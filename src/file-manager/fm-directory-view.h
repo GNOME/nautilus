@@ -219,12 +219,6 @@ struct FMDirectoryViewClass {
 	 */
 	gboolean (* supports_properties)	(FMDirectoryView *view);
 
-	/* contents_share_parent is a function pointer that subclasses may
-	 * override to specify whether all the contents of this view have
-	 * the same parent. By default it returns TRUE.
-	 */
-	gboolean (* contents_share_parent)	(FMDirectoryView *view);
-
 	void	(* start_renaming_item)	 	(FMDirectoryView *view,
 					  	 const char *uri);
 

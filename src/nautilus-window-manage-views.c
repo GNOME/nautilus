@@ -191,13 +191,18 @@ compute_default_title (const char *text_uri)
                         return short_name;
                 } else {
                 	colon_pos = strchr (text_uri, ':');
-                	if (colon_pos != NULL && colon_pos[1] != '\0') {
-                		return g_strdup (colon_pos + 1);
+                	if (colon_pos != NULL) {
+                                if (colon_pos[1] != '\0') {
+                                        return g_strdup (colon_pos + 1);
+                                } else {
+                                        return g_strndup (text_uri,
+                                                          colon_pos - text_uri);
+                                }
                         }
                 }
         }
 
-        return g_strdup (_("Nautilus"));
+        return g_strdup ("");
 }
 
 /* nautilus_window_get_current_location_title:
@@ -243,7 +248,7 @@ nautilus_window_update_title (NautilusWindow *window)
 
         title = nautilus_window_get_current_location_title (window);
 
-        if (strcmp (title, _("Nautilus")) == 0) {
+        if (title[0] == '\0') {
                 gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
         } else {
                 truncated_title = nautilus_str_middle_truncate (title, MAX_TITLE_LENGTH);

@@ -979,7 +979,6 @@ gboolean
 nautilus_directory_is_not_empty (NautilusDirectory *directory)
 {
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
-	g_return_val_if_fail (nautilus_directory_is_file_list_monitored (directory), FALSE);
 
 	return NAUTILUS_CALL_VIRTUAL
 		(NAUTILUS_DIRECTORY_CLASS, directory,

@@ -101,19 +101,21 @@ nautilus_trash_files_changed_callback (NautilusDirectory *directory, GList *file
 }
 
 static void
-nautilus_trash_metadata_ready_callback (NautilusDirectory *directory, GList *files,
-					gpointer callback_data)
+nautilus_trash_monitor_initialize (gpointer object, gpointer klass)
 {
 	NautilusTrashMonitor *trash_monitor;
 
-	trash_monitor = callback_data;
+	trash_monitor = NAUTILUS_TRASH_MONITOR (object);
 
-	g_assert (NAUTILUS_IS_TRASH_MONITOR (trash_monitor));
-	g_assert (files == NULL);
-	g_assert (trash_monitor->details->trash_directory == directory);
+	/* set up a NautilusDirectory for the Trash directory to monitor */
 
-	nautilus_directory_file_monitor_add (directory, trash_monitor,
-					     NULL, FALSE, TRUE);
+	trash_monitor->details = g_new0 (NautilusTrashMonitorDetails, 1);
+	trash_monitor->details->trash_directory = nautilus_directory_get ("trash:");
+	trash_monitor->details->empty = TRUE;
+
+	nautilus_directory_file_monitor_add (trash_monitor->details->trash_directory,
+					     trash_monitor,
+					     NULL, TRUE, FALSE);
 
 	/* Make sure we get notified about changes */
     	gtk_signal_connect (GTK_OBJECT (trash_monitor->details->trash_directory),
@@ -122,36 +124,6 @@ nautilus_trash_metadata_ready_callback (NautilusDirectory *directory, GList *fil
     	gtk_signal_connect (GTK_OBJECT (trash_monitor->details->trash_directory),
 			    "files_changed", GTK_SIGNAL_FUNC (nautilus_trash_files_changed_callback),
 			    trash_monitor);
-}
-
-static void
-nautilus_trash_monitor_initialize (gpointer object, gpointer klass)
-{
-	NautilusTrashMonitor *trash_monitor;
-	GnomeVFSURI *trash_dir_uri;
-	char *trash_dir_uri_string;
-
-	trash_monitor = NAUTILUS_TRASH_MONITOR (object);
-
-	/* set up a NautilusDirectory for the Trash directory to monitor */
-	/* FIXME: Use "trash:" here when it works.
-	 */
-	gnome_vfs_find_directory (NULL, GNOME_VFS_DIRECTORY_KIND_TRASH,
-				  &trash_dir_uri, TRUE, TRUE, 0777);
-	g_assert (trash_dir_uri != NULL);
-	trash_dir_uri_string = gnome_vfs_uri_to_string (trash_dir_uri, GNOME_VFS_URI_HIDE_NONE);
-
-	trash_monitor->details = g_new0 (NautilusTrashMonitorDetails, 1);
-	trash_monitor->details->trash_directory = nautilus_directory_get (trash_dir_uri_string);
-	trash_monitor->details->empty = TRUE;
-
-	g_free (trash_dir_uri_string);
-	gnome_vfs_uri_unref (trash_dir_uri);
-
-	nautilus_directory_call_when_ready
-		(trash_monitor->details->trash_directory,
-		 NULL, TRUE,
-		 nautilus_trash_metadata_ready_callback, trash_monitor);
 }
 
 static void
@@ -164,7 +136,7 @@ destroy (GtkObject *object)
 	nautilus_directory_file_monitor_remove
 		(trash_monitor->details->trash_directory, 
 		 trash_monitor);
-	gtk_object_unref (GTK_OBJECT (trash_monitor->details->trash_directory));	
+	nautilus_directory_unref (trash_monitor->details->trash_directory);
 	g_free (trash_monitor->details);
 }
 

@@ -25,8 +25,8 @@
 
 #include <config.h>
 #include "fm-desktop-icon-view.h"
-#include "fm-icon-view.h"
 
+#include "nautilus-trash-monitor.h"
 #include <ctype.h>
 #include <dirent.h>
 #include <fcntl.h>
@@ -51,8 +51,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "nautilus-trash-monitor.h"
-
+#define TRASH_LINK_NAME _("Trash")
 
 static void     fm_desktop_icon_view_initialize                           (FMDesktopIconView      *desktop_icon_view);
 static void     fm_desktop_icon_view_initialize_class                     (FMDesktopIconViewClass *klass);
@@ -414,7 +413,7 @@ fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor *trash_m
 	char *desktop_directory_path, *path;
 
 	desktop_directory_path = nautilus_get_desktop_directory ();
-	path = nautilus_make_path (desktop_directory_path, "Trash");
+	path = nautilus_make_path (desktop_directory_path, TRASH_LINK_NAME);
 
 	/* Change the XML file to have a new icon. */
 	nautilus_link_set_icon (path, state ? "trash-empty.png" : "trash-full.png");
@@ -617,7 +616,7 @@ find_and_rename_trash_link (void)
 				link_path = nautilus_make_path (desktop_path, this_entry->d_name);				
 				if (nautilus_link_is_trash_link (link_path)) {
 					/* Reset name */
-					rename (this_entry->d_name, "Trash");
+					rename (this_entry->d_name, TRASH_LINK_NAME);
 					return TRUE;
 				}
 				g_free (link_path);
@@ -633,9 +632,6 @@ find_and_rename_trash_link (void)
 static void
 create_or_rename_trash (void)
 {
-	GnomeVFSURI *trash_dir_uri;
-	char *trash_dir_uri_text;
-	GnomeVFSResult result;
 	char *desktop_directory_path;
 
 	/* Check for trash link */
@@ -643,18 +639,13 @@ create_or_rename_trash (void)
 		return;
 	}
 
-	result = gnome_vfs_find_directory (NULL, GNOME_VFS_DIRECTORY_KIND_TRASH, 
-					   &trash_dir_uri, TRUE, FALSE, 0777);
-	if (result == GNOME_VFS_OK) {
-		trash_dir_uri_text = gnome_vfs_uri_to_string (trash_dir_uri,
-							      GNOME_VFS_URI_HIDE_NONE);
-		gnome_vfs_uri_unref (trash_dir_uri);
-		desktop_directory_path = nautilus_get_desktop_directory ();
-		nautilus_link_create (desktop_directory_path, _("Trash"), "trash-empty.png", 
-				      trash_dir_uri_text, NAUTILUS_LINK_TRASH);
-		g_free (trash_dir_uri_text);
-		g_free (desktop_directory_path);
-	}
+	desktop_directory_path = nautilus_get_desktop_directory ();
+	nautilus_link_create (desktop_directory_path,
+			      TRASH_LINK_NAME,
+			      "trash-empty.png", 
+			      "trash:",
+			      NAUTILUS_LINK_TRASH);
+	g_free (desktop_directory_path);
 }
 
 static void

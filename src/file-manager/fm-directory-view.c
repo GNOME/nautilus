@@ -190,8 +190,6 @@ static void           metadata_ready_callback                                   
 static void	      fm_directory_view_trash_state_changed_callback		  (NautilusTrashMonitor     *trash,
 										   gboolean 		     state,
 										   gpointer		     callback_data);
-static gboolean	      fm_directory_view_contents_share_parent 			  (FMDirectoryView 	    *view);
-static gboolean	      real_contents_share_parent 			  	  (FMDirectoryView 	    *view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_file)
@@ -281,7 +279,6 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	klass->get_emblem_names_to_exclude = real_get_emblem_names_to_exclude;
 	klass->start_renaming_item = start_renaming_item;
 	klass->supports_properties = fm_directory_view_real_supports_properties;
-	klass->contents_share_parent = real_contents_share_parent;
 
 	/* Function pointers that subclasses must override */
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, add_file);
@@ -1878,45 +1875,6 @@ fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files)
 	nautilus_g_list_free_deep (uris);
 }
 
-static NautilusFile *
-get_nautilus_file_from_directory (NautilusDirectory *directory)
-{
-	char *uri;
-	NautilusFile *result;
-
-	uri = nautilus_directory_get_uri (directory);
-	result = nautilus_file_get (uri);
-	g_free (uri);
-	return result;
-}
-
-static gboolean
-fm_directory_is_trash (FMDirectoryView *view)
-{
-	NautilusFile *directory_as_file;
-	gboolean result;
-
-	directory_as_file = get_nautilus_file_from_directory 
-		(fm_directory_view_get_model (view));
-	result = nautilus_file_is_in_trash (directory_as_file);
-	nautilus_file_unref (directory_as_file);
-
-	return result;
-}
-
-static gboolean
-fm_directory_view_contents_share_parent (FMDirectoryView *view)
-{
-	return NAUTILUS_CALL_VIRTUAL (FM_DIRECTORY_VIEW_CLASS, view,
-				      contents_share_parent, (view));
-}
-
-static gboolean
-real_contents_share_parent (FMDirectoryView *view)
-{
-	return TRUE;
-}
-
 static gboolean
 all_files_in_trash (GList *files)
 {
@@ -1944,13 +1902,9 @@ fm_directory_all_selected_items_in_trash (FMDirectoryView *view)
 	 * check that parent directory. Otherwise we have to inspect
 	 * each selected item.
 	 */
-	if (fm_directory_view_contents_share_parent (view)) {
-		result = fm_directory_is_trash (view);
-	} else {
-		selection = fm_directory_view_get_selection (view);
-		result = (selection == NULL) ? FALSE : all_files_in_trash (selection);
-		nautilus_file_list_free (selection);
-	}
+	selection = fm_directory_view_get_selection (view);
+	result = (selection == NULL) ? FALSE : all_files_in_trash (selection);
+	nautilus_file_list_free (selection);
 
 	return result;
 }

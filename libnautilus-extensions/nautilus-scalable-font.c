@@ -710,7 +710,7 @@ nautilus_scalable_font_largest_fitting_font_size (const NautilusScalableFont  *f
 	g_return_val_if_fail (font_sizes != NULL, 0);
 	g_return_val_if_fail (num_font_sizes > 0, 0);
 
- 	if (text == NULL || available_width < 1) {
+ 	if (text == NULL || text[0] == '\0' || available_width < 1) {
  		return font_sizes[num_font_sizes - 1];
  	}
 

@@ -86,6 +86,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-link.c				\
 	nautilus-list-column-title.c		\
 	nautilus-list.c                         \
+	nautilus-merged-directory.c		\
 	nautilus-mime-actions.c			\
 	nautilus-password-dialog.c		\
 	nautilus-preference.c			\
@@ -172,6 +173,7 @@ noinst_HEADERS =				\
 	nautilus-link.h				\
 	nautilus-list-column-title.h		\
 	nautilus-list.h                         \
+	nautilus-merged-directory.h		\
 	nautilus-metadata.h			\
 	nautilus-mime-actions.h			\
 	nautilus-password-dialog.h		\

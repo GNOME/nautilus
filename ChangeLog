@@ -1,3 +1,70 @@
+2000-08-21  Darin Adler  <darin@eazel.com>
+
+	Finished task 571 (Make a Trash "virtual directory" with trash
+	from all volumes). Some loose ends are already reported in bugs
+	2146, 2243, and 2244.
+
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-merged-directory.h:
+	* libnautilus-extensions/nautilus-merged-directory.c:
+	Moved all the guts of NautilusTrashDirectory that are solely
+	about having a single directory that's a union of a bunch of
+	real directories into a separate base class. Also finished the
+	implementation, leaving only unimportant loose ends.
+	
+	* libnautilus-extensions/nautilus-trash-directory.h:
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	(get_volume_vfs_uri_if_writable), (find_directory_callback),
+	(add_volume), (remove_trash_volume), (remove_volume),
+	(add_one_volume), (volume_mounted_callback),
+	(volume_unmounted_callback), (nautilus_trash_directory_initialize),
+	(remove_trash_volume_cover), (trash_destroy),
+	(nautilus_trash_directory_initialize_class):
+	Added the code to find the trash on all volumes.
+	
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(flatten_hash_table_element),
+	(nautilus_g_hash_table_safe_for_each): Added a new version of the
+	hash table iterator that works even if the callback removes items
+	from the hash table.
+	
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_scalable_font_largest_fitting_font_size): Added code to
+	handle the case of an empty name; the old code worked with NULL,
+	but not with "".
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_trash_state_changed_callback),
+	(find_and_rename_trash_link), (create_or_rename_trash):
+	* src/file-manager/nautilus-trash-monitor.c:
+	(nautilus_trash_monitor_initialize):
+	Changed to use the new "trash:" URL instead of locating one of
+	the trash folders.
+
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize_class),
+	(fm_directory_all_selected_items_in_trash):
+	* src/file-manager/fm-search-list-view.c:
+	(fm_search_list_view_initialize_class):
+	The "share_parent" optimization didn't work for the new trash.
+	Instead of fixing it, I just removed it.
+	
+	* src/nautilus-window-manage-views.c: (compute_default_title),
+	(nautilus_window_update_title): Made two changes to the default
+	title: 1) Use "" instead of "Nautilus" when there's no title.
+	We still use "Nautilus" in the window title, but not in the
+	sidebar any more. 2) Use the scheme part of a URI if there's
+	nothing after the colon. This works nicely for the trash.
+
+	* libnautilus-extensions/nautilus-background-canvas-group.c:
+	(nautilus_background_canvas_group_render): Removed some unneeded
+	code and the FIXME that goes with it.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_is_not_empty): Removed an overzealous assert.
+	
 2000-08-21  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/command-line/eazel-alt-install-corba.c:
@@ -227,35 +294,27 @@
 	* components/services/nautilus-dependant-shared/Makefile.am:
 	* components/services/nautilus-dependant-shared/icons/.cvsignore:
 	* components/services/nautilus-dependant-shared/icons/Makefile.am:
-	 
-	components/services/nautilus-dependant-shared/shared-service-utilit
+	* components/services/nautilus-dependant-shared/shared-service-utilit
 	ies.c:
-	 
-	components/services/nautilus-dependant-shared/shared-service-utilit
+	* components/services/nautilus-dependant-shared/shared-service-utilit
 	ies.h:
-	 
-	components/services/nautilus-dependant-shared/shared-service-widget
+	* components/services/nautilus-dependant-shared/shared-service-widget
 	s.c:
-	 
-	components/services/nautilus-dependant-shared/shared-service-widget
+	* components/services/nautilus-dependant-shared/shared-service-widget
 	s.h:
 	* components/services/nautilus-dependent-shared/.cvsignore:
 	* components/services/nautilus-dependent-shared/Makefile.am:
 	* components/services/nautilus-dependent-shared/icons/.cvsignore:
 	* components/services/nautilus-dependent-shared/icons/Makefile.am:
-	 
-	components/services/nautilus-dependent-shared/shared-service-utilit
+	* components/services/nautilus-dependent-shared/shared-service-utilit
 	ies.c: (go_to_uri), (is_location):
-	 
-	components/services/nautilus-dependent-shared/shared-service-utilit
+	* components/services/nautilus-dependent-shared/shared-service-utilit
 	ies.h:
-	 
-	components/services/nautilus-dependent-shared/shared-service-widget
+	* components/services/nautilus-dependent-shared/shared-service-widget
 	s.c: (create_image_widget), (create_services_title_widget),
 	(create_services_header_widget), (set_widget_foreground_color),
 	(show_feedback):
-	 
-	components/services/nautilus-dependent-shared/shared-service-widget
+	* components/services/nautilus-dependent-shared/shared-service-widget
 	s.h:
 	* components/services/startup/nautilus-view/Makefile.am:
 	* components/services/summary/nautilus-view/Makefile.am:

@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
 
-   nautilus-trash-directory.h: Subclass of NautilusDirectory to implement the
-   virtual trash directory.
+   nautilus-trash-directory.h: Subclass of NautilusDirectory to implement
+   the virtual trash directory.
  
    Copyright (C) 1999, 2000 Eazel, Inc.
   
@@ -26,11 +26,7 @@
 #ifndef NAUTILUS_TRASH_DIRECTORY_H
 #define NAUTILUS_TRASH_DIRECTORY_H
 
-#include "nautilus-directory.h"
-
-/* Very little of this is trash-specific, so we could give it a new
- * name some day.
- */
+#include "nautilus-merged-directory.h"
 
 #define NAUTILUS_TYPE_TRASH_DIRECTORY \
 	(nautilus_trash_directory_get_type ())
@@ -46,18 +42,14 @@
 typedef struct NautilusTrashDirectoryDetails NautilusTrashDirectoryDetails;
 
 typedef struct {
-	NautilusDirectory parent_slot;
+	NautilusMergedDirectory parent_slot;
 	NautilusTrashDirectoryDetails *details;
 } NautilusTrashDirectory;
 
 typedef struct {
-	NautilusDirectoryClass parent_slot;
+	NautilusMergedDirectoryClass parent_slot;
 } NautilusTrashDirectoryClass;
 
-GtkType nautilus_trash_directory_get_type              (void);
-void    nautilus_trash_directory_add_real_directory    (NautilusTrashDirectory *trash,
-							NautilusDirectory      *real_directory);
-void    nautilus_trash_directory_remove_real_directory (NautilusTrashDirectory *trash,
-							NautilusDirectory      *real_directory);
+GtkType nautilus_trash_directory_get_type (void);
 
 #endif /* NAUTILUS_TRASH_DIRECTORY_H */

@@ -139,9 +139,6 @@ nautilus_background_canvas_group_render (GnomeCanvasItem *item, GnomeCanvasBuf *
 		/* FIXME: Shouldn't nautilus_background_draw_aa do these? */
 		buffer->is_bg = FALSE;
 		buffer->is_buf = TRUE;
-	} else {
-		/* FIXME: Why do we need this in this case? */
-		gnome_canvas_buf_ensure_buf (buffer);
 	}
 	
 	/* Call through to the GnomeCanvasGroup implementation, which will draw all
