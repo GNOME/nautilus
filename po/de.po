@@ -5,10 +5,8 @@
 # Christian Meyer <chrisime@gnome.org>, 2000-2002.
 # Christian Neumair <chris@gnome-de.org>, 2002-2004.
 # Hendrik Richter <hendrik@gnome-de.org>, 2004
-#
 # Last Updated:
 # 2003-06-11  Christian Neumair
-#
 # item		= Objekt
 # home		= Persönlicher Ordner
 # selected	= (aus)gewählt
@@ -28,19 +26,21 @@
 # (un)mount	= einbinden/aushängen
 # Volume	= Datenträger
 # Media		= Medium
-#
+# Hendrik Richter <hendrik@gnome-de.org>, 2004.
+# 
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.7.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-10-28 17:11+0200\n"
-"PO-Revision-Date: 2004-07-24 11:46+0200\n"
-"Last-Translator: Hendrik Richter <hendrik@gnome-de.org>\n"
+"POT-Creation-Date: 2004-11-05 14:49+0100\n"
+"PO-Revision-Date: 2004-11-05 14:51+0100\n"
+"Last-Translator: Hendrik Brandt <eru@gmx.li>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);"
 
 #: components/adapter/main.c:101
 msgid "bonobo_ui_init() failed."
@@ -262,13 +262,11 @@ msgstr "Software"
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
-msgid_plural ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
-msgstr[0] ""
+msgstr ""
 "<b>Bildtyp:</b> %s (%s)\n"
 "<b>Auflösung:</b> %dx%d Pixel\n"
-msgstr[1] ""
 "<b>Bildtyp:</b> %s (%s)\n"
 "<b>Auflösung:</b> %dx%d Pixel\n"
 
@@ -3563,11 +3561,9 @@ msgstr "Sind sie sicher, dass Sie »%s« dauerhaft löschen wollen?"
 #: src/file-manager/fm-directory-view.c:865
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
-msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items?"
-msgstr[0] ""
+msgstr ""
 "Sind sie sicher, dass Sie das gewählte Objekte dauerhaft löschen wollen?%.0d"
-msgstr[1] ""
 "Sind sie sicher, dass Sie die %d gewählten Objekte dauerhaft löschen wollen?"
 
 #: src/file-manager/fm-directory-view.c:873
@@ -3707,13 +3703,11 @@ msgstr "Sind Sie sicher, dass Sie »%s« dauerhaft aus dem Müll löschen wollen
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
-msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr[0] ""
+msgstr ""
 "Sind Sie sicher, dass Sie das gewählte Objekte dauerhaft aus dem Müll "
 "löschen wollen?%.0d"
-msgstr[1] ""
 "Sind Sie sicher, dass Sie die %d gewählten Objekte dauerhaft aus dem Müll "
 "löschen wollen?"
 
@@ -3873,12 +3867,10 @@ msgstr "»%s« wird kopiert, sobald Sie »Dateien einfügen« auswählen"
 #, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
-msgid_plural ""
 "The %d selected items will be moved if you select the Paste Files command"
-msgstr[0] ""
+msgstr ""
 "Das gewählte Objekt wird verschoben, sobald Sie »Dateien einfügen« auswählen"
 "%.0d"
-msgstr[1] ""
 "Die %d gewählten Objekte werden verschoben, sobald Sie »Dateien einfügen« "
 "auswählen"
 
@@ -3886,11 +3878,9 @@ msgstr[1] ""
 #, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
-msgid_plural ""
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr[0] ""
+msgstr ""
 "Das gewählte Objekt wird kopiert, sobald Sie »Dateien einfügen« auswählen%.0d"
-msgstr[1] ""
 "Die %d gewählten Objekte werden kopiert, sobald Sie »Dateien einfügen« "
 "auswählen"
 
@@ -4308,12 +4298,12 @@ msgstr "Fehler beim Ziehen und Ablegen"
 msgid "An invalid drag type was used."
 msgstr "Es wurde ein ungültiger Zieh-Typ verwendet."
 
-#: src/file-manager/fm-list-view.c:1542
+#: src/file-manager/fm-list-view.c:1557
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s anzuzeigende Spalten"
 
-#: src/file-manager/fm-list-view.c:1561
+#: src/file-manager/fm-list-view.c:1576
 msgid "Choose the order of information to appear in this folder."
 msgstr ""
 "Legen Sie die Reihenfolge fest, in der in diesem Ordner Informationen "
@@ -5877,14 +5867,12 @@ msgid "Location _Bar"
 msgstr "_Adressleiste"
 
 #: src/nautilus-navigation-window-ui.xml.h:22
-#, fuzzy
 msgid "Open New _Window"
-msgstr "In neuem Fenster öffnen"
+msgstr "Neues _Fenster öffnen"
 
 #: src/nautilus-navigation-window-ui.xml.h:23
-#, fuzzy
 msgid "Open another Nautilus window for the displayed location"
-msgstr "Den Vorgabe-Hintergrund für diesen Ort verwenden"
+msgstr "Ein weiteres Fenster für den angezeigten Ort öffnen"
 
 #: src/nautilus-navigation-window-ui.xml.h:24
 msgid "Reload"
@@ -6699,198 +6687,3 @@ msgstr "Netzwerk-Server"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Ihre Netzwerk-Server im Dateimanager Nautilus anzeigen"
 
-#~ msgid "There was an error displaying help: %s"
-#~ msgstr "Beim Anzeigen der Hilfe ist ein Fehler aufgetreten: %s"
-
-#~ msgid "not in menu"
-#~ msgstr "nicht im Menü"
-
-#~ msgid "in menu for this file"
-#~ msgstr "im Menü für diese Datei"
-
-#~ msgid "in menu for \"%s\""
-#~ msgstr "im Menü für »%s«"
-
-#~ msgid "default for this file"
-#~ msgstr "voreingestellt für diese Datei"
-
-#~ msgid "default for \"%s\""
-#~ msgstr "voreingestellt für »%s«"
-
-#~ msgid "Is not in the menu for \"%s\" items."
-#~ msgstr "Ist nicht im Menü für »%s«-Objekte."
-
-#~ msgid "Is in the menu for \"%s\"."
-#~ msgstr "Ist im Menü für »%s«."
-
-#~ msgid "Is in the menu for \"%s\" items."
-#~ msgstr "Ist im Menü für »%s«-Objekte."
-
-#~ msgid "Is in the menu for all \"%s\" items."
-#~ msgstr "Ist im Menü für »%s«-Objekte."
-
-#~ msgid "Is the default for \"%s\"."
-#~ msgstr "Ist voreingestellt für »%s«."
-
-#~ msgid "Is the default for \"%s\" items."
-#~ msgstr "Ist voreingestellt für alle »%s«-Objekte."
-
-#~ msgid "Is the default for all \"%s\" items."
-#~ msgstr "Ist voreingestellt für alle »%s«-Objekte."
-
-#~ msgid "Modify \"%s\""
-#~ msgstr "»%s« ändern"
-
-#~ msgid "Include in the menu for \"%s\" items"
-#~ msgstr "Für alle »%s«-Objekte ins Menü aufnehmen"
-
-#~ msgid "Use as default for \"%s\" items"
-#~ msgstr "Als Vorgabe für alle »%s«-Objekte verwenden"
-
-#~ msgid "Include in the menu for \"%s\" only"
-#~ msgstr "Nur für »%s« ins Menü aufnehmen"
-
-#~ msgid "Use as default for \"%s\" only"
-#~ msgstr "Nur als Vorgabe für »%s« verwenden"
-
-#~ msgid "Don't include in the menu for \"%s\" items"
-#~ msgstr "Nicht ins Menü für »%s«-Objekte aufnehmen"
-
-#~ msgid "Status"
-#~ msgstr "Status"
-
-#~ msgid "Done"
-#~ msgstr "Fertig"
-
-#~ msgid "_Modify..."
-#~ msgstr "Ä_ndern..."
-
-#~ msgid "File Types and Programs"
-#~ msgstr "Dateitypen und Programme"
-
-#~ msgid "_Go There"
-#~ msgstr "_Dorthin gehen"
-
-#~ msgid ""
-#~ "You can configure which programs are offered for which file types in the "
-#~ "File Types and Programs dialog."
-#~ msgstr ""
-#~ "Sie können im Dialog »Dateitypen und Programme« konfigurieren, welche "
-#~ "Programme für welche Dateitypen angeboten werden."
-
-#~ msgid "Open with Other Application"
-#~ msgstr "Mit einer anderen Anwendung öffnen"
-
-#~ msgid "Choose an application with which to open \"%s\":"
-#~ msgstr "Wählen Sie die Anwendung, mit der »%s« geöffnet werden soll:"
-
-#~ msgid "Open with Other Viewer"
-#~ msgstr "Mit einer anderen Ansicht öffnen"
-
-#~ msgid "Choose a view for \"%s\":"
-#~ msgstr "Wählen Sie eine Ansicht für »%s«:"
-
-#~ msgid "No viewers are available for \"%s\"."
-#~ msgstr "Es sind keine Ansichten für »%s« verfügbar."
-
-#~ msgid "No Viewers Available"
-#~ msgstr "Keine Ansichten verfügbar"
-
-#~ msgid "There is no application associated with \"%s\"."
-#~ msgstr "Mit »%s« ist keine Anwendung verknüpft."
-
-#~ msgid "No Application Associated"
-#~ msgstr "Keine Anwendung verknüpft"
-
-#~ msgid "There is no action associated with \"%s\"."
-#~ msgstr "Es ist keine Aktion mit »%s« verknüpft."
-
-#~ msgid "No Action Associated"
-#~ msgstr "Keine Aktion verknüpft"
-
-# klingt dämlich
-#~ msgid ""
-#~ "You can configure GNOME to associate applications with file types. Do you "
-#~ "want to associate an application with this file type now?"
-#~ msgstr ""
-#~ "Sie können GNOME anweisen, Anwendungen mit Dateitypen zu verknüpfen. "
-#~ "Möchten Sie jetzt eine Anwendung mit diesem Dateityp verknüpfen?"
-
-#~ msgid "_Associate Application"
-#~ msgstr "Anwendung _verknüpfen"
-
-#~ msgid "The viewer associated with \"%s\" is invalid."
-#~ msgstr "Die mit »%s« verknüpfte Ansicht ist ungültig."
-
-#~ msgid "Invalid Viewer Associated"
-#~ msgstr "Verknüpfte Ansicht ungültig"
-
-#~ msgid "The application associated with \"%s\" is invalid."
-#~ msgstr "Die mit »%s« verknüpfte Anwendung ist ungültig."
-
-#~ msgid "Invalid Application Associated"
-#~ msgstr "Verknüpfte Anwendung ungültig"
-
-#~ msgid "The action associated with \"%s\" is invalid."
-#~ msgstr "Die mit »%s« verknüpfte Ansicht ist ungültig."
-
-#~ msgid "Invalid Action Associated"
-#~ msgstr "Verknüpfte Aktion ungültig"
-
-#~ msgid ""
-#~ "You can configure GNOME to associate a different application or viewer "
-#~ "with this file type. Do you want to associate an application or viewer "
-#~ "with this file type now?"
-#~ msgstr ""
-#~ "Sie können GNOME anweisen, eine andere Anwendung oder Ansicht mit diesem "
-#~ "Dateityp zu verknüpfen. Möchten Sie jetzt eine Anwendung oder Ansicht mit "
-#~ "diesem Dateityp verknüpfen?"
-
-#~ msgid "_Associate Action"
-#~ msgstr "Aktion _verknüpfen"
-
-#~ msgid "Add Nautilus to session"
-#~ msgstr "Nautilus zur Sitzung hinzufügen"
-
-#~ msgid ""
-#~ "If this is set to true, Nautilus adds itself to the session when it "
-#~ "starts up. This means it will be started the next time you log in."
-#~ msgstr ""
-#~ "Falls dieser Schlüssel wahr ist, fügt sich Nautilus selbstständig zur "
-#~ "Sitzung hinzu, sobald diese gestartet wird - also das nächste Mal, wenn "
-#~ "Sie sich anmelden."
-
-# CHECK
-#~ msgid "Browse Filesystem"
-#~ msgstr "Dateisystem-Browser"
-
-#~ msgid "_Other Application..."
-#~ msgstr "_Anderer Anwendung..."
-
-#~ msgid "Open _With..."
-#~ msgstr "Öffnen _mit..."
-
-#~ msgid "Open _With"
-#~ msgstr "Öffnen _mit"
-
-#~ msgid "Example:"
-#~ msgstr "Beispiel:"
-
-#~ msgid "nautilus: --check cannot be used with URIs.\n"
-#~ msgstr "nautilus: --check kann nicht mit URIs verwendet werden.\n"
-
-#~ msgid "nautilus: --restart cannot be used with URIs.\n"
-#~ msgstr "nautilus: --restart kann nicht mit URIs verwendet werden.\n"
-
-#~ msgid "An _Application..."
-#~ msgstr "Einer _Anwendung..."
-
-#~ msgid "View as..."
-#~ msgstr "Ansicht auswählen..."
-
-#~ msgid "Choose a view for the current location, or modify the set of views"
-#~ msgstr ""
-#~ "Eine Ansicht für den aktuellen Ort wählen, oder die Ansichten verändern"
-
-#~ msgid "_View as..."
-#~ msgstr "Ansicht aus_wählen..."
