@@ -311,12 +311,12 @@ if gnome-config --libs gtkhtml > /dev/null 2>&1; then
     AC_MSG_RESULT(yes)
 	dnl <= check for GtkHTML >= 0.4 
 	AC_MSG_CHECKING(for GtkHTML >= 0.4)
-	if test `gnome-config --modversion gtkhtml|sed -e 's/.*-[[[:digit:]]].//g'` -ge 4 ; then
-		AC_MSG_RESULT([yeah, we are very up-to-date])
+	if test `gnome-config --modversion gtkhtml|sed -e 's/.*-[[[:digit:]]][[[:digit:]]]*\.\([[[:digit:]]][[[:digit:]]]*\)\(\.[[[:digit:]]][[[:digit:]]]*\)*/\1/'` -ge 4 ; then
+		AC_MSG_RESULT([yes])
 			GTKHTML_LIBS=`gnome-config --libs gtkhtml`
 			GTKHTML_CFLAGS=`gnome-config --cflags gtkhtml`
 	else
-	 		AC_MSG_ERROR([Your GtkHTML is not up-to-date enough for nautilus!])
+	 		AC_MSG_ERROR([*** GtkHTML 0.4 or better is required])
 	fi
 	dnl =>
 else

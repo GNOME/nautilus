@@ -1,3 +1,12 @@
+2000-08-14  Darin Adler  <darin@eazel.com>
+
+	* configure.in: Fixed GtkHTML configure section so it will
+	work with 3-part version numbers. I didn't really know the
+	"good" way to do this, so I just fixed the sed command to
+	work with multi-part versions and didn't try to fix any
+	other aspect of this. This change was required to make the
+	configure work with GtkHTML 0.6.1.
+
 2000-08-14  John Sullivan  <sullivan@eazel.com>
 
 	Finished the remaining details of bug 2061 (Show Properties 
