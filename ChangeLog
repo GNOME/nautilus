@@ -1,3 +1,12 @@
+2001-08-18  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-directory-background.c:
+	(nautilus_file_background_receive_root_window_changes),
+	(set_root_pixmap): Trap errors when doing the XKillClient
+	call inside set_root_pixmap. I don't know why it would
+	fail, exactly, but we have reports from the field that it
+	is failing.
+
 2001-08-16  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-volume-monitor.c:

@@ -537,7 +537,6 @@ nautilus_file_background_receive_root_window_changes (EelBackground *background)
 	XSelectInput (GDK_DISPLAY (), GDK_ROOT_WINDOW (), attribs.your_event_mask | PropertyChangeMask);
 	
 	gdk_flush ();
-
 	gdk_error_trap_pop ();
 
 	gtk_signal_connect (GTK_OBJECT (background),
@@ -618,11 +617,13 @@ set_root_pixmap (GdkPixmap *pixmap)
 				     &type, &format, &nitems, &bytes_after,
 				     &data_esetroot);
 
-	if (result == Success && type == XA_PIXMAP && format == 32 && nitems == 1) {
-		XKillClient(GDK_DISPLAY(), *(Pixmap*)data_esetroot);
-	}
-	
 	if (data_esetroot != NULL) {
+		if (result == Success && type == XA_PIXMAP && format == 32 && nitems == 1) {
+			gdk_error_trap_push ();
+			XKillClient(GDK_DISPLAY(), *(Pixmap *)data_esetroot);
+			gdk_flush ();
+			gdk_error_trap_pop ();
+		}
 		XFree (data_esetroot);
 	}
 
