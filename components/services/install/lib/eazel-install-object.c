@@ -649,7 +649,6 @@ eazel_install_install_packages (EazelInstall *service, GList *categories)
 	if (install_new_packages (service, categories)==FALSE) {
 		g_warning (_("Install failed"));
 	}
-	eazel_install_emit_done (service);
 	if (eazel_install_emit_delete_files (service)) {
 		GList *item;
 		GList *cat;
@@ -666,6 +665,7 @@ eazel_install_install_packages (EazelInstall *service, GList *categories)
 			}
 		}
 	}
+	eazel_install_emit_done (service);
 }
 
 void 
