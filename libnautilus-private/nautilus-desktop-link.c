@@ -394,6 +394,8 @@ desktop_link_finalize (GObject *object)
 
 	if (link->details->icon_file != NULL) {
 		nautilus_desktop_icon_file_remove (link->details->icon_file);
+		nautilus_file_unref (NAUTILUS_FILE (link->details->icon_file));
+		link->details->icon_file = NULL;
 	}
 
 	if (link->details->type == NAUTILUS_DESKTOP_LINK_HOME) {

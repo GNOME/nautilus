@@ -30,6 +30,7 @@
 #include "nautilus-desktop-directory.h"
 #include "nautilus-global-preferences.h"
 
+#include <eel/eel-debug.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-vfs-extensions.h>
@@ -62,12 +63,21 @@ EEL_CLASS_BOILERPLATE (NautilusDesktopLinkMonitor,
 		       G_TYPE_OBJECT)
 
 static NautilusDesktopLinkMonitor *link_monitor = NULL;
-     
+
+static void
+destroy_desktop_link_monitor (void)
+{
+	if (link_monitor != NULL) {
+		g_object_unref (link_monitor);
+	}
+}
+
 NautilusDesktopLinkMonitor *
 nautilus_desktop_link_monitor_get (void)
 {
 	if (link_monitor == NULL) {
 		link_monitor = NAUTILUS_DESKTOP_LINK_MONITOR (g_object_new (NAUTILUS_TYPE_DESKTOP_LINK_MONITOR, NULL));
+		eel_debug_call_at_shutdown (destroy_desktop_link_monitor);
 	}
 	return link_monitor;
 }
@@ -317,7 +327,7 @@ desktop_link_monitor_finalize (GObject *object)
 	}
 
 	if (monitor->details->trash_link != NULL) {
-		g_object_unref (monitor->details->home_link);
+		g_object_unref (monitor->details->trash_link);
 		monitor->details->trash_link = NULL;
 	}
 

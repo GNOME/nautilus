@@ -279,7 +279,6 @@ nautilus_desktop_icon_file_new (NautilusDesktopLink *link)
 	eazel_dump_stack_trace ("\t", 10);
 #endif
 
-	nautilus_directory_ref (directory);
 	file->details->directory = directory;
 
 	icon_file = NAUTILUS_DESKTOP_ICON_FILE (file);
@@ -309,7 +308,7 @@ nautilus_desktop_icon_file_get_link (NautilusDesktopIconFile *icon_file)
 }
 
 static void
-desktop_finalize (GObject *object)
+desktop_icon_file_finalize (GObject *object)
 {
 	NautilusDesktopIconFile *desktop_file;
 
@@ -329,7 +328,7 @@ nautilus_desktop_icon_file_class_init (gpointer klass)
 	object_class = G_OBJECT_CLASS (klass);
 	file_class = NAUTILUS_FILE_CLASS (klass);
 	
-	object_class->finalize = desktop_finalize;
+	object_class->finalize = desktop_icon_file_finalize;
 
 	file_class->monitor_add = desktop_icon_file_monitor_add;
 	file_class->monitor_remove = desktop_icon_file_monitor_remove;

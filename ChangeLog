@@ -1,8 +1,20 @@
 2003-05-23  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-desktop-icon-file.c:
+	Don't ref directory twice. Rename finalizer.
+	
+	* libnautilus-private/nautilus-desktop-link-monitor.c:
+	unref monitor on shutdown
+	Unref correct object in finalize
+
+	* libnautilus-private/nautilus-desktop-link.c:
+	unref icon file in finalizer.
+	
+2003-05-23  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-desktop-link-monitor.c (create_volume_link):
 	Fix the volume uniquification code.
-	
+
 2003-05-23  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-icon-view.c (fm_icon_view_screen_changed):
