@@ -27,6 +27,8 @@
 #include <config.h>
 #include "nautilus-location-bar.h"
 
+#include "nautilus-window.h"
+
 #include <string.h>
 
 #include <gtk/gtksignal.h>
@@ -38,11 +40,13 @@
 #include <libgnome/gnome-mime.h>
 #include <libgnome/gnome-i18n.h>
 
+#include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
 
 #include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 
@@ -84,6 +88,13 @@ static void nautilus_location_bar_initialize       (NautilusLocationBar      *ba
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusLocationBar, nautilus_location_bar, NAUTILUS_TYPE_NAVIGATION_BAR)
 
 
+
+static NautilusWindow *
+nautilus_location_bar_get_window (GtkWidget *widget)
+{
+	return NAUTILUS_WINDOW (gtk_widget_get_toplevel (widget));
+}
+
 static void
 drag_data_received_callback (GtkWidget *widget,
 		       	     GdkDragContext *context,
@@ -93,8 +104,12 @@ drag_data_received_callback (GtkWidget *widget,
 		             guint info,
 		             guint32 time)
 {
-	GList *names;
-	gchar *uri;
+	GList *names, *node;
+	NautilusApplication *application;
+	int name_count;
+	NautilusWindow *new_window;
+	gboolean new_windows_for_extras;
+	char *prompt;
 
 	g_assert (NAUTILUS_IS_LOCATION_BAR (widget));
 	g_assert (data != NULL);
@@ -107,24 +122,48 @@ drag_data_received_callback (GtkWidget *widget,
 		return;
 	}
 
-	/* FIXME bugzilla.eazel.com 670: 
-	 * When more than one URI is dragged here, should we make windows? 
+	new_windows_for_extras = FALSE;
+	/* Ask user if they really want to open multiple windows
+	 * for multiple dropped URIs. This is likely to have been
+	 * a mistake.
 	 */
-	if (nautilus_g_list_more_than_one_item (names)) {
-		g_warning ("Should we make more windows?");
+	name_count = g_list_length (names);
+	if (name_count > 1) {
+		prompt = g_strdup_printf (_("Do you want to view these %d locations "
+					  "in separate windows?"), 
+					  name_count);
+		new_windows_for_extras = nautilus_simple_dialog 
+			(GTK_WIDGET (nautilus_location_bar_get_window (widget)),
+			 prompt,
+			 _("View in Multiple Windows?"),
+			 GNOME_STOCK_BUTTON_OK,
+			 GNOME_STOCK_BUTTON_CANCEL,
+			 NULL) == GNOME_OK;
+
+		g_free (prompt);
+		
+		if (!new_windows_for_extras) {
+			gtk_drag_finish (context, FALSE, FALSE, time);
+			return;
+		}
 	}
 
-	uri = nautilus_location_bar_get_location (NAUTILUS_LOCATION_BAR (widget));
-
 	nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (widget),
-					      names->data);
-	
+					      names->data);	
 	nautilus_navigation_bar_location_changed (NAUTILUS_NAVIGATION_BAR (widget),
 						  names->data);
+
+	if (new_windows_for_extras) {
+		application = nautilus_location_bar_get_window (widget)->application;
+		for (node = names->next; node != NULL; node = node->next) {
+			new_window = nautilus_application_create_window (application);
+			nautilus_window_goto_uri (new_window, node->data);
+		}
+	}
+						  
 	gnome_uri_list_free_strings (names);
 
 	gtk_drag_finish (context, TRUE, FALSE, time);
-	g_free (uri);
 }
 
 static void

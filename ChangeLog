@@ -1,3 +1,14 @@
+2000-06-20  John Sullivan  <sullivan@eazel.com>
+
+	Finished task 670 (Open multiple windows when multiple
+	URIs dropped on location bar).
+
+	* src/nautilus-location-bar.c: 
+	(nautilus_location_bar_get_window): New helper function.
+	(drag_data_received_callback): If multiple URIs dropped,
+	ask the user whether they want to view each in a separate 
+	window.
+
 2000-06-20  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* configure.in:
