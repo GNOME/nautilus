@@ -91,7 +91,7 @@ static void fm_directory_view_list_background_changed_cb
 						     FMDirectoryViewList *list_view);
 static void fm_directory_view_list_begin_adding_entries
 						    (FMDirectoryView *view);
-static void fm_directory_view_list_bump_zoom_level  (FMDirectoryView *view, 
+static gboolean fm_directory_view_list_bump_zoom_level  (FMDirectoryView *view, 
 						     gint zoom_increment);
 static void fm_directory_view_list_clear 	    (FMDirectoryView *view);
 static guint fm_directory_view_list_get_icon_size   (FMDirectoryViewList *list_view);
@@ -490,13 +490,13 @@ get_flist (FMDirectoryViewList *list_view)
 	return GTK_FLIST (GTK_BIN (list_view)->child);
 }
 
-static void
+static gboolean
 fm_directory_view_list_bump_zoom_level (FMDirectoryView *view, gint zoom_increment)
 {
 	FMDirectoryViewList *list_view;
 	NautilusZoomLevel new_level;
 
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
 	list_view = FM_DIRECTORY_VIEW_LIST (view);
 
@@ -511,6 +511,12 @@ fm_directory_view_list_bump_zoom_level (FMDirectoryView *view, gint zoom_increme
 	}
 
 	fm_directory_view_list_set_zoom_level (list_view, new_level);
+	
+	if (zoom_increment > 0)
+    	return new_level <  NAUTILUS_ZOOM_LEVEL_LARGEST;
+  	else
+  		return new_level > NAUTILUS_ZOOM_LEVEL_SMALLEST;
+
 }
 
 static void

@@ -76,6 +76,9 @@ struct _FMDirectoryViewDetails
 	NautilusDirectory *model;
 
 	GtkMenu *background_context_menu;
+        
+        GtkWidget *zoom_in_item;
+        GtkWidget *zoom_out_item;
 };
 
 /* forward declarations */
@@ -157,7 +160,7 @@ static void
 fm_directory_view_initialize (FMDirectoryView *directory_view)
 {
 	directory_view->details = g_new0 (FMDirectoryViewDetails, 1);
-
+	
 #if 0
 	gtk_scroll_frame_set_policy (GTK_SCROLL_FRAME (directory_view),
 				     GTK_POLICY_AUTOMATIC,
@@ -369,13 +372,19 @@ stop_load (FMDirectoryView *view, gboolean error)
 static void
 zoom_in_cb(GtkMenuItem *item, FMDirectoryView *directory_view)
 {
-    fm_directory_view_bump_zoom_level (directory_view, 1);
+    
+   gboolean can_zoom_in = fm_directory_view_bump_zoom_level (directory_view, 1);
+   gtk_widget_set_sensitive(directory_view->details->zoom_in_item, can_zoom_in);
+   gtk_widget_set_sensitive(directory_view->details->zoom_out_item, TRUE);
 }
 
 static void
 zoom_out_cb(GtkMenuItem *item, FMDirectoryView *directory_view)
 {
-    fm_directory_view_bump_zoom_level (directory_view, -1);
+     gboolean can_zoom_out = fm_directory_view_bump_zoom_level (directory_view, -1);
+     gtk_widget_set_sensitive(directory_view->details->zoom_out_item, can_zoom_out);
+     gtk_widget_set_sensitive(directory_view->details->zoom_in_item, TRUE);
+     
 }
 
 static void
@@ -569,12 +578,12 @@ fm_directory_view_begin_loading (FMDirectoryView *view)
  * bump the current zoom level by invoking the relevant subclass through the slot
  * 
  **/
-void
+gboolean
 fm_directory_view_bump_zoom_level (FMDirectoryView *view, gint zoom_increment)
 {
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
-	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->bump_zoom_level) (view, zoom_increment);
+	return (* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->bump_zoom_level) (view, zoom_increment);
 }
 
 /**
@@ -660,19 +669,24 @@ append_background_items (FMDirectoryView *view, GtkMenu *menu)
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
-	menu_item = gtk_menu_item_new_with_label ("Zoom in");
+
+	menu_item = gtk_menu_item_new_with_label ("Zoom in");	
 	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
 		           GTK_SIGNAL_FUNC (zoom_in_cb), view);
 
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
+        view->details->zoom_in_item = menu_item;
 
+       
 	menu_item = gtk_menu_item_new_with_label ("Zoom out");
+	
 	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
 		           GTK_SIGNAL_FUNC (zoom_out_cb), view);
 	
         gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
+	view->details->zoom_out_item = menu_item;
 }
 
 /* FIXME - need better architecture for setting these. */

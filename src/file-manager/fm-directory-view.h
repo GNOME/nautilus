@@ -89,8 +89,9 @@ struct _FMDirectoryViewClass {
 		(* get_selection) 	 (FMDirectoryView *view);
 
         /* bump_zoom_level is a function pointer that subclasses override to
-         * change the zoom level of an object */
-       void     (* bump_zoom_level)   (FMDirectoryView *view, gint zoom_increment);
+         * change the zoom level of an object. It returns FALSE if it's now zoomed as
+           far as it can go */
+        gboolean     (* bump_zoom_level)   (FMDirectoryView *view, gint zoom_increment);
 };
 
 
@@ -124,7 +125,7 @@ void                      fm_directory_view_begin_loading            (FMDirector
  */
 void                      fm_directory_view_activate_entry           (FMDirectoryView         *view,
 								      NautilusFile            *file);
-void                      fm_directory_view_bump_zoom_level          (FMDirectoryView         *view, gint zoom_increment);
+gboolean                  fm_directory_view_bump_zoom_level          (FMDirectoryView         *view, gint zoom_increment);
 void                      fm_directory_view_notify_selection_changed (FMDirectoryView         *view);
 
 

@@ -165,8 +165,8 @@ struct _GnomeIconContainerDetails {
         /* zoom level */
         gint zoom_level;
         
-        /* default font used to draw labels */
-        GdkFont *label_font;
+        /* default fonts used to draw labels */
+        GdkFont *label_font[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
 };
 
 /* Layout and icon size constants.

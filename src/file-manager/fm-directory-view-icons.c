@@ -39,6 +39,7 @@
 #include <libnautilus/nautilus-string.h>
 #include <libnautilus/nautilus-background.h>
 #include <libnautilus/nautilus-directory.h>
+#include <libnautilus/nautilus-icon-factory.h>
 
 #define DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
 
@@ -60,7 +61,7 @@ static void fm_directory_view_icons_background_changed_cb (NautilusBackground *b
 							   FMDirectoryViewIcons *icon_view);
 static void fm_directory_view_icons_begin_loading
 				          	 (FMDirectoryView *view);
-static void fm_directory_view_icons_bump_zoom_level
+static gboolean fm_directory_view_icons_bump_zoom_level
 				          	 (FMDirectoryView *view, gint zoom_increment);
 static void fm_directory_view_icons_clear 	 (FMDirectoryView *view);
 static void fm_directory_view_icons_destroy      (GtkObject *view);
@@ -294,13 +295,17 @@ fm_directory_view_icons_begin_loading (FMDirectoryView *view)
 {
 }
 
-static void
+static gboolean
 fm_directory_view_icons_bump_zoom_level (FMDirectoryView *view, gint zoom_increment)
 {
   GnomeIconContainer *icon_container = get_icon_container(FM_DIRECTORY_VIEW_ICONS (view));
   gint current_zoom_level = gnome_icon_container_get_zoom_level(icon_container);
-  
-  gnome_icon_container_set_zoom_level(icon_container, current_zoom_level + zoom_increment);
+  gint new_zoom_level = current_zoom_level + zoom_increment;
+  gnome_icon_container_set_zoom_level(icon_container, new_zoom_level);
+  if (zoom_increment > 0)
+    return new_zoom_level <  NAUTILUS_ZOOM_LEVEL_LARGEST;
+  else
+  	return new_zoom_level > NAUTILUS_ZOOM_LEVEL_SMALLEST;
 }
 
 static GList *

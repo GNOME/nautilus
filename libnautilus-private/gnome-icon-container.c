@@ -1636,7 +1636,7 @@ static void
 destroy (GtkObject *object)
 {
 	GnomeIconContainer *container;
-
+	gint index;
 	container = GNOME_ICON_CONTAINER (object);
 
 	gnome_icon_container_dnd_fini (container);
@@ -1649,8 +1649,9 @@ destroy (GtkObject *object)
 		gtk_idle_remove (container->details->idle_id);
 	if (container->details->linger_selection_mode_timer_tag != -1)
 		gtk_timeout_remove (container->details->linger_selection_mode_timer_tag);
-        if (container->details->label_font)
-                gdk_font_unref(container->details->label_font);
+        for (index = 0; index < 3; index++)
+        	if (container->details->label_font[index])
+                	gdk_font_unref(container->details->label_font[index]);
                 
 	g_free (container->details);
 
@@ -2033,8 +2034,16 @@ gnome_icon_container_initialize (GnomeIconContainer *container)
 	details->linger_selection_mode_timer_tag = -1;
         
         details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
-        /* FIXME: soon we'll need fonts at multiple sizes */
-        details->label_font = gdk_font_load("-bitstream-charter-medium-r-normal-*-12-*-*-*-*-*-*-*"); 	
+ 
+ 	/* font table - this isnt exactly proportional, but it looks better than computed */
+        /* FIXME: read font from metadata */
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = gdk_font_load("-bitstream-charter-medium-r-normal-*-8-*-*-*-*-*-*-*");
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = gdk_font_load("-bitstream-charter-medium-r-normal-*-8-*-*-*-*-*-*-*"); 	
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALL] = gdk_font_load("-bitstream-charter-medium-r-normal-*-10-*-*-*-*-*-*-*"); 	
+        details->label_font[NAUTILUS_ZOOM_LEVEL_STANDARD] = gdk_font_load("-bitstream-charter-medium-r-normal-*-12-*-*-*-*-*-*-*"); 	
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGE] = gdk_font_load("-bitstream-charter-medium-r-normal-*-14-*-*-*-*-*-*-*"); 	
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = gdk_font_load("-bitstream-charter-medium-r-normal-*-16-*-*-*-*-*-*-*"); 	
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = gdk_font_load("-bitstream-charter-medium-r-normal-*-18-*-*-*-*-*-*-*"); 	
 
 	/* FIXME: Read these from preferences. */
 	details->linger_selection_mode = FALSE;

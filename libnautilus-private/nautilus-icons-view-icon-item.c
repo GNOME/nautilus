@@ -110,6 +110,7 @@ static void nautilus_icons_view_icon_item_bounds (GnomeCanvasItem *item, double 
 static void nautilus_icons_view_draw_text_box (GnomeCanvasItem* item, GdkDrawable *drawable, GdkFont *title_font, gchar* label, 
                                                gint icon_left, gint icon_bottom, gboolean is_selected, gboolean real_draw);
                                                
+static GdkFont* get_font_for_item(GnomeCanvasItem *item);
 
 static GnomeCanvasItemClass *parent_class;
 
@@ -491,8 +492,15 @@ compute_render_affine (NautilusIconsViewIconItem *icon_view_item, double *render
 	art_affine_multiply (render_affine, viewport_affine, i2c);
 }
 
-/* Recomputes the bounding box of a icon canvas item. 
- */
+/* utility to return the proper font for a given item, factoring in the current zoom level */
+static GdkFont*
+get_font_for_item(GnomeCanvasItem *item)
+{
+  GnomeIconContainer* container = GNOME_ICON_CONTAINER(item->canvas);
+  return container->details->label_font[container->details->zoom_level];
+}
+
+/* Recomputes the bounding box of a icon canvas item. */
 static void
 recompute_bounding_box (NautilusIconsViewIconItem *icon_view_item)
 {
@@ -537,8 +545,7 @@ nautilus_icons_view_icon_item_update (GnomeCanvasItem *item, double *affine, Art
 {
 	NautilusIconsViewIconItem *icon_view_item = NAUTILUS_ICONS_VIEW_ICON_ITEM (item);
 	IconItemPrivate *priv = icon_view_item->priv;
-        GnomeIconContainer *container = GNOME_ICON_CONTAINER(item->canvas);
- 	GdkFont *title_font = container->details->label_font;
+ 	GdkFont *title_font = get_font_for_item(item);
 
 	/* make sure the text box measurements are set up before recalculating the bounding box */
 	nautilus_icons_view_draw_text_box(item, NULL, title_font, priv->label, 0, 0, priv->is_selected, FALSE);       	
@@ -686,7 +693,7 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 	gint w, h, icon_height;
         gint center_offset = 0;
         GnomeIconContainer *container = GNOME_ICON_CONTAINER(item->canvas);
- 	GdkFont *title_font = container->details->label_font;
+ 	GdkFont *title_font = get_font_for_item(item); 	
        
 	icon_view_item = NAUTILUS_ICONS_VIEW_ICON_ITEM (item);
 	priv = icon_view_item->priv;
