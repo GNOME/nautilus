@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-19 16:41+0200\n"
-"PO-Revision-Date: 2004-04-14 16:00+0200\n"
+"POT-Creation-Date: 2004-05-11 18:58+0200\n"
+"PO-Revision-Date: 2004-05-13 11:40+0200\n"
 "Last-Translator: Laszlo Dvornik <dvornikl@mailbox.hu>\n"
 "Language-Team: Hungarian <gnome@gnome.hu>\n"
 "MIME-Version: 1.0\n"
@@ -50,7 +50,7 @@ msgstr "bonobo_ui_init() sikertelen."
 
 # data/browser.xml.h:31 src/file-manager/fm-properties-window.c:1592
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
-#: src/file-manager/fm-properties-window.c:2451
+#: src/file-manager/fm-properties-window.c:2456
 msgid "Emblems"
 msgstr "Matricák"
 
@@ -863,8 +863,7 @@ msgstr "Munkaasztal beállításai"
 
 #: data/serverconfig.desktop.in.h:1
 msgid "Configure network services (web server, DNS server, etc.)"
-msgstr ""
-"Hálózati szolgáltatások beállítása (webkiszolgáló, DNS kiszolgáló, stb.)"
+msgstr "Hálózati szolgáltatások beállítása (webkiszolgáló, DNS kiszolgáló, stb.)"
 
 # libnautilus-private/nautilus-global-preferences.c:677
 #: data/serverconfig.desktop.in.h:2 data/serverconfig.directory.in.h:2
@@ -1271,7 +1270,7 @@ msgstr "Oldal"
 # components/notes/Nautilus_View_notes.oaf.in.h:3
 #: libnautilus-extension/nautilus-property-page.c:191
 msgid "Widget for the property page"
-msgstr ""
+msgstr "Widget a tulajdonság oldalhoz"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:1
 msgid ""
@@ -1359,11 +1358,11 @@ msgstr "Alapértelmezett ikonnagyítás"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
 msgid "Default list of columns visible in the list view"
-msgstr ""
+msgstr "A listanézetben megjelenő oszlopok alapértelmezett listája"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:19
 msgid "Default list of columns visible in the list view."
-msgstr ""
+msgstr "A listanézetben megjelenő oszlopok alapértelmezett listája."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:20
 msgid "Default list zoom level"
@@ -1403,19 +1402,23 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
 msgid "Enables the classic Nautilus behavior, where all windows are browsers"
-msgstr ""
+msgstr "A klasszikus Nautilus viselkedés engedélyezése, ahol minden ablak böngésző"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid ""
 "Filename for the default folder background. Only used if background_set is "
 "true."
 msgstr ""
+"Fájlnév az alapértelmezett mappa hátteréhez. Csak akkor van használva, ha a "
+"background_set be van kapcsolva."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
 msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
 msgstr ""
+"Fájlnév az alapértelmezett oldalpanel hátteréhez. Csak akkor van használva, "
+"ha a side_pane_background_set be van kapcsolva."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
 msgid ""
@@ -1427,7 +1430,7 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
 msgid "Hide default bookmarks in the bookmark menu"
-msgstr ""
+msgstr "Alapértelmezett könyvjelzők elrejtése a könyvjelzők menüben"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
 msgid "Home icon visible on desktop"
@@ -1438,29 +1441,38 @@ msgid ""
 "If set to true, Nautilus will only show folders in the tree side pane. "
 "Otherwise it will show both folders and files."
 msgstr ""
+"Ha be van kapcsolva, akkor a Nautilus csak a mappákat jeleníti meg a fa "
+"oldalpanelen. Ellenkező esetben a mappákat és a fájlokat is megjeleníti."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
-msgid ""
-"If set to true, newly opened windows will have the location bar visible."
-msgstr ""
+msgid "If set to true, newly opened windows will have the location bar visible."
+msgstr "Ha be van kapcsolva, akkor az újonnan megnyitott ablakokban a címsáv látható."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
 msgid "If set to true, newly opened windows will have the side pane visible."
 msgstr ""
+"Ha be van kapcsolva, akkor az újonnan megnyitott ablakokban az oldalpanel "
+"látható."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
 msgid "If set to true, newly opened windows will have the status bar visible."
 msgstr ""
+"Ha be van kapcsolva, akkor az újonnan megnyitott ablakokban az állapotsor "
+"látható."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
 msgid "If set to true, newly opened windows will have toolbars visible."
 msgstr ""
+"Ha be van kapcsolva, akkor az újonnan megnyitott ablakokban az eszköztárak "
+"láthatóak."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
 msgid ""
 "If set to true, then Nautilus lets you edit some of the more esoteric "
 "options of a file in the file preferences dialog."
 msgstr ""
+"Ha be van kapcsolva, akkor a Nautilus engedélyezi önnek, hogy szerkeszthesse "
+"egy fájl néhány ezoterikus beállítását a fájl beállítások párbeszédablakban."
 
 # libnautilus-private/nautilus-file-operations.c:1899
 # libnautilus-private/nautilus-file-operations.c:2157
@@ -1469,25 +1481,30 @@ msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
 msgstr ""
+"Ha be van kapcsolva, akkor a Nautilus a mappákat a fájlok előtt jeleníti meg "
+"az ikon- és listanézetekben."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "put files in the trash."
 msgstr ""
+"Ha be van kapcsolva, akkor a Nautilus megerősítést kér, amikor ön fájlokat "
+"kísérel meg áthelyezni a kukába."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
 msgid ""
 "If set to true, then Nautilus will bring up a new Nautilus window by default "
 "whenever an item is opened."
 msgstr ""
+"He be van kapcsolva, akkor a Nautilus alapértelmezettként új Nautilus ablakot "
+"hoz fel az elemek megnyitásánál."
 
 # libnautilus-private/nautilus-file-operations.c:1899
 # libnautilus-private/nautilus-file-operations.c:2157
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
-msgstr ""
-"Ha be van állítva, akkor a Nautilus jeleníti meg a munkaasztal ikonjait."
+msgstr "Ha be van kapcsolva, akkor a Nautilus jeleníti meg a munkaasztal ikonjait."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
@@ -1495,12 +1512,17 @@ msgid ""
 "file immediately and in-place, instead of moving it to the trash. This "
 "feature can be dangerous, so use caution."
 msgstr ""
+"Ha be van kapcsolva, akkor a Nautilus engedélyezi önnek a fájlok azonnali, "
+"helyben történő törlését, ahelyett, hogy a Kukába helyezné át őket. Ez a "
+"szolgáltatás veszélyes lehet, ezért óvatosan használja."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
 msgid ""
 "If set to true, then Nautilus will just show the user's bookmarks in the "
 "bookmark menu."
 msgstr ""
+"Ha be van kapcsolva, akkor a Nautilus csak a felhasználó könyjelzőit jeleníti "
+"meg a könyvjelző menüben."
 
 # libnautilus-private/nautilus-file-operations.c:1899
 # libnautilus-private/nautilus-file-operations.c:2157
@@ -1509,6 +1531,9 @@ msgid ""
 "If set to true, then Nautilus will use the user's home folder as the "
 "desktop. If it is false, then it will use ~/Desktop as the desktop."
 msgstr ""
+"Ha be van kapcsolva, akkor a Nautilus a felhasználó saját könyvtárát "
+"használja munkaasztalként. Ha ki van kapcsolva, akkor a ~/Desktop lesz "
+"használva munkaasztalként."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
 msgid ""
@@ -1516,6 +1541,9 @@ msgid ""
 "how Nautilus used to behave before version 2.6, and some people prefer this "
 "behavior."
 msgstr ""
+"Ha be van kapcsolva, akkor minden Nautilus ablak böngészőablak. Így működött "
+"a Nautilus a 2.6-os verzió előtt, és néhány ember ezt a viselkedést "
+"preferálja."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid ""
@@ -1523,6 +1551,9 @@ msgid ""
 "displayed. Currently, only files ending in a tilde (~) are considered backup "
 "files."
 msgstr ""
+"Ha be van kapcsolva, akkor megjelennek a biztonsági másolatok, amiket például "
+"az Emacs hoz létre. Jelenleg csak a hullámjelre (~) végződő fájlok számítanak "
+"biztonsági másolatoknak."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
 msgid ""
@@ -1535,24 +1566,33 @@ msgid ""
 "If this is set to true, Nautilus adds itself to the session when it starts "
 "up. This means it will be started the next time you log in."
 msgstr ""
+"Ha be van kapcsolva, akkor a Nautilus induláskor hozzáadja magát a "
+"munkafolyamathoz. Ez azt jelenti, hogy el fog indulni a következő "
+"bejelentkezéskor."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
 "If this is set to true, an icon linking to the computer location will be put "
 "on the desktop."
 msgstr ""
+"Ha be van kapcsolva, akkor egy a számítógép helyére hivatkozó ikon lesz "
+"elhelyezve a munkaasztalon."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
 msgstr ""
+"Ha be van kapcsolva, akkor egy saját mappára hivatkozó ikon lesz elhelyezve "
+"a munkaasztalon."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
 msgstr ""
+"Ha be van kapcsolva, akkor egy Kukára hivatkozó ikon lesz elhelyezve a "
+"munkaasztalon."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid ""
@@ -1560,6 +1600,9 @@ msgid ""
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
 "sorted from \"z\" to \"a\"."
 msgstr ""
+"Ha be van kapcsolva, akkor az új ablakokban a fájlok fordított sorrendben "
+"lesznek rendezve. Pl., ha név szerint rendezi őket, akkor a fájlok \"a-tól\" "
+"\"z-ig\" helyett \"z-től\" \"a-ig\" lesznek rendezve."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
@@ -1568,19 +1611,26 @@ msgid ""
 "sorted from \"z\" to \"a\"; if sorted by size, instead of being "
 "incrementally they will be sorted decrementally."
 msgstr ""
+"Ha be van kapcsolva, akkor az új ablakokban a fájlok fordított sorrendben "
+"lesznek rendezve. Pl., ha név szerint rendezi őket, akkor a fájlok \"a-tól\" "
+"\"z-ig\" helyett \"z-től\" \"a-ig\"; ha méret szerint, akkor növekvő helyett "
+"csökkenő sorrendben lesznek rendezve."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
-msgid ""
-"If true, labels will be placed beside icons rather than underneath them."
+msgid "If true, labels will be placed beside icons rather than underneath them."
 msgstr ""
+"Ha be van kapcsolva, akkor a címkék az ikonok mellett lesznek elhelyezve, "
+"ahelyett, hogy alattuk lennének."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid "If true, new windows will use manual layout by default."
 msgstr ""
+"Ha be van kapcsolva, akkor az új ablakok alapértelmezettként a kézi "
+"elrendezést fogják használni."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid ""
@@ -1595,7 +1645,7 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid "Maximum handled files in a folder"
-msgstr ""
+msgstr "Egy mappában maximálisan kezelt fájlok"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 msgid "Maximum image size for thumbnailing"
@@ -1606,6 +1656,8 @@ msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
 msgstr ""
+"A használandó Nautilus téma neve. Ez helytelenítve van a Nautilus 2.2 óta. "
+"Használja helyette az ikontémát."
 
 # src/Nautilus_shell.oaf.in.h:9
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
@@ -1629,7 +1681,7 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid "Put labels beside icons"
-msgstr ""
+msgstr "Címkék elhelyezése az ikonok mellé"
 
 # libnautilus-private/nautilus-global-preferences.c:90
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
@@ -1701,6 +1753,9 @@ msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
 msgstr ""
+"Az ikonnézetben megjelenő elemek alapértelmezett rendezési sorrendje. "
+"Lehetséges értékek: \"name\", \"size\", \"type\", \"modification_date\", és "
+"\"emblems\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
 msgid ""
@@ -1720,7 +1775,7 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 msgid "The side pane view to show in newly opened windows."
-msgstr ""
+msgstr "Az újonnan megnyitott ablakokban megjelenítendő oldalpanel-nézet."
 
 # libnautilus-private/nautilus-file-operations.c:1899
 # libnautilus-private/nautilus-file-operations.c:2157
@@ -1729,6 +1784,8 @@ msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
 msgstr ""
+"Ezt a nevet beállíthatja, ha egyéni nevet szeretne a munkaasztalon található "
+"Saját mappának."
 
 # libnautilus-private/nautilus-file-operations.c:1899
 # libnautilus-private/nautilus-file-operations.c:2157
@@ -1737,6 +1794,8 @@ msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
 msgstr ""
+"Ezt a nevet beállíthatja, ha egyéni nevet szeretne a munkaasztalon található "
+"Kukának."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
 msgid "Trash icon visible on desktop"
@@ -1744,7 +1803,7 @@ msgstr "A Kuka ikon megjelenítése a munkaasztalon"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
 msgid "Type of click used to launch/open files"
-msgstr ""
+msgstr "A fájlok indításához/megnyitásához használandó kattintás típusa"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:32
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
@@ -1759,7 +1818,7 @@ msgstr "Szorosabb elrendezés használata az új ablakokban"
 # libnautilus-private/nautilus-global-preferences.c:113
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
 msgid "What to do with executable text files when activated"
-msgstr ""
+msgstr "Mit tegyen a végrehajtható szöveges fájlokkal aktiváláskor"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
 msgid ""
@@ -1768,6 +1827,10 @@ msgid ""
 "\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
 "text files."
 msgstr ""
+"Mit tegyen a végrehajtható szöveges fájlokkal aktiváláskor (egyszeres vagy "
+"dupla kattintás). Lehetséges értékek: \"launch\" a programként történő "
+"futtatáshoz, \"ask\" a párbeszédablakon kersztüli megkérdezéshez, és "
+"\"display\" a szöveges fájlként történő megjelenítéshez."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
 msgid ""
@@ -1775,6 +1838,9 @@ msgid ""
 "another view for that particular folder. Possible values are \"list_view\" "
 "and \"icon_view\"."
 msgstr ""
+"Mappák meglátogatásakor ez a nézőke lesz használva, hacsak más nézőkét nem "
+"jelöl ki bizonyos mappához. Lehetséges értékek: \"list_view\" és "
+"\"icon_view\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
 msgid "When to show number of items in a folder"
@@ -1793,19 +1859,19 @@ msgstr ""
 # src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
 msgid "Whether a custom default folder background has been set."
-msgstr ""
+msgstr "Be legyen-e állítva egyéni mappaháttér."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
 msgid "Whether a custom default side pane background has been set."
-msgstr ""
+msgstr "Be legyen-e állítva egyéni oldalpanel háttér."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
 msgid "Whether to ask for confirmation when moving files to trash"
-msgstr ""
+msgstr "Kérjen-e megerősítést fájlok Kukába áthelyezésekor"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
 msgid "Whether to enable immediate deletion"
-msgstr ""
+msgstr "Engedélyezze-e az azonnali törlést"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:101
 msgid "Whether to preview sounds when mousing over an icon"
@@ -1813,11 +1879,11 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
 msgid "Whether to show backup files"
-msgstr ""
+msgstr "Megjelenítse-e a biztonsági mentéseket"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:103
 msgid "Whether to show hidden files"
-msgstr ""
+msgstr "Megjelenítse-e a rejtett fájlokat"
 
 # components/notes/Nautilus_View_notes.oaf.in.h:3
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:104
@@ -1914,7 +1980,7 @@ msgstr "A fájl csoportja."
 
 # src/file-manager/fm-properties-window.c:1891
 #: libnautilus-private/nautilus-column-utilities.c:97
-#: src/file-manager/fm-properties-window.c:2922
+#: src/file-manager/fm-properties-window.c:2927
 msgid "Permissions"
 msgstr "Jogosultságok"
 
@@ -2033,10 +2099,8 @@ msgstr "Nem lehet matricát telepíteni"
 
 # src/nautilus-property-browser.c:1327
 #: libnautilus-private/nautilus-emblem-utils.c:203
-msgid ""
-"Sorry, but emblem keywords can only contain letters, spaces and numbers."
-msgstr ""
-"Sajnálom, de a matrica kulcsszavában csak betűk, szóközök és számok lehetnek."
+msgid "Sorry, but emblem keywords can only contain letters, spaces and numbers."
+msgstr "Sajnálom, de a matrica kulcsszavában csak betűk, szóközök és számok lehetnek."
 
 # src/nautilus-property-browser.c:1330
 #. this really should never happen, as a user has no idea
@@ -2138,8 +2202,7 @@ msgstr "Hiba áthelyezéskor. "
 msgid ""
 "Cannot move \"%s\" because it or its parent folder are contained in the "
 "destination."
-msgstr ""
-"\"%s\" nem helyezhető át, mert az vagy annak szülőkönyvtára a cél része."
+msgstr "\"%s\" nem helyezhető át, mert az vagy annak szülőkönyvtára a cél része."
 
 # libnautilus-private/nautilus-file-operations.c:636
 #: libnautilus-private/nautilus-file-operations.c:615
@@ -2381,6 +2444,10 @@ msgstr "_Mindet cseréli"
 # libnautilus-private/nautilus-file-operations.c:1156
 # libnautilus-private/nautilus-file.c:3803
 #. appended to new link file
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4735
 #, c-format
@@ -2445,6 +2512,9 @@ msgstr " (még egy másolat)"
 
 # libnautilus-private/nautilus-file-operations.c:1218
 #. localizers: tag used to detect the x11th copy of a file
+#. localizers: tag used to detect the x12th copy of a file
+#. localizers: tag used to detect the x13th copy of a file
+#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2486,6 +2556,9 @@ msgstr "%s (még egy másolat)%s"
 
 # libnautilus-private/nautilus-file-operations.c:1238
 #. localizers: appended to x11th file copy
+#. localizers: appended to x12th file copy
+#. localizers: appended to x13th file copy
+#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -3065,7 +3138,7 @@ msgstr "ismeretlen MIME-típus"
 #. * for which we have no more appropriate default.
 #.
 #: libnautilus-private/nautilus-file.c:4656
-#: src/file-manager/fm-properties-window.c:1198
+#: src/file-manager/fm-properties-window.c:1203
 msgid "unknown"
 msgstr "ismeretlen"
 
@@ -3387,55 +3460,55 @@ msgid "The selection rectangle"
 msgstr "A kijelölés téglalapja"
 
 # libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:87
-#: libnautilus-private/nautilus-icon-container.c:4179
+#: libnautilus-private/nautilus-icon-container.c:4195
 msgid "Frame Text"
 msgstr "Szöveg bekeretezése"
 
-#: libnautilus-private/nautilus-icon-container.c:4180
+#: libnautilus-private/nautilus-icon-container.c:4196
 msgid "Draw a frame around unselected text"
 msgstr "Keret rajzolása a ki nem jelölt szöveg köré"
 
-#: libnautilus-private/nautilus-icon-container.c:4186
+#: libnautilus-private/nautilus-icon-container.c:4202
 msgid "Selection Box Color"
 msgstr "Kijelölődoboz színe"
 
 # src/nautilus-shell-ui.xml.h:28
-#: libnautilus-private/nautilus-icon-container.c:4187
+#: libnautilus-private/nautilus-icon-container.c:4203
 msgid "Color of the selection box"
 msgstr "A kijelölődoboz színe"
 
 # src/nautilus-shell-ui.xml.h:92
-#: libnautilus-private/nautilus-icon-container.c:4192
+#: libnautilus-private/nautilus-icon-container.c:4208
 msgid "Selection Box Alpha"
 msgstr "A kijelölődoboz alfa csatornája"
 
-#: libnautilus-private/nautilus-icon-container.c:4193
+#: libnautilus-private/nautilus-icon-container.c:4209
 msgid "Opacity of the selection box"
 msgstr "A kijelölődoboz átlátszósága"
 
-#: libnautilus-private/nautilus-icon-container.c:4200
+#: libnautilus-private/nautilus-icon-container.c:4216
 msgid "Highlight Alpha"
 msgstr "Kivilágítás alfája"
 
 # components/help/converters/gnome-db2html2/sect-elements.c:1030
-#: libnautilus-private/nautilus-icon-container.c:4201
+#: libnautilus-private/nautilus-icon-container.c:4217
 msgid "Opacity of the highlight for selected icons"
 msgstr "A kijelölt ikonok kivilágításának átlátszósága"
 
-#: libnautilus-private/nautilus-icon-container.c:4207
+#: libnautilus-private/nautilus-icon-container.c:4223
 msgid "Light Info Color"
 msgstr "Világos információszín"
 
-#: libnautilus-private/nautilus-icon-container.c:4208
+#: libnautilus-private/nautilus-icon-container.c:4224
 msgid "Color used for information text against a dark background"
 msgstr "Sötét háttér előtt használt szín az információs üzenetekhez"
 
 # data/browser.xml.h:21
-#: libnautilus-private/nautilus-icon-container.c:4213
+#: libnautilus-private/nautilus-icon-container.c:4229
 msgid "Dark Info Color"
 msgstr "Sötét információszín"
 
-#: libnautilus-private/nautilus-icon-container.c:4214
+#: libnautilus-private/nautilus-icon-container.c:4230
 msgid "Color used for information text against a light background"
 msgstr "Világos háttér előtt használt szín az információs üzenetekhez"
 
@@ -3469,8 +3542,7 @@ msgstr ""
 msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it?"
-msgstr ""
-"Át akar váltani kézi elrendezésre, és otthagyni ezt az elemet, ahova letette?"
+msgstr "Át akar váltani kézi elrendezésre, és otthagyni ezt az elemet, ahova letette?"
 
 # libnautilus-private/nautilus-icon-dnd.c:746
 #: libnautilus-private/nautilus-icon-dnd.c:745
@@ -3850,6 +3922,7 @@ msgstr "%s megnyitása"
 #. TODO: These strings suck pretty badly, but we're in string-freeze,
 #. * and I found these in other places to reuse. We should make them
 #. * better later.
+#. Shouldn't have gotten this error unless there's a : separator.
 #: libnautilus-private/nautilus-program-choosing.c:969
 #: libnautilus-private/nautilus-program-choosing.c:977
 #: libnautilus-private/nautilus-program-choosing.c:982
@@ -3886,16 +3959,13 @@ msgstr "Hozzáférés megtagadva."
 #: src/nautilus-window-manage-views.c:1386
 #, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
-msgstr ""
-"Nem lehet megjeleníteni a(z) \"%s\"-t, mert a(z) \"%s\" gép nem található."
+msgstr "Nem lehet megjeleníteni a(z) \"%s\"-t, mert a(z) \"%s\" gép nem található."
 
 # src/nautilus-window-manage-views.c:1213
 #: libnautilus-private/nautilus-program-choosing.c:992
 #: src/nautilus-window-manage-views.c:1389
-msgid ""
-"Check that the spelling is correct and that your proxy settings are correct."
-msgstr ""
-"Ellenőrizze, hogy nem gépelt-e el valamit és hogy jók-e a proxy beállításai."
+msgid "Check that the spelling is correct and that your proxy settings are correct."
+msgstr "Ellenőrizze, hogy nem gépelt-e el valamit és hogy jók-e a proxy beállításai."
 
 # src/nautilus-property-browser.c:1040
 #: libnautilus-private/nautilus-program-choosing.c:997
@@ -3959,8 +4029,7 @@ msgid "This drop target only supports local files."
 msgstr "A drop célpont csak helyi fájlokat támogat."
 
 #: libnautilus-private/nautilus-program-choosing.c:1356
-msgid ""
-"To open non-local files copy them to a local folder and then drop them again."
+msgid "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
 "A nem helyi fájlok megnyitásához másolja ezeket egy helyi mappába, majd "
 "próbálja onnan kihúzni."
@@ -4288,8 +4357,7 @@ msgstr "Biztosan véglegesen törölni akarja a következőt: \"%s\"?"
 #: src/file-manager/fm-directory-view.c:897
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
-msgid_plural ""
-"Are you sure you want to permanently delete the %d selected items?"
+msgid_plural "Are you sure you want to permanently delete the %d selected items?"
 msgstr[0] "Biztosan véglegesen törölni akarja a(z) %d kijelölt elemet?"
 msgstr[1] "Biztosan véglegesen törölni akarja a(z) %d kijelölt elemet?"
 
@@ -4397,8 +4465,7 @@ msgstr "%s%s, %s"
 #: src/file-manager/fm-directory-view.c:1972
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
-msgstr ""
-"A mappában (\"%s\") több fájl van, mint amennyit a Nautilus kezelni tud."
+msgstr "A mappában (\"%s\") több fájl van, mint amennyit a Nautilus kezelni tud."
 
 #: src/file-manager/fm-directory-view.c:1978
 msgid "Some files will not be displayed."
@@ -4422,15 +4489,12 @@ msgstr "A(z) \"%s\" fájl nem helyezhető át a Kukába."
 # src/file-manager/fm-directory-view.c:2589
 #: src/file-manager/fm-directory-view.c:3252
 msgid "Cannot move items to trash, do you want to delete them immediately?"
-msgstr ""
-"Az elemeket nem lehet áthelyezni a Kukába. Akarja most rögtön törölni őket?"
+msgstr "Az elemeket nem lehet áthelyezni a Kukába. Akarja most rögtön törölni őket?"
 
 # src/file-manager/fm-directory-view.c:2589
 #: src/file-manager/fm-directory-view.c:3255
-msgid ""
-"Cannot move some items to trash, do you want to delete these immediately?"
-msgstr ""
-"Néhány elemet nem lehet áthelyezni a Kukába. Akarja most rögtön törölni őket?"
+msgid "Cannot move some items to trash, do you want to delete these immediately?"
+msgstr "Néhány elemet nem lehet áthelyezni a Kukába. Akarja most rögtön törölni őket?"
 
 # src/file-manager/fm-directory-view.c:2606
 #: src/file-manager/fm-directory-view.c:3262
@@ -4452,10 +4516,8 @@ msgid ""
 msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr[0] ""
-"Biztosan véglegesen törölni akarja a(z) %d kijelölt elemet a Kukából?"
-msgstr[1] ""
-"Biztosan véglegesen törölni akarja a(z) %d kijelölt elemet a Kukából?"
+msgstr[0] "Biztosan véglegesen törölni akarja a(z) %d kijelölt elemet a Kukából?"
+msgstr[1] "Biztosan véglegesen törölni akarja a(z) %d kijelölt elemet a Kukából?"
 
 #: src/file-manager/fm-directory-view.c:3307
 msgid "If you delete an item, it will be permanently lost."
@@ -4593,10 +4655,8 @@ msgstr ""
 # src/file-manager/fm-directory-view.c:2594
 #: src/file-manager/fm-directory-view.c:4858
 #, c-format
-msgid ""
-"The %d selected item will be moved if you select the Paste Files command"
-msgid_plural ""
-"The %d selected items will be moved if you select the Paste Files command"
+msgid "The %d selected item will be moved if you select the Paste Files command"
+msgid_plural "The %d selected items will be moved if you select the Paste Files command"
 msgstr[0] ""
 "A %d kijelölt elem akkor kerül áthelyezésre, ha kiválasztja a Fájlok "
 "beillesztése parancsot"
@@ -4606,10 +4666,8 @@ msgstr[1] ""
 
 #: src/file-manager/fm-directory-view.c:4865
 #, c-format
-msgid ""
-"The %d selected item will be copied if you select the Paste Files command"
-msgid_plural ""
-"The %d selected items will be copied if you select the Paste Files command"
+msgid "The %d selected item will be copied if you select the Paste Files command"
+msgid_plural "The %d selected items will be copied if you select the Paste Files command"
 msgstr[0] ""
 "A %d kijelölt elem akkor kerül másolásra, ha kiválasztja a Fájlok "
 "beillesztése parancsot"
@@ -4812,8 +4870,7 @@ msgstr "Mégsem nyitja meg?"
 # src/file-manager/fm-error-reporting.c:56
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
-msgid ""
-"You do not have the permissions necessary to view the contents of \"%s\"."
+msgid "You do not have the permissions necessary to view the contents of \"%s\"."
 msgstr "Nem jogosult a(z) \"%s\" tartalmának megtekintésére."
 
 #: src/file-manager/fm-error-reporting.c:61
@@ -4840,16 +4897,13 @@ msgstr "Hiba a mappa megjelenítésekor"
 # src/file-manager/fm-error-reporting.c:89
 #: src/file-manager/fm-error-reporting.c:103
 #, c-format
-msgid ""
-"The name \"%s\" is already used in this folder. Please use a different name."
-msgstr ""
-"\"%s\" nevű elem már létezik ebben a mappában. Használjon egy másik nevet."
+msgid "The name \"%s\" is already used in this folder. Please use a different name."
+msgstr "\"%s\" nevű elem már létezik ebben a mappában. Használjon egy másik nevet."
 
 # src/file-manager/fm-error-reporting.c:94
 #: src/file-manager/fm-error-reporting.c:108
 #, c-format
-msgid ""
-"There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
+msgid "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
 msgstr "Nincs \"%s\" ebben a mappában. Lehet, hogy áthelyezték vagy törölték?"
 
 # src/file-manager/fm-error-reporting.c:99
@@ -4878,8 +4932,7 @@ msgstr "A(z) \"%s\" név nem érvényes. Használjon másik nevet."
 #: src/file-manager/fm-error-reporting.c:128
 #, c-format
 msgid "Couldn't change the name of \"%s\" because it is on a read-only disk"
-msgstr ""
-"A(z) \"%s\" nevét nem lehet megváltoztatni, mert mert írásvédett lemezen van"
+msgstr "A(z) \"%s\" nevét nem lehet megváltoztatni, mert mert írásvédett lemezen van"
 
 # src/file-manager/fm-error-reporting.c:122
 #: src/file-manager/fm-error-reporting.c:137
@@ -4900,16 +4953,14 @@ msgstr "Átnevezési hiba"
 # src/file-manager/fm-error-reporting.c:148
 #: src/file-manager/fm-error-reporting.c:165
 #, c-format
-msgid ""
-"You do not have the permissions necessary to change the group of \"%s\"."
+msgid "You do not have the permissions necessary to change the group of \"%s\"."
 msgstr "Nem jogosult a(z) \"%s\" csoportjának megváltoztatására."
 
 # src/file-manager/fm-error-reporting.c:152
 #: src/file-manager/fm-error-reporting.c:169
 #, c-format
 msgid "Couldn't change the group of \"%s\" because it is on a read-only disk"
-msgstr ""
-"A(z) \"%s\" csoportját nem lehet megváltoztatni, mert írásvédett lemezen van"
+msgstr "A(z) \"%s\" csoportját nem lehet megváltoztatni, mert írásvédett lemezen van"
 
 # src/file-manager/fm-error-reporting.c:160
 #: src/file-manager/fm-error-reporting.c:177
@@ -4954,8 +5005,7 @@ msgstr "Hiba a tulajdonos beállításakor"
 # src/file-manager/fm-error-reporting.c:218
 #: src/file-manager/fm-error-reporting.c:235
 #, c-format
-msgid ""
-"Couldn't change the permissions of \"%s\" because it is on a read-only disk"
+msgid "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
 msgstr ""
 "A(z) \"%s\" jogosultságait nem lehet megváltoztatni, mert írásvédett lemezen "
 "van"
@@ -5153,37 +5203,37 @@ msgid "%s Properties"
 msgstr "%s tulajdonságai"
 
 # src/file-manager/fm-properties-window.c:714
-#: src/file-manager/fm-properties-window.c:1429
+#: src/file-manager/fm-properties-window.c:1434
 msgid "Cancel Group Change?"
 msgstr "Mégsem változtatja meg a csoportot?"
 
 # src/file-manager/fm-properties-window.c:715
-#: src/file-manager/fm-properties-window.c:1430
+#: src/file-manager/fm-properties-window.c:1435
 msgid "Changing group."
 msgstr "Csoport megváltoztatása."
 
 # src/file-manager/fm-properties-window.c:876
-#: src/file-manager/fm-properties-window.c:1591
+#: src/file-manager/fm-properties-window.c:1596
 msgid "Cancel Owner Change?"
 msgstr "Mégsem változtatja meg a tulajdonost?"
 
 # src/file-manager/fm-properties-window.c:877
-#: src/file-manager/fm-properties-window.c:1592
+#: src/file-manager/fm-properties-window.c:1597
 msgid "Changing owner."
 msgstr "Tulajdonos megváltoztatása."
 
 # src/file-manager/fm-properties-window.c:1052
-#: src/file-manager/fm-properties-window.c:1798
+#: src/file-manager/fm-properties-window.c:1803
 msgid "nothing"
 msgstr "semmi"
 
 # src/file-manager/fm-properties-window.c:1054
-#: src/file-manager/fm-properties-window.c:1800
+#: src/file-manager/fm-properties-window.c:1805
 msgid "unreadable"
 msgstr "olvashatatlan"
 
 # src/file-manager/fm-properties-window.c:1063
-#: src/file-manager/fm-properties-window.c:1810
+#: src/file-manager/fm-properties-window.c:1815
 #, c-format
 msgid "%d item, with size %s"
 msgid_plural "%d items, totalling %s"
@@ -5191,7 +5241,7 @@ msgstr[0] "%d elem, mérete: %s"
 msgstr[1] "%d elem, méretük: %s"
 
 # src/file-manager/fm-properties-window.c:1071
-#: src/file-manager/fm-properties-window.c:1819
+#: src/file-manager/fm-properties-window.c:1824
 msgid "(some contents unreadable)"
 msgstr "(egyes részei olvashatatlanok)"
 
@@ -5202,12 +5252,12 @@ msgstr "(egyes részei olvashatatlanok)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1836
+#: src/file-manager/fm-properties-window.c:1841
 msgid "Contents:"
 msgstr "Tartalom:"
 
 # src/file-manager/fm-properties-window.c:1418
-#: src/file-manager/fm-properties-window.c:2227
+#: src/file-manager/fm-properties-window.c:2232
 msgid "Basic"
 msgstr "Alap"
 
@@ -5215,7 +5265,7 @@ msgstr "Alap"
 # src/file-manager/fm-list-view.c:1970
 # src/file-manager/fm-search-list-view.c:549
 # src/nautilus-bookmarks-window.c:164
-#: src/file-manager/fm-properties-window.c:2255
+#: src/file-manager/fm-properties-window.c:2260
 msgid "_Names:"
 msgstr "_Nevek:"
 
@@ -5223,204 +5273,204 @@ msgstr "_Nevek:"
 # src/file-manager/fm-list-view.c:1970
 # src/file-manager/fm-search-list-view.c:549
 # src/nautilus-bookmarks-window.c:164
-#: src/file-manager/fm-properties-window.c:2257
+#: src/file-manager/fm-properties-window.c:2262
 msgid "_Name:"
 msgstr "_Név:"
 
 # src/file-manager/fm-properties-window.c:1497
-#: src/file-manager/fm-properties-window.c:2306
+#: src/file-manager/fm-properties-window.c:2311
 msgid "Type:"
 msgstr "Típus:"
 
-#: src/file-manager/fm-properties-window.c:2308
-#: src/file-manager/fm-properties-window.c:2318
-#: src/file-manager/fm-properties-window.c:2324
-#: src/file-manager/fm-properties-window.c:2331
-#: src/file-manager/fm-properties-window.c:2335
-#: src/file-manager/fm-properties-window.c:2343
-#: src/file-manager/fm-properties-window.c:2349
-#: src/file-manager/fm-properties-window.c:2358
-#: src/file-manager/fm-properties-window.c:2364
-#: src/file-manager/fm-properties-window.c:2957
-#: src/file-manager/fm-properties-window.c:2978
-#: src/file-manager/fm-properties-window.c:3069
-#: src/file-manager/fm-properties-window.c:3073
-#: src/file-manager/fm-properties-window.c:3077
+#: src/file-manager/fm-properties-window.c:2313
+#: src/file-manager/fm-properties-window.c:2323
+#: src/file-manager/fm-properties-window.c:2329
+#: src/file-manager/fm-properties-window.c:2336
+#: src/file-manager/fm-properties-window.c:2340
+#: src/file-manager/fm-properties-window.c:2348
+#: src/file-manager/fm-properties-window.c:2354
+#: src/file-manager/fm-properties-window.c:2363
+#: src/file-manager/fm-properties-window.c:2369
+#: src/file-manager/fm-properties-window.c:2962
+#: src/file-manager/fm-properties-window.c:2983
+#: src/file-manager/fm-properties-window.c:3074
+#: src/file-manager/fm-properties-window.c:3078
+#: src/file-manager/fm-properties-window.c:3082
 msgid "--"
 msgstr "--"
 
 # src/file-manager/fm-properties-window.c:1502
-#: src/file-manager/fm-properties-window.c:2316
+#: src/file-manager/fm-properties-window.c:2321
 msgid "Size:"
 msgstr "Méret:"
 
 # src/nautilus-location-bar.c:62
-#: src/file-manager/fm-properties-window.c:2322 src/nautilus-location-bar.c:60
+#: src/file-manager/fm-properties-window.c:2327 src/nautilus-location-bar.c:60
 msgid "Location:"
 msgstr "Hely:"
 
 # libnautilus-private/nautilus-volume-monitor.c:1545
-#: src/file-manager/fm-properties-window.c:2329
+#: src/file-manager/fm-properties-window.c:2334
 msgid "Volume:"
 msgstr "Kötet:"
 
-#: src/file-manager/fm-properties-window.c:2333
+#: src/file-manager/fm-properties-window.c:2338
 msgid "Free space:"
 msgstr "Szabad hely:"
 
 # src/nautilus-link-set-window.c:189
-#: src/file-manager/fm-properties-window.c:2341
+#: src/file-manager/fm-properties-window.c:2346
 msgid "Link target:"
 msgstr "Link célja:"
 
 # src/file-manager/fm-icon-text-window.c:86
-#: src/file-manager/fm-properties-window.c:2347
+#: src/file-manager/fm-properties-window.c:2352
 msgid "MIME type:"
 msgstr "MIME-típus:"
 
 # src/file-manager/fm-properties-window.c:1512
-#: src/file-manager/fm-properties-window.c:2356
+#: src/file-manager/fm-properties-window.c:2361
 msgid "Modified:"
 msgstr "Módosítva:"
 
 # src/file-manager/fm-properties-window.c:1515
-#: src/file-manager/fm-properties-window.c:2362
+#: src/file-manager/fm-properties-window.c:2367
 msgid "Accessed:"
 msgstr "Elérés:"
 
 # src/file-manager/fm-properties-window.c:1524
-#: src/file-manager/fm-properties-window.c:2378
+#: src/file-manager/fm-properties-window.c:2383
 msgid "_Select Custom Icon..."
 msgstr "_Egyéni ikon kiválasztása..."
 
 # src/file-manager/fm-properties-window.c:1530
-#: src/file-manager/fm-properties-window.c:2384
+#: src/file-manager/fm-properties-window.c:2389
 msgid "_Remove Custom Icon"
 msgstr "_Egyéni ikon eltávolítása"
 
 # src/file-manager/fm-properties-window.c:1958
-#: src/file-manager/fm-properties-window.c:2736
+#: src/file-manager/fm-properties-window.c:2741
 msgid "_Read"
 msgstr "_Olvasás"
 
 # src/file-manager/fm-properties-window.c:1962
-#: src/file-manager/fm-properties-window.c:2738
+#: src/file-manager/fm-properties-window.c:2743
 msgid "_Write"
 msgstr "Í_rás"
 
 # src/file-manager/fm-properties-window.c:1966
-#: src/file-manager/fm-properties-window.c:2740
+#: src/file-manager/fm-properties-window.c:2745
 msgid "E_xecute"
 msgstr "_Futtatás"
 
 # src/file-manager/fm-properties-window.c:1855
-#: src/file-manager/fm-properties-window.c:2823
+#: src/file-manager/fm-properties-window.c:2828
 msgid "Set _user ID"
 msgstr "F_elhasználói azonosító beállítása (setuid)"
 
 # src/file-manager/fm-properties-window.c:1860
-#: src/file-manager/fm-properties-window.c:2828
+#: src/file-manager/fm-properties-window.c:2833
 msgid "Special flags:"
 msgstr "Speciális kapcsolók:"
 
 # src/file-manager/fm-properties-window.c:1863
-#: src/file-manager/fm-properties-window.c:2831
+#: src/file-manager/fm-properties-window.c:2836
 msgid "Set gro_up ID"
 msgstr "C_soport azonosító beállítása (setgid)"
 
 # src/file-manager/fm-properties-window.c:1865
-#: src/file-manager/fm-properties-window.c:2833
+#: src/file-manager/fm-properties-window.c:2838
 msgid "_Sticky"
 msgstr "_Ragadós"
 
 # src/file-manager/fm-properties-window.c:1897
-#: src/file-manager/fm-properties-window.c:2932
+#: src/file-manager/fm-properties-window.c:2937
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Nem módosíthatja a jogosultságokat, mivel nem ön a fájl tulajdonosa."
 
 # src/file-manager/fm-properties-window.c:1910
-#: src/file-manager/fm-properties-window.c:2946
+#: src/file-manager/fm-properties-window.c:2951
 msgid "File _owner:"
 msgstr "Fájl _tulajdonosa:"
 
 # src/file-manager/fm-properties-window.c:1910
-#: src/file-manager/fm-properties-window.c:2952
+#: src/file-manager/fm-properties-window.c:2957
 msgid "File owner:"
 msgstr "Fájl tulajdonosa:"
 
 # src/file-manager/fm-properties-window.c:1919
-#: src/file-manager/fm-properties-window.c:2963
+#: src/file-manager/fm-properties-window.c:2968
 msgid "_File group:"
 msgstr "_Fájl csoportja:"
 
 # src/file-manager/fm-properties-window.c:1919
-#: src/file-manager/fm-properties-window.c:2972
+#: src/file-manager/fm-properties-window.c:2977
 msgid "File group:"
 msgstr "Fájl csoportja:"
 
 # src/file-manager/fm-properties-window.c:1937
-#: src/file-manager/fm-properties-window.c:2984
+#: src/file-manager/fm-properties-window.c:2989
 msgid "Owner:"
 msgstr "Tulajdonos:"
 
 # src/file-manager/fm-properties-window.c:1938
-#: src/file-manager/fm-properties-window.c:2985
+#: src/file-manager/fm-properties-window.c:2990
 msgid "Group:"
 msgstr "Csoport:"
 
 # src/file-manager/fm-properties-window.c:1939
-#: src/file-manager/fm-properties-window.c:2986
+#: src/file-manager/fm-properties-window.c:2991
 msgid "Others:"
 msgstr "A többiek:"
 
 # components/text/Nautilus_View_text.oaf.in.h:3
-#: src/file-manager/fm-properties-window.c:3068
+#: src/file-manager/fm-properties-window.c:3073
 msgid "Text view:"
 msgstr "Szövegnézet:"
 
 # src/file-manager/fm-properties-window.c:2018
-#: src/file-manager/fm-properties-window.c:3072
+#: src/file-manager/fm-properties-window.c:3077
 msgid "Number view:"
 msgstr "Számnézet:"
 
 # src/file-manager/fm-properties-window.c:2019
-#: src/file-manager/fm-properties-window.c:3076
+#: src/file-manager/fm-properties-window.c:3081
 msgid "Last changed:"
 msgstr "Utolsó változtatás:"
 
 # src/file-manager/fm-properties-window.c:2023
-#: src/file-manager/fm-properties-window.c:3082
+#: src/file-manager/fm-properties-window.c:3087
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Nem lehet megállapítani a(z) \"%s\" jogosultságait."
 
 # src/file-manager/fm-properties-window.c:2023
-#: src/file-manager/fm-properties-window.c:3085
+#: src/file-manager/fm-properties-window.c:3090
 msgid "The permissions of the selected file could not be determined."
 msgstr "Nem lehet megállapítani a kijelölt fájl jogosultságait."
 
 # components/music/nautilus-music-view.c:1694
-#: src/file-manager/fm-properties-window.c:3243
+#: src/file-manager/fm-properties-window.c:3248
 msgid "There was an error displaying help."
 msgstr "Hiba történt a súgó megjelenítése közben."
 
 # src/nautilus-theme-selector.c:398
-#: src/file-manager/fm-properties-window.c:3243
+#: src/file-manager/fm-properties-window.c:3248
 msgid "Couldn't Show Help"
 msgstr "Nem lehet megjeleníteni a súgót"
 
 # src/file-manager/fm-properties-window.c:2303
-#: src/file-manager/fm-properties-window.c:3593
+#: src/file-manager/fm-properties-window.c:3598
 msgid "Cancel Showing Properties Window?"
 msgstr "Mégse mutassa a tulajdonságok ablakot?"
 
 # src/file-manager/fm-properties-window.c:2304
-#: src/file-manager/fm-properties-window.c:3594
+#: src/file-manager/fm-properties-window.c:3599
 msgid "Creating Properties window."
 msgstr "Tulajdonságok létrehozása ablak."
 
 # src/file-manager/fm-properties-window.c:2401
-#: src/file-manager/fm-properties-window.c:3729
+#: src/file-manager/fm-properties-window.c:3734
 msgid "Select an icon"
 msgstr "Ikon kiválasztása"
 
@@ -5509,8 +5559,7 @@ msgstr "Új GNOME terminálablak megnyitása"
 
 # src/file-manager/nautilus-desktop-icon-view-ui.xml.h:10
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
-msgid ""
-"Show a window that lets you set your desktop background's pattern or color"
+msgid "Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
 "Egy olyan ablak megjelenítése, amelyben beállíthatja a háttér mintáját vagy "
 "színét."
@@ -5536,8 +5585,7 @@ msgstr "Válasszon egy programot, amivel megnyithatja a kijelölt elemet"
 # src/file-manager/nautilus-directory-view-ui.xml.h:2
 #: src/file-manager/nautilus-directory-view-ui.xml.h:2
 msgid "Choose another application with which to open the selected item"
-msgstr ""
-"Válasszon egy másik alkalmazást, amivel megnyithatja a kiválasztott elemet"
+msgstr "Válasszon egy másik alkalmazást, amivel megnyithatja a kiválasztott elemet"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:15
 #: src/file-manager/nautilus-directory-view-ui.xml.h:4
@@ -5605,8 +5653,7 @@ msgid "Mount the selected volume"
 msgstr "A kijelölt kötet beillesztése"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:23
-msgid ""
-"Move or copy files previously selected by a Cut Files or Copy Files command"
+msgid "Move or copy files previously selected by a Cut Files or Copy Files command"
 msgstr ""
 "A Fájlok másolása vagy Fájlok kivágása parancsok által kiválasztott fájlok "
 "másolása vagy áthelyezése"
@@ -5845,8 +5892,7 @@ msgstr "Fo_rdított sorrend"
 # src/file-manager/nautilus-icon-view-ui.xml.h:27
 #: src/file-manager/nautilus-icon-view-ui.xml.h:19
 msgid "Reposition icons to better fit in the window and avoid overlapping"
-msgstr ""
-"Ikonok rendezése, hogy jobban elférjenek az ablakban és ne fedjék egymást"
+msgstr "Ikonok rendezése, hogy jobban elférjenek az ablakban és ne fedjék egymást"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:29
 #: src/file-manager/nautilus-icon-view-ui.xml.h:21
@@ -5932,6 +5978,8 @@ msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
 msgstr ""
+"A munkaasztal könyvtára megváltozott a GNOME 2.4-ben. Megnyithatja a linket "
+"és áthelyezheti a kívánt fájlokat, majd törölje a linket."
 
 #: src/nautilus-application.c:363
 msgid "Migrated Old Desktop"
@@ -6007,6 +6055,7 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
+#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:581 src/nautilus-application.c:599
 #: src/nautilus-application.c:606
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -6126,7 +6175,7 @@ msgid "Desktop"
 msgstr "Munkaasztal"
 
 # src/file-manager/fm-icon-text-window.c:87
-#: src/nautilus-file-management-properties.c:295
+#: src/nautilus-file-management-properties.c:297
 msgid "None"
 msgstr "Nincs"
 
@@ -6226,8 +6275,7 @@ msgstr ""
 # src/file-manager/fm-icon-text-window.c:271
 #: src/nautilus-file-management-properties.glade.h:46
 msgid "Choose the order of information to appear in the list view."
-msgstr ""
-"Adja meg, hogy milyen sorrendben jelenjenek meg az adatok a listanézetben. "
+msgstr "Adja meg, hogy milyen sorrendben jelenjenek meg az adatok a listanézetben. "
 
 # libnautilus-private/nautilus-global-preferences.c:136
 # libnautilus-private/nautilus-global-preferences.c:753
@@ -6335,7 +6383,7 @@ msgstr "_Csak az ennél kisebb fájlokhoz:"
 # libnautilus-private/nautilus-global-preferences.c:113
 #: src/nautilus-file-management-properties.glade.h:72
 msgid "_Run executable text files when they are clicked"
-msgstr "_Végrehajtható szövegfájlok futtatása kattintáskor"
+msgstr "_Végrehajtható szöveges fájlok futtatása kattintáskor"
 
 #: src/nautilus-file-management-properties.glade.h:73
 msgid "_Single click to activate items"
@@ -6353,7 +6401,7 @@ msgstr "Szorosabb _elrendezés használata"
 # libnautilus-private/nautilus-global-preferences.c:113
 #: src/nautilus-file-management-properties.glade.h:76
 msgid "_View executable text files when they are clicked"
-msgstr "Vég_rehajtható szövegfájlok megtekintése kattintáskor"
+msgstr "Vég_rehajtható szöveges fájlok megtekintése kattintáskor"
 
 # src/file-manager/fm-icon-text-window.c:81
 #: src/nautilus-file-management-properties.glade.h:77
@@ -6542,26 +6590,31 @@ msgstr "Nautilus"
 
 # src/nautilus-main.c:208
 #: src/nautilus-main.c:259
+#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check nem használható URI-kel.\n"
 
 # src/nautilus-main.c:212
 #: src/nautilus-main.c:263
+#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check nem használható más paraméterekkel.\n"
 
 # src/nautilus-main.c:216
 #: src/nautilus-main.c:267
+#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit nem használható URI-kel.\n"
 
 # src/nautilus-main.c:220
 #: src/nautilus-main.c:271
+#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --restart nem használható URI-kel.\n"
 
 # src/nautilus-main.c:224
 #: src/nautilus-main.c:275
+#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry nem használható több mint egy URI-vel.\n"
 
@@ -7156,8 +7209,7 @@ msgstr "Információ a Nautilus szerzőiről"
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
-msgstr ""
-"Minták, színek és matricák megjelenítése. Ezekkel teheti egyénivé a Nautilust"
+msgstr "Minták, színek és matricák megjelenítése. Ezekkel teheti egyénivé a Nautilust"
 
 # src/nautilus-shell-ui.xml.h:21
 #: src/nautilus-shell-ui.xml.h:8
