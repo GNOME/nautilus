@@ -1435,7 +1435,7 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 	GtkWidget *pixmap_widget;
 	GtkWidget *label;
 	GtkWidget *erase_object;
-	int index, object_position;
+	int index, object_position = 0;
 
 	/* make room for the reset property if necessary */
 	if (property_browser->details->category_type == NAUTILUS_PROPERTY_BACKGROUND) {

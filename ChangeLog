@@ -1,5 +1,11 @@
 2000-10-10  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* src/nautilus-property-browser.c:
+	(make_properties_from_directories):
+	Fix uninitialized variable.
+
+2000-10-10  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/mozilla/nautilus-mozilla-content-view.c:
 	(mozilla_load_location_callback), (bonobo_mozilla_callback),
 	(string_list_get_index_of_string),
