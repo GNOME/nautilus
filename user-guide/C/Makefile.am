@@ -26,11 +26,11 @@ install-data-local:
 
 dist-hook:
 	mkdir $(distdir)/sgml 
+	mkdir $(distdir)/html 
 	mkdir $(distdir)/img
 	-cp $(srcdir)/sgml/*.sgml $(distdir)/sgml
 	-cp $(srcdir)/fdl.sgml $(distdir)
 	-cp $(srcdir)/img/*.png $(distdir)/img
+	-cp $(srcdir)/html/*.html $(distdir)/html
 
 EXTRA_DIST = fdl.sgml
-
-.PHONY : html
