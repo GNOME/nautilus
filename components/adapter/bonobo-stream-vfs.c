@@ -50,19 +50,74 @@ struct BonoboStreamVFSDetails {
 static BonoboStreamClass *bonobo_stream_vfs_parent_class;
 static POA_Bonobo_Stream__vepv vepv;
 
+
+static void
+bonobo_stream_vfs_storageinfo_from_file_info (Bonobo_StorageInfo *si,
+					      GnomeVFSFileInfo   *fi)
+{
+	g_return_if_fail (si != NULL);
+	g_return_if_fail (fi != NULL);
+
+	si->name = CORBA_string_dup (fi->name);
+
+	if (fi->flags & GNOME_VFS_FILE_INFO_FIELDS_SIZE)
+		si->size = fi->size;
+	else
+		si->size = 0;
+
+	if (fi->flags & GNOME_VFS_FILE_INFO_FIELDS_TYPE &&
+	    fi->type == GNOME_VFS_FILE_TYPE_DIRECTORY)
+		si->type = Bonobo_STORAGE_TYPE_DIRECTORY;
+	else
+		si->type = Bonobo_STORAGE_TYPE_REGULAR;
+
+	if (fi->flags & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE &&
+	    fi->mime_type)
+		si->content_type = CORBA_string_dup (fi->mime_type);
+	else
+		si->content_type = CORBA_string_dup ("");
+}
+
 static Bonobo_StorageInfo *
 vfs_get_info (BonoboStream *stream,
 	      Bonobo_StorageInfoFields mask,
 	      CORBA_Environment *ev)
 {
-	/* FIXME bugzilla.gnome.org 44402: Is it OK to have this
-	 * unimplemented? 
-	 */
-	g_warning ("BonoboStreamVFS:get_info not implemented");
-        CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
-                             ex_Bonobo_Stream_IOError, NULL);
+	BonoboStreamVFS    *sfs = BONOBO_STREAM_VFS (stream);
+	Bonobo_StorageInfo *si;
+	GnomeVFSFileInfo    fi;
+	GnomeVFSResult      result;
 
-	return NULL;
+	if (mask & ~(Bonobo_FIELD_CONTENT_TYPE | Bonobo_FIELD_SIZE |
+		     Bonobo_FIELD_TYPE)) {
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION, 
+				     ex_Bonobo_Storage_NotSupported, NULL);
+		return CORBA_OBJECT_NIL;
+	}
+
+	result = gnome_vfs_get_file_info_from_handle (
+			sfs->details->handle, &fi,
+			(mask & Bonobo_FIELD_CONTENT_TYPE) ?
+			GNOME_VFS_FILE_INFO_GET_MIME_TYPE :
+			GNOME_VFS_FILE_INFO_DEFAULT);
+
+	if (result != GNOME_VFS_OK) {
+		if (result == GNOME_VFS_ERROR_ACCESS_DENIED)
+			CORBA_exception_set 
+				(ev, CORBA_USER_EXCEPTION,
+				 ex_Bonobo_Stream_NoPermission, NULL);
+		else
+			CORBA_exception_set 
+				(ev, CORBA_USER_EXCEPTION,
+				 ex_Bonobo_Stream_IOError, NULL);
+		return NULL;
+	}
+
+	si = Bonobo_StorageInfo__alloc ();
+
+	bonobo_stream_vfs_storageinfo_from_file_info (si, &fi);
+
+	return si;
 }
 
 static void
