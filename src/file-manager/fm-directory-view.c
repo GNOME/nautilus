@@ -957,7 +957,8 @@ notify_selection_change_callback (NautilusView *nautilus_view,
 			}
 			
 			fm_directory_view_set_selection (directory_view, selection);
-			g_list_free (selection);
+
+			nautilus_file_list_free (selection);
 		} else {
 			/* If we are still loading, add to the list of pending URIs instead. */
 			for (i = 0; i < selection_context->selected_uris._length; i++) {
@@ -1098,7 +1099,7 @@ display_pending_files (FMDirectoryView *view)
 
 		fm_directory_view_set_selection (view, selection);
 
-		g_list_free (selection);
+		nautilus_file_list_free (selection);
 	}
 
 	nautilus_file_list_free (files_added);
@@ -1634,6 +1635,7 @@ start_renaming_item (FMDirectoryView *view, const char *uri)
 
 	selection = g_list_prepend (NULL, file);
 	fm_directory_view_set_selection (view, selection);
+	nautilus_file_list_free (selection);
 }
 
 typedef struct {

@@ -491,7 +491,7 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 		}
 	}
 		
-	/* FIXME bugzilla.eazel.com 1267: should pass the allowed iids into the query instead */
+	/* FIXME bugzilla.eazel.com 1267: should pass the allowed iids into the query */
 	result = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, NULL, &ev);
 
 	result = nautilus_g_list_partition
