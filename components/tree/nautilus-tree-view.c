@@ -93,6 +93,12 @@
 typedef struct _NautilusTreeViewDndDetails NautilusTreeViewDndDetails;
 struct _NautilusTreeViewDndDetails {
 
+	/* autoscrolling during dragging */
+	int auto_scroll_timeout_id;
+	gboolean waiting_to_autoscroll;
+	gint64 start_auto_scroll_in;
+
+
 	/* data setup by button_press signal for dragging */
 	int press_x, press_y;
 	gboolean pressed_hot_spot;
@@ -256,6 +262,14 @@ static GtkCTreeNode *nautilus_tree_view_tree_node_at      (NautilusTreeView     
 							   int                    x, 
 							   int                    y);
 
+
+static void    nautilus_tree_view_start_auto_scroll       (NautilusTreeView      *tree_view);
+
+static void    nautilus_tree_view_stop_auto_scroll        (NautilusTreeView      *tree_view);
+
+static void    nautilus_tree_view_real_scroll             (NautilusTreeView      *tree_view, 
+							   float                  x_delta, 
+							   float                  y_delta);
 
 
 static void nautilus_tree_view_initialize_class (NautilusTreeViewClass *klass);
@@ -1414,6 +1428,10 @@ nautilus_tree_view_drag_leave (GtkWidget *widget,
 					      tree_view->details->dnd->normal_style);
 	}
 	dnd->current_prelighted_node = NULL;
+
+	/* stop autoscroll */
+
+	nautilus_tree_view_stop_auto_scroll (tree_view);
 }
 
 static int motion_time_callback (gpointer data);
@@ -1505,7 +1523,7 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 	gdk_drag_status (context, context->suggested_action, time);
 
 
-	/* FIXME bugzilla.eazel.com 2418: handle scrolling if we are in a border of the widget */
+	nautilus_tree_view_start_auto_scroll (tree_view);
 
 	return FALSE;
 }
@@ -2039,4 +2057,140 @@ nautilus_tree_view_get_drag_uri  (NautilusTreeView *tree_view)
 	return nautilus_tree_view_item_at (tree_view,
 					   tree_view->details->dnd->press_x,
 					   tree_view->details->dnd->press_y);
+}
+
+
+
+
+
+
+
+
+/***********************************************************************
+ * scrolling helper code. stolen and modified from nautilus-icon-dnd.c *
+ ***********************************************************************/
+
+
+static int
+auto_scroll_timeout_callback (gpointer data)
+{
+	NautilusTreeView *tree_view;
+	GtkWidget *widget;
+	int x, y;
+	float x_scroll_delta, y_scroll_delta;
+
+	g_assert (NAUTILUS_IS_TREE_VIEW (data));
+	widget = GTK_WIDGET (data);
+	tree_view = NAUTILUS_TREE_VIEW (widget);
+
+	if (tree_view->details->dnd->waiting_to_autoscroll
+		&& tree_view->details->dnd->start_auto_scroll_in < nautilus_get_system_time()) {
+		/* not yet */
+		return TRUE;
+	}
+
+	tree_view->details->dnd->waiting_to_autoscroll = FALSE;
+
+	gdk_window_get_pointer (widget->window, &x, &y, NULL);
+
+	/* Find out if we are anywhere close to the tree view edges
+	 * to see if we need to autoscroll.
+	 */
+	x_scroll_delta = 0;
+	y_scroll_delta = 0;
+	
+	if (x < AUTO_SCROLL_MARGIN) {
+		x_scroll_delta = (float)(x - AUTO_SCROLL_MARGIN);
+	}
+
+	if (x > widget->allocation.width - AUTO_SCROLL_MARGIN) {
+		if (x_scroll_delta != 0) {
+			/* Already trying to scroll because of being too close to 
+			 * the top edge -- must be the window is really short,
+			 * don't autoscroll.
+			 */
+			return TRUE;
+		}
+		x_scroll_delta = (float)(x - (widget->allocation.width - AUTO_SCROLL_MARGIN));
+	}
+
+	if (y < AUTO_SCROLL_MARGIN) {
+		y_scroll_delta = (float)(y - AUTO_SCROLL_MARGIN);
+	}
+
+	if (y > widget->allocation.height - AUTO_SCROLL_MARGIN) {
+		if (y_scroll_delta != 0) {
+			/* Already trying to scroll because of being too close to 
+			 * the top edge -- must be the window is really narrow,
+			 * don't autoscroll.
+			 */
+			return TRUE;
+		}
+		y_scroll_delta = (float)(y - (widget->allocation.height - AUTO_SCROLL_MARGIN));
+	}
+
+	if (x_scroll_delta == 0 && y_scroll_delta == 0) {
+		/* no work */
+		return TRUE;
+	}
+
+	/* Adjust the scroll delta to the proper acceleration values depending on how far
+	 * into the sroll margins we are.
+	 * FIXME bugzilla.eazel.com 2486:
+	 * we could use an exponential acceleration factor here for better feel
+	 */
+	if (x_scroll_delta != 0) {
+		x_scroll_delta /= AUTO_SCROLL_MARGIN;
+		x_scroll_delta *= (MAX_AUTOSCROLL_DELTA - MIN_AUTOSCROLL_DELTA);
+		x_scroll_delta += MIN_AUTOSCROLL_DELTA;
+	}
+	
+	if (y_scroll_delta != 0) {
+		y_scroll_delta /= AUTO_SCROLL_MARGIN;
+		y_scroll_delta *= (MAX_AUTOSCROLL_DELTA - MIN_AUTOSCROLL_DELTA);
+		y_scroll_delta += MIN_AUTOSCROLL_DELTA;
+	}
+
+	/* make the GtkScrolledWindow actually scroll */
+	nautilus_tree_view_real_scroll (tree_view, x_scroll_delta, y_scroll_delta);
+
+	return TRUE;
+}
+
+static void
+nautilus_tree_view_start_auto_scroll (NautilusTreeView *tree_view)
+{
+	if (tree_view->details->dnd->auto_scroll_timeout_id == 0) {
+		tree_view->details->dnd->waiting_to_autoscroll = TRUE;
+		tree_view->details->dnd->start_auto_scroll_in = nautilus_get_system_time() 
+			+ AUTOSCROLL_INITIAL_DELAY;
+		tree_view->details->dnd->auto_scroll_timeout_id = gtk_timeout_add
+				(AUTOSCROLL_TIMEOUT_INTERVAL,
+				 auto_scroll_timeout_callback,
+			 	 tree_view);
+	}
+}
+
+static void
+nautilus_tree_view_stop_auto_scroll (NautilusTreeView *tree_view)
+{
+	if (tree_view->details->dnd->auto_scroll_timeout_id) {
+		gtk_timeout_remove (tree_view->details->dnd->auto_scroll_timeout_id);
+		tree_view->details->dnd->auto_scroll_timeout_id = 0;
+	}
+}
+
+
+
+static void
+nautilus_tree_view_real_scroll (NautilusTreeView *tree_view, float delta_x, float delta_y)
+{
+	GtkAdjustment *hadj, *vadj;
+
+	hadj = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (tree_view));
+	vadj = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (tree_view));
+
+	nautilus_gtk_adjustment_set_value (hadj, hadj->value + delta_x);
+	nautilus_gtk_adjustment_set_value (vadj, vadj->value + delta_y);
+
 }

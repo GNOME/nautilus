@@ -43,6 +43,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtklayout.h>
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include <math.h>
 #include <stdio.h>
@@ -332,8 +333,8 @@ nautilus_icon_container_scroll (NautilusIconContainer *container,
 {
 	GtkAdjustment *hadj, *vadj;
 
-	hadj = GTK_LAYOUT (container)->hadjustment;
-	vadj = GTK_LAYOUT (container)->vadjustment;
+	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (container));
+	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
 
 	nautilus_gtk_adjustment_set_value (hadj, hadj->value + delta_x);
 	nautilus_gtk_adjustment_set_value (vadj, vadj->value + delta_y);
@@ -351,8 +352,8 @@ reveal_icon (NautilusIconContainer *container,
 	details = container->details;
 	allocation = &GTK_WIDGET (container)->allocation;
 
-	hadj = GTK_LAYOUT (container)->hadjustment;
-	vadj = GTK_LAYOUT (container)->vadjustment;
+	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (container));
+	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
 
 	icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
 
@@ -497,8 +498,8 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 		 x2 + CONTAINER_PAD_RIGHT,
 		 y2 + CONTAINER_PAD_BOTTOM);
 
-	hadj = GTK_LAYOUT (container)->hadjustment;
-	vadj = GTK_LAYOUT (container)->vadjustment;
+	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (container));
+	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
 
 	/* Scroll by 1/4 icon each time you click. */
 	step_increment = nautilus_get_icon_size_for_zoom_level

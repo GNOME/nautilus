@@ -1,3 +1,13 @@
+2000-09-06  Mathieu Lacage  <mathieu@eazel.com>
+
+	* components/tree/nautilus-tree-view.c: implement autoscroll
+	by stealing code from nautilus-icon-dnd.c fixes task 2418
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_scroll), (reveal_icon),
+	(nautilus_icon_container_update_scroll_region): do not access
+	the GtkLayout internal structures but use the gtk accessors.
+	ie: gtk_layout_get_[vh]adjustment
+
 2000-09-06  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 2644, Enter and Return should invoke file renaming.
