@@ -1,5 +1,15 @@
 2000-07-30  Andy Hertzfeld  <andy@eazel.com>
 
+	* data/top/Computer.link:
+	* data/top/Services.link:
+	fixed some breakage in the novice home directory: these built-in links were not
+	being recognized as such, since they didn't have the magic mime string.  Fixed it
+	by adding the string to them.
+	* libnautilus-extensions/nautilus-link.c: (make_local_path):
+	made it handle remote icon fetching better by unescaping the uri if necessary
+	
+2000-07-30  Andy Hertzfeld  <andy@eazel.com>
+
 	fixed bug 1408, thumbnails do not have the right shadow.  Fixed by maintaining
 	different thumbnails for the anti-aliased and non-anti-aliased cases.
 	

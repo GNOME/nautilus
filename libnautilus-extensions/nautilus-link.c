@@ -185,14 +185,16 @@ nautilus_link_get_additional_text (const char *link_file_uri)
 /* if the icons directory hasn't been created yet, create it */
 
 static char *
-make_local_path (const char *image_name)
+make_local_path (const char *image_uri)
 {
-	char *escaped_uri, *local_directory_path, *local_file_path;
+	char *escaped_uri, *unescaped_uri, *local_directory_path, *local_file_path;
 	
-	/* FIXME: Is this +7 something we should be doing, or is
-	 * nautilus_get_local_path_from_uri better?
-	 */
-	escaped_uri = nautilus_str_escape_slashes (image_name + 7);		
+	/* we can't call nautilus_get_local_path_from_uri here, since it will return NULL because
+	   it's not a local uri, but we still should unescape */
+	unescaped_uri = gnome_vfs_unescape_string (image_uri, "/");
+	escaped_uri = nautilus_str_escape_slashes (unescaped_uri + 7);		
+	g_free (unescaped_uri);
+	
 	local_directory_path = g_strconcat
 		(g_get_home_dir (),
 		 "/.nautilus/remote_icons",
