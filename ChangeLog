@@ -1,3 +1,38 @@
+2001-03-10  Eskil Olsen  <eskil@eazel.com>
+
+	reviewed by: Robey Pointer
+
+	Fixes 7647, cases where a devel package could prevent
+	a package from getting upgraded.
+	Fixes 7652, mysterious memoryalteration caused hash 
+	lookup to misfire and thereby causes recursive
+	dependencies.
+
+	Commit ok'ed by Don friday evening.
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(add_to_dedupe_hash), 
+	Don't insert into hash if already there.
+	g_strdup key.
+	(post_get_softcat_info),
+	Changed debug message.	
+	(dedupe_foreach_depends), 
+	Changed debug message.
+	(check_if_related_package),
+	Two packages with different versions can never be related.
+	(check_tree_helper), 
+	Allow file conflicts on related packages.
+	Don't insert package into extra's if already there.
+	Added comments.
+	(clean_up_dedupe_hash):
+	Free the key.
+	* components/services/install/lib/eazel-install-problem.c:
+	(get_detailed_messages_foreach):
+	Removed SoftCat references.
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_query):
+	Code that is ifdeffed out to dump xml from softcat.
+
 2001-03-09  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* configure.in: upped version of control-center required to 1.3

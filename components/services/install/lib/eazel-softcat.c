@@ -33,6 +33,8 @@
 #include <libgnomevfs/gnome-vfs.h>
 #endif /* EAZEL_INSTALL_SLIM */
 
+#undef EAZEL_SOFTCAT_SPAM_XML		
+
 /* This is the parent class pointer */
 static GtkObjectClass *eazel_softcat_parent_class;
 
@@ -654,7 +656,8 @@ eazel_softcat_query (EazelSoftCat *softcat, PackageData *package, int sense_flag
 	     tries_left--) {
 
 		got_happy = trilobite_fetch_uri (search_url, &body, &length);
-		
+
+#ifdef EAZEL_SOFTCAT_SPAM_XML		
 		{
 			char **strs;
 			int i;
@@ -665,6 +668,7 @@ eazel_softcat_query (EazelSoftCat *softcat, PackageData *package, int sense_flag
 			}			
 			g_strfreev (strs);
 		}
+#endif /* EAZEL_SOFTCAT_SPAM_XML */
 
 		if (got_happy) {
 			got_happy = eazel_install_packagelist_parse (&packages, body, length, &db_revision);
