@@ -1660,7 +1660,7 @@ band_select_ended_callback (NautilusIconContainer *container,
 	fm_directory_view_stop_batching_selection_changes (FM_DIRECTORY_VIEW (icon_view));
 }
 
-/* handle the preview signal by inspecting the mime type.  For now, we only preview sound files. */
+/* handle the preview signal by inspecting the mime type.  For now, we only preview local sound files. */
 
 /* here's the timer task that actually plays the file using mpg123. */
 /* FIXME bugzilla.eazel.com 1258: we should get the application from our mime-type stuff */
@@ -1742,7 +1742,7 @@ icon_container_preview_callback (NautilusIconContainer *container,
 	/* preview files based on the mime_type. */
 	/* at first, we just handle sounds */
 	mime_type = nautilus_file_get_mime_type (file);
-	if (nautilus_istr_has_prefix (mime_type, "audio/")) {   	
+	if (nautilus_istr_has_prefix (mime_type, "audio/") && nautilus_file_is_local (file)) {   	
 		if (nautilus_sound_can_play_sound ()) {
 			result = 1;
 			preview_sound (file, start_flag);

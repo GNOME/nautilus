@@ -1,3 +1,23 @@
+2000-11-03  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_outline_rectangle_aa), (draw_stretch_handles_aa),
+	(draw_or_measure_label_text_aa), (draw_label_text_aa):
+	fixed bug 4192, strange feedback while stretching icons, by using
+	libart to draw the rectangle instead of the buggy custom graphics
+	routine that we were using.
+	
+	* src/file-manager/fm-icon-view.c:
+	(icon_container_preview_callback):
+	fixed bug 4460, remote sound files displayed preview icon but
+	didn't actually preview, by adding a check to make it display
+	the icon for local files only
+	
+	* src/nautilus-window-menus.c: (file_menu_new_window_callback):
+	fixed bug 4033, new window command should initially point to the
+	home directory by calling nautilus_window_go_home instead of going
+	to the uri of the current window.
+	
 2000-11-03  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-logic.c:

@@ -199,7 +199,7 @@ file_menu_new_window_callback (BonoboUIComponent *component,
 
 	current_window = NAUTILUS_WINDOW (user_data);
 	new_window = nautilus_application_create_window (current_window->application);
-	nautilus_window_goto_uri (new_window, current_window->location);
+	nautilus_window_go_home (new_window);
 }
 
 static void
