@@ -135,11 +135,11 @@ enum {
 };
 
 /* sort modes */
-
 enum {
 	SORT_BY_NUMBER,
 	SORT_BY_TITLE,
 	SORT_BY_ARTIST,
+	SORT_BY_YEAR,
 	SORT_BY_BITRATE,
 	SORT_BY_TIME
 };
@@ -810,6 +810,17 @@ sort_by_time (gconstpointer ap, gconstpointer bp)
 }
 
 static int
+sort_by_year (gconstpointer ap, gconstpointer bp)
+{
+	SongInfo *a, *b;
+
+	a = (SongInfo *) ap;
+	b = (SongInfo *) bp;
+
+	return nautilus_strcmp (a->artist, b->artist);
+}
+
+static int
 sort_by_bitrate (gconstpointer ap, gconstpointer bp)
 {
 	SongInfo *a, *b;
@@ -863,6 +874,9 @@ sort_song_list(NautilusMusicView *music_view, GList* song_list)
                 break;
         case SORT_BY_ARTIST:
                 song_list = g_list_sort (song_list, sort_by_artist);
+                break;
+        case SORT_BY_YEAR:
+                song_list = g_list_sort (song_list, sort_by_year);
                 break;
         case SORT_BY_BITRATE:
                 song_list = g_list_sort (song_list, sort_by_bitrate);

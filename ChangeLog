@@ -1,5 +1,23 @@
 2000-11-30  Gene Z. Ragan  <gzr@eazel.com>
 
+	Fixed bug 4879, "unknown sort mode" warning upon sorting
+	by "Time" column.
+
+	The problem was caused by the sort mode enumeration being
+	out of sync with the number of columns.  As a result
+	most sorts were being done incorrectly with the wrong
+	sort function. A new SORT_BY_YEAR entry was added to
+	the sort enumeration to fix the problem.
+	
+	* components/music/nautilus-music-view.c: 
+	(sort_song_list):
+	Add SORT_BY_YEAR case to switch statement.
+
+	(sort_by_year):
+	New sort function to sort by year.
+
+2000-11-30  Gene Z. Ragan  <gzr@eazel.com>
+
 	Fixed bug 3891, Repeatedly clicking the "Play" button
 	crashes Nautilus.
 	
