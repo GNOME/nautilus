@@ -1,3 +1,10 @@
+2000-08-04  Rebecca Schulman  <rebecka@eazel.com>
+
+	* components/music/nautilus-music-view.c: (sort_by_title),
+	(sort_by_artist):
+	Fixed bug 1940, where the music view crashed when 
+	sorting by title or artist if the id3 tag was incomplete
+
 2000-08-04  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/music/nautilus-music-view.c:

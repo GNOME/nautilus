@@ -47,6 +47,8 @@
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
+#include <libnautilus-extensions/nautilus-string.h>
+
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtksignal.h>
 #include <gnome.h>
@@ -620,7 +622,7 @@ sort_by_title (gconstpointer ap, gconstpointer bp)
 	a = (SongInfo *) ap;
 	b = (SongInfo *) bp;
 
-	return strcmp(a->title, b->title);
+	return nautilus_strcmp (a->title, b->title);
 }
 
 static int
@@ -631,7 +633,7 @@ sort_by_artist (gconstpointer ap, gconstpointer bp)
 	a = (SongInfo *) ap;
 	b = (SongInfo *) bp;
 
-	return strcmp(a->artist, b->artist);
+	return nautilus_strcmp (a->artist, b->artist);
 }
 
 static int
