@@ -1,5 +1,10 @@
 include $(top_srcdir)/Makefile.shared
 
+@XML_I18N_MERGE_DESKTOP_RULE@
+
+DESKTOP_IN_FILES=nautilus.desktop.in
+DESKTOP_FILES=$(DESKTOP_IN_FILES:.desktop.in=.desktop)
+
 if HAVE_APPLETS
 APPLETS_SUBDIRS = applets
 endif
@@ -40,13 +45,15 @@ EXTRA_DIST=					\
 	xml-i18n-extract			\
 	xml-i18n-merge				\
 	xml-i18n-update				\
+	$(DESKTOP_IN_FILES)			\
+	$(DESKTOP_FILES)			\
 	$(NULL)
 
 appicondir = $(datadir)/pixmaps
 appicon_DATA = nautilus-launch-icon.png
 
 Applicationsdir = $(datadir)/gnome/apps/Applications
-Applications_DATA = nautilus.desktop
+Applications_DATA = $(DESKTOP_FILES)
 
 dist-hook: nautilus.spec
 	cp nautilus.spec $(distdir)
