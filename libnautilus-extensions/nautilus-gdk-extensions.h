@@ -105,6 +105,8 @@ gboolean   nautilus_gdk_font_equal                     (GdkFont            *font
 GdkFont *  nautilus_get_largest_fitting_font           (const char         *text_to_format,
 							int                 width,
 							const char         *font_format);
+GdkFont *  nautilus_gdk_font_get_bold		       (const GdkFont 	   *plain);
+
 
 /* Misc GdkWindow helper functions */
 void       nautilus_gdk_window_bring_to_front          (GdkWindow          *window);

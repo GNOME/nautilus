@@ -147,6 +147,7 @@ progress_dialog_set_to_from_item_text (DFOSXferProgressDialog *dialog,
 	const char *from_prefix;
 	const char *to_prefix;
 	GnomeVFSURI *uri;
+	int length;
 
 	item = NULL;
 	from_path = NULL;
@@ -159,6 +160,13 @@ progress_dialog_set_to_from_item_text (DFOSXferProgressDialog *dialog,
 		uri = gnome_vfs_uri_new (from_uri);
 		item = gnome_vfs_uri_extract_short_name (uri);
 		from_path = gnome_vfs_uri_extract_dirname (uri);
+
+		/* remove the last '/' */
+		length = strlen (from_path);
+		if (from_path [length - 1] == '/') {
+			from_path [length - 1] = '\0';
+		}
+		
 		gnome_vfs_uri_unref (uri);
 		g_assert (progress_verb);
 		progress_label_text = g_strdup_printf ("%s:", progress_verb);
@@ -168,6 +176,13 @@ progress_dialog_set_to_from_item_text (DFOSXferProgressDialog *dialog,
 	if (to_uri != NULL) {
 		uri = gnome_vfs_uri_new (from_uri);
 		to_path = gnome_vfs_uri_extract_dirname (uri);
+
+		/* remove the last '/' */
+		length = strlen (to_path);
+		if (to_path [length - 1] == '/') {
+			to_path [length - 1] = '\0';
+		}
+
 		gnome_vfs_uri_unref (uri);
 		to_prefix = _("To:");
 	}

@@ -104,6 +104,9 @@ void              nautilus_gtk_style_set_font                  (GtkStyle        
 void              nautilus_gtk_style_set_font_by_name          (GtkStyle               *style,
 								const char             *font_name);
 
+/* GtkLabel */
+void		  nautilus_gtk_label_make_bold		       (GtkLabel 	       *label);
+
 /* GtkPixmap */
 GtkPixmap        *nautilus_gtk_pixmap_new_empty                (void);
 

@@ -1,3 +1,26 @@
+2000-07-24  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	* libnautilus-extensions/nautilus-gdk-extensions.h:
+	(nautilus_gdk_font_get_bold):
+	New K-rad call to get a bold flavor of a given font.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_label_make_bold):
+	Add a convenience call to set a label to a bold font.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* src/file-manager/dfos-xfer-progress-dialog.c:
+	(create_titled_label), (dfos_xfer_progress_dialog_initialize):
+	Use bold labels where appropriate.
+	Make the To: From: and Copying: labels properly right-aligned.
+	Add a space between the labels and the paths to make it look nicer.
+	
+	* src/file-manager/dfos-xfer.c:
+	(progress_dialog_set_to_from_item_text):
+	Chop off the trailing '/' from to and from paths in the progress
+	dialog.
+
 2000-07-24  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 1469 (changing owner/group doesn't handle

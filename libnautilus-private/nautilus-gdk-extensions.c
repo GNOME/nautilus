@@ -19,13 +19,14 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Authors: Darin Adler <darin@eazel.com>
+   Authors: Darin Adler <darin@eazel.com>, Pavel Cisler <pavel@eazel.com>
 */
 
 #include <config.h>
 #include "nautilus-gdk-extensions.h"
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdkx.h>
+#include <gdk/gdkprivate.h>
 #include "nautilus-glib-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-string.h"
@@ -644,6 +645,80 @@ nautilus_set_mini_icon (GdkWindow *window,
         gdk_property_change (window, icon_atom, icon_atom, 
                              32, GDK_PROP_MODE_REPLACE,
                              (guchar *) data, 2);
+}
+
+/**
+ * nautilus_gdk_font_get_bold
+ * @plain_font: A font.
+ * Returns: A bold variant of @plain_font or NULL.
+ *
+ * Tries to find a bold flavor of a given font. Returns NULL if none is available.
+ */
+GdkFont *
+nautilus_gdk_font_get_bold (const GdkFont *plain_font)
+{
+	const char *plain_name;
+	const char *scanner;
+	char *bold_name;
+	int count;
+	GSList *p;
+	GdkFont *result;
+	GdkFontPrivate *private_plain;
+
+	private_plain = (GdkFontPrivate *)plain_font;
+
+	if (private_plain->names == NULL) {
+		return NULL;
+	}
+
+
+	/* -foundry-family-weight-slant-sel_width-add-style-pixels-points-hor_res-ver_res-spacing-average_width-char_set_registry-char_set_encoding */
+
+	bold_name = NULL;
+	for (p = private_plain->names; p != NULL; p = p->next) {
+		plain_name = (const char *)p->data;
+		scanner = plain_name;
+
+		/* skip past foundry and family to weight */
+		for (count = 2; count > 0; count--) {
+			scanner = strchr (scanner + 1, '-');
+			if (!scanner) {
+				break;
+			}
+		}
+
+		if (!scanner) {
+			/* try the other names in the list */
+			continue;
+		}
+		g_assert (*scanner == '-');
+
+		/* copy "-foundry-family-" over */
+		scanner++;
+		bold_name = g_strndup (plain_name, scanner - plain_name);
+
+		/* skip weight */
+		scanner = strchr (scanner, '-');
+		g_assert (scanner != NULL);
+
+		/* FIXME:
+		 * some fonts have demibold, etc. instead. We should be able to figure out
+		 * which they are and use them here.
+		 */
+
+		/* add "bold" and copy everything past weight over */
+		bold_name = g_strconcat (bold_name, "bold", scanner, NULL);
+		break;
+	}
+	
+	if (bold_name == NULL) {
+		return NULL;
+	}
+	
+	result = gdk_font_load (bold_name);
+	g_free (bold_name);
+
+	return result;
 }
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)

@@ -34,7 +34,7 @@
 
 
 #define LABEL_BOX_WIDTH 350	/* FIXME bugzilla.eazel.com 675: ? */
-#define OPERATION_LABEL_WIDTH 80
+#define OPERATION_LABEL_WIDTH 65
 #define PATH_TRIM_WIDTH LABEL_BOX_WIDTH - OPERATION_LABEL_WIDTH - 2 * 20
 
 static void dfos_xfer_progress_dialog_initialize_class 	(DFOSXferProgressDialogClass *klass);
@@ -160,23 +160,25 @@ static void
 create_titled_label (GtkBox *vbox, GtkWidget **title_widget, GtkWidget **label_text_widget)
 {
 	GtkWidget *hbox;
-
+	
 	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_start (vbox, hbox, TRUE, TRUE, 0);
+	gtk_box_pack_start (vbox, hbox, FALSE, FALSE, 0);
 	gtk_widget_show (hbox);
 	gtk_widget_set_usize (hbox, LABEL_BOX_WIDTH, 0);
 
-
 	*title_widget = gtk_label_new ("");
-	gtk_box_pack_start (GTK_BOX (hbox), *title_widget, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), *title_widget, FALSE, FALSE, 2);
 	gtk_widget_show (*title_widget);
 	gtk_widget_set_usize (*title_widget, OPERATION_LABEL_WIDTH, 0);
 	gtk_label_set_justify (GTK_LABEL (*title_widget), GTK_JUSTIFY_RIGHT);
+	gtk_misc_set_alignment (GTK_MISC (*title_widget), 1, 0);
+	nautilus_gtk_label_make_bold (GTK_LABEL (*title_widget));
 
 	*label_text_widget = gtk_label_new ("");
-	gtk_box_pack_start (GTK_BOX (hbox), *label_text_widget, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), *label_text_widget, FALSE, FALSE, 2);
 	gtk_widget_show (*label_text_widget);
 	gtk_label_set_justify (GTK_LABEL (*label_text_widget), GTK_JUSTIFY_LEFT);
+	gtk_misc_set_alignment (GTK_MISC (*label_text_widget), 0, 0);
 }
 
 static void
@@ -192,7 +194,7 @@ dfos_xfer_progress_dialog_initialize (DFOSXferProgressDialog *dialog)
 	vbox = GTK_BOX (gnome_dialog->vbox);
 
 	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_start (vbox, hbox, TRUE, TRUE, 0);
+	gtk_box_pack_start (vbox, hbox, TRUE, TRUE, 3);
 	gtk_widget_show (hbox);
 
 	/* label- */
@@ -201,6 +203,8 @@ dfos_xfer_progress_dialog_initialize (DFOSXferProgressDialog *dialog)
 	gtk_label_set_justify (GTK_LABEL (dialog->details->progress_title_label), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start (GTK_BOX (hbox), dialog->details->progress_title_label, FALSE, FALSE, 0);
 	gtk_widget_show (dialog->details->progress_title_label);
+	nautilus_gtk_label_make_bold (GTK_LABEL (dialog->details->progress_title_label));
+
 
 	/* label -- */
 	/* 24 of 30 */
@@ -208,6 +212,7 @@ dfos_xfer_progress_dialog_initialize (DFOSXferProgressDialog *dialog)
 	gtk_label_set_justify (GTK_LABEL (dialog->details->progress_count_label), GTK_JUSTIFY_RIGHT);
 	gtk_box_pack_end (GTK_BOX (hbox), dialog->details->progress_count_label, FALSE, FALSE, 0);
 	gtk_widget_show (dialog->details->progress_count_label);
+	nautilus_gtk_label_make_bold (GTK_LABEL (dialog->details->progress_count_label));
 
 	/* progress bar */
 	dialog->details->progress_bar = gtk_progress_bar_new ();

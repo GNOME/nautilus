@@ -26,6 +26,7 @@
 
 #include <config.h>
 #include "nautilus-gtk-extensions.h"
+#include "nautilus-gdk-extensions.h"
 
 #include <gtk/gtkselection.h>
 #include <gtk/gtksignal.h>
@@ -982,3 +983,30 @@ nautilus_gtk_adjustment_clamp_value (GtkAdjustment *adjustment)
 	
 	nautilus_gtk_adjustment_set_value (adjustment, adjustment->value);
 }
+
+/**
+ * nautilus_gtk_label_make_bold.
+ *
+ * Switches the font of label to a bold equivalent.
+ * @label: The label.
+ **/
+
+void
+nautilus_gtk_label_make_bold (GtkLabel *label)
+{
+	GtkStyle *style;
+	GdkFont *bold_font;
+
+	g_return_if_fail (GTK_IS_LABEL (label));
+	style = gtk_widget_get_style (GTK_WIDGET(label));
+
+	bold_font = nautilus_gdk_font_get_bold (style->font);
+
+	if (bold_font == NULL) {
+		return;
+	}
+
+	nautilus_gtk_widget_set_font (GTK_WIDGET(label), bold_font);
+	gdk_font_unref (bold_font);
+}
+
