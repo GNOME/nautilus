@@ -509,35 +509,31 @@ build_error_string (const char *source_name, const char *target_name,
 		switch (operation_kind) {
 		case XFER_MOVE:
 		case XFER_MOVE_TO_TRASH:
-			if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
+			if (error_kind == ERROR_READ_ONLY) {
 				error_string = _("Error while moving.\n"
-						 "\"%s\" cannot be moved because you do not have "
-						 "permissions to change its parent folder.");
-			} else if (error_kind == ERROR_READ_ONLY) {
-				error_string = _("Error while moving.\n"
-						 "\"%s\" cannot be moved because its parent folder "
-						 "is read-only.");
-			} else if (error_kind == ERROR_NOT_WRITABLE) {
-				error_string = _("Error while moving.\n"
-						 "\"%s\" cannot be moved because its parent folder "
-						 "is not writable.");
+						 "\"%s\" cannot be moved because it is on "
+						 "a read-only disk.");
 			}
 			break;
 
 		case XFER_DELETE:
 		case XFER_EMPTY_TRASH:
-			if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
+			switch (error_kind) {
+			case ERROR_NOT_ENOUGH_PERMISSIONS:
+			case ERROR_NOT_WRITABLE:
 				error_string = _("Error while deleting.\n"
 						 "\"%s\" cannot be deleted because you do not have "
-						 "permissions to change its parent folder.");
-			} else if (error_kind == ERROR_READ_ONLY) {
+						 "permissions to modify its parent folder.");
+				break;
+			
+			case ERROR_READ_ONLY:
 				error_string = _("Error while deleting.\n"
-						 "\"%s\" cannot be deleted because its parent folder "
-						 "is read-only.");
-			} else if (error_kind == ERROR_NOT_WRITABLE) {
-				error_string = _("Error while moving.\n"
-						 "\"%s\" cannot be moved because its parent folder "
-						 "is not writable.");
+						 "\"%s\" cannot be deleted because it is on "
+						 "a read-only disk.");
+				break;
+
+			default:
+				break;
 			}
 			break;
 
@@ -555,6 +551,10 @@ build_error_string (const char *source_name, const char *target_name,
 
 		g_assert (source_name != NULL);
 
+		/* FIXME: Would be better if we could distinguish source vs parent permissions
+		 * better somehow. The GnomeVFS copy engine would have to do some snooping
+		 * after the failure in this case.
+		 */
 		switch (operation_kind) {
 		case XFER_MOVE:
 			if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
@@ -566,7 +566,7 @@ build_error_string (const char *source_name, const char *target_name,
 		case XFER_MOVE_TO_TRASH:
 			if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
 				error_string = _("Error while moving.\n"
-						 "\"%s\" cannot be moved to trash because you do not have "
+						 "\"%s\" cannot be moved to the trash because you do not have "
 						 "permissions to change it or its parent folder.");
 			}
 			break;
@@ -590,13 +590,8 @@ build_error_string (const char *source_name, const char *target_name,
 		case XFER_DUPLICATE:
 			if (error_kind == ERROR_NOT_READABLE) {
 				error_string = _("Error while copying.\n"
-						 "\"%s\" is not readable.");
-			}
-			break;
-		case XFER_LINK:
-			if (error_kind == ERROR_NOT_READABLE) {
-				error_string = _("Error while linking\n"
-						 "\"%s\" is not readable.");
+						 "\"%s\" cannot be copied because you do not have "
+						 "permissions to read it.");
 			}
 			break;
 
@@ -616,17 +611,17 @@ build_error_string (const char *source_name, const char *target_name,
 			switch (operation_kind) {
 			case XFER_COPY:
 			case XFER_DUPLICATE:
-				error_string = _("Error while copying \"%s\".\n"
-				   		 "There is no space on the destination.");
+				error_string = _("Error while copying to \"%s\".\n"
+				   		 "There is not enough space on the destination.");
 				break;
 			case XFER_MOVE_TO_TRASH:
 			case XFER_MOVE:
-				error_string = _("Error while moving \"%s\".\n"
-				   		 "There is no space on the destination.");
+				error_string = _("Error while moving to \"%s\".\n"
+				   		 "There is not enough space on the destination.");
 				break;
 			case XFER_LINK:
-				error_string = _("Error while linking \"%s\".\n"
-				   		 "There is no space on the destination.");
+				error_string = _("Error while creating link in \"%s\".\n"
+				   		 "There is not enough space on the destination.");
 				break;
 			default:
 				g_assert_not_reached ();
@@ -637,23 +632,23 @@ build_error_string (const char *source_name, const char *target_name,
 			case XFER_COPY:
 			case XFER_DUPLICATE:
 				if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
-					error_string = _("Error while copying items to \"%s\".\n"
+					error_string = _("Error while copying to \"%s\".\n"
 					   		 "You do not have permissions to write to "
-					   		 "the destination.");
+					   		 "this folder.");
 				} else if (error_kind == ERROR_NOT_WRITABLE) {
-					error_string = _("Error while copying items to \"%s\".\n"
-					   		 "The destination is not writable.");
+					error_string = _("Error while copying to \"%s\".\n"
+					   		 "The destination disk is read-only.");
 				} 
 				break;
 			case XFER_MOVE:
 			case XFER_MOVE_TO_TRASH:
 				if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
-					error_string = _("Error while moving items \"%s\".\n"
+					error_string = _("Error while moving items to \"%s\".\n"
 					   		 "You do not have permissions to write to "
-					   		 "the destination.");
+					   		 "this folder.");
 				} else if (error_kind == ERROR_NOT_WRITABLE) {
-					error_string = _("Error while moving items \"%s\".\n"
-					   		 "The destination is not writable.");
+					error_string = _("Error while moving items to \"%s\".\n"
+					   		 "The destination disk is read-only.");
 				} 
 
 				break;
@@ -661,10 +656,10 @@ build_error_string (const char *source_name, const char *target_name,
 				if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
 					error_string = _("Error while creating links in \"%s\".\n"
 					   		 "You do not have permissions to write to "
-					   		 "the destination.");
+					   		 "this folder.");
 				} else if (error_kind == ERROR_NOT_WRITABLE) {
 					error_string = _("Error while creating links in \"%s\".\n"
-					   		 "The destination is not writable.");
+					   		 "The destination disk is read-only.");
 				} 
 				break;
 			default:
@@ -682,6 +677,12 @@ build_error_string (const char *source_name, const char *target_name,
 		/* None of the specific error messages apply, use a catch-all
 		 * generic error
 		 */
+		g_message ("Please tell pavel@eazel.com that you hit case %s while doing "
+			"a file operation.", gnome_vfs_result_to_string (error));
+
+		/* FIXMEs: we need to consider a single item
+		 * move/copy and not offer to continue in that case
+		 */
 		if (source_name != NULL) {
 			switch (operation_kind) {
 			case XFER_COPY:
@@ -694,7 +695,7 @@ build_error_string (const char *source_name, const char *target_name,
 						 "Would you like to continue?");
 				break;
 			case XFER_LINK:
-				error_string = _("Error \"%s\" while linking \"%s\".\n"
+				error_string = _("Error \"%s\" while creating a link to \"%s\".\n"
 						 "Would you like to continue?");
 				break;
 			case XFER_DELETE:
