@@ -13,10 +13,11 @@
 /* Generic Function. Used by toc_elements and sect_preparse */
 
 void
-sect1_start_element (Context *context,
-		     const char *name,
-		     const xmlChar **atrs)
+sect1id_stack_add (Context *context,
+		   const char *name,
+		   const xmlChar **atrs)
 {
+	/* This function adds either a sect1id OR chapter tag to the context->sect1id_stack */
 	char **atrs_ptr;
 	
 	atrs_ptr = (char **) atrs;
@@ -34,9 +35,17 @@ sect1_start_element (Context *context,
 
 /* Generic functions.  Used by both elements and toc_elements */
 void
-article_start_element (Context *context, const gchar *name, const xmlChar **atrs)
+article_start_element (Context *context, const char *name, const xmlChar **atrs)
 {
 	g_print ("<HTML>\n");
+	context->doctype = ARTICLE_DOC;
+}
+
+void
+book_start_element (Context *context, const char *name, const xmlChar **atrs)
+{
+	g_print ("<HTML>\n");
+	context->doctype = BOOK_DOC;
 }
 
 void

@@ -21,7 +21,7 @@ static void toc_title_characters (Context *context, const gchar *chars, int len)
 
 ElementInfo toc_elements[] = {
 	{ ARTICLE, "article", (startElementSAXFunc) article_start_element, NULL, NULL},
-	{ BOOK, "book", (startElementSAXFunc) article_start_element, NULL, NULL},
+	{ BOOK, "book", (startElementSAXFunc) book_start_element, NULL, NULL},
 	{ SECTION, "section", (startElementSAXFunc) toc_sect_start_element, (endElementSAXFunc) toc_sect_end_element, NULL},
 	{ SECT1, "sect1", (startElementSAXFunc) toc_sect_start_element, (endElementSAXFunc) toc_sect_end_element, NULL},
 	{ SECT2, "sect2", (startElementSAXFunc) toc_sect_start_element, (endElementSAXFunc) toc_sect_end_element, NULL},
@@ -81,8 +81,8 @@ ElementInfo toc_elements[] = {
 	{ GUIMENUITEM, "guimenuitem", NULL, NULL, NULL},
 	{ HARDWARE, "hardware", NULL, NULL, NULL},
 	{ KEYCAP, "keycap", NULL, NULL, NULL},
-	{ KEYCAP, "keycode", NULL, NULL, NULL},
-	{ KEYCAP, "keysym", NULL, NULL, NULL},
+	{ KEYCODE, "keycode", NULL, NULL, NULL},
+	{ KEYSYM, "keysym", NULL, NULL, NULL},
 	{ LITERAL, "literal", NULL, NULL, NULL},
 	{ PARAMETER, "parameter", NULL, NULL, NULL},
 	{ PROMPT, "prompt", NULL, NULL, NULL},
@@ -104,6 +104,29 @@ ElementInfo toc_elements[] = {
 	{ LINK, "link", NULL, NULL, NULL},
 	{ MENUCHOICE, "menuchoice", NULL, NULL, NULL},
 	{ TABLE, "table", NULL, NULL, NULL},
+	{ INFORMALTABLE, "informaltable", NULL, NULL, NULL},
+	{ ROW, "row",  NULL, NULL, NULL},
+	{ ENTRY, "entry", NULL, NULL, NULL},
+	{ THEAD, "thead", NULL, NULL, NULL},
+	{ TBODY, "tbody", NULL, NULL, NULL},
+	{ ACRONYM, "acronym", NULL, NULL, NULL},
+	{ MARKUP, "markup", NULL, NULL, NULL},
+	{ SIMPLELIST, "simplelist", NULL, NULL, NULL},
+	{ MEMBER, "member", NULL, NULL, NULL},
+	{ MOUSEBUTTON, "mousebutton", NULL, NULL, NULL},
+	{ SUPERSCRIPT, "superscript", NULL, NULL, NULL},
+	{ SYSTEMITEM, "systemitem", NULL, NULL, NULL},
+	{ VARNAME, "varname", NULL, NULL, NULL},
+	{ BLOCKQUOTE, "blockquote", NULL, NULL, NULL},
+	{ QUOTE, "quote", NULL, NULL, NULL},
+	{ OPTION, "option", NULL, NULL, NULL},
+	{ ENVAR, "envar", NULL, NULL, NULL},
+	{ COMPUTEROUTPUT, "computeroutput", NULL, NULL, NULL},
+	{ INLINEGRAPHIC, "inlinegraphic", NULL, NULL, NULL},
+	{ LEGALNOTICE, "legalnotice", NULL, NULL, NULL},
+	{ QUESTION, "question", NULL, NULL, NULL},
+	{ ANSWER, "answer", NULL, NULL, NULL},
+	{ CHAPTER, "chapter", (startElementSAXFunc) toc_sect_start_element, (endElementSAXFunc) toc_sect_end_element, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -124,11 +147,25 @@ toc_sect_start_element (Context *context,
 {
 	gchar **atrs_ptr;
 
-	g_return_if_fail (strlen (name) >= 5);
+	if (g_strcasecmp (name, "section") == 0) {
+		return;
+	}
 
 	switch (name[4]) {
+	case 't':
+		sect1id_stack_add (context, name, atrs);
+		context->chapter++;
+		context->sect1 = 0;
+		context->sect2 = 0;
+		context->sect3 = 0;
+		context->sect4 = 0;
+		context->sect5 = 0;
+		break;
+		
 	case '1':
-		sect1_start_element (context, name, atrs);
+		if (context->doctype == ARTICLE) {
+			sect1id_stack_add (context, name, atrs);
+		}
 		context->sect1++;
 		context->sect2 = 0;
 		context->sect3 = 0;
@@ -174,9 +211,14 @@ static void
 toc_sect_end_element (Context *context,
 		      const gchar *name)
 {
-	g_return_if_fail (strlen (name) >= 5);
+	if (g_strcasecmp (name, "section") == 0) {
+		return;
+	}
+	
 
 	switch (name[4]) {
+	case 't':
+		context->sect1 = 0;
 	case '1':
 		context->sect2 = 0;
 	case '2':
@@ -334,7 +376,9 @@ toc_title_start_element (Context *context,
 	GSList *element_list = NULL;
 	StackElement *stack_el;
 	gchar **atrs_ptr;
-
+	gboolean print_link;
+	
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CHAPTER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT1));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT2));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT3));
@@ -356,41 +400,59 @@ toc_title_start_element (Context *context,
 		return;
 
 	switch (stack_el->info->index) {
+	case CHAPTER:
 	case SECT1:
-#ifdef ALL_SECT_LINKS
-	case SECT2:
-	case SECT3:
-	case SECT4:
-	case SECT5:
-#endif
 	case SECTION:
-		if (context->sect2 == 0) {
-			g_print ("<H2>");
+		if (context->sect1 == 0) {
+			g_print ("<H1>");
+		} else if (context->sect2 == 0) {
+			if (context->chapter > 0) {
+				g_print ("<H2>&nbsp;&nbsp;");
+			} else {
+				g_print ("<H2>");
+			}
+
 		} else if (context->sect3 == 0) {
 			g_print ("<H3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		} else {
 			g_print ("<H4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		}
-		if (context->sect1 > 0) g_print ("%d", context->sect1);
-		if (context->sect2 > 0) g_print (".%d", context->sect2);
-		if (context->sect3 > 0) g_print (".%d", context->sect3);
-		if (context->sect4 > 0) g_print (".%d", context->sect4);
-		if (context->sect5 > 0) g_print (".%d", context->sect5);
-		g_print (".&nbsp;&nbsp;");
-		g_print ("<A href=\"help:%s", context->base_file);
-
-		atrs_ptr = (stack_el->atrs);
-		while (atrs_ptr && *atrs_ptr) {
-			if (!g_strcasecmp (*atrs_ptr, "id")) {
-				atrs_ptr++;
-				g_print ("?%s", *atrs_ptr);
-				break;
-			}
-			atrs_ptr += 2;
+		if (context->chapter > 0) {
+			g_print ("%d", context->chapter);
+			if (context->sect1 > 0) g_print (".%d", context->sect1);
+									
+		} else {
+			if (context->sect1 > 0) g_print ("%d", context->sect1);
 		}
-		g_print ("\">");
+		
+		if (context->sect2 > 0) g_print (".%d", context->sect2);
+                if (context->sect3 > 0) g_print (".%d", context->sect3);
+                if (context->sect4 > 0) g_print (".%d", context->sect4);
+                if (context->sect5 > 0) g_print (".%d", context->sect5);
+
+
+		g_print (".&nbsp;&nbsp;");
+		
+		/* Only print the link if we are the chapter tag, or the sect1 tag
+		 * (and the document is an article) */
+		print_link = (((stack_el->info->index == SECT1) && (context->doctype != BOOK_DOC))
+				|| stack_el->info->index == CHAPTER);
+
+		if (print_link == TRUE) {
+			g_print ("<A href=\"help:%s", context->base_file);
+
+			atrs_ptr = (stack_el->atrs);
+			while (atrs_ptr && *atrs_ptr) {
+				if (!g_strcasecmp (*atrs_ptr, "id")) {
+					atrs_ptr++;
+					g_print ("?%s", *atrs_ptr);
+					break;
+				}
+				atrs_ptr += 2;
+			}
+			g_print ("\">");
+		}
 		break;
-#ifndef ALL_SECT_LINKS
 	case SECT2:
 	case SECT3:
 	case SECT4:
@@ -402,13 +464,17 @@ toc_title_start_element (Context *context,
 		} else {
 			g_print ("<H4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		}
-		if (context->sect1 > 0) g_print ("%d", context->sect1);
+		if (context->chapter > 0) {
+			g_print ("%d", context->chapter);
+			if (context->sect1 > 0) g_print (".%d", context->sect1);
+		} else {
+			if (context->sect1 > 0) g_print ("%d", context->sect1);
+		}
 		if (context->sect2 > 0) g_print (".%d", context->sect2);
 		if (context->sect3 > 0) g_print (".%d", context->sect3);
 		if (context->sect4 > 0) g_print (".%d", context->sect4);
 		if (context->sect5 > 0) g_print (".%d", context->sect5);
 		g_print (".&nbsp;&nbsp;");
-#endif
 	default:
 		break;
 	};
@@ -422,6 +488,7 @@ toc_title_end_element (Context *context,
 	GSList *element_list = NULL;
 	ElementIndex index;
 
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CHAPTER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT1));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT2));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT3));
@@ -440,25 +507,24 @@ toc_title_end_element (Context *context,
 	index = find_first_parent (context, element_list);
 
 	switch (index) {
+	case CHAPTER:
+		g_print ("</A></H1>");
+		break;
 	case SECT1:
 	case SECTION:
-		g_print ("</A></H2>\n");
+		if (context->doctype == ARTICLE_DOC) {
+			g_print ("</A></H2>\n");
+		} else {
+			g_print ("</H2>");
+		}
 		break;
 	case SECT2:
-#ifdef ALL_SECT_LINKS
-		g_print ("</A></H3>\n");
-#else
 		g_print ("</H3>\n");
-#endif
 		break;
 	case SECT3:
 	case SECT4:
 	case SECT5:
-#ifdef ALL_SECT_LINKS
-		g_print ("</A></H4>\n");
-#else
 		g_print ("</H4>\n");
-#endif
 		break;
 	default:
 		break;
@@ -474,6 +540,7 @@ toc_title_characters (Context *context, const gchar *chars, int len)
 	ElementIndex index;
 	char *temp;
 
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CHAPTER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT1));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT2));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT3));
@@ -496,6 +563,7 @@ toc_title_characters (Context *context, const gchar *chars, int len)
 	temp = g_strndup (chars, len);
 
 	switch (index) {
+	case CHAPTER:
 	case SECT1:
 	case SECT2:
 	case SECT3:

@@ -1,3 +1,56 @@
+2000-09-13  Ali Abdin  <aliabdin@aucegypt.edu>
+
+	Fixed a few typos. Add in preliminary support for QUESTION/ANWSER tags
+	First stab at getting book/chapter support in (Bug #2325) - It works
+	as I want it to, but we may encounter bugs.
+
+	This check-in is largely based on a patch by jfleck@inkstain.net (but
+	I heavily modified it)
+
+	* components/help/converters/gnome-db2html2/gdb3html.[ch]:
+	Add question/answer/chapter tags to the list.
+	(sect1_start_element): Renamed to 'sect1id_stack_add'
+	New 'DocType' datatype (added to Context struct)
+	(book_start_element): New function
+	(article_start_element): Set the doctype. Fix to Eazel style.
+		
+	* components/help/converters/gnome-db2html2/sect-elements.[ch]:
+	Fix a typo to make the computeroutput tag really work.
+	Plug in the QUESTION/ANSWER/CHAPTER tags
+
+	(sect_table_without_border_start_element): I thought I fixed this bug
+	(forgot a '<')
+
+	(sect_question_start_element): New function
+	(sect_answer_start_element): ditto
+
+	(sect_sect_start_element),
+	(sect_sect_end_element),
+	(sect_para_start_element),
+	(sect_para_end_element),
+	(sect_title_start_element),
+	(sect_title_end_element),
+	(sect_title_characters): Support for CHAPTER tag
+
+	* components/help/converters/gnome-db2html2/toc-elements.c:
+	There were a few typos here. Extended the table down all the way to
+	CHAPTERS
+	(toc_sect_end_element),
+	(toc_title_start_element),
+	(toc_title_end_element),
+	(toc_title_characters),
+	(toc_sect_start_element): Add support for chapter tag.
+
+	* components/help/converters/gnome-db2html2/sect-preparse.c:
+	Extend the table down all the way to CHAPTERS.
+
+	(sect_preparse_sect_start_element): Add in support for chapter tags.
+	Also update for function rename.
+	(sect_preparse_title_characters): ditto
+
+	(sect_preparse_set_doctype): Set the document type depending on the
+	tag name
+
 2000-09-12  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-location-bar.c: (accumulate_name),

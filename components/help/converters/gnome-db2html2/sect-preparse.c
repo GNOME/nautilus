@@ -7,10 +7,11 @@
 static void sect_preparse_sect_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_preparse_title_characters (Context *context, const gchar *chars, gint len);
 static void sect_preparse_figure_start_element (Context *context, const char *name, const xmlChar **atrs);
+static void sect_preparse_set_doctype (Context *context, const char *name, const xmlChar **atrs);
 
 ElementInfo sect_preparse[] = {
-	{ ARTICLE, "article", NULL, NULL, NULL},
-	{ BOOK, "book", NULL, NULL, NULL},
+	{ ARTICLE, "article", (startElementSAXFunc) sect_preparse_set_doctype, NULL, NULL},
+	{ BOOK, "book", (startElementSAXFunc) sect_preparse_set_doctype, NULL, NULL},
 	{ SECTION, "section", (startElementSAXFunc) sect_preparse_sect_start_element, NULL, NULL},
 	{ SECT1, "sect1", (startElementSAXFunc) sect_preparse_sect_start_element, NULL, NULL},
 	{ SECT2, "sect2", (startElementSAXFunc) sect_preparse_sect_start_element, NULL, NULL},
@@ -70,8 +71,8 @@ ElementInfo sect_preparse[] = {
 	{ GUIMENUITEM, "guimenuitem", NULL, NULL, NULL},
 	{ HARDWARE, "hardware", NULL, NULL, NULL},
 	{ KEYCAP, "keycap", NULL, NULL, NULL},
-	{ KEYCAP, "keycode", NULL, NULL, NULL},
-	{ KEYCAP, "keysym", NULL, NULL, NULL},
+	{ KEYCODE, "keycode", NULL, NULL, NULL},
+	{ KEYSYM, "keysym", NULL, NULL, NULL},
 	{ LITERAL, "literal", NULL, NULL, NULL},
 	{ PARAMETER, "parameter", NULL, NULL, NULL},
 	{ PROMPT, "prompt", NULL, NULL, NULL},
@@ -79,8 +80,57 @@ ElementInfo sect_preparse[] = {
 	{ USERINPUT, "userinput", NULL, NULL, NULL},
 	{ CAUTION, "caution", NULL, NULL, NULL},
 	{ LEGALPARA, "legalpara", NULL, NULL, NULL},
+        { FIRSTTERM, "firstterm", NULL, NULL, NULL},
+        { STRUCTNAME, "structname", NULL, NULL, NULL},
+        { STRUCTFIELD, "structfield", NULL, NULL, NULL},
+        { FUNCSYNOPSIS, "funcsynopsis", NULL, NULL, NULL},
+        { FUNCPROTOTYPE, "funcprototype", NULL, NULL, NULL},
+        { FUNCDEF, "funcdef", NULL, NULL, NULL},
+        { FUNCPARAMS, "funcparams", NULL, NULL, NULL},
+        { PARAMDEF, "paramdef", NULL, NULL, NULL},
+        { VOID, "void", NULL, NULL, NULL},
+        { GUISUBMENU, "guisubmenu", NULL, NULL, NULL},
+        { INTERFACE, "interface", NULL, NULL, NULL},
+        { LINK, "link", NULL, NULL, NULL},
+        { MENUCHOICE, "menuchoice", NULL, NULL, NULL},
+        { TABLE, "table", NULL, NULL, NULL},
+        { INFORMALTABLE, "informaltable", NULL, NULL, NULL},
+        { ROW, "row",  NULL, NULL, NULL},
+        { ENTRY, "entry", NULL, NULL, NULL},
+        { THEAD, "thead", NULL, NULL, NULL},
+        { TBODY, "tbody", NULL, NULL, NULL},
+        { ACRONYM, "acronym", NULL, NULL, NULL},
+        { MARKUP, "markup", NULL, NULL, NULL},
+        { SIMPLELIST, "simplelist", NULL, NULL, NULL},
+        { MEMBER, "member", NULL, NULL, NULL},
+        { MOUSEBUTTON, "mousebutton", NULL, NULL, NULL},
+        { SUPERSCRIPT, "superscript", NULL, NULL, NULL},
+        { SYSTEMITEM, "systemitem", NULL, NULL, NULL},
+        { VARNAME, "varname", NULL, NULL, NULL},
+        { BLOCKQUOTE, "blockquote", NULL, NULL, NULL},
+        { QUOTE, "quote", NULL, NULL, NULL},
+        { OPTION, "option", NULL, NULL, NULL},
+        { ENVAR, "envar", NULL, NULL, NULL},
+        { COMPUTEROUTPUT, "computeroutput", NULL, NULL, NULL},
+        { INLINEGRAPHIC, "inlinegraphic", NULL, NULL, NULL},
+        { LEGALNOTICE, "legalnotice", NULL, NULL, NULL},
+        { QUESTION, "question", NULL, NULL, NULL},
+        { ANSWER, "answer", NULL, NULL, NULL},
+        { CHAPTER, "chapter", (startElementSAXFunc) sect_preparse_sect_start_element, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
+
+static void
+sect_preparse_set_doctype (Context *context,
+			   const char *name,
+			   const xmlChar **atrs)
+{
+	if (g_strcasecmp (name, "article") == 0) {
+		context->doctype = ARTICLE;
+	} else if (g_strcasecmp (name, "book") == 0) {
+		context->doctype = BOOK;
+	}
+}
 
 
 static void
@@ -90,11 +140,19 @@ sect_preparse_sect_start_element (Context *context,
 {
 	gchar **atrs_ptr;
 
-	g_return_if_fail (strlen (name) >= 5);
+	if (g_strcasecmp(name, "section") == 0) {
+		return;
+	}
+
 
 	switch (name[4]) {
+	case 't':
+		sect1id_stack_add (context, name, atrs);
+		break;
 	case '1':
-		sect1_start_element (context, name, atrs);
+		if (context->doctype == ARTICLE_DOC) {
+			sect1id_stack_add (context, name, atrs);
+		}
 		break;
 	default:
 		break;
@@ -122,6 +180,7 @@ sect_preparse_title_characters (Context *context,
 	StackElement *stack_el;
 	gchar **atrs_ptr;
 
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CHAPTER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT1));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT2));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT3));

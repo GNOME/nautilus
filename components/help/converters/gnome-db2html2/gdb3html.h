@@ -113,7 +113,10 @@ typedef enum ElementIndex {
 	COMPUTEROUTPUT,
 	INLINEGRAPHIC,
 	LEGALNOTICE,
-	UNDEFINED /* 104 */
+	QUESTION,
+	ANSWER, /* 105 */
+	CHAPTER,
+	UNDEFINED /* 107 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;
@@ -131,6 +134,12 @@ struct _StackElement {
 	gchar **atrs;
 };
 
+typedef enum DocType {
+	/* Need the DOC prefix to avoid conflicts with the above */
+	ARTICLE_DOC,
+	BOOK_DOC
+} DocType;
+
 
 typedef struct _Context Context;
 struct _Context {
@@ -143,7 +152,8 @@ struct _Context {
 	GList *sect1id_stack;
 
 	/* determine the "depth" that the current section is on.
-	 * only applies to section */
+	 * only applies to section and chapter */
+	gint chapter;
 	gint sect1;
 	gint sect2;
 	gint sect3;
@@ -152,6 +162,7 @@ struct _Context {
 
 	gboolean empty_element; /* This is to determine if the element is
 				   empty or not */
+	DocType doctype;
 	GSList *footnotes;
 	xmlParserCtxtPtr ParserCtxt;
 };
@@ -180,7 +191,8 @@ typedef struct FigureInfo {
 	gchar *id;
 } FigureInfo;
 
-void article_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void article_start_element (Context *context, const char *name, const xmlChar **atrs);
+void book_start_element (Context *context, const char *name, const xmlChar **atrs);
 void article_end_element (Context *context, const gchar *name);
 void artheader_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void html_em_start_element (Context *context, const gchar *name, const xmlChar **atrs);
@@ -191,7 +203,7 @@ void para_start_element (Context *context, const gchar *name, const xmlChar **at
 void para_end_element (Context *context, const gchar *name);
 void ulink_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void ulink_end_element (Context *context, const gchar *name);
-void sect1_start_element (Context *context, const char *name, const xmlChar **atrs);
+void sect1id_stack_add (Context *context, const char *name, const xmlChar **atrs);
 StackElement *find_first_element (Context *context, GSList *args);
 ElementIndex find_first_parent (Context *context, GSList *args);
 void print_footer (const char *prev, const char *home, const char *next);
