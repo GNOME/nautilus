@@ -16,6 +16,8 @@
 	 _tip="Open another Nautilus window for the displayed location"/>
 	<cmd name="Stop"
 	 _tip="Stop loading this location"/>
+	<cmd name="Services"
+	 _tip="Go to Eazel Services"/>
 	<cmd name="Select All" accel="*Control*a" sensitive="0"/>
 	<cmd name="Up" accel="*Control*U"
 	 _tip="Go to the location that contains this one"/>
@@ -24,7 +26,7 @@
 	<cmd name="Zoom Out" accel="*Control*-"
 	 _tip="Show the contents in less detail"/>
 	<cmd name="Zoom Normal"
-	 _tip="Show the contents at the normal size"/>				  
+	 _tip="Show the contents at the normal size"/>
 </commands>
 
 <menu>
@@ -39,13 +41,13 @@
 
 		<menuitem name="Close"
 			  _label="_Close Window"
-			  _descr="Close this window"
+			  _tip="Close this window"
 			  pixtype="stock" pixname="Close"
 			  accel="*Control*w"
 			  verb="Close"/>
 		<menuitem name="Close All Windows"
 			  _label="Close _All Windows"
-			  _descr="Close all Nautilus windows"
+			  _tip="Close all Nautilus windows"
 			  accel="*Control**Shift*w"
 			  verb="Close All Windows"/>
 
@@ -56,12 +58,12 @@
 
 		<menuitem name="Toggle Find Mode"
 			  _label="_Find"
-			  _descr="Search this computer for files"
+			  _tip="Search this computer for files"
 			  accel="*Control*f"
 			  verb="Toggle Find Mode"/>
 		<menuitem name="Go to Web Search"
 			  _label="_Web Search"
-			  _descr="Search the World Wide Web"
+			  _tip="Search the World Wide Web"
 			  accel="*Control**Shift*f"
 			  verb="Go to Web Search"/>
 
@@ -71,7 +73,7 @@
 	<submenu name="Edit" _label="_Edit">
 		<menuitem name="Undo" 
 			  _label="_Undo" 
-			  _descr="Undo the last text change"
+			  _tip="Undo the last text change"
 			  pixtype="stock" pixname="Undo" 
 			  accel="*Control*z"
 			  verb="Undo"/>
@@ -80,25 +82,25 @@
 
 		<menuitem name="Cut" 
 			  _label="Cut _Text" 
-			  _descr="Cut the selected text to the clipboard"
+			  _tip="Cut the selected text to the clipboard"
 			  pixtype="stock" pixname="Cut" 
 			  accel="*Control*x"
 			  verb="Cut"/>
 		<menuitem name="Copy" 
 			  _label="_Copy Text" 
-			  _descr="Copy the selected text to the clipboard"
+			  _tip="Copy the selected text to the clipboard"
 			  pixtype="stock" pixname="Copy" 
 			  accel="*Control*c"
 			  verb="Copy"/>
 		<menuitem name="Paste" 
 			  _label="_Paste Text" 
-			  _descr="Paste the text stored on the clipboard"
+			  _tip="Paste the text stored on the clipboard"
 			  pixtype="stock" pixname="Paste" 
 			  accel="*Control*v"
 			  verb="Paste"/>
 		<menuitem name="Clear"
 			  _label="C_lear Text" 
-			  _descr="Removes the selected text without putting it on the clipboard"
+			  _tip="Removes the selected text without putting it on the clipboard"
 			  verb="Clear"/>
 
 		<separator/>
@@ -111,11 +113,11 @@
 
 		<menuitem name="Customize" 
 			  _label="Custo_mization..." 
-			  _descr="Display the Property Browser, containing patterns, colors, and emblems"
+			  _tip="Display the Property Browser, containing patterns, colors, and emblems"
 			  verb="Customize"/>
 		<menuitem name="Change Appearance" 
 			  _label="C_hange Appearance..." 
-			  _descr="Display the set of available appearance themes"
+			  _tip="Display the set of available appearance themes"
 			  verb="Change Appearance"/>
 
 		<placeholder name="Global Edit Items Placeholder"/>
@@ -126,26 +128,26 @@
 	<submenu name="View" _label="_View">
 		<menuitem name="Reload" 
 			  _label="_Refresh" 
-			  _descr="Display the latest contents of the current location"
+			  _tip="Display the latest contents of the current location"
 			  accel="*Control*r"
 			  verb="Reload"/>
 
 		<placeholder name="Show Hide Placeholder" delimit="top">
 			<menuitem name="Show Hide Sidebar" 
 				  _label="Hide Sidebar"
-				  _descr="Change the visibility of this window's sidebar"
+				  _tip="Change the visibility of this window's sidebar"
 				  verb="Show Hide Sidebar"/>
 			<menuitem name="Show Hide Tool Bar" 
 				  _label="Hide Tool Bar"
-				  _descr="Change the visibility of this window's tool bar"
+				  _tip="Change the visibility of this window's tool bar"
 				  verb="Show Hide Tool Bar"/>
 			<menuitem name="Show Hide Location Bar" 
 				  _label="Hide Location Bar"
-				  _descr="Change the visibility of this window's location bar"
+				  _tip="Change the visibility of this window's location bar"
 				  verb="Show Hide Location Bar"/>
 			<menuitem name="Show Hide Status Bar" 
 				  _label="Hide Status Bar"
-				  _descr="Change the visibility of this window's status bar"
+				  _tip="Change the visibility of this window's status bar"
 				  verb="Show Hide Status Bar"/>
 		</placeholder>
 		<placeholder name="View Items Placeholder" delimit="top"/>
@@ -175,7 +177,7 @@
 			  verb="Up"/>
 		<menuitem name="Home" 
 			  _label="_Home" 
-			  _descr="Go to the home location"
+			  _tip="Go to the home location"
 			  accel="*Control*h"
 			  verb="Home"/>
 
@@ -183,7 +185,7 @@
 
 		<menuitem name="Forget History" 
 			  _label="For_get History" 
-			  _descr="Clear contents of Go menu and Back/Forward lists"
+			  _tip="Clear contents of Go menu and Back/Forward lists"
 			  verb="Forget History"/>
 
 		<placeholder name="History Placeholder" delimit="top"/>
@@ -192,12 +194,12 @@
 	<submenu name="Bookmarks" _label="_Bookmarks">
 		<menuitem name="Add Bookmark" 
 			  _label="_Add Bookmark" 
-			  _descr="Add a bookmark for the current location to this menu"
+			  _tip="Add a bookmark for the current location to this menu"
 			  accel="*Control*B"
 			  verb="Add Bookmark"/>
 		<menuitem name="Edit Bookmarks" 
 			  _label="_Edit Bookmarks..." 
-			  _descr="Display a window that allows editing the bookmarks in this menu"
+			  _tip="Display a window that allows editing the bookmarks in this menu"
 			  verb="Edit Bookmarks"/>
 
 		<placeholder name="Built-in Bookmarks Placeholder" delimit="top"/>
@@ -207,30 +209,30 @@
 	<submenu name="Profiler" _label="_Profiler">
 		<menuitem name="Start Profiling" 
 			  _label="_Start Profiling" 
-			  _descr="Start Profiling"
+			  _tip="Start Profiling"
 			  verb="Start Profiling"/>
 		<menuitem name="Stop Profiling" 
 			  _label="_Stop Profiling" 
-			  _descr="Stop Profiling"
+			  _tip="Stop Profiling"
 			  verb="Stop Profiling"/>
 		<menuitem name="Reset Profiling" 
 			  _label="_Reset Profiling" 
-			  _descr="Reset Profiling"
+			  _tip="Reset Profiling"
 			  verb="Reset Profiling"/>
 		<menuitem name="Report Profiling" 
 			  _label="_Report Profiling" 
-			  _descr="Report Profiling"
+			  _tip="Report Profiling"
 			  verb="Report Profiling"/>
 	</submenu>
 
 	<submenu name="Help" _label="_Help">
 		<menuitem name="About Nautilus" 
 			  _label="_About Nautilus..." 
-			  _descr="Display credits for the creators of Nautilus"
+			  _tip="Display credits for the creators of Nautilus"
 			  verb="Help"/>
 		<menuitem name="Nautilus Feedback" 
 			  _label="_Nautilus Feedback..." 
-			  _descr="Show a page from which you can send feedback about Nautilus to its creators"
+			  _tip="Show a page from which you can send feedback about Nautilus to its creators"
 			  verb="Nautilus Feedback"/>
 	</submenu>
 
@@ -240,21 +242,21 @@
 		<placeholder name="User Levels Placeholder">
 			<menuitem name="Switch to Beginner Level" 
 				  _label=" Beginner"
-				  _descr="Use Beginner settings"
+				  _tip="Use Beginner settings"
                                   verb="" pixtype="filename"/>
 			<menuitem name="Switch to Intermediate Level" 
 				  _label=" Intermediate" 
-				  _descr="Use Intermediate settings"
+				  _tip="Use Intermediate settings"
                                   verb="" pixtype="filename"/>
 			<menuitem name="Switch to Advanced Level" 
 				  _label=" Advanced" 
-				  _descr="Use Advanced settings"
+				  _tip="Use Advanced settings"
                                   verb="" pixtype="filename"/>
 		</placeholder>
 		<separator/>
 		<menuitem name="User Level Customization" 
 			  _label="Edit Settings..." 
-			  _descr="Edit settings for the current user level"
+			  _tip="Edit settings for the current user level"
 			  verb="User Level Customization"/>
 	</submenu>
 </menu>
@@ -282,7 +284,7 @@
 	          verb="Up"/>
 	<toolitem name="Reload"
 		  _label="Refresh"
-		  _descr="Display the latest contents of the current location"
+		  _tip="Display the latest contents of the current location"
 	          min_width="48"
 	          pixtype="stock" pixname="Refresh"
 		  verb="Reload"/>
@@ -291,20 +293,20 @@
 
 	<toolitem name="Home"
 		  _label="Home"
-		  _descr="Go to the home location"
+		  _tip="Go to the home location"
 	          min_width="48"
 	          pixtype="stock" pixname="Home"
 		  verb="Home"/>
 	<toolitem name="Toggle Find Mode"
                   _label="Find"
-		  _descr="Search this computer for files"
+		  _tip="Search this computer for files"
 	          min_width="48"
 	          type="toggle"
 	          pixtype="stock" pixname="Search"
 		  verb="Toggle Find Mode"/>
 	<toolitem name="Go to Web Search"
 		  _label="Web Search"
-		  _descr="Search the World Wide Web"
+		  _tip="Search the World Wide Web"
 	          pixtype="stock" pixname="Search"
 		  verb="Go to Web Search"/>
 
@@ -319,7 +321,6 @@
 	<placeholder name="Extra Buttons Placeholder" delimit="top">
 		<toolitem name="Services"
 			  _label="Services"
-			  _descr="Go to Eazel Services"
 	          	  min_width="48"
 		          pixtype="stock" pixname="Services"
 		          verb="Services"/>	
