@@ -179,7 +179,7 @@ static char *manpath[MAX_MAN_PATHS + 1] = {
 				 * setting.
 				 */
 		    "/usr/X11/man/",
-		    "/usr/X11R6/man/"
+		    "/usr/X11R6/man/",
 		    "/usr/man/",
 		    "/usr/local/man/",
 		    "/usr/exp/man/",
