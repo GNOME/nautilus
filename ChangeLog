@@ -1,3 +1,10 @@
+2000-07-31  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_or_measure_label_text):
+	only save and restore the foreground color if we're drawing, otherwise
+	the gc isn't allocated and we crash.
+	
 2000-07-31  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:

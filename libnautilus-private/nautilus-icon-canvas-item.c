@@ -636,11 +636,11 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	if (drawable != NULL) {
 		icon_width = details->pixbuf == NULL ? 0 : gdk_pixbuf_get_width (details->pixbuf);
 		gc = gdk_gc_new (canvas_item->canvas->layout.bin_window);
+		gdk_gc_get_values (gc, &save_gc);
 	}
 	
 	max_text_width = floor (MAX_TEXT_WIDTH * canvas_item->canvas->pixels_per_unit);
 	
-	gdk_gc_get_values (gc, &save_gc);
 				
 	/* if the icon is highlighted, do some set-up */
 	if (needs_highlight && drawable != NULL && !details->is_renaming) {
@@ -712,8 +712,9 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	}
 	g_strfreev (pieces);
 	
-	gdk_gc_set_foreground (gc, &save_gc.foreground);
-
+	if (drawable != NULL)
+		gdk_gc_set_foreground (gc, &save_gc.foreground);
+	
 	if (needs_highlight) {
 		height_so_far += 2; /* extra slop for nicer highlighting */	
 		width_so_far += 4; /* account for emboldening, plus extra to make it look nicer */
