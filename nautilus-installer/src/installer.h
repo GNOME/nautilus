@@ -120,13 +120,6 @@ void               eazel_installer_do_install (EazelInstaller *installer,
 					       gboolean force,
 					       gboolean remove);
 
-#define DEBUG
-
-#ifdef DEBUG
-#define LOG_DEBUG(x) do { if (installer_debug) { printf x; fflush (stdout); } } while (0)
-#else
-#define LOG_DEBUG(x)
-#endif
 
 #ifdef __cplusplus
 }

@@ -54,7 +54,6 @@ if test $UID -ne 0; then
    # Start the nautilus launcher if needed
    ps ax | grep -vw grep | grep -w 'nautilus-launcher-applet' > /dev/null 2>&1
    rv=$?
-   echo $rv
    if [ $rv -ne 0 ]; then
       if [ -f /usr/bin/nautilus-launcher-applet ]; then
            nautilus-launcher-applet &

@@ -15,6 +15,7 @@ else
 fi
 
 XLIBS="-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE "
+GLOG="-DG_LOG_DOMAIN=\\\"Nautilus-Installer\\\""
 
 if test "x$XFREE" = "x"; then
     echo "* XFree86 not installed as rpm, I will check for libXext";
@@ -43,10 +44,10 @@ WARN_FLAG="-Wall -Werror"
 pushd `pwd`
 cd ../../components/services/install/lib
     make -f makefile.staticlib clean
-    make CFLAGS="$OG_FLAG $WARN_FLAG" DEFINES="-DEAZEL_INSTALL_NO_CORBA -DEAZEL_INSTALL_SLIM" -f makefile.staticlib && \
+    make CFLAGS="$OG_FLAG $WARN_FLAG $GLOG" DEFINES="-DEAZEL_INSTALL_NO_CORBA -DEAZEL_INSTALL_SLIM" -f makefile.staticlib && \
     cd ../../trilobite/libtrilobite && \
     make -f makefile.staticlib clean && \
-    make CFLAGS="$OG_FLAG $WARN_FLAG" DEFINES="-DTRILOBITE_SLIM" -f makefile.staticlib && \
+    make CFLAGS="$OG_FLAG $WARN_FLAG $GLOG" DEFINES="-DTRILOBITE_SLIM" -f makefile.staticlib && \
 popd && \
 
 make clean && \
@@ -62,6 +63,11 @@ gcc -static $OG_FLAG $WARN_FLAG -o eazel-installer main.o support.o callbacks.o 
 $XLIBS \
 -lghttp											\
 -L/usr/lib -lrpm -lbz2 -lz -ldb1 -lpopt -lxml
+
+if test $? -ne 0; then
+    echo "* Aborting."
+    exit 1
+fi
 
 cp eazel-installer eazel-installer-prezip
 
