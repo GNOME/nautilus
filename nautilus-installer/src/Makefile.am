@@ -1,0 +1,59 @@
+## Process this file with automake to produce Makefile.in
+
+NULL = 
+
+INCLUDES = \
+	-I$(top_srcdir)/components/services/install/lib 	\
+	$(GNOMEUI_CFLAGS)					\
+	$(XML_CFLAGS)						\
+	$(GNET_CFLAGS)						\
+	$(GHTTP_CFLAGS)						\
+	$(GNOME_INCLUDEDIR)					\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 		\
+	-DG_LOG_DOMAIN=\"Nautilus-Installer\"			\
+	$(NULL)
+
+CFLAGS = -O $(WERROR)
+
+bin_PROGRAMS = nautilus-installer
+
+nautilus_installer_SOURCES = \
+	main.c \
+	support.c support.h \
+	interface.c interface.h \
+	callbacks.c callbacks.h \
+	installer.c installer h 
+
+nautilus_installer_LDFLAGS = -static
+
+nautilus_installer_LDADD = 	\
+        $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o 	\
+	$(top_builddir)/components/services/install/lib/libinstall.a			\
+	-L/gnome/lib \
+	-lgnomeui \
+	-lgnome \
+	-lart_lgpl \
+	-lgdk_imlib \
+	-lgtk \
+	-lgdk \
+	-lgmodule \
+	-lglib \
+	-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE \
+	/usr/lib/libesd.a \
+	/usr/lib/libaudiofile.a \
+	-lghttp \
+	-L/usr/lib -lrpm -lz -ldb1 \
+	-lpopt \
+	-lxml 
+
+#
+#        /gnome-source/nautilus/components/services/trilobite/libtrilobite/helixcode-utils.o 	\
+#	/gnome-source/nautilus/components/services/install/lib/libinstall.a			\
+#	$(GNOME_LIBDIR) 	\
+#	$(GNOMEUI_LIBS) 	\
+#	$(GHTTP_LIBS)		\
+#	$(INTLLIBS)		\
+#	$(XML_LIBS)		\
+#	$(RPM_LIBS)		\
+#	$(NULL)
+
