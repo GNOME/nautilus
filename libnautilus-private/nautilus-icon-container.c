@@ -2689,6 +2689,7 @@ key_press_event (GtkWidget *widget,
 					       container->details->initial_stretch_size, FALSE);
 				
 				container->details->stretch_icon = NULL;				
+				relayout (container);
 			}
 			
 			handled = TRUE;

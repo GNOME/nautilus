@@ -55,6 +55,9 @@
  */
 #define EMBLEM_SPACING 2
 
+/* gap between bottom of icon and start of text box */
+#define LABEL_OFFSET 2
+
 #define MAX_TEXT_WIDTH_STANDARD 135
 #define MAX_TEXT_WIDTH_TIGHTER 80
 
@@ -844,7 +847,7 @@ static void
 draw_label_text (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 		 int icon_left, int icon_bottom)
 {
-	draw_or_measure_label_text (item, drawable, icon_left, icon_bottom);
+	draw_or_measure_label_text (item, drawable, icon_left, icon_bottom + LABEL_OFFSET);
 }
 
 static void
@@ -1232,7 +1235,7 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 	icon_rect.y1 -= y;
 
 	/* if the pre-lit or selection flag is set, make a pre-lit or darkened pixbuf and draw that instead */
-	temp_pixbuf = map_pixbuf(icon_item);
+	temp_pixbuf = map_pixbuf (icon_item);
 	draw_pixbuf (temp_pixbuf, drawable, icon_rect.x0, icon_rect.y0);
 	if (temp_pixbuf != details->pixbuf) {
 		gdk_pixbuf_unref (temp_pixbuf);
@@ -1677,7 +1680,7 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, doub
 	
 	/* Draw the pixbuf containing the label. */
 	i2c[4] -= x_delta;
-	draw_pixbuf_aa (text_pixbuf, buf, i2c, 0, 0);
+	draw_pixbuf_aa (text_pixbuf, buf, i2c, 0, LABEL_OFFSET);
 	i2c[4] += x_delta;
 	gdk_pixbuf_unref (text_pixbuf);
 }
@@ -1811,7 +1814,7 @@ compute_text_rectangle (NautilusIconCanvasItem *item,
 {
 	/* Compute text rectangle. */
 	text_rect->x0 = (icon_rect->x0 + icon_rect->x1) / 2 - item->details->text_width / 2;
-	text_rect->y0 = icon_rect->y1;
+	text_rect->y0 = icon_rect->y1 + LABEL_OFFSET;
 	text_rect->x1 = text_rect->x0 + item->details->text_width;
 	text_rect->y1 = text_rect->y0 + item->details->text_height;
 }

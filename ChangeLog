@@ -1,3 +1,16 @@
+2000-10-11  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_label_text), (nautilus_icon_canvas_item_draw),
+	(draw_label_text_aa), (compute_text_rectangle):
+	at Arlo's request, added 2 pixels worth of space between the
+	bottom of an icon and it's label.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(key_press_event):
+	fixed bug where escaping from an icon stretch wasn't calling
+	relayout after restoring the icon size; now it is.
+	
 2000-10-11  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: OK moved the eog dependency back
