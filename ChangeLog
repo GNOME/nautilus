@@ -1,3 +1,14 @@
+2000-12-08  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 5102, Changing to or from Music View advances song in
+	second window.
+
+	* components/music/nautilus-music-view.c: (stop_playing_file):
+	Only stop playback if playback is occurring. Otherwise
+	esd get's confused and temporarily halts playback causeing
+	the status callback to advnace the song counter in any music
+	view that is playing.
+	
 2000-12-08  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-sidebar-title.c: (update_emblems):

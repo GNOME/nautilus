@@ -1789,8 +1789,14 @@ start_playing_file (NautilusMusicView *music_view, const char *file_name)
 static void
 stop_playing_file (NautilusMusicView *music_view)
 {
-	mpg123_stop ();
-	set_player_state (music_view, PLAYER_STOPPED);
+	PlayerState state;
+
+	state = get_player_state (music_view);
+	
+	if (state == PLAYER_PLAYING || state == PLAYER_PAUSED) {
+		mpg123_stop ();
+		set_player_state (music_view, PLAYER_STOPPED);
+	}
 }
 
 static PlayerState
