@@ -620,7 +620,9 @@ display_icons_not_already_positioned (FMIconView *view)
 {
 	GList *p;
 
-	/* FIXME: This will block if there are many files.  */
+	/* FIXME bugzilla.eazel.com 665: 
+	 * This will block if there are many files.  
+	 */
 	for (p = view->details->icons_not_positioned; p != NULL; p = p->next) {
 		add_icon_at_free_position (view, p->data);
 	}
@@ -1157,7 +1159,8 @@ fm_icon_view_icon_changed_callback (NautilusIconContainer *container,
 	}
 
 	/* Store the new position of the icon in the metadata.
-	 * FIXME: Is a comma acceptable in locales where it is the decimal separator?
+	 * FIXME bugzilla.eazel.com 661: 
+	 * Is a comma acceptable in locales where it is the decimal separator?
 	 */
 	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
 	position_string = g_strdup_printf ("%d,%d", x, y);
@@ -1166,11 +1169,14 @@ fm_icon_view_icon_changed_callback (NautilusIconContainer *container,
 				    NULL, 
 				    position_string);
 
-	/* FIXME: %.2f is not a good format for the scale factor. We'd like it to
+	/* FIXME bugzilla.eazel.com 662: 
+	 * %.2f is not a good format for the scale factor. We'd like it to
 	 * say "2" or "2x" instead of "2.00".
-	 * FIXME: scale_x == scale_y is too strict a test. It would be better to
+	 * FIXME bugzilla.eazel.com 663: 
+	 * scale_x == scale_y is too strict a test. It would be better to
 	 * check if the string representations match instead of the FP values.
-	 * FIXME: Is a comma acceptable in locales where it is the decimal separator?
+	 * FIXME bugzilla.eazel.com 661: 
+	 * Is a comma acceptable in locales where it is the decimal separator?
 	 */
 	if (scale_x == scale_y) {
 		scale_string = g_strdup_printf ("%.2f", scale_x);
@@ -1296,7 +1302,8 @@ get_icon_editable_text_callback (NautilusIconContainer *container,
 	
 	file_name = nautilus_link_get_display_name(nautilus_file_get_name (file));
 	
-	/* FIXME: We don't want the name displayed when we are zoomed all
+	/* FIXME bugzilla.eazel.com 664: 
+	 * We don't want the name displayed when we are zoomed all
 	 * the way out. Perhaps this routine should return NULL in that
 	 * case to indicate that fact to NautilusIconContainer.
 	 */

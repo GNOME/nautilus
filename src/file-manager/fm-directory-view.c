@@ -846,7 +846,7 @@ display_pending_files (FMDirectoryView *view)
 		done_loading (view);
 	}
 
-	/* FIXME: fix memory management here */
+	/* FIXME bugzilla.eazel.com 658: fix memory management here */
 
 	files_added = view->details->pending_files_added;
 	files_changed = view->details->pending_files_changed;
@@ -875,7 +875,8 @@ display_pending_files (FMDirectoryView *view)
 	for (p = files_changed; p != NULL; p = p->next) {
 		file = p->data;
 		
-		/* FIXME: what does files_changed mean, do I need to
+		/* FIXME bugzilla.eazel.com 659: 
+		 * what does files_changed mean, do I need to
 		 * modify the files_by_uri hash table here? -mjs
 		 * Yes, the file's name could have been changed.
 		 * But perhaps we can remove the hash table instead
@@ -1055,7 +1056,9 @@ queue_pending_files (FMDirectoryView *view,
 	/* Filter out hidden files if needed */
 	if (!view->details->show_hidden_files)
 	{
-		/* FIXME: Eventually this should become a generic filtering thingy. */
+		/* FIXME bugzilla.eazel.com 653: 
+		 * Eventually this should become a generic filtering thingy. 
+		 */
 		for (files_iterator = files; 
 		     files_iterator != NULL; 
 		     files_iterator = files_iterator->next) {
@@ -1540,7 +1543,7 @@ compute_menu_item_info (const char *path,
 		name = g_strdup (_("Set _Properties..."));
 		*return_sensitivity = selection_length > 0;
 /*
- FIXME:
+ FIXME bugzilla.eazel.com 656:
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH) == 0) {
 		name = g_strdup (_("_Empty Trash"));
 		*return_sensitivity = trash is not empty;
@@ -1616,7 +1619,8 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 
         ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
 
-        /* FIXME: The first few items here have magic number indexes. Need to
+        /* FIXME bugzilla.eazel.com 660: 
+         * The first few items here have magic number indexes. Need to
          * invent and use a scheme whereby Nautilus publishes some or all of
          * its menu item paths so that components can merge items into the
          * right places without special knowledge like this.
@@ -1755,7 +1759,7 @@ fm_directory_view_real_update_menus (FMDirectoryView *view)
 	update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE, count);
 	update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES, count);
 #if 0
-/* FIXME:
+/* FIXME bugzilla.eazel.com 656:
  * Empty Trash should be enabled only if Trash is not empty
  */
 	update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH, count);
@@ -2235,7 +2239,7 @@ fm_directory_view_can_accept_item (NautilusIconContainer *container,
 	g_assert (NAUTILUS_IS_FILE (target_item));
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-	/* FIXME:
+	/* FIXME bugzilla.eazel.com 657:
 	 * elaborate here some more
 	 * should consider permissions, handle symlinks to directories, etc.
 	 * 
