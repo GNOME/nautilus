@@ -26,6 +26,7 @@ bin_PROGRAMS =					\
 nautilus_inventory_view_SOURCES =		\
 	nautilus-inventory-view.h		\
 	nautilus-inventory-view.c		\
+	nautilus-inventory-view-private.h	\
 	nautilus-inventory-enable-page.h	\
 	nautilus-inventory-enable-page.c	\
 	nautilus-inventory-disable-page.h	\
