@@ -1014,8 +1014,6 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 				   BASIC_PAGE_ICON_AND_NAME_ROW, 
 				   BASIC_PAGE_ICON_AND_NAME_ROW + 1);
 				   
-	nautilus_undo_setup_nautilus_entry_for_undo ( NAUTILUS_ENTRY (name_field));
-
 	/* Attach parameters and signal handler. */
 	nautilus_file_ref (file);
 	gtk_object_set_data_full (GTK_OBJECT (name_field),
@@ -1025,6 +1023,10 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 
 	/* Update name field initially before hooking up changed signal. */
 	name_field_update_to_match_file (NAUTILUS_ENTRY (name_field));
+
+	/* Set up name field for undo */
+	nautilus_undo_setup_nautilus_entry_for_undo ( NAUTILUS_ENTRY (name_field));
+	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (name_field), TRUE);
 
 	gtk_signal_connect (GTK_OBJECT (name_field), "focus_in_event",
       	              	    GTK_SIGNAL_FUNC (name_field_focus_in),

@@ -1,3 +1,13 @@
+2000-07-10  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 971, enable undo in file editing part of
+	properties window.
+	
+	* src/file-manager/fm-properties-window.c: 
+	(create_basic_page):
+	Enabled entry for undo and enabled the use of ctl-z
+	to invoke undo while properties dialog has focus.
+
 2000-07-10  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/nautilus-window-toolbars.c: (toolbar_services_callback):
