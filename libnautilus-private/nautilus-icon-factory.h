@@ -146,7 +146,7 @@ GdkPixbuf *           nautilus_icon_factory_get_pixbuf_from_name         (const 
 									  guint                        size_in_pixels,
 									  char                       **display_name);
 
-GnomeIconTheme *       nautilus_icon_factory_get_icon_theme               (void);
+GtkIconTheme *         nautilus_icon_factory_get_icon_theme               (void);
 GnomeThumbnailFactory *nautilus_icon_factory_get_thumbnail_factory        (void);
 gboolean               nautilus_icon_factory_remove_from_cache (const char *icon_name,
 								const char *modifier,

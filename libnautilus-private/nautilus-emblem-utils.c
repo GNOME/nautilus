@@ -49,11 +49,11 @@
 GList *
 nautilus_emblem_list_availible (void)
 {
-	GnomeIconTheme *icon_theme;
+	GtkIconTheme *icon_theme;
 	GList *list;
 	
 	icon_theme = nautilus_icon_factory_get_icon_theme ();
-	list = gnome_icon_theme_list_icons (icon_theme, "Emblems");
+	list = gtk_icon_theme_list_icons (icon_theme, "Emblems");
 	g_object_unref (icon_theme);
 	return list;
 }
@@ -61,10 +61,10 @@ nautilus_emblem_list_availible (void)
 void
 nautilus_emblem_refresh_list (void)
 {
-	GnomeIconTheme *icon_theme;
+	GtkIconTheme *icon_theme;
 	
 	icon_theme = nautilus_icon_factory_get_icon_theme ();
-	gnome_icon_theme_rescan_if_needed (icon_theme);
+	gtk_icon_theme_rescan_if_needed (icon_theme);
 	g_object_unref (icon_theme);
 }
 

@@ -49,6 +49,7 @@
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtksettings.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkicontheme.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-macros.h>
@@ -105,7 +106,13 @@ typedef struct {
 	guint ref_count;
 	
 	GdkPixbuf *pixbuf;
-	GnomeIconData *icon_data;
+	GdkRectangle *embedded_text_rect;
+
+	GdkPoint *attach_points;
+	int n_attach_points;
+	
+	char *display_name;
+	
 	time_t mtime; /* Only used for absolute filenames */
 
 	CircularList recently_used_node;
@@ -129,7 +136,7 @@ typedef struct {
 	GdkPixbuf *thumbnail_frame;
 
 	/* Used for icon themes according to the freedesktop icon spec. */
-	GnomeIconTheme *icon_theme;
+	GtkIconTheme *icon_theme;
 	GnomeThumbnailFactory *thumbnail_factory;
 
 	CircularList recently_used_dummy_head;
@@ -174,7 +181,9 @@ static gboolean   cache_key_equal                        (gconstpointer         
 static void       cache_key_destroy                      (CacheKey                 *key);
 static void       cache_icon_unref                       (CacheIcon                *icon);
 static CacheIcon *cache_icon_new                         (GdkPixbuf                *pixbuf,
-							  GnomeIconData            *icon_data);
+							  GtkIconInfo              *icon_info,
+							  double                    scale_x,
+							  double                    scale_y);
 static CacheIcon *get_icon_from_cache                    (const char               *icon,
 							  const char               *modifier,
 							  guint                     nominal_size);
@@ -248,7 +257,7 @@ icon_theme_changed_callback (GnomeIconTheme *icon_theme,
 		       signals[ICONS_CHANGED], 0);
 }
 
-GnomeIconTheme *
+GtkIconTheme *
 nautilus_icon_factory_get_icon_theme (void)
 {
 	NautilusIconFactory *factory;
@@ -335,8 +344,7 @@ nautilus_icon_factory_instance_init (NautilusIconFactory *factory)
 						     (GDestroyNotify)cache_key_destroy,
 						     (GDestroyNotify)cache_icon_unref);
 	
-	factory->icon_theme = gnome_icon_theme_new ();
-	gnome_icon_theme_set_allow_svg (factory->icon_theme, TRUE);
+	factory->icon_theme = gtk_icon_theme_get_default ();
 	g_signal_connect_object (factory->icon_theme,
 				 "changed",
 				 G_CALLBACK (icon_theme_changed_callback),
@@ -360,7 +368,7 @@ nautilus_icon_factory_instance_init (NautilusIconFactory *factory)
 					   NULL, /* don't destroy data */
 					   NULL);
 	
-	factory->fallback_icon = cache_icon_new (pixbuf, NULL);
+	factory->fallback_icon = cache_icon_new (pixbuf, NULL, 1.0, 1.0);
 
 	factory->image_mime_types = g_hash_table_new (g_str_hash, g_str_equal);
 	for (i = 0; i < G_N_ELEMENTS (types); i++) {
@@ -398,10 +406,13 @@ cache_key_destroy (CacheKey *key)
 }
 
 static CacheIcon *
-cache_icon_new (GdkPixbuf     *pixbuf,
-		GnomeIconData *icon_data)
+cache_icon_new (GdkPixbuf *pixbuf,
+		GtkIconInfo *info,
+		double scale_x, double scale_y)
 {
 	CacheIcon *icon;
+	GdkRectangle rect;
+	int i;
 
 	/* Grab the pixbuf since we are keeping it. */
 	g_object_ref (pixbuf);
@@ -410,8 +421,30 @@ cache_icon_new (GdkPixbuf     *pixbuf,
 	icon = g_new0 (CacheIcon, 1);
 	icon->ref_count = 1;
 	icon->pixbuf = pixbuf;
-	icon->icon_data = icon_data;
 	icon->mtime = 0;
+
+	if (info) {
+		icon->display_name = g_strdup (gtk_icon_info_get_display_name (info));
+		
+		if (gtk_icon_info_get_embedded_rect (info, &rect)) {
+			rect.x *= scale_x;
+			rect.width *= scale_x;
+			rect.y *= scale_y;
+			rect.height *= scale_y;
+			icon->embedded_text_rect = g_memdup (&rect, sizeof (rect));
+			
+		}
+
+		if (gtk_icon_info_get_attach_points (info,
+						     &icon->attach_points,
+						     &icon->n_attach_points)) {
+			for (i = 0; i < icon->n_attach_points; i++) {
+				icon->attach_points[i].x *= scale_x;
+				icon->attach_points[i].y *= scale_x;
+			}
+		}
+		
+	}
 	
 	return icon;
 }
@@ -468,11 +501,8 @@ cache_icon_unref (CacheIcon *icon)
 	check_recently_used_list ();
 	
 	g_object_unref (icon->pixbuf);
-	
-	if (icon->icon_data) {
-		gnome_icon_data_free (icon->icon_data);
-		icon->icon_data = NULL;
-	}
+	g_free (icon->embedded_text_rect);
+	g_free (icon->attach_points);
 
 	g_free (icon);
 }
@@ -810,7 +840,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, gboolean embedd_tex
 		thumb_factory = NULL;
 	}
 
-	lookup_flags = GNOME_ICON_LOOKUP_FLAGS_SHOW_SMALL_IMAGES_AS_THEMSELVES;
+	lookup_flags = GNOME_ICON_LOOKUP_FLAGS_SHOW_SMALL_IMAGES_AS_THEMSELVES | GNOME_ICON_LOOKUP_FLAGS_ALLOW_SVG_AS_THEMSELVES;
 	if (embedd_text) {
 		lookup_flags |= GNOME_ICON_LOOKUP_FLAGS_EMBEDDING_TEXT;
 	}
@@ -980,34 +1010,14 @@ get_smaller_icon_size (guint size)
 }
 
 
-static void
-scale_icon_data (GnomeIconData *icon_data,
-		 double scale_x,
-		 double scale_y)
-{
-	int num_points, i;
-	
-	if (icon_data->has_embedded_rect) {
-		icon_data->x0 = icon_data->x0 * scale_x;
-		icon_data->y0 = icon_data->y0 * scale_y;
-		icon_data->x1 = icon_data->x1 * scale_x;
-		icon_data->y1 = icon_data->y1 * scale_y;
-	}
-	
-	num_points = icon_data->n_attach_points;
-	for (i = 0; i < num_points; i++) {
-		icon_data->attach_points[i].x = icon_data->attach_points[i].x * scale_x;
-		icon_data->attach_points[i].y = icon_data->attach_points[i].y * scale_y;
-	}
-}
-
 
 /* This loads an SVG image, scaling it to the appropriate size. */
 static GdkPixbuf *
 load_pixbuf_svg (const char *path,
 		 guint size_in_pixels,
 		 guint base_size,
-		 GnomeIconData *icon_data)
+		 double *scale_x,
+		 double *scale_y)
 {
 	double zoom;
 	int width, height;
@@ -1028,11 +1038,11 @@ load_pixbuf_svg (const char *path,
 		return NULL;
 	}
 
-	if (icon_data != NULL) {
-		width = gdk_pixbuf_get_width (pixbuf);
-		height = gdk_pixbuf_get_height (pixbuf);
-		scale_icon_data (icon_data, width / 1000.0, height / 1000.0);
-	}
+	width = gdk_pixbuf_get_width (pixbuf);
+	height = gdk_pixbuf_get_height (pixbuf);
+	*scale_x = width / 1000.0;
+	*scale_y = height / 1000.0;
+
 	return pixbuf;
 }
 
@@ -1069,21 +1079,25 @@ scale_icon (GdkPixbuf *pixbuf,
 }
 
 static GdkPixbuf *
-load_icon_file (char          *filename,
+load_icon_file (const char    *filename,
 		guint          base_size,
 		guint          nominal_size,
-		GnomeIconData *icon_data)
+		double        *scale_x,
+		double        *scale_y)
 {
 	GdkPixbuf *pixbuf, *scaled_pixbuf;
 	int width, height, size;
 	double scale;
 	gboolean is_thumbnail;
 
+	*scale_x = 1.0;
+	*scale_y = 1.0;
+	
 	if (path_represents_svg_image (filename)) {
 		pixbuf = load_pixbuf_svg (filename,
 					  nominal_size,
 					  base_size,
-					  icon_data);
+					  scale_x, scale_y);
 	} else {
 		is_thumbnail = strstr (filename, "/.thumbnails/")  != NULL;
 
@@ -1118,9 +1132,8 @@ load_icon_file (char          *filename,
 		if (base_size != nominal_size) {
 			scale = (double)nominal_size/base_size;
 			scaled_pixbuf = scale_icon (pixbuf, &scale);
-			if (icon_data != NULL) {
-				scale_icon_data (icon_data, scale, scale);
-			}
+			*scale_x = scale;
+			*scale_y = scale;
 			g_object_unref (pixbuf);
 			pixbuf = scaled_pixbuf;
 		}
@@ -1135,19 +1148,19 @@ create_normal_cache_icon (const char *icon,
 			  guint       nominal_size)
 {
 	NautilusIconFactory *factory;
-	char *filename;
+	const char *filename;
 	char *name_with_modifier;
-	const GnomeIconData *src_icon_data;
-	GnomeIconData *icon_data;
+	GtkIconInfo *info;
 	CacheIcon *cache_icon;
 	GdkPixbuf *pixbuf;
 	int base_size;
 	struct stat statbuf;
 	time_t mtime;
+	double scale_x, scale_y;
 		
 	factory = get_icon_factory ();
 
-	icon_data = NULL;
+	info = NULL;
 	filename = NULL;
 
 	mtime = 0;
@@ -1168,38 +1181,41 @@ create_normal_cache_icon (const char *icon,
 			name_with_modifier = (char *)icon;
 		}
 
-		filename = gnome_icon_theme_lookup_icon (factory->icon_theme,
-							 name_with_modifier,
-							 nominal_size,
-							 &src_icon_data,
-							 &base_size);
+		info = gtk_icon_theme_lookup_icon (factory->icon_theme,
+						   name_with_modifier,
+						   nominal_size,
+						   GTK_ICON_LOOKUP_FORCE_SVG);
 		if (name_with_modifier != icon) {
 			g_free (name_with_modifier);
 		}
-
-		/* Make a copy of the icon data */
-		icon_data = NULL;
-		if (src_icon_data) {
-			icon_data = gnome_icon_data_dup (src_icon_data);
+		
+		if (info == NULL) {
+			return NULL;
 		}
+		
+		gtk_icon_info_set_raw_coordinates (info, TRUE);
+		base_size = gtk_icon_info_get_base_size (info);
+		filename = gtk_icon_info_get_filename (info);
 	}
 
-	if (filename == NULL) {
-		return NULL;
-	}
-
+	
 	pixbuf = load_icon_file (filename,
 				 base_size,
 				 nominal_size,
-				 icon_data);
-	g_free (filename);
+				 &scale_x, &scale_y);
 	if (pixbuf == NULL) {
+		if (info) {
+			gtk_icon_info_free (info);
+		}
 		return NULL;
 	}
 	
-	cache_icon = cache_icon_new (pixbuf, icon_data);
+	cache_icon = cache_icon_new (pixbuf, info, scale_x, scale_y);
 	cache_icon->mtime = mtime;
 
+	if (info) {
+		gtk_icon_info_free (info);
+	}
 	g_object_unref (pixbuf);
 	
 	return cache_icon;
@@ -1311,7 +1327,6 @@ nautilus_icon_factory_get_pixbuf_for_icon (const char                  *icon,
 {
 	NautilusIconFactory *factory;
 	CacheIcon *cached_icon;
-	GnomeIconData *icon_data;
 	GdkPixbuf *pixbuf;
 	int i;
 	
@@ -1321,25 +1336,20 @@ nautilus_icon_factory_get_pixbuf_for_icon (const char                  *icon,
 					   nominal_size);
 
 	if (attach_points != NULL) {
-		if (cached_icon->icon_data != NULL) {
-			icon_data = cached_icon->icon_data;
-			attach_points->num_points = MIN (icon_data->n_attach_points,
+		if (cached_icon->attach_points != NULL) {
+			attach_points->num_points = MIN (cached_icon->n_attach_points,
 							 MAX_ATTACH_POINTS);
 			for (i = 0; i < attach_points->num_points; i++) {
-				attach_points->points[i].x = icon_data->attach_points[i].x;
-				attach_points->points[i].y = icon_data->attach_points[i].y;
+				attach_points->points[i].x = cached_icon->attach_points[i].x;
+				attach_points->points[i].y = cached_icon->attach_points[i].y;
 			}
 		} else {
 			attach_points->num_points = 0;
 		}
 	}
 	if (embedded_text_rect) {
-		if (cached_icon->icon_data != NULL &&
-		    cached_icon->icon_data->has_embedded_rect) {
-			embedded_text_rect->x = cached_icon->icon_data->x0;
-			embedded_text_rect->y = cached_icon->icon_data->y0;
-			embedded_text_rect->width = cached_icon->icon_data->x1 - cached_icon->icon_data->x0;
-			embedded_text_rect->height = cached_icon->icon_data->y1 - cached_icon->icon_data->y0;
+		if (cached_icon->embedded_text_rect != NULL) {
+			*embedded_text_rect = *cached_icon->embedded_text_rect;
 		} else {
 			embedded_text_rect->x = 0;
 			embedded_text_rect->y = 0;
@@ -1349,12 +1359,7 @@ nautilus_icon_factory_get_pixbuf_for_icon (const char                  *icon,
 	}
 
 	if (display_name != NULL) {
-		if (cached_icon->icon_data != NULL &&
-		    cached_icon->icon_data->display_name != NULL) {
-			*display_name = g_strdup (cached_icon->icon_data->display_name);
-		} else {
-			*display_name = NULL;
-		}
+		*display_name = g_strdup (cached_icon->display_name);
 	}
 	
 	/* if we don't want a default icon and one is returned, return NULL instead */
