@@ -1,3 +1,34 @@
+2000-09-01  Michael Engber  <engber@eazel.com>
+	
+	Removed our quitting logic from nautilus-application
+	(where it was tied to nautilus-window closing) and added
+	a more general mechanism in main.c - by which you can
+	register any gtk object to keep the main event loop
+	alive while the object is around. This, in turn, fixed 
+	a problem with the first-time-druid not causing nautilus
+	to quit when it was cancel via the close box (bug 2211)
+	and also a problem with nautilus quitting before you had
+	a chance to see an error dialog (bug 1871). Also, added
+	nautilus_main_event_loop_quit as the preferred way to
+	cause nautilus to quit (as opposed to gtk_main_quit)
+
+	* src/nautilus-application.c: (nautilus_application_startup),
+	(nautilus_application_close_desktop),
+	(nautilus_application_destroyed_window):
+	* src/nautilus-application.h:
+	* src/nautilus-first-time-druid.c: (druid_finished),
+	(nautilus_first_time_druid_show):
+	* src/nautilus-main.c: (nautilus_main_is_event_loop_needed),
+	(nautilus_main_event_loop_unregister),
+	(nautilus_main_event_loop_register),
+	(nautilus_main_is_event_loop_mainstay),
+	(nautilus_main_event_loop_quit), (main):
+	* src/nautilus-main.h:
+	* src/nautilus-shell.c: (corba_quit), (corba_restart):
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_end_location_change_callback):
+	* src/nautilus-window.c: (nautilus_window_initialize):
+
 2000-09-01  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/nautilus-dependent-shared/icons/Makefile.am:

@@ -30,6 +30,7 @@
 #include <config.h>
 #include "nautilus-window-private.h"
 
+#include "nautilus-main.h"
 #include "nautilus-application.h"
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-sidebar.h"
@@ -150,6 +151,9 @@ nautilus_window_initialize (NautilusWindow *window)
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE,
 					   sidebar_panels_changed_callback,
 					   window);
+
+	/* Keep the main event loop alive as long as the window exists */
+	nautilus_main_event_loop_register (GTK_OBJECT (window));
 }
 
 static gboolean

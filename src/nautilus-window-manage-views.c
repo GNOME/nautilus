@@ -35,6 +35,7 @@
 
 #include "nautilus-applicable-views.h"
 #include "nautilus-application.h"
+#include "nautilus-main.h"
 #include "nautilus-location-bar.h"
 #include "nautilus-window-private.h"
 #include <libgnome/gnome-i18n.h>
@@ -1276,7 +1277,8 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
         char *error_message;
         char *scheme_string;
         char *type_string;
-        
+ 	GnomeDialog *dialog;
+       
         g_assert (navi != NULL);
         
         window->location_change_end_reached = TRUE;
@@ -1375,9 +1377,20 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                 /* Destroy never-had-a-chance-to-be-seen window. This case
                  * happens when a new window cannot display its initial URI. 
                  */
+
+                dialog = nautilus_error_dialog (error_message, NULL);
+                
+                /* If window is the sole window open, destroying it will
+                 * kill the main event loop and the dialog will go away
+                 * before the user has a chance to see it. Prevent this
+                 * by registering the dialog before calling destroy.
+                 */
+                if (nautilus_main_is_event_loop_mainstay (GTK_OBJECT (window))) {
+                	nautilus_main_event_loop_register (GTK_OBJECT (dialog));
+		}
+
                 /* FIXME bugzilla.eazel.com 2459: Is a destroy really sufficient here? Who does the unref? */
                 gtk_object_destroy (GTK_OBJECT (window));
-                nautilus_error_dialog (error_message, NULL);
         } else {
                 /* Clean up state of already-showing window */
                 nautilus_window_allow_stop (window, FALSE);

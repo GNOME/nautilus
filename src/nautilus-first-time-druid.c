@@ -34,6 +34,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnomevfs/gnome-vfs.h>
 
+#include <nautilus-main.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-druid.h>
 #include <libnautilus-extensions/nautilus-druid-page-eazel.h>
@@ -124,7 +125,6 @@ druid_finished (GtkWidget *druid_page)
 	char *user_main_directory;
 	const char *signup_uris[2];
 	
-	gtk_widget_destroy(gtk_widget_get_toplevel(druid_page));
 
 	user_main_directory = nautilus_get_user_main_directory();
 
@@ -156,8 +156,12 @@ druid_finished (GtkWidget *druid_page)
 			signup_uris[0]	= NULL;	
 			break;
 	}
-		nautilus_application_startup(save_application, FALSE, FALSE, save_manage_desktop, 
+	
+	nautilus_application_startup(save_application, FALSE, FALSE, save_manage_desktop, 
 					     FALSE, (signup_uris[0] != NULL) ? &signup_uris[0] : NULL);
+
+	/* Destroy druid last because it may be the only thing keeping the main event loop alive. */
+	gtk_widget_destroy(gtk_widget_get_toplevel(druid_page));
 }
 
 /* set up an event box to serve as the background */
@@ -679,6 +683,9 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 			      _("Nautilus: Initial Preferences"));
   	gtk_container_set_border_width (GTK_CONTAINER (dialog), 0);
   	gtk_window_set_policy (GTK_WINDOW (dialog), FALSE, FALSE, FALSE);
+  	/* Ensure there's a main event loop while the druid is running. */
+  	nautilus_main_event_loop_register (GTK_OBJECT (dialog));
+
 
 	druid = nautilus_druid_new ();
   	gtk_container_set_border_width (GTK_CONTAINER (druid), 0);

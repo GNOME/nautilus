@@ -40,6 +40,7 @@
 #include "nautilus-desktop-window.h"
 #include "nautilus-first-time-druid.h"
 #include "nautilus-shell.h"
+#include "nautilus-main.h"
 #include <bonobo.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
@@ -289,7 +290,7 @@ nautilus_make_uri_list_from_strv (const char * const *strv)
 	return uri_list;
 }
 
-gboolean
+void
 nautilus_application_startup (NautilusApplication *application,
 			      gboolean kill_shell,
 			      gboolean restart_shell,
@@ -303,17 +304,16 @@ nautilus_application_startup (NautilusApplication *application,
 	const char *message, *detailed_message;
 	GnomeDialog *dialog;
 	Nautilus_URIList *url_list;
-	gboolean need_main_loop;
 
 	/* Perform check for nautilus being run as super user */
 	if (!check_for_and_run_as_super_user ()) {
-		return FALSE;
+		return;
 	}
 
 	/* Run the first time startup druid if needed. */
 	if (need_to_show_first_time_druid ()) {
 		nautilus_first_time_druid_show (application, start_desktop, urls);
-		return TRUE;
+		return;
 	}
 	
 	/* Check the user's ~/.nautilus directories and post warnings
@@ -401,11 +401,9 @@ nautilus_application_startup (NautilusApplication *application,
 		}
 
 		if (message != NULL) {
-			dialog = nautilus_error_dialog_with_details
-				(message, detailed_message, NULL);
-			gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
-					    gtk_main_quit, NULL);
-			need_main_loop = TRUE;
+			dialog = nautilus_error_dialog_with_details (message, detailed_message, NULL);
+			/* We need the main event loop so the user has a chance to see the dialog. */
+			nautilus_main_event_loop_register (GTK_OBJECT (dialog));
 			goto out;
 		}
 	}
@@ -437,12 +435,8 @@ nautilus_application_startup (NautilusApplication *application,
 	Nautilus_Shell_unref (shell, &ev);
 	CORBA_Object_release (shell, &ev);
 
-	need_main_loop = nautilus_application_window_list != NULL
-		|| nautilus_application_desktop_window != NULL;
-
  out:
 	CORBA_exception_free (&ev);
-	return need_main_loop;
 }
 
 static void
@@ -469,11 +463,7 @@ nautilus_application_close_desktop (void)
 	if (nautilus_application_desktop_window != NULL) {
 		gtk_widget_destroy (GTK_WIDGET (nautilus_application_desktop_window));
 		nautilus_application_desktop_window = NULL;
-	}
-	
-	if (nautilus_application_window_list == NULL && gtk_main_level () > 0) {
-		gtk_main_quit ();
-	}
+	}	
 }
 
 void
@@ -488,9 +478,6 @@ static void
 nautilus_application_destroyed_window (GtkObject *object, NautilusApplication *application)
 {
 	nautilus_application_window_list = g_slist_remove (nautilus_application_window_list, object);
-	if (nautilus_application_window_list == NULL && nautilus_application_desktop_window == NULL) {
-		gtk_main_quit ();
-	}
 }
 
 NautilusWindow *

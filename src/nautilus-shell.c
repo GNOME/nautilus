@@ -36,6 +36,7 @@
 #define nautilus_view_component_H
 
 #include "nautilus-desktop-window.h"
+#include "nautilus-main.h"
 #include <gtk/gtklabel.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtkmain.h>
@@ -303,7 +304,7 @@ corba_quit (PortableServer_Servant servant,
 		      CORBA_Environment *ev)
 {
 	if (gtk_main_level () > 0) {
-		gtk_main_quit ();
+		nautilus_main_event_loop_quit ();
 	}
 }
 
@@ -402,7 +403,7 @@ corba_restart (PortableServer_Servant servant,
 	       CORBA_Environment *ev)
 {
 	if (gtk_main_level () > 0) {
-		gtk_main_quit ();
+		nautilus_main_event_loop_quit ();
 	}
 	save_window_states ();
 	setenv ("_NAUTILUS_RESTART", "yes", 1);

@@ -54,7 +54,7 @@ typedef struct {
 
 GtkType              nautilus_application_get_type      (void);
 NautilusApplication *nautilus_application_new           (void);
-gboolean             nautilus_application_startup       (NautilusApplication *application,
+void                 nautilus_application_startup       (NautilusApplication *application,
 							 gboolean             kill_shell,
 							 gboolean	      restart_shell,
 							 gboolean             stop_desktop,
@@ -68,9 +68,5 @@ void	nautilus_application_close_all_windows (void);
 
 void	nautilus_application_open_desktop (NautilusApplication *application);
 void	nautilus_application_close_desktop (void);
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
 
 #endif /* NAUTILUS_APPLICATION_H */

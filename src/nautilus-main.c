@@ -29,8 +29,10 @@
 /* nautilus-main.c: Implementation of the routines that drive program lifecycle and main window creation/destruction. */
 
 #include <config.h>
+#include "nautilus-main.h"
 
 #include "nautilus-application.h"
+#include "nautilus-window.h"
 #include "nautilus-self-check-functions.h"
 #include <bonobo/bonobo-main.h>
 #include <dlfcn.h>
@@ -41,8 +43,49 @@
 #include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
 #include <libnautilus-extensions/nautilus-self-checks.h>
 #include <liboaf/liboaf.h>
+#include <gtk/gtkmain.h>
 #include <popt.h>
 #include <stdlib.h>
+
+/* Keeps track of everyone who wants the main event loop kept active */
+static GSList *nautilus_main_event_loop_registrants;
+
+static gboolean
+nautilus_main_is_event_loop_needed (void)
+{
+	return nautilus_main_event_loop_registrants != NULL;
+}
+
+static void
+nautilus_main_event_loop_unregister (GtkObject* object)
+{
+	g_assert (g_slist_find (nautilus_main_event_loop_registrants, object) != NULL);
+	nautilus_main_event_loop_registrants = g_slist_remove (nautilus_main_event_loop_registrants, object);
+	if (!nautilus_main_is_event_loop_needed () && gtk_main_level () > 0) {
+		gtk_main_quit ();
+	}
+}
+
+void
+nautilus_main_event_loop_register (GtkObject* object)
+{
+	gtk_signal_connect (object, "destroy", nautilus_main_event_loop_unregister, NULL);
+	nautilus_main_event_loop_registrants = g_slist_prepend (nautilus_main_event_loop_registrants, object);
+}
+
+gboolean
+nautilus_main_is_event_loop_mainstay (GtkObject* object)
+{
+	return g_slist_length (nautilus_main_event_loop_registrants) == 1 && nautilus_main_event_loop_registrants->data == object;
+}
+
+void
+nautilus_main_event_loop_quit (void)
+{
+	while (nautilus_main_event_loop_registrants != NULL) {
+		gtk_object_destroy (nautilus_main_event_loop_registrants->data);
+	}
+}
 
 int
 main (int argc, char *argv[])
@@ -128,12 +171,13 @@ main (int argc, char *argv[])
 			fprintf(stderr, _("nautiluls: --stop-desktop and --start-desktop cannot be used together.\n"));
 		} else {
 			application = nautilus_application_new ();
-			if (nautilus_application_startup (application,
-							  kill_shell,
-							  restart_shell,
-							  stop_desktop,
-							  start_desktop,
-							  args)) {
+			nautilus_application_startup (application,
+						      kill_shell,
+						      restart_shell,
+						      stop_desktop,
+						      start_desktop,
+						      args);
+			if (nautilus_main_is_event_loop_needed ()) {
 				bonobo_main ();
 			}
 			bonobo_object_unref (BONOBO_OBJECT (application));
