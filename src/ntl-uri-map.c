@@ -34,7 +34,7 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
                      Nautilus_NavigationInfo *old_navinfo,
 		     NautilusView *requesting_view)
 {
-  gchar *meta_keys[] = {"icon-filename", NULL};
+  const gchar *meta_keys[] = {"icon-filename", NULL};
   memset(navinfo, 0, sizeof(*navinfo));
 
   navinfo->navinfo.requested_uri = nri->requested_uri;
