@@ -46,6 +46,10 @@
 
 #define DIRECTORY_LOAD_ITEMS_PER_CALLBACK 32
 
+/* comment this back in to see messages about each load_directory call:
+#define DEBUG_LOAD_DIRECTORY
+*/
+
 struct MetafileReadState {
 	gboolean use_public_metafile;
 	NautilusReadFileHandle *handle;
@@ -1704,6 +1708,9 @@ start_monitoring_file_list (NautilusDirectory *directory)
 	g_assert (directory->details->uri != NULL);
 	directory->details->directory_load_list_last_handled
 		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
+#ifdef DEBUG_LOAD_DIRECTORY		
+	g_message ("load_directory called to monitor file list of %s", directory->details->uri);
+#endif	
 	gnome_vfs_async_load_directory
 		(&directory->details->directory_load_in_progress, /* handle */
 		 directory->details->uri,                         /* uri */
@@ -1970,6 +1977,9 @@ start_getting_directory_counts (NautilusDirectory *directory)
 	/* Start counting. */
 	directory->details->count_file = file;
 	uri = nautilus_file_get_uri (file);
+#ifdef DEBUG_LOAD_DIRECTORY		
+	g_message ("load_directory called to get shallow file count for %s", uri);
+#endif	
 	gnome_vfs_async_load_directory
 		(&directory->details->count_in_progress,
 		 uri,
@@ -2086,6 +2096,9 @@ deep_count_load (NautilusDirectory *directory, const char *uri)
 	directory->details->deep_count_uri = g_strdup (uri);
 	directory->details->deep_count_last_handled
 		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
+#ifdef DEBUG_LOAD_DIRECTORY		
+	g_message ("load_directory called to get deep file count for %s", uri);
+#endif	
 	gnome_vfs_async_load_directory
 		(&directory->details->deep_count_in_progress,
 		 uri,

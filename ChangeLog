@@ -1,3 +1,14 @@
+2000-10-13  John Sullivan  <sullivan@eazel.com>
+
+	Added some conditionalized debugging spam to help
+	investigate bug 3389 (performance problem with
+	load_directory getting called so often)
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(start_monitoring_file_list), (start_getting_directory_counts),
+	(deep_count_load): Add #ifdeffed-out spam whenever 
+	gnome_vfs_async_load_directory is called.
+
 2000-10-13  Andy Hertzfeld  <andy@eazel.com>
 
 	* data/emblems/Makefile.am:
