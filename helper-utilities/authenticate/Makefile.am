@@ -25,6 +25,5 @@ nautilus_authenticate_LDFLAGS =	\
 	$(top_builddir)/librsvg/librsvg.la \
 	$(GNOMEUI_LIBS)	\
 	$(GCONF_LIBS) \
-	-lpam \
-	-lpam_misc \
+	$(PAM_LIBS) \
 	$(NULL)

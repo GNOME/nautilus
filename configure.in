@@ -50,14 +50,25 @@ AC_SUBST(EAZEL_SERVICES)
 
 AM_CONDITIONAL(EAZEL_SERVICES, test "x$EAZEL_SERVICES" = "x1")
 
-dnl There needs to be a better check here for the real stuff the authenticate
-dnl helper depends on, like pam.
+dnl ====================================
+dnl =
+dnl = authenticate helper
+dnl =
+dnl ====================================
 BUILD_AUTHENTICATE_HELPER=
-AC_ARG_ENABLE(authenticate-helper,
-[--enable-authenticate-helper	Authenticate Helper utility],
-BUILD_AUTHENTICATE_HELPER=1)
+
+AC_CHECK_LIB(pam, pam_authenticate, 
+  [BUILD_AUTHENTICATE_HELPER=1
+  AC_DEFINE(HAVE_PAM)
+  AC_CHECK_LIB(pam_misc, pam_misc_setenv,
+  [PAM_LIBS="-ldl -lpam -lpam_misc"], [PAM_LIBS="-ldl -lpam"], -ldl -lpam) ], [PAM_LIBS=], -ldl)
+
+AC_SUBST(PAM_LIBS)
 
 AM_CONDITIONAL(BUILD_AUTHENTICATE_HELPER, test "x$BUILD_AUTHENTICATE_HELPER" = "x1")
+dnl ====================================
+dnl = end authenticate helper
+dnl ====================================
 
 dnl ====================================
 dnl =

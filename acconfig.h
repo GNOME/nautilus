@@ -7,3 +7,5 @@
 #undef HAVE_STPCPY
 
 #undef HAVE_RPM
+#undef HAVE_PAM
+

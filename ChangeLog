@@ -1,3 +1,16 @@
+2000-04-27  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Add a real check for pam.
+
+	* acconfig.h:
+	Add HAVE_PAM.
+	
+	* configure.in:
+	Check for pam.
+	
+	* helper-utilities/authenticate/Makefile.am:
+	Use $(PAM_LIBS) instead of hardcoding.
+
 2000-04-27  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 660 (Need to publish menu positions for components to use)
