@@ -520,6 +520,7 @@ action_new_window_callback (GtkAction *action,
 	current_window = NAUTILUS_WINDOW (user_data);
 	new_window = nautilus_application_create_navigation_window (
 				current_window->application,
+				NULL,
 				gtk_window_get_screen (GTK_WINDOW (current_window)));
 	nautilus_window_go_home (new_window);
 }

@@ -143,6 +143,8 @@ nautilus_window_init (NautilusWindow *window)
 
 	window->details->show_hidden_files_mode = NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT;
 	
+	window->details->startup_id = NULL;
+
 	/* Set initial window title */
 	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
 
@@ -463,7 +465,7 @@ nautilus_window_constructed (NautilusWindow *window)
 static void
 nautilus_window_set_property (GObject *object,
 			      guint arg_id,
-		      const GValue *value,
+			      const GValue *value,
 			      GParamSpec *pspec)
 {
 	NautilusWindow *window;
@@ -551,6 +553,8 @@ nautilus_window_finalize (GObject *object)
 		g_source_remove (window->details->location_change_at_idle_id);
 	}
 
+	g_free (window->details->startup_id);
+	
 	g_free (window->details->title);
 	
 	g_free (window->details);

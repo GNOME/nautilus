@@ -83,6 +83,8 @@
 #include <libnautilus-private/nautilus-desktop-link-monitor.h>
 #include <libnautilus-private/nautilus-directory-private.h>
 #include <bonobo-activation/bonobo-activation.h>
+#define SN_API_NOT_YET_FROZEN Yes_i_know_DO_IT
+#include <libsn/sn-launchee.h>
 
 /* Needed for the is_kdesktop_present check */
 #include <gdk/gdkx.h>
@@ -452,6 +454,7 @@ nautilus_application_startup (NautilusApplication *application,
 			      gboolean no_desktop,
 			      gboolean do_first_time_druid_check,
 			      gboolean browser_window,
+			      const char *startup_id,
 			      const char *geometry,
 			      const char *urls[])
 {
@@ -461,6 +464,7 @@ nautilus_application_startup (NautilusApplication *application,
 	const char *message, *detailed_message;
 	GtkDialog *dialog;
 	Nautilus_URIList *url_list;
+	const CORBA_char *corba_startup_id;
 	const CORBA_char *corba_geometry;
 	int num_failures;
 
@@ -610,15 +614,16 @@ nautilus_application_startup (NautilusApplication *application,
 
 		/* CORBA C mapping doesn't allow NULL to be passed
 		   for string parameters */
-		corba_geometry = (geometry != NULL) ? geometry : "";
+		corba_geometry   = (geometry   != NULL) ? geometry   : "";
+		corba_startup_id = (startup_id != NULL) ? startup_id : "";
 
 	  	/* Create the other windows. */
 		if (urls != NULL) {
 			url_list = nautilus_make_uri_list_from_shell_strv (urls);
-			Nautilus_Shell_open_windows (shell, url_list, corba_geometry, browser_window, &ev);
+			Nautilus_Shell_open_windows (shell, url_list, corba_startup_id, corba_geometry, browser_window, &ev);
 			CORBA_free (url_list);
 		} else if (!no_default_window) {
-			Nautilus_Shell_open_default_window (shell, corba_geometry, browser_window, &ev);
+			Nautilus_Shell_open_default_window (shell, corba_startup_id, corba_geometry, browser_window, &ev);
 		}
 		
 		/* Add ourselves to the session */
@@ -926,6 +931,7 @@ nautilus_window_delete_event_callback (GtkWidget *widget,
 static NautilusWindow *
 create_window (NautilusApplication *application,
 	       GType window_type,
+	       const char *startup_id,
 	       GdkScreen *screen)
 {
 	NautilusWindow *window;
@@ -938,6 +944,10 @@ create_window (NautilusApplication *application,
 						  NULL));
 	/* Must be called after construction finished */
 	nautilus_window_constructed (window);
+
+	if (startup_id != NULL) {
+		window->details->startup_id = g_strdup (startup_id);
+	}
 
 	g_signal_connect_data (window, "delete_event",
 			       G_CALLBACK (nautilus_window_delete_event_callback), NULL, NULL,
@@ -966,21 +976,135 @@ spatial_window_destroyed_callback (void *user_data, GObject *window)
 NautilusWindow *
 nautilus_application_present_spatial_window (NautilusApplication *application,
 					     NautilusWindow      *requesting_window,
+					     const char          *startup_id,
 					     const char          *location,
 					     GdkScreen           *screen)
 {
 	return nautilus_application_present_spatial_window_with_selection (application,
 									   requesting_window,
+									   startup_id,
 									   location,
 									   NULL,
 									   screen);
 }
 
+static void
+sn_error_trap_push (SnDisplay *display,
+                    Display   *xdisplay)
+{
+	gdk_error_trap_push ();
+}
+
+static void
+sn_error_trap_pop (SnDisplay *display,
+                   Display   *xdisplay)
+{
+	gdk_error_trap_pop ();
+}
+
+static gboolean
+id_string_has_timestamp (const char *startup_id_string)
+{
+	char * time_str;
+	
+	time_str = g_strrstr (startup_id_string, "_TIME");
+	
+	return time_str != NULL;
+}
+
+static guint32
+get_timestamp_from_id_string (const char *startup_id_string)
+{
+	char   *time_str;
+	gchar  *end;
+	gulong  retval;
+
+	retval = 0;
+	time_str = g_strrstr (startup_id_string, "_TIME");
+	g_assert (time_str != NULL);
+
+	errno = 0;
+
+	/* Skip past the "_TIME" part */
+	time_str += 5;
+
+	retval = strtoul (time_str, &end, 0);
+	if (end == time_str || errno != 0) {
+		g_warning ("startup_id is messed up\n");
+	}
+
+	return retval;
+}
+
+static void
+end_startup_notification (GtkWidget  *widget, 
+			  const char *startup_id_to_end,
+			  const char *startup_id_with_timestamp)
+{
+	SnDisplay *sn_display;
+	SnLauncheeContext *context;
+	GdkDisplay *display;
+	GdkScreen  *screen;
+
+	g_return_if_fail (startup_id_to_end != NULL);
+  
+	if (!GTK_WIDGET_REALIZED (widget)) {
+		gtk_widget_realize (widget);
+	}
+  
+	context = NULL;
+	sn_display = NULL;
+
+	/* Set up window for launch notification */
+	/* FIXME In principle all transient children of this
+	 * window should get the same startup_id
+	 */
+
+	screen = gtk_widget_get_screen (widget);
+	display = gdk_screen_get_display (screen);
+      
+	sn_display = sn_display_new (gdk_x11_display_get_xdisplay (display),
+				     sn_error_trap_push,
+				     sn_error_trap_pop);
+      
+	context = sn_launchee_context_new (sn_display,
+					   gdk_screen_get_number (screen),
+					   startup_id_to_end);
+
+	if (startup_id_with_timestamp == NULL) {
+		sn_launchee_context_setup_window (context,
+						  GDK_WINDOW_XWINDOW (widget->window));
+		startup_id_with_timestamp = startup_id_to_end;
+	}
+
+	/* Now, set the _NET_WM_USER_TIME for the new window to the timestamp
+	 * that caused the window to be launched.
+	 */
+	if (id_string_has_timestamp (startup_id_with_timestamp)) {
+		gulong startup_id_timestamp;
+		startup_id_timestamp = get_timestamp_from_id_string (startup_id_with_timestamp);
+		gdk_x11_window_set_user_time (widget->window, startup_id_timestamp);
+	} else {
+		/* Comment this out for now, as it warns way to often.
+		 * like when launching nautilus from the terminal.
+		 
+		g_warning ("Launched by a non-compliant or obsolete startup "
+			   "notification launcher.  Focus-stealing-prevention "
+			   "may fail.\n");
+		*/
+	}
+  
+	sn_launchee_context_complete (context);
+	sn_launchee_context_unref (context);
+	sn_display_unref (sn_display);
+}
+
 NautilusWindow *
 nautilus_application_present_spatial_window_with_selection (NautilusApplication *application,
 							    NautilusWindow      *requesting_window,
+							    const char          *startup_id,
 							    const char          *location,
-							    GList		 *new_selection,
+							    GList		*new_selection,
 							    GdkScreen           *screen)
 {
 	NautilusWindow *window;
@@ -1001,6 +1125,9 @@ nautilus_application_present_spatial_window_with_selection (NautilusApplication 
 		}
 
 		if (eel_uris_match (existing_location, location)) {
+			end_startup_notification (GTK_WIDGET (existing_window),
+						  existing_window->details->startup_id,
+						  startup_id);
 			gtk_window_present (GTK_WINDOW (existing_window));
 			if (new_selection) {
 				nautilus_view_set_selection (existing_window->content_view, new_selection);
@@ -1009,7 +1136,10 @@ nautilus_application_present_spatial_window_with_selection (NautilusApplication 
 		}
 	}
 
-	window = create_window (application, NAUTILUS_TYPE_SPATIAL_WINDOW, screen);
+	window = create_window (application, NAUTILUS_TYPE_SPATIAL_WINDOW, startup_id, screen);
+	end_startup_notification (GTK_WIDGET (window),
+				  startup_id,
+				  NULL);
 	if (requesting_window) {
 		/* Center the window over the requesting window by default */
 		int orig_x, orig_y, orig_width, orig_height;
@@ -1044,13 +1174,17 @@ nautilus_application_present_spatial_window_with_selection (NautilusApplication 
 
 NautilusWindow *
 nautilus_application_create_navigation_window (NautilusApplication *application,
+					       const char          *startup_id,
 					       GdkScreen           *screen)
 {
 	NautilusWindow *window;
 
 	g_return_val_if_fail (NAUTILUS_IS_APPLICATION (application), NULL);
 	
-	window = create_window (application, NAUTILUS_TYPE_NAVIGATION_WINDOW, screen);
+	window = create_window (application, NAUTILUS_TYPE_NAVIGATION_WINDOW, startup_id, screen);
+	end_startup_notification (GTK_WIDGET (window),
+				  startup_id,
+				  NULL);
 
 	return window;
 }

@@ -196,6 +196,8 @@ main (int argc, char *argv[])
 	gboolean no_default_window;
 	gboolean browser_window;
 	gboolean no_desktop;
+	const char *startup_id;
+	char *startup_id_copy;
 	char *geometry;
 	gboolean perform_self_check;
 	poptContext popt_context;
@@ -245,6 +247,17 @@ main (int argc, char *argv[])
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
+
+	startup_id = g_getenv ("DESKTOP_STARTUP_ID");
+	startup_id_copy = NULL;
+	if (startup_id != NULL && *startup_id != '\0') {
+		/* Clear the DESKTOP_STARTUP_ID, but make sure to copy it first */
+		startup_id_copy = g_strdup (startup_id);
+		putenv ("DESKTOP_STARTUP_ID=");
+	}
+
+	/* we'll do it ourselves due to complicated factory setup */
+	gtk_window_set_auto_startup_notification (FALSE);
 
 	/* Get parameters. */
 	geometry = NULL;
@@ -349,6 +362,7 @@ main (int argc, char *argv[])
 			 kill_shell, restart_shell, no_default_window, no_desktop,
 			 !(kill_shell || restart_shell),
 			 browser_window,
+			 startup_id_copy,
 			 geometry,
 			 args);
 		if (is_event_loop_needed ()) {

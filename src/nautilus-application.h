@@ -67,6 +67,7 @@ void                 nautilus_application_startup           (NautilusApplication
 							     gboolean             no_desktop,
 							     gboolean             do_first_time_druid_check,
 							     gboolean             browser_window,
+							     const char          *startup_id,
 							     const char          *default_geometry,
 							     const char          *urls[]);
 GList *              nautilus_application_get_window_list           (void);
@@ -74,15 +75,18 @@ GList *              nautilus_application_get_spatial_window_list    (void);
 
 NautilusWindow *     nautilus_application_present_spatial_window     (NautilusApplication *application,
 								      NautilusWindow      *requesting_window,
+								      const char          *startup_id,
 								      const char          *location,
 								      GdkScreen           *screen);
 NautilusWindow *     nautilus_application_present_spatial_window_with_selection (NautilusApplication *application,
 										 NautilusWindow      *requesting_window,
+										 const char          *startup_id,
 										 const char          *location,
 										 GList		     *new_selection,
 										 GdkScreen           *screen);
 
 NautilusWindow *     nautilus_application_create_navigation_window     (NautilusApplication *application,
+									const char          *startup_id,
 									GdkScreen           *screen);
 
 void                 nautilus_application_close_all_navigation_windows (void);

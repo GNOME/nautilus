@@ -555,6 +555,7 @@ get_bookmark_nautilus_navigation_window_new (GdkScreen *screen)
 	application = nautilus_application_new ();
 
 	window = nautilus_application_create_navigation_window (application, 
+								NULL,
 								screen);
 
 	return window;

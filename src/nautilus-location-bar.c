@@ -189,7 +189,7 @@ drag_data_received_callback (GtkWidget *widget,
 		screen = gtk_window_get_screen (GTK_WINDOW (window));
 
 		for (node = names->next; node != NULL; node = node->next) {
-			new_window = nautilus_application_create_navigation_window (application, screen);
+			new_window = nautilus_application_create_navigation_window (application, NULL, screen);
 			nautilus_window_go_to (new_window, node->data);
 		}
 	}

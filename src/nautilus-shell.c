@@ -63,10 +63,12 @@ struct NautilusShellDetails {
 static void     finalize                         (GObject              *shell);
 static void     corba_open_windows              (PortableServer_Servant  servant,
 						 const Nautilus_URIList *list,
+						 const CORBA_char       *startup_id,
 						 const CORBA_char       *geometry,
 						 CORBA_boolean           browser_window,
 						 CORBA_Environment      *ev);
 static void     corba_open_default_window       (PortableServer_Servant  servant,
+						 const CORBA_char       *startup_id,
 						 const CORBA_char       *geometry,
 						 CORBA_boolean           browser_window,
 						 CORBA_Environment      *ev);
@@ -125,8 +127,8 @@ nautilus_shell_new (NautilusApplication *application)
 }
 
 static void
-open_window (NautilusShell *shell, const char *uri, const char *geometry,
-	     gboolean browser_window)
+open_window (NautilusShell *shell, const char *uri, const char *startup_id,
+	     const char *geometry, gboolean browser_window)
 {
 	char *home_uri;
 	NautilusWindow *window;
@@ -134,6 +136,7 @@ open_window (NautilusShell *shell, const char *uri, const char *geometry,
 	if (browser_window ||
 	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 		window = nautilus_application_create_navigation_window (shell->details->application,
+									startup_id,
 									gdk_screen_get_default ());
 		if (uri == NULL) {
 			nautilus_window_go_home (window);
@@ -149,6 +152,7 @@ open_window (NautilusShell *shell, const char *uri, const char *geometry,
 		
 		window = nautilus_application_present_spatial_window (shell->details->application,
 								      NULL,
+								      startup_id,
 								      uri,
 								      gdk_screen_get_default ());
 		g_free (home_uri);
@@ -166,6 +170,7 @@ open_window (NautilusShell *shell, const char *uri, const char *geometry,
 static void
 corba_open_windows (PortableServer_Servant servant,
 		    const Nautilus_URIList *list,
+		    const CORBA_char *startup_id,
 		    const CORBA_char *geometry,
 		    CORBA_boolean browser_window,
 		    CORBA_Environment *ev)
@@ -178,12 +183,13 @@ corba_open_windows (PortableServer_Servant servant,
 	/* Open windows at each requested location. */
 	for (i = 0; i < list->_length; i++) {
 		g_assert (list->_buffer[i] != NULL);
-		open_window (shell, list->_buffer[i], geometry, browser_window);
+		open_window (shell, list->_buffer[i], startup_id, geometry, browser_window);
 	}
 }
 
 static void
 corba_open_default_window (PortableServer_Servant servant,
+			   const CORBA_char *startup_id,
 			   const CORBA_char *geometry,
 			   CORBA_boolean browser_window,
 			   CORBA_Environment *ev)
@@ -194,7 +200,7 @@ corba_open_default_window (PortableServer_Servant servant,
 
 	if (!restore_window_states (shell)) {
 		/* Open a window pointing at the default location. */
-		open_window (shell, NULL, geometry, browser_window);
+		open_window (shell, NULL, startup_id, geometry, browser_window);
 	}
 }
 
@@ -345,10 +351,12 @@ restore_one_window_callback (const char *attributes,
 	if (eel_strlen (location) > 0) {
 		window = nautilus_application_present_spatial_window (shell->details->application, 
 								      NULL,
+								      NULL, /* FIXME: Need startup_id? */
 								      location,
 								      screen);
 	} else {
 		window = nautilus_application_create_navigation_window (shell->details->application,
+									NULL, /* FIXME: Need startup_id? */
 									screen);
 		nautilus_window_go_home (window);
 	}

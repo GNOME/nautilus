@@ -451,6 +451,7 @@ nautilus_window_open_location_full (NautilusWindow *window,
 				if (!NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change) {
 					target_window = nautilus_application_create_navigation_window 
 						(window->application,
+						 NULL,
 						 gtk_window_get_screen (GTK_WINDOW (window)));
 				} else {
 					NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change = FALSE;
@@ -461,6 +462,7 @@ nautilus_window_open_location_full (NautilusWindow *window,
                                 target_window = nautilus_application_present_spatial_window_with_selection (
                                         window->application,
 					window,
+					NULL,
                                         location,
 					new_selection,
                                         gtk_window_get_screen (GTK_WINDOW (window)));
@@ -477,12 +479,14 @@ nautilus_window_open_location_full (NautilusWindow *window,
                 target_window = nautilus_application_present_spatial_window (
                         window->application,
 			window,
+			NULL,
                         location,
                         gtk_window_get_screen (GTK_WINDOW (window)));
                 break;
         case NAUTILUS_WINDOW_OPEN_IN_NAVIGATION :
                 target_window = nautilus_application_create_navigation_window 
                         (window->application,
+			 NULL,
                          gtk_window_get_screen (GTK_WINDOW (window)));
                 break;
         default :

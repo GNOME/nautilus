@@ -39,10 +39,12 @@ nautilus_connect_server_dialog_present_uri (NautilusApplication *application,
 	
 	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER)) {
 		window = nautilus_application_create_navigation_window (application,
+									NULL,
 									gtk_widget_get_screen (widget));
 		nautilus_window_go_to (window, uri);
 	} else {
 		nautilus_application_present_spatial_window (application,
+							     NULL,
 							     NULL,
 							     uri,
 							     gtk_widget_get_screen (widget));
