@@ -85,7 +85,7 @@ static GnomeUIInfo toolbar_info[] = {
 	 toolbar_up_callback, "nautilus/eazel/Up.png"),
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Reload"), N_("Reload this view"),
-	 toolbar_reload_callback, GNOME_STOCK_PIXMAP_REFRESH),
+	 toolbar_reload_callback, "nautilus/eazel/Refresh.png"),
 	GNOMEUIINFO_SEPARATOR,
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Home"), N_("Go to your home directory"),
@@ -93,7 +93,7 @@ static GnomeUIInfo toolbar_info[] = {
 	GNOMEUIINFO_SEPARATOR,
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Stop"), N_("Interrupt loading"),
-	 toolbar_stop_callback, GNOME_STOCK_PIXMAP_STOP),
+	 toolbar_stop_callback, "nautilus/eazel/Stop.png"),
 	GNOMEUIINFO_END
 };
 
@@ -220,11 +220,13 @@ setup_toolbar_images(NautilusWindow *window)
 	gboolean use_eazel_theme;
 	
 	use_eazel_theme = nautilus_preferences_get_boolean(NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS, FALSE);
-	
+		
 	setup_button (window->back_button, use_eazel_theme ?  "nautilus/eazel/Back.png" : GNOME_STOCK_PIXMAP_BACK);
 	setup_button (window->forward_button, use_eazel_theme ? "nautilus/eazel/Forward.png" : GNOME_STOCK_PIXMAP_FORWARD);
 	setup_button (window->up_button, use_eazel_theme ? "nautilus/eazel/Up.png" : GNOME_STOCK_PIXMAP_UP);
 	setup_button (window->home_button, use_eazel_theme ? "nautilus/eazel/Home.png" : GNOME_STOCK_PIXMAP_HOME);
+	setup_button (window->reload_button, use_eazel_theme ? "nautilus/eazel/Refresh.png" : GNOME_STOCK_PIXMAP_REFRESH);
+	setup_button (window->stop_button, use_eazel_theme ? "nautilus/eazel/Stop.png" : GNOME_STOCK_PIXMAP_STOP);
 }
 
 /* allocate a new toolbar */
