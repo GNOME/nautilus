@@ -297,6 +297,7 @@ nautilus_directory_try_to_read_metafile (NautilusDirectory *directory, GnomeVFSU
 	if (result == GNOME_VFS_OK) {
 		char *buffer;
 
+		g_assert(size < 20480);
 		buffer = g_alloca(size);
 		result = gnome_vfs_read (metafile_handle, buffer, size, &actual_size);
 		buffer[size] = '\0';
