@@ -1,3 +1,12 @@
+2000-11-05  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
+
+	* components/music/nautilus-music-view.c: (play_status_display),
+	(slider_moved_callback), (slider_release_callback):
+	fixed bug 2407, divide by zero in the music view, which also got
+	classified as PR2 bug 4513. I'm not sure this fixes the entire
+	problem, since I wasn't able to manifest it in the first place,
+	but Eli will confirm.
+
 2000-11-04  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/run-nautilus:
