@@ -636,7 +636,9 @@ display_pending_entries (FMDirectoryView *view)
 						       (view->current_position);
 	}
 
-	g_assert(i == view->entries_to_display);
+	if (i != view->entries_to_display)
+		g_warning("BROKEN! we thought we had %d items, actually had %d",
+			  view->entries_to_display, i);
 
 	if (flist != NULL)
 		gtk_clist_thaw (GTK_CLIST (flist));
