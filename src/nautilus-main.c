@@ -167,9 +167,6 @@ main (int argc, char *argv[])
 	}
 	
 	/* Initialize gettext support */
-	/* Sadly, we need this ifdef because otherwise the following
-	 * lines cause empty statement warnings.
-	 */
 	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
