@@ -4979,16 +4979,42 @@ process_pending_icon_to_rename (NautilusIconContainer *container)
 	}
 }
 
-gboolean
+static gboolean
 is_renaming_pending (NautilusIconContainer *container)
 {
 	return get_pending_icon_to_rename (container) != NULL;
 }
 
-gboolean
+static gboolean
 is_renaming (NautilusIconContainer *container)
 {
 	return container->details->renaming;
+}
+
+static int 
+rename_filename_selection_end (const char *filename)
+{
+	const char *end, *end2;
+
+	end = strrchr (filename, '.');
+
+	if (end && end != filename) {
+		if (strcmp (end, ".gz") == 0 ||
+		    strcmp (end, ".bz2") == 0 ||
+		    strcmp (end, ".sit") == 0 ||
+		    strcmp (end, ".Z") == 0) {
+			end2 = end - 1;
+			while (end2 > filename &&
+			       *end2 != '.') {
+				end2--;
+			}
+			if (end2 != filename) {
+				end = end2;
+			}
+		}
+		return g_utf8_pointer_to_offset (filename, end);
+	}
+	return g_utf8_strlen (filename, -1);
 }
 
 /**
@@ -5003,6 +5029,8 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
 	ArtDRect icon_rect;
+	PangoContext *context;
+	PangoFontDescription *desc;
 	const char *editable_text;
 	int x, y, width;
 
@@ -5053,6 +5081,20 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 				details->rename_widget, 0, 0);
 	} 
 
+	/* Set the right font */
+	if (details->font) {
+		desc = pango_font_description_from_string (details->font);
+	} else {
+		context = gtk_widget_get_pango_context (GTK_WIDGET (container));
+		desc = pango_font_description_copy (pango_context_get_font_description (context));
+		pango_font_description_set_size (desc,
+						 pango_font_description_get_size (desc) +
+						 container->details->font_size_table [container->details->zoom_level]);
+	}
+	eel_editable_label_set_font_description (EEL_EDITABLE_LABEL (details->rename_widget),
+						 desc);
+	pango_font_description_free (desc);
+	
 	icon_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
 	
 	width = nautilus_icon_canvas_item_get_max_text_width (icon->item);
@@ -5067,9 +5109,13 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 			 x - width/2, y);
 	gtk_widget_set_size_request (details->rename_widget,
 				     width, -1);
-	gtk_widget_show (details->rename_widget);
 	eel_editable_label_set_text (EEL_EDITABLE_LABEL (details->rename_widget),
 				     editable_text);
+	eel_editable_label_select_region (EEL_EDITABLE_LABEL (details->rename_widget),
+					  rename_filename_selection_end (editable_text),
+					  0);
+	gtk_widget_show (details->rename_widget);
+	
 	gtk_widget_grab_focus (details->rename_widget);
 	
 	g_signal_emit (container,

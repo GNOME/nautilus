@@ -1,5 +1,15 @@
 2003-02-28  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_start_renaming_selected_item)
+	(rename_filename_selection_end):
+	Only select the non-extension part of the name when starting a rename.
+	Set cursor at end of selection.
+	Set correct font on rename widget.
+	Make some internal function static.
+
+2003-02-28  Alexander Larsson  <alexl@redhat.com>
+
 	* components/throbber/nautilus-throbber.c:
 	* libnautilus-private/nautilus-bonobo-extensions.c:
 	* libnautilus-private/nautilus-directory-async.c:
