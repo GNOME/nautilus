@@ -421,9 +421,10 @@ handle_go_elsewhere (NautilusWindow *window, const char *location)
 
                         bookmark_uri = nautilus_bookmark_get_uri (window->last_location_bookmark);
                         if (strcmp (bookmark_uri, window->location) != 0) {
-                        	/* FIXME: This is always a bug, and there might be multiple bugs here.
+                        	/* FIXME bugzilla.eazel.com 2872: This is always a bug, and there might be multiple bugs here.
                         	 * Right now one of them is so common that I'm changing this from an
-                        	 * assert to a message to stop blocking other work.
+                        	 * assert to a message to stop blocking other work. The common case is the
+                        	 * two locations differing by the trailing slash.
                         	 */
 				g_message ("last_location is %s, but should match %s", bookmark_uri, window->location);
                         }
