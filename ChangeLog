@@ -1,3 +1,18 @@
+2000-08-07  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Fix bug 1903.  Pick a better sidebar font.
+	
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	(nautilus_get_largest_fitting_font):
+
+	Change the number of sizes to choose from to 4 (from 5).  Also,
+	remove the 28 size which is usually available.  This size is what
+	was causing the ugliness in the font.
+	
+	* src/nautilus-sidebar-title.c: (update_font):
+
+	Changed the font to bold.
+	
 2000-08-07  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/command-line/eazel-alt-install-corba.c:

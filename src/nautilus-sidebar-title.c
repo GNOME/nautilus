@@ -275,7 +275,7 @@ update_font (NautilusSidebarTitle *sidebar_title)
 	label_font = nautilus_get_largest_fitting_font
 		(sidebar_title->details->title_text,
 		 GTK_WIDGET (sidebar_title)->allocation.width - 4,
-		 "-*-helvetica-medium-r-normal-*-%d-*-*-*-*-*-*-*");
+		 "-adobe-helvetica-bold-r-normal-*-%d-*-*-*-*-*-*-*");
 	
 	nautilus_gtk_widget_set_font (sidebar_title->details->title, label_font);
 	/* FIXME: Is there a font leak here? */

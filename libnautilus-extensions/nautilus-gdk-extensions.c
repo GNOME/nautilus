@@ -545,7 +545,8 @@ nautilus_get_largest_fitting_font (const char *text_to_format, int width, const 
 {
 	int font_index, this_width;
 	char *font_name;
-	const int font_sizes[5] = { 28, 24, 18, 14, 12 };
+//	const int font_sizes[5] = { 28, 24, 18, 14, 12 };
+	const int font_sizes[4] = { 20, 18, 14, 12 };
 	GdkFont *candidate_font;
 	char *alt_text_to_format = NULL;
 	char *temp_str;
