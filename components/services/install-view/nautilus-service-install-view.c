@@ -739,6 +739,27 @@ nautilus_service_need_password (GtkObject *object, const char *prompt, NautilusS
 	return out;
 }
 
+/* bad password -- let em try again? */
+static gboolean
+nautilus_service_try_again (GtkObject *object, NautilusServiceInstallView *view)
+{
+	if (view->details->password_attempts == 0) {
+		/* user hit "cancel" */
+		return FALSE;
+	}
+
+	/* a wrong password shouldn't be remembered :) */
+	g_free (view->details->remembered_password);
+	view->details->remembered_password = NULL;
+
+	if (view->details->password_attempts >= 3) {
+		/* give up. */
+		view->details->password_attempts = 0;
+		return FALSE;
+	}
+	return TRUE;
+}
+
 static TrilobiteRootClient *
 set_root_client (BonoboObjectClient *service, NautilusServiceInstallView *view)
 {
@@ -755,6 +776,9 @@ set_root_client (BonoboObjectClient *service, NautilusServiceInstallView *view)
 
 		gtk_signal_connect (GTK_OBJECT (root_client), "need_password",
 				    GTK_SIGNAL_FUNC (nautilus_service_need_password),
+				    view);
+		gtk_signal_connect (GTK_OBJECT (root_client), "try_again",
+				    GTK_SIGNAL_FUNC (nautilus_service_try_again),
 				    view);
 	} else {
 		g_warning ("Object does not support IDL:Trilobite/PasswordQuery:1.0");
