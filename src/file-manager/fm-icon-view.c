@@ -2526,7 +2526,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	char *container_uri;
 	char *mime_type;
 	const char *last_slash, *link_name;
-	int n_uris;
+	int n_uris, n_links;
 	gboolean all_local;
 	GArray *points;
 	GdkScreen *screen;
@@ -2552,6 +2552,10 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 		action = nautilus_drag_drop_action_ask 
 			(GTK_WIDGET (container),
 			 GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
+		if (action == 0) {
+			g_free (container_uri);
+			return;
+		}
 	}
 	
 	/* We don't support GDK_ACTION_ASK or GDK_ACTION_PRIVATE
@@ -2616,6 +2620,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 		if (points)
 			g_array_free (points, TRUE);
 	} else {
+		n_links = 0;
 		for (node = real_uri_list; node != NULL; node = node->next) {
 			/* Make a link using the desktop file contents? */
 			uri = node->data;
@@ -2641,7 +2646,8 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 
 			if (entry != NULL) {
 				/* FIXME: Handle name conflicts? */
-				nautilus_link_local_create_from_gnome_entry (entry, container_uri, &point, screen_num);
+				nautilus_link_local_create_from_gnome_entry (entry, container_uri, 
+				                                             (n_links > 0) ? NULL: &point, screen_num);
 
 				gnome_desktop_item_unref (entry);
 				continue;
@@ -2661,12 +2667,21 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 				/* FIXME: Handle name conflicts? */
 				nautilus_link_local_create (container_uri, link_name,
 							    NULL, uri,
-							    &point, screen_num,
+							    (n_links > 0) ? NULL: &point, 
+							    screen_num,
 							    NAUTILUS_LINK_GENERIC);
 			}
 			
+			n_links++;
 			g_free (stripped_uri);
-			break;
+			
+			/* The following break statement handles mozilla urls.  
+			 * Do not remove it; otherwise, nautilus will create two 
+			 * links when the url is dropped on the desktop.
+			 */
+			if (path == NULL) {
+				break;
+			}
 		}
 	}
 	
