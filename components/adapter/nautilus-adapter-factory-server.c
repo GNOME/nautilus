@@ -21,11 +21,13 @@
  * Author: Maciej Stachowiak <mjs@eazel.com>
  */
 
-/* nautilus-adapter-factory-server.c - 
+/* nautilus-adapter-factory-server.c - Server object for a factory to
+ * create NautilusAdapter objects.
  */
 
 #include <config.h>
 #include "nautilus-adapter-factory-server.h"
+#include "nautilus-adapter.h"
 
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-main.h>
@@ -37,9 +39,6 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-adapter/nautilus-adapter-factory.h>
 
-
-struct NautilusAdapterFactoryServerDetails {
-};
 
 typedef struct {
 	POA_Nautilus_ComponentAdapterFactory  servant;
@@ -112,8 +111,6 @@ nautilus_adapter_factory_server_initialize (NautilusAdapterFactoryServer *server
 	
 	g_assert (NAUTILUS_IS_ADAPTER_FACTORY_SERVER (server));
 
-	server->details = g_new0 (NautilusAdapterFactoryServerDetails, 1);
-	
 	bonobo_object_construct
 		(BONOBO_OBJECT (server),
 		 impl_Nautilus_ComponentAdapterFactory__create (server, &ev));
@@ -124,13 +121,13 @@ nautilus_adapter_factory_server_initialize (NautilusAdapterFactoryServer *server
 static void
 nautilus_adapter_factory_server_destroy (GtkObject *object)
 {
-	NautilusAdapterFactoryServer *server;
-	
-	server = NAUTILUS_ADAPTER_FACTORY_SERVER (object);
-	
-	g_free (server->details);
-	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+}
+
+static void
+adapter_object_destroyed (GtkObject *adapter, NautilusAdapterFactoryServer *server)
+{
+	bonobo_object_unref (BONOBO_OBJECT (server));
 }
 
 
@@ -139,7 +136,24 @@ impl_Nautilus_ComponentAdapterFactory_create_adapter (PortableServer_Servant  se
 						      const Bonobo_Unknown    component,
 						      CORBA_Environment      *ev)
 {
-	return CORBA_OBJECT_NIL;
+	impl_POA_Nautilus_ComponentAdapterFactory *factory_servant;
+	NautilusAdapter *adapter;
+
+	factory_servant = (impl_POA_Nautilus_ComponentAdapterFactory *) servant;
+
+	adapter = nautilus_adapter_new (component);
+
+	if (adapter == NULL) {
+		return CORBA_OBJECT_NIL;
+	} else {
+		bonobo_object_ref (BONOBO_OBJECT (factory_servant->bonobo_object));
+		
+		gtk_signal_connect (GTK_OBJECT (adapter), "destroy",
+				    adapter_object_destroyed, factory_servant->bonobo_object);
+
+		
+		return bonobo_object_corba_objref (BONOBO_OBJECT (nautilus_adapter_get_nautilus_view (adapter)));
+	}
 }
 
 static void

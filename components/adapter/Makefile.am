@@ -21,16 +21,23 @@ bin_PROGRAMS =					\
 nautilus_adapter_SOURCES =		\
 	main.c	                    \
 	nautilus-adapter-factory-server.h          \
-	nautilus-adapter-factory-server.c
+	nautilus-adapter-factory-server.c	   \
+	nautilus-adapter.h   		           \
+	nautilus-adapter.c
 
 nautilus_adapter_LDADD =		\
 	$(top_builddir)/libnautilus/libnautilus.la	\
-	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la	\
+	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la	 \
+	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
 	$(GNOMEUI_LIBS) \
 	$(OAF_LIBS) \
-	$(BONOBOX_LIBS) \
+	$(BONOBO_PRINT_LIBS) 		\
 	$(VFS_LIBS) \
 	$(XML_LIBS) \
+	$(BONOBOX_LIBS) \
+	$(GNOMECANVASPIXBUF_LIBS)	\
+	$(GHTTP_LIBS) 			\
+	$(GCONF_LIBS) 			\
 	$(LIBPNG)
 
 

@@ -1,3 +1,27 @@
+2000-09-16  Maciej Stachowiak  <mjs@eazel.com>
+
+	More work towards 1994:
+
+	* components/adapter/nautilus-adapter-factory-server.h,
+	components/adapter/nautilus-adapter-factory-server.c:
+	(nautilus_adapter_factory_server_initialize,
+	nautilus_adapter_factory_server_destroy): minor cleanups
+	(impl_Nautilus_ComponentAdapterFactory_create_adapter): Actually
+	create some objects.
+	(adapter_object_destroyed): Watch for object destruction, for
+	factory lifecycle management purposes.
+
+	* components/adapter/nautilus-adapter.h,
+	components/adapter/nautilus-adapter.c: Initial implementation of
+	class that does the actual adapting. For now, it only handles
+	Embeddables that take input via PersistStream. Later I will apply
+	the Strategy pattern to virtualize visual embedding (Control
+	vs. Embeddable) and loading (PersistStream vs. PersistFile
+	vs. ProgressiveDataSink) (and fix some missing bits in the
+	embedding virtualization).
+
+	* components/adapter/Makefile.am: Build the new files.
+	
 2000-09-16  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/mozilla/eazel-protocol-handler/eazel-protocol-module.cpp:

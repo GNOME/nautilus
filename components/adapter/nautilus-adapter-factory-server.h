@@ -21,10 +21,8 @@
  * Author: Maciej Stachowiak <mjs@eazel.com>
  */
 
-/* nautilus-adapter_factory_server-content-view.h - Adapter_Factory_Server view component. This
- * component just displays a simple message and includes a menu item
- * and a toolbar button else. It should be a good basis for writing
- * Nautilus view components.
+/* nautilus-adapter-factory-server.c - Server object for a factory to
+ * create NautilusAdapter objects.
  */
 
 #ifndef NAUTILUS_ADAPTER_FACTORY_SERVER_H
@@ -39,11 +37,8 @@
 #define NAUTILUS_IS_ADAPTER_FACTORY_SERVER(obj)	     (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_ADAPTER_FACTORY_SERVER))
 #define NAUTILUS_IS_ADAPTER_FACTORY_SERVER_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_ADAPTER_FACTORY_SERVER))
 
-typedef struct NautilusAdapterFactoryServerDetails NautilusAdapterFactoryServerDetails;
-
 typedef struct {
 	BonoboObject parent;
-	NautilusAdapterFactoryServerDetails *details;
 } NautilusAdapterFactoryServer;
 
 typedef struct {
