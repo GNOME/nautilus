@@ -72,10 +72,15 @@ ui_DATA = \
 	nautilus-clipboard-ui.xml	\
 	$(NULL)
 
-EXTRA_DIST = \
-	$(ui_DATA)			\
+idldir = $(datadir)/idl
+idl_DATA = \
 	nautilus-view-component.idl	\
 	nautilus-distributed-undo.idl	\
+	$(NULL)
+
+EXTRA_DIST = \
+	$(ui_DATA)			\
+	$(idl_DATA)			\
 	$(NULL)
 
 BUILT_SOURCES = \

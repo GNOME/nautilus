@@ -1,5 +1,39 @@
 2001-06-01  Darin Adler  <darin@bentspoon.com>
 
+	Started with patch by Caleb "J." Land <bokonon@rochester.rr.com>
+	and added XFS support so that trash will work on XFS volumes.
+
+	* libnautilus-private/nautilus-volume-monitor.h:
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_should_integrate_trash),
+	(make_volume_name_from_path), (mount_volume_get_name),
+	(do_volume_activate), (mount_volume_activate),
+	(verify_current_mount_state), (mount_volume_ext2_add),
+	(mount_volume_udf_add), (mount_volume_vfat_add),
+	(mount_volume_msdos_add), (mount_volume_affs_add),
+	(mount_volume_auto_add), (mount_volume_fat_add),
+	(mount_volume_hpfs_add), (mount_volume_hsfs_add),
+	(mount_volume_minix_add), (mount_volume_proc_add),
+	(mount_volume_reiserfs_add), (mount_volume_ufs_add),
+	(mount_volume_smb_add), (mount_volume_unsdos_add),
+	(mount_volume_xenix_add), (mount_volume_xfs_add),
+	(mount_volume_xiafs_add), (copy_volume),
+	(load_additional_mount_list_info),
+	(mount_volume_prepend_filesystem):
+	Added an XFS case and crunched code a bit.
+	
+	Rolled in patch by Johan Dahlin <zilch.am@home.se> to install the
+	public IDL files in $(datadir)/idl so that non-C programmers can
+	use them.
+
+	* libnautilus/Makefile.am: Install the IDL files.
+
+	Also added them to the .spec file.
+
+	* nautilus.spec.in: Install the IDL files as part of nautilus-devel.
+
+2001-06-01  Darin Adler  <darin@bentspoon.com>
+
 	Rolled in patch by Juan Pablo Mendoza <pablo_juan@yahoo.com> to
 	make the file dialog show up in the right position instead of
 	showing up in one place and then moving right away.
