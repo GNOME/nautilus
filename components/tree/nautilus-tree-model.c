@@ -764,7 +764,8 @@ nautilus_tree_model_directory_files_changed_callback (NautilusDirectory        *
 			uri = nautilus_file_get_uri (file);
 			g_free (uri);
 		} else {
-			if (!nautilus_directory_contains_file (directory, file)) {
+			if (!nautilus_directory_contains_file (directory, file)
+			    || nautilus_file_is_gone (file)) {
 				report_node_removed (model, node);
 			} else {			
 				report_node_changed (model, node);
