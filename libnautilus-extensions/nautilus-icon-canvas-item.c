@@ -1238,7 +1238,7 @@ draw_focus_rect (GdkPixbuf *pixbuf, int left, int top, int right, int bottom)
 {
 	GdkRectangle	area;
 	guint32		color, color_dash;
-	guchar		red, green, blue, alpha, dash_color;
+	guchar		red, green, blue, alpha, dash_color, dash_alpha;
 	guint		width, height;
 	gboolean	has_alpha;
 	guint		pixel_offset, rowstride;
@@ -1251,7 +1251,7 @@ draw_focus_rect (GdkPixbuf *pixbuf, int left, int top, int right, int bottom)
 	dash_width = 1;
 
 	color = NAUTILUS_RGBA_COLOR_PACK (0, 0, 0, 255);
-	color_dash = NAUTILUS_RGBA_COLOR_PACK (255, 255, 255, 255);
+	color_dash = NAUTILUS_RGBA_COLOR_PACK (255, 255, 255, 0);
 
 	width = gdk_pixbuf_get_width (pixbuf);
 	height = gdk_pixbuf_get_height (pixbuf);
@@ -1271,6 +1271,7 @@ draw_focus_rect (GdkPixbuf *pixbuf, int left, int top, int right, int bottom)
 	blue = NAUTILUS_RGBA_COLOR_GET_B (color);
 	alpha = NAUTILUS_RGBA_COLOR_GET_A (color);
 	dash_color = NAUTILUS_RGBA_COLOR_GET_R (color_dash);
+	dash_alpha = NAUTILUS_RGBA_COLOR_GET_A (color_dash);
 	
 	x1 = area.x;
 	y1 = area.y;
@@ -1293,9 +1294,12 @@ draw_focus_rect (GdkPixbuf *pixbuf, int left, int top, int right, int bottom)
 			*(offset++) = dash_color;
 		}		
 		
-		if (has_alpha)
-		{
-			*(offset++) = alpha;
+		if (has_alpha) {
+			if (index < dash_width) {
+				*(offset++) = alpha;
+			} else {
+				*(offset++) = dash_alpha;
+			}				
 		}
 
 		index++;
@@ -1321,7 +1325,11 @@ draw_focus_rect (GdkPixbuf *pixbuf, int left, int top, int right, int bottom)
 		}
 		
 		if (has_alpha) {
-			*(offset++) = alpha;
+			if (index < dash_width) {
+				*(offset++) = alpha;
+			} else {
+				*(offset++) = dash_alpha;
+			}				
 		}
 
 		index++;
@@ -1348,7 +1356,11 @@ draw_focus_rect (GdkPixbuf *pixbuf, int left, int top, int right, int bottom)
 		}		
 
 		if (has_alpha) {
-			*(offset++) = alpha;
+			if (index < dash_width) {
+				*(offset++) = alpha;
+			} else {
+				*(offset++) = dash_alpha;
+			}				
 		}
 		row_offset += rowstride;
 
@@ -1376,7 +1388,11 @@ draw_focus_rect (GdkPixbuf *pixbuf, int left, int top, int right, int bottom)
 		}
 						
 		if (has_alpha) {
-			*(offset++) = alpha;
+			if (index < dash_width) {
+				*(offset++) = alpha;
+			} else {
+				*(offset++) = dash_alpha;
+			}				
 		}
 		row_offset += rowstride;
 
