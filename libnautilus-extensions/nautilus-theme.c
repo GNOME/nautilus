@@ -197,7 +197,7 @@ nautilus_theme_make_selector (const char *theme_name)
 	}
 	
 	/* load the icon that we found and return it */
-	if (nautilus_str_has_suffix(pixbuf_file, ".svg")) {
+	if (nautilus_istr_has_suffix(pixbuf_file, ".svg")) {
 		FILE *f = fopen (pixbuf_file, "rb");
 		if (f != NULL) {
 			pixbuf = rsvg_render_file (f, 1.0);

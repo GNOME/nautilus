@@ -25,24 +25,24 @@
 
 #include <config.h>
 
+#include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"
 #include "nautilus-bookmarks-window.h"
-#include "nautilus-signaller.h"
-#include "nautilus-application.h"
-#include "nautilus-window-private.h"
 #include "nautilus-property-browser.h"
-
-#include <libnautilus-extensions/nautilus-undo-manager.h>
-#include <libnautilus/nautilus-bonobo-ui.h>
+#include "nautilus-signaller.h"
+#include "nautilus-window-private.h"
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
+#include <libnautilus-extensions/nautilus-debug.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <libnautilus-extensions/nautilus-user-level-manager.h>
+#include <libnautilus/nautilus-bonobo-ui.h>
 
 /*
 #define WINDOW_ITEMS_TEST
@@ -673,10 +673,12 @@ nautilus_window_add_bookmark_for_current_location (NautilusWindow *window)
 {
 	NautilusBookmark *bookmark;
 
-	g_return_if_fail(NAUTILUS_IS_WINDOW (window));
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
-	g_assert (nautilus_eat_strcmp (nautilus_bookmark_get_uri (window->current_location_bookmark), 
-		          	       window->location) == 0);
+	nautilus_assert_computed_str
+		(nautilus_bookmark_get_uri (window->current_location_bookmark), 
+		 window->location);
+
 	/* Use the first bookmark in the history list rather than creating a new one. */
 	bookmark = window->current_location_bookmark;
 

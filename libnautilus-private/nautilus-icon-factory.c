@@ -947,7 +947,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 	/* also, dont make thumbnails for images in the thumbnails directory */  
 	if (uri == NULL) {
 		mime_type = nautilus_file_get_mime_type (file);
-		if (nautilus_str_has_prefix (mime_type, "image/")) {
+		if (nautilus_istr_has_prefix (mime_type, "image/")) {
 			if (nautilus_file_get_size (file) < SELF_THUMBNAIL_SIZE_THRESHOLD) {
 				uri = nautilus_file_get_uri (file);				
 			} else if (strstr(file_uri, "/.thumbnails/") == NULL) {
@@ -962,7 +962,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 	if (nautilus_link_is_link_file (file_uri)) {
 		image_uri = nautilus_link_get_image_uri (file_uri);
 		if (image_uri != NULL) {
-			if (nautilus_str_has_prefix (image_uri, "file://"))
+			if (nautilus_istr_has_prefix (image_uri, "file://"))
 				uri = image_uri;
 			else {
 				icon_name = image_uri;
@@ -1154,14 +1154,14 @@ make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean us
 	/* append the file name if necessary */
 	if (!directory_only) {
 		char* old_uri = thumbnail_uri;
-		thumbnail_uri = g_strdup_printf("%s/%s", thumbnail_uri, last_slash + 1);
+		thumbnail_uri = g_strdup_printf ("%s/%s", thumbnail_uri, last_slash + 1);
 		g_free(old_uri);			
 	}
 	
 	/* append an image suffix if the correct one isn't already present */
-	if (!nautilus_str_has_suffix (image_uri, ".png") && !nautilus_str_has_suffix (image_uri, ".PNG") && !directory_only) {		
+	if (!nautilus_istr_has_suffix (image_uri, ".png") && !directory_only) {		
 		char* old_uri = thumbnail_uri;
-		thumbnail_uri = g_strdup_printf("%s.png", thumbnail_uri);
+		thumbnail_uri = g_strdup_printf ("%s.png", thumbnail_uri);
 		g_free(old_uri);			
 	}
 			
@@ -1482,7 +1482,7 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 		 */
 		
 		/* we use the suffix instead of mime-type here since it may be non-local */	
-		if (nautilus_str_has_suffix (scalable_icon->uri, ".svg")) {
+		if (nautilus_istr_has_suffix (scalable_icon->uri, ".svg")) {
 			image_path = nautilus_get_local_path_from_uri (scalable_icon->uri);		
 			pixbuf = load_specific_image_svg (image_path, size_in_pixels);
 			g_free (image_path);

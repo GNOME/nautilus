@@ -84,7 +84,7 @@ nautilus_format_uri_for_display (const char *uri)
 	unescaped = gnome_vfs_unescape_string_for_display (uri);
 	
 	/* Remove file:// from the beginning */
-	if (nautilus_str_has_prefix (uri, DEFAULT_SCHEME)) {
+	if (nautilus_istr_has_prefix (uri, DEFAULT_SCHEME)) {
 		toreturn = strdup (unescaped + sizeof (DEFAULT_SCHEME) - 1);
 	} else {
 		toreturn = strdup (unescaped);
@@ -345,8 +345,8 @@ nautilus_get_local_path_from_uri (const char *uri)
 		return NULL;
 	}
 
-	if (nautilus_str_has_prefix (unescaped_uri, "file://")) {
-		result = g_strdup (unescaped_uri+7);
+	if (nautilus_istr_has_prefix (unescaped_uri, "file://")) {
+		result = g_strdup (unescaped_uri + 7);
 	} else if (unescaped_uri[0] == '/') {
 		result = g_strdup (unescaped_uri);
 	} else {

@@ -1,16 +1,88 @@
+2000-07-19  Darin Adler  <darin@eazel.com>
+
+	* components/services/trilobite/libtrilobite/libtrilobite.h:
+	* components/services/trilobite/libtrilobite/trilobite-root-client.c:
+	Change include style from <libtrilobite/xxx.h> to "xxx.h" to fix
+	the build.
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(make_uri_canonical), (is_canonical_uri):
+	Add two new elements to the canonical URI rules in here: put a
+	"file:" in front of things that don't have a scheme, and
+	lower-case the scheme.
+	
+	* libnautilus-extensions/nautilus-string.h:
+	* libnautilus-extensions/nautilus-string.c:
+	(nautilus_istr_has_prefix), (nautilus_istr_has_suffix):
+	Add case-insensitive versions of these calls. These terse names
+	are maybe a little lame; istr is not completely clear. (I guess I
+	now wish the "nautilus_" namespace was "n_" instead, like those
+	rad Evolution people and their bold "e_").
+
+	* components/music/nautilus-music-view.c: (is_mp3_file),
+	(nautilus_music_view_update_from_uri):
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_format_uri_for_display),
+	(nautilus_get_local_path_from_uri):
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_contains_text):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file), (make_thumbnail_path),
+	(load_specific_image):
+	* libnautilus-extensions/nautilus-theme.c:
+	(nautilus_theme_make_selector):
+	* src/file-manager/fm-icon-view.c: (play_file), (preview_sound),
+	(icon_container_preview_callback):
+	* src/file-manager/fm-properties-window.c:
+	(get_property_names_from_uri):
+	* src/nautilus-location-bar.c: (try_to_expand_path):
+	* src/nautilus-property-browser.c: (ensure_uri_is_image),
+	(make_properties_from_directory_path):
+	* src/nautilus-sidebar.c: (map_local_data_file),
+	(add_command_buttons):
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(local_data_file_to_uri):
+	Use case-insensitive string functions when dealing with MIME
+	types, URI schemes, or file name extensions for file types that
+	are also used on Windows where file names are not case sensitive.
+	
+	* libnautilus-extensions/nautilus-string.c:
+	(nautilus_self_check_string):
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_icon_is_different):
+	* src/nautilus-bookmark-list.c:
+	(nautilus_bookmark_list_delete_items_with_uri):
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_reset_title_internal), (handle_go_back),
+	(handle_go_forward), (handle_go_elsewhere):
+	* src/nautilus-window-menus.c:
+	(nautilus_window_add_bookmark_for_current_location):
+	Get rid of uses of nautilus_eat_strcmp since it's yucky.
+	
+	* libnautilus-extensions/nautilus-debug.c:
+	(nautilus_str_equal_with_free):
+	Make a debug-only thing kind of like nautilus_eat_strcmp that's
+	good for asserts.
+	
+	* src/nautilus-sidebar.c: (add_command_buttons):
+	Fixed a storage leak.
+
+	* libnautilus-extensions/nautilus-link-set.c: (link_set_path_name):
+	Added a FIXME.
+	
+	* components/services/install/command-line/.cvsignore:
+	* cut-n-paste-code/freetype/.cvsignore:
+	Ignore some generated files.
+	
 2000-07-19  Robey Pointer  <robey@eazel.com>
 
 	* components/services/trilobite/libtrilobite/libtrilobite.h:
-	*
-	components/services/trilobite/libtrilobite/trilobite-core-utils.c:
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c:
 	(trilobite_add_log), (trilobite_init):
-	*
-	components/services/trilobite/libtrilobite/trilobite-core-utils.h:
-	*
-	components/services/trilobite/libtrilobite/trilobite-root-client.c:
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.h:
+	* components/services/trilobite/libtrilobite/trilobite-root-client.c:
 	(trilobite_root_client_unref), (trilobite_root_client_initialize):
-	*
-	components/services/trilobite/libtrilobite/trilobite-root-helper.c:
+	* components/services/trilobite/libtrilobite/trilobite-root-helper.c:
 	(trilobite_root_helper_destroy),
 	(trilobite_root_helper_initialize), (eazel_helper_start),
 	(eazel_helper_password), (trilobite_root_helper_start),

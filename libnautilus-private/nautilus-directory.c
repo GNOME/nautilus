@@ -25,16 +25,16 @@
 #include <config.h>
 #include "nautilus-directory-private.h"
 
-#include <gtk/gtksignal.h>
-#include <gtk/gtkmain.h>
-
+#include "nautilus-directory-metafile.h"
+#include "nautilus-file-private.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-macros.h"
-#include "nautilus-string.h"
 #include "nautilus-lib-self-check-functions.h"
-#include "nautilus-file-private.h"
-#include "nautilus-directory-metafile.h"
-#include "nautilus-file-utilities.h"
+#include "nautilus-string.h"
+#include <ctype.h>
+#include <gtk/gtkmain.h>
+#include <gtk/gtksignal.h>
 
 enum {
 	FILES_ADDED,
@@ -199,13 +199,15 @@ static char *
 make_uri_canonical (const char *uri)
 {
 	size_t length;
-	char *canonical_uri, *old_uri, *with_slashes;
+	char *canonical_uri, *old_uri, *with_slashes, *p;
 
 	/* FIXME bugzilla.eazel.com 648: 
 	 * This currently ignores the issue of two uris that are not identical but point
-	 * to the same data except for the specific cases of trailing '/' characters
-	 * and file:/ and file:///.
+	 * to the same data except for the specific cases of trailing '/' characters,
+	 * file:/ and file:///, and "lack of file:".
 	 */
+
+	/* Strip the trailing "/" characters. */
 	canonical_uri = nautilus_str_strip_trailing_chr (uri, '/');
 	if (strcmp (canonical_uri, uri) != 0) {
 		/* If some trailing '/' were stripped, there's the possibility,
@@ -218,6 +220,21 @@ make_uri_canonical (const char *uri)
 			with_slashes = g_strconcat (canonical_uri, "///", NULL);
 			g_free (canonical_uri);
 			canonical_uri = with_slashes;
+		}
+	}
+
+	/* Add file: if there is no scheme. */
+	if (strchr (canonical_uri, ':') == NULL) {
+		old_uri = canonical_uri;
+		canonical_uri = g_strconcat ("file:", old_uri, NULL);
+		g_free (old_uri);
+	}
+
+	/* Lower-case the scheme. */
+	for (p = canonical_uri; *p != ':'; p++) {
+		g_assert (*p != '\0');
+		if (isupper (*p)) {
+			*p = tolower (*p);
 		}
 	}
 
@@ -237,6 +254,8 @@ make_uri_canonical (const char *uri)
 static gboolean
 is_canonical_uri (const char *uri)
 {
+	const char *p;
+
 	if (uri == NULL) {
 		return FALSE;
 	}
@@ -245,6 +264,14 @@ is_canonical_uri (const char *uri)
 			return TRUE;
 		}
 		return FALSE;
+	}
+	if (strchr (uri, ':') == NULL) {
+		return FALSE;
+	}
+	for (p = uri; *p != ':'; p++) {
+		if (isupper (*p)) {
+			return FALSE;
+		}
 	}
 	if (nautilus_str_has_prefix (uri, "file:/")
 	    && !nautilus_str_has_prefix (uri, "file:///")) {

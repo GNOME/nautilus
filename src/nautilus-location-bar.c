@@ -255,8 +255,8 @@ try_to_expand_path(GtkEditable *editable)
  	
 	current_path = nautilus_make_uri_from_input (user_location);
 
-	if (!nautilus_str_has_prefix(current_path, "file://")) {
-		g_free(current_path);
+	if (!nautilus_istr_has_prefix (current_path, "file://")) {
+		g_free (current_path);
 		return;
 	}
 

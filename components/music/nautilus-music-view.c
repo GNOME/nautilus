@@ -425,8 +425,8 @@ release_song_info (SongInfo *info)
 static gboolean
 is_mp3_file(GnomeVFSFileInfo *file_info)
 {
-	return nautilus_str_has_prefix(file_info->mime_type, "audio/")
-		&& nautilus_str_has_suffix(file_info->mime_type, "mp3");
+	return nautilus_istr_has_prefix (file_info->mime_type, "audio/")
+		&& nautilus_istr_has_suffix (file_info->mime_type, "mp3");
 }
 
 /* utility routine to strip the trailing blank padding from the end of a string */
@@ -1235,7 +1235,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
         		const char *mime_type = gnome_vfs_file_info_get_mime_type
                                 (current_file_info);
 		        	
-		        if (nautilus_str_has_prefix (mime_type, "image/")) {
+		        if (nautilus_istr_has_prefix (mime_type, "image/")) {
 		        	/* for now, just keep the first image */
 		        	if (image_path_uri == NULL) {
 		        		image_path_uri = g_strdup (path_uri);

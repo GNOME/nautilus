@@ -446,7 +446,7 @@ ensure_uri_is_image(const char *uri)
 		(uri, file_info,
 		 GNOME_VFS_FILE_INFO_GET_MIME_TYPE
 		 | GNOME_VFS_FILE_INFO_FOLLOW_LINKS, NULL);
-        is_image = nautilus_str_has_prefix (file_info->mime_type, "image/");
+        is_image = nautilus_istr_has_prefix (file_info->mime_type, "image/");
 	gnome_vfs_file_info_unref (file_info);
 	return is_image;
 }
@@ -1320,7 +1320,7 @@ make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, c
 	current_file_info = gnome_vfs_directory_list_first(list);
 	while (current_file_info != NULL) {
 		/* if the file is an image, generate a widget corresponding to it */
-		if (nautilus_str_has_prefix(current_file_info->mime_type, "image/")) {
+		if (nautilus_istr_has_prefix(current_file_info->mime_type, "image/")) {
 			/* load a pixbuf scaled to the proper size, then create a pixbuf widget to hold it */
 			char *image_file_name, *filtered_name;
 			GdkPixmap *pixmap;

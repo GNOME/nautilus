@@ -278,6 +278,7 @@ nautilus_bookmark_list_delete_items_with_uri (NautilusBookmarkList *bookmarks,
 {
 	GList *node, *next;
 	gboolean list_changed;
+	char *bookmark_uri;
 
 	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 	g_return_if_fail (uri != NULL);
@@ -286,13 +287,15 @@ nautilus_bookmark_list_delete_items_with_uri (NautilusBookmarkList *bookmarks,
 	for (node = bookmarks->list; node != NULL;  node = next) {
 		next = node->next;
 
-		if (nautilus_eat_strcmp (nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (node->data)), uri) == 0) {
+		bookmark_uri = nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (node->data));
+		if (nautilus_strcmp (bookmark_uri, uri) == 0) {
 			bookmarks->list = g_list_remove_link (bookmarks->list, node);
 			stop_monitoring_bookmark (bookmarks, NAUTILUS_BOOKMARK (node->data));
 			gtk_object_unref (GTK_OBJECT (node->data));
 			g_list_free (node);
 			list_changed = TRUE;
 		}
+		g_free (bookmark_uri);
 	}
 
 	if (list_changed) {

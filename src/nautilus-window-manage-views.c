@@ -33,12 +33,16 @@
 #include <config.h>
 #include "nautilus-window-manage-views.h"
 
-#include <stdarg.h>
+#include "nautilus-applicable-views.h"
+#include "nautilus-application.h"
+#include "nautilus-location-bar.h"
+#include "nautilus-window-private.h"
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dialog-util.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libnautilus-extensions/nautilus-debug.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -46,11 +50,7 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
-
-#include "nautilus-application.h"
-#include "nautilus-applicable-views.h"
-#include "nautilus-window-private.h"
-#include "nautilus-location-bar.h"
+#include <stdarg.h>
 
 /* FIXME bugzilla.eazel.com 1243: 
  * We should use inheritance instead of these special cases
@@ -237,13 +237,23 @@ nautilus_window_update_title_internal (NautilusWindow *window, const char *title
 static void
 nautilus_window_reset_title_internal (NautilusWindow *window, const char *uri)
 {
+        char *bookmark_uri;
+        gboolean recreate;
+
         g_free (window->requested_title);
         window->requested_title = NULL;
         g_free (window->default_title);
         window->default_title = compute_default_title (uri);
+
+        if (window->current_location_bookmark == NULL) {
+                recreate = TRUE;
+        } else {
+                bookmark_uri = nautilus_bookmark_get_uri (window->current_location_bookmark);
+                recreate = nautilus_strcmp (bookmark_uri, uri) != 0;
+                g_free (bookmark_uri);
+        }
         
-        if (window->current_location_bookmark == NULL || 
-            nautilus_eat_strcmp (nautilus_bookmark_get_uri (window->current_location_bookmark), uri) != 0) {
+        if (recreate) {
                 /* We've changed locations, must recreate bookmark for current location. */
                 if (window->last_location_bookmark != NULL)  {
                         gtk_object_unref (GTK_OBJECT (window->last_location_bookmark));
@@ -284,11 +294,15 @@ handle_go_back (NautilusWindow *window, const char *location)
 
         /* Going back. Move items from the back list to the forward list. */
         g_assert (g_slist_length (window->back_list) > window->location_change_distance);
-        g_assert (nautilus_eat_strcmp (nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (g_slist_nth_data (window->back_list, window->location_change_distance))), location) == 0);
+        nautilus_assert_computed_str
+                (nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (g_slist_nth_data (window->back_list,
+                                                                                 window->location_change_distance))),
+                 location);
         g_assert (window->location != NULL);
         
         /* Move current location to Forward list */
-        g_assert (nautilus_eat_strcmp (nautilus_bookmark_get_uri (window->last_location_bookmark), window->location) == 0);
+        nautilus_assert_computed_str (nautilus_bookmark_get_uri (window->last_location_bookmark),
+                                      window->location);
 
         /* Use the first bookmark in the history list rather than creating a new one. */
         window->forward_list = g_slist_prepend (window->forward_list, window->last_location_bookmark);
@@ -315,11 +329,16 @@ handle_go_forward (NautilusWindow *window, const char *location)
 
         /* Going forward. Move items from the forward list to the back list. */
         g_assert (g_slist_length (window->forward_list) > window->location_change_distance);
-        g_assert (nautilus_eat_strcmp (nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (g_slist_nth_data (window->forward_list, window->location_change_distance))), location) == 0);
+        nautilus_assert_computed_str
+                (nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (g_slist_nth_data (window->forward_list,
+                                                                                 window->location_change_distance))),
+                 location);
         g_assert (window->location != NULL);
                                 
         /* Move current location to Back list */
-        g_assert (nautilus_eat_strcmp (nautilus_bookmark_get_uri (window->last_location_bookmark), window->location) == 0);
+        nautilus_assert_computed_str
+                (nautilus_bookmark_get_uri (window->last_location_bookmark),
+                 window->location);
         
         /* Use the first bookmark in the history list rather than creating a new one. */
         window->back_list = g_slist_prepend (window->back_list, window->last_location_bookmark);
@@ -354,8 +373,9 @@ handle_go_elsewhere (NautilusWindow *window, const char *location)
                  */
                 if (strcmp (window->location, location) != 0) {
                         /* Store bookmark for current location in back list, unless there is no current location */
-                        g_assert (nautilus_eat_strcmp (nautilus_bookmark_get_uri (window->last_location_bookmark), 
-                                          	       window->location) == 0);
+                        nautilus_assert_computed_str
+                                (nautilus_bookmark_get_uri (window->last_location_bookmark), 
+                                 window->location);
                         /* Use the first bookmark in the history list rather than creating a new one. */
                         window->back_list = g_slist_prepend (window->back_list, window->last_location_bookmark);
                         gtk_object_ref (GTK_OBJECT (window->back_list->data));

@@ -29,7 +29,8 @@
 #include <string.h>
 
 /* We use the "str" abbrevation to mean char * string, since
- * "string" usually means g_string instead.
+ * "string" usually means g_string instead. We use the "istr"
+ * abbreviation to mean a case-insensitive char *.
  */
 
 /* NULL is allowed for all the str parameters to these functions. */
@@ -40,25 +41,27 @@ char *   nautilus_strchr                 (const char    *haystack,
 					  char           needle);
 int      nautilus_strcmp                 (const char    *string_a,
 					  const char    *string_b);
-int	 nautilus_strcasecmp		 (const char	*string_a,
-					  const char	*string_b);					  
+int      nautilus_strcasecmp             (const char    *string_a,
+					  const char    *string_b);
 
 /* GCompareFunc version. */
 int      nautilus_str_compare            (gconstpointer  string_a,
 					  gconstpointer  string_b);
-
-/* Versions of basic string functions that free their parameters. */
-int      nautilus_eat_strcmp             (char          *string_a_gets_freed,
-					  const char    *string_b);
+int      nautilus_istr_compare           (gconstpointer  string_a,
+					  gconstpointer  string_b);
 
 /* Other basic string operations. */
-gboolean nautilus_str_is_empty		 (const char	*string_or_null);
+gboolean nautilus_str_is_empty           (const char    *string_or_null);
 gboolean nautilus_str_has_prefix         (const char    *target,
 					  const char    *prefix);
-char *   nautilus_str_get_prefix         (const char    *source,
-					  const char    *delimiter);
+gboolean nautilus_istr_has_prefix        (const char    *target,
+					  const char    *prefix);
 gboolean nautilus_str_has_suffix         (const char    *target,
 					  const char    *suffix);
+gboolean nautilus_istr_has_suffix        (const char    *target,
+					  const char    *suffix);
+char *   nautilus_str_get_prefix         (const char    *source,
+					  const char    *delimiter);
 char *   nautilus_str_strip_chr          (const char    *string,
 					  char           remove_this);
 char *   nautilus_str_strip_trailing_chr (const char    *string,
@@ -72,8 +75,10 @@ gboolean nautilus_eat_str_to_int         (char          *string_gets_freed,
 
 /* Escape function for slashes */
 char *   nautilus_str_escape_slashes     (const char    *string);
+
 /* Escape function for '_' character. */
 char *   nautilus_str_double_underscores (const char    *string);
+
 /* Capitalize a string */
 char *   nautilus_str_capitalize         (const char    *string);
 

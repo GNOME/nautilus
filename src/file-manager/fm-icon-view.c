@@ -25,31 +25,23 @@
 #include <config.h>
 #include "fm-icon-view.h"
 
-#include "fm-icon-text-window.h"
 #include "fm-error-reporting.h"
-
+#include "fm-icon-text-window.h"
 #include <ctype.h>
 #include <errno.h>
-#include <stdio.h>
-#include <locale.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <signal.h>
-#include <unistd.h>
-
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-xfer.h>
-#include <libgnomevfs/gnome-vfs-async-ops.h>
-#include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
@@ -60,6 +52,13 @@
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus/nautilus-bonobo-ui.h>
+#include <locale.h>
+#include <signal.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 /* Paths to use when creating & referring to Bonobo menu items */
 #define MENU_PATH_STRETCH_ICON 			"/Settings/Stretch"
@@ -1204,58 +1203,60 @@ icon_container_activate_callback (NautilusIconContainer *container,
 /* here's the timer task that actually plays the file using mpg123. */
 /* FIXME bugzilla.eazel.com 1258: we should get the application from our mime-type stuff */
 
-static gint play_file(NautilusFile *file)
+static gint
+play_file (NautilusFile *file)
 {
-	char *file_uri, *unescaped_file_uri;
+	char *file_uri;
 	char *file_path, *mime_type;
 	
-	file_uri = nautilus_file_get_uri(file);
-	unescaped_file_uri = gnome_vfs_unescape_string(file_uri, "/");
-	
-	if (nautilus_str_has_prefix(unescaped_file_uri, "file://"))
-		file_path = unescaped_file_uri + 7;
-	else
-		file_path = unescaped_file_uri;
-		
-	mime_type = nautilus_file_get_mime_type(file);
-			
 	mp3_pid = fork ();
 	if (mp3_pid == (pid_t) 0) {
+		file_uri = nautilus_file_get_uri (file);
+		file_path = nautilus_get_local_path_from_uri (file_uri);
+		/* FIXME: This can return NULL for non-local files. */
+
+		mime_type = nautilus_file_get_mime_type (file);
+
 		/* set the group (session) id to this process for future killing */
 		setsid();
-		if (!nautilus_strcmp(mime_type, "audio/x-mp3"))
+		if (nautilus_strcasecmp (mime_type, "audio/x-mp3") == 0) {
 			execlp ("mpg123", "mpg123", "-q", file_path, NULL);
-		else
+		} else {
 			execlp ("play", "play", file_path, NULL);
+		}
+
+		g_free (mime_type);
+		g_free (file_path);
+		g_free (file_uri);
+
 		_exit (0);
 	}
 
-	g_free(file_uri);
-	g_free(unescaped_file_uri);	
-	g_free(mime_type);
 	timeout = -1;
 	
 	return 0;
 }
+
+/* FIXME: Hardcoding this here sucks. We should be using components
+ * for open ended things like this.
+ */
 
 /* this routine is invoked from the preview signal handler to preview a sound file.  We
    want to wait a suitable delay until we actually do it, so set up a timer task to actually
    start playing.  If we move out before the task files, we remove it. */
    
 static void
-preview_sound(NautilusFile *file, gboolean start_flag)
+preview_sound (NautilusFile *file, gboolean start_flag)
 {	
 	if (start_flag) {
-		timeout = gtk_timeout_add(1000, (GtkFunction) play_file, file);
-
+		timeout = gtk_timeout_add (1000, (GtkFunction) play_file, file);
 	} else {
-		
 		if (mp3_pid) {
 			kill (-mp3_pid, SIGTERM);
 			mp3_pid = 0;
 		}
 		if (timeout >= 0) {
-			gtk_timeout_remove(timeout);
+			gtk_timeout_remove (timeout);
 			timeout = -1;
 		}
 	}
@@ -1271,28 +1272,29 @@ icon_container_preview_callback (NautilusIconContainer *container,
 	int result;
 	char *mime_type, *file_name, *message;
 
-	mime_type = nautilus_file_get_mime_type(file);
 	result = 0;
-	
+
 	/* preview files based on the mime_type. */
 	/* for now, we just handle mp3s, soon we'll do more general sounds, eventually, more general types */
-
-	if (nautilus_str_has_prefix(mime_type, "audio/")) {   	
+	mime_type = nautilus_file_get_mime_type(file);
+	if (nautilus_istr_has_prefix (mime_type, "audio/")) {   	
 		result = 1;
-		preview_sound(file, start_flag);
+		preview_sound (file, start_flag);
 	}	
-	g_free(mime_type);
+	g_free (mime_type);
 
 	/* display file name in status area at low zoom levels, since the name is not displayed or hard to read */
 	if (fm_icon_view_get_zoom_level (icon_view) <= NAUTILUS_ZOOM_LEVEL_SMALLER) {
 		if (start_flag) {
-			file_name = nautilus_file_get_name(file);
-			message = g_strdup_printf(_("pointing at \"%s\""), file_name);
-			nautilus_view_report_status (fm_directory_view_get_nautilus_view(FM_DIRECTORY_VIEW(icon_view)), message);
-			g_free(message);
-			g_free(file_name);
+			file_name = nautilus_file_get_name (file);
+			message = g_strdup_printf (_("pointing at \"%s\""), file_name);
+			g_free (file_name);
+			nautilus_view_report_status
+				(fm_directory_view_get_nautilus_view (FM_DIRECTORY_VIEW (icon_view)),
+				 message);
+			g_free (message);
 		} else {
-			fm_directory_view_display_selection_info(FM_DIRECTORY_VIEW(icon_view));
+			fm_directory_view_display_selection_info (FM_DIRECTORY_VIEW(icon_view));
 		}
 	}
 	

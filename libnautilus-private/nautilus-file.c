@@ -191,7 +191,7 @@ nautilus_file_get (const char *uri)
 	/* Make VFS version of directory URI. */
 	directory_vfs_uri = gnome_vfs_uri_get_parent (vfs_uri);
 	if (directory_vfs_uri == NULL) {
-		/* Use the directory itself if we have no parent. */
+		/* Use the item itself if we have no parent. */
 		gnome_vfs_uri_ref (vfs_uri);
 		directory_vfs_uri = vfs_uri;
 	}
@@ -3124,7 +3124,7 @@ nautilus_file_contains_text (NautilusFile *file)
 	uri = nautilus_file_get_uri (file);
 	
 	/* see if it's a nautilus link xml file - if so, see if we need to handle specially */
-	contains_text = (nautilus_str_has_prefix (mime_type, "text/")
+	contains_text = (nautilus_istr_has_prefix (mime_type, "text/")
 		|| (mime_type == NULL && nautilus_file_get_file_type (file)
 		    == GNOME_VFS_FILE_TYPE_REGULAR)) 
 		&& !nautilus_link_is_link_file (uri);

@@ -109,3 +109,23 @@ nautilus_get_available_file_descriptor_count (void)
 
 	return count;
 }
+
+gboolean
+nautilus_str_equal_with_free (char *eat_this,
+			      const char *not_this)
+{
+	gboolean equal;
+
+	/* NULL is not legal. */
+	if (eat_this == NULL) {
+		equal = FALSE;
+	} else if (not_this == NULL) {
+		equal = FALSE;
+	} else {
+		equal = strcmp (eat_this, not_this) == 0;
+	}
+
+	g_free (eat_this);
+
+	return equal;
+}

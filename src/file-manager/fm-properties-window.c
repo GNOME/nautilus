@@ -1154,16 +1154,17 @@ get_property_names_from_uri (const char *directory_uri, GList *property_list)
 	GnomeVFSFileInfo *current_file_info;
 	GnomeVFSDirectoryList *list;
 			
-	result = gnome_vfs_directory_list_load (&list, directory_uri, 
-		GNOME_VFS_FILE_INFO_GET_MIME_TYPE, NULL, NULL);
+	result = gnome_vfs_directory_list_load
+		(&list, directory_uri, 
+		 GNOME_VFS_FILE_INFO_GET_MIME_TYPE, NULL, NULL);
 	if (result != GNOME_VFS_OK) {
 		return property_list;
 	}
 	
 	for (current_file_info = gnome_vfs_directory_list_first(list); current_file_info != NULL; 
 	    current_file_info = gnome_vfs_directory_list_next(list)) {
-		if (nautilus_str_has_prefix(current_file_info->mime_type, "image/")) {
-			keyword = g_strdup(current_file_info->name);
+		if (nautilus_istr_has_prefix (current_file_info->mime_type, "image/")) {
+			keyword = g_strdup (current_file_info->name);
 			
 			/* strip image type suffix */
 			dot_pos = strrchr(keyword, '.');

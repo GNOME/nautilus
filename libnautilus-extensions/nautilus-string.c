@@ -70,16 +70,6 @@ nautilus_str_compare (gconstpointer string_a, gconstpointer string_b)
 				(const char *) string_b);
 }
 
-int
-nautilus_eat_strcmp (char *string_a, const char *string_b)
-{
-	int result;
-
-	result = nautilus_strcmp (string_a, string_b);
-	g_free (string_a);
-	return result;
-}
-
 gboolean
 nautilus_str_has_prefix (const char *haystack, const char *needle)
 {
@@ -125,6 +115,68 @@ nautilus_str_has_suffix (const char *haystack, const char *needle)
 	return FALSE;
 }
 
+gboolean
+nautilus_istr_has_prefix (const char *haystack, const char *needle)
+{
+	const char *h, *n;
+	char hc, nc;
+
+	/* Eat one character at a time. */
+	h = haystack == NULL ? "" : haystack;
+	n = needle == NULL ? "" : needle;
+	do {
+		if (*n == '\0') {
+			return TRUE;
+		}
+		if (*h == '\0') {
+			return FALSE;
+		}
+		hc = *h++;
+		nc = *n++;
+		if (isupper (hc)) {
+			hc = tolower (hc);
+		}
+		if (isupper (nc)) {
+			nc = tolower (nc);
+		}
+	} while (hc == nc);
+	return FALSE;
+}
+
+gboolean
+nautilus_istr_has_suffix (const char *haystack, const char *needle)
+{
+	const char *h, *n;
+	char hc, nc;
+
+	if (needle == NULL) {
+		return TRUE;
+	}
+	if (haystack == NULL) {
+		return needle[0] == '\0';
+	}
+		
+	/* Eat one character at a time. */
+	h = haystack + strlen(haystack);
+	n = needle + strlen(needle);
+	do {
+		if (n == needle) {
+			return TRUE;
+		}
+		if (h == haystack) {
+			return FALSE;
+		}
+		hc = *--h;
+		nc = *--n;
+		if (isupper (hc)) {
+			hc = tolower (hc);
+		}
+		if (isupper (nc)) {
+			nc = tolower (nc);
+		}
+	} while (hc == nc);
+	return FALSE;
+}
 
 /**
  * nautilus_str_get_prefix:
@@ -418,21 +470,6 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_strcmp ("ab", "a") > 0, TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_strcmp ("aaa", "aaab") < 0, TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_strcmp ("aaab", "aaa") > 0, TRUE);
-
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_eat_strcmp (NULL, NULL), 0);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_eat_strcmp (NULL, ""), 0);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_eat_strcmp (g_strdup (""), NULL), 0);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_eat_strcmp (g_strdup ("a"), "a"), 0);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_eat_strcmp (g_strdup ("aaab"), "aaab"), 0);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_eat_strcmp (NULL, "a") < 0, TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_eat_strcmp (g_strdup ("a"), NULL) > 0, TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_eat_strcmp (g_strdup (""), "a") < 0, TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_eat_strcmp (g_strdup ("a"), "") > 0, TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_eat_strcmp (g_strdup ("a"), "b") < 0, TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_eat_strcmp (g_strdup ("a"), "ab") < 0, TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_eat_strcmp (g_strdup ("ab"), "a") > 0, TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_eat_strcmp (g_strdup ("aaa"), "aaab") < 0, TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_eat_strcmp (g_strdup ("aaab"), "aaa") > 0, TRUE);
 
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_prefix (NULL, NULL), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_has_prefix (NULL, ""), TRUE);

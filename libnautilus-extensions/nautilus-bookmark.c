@@ -267,14 +267,17 @@ nautilus_bookmark_icon_is_different (NautilusBookmark *bookmark,
 		(new_icon, &new_uri, &new_name, NULL, NULL);
 
 	if (bookmark->details->icon == NULL) {
-		result = (!nautilus_str_is_empty (new_uri) || !nautilus_str_is_empty (new_name));
+		result = !nautilus_str_is_empty (new_uri)
+			|| !nautilus_str_is_empty (new_name);
 	} else {
 		nautilus_scalable_icon_get_text_pieces 
 			(bookmark->details->icon, &old_uri, &old_name, NULL, NULL);
 
-		result = (nautilus_eat_strcmp (old_uri, new_uri) != 0 || 
-			  nautilus_eat_strcmp (old_name, new_name) != 0);
+		result = nautilus_strcmp (old_uri, new_uri) != 0
+			|| nautilus_strcmp (old_name, new_name) != 0;
 
+		g_free (old_uri);
+		g_free (old_name);
 	}
 
 	g_free (new_uri);

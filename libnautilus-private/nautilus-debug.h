@@ -25,8 +25,25 @@
 #ifndef NAUTILUS_DEBUG_H
 #define NAUTILUS_DEBUG_H
 
-void nautilus_stop_in_debugger (void);
-void nautilus_make_warnings_and_criticals_stop_in_debugger (const char *first_domain, ...);
-int nautilus_get_available_file_descriptor_count (void);
+#include <glib.h>
+
+#ifdef G_DISABLE_ASSERT
+
+#define nautilus_assert_computed_str(str_expr, expected_str)
+
+#else /* !G_DISABLE_ASSERT */
+
+gboolean nautilus_str_equal_with_free                          (char       *eat_this,
+								const char *not_this);
+
+#define nautilus_assert_computed_str(str_expr, expected_str) \
+	g_assert (nautilus_str_equal_with_free ((str_expr), (expected_str)))
+
+#endif /* !G_DISABLE_ASSERT */
+
+void     nautilus_stop_in_debugger                             (void);
+void     nautilus_make_warnings_and_criticals_stop_in_debugger (const char *first_domain,
+								...);
+int      nautilus_get_available_file_descriptor_count          (void);
 
 #endif /* NAUTILUS_DEBUG_H */

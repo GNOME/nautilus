@@ -50,6 +50,11 @@ static char *
 link_set_path_name (const char *directory_path, const char *name)
 {
 	const char *path_start;
+
+	/* FIXME: This hack is unacceptable. Either it's a URI and the
+	 * file:// must be removed with the function that does that,
+	 * or it's a path, and there's no reason to remove the prefix.
+	 */
 	if (nautilus_str_has_prefix(directory_path, "file://"))
 		path_start = directory_path + 7;
 	else

@@ -450,7 +450,7 @@ static char*
 map_local_data_file (char *file_name)
 {
 	char *temp_str;
-	if (file_name && !nautilus_str_has_prefix (file_name, "file://")) {
+	if (file_name && !nautilus_istr_has_prefix (file_name, "file://")) {
 		temp_str = g_strdup_printf ("%s/%s",
 					    NAUTILUS_DATADIR,
 					    file_name);
@@ -1140,18 +1140,23 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 	        application = p->data;	        
 
 		temp_str = g_strdup_printf (_("Open with %s"), application->name);
-	        temp_button = gtk_button_new_with_label (temp_str);		    
+	        temp_button = gtk_button_new_with_label (temp_str);
+		g_free (temp_str);
 		gtk_box_pack_start (GTK_BOX (sidebar->details->button_box), 
 				    temp_button, 
 				    FALSE, FALSE, 
 				    0);
 
-		temp_str = g_strdup_printf("'%s'", 
-			nautilus_str_has_prefix (sidebar->details->uri, "file://") ?
-			sidebar->details->uri + 7 : sidebar->details->uri);
-
+		/* FIXME: Security hole? Can't use a string from the
+		 * MIME file as a printf format string without first
+		 * checking it over somehow.
+		 */
+		temp_str = g_strdup_printf
+			("'%s'", 
+			 nautilus_istr_has_prefix (sidebar->details->uri, "file://")
+			 ? sidebar->details->uri + 7 : sidebar->details->uri);
 		id_string = g_strdup_printf (application->id, temp_str); 		
-		g_free(temp_str);
+		g_free (temp_str);
 
 		nautilus_gtk_signal_connect_free_data 
 			(GTK_OBJECT (temp_button), "clicked",

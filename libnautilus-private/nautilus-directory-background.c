@@ -88,7 +88,8 @@ static char*
 local_data_file_to_uri (char *file_name)
 {
 	char *temp_str;
-	if (file_name && !nautilus_str_has_prefix (file_name, "file://")) {
+
+	if (file_name != NULL && !nautilus_istr_has_prefix (file_name, "file://")) {
 		temp_str = g_strdup_printf ("%s/%s",
 					    NAUTILUS_DATADIR,
 					    file_name);
