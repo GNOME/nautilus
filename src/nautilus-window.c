@@ -1392,7 +1392,7 @@ nautilus_window_set_viewed_file (NautilusWindow *window,
 		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
 			nautilus_file_set_has_open_window (file, TRUE);
 		}
-		attributes = NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME;
+		attributes = NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME | NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE;
 		nautilus_file_monitor_add (file, window, attributes);
 	}
 
