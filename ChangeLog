@@ -1,5 +1,14 @@
 2002-09-10  Dave Camp  <dave@ximian.com>
 
+	* libnautilus-private/nautilus-icon-container.c: (realize):
+	Removed background-modification code.
+	(nautilus_icon_container_instance_init): Call
+	eel_background_set_use_base().
+
+	This fixes the updating problem on theme switches.
+
+2002-09-10  Dave Camp  <dave@ximian.com>
+
 	* libnautilus-private/nautilus-icon-container.c: (keyboard_space):
 	* src/file-manager/fm-list-view.c: (key_press_callback): Activate
 	files on space.

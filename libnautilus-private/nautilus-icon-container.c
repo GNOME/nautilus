@@ -2412,12 +2412,6 @@ realize (GtkWidget *widget)
 
 	GTK_WIDGET_CLASS (parent_class)->realize (widget);
 
-	gtk_widget_modify_bg (widget, GTK_STATE_NORMAL,
-			      &widget->style->base[GTK_STATE_NORMAL]);
-	gdk_window_set_background
-		(GTK_LAYOUT (widget)->bin_window,
-		 &widget->style->bg[GTK_STATE_NORMAL]);
-
 	setup_label_gcs (NAUTILUS_ICON_CONTAINER (widget));
 
  	/* make us the focused widget */
@@ -3468,6 +3462,8 @@ nautilus_icon_container_instance_init (NautilusIconContainer *container)
 
 	g_signal_connect (container, "focus-out-event",
 			  G_CALLBACK (handle_focus_out_event), NULL);
+
+	eel_background_set_use_base (background, TRUE);
 
 	/* FIXME: The code to extract colors from the theme should be
 	 * in FMDirectoryView, not here. The NautilusIconContainer
