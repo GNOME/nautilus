@@ -57,7 +57,5 @@ ui_msgs = nautilus-directory-view-ui.xml.h	\
 	$(NULL)
 
 EXTRA_DIST = $(ui_DATA) $(ui_msgs)
-
 CLEANFILES = $(ui_msgs)
-
 BUILT_SOURCES = $(ui_msgs)

@@ -81,6 +81,7 @@ ui_msgs = \
 
 EXTRA_DIST = \
 	$(ui_DATA)			\
+	$(ui_msgs)			\
 	nautilus-view-component.idl	\
 	nautilus-distributed-undo.idl	\
 	$(NULL)

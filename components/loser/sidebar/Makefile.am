@@ -38,6 +38,6 @@ nautilus_sidebar_loser_LDADD =			\
 	$(VFS_LIBS)					\
 	$(OAF_LIBS)
 
-EXTRA_DIST = $(oaf_DATA) $(ui_DATA)
+EXTRA_DIST = $(oaf_DATA) $(ui_DATA) $(ui_msgs)
 CLEANFILES = $(ui_msgs)
 BUILT_SOURCES = $(ui_msgs)

@@ -1183,6 +1183,9 @@ position_and_show_window_callback (NautilusFile *file,
 	}
 
 	gtk_widget_show (GTK_WIDGET (window));
+
+        /* This object was ref'd when starting the callback. */
+        nautilus_file_unref (file);
 }                       			     
 
 static void
@@ -1226,7 +1229,6 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                                                        window);
                         g_list_free (attributes);
 
-                        nautilus_file_unref (file);
                         g_free (location);
                 }
                 

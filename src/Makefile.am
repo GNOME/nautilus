@@ -160,16 +160,18 @@ CLEANFILES = \
 	$(NULL)
 
 EXTRA_DIST = \
-	check-nautilus \
-	nautilus-shell-interface.idl		\
 	$(oaf_DATA)				\
-	run-nautilus				\
 	$(ui_DATA)				\
+	$(ui_msgs)				\
+	check-nautilus				\
+	nautilus-shell-interface.idl		\
+	run-nautilus				\
 	$(NULL)
 
-BUILT_SOURCES = $(nautilus_shell_interface_idl_sources) \
-		$(ui_msgs)				\
-		$(NULL)
+BUILT_SOURCES = \
+	$(nautilus_shell_interface_idl_sources) \
+	$(ui_msgs)				\
+	$(NULL)
 
 install-data-hook: run-nautilus
 	$(mkinstalldirs) $(DESTDIR)/$(prefix)/bin

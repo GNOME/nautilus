@@ -49,6 +49,6 @@ nautilus_summary_view_LDADD =						\
 	$(AMMONITE_LIBS)						\
 	$(NULL)
 
-EXTRA_DIST = $(oaf_DATA) $(ui_DATA)
+EXTRA_DIST = $(oaf_DATA) $(ui_DATA) $(ui_msgs)
 BUILT_SOURCES = $(ui_msgs)
 CLEANFILES = $(ui_msgs)

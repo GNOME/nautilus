@@ -1,7 +1,24 @@
+2000-10-20  Darin Adler  <darin@eazel.com>
+
+	* components/loser/content/Makefile.am:
+	* components/loser/sidebar/Makefile.am:
+	* components/mozilla/Makefile.am:
+	* components/sample/Makefile.am:
+	* components/services/summary/nautilus-view/Makefile.am:
+	* libnautilus/Makefile.am:
+	* src/Makefile.am:
+	* src/file-manager/Makefile.am:
+	We need to include the .xml.h files in EXTRA_DIST. My mistake
+	turning that off (killed the Tinderbox).
+	
+	* src/nautilus-window-manage-views.c:
+	(position_and_show_window_callback),
+	(nautilus_window_end_location_change_callback): Fix small ref
+	mistake I might have introduced with my last check-in.
+
 2000-10-20  J Shane Culpepper  <pepper@eazel.com>
 
-	* components/services/summary/nautilus-view/nautilus-summary-view.c
-	:
+	* components/services/summary/nautilus-view/nautilus-summary-view.c:
 	* components/services/summary/nautilus-view/tests/README:
 	* components/services/summary/nautilus-view/tests/redirects.xml:
 	* components/services/summary/nautilus-view/tests/services.xml:
