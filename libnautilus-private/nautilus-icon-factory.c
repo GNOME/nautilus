@@ -405,7 +405,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 {
 	NautilusIconFactory *factory;
         IconSet *set;
-	char *uri;
+	char *uri, *custom_image;
         gboolean is_symbolic_link;
 	NautilusScalableIcon *scalable_icon;
 	
@@ -444,16 +444,22 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 	 */
         is_symbolic_link = nautilus_file_is_symbolic_link (file);
 	
+	/* if there is a custom image in the metadata, use that instead */
+	
+    custom_image = nautilus_file_get_metadata(file, "image", NULL);
+	if (custom_image != NULL)
+	  uri = custom_image;	  	
 	/* Use the image itself as a custom icon. */
-	if (nautilus_has_prefix (nautilus_file_get_mime_type (file), "image/")
-	    && nautilus_file_get_size (file) < 10000)
+	else if (nautilus_has_prefix (nautilus_file_get_mime_type (file), "image/")
+	    && nautilus_file_get_size (file) < 16384)
 		uri = nautilus_file_get_uri (file);
 	else
 		uri = NULL;
 	
 	/* Create the icon or find it in the cache if it's already there. */
 	scalable_icon = scalable_icon_get (uri, set, is_symbolic_link);
-	g_free (uri);
+	if (uri != NULL)
+	  g_free (uri);
 	
         nautilus_icon_factory_setup_sweep (factory);
 	

@@ -1,5 +1,16 @@
 2000-02-13  Andy Hertzfeld <andy@eazel.com>
 
+	* libnautilus/nautilus-icon-factory.c:
+	made it use custom image specified in meta-data, if present.
+	also, upped the size used for displaying images as themselves without thumbnails,
+	from 10K to 16K.
+	* src/nautilus-index-title.c:
+	display "notes" from metadata in index panel if present
+	* src/ntl-index-panel.c:
+	fiddled with drag and drop code trying to get it to accept image files, not yet working
+	
+2000-02-13  Andy Hertzfeld <andy@eazel.com>
+
 	made nautilus-index-title widget to hold the title information for the index panel
 	
 	* src/ntl-index-panel.c:

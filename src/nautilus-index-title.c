@@ -60,6 +60,7 @@ struct _NautilusIndexTitleDetails
   GtkWidget *icon;
   GtkWidget *title;
   GtkWidget *more_info;
+  GtkWidget *notes;
 };
 
 /* button assignments */
@@ -111,6 +112,7 @@ nautilus_index_title_initialize (NautilusIndexTitle *index_title)
   index_title->details->icon = NULL;
   index_title->details->title = NULL;  
   index_title->details->more_info = NULL;  
+  index_title->details->notes = NULL;  
 }
 
 /* finalize by throwing away private storage */
@@ -246,12 +248,15 @@ void
 nautilus_index_title_set_up_info (NautilusIndexTitle *index_title, NautilusFile *file_object)
 {
   GdkFont *label_font;
+  gchar *notes_text;
   gchar *temp_string = NULL;
   gchar *info_string = nautilus_file_get_string_attribute(file_object, "type");
   
    if (info_string == NULL)
   	return;
 
+  /* combine the type and the size */
+  
   temp_string = nautilus_file_get_string_attribute(file_object, "size");
   if (temp_string != NULL)
     {
@@ -261,6 +266,7 @@ nautilus_index_title_set_up_info (NautilusIndexTitle *index_title, NautilusFile 
       info_string = new_info_string; 
     }
   
+  /* append the date modified */
   temp_string = nautilus_file_get_string_attribute(file_object, "date_modified");
   if (temp_string != NULL)
     {
@@ -284,6 +290,30 @@ nautilus_index_title_set_up_info (NautilusIndexTitle *index_title, NautilusFile 
   set_up_font(index_title->details->more_info, label_font);	
   
   g_free(info_string);
+
+  /* see if there are any notes for this file. If so, display them */
+  notes_text = nautilus_file_get_metadata(file_object, "notes", NULL);
+  if (notes_text)
+    {
+	  if (index_title->details->notes)
+	     gtk_label_set_text(GTK_LABEL(index_title->details->notes), notes_text);
+	  else 
+	    {  
+	      index_title->details->notes = GTK_WIDGET(gtk_label_new(notes_text));
+	      gtk_label_set_line_wrap(GTK_LABEL(index_title->details->notes), TRUE);   
+	      gtk_widget_show (index_title->details->notes);
+	      gtk_box_pack_start (GTK_BOX (index_title), index_title->details->notes, 0, 0, 0);
+	    }   
+	  
+	  /* FIXME: don't use hardwired font like this */    	
+      label_font = gdk_font_load("-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");	 
+	  set_up_font(index_title->details->notes, label_font);	
+	  
+	  g_free (notes_text);     
+    }
+  else
+    if (index_title->details->notes)
+	    gtk_label_set_text(GTK_LABEL(index_title->details->notes), "");
 }
 
 /* here's the place where we set everything up passed on the passed in uri */

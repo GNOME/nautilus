@@ -72,13 +72,15 @@ static void nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, c
 /* drag and drop definitions */
 
 enum {
+	TARGET_URI_LIST,
 	TARGET_COLOR,
-	TARGET_URI_LIST
+    TARGET_GNOME_URI_LIST
 };
 
 static GtkTargetEntry index_dnd_target_table[] = {
+	{ "text/uri-list",  0, TARGET_URI_LIST },
 	{ "application/x-color", 0, TARGET_COLOR },
-	{ "text/uri-list",  0, TARGET_URI_LIST }
+	{ "special/x-gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
 };
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIndexPanel, nautilus_index_panel, GTK_TYPE_EVENT_BOX)
@@ -192,6 +194,7 @@ nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 
 	switch (info)
 		{
+		case TARGET_GNOME_URI_LIST:
 		case TARGET_URI_LIST: 	
 			g_message("dropped data on index panel: %s", selection_data->data);
       
