@@ -1,3 +1,12 @@
+2000-09-18  Pavel Cisler  <pavel@eazel.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_destroy), (update_menus_idle_callback),
+	(update_one_menu_item), (schedule_update_menus):
+	Partial fix to bug 558- draging to select files gradually degrades.
+	Turns out to be a bonobo bug. For now tweaked the way the menu updating
+	code gets called to make it get called less to make the bug less visible.
+	
 2000-09-18  Mathieu Lacage  <mathieu@eazel.com>
 
 	* libnautilus-extensions/nautilus-search-uri.c:

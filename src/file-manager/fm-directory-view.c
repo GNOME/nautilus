@@ -1026,7 +1026,7 @@ fm_directory_view_destroy (GtkObject *object)
 	}
 
 	if (view->details->update_menus_idle_id != 0) {
-		gtk_idle_remove (view->details->update_menus_idle_id);
+		gtk_timeout_remove (view->details->update_menus_idle_id);
 	}
 
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
@@ -1483,9 +1483,9 @@ update_menus_idle_callback (gpointer data)
 	
 	view = FM_DIRECTORY_VIEW (data);
 
-	view->details->update_menus_idle_id = 0;
-
 	fm_directory_view_update_menus (view);
+	
+	view->details->update_menus_idle_id = 0;
 
 	return FALSE;
 }
@@ -3258,11 +3258,11 @@ update_one_menu_item (FMDirectoryView *view,
 {
 	char *label_string;
 	gboolean sensitive;
-
         compute_menu_item_info (view, menu_path, selection, TRUE, &label_string, &sensitive);
-        bonobo_ui_handler_menu_set_sensitivity (ui_handler, menu_path, sensitive);
-        bonobo_ui_handler_menu_set_label (ui_handler, menu_path, label_string);
-        g_free (label_string);
+
+	bonobo_ui_handler_menu_set_sensitivity (ui_handler, menu_path, sensitive);
+	bonobo_ui_handler_menu_set_label (ui_handler, menu_path, label_string);
+	g_free (label_string);
 }
 
 static void
@@ -3408,12 +3408,16 @@ static void
 schedule_update_menus (FMDirectoryView *view) 
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
-
+	
 	if (view->details->menus_merged
 	    && view->details->update_menus_idle_id == 0) {
+	    	/* Using a gtk_timeout_add instead of gtk_idle_add here to partially work
+	    	 * around a performance problem where bonobo set sensitivity calls 
+	    	 * take too long to execute.
+	    	 */
 		view->details->update_menus_idle_id
-			= gtk_idle_add (update_menus_idle_callback,
-					view);
+			= gtk_timeout_add (300,
+				 update_menus_idle_callback, view);
 	}
 }
 
