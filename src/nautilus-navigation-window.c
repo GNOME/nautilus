@@ -82,19 +82,41 @@ typedef struct {
   NautilusWindow *window;
 } impl_POA_Nautilus_ViewWindow;
 
-static const CORBA_char *impl_Nautilus_ViewWindow__get_current_uri (impl_POA_Nautilus_ViewWindow *servant,
-                                                                    CORBA_Environment            *ev);
-
+/* Implementation functions */
+static const CORBA_char *   impl_Nautilus_ViewWindow__get_current_uri (impl_POA_Nautilus_ViewWindow *servant,
+								       CORBA_Environment            *ev);
 static Nautilus_Application impl_Nautilus_ViewWindow__get_application (impl_POA_Nautilus_ViewWindow *servant,
-                                                                       CORBA_Environment            *ev);
+								       CORBA_Environment            *ev);
+static void                 impl_Nautilus_ViewWindow_open_uri         (impl_POA_Nautilus_ViewWindow *servant,
+								       CORBA_char                   *uri,
+								       CORBA_Environment            *ev);
+static void                 impl_Nautilus_ViewWindow_close            (impl_POA_Nautilus_ViewWindow *servant,
+								       CORBA_Environment            *ev);
 
-static void impl_Nautilus_ViewWindow_open_uri                         (impl_POA_Nautilus_ViewWindow *servant,
-                                                                       CORBA_char                   *uri,
-                                                                       CORBA_Environment            *ev);
+/* Private functions */
+static void               nautilus_window_class_init                    (NautilusWindowClass    *klass);
+static void               nautilus_window_init                          (NautilusWindow         *window);
+static void               nautilus_window_destroy                       (NautilusWindow         *window);
+static void               nautilus_window_set_arg                       (GtkObject              *object,
+									 GtkArg                 *arg,
+									 guint                   arg_id);
+static void               nautilus_window_get_arg                       (GtkObject              *object,
+									 GtkArg                 *arg,
+									 guint                   arg_id);
+static void               nautilus_window_goto_uri_callback             (GtkWidget              *widget,
+									 const char             *uri,
+									 GtkWidget              *window);
+static void               zoom_in_callback                              (NautilusZoomControl    *zoom_control,
+									 NautilusWindow         *window);
+static void               zoom_out_callback                             (NautilusZoomControl    *zoom_control,
+									 NautilusWindow         *window);
+static void               sidebar_panels_changed_callback               (gpointer                user_data);
+static NautilusViewFrame *window_find_sidebar_panel_by_identifier       (NautilusWindow         *window,
+									 NautilusViewIdentifier *identifier);
+static void               window_update_sidebar_panels_from_preferences (NautilusWindow         *window);
 
-static void impl_Nautilus_ViewWindow_close                            (impl_POA_Nautilus_ViewWindow *servant,
-                                                                       CORBA_Environment            *ev);
-
+/* Milliseconds */
+#define STATUSBAR_CLEAR_TIMEOUT 5000
 
 static POA_Nautilus_ViewWindow__epv impl_Nautilus_ViewWindow_epv =
 {
@@ -185,27 +207,6 @@ impl_Nautilus_ViewWindow__create(NautilusWindow *window)
 
    return retval;
 }
-
-static void nautilus_window_class_init        (NautilusWindowClass *klass);
-static void nautilus_window_init              (NautilusWindow      *window);
-static void nautilus_window_destroy           (NautilusWindow      *window);
-static void nautilus_window_set_arg           (GtkObject           *object,
-					       GtkArg              *arg,
-					       guint                arg_id);
-static void nautilus_window_get_arg           (GtkObject           *object,
-					       GtkArg              *arg,
-					       guint                arg_id);
-static void nautilus_window_goto_uri_callback (GtkWidget           *widget,
-					       const char          *uri,
-					       GtkWidget           *window);
-static void zoom_in_callback                  (NautilusZoomControl *zoom_control,
-					       NautilusWindow      *window);
-static void zoom_out_callback                 (NautilusZoomControl *zoom_control,
-					       NautilusWindow      *window);
-static void sidebar_panels_changed_callback   (gpointer             user_data);
-
-/* milliseconds */
-#define STATUSBAR_CLEAR_TIMEOUT 5000
 	
 GtkType
 nautilus_window_get_type(void)
@@ -896,19 +897,13 @@ nautilus_window_add_meta_view(NautilusWindow *window, NautilusViewFrame *meta_vi
 }
 
 void
-nautilus_window_remove_meta_view_real (NautilusWindow *window, NautilusViewFrame *meta_view)
-{
-  nautilus_index_panel_remove_meta_view(window->index_panel, meta_view);
-}
-
-void
 nautilus_window_remove_meta_view (NautilusWindow *window, NautilusViewFrame *meta_view)
 {
-  if (!g_list_find(window->meta_views, meta_view))
-    return;
-
-  window->meta_views = g_list_remove(window->meta_views, meta_view);
-  nautilus_window_remove_meta_view_real(window, meta_view);
+	if (!g_list_find(window->meta_views, meta_view))
+		return;
+	
+	nautilus_index_panel_remove_meta_view (window->index_panel, meta_view);
+	window->meta_views = g_list_remove (window->meta_views, meta_view);
 }
 
 void
@@ -1193,15 +1188,161 @@ nautilus_window_real_set_content_view (NautilusWindow *window, NautilusViewFrame
   window->content_view = new_view;
 }
 
+/**
+ * window_find_sidebar_panel_by_identifier:
+ * @window:	A NautilusWindow
+ * @identifier: The NautilusViewIdentifier to look for
+ *
+ * Search the list of sidebar panels in the given window for one that
+ * matches the given view identifier.
+ *
+ * Returns a referenced object, not a floating one. bonobo_object_unref
+ * it when done playing with it.
+ */
+static NautilusViewFrame *
+window_find_sidebar_panel_by_identifier (NautilusWindow *window, NautilusViewIdentifier *identifier)
+{
+        GList *iterator;
+
+	g_assert (window != NULL);
+	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_assert (identifier != NULL);
+
+        for (iterator = window->meta_views; iterator != NULL; iterator = iterator->next) {
+		NautilusViewFrame *sidebar_panel;
+		
+		g_assert (iterator->data != NULL);
+		g_assert (NAUTILUS_IS_VIEW_FRAME (iterator->data));
+		
+		sidebar_panel = NAUTILUS_VIEW_FRAME (iterator->data);
+		
+		if (strcmp (sidebar_panel->iid, identifier->iid) == 0) {
+			gtk_widget_ref (GTK_WIDGET (sidebar_panel));
+			return sidebar_panel;
+		}
+        }
+	
+	return NULL;
+}
+
+/**
+ * window_update_sidebar_panels_from_preferences:
+ * @window:	A NautilusWindow
+ *
+ * Update the current list of sidebar panels from preferences.   
+ *
+ * Disabled panels are removed if they are already in the list.
+ *
+ * Enabled panels are added if they are not already in the list.
+ *
+ */
+static void
+window_update_sidebar_panels_from_preferences (NautilusWindow *window)
+{
+	GList *enabled_view_identifier_list = NULL;
+	GList *disabled_view_identifier_list = NULL;
+	GList *iterator = NULL;
+
+	g_assert (window != NULL);
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	/* Obtain list of disabled view identifiers */
+	disabled_view_identifier_list = 
+		nautilus_global_preferences_get_disabled_sidebar_panel_view_identifiers ();
+
+	/* Remove disabled panels from the window as needed */
+	for (iterator = disabled_view_identifier_list; iterator != NULL; iterator = iterator->next) {
+		NautilusViewIdentifier *identifier;
+		NautilusViewFrame *sidebar_panel;
+		
+		g_assert (iterator->data != NULL);
+		
+		identifier = (NautilusViewIdentifier *) iterator->data;
+		
+		sidebar_panel = window_find_sidebar_panel_by_identifier (window, identifier);
+
+		if (sidebar_panel != NULL) {
+			nautilus_window_remove_meta_view (window, sidebar_panel);
+
+			gtk_widget_unref (GTK_WIDGET (sidebar_panel));
+		}
+	}
+
+	if (disabled_view_identifier_list) {
+		nautilus_view_identifier_free_list (disabled_view_identifier_list);
+	}
+
+	/* Obtain list of enabled view identifiers */
+	enabled_view_identifier_list = 
+		nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers ();
+	
+	/* Add enabled panels from the window as needed */
+	for (iterator = enabled_view_identifier_list; iterator != NULL; iterator = iterator->next) {
+		NautilusViewIdentifier *identifier;
+		NautilusViewFrame *sidebar_panel;
+
+		g_assert (iterator->data != NULL);
+		
+		identifier = (NautilusViewIdentifier *) iterator->data;
+
+		sidebar_panel = window_find_sidebar_panel_by_identifier (window, identifier);
+
+		if (sidebar_panel == NULL) {
+			gboolean load_result;
+
+			sidebar_panel = NAUTILUS_VIEW_FRAME (gtk_widget_new (nautilus_view_frame_get_type(), 
+									     "main_window", 
+									     window, 
+									     NULL));
+			
+			g_assert (sidebar_panel != NULL);
+			
+			nautilus_window_connect_view (window, sidebar_panel);
+			
+			load_result = nautilus_view_frame_load_client (sidebar_panel, identifier->iid);
+			
+			/* Make sure the load_client succeeded */
+			if (load_result) {
+				gtk_object_ref (GTK_OBJECT (sidebar_panel));
+				
+				nautilus_view_frame_set_active_errors (sidebar_panel, TRUE);
+				
+				nautilus_view_frame_set_label (sidebar_panel, identifier->name);
+				
+				nautilus_window_add_meta_view (window, sidebar_panel);
+			}
+			else {
+				g_warning ("sidebar_panels_changed_callback: Failed to load_client for '%s' meta view.\n", 
+					   identifier->iid);
+				
+				gtk_widget_unref (GTK_WIDGET (sidebar_panel));
+				
+				sidebar_panel = NULL;
+			}
+		}
+		else {
+			gtk_widget_unref (GTK_WIDGET (sidebar_panel));
+		}
+	}
+
+	if (enabled_view_identifier_list) {
+		nautilus_view_identifier_free_list (enabled_view_identifier_list);
+	}
+}
+
+/**
+ * sidebar_panels_changed_callback:
+ * @user_data:	Callback data
+ *
+ * Called when enabled/disabled preferences change for any
+ * sidebar panel.
+ *
+ */
 static void
 sidebar_panels_changed_callback (gpointer user_data)
 {
-	NautilusWindow *window;
-	
 	g_assert (user_data != NULL);
 	g_assert (NAUTILUS_IS_WINDOW (user_data));
 
-	window = NAUTILUS_WINDOW (user_data);
-
-	/* lots of excitement coming here soon */
+	window_update_sidebar_panels_from_preferences (NAUTILUS_WINDOW (user_data));
 }

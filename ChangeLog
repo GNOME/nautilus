@@ -1,5 +1,38 @@
 2000-05-26  Ramiro Estrugo  <ramiro@eazel.com>
 
+	Add support for toggling sidebar panels on the fly via the
+	preferences dialog.
+
+	Also moved function prototypes and macro definitions to top of
+	file.
+
+	* src/ntl-window.c: (impl_Nautilus_ViewWindow__create),
+	(nautilus_window_remove_meta_view):
+	Removed the *_real cruft.  Cleaned this a tiny bit.
+	
+	(window_find_sidebar_panel_by_identifier):
+	New function for finding panels given an identifiers.
+	
+	(window_update_sidebar_panels_from_preferences):
+	New function to update the current list of sidebar panels from
+	preferences. 
+	Disabled panels are removed if they are already in the list.
+	Enabled panels are added if they are not already in the list.
+
+	NOTE: It would be 'nice' if in the future all updates of the
+	sidebar panel occur in just one place - the above function for
+	example.  This is in contrast to the current mess where both
+	ntl-window.c and ntl-window-msgs.c abuse the meta_views list at
+	random places.  Ill look into this later.
+
+	(sidebar_panels_changed_callback):
+	Now actually responds to changes.
+	
+	* src/ntl-window.h:
+	Style dumbness.
+	
+2000-05-26  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-global-preferences.c:
 	(nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers),
 	(nautilus_global_preferences_get_disabled_sidebar_panel_view_identifiers):
