@@ -28,7 +28,7 @@ dnl Tree view build as executable
 
 TREE_VIEW_EXE_SERVER=1
 
-AC_ARG_ENABLE(enable-tree-view-exe-server,
+AC_ARG_ENABLE(tree-view-exe-server,
 [  --enable-tree-view-exe-server	Build tree as executable component instead of shlib],
 TREE_VIEW_EXE_SERVER="$enableval",
 TREE_VIEW_EXE_SERVER=1)

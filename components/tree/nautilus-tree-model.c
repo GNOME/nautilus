@@ -169,17 +169,17 @@ nautilus_tree_model_destroy (GtkObject *object)
 
 	model = (NautilusTreeModel *) object;
 
+	nautilus_tree_stop_monitoring_internal (model);
+
+	remove_all_nodes (model);
+
+	g_list_free (model->details->monitor_clients);
+
 	/* FIXME bugzilla.eazel.com 2411: 
 	 * Free all the key strings and unref all the value nodes in
            the uri_to_node_map */
 
 	g_hash_table_destroy (model->details->uri_to_node_map);
-
-	nautilus_tree_stop_monitoring_internal (model);
-
-	remove_all_nodes (model);
-
-	g_free (model->details->monitor_clients);
 
 	g_free (model->details);
 	
@@ -234,20 +234,18 @@ nautilus_tree_model_for_each_postorder (NautilusTreeModel  *model,
 	GList *reporting_queue;
 
 	if (model->details->root_node_reported) {
-		reporting_queue = g_list_prepend (reporting_queue, model->details->root_node);
+		reporting_queue = g_list_prepend (NULL, model->details->root_node);
 		
 		while (reporting_queue != NULL) {
 			current_node = (NautilusTreeNode *) reporting_queue->data;
-			reporting_queue = g_list_remove_link (reporting_queue, reporting_queue);
-			
-			/* We are doing a depth-first scan here, we
-                           could do breadth-first instead by reversing
-                           the args to the g_list_concat call
-                           below. */
-			reporting_queue = g_list_concat (g_list_copy (nautilus_tree_node_get_children (current_node)),
-							 reporting_queue);
 
-			(*callback) (model, current_node, callback_data);
+			if (nautilus_tree_node_get_children (current_node) == NULL) {
+				reporting_queue = g_list_remove_link (reporting_queue, reporting_queue);
+				(*callback) (model, current_node, callback_data);
+			} else {
+				reporting_queue = g_list_concat (g_list_copy (nautilus_tree_node_get_children (current_node)),
+								 reporting_queue);
+			}
 		}
 	}
 }

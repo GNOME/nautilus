@@ -297,11 +297,15 @@ insert_hack_node (NautilusTreeView *view, const char *uri)
 	GtkCTreeNode *hack_node;
 	char *text[2];
 
+	printf ("XXX: possibly adding hack node for %s\n", uri);
+
 	hack_node = g_hash_table_lookup (view->details->uri_to_hack_node_map, uri);
 
 	if (hack_node == NULL) {
 		text[0] = "...HACK...";
 		text[1] = NULL;
+
+		printf ("XXX: actually adding hack node for %s\n", uri);
 
 		view_node = uri_to_view_node (view, uri);
 
@@ -325,6 +329,8 @@ remove_hack_node (NautilusTreeView *view, const char *uri)
 {
 	GtkCTreeNode *hack_node;
 
+	printf ("XXX: removing hack node for %s\n", uri);
+
 	hack_node = g_hash_table_lookup (view->details->uri_to_hack_node_map, uri);
        
 	if (hack_node != NULL) {
@@ -334,6 +340,7 @@ remove_hack_node (NautilusTreeView *view, const char *uri)
 		g_hash_table_remove (view->details->uri_to_hack_node_map, uri);
 
 		gtk_clist_thaw (GTK_CLIST (view->details->tree));
+		printf ("XXX: actually thawing (%d)\n", GTK_CLIST (view->details->tree)->freeze_count);
 	}
 }
 
@@ -343,10 +350,13 @@ freeze_if_have_hack_node (NautilusTreeView *view, const char *uri)
 {
 	GtkCTreeNode *hack_node;
 
+	puts ("XXX: freezing if hack node");
+
 	hack_node = g_hash_table_lookup (view->details->uri_to_hack_node_map, uri);
 
 	if (hack_node != NULL) {
 		gtk_clist_freeze (GTK_CLIST (view->details->tree));
+		printf ("XXX: actually freezing (%d)\n", GTK_CLIST (view->details->tree)->freeze_count);
 	}
 }
 
@@ -536,11 +546,15 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 							     view_node)) {
 					gtk_ctree_expand (GTK_CTREE (view->details->tree),
 							  view_node);
-				} else {
-					reload_node_for_uri (view, uri);
-				}
+				} 
 			} else {
-				insert_hack_node (view, uri);
+				if (ctree_is_node_expanded (GTK_CTREE (view->details->tree),
+								       view_node)) {
+					gtk_ctree_collapse (GTK_CTREE (view->details->tree),
+							    view_node);
+				} else {
+					insert_hack_node (view, uri);
+				}
 			}
 		}
 	} else {
@@ -608,6 +622,8 @@ nautilus_tree_view_model_node_added_callback (NautilusTreeModel *model,
 {
 	NautilusTreeView *view;
 
+	puts ("XXX: added");
+
 	view = NAUTILUS_TREE_VIEW (callback_data);
 
 	nautilus_tree_view_insert_model_node (view, node);
@@ -624,6 +640,13 @@ nautilus_tree_view_model_node_changed_callback (NautilusTreeModel *model,
 						gpointer           callback_data)
 {
 	NautilusTreeView *view;
+	char *uri;
+
+	uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
+
+	printf ("XXX: changed %s\n", uri);
+
+	g_free (uri);
 
 	view = NAUTILUS_TREE_VIEW (callback_data);
 
@@ -638,6 +661,8 @@ nautilus_tree_view_model_node_removed_callback (NautilusTreeModel *model,
 {
 	NautilusTreeView *view;
 
+	puts ("XXX: removed");
+
 	view = NAUTILUS_TREE_VIEW (callback_data);
 
 	nautilus_tree_view_remove_model_node (view, node);
@@ -651,6 +676,8 @@ nautilus_tree_view_model_done_loading_callback (NautilusTreeModel *model,
 {
 	NautilusTreeView *view;
 	char *uri;
+
+	puts ("XXX: done loading");
 
 	view = NAUTILUS_TREE_VIEW (callback_data);
 
@@ -733,6 +760,63 @@ tree_view_realize_callback (GtkWidget *widget, gpointer user_data)
 	tree_view->details->dnd->highlight_style = new_style;
 }
 
+
+static void
+nautilus_tree_view_init_dnd (NautilusTreeView *view)
+{
+	gtk_drag_dest_set (GTK_WIDGET (view->details->tree), 
+			   GTK_DEST_DEFAULT_MOTION 
+			   | GTK_DEST_DEFAULT_HIGHLIGHT 
+			   | GTK_DEST_DEFAULT_DROP, 
+			   nautilus_tree_view_dnd_target_table,
+			   NAUTILUS_N_ELEMENTS (nautilus_tree_view_dnd_target_table),
+			   GDK_ACTION_COPY 
+			   | GDK_ACTION_MOVE 
+			   | GDK_ACTION_LINK 
+			   | GDK_ACTION_ASK);
+
+
+	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
+			    "drag_begin", 
+			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_begin), 
+			    view);
+	
+	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
+			    "drag_end", 
+			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_end), 
+			    view);
+	
+	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
+			    "drag_leave", 
+			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_leave), 
+			    view);
+
+	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
+			    "drag_motion", 
+			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_motion), 
+			    view);
+
+	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
+			    "drag_drop", 
+			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_drop), 
+			    view);
+
+	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
+			    "drag_data_received", 
+			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_data_received), 
+			    view);
+	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
+			    "drag_data_get", 
+			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_data_get), 
+			    view);
+
+	view->details->dnd = g_new0 (NautilusTreeViewDndDetails, 1);
+	view->details->dnd->motion_queue = nautilus_queue_new ();
+	view->details->dnd->target_list = gtk_target_list_new (nautilus_tree_view_dnd_target_table, 
+							       1);
+
+}
+
 static void
 nautilus_tree_view_initialize (NautilusTreeView *view)
 {
@@ -801,56 +885,8 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 
 
 	/* init dnd */
-	gtk_drag_dest_set (GTK_WIDGET (view->details->tree), 
-			   GTK_DEST_DEFAULT_MOTION 
-			   | GTK_DEST_DEFAULT_HIGHLIGHT 
-			   | GTK_DEST_DEFAULT_DROP, 
-			   nautilus_tree_view_dnd_target_table,
-			   NAUTILUS_N_ELEMENTS (nautilus_tree_view_dnd_target_table),
-			   GDK_ACTION_COPY 
-			   | GDK_ACTION_MOVE 
-			   | GDK_ACTION_LINK 
-			   | GDK_ACTION_ASK);
 
-
-	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
-			    "drag_begin", 
-			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_begin), 
-			    view);
-	
-	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
-			    "drag_end", 
-			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_end), 
-			    view);
-	
-	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
-			    "drag_leave", 
-			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_leave), 
-			    view);
-
-	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
-			    "drag_motion", 
-			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_motion), 
-			    view);
-
-	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
-			    "drag_drop", 
-			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_drop), 
-			    view);
-
-	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
-			    "drag_data_received", 
-			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_data_received), 
-			    view);
-	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
-			    "drag_data_get", 
-			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_data_get), 
-			    view);
-
-	view->details->dnd = g_new0 (NautilusTreeViewDndDetails, 1);
-	view->details->dnd->motion_queue = nautilus_queue_new ();
-	view->details->dnd->target_list = gtk_target_list_new (nautilus_tree_view_dnd_target_table, 
-							       1);
+	nautilus_tree_view_init_dnd (view);
 
 	/* set up view */
 	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
@@ -896,7 +932,9 @@ nautilus_tree_view_destroy (GtkObject *object)
 	view = NAUTILUS_TREE_VIEW (object);
 	
 	/* you do not need to unref the normal style */
-        gtk_style_unref(view->details->dnd->highlight_style);
+	if (view->details->dnd->highlight_style != NULL) {
+		gtk_style_unref(view->details->dnd->highlight_style);
+	}
 	g_free (view->details->dnd);
 	/* FIXME bugzilla.eazel.com 2422: destroy drag_info */
 
