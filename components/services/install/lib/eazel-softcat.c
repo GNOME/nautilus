@@ -533,7 +533,6 @@ remove_directories_from_provides_list (PackageData *pack)
 
 	for (iter = g_list_first (pack->provides); iter != NULL; ) {
 		if (is_filename_probably_a_directory ((char *)(iter->data), pack->provides)) {
-			printf ("removing '%s'\n", (char *)(iter->data));
 			g_free (iter->data);
 			pack->provides = g_list_remove (pack->provides, iter->data);
 			iter = g_list_first (pack->provides);

@@ -1,3 +1,16 @@
+2001-01-18  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(osd_parse_feature_list), (osd_parse_implementation):
+
+	Parse the "features" list for toplevel packages, if one is
+	provided by softcat (the next softcat release will do it).
+
+	* components/services/install/lib/eazel-softcat.c:
+	(remove_directories_from_provides_list):
+
+	Remove debugging line I accidentally left in.
+
 2001-01-18  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed some damage from the default theme change, including getting

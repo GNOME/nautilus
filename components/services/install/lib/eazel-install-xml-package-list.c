@@ -749,6 +749,26 @@ osd_parse_file_list (PackageData *pack, xmlNodePtr node)
 }
 
 static void
+osd_parse_feature_list (PackageData *pack, xmlNodePtr node)
+{
+	xmlNodePtr child;
+	char *tmp;
+
+	child = node->xmlChildrenNode;
+	while (child) {
+		if (g_strcasecmp (child->name, "FEATURE") == 0) {
+			tmp = xmlNodeGetContent (child);
+			pack->features = g_list_prepend (pack->features, g_strdup (tmp));
+			xmlFree (tmp);
+		} else {
+			trilobite_debug ("XML feature list contains %s (not FILE)", child->name);
+		}
+		child = child->next;
+	}
+	pack->features = g_list_reverse (pack->features);
+}
+
+static void
 osd_parse_implementation (PackageData *pack,
 			  xmlNodePtr node)
 {
@@ -778,6 +798,9 @@ osd_parse_implementation (PackageData *pack,
 		} else if (g_strcasecmp (child->name, "FILES") == 0) {
 			/* oh boy... exhaustive file list */
 			osd_parse_file_list (pack, child);
+		} else if (g_strcasecmp (child->name, "FEATURES") == 0) {
+			/* list of "features" (usually shared libs) in the toplevel package */
+			osd_parse_feature_list (pack, child);
 		} else if (g_strcasecmp (child->name, "DEPENDENCY")==0) {
 			osd_parse_dependency (pack, child);
 		} else {
