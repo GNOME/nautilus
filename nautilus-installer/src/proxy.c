@@ -102,7 +102,6 @@ getline_dup (FILE* stream)
 static char *
 load_nscp_proxy_settings (void)
 {
-	char * user_directory = NULL;
 	char * prefs_path = NULL;
 	char * ret = NULL;
 	char * proxy_host = NULL;
@@ -113,12 +112,7 @@ load_nscp_proxy_settings (void)
 	char * current, *end;
 	FILE * prefs_file;
 
-	user_directory = g_get_home_dir ();
-
-	prefs_path = g_strconcat (user_directory, NETSCAPE_PREFS_PATH, NULL);
-	g_free (user_directory);
-	user_directory = NULL;
-
+	prefs_path = g_strdup_printf ("%s%s", g_get_home_dir (), NETSCAPE_PREFS_PATH);
 	prefs_file = fopen (prefs_path, "r");
 
 	if ( NULL == prefs_file ) {
@@ -190,7 +184,6 @@ error:
 static char *
 load_galeon_proxy_settings (void)
 {
-	char * user_directory = NULL;
 	char * prefs_path = NULL;
 	char * line;
 	FILE * prefs_file;
@@ -198,11 +191,7 @@ load_galeon_proxy_settings (void)
 	guint32 proxy_port = 8080;
 	char * ret = NULL;
 
-	user_directory = g_get_home_dir ();
-	prefs_path = g_strconcat (user_directory, GALEON_PREFS_PATH, NULL);
-	g_free (user_directory);
-	user_directory = NULL;
-
+	prefs_path = g_strdup_printf ("%s%s", g_get_home_dir (), GALEON_PREFS_PATH);
 	prefs_file = fopen (prefs_path, "r");
 	if ( NULL == prefs_file ) {
 		goto error;

@@ -1,6 +1,20 @@
 2000-10-31  Robey Pointer  <robey@eazel.com>
 
 	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/main.c: (main):
+	* nautilus-installer/src/proxy.c: (load_nscp_proxy_settings),
+	(load_galeon_proxy_settings):
+	* src/nautilus-first-time-druid.c: (load_nscp_proxy_settings),
+	(load_galeon_proxy_settings), (attempt_http_proxy_autoconfigure):
+
+	Fix installer version to follow the Makefile define.  Fix evil bug
+	in detecting proxy servers that was freeing g_get_home_dir
+	results.  Fixed it again in the first-time druid, and added Galeon
+	support there.
+
+2000-10-31  Robey Pointer  <robey@eazel.com>
+
+	* nautilus-installer/src/Makefile:
 	* src/nautilus-window-service-ui.c: (goto_services_support):
 
 	Fix bootstrap installer for new Makefile config and fix typo in

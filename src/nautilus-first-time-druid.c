@@ -974,7 +974,6 @@ getline_dup (FILE* stream)
 static char *
 load_nscp_proxy_settings ()
 {
-	char * user_directory = NULL;
 	char * prefs_path = NULL;
 	char * ret = NULL;
 	char * proxy_host = NULL;
@@ -985,12 +984,7 @@ load_nscp_proxy_settings ()
 	char * current, *end;
 	FILE * prefs_file;
 
-	user_directory = g_get_home_dir ();
-
-	prefs_path = g_strconcat (user_directory, NETSCAPE_PREFS_PATH, NULL);
-	g_free (user_directory);
-	user_directory = NULL;
-
+	prefs_path = g_strconcat (g_get_home_dir (), NETSCAPE_PREFS_PATH, NULL);
 	prefs_file = fopen (prefs_path, "r");
 
 	if ( NULL == prefs_file ) {
@@ -1052,6 +1046,50 @@ error:
 	return ret;
 }
 
+
+#define GALEON_PREFS_PATH "/.gnome/galeon"
+
+/* http_proxy=localhost
+ * http_proxy_port=4128
+ */
+static char *
+load_galeon_proxy_settings (void)
+{
+	char * prefs_path = NULL;
+	char * line;
+	FILE * prefs_file;
+	char * proxy_host = NULL;
+	guint32 proxy_port = 8080;
+	char * ret = NULL;
+
+	prefs_path = g_strdup_printf ("%s%s", g_get_home_dir (), GALEON_PREFS_PATH);
+	prefs_file = fopen (prefs_path, "r");
+	if ( NULL == prefs_file ) {
+		goto error;
+	}
+
+	/* i have no qualms about doing it "this way" ;) */
+	for ( ; NULL != (line = getline_dup (prefs_file)) ; g_free (line) ) {
+		if ((g_strncasecmp (line, "http_proxy=", 11) == 0) && (strlen (line+11))) {
+			proxy_host = g_strdup (line+11);
+		}
+		if ((g_strncasecmp (line, "http_proxy_port=", 16) == 0) && (strlen (line+16))) {
+			proxy_port = strtoul (line+16, NULL, 10);
+		}
+	}
+
+	if (proxy_host != NULL) {
+		ret = g_strdup_printf ("http://%s:%u", proxy_host, proxy_port);
+	}
+
+error:
+	g_free (proxy_host);
+	g_free (prefs_path);
+	prefs_path = NULL;
+
+	return ret;
+}
+
 /**
  * attempt_http_proxy_autoconfigure
  *
@@ -1074,26 +1112,35 @@ attempt_http_proxy_autoconfigure (void)
 
 	/* Note that g_getenv returns a pointer to a static buffer */
 	proxy_url = g_getenv ("http_proxy");
-
 	if (NULL != proxy_url) {
 		success = TRUE;
 		set_http_proxy (proxy_url);
 		g_free (proxy_url);
 		proxy_url = NULL;
+		goto done;
 	}
 
 	/* Check Netscape 4.x settings */
-
 	proxy_url = load_nscp_proxy_settings ();
-
 	if (NULL != proxy_url) {
 		success = TRUE;
 		set_http_proxy (proxy_url);
 		g_free (proxy_url);
 		proxy_url = NULL;
+		goto done;
 	}
 
+	/* Check for Galeon */
+	proxy_url = load_galeon_proxy_settings ();
+	if (NULL != proxy_url) {
+		success = TRUE;
+		set_http_proxy (proxy_url);
+		g_free (proxy_url);
+		proxy_url = NULL;
+		goto done;
+	}
+
+done:
 	autoconfigure_attempted = TRUE;
 	return success;
 }
-
