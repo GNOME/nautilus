@@ -1,3 +1,53 @@
+2000-08-29  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2173 (We should allow clearing the History list)
+	There's now a Forget History item in the Go menu which
+	(after confirmation) forgets the history items in the Go
+	menu and the back/forward chains of each Nautilus window.
+	Afterwards, the Go menu's history list contains only locations
+	currently being displayed.
+
+	* src/nautilus-window.h: Changed back_list and forward_list
+	from GSList * to GList * so I could use nautilus glist 
+	convenience functions (there's no efficiency issue with these 
+	small lists). Added prototypes for new functions
+	nautilus_clear_back_list, nautilus_clear_forward_list, and
+	nautilus_forget_history.
+	
+	* src/nautilus-window.c: 
+	(nautilus_window_clear_forward_list),
+	(nautilus_window_clear_back_list): New functions that free and
+	set to NULL the back & forward lists.
+	(nautilus_window_destroy): Use nautilus_window_clear_back_list
+	and nautilus_window_clear_forward_list instead of replicating code.
+	(nautilus_window_back_or_forward),
+	(nautilus_window_get_base_page_index): Replace "slist" with "list"
+	(free_history_list): Set history_list variable to NULL in addition
+	to freeing its contents.
+	(nautilus_forget_history): New function, walks through all windows
+	clearing out their back/forward lists, and throws away all of the
+	history list except currently-displayed locations.
+
+	* src/nautilus-window-manage-views.c: (handle_go_back),
+	(handle_go_forward), (handle_go_elsewhere): Changed "slist"
+	to "list" in various places; called new nautilus_clear_forward_list
+	instead of replicating code.
+	
+	* src/nautilus-window-menus.c: 
+	(forget_history_if_confirmed): New function, calls nautilus_history_forget
+	if user confirms via modeless dialog (because it would be a pain to
+	accidentally choose this menu item and erase your history).
+	(go_menu_forget_history_callback): New function used by new menu item,
+	calls forget_history_if_confirmed.
+	(nautilus_window_initialize_menus): Add "Forget History" item to Go menu.
+	
+	* src/nautilus-window-toolbars.c: (create_back_or_forward_menu):
+	Replace "slist" with "list"
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_real_create_background_context_menu_items):
+	Just clarified a comment.
+
 2000-08-29  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

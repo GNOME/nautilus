@@ -93,7 +93,7 @@ struct NautilusWindow {
   /* Back/Forward chain, and history list. 
    * The data in these lists are NautilusBookmark pointers. 
    */
-  GSList *back_list, *forward_list;
+  GList *back_list, *forward_list;
 
   NautilusBookmark *current_location_bookmark; 
   NautilusBookmark *last_location_bookmark;
@@ -171,6 +171,9 @@ void             nautilus_window_allow_reload         (NautilusWindow    *window
                                                        gboolean           allow);
 void             nautilus_window_allow_stop           (NautilusWindow    *window,
                                                        gboolean           allow);
+void		 nautilus_window_clear_back_list      (NautilusWindow    *window);
+void		 nautilus_window_clear_forward_list   (NautilusWindow    *window);
+void		 nautilus_forget_history	      (void);
 void             nautilus_bookmarks_exiting           (void);
 void		 nautilus_window_reload		      (NautilusWindow	 *window);
 gint 		 nautilus_window_get_base_page_index  (NautilusWindow 	 *window);

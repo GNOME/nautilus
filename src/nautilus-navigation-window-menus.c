@@ -81,6 +81,8 @@
 #define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_ZOOM	"/View/Separator before Zoom"
 
 #define NAUTILUS_MENU_PATH_HOME_ITEM			"/Go/Home"
+#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_FORGET	"/Go/Separator before Forget"
+#define NAUTILUS_MENU_PATH_FORGET_HISTORY_ITEM		"/Go/Forget History"
 
 #define NAUTILUS_MENU_PATH_HISTORY_ITEMS_PLACEHOLDER	"/Go/History Placeholder"
 #define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_HISTORY	"/Go/Separator before History"
@@ -321,6 +323,53 @@ go_menu_home_callback (BonoboUIHandler *ui_handler,
 		       const char *path) 
 {
 	nautilus_window_go_home (NAUTILUS_WINDOW (user_data));
+}
+
+static void
+forget_history_if_confirmed (NautilusWindow *window)
+{
+	GnomeDialog *dialog;
+	char *prompt;
+
+	/* Confirm before forgetting history because it's a rare operation that
+	 * is hard to recover from. We don't want people doing it accidentally
+	 * when they intended to choose another Go menu item.
+	 */
+	if ((rand() % 10) == 0) {
+		/* This is a little joke, shows up occasionally. I only
+		 * implemented this feature so I could use this joke. 
+		 */
+		prompt = g_strdup (_("Are you sure you want to forget history? "
+				     "If you do, you will be doomed to repeat it."));
+	} else {
+		prompt = g_strdup (_("Are you sure you want Nautilus to forget "
+				     "which locations you have visited?"));
+	}
+					   
+	dialog = nautilus_yes_no_dialog (prompt,
+					 _("Forget"),
+					 GNOME_STOCK_BUTTON_CANCEL,
+					 GTK_WINDOW (window));
+	g_free (prompt);					 
+
+	gtk_signal_connect
+		(GTK_OBJECT (nautilus_gnome_dialog_get_button_by_index
+			     (dialog, GNOME_OK)),
+		 "clicked",
+		 nautilus_forget_history,
+		 NULL);
+
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Forget History?"));			 
+	gnome_dialog_set_default (dialog, GNOME_CANCEL);
+}
+
+
+static void
+go_menu_forget_history_callback (BonoboUIHandler *ui_handler, 
+		       		 gpointer user_data,
+		       		 const char *path) 
+{
+	forget_history_if_confirmed (NAUTILUS_WINDOW (user_data));
 }
 
 static void
@@ -1445,6 +1494,18 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 'H',
         				 GDK_CONTROL_MASK,
         				 go_menu_home_callback,
+        				 window);
+        				 
+	append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_FORGET);
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_FORGET_HISTORY_ITEM,
+        				 _("For_get History"),
+        				 _("Clear contents of Go menu and Back/Forward lists"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 0, 0,
+        				 go_menu_forget_history_callback,
         				 window);
 
         append_placeholder (window, NAUTILUS_MENU_PATH_HISTORY_ITEMS_PLACEHOLDER);

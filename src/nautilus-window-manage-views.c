@@ -336,10 +336,10 @@ handle_go_back (NautilusWindow *window, const char *location)
         guint i;
 
         /* Going back. Move items from the back list to the forward list. */
-        g_assert (g_slist_length (window->back_list) > window->location_change_distance);
+        g_assert (g_list_length (window->back_list) > window->location_change_distance);
         nautilus_assert_computed_str
-                (nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (g_slist_nth_data (window->back_list,
-                                                                                 window->location_change_distance))),
+                (nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (g_list_nth_data (window->back_list,
+                                                                                window->location_change_distance))),
                  location);
         g_assert (window->location != NULL);
         
@@ -348,7 +348,7 @@ handle_go_back (NautilusWindow *window, const char *location)
                                       window->location);
 
         /* Use the first bookmark in the history list rather than creating a new one. */
-        window->forward_list = g_slist_prepend (window->forward_list, window->last_location_bookmark);
+        window->forward_list = g_list_prepend (window->forward_list, window->last_location_bookmark);
         gtk_object_ref (GTK_OBJECT (window->forward_list->data));
                                 
         /* Move extra links from Back to Forward list */
@@ -356,13 +356,13 @@ handle_go_back (NautilusWindow *window, const char *location)
                 NautilusBookmark *bookmark;
                 
                 bookmark = window->back_list->data;
-                window->back_list = g_slist_remove_link (window->back_list, window->back_list);
-                window->forward_list = g_slist_prepend (window->forward_list, bookmark);
+                window->back_list = g_list_remove_link (window->back_list, window->back_list);
+                window->forward_list = g_list_prepend (window->forward_list, bookmark);
         }
         
         /* One bookmark falls out of back/forward lists and becomes viewed location */
         gtk_object_unref (window->back_list->data);
-        window->back_list = g_slist_remove_link (window->back_list, window->back_list);
+        window->back_list = g_list_remove_link (window->back_list, window->back_list);
 }
 
 static void
@@ -371,10 +371,10 @@ handle_go_forward (NautilusWindow *window, const char *location)
         guint i;
 
         /* Going forward. Move items from the forward list to the back list. */
-        g_assert (g_slist_length (window->forward_list) > window->location_change_distance);
+        g_assert (g_list_length (window->forward_list) > window->location_change_distance);
         nautilus_assert_computed_str
-                (nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (g_slist_nth_data (window->forward_list,
-                                                                                 window->location_change_distance))),
+                (nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (g_list_nth_data (window->forward_list,
+                                                                                window->location_change_distance))),
                  location);
         g_assert (window->location != NULL);
                                 
@@ -384,7 +384,7 @@ handle_go_forward (NautilusWindow *window, const char *location)
                  window->location);
         
         /* Use the first bookmark in the history list rather than creating a new one. */
-        window->back_list = g_slist_prepend (window->back_list, window->last_location_bookmark);
+        window->back_list = g_list_prepend (window->back_list, window->last_location_bookmark);
         gtk_object_ref (GTK_OBJECT (window->back_list->data));
         
         /* Move extra links from Forward to Back list */
@@ -392,22 +392,20 @@ handle_go_forward (NautilusWindow *window, const char *location)
                 NautilusBookmark *bookmark;
                 
                 bookmark = window->forward_list->data;
-                window->forward_list = g_slist_remove_link (window->forward_list, window->forward_list);
-                window->back_list = g_slist_prepend (window->back_list, bookmark);
+                window->forward_list = g_list_remove_link (window->forward_list, window->forward_list);
+                window->back_list = g_list_prepend (window->back_list, bookmark);
         }
         
         /* One bookmark falls out of back/forward lists and becomes viewed location */
         gtk_object_unref (window->forward_list->data);
-        window->forward_list = g_slist_remove_link (window->forward_list, window->forward_list);
+        window->forward_list = g_list_remove_link (window->forward_list, window->forward_list);
 }
 
 static void
 handle_go_elsewhere (NautilusWindow *window, const char *location)
 {
        /* Clobber the entire forward list, and move displayed location to back list */
-        g_slist_foreach (window->forward_list, (GFunc)gtk_object_unref, NULL);
-        g_slist_free (window->forward_list);
-        window->forward_list = NULL;
+        nautilus_window_clear_forward_list (window);
                                 
         if (window->location != NULL) {
                 /* If we're returning to the same uri somehow, don't put this uri on back list. 
@@ -420,7 +418,7 @@ handle_go_elsewhere (NautilusWindow *window, const char *location)
                                 (nautilus_bookmark_get_uri (window->last_location_bookmark), 
                                  window->location);
                         /* Use the first bookmark in the history list rather than creating a new one. */
-                        window->back_list = g_slist_prepend (window->back_list, window->last_location_bookmark);
+                        window->back_list = g_list_prepend (window->back_list, window->last_location_bookmark);
                         gtk_object_ref (GTK_OBJECT (window->back_list->data));
                 }
         }

@@ -186,7 +186,7 @@ create_back_or_forward_menu (NautilusWindow *window, gboolean back)
 {
 	GtkMenu *menu;
 	GtkWidget *menu_item;
-	GSList *list_link;
+	GList *list_link;
 	int index;
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
@@ -207,7 +207,7 @@ create_back_or_forward_menu (NautilusWindow *window, gboolean back)
 			 window);
 		
 		gtk_menu_append (menu, menu_item);
-		list_link = g_slist_next (list_link);
+		list_link = g_list_next (list_link);
 		++index;
 	}
 

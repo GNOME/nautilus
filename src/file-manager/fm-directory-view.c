@@ -2491,12 +2491,8 @@ fm_directory_view_real_create_background_context_menu_items (FMDirectoryView *vi
 		       TRUE);
 	append_gtk_menu_item_with_view (view, menu, NULL, 
 	               NAUTILUS_MENU_PATH_SELECT_ALL_ITEM, select_all_callback, NULL);
-	/* FIXME bugzilla.eazel.com 1261: 
-	 * Need to think clearly about what items to include here.
-	 * We want the list to be pretty short, but not degenerately short.
-	 * Zoom In and Out don't really seem to belong. Maybe "Show Properties"
-	 * (for the current location, not selection -- but would have to not
-	 * include this item when there's a selection)? Add Bookmark? (same issue).
+	/* FIXME bugzilla.eazel.com 1794: 
+	 * Implement Arlo's design for which items should appear.
 	 */	
 	create_background_context_menu_zoom_items (view, menu);
 	create_background_context_menu_background_items (view, menu);

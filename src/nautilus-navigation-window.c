@@ -465,10 +465,10 @@ nautilus_window_destroy (GtkObject *object)
 	g_free (window->location);
 	nautilus_g_list_free_deep (window->selection);
 	nautilus_g_list_free_deep (window->pending_selection);
-	g_slist_foreach (window->back_list, (GFunc)gtk_object_unref, NULL);
-	g_slist_foreach (window->forward_list, (GFunc)gtk_object_unref, NULL);
-	g_slist_free (window->back_list);
-	g_slist_free (window->forward_list);
+
+	nautilus_window_clear_back_list (window);
+	nautilus_window_clear_forward_list (window);
+
 	if (window->current_location_bookmark != NULL) {
 		gtk_object_unref (GTK_OBJECT (window->current_location_bookmark));
 	}
@@ -912,13 +912,13 @@ nautilus_window_remove_sidebar_panel (NautilusWindow *window, NautilusViewFrame 
 void
 nautilus_window_back_or_forward (NautilusWindow *window, gboolean back, guint distance)
 {
-	GSList *list;
+	GList *list;
 	char *uri;
 	
 	list = back ? window->back_list : window->forward_list;
-	g_assert (g_slist_length (list) > distance);
+	g_assert (g_list_length (list) > distance);
 
-	uri = nautilus_bookmark_get_uri (g_slist_nth_data (list, distance));
+	uri = nautilus_bookmark_get_uri (g_list_nth_data (list, distance));
 	nautilus_window_begin_location_change
 		(window,
 		 uri,
@@ -1068,6 +1068,7 @@ static void
 free_history_list (void)
 {
 	nautilus_gtk_object_list_free (history_list);
+	history_list = NULL;
 }
 
 void
@@ -1106,6 +1107,58 @@ nautilus_add_to_history_list (NautilusBookmark *bookmark)
 	 * NautilusWindows (not just this one) are listening.
 	 */
 	nautilus_send_history_list_changed ();
+}
+
+void
+nautilus_window_clear_forward_list (NautilusWindow *window)
+{
+	nautilus_gtk_object_list_free (window->forward_list);
+	window->forward_list = NULL;
+}
+
+void
+nautilus_window_clear_back_list (NautilusWindow *window)
+{
+	nautilus_gtk_object_list_free (window->back_list);
+	window->back_list = NULL;
+}
+
+void
+nautilus_forget_history (void) 
+{
+	GSList *window_node;
+	NautilusWindow *window;
+
+	/* Clear out each window's back & forward lists. Also, remove 
+	 * each window's current location bookmark from history list 
+	 * so it doesn't get clobbered.
+	 */
+	for (window_node = nautilus_application_windows ();
+	     window_node != NULL;
+	     window_node = window_node->next) {
+
+		window = NAUTILUS_WINDOW (window_node->data);
+
+		nautilus_window_clear_back_list (window);
+		nautilus_window_clear_forward_list (window);
+
+		nautilus_window_allow_back (window, FALSE);
+		nautilus_window_allow_forward (window, FALSE);
+
+		history_list = g_list_remove (history_list, window->current_location_bookmark);
+	}
+
+	/* Clobber history list. */
+	free_history_list ();
+
+	/* Re-add each window's current location to history list. */
+	for (window_node = nautilus_application_windows ();
+	     window_node != NULL;
+	     window_node = window_node->next) {
+
+		window = NAUTILUS_WINDOW (window_node->data);
+		nautilus_add_to_history_list (window->current_location_bookmark);
+	}
 }
 
 GList *
@@ -1699,7 +1752,7 @@ nautilus_window_get_base_page_index (NautilusWindow *window)
 {
 	gint forward_count;
 	
-	forward_count = g_slist_length (window->forward_list); 
+	forward_count = g_list_length (window->forward_list); 
 
 	/* If forward is empty, the base it at the top of the list */
 	if (forward_count == 0) {
