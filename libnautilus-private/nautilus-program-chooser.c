@@ -1026,13 +1026,13 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 	
 
 	/* Radio button for adding to short list for specific file. */
-	radio_button_text = g_strdup_printf (_("Include in the menu just for \"%s\""), 
+	radio_button_text = g_strdup_printf (_("Include in the menu for \"%s\" only"), 
 					     file_name);
 	item_radio_button = pack_radio_button (GTK_BOX (framed_vbox), radio_button_text, type_radio_button);
 	g_free (radio_button_text);
 
 	/* Radio button for setting default for specific file. */
-	radio_button_text = g_strdup_printf (_("Use as default just for \"%s\""), 
+	radio_button_text = g_strdup_printf (_("Use as default for \"%s\" only"), 
 					     file_name);
 	item_default_radio_button = pack_radio_button (GTK_BOX (framed_vbox), radio_button_text, type_radio_button);
 	g_free (radio_button_text);
@@ -1284,7 +1284,7 @@ nautilus_program_chooser_instance_init (NautilusProgramChooser *program_chooser)
 									 GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 
 	gtk_dialog_add_button (GTK_DIALOG (program_chooser),
-			       _("Choose"), GTK_RESPONSE_OK);
+			       _("C_hoose"), GTK_RESPONSE_OK);
 
 	program_chooser->details->done_button = gtk_dialog_add_button (GTK_DIALOG (program_chooser),
 								       _("Done"), GTK_RESPONSE_CANCEL);
@@ -1389,7 +1389,7 @@ nautilus_program_chooser_instance_init (NautilusProgramChooser *program_chooser)
 	gtk_box_pack_start (GTK_BOX (capplet_button_vbox), capplet_button, TRUE, FALSE, 0);
 
 	caption = gtk_label_new (_("You can configure which programs are offered "
-				   "for which file types in the GNOME Control Center."));
+				   "for which file types in the File Types and Programs dialog."));
 	gtk_widget_show (caption);
 	gtk_label_set_line_wrap (GTK_LABEL (caption), TRUE);
 	gtk_box_pack_start (GTK_BOX (capplet_hbox), caption, FALSE, FALSE, 0);				    
@@ -1419,13 +1419,13 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
 
 	switch (action_type) {
 	case GNOME_VFS_MIME_ACTION_TYPE_APPLICATION:
-		title = _("Open with Other");
-		prompt = g_strdup_printf (_("Choose an application with which to open \"%s\"."), file_name);
+		title = _("Open with Other Application");
+		prompt = g_strdup_printf (_("Choose an application with which to open \"%s\":"), file_name);
 		break;
 	case GNOME_VFS_MIME_ACTION_TYPE_COMPONENT:
 	default:
-		title = _("View as Other");
-		prompt = g_strdup_printf (_("Choose a view for \"%s\"."), file_name);
+		title = _("Open with Other Viewer");
+		prompt = g_strdup_printf (_("Choose a view for \"%s\":"), file_name);
 		break;
 	}
 
@@ -1531,8 +1531,8 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 		dialog_title = g_strdup (_("No Viewers Available"));
 	} else {
 		g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
-		unavailable_message = g_strdup_printf (_("No applications are available for \"%s\"."), file_name);
-		dialog_title = g_strdup (_("No Applications Available"));
+		unavailable_message = g_strdup_printf (_("There is no application associated with \"%s\"."), file_name);
+		dialog_title = g_strdup (_("No Application Associated"));
 	}
 
 	/* Note: This might be misleading in the components case, since the
@@ -1540,13 +1540,12 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 	 * (They can add applications though.)
 	 */
 	prompt = g_strdup_printf (_("%s\n\n"
-				    "You can configure which programs are offered "
-				    "for which file types with the \"File Types and "
-				    "Programs\" part of the GNOME Control Center. Do "
-				    "you want to go there now?"),
+				    "You can configure GNOME to associate applications "
+				    "with file types.  Do you want to associate an "
+				    "application with this file type now?"),
 				  unavailable_message);
 	dialog = eel_show_yes_no_dialog 
-		(prompt, dialog_title, GTK_STOCK_YES, GTK_STOCK_CANCEL, parent_window);
+		(prompt, dialog_title, _("Associate Application"), GTK_STOCK_CANCEL, parent_window);
 
 	g_signal_connect (dialog, "response",
 			  G_CALLBACK (launch_mime_capplet_on_ok),

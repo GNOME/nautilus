@@ -1,3 +1,17 @@
+2002-07-01  Dave Camp  <dave@ximian.com>
+
+	Changes from the UI review, bug #85669.
+
+	* libnautilus-private/nautilus-program-chooser.c:
+	(run_program_configurator_callback): Changed the wording.
+	(nautilus_program_chooser_instance_init): Added a mnemonic to the
+	Choose button.
+	(nautilus_program_chooser_new): Refer to the File Types and
+	Programs dialog rather than the (now nonexistant) GNOME Control
+	Center.
+	(nautilus_program_chooser_show_no_choices_message): Changed the
+	wording.
+
 2002-06-29  Gregory Merchan  <merchan@phys.lsu.edu>
 
 	* src/nautilus-desktop-window.c:
