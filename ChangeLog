@@ -1,3 +1,11 @@
+2000-10-25  John Sullivan  <sullivan@eazel.com>
+
+	Fixed problems that were causing crash when Services button pressed.
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(load_directory_done), (dequeue_pending_idle_callback):
+	Was missing several NULL checks.
+
 2000-10-25  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/nautilus-view/nautilus-service-instal

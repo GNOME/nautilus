@@ -1168,17 +1168,21 @@ get_filter_options_for_directory_count (void)
 static void
 load_directory_done (NautilusDirectory *directory)
 {
-	istr_set_destroy (directory->details->load_mime_list_hash);
-	directory->details->load_mime_list_hash = NULL;
-	
-	directory->details->load_directory_file->details->loading_directory = FALSE;
-	
-	if (directory->details->load_directory_file->details->directory != directory) {
-		nautilus_directory_async_state_changed (directory->details->load_directory_file->details->directory);
+	if (directory->details->load_mime_list_hash != NULL) {
+		istr_set_destroy (directory->details->load_mime_list_hash);
+		directory->details->load_mime_list_hash = NULL;
 	}
-	
-	nautilus_file_unref (directory->details->load_directory_file);
-	directory->details->load_directory_file = NULL;
+
+	if (directory->details->load_directory_file != NULL) {
+		directory->details->load_directory_file->details->loading_directory = FALSE;
+		
+		if (directory->details->load_directory_file->details->directory != directory) {
+			nautilus_directory_async_state_changed (directory->details->load_directory_file->details->directory);
+		}
+		
+		nautilus_file_unref (directory->details->load_directory_file);
+		directory->details->load_directory_file = NULL;
+	}
 
 	gnome_vfs_directory_filter_destroy (directory->details->load_file_count_filter);
 	directory->details->load_file_count_filter = NULL;
@@ -1288,12 +1292,14 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		/* Send the done_loading signal. */
 		nautilus_directory_emit_done_loading (directory);
 
-		directory->details->load_directory_file->details->got_directory_count = TRUE;
-		directory->details->load_directory_file->details->directory_count = directory->details->load_file_count;
+		if (directory->details->load_directory_file != NULL) {
+			directory->details->load_directory_file->details->got_directory_count = TRUE;
+			directory->details->load_directory_file->details->directory_count = directory->details->load_file_count;
 
-		directory->details->load_directory_file->details->got_mime_list = TRUE;
-		directory->details->load_directory_file->details->mime_list = istr_set_get_as_list
-			(directory->details->load_mime_list_hash);
+			directory->details->load_directory_file->details->got_mime_list = TRUE;
+			directory->details->load_directory_file->details->mime_list = istr_set_get_as_list
+				(directory->details->load_mime_list_hash);
+		}
 		
 		load_directory_done (directory);
 
