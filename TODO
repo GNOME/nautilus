@@ -2,11 +2,6 @@ For tasks outside the porting effort, we track them as bugs in
 http://bugzilla.gnome.org. For the porting effort, please let
 darin@bentspoon.com know what you are working on.
 
-- Port list view to GtkTreeView and then go to eel and remove
-  EelCList, EelList, and EelListColumnTitle.
-- Port tree sidebar panel to GtkTreeView and then go to eel and
-  remove EelCTree.
-
 - Visit all the GNOME2_CONVERSION_COMPLETE and fix each issue
   (details forthcoming)
 
@@ -18,10 +13,7 @@ darin@bentspoon.com know what you are working on.
 - Figure out why we get NULL font problems in Pango when the progress
   dialog comes up.
 
-- Split out icons and themes into a separate package?
-
-- Replace gnome_config calls with calls to GConf for desktop-wide
-  keys such as background (as long as we stay compatible with capplets).
+- Split themes into a separate tarball/package?
 
 - Add mnemonics for all preferences, so you can use the keyboard to
   drive the preferences dialog.
