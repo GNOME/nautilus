@@ -276,8 +276,8 @@ name_field_update_to_match_file (NautilusEntry *name_field)
 		return;
 	}
 
-	original_name = (char *)gtk_object_get_data (GTK_OBJECT (name_field),
-						     "original_name");
+	original_name = (char *) gtk_object_get_data (GTK_OBJECT (name_field),
+						      "original_name");
 
 	/* If the file name has changed since the original name was stored,
 	 * update the text in the text field, possibly (deliberately) clobbering
@@ -299,7 +299,7 @@ name_field_update_to_match_file (NautilusEntry *name_field)
 			gtk_entry_set_text (GTK_ENTRY (name_field), current_name);
 		}
 	} else {
-		g_free (original_name);
+		g_free (current_name);
 	}
 
 	/* 

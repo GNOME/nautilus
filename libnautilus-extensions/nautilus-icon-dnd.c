@@ -502,9 +502,8 @@ drag_data_received_callback (GtkWidget *widget,
 	case NAUTILUS_ICON_DND_COLOR:
 	case NAUTILUS_ICON_DND_BGIMAGE:	
 	case NAUTILUS_ICON_DND_KEYWORD:	
-		
 		/* Save the data so we can do the actual work on drop. */
-
+		g_assert (dnd_info->selection_data == NULL);
 		dnd_info->selection_data = nautilus_gtk_selection_data_copy_deep (data);
 		break;
 	default:
@@ -732,15 +731,15 @@ confirm_switch_to_manual_layout (NautilusIconContainer *container)
 	 */
 	if (nautilus_icon_container_has_stored_icon_positions (container)) {
 		if (nautilus_g_list_exactly_one_item (container->details->dnd_info->selection_list)) {
-			message = _("This directory uses automatic layout. Do you want to switch to\nmanual layout and leave this item where you dropped it?\nThis will clobber the stored manual layout.");
+			message = _("This directory uses automatic layout. Do you want to switch to manual layout and leave this item where you dropped it? This will clobber the stored manual layout.");
 		} else {
-			message = _("This directory uses automatic layout. Do you want to switch to\nmanual layout and leave these items where you dropped them?\nThis will clobber the stored manual layout.");
+			message = _("This directory uses automatic layout. Do you want to switch to manual layout and leave these items where you dropped them? This will clobber the stored manual layout.");
 		}
 	} else {
 		if (nautilus_g_list_exactly_one_item (container->details->dnd_info->selection_list)) {
-			message = _("This directory uses automatic layout. Do you want to switch to\nmanual layout and leave this item where you dropped it?");
+			message = _("This directory uses automatic layout. Do you want to switch to manual layout and leave this item where you dropped it?");
 		} else {
-			message = _("This directory uses automatic layout. Do you want to switch to\nmanual layout and leave these items where you dropped them?");
+			message = _("This directory uses automatic layout. Do you want to switch to manual layout and leave these items where you dropped them?");
 		}
 	}
 
@@ -1208,7 +1207,8 @@ drag_drop_callback (GtkWidget *widget,
 
 	dnd_info = NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info;
 
-	nautilus_icon_container_ensure_drag_data (NAUTILUS_ICON_CONTAINER (widget), context, time);
+	nautilus_icon_container_ensure_drag_data
+		(NAUTILUS_ICON_CONTAINER (widget), context, time);
 
 	g_assert (dnd_info->got_data_type);
 	switch (dnd_info->data_type) {
@@ -1225,12 +1225,16 @@ drag_drop_callback (GtkWidget *widget,
 		gtk_drag_finish (context, TRUE, FALSE, time);
 		break;
 	case NAUTILUS_ICON_DND_BGIMAGE:
-		receive_dropped_tile_image (NAUTILUS_ICON_CONTAINER (widget), dnd_info->selection_data->data);
+		receive_dropped_tile_image
+			(NAUTILUS_ICON_CONTAINER (widget),
+			 dnd_info->selection_data->data);
 		gtk_drag_finish (context, FALSE, FALSE, time);
 		break;
 	
 	case NAUTILUS_ICON_DND_KEYWORD:
-		receive_dropped_keyword (NAUTILUS_ICON_CONTAINER (widget), dnd_info->selection_data->data, x, y);
+		receive_dropped_keyword
+			(NAUTILUS_ICON_CONTAINER (widget),
+			 dnd_info->selection_data->data, x, y);
 		gtk_drag_finish (context, FALSE, FALSE, time);
 		break;
 	default:
@@ -1240,9 +1244,10 @@ drag_drop_callback (GtkWidget *widget,
 	nautilus_icon_container_free_drag_data (NAUTILUS_ICON_CONTAINER (widget));
 
 	if (saved_drag_source_info != NULL) {
-		gtk_signal_disconnect_by_func (GTK_OBJECT (saved_drag_source_info->ipc_widget),
-					GTK_SIGNAL_FUNC (nautilus_icon_drag_key_callback),
-					saved_drag_source_info);
+		gtk_signal_disconnect_by_func
+			(GTK_OBJECT (saved_drag_source_info->ipc_widget),
+			 GTK_SIGNAL_FUNC (nautilus_icon_drag_key_callback),
+			 saved_drag_source_info);
 	}
 
 	saved_drag_source_info = NULL;
@@ -1272,26 +1277,27 @@ nautilus_icon_dnd_modifier_based_action ()
 {
 	GdkModifierType modifiers;
 	gdk_window_get_pointer (NULL, NULL, NULL, &modifiers);
-
+	
 	if ((modifiers & GDK_CONTROL_MASK) != 0) {
 		return GDK_ACTION_COPY;
 #if 0
 	/* FIXME bugzilla.eazel.com 628:
 	 * don't know how to do links yet
 	 */
-	 } else if ((modifiers & GDK_MOD1_MASK) != 0) {
+	} else if ((modifiers & GDK_MOD1_MASK) != 0) {
 		return GDK_ACTION_LINK;
 #endif
 	}
-
+	
 	return GDK_ACTION_MOVE;
 }
 
 void
 nautilus_icon_dnd_update_drop_action (GtkWidget *widget)
 {
-	if (saved_drag_source_info == NULL)
+	if (saved_drag_source_info == NULL) {
 		return;
+	}
 
 	saved_drag_source_info->possible_actions = nautilus_icon_dnd_modifier_based_action ();
 }

@@ -1,17 +1,18 @@
 NULL=
 
 SUBDIRS =\
-	librsvg \
-	libnautilus \
-	libnautilus-extensions \
-	nautilus-widgets \
-	src \
 	components \
+	data \
 	helper-utilities \
 	icons \
-	data \
+	idl \
 	intl \
+	libnautilus \
+	libnautilus-extensions \
+	librsvg \
+	nautilus-widgets \
 	po \
+	src \
 	$(NULL)
 
 EXTRA_DIST=\

@@ -1,5 +1,47 @@
 2000-05-12  Darin Adler  <darin@eazel.com>
 
+	* Makefile.am: Added the idl directory.
+	
+	* libnautilus-extensions/nautilus-gnome-extensions.h:
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	(nautilus_simple_dialog): Turned on line wrapping for the label
+	in the simple dialog.
+	(turn_on_line_wrap_flag), (show_ok_box), (nautilus_error_dialog),
+	(nautilus_error_dialog_parented): Made alternate versions of
+	gnome_error_dialog and gnome_error_dialog_parented that turn on
+	line wrapping for the message label.
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_or_measure_label_text): Made the list of characters to break
+	lines on localizable.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(confirm_switch_to_manual_layout): Took newlines out of messages
+	since the dialog now does line wrapping.
+
+	* src/file-manager/dfos-xfer.c: (handle_xfer_vfs_error),
+	(handle_xfer_overwrite): Took out some extraneous spaces. I could
+	have also removed the newlines since the functions call something
+	that does line wrapping, but I decided not to.
+	
+	* src/file-manager/fm-properties-window.c:
+	(name_field_update_to_match_file): Fixed a double delete bug.
+	This may have been what Ali was running into when he was clicking
+	quickly on all the emblems in succession.
+	
+	* src/nautilus-property-browser.c:
+	Did a cleanup pass on the entire file. Marked things localizable
+	and marked some bugs with FIXME among other things.
+	
+	* src/ntl-window-msgs.c: (nautilus_window_update_state): Added
+	code to check for NULL so that we won't core dump when trying
+	to "go back" from the first failed view.
+	(nautilus_window_progress_indicate),
+	(nautilus_window_end_location_change_callback): Got rid of newlines
+	from messages and called the function that now does line wrapping.
+
+2000-05-12  Darin Adler  <darin@eazel.com>
+
 	* HACKING: Get rid of obsolete requirement for "--without-bonobo"
 	for the gtkhtml module. The internal modules list at Eazel was
 	updated but someone forgot to update HACKING, as usual.

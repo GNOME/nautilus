@@ -30,6 +30,7 @@
 #include <stdio.h>
 #include <gtk/gtksignal.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-canvas-util.h>
 #include <libgnomeui/gnome-icon-text.h>
 #include "nautilus-icon-private.h"
@@ -643,26 +644,30 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		}
 		
 		icon_text_info = gnome_icon_layout_text
-			(details->font, text_piece, " -_,;.?/&", max_text_width, TRUE);
+			(details->font, text_piece, _(" -_,;.?/&"), max_text_width, TRUE);
 		
 		/* Draw text if we are not in user rename mode */
 		if (drawable != NULL && !details->is_renaming) {
 			text_left = icon_left + (icon_width - icon_text_info->width) / 2;
 			
-
-			gnome_icon_paint_text (icon_text_info, drawable, gc,
-					       text_left, icon_bottom + height_so_far, GTK_JUSTIFY_CENTER);
+			gnome_icon_paint_text
+				(icon_text_info, drawable, gc,
+				 text_left, icon_bottom + height_so_far,
+				 GTK_JUSTIFY_CENTER);
 			
 			/* if it's highlighted, embolden by drawing twice */
-			if (needs_highlight)
-				gnome_icon_paint_text (icon_text_info, drawable, gc,
-					       		  text_left + 1, icon_bottom + height_so_far, GTK_JUSTIFY_CENTER);
-
-
+			if (needs_highlight) {
+				gnome_icon_paint_text
+					(icon_text_info, drawable, gc,
+					 text_left + 1, icon_bottom + height_so_far,
+					 GTK_JUSTIFY_CENTER);
+			}
+			
 			/* if it's prelit, underline the text */
 			if (details->is_prelit) {
-				gnome_icon_underline_text (icon_text_info, drawable, gc, text_left + 1, icon_bottom + height_so_far);
-			
+				gnome_icon_underline_text
+					(icon_text_info, drawable, gc,
+					 text_left + 1, icon_bottom + height_so_far);
 			}
 		}
 		
@@ -697,9 +702,10 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		if (details->is_highlighted_as_keyboard_focus) {
 			gdk_gc_set_stipple (gc, nautilus_stipple_bitmap ());
 			gdk_gc_set_fill (gc, GDK_STIPPLED);
-			gdk_draw_rectangle (drawable, gc, FALSE,
-					    box_left, icon_bottom - 2,
-					    width_so_far, 2 + height_so_far);
+			gdk_draw_rectangle
+				(drawable, gc, FALSE,
+				 box_left, icon_bottom - 2,
+				 width_so_far, 2 + height_so_far);
 		}
 		
 		gdk_gc_unref (gc);
@@ -737,34 +743,39 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 
 	gc = gdk_gc_new (drawable);
 	
-	gdk_draw_rectangle (drawable, gc, TRUE,
-			    rect->x0,
-			    rect->y0,
-			    STRETCH_HANDLE_THICKNESS,
-			    STRETCH_HANDLE_THICKNESS);
-	gdk_draw_rectangle (drawable, gc, TRUE,
-			    rect->x1 - STRETCH_HANDLE_THICKNESS,
-			    rect->y0,
-			    STRETCH_HANDLE_THICKNESS,
-			    STRETCH_HANDLE_THICKNESS);
-	gdk_draw_rectangle (drawable, gc, TRUE,
-			    rect->x0,
-			    rect->y1 - STRETCH_HANDLE_THICKNESS,
-			    STRETCH_HANDLE_THICKNESS,
-			    STRETCH_HANDLE_THICKNESS);
-	gdk_draw_rectangle (drawable, gc, TRUE,
-			    rect->x1 - STRETCH_HANDLE_THICKNESS,
-			    rect->y1 - STRETCH_HANDLE_THICKNESS,
-			    STRETCH_HANDLE_THICKNESS,
-			    STRETCH_HANDLE_THICKNESS);
+	gdk_draw_rectangle
+		(drawable, gc, TRUE,
+		 rect->x0,
+		 rect->y0,
+		 STRETCH_HANDLE_THICKNESS,
+		 STRETCH_HANDLE_THICKNESS);
+	gdk_draw_rectangle
+		(drawable, gc, TRUE,
+		 rect->x1 - STRETCH_HANDLE_THICKNESS,
+		 rect->y0,
+		 STRETCH_HANDLE_THICKNESS,
+		 STRETCH_HANDLE_THICKNESS);
+	gdk_draw_rectangle
+		(drawable, gc, TRUE,
+		 rect->x0,
+		 rect->y1 - STRETCH_HANDLE_THICKNESS,
+		 STRETCH_HANDLE_THICKNESS,
+		 STRETCH_HANDLE_THICKNESS);
+	gdk_draw_rectangle
+		(drawable, gc, TRUE,
+		 rect->x1 - STRETCH_HANDLE_THICKNESS,
+		 rect->y1 - STRETCH_HANDLE_THICKNESS,
+		 STRETCH_HANDLE_THICKNESS,
+		 STRETCH_HANDLE_THICKNESS);
 	
 	gdk_gc_set_stipple (gc, nautilus_stipple_bitmap ());
 	gdk_gc_set_fill (gc, GDK_STIPPLED);
-	gdk_draw_rectangle (drawable, gc, FALSE,
-			    rect->x0 + (STRETCH_HANDLE_THICKNESS - 1) / 2,
-			    rect->y0 + (STRETCH_HANDLE_THICKNESS - 1) / 2,
-			    rect->x1 - rect->x0 - (STRETCH_HANDLE_THICKNESS - 1) - 1,
-			    rect->y1 - rect->y0 - (STRETCH_HANDLE_THICKNESS - 1) - 1);
+	gdk_draw_rectangle
+		(drawable, gc, FALSE,
+		 rect->x0 + (STRETCH_HANDLE_THICKNESS - 1) / 2,
+		 rect->y0 + (STRETCH_HANDLE_THICKNESS - 1) / 2,
+		 rect->x1 - rect->x0 - (STRETCH_HANDLE_THICKNESS - 1) - 1,
+		 rect->y1 - rect->y0 - (STRETCH_HANDLE_THICKNESS - 1) - 1);
 	
 	gdk_gc_unref (gc);
 }

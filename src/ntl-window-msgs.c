@@ -42,6 +42,7 @@
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include "ntl-app.h"
 #include "ntl-meta-view.h"
 #include "ntl-uri-map.h"
@@ -73,7 +74,7 @@ nautilus_window_progress_indicate (NautilusWindow *window, ProgressType type, do
         char *the_uri;
                 
         if (type == PROGRESS_ERROR) {
-                gtk_widget_show (gnome_error_dialog_parented (msg, GTK_WINDOW (window)));
+                nautilus_error_dialog_parented (msg, GTK_WINDOW (window));
                 
                 /* If it was an error loading a URI that had been dragged to the location bar, we might
                    need to reset the URI */
@@ -794,7 +795,8 @@ nautilus_window_update_state (gpointer data)
                 }
                 
                 if (window->pending_ni != NULL) {
-                        nautilus_window_reset_title_internal (window, window->ni->requested_uri);
+                        nautilus_window_reset_title_internal
+                                (window, window->ni == NULL ? "" : window->ni->requested_uri);
                         
                         /* Tell previously-notified views to go back to the old page */
                         for (p = window->meta_views; p != NULL; p = p->next) {
@@ -1085,22 +1087,22 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
         switch (result_code) {
 
         case NAUTILUS_NAVIGATION_RESULT_NOT_FOUND:
-                error_message = g_strdup_printf (_("Couldn't find \"%s\".\nPlease check the spelling and try again."), requested_uri);
+                error_message = g_strdup_printf (_("Couldn't find \"%s\". Please check the spelling and try again."), requested_uri);
                 break;
 
         case NAUTILUS_NAVIGATION_RESULT_INVALID_URI:
-                error_message = g_strdup_printf (_("\"%s\" is not a valid location.\nPlease check the spelling and try again."), requested_uri);
+                error_message = g_strdup_printf (_("\"%s\" is not a valid location. Please check the spelling and try again."), requested_uri);
                 break;
 
         case NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE:
         	file = nautilus_file_get (requested_uri);
         	if (file != NULL) {
         		type_string = nautilus_file_get_string_attribute (file, "type");
-	                error_message = g_strdup_printf (_("Couldn't display \"%s\",\nbecause Nautilus cannot handle items of type \"%s\"."), requested_uri, type_string);
+	                error_message = g_strdup_printf (_("Couldn't display \"%s\", because Nautilus cannot handle items of type \"%s\"."), requested_uri, type_string);
 			nautilus_file_unref (file);
 			g_free (type_string);
         	} else {
-	                error_message = g_strdup_printf (_("Couldn't display \"%s\",\nbecause Nautilus cannot handle items of this type."), requested_uri);
+	                error_message = g_strdup_printf (_("Couldn't display \"%s\", because Nautilus cannot handle items of this type."), requested_uri);
         	}
                 break;
 
@@ -1110,7 +1112,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                  */
                 scheme_string = nautilus_str_get_prefix (requested_uri, ":");
                 g_assert (scheme_string != NULL);  /* Shouldn't have gotten this error unless there's a : separator. */
-                error_message = g_strdup_printf (_("Couldn't display \"%s\",\nbecause Nautilus cannot handle %s: locations."),
+                error_message = g_strdup_printf (_("Couldn't display \"%s\", because Nautilus cannot handle %s: locations."),
                                                  requested_uri, scheme_string);
                 g_free (scheme_string);
                 break;
@@ -1132,7 +1134,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                  * happens when a new window cannot display its initial URI. 
                  */
                 gtk_object_destroy (GTK_OBJECT (window));
-                gtk_widget_show (gnome_error_dialog (error_message));
+                nautilus_error_dialog (error_message);
         } else {
                 /* Clean up state of already-showing window */
                 nautilus_window_allow_stop (window, FALSE);

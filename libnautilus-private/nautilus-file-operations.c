@@ -206,7 +206,7 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 	case GNOME_VFS_XFER_ERROR_MODE_QUERY:
 
 		/* transfer error, prompt the user to continue or stop */
-		text = g_strdup_printf ( _("Error %s copying file %s. \n"
+		text = g_strdup_printf ( _("Error %s copying file %s.\n"
 			"Would you like to continue?"), 
 			gnome_vfs_result_to_string (progress_info->vfs_status),
 			progress_info->source_name);
@@ -245,7 +245,7 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 	int result;
 	char *text;
 
-	text = g_strdup_printf ( _("File %s already exists. \n"
+	text = g_strdup_printf ( _("File %s already exists.\n"
 		"Would you like to replace it?"), 
 		progress_info->target_name);
 

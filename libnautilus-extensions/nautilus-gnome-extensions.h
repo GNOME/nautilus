@@ -28,6 +28,7 @@
 #define NAUTILUS_GNOME_EXTENSIONS_H
 
 #include <libgnomeui/gnome-canvas.h>
+#include <gtk/gtkwindow.h>
 
 typedef struct {
 	int x;
@@ -38,46 +39,49 @@ typedef struct {
  * always returns the bounds * in world coordinates and it returns
  * them in a single rectangle.
  */
-void     nautilus_gnome_canvas_item_get_world_bounds          (GnomeCanvasItem *item,
-							       ArtDRect        *world_bounds);
+void       nautilus_gnome_canvas_item_get_world_bounds          (GnomeCanvasItem *item,
+								 ArtDRect        *world_bounds);
 
 /* This returns the current canvas bounds as computed by update.
  * It's not as "up to date" as get_bounds, which is accurate even
  * before an update happens.
  */
-void     nautilus_gnome_canvas_item_get_current_canvas_bounds (GnomeCanvasItem *item,
-							       ArtIRect        *canvas_bounds);
+void       nautilus_gnome_canvas_item_get_current_canvas_bounds (GnomeCanvasItem *item,
+								 ArtIRect        *canvas_bounds);
 
 /* Convenience functions for doing things with whole rectangles. */
-void     nautilus_gnome_canvas_world_to_canvas_rectangle      (GnomeCanvas     *canvas,
-							       const ArtDRect  *world_rectangle,
-							       ArtIRect        *canvas_rectangle);
-void     nautilus_gnome_canvas_world_to_window_rectangle      (GnomeCanvas     *canvas,
-							       const ArtDRect  *world_rectangle,
-							       ArtIRect        *window_rectangle);
-void     nautilus_gnome_canvas_request_redraw_rectangle       (GnomeCanvas     *canvas,
-							       const ArtIRect  *canvas_rectangle);
+void       nautilus_gnome_canvas_world_to_canvas_rectangle      (GnomeCanvas     *canvas,
+								 const ArtDRect  *world_rectangle,
+								 ArtIRect        *canvas_rectangle);
+void       nautilus_gnome_canvas_world_to_window_rectangle      (GnomeCanvas     *canvas,
+								 const ArtDRect  *world_rectangle,
+								 ArtIRect        *window_rectangle);
+void       nautilus_gnome_canvas_request_redraw_rectangle       (GnomeCanvas     *canvas,
+								 const ArtIRect  *canvas_rectangle);
 
 /* Requests the entire object be redrawn.
  * Normally, you use request_update when calling from outside the canvas item
  * code. This is for within canvas item code.
  */
-void     nautilus_gnome_canvas_item_request_redraw            (GnomeCanvasItem *item);
+void       nautilus_gnome_canvas_item_request_redraw            (GnomeCanvasItem *item);
 
 /* More functions for ArtIRect and ArtDRect. */
-gboolean nautilus_art_irect_equal                             (const ArtIRect  *rect_a,
-							       const ArtIRect  *rect_b);
-gboolean nautilus_art_drect_equal                             (const ArtDRect  *rect_a,
-							       const ArtDRect  *rect_b);
-gboolean nautilus_art_irect_hits_irect                        (const ArtIRect  *rect_a,
-							       const ArtIRect  *rect_b);
-gboolean nautilus_art_irect_contains_irect                    (const ArtIRect  *outer_rect,
-							       const ArtIRect  *inner_rect);
+gboolean   nautilus_art_irect_equal                             (const ArtIRect  *rect_a,
+								 const ArtIRect  *rect_b);
+gboolean   nautilus_art_drect_equal                             (const ArtDRect  *rect_a,
+								 const ArtDRect  *rect_b);
+gboolean   nautilus_art_irect_hits_irect                        (const ArtIRect  *rect_a,
+								 const ArtIRect  *rect_b);
+gboolean   nautilus_art_irect_contains_irect                    (const ArtIRect  *outer_rect,
+								 const ArtIRect  *inner_rect);
+int        nautilus_simple_dialog                               (GtkWidget       *parent,
+								 const char      *text,
+								 const char      *title,
+								 ...);
 
-int      nautilus_simple_dialog                               (GtkWidget *parent,
-							       const char *text,
-							       const char *title,
-							       ...);
-							       
+/* Variations on gnome dialogs that use text with line-wrapping turned on. */
+GtkWidget *nautilus_error_dialog                                (const char      *error);
+GtkWidget *nautilus_error_dialog_parented                       (const char      *error,
+								 GtkWindow       *parent);
 
 #endif /* NAUTILUS_GNOME_EXTENSIONS_H */

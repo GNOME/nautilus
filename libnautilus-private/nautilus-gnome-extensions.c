@@ -30,6 +30,8 @@
 #include <gtk/gtkbox.h>
 #include <gtk/gtklabel.h>
 #include <libgnomeui/gnome-dialog.h>
+#include <libgnomeui/gnome-messagebox.h>
+#include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
 
 void
@@ -236,6 +238,7 @@ nautilus_simple_dialog (GtkWidget *parent, const char *text, const char *title, 
 	/* Title it if asked to. */
 	if (text != NULL) {
 		prompt_widget = gtk_label_new (text);
+		gtk_label_set_line_wrap (GTK_LABEL (prompt_widget), TRUE);
 		gtk_label_set_justify (GTK_LABEL (prompt_widget),
 				       GTK_JUSTIFY_LEFT);
 		gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
@@ -246,4 +249,68 @@ nautilus_simple_dialog (GtkWidget *parent, const char *text, const char *title, 
 	/* Run it. */
         gtk_widget_show_all (dialog);
         return gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+}
+
+static void
+turn_on_line_wrap_flag (GtkWidget *widget, const char *message)
+{
+	char *text;
+	GList *children, *p;
+
+	/* Turn on the flag if we find a label with the message
+	 * in it.
+	 */
+	if (GTK_IS_LABEL (widget)) {
+		gtk_label_get (GTK_LABEL (widget), &text);
+		if (strcmp (text, message) == 0) {
+			gtk_label_set_line_wrap (GTK_LABEL (widget), TRUE);
+		}
+		g_free (text);
+	}
+
+	/* Recurse for children. */
+	if (GTK_IS_CONTAINER (widget)) {
+		children = gtk_container_children (GTK_CONTAINER (widget));
+		for (p = children; p != NULL; p = p->next) {
+			turn_on_line_wrap_flag (GTK_WIDGET (p->data), message);
+		}
+		g_list_free (children);
+	}
+}
+
+/* Shamelessly stolen from gnome-dialog-util.c: */
+static GtkWidget *
+show_ok_box (const char *message,
+	     const char *type,
+	     GtkWindow *parent)
+{  
+	GtkWidget *box;
+
+	box = gnome_message_box_new
+		(message, type, GNOME_STOCK_BUTTON_OK, NULL);
+	
+	/* A bit of a hack. We want to use gnome_message_box_new,
+	 * but we want the message to be wrapped. So, we search
+	 * for the label with this message so we can mark it.
+	 */
+	turn_on_line_wrap_flag (box, message);
+
+	if (parent != NULL) {
+		gnome_dialog_set_parent (GNOME_DIALOG(box), parent);
+	}
+	gtk_widget_show (box);
+	return box;
+}
+
+GtkWidget *
+nautilus_error_dialog (const char *error)
+{
+	return show_ok_box (error, GNOME_MESSAGE_BOX_ERROR, NULL);
+}
+
+GtkWidget *
+nautilus_error_dialog_parented (const char *error,
+				GtkWindow *parent)
+{
+	return show_ok_box (error, GNOME_MESSAGE_BOX_ERROR, parent);
 }
