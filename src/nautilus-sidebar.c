@@ -1366,13 +1366,6 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 				    FALSE, FALSE, 
 				    0);
 
-		/* FIXME bugzilla.gnome.org 42510: Security hole?
-		 * Unsafe to use a string from the MIME file as a
-		 * printf format string without first checking it over
-		 * somehow. We can do a search and replace on the "%s"
-		 * part instead, which should work.
-		 */
-
 		/* Get the local path, if there is one */
 		file_path = gnome_vfs_get_local_path_from_uri (sidebar->details->uri);
 		if (file_path == NULL) {
@@ -1380,7 +1373,7 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 		} 
 
 		temp_str = g_shell_quote (file_path);		
-		id_string = g_strdup_printf (application->id, temp_str); 		
+		id_string = eel_str_replace_substring (application->id, "%s", temp_str); 		
 		g_free (file_path);
 		g_free (temp_str);
 
