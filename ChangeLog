@@ -1,3 +1,31 @@
+2001-03-29  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Ramiro Estrugo  <ramiro@eazel.com>
+
+	Fixed bug 3328 (Need a preference to specify upper bounds for
+	thumbnailing)
+
+	In Speed Tradeoffs at Advanced level, you can now choose an
+	upper bound for image file size that will get thumbnailed.
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Add thumbnail limit preference.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(destroy_icon_factory), (get_icon_factory): Add and
+	remove callback for thumbnail-limit preference.
+	(thumbnail_limit_changed_callback): Store new value in global
+	variable; send icons-changed signal.
+	(nautilus_icon_factory_get_icon_for_file): Use global
+	variable instead of constant when determining thumbail limit.
+	
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(preferences_item_update_constrained_integer): Check the
+	label strings correctly; this was working for the font size
+	menus only because the label strings were just the number
+	printf'ed into a string.
+
 2001-03-28  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

@@ -459,21 +459,43 @@ preferences_item_create_editable_integer (NautilusPreferencesItem *item,
 static void
 preferences_item_update_constrained_integer (NautilusPreferencesItem *item)
 {
-	char *current_value_string;
+	char *current_label;
 	int current_value;
+	char *current_value_as_string;
+	int position;
 
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item));
 	g_return_if_fail (item->details->item_type == NAUTILUS_PREFERENCE_ITEM_CONSTRAINED_INTEGER);
 
-	current_value = nautilus_preferences_get_integer (item->details->preference_name);
-	current_value_string = g_strdup_printf ("%d", current_value);
+	/* Too early if the value and label lists haven't been set up yet. */
+	if (item->details->constrained_integer_value_list == NULL) {
+		return;
+	}
+	g_return_if_fail (item->details->constrained_integer_label_list != NULL);
 
-	if (nautilus_string_picker_contains (NAUTILUS_STRING_PICKER (item->details->child), current_value_string)) {
+	current_value = nautilus_preferences_get_integer (item->details->preference_name);
+	current_value_as_string = g_strdup_printf ("%d", current_value);
+	position = nautilus_string_list_get_index_for_string 
+		(item->details->constrained_integer_value_list, 
+		 current_value_as_string);
+	g_free (current_value_as_string);
+
+	g_return_if_fail (position != NAUTILUS_STRING_LIST_NOT_FOUND);
+	
+	current_label = nautilus_string_list_nth 
+		(item->details->constrained_integer_label_list, 
+		 position);
+
+	if (nautilus_string_picker_contains (NAUTILUS_STRING_PICKER (item->details->child), current_label)) {
 		nautilus_string_picker_set_selected_string (NAUTILUS_STRING_PICKER (item->details->child),
-							    current_value_string);
+							    current_label);
+	} else {
+		g_warning ("Value string for %s is %s, which isn't in the expected set of values",
+			   item->details->preference_name,
+			   current_label);
 	}
 
-	g_free (current_value_string);
+	g_free (current_label);
 }
 
 static void

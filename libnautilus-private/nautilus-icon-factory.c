@@ -116,14 +116,6 @@ static const char *icon_file_name_suffixes[] =
  * complex rule about when to use an image for itself.
  */
 #define SELF_THUMBNAIL_SIZE_THRESHOLD   16384
-
-/* Extremely large images can eat up hundreds of megabytes of memory,
- * so we shouldn't automatically thumbnail when larges are too large.
- */
-/* FIXME bugzilla.eazel.com 5082: Eventually, we want this threshold
- * to be user-settable, but for now it's hard-wired.
- */
-#define INHIBIT_THUMBNAIL_SIZE_THRESHOLD (1024 * 1024)
  
 /* Maximum size for either dimension at the standard zoom level. */
 #define MAXIMUM_ICON_SIZE                96
@@ -253,6 +245,7 @@ typedef struct {
 } CacheIcon;
 
 static CacheIcon *fallback_icon;
+static int cached_thumbnail_limit;
 
 /* forward declarations */
 
@@ -261,6 +254,7 @@ static void       nautilus_icon_factory_initialize_class (NautilusIconFactoryCla
 static void       nautilus_icon_factory_initialize       (NautilusIconFactory      *factory);
 static void       nautilus_icon_factory_destroy          (GtkObject                *object);
 static void       icon_theme_changed_callback            (gpointer                  user_data);
+static void       thumbnail_limit_changed_callback       (gpointer                  user_data);
 static void       mime_type_data_changed_callback        (GnomeVFSMIMEMonitor	   *monitor,
 							  gpointer                  user_data);
 static guint      nautilus_scalable_icon_hash            (gconstpointer             p);
@@ -288,6 +282,9 @@ destroy_icon_factory (void)
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
 					      icon_theme_changed_callback,
 					      NULL);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
+					      thumbnail_limit_changed_callback,
+					      NULL);
 	gtk_object_unref (GTK_OBJECT (global_icon_factory));
 }
 
@@ -301,10 +298,14 @@ get_icon_factory (void)
 		gtk_object_ref (GTK_OBJECT (global_icon_factory));
 		gtk_object_sink (GTK_OBJECT (global_icon_factory));
 
-		/* Update to match the theme. */
 		icon_theme_changed_callback (NULL);
 		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
 						   icon_theme_changed_callback,
+						   NULL);
+						   
+		thumbnail_limit_changed_callback (NULL);
+		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
+						   thumbnail_limit_changed_callback,
 						   NULL);
 
 		gtk_signal_connect (GTK_OBJECT (gnome_vfs_mime_monitor_get ()),
@@ -1147,6 +1148,19 @@ icon_theme_changed_callback (gpointer user_data)
 	g_free (icon_theme);
 }
 
+static void
+thumbnail_limit_changed_callback (gpointer user_data)
+{
+	cached_thumbnail_limit = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT);
+
+	/* Tell the world that icons might have changed. We could invent a narrower-scope
+	 * signal to mean only "thumbnails might have changed" if this ends up being slow
+	 * for some reason.
+	 */
+	gtk_signal_emit (GTK_OBJECT (global_icon_factory),
+			 signals[ICONS_CHANGED]);
+}
+
 static void       
 mime_type_data_changed_callback (GnomeVFSMIMEMonitor *monitor, gpointer user_data)
 {
@@ -1399,7 +1413,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 			if (file_size < SELF_THUMBNAIL_SIZE_THRESHOLD && is_local) {
 				uri = nautilus_file_get_uri (file);				
 			} else if (strstr (file_uri, "/.thumbnails/") == NULL
-				   && file_size < INHIBIT_THUMBNAIL_SIZE_THRESHOLD) {
+				   && file_size < cached_thumbnail_limit) {
 				uri = nautilus_get_thumbnail_uri (file, anti_aliased);
 				if (uri == NULL) {
 					uri = get_icon_file_path
