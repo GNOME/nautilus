@@ -31,7 +31,7 @@ typedef struct {
   char *base_url, *base_target_url;
 } BrowserInfo;
 
-char *
+static char *
 canonicalize_url (const char *in_url, const char *base_url)
 {
 	char *ctmp, *ctmp2, *retval, *removebegin, *removeend, *curpos;
