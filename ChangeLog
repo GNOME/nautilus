@@ -1,3 +1,18 @@
+2000-10-12  Pavel Cisler  <pavel@eazel.com>
+
+	* src/file-manager/fm-list-view.c: (fm_list_get_drag_pixmap):
+	Fix 3558 - Nautilus crashes with a specific sequence of icon
+	dragging ...
+	Handle a case where the cell pixmap does not have a mask.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(motion_notify_event):
+	Small renaming.
+	
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_dnd_initialize), (nautilus_list_drag_begin):
+	Get rid of a drag_begin signal override that is not needed.
+
 2000-10-16  Josh Barrow  <josh@eazel.com>
 
 	* icons/Makefile.am:

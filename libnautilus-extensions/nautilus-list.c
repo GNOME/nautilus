@@ -212,8 +212,6 @@ static int      nautilus_list_button_release            (GtkWidget            *w
 							 GdkEventButton       *event);
 static int      nautilus_list_motion                    (GtkWidget            *widget,
 							 GdkEventMotion       *event);
-static void     nautilus_list_drag_begin                (GtkWidget            *widget,
-							 GdkDragContext       *context);
 static void     nautilus_list_drag_end                  (GtkWidget            *widget,
 							 GdkDragContext       *context);
 static void     nautilus_list_drag_leave                (GtkWidget            *widget,
@@ -506,11 +504,6 @@ nautilus_list_dnd_initialize (NautilusList *list)
 
 	nautilus_drag_init (list->details->drag_info, drag_types,
 			    NAUTILUS_N_ELEMENTS (drag_types), NULL);
-
-	gtk_signal_connect (GTK_OBJECT (list), 
-			    "drag_begin", 
-			    GTK_SIGNAL_FUNC(nautilus_list_drag_begin), 
-			    list);
 	
 	gtk_signal_connect (GTK_OBJECT (list), 
 			    "drag_end", 
@@ -2816,16 +2809,6 @@ nautilus_list_ensure_drag_data (NautilusList *list,
 				   GPOINTER_TO_INT (context->targets->data),
 				   time);
 	}
-}
-
-
-static void
-nautilus_list_drag_begin (GtkWidget *widget, GdkDragContext *context)
-{
-	NautilusList *list;
-
-	list = NAUTILUS_LIST (widget);
-
 }
 
 static void

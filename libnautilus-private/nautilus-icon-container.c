@@ -2470,7 +2470,7 @@ button_release_event (GtkWidget *widget,
 
 static int
 motion_notify_event (GtkWidget *widget,
-		     GdkEventMotion *motion)
+		     GdkEventMotion *event)
 {
 	NautilusIconContainer *container;
 	NautilusIconContainerDetails *details;
@@ -2495,7 +2495,7 @@ motion_notify_event (GtkWidget *widget,
 
 			gnome_canvas_window_to_world
 				(GNOME_CANVAS (container),
-				 motion->x, motion->y,
+				 event->x, event->y,
 				 &world_x, &world_y);
 			
 			if (abs (details->drag_x - world_x) >= SNAP_RESISTANCE
@@ -2507,8 +2507,8 @@ motion_notify_event (GtkWidget *widget,
 				/* KLUDGE ALERT: Poke the starting values into the motion
 				 * structure so that dragging behaves as expected.
 				 */
-				motion->x = details->drag_x;
-				motion->y = details->drag_y;
+				event->x = details->drag_x;
+				event->y = details->drag_y;
 			
 				nautilus_icon_dnd_begin_drag (container,
 				      details->drag_state == DRAG_STATE_MOVE_OR_COPY
@@ -2518,19 +2518,19 @@ motion_notify_event (GtkWidget *widget,
 				      	| GDK_ACTION_ASK)
 				      : GDK_ACTION_ASK,
 				      details->drag_button,
-				      motion);
+				      event);
 				details->drag_state = DRAG_STATE_MOVE_OR_COPY;
 			}
 			break;
 		case DRAG_STATE_STRETCH:
-			continue_stretching (container, motion->x, motion->y, FALSE);
+			continue_stretching (container, event->x, event->y, FALSE);
 			break;
 		default:
 			break;
 		}
 	}
 
-	return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, motion_notify_event, (widget, motion));
+	return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, motion_notify_event, (widget, event));
 }
 
 void
