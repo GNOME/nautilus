@@ -178,18 +178,20 @@ static GnomeObject * make_obj(GnomeGenericFactory *Factory, const char *goad_id,
   hview->clist = (GtkCList *)clist;
 
 #if 0
-  GNOME_UIHandler remote_uih;
-  GnomeUIInfo history_menu[] = {
-    GNOMEUIINFO_MENU_NEW_ITEM("_New", "Testing", NULL, NULL),
-    GNOMEUIINFO_END
-  };
+  {
+    GNOME_UIHandler remote_uih;
+    GnomeUIInfo history_menu[] = {
+      GNOMEUIINFO_MENU_NEW_ITEM("_New", "Testing", NULL, NULL),
+      GNOMEUIINFO_END
+    };
 
-  remote_uih = gnome_control_get_remote_ui_handler(GNOME_CONTROL(ctl));
-  hview->uih = gnome_ui_handler_new();
-  gnome_ui_handler_set_container(hview->uih, remote_uih);
+    remote_uih = gnome_control_get_remote_ui_handler(GNOME_CONTROL(ctl));
+    hview->uih = gnome_ui_handler_new();
+    gnome_ui_handler_set_container(hview->uih, remote_uih);
 
-  gnome_ui_handler_menu_add_tree(hview->uih, "/History",
-                                 gnome_ui_handler_menu_parse_uiinfo_tree(history_menu));
+    gnome_ui_handler_menu_add_tree(hview->uih, "/History",
+                                   gnome_ui_handler_menu_parse_uiinfo_tree(history_menu));
+  }
 #endif
 
   return ctl;
