@@ -235,6 +235,11 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_START_WITH_SIDEBAR,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), _("Desktop"));
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
+							 3,
+							 NAUTILUS_PREFERENCES_SHOW_DESKTOP,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
 	
 	/*
@@ -930,6 +935,11 @@ global_preferences_register (void)
 							   TRUE,
 							   TRUE);
 
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
+							   _("Use Nautilus to draw the desktop"),
+							   FALSE,
+							   FALSE,
+							   FALSE);
 								  
 	/* search tradeoffs */
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SEARCH_METHOD,

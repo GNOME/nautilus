@@ -1,3 +1,23 @@
+2000-10-27  Andy Hertzfeld  <andy@eazel.com>
+
+	at Bud's request, implemented bug 4127, add a preference to
+	show or hide Nautilus' desktop.
+		
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	define NAUTILUS_PREFERENCES_SHOW_DESKTOP
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog), (global_preferences_register):
+	register the desktop preference and show the checkbox in
+	the appearance section of preferences
+	* src/nautilus-application.c: (nautilus_application_initialize),
+	(nautilus_application_destroy), (check_for_and_run_as_super_user),
+	(desktop_changed_callback):
+	watch the desktop preference and show or hide the desktop window
+	when it changes.
+	* src/nautilus-main.c: (main):
+	show the desktop at launch if the preference is set and it's not
+	overriden by command-line options.
+	
 2000-10-27  Darin Adler  <darin@eazel.com>
 
 	Fixed bugs in file renaming. These changes along with the

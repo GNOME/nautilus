@@ -44,6 +44,7 @@
 #include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-sound.h>
@@ -71,6 +72,7 @@ static void          nautilus_application_destroy                (GtkObject     
 static void          nautilus_application_check_user_directories (NautilusApplication      *application);
 static gboolean	     check_for_and_run_as_super_user 		 (void);
 static gboolean	     need_to_show_first_time_druid		 (void);
+static void	     desktop_changed_callback 		         (gpointer 		   user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusApplication, nautilus_application, BONOBO_OBJECT_TYPE)
 
@@ -176,6 +178,11 @@ nautilus_application_initialize (NautilusApplication *application)
 	
 	/* Create an undo manager */
 	application->undo_manager = nautilus_undo_manager_new ();
+
+	/* monitor the desktop preference */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
+					   desktop_changed_callback,
+					   application);	
 }
 
 NautilusApplication *
@@ -192,6 +199,10 @@ nautilus_application_destroy (GtkObject *object)
 	application = NAUTILUS_APPLICATION (object);
 
 	nautilus_bookmarks_exiting ();
+	
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
+					      desktop_changed_callback,
+					      application);
 
 	bonobo_object_unref (BONOBO_OBJECT (application->undo_manager));
 
@@ -547,6 +558,20 @@ check_for_and_run_as_super_user (void)
 	}
 
 	return TRUE;
+}
+
+/* callback for showing or hiding the desktop based on the user's preference */
+static void
+desktop_changed_callback (gpointer user_data)
+{
+	NautilusApplication *application;
+	
+	application = NAUTILUS_APPLICATION (user_data);
+	if ( nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP, FALSE)) {
+		nautilus_application_open_desktop (application);
+	} else {
+		nautilus_application_close_desktop ();
+	}
 }
 
 /*

@@ -239,6 +239,11 @@ main (int argc, char *argv[])
 	 */
 	nautilus_global_preferences_initialize ();
 
+	/* if desktop flags are not explicitly specified, get it from preferences */
+	if (!start_desktop && !stop_desktop) {
+		start_desktop = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP, FALSE);
+	}
+		
 	/* Do either the self-check or the real work. */
 	if (perform_self_check) {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
