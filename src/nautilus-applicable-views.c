@@ -221,14 +221,6 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
         if (default_component != NULL) {
         	default_id = nautilus_view_identifier_new_from_content_view (default_component);
                 CORBA_free (default_component);
-
-                if (g_list_find_custom (navinfo->content_identifiers, default_id, 
-                                        (GCompareFunc) nautilus_view_identifier_compare) == NULL) {
-                        /* FIXME: should insert in sorted order by name */
-                        navinfo->content_identifiers = g_list_prepend (navinfo->content_identifiers,
-                                                                       nautilus_view_identifier_copy (default_id));
-                }
-                
         } else if (navinfo->content_identifiers != NULL) {              
 		/* No default component, just take first one from list. */
                 default_id = nautilus_view_identifier_copy (navinfo->content_identifiers->data);
@@ -238,7 +230,8 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
         printf ("XXXXXX - default_id: %s (%s)\n", default_id->iid, default_id->name);
 #endif
 
-        if (navinfo->content_identifiers != NULL) {
+        /* If no components found at all - if there are any, there will be a default. */
+        if (default_id != NULL) {
                 vfs_result_code = GNOME_VFS_OK;
                 result_code = get_nautilus_navigation_result_from_gnome_vfs_result (vfs_result_code);
         } else {
