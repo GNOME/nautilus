@@ -1,3 +1,14 @@
+2002-07-11  Damon Chaplin  <damon@ximian.com>
+
+	* src/file-manager/fm-properties-window.c: ui-review changes.
+	added '_Name:' label for filename, added mnemonics, and used standard
+	capitalization. On the permissions page I added _Read/_Write/E_xecute
+	labels to the checkbuttons, since it improves keynav. Currently
+	GtkCheckButton doesn't show a focus indicator if there is no label.
+	Even if that were fixed (there is a patch on bug #74830) mnemonic
+	accelerators work better with labels for all the checkbuttons.
+	Fixes bug #85658.
+	
 2002-07-11  jacob berkman  <jacob@ximian.com>
 
 	* libnautilus-private/nautilus-volume-monitor.c (entry_is_supermounted_volume): 
