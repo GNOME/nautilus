@@ -1429,7 +1429,7 @@ nautilus_list_setup_style_colors (NautilusList *list)
 		style_background_color, 1.10);
 
 	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_divider_color, 
-		style_background_color, 0.9);
+		style_background_color, 0.8);
 
 	nautilus_gdk_set_shifted_foreground_gc_color (list->details->selection_main_color, 
 		selection_background_color, 1);
@@ -2211,9 +2211,9 @@ nautilus_list_clear_from_row (NautilusList *list, int row_index,
 	GdkRectangle *area)
 {
 	GtkCList *clist;
-	GdkRectangle first_column_plain_rectangle;
-	GdkRectangle selected_column_rectangle;
-	GdkRectangle second_column_plain_rectangle;
+	GdkRectangle clip_area, tmp;
+	GdkRectangle first_column_plain_rectangle, selected_column_rectangle, 
+		second_column_plain_rectangle;
 	GdkGC *selected_column_gc;
 	GdkGC *plain_column_gc;
 
@@ -2222,55 +2222,42 @@ nautilus_list_clear_from_row (NautilusList *list, int row_index,
 
 	clist = GTK_CLIST (list);
 
-	first_column_plain_rectangle = *area;
-	first_column_plain_rectangle.y = ROW_TOP_YPIXEL (clist, row_index);
-	if (first_column_plain_rectangle.y >= area->y + area->height) {
+	/* calculate the area we need to erase */
+	clip_area = *area;
+	clip_area.y = ROW_TOP_YPIXEL (clist, row_index);
+	if (clip_area.y < 0) {
+		clip_area.y = 0;
+	}
+	clip_area.height = area->height - (clip_area.y - area->y); 
+
+	if (clip_area.height <= 0) {
 		/* nothing visible to erase */
 		return;
 	}
-	
-	first_column_plain_rectangle.height = area->height 
-		- (first_column_plain_rectangle.y - area->y); 
-	g_assert (first_column_plain_rectangle.height > 0);
 
-	second_column_plain_rectangle = first_column_plain_rectangle;
-	
-	/* get the rectangle for the selected column */
-	get_cell_rectangle (clist, 0, selected_column_index (list), &selected_column_rectangle);
-	get_cell_greater_rectangle (&selected_column_rectangle, &selected_column_rectangle, 
+	/* calculate the rectangle for the selected column */
+	get_cell_rectangle (clist, 0, selected_column_index (list), &tmp);
+	get_cell_greater_rectangle (&tmp, &tmp, 
 		selected_column_index (list) == last_column_index (clist));
-	selected_column_rectangle.y = first_column_plain_rectangle.y;
-	selected_column_rectangle.height = first_column_plain_rectangle.height;
+	tmp.y = clip_area.y;
+	tmp.height = clip_area.height;
 
-	/* start out using the first_column_plain_rectangle holding the entire
-	 * area that we need to erase
-	 */
-	if (selected_column_rectangle.x + selected_column_rectangle.width
-		> first_column_plain_rectangle.x + first_column_plain_rectangle.width) {
-		/* trim invisible part */
-		selected_column_rectangle.width = 
-			(first_column_plain_rectangle.x + first_column_plain_rectangle.width)
-			- selected_column_rectangle.x + 1;
+	gdk_rectangle_intersect (&clip_area, &tmp, &selected_column_rectangle);
 
-		/* won't be needing this */
-		second_column_plain_rectangle.width = 0;
-	} else {
+	/* calculate the first rectangle */
+	tmp = clip_area;
+	tmp.width = selected_column_rectangle.x - tmp.x;
+	gdk_rectangle_intersect (&clip_area, &tmp, &first_column_plain_rectangle);
 
-		/* set up the second rectangle width */
-		second_column_plain_rectangle.x = selected_column_rectangle.y 
-			+ selected_column_rectangle.width + 1;
-		second_column_plain_rectangle.width = 
-			(first_column_plain_rectangle.x + first_column_plain_rectangle.width)
-			- second_column_plain_rectangle.x;
-	}
 
-	if (selected_column_rectangle.width > 0) {
-		/* finally trim the first rectangle to right width */
-		first_column_plain_rectangle.width = selected_column_rectangle.y 
-			- first_column_plain_rectangle.y - 1;
-	}
+	/* calculate the last rectangle */
+	tmp = clip_area;
+	tmp.x = selected_column_rectangle.x + selected_column_rectangle.width;
+	gdk_rectangle_intersect (&clip_area, &tmp, &second_column_plain_rectangle);
 
+	/* get the colors for drawing */
 	get_column_background (list, &selected_column_gc, &plain_column_gc);
+
 	/* draw the first column if non-empty */
 	if (first_column_plain_rectangle.width > 0) {
 		gdk_draw_rectangle (clist->clist_window, plain_column_gc, TRUE,
@@ -2279,7 +2266,7 @@ nautilus_list_clear_from_row (NautilusList *list, int row_index,
 	}
 	g_assert (selected_column_rectangle.width > 0);
 	/* draw the selected column if non-empty */
-	if (first_column_plain_rectangle.width > 0) {
+	if (selected_column_rectangle.width > 0) {
 		gdk_draw_rectangle (clist->clist_window, selected_column_gc, TRUE,
 			  selected_column_rectangle.x, selected_column_rectangle.y, 
 			  selected_column_rectangle.width, selected_column_rectangle.height);

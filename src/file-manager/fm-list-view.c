@@ -145,7 +145,7 @@ static void              fm_list_view_set_zoom_level              (FMListView   
 static void              fm_list_view_sort_items                  (FMListView         *list_view,
 								   int                 column,
 								   gboolean            reversed);
-static void fm_list_view_update_click_mode               (FMListView        *icon_view);
+static void 		fm_list_view_update_click_mode            (FMListView        *icon_view);
 const char *            get_attribute_from_column                 (int                 column);
 int                     get_column_from_attribute                 (const char         *value);
 int                     get_sort_column_from_attribute            (const char         *value);
@@ -154,7 +154,7 @@ static void             install_row_images                        (FMListView   
 								   guint               row);
 static int              sort_criterion_from_column                (int                 column);
 static void             update_icons                              (FMListView         *list_view);
-static void click_policy_changed_callback                (gpointer           user_data);
+static void		click_policy_changed_callback             (gpointer           user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMListView, fm_list_view, FM_TYPE_DIRECTORY_VIEW);
 
