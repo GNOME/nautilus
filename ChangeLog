@@ -1,3 +1,12 @@
+2001-01-03  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 5394, CRITICAL warning received when zooming a 1x1
+	pixel image below 100%
+	
+	* components/image-viewer/nautilus-image-view.c: (rezoom_control),
+	(control_size_allocate_callback):
+	Don't allow a scale if the new width or height is less then 1.
+
 2001-01-03  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Pavel Cisler<pavel@eazel.com>

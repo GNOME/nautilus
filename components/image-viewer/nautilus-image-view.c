@@ -410,9 +410,10 @@ rezoom_control (bonobo_object_data_t *bod, float new_zoom_level)
 	if (bod->zoomed)
 		gdk_pixbuf_unref (bod->zoomed);
 
-	bod->zoomed = gdk_pixbuf_scale_simple (pixbuf,
-					       new_width, new_height,
-					       ART_FILTER_NEAREST);
+	if (new_width >= 1 && new_height >= 1) {
+		bod->zoomed = gdk_pixbuf_scale_simple (pixbuf, new_width, 
+						       new_height, ART_FILTER_NEAREST);
+	}
 
 	resize_control (bod);
 }
@@ -577,8 +578,11 @@ control_size_allocate_callback (GtkWidget *drawing_area, GtkAllocation *allocati
 	else
 		type = ART_FILTER_TILES;
 
-	bod->scaled = gdk_pixbuf_scale_simple (buf, allocation->width,
-					       allocation->height, type);
+	if (allocation->width >= 1 && allocation->height >= 1) {
+		bod->scaled = gdk_pixbuf_scale_simple (buf, allocation->width,
+					       	       allocation->height, type);
+	}
+	
 	control_update (bod);
 }
 
