@@ -74,13 +74,21 @@ static GdkPixbuf *
 fm_icons_controller_get_icon_image (NautilusIconsController *controller,
 				    NautilusControllerIcon *icon)
 {
-	/* Get the appropriate image and name for the file. For the moment,
+	/* Get the appropriate image for the file. For the moment,
 	 * we always use the standard size of icons.
 	 */
-	return nautilus_icon_factory_get_icon_for_file (
-		nautilus_get_current_icon_factory (), 		
-		NAUTILUS_FILE (icon),
-		NAUTILUS_ICON_SIZE_STANDARD);
+
+	NautilusScalableIcon *scalable_icon;
+	GdkPixbuf *pixbuf;
+
+	scalable_icon = nautilus_icon_factory_get_icon_for_file
+		(NAUTILUS_FILE (icon));
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
+		(scalable_icon,
+		 NAUTILUS_ICON_SIZE_STANDARD);
+	nautilus_scalable_icon_unref (scalable_icon);
+
+	return pixbuf;
 }
 
 static char *

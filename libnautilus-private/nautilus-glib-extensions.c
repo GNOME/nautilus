@@ -108,4 +108,3 @@ nautilus_self_check_glib_extensions (void)
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */
-

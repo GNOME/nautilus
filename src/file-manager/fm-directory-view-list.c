@@ -897,6 +897,7 @@ install_icon (FMDirectoryViewList *list_view, guint row)
 {
 	NautilusFile *file;
 	GtkCList *clist;
+	NautilusScalableIcon *scalable_icon;
 	GdkPixbuf *pixbuf;
 	GdkPixmap *pixmap;
 	GdkBitmap *bitmap;
@@ -909,10 +910,11 @@ install_icon (FMDirectoryViewList *list_view, guint row)
 
 	g_assert (file != NULL);
 	
-	pixbuf = nautilus_icon_factory_get_icon_for_file (
-		nautilus_get_current_icon_factory(), 
-		file,
-		fm_directory_view_list_get_icon_size (list_view));
+	scalable_icon = nautilus_icon_factory_get_icon_for_file (file);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
+		(scalable_icon,
+		 fm_directory_view_list_get_icon_size (list_view));
+	nautilus_scalable_icon_unref (scalable_icon);
 
 	/* GtkCList requires a pixmap & mask rather than a pixbuf */
 	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &bitmap, 100);

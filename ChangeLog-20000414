@@ -1,3 +1,57 @@
+2000-02-01  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/nautilus-icon-factory.h:
+	* libnautilus/nautilus-icon-factory.c:
+	(nautilus_icon_factory_new):
+	(nautilus_icon_factory_destroy):
+	(nautilus_get_current_icon_factory):
+	(nautilus_icon_factory_get_icon_for_file):
+	(nautilus_icon_factory_set_theme):
+	(nautilus_icon_factory_get_icon_by_name):
+	(nautilus_icon_factory_get_pixbuf_for_icon):
+	(nautilus_scalable_icon_ref):
+	(nautilus_scalable_icon_unref):
+	(nautilus_scalable_icon_get_name):
+	(scalable_icon_get):
+	(icon_set_possibly_free):
+	(scalable_icon_new):
+	Changed the icon factory interface in a few ways: 1) There's no
+	longer a NautilusIconFactory object. There's just a single global
+	icon factory. If we find that we need multiple factories, we can
+	implement that later. 2) Instead of going straight from a file to
+	a pixbuf, you get a scalable icon, and then get a pixbuf from
+	that. This allows you to choose the icon and then get
+	different-sized versions of it without going through the icon
+	selection process over and over again. There's also a name for
+	each icon which can be stored in the metafile so you can get the
+	same icon again before you have full information on a file.
+
+	* src/nautilus-bookmark.c:
+	(nautilus_bookmark_get_pixmap_and_mask):
+	* src/file-manager/fm-directory-view-list.c:
+	(install_icon):
+	* src/file-manager/fm-icons-controller.c:
+	(fm_icons_controller_get_icon_image):
+	Changed icon factory clients to use the new interface. Maybe
+	after a while I'll add a convenience function that's as simple as
+	the old interface was for the common case where you want to go
+	straight to the pixbuf, but lets try it this way for a while.
+	
+	* libnautilus/nautilus-string.h:
+	* libnautilus/nautilus-string.c:
+	(nautilus_has_prefix):
+	Added nautilus_has_prefix. This checks to see if a string has a
+	particular prefix. It's both clearer to read and more efficient
+	than Andy's typical trick of calling strstr.
+	
+	* libnautilus/nautilus-lib-self-check-functions.h:
+	* libnautilus/nautilus-string.c:
+	Added self-checks for nautilus-string.c. The tests uncovered a
+	bug in nautilus_string_to_int that I fixed.
+
+	* nautilus-glib-extensions.c:
+	Just a stray new-line.
+
 2000-02-01  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug where selection info didn't appear in the status bar when

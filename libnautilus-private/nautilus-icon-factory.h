@@ -24,7 +24,7 @@
 */
 
 #ifndef NAUTILUS_ICON_FACTORY_H
-#define NAUTILUS_ICON_FACTORY_H 1
+#define NAUTILUS_ICON_FACTORY_H
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libnautilus/nautilus-directory.h>
@@ -67,20 +67,35 @@ typedef enum {
 #define NAUTILUS_ICON_SIZE_LARGER	96
 #define NAUTILUS_ICON_SIZE_LARGEST     192
 
-typedef struct _NautilusIconFactory NautilusIconFactory;
+typedef struct _NautilusScalableIcon NautilusScalableIcon;
 
-NautilusIconFactory *nautilus_icon_factory_new               (const char *theme_name);
-void         	     nautilus_icon_factory_destroy           (NautilusIconFactory  *factory);
-void         	     nautilus_icon_factory_set_theme         (NautilusIconFactory  *factory,
-                                                		const char *theme_name);
-NautilusIconFactory *nautilus_get_current_icon_factory       (void);
+/* Relationship between zoom levels and icons sizes. */
+guint                 nautilus_icon_size_for_zoom_level         (NautilusZoomLevel     zoom_level);
 
-guint	     	     nautilus_icon_size_for_zoom_level 	     (NautilusZoomLevel zoom_level);
+/* Switch themes. */
+void                  nautilus_icon_factory_set_theme           (const char           *theme_name);
 
-/* Ownership of a ref. count in this pixbuf comes with the deal */
-GdkPixbuf *  	     nautilus_icon_factory_get_icon_for_file (NautilusIconFactory *factory,
-                                                	      NautilusFile *file,
-                                                	      guint size_in_pixels);
+/* Choose the appropriate icon, but don't render it yet. */
+NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file   (NautilusFile         *file);
+NautilusScalableIcon *nautilus_icon_factory_get_icon_by_name    (const char           *scalable_icon_name);
+
+/* Render an icon to a particular size.
+ * Ownership of a ref. count in this pixbuf comes with the deal.
+ */
+GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
+								 guint                 size_in_pixels);
+
+/* Manage a scalable icon.
+ * Since the factory always passes out references to the same scalable
+ * icon, you can compare two scalable icons to see if they are the same
+ * with ==.
+ */
+void                  nautilus_scalable_icon_ref                (NautilusScalableIcon *scalable_icon);
+void                  nautilus_scalable_icon_unref              (NautilusScalableIcon *scalable_icon);
+
+/* The name of a scalable icon is suitable for storage in metadata.
+ * This is a quick way to record the result of getting an icon by name.
+ */
+char *                nautilus_scalable_icon_get_name           (NautilusScalableIcon *scalable_icon);
 
 #endif /* NAUTILUS_ICON_FACTORY_H */
-

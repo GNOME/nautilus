@@ -39,10 +39,11 @@ void nautilus_run_lib_self_checks (void);
 */
 
 #define NAUTILUS_LIB_FOR_EACH_SELF_CHECK_FUNCTION(macro) \
-	macro(nautilus_self_check_background) \
-	macro(nautilus_self_check_directory) \
-	macro(nautilus_self_check_gdk_extensions) \
-	macro(nautilus_self_check_glib_extensions) \
+	macro (nautilus_self_check_background) \
+	macro (nautilus_self_check_directory) \
+	macro (nautilus_self_check_gdk_extensions) \
+	macro (nautilus_self_check_glib_extensions) \
+	macro (nautilus_self_check_string) \
 /* Add new self-check functions to the list above this line. */
 
 /* Generate prototypes for all the functions. */

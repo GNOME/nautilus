@@ -33,6 +33,7 @@
 #include <libgnome/gnome-mime-info.h>
 #include <libgnome/gnome-util.h>
 
+#include "nautilus-string.h"
 #include "nautilus-default-file-icon.h"
 
 #define ICON_CACHE_MAX_ENTRIES 10
@@ -42,6 +43,7 @@
 static guint use_counter = 0;
 
 typedef struct {
+	guint ref_count;
         char *name;
         GdkPixbuf *plain, *symlink;
         guint last_use;
@@ -62,7 +64,7 @@ typedef enum {
         ICON_SET_SPECIAL_LAST
 } SpecialIconSetType;
 
-struct _NautilusIconFactory {
+typedef struct {
         char *theme_name;
         GHashTable *name_to_image;
 
@@ -71,13 +73,24 @@ struct _NautilusIconFactory {
         GdkPixbuf *symlink_overlay;
         
         guint sweep_timer;
+} NautilusIconFactory;
+
+struct _NautilusScalableIcon {
+	guint ref_count;
+
+	char *uri;
+	IconSet *icon_set;
+	gboolean is_symbolic_link;
 };
 
 /* forward declarations */
-static GdkPixbuf *nautilus_icon_factory_scale (NautilusIconFactory *factory,
-		     		       GdkPixbuf *standard_sized_pixbuf,
-		     		       guint size_in_pixels);
-
+static NautilusIconFactory * nautilus_get_current_icon_factory (void);
+static GdkPixbuf *           nautilus_icon_factory_scale       (NautilusIconFactory *factory,
+								GdkPixbuf           *standard_sized_pixbuf,
+								guint                size_in_pixels);
+static NautilusScalableIcon *scalable_icon_get                 (const char          *uri,
+								IconSet             *icon_set,
+								gboolean             is_symbolic_link);
 
 static IconSet *
 icon_set_new (const gchar *name)
@@ -93,18 +106,19 @@ icon_set_new (const gchar *name)
 static void
 icon_set_destroy (IconSet *icon_set, gboolean free_name)
 {
-        if (icon_set != NULL) {
-                if (free_name)
-                        g_free (icon_set->name);
-                if (icon_set->plain)
-                        gdk_pixbuf_unref (icon_set->plain);
-                if (icon_set->symlink)
-                        gdk_pixbuf_unref (icon_set->symlink);
-        }
+        if (icon_set == NULL)
+		return;
+
+	if (free_name)
+		g_free (icon_set->name);
+	if (icon_set->plain != NULL)
+		gdk_pixbuf_unref (icon_set->plain);
+	if (icon_set->symlink != NULL)
+		gdk_pixbuf_unref (icon_set->symlink);
 }
 
-NautilusIconFactory *
-nautilus_icon_factory_new(const char *theme_name)
+static NautilusIconFactory *
+nautilus_icon_factory_new (const char *theme_name)
 {
         NautilusIconFactory *factory;
         
@@ -128,9 +142,9 @@ nautilus_icon_factory_new(const char *theme_name)
 }
 
 static gboolean
-nautilus_icon_factory_destroy_icon_sets(gpointer key, gpointer value, gpointer user_data)
+nautilus_icon_factory_destroy_icon_sets (gpointer key, gpointer value, gpointer user_data)
 {
-        icon_set_destroy(value, TRUE);
+        icon_set_destroy (value, TRUE);
         return TRUE;
 }
 
@@ -152,7 +166,9 @@ nautilus_icon_factory_invalidate (NautilusIconFactory *factory)
         }
 }
 
-void
+#if 0
+
+static void
 nautilus_icon_factory_destroy (NautilusIconFactory *factory)
 {
         nautilus_icon_factory_invalidate (factory);
@@ -162,12 +178,14 @@ nautilus_icon_factory_destroy (NautilusIconFactory *factory)
         g_free (factory);
 }
 
+#endif
+
 static gboolean
 icon_set_possibly_free (gpointer key, gpointer value, gpointer user_data)
 {
         IconSet *is = value;
 
-        if(is->last_use > (use_counter - ICON_CACHE_MAX_ENTRIES))
+        if (is->last_use > (use_counter - ICON_CACHE_MAX_ENTRIES))
                 return FALSE;
 
         if (is->plain && is->plain->ref_count <= 1) {
@@ -180,7 +198,7 @@ icon_set_possibly_free (gpointer key, gpointer value, gpointer user_data)
                 is->symlink = NULL;
         }
 
-        if (!is->symlink && !is->plain) {
+        if (is->symlink == NULL && is->plain == NULL && is->ref_count == 0) {
                 g_free (is->name);
                 return TRUE;
         }
@@ -191,10 +209,11 @@ icon_set_possibly_free (gpointer key, gpointer value, gpointer user_data)
 static gboolean
 nautilus_icon_factory_sweep(gpointer data)
 {
-        NautilusIconFactory *factory = data;
+        NautilusIconFactory *factory;
 
-        g_hash_table_foreach_remove(factory->name_to_image, icon_set_possibly_free, NULL);
+	factory = data;
 
+        g_hash_table_foreach_remove (factory->name_to_image, icon_set_possibly_free, NULL);
         factory->sweep_timer = 0;
 
         return FALSE;
@@ -203,22 +222,25 @@ nautilus_icon_factory_sweep(gpointer data)
 static void
 nautilus_icon_factory_setup_sweep(NautilusIconFactory *factory)
 {
-        if(factory->sweep_timer)
+        if (factory->sweep_timer)
                 return;
 
-        if(g_hash_table_size(factory->name_to_image) < ICON_CACHE_MAX_ENTRIES)
+        if (g_hash_table_size (factory->name_to_image) < ICON_CACHE_MAX_ENTRIES)
                 return;
 
-        factory->sweep_timer = g_timeout_add(ICON_CACHE_SWEEP_TIMEOUT * 1000,
-                                             nautilus_icon_factory_sweep, factory);
+        factory->sweep_timer = g_timeout_add (ICON_CACHE_SWEEP_TIMEOUT * 1000,
+					      nautilus_icon_factory_sweep, factory);
 }
 
 void
-nautilus_icon_factory_set_theme(NautilusIconFactory *factory, const char *theme_name)
+nautilus_icon_factory_set_theme(const char *theme_name)
 {
-        nautilus_icon_factory_invalidate(factory);
-        g_free(factory->theme_name);
-        factory->theme_name = g_strdup(theme_name);
+	NautilusIconFactory *factory;
+
+	factory = nautilus_get_current_icon_factory ();
+        nautilus_icon_factory_invalidate (factory);
+        g_free (factory->theme_name);
+        factory->theme_name = g_strdup (theme_name);
 }
 
 static IconSet *
@@ -333,19 +355,63 @@ nautilus_icon_factory_load_icon(NautilusIconFactory *factory, IconSet *is, gbool
         return image;
 }
 
-GdkPixbuf *
-nautilus_icon_factory_get_icon_for_file (NautilusIconFactory  *factory,
-                                 NautilusFile *file,
-                                 guint	       size_in_pixels)
+static NautilusScalableIcon *
+scalable_icon_new (const char *uri,
+		   IconSet *icon_set,
+		   gboolean is_symbolic_link)
 {
+	NautilusScalableIcon *icon;
+
+	g_return_val_if_fail (icon_set != NULL, NULL);
+
+	icon = g_new (NautilusScalableIcon, 1);
+	icon->ref_count = 1;
+	icon->uri = g_strdup (uri);
+	icon->icon_set = icon_set;
+	icon->is_symbolic_link = is_symbolic_link;
+
+	icon_set->ref_count++;
+
+	return icon;
+}
+
+static NautilusScalableIcon *
+scalable_icon_get (const char *uri,
+		   IconSet *icon_set,
+		   gboolean is_symbolic_link)
+{
+	/* FIXME: These should come from a hash table. */
+	return scalable_icon_new (uri, icon_set, is_symbolic_link);
+}
+
+void
+nautilus_scalable_icon_unref (NautilusScalableIcon *icon)
+{
+	g_return_if_fail (icon->ref_count != 0);
+
+	if (--icon->ref_count != 0)
+		return;
+
+	g_free (icon->uri);
+
+	g_assert (icon->icon_set->ref_count != 0);
+	icon->icon_set->ref_count--;
+
+	g_free (icon);
+}
+
+NautilusScalableIcon *
+nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
+{
+	NautilusIconFactory *factory;
         IconSet *set;
-        const gchar *file_type;
+	char *uri;
         gboolean is_symbolic_link;
-        GdkPixbuf *image;
-
-        g_return_val_if_fail (factory, NULL);
-        g_return_val_if_fail (file, NULL);
-
+	NautilusScalableIcon *scalable_icon;
+	
+ 	factory = nautilus_get_current_icon_factory ();
+	
+	/* Get an icon set based on the file's type. */
         switch (nautilus_file_get_type (file)) {
         case GNOME_VFS_FILE_TYPE_UNKNOWN:
         case GNOME_VFS_FILE_TYPE_REGULAR:
@@ -371,45 +437,80 @@ nautilus_icon_factory_get_icon_for_file (NautilusIconFactory  *factory,
                 set = &factory->special_icon_sets[ICON_SET_BROKEN_SYMBOLIC_LINK];
                 break;
         }
-
+	
+	/* Also record whether it's a symbolic link or not.
+	 * Later, we'll probably use a separate icon badge for this,
+	 * but for now, we'll keep it.
+	 */
         is_symbolic_link = nautilus_file_is_symbolic_link (file);
+	
+	/* Use the image itself as a custom icon. */
+	if (nautilus_has_prefix (nautilus_file_get_mime_type (file), "image/")
+	    && nautilus_file_get_size (file) < 10000)
+		uri = nautilus_file_get_uri (file);
+	else
+		uri = NULL;
+	
+	/* Create the icon or find it in the cache if it's already there. */
+	scalable_icon = scalable_icon_get (uri, set, is_symbolic_link);
+	g_free (uri);
+	
+        nautilus_icon_factory_setup_sweep (factory);
+	
+	return scalable_icon;
+}
 
-		file_type = nautilus_file_get_mime_type(file);
-		if (file_type && (strstr(file_type, "image/") == file_type) && (nautilus_file_get_size(file) < 10000))
-		  {
-		    gchar *path = nautilus_file_get_uri(file);
-		    image = gdk_pixbuf_new_from_file (path + 7);
-		    g_free(path);
-		  }
-		else
-		  {		
-            set->last_use = use_counter++;
-            image = nautilus_icon_factory_load_icon (factory, set, is_symbolic_link);
-		  }
+GdkPixbuf *
+nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
+					   guint	         size_in_pixels)
+{
+	NautilusIconFactory *factory;
+        IconSet *set;
+        GdkPixbuf *image;
 
+	factory = nautilus_get_current_icon_factory (); 
+
+	/* FIXME: This works only with file:// images, because there's
+	 * no convenience function for loading an image with gnome-vfs
+	 * and gdk-pixbuf.
+	 */
+	image = NULL;
+	if (nautilus_has_prefix (scalable_icon->uri, "file://"))
+		image = gdk_pixbuf_new_from_file (scalable_icon->uri + 7);
+	
+	/* If there was no suitable custom icon URI, then use the icon set. */
+	if (image == NULL) {
+		set = scalable_icon->icon_set;
+		set->last_use = use_counter++;
+		image = nautilus_icon_factory_load_icon
+			(factory, set, scalable_icon->is_symbolic_link);
+	}
+	
+	/* If the icon set failed, then use the fallback set. */
         if (image == NULL) {
+		g_warning ("failed to load icon, using fallback icon set");
                 set = &factory->special_icon_sets[ICON_SET_FALLBACK];
                 set->last_use = use_counter++;
-                image = nautilus_icon_factory_load_icon (factory, set, is_symbolic_link);
+                image = nautilus_icon_factory_load_icon
+			(factory, set, scalable_icon->is_symbolic_link);
         }
-
+	
         g_assert (image != NULL);
 
         /* First cut at handling multiple sizes. If size is other than standard,
          * scale the pixbuf here. Eventually we'll store icons at multiple sizes
          * rather than relying on scaling in every case (though we'll still need
-         * scaling as a fallback). The scaled pixbufs also might want to be cached.
+         * scaling as a fallback). We'll also cache the scaled pixbufs.
          * For now, assume that the icon found so far is of standard size.
          */
         if (size_in_pixels != NAUTILUS_ICON_SIZE_STANDARD)
         {
-        	GdkPixbuf *non_standard_size_icon;
+        	GdkPixbuf *scaled_icon;
 
-        	non_standard_size_icon = nautilus_icon_factory_scale (factory,
-        						      image, 
-        						      size_in_pixels);
+        	scaled_icon = nautilus_icon_factory_scale
+			(factory, image, size_in_pixels);
         	gdk_pixbuf_unref (image);
-        	image = non_standard_size_icon;
+        	image = scaled_icon;
         }
   
         nautilus_icon_factory_setup_sweep (factory);
