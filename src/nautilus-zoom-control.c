@@ -40,6 +40,7 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-theme.h>
@@ -77,6 +78,8 @@ static int     nautilus_zoom_control_expose 		 (GtkWidget *widget,
 static gboolean nautilus_zoom_control_button_press_event (GtkWidget *widget, 
 							  GdkEventButton *event);
 static void	nautilus_zoom_control_load_images	 (NautilusZoomControl *zoom_control);
+static void	nautilus_zoom_control_unload_images	 (NautilusZoomControl *zoom_control);
+static void	nautilus_zoom_control_theme_changed 	 (gpointer user_data);
 
 void            draw_number		                 (GtkWidget *widget, 
 							  GdkRectangle *box);
@@ -175,6 +178,13 @@ nautilus_zoom_control_destroy (GtkObject *object)
 	nautilus_g_list_free_deep (NAUTILUS_ZOOM_CONTROL (object)->details->preferred_zoom_levels);
 	NAUTILUS_ZOOM_CONTROL (object)->details->preferred_zoom_levels = NULL;
 
+	/* deallocate pixbufs */
+	nautilus_zoom_control_unload_images (NAUTILUS_ZOOM_CONTROL (object));
+
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+					      nautilus_zoom_control_theme_changed,
+					      object);
+
 	g_free (NAUTILUS_ZOOM_CONTROL (object)->details);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -205,18 +215,35 @@ nautilus_zoom_control_initialize (NautilusZoomControl *zoom_control)
 	zoom_control->details->preferred_zoom_levels = NULL;
 
 	/* allocate the pixmap that holds the image */
-
 	nautilus_zoom_control_load_images (zoom_control);
 	
 	zoom_width = get_zoom_width (zoom_control);
 	gtk_widget_set_usize (GTK_WIDGET (zoom_control), zoom_width, -1);
+
+	/* add a callback for when the theme changes */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
+					  nautilus_zoom_control_theme_changed,
+					  zoom_control);	
+
 }
 
+/* allocate a new zoom control */
 GtkWidget*
 nautilus_zoom_control_new ()
 {
 	NautilusZoomControl *zoom_control = gtk_type_new (nautilus_zoom_control_get_type ());
 	return GTK_WIDGET (zoom_control);
+}
+
+/* handler for handling theme changes */
+static void
+nautilus_zoom_control_theme_changed (gpointer user_data)
+{
+	NautilusZoomControl *zoom_control;
+
+	zoom_control = NAUTILUS_ZOOM_CONTROL (user_data);
+	nautilus_zoom_control_load_images (zoom_control);
+	gtk_widget_queue_draw (GTK_WIDGET (zoom_control)) ;	
 }
 
 /* draw the current zoom percentage */

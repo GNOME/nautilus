@@ -1,3 +1,18 @@
+
+2000-07-25  Andy Hertzfeld  <andy@eazel.com>
+
+	completed bug 1442, toolbar zoom control needs to be themable.
+	
+	* src/nautilus-zoom-control.c: (nautilus_zoom_control_destroy),
+	(nautilus_zoom_control_initialize), (nautilus_zoom_control_new),
+	(nautilus_zoom_control_theme_changed):
+	made the zoom control connect to the theme preference and update
+	itself when the theme changes.
+	* icons/eazel/Makefile.am:
+	* icons/eazel/zoom_body.png:
+	added an alternative magnifying glass to eazel theme for testing.
+	It needs some clean-up, which Susan will do soon.
+	
 2000-07-25  Andy Hertzfeld  <andy@eazel.com>
 
 	reorganized the menus.  There's now a user level menu, which uses
