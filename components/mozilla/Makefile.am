@@ -59,7 +59,7 @@ ui_DATA = \
 	nautilus-mozilla-ui.xml \
 	$(NULL)
 ui_msgs = \
-	nautilus-mozilla-ui.xml \
+	nautilus-mozilla-ui.xml.h \
 	$(NULL)
 
 nautilus-mozilla-ui.xml.h: $(srcdir)/nautilus-mozilla-ui.xml

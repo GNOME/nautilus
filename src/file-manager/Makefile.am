@@ -51,7 +51,7 @@ ui_DATA =					\
 	nautilus-icon-view-ui.xml		\
 	nautilus-search-list-view-ui.xml	\
 	$(NULL)
-
+ui_msgs = nautilus-directory-view-ui.xml.h
 
 
 nautilus-directory-view-ui.xml.h: $(srcdir)/nautilus-directory-view-ui.xml
@@ -66,3 +66,7 @@ nautilus-search-list-view-ui.xml.h: $(srcdir)/nautilus-search-list-view-ui.xml
 
 
 EXTRA_DIST = $(ui_DATA)
+
+CLEANFILEs = $(ui_msgs)
+
+BUILT_SOURCES = $(ui_msgs)

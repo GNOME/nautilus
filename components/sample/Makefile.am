@@ -16,6 +16,10 @@ oaf_DATA = nautilus-sample-content-view.oafinfo
 
 uidir = $(datadir)/gnome/ui
 ui_DATA = nautilus-sample-content-view-ui.xml
+ui_msgs = nautilus-sample-content-view-ui.xml.h
+
+BUILT_SOURCES = $(ui_msgs)
+CLEANFILES += $(ui_msgs)
 
 nautilus-sample-content-view-ui.xml.h: $(srcdir)/nautilus-sample-content-view-ui.xml
 	$(BONOBO_UI_EXTRACT) $(srcdir)/nautilus-sample-content-view-ui.xml >	\
