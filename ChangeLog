@@ -1,3 +1,9 @@
+2003-10-08  Padraig O'Briain  <padraig.obriain@sun.com>
+
+        * libnautilus-private/nautilus-icon-canvas-item.c
+        (nautilus_icon_canvas_item_accessible_ref_state_set) Avoid
+        dereferencing a NULL pointer. (bug #124122)
+
 2003-10-02  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-container.c:

@@ -2093,10 +2093,12 @@ nautilus_icon_canvas_item_accessible_ref_state_set (AtkObject *accessible)
 	state_set = ATK_OBJECT_CLASS (accessible_parent_class)->ref_state_set (accessible);
 
 	item = eel_accessibility_get_gobject (accessible);
-	container = NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);
 	if (!item) {
 		atk_state_set_add_state (state_set, ATK_STATE_DEFUNCT);
-	} else if (item->details->is_highlighted_as_keyboard_focus) {
+		return state_set;
+	}
+	container = NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);
+	if (item->details->is_highlighted_as_keyboard_focus) {
 		atk_state_set_add_state (state_set, ATK_STATE_FOCUSED);
 	} else if (!container->details->keyboard_focus) {
 
