@@ -1576,15 +1576,15 @@ nautilus_list_setup_style_colors (NautilusList *list)
 
 	list->details->cell_darker_background_rgb
 	    = nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_darker_background, 
-							    style_background_color, 1.05);
+							    style_background_color, 1.03);
 
 	list->details->cell_selected_lighter_background_rgb
 	    = nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_selected_lighter_background, 
-							    style_background_color, 1.05);
+							    style_background_color, 1.04);
 
 	list->details->cell_selected_darker_background_rgb
 	    = nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_selected_darker_background, 
-							    style_background_color, 1.10);
+							    style_background_color, 1.06);
 
 	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_divider_color, 
 						      style_background_color, 0.8);
