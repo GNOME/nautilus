@@ -1,3 +1,20 @@
+2000-12-13  Andy Hertzfeld  <andy@eazel.com>
+
+	* icons/Makefile.am:
+	* icons/i-music-12.png:
+	* icons/i-music-12-aa.png:
+	* icons/i-music-24.png:
+	* icons/i-music-24-aa.png:
+	* icons/i-music-36.png:
+	* icons/i-music-36-aa.png:
+	fixed bug 3502, music icon doesn't scale well, by adding
+	pre-scaled icons from Susan.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_name_for_regular_file):
+	removed evil special-case of text files; now it uses
+	whatever is defined in the mime-type database.
+	
 2000-12-13  John Harper  <jsh@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

@@ -143,6 +143,12 @@ icon_DATA =\
 	i-fifo.png \
 	i-floppy.png \
 	i-harddisk.png \
+	i-music-12.png \
+	i-music-12-aa.png \
+	i-music-24.png \
+	i-music-24-aa.png \
+	i-music-36.png \
+	i-music-36-aa.png \
 	i-music-aa.png \
 	i-music.png \
 	i-nfs.png \

@@ -749,7 +749,7 @@ nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 	mime_type = nautilus_file_get_mime_type (file);
 	is_text_file = nautilus_strcasecmp (mime_type, "text/plain") == 0;
 	
-	if (mime_type != NULL && !is_text_file) {
+	if (mime_type != NULL) {
 		icon_name = gnome_vfs_mime_get_icon (mime_type);
 		if (icon_name != NULL) {
 			g_free (mime_type);
