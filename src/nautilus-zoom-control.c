@@ -291,7 +291,7 @@ void draw_number (GtkWidget *widget, GdkRectangle *box)
 	percent = floor((100.0 * zoom_control->details->zoom_level) + .5);
 	g_snprintf(buffer, 8, "%d", percent);
 
-	y = zoom_control->details->y_offset + 1 + num_v_offset + (box->height >> 1);
+	y = 1 + num_v_offset + (box->height >> 1);
 	x = num_h_offset + ((box->width - char_width * strlen(buffer)) >> 1);  
 	
 	temp_gc = gdk_gc_new(widget->window);

@@ -90,8 +90,8 @@ gchar	*mpg123_device = NULL;
 
 gint debug_mode = 0;
 gint new_song = 0;
-gint mpg123_status = STATUS_STOP;
 
+static gint mpg123_status = STATUS_STOP;
 static gint mp3_pid;
 static void sigchld_handler(int);
 
