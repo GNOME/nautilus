@@ -19,10 +19,19 @@ INCLUDES = \
 	$(GHTTP_CFLAGS)						\
 	$(NULL)
 
+if COMPILE_RPM_30
+RPM3=libeazelpackagesystem-rpm3.la
+endif
+
+if COMPILE_RPM_40
+RPM4=libeazelpackagesystem-rpm4.la
+endif
+
 lib_LTLIBRARIES = \
 	libeazelinstall.la \
 	libeazelpackagesystem.la \
-	@PACKAGESYSTEM@ \
+	$(RPM3) \
+	$(RPM4) \
 	libeazelpackagesystem-skeleton.la \
 	$(NULL)
 
@@ -97,17 +106,20 @@ libeazelpackagesystem_skeleton_la_SOURCES = 	\
 	$(NULL)
 
 
-# libeazelpackagesystem-rpm3
+if COMPILE_RPM_40
 
+# libeazelpackagesystem-rpm3
 libeazelpackagesystem_rpm3_la_SOURCES = 	\
 	eazel-package-system-rpm3.h		\
 	eazel-package-system-rpm3-private.h	\
 	eazel-package-system-rpm3.c		\
 	$(NULL)
 
+endif
+
+if COMPILE_RPM_40
 
 # libeazelpackagesystem-rpm4
-
 libeazelpackagesystem_rpm4_la_SOURCES = 	\
 	eazel-package-system-rpm3.h		\
 	eazel-package-system-rpm3.c		\
@@ -115,6 +127,7 @@ libeazelpackagesystem_rpm4_la_SOURCES = 	\
 	eazel-package-system-rpm4.c		\
 	$(NULL)
 
+endif
 
 # stuff
 
