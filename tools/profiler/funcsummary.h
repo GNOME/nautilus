@@ -43,12 +43,12 @@ public:
 	void Output(std::ostream &os);
 
 private:
-    struct FuncData {
+	struct FuncData {
 		string name;
 		profctr_t func_time, func_children_time;
 		double func_pct, func_children_pct;
 		size_t count;
-    };
+	};
 
 	typedef std::map<std::string, FuncData> function_map_t;
 	

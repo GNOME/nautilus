@@ -84,7 +84,7 @@ static char *dump_prefix;
 /************************************************************************/
 
 static void profile_exit();
-static inline arc *allocate_arc(thread_prof *thread, codeptr_t to);
+static inline arc *allocate_arc(volatile thread_prof *thread, codeptr_t to);
 
 /* Temporarily installed during determine_frequency():
  * sigsuspend() does not wake up for SIG_IGN signals. */
@@ -260,15 +260,12 @@ new_thread_profile()
 	thread->stacktop
 		= (stack_entry *)((char *)thread + sizeof(thread_prof));
 	
-	arc *root_arc = allocate_arc(thread, (codeptr_t)NULL);
+	thread->root_arc = allocate_arc(thread, (codeptr_t)NULL);
 	
-	root_arc->to = (codeptr_t)NULL;
-	root_arc->next = NULL;
-	root_arc->func_and_children = 0;
-	root_arc->count = 0;
-	root_arc->chain = NULL;
-	
-	thread->root_arc = root_arc;
+	thread->root_arc->next = NULL;
+	thread->root_arc->func_and_children = 0;
+	thread->root_arc->count = 0;
+	thread->root_arc->chain = NULL;
 	
 	/* Now we have to push a toplevel stack entry, since the rest of
 	* menter will look at stacktop->current_arc */
@@ -291,7 +288,7 @@ new_thread_profile()
 }
 
 static inline arc *
-allocate_arc(thread_prof *, codeptr_t to)
+allocate_arc(volatile thread_prof *, codeptr_t to)
 {
 	arc *result = arc_table + atomic_inc(&header->valid_arcs);
 	
@@ -305,7 +302,7 @@ allocate_arc(thread_prof *, codeptr_t to)
 }
 
 static inline arc *
-find_arc(thread_prof *thread, arc *from, codeptr_t to)
+find_arc(volatile thread_prof *thread, arc *from, codeptr_t to)
 {
 	for (arc *chain = from->chain; chain != NULL; chain = chain->next) 
 		if (chain->to == (codeptr_t)to)
@@ -350,7 +347,7 @@ extern "C" void __attribute((__stdcall__))
 __menter_internal (codeptr_t func)
 {
 	func = resolve_shared_library_address (func);
-	thread_prof *thread = get_thread_profile();
+	volatile thread_prof *thread = get_thread_profile();
 	volatile stack_entry *stacktop = thread->stacktop;
 	arc *current_arc = find_arc(thread, stacktop->current_arc, func);
 	

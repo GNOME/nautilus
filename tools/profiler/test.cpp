@@ -1,14 +1,13 @@
 #include <stdio.h>
 #include <unistd.h>
 
-void libcall(void);
-
-#ifdef TEST_LIB
-
 void libcall2(void);
 void libcall1(void);
 void libcall(void);
 void xlibcall(void);
+
+#ifdef TEST_LIB
+
 
 void
 libcall2(void)
@@ -72,7 +71,8 @@ d()
 int
 main()
 {
-	d();
+	xlibcall();
+	//d();
 	printf("test done\n");
 }
 

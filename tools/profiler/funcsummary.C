@@ -143,7 +143,7 @@ void FuncSummary::MyArcVisitor::visit(const ProfileData::ArcData &a)
 	
 	to.func_time += a.time;
 	to.func_children_time += a.time;
-	
+
 	from.func_time -= a.time;
 }
 

@@ -243,14 +243,14 @@ void ProfileData::load_arcs(void)
 	}
 
 #ifndef NDEBUG
-    for (size_t i=0; i < narcs; i++) {
+	for (size_t i=0; i < narcs; i++) {
 		assert_valid_arc_data_ptr(arc_table[i].tochain);
 		assert_valid_arc_data_ptr(arc_table[i].next_sibling);
-    }
+	}
 #endif
 
-    // Now fill in the missing ArcData fields by following the child chains.
-    for (size_t i=0; i < header->num_threads; i++) 
+	// Now fill in the missing ArcData fields by following the child chains.
+	for (size_t i=0; i < header->num_threads; i++) 
 		threads[i].root_arc = xlate_arc(get_thread(i)->root_arc);
 
 
