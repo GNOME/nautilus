@@ -167,10 +167,6 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 		}
 		return TRUE;
 
-	case GNOME_VFS_XFER_PHASE_FILECOMPLETED:
-		/* FIXME bugzilla.eazel.com 676: ? */
-		return TRUE;
-		
 	case GNOME_VFS_XFER_PHASE_COMPLETED:
 		nautilus_file_changes_consume_changes (TRUE);
 		gtk_widget_destroy (xfer_info->progress_dialog);

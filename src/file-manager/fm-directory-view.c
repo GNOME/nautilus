@@ -111,6 +111,10 @@ static void           display_selection_info                                    
 static void           fm_directory_view_initialize_class                          (FMDirectoryViewClass     *klass);
 static void           fm_directory_view_initialize                                (FMDirectoryView          *view);
 #if 0
+/* FIXME bugzilla.eazel.com 634, 635
+ * old "delete selection" code left here for now, parts of it will be used
+ * to implement a in-place delte fallback for items that cannot be moved to Trash
+ */
 static void           fm_directory_view_delete_with_confirm                       (FMDirectoryView          *view,
 										   GList                    *files);
 #endif
@@ -345,6 +349,10 @@ bonobo_menu_move_to_trash_cb (BonoboUIHandler *ui_handler, gpointer user_data, c
 }
 
 #if 0
+/* FIXME bugzilla.eazel.com 634, 635
+ * old "delete selection" code left here for now, parts of it will be used
+ * to implement a in-place delte fallback for items that cannot be moved to Trash
+ */
 static void
 bonobo_menu_delete_cb (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
 {

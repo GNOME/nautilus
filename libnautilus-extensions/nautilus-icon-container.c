@@ -1730,18 +1730,7 @@ motion_notify_event (GtkWidget *widget,
 				motion->y = details->drag_y;
 			
 				nautilus_icon_dnd_begin_drag (container,
-							      GDK_ACTION_MOVE 
-#if 0
-	/* 
-	 * FIXME bugzilla.eazel.com 623:
-	 *
-	 * disable copy operations for now -- the default drop action is
-	 * wrong (should be move, not copy) and the copy engine doesn't
-	 * handle conflicts correctly yet
-	 */
-							      | GDK_ACTION_COPY
-#endif
-							      ,
+							      GDK_ACTION_MOVE,
 							      details->drag_button,
 							      motion);
 			}

@@ -1,3 +1,32 @@
+2000-05-02  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c
+	(motion_notify_event):
+	Get rid of FIXME 623 - the problem was already fixed, I just
+	forgot to remove the FIXME.
+
+	* src/file-manager/dfos-xfer.c (handle_xfer_ok):
+	Fix FIXME 676 - the particular switch case doesn't need any
+	handling, took it out.
+
+	* libnautilus-extensions/nautilus-list-column-title.c
+	(nautilus_list_column_title_paint),
+	(nautilus_list_column_title_leave),
+	(nautilus_list_column_title_button_press),
+	(nautilus_list_column_title_button_release):
+	Fix bug 423 - Double-clicking Header boundary in List View
+	fails assertion. 
+	Fix a column press tracking bug Gene found - the coulumn would
+	stay pressed if you tracked out of the column and let go of the
+	mouse button - made it so that when tracking a column press the
+	cursor gets grabbed.
+	Fix FIXME 618 - used offscreen bitmap draws instead of invalidates
+	during the different mouse tracking state changes.
+
+	* file-manager/fm-directory-view.c:
+	Added comments to some #if 0 code that I left behind and will use
+	later.
+
 2000-05-02  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 641: should check MIME type for SVG files.

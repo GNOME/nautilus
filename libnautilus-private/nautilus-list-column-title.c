@@ -394,8 +394,8 @@ nautilus_list_column_title_paint (GtkWidget *widget, GtkWidget *draw_target,
 		gtk_paint_box (widget->style, target_drawable,
 			       column_title->details->tracking_column_prelight == index ? 
 			       		GTK_STATE_PRELIGHT : GTK_STATE_NORMAL,
-			       column_title->details->tracking_column_press == index ? 
-			       		GTK_SHADOW_IN : GTK_SHADOW_OUT,
+			       column_title->details->tracking_column_press == index 
+					? GTK_SHADOW_IN : GTK_SHADOW_OUT,
 			       area, draw_target, COLUMN_TITLE_THEME_STYLE_NAME,
 			       cell_rectangle.x, cell_rectangle.y, 
 			       cell_rectangle.width, cell_rectangle.height);
@@ -729,9 +729,8 @@ nautilus_list_column_title_leave (GtkWidget *widget, GdkEventCrossing *event)
 	if (column_title->details->tracking_column_prelight != -1) {
 		column_title->details->tracking_column_prelight = -1;
 		gtk_widget_set_state (widget, GTK_STATE_NORMAL);
-		nautilus_list_column_title_buffered_draw (widget);
 	}
-
+	nautilus_list_column_title_buffered_draw (widget);
 	return TRUE;
 }
 
@@ -740,14 +739,17 @@ nautilus_list_column_title_button_press (GtkWidget *widget, GdkEventButton *even
 {
 	NautilusListColumnTitle *column_title;
 	GtkWidget *parent_list;
+	int grab_result;
 
 	g_assert (event != NULL);
 	g_assert (NAUTILUS_IS_LIST_COLUMN_TITLE (widget));
 	g_assert (NAUTILUS_IS_LIST (widget->parent));
-	g_assert (NAUTILUS_LIST_COLUMN_TITLE(widget)->details->tracking_column_resize == -1);
+	g_assert (event->type != GDK_BUTTON_PRESS
+		|| NAUTILUS_LIST_COLUMN_TITLE(widget)->details->tracking_column_resize == -1);
 
 	column_title = NAUTILUS_LIST_COLUMN_TITLE(widget);
 	parent_list = GTK_WIDGET (widget->parent);
+
 
 	if (event->type == GDK_BUTTON_PRESS) {
 		int resized_column;
@@ -758,7 +760,6 @@ nautilus_list_column_title_button_press (GtkWidget *widget, GdkEventButton *even
 
 		if (resized_column != -1) {
 			GdkCursor *cursor;
-			int grab_result;
 
 			/* during the drag, use the resize cursor */ 
 			cursor = gdk_cursor_new (GDK_SB_H_DOUBLE_ARROW);
@@ -773,7 +774,7 @@ nautilus_list_column_title_button_press (GtkWidget *widget, GdkEventButton *even
 						        NULL, cursor, event->time);
 			gdk_cursor_destroy (cursor);
 
-			if (grab_result != 0) 
+			if (grab_result != 0) {
 				/* failed to grab the pointer, give up 
 				 * 
 				 * The grab results are not very well documented
@@ -782,6 +783,7 @@ nautilus_list_column_title_button_press (GtkWidget *widget, GdkEventButton *even
 				 * decide to return.
 				 */
 				return FALSE;
+			}
 
 			/* set up new state */
 			column_title->details->tracking_column_resize = resized_column;
@@ -798,15 +800,26 @@ nautilus_list_column_title_button_press (GtkWidget *widget, GdkEventButton *even
 
 			return FALSE;
 		}
+		
 		if (clicked_column != -1) {
 			/* clicked a column, draw the pressed column title */
 			column_title->details->tracking_column_prelight = -1;
 			column_title->details->tracking_column_press = clicked_column;
 			gtk_widget_set_state (widget, GTK_STATE_ACTIVE);
-			/* FIXME bugzilla.eazel.com 618:
-			 * buffered draw may be better here
+
+			/* grab the pointer events so that we get release events even when
+			 * the mouse tracks out of the widget window
 			 */
-			gtk_widget_queue_draw (widget);
+			grab_result = gdk_pointer_grab (widget->window, FALSE,
+						        GDK_BUTTON_RELEASE_MASK,
+						        NULL, NULL, event->time);
+
+			if (grab_result != 0) {
+				/* failed to grab the pointer, give up */
+				return FALSE;
+			}
+
+			nautilus_list_column_title_buffered_draw (widget);
 		}
 		
 	}	
@@ -824,14 +837,17 @@ nautilus_list_column_title_button_release (GtkWidget *widget, GdkEventButton *ev
 	g_assert (NAUTILUS_IS_LIST_COLUMN_TITLE (widget));
 	g_assert (NAUTILUS_IS_LIST (widget->parent));
 
+
 	column_title = NAUTILUS_LIST_COLUMN_TITLE(widget);
 	parent_list = GTK_WIDGET (widget->parent);
 
-	if (column_title->details->tracking_column_resize != -1) {
+	/* let go of all the pointer events */
+	if ((column_title->details->tracking_column_resize != -1
+	    || column_title->details->tracking_column_press != -1)
+		&& gdk_pointer_is_grabbed ())
+		gdk_pointer_ungrab (event->time);
 
-		/* let go of all the pointer events */
-		if (gdk_pointer_is_grabbed ())
-			gdk_pointer_ungrab (event->time);
+	if (column_title->details->tracking_column_resize != -1) {
 			
 		/* end column resize tracking */
 		(NAUTILUS_LIST_CLASS (NAUTILUS_KLASS (parent_list)))->
@@ -853,10 +869,7 @@ nautilus_list_column_title_button_release (GtkWidget *widget, GdkEventButton *ev
 		column_title->details->tracking_column_prelight != -1 ? 
 		GTK_STATE_PRELIGHT : GTK_STATE_NORMAL);
 
-	/* FIXME bugzilla.eazel.com 618:
-	 * buffered draw may be better here
-	 */
-	gtk_widget_queue_draw (widget);
+	nautilus_list_column_title_buffered_draw (widget);
 
 	return FALSE;
 }
