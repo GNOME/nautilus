@@ -1,3 +1,17 @@
+2002-04-22	Diego González  <diego@pemas.net>
+
+	* src/file-manager/fm-list-model.[c-h]
+	  (fm_list_model_get_sort_column_id_from_attribute): fix typo
+	  (fm_list_model_get_attribute_from_sort_column_id): implement
+
+	* src/file-manager/fm-list-view.c
+	  (create_and_set_up_tree_view): connect to sort_column_changed signal of 
+	  the model
+	  (rows_reordered_callback): implement, it stores the metadata of the
+	  directory that is being viewed
+	  (get_attribute_from_sort_type): remove, no longer needed
+	  (real_get_default_sort_attribute): remove, no longer needed
+	
 Tue Apr 23 16:18:05 2002  Owen Taylor  <otaylor@redhat.com>
 
 	* src/nautilus-preferences-dialog.c (dialog_button_response_callback):
@@ -25,6 +39,7 @@ Tue Apr 23 16:18:05 2002  Owen Taylor  <otaylor@redhat.com>
 	(lay_down_icons_tblr):
 	Take pixels_per_unit into account when setting width and height.
 	
+>>>>>>> 1.5237
 2002-04-22  Anders Carlsson  <andersca@gnu.org>
 
 	* src/nautilus-property-browser.c:

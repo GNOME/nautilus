@@ -67,6 +67,7 @@ static gboolean			default_sort_reversed_auto_value;
 
 static GList *     fm_list_view_get_selection         (FMDirectoryView *view);
 
+
 GNOME_CLASS_BOILERPLATE (FMListView, fm_list_view,
 			 FMDirectoryView, FM_TYPE_DIRECTORY_VIEW)
 
@@ -178,6 +179,27 @@ button_release_callback (GtkWidget *widget, GdkEventButton *event, gpointer call
 }
 
 static void
+rows_reordered_callback (GtkTreeSortable *sortable, 
+			 FMListView *view)
+{
+	NautilusFile *file;
+	gint sort_column_id;
+	GtkSortType order;
+	char *attr_column, *attr_order;
+
+	file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (view));
+	gtk_tree_sortable_get_sort_column_id (sortable, &sort_column_id, &order);
+
+	attr_column = fm_list_model_get_attribute_from_sort_column_id (sort_column_id);
+	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN, NULL, attr_column);
+
+	attr_order = (order ? "true" : "false");
+	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED, NULL, attr_order);
+
+	g_free (attr_column);
+}
+
+static void
 cell_renderer_edited (GtkCellRendererText *cell,
 		      const char          *path_str,
 		      const char          *new_text,
@@ -244,6 +266,10 @@ create_and_set_up_tree_view (FMListView *view)
 	
 	view->details->model = g_object_new (FM_TYPE_LIST_MODEL, NULL);
 	gtk_tree_view_set_model (view->details->tree_view, GTK_TREE_MODEL (view->details->model));
+
+	g_signal_connect_object (view->details->model, "sort_column_changed",
+				 G_CALLBACK (rows_reordered_callback), view, 0);
+
 	g_object_unref (view->details->model);
 	
 	gtk_tree_selection_set_mode (gtk_tree_view_get_selection (view->details->tree_view), GTK_SELECTION_MULTIPLE);
@@ -350,6 +376,7 @@ set_sort_order_from_metadata_and_preferences (FMListView *list_view)
 	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (list_view->details->model),
 					      sort_column_id,
 					      sort_reversed ? GTK_SORT_DESCENDING : GTK_SORT_ASCENDING);
+
 }
 
 static void
@@ -493,42 +520,6 @@ fm_list_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 				  TRUE);
 }
 
-
-#if GNOME2_CONVERSION_COMPLETE
-
-/* This is needed when writing out the sort to metadata. But we don't
- * need this list here. We can probably do this using the table inside
- * FMListModel.
- */
-
-static char *
-get_attribute_from_sort_type (NautilusFileSortType sort_type)
-{
-	switch (sort_type) {
-	case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
-		return g_strdup ("name");
-	case NAUTILUS_FILE_SORT_BY_SIZE:
-		return g_strdup ("size");
-	case NAUTILUS_FILE_SORT_BY_TYPE:
-		return g_strdup ("type");
-	case NAUTILUS_FILE_SORT_BY_MTIME:
-		return g_strdup ("date_modified");
-	case NAUTILUS_FILE_SORT_BY_EMBLEMS:
-		return g_strdup ("emblems");
-	default:
-		g_warning ("unknown sort type %d in get_attribute_from_sort_type", sort_type);
-		return g_strdup ("name");
-	}
-}
-
-static char *
-real_get_default_sort_attribute (FMListView *view)
-{
-	return get_attribute_from_sort_type (default_sort_order_auto_value);
-}
-
-#endif
-
 static void
 fm_list_view_sort_directories_first_changed (FMDirectoryView *view)
 {
@@ -566,7 +557,6 @@ fm_list_view_emblems_changed (FMDirectoryView *directory_view)
 	 */
 #endif
 }
-
 
 static void
 fm_list_view_class_init (FMListViewClass *class)

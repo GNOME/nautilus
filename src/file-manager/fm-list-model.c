@@ -53,14 +53,21 @@ typedef struct {
 	int sort_column_id;
 } AttributeEntry;
 
+/*
+ * Do not change the order of the type and size attributes, they 
+ * have to be in this order so that the column_id to attribute mapping
+ * works. This is needed to store the sorting preferences. This duplicate
+ * entry is here to allow the ordering by icon (i think...)
+ */
+
 static const AttributeEntry attributes[] = {
 	{ "name", FM_LIST_MODEL_NAME_COLUMN },
-	{ "icon", FM_LIST_MODEL_TYPE_COLUMN },
+	{ "type", FM_LIST_MODEL_TYPE_COLUMN },
 #ifdef GNOME2_CONVERSION_COMPLETE
 	{ "emblems", FM_LIST_MODEL_EMBLEMS_COLUMN },
 #endif
 	{ "size", FM_LIST_MODEL_SIZE_COLUMN },
-	{ "type", FM_LIST_MODEL_TYPE_COLUMN },
+	{ "icon", FM_LIST_MODEL_TYPE_COLUMN },
 	{ "date_modified", FM_LIST_MODEL_DATE_MODIFIED_COLUMN },
 };
 
@@ -428,6 +435,7 @@ fm_list_model_sort (FMListModel *model)
 	path = gtk_tree_path_new ();
 	iter.stamp = model->details->stamp;
 	iter.user_data = NULL;
+
 	gtk_tree_model_rows_reordered (GTK_TREE_MODEL (model),
 				       path, NULL, new_order);
 	gtk_tree_path_free (path);
@@ -701,11 +709,26 @@ fm_list_model_get_sort_column_id_from_attribute (const char *attribute)
 
 	for (i = 0; i < G_N_ELEMENTS (attributes); i++) {
 		if (strcmp (attributes[i].attribute_name, attribute) == 0) {
-			return i;
+			return attributes[i].sort_column_id;
 		}
 	}
 
 	return -1;
+}
+
+char *
+fm_list_model_get_attribute_from_sort_column_id (int sort_column_id)
+{
+	int i;
+
+	for (i = 0; i < G_N_ELEMENTS (attributes); i++) {
+		if (attributes[i].sort_column_id == sort_column_id) {
+			return g_strdup (attributes[i].attribute_name);
+		}
+	}
+
+	g_warning ("unknown sort column id: %d", sort_column_id);
+	return g_strdup ("name");
 }
 
 int

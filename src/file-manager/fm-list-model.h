@@ -72,5 +72,6 @@ void     fm_list_model_set_should_sort_directories_first (FMListModel          *
 							  gboolean              sort_directories_first);
 int      fm_list_model_get_sort_column_id_from_attribute (const char           *attribute);
 int      fm_list_model_get_sort_column_id_from_sort_type (NautilusFileSortType  sort_type);
+char    *fm_list_model_get_attribute_from_sort_column_id (int                   sort_column_id);
 
 #endif /* FM_LIST_MODEL_H */
