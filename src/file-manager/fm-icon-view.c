@@ -94,6 +94,21 @@
 #define ID_SORT_REVERSED                        "Reversed Order"
 
 
+typedef struct {
+	NautilusFileSortType sort_type;
+	const char *metadata_text;
+	const char *id;
+	const char *menu_label;
+	const char *menu_hint;
+} SortCriterion;
+
+typedef enum {
+	MENU_ITEM_TYPE_STANDARD,
+	MENU_ITEM_TYPE_CHECK,
+	MENU_ITEM_TYPE_RADIO,
+	MENU_ITEM_TYPE_TREE
+} MenuItemType;
+
 /* forward declarations */
 static void     create_icon_container                     (FMIconView        *icon_view);
 static void     fm_icon_view_initialize                   (FMIconView        *icon_view);
@@ -116,6 +131,7 @@ static void     fm_icon_view_set_directory_tighter_layout (FMIconView        *ic
 							   NautilusFile      *file,
 							   gboolean           tighter_layout);
 static gboolean real_supports_auto_layout                 (FMIconView        *view);
+static const SortCriterion *get_sort_criterion_by_id      (const char 	     *id);
 static void     set_sort_criterion_by_id                  (FMIconView        *icon_view,
 							   const char        *id);
 static gboolean set_sort_reversed                         (FMIconView        *icon_view,
@@ -128,21 +144,6 @@ static void     update_layout_menus                       (FMIconView        *vi
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMIconView,
 				   fm_icon_view,
 				   FM_TYPE_DIRECTORY_VIEW)
-
-typedef struct {
-	NautilusFileSortType sort_type;
-	const char *metadata_text;
-	const char *id;
-	const char *menu_label;
-	const char *menu_hint;
-} SortCriterion;
-
-typedef enum {
-	MENU_ITEM_TYPE_STANDARD,
-	MENU_ITEM_TYPE_CHECK,
-	MENU_ITEM_TYPE_RADIO,
-	MENU_ITEM_TYPE_TREE
-} MenuItemType;
 
 /* Note that the first item in this list is the default sort,
  * and that the items show up in the menu in the order they
@@ -432,9 +433,12 @@ static void
 handle_radio_item (FMIconView *view,
 		   const char *id)
 {
+	/* Note that id might be a toggle item.
+	 * Ignore non-sort ids so that they don't cause sorting.
+	 */
 	if (strcmp (id, ID_MANUAL_LAYOUT) == 0) {
 		switch_to_manual_layout (view);
-	} else {
+	} else if (get_sort_criterion_by_id (id) != NULL) {
 		set_sort_criterion_by_id (view, id);
 	}
 }
@@ -541,9 +545,14 @@ update_layout_menus (FMIconView *view)
 		nautilus_bonobo_set_sensitive
 			(view->details->ui, COMMAND_SORT_REVERSED, is_auto_layout);
 
-		/* Tighter Layout is only relevant for auto layout */
+		/* FIXME bugzilla.eazel.com 5903:
+		 * Tighter Layout is only relevant for manual layout when doing a Clean Up.
+		 * Leaving it disabled for manual layout is therefore not correct.
+		 * But enabling it is both potentially confusing (since it has no immediate
+		 * effect) and causes layout problems. More info in bug report.
+		 */
 		nautilus_bonobo_set_sensitive
-			(view->details->ui, COMMAND_TIGHTER_LAYOUT, is_auto_layout);	
+			(view->details->ui, COMMAND_TIGHTER_LAYOUT, is_auto_layout);
 	}
 
 	/* Clean Up is only relevant for manual layout */
@@ -1039,6 +1048,7 @@ set_sort_criterion_by_id (FMIconView *icon_view, const char *id)
 	g_assert (id != NULL);
 
 	sort = get_sort_criterion_by_id (id);
+	g_return_if_fail (sort != NULL);
 
 	if (sort == icon_view->details->sort
 	    && fm_icon_view_using_auto_layout (icon_view)) {

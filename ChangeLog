@@ -1,3 +1,23 @@
+2001-02-09  John Sullivan  <sullivan@eazel.com>
+
+	Fixed problems I ran into while trying to fix bug 5903,
+	which is about making "Tighter Layout" sensitive even
+	in manual layout, since it affects "Clean Up by Name"
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_set_tighter_layout): Don't
+	re-sort when tighter layout setting changes if not
+	in auto_layout mode.
+	
+	* src/file-manager/fm-icon-view.c: 
+	(handle_radio_item): Don't assume that every id passed
+	to this routine is a sort ID; it might be a toggle
+	button's id. Use get_sort_criterion_by_id to distinguish.
+	(update_layout_menus): Added FIXME comment explaining
+	why "tighter layout" is insensitive in manual layout.
+	(set_sort_criterion_by_id): Check whether passed id is
+	a valid sort criterion; don't try to sort if not.
+
 2001-02-09  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	reviewed by: Robey Pointer  <robey@eazel.com>

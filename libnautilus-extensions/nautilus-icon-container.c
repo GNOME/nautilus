@@ -4566,10 +4566,12 @@ nautilus_icon_container_set_tighter_layout (NautilusIconContainer *container,
 
 	container->details->tighter_layout = tighter_layout;
 
-	invalidate_label_sizes (container);
-	redo_layout (container);
+	if (container->details->auto_layout) {
+		invalidate_label_sizes (container);
+		redo_layout (container);
 
-	gtk_signal_emit (GTK_OBJECT (container), signals[LAYOUT_CHANGED]);
+		gtk_signal_emit (GTK_OBJECT (container), signals[LAYOUT_CHANGED]);
+	}
 }
 
 
