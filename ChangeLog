@@ -1,3 +1,17 @@
+2002-02-22  Gediminas Paulauskas <menesis@delfi.lt>
+
+	* configure.in: remove obsolete
+	GNOME_COMMON_INIT and GNOME_PLATFORM_GNOME_2 macros.
+	* libnautilus-private/nautilus-file-operations.c
+	(handle_transfer_duplicate):
+	* libnautilus-private/nautilus-icon-dnd.c
+	(nautilus_icon_container_get_drop_action):
+	* libnautilus-private/nautilus-volume-monitor.c
+	(mount_volume_deactivate):
+	remove empty default: label to fix warning on gcc 3.
+	* libnautilus-private/nautilus-icon-container.c (clear_drag_state):
+	fix typo.
+
 2002-02-22  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-icon-container.c:

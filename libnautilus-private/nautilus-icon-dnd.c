@@ -1108,8 +1108,6 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 		*default_action = context->suggested_action;
 		*non_default_action = context->suggested_action;
 		break;
-	
-	default:
 	}
 
 }

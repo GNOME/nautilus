@@ -2585,7 +2585,7 @@ clear_drag_state (NautilusIconContainer *container)
 {
 	container->details->drag_icon = NULL;
 	container->details->drag_state = DRAG_STATE_INITIAL;
-	remove_context_menu_tiemout (container);
+	remove_context_menu_timeout (container);
 }
 
 static gboolean
