@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
-"POT-Creation-Date: 2003-05-23 20:41+0100\n"
+"POT-Creation-Date: 2003-06-04 10:07+0200\n"
 "PO-Revision-Date: 2003-05-05 14:32+0100\n"
 "Last-Translator: Paul Duffy <dubhthach@frink.nuigalway.ie>\n"
 "Language-Team: Irish\n"
@@ -328,7 +328,9 @@ msgstr "Cuardaigh Google le haighaid an TÃ©asc seo"
 
 #: components/text/services/google.xml.h:2
 msgid "Use Google to search the web for the selected text"
-msgstr "Baint ÃºsÃ¡id as Google chun cuardaigh an IdirlÃ­on le haighaidh an TÃ©asc seo"
+msgstr ""
+"Baint ÃºsÃ¡id as Google chun cuardaigh an IdirlÃ­on le haighaidh an TÃ©asc "
+"seo"
 
 #: components/text/services/webster.xml.h:1
 msgid "Look Up Selected Text in Dictionary"
@@ -343,7 +345,7 @@ msgid "animation to indicate on-going activity"
 msgstr ""
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:577
+#: components/throbber/nautilus-throbber.c:587
 msgid "throbber"
 msgstr ""
 
@@ -355,7 +357,7 @@ msgstr ""
 msgid "throbber object factory"
 msgstr ""
 
-#: components/throbber/nautilus-throbber.c:578
+#: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr ""
 
@@ -1605,33 +1607,32 @@ msgstr ""
 msgid "Xenix Volume"
 msgstr ""
 
-#: libnautilus-private/nautilus-authn-manager.c:60
-msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr ""
-
-#: libnautilus-private/nautilus-authn-manager.c:61
-#, c-format
-msgid ""
-"You must log in to access \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-
-#: libnautilus-private/nautilus-authn-manager.c:64
-msgid "Your password will be transmitted unencrypted."
-msgstr ""
-
-#: libnautilus-private/nautilus-authn-manager.c:65
-msgid "Your password will be transmitted encrypted."
-msgstr ""
-
-#: libnautilus-private/nautilus-authn-manager.c:68
-msgid "Authentication Required"
-msgstr ""
-
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr ""
+
+#: libnautilus-private/nautilus-desktop-directory-file.c:442
+#: libnautilus-private/nautilus-desktop-icon-file.c:163
+#: libnautilus-private/nautilus-trash-file.c:690
+msgid "on the desktop"
+msgstr ""
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+msgid ""
+"You cannot delete a volume icon. If you want to eject the volume, please use "
+"Eject in the right-click menu of the volume."
+msgstr ""
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+msgid "Can't delete volume"
+msgstr ""
+
+#: libnautilus-private/nautilus-desktop-link.c:139
+#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-global-preferences.c:545
+#: libnautilus-private/nautilus-trash-directory.c:383
+msgid "Trash"
+msgstr "Bosca Bruscair"
 
 #: libnautilus-private/nautilus-dnd.c:617
 msgid "_Move here"
@@ -2816,12 +2817,6 @@ msgstr "ceangall"
 msgid "link (broken)"
 msgstr "ceangall (briste)"
 
-#: libnautilus-private/nautilus-file.c:5576
-#: libnautilus-private/nautilus-global-preferences.c:545
-#: libnautilus-private/nautilus-trash-directory.c:383
-msgid "Trash"
-msgstr "Bosca Bruscair"
-
 #: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Always"
 msgstr ""
@@ -3813,10 +3808,6 @@ msgstr ""
 msgid "Nautilus is searching your disks for trash folders."
 msgstr ""
 
-#: libnautilus-private/nautilus-trash-file.c:690
-msgid "on the desktop"
-msgstr ""
-
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
 msgstr "Eagar"
@@ -3961,20 +3952,20 @@ msgstr ""
 msgid "_Paste Text"
 msgstr ""
 
-#: nautilus.desktop.in.h:1
-msgid "Home Folder"
-msgstr "Comhadlann Baile"
-
-#: nautilus.desktop.in.h:2
-msgid "View your home folder in the Nautilus file manager"
-msgstr ""
-
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
 msgstr ""
 
 #: nautilus-file-management-properties.desktop.in.h:2
 msgid "File Management"
+msgstr ""
+
+#: nautilus.desktop.in.h:1
+msgid "Home Folder"
+msgstr "Comhadlann Baile"
+
+#: nautilus.desktop.in.h:2
+msgid "View your home folder in the Nautilus file manager"
 msgstr ""
 
 #: src/Nautilus_shell.server.in.h:1
@@ -4655,21 +4646,21 @@ msgstr ""
 msgid "An invalid drag type was used."
 msgstr ""
 
-#: src/file-manager/fm-list-view.c:726
+#: src/file-manager/fm-list-view.c:729
 msgid "File name"
 msgstr "Ainm an Comhad"
 
-#: src/file-manager/fm-list-view.c:750
+#: src/file-manager/fm-list-view.c:753
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Meid"
 
-#: src/file-manager/fm-list-view.c:761
+#: src/file-manager/fm-list-view.c:764
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Saghas"
 
-#: src/file-manager/fm-list-view.c:772
+#: src/file-manager/fm-list-view.c:775
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr ""
@@ -4768,7 +4759,6 @@ msgstr "Bunúsach"
 
 #. Name label
 #: src/file-manager/fm-properties-window.c:1643
-#: src/nautilus-bookmarks-window.glade.h:4
 msgid "_Name:"
 msgstr "Ai_nm"
 
@@ -4917,8 +4907,9 @@ msgid "Creating Properties window"
 msgstr ""
 
 #: src/file-manager/fm-properties-window.c:2714
-msgid "Select an icon:"
-msgstr ""
+#, fuzzy
+msgid "Select an icon"
+msgstr "dealbh an comhad"
 
 #: src/file-manager/fm-search-list-view.c:124
 #, c-format
@@ -5577,17 +5568,22 @@ msgstr ""
 
 #: src/nautilus-bookmarks-window.glade.h:1
 #, fuzzy
-msgid "Edit Bookmarks"
-msgstr "_Eagar Leabharmarcanna..."
-
-#: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:59
-msgid "_Bookmarks"
+msgid "<b>_Bookmarks</b>"
 msgstr "_Leabharmarcanna"
 
-#: src/nautilus-bookmarks-window.glade.h:3
+#: src/nautilus-bookmarks-window.glade.h:2
 #, fuzzy
-msgid "_Location:"
+msgid "<b>_Location</b>"
 msgstr "Ãit:"
+
+#: src/nautilus-bookmarks-window.glade.h:3
+msgid "<b>_Name</b>"
+msgstr ""
+
+#: src/nautilus-bookmarks-window.glade.h:4
+#, fuzzy
+msgid "Edit Bookmarks"
+msgstr "_Eagar Leabharmarcanna..."
 
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
@@ -6027,7 +6023,7 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr ""
 
 #: src/nautilus-property-browser.c:2037
-msgid "Select A Category:"
+msgid "Select a Category:"
 msgstr ""
 
 #: src/nautilus-property-browser.c:2046
@@ -6276,6 +6272,11 @@ msgstr "ScrÃ­os"
 msgid "*"
 msgstr "*"
 
+#: src/nautilus-server-connect.glade.h:3
+#, fuzzy
+msgid "_Connect"
+msgstr "Conectiva"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
 msgstr ""
@@ -6503,6 +6504,10 @@ msgstr "_Riomh"
 #: src/nautilus-shell-ui.xml.h:58
 msgid "_Backgrounds and Emblems"
 msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "_Bookmarks"
+msgstr "_Leabharmarcanna"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"

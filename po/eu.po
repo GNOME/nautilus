@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.0.6\n"
-"POT-Creation-Date: 2003-05-19 14:33+0200\n"
+"POT-Creation-Date: 2003-06-04 10:07+0200\n"
 "PO-Revision-Date: 2001-05-25 13:35+0200\n"
 "Last-Translator: Unmantained\n"
 "Language-Team: Euskara\n"
@@ -356,7 +356,7 @@ msgid "animation to indicate on-going activity"
 msgstr "lanean ari dela adierazteko animazioa"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:577
+#: components/throbber/nautilus-throbber.c:587
 msgid "throbber"
 msgstr "taupada"
 
@@ -368,7 +368,7 @@ msgstr "taupaden fabrika"
 msgid "throbber object factory"
 msgstr "taupada-objektuen fabrika"
 
-#: components/throbber/nautilus-throbber.c:578
+#: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr ""
 
@@ -1663,36 +1663,33 @@ msgstr "XIAFS bolumena"
 msgid "Xenix Volume"
 msgstr "Xenix bolumena"
 
-#: libnautilus-private/nautilus-authn-manager.c:60
-msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr "HTTP proxy-ak saioa has dezazun eskatzen du.\n"
-
-#: libnautilus-private/nautilus-authn-manager.c:61
-#, c-format
-msgid ""
-"You must log in to access \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"Saioa hasi behar duzu \"%s\" atzitzeko.\n"
-"\n"
-"%s"
-
-#: libnautilus-private/nautilus-authn-manager.c:64
-msgid "Your password will be transmitted unencrypted."
-msgstr "Zure pasahitza enkriptatu gabe transmitituko da."
-
-#: libnautilus-private/nautilus-authn-manager.c:65
-msgid "Your password will be transmitted encrypted."
-msgstr "Zure pasahitza enkriptatuta transmitituko da."
-
-#: libnautilus-private/nautilus-authn-manager.c:68
-msgid "Authentication Required"
-msgstr "Autentifikazioa behar da"
-
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "berrezarri"
+
+#: libnautilus-private/nautilus-desktop-directory-file.c:442
+#: libnautilus-private/nautilus-desktop-icon-file.c:163
+#: libnautilus-private/nautilus-trash-file.c:690
+msgid "on the desktop"
+msgstr "mahaigainean"
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+msgid ""
+"You cannot delete a volume icon. If you want to eject the volume, please use "
+"Eject in the right-click menu of the volume."
+msgstr ""
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+#, fuzzy
+msgid "Can't delete volume"
+msgstr "Ezin da uneko gaia ezabatu"
+
+#: libnautilus-private/nautilus-desktop-link.c:139
+#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-global-preferences.c:545
+#: libnautilus-private/nautilus-trash-directory.c:383
+msgid "Trash"
+msgstr "Zakarrontzia"
 
 #: libnautilus-private/nautilus-dnd.c:617
 #, fuzzy
@@ -2974,12 +2971,6 @@ msgstr "esteka"
 msgid "link (broken)"
 msgstr "esteka (hautsita)"
 
-#: libnautilus-private/nautilus-file.c:5576
-#: libnautilus-private/nautilus-global-preferences.c:545
-#: libnautilus-private/nautilus-trash-directory.c:383
-msgid "Trash"
-msgstr "Zakarrontzia"
-
 #: libnautilus-private/nautilus-global-preferences.c:101
 #, fuzzy
 msgid "_Always"
@@ -4044,10 +4035,6 @@ msgstr "Diskoetan bilatzen"
 msgid "Nautilus is searching your disks for trash folders."
 msgstr "Nautilus zure diskoetan ari da zakarrontziko karpetak bilatzen."
 
-#: libnautilus-private/nautilus-trash-file.c:690
-msgid "on the desktop"
-msgstr "mahaigainean"
-
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
 msgstr "Editatu"
@@ -4200,6 +4187,15 @@ msgstr "Testu-eremuko testu osoa hautatzen du"
 msgid "_Paste Text"
 msgstr "_Itsatsi testua"
 
+#: nautilus-file-management-properties.desktop.in.h:1
+msgid "Change how files are managed"
+msgstr ""
+
+#: nautilus-file-management-properties.desktop.in.h:2
+#, fuzzy
+msgid "File Management"
+msgstr "Fitxategi-jabea:"
+
 #: nautilus.desktop.in.h:1
 #, fuzzy
 msgid "Home Folder"
@@ -4209,15 +4205,6 @@ msgstr "Karpeta berria"
 #, fuzzy
 msgid "View your home folder in the Nautilus file manager"
 msgstr "Nautilus-en shell eta fitxategi-kudeatzaileen fabrika"
-
-#: nautilus-file-management-properties.desktop.in.h:1
-msgid "Change how files are managed"
-msgstr ""
-
-#: nautilus-file-management-properties.desktop.in.h:2
-#, fuzzy
-msgid "File Management"
-msgstr "Fitxategi-jabea:"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4964,35 +4951,35 @@ msgstr "Berrezarri iko_noaren jatorrizko tamaina"
 msgid "pointing at \"%s\""
 msgstr "\"%s\" seinalatzen"
 
-#: src/file-manager/fm-icon-view.c:2421
+#: src/file-manager/fm-icon-view.c:2459
 msgid "Drag and drop is only supported to local file systems."
 msgstr ""
 "Arrastatu eta jaregitea fitxategi-sistema lokalekin bakarrik egin daiteke."
 
-#: src/file-manager/fm-icon-view.c:2422 src/file-manager/fm-icon-view.c:2441
+#: src/file-manager/fm-icon-view.c:2460 src/file-manager/fm-icon-view.c:2479
 msgid "Drag and Drop error"
 msgstr "Errorea arrastatu eta jaregitean"
 
-#: src/file-manager/fm-icon-view.c:2440
+#: src/file-manager/fm-icon-view.c:2478
 msgid "An invalid drag type was used."
 msgstr "Arrastatze-mota baliogabea erabili da."
 
-#: src/file-manager/fm-list-view.c:730
+#: src/file-manager/fm-list-view.c:729
 #, fuzzy
 msgid "File name"
 msgstr "Fitxategi-jabea:"
 
-#: src/file-manager/fm-list-view.c:754
+#: src/file-manager/fm-list-view.c:753
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Tamaina"
 
-#: src/file-manager/fm-list-view.c:765
+#: src/file-manager/fm-list-view.c:764
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Mota"
 
-#: src/file-manager/fm-list-view.c:776
+#: src/file-manager/fm-list-view.c:775
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Aldatze-data"
@@ -5097,7 +5084,6 @@ msgstr "Oinarrizkoa"
 
 #. Name label
 #: src/file-manager/fm-properties-window.c:1643
-#: src/nautilus-bookmarks-window.glade.h:4
 #, fuzzy
 msgid "_Name:"
 msgstr "Izena"
@@ -5266,7 +5252,8 @@ msgid "Creating Properties window"
 msgstr "Propietateen leihoa sortzen"
 
 #: src/file-manager/fm-properties-window.c:2714
-msgid "Select an icon:"
+#, fuzzy
+msgid "Select an icon"
 msgstr "Hautatu ikono bat:"
 
 #: src/file-manager/fm-search-list-view.c:124
@@ -5885,11 +5872,11 @@ msgstr "Erakutsi _indexazioaren egoera"
 msgid "Show status of indexing used when searching"
 msgstr "Bilaketetan erabiltzen den indexazioaren egoera erakusten du"
 
-#: src/nautilus-application.c:222
+#: src/nautilus-application.c:223
 msgid "Couldn't Create Required Folder"
 msgstr "Ezin izan da beharrezkoa den karpeta sortu"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5900,11 +5887,11 @@ msgstr ""
 "exekutatu aurretik, sortu karpeta hori edo ezarri Nautilus-ek karpeta sortu "
 "ahal izateko behar diren baimenak."
 
-#: src/nautilus-application.c:228
+#: src/nautilus-application.c:229
 msgid "Couldn't Create Required Folders"
 msgstr "Ezin izan dira beharrezkoak diren karpetak sortu"
 
-#: src/nautilus-application.c:229
+#: src/nautilus-application.c:230
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5920,19 +5907,19 @@ msgstr ""
 "Nautilus exekutatu aurretik, sortu karpeta horiek edo ezarri Nautilus-ek "
 "karpetak sortu ahal izateko behar dituen baimenak."
 
-#: src/nautilus-application.c:300
+#: src/nautilus-application.c:301
 #, fuzzy
 msgid "Link To Old Desktop"
 msgstr "Leihoak eta Mahaigaina"
 
-#: src/nautilus-application.c:316
+#: src/nautilus-application.c:317
 msgid ""
 "The location of the desktop directory has changed in Gnome 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
 
-#: src/nautilus-application.c:319
+#: src/nautilus-application.c:320
 msgid "Migrated old desktop"
 msgstr ""
 
@@ -5946,7 +5933,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:437
+#: src/nautilus-application.c:438
 #, fuzzy
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -5958,7 +5945,7 @@ msgstr ""
 "ordenagailua berrabiarazita edo Nautilus berriro instalatuta."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:443
+#: src/nautilus-application.c:444
 #, fuzzy
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -6004,12 +5991,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:473 src/nautilus-application.c:491
-#: src/nautilus-application.c:498
+#: src/nautilus-application.c:474 src/nautilus-application.c:492
+#: src/nautilus-application.c:499
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Orain ezin da Nautilus erabili, ustekabeko errore bat gertatu delako."
 
-#: src/nautilus-application.c:474
+#: src/nautilus-application.c:475
 #, fuzzy
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
@@ -6019,7 +6006,7 @@ msgstr ""
 "zerbitzaria erregistratzen saiatzean OAFen ustekabeko errorea gertatu "
 "delako. "
 
-#: src/nautilus-application.c:492
+#: src/nautilus-application.c:493
 #, fuzzy
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
@@ -6030,7 +6017,7 @@ msgstr ""
 "errorea gertatu delako; oafd hiltzeak eta Nautilus berrabiarazteak arazoa "
 "konpon dezake. "
 
-#: src/nautilus-application.c:499
+#: src/nautilus-application.c:500
 #, fuzzy
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
@@ -6047,17 +6034,22 @@ msgstr ""
 
 #: src/nautilus-bookmarks-window.glade.h:1
 #, fuzzy
-msgid "Edit Bookmarks"
-msgstr "_Editatu laster-markak..."
-
-#: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:59
-msgid "_Bookmarks"
+msgid "<b>_Bookmarks</b>"
 msgstr "Laster-_markak"
 
-#: src/nautilus-bookmarks-window.glade.h:3
+#: src/nautilus-bookmarks-window.glade.h:2
 #, fuzzy
-msgid "_Location:"
-msgstr "Helbidea:"
+msgid "<b>_Location</b>"
+msgstr "Helbidea"
+
+#: src/nautilus-bookmarks-window.glade.h:3
+msgid "<b>_Name</b>"
+msgstr ""
+
+#: src/nautilus-bookmarks-window.glade.h:4
+#, fuzzy
+msgid "Edit Bookmarks"
+msgstr "_Editatu laster-markak..."
 
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
@@ -6537,7 +6529,8 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "'%s' ez da irudi-fitxategi erabilgarria!"
 
 #: src/nautilus-property-browser.c:2037
-msgid "Select A Category:"
+#, fuzzy
+msgid "Select a Category:"
 msgstr "Hautatu kategoria bat:"
 
 #: src/nautilus-property-browser.c:2046
@@ -6788,6 +6781,11 @@ msgstr "New Wave musika"
 msgid "*"
 msgstr ""
 
+#: src/nautilus-server-connect.glade.h:3
+#, fuzzy
+msgid "_Connect"
+msgstr "Conectiva"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Menu honetan uneko helbidearen laster-marka gehitzen du"
@@ -7024,6 +7022,10 @@ msgstr "_Atzera"
 #, fuzzy
 msgid "_Backgrounds and Emblems"
 msgstr "Atzeko planoak eta ikurrak"
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "_Bookmarks"
+msgstr "Laster-_markak"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
@@ -7493,6 +7495,31 @@ msgstr "Netraverse"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Nautilus-en shell eta fitxategi-kudeatzaileen fabrika"
 
+#~ msgid "Your HTTP Proxy requires you to log in.\n"
+#~ msgstr "HTTP proxy-ak saioa has dezazun eskatzen du.\n"
+
+#~ msgid ""
+#~ "You must log in to access \"%s\".\n"
+#~ "\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Saioa hasi behar duzu \"%s\" atzitzeko.\n"
+#~ "\n"
+#~ "%s"
+
+#~ msgid "Your password will be transmitted unencrypted."
+#~ msgstr "Zure pasahitza enkriptatu gabe transmitituko da."
+
+#~ msgid "Your password will be transmitted encrypted."
+#~ msgstr "Zure pasahitza enkriptatuta transmitituko da."
+
+#~ msgid "Authentication Required"
+#~ msgstr "Autentifikazioa behar da"
+
+#, fuzzy
+#~ msgid "_Location:"
+#~ msgstr "Helbidea:"
+
 #~ msgid "The Trash must remain on the desktop."
 #~ msgstr "Zakarrontzia mahaigainean eduki behar da."
 
@@ -7932,9 +7959,6 @@ msgstr "Nautilus-en shell eta fitxategi-kudeatzaileen fabrika"
 #~ msgstr ""
 #~ "Ezin duzu uneko gaia kendu. Gaia kendu ahal izateko, beste gai batera "
 #~ "aldatu behar duzu."
-
-#~ msgid "Can't delete current theme"
-#~ msgstr "Ezin da uneko gaia ezabatu"
 
 #~ msgid "Sorry, but that theme could not be removed!"
 #~ msgstr "Ezin izan da gai hori kendu!"
@@ -8755,10 +8779,6 @@ msgstr "Nautilus-en shell eta fitxategi-kudeatzaileen fabrika"
 
 #~ msgid "Bookmarks"
 #~ msgstr "Laster-markak"
-
-#, fuzzy
-#~ msgid "_Location"
-#~ msgstr "Helbidea"
 
 #, fuzzy
 #~ msgid "_Remove"

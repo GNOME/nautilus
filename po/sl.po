@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2003-05-19 14:33+0200\n"
+"POT-Creation-Date: 2003-06-04 10:07+0200\n"
 "PO-Revision-Date: 2000-07-07 12:30+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori1@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -356,7 +356,7 @@ msgid "animation to indicate on-going activity"
 msgstr "animacija, ki označuje aktivno dogajanje"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:577
+#: components/throbber/nautilus-throbber.c:587
 msgid "throbber"
 msgstr "premikanje"
 
@@ -368,7 +368,7 @@ msgstr "tovarna premikanj"
 msgid "throbber object factory"
 msgstr "tovarna objektov premikanj"
 
-#: components/throbber/nautilus-throbber.c:578
+#: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr "nudi prikaz stanja"
 
@@ -1645,36 +1645,33 @@ msgstr "Zapis XIAFS"
 msgid "Xenix Volume"
 msgstr "Zapis Xenix"
 
-#: libnautilus-private/nautilus-authn-manager.c:60
-msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr "Vaš posrednik HTTP od vas zahteva prijavo.\n"
-
-#: libnautilus-private/nautilus-authn-manager.c:61
-#, c-format
-msgid ""
-"You must log in to access \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"Za uporabo \"%s\" se morate prijaviti.\n"
-"\n"
-"%s"
-
-#: libnautilus-private/nautilus-authn-manager.c:64
-msgid "Your password will be transmitted unencrypted."
-msgstr "Vaše geslo bo prenešeno nešifrirano"
-
-#: libnautilus-private/nautilus-authn-manager.c:65
-msgid "Your password will be transmitted encrypted."
-msgstr "Vaše geslo bo prenešeno šifrirano"
-
-#: libnautilus-private/nautilus-authn-manager.c:68
-msgid "Authentication Required"
-msgstr "Potrebna je avtentifikacija"
-
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "ponastavi"
+
+#: libnautilus-private/nautilus-desktop-directory-file.c:442
+#: libnautilus-private/nautilus-desktop-icon-file.c:163
+#: libnautilus-private/nautilus-trash-file.c:690
+msgid "on the desktop"
+msgstr "na namizju"
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+msgid ""
+"You cannot delete a volume icon. If you want to eject the volume, please use "
+"Eject in the right-click menu of the volume."
+msgstr ""
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+#, fuzzy
+msgid "Can't delete volume"
+msgstr "Ne morem zbrisati trenutne teme"
+
+#: libnautilus-private/nautilus-desktop-link.c:139
+#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-global-preferences.c:545
+#: libnautilus-private/nautilus-trash-directory.c:383
+msgid "Trash"
+msgstr "Smeti"
 
 #: libnautilus-private/nautilus-dnd.c:617
 msgid "_Move here"
@@ -2949,12 +2946,6 @@ msgstr "povezava"
 msgid "link (broken)"
 msgstr "povezava (prekinjena)"
 
-#: libnautilus-private/nautilus-file.c:5576
-#: libnautilus-private/nautilus-global-preferences.c:545
-#: libnautilus-private/nautilus-trash-directory.c:383
-msgid "Trash"
-msgstr "Smeti"
-
 #: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Always"
 msgstr "_Vedno"
@@ -4003,10 +3994,6 @@ msgstr "Preiskujem diske"
 msgid "Nautilus is searching your disks for trash folders."
 msgstr "Nautilus preiskuje vaše diske za mape smeti."
 
-#: libnautilus-private/nautilus-trash-file.c:690
-msgid "on the desktop"
-msgstr "na namizju"
-
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
 msgstr "Uredi"
@@ -4155,14 +4142,6 @@ msgstr "Izberi vse besedilo v polju besedila"
 msgid "_Paste Text"
 msgstr "_Prilepi besedilo"
 
-#: nautilus.desktop.in.h:1
-msgid "Home Folder"
-msgstr "Domača mapa"
-
-#: nautilus.desktop.in.h:2
-msgid "View your home folder in the Nautilus file manager"
-msgstr "Glej domačo mapo v upravljalniku datotek Nautilus"
-
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
 msgstr "Spremeni način upravljanja z datotekami"
@@ -4170,6 +4149,14 @@ msgstr "Spremeni način upravljanja z datotekami"
 #: nautilus-file-management-properties.desktop.in.h:2
 msgid "File Management"
 msgstr "Upravljanje datotek"
+
+#: nautilus.desktop.in.h:1
+msgid "Home Folder"
+msgstr "Domača mapa"
+
+#: nautilus.desktop.in.h:2
+msgid "View your home folder in the Nautilus file manager"
+msgstr "Glej domačo mapo v upravljalniku datotek Nautilus"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4877,33 +4864,33 @@ msgstr "Povrni i_zvorno velikost ikone"
 msgid "pointing at \"%s\""
 msgstr "kaže na \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2421
+#: src/file-manager/fm-icon-view.c:2459
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Vleci in spusti je podprt le v krajevni datotečni sistem."
 
-#: src/file-manager/fm-icon-view.c:2422 src/file-manager/fm-icon-view.c:2441
+#: src/file-manager/fm-icon-view.c:2460 src/file-manager/fm-icon-view.c:2479
 msgid "Drag and Drop error"
 msgstr "Napaka vleci in spusti"
 
-#: src/file-manager/fm-icon-view.c:2440
+#: src/file-manager/fm-icon-view.c:2478
 msgid "An invalid drag type was used."
 msgstr "Uporabljena je bila neveljavna vrsta večenja."
 
-#: src/file-manager/fm-list-view.c:730
+#: src/file-manager/fm-list-view.c:729
 msgid "File name"
 msgstr "Ime datoteke"
 
-#: src/file-manager/fm-list-view.c:754
+#: src/file-manager/fm-list-view.c:753
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Velikost"
 
-#: src/file-manager/fm-list-view.c:765
+#: src/file-manager/fm-list-view.c:764
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Vrsta"
 
-#: src/file-manager/fm-list-view.c:776
+#: src/file-manager/fm-list-view.c:775
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Datum modifikacije"
@@ -5008,7 +4995,6 @@ msgstr "Osnovno"
 
 #. Name label
 #: src/file-manager/fm-properties-window.c:1643
-#: src/nautilus-bookmarks-window.glade.h:4
 msgid "_Name:"
 msgstr "_Ime:"
 
@@ -5160,7 +5146,8 @@ msgid "Creating Properties window"
 msgstr "Ustvarjam okno z lastnostmi"
 
 #: src/file-manager/fm-properties-window.c:2714
-msgid "Select an icon:"
+#, fuzzy
+msgid "Select an icon"
 msgstr "Izberite ikono:"
 
 #: src/file-manager/fm-search-list-view.c:124
@@ -5748,11 +5735,11 @@ msgstr "Kaži stanje _kazala"
 msgid "Show status of indexing used when searching"
 msgstr "Kaži status ustvarjanja kazala, ki se uporablja pri iskanjih"
 
-#: src/nautilus-application.c:222
+#: src/nautilus-application.c:223
 msgid "Couldn't Create Required Folder"
 msgstr "Nisem mogel ustvariti zahtevane mape"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5762,11 +5749,11 @@ msgstr ""
 "Nautilus ni mogel ustvariti potrebne mape \"%s\". Ustvarite to mapo pred "
 "zagonom Nautilusa ali spremenite dovoljenja, da jo bo lahko ustvaril sam."
 
-#: src/nautilus-application.c:228
+#: src/nautilus-application.c:229
 msgid "Couldn't Create Required Folders"
 msgstr "Nisem mogel ustvariti zahtevanih map"
 
-#: src/nautilus-application.c:229
+#: src/nautilus-application.c:230
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5783,19 +5770,19 @@ msgstr ""
 "Ustvarite to mapo pred zagonom Nautilusa ali spremenite dovoljenja, da jo bo "
 "lahko ustvaril sam."
 
-#: src/nautilus-application.c:300
+#: src/nautilus-application.c:301
 #, fuzzy
 msgid "Link To Old Desktop"
 msgstr "Okna in namizja"
 
-#: src/nautilus-application.c:316
+#: src/nautilus-application.c:317
 msgid ""
 "The location of the desktop directory has changed in Gnome 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
 
-#: src/nautilus-application.c:319
+#: src/nautilus-application.c:320
 msgid "Migrated old desktop"
 msgstr ""
 
@@ -5809,7 +5796,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:437
+#: src/nautilus-application.c:438
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5820,7 +5807,7 @@ msgstr ""
 "namestitvijo Nautilusa."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:443
+#: src/nautilus-application.c:444
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5866,12 +5853,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:473 src/nautilus-application.c:491
-#: src/nautilus-application.c:498
+#: src/nautilus-application.c:474 src/nautilus-application.c:492
+#: src/nautilus-application.c:499
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautlusa trenutno ni mogoče uporabljati zaradi nepričakovane napake."
 
-#: src/nautilus-application.c:474
+#: src/nautilus-application.c:475
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5880,7 +5867,7 @@ msgstr ""
 "strani Bonoba, ko se je poskušalo registrirati strežnik pogleda "
 "upravljalnika datotek."
 
-#: src/nautilus-application.c:492
+#: src/nautilus-application.c:493
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5890,7 +5877,7 @@ msgstr ""
 "strani Bonoba, ko se je poskušalo najti tovarno. Ubitje bonobo-activation-"
 "server in vnovičen zagon Nautilusa lahko morda odpravita problem."
 
-#: src/nautilus-application.c:499
+#: src/nautilus-application.c:500
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5905,16 +5892,22 @@ msgid "No bookmarks defined"
 msgstr "Noben zaznamek ni naveden"
 
 #: src/nautilus-bookmarks-window.glade.h:1
-msgid "Edit Bookmarks"
-msgstr "Uredi zaznamke"
-
-#: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:59
-msgid "_Bookmarks"
+#, fuzzy
+msgid "<b>_Bookmarks</b>"
 msgstr "_Zaznamki"
 
+#: src/nautilus-bookmarks-window.glade.h:2
+#, fuzzy
+msgid "<b>_Location</b>"
+msgstr "_Lokacija"
+
 #: src/nautilus-bookmarks-window.glade.h:3
-msgid "_Location:"
-msgstr "_Lokacija:"
+msgid "<b>_Name</b>"
+msgstr ""
+
+#: src/nautilus-bookmarks-window.glade.h:4
+msgid "Edit Bookmarks"
+msgstr "Uredi zaznamke"
 
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
@@ -6356,7 +6349,8 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "'%s' ni uporabna datoteka s sliko!"
 
 #: src/nautilus-property-browser.c:2037
-msgid "Select A Category:"
+#, fuzzy
+msgid "Select a Category:"
 msgstr "Izberi kategorijo:"
 
 #: src/nautilus-property-browser.c:2046
@@ -6606,6 +6600,11 @@ msgstr "Nov strežnik"
 msgid "*"
 msgstr "*"
 
+#: src/nautilus-server-connect.glade.h:3
+#, fuzzy
+msgid "_Connect"
+msgstr "Conectiva"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
 msgstr "V ta menu dodaj zaznamek trenutne lokacije"
@@ -6831,6 +6830,10 @@ msgstr "Na_zaj"
 #: src/nautilus-shell-ui.xml.h:58
 msgid "_Backgrounds and Emblems"
 msgstr "_Ozadja in emblemi"
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "_Bookmarks"
+msgstr "_Zaznamki"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
@@ -7269,6 +7272,30 @@ msgstr "Mrežni strežniki"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Glej svoje mrežne strežnike v upravljalniku daototek Nautilus"
+
+#~ msgid "Your HTTP Proxy requires you to log in.\n"
+#~ msgstr "Vaš posrednik HTTP od vas zahteva prijavo.\n"
+
+#~ msgid ""
+#~ "You must log in to access \"%s\".\n"
+#~ "\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Za uporabo \"%s\" se morate prijaviti.\n"
+#~ "\n"
+#~ "%s"
+
+#~ msgid "Your password will be transmitted unencrypted."
+#~ msgstr "Vaše geslo bo prenešeno nešifrirano"
+
+#~ msgid "Your password will be transmitted encrypted."
+#~ msgstr "Vaše geslo bo prenešeno šifrirano"
+
+#~ msgid "Authentication Required"
+#~ msgstr "Potrebna je avtentifikacija"
+
+#~ msgid "_Location:"
+#~ msgstr "_Lokacija:"
 
 #~ msgid "The Trash must remain on the desktop."
 #~ msgstr "Smeti morajo ostati na namizju."
@@ -8253,9 +8280,6 @@ msgstr "Glej svoje mrežne strežnike v upravljalniku daototek Nautilus"
 #~ msgid "Bookmarks"
 #~ msgstr "Zaznamki"
 
-#~ msgid "_Location"
-#~ msgstr "_Lokacija"
-
 #~ msgid "_Remove"
 #~ msgstr "_Odstrani"
 
@@ -8410,9 +8434,6 @@ msgstr "Glej svoje mrežne strežnike v upravljalniku daototek Nautilus"
 #~ msgstr ""
 #~ "Trenutne teme ne morete odstraniti. Spremenite temo pred odstranjevanjem "
 #~ "trenutne."
-
-#~ msgid "Can't delete current theme"
-#~ msgstr "Ne morem zbrisati trenutne teme"
 
 #~ msgid "Sorry, but that theme could not be removed!"
 #~ msgstr "Tema ne more biti odstranjena!"

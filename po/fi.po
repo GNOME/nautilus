@@ -23,7 +23,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.1.2\n"
-"POT-Creation-Date: 2003-05-19 14:33+0200\n"
+"POT-Creation-Date: 2003-06-04 10:07+0200\n"
 "PO-Revision-Date: 2003-03-26 00:29--200\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
 "Language-Team: Gnome Finnish Translation Team <gnome-fi-laatu@lists."
@@ -372,7 +372,7 @@ msgid "animation to indicate on-going activity"
 msgstr "animaatio, joka ilmaisee käynnissä olevaa toimintaa"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:577
+#: components/throbber/nautilus-throbber.c:587
 msgid "throbber"
 msgstr "sykin"
 
@@ -384,7 +384,7 @@ msgstr "sykintehdas"
 msgid "throbber object factory"
 msgstr "sykinoliotehdas"
 
-#: components/throbber/nautilus-throbber.c:578
+#: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr "näkyvä tilan ilmaisin"
 
@@ -1652,37 +1652,33 @@ msgstr "XIAFS-osio"
 msgid "Xenix Volume"
 msgstr "Xenix-osio"
 
-#: libnautilus-private/nautilus-authn-manager.c:60
-msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr "HTTP-välipalvelimesi vaatii sisäänkirjautumista.\n"
-
-#: libnautilus-private/nautilus-authn-manager.c:61
-#, c-format
-msgid ""
-"You must log in to access \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"Sinun täytyy kirjautua sisään, jotta voisit käyttää\n"
-"kohdetta \"%s\".\n"
-"\n"
-"%s"
-
-#: libnautilus-private/nautilus-authn-manager.c:64
-msgid "Your password will be transmitted unencrypted."
-msgstr "Salasanasi ei kulje salattuna."
-
-#: libnautilus-private/nautilus-authn-manager.c:65
-msgid "Your password will be transmitted encrypted."
-msgstr "Salasanasi kulkee salattuna."
-
-#: libnautilus-private/nautilus-authn-manager.c:68
-msgid "Authentication Required"
-msgstr "Todentaminen vaaditaan"
-
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "palauta"
+
+#: libnautilus-private/nautilus-desktop-directory-file.c:442
+#: libnautilus-private/nautilus-desktop-icon-file.c:163
+#: libnautilus-private/nautilus-trash-file.c:690
+msgid "on the desktop"
+msgstr "työpöydällä"
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+msgid ""
+"You cannot delete a volume icon. If you want to eject the volume, please use "
+"Eject in the right-click menu of the volume."
+msgstr ""
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+#, fuzzy
+msgid "Can't delete volume"
+msgstr "Alusta valittu taltio"
+
+#: libnautilus-private/nautilus-desktop-link.c:139
+#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-global-preferences.c:545
+#: libnautilus-private/nautilus-trash-directory.c:383
+msgid "Trash"
+msgstr "Roskakori"
 
 #: libnautilus-private/nautilus-dnd.c:617
 msgid "_Move here"
@@ -2964,12 +2960,6 @@ msgstr "linkki"
 msgid "link (broken)"
 msgstr "linkki (rikki)"
 
-#: libnautilus-private/nautilus-file.c:5576
-#: libnautilus-private/nautilus-global-preferences.c:545
-#: libnautilus-private/nautilus-trash-directory.c:383
-msgid "Trash"
-msgstr "Roskakori"
-
 #: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Always"
 msgstr "_Aina"
@@ -4018,10 +4008,6 @@ msgstr "Etsitään levyiltä"
 msgid "Nautilus is searching your disks for trash folders."
 msgstr "Nautilus etsii roskakorihakemistoja levyasemiltasi."
 
-#: libnautilus-private/nautilus-trash-file.c:690
-msgid "on the desktop"
-msgstr "työpöydällä"
-
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
 msgstr "Muokkaa"
@@ -4173,14 +4159,6 @@ msgstr "Valitse tämän kentän kaikki teksti"
 msgid "_Paste Text"
 msgstr "L_iitä tekstiä"
 
-#: nautilus.desktop.in.h:1
-msgid "Home Folder"
-msgstr "Kotihakemisto"
-
-#: nautilus.desktop.in.h:2
-msgid "View your home folder in the Nautilus file manager"
-msgstr "Katsele kotihakemistoasi Nautilus-tiedostonhallintaohjelmalla"
-
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
 msgstr "Muuta tiedostojen hallintatapaa"
@@ -4188,6 +4166,14 @@ msgstr "Muuta tiedostojen hallintatapaa"
 #: nautilus-file-management-properties.desktop.in.h:2
 msgid "File Management"
 msgstr "Tiedostonhallinta"
+
+#: nautilus.desktop.in.h:1
+msgid "Home Folder"
+msgstr "Kotihakemisto"
+
+#: nautilus.desktop.in.h:2
+msgid "View your home folder in the Nautilus file manager"
+msgstr "Katsele kotihakemistoasi Nautilus-tiedostonhallintaohjelmalla"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4911,33 +4897,33 @@ msgstr "Palauta kuvakkeen alkuper_äinen koko"
 msgid "pointing at \"%s\""
 msgstr "viittaa kohteeseen \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2421
+#: src/file-manager/fm-icon-view.c:2459
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Veto ja pudotus toimii vain paikallisissa tiedostojärjestelmissä."
 
-#: src/file-manager/fm-icon-view.c:2422 src/file-manager/fm-icon-view.c:2441
+#: src/file-manager/fm-icon-view.c:2460 src/file-manager/fm-icon-view.c:2479
 msgid "Drag and Drop error"
 msgstr "Veto- ja pudotusvirhe"
 
-#: src/file-manager/fm-icon-view.c:2440
+#: src/file-manager/fm-icon-view.c:2478
 msgid "An invalid drag type was used."
 msgstr "Vetotyyppi oli väärä."
 
-#: src/file-manager/fm-list-view.c:730
+#: src/file-manager/fm-list-view.c:729
 msgid "File name"
 msgstr "Tiedostonimi"
 
-#: src/file-manager/fm-list-view.c:754
+#: src/file-manager/fm-list-view.c:753
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Koko"
 
-#: src/file-manager/fm-list-view.c:765
+#: src/file-manager/fm-list-view.c:764
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Tyyppi"
 
-#: src/file-manager/fm-list-view.c:776
+#: src/file-manager/fm-list-view.c:775
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Muokattu"
@@ -5042,7 +5028,6 @@ msgstr "Perustiedot"
 
 #. Name label
 #: src/file-manager/fm-properties-window.c:1643
-#: src/nautilus-bookmarks-window.glade.h:4
 msgid "_Name:"
 msgstr "_Nimi:"
 
@@ -5192,7 +5177,8 @@ msgid "Creating Properties window"
 msgstr "Luodaan ominaisuusikkuna"
 
 #: src/file-manager/fm-properties-window.c:2714
-msgid "Select an icon:"
+#, fuzzy
+msgid "Select an icon"
 msgstr "Valitse kuvake:"
 
 #: src/file-manager/fm-search-list-view.c:124
@@ -5776,11 +5762,11 @@ msgstr "Näytä _luetteloinnin tila"
 msgid "Show status of indexing used when searching"
 msgstr "Näytä etsinnässä käytettävän luetteloinnin tila"
 
-#: src/nautilus-application.c:222
+#: src/nautilus-application.c:223
 msgid "Couldn't Create Required Folder"
 msgstr "Vaadittua hakemistoa ei voitu luoda"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5791,11 +5777,11 @@ msgstr ""
 "käynnistämistä luo tämä hakemisto tai aseta oikeudet siten, että Nautilus "
 "voi luoda sen."
 
-#: src/nautilus-application.c:228
+#: src/nautilus-application.c:229
 msgid "Couldn't Create Required Folders"
 msgstr "Vaadittuja hakemistoja ei voitu luoda"
 
-#: src/nautilus-application.c:229
+#: src/nautilus-application.c:230
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5812,19 +5798,19 @@ msgstr ""
 "Ennen Nautiluksen käynnistämistä luo nämä hakemistot tai aseta oikeudet "
 "siten, että Nautilus voi luoda ne."
 
-#: src/nautilus-application.c:300
+#: src/nautilus-application.c:301
 #, fuzzy
 msgid "Link To Old Desktop"
 msgstr "työpöydällä"
 
-#: src/nautilus-application.c:316
+#: src/nautilus-application.c:317
 msgid ""
 "The location of the desktop directory has changed in Gnome 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
 
-#: src/nautilus-application.c:319
+#: src/nautilus-application.c:320
 msgid "Migrated old desktop"
 msgstr ""
 
@@ -5838,7 +5824,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:437
+#: src/nautilus-application.c:438
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5849,7 +5835,7 @@ msgstr ""
 "käynnistää tietokoneesi uudelleen tai asentaa Nautiluksen uudestaan."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:443
+#: src/nautilus-application.c:444
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5894,12 +5880,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:473 src/nautilus-application.c:491
-#: src/nautilus-application.c:498
+#: src/nautilus-application.c:474 src/nautilus-application.c:492
+#: src/nautilus-application.c:499
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilusta ei voi käyttää nyt odottamattoman virheen takia."
 
-#: src/nautilus-application.c:474
+#: src/nautilus-application.c:475
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5907,7 +5893,7 @@ msgstr ""
 "Nautilusta ei voi käyttää nyt, koska Bonobo ilmoitti odottamattomasta "
 "virheestä tiedostonhallintanäkymäpalvelinta rekisteröidessä."
 
-#: src/nautilus-application.c:492
+#: src/nautilus-application.c:493
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5917,7 +5903,7 @@ msgstr ""
 "virheestä tehdasta paikantaessa. bonobo-activation-server'n sulkeminen ja "
 "Nautiluksen käynnistäminen uudelleen saattaa korjata ongelman."
 
-#: src/nautilus-application.c:499
+#: src/nautilus-application.c:500
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5932,16 +5918,22 @@ msgid "No bookmarks defined"
 msgstr "Kirjanmerkkejä ei määritetty"
 
 #: src/nautilus-bookmarks-window.glade.h:1
-msgid "Edit Bookmarks"
-msgstr "Muokkaa kirjanmerkkejä"
-
-#: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:59
-msgid "_Bookmarks"
+#, fuzzy
+msgid "<b>_Bookmarks</b>"
 msgstr "_Kirjanmerkit"
 
-#: src/nautilus-bookmarks-window.glade.h:3
-msgid "_Location:"
+#: src/nautilus-bookmarks-window.glade.h:2
+#, fuzzy
+msgid "<b>_Location</b>"
 msgstr "_Sijainti:"
+
+#: src/nautilus-bookmarks-window.glade.h:3
+msgid "<b>_Name</b>"
+msgstr ""
+
+#: src/nautilus-bookmarks-window.glade.h:4
+msgid "Edit Bookmarks"
+msgstr "Muokkaa kirjanmerkkejä"
 
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
@@ -6381,7 +6373,8 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Valitettavasti '%s' ei ole kelvollinen kuvatiedosto."
 
 #: src/nautilus-property-browser.c:2037
-msgid "Select A Category:"
+#, fuzzy
+msgid "Select a Category:"
 msgstr "Valitse kategoria:"
 
 #: src/nautilus-property-browser.c:2046
@@ -6631,6 +6624,11 @@ msgstr "Uusi palvelin"
 msgid "*"
 msgstr "*"
 
+#: src/nautilus-server-connect.glade.h:3
+#, fuzzy
+msgid "_Connect"
+msgstr "Conectiva"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Lisää nykyisen sijainnin kirjanmerkki tähän valikkoon"
@@ -6858,6 +6856,10 @@ msgstr "_Takaisin"
 #: src/nautilus-shell-ui.xml.h:58
 msgid "_Backgrounds and Emblems"
 msgstr "Taustat _ja tunnusmerkit"
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "_Bookmarks"
+msgstr "_Kirjanmerkit"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
@@ -7302,6 +7304,28 @@ msgstr "Verkkopalvelimet"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Katsele verkkopalvelimia Nautilus-tiedostonhallintaohjelmalla"
+
+#~ msgid "Your HTTP Proxy requires you to log in.\n"
+#~ msgstr "HTTP-välipalvelimesi vaatii sisäänkirjautumista.\n"
+
+#~ msgid ""
+#~ "You must log in to access \"%s\".\n"
+#~ "\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Sinun täytyy kirjautua sisään, jotta voisit käyttää\n"
+#~ "kohdetta \"%s\".\n"
+#~ "\n"
+#~ "%s"
+
+#~ msgid "Your password will be transmitted unencrypted."
+#~ msgstr "Salasanasi ei kulje salattuna."
+
+#~ msgid "Your password will be transmitted encrypted."
+#~ msgstr "Salasanasi kulkee salattuna."
+
+#~ msgid "Authentication Required"
+#~ msgstr "Todentaminen vaaditaan"
 
 #~ msgid "The Trash must remain on the desktop."
 #~ msgstr "Roskakorin pitää olla työpöydällä."

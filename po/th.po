@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2003-05-19 14:33+0200\n"
+"POT-Creation-Date: 2003-06-04 10:07+0200\n"
 "PO-Revision-Date: 2003-02-20 21:12-0700\n"
 "Last-Translator: Paisa Seeluangsawat <paisa@colorado.edu>\n"
 "Language-Team: Thai <L10n@opentle.org>\n"
@@ -341,7 +341,7 @@ msgid "animation to indicate on-going activity"
 msgstr "ภาพเคลื่อนไหวสำหรับตอนกำลังทำงาน"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:577
+#: components/throbber/nautilus-throbber.c:587
 msgid "throbber"
 msgstr "throbber"
 
@@ -353,7 +353,7 @@ msgstr "โรงงาน throbber"
 msgid "throbber object factory"
 msgstr ""
 
-#: components/throbber/nautilus-throbber.c:578
+#: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr "แสดงความคืบหน้า"
 
@@ -1618,36 +1618,33 @@ msgstr "XIAFS Volume"
 msgid "Xenix Volume"
 msgstr "Xenix Volume"
 
-#: libnautilus-private/nautilus-authn-manager.c:60
-msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr "HTTP Proxy ของคุณบังคับว่าคุณต้องล็อกอิน\n"
-
-#: libnautilus-private/nautilus-authn-manager.c:61
-#, c-format
-msgid ""
-"You must log in to access \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"คุณต้องล็อกอินก่อนที่จะใช้ \"%s\".\n"
-"\n"
-"%s"
-
-#: libnautilus-private/nautilus-authn-manager.c:64
-msgid "Your password will be transmitted unencrypted."
-msgstr "รหัสผ่านจะถูกส่งไปโดยไม่ถูกเข้ารหัส"
-
-#: libnautilus-private/nautilus-authn-manager.c:65
-msgid "Your password will be transmitted encrypted."
-msgstr "รหัสผ่านจะถูกเข้ารหัสก่อนถูกส่งออกไป"
-
-#: libnautilus-private/nautilus-authn-manager.c:68
-msgid "Authentication Required"
-msgstr "ต้องตรวจสอบสิทธิ์ก่อนใช้"
-
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "เริ่มใหม่"
+
+#: libnautilus-private/nautilus-desktop-directory-file.c:442
+#: libnautilus-private/nautilus-desktop-icon-file.c:163
+#: libnautilus-private/nautilus-trash-file.c:690
+msgid "on the desktop"
+msgstr "บนพื้นโต๊ะ"
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+msgid ""
+"You cannot delete a volume icon. If you want to eject the volume, please use "
+"Eject in the right-click menu of the volume."
+msgstr ""
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+#, fuzzy
+msgid "Can't delete volume"
+msgstr "ฟอร์แมตไดรฟ์ข้อมูลที่เลือก"
+
+#: libnautilus-private/nautilus-desktop-link.c:139
+#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-global-preferences.c:545
+#: libnautilus-private/nautilus-trash-directory.c:383
+msgid "Trash"
+msgstr "ถังขยะ"
 
 #: libnautilus-private/nautilus-dnd.c:617
 msgid "_Move here"
@@ -2920,12 +2917,6 @@ msgstr "ตัวเชื่อม"
 msgid "link (broken)"
 msgstr "ตัวเชื่อม (ขาด)"
 
-#: libnautilus-private/nautilus-file.c:5576
-#: libnautilus-private/nautilus-global-preferences.c:545
-#: libnautilus-private/nautilus-trash-directory.c:383
-msgid "Trash"
-msgstr "ถังขยะ"
-
 #: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Always"
 msgstr "เสมอ (_A)"
@@ -3972,10 +3963,6 @@ msgstr "กำลังค้นหา..."
 msgid "Nautilus is searching your disks for trash folders."
 msgstr "Nautilus กำลังค้นจานบันทึกเพื่อหาโฟลเดอร์ถังขยะ"
 
-#: libnautilus-private/nautilus-trash-file.c:690
-msgid "on the desktop"
-msgstr "บนพื้นโต๊ะ"
-
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
 msgstr "แก้"
@@ -4122,14 +4109,6 @@ msgstr "เลือกข้อความทั้งหมด"
 msgid "_Paste Text"
 msgstr "แปะข้อความ (_P)"
 
-#: nautilus.desktop.in.h:1
-msgid "Home Folder"
-msgstr "โฟลเดอร์บ้าน"
-
-#: nautilus.desktop.in.h:2
-msgid "View your home folder in the Nautilus file manager"
-msgstr "เปิดโฟลเดอร์บ้านใน Nautilus file manager"
-
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
 msgstr "เลือกว่าแฟ้มจะถูกจัดการอย่างไร"
@@ -4137,6 +4116,14 @@ msgstr "เลือกว่าแฟ้มจะถูกจัดการอ
 #: nautilus-file-management-properties.desktop.in.h:2
 msgid "File Management"
 msgstr "การจัดการแฟ้ม"
+
+#: nautilus.desktop.in.h:1
+msgid "Home Folder"
+msgstr "โฟลเดอร์บ้าน"
+
+#: nautilus.desktop.in.h:2
+msgid "View your home folder in the Nautilus file manager"
+msgstr "เปิดโฟลเดอร์บ้านใน Nautilus file manager"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4802,33 +4789,33 @@ msgstr "เปลี่ยนกลับไปใช้ขนาดปรกต
 msgid "pointing at \"%s\""
 msgstr "กำลังชี้ไปที่ \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2421
+#: src/file-manager/fm-icon-view.c:2459
 msgid "Drag and drop is only supported to local file systems."
 msgstr "การลากแล้วปล่อยนั้นใช้ได้แต่กับแฟ้มบนเครื่องนี้"
 
-#: src/file-manager/fm-icon-view.c:2422 src/file-manager/fm-icon-view.c:2441
+#: src/file-manager/fm-icon-view.c:2460 src/file-manager/fm-icon-view.c:2479
 msgid "Drag and Drop error"
 msgstr "เกิดข้อผิดพลาดขณะลากแล้วปล่อย"
 
-#: src/file-manager/fm-icon-view.c:2440
+#: src/file-manager/fm-icon-view.c:2478
 msgid "An invalid drag type was used."
 msgstr ""
 
-#: src/file-manager/fm-list-view.c:730
+#: src/file-manager/fm-list-view.c:729
 msgid "File name"
 msgstr "ชื่อแฟ้ม"
 
-#: src/file-manager/fm-list-view.c:754
+#: src/file-manager/fm-list-view.c:753
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "ขนาด"
 
-#: src/file-manager/fm-list-view.c:765
+#: src/file-manager/fm-list-view.c:764
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "ประเภท"
 
-#: src/file-manager/fm-list-view.c:776
+#: src/file-manager/fm-list-view.c:775
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "วันที่ถูกแก้ไข"
@@ -4927,7 +4914,6 @@ msgstr "พื้นฐาน"
 
 #. Name label
 #: src/file-manager/fm-properties-window.c:1643
-#: src/nautilus-bookmarks-window.glade.h:4
 msgid "_Name:"
 msgstr "ชื่อ (_N):"
 
@@ -5078,7 +5064,8 @@ msgid "Creating Properties window"
 msgstr "กำลังสร้างหน้าต่างคุณสมบัติ"
 
 #: src/file-manager/fm-properties-window.c:2714
-msgid "Select an icon:"
+#, fuzzy
+msgid "Select an icon"
 msgstr "เลือกสัญลักษณ์:"
 
 #: src/file-manager/fm-search-list-view.c:124
@@ -5639,11 +5626,11 @@ msgstr "แสดงผลการสร้างดัชนี (_I)"
 msgid "Show status of indexing used when searching"
 msgstr "แสดงผลการสร้างดัชนีขณะค้นหา"
 
-#: src/nautilus-application.c:222
+#: src/nautilus-application.c:223
 msgid "Couldn't Create Required Folder"
 msgstr "สร้างโฟลเดอร์ที่จำเป็นไม่สำเร็จ"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5653,11 +5640,11 @@ msgstr ""
 "Nautilus สร้างโฟลเดอร์ที่จำเป็นซึ่งชื่อ \"%s\" ไม่สำเร็จ ก่อนจะใช้ Nautilus "
 "โปรดสร้างโฟลเดอร์นี้ หรือตั้งสิทธิ์ที่อนุญาตอย่างที่ยอม Nautilus สร้างโฟลเดอร์นี้ได้"
 
-#: src/nautilus-application.c:228
+#: src/nautilus-application.c:229
 msgid "Couldn't Create Required Folders"
 msgstr "สร้างโฟลเดอร์ที่จำเป็นไม่สำเร็จ"
 
-#: src/nautilus-application.c:229
+#: src/nautilus-application.c:230
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5674,19 +5661,19 @@ msgstr ""
 "ก่อนจะใช้ Nautilus โปรดสร้างเหล่านี้โฟลเดอร์นี้ หรือตั้งสิทธิ์ที่อนุญาตอย่างที่ยอม Nautilus "
 "สร้างเหล่านี้โฟลเดอร์นี้ได้"
 
-#: src/nautilus-application.c:300
+#: src/nautilus-application.c:301
 #, fuzzy
 msgid "Link To Old Desktop"
 msgstr "บนพื้นโต๊ะ"
 
-#: src/nautilus-application.c:316
+#: src/nautilus-application.c:317
 msgid ""
 "The location of the desktop directory has changed in Gnome 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
 
-#: src/nautilus-application.c:319
+#: src/nautilus-application.c:320
 msgid "Migrated old desktop"
 msgstr ""
 
@@ -5700,7 +5687,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:437
+#: src/nautilus-application.c:438
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5710,7 +5697,7 @@ msgstr ""
 "ถ้าปัญหาไม่หายไปลองรีบูตเครื่องหรือติดตั้ง Nautilus ใหม่"
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:443
+#: src/nautilus-application.c:444
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5739,25 +5726,25 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:473 src/nautilus-application.c:491
-#: src/nautilus-application.c:498
+#: src/nautilus-application.c:474 src/nautilus-application.c:492
+#: src/nautilus-application.c:499
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr ""
 
-#: src/nautilus-application.c:474
+#: src/nautilus-application.c:475
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
 msgstr ""
 
-#: src/nautilus-application.c:492
+#: src/nautilus-application.c:493
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
 msgstr ""
 
-#: src/nautilus-application.c:499
+#: src/nautilus-application.c:500
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5769,16 +5756,22 @@ msgid "No bookmarks defined"
 msgstr "ยังไม่มีที่คั่นหน้า"
 
 #: src/nautilus-bookmarks-window.glade.h:1
-msgid "Edit Bookmarks"
-msgstr "แก้ไขที่คั่นหน้า"
-
-#: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:59
-msgid "_Bookmarks"
+#, fuzzy
+msgid "<b>_Bookmarks</b>"
 msgstr "ที่คั่นหน้า (_B)"
 
-#: src/nautilus-bookmarks-window.glade.h:3
-msgid "_Location:"
+#: src/nautilus-bookmarks-window.glade.h:2
+#, fuzzy
+msgid "<b>_Location</b>"
 msgstr "ตำแหน่ง (_L):"
+
+#: src/nautilus-bookmarks-window.glade.h:3
+msgid "<b>_Name</b>"
+msgstr ""
+
+#: src/nautilus-bookmarks-window.glade.h:4
+msgid "Edit Bookmarks"
+msgstr "แก้ไขที่คั่นหน้า"
 
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
@@ -6218,8 +6211,9 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "\"%s\" ไม่ใช่แฟ้มรูปที่ใช้ได้"
 
 #: src/nautilus-property-browser.c:2037
-msgid "Select A Category:"
-msgstr ""
+#, fuzzy
+msgid "Select a Category:"
+msgstr "เลือกสัญลักษณ์:"
 
 #: src/nautilus-property-browser.c:2046
 msgid "C_ancel Remove"
@@ -6466,6 +6460,11 @@ msgstr "เซิร์ฟเวอร์ใหม่"
 msgid "*"
 msgstr "*"
 
+#: src/nautilus-server-connect.glade.h:3
+#, fuzzy
+msgid "_Connect"
+msgstr "Conectiva"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
 msgstr "เพิ่มที่คั่นหน้าสำหรับที่อยู่ปัจจุบันลงในเมนูนี้"
@@ -6690,6 +6689,10 @@ msgstr "ก่อนหน้า (_B)"
 #: src/nautilus-shell-ui.xml.h:58
 msgid "_Backgrounds and Emblems"
 msgstr "พื้นหลังและตรา (_B)"
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "_Bookmarks"
+msgstr "ที่คั่นหน้า (_B)"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
@@ -7105,6 +7108,27 @@ msgstr "เครือข่าย"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "ดูเซิร์ฟเวอร์เครือข่ายใน Nautilus"
+
+#~ msgid "Your HTTP Proxy requires you to log in.\n"
+#~ msgstr "HTTP Proxy ของคุณบังคับว่าคุณต้องล็อกอิน\n"
+
+#~ msgid ""
+#~ "You must log in to access \"%s\".\n"
+#~ "\n"
+#~ "%s"
+#~ msgstr ""
+#~ "คุณต้องล็อกอินก่อนที่จะใช้ \"%s\".\n"
+#~ "\n"
+#~ "%s"
+
+#~ msgid "Your password will be transmitted unencrypted."
+#~ msgstr "รหัสผ่านจะถูกส่งไปโดยไม่ถูกเข้ารหัส"
+
+#~ msgid "Your password will be transmitted encrypted."
+#~ msgstr "รหัสผ่านจะถูกเข้ารหัสก่อนถูกส่งออกไป"
+
+#~ msgid "Authentication Required"
+#~ msgstr "ต้องตรวจสอบสิทธิ์ก่อนใช้"
 
 #~ msgid "The Trash must remain on the desktop."
 #~ msgstr "ถังขยะห้ามออกไปจากพื้นโต๊ะ"

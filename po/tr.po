@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2003-05-19 14:33+0200\n"
+"POT-Creation-Date: 2003-06-04 10:07+0200\n"
 "PO-Revision-Date: 2003-02-10 19:47+0200\n"
 "Last-Translator: Arman Aksoy (Armish) <armish@linux-sevenler.de>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
@@ -413,7 +413,7 @@ msgstr "etkinliği gösteren animasyon"
 
 # components/music/mpg123.c:32
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:577
+#: components/throbber/nautilus-throbber.c:587
 msgid "throbber"
 msgstr "çarpıcı"
 
@@ -426,7 +426,7 @@ msgstr "çarpım üreticisi"
 msgid "throbber object factory"
 msgstr "çarpım nesnesi üreticisi"
 
-#: components/throbber/nautilus-throbber.c:578
+#: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr "grafiksel durum sağlar"
 
@@ -1884,38 +1884,38 @@ msgstr "XIAFS Biçimi"
 msgid "Xenix Volume"
 msgstr "Xenix Biçimi"
 
-#: libnautilus-private/nautilus-authn-manager.c:60
-msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr "HTTP vekil sunucunuz bir giriş istiyor.\n"
-
-#: libnautilus-private/nautilus-authn-manager.c:61
-#, c-format
-msgid ""
-"You must log in to access \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"\"%s\" erişimi yapmak için giriş yapmalısınız.\n"
-"\n"
-"%s"
-
-#: libnautilus-private/nautilus-authn-manager.c:64
-msgid "Your password will be transmitted unencrypted."
-msgstr "Parolanız şifrelenmemiş bir şekilde gönderilecektir."
-
-#: libnautilus-private/nautilus-authn-manager.c:65
-msgid "Your password will be transmitted encrypted."
-msgstr "Parolanız şifrelenmiş olarak aktarılacaktır."
-
-# components/help/converters/gnome-db2html2/sect-elements.c:1027
-#: libnautilus-private/nautilus-authn-manager.c:68
-msgid "Authentication Required"
-msgstr "Kimlik Sınama Gerekli"
-
 # components/tree/Nautilus_View_tree.oaf.in.h:3
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "sıfırla"
+
+#: libnautilus-private/nautilus-desktop-directory-file.c:442
+#: libnautilus-private/nautilus-desktop-icon-file.c:163
+#: libnautilus-private/nautilus-trash-file.c:690
+msgid "on the desktop"
+msgstr "masaüstünde"
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+msgid ""
+"You cannot delete a volume icon. If you want to eject the volume, please use "
+"Eject in the right-click menu of the volume."
+msgstr ""
+
+# src/nautilus-theme-selector.c:594
+#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+#, fuzzy
+msgid "Can't delete volume"
+msgstr "Geçerli tema silinemedi"
+
+# data/linksets/desktop.xml.h:2 libnautilus-private/nautilus-file.c:4642
+# libnautilus-private/nautilus-trash-directory.c:301
+# src/file-manager/fm-desktop-icon-view.c:66
+#: libnautilus-private/nautilus-desktop-link.c:139
+#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-global-preferences.c:545
+#: libnautilus-private/nautilus-trash-directory.c:383
+msgid "Trash"
+msgstr "Çöp"
 
 # libnautilus-private/nautilus-program-chooser.c:1317
 #: libnautilus-private/nautilus-dnd.c:617
@@ -3438,15 +3438,6 @@ msgstr "bağlantı"
 msgid "link (broken)"
 msgstr "link (kırık)"
 
-# data/linksets/desktop.xml.h:2 libnautilus-private/nautilus-file.c:4642
-# libnautilus-private/nautilus-trash-directory.c:301
-# src/file-manager/fm-desktop-icon-view.c:66
-#: libnautilus-private/nautilus-file.c:5576
-#: libnautilus-private/nautilus-global-preferences.c:545
-#: libnautilus-private/nautilus-trash-directory.c:383
-msgid "Trash"
-msgstr "Çöp"
-
 # libnautilus-private/nautilus-global-preferences.c:886
 #: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Always"
@@ -4635,10 +4626,6 @@ msgstr "Diskler Taranıyor"
 msgid "Nautilus is searching your disks for trash folders."
 msgstr "Nautilus diskinizdeki çöp kutularını araştırıyor"
 
-#: libnautilus-private/nautilus-trash-file.c:690
-msgid "on the desktop"
-msgstr "masaüstünde"
-
 # libnautilus-private/nautilus-undo-signal-handlers.c:175
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -4817,6 +4804,15 @@ msgstr "Bu satırdaki tüm metni seç"
 msgid "_Paste Text"
 msgstr "Metni _Yapıştır"
 
+#: nautilus-file-management-properties.desktop.in.h:1
+msgid "Change how files are managed"
+msgstr "Dosyaların yönetimini değiştir"
+
+# src/file-manager/fm-properties-window.c:1677
+#: nautilus-file-management-properties.desktop.in.h:2
+msgid "File Management"
+msgstr "Dosya Yönetimi"
+
 # src/file-manager/nautilus-directory-view-ui.xml.h:15
 #: nautilus.desktop.in.h:1
 msgid "Home Folder"
@@ -4826,15 +4822,6 @@ msgstr "Başlangıç Dizini"
 #: nautilus.desktop.in.h:2
 msgid "View your home folder in the Nautilus file manager"
 msgstr "Nautilus dosya yöneticisinde başlangıç dizinini görün"
-
-#: nautilus-file-management-properties.desktop.in.h:1
-msgid "Change how files are managed"
-msgstr "Dosyaların yönetimini değiştir"
-
-# src/file-manager/fm-properties-window.c:1677
-#: nautilus-file-management-properties.desktop.in.h:2
-msgid "File Management"
-msgstr "Dosya Yönetimi"
 
 # src/Nautilus_shell.oaf.in.h:1
 #: src/Nautilus_shell.server.in.h:1
@@ -5690,27 +5677,27 @@ msgstr "S_imgeyi Asıl Boyutlarına Getir"
 msgid "pointing at \"%s\""
 msgstr "\"%s\" gösteriliyor"
 
-#: src/file-manager/fm-icon-view.c:2421
+#: src/file-manager/fm-icon-view.c:2459
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Sürükle ve bırak sadece yerel dosya sistemlerinde destekleniyor."
 
-#: src/file-manager/fm-icon-view.c:2422 src/file-manager/fm-icon-view.c:2441
+#: src/file-manager/fm-icon-view.c:2460 src/file-manager/fm-icon-view.c:2479
 msgid "Drag and Drop error"
 msgstr "Sürükle ve bırak hatası"
 
-#: src/file-manager/fm-icon-view.c:2440
+#: src/file-manager/fm-icon-view.c:2478
 msgid "An invalid drag type was used."
 msgstr "Geçersiz bir sürükleme türü kullanıldı."
 
 # src/file-manager/fm-properties-window.c:1677
-#: src/file-manager/fm-list-view.c:730
+#: src/file-manager/fm-list-view.c:729
 msgid "File name"
 msgstr "Dosya adı"
 
 # src/file-manager/fm-list-view.c:1924
 # src/file-manager/fm-search-list-view.c:346
 # src/nautilus-search-bar-criterion.c:73
-#: src/file-manager/fm-list-view.c:754
+#: src/file-manager/fm-list-view.c:753
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Boyut"
@@ -5718,14 +5705,14 @@ msgstr "Boyut"
 # src/file-manager/fm-list-view.c:1930
 # src/file-manager/fm-search-list-view.c:352
 # src/nautilus-search-bar-criterion.c:71
-#: src/file-manager/fm-list-view.c:765
+#: src/file-manager/fm-list-view.c:764
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Tip"
 
 # src/file-manager/fm-list-view.c:1936
 # src/file-manager/fm-search-list-view.c:358
-#: src/file-manager/fm-list-view.c:776
+#: src/file-manager/fm-list-view.c:775
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Değişim tarihi"
@@ -5852,7 +5839,6 @@ msgstr "Temel"
 # src/nautilus-bookmarks-window.c:164 src/nautilus-search-bar-criterion.c:67
 #. Name label
 #: src/file-manager/fm-properties-window.c:1643
-#: src/nautilus-bookmarks-window.glade.h:4
 msgid "_Name:"
 msgstr "İ_sim:"
 
@@ -6039,7 +6025,8 @@ msgstr "Özellikler Penceresi Oluşturuluyor"
 
 # src/nautilus-property-browser.c:1319
 #: src/file-manager/fm-properties-window.c:2714
-msgid "Select an icon:"
+#, fuzzy
+msgid "Select an icon"
 msgstr "Bir simge seçin:"
 
 # src/file-manager/fm-search-list-view.c:110
@@ -6719,11 +6706,11 @@ msgid "Show status of indexing used when searching"
 msgstr "Arama sırasında indeksleme durumunu göster"
 
 # src/nautilus-application.c:275
-#: src/nautilus-application.c:222
+#: src/nautilus-application.c:223
 msgid "Couldn't Create Required Folder"
 msgstr "Gereken Dizin oluşturulamadı"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -6734,11 +6721,11 @@ msgstr ""
 "önce bu dizini kendiniz oluşturun, ya da haklarını düzeltin."
 
 # src/nautilus-application.c:280
-#: src/nautilus-application.c:228
+#: src/nautilus-application.c:229
 msgid "Couldn't Create Required Folders"
 msgstr "Gereken Dizinler oluşturulamadı"
 
-#: src/nautilus-application.c:229
+#: src/nautilus-application.c:230
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -6755,19 +6742,19 @@ msgstr ""
 "Nautilus'u çalıştırmadan önce lütfen bu dizinleri oluşturun, ya da "
 "Nautilus'un bunları oluşturabileceği şekilde izinlerini değiştirin."
 
-#: src/nautilus-application.c:300
+#: src/nautilus-application.c:301
 #, fuzzy
 msgid "Link To Old Desktop"
 msgstr "Pencereler & Masaüstü"
 
-#: src/nautilus-application.c:316
+#: src/nautilus-application.c:317
 msgid ""
 "The location of the desktop directory has changed in Gnome 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
 
-#: src/nautilus-application.c:319
+#: src/nautilus-application.c:320
 msgid "Migrated old desktop"
 msgstr ""
 
@@ -6781,7 +6768,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:437
+#: src/nautilus-application.c:438
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6793,7 +6780,7 @@ msgstr ""
 
 # src/nautilus-application.c:400
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:443
+#: src/nautilus-application.c:444
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6839,13 +6826,13 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:473 src/nautilus-application.c:491
-#: src/nautilus-application.c:498
+#: src/nautilus-application.c:474 src/nautilus-application.c:492
+#: src/nautilus-application.c:499
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus beklenmedik bir hatadan dolayı kullanılamıyor."
 
 # src/nautilus-application.c:426
-#: src/nautilus-application.c:474
+#: src/nautilus-application.c:475
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -6854,7 +6841,7 @@ msgstr ""
 "Bonobo hatası yüzünden, Nautilus şuanda kullanılamıyor."
 
 # src/nautilus-application.c:444
-#: src/nautilus-application.c:492
+#: src/nautilus-application.c:493
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -6865,7 +6852,7 @@ msgstr ""
 "Nautilius'un yeniden başlatılması problemin çözümüne yardımcı olabilir."
 
 # src/nautilus-application.c:444
-#: src/nautilus-application.c:499
+#: src/nautilus-application.c:500
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -6879,20 +6866,26 @@ msgstr ""
 msgid "No bookmarks defined"
 msgstr "Yer imi tanımlanmamış"
 
-# src/nautilus-shell-ui.xml.h:76
-#: src/nautilus-bookmarks-window.glade.h:1
-msgid "Edit Bookmarks"
-msgstr "Yer İmlerini Düzenle"
-
 # src/nautilus-shell-ui.xml.h:72
-#: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:59
-msgid "_Bookmarks"
+#: src/nautilus-bookmarks-window.glade.h:1
+#, fuzzy
+msgid "<b>_Bookmarks</b>"
 msgstr "_Yer imleri"
 
-# src/nautilus-location-bar.c:60
+# src/nautilus-bookmarks-window.c:177
+#: src/nautilus-bookmarks-window.glade.h:2
+#, fuzzy
+msgid "<b>_Location</b>"
+msgstr "_Adres"
+
 #: src/nautilus-bookmarks-window.glade.h:3
-msgid "_Location:"
-msgstr "_Adres:"
+msgid "<b>_Name</b>"
+msgstr ""
+
+# src/nautilus-shell-ui.xml.h:76
+#: src/nautilus-bookmarks-window.glade.h:4
+msgid "Edit Bookmarks"
+msgstr "Yer İmlerini Düzenle"
 
 # src/nautilus-complex-search-bar.c:233
 #: src/nautilus-complex-search-bar.c:200
@@ -7408,7 +7401,8 @@ msgstr "`%s' bir resim dosyası değil!"
 
 # src/nautilus-property-browser.c:2169
 #: src/nautilus-property-browser.c:2037
-msgid "Select A Category:"
+#, fuzzy
+msgid "Select a Category:"
 msgstr "Bir Kategori Seçin:"
 
 # src/nautilus-property-browser.c:2177 src/nautilus-theme-selector.c:503
@@ -7677,6 +7671,11 @@ msgstr "Yeni Sunucu"
 #: src/nautilus-server-connect.glade.h:1
 msgid "*"
 msgstr "*"
+
+#: src/nautilus-server-connect.glade.h:3
+#, fuzzy
+msgid "_Connect"
+msgstr "Conectiva"
 
 # src/nautilus-shell-ui.xml.h:4
 #: src/nautilus-shell-ui.xml.h:1
@@ -7959,6 +7958,11 @@ msgstr "_Geri"
 #: src/nautilus-shell-ui.xml.h:58
 msgid "_Backgrounds and Emblems"
 msgstr "_Arkaplanlar ve Logolar"
+
+# src/nautilus-shell-ui.xml.h:72
+#: src/nautilus-shell-ui.xml.h:59
+msgid "_Bookmarks"
+msgstr "_Yer imleri"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
@@ -8484,6 +8488,32 @@ msgstr "Ağ Sunucuları"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Nautilus dosya yöneticisinde ağ sunucularını görüntüle"
+
+#~ msgid "Your HTTP Proxy requires you to log in.\n"
+#~ msgstr "HTTP vekil sunucunuz bir giriş istiyor.\n"
+
+#~ msgid ""
+#~ "You must log in to access \"%s\".\n"
+#~ "\n"
+#~ "%s"
+#~ msgstr ""
+#~ "\"%s\" erişimi yapmak için giriş yapmalısınız.\n"
+#~ "\n"
+#~ "%s"
+
+#~ msgid "Your password will be transmitted unencrypted."
+#~ msgstr "Parolanız şifrelenmemiş bir şekilde gönderilecektir."
+
+#~ msgid "Your password will be transmitted encrypted."
+#~ msgstr "Parolanız şifrelenmiş olarak aktarılacaktır."
+
+# components/help/converters/gnome-db2html2/sect-elements.c:1027
+#~ msgid "Authentication Required"
+#~ msgstr "Kimlik Sınama Gerekli"
+
+# src/nautilus-location-bar.c:60
+#~ msgid "_Location:"
+#~ msgstr "_Adres:"
 
 # libnautilus-private/nautilus-file-operations.c:1829
 # libnautilus-private/nautilus-file-operations.c:2059
@@ -9014,10 +9044,6 @@ msgstr "Nautilus dosya yöneticisinde ağ sunucularını görüntüle"
 #~ msgstr ""
 #~ "Geçerli temayı silemezsiniz. Bunu silmeden önce başka bir temaya geçiş "
 #~ "yapın."
-
-# src/nautilus-theme-selector.c:594
-#~ msgid "Can't delete current theme"
-#~ msgstr "Geçerli tema silinemedi"
 
 # src/nautilus-theme-selector.c:615
 #~ msgid "Sorry, but that theme could not be removed!"
@@ -10049,10 +10075,6 @@ msgstr "Nautilus dosya yöneticisinde ağ sunucularını görüntüle"
 # src/nautilus-bookmarks-window.c:127
 #~ msgid "Bookmarks"
 #~ msgstr "Yer İmleri"
-
-# src/nautilus-bookmarks-window.c:177
-#~ msgid "_Location"
-#~ msgstr "_Adres"
 
 # src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:721
 #~ msgid "_Remove"

@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.2.1\n"
-"POT-Creation-Date: 2003-05-19 14:33+0200\n"
+"POT-Creation-Date: 2003-06-04 10:07+0200\n"
 "PO-Revision-Date: 2003-03-25 18:43+0100\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
@@ -358,7 +358,7 @@ msgid "animation to indicate on-going activity"
 msgstr "animació per indicar activitat en procés"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:577
+#: components/throbber/nautilus-throbber.c:587
 msgid "throbber"
 msgstr "polsador"
 
@@ -370,7 +370,7 @@ msgstr "polsador original"
 msgid "throbber object factory"
 msgstr "original per l'objecte polsador"
 
-#: components/throbber/nautilus-throbber.c:578
+#: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr "representació visual de l'estat"
 
@@ -1652,36 +1652,33 @@ msgstr "Volum XIAFS"
 msgid "Xenix Volume"
 msgstr "Volum Xenix"
 
-#: libnautilus-private/nautilus-authn-manager.c:60
-msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr "El teu Proxy d'HTTP requereix que t'identifiquis.\n"
-
-#: libnautilus-private/nautilus-authn-manager.c:61
-#, c-format
-msgid ""
-"You must log in to access \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"Per accedir a \"%s\" necessites identificar-te.\n"
-"\n"
-"%s"
-
-#: libnautilus-private/nautilus-authn-manager.c:64
-msgid "Your password will be transmitted unencrypted."
-msgstr "La teva paraula de pas serà transmesa sense encriptació."
-
-#: libnautilus-private/nautilus-authn-manager.c:65
-msgid "Your password will be transmitted encrypted."
-msgstr "La teva paraula de pas serà transmesa amb encriptació."
-
-#: libnautilus-private/nautilus-authn-manager.c:68
-msgid "Authentication Required"
-msgstr "Es requereix identificació"
-
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "reinicia"
+
+#: libnautilus-private/nautilus-desktop-directory-file.c:442
+#: libnautilus-private/nautilus-desktop-icon-file.c:163
+#: libnautilus-private/nautilus-trash-file.c:690
+msgid "on the desktop"
+msgstr "a l'escriptori"
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+msgid ""
+"You cannot delete a volume icon. If you want to eject the volume, please use "
+"Eject in the right-click menu of the volume."
+msgstr ""
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+#, fuzzy
+msgid "Can't delete volume"
+msgstr "No es pot suprimir el tema actual"
+
+#: libnautilus-private/nautilus-desktop-link.c:139
+#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-global-preferences.c:545
+#: libnautilus-private/nautilus-trash-directory.c:383
+msgid "Trash"
+msgstr "Paperera"
 
 #: libnautilus-private/nautilus-dnd.c:617
 msgid "_Move here"
@@ -2959,12 +2956,6 @@ msgstr "enllaç"
 msgid "link (broken)"
 msgstr "enllaç (trencat)"
 
-#: libnautilus-private/nautilus-file.c:5576
-#: libnautilus-private/nautilus-global-preferences.c:545
-#: libnautilus-private/nautilus-trash-directory.c:383
-msgid "Trash"
-msgstr "Paperera"
-
 #: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Always"
 msgstr "_Sempre"
@@ -4015,10 +4006,6 @@ msgstr "S'estan cercant discs"
 msgid "Nautilus is searching your disks for trash folders."
 msgstr "Nautilus està cercants carpetes de Paperera en els vostres discs."
 
-#: libnautilus-private/nautilus-trash-file.c:690
-msgid "on the desktop"
-msgstr "a l'escriptori"
-
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
 msgstr "Edició"
@@ -4171,14 +4158,6 @@ msgstr "Selecciona tot el text dins d'un camp de text"
 msgid "_Paste Text"
 msgstr "_Enganxa el text"
 
-#: nautilus.desktop.in.h:1
-msgid "Home Folder"
-msgstr "Carpeta Inici"
-
-#: nautilus.desktop.in.h:2
-msgid "View your home folder in the Nautilus file manager"
-msgstr "Veure el teu directori d'inici amb el gestor de fitxers Nautilus"
-
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
 msgstr "Canvia com es gestionen els fitxers"
@@ -4186,6 +4165,14 @@ msgstr "Canvia com es gestionen els fitxers"
 #: nautilus-file-management-properties.desktop.in.h:2
 msgid "File Management"
 msgstr "Gestió de fitxers"
+
+#: nautilus.desktop.in.h:1
+msgid "Home Folder"
+msgstr "Carpeta Inici"
+
+#: nautilus.desktop.in.h:2
+msgid "View your home folder in the Nautilus file manager"
+msgstr "Veure el teu directori d'inici amb el gestor de fitxers Nautilus"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4909,33 +4896,33 @@ msgstr "Restaura la icona a la _mida original"
 msgid "pointing at \"%s\""
 msgstr "s'està apuntant a \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2421
+#: src/file-manager/fm-icon-view.c:2459
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Només es pot arrossegar i deixar en sistemes de fitxers locals."
 
-#: src/file-manager/fm-icon-view.c:2422 src/file-manager/fm-icon-view.c:2441
+#: src/file-manager/fm-icon-view.c:2460 src/file-manager/fm-icon-view.c:2479
 msgid "Drag and Drop error"
 msgstr "Error d'arrossegar i deixar"
 
-#: src/file-manager/fm-icon-view.c:2440
+#: src/file-manager/fm-icon-view.c:2478
 msgid "An invalid drag type was used."
 msgstr "S'ha utilitzat un tipus d'arrossegament no vàlid."
 
-#: src/file-manager/fm-list-view.c:730
+#: src/file-manager/fm-list-view.c:729
 msgid "File name"
 msgstr "Nom del fitxer"
 
-#: src/file-manager/fm-list-view.c:754
+#: src/file-manager/fm-list-view.c:753
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Mida"
 
-#: src/file-manager/fm-list-view.c:765
+#: src/file-manager/fm-list-view.c:764
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Tipus"
 
-#: src/file-manager/fm-list-view.c:776
+#: src/file-manager/fm-list-view.c:775
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Data de modificació"
@@ -5040,7 +5027,6 @@ msgstr "Bàsic"
 
 #. Name label
 #: src/file-manager/fm-properties-window.c:1643
-#: src/nautilus-bookmarks-window.glade.h:4
 msgid "_Name:"
 msgstr "_Nom:"
 
@@ -5190,7 +5176,8 @@ msgid "Creating Properties window"
 msgstr "Creant la finestra de propietats"
 
 #: src/file-manager/fm-properties-window.c:2714
-msgid "Select an icon:"
+#, fuzzy
+msgid "Select an icon"
 msgstr "Seleccioneu una icona:"
 
 #: src/file-manager/fm-search-list-view.c:124
@@ -5785,11 +5772,11 @@ msgstr "Mostra l'estat de la _indexació"
 msgid "Show status of indexing used when searching"
 msgstr "Mostra l'estat de la indexació utilitzat mentre s'està cercant"
 
-#: src/nautilus-application.c:222
+#: src/nautilus-application.c:223
 msgid "Couldn't Create Required Folder"
 msgstr "No s'ha pogut crear la carpeta requerida"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5800,11 +5787,11 @@ msgstr ""
 "el Nautilus, creeu aquesta carpeta, o especifiqueu els permisos per a que el "
 "Nautilus pugui crear-la."
 
-#: src/nautilus-application.c:228
+#: src/nautilus-application.c:229
 msgid "Couldn't Create Required Folders"
 msgstr "No s'han pogut crear les carpetes necessàries"
 
-#: src/nautilus-application.c:229
+#: src/nautilus-application.c:230
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5821,19 +5808,19 @@ msgstr ""
 "Abans d'executar el Nautilus, creeu aquesta carpeta, o especifiqueu els "
 "permisos per a que el Nautilus pugui crear-les."
 
-#: src/nautilus-application.c:300
+#: src/nautilus-application.c:301
 #, fuzzy
 msgid "Link To Old Desktop"
 msgstr "Finestres i escriptori"
 
-#: src/nautilus-application.c:316
+#: src/nautilus-application.c:317
 msgid ""
 "The location of the desktop directory has changed in Gnome 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
 
-#: src/nautilus-application.c:319
+#: src/nautilus-application.c:320
 msgid "Migrated old desktop"
 msgstr ""
 
@@ -5847,7 +5834,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:437
+#: src/nautilus-application.c:438
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5858,7 +5845,7 @@ msgstr ""
 "d'arrencar de nou l'ordinador o instal·lar de nou el Nautilus."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:443
+#: src/nautilus-application.c:444
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5905,14 +5892,14 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:473 src/nautilus-application.c:491
-#: src/nautilus-application.c:498
+#: src/nautilus-application.c:474 src/nautilus-application.c:492
+#: src/nautilus-application.c:499
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr ""
 "A causa d'un error inesperat, en aquest moment el Nautilus no es pot "
 "utilitzar."
 
-#: src/nautilus-application.c:474
+#: src/nautilus-application.c:475
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5921,7 +5908,7 @@ msgstr ""
 "vistes del gestor de fitxers, en aquest moment no es pot utilitzar el "
 "Nautilus.\""
 
-#: src/nautilus-application.c:492
+#: src/nautilus-application.c:493
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5932,7 +5919,7 @@ msgstr ""
 "activation-server i reiniciant el Nautilus potser ajudarà a arreglar el "
 "problema."
 
-#: src/nautilus-application.c:499
+#: src/nautilus-application.c:500
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5948,16 +5935,22 @@ msgid "No bookmarks defined"
 msgstr "No hi ha adreces d'interes definides"
 
 #: src/nautilus-bookmarks-window.glade.h:1
-msgid "Edit Bookmarks"
-msgstr "Edita les adreces d'interès"
-
-#: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:59
-msgid "_Bookmarks"
+#, fuzzy
+msgid "<b>_Bookmarks</b>"
 msgstr "_Adreces d'interès"
 
+#: src/nautilus-bookmarks-window.glade.h:2
+#, fuzzy
+msgid "<b>_Location</b>"
+msgstr "_Ubicació"
+
 #: src/nautilus-bookmarks-window.glade.h:3
-msgid "_Location:"
-msgstr "_Ubicació:"
+msgid "<b>_Name</b>"
+msgstr ""
+
+#: src/nautilus-bookmarks-window.glade.h:4
+msgid "Edit Bookmarks"
+msgstr "Edita les adreces d'interès"
 
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
@@ -6400,7 +6393,8 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "'%s' no és un fitxer d'imatge utilitzable!"
 
 #: src/nautilus-property-browser.c:2037
-msgid "Select A Category:"
+#, fuzzy
+msgid "Select a Category:"
 msgstr "Seleccioneu una categoria:"
 
 #: src/nautilus-property-browser.c:2046
@@ -6652,6 +6646,11 @@ msgstr "Nou servidor"
 msgid "*"
 msgstr "*"
 
+#: src/nautilus-server-connect.glade.h:3
+#, fuzzy
+msgid "_Connect"
+msgstr "Conectiva"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Afegeix l'adreça d'interès de l'actual ubicació en aquest menú"
@@ -6880,6 +6879,10 @@ msgstr "_Endarrere"
 #: src/nautilus-shell-ui.xml.h:58
 msgid "_Backgrounds and Emblems"
 msgstr "_Fons i distintius"
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "_Bookmarks"
+msgstr "_Adreces d'interès"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
@@ -7330,6 +7333,30 @@ msgid "View your network servers in the Nautilus file manager"
 msgstr ""
 "Visualitza els vostres servidors de xarxa en el gestor de fitxers Nautilus"
 
+#~ msgid "Your HTTP Proxy requires you to log in.\n"
+#~ msgstr "El teu Proxy d'HTTP requereix que t'identifiquis.\n"
+
+#~ msgid ""
+#~ "You must log in to access \"%s\".\n"
+#~ "\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Per accedir a \"%s\" necessites identificar-te.\n"
+#~ "\n"
+#~ "%s"
+
+#~ msgid "Your password will be transmitted unencrypted."
+#~ msgstr "La teva paraula de pas serà transmesa sense encriptació."
+
+#~ msgid "Your password will be transmitted encrypted."
+#~ msgstr "La teva paraula de pas serà transmesa amb encriptació."
+
+#~ msgid "Authentication Required"
+#~ msgstr "Es requereix identificació"
+
+#~ msgid "_Location:"
+#~ msgstr "_Ubicació:"
+
 #~ msgid "The Trash must remain on the desktop."
 #~ msgstr "La Paperera ha de romandre a l'escriptori."
 
@@ -7703,9 +7730,6 @@ msgstr ""
 #~ "theme before removing this one."
 #~ msgstr ""
 #~ "No podeu suprimir el tema actual. Trieu un altre tema abans de suprimir-lo"
-
-#~ msgid "Can't delete current theme"
-#~ msgstr "No es pot suprimir el tema actual"
 
 #~ msgid "Sorry, but that theme could not be removed!"
 #~ msgstr "El tema no s'ha pogut suprimir!"
@@ -8530,9 +8554,6 @@ msgstr ""
 
 #~ msgid "Bookmarks"
 #~ msgstr "_Adreces d'interès"
-
-#~ msgid "_Location"
-#~ msgstr "_Ubicació"
 
 #~ msgid "_Remove"
 #~ msgstr "_Elimina"

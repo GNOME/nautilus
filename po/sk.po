@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.sk\n"
-"POT-Creation-Date: 2003-05-19 14:33+0200\n"
+"POT-Creation-Date: 2003-06-04 10:07+0200\n"
 "PO-Revision-Date: 2003-03-11 22:03+0100\n"
 "Last-Translator: Stanislav Visnovsky <visnovsky@kde.org>\n"
 "Language-Team: Slovak <sk-i18n@linux.sk>\n"
@@ -363,7 +363,7 @@ msgid "animation to indicate on-going activity"
 msgstr "animovať pre zobrazenie aktivity"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:577
+#: components/throbber/nautilus-throbber.c:587
 msgid "throbber"
 msgstr "Pulzovač"
 
@@ -375,7 +375,7 @@ msgstr "Vytváracie rozhranie pre Pulzovač"
 msgid "throbber object factory"
 msgstr "Vytváracie rozhranie pre Pulzovač"
 
-#: components/throbber/nautilus-throbber.c:578
+#: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr "poskytuje vizuálny stav"
 
@@ -1642,36 +1642,33 @@ msgstr "Disk XIAFS"
 msgid "Xenix Volume"
 msgstr "Disk Xenix"
 
-#: libnautilus-private/nautilus-authn-manager.c:60
-msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr "Vaša HTTP proxy vyžaduje prihlásenie.\n"
-
-#: libnautilus-private/nautilus-authn-manager.c:61
-#, c-format
-msgid ""
-"You must log in to access \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"Pre prístup k \"%s\" sa musíte prihlásiť.\n"
-"\n"
-"%s"
-
-#: libnautilus-private/nautilus-authn-manager.c:64
-msgid "Your password will be transmitted unencrypted."
-msgstr "Vaše heslo bude odoslané bez šifrovania."
-
-#: libnautilus-private/nautilus-authn-manager.c:65
-msgid "Your password will be transmitted encrypted."
-msgstr "Vaše heslo bude odoslané šifrované."
-
-#: libnautilus-private/nautilus-authn-manager.c:68
-msgid "Authentication Required"
-msgstr "Vyžadované prihlásenie"
-
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "reset"
+
+#: libnautilus-private/nautilus-desktop-directory-file.c:442
+#: libnautilus-private/nautilus-desktop-icon-file.c:163
+#: libnautilus-private/nautilus-trash-file.c:690
+msgid "on the desktop"
+msgstr "na ploche"
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+msgid ""
+"You cannot delete a volume icon. If you want to eject the volume, please use "
+"Eject in the right-click menu of the volume."
+msgstr ""
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+#, fuzzy
+msgid "Can't delete volume"
+msgstr "Formátovať vybraný disk"
+
+#: libnautilus-private/nautilus-desktop-link.c:139
+#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-global-preferences.c:545
+#: libnautilus-private/nautilus-trash-directory.c:383
+msgid "Trash"
+msgstr "Odpadky"
 
 #: libnautilus-private/nautilus-dnd.c:617
 msgid "_Move here"
@@ -2947,12 +2944,6 @@ msgstr "odkaz"
 msgid "link (broken)"
 msgstr "odkaz (neplatný)"
 
-#: libnautilus-private/nautilus-file.c:5576
-#: libnautilus-private/nautilus-global-preferences.c:545
-#: libnautilus-private/nautilus-trash-directory.c:383
-msgid "Trash"
-msgstr "Odpadky"
-
 #: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Always"
 msgstr "_Vždy"
@@ -4007,10 +3998,6 @@ msgstr "Prehľadávam disky"
 msgid "Nautilus is searching your disks for trash folders."
 msgstr "Nautilus hľadá na disku priečinky s Odpadkami."
 
-#: libnautilus-private/nautilus-trash-file.c:690
-msgid "on the desktop"
-msgstr "na ploche"
-
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
 msgstr "Upraviť"
@@ -4160,14 +4147,6 @@ msgstr "Vybrať celý text v textovom poli"
 msgid "_Paste Text"
 msgstr "V_ložiť text"
 
-#: nautilus.desktop.in.h:1
-msgid "Home Folder"
-msgstr "Domovský priečinok"
-
-#: nautilus.desktop.in.h:2
-msgid "View your home folder in the Nautilus file manager"
-msgstr "Zobrazí váš domovský priečinok v správcovi súborov Nautilus"
-
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
 msgstr "Úprava správy súborov"
@@ -4175,6 +4154,14 @@ msgstr "Úprava správy súborov"
 #: nautilus-file-management-properties.desktop.in.h:2
 msgid "File Management"
 msgstr "Správa súborov"
+
+#: nautilus.desktop.in.h:1
+msgid "Home Folder"
+msgstr "Domovský priečinok"
+
+#: nautilus.desktop.in.h:2
+msgid "View your home folder in the Nautilus file manager"
+msgstr "Zobrazí váš domovský priečinok v správcovi súborov Nautilus"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4884,33 +4871,33 @@ msgstr "_Obnoviť pôvodnú veľkosť ikony"
 msgid "pointing at \"%s\""
 msgstr "ukazujúci na \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2421
+#: src/file-manager/fm-icon-view.c:2459
 msgid "Drag and drop is only supported to local file systems."
 msgstr "\"Ťahaj a pusť\" je podporované iba na lokálnych systémoch súborov."
 
-#: src/file-manager/fm-icon-view.c:2422 src/file-manager/fm-icon-view.c:2441
+#: src/file-manager/fm-icon-view.c:2460 src/file-manager/fm-icon-view.c:2479
 msgid "Drag and Drop error"
 msgstr "Chyba \"ťahaj a pusť\""
 
-#: src/file-manager/fm-icon-view.c:2440
+#: src/file-manager/fm-icon-view.c:2478
 msgid "An invalid drag type was used."
 msgstr "Použitý neplatný typ ťahania."
 
-#: src/file-manager/fm-list-view.c:730
+#: src/file-manager/fm-list-view.c:729
 msgid "File name"
 msgstr "Meno súboru"
 
-#: src/file-manager/fm-list-view.c:754
+#: src/file-manager/fm-list-view.c:753
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Veľkosť"
 
-#: src/file-manager/fm-list-view.c:765
+#: src/file-manager/fm-list-view.c:764
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Typ"
 
-#: src/file-manager/fm-list-view.c:776
+#: src/file-manager/fm-list-view.c:775
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Dátum zmeny"
@@ -5015,7 +5002,6 @@ msgstr "Základné"
 
 #. Name label
 #: src/file-manager/fm-properties-window.c:1643
-#: src/nautilus-bookmarks-window.glade.h:4
 msgid "_Name:"
 msgstr "_Meno:"
 
@@ -5166,7 +5152,8 @@ msgid "Creating Properties window"
 msgstr "Vytváram okno Vlastnosti"
 
 #: src/file-manager/fm-properties-window.c:2714
-msgid "Select an icon:"
+#, fuzzy
+msgid "Select an icon"
 msgstr "Vyberte ikonu:"
 
 #: src/file-manager/fm-search-list-view.c:124
@@ -5749,11 +5736,11 @@ msgstr "Ukázať stav _indexovania"
 msgid "Show status of indexing used when searching"
 msgstr "Pri hľadaní ukazovať stav použitého indexovania"
 
-#: src/nautilus-application.c:222
+#: src/nautilus-application.c:223
 msgid "Couldn't Create Required Folder"
 msgstr "Nie je možné vytvoriť požadovaný priečinok"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5764,11 +5751,11 @@ msgstr ""
 "Nautilusu vytvorte tento priečinok, alebo nastavte práva tak, aby ho "
 "Nautilus mohol vytvoriť."
 
-#: src/nautilus-application.c:228
+#: src/nautilus-application.c:229
 msgid "Couldn't Create Required Folders"
 msgstr "Nie je možné vytvoriť požadované priečinky"
 
-#: src/nautilus-application.c:229
+#: src/nautilus-application.c:230
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5785,19 +5772,19 @@ msgstr ""
 "Pred spustením Nautilusu vytvorte tento priečinok, alebo nastavte práva tak, "
 "aby ho Nautilus mohol vytvoriť."
 
-#: src/nautilus-application.c:300
+#: src/nautilus-application.c:301
 #, fuzzy
 msgid "Link To Old Desktop"
 msgstr "na ploche"
 
-#: src/nautilus-application.c:316
+#: src/nautilus-application.c:317
 msgid ""
 "The location of the desktop directory has changed in Gnome 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
 
-#: src/nautilus-application.c:319
+#: src/nautilus-application.c:320
 msgid "Migrated old desktop"
 msgstr ""
 
@@ -5811,7 +5798,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:437
+#: src/nautilus-application.c:438
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5822,7 +5809,7 @@ msgstr ""
 "inštaláciu Nautilusu."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:443
+#: src/nautilus-application.c:444
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5867,12 +5854,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:473 src/nautilus-application.c:491
-#: src/nautilus-application.c:498
+#: src/nautilus-application.c:474 src/nautilus-application.c:492
+#: src/nautilus-application.c:499
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus nie je momentálne možné používať kvôli neočakávanej chybe."
 
-#: src/nautilus-application.c:474
+#: src/nautilus-application.c:475
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5880,7 +5867,7 @@ msgstr ""
 "Nautilus nie je momentálne možné používať kvôli neočakávanej chybe od Bonobo "
 "pri pokuse zaregistrovať server pre pohľady správcu súborov."
 
-#: src/nautilus-application.c:492
+#: src/nautilus-application.c:493
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5890,7 +5877,7 @@ msgstr ""
 "pri pokuse nájsť vytváracie rozhranie. Zabitím bonobo-activation-server a "
 "reštartom Nautilus by mohlo pomôcť problém vyriešiť."
 
-#: src/nautilus-application.c:499
+#: src/nautilus-application.c:500
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5905,16 +5892,22 @@ msgid "No bookmarks defined"
 msgstr "Nedefinované žiadne záložky"
 
 #: src/nautilus-bookmarks-window.glade.h:1
-msgid "Edit Bookmarks"
-msgstr "Upraviť záložky"
-
-#: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:59
-msgid "_Bookmarks"
+#, fuzzy
+msgid "<b>_Bookmarks</b>"
 msgstr "_Záložky"
 
-#: src/nautilus-bookmarks-window.glade.h:3
-msgid "_Location:"
+#: src/nautilus-bookmarks-window.glade.h:2
+#, fuzzy
+msgid "<b>_Location</b>"
 msgstr "_Umiestnenie:"
+
+#: src/nautilus-bookmarks-window.glade.h:3
+msgid "<b>_Name</b>"
+msgstr ""
+
+#: src/nautilus-bookmarks-window.glade.h:4
+msgid "Edit Bookmarks"
+msgstr "Upraviť záložky"
 
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
@@ -6355,7 +6348,8 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Ľutujem, ale '%s' nie je použiteľný súbor s obrázkom!"
 
 #: src/nautilus-property-browser.c:2037
-msgid "Select A Category:"
+#, fuzzy
+msgid "Select a Category:"
 msgstr "Vyberte kategóriu:"
 
 #: src/nautilus-property-browser.c:2046
@@ -6605,6 +6599,11 @@ msgstr "Nový server"
 msgid "*"
 msgstr "*"
 
+#: src/nautilus-server-connect.glade.h:3
+#, fuzzy
+msgid "_Connect"
+msgstr "Conectiva"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Pridá záložku pre aktuálne umiestnenie do tohoto menu"
@@ -6831,6 +6830,10 @@ msgstr "_Dozadu"
 #: src/nautilus-shell-ui.xml.h:58
 msgid "_Backgrounds and Emblems"
 msgstr "_Pozadia a emblémy"
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "_Bookmarks"
+msgstr "_Záložky"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
@@ -7269,6 +7272,27 @@ msgstr "Sieťové servery"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Zobrazí vaše sieťové servery v správcovi súborov Nautilus"
+
+#~ msgid "Your HTTP Proxy requires you to log in.\n"
+#~ msgstr "Vaša HTTP proxy vyžaduje prihlásenie.\n"
+
+#~ msgid ""
+#~ "You must log in to access \"%s\".\n"
+#~ "\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Pre prístup k \"%s\" sa musíte prihlásiť.\n"
+#~ "\n"
+#~ "%s"
+
+#~ msgid "Your password will be transmitted unencrypted."
+#~ msgstr "Vaše heslo bude odoslané bez šifrovania."
+
+#~ msgid "Your password will be transmitted encrypted."
+#~ msgstr "Vaše heslo bude odoslané šifrované."
+
+#~ msgid "Authentication Required"
+#~ msgstr "Vyžadované prihlásenie"
 
 #~ msgid "The Trash must remain on the desktop."
 #~ msgstr "Priečinok Odpadky musí zostať na ploche."

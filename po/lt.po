@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 1.1.14\n"
-"POT-Creation-Date: 2003-05-19 14:33+0200\n"
+"POT-Creation-Date: 2003-06-04 10:07+0200\n"
 "PO-Revision-Date: 2002-05-15 11:34+0200\n"
 "Last-Translator: Gediminas Paulauskas <menesis@delfi.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
@@ -358,7 +358,7 @@ msgid "animation to indicate on-going activity"
 msgstr "animacija, rodanti aktyvumą"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:577
+#: components/throbber/nautilus-throbber.c:587
 msgid "throbber"
 msgstr "užimtumo indikatorius"
 
@@ -370,7 +370,7 @@ msgstr "užimtumo indikatoriaus gamykla"
 msgid "throbber object factory"
 msgstr "užimtumo indikatoriaus objektų gamykla"
 
-#: components/throbber/nautilus-throbber.c:578
+#: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr ""
 
@@ -1653,33 +1653,33 @@ msgstr "XIAFS skirsnis"
 msgid "Xenix Volume"
 msgstr "Xenix skirsnis"
 
-#: libnautilus-private/nautilus-authn-manager.c:60
-msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr ""
-
-#: libnautilus-private/nautilus-authn-manager.c:61
-#, c-format
-msgid ""
-"You must log in to access \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-
-#: libnautilus-private/nautilus-authn-manager.c:64
-msgid "Your password will be transmitted unencrypted."
-msgstr ""
-
-#: libnautilus-private/nautilus-authn-manager.c:65
-msgid "Your password will be transmitted encrypted."
-msgstr ""
-
-#: libnautilus-private/nautilus-authn-manager.c:68
-msgid "Authentication Required"
-msgstr ""
-
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr ""
+
+#: libnautilus-private/nautilus-desktop-directory-file.c:442
+#: libnautilus-private/nautilus-desktop-icon-file.c:163
+#: libnautilus-private/nautilus-trash-file.c:690
+msgid "on the desktop"
+msgstr "darbastalyje"
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+msgid ""
+"You cannot delete a volume icon. If you want to eject the volume, please use "
+"Eject in the right-click menu of the volume."
+msgstr ""
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+#, fuzzy
+msgid "Can't delete volume"
+msgstr "Negaliu ištrinti dabartinės temos"
+
+#: libnautilus-private/nautilus-desktop-link.c:139
+#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-global-preferences.c:545
+#: libnautilus-private/nautilus-trash-directory.c:383
+msgid "Trash"
+msgstr "Šiukšlinė"
 
 #: libnautilus-private/nautilus-dnd.c:617
 msgid "_Move here"
@@ -2957,12 +2957,6 @@ msgstr "nuoroda"
 msgid "link (broken)"
 msgstr "nuoroda (sugadinta)"
 
-#: libnautilus-private/nautilus-file.c:5576
-#: libnautilus-private/nautilus-global-preferences.c:545
-#: libnautilus-private/nautilus-trash-directory.c:383
-msgid "Trash"
-msgstr "Šiukšlinė"
-
 #: libnautilus-private/nautilus-global-preferences.c:101
 #, fuzzy
 msgid "_Always"
@@ -3995,10 +3989,6 @@ msgstr "Paieška diskuose"
 msgid "Nautilus is searching your disks for trash folders."
 msgstr "Nautilus Jūsų diskuose ieško šiukšlinės katalogų."
 
-#: libnautilus-private/nautilus-trash-file.c:690
-msgid "on the desktop"
-msgstr "darbastalyje"
-
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
 msgstr "Keisti"
@@ -4151,14 +4141,6 @@ msgstr "Pažymėti visą tekstą, esantį teksto lauke"
 msgid "_Paste Text"
 msgstr "_Įdėti tekstą"
 
-#: nautilus.desktop.in.h:1
-msgid "Home Folder"
-msgstr "Namų katalogas"
-
-#: nautilus.desktop.in.h:2
-msgid "View your home folder in the Nautilus file manager"
-msgstr "Rodyti namų aplanką Nautilus bylų tvarkyklėje"
-
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
 msgstr ""
@@ -4167,6 +4149,14 @@ msgstr ""
 #, fuzzy
 msgid "File Management"
 msgstr "Bylos pavadinimas"
+
+#: nautilus.desktop.in.h:1
+msgid "Home Folder"
+msgstr "Namų katalogas"
+
+#: nautilus.desktop.in.h:2
+msgid "View your home folder in the Nautilus file manager"
+msgstr "Rodyti namų aplanką Nautilus bylų tvarkyklėje"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4877,33 +4867,33 @@ msgstr "_Atstatyti piktogramos originalų dydį"
 msgid "pointing at \"%s\""
 msgstr "rodo į \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2421
+#: src/file-manager/fm-icon-view.c:2459
 msgid "Drag and drop is only supported to local file systems."
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:2422 src/file-manager/fm-icon-view.c:2441
+#: src/file-manager/fm-icon-view.c:2460 src/file-manager/fm-icon-view.c:2479
 msgid "Drag and Drop error"
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:2440
+#: src/file-manager/fm-icon-view.c:2478
 msgid "An invalid drag type was used."
 msgstr ""
 
-#: src/file-manager/fm-list-view.c:730
+#: src/file-manager/fm-list-view.c:729
 msgid "File name"
 msgstr "Bylos pavadinimas"
 
-#: src/file-manager/fm-list-view.c:754
+#: src/file-manager/fm-list-view.c:753
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Dydis"
 
-#: src/file-manager/fm-list-view.c:765
+#: src/file-manager/fm-list-view.c:764
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Tipas"
 
-#: src/file-manager/fm-list-view.c:776
+#: src/file-manager/fm-list-view.c:775
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Keitimo data"
@@ -5008,7 +4998,6 @@ msgstr "Esmė"
 
 #. Name label
 #: src/file-manager/fm-properties-window.c:1643
-#: src/nautilus-bookmarks-window.glade.h:4
 #, fuzzy
 msgid "_Name:"
 msgstr "_Pavadinimas"
@@ -5176,7 +5165,8 @@ msgid "Creating Properties window"
 msgstr "Kuriamas savybių langas"
 
 #: src/file-manager/fm-properties-window.c:2714
-msgid "Select an icon:"
+#, fuzzy
+msgid "Select an icon"
 msgstr "Pasirink piktogramą:"
 
 #: src/file-manager/fm-search-list-view.c:124
@@ -5781,11 +5771,11 @@ msgstr "Rodyti _indeksavimo būseną"
 msgid "Show status of indexing used when searching"
 msgstr "Rodyti indeksavimo, naudojamo paieškant, būseną"
 
-#: src/nautilus-application.c:222
+#: src/nautilus-application.c:223
 msgid "Couldn't Create Required Folder"
 msgstr "Negaliu sukurti reikiamo katalogo"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5796,11 +5786,11 @@ msgstr ""
 "vykdant Nautilus, arba nustatyti reikiamas teises, kad Nautilus galėtų jį "
 "sukurti."
 
-#: src/nautilus-application.c:228
+#: src/nautilus-application.c:229
 msgid "Couldn't Create Required Folders"
 msgstr "Negaliu sukurti reikiamų katalogų"
 
-#: src/nautilus-application.c:229
+#: src/nautilus-application.c:230
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5817,19 +5807,19 @@ msgstr ""
 "Prašom sukurti šiuos katalogus prieš vykdant Nautilus, arba nustatyti "
 "reikiamas teises, kad Nautilus galėtų juos sukurti."
 
-#: src/nautilus-application.c:300
+#: src/nautilus-application.c:301
 #, fuzzy
 msgid "Link To Old Desktop"
 msgstr "darbastalyje"
 
-#: src/nautilus-application.c:316
+#: src/nautilus-application.c:317
 msgid ""
 "The location of the desktop directory has changed in Gnome 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
 
-#: src/nautilus-application.c:319
+#: src/nautilus-application.c:320
 msgid "Migrated old desktop"
 msgstr ""
 
@@ -5843,7 +5833,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:437
+#: src/nautilus-application.c:438
 #, fuzzy
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -5855,7 +5845,7 @@ msgstr ""
 "perkrauti kompiuterį arba įdiegti Nautilus iš naujo."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:443
+#: src/nautilus-application.c:444
 #, fuzzy
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -5900,12 +5890,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:473 src/nautilus-application.c:491
-#: src/nautilus-application.c:498
+#: src/nautilus-application.c:474 src/nautilus-application.c:492
+#: src/nautilus-application.c:499
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Dėl netikėtos klaidos dabar negalima naudoti Nautilus."
 
-#: src/nautilus-application.c:474
+#: src/nautilus-application.c:475
 #, fuzzy
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
@@ -5914,7 +5904,7 @@ msgstr ""
 "Dabar negalima naudoti Nautilus, dėl netikėtos klaidos iš OAF, bandant "
 "registruoti bylų tvarkytojo vaizdo serverį."
 
-#: src/nautilus-application.c:492
+#: src/nautilus-application.c:493
 #, fuzzy
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
@@ -5925,7 +5915,7 @@ msgstr ""
 "surasti gamyklą. oafd nužudymas bei Nautilus paleidimas iš naujo gali padėti "
 "išspręsti šią problemą."
 
-#: src/nautilus-application.c:499
+#: src/nautilus-application.c:500
 #, fuzzy
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
@@ -5942,17 +5932,22 @@ msgstr ""
 
 #: src/nautilus-bookmarks-window.glade.h:1
 #, fuzzy
-msgid "Edit Bookmarks"
-msgstr "_Redaguoti žymeles"
-
-#: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:59
-msgid "_Bookmarks"
+msgid "<b>_Bookmarks</b>"
 msgstr "Žy_melės"
 
-#: src/nautilus-bookmarks-window.glade.h:3
+#: src/nautilus-bookmarks-window.glade.h:2
 #, fuzzy
-msgid "_Location:"
-msgstr "Vieta:"
+msgid "<b>_Location</b>"
+msgstr "_Vieta"
+
+#: src/nautilus-bookmarks-window.glade.h:3
+msgid "<b>_Name</b>"
+msgstr ""
+
+#: src/nautilus-bookmarks-window.glade.h:4
+#, fuzzy
+msgid "Edit Bookmarks"
+msgstr "_Redaguoti žymeles"
 
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
@@ -6424,7 +6419,8 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Atsiprašau, bet '%s' nėra gera paveikslėlio byla."
 
 #: src/nautilus-property-browser.c:2037
-msgid "Select A Category:"
+#, fuzzy
+msgid "Select a Category:"
 msgstr "Išsirinkite kategoriją:"
 
 #: src/nautilus-property-browser.c:2046
@@ -6675,6 +6671,11 @@ msgstr "Interneto paslaugos"
 msgid "*"
 msgstr ""
 
+#: src/nautilus-server-connect.glade.h:3
+#, fuzzy
+msgid "_Connect"
+msgstr "Conectiva"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Pridėti esamo adreso žymelę į šį meniu"
@@ -6911,6 +6912,10 @@ msgstr "_Atgal"
 #, fuzzy
 msgid "_Backgrounds and Emblems"
 msgstr "Fonas ir Emblemos"
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "_Bookmarks"
+msgstr "Žy_melės"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
@@ -7367,6 +7372,10 @@ msgstr "Netraverse"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Rodyti namų aplanką Nautilus bylų tvarkyklėje"
 
+#, fuzzy
+#~ msgid "_Location:"
+#~ msgstr "Vieta:"
+
 #~ msgid "The Trash must remain on the desktop."
 #~ msgstr "Šiukšlinė turi likti darbalaukyje."
 
@@ -7709,9 +7718,6 @@ msgstr "Rodyti namų aplanką Nautilus bylų tvarkyklėje"
 #~ msgstr ""
 #~ "Atleiskite, bet jūs negalite išmesti dabartinės temos. Kad išmestumėte "
 #~ "šitą, prašau persijunkite į kitą temą."
-
-#~ msgid "Can't delete current theme"
-#~ msgstr "Negaliu ištrinti dabartinės temos"
 
 #~ msgid "Sorry, but that theme could not be removed!"
 #~ msgstr "Atsiprašau, bet ši tema negali būti išmesta!"
@@ -8341,9 +8347,6 @@ msgstr "Rodyti namų aplanką Nautilus bylų tvarkyklėje"
 
 #~ msgid "Bookmarks"
 #~ msgstr "Žymelės"
-
-#~ msgid "_Location"
-#~ msgstr "_Vieta"
 
 #~ msgid "_Remove"
 #~ msgstr "_Pašalinti"

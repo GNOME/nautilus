@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2003-05-19 14:33+0200\n"
+"POT-Creation-Date: 2003-06-04 10:07+0200\n"
 "PO-Revision-Date: 2003-01-14 21:10+0100\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -357,7 +357,7 @@ msgid "animation to indicate on-going activity"
 msgstr "animacja informująca o aktywności aplikacji"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:577
+#: components/throbber/nautilus-throbber.c:587
 msgid "throbber"
 msgstr "znacznik zajętości"
 
@@ -369,7 +369,7 @@ msgstr "generator znaczników zajętości"
 msgid "throbber object factory"
 msgstr "generator obiektów znacznika zajętości"
 
-#: components/throbber/nautilus-throbber.c:578
+#: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr "prezentuje stan w postaci wizualnej"
 
@@ -1641,36 +1641,33 @@ msgstr "Wolumin XIAFS"
 msgid "Xenix Volume"
 msgstr "Wolumin Xenix"
 
-#: libnautilus-private/nautilus-authn-manager.c:60
-msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr "Pośrednik HTTP wymaga zalogowania się.\n"
-
-#: libnautilus-private/nautilus-authn-manager.c:61
-#, c-format
-msgid ""
-"You must log in to access \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"Aby uzyskać dostęp do \"%s\", musisz się zalogować.\n"
-"\n"
-"%s"
-
-#: libnautilus-private/nautilus-authn-manager.c:64
-msgid "Your password will be transmitted unencrypted."
-msgstr "Twoje hasło zostanie przesłane bez użycia szyfrowania."
-
-#: libnautilus-private/nautilus-authn-manager.c:65
-msgid "Your password will be transmitted encrypted."
-msgstr "Twoje hasło zostanie przesłane z użyciem szyfrowania."
-
-#: libnautilus-private/nautilus-authn-manager.c:68
-msgid "Authentication Required"
-msgstr "Wymagane jest uwierzytelnienie"
-
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "wyczyść"
+
+#: libnautilus-private/nautilus-desktop-directory-file.c:442
+#: libnautilus-private/nautilus-desktop-icon-file.c:163
+#: libnautilus-private/nautilus-trash-file.c:690
+msgid "on the desktop"
+msgstr "na biurku"
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+msgid ""
+"You cannot delete a volume icon. If you want to eject the volume, please use "
+"Eject in the right-click menu of the volume."
+msgstr ""
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+#, fuzzy
+msgid "Can't delete volume"
+msgstr "Nie można usunąć bieżącego motywu"
+
+#: libnautilus-private/nautilus-desktop-link.c:139
+#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-global-preferences.c:545
+#: libnautilus-private/nautilus-trash-directory.c:383
+msgid "Trash"
+msgstr "Śmietnik"
 
 #: libnautilus-private/nautilus-dnd.c:617
 msgid "_Move here"
@@ -2947,12 +2944,6 @@ msgstr "dowiązanie"
 msgid "link (broken)"
 msgstr "dowiązanie (uszkodzone)"
 
-#: libnautilus-private/nautilus-file.c:5576
-#: libnautilus-private/nautilus-global-preferences.c:545
-#: libnautilus-private/nautilus-trash-directory.c:383
-msgid "Trash"
-msgstr "Śmietnik"
-
 #: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Always"
 msgstr "_Zawsze"
@@ -4009,10 +4000,6 @@ msgstr ""
 "Nautilus przeszukuje dyski w poszukiwaniu folderów zawierających dane "
 "śmietnika."
 
-#: libnautilus-private/nautilus-trash-file.c:690
-msgid "on the desktop"
-msgstr "na biurku"
-
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
 msgstr "Edycja"
@@ -4164,14 +4151,6 @@ msgstr "Zaznacza cały tekst w polu tekstowym"
 msgid "_Paste Text"
 msgstr "Wk_lej tekst"
 
-#: nautilus.desktop.in.h:1
-msgid "Home Folder"
-msgstr "Folder domowy"
-
-#: nautilus.desktop.in.h:2
-msgid "View your home folder in the Nautilus file manager"
-msgstr "Wyświetla folder domowy przy użyciu menedżera plików - Nautilusa"
-
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
 msgstr "Zmiana sposobu zarządzania plikami"
@@ -4179,6 +4158,14 @@ msgstr "Zmiana sposobu zarządzania plikami"
 #: nautilus-file-management-properties.desktop.in.h:2
 msgid "File Management"
 msgstr "Zarządzanie plikami"
+
+#: nautilus.desktop.in.h:1
+msgid "Home Folder"
+msgstr "Folder domowy"
+
+#: nautilus.desktop.in.h:2
+msgid "View your home folder in the Nautilus file manager"
+msgstr "Wyświetla folder domowy przy użyciu menedżera plików - Nautilusa"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4896,35 +4883,35 @@ msgstr "Przywróć p_ierwotny rozmiar ikony"
 msgid "pointing at \"%s\""
 msgstr "Wskazanie \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2421
+#: src/file-manager/fm-icon-view.c:2459
 msgid "Drag and drop is only supported to local file systems."
 msgstr ""
 "Przeciąganie i upuszczanie obiektów jest obsługiwane tylko w lokalnym "
 "systemie plików."
 
-#: src/file-manager/fm-icon-view.c:2422 src/file-manager/fm-icon-view.c:2441
+#: src/file-manager/fm-icon-view.c:2460 src/file-manager/fm-icon-view.c:2479
 msgid "Drag and Drop error"
 msgstr "Błąd przy obsłudze przeciąganych danych"
 
-#: src/file-manager/fm-icon-view.c:2440
+#: src/file-manager/fm-icon-view.c:2478
 msgid "An invalid drag type was used."
 msgstr "Użyto niepoprawnego typu przeciąganych danych."
 
-#: src/file-manager/fm-list-view.c:730
+#: src/file-manager/fm-list-view.c:729
 msgid "File name"
 msgstr "Nazwa pliku"
 
-#: src/file-manager/fm-list-view.c:754
+#: src/file-manager/fm-list-view.c:753
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Rozmiar"
 
-#: src/file-manager/fm-list-view.c:765
+#: src/file-manager/fm-list-view.c:764
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Typ"
 
-#: src/file-manager/fm-list-view.c:776
+#: src/file-manager/fm-list-view.c:775
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Czas modyfikacji"
@@ -5029,7 +5016,6 @@ msgstr "Proste"
 
 #. Name label
 #: src/file-manager/fm-properties-window.c:1643
-#: src/nautilus-bookmarks-window.glade.h:4
 msgid "_Name:"
 msgstr "_Nazwa:"
 
@@ -5181,7 +5167,8 @@ msgid "Creating Properties window"
 msgstr "Tworzenie okna właściwości"
 
 #: src/file-manager/fm-properties-window.c:2714
-msgid "Select an icon:"
+#, fuzzy
+msgid "Select an icon"
 msgstr "Wybór ikony"
 
 #: src/file-manager/fm-search-list-view.c:124
@@ -5782,11 +5769,11 @@ msgstr "Wyświetl stan indeksowania"
 msgid "Show status of indexing used when searching"
 msgstr "Wyświetla stan indeksowania wykorzystywanego przy wyszukiwaniu"
 
-#: src/nautilus-application.c:222
+#: src/nautilus-application.c:223
 msgid "Couldn't Create Required Folder"
 msgstr "Nie można utworzyć wymaganego folderu"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5797,11 +5784,11 @@ msgstr ""
 "uruchomieniem Nautilusa lub ustal uprawnienia tak, aby możliwe było ich "
 "utworzenie przez Nautilusa."
 
-#: src/nautilus-application.c:228
+#: src/nautilus-application.c:229
 msgid "Couldn't Create Required Folders"
 msgstr "Nie można utworzyć wymaganych folderów"
 
-#: src/nautilus-application.c:229
+#: src/nautilus-application.c:230
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5818,19 +5805,19 @@ msgstr ""
 "Utwórz te foldery przed uruchomieniem Nautilusa lub ustal uprawnienia tak, "
 "aby możliwe było ich utworzenie przez Nautilusa."
 
-#: src/nautilus-application.c:300
+#: src/nautilus-application.c:301
 #, fuzzy
 msgid "Link To Old Desktop"
 msgstr "na biurku"
 
-#: src/nautilus-application.c:316
+#: src/nautilus-application.c:317
 msgid ""
 "The location of the desktop directory has changed in Gnome 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
 
-#: src/nautilus-application.c:319
+#: src/nautilus-application.c:320
 msgid "Migrated old desktop"
 msgstr ""
 
@@ -5844,7 +5831,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:437
+#: src/nautilus-application.c:438
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5856,7 +5843,7 @@ msgstr ""
 "przeinstalować Nautilusa."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:443
+#: src/nautilus-application.c:444
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5901,12 +5888,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:473 src/nautilus-application.c:491
-#: src/nautilus-application.c:498
+#: src/nautilus-application.c:474 src/nautilus-application.c:492
+#: src/nautilus-application.c:499
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Z powodu nieoczekiwanego błędu nie można teraz używać Nautilusa."
 
-#: src/nautilus-application.c:474
+#: src/nautilus-application.c:475
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5915,7 +5902,7 @@ msgstr ""
 "nieoczekiwanego błędu zgłoszonego przez Bonobo przy próbie zarejestrowania "
 "serwera widoku menedżera plików."
 
-#: src/nautilus-application.c:492
+#: src/nautilus-application.c:493
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5926,7 +5913,7 @@ msgstr ""
 "generatora obiektów. W naprawieniu problemu może pomóc usunięcie procesu "
 "bonobo-activation-server i ponowne uruchomienie Nautilusa."
 
-#: src/nautilus-application.c:499
+#: src/nautilus-application.c:500
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5942,16 +5929,22 @@ msgid "No bookmarks defined"
 msgstr "Nie zdefiniowano żadnych Ulubionych"
 
 #: src/nautilus-bookmarks-window.glade.h:1
-msgid "Edit Bookmarks"
-msgstr "Modyfikacja Ulubionych"
-
-#: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:59
-msgid "_Bookmarks"
+#, fuzzy
+msgid "<b>_Bookmarks</b>"
 msgstr "Ulu_bione"
 
-#: src/nautilus-bookmarks-window.glade.h:3
-msgid "_Location:"
+#: src/nautilus-bookmarks-window.glade.h:2
+#, fuzzy
+msgid "<b>_Location</b>"
 msgstr "_Położenie:"
+
+#: src/nautilus-bookmarks-window.glade.h:3
+msgid "<b>_Name</b>"
+msgstr ""
+
+#: src/nautilus-bookmarks-window.glade.h:4
+msgid "Edit Bookmarks"
+msgstr "Modyfikacja Ulubionych"
 
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
@@ -6389,7 +6382,8 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "niestety, \"%s\" nie jest plikiem zawierającym obraz!"
 
 #: src/nautilus-property-browser.c:2037
-msgid "Select A Category:"
+#, fuzzy
+msgid "Select a Category:"
 msgstr "Wybierz kategorię:"
 
 #: src/nautilus-property-browser.c:2046
@@ -6642,6 +6636,11 @@ msgstr "Nowy serwer"
 msgid "*"
 msgstr "*"
 
+#: src/nautilus-server-connect.glade.h:3
+#, fuzzy
+msgid "_Connect"
+msgstr "Conectiva"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Dodaje bieżące położenie do Ulubionych w tym menu"
@@ -6868,6 +6867,10 @@ msgstr "_Wstecz"
 #: src/nautilus-shell-ui.xml.h:58
 msgid "_Backgrounds and Emblems"
 msgstr "_Tła i symbole"
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "_Bookmarks"
+msgstr "Ulu_bione"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
@@ -7305,6 +7308,27 @@ msgstr "Serwery sieciowe"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Wyświetla serwery sieciowe przy użyciu menedżera plików - Nautilusa"
+
+#~ msgid "Your HTTP Proxy requires you to log in.\n"
+#~ msgstr "Pośrednik HTTP wymaga zalogowania się.\n"
+
+#~ msgid ""
+#~ "You must log in to access \"%s\".\n"
+#~ "\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Aby uzyskać dostęp do \"%s\", musisz się zalogować.\n"
+#~ "\n"
+#~ "%s"
+
+#~ msgid "Your password will be transmitted unencrypted."
+#~ msgstr "Twoje hasło zostanie przesłane bez użycia szyfrowania."
+
+#~ msgid "Your password will be transmitted encrypted."
+#~ msgstr "Twoje hasło zostanie przesłane z użyciem szyfrowania."
+
+#~ msgid "Authentication Required"
+#~ msgstr "Wymagane jest uwierzytelnienie"
 
 #~ msgid "The Trash must remain on the desktop."
 #~ msgstr "Śmietnik musi pozostać na biurku."
@@ -8176,9 +8200,6 @@ msgstr "Wyświetla serwery sieciowe przy użyciu menedżera plików - Nautilusa"
 #~ msgstr ""
 #~ "Niestety, nie można usunąć bieżącego motywu. Przed usunięciem zmień motyw "
 #~ "na inny."
-
-#~ msgid "Can't delete current theme"
-#~ msgstr "Nie można usunąć bieżącego motywu"
 
 #~ msgid "Sorry, but that theme could not be removed!"
 #~ msgstr "Niestety, nie można usunąć motywu!"

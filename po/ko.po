@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.2.2\n"
-"POT-Creation-Date: 2003-05-19 14:33+0200\n"
+"POT-Creation-Date: 2003-06-04 10:07+0200\n"
 "PO-Revision-Date: 2003-03-15 19:44+0900\n"
 "Last-Translator: Young-Ho, Cha <ganadist@mizi.com>\n"
 "Language-Team: GTP Korean <gnome-kr-translation@gnome.or.kr>\n"
@@ -350,7 +350,7 @@ msgid "animation to indicate on-going activity"
 msgstr "활동중이라는 것을 알리는 움직임"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:577
+#: components/throbber/nautilus-throbber.c:587
 msgid "throbber"
 msgstr "진동"
 
@@ -362,7 +362,7 @@ msgstr "진동 팩토리"
 msgid "throbber object factory"
 msgstr "진동 객체 팩토리"
 
-#: components/throbber/nautilus-throbber.c:578
+#: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr "그래픽 상태 보기"
 
@@ -1628,36 +1628,33 @@ msgstr "XIAFS 볼륨"
 msgid "Xenix Volume"
 msgstr "제닉스 볼륨"
 
-#: libnautilus-private/nautilus-authn-manager.c:60
-msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr "HTTP 프록시는 로그인을 필요로 합니다.\n"
-
-#: libnautilus-private/nautilus-authn-manager.c:61
-#, c-format
-msgid ""
-"You must log in to access \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"\"%s\"에 접근하려면 로그인 하여야 합니다.\n"
-"\n"
-"%s"
-
-#: libnautilus-private/nautilus-authn-manager.c:64
-msgid "Your password will be transmitted unencrypted."
-msgstr "비밀번호는 암호화되지 않고 전송됩니다."
-
-#: libnautilus-private/nautilus-authn-manager.c:65
-msgid "Your password will be transmitted encrypted."
-msgstr "비밀번호는 암호화되어서 전송됩니다."
-
-#: libnautilus-private/nautilus-authn-manager.c:68
-msgid "Authentication Required"
-msgstr "인증을 필요로 합니다"
-
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "다시 초기화"
+
+#: libnautilus-private/nautilus-desktop-directory-file.c:442
+#: libnautilus-private/nautilus-desktop-icon-file.c:163
+#: libnautilus-private/nautilus-trash-file.c:690
+msgid "on the desktop"
+msgstr "바탕화면"
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+msgid ""
+"You cannot delete a volume icon. If you want to eject the volume, please use "
+"Eject in the right-click menu of the volume."
+msgstr ""
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+#, fuzzy
+msgid "Can't delete volume"
+msgstr "선택한 볼륨을 포맷하기"
+
+#: libnautilus-private/nautilus-desktop-link.c:139
+#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-global-preferences.c:545
+#: libnautilus-private/nautilus-trash-directory.c:383
+msgid "Trash"
+msgstr "휴지통"
 
 #: libnautilus-private/nautilus-dnd.c:617
 msgid "_Move here"
@@ -2933,12 +2930,6 @@ msgstr "연결"
 msgid "link (broken)"
 msgstr "연결 (깨어짐)"
 
-#: libnautilus-private/nautilus-file.c:5576
-#: libnautilus-private/nautilus-global-preferences.c:545
-#: libnautilus-private/nautilus-trash-directory.c:383
-msgid "Trash"
-msgstr "휴지통"
-
 #: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Always"
 msgstr "항상(_A)"
@@ -3983,10 +3974,6 @@ msgstr "디스크 찾기"
 msgid "Nautilus is searching your disks for trash folders."
 msgstr "노틸러스가 휴지통 폴더를 찾는 중입니다."
 
-#: libnautilus-private/nautilus-trash-file.c:690
-msgid "on the desktop"
-msgstr "바탕화면"
-
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
 msgstr "고치기"
@@ -4139,14 +4126,6 @@ msgstr "텍스트 영역의 모든 글자 선택"
 msgid "_Paste Text"
 msgstr "글자 붙이기(_P)"
 
-#: nautilus.desktop.in.h:1
-msgid "Home Folder"
-msgstr "내 폴더"
-
-#: nautilus.desktop.in.h:2
-msgid "View your home folder in the Nautilus file manager"
-msgstr "노틸러스 파일 관리자로 내 폴더 보기"
-
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
 msgstr "파일 관리하는 방법을 바꿉니다"
@@ -4154,6 +4133,14 @@ msgstr "파일 관리하는 방법을 바꿉니다"
 #: nautilus-file-management-properties.desktop.in.h:2
 msgid "File Management"
 msgstr "파일 관리"
+
+#: nautilus.desktop.in.h:1
+msgid "Home Folder"
+msgstr "내 폴더"
+
+#: nautilus.desktop.in.h:2
+msgid "View your home folder in the Nautilus file manager"
+msgstr "노틸러스 파일 관리자로 내 폴더 보기"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4851,33 +4838,33 @@ msgstr "원래 크기의 아이콘으로 되돌림(_Z)"
 msgid "pointing at \"%s\""
 msgstr "\"%s\"을(를) 가르킴"
 
-#: src/file-manager/fm-icon-view.c:2421
+#: src/file-manager/fm-icon-view.c:2459
 msgid "Drag and drop is only supported to local file systems."
 msgstr "끌어서 놓기는 로컬 파일시스템에서만 지원됩니다."
 
-#: src/file-manager/fm-icon-view.c:2422 src/file-manager/fm-icon-view.c:2441
+#: src/file-manager/fm-icon-view.c:2460 src/file-manager/fm-icon-view.c:2479
 msgid "Drag and Drop error"
 msgstr "끌어서 놓기 오류"
 
-#: src/file-manager/fm-icon-view.c:2440
+#: src/file-manager/fm-icon-view.c:2478
 msgid "An invalid drag type was used."
 msgstr "잘못된 끌기형식이 쓰였습니다."
 
-#: src/file-manager/fm-list-view.c:730
+#: src/file-manager/fm-list-view.c:729
 msgid "File name"
 msgstr "파일 이름"
 
-#: src/file-manager/fm-list-view.c:754
+#: src/file-manager/fm-list-view.c:753
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "크기"
 
-#: src/file-manager/fm-list-view.c:765
+#: src/file-manager/fm-list-view.c:764
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "형식"
 
-#: src/file-manager/fm-list-view.c:776
+#: src/file-manager/fm-list-view.c:775
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "내용이 바뀐 날짜"
@@ -4982,7 +4969,6 @@ msgstr "기본"
 
 #. Name label
 #: src/file-manager/fm-properties-window.c:1643
-#: src/nautilus-bookmarks-window.glade.h:4
 msgid "_Name:"
 msgstr "이름(_N):"
 
@@ -5133,7 +5119,8 @@ msgid "Creating Properties window"
 msgstr "등록 정보창 만들기"
 
 #: src/file-manager/fm-properties-window.c:2714
-msgid "Select an icon:"
+#, fuzzy
+msgid "Select an icon"
 msgstr "아이콘에서 선택:"
 
 #: src/file-manager/fm-search-list-view.c:124
@@ -5711,11 +5698,11 @@ msgstr "인덱싱 상황 보임(_I)"
 msgid "Show status of indexing used when searching"
 msgstr "찾는 중에 사용되는 인덱싱의 상황을 보기"
 
-#: src/nautilus-application.c:222
+#: src/nautilus-application.c:223
 msgid "Couldn't Create Required Folder"
 msgstr "필요로 하는 폴더를 만들 수 없습니다"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5725,11 +5712,11 @@ msgstr ""
 "노틸러스는 필요한 폴더인 \"%s\"을(를) 만들 수 없습니다. 노틸러스를 실행하기 "
 "전에 이 폴더를 만들거나 노틸러스가 만들 수 있도록 허가권을 설정하십시오."
 
-#: src/nautilus-application.c:228
+#: src/nautilus-application.c:229
 msgid "Couldn't Create Required Folders"
 msgstr "필요로 하는 폴더를 만들 수 없습니다"
 
-#: src/nautilus-application.c:229
+#: src/nautilus-application.c:230
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5746,19 +5733,19 @@ msgstr ""
 "노틸러스를 실행하기 전에 이 폴더를 만들거나 만들 수 있도록 허가권을설정하십시"
 "오."
 
-#: src/nautilus-application.c:300
+#: src/nautilus-application.c:301
 #, fuzzy
 msgid "Link To Old Desktop"
 msgstr "바탕화면"
 
-#: src/nautilus-application.c:316
+#: src/nautilus-application.c:317
 msgid ""
 "The location of the desktop directory has changed in Gnome 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
 
-#: src/nautilus-application.c:319
+#: src/nautilus-application.c:320
 msgid "Migrated old desktop"
 msgstr ""
 
@@ -5772,7 +5759,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:437
+#: src/nautilus-application.c:438
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5782,7 +5769,7 @@ msgstr ""
 "\"를 실행하십시오. 아니면 컴퓨터를 재시작 하거나 노틸러스를 재설치 하십시오."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:443
+#: src/nautilus-application.c:444
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5828,12 +5815,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:473 src/nautilus-application.c:491
-#: src/nautilus-application.c:498
+#: src/nautilus-application.c:474 src/nautilus-application.c:492
+#: src/nautilus-application.c:499
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "예상하지 못한 오류로 인해 현재 노틸러스를 사용할 수 없습니다."
 
-#: src/nautilus-application.c:474
+#: src/nautilus-application.c:475
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5841,7 +5828,7 @@ msgstr ""
 "파일관리자 보기 서버에 등록하기를 시도하는 중 OAF로 인한 예상하지 못한오류로 "
 "인해 현재 노틸러스를 사용할 수 없습니다."
 
-#: src/nautilus-application.c:492
+#: src/nautilus-application.c:493
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5851,7 +5838,7 @@ msgstr ""
 "노틸러스를 사용할 수 없습니다. bonobo-activation-server를 강제로 종료하고 노"
 "틸러스를재시작 하면문제가 해결될수 있습니다."
 
-#: src/nautilus-application.c:499
+#: src/nautilus-application.c:500
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5866,16 +5853,22 @@ msgid "No bookmarks defined"
 msgstr "정의된 책갈피 없음"
 
 #: src/nautilus-bookmarks-window.glade.h:1
-msgid "Edit Bookmarks"
-msgstr "책갈피 고치기"
-
-#: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:59
-msgid "_Bookmarks"
+#, fuzzy
+msgid "<b>_Bookmarks</b>"
 msgstr "책갈피(_B)"
 
-#: src/nautilus-bookmarks-window.glade.h:3
-msgid "_Location:"
+#: src/nautilus-bookmarks-window.glade.h:2
+#, fuzzy
+msgid "<b>_Location</b>"
 msgstr "위치(_L):"
+
+#: src/nautilus-bookmarks-window.glade.h:3
+msgid "<b>_Name</b>"
+msgstr ""
+
+#: src/nautilus-bookmarks-window.glade.h:4
+msgid "Edit Bookmarks"
+msgstr "책갈피 고치기"
 
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
@@ -6314,7 +6307,8 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "'%s'은(는) 사용할 수 있는 그림 파일이 아닙니다!"
 
 #: src/nautilus-property-browser.c:2037
-msgid "Select A Category:"
+#, fuzzy
+msgid "Select a Category:"
 msgstr "카테고리 선택:"
 
 #: src/nautilus-property-browser.c:2046
@@ -6563,6 +6557,11 @@ msgstr "새로운 서버"
 msgid "*"
 msgstr "*"
 
+#: src/nautilus-server-connect.glade.h:3
+#, fuzzy
+msgid "_Connect"
+msgstr "커넥티바"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
 msgstr "현재 위치를 책갈피에 더합니다"
@@ -6787,6 +6786,10 @@ msgstr "뒤로(_B)"
 #: src/nautilus-shell-ui.xml.h:58
 msgid "_Backgrounds and Emblems"
 msgstr "바탕색과 꼬리표(_B)"
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "_Bookmarks"
+msgstr "책갈피(_B)"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
@@ -7222,6 +7225,27 @@ msgstr "네트워크 서버"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "노틸러스 파일 관리자에서 네트워크 서버를 봅니다"
+
+#~ msgid "Your HTTP Proxy requires you to log in.\n"
+#~ msgstr "HTTP 프록시는 로그인을 필요로 합니다.\n"
+
+#~ msgid ""
+#~ "You must log in to access \"%s\".\n"
+#~ "\n"
+#~ "%s"
+#~ msgstr ""
+#~ "\"%s\"에 접근하려면 로그인 하여야 합니다.\n"
+#~ "\n"
+#~ "%s"
+
+#~ msgid "Your password will be transmitted unencrypted."
+#~ msgstr "비밀번호는 암호화되지 않고 전송됩니다."
+
+#~ msgid "Your password will be transmitted encrypted."
+#~ msgstr "비밀번호는 암호화되어서 전송됩니다."
+
+#~ msgid "Authentication Required"
+#~ msgstr "인증을 필요로 합니다"
 
 #~ msgid "The Trash must remain on the desktop."
 #~ msgstr "휴지통은 바탕화면에 남아 있어야 합니다."

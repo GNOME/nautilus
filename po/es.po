@@ -11,7 +11,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 2.2.x\n"
-"POT-Creation-Date: 2003-05-23 12:44+0200\n"
+"POT-Creation-Date: 2003-06-04 10:07+0200\n"
 "PO-Revision-Date: 2003-05-23 10:38-0300\n"
 "Last-Translator: Pablo G. del Campo <pablodc@bigfoot.com>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
@@ -393,7 +393,7 @@ msgstr "animación para indicar actividad en proceso"
 
 # src/file-manager/fm-properties-window.c:1560
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:577
+#: components/throbber/nautilus-throbber.c:587
 msgid "throbber"
 msgstr "pulsador"
 
@@ -405,7 +405,7 @@ msgstr "fábrica para pulsador"
 msgid "throbber object factory"
 msgstr "fábrica de objeto pulsador"
 
-#: components/throbber/nautilus-throbber.c:578
+#: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr "provee un estado visual"
 
@@ -1067,7 +1067,8 @@ msgstr "Zero-Knowledge"
 
 #: data/sysconfig.desktop.in.h:1 data/sysconfig.directory.in.h:1
 msgid "Change systemwide settings (affects all users)"
-msgstr "Cambia las preferencias globales del sistema (afecta a todos los usuarios)"
+msgstr ""
+"Cambia las preferencias globales del sistema (afecta a todos los usuarios)"
 
 #: data/sysconfig.desktop.in.h:2 data/sysconfig.directory.in.h:2
 msgid "System Settings"
@@ -1241,7 +1242,8 @@ msgstr "Nombre del icono de la papelera del escritorio"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
 msgid "Enable 'special' flags in file preferences dialog"
-msgstr "Activar los atributos «especiales» en el diálogo de preferencias de archivo"
+msgstr ""
+"Activar los atributos «especiales» en el diálogo de preferencias de archivo"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
 msgid ""
@@ -1277,7 +1279,8 @@ msgstr ""
 "los archivos."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
-msgid "If set to true, newly opened windows will have the location bar visible."
+msgid ""
+"If set to true, newly opened windows will have the location bar visible."
 msgstr ""
 "Si está definido como «true», las ventanas nuevas abiertas tendrán la barra "
 "de dirección visible."
@@ -1329,7 +1332,8 @@ msgstr ""
 "terminan con una tilde (~) son considerados archivos de resguardo."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
-msgid "If set to true, then hidden files (dotfiles) are shown in the file manager."
+msgid ""
+"If set to true, then hidden files (dotfiles) are shown in the file manager."
 msgstr ""
 "Si está definido como «true» entonces los archivos ocultos (archivos con "
 "punto adelante) son mostrados en el administrador de archivos."
@@ -1396,14 +1400,16 @@ msgid ""
 "If this is set to true, an icon linking to the home directory will be put on "
 "the desktop."
 msgstr ""
-"Si está definido como «true» se colocará en el escritorio un icono de enlace al directorio "
-"personal en el escritorio."
+"Si está definido como «true» se colocará en el escritorio un icono de enlace "
+"al directorio personal en el escritorio."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
-msgstr "Si está definido como «true» se colocará un icono enlazado a la papelera en el escritorio."
+msgstr ""
+"Si está definido como «true» se colocará un icono enlazado a la papelera en "
+"el escritorio."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
 msgid ""
@@ -1601,27 +1607,29 @@ msgstr "El ancho predeterminado para el panel lateral en las ventanas nuevas."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid "The font description used for the icons on the desktop."
-msgstr "La descripción de la tipografía usada para los íconos en el escritorio."
+msgstr ""
+"La descripción de la tipografía usada para los íconos en el escritorio."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid "The side pane view to show in newly opened windows."
-msgstr "La vista del panel lateral que se mostrará en la ventanas nuevas abiertas."
+msgstr ""
+"La vista del panel lateral que se mostrará en la ventanas nuevas abiertas."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid ""
 "This name can be set if you want a custom name for the home link icon on the "
 "desktop."
 msgstr ""
-"Este nombre puede ser definido si desea colocar un nombre personalizado al icono de enlce del "
-"directorio personal en el escritorio."
+"Este nombre puede ser definido si desea colocar un nombre personalizado al "
+"icono de enlce del directorio personal en el escritorio."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
 msgstr ""
-"Este nombre puede ser definido si quiere colocar un nombre personalizado al icono de la "
-"papelera del escritorio."
+"Este nombre puede ser definido si quiere colocar un nombre personalizado al "
+"icono de la papelera del escritorio."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "Trash icon visible on desktop"
@@ -1848,36 +1856,33 @@ msgstr "Volumen XIAFS"
 msgid "Xenix Volume"
 msgstr "Volumen Xenix"
 
-#: libnautilus-private/nautilus-authn-manager.c:60
-msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr "Su proxy de HTTP requiere que inicie su sesión.\n"
-
-#: libnautilus-private/nautilus-authn-manager.c:61
-#, c-format
-msgid ""
-"You must log in to access \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"Debe iniciar su sesión para acceder a «%s».\n"
-"\n"
-"%s"
-
-#: libnautilus-private/nautilus-authn-manager.c:64
-msgid "Your password will be transmitted unencrypted."
-msgstr "Su contraseña se transmitirá sin cifrar."
-
-#: libnautilus-private/nautilus-authn-manager.c:65
-msgid "Your password will be transmitted encrypted."
-msgstr "Su contraseña se transmitirá cifrada."
-
-#: libnautilus-private/nautilus-authn-manager.c:68
-msgid "Authentication Required"
-msgstr "Autenticación requerida"
-
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "reiniciar"
+
+#: libnautilus-private/nautilus-desktop-directory-file.c:442
+#: libnautilus-private/nautilus-desktop-icon-file.c:163
+#: libnautilus-private/nautilus-trash-file.c:690
+msgid "on the desktop"
+msgstr "en el escritorio"
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+msgid ""
+"You cannot delete a volume icon. If you want to eject the volume, please use "
+"Eject in the right-click menu of the volume."
+msgstr ""
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+#, fuzzy
+msgid "Can't delete volume"
+msgstr "Dar formato al volumen seleccionado"
+
+#: libnautilus-private/nautilus-desktop-link.c:139
+#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-global-preferences.c:545
+#: libnautilus-private/nautilus-trash-directory.c:383
+msgid "Trash"
+msgstr "Papelera"
 
 # libnautilus-private/nautilus-program-chooser.c:1344
 #: libnautilus-private/nautilus-dnd.c:617
@@ -1915,7 +1920,8 @@ msgstr "Es_tablecer como fondo para esta carpeta"
 
 #: libnautilus-private/nautilus-emblem-utils.c:208
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
-msgstr "Lo siento, pero debe especificar una descripción para el nuevo emblema."
+msgstr ""
+"Lo siento, pero debe especificar una descripción para el nuevo emblema."
 
 # components/services/trilobite/libtrilobite/trilobite-core-utils.c:197
 #: libnautilus-private/nautilus-emblem-utils.c:209
@@ -1927,7 +1933,8 @@ msgid "Couldn't install emblem"
 msgstr "No se ha podido instalar el emblema"
 
 #: libnautilus-private/nautilus-emblem-utils.c:212
-msgid "Sorry, but emblem keywords can only contain letters, spaces and numbers."
+msgid ""
+"Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Lo siento, pero la descripción del emblema sólo puede contener letras, "
 "espacios y números."
@@ -2722,7 +2729,8 @@ msgstr "Vaciar la papelera"
 
 # src/file-manager/fm-directory-view.c:1855
 #: libnautilus-private/nautilus-file-operations.c:2279
-msgid "Are you sure you want to permanently delete all of the items in the Trash?"
+msgid ""
+"Are you sure you want to permanently delete all of the items in the Trash?"
 msgstr ""
 "¿Está seguro que desea eliminar permanentemente todos los elementos de la "
 "papelera?"
@@ -3263,12 +3271,6 @@ msgstr "enlace"
 #: libnautilus-private/nautilus-file.c:4424
 msgid "link (broken)"
 msgstr "enlace (roto)"
-
-#: libnautilus-private/nautilus-file.c:5576
-#: libnautilus-private/nautilus-global-preferences.c:545
-#: libnautilus-private/nautilus-trash-directory.c:383
-msgid "Trash"
-msgstr "Papelera"
 
 # libnautilus-private/nautilus-global-preferences.c:582
 #: libnautilus-private/nautilus-global-preferences.c:101
@@ -4364,7 +4366,8 @@ msgstr "[Elementos ]sin ninguna de las palabras «%s»"
 
 #: libnautilus-private/nautilus-search-uri.c:555
 msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr "[Elementos mayores de 400K] y [sin ninguna de las palabras «manzana naranja»]"
+msgstr ""
+"[Elementos mayores de 400K] y [sin ninguna de las palabras «manzana naranja»]"
 
 #. Human readable description for a criterion in a search for
 #. files. Bracketed items are context, and are message
@@ -4419,10 +4422,6 @@ msgstr "Buscando discos"
 #: libnautilus-private/nautilus-trash-directory.c:70
 msgid "Nautilus is searching your disks for trash folders."
 msgstr "Nautilus está buscando carpetas papeleras en los discos."
-
-#: libnautilus-private/nautilus-trash-file.c:690
-msgid "on the desktop"
-msgstr "en el escritorio"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # libnautilus-private/nautilus-undo-signal-handlers.c:174
@@ -4592,6 +4591,14 @@ msgstr "Seleccionar todo el texto en un campo de texto"
 msgid "_Paste Text"
 msgstr "_Pegar el texto"
 
+#: nautilus-file-management-properties.desktop.in.h:1
+msgid "Change how files are managed"
+msgstr "Cambiar la administración de archivos"
+
+#: nautilus-file-management-properties.desktop.in.h:2
+msgid "File Management"
+msgstr "Administración de archivos"
+
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
 #: nautilus.desktop.in.h:1
@@ -4601,14 +4608,6 @@ msgstr "Carpeta inicio"
 #: nautilus.desktop.in.h:2
 msgid "View your home folder in the Nautilus file manager"
 msgstr "Ver su carpeta de inicio en el administrador de archivos Nautilus"
-
-#: nautilus-file-management-properties.desktop.in.h:1
-msgid "Change how files are managed"
-msgstr "Cambiar la administración de archivos"
-
-#: nautilus-file-management-properties.desktop.in.h:2
-msgid "File Management"
-msgstr "Administración de archivos"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4762,7 +4761,8 @@ msgstr "_Desmontar el volumen"
 #: src/file-manager/fm-directory-view.c:493
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
-msgstr "Esto abrirá %d ventanas separadas. ¿Está seguro de que quiere hacer esto?"
+msgstr ""
+"Esto abrirá %d ventanas separadas. ¿Está seguro de que quiere hacer esto?"
 
 # src/file-manager/fm-directory-view.c:2128
 #: src/file-manager/fm-directory-view.c:495
@@ -4894,8 +4894,10 @@ msgstr "Demasiados archivos"
 
 #: src/file-manager/fm-directory-view.c:3053
 #, c-format
-msgid "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
-msgstr "«%s» no puede ser movido a la papelera. ¿Quiere eliminarlo directamente?"
+msgid ""
+"\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
+msgstr ""
+"«%s» no puede ser movido a la papelera. ¿Quiere eliminarlo directamente?"
 
 #: src/file-manager/fm-directory-view.c:3058
 #, c-format
@@ -5049,14 +5051,16 @@ msgstr "«%s» será copiado si selecciona la orden «Pegar archivos»"
 
 #: src/file-manager/fm-directory-view.c:4447
 #, c-format
-msgid "The %d selected items will be moved if you select the Paste Files command"
+msgid ""
+"The %d selected items will be moved if you select the Paste Files command"
 msgstr ""
 "Los %d elementos seleccionados serán movidos si selecciona la orden «Pegar "
 "Archivos»"
 
 #: src/file-manager/fm-directory-view.c:4451
 #, c-format
-msgid "The %d selected items will be copied if you select the Paste Files command"
+msgid ""
+"The %d selected items will be copied if you select the Paste Files command"
 msgstr ""
 "Los %d elementos seleccionados serán copiados si selecciona la orden «Pegar "
 "Archivos»"
@@ -5211,13 +5215,15 @@ msgstr "¿Cancelar abrir?"
 # src/nautilus-window-manage-views.c:648
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
-msgid "You do not have the permissions necessary to view the contents of \"%s\"."
+msgid ""
+"You do not have the permissions necessary to view the contents of \"%s\"."
 msgstr "No tiene los permisos suficientes para ver el contenido de «%s»."
 
 #: src/file-manager/fm-error-reporting.c:61
 #, c-format
 msgid "\"%s\" couldn't be found. Perhaps it has recently been deleted."
-msgstr "«%s» no ha podido ser encontrado. Quizás haya sido eliminado recientemente."
+msgstr ""
+"«%s» no ha podido ser encontrado. Quizás haya sido eliminado recientemente."
 
 # src/file-manager/fm-error-reporting.c:115
 #: src/file-manager/fm-error-reporting.c:68
@@ -5232,14 +5238,16 @@ msgstr "Error al mostrar la carpeta"
 # src/file-manager/fm-error-reporting.c:50
 #: src/file-manager/fm-error-reporting.c:102
 #, c-format
-msgid "The name \"%s\" is already used in this folder. Please use a different name."
+msgid ""
+"The name \"%s\" is already used in this folder. Please use a different name."
 msgstr ""
 "El nombre «%s» ya está siendo usado en esta carpeta. Por favor seleccione un "
 "nombre distinto."
 
 #: src/file-manager/fm-error-reporting.c:107
 #, c-format
-msgid "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
+msgid ""
+"There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
 msgstr ""
 "No existe un «%s» en esta carpeta. Quizás fué movido o eliminado "
 "recientemente."
@@ -5287,7 +5295,8 @@ msgstr "Error al cambiar el nombre"
 # src/file-manager/fm-error-reporting.c:85
 #: src/file-manager/fm-error-reporting.c:163
 #, c-format
-msgid "You do not have the permissions necessary to change the group of \"%s\"."
+msgid ""
+"You do not have the permissions necessary to change the group of \"%s\"."
 msgstr "No tiene los permisos suficientes para cambiar el grupo de «%s»."
 
 #: src/file-manager/fm-error-reporting.c:167
@@ -5327,7 +5336,8 @@ msgstr "Error al cambiar el propietario"
 # src/file-manager/fm-error-reporting.c:137
 #: src/file-manager/fm-error-reporting.c:233
 #, c-format
-msgid "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
+msgid ""
+"Couldn't change the permissions of \"%s\" because it is on a read-only disk"
 msgstr ""
 "No se ha podido cambiar los permisos de «%s» porque está en un disco de sólo "
 "lectura"
@@ -5426,19 +5436,20 @@ msgstr "Re_staurar el tamaño normal del icono"
 msgid "pointing at \"%s\""
 msgstr "apuntando hacia «%s»"
 
-#: src/file-manager/fm-icon-view.c:2421
+#: src/file-manager/fm-icon-view.c:2459
 msgid "Drag and drop is only supported to local file systems."
-msgstr "Arrastrar y soltar solo está soportado para sistemas de archivos locales."
+msgstr ""
+"Arrastrar y soltar solo está soportado para sistemas de archivos locales."
 
-#: src/file-manager/fm-icon-view.c:2422 src/file-manager/fm-icon-view.c:2441
+#: src/file-manager/fm-icon-view.c:2460 src/file-manager/fm-icon-view.c:2479
 msgid "Drag and Drop error"
 msgstr "Error al arrastrar y soltar"
 
-#: src/file-manager/fm-icon-view.c:2440
+#: src/file-manager/fm-icon-view.c:2478
 msgid "An invalid drag type was used."
 msgstr "Se ha utilizado un tipo de arrastre inválido."
 
-#: src/file-manager/fm-list-view.c:726
+#: src/file-manager/fm-list-view.c:729
 msgid "File name"
 msgstr "Nombre de archivo"
 
@@ -5446,7 +5457,7 @@ msgstr "Nombre de archivo"
 # libnautilus-private/nautilus-search-bar-criterion.c:46
 # src/file-manager/fm-list-view.c:1587
 # src/file-manager/fm-search-list-view.c:146
-#: src/file-manager/fm-list-view.c:750
+#: src/file-manager/fm-list-view.c:753
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Tamaño"
@@ -5455,14 +5466,14 @@ msgstr "Tamaño"
 # libnautilus-private/nautilus-search-bar-criterion.c:44
 # src/file-manager/fm-list-view.c:1593
 # src/file-manager/fm-search-list-view.c:152
-#: src/file-manager/fm-list-view.c:761
+#: src/file-manager/fm-list-view.c:764
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Tipo"
 
 # src/file-manager/fm-list-view.c:1599
 # src/file-manager/fm-search-list-view.c:158
-#: src/file-manager/fm-list-view.c:772
+#: src/file-manager/fm-list-view.c:775
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Fecha de modificación"
@@ -5586,7 +5597,6 @@ msgstr "Básico"
 # src/nautilus-bookmarks-window.c:172
 #. Name label
 #: src/file-manager/fm-properties-window.c:1643
-#: src/nautilus-bookmarks-window.glade.h:4
 msgid "_Name:"
 msgstr "_Nombre:"
 
@@ -5771,7 +5781,8 @@ msgstr "Creando ventana de propiedades"
 
 # src/nautilus-property-browser.c:1083
 #: src/file-manager/fm-properties-window.c:2714
-msgid "Select an icon:"
+#, fuzzy
+msgid "Select an icon"
 msgstr "Elija un icono:"
 
 #: src/file-manager/fm-search-list-view.c:124
@@ -6066,7 +6077,8 @@ msgid "Protect the selected volume"
 msgstr "Proteger el volumen seleccionado"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:14
-msgid "Show a window that lets you set your desktop background's pattern or color"
+msgid ""
+"Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
 "Muestra una ventana que le deja configurar el patrón del fondo o el color de "
 "su escritorio"
@@ -6099,7 +6111,8 @@ msgstr "_Formato"
 # libnautilus-private/nautilus-program-chooser.c:1248
 #: src/file-manager/nautilus-directory-view-ui.xml.h:1
 msgid "Choose a program with which to open the selected item"
-msgstr "Selecciona un programa con el cual poder abrir el elemento seleccionado"
+msgstr ""
+"Selecciona un programa con el cual poder abrir el elemento seleccionado"
 
 # libnautilus-private/nautilus-program-chooser.c:1248
 #: src/file-manager/nautilus-directory-view-ui.xml.h:2
@@ -6143,7 +6156,8 @@ msgid "Edit the launcher information"
 msgstr "Edita la información del lanzador"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
-msgid "Move or copy files previously selected by a Cut Files or Copy Files command"
+msgid ""
+"Move or copy files previously selected by a Cut Files or Copy Files command"
 msgstr ""
 "Mueve o copia archivos previamente seleccionados por una orden «Cortar» o "
 "«Copiar archivos»"
@@ -6215,7 +6229,8 @@ msgstr "Usa el fondo predeterminado para esta dirección"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:36
 msgid "View or modify the properties of each selected item"
-msgstr "Muestra o permite modificar las propiedades de cada elemento seleccionado"
+msgstr ""
+"Muestra o permite modificar las propiedades de cada elemento seleccionado"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-directory-view.c:2140
@@ -6463,9 +6478,10 @@ msgid ""
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
-"La ubicación del directorio del escritorio ha cambiado en GNOME 2.4. Se ha creado un enlace "
-"llamado «Enalce al escritorio anterior» en el escritorio. Puede abrirlo para mover los "
-"archivos que desee y luego eliminar el escritorio."
+"La ubicación del directorio del escritorio ha cambiado en GNOME 2.4. Se ha "
+"creado un enlace llamado «Enalce al escritorio anterior» en el escritorio. "
+"Puede abrirlo para mover los archivos que desee y luego eliminar el "
+"escritorio."
 
 #: src/nautilus-application.c:320
 msgid "Migrated old desktop"
@@ -6581,20 +6597,26 @@ msgstr ""
 msgid "No bookmarks defined"
 msgstr "No se han definido marcadores"
 
-# src/nautilus-bookmarks-window.c:136
-#: src/nautilus-bookmarks-window.glade.h:1
-msgid "Edit Bookmarks"
-msgstr "Editar los marcadores"
-
 # src/nautilus-window-menus.c:1235
-#: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:59
-msgid "_Bookmarks"
+#: src/nautilus-bookmarks-window.glade.h:1
+#, fuzzy
+msgid "<b>_Bookmarks</b>"
 msgstr "_Marcadores"
 
 # src/nautilus-location-bar.c:401
-#: src/nautilus-bookmarks-window.glade.h:3
-msgid "_Location:"
+#: src/nautilus-bookmarks-window.glade.h:2
+#, fuzzy
+msgid "<b>_Location</b>"
 msgstr "_Dirección:"
+
+#: src/nautilus-bookmarks-window.glade.h:3
+msgid "<b>_Name</b>"
+msgstr ""
+
+# src/nautilus-bookmarks-window.c:136
+#: src/nautilus-bookmarks-window.glade.h:4
+msgid "Edit Bookmarks"
+msgstr "Editar los marcadores"
 
 # src/file-manager/fm-icon-view.c:324
 #: src/nautilus-complex-search-bar.c:200
@@ -6649,11 +6671,13 @@ msgstr "<span weight=\"bold\">Descripciones de los iconos</span>"
 
 #: src/nautilus-file-management-properties.glade.h:29
 msgid "<span weight=\"bold\">Icon View Defaults</span>"
-msgstr "<span weight=\"bold\">Valores predeterminados para la vista de iconos</span>"
+msgstr ""
+"<span weight=\"bold\">Valores predeterminados para la vista de iconos</span>"
 
 #: src/nautilus-file-management-properties.glade.h:30
 msgid "<span weight=\"bold\">List View Defaults</span>"
-msgstr "<span weight=\"bold\">Valores predeterminados para la vista de lista</span>"
+msgstr ""
+"<span weight=\"bold\">Valores predeterminados para la vista de lista</span>"
 
 #: src/nautilus-file-management-properties.glade.h:31
 msgid "<span weight=\"bold\">Other Previewable Files</span>"
@@ -6673,7 +6697,8 @@ msgstr "<span weight=\"bold\">Papelera</span>"
 
 #: src/nautilus-file-management-properties.glade.h:35
 msgid "<span weight=\"bold\">Tree View Defaults</span>"
-msgstr "<span weight=\"bold\">Valores predeterminados para la vista de árbol</span>"
+msgstr ""
+"<span weight=\"bold\">Valores predeterminados para la vista de árbol</span>"
 
 # libnautilus-private/nautilus-global-preferences.c:582
 #: src/nautilus-file-management-properties.glade.h:36
@@ -7087,7 +7112,8 @@ msgstr "Lo siento, pero «%s» no es un archivo de imagen que se pueda usar"
 
 # src/nautilus-property-browser.c:263 src/nautilus-property-browser.c:1977
 #: src/nautilus-property-browser.c:2037
-msgid "Select A Category:"
+#, fuzzy
+msgid "Select a Category:"
 msgstr "Seleccione una categoría"
 
 # src/nautilus-property-browser.c:1985
@@ -7355,6 +7381,11 @@ msgstr "Nuevo servidor"
 msgid "*"
 msgstr "*"
 
+#: src/nautilus-server-connect.glade.h:3
+#, fuzzy
+msgid "_Connect"
+msgstr "Conectiva"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Agrega un marcador con la ubicación actual a este menú"
@@ -7388,7 +7419,8 @@ msgstr ""
 
 #: src/nautilus-shell-ui.xml.h:9
 msgid "Clear contents of Go menu and Back/Forward lists"
-msgstr "Limpia los contenidos de los menús «Ir a» y listas de «Atrás» y «Adelante»"
+msgstr ""
+"Limpia los contenidos de los menús «Ir a» y listas de «Atrás» y «Adelante»"
 
 #: src/nautilus-shell-ui.xml.h:10
 msgid "Close _All Windows"
@@ -7411,7 +7443,8 @@ msgstr "Muestra la ayuda de Nautilus"
 
 #: src/nautilus-shell-ui.xml.h:15
 msgid "Display a window that allows editing the bookmarks in this menu"
-msgstr "Muestra una ventana que permite editar los marcadores que hay en este menú"
+msgstr ""
+"Muestra una ventana que permite editar los marcadores que hay en este menú"
 
 #: src/nautilus-shell-ui.xml.h:16
 msgid "Display credits for the creators of Nautilus"
@@ -7612,6 +7645,11 @@ msgstr "_Atrás"
 #: src/nautilus-shell-ui.xml.h:58
 msgid "_Backgrounds and Emblems"
 msgstr "_Fondos y emblemas"
+
+# src/nautilus-window-menus.c:1235
+#: src/nautilus-shell-ui.xml.h:59
+msgid "_Bookmarks"
+msgstr "_Marcadores"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
@@ -7846,7 +7884,8 @@ msgstr ""
 # src/nautilus-window-manage-views.c:1247
 #: src/nautilus-window-manage-views.c:1334
 #, c-format
-msgid "\"%s\" is not a valid location. Please check the spelling and try again."
+msgid ""
+"\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
 "«%s» no es una dirección válida. Por favor verifique lo que ha escrito y "
 "pruébelo de nuevo."
@@ -8115,6 +8154,27 @@ msgstr "Servidores de red"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Ver sus servidores de red en el administrador de archivos Nautilus"
 
+#~ msgid "Your HTTP Proxy requires you to log in.\n"
+#~ msgstr "Su proxy de HTTP requiere que inicie su sesión.\n"
+
+#~ msgid ""
+#~ "You must log in to access \"%s\".\n"
+#~ "\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Debe iniciar su sesión para acceder a «%s».\n"
+#~ "\n"
+#~ "%s"
+
+#~ msgid "Your password will be transmitted unencrypted."
+#~ msgstr "Su contraseña se transmitirá sin cifrar."
+
+#~ msgid "Your password will be transmitted encrypted."
+#~ msgstr "Su contraseña se transmitirá cifrada."
+
+#~ msgid "Authentication Required"
+#~ msgstr "Autenticación requerida"
+
 #~ msgid "The Trash must remain on the desktop."
 #~ msgstr "La papelera debe permanecer en el escritorio."
 
@@ -8168,4 +8228,3 @@ msgstr "Ver sus servidores de red en el administrador de archivos Nautilus"
 # components/music/nautilus-music-view.c:198
 #~ msgid "_Times"
 #~ msgstr "_Times"
-

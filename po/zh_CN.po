@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2003-05-19 14:33+0200\n"
+"POT-Creation-Date: 2003-06-04 10:07+0200\n"
 "PO-Revision-Date: 2003-01-13 20:03+0800\n"
 "Last-Translator: Sarah Smith <sarahs@redhat.com>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -343,7 +343,7 @@ msgid "animation to indicate on-going activity"
 msgstr "表示活动正在进行中的动画"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:577
+#: components/throbber/nautilus-throbber.c:587
 msgid "throbber"
 msgstr "throbber"
 
@@ -355,7 +355,7 @@ msgstr "throbbe 工厂"
 msgid "throbber object factory"
 msgstr "throbber 对象工厂"
 
-#: components/throbber/nautilus-throbber.c:578
+#: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr "提供视觉状态"
 
@@ -1633,36 +1633,33 @@ msgstr "XIAFS 文件卷"
 msgid "Xenix Volume"
 msgstr "Xenix 文件卷"
 
-#: libnautilus-private/nautilus-authn-manager.c:60
-msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr "您的 HTTP 代理服务器要求您验证。\n"
-
-#: libnautilus-private/nautilus-authn-manager.c:61
-#, c-format
-msgid ""
-"You must log in to access \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"您必须通过验证才可以访问“%s”。\n"
-"\n"
-"%s"
-
-#: libnautilus-private/nautilus-authn-manager.c:64
-msgid "Your password will be transmitted unencrypted."
-msgstr "您的口令将明文传输。"
-
-#: libnautilus-private/nautilus-authn-manager.c:65
-msgid "Your password will be transmitted encrypted."
-msgstr "您的口令将被加密传输。"
-
-#: libnautilus-private/nautilus-authn-manager.c:68
-msgid "Authentication Required"
-msgstr "需要验证"
-
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "复位"
+
+#: libnautilus-private/nautilus-desktop-directory-file.c:442
+#: libnautilus-private/nautilus-desktop-icon-file.c:163
+#: libnautilus-private/nautilus-trash-file.c:690
+msgid "on the desktop"
+msgstr "在桌面上"
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+msgid ""
+"You cannot delete a volume icon. If you want to eject the volume, please use "
+"Eject in the right-click menu of the volume."
+msgstr ""
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+#, fuzzy
+msgid "Can't delete volume"
+msgstr "无法删除当前主题"
+
+#: libnautilus-private/nautilus-desktop-link.c:139
+#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-global-preferences.c:545
+#: libnautilus-private/nautilus-trash-directory.c:383
+msgid "Trash"
+msgstr "回收站"
 
 #: libnautilus-private/nautilus-dnd.c:617
 msgid "_Move here"
@@ -2929,12 +2926,6 @@ msgstr "链接"
 msgid "link (broken)"
 msgstr "链接(不正确)"
 
-#: libnautilus-private/nautilus-file.c:5576
-#: libnautilus-private/nautilus-global-preferences.c:545
-#: libnautilus-private/nautilus-trash-directory.c:383
-msgid "Trash"
-msgstr "回收站"
-
 #: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Always"
 msgstr "总是(_A)"
@@ -3965,10 +3956,6 @@ msgstr "正在搜索磁盘"
 msgid "Nautilus is searching your disks for trash folders."
 msgstr "Nautilus 正在您的磁盘中搜索回收站文件夹。"
 
-#: libnautilus-private/nautilus-trash-file.c:690
-msgid "on the desktop"
-msgstr "在桌面上"
-
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
 msgstr "编辑"
@@ -4113,14 +4100,6 @@ msgstr "选择文本域中的所有文本"
 msgid "_Paste Text"
 msgstr "粘贴文本(_P)"
 
-#: nautilus.desktop.in.h:1
-msgid "Home Folder"
-msgstr "主文件夹"
-
-#: nautilus.desktop.in.h:2
-msgid "View your home folder in the Nautilus file manager"
-msgstr "在 Nautilus 文件管理器中查看主文件夹"
-
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
 msgstr "更改文件管理的方式"
@@ -4128,6 +4107,14 @@ msgstr "更改文件管理的方式"
 #: nautilus-file-management-properties.desktop.in.h:2
 msgid "File Management"
 msgstr "文件管理"
+
+#: nautilus.desktop.in.h:1
+msgid "Home Folder"
+msgstr "主文件夹"
+
+#: nautilus.desktop.in.h:2
+msgid "View your home folder in the Nautilus file manager"
+msgstr "在 Nautilus 文件管理器中查看主文件夹"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4811,33 +4798,33 @@ msgstr "恢复图标的初始大小(_Z)"
 msgid "pointing at \"%s\""
 msgstr "指向“%s”"
 
-#: src/file-manager/fm-icon-view.c:2421
+#: src/file-manager/fm-icon-view.c:2459
 msgid "Drag and drop is only supported to local file systems."
 msgstr "拖放操作只能在本地文件系统中进行。"
 
-#: src/file-manager/fm-icon-view.c:2422 src/file-manager/fm-icon-view.c:2441
+#: src/file-manager/fm-icon-view.c:2460 src/file-manager/fm-icon-view.c:2479
 msgid "Drag and Drop error"
 msgstr "拖放错误"
 
-#: src/file-manager/fm-icon-view.c:2440
+#: src/file-manager/fm-icon-view.c:2478
 msgid "An invalid drag type was used."
 msgstr "使用了无效的拖放类型。"
 
-#: src/file-manager/fm-list-view.c:730
+#: src/file-manager/fm-list-view.c:729
 msgid "File name"
 msgstr "文件名"
 
-#: src/file-manager/fm-list-view.c:754
+#: src/file-manager/fm-list-view.c:753
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "大小"
 
-#: src/file-manager/fm-list-view.c:765
+#: src/file-manager/fm-list-view.c:764
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "类型"
 
-#: src/file-manager/fm-list-view.c:776
+#: src/file-manager/fm-list-view.c:775
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "修改日期"
@@ -4936,7 +4923,6 @@ msgstr "基本"
 
 #. Name label
 #: src/file-manager/fm-properties-window.c:1643
-#: src/nautilus-bookmarks-window.glade.h:4
 msgid "_Name:"
 msgstr "名称(_N)："
 
@@ -5087,7 +5073,8 @@ msgid "Creating Properties window"
 msgstr "正在创建属性窗口"
 
 #: src/file-manager/fm-properties-window.c:2714
-msgid "Select an icon:"
+#, fuzzy
+msgid "Select an icon"
 msgstr "选择图标："
 
 #: src/file-manager/fm-search-list-view.c:124
@@ -5651,11 +5638,11 @@ msgstr "显示索引状态(_I)"
 msgid "Show status of indexing used when searching"
 msgstr "在搜索时显示索引状态"
 
-#: src/nautilus-application.c:222
+#: src/nautilus-application.c:223
 msgid "Couldn't Create Required Folder"
 msgstr "无法创建所需的文件夹"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5665,11 +5652,11 @@ msgstr ""
 "Nautilus 无法创建所需的文件夹“%s”。在运行 Nautilus 前，请创建该文件夹，或设置"
 "好权限以使 Nautilus 可以创建它。"
 
-#: src/nautilus-application.c:228
+#: src/nautilus-application.c:229
 msgid "Couldn't Create Required Folders"
 msgstr "无法创建所需文件夹"
 
-#: src/nautilus-application.c:229
+#: src/nautilus-application.c:230
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5686,19 +5673,19 @@ msgstr ""
 "在运行 Nautilus 前，请创建这些文件夹，或设置好权限以使 Nautilus 可以创建它"
 "们。"
 
-#: src/nautilus-application.c:300
+#: src/nautilus-application.c:301
 #, fuzzy
 msgid "Link To Old Desktop"
 msgstr "窗口和桌面"
 
-#: src/nautilus-application.c:316
+#: src/nautilus-application.c:317
 msgid ""
 "The location of the desktop directory has changed in Gnome 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
 
-#: src/nautilus-application.c:319
+#: src/nautilus-application.c:320
 msgid "Migrated old desktop"
 msgstr ""
 
@@ -5712,7 +5699,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:437
+#: src/nautilus-application.c:438
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5722,7 +5709,7 @@ msgstr ""
 "果不能解决，您可以试试重新启动机器，或者重装 Nautilus。"
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:443
+#: src/nautilus-application.c:444
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5765,12 +5752,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:473 src/nautilus-application.c:491
-#: src/nautilus-application.c:498
+#: src/nautilus-application.c:474 src/nautilus-application.c:492
+#: src/nautilus-application.c:499
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "由于未预料的错误，现在无法使用 Nautilus。"
 
-#: src/nautilus-application.c:474
+#: src/nautilus-application.c:475
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5778,7 +5765,7 @@ msgstr ""
 "由于在试图注册文件管理器视图服务器时，遇到未预料到的 Bonobo 错误，现在无法使"
 "用 Nautilus。"
 
-#: src/nautilus-application.c:492
+#: src/nautilus-application.c:493
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5787,7 +5774,7 @@ msgstr ""
 "由于在试图定位工厂时，遇到未预料到的 Bonobo 错误，现在无法使用 Nautilus。杀"
 "死 bonobo-activation-server 并重启动 Nautilus 可能会解决这个问题。"
 
-#: src/nautilus-application.c:499
+#: src/nautilus-application.c:500
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5802,16 +5789,22 @@ msgid "No bookmarks defined"
 msgstr "没有定义任何书签"
 
 #: src/nautilus-bookmarks-window.glade.h:1
-msgid "Edit Bookmarks"
-msgstr "编辑书签"
-
-#: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:59
-msgid "_Bookmarks"
+#, fuzzy
+msgid "<b>_Bookmarks</b>"
 msgstr "书签(_B)"
 
+#: src/nautilus-bookmarks-window.glade.h:2
+#, fuzzy
+msgid "<b>_Location</b>"
+msgstr "位置"
+
 #: src/nautilus-bookmarks-window.glade.h:3
-msgid "_Location:"
-msgstr "位置(_L)："
+msgid "<b>_Name</b>"
+msgstr ""
+
+#: src/nautilus-bookmarks-window.glade.h:4
+msgid "Edit Bookmarks"
+msgstr "编辑书签"
 
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
@@ -6250,7 +6243,8 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "抱歉，“%s”不是一个可用的图像文件！"
 
 #: src/nautilus-property-browser.c:2037
-msgid "Select A Category:"
+#, fuzzy
+msgid "Select a Category:"
 msgstr "选择类别："
 
 #: src/nautilus-property-browser.c:2046
@@ -6499,6 +6493,11 @@ msgstr "新建服务器"
 msgid "*"
 msgstr "*"
 
+#: src/nautilus-server-connect.glade.h:3
+#, fuzzy
+msgid "_Connect"
+msgstr "Conectiva"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
 msgstr "在该菜单中添加一个当前位置的书签"
@@ -6723,6 +6722,10 @@ msgstr "后退(_B)"
 #: src/nautilus-shell-ui.xml.h:58
 msgid "_Backgrounds and Emblems"
 msgstr "背景和徽标(_B)"
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "_Bookmarks"
+msgstr "书签(_B)"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
@@ -7143,6 +7146,30 @@ msgstr "网络服务器"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "在 Nautilus 文件管理器中查看您的网络服务器"
 
+#~ msgid "Your HTTP Proxy requires you to log in.\n"
+#~ msgstr "您的 HTTP 代理服务器要求您验证。\n"
+
+#~ msgid ""
+#~ "You must log in to access \"%s\".\n"
+#~ "\n"
+#~ "%s"
+#~ msgstr ""
+#~ "您必须通过验证才可以访问“%s”。\n"
+#~ "\n"
+#~ "%s"
+
+#~ msgid "Your password will be transmitted unencrypted."
+#~ msgstr "您的口令将明文传输。"
+
+#~ msgid "Your password will be transmitted encrypted."
+#~ msgstr "您的口令将被加密传输。"
+
+#~ msgid "Authentication Required"
+#~ msgstr "需要验证"
+
+#~ msgid "_Location:"
+#~ msgstr "位置(_L)："
+
 #~ msgid "The Trash must remain on the desktop."
 #~ msgstr "回收站必须被保留在桌面。"
 
@@ -7552,9 +7579,6 @@ msgstr "在 Nautilus 文件管理器中查看您的网络服务器"
 #~ "Sorry, but you can't remove the current theme. Please change to another "
 #~ "theme before removing this one."
 #~ msgstr "抱歉，您无法删除当前主题。请切换到另外一个主题，然后删除这个主题。"
-
-#~ msgid "Can't delete current theme"
-#~ msgstr "无法删除当前主题"
 
 #~ msgid "Sorry, but that theme could not be removed!"
 #~ msgstr "抱歉，无法删除该主题！"
@@ -8222,10 +8246,6 @@ msgstr "在 Nautilus 文件管理器中查看您的网络服务器"
 
 #~ msgid "Bookmarks"
 #~ msgstr "书签"
-
-#, fuzzy
-#~ msgid "_Location"
-#~ msgstr "位置"
 
 #~ msgid "_Remove"
 #~ msgstr "删除(_R)..."

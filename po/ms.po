@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus HEAD\n"
-"POT-Creation-Date: 2003-05-19 14:33+0200\n"
+"POT-Creation-Date: 2003-06-04 10:07+0200\n"
 "PO-Revision-Date: 2003-03-26 20:46+0800\n"
 "Last-Translator: Hasbullah Bin Pit <sebol@ikhlas.com>\n"
 "Language-Team: Projek Gabai <gabai-penyumbang@lists.sourceforge.org>\n"
@@ -355,7 +355,7 @@ msgid "animation to indicate on-going activity"
 msgstr "animasi untuk menunjuk aktiviti semasa"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:577
+#: components/throbber/nautilus-throbber.c:587
 msgid "throbber"
 msgstr "throbber"
 
@@ -367,7 +367,7 @@ msgstr "kilang throbber"
 msgid "throbber object factory"
 msgstr "kilang objeck throbber"
 
-#: components/throbber/nautilus-throbber.c:578
+#: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr "membekalkan status visual"
 
@@ -1633,36 +1633,33 @@ msgstr "Volum XIAFS"
 msgid "Xenix Volume"
 msgstr "Volum Xenix"
 
-#: libnautilus-private/nautilus-authn-manager.c:60
-msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr "Proksi HTTP anda memerlukan anda log masuk.\n"
-
-#: libnautilus-private/nautilus-authn-manager.c:61
-#, c-format
-msgid ""
-"You must log in to access \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"Anda mesti logmasuk untuk mengakses \"%s\".\n"
-"\n"
-"%s"
-
-#: libnautilus-private/nautilus-authn-manager.c:64
-msgid "Your password will be transmitted unencrypted."
-msgstr "Katalaluan anda dihantar tanpa dienkripsikan"
-
-#: libnautilus-private/nautilus-authn-manager.c:65
-msgid "Your password will be transmitted encrypted."
-msgstr "Katalaluan kamu tidak disimpan dengan selamat"
-
-#: libnautilus-private/nautilus-authn-manager.c:68
-msgid "Authentication Required"
-msgstr "Authentikasi diperlukan"
-
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "ulangtetap"
+
+#: libnautilus-private/nautilus-desktop-directory-file.c:442
+#: libnautilus-private/nautilus-desktop-icon-file.c:163
+#: libnautilus-private/nautilus-trash-file.c:690
+msgid "on the desktop"
+msgstr "pada desktop"
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+msgid ""
+"You cannot delete a volume icon. If you want to eject the volume, please use "
+"Eject in the right-click menu of the volume."
+msgstr ""
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+#, fuzzy
+msgid "Can't delete volume"
+msgstr "Format volum dipilih"
+
+#: libnautilus-private/nautilus-desktop-link.c:139
+#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-global-preferences.c:545
+#: libnautilus-private/nautilus-trash-directory.c:383
+msgid "Trash"
+msgstr "Sampah"
 
 #: libnautilus-private/nautilus-dnd.c:617
 msgid "_Move here"
@@ -2942,12 +2939,6 @@ msgstr "pautan"
 msgid "link (broken)"
 msgstr "pautan (rosak)"
 
-#: libnautilus-private/nautilus-file.c:5576
-#: libnautilus-private/nautilus-global-preferences.c:545
-#: libnautilus-private/nautilus-trash-directory.c:383
-msgid "Trash"
-msgstr "Sampah"
-
 #: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Always"
 msgstr "_Sentiasa"
@@ -3989,10 +3980,6 @@ msgstr "Cari di Cakera"
 msgid "Nautilus is searching your disks for trash folders."
 msgstr "Nautilus mencari folder sampah di disk anda."
 
-#: libnautilus-private/nautilus-trash-file.c:690
-msgid "on the desktop"
-msgstr "pada desktop"
-
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
 msgstr "Edit"
@@ -4143,14 +4130,6 @@ msgstr "Pilih semua teks pada medan teks"
 msgid "_Paste Text"
 msgstr "_Tepek Teks"
 
-#: nautilus.desktop.in.h:1
-msgid "Home Folder"
-msgstr "Folder Rumah"
-
-#: nautilus.desktop.in.h:2
-msgid "View your home folder in the Nautilus file manager"
-msgstr "Lihat folder rumah padan pengurus fail Nautilus"
-
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
 msgstr "Tukar bagaimana fail diurus"
@@ -4158,6 +4137,14 @@ msgstr "Tukar bagaimana fail diurus"
 #: nautilus-file-management-properties.desktop.in.h:2
 msgid "File Management"
 msgstr "Pengurusan Fail"
+
+#: nautilus.desktop.in.h:1
+msgid "Home Folder"
+msgstr "Folder Rumah"
+
+#: nautilus.desktop.in.h:2
+msgid "View your home folder in the Nautilus file manager"
+msgstr "Lihat folder rumah padan pengurus fail Nautilus"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4848,34 +4835,34 @@ msgstr "Pulihkan Sai_z Asal Ikon"
 msgid "pointing at \"%s\""
 msgstr "menuding ke \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2421
+#: src/file-manager/fm-icon-view.c:2459
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Heret dan jatuh hanya disokong pada sistemfail lokal."
 
-#: src/file-manager/fm-icon-view.c:2422 src/file-manager/fm-icon-view.c:2441
+#: src/file-manager/fm-icon-view.c:2460 src/file-manager/fm-icon-view.c:2479
 msgid "Drag and Drop error"
 msgstr "Ralat Heret dan Jatuh"
 
-#: src/file-manager/fm-icon-view.c:2440
+#: src/file-manager/fm-icon-view.c:2478
 msgid "An invalid drag type was used."
 msgstr "Jenis heretan tidak sah digunakan."
 
-#: src/file-manager/fm-list-view.c:730
+#: src/file-manager/fm-list-view.c:729
 msgid "File name"
 msgstr "Nama fail"
 
 # Saiz bra
-#: src/file-manager/fm-list-view.c:754
+#: src/file-manager/fm-list-view.c:753
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Saiz"
 
-#: src/file-manager/fm-list-view.c:765
+#: src/file-manager/fm-list-view.c:764
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Jenis"
 
-#: src/file-manager/fm-list-view.c:776
+#: src/file-manager/fm-list-view.c:775
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Tarikh Ubahsuai"
@@ -4980,7 +4967,6 @@ msgstr "Asas"
 
 #. Name label
 #: src/file-manager/fm-properties-window.c:1643
-#: src/nautilus-bookmarks-window.glade.h:4
 msgid "_Name:"
 msgstr "_Nama:"
 
@@ -5130,7 +5116,8 @@ msgid "Creating Properties window"
 msgstr "Mencipta Tetingkap Ciri-ciri"
 
 #: src/file-manager/fm-properties-window.c:2714
-msgid "Select an icon:"
+#, fuzzy
+msgid "Select an icon"
 msgstr "Pilih satu ikon:"
 
 #: src/file-manager/fm-search-list-view.c:124
@@ -5707,11 +5694,11 @@ msgstr "Papar Status Peng_Indeksan"
 msgid "Show status of indexing used when searching"
 msgstr "Papar status bila pengindeksan digunakan bila mencari"
 
-#: src/nautilus-application.c:222
+#: src/nautilus-application.c:223
 msgid "Couldn't Create Required Folder"
 msgstr "Tidak Dapat Cipta Folder yang Diperlukan"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5722,11 +5709,11 @@ msgstr ""
 "Nautilus, Sila cipta folder ini, atau tetapkan keizinan dimana Nautilus "
 "boleh menciptanya."
 
-#: src/nautilus-application.c:228
+#: src/nautilus-application.c:229
 msgid "Couldn't Create Required Folders"
 msgstr "Tidak Dapat Cipta Folder yang Diperlukan"
 
-#: src/nautilus-application.c:229
+#: src/nautilus-application.c:230
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5743,19 +5730,19 @@ msgstr ""
 "Sebelum melaksanakan Nautilus, Sila cipta folder ini, atau tetapkan keizinan "
 "supaya Nautilus boleh menciptanya."
 
-#: src/nautilus-application.c:300
+#: src/nautilus-application.c:301
 #, fuzzy
 msgid "Link To Old Desktop"
 msgstr "pada desktop"
 
-#: src/nautilus-application.c:316
+#: src/nautilus-application.c:317
 msgid ""
 "The location of the desktop directory has changed in Gnome 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
 
-#: src/nautilus-application.c:319
+#: src/nautilus-application.c:320
 msgid "Migrated old desktop"
 msgstr ""
 
@@ -5769,7 +5756,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:437
+#: src/nautilus-application.c:438
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5780,7 +5767,7 @@ msgstr ""
 "ulangboot komputer atau memasng Nautilus semula."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:443
+#: src/nautilus-application.c:444
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5809,12 +5796,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:473 src/nautilus-application.c:491
-#: src/nautilus-application.c:498
+#: src/nautilus-application.c:474 src/nautilus-application.c:492
+#: src/nautilus-application.c:499
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus tak dapat digunakan sekarang, kerana ralat luardugaan."
 
-#: src/nautilus-application.c:474
+#: src/nautilus-application.c:475
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5822,7 +5809,7 @@ msgstr ""
 "Nautilus tak dpaat digunakan sekarang, kerana ralat luardugaan dari Bonobo "
 "bila cuba mendaftar pelayan paparan pengurus fail."
 
-#: src/nautilus-application.c:492
+#: src/nautilus-application.c:493
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5832,7 +5819,7 @@ msgstr ""
 "bila cuba mencari kilang. Bunuh bonobo-activation-server dan ulanghidup "
 "Nautilus mungkin boleh membetulkan masalah"
 
-#: src/nautilus-application.c:499
+#: src/nautilus-application.c:500
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5848,16 +5835,22 @@ msgid "No bookmarks defined"
 msgstr "Tiada tandabuku ditakrifkan"
 
 #: src/nautilus-bookmarks-window.glade.h:1
-msgid "Edit Bookmarks"
-msgstr "Edit TandaBuku"
-
-#: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:59
-msgid "_Bookmarks"
+#, fuzzy
+msgid "<b>_Bookmarks</b>"
 msgstr "Ta_ndaBuku"
 
-#: src/nautilus-bookmarks-window.glade.h:3
-msgid "_Location:"
+#: src/nautilus-bookmarks-window.glade.h:2
+#, fuzzy
+msgid "<b>_Location</b>"
 msgstr "_Lokasi:"
+
+#: src/nautilus-bookmarks-window.glade.h:3
+msgid "<b>_Name</b>"
+msgstr ""
+
+#: src/nautilus-bookmarks-window.glade.h:4
+msgid "Edit Bookmarks"
+msgstr "Edit TandaBuku"
 
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
@@ -6297,7 +6290,8 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Maaf, '%s' bukanlah fail imej yang boleh digunakan!"
 
 #: src/nautilus-property-browser.c:2037
-msgid "Select A Category:"
+#, fuzzy
+msgid "Select a Category:"
 msgstr "Pilih kategori:"
 
 #: src/nautilus-property-browser.c:2046
@@ -6547,6 +6541,11 @@ msgstr "Pelayan Baru"
 msgid "*"
 msgstr "*"
 
+#: src/nautilus-server-connect.glade.h:3
+#, fuzzy
+msgid "_Connect"
+msgstr "Conectiva"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Tambah tandabuku bagi lokasi semasa kemenu ini"
@@ -6774,6 +6773,10 @@ msgstr "_Undur"
 #: src/nautilus-shell-ui.xml.h:58
 msgid "_Backgrounds and Emblems"
 msgstr "Latar_belakang dan Emblem"
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "_Bookmarks"
+msgstr "Ta_ndaBuku"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
@@ -7207,6 +7210,27 @@ msgstr "Pelayan Rangkaian"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Lihat pelayan rangkaian pada pengurus fail Nautilus"
+
+#~ msgid "Your HTTP Proxy requires you to log in.\n"
+#~ msgstr "Proksi HTTP anda memerlukan anda log masuk.\n"
+
+#~ msgid ""
+#~ "You must log in to access \"%s\".\n"
+#~ "\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Anda mesti logmasuk untuk mengakses \"%s\".\n"
+#~ "\n"
+#~ "%s"
+
+#~ msgid "Your password will be transmitted unencrypted."
+#~ msgstr "Katalaluan anda dihantar tanpa dienkripsikan"
+
+#~ msgid "Your password will be transmitted encrypted."
+#~ msgstr "Katalaluan kamu tidak disimpan dengan selamat"
+
+#~ msgid "Authentication Required"
+#~ msgstr "Authentikasi diperlukan"
 
 #~ msgid "The Trash must remain on the desktop."
 #~ msgstr "Sampah mesti kekal pada desktop."

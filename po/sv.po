@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2003-05-23 17:20+0200\n"
+"POT-Creation-Date: 2003-06-04 10:07+0200\n"
 "PO-Revision-Date: 2003-05-23 17:20+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -359,7 +359,7 @@ msgid "animation to indicate on-going activity"
 msgstr "animation som visar pågåenda aktivitet"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:577
+#: components/throbber/nautilus-throbber.c:587
 msgid "throbber"
 msgstr "snurra"
 
@@ -371,7 +371,7 @@ msgstr "snurrfabrik"
 msgid "throbber object factory"
 msgstr "snurrobjektsfabrik"
 
-#: components/throbber/nautilus-throbber.c:578
+#: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr "tillhandahåller synlig status"
 
@@ -1646,36 +1646,33 @@ msgstr "XIAFS-volym"
 msgid "Xenix Volume"
 msgstr "Xenix-volym"
 
-#: libnautilus-private/nautilus-authn-manager.c:60
-msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr "Din HTTP-proxyserver kräver att du loggar in.\n"
-
-#: libnautilus-private/nautilus-authn-manager.c:61
-#, c-format
-msgid ""
-"You must log in to access \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"Du måste logga in för att komma åt \"%s\".\n"
-"\n"
-"%s"
-
-#: libnautilus-private/nautilus-authn-manager.c:64
-msgid "Your password will be transmitted unencrypted."
-msgstr "Ditt lösenord kommer att skickas okrypterat."
-
-#: libnautilus-private/nautilus-authn-manager.c:65
-msgid "Your password will be transmitted encrypted."
-msgstr "Ditt lösenord kommer att skickas krypterat."
-
-#: libnautilus-private/nautilus-authn-manager.c:68
-msgid "Authentication Required"
-msgstr "Autentisering krävs"
-
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "återst."
+
+#: libnautilus-private/nautilus-desktop-directory-file.c:442
+#: libnautilus-private/nautilus-desktop-icon-file.c:163
+#: libnautilus-private/nautilus-trash-file.c:690
+msgid "on the desktop"
+msgstr "på skrivbordet"
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+msgid ""
+"You cannot delete a volume icon. If you want to eject the volume, please use "
+"Eject in the right-click menu of the volume."
+msgstr ""
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+#, fuzzy
+msgid "Can't delete volume"
+msgstr "Kan inte ta bort aktuellt tema"
+
+#: libnautilus-private/nautilus-desktop-link.c:139
+#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-global-preferences.c:545
+#: libnautilus-private/nautilus-trash-directory.c:383
+msgid "Trash"
+msgstr "Papperskorg"
 
 #: libnautilus-private/nautilus-dnd.c:617
 msgid "_Move here"
@@ -2952,12 +2949,6 @@ msgstr "länk"
 msgid "link (broken)"
 msgstr "länk (trasig)"
 
-#: libnautilus-private/nautilus-file.c:5576
-#: libnautilus-private/nautilus-global-preferences.c:545
-#: libnautilus-private/nautilus-trash-directory.c:383
-msgid "Trash"
-msgstr "Papperskorg"
-
 #: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Always"
 msgstr "_Alltid"
@@ -4010,10 +4001,6 @@ msgstr "Söker på diskar"
 msgid "Nautilus is searching your disks for trash folders."
 msgstr "Nautilus söker efter papperskorgsmappar på dina hårddiskar."
 
-#: libnautilus-private/nautilus-trash-file.c:690
-msgid "on the desktop"
-msgstr "på skrivbordet"
-
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
 msgstr "Redigera"
@@ -4166,14 +4153,6 @@ msgstr "Markera all text i ett textfält"
 msgid "_Paste Text"
 msgstr "K_listra in text"
 
-#: nautilus.desktop.in.h:1
-msgid "Home Folder"
-msgstr "Hemmapp"
-
-#: nautilus.desktop.in.h:2
-msgid "View your home folder in the Nautilus file manager"
-msgstr "Visa din hemmapp i filhanteraren Nautilus"
-
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
 msgstr "Ändra hur filer hanteras"
@@ -4181,6 +4160,14 @@ msgstr "Ändra hur filer hanteras"
 #: nautilus-file-management-properties.desktop.in.h:2
 msgid "File Management"
 msgstr "Filhantering"
+
+#: nautilus.desktop.in.h:1
+msgid "Home Folder"
+msgstr "Hemmapp"
+
+#: nautilus.desktop.in.h:2
+msgid "View your home folder in the Nautilus file manager"
+msgstr "Visa din hemmapp i filhanteraren Nautilus"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4906,21 +4893,21 @@ msgstr "Fel med dra och släpp"
 msgid "An invalid drag type was used."
 msgstr "En ogiltig dragtyp användes."
 
-#: src/file-manager/fm-list-view.c:726
+#: src/file-manager/fm-list-view.c:729
 msgid "File name"
 msgstr "Filnamn"
 
-#: src/file-manager/fm-list-view.c:750
+#: src/file-manager/fm-list-view.c:753
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Storlek"
 
-#: src/file-manager/fm-list-view.c:761
+#: src/file-manager/fm-list-view.c:764
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Typ"
 
-#: src/file-manager/fm-list-view.c:772
+#: src/file-manager/fm-list-view.c:775
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Modifieringsdatum"
@@ -5025,7 +5012,6 @@ msgstr "Grundläggande"
 
 #. Name label
 #: src/file-manager/fm-properties-window.c:1643
-#: src/nautilus-bookmarks-window.glade.h:4
 msgid "_Name:"
 msgstr "_Namn:"
 
@@ -5175,7 +5161,8 @@ msgid "Creating Properties window"
 msgstr "Skapar fönstret Egenskaper"
 
 #: src/file-manager/fm-properties-window.c:2714
-msgid "Select an icon:"
+#, fuzzy
+msgid "Select an icon"
 msgstr "Välj en ikon:"
 
 #: src/file-manager/fm-search-list-view.c:124
@@ -5925,16 +5912,22 @@ msgid "No bookmarks defined"
 msgstr "Inga bokmärken angivna"
 
 #: src/nautilus-bookmarks-window.glade.h:1
-msgid "Edit Bookmarks"
-msgstr "Redigera bokmärken"
-
-#: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:59
-msgid "_Bookmarks"
+#, fuzzy
+msgid "<b>_Bookmarks</b>"
 msgstr "_Bokmärken"
 
+#: src/nautilus-bookmarks-window.glade.h:2
+#, fuzzy
+msgid "<b>_Location</b>"
+msgstr "_Plats"
+
 #: src/nautilus-bookmarks-window.glade.h:3
-msgid "_Location:"
-msgstr "_Plats:"
+msgid "<b>_Name</b>"
+msgstr ""
+
+#: src/nautilus-bookmarks-window.glade.h:4
+msgid "Edit Bookmarks"
+msgstr "Redigera bokmärken"
 
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
@@ -6376,7 +6369,8 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil!"
 
 #: src/nautilus-property-browser.c:2037
-msgid "Select A Category:"
+#, fuzzy
+msgid "Select a Category:"
 msgstr "Välj en kategori:"
 
 # SUN CHANGED MESSAGE
@@ -6638,6 +6632,11 @@ msgstr "Ny server"
 msgid "*"
 msgstr "*"
 
+#: src/nautilus-server-connect.glade.h:3
+#, fuzzy
+msgid "_Connect"
+msgstr "Conectiva"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Lägg till ett bokmärke för den aktuella platsen till denna meny"
@@ -6863,6 +6862,10 @@ msgstr "_Bakåt"
 #: src/nautilus-shell-ui.xml.h:58
 msgid "_Backgrounds and Emblems"
 msgstr "Bakgrunder och _emblem"
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "_Bookmarks"
+msgstr "_Bokmärken"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
@@ -7305,6 +7308,30 @@ msgstr "Nätverksservrar"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Visa dina nätverksservrar i filhanteraren Nautilus"
+
+#~ msgid "Your HTTP Proxy requires you to log in.\n"
+#~ msgstr "Din HTTP-proxyserver kräver att du loggar in.\n"
+
+#~ msgid ""
+#~ "You must log in to access \"%s\".\n"
+#~ "\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Du måste logga in för att komma åt \"%s\".\n"
+#~ "\n"
+#~ "%s"
+
+#~ msgid "Your password will be transmitted unencrypted."
+#~ msgstr "Ditt lösenord kommer att skickas okrypterat."
+
+#~ msgid "Your password will be transmitted encrypted."
+#~ msgstr "Ditt lösenord kommer att skickas krypterat."
+
+#~ msgid "Authentication Required"
+#~ msgstr "Autentisering krävs"
+
+#~ msgid "_Location:"
+#~ msgstr "_Plats:"
 
 #~ msgid "Current Nautilus theme"
 #~ msgstr "Aktuellt Nautilus-tema"
@@ -8300,9 +8327,6 @@ msgstr "Visa dina nätverksservrar i filhanteraren Nautilus"
 #~ "Tyvärr, du kan inte ta bort det aktuella temat. Byt till ett annat tema "
 #~ "innan du tar bort detta."
 
-#~ msgid "Can't delete current theme"
-#~ msgstr "Kan inte ta bort aktuellt tema"
-
 #~ msgid "Sorry, but that theme could not be removed!"
 #~ msgstr "Tyvärr, det temat kunde inte tas bort!"
 
@@ -8626,9 +8650,6 @@ msgstr "Visa dina nätverksservrar i filhanteraren Nautilus"
 
 #~ msgid "Bookmarks"
 #~ msgstr "Bokmärken"
-
-#~ msgid "_Location"
-#~ msgstr "_Plats"
 
 #~ msgid "_Remove"
 #~ msgstr "_Ta bort"

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.sq\n"
-"POT-Creation-Date: 2003-05-19 14:33+0200\n"
+"POT-Creation-Date: 2003-06-04 10:07+0200\n"
 "PO-Revision-Date: 2003-03-31 12:06+0200\n"
 "Last-Translator: Laurent Dhima <laurenti@alblinux.net>\n"
 "Language-Team: albanian <gnome-albanian-perkthyesit@lists.sourceforge.net>\n"
@@ -356,7 +356,7 @@ msgid "animation to indicate on-going activity"
 msgstr "animacion për të treguar aktivitetin aktual"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:577
+#: components/throbber/nautilus-throbber.c:587
 msgid "throbber"
 msgstr "ndizet e fiket"
 
@@ -368,7 +368,7 @@ msgstr "fabrika e throbber"
 msgid "throbber object factory"
 msgstr "fabrika e objektit që ndizet e fiket"
 
-#: components/throbber/nautilus-throbber.c:578
+#: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr "afron një gjendje vizuale"
 
@@ -1641,36 +1641,33 @@ msgstr "Volum XIAFS"
 msgid "Xenix Volume"
 msgstr "Volum Xenix"
 
-#: libnautilus-private/nautilus-authn-manager.c:60
-msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr "Proxy juaj HTTP ju kërkon të kryeni identifikimin.\n"
-
-#: libnautilus-private/nautilus-authn-manager.c:61
-#, c-format
-msgid ""
-"You must log in to access \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"Duhet të identifikoheni për t'u futur \"%s\".\n"
-"\n"
-"%s"
-
-#: libnautilus-private/nautilus-authn-manager.c:64
-msgid "Your password will be transmitted unencrypted."
-msgstr "Password do të trasmetohet e pakriptuar."
-
-#: libnautilus-private/nautilus-authn-manager.c:65
-msgid "Your password will be transmitted encrypted."
-msgstr "Password do të trasmetohet e kriptuar."
-
-#: libnautilus-private/nautilus-authn-manager.c:68
-msgid "Authentication Required"
-msgstr "Nevoitet autentifikimi"
-
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "rishkruaj"
+
+#: libnautilus-private/nautilus-desktop-directory-file.c:442
+#: libnautilus-private/nautilus-desktop-icon-file.c:163
+#: libnautilus-private/nautilus-trash-file.c:690
+msgid "on the desktop"
+msgstr "në desktop"
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+msgid ""
+"You cannot delete a volume icon. If you want to eject the volume, please use "
+"Eject in the right-click menu of the volume."
+msgstr ""
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+#, fuzzy
+msgid "Can't delete volume"
+msgstr "E pamundur heqja e temës aktuale"
+
+#: libnautilus-private/nautilus-desktop-link.c:139
+#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-global-preferences.c:545
+#: libnautilus-private/nautilus-trash-directory.c:383
+msgid "Trash"
+msgstr "Koshi"
 
 #: libnautilus-private/nautilus-dnd.c:617
 msgid "_Move here"
@@ -2954,12 +2951,6 @@ msgstr "lidhje"
 msgid "link (broken)"
 msgstr "lidhje (e shkëputur)"
 
-#: libnautilus-private/nautilus-file.c:5576
-#: libnautilus-private/nautilus-global-preferences.c:545
-#: libnautilus-private/nautilus-trash-directory.c:383
-msgid "Trash"
-msgstr "Koshi"
-
 #: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Always"
 msgstr "_Gjithmonë"
@@ -4016,10 +4007,6 @@ msgstr "Kërkim nëpër disqe"
 msgid "Nautilus is searching your disks for trash folders."
 msgstr "Nautilus është duke kërkuar në disqe kartelat e koshit."
 
-#: libnautilus-private/nautilus-trash-file.c:690
-msgid "on the desktop"
-msgstr "në desktop"
-
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
 msgstr "Ndrysho"
@@ -4172,14 +4159,6 @@ msgstr "Zgjidh të gjithë tekstin në një fushë teksti"
 msgid "_Paste Text"
 msgstr "_Ngjit tekstin"
 
-#: nautilus.desktop.in.h:1
-msgid "Home Folder"
-msgstr "Kartela Home"
-
-#: nautilus.desktop.in.h:2
-msgid "View your home folder in the Nautilus file manager"
-msgstr "Shfaqe kartelën home të përdoruesit tek file manager Nautilus"
-
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
 msgstr "Ndrysho mënyrën e manazhimit të files"
@@ -4187,6 +4166,14 @@ msgstr "Ndrysho mënyrën e manazhimit të files"
 #: nautilus-file-management-properties.desktop.in.h:2
 msgid "File Management"
 msgstr "Manzhimi i file"
+
+#: nautilus.desktop.in.h:1
+msgid "Home Folder"
+msgstr "Kartela Home"
+
+#: nautilus.desktop.in.h:2
+msgid "View your home folder in the Nautilus file manager"
+msgstr "Shfaqe kartelën home të përdoruesit tek file manager Nautilus"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4908,33 +4895,33 @@ msgstr "Dimensi_oni origjinal i ikonës"
 msgid "pointing at \"%s\""
 msgstr "ka si objektiv \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2421
+#: src/file-manager/fm-icon-view.c:2459
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Zvarritja suportohet vetëm për file lokalë të sistemit."
 
-#: src/file-manager/fm-icon-view.c:2422 src/file-manager/fm-icon-view.c:2441
+#: src/file-manager/fm-icon-view.c:2460 src/file-manager/fm-icon-view.c:2479
 msgid "Drag and Drop error"
 msgstr "Gabim gjatë zvarritjes"
 
-#: src/file-manager/fm-icon-view.c:2440
+#: src/file-manager/fm-icon-view.c:2478
 msgid "An invalid drag type was used."
 msgstr "Është përdorur një tip drag jo i vlefshëm."
 
-#: src/file-manager/fm-list-view.c:730
+#: src/file-manager/fm-list-view.c:729
 msgid "File name"
 msgstr "Emri i file"
 
-#: src/file-manager/fm-list-view.c:754
+#: src/file-manager/fm-list-view.c:753
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Madhësia"
 
-#: src/file-manager/fm-list-view.c:765
+#: src/file-manager/fm-list-view.c:764
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Lloji"
 
-#: src/file-manager/fm-list-view.c:776
+#: src/file-manager/fm-list-view.c:775
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Data ndryshimit"
@@ -5040,7 +5027,6 @@ msgstr "Të përgjithshme"
 
 #. Name label
 #: src/file-manager/fm-properties-window.c:1643
-#: src/nautilus-bookmarks-window.glade.h:4
 msgid "_Name:"
 msgstr "_Emri:"
 
@@ -5190,7 +5176,8 @@ msgid "Creating Properties window"
 msgstr "Krijimi i dritares së pronësive"
 
 #: src/file-manager/fm-properties-window.c:2714
-msgid "Select an icon:"
+#, fuzzy
+msgid "Select an icon"
 msgstr "Zgjidh një ikonë:"
 
 #: src/file-manager/fm-search-list-view.c:124
@@ -5788,11 +5775,11 @@ msgstr "Trego gjendjen e _Indeksimit"
 msgid "Show status of indexing used when searching"
 msgstr "Trego gjendjen e indeksimit të përdorur gjatë kërkimit"
 
-#: src/nautilus-application.c:222
+#: src/nautilus-application.c:223
 msgid "Couldn't Create Required Folder"
 msgstr "I pamundur krijimi i kartelës së kërkuar"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5803,11 +5790,11 @@ msgstr ""
 "ekzekutoni Nautilus, ju lutem krijoni atë kartelë, ose vendosni të drejtat e "
 "duhura qe Nautilus të mund t'a krijojë atë."
 
-#: src/nautilus-application.c:228
+#: src/nautilus-application.c:229
 msgid "Couldn't Create Required Folders"
 msgstr "I pamundur krijimi i kartelave të kërkuara"
 
-#: src/nautilus-application.c:229
+#: src/nautilus-application.c:230
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5824,19 +5811,19 @@ msgstr ""
 "Përpara se të ekzekutoni Nautilus, ju lutem krijoni kartelat, ose vendosni "
 "të drejtat e duhura qe Nautilus të mund t'i krijojë."
 
-#: src/nautilus-application.c:300
+#: src/nautilus-application.c:301
 #, fuzzy
 msgid "Link To Old Desktop"
 msgstr "në desktop"
 
-#: src/nautilus-application.c:316
+#: src/nautilus-application.c:317
 msgid ""
 "The location of the desktop directory has changed in Gnome 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
 
-#: src/nautilus-application.c:319
+#: src/nautilus-application.c:320
 msgid "Migrated old desktop"
 msgstr ""
 
@@ -5850,7 +5837,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:437
+#: src/nautilus-application.c:438
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5861,7 +5848,7 @@ msgstr ""
 "provoni të rinisni kompjuterin ose të instaloni Nautilus edhe njëherë."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:443
+#: src/nautilus-application.c:444
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5908,13 +5895,13 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:473 src/nautilus-application.c:491
-#: src/nautilus-application.c:498
+#: src/nautilus-application.c:474 src/nautilus-application.c:492
+#: src/nautilus-application.c:499
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr ""
 "Nautilus nuk mund të përdoret tani, për arsye të një difekti të papritur."
 
-#: src/nautilus-application.c:474
+#: src/nautilus-application.c:475
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5923,7 +5910,7 @@ msgstr ""
 "ana e Bonobo gjatë përpjekjes së regjistrimit të server-it për paraqitjen e "
 "file manager. "
 
-#: src/nautilus-application.c:492
+#: src/nautilus-application.c:493
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5933,7 +5920,7 @@ msgstr ""
 "Bonobo gjatë përpjekjes së lokalizimit të fabrikës. Duke vrarë bonobo-"
 "activation-server dhe duke rinisur Nautilus ndoshta problemi zgjidhet."
 
-#: src/nautilus-application.c:499
+#: src/nautilus-application.c:500
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5948,16 +5935,22 @@ msgid "No bookmarks defined"
 msgstr "Asnjë i preferuar është përcaktuar"
 
 #: src/nautilus-bookmarks-window.glade.h:1
-msgid "Edit Bookmarks"
-msgstr "Modifiko të preferuarit"
-
-#: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:59
-msgid "_Bookmarks"
+#, fuzzy
+msgid "<b>_Bookmarks</b>"
 msgstr "_Të Preferuar"
 
-#: src/nautilus-bookmarks-window.glade.h:3
-msgid "_Location:"
+#: src/nautilus-bookmarks-window.glade.h:2
+#, fuzzy
+msgid "<b>_Location</b>"
 msgstr "P_ozicioni:"
+
+#: src/nautilus-bookmarks-window.glade.h:3
+msgid "<b>_Name</b>"
+msgstr ""
+
+#: src/nautilus-bookmarks-window.glade.h:4
+msgid "Edit Bookmarks"
+msgstr "Modifiko të preferuarit"
 
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
@@ -6398,7 +6391,8 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Më vjen keq, por '%s' nuk është një file imazh i përdorshëm!"
 
 #: src/nautilus-property-browser.c:2037
-msgid "Select A Category:"
+#, fuzzy
+msgid "Select a Category:"
 msgstr "Zgjidh një kategori:"
 
 #: src/nautilus-property-browser.c:2046
@@ -6649,6 +6643,11 @@ msgstr "Server i Ri"
 msgid "*"
 msgstr "*"
 
+#: src/nautilus-server-connect.glade.h:3
+#, fuzzy
+msgid "_Connect"
+msgstr "Conectiva"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Shton një libërshënues për pozicionin aktual në këtë menu"
@@ -6877,6 +6876,10 @@ msgstr "_Kthehu mbrapa"
 #: src/nautilus-shell-ui.xml.h:58
 msgid "_Backgrounds and Emblems"
 msgstr "_Sfonde dhe simbole"
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "_Bookmarks"
+msgstr "_Të Preferuar"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
@@ -7317,6 +7320,27 @@ msgstr "Rrjeti i Server-ve"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Shiko rrjetin tuaj të server-ve tek file manager i Nautilus"
+
+#~ msgid "Your HTTP Proxy requires you to log in.\n"
+#~ msgstr "Proxy juaj HTTP ju kërkon të kryeni identifikimin.\n"
+
+#~ msgid ""
+#~ "You must log in to access \"%s\".\n"
+#~ "\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Duhet të identifikoheni për t'u futur \"%s\".\n"
+#~ "\n"
+#~ "%s"
+
+#~ msgid "Your password will be transmitted unencrypted."
+#~ msgstr "Password do të trasmetohet e pakriptuar."
+
+#~ msgid "Your password will be transmitted encrypted."
+#~ msgstr "Password do të trasmetohet e kriptuar."
+
+#~ msgid "Authentication Required"
+#~ msgstr "Nevoitet autentifikimi"
 
 #~ msgid "The Trash must remain on the desktop."
 #~ msgstr "Koshi duhet të qëndrojë në desktop."
@@ -8198,9 +8222,6 @@ msgstr "Shiko rrjetin tuaj të server-ve tek file manager i Nautilus"
 #~ msgstr ""
 #~ "Më vjen keq, por nuk mund të hiqni temën aktuale. Fillimisht ndryshojeni "
 #~ "në një temë tjetër pastaj hiqni këtë."
-
-#~ msgid "Can't delete current theme"
-#~ msgstr "E pamundur heqja e temës aktuale"
 
 #~ msgid "Sorry, but that theme could not be removed!"
 #~ msgstr "Më vjen keq, por kjo temë nuk mund të hiqet!"

@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.gnome-2-2.mn\n"
-"POT-Creation-Date: 2003-05-19 14:33+0200\n"
+"POT-Creation-Date: 2003-06-04 10:07+0200\n"
 "PO-Revision-Date: 2003-04-22 23:42+0200\n"
 "Last-Translator: Sanlig Badral <badral@chinggis.com>\n"
 "Language-Team: Mongolian <openmn-gnome@lists.sourceforge.net>\n"
@@ -357,7 +357,7 @@ msgid "animation to indicate on-going activity"
 msgstr "Систем дотор хийгдэж буй үйл ажиллагааг үзүүлэх хөдөлгөөнт үзүүлбэр"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:577
+#: components/throbber/nautilus-throbber.c:587
 msgid "throbber"
 msgstr "Лугшуур (цохилуур)"
 
@@ -369,7 +369,7 @@ msgstr "Лугшуур (цохилуур)-ын үйлдвэр"
 msgid "throbber object factory"
 msgstr "Лугшуур (цохилуурын)-ын объектийн үйлдвэр"
 
-#: components/throbber/nautilus-throbber.c:578
+#: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr "Үзэгдэх хэлбэрийн стандарт тохируулга"
 
@@ -1642,37 +1642,33 @@ msgstr "XIAFS-Хуваалт"
 msgid "Xenix Volume"
 msgstr "Xenix-Хуваалт"
 
-#: libnautilus-private/nautilus-authn-manager.c:60
-msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr "Та өөрийгөө HTTP-Proxy-дээ бүртгүүлэх шаардлагатай .\n"
-
-#: libnautilus-private/nautilus-authn-manager.c:61
-#, c-format
-msgid ""
-"You must log in to access \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"Та »%s« -д орохын тулд бүртгүүлэх хэрэгтэй.\n"
-"\n"
-"%s"
-
-#: libnautilus-private/nautilus-authn-manager.c:64
-msgid "Your password will be transmitted unencrypted."
-msgstr "Таны нууц үг код-нь задраагүйгээр дамжуулагдана."
-
-#: libnautilus-private/nautilus-authn-manager.c:65
-msgid "Your password will be transmitted encrypted."
-msgstr "Таны нууц үг нууцлагдсан чигээр дамжуулагдана."
-
-# CHECK
-#: libnautilus-private/nautilus-authn-manager.c:68
-msgid "Authentication Required"
-msgstr "Зөвшөөрөл хэрэгтэй"
-
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "дахин эхнээс"
+
+#: libnautilus-private/nautilus-desktop-directory-file.c:442
+#: libnautilus-private/nautilus-desktop-icon-file.c:163
+#: libnautilus-private/nautilus-trash-file.c:690
+msgid "on the desktop"
+msgstr "Ажлын талбар дээр"
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+msgid ""
+"You cannot delete a volume icon. If you want to eject the volume, please use "
+"Eject in the right-click menu of the volume."
+msgstr ""
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+#, fuzzy
+msgid "Can't delete volume"
+msgstr "Сонгосон хуваалтыг форматлах"
+
+#: libnautilus-private/nautilus-desktop-link.c:139
+#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-global-preferences.c:545
+#: libnautilus-private/nautilus-trash-directory.c:383
+msgid "Trash"
+msgstr "Хогийн сав"
 
 #: libnautilus-private/nautilus-dnd.c:617
 msgid "_Move here"
@@ -2958,12 +2954,6 @@ msgstr "Холбоос"
 msgid "link (broken)"
 msgstr "Линк (эвдрэлтэй)"
 
-#: libnautilus-private/nautilus-file.c:5576
-#: libnautilus-private/nautilus-global-preferences.c:545
-#: libnautilus-private/nautilus-trash-directory.c:383
-msgid "Trash"
-msgstr "Хогийн сав"
-
 #: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Always"
 msgstr "_Үргэлжийн"
@@ -4020,10 +4010,6 @@ msgstr "Дискүүдийг хайж байна"
 msgid "Nautilus is searching your disks for trash folders."
 msgstr "Наутилус таны пискүүдэд орших хогийн савуудыг эрж байна"
 
-#: libnautilus-private/nautilus-trash-file.c:690
-msgid "on the desktop"
-msgstr "Ажлын талбар дээр"
-
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
 msgstr "боловсруулах"
@@ -4176,14 +4162,6 @@ msgstr "Баримтанд буй бүх текстийг сонгох"
 msgid "_Paste Text"
 msgstr "Текст _буулгах"
 
-#: nautilus.desktop.in.h:1
-msgid "Home Folder"
-msgstr "Гэрийн хэргийн хавтас"
-
-#: nautilus.desktop.in.h:2
-msgid "View your home folder in the Nautilus file manager"
-msgstr "Хувийн гэрийн хавтсын агуулгыг файл-менежер- Наутилусаар харах"
-
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
 msgstr "Файлууд хэрхэн зохицуулагдахыг энд тодорхойлж өгч болно"
@@ -4191,6 +4169,14 @@ msgstr "Файлууд хэрхэн зохицуулагдахыг энд тод
 #: nautilus-file-management-properties.desktop.in.h:2
 msgid "File Management"
 msgstr "Файлуудыг зохицуулах"
+
+#: nautilus.desktop.in.h:1
+msgid "Home Folder"
+msgstr "Гэрийн хэргийн хавтас"
+
+#: nautilus.desktop.in.h:2
+msgid "View your home folder in the Nautilus file manager"
+msgstr "Хувийн гэрийн хавтсын агуулгыг файл-менежер- Наутилусаар харах"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4913,33 +4899,33 @@ msgstr "Эмблемүүдийг оригинал хэм_жээнд нь ору�
 msgid "pointing at \"%s\""
 msgstr "»%s«-ийг заасан"
 
-#: src/file-manager/fm-icon-view.c:2421
+#: src/file-manager/fm-icon-view.c:2459
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Чирч хаях (drag and drop) үйлдлийг зөвхөн дотоод файл системд хэрэглэх"
 
-#: src/file-manager/fm-icon-view.c:2422 src/file-manager/fm-icon-view.c:2441
+#: src/file-manager/fm-icon-view.c:2460 src/file-manager/fm-icon-view.c:2479
 msgid "Drag and Drop error"
 msgstr "Чирч хаях(drag and drop)-д алдаа гарлаа"
 
-#: src/file-manager/fm-icon-view.c:2440
+#: src/file-manager/fm-icon-view.c:2478
 msgid "An invalid drag type was used."
 msgstr "Чирч хаях(drag and drop)-ын утгагүй үйлдэл хийгдлээ"
 
-#: src/file-manager/fm-list-view.c:730
+#: src/file-manager/fm-list-view.c:729
 msgid "File name"
 msgstr "Файлын нэр"
 
-#: src/file-manager/fm-list-view.c:754
+#: src/file-manager/fm-list-view.c:753
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Хэмжээ"
 
-#: src/file-manager/fm-list-view.c:765
+#: src/file-manager/fm-list-view.c:764
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Төрөл"
 
-#: src/file-manager/fm-list-view.c:776
+#: src/file-manager/fm-list-view.c:775
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Өөрчилсөн огноо"
@@ -5044,7 +5030,6 @@ msgstr "Суурь"
 
 #. Name label
 #: src/file-manager/fm-properties-window.c:1643
-#: src/nautilus-bookmarks-window.glade.h:4
 msgid "_Name:"
 msgstr "_Нэр:"
 
@@ -5194,7 +5179,8 @@ msgid "Creating Properties window"
 msgstr "Шинж байдлыг харуулах цонхыг зохиож байна"
 
 #: src/file-manager/fm-properties-window.c:2714
-msgid "Select an icon:"
+#, fuzzy
+msgid "Select an icon"
 msgstr "Нэг эмблем сонгоно уу:"
 
 #: src/file-manager/fm-search-list-view.c:124
@@ -5782,11 +5768,11 @@ msgstr "_Индексжүүлэлтийн төвшнийг харуулах"
 msgid "Show status of indexing used when searching"
 msgstr "Хайх хооронд индексжүүлэлтийн төвшнийг харуулах"
 
-#: src/nautilus-application.c:222
+#: src/nautilus-application.c:223
 msgid "Couldn't Create Required Folder"
 msgstr "Шаардлагатай хавтсыг зохиож чадсангүй"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5797,11 +5783,11 @@ msgstr ""
 "ажиллуулахын өмнө энэ хавтсыг шинээр зохиох эсвэл наутилуст өөрт нь ийм "
 "үйлдэл хийх зөвшөөрөл зэргийг олгож тохируулах хэрэгтэй."
 
-#: src/nautilus-application.c:228
+#: src/nautilus-application.c:229
 msgid "Couldn't Create Required Folders"
 msgstr "Шаардлагатай хавтсуудыг зохиож чадсангүй"
 
-#: src/nautilus-application.c:229
+#: src/nautilus-application.c:230
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5818,19 +5804,19 @@ msgstr ""
 "Та наутилусыг ажиллуулахын өмнө энэ хавтсыг шинээр зохиох эсвэл наутилуст "
 "өөрт нь ийм үйлдэл хийх зөвшөөрөл зэргийг олгож тохируулах хэрэгтэй."
 
-#: src/nautilus-application.c:300
+#: src/nautilus-application.c:301
 #, fuzzy
 msgid "Link To Old Desktop"
 msgstr "Ажлын талбар дээр"
 
-#: src/nautilus-application.c:316
+#: src/nautilus-application.c:317
 msgid ""
 "The location of the desktop directory has changed in Gnome 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
 
-#: src/nautilus-application.c:319
+#: src/nautilus-application.c:320
 msgid "Migrated old desktop"
 msgstr ""
 
@@ -5844,7 +5830,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:437
+#: src/nautilus-application.c:438
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5855,7 +5841,7 @@ msgstr ""
 "суулгах л үлдэж байна."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:443
+#: src/nautilus-application.c:444
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5901,12 +5887,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:473 src/nautilus-application.c:491
-#: src/nautilus-application.c:498
+#: src/nautilus-application.c:474 src/nautilus-application.c:492
+#: src/nautilus-application.c:499
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Гэнэтийн алдаанаас болж Наутилусыг одоогоор ашиглах боломжгүй."
 
-#: src/nautilus-application.c:474
+#: src/nautilus-application.c:475
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5914,7 +5900,7 @@ msgstr ""
 "Файл менежерийн харах серверийг бүртгэх үед Bonobo-д гарсан гэнэтийн "
 "алдаанаас болж Наутилусыг одоогоор ашиглах боломжгүй."
 
-#: src/nautilus-application.c:492
+#: src/nautilus-application.c:493
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5924,7 +5910,7 @@ msgstr ""
 "одоогоор ашиглах боломжгүй. Bonobo идэвхжүүлэлтийг хаагаад Наутилусыг шинээр "
 "нээвэл доголдол арилж магад."
 
-#: src/nautilus-application.c:499
+#: src/nautilus-application.c:500
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5939,16 +5925,22 @@ msgid "No bookmarks defined"
 msgstr "Ямар ч тэмдэглэгээ алга"
 
 #: src/nautilus-bookmarks-window.glade.h:1
-msgid "Edit Bookmarks"
-msgstr "Тэмдэглэгээг боловсруулж тохируулах"
-
-#: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:59
-msgid "_Bookmarks"
+#, fuzzy
+msgid "<b>_Bookmarks</b>"
 msgstr "Тэм_дэглэгээ"
 
-#: src/nautilus-bookmarks-window.glade.h:3
-msgid "_Location:"
+#: src/nautilus-bookmarks-window.glade.h:2
+#, fuzzy
+msgid "<b>_Location</b>"
 msgstr "_Байршил (Хаяг):"
+
+#: src/nautilus-bookmarks-window.glade.h:3
+msgid "<b>_Name</b>"
+msgstr ""
+
+#: src/nautilus-bookmarks-window.glade.h:4
+msgid "Edit Bookmarks"
+msgstr "Тэмдэглэгээг боловсруулж тохируулах"
 
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
@@ -6390,7 +6382,8 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Уучлаарай, харамсалтай нь %s хэрэглэж болохуйц зургийн файл биш байна."
 
 #: src/nautilus-property-browser.c:2037
-msgid "Select A Category:"
+#, fuzzy
+msgid "Select a Category:"
 msgstr "Категор-оо сонгоно уу:"
 
 #: src/nautilus-property-browser.c:2046
@@ -6640,6 +6633,11 @@ msgstr "Шинэ сервер"
 msgid "*"
 msgstr "*"
 
+#: src/nautilus-server-connect.glade.h:3
+#, fuzzy
+msgid "_Connect"
+msgstr "Conectiva"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Одоо байгаа энэ хаягийг (байршлыг) цэсэндээ нэмж  өгөх"
@@ -6870,6 +6868,10 @@ msgstr "_Эгэн"
 #: src/nautilus-shell-ui.xml.h:58
 msgid "_Backgrounds and Emblems"
 msgstr "_Дэвсгэр болон эмблемүүд"
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "_Bookmarks"
+msgstr "Тэм_дэглэгээ"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
@@ -7310,6 +7312,28 @@ msgstr "Сүлжээний серверүүд"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Наутилусын файл менежерээр дамжуулан Сүлжээний серверүүдийг харах."
+
+#~ msgid "Your HTTP Proxy requires you to log in.\n"
+#~ msgstr "Та өөрийгөө HTTP-Proxy-дээ бүртгүүлэх шаардлагатай .\n"
+
+#~ msgid ""
+#~ "You must log in to access \"%s\".\n"
+#~ "\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Та »%s« -д орохын тулд бүртгүүлэх хэрэгтэй.\n"
+#~ "\n"
+#~ "%s"
+
+#~ msgid "Your password will be transmitted unencrypted."
+#~ msgstr "Таны нууц үг код-нь задраагүйгээр дамжуулагдана."
+
+#~ msgid "Your password will be transmitted encrypted."
+#~ msgstr "Таны нууц үг нууцлагдсан чигээр дамжуулагдана."
+
+# CHECK
+#~ msgid "Authentication Required"
+#~ msgstr "Зөвшөөрөл хэрэгтэй"
 
 #~ msgid "The Trash must remain on the desktop."
 #~ msgstr "Хогийн сав дэлгэцэн дээр үлдэх ёстой"

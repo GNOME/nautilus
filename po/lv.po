@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2003-05-19 14:33+0200\n"
+"POT-Creation-Date: 2003-06-04 10:07+0200\n"
 "PO-Revision-Date: 2003-03-15 12:33+0200\n"
 "Last-Translator: Artis Trops  <hornet@navigator.lv>\n"
 "Language-Team: Latvian <ll10nt@os.lv>\n"
@@ -354,7 +354,7 @@ msgid "animation to indicate on-going activity"
 msgstr "animācija lai parādītu notiekošo aktivitāti"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:577
+#: components/throbber/nautilus-throbber.c:587
 msgid "throbber"
 msgstr "troberis"
 
@@ -366,7 +366,7 @@ msgstr "trobera ražotne"
 msgid "throbber object factory"
 msgstr "trobera objekta ražotne"
 
-#: components/throbber/nautilus-throbber.c:578
+#: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr "piedāvā visuālo statusu"
 
@@ -1632,36 +1632,33 @@ msgstr "XIAFS Partīcija"
 msgid "Xenix Volume"
 msgstr "Xenix Partīcija"
 
-#: libnautilus-private/nautilus-authn-manager.c:60
-msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr "Jūsu HTTP Starpserveris pieprasa ieiet sistēmā.\n"
-
-#: libnautilus-private/nautilus-authn-manager.c:61
-#, c-format
-msgid ""
-"You must log in to access \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"Jums jāpiesakās, lai piekļūtu \"%s\".\n"
-"\n"
-"%s"
-
-#: libnautilus-private/nautilus-authn-manager.c:64
-msgid "Your password will be transmitted unencrypted."
-msgstr "Jūsu parole tiks pārraidīta nešifrētā veidā."
-
-#: libnautilus-private/nautilus-authn-manager.c:65
-msgid "Your password will be transmitted encrypted."
-msgstr "Jūsu parole tiks pārraidīta šifrētā veidā."
-
-#: libnautilus-private/nautilus-authn-manager.c:68
-msgid "Authentication Required"
-msgstr "Nepieciešama Autentifikācija"
-
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "pārstatīt"
+
+#: libnautilus-private/nautilus-desktop-directory-file.c:442
+#: libnautilus-private/nautilus-desktop-icon-file.c:163
+#: libnautilus-private/nautilus-trash-file.c:690
+msgid "on the desktop"
+msgstr "uz darbavirsmas"
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+msgid ""
+"You cannot delete a volume icon. If you want to eject the volume, please use "
+"Eject in the right-click menu of the volume."
+msgstr ""
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+#, fuzzy
+msgid "Can't delete volume"
+msgstr "Formatēt izvēlēto partīciju"
+
+#: libnautilus-private/nautilus-desktop-link.c:139
+#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-global-preferences.c:545
+#: libnautilus-private/nautilus-trash-directory.c:383
+msgid "Trash"
+msgstr "Atkritumkaste"
 
 #: libnautilus-private/nautilus-dnd.c:617
 msgid "_Move here"
@@ -2943,12 +2940,6 @@ msgstr "saite"
 msgid "link (broken)"
 msgstr "saite (pārrauta)"
 
-#: libnautilus-private/nautilus-file.c:5576
-#: libnautilus-private/nautilus-global-preferences.c:545
-#: libnautilus-private/nautilus-trash-directory.c:383
-msgid "Trash"
-msgstr "Atkritumkaste"
-
 #: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Always"
 msgstr "_Vienmēr"
@@ -3998,10 +3989,6 @@ msgstr "Meklējam pa Diskiem"
 msgid "Nautilus is searching your disks for trash folders."
 msgstr "Nautilus meklē jūsu diskos aktritumkastes mapes."
 
-#: libnautilus-private/nautilus-trash-file.c:690
-msgid "on the desktop"
-msgstr "uz darbavirsmas"
-
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
 msgstr "Rediģēt"
@@ -4153,14 +4140,6 @@ msgstr "Izvēlēties visu tekstu teksta laukā"
 msgid "_Paste Text"
 msgstr "_Ielikt Tekstu"
 
-#: nautilus.desktop.in.h:1
-msgid "Home Folder"
-msgstr "Mājas Mape"
-
-#: nautilus.desktop.in.h:2
-msgid "View your home folder in the Nautilus file manager"
-msgstr "Skatīt mājas mapi Nautilus failu pāvaldniekā"
-
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
 msgstr "Izmainīt, kā faili tiek pārvaldīti"
@@ -4168,6 +4147,14 @@ msgstr "Izmainīt, kā faili tiek pārvaldīti"
 #: nautilus-file-management-properties.desktop.in.h:2
 msgid "File Management"
 msgstr "Failu Pārvalde"
+
+#: nautilus.desktop.in.h:1
+msgid "Home Folder"
+msgstr "Mājas Mape"
+
+#: nautilus.desktop.in.h:2
+msgid "View your home folder in the Nautilus file manager"
+msgstr "Skatīt mājas mapi Nautilus failu pāvaldniekā"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4890,33 +4877,33 @@ msgstr "Atjaunot Ikonas Oriģinālo Izmē_ru"
 msgid "pointing at \"%s\""
 msgstr "norādām uz \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2421
+#: src/file-manager/fm-icon-view.c:2459
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Vilkt un Nomest tiek atbalstīts tikai uz lokālajām failsistēmām."
 
-#: src/file-manager/fm-icon-view.c:2422 src/file-manager/fm-icon-view.c:2441
+#: src/file-manager/fm-icon-view.c:2460 src/file-manager/fm-icon-view.c:2479
 msgid "Drag and Drop error"
 msgstr "Vilkt un Nomest kļūda"
 
-#: src/file-manager/fm-icon-view.c:2440
+#: src/file-manager/fm-icon-view.c:2478
 msgid "An invalid drag type was used."
 msgstr "Tika lietots nepareizs vilkšanas tips."
 
-#: src/file-manager/fm-list-view.c:730
+#: src/file-manager/fm-list-view.c:729
 msgid "File name"
 msgstr "Faila nosaukums"
 
-#: src/file-manager/fm-list-view.c:754
+#: src/file-manager/fm-list-view.c:753
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Izmērs"
 
-#: src/file-manager/fm-list-view.c:765
+#: src/file-manager/fm-list-view.c:764
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Tips"
 
-#: src/file-manager/fm-list-view.c:776
+#: src/file-manager/fm-list-view.c:775
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Izmaiņu Datums"
@@ -5021,7 +5008,6 @@ msgstr "Pamats"
 
 #. Name label
 #: src/file-manager/fm-properties-window.c:1643
-#: src/nautilus-bookmarks-window.glade.h:4
 msgid "_Name:"
 msgstr "_Nosaukums:"
 
@@ -5172,7 +5158,8 @@ msgid "Creating Properties window"
 msgstr "Izveidoju Rekvizītu logu"
 
 #: src/file-manager/fm-properties-window.c:2714
-msgid "Select an icon:"
+#, fuzzy
+msgid "Select an icon"
 msgstr "Izvēlēties ikonu:"
 
 #: src/file-manager/fm-search-list-view.c:124
@@ -5762,11 +5749,11 @@ msgstr "Parādīt Indeksēšanas Statusu"
 msgid "Show status of indexing used when searching"
 msgstr "Parādīt indeksēšanas statusu, kad meklēju"
 
-#: src/nautilus-application.c:222
+#: src/nautilus-application.c:223
 msgid "Couldn't Create Required Folder"
 msgstr "Nevar izveidot Pieprasīto Mapi"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5777,11 +5764,11 @@ msgstr ""
 "palaišanas, lūdzu izveidojiet šo mapi vai uzstādiet tādas atļaujas, ka "
 "Nautilus var to izveidot."
 
-#: src/nautilus-application.c:228
+#: src/nautilus-application.c:229
 msgid "Couldn't Create Required Folders"
 msgstr "Nevaru Izveidot Pieprasītās Mapes"
 
-#: src/nautilus-application.c:229
+#: src/nautilus-application.c:230
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5798,19 +5785,19 @@ msgstr ""
 "Pirms Nautilus palaišanas, lūdzu izveidojiet šīs mapes vai uzstādiet tādas "
 "atļaujas, ka Nautilus var tās izveidot."
 
-#: src/nautilus-application.c:300
+#: src/nautilus-application.c:301
 #, fuzzy
 msgid "Link To Old Desktop"
 msgstr "uz darbavirsmas"
 
-#: src/nautilus-application.c:316
+#: src/nautilus-application.c:317
 msgid ""
 "The location of the desktop directory has changed in Gnome 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
 
-#: src/nautilus-application.c:319
+#: src/nautilus-application.c:320
 msgid "Migrated old desktop"
 msgstr ""
 
@@ -5824,7 +5811,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:437
+#: src/nautilus-application.c:438
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5835,7 +5822,7 @@ msgstr ""
 "datoru vai vēlreiz uzinstalēt Nautilus."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:443
+#: src/nautilus-application.c:444
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5881,12 +5868,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:473 src/nautilus-application.c:491
-#: src/nautilus-application.c:498
+#: src/nautilus-application.c:474 src/nautilus-application.c:492
+#: src/nautilus-application.c:499
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus nevar tikt izmantots sakarā ar negaidītu kļūdu."
 
-#: src/nautilus-application.c:474
+#: src/nautilus-application.c:475
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5894,7 +5881,7 @@ msgstr ""
 "Nautikus nevar tikt tagad izmantots, sakarā ar negaidītu kļūdu no Bonobo, "
 "kāmēr mēģināts reģistrēt failu pārvaldnieka skatu serveri."
 
-#: src/nautilus-application.c:492
+#: src/nautilus-application.c:493
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5904,7 +5891,7 @@ msgstr ""
 "kad mēģināts atrast ražotni. Nokaujot bonobo-activation-server un "
 "pārstartējot Nautilus varētu palīdzēt atrisināt problēmu."
 
-#: src/nautilus-application.c:499
+#: src/nautilus-application.c:500
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5919,16 +5906,22 @@ msgid "No bookmarks defined"
 msgstr "Neviena grāmatzīme nav definēta"
 
 #: src/nautilus-bookmarks-window.glade.h:1
-msgid "Edit Bookmarks"
-msgstr "Rediģēt Grāmatzīmes"
-
-#: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:59
-msgid "_Bookmarks"
+#, fuzzy
+msgid "<b>_Bookmarks</b>"
 msgstr "_Grāmatzīmes"
 
-#: src/nautilus-bookmarks-window.glade.h:3
-msgid "_Location:"
+#: src/nautilus-bookmarks-window.glade.h:2
+#, fuzzy
+msgid "<b>_Location</b>"
 msgstr "_Lokācija:"
+
+#: src/nautilus-bookmarks-window.glade.h:3
+msgid "<b>_Name</b>"
+msgstr ""
+
+#: src/nautilus-bookmarks-window.glade.h:4
+msgid "Edit Bookmarks"
+msgstr "Rediģēt Grāmatzīmes"
 
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
@@ -6368,7 +6361,8 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Piedodiet, bet '%s' nav lietojams attēla fails!"
 
 #: src/nautilus-property-browser.c:2037
-msgid "Select A Category:"
+#, fuzzy
+msgid "Select a Category:"
 msgstr "Izvēlēties Kategoriju:"
 
 #: src/nautilus-property-browser.c:2046
@@ -6618,6 +6612,11 @@ msgstr "Jauns Serveris"
 msgid "*"
 msgstr "*"
 
+#: src/nautilus-server-connect.glade.h:3
+#, fuzzy
+msgid "_Connect"
+msgstr "Conectiva"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Pievienot grāmatzīmi par pašreizējo lokāciju šajā izvēlnē"
@@ -6844,6 +6843,10 @@ msgstr "_Atpakaļ"
 #: src/nautilus-shell-ui.xml.h:58
 msgid "_Backgrounds and Emblems"
 msgstr "_Foni un Emblēmas"
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "_Bookmarks"
+msgstr "_Grāmatzīmes"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
@@ -7286,6 +7289,27 @@ msgstr "Tīkla Serveri"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Skatīt jūsu tīkla serverus Nautilus failu pāvaldniekā"
+
+#~ msgid "Your HTTP Proxy requires you to log in.\n"
+#~ msgstr "Jūsu HTTP Starpserveris pieprasa ieiet sistēmā.\n"
+
+#~ msgid ""
+#~ "You must log in to access \"%s\".\n"
+#~ "\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Jums jāpiesakās, lai piekļūtu \"%s\".\n"
+#~ "\n"
+#~ "%s"
+
+#~ msgid "Your password will be transmitted unencrypted."
+#~ msgstr "Jūsu parole tiks pārraidīta nešifrētā veidā."
+
+#~ msgid "Your password will be transmitted encrypted."
+#~ msgstr "Jūsu parole tiks pārraidīta šifrētā veidā."
+
+#~ msgid "Authentication Required"
+#~ msgstr "Nepieciešama Autentifikācija"
 
 #~ msgid "The Trash must remain on the desktop."
 #~ msgstr "Atkritumkastei jāpaliek uz darbavirsmas."

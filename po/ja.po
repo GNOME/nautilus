@@ -11,7 +11,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
-"POT-Creation-Date: 2003-05-21 00:58+0900\n"
+"POT-Creation-Date: 2003-06-04 10:07+0200\n"
 "PO-Revision-Date: 2003-05-21 00:28+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
@@ -360,7 +360,7 @@ msgid "animation to indicate on-going activity"
 msgstr "実行中であることを示すためのアニメーション"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:2
-#: components/throbber/nautilus-throbber.c:577
+#: components/throbber/nautilus-throbber.c:587
 msgid "throbber"
 msgstr "throbber"
 
@@ -372,7 +372,7 @@ msgstr "throbber ファクトリ"
 msgid "throbber object factory"
 msgstr "throbber オブジェクト・ファクトリ"
 
-#: components/throbber/nautilus-throbber.c:578
+#: components/throbber/nautilus-throbber.c:588
 msgid "provides visual status"
 msgstr "視覚的なステータスを表示します"
 
@@ -1695,36 +1695,33 @@ msgstr "XIAFS ボリューム"
 msgid "Xenix Volume"
 msgstr "Xenix ボリューム"
 
-#: libnautilus-private/nautilus-authn-manager.c:60
-msgid "Your HTTP Proxy requires you to log in.\n"
-msgstr "HTTP プロクシを使用するにはログインする必要があります。\n"
-
-#: libnautilus-private/nautilus-authn-manager.c:61
-#, c-format
-msgid ""
-"You must log in to access \"%s\".\n"
-"\n"
-"%s"
-msgstr ""
-"\"%s\"にアクセスするにはログインする必要があります。\n"
-"\n"
-"%s"
-
-#: libnautilus-private/nautilus-authn-manager.c:64
-msgid "Your password will be transmitted unencrypted."
-msgstr "パスワードは暗号化されずに転送されます。"
-
-#: libnautilus-private/nautilus-authn-manager.c:65
-msgid "Your password will be transmitted encrypted."
-msgstr "パスワードは暗号化されて転送されます。"
-
-#: libnautilus-private/nautilus-authn-manager.c:68
-msgid "Authentication Required"
-msgstr "認証が必要です"
-
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "リセット"
+
+#: libnautilus-private/nautilus-desktop-directory-file.c:442
+#: libnautilus-private/nautilus-desktop-icon-file.c:163
+#: libnautilus-private/nautilus-trash-file.c:690
+msgid "on the desktop"
+msgstr "デスクトップ上"
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:104
+msgid ""
+"You cannot delete a volume icon. If you want to eject the volume, please use "
+"Eject in the right-click menu of the volume."
+msgstr ""
+
+#: libnautilus-private/nautilus-desktop-link-monitor.c:107
+#, fuzzy
+msgid "Can't delete volume"
+msgstr "選択したボリュームをフォーマットします"
+
+#: libnautilus-private/nautilus-desktop-link.c:139
+#: libnautilus-private/nautilus-file.c:5576
+#: libnautilus-private/nautilus-global-preferences.c:545
+#: libnautilus-private/nautilus-trash-directory.c:383
+msgid "Trash"
+msgstr "ゴミ箱"
 
 #: libnautilus-private/nautilus-dnd.c:617
 msgid "_Move here"
@@ -2997,12 +2994,6 @@ msgstr "リンク"
 msgid "link (broken)"
 msgstr "リンク切れ"
 
-#: libnautilus-private/nautilus-file.c:5576
-#: libnautilus-private/nautilus-global-preferences.c:545
-#: libnautilus-private/nautilus-trash-directory.c:383
-msgid "Trash"
-msgstr "ゴミ箱"
-
 #: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Always"
 msgstr "常に(_A)"
@@ -4050,10 +4041,6 @@ msgstr "ディスクの検索"
 msgid "Nautilus is searching your disks for trash folders."
 msgstr "Nautilus はディスクからゴミ箱を検索しています。"
 
-#: libnautilus-private/nautilus-trash-file.c:690
-msgid "on the desktop"
-msgstr "デスクトップ上"
-
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
 msgstr "編集"
@@ -4206,14 +4193,6 @@ msgstr "テキスト・フィールドにある全てのテキストを選択し
 msgid "_Paste Text"
 msgstr "テキストの貼り付け(_P)"
 
-#: nautilus.desktop.in.h:1
-msgid "Home Folder"
-msgstr "ホーム・フォルダ"
-
-#: nautilus.desktop.in.h:2
-msgid "View your home folder in the Nautilus file manager"
-msgstr "Nautilus ファイル・マネージャでホーム・フォルダを表示します"
-
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
 msgstr "ファイルを管理する方法を変更します"
@@ -4221,6 +4200,14 @@ msgstr "ファイルを管理する方法を変更します"
 #: nautilus-file-management-properties.desktop.in.h:2
 msgid "File Management"
 msgstr "ファイル管理"
+
+#: nautilus.desktop.in.h:1
+msgid "Home Folder"
+msgstr "ホーム・フォルダ"
+
+#: nautilus.desktop.in.h:2
+msgid "View your home folder in the Nautilus file manager"
+msgstr "Nautilus ファイル・マネージャでホーム・フォルダを表示します"
 
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -4932,34 +4919,34 @@ msgstr "アイコンを元のサイズに戻す(_Z)"
 msgid "pointing at \"%s\""
 msgstr "%s を指しています"
 
-#: src/file-manager/fm-icon-view.c:2421
+#: src/file-manager/fm-icon-view.c:2459
 msgid "Drag and drop is only supported to local file systems."
 msgstr ""
 "ドラッグ＆ドロップはローカルのファイル・システムでのみサポートされます。"
 
-#: src/file-manager/fm-icon-view.c:2422 src/file-manager/fm-icon-view.c:2441
+#: src/file-manager/fm-icon-view.c:2460 src/file-manager/fm-icon-view.c:2479
 msgid "Drag and Drop error"
 msgstr "ドラッグ＆ドロップのエラー"
 
-#: src/file-manager/fm-icon-view.c:2440
+#: src/file-manager/fm-icon-view.c:2478
 msgid "An invalid drag type was used."
 msgstr "使用したドラッグの種類は無効です。"
 
-#: src/file-manager/fm-list-view.c:730
+#: src/file-manager/fm-list-view.c:729
 msgid "File name"
 msgstr "ファイル名"
 
-#: src/file-manager/fm-list-view.c:754
+#: src/file-manager/fm-list-view.c:753
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "サイズ"
 
-#: src/file-manager/fm-list-view.c:765
+#: src/file-manager/fm-list-view.c:764
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "種類"
 
-#: src/file-manager/fm-list-view.c:776
+#: src/file-manager/fm-list-view.c:775
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "更新日時"
@@ -5064,7 +5051,6 @@ msgstr "基本"
 
 #. Name label
 #: src/file-manager/fm-properties-window.c:1643
-#: src/nautilus-bookmarks-window.glade.h:4
 msgid "_Name:"
 msgstr "名前(_N):"
 
@@ -5215,7 +5201,8 @@ msgid "Creating Properties window"
 msgstr "プロパティ・ウィンドウの作成中"
 
 #: src/file-manager/fm-properties-window.c:2714
-msgid "Select an icon:"
+#, fuzzy
+msgid "Select an icon"
 msgstr "アイコンの選択:"
 
 #: src/file-manager/fm-search-list-view.c:124
@@ -5798,11 +5785,11 @@ msgstr "インデックス生成状況の表示(_I)"
 msgid "Show status of indexing used when searching"
 msgstr "検索に使用するインデックス生成の状況を表示します"
 
-#: src/nautilus-application.c:222
+#: src/nautilus-application.c:223
 msgid "Couldn't Create Required Folder"
 msgstr "指定したフォルダを生成できませんでした"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5813,11 +5800,11 @@ msgstr ""
 "Nautilus を起動する前に作成するか、Nautilus がフォルダを生成できるように適切"
 "なパーミションを設定して下さい。"
 
-#: src/nautilus-application.c:228
+#: src/nautilus-application.c:229
 msgid "Couldn't Create Required Folders"
 msgstr "指定したフォルダを生成できませんでした"
 
-#: src/nautilus-application.c:229
+#: src/nautilus-application.c:230
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5834,11 +5821,11 @@ msgstr ""
 "Nautilus を起動する前にこれらのフォルダを作成するか、Nautilus がそれらのフォ"
 "ルダを作成できるように適切なパーミッションを設定して下さい。"
 
-#: src/nautilus-application.c:300
+#: src/nautilus-application.c:301
 msgid "Link To Old Desktop"
 msgstr "古いデスクトップへのリンク"
 
-#: src/nautilus-application.c:316
+#: src/nautilus-application.c:317
 msgid ""
 "The location of the desktop directory has changed in Gnome 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
@@ -5848,7 +5835,7 @@ msgstr ""
 "ンク\" というリンクがデスクトップ上に作成されます。この中にあるファイルをお好"
 "きな場所に移動して、リンクを削除することができます。"
 
-#: src/nautilus-application.c:319
+#: src/nautilus-application.c:320
 msgid "Migrated old desktop"
 msgstr "古いデスクトップを移動します"
 
@@ -5862,7 +5849,7 @@ msgstr "古いデスクトップを移動します"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:437
+#: src/nautilus-application.c:438
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5873,7 +5860,7 @@ msgstr ""
 "は Nautilus の再インストールを試みて下さい。"
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:443
+#: src/nautilus-application.c:444
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5920,12 +5907,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:473 src/nautilus-application.c:491
-#: src/nautilus-application.c:498
+#: src/nautilus-application.c:474 src/nautilus-application.c:492
+#: src/nautilus-application.c:499
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "予期しないエラーのために Nautilus は現在利用できません。"
 
-#: src/nautilus-application.c:474
+#: src/nautilus-application.c:475
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5933,7 +5920,7 @@ msgstr ""
 "ファイル・マネージャのビュー・サーバを登録する際に Bonobo で予期しないエラー"
 "が発生したため Nautilus は現在利用できません。"
 
-#: src/nautilus-application.c:492
+#: src/nautilus-application.c:493
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5943,7 +5930,7 @@ msgstr ""
 "は現在利用できません。bonobo-activation-server を強制終了し Nautilus を再起動"
 "することで問題が解決するかもしれません。"
 
-#: src/nautilus-application.c:499
+#: src/nautilus-application.c:500
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5958,16 +5945,22 @@ msgid "No bookmarks defined"
 msgstr "ブックマークは定義されていません"
 
 #: src/nautilus-bookmarks-window.glade.h:1
-msgid "Edit Bookmarks"
-msgstr "ブックマークの編集"
-
-#: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:59
-msgid "_Bookmarks"
+#, fuzzy
+msgid "<b>_Bookmarks</b>"
 msgstr "ブックマーク(_B)"
 
-#: src/nautilus-bookmarks-window.glade.h:3
-msgid "_Location:"
+#: src/nautilus-bookmarks-window.glade.h:2
+#, fuzzy
+msgid "<b>_Location</b>"
 msgstr "場所(_L):"
+
+#: src/nautilus-bookmarks-window.glade.h:3
+msgid "<b>_Name</b>"
+msgstr ""
+
+#: src/nautilus-bookmarks-window.glade.h:4
+msgid "Edit Bookmarks"
+msgstr "ブックマークの編集"
 
 #: src/nautilus-complex-search-bar.c:200
 msgid "More Options"
@@ -6407,7 +6400,8 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "画像ファイル '%s' は利用できません！"
 
 #: src/nautilus-property-browser.c:2037
-msgid "Select A Category:"
+#, fuzzy
+msgid "Select a Category:"
 msgstr "カテゴリの選択:"
 
 #: src/nautilus-property-browser.c:2046
@@ -6656,6 +6650,11 @@ msgstr "新しいサーバ"
 msgid "*"
 msgstr "*"
 
+#: src/nautilus-server-connect.glade.h:3
+#, fuzzy
+msgid "_Connect"
+msgstr "Connectiva"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
 msgstr "この場所をブックマーク・メニューに追加します"
@@ -6879,6 +6878,10 @@ msgstr "戻る(_B)"
 #: src/nautilus-shell-ui.xml.h:58
 msgid "_Backgrounds and Emblems"
 msgstr "背景とエンブレム(_B)"
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "_Bookmarks"
+msgstr "ブックマーク(_B)"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
@@ -7319,3 +7322,24 @@ msgstr "ネットワーク・サーバ"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Nautilus でお使いのネットワークのサーバを表示します"
+
+#~ msgid "Your HTTP Proxy requires you to log in.\n"
+#~ msgstr "HTTP プロクシを使用するにはログインする必要があります。\n"
+
+#~ msgid ""
+#~ "You must log in to access \"%s\".\n"
+#~ "\n"
+#~ "%s"
+#~ msgstr ""
+#~ "\"%s\"にアクセスするにはログインする必要があります。\n"
+#~ "\n"
+#~ "%s"
+
+#~ msgid "Your password will be transmitted unencrypted."
+#~ msgstr "パスワードは暗号化されずに転送されます。"
+
+#~ msgid "Your password will be transmitted encrypted."
+#~ msgstr "パスワードは暗号化されて転送されます。"
+
+#~ msgid "Authentication Required"
+#~ msgstr "認証が必要です"
