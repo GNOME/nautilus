@@ -1,3 +1,11 @@
+2000-10-30  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-thumbnails.c:
+	(make_thumbnail_path):
+	fixed bug 4190, problem thumbnailing icons in vault, by adding
+	a test to make sure it tries to keep the thumbnails for remote
+	files locally.
+	
 2000-10-30  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* icons/nautilus-launch-icon.png:

@@ -77,15 +77,21 @@ vfs_file_exists (const char *file_uri)
 static char *
 make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean use_local_directory, gboolean anti_aliased)
 {
+	GnomeVFSURI  *vfs_uri;
 	char *thumbnail_uri, *thumbnail_path;
 	char *directory_name = g_strdup (image_uri);
 	char *last_slash = strrchr (directory_name, '/');
 	char *dot_pos;
+	gboolean is_local;
 	
 	*last_slash = '\0';
+
+	vfs_uri = gnome_vfs_uri_new (image_uri);
+	is_local = gnome_vfs_uri_is_local (vfs_uri);
+	gnome_vfs_uri_unref (vfs_uri);	
 	
 	/* either use the local directory or one in the user's home directory, as selected by the passed in flag */
-	if (use_local_directory) {
+	if (use_local_directory && is_local) {
 		thumbnail_uri = g_strdup_printf ("%s/.thumbnails", directory_name);
 	} else  {
 		GnomeVFSResult result;
