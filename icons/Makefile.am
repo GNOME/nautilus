@@ -142,6 +142,7 @@ icon_DATA =\
 	i-regular.png \
 	i-sock.png \
 	i-stalled.png \
+	i-symlink.png \
 	i-zipdisk.png \
 	i-zipdisk2.png \
 	increment.png \

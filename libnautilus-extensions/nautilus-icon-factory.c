@@ -78,7 +78,7 @@ static const char *icon_file_name_suffixes[] =
 #define ICON_NAME_FIFO                  "i-fifo"
 #define ICON_NAME_CHARACTER_DEVICE      "i-chardev"
 #define ICON_NAME_BLOCK_DEVICE          "i-blockdev"
-#define ICON_NAME_SYMBOLIC_LINK         "i-symlink"
+#define ICON_NAME_BROKEN_SYMBOLIC_LINK  "i-symlink"
 
 #define ICON_NAME_THUMBNAIL_LOADING     "loading"
 
@@ -540,7 +540,7 @@ nautilus_icon_factory_get_icon_name_for_file (NautilusFile *file)
         case GNOME_VFS_FILE_TYPE_BLOCK_DEVICE:
 		return ICON_NAME_BLOCK_DEVICE;
         case GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK:
-                return ICON_NAME_SYMBOLIC_LINK;
+                return ICON_NAME_BROKEN_SYMBOLIC_LINK;
         case GNOME_VFS_FILE_TYPE_REGULAR:
         case GNOME_VFS_FILE_TYPE_UNKNOWN:
         default:

@@ -1,3 +1,17 @@
+2000-07-27  Seth Nickell  <seth@eazel.com>
+
+	* icons/Makefile.am:
+	Added entry for placeholder broken-symlink icon.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_permissions_as_string),
+	(nautilus_file_is_symbolic_link):
+	Use new Gnome-VFS flags for symlink follow detection.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_name_for_file):
+	Deal w/ broken symbolic links properly.
+	
 2000-07-27  Arlo Rose  <arlo@eazel.com>
 
         * icons/arlo/i-directory.png
