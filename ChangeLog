@@ -1,3 +1,25 @@
+2000-08-08  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_open_uri_callback):
+	*
+	components/services/install/nautilus-view/nautilus-service-install-
+	view.c:
+	* components/services/login/nautilus-view/nautilus-login-view.c:
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_draw_text_white):
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(update_label_color):
+	* libnautilus-extensions/nautilus-image.c:
+	(nautilus_image_size_allocate):
+	* src/file-manager/fm-directory-view.c: (file_is_launchable),
+	(activate_callback):
+
+	Adding hacks from old demo branch, point service urls to the
+	correct location, adding a minor fix for vault stability and
+	removed an unneeded debug for Andy.
+
 2000-08-07  Andy Hertzfeld  <andy@eazel.com>
 
 	last minute tweak for demo release of info color text: now it

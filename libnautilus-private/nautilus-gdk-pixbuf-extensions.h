@@ -75,4 +75,11 @@ void                      nautilus_gdk_pixbuf_draw_text                (GdkPixbu
 									const char                 *text,
 									guint			   overall_alpha);
 
+/* Add white text to a graphics widget */
+void			nautilus_gdk_pixbuf_draw_text_white		(GdkPixbuf			*pixbuf,
+									 const GdkFont			*font,
+									 const ArtIRect			*destination_rect,
+									 const char			*text,
+									 guint				overall_alpha);
+
 #endif /* NAUTILUS_GDK_PIXBUF_EXTENSIONS_H */

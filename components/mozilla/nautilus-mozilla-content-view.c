@@ -548,6 +548,16 @@ mozilla_open_uri_callback (GtkMozEmbed *mozilla,
 
 	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
 
+/* Ramiro's custom uri redirect hack */
+#if 1
+	if (strncmp (uri, "http://hack-translate/", strlen ("http://hack-translate/")) == 0) {
+		char *hacked_uri = g_strdup_printf ("%s:", (uri + strlen ("http://hack-translate/")));
+		nautilus_view_open_location (view->details->nautilus_view, hacked_uri);
+		g_free (hacked_uri);
+		return TRUE;
+	}
+#endif
+
 	/* Determine whether we want to abort this uri load */
  	abort_uri_open = mozilla_is_uri_handled_by_nautilus (uri);
 	

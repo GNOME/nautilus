@@ -601,12 +601,11 @@ nautilus_image_size_allocate (GtkWidget *widget, GtkAllocation* allocation)
 /* FIXME bugzilla.eazel.com xxxx: 
  * Need to be able to pass in a rgb colot into the draw_text function.
  */
-		nautilus_gdk_pixbuf_draw_text (image->detail->buffer,
-					       image->detail->label_font,
-					       1.0,
-					       &text_rect,
-					       image->detail->label_text,
-					       image->detail->overall_alpha);
+		nautilus_gdk_pixbuf_draw_text_white (image->detail->buffer,
+						     image->detail->label_font,
+						     &text_rect,
+						     image->detail->label_text,
+						     image->detail->overall_alpha);
 	}
 }
 

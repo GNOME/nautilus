@@ -57,7 +57,7 @@ struct _NautilusLoginViewDetails {
 	GtkWidget	*feedback_text;
 };
 
-#define SERVICE_SUMMARY_LOCATION                "eazel-summary:"
+#define SERVICE_SUMMARY_LOCATION                "http://eazel1.eazel.com/services/summary1.html"
 #define SERVICE_HELP_LOCATION                   "http://www.eazel.com"
 
 static void       nautilus_login_view_initialize_class (NautilusLoginViewClass     *klass);
