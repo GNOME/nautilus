@@ -137,6 +137,9 @@ struct NautilusListDetails
 	guint32 selection_light_color_rgb;
 	guint32 selection_medium_color_rgb;
 	guint32 selection_main_color_rgb;
+
+	gboolean alternate_row_colors;
+	gulong background_color_offset, selection_color_offset;
 };
 
 /* maximum amount of milliseconds the mouse button is allowed to stay down and still be considered a click */
@@ -596,7 +599,11 @@ nautilus_list_initialize (NautilusList *list)
 	list->details->anchor_row = -1;
 
 	list->details->drag_prelight_row = NULL;
-	
+
+	list->details->alternate_row_colors = TRUE;
+	list->details->background_color_offset = G_STRUCT_OFFSET (GtkStyle, bg[GTK_STATE_NORMAL]);
+	list->details->selection_color_offset = G_STRUCT_OFFSET (GtkStyle, bg[GTK_STATE_SELECTED]);
+
 	/* GtkCList does not specify pointer motion by default */
 	gtk_widget_add_events (GTK_WIDGET (list), GDK_POINTER_MOTION_MASK);
 
@@ -1563,9 +1570,11 @@ nautilus_list_setup_style_colors (NautilusList *list)
 	gdk_rgb_init();
 
 	style_background_color = nautilus_gdk_color_to_rgb
-		(&GTK_WIDGET (list)->style->bg [GTK_STATE_NORMAL]);
+		(G_STRUCT_MEMBER_P (GTK_WIDGET (list)->style,
+				    list->details->background_color_offset));
 	selection_background_color = nautilus_gdk_color_to_rgb
-		(&GTK_WIDGET (list)->style->bg [GTK_STATE_SELECTED]);
+		(G_STRUCT_MEMBER_P (GTK_WIDGET (list)->style,
+				    list->details->selection_color_offset));
 
 	list->details->cell_lighter_background_rgb
 	    = nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_lighter_background, 
@@ -1996,6 +2005,11 @@ nautilus_list_get_cell_style (NautilusList *list, NautilusCListRow *row,
 			      int state, int row_index, int column_index, GtkStyle **style,
 			      GdkGC **fg_gc, GdkGC **bg_gc, guint32 *bg_rgb)
 {
+	gboolean lighter_row;
+
+	lighter_row = (list->details->alternate_row_colors
+		       ? (row_index % 2) != 0 : TRUE);
+
 	if (style) {
 		*style = GTK_WIDGET (list)->style;
 	}
@@ -2029,13 +2043,13 @@ nautilus_list_get_cell_style (NautilusList *list, NautilusCListRow *row,
 
 	if (bg_gc != NULL) {
 		if (column_index == selected_column_index (list)) {
-			if ((row_index % 2) != 0) {
+			if (lighter_row) {
 				*bg_gc = list->details->cell_selected_lighter_background;
 			} else {
 				*bg_gc = list->details->cell_selected_darker_background;
 			}
 		} else {
-			if ((row_index % 2) != 0) {
+			if (lighter_row) {
 				*bg_gc = list->details->cell_lighter_background;
 			} else {
 				*bg_gc = list->details->cell_darker_background;
@@ -2044,18 +2058,43 @@ nautilus_list_get_cell_style (NautilusList *list, NautilusCListRow *row,
 	}
 	if (bg_rgb != NULL) {
 		if (column_index == selected_column_index (list)) {
-			if ((row_index % 2) != 0) {
+			if (lighter_row) {
 				*bg_rgb = list->details->cell_selected_lighter_background_rgb;
 			} else {
 				*bg_rgb = list->details->cell_selected_darker_background_rgb;
 			}
 		} else {
-			if ((row_index % 2) != 0) {
+			if (lighter_row) {
 				*bg_rgb = list->details->cell_lighter_background_rgb;
 			} else {
 				*bg_rgb = list->details->cell_darker_background_rgb;
 			}
 		}
+	}
+}
+
+void
+nautilus_list_set_alternate_row_colors (NautilusList *list,
+					gboolean state)
+{
+	list->details->alternate_row_colors = state;
+}
+
+void
+nautilus_list_set_background_color_offsets (NautilusList *list,
+					    long background_offset,
+					    long selection_offset)
+{
+	g_return_if_fail (background_offset < 0
+			  || (gulong) background_offset < sizeof (GtkStyle));
+	g_return_if_fail (selection_offset < 0
+			  || (gulong) selection_offset < sizeof (GtkStyle));
+
+	if (background_offset >= 0) {
+		list->details->background_color_offset = background_offset;
+	}
+	if (selection_offset >= 0) {
+		list->details->selection_color_offset = selection_offset;
 	}
 }
 

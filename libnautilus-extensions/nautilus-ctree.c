@@ -607,6 +607,12 @@ nautilus_ctree_init (NautilusCTree *ctree)
 	
 	clist->button_actions[0] |= NAUTILUS_BUTTON_EXPANDS;
 
+	/* Some random GNOME luser wants trees to look `normal' */
+	nautilus_list_set_alternate_row_colors (NAUTILUS_LIST (ctree), FALSE);
+	nautilus_list_set_background_color_offsets (NAUTILUS_LIST (ctree),
+						    G_STRUCT_OFFSET (GtkStyle,
+								     base[GTK_STATE_NORMAL]), -1);
+
 	gtk_signal_connect (GTK_OBJECT (ctree), "event",
 			    GTK_SIGNAL_FUNC (nautilus_ctree_event), ctree);
 }

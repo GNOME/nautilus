@@ -206,6 +206,11 @@ void	     nautilus_list_get_cell_style	     (NautilusList	      *list,
 						      GdkGC		     **fg_gc,
 						      GdkGC		     **bg_gc,
 						      guint32		      *bg_rgb);
+void	     nautilus_list_set_alternate_row_colors  (NautilusList	      *list,
+						      gboolean		       state);
+void	     nautilus_list_set_background_color_offsets (NautilusList         *list,
+							 long		       background_offset,
+							 long		       selection_offset);
 
 #endif /* NAUTILUS_LIST_H */
 

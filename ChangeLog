@@ -1,3 +1,23 @@
+2001-04-03  John Harper  <jsh@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 7967 (Tree view uses non-standard colors instead of
+	gtk theme colors):
+
+	* libnautilus-extensions/nautilus-list.c,
+	libnautilus-extensions/nautilus-list.h
+	(nautilus_list_set_alternate_row_colors,
+	nautilus_list_set_background_color_offsets): new functions.
+	They give some control over how the list background is drawn.
+	The offsets function takes two offsets into the GtkStyle
+	structure (which should point to GdkColor structures)
+
+	* libnautilus-extensions/nautilus-ctree.c
+	(nautilus_ctree_init): call the above two functions with
+	suitable values to make the tree look like it used to, before
+	being derived from the NautilusList widget
+
 2001-04-03  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
