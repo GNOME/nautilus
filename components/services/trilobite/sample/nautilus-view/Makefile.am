@@ -33,7 +33,6 @@ nautilus_eazel_sample_service_view_SOURCES =		\
 
 nautilus_eazel_sample_service_view_LDFLAGS =			\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
-	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la \
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
 	$(top_builddir)/librsvg/librsvg.la		\

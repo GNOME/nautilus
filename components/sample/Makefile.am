@@ -24,7 +24,6 @@ nautilus_sample_content_view_SOURCES =		\
 	main.c
 
 nautilus_sample_content_view_LDFLAGS =			\
-	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la \
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
 	$(top_builddir)/librsvg/librsvg.la		\

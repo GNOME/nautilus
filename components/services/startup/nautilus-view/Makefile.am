@@ -34,7 +34,6 @@ nautilus_service_startup_view_SOURCES =		\
 
 nautilus_service_startup_view_LDADD =                                     \
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
-	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la           \
 	$(top_builddir)/libnautilus/libnautilus.la                        \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la  \
 	$(top_builddir)/librsvg/librsvg.la                                \

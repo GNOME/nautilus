@@ -24,7 +24,6 @@ nautilus_sidebar_loser_SOURCES =		\
 	main.c
 
 nautilus_sidebar_loser_LDFLAGS =			\
-	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la \
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
 	$(top_builddir)/librsvg/librsvg.la		\
