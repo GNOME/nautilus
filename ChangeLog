@@ -1,3 +1,11 @@
+2000-09-20  Darin Adler  <darin@eazel.com>
+
+	* components/help/help-method.c: (shell_quote),
+	(help_uri_to_string): Moved the shell quote function in here
+	instead of trying to share the one in libnautilus-extensions. This
+	fixes bug 3163 (Nautilus crashes any time a help item in the
+	sidebar pane is double-clicked).
+
 2000-09-20  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/adapter/nautilus-adapter-file-load-strategy.c

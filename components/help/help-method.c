@@ -29,7 +29,6 @@
 #include <libgnomevfs/gnome-vfs-module-shared.h>
 #include <libgnomevfs/gnome-vfs-module.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -58,6 +57,47 @@ typedef struct {
 static gboolean file_in_info_path (const char *file);
 static char *old_help_file (const char *old_uri);
 
+
+/* This is a copy of nautilus_shell_quote. The best thing to do is to
+ * use the one on GNOME for GNOME 2.0, but we could also move this
+ * into gnome-vfs or some other library so we could share it.
+ */
+static char *
+shell_quote (const char *string)
+{
+	const char *p;
+	GString *quoted_string;
+	char *quoted_str;
+
+	/* All kinds of ways to do this fancier.
+	 * - Detect when quotes aren't needed at all.
+	 * - Use double quotes when they would look nicer.
+	 * - Avoid sequences of quote/unquote in a row (like when you quote "'''").
+	 * - Do it higher speed with strchr.
+	 * - Allocate the GString with g_string_sized_new.
+	 */
+
+	g_return_val_if_fail (string != NULL, NULL);
+
+	quoted_string = g_string_new ("'");
+
+	for (p = string; *p != '\0'; p++) {
+		if (*p == '\'') {
+			/* Get out of quotes, do a quote, then back in. */
+			g_string_append (quoted_string, "'\\''");
+		} else {
+			g_string_append_c (quoted_string, *p);
+		}
+	}
+
+	g_string_append_c (quoted_string, '\'');
+
+	/* Let go of the GString. */
+	quoted_str = quoted_string->str;
+	g_string_free (quoted_string, FALSE);
+
+	return quoted_str;
+}
 
 static HelpURI *
 help_uri_new (void)
@@ -116,7 +156,7 @@ help_uri_to_string (HelpURI *help_uri)
 	}
         
         /* Build a command line. */
-        escaped = nautilus_shell_quote (parameter);
+        escaped = shell_quote (parameter);
         g_free (parameter);
         command_line = g_strconcat (command, " ", escaped, ";mime-type=text/html", NULL);
         g_free (escaped);
