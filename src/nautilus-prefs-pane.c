@@ -43,7 +43,8 @@ enum
 	LAST_SIGNAL
 };
 
-static const guint PREFS_PANE_TITLE_SPACING = 10;
+static const guint PREFS_PANE_TITLE_SPACING = 100;
+static const guint PREFS_PANE_GROUPS_BOX_TOP_OFFSET = 10;
 
 struct _NautilusPrefsPanePrivate
 {
@@ -153,14 +154,13 @@ prefs_pane_construct (NautilusPrefsPane *prefs_pane,
 	g_assert (prefs_pane->priv->title_frame == NULL);
 	g_assert (prefs_pane->priv->groups == NULL);
 
-
 	prefs_pane->priv->groups = g_slist_alloc ();
 
 	/* Title frame */
 	prefs_pane->priv->title_frame = gtk_frame_new (NULL);
 
 	gtk_frame_set_shadow_type (GTK_FRAME (prefs_pane->priv->title_frame),
-				   GTK_SHADOW_IN);
+				   GTK_SHADOW_ETCHED_IN);
 
 	/* Title box */
 	prefs_pane->priv->title_box = 
@@ -209,7 +209,7 @@ prefs_pane_construct (NautilusPrefsPane *prefs_pane,
 			    prefs_pane->priv->groups_box,
 			    FALSE,
 			    FALSE,
-			    0);
+			    PREFS_PANE_GROUPS_BOX_TOP_OFFSET);
 
 	gtk_widget_show (prefs_pane->priv->groups_box);
 }

@@ -44,6 +44,7 @@ enum
 };
 
 static const guint PREFS_GROUP_TITLE_SPACING = 4;
+static const guint PREFS_GROUP_FRAME_BORDER_WIDTH = 6;
 
 struct _NautilusPrefsGroupPrivate
 {
@@ -147,6 +148,9 @@ prefs_group_construct (NautilusPrefsGroup *prefs_group,
 
 	gtk_container_add (GTK_CONTAINER (prefs_group),
 			   prefs_group->priv->content_box);
+
+	gtk_container_set_border_width (GTK_CONTAINER (prefs_group->priv->content_box),
+					PREFS_GROUP_FRAME_BORDER_WIDTH);
 
 	gtk_widget_show (prefs_group->priv->content_box);
 

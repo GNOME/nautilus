@@ -55,12 +55,20 @@ struct _NautilusPrefsGroupRadioClass
 	NautilusPrefsGroupClass	parent_class;
 };
 
+typedef struct
+{
+	guint active_button_index;
+} NautilusPrefsGroupRadioSignalData;
+
 GtkType    nautilus_prefs_group_radio_get_type (void);
 GtkWidget* nautilus_prefs_group_radio_new      (const gchar             *group_title);
 void       nautilus_prefs_group_radio_clear    (NautilusPrefsGroupRadio *prefs_group_radio);
 void       nautilus_prefs_group_radio_insert   (NautilusPrefsGroupRadio *prefs_group_radio,
 						const gchar             *label,
 						gboolean                 active);
+void       nautilus_prefs_group_radio_set_active_button   (NautilusPrefsGroupRadio *prefs_group_radio,
+							   guint button_index);
+guint       nautilus_prefs_group_radio_get_active_button   (NautilusPrefsGroupRadio *prefs_group_radio);
 
 BEGIN_GNOME_DECLS
 

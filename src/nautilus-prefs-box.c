@@ -44,6 +44,7 @@ static const guint PREFS_BOX_NUM_CATEGORY_COLUMNS = 1;
 static const guint PREFS_BOX_CATEGORY_COLUMN = 0;
 static const guint PREFS_BOX_SPACING = 4;
 static const guint PREFS_SELECTED_PANE_UNKNOWN = -1;
+static const guint PREFS_BOX_PANE_LEFT_OFFSET = 10;
 
 typedef struct
 {
@@ -368,7 +369,7 @@ nautilus_prefs_box_add_pane (NautilusPrefsBox	*prefs_box,
 			    info->pane_widget,
 			    TRUE,
 			    TRUE,
-			    0);
+			    PREFS_BOX_PANE_LEFT_OFFSET);
 
 	text[PREFS_BOX_CATEGORY_COLUMN] = (gchar *) pane_title;
 
