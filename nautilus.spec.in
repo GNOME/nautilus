@@ -20,16 +20,16 @@ Requires:	glib >= 1.2.8
 Requires:	gtk+ >= 1.2.8
 Requires:	imlib >= 1.9.8
 Requires:	libxml >= 1.8.10
-Requires:	gnome-libs >= 1.2.1
-Requires:	GConf >= 0.10
+Requires:	gnome-libs >= 1.2.8
+Requires:	GConf >= 0.11
 Requires:	ORBit >= 0.5.4
 Requires:	oaf >= 0.6.0
-Requires:	gnome-vfs >= 0.3.1
+Requires:	gnome-vfs >= 0.4.1
 Requires:	gdk-pixbuf >= 0.9.0
-Requires:	bonobo >= 0.24
+Requires:	bonobo = 0.26
 Requires:	popt >= 1.5
 Requires:	freetype2 >= 1.0beta8
-Requires:	medusa >= 0.2.1
+Requires:	medusa >= 0.2.2
 Requires:	gnome-core >= 1.2.3
 
 %description
@@ -61,7 +61,7 @@ Requires:	usermode >= 1.35
 %package extras
 Summary:	Extra goodies to use with Nautilus
 Group:          User Interface/Desktop
-Requires:	xpdf >= 0.90
+# Requires:	xpdf >= 0.90
 Requires:	mpg123 >= 0.59
 
 %package suggested
