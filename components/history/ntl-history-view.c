@@ -22,9 +22,7 @@
  *  Author: Elliot Lee <sopwith@redhat.com>
  *
  */
-/* ntl-view.c: Implementation of the object representing a data view,
-   and its associated CORBA object for proxying requests into this
-   object. */
+ 
 #include <config.h>
 
 #include <gnome.h>
@@ -33,6 +31,7 @@
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-init.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
 #include <liboaf/liboaf.h>
 
 typedef struct {
@@ -107,13 +106,30 @@ hyperbola_navigation_history_notify_location_change (NautilusViewFrame *view,
   GtkCList *clist;
   NautilusBookmark *bookmark;
   int i;
+  GnomeVFSURI *vfs_uri;
+  char *short_name;
 
   hview->notify_count++;
 
   clist = hview->clist;
   gtk_clist_freeze(clist);
 
-  bookmark = nautilus_bookmark_new (loci->requested_uri);
+  /* FIXME bugzilla.eazel.com 206: 
+   * Get the bookmark info from the Nautilus window instead of
+   * keeping a parallel mechanism here. That will get us the right
+   * short name for different locations.
+   */
+  gnome_vfs_uri_new (loci->requested_uri);
+  if (vfs_uri == NULL) {
+    short_name = g_strdup (loci->requested_uri);
+  } else {
+    short_name = gnome_vfs_uri_extract_short_name (vfs_uri);
+    gnome_vfs_uri_unref (vfs_uri);
+  }
+  bookmark = nautilus_bookmark_new (loci->requested_uri, short_name);
+  g_free (short_name);
+
+  
 
   /* If a bookmark for this location was already in list, remove it
    * (no duplicates in list, new one goes at top)

@@ -36,7 +36,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 
 
-struct _NautilusBookmarkDetails
+struct NautilusBookmarkDetails
 {
 	char *name;
 	char *uri;
@@ -129,7 +129,7 @@ nautilus_bookmark_copy (const NautilusBookmark *bookmark)
 {
 	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), NULL);
 
-	return nautilus_bookmark_new_with_name(
+	return nautilus_bookmark_new (
 			nautilus_bookmark_get_uri (bookmark),
 			nautilus_bookmark_get_name (bookmark));
 }
@@ -148,22 +148,12 @@ nautilus_bookmark_get_pixmap_and_mask (const NautilusBookmark *bookmark,
 				       GdkPixmap **pixmap_return,
 				       GdkBitmap **mask_return)
 {
-	NautilusFile *file;
 	GdkPixbuf *pixbuf;
 
-	file = nautilus_file_get (nautilus_bookmark_get_uri (bookmark));
-
-	/* FIXME bug 461: This might be a bookmark that points to nothing, or
-	 * maybe its uri cannot be converted to a NautilusFile for some
-	 * other reason. It should get some sort of generic icon, but for
-	 * now it gets none.
-	 */
-	if (file == NULL) {
+	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, icon_size);
+	if (pixbuf == NULL) {
 		return FALSE;
 	}
-
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, icon_size);
-	nautilus_file_unref (file);
 
 	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap_return, mask_return, 100);
 	gdk_pixbuf_unref (pixbuf);
@@ -172,28 +162,28 @@ nautilus_bookmark_get_pixmap_and_mask (const NautilusBookmark *bookmark,
 }
 
 
-gboolean	    
-nautilus_bookmark_get_pixbuf(const NautilusBookmark *bookmark,
-						guint	 icon_size,
-				       GdkPixbuf **pixbuf_return)
+GdkPixbuf *	    
+nautilus_bookmark_get_pixbuf (const NautilusBookmark *bookmark,
+			      guint icon_size)
 {
 	NautilusFile *file;
+	GdkPixbuf *pixbuf;
 
 	file = nautilus_file_get (nautilus_bookmark_get_uri (bookmark));
 
-	/* FIXME bug 461: This might be a bookmark that points to nothing, or
-	 * maybe its uri cannot be converted to a NautilusFile for some
-	 * other reason. It should get some sort of generic icon, but for
-	 * now it gets none.
+	/* FIXME bugzilla.eazel.com 461: This might be a bookmark that points 
+	 * to nothing, or maybe its uri cannot be converted to a NautilusFile 
+	 * for some other reason. It should get some sort of generic icon, but 
+	 * for now it gets none.
 	 */
 	if (file == NULL) {
-		return FALSE;
+		return NULL;
 	}
 
-	*pixbuf_return = nautilus_icon_factory_get_pixbuf_for_file (file, icon_size);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, icon_size);
 	nautilus_file_unref (file);
 
-	return TRUE;
+	return pixbuf;
 }
 
 const char *
@@ -223,7 +213,7 @@ nautilus_bookmark_set_name (NautilusBookmark *bookmark, const char *new_name)
 }
 
 /**
- * nautilus_bookmark_new_with_name:
+ * nautilus_bookmark_new:
  *
  * Create a new NautilusBookmark from a text uri and a display name.
  * @uri: Any uri, even a malformed or non-existent one.
@@ -233,7 +223,7 @@ nautilus_bookmark_set_name (NautilusBookmark *bookmark, const char *new_name)
  * 
  **/
 NautilusBookmark *
-nautilus_bookmark_new_with_name (const char *uri, const char *name)
+nautilus_bookmark_new (const char *uri, const char *name)
 {
 	NautilusBookmark *new_bookmark;
 
@@ -243,52 +233,6 @@ nautilus_bookmark_new_with_name (const char *uri, const char *name)
 	new_bookmark->details->uri = g_strdup (uri);
 
 	return new_bookmark;
-}
-
-/**
- * nautilus_bookmark_new:
- *
- * Create a new NautilusBookmark from just a text uri.
- * @uri: Any uri, even a malformed or non-existent one.
- * 
- * Return value: A newly allocated NautilusBookmark, whose display
- * name is chosen using default rules based on the uri.
- * 
- **/
-NautilusBookmark *
-nautilus_bookmark_new (const char *uri)
-{
-	/* Use default rules to determine the displayed name */
-
-	NautilusBookmark *result;
-	GnomeVFSURI *vfs_uri;
-
-	result = NULL;
-	
-	/* For now, the only default rule is to use the file/directory name
-	 * rather than the whole path. */
-	/* FIXME bug 1000: This needs to do better (use just file names for file:// urls,
-	 * use page names for http://, etc.)
-	 */
-
-	vfs_uri = gnome_vfs_uri_new (uri);
-	if (vfs_uri != NULL) {
-		if (strcmp (vfs_uri->method_string, "file") == 0) {
-			char *short_name;
-
-			short_name = gnome_vfs_uri_extract_short_name (vfs_uri);
-			result = nautilus_bookmark_new_with_name (uri, short_name);
-			g_free (short_name);
-		}
-		
-		gnome_vfs_uri_unref (vfs_uri);
-	}
-
-	if (result == NULL) {
-		result = nautilus_bookmark_new_with_name (uri, uri);
-	}
-
-	return result;
 }
 
 static GtkWidget *

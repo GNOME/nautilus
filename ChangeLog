@@ -1,5 +1,35 @@
 2000-04-19  John Sullivan  <sullivan@eazel.com>
 
+	Darin and I started out thinking we were going to start entering
+	bugs for the FIXME items but we were distracted into fixing bugs
+	and tweaking code that we found while doing so.
+	
+	* check-FIXME.pl: Won't search old ChangeLogs for FIXMEs either;
+	changed FIXME format from "FIXME bug xxx" to "FIXME bugzilla.eazel.com xxx"
+	
+	* components/history/ntl-history-view.c:
+	(hyperbola_navigation_history_notify_location_change): Moved bookmark
+	naming hack here and added FIXME explaining it.
+	
+	* libnautilus-extensions/nautilus-bookmark.h,
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_new), (nautilus_bookmark_new_with_name):
+	Combined these two into one routine that takes both the uri and
+	title; removed hack for trying to come up with good name for
+	bookmark here.
+	(nautilus_bookmark_get_pixmap_and_mask): Changed to call
+	_get_pixbuf instead of duplicating code.
+	(nautilus_bookmark_get_pixbuf): Changed interface to return
+	pixbuf or NULL instead of boolean result & "out" parameter.
+	
+	* src/nautilus-bookmark-list.c,
+	* src/nautilus-bookmarks-window.c,
+	* src/nautilus-window-menus.c,
+	* src/ntl-window-msgs.c: 
+	Updated callers of nautilus_bookmark_new and _new_with_name.
+
+2000-04-19  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 540 (need specific error message for "access denied"
 	when renaming)
 

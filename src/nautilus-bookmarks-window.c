@@ -491,7 +491,7 @@ update_bookmark_from_text ()
 		g_assert (GTK_IS_ENTRY (name_field));
 		g_assert (GTK_IS_ENTRY (uri_field));
 
-		bookmark = nautilus_bookmark_new_with_name
+		bookmark = nautilus_bookmark_new
 			(gtk_entry_get_text (GTK_ENTRY (uri_field)),
 			 gtk_entry_get_text (GTK_ENTRY (name_field)));
 		selected_row = get_selected_row ();

@@ -314,23 +314,18 @@ append_bookmark_to_menu (NautilusWindow *window,
                          const char *menu_item_path)
 {
 	BookmarkHolder *bookmark_holder;	
-	gpointer pixbuf_data;
-	BonoboUIHandlerPixmapType pixmap_type;
-	gboolean result;
 	GdkPixbuf *pixbuf;
+	BonoboUIHandlerPixmapType pixmap_type;
 	char *name;
 
 	/* Attempt to retrieve icon and mask for bookmark */
-	result = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_SMALLER, &pixbuf);
+	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_SMALLER);
 
 	/* Set up pixmap type based on result of function.  If we fail, set pixmap type to none */
-	if (result) {
+	if (pixbuf != NULL) {
 		pixmap_type = BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA;
-		pixbuf_data = pixbuf;
-	}
-	else {
+	} else {
 		pixmap_type = BONOBO_UI_HANDLER_PIXMAP_NONE;
-		pixbuf_data = NULL;
 	}
 	
 	bookmark_holder = g_new (BookmarkHolder, 1);
@@ -350,7 +345,7 @@ append_bookmark_to_menu (NautilusWindow *window,
 					 _("Go to the specified location"),
 					 -1,
 					 pixmap_type,
-					 pixbuf_data,
+					 pixbuf,
 					 0,
 					 0,
 					 activate_bookmark_in_menu_item,

@@ -312,7 +312,7 @@ nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 			
 			bookmarks->list = g_list_append
 				(bookmarks->list,
-				 nautilus_bookmark_new_with_name (xml_uri, xml_name));
+				 nautilus_bookmark_new (xml_uri, xml_name));
 			
 			xmlFree (xml_name);
 			xmlFree (xml_uri);

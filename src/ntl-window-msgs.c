@@ -283,7 +283,7 @@ nautilus_window_reset_title_internal (NautilusWindow *window, const char *uri)
                         gtk_object_unref (GTK_OBJECT (window->last_location_bookmark));
                 }
                 window->last_location_bookmark = window->current_location_bookmark;
-                window->current_location_bookmark = nautilus_bookmark_new (uri);
+                window->current_location_bookmark = nautilus_bookmark_new (uri, uri);
         }
         
         nautilus_window_update_title_internal (window, window->default_title);

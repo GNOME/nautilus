@@ -33,7 +33,7 @@ use strict;
 my %skip_files;
 if (!@ARGV)
   {
-    @ARGV = `find -name '*' -and ! \\( -name '*~' -or -name '#*' -or -name 'ChangeLog' -or -name 'Entries' -or -name 'check-FIXME.pl' \\)`;
+    @ARGV = `find -name '*' -and ! \\( -name '*~' -or -name '#*' -or -name 'ChangeLog*' -or -name 'Entries' -or -name 'check-FIXME.pl' \\)`;
     $skip_files{"./TODO"} = 1;
     $skip_files{"./autogen.sh"} = 1;
     $skip_files{"./aclocal.m4"} = 1;
@@ -58,7 +58,7 @@ foreach my $file (@ARGV)
     while (<FILE>)
       {
         next if !/FIXME/;
-        if (/FIXME bug (\d+)/)
+        if (/FIXME bugzilla.eazel.com (\d+)/)
           {
             $bug_lines{$1} .= "$file:$.:$_";
           }
