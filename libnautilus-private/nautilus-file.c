@@ -982,14 +982,15 @@ rename_guts (NautilusFile *file,
 	g_return_if_fail (new_name != NULL);
 	g_return_if_fail (callback != NULL);
 
+	uri = nautilus_file_get_uri (file);
 	is_local_desktop_file =
 		(nautilus_file_is_mime_type (file, "application/x-gnome-app-info") ||
 		 nautilus_file_is_mime_type (file, "application/x-desktop")) &&
-		has_local_path (file);
+		!eel_vfs_has_capability (uri, 
+					 EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW);
 	
 	/* Return an error for incoming names containing path separators.
 	 * But not for .desktop files as '/' are allowed for them */
-	uri = nautilus_file_get_uri (file);
 	if (strstr (new_name, "/") != NULL && !is_local_desktop_file) {
 		(* callback) (file, GNOME_VFS_ERROR_NOT_PERMITTED, callback_data);
 		return;
@@ -1034,7 +1035,6 @@ rename_guts (NautilusFile *file,
 	}
 	
 	if (is_local_desktop_file) {
-		uri = nautilus_file_get_uri (file);
 		success = nautilus_link_desktop_file_local_set_text (uri, new_name);
 		g_free (uri);
 
@@ -1049,6 +1049,7 @@ rename_guts (NautilusFile *file,
 			return;
 		}
 	}
+	g_free (uri);
 
 	/* Set up a renaming operation. */
 	op = operation_new (file, callback, callback_data);
