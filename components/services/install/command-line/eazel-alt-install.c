@@ -300,7 +300,7 @@ int main(int argc, char *argv[]) {
 		fprintf (stderr, "*** This tool requires root access.\n");
 	}
 	if (!check_for_redhat ()) {
-		fprintf (stderr, "*** This tool can only be used on RedHat.\n");
+		fprintf (stderr, "*** This tool can only be used on Red Hat Linux.\n");
 	}
 
 
