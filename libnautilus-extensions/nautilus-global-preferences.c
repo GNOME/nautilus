@@ -293,7 +293,7 @@ global_preferences_install_defaults (void)
 	
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
 						  NAUTILUS_USER_LEVEL_NOVICE,
-						  TRUE);
+						  !nautilus_dumb_down_for_multi_byte_locale_hack ());
 	
 	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_PREVIEW_SOUND,
 						  NAUTILUS_USER_LEVEL_NOVICE,

@@ -1,3 +1,19 @@
+2001-03-09  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Merge from HEAD:
+
+	reviewed by: John Harper  <jsh@eazel.com>
+
+	Fix bug 7547 - Multi byte locales should default to non smooth
+	graphics mode
+		
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_defaults):
+	Make multi byte locales default to non smooth mode, so that it
+	works for more Japanese user most of the time.  Japanese users can
+	still select smooth mode if they have the right scalable font in
+	their system.
+	
 2001-03-09  Dan Mueth  <dan@eazel.com>
 
         reviewed by: Don Melton <don@eazel.com>
