@@ -1833,17 +1833,16 @@ icon_container_preview_callback (NautilusIconContainer *container,
 		
 	result = 0;
 	
-	if (nautilus_sound_can_play_sound ()) {
-	
-		/* preview files based on the mime_type. */
-		/* for now, we just handle mp3s, soon we'll do more general sounds, eventually, more general types */
-		mime_type = nautilus_file_get_mime_type(file);
-		if (nautilus_istr_has_prefix (mime_type, "audio/")) {   	
+	/* preview files based on the mime_type. */
+	/* at first, we just handle sounds */
+	mime_type = nautilus_file_get_mime_type(file);
+	if (nautilus_istr_has_prefix (mime_type, "audio/")) {   	
+		if (nautilus_sound_can_play_sound ()) {
 			result = 1;
 			preview_sound (file, start_flag);
-		}	
-		g_free (mime_type);
-	}
+		}
+	}	
+	g_free (mime_type);
 	
 	/* display file name in status area at low zoom levels, since the name is not displayed or hard to read */
 	if (fm_icon_view_get_zoom_level (icon_view) <= NAUTILUS_ZOOM_LEVEL_SMALLER) {

@@ -1,3 +1,23 @@
+2000-10-04  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/file-manager/fm-icon-view.c:
+	(icon_container_preview_callback):
+	fixed bug 3463, get sound diagnostics when mousing over non-sound
+	files, by only testing for sound if we're over a sound file
+
+	* src/nautilus-window-toolbars.c: (set_up_throbber_frame_type),
+	(allocate_throbber), (theme_changed_callback),
+	(nautilus_window_initialize_toolbars),
+	(nautilus_window_toolbar_remove_theme_callback):
+	made the shadow type of the throbber frame be specified by the
+	theme.
+		
+	* icons/ardmore/ardmore.xml:
+	* icons/default.xml:
+	* icons/eazel/eazel.xml:
+	* icons/vector/vector.xml:
+	changed the shadow types in some themes
+	
 2000-10-03  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-protocols.c:

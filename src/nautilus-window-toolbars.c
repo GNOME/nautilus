@@ -40,6 +40,7 @@
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 
 /* forward declarations */
@@ -336,6 +337,34 @@ set_up_toolbar_images (NautilusWindow *window)
 	set_up_button (window->stop_button, GNOME_STOCK_PIXMAP_STOP);
 }
 
+static void
+set_up_throbber_frame_type (NautilusWindow *window)
+{
+	GtkWidget *frame;
+	char *frame_type;
+	GtkShadowType shadow_type;
+	
+	frame = window->throbber->parent;
+	
+	frame_type = nautilus_theme_get_theme_data ("toolbar", "FRAME_TYPE");
+	shadow_type = GTK_SHADOW_NONE;
+	
+	if (nautilus_strcmp (frame_type, "in") == 0) {
+		shadow_type = GTK_SHADOW_IN;
+	} else if (nautilus_strcmp (frame_type, "out") == 0) {
+		shadow_type = GTK_SHADOW_OUT;	
+	} else if (nautilus_strcmp (frame_type, "none") == 0) {
+		shadow_type = GTK_SHADOW_NONE;	
+	} else {
+		shadow_type = GTK_SHADOW_NONE;
+	}
+	
+	g_free (frame_type);	
+	gtk_frame_set_shadow_type (GTK_FRAME (frame), shadow_type);
+}
+
+
+
 static GtkWidget*
 allocate_throbber (GtkWidget *toolbar)
 {
@@ -346,7 +375,6 @@ allocate_throbber (GtkWidget *toolbar)
 	gtk_widget_show (throbber);
 	
 	frame = gtk_frame_new (NULL);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_IN);	
 	gtk_widget_show (frame);
 	gtk_container_add (GTK_CONTAINER (frame), throbber);
 		
@@ -359,10 +387,12 @@ allocate_throbber (GtkWidget *toolbar)
 	return throbber;
 }
 
+/* handle theme changes */
 static void
-set_up_toolbar_images_callback (gpointer callback_data)
+theme_changed_callback (gpointer callback_data)
 {
 	set_up_toolbar_images (NAUTILUS_WINDOW (callback_data));
+	set_up_throbber_frame_type (NAUTILUS_WINDOW (callback_data));
 }
 
 /* allocate a new toolbar */
@@ -384,6 +414,7 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 	window->throbber = allocate_throbber (toolbar);
 	
 	set_up_toolbar_images (window);
+	set_up_throbber_frame_type (window);
 
 	gnome_app_set_toolbar (app, GTK_TOOLBAR (toolbar));
 			
@@ -402,7 +433,7 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 	/* add callback for preference changes */
 	nautilus_preferences_add_callback
 		(NAUTILUS_PREFERENCES_THEME, 
-		 set_up_toolbar_images_callback,
+		 theme_changed_callback,
 		 window);
 }
  
@@ -411,7 +442,7 @@ nautilus_window_toolbar_remove_theme_callback (NautilusWindow *window)
 {
 	nautilus_preferences_remove_callback
 		(NAUTILUS_PREFERENCES_THEME,
-		 set_up_toolbar_images_callback,
+		 theme_changed_callback,
 		 window);
 }
  
