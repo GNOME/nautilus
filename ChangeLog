@@ -1,3 +1,16 @@
+2001-04-05  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 7985 (Separately group "Move to Trash" and
+	"Delete" menu items to avoid accidental selection)
+
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Moved Move to Trash and Delete into their own
+	menu section (surrounded by separators).	
+	* src/file-manager/fm-directory-view.c: Updated menu
+	paths that have now changed.
+	* src/nautilus-shell-ui.xml: Added placeholder used by
+	Move to Trash and Delete to get ordering right.
+
 2001-04-05  Arlo Rose  <arlo@eazel.com>
 
 	* icons/Makefile.am:

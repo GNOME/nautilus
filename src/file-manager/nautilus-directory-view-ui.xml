@@ -105,13 +105,6 @@
 				  _label="Show _Properties"
 				  accel="*Control*i"
 				  verb="Show Properties"/>
-			<menuitem name="Trash"
-				  _label="Move to _Trash"
-				  accel="*Control*t"
-				  verb="Trash"/>
-			<menuitem name="Delete"
-				  _label="De_lete"
-				  verb="Delete"/>
 			<menuitem name="Duplicate"
 				  _label="_Duplicate"
 				  accel="*Control*d"
@@ -120,6 +113,15 @@
 				  _label="Make _Link"
 				  accel="*Control*m"
 				  verb="Create Link"/>
+		</placeholder>
+		<placeholder name="Dangerous File Items Placeholder">
+			<menuitem name="Trash"
+				  _label="Move to _Trash"
+				  accel="*Control*t"
+				  verb="Trash"/>
+			<menuitem name="Delete"
+				  _label="De_lete"
+				  verb="Delete"/>
 		</placeholder>
 
 		<placeholder name="Global File Items Placeholder">
@@ -204,10 +206,12 @@
 		</placeholder>
 		<placeholder name="File Actions" delimit="top">
 			<menuitem name="Show Properties" verb="Show Properties"/>
-			<menuitem name="Trash" verb="Trash"/>
-			<menuitem name="Delete" verb="Delete"/>
 			<menuitem name="Duplicate" verb="Duplicate"/>
 			<menuitem name="Create Link" verb="Create Link"/>
+		</placeholder>
+		<placeholder name="Dangerous File Actions" delimit="top">
+			<menuitem name="Trash" verb="Trash"/>
+			<menuitem name="Delete" verb="Delete"/>
 		</placeholder>
 		<placeholder name="File Clipboard Actions" delimit="top">
 			<menuitem name="Cut Files" verb="Cut Files"/>
