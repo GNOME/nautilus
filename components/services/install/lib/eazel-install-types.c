@@ -606,6 +606,47 @@ rpmname_from_packagedata (const PackageData *pack)
 	return name;
 }
 
+char*
+packagedata_get_readable_name (const PackageData *pack)
+{
+	char *result = NULL;
+	if (pack==NULL) {
+		result = NULL;
+	} else if (pack->name && pack->version) {
+		/* This is a hack to shorten EazelSourceSnapshot names
+		   into the build date/time */
+		if (strstr (pack->version, "EazelSourceSnapshot.2000") != NULL) {
+			char *month[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
+					 "Sep", "Oct", "Nov", "Dec"};
+			char *temp, *temp2;
+			int mo, da, ho, mi;
+			/* this crap is too long to display ! */
+			temp = g_strdup (pack->version);
+			temp2 = strstr (temp, "EazelSourceSnapshot.2000");
+			strcpy (temp2, "ESS");
+			temp2 += strlen ("EazelSourceSnapshot.2000");
+			sscanf (temp2, "%2d%2d%2d%2d", &mo, &da, &ho, &mi);
+			result = g_strdup_printf ("%s of %d %s, %02d:%02d", 
+						  pack->name,
+						  da, month[mo-1], ho, mi);
+			g_free (temp);
+		} else {
+			result = g_strdup_printf ("%s v%s", pack->name, pack->version);
+		}
+	} else if (pack->name) {
+		result = g_strdup_printf ("%s", pack->name);
+	} else if (pack->eazel_id) {
+		result = g_strdup_printf ("Eazel rpm id %s", pack->eazel_id);
+	} else if (pack->provides && pack->provides->data) {
+		result = g_strdup_printf ("file %s", (char*)(pack->provides->data));
+	} else {
+		/* what the--?!  WHO ARE YOU! */
+		result = g_strdup ("another package");
+	}
+	
+	return result;
+}
+
 int 
 packagedata_hash_equal (PackageData *a, 
 			PackageData *b)

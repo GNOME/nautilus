@@ -90,7 +90,6 @@ eazel_install_rpm_set_settings (EazelInstall *service) {
 	if (eazel_install_get_debug (service)) {
 		rpmSetVerbosity (RPMMESS_DEBUG);
 	}
-	rpmSetVerbosity (RPMMESS_DEBUG);
 
 	trilobite_debug ("Read rpmrc file %s", eazel_install_get_rpmrc_file (service));
 	rpmReadConfigFiles (eazel_install_get_rpmrc_file (service), NULL);
@@ -111,12 +110,12 @@ eazel_install_start_transaction_make_rpm_argument_list (EazelInstall *service,
 		}
 		(*args) = g_list_prepend (*args, g_strdup ("--nodeps"));
 	}
-	if (eazel_install_get_downgrade (service)) {
-		(*args) = g_list_prepend (*args, g_strdup ("--oldpackage"));
-	}
 	if (eazel_install_get_uninstall (service)) {
 		(*args) = g_list_prepend (*args, g_strdup ("-e"));
 	} else if (eazel_install_get_update (service) || eazel_install_get_downgrade (service)) {
+		if (eazel_install_get_downgrade (service)) {
+			(*args) = g_list_prepend (*args, g_strdup ("--oldpackage"));
+		}
 		(*args) = g_list_prepend (*args, g_strdup ("-Uvh"));
 	} else {
 		(*args) = g_list_prepend (*args, g_strdup ("-ivh"));

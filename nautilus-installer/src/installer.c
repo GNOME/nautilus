@@ -98,7 +98,7 @@ typedef struct {
 #define ERROR_LABEL	_("The installer was not able to complete the installation of the\n" \
 			  "selected files.  Here's why:")
 #define ERROR_LABEL_2	_("Look for possible solutions to this problem at:\n" \
- 			  "        http://www.eazel.com/support/nautilusfaq\n" \
+ 			  "        http://www.eazel.com/support/\n" \
 			  "Once you have resolved the problem, please restart the installer.")
 #define ERROR_TITLE	_("An error has occurred")
 #define RETRY_LABEL	_("An installation problem has been encountered, but we think we can\n" \
@@ -131,8 +131,6 @@ int installer_server_port = 0;
 char *installer_cgi_path = NULL;
 char *installer_tmpdir = NULL;
 static void check_if_next_okay (GnomeDruidPage *page, void *unused, EazelInstaller *installer);
-
-static char * get_required_name (const PackageData *pack);
 
 static GtkObjectClass *eazel_installer_parent_class;
 
@@ -808,14 +806,14 @@ jump_to_retry_page (EazelInstaller *installer)
 		LOG_DEBUG (("rcase->t = %d\n", rcase->t));
 		switch (rcase->t) {
 		case MUST_UPDATE: {
-			char *required = get_required_name (rcase->u.in_the_way.pack);
+			char *required = packagedata_get_readable_name (rcase->u.in_the_way.pack);
 			temp = g_strdup_printf ("%s needs to be updated.", required);
 			g_free (required);
 		}
 		break;
 		case FORCE_BOTH: {
-			char *required_1 = get_required_name (rcase->u.force_both.pack_1);
-			char *required_2 = get_required_name (rcase->u.force_both.pack_2);
+			char *required_1 = packagedata_get_readable_name (rcase->u.force_both.pack_1);
+			char *required_2 = packagedata_get_readable_name (rcase->u.force_both.pack_2);
 			temp = g_strdup_printf ("%s and %s can both be force installed (DANGER!)", 
 						required_1,
 						required_2);
@@ -824,7 +822,7 @@ jump_to_retry_page (EazelInstaller *installer)
 		}
 		break;
 		case REMOVE: {
-			char *required = get_required_name (rcase->u.remove.pack);
+			char *required = packagedata_get_readable_name (rcase->u.remove.pack);
 			temp = g_strdup_printf ("%s could not be solved, will be forcefully removed.", 
 						required);
 			g_free (required);
@@ -1148,48 +1146,6 @@ add_update_package (EazelInstaller *installer,
 	}
 }
 
-static char *
-get_required_name (const PackageData *pack)
-{
-	char *result = NULL;
-
-	if (pack==NULL) {
-		result = NULL;
-	} else if (pack->name && pack->version) {
-		/* This is a hack to shorten EazelSourceSnapshot names
-		   into the build date/time */
-		if (strstr (pack->version, "EazelSourceSnapshot.2000") != NULL) {
-			char *month[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
-					 "Sep", "Oct", "Nov", "Dec"};
-			char *temp, *temp2;
-			int mo, da, ho, mi;
-			/* this crap is too long to display ! */
-			temp = g_strdup (pack->version);
-			temp2 = strstr (temp, "EazelSourceSnapshot.2000");
-			strcpy (temp2, "ESS");
-			temp2 += strlen ("EazelSourceSnapshot.2000");
-			sscanf (temp2, "%2d%2d%2d%2d", &mo, &da, &ho, &mi);
-			result = g_strdup_printf ("%s of %d %s, %02d:%02d", 
-						  pack->name,
-						  da, month[mo-1], ho, mi);
-			g_free (temp);
-		} else {
-			result = g_strdup_printf ("%s v%s", pack->name, pack->version);
-		}
-	} else if (pack->name) {
-		result = g_strdup_printf ("%s", pack->name);
-	} else if (pack->eazel_id) {
-		result = g_strdup_printf ("Eazel package %s", pack->eazel_id);
-	} else if (pack->provides && pack->provides->data) {
-		result = g_strdup (pack->provides->data);
-	} else {
-		/* what the--?!  WHO ARE YOU! */
-		result = g_strdup ("another package");
-	}
-	
-	return result;
-}
-
 static void
 get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 {
@@ -1203,8 +1159,8 @@ get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 	if (data->path) {
 		previous_pack = (PackageData*)(data->path->data);
 	}
-	required = get_required_name (pack);
-	required_by = get_required_name (previous_pack);
+	required = packagedata_get_readable_name (pack);
+	required_by = packagedata_get_readable_name (previous_pack);
 
 	LOG_DEBUG (("traversing error tree: package (%s) status (%s/%s)\n", required, 
 		    packagedata_status_enum_to_str (pack->status),
@@ -1281,7 +1237,7 @@ get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 		if (previous_pack->status == PACKAGE_CIRCULAR_DEPENDENCY) {
 			if (g_list_length (data->path) >= 3) {
 				PackageData *causing_package = (PackageData*)((g_list_nth (data->path, 1))->data);
-				char *cause = get_required_name (causing_package);
+				char *cause = packagedata_get_readable_name (causing_package);
 				message = g_strdup_printf ("%s and %s are mutexed because of %s", 
 							   required_by,
 							   required, 
@@ -1459,7 +1415,7 @@ eazel_install_dep_check (EazelInstall *service,
 {
 	GtkWidget *label_overall;
 	char *temp;
-	char *required = get_required_name (needs);
+	char *required = packagedata_get_readable_name (needs);
 
 	label_overall = gtk_object_get_data (GTK_OBJECT (installer->window), "label_overall");
 	/* careful: this needs->name is not always a package name (sometimes it's a filename) */

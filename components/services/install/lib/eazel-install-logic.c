@@ -52,6 +52,13 @@
 #include <sys/wait.h>
 #endif
 
+typedef enum {
+	EAZEL_INSTALL_STATUS_NEW_PACKAGE,
+	EAZEL_INSTALL_STATUS_UPGRADES,
+	EAZEL_INSTALL_STATUS_DOWNGRADES,
+	EAZEL_INSTALL_STATUS_QUO
+} EazelInstallStatus;
+
 static gboolean eazel_install_do_install_packages (EazelInstall *service,
 						   GList* packages);
 
@@ -66,8 +73,8 @@ static void eazel_uninstall_globber (EazelInstall *service,
 				     GList **packages,
 				     GList **failed);
 
-static int eazel_install_check_existing_packages (EazelInstall *service, 
-						  PackageData *pack);
+static EazelInstallStatus eazel_install_check_existing_packages (EazelInstall *service, 
+								 PackageData *pack);
 
 static gboolean eazel_install_download_packages (EazelInstall *service,
 						 gboolean toplevel,
@@ -119,19 +126,18 @@ eazel_install_pre_install_packages (EazelInstall *service,
 
 	for (iterator = *packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack = (PackageData*)iterator->data;
-		int inst_status;
+		EazelInstallStatus inst_status;
 		gboolean skip = FALSE;
 		
 		inst_status = eazel_install_check_existing_packages (service, pack);
-		trilobite_debug ("%s: install status = %d", pack->name, inst_status);
 
 		/* If in force mode, install it under all circumstances.
 		   if not, only install if not already installed in same
 		   version or up/downgrade is set */
 		if (eazel_install_get_force (service) ||
-		    (eazel_install_get_downgrade (service) && inst_status == -1) ||
-		    (eazel_install_get_update (service) && inst_status == 1) ||
-		    inst_status == 2) {
+		    (eazel_install_get_downgrade (service) && inst_status == EAZEL_INSTALL_STATUS_DOWNGRADES) ||
+		    (eazel_install_get_update (service) && inst_status == EAZEL_INSTALL_STATUS_UPGRADES) ||
+		    inst_status == EAZEL_INSTALL_STATUS_NEW_PACKAGE) {
 			skip = FALSE;
 		} else {
 			skip = TRUE;
@@ -251,11 +257,14 @@ eazel_install_download_packages (EazelInstall *service,
 			   - after download, when we for sure have access to the version, check again
 			   - we do this before do_dependency_check to avoid downloaded soft_deps.
 			*/
-			int inst_status = eazel_install_check_existing_packages (service, package);
-			if (inst_status == -1 && eazel_install_get_downgrade (service)) {
+			EazelInstallStatus inst_status;
+
+			inst_status = eazel_install_check_existing_packages (service, package);
+			if (eazel_install_get_downgrade (service) && inst_status == EAZEL_INSTALL_STATUS_DOWNGRADES) {
 				trilobite_debug (_("Will download %s"), package->name);
 				/* must download... */
-			} else if (inst_status <= 0) {
+			} else if (inst_status == EAZEL_INSTALL_STATUS_QUO ||
+				   inst_status == EAZEL_INSTALL_STATUS_DOWNGRADES) {
 				/* Nuke the modifies list again, since we don't want to see them */
 				g_list_foreach (package->modifies, 
 						(GFunc)packagedata_destroy, 
@@ -1368,14 +1377,14 @@ eazel_install_add_to_extras_foreach (char *key, GList *list, GList **extrapackag
 
    In some weird cases, you should eg get -1 and 1 returned (or such). But this will always
    return the "lowest possible" stage */
-static int
+static EazelInstallStatus
 eazel_install_check_existing_packages (EazelInstall *service, 
 				       PackageData *pack)
 {
 	GList *existing_packages;
-	int result;
+	EazelInstallStatus result;
 
-	result = 2;
+	result = EAZEL_INSTALL_STATUS_NEW_PACKAGE;
 	/* query for existing package of same name */
 	existing_packages = eazel_install_simple_query (service, 
 							pack->name, 
@@ -1438,36 +1447,52 @@ eazel_install_check_existing_packages (EazelInstall *service,
 
 			/* Calc the result */
 			if (res == 0 && result > 0) {
-				result = 0;
+				result = EAZEL_INSTALL_STATUS_QUO;
 			} else if (res > 0 && result > 1) {
-				result = 1;
+				result = EAZEL_INSTALL_STATUS_UPGRADES;
 			} else {
-				result = -1;
+				result = EAZEL_INSTALL_STATUS_DOWNGRADES;
 			}
 		
-			/* Debug && setting modifes list */
-			if (result!=0) {
-				if (result>0) {
-					trilobite_debug (_("%s upgrades from version %s to %s"),
-							 pack->name, 
-							 existing_package->version, 
-							 pack->version);
-				} else {
-					trilobite_debug (_("%s downgrades from version %s to %s"),
-							 pack->name, 
-							 existing_package->version, 
-							 pack->version);
-				}
+			/* Debug output */ 
+			switch (result) {
+			case EAZEL_INSTALL_STATUS_QUO: {
+				trilobite_debug (_("%s version %s already installed"), 
+						 pack->name, 
+						 existing_package->version);
+			} 
+			break;
+			case EAZEL_INSTALL_STATUS_UPGRADES: {
+				trilobite_debug (_("%s upgrades from version %s to %s"),
+						 pack->name, 
+						 existing_package->version, 
+						 pack->version);
+			}
+			break;
+			case EAZEL_INSTALL_STATUS_DOWNGRADES: {
+				trilobite_debug (_("%s downgrades from version %s to %s"),
+						 pack->name, 
+						 existing_package->version, 
+						 pack->version);
+			}
+			break;
+			default:
+				break;
+			}
+				
+			/* Set modifies list */
+			if (result != EAZEL_INSTALL_STATUS_QUO) {
 				packagedata_add_pack_to_modifies (pack, existing_package);
 				existing_package->status = PACKAGE_RESOLVED;
 			} else {
 				pack->status = PACKAGE_ALREADY_INSTALLED;
-				trilobite_debug (_("%s version %s already installed"), 
-						 pack->name, 
-						 existing_package->version);
 				packagedata_destroy (existing_package, TRUE);
 			}
 		}
+	} else {
+		trilobite_debug (_("%s installs version %s"), 
+				 pack->name, 
+				 pack->version);
 	}
 
 	return result;
@@ -1632,6 +1657,7 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 		}
 
 		if (fetch_result) {
+			EazelInstallStatus inst_status;
 			/* This sets the dep->modifies and checks for a funky case.
 			   This case is sort of like the one above.
 			   If the call returns 0, the following must have happened ;
@@ -1646,7 +1672,8 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 			   
 			   I assume the packages have the same name...
 			*/
-			if (eazel_install_check_existing_packages (service, dep)==0) {
+			inst_status = eazel_install_check_existing_packages (service, dep);
+			if (inst_status == EAZEL_INSTALL_STATUS_QUO) {
 				GList *pack_entry;
 				
 				trilobite_debug ("package %s required %s", pack->name, dep->name);
@@ -1668,6 +1695,14 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 					trilobite_debug ("I cannot set the funky break list");
 				}
 				dep->status = PACKAGE_CIRCULAR_DEPENDENCY;
+				fetch_result = FALSE;
+			} else if (eazel_install_get_downgrade (service)==FALSE && 
+				   inst_status == EAZEL_INSTALL_STATUS_DOWNGRADES) {
+				/* Bad, we're downgrading but not allowed to downgrade */
+				fetch_result = FALSE;
+			} else if (eazel_install_get_update (service)==FALSE && 
+				   inst_status == EAZEL_INSTALL_STATUS_UPGRADES) {
+				/* Bad, we're upgrading but not allowed to upgrade */
 				fetch_result = FALSE;
 			}
 
@@ -1731,7 +1766,12 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 			if (dep->status == PACKAGE_UNKNOWN_STATUS) {
 				dep->status = PACKAGE_CANNOT_OPEN;
 			}
-			
+
+			trilobite_debug ("Fetching %s failed, status %s/%s", 
+					 packagedata_get_readable_name (dep),
+					 packagedata_status_enum_to_str (dep->status),
+					 packagedata_modstatus_enum_to_str (dep->modify_status));
+					 			
 			if (!eazel_install_get_force (service)) {
 				/* Remove the extra packages for this package */
 				extralist = g_hash_table_lookup (extras, pack->name);			

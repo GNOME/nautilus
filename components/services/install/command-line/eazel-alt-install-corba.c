@@ -76,9 +76,11 @@ char    *arg_server,
 	*arg_tmp_dir,
 	*arg_root;
 
+/* Yeahyeah, but this was initially a test tool,
+   so stop whining... */
 CORBA_ORB orb;
 CORBA_Environment ev;
-
+int cli_result = 1;
 GList *cases = NULL;
 
 static const struct poptOption options[] = {
@@ -581,6 +583,7 @@ done (EazelInstallCallback *service,
       gpointer unused)
 {
 	fprintf (stderr, "Operation %s\n", result ? "ok" : "failed");
+	cli_result = result ? 0 : 1;
 	if (cases == NULL) {
 		gtk_main_quit ();
 	}
@@ -767,6 +770,7 @@ int main(int argc, char *argv[]) {
 				}
 			}
 		}
+		cli_result = 0;
 	} else if (arg_revert) {
 		GList *iterator;
 		for (iterator = strs; iterator; iterator = iterator->next) {
@@ -786,6 +790,10 @@ int main(int argc, char *argv[]) {
 	gtk_object_unref (GTK_OBJECT (problem));
 	/* Corba cleanup */
 	CORBA_exception_free (&ev);
+
+	if (arg_debug) {
+		g_message ("cli_result = %d", cli_result);
+	}
        
-	return 0;
+	return cli_result;
 };

@@ -32,7 +32,6 @@ corba_string_sequence_to_glist (CORBA_sequence_CORBA_string provides) {
 	for (iterator = 0; iterator < provides._length; iterator++) {
 		result = g_list_prepend (result, g_strdup (provides._buffer[iterator]));
 	}
-	
 	return result;
 }
 
@@ -138,7 +137,7 @@ corba_packagedatastruct_from_packagedata (const PackageData *pack)
 		break;
 	}
 
-	if (pack->provides) {
+	if (pack->provides) {		
 		corbapack->provides = g_list_to_corba_string_sequence (pack->provides);
 	} else {
 		corbapack->provides._length = 0;

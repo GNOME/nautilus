@@ -37,12 +37,12 @@ typedef enum {
 	EAZEL_INSTALL_INSTALL_OK = 1<<0,
 	EAZEL_INSTALL_UNINSTALL_OK = 1<<1,
 	EAZEL_INSTALL_REVERSION_OK = 1<<2
-} EazelInstallStatus;
+} EazelInstallOperationStatus;
 	
 
-EazelInstallStatus install_packages (EazelInstall *service, GList *categories);
-EazelInstallStatus uninstall_packages (EazelInstall *service, GList *categories);
-EazelInstallStatus revert_transaction (EazelInstall *service, GList *packages);
+EazelInstallOperationStatus install_packages (EazelInstall *service, GList *categories);
+EazelInstallOperationStatus uninstall_packages (EazelInstall *service, GList *categories);
+EazelInstallOperationStatus revert_transaction (EazelInstall *service, GList *packages);
 
 gboolean eazel_install_prepare_package_system (EazelInstall *service);
 gboolean eazel_install_free_package_system (EazelInstall *service);

@@ -890,7 +890,7 @@ eazel_install_install_packages (EazelInstall *service,
 				GList *categories,
 				const char *root)
 {
-	EazelInstallStatus result;
+	EazelInstallOperationStatus result;
 	SANITY (service);
 
 	trilobite_debug ("eazel_install_install_packages (..., %d cats, %s)", 
@@ -942,7 +942,7 @@ eazel_install_install_packages (EazelInstall *service,
 void 
 eazel_install_uninstall_packages (EazelInstall *service, GList *categories, const char *root)
 {
-	EazelInstallStatus result;
+	EazelInstallOperationStatus result;
 	SANITY (service);
 
 	trilobite_debug ("eazel_install_uninstall_packages (..., %d cats, %s)", 
@@ -974,7 +974,7 @@ eazel_install_revert_transaction_from_xmlstring (EazelInstall *service,
 						 const char *root)
 {
 	GList *packages;
-	EazelInstallStatus result;
+	EazelInstallOperationStatus result;
 
 	g_free (service->private->cur_root);
 	service->private->cur_root = g_strdup (root?root:DEFAULT_RPM_DB_ROOT);

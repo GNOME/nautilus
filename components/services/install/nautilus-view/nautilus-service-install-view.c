@@ -597,18 +597,41 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 }
 
 
+
 /* is this really necessary?  in most cases it will probably just flash past at the speed of light. */
 static void
 nautilus_service_install_dependency_check (EazelInstallCallback *cb, const PackageData *package,
 					   const PackageData *needs, NautilusServiceInstallView *view)
 {
 	char *out;
+	char *required = packagedata_get_readable_name (needs);
 
-	out = g_strdup_printf (_("Dependency check: Package %s needs %s"), package->name, needs->name);
+	out = g_strdup_printf (_("Dependency check: Package %s needs %s"), package->name, required);
 	show_overall_feedback (view, out);
 	g_free (out);
+	g_free (required);
 }
 
+
+static void
+nautilus_service_install_check_for_desktop_files (NautilusServiceInstallView *view,
+						  EazelInstallCallback *cb,
+						  PackageData *package)
+{
+	GList *iterator;
+
+	for (iterator = package->provides; iterator; iterator = g_list_next (iterator)) {
+		char *fname = (char*)(iterator->data);
+		char *ptr;
+
+		ptr = strrchr (fname, '.');
+		if (ptr && ((strcmp (ptr, ".desktop") == 0) ||
+			    (strcmp (ptr, ".kdelink") == 0))) {
+			view->details->desktop_files = g_list_prepend (view->details->desktop_files,
+								       g_strdup (fname));
+		}
+	}
+}
 
 /* do what gnome ought to do automatically */
 static void
@@ -653,7 +676,7 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 	while (package_list) {
 		package = (PackageData *) (package_list->data);
 		package_list = g_list_remove (package_list, package_list->data);
-	        g_string_sprintfa (message, "%s %s\n", package->name, package->version);
+	        g_string_sprintfa (message, " \xB7 %s v%s\n", package->name, package->version);
 
 		for (iter = g_list_first (package->soft_depends); iter; iter = g_list_next (iter)) {
 			package_list = g_list_prepend (package_list, iter->data);
@@ -661,7 +684,12 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 		for (iter = g_list_first (package->hard_depends); iter; iter = g_list_next (iter)) {
 			package_list = g_list_prepend (package_list, iter->data);
 		}
-	}
+		if (package->toplevel && package->modify_status == PACKAGE_MOD_INSTALLED) {
+			nautilus_service_install_check_for_desktop_files (view,
+									  cb,
+									  package);
+		}
+	}	
 
 	message = g_string_append (message, _("\nIs this okay?"));
 
@@ -735,21 +763,6 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 				view->details->core_package = TRUE;
 			} 
 		}
-		/* Crude fix for 
-		   FIXME bugzilla.eazel.com 3431
-		   should go into nautilus_service_install_done, and only by called 
-		   if result==TRUE
-		*/
-		if (view->details->core_package) {
-			GtkWidget *toplevel;
-			GnomeDialog *dialog;
-			toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view->details->nautilus_view));
-			dialog = nautilus_info_dialog (_("A core package of nautilus has been updated.\n"
-							 "You should restart nautilus."),
-						       _("Nautilus updated"),
-						       GTK_WINDOW (toplevel));
-		}
-
 
 		make_new_status (view);
 		gtk_progress_set_percentage (GTK_PROGRESS (view->details->current_progress_bar), 0.0);
@@ -811,6 +824,57 @@ show_dialog_and_run_away (NautilusServiceInstallView *view, const char *message)
 	nautilus_view_open_location (view->details->nautilus_view, NEXT_SERVICE_VIEW);
 }
 
+/* Get the toplevel menu name for the desktop file installed */
+static char*
+nautilus_install_service_locate_menu_entries (NautilusServiceInstallView *view) 
+{
+	GList *iterator;
+	char *result;
+	
+	result = g_strdup ("");
+
+	for (iterator = view->details->desktop_files; iterator; iterator = g_list_next (iterator)) {
+		char *fname = (char*)(iterator->data);
+		char *addition;
+		char *tmp;
+		GnomeDesktopEntry *dentry = gnome_desktop_entry_load (fname);
+
+		g_message ("DEntry for %s (%s app), location %s", 
+			   dentry->name, dentry->is_kde ? "KDE" : "Gnome",
+			   dentry->location);
+
+		if (dentry->is_kde) {
+			addition = g_strdup_printf (_(" \xB7 %s is in the KDE menu.\n"), dentry->name);
+		} else {
+			char *gnomeapp = "gnome/apps/";
+			char *apps_ptr = strstr (fname, gnomeapp);
+			if (apps_ptr) {
+				char *slash;
+				char *menu;
+				apps_ptr += strlen (gnomeapp);
+				slash = strrchr (apps_ptr, G_DIR_SEPARATOR);
+				if (slash) {
+					menu = g_strndup (apps_ptr, strlen (apps_ptr) - strlen (slash));
+					addition = g_strdup_printf (_(" \xB7 %s is in the Gnome menu under %s.\n"), 
+								    dentry->name, menu);
+					g_free (menu);
+				} else {
+					addition = g_strdup_printf (_(" \xB7 %s is in the Gnome menu.\n"), 
+								    dentry->name);
+				}
+			} else {			       
+				addition = g_strdup_printf (_(" \xB7 %s in somewhere...\n"), 
+							    dentry->name);
+			}
+		}
+		tmp = g_strdup_printf ("%s%s", result, addition);
+		g_free (result);
+		result = tmp;
+		g_free (addition);
+	}
+	return result;
+}
+
 static void
 nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, NautilusServiceInstallView *view)
 {
@@ -836,7 +900,18 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 	turn_cylon_off (view, success ? 1.0 : 0.0);
 
 	if (success) {
-		message = _("Installation complete!");
+		/* Crude fix for 
+		   FIXME bugzilla.eazel.com 3431
+		   should go into nautilus_service_install_done, and only by called 
+		   if result==TRUE
+		*/
+		if (view->details->core_package) {
+			message = _("Installation complete!\n"
+				    "A core package of Nautilus has been\n"
+				    "updated, you should restart Nautilus");
+		} else {
+			message = _("Installation complete!");
+		}
 	} else if (view->details->cancelled) {
 		message = _("Installation aborted.");
 	} else {
@@ -845,7 +920,13 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 
 	show_overall_feedback (view, message);
 
-	real_message = g_strdup_printf (_("%s\nErase the leftover RPM files?"), message);
+	if (success && view->details->desktop_files) {
+		real_message = g_strdup_printf (_("%s\n%s\nErase the leftover RPM files?"), 
+						message,
+						nautilus_install_service_locate_menu_entries (view));
+	} else {
+		real_message = g_strdup_printf (_("%s\nErase the leftover RPM files?"), message);
+	}
 	toplevel = gtk_widget_get_toplevel (view->details->message_box);
 	if (GTK_IS_WINDOW (toplevel)) {
 		dialog = gnome_question_dialog_parented (real_message, (GnomeReplyCallback)reply_callback,

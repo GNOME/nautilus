@@ -221,6 +221,10 @@ void packagedata_remove_soft_dep (PackageData *remove, PackageData *from);
 const char *rpmfilename_from_packagedata (const PackageData *pack);
 const char *rpmname_from_packagedata (const PackageData *pack);
 
+/* This is now the authorative way to get a nice human-readble name
+   from a given package */
+char *packagedata_get_readable_name (const PackageData *pack);
+
 void packagedata_destroy (PackageData *pd, gboolean deep);
 
 int packagedata_hash_equal (PackageData *a, PackageData *b);

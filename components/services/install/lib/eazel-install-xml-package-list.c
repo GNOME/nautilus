@@ -66,6 +66,19 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 	} else {
 		rv->bytesize = 0;
 	}
+	temp = xml_get_value (package, "PROVIDES");
+	if (temp) {
+		const char *tmp1, *sep, *end;		
+		tmp1 = temp;
+		end = temp + strlen (temp);
+		while ((sep = strchr (tmp1, G_SEARCHPATH_SEPARATOR))!= NULL) {
+			rv->provides = g_list_prepend (rv->provides, g_strndup (tmp1, (int)(sep - tmp1)));
+			tmp1 = sep;
+			tmp1 ++;
+		}
+		rv->provides = g_list_prepend (rv->provides, g_strdup (tmp1));
+		rv->provides = g_list_reverse (rv->provides);
+	}
 
 	rv->summary = g_strdup (xml_get_value (package, "SUMMARY"));
 	rv->description = g_strdup (xml_get_value (package, "DESCRIPTION"));
@@ -539,6 +552,18 @@ eazel_install_packagedata_to_xml (const PackageData *pack, char *title, xmlNodeP
 	tmp = g_strdup_printf ("%d", pack->bytesize);
 	node = xmlNewChild (root, NULL, "BYTESIZE", tmp);
 	g_free (tmp);
+
+	if (pack->provides) {
+		tmp = g_strdup ((char*)(pack->provides->data));
+		for (iterator = g_list_next (pack->provides); iterator; iterator = g_list_next (iterator)) {
+			char *fname = (char*)(iterator->data);
+			char *tmp1;
+			tmp1 = g_strdup_printf ("%s%c%s", tmp, G_SEARCHPATH_SEPARATOR, fname);
+			g_free (tmp);
+			tmp = tmp1;			
+		}
+		node = xmlNewChild (root, NULL, "PROVIDES", tmp);
+	}
 
 	for (iterator = pack->soft_depends; iterator; iterator = iterator->next) {
 		eazel_install_packagedata_to_xml ((PackageData*)iterator->data, "SOFT_DEPEND", root);

@@ -47,47 +47,6 @@ typedef struct {
 	GList *path;
 } GetErrorsForEachData;
 
-static char *
-get_required_name (const PackageData *pack)
-{
-	char *result = NULL;
-	if (pack==NULL) {
-		result = NULL;
-	} else if (pack->name && pack->version) {
-		/* This is a hack to shorten EazelSourceSnapshot names
-		   into the build date/time */
-		if (strstr (pack->version, "EazelSourceSnapshot.2000") != NULL) {
-			char *month[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
-					 "Sep", "Oct", "Nov", "Dec"};
-			char *temp, *temp2;
-			int mo, da, ho, mi;
-			/* this crap is too long to display ! */
-			temp = g_strdup (pack->version);
-			temp2 = strstr (temp, "EazelSourceSnapshot.2000");
-			strcpy (temp2, "ESS");
-			temp2 += strlen ("EazelSourceSnapshot.2000");
-			sscanf (temp2, "%2d%2d%2d%2d", &mo, &da, &ho, &mi);
-			result = g_strdup_printf ("%s of %d %s, %02d:%02d", 
-						  pack->name,
-						  da, month[mo-1], ho, mi);
-			g_free (temp);
-		} else {
-			result = g_strdup_printf ("%s v%s", pack->name, pack->version);
-		}
-	} else if (pack->name) {
-		result = g_strdup_printf ("%s", pack->name);
-	} else if (pack->eazel_id) {
-		result = g_strdup_printf ("Eazel rpm id %s", pack->eazel_id);
-	} else if (pack->provides && pack->provides->data) {
-		result = g_strdup_printf ("file %s", (char*)(pack->provides->data));
-	} else {
-		/* what the--?!  WHO ARE YOU! */
-		result = g_strdup ("another package");
-	}
-	
-	return result;
-}
-
 static void
 get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
 {
@@ -96,7 +55,6 @@ get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
 	char *required_by = NULL;
 	char *top_name = NULL;
 	GList **errors = &(data->errors);
-	gboolean recoverable_error = FALSE;
 	PackageData *previous_pack = NULL;
 	PackageData *top_pack = NULL;
 
@@ -106,10 +64,10 @@ get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
 		if (top_pack == previous_pack) {
 			previous_pack = NULL;
 		}
-		required_by = get_required_name (previous_pack);
-		top_name = get_required_name (top_pack);
+		required_by = packagedata_get_readable_name (previous_pack);
+		top_name = packagedata_get_readable_name (top_pack);
 	}
-	required = get_required_name (pack);
+	required = packagedata_get_readable_name (pack);
 
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:
@@ -129,10 +87,7 @@ get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
 		break;
 	case PACKAGE_DEPENDENCY_FAIL:
 		if (pack->soft_depends || pack->hard_depends) {
-			/* only add this message if it's not going to be explained by a lower dependency */
-			/* (avoids redundant info like "nautilus would not work anymore" -- DUH) */
-			/* message = g_strdup_printf (_("%s requires the following :"), required); */
-			recoverable_error = TRUE;
+
 		} else {
 			if (previous_pack->status == PACKAGE_BREAKS_DEPENDENCY) {
 				if (required_by) {
@@ -169,7 +124,7 @@ get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
 		if (previous_pack->status == PACKAGE_CIRCULAR_DEPENDENCY) {
 			if (g_list_length (data->path) >= 3) {
 				PackageData *causing_package = (PackageData*)((g_list_nth (data->path, 1))->data);
-				char *cause = get_required_name (causing_package);
+				char *cause = packagedata_get_readable_name (causing_package);
 				message = g_strdup_printf ("%s and %s are mutexed because of %s", 
 							   required_by,
 							   required, 
@@ -383,6 +338,11 @@ add_update_case (EazelInstallProblem *problem,
 	}
 }
 
+/* 
+   FIXME bugzilla.eazel.com
+   Needs to handle the following :
+   - package status looks ok, check modification_status
+*/
 static void
 get_detailed_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
 {
@@ -465,14 +425,14 @@ eazel_install_problem_case_to_string (EazelInstallProblemCase *pcase)
 	char *message = NULL;
 	switch (pcase->problem) {
 	case EI_PROBLEM_UPDATE: {
-		char *required = get_required_name (pcase->u.update.pack);
+		char *required = packagedata_get_readable_name (pcase->u.update.pack);
 		message = g_strdup_printf ("%s needs update", required);
 		g_free (required);
 	}
 	break;
 	case EI_PROBLEM_FORCE_INSTALL_BOTH: {
-		char *required_1 = get_required_name (pcase->u.force_install_both.pack_1);
-		char *required_2 = get_required_name (pcase->u.force_install_both.pack_2);
+		char *required_1 = packagedata_get_readable_name (pcase->u.force_install_both.pack_1);
+		char *required_2 = packagedata_get_readable_name (pcase->u.force_install_both.pack_2);
 		message = g_strdup_printf ("%s and %s are both needed", 
 					   required_1, 
 					   required_2);
@@ -481,13 +441,13 @@ eazel_install_problem_case_to_string (EazelInstallProblemCase *pcase)
 	}
 	break;
 	case EI_PROBLEM_REMOVE: {
-		char *required = get_required_name (pcase->u.remove.pack);
+		char *required = packagedata_get_readable_name (pcase->u.remove.pack);
 		message = g_strdup_printf ("%s needs to be removed", required);
 		g_free (required);
 	}
 	break;
 	case EI_PROBLEM_FORCE_REMOVE: {
-		char *required = get_required_name (pcase->u.force_remove.pack);
+		char *required = packagedata_get_readable_name (pcase->u.force_remove.pack);
 		message = g_strdup_printf ("%s needs to be forcefully removed", required);
 		g_free (required);
 	}
@@ -855,8 +815,8 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 {
 	EazelInstallProblemEnum dominant_problem_type;
 	GList *dominant_problems;
-	gboolean service_force, service_update;
-	gboolean force, update;
+	gboolean service_force, service_update, service_downgrade;
+	gboolean force, update, downgrade;
 	GList *categories;
 #ifndef EAZEL_INSTALL_NO_CORBA
 	CORBA_Environment ev;
@@ -886,9 +846,11 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 #ifdef EAZEL_INSTALL_NO_CORBA
 	service_force = eazel_install_get_force (service);
 	service_update = eazel_install_get_update (service);
+	service_downgrade = eazel_install_get_downgrade (service);
 #else /* EAZEL_INSTALL_NO_CORBA */
 	service_force = Trilobite_Eazel_Install__get_force (corba_service, &ev);
 	service_update = Trilobite_Eazel_Install__get_update (corba_service, &ev);
+	service_downgrade = Trilobite_Eazel_Install__get_downgrade (corba_service, &ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
 	/* now determine the new parameters */
@@ -896,18 +858,22 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 	case EI_PROBLEM_UPDATE:
 		force = FALSE;
 		update = TRUE;
+		downgrade = FALSE;
 		break;
 	case EI_PROBLEM_FORCE_INSTALL_BOTH:
 		force = TRUE;
 		update = TRUE;
+		downgrade = TRUE;
 		break;
 	case EI_PROBLEM_REMOVE:
 		force = FALSE;
 		update = TRUE;
+		downgrade = FALSE;
 		break;
 	case EI_PROBLEM_FORCE_REMOVE:
 		force = TRUE;
 		update = TRUE;
+		downgrade = FALSE;
 		break;
 	case EI_PROBLEM_INCONSISTENCY:
 		break;
@@ -920,9 +886,11 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 #ifdef EAZEL_INSTALL_NO_CORBA		
 	eazel_install_set_force (service, force);
 	eazel_install_set_update (service, update);
+	eazel_install_set_downgrade (service, downgrade);
 #else /* EAZEL_INSTALL_NO_CORBA */
 	Trilobite_Eazel_Install__set_force (corba_service, service_force, &ev);
 	Trilobite_Eazel_Install__set_update (corba_service, service_update, &ev);
+	Trilobite_Eazel_Install__set_downgrade (corba_service, service_downgrade, &ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
 	/* fire it off */
@@ -954,9 +922,11 @@ eazel_install_problem_handle_cases (EazelInstallProblem *problem,
 #ifdef EAZEL_INSTALL_NO_CORBA
 	eazel_install_set_force (service, service_force);
 	eazel_install_set_update (service, service_update);
+	eazel_install_set_downgrade (service, service_downgrade);
 #else /* EAZEL_INSTALL_NO_CORBA */
 	Trilobite_Eazel_Install__set_force (corba_service, service_force, &ev);
 	Trilobite_Eazel_Install__set_update (corba_service, service_update, &ev);
+	Trilobite_Eazel_Install__set_downgrade (corba_service, service_downgrade, &ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
 #ifndef EAZEL_INSTALL_NO_CORBA

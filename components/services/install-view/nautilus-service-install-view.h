@@ -86,6 +86,8 @@ struct _NautilusServiceInstallViewDetails {
 	   FIXME bugzilla.eazel.com 3431
 	*/
 	gboolean core_package;
+
+	GList *desktop_files;
 };
 
 
