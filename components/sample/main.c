@@ -113,8 +113,5 @@ main (int argc, char *argv[])
 	/* Let the factory go. */
 	bonobo_object_unref (BONOBO_OBJECT (factory));
 
-	/* Finalize libraries. */
-	bonobo_shutdown ();
-	
 	return EXIT_SUCCESS;
 }

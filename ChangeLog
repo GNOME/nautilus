@@ -1,5 +1,10 @@
 2000-07-13  Darin Adler  <darin@eazel.com>
 
+	* components/sample/main.c: (main): There was a second call
+	to bonobo_shutdown which I forgot to remove.
+
+2000-07-13  Darin Adler  <darin@eazel.com>
+
 	* libnautilus-extensions/nautilus-file.h: Fix a FIXME.
 	* libnautilus-extensions/nautilus-file.c: Add a FIXME.
 	
