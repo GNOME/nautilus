@@ -302,6 +302,10 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 			   GTK_TYPE_STRING,
 			   GTK_ARG_READWRITE|GTK_ARG_CONSTRUCT,
 			   ARG_APP_ID);
+  gtk_object_add_arg_type ("NautilusWindow::app",
+			   GTK_TYPE_OBJECT,
+			   GTK_ARG_READWRITE|GTK_ARG_CONSTRUCT,
+			   ARG_APP);
   gtk_object_add_arg_type ("NautilusWindow::content_view",
 			   GTK_TYPE_OBJECT,
 			   GTK_ARG_READWRITE,

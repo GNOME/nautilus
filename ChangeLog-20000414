@@ -1,3 +1,15 @@
+2000-03-02  Pavel Cisler <pavel@eazel.com> (checking in as ramiro)
+	Fixed a crash in "Open in New Window".
+
+	* src/ntl-window.c,h: 
+	  (nautilus_window_new): Removed the call. Creating new
+	  windows should only be done through nautilus_app_create_window.
+	  (nautilus_window_class_init): Added a call to add "NautilusWindow::app"
+	  as an argument to make the app field get initialized properly.
+	* src/ntl-app.c:
+	  (nautilus_app_create_window): Made it call gtk_object_new with the
+	  right arguments to create a new window.
+
 2000-03-02  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus/nautilus-icon-factory.c:

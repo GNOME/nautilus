@@ -243,7 +243,9 @@ nautilus_app_destroy_window(GtkObject *obj, NautilusApp *app)
 NautilusWindow *
 nautilus_app_create_window(NautilusApp *app)
 {
-  GtkWidget *win = gtk_widget_new(nautilus_window_get_type(), "app_id", "nautilus", NULL);
+  GtkWidget *win = GTK_WIDGET (gtk_object_new (nautilus_window_get_type(), "app_id", "nautilus", 
+                               "app", BONOBO_OBJECT(app), NULL));
+
 
   gtk_signal_connect(GTK_OBJECT(win), "destroy", nautilus_app_destroy_window, app);
 
