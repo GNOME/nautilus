@@ -156,8 +156,6 @@ finish_loading_note (NautilusFile *file,
 
 	tab_image = notes_get_indicator_image (notes);	
 	
-	g_message ("has text is %d, tab image is %s", notes->has_text, tab_image);
-	
 	tab_image_arg = bonobo_arg_new (BONOBO_ARG_STRING);
 	BONOBO_ARG_SET_STRING (tab_image_arg, tab_image);			
 	
