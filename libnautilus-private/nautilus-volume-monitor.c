@@ -87,7 +87,8 @@
 
 #ifdef HAVE_CDDA_INTERFACE_H
 #ifdef HAVE_CDDA_PARANOIA_H
-#define HAVE_CDDA 1
+/* Take this out for now */
+/*#define HAVE_CDDA 1*/
 #endif
 #endif
 
