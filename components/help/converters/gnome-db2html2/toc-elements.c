@@ -357,10 +357,12 @@ toc_title_start_element (Context *context,
 
 	switch (stack_el->info->index) {
 	case SECT1:
+#ifdef ALL_SECT_LINKS
 	case SECT2:
 	case SECT3:
 	case SECT4:
 	case SECT5:
+#endif
 	case SECTION:
 		if (context->sect2 == 0) {
 			g_print ("<H2>");
@@ -388,6 +390,25 @@ toc_title_start_element (Context *context,
 		}
 		g_print ("\">");
 		break;
+#ifndef ALL_SECT_LINKS
+	case SECT2:
+	case SECT3:
+	case SECT4:
+	case SECT5:
+		if (context->sect2 == 0) {
+			g_print ("<H2>");
+		} else if (context->sect3 == 0) {
+			g_print ("<H3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		} else {
+			g_print ("<H4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		}
+		if (context->sect1 > 0) g_print ("%d", context->sect1);
+		if (context->sect2 > 0) g_print (".%d", context->sect2);
+		if (context->sect3 > 0) g_print (".%d", context->sect3);
+		if (context->sect4 > 0) g_print (".%d", context->sect4);
+		if (context->sect5 > 0) g_print (".%d", context->sect5);
+		g_print (".&nbsp;&nbsp;");
+#endif
 	default:
 		break;
 	};
@@ -424,12 +445,20 @@ toc_title_end_element (Context *context,
 		g_print ("</A></H2>\n");
 		break;
 	case SECT2:
+#ifdef ALL_SECT_LINKS
 		g_print ("</A></H3>\n");
+#else
+		g_print ("</H3>\n");
+#endif
 		break;
 	case SECT3:
 	case SECT4:
 	case SECT5:
+#ifdef ALL_SECT_LINKS
 		g_print ("</A></H4>\n");
+#else
+		g_print ("</H4>\n");
+#endif
 		break;
 	default:
 		break;

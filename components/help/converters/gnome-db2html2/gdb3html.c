@@ -577,7 +577,7 @@ xml_parse_document (gchar *filename)
 }
 
 static void
-print_footer (Context *context, const char *prev, const char *next, gboolean with_home)
+print_footer (const char *prev, const char *home, const char *next)
 {
 	g_print ("\n<HR ALIGN=\"LEFT\" WIDTH=\"100%%\">\n");
 	g_print ("<TABLE WIDTH=\"100%%\" BORDER=\"0\" CELLPADDING=\"0\" CELLSPACING=\"0\">\n");
@@ -586,21 +586,21 @@ print_footer (Context *context, const char *prev, const char *next, gboolean wit
 	if (prev == NULL) {
 		g_print ("&nbsp;");
 	} else {
-		g_print ("<A HREF=\"help:%s?%s\">&#60;&#60;&#60; Previous</A>", context->base_file, prev);
+		g_print ("<A HREF=\"%s\">&#60;&#60;&#60; Previous</A>", prev);
 	}
 
 	g_print ("</TD>\n<TD WIDTH=\"34%%\" ALIGN=\"CENTER\" VALIGN=\"TOP\">");
-	if (with_home == FALSE) {
+	if (home == NULL) {
 		g_print ("&nbsp;");
 	} else {
-		g_print ("<A HREF=\"help:%s\">Home</A>", context->base_file);
+		g_print ("<A HREF=\"%s\">Home</A>", home);
 	}
 
 	g_print ("</TD>\n<TD WIDTH=\"33%%\" ALIGN=\"RIGHT\" VALIGN=\"TOP\">");
 	if (next == NULL) {
 		g_print ("&nbsp;");
 	} else {
-		g_print ("<A HREF=\"help:%s?%s\">Next &#62;&#62;&#62;</A>", context->base_file, next);
+		g_print ("<A HREF=\"%s\">Next &#62;&#62;&#62;</A>", next);
 	}
 
 	g_print ("</TD>\n</TR></TABLE>\n");
@@ -610,46 +610,55 @@ print_footer (Context *context, const char *prev, const char *next, gboolean wit
 static void
 sect_footer (Context *context, const char *section)
 {
-	GList *tmp;
-	GList *tmp_next;
-	GList *tmp_prev;
-	char *tmp_next_data;
-	char *tmp_prev_data;
+	GList *temp_list;
+	GList *next_node;
+	GList *prev_node;
+	char *next_uri;
+	char *prev_uri;
+	char *home_uri;
 
 	if (context->sect1id_stack == NULL) {
 		return;
 	}
 
-	tmp = context->sect1id_stack;
-	while (tmp != NULL) {
-		if (g_strcasecmp ((char *)tmp->data, section) == 0) {
-			/* Yes this below is correct because we are using a 'stack' */
-			tmp_next = g_list_previous (tmp);
-			tmp_prev = g_list_next (tmp);
+	temp_list = context->sect1id_stack;
+	while (temp_list != NULL) {
+		if (g_strcasecmp ((char *)temp_list->data, section) == 0) {
+			/* Yes the below is correct because we are using a 'stack' */
+			next_node = g_list_previous (temp_list);
+			prev_node = g_list_next (temp_list);
 			
-			if (tmp_next == NULL) {
-				tmp_next_data = NULL;
+			if (next_node == NULL) {
+				next_uri = NULL;
 			} else {
-				tmp_next_data = tmp_next->data;
+				next_uri = g_strdup_printf ("help:%s?%s", context->base_file, (char *) next_node->data);
 			}
 
-			if (tmp_prev == NULL) {
-				tmp_prev_data = NULL;
+			if (prev_node == NULL) {
+				/* link back to the TOC */
+				prev_uri = g_strdup_printf ("help:%s", context->base_file);
 			} else {
-				tmp_prev_data = tmp_prev->data;
+				prev_uri = g_strdup_printf ("help:%s?%s", context->base_file, (char *)prev_node->data);
 			}
 			
-			print_footer (context ,(char *) tmp_prev_data, (char *) tmp_next_data, TRUE);
+			home_uri = g_strdup_printf ("help:%s", context->base_file);
+			
+			print_footer (prev_uri, home_uri, next_uri);
+
+			g_free (home_uri);
+			g_free (prev_uri);
+			g_free (next_uri);
+			
 			break;
 		}
-		tmp = g_list_next (tmp);
+		temp_list = g_list_next (temp_list);
 	}	
 }
 
 static void
 parse_file (gchar *filename, gchar *section)
 {
-	GList *tmp;
+	GList *temp_list;
 	Context *context = g_new0 (Context, 1);
 	
 	context->ParserCtxt = xmlNewParserCtxt ();
@@ -658,11 +667,10 @@ parse_file (gchar *filename, gchar *section)
 	context->ParserCtxt->validate = 1;
 	/* FIXME bugzilla.eazel.com 2399: 
 	 * Is the below correct? version needs to be set so as not to
-	 * segfault in starDocument (in SAX.h) */
+	 * segfault in startDocument (in SAX.h) */
 	context->ParserCtxt->version = xmlStrdup ("1.0"); 
 	context->ParserCtxt->myDoc = xml_parse_document (filename);
 	xmlSubstituteEntitiesDefault (1);
-	//context->sect1id_stack = NULL;
 
 	if (section) {
 		context->target_section = g_strdup (section);
@@ -685,9 +693,13 @@ parse_file (gchar *filename, gchar *section)
 		if (xmlSAXUserParseFile (&parser, context, context->base_file) < 0) {
 			g_error ("error");
 		};
-		tmp = g_list_last (context->sect1id_stack);
-		if (tmp != NULL) {
-			print_footer (context, NULL, tmp->data,FALSE);
+		temp_list = g_list_last (context->sect1id_stack);
+		if (temp_list != NULL) {
+			char *temp_uri;
+			
+			temp_uri = g_strdup_printf ("help:%s?%s", context->base_file, (char *)temp_list->data);
+			print_footer (NULL, NULL, temp_uri);
+			g_free (temp_uri);
 		}
 	}
 }
