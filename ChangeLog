@@ -1,3 +1,12 @@
+2000-06-16  Darin Adler  <darin@eazel.com>
+
+	* src/nautilus-location-bar.c: (try_to_expand_path):
+	Removed first cut at a fix for the "space accepts" problem.
+	(entry_would_have_inserted_characters),
+	(editable_key_press_callback), (nautilus_location_bar_initialize):
+	Put in a new fix that uses a marshal function to avoid clobbering
+	the return value of key_press_event.
+
 2000-06-16  Rebecka Schulman  <set EMAIL_ADDRESS environment variable>
 
 	* icons/eazel/Search.png:

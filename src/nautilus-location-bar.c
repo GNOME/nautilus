@@ -272,24 +272,69 @@ try_to_expand_path(GtkEditable *editable)
 	g_free(current_path);
 	g_free(user_location);
 	gnome_vfs_directory_list_destroy(list);
-	/* FIXME: for purposes of "doing it right" and our own edification we want to
-	   be able to remove the following line...but this will work just fine for now.
-	   The problem is that *some* mysterious piece of the above code seems to affecting
-	   the focus */
-	gtk_widget_grab_focus(GTK_WIDGET(editable));
 }
 
-
-/* handle changes in the location entry by checking for tabs */
-static void
-editable_key_press_callback (GtkEditable *editable,
-		       	     	GdkEventKey *event)
+/* Until we have a more elegant solution, this is how we figure out if
+ * the GtkEntry inserted characters, assuming that the return value is
+ * TRUE indicating that the GtkEntry consumed the key event for some
+ * reason. This is a clone of code from GtkEntry.
+ */
+static gboolean
+entry_would_have_inserted_characters (const GdkEventKey *event)
 {
-	g_assert (GTK_IS_EDITABLE (editable));
-	if (event->string[0] != '\b')  {
+	switch (event->keyval) {
+	case GDK_BackSpace:
+	case GDK_Clear:
+	case GDK_Insert:
+	case GDK_Delete:
+	case GDK_Home:
+	case GDK_End:
+	case GDK_Left:
+	case GDK_Right:
+	case GDK_Return:
+		return FALSE;
+	default:
+		if (event->keyval >= 0x20 && event->keyval <= 0xFF) {
+			if ((event->state & GDK_CONTROL_MASK) != 0) {
+				return FALSE;
+			}
+			if ((event->state & GDK_MOD1_MASK) != 0) {
+				return FALSE;
+			}
+		}
+		return event->length > 0;
+	}
+}
+
+/* Handle changes in the location entry. This is a marshal-style
+ * callback so that we don't mess up the return value.
+ */
+static void
+editable_key_press_callback (GtkObject *object,
+			     gpointer data,
+			     guint n_args,
+			     GtkArg *args)
+{
+	GtkEditable *editable;
+	GdkEventKey *event;
+	gboolean *return_value_location;
+
+	g_assert (data == NULL);
+	g_assert (n_args == 1);
+	g_assert (args != NULL);
+
+	editable = GTK_EDITABLE (object);
+	event = GTK_VALUE_POINTER (args[0]);
+	return_value_location = GTK_RETLOC_BOOL (args[1]);
+
+	/* Only do an expand if we just handled a key that inserted
+	 * characters.
+	 */
+	if (*return_value_location
+	    && entry_would_have_inserted_characters (event))  {
 		try_to_expand_path (editable);
 	}
-}	
+}
 
 static void
 destroy (GtkObject *object)
@@ -339,8 +384,13 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 	gtk_signal_connect (GTK_OBJECT (entry), "activate",
 			    editable_activated_callback, bar);
 
-	gtk_signal_connect_after (GTK_OBJECT (entry), "key_press_event",
-			    editable_key_press_callback, NULL);
+	/* The callback uses the marshal interface directly
+	 * so it can both read and write the return value.
+	 */
+	gtk_signal_connect_full (GTK_OBJECT (entry), "key_press_event",
+				 NULL, editable_key_press_callback,
+				 NULL, NULL,
+				 FALSE, TRUE);
 	
 	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
 
