@@ -1,3 +1,35 @@
+2000-07-19  Rebecca Schulman  <rebecka@eazel.com>
+        Created initial list view for search results, as a subclass (sort of)
+	of fm-list-view
+
+	* src/file-manager/fm-list-view.h:
+	* src/file-manager/fm-list-view.c: (fm_list_view_initialize_class),
+	(fm_list_view_initialize), (fm_list_view_list_is_instantiated),
+	(fm_list_view_set_instantiated), (fm_list_view_create_list),
+	(fm_list_view_setup_list), (add_to_list), (get_list),
+	(fm_list_view_set_zoom_level), (fm_list_view_install_row_images),
+	(update_icons):
+	added new create_list signal to FM_LIST_VIEW, and instantiate the
+	actual widget not in fm_list_view_initialize, but later, so that
+	the search subclass can create its own separate clist widget
+
+	* src/file-manager/fm-search-list-view.c:
+	(fm_search_list_view_initialize_class),
+	(fm_search_list_view_initialize), (fm_search_list_view_add_file),
+	(add_to_list), (get_list), (fm_search_list_view_create_list),
+	(compare_rows), (sort_criterion_from_column),
+	(get_attribute_from_column), (fm_search_list_view_destroy):
+	* src/file-manager/fm-search-list-view.h:
+	adjusted list-view appearance for search results, by adding a directory
+	column to show the actual path of files in a search result directory
+	
+	* src/nautilus-application.c: (manufactures), (create_object):
+	* src/nautilus.oafinfo:
+	register the search list view
+	
+	* src/file-manager/Makefile.am: added new fm-search-list-view.* files        
+
+
 2000-07-19  Robey Pointer  <robey@eazel.com>
 
 	*

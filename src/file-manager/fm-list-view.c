@@ -24,6 +24,7 @@
 
 #include <config.h>
 #include "fm-list-view.h"
+#include "fm-list-view-private.h"
 
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkmenu.h>
@@ -41,10 +42,21 @@
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
 
+
+enum {
+	CREATE_LIST,
+	GET_ICON_SIZE,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 struct FMListViewDetails
 {
 	int sort_column;
 	gboolean sort_reversed;
+	gboolean search_directory;
+	gboolean list_instantiated;
 	guint zoom_level;
 	NautilusZoomLevel default_zoom_level;
 };
@@ -107,7 +119,7 @@ static void              context_click_selection_callback         (GtkCList     
 								   FMListView         *list_view);
 static void              context_click_background_callback        (GtkCList           *clist,
 								   FMListView         *list_view);
-static void		 create_list                              (FMListView         *list_view);
+
 static void              list_activate_callback                   (NautilusList       *list,
 								   GList              *file_list,
 								   gpointer            data);
@@ -129,15 +141,16 @@ static gboolean          fm_list_view_can_zoom_in                 (FMDirectoryVi
 static gboolean          fm_list_view_can_zoom_out                (FMDirectoryView    *view);
 static GtkWidget *       fm_list_view_get_background_widget       (FMDirectoryView    *view);
 static void              fm_list_view_clear                       (FMDirectoryView    *view);
-static guint             fm_list_view_get_icon_size               (FMListView         *list_view);
+
 static GList *           fm_list_view_get_selection               (FMDirectoryView    *view);
 static NautilusZoomLevel fm_list_view_get_zoom_level              (FMListView         *list_view);
 static void              fm_list_view_initialize                  (gpointer            object,
 								   gpointer            klass);
-static void              fm_list_view_initialize_class            (gpointer            klass);
+static void              fm_list_view_initialize_class            (gpointer           klass);
 static void              fm_list_view_destroy                     (GtkObject          *object);
 static void              fm_list_view_done_adding_files           (FMDirectoryView    *view);
 static void              fm_list_view_select_all                  (FMDirectoryView    *view);
+
 static void              fm_list_view_set_selection               (FMDirectoryView    *view, GList *selection);
 static void              fm_list_view_set_zoom_level              (FMListView         *list_view,
 								   NautilusZoomLevel   new_level,
@@ -145,13 +158,17 @@ static void              fm_list_view_set_zoom_level              (FMListView   
 static void              fm_list_view_sort_items                  (FMListView         *list_view,
 								   int                 column,
 								   gboolean            reversed);
-static void 		fm_list_view_update_click_mode            (FMListView        *icon_view);
-const char *            get_attribute_from_column                 (int                 column);
+
+static void              fm_list_view_update_click_mode           (FMListView        *icon_view);
+
+static void              fm_list_view_create_list                 (FMListView *list_view);
+
+
+static const char *     get_attribute_from_column                 (int                 column);
 int                     get_column_from_attribute                 (const char         *value);
 int                     get_sort_column_from_attribute            (const char         *value);
 static NautilusList *   get_list                                  (FMListView         *list_view);
-static void             install_row_images                        (FMListView         *list_view,
-								   guint               row);
+
 static int              sort_criterion_from_column                (int                 column);
 static void             update_icons                              (FMListView         *list_view);
 static void		click_policy_changed_callback             (gpointer           user_data);
@@ -166,12 +183,13 @@ fm_list_view_initialize_class (gpointer klass)
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 	FMDirectoryViewClass *fm_directory_view_class;
+	FMListViewClass *fm_list_view_klass;
 
 	object_class = GTK_OBJECT_CLASS (klass);
 	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (klass);
 	widget_class = (GtkWidgetClass *) klass;
+	fm_list_view_klass = FM_LIST_VIEW_CLASS (klass);
 
-	
 	fm_directory_view_class->add_file = fm_list_view_add_file;
 	fm_directory_view_class->begin_adding_files = fm_list_view_begin_adding_files;
 	fm_directory_view_class->begin_loading = fm_list_view_begin_loading;
@@ -189,6 +207,17 @@ fm_list_view_initialize_class (gpointer klass)
 	fm_directory_view_class->set_selection = fm_list_view_set_selection;
 
 	object_class->destroy = fm_list_view_destroy;
+
+	signals[CREATE_LIST] = 
+		gtk_signal_new ("create_list",
+				GTK_RUN_FIRST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (FMListViewClass, create_list),
+				gtk_marshal_NONE__BOXED,
+				GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
+
+	fm_list_view_klass->create_list = fm_list_view_create_list;
+	
 }
 
 static void
@@ -209,8 +238,7 @@ fm_list_view_initialize (gpointer object, gpointer klass)
 	list_view->details->zoom_level = NAUTILUS_ZOOM_LEVEL_SMALLER;
 	list_view->details->sort_column = LIST_VIEW_COLUMN_NONE;
 	list_view->details->default_zoom_level = NAUTILUS_ZOOM_LEVEL_SMALLER;
-
-	create_list (list_view);
+	list_view->details->list_instantiated = FALSE;
 
 	/* Register to find out about icon theme changes */
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
@@ -222,6 +250,7 @@ fm_list_view_initialize (gpointer object, gpointer klass)
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
 					   click_policy_changed_callback,
 					   list_view);
+
 }
 
 static void
@@ -653,8 +682,20 @@ fm_list_get_sort_column_index (GtkWidget *widget, FMListView *list_view)
 	return FM_LIST_VIEW (list_view)->details->sort_column;
 }
 
+gboolean
+fm_list_view_list_is_instantiated (FMListView *list_view)
+{
+	return list_view->details->list_instantiated;
+}
+
+void
+fm_list_view_set_instantiated (FMListView *list_view)
+{
+	list_view->details->list_instantiated = TRUE;
+}
+
 static void
-create_list (FMListView *list_view)
+fm_list_view_create_list (FMListView *list_view)
 {
 	NautilusList *list;
 	GtkCList *clist;
@@ -703,7 +744,6 @@ create_list (FMListView *list_view)
 
 	int i;
 
-	g_return_if_fail (FM_IS_LIST_VIEW (list_view));
 
 	list = NAUTILUS_LIST (nautilus_list_new_with_titles (LIST_VIEW_COLUMN_COUNT, titles));
 	clist = GTK_CLIST (list);
@@ -736,10 +776,24 @@ create_list (FMListView *list_view)
 		}
 
 	}
-
 	gtk_clist_set_auto_sort (clist, TRUE);
 	gtk_clist_set_compare_func (clist, compare_rows);
+
+	gtk_container_add (GTK_CONTAINER (list_view), GTK_WIDGET (list));
 	
+	fm_list_view_setup_list (list_view);
+}
+
+void
+fm_list_view_setup_list (FMListView *list_view)
+{
+	NautilusList *list;
+	
+	g_return_if_fail (FM_IS_LIST_VIEW (list_view));
+	
+
+	list = get_list (list_view);
+
 	GTK_WIDGET_SET_FLAGS (list, GTK_CAN_FOCUS);
 
 	gtk_signal_connect (GTK_OBJECT (list),
@@ -791,7 +845,6 @@ create_list (FMListView *list_view)
 			    GTK_SIGNAL_FUNC (fm_list_get_sort_column_index),
 			    list_view);
 
-	gtk_container_add (GTK_CONTAINER (list_view), GTK_WIDGET (list));
 
 	/* Make height tall enough for icons to look good.
 	 * This must be done after the list widget is realized, due to
@@ -871,7 +924,7 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 	nautilus_list_mark_cell_as_link (list, new_row, LIST_VIEW_COLUMN_NAME);
 	gtk_object_set_data (GTK_OBJECT (clist), PENDING_USER_DATA_KEY, NULL);
 
-	install_row_images (list_view, new_row);
+	fm_list_view_install_row_images (list_view, new_row);
 
 	g_strfreev (text);
 
@@ -882,6 +935,10 @@ static NautilusList *
 get_list (FMListView *list_view)
 {
 	g_return_val_if_fail (FM_IS_LIST_VIEW (list_view), NULL);
+	if (fm_list_view_list_is_instantiated (list_view) == FALSE) {
+		(* FM_LIST_VIEW_CLASS (GTK_OBJECT (list_view)->klass)->create_list) (list_view);
+		fm_list_view_set_instantiated (list_view);
+	}
 	g_return_val_if_fail (NAUTILUS_IS_LIST (GTK_BIN (list_view)->child), NULL);
 
 	return NAUTILUS_LIST (GTK_BIN (list_view)->child);
@@ -1094,7 +1151,7 @@ fm_list_view_done_adding_files (FMDirectoryView *view)
 	gtk_clist_thaw (GTK_CLIST (get_list (FM_LIST_VIEW (view))));
 }
 
-static guint
+guint
 fm_list_view_get_icon_size (FMListView *list_view)
 {
 	g_return_val_if_fail (FM_IS_LIST_VIEW (list_view), NAUTILUS_ICON_SIZE_STANDARD);
@@ -1184,7 +1241,7 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 				    fm_list_view_get_icon_size (list_view));
 	
 	for (row = 0; row < clist->rows; ++row) {
-		install_row_images (list_view, row);
+		fm_list_view_install_row_images (list_view, row);
 	}
 
 	gtk_clist_thaw (clist);
@@ -1279,7 +1336,7 @@ fm_list_view_sort_items (FMListView *list_view,
  * 
  * Return value: The string to be saved in the metadata.
  */
-const char *
+static const char *
 get_attribute_from_column (int column)
 {
 	switch (column) {
@@ -1385,15 +1442,15 @@ fm_list_view_get_emblem_pixbufs_for_file (FMListView *list_view,
 }
 
 /**
- * install_row_images:
+ * fm_list_view_install_row_images:
  *
  * Put the icon and emblems for a file into the specified row.
  * @list_view: FMDirectoryView in which to install icon.
  * @row: target row index
  * 
  **/
-static void
-install_row_images (FMListView *list_view, guint row)
+void
+fm_list_view_install_row_images (FMListView *list_view, guint row)
 {
 	NautilusList *list;
 	GtkCList *clist;
@@ -1452,7 +1509,7 @@ update_icons (FMListView *list_view)
 	list = get_list (list_view);
 
 	for (row = 0; row < GTK_CLIST (list)->rows; ++row) {
-		install_row_images (list_view, row);	
+		fm_list_view_install_row_images (list_view, row);	
 	}
 }
 

@@ -25,7 +25,9 @@
 #ifndef FM_LIST_VIEW_H
 #define FM_LIST_VIEW_H
 
+#include <gtk/gtkclist.h>
 #include "fm-directory-view.h"
+
 
 typedef struct FMListView FMListView;
 typedef struct FMListViewClass FMListViewClass;
@@ -45,6 +47,12 @@ struct FMListView {
 
 struct FMListViewClass {
 	FMDirectoryViewClass parent_class;
+
+	/* 'create_list' sets up the columns.  Subclasses
+	   can use this to create a list view with different columns
+	   than the standard */
+	void     (* create_list)           (FMListView *list_view);
+
 };
 
 /* GtkObject support */

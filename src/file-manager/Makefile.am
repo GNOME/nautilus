@@ -43,7 +43,9 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-list-view.c			\
 	fm-list-view.h			\
 	fm-properties-window.c		\
-	fm-properties-window.h		
+	fm-properties-window.h		\
+	fm-search-list-view.c		\
+	fm-search-list-view.h
 
 dfos-corba.h: GNOME_Desktop_FileOperationService.h
 

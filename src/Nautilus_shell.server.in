@@ -45,13 +45,29 @@
     <item value="x-special/directory"/>
     <item value="x-special/webdav-directory"/>
   </oaf_attribute>
-    <oaf_attribute name="bonobo:additional_uri_schemes" type="stringv">
+  <oaf_attribute name="nautilus:view_as_name" type="string" value="List"/>
+</oaf_server>
+
+<oaf_server iid="OAFIID:nautilus_file_manager_search_list_view:b186e381-198e-43cf-9c46-60b6bb35db0b" type="factory" location="OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3">
+  <oaf_attribute name="repo_ids" type="stringv">
+    <item value="IDL:Bonobo/Unknown:1.0"/>
+    <item value="IDL:Bonobo/Control:1.0"/>
+    <item value="IDL:Nautilus/View:1.0"/>
+  </oaf_attribute>
+  <oaf_attribute name="name" type="string" value="Nautilus file manager search results list view"/>
+  <oaf_attribute name="description" type="string" value="Nautilus file manager component that shows a scrollable list for search results"/>
+    <oaf_attribute name="bonobo:supported_uri_schemes" type="stringv">
       <item value="search"/>
       <item value="gnome-search"/>
       <item value="medusa"/>
     </oaf_attribute>
-  <oaf_attribute name="nautilus:view_as_name" type="string" value="List"/>
+  <oaf_attribute name="bonobo:supported_mime_types" type="stringv">
+    <item value="x-special/virtual-directory"/>
+  </oaf_attribute>
+  <oaf_attribute name="nautilus:view_as_name" type="string" value="Search List"/>
 </oaf_server>
+
+
 
 <oaf_server iid="OAFIID:nautilus_shell:cd5183b2-3913-4b74-9b8e-10528b0de08d" type="factory" location="OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3">
   <oaf_attribute name="repo_ids" type="stringv">
