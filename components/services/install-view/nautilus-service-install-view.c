@@ -718,10 +718,10 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const PackageDat
 
 		needed_by = g_hash_table_lookup (view->details->deps, pack->name);
 		if (needed_by != NULL) {
-			out = g_strdup_printf (_("The package \"%s\" needs \"%s\" to run.\nI'm now attempting to download it."),
-					       needed_by, pack->name);
+			out = g_strdup_printf (_("The package \"%s\" requires \"%s\" to run.\nDownloading \"%s\" now."),
+					       needed_by, pack->name, pack->name);
 		} else {
-			out = g_strdup_printf (_("I'm attempting to download package \"%s\"."), pack->name);
+			out = g_strdup_printf (_("Attempting to download package \"%s\"."), pack->name);
 		}
 		nautilus_label_set_text (NAUTILUS_LABEL (im->label), out);
 		g_free (out);
@@ -731,10 +731,10 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const PackageDat
 		gtk_progress_set_percentage (GTK_PROGRESS (im->progress_bar), 1.0);
 		needed_by = g_hash_table_lookup (view->details->deps, pack->name);
 		if (needed_by != NULL) {
-			out = g_strdup_printf (_("The package \"%s\" needs \"%s\" to run.\nI've downloaded it successfully."),
-					       needed_by, pack->name);
+			out = g_strdup_printf (_("The package \"%s\" requires \"%s\" to run.\n\"%s\" has been successfully downloaded."),
+					       needed_by, pack->name, pack->name);
 		} else {
-			out = g_strdup_printf (_("I've successfully downloaded package \"%s\"."), pack->name);
+			out = g_strdup_printf (_("The package \"%s\" has been successfully downloaded."), pack->name);
 		}
 		nautilus_label_set_text (NAUTILUS_LABEL (im->label), out);
 		g_free (out);
@@ -743,7 +743,6 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const PackageDat
 		view->details->current_im = NULL;
 		/* update downloaded bytes */
 		view->details->download_bytes_sofar += (pack->filesize > 0 ? pack->filesize : pack->bytesize);
-		/* not until we get an rpm size */
 		gtk_progress_set_percentage (GTK_PROGRESS (view->details->total_progress_bar),
 					     (float) view->details->download_bytes_sofar /
 					     (float) view->details->download_bytes_total);
@@ -877,7 +876,7 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 	show_overall_feedback (view, _("Preparing to download packages..."));
 
 	message = g_string_new ("");
-	message = g_string_append (message, _("I'm about to download and install the following packages:\n\n"));
+	message = g_string_append (message, _("These packages are about to be downloaded and installed:\n\n"));
 
 	view->details->download_bytes_total = view->details->download_bytes_sofar = 0;
 	for (iter = g_list_first (package_list); iter != NULL; iter = g_list_next (iter)) {
@@ -979,10 +978,10 @@ previous_install_finished (NautilusServiceInstallView *view)
 
 		needed_by = g_hash_table_lookup (view->details->deps, view->details->current_rpm);
 		if (needed_by != NULL) {
-			out = g_strdup_printf (_("The package \"%s\" needed \"%s\" to run.\nI've downloaded and installed it."),
-					       needed_by, view->details->current_rpm);
+			out = g_strdup_printf (_("The package \"%s\" requires \"%s\" to run.\n\"%s\" has been successfully downloaded and installed."),
+					       needed_by, view->details->current_rpm, view->details->current_rpm);
 		} else {
-			out = g_strdup_printf (_("I've downloaded and installed package \"%s\"."), view->details->current_rpm);
+			out = g_strdup_printf (_("\"%s\" has been successfully downloaded and installed."), view->details->current_rpm);
 		}
 		nautilus_label_set_text (NAUTILUS_LABEL (im->label), out);
 		g_free (out);
@@ -1037,10 +1036,10 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 		gtk_progress_set_percentage (GTK_PROGRESS (im->progress_bar), 0.0);
 		needed_by = g_hash_table_lookup (view->details->deps, pack->name);
 		if (needed_by != NULL) {
-			out = g_strdup_printf (_("The package \"%s\" needs \"%s\" to run.\nI'm now installing it."),
-					       needed_by, pack->name);
+			out = g_strdup_printf (_("The package \"%s\" requires \"%s\" to run.\n\"%s\" is now being installed."),
+					       needed_by, pack->name, pack->name);
 		} else {
-			out = g_strdup_printf (_("I'm installing package \"%s\"."), pack->name);
+			out = g_strdup_printf (_("Now installing package \"%s\"."), pack->name);
 		}
 		nautilus_label_set_text (NAUTILUS_LABEL (im->label), out);
 		g_free (out);
@@ -1268,9 +1267,9 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 	} else if (view->details->already_installed) {
 		message = _("This package has already been installed.");
 	} else if (success) {
-		message = _("Installation complete!");
+		message = _("Installation complete.");
 	} else {
-		message = _("Installation failed!");
+		message = _("Installation failed.");
 		answer = nautilus_service_install_solve_cases (view);
 	}
 
@@ -1286,6 +1285,7 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 	} else {
 		real_message = g_string_new (message);
 		question_dialog = TRUE;
+		answer = FALSE;
 
 		if (success && view->details->desktop_files &&
 		    !view->details->cancelled &&
@@ -1297,6 +1297,7 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 		    (nautilus_preferences_get_user_level () < NAUTILUS_USER_LEVEL_ADVANCED)) {
 			/* don't ask about erasing rpms */
 			question_dialog = FALSE;
+			answer = TRUE;
 		} else if (view->details->downloaded_anything) {
 			if (view->details->cancelled || view->details->failure) {
 				g_string_sprintfa (real_message, "\n%s", _("Erase the RPM files?"));
@@ -1315,7 +1316,6 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 									 &answer, GTK_WINDOW (toplevel));
 			} else {
 				dialog = gnome_ok_dialog_parented (real_message->str, GTK_WINDOW (toplevel));
-				answer = FALSE;
 			}
 		} else {
 			if (question_dialog) {
@@ -1323,7 +1323,6 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 								(GnomeReplyCallback)reply_callback, &answer);
 			} else {
 				dialog = gnome_ok_dialog (real_message->str);
-				answer = FALSE;
 			}
 		}
 		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
@@ -1671,7 +1670,7 @@ nautilus_service_install_view_update_from_uri_finish (NautilusServiceInstallView
 
 	CORBA_exception_free (&ev);
 
-	show_overall_feedback (view, _("Contacting the software catalog ..."));
+	show_overall_feedback (view, _("Contacting the Eazel Software Catalog ..."));
 
 	/* might take a while (leave the throbber on) */
 }
