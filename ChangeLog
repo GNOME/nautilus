@@ -1,3 +1,15 @@
+2001-02-02  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 5749 (bookmarks are untranslated)
+
+	* data/static_bookmarks.xml:
+	An earlier checkin to update the bookmarks stripped off
+	all the underscores from "_name=" strings, which was what
+	was causing them to be translated. Fixed by returning the
+	underscores.
+
 2001-02-02  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* applets/preferences-applet/nautilus-preferences-applet.c:
