@@ -1,5 +1,17 @@
 2004-02-27  Dave Camp  <dave@ximian.com>
 
+	* src/file-manager/fm-list-model.c: (fm_list_model_get_value):
+	* src/file-manager/fm-list-model.h: Remove the 
+	FM_LIST_MODEL_NAME_COLUMN enum, the name column is handled 
+	with the dynamic columns.
+	* src/file-manager/fm-list-view.c: (select_matching_name),
+	(create_and_set_up_tree_view): Use the dynamic name column
+	in the typeahead buffer.
+
+	Fixes #133750.
+
+2004-02-27  Dave Camp  <dave@ximian.com>
+
 	* src/file-manager/fm-properties-window.c (append_extension_pages): 
 	Set is-extension-page on the page widget, not the extension object.
 

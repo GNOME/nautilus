@@ -79,6 +79,7 @@ struct FMListViewDetails {
 	FMListModel *model;
 
 	GtkTreeViewColumn   *file_name_column;
+	int file_name_column_num;
 
 	GtkCellRendererPixbuf *pixbuf_cell;
 	GtkCellRendererText   *file_name_cell;
@@ -617,7 +618,7 @@ select_matching_name (FMListView *view,
 	}
 	
 	do {
-		gtk_tree_model_get_value (GTK_TREE_MODEL (view->details->model), &iter, FM_LIST_MODEL_NAME_COLUMN, &value);
+		gtk_tree_model_get_value (GTK_TREE_MODEL (view->details->model), &iter, view->details->file_name_column_num, &value);
 		file_name = g_value_get_string (&value);
 		match_found = (g_ascii_strncasecmp (match_name, file_name, MIN (strlen (match_name), strlen (file_name))) == 0);
 		g_value_unset (&value);
@@ -1043,6 +1044,7 @@ create_and_set_up_tree_view (FMListView *view)
 			view->details->pixbuf_cell = (GtkCellRendererPixbuf *)cell;
 			
 			view->details->file_name_column = gtk_tree_view_column_new ();
+			view->details->file_name_column_num = column_num;
 			
 			g_hash_table_insert (view->details->columns,
 					     g_strdup ("name"), 

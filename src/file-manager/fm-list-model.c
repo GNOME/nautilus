@@ -287,7 +287,7 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
                 g_value_set_boolean (value, nautilus_file_can_rename (file));
                 break;
  	default:
-		if (column < FM_LIST_MODEL_NUM_COLUMNS + model->details->columns->len) {
+		if (column >= FM_LIST_MODEL_NUM_COLUMNS || column < FM_LIST_MODEL_NUM_COLUMNS + model->details->columns->len) {
 			NautilusColumn *nautilus_column;
 			char *attribute;
 			nautilus_column = model->details->columns->pdata[column - FM_LIST_MODEL_NUM_COLUMNS];
