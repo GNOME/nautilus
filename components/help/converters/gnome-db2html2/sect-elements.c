@@ -26,7 +26,7 @@ ElementInfo sect_elements[] = {
 	{ AFFILIATION, "affiliation", NULL, NULL, NULL},
 	{ EMAIL, "email", NULL, NULL, (charactersSAXFunc) sect_email_characters },
 	{ ORGNAME, "orgname", NULL, NULL, (charactersSAXFunc) sect_author_characters },
-	{ ADDRESS, "address", NULL, NULL, NULL},
+	{ ADDRESS, "address", NULL, NULL, (charactersSAXFunc) sect_write_characters},
 	{ COPYRIGHT, "copyright", NULL, NULL, NULL},
 	{ YEAR, "year", NULL, NULL, (charactersSAXFunc) sect_copyright_characters},
 	{ HOLDER, "holder", NULL, NULL, (charactersSAXFunc) sect_copyright_characters},
@@ -94,6 +94,7 @@ ElementInfo sect_elements[] = {
 	{ THEAD, "thead", (startElementSAXFunc) sect_thead_start_element, (endElementSAXFunc) sect_thead_end_element, NULL},
 	{ TBODY, "tbody", (startElementSAXFunc) sect_tbody_start_element, (endElementSAXFunc) sect_tbody_end_element, NULL},
 	{ ACRONYM, "acronym", NULL, NULL, (charactersSAXFunc) sect_write_characters},
+	{ MARKUP, "markup", NULL, NULL, (charactersSAXFunc) sect_write_characters},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -197,33 +198,12 @@ sect_write_characters (Context *context,
 		      int len)
 {
 	gchar *temp;
-	GSList *list = NULL;
-	ElementIndex index;
 
 	if (!IS_IN_SECT (context))
 		return;
 		
 
-	list = g_slist_prepend (list, GINT_TO_POINTER (ENTRY));
-	index = find_first_parent (context, list);
-	g_slist_free (list);
-	
-	switch (index) { 
-		case ENTRY:
-			if (len == 0) {
-				/* This will not work possible due to a
-				 * libxml bug */
-				temp = g_strdup ("&nbsp;");
-			} else {
-				temp = g_strndup (chars, len);
-			}
-			break; 
-		default:
-			temp = g_strndup (chars, len);
-			break;
-	}
-
-
+	temp = g_strndup (chars, len);
 	sect_print (context, temp);
 	g_free (temp);
 }
@@ -528,6 +508,19 @@ sect_email_characters (Context *context, const gchar *chars, int len)
 
 	temp = g_strndup (chars, len);
 	sect_print (context, "<tt>&lt;<A href=\"mailto:%s\">%s</A>&gt;</tt>", temp, temp);
+	g_free (temp);
+}
+
+void
+sect_country_characters (Context *context, const char *chars, int len)
+{
+	char *temp;
+	
+	if (!IS_IN_SECT (context))
+		return;
+	
+	temp = g_strndup (chars, len);
+	sect_print (context, "<br>%s", temp);
 	g_free (temp);
 }
 
@@ -1608,6 +1601,11 @@ sect_entry_end_element (Context *context,
 	g_slist_free (element_list);
 	if (stack_el == NULL) {
 		return;
+	}
+
+	if (context->empty_element == TRUE) {
+		/* We encoutnered an 'empty' element */
+		g_print ("&nbsp;");
 	}
 	
 	switch (stack_el->info->index) {

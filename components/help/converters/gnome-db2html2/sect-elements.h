@@ -112,5 +112,5 @@ void sect_thead_start_element (Context *context, const char *name, const xmlChar
 void sect_thead_end_element (Context *context, const char *name);
 void sect_tbody_start_element (Context *context, const char *name, const xmlChar **atrs);
 void sect_tbody_end_element (Context *context, const char *name);
-
+void sect_country_characters (Context *context, const char *chars, int len);
 #endif

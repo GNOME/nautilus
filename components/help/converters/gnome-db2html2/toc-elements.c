@@ -417,6 +417,7 @@ toc_title_end_element (Context *context,
 		break;
 	case SECT2:
 		g_print ("</A></H3>\n");
+		break;
 	case SECT3:
 	case SECT4:
 	case SECT5:

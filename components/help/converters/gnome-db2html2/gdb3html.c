@@ -196,6 +196,7 @@ start_element(Context *context,
 
 	stack_el->info = element;
 	context->stack = g_list_prepend (context->stack, stack_el);
+	context->empty_element = TRUE;
 
 	if (element && element->start_element_func)
 		(* element->start_element_func) (context, name, attrs);
@@ -244,6 +245,7 @@ characters (Context *context,
 	if (context->stack == NULL)
 		return;
 	element = ((StackElement *)context->stack->data)->info;
+	context->empty_element = FALSE;
 	
 	if (element && element->characters_func)
 		(* element->characters_func) (context, chars, len);

@@ -202,6 +202,7 @@ transform_file (const char *old_uri,
 	HelpURI *help_uri;
 	char *p;
 	char *base, *new_uri, *new_uri_with_extension;
+	char *old_help;
 
 	help_uri = help_uri_new ();
 
@@ -226,6 +227,7 @@ transform_file (const char *old_uri,
 
         /* Call the passed in function to compute the URI. */
 	new_uri = (* compute_uri_function) (base);
+	old_help = old_help_file (base);
         g_free (base);
         if (new_uri == NULL) {
                 help_uri_free (help_uri);
@@ -240,6 +242,7 @@ transform_file (const char *old_uri,
 	new_uri_with_extension = g_strconcat (new_uri, ".xml", NULL);
 	if (convert_file_to_uri (help_uri, new_uri_with_extension)) {
 		g_free (new_uri);
+		g_free (old_help);
 		return help_uri;
 	}
 	g_free(new_uri_with_extension);
@@ -248,22 +251,23 @@ transform_file (const char *old_uri,
 	new_uri_with_extension = g_strconcat (new_uri, ".sgml", NULL);
 	if (convert_file_to_uri (help_uri, new_uri_with_extension)) {
 		g_free (new_uri);
+		g_free (old_help);
 		return help_uri;
 	}
 	g_free (new_uri_with_extension);
-	
-	g_free (new_uri);
-	new_uri = old_help_file (base);	
-	/* Try with an html extension. */
-	new_uri_with_extension = g_strconcat (new_uri, ".html", NULL);
+
+	/* Try to look for the 'index.html' file */	
+	new_uri_with_extension = g_strconcat (old_help, ".html", NULL);
 	if (convert_file_to_uri (help_uri, new_uri_with_extension)) {
 		g_free (new_uri);
+		g_free (old_help);
 		return help_uri;
 	}
         g_free (new_uri_with_extension);
 
         /* Failed, so return. */
 	g_free (new_uri);
+	g_free (old_help);
         help_uri_free (help_uri);
 	return NULL;
 }

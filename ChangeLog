@@ -1,3 +1,27 @@
+2000-08-22  Ali Abdin  <aliabdin@aucegypt.edu>
+
+        * components/help/help-method.c:
+        (transform_file): Ooops - there was a bug in this causing the
+        index.html file not to load. It is now fixed (but is still broken
+        until help renders with Mozilla)
+
+        * components/help/converters/gnome-db2html2/toc-elements.c:
+        (toc_title_end_element): Forgot a break in a case statement. This
+        stops erroneous </A></H4> tags being inserted (Fixes Bug #2178)
+
+        * components/help/converters/gnome-db2html2/gdb3html.h:
+        * components/help/converters/gnome-db2html2/sect-elements.c:
+        Added the 'Markup' tag - Fixes Bug #2228
+
+        * components/help/converters/gnome-db2html2/gdb3html.[ch]:
+        (start_element),
+        (characters): Added a 'empty_element' to the Context struct.
+
+        * components/help/converters/gnome-db2html2/sect-elements.[ch]:
+        (sect_country_characters): New function - not used yet
+        (sect_write_characters): Remove a 'hack' for the 'entry' tag
+        (sect_entry_end_element): Print a &nbsp; if it is an empty element
+
 2000-08-22  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/eazel-install-rpm-glue.c:

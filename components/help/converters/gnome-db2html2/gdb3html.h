@@ -97,7 +97,8 @@ typedef enum ElementIndex {
 	THEAD,
 	TBODY,
 	ACRONYM,
-	UNDEFINED /* 90 */
+	MARKUP, /* 90 */
+	UNDEFINED /* 91 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;
@@ -133,6 +134,8 @@ struct _Context {
 	gint sect4;
 	gint sect5;
 
+	gboolean empty_element; /* This is to determine if the element is
+				   empty or not */
 	GSList *footnotes;
 };
 
