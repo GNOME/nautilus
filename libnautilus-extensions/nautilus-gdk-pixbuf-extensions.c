@@ -141,7 +141,7 @@ nautilus_gdk_pixbuf_load (const char *uri)
 		}
 	}
 
-	if (result != GNOME_VFS_OK) {
+	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_EOF) {
 		gtk_object_unref (GTK_OBJECT (loader));
 		gnome_vfs_close (handle);
 		return NULL;

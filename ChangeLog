@@ -1,3 +1,10 @@
+2000-09-21  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_load):
+	Handle GNOME_VFS_ERROR_EOF properly, now that we get this result
+	instead of just relying on getting 0 bytes read.
+
 2000-09-21  Darin Adler  <darin@eazel.com>
 
 	* components/tree/nautilus-tree-model.c: (report_node_changed):
