@@ -58,6 +58,7 @@ enum _PackageSystemStatus {
 	PACKAGE_INVALID,
 	PACKAGE_CANNOT_OPEN,
 	PACKAGE_PARTLY_RESOLVED,
+	PACKAGE_ALREADY_INSTALLED,
 	PACKAGE_RESOLVED
 };
 /* Methods to convert enum to/from char* val. The returned
@@ -66,6 +67,7 @@ PackageSystemStatus packagedata_status_str_to_enum (const char *st);
 const char* packagedata_status_enum_to_str (PackageSystemStatus st);
 
 enum _PackageModification {
+	PACKAGE_MOD_UNTOUCHED,
 	PACKAGE_MOD_UPGRADED,
 	PACKAGE_MOD_DOWNGRADED,
 	PACKAGE_MOD_INSTALLED,
@@ -170,11 +172,15 @@ struct _PackageData {
 };
 
 PackageData* packagedata_new (void);
+PackageData* packagedata_new_from_file (const char *file);
+
 PackageData* packagedata_new_from_rpm_header (Header*);
 PackageData* packagedata_new_from_rpm_conflict (struct rpmDependencyConflict);
 PackageData* packagedata_new_from_rpm_conflict_reversed (struct rpmDependencyConflict);
 
+void packagedata_fill_from_file (PackageData *pack, const char *filename);
 void packagedata_fill_from_rpm_header (PackageData *pack, Header*);
+
 const char *rpmfilename_from_packagedata (const PackageData *pack);
 const char *rpmname_from_packagedata (const PackageData *pack);
 

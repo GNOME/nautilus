@@ -29,7 +29,9 @@
 #include "eazel-install-protocols.h"
 #include "eazel-install-private.h"
 #include <config.h>
+#include <sys/utsname.h>
 
+#define CGI_BASE "http://%s:%d/cgi-bin/rpmsearch.cgi"
 
 gboolean http_fetch_remote_file (EazelInstall *service,
 				 char* url, 
@@ -40,6 +42,11 @@ gboolean ftp_fetch_remote_file (EazelInstall *service,
 gboolean local_fetch_remote_file (EazelInstall *service,
 				  char* url, 
 				  const char* target_file);
+
+typedef enum { RPMSEARCH_ENTRY_NAME, RPMSEARCH_ENTRY_PROVIDES } RpmSearchEntry;
+
+char* get_search_url_for_package (EazelInstall *service, RpmSearchEntry, const gpointer data);
+char* get_url_for_package (EazelInstall *service, RpmSearchEntry, const gpointer data);
 
 gboolean
 http_fetch_remote_file (EazelInstall *service,
@@ -228,7 +235,7 @@ eazel_install_fetch_package (EazelInstall *service,
 	case PROTOCOL_FTP:
 	case PROTOCOL_HTTP: 
 	{
-		url = get_url_for_package (service, package);
+		url = get_url_for_package (service, RPMSEARCH_ENTRY_NAME, package);
 	}
 	break;
 	case PROTOCOL_LOCAL:
@@ -245,17 +252,65 @@ eazel_install_fetch_package (EazelInstall *service,
 			targetname = g_strdup_printf ("%s/%s",
 						      eazel_install_get_tmp_dir (service),
 						      filename_from_url (url));
-			g_free (package->filename);
-			package->filename = g_strdup (targetname);
+			packagedata_fill_from_file (package, targetname); 
+			/* package->filename = g_strdup (targetname); */
 			result = eazel_install_fetch_file (service, url, targetname);
 			g_free (targetname);
 		}
 		g_free (url);
 	}
 	
+	return result;
+}
+
+gboolean eazel_install_fetch_package_which_provides (EazelInstall *service,
+						     const char *file,
+						     PackageData **package)
+{
+	gboolean result;
+	char *url;
+	char *targetname;
+
+	g_assert (package != NULL);
+	g_assert (*package != NULL);
+
+	result = FALSE;
+
+	switch (eazel_install_get_protocol (service)) {
+	case PROTOCOL_FTP:
+	case PROTOCOL_HTTP: 
+	{
+		url = get_url_for_package (service, RPMSEARCH_ENTRY_PROVIDES, (const gpointer)file);
+	}
+	break;
+	case PROTOCOL_LOCAL:
+		g_warning (_("Using local protocol cannot resolve library dependencies"));
+		url = NULL;
+		break;
+	};
+
+	if (url == NULL) {
+		g_warning (_("Could not get a URL for %s"), file);
+	} else {
+		/* FIXME: bugzilla.eazel.com 1315
+		   Loose the check once a proper rpmsearch.cgi is up and running */
+		if (filename_from_url (url) && strlen (filename_from_url (url))>1) {
+			targetname = g_strdup_printf ("%s/%s",
+						      eazel_install_get_tmp_dir (service),
+						      filename_from_url (url));
+			packagedata_fill_from_file (*package, targetname);
+			result = eazel_install_fetch_file (service, url, targetname);
+			if (!result) {
+				(*package)->status = PACKAGE_DEPENDENCY_FAIL;
+			}
+			g_free (targetname);
+		}
+		g_free (url);
+	}
 
 	return result;
 }
+
 
 static void
 add_to_url (char **url,
@@ -277,7 +332,8 @@ add_to_url (char **url,
 
 char*
 get_url_for_package  (EazelInstall *service, 
-		      PackageData *package)
+		      RpmSearchEntry entry,
+		      const gpointer data)
 {
 	char *search_url;
 	char *url;
@@ -285,7 +341,7 @@ get_url_for_package  (EazelInstall *service,
         ghttp_request* request;
 
 	url = NULL;
-	search_url = get_search_url_for_package (service, package);
+	search_url = get_search_url_for_package (service, entry, data);
 	g_message (_("Search URL: %s"), search_url);
 
         request = ghttp_request_new();
@@ -305,8 +361,19 @@ get_url_for_package  (EazelInstall *service,
 				switch (status) {
 				case ghttp_error:					
 				case ghttp_not_done:
-					g_warning (_("Could not retrieve a URL for %s"), rpmfilename_from_packagedata (package));
+					/* Eugh, no luck */
+					switch (entry) {
+					case RPMSEARCH_ENTRY_NAME:
+						g_warning (_("Could not retrieve a URL for %s"), 
+							   rpmfilename_from_packagedata ((PackageData*)data));
+						break;
+					case RPMSEARCH_ENTRY_PROVIDES:
+						g_warning (_("Could not retrieve a URL for %s"),
+							   (char*)data);
+						break;
+					}
 				case ghttp_done:
+					/* 404 or did we get something usefull ? */
 					if (ghttp_status_code (request) != 404) {
 						url = g_strdup (ghttp_get_body (request));
 						if (url) {
@@ -329,21 +396,32 @@ get_url_for_package  (EazelInstall *service,
 
 
 char* get_search_url_for_package (EazelInstall *service, 
-				  PackageData *pack)
+				  RpmSearchEntry entry,
+				  const gpointer data)
 {
 	char *url;
-	url = g_strdup_printf ("http://%s:%d/cgi-bin/rpmsearch.cgi",
+	url = g_strdup_printf (CGI_BASE,
 			       eazel_install_get_server (service),
 			       eazel_install_get_server_port (service));
-	if (pack->filename == NULL) {
-		g_message ("filename is null");
+
+	switch (entry) {
+	case RPMSEARCH_ENTRY_NAME: {
+		PackageData *pack;
+
+		pack = (PackageData*)data;
 		add_to_url (&url, "?name=", pack->name);
-	} else {
-		g_message ("filename is NOT null");
-		add_to_url (&url, "?filename=", pack->filename);
+		add_to_url (&url, "&arch=", pack->archtype);
+		add_to_url (&url, "&version>=", pack->version);
 	}
-	add_to_url (&url, "&arch=", pack->archtype);
-	/* add_to_url (&url, "&version>=", pack->version); */
+	break;
+	case RPMSEARCH_ENTRY_PROVIDES: {
+		struct utsname buf;
+		uname (&buf);
+		add_to_url (&url, "?provides=", (char*)data);
+		add_to_url (&url, "&arch=", buf.machine);
+	}
+	break;
+	}
 
 	switch (eazel_install_get_protocol (service)) {
 	case PROTOCOL_HTTP:
@@ -357,7 +435,7 @@ char* get_search_url_for_package (EazelInstall *service,
 	}
 /*
   FIXME: bugzilla.eazel.com 1333
-  We need to sent distro name at some point. Depends on the rpmsearch cgi script
+  We need to send distro name at some point. Depends on the rpmsearch cgi script
 */
 	/*
 	if (pack->name != DISTRO_UNKNOWN) {

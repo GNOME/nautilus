@@ -117,6 +117,7 @@ GtkType                                   eazel_install_callback_get_type   (voi
 POA_Trilobite_Eazel_InstallCallback__epv *eazel_install_callback_get_epv (void);
 Trilobite_Eazel_InstallCallback           eazel_install_callback_create_corba_object (BonoboObject *service);
 Trilobite_Eazel_Install                   eazel_install_callback_corba_objref (EazelInstallCallback *service);
+BonoboObjectClient                       *eazel_install_callback_bonobo (EazelInstallCallback *service);
 
 #ifdef __cplusplus
 }

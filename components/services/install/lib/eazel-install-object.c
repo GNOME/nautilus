@@ -123,12 +123,22 @@ static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
 static CORBA_char*
 xml_from_packagedata (const PackageData *pack) {
 	xmlDocPtr doc;
+	xmlNodePtr node;
 	xmlChar *mem;
 	CORBA_char *result;
 	int size;
 
 	doc = xmlNewDoc ("1.0");
-	xmlDocSetRootElement (doc, eazel_install_packagedata_to_xml (pack, NULL, NULL));
+
+	node = xmlNewDocNode (doc, NULL, "CATEGORIES", NULL);
+	xmlDocSetRootElement (doc, node);
+	node = xmlAddChild (node, xmlNewNode (NULL, "CATEGORY"));
+	xmlSetProp (node, "name", "failed");
+	
+	node = xmlAddChild (node, xmlNewNode (NULL, "PACKAGES"));
+
+	xmlAddChild (node, eazel_install_packagedata_to_xml (pack, NULL, NULL));
+
 	xmlDocDumpMemory (doc, &mem, &size);
 	result = CORBA_string_dup (mem);
 	free (mem);

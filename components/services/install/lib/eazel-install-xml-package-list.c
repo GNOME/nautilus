@@ -50,7 +50,9 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 	rv->minor = g_strdup (xml_get_value (package, "MINOR"));
 	rv->archtype = g_strdup (xml_get_value (package, "ARCH"));
 	rv->status = packagedata_status_str_to_enum (xml_get_value (package, "STATUS"));
-	rv->modify_status = packagedata_modstatus_str_to_enum (xml_get_value (package, "MODSTATUS"));
+	if (xml_get_value (package, "MODSTATUS")) {
+		rv->modify_status = packagedata_modstatus_str_to_enum (xml_get_value (package, "MODSTATUS"));
+	}
 
 	{
 		char *tmp;
@@ -91,12 +93,12 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 
 			depend = parse_package (dep, FALSE);
 			rv->breaks = g_list_append (rv->breaks, depend);
-		} /* else if (g_strcasecmp (dep->name, "MODIFIES") == 0) {
+		} else if (g_strcasecmp (dep->name, "MODIFIES") == 0) {
 			PackageData* depend;
 
 			depend = parse_package (dep, FALSE);
 			rv->modifies = g_list_append (rv->modifies, depend);
-			} */
+		} 
 
 		dep = dep->next;
 

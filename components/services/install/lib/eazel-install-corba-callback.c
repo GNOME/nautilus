@@ -233,8 +233,6 @@ eazel_install_callback_destroy (GtkObject *object)
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (EAZEL_INSTALL_CALLBACK (object));
 
-	g_message ("in eazel_install_callback_destroy ");
-
 	service = EAZEL_INSTALL_CALLBACK (object);
 
 	if (service->installservice_corba != CORBA_OBJECT_NIL) {
@@ -249,8 +247,6 @@ eazel_install_callback_destroy (GtkObject *object)
 	if (GTK_OBJECT_CLASS (eazel_install_callback_parent_class)->destroy) {
 		GTK_OBJECT_CLASS (eazel_install_callback_parent_class)->destroy (object);
 	}
-	g_message ("out eazel_install_callback_destroy ");
-
 }
 
 static void
@@ -406,6 +402,12 @@ Trilobite_Eazel_Install
 eazel_install_callback_corba_objref (EazelInstallCallback *service)
 {
 	return service->installservice_corba;
+}
+
+BonoboObjectClient*
+eazel_install_callback_bonobo (EazelInstallCallback *service)
+{
+	return service->installservice_bonobo;
 }
 
 void 

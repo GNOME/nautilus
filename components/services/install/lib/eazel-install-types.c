@@ -87,6 +87,7 @@ packagedata_new ()
 	pack->soft_depends = NULL;
 	pack->hard_depends = NULL;
 	pack->breaks = NULL;
+	pack->modifies = NULL;
 	return pack;
 }
 
@@ -157,6 +158,39 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 	pack->packsys_struc = (gpointer)hd;
 }
 
+/* FIXME: bugzilla.eazel.com 1532
+   RPM specific code */
+PackageData* 
+packagedata_new_from_file (const char *file)
+{
+	PackageData *pack;
+
+	pack = packagedata_new ();
+	packagedata_fill_from_file (pack, file);
+	return pack;
+}
+
+/* FIXME: bugzilla.eazel.com 1532
+   RPM specific code */
+void 
+packagedata_fill_from_file (PackageData *pack, const char *filename)
+{
+	static FD_t fd;
+	Header *hd;
+
+	fd = fdOpen (filename, O_RDONLY, 0);
+
+	hd = g_new0 (Header, 1);
+	rpmReadPackageHeader (fd, hd, NULL, NULL, NULL);
+	packagedata_fill_from_rpm_header (pack, hd);	
+
+	g_free (pack->filename);
+	pack->filename = g_strdup (filename);
+
+	fdClose (fd);
+	
+}
+
 void 
 packagedata_destroy_foreach (PackageData *pack, gpointer unused)
 {
@@ -178,6 +212,7 @@ packagedata_destroy_foreach (PackageData *pack, gpointer unused)
 	g_list_foreach (pack->soft_depends, (GFunc)packagedata_destroy_foreach, NULL);
 	g_list_foreach (pack->hard_depends, (GFunc)packagedata_destroy_foreach, NULL);
 	g_list_foreach (pack->breaks, (GFunc)packagedata_destroy_foreach, NULL);
+	g_list_foreach (pack->modifies, (GFunc)packagedata_destroy_foreach, NULL);
 	pack->soft_depends = NULL;
 	pack->hard_depends = NULL;
 	pack->breaks = NULL;
@@ -296,6 +331,9 @@ packagedata_status_enum_to_str (PackageSystemStatus st)
 	case PACKAGE_RESOLVED:
 		result = g_strdup ("RESOLVED");
 		break;
+	case PACKAGE_ALREADY_INSTALLED:
+		result = g_strdup ("ALREADY_INSTALLED");
+		break;
 	}
 	return result;
 }
@@ -305,6 +343,8 @@ packagedata_status_str_to_enum (const char *st)
 {
 	PackageSystemStatus result;
 	
+	g_return_val_if_fail (st!=NULL, PACKAGE_UNKNOWN_STATUS);
+	
 	if (strcmp (st, "UNKNOWN_STATUS")==0) { result = PACKAGE_UNKNOWN_STATUS; } 
 	else if (strcmp (st, "SOURCE_NOT_SUPPORTED")==0) { result = PACKAGE_SOURCE_NOT_SUPPORTED; } 
 	else if (strcmp (st, "DEPENDENCY_FAIL")==0) { result = PACKAGE_DEPENDENCY_FAIL; } 
@@ -313,6 +353,7 @@ packagedata_status_str_to_enum (const char *st)
 	else if (strcmp (st, "CANNOT_OPEN")==0) { result = PACKAGE_CANNOT_OPEN; } 
 	else if (strcmp (st, "PARTLY_RESOLVED")==0) { result = PACKAGE_PARTLY_RESOLVED; } 
 	else if (strcmp (st, "RESOLVED")==0) { result = PACKAGE_RESOLVED; } 
+	else if (strcmp (st, "ALREADY_INSTALLED")==0) { result = PACKAGE_ALREADY_INSTALLED; } 
 
 	return result;
 }
@@ -336,6 +377,9 @@ packagedata_modstatus_enum_to_str (PackageSystemStatus st)
 	case PACKAGE_MOD_UNINSTALLED:
 		result = g_strdup ("UNINSTALLED");
 		break;
+	case PACKAGE_MOD_UNTOUCHED:
+		result = g_strdup ("UNTOUCHED");
+		break;
 	}
 	return result;
 }
@@ -345,7 +389,10 @@ packagedata_modstatus_str_to_enum (const char *st)
 {
 	PackageSystemStatus result;
 	
+	g_return_val_if_fail (st!=NULL, PACKAGE_MOD_UNTOUCHED);
+
 	if (strcmp (st, "INSTALLED")==0) { result = PACKAGE_MOD_INSTALLED; } 
+	else if (strcmp (st, "UNTOUCHED")==0) { result = PACKAGE_MOD_UNTOUCHED; } 
 	else if (strcmp (st, "UNINSTALLED")==0) { result = PACKAGE_MOD_UNINSTALLED; } 
 	else if (strcmp (st, "UPGRADED")==0) { result = PACKAGE_MOD_UPGRADED; } 
 	else if (strcmp (st, "DOWNGRADED")==0) { result = PACKAGE_MOD_DOWNGRADED; } 

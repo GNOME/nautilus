@@ -1,3 +1,64 @@
+2000-07-20  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	*
+	components/services/install/command-line/eazel-alt-install-corba.c:
+	(install_failed), (get_password_dude), (set_root_client), (main):
+	Added Robey's trilobite-root-helper-client thingy. Now prompts for
+	password.
+	
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(eazel_install_callback_destroy),
+	(eazel_install_callback_corba_objref),
+	(eazel_install_callback_bonobo):
+	Added a function to get the bonoboobjectclient pointer from the
+	callback dingbot.
+	
+	* components/services/install/lib/eazel-install-object.c:
+	(xml_from_packagedata):
+	Duh, the xml creation was screwed.
+	
+	* components/services/install/lib/eazel-install-protocols.h:
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package),
+	(eazel_install_fetch_package_which_provides),
+	(get_url_for_package), (get_search_url_for_package):
+	Added code to fetch a package using the ?provides=; entry
+	point. Also fetching now immediately reads the package header.
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_all_packages),
+	(eazel_install_do_rpm_transaction_make_argument_list),
+	(do_rpm_transaction), (eazel_install_load_rpm_headers),
+	(eazel_install_check_existing_packages),
+	(eazel_install_fetch_rpm_dependencies):
+	Better check-existing-package code. No longer allows installs of
+	packages already present with equal or higher version. Fixed the
+	bad "--force --nodeps" argument to rpm. Implemented querying for
+	file dependencies.
+	
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_new), (packagedata_new_from_file),
+	(packagedata_fill_from_file), (packagedata_destroy_foreach),
+	(packagedata_status_enum_to_str), (packagedata_status_str_to_enum),
+	(packagedata_modstatus_enum_to_str),
+	(packagedata_modstatus_str_to_enum):
+	Fixes to the (mod)status to enum and vice versa. Also some
+	functions to load a header into a package. 
+
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_package):
+	Now parses MODIFIES into the structure, also checks if MODSTATUS
+	is present before calling modstatus_str_to_enum,
+	
+	* components/services/install/lib/libeazelinstall.h:
+	*
+	components/services/trilobite/libtrilobite/libtrilobite-service.h:
+	* components/services/trilobite/libtrilobite/libtrilobite.h:
+	*
+	Fixed <.../...> to "...", and added the gtk roothelper.
+
 2000-07-20  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* librsvg/.cvsignore:

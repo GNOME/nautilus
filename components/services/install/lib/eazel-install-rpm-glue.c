@@ -106,8 +106,8 @@ gboolean eazel_install_prepare_package_system (EazelInstall *service);
 
 gboolean eazel_install_free_package_system (EazelInstall *service);
 
-static void eazel_install_check_existing_packages (EazelInstall *service, 
-						   PackageData *pack);
+static int eazel_install_check_existing_packages (EazelInstall *service, 
+						  PackageData *pack);
 
 gboolean
 install_new_packages (EazelInstall *service, GList *categories) {
@@ -239,35 +239,46 @@ install_all_packages (EazelInstall *service,
 	rv = TRUE;
 
 	while (categories) {
-		CategoryData* cat = categories->data;
-		GList* pkgs = cat->packages;
-		GList* newfiles;
+		CategoryData* cat;
+		GList* packages;
 		GList* failedfiles;
 		GList* iterator;
 		
-		newfiles = NULL;
+		cat = categories->data;
 		failedfiles = NULL;
+		packages = NULL;
 
 		/* Check for existing installed packages */
-		for (iterator = pkgs; iterator; iterator = iterator->next) {
+		for (iterator = cat->packages; iterator; iterator = iterator->next) {
 			PackageData *pack;
 			
 			pack = (PackageData*)iterator->data;
-			eazel_install_check_existing_packages (service, pack);
+			/* If it already exists in version => then pack and we're
+			   not in force mode, skip it */
+			if (eazel_install_get_force (service) || 
+			    eazel_install_check_existing_packages (service, pack) > 0) {
+				packages = g_list_prepend (packages, pack);
+			} else {
+				g_message ("Skipping %s...", pack->name);
+				pack->status = PACKAGE_ALREADY_INSTALLED;				
+				eazel_install_emit_install_failed (service, pack);
+			}
 		}
 
-		if (pkgs) {
+		if (packages) {
 			if (eazel_install_prepare_package_system (service) == FALSE) {
 				return FALSE;
 			}
-			eazel_install_ensure_deps (service, &pkgs, &failedfiles);
+			eazel_install_ensure_deps (service, &packages, &failedfiles);
 			eazel_install_free_package_system (service); 
+
+			g_message (_("Category = %s, %d packages"), cat->name, g_list_length (packages));			
+			do_rpm_transaction (service,
+					    packages);
+			
+			g_list_free (packages);
 		}
 
-		g_message (_("Category = %s, %d packages"), cat->name, g_list_length (pkgs));
-
-		do_rpm_transaction (service,
-				    pkgs);
 		categories = categories->next;
 	}
 
@@ -500,23 +511,24 @@ eazel_install_do_rpm_transaction_make_argument_list (EazelInstall *service,
 	}
 	
 	/* Set the RPM parameters */
-	if (eazel_install_get_uninstall (service)) {
-		args = g_list_prepend (args, g_strdup ("-ev"));
-	} else 	if (eazel_install_get_update (service)) {
-		args = g_list_prepend (args, g_strdup ("-Uv"));
-		args = g_list_prepend (args, g_strdup ("--percent"));
-	} else {
-		args = g_list_prepend (args, g_strdup ("-iv"));
-		args = g_list_prepend (args, g_strdup ("--percent"));
-	}
 	if (eazel_install_get_test (service)) {
 		g_message ("Dry run mode!");
 		args = g_list_prepend (args, g_strdup ("--test"));
 	} 
 	if (eazel_install_get_force (service)) {
 		g_warning ("Force install mode!");
-		args = g_list_prepend (args, g_strdup ("--force --nodeps"));
+		args = g_list_prepend (args, g_strdup ("--force"));
+		args = g_list_prepend (args, g_strdup ("--nodeps"));
 	} 
+	if (eazel_install_get_uninstall (service)) {
+		args = g_list_prepend (args, g_strdup ("-ev"));
+	} else 	if (eazel_install_get_update (service)) {
+		args = g_list_prepend (args, g_strdup ("--percent"));
+		args = g_list_prepend (args, g_strdup ("-Uv"));
+	} else {
+		args = g_list_prepend (args, g_strdup ("--percent"));
+		args = g_list_prepend (args, g_strdup ("-iv"));
+	}
 
 	return args;
 }
@@ -611,6 +623,10 @@ do_rpm_transaction (EazelInstall *service,
 	TrilobiteRootHelper *root_helper;
 	GList *args;
 	int fd;
+
+	if (g_list_length (packages) == 0) {
+		return 0;
+	}
 		
 	service->private->packsys.rpm.packages_installed = 0;
 	service->private->packsys.rpm.num_packages = g_list_length (packages);
@@ -626,6 +642,18 @@ do_rpm_transaction (EazelInstall *service,
 	eazel_install_emit_preflight_check (service, 					     
 					    service->private->packsys.rpm.total_size,
 					    service->private->packsys.rpm.num_packages);
+
+	/*
+	{
+		GList *iterator;
+		fprintf (stdout, "\nARGS: ");
+		for (iterator = args; iterator; iterator = iterator->next) {
+			fprintf (stdout, "%s ", (char*)iterator->data);
+		}
+		fprintf (stdout, "\n");
+	}
+	*/
+
 
 	/* Fire off the helper */
 	root_helper = gtk_object_get_data (GTK_OBJECT (service), "trilobite-root-helper");
@@ -643,7 +671,7 @@ do_rpm_transaction (EazelInstall *service,
 	
 	eazel_install_do_rpm_transaction_process_pipe (service, fd);
 
-	g_list_foreach (args, g_free, NULL);
+	g_list_foreach (args, (GFunc)g_free, NULL);
 	g_list_free (args);
 
 	/* FIXME: bugzilla.eazel.com 1586 1673
@@ -902,6 +930,12 @@ eazel_install_load_rpm_headers (EazelInstall *service,
 		int is_source;
 
 		pack = (PackageData*)iterator->data;
+
+		/* If the package already has a packsys struc, keep spinning */
+		if (pack->packsys_struc) {
+			continue;
+		}
+
 		filename = g_strdup (rpmfilename_from_packagedata (pack));
 
 		/* Open the RPM file */
@@ -1154,26 +1188,50 @@ eazel_install_add_to_extras_foreach (char *key, GList *list, GList **extrapackag
 	}
 }
 
-static void 
+/* Returns 0 if the package is causes same state (ie package already installed
+   with same version.
+   -1 if it'll downgrade your system, (ie. you have a newer version installed)
+   1 if it'll upgrade your system (ie. if you have an older version installed)
+   2 if you don't have the package already 
+
+   In some weird cases, you should eg get -1 and 1 returned (or such). But this will always
+   return the "lowest possible" stage */
+static int
 eazel_install_check_existing_packages (EazelInstall *service, 
 				       PackageData *pack) 
 {
 	GList *existing_packages;
+	int result;
 
+	result = 2;
 	/* query for existing package of same name */
 	existing_packages = eazel_install_simple_query (service, pack->name, EI_SIMPLE_QUERY_MATCHES, 0, NULL);
 	if (existing_packages) {
 		/* Get the existing package, set it's modify flag and add it */
 		GList *existing_iterator;
 		for (existing_iterator = existing_packages; existing_iterator; existing_iterator = existing_iterator->next) {
+			int res;
 			PackageData *existing_package;
+
 			existing_package = (PackageData*)existing_iterator->data;
 			existing_package->modify_status = PACKAGE_MOD_UPGRADED;
 			pack->modifies = g_list_prepend (pack->modifies, existing_package);
-			g_message ("%s upgraded from %s to %s", pack->name, existing_package->version, pack->version);
+			
+			res = rpmvercmp (existing_package->version, pack->version);
+			
+			if (res == 0 && result > 0) {
+				result = 0;
+			} else if (res > 0 && result > 1) {
+				result = 1;
+			} else {
+				result = -1;
+			}
+		
+			g_message ("%s %sgrades from %s to %s", pack->name, result != 0 ? (result>0 ? "up" : "down") : "", existing_package->version, pack->version);
 		}
 	}
-	
+
+	return result;
 }
 
 
@@ -1190,9 +1248,13 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 	GHashTable *extras;
 	GList *to_remove, *remove_iterator;
 	struct rpmDependencyConflict conflict;
+	gboolean fetch_from_file_dependency;
+	gboolean fetch_result;
 	
 	to_remove = NULL;
 	extras = g_hash_table_new (g_str_hash, g_str_equal);
+	fetch_from_file_dependency = FALSE;
+	fetch_result = FALSE;
 
 	/* FIXME: bugzilla.eazel.com 1512 
 	   This piece of code is rpm specific. It has some generic algorithm
@@ -1208,20 +1270,6 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 		pack_entry = g_list_find_custom (*packages, 
 						 (gpointer)&conflict,
 						 (GCompareFunc)eazel_install_package_conflict_compare);
-
-		/* FIXME bugzilla.eazel.com 1316
-		   Need to find a solid way to capture file dependencies, and once they do not
-		   appear at this point anymore, remove them. And in the end, check the list is
-		   empty. 
-
-		   Perhaps the smartest thing is to check at the final install. We can't resolve
-		   these deps anyway, as we have on idea as to where the file is from.
-		   
-		   Or do a http search for a package providing the lib
-		*/
-		if (*conflict.needsName=='/' || strstr (conflict.needsName, ".so")) {
-			continue;
-		}
 
 		if (pack_entry == NULL) {
 			switch (conflict.sense) {
@@ -1274,18 +1322,41 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 				break;
 			}
 		} else {
-			pack = (PackageData*)(pack_entry->data);
-			dep = packagedata_new_from_rpm_conflict (conflict);
-			dep->archtype = g_strdup (pack->archtype);
+			/* Does the conflict look like a file dependency ? */
+			pack = (PackageData*)pack_entry->data;
+			if (*conflict.needsName=='/' || strstr (conflict.needsName, ".so")) {
+				/* FIXME bugzilla.eazel.com 1316
+				   Need to find a solid way to capture file dependencies, and once they do not
+				   appear at this point anymore, remove them. And in the end, check the list is
+				   empty. 
+				   
+				   Perhaps the smartest thing is to check at the final install. We can't resolve
+				   these deps anyway, as we have on idea as to where the file is from.
+				   
+				   Or do a http search for a package providing the lib
+				*/
+				g_message (_("Processing dep for %s : requires %s"), pack->name, conflict.needsName);		
+				dep = packagedata_new ();
+				dep->name = g_strdup (conflict.needsName);
+				fetch_from_file_dependency = TRUE;
+			} else {
+				dep = packagedata_new_from_rpm_conflict (conflict);
+				dep->archtype = g_strdup (pack->archtype);
+				fetch_from_file_dependency = FALSE;
+				g_message (_("Processing dep for %s : requires %s"), pack->name, dep->name);		
+			}
 		}
-		g_assert (dep->name != NULL);
+
 		eazel_install_emit_dependency_check (service, pack, dep);
-		dep->archtype = g_strdup (pack->archtype);	       						
 		pack->soft_depends = g_list_prepend (pack->soft_depends, dep);
 
-		g_message (_("Processing dep for %s : requires %s"), pack->name, dep->name);
+		if (fetch_from_file_dependency) {
+			fetch_result = eazel_install_fetch_package_which_provides (service, conflict.needsName, &dep);
+		} else {
+			fetch_result = eazel_install_fetch_package (service, dep);
+		}
 
-		if (eazel_install_fetch_package (service, dep)) {
+		if (fetch_result) {
 			/* if it succeeds, add to a list of extras for this package 
 			   We cannot just put it into extrapackages, as a later dep
 			   might fail, and then we have to fail the package */

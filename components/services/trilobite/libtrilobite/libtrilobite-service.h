@@ -32,10 +32,9 @@
 
 #include <gnome.h>
 
-
-#include <libtrilobite/trilobite-service.h>
-#include <libtrilobite/trilobite-service-public.h>
-#include <libtrilobite/trilobite-service-passwordquery-public.h>
+#include "trilobite-service.h"
+#include "trilobite-service-public.h"
+#include "trilobite-service-passwordquery-public.h"
 
 #endif /* __LIBTRILOBITE_SERVICE_H__ */
 

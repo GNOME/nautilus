@@ -253,7 +253,7 @@ install_failed (EazelInstallCallback *service,
 	for (iterator = pd->soft_depends; iterator; iterator = iterator->next) {			
 		PackageData *pack;
 		char *indent2;
-		indent2 = g_strconcat (indent, (iterator->next || pd->breaks) ? " |- " : " +- " , NULL);
+		indent2 = g_strconcat (indent, (iterator->next || pd->breaks) ? " |-d- " : " +-d- " , NULL);
 		pack = (PackageData*)iterator->data;
 		install_failed (service, pack, indent2);
 		g_free (indent2);
@@ -261,7 +261,15 @@ install_failed (EazelInstallCallback *service,
 	for (iterator = pd->breaks; iterator; iterator = iterator->next) {			
 		PackageData *pack;
 		char *indent2;
-		indent2 = g_strconcat (indent, iterator->next ? " |- " : " +- " , NULL);
+		indent2 = g_strconcat (indent, iterator->next ? " |-b- " : " +-b- " , NULL);
+		pack = (PackageData*)iterator->data;
+		install_failed (service, pack, indent2);
+		g_free (indent2);
+	}
+	for (iterator = pd->modifies; iterator; iterator = iterator->next) {			
+		PackageData *pack;
+		char *indent2;
+		indent2 = g_strconcat (indent, iterator->next ? " |-m- " : " +-m- " , NULL);
 		pack = (PackageData*)iterator->data;
 		install_failed (service, pack, indent2);
 		g_free (indent2);
@@ -314,12 +322,62 @@ done (EazelInstallCallback *service,
 	gtk_main_quit ();
 }
 
+static char *
+get_password_dude (TrilobiteRootClient *root_client, const char *prompt, void *user_data)
+{
+	char password[80];
+
+	printf ("gimme %s's password : ", prompt);
+	fflush (stdout);
+
+	fgets (password, 80, stdin);
+	if (password[strlen (password) - 1] == '\n') {
+		password[strlen (password) - 1] = 0;
+	}
+	password[79] = 0;
+	return g_strdup (password);
+}
+
+static TrilobiteRootClient *
+set_root_client (BonoboObjectClient *service)
+{
+	TrilobiteRootClient *root_client;
+	Trilobite_PasswordQueryClient trilobite_client;
+
+	if (bonobo_object_client_has_interface (service, "IDL:Trilobite/PasswordQuery:1.0", &ev)) {
+	        Trilobite_PasswordQuery trilobite_password;
+
+		root_client = trilobite_root_client_new ();
+		gtk_signal_connect (GTK_OBJECT (root_client), "need_password", GTK_SIGNAL_FUNC (get_password_dude),
+				    NULL);
+
+		trilobite_password = bonobo_object_query_interface (BONOBO_OBJECT (service),
+								    "IDL:Trilobite/PasswordQuery:1.0");
+		trilobite_client = trilobite_root_client_get_passwordqueryclient (root_client);
+		if (trilobite_password) {
+			Trilobite_PasswordQuery_set_query_client (trilobite_password, trilobite_client, &ev);
+			if (ev._major != CORBA_NO_EXCEPTION) {
+				g_warning ("set-query-client got exception :(");
+			}
+			Trilobite_PasswordQuery_unref (trilobite_password, &ev);
+			CORBA_Object_release (trilobite_password, &ev);
+		} else {
+			g_warning ("Never set client!");
+		}
+		return root_client;
+	} else {
+		g_warning ("Object does not support IDL:Trilobite/PasswordQuery:1.0");
+		return NULL;
+	}
+}
+
 int main(int argc, char *argv[]) {
 	poptContext ctxt;
 	GList *packages;
 	GList *categories;
 	char *str;
 	EazelInstallCallback *cb;		
+	
 
 	CORBA_exception_init (&ev);
 
@@ -372,6 +430,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	set_parameters_from_command_line (eazel_install_callback_corba_objref (cb));
+	set_root_client (eazel_install_callback_bonobo (cb));
 	
 	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", eazel_download_progress_signal, "Download progress");
 	gtk_signal_connect (GTK_OBJECT (cb), "preflight_check", eazel_preflight_check_signal, NULL);

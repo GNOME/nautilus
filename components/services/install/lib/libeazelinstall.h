@@ -24,6 +24,6 @@
 #ifndef LIBEAZEL_INSTALL_H
 #define LIBEAZEL_INSTALL_H
 
-#include <eazel-install-corba-callback.h>
+#include "eazel-install-corba-callback.h"
 
 #endif /* LIBEAZEL_INSTALL_H */

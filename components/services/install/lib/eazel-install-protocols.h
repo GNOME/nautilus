@@ -34,14 +34,15 @@
 
 #define USER_AGENT_STRING "eazel-install/"
 
-char* get_search_url_for_package (EazelInstall *service, PackageData *pack);
-char* get_url_for_package (EazelInstall *service, PackageData *pack);
-
 gboolean eazel_install_fetch_file (EazelInstall *service,
 				   char* url, 
 				   const char* target_file);
 
 gboolean eazel_install_fetch_package (EazelInstall *service,
 				      PackageData *package);
+
+gboolean eazel_install_fetch_package_which_provides (EazelInstall *service,
+						     const char *file,
+						     PackageData **package);
 
 #endif /* EAZEL_INSTALL_PROTOCOLS_H */
