@@ -60,7 +60,6 @@ GtkType			nautilus_trash_monitor_get_type				(void);
 
 NautilusTrashMonitor   *nautilus_trash_monitor_get 				(void);
 gboolean		nautilus_trash_monitor_is_empty 			(void);
-void			nautilus_trash_monitor_async_get_trash_directories 	(GnomeVFSAsyncFindDirectoryCallback callback,
-										 gpointer context);
+GList *			nautilus_trash_monitor_get_trash_directories 		(void);
 
 #endif

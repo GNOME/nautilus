@@ -187,3 +187,57 @@ nautilus_trash_monitor_is_empty (void)
 {
 	return nautilus_trash_monitor_get ()->details->empty;
 }
+
+static gboolean
+add_one_volume_trash (const NautilusVolume *volume,
+		      gpointer callback_data)
+{
+	GnomeVFSURI *volume_mount_point_uri;
+	GnomeVFSURI *trash_uri;
+	GList **result;
+	
+	result = (GList **)callback_data;
+
+	if (nautilus_volume_monitor_should_integrate_trash (volume)) {
+	
+		/* Get the uri of the volume mount point as the place
+		 * "near" which to look for trash on the given volume.
+		 */ 
+		volume_mount_point_uri = gnome_vfs_uri_new (
+			nautilus_volume_monitor_get_volume_mount_uri (volume));
+
+		g_assert (volume_mount_point_uri != NULL);
+	
+		/* Look for trash. It is OK to use a sync call here because
+		 * the options we use (don't create, don't look for it if we
+		 * already don't know where it is) do not cause any IO.
+		 */
+		if (gnome_vfs_find_directory (volume_mount_point_uri,
+			GNOME_VFS_DIRECTORY_KIND_TRASH, &trash_uri,
+			FALSE, FALSE, 0777) == GNOME_VFS_OK) {
+
+			/* found trash, put it on the list */
+			*result = g_list_append (*result, trash_uri);
+		}
+		
+		gnome_vfs_uri_unref (volume_mount_point_uri);
+	}
+
+	/* don't stop iterating */
+	return FALSE; 
+}
+
+GList *
+nautilus_trash_monitor_get_trash_directories (void)
+{
+	GList *result;
+
+	result = NULL;
+
+	/* Collect the trash directories on all the mounted volumes. */
+	nautilus_volume_monitor_each_mounted_volume
+		(nautilus_volume_monitor_get (), add_one_volume_trash, &result);
+	
+	return result;
+}
+

@@ -55,32 +55,6 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTrashDirectory,
 				   nautilus_trash_directory,
 				   NAUTILUS_TYPE_MERGED_DIRECTORY)
 
-static GnomeVFSURI *
-get_volume_vfs_uri_if_writable (NautilusVolume *volume)
-{
-	char *uri;
-	GnomeVFSURI *vfs_uri;
-
-	/* FIXME bugzilla.eazel.com 2443: 
-	 * Why is trash only found on EXT2 volumes? This seems
-	 * like an incorrect check.
-	 */
-
-	/* FIXME bugzilla.eazel.com 2444:
-	 * Why can't we view the trash on a read-only volume 
-	 * if it happens to be there?
-	 */
-	if (volume->type != NAUTILUS_VOLUME_EXT2 || volume->is_read_only) {
-		return NULL;
-	}
-
-	uri = gnome_vfs_get_uri_from_local_path (volume->mount_path);
-	vfs_uri = gnome_vfs_uri_new (uri);
-	g_free (uri);
-
-	return vfs_uri;
-}
-
 static void
 find_directory_callback (GnomeVFSAsyncHandle *handle,
 			 GList *results,
@@ -129,7 +103,7 @@ add_volume (NautilusTrashDirectory *trash,
 	    NautilusVolume *volume)
 {
 	TrashVolume *trash_volume;
-	GnomeVFSURI *vfs_uri;
+	GnomeVFSURI *volume_mount_uri;
 	GList vfs_uri_as_list;
 
 	/* Quick out if we already know about this volume. */
@@ -139,11 +113,12 @@ add_volume (NautilusTrashDirectory *trash,
 		return;
 	}
 
-	/* If we can't get the URI, we jus don't do trash on this volume. */
-	vfs_uri = get_volume_vfs_uri_if_writable (volume);
-	if (vfs_uri == NULL) {
+	if (!nautilus_volume_monitor_should_integrate_trash (volume)) {
 		return;
 	}
+	
+	volume_mount_uri = gnome_vfs_uri_new (
+		nautilus_volume_monitor_get_volume_mount_uri (volume));
 
 	/* Make the structure used to track the trash for this volume. */
 	trash_volume = g_new0 (TrashVolume, 1);
@@ -152,7 +127,7 @@ add_volume (NautilusTrashDirectory *trash,
 	g_hash_table_insert (trash->details->volumes, volume, trash_volume);
 
 	/* Find the real trash directory for this one. */
-	vfs_uri_as_list.data = vfs_uri;
+	vfs_uri_as_list.data = volume_mount_uri;
 	vfs_uri_as_list.next = NULL;
 	vfs_uri_as_list.prev = NULL;
 	/* Search for Trash directories but don't create new ones. */

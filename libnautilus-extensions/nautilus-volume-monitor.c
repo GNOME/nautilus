@@ -318,6 +318,28 @@ nautilus_volume_monitor_volume_is_mounted (const NautilusVolume *volume)
 	return FALSE;
 }
 
+gboolean 
+nautilus_volume_monitor_should_integrate_trash (const NautilusVolume *volume)
+{
+	/* Hand-pick a bunch of file system types that we know we can support
+	 * trash on. It would probably be harder to keep a list of the ones
+	 * we can't try to support trash on because the list would have to be
+	 * more definitive.
+	 */
+	return volume->type == NAUTILUS_VOLUME_EXT2
+		|| volume->type == NAUTILUS_VOLUME_FAT
+		|| volume->type == NAUTILUS_VOLUME_NFS
+		|| volume->type == NAUTILUS_VOLUME_VFAT
+		|| volume->type == NAUTILUS_VOLUME_FLOPPY
+		|| volume->type == NAUTILUS_VOLUME_SMB;
+}
+
+const char *
+nautilus_volume_monitor_get_volume_mount_uri (const NautilusVolume *volume)
+{
+	return volume->mount_path;
+}
+
 static void
 mount_volume_cdrom_set_state (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 {

@@ -44,6 +44,7 @@
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
+#include <libnautilus-extensions/nautilus-trash-monitor.h>
 
 typedef enum {
 	XFER_MOVE,
@@ -467,6 +468,281 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 	}
 }
 
+typedef enum {
+	ERROR_READ_ONLY,
+	ERROR_NOT_READABLE,
+	ERROR_NOT_WRITABLE,
+	ERROR_NOT_ENOUGH_PERMISSIONS,
+	ERROR_NO_SPACE,
+	ERROR_OTHER
+} NautilusFileOperationsErrorKind;
+
+typedef enum {
+	ERROR_LOCATION_UNKNOWN,
+	ERROR_LOCATION_SOURCE,
+	ERROR_LOCATION_SOURCE_PARENT,
+	ERROR_LOCATION_SOURCE_OR_PARENT,
+	ERROR_LOCATION_TARGET
+} NautilusFileOperationsErrorLocation;
+
+
+static char *
+build_error_string (const char *source_name, const char *target_name,
+	XferKind operation_kind, NautilusFileOperationsErrorKind error_kind,
+	NautilusFileOperationsErrorLocation error_location, GnomeVFSResult error)
+{
+	/* Avoid clever message composing here, just use brute force and
+	 * duplicate the different flavors of error messages for all the
+	 * possible permutations.
+	 * That way localizers have an easier time and can even rearrange the
+	 * order of the words in the messages easily.
+	 */
+
+	const char *error_string;
+	char *result;
+
+	error_string = NULL;
+	result = NULL;
+
+	if (error_location == ERROR_LOCATION_SOURCE_PARENT) {
+
+		switch (operation_kind) {
+		case XFER_MOVE:
+		case XFER_MOVE_TO_TRASH:
+			if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
+				error_string = _("Error while moving.\n"
+						 "\"%s\" cannot be moved because you do not have "
+						 "permissions to change its parent folder.");
+			} else if (error_kind == ERROR_READ_ONLY) {
+				error_string = _("Error while moving.\n"
+						 "\"%s\" cannot be moved because its parent folder "
+						 "is read-only.");
+			} else if (error_kind == ERROR_NOT_WRITABLE) {
+				error_string = _("Error while moving.\n"
+						 "\"%s\" cannot be moved because its parent folder "
+						 "is not writable.");
+			}
+			break;
+
+		case XFER_DELETE:
+		case XFER_EMPTY_TRASH:
+			if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
+				error_string = _("Error while deleting.\n"
+						 "\"%s\" cannot be deleted because you do not have "
+						 "permissions to change its parent folder.");
+			} else if (error_kind == ERROR_READ_ONLY) {
+				error_string = _("Error while deleting.\n"
+						 "\"%s\" cannot be deleted because its parent folder "
+						 "is read-only.");
+			} else if (error_kind == ERROR_NOT_WRITABLE) {
+				error_string = _("Error while moving.\n"
+						 "\"%s\" cannot be moved because its parent folder "
+						 "is not writable.");
+			}
+			break;
+
+		default:
+			g_assert_not_reached ();
+			break;
+		}
+		
+		if (error_string != NULL) {
+			g_assert (source_name != NULL);
+			result = g_strdup_printf (error_string, source_name);
+		}
+
+	} else if (error_location == ERROR_LOCATION_SOURCE_OR_PARENT) {
+
+		g_assert (source_name != NULL);
+
+		switch (operation_kind) {
+		case XFER_MOVE:
+			if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
+				error_string = _("Error while moving.\n"
+						 "\"%s\" cannot be moved because you do not have "
+						 "permissions to change it or its parent folder.");
+			}
+			break;
+		case XFER_MOVE_TO_TRASH:
+			if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
+				error_string = _("Error while moving.\n"
+						 "\"%s\" cannot be moved to trash because you do not have "
+						 "permissions to change it or its parent folder.");
+			}
+			break;
+
+		default:
+			g_assert_not_reached ();
+			break;
+		}
+
+		if (error_string != NULL) {
+			g_assert (source_name != NULL);
+			result = g_strdup_printf (error_string, source_name);
+		}
+
+	} else if (error_location == ERROR_LOCATION_SOURCE) {
+
+		g_assert (source_name != NULL);
+
+		switch (operation_kind) {
+		case XFER_COPY:
+		case XFER_DUPLICATE:
+			if (error_kind == ERROR_NOT_READABLE) {
+				error_string = _("Error while copying.\n"
+						 "\"%s\" is not readable.");
+			}
+			break;
+		case XFER_LINK:
+			if (error_kind == ERROR_NOT_READABLE) {
+				error_string = _("Error while linking\n"
+						 "\"%s\" is not readable.");
+			}
+			break;
+
+		default:
+			g_assert_not_reached ();
+			break;
+		}
+
+		if (error_string != NULL) {
+			g_assert (source_name != NULL);
+			result = g_strdup_printf (error_string, source_name);
+		}
+
+	} else if (error_location == ERROR_LOCATION_TARGET) {
+
+		if (error_kind == ERROR_NO_SPACE) {
+			switch (operation_kind) {
+			case XFER_COPY:
+			case XFER_DUPLICATE:
+				error_string = _("Error while copying \"%s\".\n"
+				   		 "There is no space on the destination.");
+				break;
+			case XFER_MOVE_TO_TRASH:
+			case XFER_MOVE:
+				error_string = _("Error while moving \"%s\".\n"
+				   		 "There is no space on the destination.");
+				break;
+			case XFER_LINK:
+				error_string = _("Error while linking \"%s\".\n"
+				   		 "There is no space on the destination.");
+				break;
+			default:
+				g_assert_not_reached ();
+				break;
+			}
+		} else {
+			switch (operation_kind) {
+			case XFER_COPY:
+			case XFER_DUPLICATE:
+				if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
+					error_string = _("Error while copying items to \"%s\".\n"
+					   		 "You do not have permissions to write to "
+					   		 "the destination.");
+				} else if (error_kind == ERROR_NOT_WRITABLE) {
+					error_string = _("Error while copying items to \"%s\".\n"
+					   		 "The destination is not writable.");
+				} 
+				break;
+			case XFER_MOVE:
+			case XFER_MOVE_TO_TRASH:
+				if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
+					error_string = _("Error while moving items \"%s\".\n"
+					   		 "You do not have permissions to write to "
+					   		 "the destination.");
+				} else if (error_kind == ERROR_NOT_WRITABLE) {
+					error_string = _("Error while moving items \"%s\".\n"
+					   		 "The destination is not writable.");
+				} 
+
+				break;
+			case XFER_LINK:
+				if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
+					error_string = _("Error while creating links in \"%s\".\n"
+					   		 "You do not have permissions to write to "
+					   		 "the destination.");
+				} else if (error_kind == ERROR_NOT_WRITABLE) {
+					error_string = _("Error while creating links in \"%s\".\n"
+					   		 "The destination is not writable.");
+				} 
+				break;
+			default:
+				g_assert_not_reached ();
+				break;
+			}
+		}
+		if (error_string != NULL) {
+			g_assert (target_name != NULL);
+			result = g_strdup_printf (error_string, target_name);
+		}
+	}
+	
+	if (result == NULL) {
+		/* None of the specific error messages apply, use a catch-all
+		 * generic error
+		 */
+		if (source_name != NULL) {
+			switch (operation_kind) {
+			case XFER_COPY:
+			case XFER_DUPLICATE:
+				error_string = _("Error \"%s\" while copying \"%s\".\n"
+						 "Would you like to continue?");
+				break;
+			case XFER_MOVE:
+				error_string = _("Error \"%s\" while moving \"%s\".\n"
+						 "Would you like to continue?");
+				break;
+			case XFER_LINK:
+				error_string = _("Error \"%s\" while linking \"%s\".\n"
+						 "Would you like to continue?");
+				break;
+			case XFER_DELETE:
+			case XFER_EMPTY_TRASH:
+			case XFER_MOVE_TO_TRASH:
+				error_string = _("Error \"%s\" while deleting \"%s\".\n"
+						 "Would you like to continue?");
+				break;
+			default:
+				g_assert_not_reached ();
+				break;
+			}
+	
+			result = g_strdup_printf (error_string, 
+				 gnome_vfs_result_to_string (error),
+				 source_name);
+		} else {
+			switch (operation_kind) {
+			case XFER_COPY:
+			case XFER_DUPLICATE:
+				error_string = _("Error \"%s\" while copying.\n"
+						 "Would you like to continue?");
+				break;
+			case XFER_MOVE:
+				error_string = _("Error \"%s\" while moving.\n"
+						 "Would you like to continue?");
+				break;
+			case XFER_LINK:
+				error_string = _("Error \"%s\" while linking.\n"
+						 "Would you like to continue?");
+				break;
+			case XFER_DELETE:
+			case XFER_EMPTY_TRASH:
+			case XFER_MOVE_TO_TRASH:
+				error_string = _("Error \"%s\" while deleting.\n"
+						 "Would you like to continue?");
+				break;
+			default:
+				g_assert_not_reached ();
+				break;
+			}
+	
+			result = g_strdup_printf (error_string, 
+				 gnome_vfs_result_to_string (error));
+		}
+	}
+	return result;
+}
 
 static int
 handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
@@ -477,28 +753,87 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
          * `GNOME_VFS_XFER_ERROR_MODE_QUERY'.
          */
 
-	int result;
+	int error_dialog_button_pressed;
+	int error_dialog_result;
 	char *text;
-	char *unescaped_name;
+	char *unescaped_source_name;
+	char *unescaped_target_name;
 	const char *dialog_title;
-	const char *error_string;
-
+	NautilusFileOperationsErrorKind error_kind;
+	NautilusFileOperationsErrorLocation error_location;
+	
 	switch (xfer_info->error_mode) {
 	case GNOME_VFS_XFER_ERROR_MODE_QUERY:
 
 		/* transfer error, prompt the user to continue or stop */
 
-		unescaped_name = NULL;
+		unescaped_source_name = NULL;
+		unescaped_target_name = NULL;
 
 		if (progress_info->source_name != NULL) {
-			unescaped_name = nautilus_format_name_for_display (progress_info->source_name);
+			unescaped_source_name = nautilus_format_name_for_display
+				(progress_info->source_name);
 		}
 
-		/* Resist the temptation to do clever message composing here, just
-		 * use brute force and duplicate the different flavors of error messages.
-		 * That way localizers have an easier time and can even rearrange the
-		 * order of the words in the messages easily.
+		if (progress_info->target_name != NULL) {
+			unescaped_target_name = nautilus_format_name_for_display
+				(progress_info->target_name);
+		}
+
+		error_kind = ERROR_OTHER;
+		error_location = ERROR_LOCATION_UNKNOWN;
+		
+		/* Single out a few common error conditions for which we have
+		 * custom-taylored error messages.
 		 */
+		if ((progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM
+				|| progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY)
+			&& (xfer_info->kind == XFER_DELETE
+				|| xfer_info->kind == XFER_EMPTY_TRASH)) {
+			error_location = ERROR_LOCATION_SOURCE_PARENT;
+			error_kind = ERROR_READ_ONLY;
+		} else if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED
+			&& (xfer_info->kind == XFER_DELETE
+				|| xfer_info->kind == XFER_EMPTY_TRASH)) {
+			error_location = ERROR_LOCATION_SOURCE_PARENT;
+			error_kind = ERROR_NOT_ENOUGH_PERMISSIONS;
+		} else if ((progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM
+				|| progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY)
+			&& (xfer_info->kind == XFER_MOVE
+				|| xfer_info->kind == XFER_MOVE_TO_TRASH)
+			&& progress_info->phase != GNOME_VFS_XFER_CHECKING_DESTINATION) {
+			error_location = ERROR_LOCATION_SOURCE_PARENT;
+			error_kind = ERROR_READ_ONLY;
+		} else if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED
+			&& (xfer_info->kind == XFER_MOVE
+				|| xfer_info->kind == XFER_MOVE_TO_TRASH)
+			&& progress_info->phase != GNOME_VFS_XFER_CHECKING_DESTINATION) {
+			error_location = ERROR_LOCATION_SOURCE_OR_PARENT;
+			error_kind = ERROR_NOT_ENOUGH_PERMISSIONS;
+		} else if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED
+			&& (xfer_info->kind == XFER_COPY
+				|| xfer_info->kind == XFER_DUPLICATE)
+			&& (progress_info->phase == GNOME_VFS_XFER_PHASE_OPENSOURCE
+				|| progress_info->phase == GNOME_VFS_XFER_PHASE_COLLECTING
+				|| progress_info->phase == GNOME_VFS_XFER_PHASE_INITIAL)) {
+			error_location = ERROR_LOCATION_SOURCE;
+			error_kind = ERROR_NOT_READABLE;
+		} else if ((progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM
+				|| progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY)
+			&& progress_info->phase == GNOME_VFS_XFER_CHECKING_DESTINATION) {
+			error_location = ERROR_LOCATION_TARGET;
+			error_kind = ERROR_NOT_WRITABLE;
+		} else if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED
+			&& progress_info->phase == GNOME_VFS_XFER_CHECKING_DESTINATION) {
+			error_location = ERROR_LOCATION_TARGET;
+			error_kind = ERROR_NOT_ENOUGH_PERMISSIONS;
+		} else if (progress_info->vfs_status == GNOME_VFS_ERROR_NO_SPACE) {
+			error_location = ERROR_LOCATION_TARGET;
+			error_kind = ERROR_NO_SPACE;
+		}
+
+		text = build_error_string (unescaped_source_name, unescaped_target_name,
+			xfer_info->kind, error_kind, error_location, progress_info->vfs_status);
 
 		switch (xfer_info->kind) {
 		case XFER_COPY:
@@ -521,284 +856,63 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			break;
 		}
 
-		/* special case read only target errors or non-readable sources
-		 * and other predictable failures
-		 */
-		
-		if (progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM
-		    || progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY
-		    || progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
+		if (error_location == ERROR_LOCATION_TARGET) {
+			/* We can't continue, just tell the user. */
+			nautilus_simple_dialog (parent_for_error_dialog (xfer_info),
+				TRUE, text, dialog_title, _("Stop"), NULL);
+			error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 
-			if ((xfer_info->kind == XFER_MOVE || xfer_info->kind == XFER_MOVE_TO_TRASH)
-				&& progress_info->phase != GNOME_VFS_XFER_CHECKING_DESTINATION) {
-				/* we are failing because we are moving from a directory that
-				 * is not writable
-				 */
-				if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
-					error_string = _("Error while moving.\n"
-							 "%s cannot be moved because you do not have "
-							 "permissions to change it's parent folder.");
-				} else {
-					error_string = _("Error while moving.\n"
-							 "%s cannot be moved because its parent folder "
-							 "is read-only.");
-				}
-			} else if (progress_info->phase == GNOME_VFS_XFER_PHASE_OPENSOURCE
-					|| progress_info->phase == GNOME_VFS_XFER_PHASE_COLLECTING
-					|| progress_info->phase == GNOME_VFS_XFER_PHASE_INITIAL) {
-				
-				if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
-					switch (xfer_info->kind) {
-					case XFER_COPY:
-					case XFER_DUPLICATE:
-						error_string = _("Error while copying.\n"
-								 "You do not have permissions to read %s.");
-						break;
-					case XFER_MOVE:
-						error_string = _("Error while moving.\n"
-								 "You do not have permissions to read %s.");
-						break;
-					case XFER_LINK:
-						error_string = _("Error while linking.\n"
-								 "You do not have permissions to read %s.");
-						break;
-					case XFER_DELETE:
-					case XFER_EMPTY_TRASH:
-					case XFER_MOVE_TO_TRASH:
-						error_string = _("Error while deleting.\n"
-								 "You do not have permissions to read %s.");
-						break;
-					default:
-						error_string = "";
-						break;
-					}
-				} else {
-					switch (xfer_info->kind) {
-					case XFER_COPY:
-					case XFER_DUPLICATE:
-						error_string = _("Error while copying.\n"
-								 "%s is not readable.");
-						break;
-					case XFER_MOVE:
-						error_string = _("Error while moving.\n"
-								 "%s is not readable.");
-						break;
-					case XFER_LINK:
-						error_string = _("Error while linking.\n"
-								 "%s is not readable.");
-						break;
-					case XFER_DELETE:
-					case XFER_EMPTY_TRASH:
-					case XFER_MOVE_TO_TRASH:
-						error_string = _("Error while deleting.\n"
-								 "%s is not readable.");
-						break;
-					default:
-						error_string = "";
-						break;
-					}
-				}
-
-			} else {
-				if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
-					switch (xfer_info->kind) {
-					case XFER_COPY:
-					case XFER_DUPLICATE:
-						error_string = _("Error while copying items to \"%s\".\n"
-						   		 "You do not have permissions to write to the destination.");
-						break;
-					case XFER_MOVE_TO_TRASH:
-					case XFER_MOVE:
-						error_string = _("Error while moving items to \"%s\".\n"
-						   		 "You do not have permissions to write to the destination.");
-						break;
-					case XFER_LINK:
-						error_string = _("Error while linking items to \"%s\".\n"
-						   		 "You do not have permissions to write to the destination.");
-						break;
-					default:
-						g_assert_not_reached ();
-						error_string = "";
-						break;
-					}
-				} else {
-					switch (xfer_info->kind) {
-					case XFER_COPY:
-					case XFER_DUPLICATE:
-						error_string = _("Error while copying items to \"%s\".\n"
-						   		 "The destination is not writable.");
-						break;
-					case XFER_MOVE_TO_TRASH:
-					case XFER_MOVE:
-						error_string = _("Error while moving items to \"%s\".\n"
-						   		 "The destination is not writable.");
-						break;
-					case XFER_LINK:
-						error_string = _("Error while linking items to \"%s\".\n"
-						   		 "The destination is not writable.");
-						break;
-					default:
-						g_assert_not_reached ();
-						error_string = "";
-						break;
-					}
-				}
-
-				if (progress_info->target_name != NULL) {
-					g_free (unescaped_name);
-					unescaped_name = nautilus_format_name_for_display (
-						progress_info->target_name);
-				}
-			}
-			text = g_strdup_printf (error_string, unescaped_name);
-			g_free (unescaped_name);
-			
-			result = nautilus_simple_dialog
+		} else if ((error_location == ERROR_LOCATION_SOURCE
+				|| error_location == ERROR_LOCATION_SOURCE_PARENT
+				|| error_location == ERROR_LOCATION_SOURCE_OR_PARENT)
+			&& (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS
+				|| error_kind == ERROR_NOT_READABLE)) {
+			/* The error could have happened on any of the files
+			 * in the moved/copied/deleted hierarchy, we can probably
+			 * continue. Allow the user to skip.
+			 */
+			error_dialog_button_pressed = nautilus_simple_dialog
 				(parent_for_error_dialog (xfer_info), TRUE, text, 
-				dialog_title, _("Stop"), NULL);
-			g_free (text);
-
-			return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
-		}
-		/* special case read only target errors */
-		if (progress_info->vfs_status == GNOME_VFS_ERROR_NO_SPACE) {
-			
-			if (unescaped_name != NULL) {
-				switch (xfer_info->kind) {
-				case XFER_COPY:
-				case XFER_DUPLICATE:
-					error_string = _("Error while copying \"%s\".\n"
-					   		 "There is no space on the destination.");
-					break;
-				case XFER_MOVE_TO_TRASH:
-				case XFER_MOVE:
-					error_string = _("Error while moving \"%s\".\n"
-					   		 "There is no space on the destination.");
-					break;
-				case XFER_LINK:
-					error_string = _("Error while linking \"%s\".\n"
-					   		 "There is no space on the destination.");
-					break;
-				default:
-					g_assert_not_reached ();
-					error_string = "";
-					break;
-				}
-				text = g_strdup (error_string);
-			} else {
-				switch (xfer_info->kind) {
-				case XFER_COPY:
-				case XFER_DUPLICATE:
-					error_string = _("Error while copying.\n"
-					   		 "There is no space on the destination.");
-					break;
-				case XFER_MOVE_TO_TRASH:
-				case XFER_MOVE:
-					error_string = _("Error while moving.\n"
-					   		 "There is no space on the destination.");
-					break;
-				case XFER_LINK:
-					error_string = _("Error while linking.\n"
-					   		 "There is no space on the destination.");
-					break;
-				default:
-					g_assert_not_reached ();
-					error_string = "";
-					break;
-				}
-				text = g_strdup_printf (error_string, unescaped_name);
-			}
-			g_free (unescaped_name);
-			
-			result = nautilus_simple_dialog
-				(parent_for_error_dialog (xfer_info), TRUE, text, 
-				dialog_title, _("Stop"), NULL);
-			g_free (text);
-
-			return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
-		}
-
-		if (unescaped_name != NULL) {
-		
-			switch (xfer_info->kind) {
-			case XFER_COPY:
-			case XFER_DUPLICATE:
-				error_string = _("Error \"%s\" while copying.\n"
-						 "Would you like to continue?");
+				dialog_title,
+				 _("Skip"), _("Stop"), NULL);
+				 
+			switch (error_dialog_button_pressed) {
+			case 0:
+				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_SKIP;
 				break;
-			case XFER_MOVE:
-				error_string = _("Error \"%s\" while moving.\n"
-						 "Would you like to continue?");
-				break;
-			case XFER_LINK:
-				error_string = _("Error \"%s\" while linking.\n"
-						 "Would you like to continue?");
-				break;
-			case XFER_DELETE:
-			case XFER_EMPTY_TRASH:
-			case XFER_MOVE_TO_TRASH:
-				error_string = _("Error \"%s\" while deleting.\n"
-						 "Would you like to continue?");
+			case 1:
+				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 				break;
 			default:
-				error_string = "";
-				break;
+				g_assert_not_reached ();
+				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 			}
-	
-			text = g_strdup_printf (error_string, 
-				 gnome_vfs_result_to_string (progress_info->vfs_status));
+								
 		} else {
+			/* Generic error, offer to retry and skip. */
+			error_dialog_button_pressed = nautilus_simple_dialog
+				(parent_for_error_dialog (xfer_info), TRUE, text, 
+				dialog_title,
+				 _("Skip"), _("Retry"), _("Stop"), NULL);
 
-			switch (xfer_info->kind) {
-			case XFER_COPY:
-			case XFER_DUPLICATE:
-				error_string = _("Error \"%s\" while copying \"%s\".\n"
-						 "Would you like to continue?");
+			switch (error_dialog_button_pressed) {
+			case 0:
+				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_SKIP;
 				break;
-			case XFER_MOVE:
-				error_string = _("Error \"%s\" while moving \"%s\".\n"
-						 "Would you like to continue?");
+			case 1:
+				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_RETRY;
 				break;
-			case XFER_LINK:
-				error_string = _("Error \"%s\" while linking \"%s\".\n"
-						 "Would you like to continue?");
-				break;
-			case XFER_DELETE:
-			case XFER_EMPTY_TRASH:
-			case XFER_MOVE_TO_TRASH:
-				error_string = _("Error \"%s\" while deleting \"%s\".\n"
-						 "Would you like to continue?");
+			case 2:
+				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 				break;
 			default:
-				error_string = "";
-				break;
+				g_assert_not_reached ();
+				error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 			}
-	
-			text = g_strdup_printf (error_string, 
-				 gnome_vfs_result_to_string (progress_info->vfs_status),
-				 unescaped_name);
 		}
-		g_free (unescaped_name);
-
-		result = nautilus_simple_dialog
-			(parent_for_error_dialog (xfer_info), TRUE, text, 
-			dialog_title,
-			 _("Skip"), _("Retry"), _("Stop"), NULL);
-
+			
 		g_free (text);
-		
-		switch (result) {
-		case 0:
-			return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
-		case 1:
-			return GNOME_VFS_XFER_ERROR_ACTION_RETRY;
-		default:
-			g_assert_not_reached ();
-			/* fall through */
-		case 2:
-			return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
-		}						
-
+		return error_dialog_result;
 
 	case GNOME_VFS_XFER_ERROR_MODE_ABORT:
 	default:
@@ -1946,24 +2060,11 @@ nautilus_file_operations_delete (const GList *item_uris,
 static void
 do_empty_trash (GtkWidget *parent_view)
 {
-	GnomeVFSURI *trash_dir_uri;
-	GnomeVFSResult result;
 	XferInfo *xfer_info;
 	GList *trash_dir_list;
 
-	/* FIXME bugzilla.eazel.com 638:
-	 * add the different trash directories from the different volumes
-	 */
-
-	trash_dir_uri = NULL;
-	trash_dir_list = NULL;
-
-	result = gnome_vfs_find_directory (NULL, GNOME_VFS_DIRECTORY_KIND_TRASH,
-		&trash_dir_uri, FALSE, FALSE, 0777);
-
-	if (result == GNOME_VFS_OK) {
-		g_assert (trash_dir_uri != NULL);
-
+	trash_dir_list = nautilus_trash_monitor_get_trash_directories ();
+	if (trash_dir_list != NULL) {
 		/* set up the move parameters */
 		xfer_info = g_new0 (XferInfo, 1);
 		xfer_info->parent_view = parent_view;
@@ -1981,8 +2082,6 @@ do_empty_trash (GtkWidget *parent_view)
 		xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
 		xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
 		xfer_info->kind = XFER_EMPTY_TRASH;
-
-		trash_dir_list = g_list_append (NULL, trash_dir_uri);
 
 		gnome_vfs_async_xfer (&xfer_info->handle, trash_dir_list, NULL,
 		      		      GNOME_VFS_XFER_EMPTY_DIRECTORIES,

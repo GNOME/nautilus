@@ -1,3 +1,67 @@
+2000-12-12  Pavel Cisler <pavel@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed 4954 Nautilus crashes attempting to empty a .Trash
+	containing undeletable files
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(build_error_string), (handle_xfer_vfs_error)
+	Reworked the error message building logic. Split up
+	the routine into a part that decides what the interesting
+	input for building the error message is and a part that
+	actually builds the error message. Fixed a number
+	of cases where a wrong error message would be used. The
+	actual bug in the bug report was one of the cases -- an assert
+	catching a case that was not handled properly.
+	
+	Fixed:
+	part of -- 638 When a new volume gets mounted, integrate its Trash
+	directory.
+	part of -- 4143 Files dragged to trash icon on desktop seem to
+	vanish,
+	part of -- 4963 Files dragged to Trash from floppy don't appear
+	in Trash,
+
+	* libnautilus-extensions/nautilus-trash-monitor.c:
+	* libnautilus-extensions/nautilus-trash-monitor.h:
+	(add_one_volume_trash),
+	(nautilus_trash_monitor_get_trash_directories):
+	Added a new call that returns a list of all the Trash directories
+	on all the mouted volumes.  
+
+	* libnautilus-extensions/nautilus-trash-directory.c: (add_volume):	
+	Got rid of get_volume_vfs_uri_if_writable.
+	Used the new nautilus_volume_monitor_should_integrate_trash instead
+	to pick the volumes that can support trash.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_should_integrate_trash),
+	(nautilus_volume_monitor_get_volume_mount_uri):
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	Add new helper calls used by the routine that collects all the
+	trash uris from all mouted volumes.	
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(do_empty_trash):
+	Pass in a list of Trash directories instead of just the
+	single trash in the user's home directory. 
+
+	Fixed:
+	2443 Trash is only found on EXT2 volumes
+	2444 Trash on read-only volumes is not displayed
+	remaining part of -- 4143 Files dragged to trash icon on desktop
+	seem to vanish,
+	remaining part of -- 4963 Files dragged to Trash from floppy
+	don't appear in Trash,
+
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_should_integrate_trash):
+	Removed the old logic from get_volume_vfs_uri_if_writable
+	that only displayed trash from writable ext2 volumes.
+	Enumerated all the file system types that we know can
+	support trash.
+	
 2000-12-12  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/eazel-package-system-private.h:
@@ -149,7 +213,6 @@
 	that did a hide followed by a show. Corrected an assert that
 	should have been a return_if_fail.
 	
->>>>>>> 1.3120
 2000-12-12  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

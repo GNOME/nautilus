@@ -111,6 +111,8 @@ gboolean               	nautilus_volume_monitor_is_volume_link             	(con
 void                   	nautilus_volume_monitor_each_volume                	(NautilusVolumeMonitor 		*monitor,
 									   	 NautilusEachVolumeFunction  	function,
 									   	 gpointer               	context);
+gboolean		nautilus_volume_monitor_should_integrate_trash		(const NautilusVolume 		*volume);
+const char		*nautilus_volume_monitor_get_volume_mount_uri 		(const NautilusVolume 		*volume);
 void                   	nautilus_volume_monitor_each_mounted_volume        	(NautilusVolumeMonitor 		*monitor,
 									  	 NautilusEachVolumeFunction   	function,
 									   	 gpointer               	context);
