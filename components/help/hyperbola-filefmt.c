@@ -54,6 +54,7 @@ static void fmt_help_populate_tree (HyperbolaDocTree * tree);
 #ifdef ENABLE_SCROLLKEEPER_SUPPORT
 static int fmt_toplevel_populate_tree (HyperbolaDocTree * tree);
 static void fmt_scrollkeeper_populate_tree (HyperbolaDocTree * tree);
+static xmlDocPtr fmt_scrollkeeper_get_xml_tree_of_locale (char *locale);
 #endif
 
 static void make_treesection (HyperbolaDocTree * tree, char **path);
@@ -1292,33 +1293,44 @@ fmt_scrollkeeper_trim_empty_branches (xmlNodePtr cl_node)
 	}
 }
 
+/* checks if there is any doc in the tree */
+static int
+fmt_scrollkeeper_tree_empty (xmlNodePtr cl_node)
+{
+	xmlNodePtr node, next;
+	int ret_val;
 
-/*
- * fmt_scrollkeeper_populate_tree
- * 
- * Entry point into the ScrollKeeper specific code for Hyperbola.
- *
- * This function obtains the location of the ScrollKeeper Contents List 
- * XML file, if it exists.  If the XML file is found and can be parsed
- * by the libXml library, the parsing of that file continues.
- *
- * 	tree:	Pointer to the tree structure used by Hyperbola to
- * 		maintain the list of documentation available.
- */
-static void
-fmt_scrollkeeper_populate_tree (HyperbolaDocTree * tree)
+	if (cl_node == NULL)
+		return 1;
+
+	for (node = cl_node; node != NULL; node = next) {
+		next = node->next;
+
+		if (!strcmp (node->name, "sect") &&
+		    node->childs->next != NULL) 
+		    ret_val = fmt_scrollkeeper_tree_empty (node->childs->next);
+		    if (!ret_val)
+		    	return ret_val;
+
+		if (!strcmp (node->name, "doc"))
+			return 0;
+	}
+	
+	return 1;
+}
+
+/* retrieve the XML tree of a certain locale */
+static xmlDocPtr
+fmt_scrollkeeper_get_xml_tree_of_locale (char *locale)
 {
 	xmlDocPtr doc;
 	FILE *pipe;
 
-	char *xml_location, *locale;
+	char *xml_location;
 	int bytes_read;
 	
-	char *tree_path[] = { NULL };
-
-	locale = getenv ("LANG");
 	if (locale == NULL)
-	    return;
+	    return NULL;
 
 	xml_location = g_new0 (char, 1024);
 
@@ -1333,31 +1345,64 @@ fmt_scrollkeeper_populate_tree (HyperbolaDocTree * tree)
 	if (bytes_read < 1) {
 		pclose (pipe);
 		g_free (xml_location);
-		return;
+		return NULL;
 	}
 
 	/* Make sure the string is properly terminated */
 	xml_location[bytes_read - 1] = '\0';
+	
+	doc = NULL;
 
 	/* Exit code of 0 means we got a path back from ScrollKeeper */
-	if (!pclose (pipe)) {
-
+	if (!pclose (pipe))
 		doc = xmlParseFile (xml_location);
 
-		if (doc) {
-			fmt_scrollkeeper_trim_empty_branches (doc->
-							      root->childs);
-			fmt_scrollkeeper_parse_xml (tree, tree_path, doc);
-		} else {
-			g_warning
-				("Unable to locate ScrollKeeper XML file:\n\t%s",
-				 xml_location);
-		}
+	g_free (xml_location);
 
+	return doc;
+}
+
+
+/*
+ * fmt_scrollkeeper_populate_tree
+ * 
+ * Entry point into the ScrollKeeper specific code for Hyperbola.
+ *
+ * This function obtains the location of the ScrollKeeper Contents List 
+ * XML file, if it exists.  If the XML file is found and can be parsed
+ * by the libXml library, the parsing of that file continues.
+ * There is a fallback to the C locale tree if the current locale is
+ * not there.
+ * It populates the main category tree that holds all the docs installed
+ * through Scrollkeeper. 
+ *
+ * 	tree:	Pointer to the tree structure used by Hyperbola to
+ * 		maintain the list of documentation available.
+ */
+static void
+fmt_scrollkeeper_populate_tree (HyperbolaDocTree * tree)
+{
+	xmlDocPtr doc;
+	char *locale;
+	
+	char *tree_path[] = { NULL };
+
+	locale = getenv ("LANG");
+	if (locale == NULL)
+	    return;
+
+	doc = fmt_scrollkeeper_get_xml_tree_of_locale (locale);
+	if (strcmp(locale, "C") &&
+	    (doc == NULL ||
+	     (doc->root != NULL &&
+	      fmt_scrollkeeper_tree_empty(doc->root->childs))))
+		doc = fmt_scrollkeeper_get_xml_tree_of_locale("C");
+		
+	if (doc) {
+		fmt_scrollkeeper_trim_empty_branches (doc->root->childs);
+		fmt_scrollkeeper_parse_xml (tree, tree_path, doc);
 		xmlFreeDoc (doc);
 	}
-
-	g_free (xml_location);
 
 	return;
 }
@@ -1465,17 +1510,18 @@ static void fmt_toplevel_add_doc (HyperbolaDocTree * tree, char * omf_name)
     	}
 }
 
-static void fmt_toplevel_parse_xml_tree (HyperbolaDocTree * tree, xmlDocPtr doc)
+static void fmt_toplevel_parse_xml_tree (HyperbolaDocTree * tree, xmlDocPtr doc,
+						char *locale)
 {
 	xmlNodePtr doc_node, docpath_node;
-    	char *locale, *omf_name, *str, *doc_locale, omf_dir[256], omf_path[256];
+    	char *omf_name, *str, *doc_locale, omf_dir[256], omf_path[256];
 	FILE *pipe;
 	int bytes_read;
+	int node_added;
 
     	if (doc == NULL || doc->root == NULL)
         	return;
 
-	locale = getenv("LANG");
 	if (locale == NULL)
 		return;
 		
@@ -1498,6 +1544,10 @@ static void fmt_toplevel_parse_xml_tree (HyperbolaDocTree * tree, xmlDocPtr doc)
     	for(doc_node = doc->root->childs; doc_node != NULL; 
             doc_node = doc_node->next) {
 	    
+		/* check out the doc for the current locale */
+
+	        node_added = 0;
+	    
         	for(docpath_node = doc_node->childs; 
 	    	    docpath_node != NULL;
 	    	    docpath_node = docpath_node->next) {	
@@ -1512,24 +1562,59 @@ static void fmt_toplevel_parse_xml_tree (HyperbolaDocTree * tree, xmlDocPtr doc)
 					sprintf(omf_path, "%s/%s", omf_dir, omf_name);
 		    			fmt_toplevel_add_doc(tree, omf_path);
 		    			g_free(str);
+					node_added = 1;
+		 		}
+	    		}
+		}
+		
+		if (node_added || !strcmp(locale, "C"))
+			continue;
+
+		/* add the C locale one if the translated doc was not there */
+						
+		for(docpath_node = doc_node->childs; 
+	    	    docpath_node != NULL;
+	    	    docpath_node = docpath_node->next) {	
+		    
+		    	doc_locale = xmlGetProp(docpath_node, "locale");
+	    		if (doc_locale != NULL && !strcmp(doc_locale, "C")) {
+	        		if (docpath_node->childs != NULL && 
+	            		    docpath_node->childs->content != NULL) {
+				    
+	            			str = g_strdup(docpath_node->childs->content);
+		    			omf_name = remove_leading_and_trailing_white_spaces(str);
+					sprintf(omf_path, "%s/%s", omf_dir, omf_name);
+		    			fmt_toplevel_add_doc(tree, omf_path);
+		    			g_free(str);
 		 		}
 	    		}
 		}
     	}
 }
 
+/* entry point for filling the toplevel tree that holds the very 
+ * important docs listed in 
+ * $prefix/share/nautilus/components/hyperbola/topleveldocs.xml
+ * it falls back to the C locale doc if the translated one is 
+ * not there.
+ */
 static int fmt_toplevel_populate_tree (HyperbolaDocTree * tree)
 {
     	xmlDocPtr toplevel_doc;
     	char *toplevel_file;
 	int retval;
+	char *locale;
   	
 	toplevel_file = HYPERBOLA_DATADIR "/topleveldocs.xml";
 
+	locale = getenv("LANG");
+	if (locale == NULL)
+		return 0;
+
     	toplevel_doc = xmlParseFile (toplevel_file); 
-   
+	
     	if (toplevel_doc) {
-        	fmt_toplevel_parse_xml_tree(tree, toplevel_doc);
+        	fmt_toplevel_parse_xml_tree(tree, toplevel_doc, locale);
 		if (toplevel_doc->root != NULL &&
 		    toplevel_doc->root->childs != NULL &&
 		    toplevel_doc->root->childs->childs != NULL)
