@@ -1,5 +1,11 @@
 2002-02-24  Alexander Larsson  <alla@lysator.liu.se>
 
+	* libnautilus-private/nautilus-directory-background.c (image_loading_done_callback):
+	Enable gdk_window_set_back_pixmap() again. This limits flicker when
+	switching workspaces and moving windows.
+
+2002-02-24  Alexander Larsson  <alla@lysator.liu.se>
+
 	* libnautilus-private/nautilus-icon-container.c (realize):
 	Don't set background pixmap None. Gtk+ already does that when
 	scrolling windows these days, and due to a bug in Gtk+ (now fixed)
