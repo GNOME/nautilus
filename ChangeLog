@@ -1,3 +1,11 @@
+2000-08-31  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-throbber.c: (select_throbber_image),
+	(nautilus_throbber_load_images):
+	made the throbber throb in the intended direction (clockwise); the
+	problem was caused by prepending to the image list, which was reversing
+	their order - fixed by making it append instead.
+	
 2000-08-31  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/lib/eazel-summary-shared.c:

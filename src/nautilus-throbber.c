@@ -204,13 +204,13 @@ static GdkPixbuf *
 select_throbber_image (NautilusThrobber *throbber)
 {
 	GList *element;
-	
+
 	if (throbber->details->timer_task == -1)
 		return throbber->details->quiescent_pixbuf;
 	
 	if (throbber->details->image_list == NULL)
 		return NULL;
-	
+
 	element = g_list_nth (throbber->details->image_list, throbber->details->current_frame);
 	
 	return (GdkPixbuf*) element->data;
@@ -366,7 +366,7 @@ nautilus_throbber_load_images (NautilusThrobber *throbber)
 		if (pixbuf == NULL)
 			break;
 	
-		throbber->details->image_list = g_list_prepend (throbber->details->image_list, pixbuf);
+		throbber->details->image_list = g_list_append (throbber->details->image_list, pixbuf);
 		index += 1;
 		throbber->details->max_frame += 1;	
 	}
