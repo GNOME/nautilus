@@ -24,8 +24,8 @@
 
 #include <config.h>
 #include "gnome-icon-container.h"
-
 #include <string.h>
+#include <stdio.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
@@ -67,12 +67,16 @@
 #define RUBBERBAND_BUTTON 1
 #define CONTEXTUAL_MENU_BUTTON 3
 
+/* maximum size allowed for icons at the time they are installed - the user can still stretch them further */
+#define MAXIMUM_INITIAL_ICON_SIZE  80
+
 static void gnome_icon_container_initialize_class (GnomeIconContainerClass *class);
 static void gnome_icon_container_initialize (GnomeIconContainer *container);
 static void update_icon (GnomeIconContainer *container, 
 			 GnomeIconContainerIcon *icon);
 static void compute_stretch (StretchState *start,
 			     StretchState *current);
+static double icon_get_actual_size(GnomeIconContainerIcon *icon);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (GnomeIconContainer, gnome_icon_container, GNOME_TYPE_CANVAS)
 
@@ -109,6 +113,7 @@ icon_new (GnomeIconContainer *container,
 {
 	GnomeIconContainerIcon *new;
         GnomeCanvas *canvas;
+        double actual_size;
         
 	canvas = GNOME_CANVAS (container);
 	
@@ -125,6 +130,13 @@ icon_new (GnomeIconContainer *container,
 					NULL));
 
 	update_icon (container, new);
+	
+	/* enforce a maximum size for new icons by reducing the scale factor as necessary */
+	actual_size = new->scale * icon_get_actual_size(new);
+	if (actual_size > MAXIMUM_INITIAL_ICON_SIZE) {
+		new->scale *= MAXIMUM_INITIAL_ICON_SIZE / actual_size;
+		update_icon (container, new);
+	}
 	
 	return new;
 }
@@ -166,6 +178,24 @@ icon_set_size (GnomeIconContainer *container,
 		(container->details->zoom_level);
 
 	update_icon (container, icon);
+}
+
+/* return the size in pixels of the largest dimension of the pixmap associated with the icon */ 
+static double
+icon_get_actual_size(GnomeIconContainerIcon *icon)
+{
+	GtkArg pixbuf_arg;
+	GdkPixbuf *pixbuf;
+	gint max_size;
+	
+	pixbuf_arg.name = "NautilusIconsViewIconItem::pixbuf";
+	gtk_object_getv (GTK_OBJECT (icon->item), 1, &pixbuf_arg);
+ 	pixbuf = GTK_VALUE_BOXED (pixbuf_arg);
+	max_size = pixbuf->art_pixbuf->width;
+	if (pixbuf->art_pixbuf->height > max_size)
+		max_size = pixbuf->art_pixbuf->height;
+
+	return (double) max_size;
 }
 
 static void
