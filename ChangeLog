@@ -1,3 +1,38 @@
+2000-10-17  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3828 (switching views makes torn-off menus disappear)
+	Fixed bug 3822 (Edit menu flashes when you click in location field)
+	Fixed bug 3529 (menu bar flashes when view switched)
+
+	These were all caused by our Bonobo xml files redefining labels
+	for submenus, causing Bonobo to think that it needed to destroy
+	the widget holding the title of the old submenu.
+
+	* libnautilus/nautilus-clipboard-ui.xml:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/file-manager/nautilus-icon-view-ui.xml:
+	* src/file-manager/nautilus-search-list-view-ui.xml:
+	Removed all _label="Foo"s from submenus defined in
+	nautilus-shell-ui.xml (e.g. File, Edit, View).
+
+	Some bug fixes and cleanup in the summary view code. I noticed a
+	couple of obvious problems when I was trying to use services
+	earlier, and they led me to fix up a little of this code.
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c:
+	Removed "feedback_text" field from Details struct; now it's just a
+	parameter to generate_error_dialog (it was being leaked with each
+	use, also).
+	(generate_summary_form): Use new error_dialog_shown boolean to avoid
+	showing exactly the same dialog twice; removed a bunch of duplicate 
+	code by collapsing an if/else into only the part that's different;
+	pass dialog text to generate_error_dialog directly
+	(authn_cb_failed): Don't follow an exclamation point with a period.
+	(generate_error_dialog): Set up a parent window so the dialog
+	appears in a sensible place; use GNOME_STOCK_BUTTON_CANCEL instead
+	of "CANCEL"; get message from parameter instead of Details field;
+	change "Retry" to "Try Again" to be less nerdly.
+
 2000-10-17  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-async.c:
