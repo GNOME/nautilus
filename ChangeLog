@@ -1,3 +1,16 @@
+2001-01-15  Michael K. Fleming  <mfleming@eazel.com>
+
+	reviewed by: <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(handle_transfer_vfs_error):
+
+	Fixed error message for the case where a file was moved to an unwritable
+	target where permissions were not known in advance (eg, Eazel vault).
+
+	Previously: "The file or its directory cannot be changed"
+	Now: "You do not have permissions to write to this folder"
+
 2001-01-15  Michael Engber  <engber@eazel.com>
 
 	reviewed by: Gene Z. Ragan

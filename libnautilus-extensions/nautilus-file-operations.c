@@ -806,6 +806,11 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			error_location = ERROR_LOCATION_SOURCE_PARENT;
 			error_kind = ERROR_READ_ONLY;
 		} else if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED
+			&& transfer_info->kind == TRANSFER_MOVE
+			&& progress_info->phase == GNOME_VFS_XFER_PHASE_OPENTARGET) {
+			error_location = ERROR_LOCATION_TARGET;
+			error_kind = ERROR_NOT_ENOUGH_PERMISSIONS;
+		} else if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED
 			&& (transfer_info->kind == TRANSFER_MOVE
 				|| transfer_info->kind == TRANSFER_MOVE_TO_TRASH)
 			&& progress_info->phase != GNOME_VFS_XFER_CHECKING_DESTINATION) {
