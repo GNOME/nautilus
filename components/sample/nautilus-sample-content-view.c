@@ -32,6 +32,7 @@
 
 #include <bonobo/bonobo-control.h>
 #include <gtk/gtksignal.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libnautilus/nautilus-gtk-macros.h>
@@ -48,13 +49,12 @@ static void nautilus_sample_content_view_destroy          (GtkObject            
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSampleContentView, nautilus_sample_content_view, GTK_TYPE_LABEL)
      
-static void sample_notify_location_change_callback (NautilusContentViewFrame  *view_frame,
-						    Nautilus_NavigationInfo   *navinfo,
-						    NautilusSampleContentView *view);
-static void sample_merge_bonobo_items_callback     (BonoboObject              *control,
-						    gboolean                   state,
-						    gpointer                   user_data);
- 
+static void sample_notify_location_change_callback        (NautilusContentViewFrame  *view_frame, 
+							   Nautilus_NavigationInfo   *navinfo, 
+							   NautilusSampleContentView *view);
+static void sample_merge_bonobo_items_callback 		  (BonoboObject 	     *control, 
+							   gboolean 		      state, 
+							   gpointer 		      user_data);
      
 static void
 nautilus_sample_content_view_initialize_class (NautilusSampleContentViewClass *klass)
@@ -210,35 +210,44 @@ static void
 sample_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpointer user_data)
 {
  	NautilusSampleContentView *view;
-        BonoboUIHandler *local_ui_handler;
-
-        g_assert (NAUTILUS_IS_SAMPLE_CONTENT_VIEW (user_data));
+	BonoboUIHandler *local_ui_handler;
+	GdkPixbuf		*pixbuf;
+	BonoboUIHandlerPixmapType pixmap_type;
+	
+	g_assert (NAUTILUS_IS_SAMPLE_CONTENT_VIEW (user_data));
 
 	view = NAUTILUS_SAMPLE_CONTENT_VIEW (user_data);
-        local_ui_handler = bonobo_control_get_ui_handler (BONOBO_CONTROL (control));
+	local_ui_handler = bonobo_control_get_ui_handler (BONOBO_CONTROL (control));
 
-        if (state) {
-        	/* Tell the Nautilus window to merge our bonobo_ui_handler items with its ones */
-                bonobo_ui_handler_set_container (local_ui_handler, 
+	if (state) {
+		/* Tell the Nautilus window to merge our bonobo_ui_handler items with its ones */
+		bonobo_ui_handler_set_container (local_ui_handler, 
                                                  bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (control)));
 
-                /* 
-                 * Create our sample menu item.
-                 *
-                 * Note that it's sorta bogus that we know Nautilus has a menu whose
-                 * path is "/File", and also that we know a sensible position to use within
-                 * that menu. Nautilus should publish this information somehow.
-                 */ 
-	        bonobo_ui_handler_menu_new_item (local_ui_handler,				/* BonoboUIHandler */
+		/* Load test pixbuf */
+		pixbuf = gdk_pixbuf_new_from_file ("/gnome/share/pixmaps/nautilus/i-directory-24.png");		
+		if (pixbuf != NULL)
+			pixmap_type = BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA;
+		else
+			pixmap_type = BONOBO_UI_HANDLER_PIXMAP_NONE;
+
+		/* 
+		* Create our sample menu item.
+		*
+		* Note that it's sorta bogus that we know Nautilus has a menu whose
+		* path is "/File", and also that we know a sensible position to use within
+		* that menu. Nautilus should publish this information somehow.
+		*/ 
+		bonobo_ui_handler_menu_new_item (local_ui_handler,				/* BonoboUIHandler */
 	        				 "/File/Sample",				/* menu item path, must start with /some-existing-menu-path and be otherwise unique */
 	                                         _("_Sample"),					/* menu item user-displayed label */
 	                                         _("This is a sample merged menu item"),	/* hint that appears in status bar */
-	                                         1,						/* position within menu; -1 means last */
-	                                         BONOBO_UI_HANDLER_PIXMAP_NONE,			/* pixmap type */
-	                                         NULL,						/* pixmap data */
+	                                         1,							/* position within menu; -1 means last */
+	                                         pixmap_type,				/* pixmap type */
+	                                         pixbuf,					/* pixmap data */
 	                                         'M',						/* accelerator key, couldn't bear the thought of using Control-S for anything except Save */
-	                                         GDK_CONTROL_MASK,				/* accelerator key modifiers */
-	                                         bonobo_sample_callback,			/* callback function */
+	                                         GDK_CONTROL_MASK,			/* accelerator key modifiers */
+	                                         bonobo_sample_callback,	/* callback function */
 	                                         view);                				/* callback function data */
 
                 /* 
@@ -252,8 +261,8 @@ sample_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoin
 	        				    _("Sample"),					/* button user-displayed label */
 	        				    _("This is a sample merged toolbar button"),/* hint that appears in status bar */
 	        				    -1,						/* position, -1 means last */
-	        				    BONOBO_UI_HANDLER_PIXMAP_STOCK,		/* pixmap type */
-	        				    GNOME_STOCK_PIXMAP_BOOK_BLUE,		/* pixmap data */
+	        				    pixmap_type,			/* pixmap type */
+	        				    pixbuf,					/* pixmap data */
 	        				    0,						/* accelerator key */
 	        				    0,						/* accelerator key modifiers */
 	        				    bonobo_sample_callback,			/* callback function */

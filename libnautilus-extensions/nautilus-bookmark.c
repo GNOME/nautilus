@@ -170,6 +170,31 @@ nautilus_bookmark_get_pixmap_and_mask (const NautilusBookmark *bookmark,
 	return TRUE;
 }
 
+
+gboolean	    
+nautilus_bookmark_get_pixbuf(const NautilusBookmark *bookmark,
+						guint	 icon_size,
+				       GdkPixbuf **pixbuf_return)
+{
+	NautilusFile *file;
+
+	file = nautilus_file_get (nautilus_bookmark_get_uri (bookmark));
+
+	/* FIXME: This might be a bookmark that points to nothing, or
+	 * maybe its uri cannot be converted to a NautilusFile for some
+	 * other reason. It should get some sort of generic icon, but for
+	 * now it gets none.
+	 */
+	if (file == NULL) {
+		return FALSE;
+	}
+
+	*pixbuf_return = nautilus_icon_factory_get_pixbuf_for_file (file, icon_size);
+	nautilus_file_unref (file);
+
+	return TRUE;
+}
+
 const char *
 nautilus_bookmark_get_uri (const NautilusBookmark *bookmark)
 {

@@ -312,24 +312,40 @@ append_bookmark_to_menu (NautilusWindow *window,
                          const NautilusBookmark *bookmark, 
                          const char *menu_item_path)
 {
-        BookmarkHolder *bookmark_holder;
+	BookmarkHolder 				*bookmark_holder;	
+	gpointer					*pixbuf_data = NULL;
+	BonoboUIHandlerPixmapType 	pixmap_type;
+	gboolean					result;
+	GdkPixbuf					*pixbuf;
 
+	/* Attempt to retrieve icon and mask for bookmark */
+	result = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_SMALLER, &pixbuf);
+
+	/* Set up pixmap type based on result of function.  If we fail, set pixmap type to none */
+	if (result) {
+		pixmap_type = BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA;
+		pixbuf_data = (gpointer)pixbuf;
+	}
+	else {
+		pixmap_type = BONOBO_UI_HANDLER_PIXMAP_NONE;
+		pixbuf_data = NULL;
+	}
+	
 	bookmark_holder = g_new (BookmarkHolder, 1);
 	bookmark_holder->window = window;
 	bookmark_holder->bookmark = bookmark;
 
-        /* FIXME: Need to get the bookmark's icon in here, but how? */
-        bonobo_ui_handler_menu_new_item (window->uih,
-                                         menu_item_path,
-                                         nautilus_bookmark_get_name (bookmark),
-                                         _("Go to the specified location"),
-                                         -1,
-                                         BONOBO_UI_HANDLER_PIXMAP_NONE,
-                                         NULL,
-                                         0,
-                                         0,
-                                         activate_bookmark_in_menu_item,
-                                         bookmark_holder);
+ 	bonobo_ui_handler_menu_new_item (	window->uih,
+                                  		menu_item_path,
+                                       	nautilus_bookmark_get_name (bookmark),
+                                       	_("Go to the specified location"),
+                                       	-1,
+                                       	pixmap_type,
+                                       	pixbuf_data,
+                                      	0,
+                                       	0,
+                                       	activate_bookmark_in_menu_item,
+                                      	bookmark_holder);
 }
 
 static void
@@ -485,7 +501,6 @@ nautilus_window_add_bookmark_for_current_location (NautilusWindow *window)
 
 	g_assert (strcmp (nautilus_bookmark_get_uri (window->current_location_bookmark), 
 		          nautilus_window_get_requested_uri(window)) == 0);
-
 	/* Use the first bookmark in the history list rather than creating a new one. */
 	bookmark = window->current_location_bookmark;
 

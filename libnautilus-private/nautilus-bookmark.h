@@ -27,6 +27,7 @@
 
 #include <gtk/gtkwidget.h>
 #include <gdk/gdktypes.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 typedef struct _NautilusBookmark NautilusBookmark;
 
@@ -73,6 +74,9 @@ gboolean          nautilus_bookmark_get_pixmap_and_mask (const NautilusBookmark 
 							 guint                    icon_size,
 							 GdkPixmap              **pixmap_return,
 							 GdkBitmap              **mask_return);
+gboolean		  nautilus_bookmark_get_pixbuf(const NautilusBookmark *bookmark,
+								guint		icon_size,
+				       		 	GdkPixbuf 	**pixbuf_return);
 GtkWidget *       nautilus_bookmark_menu_item_new       (const NautilusBookmark  *bookmark);
 
 
