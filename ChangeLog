@@ -2,6 +2,16 @@
 
 	reviewed by: Darin Adler <darin@eazel.com>
 
+	Fixed bug 6181 (funny mouse clicking freezes Nautilus)
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(button_press_event): Ignore middle & right button
+	presses when we're dragging a selection rectangle.
+
+2001-02-01  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
 	* libnautilus-extensions/nautilus-global-preferences.c:
 	(global_preferences_install_descriptions):
 	Parenthesize parenthetical part of "slow but complete

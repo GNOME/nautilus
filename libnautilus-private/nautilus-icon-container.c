@@ -2452,6 +2452,11 @@ button_press_event (GtkWidget *widget,
 		start_rubberbanding (container, event);
 		return TRUE;
 	}
+
+	/* Prevent multi-button weirdness such as bug 6181 */
+	if (container->details->rubberband_info.active) {
+		return TRUE;
+	}
 	
 	/* Button 2 may be passed to the window manager. */
 	if (event->button == MIDDLE_BUTTON) {
