@@ -233,9 +233,9 @@ AC_SUBST(VFS_CFLAGS)
 AC_SUBST(VFS_LIBS)
 AC_SUBST(IDL_CFLAGS)
 
-AM_PATH_OAF(0.1.0)
+AM_PATH_OAF(0.3.0)
 
-AM_PATH_GCONF(0.1.0,,,gconf-gtk)
+AM_PATH_GCONF(0.5.0,,,gconf-gtk)
 
 AC_PATH_PROG(XML_CONFIG,xml-config,no)
 if test x$XML_CONFIG = xno; then
@@ -291,8 +291,16 @@ dnl been released yet.
 AC_MSG_CHECKING(for GtkHTML)
 if gnome-config --libs gtkhtml > /dev/null 2>&1; then
     AC_MSG_RESULT(yes)
-    GTKHTML_LIBS=`gnome-config --libs gtkhtml`
-    GTKHTML_CFLAGS=`gnome-config --cflags gtkhtml`
+	dnl <= check for GtkHTML >= 0.4 
+	AC_MSG_CHECKING(for GtkHTML >= 0.4)
+	if test `gnome-config --modversion gtkhtml|sed -e 's/.*-[[[:digit:]]].//g'` -ge 4 ; then
+		AC_MSG_RESULT([yeah, we are very up-to-date])
+			GTKHTML_LIBS=`gnome-config --libs gtkhtml`
+			GTKHTML_CFLAGS=`gnome-config --cflags gtkhtml`
+	else
+	 		AC_MSG_ERROR([Your GtkHTML is not up-to-date enough for nautilus!])
+	fi
+	dnl =>
 else
     AC_MSG_ERROR([Not Found])
     AC_MSG_ERROR([GtkHTML from the GNOME CVS is required])
