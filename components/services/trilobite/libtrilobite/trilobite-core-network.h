@@ -27,10 +27,8 @@
  *
  */
 
-#ifndef __TRILOBITE_CORE_NETWORK_H__
-#define __TRILOBITE_CORE_NETWORK_H__
+#ifndef TRILOBITE_CORE_NETWORK_H
+#define TRILOBITE_CORE_NETWORK_H
 
-#endif /* __TRILOBITE_CORE_NETWORK_H__ */
-
-/************************** end trilobite-core-network.h **********************/
+#endif /* TRILOBITE_CORE_NETWORK_H */
 

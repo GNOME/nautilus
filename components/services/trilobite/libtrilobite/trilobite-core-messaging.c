@@ -36,5 +36,3 @@ print_message (MessageFormat* format,
 	return;
 }
 
-/****************** end trilobite-core-messaging.c ****************************/
-

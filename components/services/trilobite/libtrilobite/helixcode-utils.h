@@ -25,8 +25,8 @@
 /* Most of this code is taken directly from Joe Shaw's Helix Code install / Updater
  * with a few very minor changes made by me. */
  
-#ifndef __HELIXCODE_INSTALL_UTILS_H__
-#define __HELIXCODE_INSTALL_UTILS_H__
+#ifndef HELIXCODE_INSTALL_UTILS_H
+#define HELIXCODE_INSTALL_UTILS_H
 
 #include <gnome.h>
 #include <sys/types.h>
@@ -39,4 +39,4 @@ char* xml_get_value (xmlNode* node, const char* name);
 gboolean check_for_root_user (void);
 gboolean check_for_redhat (void);
 
-#endif /* __HELIXCODE_INSTALL_UTILS_H__ */
+#endif /* HELIXCODE_INSTALL_UTILS_H */

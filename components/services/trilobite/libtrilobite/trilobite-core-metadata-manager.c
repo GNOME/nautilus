@@ -27,5 +27,3 @@
  *
  */
 
-/****************** end trilobite-core-metadata-manager.c *********************/
-

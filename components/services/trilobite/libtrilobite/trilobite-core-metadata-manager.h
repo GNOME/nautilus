@@ -27,10 +27,8 @@
  *
  */
 
-#ifndef __TRILOBITE_CORE_METADATA_MANAGER_H__
-#define __TRILOBITE_CORE_METADATA_MANAGER_H__
+#ifndef TRILOBITE_CORE_METADATA_MANAGER_H
+#define TRILOBITE_CORE_METADATA_MANAGER_H
 
-#endif /* __TRILOBITE_CORE_METADATA_MANAGER_H__ */
-
-/********************* end trilobite-core-metadata-manager.h ******************/
+#endif /* TRILOBITE_CORE_METADATA_MANAGER_H */
 

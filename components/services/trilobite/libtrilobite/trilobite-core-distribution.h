@@ -20,8 +20,8 @@
  * Authors: Eskil Heyn Olsen <eskil@eazel.com>
  */
 
-#ifndef __EAZEL_SERVICES_DISTRIBUTION_H__
-#define __EAZEL_SERVICES_DISTRIBUTION_H__ 
+#ifndef EAZEL_SERVICES_DISTRIBUTION_H
+#define EAZEL_SERVICES_DISTRIBUTION_H
 
 #include <gnome.h>
 #include <stdio.h>
@@ -59,4 +59,4 @@ DistributionInfo trilobite_get_distribution (void);
 char* trilobite_get_distribution_name (DistributionInfo distinfo,
 				       gboolean show_version);
 
-#endif /* __EAZEL_SERVICES_DISTRIBUTION_H__ */
+#endif /* EAZEL_SERVICES_DISTRIBUTION_H */

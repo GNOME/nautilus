@@ -17,7 +17,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Authors: J Shane Culpepper <pepper@eazel.com>
+ * Authors:
  */
 
 #ifndef NAUTILUS_VAULT_VIEW_H

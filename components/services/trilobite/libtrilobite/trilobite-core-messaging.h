@@ -27,8 +27,8 @@
  *
  */
 
-#ifndef __TRILOBITE_CORE_MESSAGING_H__
-#define __TRILOBITE_CORE_MESSAGING_H__
+#ifndef TRILOBITE_CORE_MESSAGING_H
+#define TRILOBITE_CORE_MESSAGING_H
 
 typedef enum _MessageFormat MessageFormat;
 typedef enum _MessageSeverity MessageSeverity;
@@ -49,7 +49,5 @@ void print_message (MessageFormat* format,
                     MessageSeverity* severity,
                     const char* message_buffer);
 
-#endif /* __TRILOBITE_CORE_MESSAGING_H__ */
-
-/************************** end trilobite-core-messaging.h ********************/
+#endif /* TRILOBITE_CORE_MESSAGING_H */
 
