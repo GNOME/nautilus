@@ -90,29 +90,29 @@ typedef void (*NautilusCTreeFunc) 	(NautilusCTree     *ctree,
 			      		 gpointer      data);
 
 typedef gboolean (*NautilusCTreeGNodeFunc) (NautilusCTree     *ctree,
-                                       guint         depth,
-                                       GNode        *gnode,
-				       NautilusCTreeNode *cnode,
-                                       gpointer      data);
+					    guint         depth,
+					    GNode        *gnode,
+					    NautilusCTreeNode *cnode,
+					    gpointer      data);
 
 typedef gboolean (*NautilusCTreeCompareDragFunc) (NautilusCTree     *ctree,
-                                             NautilusCTreeNode *source_node,
-                                             NautilusCTreeNode *new_parent,
-                                             NautilusCTreeNode *new_sibling);
+						  NautilusCTreeNode *source_node,
+						  NautilusCTreeNode *new_parent,
+						  NautilusCTreeNode *new_sibling);
 
 struct _NautilusCTree
 {
 	GtkCList clist;
-  
+	
 	GdkGC *lines_gc;
-  
+	
 	gint tree_indent;
 	gint tree_spacing;
 	gint tree_column;
-
+	
 	guint line_style     : 2;
 	guint show_stub      : 1;
-
+	
 	NautilusCTreeNode *prelight_node;
 
 	NautilusCTreeRow *dnd_prelighted_row;
@@ -175,40 +175,40 @@ struct _NautilusCTreeNode {
  ***********************************************************/
 
 GtkType nautilus_ctree_get_type                       (void);
-void nautilus_ctree_construct                         (NautilusCTree     *ctree,
-						  gint          columns, 
-						  gint          tree_column,
-						  gchar        *titles[]);
-GtkWidget * nautilus_ctree_new_with_titles            (gint          columns, 
-						  gint          tree_column,
-						  gchar        *titles[]);
-GtkWidget * nautilus_ctree_new                        (gint          columns, 
-						  gint          tree_column);
-NautilusCTreeNode * nautilus_ctree_insert_node             (NautilusCTree     *ctree,
-						  NautilusCTreeNode *parent, 
-						  NautilusCTreeNode *sibling,
-						  gchar        *text[],
-						  guint8        spacing,
-						  GdkPixmap    *pixmap_closed,
-						  GdkBitmap    *mask_closed,
-						  GdkPixmap    *pixmap_opened,
-						  GdkBitmap    *mask_opened,
-						  gboolean      is_leaf,
-						  gboolean      expanded);
-void nautilus_ctree_remove_node                       (NautilusCTree     *ctree, 
-						  NautilusCTreeNode *node);
-NautilusCTreeNode * nautilus_ctree_insert_gnode            (NautilusCTree          *ctree,
-						  NautilusCTreeNode      *parent,
-						  NautilusCTreeNode      *sibling,
-						  GNode             *gnode,
-						  NautilusCTreeGNodeFunc  func,
-						  gpointer           data);
+void nautilus_ctree_construct                         (NautilusCTree          *ctree,
+						       gint                    columns, 
+						       gint                    tree_column,
+						       gchar                  *titles[]);
+GtkWidget * nautilus_ctree_new_with_titles            (gint                    columns, 
+						       gint                    tree_column,
+						       gchar                  *titles[]);
+GtkWidget * nautilus_ctree_new                        (gint                    columns, 
+						       gint                    tree_column);
+NautilusCTreeNode * nautilus_ctree_insert_node        (NautilusCTree          *ctree,
+						       NautilusCTreeNode      *parent, 
+						       NautilusCTreeNode      *sibling,
+						       gchar                  *text[],
+						       guint8                  spacing,
+						       GdkPixmap              *pixmap_closed,
+						       GdkBitmap              *mask_closed,
+						       GdkPixmap              *pixmap_opened,
+						       GdkBitmap              *mask_opened,
+						       gboolean                is_leaf,
+						       gboolean                expanded);
+void nautilus_ctree_remove_node                       (NautilusCTree          *ctree, 
+						       NautilusCTreeNode      *node);
+NautilusCTreeNode * nautilus_ctree_insert_gnode       (NautilusCTree          *ctree,
+						       NautilusCTreeNode      *parent,
+						       NautilusCTreeNode      *sibling,
+						       GNode                  *gnode,
+						       NautilusCTreeGNodeFunc  func,
+						       gpointer                data);
 GNode * nautilus_ctree_export_to_gnode                (NautilusCTree          *ctree,
-						  GNode             *parent,
-						  GNode             *sibling,
-						  NautilusCTreeNode      *node,
-						  NautilusCTreeGNodeFunc  func,
-						  gpointer           data);
+						       GNode                  *parent,
+						       GNode                  *sibling,
+						       NautilusCTreeNode      *node,
+						       NautilusCTreeGNodeFunc  func,
+						       gpointer                data);
 
 /***********************************************************
  *  Generic recursive functions, querying / finding tree   *
@@ -216,94 +216,94 @@ GNode * nautilus_ctree_export_to_gnode                (NautilusCTree          *c
  ***********************************************************/
 
 void nautilus_ctree_post_recursive                    (NautilusCTree     *ctree, 
-						  NautilusCTreeNode *node,
-						  NautilusCTreeFunc  func,
-						  gpointer      data);
+						       NautilusCTreeNode *node,
+						       NautilusCTreeFunc  func,
+						       gpointer      data);
 void nautilus_ctree_post_recursive_to_depth           (NautilusCTree     *ctree, 
-						  NautilusCTreeNode *node,
-						  gint          depth,
-						  NautilusCTreeFunc  func,
-						  gpointer      data);
+						       NautilusCTreeNode *node,
+						       gint          depth,
+						       NautilusCTreeFunc  func,
+						       gpointer      data);
 void nautilus_ctree_pre_recursive                     (NautilusCTree     *ctree, 
-						  NautilusCTreeNode *node,
-						  NautilusCTreeFunc  func,
-						  gpointer      data);
+						       NautilusCTreeNode *node,
+						       NautilusCTreeFunc  func,
+						       gpointer      data);
 void nautilus_ctree_pre_recursive_to_depth            (NautilusCTree     *ctree, 
-						  NautilusCTreeNode *node,
-						  gint          depth,
-						  NautilusCTreeFunc  func,
-						  gpointer      data);
+						       NautilusCTreeNode *node,
+						       gint          depth,
+						       NautilusCTreeFunc  func,
+						       gpointer      data);
 gboolean nautilus_ctree_is_viewable                   (NautilusCTree     *ctree, 
-					          NautilusCTreeNode *node);
+						       NautilusCTreeNode *node);
 NautilusCTreeNode * nautilus_ctree_last                    (NautilusCTree     *ctree,
-					          NautilusCTreeNode *node);
+							    NautilusCTreeNode *node);
 NautilusCTreeNode * nautilus_ctree_find_node_ptr           (NautilusCTree     *ctree,
-					          NautilusCTreeRow  *ctree_row);
+							    NautilusCTreeRow  *ctree_row);
 NautilusCTreeNode * nautilus_ctree_node_nth                (NautilusCTree     *ctree,
-						  int         row);
+							    int         row);
 gboolean nautilus_ctree_find                          (NautilusCTree     *ctree,
-					          NautilusCTreeNode *node,
-					          NautilusCTreeNode *child);
+						       NautilusCTreeNode *node,
+						       NautilusCTreeNode *child);
 gboolean nautilus_ctree_is_ancestor                   (NautilusCTree     *ctree,
-					          NautilusCTreeNode *node,
-					          NautilusCTreeNode *child);
+						       NautilusCTreeNode *node,
+						       NautilusCTreeNode *child);
 NautilusCTreeNode * nautilus_ctree_find_by_row_data        (NautilusCTree     *ctree,
-					          NautilusCTreeNode *node,
-					          gpointer      data);
+							    NautilusCTreeNode *node,
+							    gpointer      data);
 /* returns a GList of all NautilusCTreeNodes with row->data == data. */
 GList * nautilus_ctree_find_all_by_row_data           (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  gpointer      data);
+						       NautilusCTreeNode *node,
+						       gpointer      data);
 NautilusCTreeNode * nautilus_ctree_find_by_row_data_custom (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  gpointer      data,
-						  GCompareFunc  func);
+							    NautilusCTreeNode *node,
+							    gpointer      data,
+							    GCompareFunc  func);
 /* returns a GList of all NautilusCTreeNodes with row->data == data. */
 GList * nautilus_ctree_find_all_by_row_data_custom    (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  gpointer      data,
-						  GCompareFunc  func);
+						       NautilusCTreeNode *node,
+						       gpointer      data,
+						       GCompareFunc  func);
 gboolean nautilus_ctree_is_hot_spot                   (NautilusCTree     *ctree,
-					          gint          x,
-					          gint          y);
+						       gint          x,
+						       gint          y);
 
 /***********************************************************
  *   Tree signals : move, expand, collapse, (un)select     *
  ***********************************************************/
 
 void nautilus_ctree_move                              (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  NautilusCTreeNode *new_parent, 
-						  NautilusCTreeNode *new_sibling);
+						       NautilusCTreeNode *node,
+						       NautilusCTreeNode *new_parent, 
+						       NautilusCTreeNode *new_sibling);
 void nautilus_ctree_expand                            (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node);
+						       NautilusCTreeNode *node);
 void nautilus_ctree_expand_recursive                  (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node);
+						       NautilusCTreeNode *node);
 void nautilus_ctree_expand_to_depth                   (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  gint          depth);
+						       NautilusCTreeNode *node,
+						       gint          depth);
 void nautilus_ctree_collapse                          (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node);
+						       NautilusCTreeNode *node);
 void nautilus_ctree_collapse_recursive                (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node);
+						       NautilusCTreeNode *node);
 void nautilus_ctree_collapse_to_depth                 (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  gint          depth);
+						       NautilusCTreeNode *node,
+						       gint          depth);
 void nautilus_ctree_toggle_expansion                  (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node);
+						       NautilusCTreeNode *node);
 void nautilus_ctree_toggle_expansion_recursive        (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node);
+						       NautilusCTreeNode *node);
 void nautilus_ctree_select                            (NautilusCTree     *ctree, 
-						  NautilusCTreeNode *node);
+						       NautilusCTreeNode *node);
 void nautilus_ctree_select_recursive                  (NautilusCTree     *ctree, 
-						  NautilusCTreeNode *node);
+						       NautilusCTreeNode *node);
 void nautilus_ctree_unselect                          (NautilusCTree     *ctree, 
-						  NautilusCTreeNode *node);
+						       NautilusCTreeNode *node);
 void nautilus_ctree_unselect_recursive                (NautilusCTree     *ctree, 
-						  NautilusCTreeNode *node);
+						       NautilusCTreeNode *node);
 void nautilus_ctree_real_select_recursive             (NautilusCTree     *ctree, 
-						  NautilusCTreeNode *node, 
-						  gint          state);
+						       NautilusCTreeNode *node, 
+						       gint          state);
 void nautilus_ctree_draw_node 			 (NautilusCTree 	*ctree, 
 						  NautilusCTreeNode 	*node);
 
@@ -312,70 +312,70 @@ void nautilus_ctree_draw_node 			 (NautilusCTree 	*ctree,
  ***********************************************************/
 
 void nautilus_ctree_node_set_text                     (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  gint          column,
-						  const gchar  *text);
+						       NautilusCTreeNode *node,
+						       gint          column,
+						       const gchar  *text);
 void nautilus_ctree_node_set_pixmap                   (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  gint          column,
-						  GdkPixmap    *pixmap,
-						  GdkBitmap    *mask);
+						       NautilusCTreeNode *node,
+						       gint          column,
+						       GdkPixmap    *pixmap,
+						       GdkBitmap    *mask);
 void nautilus_ctree_node_set_pixtext                  (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  gint          column,
-						  const gchar  *text,
-						  guint8        spacing,
-						  GdkPixmap    *pixmap,
-						  GdkBitmap    *mask);
+						       NautilusCTreeNode *node,
+						       gint          column,
+						       const gchar  *text,
+						       guint8        spacing,
+						       GdkPixmap    *pixmap,
+						       GdkBitmap    *mask);
 void nautilus_ctree_set_node_info                     (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  const gchar  *text,
-						  guint8        spacing,
-						  GdkPixmap    *pixmap_closed,
-						  GdkBitmap    *mask_closed,
-						  GdkPixmap    *pixmap_opened,
-						  GdkBitmap    *mask_opened,
-						  gboolean      is_leaf,
-						  gboolean      expanded);
+						       NautilusCTreeNode *node,
+						       const gchar  *text,
+						       guint8        spacing,
+						       GdkPixmap    *pixmap_closed,
+						       GdkBitmap    *mask_closed,
+						       GdkPixmap    *pixmap_opened,
+						       GdkBitmap    *mask_opened,
+						       gboolean      is_leaf,
+						       gboolean      expanded);
 void nautilus_ctree_node_set_shift                    (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  gint          column,
-						  gint          vertical,
-						  gint          horizontal);
+						       NautilusCTreeNode *node,
+						       gint          column,
+						       gint          vertical,
+						       gint          horizontal);
 void nautilus_ctree_node_set_selectable               (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  gboolean      selectable);
+						       NautilusCTreeNode *node,
+						       gboolean      selectable);
 gboolean nautilus_ctree_node_get_selectable           (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node);
+						       NautilusCTreeNode *node);
 GtkCellType nautilus_ctree_node_get_cell_type         (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  gint          column);
+						       NautilusCTreeNode *node,
+						       gint          column);
 gint nautilus_ctree_node_get_text                     (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  gint          column,
-						  gchar       **text);
+						       NautilusCTreeNode *node,
+						       gint          column,
+						       gchar       **text);
 gint nautilus_ctree_node_get_pixmap                   (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  gint          column,
-						  GdkPixmap   **pixmap,
-						  GdkBitmap   **mask);
+						       NautilusCTreeNode *node,
+						       gint          column,
+						       GdkPixmap   **pixmap,
+						       GdkBitmap   **mask);
 gint nautilus_ctree_node_get_pixtext                  (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  gint          column,
-						  gchar       **text,
-						  guint8       *spacing,
-						  GdkPixmap   **pixmap,
-						  GdkBitmap   **mask);
+						       NautilusCTreeNode *node,
+						       gint          column,
+						       gchar       **text,
+						       guint8       *spacing,
+						       GdkPixmap   **pixmap,
+						       GdkBitmap   **mask);
 gint nautilus_ctree_get_node_info                     (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  gchar       **text,
-						  guint8       *spacing,
-						  GdkPixmap   **pixmap_closed,
-						  GdkBitmap   **mask_closed,
-						  GdkPixmap   **pixmap_opened,
-						  GdkBitmap   **mask_opened,
-						  gboolean     *is_leaf,
-						  gboolean     *expanded);
+						       NautilusCTreeNode *node,
+						       gchar       **text,
+						       guint8       *spacing,
+						       GdkPixmap   **pixmap_closed,
+						       GdkBitmap   **mask_closed,
+						       GdkPixmap   **pixmap_opened,
+						       GdkBitmap   **mask_opened,
+						       gboolean     *is_leaf,
+						       gboolean     *expanded);
 
 void nautilus_ctree_set_prelight                 (NautilusCTree *ctree,
 						  int            y);
@@ -384,36 +384,36 @@ void nautilus_ctree_node_set_row_style           (NautilusCTree     *ctree,
 						  NautilusCTreeNode *node,
 						  GtkStyle     *style);
 GtkStyle * nautilus_ctree_node_get_row_style          (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node);
+						       NautilusCTreeNode *node);
 void nautilus_ctree_node_set_cell_style               (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  gint          column,
-						  GtkStyle     *style);
+						       NautilusCTreeNode *node,
+						       gint          column,
+						       GtkStyle     *style);
 GtkStyle * nautilus_ctree_node_get_cell_style         (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  gint          column);
+						       NautilusCTreeNode *node,
+						       gint          column);
 void nautilus_ctree_node_set_foreground               (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  GdkColor     *color);
+						       NautilusCTreeNode *node,
+						       GdkColor     *color);
 void nautilus_ctree_node_set_background               (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  GdkColor     *color);
+						       NautilusCTreeNode *node,
+						       GdkColor     *color);
 void nautilus_ctree_node_set_row_data                 (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  gpointer      data);
+						       NautilusCTreeNode *node,
+						       gpointer      data);
 void nautilus_ctree_node_set_row_data_full            (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  gpointer      data,
-						  GtkDestroyNotify destroy);
+						       NautilusCTreeNode *node,
+						       gpointer      data,
+						       GtkDestroyNotify destroy);
 gpointer nautilus_ctree_node_get_row_data             (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node);
+						       NautilusCTreeNode *node);
 void nautilus_ctree_node_moveto                       (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node,
-						  gint          column,
-						  gfloat        row_align,
-						  gfloat        col_align);
+						       NautilusCTreeNode *node,
+						       gint          column,
+						       gfloat        row_align,
+						       gfloat        col_align);
 GtkVisibility nautilus_ctree_node_is_visible          (NautilusCTree     *ctree,
-						  NautilusCTreeNode *node);
+						       NautilusCTreeNode *node);
 
 /***********************************************************
  *             NautilusCTree specific functions            *
@@ -435,9 +435,9 @@ void nautilus_ctree_set_drag_compare_func 	(NautilusCTree     	      	*ctree,
  ***********************************************************/
 
 void nautilus_ctree_sort_node                         (NautilusCTree     *ctree, 
-						  NautilusCTreeNode *node);
+						       NautilusCTreeNode *node);
 void nautilus_ctree_sort_recursive                    (NautilusCTree     *ctree, 
-						  NautilusCTreeNode *node);
+						       NautilusCTreeNode *node);
 
 
 

@@ -140,95 +140,6 @@ nautilus_tree_view_should_skip_file (NautilusTreeView *view,
 		  nautilus_file_is_directory (file)));
 }
 
-
-static void
-insert_hack_node (NautilusTreeView *view, NautilusFile *file)
-{
- 	NautilusCTreeNode *view_node;
-	NautilusCTreeNode *hack_node;
-	char *text[2];
-
-#ifdef DEBUG_TREE
-	printf ("XXX: possibly adding hack node for %s\n", nautilus_file_get_uri (file));
-#endif
-
-	hack_node = g_hash_table_lookup (view->details->file_to_hack_node_map, file);
-
-	if (hack_node == NULL) {
-		text[0] = "...HACK...";
-		text[1] = NULL;
-
-#ifdef DEBUG_TREE
-		printf ("XXX: actually adding hack node for %s\n", nautilus_file_get_uri (file));
-#endif
-
-		view_node = file_to_view_node (view, file);
-
-		hack_node = nautilus_ctree_insert_node (NAUTILUS_CTREE (view->details->tree),
-							view_node, 
-							NULL,
-							text,
-							TREE_SPACING,
-							NULL, NULL, NULL, NULL,
-							FALSE,
-							FALSE);
-
-		g_assert (g_hash_table_lookup (view->details->file_to_hack_node_map, file) == NULL);
-		nautilus_file_ref (file);
-		g_hash_table_insert (view->details->file_to_hack_node_map, 
-				     file, hack_node);
-	}
-}
-
-
-static void
-remove_hack_node (NautilusTreeView *view, NautilusFile *file)
-{
-	gpointer key, value;
-	NautilusCTreeNode *hack_node;
-
-#ifdef DEBUG_TREE
-	printf ("XXX: removing hack node for %s\n", nautilus_file_get_uri (file));
-#endif
-
-	if (g_hash_table_lookup_extended (view->details->file_to_hack_node_map,
-					  file, &key, &value)) {
-		hack_node = value;
-
-		nautilus_ctree_remove_node (NAUTILUS_CTREE (view->details->tree),
-					    hack_node);
-		g_hash_table_remove (view->details->file_to_hack_node_map, file);
-		
-		nautilus_file_unref (file);
-
-		gtk_clist_thaw (GTK_CLIST (view->details->tree));
-
-#ifdef DEBUG_TREE
-		printf ("XXX: actually thawing (%d)\n", GTK_CLIST (view->details->tree)->freeze_count);
-#endif
-	}
-}
-
-
-static void
-freeze_if_have_hack_node (NautilusTreeView *view, NautilusFile *file)
-{
-	NautilusCTreeNode *hack_node;
-
-#ifdef DEBUG_TREE
-	puts ("XXX: freezing if hack node");
-#endif
-
-	hack_node = g_hash_table_lookup (view->details->file_to_hack_node_map, file);
-
-	if (hack_node != NULL) {
-		gtk_clist_freeze (GTK_CLIST (view->details->tree));
-#ifdef DEBUG_TREE
-		printf ("XXX: actually freezing (%d)\n", GTK_CLIST (view->details->tree)->freeze_count);
-#endif
-	}
-}
-
 static void
 nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *node)
 {
@@ -236,7 +147,6 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
  	NautilusCTreeNode *view_node;
 	NautilusFile *file;
 	NautilusFile *parent_file;
-	char *uri;
 	char *text[2];
 	GdkPixmap *closed_pixmap;
 	GdkBitmap *closed_mask;
@@ -286,7 +196,7 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 							text,
 							TREE_SPACING,
 							closed_pixmap, closed_mask, open_pixmap, open_mask,
-							FALSE,
+							! nautilus_file_is_directory (file),
 							FALSE);
 		gdk_pixmap_unref (closed_pixmap);
 		gdk_pixmap_unref (open_pixmap);
@@ -305,28 +215,12 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 
 		nautilus_file_ref (file);
 		g_hash_table_insert (view->details->file_to_node_map, file, view_node); 
-		
-		if (nautilus_file_is_directory (file)) {
-			/* Gratuitous hack so node can be expandable w/o
-			   immediately inserting all the real children. */
-
-			uri = nautilus_file_get_uri (file);
-			if (nautilus_tree_expansion_state_is_node_expanded (view->details->expansion_state, uri)) {
-				nautilus_ctree_expand (NAUTILUS_CTREE (NAUTILUS_CTREE (view->details->tree)),
-						  view_node);
-			} else {
-				insert_hack_node (view, file);
-			}
-			
-			g_free (uri);
-		}
 	}
 
 	g_free (text[0]);
 
 	if (parent_view_node != NULL) {
 		parent_file = nautilus_tree_view_node_to_file (view, parent_view_node);
-		remove_hack_node (view, parent_file);
 	}
 }
 
@@ -338,15 +232,6 @@ forget_view_node (NautilusTreeView *view,
 	char *uri;
 
 	file = nautilus_tree_view_node_to_file (view, view_node);
-
-	/* We get NULL when we visit hack nodes, and we visit the hack
-	 * nodes before we remove them.
-	 */
-	if (file == NULL) {
-		return;
-	}
-
-	remove_hack_node (view, file);
 
 	uri = nautilus_file_get_uri (file);
 	nautilus_tree_expansion_state_remove_node
@@ -457,7 +342,7 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 					      TREE_SPACING,
 					      closed_pixmap, closed_mask,
 					      open_pixmap, open_mask,
-					      FALSE,
+					      ! nautilus_file_is_directory (file),
 					      ctree_is_node_expanded (NAUTILUS_CTREE (view->details->tree),
 								      view_node));
 
@@ -486,8 +371,6 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 							    view_node)) {
 					nautilus_ctree_collapse (NAUTILUS_CTREE (view->details->tree),
 								 view_node);
-				} else {
-					insert_hack_node (view, file);
 				}
 			}
 
@@ -623,8 +506,6 @@ nautilus_tree_view_model_done_loading_callback (NautilusTreeModel *model,
 #endif
 
 	view = NAUTILUS_TREE_VIEW (callback_data);
-
-	remove_hack_node (view, nautilus_tree_node_get_file (node));
 
 	notify_done_loading (view, node);
 }
@@ -770,7 +651,6 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 			    view);
 
 	view->details->file_to_node_map = g_hash_table_new (g_direct_hash, g_direct_equal);
-	view->details->file_to_hack_node_map = g_hash_table_new (g_direct_hash, g_direct_equal);
 	
 	nautilus_tree_view_load_from_filesystem (view);
 
@@ -811,14 +691,6 @@ free_file_to_node_map_entry (gpointer key, gpointer value, gpointer callback_dat
 }
 
 static void
-free_file_to_hack_node_map_entry (gpointer key, gpointer value, gpointer callback_data)
-{
-	g_assert (callback_data == NULL);
-
-	nautilus_file_unref (NAUTILUS_FILE (key));
-}
-
-static void
 nautilus_tree_view_destroy (GtkObject *object)
 {
 	NautilusTreeView *view;
@@ -839,11 +711,6 @@ nautilus_tree_view_destroy (GtkObject *object)
 			      free_file_to_node_map_entry,
 			      NULL);
 	g_hash_table_destroy (view->details->file_to_node_map);
-	
-	g_hash_table_foreach (view->details->file_to_hack_node_map,
-			      free_file_to_hack_node_map_entry,
-			      NULL);
-	g_hash_table_destroy (view->details->file_to_hack_node_map);
 	
 	/* you do not need to unref the normal style */
 	if (view->details->dnd->highlight_style != NULL) {
@@ -1164,8 +1031,6 @@ expand_node_for_file (NautilusTreeView *view,
 {
 	char *uri;
 
-	freeze_if_have_hack_node (view, file);
-	
 	uri = nautilus_file_get_uri (file);
 	nautilus_tree_expansion_state_expand_node (view->details->expansion_state,
 						   uri);

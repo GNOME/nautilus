@@ -1,3 +1,37 @@
+2000-11-27  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bugs 3608 (Tree view disclosure triangle behavior on empty
+	folders is confusing) and 4368 (Tree View gets confused by
+	renaming file in closed folder).
+	
+	* libnautilus-extensions/nautilus-ctree.h: Reindented.
+
+	* libnautilus-extensions/nautilus-ctree.c:
+	(nautilus_ctree_realize, nautilus_ctree_unrealize,
+	nautilus_ctree_button_press, nautilus_ctree_draw_expander,
+	draw_row, nautilus_ctree_unlink, change_focus_row_expansion,
+	nautilus_ctree_last, nautilus_ctree_find_node_ptr,
+	nautilus_ctree_find_all_by_row_data): Made NautilusCTree handle
+	all expansion and expander-related stuff based on whether the
+	node's is_leaf field is set, not based on whether it actually has
+	children. This way, by setting is_leaf to FALSE, you can make a
+	node with no children expandable.
+
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_insert_model_node, forget_view_node,
+	nautilus_tree_view_update_model_node,
+	nautilus_tree_view_model_done_loading_callback,
+	nautilus_tree_view_initialize, nautilus_tree_view_destroy),
+	expand_node_for_file, insert_hack_node, remove_hack_node,
+	freeze_if_have_hack_node): When inserting or updating nodes, set
+	is_leaf to FALSE if the node represents a directory, otherwise
+	TRUE. Remove all code relating to hack node handling. Combined
+	with the change above, this makes normal directories expand
+	normally, and prevents directories from collapsing when files
+	inside them are renamed.	
+
 2000-11-27  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/music/nautilus-music-view.c:
