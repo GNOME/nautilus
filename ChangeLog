@@ -1,3 +1,12 @@
+2000-12-08  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	* libnautilus-extensions/nautilus-undo-signal-handlers.c:
+	(editable_key_press_event): Fixed bugs 5090 and 5091. The fix is
+	not even compiled right now, but it was better to improve the code
+	now -- we'll test when we enable it some day.
+
 2000-12-07  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/services/startup/nautilus-view/.cvsignore: Remove

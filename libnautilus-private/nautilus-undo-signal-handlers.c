@@ -291,8 +291,7 @@ restore_editable_from_undo_snapshot_callback (GtkObject *target, gpointer callba
 /* FIXME bugzilla.eazel.com 3515: Undo doesn't work */
 #ifdef UNDO_ENABLED
 
-/* FIXME bugzilla.eazel.com 5090: This needs a return value of gboolean. */
-static void
+static gboolean
 editable_key_press_event (GtkEditable *editable, GdkEventKey *event, gpointer user_data)
 {	
 	switch (event->keyval) {
@@ -300,17 +299,17 @@ editable_key_press_event (GtkEditable *editable, GdkEventKey *event, gpointer us
 	case 'z':
 		if ((event->state & GDK_CONTROL_MASK) != 0) {
 			nautilus_undo (GTK_OBJECT (editable));
-			/* FIXME bugzilla.eazel.com 5091: Need to stop the 
-			   signal to prevent
-			 * re-handling the same event.
-			 */
-			return;
+			gtk_signal_emit_stop_by_name (GTK_OBJECT (editable),
+						      "key_press_event");
+			return TRUE;
 		}
 		break;
 		
 	default:
 		break;
 	}
+
+	return FALSE;
 }
 
 #endif
@@ -333,8 +332,10 @@ nautilus_undo_editable_set_undo_key (GtkEditable *editable, gboolean value)
 				    GTK_SIGNAL_FUNC (editable_key_press_event),
 				    NULL);
 	} else {
-		/* FIXME bugzilla.eazel.com 5092: This warns if 
-		   the handler is already connected. */
+		/* FIXME bugzilla.eazel.com 5092: Warns if the handler
+		 * is not already connected. We could use object data
+		 * to prevent that little problem.
+		 */
 		gtk_signal_disconnect_by_func (GTK_OBJECT (editable), 
 					       GTK_SIGNAL_FUNC (editable_key_press_event),		    
 					       NULL);
