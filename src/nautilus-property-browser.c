@@ -1925,7 +1925,7 @@ make_category_link (NautilusPropertyBrowser *property_browser, char* name, char 
 	char *file_name = nautilus_pixmap_file (image); 
 	GtkWidget* temp_box = gtk_vbox_new (FALSE, 0);
 	
-	pix_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
+	pix_widget = GTK_WIDGET (nautilus_image_new (file_name));
 	gtk_widget_show (pix_widget);
 	gtk_box_pack_start (GTK_BOX (temp_box), pix_widget, FALSE, FALSE, 0);
 	
