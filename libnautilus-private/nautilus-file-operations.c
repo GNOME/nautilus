@@ -449,7 +449,7 @@ fs_xfer (const GList *item_uris,
 	GnomeVFSURI *source_dir_uri;
 	GnomeVFSURI *target_dir_uri;
 	XferInfo *xfer_info;
-	const char *target_dir_uri_text;
+	char *target_dir_uri_text;
 	
 	g_assert (item_uris != NULL);
 	
@@ -461,7 +461,7 @@ fs_xfer (const GList *item_uris,
 	source_dir = gnome_vfs_uri_to_string (source_dir_uri, GNOME_VFS_URI_HIDE_NONE);
 	if (target_dir != NULL) {
 		target_dir_uri = gnome_vfs_uri_new (target_dir);
-		target_dir_uri_text = target_dir;
+		target_dir_uri_text = g_strdup (target_dir);
 	} else {
 		/* assume duplication */
 		target_dir_uri = gnome_vfs_uri_ref (source_dir_uri);
@@ -501,8 +501,7 @@ fs_xfer (const GList *item_uris,
 	      		      &update_xfer_callback, xfer_info,
 	      		      &sync_xfer_callback, xfer_info);
 
-	if (target_dir != NULL)
-		g_free ((char *)target_dir_uri_text);
+	g_free (target_dir_uri_text);
 
 	gnome_vfs_uri_unref (target_dir_uri);
 	gnome_vfs_uri_unref (source_dir_uri);
@@ -602,6 +601,7 @@ fs_empty_trash (GtkWidget *parent_view)
 		trash_dir_name = gnome_vfs_uri_to_string (trash_dir_uri, 
 							  GNOME_VFS_URI_HIDE_NONE);
 		trash_dir_list = g_list_append (trash_dir_list, trash_dir_name);
+
 		gnome_vfs_async_xfer (&xfer_info->handle, NULL, trash_dir_list,
 		      		      NULL, NULL,
 		      		      GNOME_VFS_XFER_REMOVESOURCE,

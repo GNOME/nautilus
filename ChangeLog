@@ -1,3 +1,10 @@
+2000-04-26  Pavel Cisler  <pavel@eazel.com>
+
+	* src/file-manager/dfos-xfer.c:
+	(fs_xfer):
+	Fixed a memory thrasher Darin ran into.
+	The code in question was just asking for trouble to begin with.
+	 
 2000-04-26  Andy Hertzfeld <andy@eazel.com>
 
 	fixed bug #683, experts shouldn't get suffix stripped from link file
@@ -170,7 +177,6 @@
 	Wrote bug reports for all FIXMEs in these files. Down to 90
 	in Nautilus with no bug report.
 
->>>>>>> 1.133
 2000-04-26  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* doc/nautilus.faq: Added faq.
@@ -204,7 +210,6 @@
 	(nautilus_directory_notify_files_moved):
 	Updated bug numbers on FIXMEs in here.
 
->>>>>>> 1.127
 2000-04-26  John Sullivan  <sullivan@eazel.com>
 
 	More FIXME-to-bug work.
