@@ -35,6 +35,7 @@
 
 #include "gdk-extensions.h"
 #include "nautilus-glib-extensions.h"
+#include "nautilus-gtk-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-lib-self-check-functions.h"
 
@@ -1002,7 +1003,7 @@ unselect_all (GnomeIconContainer *container)
 void
 gnome_icon_container_move_icon (GnomeIconContainer *container,
 	   GnomeIconContainerIcon *icon,
-	   int x, int y, gboolean raise)
+	   int x, int y, double xscale, double yscale, gboolean raise)
 {
 	GnomeIconContainerDetails *details;
 	int old_x, old_y;
@@ -1052,10 +1053,10 @@ gnome_icon_container_move_icon (GnomeIconContainer *container,
 		set_kbd_current (container, icon, FALSE);
 
 	gtk_signal_emit (GTK_OBJECT (container), signals[ICON_MOVED],
-			 icon->data, x, y);
+			 icon->data, x, y, xscale, yscale);
 }
 
-
+
 /* Implementation of rubberband selection.  */
 
 static gboolean
@@ -2067,11 +2068,13 @@ gnome_icon_container_initialize_class (GnomeIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (GnomeIconContainerClass,
 						     icon_moved),
-				  gtk_marshal_NONE__POINTER_INT_INT,
-				  GTK_TYPE_NONE, 3,
+				  nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE,
+				  GTK_TYPE_NONE, 5,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_INT,
-				  GTK_TYPE_INT);
+				  GTK_TYPE_INT,
+				  GTK_TYPE_DOUBLE,
+				  GTK_TYPE_DOUBLE);
 
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
@@ -2524,7 +2527,7 @@ update_icon (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 void
 gnome_icon_container_add (GnomeIconContainer *container,
 			  NautilusControllerIcon *data,
-			  int x, int y)
+			  int x, int y, double xscale, double yscale)
 {
 	GnomeIconContainerDetails *details;
 	GnomeIconContainerIcon *new_icon;
@@ -2537,6 +2540,7 @@ gnome_icon_container_add (GnomeIconContainer *container,
 
 	new_icon = icon_new (container, data);
 	icon_set_position (new_icon, x, y);
+
 
 	world_to_grid (container, x, y, &grid_x, &grid_y);
 	icon_grid_add (details->grid, new_icon, grid_x, grid_y);
@@ -2552,6 +2556,12 @@ gnome_icon_container_add (GnomeIconContainer *container,
 	setup_icon_in_container (container, new_icon);
 
 	add_idle (container);
+
+	/* FIXME: deal with y scaling and x scaling seperately */
+	new_icon->scale = xscale; 
+	new_icon->xscale = xscale;
+	new_icon->yscale = yscale;
+	update_icon (container, new_icon);
 }
 
 /**

@@ -61,7 +61,7 @@ struct _GnomeIconContainerClass {
 
 	void (* icon_moved)		  (GnomeIconContainer *container,
 					   NautilusControllerIcon *icon,
-					   int x, int y);
+					   int x, int y, double xscale, double yscale);
 };
 
 
@@ -77,7 +77,9 @@ void       gnome_icon_container_clear_selected_items    (GnomeIconContainer     
 void       gnome_icon_container_add                     (GnomeIconContainer      *view,
 							 NautilusControllerIcon  *icon,
 							 int                      x,
-							 int                      y);
+							 int                      y,
+							 double xscale,
+							 double yscale);
 void       gnome_icon_container_add_auto                (GnomeIconContainer      *view,
 							 NautilusControllerIcon  *icon);
 

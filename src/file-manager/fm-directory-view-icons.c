@@ -57,7 +57,8 @@ static GnomeIconContainer *create_icon_container (FMDirectoryViewIcons *icon_vie
 static void display_icons_not_already_positioned (FMDirectoryViewIcons *icon_view);
 static void fm_directory_view_icons_icon_moved_cb (GnomeIconContainer *container,
 						   NautilusFile *icon_data,
-						   int x, int y,
+						   int x, int y, 
+						   double xscale, double yscale,
 						   FMDirectoryViewIcons *icon_view);
 static void fm_directory_view_icons_add_entry    (FMDirectoryView *view, 
 					          NautilusFile *file);
@@ -256,9 +257,10 @@ add_icon_if_already_positioned (FMDirectoryViewIcons *icon_view,
 				NautilusFile *file)
 {
 	NautilusDirectory *directory;
-	char *position_string;
-	gboolean position_good;
+	char *position_string, *scale_string;
+	gboolean position_good, scale_good;
 	int x, y;
+	double xscale, yscale;
 
 	/* Get the current position of this icon from the metadata. */
 	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
@@ -268,6 +270,18 @@ add_icon_if_already_positioned (FMDirectoryViewIcons *icon_view,
 	position_good = sscanf (position_string, " %d , %d %*s", &x, &y) == 2;
 	g_free (position_string);
 
+	/* Get the scale of the icon from the metadata. */
+	scale_string = nautilus_file_get_metadata (file,
+						   ICON_VIEW_ICON_SCALE_METADATA_KEY,
+						   "");
+	scale_good = sscanf (scale_string, " %lf , %lf %*s", &xscale, &yscale) == 2;
+	/* FIXME: deal with bad scale more gracefully ?!? */
+	if (!scale_good) {
+		xscale = 1.0;
+		yscale = 1.0;
+	}
+	g_free (scale_string);
+
 	if (!position_good) {
 		nautilus_file_ref (file);
 		icon_view->details->icons_not_positioned =
@@ -276,7 +290,7 @@ add_icon_if_already_positioned (FMDirectoryViewIcons *icon_view,
 	}
 
 	gnome_icon_container_add (get_icon_container (icon_view),
-				  NAUTILUS_CONTROLLER_ICON (file), x, y);
+				  NAUTILUS_CONTROLLER_ICON (file), x, y, xscale, yscale);
 }
 
 static void
@@ -759,11 +773,12 @@ fm_directory_view_icons_background_changed_cb (NautilusBackground *background,
 static void
 fm_directory_view_icons_icon_moved_cb (GnomeIconContainer *container,
 				       NautilusFile *file,
-				       int x, int y,
+				       int x, int y, double xscale, double yscale,
 				       FMDirectoryViewIcons *icon_view)
 {
 	NautilusDirectory *directory;
 	char *position_string;
+	char *scale_string;
 
 	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
 	g_assert (container == get_icon_container (icon_view));
@@ -776,5 +791,13 @@ fm_directory_view_icons_icon_moved_cb (GnomeIconContainer *container,
 				    ICON_VIEW_ICON_POSITION_METADATA_KEY, 
 				    NULL, 
 				    position_string);
+
+	scale_string = g_strdup_printf ("%lf,%lf", xscale, yscale);
+	nautilus_file_set_metadata (file,
+				    ICON_VIEW_ICON_SCALE_METADATA_KEY,
+				    NULL,
+				    scale_string);
+
 	g_free (position_string);
+	g_free (scale_string);
 }

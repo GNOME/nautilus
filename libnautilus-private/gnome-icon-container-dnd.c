@@ -529,7 +529,7 @@ gnome_icon_container_receive_dropped_icons (GnomeIconContainer *container,
 		for (p = dnd_info->selection_list; p != NULL; p = p->next) {
 			DndSelectionItem *item;
 			GnomeIconContainerIcon *icon;
-			
+
 			item = p->data;
 			icon = gnome_icon_container_get_icon_by_uri
 				(container, item->uri);
@@ -544,13 +544,17 @@ gnome_icon_container_receive_dropped_icons (GnomeIconContainer *container,
 			
 			if (item->got_icon_position) {
 				double world_x, world_y;
-				
+				double xscale, yscale; 
+				xscale = icon->scale; 
+				yscale = icon->scale;
+				/* FIXME: actual icon scale should be passed, not 1! */
 				gnome_canvas_window_to_world (GNOME_CANVAS (container),
 							      x + item->icon_x,
 							      y + item->icon_y,
 							      &world_x, &world_y);
 				gnome_icon_container_move_icon
-					(container, icon, world_x, world_y, TRUE);
+					(container, icon, world_x, world_y, xscale, yscale, TRUE);   
+
 			}
 			
 			icons_to_select = g_list_prepend (icons_to_select, icon);

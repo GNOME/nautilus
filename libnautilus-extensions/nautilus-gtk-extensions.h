@@ -29,6 +29,9 @@
 
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkwindow.h>
+#include <gtk/gtktypeutils.h>
+#include <gtk/gtkobject.h>
+
 
 #define gtk_marshal_NONE__BOXED_BOXED gtk_marshal_NONE__POINTER_POINTER
 
@@ -48,4 +51,16 @@ void		  nautilus_pop_up_context_menu 		(GtkMenu 		*menu,
 							 gint16			 offset_x,
 							 gint16			 offset_y);
 
+void nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE (GtkObject * object,
+							       GtkSignalFunc func,
+							       gpointer func_data, GtkArg * args);
+
+
+
 #endif /* NAUTILUS_GTK_EXTENSIONS_H */
+
+
+
+
+
+

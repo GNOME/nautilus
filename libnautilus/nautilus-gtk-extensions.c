@@ -212,3 +212,29 @@ nautilus_pop_up_context_menu (GtkMenu	*menu,
 
 	gtk_object_sink (GTK_OBJECT(menu));
 }
+
+
+typedef void (*NautilusGtkSignal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE) (GtkObject * object,
+								       gpointer arg1,
+								       gint arg2,
+								       gint arg3,
+								       gdouble arg4,
+								       gdouble arg5,
+								       gpointer user_data);
+
+void
+nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE (GtkObject * object,
+							  GtkSignalFunc func,
+							  gpointer func_data,
+							  GtkArg * args)
+{
+  NautilusGtkSignal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE rfunc;
+  rfunc = (NautilusGtkSignal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE) func;
+  (*rfunc) (object,
+	    GTK_VALUE_POINTER (args[0]),
+	    GTK_VALUE_INT (args[1]), 
+	    GTK_VALUE_INT (args[2]), 
+	    GTK_VALUE_DOUBLE (args[3]), 
+	    GTK_VALUE_DOUBLE (args[4]), 
+	    func_data);
+}

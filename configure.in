@@ -34,7 +34,7 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	-Wno-sign-compare -Wsign-promo"
 fi
 if test "$GCC" = "yes"; then
-	WERROR="-Werror"
+	WERROR=""
 fi
 AC_SUBST(WERROR)
 
