@@ -1,5 +1,14 @@
 2000-10-16  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 3789 (Zoom In/Zoom Out/Back/Forward have lost
+	their control-key equivalents)
+
+	* src/nautilus-shell-ui.xml: Updated the specification
+	of non-alphanumeric keyboard equivalents to the new
+	required style ("*Control*equal", not "*Control*=").
+
+2000-10-16  John Sullivan  <sullivan@eazel.com>
+
 	* libnautilus-extensions/nautilus-directory-async.c:
 	(mime_list_load): Added a (conditional) line of spam for 
 	when load_directory is called to get the MIME list.

@@ -8,9 +8,9 @@
 	 than one item (usually 1 menuitem and 1 toolitem.
 	-->
 	 
-	<cmd name="Back" accel="*Control*["
+	<cmd name="Back" accel="*Control*bracketleft"
 	 _tip="Go to the previous visited location"/>
-	<cmd name="Forward" accel="*Control*]"
+	<cmd name="Forward" accel="*Control*bracketright"
 	 _tip="Go to the next visited location"/>
 	<cmd name="New Window"
 	 _tip="Open another Nautilus window for the displayed location"/>
@@ -25,9 +25,9 @@
         <cmd name="Clear" sensitive="0"/>
 	<cmd name="Up" accel="*Control*u"
 	 _tip="Go to the location that contains this one"/>
-	<cmd name="Zoom In" accel="*Control*="
+	<cmd name="Zoom In" accel="*Control*equal"
 	 _tip="Show the contents in more detail"/>
-	<cmd name="Zoom Out" accel="*Control*-"
+	<cmd name="Zoom Out" accel="*Control*minus"
 	 _tip="Show the contents in less detail"/>
 	<cmd name="Zoom Normal"
 	 _tip="Show the contents at the normal size"/>
