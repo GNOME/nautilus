@@ -1,3 +1,9 @@
+2004-01-05  Martin Wehner  <martin.wehner@epost.de>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(icon_destroy): Nullify stretch_icon when the icon being
+	pointed to is removed. Fixes bug #128713.
+
 Sun Jan  4 14:39:49 2004  Soeren Sandmann  <sandmann@daimi.au.dk>
 
 	* cut-n-paste-code/gsequence/gsequence.c
