@@ -42,8 +42,6 @@ void  nautilus_file_operations_copy_move               (const GList             
 							GtkWidget                 *parent_view,
 							NautilusCopyCallback       done_callback,
 							gpointer                   done_callback_data);
-void  nautilus_file_operations_move_to_trash           (const GList               *item_uris,
-							GtkWidget                 *parent_view);
 void  nautilus_file_operations_empty_trash             (GtkWidget                 *parent_view);
 void  nautilus_file_operations_new_folder              (GtkWidget                 *parent_view,
 							const char                *parent_dir_uri,
