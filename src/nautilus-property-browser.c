@@ -340,7 +340,7 @@ nautilus_property_browser_init (GtkObject *object)
 	/* add the title label */
 	property_browser->details->title_label = gtk_label_new ("");
 	eel_gtk_label_set_scale (GTK_LABEL (property_browser->details->title_label), PANGO_SCALE_X_LARGE);
-	eel_gtk_label_make_bold (GTK_LABEL (property_browser->details->title_label));
+/*	eel_gtk_label_make_bold (GTK_LABEL (property_browser->details->title_label)); */
  	
 	gtk_widget_show(property_browser->details->title_label);
 	gtk_box_pack_start (GTK_BOX(temp_hbox), property_browser->details->title_label, FALSE, FALSE, 8);
@@ -348,7 +348,6 @@ nautilus_property_browser_init (GtkObject *object)
  	/* add the help label */
 	property_browser->details->help_label = gtk_label_new  ("");
 	gtk_widget_show(property_browser->details->help_label);
-	eel_gtk_label_set_scale (GTK_LABEL (property_browser->details->help_label), PANGO_SCALE_SMALL);
 	gtk_box_pack_end (GTK_BOX (temp_hbox), property_browser->details->help_label, FALSE, FALSE, 8);
  	 	
   	/* add the bottom box to hold the command buttons */
@@ -370,7 +369,6 @@ nautilus_property_browser_init (GtkObject *object)
   
   	/* create the "help" button */
 	temp_button = gtk_button_new_from_stock (GTK_STOCK_HELP);
-	GTK_WIDGET_SET_FLAGS (temp_button, GTK_CAN_DEFAULT);
 
 	gtk_widget_show (temp_button);
 	gtk_box_pack_start (GTK_BOX (property_browser->details->bottom_box), temp_button, FALSE, FALSE, GNOME_PAD_SMALL);
@@ -502,7 +500,6 @@ nautilus_property_browser_destroy (GtkObject *object)
 		main_browser = NULL;
 		
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
-
 }
 
 /* create a new instance */
@@ -1997,7 +1994,8 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	eel_background_set_color (background, BROWSER_BACKGROUND_COLOR);	
 	gtk_container_add (GTK_CONTAINER (property_browser->details->content_container), property_browser->details->content_frame);
 	gtk_widget_show (property_browser->details->content_frame);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (property_browser->details->content_frame), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (property_browser->details->content_frame),
+					GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
 	/* allocate a table to hold the content widgets */
   	property_browser->details->content_table = eel_image_table_new (TRUE);
@@ -2148,7 +2146,8 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		}
 		
 		if (label_text) {
-			gtk_label_set_text_with_mnemonic (GTK_LABEL (property_browser->details->title_label), label_text);
+			gtk_label_set_text_with_mnemonic
+				(GTK_LABEL (property_browser->details->title_label), label_text);
 		}
 		g_free(label_text);
 

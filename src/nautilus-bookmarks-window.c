@@ -30,6 +30,7 @@
 #include <libnautilus/nautilus-undo.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gnome-extensions.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
 #include <gtk/gtkhbbox.h>
@@ -214,13 +215,16 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 
 	bookmarks = list;
 
-	gui = glade_xml_new (GLADEDIR "/nautilus-bookmarks-window.glade", NULL, NULL);
+	gui = eel_glade_get_file (GLADEDIR "/nautilus-bookmarks-window.glade",
+				  NULL, NULL,
+				  "bookmarks_dialog", &window,
+				  "bookmark_tree_view", &bookmark_list_widget,
+				  "bookmark_delete_button", &remove_button,
+				  NULL);
 	if (!gui) {
-		g_warning ("Failed to locate " GLADEDIR "/nautilus-bookmarks-window.glade");
 		return NULL;
 	}
 
-	window = glade_xml_get_widget (gui, "bookmarks_dialog");
 	set_up_close_accelerator (window);
 	nautilus_undo_share_undo_manager (G_OBJECT (window), undo_manager_source);
 
@@ -319,7 +323,6 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 			  G_CALLBACK (on_text_field_focus_out_event), NULL);
 	g_signal_connect (uri_field, "activate",
 			  G_CALLBACK (name_or_uri_field_activate), NULL);
-	remove_button = glade_xml_get_widget (gui, "bookmark_delete_button");
 	g_signal_connect (remove_button, "clicked",
 			  G_CALLBACK (on_remove_button_clicked), NULL);
 

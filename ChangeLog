@@ -1,6 +1,21 @@
 2002-07-02  Michael Meeks  <michael@ximian.com>
 
 	* src/nautilus-bookmarks-window.c
+	(create_bookmarks_window): use new eel_glade_get_file.
+
+	* configure.in: hack libglade out, we use eel now,
+	requires a recent eel.
+
+	* data/browser.xml: add mnemonics
+
+	* src/nautilus-property-browser.c
+	(nautilus_property_browser_init): don't shrink the
+	description text, un-bold description [ makes it
+	look ugly, but hey ].
+
+2002-07-02  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-bookmarks-window.c
 	(repopulate): remove cut and paste complexity.
 
 2002-07-01  Michael Meeks  <michael@ximian.com>
