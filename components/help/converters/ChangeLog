@@ -1,3 +1,8 @@
+2001-08-25  Philip Langdale  <philipl@mail.utexas.edu>
+
+	* gnome-info2html2/main.c: Duplicated INFOPATH before passing
+	to strtok to prevent actual env var getting corrupted.
+
 2001-08-21  Philip Langdale  <philipl@mail.utexas.edu>
 
         * gnome-info2html2/main.c: Fixed bug preventing INFOPATH being

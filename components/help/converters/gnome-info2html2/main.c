@@ -77,7 +77,9 @@ main(int argc, char **argv)
 	for(n = 0; args[n]; n++) /* */;
 	if(n == 1 && !file_exists(args[0]))
 	  {
-	    char *ctmp, *infopath = g_getenv("INFOPATH");
+	    /* As strtok destroys the string it parses and g_getenv returns a pointer to
+	       the actually env var, we have to duplicate the var before parsing it. */
+	    char *ctmp, *infopath = g_strdup(g_getenv("INFOPATH"));
 	    char *dirs[64], *ext = NULL;
 	    int ndirs;
 	    char buf[PATH_MAX];
