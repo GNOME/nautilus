@@ -102,6 +102,10 @@ gboolean		nautilus_drag_can_accept_item 		(NautilusFile *drop_target_item,
 			       					 const char *item_uri);
 gboolean		nautilus_drag_can_accept_items 		(NautilusFile *drop_target_item,
 								 const GList *items);
+void			nautilus_drag_default_drop_action	(const char *target_uri,
+								 const GList *items,
+								 int *default_action,
+								 int *non_default_action);
 
 gboolean 		nautilus_drag_drag_data_get 		(GtkWidget *widget,
 								 GdkDragContext *context,
@@ -110,6 +114,7 @@ gboolean 		nautilus_drag_drag_data_get 		(GtkWidget *widget,
 								 guint32 time,
 								 gpointer container_context,
 								 NautilusDragEachSelectedItemIterator each_selected_item_iterator);
-int 			nautilus_drag_modifier_based_action 	(void);
+int 			nautilus_drag_modifier_based_action 	(int default_action, 
+								 int non_default_action);
 
 #endif

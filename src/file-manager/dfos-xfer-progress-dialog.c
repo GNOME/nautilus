@@ -19,9 +19,13 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Author: Ettore Perazzoli <ettore@gnu.org> */
+   Authors: 
+   	Ettore Perazzoli <ettore@gnu.org> 
+   	Pavel Cisler <pavel@eazel.com> 
+  */
 
 #include <config.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include "dfos-xfer-progress-dialog.h"
 
 #include <gnome.h>
@@ -79,49 +83,61 @@ trim_string (const char *string,
 }
 
 static void
-set_text_trimmed (GtkLabel *label,
-		  const char *text,
-		  const char *trimmable_text,
-		  guint max_width)
+set_text_unescaped_trimmed (GtkLabel *label,
+			    const char *text,
+			    const char *trimmable_text,
+			    guint max_width)
 {
 	GdkFont *font;
+	char *unescaped_text;
 	char *trimmed_text;
+	char *unescaped_trimmable_text;
 	char *s;
 	guint text_width;
 	guint trimmable_text_width;
 
 	font = GTK_WIDGET (label)->style->font;
 
-	if (text != NULL)
-		text_width = gdk_string_width (font, text);
-	else
+	trimmed_text = NULL;
+	unescaped_text = NULL;
+	unescaped_trimmable_text = NULL;
+	
+	if (text) {
+		unescaped_text = gnome_vfs_unescape_string_for_display (text);
+	}
+	if (trimmable_text) {
+		unescaped_trimmable_text = gnome_vfs_unescape_string_for_display (trimmable_text);
+	}
+	
+	if (unescaped_text != NULL) {
+		text_width = gdk_string_width (font, unescaped_text);
+	} else {
 		text_width = 0;
+	}
 
-	if (trimmable_text != NULL)
-		trimmable_text_width = gdk_string_width (font, trimmable_text);
+	if (unescaped_trimmable_text != NULL)
+		trimmable_text_width = gdk_string_width (font, unescaped_trimmable_text);
 	else
 		trimmable_text_width = 0;
 
 	if (text_width + trimmable_text_width <= max_width) {
-		s = g_strconcat (text, trimmable_text, NULL);
-		gtk_label_set_text (GTK_LABEL (label), s);
-		g_free (s);
-		return;
+		s = g_strconcat (unescaped_text, unescaped_trimmable_text, NULL);
+	} else {
+
+		trimmed_text = trim_string (unescaped_trimmable_text,
+					    font,
+					    max_width - text_width,
+					    trimmable_text_width);
+		s = g_strconcat (unescaped_text, trimmed_text, NULL);
 	}
 
-	trimmed_text = trim_string (trimmable_text,
-				    font,
-				    max_width - text_width,
-				    trimmable_text_width);
-	s = g_strconcat (text, trimmed_text, NULL);
-
 	gtk_label_set_text (GTK_LABEL (label), s);
-
 	g_free (s);
 	g_free (trimmed_text);
+	g_free (unescaped_text);
+	g_free (unescaped_trimmable_text);
 }
 
-
 /* GnomeDialog signals.  */
 
 /* This is just to make sure the dialog is not closed without explicit
@@ -135,7 +151,6 @@ do_close (GnomeDialog *dialog)
 	return FALSE;
 }
 
-
 /* GtkObject methods.  */
 
 static void
@@ -148,7 +163,6 @@ destroy (GtkObject *object)
 	g_free (dialog->operation_string);
 }
 
-
 /* Initialization.  */
 
 static GtkWidget *
@@ -215,7 +229,6 @@ class_init (DFOSXferProgressDialogClass *class)
 	dialog_class->close = do_close;
 }
 
-
 /* Public functions.  */
 
 guint
@@ -320,15 +333,25 @@ dfos_xfer_progress_dialog_new_file (DFOSXferProgressDialog *dialog,
 	gtk_label_set_text (GTK_LABEL (dialog->operation_label), s);
 	g_free (s);
 
-	set_text_trimmed (GTK_LABEL (dialog->source_label),
-			  dialog->from_prefix, source_uri,
-			  DIALOG_WIDTH);
+	set_text_unescaped_trimmed (GTK_LABEL (dialog->source_label),
+		dialog->from_prefix, source_uri, DIALOG_WIDTH);
 
 	if (dialog->to_prefix != NULL && dialog->target_label != NULL)
-		set_text_trimmed (GTK_LABEL (dialog->target_label),
-				  dialog->to_prefix, target_uri,
-				  DIALOG_WIDTH);
+		set_text_unescaped_trimmed (GTK_LABEL (dialog->target_label),
+			dialog->to_prefix, target_uri, DIALOG_WIDTH);
 
+
+	update (dialog);
+}
+
+void
+dfos_xfer_progress_dialog_clear (DFOSXferProgressDialog *dialog)
+{
+	gtk_label_set_text (GTK_LABEL (dialog->source_label), "");
+	gtk_label_set_text (GTK_LABEL (dialog->target_label), "");
+
+	dialog->files_total = 0;
+	dialog->bytes_total = 0;
 
 	update (dialog);
 }
@@ -346,7 +369,6 @@ dfos_xfer_progress_dialog_update (DFOSXferProgressDialog *dialog,
 	update (dialog);
 }
 
-
 void
 dfos_xfer_progress_dialog_freeze (DFOSXferProgressDialog *dialog)
 {

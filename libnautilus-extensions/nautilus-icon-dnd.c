@@ -590,10 +590,10 @@ static void
 handle_nonlocal_move (NautilusIconContainer *container,
 		      GdkDragContext *context,
 		      int x, int y,
-		      NautilusIcon *drop_target_icon)
+		      const char *target_uri,
+		      gboolean icon_hit)
 {
 	GList *source_uris, *p;
-	char *target_uri;
 	GdkPoint *source_item_locations;
 	int i;
 
@@ -609,7 +609,7 @@ handle_nonlocal_move (NautilusIconContainer *container,
 	source_uris = g_list_reverse (source_uris);
 	
 	source_item_locations = NULL;
-	if (drop_target_icon != NULL) {
+	if (!icon_hit) {
 		/* Drop onto a container. Pass along the item points to allow placing
 		 * the items in their same relative positions in the new container.
 		 */
@@ -623,15 +623,7 @@ handle_nonlocal_move (NautilusIconContainer *container,
 			source_item_locations[i].y = ((DragSelectionItem *)p->data)->icon_y;
 		}
 	}
-	
-	/* get the URI of either the item or the container we hit */
-	if (drop_target_icon != NULL) {
-		target_uri = nautilus_icon_container_get_icon_uri
-			(container, drop_target_icon);
-	} else {
-		target_uri = get_container_uri (container);
-	}
-	
+		
 	/* start the copy */
 	gtk_signal_emit_by_name (GTK_OBJECT (container), "move_copy_items",
 				 source_uris,
@@ -641,20 +633,19 @@ handle_nonlocal_move (NautilusIconContainer *container,
 				 x, y);
 	g_list_free (source_uris);
 	g_free (source_item_locations);
-	g_free (target_uri);
 }
 
-static void
-nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
-					       GdkDragContext *context,
-					       int x, int y)
+static char *
+nautilus_icon_container_find_drop_target (NautilusIconContainer *container,
+					  GdkDragContext *context,
+					  int x, int y,
+					  gboolean *icon_hit)
 {
 	NautilusIcon *drop_target_icon;
-	gboolean local_move_only;
 	double world_x, world_y;
-	
+
 	if (container->details->dnd_info->drag_info.selection_list == NULL) {
-		return;
+		return NULL;
 	}
 
   	gnome_canvas_window_to_world (GNOME_CANVAS (container),
@@ -679,8 +670,38 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 		drop_target_icon = NULL;
 	}
 
+	if (!drop_target_icon) {
+		*icon_hit = FALSE;
+		return get_container_uri (container);
+	}
+
+	
+	*icon_hit = TRUE;
+	return nautilus_icon_container_get_icon_uri (container, drop_target_icon);
+}
+
+static void
+nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
+					       GdkDragContext *context,
+					       int x, int y)
+{
+	char *drop_target;
+	gboolean local_move_only;
+	double world_x, world_y;
+	gboolean icon_hit;
+	
+	if (container->details->dnd_info->drag_info.selection_list == NULL) {
+		return;
+	}
+
+  	gnome_canvas_window_to_world (GNOME_CANVAS (container),
+				      x, y, &world_x, &world_y);
+
+	drop_target = nautilus_icon_container_find_drop_target (container, 
+		context, x, y, &icon_hit);
+
 	local_move_only = FALSE;
-	if (drop_target_icon == NULL && context->action == GDK_ACTION_MOVE) {
+	if (!icon_hit && context->action == GDK_ACTION_MOVE) {
 		/* we can just move the icon positions if the move ended up in
 		 * the item's parent container
 		 */
@@ -691,11 +712,42 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 	if (local_move_only) {
 		handle_local_move (container, world_x, world_y);
 	} else {
-		handle_nonlocal_move (container, context, x, y, drop_target_icon);
+		handle_nonlocal_move (container, context, x, y, drop_target, icon_hit);
 	}
 
+	g_free (drop_target);
 	nautilus_drag_destroy_selection_list (container->details->dnd_info->drag_info.selection_list);
 	container->details->dnd_info->drag_info.selection_list = NULL;
+}
+
+static void
+nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
+					 GdkDragContext *context,
+					 int x, int y,
+					 int *default_action,
+					 int *non_default_action)
+{
+	char *drop_target;
+	gboolean icon_hit;
+
+	if (container->details->dnd_info->drag_info.selection_list == NULL) {
+		*default_action = 0;
+		*non_default_action = 0;
+		return;
+	}
+
+	drop_target = nautilus_icon_container_find_drop_target (container,
+		context, x, y, &icon_hit);
+
+	if (!drop_target) {
+		*default_action = 0;
+		*non_default_action = 0;
+		return;
+	}
+	
+	nautilus_drag_default_drop_action (drop_target, 
+		container->details->dnd_info->drag_info.selection_list, default_action, non_default_action);
+	g_free (drop_target);
 }
 
 static void
@@ -927,11 +979,22 @@ drag_motion_callback (GtkWidget *widget,
 		      int x, int y,
 		      guint32 time)
 {
+	int default_action, non_default_action;
+
 	nautilus_icon_container_ensure_drag_data (NAUTILUS_ICON_CONTAINER (widget), context, time);
 	nautilus_icon_container_position_shadow (NAUTILUS_ICON_CONTAINER (widget), x, y);
 	nautilus_icon_dnd_update_drop_target (NAUTILUS_ICON_CONTAINER (widget), context, x, y);
 
-	gdk_drag_status (context, nautilus_drag_modifier_based_action (), time);
+	/* Find out what the drop actions are based on our drag selection and
+	 * the drop target.
+	 */
+	nautilus_icon_container_get_drop_action (NAUTILUS_ICON_CONTAINER (widget), context, x, y,
+		&default_action, &non_default_action);
+
+	/* set the right drop action, choose based on modifier key state
+	 */
+	gdk_drag_status (context, nautilus_drag_modifier_based_action (default_action, 
+		non_default_action), time);
 
 	return TRUE;
 }

@@ -27,6 +27,7 @@
 
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -242,6 +243,37 @@ nautilus_drag_can_accept_items (NautilusFile *drop_target_item,
 	return TRUE;		
 }
 
+void
+nautilus_drag_default_drop_action (const char *target_uri_string, const GList *items,
+	int *default_action, int *non_default_action)
+{
+	gboolean same_fs;
+	GnomeVFSURI *target_uri;
+	GnomeVFSURI *dropped_uri;
+	
+	if (target_uri_string == NULL) {
+		*default_action = 0;
+		*non_default_action = 0;
+		return;
+	}
+
+	target_uri = gnome_vfs_uri_new (target_uri_string);
+
+	/* Compare the first dropped uri with the target uri for same fs match. */
+	dropped_uri = gnome_vfs_uri_new (((DragSelectionItem *)items->data)->uri);
+	same_fs = TRUE;
+	gnome_vfs_check_same_fs_uris (target_uri, dropped_uri, &same_fs);
+	gnome_vfs_uri_unref (dropped_uri);
+	gnome_vfs_uri_unref (target_uri);
+	
+	if (same_fs) {
+		*default_action = GDK_ACTION_MOVE;
+		*non_default_action = GDK_ACTION_COPY;
+	} else {
+		*default_action = GDK_ACTION_COPY;
+		*non_default_action = GDK_ACTION_MOVE;
+	}
+}
 
 /* Encode a "x-special/gnome-icon-list" selection.
    Along with the URIs of the dragged files, this encodes
@@ -311,17 +343,17 @@ nautilus_drag_drag_data_get (GtkWidget *widget,
 }
 
 int
-nautilus_drag_modifier_based_action ()
+nautilus_drag_modifier_based_action (int default_action, int non_default_action)
 {
 	GdkModifierType modifiers;
 	gdk_window_get_pointer (NULL, NULL, NULL, &modifiers);
 	
 	if ((modifiers & GDK_CONTROL_MASK) != 0) {
-		return GDK_ACTION_COPY;
+		return non_default_action;
 	} else if ((modifiers & GDK_MOD1_MASK) != 0) {
 		return GDK_ACTION_LINK;
 	}
 
-	return GDK_ACTION_MOVE;
+	return default_action;
 }
 

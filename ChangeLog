@@ -1,3 +1,47 @@
+2000-07-04  Pavel Cisler <pavel@eazel.com>
+
+	* src/file-manager/dfos-xfer-progress-dialog.c:
+	* src/file-manager/dfos-xfer-progress-dialog.h:
+	(handle_xfer_ok),
+	(fs_xfer), (fs_move_to_trash), (fs_delete), (fs_empty_trash):
+	* src/file-manager/dfos-xfer-progress-dialog.c:
+	(dfos_xfer_progress_dialog_clear):
+	Fixed 1215 - inter-volume move now removes the source files.
+	Made it so that when an inter-volume copy has ended and source files
+	are removed, the progress dialog updates. Added a new cleanup phase
+	string.
+
+	* src/file-manager/dfos-xfer-progress-dialog.c:
+	(dfos_xfer_progress_dialog_new_file),
+	(set_text_unescaped_trimmed):
+	Added code to unescape paths in progress dialogs.
+	
+	* src/file-manager/dfos-xfer.c:
+	* src/file-manager/dfos-xfer.h:
+	(nautilus_convert_to_unescaped_string_for_display),
+	(handle_xfer_vfs_error), (handle_xfer_overwrite):
+	Added code to unescape paths in error dialogs.
+	
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_default_drop_action),
+	(nautilus_drag_modifier_based_action):
+	* libnautilus-extensions/nautilus-drag.h:
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(handle_nonlocal_move), (nautilus_icon_container_find_drop_target),
+	(nautilus_icon_container_receive_dropped_icons),
+	(nautilus_icon_container_get_drop_action), (drag_motion_callback):
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_drag_motion):
+	Reworked a whole lot to allow me to update the default copy action
+	based on the drag&drop context - an inter-volume drag&drop will now
+	suggest a copy as a default.
+	Moved out more sharable code into nautilus-drag.c.
+	Added a common routine for figuring out the drop target.
+	
+	* src/file-manager/fm-directory-view.c: (fm_directory_is_trash),
+	(fm_directory_can_move_to_trash):
+	Fixed a bunch of asserts caused by unreffing NULL uris.
+
 2000-07-04  Michael Meeks  <michael@helixcode.com>
 
 	* libnautilus-extensions/bonobo-stream-vfs.c (vfs_read): update

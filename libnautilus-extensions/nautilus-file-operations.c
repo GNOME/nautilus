@@ -42,12 +42,12 @@ typedef enum {
 	XFER_DELETE
 } XferKind;
 
-
 typedef struct XferInfo {
 	GnomeVFSAsyncHandle *handle;
 	GtkWidget *progress_dialog;
 	const char *operation_name;
 	const char *preparation_name;
+	const char *cleanup_name;
 	GnomeVFSXferErrorMode error_mode;
 	GnomeVFSXferOverwriteMode overwrite_mode;
 	GtkWidget *parent_view;
@@ -74,6 +74,19 @@ xfer_info_new (GnomeVFSAsyncHandle *handle,
 
 	return info;
 }
+
+char *
+nautilus_convert_to_unescaped_string_for_display  (char *escaped)
+{
+	char *result;
+	if (!escaped) {
+		return NULL;
+	}
+	result = gnome_vfs_unescape_string_for_display (escaped);
+	g_free (escaped);
+	return result;
+}
+
 
 static void
 xfer_dialog_clicked_callback (DFOSXferProgressDialog *dialog,
@@ -153,6 +166,7 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 
 	case GNOME_VFS_XFER_PHASE_COPYING:
 		if (xfer_info->progress_dialog != NULL) {
+				
 			if (progress_info->bytes_copied == 0) {
 				dfos_xfer_progress_dialog_new_file
 					(DFOS_XFER_PROGRESS_DIALOG
@@ -181,6 +195,18 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 		}
 		return TRUE;
 
+	case GNOME_VFS_XFER_PHASE_CLEANUP:
+		if (xfer_info->progress_dialog != NULL) {
+			dfos_xfer_progress_dialog_clear(
+				DFOS_XFER_PROGRESS_DIALOG
+					 (xfer_info->progress_dialog));
+			dfos_xfer_progress_dialog_set_operation_string
+				(DFOS_XFER_PROGRESS_DIALOG
+					 (xfer_info->progress_dialog),
+					 xfer_info->cleanup_name);
+		}
+		return TRUE;
+
 	case GNOME_VFS_XFER_PHASE_COMPLETED:
 		nautilus_file_changes_consume_changes (TRUE);
 		if (xfer_info->progress_dialog != NULL) {
@@ -204,15 +230,18 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 
 	int result;
 	char *text;
+	char *unescaped_name;
 
 	switch (xfer_info->error_mode) {
 	case GNOME_VFS_XFER_ERROR_MODE_QUERY:
 
+		unescaped_name = gnome_vfs_unescape_string_for_display (progress_info->source_name);
 		/* transfer error, prompt the user to continue or stop */
 		text = g_strdup_printf ( _("Error %s copying file %s.\n"
 			"Would you like to continue?"), 
 			gnome_vfs_result_to_string (progress_info->vfs_status),
-			progress_info->source_name);
+			unescaped_name);
+		g_free (unescaped_name);
 		result = nautilus_simple_dialog
 			(xfer_info->parent_view, text, 
 			 _("File copy error"),
@@ -247,10 +276,13 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 	/* transfer conflict, prompt the user to replace or skip */
 	int result;
 	char *text;
+	char *unescaped_name;
 
+	unescaped_name = gnome_vfs_unescape_string_for_display (progress_info->target_name);
 	text = g_strdup_printf ( _("File %s already exists.\n"
 		"Would you like to replace it?"), 
-		progress_info->target_name);
+		unescaped_name);
+	g_free (unescaped_name);
 
 	if (progress_info->duplicate_count == 1) {
 		/* we are going to only get one duplicate alert, don't offer
@@ -358,7 +390,6 @@ sync_xfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 	return 1;
 }
 
-
 void
 dfos_xfer (DFOS *dfos,
 	   const gchar *source_directory_uri,
@@ -452,6 +483,7 @@ fs_xfer (const GList *item_uris,
 	XferInfo *xfer_info;
 	char *target_dir_uri_text;
 	GnomeVFSResult result;
+	gboolean same_fs;
 	
 	g_assert (item_uris != NULL);
 	
@@ -482,6 +514,12 @@ fs_xfer (const GList *item_uris,
 		move_options |= GNOME_VFS_XFER_REMOVESOURCE;
 	}
 
+	same_fs = TRUE;
+	if (source_dir_uri != NULL && target_dir_uri != NULL) {
+		gnome_vfs_check_same_fs_uris (source_dir_uri, 
+			target_dir_uri,	&same_fs);
+	}
+	
 	/* set up the copy/move parameters */
 	xfer_info = g_new (XferInfo, 1);
 	xfer_info->parent_view = view;
@@ -490,14 +528,17 @@ fs_xfer (const GList *item_uris,
 	if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) {
 		xfer_info->operation_name = _("Moving");
 		xfer_info->preparation_name =_("Preparing To Move...");
+		xfer_info->cleanup_name =_("Finishing Move...");
 		xfer_info->kind = XFER_MOVE;
 		/* Do an arbitrary guess that an operation will take very little
 		 * time and the progress shouldn't be shown.
 		 */
-		xfer_info->show_progress_dialog =  g_list_length ((GList *)item_uris) > 20;
+		xfer_info->show_progress_dialog = 
+			!same_fs || g_list_length ((GList *)item_uris) > 20;
 	} else {
 		xfer_info->operation_name = _("Copying");
 		xfer_info->preparation_name =_("Preparing To Copy...");
+		xfer_info->cleanup_name =_("Finishing Copy...");
 		xfer_info->kind = XFER_COPY;
 		/* always show progress during copy */
 		xfer_info->show_progress_dialog = TRUE;
@@ -574,7 +615,9 @@ fs_xfer (const GList *item_uris,
 
 	g_free (target_dir_uri_text);
 
-	gnome_vfs_uri_unref (trash_dir_uri);
+	if (trash_dir_uri != NULL) {
+		gnome_vfs_uri_unref (trash_dir_uri);
+	}
 	gnome_vfs_uri_unref (target_dir_uri);
 	gnome_vfs_uri_unref (source_dir_uri);
 	nautilus_g_list_free_deep (item_names);
@@ -681,7 +724,8 @@ fs_move_to_trash (const GList *item_uris, GtkWidget *parent_view)
 				_("OK"), NULL, NULL);			
 			bail = TRUE;
 		} else if (gnome_vfs_uri_is_parent (uri, trash_dir_uri, TRUE)) {
-			item_name = gnome_vfs_uri_extract_short_name (uri);
+			item_name = nautilus_convert_to_unescaped_string_for_display 
+				(gnome_vfs_uri_extract_short_name (uri));
 			text = g_strdup_printf ( _("You cannot throw \"%s\" "
 				"into the Trash."), item_name);
 
@@ -716,6 +760,7 @@ fs_move_to_trash (const GList *item_uris, GtkWidget *parent_view)
 
 		xfer_info->operation_name = _("Moving to Trash");
 		xfer_info->preparation_name =_("Preparing to Move to Trash...");
+		xfer_info->cleanup_name =_("Finishing Move to Trash...");
 		xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
 		xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
 		xfer_info->kind = XFER_MOVE_TO_TRASH;
@@ -756,6 +801,7 @@ fs_delete (const GList *item_uris, GtkWidget *parent_view)
 	xfer_info->show_progress_dialog = TRUE;
 	xfer_info->operation_name = _("Deleting");
 	xfer_info->preparation_name =_("Preparing to Delete...");
+	xfer_info->cleanup_name =_("Finishing Delete...");
 	xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
 	xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
 	xfer_info->kind = XFER_DELETE;
@@ -801,6 +847,7 @@ fs_empty_trash (GtkWidget *parent_view)
 		xfer_info->show_progress_dialog = TRUE;
 		xfer_info->operation_name = _("Emptying the Trash");
 		xfer_info->preparation_name =_("Preparing to Empty the Trash...");
+		xfer_info->cleanup_name =_("Finishing Emptying the Trash...");
 		xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
 		xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
 		xfer_info->kind = XFER_EMPTY_TRASH;

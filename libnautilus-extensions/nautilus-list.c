@@ -2463,7 +2463,12 @@ nautilus_list_drag_motion (GtkWidget *widget, GdkDragContext *context,
 {
 	NautilusList *list;
 
-	gdk_drag_status (context, nautilus_drag_modifier_based_action (), time);
+	/* FIXME:
+	 * pass in the drop action default and non-default values here based on
+	 * the drag selection and drop target
+	 */
+	gdk_drag_status (context, nautilus_drag_modifier_based_action (GDK_ACTION_MOVE,
+		GDK_ACTION_COPY), time);
 
 	g_assert (NAUTILUS_IS_LIST (widget));
 	list = NAUTILUS_LIST (widget);

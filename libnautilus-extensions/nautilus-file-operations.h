@@ -52,4 +52,9 @@ void 	fs_new_folder 	(GtkWidget *parent_view,
 			 gpointer data);
 void	fs_delete 	(const GList *item_uris, GtkWidget *parent_view);
 
+
+/* Prepare an escaped string for display. Unescapes a string in place.
+ * Frees the original string.
+ */
+char *nautilus_convert_to_unescaped_string_for_display  (char *escaped);
 #endif /* DFOS_XFER_H */

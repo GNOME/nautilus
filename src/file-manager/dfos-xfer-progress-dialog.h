@@ -86,6 +86,9 @@ void		 dfos_xfer_progress_dialog_set_operation_string
 						(DFOSXferProgressDialog *dialog,
 						 const char *operation_string);
 
+void		 dfos_xfer_progress_dialog_clear 
+						(DFOSXferProgressDialog *dialog);
+
 void		 dfos_xfer_progress_dialog_new_file
 						(DFOSXferProgressDialog *dialog,
 						 const char *source_uri,
