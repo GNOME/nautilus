@@ -36,7 +36,7 @@ hyperbola_SOURCES=		\
 	hyperbola-nav-index.c	\
 	hyperbola-nav-search.c
 
-mapdatadir=$(datadir)/hyperbola/maps
+mapdatadir=$(datadir)/nautilus/components/hyperbola/maps
 mapdata_DATA=pages.map
 
 module_flags = -export_dynamic -avoid-version
