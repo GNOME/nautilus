@@ -1,3 +1,15 @@
+2000-09-10  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 1266, application and component lists should
+	be sorted somehow.
+
+	GnomeVFS sorts these list alphabetically now.
+	
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_short_list_applications_for_uri),
+	(nautilus_mime_get_all_applications_for_uri):
+	Lists are returned sorted alphabetically.
+
 2000-09-10  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/hardware/nautilus-hardware-view.c:

@@ -468,7 +468,6 @@ nautilus_mime_get_short_list_applications_for_uri (const char *uri)
 
 	CORBA_exception_free (&ev);
 
-	/* FIXME bugzilla.eazel.com 1266: should sort alphabetically by name or something */
 	return result;
 }
 
@@ -621,8 +620,6 @@ nautilus_mime_get_all_applications_for_uri (const char *uri)
 			}
 		}
 	}
-
-	/* FIXME bugzilla.eazel.com 1266: should sort alphabetically by name or something */
 
 	g_free (mime_type);
 	return result;
