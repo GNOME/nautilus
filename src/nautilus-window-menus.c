@@ -48,10 +48,10 @@
 #include <eel/eel-xml-extensions.h>
 #include <libxml/parser.h>
 #include <gtk/gtkmain.h>
+#include <gtk/gtkaboutdialog.h>
 #include <libgnome/gnome-help.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
-#include <libgnomeui/gnome-about.h>
 #include <libgnomeui/gnome-help.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
@@ -362,7 +362,7 @@ action_about_nautilus_callback (GtkAction *action,
 				gpointer user_data)
 {
 	static GtkWidget *about = NULL;
-	const char *authors[] = {
+	const gchar *authors[] = {
 		"Alexander Larsson",
 		"Ali Abdin",
 		"Anders Carlsson",
@@ -398,50 +398,40 @@ action_about_nautilus_callback (GtkAction *action,
 		"Susan Kare",
 		NULL
 	};
-	const char *copyright;
-	const char *translator_credits;
-	const char *locale;
+	const gchar *documenters[] = {
+		"GNOME Documentation Team",
+		"Sun Microsystem",
+		NULL
+	};
 
 	if (about == NULL) {
-		/* We could probably just put a translation in en_US
-		 * instead of doing this mess, but I got this working
-		 * and I don't feel like fiddling with it any more.
-		 */
-		locale = setlocale (LC_MESSAGES, NULL);
-		if (locale == NULL
-		    || strcmp (locale, "C") == 0
-		    || strcmp (locale, "POSIX") == 0
-		    || strcmp (locale, "en_US") == 0) {
-			/* The copyright character here is in UTF-8 */
-			copyright = "Copyright \xC2\xA9 1999-2001 Eazel, Inc.";
-		} else {
-			/* Localize to deal with issues in the copyright
-			 * symbol characters -- do not translate the company
-			 * name, please.
-			 */
-			copyright = _("Copyright (C) 1999-2001 Eazel, Inc.");
-		}
+ 
+		about = gtk_about_dialog_new ();
 
 		/* Translators should localize the following string
 		 * which will be displayed at the bottom of the about
 		 * box to give credit to the translator(s).
 		 */
-		translator_credits = (strcmp (_("Translator Credits"), "Translator Credits") == 0) ?
-			NULL : _("Translator Credits");
 		
-		about = gnome_about_new (_("Nautilus"),
-					 VERSION,
-					 copyright,
-					 _("Nautilus is a graphical shell "
+		g_object_set (about,
+			      "name", _("Nautilus"),
+			      "version", VERSION,
+			      "comments", _("Nautilus is a graphical shell "
 					   "for GNOME that makes it "
 					   "easy to manage your files "
 					   "and the rest of your system."),
-					 authors,
-					 NULL,
-					 translator_credits,
-					 NULL);
+			      "copyright", _("Copyright \xC2\xA9 2002-2005 Red Hat, Inc\n"
+					     "Copyright \xC2\xA9 2002-2004 Novell, Inc\n"
+					     "Copyright \xC2\xA9 1999-2001 Eazel, Inc.\n"
+					     "And all the other authors"),
+			      "authors", authors,
+			      "documenters", documenters,
+			      "translator-credits", _("translator-credits"),
+			      "logo-icon-name", "gnome-starthere",
+			      NULL);
+
 		gtk_window_set_transient_for (GTK_WINDOW (about), GTK_WINDOW (user_data));
-		
+
 		eel_add_weak_pointer (&about);
 	}
 	
