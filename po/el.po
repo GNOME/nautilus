@@ -14,12 +14,13 @@
 # simos: 1853 messages, 26Feb2001, 79 messages remaining.
 # simos: 1870 messages, 27Feb2001, 79 messages remaining.
 # simos: 1926 messages, 01Mar2001, 86 messages remaining.
+# simos: 2009 messages, 02Mar2001, full translation.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 0.8.3\n"
 "POT-Creation-Date: 2001-03-02 18:37+0000\n"
-"PO-Revision-Date: 2001-03-02 20:07:53+0900\n"
+"PO-Revision-Date: 2001-03-02 23:26:46+0900\n"
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
@@ -7749,6 +7750,10 @@ msgid ""
 "system.  Your computer is currently creating that index.  Content searches "
 "will be available when the index is complete."
 msgstr ""
+"Για να κάνετε μια αναζήτηση περιεχομένου, το Ευρετήριο απαιτεί ένα πίνακα των "
+"περιεχομένων του συστήματός σας. Ο υπολογιστή σας δημιουργεί αυτή τη στιγμή αυτό "
+"το ευρετήριο. Οι αναζητήσεις περιεχομένου θα είναι διαθέσιμες όταν το ευρετήριο "
+"ολοκληρωθεί. "
 
 #: src/file-manager/fm-search-list-view.c:326
 msgid ""
@@ -7756,18 +7761,27 @@ msgid ""
 "index can't be created right now. When an index is not available, searches "
 "will take several minutes."
 msgstr ""
+"Για να κάνετε μια γρήγορη αναζήτηση, το Ευρετήριο απαιτεί ένα πίνακα των "
+"αρχείων του συστήματός σας. Ένας τέτοιος πίνακας δε μπορεί να δημιουργηθεί "
+"αυτή τη στιγμή. Χωρίς πίνακα, η αναζήτηση μπορεί να διαρκέσει μερικά λεπτά."
 
 #: src/file-manager/fm-search-list-view.c:332
 msgid ""
 "To do a content search, Find requires an index of the content on your "
 "system.  An index can't be created right now."
 msgstr ""
+"Για να κάνετε μια αναζήτηση περιεχομένου, το Ευρετήριο απαιτεί ένα πίνακα των "
+"περιεχομένων του συστήματός σας. Ο υπολογιστής σας δεν έχει τέτοιο πίνακα αυτή "
+"τη στιγμή. "
 
 #: src/file-manager/fm-search-list-view.c:341
 msgid ""
 "The program that creates an index is not set up correctly.  You can create "
 "an index by hand by running \"medusa-indexd\" as root on the command line."
 msgstr ""
+"Το πρόγραμμα που δημιουργεί τον πίνακα δεν είναι ρυθμίσμένο σωστά. Μπορείτε "
+"να δημιουργήσετε ένα πίνακα χειρωνακτικά εκτελώντας \"medusa-indexd\" ως "
+"διαχειριστής, από την γραμμή εντολών."
 
 #. It is not necessary to translate this text just yet; it has not been
 #. edited yet, and will be replaced by a final copy in a few days.
@@ -7778,6 +7792,9 @@ msgid ""
 "Your system administrator has disabled fast search on your computer, so no "
 "index is available."
 msgstr ""
+"Για να κάνετε μια γρήγορη αναζήτηση, το Ευρετήριο απαιτεί ένα πίνακα των "
+"αρχείων του συστήματός σας. Ο διαχειριστής σας έχει απενεργοποιήσει τη γρήγορη "
+"αναζήτηση στον υπολογιστή σας, οπότε δεν υπάρχει διαθέσιμος πίνακας. "
 
 #: src/file-manager/fm-search-list-view.c:364
 msgid "Fast searches are not available on your computer"
@@ -7789,6 +7806,9 @@ msgid ""
 "To do a fast search, Find requires an index of the files on your system. "
 "Fast search is disabled in your Search preferences, so no index is available."
 msgstr ""
+"Για να κάνετε μια γρήγορη αναζήτηση, το Ευρετήριο απαιτεί ένα πίνακα των "
+"αρχείων του συστήματός σας. Η γρήγορη αναζήτηση είναι απενεργοποιημένη στις "
+"προτιμήσεις Αναζήτησης, οπότε δεν υπάρχει διαθέσιμος πίνακας. "
 
 #: src/file-manager/fm-search-list-view.c:376
 #: src/file-manager/nautilus-indexing-info.c:345
@@ -7804,6 +7824,10 @@ msgid ""
 "checkbox. An index will be generated while your computer is idle, so your "
 "index won't be available immediately."
 msgstr ""
+"Για να ενεργοποιήσετε τη γρήγορη αναζήτηση, ανοίξτε το μενού Προτιμήσεων και "
+"επιλέξτε Προτιμήσεις. Έπειτα, επιλέξτε Προτιμήσεις Αναζήτησης και σημειώστε "
+"τη γραμμή Ενεργοποίηση Γρήγορων Αναζητήσεων. Ένας πίνακας θα δημιουργηθεί όταν "
+"ο υπολογιστής σας είναι ανενεργός, οπότε ο πίνακας δεν θα είναι διαθέσιμος αμέσως."
 
 #: src/file-manager/fm-search-list-view.c:551
 msgid "Where"
@@ -7839,6 +7863,8 @@ msgid ""
 "Nautilus found more search results than it can display. Some matching items "
 "will not be displayed. "
 msgstr ""
+"Ο Ναυτίλος βρήκε περισσότερα αποτελέσματα αναζήτησης από αυτά που μπορεί να "
+"εμφανίσει. Μερικά αποτελέσματα δε θα εμφανιστούν. "
 
 #
 #: src/file-manager/fm-search-list-view.c:725
@@ -7884,6 +7910,8 @@ msgstr "Αρχικοποίηση Παρασκηνίου Επιφάνειας Εργασίας"
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
+"Εμφάνιση παραθύρου που σας επιτρέπει να καθορίσετε σχήμα παρασκηνίου ή χρώμα "
+"της επιφάνειας εργασίας"
 
 #
 #: src/file-manager/nautilus-directory-view-ui.xml.h:1
@@ -8131,7 +8159,8 @@ msgstr "Μετανομασία επιλεγμένου εικονιδίου"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:27
 msgid "Reposition icons to better fit in the window and avoid overlapping"
-msgstr ""
+msgstr "Επανατοποθέτηση εικονιδίων για να ταιριάξουν καλύτερα στο παράθυρο "
+"και να αποφευχθεί επικάλυψη"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:28
 msgid "Restore Icons' Original Sizes"
@@ -8200,6 +8229,8 @@ msgid ""
 "An indexer is not running, or is not responding to requests to reindex your "
 "computer."
 msgstr ""
+"Η λειτουργία ευρετηρίου δεν εκτελείται ή δεν ανταποκρίνετε σε αιτήσεις για "
+"επαναδημιουργία ευρετηρίου του υπολογιστή."
 
 #: src/file-manager/nautilus-indexing-info.c:185
 msgid ""
@@ -8219,6 +8250,9 @@ msgid ""
 "fast. If you need to update your index now, click on the \"Update Now\" "
 "button."
 msgstr ""
+"Μια φορά την ημέρα τα αρχεία σας και το περιεχόμενα κειμένου καταλογραφούνται "
+"με σκοπό οι αναζητήσεις σας να είναι γρηγορότερες. Αν επιθυμείτε να ανανέωσετε "
+"το ευρετήριο τώρα, επιλέξτε το κουμπί \"Ενημέρωση Τώρα\"."
 
 #: src/file-manager/nautilus-indexing-info.c:219
 #: src/file-manager/nautilus-indexing-info.c:226
@@ -8232,6 +8266,8 @@ msgid ""
 "Once a day your files and text content are indexed so your searches are "
 "fast. "
 msgstr ""
+"Μια φορά την ημέρα τα αρχεία σας και το περιεχόμενα κειμένου καταλογραφούνται "
+"με σκοπό οι αναζητήσεις σας να είναι γρηγορότερες."
 
 #: src/file-manager/nautilus-indexing-info.c:236
 #, c-format
@@ -8248,6 +8284,9 @@ msgid ""
 "Once a day your files and text content are indexed so your searches are "
 "fast.  Your files are currently being indexed."
 msgstr ""
+"Μια φορά την ημέρα τα αρχεία σας και το περιεχόμενα κειμένου καταλογραφούνται "
+"με σκοπό οι αναζητήσεις σας να είναι γρηγορότερες. Τα αρχεία σας καταλογραφούνται "
+"αυτή τη στιγμή. "
 
 #: src/file-manager/nautilus-indexing-info.c:404
 msgid "Sorry, but the medusa search service is not available."
@@ -8298,6 +8337,10 @@ msgid ""
 "Nautilus, please create this folder, or set permissions such that Nautilus "
 "can create it."
 msgstr ""
+"Ο Ναυτίλος δε μπόρεσε να δημιουργήσει τον απαιτούμενο φάκελο \"%s\". "
+"Πριν την εκτέλεση του Ναυτίλου, παρακαλώ δημιουργήστε τον φάκελο ή "
+"καθορίστε τα δικαιώματα ούτως ώστε ο Ναυτίλος να μπορέσει να τον "
+"δημιουργήσει."
 
 #: src/nautilus-application.c:281
 msgid "Couldn't Create Required Folders"
@@ -8313,6 +8356,13 @@ msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
 msgstr ""
+"Ο Ναυτίλος δε μπόρεσε να δημιουργήσει τους επόμενους απαιτούμενους φακέλους:\n"
+"\n"
+"%s\n"
+"\n"
+"Πριν την εκτέλεση του Ναυτίλου, παρακαλώ δημιουργήστε αυτούς τους φακέλους "
+"ή καθορίστε τα δικαιώματα ούτως ώστε ο Ναυτίλος να μπορέσει να τον "
+"δημιουργήσει."
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.oaf file. This has happened when you
@@ -8330,6 +8380,10 @@ msgid ""
 "from the console may fix the problem. If not, you can try rebooting the "
 "computer or installing Nautilus again."
 msgstr ""
+"Ο Ναυτίλος δε μπορεί να χρησιμοποιηθεί τώρα. Η εκτέλεση της εντολής "
+"\"nautilus-clean.sh -x\" στον υπολογιστή σας μπορεί να λύσει το πρόβλημα. "
+"Αν όχι, δοκιμάστε να επανεκκινήσετε τον υπολογιστή σας ή να εγκαταστήσετε "
+"τον Ναυτίλο ξανά."
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:413
@@ -8350,6 +8404,20 @@ msgid ""
 "\n"
 "We have also seen this error when a faulty version of oaf was installed."
 msgstr ""
+"Ο Ναυτίλος δε μπορεί να χρησιμοποιηθεί τώρα. Η εκτέλεση της εντολής "
+"\"nautilus-clean.sh -x\" στον υπολογιστή σας μπορεί να λύσει το πρόβλημα. "
+"Αν όχι, δοκιμάστε να επανεκκινήσετε τον υπολογιστή σας ή να εγκαταστήσετε "
+"τον Ναυτίλο ξανά.\n"
+"\n"
+"Το OAF δε μπόρεσε να εντοπίσει το αρχείο Nautilus_shell.oaf. Μια αιτία "
+"μπορεί να είναι ότι το LD_LIBRARY_PATH δεν περιλαμβάνει τον κατάλογο της "
+"βιβλιοθήκης oaf. Μια άλλη πιθανή αιτία είναι μια κακή εγκατάσταση με το "
+"αρχείο Nautilus_Shell.oaf να λείπει.\n"
+"\n"
+"Εκτελώντας το \"nautilus-clean.sh -x\" θα τερματίσει όλες τις διεργασίες "
+"OAF και GConf, οι οποίες μπορεί να είναι αναγκαίες από άλλες εφαρμογές.\n"
+"\n"
+"Τέλος, είναι πιθανό να συμβεί αυτό το πρόβλημα λόγω λάθος έκδοση του oaf."
 
 #. Some misc. error (can never happen with current
 #. * version of OAF). Show dialog and terminate the
@@ -8372,6 +8440,8 @@ msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to register the file manager view server."
 msgstr ""
+"Ο Ναυτίλος δε μπορεί να χρησιμοποιηθεί τώρα λόγω μη αναμενώμενου σφάλματος "
+"από το OAF κατά την προσπάθεια δήλωσης του εξυπηρετητή όψης διαχειριστή αρχείων."
 
 #: src/nautilus-application.c:463
 msgid ""
@@ -8379,6 +8449,9 @@ msgid ""
 "attempting to locate the factory.Killing oafd and restarting Nautilus may "
 "help fix the problem."
 msgstr ""
+"Ο Ναυτίλος δε μπορεί να χρησιμοποιηθεί τώρα λόγω μη αναμενώμενου σφάλματος "
+"από το OAF κατά την προσπάθεια εντοπισμού του εργοστασίου. Ο τερματισμός του "
+"oafd και η επανεκκίνηση του Ναυτίλου μπορεί να βοηθήσει στη λύση του προβλήματός."
 
 #: src/nautilus-application.c:470
 msgid ""
@@ -8386,6 +8459,9 @@ msgid ""
 "attempting to locate the shell object. Killing oafd and restarting Nautilus "
 "may help fix the problem."
 msgstr ""
+"Ο Ναυτίλος δε μπορεί να χρησιμοποιηθεί τώρα λόγω μη αναμενώμενου σφάλματος "
+"από το OAF κατά την προσπάθεια εντοπισμού του αντικειμένου φλοιού. Ο τερματισμός του "
+"oafd και η επανεκκίνηση του Ναυτίλου μπορεί να βοηθήσει στη λύση του προβλήματός."
 
 #: src/nautilus-application.c:635
 msgid ""
@@ -8433,6 +8509,11 @@ msgid ""
 "You can manually erase this file to present the druid again.\n"
 "\n"
 msgstr ""
+"Η ύπαρξη αυτού του αρχείου δηλώνει ότι ο δρυίδης ρύθμισης του Ναυτίλου\n"
+"έχει εμφανιστεί.\n"
+"\n"
+"Μπορείτε να διαγράψετε χειρωνακτικά το αρχείο για να παρουσιαστεί ο δρυίδης ξανά.\n"
+"\n"
 
 #: src/nautilus-first-time-druid.c:342
 msgid "medium"
@@ -8444,6 +8525,9 @@ msgid ""
 "using GNOME and Linux. Choose a level that's comfortable for\n"
 "you - you can always change it later."
 msgstr ""
+"Το επίπεδο χρήστη ρυθμίζει το Ναυτίλο στο βαθμό της εμπειρίας σας\n"
+"στη χρήση του GNOME και του Linux. Επιλέξτε ένα επίπεδο που είναι\n"
+"κατάλληλο για εσάς - φυσικά μπορείτε να το αλλάξετε αργότερα."
 
 #: src/nautilus-first-time-druid.c:482
 msgid ""
@@ -8458,12 +8542,16 @@ msgid ""
 "For users who are comfortable with GNOME and Linux,\n"
 "but don't describe themselves as ``technical.''"
 msgstr ""
+"Για του χρήστες που είναι άνετοι στη χρήση του GNOME και του Linux,\n"
+"αλλά δεν περιγράφουν τους εαυτούς του ως ``τεχνικά άτομα.''"
 
 #: src/nautilus-first-time-druid.c:494
 msgid ""
 "For users who have GNOME and Linux experience, and\n"
 "like to see every detail of the operating system."
 msgstr ""
+"Για του χρήστες με εμπειρία στο GNOME και το Linux, \n"
+"και που θέλουν να βλέπουν κάθε λεπτομέρεια του λειτουργικού συστήματος."
 
 #: src/nautilus-first-time-druid.c:532
 msgid ""
@@ -8476,6 +8564,12 @@ msgid ""
 "If you know your computer uses a proxy connection, click\n"
 "Verify and Nautilus will use it.\n"
 msgstr ""
+"Για να ελέγξετε τη σύνδεση του Internet και να επιβεβαιώσετε ότι\n"
+"έχετε τις πιο πρόσφατες ενημερώσεις του Ναυτίλου, ο Ναυτίλος θα\n"
+"θα συνδεθεί τώρα στο δικτυακό τόπο της Eazel. Αυτό θα διαρκέσει\n"
+"δευτερόλεπτα αν το αντίγραφο σας του Ναυτίλου είναι πρόσφατο· \n"
+"περισσότερο (αλλά όχι περισσότερο από μερικά λεπτά) αν απαιτήται\n"
+"ανανέωση.\n"
 
 #: src/nautilus-first-time-druid.c:546
 msgid "Verify my connection and check for updates"
@@ -8491,6 +8585,9 @@ msgid ""
 "Sometimes, firewalls require you to specify a web proxy server.\n"
 "Fill in the name or port of your proxy server, if any, below."
 msgstr ""
+"Υπάρχει πρόβλημα στη σύνδεση τύπου WWW με εξωτερικό σύστημα.\n"
+"Μερικές φορές, οι firewalls απαιτούν να καθορίσετε ένα διαμεσολαβητή\n"
+"WWW. Συμπληρώστε το όνομα ή τη θύρα του διαμεσολαβητή, αν υπάρχει, παρακάτω."
 
 #: src/nautilus-first-time-druid.c:624
 msgid "No proxy server required."
@@ -8520,6 +8617,10 @@ msgid ""
 "these settings move your desktop icons to Nautilus and\n"
 "make Nautilus the default desktop.\n"
 msgstr ""
+"Αν χρησιμοποιούσατε το Midnight Commander του GNOME\n"
+"αυτές οι ρυθμίσεις μετακινούν τα εικονίδια της επιφάνειας\n"
+"εργασίας στο Ναυτίλο και κάνουν τον Ναυτίλο την εξ' ορισμού\n"
+"επιλογή.\n"
 
 #: src/nautilus-first-time-druid.c:880
 msgid "Use Nautilus to draw the desktop."
@@ -8542,6 +8643,12 @@ msgid ""
 "as well as filename, date, and other file properties. The indexing\n"
 "takes time but is performed only when your computer is idle.\n"
 msgstr ""
+"Η δυνατότητα γρήγορης αναζήτησης καταλογραφεί όλα τα αντικείμενα του\n"
+"σκληρού σας δίσκου. Επιταχύνει την αναζήτηση και σας επιτρέπει να\n"
+"κάνετε αναζητήσεις βάση περιεχομένου αρχείου, όπως επίσης βάση\n"
+"ονόματος αρχείου, ημερομηνίας και άλλων ιδιοτήτων των αρχείων.\n"
+"Η καταλογράφηση διαρκεί χρόνο αλλά εκτελείτε όταν ο υπολογιστής σας\n"
+"είναι ανενεργός.\n"
 
 #: src/nautilus-first-time-druid.c:934
 msgid "Enable fast search"
@@ -8567,6 +8674,13 @@ msgid ""
 "experience, and check your Internet connection. Click Next\n"
 "to continue."
 msgstr ""
+"Ο Ναυτίλος είναι μέρος του περιβάλλοντος επιφάνειας εργασίας του GNOME.\n"
+"Σας βοηθάει να διαχειρίζετε τα αρχεία και τους φακέλους (καταλόγους),\n"
+"να εμφανίζετε έγγραφα, να συνδέεστε στο Internet και να κάνετε πολλές\n"
+"άλλες εργασίες.\n"
+"Οι επόμενες τέσσερις οθόνες θα σας ρωτήσουν για το επίπεδο εμπειρίας σας\n"
+"σχετικά με το Linux και θα ελέγξουν τη σύνδεση σας με το Internet.\n"
+"Πατήστε Συνέχεια για να συνεχίσετε."
 
 #. set up the final page
 #: src/nautilus-first-time-druid.c:1072
@@ -8839,6 +8953,8 @@ msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
 "for it."
 msgstr ""
+"Συγγνώμη, αλλά το \"%s\" είναι ένα υπάρχον λεκτικό. Παρακαλώ επιλέξτε ένα "
+"διαφορετικό όνομα για αυτό."
 
 #: src/nautilus-property-browser.c:1362
 #, c-format
@@ -9069,7 +9185,7 @@ msgstr "Πήγαινε στο Κατάλογο Λογισμικού Eazel"
 
 #: src/nautilus-service-ui.xml.h:3
 msgid "Go to your online storage repository"
-msgstr ""
+msgstr "Πήγαινε στον ενεργό αποθηκευτικό χώρο"
 
 #
 #: src/nautilus-service-ui.xml.h:5
@@ -9082,7 +9198,7 @@ msgstr "Αρχική Σελίδα _Υπηρεσιών Eazel"
 
 #: src/nautilus-service-ui.xml.h:7
 msgid "_Online Storage"
-msgstr ""
+msgstr "_Ενεργή Αποθήκη"
 
 #: src/nautilus-service-ui.xml.h:8
 msgid "_Services"
@@ -9192,6 +9308,8 @@ msgid ""
 "Nautilus shell operations that can be done from subsequent command-line "
 "invocations"
 msgstr ""
+"Λειτουργίες φλοιού του Ναυτίλου που μπορούν να εκτελεστούν από παρεπόμενες "
+"κλήσεις γραμμής εντολών"
 
 #: src/Nautilus_shell.oaf.in.h:18
 msgid "Produces metafile objects for accessing Nautilus metadata"
@@ -9241,7 +9359,7 @@ msgstr "Αλλαγή της ορατότητας της εργαλειοθήκης του παραθύρου αυτού"
 
 #: src/nautilus-shell-ui.xml.h:9
 msgid "Change the visibility of this window's toolbar"
-msgstr ""
+msgstr "Αλλαγή της ορατότητας της εργαλειοθήκης αυτού του παραθύρου"
 
 #: src/nautilus-shell-ui.xml.h:10
 msgid "Clear contents of Go menu and Back/Forward lists"
@@ -9278,13 +9396,15 @@ msgstr "Εμφάνιση μνείας των δημιουργών του Ναυτίλου"
 
 #: src/nautilus-shell-ui.xml.h:19
 msgid "Display on-line help for Nautilus"
-msgstr ""
+msgstr "Εμφάνιση ενεργής βοήθειας για το Ναυτίλο"
 
 #: src/nautilus-shell-ui.xml.h:20
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
 msgstr ""
+"Εμφάνιση σχεδίων, χρωμάτων και εμβλημάτων που μπορούν να χρησιμοποιηθούν "
+"στην παραμετροποίηση της εμφάνισης"
 
 #: src/nautilus-shell-ui.xml.h:21
 msgid "Display quick reference pages for Nautilus"
@@ -9296,7 +9416,7 @@ msgstr "Εμφάνιση σημειώσεων έκδοσης του Ναυτίλο"
 
 #: src/nautilus-shell-ui.xml.h:23
 msgid "Display support information for Nautilus and Eazel Services"
-msgstr ""
+msgstr "Εμφάνιση πληροφοριών υποστήριξης για το Ναυτίλο και τις Υπηρεσίες Eazel"
 
 #: src/nautilus-shell-ui.xml.h:24
 msgid "Display the latest contents of the current location"
@@ -9415,6 +9535,8 @@ msgid ""
 "Show a page from which you can send feedback about Nautilus and Eazel "
 "Services"
 msgstr ""
+"Εμφάνιση σελίδας από την οποία μπορεί να σταλεί ανάδραση σχετικά με το "
+"Ναυτίλο και τις Υπηρεσίες Eazel"
 
 #: src/nautilus-shell-ui.xml.h:54
 msgid "Show the contents at the normal size"
@@ -9606,6 +9728,8 @@ msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
 "image to set a custom icon."
 msgstr ""
+"Δε μπορείτε να καθορίσετε περισσότερα από ένα παραμετροποιημένα εικονίδια! "
+"Παρακαλώ σύρτε μόνο μια εικόνα για να θέσετε το παραμετροποιημένο εικονίδιο."
 
 #: src/nautilus-sidebar.c:661
 msgid "More Than One Image"
@@ -9616,6 +9740,8 @@ msgid ""
 "The file that you dropped is not local.  You can only use local images as "
 "custom icons."
 msgstr ""
+"Το αρχείο που ρίξατε δεν είναι τοπικό. Μπορείτε να χρησιμοποιήσετε μόνο "
+"τοπικές εικόνες ως παραμετροποιημένα εικονίδια."
 
 #
 #: src/nautilus-sidebar.c:682
@@ -9627,6 +9753,8 @@ msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
 "custom icons."
 msgstr ""
+"Το αρχείο που ρίξατε δεν είναι εικόνα. Μπορείτε να χρησιμοποιήσετε μόνο "
+"τοπικές εικόνες ως παραμετροποιημένα εικονίδια."
 
 #: src/nautilus-sidebar.c:689
 msgid "Images Only"
@@ -9714,6 +9842,8 @@ msgid ""
 "Sorry, but you can't remove the current theme. Please change to another "
 "theme before removing this one."
 msgstr ""
+"Συγγνώμη, αλλά δε μπορείτε να διαγράψετε το τρέχον θέμα. Παρακαλώ αλλάξτε "
+"το με άλλο θέμα πριν το διαγράψετε."
 
 #: src/nautilus-theme-selector.c:584
 msgid "Can't delete current theme"
@@ -9766,6 +9896,8 @@ msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
 "view or go to a different location."
 msgstr ""
+"Η όψη %s παρουσίασε ένα σφάλμα και δε μπορεί να συνεχίσει. Μπορείτε να "
+"επιλέξτε μια άλλη όψη ή να πάτε σε διαφορετική τοποθεσία."
 
 #: src/nautilus-window-manage-views.c:834
 #, c-format
@@ -9777,6 +9909,8 @@ msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
 msgstr ""
+"Ένα από τα πλευρικά ταμπλώ παρουσίασε ένα σφάλμα και δε μπορεί να "
+"συνεχίσει. Δυστυχώς δεν είναι δυνατός ο ακριβής εντοπισμός του."
 
 #: src/nautilus-window-manage-views.c:997
 #, c-format
@@ -9784,21 +9918,25 @@ msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
 "happening, you might want to turn this panel off."
 msgstr ""
+"Το πλευρικό ταμπλώ %s παρουσίασε ένα σφάλμα και δε μπορεί να συνεχίσει. "
+"Αν αυτό συνεχίσει να συμβαίνει, ίσως θελήσετε να το απενεργοποιήσετε."
 
 #: src/nautilus-window-manage-views.c:1002
 msgid "Sidebar Panel Failed"
-msgstr ""
+msgstr "Αποτυχία Πλευρικού Ταμπλώ"
 
 #: src/nautilus-window-manage-views.c:1217
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
-msgstr ""
+msgstr "Αδύνατη η εύρεση του \"%s\". Παρακαλώ ελέγξτε την ορθογραφία και δοκιμάστε ξανά."
 
 #: src/nautilus-window-manage-views.c:1223
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
+"Το \"%s\" δεν είναι έγκυρη διαδρομή. Παρακαλώ ελέγξτε την ορθογραφία και "
+"δοκιμάστε ξανά."
 
 #: src/nautilus-window-manage-views.c:1237
 #, c-format
@@ -9806,27 +9944,29 @@ msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
 "it is."
 msgstr ""
+"Αδύνατη η εμφάνιση του \"%s\" διότι ο Ναυτίλος δε μπορεί να διακρίνει το είδος "
+"του αρχείου."
 
 #: src/nautilus-window-manage-views.c:1245
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
-msgstr ""
+msgstr "Ο Ναυτίλος δεν έχει εγκατεστημένο πρόγραμμα παρουσίασης για την εμφάνιση του \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
 #: src/nautilus-window-manage-views.c:1257
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
-msgstr ""
+msgstr "Αδύνατη η εμφάνιση του \"%s\" διότι ο Ναυτίλος δε μπορεί να χειριστεί διαδρομές %s:."
 
 #: src/nautilus-window-manage-views.c:1263
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
-msgstr ""
+msgstr "Αδύνατη η εμφάνιση του \"%s\" διότι απέτυχε η προσπάθεια αυθεντικοποίησης."
 
 #: src/nautilus-window-manage-views.c:1268
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
-msgstr ""
+msgstr "Αδύνατη η εμφάνιση του \"%s\" διότι η πρόσβαση απαγορεύτηκε."
 
 #: src/nautilus-window-manage-views.c:1279
 #, c-format
@@ -9834,6 +9974,9 @@ msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
 "the spelling is correct and that your proxy settings are correct."
 msgstr ""
+"Αδύνατη η εμφάνιση του \"%s\" διότι δε βρέθηκε σύστημα \"%s\". Παρακαλώ "
+"ελέγξτε ότι η ορθογραφία είναι σωστή και ότι οι ρυθμίσεις διαμεσολαβητή "
+"είναι σωστές."
 
 #: src/nautilus-window-manage-views.c:1287
 #, c-format
@@ -9841,6 +9984,8 @@ msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
 "proxy settings are correct."
 msgstr ""
+"Αδύνατη η εμφάνιση του \"%s\" διότι το όνομα συστήματος είναι κενό. Ελέγξτε "
+"ότι οι ρυθμίσεις διαμεσολαβητή είναι σωστές."
 
 #: src/nautilus-window-manage-views.c:1299
 msgid ""
@@ -9849,6 +9994,10 @@ msgid ""
 "search service, and if you don't have an index, that the Medusa indexer is "
 "running."
 msgstr ""
+"Η αναζήτηση δεν είναι διαθέσιμη αυτή τη στιγμή διότι είτε δεν έχει γίνει "
+"καταλογράφηση είτε η υπηρεσία αναζήτησης δεν εκτελείτε. Επιβεβαιώστε ότι έχετε "
+"εκκινήσει την υπηρεσία αναζήτησης Μέδουσα και αν δεν έχετε κάνει καταλογράφηση, "
+"ότι το πρόγραμμα καταλογράφησης Μέδουσα εκτελείτε."
 
 #: src/nautilus-window-manage-views.c:1303
 msgid "Searching Unavailable"
@@ -9950,6 +10099,8 @@ msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
 "this location from your list?"
 msgstr ""
+"Η τοποθεσία \"%s\" δεν υπάρχει. Θέλετε να διαγράψετε τους σελιδοδείκτες "
+"με αυτήν την τοποθεσία από την λίστα σας;"
 
 #: src/nautilus-window-menus.c:756
 msgid "Bookmark for Nonexistent Location"
