@@ -1630,6 +1630,37 @@ nautilus_directory_get_file_list (NautilusDirectory *directory)
 	return non_tentative_files;
 }
 
+GList *
+nautilus_directory_match_pattern (NautilusDirectory *directory, const char *pattern)
+{
+	GList *files, *l, *ret;
+	GPatternSpec *spec;
+
+
+	ret = NULL;
+	spec = g_pattern_spec_new (pattern);
+	
+	files = nautilus_directory_get_file_list (directory);
+	for (l = files; l; l = l->next) {
+		NautilusFile *file;
+		char *name;
+	       
+	        file = NAUTILUS_FILE (l->data);
+		name = nautilus_file_get_display_name (file);
+
+		if (g_pattern_match_string (spec, name)) {
+			ret = g_list_prepend(ret, nautilus_file_ref (file));	
+		}
+
+		g_free (name);
+	}
+
+	g_pattern_spec_free (spec);
+	nautilus_file_list_free (files);
+
+	return ret;
+}
+
 /**
  * nautilus_directory_list_ref
  *

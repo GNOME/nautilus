@@ -55,6 +55,8 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkstock.h>
 #include <gtk/gtkmessagedialog.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtkentry.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-uidefs.h>
@@ -950,6 +952,79 @@ bonobo_menu_select_all_callback (BonoboUIComponent *component,
 	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
 	fm_directory_view_select_all (callback_data);
+}
+
+static void
+pattern_select_response_cb (GtkWidget *dialog, int response, gpointer user_data)
+{
+	FMDirectoryView *view;
+	GtkWidget *entry;
+
+	view = FM_DIRECTORY_VIEW (user_data);
+	
+	if (response == GTK_RESPONSE_OK) {
+		NautilusDirectory *directory;
+		GList *selection;
+
+		entry = g_object_get_data (G_OBJECT (dialog), "entry");
+		directory = fm_directory_view_get_model (view);
+		selection = nautilus_directory_match_pattern (directory,
+					gtk_entry_get_text (GTK_ENTRY (entry)));
+			
+		if (selection) {
+			fm_directory_view_set_selection(view, selection);
+			nautilus_file_list_free (selection);
+		}
+	}
+
+	gtk_widget_destroy (dialog);
+}
+
+static void
+select_pattern (FMDirectoryView *view)
+{
+	GtkWidget *dialog;
+	GtkWidget *box;
+	GtkWidget *entry;
+	GList *ret;
+
+	ret = NULL;
+	dialog = gtk_dialog_new_with_buttons (_("Select Pattern"),
+			fm_directory_view_get_containing_window (view),
+			GTK_DIALOG_DESTROY_WITH_PARENT,
+			GTK_STOCK_CANCEL,
+			GTK_RESPONSE_CANCEL,
+			GTK_STOCK_OK,
+			GTK_RESPONSE_OK,
+			NULL);
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+					 GTK_RESPONSE_OK);
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+
+	box = gtk_hbox_new (FALSE, 6);
+	gtk_container_set_border_width (GTK_CONTAINER (box), 6);
+	entry = gtk_entry_new ();
+	gtk_entry_set_activates_default (GTK_ENTRY (entry), TRUE);
+	gtk_box_pack_start_defaults (GTK_BOX (box),
+				     gtk_label_new (_("Pattern:")));
+	gtk_box_pack_start_defaults (GTK_BOX (box), entry);
+	gtk_widget_show_all (box);
+	gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dialog)->vbox), box);
+	g_object_set_data (G_OBJECT (dialog), "entry", entry);
+	g_signal_connect (dialog, "response",
+			  G_CALLBACK (pattern_select_response_cb),
+			  view);
+	gtk_widget_show_all (dialog);
+}
+
+static void
+bonobo_menu_select_pattern_callback (BonoboUIComponent *component, 
+				 gpointer callback_data, 
+				 const char *verb)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
+
+	select_pattern(callback_data);
 }
 
 static void
@@ -4615,6 +4690,7 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("Reset Background", reset_background_callback),
 		BONOBO_UI_VERB ("Reset to Defaults", reset_to_defaults_callback),
 		BONOBO_UI_VERB ("Select All", bonobo_menu_select_all_callback),
+		BONOBO_UI_VERB ("Select Pattern", bonobo_menu_select_pattern_callback),
 		BONOBO_UI_VERB ("Properties", open_properties_window_callback),
 		BONOBO_UI_VERB ("Trash", trash_callback),
 		BONOBO_UI_VERB_END

@@ -60,6 +60,9 @@
 	<cmd name="Select All"
          _label="Select _All Files"
 	 _tip="Select all items in this window"/>
+	<cmd name="Select Pattern"
+         _label="Select _Pattern"
+	 _tip="Select items in this window matching a given pattern"/>
 	<cmd name="Properties"
          _label="_Properties"
 	 _tip="View or modify the properties of each selected item"/>
@@ -142,9 +145,14 @@
 			  accel="*Control*v"
 			  pixtype="stock" pixname="gtk-paste"
 			  verb="Paste Files"/>
+
+		<placeholder name="Select Items">
 		<menuitem name="Select All"
 			  accel="*Control*a"
 			  verb="Select All"/>
+		<menuitem name="Select Pattern"
+			  verb="Select Pattern"/>
+		</placeholder>
 
 		<placeholder name="File Items Placeholder">
 			<menuitem name="Duplicate"

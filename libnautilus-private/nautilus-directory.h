@@ -188,6 +188,10 @@ void               nautilus_directory_force_reload             (NautilusDirector
 /* Get a list of all files currently known in the directory. */
 GList *            nautilus_directory_get_file_list            (NautilusDirectory         *directory);
 
+GList *            nautilus_directory_match_pattern            (NautilusDirectory         *directory,
+							        const char *glob);
+
+
 /* Return true if the directory has information about all the files.
  * This will be false until the directory has been read at least once.
  */
