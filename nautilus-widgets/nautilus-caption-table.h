@@ -60,7 +60,6 @@ struct _NautilusCaptionTableClass
 	void (*activate) (GtkWidget *caption_table, int active_entry);
 };
 
-
 GtkType    nautilus_caption_table_get_type           (void);
 GtkWidget* nautilus_caption_table_new                (guint                 num_rows);
 void       nautilus_caption_table_set_row_info       (NautilusCaptionTable *caption_table,
@@ -80,7 +79,8 @@ void       nautilus_caption_table_entry_grab_focus   (NautilusCaptionTable *capt
 char*      nautilus_caption_table_get_entry_text     (NautilusCaptionTable *caption_table,
 						      guint                 row);
 guint      nautilus_caption_table_get_num_rows       (NautilusCaptionTable *caption_table);
-
+void       nautilus_caption_table_resize             (NautilusCaptionTable *caption_table,
+						      guint                 num_rows);
 
 BEGIN_GNOME_DECLS
 

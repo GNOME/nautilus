@@ -52,8 +52,6 @@ static void       nautilus_caption_table_initialize       (NautilusCaptionTable 
 static void       caption_table_destroy                   (GtkObject                 *object);
 
 /* Private methods */
-static void       caption_table_resize                    (NautilusCaptionTable      *caption_table,
-							   guint                      num_rows);
 static GtkWidget* caption_table_find_next_sensitive_entry (NautilusCaptionTable      *caption_table,
 							   guint                      index);
 static int        caption_table_index_of_entry            (NautilusCaptionTable      *caption_table,
@@ -135,10 +133,9 @@ caption_table_destroy (GtkObject *object)
 		(*GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
-/* FIXME bugzilla.eazel.com 679: This should be public for the widget to be useful */
-static void
-caption_table_resize (NautilusCaptionTable	*caption_table,
-		      guint			num_rows)
+void
+nautilus_caption_table_resize (NautilusCaptionTable	*caption_table,
+			       guint			num_rows)
 {
 	GtkTable* table = NULL;
 
@@ -314,7 +311,7 @@ nautilus_caption_table_new (guint num_rows)
 	if (num_rows == 0)
 		num_rows = 1;
 
-	caption_table_resize (NAUTILUS_CAPTION_TABLE(widget), num_rows);
+	nautilus_caption_table_resize (NAUTILUS_CAPTION_TABLE(widget), num_rows);
 
 	gtk_table_set_col_spacing (GTK_TABLE (widget), 0, 10);
 
