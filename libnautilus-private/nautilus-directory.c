@@ -58,7 +58,6 @@
 enum 
 {
 	FILES_ADDED,
-	FILES_REMOVED,
 	FILES_CHANGED,
 	METADATA_CHANGED,
 	LAST_SIGNAL
@@ -97,13 +96,6 @@ nautilus_directory_initialize_class (gpointer klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, files_added),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
-	signals[FILES_REMOVED] =
-		gtk_signal_new ("files_removed",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, files_removed),
 				gtk_marshal_NONE__POINTER,
 				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
 	signals[FILES_CHANGED] =
@@ -1175,15 +1167,6 @@ nautilus_directory_find_file (NautilusDirectory *directory, const char *name)
 					 compare_file_with_name);
 
 	return list_entry == NULL ? NULL : list_entry->data;
-}
-
-void
-nautilus_directory_files_removed (NautilusDirectory *directory,
-				  GList *removed_files)
-{
-	gtk_signal_emit (GTK_OBJECT (directory),
-			 signals[FILES_REMOVED],
-			 removed_files);
 }
 
 void

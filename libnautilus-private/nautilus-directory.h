@@ -131,19 +131,18 @@ struct NautilusDirectoryClass
 
 	/*** Notification signals for clients to connect to. ***/
 
-	/* The files_added and files_removed signals are emitted as
-	   the directory model discovers new files or discovers that
-	   old files have been deleted. In the case of files_removed,
-	   this is the last chance to forget about these file objects
-	   which are about to be unref'd.
+	/* The files_added signal is emitted as the directory model 
+	   discovers new files.
 	*/
 	void   (* files_added)      (NautilusDirectory        *directory,
 				     GList                    *added_files);
-	void   (* files_removed)    (NautilusDirectory        *directory,
-				     GList                    *removed_files);
 
 	/* The files_changed signal is emitted as changes occur to
-	   existing files that are noticed by the synchronization framework.
+	   existing files that are noticed by the synchronization framework,
+	   including when an old file has been deleted. When an old file
+	   has been deleted, this is the last chance to forget about these
+	   file objects, which are about to be unref'd. Use nautilus_file_is_gone ()
+	   to test for this case.
 	   The client must register which file attributes it is interested
 	   in. Changes to other attributes are not reported via the signal.
 	*/

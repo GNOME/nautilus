@@ -243,12 +243,64 @@ nautilus_file_unref (NautilusFile *file)
 	gtk_object_unref (GTK_OBJECT (file));
 }
 
+static NautilusFile *
+get_file_for_parent_directory (NautilusFile *file)
+{
+	char *parent_uri;
+	NautilusFile *result;
+
+	g_assert (NAUTILUS_IS_FILE (file));
+	
+	if (file->details->directory == NULL) {
+		return NULL;
+	}
+
+	parent_uri = nautilus_directory_get_uri (file->details->directory);
+	result = nautilus_file_get (parent_uri);
+	g_free (parent_uri);
+
+	return result;
+}
+
+/**
+ * nautilus_file_can_rename:
+ * 
+ * Check whether the user is allowed to change the name of the file.
+ * 
+ * @file: The file to check.
+ * 
+ * Return value: FALSE if the user is definitely not allowed to change
+ * the name of the file. If the user is allowed to change the name, or
+ * the code can't tell whether the user is allowed to change the name,
+ * returns TRUE (so rename failures must always be handled).
+ */
 gboolean
 nautilus_file_can_rename (NautilusFile *file)
 {
+	NautilusFile *parent;
+	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	return (file->details->info->flags & GNOME_VFS_PERM_USER_WRITE) != 0;
+	parent = get_file_for_parent_directory (file);
+
+	if (parent == NULL) {
+		/* 
+		 * No parent directory for some reason (at root level?).
+		 * Can't tell whether this file is renameable, so return TRUE.
+		 */
+		return TRUE;
+	}
+
+	if ((parent->details->info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS) == 0){
+		/* 
+		 * Parent's permissions field is not valid.
+		 * Can't tell whether this file is renameable, so return TRUE.
+		 */
+		return TRUE;
+	}
+
+	/* Trust the write permissions of the parent directory. */
+	return (file->details->info->permissions & GNOME_VFS_PERM_USER_WRITE) != 0;
 }
 
 GnomeVFSResult
@@ -1286,7 +1338,6 @@ nautilus_file_delete (NautilusFile *file)
 {
 	char *text_uri;
 	GnomeVFSResult result;
-	GList *removed_files;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
@@ -1314,9 +1365,7 @@ nautilus_file_delete (NautilusFile *file)
 			= g_list_remove (file->details->directory->details->files, file);
 		
 		/* Send out a signal. */
-		removed_files = g_list_prepend (NULL, file);
-		nautilus_directory_files_removed (file->details->directory, removed_files);
-		g_list_free (removed_files);
+		nautilus_file_changed (file);
 	}
 }
 

@@ -1,3 +1,64 @@
+2000-04-05  John Sullivan  <sullivan@eazel.com>
+
+	Some cleanups from the file-renaming checkin I did
+	yesterday. The largest change was making NautilusDirectory
+	send "files-changed" signal instead of "files-removed" 
+	signal when a file is removed. That way	interested callers 
+	need register only for one signal. The callers can use 
+	nautilus_file_is_gone () to test whether the file was removed.
+
+	* libnautilus/nautilus-directory-private.h:
+	(nautilus_directory_files_removed): Removed function.
+	* libnautilus/nautilus-directory.h:
+	(files_removed): Removed signal definition, updated comments.
+	* libnautilus/nautilus-directory.c:
+	Removed FILES_REMOVED signal enum entry;
+	(nautilus_directory_initialize_class): Removed FILES_REMOVED
+	signal creation.
+	(nautilus_directory_files_removed): Removed function.
+	* libnautilus/nautilus-file.c:
+	(get_file_for_parent_directory): New private function.
+	(nautilus_file_can_rename): This function was quite broken in
+	its initial check-in. It worked only on a random basis. Now it
+	works quite a bit better. It should only return FALSE if it's
+	darn well sure that the user can't rename the file; it returns
+	TRUE even if it isn't sure, so clients must handle failed
+	renames (which they would have to anyway).
+	(nautilus_file_delete): Call nautilus_file_changed instead of
+	nautilus_directory_files_removed when file is deleted.
+
+	* src/file-manager/fm-directory-view.h:
+	(remove_file): Remove signal definition, update comments.
+	* src/file-manager/fm-directory-view.c:
+	remove REMOVE_FILE signal enum entry; 
+	remove files_removed_handler_id and pending_files_removed from
+	Details struct;
+	(fm_directory_view_initialize_class): remove REMOVE_FILE signal
+	initialization
+	(display_pending_files): remove "removed" case; made "changed"
+	case handle updating uri table; made "changed" case send signal
+	even if file is gone.
+	(files_removed_cb): Removed function.
+	(fm_directory_view_load_uri): removed connection to "files_removed"
+	signal
+	(disconnect_model_handlers): removed disconnect of files_removed_handler.
+	
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_remove_file): Removed function.
+	(fm_icon_view_initialize_class): Remove remove_file signal handler override.
+	(fm_icon_view_file_changed): check if file is gone and do what
+	fm_icon_view_remove_file used to do if so.
+	* src/file-manager/fm-list-view.c:
+	(fm_list_view_remove_file): Removed function.
+	(fm_list_view_initialize_class): Remove remove_file signal handler override.
+	(fm_list_view_file_changed): check if file is gone and do what
+	fm_list_view_remove_file used to do if so.
+	
+	* src/file-manager/fm-properties-window.c:
+	(properties_window_file_changed_callback): Don't update the window title 
+	if you just nuked the window -- Doh! Now the Properties window will 
+	vanish silently if the file is deleted.
+
 2000-04-05  Darin Adler  <darin@eazel.com>
 
 	Improved the background handling code so more is shared.

@@ -72,8 +72,6 @@ static void                   fm_icon_view_icon_changed_callback                
 										 FMIconView               *icon_view);
 static void                   fm_icon_view_add_file                             (FMDirectoryView          *view,
 										 NautilusFile             *file);
-static void                   fm_icon_view_remove_file                          (FMDirectoryView          *view,
-										 NautilusFile             *file);
 static void                   fm_icon_view_file_changed                         (FMDirectoryView          *view,
 										 NautilusFile             *file);
 static void                   fm_icon_view_append_background_context_menu_items (FMDirectoryView          *view,
@@ -164,7 +162,6 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
 	fm_directory_view_class->done_adding_files = fm_icon_view_done_adding_files;	
 	fm_directory_view_class->file_changed = fm_icon_view_file_changed;
 	fm_directory_view_class->get_selection = fm_icon_view_get_selection;
-	fm_directory_view_class->remove_file = fm_icon_view_remove_file;
 	fm_directory_view_class->select_all = fm_icon_view_select_all;
 	fm_directory_view_class->set_selection = fm_icon_view_set_selection;
         fm_directory_view_class->append_background_context_menu_items = fm_icon_view_append_background_context_menu_items;
@@ -550,19 +547,18 @@ fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file)
 }
 
 static void
-fm_icon_view_remove_file (FMDirectoryView *view, NautilusFile *file)
-{
-	if (nautilus_icon_container_remove (get_icon_container (FM_ICON_VIEW (view)),
-					    NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
-		nautilus_file_unref (file);
-	}
-}
-
-static void
 fm_icon_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 {
-	nautilus_icon_container_request_update (get_icon_container (FM_ICON_VIEW (view)),
-						NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
+	/* This handles both changes to an existing file and the existing file going away. */
+	if (nautilus_file_is_gone (file)) {
+		if (nautilus_icon_container_remove (get_icon_container (FM_ICON_VIEW (view)),
+						    NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
+			nautilus_file_unref (file);
+		}
+	} else {
+		nautilus_icon_container_request_update (get_icon_container (FM_ICON_VIEW (view)),
+							NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
+	}
 }
 
 static void

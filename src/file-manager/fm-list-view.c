@@ -109,8 +109,6 @@ static void              list_selection_changed_callback          (NautilusList 
 								   gpointer            data);
 static void              fm_list_view_add_file                    (FMDirectoryView    *view,
 								   NautilusFile       *file);
-static void              fm_list_view_remove_file                 (FMDirectoryView    *view,
-								   NautilusFile       *file);
 static void		 fm_list_view_reset_row_height 		  (FMListView 	      *list_view);
 static void              fm_list_view_file_changed                (FMDirectoryView    *view,
 								   NautilusFile       *file);
@@ -170,7 +168,6 @@ fm_list_view_initialize_class (gpointer klass)
 	fm_directory_view_class->done_adding_files = fm_list_view_done_adding_files;
 	fm_directory_view_class->file_changed = fm_list_view_file_changed;
 	fm_directory_view_class->get_selection = fm_list_view_get_selection;
-	fm_directory_view_class->remove_file = fm_list_view_remove_file;
 	fm_directory_view_class->select_all = fm_list_view_select_all;
 	fm_directory_view_class->set_selection = fm_list_view_set_selection;
 }
@@ -590,22 +587,6 @@ fm_list_view_add_file (FMDirectoryView *view, NautilusFile *file)
 }
 
 static void
-fm_list_view_remove_file (FMDirectoryView *view, NautilusFile *file)
-{
-	GtkCList *clist;
-	int row;
-
-	g_return_if_fail (FM_IS_LIST_VIEW (view));
-
-	clist = GTK_CLIST (get_list (FM_LIST_VIEW (view)));
-	row = gtk_clist_find_row_from_data (clist, file);
-	if (row != -1) {
-		gtk_clist_remove (clist, row);
-		nautilus_file_unref (file);
-	}
-}
-
-static void
 fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 {
 	FMListView *list_view;
@@ -615,6 +596,10 @@ fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 
+	/* 
+	 * This handles both changes to an existing file and the
+	 * existing file going away.
+	 */
 	list_view = FM_LIST_VIEW (view);
 	nautilus_list = get_list (list_view);
 	old_row = gtk_clist_find_row_from_data (GTK_CLIST (nautilus_list), file);
@@ -630,10 +615,14 @@ fm_list_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 	gtk_clist_freeze (GTK_CLIST (nautilus_list));
 
 	/* Remove and re-add file to get new text/icon values and sort correctly. */
-	fm_list_view_remove_file (FM_DIRECTORY_VIEW (list_view), file);
-	new_row = add_to_list (list_view, file);
+	gtk_clist_remove (GTK_CLIST (nautilus_list), old_row);
+	nautilus_file_unref (file);
 
-	if (was_selected) {
+	if (!nautilus_file_is_gone (file)) {
+		new_row = add_to_list (list_view, file);
+	}
+
+	if (was_selected && !nautilus_file_is_gone (file)) {
 		gtk_clist_select_row (GTK_CLIST (nautilus_list), new_row, -1);
 	}
 

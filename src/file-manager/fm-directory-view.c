@@ -72,7 +72,6 @@ enum
 	CLEAR,
 	DONE_ADDING_FILES,
 	FILE_CHANGED,
-	REMOVE_FILE,
 	MOVE_COPY_ITEMS,
 	LAST_SIGNAL
 };
@@ -92,11 +91,9 @@ struct _FMDirectoryViewDetails
 	guint display_pending_idle_id;
 	
 	guint files_added_handler_id;
-	guint files_removed_handler_id;
 	guint files_changed_handler_id;
 	
 	GList *pending_files_added;
-	GList *pending_files_removed;
 	GList *pending_files_changed;
 	GList *pending_uris_selected;
 
@@ -193,7 +190,6 @@ NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, can_zoom_out)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, file_changed)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, remove_file)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, select_all)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, set_selection)
 
@@ -225,13 +221,6 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
        				GTK_RUN_LAST,
                     		object_class->type,
                     		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, add_file),
-		    		gtk_marshal_NONE__BOXED,
-		    		GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
-	signals[REMOVE_FILE] =
-		gtk_signal_new ("remove_file",
-       				GTK_RUN_LAST,
-                    		object_class->type,
-                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, remove_file),
 		    		gtk_marshal_NONE__BOXED,
 		    		GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
 	signals[FILE_CHANGED] =
@@ -284,7 +273,6 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, clear);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, file_changed);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selection);
-	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, remove_file);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, select_all);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, set_selection);
 }
@@ -812,7 +800,7 @@ zoomable_zoom_out_cb (NautilusZoomable *zoomable, FMDirectoryView *directory_vie
 static gboolean
 display_pending_files (FMDirectoryView *view)
 {
-	GList *files_added, *files_removed, *files_changed, *uris_selected, *p;
+	GList *files_added, *files_changed, *uris_selected, *p;
 	NautilusFile *file;
 
 	if (view->details->model != NULL
@@ -823,15 +811,13 @@ display_pending_files (FMDirectoryView *view)
 	/* FIXME: fix memory management here */
 
 	files_added = view->details->pending_files_added;
-	files_removed = view->details->pending_files_removed;
 	files_changed = view->details->pending_files_changed;
 	uris_selected = view->details->pending_uris_selected;
 
-	if (files_added == NULL && files_removed == NULL && files_changed == NULL && uris_selected == NULL) {
+	if (files_added == NULL && files_changed == NULL && uris_selected == NULL) {
 		return FALSE;
 	}
 	view->details->pending_files_added = NULL;
-	view->details->pending_files_removed = NULL;
 	view->details->pending_files_changed = NULL;
 
 	gtk_signal_emit (GTK_OBJECT (view), signals[BEGIN_ADDING_FILES]);
@@ -848,29 +834,19 @@ display_pending_files (FMDirectoryView *view)
 		}
 	}
 
-	for (p = files_removed; p != NULL; p = p->next) {
-		file = p->data;
-		
-		g_assert (nautilus_file_is_gone (file));
-
-		remove_nautilus_file_from_uri_map (view, NAUTILUS_FILE (file));
-
-		gtk_signal_emit (GTK_OBJECT (view),
-				 signals[REMOVE_FILE],
-				 file);
-	}
-
 	for (p = files_changed; p != NULL; p = p->next) {
 		file = p->data;
 		
 		/* FIXME: what does files_changed mean, do I need to
                    modify the files_by_uri hash table here? */
 
-		if (!nautilus_file_is_gone (file)) {
-			gtk_signal_emit (GTK_OBJECT (view),
-					 signals[FILE_CHANGED],
-					 file);
-		}
+                if (nautilus_file_is_gone (file)) {
+			remove_nautilus_file_from_uri_map (view, NAUTILUS_FILE (file));
+                }
+
+		gtk_signal_emit (GTK_OBJECT (view),
+				 signals[FILE_CHANGED],
+				 file);
 	}
 
 	gtk_signal_emit (GTK_OBJECT (view), signals[DONE_ADDING_FILES]);
@@ -901,7 +877,6 @@ display_pending_files (FMDirectoryView *view)
 	}
 
 	nautilus_file_list_free (files_added);
-	nautilus_file_list_free (files_removed);
 	nautilus_file_list_free (files_changed);
 
 	return TRUE;
@@ -1094,17 +1069,6 @@ files_added_cb (NautilusDirectory *directory,
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 	queue_pending_files (view, files, &view->details->pending_files_added);
-}
-
-static void
-files_removed_cb (NautilusDirectory *directory,
-		  GList *files,
-		  gpointer callback_data)
-{
-	FMDirectoryView *view;
-
-	view = FM_DIRECTORY_VIEW (callback_data);
-	queue_pending_files (view, files, &view->details->pending_files_removed);
 }
 
 static void
@@ -1898,11 +1862,6 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 		 "files_added",
 		 GTK_SIGNAL_FUNC (files_added_cb),
 		 view);
-	view->details->files_removed_handler_id = gtk_signal_connect
-		(GTK_OBJECT (view->details->model), 
-		 "files_removed",
-		 GTK_SIGNAL_FUNC (files_removed_cb),
-		 view);
 	view->details->files_changed_handler_id = gtk_signal_connect
 		(GTK_OBJECT (view->details->model), 
 		 "files_changed",
@@ -1937,7 +1896,6 @@ static void
 disconnect_model_handlers (FMDirectoryView *view)
 {
 	disconnect_handler (view, &view->details->files_added_handler_id);
-	disconnect_handler (view, &view->details->files_removed_handler_id);
 	disconnect_handler (view, &view->details->files_changed_handler_id);
 
 	if (view->details->loading) {

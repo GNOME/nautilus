@@ -266,9 +266,9 @@ properties_window_file_changed_callback (GtkWindow *window, NautilusFile *file)
 
 	if (nautilus_file_is_gone (file)) {
 		gtk_widget_destroy (GTK_WIDGET (window));
+	} else {
+		update_properties_window_title (window, file);
 	}
-
-	update_properties_window_title (window, file);
 }
 
 static GtkWindow *

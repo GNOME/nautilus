@@ -70,13 +70,8 @@ struct _FMDirectoryViewClass {
 	void 	(* add_file) 		 (FMDirectoryView *view, 
 					  NautilusFile *file);
 
-	/* The 'remove_file' signal is emitted to remove one file from the view.
-	 * It must be replaced by each subclass.
-	 */
-	void 	(* remove_file) 	 (FMDirectoryView *view, 
-					  NautilusFile *file);
-
-	/* The 'file_changed' signal is emitted to signal a change in a file.
+	/* The 'file_changed' signal is emitted to signal a change in a file,
+	 * including the file being removed.
 	 * It must be replaced by each subclass.
 	 */
 	void 	(* file_changed)         (FMDirectoryView *view, 
