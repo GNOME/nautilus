@@ -105,6 +105,12 @@ static const char *icon_file_name_suffixes[] =
  */
 #define SELF_THUMBNAIL_SIZE_THRESHOLD   16384
 
+/* extremely large images can eat up hundreds of megabytes of memory, so we
+ * shouldn't automatically thumbnail when larges are too large.  Eventually,
+ * we want this threshold to be user-settable, but for now it's hard-wired.
+ */
+ #define INHIBIT_THUMBNAIL_SIZE_THRESHOLD 1048576
+ 
 /* This circular doubly-linked list structure is used to keep a list
  * of the most recently used items in the cache.
  */
@@ -1216,6 +1222,7 @@ NautilusScalableIcon *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifier, gboolean anti_aliased)
 {
 	char *uri, *file_uri, *file_path, *image_uri, *icon_name, *mime_type, *top_left_text;
+ 	int file_size;
  	NautilusScalableIcon *scalable_icon;
 	
 	if (file == NULL) {
@@ -1227,19 +1234,22 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 	file_uri = nautilus_file_get_uri (file);
 	
 	/* if the file is an image, either use the image itself as the icon if it's small enough,
-	   or use a thumbnail if one exists.  If a thumbnail is required, but does not yet exist,
-	   put an entry on the thumbnail queue so we eventually make one */
+	   or use a thumbnail if one exists.  If it's too large, don't try to thumbnail it at all. 
+	   If a thumbnail is required, but does not yet exist,  put an entry on the thumbnail queue so we
+	   eventually make one */
 
 	/* also, dont make thumbnails for images in the thumbnails directory */  
 	if (uri == NULL) {		
 		mime_type = nautilus_file_get_mime_type (file);
+		file_size = nautilus_file_get_size (file);
+		
 		if (nautilus_istr_has_prefix (mime_type, "image/") && should_display_image_file_as_itself (file)) {
-			if (nautilus_file_get_size (file) < SELF_THUMBNAIL_SIZE_THRESHOLD) {
+			if (file_size < SELF_THUMBNAIL_SIZE_THRESHOLD) {
 				uri = nautilus_file_get_uri (file);				
-			} else if (strstr (file_uri, "/.thumbnails/") == NULL) {
+			} else if (strstr (file_uri, "/.thumbnails/") == NULL && file_size < INHIBIT_THUMBNAIL_SIZE_THRESHOLD) {
 				uri = nautilus_get_thumbnail_uri (file, anti_aliased);
 				if (uri == NULL) {
-					get_icon_file_path
+					uri = get_icon_file_path
 						(ICON_NAME_THUMBNAIL_LOADING, NULL,
 						 NAUTILUS_ICON_SIZE_STANDARD, FALSE, NULL);
 				}
