@@ -198,11 +198,11 @@ find_element_info (ElementInfo *elements,
 }
 static void
 init_entities (xmlDocPtr doc) {
-	xmlAddDocEntity (doc, "mdash", XML_INTERNAL_GENERAL_ENTITY,
+	xmlAddDocEntity (doc, "mdash", XML_INTERNAL_PREDEFINED_ENTITY,
 		         NULL, NULL, "&mdash;");
-	xmlAddDocEntity (doc, "hellip", XML_INTERNAL_GENERAL_ENTITY,
+	xmlAddDocEntity (doc, "hellip", XML_INTERNAL_PREDEFINED_ENTITY,
 		         NULL, NULL, "&hellip;");
-	xmlAddDocEntity (doc, "percnt", XML_INTERNAL_GENERAL_ENTITY,
+	xmlAddDocEntity (doc, "percnt", XML_INTERNAL_PREDEFINED_ENTITY,
 		         NULL, NULL, "%");
 }
 
