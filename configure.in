@@ -70,16 +70,18 @@ AM_CONDITIONAL(TREE_VIEW_EXE_SERVER, test "x$TREE_VIEW_EXE_SERVER" = "x1")
 dnl ====================================
 dnl = Begin tests for eazel-services
 dnl ====================================
-dnl FIXME: change the "1" to yes/no
-EAZEL_SERVICES=
-AC_ARG_ENABLE(eazel-services,
-[  --enable-eazel-services={1|0}		Eazel services],
-EAZEL_SERVICES=1
-AC_DEFINE(EAZEL_SERVICES))
+AC_ARG_ENABLE(
+	[eazel-services],
+	[  --enable-eazel-services	Enable support for Eazel services (default is no)],
+	[ EAZEL_SERVICES_ENABLED=$enableval ], 
+	[ EAZEL_SERVICES_ENABLED=no ])
 
 AC_SUBST(EAZEL_SERVICES)
 
-AM_CONDITIONAL(EAZEL_SERVICES, test "x$EAZEL_SERVICES" = "x1")
+if test x"$EAZEL_SERVICES_ENABLED" = xyes; then
+	AC_DEFINE(EAZEL_SERVICES)
+fi
+AM_CONDITIONAL(EAZEL_SERVICES, test "x$EAZEL_SERVICES_ENABLED" = "xyes")
 dnl =======================
 dnl = End tests for eazel-services
 dnl =======================
@@ -279,8 +281,8 @@ if test -n "$_mozilla_nspr_libs" -a \
 	-n "$_mozilla_gtk_super_win_libs" -a \
 	-n "$_mozilla_gtk_moz_embed_libs"
 then
-	AC_PROG_CXX
 	AC_MSG_RESULT(yes)
+	AC_PROG_CXX
 	found_mozilla=true
 
 	MOZILLA_COMPONENT_CFLAGS=-I$_mozilla_include_place
@@ -381,65 +383,70 @@ dnl ====================================
 dnl = rpmview component support
 dnl ====================================
 
-rpm_libs=
-AC_CHECK_LIB(bz2, bzread, [rpm_libs=-lbz2])
-dnl <= Check for bzip2 > 1.0.0
-	AC_CHECK_LIB(bz2, BZ2_bzread, [rpm_libs=-lbz2
-	dnl <= define the wrapper-functions to get the Bzip2 stuff working .. =>	
-		AC_DEFINE(bzread,BZ2_bzread)
-		AC_DEFINE(bzopen,BZ2_bzopen)
-		AC_DEFINE(bzdopen,BZ2_bzdopen)
-		AC_DEFINE(bzwrite,BZ2_bzwrite)
-		AC_DEFINE(bzerror,BZ2_bzerror)
-		AC_DEFINE(bzclose,BZ2_bzclose)
-		AC_DEFINE(bzflush,BZ2_bzflush)
-		AC_DEFINE(bzCompress,BZ2_bzCompress)
-		AC_DEFINE(bzCompressInit,BZ2_bzCompressInit)
-		AC_DEFINE(bzDecompress,BZ2_bzDecompress)
-		AC_DEFINE(bzDecompressInit,BZ2_bzDecompressInit)	
+if test "x$EAZEL_SERVICES_ENABLED" = "xyes" ;
+then
+	rpm_libs=
+	AC_CHECK_LIB(bz2, bzread, [rpm_libs=-lbz2])
+	dnl <= Check for bzip2 > 1.0.0
+		AC_CHECK_LIB(bz2, BZ2_bzread, [rpm_libs=-lbz2
+		dnl <= define the wrapper-functions to get the Bzip2 stuff working .. =>	
+			AC_DEFINE(bzread,BZ2_bzread)
+			AC_DEFINE(bzopen,BZ2_bzopen)
+			AC_DEFINE(bzdopen,BZ2_bzdopen)
+			AC_DEFINE(bzwrite,BZ2_bzwrite)
+			AC_DEFINE(bzerror,BZ2_bzerror)
+			AC_DEFINE(bzclose,BZ2_bzclose)
+			AC_DEFINE(bzflush,BZ2_bzflush)
+			AC_DEFINE(bzCompress,BZ2_bzCompress)
+			AC_DEFINE(bzCompressInit,BZ2_bzCompressInit)
+			AC_DEFINE(bzDecompress,BZ2_bzDecompress)
+			AC_DEFINE(bzDecompressInit,BZ2_bzDecompressInit)	
+		])
+	dnl =>
+	AC_CHECK_LIB(popt, poptParseArgvString, [rpm_libs="$rpm_libs -lpopt"])
+	AC_CHECK_FUNC(dbopen, [],
+	  AC_CHECK_LIB(db1, dbopen, [rpm_libs="$rpm_libs -ldb1"],
+	    AC_CHECK_LIB(db, dbopen, [rpm_libs="$rpm_libs -ldb"],
+	       AC_MSG_ERROR([sorry rpm requires a db-1.85 API])))
+	           )
+	AC_CHECK_LIB(rpm, rpmRunTransactions,[build_rpmview=yes],
+	  [build_rpmview=false],-lz $rpm_libs)
+	if test "x$build_rpmview" = "xyes" ; then
+	dnl FIXME
+	dnl Ideally I should check for rpm and where it is
+
+	  RPM_VERSION=`rpm --version | awk '{ print $3; }'`
+
+	  AC_MSG_CHECKING(rpm version >= 3.0.4)
+
+	  _found_valid_rpm="no"
+
+	  case $RPM_VERSION in
+	    3.0.*)
+	      _found_valid_rpm="yes"
+	    ;;
+
+	    *)
+	  esac
+
+	  if test "$_found_valid_rpm" = "yes"
+	  then
+		AC_MSG_RESULT([found $RPM_VERSION, yes])
+		AC_DEFINE(HAVE_RPM)  	
+	  	RPM_LIBS="-lrpm -lz $rpm_libs"
+	  else
+		AC_MSG_ERROR([
+	*** RPM 3.0.4 required
+	*** $RPM_VERSION found
+	*** configure with --disable-eazel-services to get around this
 	])
-dnl =>
-AC_CHECK_LIB(popt, poptParseArgvString, [rpm_libs="$rpm_libs -lpopt"])
-AC_CHECK_FUNC(dbopen, [],
-  AC_CHECK_LIB(db1, dbopen, [rpm_libs="$rpm_libs -ldb1"],
-    AC_CHECK_LIB(db, dbopen, [rpm_libs="$rpm_libs -ldb"],
-       AC_MSG_ERROR([sorry rpm requires a db-1.85 API])))
-           )
-AC_CHECK_LIB(rpm, rpmRunTransactions,[build_rpmview=true],
-  [build_rpmview=false],-lz $rpm_libs)
-if test "x$build_rpmview" = "xtrue" ; then
-dnl FIXME
-dnl Ideally I should check for rpm and where it is
-
-  RPM_VERSION=`rpm --version | awk '{ print $3; }'`
-
-  AC_MSG_CHECKING(rpm version >= 3.0.4)
-
-  _found_valid_rpm="no"
-
-  case $RPM_VERSION in
-    3.0.*)
-      _found_valid_rpm="yes"
-    ;;
-
-    *)
-  esac
-
-  if test "$_found_valid_rpm" = "yes"
-  then
-	AC_MSG_RESULT([found $RPM_VERSION, yes])
-	AC_DEFINE(HAVE_RPM)  	
-  	RPM_LIBS="-lrpm -lz $rpm_libs"
-  else
-	AC_MSG_ERROR([
-*** RPM 3.0.4 required
-*** $RPM_VERSION found
-*** configure with --disable-eazel-services to get around this
-])
-  fi
+	  fi
+	fi
+	AC_SUBST(RPM_LIBS)
+else
+	build_rpmview=no
 fi
-AC_SUBST(RPM_LIBS)
-AM_CONDITIONAL(BUILD_RPMVIEW_COMPONENT, test "x$build_rpmview" = "xtrue")
+AM_CONDITIONAL(BUILD_RPMVIEW_COMPONENT, test "x$build_rpmview" = "xyes")
 
 dnl ====================================
 dnl = End rpmview checks
@@ -604,7 +611,7 @@ dnl =======================
 dnl ====================================
 dnl = Begin tests for ammonite (--enable-eazel-services only)
 dnl ====================================
-if test "x$EAZEL_SERVICES" = "x1" ;
+if test "x$EAZEL_SERVICES_ENABLED" = "xyes" ;
 then
 	AMMONITE_CFLAGS=""
 	AMMONITE_LIBS=""
@@ -825,9 +832,8 @@ dnl <= Configuration summary =>
 
 echo "<= Nautilus configuration summary :"
 dnl <= Rpm-view integrated? =>
-grep -sq HAVE_RPM config.h
-case $? in
-0)
+case x$build_rpmview in
+xyes)
 echo "
 RPMview component	: YES"
 ;;
@@ -852,8 +858,8 @@ Mozilla component	: NO"
 ;;
 esac
 dnl <= Do we want Eazel services =>
-case "X$EAZEL_SERVICES" in
-X1)
+case "X$EAZEL_SERVICES_ENABLED" in
+Xyes)
 echo "
 Eazel services		: YES"
 ;;
