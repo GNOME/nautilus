@@ -2198,11 +2198,6 @@ should_show_accessed_date (FMPropertiesWindow *window)
 static gboolean
 should_show_mime_type (FMPropertiesWindow *window) 
 {
-	/* FIXME bugzilla.gnome.org 45652:
-	 * nautilus_file_is_directory should return TRUE for special
-	 * trash directory, but doesn't. I could trivially fix this
-	 * with a check for is_merged_trash_directory here instead.
-	 */
 	if (file_list_all_directories (window->details->target_files)) {
 		return FALSE;
 	}
