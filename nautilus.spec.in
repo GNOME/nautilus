@@ -31,8 +31,9 @@ Requires:	gdk-pixbuf >= 0.9.0
 Requires:	bonobo >= 0.33
 Requires:	popt >= 1.5
 Requires:	freetype2 >= 2.0
-Requires:	medusa >= 0.2.1
+Requires:	medusa >= 0.2.2
 Requires:	esound >= 0.2
+Requires:	libghttp >= 1.0.9
 
 %description
 Nautilus is an open-source file manager and graphical shell being
@@ -51,6 +52,8 @@ Summary:        Nautilus component for use with Mozilla
 Group:          User Interface/Desktop
 Requires:       %name = %{PACKAGE_VERSION}
 Requires:	mozilla >= 0.7
+Requires:	mozilla-mail >= 0.7
+Requires:	mozilla-psm >= 0.7
 
 %package trilobite
 Summary:        Nautilus component framework for services
@@ -249,6 +252,7 @@ fi
 %{prefix}/share/oaf/Nautilus_shell.oaf
 %{prefix}/share/oaf/Nautilus_Control_throbber.oaf
 %{prefix}/share/gnome/help/nautilus/C/*
+%{prefix}/share/gnome/help/gnufdl/C/*
 
 %files devel
 
@@ -276,6 +280,7 @@ fi
 %{prefix}/bin/nautilus-service-install-view
 %{prefix}/bin/trilobite-eazel-install-service
 %{prefix}/bin/nautilus-summary-view
+%{prefix}/bin/nautilus-change-password-view
 %{prefix}/bin/nautilus-rpm-view
 %{prefix}/bin/eazel-gen-xml
 %{prefix}/bin/eazel-vault
