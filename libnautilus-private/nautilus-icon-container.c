@@ -6133,8 +6133,8 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 				     editable_text);
 	eel_filename_get_rename_region (editable_text, &start_offset, &end_offset);
 	eel_editable_label_select_region (EEL_EDITABLE_LABEL (details->rename_widget),
-					  end_offset,
-					  start_offset);
+					  start_offset,
+					  end_offset);
 	gtk_widget_show (details->rename_widget);
 	
 	gtk_widget_grab_focus (details->rename_widget);
