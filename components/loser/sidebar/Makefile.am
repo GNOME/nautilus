@@ -17,7 +17,6 @@ oaf_DATA = nautilus-sidebar-loser.oafinfo
 
 uidir = $(datadir)/gnome/ui
 ui_DATA = nautilus-sidebar-loser-ui.xml
-ui_msgs = nautilus-sidebar-loser-ui.xml.h
 
 bin_PROGRAMS =					\
 	nautilus-sidebar-loser
@@ -36,6 +35,4 @@ nautilus_sidebar_loser_LDADD =			\
 	$(VFS_LIBS)					\
 	$(OAF_LIBS)
 
-EXTRA_DIST = $(oaf_DATA) $(ui_DATA) $(ui_msgs)
-CLEANFILES = $(ui_msgs)
-BUILT_SOURCES = $(ui_msgs)
+EXTRA_DIST = $(oaf_DATA) $(ui_DATA)

@@ -1,3 +1,46 @@
+2000-10-30  Darin Adler  <darin@eazel.com>
+
+	Fixed bug 4057 (clicking the back button while opening a huge
+	directory often crashes).
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_for_each): The function was iterating
+	some icons twice. All the icons on the new_icons list are also on
+	the icons list.
+	(icon_destroy): Also be sure to remove the icon from the new_icons
+	list if it happens to be destroyed while still on that list.
+
+	* configure.in:
+	* Makefile.shared:
+	Got rid of the shared part of the code to generate .xml.h
+	files. It's no longer needed since the po directory takes care of
+	everything itself.
+	
+	* components/loser/content/Makefile.am:
+	* components/loser/sidebar/Makefile.am:
+	* components/mozilla/Makefile.am:
+	* components/sample/Makefile.am:
+	* components/services/summary/nautilus-view/Makefile.am:
+	* libnautilus/Makefile.am:
+	* src/Makefile.am:
+	* src/file-manager/Makefile.am:
+	Got rid of the per-directory part of the code to generate .xml.h
+	files.
+	
+	* components/loser/content/nautilus-content-loser-ui.xml.h:
+	* components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:
+	* components/mozilla/nautilus-mozilla-ui.xml.h:
+	* components/sample/nautilus-sample-content-view-ui.xml.h:
+	* components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:
+	* libnautilus/nautilus-clipboard-ui.xml.h:
+	* src/file-manager/nautilus-directory-view-ui.xml.h:
+	* src/file-manager/nautilus-icon-view-ui.xml.h:
+	* src/file-manager/nautilus-search-list-view-ui.xml.h:
+	* src/nautilus-service-ui.xml.h:
+	* src/nautilus-shell-ui.xml.h:
+	Got rid of the checked-in copies of the .xml.h files. The worst
+	part!
+
 2000-10-30  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

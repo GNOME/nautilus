@@ -22,7 +22,6 @@ oaf_DATA = nautilus-summary-view.oafinfo
 
 uidir = $(datadir)/gnome/ui
 ui_DATA = nautilus-summary-view-ui.xml
-ui_msgs = nautilus-summary-view-ui.xml.h
 
 bin_PROGRAMS =								\
 	nautilus-summary-view
@@ -48,6 +47,4 @@ nautilus_summary_view_LDADD =						\
 	$(AMMONITE_LIBS)						\
 	$(NULL)
 
-EXTRA_DIST = $(oaf_DATA) $(ui_DATA) $(ui_msgs)
-BUILT_SOURCES = $(ui_msgs)
-CLEANFILES = $(ui_msgs)
+EXTRA_DIST = $(oaf_DATA) $(ui_DATA)

@@ -153,21 +153,15 @@ ui_DATA = 					\
 	nautilus-service-ui.xml			\
 	nautilus-shell-ui.xml			\
 	$(NULL)
-ui_msgs =					\
-	nautilus-service-ui.xml.h		\
-	nautilus-shell-ui.xml.h			\
-	$(NULL)
 
 CLEANFILES = \
 	$(nautilus_shell_interface_idl_sources)	\
 	nautilus_shell_interface_idl_stamp	\
-	$(ui_msgs)				\
 	$(NULL)
 
 EXTRA_DIST = \
 	$(oaf_DATA)				\
 	$(ui_DATA)				\
-	$(ui_msgs)				\
 	check-nautilus				\
 	nautilus-shell-interface.idl		\
 	run-nautilus				\
@@ -175,7 +169,6 @@ EXTRA_DIST = \
 
 BUILT_SOURCES = \
 	$(nautilus_shell_interface_idl_sources) \
-	$(ui_msgs)				\
 	$(NULL)
 
 install-data-hook: run-nautilus

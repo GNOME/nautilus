@@ -3364,8 +3364,6 @@ nautilus_icon_container_for_each (NautilusIconContainer *container,
 
 	g_list_foreach (container->details->icons,
 			call_icon_callback, &callback_and_data);
-	g_list_foreach (container->details->new_icons,
-			call_icon_callback, &callback_and_data);
 }
 
 /* utility routine to remove a single icon from the container */
@@ -3380,6 +3378,7 @@ icon_destroy (NautilusIconContainer *container,
 	details = container->details;
 
 	details->icons = g_list_remove (details->icons, icon);
+	details->new_icons = g_list_remove (details->new_icons, icon);
 		
 	was_selected = icon->is_selected;
 

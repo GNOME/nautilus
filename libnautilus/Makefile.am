@@ -75,13 +75,9 @@ uidir = $(datadir)/gnome/ui
 ui_DATA = \
 	nautilus-clipboard-ui.xml	\
 	$(NULL)
-ui_msgs = \
-	nautilus-clipboard-ui.xml.h	\
-	$(NULL)
 
 EXTRA_DIST = \
 	$(ui_DATA)			\
-	$(ui_msgs)			\
 	nautilus-view-component.idl	\
 	nautilus-distributed-undo.idl	\
 	$(NULL)
@@ -89,7 +85,6 @@ EXTRA_DIST = \
 BUILT_SOURCES = \
 	$(nautilus_view_component_idl_sources)		\
 	$(nautilus_distributed_undo_idl_sources)	\
-	$(ui_msgs)					\
 	$(NULL)
 
 CLEANFILES = \
@@ -97,5 +92,4 @@ CLEANFILES = \
 	nautilus_view_component_idl_stamp		\
 	$(nautilus_distributed_undo_idl_sources)	\
 	nautilus_distributed_undo_idl_stamp             \
-	$(ui_msgs)					\
 	$(NULL)

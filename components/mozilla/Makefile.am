@@ -59,10 +59,5 @@ uidir = $(datadir)/gnome/ui
 ui_DATA = \
 	nautilus-mozilla-ui.xml \
 	$(NULL)
-ui_msgs = \
-	nautilus-mozilla-ui.xml.h \
-	$(NULL)
 
-EXTRA_DIST = $(oaf_DATA) $(ui_DATA) $(ui_msgs)
-BUILT_SOURCES = $(ui_msgs)
-CLEANFILES = $(ui_msgs)
+EXTRA_DIST = $(oaf_DATA) $(ui_DATA)
