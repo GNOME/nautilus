@@ -2309,7 +2309,8 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 
 	if (action == GDK_ACTION_ASK) {
 		action = nautilus_drag_drop_action_ask 
-			(GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
+			(GTK_WIDGET (container),
+			 GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
 	}
 	
 	/* We don't support GDK_ACTION_ASK or GDK_ACTION_PRIVATE

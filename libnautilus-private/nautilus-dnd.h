@@ -128,8 +128,10 @@ gboolean                    nautilus_drag_drag_data_get                 (GtkWidg
 int                         nautilus_drag_modifier_based_action         (int                                   default_action,
 									 int                                   non_default_action);
 
-GdkDragAction               nautilus_drag_drop_action_ask               (GdkDragAction                         possible_actions);
-GdkDragAction               nautilus_drag_drop_background_ask           (GdkDragAction                         possible_actions);
+GdkDragAction               nautilus_drag_drop_action_ask               (GtkWidget                            *widget,
+									 GdkDragAction                         possible_actions);
+GdkDragAction               nautilus_drag_drop_background_ask           (GtkWidget                            *widget,
+									 GdkDragAction                         possible_actions);
 
 gboolean                    nautilus_drag_autoscroll_in_scroll_region   (GtkWidget                            *widget);
 void                        nautilus_drag_autoscroll_calculate_delta    (GtkWidget                            *widget,

@@ -441,7 +441,8 @@ receive_uris (NautilusTreeViewDragDest *dest,
 		} else {
 			action = GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK;
 		}
-		context->action = nautilus_drag_drop_action_ask (action);
+		context->action = nautilus_drag_drop_action_ask
+			(GTK_WIDGET (dest->details->tree_view), action);
 	}
 
 	/* We only want to copy external uris */

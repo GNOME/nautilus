@@ -535,7 +535,8 @@ get_background_drag_action (NautilusIconContainer *container,
 			valid_actions |= NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND;
 		}
 
-		action = nautilus_drag_drop_background_ask (valid_actions);
+		action = nautilus_drag_drop_background_ask 
+			(GTK_WIDGET (container), valid_actions);
 	}
 
 	return action;
@@ -979,7 +980,8 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 				action |= NAUTILUS_DND_ACTION_SET_AS_BACKGROUND;
 			}
 		}
-		context->action = nautilus_drag_drop_action_ask (action);
+		context->action = nautilus_drag_drop_action_ask
+			(GTK_WIDGET (container), action);
 	}
 	
 	if (context->action == NAUTILUS_DND_ACTION_SET_AS_BACKGROUND) {

@@ -483,7 +483,7 @@ receive_dropped_uri_list (NautilusInformationPanel *information_panel,
 		 */
 		if (exactly_one && uri_is_local_image (uris[0])) {
 			if (action == GDK_ACTION_ASK) {
-				action = nautilus_drag_drop_background_ask (NAUTILUS_DND_ACTION_SET_AS_BACKGROUND | NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND);
+				action = nautilus_drag_drop_background_ask (GTK_WIDGET (information_panel), NAUTILUS_DND_ACTION_SET_AS_BACKGROUND | NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND);
 			}	
 
 			if (action > 0) {
@@ -567,7 +567,7 @@ receive_dropped_color (NautilusInformationPanel *information_panel,
 	case ICON_PART:
 	case BACKGROUND_PART:
 		if (action == GDK_ACTION_ASK) {
-			action = nautilus_drag_drop_background_ask (NAUTILUS_DND_ACTION_SET_AS_BACKGROUND | NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND);
+			action = nautilus_drag_drop_background_ask (GTK_WIDGET (information_panel), NAUTILUS_DND_ACTION_SET_AS_BACKGROUND | NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND);
 		}	
 
 		if (action > 0) {

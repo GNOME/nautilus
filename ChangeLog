@@ -1,5 +1,21 @@
 2003-02-08  Dave Camp  <dave@ximian.com>
 
+	* libnautilus-private/nautilus-dnd.c:
+	(nautilus_drag_drop_action_ask),
+	(nautilus_drag_drop_background_ask):
+	* libnautilus-private/nautilus-dnd.h:
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(get_background_drag_action),
+	(nautilus_icon_container_receive_dropped_icons):
+	* libnautilus-private/nautilus-tree-view-drag-dest.c:
+	(receive_uris):
+	* src/file-manager/fm-icon-view.c: (icon_view_handle_uri_list):
+	* src/nautilus-information-panel.c: (receive_dropped_uri_list),
+	(receive_dropped_color): Set the GdkScreen on the drag-and-drop 
+	context menu.  Fixes #90920.
+
+2003-02-08  Dave Camp  <dave@ximian.com>
+
 	* libnautilus-private/nautilus-icon-factory.c:
 	(nautilus_remove_icon_file_name_suffix),
 	(path_represents_svg_image): Allow .svgz rendering in nautilus.

@@ -551,7 +551,8 @@ append_drop_action_menu_item (GtkWidget          *menu,
 
 /* Pops up a menu of actions to perform on dropped files */
 GdkDragAction
-nautilus_drag_drop_action_ask (GdkDragAction actions)
+nautilus_drag_drop_action_ask (GtkWidget *widget,
+			       GdkDragAction actions)
 {
 	GtkWidget *menu;
 	GtkWidget *menu_item;
@@ -561,6 +562,7 @@ nautilus_drag_drop_action_ask (GdkDragAction actions)
 	 * allowed actions.
 	 */
 	menu = gtk_menu_new ();
+	gtk_menu_set_screen (GTK_MENU (menu), gtk_widget_get_screen (widget));
 	
 	append_drop_action_menu_item (menu, _("_Move here"),
 				      GDK_ACTION_MOVE,
@@ -614,7 +616,8 @@ nautilus_drag_drop_action_ask (GdkDragAction actions)
 }
 
 GdkDragAction
-nautilus_drag_drop_background_ask (GdkDragAction actions)
+nautilus_drag_drop_background_ask (GtkWidget *widget, 
+				   GdkDragAction actions)
 {
 	GtkWidget *menu;
 	GtkWidget *menu_item;
@@ -624,6 +627,7 @@ nautilus_drag_drop_background_ask (GdkDragAction actions)
 	 * allowed actions.
 	 */
 	menu = gtk_menu_new ();
+	gtk_menu_set_screen (GTK_MENU (menu), gtk_widget_get_screen (widget));
 	
 	append_drop_action_menu_item (menu, _("Set as background for _all folders"),
 				      NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND,
