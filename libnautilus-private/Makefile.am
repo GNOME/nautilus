@@ -25,12 +25,15 @@ fsextension_idl_sources=fsextension-stubs.c fsextension-skels.c fsextension-comm
 BUILT_SOURCES=$(fsextension_idl_sources)
 
 libnautilus_extensionsincludedir=$(includedir)/libnautilus-extensions
-libnautilus_extensionsinclude_HEADERS=			\
-	nautilus-icon-grid.h			\
-	nautilus-icon-dnd.h			\
-	nautilus-icon-canvas-item.h		\
-	nautilus-file-changes-queue.h		\
+libnautilus_extensionsinclude_HEADERS=		\
 	nautilus-background-canvas-group.h	\
+	nautilus-file-changes-queue.h		\
+	nautilus-icon-canvas-item.h		\
+	nautilus-icon-dnd.h			\
+	nautilus-icon-grid.h			\
+	nautilus-undo-manager.h			\
+	nautilus-undo-transaction.h		\
+	nautilus-undoable.h			\
 	bonobo-stream-vfs.h			\
 	gtkscrollframe.h			\
 	libnautilus-extensions.h		\
@@ -71,6 +74,7 @@ libnautilus_extensionsinclude_HEADERS=			\
 	$(NULL)
 
 libnautilus_extensions_la_SOURCES = \
+	nautilus-undo-manager-private.h		\
 	nautilus-file-changes-queue-private.h	\
 	nautilus-icon-private.h			\
 	nautilus-file-private.h			\
