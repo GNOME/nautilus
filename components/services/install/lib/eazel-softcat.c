@@ -495,7 +495,7 @@ get_search_url_for_package (EazelSoftCat *softcat, const PackageData *package, i
 
 	if (dist.name != DISTRO_UNKNOWN) {
 		dist_name = trilobite_get_distribution_name (dist, TRUE, TRUE);
-		add_to_url (url, "&distro=", "RedHat62");
+		add_to_url (url, "&distro=", dist_name);
 		g_free (dist_name);
 	}
 	/* FIXME: should let them specify a protocol other than http, someday */

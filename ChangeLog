@@ -1,3 +1,20 @@
+2001-01-26  Eskil Olsen  <eskil@eazel.com>
+
+	reviewed by: Ramiro Estrugo <ramiro@eazel.com>
+
+	* components/services/install/command-line/eazel-test-packsys.c:
+	(test_version_compare):
+	Testing the Mozilla hack...
+	
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(eazel_package_system_rpm3_compare_version):
+	Special case for Mxx versions because rpmvercmp is not obeying
+	the laws of mathematics...
+	
+	* components/services/install/lib/eazel-softcat.c:
+	(get_search_url_for_package):
+	Fix for 6055 - no longer use hardcoded RedHat62 as distro.
+
 2001-01-26  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: added  nautilus-change-password-view

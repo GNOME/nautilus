@@ -1533,7 +1533,13 @@ eazel_package_system_rpm3_compare_version (EazelPackageSystem *system,
 					   const char *a,
 					   const char *b)
 {
-	return rpmvercmp (a, b);
+	int result;
+	result = rpmvercmp (a, b);
+	/* Special bandaid for M18 <> 0.7 mozilla versions */
+	if (isdigit (*a) && *b=='M') {
+		if (result < 0) { result = abs (result); }
+	}
+	return result;
 }
 
 /*****************************************
