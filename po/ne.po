@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-11 13:05+0100\n"
+"POT-Creation-Date: 2004-02-24 14:56+0100\n"
 "PO-Revision-Date: 2003-11-01 10:53NST\n"
 "Last-Translator: Pawan Chitrakar <pawan@nplinux.org>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
@@ -957,15 +957,6 @@ msgstr "टाहोए"
 msgid "This theme uses photo-realistic folders."
 msgstr "यह थीम फोटो रिएलिस्टिक फोल्डरों का उपयोग करती है"
 
-#: libbackground/preview-file-selection.c:207
-msgid "Can't find an hbox, using a normal file selection"
-msgstr "सामान्य फाइल छानोट प्रयोग गर्दा एचबक्स पत्ता लागेन"
-
-#: libbackground/preview-file-selection.c:212
-#: src/nautilus-file-management-properties.glade.h:58
-msgid "Preview"
-msgstr "पूर्वावलोकन"
-
 #: libnautilus-extension/nautilus-column.c:175
 #: libnautilus-extension/nautilus-menu-item.c:206
 #: libnautilus-extension/nautilus-property-page.c:176
@@ -1202,18 +1193,22 @@ msgid "Enable 'special' flags in file preferences dialog"
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
+msgid "Enables the classic Nautilus behavior, where all windows are browsers"
+msgstr ""
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid ""
 "Filename for the default folder background. Only used if background_set is "
 "true."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
 msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
 msgid ""
 "Folders over this size will be truncated to around this size. The purpose of "
 "this is to avoid unintentionally blowing the heap and killing Nautilus on "
@@ -1221,129 +1216,136 @@ msgid ""
 "due to the reading of folders chunk-wise."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
 msgid "Hide default bookmarks in the bookmark menu"
 msgstr "पूर्वनिर्धारित बुकमार्क्स नदेखाउ"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
 msgid "Home icon visible on desktop"
 msgstr "डेस्कटपमा होम आईकन देखाउ"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
 msgid ""
 "If set to true, Nautilus will only show folders in the tree side pane. "
 "Otherwise it will show both folders and files."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
 msgid "If set to true, newly opened windows will have the side pane visible."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
 msgid "If set to true, newly opened windows will have the status bar visible."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
 msgid "If set to true, newly opened windows will have toolbars visible."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
 msgid ""
 "If set to true, then Nautilus lets you edit some of the more esoteric "
 "options of a file in the file preferences dialog."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
 msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "put files in the trash."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
 msgid ""
 "If set to true, then Nautilus will bring up a new Nautilus window by default "
 "whenever an item is opened."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
 "If set to true, then Nautilus will have a feature allowing you to delete a "
 "file immediately and in-place, instead of moving it to the trash. This "
 "feature can be dangerous, so use caution."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
 msgid ""
 "If set to true, then Nautilus will just show the user's bookmarks in the "
 "bookmark menu."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid ""
 "If set to true, then Nautilus will use the user's home folder as the "
 "desktop. If it is false, then it will use ~/Desktop as the desktop."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
+msgid ""
+"If set to true, then all Nautilus windows will be browser windows. This is "
+"how Nautilus used to behave before version 2.6, and some people prefer this "
+"behavior."
+msgstr ""
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid ""
 "If set to true, then backup files such as those created by Emacs are "
 "displayed. Currently, only files ending in a tilde (~) are considered backup "
 "files."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
 msgid ""
 "If set to true, then hidden files are shown in the file manager. Hidden "
 "files are either dotfiles or are listed in the folder's .hidden file."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid ""
 "If this is set to true, Nautilus adds itself to the session when it starts "
 "up. This means it will be started the next time you log in."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
 "If this is set to true, an icon linking to the computer location will be put "
 "on the desktop."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
 "sorted from \"z\" to \"a\"."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -1351,99 +1353,99 @@ msgid ""
 "incrementally they will be sorted decrementally."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid "If true, icons will be laid out tighter by default in new windows."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 msgid ""
 "If true, labels will be placed beside icons rather than underneath them."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid "If true, new windows will use manual layout by default."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
 "load or use lots of memory."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid "List of possible captions on icons"
 msgstr "आईकनमा राख्न सकिने क्याप्सनको सुचि"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 #, fuzzy
 msgid "Maximum handled files in a folder"
 msgstr "फोल्डरमा राख्न सकिने अघिकतम फाईल"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 msgid "Maximum image size for thumbnailing"
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
 msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
 msgid "Nautilus handles drawing the desktop"
 msgstr "डेस्कटप नटिलसले बनाउन सक्छ"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
 #, fuzzy
 msgid "Nautilus uses the users home folder as the desktop"
 msgstr "नटिलसले यूजरको होम फोल्डरलाई डेस्कटप बनाउछ"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
 #, fuzzy
 msgid "Only show folders in the tree sidebar"
 msgstr "किनाराको बारमा फोल्डर मात्र देखाउ"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid "Put labels beside icons"
 msgstr "आइकनसगै लेबल राख"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid "Reverse sort order in new windows"
 msgstr "नया विन्डोमा उल्टो क्रममा देखाउ"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 #, fuzzy
 msgid "Show folders first in windows"
 msgstr "फोल्डर पहिला देखाउ"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid "Show location bar in new windows"
 msgstr "नया विन्डोमा लोकेसन बार देखाउ"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid "Show side pane in new windows"
 msgstr "नया विन्डोमा किनाराको पेन देखाउ"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid "Show status bar in new windows"
 msgstr "नया विन्डोमा स्ट्याटस बार देखाउ"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid "Show toolbar in new windows"
 msgstr "नया विन्डोमा टुल बार देखाउ"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "Side pane view"
 msgstr "किनाराको पेन दृष्य"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid ""
 "Speed tradeoff for when to preview a sound file when mousing over a files "
 "icon. If set to \"always\" then always plays the sound, even if the file is "
@@ -1451,7 +1453,7 @@ msgid ""
 "local filesystems. If set to \"never\" then it never previews sound."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
 "file's icon. If set to \"always\" then always show previews, even if the "
@@ -1460,7 +1462,7 @@ msgid ""
 "read preview data."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid ""
 "Speed tradeoff for when to show an image file as a thumbnail. If set to "
 "\"always\" then always thumbnail, even if the folder is on a remote server. "
@@ -1469,7 +1471,7 @@ msgid ""
 "icon."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
@@ -1477,64 +1479,64 @@ msgid ""
 "filesystems. If set to \"never\" then never bother to compute item counts."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
 msgid ""
 "The default sort-order for the items in the list view. Possible values are "
 "\"name\", \"size\", \"type\", and \"modification_date\"."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid "The default width of the side pane in new windows."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
 msgid "The font description used for the icons on the desktop."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 msgid "The side pane view to show in newly opened windows."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
 msgid "Trash icon visible on desktop"
 msgstr "ट्रेश डेस्कटपमा देखाउ"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
 msgid "Type of click used to launch/open files"
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
 msgid "Use manual layout in new windows"
 msgstr "नया विन्डोमा manual layout प्रयोग गर"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:90
 #, fuzzy
 msgid "Use tighter layout in new windows"
 msgstr "नया विन्डोमा कसिएको layout प्रयोग गर"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
 msgid "What to do with executable text files when activated"
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:90
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
 msgid ""
 "What to do with executable text files when they are activated (single or "
 "double clicked). Possible values are \"launch\" to launch them as programs, "
@@ -1542,175 +1544,82 @@ msgid ""
 "text files."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are \"list_view\" "
 "and \"icon_view\"."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
 #, fuzzy
 msgid "When to show number of items in a folder"
 msgstr "फोल्डरमा भएको आइटम्स देखाउ"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
 msgid "When to show preview text in icons"
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
 #, fuzzy
 msgid "When to show thumbnails of image files"
 msgstr "छवि फाइलों के लिए थम्बनेल्स दिखाएँ"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
 #, fuzzy
 msgid "Whether a custom default folder background has been set."
 msgstr "पूर्वनिर्धारित पार्श्व डेस्कटपको प्रयोग गर"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
 msgid "Whether a custom default side pane background has been set."
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:97
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
 msgid "Whether to ask for confirmation when moving files to trash"
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:98
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
 msgid "Whether to enable immediate deletion"
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:99
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:101
 msgid "Whether to preview sounds when mousing over an icon"
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:100
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
 msgid "Whether to show backup files"
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:101
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:103
 msgid "Whether to show hidden files"
 msgstr ""
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:104
 msgid "Width of the side pane"
 msgstr "साइड पेनको चौडाइ"
 
-#: libnautilus-private/filesystem-attributes.xml.h:1
-msgid "AFFS Volume"
-msgstr "AFFS भोल्यूम"
+#: libnautilus-private/nautilus-column-chooser.c:365
+msgid "Move _Up"
+msgstr ""
 
-#: libnautilus-private/filesystem-attributes.xml.h:2
-msgid "AFS Network Volume"
-msgstr "AFS नेटवर्क भोल्यूम"
+#: libnautilus-private/nautilus-column-chooser.c:374
+msgid "Move _Down"
+msgstr ""
 
-#: libnautilus-private/filesystem-attributes.xml.h:3
-msgid "Auto-detected Volume"
-msgstr "आफै-खोजेको भोल्यूम"
+#: libnautilus-private/nautilus-column-chooser.c:383
+#, fuzzy
+msgid "_Show"
+msgstr "%s देखाउ"
 
-#: libnautilus-private/filesystem-attributes.xml.h:4
-msgid "CD Digital Audio"
-msgstr "सीडी डिजिटल आडियो"
+#: libnautilus-private/nautilus-column-chooser.c:393
+#, fuzzy
+msgid "_Hide"
+msgstr "खोज्नुस"
 
-#: libnautilus-private/filesystem-attributes.xml.h:5
-msgid "CD-ROM Drive"
-msgstr "सीडी रोम ड्राइव"
-
-#: libnautilus-private/filesystem-attributes.xml.h:6
-msgid "CDROM Volume"
-msgstr "सीडी रोम भोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:7
-msgid "DVD Volume"
-msgstr "डीवीडी भोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:8
-msgid "Enhanced DOS Volume"
-msgstr "डास वोल्यूम में वद्धि कर दी"
-
-#: libnautilus-private/filesystem-attributes.xml.h:9
-msgid "Ext2 Linux Volume"
-msgstr "एक्स्ट लाइनक्स वोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:10
-msgid "Ext3 Linux Volume"
-msgstr "एक्सट३ लाइनक्स वोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:11
-msgid "Hardware Device Volume"
-msgstr "हार्डवेयर उपकरण वोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:12
-msgid "Hsfs CDROM Volume"
-msgstr "एच एस एफ एस सीडीरोम वोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:13
-msgid "JFS Volume"
-msgstr "जेएफएस वोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:14
-msgid "MSDOS Volume"
-msgstr "एमएस डास वोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:15
-msgid "MacOS Volume"
-msgstr "मैक ओएस वोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:16
-msgid "Minix Volume"
-msgstr "मिनिक्स वोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:17
-msgid "NFS Network Volume"
-msgstr "एन एफ एस नेटवर्क वोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:18
-msgid "Pcfs Solaris Volume"
-msgstr "पीसीएफएस सोलारिस वोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:19
-msgid "ReiserFS Linux Volume"
-msgstr "रिसर एफएस लाइनक्स वोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:20
-msgid "Solaris/BSD Volume"
-msgstr "सोलारिस/बीएसडी वोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:21
-msgid "SuperMount Volume"
-msgstr "सुपर माउण्ट वोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:22
-msgid "System Volume"
-msgstr "सिस्टम वोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:23
-msgid "Udfs Solaris Volume"
-msgstr "यूडीएफएस वोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:24
-msgid "Windows NT Volume"
-msgstr "विन्डोज एन टी वोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:25
-msgid "Windows Shared Volume"
-msgstr "विन्डोज शेयर्ड वोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:26
-msgid "Windows VFAT Volume"
-msgstr "विन्डोज वीफेट वोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:27
-msgid "XFS Linux Volume"
-msgstr "एक्सएफएस लाइनक्स वोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:28
-msgid "XIAFS Volume"
-msgstr "एक्सआईएफएस वोल्यूम"
-
-#: libnautilus-private/filesystem-attributes.xml.h:29
-msgid "Xenix Volume"
-msgstr "जेनिक्स वोल्यूम"
+#: libnautilus-private/nautilus-column-chooser.c:406
+#, fuzzy
+msgid "_Use Default"
+msgstr "दर्शाएँ व्यू डिफाल्ट"
 
 #: libnautilus-private/nautilus-column-utilities.c:44
 #, fuzzy
@@ -2208,7 +2117,7 @@ msgstr "सभी बलदना"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1148
-#: libnautilus-private/nautilus-file.c:4690
+#: libnautilus-private/nautilus-file.c:4714
 #, c-format
 msgid "link to %s"
 msgstr "%s के लिए कड़ी"
@@ -2569,46 +2478,46 @@ msgstr "ट्रेश को खाली कर रहे हैं"
 msgid "Preparing to Empty the Trash..."
 msgstr "ट्रेश को खाली करने की तैयारी"
 
-#: libnautilus-private/nautilus-file-operations.c:2529
+#: libnautilus-private/nautilus-file-operations.c:2534
 #, fuzzy
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr "के तपाईं ट्रेशबाट सबै आईटमहरू स्थायी तरीकाले मेट्न चाहनुहुन्छ"
 
-#: libnautilus-private/nautilus-file-operations.c:2543
+#: libnautilus-private/nautilus-file-operations.c:2548
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr ""
 
-#: libnautilus-private/nautilus-file-operations.c:2555
+#: libnautilus-private/nautilus-file-operations.c:2560
 msgid "_Empty"
 msgstr "खाली"
 
-#: libnautilus-private/nautilus-file-utilities.c:368
-#: libnautilus-private/nautilus-global-preferences.c:523
+#: libnautilus-private/nautilus-file-utilities.c:369
+#: libnautilus-private/nautilus-global-preferences.c:527
 #: nautilus-computer.desktop.in.h:1 src/nautilus-navigation-window-ui.xml.h:9
 #, fuzzy
 msgid "Computer"
 msgstr "काउण्टरटप"
 
-#: libnautilus-private/nautilus-file-utilities.c:370
+#: libnautilus-private/nautilus-file-utilities.c:371
 #, fuzzy
 msgid "Network"
 msgstr "रेडहेट नेटवर्क"
 
-#: libnautilus-private/nautilus-file-utilities.c:372
+#: libnautilus-private/nautilus-file-utilities.c:373
 #, fuzzy
 msgid "Fonts"
 msgstr "बिन्दु"
 
-#: libnautilus-private/nautilus-file-utilities.c:374
+#: libnautilus-private/nautilus-file-utilities.c:375
 msgid "Themes"
 msgstr "थीम्स"
 
-#: libnautilus-private/nautilus-file-utilities.c:376
+#: libnautilus-private/nautilus-file-utilities.c:377
 #, fuzzy
 msgid "CD Creator"
 msgstr "सिडि निर्माता"
 
-#: libnautilus-private/nautilus-file-utilities.c:378
+#: libnautilus-private/nautilus-file-utilities.c:379
 #, fuzzy
 msgid "Windows Network"
 msgstr "विन्डो"
@@ -2628,64 +2537,64 @@ msgstr "विन्डो"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2898
+#: libnautilus-private/nautilus-file.c:2922
 msgid "today at 00:00:00 PM"
 msgstr "आज दिउसो 00:00:00 बजे"
 
-#: libnautilus-private/nautilus-file.c:2899
+#: libnautilus-private/nautilus-file.c:2923
 msgid "today at %-I:%M:%S %p"
 msgstr "आज %-l:%M:%S %p बजे"
 
-#: libnautilus-private/nautilus-file.c:2901
+#: libnautilus-private/nautilus-file.c:2925
 msgid "today at 00:00 PM"
 msgstr "आज दिउसो 00:00 बजे"
 
-#: libnautilus-private/nautilus-file.c:2902
+#: libnautilus-private/nautilus-file.c:2926
 msgid "today at %-I:%M %p"
 msgstr "आज %-l :%M %p बजे"
 
-#: libnautilus-private/nautilus-file.c:2904
+#: libnautilus-private/nautilus-file.c:2928
 msgid "today, 00:00 PM"
 msgstr "आज दिउसो 00:00 बजे"
 
-#: libnautilus-private/nautilus-file.c:2905
+#: libnautilus-private/nautilus-file.c:2929
 msgid "today, %-I:%M %p"
 msgstr "आज %-l:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2907
-#: libnautilus-private/nautilus-file.c:2908
+#: libnautilus-private/nautilus-file.c:2931
+#: libnautilus-private/nautilus-file.c:2932
 msgid "today"
 msgstr "आज"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2917
+#: libnautilus-private/nautilus-file.c:2941
 msgid "yesterday at 00:00:00 PM"
 msgstr "हिजोको दिउसो 00:00:00 बजे"
 
-#: libnautilus-private/nautilus-file.c:2918
+#: libnautilus-private/nautilus-file.c:2942
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "हिजोको दिउसो %-l:%M:%S%p बजे"
 
-#: libnautilus-private/nautilus-file.c:2920
+#: libnautilus-private/nautilus-file.c:2944
 msgid "yesterday at 00:00 PM"
 msgstr "हिजोको दिउसो 00:00 बजे"
 
-#: libnautilus-private/nautilus-file.c:2921
+#: libnautilus-private/nautilus-file.c:2945
 msgid "yesterday at %-I:%M %p"
 msgstr "हिजोको दिउसो %-l:%M%p बजे"
 
-#: libnautilus-private/nautilus-file.c:2923
+#: libnautilus-private/nautilus-file.c:2947
 msgid "yesterday, 00:00 PM"
 msgstr "हिजो, दिउसो 00:00 बजे"
 
-#: libnautilus-private/nautilus-file.c:2924
+#: libnautilus-private/nautilus-file.c:2948
 msgid "yesterday, %-I:%M %p"
 msgstr "हिजो, %l:%M%p"
 
-#: libnautilus-private/nautilus-file.c:2926
-#: libnautilus-private/nautilus-file.c:2927
+#: libnautilus-private/nautilus-file.c:2950
+#: libnautilus-private/nautilus-file.c:2951
 msgid "yesterday"
 msgstr "हिजो"
 
@@ -2694,78 +2603,78 @@ msgstr "हिजो"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2938
+#: libnautilus-private/nautilus-file.c:2962
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "बुधवार, सितम्बर 00 0000 अपरान्ह 00:00:00 बजे"
 
-#: libnautilus-private/nautilus-file.c:2939
+#: libnautilus-private/nautilus-file.c:2963
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A,%B%-d%Y को %-l:%M%S%p बजे"
 
-#: libnautilus-private/nautilus-file.c:2941
+#: libnautilus-private/nautilus-file.c:2965
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "सोमवार, अक्टूबर 00 0000 को अपरान्ह 00:00:00 बजे"
 
-#: libnautilus-private/nautilus-file.c:2942
+#: libnautilus-private/nautilus-file.c:2966
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a,%b%-d%Y %-l:%M%S%p"
 
-#: libnautilus-private/nautilus-file.c:2944
+#: libnautilus-private/nautilus-file.c:2968
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "सोमवार, अक्टूबर 00 0000 को अपरान्ह 00:00 बजे"
 
-#: libnautilus-private/nautilus-file.c:2945
+#: libnautilus-private/nautilus-file.c:2969
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a,%b%-d%Y को %-l:%M%p बजे"
 
-#: libnautilus-private/nautilus-file.c:2947
+#: libnautilus-private/nautilus-file.c:2971
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "अक्टूबर 00 0000 को अपरान्ह 00:00 पर"
 
-#: libnautilus-private/nautilus-file.c:2948
+#: libnautilus-private/nautilus-file.c:2972
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%b,%-d%Y %-l:%M%p"
 
-#: libnautilus-private/nautilus-file.c:2950
+#: libnautilus-private/nautilus-file.c:2974
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "अक्टूबर 00 0000, 00:00 अपरान्ह"
 
-#: libnautilus-private/nautilus-file.c:2951
+#: libnautilus-private/nautilus-file.c:2975
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%b,%-d%Y, %-l:%M%p"
 
-#: libnautilus-private/nautilus-file.c:2953
+#: libnautilus-private/nautilus-file.c:2977
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 अपरान्ह"
 
-#: libnautilus-private/nautilus-file.c:2954
+#: libnautilus-private/nautilus-file.c:2978
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%m,%-d%y, %-l:%M%p"
 
-#: libnautilus-private/nautilus-file.c:2956
+#: libnautilus-private/nautilus-file.c:2980
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2957
+#: libnautilus-private/nautilus-file.c:2981
 msgid "%m/%d/%y"
 msgstr "%m/%d/%y"
 
-#: libnautilus-private/nautilus-file.c:4265
-#: src/file-manager/fm-directory-view.c:1813
+#: libnautilus-private/nautilus-file.c:4289
+#: src/file-manager/fm-directory-view.c:1814
 #, fuzzy, c-format
 msgid "%u item"
 msgid_plural "%u items"
 msgstr[0] "%u आईटमहरू"
 msgstr[1] "%u आईटमहरू"
 
-#: libnautilus-private/nautilus-file.c:4266
+#: libnautilus-private/nautilus-file.c:4290
 #, fuzzy, c-format
 msgid "%u folder"
 msgid_plural "%u folders"
 msgstr[0] "%u फोल्डर्स"
 msgstr[1] "%u फोल्डर्स"
 
-#: libnautilus-private/nautilus-file.c:4267
+#: libnautilus-private/nautilus-file.c:4291
 #, fuzzy, c-format
 msgid "%u file"
 msgid_plural "%u files"
@@ -2773,37 +2682,37 @@ msgstr[0] "%u फाईल्स"
 msgstr[1] "%u फाईल्स"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4592
-#: libnautilus-private/nautilus-file.c:4608
+#: libnautilus-private/nautilus-file.c:4616
+#: libnautilus-private/nautilus-file.c:4632
 msgid "? items"
 msgstr " आईटमहरू ?"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4598
+#: libnautilus-private/nautilus-file.c:4622
 msgid "? bytes"
 msgstr "? बाइट्स"
 
-#: libnautilus-private/nautilus-file.c:4613
+#: libnautilus-private/nautilus-file.c:4637
 msgid "unknown type"
 msgstr "अपरिचित प्रकार"
 
-#: libnautilus-private/nautilus-file.c:4616
+#: libnautilus-private/nautilus-file.c:4640
 msgid "unknown MIME type"
 msgstr "अपरिचित MIME प्रकार"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4622
+#: libnautilus-private/nautilus-file.c:4646
 #: src/file-manager/fm-properties-window.c:1147
 msgid "unknown"
 msgstr "अपरिचित"
 
-#: libnautilus-private/nautilus-file.c:4654
+#: libnautilus-private/nautilus-file.c:4678
 msgid "program"
 msgstr "प्रोग्राम"
 
-#: libnautilus-private/nautilus-file.c:4666
+#: libnautilus-private/nautilus-file.c:4690
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2812,7 +2721,7 @@ msgstr ""
 "एक्स-डायरेक्टरी/नारमलका भी विवरण नहीं मिल पा रहा। शायद इसका मतलब है कि आपकी जीनोम "
 "बी एफ एस की फाइल गलत जगह पर है या किसी अन्य कारण से नहीं मिल रही"
 
-#: libnautilus-private/nautilus-file.c:4670
+#: libnautilus-private/nautilus-file.c:4694
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2821,16 +2730,16 @@ msgstr ""
 "एम आई एम ई प्रकार \"%s\" (फाइल है\"%s\") का विवरण नहीं मिल रहा। कपया जीनोम "
 "वीएफएस मेलिंग लिस्ट से बताएं।)"
 
-#: libnautilus-private/nautilus-file.c:4684
+#: libnautilus-private/nautilus-file.c:4708
 msgid "link"
 msgstr "कड़ी"
 
-#: libnautilus-private/nautilus-file.c:4704
+#: libnautilus-private/nautilus-file.c:4728
 msgid "link (broken)"
 msgstr "कड़ी (टूट गई)"
 
-#: libnautilus-private/nautilus-file.c:5999
-#: libnautilus-private/nautilus-global-preferences.c:529
+#: libnautilus-private/nautilus-file.c:6138
+#: libnautilus-private/nautilus-global-preferences.c:533
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
 msgstr "ट्रेश"
@@ -3037,48 +2946,48 @@ msgstr "24"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: libnautilus-private/nautilus-global-preferences.c:517
+#: libnautilus-private/nautilus-global-preferences.c:521
 #, c-format
 msgid "%s's Home"
 msgstr "%s को होम"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2804
+#: libnautilus-private/nautilus-icon-canvas-item.c:2803
 msgid "editable text"
 msgstr "एडीटेबल टेक्स्ट"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2805
+#: libnautilus-private/nautilus-icon-canvas-item.c:2804
 msgid "the editable label"
 msgstr "द एडीटेबल लेबल"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2812
+#: libnautilus-private/nautilus-icon-canvas-item.c:2811
 msgid "additional text"
 msgstr "एड़ीशनल टेक्स्ट"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2813
+#: libnautilus-private/nautilus-icon-canvas-item.c:2812
 msgid "some more text"
 msgstr "अरू केहि पाठ्य"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2820
+#: libnautilus-private/nautilus-icon-canvas-item.c:2819
 msgid "highlighted for selection"
 msgstr "सिलेक्शन के लिए हाइलाइट किया"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2821
+#: libnautilus-private/nautilus-icon-canvas-item.c:2820
 msgid "whether we are highlighted for a selection"
 msgstr "क्या चुनने के लिए हमने हाइलाइटेड किया है"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2828
+#: libnautilus-private/nautilus-icon-canvas-item.c:2827
 msgid "highlighted as keyboard focus"
 msgstr "की-बोर्ड फोकस के हमने हाइलाइट किया"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2829
+#: libnautilus-private/nautilus-icon-canvas-item.c:2828
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "क्या रेंडर की-बोर्ड फोकस को लमने हाइलाइट किया"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2837
+#: libnautilus-private/nautilus-icon-canvas-item.c:2836
 msgid "highlighted for drop"
 msgstr "ड्राव के लिए हाइलाइट करें"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2838
+#: libnautilus-private/nautilus-icon-canvas-item.c:2837
 msgid "whether we are highlighted for a D&D drop"
 msgstr "क्या हमने डी और डी ड्राप को हाइलाइट किया है"
 
@@ -3457,103 +3366,103 @@ msgstr ""
 msgid "_Associate Action"
 msgstr "संबंधित प्रक्रिया"
 
-#: libnautilus-private/nautilus-program-choosing.c:529
+#: libnautilus-private/nautilus-program-choosing.c:568
 msgid "Open Failed, would you like to choose another application?"
 msgstr ""
 
-#: libnautilus-private/nautilus-program-choosing.c:530
+#: libnautilus-private/nautilus-program-choosing.c:569
 #, fuzzy, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations."
 msgstr "\"%s\" देखाउन सक्तैन किनकी नटिलस %s स्थिति समाल्न सक्तैन"
 
-#: libnautilus-private/nautilus-program-choosing.c:535
+#: libnautilus-private/nautilus-program-choosing.c:574
 msgid "Open Failed, would you like to choose another action?"
 msgstr ""
 
-#: libnautilus-private/nautilus-program-choosing.c:536
+#: libnautilus-private/nautilus-program-choosing.c:575
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-choosing.c:543
-#: libnautilus-private/nautilus-program-choosing.c:576
+#: libnautilus-private/nautilus-program-choosing.c:582
+#: libnautilus-private/nautilus-program-choosing.c:615
 msgid "Can't Open Location"
 msgstr " स्थान खोल्न सकेन"
 
-#: libnautilus-private/nautilus-program-choosing.c:562
+#: libnautilus-private/nautilus-program-choosing.c:601
 #, fuzzy, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
 "locations."
 msgstr "\"%s\" देखाउन सक्तैन किनकी नटिलस %s स्थिति समाल्न सक्तैन"
 
-#: libnautilus-private/nautilus-program-choosing.c:565
+#: libnautilus-private/nautilus-program-choosing.c:604
 msgid ""
 "No other applications are available to view this file.  If you copy this "
 "file onto your computer, you may be able to open it."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-choosing.c:569
+#: libnautilus-private/nautilus-program-choosing.c:608
 #, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\"."
 "locations."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-choosing.c:571
+#: libnautilus-private/nautilus-program-choosing.c:610
 msgid ""
 "No other actions are available to view this file.  If you copy this file "
 "onto your computer, you may be able to open it."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-choosing.c:830
-#: libnautilus-private/nautilus-program-choosing.c:1047
+#: libnautilus-private/nautilus-program-choosing.c:869
+#: libnautilus-private/nautilus-program-choosing.c:1086
 #, fuzzy, c-format
 msgid "Opening %s"
 msgstr "\"%s\" खुल रहा है"
 
-#: libnautilus-private/nautilus-program-choosing.c:1191
+#: libnautilus-private/nautilus-program-choosing.c:1230
 #, fuzzy
 msgid "Sorry, but you can't execute commands from a remote site."
 msgstr "आप सुरछा के कारणों रिमोट साइट से कमांड नहीं चला सकते"
 
-#: libnautilus-private/nautilus-program-choosing.c:1193
+#: libnautilus-private/nautilus-program-choosing.c:1232
 msgid "This is disabled due to security considerations."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-choosing.c:1194
+#: libnautilus-private/nautilus-program-choosing.c:1233
 #, fuzzy
 msgid "Can't Execute Remote Links"
 msgstr "रिमोट लिंक्स् खुल्न सकेन "
 
-#: libnautilus-private/nautilus-program-choosing.c:1204
-#: libnautilus-private/nautilus-program-choosing.c:1270
+#: libnautilus-private/nautilus-program-choosing.c:1243
+#: libnautilus-private/nautilus-program-choosing.c:1309
 msgid "Details: "
 msgstr ""
 
-#: libnautilus-private/nautilus-program-choosing.c:1206
-#: libnautilus-private/nautilus-program-choosing.c:1272
+#: libnautilus-private/nautilus-program-choosing.c:1245
+#: libnautilus-private/nautilus-program-choosing.c:1311
 #, fuzzy
 msgid "There was an error launching the application."
 msgstr "एप्लीकेशन को लांच करने में गलती विवरण"
 
-#: libnautilus-private/nautilus-program-choosing.c:1208
-#: libnautilus-private/nautilus-program-choosing.c:1274
+#: libnautilus-private/nautilus-program-choosing.c:1247
+#: libnautilus-private/nautilus-program-choosing.c:1313
 #, fuzzy
 msgid "Error Launching Application"
 msgstr "एप्लीकेशन लांच करने में गलती"
 
-#: libnautilus-private/nautilus-program-choosing.c:1236
-#: libnautilus-private/nautilus-program-choosing.c:1248
+#: libnautilus-private/nautilus-program-choosing.c:1275
+#: libnautilus-private/nautilus-program-choosing.c:1287
 #, fuzzy
 msgid "This drop target only supports local files."
 msgstr "ड्राप टारगेट केवल स्थानीय फाइल्स को सपोर्ट करता है"
 
-#: libnautilus-private/nautilus-program-choosing.c:1237
+#: libnautilus-private/nautilus-program-choosing.c:1276
 #, fuzzy
 msgid ""
 "To open non-local files copy them to a local folder and then drop them again."
@@ -3561,13 +3470,13 @@ msgstr ""
 "अस्थानीय फाइल्स को खोलने के लिए पहले इन्हें स्थायी फोल्डर में कापी करे फिर उन्हें फिर से ड्राप "
 "करें"
 
-#: libnautilus-private/nautilus-program-choosing.c:1239
-#: libnautilus-private/nautilus-program-choosing.c:1251
+#: libnautilus-private/nautilus-program-choosing.c:1278
+#: libnautilus-private/nautilus-program-choosing.c:1290
 #, fuzzy
 msgid "Drop Target Only Supports Local Files"
 msgstr "ड्राप टारगेट केवल स्थानीय फाइल्स को सपोर्ट करता है"
 
-#: libnautilus-private/nautilus-program-choosing.c:1249
+#: libnautilus-private/nautilus-program-choosing.c:1288
 #, fuzzy
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
@@ -4033,40 +3942,40 @@ msgstr ""
 msgid "Could not complete specified action."
 msgstr ""
 
-#: src/file-manager/fm-desktop-icon-view.c:582
+#: src/file-manager/fm-desktop-icon-view.c:581
 msgid "Background"
 msgstr "पार्श्व"
 
-#: src/file-manager/fm-desktop-icon-view.c:655
+#: src/file-manager/fm-desktop-icon-view.c:654
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 msgid "Empty Trash"
 msgstr "खाली ट्रेश"
 
-#: src/file-manager/fm-directory-view.c:539
+#: src/file-manager/fm-directory-view.c:540
 #, fuzzy, c-format
 msgid "Open %d Window?"
 msgid_plural "Open %d Windows?"
 msgstr[0] "%d विंडो को खोलें"
 msgstr[1] "%d विंडो को खोलें"
 
-#: src/file-manager/fm-directory-view.c:540
+#: src/file-manager/fm-directory-view.c:541
 #, fuzzy
 msgid "Are you sure you want to open all files?"
 msgstr "के तपाईं   \"%s\"  स्थायी तरीकाले मेट्न चाहनुहुन्छ"
 
-#: src/file-manager/fm-directory-view.c:541 src/nautilus-location-bar.c:158
+#: src/file-manager/fm-directory-view.c:542 src/nautilus-location-bar.c:158
 #, fuzzy, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
 msgstr[0] "यह %d अलग विंडो खोलेगा क्या आप निश्चित हैं कि आप ऐसा करना चाहते हैं"
 msgstr[1] "यह %d अलग विंडो खोलेगा क्या आप निश्चित हैं कि आप ऐसा करना चाहते हैं"
 
-#: src/file-manager/fm-directory-view.c:888
+#: src/file-manager/fm-directory-view.c:889
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "के तपाईं   \"%s\"  स्थायी तरीकाले मेट्न चाहनुहुन्छ"
 
-#: src/file-manager/fm-directory-view.c:892
+#: src/file-manager/fm-directory-view.c:893
 #, fuzzy, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
@@ -4074,38 +3983,38 @@ msgid_plural ""
 msgstr[0] "के तपाईं  %d छानीएको सबै आईटमहरू स्थायी तरीकाले मेट्न चाहनुहुन्छ"
 msgstr[1] "के तपाईं  %d छानीएको सबै आईटमहरू स्थायी तरीकाले मेट्न चाहनुहुन्छ"
 
-#: src/file-manager/fm-directory-view.c:900
+#: src/file-manager/fm-directory-view.c:901
 #, fuzzy
 msgid "If you delete an item, it is permanently lost."
 msgstr "छानीएको सबै बस्तुहरु सधैंको लागी मेट्नुहोस्"
 
-#: src/file-manager/fm-directory-view.c:901
+#: src/file-manager/fm-directory-view.c:902
 msgid "Delete?"
 msgstr "मेट्नुहोस्"
 
-#: src/file-manager/fm-directory-view.c:1040
+#: src/file-manager/fm-directory-view.c:1041
 #, fuzzy
 msgid "Select Pattern"
 msgstr "समूह छान्नुस"
 
-#: src/file-manager/fm-directory-view.c:1056
+#: src/file-manager/fm-directory-view.c:1057
 #, fuzzy
 msgid "_Pattern:"
 msgstr "बुट्टा"
 
-#: src/file-manager/fm-directory-view.c:1745
+#: src/file-manager/fm-directory-view.c:1746
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" छानिएको"
 
-#: src/file-manager/fm-directory-view.c:1747
+#: src/file-manager/fm-directory-view.c:1748
 #, fuzzy, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
 msgstr[0] "%d फोल्डर छानियो"
 msgstr[1] "%d फोल्डर छानियो"
 
-#: src/file-manager/fm-directory-view.c:1757
+#: src/file-manager/fm-directory-view.c:1758
 #, fuzzy, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -4113,19 +4022,19 @@ msgstr[0] "(%d आईटमहरू छ)"
 msgstr[1] "(%d आईटमहरू छ)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/file-manager/fm-directory-view.c:1768
+#: src/file-manager/fm-directory-view.c:1769
 #, fuzzy, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
 msgstr[0] "(कुल %d आईटमहरू छ)"
 msgstr[1] "(कुल %d आईटमहरू छ)"
 
-#: src/file-manager/fm-directory-view.c:1784
+#: src/file-manager/fm-directory-view.c:1785
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "कुल \"%s\" छानिएको (%s)"
 
-#: src/file-manager/fm-directory-view.c:1788
+#: src/file-manager/fm-directory-view.c:1789
 #, fuzzy, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -4133,14 +4042,14 @@ msgstr[0] "%d आईटम छानियो (%s)"
 msgstr[1] "%d आईटम छानियो (%s)"
 
 #. Folders selected also, use "other" terminology
-#: src/file-manager/fm-directory-view.c:1796
+#: src/file-manager/fm-directory-view.c:1797
 #, fuzzy, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
 msgstr[0] "%d अन्य आईटमहरू छानियो (%s)"
 msgstr[1] "%d अन्य आईटमहरू छानियो (%s)"
 
-#: src/file-manager/fm-directory-view.c:1817
+#: src/file-manager/fm-directory-view.c:1818
 #, c-format
 msgid "%s, Free space: %s"
 msgstr ""
@@ -4152,7 +4061,7 @@ msgstr ""
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1842
+#: src/file-manager/fm-directory-view.c:1843
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4161,52 +4070,52 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1967
+#: src/file-manager/fm-directory-view.c:1968
 #, fuzzy, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr ""
 "जितने परिणाम दिखाए जा सकते हैं। उससे अधिक खोज परिणाम आ गए हैं कुछ खोज परिणाम नहीं "
 "दिखाए जाएंगे।"
 
-#: src/file-manager/fm-directory-view.c:1973
+#: src/file-manager/fm-directory-view.c:1974
 msgid "Some files will not be displayed."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:1974
+#: src/file-manager/fm-directory-view.c:1975
 msgid "Too Many Files"
 msgstr "धेरै फाइल्स"
 
-#: src/file-manager/fm-directory-view.c:3242
+#: src/file-manager/fm-directory-view.c:3243
 #, fuzzy
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "\"%s\" ट्रेशमा राख्न सकिएन के तपाई मेट्न चाहनु हुन्छ"
 
-#: src/file-manager/fm-directory-view.c:3243
+#: src/file-manager/fm-directory-view.c:3244
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3247
+#: src/file-manager/fm-directory-view.c:3248
 #, fuzzy
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr "\"%s\" ट्रेशमा राख्न सकिएन के तपाई मेट्न चाहनु हुन्छ"
 
-#: src/file-manager/fm-directory-view.c:3250
+#: src/file-manager/fm-directory-view.c:3251
 #, fuzzy
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr "\"%s\" ट्रेशमा राख्न सकिएन के तपाई मेट्न चाहनु हुन्छ"
 
-#: src/file-manager/fm-directory-view.c:3257
+#: src/file-manager/fm-directory-view.c:3258
 msgid "Delete Immediately?"
 msgstr "तुरुन्त मेट्नुहोस्"
 
-#: src/file-manager/fm-directory-view.c:3289
+#: src/file-manager/fm-directory-view.c:3290
 #, fuzzy, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "के तपाईं \"%s\"  ट्रेशबाट स्थायी तरीकाले डिलीट गर्न चाहनुहुन्छ "
 
-#: src/file-manager/fm-directory-view.c:3293
+#: src/file-manager/fm-directory-view.c:3294
 #, fuzzy, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -4217,46 +4126,64 @@ msgid_plural ""
 msgstr[0] "के तपाईं  %d छानीएको आईटमहरू ट्रेशबाट मेट्न चाहनुहुन्छ"
 msgstr[1] "के तपाईं  %d छानीएको आईटमहरू ट्रेशबाट मेट्न चाहनुहुन्छ"
 
-#: src/file-manager/fm-directory-view.c:3302
+#: src/file-manager/fm-directory-view.c:3303
 msgid "If you delete an item, it will be permanently lost."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3303
+#: src/file-manager/fm-directory-view.c:3304
 msgid "Delete From Trash?"
 msgstr "ट्रेशबाट मेट्नुहोस्"
 
-#: src/file-manager/fm-directory-view.c:3666
+#: src/file-manager/fm-directory-view.c:3667
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "चुने हुए आयटम को खोलने के लिए \"%s\" का उपयोग करें"
 
-#: src/file-manager/fm-directory-view.c:3730
+#: src/file-manager/fm-directory-view.c:3731
 #: src/file-manager/nautilus-directory-view-ui.xml.h:30
 msgid "Other _Application..."
 msgstr "अन्य एप्लीकेशन्स"
 
-#: src/file-manager/fm-directory-view.c:3730
+#: src/file-manager/fm-directory-view.c:3731
 msgid "An _Application..."
 msgstr "एउटा एप्लीकेशन"
 
-#: src/file-manager/fm-directory-view.c:4081
+#: src/file-manager/fm-directory-view.c:3915
+#, fuzzy, c-format
+msgid "Cannot open %s"
+msgstr "ट्रेशलाई कपी गर्न सक्तैन "
+
+#: src/file-manager/fm-directory-view.c:3918
+#, c-format
+msgid ""
+"The filename \"%s\" indicates that this file is of type \"%s\". The contents "
+"of the file indicate that the file is of type \"%s\". If you open this file, "
+"the file might present a security risk to your system.\n"
+"\n"
+"Do not open the file unless you created the file yourself, or received the "
+"file from a trusted source. To open the file, rename the file to the correct "
+"extension for \"%s\", then open the file normally. Alternatively, use the "
+"Open With menu to choose a specific application for the file. "
+msgstr ""
+
+#: src/file-manager/fm-directory-view.c:4289
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "\"%s\" को किसी चुने हुए आयटम्स पर चलाएं"
 
-#: src/file-manager/fm-directory-view.c:4315
+#: src/file-manager/fm-directory-view.c:4523
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:4499
+#: src/file-manager/fm-directory-view.c:4707
 #, fuzzy
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "यस फोल्डरको सबै एक्जीक्यूटेबल फाईल स्क्रिप्ट मेनुमा देखिन्छ। मेनुबाट कुनै स्क्रिप्ट छानिएमा त्यो "
 "स्क्रिप्ट छानिएको आईटमसंग इनपुट "
 
-#: src/file-manager/fm-directory-view.c:4501
+#: src/file-manager/fm-directory-view.c:4709
 #, fuzzy
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
@@ -4265,11 +4192,11 @@ msgstr ""
 "यस फोल्डरको सबै एक्जीक्यूटेबल फाईल स्क्रिप्ट मेनुमा देखिन्छ। मेनुबाट कुनै स्क्रिप्ट छानिएमा त्यो "
 "स्क्रिप्ट छानिएको आईटमसंग इनपुट "
 
-#: src/file-manager/fm-directory-view.c:4503
+#: src/file-manager/fm-directory-view.c:4711
 msgid "About Scripts"
 msgstr "स्क्रिप्टको बारेमा"
 
-#: src/file-manager/fm-directory-view.c:4504
+#: src/file-manager/fm-directory-view.c:4712
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4300,19 +4227,19 @@ msgstr ""
 "आई नॉटिलिस स्क्रिप्ट करेंट यू आर आई करेंट ठाउँ लीएर यू आर आई नटिलस स्क्रिप्ट विंडो "
 "जियोमेंट्री करेंट विंडो को स्थान र आकार"
 
-#: src/file-manager/fm-directory-view.c:4635
+#: src/file-manager/fm-directory-view.c:4843
 #: src/file-manager/fm-tree-view.c:788
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "यदि तपाईले फाइल तास्ने निर्देश छानेमा \"%s\" फाइल मूव हुन्छ"
 
-#: src/file-manager/fm-directory-view.c:4639
+#: src/file-manager/fm-directory-view.c:4847
 #: src/file-manager/fm-tree-view.c:792
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "यदि तपाईले फाइल तास्ने निर्देश छानेमा \"%s\" कपी हुन्छ"
 
-#: src/file-manager/fm-directory-view.c:4646
+#: src/file-manager/fm-directory-view.c:4854
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -4321,7 +4248,7 @@ msgid_plural ""
 msgstr[0] "यदि आप पेस्ट फाइल निर्देश चुनें तो %d चुने हुए आयटम्स मूव हो जाएंगे।"
 msgstr[1] "यदि आप पेस्ट फाइल निर्देश चुनें तो %d चुने हुए आयटम्स मूव हो जाएंगे।"
 
-#: src/file-manager/fm-directory-view.c:4653
+#: src/file-manager/fm-directory-view.c:4861
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
@@ -4330,36 +4257,36 @@ msgid_plural ""
 msgstr[0] "यदि आप पेस्ट फाइल्स निर्देश चुनें तो %d चुने हुए आयटम्स कापी हो जाएंगे"
 msgstr[1] "यदि आप पेस्ट फाइल्स निर्देश चुनें तो %d चुने हुए आयटम्स कापी हो जाएंगे"
 
-#: src/file-manager/fm-directory-view.c:4735
+#: src/file-manager/fm-directory-view.c:4943
 #: src/file-manager/fm-tree-view.c:868
 msgid "There is nothing on the clipboard to paste."
 msgstr "क्लिप बोर्ड पर पेस्ट करने के लिए कुछ भी नहीं है"
 
-#: src/file-manager/fm-directory-view.c:4838
-#: src/file-manager/fm-directory-view.c:5849
+#: src/file-manager/fm-directory-view.c:5046
+#: src/file-manager/fm-directory-view.c:6097
 msgid "Mount Error"
 msgstr "गल्ती माउण्ट करें"
 
-#: src/file-manager/fm-directory-view.c:4900
+#: src/file-manager/fm-directory-view.c:5108
 msgid "Unmount Error"
 msgstr "गलती अनमाउण्ट करें"
 
-#: src/file-manager/fm-directory-view.c:4903
+#: src/file-manager/fm-directory-view.c:5111
 #, fuzzy
 msgid "Eject Error"
 msgstr "गल्ती माउण्ट करें"
 
-#: src/file-manager/fm-directory-view.c:5127
+#: src/file-manager/fm-directory-view.c:5373
 msgid "E_ject"
 msgstr "इजेक्ट"
 
-#: src/file-manager/fm-directory-view.c:5127
+#: src/file-manager/fm-directory-view.c:5373
 #: src/file-manager/nautilus-directory-view-ui.xml.h:62
 msgid "_Unmount Volume"
 msgstr "अनमाउण्ट वाल्यूम"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5258
+#: src/file-manager/fm-directory-view.c:5503
 #: src/file-manager/fm-tree-view.c:960
 #, fuzzy, c-format
 msgid "Open in New Window"
@@ -4367,122 +4294,122 @@ msgid_plural "Open in %d New Windows"
 msgstr[0] "नया विन्डोमा खोल्नुस"
 msgstr[1] "नया विन्डोमा खोल्नुस"
 
-#: src/file-manager/fm-directory-view.c:5265
+#: src/file-manager/fm-directory-view.c:5510
 #, fuzzy
 msgid "Browse Folder"
 msgstr "होम फोल्डर"
 
-#: src/file-manager/fm-directory-view.c:5267
+#: src/file-manager/fm-directory-view.c:5512
 #, fuzzy
 msgid "Browse Folders"
 msgstr "होम फोल्डर"
 
-#: src/file-manager/fm-directory-view.c:5290
+#: src/file-manager/fm-directory-view.c:5535
 msgid "_Delete from Trash"
 msgstr "ट्रेशबाट हटाउनुस"
 
-#: src/file-manager/fm-directory-view.c:5292
+#: src/file-manager/fm-directory-view.c:5537
 msgid "Delete all selected items permanently"
 msgstr "छानीएको सबै बस्तुहरु सधैंको लागी मेट्नुहोस्"
 
-#: src/file-manager/fm-directory-view.c:5295
-#: src/file-manager/fm-directory-view.c:5633
+#: src/file-manager/fm-directory-view.c:5540
+#: src/file-manager/fm-directory-view.c:5878
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Mo_ve to Trash"
 msgstr "ट्रेशमा राख्नुस"
 
-#: src/file-manager/fm-directory-view.c:5297
+#: src/file-manager/fm-directory-view.c:5542
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Move each selected item to the Trash"
 msgstr "छानेको आइटमहरू ट्रेशमा राख्नुस"
 
-#: src/file-manager/fm-directory-view.c:5321
+#: src/file-manager/fm-directory-view.c:5566
 #: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "_Delete"
 msgstr "मेट्नुस"
 
-#: src/file-manager/fm-directory-view.c:5341
+#: src/file-manager/fm-directory-view.c:5586
 msgid "Ma_ke Links"
 msgstr "लीङ्क बनाउ"
 
-#: src/file-manager/fm-directory-view.c:5342
+#: src/file-manager/fm-directory-view.c:5587
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Ma_ke Link"
 msgstr "लीङ्क बनाउ"
 
-#: src/file-manager/fm-directory-view.c:5355
+#: src/file-manager/fm-directory-view.c:5600
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "_Empty Trash"
 msgstr "ट्रेश खाली गर्नुस"
 
-#: src/file-manager/fm-directory-view.c:5371
+#: src/file-manager/fm-directory-view.c:5616
 msgid "Cu_t File"
 msgstr "फाइल काट्नुहोस्"
 
-#: src/file-manager/fm-directory-view.c:5372
+#: src/file-manager/fm-directory-view.c:5617
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Cu_t Files"
 msgstr "फाइल काट्नुहोस्"
 
-#: src/file-manager/fm-directory-view.c:5381
+#: src/file-manager/fm-directory-view.c:5626
 msgid "_Copy File"
 msgstr "फाइल कपी गर्नुस"
 
-#: src/file-manager/fm-directory-view.c:5382
+#: src/file-manager/fm-directory-view.c:5627
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "_Copy Files"
 msgstr "फाइलहरू कपी गर्नुस"
 
-#: src/file-manager/fm-directory-view.c:5624
+#: src/file-manager/fm-directory-view.c:5869
 #, fuzzy
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "के तपाईं ट्रेशबाट सबै आईटमहरू स्थायी तरीकाले मेट्न चाहनुहुन्छ"
 
-#: src/file-manager/fm-directory-view.c:5626
+#: src/file-manager/fm-directory-view.c:5871
 msgid "This link can't be used, because it has no target."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:5628
+#: src/file-manager/fm-directory-view.c:5873
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:5633
+#: src/file-manager/fm-directory-view.c:5878
 msgid "Broken Link"
 msgstr "छुट्टिएको लिंक"
 
-#: src/file-manager/fm-directory-view.c:5691
+#: src/file-manager/fm-directory-view.c:5936
 #, fuzzy, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "\"%s\" एक एक्सक्यूटेबल पाठ्य फाइल हो ÷ यसलाई चलाउन या हेर्न चाहनु हुन्छ"
 
-#: src/file-manager/fm-directory-view.c:5693
+#: src/file-manager/fm-directory-view.c:5938
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:5699
+#: src/file-manager/fm-directory-view.c:5944
 msgid "Run or Display?"
 msgstr "चलाएं या प्रदर्शित करें?"
 
-#: src/file-manager/fm-directory-view.c:5700
+#: src/file-manager/fm-directory-view.c:5945
 msgid "Run in _Terminal"
 msgstr "टर्मिनल में चलाएं"
 
-#: src/file-manager/fm-directory-view.c:5701
+#: src/file-manager/fm-directory-view.c:5946
 msgid "_Display"
 msgstr "प्रदर्शित करें"
 
-#: src/file-manager/fm-directory-view.c:5704
+#: src/file-manager/fm-directory-view.c:5949
 msgid "_Run"
 msgstr "चलाएं"
 
-#: src/file-manager/fm-directory-view.c:5982
+#: src/file-manager/fm-directory-view.c:6231
 #, fuzzy, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" खुल रहा है"
 
-#: src/file-manager/fm-directory-view.c:5988
+#: src/file-manager/fm-directory-view.c:6237
 msgid "Cancel Open?"
 msgstr "खोल्ने काम रद्द गर्नु"
 
@@ -4633,81 +4560,81 @@ msgstr "\"%s\" को \"%s\" नाम से बदलें"
 msgid "Cancel Rename?"
 msgstr "नाम परिवर्तन रद्द गर्नु"
 
-#: src/file-manager/fm-icon-view.c:161
+#: src/file-manager/fm-icon-view.c:159
 msgid "by _Name"
 msgstr "नाम से"
 
-#: src/file-manager/fm-icon-view.c:162
+#: src/file-manager/fm-icon-view.c:160
 #: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by name in rows"
 msgstr "आयकन्स को उनके नाम के अनुसार पंक्ति में रखें"
 
-#: src/file-manager/fm-icon-view.c:168
+#: src/file-manager/fm-icon-view.c:166
 msgid "by _Size"
 msgstr "आकार से"
 
-#: src/file-manager/fm-icon-view.c:169
+#: src/file-manager/fm-icon-view.c:167
 #: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by size in rows"
 msgstr "आयकन्स को उनके आकार के अनुसार पंक्ति में रखें"
 
-#: src/file-manager/fm-icon-view.c:175
+#: src/file-manager/fm-icon-view.c:173
 msgid "by _Type"
 msgstr "प्रकार से"
 
-#: src/file-manager/fm-icon-view.c:176
+#: src/file-manager/fm-icon-view.c:174
 #: src/file-manager/nautilus-icon-view-ui.xml.h:15
 msgid "Keep icons sorted by type in rows"
 msgstr "आईकन्स को उनके प्रकार के अनुसार पंक्तिबद्ध करें"
 
-#: src/file-manager/fm-icon-view.c:182
+#: src/file-manager/fm-icon-view.c:180
 msgid "by Modification _Date"
 msgstr "परिवर्तन की तारीख के अनुसार"
 
-#: src/file-manager/fm-icon-view.c:183
+#: src/file-manager/fm-icon-view.c:181
 #: src/file-manager/nautilus-icon-view-ui.xml.h:12
 msgid "Keep icons sorted by modification date in rows"
 msgstr "आईकन्स को परिवर्तन की तारीख के अनुसार पंक्तिबद्ध करें"
 
-#: src/file-manager/fm-icon-view.c:189
+#: src/file-manager/fm-icon-view.c:187
 msgid "by _Emblems"
 msgstr "प्रतीक के अनुसार"
 
-#: src/file-manager/fm-icon-view.c:190
+#: src/file-manager/fm-icon-view.c:188
 #: src/file-manager/nautilus-icon-view-ui.xml.h:11
 msgid "Keep icons sorted by emblems in rows"
 msgstr "आईकन्स को प्रतीकों के अनुसार पंक्तिबद्ध करके रखें"
 
-#: src/file-manager/fm-icon-view.c:1632
+#: src/file-manager/fm-icon-view.c:1641
 #: src/file-manager/nautilus-icon-view-ui.xml.h:20
 msgid "Restore Icons' Original Si_zes"
 msgstr "आईकन्सलाई आफ्नो आकारमा राख"
 
-#: src/file-manager/fm-icon-view.c:1633
+#: src/file-manager/fm-icon-view.c:1642
 msgid "Restore Icon's Original Si_ze"
 msgstr "आईकन्सलाई आफ्नो आकारमा राख"
 
-#: src/file-manager/fm-icon-view.c:1996
+#: src/file-manager/fm-icon-view.c:2005
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "\"%s\" मा देखाउ"
 
-#: src/file-manager/fm-icon-view.c:2579 src/file-manager/fm-icon-view.c:2603
+#: src/file-manager/fm-icon-view.c:2588 src/file-manager/fm-icon-view.c:2612
 #, fuzzy
 msgid "Drag and drop is not supported."
 msgstr "स्थानीय फाईल सिस्टम में ही ड्रैग और ड्राप की सुविधा उपलब्ध है"
 
-#: src/file-manager/fm-icon-view.c:2580
+#: src/file-manager/fm-icon-view.c:2589
 #, fuzzy
 msgid "Drag and drop is only supported on local file systems."
 msgstr "स्थानीय फाईल सिस्टम में ही ड्रैग और ड्राप की सुविधा उपलब्ध है"
 
-#: src/file-manager/fm-icon-view.c:2581 src/file-manager/fm-icon-view.c:2605
+#: src/file-manager/fm-icon-view.c:2590 src/file-manager/fm-icon-view.c:2614
 #, fuzzy
 msgid "Drag and Drop Error"
 msgstr "ड्रैग और ड्राप त्रुटि"
 
-#: src/file-manager/fm-icon-view.c:2604
+#: src/file-manager/fm-icon-view.c:2613
 msgid "An invalid drag type was used."
 msgstr "नाकाम ड्रैग प्रकार प्रयोग भएको छ"
 
@@ -5881,7 +5808,7 @@ msgstr "एक अनअपेछित त्रुटि के कारण �
 
 #: src/nautilus-bookmarks-window.c:146
 #: src/nautilus-file-management-properties.c:231
-#: src/nautilus-property-browser.c:1456 src/nautilus-window-menus.c:648
+#: src/nautilus-property-browser.c:1456 src/nautilus-window-menus.c:647
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -5938,15 +5865,15 @@ msgid "Can't Connect to Server"
 msgstr "आफैंमा जान सक्तैन"
 
 #: src/nautilus-connect-server-dialog.c:101
-#: src/nautilus-window-manage-views.c:1255
+#: src/nautilus-window-manage-views.c:1266
 #, fuzzy, c-format
 msgid "\"%s\" is not a valid location."
 msgstr "माफ गर्नुस, यो \"%s\" वैध फाईल होईन"
 
 #: src/nautilus-connect-server-dialog.c:103
 #: src/nautilus-property-browser.c:1106
-#: src/nautilus-window-manage-views.c:1250
-#: src/nautilus-window-manage-views.c:1258
+#: src/nautilus-window-manage-views.c:1261
+#: src/nautilus-window-manage-views.c:1269
 #, fuzzy
 msgid "Please check the spelling and try again."
 msgstr "\"%s\" पाउन सकेन, हिज्जे जाँचेर फेरी कोशीश गर्नुहोस्"
@@ -6113,6 +6040,10 @@ msgstr "एम आई एम ई प्रकार"
 #: src/nautilus-file-management-properties.glade.h:57
 msgid "Never"
 msgstr "कहिलेपनि"
+
+#: src/nautilus-file-management-properties.glade.h:58
+msgid "Preview"
+msgstr "पूर्वावलोकन"
 
 #: src/nautilus-file-management-properties.glade.h:59
 msgid "Preview _sound files:"
@@ -6337,7 +6268,7 @@ msgstr "फाईल मानेजर"
 
 #. Set initial window title
 #: src/nautilus-main.c:240 src/nautilus-spatial-window.c:301
-#: src/nautilus-window-menus.c:602 src/nautilus-window.c:173
+#: src/nautilus-window-menus.c:601 src/nautilus-window.c:173
 msgid "Nautilus"
 msgstr "नटिलस"
 
@@ -6364,29 +6295,29 @@ msgstr "नटिलस - रेखागणित ईस यूआर एल �
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-navigation-window-menus.c:187
+#: src/nautilus-navigation-window-menus.c:186
 #, fuzzy
 msgid "Are you sure you want to forget history?"
 msgstr "के तपाईं   \"%s\"  स्थायी तरीकाले मेट्न चाहनुहुन्छ"
 
-#: src/nautilus-navigation-window-menus.c:188
+#: src/nautilus-navigation-window-menus.c:187
 #, fuzzy
 msgid "If you do, you will be doomed to repeat it."
 msgstr "के तपाइ ईतीहास भुल्न चाहनुहुन्छ।"
 
-#: src/nautilus-navigation-window-menus.c:190
+#: src/nautilus-navigation-window-menus.c:189
 msgid "Are you sure you want to clear the list of locations you have visited?"
 msgstr "के तपाईले हेर्नुभएको स्थानको सूचीहरू मेट्न चाहनुहुन्छ"
 
-#: src/nautilus-navigation-window-menus.c:192
+#: src/nautilus-navigation-window-menus.c:191
 msgid "If you clear the list of locations, they will be permanently deleted."
 msgstr ""
 
-#: src/nautilus-navigation-window-menus.c:198
+#: src/nautilus-navigation-window-menus.c:197
 msgid "Clear History"
 msgstr "इतिहास मेट्नुहोस्"
 
-#: src/nautilus-navigation-window-menus.c:427
+#: src/nautilus-navigation-window-menus.c:426
 #, fuzzy
 msgid ""
 "Do you want to remove any bookmarks with the non-existing location from your "
@@ -6394,16 +6325,16 @@ msgid ""
 msgstr ""
 "\"%s\" स्थिति उपस्थित नहीं है। क्या आप अपनी सूची से किसी बुकमार्क को हटाना चाहते हैं"
 
-#: src/nautilus-navigation-window-menus.c:429
+#: src/nautilus-navigation-window-menus.c:428
 #, fuzzy, c-format
 msgid "The location \"%s\" does not exist."
 msgstr "स्थिति %s अब उपस्थित नहीं है"
 
-#: src/nautilus-navigation-window-menus.c:432
+#: src/nautilus-navigation-window-menus.c:431
 msgid "Bookmark for Nonexistent Location"
 msgstr "नभएको स्थानकोलागी बुकमार्ग"
 
-#: src/nautilus-navigation-window-menus.c:433
+#: src/nautilus-navigation-window-menus.c:432
 msgid "Remove"
 msgstr "हटाएँ"
 
@@ -6984,45 +6915,6 @@ msgstr "[] है []"
 msgid "[File owner] is not [root]"
 msgstr "नहीं है"
 
-#: src/nautilus-server-connect.c:132
-msgid ""
-"Couldn't execute nautilus\n"
-"Make sure nautilus is in your path and correctly installed"
-msgstr ""
-
-#: src/nautilus-server-connect.c:395
-#, c-format
-msgid ""
-"Couldn't connect to URI %s\n"
-"Please make sure that the address is correct and alternatively, type in this "
-"address in the file manager directly"
-msgstr ""
-
-#: src/nautilus-server-connect.c:460
-msgid ""
-"Glade file for the connect to server program is missing.\n"
-"Please check your installation of nautilus"
-msgstr ""
-
-#: src/nautilus-server-connect.desktop.in.h:1
-msgid "Add a new server to your Network Servers and connect to it"
-msgstr ""
-
-#: src/nautilus-server-connect.desktop.in.h:2
-#: src/nautilus-server-connect.glade.h:2
-#, fuzzy
-msgid "New Server"
-msgstr "वेब सेवाएं"
-
-#: src/nautilus-server-connect.glade.h:1
-msgid "*"
-msgstr ""
-
-#: src/nautilus-server-connect.glade.h:3
-#, fuzzy
-msgid "_Connect"
-msgstr "कनेक्टिवा"
-
 #: src/nautilus-shell-ui.xml.h:2
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr "हालको स्थानको लागी दृष्य छान्नुहोस्, अथवा दृष्यको समूहलाई परीवर्त गर्नुहोस् "
@@ -7263,85 +7155,85 @@ msgstr "अहिले छानिएको"
 msgid "the type of window the view is embedded in"
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:822
+#: src/nautilus-window-manage-views.c:833
 msgid "View Failed"
 msgstr "दृष्यमा त्रुटि"
 
-#: src/nautilus-window-manage-views.c:833
+#: src/nautilus-window-manage-views.c:844
 #, fuzzy, c-format
 msgid "The %s view encountered an error and can't continue."
 msgstr "शुरू करते समय %s व्यू में त्रुटि मिली"
 
-#: src/nautilus-window-manage-views.c:834
+#: src/nautilus-window-manage-views.c:845
 #, fuzzy
 msgid "You can choose another view or go to a different location."
 msgstr ""
 "%s व्यू में त्रुटि है और आगे नहीं बढ़ सकता। आप अन्य व्यू निश्चित करें या दूसरे स्थान पर जा सकते हैं"
 
-#: src/nautilus-window-manage-views.c:844
+#: src/nautilus-window-manage-views.c:855
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "शुरू करते समय %s व्यू में त्रुटि मिली"
 
-#: src/nautilus-window-manage-views.c:845
+#: src/nautilus-window-manage-views.c:856
 #, fuzzy
 msgid "The location cannot be displayed with this viewer."
 msgstr "इस विन्डो के साथ निर्धारित करें नटिलस उफयोग के योग्य"
 
-#: src/nautilus-window-manage-views.c:992
+#: src/nautilus-window-manage-views.c:1003
 msgid "Content View"
 msgstr "सामाग्री दृष्य"
 
-#: src/nautilus-window-manage-views.c:993
+#: src/nautilus-window-manage-views.c:1004
 msgid "View of the current file or folder"
 msgstr "वर्तमान फाईल या फोल्डरको दृष्य"
 
-#: src/nautilus-window-manage-views.c:1247
+#: src/nautilus-window-manage-views.c:1258
 #, fuzzy, c-format
 msgid "Couldn't find \"%s\"."
 msgstr "चिन्ह थप्न सकिएन"
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1271
-#: src/nautilus-window-manage-views.c:1281
-#: src/nautilus-window-manage-views.c:1295
-#: src/nautilus-window-manage-views.c:1303
-#: src/nautilus-window-manage-views.c:1309
-#: src/nautilus-window-manage-views.c:1329
+#: src/nautilus-window-manage-views.c:1282
+#: src/nautilus-window-manage-views.c:1292
+#: src/nautilus-window-manage-views.c:1306
+#: src/nautilus-window-manage-views.c:1314
+#: src/nautilus-window-manage-views.c:1320
+#: src/nautilus-window-manage-views.c:1340
 #, fuzzy, c-format
 msgid "Couldn't display \"%s\"."
 msgstr "नटिलस \"%s\" नहीं दिखा सका"
 
-#: src/nautilus-window-manage-views.c:1274
+#: src/nautilus-window-manage-views.c:1285
 #, fuzzy
 msgid "Nautilus cannot determine what type of file it is."
 msgstr "\"%s\" देखाउन सक्तैन किनकी नटिलसले फाइलको प्रकार छुट्याउन सकेन"
 
-#: src/nautilus-window-manage-views.c:1284
+#: src/nautilus-window-manage-views.c:1295
 #, fuzzy
 msgid "Nautilus has no installed viewer capable of displaying the file."
 msgstr "\"%s\" दिखाने की शक्ति रखने वाला कोई व्यूवर नटिलस के पास नहीं है"
 
-#: src/nautilus-window-manage-views.c:1297
+#: src/nautilus-window-manage-views.c:1308
 #, fuzzy, c-format
 msgid "Nautilus cannot handle %s: locations."
 msgstr "\"%s\" देखाउन सक्तैन किनकी नटिलस %s स्थिति समाल्न सक्तैन"
 
-#: src/nautilus-window-manage-views.c:1305
+#: src/nautilus-window-manage-views.c:1316
 #, fuzzy
 msgid "The attempt to log in failed."
 msgstr "\"%s\" देखाउन सक्तैन किनकी लग इन गर्ने प्रयास असफल भयो"
 
-#: src/nautilus-window-manage-views.c:1311
+#: src/nautilus-window-manage-views.c:1322
 msgid "Access was denied."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1321
+#: src/nautilus-window-manage-views.c:1332
 #, fuzzy, c-format
 msgid "Couldn't display \"%s\", because no host \"%s\" could be found."
 msgstr "\"%s\" देखाउन सक्तैन किनकी प्रवेशको अनुमति छैन"
 
-#: src/nautilus-window-manage-views.c:1324
+#: src/nautilus-window-manage-views.c:1335
 #, fuzzy
 msgid ""
 "Check that the spelling is correct and that your proxy settings are correct."
@@ -7349,25 +7241,25 @@ msgstr ""
 "\"%s\" देखाउन सक्तैन किनकी कुनै पनी \"%s\" होस्ट पत्ता लागेन।  जाँच्नुहोस्की हिज्जे र "
 "प्रोक्सी सर्वर सेटिंग्स ठीक छ की छैन"
 
-#: src/nautilus-window-manage-views.c:1331
+#: src/nautilus-window-manage-views.c:1342
 #, fuzzy
 msgid "Check that your proxy settings are correct."
 msgstr ""
 "\"%s\" देखाउन सक्तैन किनकी होस्ट को नाम खाली थियो। जाँच्नुहोस्की तपाईको प्रोक्सी सर्वर "
 "सेटिंग्स ठीक छ की छैन"
 
-#: src/nautilus-window-manage-views.c:1336
+#: src/nautilus-window-manage-views.c:1347
 #, fuzzy, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
 "browser."
 msgstr "\"%s\" देखाउन सक्तैन किनकी नटिलस %s स्थिति समाल्न सक्तैन"
 
-#: src/nautilus-window-manage-views.c:1339
+#: src/nautilus-window-manage-views.c:1350
 msgid "Check that an SMB server is running in the local network."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1349
+#: src/nautilus-window-manage-views.c:1360
 #, fuzzy
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
@@ -7377,7 +7269,7 @@ msgstr ""
 "पक्का कर लें कि आपने मेड्यूसा खोज सुविधा शुरू की या नहीं। और यदि इन्डेक्स नहीं है तो मेड्युसा "
 "इन्डेक्सर चल रहा है या नहीं।"
 
-#: src/nautilus-window-manage-views.c:1352
+#: src/nautilus-window-manage-views.c:1363
 #, fuzzy
 msgid ""
 "Be sure that you have started the Medusa search service, and if you don't "
@@ -7387,24 +7279,24 @@ msgstr ""
 "पक्का कर लें कि आपने मेड्यूसा खोज सुविधा शुरू की या नहीं। और यदि इन्डेक्स नहीं है तो मेड्युसा "
 "इन्डेक्सर चल रहा है या नहीं।"
 
-#: src/nautilus-window-manage-views.c:1354
+#: src/nautilus-window-manage-views.c:1365
 msgid "Searching Unavailable"
 msgstr "खोज सुविधा उपलब्ध नहीं"
 
-#: src/nautilus-window-manage-views.c:1359
+#: src/nautilus-window-manage-views.c:1370
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "नटिलस \"%s\" नहीं दिखा सका"
 
-#: src/nautilus-window-manage-views.c:1361
+#: src/nautilus-window-manage-views.c:1372
 msgid "Please select another viewer and try again."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1365
+#: src/nautilus-window-manage-views.c:1376
 msgid "Can't Display Location"
 msgstr "स्थान देखाउन सक्तैन"
 
-#: src/nautilus-window-menus.c:221
+#: src/nautilus-window-menus.c:220
 msgid "Go to the location specified by this bookmark"
 msgstr "उस स्थल पर जाएँ जो इस बुकमार्क द्वारा दर्शाया गया है।"
 
@@ -7412,7 +7304,7 @@ msgstr "उस स्थल पर जाएँ जो इस बुकमार
 #. * symbol characters -- do not translate the company
 #. * name, please.
 #.
-#: src/nautilus-window-menus.c:592
+#: src/nautilus-window-menus.c:591
 msgid "Copyright (C) 1999-2001 Eazel, Inc."
 msgstr "कपीराइट (c) 1999-2001Eazel, inc"
 
@@ -7420,11 +7312,11 @@ msgstr "कपीराइट (c) 1999-2001Eazel, inc"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window-menus.c:599 src/nautilus-window-menus.c:600
+#: src/nautilus-window-menus.c:598 src/nautilus-window-menus.c:599
 msgid "Translator Credits"
 msgstr "अनुवादकलाई श्रेय"
 
-#: src/nautilus-window-menus.c:605
+#: src/nautilus-window-menus.c:604
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
@@ -7444,19 +7336,19 @@ msgstr "कई पन्ने आगे जाएँ"
 msgid "Display this location with \"%s\""
 msgstr "यस स्थानलाई %s सँग देखाऊ"
 
-#: src/nautilus-window.c:1606
+#: src/nautilus-window.c:1578
 msgid "Application ID"
 msgstr "एप्लीकेशन ID"
 
-#: src/nautilus-window.c:1607
+#: src/nautilus-window.c:1579
 msgid "The application ID of the window."
 msgstr "विन्डो की उपयोग के योग्य आई डी"
 
-#: src/nautilus-window.c:1613
+#: src/nautilus-window.c:1585
 msgid "Application"
 msgstr "एप्लीकेशन"
 
-#: src/nautilus-window.c:1614
+#: src/nautilus-window.c:1586
 msgid "The NautilusApplication associated with this window."
 msgstr "इस विन्डो के साथ निर्धारित करें नटिलस उफयोग के योग्य"
 
@@ -7493,6 +7385,104 @@ msgstr "नेट्रावर्स"
 #, fuzzy
 msgid "View your network servers in the Nautilus file manager"
 msgstr "अपने होम फोल्डर को नटिलस फाइल मैनेजर में देखें"
+
+#~ msgid "Can't find an hbox, using a normal file selection"
+#~ msgstr "सामान्य फाइल छानोट प्रयोग गर्दा एचबक्स पत्ता लागेन"
+
+#~ msgid "AFFS Volume"
+#~ msgstr "AFFS भोल्यूम"
+
+#~ msgid "AFS Network Volume"
+#~ msgstr "AFS नेटवर्क भोल्यूम"
+
+#~ msgid "Auto-detected Volume"
+#~ msgstr "आफै-खोजेको भोल्यूम"
+
+#~ msgid "CD Digital Audio"
+#~ msgstr "सीडी डिजिटल आडियो"
+
+#~ msgid "CD-ROM Drive"
+#~ msgstr "सीडी रोम ड्राइव"
+
+#~ msgid "CDROM Volume"
+#~ msgstr "सीडी रोम भोल्यूम"
+
+#~ msgid "DVD Volume"
+#~ msgstr "डीवीडी भोल्यूम"
+
+#~ msgid "Enhanced DOS Volume"
+#~ msgstr "डास वोल्यूम में वद्धि कर दी"
+
+#~ msgid "Ext2 Linux Volume"
+#~ msgstr "एक्स्ट लाइनक्स वोल्यूम"
+
+#~ msgid "Ext3 Linux Volume"
+#~ msgstr "एक्सट३ लाइनक्स वोल्यूम"
+
+#~ msgid "Hardware Device Volume"
+#~ msgstr "हार्डवेयर उपकरण वोल्यूम"
+
+#~ msgid "Hsfs CDROM Volume"
+#~ msgstr "एच एस एफ एस सीडीरोम वोल्यूम"
+
+#~ msgid "JFS Volume"
+#~ msgstr "जेएफएस वोल्यूम"
+
+#~ msgid "MSDOS Volume"
+#~ msgstr "एमएस डास वोल्यूम"
+
+#~ msgid "MacOS Volume"
+#~ msgstr "मैक ओएस वोल्यूम"
+
+#~ msgid "Minix Volume"
+#~ msgstr "मिनिक्स वोल्यूम"
+
+#~ msgid "NFS Network Volume"
+#~ msgstr "एन एफ एस नेटवर्क वोल्यूम"
+
+#~ msgid "Pcfs Solaris Volume"
+#~ msgstr "पीसीएफएस सोलारिस वोल्यूम"
+
+#~ msgid "ReiserFS Linux Volume"
+#~ msgstr "रिसर एफएस लाइनक्स वोल्यूम"
+
+#~ msgid "Solaris/BSD Volume"
+#~ msgstr "सोलारिस/बीएसडी वोल्यूम"
+
+#~ msgid "SuperMount Volume"
+#~ msgstr "सुपर माउण्ट वोल्यूम"
+
+#~ msgid "System Volume"
+#~ msgstr "सिस्टम वोल्यूम"
+
+#~ msgid "Udfs Solaris Volume"
+#~ msgstr "यूडीएफएस वोल्यूम"
+
+#~ msgid "Windows NT Volume"
+#~ msgstr "विन्डोज एन टी वोल्यूम"
+
+#~ msgid "Windows Shared Volume"
+#~ msgstr "विन्डोज शेयर्ड वोल्यूम"
+
+#~ msgid "Windows VFAT Volume"
+#~ msgstr "विन्डोज वीफेट वोल्यूम"
+
+#~ msgid "XFS Linux Volume"
+#~ msgstr "एक्सएफएस लाइनक्स वोल्यूम"
+
+#~ msgid "XIAFS Volume"
+#~ msgstr "एक्सआईएफएस वोल्यूम"
+
+#~ msgid "Xenix Volume"
+#~ msgstr "जेनिक्स वोल्यूम"
+
+#, fuzzy
+#~ msgid "New Server"
+#~ msgstr "वेब सेवाएं"
+
+#, fuzzy
+#~ msgid "_Connect"
+#~ msgstr "कनेक्टिवा"
 
 #~ msgid "File name"
 #~ msgstr "फाईल नाम"
@@ -8082,9 +8072,6 @@ msgstr "अपने होम फोल्डर को नटिलस फा�
 #~ msgid "Open another Nautilus window for the displayed location"
 #~ msgstr "स्थिति दर्शाने के लिए एक अन्य नटिलस विन्डो खोलें"
 
-#~ msgid "_Find"
-#~ msgstr "खोज्नुस"
-
 #~ msgid "_Start Here"
 #~ msgstr "यहाबाट शुरू"
 
@@ -8447,9 +8434,6 @@ msgstr "अपने होम फोल्डर को नटिलस फा�
 
 #~ msgid "Latin"
 #~ msgstr "लेटिन"
-
-#~ msgid "List View Defaults"
-#~ msgstr "दर्शाएँ व्यू डिफाल्ट"
 
 #~ msgid "Lucida"
 #~ msgstr "ल्यूसिडा"
