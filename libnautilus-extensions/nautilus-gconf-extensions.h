@@ -44,9 +44,9 @@ void         nautilus_gconf_set_integer         (const char             *key,
 char *       nautilus_gconf_get_string          (const char             *key);
 void         nautilus_gconf_set_string          (const char             *key,
 						 const char             *string_value);
-GList *      nautilus_gconf_get_string_list     (const char             *key);
+GSList *     nautilus_gconf_get_string_list     (const char             *key);
 void         nautilus_gconf_set_string_list     (const char             *key,
-						 GList                  *string_list_value);
+						 const GSList           *string_list_value);
 gboolean     nautilus_gconf_is_default          (const char             *key);
 gboolean     nautilus_gconf_monitor_add         (const char             *directory);
 gboolean     nautilus_gconf_monitor_remove      (const char             *directory);

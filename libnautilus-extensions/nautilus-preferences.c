@@ -484,33 +484,41 @@ nautilus_preferences_get (const char *name)
 
 void
 nautilus_preferences_set_string_list (const char *name,
-				      GList *string_list_value)
+				      const EelStringList *string_list_value)
 {
 	char *key;
+	GSList *slist;
 
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (preferences_is_initialized ());
-	
+
+	slist = eel_string_list_as_g_slist (string_list_value);
+
 	key = preferences_key_make (name);
-	nautilus_gconf_set_string_list (key, string_list_value);
+	nautilus_gconf_set_string_list (key, slist);
 	g_free (key);
+
+	eel_g_slist_free_deep (slist);
 
 	nautilus_gconf_suggest_sync ();
 }
 
-GList *
+EelStringList *
 nautilus_preferences_get_string_list (const char *name)
 {
- 	GList *result;
+ 	EelStringList *result;
 	char *key;
+	GSList *slist;
 	
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (preferences_is_initialized (), NULL);
 	
 	key = preferences_key_make_for_getter (name);
-	result = nautilus_gconf_get_string_list (key);
+	slist = nautilus_gconf_get_string_list (key);
 	g_free (key);
 
+	result = eel_string_list_new_from_g_slist (slist, TRUE);
+	eel_g_slist_free_deep (slist);
 	return result;
 }
 
@@ -650,31 +658,40 @@ nautilus_preferences_default_get_string (const char *name,
 void
 nautilus_preferences_default_set_string_list (const char *name,
 					      int user_level,
-					      GList *string_list_value)
+					      const EelStringList *string_list_value)
 {
 	char *default_key;
+	GSList *slist;
 	
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (preferences_is_initialized ());
+
+	slist = eel_string_list_as_g_slist (string_list_value);
 	
 	default_key = preferences_key_make_for_default (name, user_level);
-	nautilus_gconf_set_string_list (default_key, string_list_value);
+	nautilus_gconf_set_string_list (default_key, slist);
 	g_free (default_key);
+
+	eel_g_slist_free_deep (slist);
 }
 
-GList *
+EelStringList *
 nautilus_preferences_default_get_string_list (const char *name,
 					      int user_level)
 {
- 	GList *result;
+ 	EelStringList *result;
 	char *default_key;
+	GSList *slist;
 	
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (preferences_is_initialized (), NULL);
 	
 	default_key = preferences_key_make_for_default (name, user_level);
-	result = nautilus_gconf_get_string_list (default_key);
+	slist = nautilus_gconf_get_string_list (default_key);
 	g_free (default_key);
+
+	result = eel_string_list_new_from_g_slist (slist, TRUE);
+	eel_g_slist_free_deep (slist);
 
 	return result;
 }
@@ -992,7 +1009,7 @@ preferences_entry_remove_callback (PreferencesEntry *entry,
 				   gpointer callback_data)
 {
 	GList *new_list;
-	GList *iterator;
+	const GList *node;
 
 	g_return_if_fail (entry != NULL);
 	g_return_if_fail (callback != NULL);
@@ -1000,8 +1017,8 @@ preferences_entry_remove_callback (PreferencesEntry *entry,
 	
 	new_list = g_list_copy (entry->callback_list);
 	
-	for (iterator = new_list; iterator != NULL; iterator = iterator->next) {
-		PreferencesCallbackEntry *callback_entry = iterator->data;
+	for (node = new_list; node != NULL; node = node->next) {
+		PreferencesCallbackEntry *callback_entry = node->data;
 		
 		g_return_if_fail (callback_entry != NULL);
 		
@@ -1031,7 +1048,7 @@ preferences_entry_remove_auto_storage (PreferencesEntry *entry,
 				       gpointer storage)
 {
 	GList *new_list;
-	GList *iterator;
+	const GList *node;
 	gpointer storage_in_entry;
 
 	g_return_if_fail (entry != NULL);
@@ -1040,8 +1057,8 @@ preferences_entry_remove_auto_storage (PreferencesEntry *entry,
 	
 	new_list = g_list_copy (entry->auto_storage_list);
 	
-	for (iterator = new_list; iterator != NULL; iterator = iterator->next) {
-		storage_in_entry = iterator->data;
+	for (node = new_list; node != NULL; node = node->next) {
+		storage_in_entry = node->data;
 		
 		g_return_if_fail (storage_in_entry != NULL);
 		

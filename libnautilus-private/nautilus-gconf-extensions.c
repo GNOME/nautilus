@@ -212,31 +212,28 @@ nautilus_gconf_get_string (const char *key)
 
 void
 nautilus_gconf_set_string_list (const char *key,
-				GList *string_list_value)
+				const GSList *slist)
 {
 	GConfClient *client;
 	GError *error;
-	GSList *slist;
 
 	g_return_if_fail (key != NULL);
 
 	client = nautilus_gconf_client_get_global ();
 	g_return_if_fail (client != NULL);
 
-	slist = eel_g_slist_from_g_list (string_list_value);
-
 	error = NULL;
-	gconf_client_set_list (client, key, GCONF_VALUE_STRING, slist, &error);
+	gconf_client_set_list (client, key, GCONF_VALUE_STRING,
+			       /* Need cast cause of GConf api bug */
+			       (GSList *) slist,
+			       &error);
 	nautilus_gconf_handle_error (&error);
-
-	g_slist_free (slist);
 }
 
-GList *
+GSList *
 nautilus_gconf_get_string_list (const char *key)
 {
 	GSList *slist;
-	GList *result;
 	GConfClient *client;
 	GError *error;
 	
@@ -251,10 +248,7 @@ nautilus_gconf_get_string_list (const char *key)
 		slist = NULL;
 	}
 
-	result = eel_g_list_from_g_slist (slist);
-	g_slist_free (slist);
-	
-	return result;
+	return slist;
 }
 
 gboolean

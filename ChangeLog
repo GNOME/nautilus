@@ -1,5 +1,38 @@
 2001-04-17  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/tree/nautilus-tree-expansion-state.c:
+	(expansion_state_load_callback),
+	(nautilus_tree_expansion_state_load_from_preferences),
+	(nautilus_tree_expansion_state_save_to_preferences),
+	(nautilus_tree_expansion_state_initialize),
+	(nautilus_tree_expansion_state_save):
+	Update for string_list set/get preferences changes.
+	
+	* libnautilus-extensions/nautilus-gconf-extensions.h:
+	* libnautilus-extensions/nautilus-gconf-extensions.c:
+	(nautilus_gconf_set_string_list), (nautilus_gconf_get_string_list):
+	Use GSList instead of GList as this the format that GConf
+	understands.
+	
+	* libnautilus-extensions/nautilus-preferences.h:
+	* libnautilus-extensions/nautilus-preferences.c:
+	(nautilus_preferences_set_string_list),
+	(nautilus_preferences_get_string_list),
+	(nautilus_preferences_default_set_string_list),
+	(nautilus_preferences_default_get_string_list),
+	(preferences_entry_remove_callback),
+	(preferences_entry_remove_auto_storage),
+	(nautilus_self_check_preferences):
+	Use EelStringList instead of GList for string_list preferences.
+	
+	* src/nautilus-shell.c: (save_window_states),
+	(restore_one_window_callback), (restore_window_states):
+	Update for string_list set/get preferences changes.  Simplify a
+	little by using a string list iterator and string lists instead of
+	parsing the geometry strings "by hand."
+
+2001-04-17  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-monitor.c:
 	#include <glib.h> for g_return macros in the case where HAVE_FAM_H
 	ain't defined.
