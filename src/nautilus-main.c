@@ -79,11 +79,14 @@ main(int argc, char *argv[])
 		nautilus_exit_if_self_checks_failed ();
 	} else {
 #endif
+		NautilusApp *app;
+
+		app = NAUTILUS_APP(nautilus_app_new());
 
 		/* Run the nautilus application. */
-		nautilus_app_init (args ? args[0] : NULL);
+		nautilus_app_startup (app, args ? args[0] : NULL);
 		bonobo_main();
-		nautilus_app_exiting();
+		gtk_object_unref(GTK_OBJECT(app));
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 	}

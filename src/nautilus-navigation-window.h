@@ -61,6 +61,7 @@ struct _NautilusWindow {
   /** CORBA-related elements **/
   BonoboObject *ntl_viewwindow;
   BonoboUIHandler *uih;
+  BonoboObject *app;
 
   /** State information **/
 
@@ -109,7 +110,7 @@ struct _NautilusWindow {
 };
 
 GtkType     nautilus_window_get_type          (void);
-GtkWidget  *nautilus_window_new               (const char *app_id);
+GtkWidget  *nautilus_window_new               (const char *app_id, BonoboObject *app);
 void        nautilus_window_close             (NautilusWindow *window);
 void        nautilus_window_set_content_view  (NautilusWindow *window, 
                                                NautilusView *content_view);

@@ -472,7 +472,7 @@ nautilus_window_request_location_change(NautilusWindow *window,
     {
       NautilusWindow *new_window;
 
-      new_window = nautilus_app_create_window ();
+      new_window = nautilus_app_create_window (NAUTILUS_APP(window->app));
       nautilus_window_set_initial_state (new_window, loc->requested_uri);
     }
   else

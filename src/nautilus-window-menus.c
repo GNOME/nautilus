@@ -83,7 +83,7 @@ file_menu_new_window_cb (GtkWidget *widget,
   
   current_mainwin = NAUTILUS_WINDOW(data);
 
-  new_mainwin = nautilus_app_create_window();
+  new_mainwin = nautilus_app_create_window(NAUTILUS_APP(current_mainwin->app));
 
   nautilus_window_goto_uri(new_mainwin, 
                            nautilus_window_get_requested_uri(current_mainwin));

@@ -111,7 +111,7 @@ static Nautilus_Application
 impl_Nautilus_ViewWindow__get_application (impl_POA_Nautilus_ViewWindow *servant,
                                            CORBA_Environment            *ev)
 {
-  return CORBA_OBJECT_NIL;
+  return CORBA_Object_duplicate(bonobo_object_corba_objref(servant->window->app), ev);
 }
 
 static void
@@ -276,6 +276,7 @@ gtk_marshal_NONE__BOXED_OBJECT (GtkObject * object,
 enum {
   ARG_0,
   ARG_APP_ID,
+  ARG_APP,
   ARG_CONTENT_VIEW
 };
 
@@ -605,6 +606,9 @@ nautilus_window_set_arg (GtkObject      *object,
     if(!old_app_name)
       nautilus_window_constructed(NAUTILUS_WINDOW(object));
     break;
+  case ARG_APP:
+    window->app = BONOBO_OBJECT(GTK_VALUE_OBJECT(*arg));
+    break;
   case ARG_CONTENT_VIEW:
     nautilus_window_real_set_content_view (window, (NautilusView *)GTK_VALUE_OBJECT(*arg));
     break;
@@ -621,6 +625,9 @@ nautilus_window_get_arg (GtkObject      *object,
   switch(arg_id) {
   case ARG_APP_ID:
     GTK_VALUE_STRING(*arg) = app->name;
+    break;
+  case ARG_APP:
+    GTK_VALUE_OBJECT(*arg) = GTK_OBJECT(NAUTILUS_WINDOW(object)->app);
     break;
   case ARG_CONTENT_VIEW:
     GTK_VALUE_OBJECT(*arg) = GTK_OBJECT(((NautilusWindow *)object)->content_view);
@@ -648,9 +655,9 @@ static void nautilus_window_destroy (NautilusWindow *window)
 }
 
 GtkWidget *
-nautilus_window_new(const char *app_id)
+nautilus_window_new(const char *app_id, BonoboObject *app)
 {
-  return GTK_WIDGET (gtk_object_new (nautilus_window_get_type(), "app_id", app_id, NULL));
+  return GTK_WIDGET (gtk_object_new (nautilus_window_get_type(), "app_id", app_id, "app", app, NULL));
 }
 
 void

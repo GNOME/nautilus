@@ -162,7 +162,3 @@ impl_Nautilus_ViewFrame_request_progress_change(impl_POA_Nautilus_ViewFrame * se
 {
   nautilus_view_request_progress_change(servant->view, proginfo);
 }
-
-
-
-
