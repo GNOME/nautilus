@@ -62,7 +62,7 @@ struct _NautilusViewFrameClass
 
   gpointer servant_init_func, servant_destroy_func, vepv;
 
-  guint view_frame_signals[5];
+  guint view_frame_signals[6];
 };
 
 struct _NautilusViewFrame

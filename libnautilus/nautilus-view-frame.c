@@ -253,8 +253,6 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *klass)
   widget_class->size_request = nautilus_view_frame_size_request;
   widget_class->size_allocate = nautilus_view_frame_size_allocate;
 
-  klass->notify_location_change = NULL;
-
   klass->parent_class = gtk_type_class (gtk_type_parent (object_class->type));
   klass->servant_init_func = POA_Nautilus_View__init;
   klass->servant_destroy_func = POA_Nautilus_View__fini;
