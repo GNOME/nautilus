@@ -1,8 +1,12 @@
+NULL=
+
 SUBDIRS =\
 	libnautilus \
 	nautilus-widgets \
 	src \
 	components \
-	icons
+	icons \
+	data \
+	$(NULL)
 
 EXTRA_DIST=COPYING.LIB
