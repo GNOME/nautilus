@@ -39,6 +39,10 @@
 #define NAUTILUS_ICON_CONTAINER_ICON_DATA(pointer) \
 	((NautilusIconData *) (pointer))
 
+#define NAUTILUS_ICON_CONTAINER_GET_CLASS(object) (G_TYPE_INSTANCE_GET_CLASS ((object), \
+					           nautilus_icon_container_get_type (), \
+						   NautilusIconContainerClass))
+
 typedef struct NautilusIconData NautilusIconData;
 
 typedef void (* NautilusIconCallback) (NautilusIconData *icon_data,
@@ -98,14 +102,9 @@ typedef struct {
 	char *	     (* get_container_uri)	  (NautilusIconContainer *container);
 
 	/* Queries on icons for subclass/client.
-	 * These must be implemented. The default "do nothing" is not good enough.
+	 * These must be implemented. The default "do nothing" is not
+	 * good enough, these are _not_ signals.
 	 */
-	gboolean     (* can_accept_item)	  (NautilusIconContainer *container,
-						   NautilusIconData *target, 
-						   const char *item_uri);
-	gboolean     (* get_stored_icon_position) (NautilusIconContainer *container,
-						   NautilusIconData *data,
-						   NautilusIconPosition *position);
 	NautilusScalableIcon *
 	             (* get_icon_images)          (NautilusIconContainer *container,
 						   NautilusIconData *data,
@@ -115,16 +114,27 @@ typedef struct {
 						   NautilusIconData *data,
 						   char **editable_text,
 						   char **additional_text);
-	char *       (* get_icon_uri)             (NautilusIconContainer *container,
-						   NautilusIconData *data);
-	char *       (* get_icon_drop_target_uri) (NautilusIconContainer *container,
-						   NautilusIconData *data);
 	int          (* compare_icons)            (NautilusIconContainer *container,
 						   NautilusIconData *icon_a,
 						   NautilusIconData *icon_b);
 	int          (* compare_icons_by_name)    (NautilusIconContainer *container,
 						   NautilusIconData *icon_a,
 						   NautilusIconData *icon_b);
+
+	/* Queries on icons for subclass/client.
+	 * These must be implemented => These are signals !
+	 * The default "do nothing" is not good enough.
+	 */
+	gboolean     (* can_accept_item)	  (NautilusIconContainer *container,
+						   NautilusIconData *target, 
+						   const char *item_uri);
+	gboolean     (* get_stored_icon_position) (NautilusIconContainer *container,
+						   NautilusIconData *data,
+						   NautilusIconPosition *position);
+	char *       (* get_icon_uri)             (NautilusIconContainer *container,
+						   NautilusIconData *data);
+	char *       (* get_icon_drop_target_uri) (NautilusIconContainer *container,
+						   NautilusIconData *data);
 
 	/* Notifications for the whole container. */
 	void	     (* band_select_started)	  (NautilusIconContainer *container);

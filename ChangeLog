@@ -1,15 +1,58 @@
+2002-04-09  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(nautilus_icon_canvas_item_class_init): remove unused
+	'bounds_changed' signal.
+	(nautilus_icon_canvas_item_update_bounds): don't emit
+	it either.
+
+	* src/file-manager/fm-icon-view.c
+	(icon_container_compare_icons_callback): kill.
+	(icon_container_compare_icons_by_name_callback): kill.
+	(fm_icon_view_compare_files): publicize.
+	(compare_files_cover): upd.
+
+	* src/file-manager/fm-desktop-icon-view.c
+	(desktop_icons_compare_callback): move
+	(fm_desktop_icon_view_init): upd.
+
+	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_get_icon_text),
+	(nautilus_icon_container_get_icon_images): wrap the
+	virtual methods.
+	(nautilus_icon_container_update_icon): upd. to use them.
+	(sort_icons_by_name, compare_icons_by_name),
+	(compare_icons, sort_icons): use the virtual methods
+	instead for speed.
+	(nautilus_icon_container_class_init): prune some signals.
+
+	* src/file-manager/fm-icon-view.c
+	(create_icon_container): use the fm-icon-container.
+	(create_icon_container): upd.
+	(get_icon_images_callback),
+	(get_icon_text_callback): move
+
+	* src/file-manager/fm-icon-container.[ch]: impl.
+	(fm_icon_container_get_icon_images),
+	(fm_icon_container_get_icon_text): move
+	(fm_icon_container_compare_icons),
+	(fm_icon_container_compare_icons_by_name): impl.
+	(fm_icon_container_icons_compare): move here.
+	create this to handle special desktop bits.
+	(fm_icon_container_set_sort_desktop): impl.
+
 2002-04-09  Alexander Larsson  <alla@lysator.liu.se>
 
 	* libnautilus-private/nautilus-customization-data.c:
 	* src/nautilus-property-browser.c (make_drag_image):
 	Handle svg emblems.
 
-2002-04-07	Diego Gonzalez  <dggonz@yahoo.com>
+2002-04-07  Diego Gonzalez  <dggonz@yahoo.com>
 
 	* src/file-manager/fm-list-view.c (create_and_set_up_list_view):
 	  make columns in the list view resizable, bug 74749
 
-2002-04-07	Diego Gonzalez  <dggonz@yahoo.com>
+2002-04-07  Diego Gonzalez  <dggonz@yahoo.com>
 
 	* src/file-manager/nautilus-desktop-icon-view-ui.xml
 	  add "New Laucher" item

@@ -25,6 +25,7 @@
 */
 
 #include <config.h>
+#include "fm-icon-container.h"
 #include "fm-desktop-icon-view.h"
 
 #include <X11/Xatom.h>
@@ -104,10 +105,6 @@ static void     volume_mounted_callback                           (NautilusVolum
 								   FMDesktopIconView      *icon_view);
 static void     volume_unmounted_callback                         (NautilusVolumeMonitor  *monitor,
 								   NautilusVolume         *volume,
-								   FMDesktopIconView      *icon_view);
-static int      desktop_icons_compare_callback                    (NautilusIconContainer  *container,
-								   NautilusFile           *file_a,
-								   NautilusFile           *file_b,
 								   FMDesktopIconView      *icon_view);
 static void     delete_all_mount_links                            (void);
 static void     update_home_link_and_delete_copies                (void);
@@ -541,6 +538,8 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 
 	icon_container = get_icon_container (desktop_icon_view);
 
+	fm_icon_container_set_sort_desktop (FM_ICON_CONTAINER (icon_container), TRUE);
+
 	/* Set up details */
 	desktop_icon_view->details = g_new0 (FMDesktopIconViewDetails, 1);	
 
@@ -590,8 +589,6 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	
 	g_signal_connect_object (icon_container, "middle_click",
 				 G_CALLBACK (fm_desktop_icon_view_handle_middle_click), desktop_icon_view, 0);
-	g_signal_connect_object (icon_container, "compare_icons",
-				 G_CALLBACK (desktop_icons_compare_callback), desktop_icon_view, 0);
 	g_signal_connect_object (desktop_icon_view, "event",
 				 G_CALLBACK (event_callback), desktop_icon_view, 0);
 	g_signal_connect_object (nautilus_trash_monitor_get (), "trash_state_changed",
@@ -936,93 +933,6 @@ delete_all_mount_links (void)
 {
 	update_link_and_delete_copies (nautilus_link_local_is_volume_link,
 				       "", "");
-}
-
-static char *
-get_local_path (NautilusFile *file)
-{
-	char *uri, *local_path;
-
-	uri = nautilus_file_get_uri (file);
-	local_path = gnome_vfs_get_local_path_from_uri (uri);
-	g_free (uri);
-	return local_path;
-}
-
-/* Sort as follows:
- *   1) home link
- *   2) mount links
- *   3) other
- *   4) trash link
- */
-
-typedef enum {
-	SORT_HOME_LINK,
-	SORT_MOUNT_LINK,
-	SORT_OTHER,
-	SORT_TRASH_LINK
-} SortCategory;
-
-static SortCategory
-get_sort_category (NautilusFile *file)
-{
-	char *path;
-	SortCategory category;
-
-	if (!nautilus_file_is_nautilus_link (file)) {
-		category = SORT_OTHER;
-	} else {
-		path = get_local_path (file);
-		g_return_val_if_fail (path != NULL, SORT_OTHER);
-		
-		switch (nautilus_link_local_get_link_type (path)) {
-		case NAUTILUS_LINK_HOME:
-			category = SORT_HOME_LINK;
-			break;
-		case NAUTILUS_LINK_MOUNT:
-			category = SORT_MOUNT_LINK;
-			break;
-		case NAUTILUS_LINK_TRASH:
-			category = SORT_TRASH_LINK;
-			break;
-		default:
-			category = SORT_OTHER;
-			break;
-		}
-		
-		g_free (path);
-	}
-	
-	return category;
-}
-
-static int
-desktop_icons_compare_callback (NautilusIconContainer *container,
-				NautilusFile *file_a,
-				NautilusFile *file_b,
-				FMDesktopIconView *icon_view)
-{
-	SortCategory category_a, category_b;
-	
-	category_a = get_sort_category (file_a);
-	category_b = get_sort_category (file_b);
-
-	if (category_a == category_b) {
-		return nautilus_file_compare_for_sort 
-			(file_a, file_b, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, 
-			 fm_directory_view_should_sort_directories_first (FM_DIRECTORY_VIEW (icon_view)), 
-			 FALSE);
-	}
-
-	/* We know the answer, so prevent the other handlers
-	 * from overwriting our result.
-	 */
-	g_signal_stop_emission_by_name (container, "compare_icons");
-	if (category_a < category_b) {
-		return -1;
-	} else {
-		return +1;
-	}
 }
 
 static MountParameters *

@@ -132,13 +132,6 @@ typedef struct {
 	GList *emblem;
 } EmblemLayout;
 
-enum {
-	BOUNDS_CHANGED,
-	LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL];
-
 static  gboolean antialias_selection_rectangle = TRUE;
 
 static int click_policy_auto_value;
@@ -556,8 +549,6 @@ nautilus_icon_canvas_item_update_bounds (NautilusIconCanvasItem *item)
 	/* Send out the bounds_changed signal and queue a redraw. */
 	eel_gnome_canvas_request_redraw_rectangle
 		(GNOME_CANVAS_ITEM (item)->canvas, before);
-	g_signal_emit (item,
-			 signals[BOUNDS_CHANGED], 0);
 	eel_gnome_canvas_item_request_redraw
 		(GNOME_CANVAS_ITEM (item));
 }
@@ -1961,16 +1952,6 @@ nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
 				      _("highlighted for drop"),
 				      _("whether we are highlighted for a D&D drop"),
 				      FALSE, G_PARAM_READWRITE)); 
-	
-	signals[BOUNDS_CHANGED]
-		= g_signal_new ("bounds_changed",
-		                G_TYPE_FROM_CLASS (class),
-		                G_SIGNAL_RUN_LAST,
-		                G_STRUCT_OFFSET (NautilusIconCanvasItemClass,
-						     bounds_changed),
-		                NULL, NULL,
-		                g_cclosure_marshal_VOID__VOID,
-		                G_TYPE_NONE, 0);
 
 	item_class->update = nautilus_icon_canvas_item_update;
 	item_class->draw = nautilus_icon_canvas_item_draw;

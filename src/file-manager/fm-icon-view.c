@@ -25,6 +25,7 @@
 #include <config.h>
 #include "fm-icon-view.h"
 
+#include "fm-icon-container.h"
 #include "fm-desktop-icon-view.h"
 #include "fm-error-reporting.h"
 #include <bonobo/bonobo-ui-util.h>
@@ -98,9 +99,6 @@
 #define ID_MANUAL_LAYOUT                        "Manual Layout"
 #define ID_TIGHTER_LAYOUT                       "Tighter Layout"
 #define ID_SORT_REVERSED                        "Reversed Order"
-
-#define ICON_TEXT_ATTRIBUTES_NUM_ITEMS		3
-#define ICON_TEXT_ATTRIBUTES_DEFAULT_TOKENS	"size,date_modified,type"
 
 typedef struct {
 	NautilusFileSortType sort_type;
@@ -1057,93 +1055,6 @@ fm_icon_view_get_background_widget (FMDirectoryView *view)
 	return GTK_WIDGET (get_icon_container (FM_ICON_VIEW (view)));
 }
 
-/*
- * Get the preference for which caption text should appear
- * beneath icons.
- */
-static EelStringList *
-fm_icon_view_get_icon_text_attributes_from_preferences (void)
-{
-	static const EelStringList *attributes;
-
-	if (attributes == NULL) {
-		eel_preferences_add_auto_string_list (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-							   &attributes);
-	}
-
-	/* A simple check that the attributes list matches the expected length */
-	g_return_val_if_fail (eel_string_list_get_length (attributes) == ICON_TEXT_ATTRIBUTES_NUM_ITEMS,
-			      eel_string_list_new_from_tokens (ICON_TEXT_ATTRIBUTES_DEFAULT_TOKENS, ",", TRUE));
-
-
-	/* We don't need to sanity check the attributes list even though it came
-	 * from preferences.
-	 *
-	 * There are 2 ways that the values in the list could be bad.
-	 *
-	 * 1) The user picks "bad" values.  "bad" values are those that result in 
-	 *    there being duplicate attributes in the list.
-	 *
-	 * 2) Value stored in GConf are tampered with.  Its possible physically do
-	 *    this by pulling the rug underneath GConf and manually editing its
-	 *    config files.  Its also possible to use a third party GConf key 
-	 *    editor and store garbage for the keys in question.
-	 *
-	 * Thankfully, the Nautilus preferences machinery deals with both of 
-	 * these cases.
-	 *
-	 * In the first case, the preferences dialog widgetry prevents
-	 * duplicate attributes by making "bad" choices insensitive.
-	 *
-	 * In the second case, the preferences getter (and also the auto storage) for
-	 * string_list values are always valid members of the enumeration associated
-	 * with the preference.
-	 *
-	 * So, no more error checking on attributes is needed here and we can return
-	 * a copy of the auto stored value.
-	 */
-	return eel_string_list_copy (attributes);
-}
-
-/**
- * fm_icon_view_get_icon_text_attribute_names:
- *
- * Get a string representing which text attributes should be displayed
- * beneath an icon. The result is dependent on zoom level and possibly
- * user configuration. Use g_free to free the result.
- * @view: FMIconView to query.
- * 
- * Return value: A |-delimited string comprising attribute names, e.g. "name|size".
- * 
- **/
-static char *
-fm_icon_view_get_icon_text_attribute_names (FMIconView *view)
-{
-	EelStringList *attributes;
-	char *result;
-	int piece_count;
-
-	const int pieces_by_level[] = {
-		0,	/* NAUTILUS_ZOOM_LEVEL_SMALLEST */
-		0,	/* NAUTILUS_ZOOM_LEVEL_SMALLER */
-		0,	/* NAUTILUS_ZOOM_LEVEL_SMALL */
-		1,	/* NAUTILUS_ZOOM_LEVEL_STANDARD */
-		2,	/* NAUTILUS_ZOOM_LEVEL_LARGE */
-		2,	/* NAUTILUS_ZOOM_LEVEL_LARGER */
-		3	/* NAUTILUS_ZOOM_LEVEL_LARGEST */
-	};
-
-	piece_count = pieces_by_level[fm_icon_view_get_zoom_level (view)];
-	
-	attributes = fm_icon_view_get_icon_text_attributes_from_preferences ();
-	g_return_val_if_fail ((guint)piece_count <= eel_string_list_get_length (attributes), NULL);
-	
-	result = eel_string_list_as_string (attributes, "|", piece_count);
-	eel_string_list_free (attributes);
-
-	return result;
-}
-
 static gboolean
 fm_icon_view_is_empty (FMDirectoryView *view)
 {
@@ -1737,12 +1648,13 @@ renaming_icon_callback (NautilusIconContainer *container,
 		 TRUE);
 }
 
-static int
-compare_files (FMIconView *icon_view,
-	       NautilusFile *a,
-	       NautilusFile *b)
+int
+fm_icon_view_compare_files (FMIconView   *icon_view,
+			    NautilusFile *a,
+			    NautilusFile *b)
 {
 	g_assert (FM_IS_ICON_VIEW (icon_view));
+
 	return nautilus_file_compare_for_sort
 		(a, b, icon_view->details->sort->sort_type,
 		 fm_directory_view_should_sort_directories_first (FM_DIRECTORY_VIEW (icon_view)),
@@ -1752,7 +1664,9 @@ compare_files (FMIconView *icon_view,
 static int
 compare_files_cover (gconstpointer a, gconstpointer b, gpointer callback_data)
 {
-	return compare_files (callback_data, NAUTILUS_FILE (a), NAUTILUS_FILE (b));
+	return fm_icon_view_compare_files (callback_data,
+					   NAUTILUS_FILE (a),
+					   NAUTILUS_FILE (b));
 }
 
 static void
@@ -1765,37 +1679,6 @@ fm_icon_view_sort_files (FMDirectoryView *view, GList **files)
 		return;
 	}
 	*files = g_list_sort_with_data (*files, compare_files_cover, icon_view);
-}
-
-static int
-icon_container_compare_icons_callback (NautilusIconContainer *container,
-				       NautilusFile *a,
-				       NautilusFile *b,
-				       FMIconView *icon_view)
-{
-	return compare_files (icon_view, a, b);
-}
-
-/* This is used by type-to-select code. It deliberately ignores the
- * folders-first and reversed-sort settings.
- */
-static int
-icon_container_compare_icons_by_name_callback (NautilusIconContainer *container,
-					       NautilusFile *file_a,
-					       NautilusFile *file_b,
-					       FMIconView *icon_view)
-{
-	int result;
-
-	g_assert (FM_IS_ICON_VIEW (icon_view));
-	g_assert (container == get_icon_container (icon_view));
-	g_assert (NAUTILUS_IS_FILE (file_a));
-	g_assert (NAUTILUS_IS_FILE (file_b));
-
-	result = nautilus_file_compare_for_sort (file_a, file_b, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
-		 				 FALSE, FALSE);
-
-	return result;
 }
 
 static void
@@ -1937,28 +1820,6 @@ fm_icon_view_icon_text_changed_callback (NautilusIconContainer *container,
 	fm_rename_file (file, new_name);
 }
 
-static NautilusScalableIcon *
-get_icon_images_callback (NautilusIconContainer *container,
-			  NautilusFile *file,
-			  const char *modifier,
-			  GList **emblem_icons,
-			  FMIconView *icon_view)
-{
-	EelStringList *emblems_to_ignore;
-	
-	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_assert (NAUTILUS_IS_FILE (file));
-	g_assert (FM_IS_ICON_VIEW (icon_view));
-
-	if (emblem_icons != NULL) {
-		emblems_to_ignore = fm_directory_view_get_emblem_names_to_exclude 
-			(FM_DIRECTORY_VIEW (icon_view));
-		*emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, emblems_to_ignore);
-		eel_string_list_free (emblems_to_ignore);
-	}
-	return nautilus_icon_factory_get_icon_for_file (file, modifier);
-}
-
 static char *
 get_icon_uri_callback (NautilusIconContainer *container,
 		       NautilusFile *file,
@@ -1999,91 +1860,6 @@ get_icon_drop_target_uri_callback (NautilusIconContainer *container,
 	}
 
 	return uri;
-}
-
-/* This callback returns the text, both the editable part, and the
- * part below that is not editable.
- */
-static void
-get_icon_text_callback (NautilusIconContainer *container,
-			NautilusFile *file,
-			char **editable_text,
-			char **additional_text,
-			FMIconView *icon_view)
-{
-	char *actual_uri, *path;
-	gchar *description;
-	char *attribute_names;
-	char **text_array;
-	int i , slot_index;
-	char *attribute_string;
-	
-	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_assert (NAUTILUS_IS_FILE (file));
-	g_assert (editable_text != NULL);
-	g_assert (additional_text != NULL);
-	g_assert (FM_IS_ICON_VIEW (icon_view));
-
-	/* In the smallest zoom mode, no text is drawn. */
-	if (fm_icon_view_get_zoom_level (icon_view) == NAUTILUS_ZOOM_LEVEL_SMALLEST) {
-		*editable_text = NULL;
-	} else {
-		/* Strip the suffix for nautilus object xml files. */
-		*editable_text = nautilus_file_get_display_name (file);
-	}
-	
-	/* Handle link files specially. */
-	if (nautilus_file_is_nautilus_link (file)) {
-		/* FIXME bugzilla.gnome.org 42531: Does sync. I/O and works only locally. */
-		actual_uri = nautilus_file_get_uri (file);
-		path = gnome_vfs_get_local_path_from_uri (actual_uri);
-		g_free (actual_uri);
- 		*additional_text = NULL;
-		if (path != NULL) {
-			description = nautilus_link_local_get_additional_text (path);
-			g_free (path);
-			if (description)
-				*additional_text = g_strdup_printf (" \n%s\n ", description);
-			g_free (description);
-			return;
-		}
-	}
-	
-	/* Find out what attributes go below each icon. */
-	attribute_names = fm_icon_view_get_icon_text_attribute_names (icon_view);
-	text_array = g_strsplit (attribute_names, "|", 0);
-	g_free (attribute_names);
-
-	/* Get the attributes. */
-	for (i = 0; text_array[i] != NULL; i++)	{
-		/* if the attribute is "none", delete the array slot */
-		while (eel_strcmp (text_array[i], "none") == 0) {
-			g_free (text_array[i]);
-			text_array[i] = NULL;
-			slot_index = i + 1;			
-			while (text_array[slot_index] != NULL) {
-				text_array[slot_index - 1] = text_array[slot_index];
-				text_array[slot_index++] = NULL;
-			}
-			if (text_array[i] == NULL)
-				break;
-		} 
-		
-		if (text_array[i] == NULL)
-			break;
-			
-		attribute_string = nautilus_file_get_string_attribute_with_default
-			(file, text_array[i]);
-				
-		/* Replace each attribute name in the array with its string value */
-		g_free (text_array[i]);
-		text_array[i] = attribute_string;
-	}
-
-	/* Return them. */
-	*additional_text = g_strjoinv ("\n", text_array);
-
-	g_strfreev (text_array);
 }
 
 /* Preferences changed callbacks */
@@ -2398,7 +2174,7 @@ create_icon_container (FMIconView *icon_view)
 {
 	NautilusIconContainer *icon_container;
 
-	icon_container = NAUTILUS_ICON_CONTAINER (nautilus_icon_container_new ());
+	icon_container = fm_icon_container_new (icon_view);
 
 	GTK_WIDGET_SET_FLAGS (icon_container, GTK_CAN_FOCUS);
 	
@@ -2408,10 +2184,6 @@ create_icon_container (FMIconView *icon_view)
 				 G_CALLBACK (band_select_started_callback), icon_view, 0);
 	g_signal_connect_object (icon_container, "band_select_ended",
 				 G_CALLBACK (band_select_ended_callback), icon_view, 0);
-	g_signal_connect_object (icon_container, "compare_icons",
-				 G_CALLBACK (icon_container_compare_icons_callback), icon_view, 0);
-	g_signal_connect_object (icon_container, "compare_icons_by_name",
-				 G_CALLBACK (icon_container_compare_icons_by_name_callback), icon_view, 0);
 	g_signal_connect_object (icon_container, "context_click_selection",
 				 G_CALLBACK (icon_container_context_click_selection_callback), icon_view, 0);
 	g_signal_connect_object (icon_container, "context_click_background",
@@ -2422,14 +2194,11 @@ create_icon_container (FMIconView *icon_view)
 				 G_CALLBACK (fm_icon_view_icon_text_changed_callback), icon_view, 0);
 	g_signal_connect_object (icon_container, "selection_changed",
 				 G_CALLBACK (selection_changed_callback), icon_view, 0);
-	g_signal_connect_object (icon_container, "get_icon_images",
-				 G_CALLBACK (get_icon_images_callback), icon_view, 0);
+	/* FIXME: many of these should move into fm-icon-container as virtual methods */
 	g_signal_connect_object (icon_container, "get_icon_uri",
 				 G_CALLBACK (get_icon_uri_callback), icon_view, 0);
 	g_signal_connect_object (icon_container, "get_icon_drop_target_uri",
 				 G_CALLBACK (get_icon_drop_target_uri_callback), icon_view, 0);
-	g_signal_connect_object (icon_container, "get_icon_text",
-				 G_CALLBACK (get_icon_text_callback), icon_view, 0);
 	g_signal_connect_object (icon_container, "move_copy_items",
 				 G_CALLBACK (icon_view_move_copy_items), icon_view, 0);
 	g_signal_connect_object (icon_container, "get_container_uri",

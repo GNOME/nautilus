@@ -185,14 +185,10 @@ enum {
 	BAND_SELECT_ENDED,
 	BUTTON_PRESS,
 	CAN_ACCEPT_ITEM,
-	COMPARE_ICONS,
-	COMPARE_ICONS_BY_NAME,
 	CONTEXT_CLICK_BACKGROUND,
 	CONTEXT_CLICK_SELECTION,
 	MIDDLE_CLICK,
 	GET_CONTAINER_URI,
-	GET_ICON_IMAGES,
-	GET_ICON_TEXT,
 	GET_ICON_URI,
 	GET_ICON_DROP_TARGET_URI,
 	GET_STORED_ICON_POSITION,
@@ -731,53 +727,54 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 static int
 compare_icons (gconstpointer a, gconstpointer b, gpointer icon_container)
 {
+	NautilusIconContainerClass *klass;
 	const NautilusIcon *icon_a, *icon_b;
-	int result;
 
 	icon_a = a;
 	icon_b = b;
+	klass  = NAUTILUS_ICON_CONTAINER_GET_CLASS (icon_container);
 
-	result = 0;
-	g_signal_emit (icon_container,
-			 signals[COMPARE_ICONS], 0,
-			 icon_a->data,
-			 icon_b->data,
-			 &result);
-	return result;
+	return klass->compare_icons (icon_container, icon_a->data, icon_b->data);
 }
 
 static void
 sort_icons (NautilusIconContainer *container,
-	    GList **icons)
+	    GList                **icons)
 {
+	NautilusIconContainerClass *klass;
+
+	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
+	g_return_if_fail (klass->compare_icons != NULL);
+
 	*icons = g_list_sort_with_data (*icons, compare_icons, container);
 }
 
 static int
 compare_icons_by_name (gconstpointer a, gconstpointer b, gpointer icon_container)
 {
+	NautilusIconContainerClass *klass;
 	const NautilusIcon *icon_a, *icon_b;
-	int result;
 
 	icon_a = a;
 	icon_b = b;
 
-	result = 0;
-	g_signal_emit (icon_container,
-			 signals[COMPARE_ICONS_BY_NAME], 0,
-			 icon_a->data,
-			 icon_b->data,
-			 &result);
-	return result;
+	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (icon_container);
+
+	return klass->compare_icons_by_name
+		(icon_container, icon_a->data, icon_b->data);
 }
 
 static void
 sort_icons_by_name (NautilusIconContainer *container,
-		    GList **icons)
+		    GList                **icons)
 {
+	NautilusIconContainerClass *klass;
+
+	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
+	g_return_if_fail (klass->compare_icons_by_name != NULL);
+
 	*icons = g_list_sort_with_data (*icons, compare_icons_by_name, container);
 }
-
 
 static void
 resort (NautilusIconContainer *container)
@@ -3160,30 +3157,6 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1,
 				G_TYPE_POINTER);
-	signals[GET_ICON_IMAGES]
-		= g_signal_new ("get_icon_images",
-		                G_TYPE_FROM_CLASS (class),
-		                G_SIGNAL_RUN_LAST,
-		                G_STRUCT_OFFSET (NautilusIconContainerClass,
-						 get_icon_images),
-		                NULL, NULL,
-		                eel_marshal_POINTER__POINTER_STRING_POINTER,
-		                G_TYPE_POINTER, 3,
-				G_TYPE_POINTER,
-				G_TYPE_STRING,
-				G_TYPE_POINTER);
-	signals[GET_ICON_TEXT]
-		= g_signal_new ("get_icon_text",
-		                G_TYPE_FROM_CLASS (class),
-		                G_SIGNAL_RUN_LAST,
-		                G_STRUCT_OFFSET (NautilusIconContainerClass,
-						 get_icon_text),
-		                NULL, NULL,
-		                eel_marshal_VOID__POINTER_POINTER_POINTER,
-		                G_TYPE_NONE, 3,
-				G_TYPE_POINTER,
-				G_TYPE_POINTER,
-				G_TYPE_POINTER);
 	signals[GET_ICON_URI]
 		= g_signal_new ("get_icon_uri",
 		                G_TYPE_FROM_CLASS (class),
@@ -3203,28 +3176,6 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                NULL, NULL,
 		                eel_marshal_STRING__POINTER,
 		                G_TYPE_STRING, 1,
-				G_TYPE_POINTER);
-	signals[COMPARE_ICONS]
-		= g_signal_new ("compare_icons",
-		                G_TYPE_FROM_CLASS (class),
-		                G_SIGNAL_RUN_LAST,
-		                G_STRUCT_OFFSET (NautilusIconContainerClass,
-						 compare_icons),
-		                NULL, NULL,
-		                nautilus_marshal_INT__POINTER_POINTER,
-		                G_TYPE_INT, 2,
-				G_TYPE_POINTER,
-				G_TYPE_POINTER);
-	signals[COMPARE_ICONS_BY_NAME]
-		= g_signal_new ("compare_icons_by_name",
-		                G_TYPE_FROM_CLASS (class),
-		                G_SIGNAL_RUN_LAST,
-		                G_STRUCT_OFFSET (NautilusIconContainerClass,
-						 compare_icons_by_name),
-		                NULL, NULL,
-		                nautilus_marshal_INT__POINTER_POINTER,
-		                G_TYPE_INT, 2,
-				G_TYPE_POINTER,
 				G_TYPE_POINTER);
 	signals[MOVE_COPY_ITEMS] 
 		= g_signal_new ("move_copy_items",
@@ -3752,6 +3703,35 @@ get_icon_being_renamed (NautilusIconContainer *container)
 	return rename_icon;
 }			 
 
+static NautilusScalableIcon *
+nautilus_icon_container_get_icon_images (NautilusIconContainer *container,
+					 NautilusIconData      *data,
+					 const char            *modifier,
+					 GList                **emblem_icons)
+{
+	NautilusIconContainerClass *klass;
+
+	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
+	g_return_val_if_fail (klass->get_icon_images != NULL, NULL);
+
+	return klass->get_icon_images (container, data, modifier, emblem_icons);
+}
+
+
+static void
+nautilus_icon_container_get_icon_text (NautilusIconContainer *container,
+				       NautilusIconData      *data,
+				       char                 **editable_text,
+				       char                 **additional_text)
+{
+	NautilusIconContainerClass *klass;
+
+	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
+	g_return_if_fail (klass->get_icon_text != NULL);
+
+	klass->get_icon_text (container, data, editable_text, additional_text);
+}
+
 void 
 nautilus_icon_container_update_icon (NautilusIconContainer *container,
 				     NautilusIcon *icon)
@@ -3774,12 +3754,10 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	details = container->details;
 
 	/* Get the icons. */
-	g_signal_emit (container,
-		       signals[GET_ICON_IMAGES], 0,
-		       icon->data,
-		       (icon == details->drop_target) ? "accept" : "",
-		       &emblem_scalable_icons,
-		       &scalable_icon);
+	scalable_icon = nautilus_icon_container_get_icon_images (
+		container, icon->data, 
+		(icon == details->drop_target) ? "accept" : "",
+		&emblem_scalable_icons);
 
 	/* compute the maximum size based on the scale factor */
 	min_image_size = MINIMUM_IMAGE_SIZE * GNOME_CANVAS (container)->pixels_per_unit;
@@ -3837,12 +3815,10 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	emblem_pixbufs = g_list_reverse (emblem_pixbufs);
 	nautilus_scalable_icon_list_free (emblem_scalable_icons);
 
-	/* Get both editable and non-editable icon text */
-	g_signal_emit (container,
-			 signals[GET_ICON_TEXT], 0,
-			 icon->data,
-			 &editable_text,
-			 &additional_text);
+	nautilus_icon_container_get_icon_text (container,
+					       icon->data,
+					       &editable_text,
+					       &additional_text);
 
 	/* If name of icon being renamed was changed from elsewhere, end renaming mode. 
 	 * Alternatively, we could replace the characters in the editable text widget

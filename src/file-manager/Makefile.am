@@ -20,6 +20,7 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-desktop-icon-view.c		\
 	fm-directory-view.c		\
 	fm-error-reporting.c		\
+	fm-icon-container.c		\
 	fm-icon-view.c			\
 	fm-list-model.c			\
 	fm-list-view.c			\
@@ -29,6 +30,7 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-desktop-icon-view.h 		\
 	fm-directory-view.h 		\
 	fm-error-reporting.h 		\
+	fm-icon-container.h		\
 	fm-icon-view.h 			\
 	fm-list-model.h			\
 	fm-list-view-private.h 		\
