@@ -1,3 +1,11 @@
+2001-02-11  Rebecca Schulman  <rebecka@eazel.com>
+
+	reviewed by: Mathieu Lacage <mathieu@gnome.org>
+
+	* cut-n-paste-code/widgets/nautilusclist/nautilusclist.c: Use
+	binary instead of linear search to find the right insert new row
+	into a sorted clist. This is part of addressing bug 6290
+
 2001-02-10  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-sidebar.c: (add_command_buttons),
@@ -383,6 +391,7 @@
 	except with extremely long titles, for which the title-writer
 	should be flogged.
 
+>>>>>>> 1.3705
 2001-02-09  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 6453, Gnome VFS_CRITICAL received when dragging
@@ -709,6 +718,7 @@
 	* components/mozilla/nautilus-mozilla-content-view.c:
 	* components/mozilla/nautilus-mozilla-content-view.h:
 
+>>>>>>> 1.3690
 2001-02-08  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-gnome-extensions.c:

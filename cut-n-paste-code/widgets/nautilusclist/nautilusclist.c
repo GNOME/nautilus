@@ -2608,6 +2608,7 @@ nautilus_clist_remove (NautilusCList *clist,
   NAUTILUS_CLIST_CLASS_FW (clist)->remove_row (clist, row);
 }
 
+
 void
 nautilus_clist_clear (NautilusCList *clist)
 {
@@ -2618,11 +2619,112 @@ nautilus_clist_clear (NautilusCList *clist)
 }
 
 /* PRIVATE INSERT/REMOVE ROW FUNCTIONS
+ *   get_ascending_sorted_list_position_for_new_row   
+ *   get_descending_sorted_list_position_for_new_row
  *   real_insert_row
  *   real_remove_row
  *   real_clear
  *   real_row_move
  */
+
+/* Returns a row number >= 0 */
+static gint
+get_ascending_sorted_list_position_for_new_row (NautilusCList *clist,
+					    NautilusCListRow *new_row)
+{
+  int current_row, high_row_bound, low_row_bound;
+  int compare_result;
+  GList *current_row_node;
+
+  if (clist->rows == 0) {
+    return 0;
+  }
+
+  current_row = clist->rows / 2;
+  high_row_bound = clist->rows;
+  low_row_bound = 0;
+
+  while (TRUE) {
+    current_row_node = g_list_nth (clist->row_list, current_row);
+    compare_result = clist->compare (clist, 
+				     new_row,
+				     NAUTILUS_CLIST_ROW (current_row_node));
+    
+    if (compare_result == 0 ||
+	(compare_result > 0 && high_row_bound == current_row + 1)) {
+      /* GList starts at 0, rows at 1 */
+      return current_row + 1;
+    }
+    else if (compare_result > 0) {
+      g_assert (high_row_bound > current_row);
+      low_row_bound = current_row;
+      current_row = (current_row + high_row_bound) / 2;
+    }
+    else if (compare_result < 0) {
+      /* Check for case of new row being less than the first row */
+      if (current_row == 0) {
+	return 0;
+      }
+      g_assert (low_row_bound < current_row);
+      high_row_bound = current_row;
+      current_row = (current_row + low_row_bound) / 2;
+    }
+  }
+
+  g_assert_not_reached ();
+  return -1;
+}
+
+/* Returns a row number >= 0 */
+static gint
+get_descending_sorted_list_position_for_new_row (NautilusCList *clist,
+						 NautilusCListRow *new_row)
+{
+  int current_row, high_row_bound, low_row_bound;
+  int compare_result;
+  GList *current_row_node;
+
+  if (clist->rows == 0) {
+    return 0;
+  }
+
+  current_row = clist->rows / 2;
+  high_row_bound = clist->rows;
+  low_row_bound = 0;
+
+  while (TRUE) {
+    current_row_node = g_list_nth (clist->row_list, current_row);
+    compare_result = clist->compare (clist, 
+				     new_row,
+				     NAUTILUS_CLIST_ROW (current_row_node));
+    
+    if (compare_result == 0 ||
+	(compare_result < 0 && high_row_bound == current_row + 1)) {
+      /* GList starts at 0, rows at 1 */
+      return current_row + 1;
+    }
+    else if (compare_result < 0) {
+      g_assert (high_row_bound > current_row);
+      low_row_bound = current_row;
+      current_row = (current_row + high_row_bound) / 2;
+    }
+    else if (compare_result > 0) {
+      /* Check for case of new row being less than the first row */
+      if (current_row == 0) {
+	return 0;
+      }
+      g_assert (low_row_bound < current_row);
+      high_row_bound = current_row;
+      current_row = (current_row + low_row_bound) / 2;
+    }
+  }
+
+  g_assert_not_reached ();
+  return -1;
+}
+
+
+
 static gint
 real_insert_row (NautilusCList *clist,
 		 gint      row,
@@ -2658,42 +2760,30 @@ real_insert_row (NautilusCList *clist,
       if (NAUTILUS_CLIST_AUTO_SORT(clist))   /* override insertion pos */
 	{
 	  GList *work;
-	  
+
 	  row = 0;
 	  work = clist->row_list;
 	  
 	  if (clist->sort_type == GTK_SORT_ASCENDING)
 	    {
-	      while (row < clist->rows &&
-		     clist->compare (clist, clist_row,
-				     NAUTILUS_CLIST_ROW (work)) > 0)
-		{
-		  row++;
-		  work = work->next;
-		}
+	      row = get_ascending_sorted_list_position_for_new_row (clist, clist_row);
 	    }
 	  else
 	    {
-	      while (row < clist->rows &&
-		     clist->compare (clist, clist_row,
-				     NAUTILUS_CLIST_ROW (work)) < 0)
-		{
-		  row++;
-		  work = work->next;
-		}
+	      row = get_descending_sorted_list_position_for_new_row (clist, clist_row);
 	    }
 	}
-      
+
       /* reset the row end pointer if we're inserting at the end of the list */
       if (row == clist->rows)
 	clist->row_list_end = (g_list_append (clist->row_list_end,
 					      clist_row))->next;
       else
 	clist->row_list = g_list_insert (clist->row_list, clist_row, row);
-
+      
     }
   clist->rows++;
-
+  
   if (row < ROW_FROM_YPIXEL (clist, 0))
     clist->voffset -= (clist->row_height + CELL_SPACING);
 
