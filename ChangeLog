@@ -1,5 +1,16 @@
 2002-06-12  Damon Chaplin  <damon@ximian.com>
 
+	* src/nautilus-property-browser.c (nautilus_property_browser_init): 
+	Add a 'Help' button on the bottom-left of the dialog. Also used
+	gtk_window_set_default_size() rather than gtk_widget_set_size_request()
+	so the dialog grows if necessary.
+	(help_button_callback): new callback to show the help page.
+	Based on patch from Satyajit Kanungo  <satyajit.kanungo@wipro.com>.
+
+	Fixes bug #83524.
+
+2002-06-12  Damon Chaplin  <damon@ximian.com>
+
 	* test/Makefile.am (INCLUDES): 
 	* src/Makefile.am (INCLUDES): 
 	* components/tree/Makefile.am (INCLUDES): 

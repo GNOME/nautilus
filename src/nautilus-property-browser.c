@@ -49,6 +49,7 @@
 #include <libxml/parser.h>
 #include <gtk/gtkalignment.h>
 #include <gtk/gtkcolorseldialog.h>
+#include <gtk/gtkmessagedialog.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkeventbox.h>
@@ -67,6 +68,7 @@
 #include <gtk/gtkviewport.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
+#include <libgnome/gnome-help.h>
 #include <libgnomeui/gnome-color-picker.h>
 #include <libgnomeui/gnome-icon-entry.h>
 #include <libgnomeui/gnome-stock-icons.h>
@@ -161,6 +163,8 @@ static void     add_new_button_callback                         (GtkWidget      
 static void     cancel_remove_mode                              (NautilusPropertyBrowser       *property_browser);
 static void     done_button_callback                            (GtkWidget                     *widget,
 								 GtkWidget                     *property_browser);
+static void     help_button_callback                            (GtkWidget                     *widget,
+								 GtkWidget                     *property_browser);
 static void     remove_button_callback                          (GtkWidget                     *widget,
 								 NautilusPropertyBrowser       *property_browser);
 static gboolean nautilus_property_browser_delete_event_callback (GtkWidget                     *widget,
@@ -241,7 +245,7 @@ static void
 nautilus_property_browser_init (GtkObject *object)
 {
  	NautilusPropertyBrowser *property_browser;
- 	GtkWidget *widget, *temp_box, *temp_hbox, *temp_frame;
+ 	GtkWidget *widget, *temp_box, *temp_hbox, *temp_frame, *vbox;
 	GtkWidget *temp_button, *align;
 	GtkWidget *viewport;
 	char *temp_str;
@@ -260,7 +264,9 @@ nautilus_property_browser_init (GtkObject *object)
 	g_free (temp_str);
 	
 	/* set the initial size of the property browser */
-	gtk_widget_set_size_request (widget, PROPERTY_BROWSER_WIDTH, PROPERTY_BROWSER_HEIGHT);
+	gtk_window_set_default_size (GTK_WINDOW (property_browser),
+				     PROPERTY_BROWSER_WIDTH,
+				     PROPERTY_BROWSER_HEIGHT);
 	gtk_container_set_border_width (GTK_CONTAINER (widget), 0);				
 
 	/* set the title and standard close accelerator */
@@ -268,12 +274,19 @@ nautilus_property_browser_init (GtkObject *object)
 	gtk_window_set_wmclass (GTK_WINDOW (widget), "property_browser", "Nautilus");
 	eel_gtk_window_set_up_close_accelerator (GTK_WINDOW (widget));
 		
+
+	/* create the main vbox. */
+  	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox);
+	gtk_container_add (GTK_CONTAINER (property_browser), vbox);
+
 	/* create the container box */  
   	property_browser->details->container = GTK_HBOX (gtk_hbox_new (FALSE, 0));
 	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->container), 0);
 	gtk_widget_show (GTK_WIDGET (property_browser->details->container));
-	gtk_container_add (GTK_CONTAINER (property_browser),
-			   GTK_WIDGET (property_browser->details->container));	
+	gtk_box_pack_start (GTK_BOX (vbox),
+			    GTK_WIDGET (property_browser->details->container),
+			    TRUE, TRUE, 0);	
 
 	/* make the category container */
 	property_browser->details->category_container = gtk_scrolled_window_new (NULL, NULL);
@@ -352,16 +365,24 @@ nautilus_property_browser_init (GtkObject *object)
 	gtk_widget_show (property_browser->details->bottom_box);
 	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->bottom_box), GNOME_PAD_SMALL);
 	
-	gtk_box_pack_end (GTK_BOX(property_browser->details->content_container), temp_box, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (vbox), temp_box, FALSE, FALSE, 0);
   	gtk_container_add (GTK_CONTAINER (temp_frame), property_browser->details->bottom_box);
-  	
+  
+  	/* create the "help" button */
+	temp_button = gtk_button_new_from_stock (GTK_STOCK_HELP);
+	GTK_WIDGET_SET_FLAGS (temp_button, GTK_CAN_DEFAULT);
+
+	gtk_widget_show (temp_button);
+	gtk_box_pack_start (GTK_BOX (property_browser->details->bottom_box), temp_button, FALSE, FALSE, GNOME_PAD_SMALL);
+	g_signal_connect_object (temp_button, "clicked", G_CALLBACK (help_button_callback), property_browser, 0);
+	
   	/* create the "done" button */
  	temp_button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
 	GTK_WIDGET_SET_FLAGS (temp_button, GTK_CAN_DEFAULT);
 	eel_gtk_button_set_padding (GTK_BUTTON (temp_button), GNOME_PAD_SMALL);
 
-	gtk_widget_show(temp_button);
-	gtk_box_pack_end (GTK_BOX(property_browser->details->bottom_box), temp_button, FALSE, FALSE, GNOME_PAD_SMALL);
+	gtk_widget_show (temp_button);
+	gtk_box_pack_end (GTK_BOX (property_browser->details->bottom_box), temp_button, FALSE, FALSE, GNOME_PAD_SMALL);
 	gtk_widget_grab_default (temp_button);
 	gtk_widget_grab_focus (temp_button);
  	g_signal_connect_object (temp_button, "clicked", G_CALLBACK (done_button_callback), property_browser, 0);
@@ -1479,6 +1500,34 @@ done_button_callback (GtkWidget *widget, GtkWidget *property_browser)
 {
 	cancel_remove_mode (NAUTILUS_PROPERTY_BROWSER (property_browser));
 	gtk_widget_hide (property_browser);
+}
+
+/* handle the "help" button */
+static void
+help_button_callback (GtkWidget *widget, GtkWidget *property_browser)
+{
+	GError *error = NULL;
+	GtkWidget *dialog;
+
+	gnome_help_display_desktop (NULL,
+				    "user-guide",
+				    "wgosnautilus.xml", "gosnautilus-50",
+				    &error);
+	if (error) {
+		dialog = gtk_message_dialog_new (GTK_WINDOW (widget),
+						 GTK_DIALOG_DESTROY_WITH_PARENT,
+						 GTK_MESSAGE_ERROR,
+						 GTK_BUTTONS_CLOSE,
+						 _("There was an error displaying help: %s"),
+						 error->message);
+
+		g_signal_connect (G_OBJECT (dialog),
+				  "response", G_CALLBACK (gtk_widget_destroy),
+				  NULL);
+		gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+		gtk_widget_show (dialog);
+		g_error_free (error);
+	}
 }
 
 /* handle the "remove" button */
