@@ -1,12 +1,51 @@
+2000-12-20  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 5285 (Renaming file through 'properties' dialog causes
+	Glib errors).
+
+	Did some work on bug 2288 (Location bar should only escape /
+	unescape unambiguously for URIs ).
+
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(nautilus_directory_set_metafile_contents): Create hash table even
+	when no metafile is read in. This fixes asserts people were
+	seeing.
+	
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_format_uri_for_display): Use
+	gnome_vfs_get_local_path_from_uri to unescape paths so we don't
+	unintentionally munge them. There may still be an issue with using
+	this function on a string that gets written into the location bar.
+	(is_valid_scheme_character), (has_valid_scheme), (expand_tilde),
+	(nautilus_make_uri_from_input): Redo function to implement a new
+	scheme where we put http:// in front of anything that doesn't
+	start with a URI scheme or a / and file:// in front of things that
+	do start with / (converting the path to a URI by escaping
+	characters are necessary).
+	(nautilus_get_build_timestamp): Get rid of unneeded tests.
+	(nautilus_self_check_file_utilities): Updated self-test for
+	nautilus_make_uri_from_input.
+	* src/nautilus-location-bar.c: (try_to_expand_path): Fix
+	NULL-dereference in cases where gnome_vfs_unescape_string returns
+	NULL.
+	* src/nautilus-navigation-bar.c:
+	(nautilus_navigation_bar_location_changed): Remove the broken
+	get_mapped_location function (which called g_file_exists on
+	partial paths so gave virtually "random" results) and just call
+	get_location directly.
+
 2000-12-20  Gene Z. Ragan  <gzr@eazel.com>
 
-	Fixed bug 5186, Music View (and then Nautilus) crashes playing 0-length MP3
+	Fixed bug 5186, Music View (and then Nautilus) crashes playing
+	0-length MP3
 	
 	reviewed by: Pavel Cisler <pavel@eazel.com>
 
-	Crash was caused by using an unitialized variable.  Initializing the
-	variable to NULL and then checking th eresult after the function
-	is called solved the problem.
+	Crash was caused by using an unitialized variable. Initializing
+	the variable to NULL and then checking the result after the
+	function is called solved the problem.
 	
 	* components/music/nautilus-music-view.c: (get_song_text),
 	(music_view_set_selected_song_title):

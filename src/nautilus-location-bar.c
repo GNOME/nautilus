@@ -288,16 +288,20 @@ try_to_expand_path (GtkEditable *editable)
 	uri = gnome_vfs_uri_new (current_path);
 	
 	base_name_ptr = gnome_vfs_uri_get_basename (uri);
-	if (base_name_ptr) {
-		base_name = gnome_vfs_unescape_string (base_name_ptr, NULL);
-		base_length = strlen (base_name);
+	if (base_name_ptr == NULL) {
+		base_name = NULL;
 	} else {
+		base_name = gnome_vfs_unescape_string (base_name_ptr, NULL);
+	}
+
+	if (base_name == NULL) {
 		gnome_vfs_uri_unref (uri);
 		g_free (current_path);
 		return;	
 	}
-		
-	dir_name = gnome_vfs_uri_extract_dirname(uri);
+	
+	base_length = strlen (base_name);
+	dir_name = gnome_vfs_uri_extract_dirname (uri);
 
 	/* get file info for the directory */
 

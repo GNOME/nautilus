@@ -24,25 +24,27 @@
 
 #include <config.h>
 #include "nautilus-file-utilities.h"
+
+#include "nautilus-file.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-util.h>
-#include <sys/stat.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include "nautilus-file.h"
 #include "nautilus-link-set.h"
 #include "nautilus-metadata.h"
 #include "nautilus-string.h"
-#include <libgnomevfs/gnome-vfs-utils.h>
-#include <libgnomevfs/gnome-vfs-ops.h>
-#include <libgnomevfs/gnome-vfs-async-ops.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnomevfs/gnome-vfs-xfer.h>
 #include <ctype.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-util.h>
+#include <libgnomevfs/gnome-vfs-async-ops.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
+#include <libgnomevfs/gnome-vfs-xfer.h>
 #include <pthread.h>
+#include <pwd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #define NAUTILUS_USER_DIRECTORY_NAME ".nautilus"
 #define DEFAULT_NAUTILUS_DIRECTORY_MODE (0755)
@@ -51,8 +53,6 @@
 #define DEFAULT_DESKTOP_DIRECTORY_MODE (0755)
 
 #define NAUTILUS_USER_MAIN_DIRECTORY_NAME "Nautilus"
-
-#define DEFAULT_SCHEME "file://"
 
 #define READ_CHUNK_SIZE 8192
 
@@ -85,22 +85,72 @@ static void read_file_read_chunk (NautilusReadFileHandle *handle);
 char *
 nautilus_format_uri_for_display (const char *uri) 
 {
-	gchar *toreturn, *unescaped;
+	char *path;
 
-	g_assert (uri != NULL);
+	g_return_val_if_fail (uri != NULL, g_strdup (""));
 
-	unescaped = gnome_vfs_unescape_string_for_display (uri);
-	
-	/* Remove file:// from the beginning */
-	if (nautilus_istr_has_prefix (uri, DEFAULT_SCHEME)) {
-		toreturn = g_strdup (unescaped + sizeof (DEFAULT_SCHEME) - 1);
-	} else {
-		toreturn = g_strdup (unescaped);
+	path = gnome_vfs_get_local_path_from_uri (uri);
+	if (path != NULL) {
+		return path;
 	}
 	
-	g_free (unescaped);
+	return gnome_vfs_unescape_string_for_display (uri);
+}
 
-	return toreturn;
+static gboolean
+is_valid_scheme_character (char c)
+{
+	return isalnum ((guchar) c) || c == '+' || c == '-' || c == '.';
+}
+
+static gboolean
+has_valid_scheme (const char *uri)
+{
+	const char *p;
+
+	p = uri;
+
+	if (!is_valid_scheme_character (*p)) {
+		return FALSE;
+	}
+
+	do {
+		p++;
+	} while (is_valid_scheme_character (*p));
+
+	return *p == ':';
+}
+
+static char *
+expand_tilde (const char *path)
+{
+	char *slash_after_user_name, *user_name;
+	struct passwd *passwd_file_entry;
+
+	g_assert (path != NULL);
+	g_assert (path[0] == '~');
+	
+	if (path[1] == '/' || path[1] == '\0') {
+		return g_strconcat (g_get_home_dir (), &path[1], NULL);
+	}
+
+	slash_after_user_name = strchr (&path[1], '/');
+	if (slash_after_user_name == NULL) {
+		user_name = g_strdup (&path[1]);
+	} else {
+		user_name = g_strndup (&path[1],
+				       slash_after_user_name - &path[1]);
+	}
+	passwd_file_entry = getpwnam (user_name);
+	g_free (user_name);
+
+	if (passwd_file_entry == NULL || passwd_file_entry->pw_dir == NULL) {
+		return NULL;
+	}
+
+	return g_strconcat (passwd_file_entry->pw_dir,
+			    slash_after_user_name,
+			    NULL);
 }
 
 /**
@@ -117,57 +167,42 @@ nautilus_format_uri_for_display (const char *uri)
 char *
 nautilus_make_uri_from_input (const char *location)
 {
-	char *stripped, *path, *toreturn, *escaped;
-	const char *no_method;
-	int method_length;
+	char *stripped, *path, *uri;
 
 	g_return_val_if_fail (location != NULL, g_strdup (""));
 
-	/* URIs can't contain leading or trailing white space,
-	 * so strip it off. This makes copy/paste of URIs less error-prone.
+	/* Strip off leading and trailing spaces.
+	 * This makes copy/paste of URIs less error-prone.
 	 */
 	stripped = g_strstrip (g_strdup (location));
 
-	if (stripped[0] == '/') {
-		escaped = gnome_vfs_escape_path_string (stripped);
-		toreturn = g_strconcat (DEFAULT_SCHEME, escaped, NULL);
-		g_free (escaped);
-	} else if (stripped[0] == '~') {
-		if (stripped[1] == '/') {
-			path = g_strconcat (g_get_home_dir (), &stripped[1], NULL);
-		} else if (stripped[1]) {
-			path = g_strconcat ("/home/", &stripped[1], NULL);
+	switch (stripped[0]) {
+	case '\0':
+		uri = g_strdup ("");
+		break;
+	case '/':
+		uri = gnome_vfs_get_uri_from_local_path (stripped);
+		break;
+	case '~':
+		path = expand_tilde (stripped);
+		if (path == NULL) {
+			uri = g_strdup (stripped);
 		} else {
-			path = g_strdup (g_get_home_dir ());
+			uri = gnome_vfs_get_uri_from_local_path (path);
 		}
-		escaped = gnome_vfs_escape_path_string (path);
-		toreturn = g_strconcat (DEFAULT_SCHEME, escaped, NULL);
 		g_free (path);
-		g_free (escaped);
-		
-	} else {
-		no_method = strchr (stripped, ':');
-		if (no_method == NULL) {
-			no_method = stripped;
+		break;
+	default:
+		if (has_valid_scheme (stripped)) {
+			uri = g_strdup (stripped);
 		} else {
-			no_method++;
-			if ((no_method[0] == '/') && (no_method[1] == '/')) {
-				no_method += 2;
-			}
+			uri = g_strconcat ("http://", stripped, NULL);
 		}
-
-		method_length = (no_method - stripped);
-		escaped = gnome_vfs_escape_host_and_path_string (no_method);
-		toreturn = g_new (char, strlen (escaped) + method_length + 1);
-		toreturn[0] = '\0';
-		strncat (toreturn, stripped, method_length);
-		strcat (toreturn, escaped);
-		g_free (escaped);
 	}
 
 	g_free (stripped);
 
-	return toreturn;
+	return uri;
 }
 
 char *
@@ -1247,7 +1282,7 @@ static const char *BUILD_TIMESTAMP = NULL;
 char *
 nautilus_get_build_timestamp (void)
 {
-	return BUILD_TIMESTAMP ? g_strdup (BUILD_TIMESTAMP) : NULL;
+	return g_strdup (BUILD_TIMESTAMP);
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
@@ -1255,27 +1290,42 @@ nautilus_get_build_timestamp (void)
 void
 nautilus_self_check_file_utilities (void)
 {
-	/* nautilus_make_uri_from_input */
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (""), "");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/home"), "file:///home");	
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("www.eazel.com"), "www.eazel.com");	
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (" "), "");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (" \n\t"), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (" / "), "file:///");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (" /"), "file:///");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (" /home\n\n"), "file:///home");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (" \n\t"), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("!"), "http://!");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("#"), "http://#");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/ "), "file:///");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/!"), "file:///!");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/#"), "file:///%23");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/%20"), "file:///%2520");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/%25"), "file:///%2525");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/:"), "file:///%3A");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/home"), "file:///home");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("/home/darin"), "file:///home/darin");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (":"), "http://:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("::"), "http://::");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (":://:://:::::::::::::::::"), "http://:://:://:::::::::::::::::");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:"), "file:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:///%20"), "file:///%20");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:///%3F"), "file:///%3F");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:///:"), "file:///:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:///?"), "file:///?");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:///home/joe/some file"), "file:///home/joe/some file");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file://home/joe/some file"), "file://home/joe/some file");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:::::////"), "file:::::////");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("foo://foobar.txt"), "foo://foobar.txt");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("home"), "http://home");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://null.stanford.edu"), "http://null.stanford.edu");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://null.stanford.edu:80"), "http://null.stanford.edu:80");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://seth@null.stanford.edu:80"), "http://seth@null.stanford.edu:80");
-        NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://null.stanford.edu/some file"), "http://null.stanford.edu/some%20file");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:///home/joe/some file"), "file:///home/joe/some%20file");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file://home/joe/some file"), "file://home/joe/some%20file");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("foo://foobar.txt"), "foo://foobar.txt");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("::"), "::");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (":://:://:::::::::::::::::"), ":://%3A%3A//%3A%3A%3A%3A%3A%3A%3A%3A%3A%3A%3A%3A%3A%3A%3A%3A%3A");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:::::////"), "file:::::////");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http:::::::::"), "http:::::::::");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("www.eazel.com"), "http://www.eazel.com");
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://null.stanford.edu/some file"), "http://null.stanford.edu/some file");
 
-
-	/* nautilus_handle_trailing_slashes */
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file:///////"), "file:///");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file://foo/"), "file://foo");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("file://foo"), "file://foo");
@@ -1284,7 +1334,6 @@ nautilus_self_check_file_utilities (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("http://le-hacker.org"), "http://le-hacker.org");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("http://le-hacker.org/dir//////"), "http://le-hacker.org/dir/");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_handle_trailing_slashes ("http://le-hacker.org/////"), "http://le-hacker.org/");
-
 
 	/* nautilus_make_uri_canonical */
 
@@ -1304,7 +1353,7 @@ nautilus_self_check_file_utilities (void)
 
 	/* FIXME bugzilla.eazel.com 5068: the "nested" URI loses some characters here. Maybe that's OK because we escape them in practice? */
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("search://[file://]file_name contains stuff"), "search://[file/]file_name contains stuff");
-#ifdef EAZEL_SERVICES	
+#ifdef EAZEL_SERVICES
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("eazel-services:/~turtle"), "eazel-services:///~turtle");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("eazel-services:///~turtle"), "eazel-services:///~turtle");
 #endif
@@ -1398,7 +1447,6 @@ nautilus_self_check_file_utilities (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("trash:xxx"), NAUTILUS_TRASH_URI);
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("GNOME-TRASH:XXX"), NAUTILUS_TRASH_URI);
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("gnome-trash:xxx"), NAUTILUS_TRASH_URI);
-
 
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("pipe:gnome-info2html2 as"), "pipe:gnome-info2html2 as");
 }

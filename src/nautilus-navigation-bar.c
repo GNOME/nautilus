@@ -139,39 +139,6 @@ nautilus_navigation_bar_set_location (NautilusNavigationBar *bar,
 			       set_location, (bar, location));
 }
 
-/**
- * nautilus_navigation_get_mapped_location
- * 
- * apply heuristics to map the uri to something reasonable
- * 
- * @bar: A NautilusNavigationBar.
- * @location: The resulting uri
- */
-static char *
-nautilus_navigation_bar_get_mapped_location (NautilusNavigationBar *bar)
-{
-	char *location, *new_location;
-	
-	g_return_val_if_fail (NAUTILUS_IS_NAVIGATION_BAR (bar), NULL);
-	location = nautilus_navigation_bar_get_location (bar);
-	/* see if there's a protocol already specified; if so, there's no need to map */
-	if (strstr(location, "://"))
-		return location;
-		
-	/* there's no protocol specified, so see if there's an actual file */
-	if (g_file_exists (location))
-		return location;
-		
-	/* see if there's anything that looks like a domain name */
-	if (strstr (location, ".com") || strstr (location, ".org") || strstr (location, ".net")) {
-		new_location =  g_strconcat ("http://", location, NULL);
-		g_free (location);
-		return new_location;
-	}
-
-	return location;
-}
-
 void
 nautilus_navigation_bar_location_changed (NautilusNavigationBar *bar)
 {
@@ -179,7 +146,7 @@ nautilus_navigation_bar_location_changed (NautilusNavigationBar *bar)
 
 	g_return_if_fail (NAUTILUS_IS_NAVIGATION_BAR (bar));
 
-	location = nautilus_navigation_bar_get_mapped_location (bar);
+	location = nautilus_navigation_bar_get_location (bar);
 	gtk_signal_emit (GTK_OBJECT (bar),
 			 signals[LOCATION_CHANGED],
 			 location);

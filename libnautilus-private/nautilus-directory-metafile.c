@@ -942,24 +942,25 @@ nautilus_directory_set_metafile_contents (NautilusDirectory *directory,
 	g_assert (directory->details->metafile == NULL);
 	g_assert (directory->details->metafile_node_hash == NULL);
 
-	if (metafile_contents == NULL) {
-		return;
-	}
-	directory->details->metafile = metafile_contents;
-
-	/* Create and populate the node hash table. */
 	hash = g_hash_table_new (g_str_hash, g_str_equal);
-	for (node = nautilus_xml_get_root_children (metafile_contents);
-	     node != NULL; node = node->next) {
-		if (strcmp (node->name, "FILE") == 0) {
-			name = xmlGetProp (node, "NAME");
-			if (g_hash_table_lookup (hash, name) != NULL) {
-				xmlFree (name);
+
+	if (metafile_contents != NULL) {
+		directory->details->metafile = metafile_contents;
+		
+		/* Create and populate the node hash table. */
+		for (node = nautilus_xml_get_root_children (metafile_contents);
+		     node != NULL; node = node->next) {
+			if (strcmp (node->name, "FILE") == 0) {
+				name = xmlGetProp (node, "NAME");
+				if (g_hash_table_lookup (hash, name) != NULL) {
+					xmlFree (name);
 				/* FIXME: Should we delete these duplicate nodes? */
-			} else {
-				g_hash_table_insert (hash, name, node);
+				} else {
+					g_hash_table_insert (hash, name, node);
+				}
 			}
 		}
 	}
+
 	directory->details->metafile_node_hash = hash;
 }
