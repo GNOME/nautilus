@@ -704,6 +704,10 @@ open_location (NautilusWindow *window,
 	eel_g_list_free_deep (target_window->details->pending_selection);
         target_window->details->pending_selection = eel_g_str_list_copy (new_selection);
 
+        if (!eel_is_valid_uri (location))
+                g_warning ("Possibly invalid new URI '%s'\n"
+                           "This can cause subtle evils like #48423", location);
+
         begin_location_change (target_window, location,
                                NAUTILUS_LOCATION_CHANGE_STANDARD, 0);
 }

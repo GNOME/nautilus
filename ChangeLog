@@ -1,3 +1,18 @@
+2002-05-22  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-dnd.c (add_one_uri):
+	add the full, non-mangled, clean, escaped URI.
+	(is_path_that_gnome_uri_list_extract_filenames_can_parse),
+	(add_one_compatible_uri): #ifdef out these abominations :-)
+	Fixes bug #48423, breaks a certain level of
+	compatibility with gnome-libs 1.4, inasmuch that
+	complex URLs, containing strange characters will not
+	be backwards compatible.
+
+	* src/nautilus-window-manage-views.c (open_location):
+	add a eel_uri_is_valid check, so the next #48423 is easier
+	to track.
+
 2002-05-21  Frank Worsley  <fworsley@shaw.ca>
 
 	* libnautilus-private/nautilus-link-desktop-file.c:

@@ -365,6 +365,10 @@ add_one_netscape_url (const char *url, int x, int y, int w, int h, gpointer data
 	}
 }
 
+/*
+ * Cf. #48423
+ */
+#ifdef THIS_WAS_REALLY_BROKEN
 static gboolean
 is_path_that_gnome_uri_list_extract_filenames_can_parse (const char *path)
 {
@@ -433,6 +437,18 @@ add_one_compatible_uri (const char *uri, int x, int y, int w, int h, gpointer da
 		g_free (local_path);
 	}
 }
+#endif
+
+static void
+add_one_uri (const char *uri, int x, int y, int w, int h, gpointer data)
+{
+	GString *result;
+	
+	result = (GString *) data;
+
+	g_string_append (result, uri);
+	g_string_append (result, "\r\n");
+}
 
 /* Common function for drag_data_get_callback calls.
  * Returns FALSE if it doesn't handle drag data */
@@ -456,7 +472,7 @@ nautilus_drag_drag_data_get (GtkWidget *widget,
 	case NAUTILUS_ICON_DND_URI_LIST:
 	case NAUTILUS_ICON_DND_TEXT:
 		result = g_string_new (NULL);
-		(* each_selected_item_iterator) (add_one_compatible_uri, container_context, result);
+		(* each_selected_item_iterator) (add_one_uri, container_context, result);
 		break;
 		
 	case NAUTILUS_ICON_DND_URL:
