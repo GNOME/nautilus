@@ -769,7 +769,9 @@ nautilus_hardware_view_drag_data_received (GtkWidget *widget, GdkDragContext *co
         case TARGET_COLOR:
                 /* Let the background change based on the dropped color. */
                 eel_background_receive_dropped_color (eel_get_widget_background (widget),
-                                                           widget, x, y, selection_data);
+                                                      widget, 
+                                                      GDK_ACTION_COPY,
+                                                      x, y, selection_data);
                 break;
                 
         default:
