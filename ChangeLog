@@ -1,5 +1,11 @@
 2000-09-08  Mathieu Lacage  <mathieu@eazel.com>
 
+	* components/tree/nautilus-tree-view.c: fixes one more ccrash.
+	nautilus_model_node_get_file does not return a refed NautilusFile
+	for you. So, must not unref it.
+
+2000-09-08  Mathieu Lacage  <mathieu@eazel.com>
+
 	* components/tree/nautilus-tree-view.c: fix bug 2918.
 
 2000-09-08  Maciej Stachowiak  <mjs@eazel.com>

@@ -2067,13 +2067,10 @@ nautilus_tree_view_find_drop_target (NautilusTreeView *tree_view,
 
 	if ( !nautilus_drag_can_accept_items 
 	     (file, selection_list)) {	
-		nautilus_file_unref (file);
 		return NULL;
 	}
 
 	target_uri = nautilus_file_get_uri (file);
-
-	nautilus_file_unref (file);
 
 	return target_uri;
 }
