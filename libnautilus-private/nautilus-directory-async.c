@@ -141,6 +141,8 @@ static void     move_file_to_low_priority_queue    (NautilusDirectory *directory
 						    NautilusFile      *file);
 static void     move_file_to_extension_queue    (NautilusDirectory *directory,
 						 NautilusFile      *file);
+static void     nautilus_directory_invalidate_file_attributes (NautilusDirectory      *directory,
+							       NautilusFileAttributes  file_attributes);
 
 
 void
@@ -593,10 +595,7 @@ nautilus_directory_set_up_request (Request *request,
 static void
 mime_db_changed_callback (GnomeVFSMIMEMonitor *ignore, NautilusDirectory *dir)
 {
-	const Monitor *monitor;
 	NautilusFileAttributes attrs;
-	GList *ptr;
-	GList *file_list;
 
 	g_return_if_fail (dir != NULL);
 	g_return_if_fail (dir->details != NULL);
@@ -610,29 +609,7 @@ mime_db_changed_callback (GnomeVFSMIMEMonitor *ignore, NautilusDirectory *dir)
 		NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE |
 		NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES;
 
-	file_list = NULL;
-	for (ptr = dir->details->monitor_list ; ptr != NULL ; ptr = ptr->next) {
-		monitor = ptr->data;
-		if (monitor->request.file_info && monitor->file != NULL) {
-			if (nautilus_file_is_self_owned (monitor->file)) {
-				nautilus_file_emit_changed (monitor->file);
-				nautilus_file_invalidate_attributes (monitor->file, attrs);
-			} else {
-				file_list = g_list_prepend (file_list, 
-							    monitor->file);
-			}
-			
-		}
-	}
-	
-	if (file_list) {
-		nautilus_directory_emit_change_signals (dir, file_list);
-
-		for (ptr = file_list; ptr != NULL; ptr = ptr->next) {
-			nautilus_file_invalidate_attributes (ptr->data, attrs);
-		}
-		g_list_free (file_list);
-	}
+	nautilus_directory_invalidate_file_attributes (dir, attrs);
 }
 
 void

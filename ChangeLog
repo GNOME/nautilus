@@ -1,5 +1,10 @@
 2004-08-26  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-directory-async.c (mime_db_changed_callback):
+	Invalidate more files when the mime db changes.
+
+2004-08-26  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-file.c:
 	Make nautilus_file_is_mime_type handle inherited types too.
 	Make nautilus_file_contains_text work again.
