@@ -3,6 +3,7 @@ include $(top_srcdir)/Makefile.shared
 lib_LTLIBRARIES=libnautilus.la
 
 INCLUDES=\
+	-I$(builddir) \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
 	$(NAUTILUS_DEPENDENCY_CFLAGS) \

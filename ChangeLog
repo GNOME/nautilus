@@ -1,5 +1,17 @@
 2001-10-11  Darin Adler  <darin@bentspoon.com>
 
+	* Makefile.am: Remove RPMs-README.
+	
+	* libnautilus/Makefile.am: -I$(builddir)
+	
+	* libnautilus/nautilus-undo-private.h:
+	* libnautilus/nautilus-undo-transaction.h:
+	Use #include <libnautilus/x.h> rather than #include "x.h".
+
+	* NEWS: Some refinement.
+
+2001-10-11  Darin Adler  <darin@bentspoon.com>
+
 	* NEWS: Add a first cut at Nautilus 1.0.5 release notes.
 	* THANKS: Updated to match change log better.
 	* configure.in: Bumped version to 1.0.5 in preparation for the

@@ -27,8 +27,8 @@
 #ifndef NAUTILUS_UNDO_TRANSACTION_H
 #define NAUTILUS_UNDO_TRANSACTION_H
 
-#include "nautilus-undo.h"
-#include "nautilus-distributed-undo.h"
+#include <libnautilus/nautilus-undo.h>
+#include <libnautilus/nautilus-distributed-undo.h>
 
 #define NAUTILUS_TYPE_UNDO_TRANSACTION \
 	(nautilus_undo_transaction_get_type ())

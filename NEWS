@@ -6,16 +6,15 @@ fixes.
 Many of the changes for this release were done by hackers at Red Hat
 (Jonathan Blandford, Havoc Pennington, Alex Larsson, Owen Taylor) for
 their Nautilus release, and rolled into the main Nautilus sources,
-mostly by Alex.
-
-Some of the other changes were changes from the Mandrake version of
-Nautilus, contributed by Frederic Crozat.
+mostly by Alex. Thanks also to Alan Cox for doing a profile of system
+calls Nautilus was making and driving some simple but effective
+speedups.
 
 As a practical matter, many of the changes here that were inspired by
 changes that others made or patches they submitted may still be marked
-"(Darin)" since I did the actual check-i. Similarly, Red Hat changes
-done by others may be marked "(Alex)" since he did the rolling in even
-though others did the original code or have an imporoper guess.
+"(Darin)" since I did the actual check-i. Similarly, changes done by
+others may be marked "(Alex)" since he did the rolling in even though
+others did the original code (sometimes I tried to guess).
 
 Here's a partial list of changes since Nautilus 1.0.4:
 
@@ -36,23 +35,24 @@ Here's a partial list of changes since Nautilus 1.0.4:
 * Don't refresh all other windows when you open a new window that
   points to a particular location (Darin)
 
-- features (no big ones)
+- features (mostly small ones)
+
+* Eliminate ~/Nautilus, replacing it with "start here" (Havoc)
+* Use ".desktop" files instead of Nautilus links (Alex, Maciej, Havoc,
+  Jonathan)
 
 * Allow dragging an image to the icon in the file properties dialog
   to create a custom icon, as in the sidebar (Benedikt Roth)
 * Allow Mozilla component to open Chrome windows (Alex)
-* Use ".desktop" files instead of Nautilus links (Alex, Maciej, Havoc,
-  Jonathan)
 * Add support for JFS (Frederic)
 * Added get_info support to the stream adapter so we can work with
   more components, specifically the eog one (Fabrice Bellet)
 * Set _NET_WM_WINDOW_TYPE tag, mostly for kwin's benefit (Alex)
-* Eliminate ~/Nautilus, replacing it with "start here" (Havoc)
 * Don't manage the desktop if kdesktop is already running (Havoc)
 * Handle a lot more cases of dragging URIs to a Nautilus window
   (Jonathan)
 * Allow nested directories inside the scripts directory (David Emory
-  WWatson, Darin)
+  Watson, Darin)
 * Remove Eazel remnants (Christian Meyer, Benedikt Roth, Darin)
 * Make music view list look better by using EelList, show artist of
   selected song (Maciej)

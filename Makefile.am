@@ -32,7 +32,6 @@ EXTRA_DIST=					\
 	TRADEMARK_NOTICE			\
 	COPYING.LIB				\
 	COPYING-DOCS				\
-	RPMs-README				\
 	HACKING					\
 	MAINTAINERS				\
 	nautilus.spec.in			\

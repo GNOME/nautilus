@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_UNDO_PRIVATE_H
 #define NAUTILUS_UNDO_PRIVATE_H
 
-#include "nautilus-distributed-undo.h"
+#include <libnautilus/nautilus-distributed-undo.h>
 #include <gtk/gtkobject.h>
 
 Nautilus_Undo_Manager nautilus_undo_get_undo_manager                (GtkObject             *attached_object);
