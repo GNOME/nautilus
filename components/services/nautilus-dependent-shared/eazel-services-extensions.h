@@ -53,6 +53,12 @@
 
 #define EAZEL_SERVICES_FONT_FAMILY			"helvetica"
 
+#define EAZEL_SERVICES_HEADER_FONT_SIZE			18
+#define EAZEL_SERVICES_HEADER_FONT_WEIGHT		"bold"
+
+#define EAZEL_SERVICES_FOOTER_FONT_SIZE			13
+#define EAZEL_SERVICES_FOOTER_FONT_WEIGHT		"normal"
+
 BEGIN_GNOME_DECLS
 
 GdkPixbuf *eazel_services_pixbuf_new              (const char *name);
@@ -60,7 +66,7 @@ GtkWidget *eazel_services_image_new               (const char *icon_name,
 						   const char *tile_name,
 						   guint32     background_color);
 GtkWidget *eazel_services_label_new               (const char *text,
-						   gboolean    bold,
+						   const char *weight,
 						   guint       font_size,
 						   gint        xpadding,
 						   gint        ypadding,

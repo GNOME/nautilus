@@ -91,7 +91,11 @@ eazel_services_header_new (const char *text)
 
 	header = EAZEL_SERVICES_HEADER (gtk_widget_new (eazel_services_header_get_type (), NULL));
 	
-	header->details->text = eazel_services_label_new (text, TRUE, 18, 10, 0, 4, 0,
+	header->details->text = eazel_services_label_new (text,
+							  EAZEL_SERVICES_HEADER_FONT_WEIGHT,
+							  EAZEL_SERVICES_HEADER_FONT_SIZE,
+							  10, 0,
+							  4, 0,
 							  EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
 							  EAZEL_SERVICES_LOGO_LEFT_SIDE_REPEAT_ICON);
 

@@ -82,7 +82,7 @@ eazel_services_image_new (const char *icon_name, const char *tile_name, guint32 
 
 GtkWidget *
 eazel_services_label_new (const char *text,
-			  gboolean bold,
+			  const char *weight,
 			  guint       font_size,
 			  gint        xpadding,
 			  gint        ypadding,
@@ -98,7 +98,7 @@ eazel_services_label_new (const char *text,
 	
 	label = nautilus_label_new_loaded (text,
 					   EAZEL_SERVICES_FONT_FAMILY,
-					   bold ? "bold" : NULL,
+					   weight,
 					   font_size,
 					   1, /* drop_shadow_offset */
 					   EAZEL_SERVICES_DROP_SHADOW_COLOR_RGBA,
