@@ -67,7 +67,7 @@
 
 #define CACHE_SELF_CHECKS 0
 
-#define ICON_NAME_THUMBNAIL_LOADING     "loading"
+#define ICON_NAME_THUMBNAIL_LOADING     "gnome-fs-loading-icon"
 #define NAUTILUS_EMBLEM_NAME_PREFIX "emblem-"
 
 /* This used to be called ICON_CACHE_MAX_ENTRIES, but it's misleading

@@ -1,3 +1,14 @@
+2002-09-19  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-factory.c (ICON_NAME_THUMBNAIL_LOADING):
+	Correct thumbnail loading icon.
+
+	* libnautilus-private/nautilus-file.c (update_info_internal):
+	Don't invalidate DISPLAY_NAME for all files, since this will re-load
+	file_info making directory loads very slow! As a workaround, only do
+	this if file->details->display_name is already set. I don't know
+	if this is the correct way though.
+
 2002-09-18  Alexander Larsson  <alexl@redhat.com>
 
 	Merge the new-icon-factory-branch branch to HEAD.
