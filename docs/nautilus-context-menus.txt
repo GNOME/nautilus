@@ -1,0 +1,35 @@
+Adding Mime-Type Sensitive Context Menus to Nautilus
+November 10, 2002
+James Willcox <jwillcox@gnome.org>
+
+Ok, this is how it works:
+
+1)  User selects one or more files in the icon or list view
+
+2)  Nautilus queries bonobo-activation for all components that have the
+    following properties:
+
+	a)  Has an attribute named "nautilus:context_menu_handler", which is
+	    a boolean.
+	b)  Has an attribute named "nautilus:can_handle_multiple_files", which
+	    is also a boolean (I think its meaning is self explanatory)
+	c)  Implements IDL:Bonobo/Listener:1.0
+
+	Also, the normal nautilus component selection rules apply here, so it
+	will look at it bonobo:supported_mime_types,
+	bonobo:supported_uri_schemes, etc. as well.
+
+3)  Then, we look at each component, and find all attributes that start with
+    "nautilusverb:".  The part following the colon will be the event name that
+    gets passed to Bonobo::Listener::event().  The value of this attribute is
+    the text that should be displayed in the menu item.  So, you might have
+    something like the following for unpacking an archive:
+
+	<oaf_attribute name="nautilusverb:DoExtract" type="string" _value="Extract To..."/>
+
+    If the component has "nauitlus:can_handle_multiple_files" set to false,
+    the item will still be displayed when multiple files are selected, but
+    it will be insensitive.  When the user clicks the menu item, nautilus
+    activates the component, and invoked Bonobo::Listener::event() on it,
+    passing the event name and a CORBA sequence of the selected URIs as the
+    args.

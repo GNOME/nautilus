@@ -827,7 +827,7 @@ nautilus_mime_get_popup_components_for_file (NautilusFile *file)
 		item_mime_types = NULL;
 	}
 
-	extra_reqs = "repo_ids.has ('IDL:Bonobo/Listener:1.0') AND (nautilus:context_menu_handler == true)";
+	extra_reqs = "repo_ids.has ('IDL:Bonobo/Listener:1.0') AND (nautilus:context_menu_handler == true) AND nautilus:can_handle_multiple_files.defined()";
 
 	info_list = nautilus_do_component_query (mime_type, uri_scheme,
 						 item_mime_types, FALSE,
