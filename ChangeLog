@@ -1,3 +1,54 @@
+2000-09-12  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2668 (Switching to Search mode should move the
+	focus to the search text field).
+
+	* src/nautilus-navigation-bar.h: Added signal and public
+	function for nautilus_navigation_bar_activate.
+	* src/nautilus-navigation-bar.c:
+	(nautilus_navigation_bar_initialize_class): Wire up
+	activate signal; default function is NULL.
+	(nautilus_navigation_bar_activate): New function, emits
+	signal.
+
+	* src/nautilus-switchable-navigation-bar.h:
+	* src/nautilus-switchable-navigation-bar.c:
+	Defined a NautilusSwitchableNavigationBarDetails struct,
+	and moved implementation details into it. Set the types
+	of the fields in this struct to reflect actual needs,
+	instead of using GtkWidget and casting up to other
+	classes.
+	(nautilus_switchable_navigation_bar_initialize): Create
+	details struct.
+	(nautilus_switchable_navigation_bar_destroy): New function,
+	free details struct.
+	(nautilus_switchable_navigation_bar_initialize_class):
+	Wire up destroy handler.
+	(nautilus_switchable_navigation_bar_set_mode): Call
+	nautilus_navigation_bar_activate on switched-to bar.
+	(nautilus_switchable_navigation_bar_get_mode),
+	(nautilus_switchable_navigation_bar_get_location),
+	(nautilus_switchable_navigation_bar_set_location): Updated
+	to use bar->details.
+
+	* src/nautilus-switchable-search-bar.c:
+	(nautilus_switchable_search_bar_initialize_class):
+	Wire up activate signal to real_activate.
+	(real_activate): Call nautilus_navigation_bar_activate
+	on the current search bar.
+
+	* src/nautilus-simple-search-bar.c:
+	(nautilus_simple_search_bar_initialize_class): Wire up
+	activate signal to real_activate.
+	(real_activate): Set focus to text field.
+
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_initialize_class): Wire up
+	activate signal to real_activate.
+	(get_first_text_field): New helper function to find the
+	first text field in a search criterion (or NULL).
+	(real_activate): Set focus to first text field.
+
 2000-09-11  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-notify.h:

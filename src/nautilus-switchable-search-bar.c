@@ -40,6 +40,7 @@
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 
+static void		     real_activate				     (NautilusNavigationBar	       *bar);
 static void                  nautilus_switchable_search_bar_set_location     (NautilusNavigationBar            *bar,
 									      const char                       *location);
 static char *                nautilus_switchable_search_bar_get_location     (NautilusNavigationBar            *bar);
@@ -59,6 +60,7 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableSearchBar,
 static void
 nautilus_switchable_search_bar_initialize_class (NautilusSwitchableSearchBarClass *klass)
 {
+	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->activate = real_activate;
 	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->get_location = nautilus_switchable_search_bar_get_location;
 	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->set_location = nautilus_switchable_search_bar_set_location;
 
@@ -151,6 +153,29 @@ GtkWidget *
 nautilus_switchable_search_bar_new (void)
 {
 	return gtk_widget_new (nautilus_switchable_search_bar_get_type (), NULL);
+}
+
+static void
+real_activate (NautilusNavigationBar *navigation_bar)
+{
+	NautilusSwitchableSearchBar *bar;
+	NautilusNavigationBar *bar_to_activate;
+
+	bar = NAUTILUS_SWITCHABLE_SEARCH_BAR (navigation_bar);
+
+	switch (bar->mode) {
+	case NAUTILUS_SIMPLE_SEARCH_BAR:
+		bar_to_activate = NAUTILUS_NAVIGATION_BAR (bar->simple_search_bar);
+		break;
+	case NAUTILUS_COMPLEX_SEARCH_BAR:
+		bar_to_activate = NAUTILUS_NAVIGATION_BAR (bar->complex_search_bar);
+		break;
+	default:
+		g_assert_not_reached();
+	}
+
+	g_assert (bar_to_activate != NULL);
+	nautilus_navigation_bar_activate (bar_to_activate);
 }
 
 void

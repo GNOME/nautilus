@@ -42,6 +42,7 @@ struct NautilusSimpleSearchBarDetails {
 	GtkWidget *find_button;
 };
 
+static void   real_activate				     	 (NautilusNavigationBar	       *bar);
 static char * nautilus_simple_search_bar_get_location            (NautilusNavigationBar        *bar);
 static void   nautilus_simple_search_bar_set_location            (NautilusNavigationBar        *bar,
 								  const char                   *location);
@@ -62,6 +63,7 @@ nautilus_simple_search_bar_initialize_class (NautilusSimpleSearchBarClass *klass
 {
 	GTK_OBJECT_CLASS (klass)->destroy = nautilus_simple_search_bar_destroy;
 
+	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->activate = real_activate;
 	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->get_location = nautilus_simple_search_bar_get_location;  
 	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->set_location = nautilus_simple_search_bar_set_location;  
 }
@@ -140,6 +142,17 @@ GtkWidget *
 nautilus_simple_search_bar_new (void)
 {
 	return gtk_widget_new (NAUTILUS_TYPE_SIMPLE_SEARCH_BAR, NULL);
+}
+
+static void
+real_activate (NautilusNavigationBar *navigation_bar)
+{
+	NautilusSimpleSearchBar *bar;
+
+	bar = NAUTILUS_SIMPLE_SEARCH_BAR (navigation_bar);
+
+	/* Put the keyboard focus in the text field when switching to search mode */
+	gtk_widget_grab_focus (GTK_WIDGET (bar->details->entry));
 }
 
 static void

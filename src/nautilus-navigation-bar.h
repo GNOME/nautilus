@@ -51,6 +51,7 @@ typedef struct {
 					   const char            *location);
 
 	/* virtual methods */
+	void	     (* activate)	  (NautilusNavigationBar *bar);
 	char *       (* get_location)     (NautilusNavigationBar *bar);
 	void         (* set_location)     (NautilusNavigationBar *bar,
 					   const char            *location);
@@ -58,6 +59,7 @@ typedef struct {
 } NautilusNavigationBarClass;
 
 GtkType nautilus_navigation_bar_get_type         (void);
+void	nautilus_navigation_bar_activate	 (NautilusNavigationBar *bar);
 char *  nautilus_navigation_bar_get_location     (NautilusNavigationBar *bar);
 void    nautilus_navigation_bar_set_location     (NautilusNavigationBar *bar,
 						  const char            *location);

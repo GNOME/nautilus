@@ -41,6 +41,13 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <stdio.h>
 
+struct NautilusSwitchableNavigationBarDetails {
+	NautilusSwitchableNavigationBarMode mode;
+
+	NautilusLocationBar *location_bar;
+	NautilusSwitchableSearchBar *search_bar;
+};
+
 enum {
 	MODE_CHANGED,
 	LAST_SIGNAL
@@ -53,6 +60,7 @@ static void  nautilus_switchable_navigation_bar_set_location     (NautilusNaviga
 								  const char                           *location);
 static void  nautilus_switchable_navigation_bar_initialize_class (NautilusSwitchableNavigationBarClass *class);
 static void  nautilus_switchable_navigation_bar_initialize       (NautilusSwitchableNavigationBar      *bar);
+static void  nautilus_switchable_navigation_bar_destroy 	 (GtkObject 			       *object);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableNavigationBar,
 				   nautilus_switchable_navigation_bar,
@@ -65,6 +73,7 @@ nautilus_switchable_navigation_bar_initialize_class (NautilusSwitchableNavigatio
 	NautilusNavigationBarClass *navigation_bar_class;
 
 	object_class = GTK_OBJECT_CLASS (klass);
+	navigation_bar_class = NAUTILUS_NAVIGATION_BAR_CLASS (klass);
 
 	signals[MODE_CHANGED]
 		= gtk_signal_new ("mode_changed",
@@ -77,7 +86,7 @@ nautilus_switchable_navigation_bar_initialize_class (NautilusSwitchableNavigatio
 
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 	
-	navigation_bar_class = NAUTILUS_NAVIGATION_BAR_CLASS (klass);
+	object_class->destroy = nautilus_switchable_navigation_bar_destroy;
 
 	navigation_bar_class->get_location = nautilus_switchable_navigation_bar_get_location;
 	navigation_bar_class->set_location = nautilus_switchable_navigation_bar_set_location;
@@ -88,27 +97,36 @@ nautilus_switchable_navigation_bar_initialize (NautilusSwitchableNavigationBar *
 {
 	GtkWidget *hbox;
 
-	hbox = gtk_hbox_new (0, FALSE);
-	bar->location_bar = nautilus_location_bar_new ();
-	bar->search_bar = nautilus_switchable_search_bar_new ();
+	bar->details = g_new0 (NautilusSwitchableNavigationBarDetails, 1);
 
-	gtk_signal_connect_object (GTK_OBJECT (bar->location_bar),
+	hbox = gtk_hbox_new (0, FALSE);
+	bar->details->location_bar = NAUTILUS_LOCATION_BAR (nautilus_location_bar_new ());
+	bar->details->search_bar = NAUTILUS_SWITCHABLE_SEARCH_BAR (nautilus_switchable_search_bar_new ());
+
+	gtk_signal_connect_object (GTK_OBJECT (bar->details->location_bar),
 				   "location_changed",
 				   nautilus_navigation_bar_location_changed,
 				   GTK_OBJECT (bar));
-	gtk_signal_connect_object (GTK_OBJECT (bar->search_bar),
+	gtk_signal_connect_object (GTK_OBJECT (bar->details->search_bar),
 				   "location_changed",
 				   nautilus_navigation_bar_location_changed,
 				   GTK_OBJECT (bar));
 	
-	gtk_box_pack_start  (GTK_BOX (hbox), bar->location_bar, TRUE, TRUE,
+	gtk_box_pack_start  (GTK_BOX (hbox), GTK_WIDGET (bar->details->location_bar), TRUE, TRUE,
 			     0);
-	gtk_box_pack_start  (GTK_BOX (hbox), bar->search_bar, TRUE, TRUE,
+	gtk_box_pack_start  (GTK_BOX (hbox), GTK_WIDGET (bar->details->search_bar), TRUE, TRUE,
 			     0);
 
-	gtk_widget_show (GTK_WIDGET (bar->location_bar));
+	gtk_widget_show (GTK_WIDGET (bar->details->location_bar));
 	gtk_widget_show (GTK_WIDGET (hbox));
 	gtk_container_add (GTK_CONTAINER (bar), hbox);
+}
+
+static void
+nautilus_switchable_navigation_bar_destroy (GtkObject *object)
+{
+	g_free (NAUTILUS_SWITCHABLE_NAVIGATION_BAR (object)->details);
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 GtkWidget *
@@ -120,31 +138,33 @@ nautilus_switchable_navigation_bar_new (void)
 NautilusSwitchableNavigationBarMode
 nautilus_switchable_navigation_bar_get_mode (NautilusSwitchableNavigationBar     *bar)
 {
-	return bar->mode;
+	return bar->details->mode;
 }
 
 void
 nautilus_switchable_navigation_bar_set_mode (NautilusSwitchableNavigationBar     *bar,
 					     NautilusSwitchableNavigationBarMode  mode)
 {
-	if (bar->mode == mode) {
+	if (bar->details->mode == mode) {
 		return;
 	}
 
 	switch (mode) {
 	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION:
-		gtk_widget_show (bar->location_bar);
-		gtk_widget_hide (bar->search_bar);
+		gtk_widget_show (GTK_WIDGET (bar->details->location_bar));
+		nautilus_navigation_bar_activate (NAUTILUS_NAVIGATION_BAR (bar->details->location_bar));
+		gtk_widget_hide (GTK_WIDGET (bar->details->search_bar));
 		break;
 	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH:
-		gtk_widget_show (bar->search_bar);
-		gtk_widget_hide (bar->location_bar);
+		gtk_widget_show (GTK_WIDGET (bar->details->search_bar));
+		nautilus_navigation_bar_activate (NAUTILUS_NAVIGATION_BAR (bar->details->search_bar));
+		gtk_widget_hide (GTK_WIDGET (bar->details->location_bar));
 		break;
 	default:
 		g_return_if_fail (mode && 0);
 	}
 
-	bar->mode = mode;
+	bar->details->mode = mode;
 	gtk_signal_emit (GTK_OBJECT (bar), signals[MODE_CHANGED], mode);
 }
 
@@ -155,11 +175,11 @@ nautilus_switchable_navigation_bar_get_location (NautilusNavigationBar *navigati
 
 	bar = NAUTILUS_SWITCHABLE_NAVIGATION_BAR (navigation_bar);
 
-	switch (bar->mode) {
+	switch (bar->details->mode) {
 	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION:
-		return nautilus_navigation_bar_get_location (NAUTILUS_NAVIGATION_BAR (bar->location_bar));
+		return nautilus_navigation_bar_get_location (NAUTILUS_NAVIGATION_BAR (bar->details->location_bar));
 	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH:
-		return nautilus_navigation_bar_get_location (NAUTILUS_NAVIGATION_BAR (bar->search_bar));
+		return nautilus_navigation_bar_get_location (NAUTILUS_NAVIGATION_BAR (bar->details->search_bar));
 	default:
 		g_assert_not_reached ();
 		return NULL;
@@ -177,9 +197,9 @@ nautilus_switchable_navigation_bar_set_location (NautilusNavigationBar *navigati
 	/* Set location for both bars so if we switch things will
 	 * still look OK.
 	 */
-	nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (bar->location_bar),
+	nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (bar->details->location_bar),
 					      location);
-	nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (bar->search_bar),
+	nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (bar->details->search_bar),
 					      location);
 	
 	/* Toggle the search button on and off appropriately */

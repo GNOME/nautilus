@@ -53,6 +53,7 @@ struct NautilusComplexSearchBarDetails {
 
 };
 
+static void  real_activate				  (NautilusNavigationBar	       *bar);
 static char *nautilus_complex_search_bar_get_location     (NautilusNavigationBar         *bar);
 static void  nautilus_complex_search_bar_set_location     (NautilusNavigationBar         *bar,
 							   const char                    *location);
@@ -149,6 +150,7 @@ nautilus_complex_search_bar_initialize_class (NautilusComplexSearchBarClass *kla
 {
 	GTK_OBJECT_CLASS (klass)->destroy = nautilus_complex_search_bar_destroy;
 
+	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->activate = real_activate;
 	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->get_location = nautilus_complex_search_bar_get_location;
 	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->set_location = nautilus_complex_search_bar_set_location;
 }
@@ -260,6 +262,37 @@ nautilus_complex_search_bar_destroy (GtkObject *object)
 {
 	g_free (NAUTILUS_COMPLEX_SEARCH_BAR (object)->details);
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+}
+
+static GtkWidget *
+get_first_text_field (NautilusComplexSearchBar *bar)
+{
+	GSList *node;
+	NautilusSearchBarCriterion *criterion;
+
+	for (node = bar->details->search_criteria; node != NULL; node = node->next) {
+		criterion = NAUTILUS_SEARCH_BAR_CRITERION (node->data);
+		if (criterion->details->use_value_entry) {
+			return GTK_WIDGET (criterion->details->value_entry);
+		}
+	}
+
+	return NULL;
+}
+
+static void
+real_activate (NautilusNavigationBar *navigation_bar)
+{
+	NautilusComplexSearchBar *bar;
+	GtkWidget *initial_focus_widget;
+
+	bar = NAUTILUS_COMPLEX_SEARCH_BAR (navigation_bar);
+
+	/* Put the keyboard focus in a text field when switching to search mode */
+	initial_focus_widget = get_first_text_field (bar);
+	if (initial_focus_widget != NULL) {
+		gtk_widget_grab_focus (initial_focus_widget);
+	}
 }
 
 /* returned string should be g_freed by the caller */

@@ -43,6 +43,8 @@
 #define NAUTILUS_IS_SWITCHABLE_NAVIGATION_BAR(obj) \
 	GTK_CHECK_TYPE (obj, NAUTILUS_TYPE_SWITCHABLE_NAVIGATION_BAR)
 
+typedef struct NautilusSwitchableNavigationBarDetails NautilusSwitchableNavigationBarDetails;
+
 typedef enum {
 	NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION,
 	NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH
@@ -51,11 +53,7 @@ typedef enum {
 
 typedef struct NautilusSwitchableNavigationBar {
 	NautilusNavigationBar parent;
-
-	NautilusSwitchableNavigationBarMode mode;
-
-	GtkWidget *location_bar;
-	GtkWidget *search_bar;
+	NautilusSwitchableNavigationBarDetails *details;
 } NautilusSwitchableNavigationBar;
 
 typedef struct {

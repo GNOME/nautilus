@@ -37,6 +37,7 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 enum {
+	ACTIVATE,
 	LOCATION_CHANGED,
 	LAST_SIGNAL
 };
@@ -57,6 +58,15 @@ nautilus_navigation_bar_initialize_class (NautilusNavigationBarClass *klass)
 
 	object_class = GTK_OBJECT_CLASS (klass);
 	
+	signals[ACTIVATE]
+		= gtk_signal_new ("activate",
+				  GTK_RUN_FIRST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusNavigationBarClass,
+						     activate),
+				  gtk_marshal_NONE__NONE,
+				  GTK_TYPE_NONE, 0);
+
 	signals[LOCATION_CHANGED]
 		= gtk_signal_new ("location_changed",
 				  GTK_RUN_FIRST,
@@ -68,6 +78,8 @@ nautilus_navigation_bar_initialize_class (NautilusNavigationBarClass *klass)
 
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
+	klass->activate = NULL;
+
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_navigation_bar, get_location);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_navigation_bar, set_location);
 }
@@ -75,6 +87,21 @@ nautilus_navigation_bar_initialize_class (NautilusNavigationBarClass *klass)
 static void
 nautilus_navigation_bar_initialize (NautilusNavigationBar *bar)
 {
+}
+
+/**
+ * nautilus_navigation_bar_activate
+ * 
+ * Change the navigation bar to an active state.
+ * 
+ * @bar: A NautilusNavigationBar.
+ */
+void
+nautilus_navigation_bar_activate (NautilusNavigationBar *bar)
+{
+	g_return_if_fail (NAUTILUS_IS_NAVIGATION_BAR (bar));
+
+	gtk_signal_emit (GTK_OBJECT (bar), signals[ACTIVATE]);
 }
 
 /**
