@@ -79,7 +79,7 @@ const char *eazel_softcat_get_cgi_path (const EazelSoftCat *softcat);
 void eazel_softcat_set_authn (EazelSoftCat *softcat, gboolean use_authn, const char *username);
 gboolean eazel_softcat_get_authn (const EazelSoftCat *softcat, const char **username);
 
-void eazel_softcat_set_packages_pr_query (EazelSoftCat *softcat, int number);
+void eazel_softcat_set_packages_per_query (EazelSoftCat *softcat, int number);
 void eazel_softcat_set_authn_flag (EazelSoftCat *softcat, gboolean use_authn);
 void eazel_softcat_set_username (EazelSoftCat *softcat, const char *username);
 void eazel_softcat_set_retry (EazelSoftCat *softcat, unsigned int retries, unsigned int delay_us);

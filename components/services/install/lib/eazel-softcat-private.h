@@ -45,7 +45,7 @@ struct _EazelSoftCatPrivate {
 	/* This is used to track the server update status */
 	char *db_revision;
 
-	int packages_pr_query;
+	int packages_per_query;
 };
 
 #endif /* EAZEL_SOFTCAT_PRIVATE_H */

@@ -54,7 +54,7 @@ static int category_allocs = 0;
 
 static gboolean at_exit_registered = FALSE;
 
- static void 
+static void 
 at_exit_package_data_info (void) 
 {
 	if (packages_allocated == NULL) {

@@ -969,13 +969,13 @@ report_unusual_errors (const PackageData *pack, EazelInstaller *installer)
                         resolved = TRUE;
                 } else if (pack->status == PACKAGE_ALREADY_INSTALLED) {
                         g_message ("already installed: %s", pack->name);
-                        /* FIXME: after 1.0, change "Nautilus" back to "%s" -> category->name */
                         /* FIXME: this string isn't marked translatable, because it was added extremely late,
                          * and the installer doesn't actually use translations in the current builds.  (we have
                          * an XML-file-based scheme that isn't ready just yet.)
                          */
-                        message = g_strdup_printf ("You've already got the most recent version of Nautilus, "
-                                                   "so there's nothing new to install.");
+                        message = g_strdup_printf ("You've already got the most recent version of %s, "
+                                                   "so there's nothing new to install.",
+                                                   category->name);
                         installer->failure_info = g_list_prepend (installer->failure_info, message);
                         resolved = TRUE;
                 }

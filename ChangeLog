@@ -1,3 +1,42 @@
+2001-03-28  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>
+	who glanced at it before passing out
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(dedupe_foreach_depends):
+
+	Backport a fix for deduping from the branch. (This may fix some
+	bugs related to deduping suites; to be honest, nobody remembers
+	what this patch was originally supposed to do.)
+
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_initialize):
+	* components/services/install/lib/eazel-package-system-types.c:
+	* components/services/install/lib/eazel-softcat-private.h:
+	* components/services/install/lib/eazel-softcat.h:
+
+	Change 'eazel_softcat_set_packages_pr_query' to
+	'eazel_softcat_set_packages_per_query' because I just can't see
+	one extra letter making a difference in a function name that long
+	anyway.
+	
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_initialize), (eazel_softcat_set_packages_per_query),
+	(eazel_softcat_get_info), (eazel_softcat_get_info_plural):
+
+	Backport a fix for suites from the branch.  This caused wrong
+	error messages for the case where a suite contained only one
+	package (which is currently nearly 99% of all suites in softcat).
+	Adam noticed this a few days ago.
+
+	* nautilus-installer/src/installer.c: (report_unusual_errors):
+
+	Fix a trivial FIXME.
+
+	These should be the last of the patches that need to be backported
+	from the 1.0 branch.
+
 2001-03-28  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/eazel-package-system-types.h:

@@ -131,7 +131,7 @@ eazel_softcat_initialize (EazelSoftCat *softcat)
 	softcat->private->retries = 3;
 	softcat->private->delay = 100;
 	softcat->private->db_revision = NULL;
-	softcat->private->packages_pr_query = 1;
+	softcat->private->packages_per_query = 1;
 }
 
 GtkType
@@ -287,9 +287,9 @@ eazel_softcat_get_authn (const EazelSoftCat *softcat, const char **username)
 }
 
 void 
-eazel_softcat_set_packages_pr_query (EazelSoftCat *softcat, int number)
+eazel_softcat_set_packages_per_query (EazelSoftCat *softcat, int number)
 {
-	softcat->private->packages_pr_query = number;
+	softcat->private->packages_per_query = number;
 }
 
 void
@@ -813,58 +813,57 @@ eazel_softcat_get_info (EazelSoftCat *softcat, PackageData *package, int sense_f
 
 	packages = g_list_prepend (packages, package);
 	err = eazel_softcat_query (softcat, packages, sense_flags, fill_flags, &result_packages);
+	g_list_free (packages);
 	if (err != EAZEL_SOFTCAT_SUCCESS) {
 		return err;
 	}
-	g_list_free (packages);
 
-	if (g_list_length (result_packages) > 1) {
-		if (package->suite_id) {
-			/* More than one package returned and we queried on a suite Id.
-			   Make deps and put into "package", remember to strip dirs in 
-			   provides if needed */
-			GList *iterator;
+	if (package->suite_id) {
+		/* More than one package returned and we queried on a suite Id.
+		   Make deps and put into "package", remember to strip dirs in 
+		   provides if needed */
+		GList *iterator;
 
-			trilobite_debug ("softcat query returned suite with %d elements", 
-					 g_list_length (result_packages));
-			for (iterator = result_packages; iterator; iterator = g_list_next (iterator)) {
-				PackageData *pack = PACKAGEDATA (iterator->data);
-				PackageDependency *dep = packagedependency_new ();
+		trilobite_debug ("softcat query returned suite with %d elements", 
+				 g_list_length (result_packages));
+		for (iterator = result_packages; iterator; iterator = g_list_next (iterator)) {
+			PackageData *pack = PACKAGEDATA (iterator->data);
+			PackageDependency *dep = packagedependency_new ();
 
-				if (fill_flags & PACKAGE_FILL_NO_DIRS_IN_PROVIDES) {
-					remove_directories_from_provides_list (pack);
-				}
-				gtk_object_ref (GTK_OBJECT (pack));
-				pack->fillflag = fill_flags;
-
-				dep->package = pack;
-				dep->version = g_strdup (pack->version);
-
-				if (dep->version) {
-					/* FIXME: should a suite be EQ or GE ? If GE, any newer version
-					   that's already installed will be ok, if EQ, the suites depends
-					   on an exact version */
-					dep->sense = EAZEL_SOFTCAT_SENSE_GE;
-				} else {
-					dep->sense = EAZEL_SOFTCAT_SENSE_ANY;
-				}
-
-				packagedata_add_pack_to_depends (package, dep);
+			if (fill_flags & PACKAGE_FILL_NO_DIRS_IN_PROVIDES) {
+				remove_directories_from_provides_list (pack);
 			}
-		} else {
-			g_warning ("softcat query returned %d results!", g_list_length (result_packages));
-			err = EAZEL_SOFTCAT_ERROR_MULTIPLE_RESPONSES;
-			g_list_foreach (result_packages, (GFunc)gtk_object_unref, NULL);
-			g_list_free (result_packages);
-			return err;
+			gtk_object_ref (GTK_OBJECT (pack));
+			pack->fillflag = fill_flags;
+
+			dep->package = pack;
+			dep->version = g_strdup (pack->version);
+
+			if (dep->version) {
+				/* FIXME: should a suite be EQ or GE ? If GE, any newer version
+				   that's already installed will be ok, if EQ, the suites depends
+				   on an exact version */
+				dep->sense = EAZEL_SOFTCAT_SENSE_GE;
+			} else {
+				dep->sense = EAZEL_SOFTCAT_SENSE_ANY;
+			}
+
+			packagedata_add_pack_to_depends (package, dep);
 		}
-	} else {
+	} else if (g_list_length (packages) > 1) {
+		g_warning ("softcat query returned %d results!", g_list_length (result_packages));
+		err = EAZEL_SOFTCAT_ERROR_MULTIPLE_RESPONSES;
+		g_list_foreach (result_packages, (GFunc)gtk_object_unref, NULL);
+		g_list_free (result_packages);
+		return err;
+	} else {	/* 1 package, not a suite */
 		full_package = PACKAGEDATA (result_packages->data);
 		packagedata_fill_in_missing (package, full_package, fill_flags);
 		if (fill_flags & PACKAGE_FILL_NO_DIRS_IN_PROVIDES) {
 			remove_directories_from_provides_list (package);
 		}
 	}
+
 	g_list_foreach (result_packages, (GFunc)gtk_object_unref, NULL);
 	g_list_free (result_packages);
 	return err;
@@ -1037,7 +1036,7 @@ eazel_softcat_get_info_plural_helper (EazelSoftCat *softcat,
    packages with same query signature (id or name).
 
    foreach L in massives {
-        foreach subL in L (subL will be the "next" packages_pr_query elements in L) {
+        foreach subL in L (subL will be the "next" packages_per_query elements in L) {
 	     (voodoo to maintain the lists)
 	     do a get_info_plural_helper (L, out, error)
 	     (voodoo to maintain the lists)
@@ -1049,7 +1048,7 @@ eazel_softcat_get_info_plural_helper (EazelSoftCat *softcat,
 
    So basically this function will accept any weird combo of crackass
    packages and try and make the minimal amount of queries (depending
-   on packages_pr_query)
+   on packages_per_query)
 
 */
 
@@ -1076,8 +1075,8 @@ eazel_softcat_get_info_plural (EazelSoftCat *softcat,
 
 	while (massives && massive) {
 		int i;
-		/* Only put softcat->private->packages_pr_query into one query */
-		for (i = 0; i < softcat->private->packages_pr_query; i++) {
+		/* Only put softcat->private->packages_per_query into one query */
+		for (i = 0; i < softcat->private->packages_per_query; i++) {
 			gpointer p;
 
 			/* Move head to partial */

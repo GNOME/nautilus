@@ -968,6 +968,7 @@ dedupe_foreach_depends (PackageDependency *d,
 			 EazelInstall *service) 
 {
 	PackageData *p1;
+	PackageData *p11;
 
 	g_assert (d);
 	g_assert (IS_PACKAGEDEPENDENCY (d));
@@ -981,28 +982,24 @@ dedupe_foreach_depends (PackageDependency *d,
 		return;
 	}
 
-	if (~p1->fillflag & MUST_HAVE) {
-		PackageData *p11;
-
-		p11 = g_hash_table_lookup (service->private->dedupe_hash, p1->md5);
+	p11 = g_hash_table_lookup (service->private->dedupe_hash, p1->md5);
 		
-		if (p11) {
-			if (p11 != p1) {
+	if (p11) {
+		if (p11 != p1) {
 #if EI2_DEBUG & 0x4
-				trilobite_debug ("\tdeduping(b) %p %s is already read at %p %s", p1, p1->name, p11, p11->name);
+			trilobite_debug ("\tdeduping(b) %p %s is already read at %p %s", p1, p1->name, p11, p11->name);
 #endif         
-				gtk_object_ref (GTK_OBJECT (p11));
-				gtk_object_unref (GTK_OBJECT (p1)); 
-				d->package = p11;
-			} else {
-#if EI2_DEBUG & 0x4
-				trilobite_debug ("\tnot deduping(b) myself %p %s", p11, p11->name, p1);
-#endif
-			}
+			gtk_object_ref (GTK_OBJECT (p11));
+			gtk_object_unref (GTK_OBJECT (p1)); 
+			d->package = p11;
 		} else {
-			add_to_dedupe_hash (service, p1);
-			dedupe_foreach ((gpointer)p1, service);
+#if EI2_DEBUG & 0x4
+			trilobite_debug ("\tnot deduping(b) myself %p %s", p11, p11->name, p1);
+#endif
 		}
+	} else {
+		add_to_dedupe_hash (service, p1);
+		dedupe_foreach ((gpointer)p1, service);
 	}
 }
 
