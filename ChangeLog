@@ -1,3 +1,10 @@
+2002-07-01  Damon Chaplin  <damon@ximian.com>
+
+	* src/file-manager/fm-list-view.c (create_and_set_up_tree_view): set
+	the initial pixbuf column to match the initial zoom level, 25%.
+	Otherwise the pixbuf column may not be set and the icons don't appear.
+	Fixes bug #85286.
+
 2002-07-02  Michael Meeks  <michael@ximian.com>
 
 	* src/nautilus-preferences-dialog.c

@@ -331,6 +331,10 @@ create_and_set_up_tree_view (FMListView *view)
 	gtk_tree_view_column_set_resizable (view->details->file_name_column, TRUE);
 
 	gtk_tree_view_column_pack_start (view->details->file_name_column, cell, FALSE);
+	gtk_tree_view_column_set_attributes (view->details->file_name_column,
+					     cell,
+					     "pixbuf", FM_LIST_MODEL_SMALLEST_ICON_COLUMN,
+					     NULL);
 
 	cell = gtk_cell_renderer_text_new ();
 	view->details->file_name_cell = (GtkCellRendererText *)cell;
