@@ -66,12 +66,19 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_ICON_THEME				"preferences/icon_theme"
 
 /* File Indexing */
-#define NAUTILUS_PREFERENCES_SEARCH_SPEED_SETTINGS              "preferences/do_slow_search"
+#define NAUTILUS_PREFERENCES_SEARCH_METHOD                       "preferences/also_do_slow_search"
+#define NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE                     "preferences/search_bar_type"
 
 enum
 {
 	NAUTILUS_CLICK_POLICY_SINGLE,
 	NAUTILUS_CLICK_POLICY_DOUBLE
+};
+
+enum
+{
+	NAUTILUS_SEARCH_BAR_ONE_BOX,
+	NAUTILUS_SEARCH_BAR_MULTI_BOX
 };
 
 #define NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS		"preferences/remote_icon_text"

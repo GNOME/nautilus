@@ -29,8 +29,26 @@
 #include <libgnome/gnome-i18n.h>
 
 #include <gtk/gtklabel.h>
+#include <gtk/gtkentry.h>
 
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+
+typedef enum {
+	NAUTILUS_SEARCH_ONE_BOX,
+	NAUTILUS_SEARCH_MULTI_BOX
+} NautilusSearchBarType;
+
+struct NautilusSearchBarDetails {
+	NautilusSearchBarType search_bar_type;
+	GtkLabel *search_label;
+	/* This one is used for the simple search */  
+	GtkEntry *entry;
+	/* These are used for the more complicated
+	   search */
+	/* Under construction */
+	GList *search_bar_pairs;
+	
+};
 
 static void nautilus_search_bar_set_location     (NautilusNavigationBar *bar,
 						  const char            *location);
@@ -66,13 +84,13 @@ nautilus_search_bar_initialize_class (NautilusSearchBarClass *klass)
 static void
 nautilus_search_bar_initialize (NautilusSearchBar *bar)
 {
-	GtkWidget *label;
+	GtkWidget *label;		
 
 	/* FIXME: set up the widgetry here. */
 
 	label = gtk_label_new (_("The search bar goes here"));
 
-	gtk_widget_show (label);
+     	gtk_widget_show (label);
 
 	gtk_container_add   (GTK_CONTAINER (bar), label);
 }

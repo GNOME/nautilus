@@ -219,18 +219,26 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
 	/*
-	 * File Indexing 
+	 * Search Settings 
 	 */
+
 	file_indexing_pane = nautilus_preferences_box_add_pane (preference_box,
 							     "Search",
 							     "Search Settings");
-
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
+					     "Search Complexity Options");
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
+							 0,
+							 NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
+							 NAUTILUS_PREFERENCE_ITEM_ENUM);
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
 					     "Search Tradeoffs");
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
-							 0,
-							 NAUTILUS_PREFERENCES_SEARCH_SPEED_SETTINGS,
+							 1,
+							 NAUTILUS_PREFERENCES_SEARCH_METHOD,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+
+
 					
 	/*
 	 * Navigation
@@ -549,11 +557,29 @@ global_preferences_register_for_ui (void)
 							   "standard",
 							   "standard");
 
-	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SEARCH_SPEED_SETTINGS,
-							   "find very new files by doing a slow search on disk after a fast search",
+	/* search tradeoffs */
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SEARCH_METHOD,
+							   "Always do slow, complete search",
 							   FALSE,
 							   FALSE,
 							   FALSE);
+
+	/* search bar type */
+	global_preferences_register_enum_with_defaults (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
+							"search type to do by default",
+							NAUTILUS_SEARCH_BAR_ONE_BOX,
+							NAUTILUS_SEARCH_BAR_MULTI_BOX,
+							NAUTILUS_SEARCH_BAR_MULTI_BOX);
+
+	nautilus_preference_enum_add_entry_by_name (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
+						     "search by text",
+						     "Search for files by text only",
+						     NAUTILUS_SEARCH_BAR_ONE_BOX);
+
+	nautilus_preference_enum_add_entry_by_name (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
+						     "search by text and properties",
+						     "Search for files by text and by their properties",
+						     NAUTILUS_SEARCH_BAR_MULTI_BOX);
 
 	/*
 	 * These dont have a UI (yet ? maybe in the advanced settings ?).

@@ -36,8 +36,12 @@
 #define NAUTILUS_IS_SEARCH_BAR(obj) \
 	GTK_CHECK_TYPE (obj, NAUTILUS_TYPE_SEARCH_BAR)
 
+typedef struct NautilusSearchBarDetails NautilusSearchBarDetails;
+
 typedef struct NautilusSearchBar {
 	NautilusNavigationBar parent;
+
+	NautilusSearchBarDetails *details;
 } NautilusSearchBar;
 
 typedef struct {
@@ -49,3 +53,4 @@ GtkWidget* nautilus_search_bar_new          	(void);
 
 
 #endif /* NAUTILUS_SEARCH_BAR_H */
+
