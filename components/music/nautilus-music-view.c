@@ -38,7 +38,6 @@
 #include <libnautilus/libnautilus.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
-#include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -540,24 +539,26 @@ fetch_bit_rate (const char *song_uri)
 
 /* fetch_play_time takes the pathname to a file and returns the play time in seconds */
 static int
-fetch_play_time (const char *song_uri, int bitrate)
+fetch_play_time (GnomeVFSFileInfo *file_info, int bitrate)
 {
-	NautilusFile *file = nautilus_file_get (song_uri + 7);
- 	GnomeVFSFileSize file_size = nautilus_file_get_size (file);       			
-	nautilus_file_unref(file);
-	
-	return file_size / (125 * bitrate);
+        if ((file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_SIZE) == 0) {
+                /* FIXME: Unknown time should return 0? */
+                return 0;
+        }
+
+	return file_info->size / (125 * bitrate);
 }
 
 /* format_play_time takes the pathname to a file and returns the play time formated as mm:ss */
 static char *
-format_play_time (const char *song_uri, int bitrate)
+format_play_time (int track_time)
 {
-	int seconds = fetch_play_time(song_uri, bitrate);
-	int minutes = seconds / 60;
-	int remain_seconds = seconds - (60 * minutes);
-	char *result = g_strdup_printf ("%d:%02d ", minutes, remain_seconds);
-	return result;
+	int seconds, minutes, remain_seconds;
+
+        seconds = track_time;
+	minutes = seconds / 60;
+	remain_seconds = seconds - (60 * minutes);
+	return g_strdup_printf ("%d:%02d ", minutes, remain_seconds);
 }
 
 /* utility routine to pull an initial number from the beginning of the passed in name.
@@ -590,7 +591,7 @@ extract_initial_number(const char *name_str)
 /* allocate a return a song info record, from an mp3 tag if present, or from intrinsic info */
 
 static SongInfo *
-fetch_song_info (const char *song_uri, int file_order) 
+fetch_song_info (const char *song_uri, GnomeVFSFileInfo *file_info, int file_order) 
 {
 	gboolean has_info = FALSE;
 	SongInfo *info; 
@@ -607,16 +608,16 @@ fetch_song_info (const char *song_uri, int file_order)
 	/* if we couldn't get a track number, see if we can pull one from
 	   the beginning of the file name */
 	if (info->track_number <= 0) {
-		info->track_number = extract_initial_number(g_basename(song_uri));
+		info->track_number = extract_initial_number(file_info->name);
 	}
   	
 	/* there was no id3 tag, so set up the info heuristically from the file name and file order */
 	if (!has_info) {
-		info->title = g_strdup (g_basename (song_uri));
+		info->title = g_strdup (file_info->name);
 	}	
 	
-	info->bitrate = fetch_bit_rate(song_uri);
-	info->track_time = fetch_play_time(song_uri, info->bitrate);
+	info->bitrate = fetch_bit_rate (song_uri);
+	info->track_time = fetch_play_time (file_info, info->bitrate);
 	return	info;
 }
 
@@ -856,7 +857,6 @@ play_status_display (NautilusMusicView *music_view)
 		update_play_controls_status(music_view, status);
 	}
 	
-	
 	if (is_playing) {			
 		if (!music_view->details->slider_dragging) {
 			frameNo = get_current_frame();	
@@ -887,38 +887,45 @@ play_status_display (NautilusMusicView *music_view)
 /* track incrementing routines */
 
 static void
-play_current_file(NautilusMusicView *music_view, gboolean from_start)
+play_current_file (NautilusMusicView *music_view, gboolean from_start)
 {
 	int play_mode;
-	char *song_filename, *temp_str;	
-	NautilusFile *file;
-		
+	char *song_filename, *temp_str, *song_uri;
+        GnomeVFSResult result;
+        GnomeVFSFileInfo file_info;
+        
 	play_mode = get_play_status();
 	gtk_clist_select_row (GTK_CLIST(music_view->details->song_list), music_view->details->selected_index, 0);
 	
-	song_filename =  gtk_clist_get_row_data(GTK_CLIST(music_view->details->song_list),
-						music_view->details->selected_index);
-	
+	song_filename = gtk_clist_get_row_data (GTK_CLIST (music_view->details->song_list),
+                                                music_view->details->selected_index);
 	if (song_filename == NULL) {
 		return;
 	}
 
 	/* set up the current bitrate and file size so we can give progress feedback */
         
-        gtk_clist_get_text (GTK_CLIST(music_view->details->song_list), music_view->details->selected_index, 4, &temp_str);
-	music_view->details->current_bitrate  = atoi(temp_str);
+        gtk_clist_get_text (GTK_CLIST(music_view->details->song_list),
+                            music_view->details->selected_index, 4, &temp_str);
+	music_view->details->current_bitrate = atoi (temp_str);
+        song_uri = nautilus_get_uri_from_local_path (song_filename);
+        result = gnome_vfs_get_file_info (song_uri, &file_info,
+                                          GNOME_VFS_FILE_INFO_DEFAULT, NULL);
+        g_free (song_uri);
+ 	music_view->details->current_file_size =
+                (result == GNOME_VFS_OK
+                 && (file_info.valid_fields & GNOME_VFS_FILE_INFO_FIELDS_SIZE) != 0)
+                ? file_info.size
+                : 0; /* FIXME: Is 0 OK for the failure case here? */
 
-	file = nautilus_file_get (song_filename + 7);
- 	music_view->details->current_file_size = (int) nautilus_file_get_size (file);       			
-	nautilus_file_unref(file);
-
-	gtk_widget_set_sensitive(music_view->details->playtime_bar, TRUE);
+	gtk_widget_set_sensitive (music_view->details->playtime_bar, TRUE);
 	
 	if (music_view->details->status_timeout != -1)
 		gtk_timeout_remove(music_view->details->status_timeout);
 		
 	music_view->details->status_timeout = gtk_timeout_add(900, (GtkFunction) play_status_display, music_view);
 
+        /* FIXME: +7 does not make a URI into a path. */
 	start_playing_file(song_filename + 7, from_start || (play_mode != STATUS_PAUSE));
 }
 
@@ -1268,25 +1275,26 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	current_file_info = gnome_vfs_directory_list_first (list);
 	while (current_file_info != NULL) {
 		/* skip invisible files, for now */
-			
 		if (current_file_info->name[0] == '.') {
 				current_file_info = gnome_vfs_directory_list_next(list);
 				continue;
                 }
 		
-		path_uri = nautilus_make_path(uri, current_file_info->name);
+                /* FIXME: This won't work for file names with special characters.
+                 * The file name needs to be escaped.
+                 */
+		path_uri = nautilus_make_path (uri, current_file_info->name);
 			
 		/* fetch info and queue it if it's an mp3 file */
-		info = fetch_song_info (path_uri, file_index);
+		info = fetch_song_info (path_uri, current_file_info, file_index);
 		if (info) {
-			
 			info->path_uri = path_uri;
 			file_index += 1;
                         song_list = g_list_append (song_list, info);
 		} else {
 		        /* it's not an mp3 file, so see if it's an image */
-		        NautilusFile *file = nautilus_file_get (path_uri + 7);
-        		char *mime_type = nautilus_file_get_mime_type (file);
+        		const char *mime_type = gnome_vfs_file_info_get_mime_type
+                                (current_file_info);
 		        	
 		        if (nautilus_str_has_prefix (mime_type, "image/")) {
 		        	/* for now, just keep the first image */
@@ -1294,10 +1302,8 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 		        		image_path_uri = g_strdup (path_uri);
                                 }
 		        }
-		        	
-		        nautilus_file_unref (file);
+                        
 		        g_free (path_uri);
-                        g_free (mime_type);
 		}
 		
 		current_file_info = gnome_vfs_directory_list_next(list);
@@ -1311,7 +1317,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	gtk_clist_clear (GTK_CLIST (music_view->details->song_list));
 	
 	for (p = song_list; p != NULL; p = p->next) {
-		info = (SongInfo *)p->data;
+		info = (SongInfo *) p->data;
 		
 		clist_entry[0] = malloc(4);
 		if (info->track_number > 0)
@@ -1335,8 +1341,8 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 			clist_entry[3] = g_strdup(info->year);
 		if (info->bitrate > 0)
 			clist_entry[4] = g_strdup_printf("%d ", info->bitrate);
-		if (info->path_uri)
-			clist_entry[5] = format_play_time(info->path_uri, info->bitrate);
+		if (info->track_time > 0)
+			clist_entry[5] = format_play_time (info->track_time);
 		if (info->album)
 			clist_entry[6] = g_strdup(info->album);
 		if (info->comment)
@@ -1352,6 +1358,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	/* install the album cover */
 		
 	if (image_path_uri != NULL) {
+                /* FIXME: +7 does not make a URI into a path. */
 		pixbuf = gdk_pixbuf_new_from_file(image_path_uri + 7);
 		pixbuf = nautilus_gdk_pixbuf_scale_to_fit(pixbuf, 128, 128);
 

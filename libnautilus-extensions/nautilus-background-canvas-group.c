@@ -34,31 +34,25 @@
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gtk-macros.h"
 
-static void nautilus_background_canvas_group_initialize_class (gpointer klass);
-static void nautilus_background_canvas_group_initialize (gpointer object, gpointer klass);
-static void nautilus_background_canvas_group_destroy (GtkObject *object);
-static void nautilus_background_canvas_group_finalize (GtkObject *object);
-static void nautilus_background_canvas_group_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
-						   int x, int y, int width, int height);
-static void nautilus_background_canvas_group_render (GnomeCanvasItem *item, GnomeCanvasBuf *buffer);
-
+static void nautilus_background_canvas_group_initialize_class (gpointer         klass);
+static void nautilus_background_canvas_group_initialize       (gpointer         object,
+							       gpointer         klass);
+static void nautilus_background_canvas_group_draw             (GnomeCanvasItem *item,
+							       GdkDrawable     *drawable,
+							       int              x,
+							       int              y,
+							       int              width,
+							       int              height);
+static void nautilus_background_canvas_group_render           (GnomeCanvasItem *item,
+							       GnomeCanvasBuf  *buffer);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBackgroundCanvasGroup, nautilus_background_canvas_group, GNOME_TYPE_CANVAS_GROUP)
 
 static void
 nautilus_background_canvas_group_initialize_class (gpointer klass)
 {
-	GtkObjectClass *object_class;
-	GnomeCanvasItemClass *canvas_item_class;
-
-	object_class = GTK_OBJECT_CLASS (klass);
-	canvas_item_class = GNOME_CANVAS_ITEM_CLASS (klass);
-	
-	object_class->destroy = nautilus_background_canvas_group_destroy;
-	object_class->finalize = nautilus_background_canvas_group_finalize;
-
-	canvas_item_class->draw = nautilus_background_canvas_group_draw;
-	canvas_item_class->render = nautilus_background_canvas_group_render;
+	GNOME_CANVAS_ITEM_CLASS (klass)->draw = nautilus_background_canvas_group_draw;
+	GNOME_CANVAS_ITEM_CLASS (klass)->render = nautilus_background_canvas_group_render;
 }
 
 static void
@@ -67,44 +61,36 @@ nautilus_background_canvas_group_initialize (gpointer object, gpointer klass)
 }
 
 static void
-nautilus_background_canvas_group_destroy (GtkObject *object)
-{
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
-}
-
-static void
-nautilus_background_canvas_group_finalize (GtkObject *object)
-{
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, finalize, (object));
-}
-
-static void
 nautilus_background_canvas_group_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 				       int drawable_corner_x, int drawable_corner_y,
 				       int drawable_width, int drawable_height)
 {
 	NautilusBackground *background;
+	GdkGC *gc;
+	GdkRectangle rectangle;
 
 	/* Draw the background. */
-	background = nautilus_get_widget_background(GTK_WIDGET (item->canvas));
+	background = nautilus_get_widget_background (GTK_WIDGET (item->canvas));
 
-	if (background != NULL && nautilus_background_is_too_complex_for_gtk_style (background)) {
-		GdkGC *gc;
-		GdkRectangle rectangle;
-
+	/* If GtkStyle handled it, then we don't want to bother doing
+	 * any additional work. It would be way slow to draw again.
+	 */
+	if (nautilus_background_is_too_complex_for_gtk_style (background)) {
 		/* Create a new gc each time.
-		   If this is a speed problem, we can create one and keep it around,
-		   but it's a bit more complicated to ensure that it's always compatible
-		   with whatever drawable is passed in.
-		*/
+		 * If this is a speed problem, we can create one and keep it around,
+		 * but it's a bit more complicated to ensure that it's always compatible
+		 * with whatever drawable is passed in.
+		 */
 		gc = gdk_gc_new (drawable);
 
-		/* The rectangle is the size of the entire viewed area of the canvas.
-		   The corner is determined by the current scroll position of the
-		   GtkLayout, and the size is determined by the current size of the widget.
-		   Since 0,0 is the corner of the drawable, we need to offset the rectangle
-		   so it's relative to the drawable's coordinates.
-		*/
+		/* The rectangle is the size of the entire viewed area
+		 * of the canvas. The corner is determined by the
+		 * current scroll position of the GtkLayout, and the
+		 * size is determined by the current size of the
+		 * widget. Since 0,0 is the corner of the drawable,
+		 * we need to offset the rectangle so it's relative to
+		 * the drawable's coordinates.
+		 */
 	       	rectangle.x = GTK_LAYOUT (item->canvas)->xoffset - drawable_corner_x;
 		rectangle.y = GTK_LAYOUT (item->canvas)->yoffset - drawable_corner_y;
 		rectangle.width = GTK_WIDGET (item->canvas)->allocation.width;
@@ -116,9 +102,9 @@ nautilus_background_canvas_group_draw (GnomeCanvasItem *item, GdkDrawable *drawa
 		gdk_gc_unref (gc);
 	}
 
-	/* Call through to the GnomeCanvasGroup implementation, which will draw all
-	   the canvas items.
-	*/
+	/* Call through to the GnomeCanvasGroup implementation, which
+	 * will draw all the canvas items.
+	 */
 	NAUTILUS_CALL_PARENT_CLASS (GNOME_CANVAS_ITEM_CLASS, draw,
 				    (item, drawable,
 				     drawable_corner_x, drawable_corner_y,
@@ -126,32 +112,40 @@ nautilus_background_canvas_group_draw (GnomeCanvasItem *item, GdkDrawable *drawa
 }
 
 
-/* draw the background for the anti-aliased canvas */
-
+/* draw the background for the anti-aliased canvas case */
 static void
 nautilus_background_canvas_group_render (GnomeCanvasItem *item, GnomeCanvasBuf *buffer)
 {
-	gint entire_width, entire_height;
-	double left, top, bottom, right;
 	NautilusBackground *background;	
+	double left, top, bottom, right;
+	int entire_width, entire_height;
 			
-	background = nautilus_get_widget_background(GTK_WIDGET (item->canvas));
+	background = nautilus_get_widget_background (GTK_WIDGET (item->canvas));
 	if (background != NULL) {
-		gnome_canvas_get_scroll_region (GNOME_CANVAS(item->canvas), &left, &top, &right, &bottom);
+		/* FIXME: Don't we want to draw the background for the size of the window
+		 * rather than the whole canvas? This won't work right for gradients, will it?
+		 */
+		gnome_canvas_get_scroll_region (GNOME_CANVAS(item->canvas),
+						&left, &top, &right, &bottom);
+
+		/* FIXME: Icons can go past bounds? News to me! (Darin)
+		 * This slop value of 24 must die.
+		 */
 		entire_width = right - left + 24; /* add some slop since icons can go past bounds */
 		entire_height = bottom - top + 24;
-		nautilus_background_draw_aa(background, buffer, entire_width, entire_height);
-	} else
+
+		nautilus_background_draw_aa (background, buffer, entire_width, entire_height);
+
+		/* FIXME: Shouldn't nautilus_background_draw_aa do these? */
+		buffer->is_bg = FALSE;
+		buffer->is_buf = TRUE;
+	} else {
+		/* FIXME: Why do we need this in this case? */
 		gnome_canvas_buf_ensure_buf (buffer);
-	
-	buffer->is_bg = FALSE;
-	buffer->is_buf = TRUE;
+	}
 	
 	/* Call through to the GnomeCanvasGroup implementation, which will draw all
-	   the canvas items.
-	*/
-	NAUTILUS_CALL_PARENT_CLASS (GNOME_CANVAS_ITEM_CLASS, render ,
-				    (item, buffer));
-				     
-	
+	 * the canvas items.
+	 */
+	NAUTILUS_CALL_PARENT_CLASS (GNOME_CANVAS_ITEM_CLASS, render, (item, buffer));
 }

@@ -42,6 +42,7 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-user-level-manager.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 
 static GtkWindow *bookmarks_window = NULL;
 
@@ -405,23 +406,19 @@ show_bogus_bookmark_window (BookmarkHolder *holder)
 static gboolean
 uri_known_not_to_exist (const char *uri) 
 {
-	NautilusFile *file;
+	char *path_name;
+	gboolean exists;
 
-	/* Don't assume anything about schemes other than "file://" */
-	if (!nautilus_str_has_prefix (uri, "file://")) {
+	/* Convert to a path, returning FALSE if not local. */
+	path_name = nautilus_get_local_path_from_uri (uri);
+	if (path_name == NULL) {
 		return FALSE;
 	}
-	
-	file = nautilus_file_get (uri);
 
-	/* Couldn't make a NautilusFile, so uri must have been bogus. */
-	if (file == NULL) {
-		return TRUE;
-	}
-
-	nautilus_file_unref (file);
-
-	return FALSE;
+	/* Now check if the file exists (sync. call OK because it is local). */
+	exists = g_file_exists (path_name);
+	g_free (path_name);
+	return !exists;
 }
 
 static void

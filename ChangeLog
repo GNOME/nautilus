@@ -1,3 +1,33 @@
+2000-06-13  Darin Adler  <darin@eazel.com>
+
+	Preparations to make nautilus_file_get use async. I/O.
+	There's still a long way to go.
+
+	* components/music/nautilus-music-view.c: (fetch_play_time),
+	(format_play_time), (fetch_song_info), (play_status_display),
+	(play_current_file), (nautilus_music_view_update_from_uri):
+	Changed the music view so it doesn't use NautilusFile any more
+	since it already has what it needs from gnome-vfs. There's still
+	the issue of sync. vs. async. for this component.
+	
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	(nautilus_timed_wait_start), (nautilus_timed_wait_free),
+	(nautilus_timed_wait_stop):
+	* libnautilus-extensions/nautilus-stock-dialogs.h:
+	Started on something called nautilus_timed_wait that we need to
+	use when all our lines are busy. Checked it in since I'll be in
+	Palo Alto and don't want any non-checked-in changes.
+	
+	* libnautilus-extensions/nautilus-background-canvas-group.c:
+	Added comments and removed some dead code.
+	
+	* src/nautilus-window-menus.c: (uri_known_not_to_exist):
+	Rewrote this to use sync. I/O on local files instead of using
+	nautilus_file_get.
+	
+	* test/.cvsignore: Ignore some of the new files in this directory.
+
 2000-06-13  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus-extensions/nautilus-mime-actions.c
@@ -110,15 +140,17 @@
 
 2000-06-14  Anders Carlsson  <andersca@gnu.org>
 
-	* libnautilus-extensions/nautilus-background-canvas-group.c 
+	* libnautilus-extensions/nautilus-background-canvas-group.c
 	(nautilus_background_canvas_group_draw): Add a check to see if the
-	NautilusBackground is too complex which means we have do draw if ourselves.
+	NautilusBackground is too complex which means we have do draw if
+	ourselves. Otherwise, we can have a light touch and let the canvas
+	handle it without our "help".
 	
 	* libnautilus-extensions/nautilus-background.c,
 	  libnautilus-extensions/nautilus-background.h
 	(nautilus_background_is_too_complex_for_gtk_style): New function. 
-	Checks if a NautilusBackground is too complex to be drawn by GtkStyle, forcing
-	us to draw it ourselves.
+	Checks if a NautilusBackground is too complex to be drawn by
+	GtkStyle, forcing us to draw it ourselves.
 
 2000-06-13  Seth Nickell  <seth@eazel.com>
 
@@ -13310,5 +13342,3 @@ Fri Apr 14 16:35:32 2000  Raph Levien  <raph@acm.org>
 2000-04-14  Maciej Stachowiak  <mjs@eazel.com>
 
 	* ChangeLog-20000414: rolled over from ChangeLog.
-	
-
