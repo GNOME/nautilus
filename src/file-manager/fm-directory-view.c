@@ -60,6 +60,7 @@
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-result.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -343,6 +344,7 @@ static void     fm_directory_view_select_file                  (FMDirectoryView 
 								NautilusFile         *file);
 static void     monitor_file_for_open_with                     (FMDirectoryView      *view,
 								NautilusFile         *file);
+static void     create_scripts_directory                       (void);
 
 EEL_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 
@@ -1183,6 +1185,10 @@ set_up_scripts_directory_global (void)
 
 	scripts_directory_uri = gnome_vfs_get_uri_from_local_path (scripts_directory_path);
 	scripts_directory_uri_length = strlen (scripts_directory_uri);
+
+	if (!g_file_test (scripts_directory_path, G_FILE_TEST_EXISTS)) {
+		create_scripts_directory ();
+	}
 	
 	g_free (scripts_directory_path);
 }
@@ -1190,13 +1196,33 @@ set_up_scripts_directory_global (void)
 static void
 create_scripts_directory (void)
 {
-	char *path;
+	char *gnome1_path, *gnome1_uri_str;
+	GnomeVFSURI *gnome1_uri, *scripts_uri;
 
-	set_up_scripts_directory_global ();
-	path = gnome_vfs_get_local_path_from_uri (scripts_directory_uri);
-	mkdir (path, 
-	       GNOME_VFS_PERM_USER_ALL | GNOME_VFS_PERM_GROUP_ALL | GNOME_VFS_PERM_OTHER_READ);
-	g_free (path);
+	scripts_uri = gnome_vfs_uri_new (scripts_directory_uri);
+	/* try to migrate nautilus 1 scripts */
+	gnome1_path = g_strconcat (g_get_home_dir(), "/.gnome/nautilus-scripts", NULL);
+
+	if (g_file_test (gnome1_path, G_FILE_TEST_EXISTS)) {
+		gnome1_uri_str = gnome_vfs_get_uri_from_local_path (gnome1_path);
+		gnome1_uri = gnome_vfs_uri_new (gnome1_uri_str);
+		g_free (gnome1_uri_str);
+		if (gnome_vfs_xfer_uri (gnome1_uri, scripts_uri,
+					GNOME_VFS_XFER_DEFAULT,
+					GNOME_VFS_XFER_ERROR_MODE_ABORT,
+					GNOME_VFS_XFER_OVERWRITE_MODE_SKIP,
+					NULL, NULL) != GNOME_VFS_OK) {
+			g_warning ("Failed to migrate Nautilus1 scripts\n");
+		}
+		gnome_vfs_uri_unref (gnome1_uri);
+	}
+	g_free (gnome1_path);
+
+	/* make sure scripts directory is created */
+	gnome_vfs_make_directory_for_uri (scripts_uri, 
+					  GNOME_VFS_PERM_USER_ALL | GNOME_VFS_PERM_GROUP_ALL | GNOME_VFS_PERM_OTHER_READ);
+
+	gnome_vfs_uri_unref (scripts_uri);
 }
 
 static void
@@ -4268,8 +4294,6 @@ open_scripts_folder_callback (BonoboUIComponent *component,
 	FMDirectoryView *view;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
-
-	create_scripts_directory ();
 
 	open_location (view, scripts_directory_uri, RESPECT_PREFERENCE);
 	
