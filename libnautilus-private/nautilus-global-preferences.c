@@ -900,9 +900,9 @@ global_preferences_register (void)
 	/* Appearance options */
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
 							   _("Use smoother (but slower) graphics"),
-							   TRUE,
-							   TRUE,
-							   TRUE);
+							   FALSE,
+							   FALSE,
+							   FALSE);
 
 	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
 							  _("Font family used to display file names"),
