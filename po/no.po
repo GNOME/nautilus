@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.5.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-30 14:48+0100\n"
-"PO-Revision-Date: 2004-01-29 00:24+0100\n"
+"POT-Creation-Date: 2004-02-08 21:15+0100\n"
+"PO-Revision-Date: 2004-02-08 21:40+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Nynorsk <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -976,6 +976,7 @@ msgstr "Forhåndsvis"
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
+#: src/file-manager/fm-list-view.c:1052
 #: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Navn"
@@ -2593,15 +2594,15 @@ msgstr "Tømmer søppelkurven"
 msgid "Preparing to Empty the Trash..."
 msgstr "Forbereder tømming av søppelkurven..."
 
-#: libnautilus-private/nautilus-file-operations.c:2528
+#: libnautilus-private/nautilus-file-operations.c:2529
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr "Er du sikker på at du vil tømme alle oppføringer i søppelkurven?"
 
-#: libnautilus-private/nautilus-file-operations.c:2542
+#: libnautilus-private/nautilus-file-operations.c:2543
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr "Hvis du tømmer papirkurven vil oppføringene bli slettet permanent."
 
-#: libnautilus-private/nautilus-file-operations.c:2554
+#: libnautilus-private/nautilus-file-operations.c:2555
 msgid "_Empty"
 msgstr "_Tøm"
 
@@ -2998,7 +2999,7 @@ msgstr "Etter type"
 #: libnautilus-private/nautilus-global-preferences.c:189
 #: src/nautilus-file-management-properties.glade.h:41
 msgid "By Modification Date"
-msgstr "Etter modifikasjonsdato"
+msgstr "Etter endringsdato"
 
 #: libnautilus-private/nautilus-global-preferences.c:190
 #: src/nautilus-file-management-properties.glade.h:40
@@ -3098,51 +3099,51 @@ msgstr "om vi er merket for en slipp-operasjon"
 msgid "The selection rectangle"
 msgstr "Utvalgsrektangelet"
 
-#: libnautilus-private/nautilus-icon-container.c:4176
+#: libnautilus-private/nautilus-icon-container.c:4175
 msgid "Frame Text"
 msgstr "Sett tekst i ramme"
 
-#: libnautilus-private/nautilus-icon-container.c:4177
+#: libnautilus-private/nautilus-icon-container.c:4176
 msgid "Draw a frame around unselected text"
 msgstr "Tegn en ramme rundt tekst som ikke er valgt"
 
-#: libnautilus-private/nautilus-icon-container.c:4183
+#: libnautilus-private/nautilus-icon-container.c:4182
 msgid "Selection Box Color"
 msgstr "Farge for utvalgsboks"
 
-#: libnautilus-private/nautilus-icon-container.c:4184
+#: libnautilus-private/nautilus-icon-container.c:4183
 msgid "Color of the selection box"
 msgstr "Farge på utvalgsboksen"
 
-#: libnautilus-private/nautilus-icon-container.c:4189
+#: libnautilus-private/nautilus-icon-container.c:4188
 msgid "Selection Box Alpha"
 msgstr "Alpha for utvalgsboks"
 
-#: libnautilus-private/nautilus-icon-container.c:4190
+#: libnautilus-private/nautilus-icon-container.c:4189
 msgid "Opacity of the selection box"
 msgstr "Ugjennomsiktighet for utvalgsboksen"
 
-#: libnautilus-private/nautilus-icon-container.c:4197
+#: libnautilus-private/nautilus-icon-container.c:4196
 msgid "Highlight Alpha"
 msgstr "Lys opp alpha"
 
-#: libnautilus-private/nautilus-icon-container.c:4198
+#: libnautilus-private/nautilus-icon-container.c:4197
 msgid "Opacity of the highlight for selected icons"
 msgstr "Ugjennomsiktighet i merking for valgte ikoner"
 
-#: libnautilus-private/nautilus-icon-container.c:4204
+#: libnautilus-private/nautilus-icon-container.c:4203
 msgid "Light Info Color"
 msgstr "Lys informasjonsfarge"
 
-#: libnautilus-private/nautilus-icon-container.c:4205
+#: libnautilus-private/nautilus-icon-container.c:4204
 msgid "Color used for information text against a dark background"
 msgstr "Farge som brukes for informativ tekst på en mørk bakgrunn"
 
-#: libnautilus-private/nautilus-icon-container.c:4210
+#: libnautilus-private/nautilus-icon-container.c:4209
 msgid "Dark Info Color"
 msgstr "Mørk informasjonsfarge"
 
-#: libnautilus-private/nautilus-icon-container.c:4211
+#: libnautilus-private/nautilus-icon-container.c:4210
 msgid "Color used for information text against a light background"
 msgstr "Farge som brukes for informativ tekst på en lys bakgrunn"
 
@@ -4683,12 +4684,12 @@ msgstr "Behold ikoner sortert etter type i rader"
 
 #: src/file-manager/fm-icon-view.c:182
 msgid "by Modification _Date"
-msgstr "etter modifikasjons_dato"
+msgstr "etter endrings_dato"
 
 #: src/file-manager/fm-icon-view.c:183
 #: src/file-manager/nautilus-icon-view-ui.xml.h:12
 msgid "Keep icons sorted by modification date in rows"
-msgstr "Behold ikoner sortert etter modifikasjonsdato i rader"
+msgstr "Behold ikoner sortert etter endringsdato i rader"
 
 #: src/file-manager/fm-icon-view.c:189
 msgid "by _Emblems"
@@ -4708,30 +4709,26 @@ msgstr "G_jenopprett ikonenes opprinnelige størrelser"
 msgid "Restore Icon's Original Si_ze"
 msgstr "G_jenopprett ikonets opprinnelige størrelse"
 
-#: src/file-manager/fm-icon-view.c:1989
+#: src/file-manager/fm-icon-view.c:1990
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "peker til «%s»"
 
-#: src/file-manager/fm-icon-view.c:2572 src/file-manager/fm-icon-view.c:2596
+#: src/file-manager/fm-icon-view.c:2573 src/file-manager/fm-icon-view.c:2597
 msgid "Drag and drop is not supported."
 msgstr "Dra-og-slipp er ikke støttet."
 
-#: src/file-manager/fm-icon-view.c:2573
+#: src/file-manager/fm-icon-view.c:2574
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Dra-og-slipp er kun støttet for lokale filsystemer."
 
-#: src/file-manager/fm-icon-view.c:2574 src/file-manager/fm-icon-view.c:2598
+#: src/file-manager/fm-icon-view.c:2575 src/file-manager/fm-icon-view.c:2599
 msgid "Drag and Drop Error"
 msgstr "Feil ved dra-og-slipp"
 
-#: src/file-manager/fm-icon-view.c:2597
+#: src/file-manager/fm-icon-view.c:2598
 msgid "An invalid drag type was used."
 msgstr "En ugyldig type ble brukt for draoperasjon."
-
-#: src/file-manager/fm-list-view.c:1052
-msgid "File name"
-msgstr "Filnavn"
 
 #: src/file-manager/fm-list-view.c:1512
 #, c-format
@@ -5458,7 +5455,7 @@ msgstr "Endre navn på valgt oppføring"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:36
 msgid "Reset View to _Defaults"
-msgstr "_Nullstill visning til forvalg"
+msgstr "_Sett visning til forvalg"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "Reset sorting order and zoom level to match preferences for this view"
@@ -5552,7 +5549,7 @@ msgstr "_Plasser oppføringer"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:2
 msgid "By Modification _Date"
-msgstr "etter modifikasjons_dato"
+msgstr "Etter endrings_dato"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:3
 msgid "By _Emblems"
@@ -5947,7 +5944,7 @@ msgid "Connect to Server"
 msgstr "Koble til tjener"
 
 #: src/nautilus-connect-server-dialog.c:191
-msgid "Link _Name:"
+msgid "Link _name:"
 msgstr "_Navn på lenke:"
 
 #: src/nautilus-connect-server-dialog.c:210
@@ -6064,7 +6061,7 @@ msgstr "Velg rekkefølgen for informasjonen som skal vises i listevisning."
 
 #: src/nautilus-file-management-properties.glade.h:47
 msgid "Count _number of items:"
-msgstr "Tell a_ntall oppføringer:"
+msgstr "Vis a_ntall oppføringer:"
 
 #: src/nautilus-file-management-properties.glade.h:48
 msgid "Default _zoom level:"
@@ -6076,7 +6073,7 @@ msgstr "Brukervalg for filhåndtering"
 
 #: src/nautilus-file-management-properties.glade.h:50
 msgid "I_nclude a Delete command that bypasses Trash"
-msgstr "I_nkluder en slett-kommando som går utenom papirkurven"
+msgstr "Ta med en slettekommando som går utenom papirkurven"
 
 #: src/nautilus-file-management-properties.glade.h:51
 msgid "Icon Captions"
@@ -6148,7 +6145,7 @@ msgstr "_Kun for filer mindre enn:"
 
 #: src/nautilus-file-management-properties.glade.h:72
 msgid "_Run executable text files when they are clicked"
-msgstr "K_jør kjørbare tekstfiler når de klikkes"
+msgstr "K_jør kjørbare tekstfiler når de aktiveres"
 
 #: src/nautilus-file-management-properties.glade.h:73
 msgid "_Single click to activate items"
@@ -6164,7 +6161,7 @@ msgstr "Br_uk tettere plassering"
 
 #: src/nautilus-file-management-properties.glade.h:76
 msgid "_View executable text files when they are clicked"
-msgstr "_Vis kjørbare tekstfiler når de klikkes"
+msgstr "_Vis kjørbare tekstfiler når de aktiveres"
 
 #: src/nautilus-file-management-properties.glade.h:77
 msgid "date accessed"
@@ -7428,6 +7425,3 @@ msgstr "Nettverkstjenere"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Vis dine nettverkstjenere i filhåndtereren Nautilus"
-
-#~ msgid "Close this window"
-#~ msgstr "Lukk dette vinduet"
