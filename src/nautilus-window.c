@@ -362,6 +362,7 @@ nautilus_window_constructed(NautilusWindow *window)
   GnomeApp *app;
   GtkWidget *location_bar_box, *statusbar;
   GtkWidget *temp_frame;
+  GnomeDockItemBehavior behavior;
   
   app = GNOME_APP(window);
 
@@ -374,9 +375,11 @@ nautilus_window_constructed(NautilusWindow *window)
   gtk_signal_connect(GTK_OBJECT(window->ent_uri), "location_changed",
                      nautilus_window_goto_uri_cb, window);
   gtk_box_pack_start(GTK_BOX(location_bar_box), window->ent_uri, TRUE, TRUE, GNOME_PAD_SMALL);
+  behavior = GNOME_DOCK_ITEM_BEH_EXCLUSIVE | GNOME_DOCK_ITEM_BEH_NEVER_VERTICAL;
+  if(!gnome_preferences_get_toolbar_detachable())
+     behavior |= GNOME_DOCK_ITEM_BEH_LOCKED;
   gnome_app_add_docked(app, location_bar_box, "uri-entry",
-  					   GNOME_DOCK_ITEM_BEH_EXCLUSIVE|GNOME_DOCK_ITEM_BEH_NEVER_VERTICAL,
-                       GNOME_DOCK_TOP, 2, 0, 0);
+  		       behavior, GNOME_DOCK_TOP, 2, 0, 0);
 
   /* Option menu for content view types; it's empty here, filled in when a uri is set. */
   window->option_cvtype = gtk_option_menu_new();
