@@ -35,6 +35,7 @@
 
 #include "nautilus-gtk-macros.h"
 #include "nautilus-string.h"
+#include "nautilus-xml-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-file-private.h"
 
@@ -983,34 +984,26 @@ nautilus_directory_get_file_metadata_node (NautilusDirectory *directory,
 					   gboolean create)
 {
 	xmlNode *root, *child;
-	gboolean match;
-	xmlChar *property;
-
+	
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
-
-	/* The root itself represents the directory. */
-	root = xmlDocGetRootElement (directory->details->metafile_tree);
-	if (root != NULL) {
-		/* The children represent the files.
-		   This linear search is temporary.
-		   Eventually, we'll have a pointer from the NautilusFile right to
-		   the corresponding XML node, or we won't have the XML tree
-		   in memory at all.
-		*/
-		for (child = root->childs; child != NULL; child = child->next) {
-			if (strcmp (child->name, "FILE") == 0) {
-				property = xmlGetProp (child, "NAME");
-				match = nautilus_strcmp (property, file_name) == 0;
-				xmlFree (property);
-				if (match) {
-					return child;
-				}
-			}
-		}
+	
+	/* The root itself represents the directory.
+	 * The children represent the files.
+	 * FIXME: This linear search is temporary.
+	 * Eventually, we'll have a pointer from the NautilusFile right to
+	 * the corresponding XML node, or we won't have the XML tree
+	 * in memory at all.
+	 */
+	child = nautilus_xml_get_root_child_by_name_and_property
+		(directory->details->metafile_tree,
+		 "FILE", "NAME", file_name);
+	if (child != NULL) {
+		return child;
 	}
-
+	
 	/* Create if necessary. */
 	if (create) {
+		root = xmlDocGetRootElement (directory->details->metafile_tree);
 		if (root == NULL) {
 			root = nautilus_directory_create_metafile_tree_root (directory);
 		}
@@ -1018,7 +1011,7 @@ nautilus_directory_get_file_metadata_node (NautilusDirectory *directory,
 		xmlSetProp (child, "NAME", file_name);
 		return child;
 	}
-
+	
 	return NULL;
 }
 

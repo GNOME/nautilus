@@ -47,6 +47,7 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-macros.h"
+#include "nautilus-xml-extensions.h"
 
 /* List of suffixes to search when looking for an icon file. */
 static const char *icon_file_name_suffixes[] =
@@ -446,32 +447,6 @@ nautilus_icon_factory_get_icon_name_for_file (NautilusFile *file)
         }
 }
 
-static xmlNodePtr
-get_child_node_by_property (xmlNodePtr parent,
-			    const char *child_nodes_name,
-			    const char *child_node_property,
-			    const char *child_node_property_value)
-{
-	xmlNodePtr child;
-	xmlChar *property;
-	gboolean match;
-
-	if (parent == NULL) {
-		return NULL;
-	}
-	for (child = parent->childs; child != NULL; child = child->next) {
-		if (strcmp (child->name, child_nodes_name) == 0) {
-			property = xmlGetProp (child, child_node_property);
-			match = nautilus_strcmp (property, child_node_property_value) == 0;
-			xmlFree (property);
-			if (match) {
-				return child;
-			}
-		}
-	}
-	return NULL;
-}
-
 /* Pick a particular icon to use, trying all the various suffixes.
  * Return the path of the icon or NULL if no icon is found.
  */
@@ -529,8 +504,8 @@ get_themed_icon_file_path (const char *theme_name,
 		g_free (xml_path);
 
 		size_as_string = g_strdup_printf ("%u", icon_size);
-		node = get_child_node_by_property (xmlDocGetRootElement (doc),
-						   "ICON", "SIZE", size_as_string);
+		node = nautilus_xml_get_root_child_by_name_and_property
+			(doc, "ICON", "SIZE", size_as_string);
 		g_free (size_as_string);
 
 		property = xmlGetProp (node, "EMBEDDED_TEXT_RECTANGLE");

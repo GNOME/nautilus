@@ -35,6 +35,7 @@
 #include <xmlmemory.h>
 
 #include "nautilus-glib-extensions.h"
+#include "nautilus-xml-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-string.h"
 #include "nautilus-directory-private.h"
@@ -874,15 +875,15 @@ nautilus_file_get_keywords (NautilusFile *file)
 	file_node = nautilus_directory_get_file_metadata_node (file->directory,
 							       file->info->name,
 							       FALSE);
-	if (file_node != NULL) {
-		for (child = file_node->childs; child != NULL; child = child->next) {
-			if (strcmp (child->name, "KEYWORD") == 0) {
-				property = xmlGetProp (child, "NAME");
-				if (property != NULL) {
-					keywords = g_list_prepend (keywords,
-								   g_strdup (property));
-					xmlFree (property);
-				}
+	for (child = nautilus_xml_get_children (file_node);
+	     child != NULL;
+	     child = child->next) {
+		if (strcmp (child->name, "KEYWORD") == 0) {
+			property = xmlGetProp (child, "NAME");
+			if (property != NULL) {
+				keywords = g_list_prepend (keywords,
+							   g_strdup (property));
+				xmlFree (property);
 			}
 		}
 	}
@@ -913,11 +914,16 @@ nautilus_file_set_keywords (NautilusFile *file, GList *keywords)
 							       file->info->name,
 							       keywords != NULL);
 	need_write = FALSE;
-	if (file_node != NULL) {
+	if (file_node == NULL) {
+		g_assert (keywords == NULL);
+	} else	{
 		p = keywords;
 
 		/* Remove any nodes except the ones we expect. */
-		for (child = file_node->childs; child != NULL; child = next) {
+		for (child = nautilus_xml_get_children (file_node);
+		     child != NULL;
+		     child = next) {
+
 			next = child->next;
 			if (strcmp (child->name, "KEYWORD") == 0) {
 				property = xmlGetProp (child, "NAME");
@@ -932,7 +938,7 @@ nautilus_file_set_keywords (NautilusFile *file, GList *keywords)
 				xmlFree (property);
 			}
 		}
-
+		
 		/* Add any additional nodes needed. */
 		for (; p != NULL; p = p->next) {
 			child = xmlNewChild (file_node, NULL, "KEYWORD", NULL);

@@ -1,3 +1,33 @@
+2000-03-15  Darin Adler  <darin@eazel.com>
+
+	A quick cleanup of how we use gnome-xml.
+
+	* libnautilus/Makefile.am:
+	* libnautilus/nautilus-xml-extensions.c:
+	* libnautilus/nautilus-xml-extensions.h:
+	Added some new gnome-xml helper functions.
+	
+	* libnautilus/nautilus-directory.c:
+	(nautilus_directory_get_file_metadata_node):
+	* libnautilus/nautilus-file.c:
+	(nautilus_file_get_keywords):
+	(nautilus_file_set_keywords):
+	* libnautilus/nautilus-icon-factory.c:
+	(get_child_node_by_property):
+	(get_themed_icon_file_path):
+	* src/nautilus-bookmarklist.c:
+	(nautilus_bookmarklist_load_file):
+	Changed to use the new helper functions.
+
+	* src/nautilus-bookmarklist.c:
+	(nautilus_bookmarklist_save_file): Changed direct uses of root to
+	use xmlDocGet/SetRootElement while I was editing the file.  I
+	think this is the same change Pavel made but wasn't able to check
+	in.
+
+	* src/nautilus-bookmarklist.c:
+	General cleanup.
+
 2000-03-14  Darin Adler  <darin@eazel.com>
 
 	Added additional data to icons so they can specify where the
