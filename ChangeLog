@@ -1,3 +1,19 @@
+2000-05-19  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/Makefile.am:
+	* components/music/mpg123_handler.c: (sigchld_handler),
+	(parse_header_info), (parse_frame_info), (stop_data),
+	(song_finished), (parse_pipe_buffer), (check_pipe_for_data),
+	(read_data), (start_playing_file), (stop_playing_file),
+	(do_mpg123_pause):
+	* components/music/mpg123_handler.h:
+	* components/music/nautilus-music-view.c: (selection_callback),
+	(play_button_callback), (stop_button_callback),
+	(pause_button_callback), (prev_button_callback),
+	(next_button_callback), (add_play_controls):
+	added playing code to the music view, but it's still not working
+	so it's disabled
+	
 2000-05-19  Eskil Heyn Olsen  <eskil@eazel.om>
 
 	* configure.in:

@@ -25,6 +25,8 @@
 
 #include <config.h>
 #include "nautilus-music-view.h"
+#include "mpg123_handler.h"
+
 #include "pixmaps.h"
 
 #include <sys/types.h>
@@ -307,10 +309,15 @@ selection_callback(GtkCList * clist, int row, int column, GdkEventButton * event
         music_view_set_selected_song_title(music_view, row);
         	
 	/* fork off a task to play the sound file */
-	if (!(play_pid = fork())) {
-		execlp ("xmms", "xmms", song_name + 7, NULL);
-   	   	exit (0); 
-   	}		
+	
+	/* this will soon be an optional choice */
+	if (FALSE) {
+	} else {
+		if (!(play_pid = fork())) {
+			execlp ("xmms", "xmms", song_name + 7, NULL);
+   	   		exit (0); 
+   		}
+	}		
 } 
 
 /* handle clicks in the songlist columns */
@@ -736,9 +743,43 @@ sort_song_list(NautilusMusicView *music_view, GList* song_list)
 
 /* callback for buttons */
 
-static void button_callback (GtkWidget * widget, gint which_button)
+
+static void play_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
 {
-	g_message("button %d clicked", which_button);
+        char *song_name;
+	g_message("play button clicked");
+	
+	song_name =  gtk_clist_get_row_data(GTK_CLIST(music_view->details->song_list),
+						music_view->details->selected_index);
+	
+	if (song_name == NULL) {
+		return;
+	}
+	/*
+	start_playing_file(song_name);
+	*/
+}
+
+static void stop_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
+{
+	stop_playing_file();
+	g_message("stop button clicked");
+}
+
+static void pause_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
+{
+	g_message("pause button clicked");
+}
+
+static void prev_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
+{
+	g_message("previous button clicked");
+
+}
+
+static void next_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
+{
+	g_message("next button clicked");
 }
 
 /* here are the  callbacks that handle seeking within a song by dragging the progress bar.
@@ -883,7 +924,7 @@ static void add_play_controls (NautilusMusicView *music_view)
 	gtk_tooltips_set_tip (GTK_TOOLTIPS(tooltips), button, _("Previous"), NULL);
 	gtk_container_add (GTK_CONTAINER(button), box);
 
-	gtk_signal_connect (GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(button_callback), (gpointer)  PREVIOUS_BUTTON);
+	gtk_signal_connect (GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(prev_button_callback), music_view);
 	gtk_table_attach (GTK_TABLE(table), button, 0, 1, 1, 2, 0, 0, 0, 0);
 	gtk_button_set_relief (GTK_BUTTON(button), GTK_RELIEF_NORMAL);
 	gtk_widget_show (button);
@@ -896,7 +937,7 @@ static void add_play_controls (NautilusMusicView *music_view)
 	gtk_button_set_relief (GTK_BUTTON(button), GTK_RELIEF_NORMAL);
 	gtk_container_add (GTK_CONTAINER(button), box);
 
-	gtk_signal_connect (GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(button_callback), (gpointer)  PLAY_BUTTON);
+	gtk_signal_connect (GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(play_button_callback), music_view);
 	gtk_table_attach (GTK_TABLE(table), button, 1, 2, 1, 2, 0, 0, 0, 0);
 	gtk_widget_show (button);
 
@@ -908,7 +949,7 @@ static void add_play_controls (NautilusMusicView *music_view)
 	gtk_button_set_relief (GTK_BUTTON(button), GTK_RELIEF_NORMAL);
 	gtk_container_add (GTK_CONTAINER(button), box);
 
-	gtk_signal_connect (GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(button_callback), (gpointer)  PAUSE_BUTTON);
+	gtk_signal_connect (GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(pause_button_callback), music_view);
 	gtk_table_attach (GTK_TABLE(table), button, 2, 3, 1, 2, 0, 0, 0, 0);
 	gtk_widget_show (button);
 
@@ -920,7 +961,7 @@ static void add_play_controls (NautilusMusicView *music_view)
 	gtk_button_set_relief (GTK_BUTTON(button), GTK_RELIEF_NORMAL);
 	gtk_container_add (GTK_CONTAINER(button), box);
 
-	gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(button_callback), (gpointer)  STOP_BUTTON);
+	gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(stop_button_callback), music_view);
 	gtk_table_attach (GTK_TABLE(table), button, 3, 4, 1, 2, 0, 0, 0, 0);
 	gtk_widget_show(button);
 
@@ -932,7 +973,7 @@ static void add_play_controls (NautilusMusicView *music_view)
 	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NORMAL);
 	gtk_container_add(GTK_CONTAINER(button), box);
 
-	gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(button_callback), (gpointer) NEXT_BUTTON);
+	gtk_signal_connect(GTK_OBJECT(button), "clicked", GTK_SIGNAL_FUNC(next_button_callback), music_view);
 	gtk_table_attach (GTK_TABLE(table), button, 4, 5, 1, 2, 0, 0, 0, 0);
 	gtk_widget_show(button);
 
