@@ -746,7 +746,6 @@ get_tab_width (NautilusSidebarTabs *sidebar_tabs, TabItem *this_tab, gboolean is
 	if (this_tab == NULL)
 		return 0;
 	
-	/* FIXME bugzilla.eazel.com 2505: the font scale shouldn't be hardwired */			
 	if (is_themed) {
 		if (first_flag)
 			edge_width = gdk_pixbuf_get_width (sidebar_tabs->details->tab_piece_images[TAB_NORMAL_LEFT]);

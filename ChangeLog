@@ -1,3 +1,10 @@
+2000-09-06  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar-tabs.c: (get_tab_width):
+	fixed bug 2505, scale in sidebar tabs shouldn't be hardwired.
+	This was made irrelevant when we changed it to use scalable fonts
+	instead of the old scaling hack, so I'm just removing the fixme.
+	
 2000-09-06  Raph Levien  <raph@acm.org>
 
 	* librsvg/test-ft-gtk.c (test_ft_quit): Invoke rsvg_ft_ctx_done()
