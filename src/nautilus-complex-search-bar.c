@@ -50,8 +50,7 @@ struct NautilusComplexSearchBarDetails {
 	GtkWidget *find_them;
 
 	GSList *search_criteria;
-	gchar *undo_text;
-	gboolean undo_registered;
+
 };
 
 static char *nautilus_complex_search_bar_get_location     (NautilusNavigationBar         *bar);
@@ -69,56 +68,81 @@ static void  more_options_callback                        (GtkObject            
 							   gpointer                       data);
 static void  fewer_options_callback                       (GtkObject                     *object,
 							   gpointer                       data);
-static void  criterion_callback                           (NautilusSearchBarCriterion *old_criterion,
-							   NautilusSearchBarCriterion *new_criterion,
+static void  search_bar_criterion_type_changed_callback   (GtkObject *old_criterion_object,
 							   gpointer data);
 static GtkWidget * load_find_them_pixmap_widget           (void);
 
 static void	   update_options_buttons_state 	  (NautilusComplexSearchBar *bar);
 static void	   update_find_button_state 	  	  (NautilusComplexSearchBar *bar);
 static void	   update_dynamic_buttons_state 	  (NautilusComplexSearchBar *bar);
-
+static void        update_criteria_choices                (gpointer list_item,
+							   gpointer data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusComplexSearchBar, nautilus_complex_search_bar, NAUTILUS_TYPE_SEARCH_BAR)
 
 
-     /* called by the criterion when the user choosed 
-	a new criterion type */
-static void criterion_callback (NautilusSearchBarCriterion *old_criterion,
-				NautilusSearchBarCriterion *new_criterion,
-				gpointer data)
+/* called by the criterion when the user chooses
+   a new criterion type */
+static void 
+search_bar_criterion_type_changed_callback (GtkObject *old_criterion_object,
+					    gpointer data)
 { 
+	NautilusSearchBarCriterionType new_type;
+	NautilusSearchBarCriterion *criterion, *new_criterion;
+	GSList *old_criterion_location;
 	NautilusComplexSearchBar *bar;
-	int row;
-	GSList *criterion_list;
-	GSList *list;
 
-	bar = (NautilusComplexSearchBar *) data;
+	g_return_if_fail (NAUTILUS_IS_SEARCH_BAR_CRITERION (old_criterion_object));
+	g_return_if_fail (NAUTILUS_IS_COMPLEX_SEARCH_BAR (data));
 
-	unattach_criterion_from_search_bar (bar, old_criterion);
+	criterion = NAUTILUS_SEARCH_BAR_CRITERION (old_criterion_object);
+	bar = NAUTILUS_COMPLEX_SEARCH_BAR (data);
+
+	/* First create the new criterion with the type that was activated */
+	new_type = GPOINTER_TO_INT (gtk_object_get_data (old_criterion_object,
+							 "type"));
+	new_criterion = nautilus_search_bar_criterion_new_with_type (new_type, 
+								     bar);
+	gtk_signal_connect (GTK_OBJECT (new_criterion),
+			    "criterion_type_changed",
+			    search_bar_criterion_type_changed_callback,
+			    (gpointer) bar);
+	old_criterion_location = g_slist_find (bar->details->search_criteria,
+					       criterion);
+	old_criterion_location->data = new_criterion;
+	unattach_criterion_from_search_bar (bar,
+					    criterion);
+	gtk_object_destroy (GTK_OBJECT (criterion));
+	attach_criterion_to_search_bar (bar,
+					new_criterion,
+					g_slist_position (bar->details->search_criteria,
+							  old_criterion_location) + 1);
+
 	
-	criterion_list = g_slist_find (bar->details->search_criteria, 
-				       old_criterion);
-	row = g_slist_position (bar->details->search_criteria,
-				criterion_list);
-
-	list = g_slist_remove (bar->details->search_criteria,
-			       old_criterion);
-			
-	list = g_slist_insert (list, new_criterion, row);
-
-	nautilus_search_bar_criterion_set_callback (new_criterion, 
-						    criterion_callback,
-						    (gpointer) bar);
-
-	attach_criterion_to_search_bar (bar, new_criterion, row + 1);
-
-	update_find_button_state (bar);
-
+	/* Then tell the other criteria to take update their
+	   menus to reflect the other criteria you can really choose now */
+	g_slist_foreach (bar->details->search_criteria,
+			 update_criteria_choices,
+			 bar);
 }
 
 
-     
+static void
+update_criteria_choices (gpointer list_item,
+			 gpointer data)
+{
+	NautilusSearchBarCriterion *criterion;
+	NautilusComplexSearchBar *bar;
+
+	g_return_if_fail (NAUTILUS_IS_SEARCH_BAR_CRITERION (list_item));
+	g_return_if_fail (NAUTILUS_IS_COMPLEX_SEARCH_BAR (data));
+	criterion = NAUTILUS_SEARCH_BAR_CRITERION (list_item);
+	bar = NAUTILUS_COMPLEX_SEARCH_BAR (data);
+
+	nautilus_search_bar_criterion_update_valid_criteria_choices (criterion,
+								     bar->details->search_criteria);
+	
+}
      
 static void
 nautilus_complex_search_bar_initialize_class (NautilusComplexSearchBarClass *klass)
@@ -152,11 +176,12 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 	/* Create button before criterion so we text fields can hook to criterion's signal */
 	bar->details->find_them = gtk_button_new ();
 
-	file_name_criterion = nautilus_search_bar_criterion_first_new ();
-	nautilus_search_bar_criterion_set_callback (file_name_criterion, 
-						    criterion_callback,
-						    (gpointer) bar);
-
+	file_name_criterion = nautilus_search_bar_criterion_first_new (bar);
+	g_assert (GTK_IS_OBJECT (GTK_OBJECT (file_name_criterion)));
+	gtk_signal_connect (GTK_OBJECT (file_name_criterion),
+			    "criterion_type_changed",
+			    search_bar_criterion_type_changed_callback,
+			    (gpointer) bar);
 	bar->details->search_criteria = g_slist_append (NULL,
 							file_name_criterion);
 	attach_criterion_to_search_bar (bar, file_name_criterion, 1);
@@ -428,16 +453,21 @@ more_options_callback (GtkObject *object,
 
 	list = bar->details->search_criteria;
 	last_criterion = (NautilusSearchBarCriterion *)((g_slist_last (list))->data);
-	criterion = nautilus_search_bar_criterion_next_new (last_criterion->details->type);
-	nautilus_search_bar_criterion_set_callback (criterion, 
-						    criterion_callback, 
-						    (gpointer) bar);
+	criterion = nautilus_search_bar_criterion_next_new (last_criterion->details->type,
+							    bar);
+	gtk_signal_connect (GTK_OBJECT (criterion),
+			    "criterion_type_changed",
+			    search_bar_criterion_type_changed_callback,
+			    (gpointer) bar);
 	bar->details->search_criteria = g_slist_append (list, criterion);
 
 	attach_criterion_to_search_bar (bar, criterion, 
 					g_slist_length (bar->details->search_criteria));
 	nautilus_search_bar_criterion_show (criterion);
 	update_dynamic_buttons_state (bar);
+	g_slist_foreach (bar->details->search_criteria,
+			 update_criteria_choices,
+			 bar);	
 }
 
 
@@ -470,13 +500,15 @@ fewer_options_callback (GtkObject *object,
 	new_length = g_slist_length (bar->details->search_criteria);
 	g_assert (new_length + 1 == old_length);
 
-	/* FIXME bugzilla.eazel.com 2519: the folowing is pretty much evil since it relies on the run-time
-	   widget hierarchy of the nautilus toolbar. 
-	   Any better fix is wellcome.
-	*/
+	/* FIXME bugzilla.eazel.com 2519: the following is pretty much
+	   evil since it relies on the run-time widget hierarchy of
+	   the nautilus toolbar.  Any better fix is welcome.  */
 	gtk_widget_queue_resize (GTK_WIDGET (bar->details->bar_container)->parent->parent->parent->parent->parent->parent->parent->parent);
 
 	update_dynamic_buttons_state (bar);
+	g_slist_foreach (bar->details->search_criteria,
+			 update_criteria_choices,
+			 bar);
 }
 
 static void
@@ -484,6 +516,7 @@ update_options_buttons_state (NautilusComplexSearchBar *bar)
 {
 	/* "Fewer Options" is enabled unless there's only one criterion */
 	gtk_widget_set_sensitive (GTK_WIDGET (bar->details->fewer_options), g_slist_length (bar->details->search_criteria) > 1);
+	gtk_widget_set_sensitive (GTK_WIDGET (bar->details->more_options), g_slist_length (bar->details->search_criteria) < NAUTILUS_NUMBER_OF_SEARCH_CRITERIA);
 
 	/* FIXME bugzilla.eazel.com 1937:
 	 * When we limit the number of criteria available for a single search, we need to
@@ -537,4 +570,8 @@ update_dynamic_buttons_state (NautilusComplexSearchBar *bar)
 }
 
 
-
+GSList *   
+nautilus_complex_search_bar_get_search_criteria (NautilusComplexSearchBar *bar)
+{
+	return bar->details->search_criteria;
+}

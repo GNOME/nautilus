@@ -27,6 +27,7 @@
 #ifndef NAUTILUS_SEARCH_BAR_CRITERION_PRIVATE_H
 #define NAUTILUS_SEARCH_BAR_CRITERION_PRIVATE_H
 
+#include "nautilus-complex-search-bar.h"
 #include "nautilus-search-bar-criterion.h"
 #include <gtk/gtkentry.h>
 #include <gtk/gtklabel.h>
@@ -48,9 +49,10 @@ struct NautilusSearchBarCriterionDetails {
 	GtkLabel *value_suffix;
 	GnomeDateEdit *date;
 
-	/* callback to be called when the criterion type changes */
-	NautilusSearchBarCriterionCallback callback;
-	gpointer callback_data;
+	/* Keep a pointer to the whole bar, so we know what other
+	   criteria are currently chosen, and therefore what types are
+	   valid to change to */
+	NautilusComplexSearchBar *bar;
 
 };
 

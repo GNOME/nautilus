@@ -27,7 +27,8 @@
 #ifndef NAUTILUS_SEARCH_BAR_CRITERION_H
 #define NAUTILUS_SEARCH_BAR_CRITERION_H
 
-#include <gtk/gtkoptionmenu.h>
+#include "nautilus-complex-search-bar.h"
+#include <gtk/gtkeventbox.h>
 #include <libnautilus-extensions/nautilus-entry.h>
 
 
@@ -39,43 +40,61 @@ typedef enum {
 	NAUTILUS_EMBLEM_SEARCH_CRITERION,
 	NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION,
 	NAUTILUS_OWNER_SEARCH_CRITERION,
-	NAUTILUS_LAST_CRITERION
+	NAUTILUS_NUMBER_OF_SEARCH_CRITERIA
 } NautilusSearchBarCriterionType;
 
+
+#define NAUTILUS_TYPE_SEARCH_BAR_CRITERION \
+	(nautilus_search_bar_criterion_get_type ())
+#define NAUTILUS_SEARCH_BAR_CRITERION(obj) \
+	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SEARCH_BAR_CRITERION, NautilusSearchBarCriterion))
+#define NAUTILUS_SEARCH_BAR_CRITERION_CLASS(klass) \
+	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SEARCH_BAR_CRITERION, NautilusSearchBarCriterionClass))
+#define NAUTILUS_IS_SEARCH_BAR_CRITERION(obj) \
+	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SEARCH_BAR_CRITERION))
+#define NAUTILUS_IS_SEARCH_BAR_CRITERION_CLASS(klass) \
+	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SEARCH_BAR_CRITERION))
+
+
 typedef struct NautilusSearchBarCriterionDetails NautilusSearchBarCriterionDetails;
+
 typedef struct NautilusSearchBarCriterion {
+	GtkEventBox parent_slot;
 	NautilusSearchBarCriterionDetails *details;
 } NautilusSearchBarCriterion;
 
 
+typedef struct {
+	GtkEventBoxClass parent_slot;
+} NautilusSearchBarCriterionClass;
+
+
 typedef void (* NautilusSearchBarCriterionCallback) (NautilusSearchBarCriterion *old_criterion,
-						     NautilusSearchBarCriterion *new_criterion,
 						     gpointer data);
 
-#define NAUTILUS_SEARCH_BAR_CRITERION(arg) (NautilusSearchBarCriterion *) arg
+GtkType                            nautilus_search_bar_criterion_get_type         (void);
+
+/* Three new procedures, each with a separate purpose:
+   create the initial search option with first_new,
+   create a new subsequent one automatically with next_new,
+   and change to a particular type at a user's request with new_with_type */
+NautilusSearchBarCriterion *       nautilus_search_bar_criterion_first_new        (NautilusComplexSearchBar *bar);
+
+NautilusSearchBarCriterion *       nautilus_search_bar_criterion_next_new         (NautilusSearchBarCriterionType criterion_type,
+										   NautilusComplexSearchBar *bar);
+NautilusSearchBarCriterion *       nautilus_search_bar_criterion_new_with_type    (NautilusSearchBarCriterionType criteiron_type,
+										   NautilusComplexSearchBar *bar);
 
 
-
-
-NautilusSearchBarCriterion *       nautilus_search_bar_criterion_first_new        (void);
-
-NautilusSearchBarCriterion *       nautilus_search_bar_criterion_next_new         (NautilusSearchBarCriterionType criterion_type);
-
-/* set callback called when the user chooses a new criterion type.
-   Used by complex-search-bar */
-void                               nautilus_search_bar_criterion_set_callback     (NautilusSearchBarCriterion *criterion,
-										   NautilusSearchBarCriterionCallback callback,
-										   gpointer data);
-/* called by the seach-bar-complex when the user asks for a search to be performed.
-   We need toi build the serach uri from the different criterions.
-   Each criterion returns the part of the search uri it represents 
-*/
 char *                             nautilus_search_bar_criterion_get_location     (NautilusSearchBarCriterion *criterion);
 
 void                               nautilus_search_bar_criterion_show             (NautilusSearchBarCriterion *criterion);
 void                               nautilus_search_bar_criterion_hide             (NautilusSearchBarCriterion *criterion);
 
-void                               nautilus_search_bar_criterion_destroy          (NautilusSearchBarCriterion *criterion);
+/* Run when a criteria changes so that we can be sure we give only valid criteria choices to the user,
+   (like whether you can select name, type, etc. */
+void                               nautilus_search_bar_criterion_update_valid_criteria_choices  (NautilusSearchBarCriterion *criterion,
+												 GSList *current_criteria);
 
 
 /* Search URI utilities. Maybe these should go in a separate file? */

@@ -1,3 +1,51 @@
+2000-09-08  Rebecca Schulman  <rebecka@eazel.com>
+	Fixed bugzilla.eazel.com bugs 1937, 2014, and 2633,
+	to disallow repeat criteria in the search bar,
+	limit number of criteria on the bar, 
+	and to disallow searching  for the emblem
+	"erase" which doesn't really exist.
+
+	* libnautilus-extensions/nautilus-search-uri.c: (parse_uri):
+	a few more text brush ups
+	* src/nautilus-complex-search-bar.c:
+	* src/nautilus-complex-search-bar.h:
+	(search_bar_criterion_type_changed_callback),
+	(update_criteria_choices),
+	(nautilus_complex_search_bar_initialize), (more_options_callback),
+	(fewer_options_callback), (update_options_buttons_state),
+	(nautilus_complex_search_bar_get_search_criteria):
+	Add a callback to update when a criteria is added removed or
+	changed, to update what criteria are sensitive in the menus
+	Added an accessor function to get the list of search criteria
+	so the search criterion class can use it to figure out
+	what to leave sensitive in the available criteria menu.
+	Add code to desensitize the "more options" button when
+	all criteria are displayed.
+
+	* src/nautilus-search-bar-criterion-private.h:
+	* src/nautilus-search-bar-criterion.c:
+	(nautilus_search_bar_criterion_initialize_class),
+	(nautilus_search_bar_criterion_destroy),
+	(nautilus_search_bar_criterion_new),
+	(nautilus_search_bar_criterion_initialize),
+	(nautilus_search_bar_criterion_new_from_values),
+	(nautilus_search_bar_criterion_next_new),
+	(nautilus_search_bar_criterion_new_with_type),
+	(nautilus_search_bar_criterion_first_new),
+	(nautilus_search_bar_criterion_get_location),
+	(get_next_default_search_criterion_type),
+	(nautilus_search_bar_criterion_update_valid_criteria_choices),
+	(make_emblem_value_menu), (criterion_type_changed_callback),
+	(emblems_changed_callback), (criterion_is_of_type),
+	(criterion_type_already_is_displayed), (get_next_criterion_type):
+	* src/nautilus-search-bar-criterion.h:
+	convert this to a gtk class so that it can emit signals
+	(criterion_type_changed) and let the bar know.
+	Add code to handle figuring out when criteria has changed,
+	and what criteria are still available.  Add special code
+	to get rid of the erase emblem.  Also, since it is now a 
+	gtk class, add more type checking where appropriate.
+
 2000-09-08  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-file.c:

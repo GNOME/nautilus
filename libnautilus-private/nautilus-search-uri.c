@@ -582,13 +582,12 @@ parse_uri (const char *search_uri)
         translated_prefix = get_first_criterion_prefix (criteria);
         translated_suffix = get_first_criterion_suffix (criteria);
         if (strcmp (translated_prefix, "") == 0) {
-                ret_val = g_strdup_printf (_("Search results for items %s%s"), 
+                ret_val = g_strdup_printf (_("Items %s%s"), 
                                            translated_criterion, translated_suffix);
         } else {
-                ret_val = g_strdup_printf (_("Search results for items %s %s%s"), 
+                ret_val = g_strdup_printf (_("Items %s %s%s"), 
                                            translated_prefix, translated_criterion, translated_suffix);
         }
-
         g_free (translated_suffix);
         g_free (translated_criterion);
         g_free (translated_prefix);

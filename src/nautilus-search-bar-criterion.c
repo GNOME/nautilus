@@ -30,6 +30,7 @@
 #include "nautilus-search-bar-criterion-private.h"
 #include "nautilus-signaller.h"
 #include <gtk/gtkentry.h>
+#include <gtk/gtkeventbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
@@ -54,15 +55,22 @@
 #include <stdlib.h>
 #include <time.h>
 
+enum {
+	CRITERION_TYPE_CHANGED,
+	LAST_SIGNAL
+};
+
+static guint nautilus_search_bar_criterion_signals[LAST_SIGNAL];
+
 static char * criteria_titles [] = {
-	  N_("Name"),
-	  N_("Content"),
-	  N_("Type"),
-	  N_("Size"),
-	  N_("With Emblem"),
-	  N_("Last Modified"),
-	  N_("Owned By"),
-	  NULL
+	N_("Name"),
+	N_("Content"),
+	N_("Type"),
+	N_("Size"),
+	N_("With Emblem"),
+	N_("Last Modified"),
+	N_("Owned By"),
+	NULL
 };
 
 
@@ -132,19 +140,21 @@ static char *owner_relations [] = {
 	NULL
 };
 
-static NautilusSearchBarCriterion * nautilus_search_bar_criterion_new              (void);
 
+static GtkWidget *                  nautilus_search_bar_criterion_new              (void);
 static NautilusSearchBarCriterion * nautilus_search_bar_criterion_new_from_values  (NautilusSearchBarCriterionType type,
 										    char *operator_options[],
 										    gboolean use_value_entry,
 										    gboolean use_value_menu,
 										    char *value_options[],
 										    gboolean use_value_suffix,
-										    char *value_suffix);
+										    char *value_suffix,
+										    NautilusComplexSearchBar *bar);
 
 
 NautilusSearchBarCriterionType      get_next_default_search_criterion_type         (NautilusSearchBarCriterionType type) ;
-
+static void                         nautilus_search_bar_criterion_initialize_class (NautilusSearchBarCriterionClass *klass);
+static void                         nautilus_search_bar_criterion_initialize       (NautilusSearchBarCriterion *criterion);
 static char *                              get_name_location_for                  (int relation_number,
 										   char *name_text);
 static char *                              get_content_location_for               (int relation_number,
@@ -161,56 +171,70 @@ static char *                              get_owner_location_for               
 										   char *owner_number);
 static void                                make_emblem_value_menu                 (NautilusSearchBarCriterion *criterion);
 
+static void                                criterion_type_changed_callback        (GtkObject *object,
+										   gpointer data);
 static void                                emblems_changed_callback               (GtkObject *signaller,
 										   gpointer data);
+static gboolean                            criterion_type_already_is_displayed         (GSList *criteria,
+											NautilusSearchBarCriterionType criterion_number);
+static NautilusSearchBarCriterionType      get_next_criterion_type                (NautilusSearchBarCriterionType current_type,
+										   GSList *displayed_criteria);
+static void                                nautilus_search_bar_criterion_destroy  (GtkObject *object);
+
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSearchBarCriterion, nautilus_search_bar_criterion, GTK_TYPE_EVENT_BOX)
+
+     static void
+nautilus_search_bar_criterion_initialize_class (NautilusSearchBarCriterionClass *klass)
+{
+	GtkObjectClass *object_class;
+
+	object_class = GTK_OBJECT_CLASS (klass);
+	object_class->destroy = nautilus_search_bar_criterion_destroy;
+	
+	nautilus_search_bar_criterion_signals[CRITERION_TYPE_CHANGED] =
+		gtk_signal_new ("criterion_type_changed",
+				GTK_RUN_FIRST,
+				object_class->type,
+				0,
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE, 0);
+
+	gtk_object_class_add_signals (object_class, nautilus_search_bar_criterion_signals, LAST_SIGNAL);
+				
+}
 
 void
-nautilus_search_bar_criterion_destroy (NautilusSearchBarCriterion *criterion)
+nautilus_search_bar_criterion_destroy (GtkObject *object)
 {
+	NautilusSearchBarCriterion *criterion;
+
+	g_return_if_fail (NAUTILUS_IS_SEARCH_BAR_CRITERION (object));
+	criterion = NAUTILUS_SEARCH_BAR_CRITERION (object);
+
 	/* FIXME bugzilla.eazel.com 2437: need more freeage */
 	gtk_signal_disconnect_by_data (GTK_OBJECT (nautilus_signaller_get_current ()),
 				       criterion);
-	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (criterion->details->value_entry), FALSE);
+	/*	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (criterion->details->value_entry), FALSE);
 	nautilus_undo_tear_down_nautilus_entry_for_undo (criterion->details->value_entry);
-	
+	*/
 	g_free (criterion->details);
-	g_free (criterion);
+	
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
-static NautilusSearchBarCriterion * 
+
+static GtkWidget *
 nautilus_search_bar_criterion_new (void)
 {
-	return g_new0 (NautilusSearchBarCriterion, 1);
+	return gtk_widget_new (NAUTILUS_TYPE_SEARCH_BAR_CRITERION, NULL);
 }
 
 
 static void
-option_menu_callback (GtkWidget *widget, gpointer data)
+nautilus_search_bar_criterion_initialize (NautilusSearchBarCriterion *criterion)
 {
-	NautilusSearchBarCriterion *criterion, *new_criterion;
-	int type;
-		
-	criterion = (NautilusSearchBarCriterion *) data;
-	
-	type = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT(widget), "type"));
-
-	new_criterion = nautilus_search_bar_criterion_next_new (type - 1);	
-
-	criterion->details->callback (criterion, new_criterion, criterion->details->callback_data);
-	
-	nautilus_search_bar_criterion_destroy (criterion);
+	criterion->details = g_new0 (NautilusSearchBarCriterionDetails, 1);
 }
-
-
-void                               
-nautilus_search_bar_criterion_set_callback     (NautilusSearchBarCriterion *criterion,
-						NautilusSearchBarCriterionCallback callback,
-						gpointer data)
-{
-	criterion->details->callback = callback;
-	criterion->details->callback_data = data;
-}
-
 
 static NautilusSearchBarCriterion *
 nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType type,
@@ -219,7 +243,8 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 					       gboolean use_value_menu,
 					       char *value_options[],
 					       gboolean use_value_suffix,
-					       char *value_suffix)
+					       char *value_suffix,
+					       NautilusComplexSearchBar *bar)
 {
 	NautilusSearchBarCriterion *criterion;
 	GtkWidget *search_criteria_option_menu, *search_criteria_menu; 
@@ -228,9 +253,12 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 
 	int i;
 	
-	criterion = nautilus_search_bar_criterion_new ();
-	criterion->details = g_new0 (NautilusSearchBarCriterionDetails, 1);
+	g_return_val_if_fail (NAUTILUS_IS_COMPLEX_SEARCH_BAR (bar), NULL);
+
+	criterion = NAUTILUS_SEARCH_BAR_CRITERION (nautilus_search_bar_criterion_new ());
+	nautilus_search_bar_criterion_initialize (criterion);
 	criterion->details->type = type;
+	criterion->details->bar = bar;
 
 	gtk_signal_connect (GTK_OBJECT (nautilus_signaller_get_current ()),
 			    "emblems_changed",
@@ -240,18 +268,23 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 
 	search_criteria_option_menu = gtk_option_menu_new ();
 	search_criteria_menu = gtk_menu_new ();
+	/* Should we even be making the menu here? */
 	for (i = 0; criteria_titles[i] != NULL; i++) {
 		GtkWidget *item;
+
 		item = gtk_menu_item_new_with_label (_(criteria_titles[i]));
+
 		gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
-		gtk_signal_connect (GTK_OBJECT (item), 
+
+		gtk_signal_connect (GTK_OBJECT (item),
 				    "activate",
-				    option_menu_callback,
+				    criterion_type_changed_callback,
 				    (gpointer) criterion);
 		gtk_menu_append (GTK_MENU (search_criteria_menu),
 				 item);
 	}
-	gtk_menu_set_active (GTK_MENU (search_criteria_menu), type);
+
+
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (search_criteria_option_menu),
 				  search_criteria_menu);
 	criterion->details->available_criteria = GTK_OPTION_MENU (search_criteria_option_menu);
@@ -326,14 +359,25 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 
 
 NautilusSearchBarCriterion *
-nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionType criterion_type)
+nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionType criterion_type,
+					NautilusComplexSearchBar *bar)
 {
-	NautilusSearchBarCriterion *new_criterion;
 	NautilusSearchBarCriterionType next_type;
 
-	next_type = (criterion_type + 1) % NAUTILUS_LAST_CRITERION;
+	next_type = get_next_criterion_type (criterion_type,
+					     nautilus_complex_search_bar_get_search_criteria (bar));
 
-	switch(next_type) {
+	return nautilus_search_bar_criterion_new_with_type (next_type, bar);
+
+}
+
+NautilusSearchBarCriterion *       
+nautilus_search_bar_criterion_new_with_type (NautilusSearchBarCriterionType criterion_type,
+					     NautilusComplexSearchBar *bar)
+{
+	NautilusSearchBarCriterion *new_criterion;
+
+	switch(criterion_type) {
 	case NAUTILUS_FILE_NAME_SEARCH_CRITERION:
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_FILE_NAME_SEARCH_CRITERION,
 									       name_relations,
@@ -341,7 +385,8 @@ nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionType criterion
 									       FALSE,
 									       NULL,
 									       FALSE,
-									       NULL);
+									       NULL,
+									       bar);
  		break; 
 	case NAUTILUS_CONTENT_SEARCH_CRITERION:
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_CONTENT_SEARCH_CRITERION,
@@ -350,7 +395,8 @@ nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionType criterion
 									       FALSE,
 									       NULL,
 									       FALSE,
-									       NULL);
+									       NULL,
+									       bar);
 		break;
 	case NAUTILUS_FILE_TYPE_SEARCH_CRITERION:
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_FILE_TYPE_SEARCH_CRITERION,
@@ -359,7 +405,8 @@ nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionType criterion
 									       TRUE,
 									       type_objects,
 									       FALSE,
-									       NULL);
+									       NULL,
+									       bar);
 		break;
 	case NAUTILUS_SIZE_SEARCH_CRITERION:
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_SIZE_SEARCH_CRITERION,
@@ -368,7 +415,8 @@ nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionType criterion
 									       FALSE,
 									       NULL,
 									       TRUE,
-									       "K");
+									       "K",
+									       bar);
 		break;
 	case NAUTILUS_EMBLEM_SEARCH_CRITERION:
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_EMBLEM_SEARCH_CRITERION,
@@ -377,7 +425,8 @@ nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionType criterion
 									       FALSE,
 									       NULL,
 									       FALSE,
-									       NULL);
+									       NULL,
+									       bar);
 									       
 		break;
 	case NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION:
@@ -387,7 +436,8 @@ nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionType criterion
 									       FALSE,
 									       NULL,
 									       FALSE,
-									       NULL);
+									       NULL,
+									       bar);
 		break;
 	case NAUTILUS_OWNER_SEARCH_CRITERION:
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_OWNER_SEARCH_CRITERION,
@@ -396,7 +446,8 @@ nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionType criterion
 									       FALSE,
 									       NULL,
 									       FALSE,
-									       NULL);
+									       NULL,
+									       bar);
 		break;
 	default:
 		new_criterion = NULL;
@@ -407,8 +458,9 @@ nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionType criterion
 	return new_criterion;
 }
 
+
 NautilusSearchBarCriterion *
-nautilus_search_bar_criterion_first_new (void)
+nautilus_search_bar_criterion_first_new (NautilusComplexSearchBar *bar)
 {
 	return nautilus_search_bar_criterion_new_from_values (NAUTILUS_FILE_NAME_SEARCH_CRITERION,
 							      name_relations,
@@ -416,7 +468,8 @@ nautilus_search_bar_criterion_first_new (void)
 							      FALSE,
 							      NULL,
 							      FALSE,
-							      NULL); 	
+							      NULL,
+							      bar);
 }
 
 /* returns a newly allocated string: needs to be freed by the caller. */
@@ -435,10 +488,10 @@ nautilus_search_bar_criterion_get_location (NautilusSearchBarCriterion *criterio
 	   So, to implement this, you are supposed to:
 	   - build various tables which contain the strings corresponding to  a search type.
 	   - call 
-	          option_menu = gtk_option_menu_get_menu (criterion->details->some_menu)
-		  menu_item = gtk_menu_get_active (optin_menu)
-		  number = gtk_object_get_data (menu_item, "type")
-	 */
+	   option_menu = gtk_option_menu_get_menu (criterion->details->some_menu)
+	   menu_item = gtk_menu_get_active (option_menu)
+	   number = gtk_object_get_data (menu_item, "type")
+	*/
 	menu = gtk_option_menu_get_menu (criterion->details->available_criteria);
 	menu_item = gtk_menu_get_active (GTK_MENU (menu));
 	name_number = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (menu_item), "type"));
@@ -460,7 +513,7 @@ nautilus_search_bar_criterion_get_location (NautilusSearchBarCriterion *criterio
 	switch (name_number) {
 	case NAUTILUS_FILE_NAME_SEARCH_CRITERION:
 		g_assert (criterion->details->use_value_entry
-			|| criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION);
+			  || criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION);
 		return get_name_location_for (relation_number,
 					      value_text);
 	case NAUTILUS_CONTENT_SEARCH_CRITERION:
@@ -511,9 +564,9 @@ get_next_default_search_criterion_type (NautilusSearchBarCriterionType type)
 		return NAUTILUS_FILE_NAME_SEARCH_CRITERION;
 	default:
 		g_assert_not_reached ();
-		return NAUTILUS_LAST_CRITERION;
+		return NAUTILUS_NUMBER_OF_SEARCH_CRITERIA;
 	}
-	return NAUTILUS_LAST_CRITERION;
+	return NAUTILUS_NUMBER_OF_SEARCH_CRITERIA;
 }
 
 void                               
@@ -546,6 +599,48 @@ nautilus_search_bar_criterion_hide (NautilusSearchBarCriterion *criterion)
 	if (criterion->details->use_value_menu) {
 		gtk_widget_hide (GTK_WIDGET (criterion->details->value_menu));
 	}
+}
+
+void                              
+nautilus_search_bar_criterion_update_valid_criteria_choices (NautilusSearchBarCriterion *criterion,
+							     GSList *current_criteria)
+{
+	GtkWidget *old_menu, *new_menu;
+	GtkWidget *item;
+	int i;
+
+	/* We remove the whole menu and put in a new one. */
+	new_menu = gtk_menu_new ();
+	for (i = 0; criteria_titles[i] != NULL; i++) {
+
+		item = gtk_menu_item_new_with_label (_(criteria_titles[i]));
+		
+		gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
+		
+		gtk_signal_connect (GTK_OBJECT (item),
+				    "activate",
+				    criterion_type_changed_callback,
+				    (gpointer) criterion);
+		gtk_menu_append (GTK_MENU (new_menu),
+				 item);
+		if (i == criterion->details->type) {
+			gtk_menu_set_active (GTK_MENU (new_menu), i);
+		}
+		if (i != criterion->details->type && 
+		    criterion_type_already_is_displayed (current_criteria, i)) {
+			gtk_widget_set_sensitive (item, FALSE);
+			continue;
+		}
+	}
+	
+	old_menu = gtk_option_menu_get_menu (criterion->details->available_criteria);
+
+	gtk_object_destroy (GTK_OBJECT (old_menu));
+	gtk_option_menu_set_menu (criterion->details->available_criteria,
+				  new_menu);
+
+	gtk_widget_show_all (GTK_WIDGET (criterion->details->available_criteria));
+	
 }
 
 char *
@@ -753,17 +848,26 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 									 &emblem_pixmap_widget,
 									 &emblem_label) == GNOME_VFS_OK) {
 		
-		menu_item = gtk_menu_item_new ();
+		
+		
 		emblem_display_name = nautilus_label_get_text (NAUTILUS_LABEL (emblem_label));
+		if (strcmp (emblem_display_name, "Erase") == 0) {
+			gtk_widget_destroy (emblem_pixmap_widget);
+			gtk_widget_destroy (emblem_label);
+			continue;
+		}
+		menu_item = gtk_menu_item_new ();
+		
 		gtk_object_set_data_full (GTK_OBJECT (menu_item), "emblem name", emblem_display_name, g_free);
+		
 		temp_hbox = gtk_hbox_new (FALSE, GNOME_PAD_SMALL);
 		gtk_container_add (GTK_CONTAINER (menu_item), temp_hbox);
 		gtk_box_pack_start (GTK_BOX (temp_hbox), emblem_pixmap_widget, FALSE, FALSE, 0);
 		gtk_box_pack_start (GTK_BOX (temp_hbox), emblem_label, FALSE, FALSE, 0);
 		gtk_menu_append (GTK_MENU (value_menu), menu_item);
 	}
-
-				      
+	
+		
 	gtk_option_menu_set_menu (criterion->details->value_menu,
 				  value_menu);
 	gtk_widget_show_all (GTK_WIDGET (criterion->details->value_menu));
@@ -774,13 +878,33 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 
 
 static void
+criterion_type_changed_callback (GtkObject *object,
+				 gpointer data)
+{
+	NautilusSearchBarCriterion *criterion;
+	GtkWidget *menu_item;
+
+	g_return_if_fail (NAUTILUS_IS_SEARCH_BAR_CRITERION (data));
+	g_return_if_fail (GTK_IS_MENU_ITEM (object));
+	criterion = NAUTILUS_SEARCH_BAR_CRITERION (data);
+	menu_item = GTK_WIDGET (object);
+
+	g_return_if_fail (NAUTILUS_IS_COMPLEX_SEARCH_BAR (criterion->details->bar));
+	gtk_object_set_data (GTK_OBJECT (criterion), "type", 
+			     gtk_object_get_data (GTK_OBJECT (menu_item), "type"));
+	gtk_signal_emit (GTK_OBJECT (criterion),
+			 nautilus_search_bar_criterion_signals[CRITERION_TYPE_CHANGED]);
+	
+}
+
+static void
 emblems_changed_callback (GtkObject *signaller,
 			  gpointer data)
 {
 	NautilusSearchBarCriterion *criterion;
 	GtkWidget *menu_widget;
 
-	/* FIXME bugzilla.eazel.com 2739: check type here in some way */
+	g_return_if_fail (NAUTILUS_IS_SEARCH_BAR_CRITERION (data));
 	criterion = NAUTILUS_SEARCH_BAR_CRITERION (data);
 
 	if (criterion->details->type == NAUTILUS_EMBLEM_SEARCH_CRITERION) {
@@ -792,6 +916,51 @@ emblems_changed_callback (GtkObject *signaller,
 	}
 }
 
+static gint
+criterion_is_of_type (gconstpointer a,
+		      gconstpointer b) 
+{
+	NautilusSearchBarCriterion *criterion;
+	NautilusSearchBarCriterionType type;
+
+	g_return_val_if_fail (NAUTILUS_IS_SEARCH_BAR_CRITERION (a), 
+			      NAUTILUS_NUMBER_OF_SEARCH_CRITERIA);
+	criterion = NAUTILUS_SEARCH_BAR_CRITERION (a);
+	type = (NautilusSearchBarCriterionType) b;
+	
+	return (criterion->details->type - type);
+}
+
+static gboolean                            
+criterion_type_already_is_displayed (GSList *criteria,
+				     NautilusSearchBarCriterionType criterion_number)
+{
+	if (g_slist_find_custom (criteria,
+				 GINT_TO_POINTER (criterion_number),
+				 criterion_is_of_type)) {
+		return TRUE;
+	}
+	else {
+		return FALSE;
+	}
+}
 
 
+
+static NautilusSearchBarCriterionType
+get_next_criterion_type (NautilusSearchBarCriterionType current_type,
+			 GSList *displayed_criteria)
+{
+	NautilusSearchBarCriterionType new_type;
+
+	g_assert (g_slist_length (displayed_criteria) < NAUTILUS_NUMBER_OF_SEARCH_CRITERIA);
+	
+	new_type = (current_type + 1) % NAUTILUS_NUMBER_OF_SEARCH_CRITERIA;
+	while (criterion_type_already_is_displayed (displayed_criteria,
+						    new_type)) {
+		new_type = (new_type + 1) % NAUTILUS_NUMBER_OF_SEARCH_CRITERIA;
+	}
+	
+	return new_type;
+}
 

@@ -53,7 +53,7 @@ typedef struct {
 GtkType    nautilus_complex_search_bar_get_type (void);
 GtkWidget *nautilus_complex_search_bar_new      (void);
 
-
+GSList *   nautilus_complex_search_bar_get_search_criteria (NautilusComplexSearchBar *bar);
 
 #endif /* NAUTILUS_COMPLEX_SEARCH_BAR_H */
 
