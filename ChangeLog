@@ -1,4 +1,17 @@
+2000-07-13  Darin Adler  <darin@eazel.com>
+
+	* components/services/startup/lib/dummy.c: Added an empty file to
+	fix the build (required since Elliot added it to the Makefile).
+
+	* HACKING: Some tweaks.
+	* TODO: Removed some done items.
+	
+	* src/Makefile.am:
+	* src/file-manager/Makefile.am:
+	Changed libntl-file-manager.la to libnautilus-file-manager.la.
+
 2000-07-13 Elliot Lee <sopwith@redhat.com>
+	
 	* TODO: Fix typo
 	* components/rpmview/Makefile.am,
 	components/services/install/command-line/Makefile.am,
@@ -61,12 +74,10 @@
 	 
 2000-07-13  Robey Pointer  <robey@eazel.com>
 
-	*
-	components/services/trilobite/libtrilobite/trilobite-root-client.c:
+	* components/services/trilobite/libtrilobite/trilobite-root-client.c:
 	(trilobite_root_client_destroy):
 	* components/services/trilobite/sample/command-line/main.c: (main):
-	*
-	components/services/trilobite/sample/service/sample-service-impl.c:
+	* components/services/trilobite/sample/service/sample-service-impl.c:
 	(impl_Trilobite_Eazel_Sample_list_it):
 
 	Fix a few places where corba objects weren't released, so that the
@@ -75,7 +86,7 @@
 	
 2000-07-13  Robin * Slomkowski  <rslomkow@eazel.com>
 
-	* nautilus.spec.in: added arlo them
+	* nautilus.spec.in: added arlo theme
 
 2000-07-13  Darin Adler  <darin@eazel.com>
 

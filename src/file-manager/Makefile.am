@@ -1,6 +1,6 @@
 NULL = 
 
-noinst_LTLIBRARIES=libntl-file-manager.la
+noinst_LTLIBRARIES=libnautilus-file-manager.la
 
 INCLUDES = \
 	-I$(top_srcdir) \
@@ -20,7 +20,7 @@ dfos_corba_srcs=					\
 	GNOME_Desktop_FileOperationService-skels.c	\
 	GNOME_Desktop_FileOperationService-common.c
 
-libntl_file_manager_la_SOURCES=	\
+libnautilus_file_manager_la_SOURCES=	\
 	$(dfos_corba_srcs)		\
 	dfos-corba.c			\
 	dfos-corba.h			\

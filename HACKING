@@ -27,6 +27,8 @@ Specifically, you will need to:
 
 NOTE:  more documentation is in docs/
 
+* All patches should go through nautilus-list@lists.eazel.com.
+
 =================
 2: Module Listing
 =================
@@ -154,10 +156,7 @@ Then you want to remove the m4 file for any of the things you are building.
 ===============================
 
 Also, you need to do a "killall oafd; killall gconfd" before
-running Nautilus if OAF, GConf, or any of the .oafinfo files
-in any module changed.
-
-* All patches should go through nautilus-list@lists.eazel.com.
+running Nautilus if OAF or GConf changed.
 
 ===============================
 6: Using the leak checker
