@@ -6,6 +6,9 @@
  *
  */
 
+#ifdef USE_GNOME_DB2HTML3
+
+#include <config.h>
 #include <glib.h>
 #include <string.h>
 #include <sys/time.h>
@@ -40,6 +43,9 @@ main(int argc, char **argv) {
 	gboolean has_rootid;
  
 	has_rootid = FALSE; 
+	gdb_doc = NULL;
+	gdb_rootid = NULL;
+
 	/* stylesheet location based on Linux Standard Base      *
 	 * http://www.linuxbase.org/spec/gLSB/gLSB/sgmlr002.html */
 	gdb_stylesheet = g_strconcat (PREFIXDIR, "/share/sgml/docbook/gnome-customization-0.1/gnome-customization.xsl", NULL);
@@ -129,3 +135,12 @@ main(int argc, char **argv) {
 	
 	return (1);
 }
+
+#else
+
+int
+main(int argc, char **argv) {
+	return 1;
+}
+
+#endif /* USE_GNOME_DB2HTML3 */
