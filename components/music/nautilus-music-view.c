@@ -272,8 +272,7 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	gtk_clist_set_column_visibility (GTK_CLIST (music_view->details->song_list), 8, FALSE);
 	gtk_clist_set_column_visibility (GTK_CLIST (music_view->details->song_list), 9, FALSE);
 
- 	/* make some of the columns right justified */
- 		
+ 	/* make some of the columns right justified */ 		
  	gtk_clist_set_column_justification(GTK_CLIST(music_view->details->song_list), 0, GTK_JUSTIFY_RIGHT);
  	gtk_clist_set_column_justification(GTK_CLIST(music_view->details->song_list), 3, GTK_JUSTIFY_RIGHT);
  	gtk_clist_set_column_justification(GTK_CLIST(music_view->details->song_list), 4, GTK_JUSTIFY_RIGHT);
@@ -982,7 +981,6 @@ play_status_display (NautilusMusicView *music_view)
 }
 
 /* track incrementing routines */
-
 static void
 play_current_file (NautilusMusicView *music_view, gboolean from_start)
 {
@@ -1014,16 +1012,24 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
                 return;
 	}
 	
-	/* set up the current bitrate and file size so we can give progress feedback */
-        
+	/* set up the current bitrate and file size so we can give progress feedback */        
         gtk_clist_get_text (GTK_CLIST(music_view->details->song_list),
                             music_view->details->selected_index, 4, &temp_str);
 	music_view->details->current_bitrate = atoi (temp_str);
         gtk_clist_get_text (GTK_CLIST(music_view->details->song_list),
                             music_view->details->selected_index, 9, &temp_str);
 	music_view->details->current_samprate = atoi (temp_str);
-        result = gnome_vfs_get_file_info (song_uri, &file_info,
-                                          GNOME_VFS_FILE_INFO_DEFAULT);
+	
+        result = gnome_vfs_get_file_info (song_uri, &file_info, GNOME_VFS_FILE_INFO_DEFAULT);
+	if (result != GNOME_VFS_OK) {
+		/* File must be unavailable for some reason. Let's yank it from the list */
+		gtk_clist_remove (GTK_CLIST (music_view->details->song_list), music_view->details->selected_index);
+		g_free (song_filename);
+		music_view->details->selected_index -= 1;
+		go_to_next_track (music_view);
+		return;
+	}
+
  	music_view->details->current_file_size =
                 (result == GNOME_VFS_OK
                  && (file_info.valid_fields & GNOME_VFS_FILE_INFO_FIELDS_SIZE) != 0)

@@ -1,3 +1,14 @@
+2000-11-30  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 3888, Deleting an MP3 file while in use -> Nautilus crashes
+
+	Added a check for the existence of a file before beginning playback.
+	If the file is no longer available, remove the file form the 
+	song list and attempt to play the next file in the song list.
+
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize), (play_current_file):
+
 2000-11-30  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Rebecca Schulman  <rebecka@eazel.com>
