@@ -1,4 +1,10 @@
 2000-04-13  Andy Hertzfeld <andy@eazel.com>
+	
+	* components/services/startup/nautilus-service-startup-view.c:
+	made configuration upload work again by adding a "Content-Type"
+	header, which is now required by Jonathan's script
+	
+2000-04-13  Andy Hertzfeld <andy@eazel.com>
 
 	* components/services/startup/nautilus-service-startup-view.c:
 	fixed problems with the url escaping by unescaping the token

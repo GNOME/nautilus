@@ -133,6 +133,7 @@ make_http_post_request(gchar *uri, gchar *post_body, gchar *auth_token)
 
     ghttp_set_type(request, ghttp_type_post);
     ghttp_set_header(request, http_hdr_Accept, "text/xml");
+    ghttp_set_header(request, http_hdr_Content_Type, "text/xml");
     ghttp_set_header(request, http_hdr_Host, SERVICE_DOMAIN_NAME);
     /* FIXME: user agent version and OS should be substituted on the fly */
     ghttp_set_header(request, http_hdr_User_Agent, "Nautilus/0.1 (Linux)");   
