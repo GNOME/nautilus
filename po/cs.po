@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.0.98\n"
-"POT-Creation-Date: 2002-09-23 05:05+0200\n"
+"POT-Creation-Date: 2002-11-18 17:58-0500\n"
 "PO-Revision-Date: 2002-09-27 01:59+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: czech <cs@li.org>\n"
@@ -26,7 +26,9 @@ msgstr "Factory pro factory pro komponentový adaptér Nautilu "
 msgid ""
 "Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
 "look like Nautilus Views"
-msgstr "Factory pro objekty, které zabalí normální Bonobo Controly nebo Embeddable, aby vypadaly jako pohledy Nautilu"
+msgstr ""
+"Factory pro objekty, které zabalí normální Bonobo Controly nebo Embeddable, "
+"aby vypadaly jako pohledy Nautilu"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:4
 msgid "Nautilus component adapter factory"
@@ -908,7 +910,10 @@ msgid ""
 "Sorry, but the music view is unable to play back sound right now. This is "
 "because the Enable sound server startup setting in the Sound section of the "
 "Control Center is turned off."
-msgstr "Lituje, ale hudební pohled teď nemůže přehrávat zvuk. To je proto, že nastavení Povolit start zvukového serveru v sekci Zvuk Ovládacího centra je vypnuto."
+msgstr ""
+"Lituje, ale hudební pohled teď nemůže přehrávat zvuk. To je proto, že "
+"nastavení Povolit start zvukového serveru v sekci Zvuk Ovládacího centra je "
+"vypnuto."
 
 #: components/music/nautilus-music-view.c:1197
 #: components/music/nautilus-music-view.c:1209
@@ -921,7 +926,11 @@ msgid ""
 "another program is using or blocking the sound card, or your sound card is "
 "not configured properly. Try quitting any applications that may be blocking "
 "use of the sound card."
-msgstr "Lituji, ale hudební pohled teď nemůže přehrávat zvuk. Buď zvukovou kartu používá nebo blokuje jiný program, nebo vaše zvuková karta není správně nastavena. Zkuste ukončit všechny aplikace, které by mohly blokovat použití zvukové karty."
+msgstr ""
+"Lituji, ale hudební pohled teď nemůže přehrávat zvuk. Buď zvukovou kartu "
+"používá nebo blokuje jiný program, nebo vaše zvuková karta není správně "
+"nastavena. Zkuste ukončit všechny aplikace, které by mohly blokovat použití "
+"zvukové karty."
 
 #: components/music/nautilus-music-view.c:1233
 msgid "Sorry, but the music view can't play non-local files yet."
@@ -2046,7 +2055,8 @@ msgid ""
 msgstr ""
 "Chyba při odstraňování.\n"
 "\n"
-"\"%s\" nelze odstranit, protože nemáte oprávnění měnit složku, kde je umístěn."
+"\"%s\" nelze odstranit, protože nemáte oprávnění měnit složku, kde je "
+"umístěn."
 
 #: libnautilus-private/nautilus-file-operations.c:555
 #, c-format
@@ -2069,7 +2079,8 @@ msgid ""
 msgstr ""
 "Chyba při přesunu.\n"
 "\n"
-"\"%s\" nelze přesunout, protože nemáte oprávnění změnit jej nebo jeho rodičovský adresář."
+"\"%s\" nelze přesunout, protože nemáte oprávnění změnit jej nebo jeho "
+"rodičovský adresář."
 
 #: libnautilus-private/nautilus-file-operations.c:592
 #, c-format
@@ -2081,7 +2092,8 @@ msgid ""
 msgstr ""
 "Chyba při přesunu.\n"
 "\n"
-"\"%s\" nelze přesunout do koše, protože nemáte oprávnění změnit jej nebo jeho rodičovský adresář."
+"\"%s\" nelze přesunout do koše, protože nemáte oprávnění změnit jej nebo "
+"jeho rodičovský adresář."
 
 #: libnautilus-private/nautilus-file-operations.c:615
 #, c-format
@@ -2316,7 +2328,8 @@ msgid ""
 "\n"
 "If you still want to move \"%s\", rename it and try again."
 msgstr ""
-"\"%s\" nemohl být přesunout na nové umístění, protože jeho jméno se již používá pro zvláštní položku, která nemůže být odstraněna nebo přepsána.\n"
+"\"%s\" nemohl být přesunout na nové umístění, protože jeho jméno se již "
+"používá pro zvláštní položku, která nemůže být odstraněna nebo přepsána.\n"
 "\n"
 "Pokud stále chcete přesunout \"%s\", přejmenujte jej a zkuste to znovu."
 
@@ -2328,7 +2341,8 @@ msgid ""
 "\n"
 "If you still want to copy \"%s\", rename it and try again."
 msgstr ""
-"\"%s\" nemohl být zkopírován na nové umístění, protože jeho jméno se již používá pro zvláštní položku, která nemůže být odstraněna nebo přepsána.\n"
+"\"%s\" nemohl být zkopírován na nové umístění, protože jeho jméno se již "
+"používá pro zvláštní položku, která nemůže být odstraněna nebo přepsána.\n"
 "\n"
 "Pokud stále chcete zkopírovat \"%s\", přejmenujte jej a zkuste to znovu."
 
@@ -2363,7 +2377,7 @@ msgstr "Přepsat vše"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1112
-#: libnautilus-private/nautilus-file.c:4266
+#: libnautilus-private/nautilus-file.c:4274
 #, c-format
 msgid "link to %s"
 msgstr "odkaz na %s"
@@ -2697,7 +2711,7 @@ msgid "Preparing to Empty the Trash..."
 msgstr "Připravuji vyprázdnění koše..."
 
 #: libnautilus-private/nautilus-file-operations.c:2206
-#: src/file-manager/fm-desktop-icon-view.c:1238
+#: src/file-manager/fm-desktop-icon-view.c:1241
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 msgid "Empty Trash"
 msgstr "Vyprázdnit koš"
@@ -2989,64 +3003,64 @@ msgstr "foo (124. kopie).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2517
+#: libnautilus-private/nautilus-file.c:2525
 msgid "today at 00:00:00 PM"
 msgstr "dnes v 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2518
+#: libnautilus-private/nautilus-file.c:2526
 msgid "today at %-I:%M:%S %p"
 msgstr "dnes v %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2520
+#: libnautilus-private/nautilus-file.c:2528
 msgid "today at 00:00 PM"
 msgstr "dnes v 00:00"
 
-#: libnautilus-private/nautilus-file.c:2521
+#: libnautilus-private/nautilus-file.c:2529
 msgid "today at %-I:%M %p"
 msgstr "dnes v %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2523
+#: libnautilus-private/nautilus-file.c:2531
 msgid "today, 00:00 PM"
 msgstr "dnes, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2524
+#: libnautilus-private/nautilus-file.c:2532
 msgid "today, %-I:%M %p"
 msgstr "dnes, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2526
-#: libnautilus-private/nautilus-file.c:2527
+#: libnautilus-private/nautilus-file.c:2534
+#: libnautilus-private/nautilus-file.c:2535
 msgid "today"
 msgstr "dnes"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2536
+#: libnautilus-private/nautilus-file.c:2544
 msgid "yesterday at 00:00:00 PM"
 msgstr "včera v 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2537
+#: libnautilus-private/nautilus-file.c:2545
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "včera v %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2539
+#: libnautilus-private/nautilus-file.c:2547
 msgid "yesterday at 00:00 PM"
 msgstr "včera v 00:00"
 
-#: libnautilus-private/nautilus-file.c:2540
+#: libnautilus-private/nautilus-file.c:2548
 msgid "yesterday at %-I:%M %p"
 msgstr "včera v %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2542
+#: libnautilus-private/nautilus-file.c:2550
 msgid "yesterday, 00:00 PM"
 msgstr "včera, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2543
+#: libnautilus-private/nautilus-file.c:2551
 msgid "yesterday, %-I:%M %p"
 msgstr "včera, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2545
-#: libnautilus-private/nautilus-file.c:2546
+#: libnautilus-private/nautilus-file.c:2553
+#: libnautilus-private/nautilus-file.c:2554
 msgid "yesterday"
 msgstr "včera"
 
@@ -3055,154 +3069,159 @@ msgstr "včera"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2557
+#: libnautilus-private/nautilus-file.c:2565
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Pondělí, 00. červenec 0000 v 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2558
+#: libnautilus-private/nautilus-file.c:2566
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %-d. %B %Y v %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2560
+#: libnautilus-private/nautilus-file.c:2568
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Pá, 00. kvě 0000 v 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2561
+#: libnautilus-private/nautilus-file.c:2569
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %-d. %b %Y v %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2563
+#: libnautilus-private/nautilus-file.c:2571
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Pá, 00. kvě 0000 v 00:00"
 
-#: libnautilus-private/nautilus-file.c:2564
+#: libnautilus-private/nautilus-file.c:2572
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %-d. %b %Y v %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2566
+#: libnautilus-private/nautilus-file.c:2574
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00. kvě 0000 v 00:00"
 
-#: libnautilus-private/nautilus-file.c:2567
+#: libnautilus-private/nautilus-file.c:2575
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d. %b %Y v %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2569
+#: libnautilus-private/nautilus-file.c:2577
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00. kvě 0000, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2570
+#: libnautilus-private/nautilus-file.c:2578
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d. %b %Y, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2572
+#: libnautilus-private/nautilus-file.c:2580
 msgid "00/00/00, 00:00 PM"
 msgstr "00.00.00, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2573
+#: libnautilus-private/nautilus-file.c:2581
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d.%m.%y, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2575
+#: libnautilus-private/nautilus-file.c:2583
 msgid "00/00/00"
 msgstr "00.00.00"
 
-#: libnautilus-private/nautilus-file.c:2576
+#: libnautilus-private/nautilus-file.c:2584
 msgid "%m/%d/%y"
 msgstr "%d.%m.%y"
 
-#: libnautilus-private/nautilus-file.c:3851
+#: libnautilus-private/nautilus-file.c:3859
 msgid "0 items"
 msgstr "0 položek"
 
-#: libnautilus-private/nautilus-file.c:3851
+#: libnautilus-private/nautilus-file.c:3859
 msgid "0 folders"
 msgstr "0 adresářů"
 
-#: libnautilus-private/nautilus-file.c:3852
+#: libnautilus-private/nautilus-file.c:3860
 msgid "0 files"
 msgstr "0 souborů"
 
-#: libnautilus-private/nautilus-file.c:3856
+#: libnautilus-private/nautilus-file.c:3864
 msgid "1 item"
 msgstr "1 položka"
 
-#: libnautilus-private/nautilus-file.c:3856
+#: libnautilus-private/nautilus-file.c:3864
 msgid "1 folder"
 msgstr "1 adresář"
 
-#: libnautilus-private/nautilus-file.c:3857
+#: libnautilus-private/nautilus-file.c:3865
 msgid "1 file"
 msgstr "1 soubor"
 
-#: libnautilus-private/nautilus-file.c:3860
+#: libnautilus-private/nautilus-file.c:3868
 #, c-format
 msgid "%u items"
 msgstr "%u položek"
 
-#: libnautilus-private/nautilus-file.c:3860
+#: libnautilus-private/nautilus-file.c:3868
 #, c-format
 msgid "%u folders"
 msgstr "%u adresářů"
 
-#: libnautilus-private/nautilus-file.c:3861
+#: libnautilus-private/nautilus-file.c:3869
 #, c-format
 msgid "%u files"
 msgstr "%u souborů"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4168
-#: libnautilus-private/nautilus-file.c:4184
+#: libnautilus-private/nautilus-file.c:4176
+#: libnautilus-private/nautilus-file.c:4192
 msgid "? items"
 msgstr "? položek"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4174
+#: libnautilus-private/nautilus-file.c:4182
 msgid "? bytes"
 msgstr "? bytů"
 
-#: libnautilus-private/nautilus-file.c:4189
+#: libnautilus-private/nautilus-file.c:4197
 msgid "unknown type"
 msgstr "neznámý typ"
 
-#: libnautilus-private/nautilus-file.c:4192
+#: libnautilus-private/nautilus-file.c:4200
 msgid "unknown MIME type"
 msgstr "neznámý typ MIME"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4198
+#: libnautilus-private/nautilus-file.c:4206
 msgid "unknown"
 msgstr "neznámý"
 
-#: libnautilus-private/nautilus-file.c:4230
+#: libnautilus-private/nautilus-file.c:4238
 msgid "program"
 msgstr "program"
 
-#: libnautilus-private/nautilus-file.c:4242
+#: libnautilus-private/nautilus-file.c:4250
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
 "some other reason."
-msgstr "Nemohu najít popis ano pro \"x-directory/normal\". To pravděpodobně znamená, že váš soubor gnome-vfs.keys je na špatném místě nebo z nějakého jiného důvodu nejde najít."
+msgstr ""
+"Nemohu najít popis ano pro \"x-directory/normal\". To pravděpodobně znamená, "
+"že váš soubor gnome-vfs.keys je na špatném místě nebo z nějakého jiného "
+"důvodu nejde najít."
 
-#: libnautilus-private/nautilus-file.c:4246
+#: libnautilus-private/nautilus-file.c:4254
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
 "gnome-vfs mailing list."
-msgstr "Nebyl nalezen popis typu mime \"%s\" (soubor je \"%s\"), oznamte prosím v poštovní konferenci gnome-vfs."
+msgstr ""
+"Nebyl nalezen popis typu mime \"%s\" (soubor je \"%s\"), oznamte prosím v "
+"poštovní konferenci gnome-vfs."
 
-#: libnautilus-private/nautilus-file.c:4260
+#: libnautilus-private/nautilus-file.c:4268
 msgid "link"
 msgstr "odkaz"
 
-#: libnautilus-private/nautilus-file.c:4280
+#: libnautilus-private/nautilus-file.c:4288
 msgid "link (broken)"
 msgstr "odkaz (neplatný)"
 
-#: libnautilus-private/nautilus-file.c:5323
+#: libnautilus-private/nautilus-file.c:5331
 #: libnautilus-private/nautilus-trash-directory.c:383
 #: src/file-manager/fm-desktop-icon-view.c:70
 msgid "Trash"
@@ -3489,26 +3508,36 @@ msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
 "manual layout."
-msgstr "Tento adresář používá automatické rozložení. Chcete přepnout na ruční rozložení a nechat tuto položku tam, kde jste ji pustili? Tím změníte uložené ruční rozložení."
+msgstr ""
+"Tento adresář používá automatické rozložení. Chcete přepnout na ruční "
+"rozložení a nechat tuto položku tam, kde jste ji pustili? Tím změníte "
+"uložené ruční rozložení."
 
 #: libnautilus-private/nautilus-icon-dnd.c:629
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
 "manual layout."
-msgstr "Tento adresář používá automatické rozložení. Chcete přepnout na ruční rozložení a nechat tyto položky tam, kde jste je pustili? Tím změníte uložené ruční rozložení."
+msgstr ""
+"Tento adresář používá automatické rozložení. Chcete přepnout na ruční "
+"rozložení a nechat tyto položky tam, kde jste je pustili? Tím změníte "
+"uložené ruční rozložení."
 
 #: libnautilus-private/nautilus-icon-dnd.c:635
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
-msgstr "Tento adresář používá automatické rozložení. Chcete přepnout na ruční rozložení a nechat tuto položku tam, kde jste ji pustili?"
+msgstr ""
+"Tento adresář používá automatické rozložení. Chcete přepnout na ruční "
+"rozložení a nechat tuto položku tam, kde jste ji pustili?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:638
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
-msgstr "Tento adresář používá automatické rozložení. Chcete přepnout na ruční rozložení a nechat tyto položky tam, kde jste je pustili?"
+msgstr ""
+"Tento adresář používá automatické rozložení. Chcete přepnout na ruční "
+"rozložení a nechat tyto položky tam, kde jste je pustili?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:643
 msgid "Switch to Manual Layout?"
@@ -3532,12 +3561,16 @@ msgid ""
 "Fast searches will not be available until an initial index of your files has "
 "been created.  This may take a long time."
 msgstr ""
-"Chcete-li povolit rychlé hledání, můžete jako root upravit soubor %s. Nastavení volby enabled na \"yes\" zapne služby medusa. Pak můžete okamžitě spustit služby indexování a hledání zadáním následujících příkazů jako root:\n"
+"Chcete-li povolit rychlé hledání, můžete jako root upravit soubor %s. "
+"Nastavení volby enabled na \"yes\" zapne služby medusa. Pak můžete okamžitě "
+"spustit služby indexování a hledání zadáním následujících příkazů jako "
+"root:\n"
 "\n"
 "medusa-indexd\n"
 "medusa-searchd\n"
 "\n"
-"Rychlé hledání nebude k dispozici, dokud nebude vytvořen počáteční index vašich souborů. To může trvat dlouho."
+"Rychlé hledání nebude k dispozici, dokud nebude vytvořen počáteční index "
+"vašich souborů. To může trvat dlouho."
 
 #: libnautilus-private/nautilus-medusa-support.c:138
 msgid ""
@@ -3548,7 +3581,10 @@ msgid ""
 "If you are using a packaged version of Nautilus, fast searching is not "
 "available.\n"
 msgstr ""
-"Na vašem systému nelze najít Medusu, aplikaci, která provádí hledání. Pokud jste nautilus překládali sami, budete muset nainstalovat kopii medusy a rekompilovat nautilus (Kopie Medusy může být k dispozici na ftp://ftp.gnome.org)\n"
+"Na vašem systému nelze najít Medusu, aplikaci, která provádí hledání. Pokud "
+"jste nautilus překládali sami, budete muset nainstalovat kopii medusy a "
+"rekompilovat nautilus (Kopie Medusy může být k dispozici na ftp://ftp.gnome."
+"org)\n"
 "Pokud používáte verzi Nautilu z balíčku, není rychlé hledání k dispozici.\n"
 
 #: libnautilus-private/nautilus-program-chooser.c:195
@@ -3684,7 +3720,9 @@ msgstr "_Jít tam"
 msgid ""
 "You can configure which programs are offered for which file types in the "
 "File Types and Programs dialog."
-msgstr "Můžete nastavit, které programy se nabízejí pro které typy souborů v dialogu Typy souborů a programy."
+msgstr ""
+"Můžete nastavit, které programy se nabízejí pro které typy souborů v dialogu "
+"Typy souborů a programy."
 
 #: libnautilus-private/nautilus-program-chooser.c:1487
 msgid "Open with Other Application"
@@ -3736,7 +3774,8 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"V GNOME můžete asociovat aplikace s typy souborů. Chcete teď asociovat aplikaci s tímto typem souboru?"
+"V GNOME můžete asociovat aplikace s typy souborů. Chcete teď asociovat "
+"aplikaci s tímto typem souboru?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1613
 msgid "Associate Application"
@@ -3747,7 +3786,9 @@ msgstr "Asociovat aplikaci"
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations.  Would you like to choose another application?"
-msgstr "\"%s\" nemůže otevřít \"%s\", protože \"%s\" nemůže přistupovat k souborům v umístění \"%s\".  Chcete vybrat jinou aplikaci?"
+msgstr ""
+"\"%s\" nemůže otevřít \"%s\", protože \"%s\" nemůže přistupovat k souborům v "
+"umístění \"%s\".  Chcete vybrat jinou aplikaci?"
 
 #: libnautilus-private/nautilus-program-choosing.c:498
 #: libnautilus-private/nautilus-program-choosing.c:520
@@ -3760,13 +3801,19 @@ msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations.  No other applications are available to view this file.  If you "
 "copy this file onto your computer, you may be able to open it."
-msgstr "\"%s\" nemůže otevřít \"%s\", protože \"%s\" nemůže přistupovat k souborům v umístění \"%s\". Žádné jiné aplikace pro prohlížení tohoto souboru nejsou k dispozici. Pokud zkopírujete tento soubor na váš počítač, budete ho možná moci otevřít."
+msgstr ""
+"\"%s\" nemůže otevřít \"%s\", protože \"%s\" nemůže přistupovat k souborům v "
+"umístění \"%s\". Žádné jiné aplikace pro prohlížení tohoto souboru nejsou k "
+"dispozici. Pokud zkopírujete tento soubor na váš počítač, budete ho možná "
+"moci otevřít."
 
 #: libnautilus-private/nautilus-program-choosing.c:661
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
-msgstr "Lituji, z bezpečnostních důvodů nemůžete spouštět příkazy ze vzdáleného počítače."
+msgstr ""
+"Lituji, z bezpečnostních důvodů nemůžete spouštět příkazy ze vzdáleného "
+"počítače."
 
 #: libnautilus-private/nautilus-program-choosing.c:663
 msgid "Can't execute remote links"
@@ -3796,7 +3843,8 @@ msgid ""
 msgstr ""
 "Tento cíl upuštění podporuje jen místní soubory.\n"
 "\n"
-"Vzdálené soubory můžete otevřít po jejich zkopírování do místního adresáře a jejich opětovném upuštění."
+"Vzdálené soubory můžete otevřít po jejich zkopírování do místního adresáře a "
+"jejich opětovném upuštění."
 
 #: libnautilus-private/nautilus-program-choosing.c:708
 #: libnautilus-private/nautilus-program-choosing.c:720
@@ -3812,7 +3860,9 @@ msgid ""
 msgstr ""
 "Tento cíl upuštění podporuje jen místní soubory.\n"
 "\n"
-"Vzdálené soubory můžete otevřít po jejich zkopírování do místního adresáře a jejich opětovném upuštění. Místní soubory, které jste upustily, byly již otevřeny."
+"Vzdálené soubory můžete otevřít po jejich zkopírování do místního adresáře a "
+"jejich opětovném upuštění. Místní soubory, které jste upustily, byly již "
+"otevřeny."
 
 #. Human readable description for a criterion in a search for
 #. files. Bracketed items are context, and are message
@@ -4023,7 +4073,9 @@ msgstr "[Items larger than 400K] a [without all the words \"apple orange\"]"
 msgid ""
 "[Items larger than 400K], [owned by root and without all the words \"apple "
 "orange\"]"
-msgstr "[Items larger than 400K], [owned by root and without all the words \"apple orange\"]"
+msgstr ""
+"[Items larger than 400K], [owned by root and without all the words \"apple "
+"orange\"]"
 
 #. The beginning of the description of a search that has just been
 #. performed.  The "%s" here is a description of a single criterion,
@@ -4049,7 +4101,9 @@ msgstr "Položky, které ve jménu obsahují \"stuff\" a jsou normální soubory
 msgid ""
 "Items containing \"stuff\" in their names, that are regular files and "
 "smaller than 2000 bytes"
-msgstr "Položky, které ve jménu obsahují \"stuff\", jsou normální soubory a jsou menší než 2000 bytů"
+msgstr ""
+"Položky, které ve jménu obsahují \"stuff\", jsou normální soubory a jsou "
+"menší než 2000 bytů"
 
 #: libnautilus-private/nautilus-search-uri.c:713
 msgid "Items containing \"medusa\" in their names and that are folders"
@@ -4138,7 +4192,9 @@ msgstr "Chyba při odpojení"
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
-msgstr "Nautilus nemohl připojit disketovou mechaniku. Pravděpodobně v ní není disketa."
+msgstr ""
+"Nautilus nemohl připojit disketovou mechaniku. Pravděpodobně v ní není "
+"disketa."
 
 #. All others
 #: libnautilus-private/nautilus-volume-monitor.c:1530
@@ -4151,13 +4207,17 @@ msgstr "Nautilus nemohl připojit svazek. V zařízení pravděpodobně není m�
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
-msgstr "Nautilus nemohl připojit disketovou mechaniku. Disketa asi obsahuje souborový systém, který nelze připojit."
+msgstr ""
+"Nautilus nemohl připojit disketovou mechaniku. Disketa asi obsahuje "
+"souborový systém, který nelze připojit."
 
 #: libnautilus-private/nautilus-volume-monitor.c:1539
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
-msgstr "Nautilus nemohl připojit vybraný svazek. Svazek asi obsahuje souborový systém, který nelze připojit."
+msgstr ""
+"Nautilus nemohl připojit vybraný svazek. Svazek asi obsahuje souborový "
+"systém, který nelze připojit."
 
 #: libnautilus-private/nautilus-volume-monitor.c:1544
 msgid "Nautilus was unable to mount the selected floppy drive."
@@ -4270,21 +4330,27 @@ msgstr "Factory pro Nautilus"
 
 #: src/Nautilus_shell.server.in.h:7
 msgid "Nautilus file manager component that shows a scrollable list"
-msgstr "Komponenta správce souborů Nautilus, která zobrazuje rolovatelný seznam"
+msgstr ""
+"Komponenta správce souborů Nautilus, která zobrazuje rolovatelný seznam"
 
 #: src/Nautilus_shell.server.in.h:8
 msgid ""
 "Nautilus file manager component that shows a scrollable list for search "
 "results"
-msgstr "Komponenta správce souborů Nautilus, která zobrazuje rolovatelný seznam výsledků hledání"
+msgstr ""
+"Komponenta správce souborů Nautilus, která zobrazuje rolovatelný seznam "
+"výsledků hledání"
 
 #: src/Nautilus_shell.server.in.h:9
 msgid "Nautilus file manager component that shows a two-dimensional icon space"
-msgstr "Komponenta správce souborů Nautilus, která zobrazuje dvourozměrný prostor ikon"
+msgstr ""
+"Komponenta správce souborů Nautilus, která zobrazuje dvourozměrný prostor "
+"ikon"
 
 #: src/Nautilus_shell.server.in.h:10
 msgid "Nautilus file manager component that shows icons on the desktop"
-msgstr "Komponenta správce souborů Nautilus, která zobrazuje ikony na pracovní ploše"
+msgstr ""
+"Komponenta správce souborů Nautilus, která zobrazuje ikony na pracovní ploše"
 
 #: src/Nautilus_shell.server.in.h:11
 msgid "Nautilus file manager desktop icon view"
@@ -4341,11 +4407,11 @@ msgstr "Pozadí"
 msgid "Error executing utility program '%s': %s"
 msgstr "Chyba při spouštění pomocného programu '%s': %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1256
+#: src/file-manager/fm-desktop-icon-view.c:1259
 msgid "E_ject"
 msgstr "V_ysunout"
 
-#: src/file-manager/fm-desktop-icon-view.c:1356
+#: src/file-manager/fm-desktop-icon-view.c:1359
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
 msgid "_Unmount Volume"
 msgstr "_Odpojit svazek"
@@ -4358,7 +4424,7 @@ msgstr "_Odpojit svazek"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: src/file-manager/fm-desktop-icon-view.c:1480
+#: src/file-manager/fm-desktop-icon-view.c:1483
 #, c-format
 msgid "%s's Home"
 msgstr "Domov %s"
@@ -4474,7 +4540,9 @@ msgstr "%s%s, %s"
 msgid ""
 "The folder \"%s\" contains more files than Nautilus can handle. Some files "
 "will not be displayed."
-msgstr "Adresář \"%s\" obsahuje více souborů, než může Nautilus zvládnout. Některé soubory nebudou zobrazeny"
+msgstr ""
+"Adresář \"%s\" obsahuje více souborů, než může Nautilus zvládnout. Některé "
+"soubory nebudou zobrazeny"
 
 #: src/file-manager/fm-directory-view.c:1708
 msgid "Too Many Files"
@@ -4499,7 +4567,9 @@ msgstr ""
 msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
 "those %d items immediately?"
-msgstr "%d z vybraných položek nelze přesunout do koše. Chcete těchto %d položek odstranit ihned?"
+msgstr ""
+"%d z vybraných položek nelze přesunout do koše. Chcete těchto %d položek "
+"odstranit ihned?"
 
 #: src/file-manager/fm-directory-view.c:3014
 msgid "Delete Immediately?"
@@ -4515,7 +4585,8 @@ msgstr "Jste si jisti, že chcete z koše natrvalo odstranit \"%s\"?"
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "Trash?"
-msgstr "Jste si jisti, že chcete z koše natrvalo odstranit %d vybraných položek?"
+msgstr ""
+"Jste si jisti, že chcete z koše natrvalo odstranit %d vybraných položek?"
 
 #: src/file-manager/fm-directory-view.c:3056
 msgid "Delete From Trash?"
@@ -4585,13 +4656,18 @@ msgid ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
-"Všechny spustitelné soubory z tohoto adresáře se objeví v menu skriptů. Výběr skriptu z tohoto menu tento skript spustí.\n"
+"Všechny spustitelné soubory z tohoto adresáře se objeví v menu skriptů. "
+"Výběr skriptu z tohoto menu tento skript spustí.\n"
 "\n"
-"Jsou-li skripty spuštěny z místního adresáře, dostanou jména vybraných souborů. Jsou-li spuštěny ze vzdáleného adresáře (např. adresáře zobrazujícího obsah WWW nebo ftp), nedostanou žádné parametry.\n"
+"Jsou-li skripty spuštěny z místního adresáře, dostanou jména vybraných "
+"souborů. Jsou-li spuštěny ze vzdáleného adresáře (např. adresáře "
+"zobrazujícího obsah WWW nebo ftp), nedostanou žádné parametry.\n"
 "\n"
-"Ve všech případech nastaví Nautilus následující proměnné prostředí, které skripty mohou použít:\n"
+"Ve všech případech nastaví Nautilus následující proměnné prostředí, které "
+"skripty mohou použít:\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: cesty vybraných souborů oddělené koncem řádku (jen místní)\n"
+"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: cesty vybraných souborů oddělené koncem "
+"řádku (jen místní)\n"
 "\n"
 "NAUTILUS_SCRIPT_SELECTED_URIS: URI vybraných souborů oddělené koncem řádku\n"
 "\n"
@@ -4613,13 +4689,15 @@ msgstr "\"%s\" bude zkopírován, pokud vyberete příkaz Vložit soubory"
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
-msgstr "%d vybraných položek bude přesunuto, pokud vyberete příkaz Vložit soubory"
+msgstr ""
+"%d vybraných položek bude přesunuto, pokud vyberete příkaz Vložit soubory"
 
 #: src/file-manager/fm-directory-view.c:4063
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr "%d vybraných položek bude zkopírováno, pokud vyberete příkaz Vložit soubory"
+msgstr ""
+"%d vybraných položek bude zkopírováno, pokud vyberete příkaz Vložit soubory"
 
 #: src/file-manager/fm-directory-view.c:4148
 msgid "There is nothing on the clipboard to paste."
@@ -4709,14 +4787,18 @@ msgstr "_Kopírovat soubory"
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the Trash?"
-msgstr "Tento odkaz nelze použít, protože nemá cíl. Chcete tento odkaz přesunout do koše?"
+msgstr ""
+"Tento odkaz nelze použít, protože nemá cíl. Chcete tento odkaz přesunout do "
+"koše?"
 
 #: src/file-manager/fm-directory-view.c:4635
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
 "want to put this link in the Trash?"
-msgstr "Tento odkaz nelze použít, protože jeho cíl \"%s\" neexistuje. Chcete tento odkaz přesunout do koše?"
+msgstr ""
+"Tento odkaz nelze použít, protože jeho cíl \"%s\" neexistuje. Chcete tento "
+"odkaz přesunout do koše?"
 
 #: src/file-manager/fm-directory-view.c:4641
 msgid "Broken Link"
@@ -4731,7 +4813,9 @@ msgstr "Zahodit"
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
 "contents?"
-msgstr "\"%s\" je spustitelný textový soubor. Chcete jej spustit nebo zobrazit jeho obsah?"
+msgstr ""
+"\"%s\" je spustitelný textový soubor. Chcete jej spustit nebo zobrazit jeho "
+"obsah?"
 
 #: src/file-manager/fm-directory-view.c:4704
 msgid "Run or Display?"
@@ -4782,7 +4866,8 @@ msgstr "Chyba při zobrazování adresáře"
 #, c-format
 msgid ""
 "The name \"%s\" is already used in this folder. Please use a different name."
-msgstr "Jméno \"%s\" je v tomto adresáři již použité. Použijte prosím jiné jméno."
+msgstr ""
+"Jméno \"%s\" je v tomto adresáři již použité. Použijte prosím jiné jméno."
 
 #: src/file-manager/fm-error-reporting.c:107
 #, c-format
@@ -4801,7 +4886,9 @@ msgstr "Nemáte oprávnění potřebná k přejmenování \"%s\""
 msgid ""
 "The name \"%s\" is not valid because it contains the character \"/\". Please "
 "use a different name."
-msgstr "Jméno \"%s\" není platné, protože obsahuje znak \"/\". Použijte prosím jiné jméno."
+msgstr ""
+"Jméno \"%s\" není platné, protože obsahuje znak \"/\". Použijte prosím jiné "
+"jméno."
 
 #: src/file-manager/fm-error-reporting.c:121
 #, c-format
@@ -4831,7 +4918,8 @@ msgstr "Nemáte oprávnění potřebná ke změně skupiny \"%s\"."
 #: src/file-manager/fm-error-reporting.c:167
 #, c-format
 msgid "Couldn't change the group of \"%s\" because it is on a read-only disk"
-msgstr "Nemohu změnit skupinu \"%s\", protože je na disku připojeném jen ke čtení"
+msgstr ""
+"Nemohu změnit skupinu \"%s\", protože je na disku připojeném jen ke čtení"
 
 #: src/file-manager/fm-error-reporting.c:175
 #, c-format
@@ -4845,7 +4933,8 @@ msgstr "Chyba při změně skupiny"
 #: src/file-manager/fm-error-reporting.c:201
 #, c-format
 msgid "Couldn't change the owner of \"%s\" because it is on a read-only disk"
-msgstr "Nemohu změnit vlastníka \"%s\", protože je na disku připojeném jen ke čtení"
+msgstr ""
+"Nemohu změnit vlastníka \"%s\", protože je na disku připojeném jen ke čtení"
 
 #: src/file-manager/fm-error-reporting.c:208
 #, c-format
@@ -4860,7 +4949,8 @@ msgstr "Chyba při změně vlastníka"
 #, c-format
 msgid ""
 "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
-msgstr "Nemohu změnit oprávnění \"%s\", protože je na disku připojeném jen ke čtení"
+msgstr ""
+"Nemohu změnit oprávnění \"%s\", protože je na disku připojeném jen ke čtení"
 
 #: src/file-manager/fm-error-reporting.c:240
 #, c-format
@@ -4974,7 +5064,9 @@ msgstr "Datum změny"
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
 "image to set a custom icon."
-msgstr "Nemůžete přiřadit více než jednu vlastní ikonu! Přetáhněte a pusťte prosím jen jeden obrázek pro nastavení vlastní ikony."
+msgstr ""
+"Nemůžete přiřadit více než jednu vlastní ikonu! Přetáhněte a pusťte prosím "
+"jen jeden obrázek pro nastavení vlastní ikony."
 
 #: src/file-manager/fm-properties-window.c:316 src/nautilus-sidebar.c:739
 msgid "More Than One Image"
@@ -4984,7 +5076,9 @@ msgstr "Více než jeden obrázek"
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
 "custom icons."
-msgstr "Soubor který, jste pustili, není místní. Jako vlastní ikony můžete použít jen místní obrázky."
+msgstr ""
+"Soubor který, jste pustili, není místní. Jako vlastní ikony můžete použít "
+"jen místní obrázky."
 
 #: src/file-manager/fm-properties-window.c:327 src/nautilus-sidebar.c:760
 msgid "Local Images Only"
@@ -4994,7 +5088,9 @@ msgstr "Jen místní obrázky"
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
 "custom icons."
-msgstr "Soubor, který jste pustili, není obrázek. Jako vlastní ikony můžete použít jen místní obrázky."
+msgstr ""
+"Soubor, který jste pustili, není obrázek. Jako vlastní ikony můžete použít "
+"jen místní obrázky."
 
 #: src/file-manager/fm-properties-window.c:334 src/nautilus-sidebar.c:767
 msgid "Images Only"
@@ -5197,7 +5293,9 @@ msgstr "Vyberte ikonu:"
 msgid ""
 "Search results may not include items modified after %s, when your drive was "
 "last indexed."
-msgstr "Výsledky hledání možná nebudou obsahovat položky změněné po %s, kdy byl váš disk naposledy indexován."
+msgstr ""
+"Výsledky hledání možná nebudou obsahovat položky změněné po %s, kdy byl váš "
+"disk naposledy indexován."
 
 #: src/file-manager/fm-search-list-view.c:144
 msgid "Search Results"
@@ -5207,7 +5305,9 @@ msgstr "Výsledky hledání"
 msgid ""
 "Sorry, but the Medusa search service is not available because it is not "
 "installed."
-msgstr "Lituji, ale služba hledání Medusa není k dispozici, protože není nainstalovaná."
+msgstr ""
+"Lituji, ale služba hledání Medusa není k dispozici, protože není "
+"nainstalovaná."
 
 #: src/file-manager/fm-search-list-view.c:167
 #: src/file-manager/nautilus-indexing-info.c:303
@@ -5219,7 +5319,10 @@ msgid ""
 "The search you have selected is newer than the index on your system.  The "
 "search will return no results right now.  You can create a new  index by "
 "running \"medusa-indexd\" as root on the command line."
-msgstr "Hledání, které jste vybrali, je novější, než index vašeho systému. Hledání teď nevrátí žádné výsledky. Nový index můžete vytvořit spuštěním \"medusa-indexd\" na příkazovém řádku jako root."
+msgstr ""
+"Hledání, které jste vybrali, je novější, než index vašeho systému. Hledání "
+"teď nevrátí žádné výsledky. Nový index můžete vytvořit spuštěním \"medusa-"
+"indexd\" na příkazovém řádku jako root."
 
 #: src/file-manager/fm-search-list-view.c:196
 msgid "Search for items that are too new"
@@ -5230,7 +5333,10 @@ msgid ""
 "Every indexed file on your computer matches the criteria you selected. You "
 "can check the spelling on your selections or add more criteria to narrow "
 "your results."
-msgstr "Každý indexovaný soubor na vašem počítači vyhovuje vámi vybraným kritériím. Zkontrolujte překlepy ve vašem výběru nebo zužte výsledky přidáním dalších kritérií."
+msgstr ""
+"Každý indexovaný soubor na vašem počítači vyhovuje vámi vybraným kritériím. "
+"Zkontrolujte překlepy ve vašem výběru nebo zužte výsledky přidáním dalších "
+"kritérií."
 
 #: src/file-manager/fm-search-list-view.c:204
 #: src/file-manager/fm-search-list-view.c:225
@@ -5244,7 +5350,10 @@ msgid ""
 "Find cannot open your file system index.  Your index may be missing or "
 "corrupt.  You can create a new index by running \"medusa-indexd\" as root on "
 "the command line."
-msgstr "Hledání nemohlo najít váš index systému souborů. Váš index může chybět nebo být poškozen. Nový index můžete vytvořit spuštěním \"medusa-indexd\" na příkazovém řádku jako root."
+msgstr ""
+"Hledání nemohlo najít váš index systému souborů. Váš index může chybět nebo "
+"být poškozen. Nový index můžete vytvořit spuštěním \"medusa-indexd\" na "
+"příkazovém řádku jako root."
 
 #: src/file-manager/fm-search-list-view.c:214
 msgid "Error reading file index"
@@ -5260,13 +5369,18 @@ msgid ""
 "To do a fast search, Find requires an index of the files on your system.  "
 "Find can't access your index right now so a slower search will be performed "
 "that doesn't use the index."
-msgstr "Aby bylo možné hledat rychle, je potřeba index souborů ve vašem systému. Hledání momentálně nemůže přistupovat k indexu, takže bude provedeno pomalejší hledání, které index nepoužívá."
+msgstr ""
+"Aby bylo možné hledat rychle, je potřeba index souborů ve vašem systému. "
+"Hledání momentálně nemůže přistupovat k indexu, takže bude provedeno "
+"pomalejší hledání, které index nepoužívá."
 
 #: src/file-manager/fm-search-list-view.c:249
 msgid ""
 "To do a content search, Find requires an index of the files on your system.  "
 "Find can't access your index right now. "
-msgstr "Aby bylo možné hledat v obsahu, je potřeba index souborů ve vašem systému. Hledání momentálně nemůže přistupovat k indexu."
+msgstr ""
+"Aby bylo možné hledat v obsahu, je potřeba index souborů ve vašem systému. "
+"Hledání momentálně nemůže přistupovat k indexu."
 
 #: src/file-manager/fm-search-list-view.c:253
 msgid "Fast searches are not available"
@@ -5286,7 +5400,9 @@ msgid ""
 "\n"
 "medusa-searchd"
 msgstr ""
-"Vaše soubory indexu jsou k dispozici, ale vyhledávací démon Medusa, který obsluhuje požadavky na index, neběží. Tento program spustíte přihlášením jako root a zadáním následujícího příkazu na příkazové řádce:\n"
+"Vaše soubory indexu jsou k dispozici, ale vyhledávací démon Medusa, který "
+"obsluhuje požadavky na index, neběží. Tento program spustíte přihlášením "
+"jako root a zadáním následujícího příkazu na příkazové řádce:\n"
 "\n"
 "medusa-searchd"
 
@@ -5295,14 +5411,20 @@ msgid ""
 "To do a fast search, Find requires an index of the files on your system.  "
 "Your computer is currently creating that index.   Because Find cannot use an "
 "index, this search may take several minutes."
-msgstr "Aby bylo možné hledat rychle, je potřeba index souborů ve vašem systému. Tento index se právě vytváří. Protože Hledání nemůže použít index, může hledání trvat několik minut."
+msgstr ""
+"Aby bylo možné hledat rychle, je potřeba index souborů ve vašem systému. "
+"Tento index se právě vytváří. Protože Hledání nemůže použít index, může "
+"hledání trvat několik minut."
 
 #: src/file-manager/fm-search-list-view.c:277
 msgid ""
 "To do a content search, Find requires an index of the content on your "
 "system.  Your computer is currently creating that index.  Content searches "
 "will be available when the index is complete."
-msgstr "Aby bylo možné hledat v obsahu, je potřeba index souborů ve vašem systému. Tento index se právě vytváří. Hledání v obsahu bude k dispozici, až bude index hotov."
+msgstr ""
+"Aby bylo možné hledat v obsahu, je potřeba index souborů ve vašem systému. "
+"Tento index se právě vytváří. Hledání v obsahu bude k dispozici, až bude "
+"index hotov."
 
 #: src/file-manager/fm-search-list-view.c:283
 #: src/file-manager/fm-search-list-view.c:306
@@ -5315,7 +5437,11 @@ msgid ""
 "index is available right now. You can create an index by running \"medusa-"
 "indexd\" as root on the command line.  Until a complete index is available, "
 "searches will take several minutes."
-msgstr "Aby bylo možné hledat rychle, je potřeba index souborů ve vašem systému. Tento index není momentálně k dispozici. Index můžete vytvořit spuštěním \"medusa-indexd\" na příkazovém řádku jako root. Dokud nebude k dispozici index, může hledání trvat několik minu."
+msgstr ""
+"Aby bylo možné hledat rychle, je potřeba index souborů ve vašem systému. "
+"Tento index není momentálně k dispozici. Index můžete vytvořit spuštěním "
+"\"medusa-indexd\" na příkazovém řádku jako root. Dokud nebude k dispozici "
+"index, může hledání trvat několik minu."
 
 #: src/file-manager/fm-search-list-view.c:298
 msgid ""
@@ -5323,14 +5449,20 @@ msgid ""
 "system.  No index is available right now.  You can create an index by "
 "running \"medusa-indexd\" as root on the command line.  Until a complete "
 "index is available, content searches cannot be performed."
-msgstr "Aby bylo možné hledat v obsahu, je potřeba index souborů ve vašem systému. Tento index není momentálně k dispozici. Index můžete vytvořit spuštěním \"medusa-indexd\" na příkazovém řádku jako root. Dokud nebude k dispozici index, nelze hledat v obsahu."
+msgstr ""
+"Aby bylo možné hledat v obsahu, je potřeba index souborů ve vašem systému. "
+"Tento index není momentálně k dispozici. Index můžete vytvořit spuštěním "
+"\"medusa-indexd\" na příkazovém řádku jako root. Dokud nebude k dispozici "
+"index, nelze hledat v obsahu."
 
 #: src/file-manager/fm-search-list-view.c:323
 msgid ""
 "To do a fast search, Find requires an index of the files on your system. "
 "Your system administrator has disabled fast search on your computer, so no "
 "index is available."
-msgstr "Aby bylo možné hledat rychle, je potřeba index souborů ve vašem systému. Váš správce systému zakázal rychlé hledání, takže index není k dispozici."
+msgstr ""
+"Aby bylo možné hledat rychle, je potřeba index souborů ve vašem systému. Váš "
+"správce systému zakázal rychlé hledání, takže index není k dispozici."
 
 #: src/file-manager/fm-search-list-view.c:327
 msgid "Fast searches are not enabled on your computer"
@@ -5369,7 +5501,9 @@ msgstr "Ukázat v %d _nových oknech"
 msgid ""
 "Nautilus found more search results than it can display. Some matching items "
 "will not be displayed. "
-msgstr "Nautilus našel více výsledků hledání, než může zobrazit. Některé odpovídající položky nebudou zobrazeny. "
+msgstr ""
+"Nautilus našel více výsledků hledání, než může zobrazit. Některé "
+"odpovídající položky nebudou zobrazeny. "
 
 #: src/file-manager/fm-search-list-view.c:686
 msgid "Too Many Matches"
@@ -5429,7 +5563,9 @@ msgstr "Ochránit vybraný svazek"
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:14
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
-msgstr "Zobrazit okno, které vám umožní nastavit vzor nebo barvu pozadí pracovní plochy"
+msgstr ""
+"Zobrazit okno, které vám umožní nastavit vzor nebo barvu pozadí pracovní "
+"plochy"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:15
 msgid "Show media properties for the selected volume"
@@ -5497,7 +5633,9 @@ msgstr "Změnit parametry spouštěče"
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid ""
 "Move or copy files previously selected by a Cut Files or Copy Files command"
-msgstr "Přesunout nebo zkopírovat soubory dříve vybrané příkazem Vyjmout soubory nebo Kopírovat soubory"
+msgstr ""
+"Přesunout nebo zkopírovat soubory dříve vybrané příkazem Vyjmout soubory "
+"nebo Kopírovat soubory"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:19
 msgid "Open Wit_h"
@@ -5533,7 +5671,8 @@ msgstr "Obnovit pohled na _implicitní"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:31
 msgid "Reset sorting order and zoom level to match preferences for this view"
-msgstr "Obnovit pořadí třídění a úroveň zvětšení podle nastavení pro tento pohled"
+msgstr ""
+"Obnovit pořadí třídění a úroveň zvětšení podle nastavení pro tento pohled"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Run or manage scripts from ~/Nautilus/scripts"
@@ -5682,14 +5821,19 @@ msgstr "Vaše soubory byly naposled indexovány v %s"
 msgid ""
 "Once a day your files and text content are indexed so your searches are "
 "fast.  Your files are currently being indexed."
-msgstr "Jednou za den jsou vaše soubory a textový obsah indexovány, aby bylo vaše hledání rychlé. Vaše soubory se právě indexují."
+msgstr ""
+"Jednou za den jsou vaše soubory a textový obsah indexovány, aby bylo vaše "
+"hledání rychlé. Vaše soubory se právě indexují."
 
 #: src/file-manager/nautilus-indexing-info.c:261
 msgid ""
 "When Fast Search is enabled, Find creates an index to speed up searches.  "
 "Fast searching is not enabled on your computer, so you do not have an index "
 "right now."
-msgstr "Když je povoleno Rychlé hledání, vytváří Hledání index pro zrychlení vyhledávání. Rychlé hledání není na vašem počítači povoleno, takže momentálně nemáte index."
+msgstr ""
+"Když je povoleno Rychlé hledání, vytváří Hledání index pro zrychlení "
+"vyhledávání. Rychlé hledání není na vašem počítači povoleno, takže "
+"momentálně nemáte index."
 
 #: src/file-manager/nautilus-indexing-info.c:265
 msgid "There is no index of your files right now."
@@ -5733,7 +5877,10 @@ msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
 "Nautilus, please create this folder, or set permissions such that Nautilus "
 "can create it."
-msgstr "Nautilus nemohl vytvořit potřebný adresář \"%s\". Před spuštěním Nautilu prosím vytvořte tento adresář nebo nastavte oprávnění tak, aby ho Nautilus mohl vytvořit."
+msgstr ""
+"Nautilus nemohl vytvořit potřebný adresář \"%s\". Před spuštěním Nautilu "
+"prosím vytvořte tento adresář nebo nastavte oprávnění tak, aby ho Nautilus "
+"mohl vytvořit."
 
 #: src/nautilus-application.c:224
 msgid "Couldn't Create Required Folders"
@@ -5753,7 +5900,8 @@ msgstr ""
 "\n"
 "%s\n"
 "\n"
-"Před spuštěním Nautilu prosím vytvořte tyto adresáře nebo nastavte oprávnění tak, aby je Nautilus mohl vytvořit."
+"Před spuštěním Nautilu prosím vytvořte tyto adresáře nebo nastavte oprávnění "
+"tak, aby je Nautilus mohl vytvořit."
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.server file. This has happened when you
@@ -5770,7 +5918,10 @@ msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
 "installing Nautilus again."
-msgstr "Nyní nelze Nautilus použít. Problém možná vyřešíte spuštěním příkazu \"bonobo-slay\" z konzoly. Pokud ne, můžete zkusit restartovat počítač nebo znovu nainstalovat Nautilus."
+msgstr ""
+"Nyní nelze Nautilus použít. Problém možná vyřešíte spuštěním příkazu "
+"\"bonobo-slay\" z konzoly. Pokud ne, můžete zkusit restartovat počítač nebo "
+"znovu nainstalovat Nautilus."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:449
@@ -5793,15 +5944,23 @@ msgid ""
 "We have also seen this error when a faulty version of bonobo-activation was "
 "installed."
 msgstr ""
-"Nyní nelze Nautilus použít. Problém možná vyřešíte spuštěním příkazu \"bonobo-slay\" z konzole. Pokud ne, můžete zkusit restartovat počítač nebo znovu nainstalovat Nautilus.\n"
+"Nyní nelze Nautilus použít. Problém možná vyřešíte spuštěním příkazu "
+"\"bonobo-slay\" z konzole. Pokud ne, můžete zkusit restartovat počítač nebo "
+"znovu nainstalovat Nautilus.\n"
 "\n"
-"Bonobo nemohl nalézt soubor Nautilus_shell.server. Zdá se, že jedna z příčin je LD_LIBRARY_PATH, která neobsahuje adresář knihoven bonobo-activation. Jiná možná příčina je špatná instalace, ve které chybí soubor Nautilus_Shell.server.\n"
+"Bonobo nemohl nalézt soubor Nautilus_shell.server. Zdá se, že jedna z příčin "
+"je LD_LIBRARY_PATH, která neobsahuje adresář knihoven bonobo-activation. "
+"Jiná možná příčina je špatná instalace, ve které chybí soubor Nautilus_Shell."
+"server.\n"
 "\n"
-"Spuštění \"bonobo-slay\" zabije všechny procesy Bonobo Activation a GConf, které mohou být potřebné pro jiné aplikace.\n"
+"Spuštění \"bonobo-slay\" zabije všechny procesy Bonobo Activation a GConf, "
+"které mohou být potřebné pro jiné aplikace.\n"
 "\n"
-"Někdy problém vyřeší zabití bonobo-activation-server a gconfd, ale nevíme proč.\n"
+"Někdy problém vyřeší zabití bonobo-activation-server a gconfd, ale nevíme "
+"proč.\n"
 "\n"
-"Také jsme tuto chybu viděli, když byla nainstalována vadná verze bonobo-activation."
+"Také jsme tuto chybu viděli, když byla nainstalována vadná verze bonobo-"
+"activation."
 
 #. Some misc. error (can never happen with current
 #. * version of bonobo-activation). Show dialog and terminate the
@@ -5820,21 +5979,29 @@ msgstr "Nyní nelze Nautilus použít kvůli neočekávané chybě."
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
-msgstr "Nyní nelze Nautilus použít kvůli neočekávané chybě z Bonobo při pokusu registrovat server pohledu správce souborů."
+msgstr ""
+"Nyní nelze Nautilus použít kvůli neočekávané chybě z Bonobo při pokusu "
+"registrovat server pohledu správce souborů."
 
 #: src/nautilus-application.c:498
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
-msgstr "Nyní nelze Nautilus použít kvůli neočekávané chybě z Bonobo při pokusu nalézt továrnu. Problém možná vyřešíte zabitím bonobo-activation-server a restartováním Nautilu."
+msgstr ""
+"Nyní nelze Nautilus použít kvůli neočekávané chybě z Bonobo při pokusu "
+"nalézt továrnu. Problém možná vyřešíte zabitím bonobo-activation-server a "
+"restartováním Nautilu."
 
 #: src/nautilus-application.c:505
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
 "restarting Nautilus may help fix the problem."
-msgstr "Nyní nelze Nautilus použít kvůli neočekávané chybě z Bonobo při pokusu nalézt objekt shellu. Problém možná vyřešíte zabitím bonobo-activation-server a restartováním Nautilu."
+msgstr ""
+"Nyní nelze Nautilus použít kvůli neočekávané chybě z Bonobo při pokusu "
+"nalézt objekt shellu. Problém možná vyřešíte zabitím bonobo-activation-"
+"server a restartováním Nautilu."
 
 #: src/nautilus-bookmarks-window.c:137 src/nautilus-preferences-dialog.c:371
 #: src/nautilus-property-browser.c:1498 src/nautilus-window-menus.c:688
@@ -5883,7 +6050,8 @@ msgid ""
 "\n"
 "You can manually erase this file to present the druid again.\n"
 msgstr ""
-"Existence tohoto souboru znamená, že druid nastavení Nautilu již byl nabídnut.\n"
+"Existence tohoto souboru znamená, že druid nastavení Nautilu již byl "
+"nabídnut.\n"
 "\n"
 "Druida můžete znovu zobrazit ručním smazáním tohoto souboru.\n"
 
@@ -6339,14 +6507,17 @@ msgstr "Nemohu nainstalovat emblém"
 #: src/nautilus-property-browser.c:1362
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
-msgstr "Lituji, ale klíčová slova emblémů mohou obsahovat jen písmena, mezery a čísla."
+msgstr ""
+"Lituji, ale klíčová slova emblémů mohou obsahovat jen písmena, mezery a "
+"čísla."
 
 #: src/nautilus-property-browser.c:1365
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
 "for it."
-msgstr "Lituji, ale klíčové slovo \"%s\" již existuje. Zvolte prosím jiné jméno."
+msgstr ""
+"Lituji, ale klíčové slovo \"%s\" již existuje. Zvolte prosím jiné jméno."
 
 #: src/nautilus-property-browser.c:1397
 #, c-format
@@ -6624,7 +6795,9 @@ msgstr "Zobrazit kredity pro tvůrce Nautilu"
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
-msgstr "Zobrazit vzorky, barvy a emblémy, které mohou být použity pro upravení vzhledu"
+msgstr ""
+"Zobrazit vzorky, barvy a emblémy, které mohou být použity pro upravení "
+"vzhledu"
 
 #: src/nautilus-shell-ui.xml.h:18
 msgid "Display the latest contents of the current location"
@@ -6925,7 +7098,9 @@ msgstr "Vyberte adresář tématu, který přidat jako nové téma:"
 msgid ""
 "Sorry, but you can't remove the current theme. Please change to another "
 "theme before removing this one."
-msgstr "Lituji, ale nemůžete odstranit aktuální téma. Před odstraněním tohoto tématu prosím zvolte jiné téma."
+msgstr ""
+"Lituji, ale nemůžete odstranit aktuální téma. Před odstraněním tohoto tématu "
+"prosím zvolte jiné téma."
 
 #: src/nautilus-theme-selector.c:308
 msgid "Can't delete current theme"
@@ -6972,7 +7147,9 @@ msgstr "Pohled selhal"
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
 "view or go to a different location."
-msgstr "V pohledu %s nastala chyba a on nemůže pokračovat. Můžete zvolit jiný pohled nebo přejít na jiné umístění."
+msgstr ""
+"V pohledu %s nastala chyba a on nemůže pokračovat. Můžete zvolit jiný pohled "
+"nebo přejít na jiné umístění."
 
 #: src/nautilus-window-manage-views.c:822
 #, c-format
@@ -6991,14 +7168,18 @@ msgstr "Pohled na aktuální soubor nebo adresář"
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
-msgstr "V jednom z panelů bočního panelu došlo k chybě a on nemůže pokračovat. Bohužel nevím, který."
+msgstr ""
+"V jednom z panelů bočního panelu došlo k chybě a on nemůže pokračovat. "
+"Bohužel nevím, který."
 
 #: src/nautilus-window-manage-views.c:1007
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
 "happening, you might want to turn this panel off."
-msgstr "V panelu bočního panelu %s došlo k chybě a on nemůže pokračovat. Pokud se to bude opakovat, možná byste měli tento panel vypnout."
+msgstr ""
+"V panelu bočního panelu %s došlo k chybě a on nemůže pokračovat. Pokud se to "
+"bude opakovat, možná byste měli tento panel vypnout."
 
 #: src/nautilus-window-manage-views.c:1012
 msgid "Sidebar Panel Failed"
@@ -7013,14 +7194,17 @@ msgstr "Nemohu najít \"%s\". Zkontrolujte prosím překlepy a zkuste to znovu."
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
-msgstr "\"%s\" není platné umístění. Zkontrolujte prosím překlepy a zkuste to znovu."
+msgstr ""
+"\"%s\" není platné umístění. Zkontrolujte prosím překlepy a zkuste to znovu."
 
 #: src/nautilus-window-manage-views.c:1278
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
 "it is."
-msgstr "Nemohu zobrazit \"%s\", protože Nautilus nemůže zjistit, jaký je to typ souboru."
+msgstr ""
+"Nemohu zobrazit \"%s\", protože Nautilus nemůže zjistit, jaký je to typ "
+"souboru."
 
 #: src/nautilus-window-manage-views.c:1286
 #, c-format
@@ -7031,7 +7215,8 @@ msgstr "Nautilus nemá nainstalován žádný prohlížeč schopný zobrazit \"%
 #: src/nautilus-window-manage-views.c:1298
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
-msgstr "Nemohu zobrazit \"%s\", protože Nautilus nemůže obsloužit umístění %s:."
+msgstr ""
+"Nemohu zobrazit \"%s\", protože Nautilus nemůže obsloužit umístění %s:."
 
 #: src/nautilus-window-manage-views.c:1304
 #, c-format
@@ -7048,14 +7233,18 @@ msgstr "Nemohu zobrazit \"%s\", protože přístup byl odmítnut."
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
 "the spelling is correct and that your proxy settings are correct."
-msgstr "Nemohu zobrazit \"%s\", protože nemohl být nalezen žádný počítač \"%s\". Zkontrolujte překlepy a vaše nastavení proxy."
+msgstr ""
+"Nemohu zobrazit \"%s\", protože nemohl být nalezen žádný počítač \"%s\". "
+"Zkontrolujte překlepy a vaše nastavení proxy."
 
 #: src/nautilus-window-manage-views.c:1328
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
 "proxy settings are correct."
-msgstr "Nemohu zobrazit \"%s\", protože jméno počítače bylo prázdné. Zkontrolujte vaše nastavení proxy."
+msgstr ""
+"Nemohu zobrazit \"%s\", protože jméno počítače bylo prázdné. Zkontrolujte "
+"vaše nastavení proxy."
 
 #: src/nautilus-window-manage-views.c:1340
 msgid ""
@@ -7063,7 +7252,10 @@ msgid ""
 "search service isn't running. Be sure that you have started the Medusa "
 "search service, and if you don't have an index, that the Medusa indexer is "
 "running."
-msgstr "Hledání momentálně není k dispozici, protože buď nemáte index, nebo neběží vyhledávací služba. Zkontrolujte, že jste spustili vyhledávací službu Medusa, a pokud nemáte index, že běží indexovací služba Medusy."
+msgstr ""
+"Hledání momentálně není k dispozici, protože buď nemáte index, nebo neběží "
+"vyhledávací služba. Zkontrolujte, že jste spustili vyhledávací službu "
+"Medusa, a pokud nemáte index, že běží indexovací služba Medusy."
 
 #: src/nautilus-window-manage-views.c:1344
 msgid "Searching Unavailable"
@@ -7076,7 +7268,8 @@ msgid ""
 "browser.\n"
 "Check that an SMB server is running in the local network."
 msgstr ""
-"Nemohu zobrazit \"%s\", protože Nautilus nemůže kontaktovat hlavní vyhledávač SMB.\n"
+"Nemohu zobrazit \"%s\", protože Nautilus nemůže kontaktovat hlavní "
+"vyhledávač SMB.\n"
 "Zkontrolujte, že na místní síti běží server SMB."
 
 #: src/nautilus-window-manage-views.c:1359
@@ -7103,7 +7296,9 @@ msgstr "Obsahuje pohled bočního panelu"
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
-msgstr "Jste si jisti, že chcete zapomenout historii? Pokud ano, je váš osud ji zopakovat."
+msgstr ""
+"Jste si jisti, že chcete zapomenout historii? Pokud ano, je váš osud ji "
+"zopakovat."
 
 #: src/nautilus-window-menus.c:363
 msgid "Are you sure you want to clear the list of locations you have visited?"
@@ -7135,14 +7330,18 @@ msgstr ""
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
-msgstr "Nautilus je grafické prostředí pro GNOME, které zjednodušuje správu vašich souborů a celého vašeho systému."
+msgstr ""
+"Nautilus je grafické prostředí pro GNOME, které zjednodušuje správu vašich "
+"souborů a celého vašeho systému."
 
 #: src/nautilus-window-menus.c:728
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
 "this location from your list?"
-msgstr "Umístění \"%s\" neexistuje. Chcete z vašeho seznamu odstranit všechny záložky s tímto umístěním?"
+msgstr ""
+"Umístění \"%s\" neexistuje. Chcete z vašeho seznamu odstranit všechny "
+"záložky s tímto umístěním?"
 
 #: src/nautilus-window-menus.c:732
 msgid "Bookmark for Nonexistent Location"
