@@ -541,7 +541,7 @@ tree_helper (EazelInstallCallback *service,
 
 static void
 something_failed (EazelInstallCallback *service,
-		  const PackageData *pd,
+		  PackageData *pd,
 		  EazelInstallProblem *problem,
 		  gboolean uninstall)
 {
@@ -574,14 +574,14 @@ something_failed (EazelInstallCallback *service,
 	if (problem) {
 		stuff = eazel_install_problem_tree_to_string (problem, pd, uninstall);
 		if (stuff) {
+			GList *extra_cases = NULL;
 			GList *it;
 			for (it = stuff; it; it = g_list_next (it)) {
 				fprintf (stdout, "\t\xB7 Problem : %s\n", (char*)(it->data));
 			}
-			eazel_install_problem_tree_to_case (problem, pd, uninstall, &cases);
-			stuff = eazel_install_problem_cases_to_string (problem, cases);
-			if (cases) {
-				stuff = eazel_install_problem_cases_to_string (problem, cases);
+			eazel_install_problem_tree_to_case (problem, pd, uninstall, &extra_cases);
+			if (extra_cases) {
+				stuff = eazel_install_problem_cases_to_string (problem, extra_cases);
 				if (stuff) {
 					GList *it;
 					for (it = stuff; it; it = g_list_next (it)) {
@@ -589,6 +589,7 @@ something_failed (EazelInstallCallback *service,
 					}
 				}
 			}
+			cases = g_list_concat (cases, extra_cases);
 		}
 	}
 	gtk_object_unref (GTK_OBJECT (pd));
@@ -599,7 +600,7 @@ something_failed (EazelInstallCallback *service,
  */
 static void
 install_failed (EazelInstallCallback *service,
-		const PackageData *pd,
+		PackageData *pd,
 		EazelInstallProblem *problem)
 {
 	something_failed (service, pd, problem, FALSE);
@@ -607,7 +608,7 @@ install_failed (EazelInstallCallback *service,
 
 static void
 uninstall_failed (EazelInstallCallback *service,
-		  const PackageData *pd,		
+		  PackageData *pd,		
 		  EazelInstallProblem *problem)
 {
 	something_failed (service, pd, problem, TRUE);

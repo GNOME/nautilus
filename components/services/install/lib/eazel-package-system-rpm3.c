@@ -988,14 +988,14 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 
 			/* If it's a lib*.so* or a /yadayada, but not ld-linux.so
 			   or rpmlib( add to provides */
-			if (((strncmp (requires_name[index], "lib", 3)==0 && strstr (requires_name[index], ".so")) ||
-			    (strncmp (requires_name[index], "ld-linux.so", 11) == 0) ||
-			    (*requires_name[index]=='/')) &&
-			    (strncmp (requires_name[index], "rpmlib(", 7) != 0)) {
-
-
+			if ((strncmp (requires_name[index], "lib", 3)==0 && 
+			     strstr (requires_name[index], ".so")) ||
+			    (*requires_name[index]=='/')) {
 				package->features = g_list_prepend (package->features, 
 								    g_strdup (requires_name[index]));
+			} else if ((strncmp (requires_name[index], "ld-linux.so", 11) != 0) ||
+				   (strncmp (requires_name[index], "rpmlib(", 7) != 0)) { 
+				/* foo */
 			} else {
 				/* Otherwise, add as a package name */
 				package->name = g_strdup (requires_name[index]);
@@ -1036,6 +1036,11 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 		}
 
 		free ((void*)provides_name);
+	}
+
+	/* Load the crack that is epoch/serial */
+	if (!headerGetEntry (hd, RPMTAG_EPOCH, NULL, (void**)&pack->epoch, NULL)) {
+		pack->epoch = 0;
 	}
 }
 

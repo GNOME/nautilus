@@ -284,14 +284,17 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 			initial_emit = TRUE;
 			last_emit = FALSE;
 			return TRUE;
+
 		case GNOME_VFS_XFER_PHASE_COLLECTING:
-			return TRUE;
 		case GNOME_VFS_XFER_PHASE_READYTOGO:
-			return TRUE;
 		case GNOME_VFS_XFER_PHASE_OPENSOURCE:
-			return TRUE;
 		case GNOME_VFS_XFER_PHASE_OPENTARGET:
+		case GNOME_VFS_XFER_CHECKING_DESTINATION:
+		case GNOME_VFS_XFER_PHASE_CLOSESOURCE:
+		case GNOME_VFS_XFER_PHASE_CLOSETARGET:
+		case GNOME_VFS_XFER_PHASE_FILECOMPLETED:
 			return TRUE;
+
 		case GNOME_VFS_XFER_PHASE_COPYING:
 #ifdef EIP_FAIL_ALL_DOWNLOADS
 			if (info->bytes_copied > 1024*8) {
@@ -299,24 +302,29 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 			}
 #endif /* EIP_FAIL_ALL_DOWNLOADS */
 
+			/* gnome-vfs had a period of time where it emitted bytes_copied = file_size+1k */
 			if (info->bytes_copied > info->file_size) {
 				g_warning ("VFS bug: lying about filesize, copying %ld > %ld", 
 					   (glong)info->bytes_copied,
 					   (glong)info->file_size);
 				return TRUE;
 			}
+                        /***/
+
 			if (initial_emit && info->file_size>0) {
 				initial_emit = FALSE;
 				eazel_install_emit_download_progress (service,
 								      package,
 								      0,
 								      info->file_size);
-			} else if (!last_emit && info->bytes_copied == info->file_size) {
-				last_emit = TRUE;
-				eazel_install_emit_download_progress (service, 
-								      package,
-								      info->file_size,
-								      info->file_size);
+			} else if (info->bytes_copied == info->file_size) {
+				if (!last_emit) {
+					last_emit = TRUE;
+					eazel_install_emit_download_progress (service, 
+									      package,
+									      info->file_size,
+									      info->file_size);
+				}
 			} else if (info->bytes_copied > 0) {
 				eazel_install_emit_download_progress (service, 
 								      package,
@@ -336,12 +344,6 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 				   info->bytes_total);
 */		
 			return TRUE;
-		case GNOME_VFS_XFER_PHASE_CLOSESOURCE:
-			return TRUE;
-		case GNOME_VFS_XFER_PHASE_CLOSETARGET:
-			return TRUE;
-		case GNOME_VFS_XFER_PHASE_FILECOMPLETED:
-			return TRUE;
 		case GNOME_VFS_XFER_PHASE_COMPLETED:
 			if (!last_emit) {
 				last_emit = TRUE;
@@ -352,8 +354,8 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 			}
 			return TRUE;
 		default:
-			trilobite_debug ("Unexpected phase %d", info->phase);
-			return FALSE; /* keep going anyway */
+			trilobite_debug ("Unexpected VFS phase %d", info->phase);
+			return TRUE; /* keep going anyway */
 		}
 		break;
 	case GNOME_VFS_XFER_PROGRESS_STATUS_DUPLICATE:
@@ -614,6 +616,13 @@ eazel_install_fetch_package (EazelInstall *service,
 	char* targetname = NULL;
 	char *name = g_strdup (package->name);
 	char *version = g_strdup (package->version);
+
+	if (package->suite_id != NULL) {
+		trilobite_debug ("suites has no urls...");
+		g_free (name);
+		g_free (version);
+		return TRUE;
+	}
 
 	if (package->remote_url != NULL) {
 		url = g_strdup (package->remote_url);

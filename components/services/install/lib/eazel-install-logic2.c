@@ -213,6 +213,11 @@ prune_failed_packages_helper (EazelInstall *service,
 		}
 	}
 
+	/* If it's a suite and no dependencies, cancel it */
+	if (pack->suite_id && g_list_length (pack->depends)==0) {
+		pack->status = PACKAGE_ALREADY_INSTALLED;
+	}
+
 	/* Recursion check */
 	if (g_list_find (*path, pack)) {
 #if EI2_DEBUG & 0x4
@@ -562,6 +567,20 @@ add_to_dedupe_hash (EazelInstall *service,
 			     package);
 }
 
+static void
+fail_modified_packages (EazelInstall *service, 
+			PackageData *package)
+{
+	GList *iterator;
+
+	for (iterator = package->modifies; iterator; iterator = g_list_next (iterator)) {
+		PackageData *pack = PACKAGEDATA (iterator->data);
+		if (pack->status == PACKAGE_RESOLVED) {
+			pack->status = PACKAGE_CANCELLED;
+		}
+	}
+}
+
 GetSoftCatResult
 get_softcat_info (EazelInstall *service, 
 		  PackageData **package)
@@ -628,7 +647,7 @@ get_softcat_info (EazelInstall *service,
 
 		if (p1) {
 #if EI2_DEBUG & 0x4
-			trilobite_debug ("deduping %p %s", *package, (*package)->name);
+			trilobite_debug ("deduping %p %s to %p", *package, (*package)->name, p1);
 #endif		
 			
 			gtk_object_ref (GTK_OBJECT (p1));
@@ -639,6 +658,14 @@ get_softcat_info (EazelInstall *service,
 
 			status = eazel_install_check_existing_packages (service, *package);
 
+#if 0
+			/* HACK to always fail gnome-libs for fun... */
+			if (strcmp ((*package)->name, "gnome-libs")==0) {
+				trilobite_debug ("%s:%d MATCHED gnome-libs", __FILE__, __LINE__);
+				status = EAZEL_INSTALL_STATUS_DOWNGRADES;
+			}
+#endif
+
 			switch (status) {
 			case EAZEL_INSTALL_STATUS_NEW_PACKAGE:
 				add_to_dedupe_hash (service, *package);
@@ -647,6 +674,7 @@ get_softcat_info (EazelInstall *service,
 				if (eazel_install_get_update (service)) {
 					add_to_dedupe_hash (service, *package);
 				} else {
+					fail_modified_packages (service, *package);
 					gtk_object_set_data (GTK_OBJECT (*package), 
 							     "cancelled", 
 							     GINT_TO_POINTER (1));
@@ -656,12 +684,14 @@ get_softcat_info (EazelInstall *service,
 				if (eazel_install_get_downgrade (service)) {
 					add_to_dedupe_hash (service, *package);
 				} else {
+					fail_modified_packages (service, *package);
 					gtk_object_set_data (GTK_OBJECT (*package), 
 							     "cancelled", 
 							     GINT_TO_POINTER (1));
 				}
 				break;
 			case EAZEL_INSTALL_STATUS_QUO:
+				fail_modified_packages (service, *package);
 				gtk_object_set_data (GTK_OBJECT (*package), 
 						     "cancelled", 
 						     GINT_TO_POINTER (1));
@@ -968,10 +998,12 @@ is_satisfied_from_package_list (EazelInstall *service,
 #endif
 	for (iterator = flat_packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *p = PACKAGEDATA (iterator->data);
+		/*
 		trilobite_debug ("\t\t --> checking %s %s %s", 
 				 p->name, 
 				 packagedata_status_enum_to_str (p->status),
 				 p->fillflag == MUST_HAVE ? "filled" : "not filled");
+		*/
 		if (p->status == PACKAGE_PARTLY_RESOLVED && 
 		    (p->fillflag == MUST_HAVE) && 
 		    p->name && 
@@ -1125,8 +1157,7 @@ check_dependencies_foreach (EazelInstall *service,
 			g_free (name_a);
 			g_free (name_b);
 
-			package->status = PACKAGE_CANCELLED;
-			remove = g_list_prepend (remove, dep);
+			package->status = PACKAGE_CIRCULAR_DEPENDENCY;
 		} else {
 			if (is_satisfied (service, packages, dep)) {
 				remove = g_list_prepend (remove, dep);
@@ -1279,6 +1310,41 @@ check_update_for_no_more_file_conflicts (PackageFileConflict *conflict,
 	return TRUE;
 }
 
+static gboolean
+check_for_no_more_missing_features (PackageFeatureMissing *missing, 
+				    PackageData *pack_update)
+{
+					/* FIXME: bugzilla.eazel.com 6811 */
+					/* 
+					   tjek that the update no longer requires 
+					   missing->features;
+					   for each F in missing->features {
+					       for each D in pack_update->depends {
+					           if F occurs in D->features pack_update still needs feature F
+					       }
+					   }
+					   
+					 */
+	GList *iterator;
+
+	for (iterator = missing->features; iterator; iterator = g_list_next (iterator)) {
+		char *feature = (char*)iterator->data;
+		GList *dep_iterator;
+		for (dep_iterator = pack_update->depends; dep_iterator; dep_iterator = g_list_next (dep_iterator)) {
+			PackageDependency *dep = PACKAGEDEPENDENCY (dep_iterator->data);
+			PackageData *pack = dep->package;
+			
+			if (pack==NULL) { continue; }
+			if (g_list_find (pack->features, feature)) {
+				return FALSE;
+			}
+		}		
+	}
+
+	return TRUE;
+}
+
+
 static void
 check_tree_helper (EazelInstall *service, 
 		   PackageData *pack,
@@ -1299,6 +1365,11 @@ check_tree_helper (EazelInstall *service,
 	trilobite_debug ("-> check_tree_for_conflicts_helper");
 #endif
 	if (pack->status == PACKAGE_FILE_CONFLICT) {
+		if (eazel_install_get_update (service)==FALSE) {
+#if EI2_DEBUG & 0x4
+			trilobite_debug ("cannot revive %s, update not allowed", pack->name);
+#endif			
+		}
 #if EI2_DEBUG & 0x4
 		trilobite_debug ("trying to revive %s", pack->name);
 #endif
@@ -1313,33 +1384,33 @@ check_tree_helper (EazelInstall *service,
 						      pack,
 						      pack_broken)) {
 				char *a, *b;
-					a = packagedata_get_readable_name (pack);
-					b = packagedata_get_readable_name (pack_broken);
-					g_message ("%s is related to %s",
-						   a, b);
-					
+				a = packagedata_get_readable_name (pack);
+				b = packagedata_get_readable_name (pack_broken);
+				g_message ("%s is related to %s",
+					   a, b);
+				
 					/* Create the pack_update */
-					pack_update = packagedata_new ();
-					pack_update->name = g_strdup (pack_broken->name);
-					pack_update->version = g_strdup (pack->version);
-					pack_update->distribution = pack_broken->distribution;
-					pack_update->archtype = g_strdup (pack_broken->archtype);
-					
+				pack_update = packagedata_new ();
+				pack_update->name = g_strdup (pack_broken->name);
+				pack_update->version = g_strdup (pack->version);
+				pack_update->distribution = pack_broken->distribution;
+				pack_update->archtype = g_strdup (pack_broken->archtype);
+				
 					/* Try and get the info */
-					if (eazel_softcat_get_info (service->private->softcat,
-								    pack_update,
-								    EAZEL_SOFTCAT_SENSE_EQ,
-								    UPDATE_MUST_HAVE) 
-					    != EAZEL_SOFTCAT_SUCCESS) {
-						update_available = FALSE;
+				if (eazel_softcat_get_info (service->private->softcat,
+							    pack_update,
+							    EAZEL_SOFTCAT_SENSE_EQ,
+							    UPDATE_MUST_HAVE) 
+				    != EAZEL_SOFTCAT_SUCCESS) {
+					update_available = FALSE;
 					        /* if we failed, delete the package object */
-						gtk_object_unref (GTK_OBJECT (pack_update));
-					} else {
+					gtk_object_unref (GTK_OBJECT (pack_update));
+				} else {
 						update_available = TRUE;
-					}
-					
-					g_free (a);
-					g_free (b);
+				}
+				
+				g_free (a);
+				g_free (b);
 			} else {
 				update_available = 
 					eazel_softcat_available_update (service->private->softcat,
@@ -1358,7 +1429,11 @@ check_tree_helper (EazelInstall *service,
 						proceed = FALSE;
 					}
 				} else if (IS_PACKAGEFEATUREMISSING (breakage)) {
-					/* FIXME: bugzilla.eazel.com 6811 */
+					PackageFeatureMissing *missing = PACKAGEFEATUREMISSING (breakage);
+					
+					if (!check_for_no_more_missing_features (missing, pack_update)) {
+						proceed = FALSE;
+					}					
 				} 
 				if (proceed) {
 #if EI2_DEBUG & 0x4
@@ -2035,11 +2110,11 @@ execute (EazelInstall *service,
 	eazel_install_init_transaction (service);
 	
 	/* Init the hack var to emit the old style progress signals */
-	service->private->infoblock [0] = 0;
-	service->private->infoblock [1] = 0;
-	service->private->infoblock [2] = 0;
+	service->private->infoblock [0] = 0; /* bytes of package completed */
+	service->private->infoblock [1] = 0; /* total size of package */
+	service->private->infoblock [2] = 0; /* number of packages */ 
 	service->private->infoblock [3] = g_list_length (flat_packages);
-	service->private->infoblock [4] = 0;
+	service->private->infoblock [4] = 0; /* total size completed */
 	service->private->infoblock [5] = eazel_install_get_total_size_of_packages (service, flat_packages);
 
 	switch (op) {
@@ -2476,7 +2551,7 @@ install_packages (EazelInstall *service, GList *categories)
 #endif	
 	if (packages) {
 		if (eazel_install_emit_preflight_check (service, packages)) {
-			int flags = EAZEL_PACKAGE_SYSTEM_OPERATION_UPGRADE | EAZEL_PACKAGE_SYSTEM_OPERATION_DOWNGRADE | EAZEL_PACKAGE_SYSTEM_OPERATION_FORCE;
+			int flags = EAZEL_PACKAGE_SYSTEM_OPERATION_UPGRADE | EAZEL_PACKAGE_SYSTEM_OPERATION_DOWNGRADE;
 			gboolean go_ahead = TRUE;
 			
 #if EI2_DEBUG & 0x4
@@ -2528,7 +2603,7 @@ uninstall_packages (EazelInstall *service, GList *categories)
 	
 	if (packages) {
 		if (eazel_install_emit_preflight_check (service, packages)) {
-			int flags = EAZEL_PACKAGE_SYSTEM_OPERATION_FORCE;
+			int flags = 0;
 			if (execute (service, packages, EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL, flags)) {
 				result = EAZEL_INSTALL_UNINSTALL_OK;
 			}

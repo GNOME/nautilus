@@ -185,6 +185,13 @@ eazel_package_system_rpm4_query_foreach (const char *dbpath,
 							  pig->detail_level,
 							  pig->result);
 		break;
+	case EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES_FEATURE:
+		eazel_package_system_rpm3_query_requires_feature (EAZEL_PACKAGE_SYSTEM_RPM3 (pig->system),
+								  dbpath,
+								  pig->key,
+								  pig->detail_level,
+								  pig->result);
+		break;
 	case EAZEL_PACKAGE_SYSTEM_QUERY_SUBSTR:
 		eazel_package_system_rpm4_query_substr (EAZEL_PACKAGE_SYSTEM_RPM4 (pig->system),
 							dbpath,

@@ -44,7 +44,6 @@ test_database_mtime (EazelPackageSystem *packsys)
 	} else {
 		tmp = ctime (&mtime);
 		g_message ("Package system database mtime: %s\n", tmp);
-		g_free (tmp);
 	}
 }
 
@@ -162,7 +161,7 @@ test_package_load (EazelPackageSystem *packsys,
 	} else {
 		g_message ("load_package test 1 FAIL");
 	}
-
+	g_message (packagedata_dump (p, TRUE));
 	gtk_object_unref (GTK_OBJECT (p));
 
 	flag = PACKAGE_FILL_NO_PROVIDES;
@@ -610,10 +609,10 @@ int main(int argc, char *argv[]) {
 
 	eazel_package_system_set_debug (packsys, arg_debug);
 
+	test_package_load (packsys, filename);
 	test_database_mtime (packsys);
 	test_is_installed (packsys);
 	test_version_compare (packsys);
-	test_package_load (packsys, filename);
 	test_query (packsys);
 	test_query_owns_mem (packsys);
 

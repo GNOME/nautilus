@@ -1,3 +1,89 @@
+2001-02-22  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	reviewed by: Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (something_failed), (install_failed), (uninstall_failed):
+	Fixed output of Problem/Actions.
+	
+	* components/services/install/command-line/eazel-test-packsys.c:
+	(test_database_mtime), (test_package_load), (main):
+	Fixed a fatal free in test_database_mtime.
+	Output first package loaded.
+	Set the package load to be the first test.
+	
+	* components/services/install/lib/eazel-install-logic2.c:
+	(prune_failed_packages_helper), (fail_modified_packages),
+	(get_softcat_info), (is_satisfied_from_package_list),
+	(check_dependencies_foreach), (check_for_no_more_missing_features),
+	(check_tree_helper), (execute), (install_packages),
+	(uninstall_packages):
+	If a package has suite_id set and no dependencies during pruning,
+	fail by setting to ALREADY_INSTALLED.
+	If  a package update/downgrades and isn't allowed to, set modified
+	packages->status top CANCELLED.
+	Ifdeffed out some code to always fail gnome-libs (for testing)
+	Commented out some crack debug output (\t\t-->checking)
+	Changed a status = CANCELLED to CIRCULAR_DEPENDENCY.
+	Fixed bug 6811, need to find a possible test case.
+	Fixed indentation in a fucktion.
+	Added comments to the code that sets the infoblock for the
+	progress signals.
+	No longer set FORCE under any condition.
+	
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_progress_signal):
+	Tried to fix the uninstall emits, but since bytesize is rarely
+	set...
+	
+	* components/services/install/lib/eazel-install-private.h:
+	Added a newline...
+
+	* components/services/install/lib/eazel-install-problem.h:
+	Removed some consts.
+	
+	* components/services/install/lib/eazel-install-problem.c:
+	(get_detailed_messages_breaks_foreach),
+	(get_detailed_messages_foreach),
+	(get_detailed_uninstall_messages_foreach), (compare_problem_case),
+	(add_force_install_both_case), (add_force_remove_case),
+	(add_remove_case), (add_update_case), (add_cascade_remove),
+	(get_detailed_cases_foreach),
+	(get_detailed_uninstall_cases_foreach),
+	(eazel_install_problem_case_to_string),
+	(eazel_install_problem_tree_to_case),
+	(eazel_install_problem_tree_to_string),
+	(build_categories_from_problem_list):
+	Eliminated the use of packagedata_copy
+	Fixed generation of strings for errors, won't report bogus
+	"already installed" cases.
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(gnome_vfs_xfer_callback), (eazel_install_fetch_package):
+	Fixed the extra download progress emission, which ocurred since
+	the off-by-1k gnome-vfs bug has been fixed.
+	Paranoia check to not download suite objects.
+
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(eazel_package_system_rpm3_packagedata_fill_from_header):
+	Fixed the broken feature loading.
+	Added code to load epoch *sigh*
+
+	* components/services/install/lib/eazel-package-system-rpm4.c:
+	(eazel_package_system_rpm4_query_foreach):
+	Added handler for QUERY_REQUIRES_FEATURE query enum.
+
+	* components/services/install/lib/eazel-package-system-types.h:
+	* components/services/install/lib/eazel-package-system-types.c:
+	(packagedata_finalize), (packagedata_initialize),
+	(packagedata_list_copy), (packagedata_copy),
+	(packagedata_fill_in_missing),
+	(flatten_packagedata_dependency_tree), (packagedata_dump_int):
+	copy avoid duplicated objects in the new tree, fixes redundant
+	problemhandler output.
+	Flatten tree doesn't add suites.
+	Added obsoletes and epoch to packagedata
+
 2001-02-22  John Harper  <jsh@eazel.com>
 
 	reviewed by: George Lebl <jirka@5z.com>

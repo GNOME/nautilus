@@ -63,6 +63,7 @@ struct _EazelInstallPrivate {
 	gboolean use_local_package_list;
   	
 	EazelPackageSystem *package_system;
+
 	/* hacky way to implement the old style signals with the new package system object */
 	unsigned long infoblock[6];
 

@@ -313,7 +313,7 @@ eazel_install_progress_signal (EazelPackageSystem *system,
 			eazel_install_emit_uninstall_progress (service, 
 							       pack,
 							       service->private->infoblock[2], service->private->infoblock[3],
-							       info[0], pack->bytesize,
+							       1, pack->bytesize,
 							       info[4], info[5]);
 			break;
 		default:

@@ -328,6 +328,11 @@ packagedata_finalize (GtkObject *obj)
 	g_list_free (pack->modifies);
 	pack->modifies = NULL;
 
+	g_free (pack->obsoletes);
+	pack->obsoletes = NULL;
+	
+	pack->epoch = 0;
+
 	if (pack->packsys_struc) {
 		/* FIXME: bugzilla.eazel.com 6007
 		 */
@@ -399,6 +404,8 @@ packagedata_initialize (PackageData *package) {
 	package->packsys_struc = NULL;
 	package->features = NULL;
 	package->fillflag = PACKAGE_FILL_INVALID;
+	package->obsoletes = NULL;
+	package->epoch = 0;
 }
 
 GtkType 
@@ -449,10 +456,9 @@ packagedata_list_copy (const GList *list, gboolean deep)
 
 	for (ptr = list; ptr; ptr = g_list_next (ptr)) {
 		result = g_list_prepend (result, 
-					 packagedata_copy ((PackageData*)(ptr->data), deep));
+					 packagedata_copy (PACKAGEDATA(ptr->data), deep));
 	}
 	result = g_list_reverse (result);
-
 	return result;
 }
 
@@ -503,6 +509,9 @@ packagedata_copy (const PackageData *pack, gboolean deep)
 	result->bytesize = pack->bytesize;
 	result->filesize = pack->filesize;
 	result->md5 = g_strdup (pack->md5);
+
+	result->obsoletes = g_strdup (pack->obsoletes);
+	result->epoch = pack->epoch;
 
 	if (deep) {
 		result->depends = packagedata_deplist_copy (pack->depends, TRUE);
@@ -556,6 +565,9 @@ packagedata_fill_in_missing (PackageData *package, const PackageData *full_packa
 	COPY_STRING (suite_id);
 	COPY_STRING (remote_url);
 	COPY_STRING (md5);
+	COPY_STRING (obsoletes);
+
+	package->epoch = full_package->epoch;
 
 	if (! (fill_flags & PACKAGE_FILL_NO_TEXT)) {
 		COPY_STRING (summary);
@@ -904,7 +916,10 @@ flatten_packagedata_dependency_tree (GList *packages)
 	   for dupes in the helper */
 	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack = PACKAGEDATA (iterator->data);
-		result = g_list_prepend (result, pack);
+		/* Don't add suites */
+		if (pack->suite_id == NULL) {
+			result = g_list_prepend (result, pack);
+		}
 	}
 	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack = PACKAGEDATA (iterator->data);
@@ -1422,6 +1437,12 @@ packagedata_dump_int (const PackageData *package, gboolean deep, int indent)
 	}
 	if (package->conflicts_checked) {
 		g_string_sprintfa (out, ", checked");
+	}
+	if (package->epoch) {
+		g_string_sprintfa (out, "\nEPOCH %d", package->epoch);
+	}
+	if (package->obsoletes) {
+		g_string_sprintfa (out, "\nObsoletes %s", package->obsoletes);
 	}
 	g_string_sprintfa (out, "\n");
 

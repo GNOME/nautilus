@@ -244,6 +244,12 @@ struct _PackageData {
 	 * list will contain "/bin/sh".
 	 */
 	GList *features;
+
+	/* This identifies a package (by name) that should be deleted if installing this package */
+	char *obsoletes;
+
+	/* if set, the package has an epoch, currently only set for stuff read from the local db system */
+	guint32 epoch;
 };
 
 PackageData* packagedata_new (void);

@@ -68,7 +68,7 @@ get_detailed_messages_breaks_foreach (PackageBreaks *breakage, GetErrorsForEachD
 	GList **errors = &(data->errors);
 
 	if (data->path) {
-		previous_pack = (PackageData*)(data->path->data);
+		previous_pack = PACKAGEDATA(data->path->data);
 	}
 
 	package_broken_name = packagebreaks_get_package (breakage)->name;
@@ -123,13 +123,10 @@ get_detailed_messages_foreach (GtkObject *foo, GetErrorsForEachData *data)
 		g_assert_not_reached ();
 	}
 
-	if (g_list_find (data->handled, pack)) {
-		return;
-	}
 
 	if (data->path) {
-		previous_pack = (PackageData*)(data->path->data);
-		top_pack = (PackageData*)(g_list_last (data->path)->data);
+		previous_pack = PACKAGEDATA(data->path->data);
+		top_pack = PACKAGEDATA(g_list_last (data->path)->data);
 		if (top_pack == previous_pack) {
 			previous_pack = NULL;
 		}
@@ -138,12 +135,16 @@ get_detailed_messages_foreach (GtkObject *foo, GetErrorsForEachData *data)
 	}
 	required = packagedata_get_readable_name (pack);
 
+	if (g_list_find (data->handled, pack)) { return; }
+
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:
 		break;
 	case PACKAGE_CANCELLED:
 		if (required_by) {
-			message = g_strdup_printf (_("%s was cancelled"), required);
+			if (pack->modifies!=NULL) {
+				message = g_strdup_printf (_("%s was cancelled"), required);
+			}
 		}
 		break;
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
@@ -205,21 +206,31 @@ get_detailed_messages_foreach (GtkObject *foo, GetErrorsForEachData *data)
 		}
 		break;
 	case PACKAGE_CIRCULAR_DEPENDENCY: 
-		if (previous_pack->status == PACKAGE_CIRCULAR_DEPENDENCY) {
-			if (g_list_length (data->path) >= 3) {
-				PackageData *causing_package = (PackageData*)((g_list_nth (data->path, 1))->data);
-				char *cause = packagedata_get_readable_name (causing_package);
-				message = g_strdup_printf ("%s and %s are mutexed because of %s", 
-							   required_by,
-							   required, 
-							   cause);
-				g_free (cause);
-			} else {
-				message = g_strdup_printf ("%s and %s exclude each other, but were both needed",
-							   required_by,
-							   required);
-			}
-		} 
+		if (previous_pack == NULL) {
+			message = g_strdup_printf ("%s depends on itself. Possibly SoftCat is updating...",
+						   required);
+		} else {
+			if (previous_pack->status == PACKAGE_CIRCULAR_DEPENDENCY) {
+				if (strcmp (required_by, required)==0) {
+					message = g_strdup_printf ("%s depends on itself. Possibly SoftCat is updating...",
+								   required);					
+				} else {
+					if (g_list_length (data->path) >= 3) {
+						PackageData *causing_package = PACKAGEDATA((g_list_nth (data->path, 1))->data);
+						char *cause = packagedata_get_readable_name (causing_package);
+						message = g_strdup_printf ("%s and %s are mutexed because of %s", 
+									   required_by,
+									   required, 
+									   cause);
+						g_free (cause);
+					} else {
+						message = g_strdup_printf ("%s and %s exclude each other, but were both needed",
+									   required_by,
+									   required);
+					}
+				}
+			} 
+		}
 		break;
 	case PACKAGE_RESOLVED:
 		break;
@@ -227,16 +238,16 @@ get_detailed_messages_foreach (GtkObject *foo, GetErrorsForEachData *data)
 
 	if (message != NULL) {
 		(*errors) = g_list_append (*errors, message);
-	} else {
+	} else if (pack->status == PACKAGE_CANCELLED) {
 		switch (pack->modify_status) {
 		case PACKAGE_MOD_UNTOUCHED:
 			break;
 		case PACKAGE_MOD_DOWNGRADED:
-			message = g_strdup_printf (_("%s, which is newer, is already installed and downgrade is not enabled"), 
+			message = g_strdup_printf (_("%s, which is newer, needs downgrade and downgrade is not enabled"), 
 						   required);
 			break;
 		case PACKAGE_MOD_UPGRADED:
-			message = g_strdup_printf (_("%s, which is older, is already installed and upgrade is not enabled"), 
+			message = g_strdup_printf (_("%s, which is older, needs upgrade and upgrade is not enabled"), 
 						   required);						     
 			break;
 		case PACKAGE_MOD_INSTALLED:
@@ -257,8 +268,6 @@ get_detailed_messages_foreach (GtkObject *foo, GetErrorsForEachData *data)
 	/* Create the path list */
 	data->path = g_list_prepend (data->path, pack);
 	data->handled = g_list_prepend (data->handled, pack);
-
-	g_message ("handled %p %s", pack, packagedata_get_readable_name (pack));
 
 	if (pack->status != PACKAGE_CANCELLED) {
 		g_list_foreach (pack->depends, (GFunc)get_detailed_messages_foreach, data);
@@ -294,8 +303,8 @@ get_detailed_uninstall_messages_foreach (GtkObject *foo,
 	}
 
 	if (data->path) {
-		previous_pack = (PackageData*)(data->path->data);
-		top_pack = (PackageData*)(g_list_last (data->path)->data);
+		previous_pack = PACKAGEDATA(data->path->data);
+		top_pack = PACKAGEDATA(g_list_last (data->path)->data);
 		if (top_pack == previous_pack) {
 			previous_pack = NULL;
 		}
@@ -409,11 +418,11 @@ compare_problem_case (EazelInstallProblemCase *a, EazelInstallProblemCase *b)
 			/* Check that all packages in a occur in b */
 			for (a_iterator = a->u.cascade.packages; 
 			     a_iterator && !result; a_iterator = g_list_next (a_iterator)) {
-				PackageData *a_pack = (PackageData*)a_iterator->data;
+				PackageData *a_pack = PACKAGEDATA(a_iterator->data);
 				GList *b_iterator;
 				for (b_iterator = b->u.cascade.packages; b_iterator; 
 				     b_iterator = g_list_next (b_iterator)) {
-					PackageData *b_pack = (PackageData*)b_iterator->data;
+					PackageData *b_pack = PACKAGEDATA(b_iterator->data);
 					result = eazel_install_package_compare (a_pack, b_pack);
 				}
 			}
@@ -537,19 +546,20 @@ add_continue_with_flag_case (EazelInstallProblem *problem,
 
 static void
 add_force_install_both_case (EazelInstallProblem *problem,
-			     const PackageData *pack_1, 
-			     const PackageData *pack_2,
+			     PackageData *pack_1, 
+			     PackageData *pack_2,
 			     GList **output) 
 {
 	EazelInstallProblemCase *pcase = eazel_install_problem_case_new (EI_PROBLEM_FORCE_INSTALL_BOTH);
-	PackageData *copy_1 = packagedata_copy (pack_1, FALSE);
-	PackageData *copy_2 = packagedata_copy (pack_2, FALSE);
 
 #ifdef EIP_DEBUG
 	g_message ("add_force_install_both_case");
 #endif /* EIP_DEBUG */
-	pcase->u.force_install_both.pack_1 = copy_1;
-	pcase->u.force_install_both.pack_2 = copy_2;
+	gtk_object_ref (GTK_OBJECT (pack_1));
+	gtk_object_ref (GTK_OBJECT (pack_2));
+
+	pcase->u.force_install_both.pack_1 = pack_1;
+	pcase->u.force_install_both.pack_2 = pack_2;
 	
 	if (!add_case (problem, pcase, output)) {
 		add_continue_with_flag_case (problem, 
@@ -562,18 +572,18 @@ add_force_install_both_case (EazelInstallProblem *problem,
 
 static void
 add_force_remove_case (EazelInstallProblem *problem,
-		       const PackageData *pack,
+		       PackageData *pack,
 		       gboolean file_conflict,
 		       GList **output) 
 {
 	EazelInstallProblemCase *pcase = eazel_install_problem_case_new (EI_PROBLEM_FORCE_REMOVE);
-	PackageData *copy = packagedata_copy (pack, FALSE);
 
 #ifdef EIP_DEBUG
 	g_message ("add_force_remove_case");
 #endif /* EIP_DEBUG */
-
-	pcase->u.force_remove.pack = copy;
+	
+	gtk_object_ref (GTK_OBJECT (pack));
+	pcase->u.force_remove.pack = pack;
 	pcase->file_conflict = file_conflict;
 	
 	if (!add_case (problem, pcase, output)) {
@@ -586,19 +596,19 @@ add_force_remove_case (EazelInstallProblem *problem,
 
 static void
 add_remove_case (EazelInstallProblem *problem,
-		 const PackageData *pack,
+		 PackageData *pack,
 		 gboolean file_conflict,
 		 GList **output)
 {
 
 	EazelInstallProblemCase *pcase = eazel_install_problem_case_new (EI_PROBLEM_REMOVE);
-	PackageData *copy = packagedata_copy (pack, FALSE);
 
 #ifdef EIP_DEBUG
 	g_message ("add_remove_case");
 #endif /* EIP_DEBUG */
-
-	pcase->u.remove.pack = copy;
+	
+	gtk_object_ref (GTK_OBJECT (pack));
+	pcase->u.remove.pack = pack;
 	pcase->file_conflict = file_conflict;
 	
 	if (!add_case (problem, pcase, output)) {
@@ -609,13 +619,12 @@ add_remove_case (EazelInstallProblem *problem,
 
 static void
 add_update_case (EazelInstallProblem *problem,
-		 const PackageData *pack,
+		 PackageData *pack,
 		 gboolean file_conflict,
 		 GList **output)
 {
 	EazelInstallProblemCase *pcase = eazel_install_problem_case_new (EI_PROBLEM_UPDATE);
 	PackageData *copy = packagedata_new ();
-
 #ifdef EIP_DEBUG
 	g_message ("add_update_case");
 #endif /* EIP_DEBUG */
@@ -650,7 +659,7 @@ add_cascade_remove (EazelInstallProblem *problem,
 	if (!add_case (problem, pcase, output)) {
 		GList *iterator;
 		for (iterator = *packs; iterator; iterator = g_list_next (iterator)) {
-			PackageData *pack = (PackageData*)(iterator->data);
+			PackageData *pack = PACKAGEDATA(iterator->data);
 			add_force_remove_case (problem, pack, file_conflict, output);
 		}
 		eazel_install_problem_case_destroy (pcase);
@@ -695,8 +704,10 @@ get_detailed_cases_foreach (GtkObject *foo,
 		   packagedata_modstatus_enum_to_str (pack->modify_status));
 #endif /* EIP_DEBUG */
 
+	if (g_list_find (data->handled, pack)) { return; }
+
 	if (data->path) {
-		previous_pack = (PackageData*)(data->path->data);
+		previous_pack = PACKAGEDATA(data->path->data);
 	}
 
 	switch (pack->status) {
@@ -746,34 +757,37 @@ get_detailed_cases_foreach (GtkObject *foo,
 	}
 
 	if (no_problem_added) {
-		switch (pack->modify_status) {
-		case PACKAGE_MOD_UNTOUCHED:
-			break;
-		case PACKAGE_MOD_DOWNGRADED:
-			add_continue_with_flag_case (data->problem,
-						     NULL,
-						     EazelInstallProblemContinueFlag_DOWNGRADE,
-						     FALSE,
-						     &(data->errors));
-			no_problem_added = FALSE;
-			break;
-		case PACKAGE_MOD_UPGRADED:
-			add_continue_with_flag_case (data->problem,
-						     NULL,
-						     EazelInstallProblemContinueFlag_UPGRADE,
-						     FALSE,
-						     &(data->errors));
-			no_problem_added = FALSE;
-			break;
-		case PACKAGE_MOD_INSTALLED:
-			break;
-		case PACKAGE_MOD_UNINSTALLED:
-			break;
+		if (pack->status == PACKAGE_CANCELLED) {
+			switch (pack->modify_status) {
+			case PACKAGE_MOD_UNTOUCHED:
+				break;
+			case PACKAGE_MOD_DOWNGRADED:
+				add_continue_with_flag_case (data->problem,
+							     NULL,
+							     EazelInstallProblemContinueFlag_DOWNGRADE,
+							     FALSE,
+							     &(data->errors));
+				no_problem_added = FALSE;
+				break;
+			case PACKAGE_MOD_UPGRADED:
+				add_continue_with_flag_case (data->problem,
+							     NULL,
+							     EazelInstallProblemContinueFlag_UPGRADE,
+							     FALSE,
+							     &(data->errors));
+				no_problem_added = FALSE;
+				break;
+			case PACKAGE_MOD_INSTALLED:
+				break;
+			case PACKAGE_MOD_UNINSTALLED:
+				break;
+			}
 		}
 	}
 
 	/* Create the path list */
 	data->path = g_list_prepend (data->path, pack);
+	data->handled = g_list_prepend (data->handled, pack);
 
 	g_list_foreach (pack->depends, (GFunc)get_detailed_cases_foreach, data);
 	g_list_foreach (pack->modifies, (GFunc)get_detailed_cases_foreach, data);
@@ -811,7 +825,7 @@ get_detailed_uninstall_cases_foreach (GtkObject *foo, GetErrorsForEachData *data
 #endif /* EIP_DEBUG */
 
 	if (data->path) {
-		previous_pack = (PackageData*)(data->path->data);
+		previous_pack = PACKAGEDATA(data->path->data);
 	}
 
 	if (pack->toplevel) {
@@ -829,7 +843,8 @@ get_detailed_uninstall_cases_foreach (GtkObject *foo, GetErrorsForEachData *data
 	case PACKAGE_DEPENDENCY_FAIL:
 	case PACKAGE_BREAKS_DEPENDENCY:
 		/* This is what a uninstall fail tree will normally have */
-		data->packs = g_list_prepend (data->packs, packagedata_copy (pack, FALSE));
+		gtk_object_ref (GTK_OBJECT (pack));
+		data->packs = g_list_prepend (data->packs, pack);
 		break;
 	case PACKAGE_INVALID:
 		break;
@@ -949,7 +964,7 @@ eazel_install_problem_case_to_string (EazelInstallProblemCase *pcase, gboolean n
 		}
 		iterator  = pcase->u.cascade.packages;
 		while (iterator) {
-			PackageData *pack = (PackageData*)iterator->data;
+			PackageData *pack = PACKAGEDATA(iterator->data);
 			iterator = g_list_next (iterator);
 			if (iterator) {
 				if (g_list_next (iterator)) {
@@ -1207,7 +1222,6 @@ eazel_install_problem_tree_to_case (EazelInstallProblem *problem,
 				    GList **output)
 {
 	GetErrorsForEachData data;
-	PackageData *pack_copy;
 
 	P_SANITY (problem);
 
@@ -1221,16 +1235,17 @@ eazel_install_problem_tree_to_case (EazelInstallProblem *problem,
 	data.errors = (*output);
 	data.path = NULL;
 	data.handled = NULL;
-	pack_copy = packagedata_copy (pack, TRUE);
 	problem->in_step_problem_mode = FALSE;
 
+	gtk_object_ref (GTK_OBJECT (pack));
+
 	if (uninstall) {
-		get_detailed_uninstall_cases_foreach (GTK_OBJECT (pack_copy), &data);
+		get_detailed_uninstall_cases_foreach (GTK_OBJECT (pack), &data);
 	} else {
-		get_detailed_cases_foreach (GTK_OBJECT (pack_copy), &data);
+		get_detailed_cases_foreach (GTK_OBJECT (pack), &data);
 	}
 
-	gtk_object_unref (GTK_OBJECT (pack_copy));
+	gtk_object_unref (GTK_OBJECT (pack));
 	(*output) = data.errors;
 }
 
@@ -1238,27 +1253,27 @@ eazel_install_problem_tree_to_case (EazelInstallProblem *problem,
    encountered problems in the given PackageData tree */
 GList* 
 eazel_install_problem_tree_to_string (EazelInstallProblem *problem,				      
-				      const PackageData *pack,
+				      PackageData *pack,
 				      gboolean uninstall)
 {
 	GList *result = NULL;
 	GetErrorsForEachData data;
-	PackageData *pack_copy;
 
 	P_SANITY_VAL (problem, result);
 
 	data.problem = problem;
 	data.errors = NULL;
 	data.path = NULL;
-	pack_copy = packagedata_copy (pack, TRUE);
+	data.handled = NULL;
 
+	gtk_object_ref (GTK_OBJECT (pack));
 	if (uninstall) {
-		get_detailed_uninstall_messages_foreach (GTK_OBJECT (pack_copy), &data);
+		get_detailed_uninstall_messages_foreach (GTK_OBJECT (pack), &data);
 	} else {
-		get_detailed_messages_foreach (GTK_OBJECT (pack_copy), &data);
+		get_detailed_messages_foreach (GTK_OBJECT (pack), &data);
 	}
 
-	gtk_object_unref (GTK_OBJECT (pack_copy));
+	gtk_object_unref (GTK_OBJECT (pack));
 	result = data.errors;
 
 	return result;
@@ -1368,22 +1383,22 @@ build_categories_from_problem_list (EazelInstallProblem *problem,
 
 		switch (pcase->problem) {
 		case EI_PROBLEM_UPDATE:
-			packages = g_list_prepend (packages, 
-						   packagedata_copy (pcase->u.update.pack, TRUE));
+			gtk_object_ref (GTK_OBJECT (pcase->u.update.pack));
+			packages = g_list_prepend (packages, pcase->u.update.pack);
 			break;
 		case EI_PROBLEM_FORCE_INSTALL_BOTH:
-			packages = g_list_prepend (packages, 
-						   packagedata_copy (pcase->u.force_install_both.pack_1, TRUE));
-			packages = g_list_prepend (packages, 
-						   packagedata_copy (pcase->u.force_install_both.pack_2, TRUE));
+			gtk_object_ref (GTK_OBJECT (pcase->u.force_install_both.pack_1));
+			gtk_object_ref (GTK_OBJECT (pcase->u.force_install_both.pack_2));
+			packages = g_list_prepend (packages, pcase->u.force_install_both.pack_1);
+			packages = g_list_prepend (packages, pcase->u.force_install_both.pack_2);
 			break;
 		case EI_PROBLEM_REMOVE:
-			packages = g_list_prepend (packages, 
-						   packagedata_copy (pcase->u.remove.pack, TRUE));
+			gtk_object_ref (GTK_OBJECT (pcase->u.remove.pack));
+			packages = g_list_prepend (packages, pcase->u.remove.pack);
 			break;
 		case EI_PROBLEM_FORCE_REMOVE:
-			packages = g_list_prepend (packages, 
-						   packagedata_copy (pcase->u.force_remove.pack, TRUE));
+			gtk_object_ref (GTK_OBJECT (pcase->u.force_remove.pack));
+			packages = g_list_prepend (packages, pcase->u.force_remove.pack);
 			break;
 		case EI_PROBLEM_CASCADE_REMOVE: {
 			GList *iterator;

@@ -170,7 +170,7 @@ void eazel_install_problem_tree_to_case (EazelInstallProblem *problem,
 /* This returns a GList<char*> list containing the 
    encountered problems in the given PackageData tree */
 GList * eazel_install_problem_tree_to_string (EazelInstallProblem *problem,
-					      const PackageData *pack,
+					      PackageData *pack,
 					      gboolean uninstall);
 
 /* This returns a GList<char*> list containing the 
