@@ -1,5 +1,22 @@
 2000-07-28  Gene Z. Ragan  <gzr@eazel.com>
 
+	OK.  I made a booboo.  Went back to using NautilusFile.
+	I really do understand what is going on now.
+	
+	NautilusFIle
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(activation_uri_gmc_link_read_callback):
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_contains_text), (nautilus_file_activate_custom):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file):
+	* libnautilus-extensions/nautilus-link.c:
+	(nautilus_link_is_link_file), (nautilus_link_set_icon):
+	* libnautilus-extensions/nautilus-link.h:
+	* src/file-manager/fm-icon-view.c: (get_icon_text_callback):
+
+2000-07-28  Gene Z. Ragan  <gzr@eazel.com>
+
 	Some placeholder trash code written at the request of Pavel.
 	
 	* libnautilus-extensions/nautilus-link.c: (nautilus_link_set_icon):

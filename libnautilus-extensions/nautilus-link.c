@@ -83,26 +83,21 @@ nautilus_link_create (const char *directory_path, const char *name, const char *
 
 /* given a path, returns TRUE if it's a link file */
 gboolean
-nautilus_link_is_link_file (const char *path)
+nautilus_link_is_link_file (NautilusFile *file)
 {
-	const char *mime_type;
-	char *escape_path;
+	char *mime_type;
 	
-	/* FIXME: Unescape path. Need to look some more into why I have to do this. */
-	escape_path = gnome_vfs_unescape_string_for_display (path);
-	
-	mime_type = gnome_vfs_get_file_mime_type (escape_path, NULL, FALSE);
+	mime_type = nautilus_file_get_mime_type (file);
 	if (mime_type == NULL) {
-		g_free (escape_path);
 		return FALSE;
 	}
 	
 	if (nautilus_strcasecmp (mime_type, "application/x-nautilus-link") == 0) {
-		g_free (escape_path);
+		g_free (mime_type);
 		return TRUE;
 	}
 
-	g_free (escape_path);
+	g_free (mime_type);
 
 	return FALSE;
 }
@@ -113,21 +108,30 @@ gboolean
 nautilus_link_set_icon (const char *path, const char *icon_name)
 {
 	xmlDocPtr document;
+	NautilusFile *file;
 
-	if (!nautilus_link_is_link_file (path)) {
+	file = nautilus_file_get (path);
+	if (file == NULL) {
+		return FALSE;
+	}
+	
+	if (!nautilus_link_is_link_file (file)) {
+		nautilus_file_unref (file);
 		return FALSE;
 	}
 
 	document = xmlParseFile (path);
 	if (document == NULL) {
+		nautilus_file_unref (file);
 		return FALSE;
 	}
 
 	xmlSetProp (xmlDocGetRootElement (document), NAUTILUS_METADATA_KEY_CUSTOM_ICON, icon_name);
 
 	xmlSaveFile (path, document);
-
 	xmlFreeDoc (document);
+
+	nautilus_file_unref (file);
 	
 	return TRUE;
 }

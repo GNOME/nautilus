@@ -36,7 +36,7 @@ gboolean nautilus_link_create 				(const char *directory_path,
 							 const char *uri);
 
 /* given a uri, returns TRUE if it's a link file */
-gboolean nautilus_link_is_link_file                	(const char *path);
+gboolean nautilus_link_is_link_file                	(NautilusFile *file);
 
 gboolean nautilus_link_set_icon 			(const char  *path, 
 							 const char  *icon_name);

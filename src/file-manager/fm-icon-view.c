@@ -1495,8 +1495,6 @@ get_icon_text_callback (NautilusIconContainer *container,
 	char **text_array;
 	int i , slot_index;
 	char *attribute_string;
-	const char *path;
-	GnomeVFSURI *vfs_uri;
 	
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (file));
@@ -1515,16 +1513,11 @@ get_icon_text_callback (NautilusIconContainer *container,
 	
 	/* Handle link files specially. */
 	actual_uri = nautilus_file_get_uri (file);
-	vfs_uri = gnome_vfs_uri_new (actual_uri);
-	path = gnome_vfs_uri_get_path (vfs_uri);
-	if (nautilus_link_is_link_file (path)) {		
+	if (nautilus_link_is_link_file (file)) {		
 		*additional_text = nautilus_link_get_additional_text (actual_uri);
 		g_free (actual_uri);
-		gnome_vfs_uri_unref (vfs_uri);
 		return;
 	}
-	g_free (actual_uri);
-	gnome_vfs_uri_unref (vfs_uri);
 	
 	/* Find out what attributes go below each icon. */
 	attribute_names = fm_icon_view_get_icon_text_attribute_names (icon_view);

@@ -931,8 +931,6 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 {
 	char *uri, *file_uri, *image_uri, *icon_name, *mime_type, *top_left_text;
  	NautilusScalableIcon *scalable_icon;
- 	GnomeVFSURI *vfs_uri;
- 	const char *path;
 	
 	if (file == NULL) {
 		return NULL;
@@ -963,11 +961,8 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 	icon_name = NULL;
 	if (uri == NULL) {
 		uri = g_strdup (file_uri);
-	}
-	vfs_uri = gnome_vfs_uri_new (uri);
-	path = gnome_vfs_uri_get_path (vfs_uri);
-	
-	if (nautilus_link_is_link_file (path)) {	
+	}	
+	if (nautilus_link_is_link_file (file)) {	
 		image_uri = nautilus_link_get_image_uri (file_uri);
 		if (image_uri != NULL) {
 			if (nautilus_istr_has_prefix (image_uri, "file://"))
@@ -977,7 +972,6 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 			}
 		}
 	}
-	gnome_vfs_uri_unref (vfs_uri);
 			
 	/* handle SVG files */
 	if (uri == NULL && nautilus_file_is_mime_type (file, "image/svg")) {
