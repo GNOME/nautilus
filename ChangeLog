@@ -1,3 +1,15 @@
+2000-11-16  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(hide_rename_widget):
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(create_selection_shadow):
+	Remove two different FIXMEs about using gtk_object_destroy instead
+	of gtk_object_unref. It turns out that for widgets, destroy is the
+	right way to let go.
+
 2000-11-27  Andy Hertzfeld  andy@eazel.com>
 
 	* src/file-manager/fm-directory-view.c: (real_update_menus):

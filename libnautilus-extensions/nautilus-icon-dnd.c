@@ -140,9 +140,6 @@ create_selection_shadow (NautilusIconContainer *container,
            we try to be smart and only create the maximum number of rectangles
            that we will need, in the vertical/horizontal directions.  */
 
-	/* FIXME bugzilla.eazel.com 624: 
-	 * Does this work properly if the window is scrolled? 
-	 */
 	max_x = GTK_WIDGET (container)->allocation.width;
 	min_x = -max_x;
 
