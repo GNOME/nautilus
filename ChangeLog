@@ -1,3 +1,9 @@
+2002-03-13  Anders Carlsson  <andersca@gnu.org>
+
+	* src/nautilus-window-menus.c 
+	(help_menu_about_nautilus_callback): 
+	Call gtk_window_set_transient_for on the about dialog.
+
 2002-03-12  Alexander Larsson  <alla@lysator.liu.se>
 
 	* components/music/nautilus-music-view.c:
@@ -19,6 +25,7 @@
 	Fix a crash where the music view would crash after playing the
 	last song of a list. Correct indentation.
 
+>>>>>>> 1.5131
 2002-03-11  Anders Carlsson  <andersca@gnu.org>
 
 	* libnautilus-private/Makefile.am:

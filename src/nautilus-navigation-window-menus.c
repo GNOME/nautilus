@@ -625,6 +625,7 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 					 NULL,
 					 translator_credits,
 					 NULL);
+		gtk_window_set_transient_for (GTK_WINDOW (about), GTK_WINDOW (user_data));
 		
 		g_free (build_message);
 
