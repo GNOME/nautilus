@@ -1082,22 +1082,15 @@ fm_icon_view_set_selection (FMDirectoryView *view, GList *selection)
 	nautilus_icon_container_set_selection (icon_container, selection);
 }
 
-/* activate the passed-in list of files.  Open the first one potentially in the original window,
-   and subsequent ones in new windows */    
 static void
 icon_container_activate_callback (NautilusIconContainer *container,
 				  GList *file_list,
 				  FMIconView *icon_view)
 {
-	int count;
-	GList *p;
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 	g_assert (container == get_icon_container (icon_view));
 
-	count = 0;
-	for (p = file_list; p != NULL; p = p->next) {  	
-		fm_directory_view_activate_file (FM_DIRECTORY_VIEW (icon_view), p->data, count++ > 0);
-	}
+	fm_directory_view_activate_files (FM_DIRECTORY_VIEW (icon_view), file_list);
 }
 
 /* handle the preview signal by inspecting the mime type.  For now, we only preview sound files. */

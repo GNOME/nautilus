@@ -129,9 +129,6 @@ struct NautilusIconContainerDetails {
 
 	/* Remembered information about the start of the current event. */
 	guint32 button_down_time;
-
-	/* list of selected files remembered between clicks so double-click can activate the entire selection */	
-	GList* last_selected_files;
 	
 	/* Drag state. Valid only if drag_button is non-zero. */
 	guint drag_button;

@@ -99,8 +99,8 @@ struct NautilusListClass {
 	/* Signal: invoke the popup menu for empty areas */
 	void (* context_click_background) (NautilusList *list);
 
-	/* Signal: open the file in the selected row */
-	void (* activate) (NautilusList *list, gpointer data);
+	/* Signal: announce that one or more items have been activated. */
+	void (* activate) (NautilusList *list, GList *row_data_list);
 
 	/* Signal: selection has changed */
 	void (* selection_changed) (NautilusList *list);

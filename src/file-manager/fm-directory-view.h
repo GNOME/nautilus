@@ -235,9 +235,8 @@ void               fm_directory_view_begin_loading                  (FMDirectory
 /* Hooks for subclasses to call. These are normally called only by 
  * FMDirectoryView and its subclasses 
  */
-void               fm_directory_view_activate_file                  (FMDirectoryView       *view,
-								     NautilusFile          *file,
-								     gboolean               request_new_window);
+void               fm_directory_view_activate_files                 (FMDirectoryView       *view,
+								     GList          	   *files);
 void               fm_directory_view_notify_selection_changed       (FMDirectoryView       *view);
 BonoboUIHandler *  fm_directory_view_get_bonobo_ui_handler          (FMDirectoryView       *view);
 NautilusDirectory *fm_directory_view_get_model                      (FMDirectoryView       *view);

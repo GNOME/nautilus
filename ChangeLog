@@ -1,3 +1,83 @@
+2000-06-09  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bugs related to selection and activation in directory
+	views, including 881 (right-click on selected item in list
+	view shouldn't change selection), 918 (mouse activation
+	in list view shouldn't affect only clicked item), and some
+	others I found while in this code. Redefined the behavior
+	of activation and multiple selection to some extent. Now
+	double-clicking on a selected item always opens all selected
+	items, and always opens them in new windows. If in single-click
+	mode, single-clicking in list view when there's a multiple
+	selection still opens only the clicked-on item, since the UI
+	makes it pretty clear that you're clicking on a link for this
+	one item. In icon view, single-clicking on a selected item in
+	a multiple selection opens all selected items in new windows,
+	since this feels to me more like "activate selected items"
+	than "follow link", but I'm not really sure which is better.
+
+	I changed the old behavior where single-clicking in icon view
+	with a multiple selection would open the clicked item in the
+	same window (if your preference was for "open in same window")
+	and all others in new windows. In practice this seemed wrong,
+	and opening all of the items in new windows is equivalent to
+	the "Open in n New Windows" menu item. Please argue with me
+	if you disagree.
+
+	* libnautilus-extensions/nautilus-icon-container.c: 
+	(remember_selected_files), (forget_selected_files): Removed these
+	functions, which were part of an earlier incomplete selection
+	behavior fix.
+	(destroy): Removed call to forget_selected_files.
+	(nautilus_icon_container_almost_drag): Changed name to
+	somewhat less misleading "nautilus_icon_container_did_not_drag";
+	fixed bug where clicking on selected item (in double-click mode)
+	would deselect other selected items; replaced remember/forget
+	pair with call to activate_selected_items.
+	(handle_icon_button_press): replaced remember/forget pair with
+	call to activate_selected_items.
+	(activate_selected_items): Reimplemented to use nautilus_icon_
+	container_get_selection instead of remember/forget.
+	
+	* libnautilus-extensions/nautilus-icon-private.h: Removed
+	last_selected_files field, formerly used by remember_ and
+	forget_selected_files.
+	
+	* libnautilus-extensions/nautilus-list.h: Changed "activate"
+	signal to pass a list of items to activate instead of just one.
+	
+	* libnautilus-extensions/nautilus-list.c:
+	(event_state_modifies_selection): New helper function, checks
+	for control or shift key mask.
+	(activate_row_data_list): New function, emits activate signal
+	on a list of row_data elements.
+	(activate_selected_rows): New function.
+	(activate_row): Reimplemented to use activate_row_data_list.
+	(nautilus_list_button_press): Deployed 
+	event_state_modifies_selection; fixed 881 by not deselecting
+	other items when right-clicking on a selected item; fixed 918
+	by making double-click activate all selected rows.
+	(nautilus_list_button_release): Deployed 
+	event_state_modifies_selection; fixed bug where (left-)
+	clicking on a selected item would unselect others
+	
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_activate_file): Renamed from
+	fm_directory_view_activate_files; now takes a list
+	of files to activate and opens them all in new windows
+	if there are more than one (otherwise respects preference).
+	(fm_directory_view_activate_file_internal): Renamed to
+	fm_directory_view_activate_file now that this name was
+	available.
+	
+	* src/file-manager/fm-icon-view.c:
+	(icon_container_activate_callback): Now calls 
+	fm_directory_view_activate_files instead of iterating here.
+	* src/file-manager/fm-list-view.c: 
+	(list_activate_callback): Changed to take list parameter and
+	call fm_directory_view_activate_files.
+
 2000-06-09  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-text-item.c:

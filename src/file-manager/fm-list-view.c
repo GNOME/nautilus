@@ -110,7 +110,7 @@ static void              context_click_background_callback        (GtkCList     
 								   FMListView         *list_view);
 static NautilusList *    create_list                              (FMListView         *list_view);
 static void              list_activate_callback                   (NautilusList       *list,
-								   gpointer            entry_data,
+								   GList              *file_list,
 								   gpointer            data);
 static void              list_selection_changed_callback          (NautilusList       *list,
 								   gpointer            data);
@@ -752,14 +752,14 @@ create_list (FMListView *list_view)
 
 static void
 list_activate_callback (NautilusList *list,
-			gpointer entry_data,
+			GList *file_list,
 			gpointer data)
 {
 	g_return_if_fail (NAUTILUS_IS_LIST (list));
 	g_return_if_fail (FM_IS_LIST_VIEW (data));
-	g_return_if_fail (entry_data != NULL);
+	g_return_if_fail (file_list != NULL);
 
-	fm_directory_view_activate_file (FM_DIRECTORY_VIEW (data), entry_data, FALSE);
+	fm_directory_view_activate_files (FM_DIRECTORY_VIEW (data), file_list);
 }
 
 static void

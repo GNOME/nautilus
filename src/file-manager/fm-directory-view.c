@@ -119,7 +119,7 @@ static void           fm_directory_view_trash_or_delete_selection               
 										   GList                    *files);
 static void	      fm_directory_view_new_folder				  (FMDirectoryView          *view);
 static void           fm_directory_view_destroy                                   (GtkObject                *object);
-static void           fm_directory_view_activate_file_internal                    (FMDirectoryView          *view,
+static void           fm_directory_view_activate_file	                          (FMDirectoryView          *view,
 										   NautilusFile             *file,
 										   gboolean                  use_new_window);
 static void           fm_directory_view_create_background_context_menu_items      (FMDirectoryView          *view,
@@ -346,9 +346,9 @@ bonobo_menu_open_callback (BonoboUIHandler *ui_handler, gpointer user_data, cons
          */
         g_assert (nautilus_g_list_exactly_one_item (selection));
 
-	fm_directory_view_activate_file_internal (view, 
-	                                  	  NAUTILUS_FILE (selection->data), 
-	                                  	  FALSE);        
+	fm_directory_view_activate_file (view, 
+	                                 NAUTILUS_FILE (selection->data), 
+	                                 FALSE);        
 
 	nautilus_file_list_free (selection);
 }
@@ -1702,7 +1702,7 @@ open_callback (GtkMenuItem *item, GList *files)
 
 	directory_view = FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view"));
 
-	fm_directory_view_activate_file_internal (directory_view, files->data, FALSE);
+	fm_directory_view_activate_file (directory_view, files->data, FALSE);
 }
 
 static void
@@ -1711,7 +1711,7 @@ open_one_in_new_window (gpointer data, gpointer user_data)
 	g_assert (NAUTILUS_IS_FILE (data));
 	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
 
-	fm_directory_view_activate_file_internal (FM_DIRECTORY_VIEW (user_data), NAUTILUS_FILE (data), TRUE);
+	fm_directory_view_activate_file (FM_DIRECTORY_VIEW (user_data), NAUTILUS_FILE (data), TRUE);
 }
 
 static void
@@ -2695,22 +2695,19 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 }
 
 /**
- * fm_directory_view_activate_file_internal:
+ * fm_directory_view_activate_file:
  * 
- * Activate an file in this view. This might involve switching the displayed
- * location for the current window, or launching an application. The only
- * difference between this private call and the public fm_directory_view_activate_file
- * is that the public call combines the caller's new-window request with the
- * user's preference to create the value for this call.
+ * Activate a file in this view. This might involve switching the displayed
+ * location for the current window, or launching an application.
  * @view: FMDirectoryView in question.
  * @file: A NautilusFile representing the file in this view to activate.
  * @use_new_window: Should this item be opened in a new window?
  * 
  **/
 static void
-fm_directory_view_activate_file_internal (FMDirectoryView *view, 
-				 	  NautilusFile *file,
-				 	  gboolean use_new_window)
+fm_directory_view_activate_file (FMDirectoryView *view, 
+				 NautilusFile *file,
+				 gboolean use_new_window)
 {
 	GnomeVFSMimeActionType action_type;
 	GnomeVFSMimeApplication *application;
@@ -2746,29 +2743,37 @@ fm_directory_view_activate_file_internal (FMDirectoryView *view,
 
 
 /**
- * fm_directory_view_activate_file:
+ * fm_directory_view_activate_files:
  * 
- * Activate an file in this view. This might involve switching the displayed
- * location for the current window, or launching an application. This is normally
- * called only by subclasses.
+ * Activate a list of files. Each one might launch with an application or
+ * with a component. This is normally called only by subclasses.
  * @view: FMDirectoryView in question.
- * @file: A NautilusFile representing the file in this view to activate.
- * @request_new_window: Should this item be opened in a new window?
+ * @files: A GList of NautilusFiles to activate.
  * 
  **/
 void
-fm_directory_view_activate_file (FMDirectoryView *view, 
-				 NautilusFile *file,
-				 gboolean request_new_window)
+fm_directory_view_activate_files (FMDirectoryView *view, 
+				  GList *files)
 {
-	gboolean use_new_window_preference;
+	GList *node;
+	gboolean use_new_window;
 
-	use_new_window_preference = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-								      FALSE);
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	fm_directory_view_activate_file_internal (view,
-						  file,
-						  request_new_window || use_new_window_preference);
+	/* If there's a single file to activate, check user's preference whether
+	 * to open it in this window or a new window. If there is more than one
+	 * file to activate, open each one in a new window. Don't try to choose
+	 * one special one to replace the current window's contents; we tried this
+	 * but it proved mysterious in practice.
+	 */
+	use_new_window = nautilus_g_list_more_than_one_item (files)
+			 ||  nautilus_preferences_get_boolean 
+			 	(NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW, FALSE);
+
+	for (node = files; node != NULL; node = node->next) {  	
+		fm_directory_view_activate_file 
+			(view, node->data, use_new_window);
+	}
 }
 
 /**
