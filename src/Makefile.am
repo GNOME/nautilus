@@ -2,7 +2,7 @@ include $(top_srcdir)/Makefile.shared
 
 SUBDIRS=file-manager
 
-bin_PROGRAMS=nautilus
+bin_PROGRAMS=nautilus nautilus-server-connect
 
 INCLUDES =\
 	-I$(top_srcdir) \
@@ -32,6 +32,13 @@ LDADD =\
 	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
 	$(CORE_LIBS) \
 	$(NULL)
+
+@INTLTOOL_DESKTOP_RULE@
+
+nautilus_server_connect_SOURCES = nautilus-server-connect.c
+
+DESKTOP_IN_FILES=nautilus-server-connect.desktop.in
+DESKTOP_FILES=$(DESKTOP_IN_FILES:.desktop.in=.desktop)
 
 nautilus_shell_interface_idl_sources =		\
 	nautilus-shell-interface-stubs.c	\
@@ -133,7 +140,7 @@ ui_DATA = 					\
 	$(NULL)
 
 gladedir = $(datadir)/nautilus/glade
-glade_DATA = nautilus-bookmarks-window.glade
+glade_DATA = nautilus-bookmarks-window.glade nautilus-server-connect.glade
 
 CLEANFILES = \
 	$(nautilus_shell_interface_idl_sources)	\
@@ -147,6 +154,7 @@ EXTRA_DIST =					\
 	$(ui_DATA)				\
 	check-nautilus				\
 	nautilus-shell-interface.idl		\
+	$(DESKTOP_IN_FILES) $(DESKTOP_FILES)	\
 	$(NULL)
 
 BUILT_SOURCES = \

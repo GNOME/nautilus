@@ -24,6 +24,7 @@ icon_DATA =\
 	knob.png \
 	nautilus-launch-icon.png \
 	nautilus-mini-logo.png \
+	nautilus-server-connect.png \
 	note-indicator.png \
 	number_strip.png \
 	side_bar_image.png \
