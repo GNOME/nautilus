@@ -571,9 +571,14 @@ get_song_text (NautilusMusicView *music_view, int row)
         char *song_title;
         GtkTreeIter iter;
         char *info_title, *info_album, *info_year, *info_artist;
+        gint num_rows;
         
 	song_text = NULL;
 	artist_album_string = NULL;
+
+	num_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (music_view->details->list_store), NULL);
+        if (num_rows == 0)
+                return g_strdup ("");
 
         get_tree_iter_for_row (music_view, row, &iter);
         
@@ -1168,12 +1173,17 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 	char *song_filename, *title;
         GnomeVFSResult result;
         GnomeVFSFileInfo file_info;
-	int length;
+	int length, num_rows;
         char *path_uri;
         GtkTreeIter iter;
 	gboolean enable_esd = FALSE;
 	GConfClient *client;
         
+        /* If there are no tracks in the list, just return. */
+	num_rows = gtk_tree_model_iter_n_children (GTK_TREE_MODEL (music_view->details->list_store), NULL);
+        if (num_rows == 0)
+                return;
+
 	/* Check gconf sound preference */
 	client = gconf_client_get_default ();
 	enable_esd = gconf_client_get_bool (client, "/desktop/gnome/sound/enable_esd", NULL);

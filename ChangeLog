@@ -1,5 +1,12 @@
 2002-06-24  Damon Chaplin  <damon@ximian.com>
 
+	* components/music/nautilus-music-view.c (get_song_text): if there are
+	no tracks in the list just return "".
+	(play_current_file): if there are no tracks in the list just return.
+	Fixes bug #85975.
+
+2002-06-24  Damon Chaplin  <damon@ximian.com>
+
 	* src/nautilus-theme-selector.c (theme_selector_changed_callback): 
 	added a final NULL argument to g_signal_emit(). Fixes bug #85399.
 
