@@ -154,6 +154,7 @@ enum {
 	ICON_TEXT_CHANGED,
 	LAYOUT_CHANGED,
 	MOVE_COPY_ITEMS,
+	CREATE_NAUTILUS_LINKS,
 	PREVIEW,
 	SELECTION_CHANGED,	
 	LAST_SIGNAL
@@ -2400,7 +2401,7 @@ button_release_event (GtkWidget *widget,
 		stop_rubberbanding (container, event);
 		return TRUE;
 	}
-
+	
 	if (event->button == details->drag_button) {
 		details->drag_button = 0;
 
@@ -2842,6 +2843,18 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  GTK_TYPE_INT,
 				  GTK_TYPE_INT,
 				  GTK_TYPE_INT);
+	signals[CREATE_NAUTILUS_LINKS] 
+		= gtk_signal_new ("create_nautilus_links",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
+						     create_nautilus_links),
+				  gtk_marshal_NONE__POINTER_INT_INT,
+				  GTK_TYPE_NONE, 3,
+				  GTK_TYPE_POINTER,
+				  GTK_TYPE_INT,
+				  GTK_TYPE_INT);
+
 	signals[GET_CONTAINER_URI] 
 		= gtk_signal_new ("get_container_uri",
 				  GTK_RUN_LAST,

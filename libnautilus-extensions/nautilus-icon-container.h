@@ -86,6 +86,10 @@ typedef struct {
 						   int copy_action,
 						   int x,
 						   int y);
+	void	     (* create_nautilus_links)	  (NautilusIconContainer *container,
+						   GList *item_uris,
+						   int x,
+						   int y);
 
 	/* Queries on the container for subclass/client.
 	 * These must be implemented. The default "do nothing" is not good enough.

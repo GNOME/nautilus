@@ -306,14 +306,18 @@ nautilus_launch_application (GnomeVFSMimeApplication *application, const char *u
 void
 nautilus_launch_application_from_command (const char *command_string, const char *parameter)
 {
-	char *full_command, *quoted_parameter;
+	char *full_command, *quoted_parameter, *quoted_command;
 
 	if (parameter != NULL) {
 		quoted_parameter = nautilus_shell_quote (parameter);
-		full_command = g_strconcat (command_string, " ", quoted_parameter, " &", NULL);
+		quoted_command = nautilus_shell_quote (command_string);
+		full_command = g_strconcat (quoted_command, " ", quoted_parameter, " &", NULL);
+		g_free (quoted_command);
 		g_free (quoted_parameter);
 	} else {
-		full_command = g_strconcat (command_string, " &", NULL);
+		quoted_command = nautilus_shell_quote (command_string);
+		full_command = g_strconcat (quoted_command, " &", NULL);
+		g_free (quoted_command);
 	}
 
 	system (full_command);

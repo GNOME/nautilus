@@ -47,6 +47,7 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-mime.h>
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
@@ -78,6 +79,10 @@ static void     nautilus_icon_container_receive_dropped_icons    (NautilusIconCo
 static void     receive_dropped_tile_image                       (NautilusIconContainer *container, 
 								  GtkSelectionData *data);
 static void     receive_dropped_keyword                          (NautilusIconContainer *container, 
+								  char* keyword, 
+								  int x, 
+								  int y);
+static void     receive_dropped_uri_list                          (NautilusIconContainer *container, 
 								  char* keyword, 
 								  int x, 
 								  int y);
@@ -395,6 +400,7 @@ drag_data_received_callback (GtkWidget *widget,
 	case NAUTILUS_ICON_DND_COLOR:
 	case NAUTILUS_ICON_DND_BGIMAGE:	
 	case NAUTILUS_ICON_DND_KEYWORD:	
+	case NAUTILUS_ICON_DND_URI_LIST:
 		/* Save the data so we can do the actual work on drop. */
 		g_assert (drag_info->selection_data == NULL);
 		drag_info->selection_data = nautilus_gtk_selection_data_copy_deep (data);
@@ -434,6 +440,13 @@ drag_data_received_callback (GtkWidget *widget,
 				 (char*) data->data, x, y);
 			gtk_drag_finish (context, FALSE, FALSE, time);
 			break;
+		case NAUTILUS_ICON_DND_URI_LIST:
+			receive_dropped_uri_list
+				(NAUTILUS_ICON_CONTAINER (widget),
+				 (char*) data->data, x, y);
+			gtk_drag_finish (context, FALSE, FALSE, time);
+			break;
+
 		default:
 			gtk_drag_finish (context, FALSE, FALSE, time);
 		}
@@ -580,6 +593,35 @@ receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x,
 
 	nautilus_file_unref (file);
 	nautilus_icon_container_update_icon (container, drop_target_icon);
+}
+
+/* handle dropped uri list */
+static void
+receive_dropped_uri_list (NautilusIconContainer *container, char *uri_list, int x, int y)
+{
+	GList *li, *files;
+	int argc;
+	char **argv;
+	int i;
+	
+	g_assert (uri_list != NULL);
+
+	files = gnome_uri_list_extract_filenames (uri_list);
+	argc = g_list_length (files);
+	argv = g_new (char *, argc + 1);
+	argv[argc] = NULL;
+
+	for (i=0, li = files; li; i++, li = g_list_next (li)) {
+		argv[i] = li->data;
+	}
+
+	/* Extract .desktop info and create link/links */
+	gtk_signal_emit_by_name (GTK_OBJECT (container), "create_nautilus_links",
+				 files,
+				 x, y);
+
+	gnome_uri_list_free_strings (files);
+	g_free(argv);
 }
 
 static int
@@ -966,10 +1008,11 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 	case NAUTILUS_ICON_DND_COLOR:
 	case NAUTILUS_ICON_DND_BGIMAGE:
 	case NAUTILUS_ICON_DND_KEYWORD:
+	case NAUTILUS_ICON_DND_URI_LIST:
 		*default_action = context->suggested_action;
 		*non_default_action = context->suggested_action;
 		break;
-
+	
 	default:
 	}
 
@@ -1202,7 +1245,7 @@ drag_motion_callback (GtkWidget *widget,
 {
 	int default_action, non_default_action;
 	int resulting_action;
-
+	
 	nautilus_icon_container_ensure_drag_data (NAUTILUS_ICON_CONTAINER (widget), context, time);
 	nautilus_icon_container_position_shadow (NAUTILUS_ICON_CONTAINER (widget), x, y);
 	nautilus_icon_dnd_update_drop_target (NAUTILUS_ICON_CONTAINER (widget), context, x, y);
