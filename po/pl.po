@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-08-19 00:50+0200\n"
-"PO-Revision-Date: 2001-09-01 10:59+0200\n"
+"POT-Creation-Date: 2001-10-07 20:23+0200\n"
+"PO-Revision-Date: 2001-10-07 20:28+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -105,11 +105,11 @@ msgstr "zestawienie informacji o sprzêcie"
 msgid ""
 "%s CPU\n"
 "%s MHz\n"
-"%s cache size"
+"%s K cache size"
 msgstr ""
 "CPU %s\n"
 "%s MHz\n"
-"Rozmiar cache: %s"
+"Rozmiar cache: %s KB"
 
 #: components/hardware/nautilus-hardware-view.c:1
 #, c-format
@@ -153,7 +153,7 @@ msgstr "To jest puste miejsce na stronê po¶wiêcon± pamiêci RAM."
 msgid "This is a placeholder for the IDE page."
 msgstr "To jest puste miejsce na stronê po¶wiêcon± urz±dzeniom RAM."
 
-#: components/help/Nautilus_View_help.oaf.in.h:1
+#: components/help/Nautilus_View_help.oaf.in.h:1 nautilus-help.desktop.in.h:1
 msgid "Help"
 msgstr "Pomoc"
 
@@ -193,7 +193,7 @@ msgstr "Poprzedni"
 #: components/help/converters/gnome-db2html2/gdb3html.c:1
 #: src/nautilus-preferences-dialog.c:1 src/nautilus-shell-ui.xml.h:1
 msgid "Home"
-msgstr "Pocz±tek"
+msgstr "Dom"
 
 #: components/help/converters/gnome-db2html2/gdb3html.c:1
 #: components/music/nautilus-music-view.c:1
@@ -1723,6 +1723,10 @@ msgid "News sidebar panel fetches and displays RSS feeds"
 msgstr "Panel paska bocznego z nowo¶ciami pobiera i wy¶wietla ¼ród³a RSS"
 
 #: components/news/nautilus-news.c:1
+msgid "%I:%M %p"
+msgstr "%H:%M"
+
+#: components/news/nautilus-news.c:1
 #, c-format
 msgid "Couldn't load %s"
 msgstr "Nie mo¿na wczytaæ %s"
@@ -1938,7 +1942,6 @@ msgid "Lucida"
 msgstr "Lucida"
 
 #: components/text/nautilus-text-view-ui.xml.h:1 data/linksets/home.xml.h:1
-#: src/nautilus-service-ui.xml.h:1
 msgid "Services"
 msgstr "Us³ugi"
 
@@ -2366,6 +2369,14 @@ msgstr "Bia³y"
 msgid "White Ribs"
 msgstr "Bia³e ¿eberka"
 
+#: data/favorites.desktop.in.h:1
+msgid "Favorite applications"
+msgstr "Ulubione aplikacje"
+
+#: data/favorites.desktop.in.h:1
+msgid "Favorites"
+msgstr "Ulubione"
+
 #: data/linksets/apps.xml.h:1
 msgid "Gnumeric"
 msgstr "Gnumeric"
@@ -2395,7 +2406,7 @@ msgstr "Komputer"
 
 #: data/linksets/home.xml.h:1
 msgid "Home Directory"
-msgstr "Katalog pocz±tkowy"
+msgstr "Katalog domowy"
 
 #: data/linksets/portals.xml.h:1
 msgid "Excite"
@@ -2420,6 +2431,34 @@ msgstr "Google"
 #: data/linksets/search_engines.xml.h:1 src/nautilus-preferences-dialog.c:1
 msgid "Search Engines"
 msgstr "Mechanizmy wyszukiwawcze"
+
+#: data/preferences.desktop.in.h:1
+msgid "Adjust your user environment"
+msgstr "Dopasowuje ¶rodowisko u¿ytkownika"
+
+#: data/preferences.desktop.in.h:1 src/nautilus-preferences-dialog.c:1
+msgid "Preferences"
+msgstr "Preferencje"
+
+#: data/programs.desktop.in.h:1
+msgid "Browse available software"
+msgstr "Wy¶wietla dostêpne oprogramowanie"
+
+#: data/programs.desktop.in.h:1
+msgid "Programs"
+msgstr "Programy"
+
+#: data/serverconfig.desktop.in.h:1
+msgid "Configure network services (web server, DNS server, etc.)"
+msgstr "Konfiguruje us³ugi sieciowe (serwer WWW, serwer DNS, itp.)"
+
+#: data/serverconfig.desktop.in.h:1
+msgid "Server Configuration"
+msgstr "Konfiguracja serwera"
+
+#: data/starthere-link.desktop.in.h:1 data/starthere.desktop.in.h:1
+msgid "Start Here"
+msgstr "Zacznij tutaj"
 
 #: data/static_bookmarks.xml.h:1
 msgid "Allaire"
@@ -2464,10 +2503,6 @@ msgstr "Debian.org"
 #: data/static_bookmarks.xml.h:1
 msgid "Dell"
 msgstr "Dell"
-
-#: data/static_bookmarks.xml.h:1
-msgid "Eazel"
-msgstr "Eazel"
 
 #: data/static_bookmarks.xml.h:1
 msgid "Freshmeat.net"
@@ -2570,6 +2605,10 @@ msgid "SourceForge"
 msgstr "SourceForge"
 
 #: data/static_bookmarks.xml.h:1
+msgid "SuSE"
+msgstr "SuSE"
+
+#: data/static_bookmarks.xml.h:1
 msgid "Sun StarOffice"
 msgstr "Sun StarOffice"
 
@@ -2582,6 +2621,10 @@ msgid "Web Services"
 msgstr "Us³ugi w sieci WWW"
 
 #: data/static_bookmarks.xml.h:1
+msgid "Ximian"
+msgstr "Ximian"
+
+#: data/static_bookmarks.xml.h:1
 msgid "ZDNet Linux Hardware Database"
 msgstr "ZDNet Linux Hardware Database"
 
@@ -2592,6 +2635,14 @@ msgstr "ZDNet Linux Resource Center"
 #: data/static_bookmarks.xml.h:1
 msgid "Zero-Knowledge"
 msgstr "Zero-Knowledge"
+
+#: data/sysconfig.desktop.in.h:1
+msgid "Change systemwide settings (affects all users)"
+msgstr "Zmienia ustawienia systemowe (dotycz±ce wszystkich u¿ytkowników)"
+
+#: data/sysconfig.desktop.in.h:1
+msgid "System Settings"
+msgstr "Ustawienia systemowe"
 
 #: icons/crux_eggplant/crux_eggplant.xml.h:1
 msgid "An Eggplant variation of the Crux theme."
@@ -2618,8 +2669,8 @@ msgid "This is the default theme for Nautilus."
 msgstr "Domy¶lny motyw Nautilusa"
 
 #: icons/gnome/gnome.xml.h:1
-msgid "A theme designed to fit well with the classic GNOME environment"
-msgstr "Motyw zaprojektowany w zgodzie z klasycznym wygl±dem ¶rodowiska GNOME"
+msgid "A theme designed to fit well with the classic GNOME environment."
+msgstr "Motyw zaprojektowany w zgodzie z klasycznym wygl±dem ¶rodowiska GNOME."
 
 #: icons/sierra/sierra.xml.h:1
 msgid "Sierra"
@@ -2680,6 +2731,10 @@ msgstr "Linuksowy wolumin ext3"
 #: libnautilus-private/filesystem-attributes.xml.h:1
 msgid "Hardware Device Volume"
 msgstr "Wolumin urz±dzenia sprzêtowego"
+
+#: libnautilus-private/filesystem-attributes.xml.h:1
+msgid "JFS Volume"
+msgstr "Wolumin JFS"
 
 #: libnautilus-private/filesystem-attributes.xml.h:1
 msgid "MSDOS Volume"
@@ -3157,6 +3212,14 @@ msgstr " (kopia)"
 msgid " (another copy)"
 msgstr " (kolejna kopia)"
 
+#. localizers: tag used to detect the x11th copy of a file
+#: libnautilus-private/nautilus-file-operations.c:1
+#: libnautilus-private/nautilus-file-operations.c:1
+#: libnautilus-private/nautilus-file-operations.c:1
+#: libnautilus-private/nautilus-file-operations.c:1
+msgid "th copy)"
+msgstr ". kopia)"
+
 #. localizers: tag used to detect the x1st copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1
 msgid "st copy)"
@@ -3172,11 +3235,6 @@ msgstr ". kopia)"
 msgid "rd copy)"
 msgstr ". kopia)"
 
-#. localizers: tag used to detect the xxth copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1
-msgid "th copy)"
-msgstr ". kopia)"
-
 #. localizers: appended to first file copy
 #: libnautilus-private/nautilus-file-operations.c:1
 #, c-format
@@ -3188,6 +3246,15 @@ msgstr "%s (kopia)%s"
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (kolejna kopia)%s"
+
+#. localizers: appended to x11th file copy
+#: libnautilus-private/nautilus-file-operations.c:1
+#: libnautilus-private/nautilus-file-operations.c:1
+#: libnautilus-private/nautilus-file-operations.c:1
+#: libnautilus-private/nautilus-file-operations.c:1
+#, c-format
+msgid "%s (%dth copy)%s"
+msgstr "%s (%d. kopia)%s"
 
 #. localizers: appended to x1st file copy
 #: libnautilus-private/nautilus-file-operations.c:1
@@ -3205,12 +3272,6 @@ msgstr "%s (%d. kopia)%s"
 #: libnautilus-private/nautilus-file-operations.c:1
 #, c-format
 msgid "%s (%drd copy)%s"
-msgstr "%s (%d. kopia)%s"
-
-#. localizers: appended to xxth file copy
-#: libnautilus-private/nautilus-file-operations.c:1
-#, c-format
-msgid "%s (%dth copy)%s"
 msgstr "%s (%d. kopia)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
@@ -3553,6 +3614,7 @@ msgid "foo foo (3rd copy).txt"
 msgstr "foo foo (3. kopia).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:1
+#: libnautilus-private/nautilus-file-operations.c:1
 msgid "foo (13th copy)"
 msgstr "foo (13. kopia)"
 
@@ -3560,6 +3622,7 @@ msgstr "foo (13. kopia)"
 msgid "foo (14th copy)"
 msgstr "foo (14. kopia)"
 
+#: libnautilus-private/nautilus-file-operations.c:1
 #: libnautilus-private/nautilus-file-operations.c:1
 msgid "foo (13th copy).txt"
 msgstr "foo (13. kopia).txt"
@@ -3634,13 +3697,13 @@ msgstr "foo foo (25. kopia).txt"
 msgid "foo foo (100000000000000th copy).txt"
 msgstr "foo foo (100000000000000. kopia).txt"
 
-#. FIXME bugzilla.eazel.com 7701: These are wrong.
 #: libnautilus-private/nautilus-file-operations.c:1
 msgid "foo (10th copy)"
 msgstr "foo (10. kopia)"
 
 #: libnautilus-private/nautilus-file-operations.c:1
-msgid "foo (11st copy)"
+#: libnautilus-private/nautilus-file-operations.c:1
+msgid "foo (11th copy)"
 msgstr "foo (11. kopia)"
 
 #: libnautilus-private/nautilus-file-operations.c:1
@@ -3648,40 +3711,61 @@ msgid "foo (10th copy).txt"
 msgstr "foo (10. kopia).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:1
-msgid "foo (11st copy).txt"
-msgstr "foo (11. kopia).txt"
-
-#: libnautilus-private/nautilus-file-operations.c:1
-msgid "foo (11th copy)"
-msgstr "foo (11. kopia)"
-
-#: libnautilus-private/nautilus-file-operations.c:1
-msgid "foo (12nd copy)"
-msgstr "foo (12. kopia)"
-
 #: libnautilus-private/nautilus-file-operations.c:1
 msgid "foo (11th copy).txt"
 msgstr "foo (11. kopia).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:1
-msgid "foo (12nd copy).txt"
-msgstr "foo (12. kopia).txt"
-
 #: libnautilus-private/nautilus-file-operations.c:1
 msgid "foo (12th copy)"
 msgstr "foo (12. kopia)"
 
 #: libnautilus-private/nautilus-file-operations.c:1
-msgid "foo (13rd copy)"
-msgstr "foo (13. kopia)"
-
 #: libnautilus-private/nautilus-file-operations.c:1
 msgid "foo (12th copy).txt"
 msgstr "foo (12. kopia).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:1
-msgid "foo (13rd copy).txt"
-msgstr "foo (13. kopia).txt"
+msgid "foo (110th copy)"
+msgstr "foo (110. kopia)"
+
+#: libnautilus-private/nautilus-file-operations.c:1
+msgid "foo (111th copy)"
+msgstr "foo (111. kopia)"
+
+#: libnautilus-private/nautilus-file-operations.c:1
+msgid "foo (110th copy).txt"
+msgstr "foo (110. kopia).txt"
+
+#: libnautilus-private/nautilus-file-operations.c:1
+msgid "foo (111th copy).txt"
+msgstr "foo (111. kopia).txt"
+
+#: libnautilus-private/nautilus-file-operations.c:1
+msgid "foo (122nd copy)"
+msgstr "foo (222. kopia)"
+
+#: libnautilus-private/nautilus-file-operations.c:1
+#: libnautilus-private/nautilus-file-operations.c:1
+msgid "foo (123rd copy)"
+msgstr "foo (123. kopia)"
+
+#: libnautilus-private/nautilus-file-operations.c:1
+msgid "foo (122nd copy).txt"
+msgstr "foo (122. kopia).txt"
+
+#: libnautilus-private/nautilus-file-operations.c:1
+#: libnautilus-private/nautilus-file-operations.c:1
+msgid "foo (123rd copy).txt"
+msgstr "foo (123. kopia).txt"
+
+#: libnautilus-private/nautilus-file-operations.c:1
+msgid "foo (124th copy)"
+msgstr "foo (124. kopia)"
+
+#: libnautilus-private/nautilus-file-operations.c:1
+msgid "foo (124th copy).txt"
+msgstr "foo (124. kopia).txt"
 
 #. Today, use special word.
 #. * strftime patterns preceeded with the widest
@@ -4796,18 +4880,6 @@ msgstr "B³±d przy montowaniu"
 msgid "Unmount Error"
 msgstr "B³±d przy odmontowywaniu"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1
-msgid "is write-protected, mounting read-only"
-msgstr "jest zabezpieczony przed zapisem, zamontowano tylko-do-odczytu"
-
-#: libnautilus-private/nautilus-volume-monitor.c:1
-msgid "is not a valid block device"
-msgstr "nie jest poprawnym urz±dzeniem blokowym"
-
-#: libnautilus-private/nautilus-volume-monitor.c:1
-msgid "No medium found"
-msgstr "Nie odnaleziono no¶nika"
-
 #. Handle floppy case
 #: libnautilus-private/nautilus-volume-monitor.c:1
 msgid ""
@@ -4824,12 +4896,6 @@ msgid ""
 "device."
 msgstr ""
 "Nie mo¿na zamontowaæ woluminu. Prawdopodobnie w urz±dzeniu nie ma no¶nika."
-
-#: libnautilus-private/nautilus-volume-monitor.c:1
-msgid "wrong fs type, bad option, bad superblock on"
-msgstr ""
-"niepoprawny typ systemu plików, niew³a¶ciwa opcja lub niepoprawny superblock "
-"na"
 
 #: libnautilus-private/nautilus-volume-monitor.c:1
 msgid ""
@@ -4932,6 +4998,10 @@ msgstr "Nautilus"
 #: nautilus.desktop.in.h:1
 msgid "Nautilus File Manager and Graphic Shell"
 msgstr "Mened¿er plików i pow³oka graficzna Nautilus"
+
+#: nautilus-help.desktop.in.h:1
+msgid "Documentation"
+msgstr "Dokumentacja"
 
 #: src/Nautilus_shell.oaf.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -5092,13 +5162,6 @@ msgstr "Usun±æ?"
 #: src/file-manager/nautilus-directory-view-ui.xml.h:1
 msgid "Delete"
 msgstr "Usuñ"
-
-#. Localizers: This is the name of a directory that's created in ~/Nautilus, and
-#. * stores the scripts that appear in the Scripts submenu.
-#.
-#: src/file-manager/fm-directory-view.c:1
-msgid "scripts"
-msgstr "scripts"
 
 #: src/file-manager/fm-directory-view.c:1
 #, c-format
@@ -5318,18 +5381,6 @@ msgstr ""
 "NAUTILUS_SCRIPT_CURRENT_URI: URI bie¿±cego po³o¿enia\n"
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: po³o¿enie i rozmiar bie¿±cego okna"
-
-#. This shouldn't happen. If it does, get_scripts_directory was unable to
-#. * mkdir the scripts directory, and this case should be debugged.
-#.
-#: src/file-manager/fm-directory-view.c:1
-#, c-format
-msgid "Nautilus was unable to create the directory %s."
-msgstr "Nie mo¿na utworzyæ katalogu %s."
-
-#: src/file-manager/fm-directory-view.c:1
-msgid "No Scripts Folder"
-msgstr "Brak folderu ze skryptami (Scripts)"
 
 #: src/file-manager/fm-directory-view.c:1
 #, c-format
@@ -5703,6 +5754,20 @@ msgstr "Przywróæ p_ierwotny rozmiar ikony"
 msgid "pointing at \"%s\""
 msgstr "Wskazanie \"%s\""
 
+#: src/file-manager/fm-icon-view.c:1
+msgid "Drag and drop is only supported to local file systems."
+msgstr ""
+"Przeci±ganie i upuszczanie obiektów jest obs³ugiwane tylko w lokalnym "
+"systemie plików."
+
+#: src/file-manager/fm-icon-view.c:1 src/file-manager/fm-icon-view.c:1
+msgid "Drag and Drop error"
+msgstr "B³±d prz obs³udze przeci±ganych danych"
+
+#: src/file-manager/fm-icon-view.c:1
+msgid "An invalid drag type was used."
+msgstr "U¿yto niepoprawnego typu przeci±ganych danych."
+
 #: src/file-manager/fm-list-view.c:1
 #: src/file-manager/fm-search-list-view.c:1
 msgid "Size"
@@ -5717,6 +5782,42 @@ msgstr "Typ"
 #: src/file-manager/fm-search-list-view.c:1
 msgid "Date Modified"
 msgstr "Czas modyfikacji"
+
+#: src/file-manager/fm-properties-window.c:1 src/nautilus-sidebar.c:1
+msgid ""
+"You can't assign more than one custom icon at a time! Please drag just one "
+"image to set a custom icon."
+msgstr ""
+"Nie mo¿na przypisaæ wiêcej ni¿ jednego obrazu u¿ytkownika jednocze¶nie! "
+"Przeci±gnij dok³adnie jeden obraz, aby ustawiæ wygl±d ikony."
+
+#: src/file-manager/fm-properties-window.c:1 src/nautilus-sidebar.c:1
+msgid "More Than One Image"
+msgstr "Wiêcej ni¿ jeden obraz"
+
+#: src/file-manager/fm-properties-window.c:1 src/nautilus-sidebar.c:1
+msgid ""
+"The file that you dropped is not local.  You can only use local images as "
+"custom icons."
+msgstr ""
+"Przeci±gniêty plik nie jest lokalny. Jako ikony u¿ytkownika mog± byæ "
+"wykorzystywane tylko lokalne obrazy."
+
+#: src/file-manager/fm-properties-window.c:1 src/nautilus-sidebar.c:1
+msgid "Local Images Only"
+msgstr "Tylko lokalne obrazy"
+
+#: src/file-manager/fm-properties-window.c:1 src/nautilus-sidebar.c:1
+msgid ""
+"The file that you dropped is not an image.  You can only use local images as "
+"custom icons."
+msgstr ""
+"Przeci±gniêty przez ciebie plik nie zawiera obrazu. Jako ikony u¿ytkownika "
+"mog± byæ wykorzystywane tylko lokalne obrazy."
+
+#: src/file-manager/fm-properties-window.c:1 src/nautilus-sidebar.c:1
+msgid "Images Only"
+msgstr "Tylko obrazy"
 
 #: src/file-manager/fm-properties-window.c:1
 #, c-format
@@ -6621,7 +6722,7 @@ msgstr ""
 "problem nadal bêdzie siê pojawia³, spróbuj ponownie uruchomiæ komputer lub "
 "przeinstalowaæ Nautilusa."
 
-#. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
+#. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:1
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
@@ -6660,7 +6761,7 @@ msgstr ""
 #. * version of OAF). Show dialog and terminate the
 #. * program.
 #.
-#. FIXME bugzilla.eazel.com 2537: Looks like this does happen with the
+#. FIXME bugzilla.gnome.org 42537: Looks like this does happen with the
 #. * current OAF. I guess I read the code
 #. * wrong. Need to figure out when and make a
 #. * good message.
@@ -6877,7 +6978,7 @@ msgstr "Rysowanie biurka przez Nautilusa."
 msgid "Move existing desktop icons to the Nautilus desktop."
 msgstr "Przeniesienie ikon umiejscowionych na biurku do Nautilusa."
 
-#. This option is currently disabled, per bugzilla.eazel.com 7557
+#. This option is currently disabled, per bugzilla.gnome.org 47557
 #: src/nautilus-first-time-druid.c:1
 msgid "Launch Nautilus when GNOME starts up."
 msgstr "Uruchamianie Nautilusa przy uruchamianiu GNOME."
@@ -7297,7 +7398,7 @@ msgstr "Tworzenie miniaturek plików nie wiêkszych ni¿:"
 msgid "Preview Sound Files"
 msgstr "Ods³uchiwanie plików d¼wiêkowych"
 
-#. FIXME bugzilla.eazel.com 2560: This title phrase needs improvement.
+#. FIXME bugzilla.gnome.org 42560: This title phrase needs improvement.
 #: src/nautilus-preferences-dialog.c:1
 msgid "Make Folder Appearance Details Public"
 msgstr "Wy¶wietlanie szczegó³ów dotycz±cych zawarto¶ci folderu"
@@ -7361,10 +7462,6 @@ msgstr "Wydajno¶æ"
 #: src/nautilus-preferences-dialog.c:1
 msgid "News Panel"
 msgstr "Panel nowo¶ci"
-
-#: src/nautilus-preferences-dialog.c:1
-msgid "Preferences"
-msgstr "Preferencje"
 
 #: src/nautilus-preferences-dialog.c:1
 #, c-format
@@ -7711,34 +7808,6 @@ msgstr "[W³a¶cicielem pliku] jest [root]"
 msgid "[File owner] is not [root]"
 msgstr "[W³a¶cicielem pliku] nie jest [root]"
 
-#: src/nautilus-service-ui.xml.h:1
-msgid "Go to the Eazel Services Summary Page"
-msgstr "Przechodzi do strony zestawienia us³ug Eazela"
-
-#: src/nautilus-service-ui.xml.h:1
-msgid "Go to the Eazel Software Catalog"
-msgstr "Przejd¼ do katalogu oprogramowania Eazela"
-
-#: src/nautilus-service-ui.xml.h:1
-msgid "Go to your online storage repository"
-msgstr "Przechodzi do twojej sieciowej sk³adnicy danych"
-
-#: src/nautilus-service-ui.xml.h:1
-msgid "Software _Catalog"
-msgstr "_Katalog oprogramowania"
-
-#: src/nautilus-service-ui.xml.h:1
-msgid "_Eazel Services Home"
-msgstr "Strona z us³ugami _Eazela"
-
-#: src/nautilus-service-ui.xml.h:1
-msgid "_Online Storage"
-msgstr "_Sieciowa sk³adnica danych"
-
-#: src/nautilus-service-ui.xml.h:1
-msgid "_Services"
-msgstr "_Us³ugi"
-
 #: src/nautilus-shell-ui.xml.h:1
 msgid " _Advanced"
 msgstr " _Zaawansowany"
@@ -7820,10 +7889,6 @@ msgid "Display release notes for Nautilus"
 msgstr "Wy¶wietla informacje dotycz±ce tego wydania Nautilusa"
 
 #: src/nautilus-shell-ui.xml.h:1
-msgid "Display support information for Nautilus and Eazel Services"
-msgstr "Wy¶wietla informacje o wsparciu dotycz±cym Nautilusa i us³ug Eazela"
-
-#: src/nautilus-shell-ui.xml.h:1
 msgid "Display the latest contents of the current location"
 msgstr "Wy¶wietla ostatni± zawarto¶æ bie¿±cego po³o¿enia"
 
@@ -7840,12 +7905,12 @@ msgid "For_get History"
 msgstr "_Zapomnij historiê"
 
 #: src/nautilus-shell-ui.xml.h:1
-msgid "Go to Eazel Services"
-msgstr "Przejd¼ do us³ug Eazela"
+msgid "Go to the Start Here folder"
+msgstr "Przechodzi do folderu pocz±tkowego"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Go to the home location"
-msgstr "Przechodzi do po³o¿enia pocz±tkowego"
+msgstr "Przechodzi do po³o¿enia domowego"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Go to the next visited location"
@@ -7874,6 +7939,12 @@ msgstr "Ukryj pasek _boczny"
 #: src/nautilus-shell-ui.xml.h:1 src/nautilus-window-menus.c:1
 msgid "Hide _Toolbar"
 msgstr "Ukryj pasek _narzêdziowy"
+
+#: src/nautilus-shell-ui.xml.h:1
+msgid "Mailing list where you can send feedback about Nautilus"
+msgstr ""
+"Lista dyskusyjna, na któr± mo¿na wysy³aæ komentarze na temat Nautilusa (w "
+"jêzyku angielskim)"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Nautilus Quick _Reference"
@@ -7922,14 +7993,6 @@ msgstr "Przeszukuje sieæ WWW"
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Search this computer for files"
 msgstr "Przeszukuje komputer w poszukiwaniu plików"
-
-#: src/nautilus-shell-ui.xml.h:1
-msgid ""
-"Show a page from which you can send feedback about Nautilus and Eazel "
-"Services"
-msgstr ""
-"Wy¶wietla stronê, z której mo¿na wys³aæ informacje zwrotne o Nautilusie oraz "
-"o us³ugach Eazela"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Show the contents at the normal size"
@@ -8030,10 +8093,6 @@ msgid "_Close Window"
 msgstr "Z_amknij okno"
 
 #: src/nautilus-shell-ui.xml.h:1
-msgid "_Community Support"
-msgstr "_Wsparcie dla u¿ytkowników"
-
-#: src/nautilus-shell-ui.xml.h:1
 msgid "_Edit"
 msgstr "_Edycja"
 
@@ -8067,7 +8126,7 @@ msgstr "Pomo_c"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid "_Home"
-msgstr "_Pocz±tek"
+msgstr "Do_m"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid "_Location..."
@@ -8096,6 +8155,10 @@ msgstr "P_odsumowanie profilowania"
 #: src/nautilus-shell-ui.xml.h:1
 msgid "_Reset Profiling"
 msgstr "_Profilowanie od pocz±tku"
+
+#: src/nautilus-shell-ui.xml.h:1
+msgid "_Start Here"
+msgstr "_Pocz±tek"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid "_Start Profiling"
@@ -8130,58 +8193,22 @@ msgid ""
 "Thank you for your interest in Nautilus.\n"
 " \n"
 "As with any software under development, you should exercise caution when "
-"using Nautilus.  Eazel does not provide any guarantee that it will work "
-"properly, or assume any liability for your use of it.  Please use it at your "
-"own risk.\n"
+"using Nautilus. We do not provide any guarantee that it will work properly, "
+"or assume any liability for your use of it.  Please use it at your own "
+"risk.\n"
 "\n"
-"Please visit http://www.eazel.com/feedback.html to provide feedback, "
+"Please write a mail to <nautilus-list@eazel.com> to provide feedback, "
 "comments, and suggestions."
 msgstr ""
 "Dziêkujemy za zainteresowanie siê Nautilusem.\n"
 "\n"
 "Jak w przypadku ka¿dego programu na etapie rozwoju, przy korzystaniu z "
-"Nautilusa nale¿y zachowaæ ostro¿no¶æ. Eazel nie gwarantuje poprawnego "
-"dzia³ania aplikacji oraz nie ponosi ¿adnej odpowiedzialno¶ci za skutki tych "
+"Nautilusa nale¿y zachowaæ ostro¿no¶æ. Twórcy nie gwarantuj± poprawnego "
+"dzia³ania aplikacji oraz nie ponosz± ¿adnej odpowiedzialno¶ci za skutki tych "
 "dzia³añ. Korzystaj±c z programu godzisz siê na zwi±zane z tym ryzyko.\n"
 "\n"
-"Odwied¼ stronê http://www.eazel.com/feedback.html je¶li chcesz wys³aæ "
-"informacje zwrotne, komentarze lub sugestie."
-
-#: src/nautilus-sidebar.c:1
-msgid ""
-"You can't assign more than one custom icon at a time! Please drag just one "
-"image to set a custom icon."
-msgstr ""
-"Nie mo¿na przypisaæ wiêcej ni¿ jednego obrazu u¿ytkownika jednocze¶nie! "
-"Przeci±gnij dok³adnie jeden obraz, aby ustawiæ wygl±d ikony."
-
-#: src/nautilus-sidebar.c:1
-msgid "More Than One Image"
-msgstr "Wiêcej ni¿ jeden obraz"
-
-#: src/nautilus-sidebar.c:1
-msgid ""
-"The file that you dropped is not local.  You can only use local images as "
-"custom icons."
-msgstr ""
-"Przeci±gniêty plik nie jest lokalny. Jako ikony u¿ytkownika mog± byæ "
-"wykorzystywane tylko lokalne obrazy."
-
-#: src/nautilus-sidebar.c:1
-msgid "Local Images Only"
-msgstr "Tylko lokalne obrazy"
-
-#: src/nautilus-sidebar.c:1
-msgid ""
-"The file that you dropped is not an image.  You can only use local images as "
-"custom icons."
-msgstr ""
-"Przeci±gniêty przez ciebie plik nie zawiera obrazu. Jako ikony u¿ytkownika "
-"mog± byæ wykorzystywane tylko lokalne obrazy."
-
-#: src/nautilus-sidebar.c:1
-msgid "Images Only"
-msgstr "Tylko obrazy"
+"Je¶li chcesz podzieliæ siê swymi uwagami i sugestiami lub poinformowaæ nas o "
+"b³êdach, napisz na adres <nautilus-list@eazel.com> (w jêzyku angielskim)."
 
 #: src/nautilus-sidebar.c:1
 #, c-format
@@ -8255,7 +8282,7 @@ msgstr "Niestety, nie mo¿na usun±æ motywu!"
 msgid "Couldn't remove theme"
 msgstr "Nie mo¿na usun±æ motywu"
 
-#. FIXME bugzilla.eazel.com 5037: The text Preview
+#. FIXME bugzilla.gnome.org 45037: The text Preview
 #. * Release is hardcoded here. Are all builds with
 #. * time stamps really best described as "preview
 #. * release"?.
