@@ -121,6 +121,7 @@ class_name_in_function_format##_unimplemented_##signal (void)                   
 
 #define NAUTILUS_DEFINE_MUST_OVERRIDE_SIGNAL(class_cast_macro, class_pointer, class_name_in_function_format, signal)
 #define NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL(class_name_in_function_format, signal)
+#define NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL(class_pointer, class_name_in_function_format, signal)
 
 #endif /* G_DISABLE_ASSERT */
 
