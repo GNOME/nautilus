@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-06-02 08:23-0400\n"
-"PO-Revision-Date: 2004-06-02 08:23-0400\n"
+"POT-Creation-Date: 2004-06-09 20:29-0400\n"
+"PO-Revision-Date: 2004-06-09 20:29-0400\n"
 "Last-Translator: Gareth Owen <gowen72@yahoo.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1891,7 +1891,17 @@ msgstr "Sorry, unable to save custom emblem."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Sorry, unable to save custom emblem name."
 
-#: libnautilus-private/nautilus-file-operations-progress.c:457
+#: libnautilus-private/nautilus-file-operations-progress.c:393
+#, c-format
+msgid "(%d:%02d:%d Remaining)"
+msgstr "(%d:%02d:%d Remaining)"
+
+#: libnautilus-private/nautilus-file-operations-progress.c:397
+#, c-format
+msgid "(%d:%02d Remaining)"
+msgstr "(%d:%02d Remaining)"
+
+#: libnautilus-private/nautilus-file-operations-progress.c:510
 #, c-format
 msgid "%ld of %ld"
 msgstr "%ld of %ld"
@@ -2280,242 +2290,242 @@ msgstr " ("
 msgid " (%d"
 msgstr " (%d"
 
-#: libnautilus-private/nautilus-file-operations.c:1543
-#: libnautilus-private/nautilus-file-operations.c:2133
-#: libnautilus-private/nautilus-file-operations.c:2295
+#: libnautilus-private/nautilus-file-operations.c:1554
+#: libnautilus-private/nautilus-file-operations.c:2144
+#: libnautilus-private/nautilus-file-operations.c:2306
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Unknown GnomeVFSXferProgressStatus %d"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1870
+#: libnautilus-private/nautilus-file-operations.c:1881
 msgid "Moving files to the Trash"
 msgstr "Moving files to the Wastebasket"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1872
+#: libnautilus-private/nautilus-file-operations.c:1883
 msgid "Files thrown out:"
 msgstr "Files thrown out:"
 
 #. localizers: label prepended to the name of the current file moved
-#: libnautilus-private/nautilus-file-operations.c:1874
 #: libnautilus-private/nautilus-file-operations.c:1885
+#: libnautilus-private/nautilus-file-operations.c:1896
 msgid "Moving"
 msgstr "Moving"
 
-#: libnautilus-private/nautilus-file-operations.c:1875
+#: libnautilus-private/nautilus-file-operations.c:1886
 msgid "Preparing to Move to Trash..."
 msgstr "Preparing to Move to Wastebasket..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1881
+#: libnautilus-private/nautilus-file-operations.c:1892
 msgid "Moving files"
 msgstr "Moving files"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1883
+#: libnautilus-private/nautilus-file-operations.c:1894
 msgid "Files moved:"
 msgstr "Files moved:"
 
-#: libnautilus-private/nautilus-file-operations.c:1886
+#: libnautilus-private/nautilus-file-operations.c:1897
 msgid "Preparing To Move..."
 msgstr "Preparing To Move..."
 
-#: libnautilus-private/nautilus-file-operations.c:1887
+#: libnautilus-private/nautilus-file-operations.c:1898
 msgid "Finishing Move..."
 msgstr "Finishing Move..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1895
+#: libnautilus-private/nautilus-file-operations.c:1906
 msgid "Creating links to files"
 msgstr "Creating links to files"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1897
+#: libnautilus-private/nautilus-file-operations.c:1908
 msgid "Files linked:"
 msgstr "Files linked:"
 
 #. localizers: label prepended to the name of the current file linked
-#: libnautilus-private/nautilus-file-operations.c:1899
+#: libnautilus-private/nautilus-file-operations.c:1910
 msgid "Linking"
 msgstr "Linking"
 
-#: libnautilus-private/nautilus-file-operations.c:1900
+#: libnautilus-private/nautilus-file-operations.c:1911
 msgid "Preparing to Create Links..."
 msgstr "Preparing to Create Links..."
 
-#: libnautilus-private/nautilus-file-operations.c:1901
+#: libnautilus-private/nautilus-file-operations.c:1912
 msgid "Finishing Creating Links..."
 msgstr "Finishing Creating Links..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1907
+#: libnautilus-private/nautilus-file-operations.c:1918
 msgid "Copying files"
 msgstr "Copying files"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1909
+#: libnautilus-private/nautilus-file-operations.c:1920
 msgid "Files copied:"
 msgstr "Files copied:"
 
 #. localizers: label prepended to the name of the current file copied
-#: libnautilus-private/nautilus-file-operations.c:1911
+#: libnautilus-private/nautilus-file-operations.c:1922
 msgid "Copying"
 msgstr "Copying"
 
-#: libnautilus-private/nautilus-file-operations.c:1912
+#: libnautilus-private/nautilus-file-operations.c:1923
 msgid "Preparing To Copy..."
 msgstr "Preparing To Copy..."
 
-#: libnautilus-private/nautilus-file-operations.c:1930
+#: libnautilus-private/nautilus-file-operations.c:1941
 msgid "You cannot copy items into the trash."
 msgstr "You cannot copy items into the wastebasket."
 
-#: libnautilus-private/nautilus-file-operations.c:1931
+#: libnautilus-private/nautilus-file-operations.c:1942
 msgid "You cannot create links inside the trash."
 msgstr "You cannot copy items into the wastebasket."
 
-#: libnautilus-private/nautilus-file-operations.c:1932
+#: libnautilus-private/nautilus-file-operations.c:1943
 msgid "Files and folders can only be moved into the trash."
 msgstr "Files and folders can only be moved into the wastebasket."
 
-#: libnautilus-private/nautilus-file-operations.c:1956
+#: libnautilus-private/nautilus-file-operations.c:1967
 msgid "You cannot move this trash folder."
 msgstr "You cannot move this wastebasket folder."
 
-#: libnautilus-private/nautilus-file-operations.c:1957
+#: libnautilus-private/nautilus-file-operations.c:1968
 msgid "You cannot copy this trash folder."
 msgstr "You cannot copy this wastebasket folder."
 
-#: libnautilus-private/nautilus-file-operations.c:1958
+#: libnautilus-private/nautilus-file-operations.c:1969
 msgid "A trash folder is used for storing items moved to the trash."
 msgstr ""
 "A wastebasket folder is used for storing items moved to the wastebasket."
 
-#: libnautilus-private/nautilus-file-operations.c:1960
+#: libnautilus-private/nautilus-file-operations.c:1971
 msgid "Can't Change Trash Location"
 msgstr "Can't Change Wastebasket Location"
 
-#: libnautilus-private/nautilus-file-operations.c:1961
+#: libnautilus-private/nautilus-file-operations.c:1972
 msgid "Can't Copy Trash"
 msgstr "Can't Copy Wastebasket"
 
-#: libnautilus-private/nautilus-file-operations.c:1985
+#: libnautilus-private/nautilus-file-operations.c:1996
 msgid "You cannot move a folder into itself."
 msgstr "You cannot move a folder into itself."
 
-#: libnautilus-private/nautilus-file-operations.c:1986
+#: libnautilus-private/nautilus-file-operations.c:1997
 msgid "You cannot copy a folder into itself."
 msgstr "You cannot copy a folder into itself."
 
-#: libnautilus-private/nautilus-file-operations.c:1987
+#: libnautilus-private/nautilus-file-operations.c:1998
 msgid "The destination folder is inside the source folder."
 msgstr "The destination folder is inside the source folder."
 
-#: libnautilus-private/nautilus-file-operations.c:1989
+#: libnautilus-private/nautilus-file-operations.c:2000
 msgid "Can't Move Into Self"
 msgstr "Can't Move Into Self"
 
-#: libnautilus-private/nautilus-file-operations.c:1990
+#: libnautilus-private/nautilus-file-operations.c:2001
 msgid "Can't Copy Into Self"
 msgstr "Can't Copy Into Self"
 
-#: libnautilus-private/nautilus-file-operations.c:2003
+#: libnautilus-private/nautilus-file-operations.c:2014
 msgid "You cannot copy a file over itself."
 msgstr "You cannot copy a file over itself."
 
-#: libnautilus-private/nautilus-file-operations.c:2004
+#: libnautilus-private/nautilus-file-operations.c:2015
 msgid "The destination and source are the same file."
 msgstr "The destination and source are the same file."
 
-#: libnautilus-private/nautilus-file-operations.c:2005
+#: libnautilus-private/nautilus-file-operations.c:2016
 msgid "Can't Copy Over Self"
 msgstr "Can't Copy Over Self"
 
-#: libnautilus-private/nautilus-file-operations.c:2057
-#: libnautilus-private/nautilus-file-operations.c:2197
+#: libnautilus-private/nautilus-file-operations.c:2068
+#: libnautilus-private/nautilus-file-operations.c:2208
 msgid "You do not have permissions to write to the destination."
 msgstr "You do not have permissions to write to the destination."
 
-#: libnautilus-private/nautilus-file-operations.c:2059
-#: libnautilus-private/nautilus-file-operations.c:2199
+#: libnautilus-private/nautilus-file-operations.c:2070
+#: libnautilus-private/nautilus-file-operations.c:2210
 msgid "There is no space on the destination."
 msgstr "There is no space on the destination."
 
-#: libnautilus-private/nautilus-file-operations.c:2061
+#: libnautilus-private/nautilus-file-operations.c:2072
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Error \"%s\" creating new folder."
 
-#: libnautilus-private/nautilus-file-operations.c:2066
+#: libnautilus-private/nautilus-file-operations.c:2077
 msgid "Error creating new folder."
 msgstr "Error creating new folder."
 
-#: libnautilus-private/nautilus-file-operations.c:2066
+#: libnautilus-private/nautilus-file-operations.c:2077
 msgid "Error Creating New Folder"
 msgstr "Error Creating New Folder"
 
 #. localizers: the initial name of a new folder
-#: libnautilus-private/nautilus-file-operations.c:2161
+#: libnautilus-private/nautilus-file-operations.c:2172
 msgid "untitled folder"
 msgstr "untitled folder"
 
-#: libnautilus-private/nautilus-file-operations.c:2201
+#: libnautilus-private/nautilus-file-operations.c:2212
 #, c-format
 msgid "Error \"%s\" creating new document."
 msgstr "Error \"%s\" creating new document."
 
-#: libnautilus-private/nautilus-file-operations.c:2206
+#: libnautilus-private/nautilus-file-operations.c:2217
 msgid "Error creating new document."
 msgstr "Error creating new document."
 
-#: libnautilus-private/nautilus-file-operations.c:2206
+#: libnautilus-private/nautilus-file-operations.c:2217
 msgid "Error Creating New Document"
 msgstr "Error Creating New Document"
 
-#: libnautilus-private/nautilus-file-operations.c:2353
+#: libnautilus-private/nautilus-file-operations.c:2364
 msgid "new file"
 msgstr "new file"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2425
+#: libnautilus-private/nautilus-file-operations.c:2436
 msgid "Deleting files"
 msgstr "Deleting files"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2427
-#: libnautilus-private/nautilus-file-operations.c:2462
+#: libnautilus-private/nautilus-file-operations.c:2438
+#: libnautilus-private/nautilus-file-operations.c:2473
 msgid "Files deleted:"
 msgstr "Files deleted:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-private/nautilus-file-operations.c:2429
-#: libnautilus-private/nautilus-file-operations.c:2464
+#: libnautilus-private/nautilus-file-operations.c:2440
+#: libnautilus-private/nautilus-file-operations.c:2475
 msgid "Deleting"
 msgstr "Deleting"
 
-#: libnautilus-private/nautilus-file-operations.c:2430
+#: libnautilus-private/nautilus-file-operations.c:2441
 msgid "Preparing to Delete files..."
 msgstr "Preparing to Delete files..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2460
+#: libnautilus-private/nautilus-file-operations.c:2471
 msgid "Emptying the Trash"
 msgstr "Emptying the Wastebasket"
 
-#: libnautilus-private/nautilus-file-operations.c:2465
+#: libnautilus-private/nautilus-file-operations.c:2476
 msgid "Preparing to Empty the Trash..."
 msgstr "Preparing to Empty the Wastebasket..."
 
-#: libnautilus-private/nautilus-file-operations.c:2534
+#: libnautilus-private/nautilus-file-operations.c:2545
 msgid "Are you sure you want to empty all of the items from the trash?"
 msgstr "Are you sure you want to empty all of the items from the wastebasket?"
 
-#: libnautilus-private/nautilus-file-operations.c:2548
+#: libnautilus-private/nautilus-file-operations.c:2559
 msgid "If you empty the trash, items will be permanently deleted."
 msgstr "If you empty the wastebasket, items will be permanently deleted."
 
-#: libnautilus-private/nautilus-file-operations.c:2560
+#: libnautilus-private/nautilus-file-operations.c:2571
 msgid "_Empty"
 msgstr "_Empty"
 
@@ -2683,7 +2693,7 @@ msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
 #: libnautilus-private/nautilus-file.c:4299
-#: src/file-manager/fm-directory-view.c:1818
+#: src/file-manager/fm-directory-view.c:1824
 #, c-format
 msgid "%u item"
 msgid_plural "%u items"
@@ -3748,11 +3758,11 @@ msgstr "Could not complete specified action:  %s"
 msgid "Could not complete specified action."
 msgstr "Could not complete specified action."
 
-#: src/file-manager/fm-desktop-icon-view.c:581
+#: src/file-manager/fm-desktop-icon-view.c:594
 msgid "Background"
 msgstr "Background"
 
-#: src/file-manager/fm-desktop-icon-view.c:654
+#: src/file-manager/fm-desktop-icon-view.c:667
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 msgid "Empty Trash"
 msgstr "Empty Wastebasket"
@@ -3804,19 +3814,19 @@ msgstr "Select Pattern"
 msgid "_Pattern:"
 msgstr "_Pattern:"
 
-#: src/file-manager/fm-directory-view.c:1750
+#: src/file-manager/fm-directory-view.c:1756
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" selected"
 
-#: src/file-manager/fm-directory-view.c:1752
+#: src/file-manager/fm-directory-view.c:1758
 #, c-format
 msgid "%d folder selected"
 msgid_plural "%d folders selected"
 msgstr[0] "%d folder selected"
 msgstr[1] "%d folders selected"
 
-#: src/file-manager/fm-directory-view.c:1762
+#: src/file-manager/fm-directory-view.c:1768
 #, c-format
 msgid " (containing %d item)"
 msgid_plural " (containing %d items)"
@@ -3824,19 +3834,19 @@ msgstr[0] " (containing %d item)"
 msgstr[1] " (containing %d items)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/file-manager/fm-directory-view.c:1773
+#: src/file-manager/fm-directory-view.c:1779
 #, c-format
 msgid " (containing a total of %d item)"
 msgid_plural " (containing a total of %d items)"
 msgstr[0] " (containing a total of %d item)"
 msgstr[1] " (containing a total of %d items)"
 
-#: src/file-manager/fm-directory-view.c:1789
+#: src/file-manager/fm-directory-view.c:1795
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" selected (%s)"
 
-#: src/file-manager/fm-directory-view.c:1793
+#: src/file-manager/fm-directory-view.c:1799
 #, c-format
 msgid "%d item selected (%s)"
 msgid_plural "%d items selected (%s)"
@@ -3844,14 +3854,14 @@ msgstr[0] "%d item selected (%s)"
 msgstr[1] "%d items selected (%s)"
 
 #. Folders selected also, use "other" terminology
-#: src/file-manager/fm-directory-view.c:1801
+#: src/file-manager/fm-directory-view.c:1807
 #, c-format
 msgid "%d other item selected (%s)"
 msgid_plural "%d other items selected (%s)"
 msgstr[0] "%d other item selected (%s)"
 msgstr[1] "%d other items selected (%s)"
 
-#: src/file-manager/fm-directory-view.c:1822
+#: src/file-manager/fm-directory-view.c:1828
 #, c-format
 msgid "%s, Free space: %s"
 msgstr "%s, Free space: %s"
@@ -3863,7 +3873,7 @@ msgstr "%s, Free space: %s"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1847
+#: src/file-manager/fm-directory-view.c:1853
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -3872,51 +3882,51 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1972
+#: src/file-manager/fm-directory-view.c:1978
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
 msgstr "The folder \"%s\" contains more files than Nautilus can handle."
 
-#: src/file-manager/fm-directory-view.c:1978
+#: src/file-manager/fm-directory-view.c:1984
 msgid "Some files will not be displayed."
 msgstr "Some files will not be displayed."
 
-#: src/file-manager/fm-directory-view.c:1979
+#: src/file-manager/fm-directory-view.c:1985
 msgid "Too Many Files"
 msgstr "Too Many Files"
 
-#: src/file-manager/fm-directory-view.c:3247
+#: src/file-manager/fm-directory-view.c:3253
 msgid "Cannot move file to trash, do you want to delete immediately?"
 msgstr "Cannot move file to wastebasket, do you want to delete immediately?"
 
-#: src/file-manager/fm-directory-view.c:3248
+#: src/file-manager/fm-directory-view.c:3254
 #, c-format
 msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "The file \"%s\" cannot be moved to the wastebasket."
 
-#: src/file-manager/fm-directory-view.c:3252
+#: src/file-manager/fm-directory-view.c:3258
 msgid "Cannot move items to trash, do you want to delete them immediately?"
 msgstr ""
 "Cannot move items to wastebasket, do you want to delete them immediately?"
 
-#: src/file-manager/fm-directory-view.c:3255
+#: src/file-manager/fm-directory-view.c:3261
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
 msgstr ""
 "Cannot move some items to wastebasket, do you want to delete these "
 "immediately?"
 
-#: src/file-manager/fm-directory-view.c:3262
+#: src/file-manager/fm-directory-view.c:3268
 msgid "Delete Immediately?"
 msgstr "Delete Immediately?"
 
-#: src/file-manager/fm-directory-view.c:3294
+#: src/file-manager/fm-directory-view.c:3300
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr ""
 "Are you sure you want to permanently delete \"%s\" from the wastebasket?"
 
-#: src/file-manager/fm-directory-view.c:3298
+#: src/file-manager/fm-directory-view.c:3304
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
@@ -3931,34 +3941,34 @@ msgstr[1] ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "wastebasket?"
 
-#: src/file-manager/fm-directory-view.c:3307
+#: src/file-manager/fm-directory-view.c:3313
 msgid "If you delete an item, it will be permanently lost."
 msgstr "If you delete an item, it will be permanently lost."
 
-#: src/file-manager/fm-directory-view.c:3308
+#: src/file-manager/fm-directory-view.c:3314
 msgid "Delete From Trash?"
 msgstr "Delete From Wastebasket?"
 
-#: src/file-manager/fm-directory-view.c:3671
+#: src/file-manager/fm-directory-view.c:3677
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Use \"%s\" to open the selected item"
 
-#: src/file-manager/fm-directory-view.c:3735
+#: src/file-manager/fm-directory-view.c:3741
 #: src/file-manager/nautilus-directory-view-ui.xml.h:30
 msgid "Other _Application..."
 msgstr "Other _Application..."
 
-#: src/file-manager/fm-directory-view.c:3735
+#: src/file-manager/fm-directory-view.c:3741
 msgid "An _Application..."
 msgstr "An _Application..."
 
-#: src/file-manager/fm-directory-view.c:3919
+#: src/file-manager/fm-directory-view.c:3925
 #, c-format
 msgid "Cannot open %s"
 msgstr "Cannot open %s"
 
-#: src/file-manager/fm-directory-view.c:3922
+#: src/file-manager/fm-directory-view.c:3928
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -3979,21 +3989,21 @@ msgstr ""
 "extension for \"%s\", then open the file normally. Alternatively, use the "
 "Open With menu to choose a specific application for the file. "
 
-#: src/file-manager/fm-directory-view.c:4293
+#: src/file-manager/fm-directory-view.c:4299
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Run \"%s\" on any selected items"
 
-#: src/file-manager/fm-directory-view.c:4527
+#: src/file-manager/fm-directory-view.c:4533
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Create Document from template \"%s\""
 
-#: src/file-manager/fm-directory-view.c:4711
+#: src/file-manager/fm-directory-view.c:4717
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "All executable files in this folder will appear in the Scripts menu."
 
-#: src/file-manager/fm-directory-view.c:4713
+#: src/file-manager/fm-directory-view.c:4719
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -4001,11 +4011,11 @@ msgstr ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 
-#: src/file-manager/fm-directory-view.c:4715
+#: src/file-manager/fm-directory-view.c:4721
 msgid "About Scripts"
 msgstr "About Scripts"
 
-#: src/file-manager/fm-directory-view.c:4716
+#: src/file-manager/fm-directory-view.c:4722
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4045,19 +4055,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 
-#: src/file-manager/fm-directory-view.c:4847
+#: src/file-manager/fm-directory-view.c:4853
 #: src/file-manager/fm-tree-view.c:788
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\" will be moved if you select the Paste Files command"
 
-#: src/file-manager/fm-directory-view.c:4851
+#: src/file-manager/fm-directory-view.c:4857
 #: src/file-manager/fm-tree-view.c:792
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" will be copied if you select the Paste Files command"
 
-#: src/file-manager/fm-directory-view.c:4858
+#: src/file-manager/fm-directory-view.c:4864
 #, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -4068,7 +4078,7 @@ msgstr[0] ""
 msgstr[1] ""
 "The %d selected items will be moved if you select the Paste Files command"
 
-#: src/file-manager/fm-directory-view.c:4865
+#: src/file-manager/fm-directory-view.c:4871
 #, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
@@ -4079,35 +4089,35 @@ msgstr[0] ""
 msgstr[1] ""
 "The %d selected items will be copied if you select the Paste Files command"
 
-#: src/file-manager/fm-directory-view.c:4947
+#: src/file-manager/fm-directory-view.c:4953
 #: src/file-manager/fm-tree-view.c:868
 msgid "There is nothing on the clipboard to paste."
 msgstr "There is nothing on the clipboard to paste."
 
-#: src/file-manager/fm-directory-view.c:5050
-#: src/file-manager/fm-directory-view.c:6134
+#: src/file-manager/fm-directory-view.c:5056
+#: src/file-manager/fm-directory-view.c:6140
 msgid "Mount Error"
 msgstr "Mount Error"
 
-#: src/file-manager/fm-directory-view.c:5112
+#: src/file-manager/fm-directory-view.c:5118
 msgid "Eject Error"
 msgstr "Eject Error"
 
-#: src/file-manager/fm-directory-view.c:5115
+#: src/file-manager/fm-directory-view.c:5121
 msgid "Unmount Error"
 msgstr "Unmount Error"
 
-#: src/file-manager/fm-directory-view.c:5378
+#: src/file-manager/fm-directory-view.c:5384
 msgid "E_ject"
 msgstr "E_ject"
 
-#: src/file-manager/fm-directory-view.c:5378
+#: src/file-manager/fm-directory-view.c:5384
 #: src/file-manager/nautilus-directory-view-ui.xml.h:62
 msgid "_Unmount Volume"
 msgstr "_Unmount Volume"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5508
+#: src/file-manager/fm-directory-view.c:5514
 #: src/file-manager/fm-tree-view.c:960
 #, c-format
 msgid "Open in New Window"
@@ -4115,119 +4125,119 @@ msgid_plural "Open in %d New Windows"
 msgstr[0] "Open in New Window"
 msgstr[1] "Open in %d New Windows"
 
-#: src/file-manager/fm-directory-view.c:5515
+#: src/file-manager/fm-directory-view.c:5521
 msgid "Browse Folder"
 msgstr "Browse Folder"
 
-#: src/file-manager/fm-directory-view.c:5517
+#: src/file-manager/fm-directory-view.c:5523
 msgid "Browse Folders"
 msgstr "Browse Folders"
 
-#: src/file-manager/fm-directory-view.c:5540
+#: src/file-manager/fm-directory-view.c:5546
 msgid "_Delete from Trash"
 msgstr "_Delete from Wastebasket"
 
-#: src/file-manager/fm-directory-view.c:5542
+#: src/file-manager/fm-directory-view.c:5548
 msgid "Delete all selected items permanently"
 msgstr "Delete all selected items permanently"
 
-#: src/file-manager/fm-directory-view.c:5545
-#: src/file-manager/fm-directory-view.c:5883
+#: src/file-manager/fm-directory-view.c:5551
+#: src/file-manager/fm-directory-view.c:5889
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Mo_ve to Trash"
 msgstr "Mo_ve to Wastebasket"
 
-#: src/file-manager/fm-directory-view.c:5547
+#: src/file-manager/fm-directory-view.c:5553
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Move each selected item to the Trash"
 msgstr "Move each selected item to the Wastebasket"
 
-#: src/file-manager/fm-directory-view.c:5571
+#: src/file-manager/fm-directory-view.c:5577
 #: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "_Delete"
 msgstr "_Delete"
 
-#: src/file-manager/fm-directory-view.c:5591
+#: src/file-manager/fm-directory-view.c:5597
 msgid "Ma_ke Links"
 msgstr "Ma_ke Links"
 
-#: src/file-manager/fm-directory-view.c:5592
+#: src/file-manager/fm-directory-view.c:5598
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Ma_ke Link"
 msgstr "Ma_ke Link"
 
-#: src/file-manager/fm-directory-view.c:5605
+#: src/file-manager/fm-directory-view.c:5611
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "_Empty Trash"
 msgstr "_Empty Wastebasket"
 
-#: src/file-manager/fm-directory-view.c:5621
+#: src/file-manager/fm-directory-view.c:5627
 msgid "Cu_t File"
 msgstr "Cu_t File"
 
-#: src/file-manager/fm-directory-view.c:5622
+#: src/file-manager/fm-directory-view.c:5628
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Cu_t Files"
 msgstr "Cu_t Files"
 
-#: src/file-manager/fm-directory-view.c:5631
+#: src/file-manager/fm-directory-view.c:5637
 msgid "_Copy File"
 msgstr "_Copy File"
 
-#: src/file-manager/fm-directory-view.c:5632
+#: src/file-manager/fm-directory-view.c:5638
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "_Copy Files"
 msgstr "_Copy Files"
 
-#: src/file-manager/fm-directory-view.c:5874
+#: src/file-manager/fm-directory-view.c:5880
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "The link is broken, do you want to move it to the Wastebasket?"
 
-#: src/file-manager/fm-directory-view.c:5876
+#: src/file-manager/fm-directory-view.c:5882
 msgid "This link can't be used, because it has no target."
 msgstr "This link can't be used, because it has no target."
 
-#: src/file-manager/fm-directory-view.c:5878
+#: src/file-manager/fm-directory-view.c:5884
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "This link can't be used, because its target \"%s\" doesn't exist."
 
-#: src/file-manager/fm-directory-view.c:5883
+#: src/file-manager/fm-directory-view.c:5889
 msgid "Broken Link"
 msgstr "Broken Link"
 
-#: src/file-manager/fm-directory-view.c:5941
+#: src/file-manager/fm-directory-view.c:5947
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Do you want to run \"%s\", or display its contents?"
 
-#: src/file-manager/fm-directory-view.c:5943
+#: src/file-manager/fm-directory-view.c:5949
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "\"%s\" is an executable text file."
 
-#: src/file-manager/fm-directory-view.c:5949
+#: src/file-manager/fm-directory-view.c:5955
 msgid "Run or Display?"
 msgstr "Run or Display?"
 
-#: src/file-manager/fm-directory-view.c:5950
+#: src/file-manager/fm-directory-view.c:5956
 msgid "Run in _Terminal"
 msgstr "Run in _Terminal"
 
-#: src/file-manager/fm-directory-view.c:5951
+#: src/file-manager/fm-directory-view.c:5957
 msgid "_Display"
 msgstr "_Display"
 
-#: src/file-manager/fm-directory-view.c:5954
+#: src/file-manager/fm-directory-view.c:5960
 msgid "_Run"
 msgstr "_Run"
 
-#: src/file-manager/fm-directory-view.c:6270
+#: src/file-manager/fm-directory-view.c:6276
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Opening \"%s\"."
 
-#: src/file-manager/fm-directory-view.c:6277
+#: src/file-manager/fm-directory-view.c:6283
 msgid "Cancel Open?"
 msgstr "Cancel Open?"
 
@@ -4444,33 +4454,33 @@ msgstr "by _Emblems"
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Keep icons sorted by emblems in rows"
 
-#: src/file-manager/fm-icon-view.c:1652
+#: src/file-manager/fm-icon-view.c:1668
 #: src/file-manager/nautilus-icon-view-ui.xml.h:20
 msgid "Restore Icons' Original Si_zes"
 msgstr "Restore Icons' Original Si_zes"
 
-#: src/file-manager/fm-icon-view.c:1653
+#: src/file-manager/fm-icon-view.c:1669
 msgid "Restore Icon's Original Si_ze"
 msgstr "Restore Icon's Original Si_ze"
 
-#: src/file-manager/fm-icon-view.c:2016
+#: src/file-manager/fm-icon-view.c:2032
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "pointing at \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2599 src/file-manager/fm-icon-view.c:2623
+#: src/file-manager/fm-icon-view.c:2615 src/file-manager/fm-icon-view.c:2639
 msgid "Drag and drop is not supported."
 msgstr "Drag and drop is not supported."
 
-#: src/file-manager/fm-icon-view.c:2600
+#: src/file-manager/fm-icon-view.c:2616
 msgid "Drag and drop is only supported on local file systems."
 msgstr "Drag and drop is only supported on local file systems."
 
-#: src/file-manager/fm-icon-view.c:2601 src/file-manager/fm-icon-view.c:2625
+#: src/file-manager/fm-icon-view.c:2617 src/file-manager/fm-icon-view.c:2641
 msgid "Drag and Drop Error"
 msgstr "Drag and Drop Error"
 
-#: src/file-manager/fm-icon-view.c:2624
+#: src/file-manager/fm-icon-view.c:2640
 msgid "An invalid drag type was used."
 msgstr "An invalid drag type was used."
 
