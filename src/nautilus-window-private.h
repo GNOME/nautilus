@@ -21,7 +21,7 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *  Authors: Elliot Lee <sopwith@redhat.com>
- *           Darin Adler <darin@eazel.com>
+ *           Darin Adler <darin@bentspoon.com>
  *
  */
 
@@ -42,7 +42,7 @@ typedef enum {
         NAUTILUS_LOCATION_CHANGE_REDIRECT
 } NautilusLocationChangeType;
 
-/* FIXME bugzilla.eazel.com 2575: Migrate more fields into here. */
+/* FIXME bugzilla.gnome.org 42575: Migrate more fields into here. */
 struct NautilusWindowDetails
 {
         /* Bonobo. */

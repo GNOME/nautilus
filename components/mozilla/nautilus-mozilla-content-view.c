@@ -1643,7 +1643,7 @@ make_full_uri_from_relative (const char *base_uri, const char *uri)
 
 	/* See section 5.2 in RFC 2396 */
 
-	/* FIXME bugzilla.eazel.com 4413: This function does not take
+	/* FIXME bugzilla.gnome.org 44413: This function does not take
 	 * into account a BASE tag in an HTML document, so its
 	 * functionality differs from what Mozilla itself would do.
 	 */

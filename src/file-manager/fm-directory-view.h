@@ -20,7 +20,7 @@
  * Boston, MA 02111-1307, USA.
  *
  * Authors: Ettore Perazzoli
- * 	    Darin Adler <darin@eazel.com>
+ * 	    Darin Adler <darin@bentspoon.com>
  * 	    John Sullivan <sullivan@eazel.com>
  *          Pavel Cisler <pavel@eazel.com>
  */

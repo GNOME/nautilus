@@ -1090,7 +1090,7 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 		return TRUE;
 
 	case GDK_FOCUS_CHANGE:
-		/* FIXME bugzilla.eazel.com 5484:
+		/* FIXME bugzilla.gnome.org 45484:
 		 * Working around bug in the GnomeCanvas widget's focus_in/focus_out
 		 * methods. They (all widgets) should be setting/usetting these flags.
 		 * GnomeCanvas doesn't. We need it set so the GtkWindow passes us all

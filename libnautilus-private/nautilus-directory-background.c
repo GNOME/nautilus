@@ -21,7 +21,7 @@
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
   
-   Author: Darin Adler <darin@eazel.com>
+   Author: Darin Adler <darin@bentspoon.com>
 */
 
 #include <config.h>
@@ -283,7 +283,7 @@ nautilus_file_background_read_desktop_settings (char **color,
 		 	default:
 		 		g_assert_not_reached ();
 			case WALLPAPER_EMBOSSED:
-				/* FIXME bugzilla.eazel.com 2193: we don't support embossing.
+				/* FIXME bugzilla.gnome.org 42193: we don't support embossing.
 				 * Just treat it as centered - ugh.
 				 */
 			case WALLPAPER_CENTERED:
@@ -503,7 +503,7 @@ nautilus_file_background_event_filter (GdkXEvent *gdk_xevent, GdkEvent *event, g
 		}
 		
 	    	background = EEL_BACKGROUND (data);
-	    	/* FIXME bugzilla.eazel.com 2220:
+	    	/* FIXME bugzilla.gnome.org 42220:
 	    	 * We'd like to call saved_settings_changed_callback right here, directly.
 	    	 * However, the current version of the property-background capplet saves
 	    	 * the new setting in gnome_config AFTER setting the root window's property -

@@ -19,7 +19,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * Authors: Darin Adler <darin@eazel.com>
+ * Authors: Darin Adler <darin@bentspoon.com>
  */
 
 /* nautilus-desktop-window.c
@@ -72,7 +72,7 @@ nautilus_desktop_window_initialize (NautilusDesktopWindow *window)
 {
 	window->details = g_new0 (NautilusDesktopWindowDetails, 1);
 
-	/* FIXME bugzilla.eazel.com 1251: 
+	/* FIXME bugzilla.gnome.org 41251: 
 	 * Although Havoc had this call to set_default_size in
 	 * his code, it seems to have no effect for me. But the
 	 * set_usize below does seem to work.
@@ -324,7 +324,7 @@ realize (GtkWidget *widget)
 				   | WIN_HINTS_SKIP_TASKBAR
 				   | WIN_HINTS_SKIP_FOCUS);
 
-	/* FIXME bugzilla.eazel.com 1255: 
+	/* FIXME bugzilla.gnome.org 41255: 
 	 * Should we do a gdk_window_move_resize here, in addition to
 	 * the calls in initialize above that set the size?
 	 */

@@ -471,7 +471,7 @@ static const PreferenceDefault preference_defaults[] = {
 	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { USER_LEVEL_NONE }
 	},
-	/* FIXME bugzilla.eazel.com 1245: Saved in pixels instead of in %? */
+	/* FIXME bugzilla.gnome.org 41245: Saved in pixels instead of in %? */
 	{ NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
 	  PREFERENCE_INTEGER,
 	  EEL_USER_LEVEL_NOVICE,

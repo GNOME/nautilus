@@ -417,7 +417,7 @@ create_mount_link (FMDesktopIconView *icon_view,
 		return;
 	}
 	
-	/* FIXME bugzilla.eazel.com 5412: Design a comprehensive desktop mounting strategy */
+	/* FIXME bugzilla.gnome.org 45412: Design a comprehensive desktop mounting strategy */
 	if (!nautilus_volume_is_removable (volume)) {
 		return;
 	}

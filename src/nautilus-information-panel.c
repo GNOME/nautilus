@@ -127,7 +127,7 @@ static void     background_metadata_changed_callback   (NautilusSidebar  *sideba
 
 #define DEFAULT_TAB_COLOR "rgb:9999/9999/9999"
 
-/* FIXME bugzilla.eazel.com 1245: hardwired sizes */
+/* FIXME bugzilla.gnome.org 41245: hardwired sizes */
 #define SIDEBAR_MINIMUM_WIDTH 1
 #define SIDEBAR_MINIMUM_HEIGHT 400
 
@@ -702,7 +702,7 @@ receive_dropped_uri_list (NautilusSidebar *sidebar,
 	switch (hit_test (sidebar, x, y)) {
 	case NO_PART:
 	case BACKGROUND_PART:
-		/* FIXME bugzilla.eazel.com 2507: Does this work for all images, or only background images?
+		/* FIXME bugzilla.gnome.org 42507: Does this work for all images, or only background images?
 		 * Other views handle background images differently from other URIs.
 		 */
 		if (exactly_one && uri_is_local_image (uris[0])) {
@@ -1356,7 +1356,7 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 				    FALSE, FALSE, 
 				    0);
 
-		/* FIXME bugzilla.eazel.com 2510: Security hole?
+		/* FIXME bugzilla.gnome.org 42510: Security hole?
 		 * Unsafe to use a string from the MIME file as a
 		 * printf format string without first checking it over
 		 * somehow. We can do a search and replace on the "%s"

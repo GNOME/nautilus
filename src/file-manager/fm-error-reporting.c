@@ -313,7 +313,7 @@ fm_rename_file (NautilusFile *file,
 	g_free (old_name);
 	eel_timed_wait_start (cancel_rename_callback, file,
 				   _("Cancel Rename?"), wait_message,
-				   NULL); /* FIXME bugzilla.eazel.com 2395: Parent this? */
+				   NULL); /* FIXME bugzilla.gnome.org 42395: Parent this? */
 	g_free (wait_message);
 
 	/* Start the rename. */

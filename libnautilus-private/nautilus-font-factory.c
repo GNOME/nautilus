@@ -219,7 +219,7 @@ nautilus_font_factory_get_font_by_family (const char *family,
 	g_return_val_if_fail (family != NULL, NULL);
 	g_return_val_if_fail (size_in_pixels > 0, NULL);
 
-	/* FIXME bugzilla.eazel.com 7907: 
+	/* FIXME bugzilla.gnome.org 47907: 
 	 * The "GTK System Font" string is hard coded in many places.
 	 */
 	if (eel_str_is_equal (family, "GTK System Font")) {
@@ -231,7 +231,7 @@ nautilus_font_factory_get_font_by_family (const char *family,
 
 	factory = nautilus_get_current_font_factory ();
 	while (*iter) {
-		/* FIXME bugzilla.eazel.com 7347: 
+		/* FIXME bugzilla.gnome.org 47347: 
 		 * Its a hack that we check for "-" prefixes in font names.
 		 * We do this in order not to break transalted font families.
 		 */

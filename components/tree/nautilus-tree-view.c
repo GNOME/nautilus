@@ -928,7 +928,7 @@ create_tree (NautilusTreeView *view)
 
 	update_smooth_graphics_mode (view);
 
-	/* FIXME bugzilla.eazel.com 6820:
+	/* FIXME bugzilla.gnome.org 46820:
 	 * Using the NautilusFile comparison function to sort by
 	 * is way too slow when opening large directories (those with
 	 * 1000s of files). So to fix bug 6988 we're reverting back

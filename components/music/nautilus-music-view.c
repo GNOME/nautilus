@@ -1989,7 +1989,7 @@ nautilus_music_view_drag_data_received (GtkWidget *widget, GdkDragContext *conte
 	switch (info) {
         case TARGET_GNOME_URI_LIST:
         case TARGET_URI_LIST: 	
-                /* FIXME bugzilla.eazel.com 2406: 
+                /* FIXME bugzilla.gnome.org 42406: 
                  * the music view should accept mp3 files.
                  */
                 break;

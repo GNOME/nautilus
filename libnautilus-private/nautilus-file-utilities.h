@@ -32,7 +32,7 @@ gboolean nautilus_file_name_matches_hidden_pattern   (const char *name_or_relati
 gboolean nautilus_file_name_matches_backup_pattern   (const char *name_or_relative_uri);
 gboolean nautilus_file_name_matches_metafile_pattern (const char *name_or_relative_uri);
 
-/* FIXME bugzilla.eazel.com 2424: 
+/* FIXME bugzilla.gnome.org 42424: 
  * This is the same as gnome-libs g_concat_dir_and_file except
  * for handling path == NULL.
  */
@@ -50,7 +50,7 @@ char *   nautilus_get_pixmap_directory               (void);
  * Otherwise similar to gnome_pixmap_file in that it checks to see if the file
  * exists and returns NULL if it doesn't.
  */
-/* FIXME bugzilla.eazel.com 2425: 
+/* FIXME bugzilla.gnome.org 42425: 
  * We might not need this once we get on gnome-libs 2.0 which handles
  * gnome_pixmap_file better, using GNOME_PATH.
  */

@@ -24,7 +24,7 @@
  * Boston, MA 02111-1307, USA.
  *
  * Authors: Rebecca Schulman <rebecka@eazel.com>,
- *          Darin Adler <darin@eazel.com>
+ *          Darin Adler <darin@bentspoon.com>
  */
 
 #include <config.h>

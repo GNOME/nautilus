@@ -19,7 +19,7 @@
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
   
-   Authors: Darin Adler <darin@eazel.com>,
+   Authors: Darin Adler <darin@bentspoon.com>,
             Mike Engber <engber@eazel.com>
 */
 
@@ -172,7 +172,7 @@ nautilus_directory_is_metadata_read (NautilusDirectory *directory)
 
 	result = Nautilus_Metafile_is_read (metafile, &ev);
 
-	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 	CORBA_exception_free (&ev);
 	bonobo_object_release_unref (metafile, NULL);
 
@@ -204,7 +204,7 @@ nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 
 	corba_value = Nautilus_Metafile_get (metafile, file_name, key, non_null_default, &ev);
 
-	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 	CORBA_exception_free (&ev);
 	bonobo_object_release_unref (metafile, NULL);
 
@@ -245,7 +245,7 @@ nautilus_directory_get_file_metadata_list (NautilusDirectory *directory,
 
 	corba_value = Nautilus_Metafile_get_list (metafile, file_name, list_key, list_subkey, &ev);
 
-	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 	CORBA_exception_free (&ev);
 	bonobo_object_release_unref (metafile, NULL);
 
@@ -287,7 +287,7 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 
 	Nautilus_Metafile_set (metafile, file_name, key, default_metadata, metadata, &ev);
 
-	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 	CORBA_exception_free (&ev);
 	bonobo_object_release_unref (metafile, NULL);
 }
@@ -337,7 +337,7 @@ nautilus_directory_set_file_metadata_list (NautilusDirectory *directory,
 
 	Nautilus_Metafile_set_list (metafile, file_name, list_key, list_subkey, corba_list, &ev);
 
-	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 	CORBA_exception_free (&ev);
 	bonobo_object_release_unref (metafile, NULL);
 
@@ -459,7 +459,7 @@ nautilus_directory_copy_file_metadata (NautilusDirectory *source_directory,
 
 	Nautilus_Metafile_copy (source_metafile, source_file_name, destination_uri, destination_file_name, &ev);
 
-	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 	CORBA_exception_free (&ev);
 	bonobo_object_release_unref (source_metafile, NULL);
 
@@ -481,7 +481,7 @@ nautilus_directory_remove_file_metadata (NautilusDirectory *directory,
 
 	Nautilus_Metafile_remove (metafile, file_name, &ev);
 
-	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 	CORBA_exception_free (&ev);
 	bonobo_object_release_unref (metafile, NULL);
 }
@@ -503,7 +503,7 @@ nautilus_directory_rename_file_metadata (NautilusDirectory *directory,
 
 	Nautilus_Metafile_rename (metafile, old_file_name, new_file_name, &ev);
 
-	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 	CORBA_exception_free (&ev);
 	bonobo_object_release_unref (metafile, &ev);
 }
@@ -523,7 +523,7 @@ nautilus_directory_rename_directory_metadata (NautilusDirectory *directory,
 
 	Nautilus_Metafile_rename_directory (metafile, new_directory_uri, &ev);
 
-	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 	CORBA_exception_free (&ev);
 	bonobo_object_release_unref (metafile, &ev);
 }
@@ -551,7 +551,7 @@ nautilus_directory_register_metadata_monitor (NautilusDirectory *directory)
 		 bonobo_object_corba_objref (BONOBO_OBJECT (directory->details->metafile_monitor)),
 		 &ev);
 
-	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 	CORBA_exception_free (&ev);
 	bonobo_object_release_unref (metafile, NULL);
 }
@@ -574,7 +574,7 @@ nautilus_directory_unregister_metadata_monitor (NautilusDirectory *directory)
 		 bonobo_object_corba_objref (BONOBO_OBJECT (directory->details->metafile_monitor)),
 		 &ev);
 
-	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 	CORBA_exception_free (&ev);
 	bonobo_object_release_unref (metafile, NULL);
 

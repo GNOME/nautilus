@@ -20,7 +20,7 @@
 #  along with this script; if not, write to the Free Software
 #  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
-#  Author: Darin Adler <darin@eazel.com>,
+#  Author: Darin Adler <darin@bentspoon.com>,
 #
 
 # check-signals.pl: Search for .c files where someone forgot to

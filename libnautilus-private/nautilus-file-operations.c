@@ -1723,7 +1723,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	duplicate = copy_action != GDK_ACTION_MOVE;
 	for (p = item_uris; p != NULL; p = p->next) {
 		/* Filter out special Nautilus link files */
-		/* FIXME bugzilla.eazel.com 5295: 
+		/* FIXME bugzilla.gnome.org 45295: 
 		 * This is surprising behavior -- the user drags the Trash icon (say)
 		 * to a folder, releases it, and nothing whatsoever happens. Don't we want
 		 * a dialog in this case?
@@ -2289,7 +2289,7 @@ nautilus_self_check_file_operations (void)
 	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (24th copy).txt"), 1), _("foo foo (25th copy).txt"));
 	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (100000000000000th copy).txt"), 1), _("foo foo (copy).txt"));
 
-	/* FIXME bugzilla.eazel.com 7701: These are wrong. */
+	/* FIXME bugzilla.gnome.org 47701: These are wrong. */
 	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (10th copy)"), 1), _("foo (11st copy)"));
 	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (10th copy).txt"), 1), _("foo (11st copy).txt"));
 	EEL_CHECK_STRING_RESULT (get_duplicate_name (_("foo (11th copy)"), 1), _("foo (12nd copy)"));

@@ -254,7 +254,7 @@ display_caveat_first_time (NautilusShell *shell, NautilusWindow *window)
 	/* Show the "not ready for prime time" dialog after the first
 	 * window appears, so it's on top.
 	 */
-	/* FIXME bugzilla.eazel.com 1256: It's not on top of the
+	/* FIXME bugzilla.gnome.org 41256: It's not on top of the
          * windows other than the first one.
 	 */
 	if (!showed_caveat

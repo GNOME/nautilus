@@ -468,7 +468,7 @@ nautilus_link_local_get_link_type (const char *path)
 	return type;
 }
 
-/* FIXME bugzilla.eazel.com 2495: 
+/* FIXME bugzilla.gnome.org 42495: 
  * Caller has to know to pass in a file with a NUL character at the end.
  */
 char *

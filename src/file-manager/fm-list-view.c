@@ -295,7 +295,7 @@ fm_list_view_initialize (gpointer object, gpointer klass)
 	 * to create_list) until later, when the function pointers
 	 * have been initialized by the subclass.
 	 */
-	/* FIXME bugzilla.eazel.com 2533: 
+	/* FIXME bugzilla.gnome.org 42533: 
 	 * This code currently relies on there being a call to
 	 * get_list before the widget is shown to the user. It would
 	 * be better to do something explicit, like connecting to
@@ -776,7 +776,7 @@ fm_list_get_default_action (EelList *list,
 
 	g_assert (EEL_IS_LIST (list));
 
-	/* FIXME bugzilla.eazel.com 2569: Too much code copied from nautilus-icon-dnd.c. Need to share more. */
+	/* FIXME bugzilla.gnome.org 42569: Too much code copied from nautilus-icon-dnd.c. Need to share more. */
 
 	switch (info) {
 	case EEL_ICON_DND_GNOME_ICON_LIST:
@@ -821,7 +821,7 @@ fm_list_handle_dropped_items (EelList *list,
 			      int x, int y, guint info,
 			      FMListView *list_view)
 {
-	/* FIXME bugzilla.eazel.com 1257:
+	/* FIXME bugzilla.gnome.org 41257:
 	 * Merge this with nautilus_icon_container_receive_dropped_icons
 	 */ 
 
@@ -992,7 +992,7 @@ create_list (FMListView *list_view)
 	int i;
 	FMListViewColumn column;
 
-	/* FIXME bugzilla.eazel.com 666:
+	/* FIXME bugzilla.gnome.org 40666:
 	 * title setup should allow for columns not being resizable at all,
 	 * justification, editable or not, type/format,
 	 * not being usable as a sort order criteria, etc.
@@ -1013,7 +1013,7 @@ create_list (FMListView *list_view)
 	for (i = 0; i < number_of_columns; ++i) {
 		get_column_specification (list_view, i, &column);
 
-		/* FIXME bugzilla.eazel.com 2532: Make a cover to do this trick. */
+		/* FIXME bugzilla.gnome.org 42532: Make a cover to do this trick. */
 		eel_clist_set_column_max_width (clist, i, column.maximum_width);
 		eel_clist_set_column_min_width (clist, i, column.minimum_width);
 		/* work around broken EelCList that pins the max_width to be no less than
@@ -1761,7 +1761,7 @@ fm_list_view_set_zoom_level (FMListView *list_view,
 	/* This little dance is necessary due to bugs in EelCList.
 	 * Must set min, then max, then min, then actual width.
 	 */
-	/* FIXME bugzilla.eazel.com 2532: Make a cover to do this
+	/* FIXME bugzilla.gnome.org 42532: Make a cover to do this
 	 * trick, or fix EelCList now that we have a copy of the
 	 * code here in Nautilus.
 	 */

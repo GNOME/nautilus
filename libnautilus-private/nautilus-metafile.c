@@ -656,7 +656,7 @@ find_monitor_node (GList *monitors, const Nautilus_MetafileMonitor monitor)
 		}
 	}
 	
-	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+	/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 
 	CORBA_exception_free (&ev);
 	
@@ -711,7 +711,7 @@ nautilus_metafile_notify_metafile_ready (NautilusMetafile *metafile)
 	for (node = metafile->details->monitors; node != NULL; node = node->next) {
 		monitor = node->data;
 		Nautilus_MetafileMonitor_metafile_ready (monitor, &ev);
-		/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+		/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 	}
 	
 	CORBA_exception_free (&ev);
@@ -730,7 +730,7 @@ call_metafile_changed (NautilusMetafile *metafile,
 	for (node = metafile->details->monitors; node != NULL; node = node->next) {
 		monitor = node->data;
 		Nautilus_MetafileMonitor_metafile_changed (monitor, file_names, &ev);
-		/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+		/* FIXME bugzilla.gnome.org 46664: examine ev for errors */
 	}
 	
 	CORBA_exception_free (&ev);
@@ -1530,7 +1530,7 @@ copy_file_metadata (NautilusMetafile *source_metafile,
 	g_return_if_fail (NAUTILUS_IS_METAFILE (destination_metafile));
 	g_return_if_fail (destination_file_name != NULL);
 
-	/* FIXME bugzilla.eazel.com 3343: This does not properly
+	/* FIXME bugzilla.gnome.org 43343: This does not properly
 	 * handle the case where we don't have the source metadata yet
 	 * since it's not read in.
 	 */
@@ -1549,7 +1549,7 @@ copy_file_metadata (NautilusMetafile *source_metafile,
 			g_hash_table_insert (destination_metafile->details->node_hash,
 					     xmlMemStrdup (destination_file_name), node);
 		} else {
-			/* FIXME bugzilla.eazel.com 6526: Copying data into a destination
+			/* FIXME bugzilla.gnome.org 46526: Copying data into a destination
 			 * where the metafile was not yet read is not implemented.
 			 */
 			g_warning ("not copying metadata");
@@ -1896,7 +1896,7 @@ allow_metafile (NautilusMetafile *metafile)
 	 * hardcode the schemes that are good for metadata instead of
 	 * the schemes that are bad for it.
 	 */
-	/* FIXME bugzilla.eazel.com 2434: 
+	/* FIXME bugzilla.gnome.org 42434: 
 	 * We need to handle this in a better way. Perhaps a
 	 * better way can wait until we have support for metadata
 	 * access inside gnome-vfs.

@@ -49,7 +49,7 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-theme.h>
 
-/* FIXME bugzilla.eazel.com 1243: 
+/* FIXME bugzilla.gnome.org 41243: 
  * We should use inheritance instead of these special cases
  * for the desktop window.
  */
@@ -281,7 +281,7 @@ set_up_special_bonobo_button (NautilusWindow *window,
 	bonobo_ui_toolbar_button_item_set_icon (item, pixbuf);
 	gdk_pixbuf_unref (pixbuf);
 
-	/* FIXME bugzilla.eazel.com 5005:
+	/* FIXME bugzilla.gnome.org 45005:
 	 * Setting the style here accounts for the preference, but does not
 	 * account for a hard-wired toolbar style or later changes in style
 	 * (such as if the toolbar is detached and made vertical). There
@@ -387,7 +387,7 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 
 	CORBA_exception_init (&ev);
 
-	/* FIXME bugzilla.eazel.com 1243: 
+	/* FIXME bugzilla.gnome.org 41243: 
 	 * We should use inheritance instead of these special cases
 	 * for the desktop window.
 	 */

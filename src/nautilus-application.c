@@ -21,7 +21,7 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *  Authors: Elliot Lee <sopwith@redhat.com>,
- *           Darin Adler <darin@eazel.com>
+ *           Darin Adler <darin@bentspoon.com>
  *
  */
 
@@ -535,7 +535,7 @@ nautilus_application_startup (NautilusApplication *application,
 				    " from the console may fix the problem. If not,"
 				    " you can try rebooting the computer or"
 				    " installing Nautilus again.");
-			/* FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame. */
+			/* FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame. */
 			detailed_message = _("Nautilus can't be used now. "
 					     "Running the command \"nautilus-clean.sh -x\""
 					     " from the console may fix the problem. If not,"
@@ -562,7 +562,7 @@ nautilus_application_startup (NautilusApplication *application,
 			 * version of OAF). Show dialog and terminate the
 			 * program.
 			 */
-			/* FIXME bugzilla.eazel.com 2537: Looks like this does happen with the
+			/* FIXME bugzilla.gnome.org 42537: Looks like this does happen with the
 			 * current OAF. I guess I read the code
 			 * wrong. Need to figure out when and make a
 			 * good message.
@@ -584,7 +584,7 @@ nautilus_application_startup (NautilusApplication *application,
 			 * we better stop looping.
 			 */
 			if (result == OAF_REG_SUCCESS) {
-				/* FIXME bugzilla.eazel.com 2538: When can this happen? */
+				/* FIXME bugzilla.gnome.org 42538: When can this happen? */
 				message = _("Nautilus can't be used now, due to an unexpected error.");
 				detailed_message = _("Nautilus can't be used now, due to an unexpected error "
 						     "from OAF when attempting to locate the factory."

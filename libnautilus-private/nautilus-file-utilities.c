@@ -113,7 +113,7 @@ nautilus_get_user_directory (void)
 
 	if (!g_file_exists (user_directory)) {
 		mkdir (user_directory, DEFAULT_NAUTILUS_DIRECTORY_MODE);
-		/* FIXME bugzilla.eazel.com 1286: 
+		/* FIXME bugzilla.gnome.org 41286: 
 		 * How should we handle the case where this mkdir fails? 
 		 * Note that nautilus_application_startup will refuse to launch if this 
 		 * directory doesn't get created, so that case is OK. But the directory 
@@ -143,7 +143,7 @@ nautilus_get_desktop_directory (void)
 		desktop_directory = nautilus_get_gmc_desktop_directory ();
 		if (!g_file_exists (desktop_directory)) {
 			mkdir (desktop_directory, DEFAULT_DESKTOP_DIRECTORY_MODE);
-			/* FIXME bugzilla.eazel.com 1286: 
+			/* FIXME bugzilla.gnome.org 41286: 
 			 * How should we handle the case where this mkdir fails? 
 			 * Note that nautilus_application_startup will refuse to launch if this 
 			 * directory doesn't get created, so that case is OK. But the directory 
@@ -182,7 +182,7 @@ nautilus_get_pixmap_directory (void)
 	return g_strdup (DATADIR "/pixmaps/nautilus");
 }
 
-/* FIXME bugzilla.eazel.com 2423: 
+/* FIXME bugzilla.gnome.org 42423: 
  * Callers just use this and dereference so we core dump if
  * pixmaps are missing. That is lame.
  */

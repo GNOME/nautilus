@@ -19,7 +19,7 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Authors: Darin Adler <darin@eazel.com>
+   Authors: Darin Adler <darin@bentspoon.com>
 */
 
 #include <config.h>
@@ -716,7 +716,7 @@ activate_group_callback (GtkMenuItem *menu_item, FileNamePair *pair)
 		 pair->file,
 		 _("Cancel Group Change?"),
 		 _("Changing group"),
-		 NULL); /* FIXME bugzilla.eazel.com 2397: Parent this? */
+		 NULL); /* FIXME bugzilla.gnome.org 42397: Parent this? */
 	nautilus_file_set_group
 		(pair->file, pair->name,
 		 group_change_callback, NULL);
@@ -878,7 +878,7 @@ activate_owner_callback (GtkMenuItem *menu_item, FileNamePair *pair)
 		 pair->file,
 		 _("Cancel Owner Change?"),
 		 _("Changing owner"),
-		 NULL); /* FIXME bugzilla.eazel.com 2397: Parent this? */
+		 NULL); /* FIXME bugzilla.gnome.org 42397: Parent this? */
 	nautilus_file_set_owner
 		(pair->file, pair->name,
 		 owner_change_callback, NULL);
@@ -1364,7 +1364,7 @@ is_merged_trash_directory (NautilusFile *file)
 static gboolean
 should_show_custom_icon_buttons (FMPropertiesWindow *window) 
 {
-	/* FIXME bugzilla.eazel.com 5642:
+	/* FIXME bugzilla.gnome.org 45642:
 	 * Custom icons aren't displayed on the the desktop Trash icon, so
 	 * we shouldn't pretend that they work by showing them here.
 	 * When bug 5642 is fixed we can remove this case.
@@ -1404,7 +1404,7 @@ should_show_accessed_date (FMPropertiesWindow *window)
 static gboolean
 should_show_mime_type (FMPropertiesWindow *window) 
 {
-	/* FIXME bugzilla.eazel.com 5652:
+	/* FIXME bugzilla.gnome.org 45652:
 	 * nautilus_file_is_directory should return TRUE for special
 	 * trash directory, but doesn't. I could trivially fix this
 	 * with a check for is_merged_trash_directory here instead.
@@ -1484,7 +1484,7 @@ create_basic_page (FMPropertiesWindow *window)
 	/* Update name field initially before hooking up changed signal. */
 	name_field_update_to_match_file (NAUTILUS_ENTRY (name_field));
 
-/* FIXME bugzilla.eazel.com 2151:
+/* FIXME bugzilla.gnome.org 42151:
  * With this (and one place elsewhere in this file, not sure which is the
  * trouble-causer) code in place, bug 2151 happens (crash on quit). Since
  * we've removed Undo from Nautilus for now, I'm just ifdeffing out this
@@ -2061,7 +2061,7 @@ create_permissions_page (FMPropertiesWindow *window)
 static gboolean
 should_show_emblems (FMPropertiesWindow *window) 
 {
-	/* FIXME bugzilla.eazel.com 5643:
+	/* FIXME bugzilla.gnome.org 45643:
 	 * Emblems aren't displayed on the the desktop Trash icon, so
 	 * we shouldn't pretend that they work by showing them here.
 	 * When bug 5643 is fixed we can remove this case.
@@ -2231,7 +2231,7 @@ create_properties_window_callback (NautilusFile *file, gpointer callback_data)
 
 	remove_pending_file (startup_data, FALSE, TRUE, TRUE);
 
-/* FIXME bugzilla.eazel.com 2151:
+/* FIXME bugzilla.gnome.org 42151:
  * See comment elsewhere in this file about bug 2151.
  */
 #ifdef UNDO_ENABLED

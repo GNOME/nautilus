@@ -288,7 +288,7 @@ restore_editable_from_undo_snapshot_callback (GtkObject *target, gpointer callba
  * Both here and in nautilus-shell-ui.xml.
  */
 
-/* FIXME bugzilla.eazel.com 3515: Undo doesn't work */
+/* FIXME bugzilla.gnome.org 43515: Undo doesn't work */
 #ifdef UNDO_ENABLED
 
 static gboolean
@@ -323,7 +323,7 @@ editable_key_press_event (GtkEditable *editable, GdkEventKey *event, gpointer us
 void 
 nautilus_undo_editable_set_undo_key (GtkEditable *editable, gboolean value)
 {
-/* FIXME bugzilla.eazel.com 3515: Undo doesn't work */
+/* FIXME bugzilla.gnome.org 43515: Undo doesn't work */
 #ifdef UNDO_ENABLED
 	if (value) {
 		/* Connect to entry signals */
@@ -332,7 +332,7 @@ nautilus_undo_editable_set_undo_key (GtkEditable *editable, gboolean value)
 				    GTK_SIGNAL_FUNC (editable_key_press_event),
 				    NULL);
 	} else {
-		/* FIXME bugzilla.eazel.com 5092: Warns if the handler
+		/* FIXME bugzilla.gnome.org 45092: Warns if the handler
 		 * is not already connected. We could use object data
 		 * to prevent that little problem.
 		 */

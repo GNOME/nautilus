@@ -206,7 +206,7 @@ nautilus_switchable_navigation_bar_set_mode (NautilusSwitchableNavigationBar    
 
 	nautilus_switchable_navigation_bar_activate (bar);
 
-	/* FIXME bugzilla.eazel.com 3171:
+	/* FIXME bugzilla.gnome.org 43171:
 	 * We don't know why this line is needed here, but if it's removed
 	 * then the bar won't shrink when we switch from the complex search
 	 * bar to the location bar (though it does grow when switching in

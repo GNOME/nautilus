@@ -20,7 +20,7 @@
 #  along with this library; if not, write to the Free Software
 #  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
-#  Author: Darin Adler <darin@eazel.com>,
+#  Author: Darin Adler <darin@bentspoon.com>,
 #
 
 # check-FIXME.pl: Search for FIXMEs in the sources and correlate them
@@ -62,10 +62,10 @@ close FILE;
 print "Searching the bugzilla database's product $product for open FIXME bugs\n";
 
 if (!grep /$product/, ( "nautilus", "gnome-vfs", "medusa", "oaf")) {
-    print "Can't find your product in the bugzilla.eazel.com database\n";
+    print "Can't find your product in the bugzilla.gnome.org database\n";
 }
 
-my $bugzilla_query_bug_url = "http://bugzilla.eazel.com/buglist.cgi?";
+my $bugzilla_query_bug_url = "http://bugzilla.gnome.org/buglist.cgi?";
 
 $product =~ s/\-/\+/g;
 my @cgi_options = ("bug_status=NEW",
@@ -98,7 +98,7 @@ foreach my $file (@ARGV)
     while (<FILE>)
       {
         next if !/FIXME/;
-        if (/FIXME\s*:?\s*bugzilla.eazel.com\s+(\d+)/)
+        if (/FIXME\s*:?\s*bugzilla.gnome.org\s+(\d+)/)
           {
             $bug_lines{$1} .= "$file:$.:$_";
           }
@@ -121,7 +121,7 @@ print "\n";
 foreach my $bug_number (keys %bugs_in_bugzilla) {
     if ($bugs_in_bugzilla{$bug_number} eq "UNFOUND") {
         # Also check that the 
-        my $bug_url = "http://bugzilla.eazel.com/show_bug.cgi?id=".$bug_number;
+        my $bug_url = "http://bugzilla.gnome.org/show_bug.cgi?id=".$bug_number;
         my $bug_page = `wget -q -O - $bug_url`;
         if (!($bug_page =~ /This is not a FIXME bug/i)) {
           $bug_page =~ /<A HREF=\"bug_status.html\#assigned_to\">Assigned To:<\/A><\/B><\/TD>\s+<TD>([^<]+)<\/TD>/s;
@@ -148,7 +148,7 @@ sub numerically { $a <=> $b; }
 foreach my $bug (sort numerically keys %bug_lines)
   {
     # Check and see if the bug is open.
-    my $page = `wget -q -O - http://bugzilla.eazel.com/show_bug.cgi?id=$bug`;
+    my $page = `wget -q -O - http://bugzilla.gnome.org/show_bug.cgi?id=$bug`;
     $page =~ tr/\n/ /;
     my $status = "unknown";
     $status = $1 if $page =~ m|Status:.*</TD>\s*<TD>([A-Z]+)</TD>|;

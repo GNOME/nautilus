@@ -148,7 +148,7 @@ help_uri_to_string (HelpURI *help_uri)
 	case UNKNOWN_FILE:
 		return NULL;
 	default:
-		/* FIXME bugzilla.eazel.com 2401: 
+		/* FIXME bugzilla.gnome.org 42401: 
 		 * An assert at runtime may be a bit harsh.
                  * We'd prefer behavior more like g_return_if_fail.
                  * In glib 2.0 we can use g_return_val_if_reached.
@@ -219,7 +219,7 @@ convert_file_to_uri (HelpURI *help_uri, char *file)
 	} else if (g_strcasecmp (mime_type, "text/html") == 0) {
 		help_uri->type = HTML_FILE;
 	} else if (g_strcasecmp (mime_type, "application/x-troff-man") == 0) {
-                /* FIXME bugzilla.eazel.com 2402: 
+                /* FIXME bugzilla.gnome.org 42402: 
                  * The check above used to check for a prefix
                  * of "application/x-troff-man", but now we check for
                  * an exact string match. Is that what we really want?
@@ -272,7 +272,7 @@ strdup_string_to_substring_end (const char *string, const char *substring)
 }
 
 /*
- * bugzilla.eazel.com 6761:
+ * bugzilla.gnome.org 46761:
  * Automatically promote requests for html help to sgml help
  * if available
  *

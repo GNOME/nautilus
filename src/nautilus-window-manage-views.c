@@ -22,7 +22,7 @@
  *
  *  Authors: Elliot Lee <sopwith@redhat.com>
  *           John Sullivan <sullivan@eazel.com>
- *           Darin Adler <darin@eazel.com>
+ *           Darin Adler <darin@bentspoon.com>
  */
 
 #include <config.h>
@@ -59,7 +59,7 @@
 #include <libnautilus-private/nautilus-monitor.h>
 #include <libnautilus-private/nautilus-search-uri.h>
 
-/* FIXME bugzilla.eazel.com 1243: 
+/* FIXME bugzilla.gnome.org 41243: 
  * We should use inheritance instead of these special cases
  * for the desktop window.
  */
@@ -210,7 +210,7 @@ window_set_title_with_time_stamp (NautilusWindow *window, const char *title)
 	time_stamp = nautilus_get_build_time_stamp ();
 	
 	if (time_stamp != NULL) {
-		/* FIXME bugzilla.eazel.com 5037: The text Preview
+		/* FIXME bugzilla.gnome.org 45037: The text Preview
 		 * Release is hardcoded here. Are all builds with
 		 * time stamps really best described as "preview
 		 * release"?.
@@ -491,7 +491,7 @@ viewed_file_changed_callback (NautilusFile *file,
                          */
                         end_location_change (window);
                         
-                        /* FIXME bugzilla.eazel.com 5038: Is closing
+                        /* FIXME bugzilla.gnome.org 45038: Is closing
                          * the window really the right thing to do for
                          * all cases?
                          */
@@ -612,7 +612,7 @@ update_for_new_location (NautilusWindow *window)
                                               window->details->location);
         
         /* Notify the sidebar of the location change. */
-        /* FIXME bugzilla.eazel.com 211:
+        /* FIXME bugzilla.gnome.org 40211:
          * Eventually, this will not be necessary when we restructure the 
          * sidebar itself to be a NautilusViewFrame.
          */
@@ -690,7 +690,7 @@ open_location (NautilusWindow *window,
         target_window = window;
         create_new_window = force_new_window;
 
-	/* FIXME bugzilla.eazel.com 1243: 
+	/* FIXME bugzilla.gnome.org 41243: 
 	 * We should use inheritance instead of these special cases
 	 * for the desktop window.
 	 */
@@ -699,7 +699,7 @@ open_location (NautilusWindow *window,
 	 * mode", always use another window. Either use the topmost window, 
 	 * or create a new window if the desktop is the topmost (and only).
 	 * However, this behavior was nearly universally disliked (see 
-	 * bugzilla.eazel.com bug 8122).
+	 * bugzilla.gnome.org bug 48122).
 	 */
         if (!create_new_window && NAUTILUS_IS_DESKTOP_WINDOW (window)) {
                 if (!NAUTILUS_DESKTOP_WINDOW (window)->affect_desktop_on_next_location_change) {
@@ -936,7 +936,7 @@ load_content_view (NautilusWindow *window,
         const char *iid;
         NautilusViewFrame *view;
 
- 	/* FIXME bugzilla.eazel.com 1243: 
+ 	/* FIXME bugzilla.gnome.org 41243: 
 	 * We should use inheritance instead of these special cases
 	 * for the desktop window.
 	 */
@@ -1041,14 +1041,14 @@ handle_view_failure (NautilusWindow *window,
 	        if (view == window->content_view) {
 	                nautilus_window_set_content_view_widget (window, NULL);
 
-                        /* FIXME bugzilla.eazel.com 5039: We need a
+                        /* FIXME bugzilla.gnome.org 45039: We need a
                          * way to report the specific error that
                          * happens in this case - adapter factory not
                          * found, component failed to load, etc.
                          */
 	                report_current_content_view_failure_to_user (window, view);
 	        } else {
-                        /* FIXME bugzilla.eazel.com 5039: We need a
+                        /* FIXME bugzilla.gnome.org 45039: We need a
                          * way to report the specific error that
                          * happens in this case - adapter factory not
                          * found, component failed to load, etc.
@@ -1222,7 +1222,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
                 break;
 
         case NAUTILUS_DETERMINE_VIEW_NO_HANDLER_FOR_TYPE:
-                /* FIXME bugzilla.eazel.com 866: Can't expect to read the
+                /* FIXME bugzilla.gnome.org 40866: Can't expect to read the
                  * permissions instantly here. We might need to wait for
                  * a stat first.
                  */
@@ -1234,7 +1234,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
                                 (_("Couldn't display \"%s\", because Nautilus cannot determine what type of file it is."),
                                  uri_for_display);
         	} else {
-        		/* FIXME bugzilla.eazel.com 4932:
+        		/* FIXME bugzilla.gnome.org 44932:
         		 * Should distinguish URIs with no handlers at all from remote URIs
         		 * with local-only handlers.
         		 */
@@ -1288,7 +1288,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
 
 	case NAUTILUS_DETERMINE_VIEW_SERVICE_NOT_AVAILABLE:
 		if (nautilus_is_search_uri (location)) {
-			/* FIXME bugzilla.eazel.com 2458: Need to give
+			/* FIXME bugzilla.gnome.org 42458: Need to give
                          * the user better advice about what to do
                          * here.
                          */
@@ -1571,7 +1571,7 @@ zoom_level_changed_callback (NautilusViewFrame *view,
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 				       NAUTILUS_COMMAND_ZOOM_NORMAL,
 				       TRUE);
-	/* FIXME bugzilla.eazel.com 3442: Desensitize "Zoom Normal"? */
+	/* FIXME bugzilla.gnome.org 43442: Desensitize "Zoom Normal"? */
 
 	nautilus_window_ui_thaw (window);
 }
@@ -1737,7 +1737,7 @@ load_underway_callback (NautilusViewFrame *view,
 {
         g_assert (NAUTILUS_IS_WINDOW (window));
 
-        /* FIXME bugzilla.eazel.com 2460: We intentionally ignore
+        /* FIXME bugzilla.gnome.org 42460: We intentionally ignore
          * progress from sidebar panels. Some sidebar panels may get
          * their own progress indicators later.
          */
@@ -1755,7 +1755,7 @@ load_complete_callback (NautilusViewFrame *view,
 {
         g_assert (NAUTILUS_IS_WINDOW (window));
 
-        /* FIXME bugzilla.eazel.com 2460: We intentionally ignore
+        /* FIXME bugzilla.gnome.org 42460: We intentionally ignore
          * progress from sidebar panels. Some sidebar panels may get
          * their own progress indicators later.
          */

@@ -32,7 +32,7 @@
 
 #include <eel/eel-gtk-macros.h>
 
-/* FIXME bugzilla.eazel.com 2516: This adds nothing to NautilusNavigationBar.
+/* FIXME bugzilla.gnome.org 42516: This adds nothing to NautilusNavigationBar.
  * Perhaps we can remove it.
  */
 

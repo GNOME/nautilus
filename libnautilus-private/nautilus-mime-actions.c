@@ -218,7 +218,7 @@ nautilus_mime_get_default_application_for_file_internal (NautilusFile *file,
 	default_application_string = nautilus_file_get_metadata 
 		(file, NAUTILUS_METADATA_KEY_DEFAULT_APPLICATION, NULL);
 
-	/* FIXME bugzilla.eazel.com 5085: should fall back to normal default 
+	/* FIXME bugzilla.gnome.org 45085: should fall back to normal default 
 	   if user-specified default is bogus */
 
 	if (default_application_string == NULL) {
@@ -940,7 +940,7 @@ nautilus_mime_set_short_list_applications_for_file (NautilusFile      *file,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID,
 		 remove_list);
 
-	/* FIXME bugzilla.eazel.com 1269: 
+	/* FIXME bugzilla.gnome.org 41269: 
 	 * need to free normal_short_list, normal_short_list_ids, add_list, remove_list 
 	 */
 
@@ -987,7 +987,7 @@ nautilus_mime_set_short_list_components_for_file (NautilusFile      *file,
 		 NAUTILUS_METADATA_SUBKEY_COMPONENT_IID,
 		 remove_list);
 
-	/* FIXME bugzilla.eazel.com 1269: 
+	/* FIXME bugzilla.gnome.org 41269: 
 	 * need to free normal_short_list, normal_short_list_ids, add_list, remove_list 
 	 */
 
@@ -1320,7 +1320,7 @@ make_oaf_query_with_known_mime_type (const char *mime_type,
 
 		 /* One of two possibilties */
 
-		 /* FIXME bugzilla.eazel.com 2542: this comment is not very clear. */
+		 /* FIXME bugzilla.gnome.org 42542: this comment is not very clear. */
 		 /* 1 The mime type and URI scheme match the supported
                     attributes. */
 
@@ -1414,7 +1414,7 @@ make_oaf_query_with_uri_scheme_only (const char *uri_scheme,
                    */
                   "AND (NOT bonobo:supported_mime_types.defined ()))"
 
-		  /* FIXME bugzilla.eazel.com 2542: improve the comment explaining this. */
+		  /* FIXME bugzilla.gnome.org 42542: improve the comment explaining this. */
 		  
 		  /* This attribute allows uri schemes to be supported
 		     even for unsupported mime types or no mime type. */

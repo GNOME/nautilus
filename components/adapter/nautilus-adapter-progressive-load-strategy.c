@@ -249,7 +249,7 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 
 	CORBA_exception_init (&ev);
 
-	/* FIXME bugzilla.eazel.com 3455: this code is stupid and
+	/* FIXME bugzilla.gnome.org 43455: this code is stupid and
            loads the component in a way that blocks the nautilus
            adapter component, which is pointless/stupid; it should be
            async. */

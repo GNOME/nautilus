@@ -42,7 +42,7 @@
 #include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus/nautilus-view-standard-main.h>
 
-/* FIXME bugzilla.eazel.com 4436: 
+/* FIXME bugzilla.gnome.org 44436: 
  * Undo not working in notes-view.
  */
 #if 0
@@ -178,7 +178,7 @@ load_note_text_from_metadata (NautilusFile *file,
 		g_free (saved_text);
 	}
 	
-/* FIXME bugzilla.eazel.com 4436: 
+/* FIXME bugzilla.gnome.org 44436: 
  * Undo not working in notes-view.
  */
 #if 0
@@ -290,7 +290,7 @@ notes_load_location (NautilusView *view,
                      Notes *notes)
 {
         if (strcmp (notes->uri, location) != 0) {
-/* FIXME bugzilla.eazel.com 4436: 
+/* FIXME bugzilla.gnome.org 44436: 
  * Undo not working in notes-view.
  */
 #if 0
@@ -406,7 +406,7 @@ make_notes_view (const char *iid, gpointer callback_data)
                  nautilus_view_get_bonobo_control (notes->view),
                  FALSE);
 
-/* FIXME bugzilla.eazel.com 4436: 
+/* FIXME bugzilla.gnome.org 44436: 
  * Undo not working in notes-view.
  */
 #if 0

@@ -19,7 +19,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * Author: Darin Adler <darin@eazel.com>
+ * Author: Darin Adler <darin@bentspoon.com>
  */
 
 /* nautilus-self-check-functions.h: Wrapper and prototypes for all self

@@ -19,7 +19,7 @@
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
   
-   Author: Darin Adler <darin@eazel.com>
+   Author: Darin Adler <darin@bentspoon.com>
 */
 
 #include <config.h>
@@ -306,7 +306,7 @@ nautilus_directory_make_uri_canonical (const char *uri)
 	/* To NautilusDirectory, a uri with or without a trailing
 	 * / is equivalent. This is necessary to prevent separate
 	 * NautilusDirectories for the same location from being
-	 * created. (See bugzilla.eazel.com 3322 for an example.)
+	 * created. (See bugzilla.gnome.org 43322 for an example.)
 	 */
 	canonical = eel_str_strip_trailing_chr (canonical_maybe_trailing_slash, '/');
 	if (strcmp (canonical, canonical_maybe_trailing_slash) != 0) {
@@ -1773,7 +1773,7 @@ nautilus_self_check_directory (void)
 	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org/"), "http://le-hackeur.org");
 	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org/dir"), "http://le-hackeur.org/dir");
 	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org/dir/"), "http://le-hackeur.org/dir");
-	/* FIXME bugzilla.eazel.com 5068: the "nested" URI loses some characters here. Maybe that's OK because we escape them in practice? */
+	/* FIXME bugzilla.gnome.org 45068: the "nested" URI loses some characters here. Maybe that's OK because we escape them in practice? */
 	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("search://[file://]file_name contains stuff"), "search://[file/]file_name contains stuff");
 	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("eazel-services:/~turtle"), "eazel-services:///~turtle");
 	EEL_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("eazel-services:///~turtle"), "eazel-services:///~turtle");

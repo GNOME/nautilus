@@ -19,7 +19,7 @@
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
   
-   Author: Darin Adler <darin@eazel.com>
+   Author: Darin Adler <darin@bentspoon.com>
 */
 
 #ifndef NAUTILUS_DIRECTORY_H
@@ -57,10 +57,10 @@
 typedef struct NautilusFile NautilusFile;
 #endif
 
-/* FIXME bugzilla.eazel.com 5382:
+/* FIXME bugzilla.gnome.org 45382:
  * Increase or remove this limit? 
  */
-/* FIXME bugzilla.eazel.com 5603:
+/* FIXME bugzilla.gnome.org 45603:
  * This limit is not actually "hard", which can lead to some minor UI problems.
  */
 #define NAUTILUS_DIRECTORY_FILE_LIST_HARD_LIMIT     4000

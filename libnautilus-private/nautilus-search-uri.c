@@ -701,15 +701,15 @@ nautilus_self_check_search_uri (void)
                                       _("Items containing \"stuff\" in their names"));
         EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_type is file"), 
                                       _("Items that are regular files"));
-        /* FIXME bugzilla.eazel.com 5088: This may be what the function calls "human", but it's bad grammar. */
+        /* FIXME bugzilla.gnome.org 45088: This may be what the function calls "human", but it's bad grammar. */
         EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"), 
                                       _("Items containing \"stuff\" in their names and that are regular files"));
-        /* FIXME bugzilla.eazel.com 5088: This may be what the function calls "human", but it's bad grammar. */
+        /* FIXME bugzilla.gnome.org 45088: This may be what the function calls "human", but it's bad grammar. */
         EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"
                                                                     " & size smaller_than 2000"), 
                                       _("Items containing \"stuff\" in their names, that are regular files and "
                                         "smaller than 2000 bytes"));
-        /* FIXME bugzilla.eazel.com 5088: This may be what the function calls "human", but it's bad grammar. */
+        /* FIXME bugzilla.gnome.org 45088: This may be what the function calls "human", but it's bad grammar. */
         EEL_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains medusa & file_type is directory"), 
                                       _("Items containing \"medusa\" in their names and that are "
                                         "folders"));

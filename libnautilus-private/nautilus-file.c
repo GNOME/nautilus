@@ -19,7 +19,7 @@
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
   
-   Author: Darin Adler <darin@eazel.com>
+   Author: Darin Adler <darin@bentspoon.com>
 */
 
 #include <config.h>
@@ -657,7 +657,7 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 	}
 
 	/* File owner's access is governed by the owner bits. */
-	/* FIXME bugzilla.eazel.com 644: 
+	/* FIXME bugzilla.gnome.org 40644: 
 	 * Can we trust the uid in the file info? Might
 	 * there be garbage there? What will it do for non-local files?
 	 */
@@ -667,7 +667,7 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 
 
 	/* Group member's access is governed by the group bits. */
-	/* FIXME bugzilla.eazel.com 644: 
+	/* FIXME bugzilla.gnome.org 40644: 
 	 * Can we trust the gid in the file info? Might
 	 * there be garbage there? What will it do for non-local files?
 	 */
@@ -1147,7 +1147,7 @@ update_link (NautilusFile *link_file, NautilusFile *target_file)
 	g_assert (NAUTILUS_IS_FILE (target_file));
 	g_assert (!nautilus_file_info_missing (link_file, GNOME_VFS_FILE_INFO_FIELDS_SYMLINK_NAME));
 
-	/* FIXME bugzilla.eazel.com 2044: If we don't put any code
+	/* FIXME bugzilla.gnome.org 42044: If we don't put any code
 	 * here then the hash table is a waste of time.
 	 */
 }
@@ -1205,7 +1205,7 @@ update_info_internal (NautilusFile *file,
 		return FALSE;
 	}
 
-	/* FIXME bugzilla.eazel.com 2044: Need to let links that
+	/* FIXME bugzilla.gnome.org 42044: Need to let links that
 	 * point to the old name know that the file has been renamed.
 	 */
 
@@ -1309,7 +1309,7 @@ nautilus_file_set_directory (NautilusFile *file,
 
 	nautilus_file_ref (file);
 
-	/* FIXME bugzilla.eazel.com 2044: Need to let links that
+	/* FIXME bugzilla.gnome.org 42044: Need to let links that
 	 * point to the old name know that the file has been moved.
 	 */
 
@@ -2044,7 +2044,7 @@ nautilus_file_list_filter_hidden_and_backup (GList    *files,
 	GList *filtered_files;
 	GList *removed_files;
 
-	/* FIXME bugzilla.eazel.com 653: 
+	/* FIXME bugzilla.gnome.org 40653: 
 	 * Eventually this should become a generic filtering thingy. 
 	 */
 
@@ -3211,11 +3211,11 @@ gboolean
 nautilus_file_can_get_owner (NautilusFile *file)
 {
 	/* Before we have info on a file, the owner is unknown. */
-	/* FIXME bugzilla.eazel.com 644: 
+	/* FIXME bugzilla.gnome.org 40644: 
 	 * Can we trust the uid in the file info? Might
 	 * there be garbage there? What will it do for non-local files?
 	 */
-	return !nautilus_file_info_missing (file, 0 /* FIXME bugzilla.eazel.com 644: GNOME_VFS_FILE_INFO_FIELDS_UID */);
+	return !nautilus_file_info_missing (file, 0 /* FIXME bugzilla.gnome.org 40644: GNOME_VFS_FILE_INFO_FIELDS_UID */);
 }
 
 /**
@@ -3366,7 +3366,7 @@ nautilus_file_set_owner (NautilusFile *file,
 		return;
 	}
 
-	/* FIXME bugzilla.eazel.com 2427: 
+	/* FIXME bugzilla.gnome.org 42427: 
 	 * We can't assume that the gid is already good/read,
 	 * can we? Maybe we have to precede the set_file_info with a
 	 * get_file_info to fix this?
@@ -3426,11 +3426,11 @@ gboolean
 nautilus_file_can_get_group (NautilusFile *file)
 {
 	/* Before we have info on a file, the group is unknown. */
-	/* FIXME bugzilla.eazel.com 644: 
+	/* FIXME bugzilla.gnome.org 40644: 
 	 * Can we trust the gid in the file info? Might
 	 * there be garbage there? What will it do for non-local files?
 	 */
-	return !nautilus_file_info_missing (file, 0 /* FIXME bugzilla.eazel.com 644: GNOME_VFS_FILE_INFO_FIELDS_GID */);
+	return !nautilus_file_info_missing (file, 0 /* FIXME bugzilla.gnome.org 40644: GNOME_VFS_FILE_INFO_FIELDS_GID */);
 }
 
 /**
@@ -3450,11 +3450,11 @@ nautilus_file_get_group_name (NautilusFile *file)
 	struct group *group_info;
 
 	/* Before we have info on a file, the owner is unknown. */
-	if (nautilus_file_info_missing (file, 0 /* FIXME bugzilla.eazel.com 644: GNOME_VFS_FILE_INFO_FIELDS_GID */)) {
+	if (nautilus_file_info_missing (file, 0 /* FIXME bugzilla.gnome.org 40644: GNOME_VFS_FILE_INFO_FIELDS_GID */)) {
 		return NULL;
 	}
 
-	/* FIXME bugzilla.eazel.com 644: 
+	/* FIXME bugzilla.gnome.org 40644: 
 	 * Can we trust the gid in the file info? Might
 	 * there be garbage there? What will it do for non-local files?
 	 */
@@ -3669,7 +3669,7 @@ nautilus_file_set_group (NautilusFile *file,
 		return;
 	}
 
-	/* FIXME bugzilla.eazel.com 2427: We can't assume that the gid is already good/read,
+	/* FIXME bugzilla.gnome.org 42427: We can't assume that the gid is already good/read,
 	 * can we? Maybe we have to precede the set_file_info with a
 	 * get_file_info to fix this?
 	 */
@@ -3775,11 +3775,11 @@ nautilus_file_get_owner_as_string (NautilusFile *file, gboolean include_real_nam
 	char *user_name;
 
 	/* Before we have info on a file, the owner is unknown. */
-	/* FIXME bugzilla.eazel.com 644: 
+	/* FIXME bugzilla.gnome.org 40644: 
 	 * Can we trust the uid in the file info? Might
 	 * there be garbage there? What will it do for non-local files?
 	 */
-	if (nautilus_file_info_missing (file, 0 /* FIXME bugzilla.eazel.com 644: GNOME_VFS_FILE_INFO_FIELDS_UID */)) {
+	if (nautilus_file_info_missing (file, 0 /* FIXME bugzilla.gnome.org 40644: GNOME_VFS_FILE_INFO_FIELDS_UID */)) {
 		return NULL;
 	}
 
@@ -4014,7 +4014,7 @@ nautilus_file_get_deep_directory_count_as_string (NautilusFile *file)
 char *
 nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_name)
 {
-	/* FIXME bugzilla.eazel.com 646: 
+	/* FIXME bugzilla.gnome.org 40646: 
 	 * Use hash table and switch statement or function pointers for speed? 
 	 */
 
@@ -4114,7 +4114,7 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 	}
 
 	/* Supply default values for the ones we know about. */
-	/* FIXME bugzilla.eazel.com 646: 
+	/* FIXME bugzilla.gnome.org 40646: 
 	 * Use hash table and switch statement or function pointers for speed? 
 	 */
 	if (strcmp (attribute_name, "size") == 0) {
@@ -4646,7 +4646,7 @@ nautilus_file_mark_gone (NautilusFile *file)
 		file->details->info = NULL;
 	}
 
-	/* FIXME bugzilla.eazel.com 2429: 
+	/* FIXME bugzilla.gnome.org 42429: 
 	 * Maybe we can get rid of the name too eventually, but
 	 * for now that would probably require too many if statements
 	 * everywhere anyone deals with the name. Maybe we can give it
@@ -4911,7 +4911,7 @@ nautilus_file_invalidate_attributes_internal (NautilusFile *file,
 		invalidate_activation_uri (file);
 	}
 
-	/* FIXME bugzilla.eazel.com 5075: implement invalidating metadata */
+	/* FIXME bugzilla.gnome.org 45075: implement invalidating metadata */
 }
 
 
@@ -5025,9 +5025,9 @@ nautilus_file_dump (NautilusFile *file)
 		g_print ("kind: %s \n", file_kind);
 		if (file->details->info->type == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK) {
 			g_print ("link to %s \n", file->details->info->symlink_name);
-			/* FIXME bugzilla.eazel.com 2430: add following of symlinks here */
+			/* FIXME bugzilla.gnome.org 42430: add following of symlinks here */
 		}
-		/* FIXME bugzilla.eazel.com 2431: add permissions and other useful stuff here */
+		/* FIXME bugzilla.gnome.org 42431: add permissions and other useful stuff here */
 	}
 	g_free (uri);
 }

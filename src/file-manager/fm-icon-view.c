@@ -951,7 +951,7 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	/* kill any sound preview process that is ongoing */
 	preview_audio (icon_view, NULL, FALSE);
 	
-	/* FIXME bugzilla.eazel.com 5060: Should use methods instead
+	/* FIXME bugzilla.gnome.org 45060: Should use methods instead
 	 * of hardcoding desktop knowledge in here.
 	 */
 	if (FM_IS_DESKTOP_ICON_VIEW (view)) {
@@ -1533,7 +1533,7 @@ band_select_ended_callback (NautilusIconContainer *container,
 /* handle the preview signal by inspecting the mime type.  For now, we only preview local sound files. */
 
 /* here's the timer task that actually plays the file using mpg123. */
-/* FIXME bugzilla.eazel.com 1258: we should get the application from our mime-type stuff */
+/* FIXME bugzilla.gnome.org 41258: we should get the application from our mime-type stuff */
 static int
 play_file (gpointer callback_data)
 {
@@ -1605,7 +1605,7 @@ play_file (gpointer callback_data)
 	return 0;
 }
 
-/* FIXME bugzilla.eazel.com 2530: Hardcoding this here sucks. We should be using components
+/* FIXME bugzilla.gnome.org 42530: Hardcoding this here sucks. We should be using components
  * for open ended things like this.
  */
 
@@ -1863,7 +1863,7 @@ icon_position_changed_callback (NautilusIconContainer *container,
 		g_free (position_string);
 	}
 
-	/* FIXME bugzilla.eazel.com 662: 
+	/* FIXME bugzilla.gnome.org 40662: 
 	 * %.2f is not a good format for the scale factor. We'd like it to
 	 * say "2" or "2x" instead of "2.00".
 	 */
@@ -1953,7 +1953,7 @@ get_icon_drop_target_uri_callback (NautilusIconContainer *container,
 
 	/* Check for Nautilus link */
 	if (nautilus_file_is_nautilus_link (file)) {
-		/* FIXME bugzilla.eazel.com 3020: This does sync. I/O and works only locally. */
+		/* FIXME bugzilla.gnome.org 43020: This does sync. I/O and works only locally. */
 		path = gnome_vfs_get_local_path_from_uri (uri);
 		if (path != NULL) {
 			target_uri = nautilus_link_local_get_link_uri (path);
@@ -2000,7 +2000,7 @@ get_icon_text_callback (NautilusIconContainer *container,
 	
 	/* Handle link files specially. */
 	if (nautilus_file_is_nautilus_link (file)) {
-		/* FIXME bugzilla.eazel.com 2531: Does sync. I/O and works only locally. */
+		/* FIXME bugzilla.gnome.org 42531: Does sync. I/O and works only locally. */
 		actual_uri = nautilus_file_get_uri (file);
 		path = gnome_vfs_get_local_path_from_uri (actual_uri);
 		g_free (actual_uri);

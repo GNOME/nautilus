@@ -370,7 +370,7 @@ nautilus_complex_search_bar_set_location (NautilusNavigationBar *navigation_bar,
 
 	bar = NAUTILUS_COMPLEX_SEARCH_BAR (navigation_bar);
 
-	/* FIXME bugzilla.eazel.com 2517: Not implemented. */
+	/* FIXME bugzilla.gnome.org 42517: Not implemented. */
 }
 
 void  
@@ -379,7 +379,7 @@ nautilus_complex_search_bar_queue_resize (NautilusComplexSearchBar      *bar)
 	GtkWidget *dock;
 
 	gtk_widget_queue_resize (bar->details->criteria_container);
-	/* FIXME bugzilla.eazel.com 3171:
+	/* FIXME bugzilla.gnome.org 43171:
 	 * (It is possible this comment is no longer correct due to
 	 * a change in the layout code)
 	 * We don't know why this line is needed here, but if it's removed

@@ -19,7 +19,7 @@
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
   
-   Author: Darin Adler <darin@eazel.com>
+   Author: Darin Adler <darin@bentspoon.com>
 */
 
 #ifndef NAUTILUS_DEFAULT_FILE_ICON_H

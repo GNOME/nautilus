@@ -21,7 +21,7 @@
    Boston, MA 02111-1307, USA.
 
    Authors: Ettore Perazzoli <ettore@gnu.org>,
-            Darin Adler <darin@eazel.com>,
+            Darin Adler <darin@bentspoon.com>,
 	    Andy Hertzfeld <andy@eazel.com>
 */
 

@@ -21,7 +21,7 @@
    Boston, MA 02111-1307, USA.
   
    Authors: John Sullivan <sullivan@eazel.com>,
-            Darin Adler <darin@eazel.com>,
+            Darin Adler <darin@bentspoon.com>,
 	    Andy Hertzfeld <andy@eazel.com>
 */
 
@@ -111,7 +111,7 @@ static const char *icon_file_name_suffixes[] =
 /* Images are used themselves as thumbnails when they are below this
  * threshold size.
  */
-/* FIXME bugzilla.eazel.com 5081: Later we might have to have a more
+/* FIXME bugzilla.gnome.org 45081: Later we might have to have a more
  * complex rule about when to use an image for itself.
  */
 #define SELF_THUMBNAIL_SIZE_THRESHOLD   16384
@@ -1541,12 +1541,12 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 	
 	/* Handle nautilus link xml files, which may specify their own image */	
 	if (nautilus_file_is_nautilus_link (file)) {
-		/* FIXME bugzilla.eazel.com 2563: This does sync. I/O and only works for local paths. */
+		/* FIXME bugzilla.gnome.org 42563: This does sync. I/O and only works for local paths. */
 		file_path = gnome_vfs_get_local_path_from_uri (file_uri);
 		if (file_path != NULL) {
 			image_uri = nautilus_link_local_get_image_uri (file_path);
 			if (image_uri != NULL) {
-				/* FIXME bugzilla.eazel.com 2564: All custom icons must be in file:. */
+				/* FIXME bugzilla.gnome.org 42564: All custom icons must be in file:. */
 				icon_path = gnome_vfs_get_local_path_from_uri (image_uri);
 				if (icon_path == NULL && image_uri[0] == '/') {
 					icon_path = g_strdup (image_uri);
@@ -1568,7 +1568,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 	/* Handle .desktop files. */
 	if (uri == NULL
 	    && nautilus_file_is_mime_type (file, "application/x-gnome-app-info")) {
-		/* FIXME bugzilla.eazel.com 2563: This does sync. I/O and only works for local paths. */
+		/* FIXME bugzilla.gnome.org 42563: This does sync. I/O and only works for local paths. */
 		file_path = gnome_vfs_get_local_path_from_uri (file_uri);
 		if (file_path != NULL) {
 			entry = gnome_desktop_entry_load (file_path);
@@ -1851,7 +1851,7 @@ get_cache_time (const char *file_uri, time_t *cache_time)
 		return GNOME_VFS_ERROR_NOT_SUPPORTED;
 	}
 		
-	/* FIXME bugzilla.eazel.com 2566: if the URI is remote, assume
+	/* FIXME bugzilla.gnome.org 42566: if the URI is remote, assume
 	 * it's valid to match logic below.
 	 */
 	vfs_uri = gnome_vfs_uri_new (file_uri);

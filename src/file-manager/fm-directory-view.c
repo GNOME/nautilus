@@ -22,7 +22,7 @@
  *
  * Authors: Ettore Perazzoli,
  *          John Sullivan <sullivan@eazel.com>,
- *          Darin Adler <darin@eazel.com>,
+ *          Darin Adler <darin@bentspoon.com>,
  *          Pavel Cisler <pavel@eazel.com>,
  *          David Emory Watson <dwatson@cs.ucr.edu>
  */
@@ -624,7 +624,7 @@ switch_location_and_view (NautilusViewIdentifier *identifier,
 	/* User has explicitly chosen a viewer other than the default, so
 	 * make it the default and then switch locations.
 	 */
-	/* FIXME bugzilla.eazel.com 1053: We might want an atomic operation
+	/* FIXME bugzilla.gnome.org 41053: We might want an atomic operation
 	 * for switching location and viewer together, so we don't have to
 	 * rely on metadata for holding the default location.
 	 */
@@ -829,7 +829,7 @@ duplicate_callback (BonoboUIComponent *component, gpointer callback_data, const 
         view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
 	if (selection_not_empty_in_menu_callback (view, selection)) {
-		/* FIXME bugzilla.eazel.com 5061:
+		/* FIXME bugzilla.gnome.org 45061:
 		 * should change things here so that we use a get_icon_locations (view, selection).
 		 * Not a problem in this case but in other places the selection may change by
 		 * the time we go and retrieve the icon positions, relying on the selection
@@ -1727,7 +1727,7 @@ zoomable_set_zoom_level_callback (BonoboZoomable *zoomable, float level, FMDirec
 static void
 zoomable_zoom_to_fit_callback (BonoboZoomable *zoomable, FMDirectoryView *view)
 {
-	/* FIXME bugzilla.eazel.com 2388:
+	/* FIXME bugzilla.gnome.org 42388:
 	 * Need to really implement "zoom to fit"
 	 */
 	fm_directory_view_restore_default_zoom_level (view);
@@ -4567,7 +4567,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 		action = ACTIVATION_ACTION_LAUNCH;
 		
-		/* FIXME bugzilla.eazel.com 2391: This should check if
+		/* FIXME bugzilla.gnome.org 42391: This should check if
 		 * the activation URI points to something launchable,
 		 * not the original file. Also, for symbolic links we
 		 * need to check the X bit on the target file, not on
@@ -4590,7 +4590,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		if (action == ACTIVATION_ACTION_LAUNCH) {
 			quoted_path = eel_shell_quote (executable_path);
 			name = nautilus_file_get_name (file);
-			/* FIXME bugzilla.eazel.com 1773: This is a
+			/* FIXME bugzilla.gnome.org 41773: This is a
 			 * lame way to run command-line tools, since
 			 * there's no terminal for the output. But if
 			 * we always had a terminal, that would be
@@ -4782,7 +4782,7 @@ load_directory (FMDirectoryView *view,
 
 	view->details->reported_load_error = FALSE;
 
-	/* FIXME bugzilla.eazel.com 5062: In theory, we also need to monitor metadata here (as
+	/* FIXME bugzilla.gnome.org 45062: In theory, we also need to monitor metadata here (as
          * well as doing a call when ready), in case external forces
          * change the directory's file metadata.
 	 */

@@ -156,7 +156,7 @@ nautilus_adapter_new (Bonobo_Unknown component)
 	CORBA_Environment     ev;
 
 
-	/* FIXME bugzilla.eazel.com 4405: should be done with
+	/* FIXME bugzilla.gnome.org 44405: should be done with
 	 * construct args 
 	 */
 

@@ -48,7 +48,7 @@ void fm_report_error_setting_group       (NautilusFile   *file,
 					  GnomeVFSResult  error_code,
 					  GtkWindow	 *parent_window);
 
-/* FIXME bugzilla.eazel.com 2394: Should this file be renamed or should these be moved? */
+/* FIXME bugzilla.gnome.org 42394: Should this file be renamed or should these be moved? */
 void fm_rename_file                      (NautilusFile   *file,
 					  const char     *new_name);
 

@@ -19,7 +19,7 @@
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
   
-   Author: Darin Adler <darin@eazel.com>
+   Author: Darin Adler <darin@bentspoon.com>
 */
 
 #include <config.h>
@@ -544,7 +544,7 @@ nautilus_directory_set_up_request (Request *request,
 		 NAUTILUS_FILE_ATTRIBUTE_METADATA,
 		 eel_strcmp_compare_func) != NULL;
 
-	/* FIXME bugzilla.eazel.com 2435:
+	/* FIXME bugzilla.gnome.org 42435:
 	 * Some file attributes are really pieces of metadata.
 	 * This is a confusing/broken design, since other metadata
 	 * pieces are handled separately from file attributes. There
@@ -767,7 +767,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		file_info = node->data;
 
 		/* Update the file count. */
-		/* FIXME bugzilla.eazel.com 5063: This could count a file twice if we get it
+		/* FIXME bugzilla.gnome.org 45063: This could count a file twice if we get it
 		 * from both load_directory and from
 		 * new_files_callback. Not too hard to fix by moving
 		 * this into the actual callback instead of waiting
@@ -2721,7 +2721,7 @@ activation_uri_nautilus_link_read_callback (GnomeVFSResult result,
 
 	/* Handle the case where we read the Nautilus link. */
 	if (result != GNOME_VFS_OK) {
-		/* FIXME bugzilla.eazel.com 2433: We should report this error to the user. */
+		/* FIXME bugzilla.gnome.org 42433: We should report this error to the user. */
 		g_free (file_contents);
 		uri = NULL;
 	} else {
@@ -2753,7 +2753,7 @@ activation_uri_gmc_link_read_callback (GnomeVFSResult result,
 
 	/* Handle the case where we read the GMC link. */
 	if (result != GNOME_VFS_OK || !eel_str_has_prefix (file_contents, "URL: ")) {
-		/* FIXME bugzilla.eazel.com 2433: We should report this error to the user. */
+		/* FIXME bugzilla.gnome.org 42433: We should report this error to the user. */
 		uri = NULL;
 	} else {
 		/* Make sure we don't run off the end of the buffer. */
@@ -3017,7 +3017,7 @@ cancel_loading_attributes (NautilusDirectory *directory,
 		file_info_cancel (directory);
 	}
 	
-	/* FIXME bugzilla.eazel.com 5064: implement cancelling metadata when we
+	/* FIXME bugzilla.gnome.org 45064: implement cancelling metadata when we
 	   implement invalidating metadata */
 
 	nautilus_directory_async_state_changed (directory);
@@ -3052,7 +3052,7 @@ nautilus_directory_cancel_loading_file_attributes (NautilusDirectory *directory,
 		cancel_activation_uri_for_file (directory, file);
 	}
 
-	/* FIXME bugzilla.eazel.com 5064: implement cancelling metadata when we
+	/* FIXME bugzilla.gnome.org 45064: implement cancelling metadata when we
 	   implement invalidating metadata */
 
 	nautilus_directory_async_state_changed (directory);

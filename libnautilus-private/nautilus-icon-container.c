@@ -21,7 +21,7 @@
    Boston, MA 02111-1307, USA.
 
    Authors: Ettore Perazzoli <ettore@gnu.org>,
-   Darin Adler <darin@eazel.com>
+   Darin Adler <darin@bentspoon.com>
 */
 
 #include <config.h>
@@ -522,7 +522,7 @@ keyboard_icon_reveal_timeout_callback (gpointer data)
 	 * cancel this reveal if the user manages to sneak a direct
 	 * scroll in before the timeout fires, but we later realized
 	 * this wouldn't actually be an improvement 
-	 * (see bugzilla.eazel.com 612).
+	 * (see bugzilla.gnome.org 40612).
 	 */
 	if (icon == container->details->keyboard_focus
 	    || icon->is_selected) {
@@ -599,7 +599,7 @@ get_all_icon_bounds (NautilusIconContainer *container,
 		     double *x1, double *y1,
 		     double *x2, double *y2)
 {
-	/* FIXME bugzilla.eazel.com 2477: Do we have to do something about the rubberband
+	/* FIXME bugzilla.gnome.org 42477: Do we have to do something about the rubberband
 	 * here? Any other non-icon items?
 	 */
 	gnome_canvas_item_get_bounds
@@ -1133,7 +1133,7 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 	/* These modes are special. We freeze all of our positions
 	 * after we do the layout.
 	 */
-	/* FIXME bugzilla.eazel.com 2478: 
+	/* FIXME bugzilla.gnome.org 42478: 
 	 * This should not be tied to the direction of layout.
 	 * It should be a separate switch.
 	 */
@@ -1152,7 +1152,7 @@ lay_down_icons (NautilusIconContainer *container, GList *icons, double start_y)
 		
 	case NAUTILUS_ICON_LAYOUT_T_B_L_R:
 	case NAUTILUS_ICON_LAYOUT_T_B_R_L:
-		/* FIXME bugzilla.eazel.com 2479: 
+		/* FIXME bugzilla.gnome.org 42479: 
 		 * Need to handle T_B_R_L differently. */
 		lay_down_icons_tblr (container, icons);
 		break;
@@ -1367,7 +1367,7 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 		icon_raise (icon);
 	}
 
-	/* FIXME bugzilla.eazel.com 2474: 
+	/* FIXME bugzilla.gnome.org 42474: 
 	 * Handling of the scroll region is inconsistent here. In
 	 * the scale-changing case, redo_layout is called, which updates the
 	 * scroll region appropriately. In other cases, it's up to the
@@ -2366,7 +2366,7 @@ size_allocate (GtkWidget *widget,
 
 	need_layout_redone = !container->details->has_been_allocated;
 
-	/* FIXME bugzilla.eazel.com 7219: 
+	/* FIXME bugzilla.gnome.org 47219: 
 	 * We shouldn't have to redo the layout when x, y, or height
 	 * changes, only when width changes. However, just removing these
 	 * tests causes a problem when you're vertically stretching a window
@@ -3334,8 +3334,8 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
         details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
  
  	/* font table - this isn't exactly proportional, but it looks better than computed */
-	/* FIXME bugzilla.eazel.com 5093: Font name is hard-coded here. */
-	/* FIXME bugzilla.eazel.com 5101: Font size is hard-coded here. */
+	/* FIXME bugzilla.gnome.org 45093: Font name is hard-coded here. */
+	/* FIXME bugzilla.gnome.org 45101: Font size is hard-coded here. */
 
         details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = nautilus_font_factory_get_font_by_family ("helvetica", 8);
         details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = nautilus_font_factory_get_font_by_family ("helvetica", 8);
@@ -3936,7 +3936,7 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 
 	details = container->details;
 
-	/* FIXME bugzilla.eazel.com 1288: 
+	/* FIXME bugzilla.gnome.org 41288: 
 	 * I guess we need to use an indexed data structure to avoid this loop.
 	 */
 	for (p = details->icons; p != NULL; p = p->next) {
@@ -3989,7 +3989,7 @@ nautilus_icon_container_remove (NautilusIconContainer *container,
 
 	end_renaming_mode (container, FALSE);
 		
-	/* FIXME bugzilla.eazel.com 1288: 
+	/* FIXME bugzilla.gnome.org 41288: 
 	 * I guess we need to use an indexed data structure to avoid this loop.
 	 */
 	for (p = container->details->icons; p != NULL; p = p->next) {
@@ -4103,7 +4103,7 @@ nautilus_icon_container_reveal (NautilusIconContainer *container, NautilusIconDa
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_return_if_fail (data != NULL);
 
-	/* FIXME bugzilla.eazel.com 1288: 
+	/* FIXME bugzilla.gnome.org 41288: 
 	 * I guess we need to use an indexed data structure to avoid this loop.
 	 */
 	for (p = container->details->icons; p != NULL; p = p->next) {
@@ -4545,7 +4545,7 @@ compute_stretch (StretchState *start,
 	gboolean right, bottom;
 	int x_stretch, y_stretch;
 
-	/* FIXME bugzilla.eazel.com 5390: This doesn't correspond to
+	/* FIXME bugzilla.gnome.org 45390: This doesn't correspond to
          * the way the handles are drawn.
 	 */
 	/* Figure out which handle we are dragging. */

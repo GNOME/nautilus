@@ -19,7 +19,7 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Author: Darin Adler <darin@eazel.com>
+ *  Author: Darin Adler <darin@bentspoon.com>
  *
  */
 
@@ -56,7 +56,7 @@ typedef struct {
  */
 #define MINIMIZE_RACE_CONDITIONS_DELAY 60000
 
-/* FIXME bugzilla.eazel.com 2456: Is a hard-coded 20 seconds wait to
+/* FIXME bugzilla.gnome.org 42456: Is a hard-coded 20 seconds wait to
  * detect that a remote object's process is hung acceptable? Can a
  * component that is working still take 20 seconds to respond?
  */

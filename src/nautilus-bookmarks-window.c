@@ -452,7 +452,7 @@ on_select_row (GtkCList	       *clist,
 	g_assert (GTK_IS_ENTRY (name_field));
 	g_assert (GTK_IS_ENTRY (uri_field));
 
-	/* Workaround for apparent GtkCList bug. See bugzilla.eazel.com 7846. */
+	/* Workaround for apparent GtkCList bug. See bugzilla.gnome.org 47846. */
 	if (clist->rows <= row) {
 		return;
 	}

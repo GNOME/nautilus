@@ -20,7 +20,7 @@
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
   
-   Author: Darin Adler <darin@eazel.com>
+   Author: Darin Adler <darin@bentspoon.com>
 */
 
 #include <config.h>
@@ -505,7 +505,7 @@ merged_add_real_directory (NautilusMergedDirectory *merged,
 			    done_loading_callback,
 			    merged);
 
-	/* FIXME bugzilla.eazel.com 5084: The done_loading part won't work for the case where
+	/* FIXME bugzilla.gnome.org 45084: The done_loading part won't work for the case where
          * we have no directories in our list.
 	 */
 
@@ -513,7 +513,7 @@ merged_add_real_directory (NautilusMergedDirectory *merged,
 	g_hash_table_foreach (merged->details->monitors,
 			      monitor_add_directory,
 			      real_directory);
-	/* FIXME bugzilla.eazel.com 2541: Do we need to add the directory to callbacks too? */
+	/* FIXME bugzilla.gnome.org 42541: Do we need to add the directory to callbacks too? */
 
 	gtk_signal_connect (GTK_OBJECT (real_directory),
 			    "files_added",

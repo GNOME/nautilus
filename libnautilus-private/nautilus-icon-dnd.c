@@ -21,7 +21,7 @@
    Boston, MA 02111-1307, USA.
 
    Authors: Ettore Perazzoli <ettore@gnu.org>,
-            Darin Adler <darin@eazel.com>,
+            Darin Adler <darin@bentspoon.com>,
 	    Andy Hertzfeld <andy@eazel.com>
 	    Pavel Cisler <pavel@eazel.com>
 */
@@ -363,7 +363,7 @@ nautilus_icon_container_dropped_icon_feedback (GtkWidget *widget,
 
 	/* Delete old shadow if any. */
 	if (dnd_info->shadow != NULL) {
-		/* FIXME bugzilla.eazel.com 2484: 
+		/* FIXME bugzilla.gnome.org 42484: 
 		 * Is a destroy really sufficient here? Who does the unref? */
 		gtk_object_destroy (GTK_OBJECT (dnd_info->shadow));
 	}
@@ -488,7 +488,7 @@ drag_data_received_callback (GtkWidget *widget,
 
 }
 
-/* FIXME bugzilla.eazel.com 7445: Needs to become a shared function */
+/* FIXME bugzilla.gnome.org 47445: Needs to become a shared function */
 static void
 get_data_on_first_target_we_support (GtkWidget *widget, GdkDragContext *context, guint32 time)
 {
@@ -642,7 +642,7 @@ receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x,
 		return;
 	}
 
-	/* FIXME bugzilla.eazel.com 2485: 
+	/* FIXME bugzilla.gnome.org 42485: 
 	 * This does not belong in the icon code.
 	 * It has to be in the file manager.
 	 * The icon code has no right to deal with the file directly.
@@ -761,7 +761,7 @@ confirm_switch_to_manual_layout (NautilusIconContainer *container)
 	const char *message;
 	GnomeDialog *dialog;
 
-	/* FIXME bugzilla.eazel.com 915: Use of the word "directory"
+	/* FIXME bugzilla.gnome.org 40915: Use of the word "directory"
 	 * makes this FMIconView specific. Move these messages into
 	 * FMIconView so NautilusIconContainer can be used for things
 	 * that are not directories?
@@ -903,7 +903,7 @@ nautilus_icon_container_find_drop_target (NautilusIconContainer *container,
   	gnome_canvas_window_to_world (GNOME_CANVAS (container),
 				      x, y, &world_x, &world_y);
 	
-	/* FIXME bugzilla.eazel.com 2485: 
+	/* FIXME bugzilla.gnome.org 42485: 
 	 * These "can_accept_items" tests need to be done by
 	 * the icon view, not here. This file is not supposed to know
 	 * that the target is a file.
@@ -938,7 +938,7 @@ nautilus_icon_container_find_drop_target (NautilusIconContainer *container,
 	return nautilus_icon_container_get_icon_drop_target_uri (container, drop_target_icon);
 }
 
-/* FIXME bugzilla.eazel.com 2485: This belongs in FMDirectoryView, not here. */
+/* FIXME bugzilla.gnome.org 42485: This belongs in FMDirectoryView, not here. */
 static gboolean
 selection_includes_special_link (GList *selection_list)
 {
@@ -951,7 +951,7 @@ selection_includes_special_link (GList *selection_list)
 	for (node = selection_list; node != NULL; node = node->next) {
 		uri = ((EelDragSelectionItem *) node->data)->uri;
 
-		/* FIXME bugzilla.eazel.com 3020: This does sync. I/O and works only locally. */
+		/* FIXME bugzilla.gnome.org 43020: This does sync. I/O and works only locally. */
 		local_path = gnome_vfs_get_local_path_from_uri (uri);
 		link_in_selection = local_path != NULL
 			&& (nautilus_link_local_is_trash_link (local_path) || nautilus_link_local_is_home_link (local_path) ||
@@ -984,7 +984,7 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 	}
 
 	if (context->action == GDK_ACTION_ASK) {
-		/* FIXME bugzilla.eazel.com 2485: This belongs in FMDirectoryView, not here. */
+		/* FIXME bugzilla.gnome.org 42485: This belongs in FMDirectoryView, not here. */
 		/* Check for special case items in selection list */
 		if (selection_includes_special_link (container->details->dnd_info->drag_info.selection_list)) {
 			/* We only want to move the trash */
@@ -1145,7 +1145,7 @@ nautilus_icon_dnd_update_drop_target (NautilusIconContainer *container,
 	/* Find the item we hit with our drop, if any. */
 	icon = nautilus_icon_container_item_at (container, world_x, world_y);
 
-	/* FIXME bugzilla.eazel.com 2485: 
+	/* FIXME bugzilla.gnome.org 42485: 
 	 * These "can_accept_items" tests need to be done by
 	 * the icon view, not here. This file is not supposed to know
 	 * that the target is a file.
@@ -1250,7 +1250,7 @@ nautilus_icon_dnd_fini (NautilusIconContainer *container)
 
 	stop_auto_scroll (container);
 	if (container->details->dnd_info->shadow != NULL) {
-		/* FIXME bugzilla.eazel.com 2484: 
+		/* FIXME bugzilla.gnome.org 42484: 
 		 * Is a destroy really sufficient here? Who does the unref? */
 		gtk_object_destroy (GTK_OBJECT (container->details->dnd_info->shadow));
 	}

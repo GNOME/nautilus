@@ -387,7 +387,7 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 	return TRUE;
 }
 
-/* FIXME bugzilla.eazel.com 7445: Needs to become a shared function */
+/* FIXME bugzilla.gnome.org 47445: Needs to become a shared function */
 static void
 get_data_on_first_target_we_support (GtkWidget *widget, GdkDragContext *context, guint32 time)
 {
@@ -1111,7 +1111,7 @@ nautilus_tree_view_get_drop_action (NautilusTreeView *tree_view,
 
 	drag_info = NAUTILUS_TREE_VIEW (tree_view)->details->dnd->drag_info;
 
-	/* FIXME bugzilla.eazel.com 2569: Too much code copied from nautilus-icon-dnd.c. Need to share more. */
+	/* FIXME bugzilla.gnome.org 42569: Too much code copied from nautilus-icon-dnd.c. Need to share more. */
 
 	if (!drag_info->got_drop_data_type) {
 		/* drag_data_received didn't get called yet */

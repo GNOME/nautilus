@@ -20,7 +20,7 @@
 #  along with this library; if not, write to the Free Software
 #  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
-#  Author: Darin Adler <darin@eazel.com>,
+#  Author: Darin Adler <darin@bentspoon.com>,
 #
 
 # check-POTFILES.pl: Checks for files mentioned in POTFILES.in that

@@ -151,7 +151,7 @@ get_link_set_names (void)
 
 	link_set_list = NULL;
 	
-	/* FIXME bugzilla.eazel.com 5049: The names should really come from the names inside the files. */
+	/* FIXME bugzilla.gnome.org 45049: The names should really come from the names inside the files. */
 	/* build the list by iterating through the directory info */	
 	for (node = list; node != NULL; node = node->next) {
 		current_file_info = node->data;

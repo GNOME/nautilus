@@ -22,7 +22,7 @@
  *
  *  Authors: Elliot Lee <sopwith@redhat.com>
  *           Maciej Stachowiak <mjs@eazel.com>
- *           Darin Adler <darin@eazel.com>
+ *           Darin Adler <darin@bentspoon.com>
  *
  */
 

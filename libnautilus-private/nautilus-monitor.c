@@ -20,7 +20,7 @@
    Boston, MA 02111-1307, USA.
   
    Authors: Seth Nickell <seth@eazel.com>
-            Darin Adler <darin@eazel.com>
+            Darin Adler <darin@bentspoon.com>
 */
 
 #include <config.h>

@@ -141,7 +141,7 @@ activate_uri_callback (BonoboControlFrame *frame,
 		       gboolean relative,
 		       NautilusAdapterControlEmbedStrategy *strategy)
 {
-	/* FIXME bugzilla.eazel.com 4404: ignoring `relative' parameter as
+	/* FIXME bugzilla.gnome.org 44404: ignoring `relative' parameter as
 	 * the concept is kind of broken. 
 	 */
 	nautilus_adapter_embed_strategy_emit_open_location (NAUTILUS_ADAPTER_EMBED_STRATEGY (strategy), 

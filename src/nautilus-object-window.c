@@ -80,7 +80,7 @@
 #include <math.h>
 #include <sys/time.h>
 
-/* FIXME bugzilla.eazel.com 1243: 
+/* FIXME bugzilla.gnome.org 41243: 
  * We should use inheritance instead of these special cases
  * for the desktop window.
  */
@@ -349,7 +349,7 @@ nautilus_window_clear_status (gpointer callback_data)
 
 	nautilus_window_ui_freeze (window);
 
-	/* FIXME bugzilla.eazel.com 3597:
+	/* FIXME bugzilla.gnome.org 43597:
 	 * Should pass "" or NULL here. This didn't work, then did, now doesn't again.
 	 * When this is fixed in Bonobo we should change this line.
 	 */
@@ -728,7 +728,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	
 	gtk_widget_show (location_bar_box);
 	
-	/* FIXME bugzilla.eazel.com 1243: 
+	/* FIXME bugzilla.gnome.org 41243: 
 	 * We should use inheritance instead of these special cases
 	 * for the desktop window.
 	 */
@@ -740,15 +740,15 @@ nautilus_window_constructed (NautilusWindow *window)
 		window->content_hbox = nautilus_horizontal_splitter_new ();
 		panel = E_PANED (window->content_hbox);
 		
-		/* FIXME bugzilla.eazel.com 1245: Saved in pixels instead of in %? */
-		/* FIXME bugzilla.eazel.com 1245: No reality check on the value? */
+		/* FIXME bugzilla.gnome.org 41245: Saved in pixels instead of in %? */
+		/* FIXME bugzilla.gnome.org 41245: No reality check on the value? */
 		sidebar_width = eel_preferences_get_integer (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH);
 		e_paned_set_position (E_PANED (window->content_hbox), sidebar_width);
 	}
 	gtk_widget_show (window->content_hbox);
 	bonobo_window_set_contents (BONOBO_WINDOW (window), window->content_hbox);
 	
-	/* FIXME bugzilla.eazel.com 1243: 
+	/* FIXME bugzilla.gnome.org 41243: 
 	 * We should use inheritance instead of these special cases
 	 * for the desktop window.
 	 */
@@ -769,7 +769,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 
-	/* FIXME bugzilla.eazel.com 1243: 
+	/* FIXME bugzilla.gnome.org 41243: 
 	 * We should use inheritance instead of these special cases
 	 * for the desktop window.
 	 */
@@ -783,7 +783,7 @@ nautilus_window_constructed (NautilusWindow *window)
 		nautilus_bonobo_set_hidden (window->details->shell_ui,
 					    MENU_BAR_PATH, TRUE);
 
-		/* FIXME bugzilla.eazel.com 4752:
+		/* FIXME bugzilla.gnome.org 44752:
 		 * If we ever get the unsigned math errors in
 		 * gtk_menu_item_size_allocate fixed this can be removed.
 		 */
@@ -1411,7 +1411,7 @@ chose_component_callback (NautilusViewIdentifier *identifier, gpointer callback_
 		nautilus_window_set_content_view (window, identifier);
 	}
 	
-	/* FIXME bugzilla.eazel.com 1334: There should be some global
+	/* FIXME bugzilla.gnome.org 41334: There should be some global
 	 * way to signal that the file type associations have changed,
 	 * so that the places that display these lists can react. For
 	 * now, hardwire this case, which is the most obvious one by
@@ -1982,7 +1982,7 @@ nautilus_window_set_content_view_widget (NautilusWindow *window,
 		 */
 		nautilus_window_ui_update (window);
 
-		/* FIXME bugzilla.eazel.com 1243: 
+		/* FIXME bugzilla.gnome.org 41243: 
 		 * We should use inheritance instead of these special cases
 		 * for the desktop window.
 		 */

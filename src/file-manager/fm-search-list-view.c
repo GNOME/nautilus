@@ -51,7 +51,7 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 
-/* FIXME bugzilla.eazel.com 2815: This code uses part of the
+/* FIXME bugzilla.gnome.org 42815: This code uses part of the
  * NautilusSearchBarCriterion class, which is really for complex
  * search bar user interface. We only need to do some non-UI
  * manipulations of the search URI, so we can refactor the code, put
@@ -170,7 +170,7 @@ load_location_callback (NautilusView *nautilus_view, char *location)
 
 }
 
-/* FIXME bugzilla.eazel.com 5057: GnomeVFSResults may not be the
+/* FIXME bugzilla.gnome.org 45057: GnomeVFSResults may not be the
    best way to communicate an error code to
    a view */
 static void
@@ -621,7 +621,7 @@ real_adding_file (FMListView *view, NautilusFile *file)
 
 	EEL_CALL_PARENT (FM_LIST_VIEW_CLASS, adding_file, (view, file));
 
-	/* FIXME bugzilla.eazel.com 5059: this implies that positioning, custom icon, icon
+	/* FIXME bugzilla.gnome.org 45059: this implies that positioning, custom icon, icon
 	 * stretching, etc, will be based on the real directory the file is in,
 	 * and won't be specific to the search directory. Is that OK? 
 	 */

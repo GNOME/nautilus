@@ -624,7 +624,7 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc, char *tab_name
 		tab_rect->height = sidebar_tabs->details->tab_height;
 	}
 	
-	/* FIXME bugzilla.eazel.com 668: 
+	/* FIXME bugzilla.gnome.org 40668: 
 	 * we must "ellipsize" the name if it doesn't fit, for now, assume it does 
 	 */
 	 

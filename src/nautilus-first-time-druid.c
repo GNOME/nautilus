@@ -155,7 +155,7 @@ druid_cancel (GtkWidget *druid)
 {
 	gtk_widget_destroy (gtk_widget_get_toplevel (druid));
 
-	/* FIXME bugzilla.eazel.com 5050: Why _exit instead of a plain exit? It might be OK
+	/* FIXME bugzilla.gnome.org 45050: Why _exit instead of a plain exit? It might be OK
 	 * to do nothing here now that Nautilus knows to quit when
 	 * windows go away.
 	 */
@@ -207,7 +207,7 @@ druid_finished (GtkWidget *druid_page)
 	 * we don't want Nautilus to hang indefinitely trying to resolve
 	 * an HTTP address.
 	 */
-	/* FIXME bugzilla.eazel.com 5051: Perhaps we can fix the underlying problem instead of
+	/* FIXME bugzilla.gnome.org 45051: Perhaps we can fix the underlying problem instead of
 	 * having this hack here to guess whether the network is broken.
 	 */
 	if (Untested == network_status) {
@@ -740,7 +740,7 @@ next_update_page_callback (GtkWidget *button, GnomeDruid *druid)
 {
 	if (last_update_choice == 0) {
 		/* initiate the file transfer and launch a timer task to track feedback */
-		/* FIXME bugzilla.eazel.com 5053: There's no timer task! */
+		/* FIXME bugzilla.gnome.org 45053: There's no timer task! */
 		initiate_file_download (druid);
 		
 		/* return FALSE to display the feedback page */
@@ -890,7 +890,7 @@ set_up_gmc_transition_page (NautilusDruidPageEazel *page)
 	gtk_signal_connect (GTK_OBJECT (checkbox), "toggled", GTK_SIGNAL_FUNC (transition_value_changed), &transfer_gmc_icons);
 
 #if 0
-	/* This option is currently disabled, per bugzilla.eazel.com 7557 */
+	/* This option is currently disabled, per bugzilla.gnome.org 47557 */
 
 	checkbox = gtk_check_button_new_with_label (_("Launch Nautilus when GNOME starts up."));
 	gtk_box_pack_start (GTK_BOX (main_box), checkbox, FALSE, FALSE, 0);
@@ -1255,7 +1255,7 @@ initiate_file_download (GnomeDruid *druid)
 	/* Cancel any download already in progress. */
 	gtk_object_remove_data (GTK_OBJECT (druid), READ_FILE_HANDLE_TAG);
 			
-	/* FIXME bugzilla.eazel.com 5054: We might hang here for a while; if we do, we don't want
+	/* FIXME bugzilla.gnome.org 45054: We might hang here for a while; if we do, we don't want
 	 * the user to get forced through the druid again
 	 */
 	nautilus_set_first_time_file_flag ();
@@ -1360,7 +1360,7 @@ set_http_proxy (const char *proxy_url)
  * reads newline (or CR) or EOF terminated line from stream, allocating the return
  * buffer as appropriate
  **/
-/* FIXME bugzilla.eazel.com 5055: Belongs in a library, not here. */
+/* FIXME bugzilla.gnome.org 45055: Belongs in a library, not here. */
 static char * 
 getline_dup (FILE* stream)
 {

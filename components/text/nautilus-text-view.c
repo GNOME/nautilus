@@ -763,12 +763,12 @@ merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_d
 	text_view = NAUTILUS_TEXT_VIEW (user_data);
 
 	if (state) {
-                /* FIXME bugzilla.eazel.com 1274:
+                /* FIXME bugzilla.gnome.org 41274:
                  * See nautilus-text-view-ui.xml.  Need to query system for
                  * available fonts instead of hard coding the font list
                  */
 
-                /* FIXME bugzilla.eazel.com 7907: 
+                /* FIXME bugzilla.gnome.org 47907: 
                  * The "GTK System Font" string is hard coded in many places.
                  * Please see nautilus-text-view-ui.xml.
                  */

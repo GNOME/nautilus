@@ -1252,7 +1252,7 @@ emblem_layout_next (EmblemLayout *layout,
 static void
 draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
 {
-	/* FIXME bugzilla.eazel.com 703: 
+	/* FIXME bugzilla.gnome.org 40703: 
 	 * Dither would be better if we passed dither values. 
 	 */
 	gdk_pixbuf_render_to_drawable_alpha (pixbuf, drawable, 0, 0, x, y,
@@ -1280,7 +1280,7 @@ real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 		temp_pixbuf = eel_create_spotlight_pixbuf (temp_pixbuf);
 		gdk_pixbuf_unref (old_pixbuf);
 
-		/* FIXME bugzilla.eazel.com 2471: This hard-wired image is inappropriate to
+		/* FIXME bugzilla.gnome.org 42471: This hard-wired image is inappropriate to
 		 * this level of code, which shouldn't know that the
 		 * preview is audio, nor should it have an icon
 		 * hard-wired in.
@@ -1777,7 +1777,7 @@ nautilus_icon_canvas_item_event (GnomeCanvasItem *item, GdkEvent *event)
 		if (!icon_item->details->is_prelit) {
 			icon_item->details->is_prelit = TRUE;
 			gnome_canvas_item_request_update (item);
-			/* FIXME bugzilla.eazel.com 2473: 
+			/* FIXME bugzilla.gnome.org 42473: 
 			 * We should emit our own signal here,
 			 * not one from the container; it could hook
 			 * up to that signal and emit one of its
@@ -1800,7 +1800,7 @@ nautilus_icon_canvas_item_event (GnomeCanvasItem *item, GdkEvent *event)
 			 * higlighted for drop. The latter gets turned on
 			 * by the drag&drop motion callback.
 			 */
-			/* FIXME bugzilla.eazel.com 2473: 
+			/* FIXME bugzilla.gnome.org 42473: 
 			 * We should emit our own signal here,
 			 * not one from the containe; it could hook up
 			 * to that signal and emit one of its

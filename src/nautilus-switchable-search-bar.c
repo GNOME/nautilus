@@ -77,7 +77,7 @@ search_bar_preference_changed_callback (gpointer user_data)
 	g_assert (NAUTILUS_IS_SWITCHABLE_SEARCH_BAR (user_data));
 
 	/* Switch immediately as long as the current search_uri doesn't veto the switch.
-	 * FIXME bugzilla.eazel.com 2515: 
+	 * FIXME bugzilla.gnome.org 42515: 
 	 * Perhaps switch immediately anyway and blow away partially-formed
 	 * search criteria?
 	 */
@@ -223,7 +223,7 @@ nautilus_switchable_search_bar_set_mode (NautilusSwitchableSearchBar *bar,
 		break;
 	}
 
-	/* FIXME bugzilla.eazel.com 3171:
+	/* FIXME bugzilla.gnome.org 43171:
 	 * We don't know why this line is needed here, but if it's removed
 	 * then the bar won't shrink when we switch to the simple search bar
 	 * (though it does grow when switching to the complex one).
@@ -264,7 +264,7 @@ nautilus_switchable_search_bar_set_location (NautilusNavigationBar *navigation_b
 	/* Set the mode of the search bar,
 	   in case preferences have changed 
 	*/
-	/* FIXME bugzilla.eazel.com 2514:  This doesn't work yet. */
+	/* FIXME bugzilla.gnome.org 42514:  This doesn't work yet. */
 	mode = nautilus_search_uri_to_search_bar_mode (location);
 	nautilus_switchable_search_bar_set_mode (bar, mode);
 						 
@@ -296,7 +296,7 @@ gboolean
 nautilus_search_uri_is_displayable_by_mode (const char *uri,
 					    NautilusSearchBarMode mode)
 {
-	/* FIXME bugzilla.eazel.com 2514 */
+	/* FIXME bugzilla.gnome.org 42514 */
 	return TRUE;
 }
 

@@ -128,7 +128,7 @@ while (<CHANGELOGS>)
           }
         else
           {
-            # FIXME bugzilla.eazel.com 3452: we should also try to extract
+            # FIXME bugzilla.gnome.org 43452: we should also try to extract
             # names & addresses from entry body text.
             next; # ignore unknown lines for now
           }

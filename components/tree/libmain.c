@@ -31,7 +31,7 @@
 #include <bonobo.h>
 #include <liboaf/liboaf.h>
 
-/* FIXME bugzilla.eazel.com 2736: oaf_plugin_unuse can't possibly work! this sucks */
+/* FIXME bugzilla.gnome.org 42736: oaf_plugin_unuse can't possibly work! this sucks */
 #if 0
 static void
 tree_shlib_object_destroyed (GtkObject *object)

@@ -604,7 +604,7 @@ get_xalf_prefix (const char *name)
 	char *quoted;
 	char *prefix;
 
-	/* FIXME bugzilla.eazel.com 8206: At time I am writing this,
+	/* FIXME bugzilla.gnome.org 48206: At time I am writing this,
 	 * xalf is still pretty buggy, and Nautilus uses it a lot more
 	 * than the Panel does with no way to turn it off for
 	 * individual programs the way you can in the Panel. Sadly,

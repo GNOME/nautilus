@@ -74,7 +74,7 @@ vfs_file_exists (const char *file_uri)
 		return FALSE;
 	}	
 
-	/* FIXME bugzilla.eazel.com 3137: The synchronous I/O here
+	/* FIXME bugzilla.gnome.org 43137: The synchronous I/O here
 	 * means this call is unsuitable for use on anything that
 	 * might be remote.
 	 */
@@ -193,7 +193,7 @@ make_thumbnail_uri (const char *image_uri, gboolean directory_only, gboolean use
 				return NULL;
 			}
 		}
-		/* FIXME bugzilla.eazel.com 3137: synchronous I/O - it
+		/* FIXME bugzilla.gnome.org 43137: synchronous I/O - it
                    looks like the URI will be local-only, but best to
                    make sure. */
 
@@ -220,7 +220,7 @@ make_thumbnail_uri (const char *image_uri, gboolean directory_only, gboolean use
 }
 
 /* utility routine that takes two uris and returns true if the first file has been modified later than the second */
-/* FIXME bugzilla.eazel.com 2565: it makes synchronous file info calls, so for now, it returns FALSE if either of the uri's are non-local */
+/* FIXME bugzilla.gnome.org 42565: it makes synchronous file info calls, so for now, it returns FALSE if either of the uri's are non-local */
 static gboolean
 first_file_more_recent (const char* file_uri, const char* other_file_uri)
 {
@@ -310,7 +310,7 @@ nautilus_thumbnail_has_invalid_thumbnail (NautilusFile *file)
 
 /* routine that takes a uri of a large image file and returns the uri of its corresponding thumbnail.
    If no thumbnail is available, put the image on the thumbnail queue so one is eventually made. */
-/* FIXME bugzilla.eazel.com 642: 
+/* FIXME bugzilla.gnome.org 40642: 
  * Most of this thumbnail machinery belongs in NautilusFile, not here.
  */
 
@@ -380,7 +380,7 @@ nautilus_get_thumbnail_uri (NautilusFile *file)
 	local_flag = TRUE;
 	thumbnail_uri = make_thumbnail_uri (file_uri, TRUE, local_flag, TRUE);
 				
-	/* FIXME bugzilla.eazel.com 3137: more potentially losing
+	/* FIXME bugzilla.gnome.org 43137: more potentially losing
 	   synch I/O - this could be remote */
 
 	result = gnome_vfs_make_directory (thumbnail_uri, THUMBNAIL_DIR_PERMISSIONS);

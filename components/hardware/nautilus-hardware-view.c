@@ -293,7 +293,7 @@ get_CPU_description (int nth)
          * ("," for many European countries).
          */
 
-        /* FIXME bugzilla.eazel.com 5298: The KB string that comes
+        /* FIXME bugzilla.gnome.org 45298: The KB string that comes
          * from the proc data is wrong -- "kB" is correct, and we use
          * "K" for file sizes as of this writing (although we use "MB"
          * and "GB").

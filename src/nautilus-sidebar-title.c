@@ -312,7 +312,7 @@ nautilus_sidebar_title_background (NautilusSidebarTitle *sidebar_title)
 		g_return_val_if_fail (EEL_IS_BACKGROUND (background), NULL);
 		return background;
 	} else {
-		/* FIXME bugzilla.eazel.com 5042
+		/* FIXME bugzilla.gnome.org 45042
 		 * It would be preferable to assert widget != NULL and not have
 		 * this else case. Doing this would require us to be carful when
 		 * nautilus_sidebar_title_select_text_color is called - which would
@@ -370,7 +370,7 @@ nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
 		}
 		
 		if (sidebar_title_color == NULL) {
-			/* FIXME bugzilla.eazel.com 2496: for now, both the title and info colors are the same */
+			/* FIXME bugzilla.gnome.org 42496: for now, both the title and info colors are the same */
 			if (eel_background_is_dark (background)) {
 				sidebar_title_color = g_strdup("rgb:FFFF/FFFF/FFFF");
 				sidebar_info_title_color = g_strdup("rgb:FFFF/FFFF/FFFF");
@@ -585,7 +585,7 @@ update_title_font (NautilusSidebarTitle *sidebar_title)
 static void
 update_title (NautilusSidebarTitle *sidebar_title)
 {
-	/* FIXME bugzilla.eazel.com 2500: We could defer showing the title until the icon is ready. */
+	/* FIXME bugzilla.gnome.org 42500: We could defer showing the title until the icon is ready. */
 	if (eel_label_set_text (EEL_LABEL (sidebar_title->details->title_label),
 				     sidebar_title->details->title_text)) {
 		update_title_font (sidebar_title);
@@ -649,7 +649,7 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 		info_string = g_string_new (component_info);
 		g_free (component_info);
 	} else {
-		/* FIXME bugzilla.eazel.com 2500: We could defer showing info until the icon is ready. */
+		/* FIXME bugzilla.gnome.org 42500: We could defer showing info until the icon is ready. */
 		/* Adding this special case for search results to 
 		   correspond to the fix for bug 2341.  */
 		if (file != NULL && file_is_search_location (file)) {
@@ -706,7 +706,7 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 	GList *icons, *p;
 	GdkPixbuf *pixbuf;
 
-	/* FIXME bugzilla.eazel.com 2500: We could defer showing emblems until the icon is ready. */
+	/* FIXME bugzilla.gnome.org 42500: We could defer showing emblems until the icon is ready. */
 	/* exit if we don't have the file yet */
 	if (sidebar_title->details->file == NULL) {
 		return;
@@ -741,7 +741,7 @@ update_notes (NautilusSidebarTitle *sidebar_title)
 {
 	char *text;
 	
-	/* FIXME bugzilla.eazel.com 2500: We could defer showing notes until the icon is ready. */
+	/* FIXME bugzilla.gnome.org 42500: We could defer showing notes until the icon is ready. */
 
 	text = nautilus_file_get_metadata (sidebar_title->details->file,
 					   NAUTILUS_METADATA_KEY_NOTES,
