@@ -729,6 +729,7 @@ nautilus_emblem_view_drag_received_cb (GtkWidget *widget,
 			emblem = g_new (Emblem, 1);
 			emblem->uri = uri;
 			emblem->name = NULL; /* created later on by the user */
+			emblem->keyword = NULL;
 			emblem->pixbuf = pixbuf;
 
 			emblems = g_slist_prepend (emblems, emblem);
@@ -769,6 +770,7 @@ nautilus_emblem_view_drag_received_cb (GtkWidget *widget,
 			emblem = g_new (Emblem, 1);
 			emblem->uri = uri;
 			emblem->name = NULL;
+			emblem->keyword = NULL;
 			emblem->pixbuf = pixbuf;
 
 			emblems = g_slist_prepend (NULL, emblem);
@@ -823,6 +825,7 @@ nautilus_emblem_view_drag_received_cb (GtkWidget *widget,
 			emblem = g_new (Emblem, 1);
 			emblem->uri = g_strdup (uri);
 			emblem->name = NULL;
+			emblem->keyword = NULL;
 			emblem->pixbuf = pixbuf;
 
 			emblems = g_slist_prepend (NULL, emblem);
