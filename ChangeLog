@@ -1,3 +1,15 @@
+2000-12-06  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-query.c:
+	killed
+	
+	* components/services/trilobite/libtrilobite/trilobite-root-helper.
+	c: (trilobite_root_helper_run_program):
+	Replaced the g_assert with g_warning and a continue;
+
+	* po/POTFILES.in:
+	Updated for all the new stuff in eazel-install
+
 2000-12-06 Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/rpmview/Makefile.am:
