@@ -11,8 +11,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.1\n"
-"POT-Creation-Date: 2000-09-25 00:24+0200\n"
-"PO-Revision-Date: 2000-09-25 00:26+02:00\n"
+"POT-Creation-Date: 2000-10-03 23:36+0200\n"
+"PO-Revision-Date: 2000-10-03 23:50+02:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -103,7 +103,7 @@ msgid "System Calls"
 msgstr "Systemkall"
 
 #: components/help/hyperbola-filefmt.c:556
-#: libnautilus-extensions/nautilus-stock-dialogs.c:365
+#: libnautilus-extensions/nautilus-stock-dialogs.c:393
 msgid "Info"
 msgstr "Info"
 
@@ -229,12 +229,12 @@ msgstr "Drep taper sidelinjevisning."
 #.
 #. BonoboUIHandler
 #. menu item path, must start with /some-existing-menu-path and be otherwise unique
-#: components/mozilla/nautilus-mozilla-content-view.c:524
+#: components/mozilla/nautilus-mozilla-content-view.c:568
 msgid "_Mozilla"
 msgstr "_Mozilla"
 
 #. menu item user-displayed label
-#: components/mozilla/nautilus-mozilla-content-view.c:525
+#: components/mozilla/nautilus-mozilla-content-view.c:569
 msgid "This is a mozilla merged menu item"
 msgstr "Dette er en flettet menyoppføring for mozilla"
 
@@ -254,85 +254,99 @@ msgstr "Dette er en flettet menyoppføring for mozilla"
 #.
 #. BonoboUIHandler
 #. button path, must start with /Main/ and be otherwise unique
-#: components/mozilla/nautilus-mozilla-content-view.c:542
+#: components/mozilla/nautilus-mozilla-content-view.c:586
 msgid "Mozilla"
 msgstr "Mozilla"
 
 #. button user-displayed label
-#: components/mozilla/nautilus-mozilla-content-view.c:543
+#: components/mozilla/nautilus-mozilla-content-view.c:587
 msgid "This is a mozilla merged toolbar button"
 msgstr "Dette er en flettet verktøylinjeknapp for mozilla"
 
-#: components/music/nautilus-music-view.c:201
+#: components/music/nautilus-music-view.c:207
 msgid "Track "
 msgstr "Spor"
 
-#: components/music/nautilus-music-view.c:201
+#: components/music/nautilus-music-view.c:207
 msgid "Title"
 msgstr "Tittel"
 
-#: components/music/nautilus-music-view.c:201
+#: components/music/nautilus-music-view.c:207
 msgid "Artist"
 msgstr "Artist"
 
-#: components/music/nautilus-music-view.c:201
+#: components/music/nautilus-music-view.c:207
 msgid "Year"
 msgstr "År"
 
-#: components/music/nautilus-music-view.c:201
+#: components/music/nautilus-music-view.c:207
 msgid "Bitrate "
 msgstr "Bitrate: "
 
-#: components/music/nautilus-music-view.c:201
+#: components/music/nautilus-music-view.c:207
 msgid "Time "
 msgstr "Tid "
 
-#: components/music/nautilus-music-view.c:201
+#: components/music/nautilus-music-view.c:207
 msgid "Album"
 msgstr "Album"
 
-#: components/music/nautilus-music-view.c:201
+#: components/music/nautilus-music-view.c:207
 msgid "Comment"
 msgstr "Kommentar"
 
-#: components/music/nautilus-music-view.c:201
+#: components/music/nautilus-music-view.c:207
 msgid "Channels"
 msgstr "Kanaler"
 
-#: components/music/nautilus-music-view.c:201
+#: components/music/nautilus-music-view.c:207
 msgid "Sample Rate"
 msgstr "Samplerate"
 
-#: components/music/nautilus-music-view.c:845
+#: components/music/nautilus-music-view.c:856
 msgid "Sorry, but the music view can't play non-local files yet! "
 msgstr "Beklager, men musikkvisning kan ikke spille av eksterne filer ennå!"
 
-#: components/music/nautilus-music-view.c:846
+#: components/music/nautilus-music-view.c:857
 msgid "Can't Play Remote Files"
 msgstr "Kunne ikke spille eksterne filer"
 
-#: components/music/nautilus-music-view.c:1157
+#: components/music/nautilus-music-view.c:1168
 msgid "Previous"
 msgstr "Forrige"
 
-#: components/music/nautilus-music-view.c:1169
+#: components/music/nautilus-music-view.c:1181
 msgid "Play"
 msgstr "Spill"
 
-#: components/music/nautilus-music-view.c:1181
+#: components/music/nautilus-music-view.c:1194
 msgid "Pause"
 msgstr "Pause"
 
-#: components/music/nautilus-music-view.c:1193
+#: components/music/nautilus-music-view.c:1207
 #: libnautilus-extensions/nautilus-file-operations.c:385
-#: libnautilus-extensions/nautilus-file-operations.c:412
-#: src/nautilus-window-toolbars.c:148
+#: libnautilus-extensions/nautilus-file-operations.c:404
+#: libnautilus-extensions/nautilus-file-operations.c:422
+#: src/nautilus-window-toolbars.c:149
 msgid "Stop"
 msgstr "Stopp"
 
-#: components/music/nautilus-music-view.c:1205
+#: components/music/nautilus-music-view.c:1220
 msgid "Next"
 msgstr "Neste"
+
+#: components/music/nautilus-music-view.c:1232
+msgid "Sound hardware missing or busy!"
+msgstr "Lydkort mangler eller er opptatt!"
+
+#: components/music/nautilus-music-view.c:1280
+#, c-format
+msgid "Sorry, but there was an error reading %s."
+msgstr "Beklager, en feil oppsto under lesing av %s."
+
+#: components/music/nautilus-music-view.c:1281
+msgid "Couldn't read directory"
+msgstr "Kunne ikke lese katalogen"
 
 #. set up the window title
 #: components/rpmview/nautilus-rpm-verify-window.c:182
@@ -410,32 +424,32 @@ msgstr "Gå til valgt fil"
 msgid "Description"
 msgstr "Beskrivelse"
 
-#: components/rpmview/nautilus-rpm-view.c:582
-#, c-format
-msgid "Package \"%s\" "
-msgstr "Pakke \"%s\""
-
-#: components/rpmview/nautilus-rpm-view.c:647
-#, c-format
-msgid "version %s-%s"
-msgstr "versjon %s-%s"
-
-#: components/rpmview/nautilus-rpm-view.c:727
+#: components/rpmview/nautilus-rpm-view.c:631
 #, c-format
 msgid "Package Contents: %d files"
 msgstr "Pakkeinnhold: %d filer"
 
-#: components/rpmview/nautilus-rpm-view.c:852
+#: components/rpmview/nautilus-rpm-view.c:643
+#, c-format
+msgid "Package \"%s\" "
+msgstr "Pakke \"%s\""
+
+#: components/rpmview/nautilus-rpm-view.c:708
+#, c-format
+msgid "version %s-%s"
+msgstr "versjon %s-%s"
+
+#: components/rpmview/nautilus-rpm-view.c:865
 #, c-format
 msgid "checking %s..."
 msgstr "sjekker %s..."
 
-#: components/rpmview/nautilus-rpm-view.c:854
+#: components/rpmview/nautilus-rpm-view.c:867
 #, c-format
 msgid "file %s has an error!"
 msgstr "fil %s har en feil!"
 
-#: components/rpmview/nautilus-rpm-view.c:872
+#: components/rpmview/nautilus-rpm-view.c:885
 msgid "Verification completed."
 msgstr "Verifisering fullført."
 
@@ -627,281 +641,255 @@ msgstr ""
 msgid "Could not set URLType from config file!"
 msgstr "Kunne ikke sette URLType fra konfigurasjonsfilen!"
 
-#: components/services/install/lib/eazel-install-object.c:668
+#: components/services/install/lib/eazel-install-object.c:673
 msgid "Creating temporary download directory ...\n"
 msgstr "Oppretter midlertidig katalog for nedlasting...\n"
 
-#: components/services/install/lib/eazel-install-object.c:673
+#: components/services/install/lib/eazel-install-object.c:678
 msgid "Could not create temporary directory!\n"
 msgstr "Kunne ikke opprette midlertidig katalog!\n"
 
-#: components/services/install/lib/eazel-install-object.c:687
+#: components/services/install/lib/eazel-install-object.c:692
 msgid "Getting package list from remote server ...\n"
 msgstr "Henter pakkeliste fra ekstern tjener ...\n"
 
-#: components/services/install/lib/eazel-install-object.c:707
+#: components/services/install/lib/eazel-install-object.c:712
 msgid "Unable to retrieve package-list.xml!\n"
 msgstr "Kunne ikke hente package-list.xml!\n"
 
-#: components/services/install/lib/eazel-install-object.c:752
+#: components/services/install/lib/eazel-install-object.c:757
 #, c-format
 msgid "Cannot write to file %s, using default log handler"
 msgstr "Kan ikke skrive til fil %s, bruker forvalgt logghåndterer"
 
-#: components/services/install/lib/eazel-install-object.c:852
+#: components/services/install/lib/eazel-install-object.c:856
 msgid "Install failed"
 msgstr "Installasjon feilet"
 
-#: components/services/install/lib/eazel-install-object.c:883
+#: components/services/install/lib/eazel-install-object.c:887
 msgid "Uninstall failed"
 msgstr "Avinstallering feilet"
 
-#: components/services/install/lib/eazel-install-protocols.c:122
-#: components/services/install/lib/eazel-install-protocols.c:223
+#: components/services/install/lib/eazel-install-protocols.c:123
+#: components/services/install/lib/eazel-install-protocols.c:224
 #, c-format
 msgid "Downloading %s..."
 msgstr "Laster ned %s..."
 
-#: components/services/install/lib/eazel-install-protocols.c:133
-#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:399
+#: components/services/install/lib/eazel-install-protocols.c:134
+#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:400
 #, c-format
 msgid "Could not open target file %s"
 msgstr "Kunne ikke åpne målfil %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:140
-#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:333
+#: components/services/install/lib/eazel-install-protocols.c:141
+#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:334
 msgid "Could not create an http request !"
 msgstr "Kunne ikke lage en http forespørsel!"
 
-#: components/services/install/lib/eazel-install-protocols.c:147
+#: components/services/install/lib/eazel-install-protocols.c:148
 msgid "Proxy: Invalid uri !"
 msgstr "Proxy: Ugyldig uri!"
 
-#: components/services/install/lib/eazel-install-protocols.c:152
-#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:338
+#: components/services/install/lib/eazel-install-protocols.c:153
+#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:339
 msgid "Invalid uri !"
 msgstr "Ugyldig uri!"
 
-#: components/services/install/lib/eazel-install-protocols.c:159
-#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:348
+#: components/services/install/lib/eazel-install-protocols.c:160
+#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:349
 msgid "Could not prepare http request !"
 msgstr "Kunne ikke forberede http forespørsel!"
 
-#: components/services/install/lib/eazel-install-protocols.c:163
-#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:353
+#: components/services/install/lib/eazel-install-protocols.c:164
+#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:354
 msgid "Couldn't get async mode "
 msgstr "Kunne ikke gå over i asynkron modus"
 
-#: components/services/install/lib/eazel-install-protocols.c:188
-#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:363
+#: components/services/install/lib/eazel-install-protocols.c:189
+#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:364
 #, c-format
 msgid "HTTP error: %d %s"
 msgstr "HTTP-feil: %d %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:198
+#: components/services/install/lib/eazel-install-protocols.c:199
 msgid "Could not get request body!"
 msgstr "Fikk ikke forspørselens kropp!"
 
-#: components/services/install/lib/eazel-install-protocols.c:224
+#: components/services/install/lib/eazel-install-protocols.c:225
 msgid "FTP not supported yet"
 msgstr "FTP er ikke støttet ennå"
 
-#: components/services/install/lib/eazel-install-protocols.c:409
+#: components/services/install/lib/eazel-install-protocols.c:404
 #, c-format
 msgid "Checking local file %s..."
 msgstr "Sjekker lokal fil %s..."
 
-#: components/services/install/lib/eazel-install-protocols.c:481
+#: components/services/install/lib/eazel-install-protocols.c:476
 #, c-format
 msgid "Failed to retreive %s!"
 msgstr "Kunne ikke hente %s!"
 
-#: components/services/install/lib/eazel-install-protocols.c:539
-#: components/services/install/lib/eazel-install-protocols.c:593
+#: components/services/install/lib/eazel-install-protocols.c:545
 #, c-format
 msgid "Could not get a URL for %s"
 msgstr "Fant ikke en URL for %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:557
-#: components/services/install/lib/eazel-install-protocols.c:606
-#: components/services/install/lib/eazel-install-protocols.c:655
+#: components/services/install/lib/eazel-install-protocols.c:563
+#: components/services/install/lib/eazel-install-protocols.c:613
 msgid "File download failed"
 msgstr "Nedlasting av fil feilet"
 
-#: components/services/install/lib/eazel-install-protocols.c:587
-msgid "Using local protocol cannot resolve library dependencies"
-msgstr "Lokal protokoll kan ikke løse avhengigheter i biblioteker"
-
-#: components/services/install/lib/eazel-install-protocols.c:636
+#: components/services/install/lib/eazel-install-protocols.c:591
 msgid "Using local protocol cannot fetch by id"
 msgstr "Kan ikke hente etter ID ved bruk av lokal protokoll"
 
-#: components/services/install/lib/eazel-install-protocols.c:642
+#: components/services/install/lib/eazel-install-protocols.c:600
 #, c-format
 msgid "Could not get a URL for package id %s"
 msgstr "Fant ikke en URL for pakke ID %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:742
-#: components/services/install/lib/eazel-install-protocols.c:746
+#: components/services/install/lib/eazel-install-protocols.c:710
+#: components/services/install/lib/eazel-install-protocols.c:715
 #, c-format
 msgid "Could not retrieve a URL for %s"
 msgstr "Kunne ikke hente en URL for %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:750
+#: components/services/install/lib/eazel-install-protocols.c:720
 #, c-format
 msgid "Could not retrieve a URL for id %s"
 msgstr "Kunne ikke hente en URL for ID %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:135
-#: components/services/install/lib/eazel-install-rpm-glue.c:464
+#: components/services/install/lib/eazel-install-rpm-glue.c:201
+#: components/services/install/lib/eazel-install-rpm-glue.c:515
 msgid "Dry Run Mode Activated.  Packages will not actually be installed ..."
 msgstr "Tørrtreningsmodus aktivert. Pakker vil ikke bli installert..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:166
+#: components/services/install/lib/eazel-install-rpm-glue.c:231
 #, c-format
 msgid "*** Could not create tmp directory (%s)! ***\n"
 msgstr "*** Kunne ikke opprette tmp-katalog (%s)! ***\n"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:173
+#: components/services/install/lib/eazel-install-rpm-glue.c:238
 #, c-format
 msgid "Reading the install package list %s"
 msgstr "Leser pakkeliste for installasjon %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:245
+#: components/services/install/lib/eazel-install-rpm-glue.c:315
 #, c-format
 msgid "Will download %s"
 msgstr "Vil laste ned %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:258
+#: components/services/install/lib/eazel-install-rpm-glue.c:328
 #, c-format
 msgid "%s already installed"
 msgstr "%s er allerede installalert"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:373
-#, c-format
-msgid "%s..."
-msgstr "%s..."
-
-#: components/services/install/lib/eazel-install-rpm-glue.c:382
-#, c-format
-msgid "Skipping %s..."
-msgstr "Hopper over %s..."
-
-#: components/services/install/lib/eazel-install-rpm-glue.c:437
+#: components/services/install/lib/eazel-install-rpm-glue.c:488
 #, c-format
 msgid "Category = %s"
 msgstr "Kategori = %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:750
+#: components/services/install/lib/eazel-install-rpm-glue.c:805
 #, c-format
 msgid "Could not create transaction directory (%s)! ***\n"
 msgstr "*** Kunne ikke opprette transaksjonskatalog (%s)! ***\n"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:772
+#: components/services/install/lib/eazel-install-rpm-glue.c:828
 #, c-format
 msgid "Writing transaction to %s"
 msgstr "Skriver transaksjon til %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:970
+#: components/services/install/lib/eazel-install-rpm-glue.c:1028
 msgid "Failed to lock the downloaded file"
 msgstr "Kunne ikke låse nedlastingsfilen"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:985
+#: components/services/install/lib/eazel-install-rpm-glue.c:1043
 #, c-format
 msgid "MD5 mismatch, package %s may be compromised"
 msgstr "MD5-feil, pakke %s kan være tuklet med"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1043
+#: components/services/install/lib/eazel-install-rpm-glue.c:1101
 #, c-format
-msgid "Preflight (%d bytes, %d packages)"
-msgstr "Forhåndssendt (%d bytes, %d pakker)"
+msgid "Preflight (%ld bytes, %ld packages)"
+msgstr "Forhåndssendt (%ld bytes, %ld pakker)"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1081
+#: components/services/install/lib/eazel-install-rpm-glue.c:1138
 msgid "rpm running..."
 msgstr "rpm kjører..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1173
+#: components/services/install/lib/eazel-install-rpm-glue.c:1230
 #, c-format
 msgid "Removing package %s %s"
 msgstr "Fjerner pakke %s %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1294
-#, c-format
-msgid "Cannot open %s"
-msgstr "Kan ikke åpne %s"
-
-#: components/services/install/lib/eazel-install-rpm-glue.c:1356
+#: components/services/install/lib/eazel-install-rpm-glue.c:1321
 #, c-format
 msgid "Closing db for %s (open)"
 msgstr "Lukker db for %s (åpen)"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1361
+#: components/services/install/lib/eazel-install-rpm-glue.c:1326
 #, c-format
 msgid "Closing db for %s (not open)"
 msgstr "Lukker db for %s (ikke åpen)"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1417
+#: components/services/install/lib/eazel-install-rpm-glue.c:1380
 msgid "RPM package database query failed !"
 msgstr "Spørring på RPM pakkedatabasen feilet!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1420
+#: components/services/install/lib/eazel-install-rpm-glue.c:1383
 #, c-format
 msgid "Opened packages database in %s"
 msgstr "Åpnet pakkedatabasen i %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1422
+#: components/services/install/lib/eazel-install-rpm-glue.c:1385
 #, c-format
 msgid "Opening packages database in %s failed"
 msgstr "Åpning av pakkedatabasen i %s feilet"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1439
+#: components/services/install/lib/eazel-install-rpm-glue.c:1402
 msgid "Preparing package system"
 msgstr "Forbereder pakkesystem"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1693
+#: components/services/install/lib/eazel-install-rpm-glue.c:1640
 #, c-format
 msgid "%s upgrades from version %s to %s"
 msgstr "%s oppgraderinger fra versjon %s til %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1698
+#: components/services/install/lib/eazel-install-rpm-glue.c:1645
 #, c-format
 msgid "%s downgrades from version %s to %s"
 msgstr "%s nedgraderinger fra versjon %s til %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1705
+#: components/services/install/lib/eazel-install-rpm-glue.c:1652
 #, c-format
 msgid "%s version %s already installed"
 msgstr "%s versjon %s er allerede installert"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1828
+#. Possibly the implest case, we're installing package A, which requires
+#. B that is not installed.
+#: components/services/install/lib/eazel-install-rpm-glue.c:2019
 #, c-format
 msgid "%s requires %s"
 msgstr "%s er avhengig av %s"
 
 #. If we end here, it's a conflict is going to break something
-#. FIXME bugzilla.eazel.com 1514:
-#. Need to handle this more intelligently
-#: components/services/install/lib/eazel-install-rpm-glue.c:1885
+#: components/services/install/lib/eazel-install-rpm-glue.c:2086
 #, c-format
-msgid "%s conflicts %s-%s"
-msgstr "%s konflikter %s-%s"
+msgid "Package %s conflicts with %s-%s"
+msgstr "Pakke %s er i konflikt med %s-%s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1899
+#: components/services/install/lib/eazel-install-rpm-glue.c:2100
 #, c-format
 msgid "Processing dep for %s, requires library %s"
 msgstr "Prosesserer avhengighet for %s, trenger bibliotek %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1908
+#: components/services/install/lib/eazel-install-rpm-glue.c:2107
 #, c-format
 msgid "Processing dep for %s, requires package %s"
 msgstr "Prosesserer avhengighet for %s, trenger pakke %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:2190
-#, c-format
-msgid "%d dependency failure(s)"
-msgstr "%d avhengighet(er) feilet!"
-
-#: components/services/install/lib/eazel-install-rpm-glue.c:2254
+#: components/services/install/lib/eazel-install-rpm-glue.c:2310
 msgid "Dependencies are ok"
 msgstr "Avhengigheter er ok"
 
@@ -931,24 +919,24 @@ msgstr "*** Feilutformet pakkenode! ***"
 msgid "*** Malformed depends node!"
 msgstr "Feilutformet avhengighetsnode!"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:163
+#: components/services/install/lib/eazel-install-xml-package-list.c:167
 #, c-format
 msgid "*** Unknown node type '%s'"
 msgstr "** Ukjent nodetype '%s'"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:182
+#: components/services/install/lib/eazel-install-xml-package-list.c:184
 msgid "*** The pkg list file contains no data! ***\n"
 msgstr "*** Pakkelistefilen inneholder ikke data! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:187
+#: components/services/install/lib/eazel-install-xml-package-list.c:189
 msgid "*** Cannot find the CATEGORIES xmlnode! ***\n"
 msgstr "*** Kan ikke finne xmlnoden KATEGORIER! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:189
+#: components/services/install/lib/eazel-install-xml-package-list.c:190
 msgid "*** Bailing from categories parse! ***\n"
 msgstr "*** Hopper ut av tolking av kategorier! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:195
+#: components/services/install/lib/eazel-install-xml-package-list.c:196
 msgid "*** No Categories! ***\n"
 msgstr "*** Ingen kategorier! ***\n"
 
@@ -956,36 +944,49 @@ msgstr "*** Ingen kategorier! ***\n"
 msgid "*** Bailing from category parse! ***\n"
 msgstr "*** Hopper ut fra tolking av kategorier! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:248
+#: components/services/install/lib/eazel-install-xml-package-list.c:251
 msgid "*** Cannot find the TRANSACTION xmlnode! ***\n"
 msgstr "*** Kan ikke finne xmlnoden TRANSAKSJON! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:250
-#: components/services/install/lib/eazel-install-xml-package-list.c:258
+#: components/services/install/lib/eazel-install-xml-package-list.c:253
+#: components/services/install/lib/eazel-install-xml-package-list.c:261
 msgid "*** Bailing from transaction parse! ***\n"
 msgstr "*** Hopper ut fra tolking av transaksjoner! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:256
+#: components/services/install/lib/eazel-install-xml-package-list.c:259
 msgid "*** No packages! ***\n"
 msgstr "*** Ingen pakker! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:364
+#: components/services/install/lib/eazel-install-xml-package-list.c:295
+msgid "*** No category nodes! ***"
+msgstr "*** Ingen kategorinoder! ***"
+
+#: components/services/install/lib/eazel-install-xml-package-list.c:299
+msgid "*** Cannot find the CATEGORIES xmlnode! ***"
+msgstr "*** Kan ikke finne xmlnoden KATEGORIER! ***"
+
+#: components/services/install/lib/eazel-install-xml-package-list.c:315
+#, c-format
+msgid "*** Unknown node %s"
+msgstr "*** Ukjent node %s"
+
+#: components/services/install/lib/eazel-install-xml-package-list.c:408
 msgid "*** Error generating xml package list! ***\n"
 msgstr "*** Feil under generering av xml pakkeliste! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:411
+#: components/services/install/lib/eazel-install-xml-package-list.c:455
 msgid "*** Error reading package list! ***\n"
 msgstr "*** Feil under lesing av pakkelisten! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:590
+#: components/services/install/lib/eazel-install-xml-package-list.c:659
 msgid "*** The osd xml contains no data! ***\n"
 msgstr "*** Osd xml inneholder ikke data! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:595
+#: components/services/install/lib/eazel-install-xml-package-list.c:664
 msgid "*** Bailing from osd parse! ***\n"
 msgstr "*** Hopper ut av osd tolking! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:648
+#: components/services/install/lib/eazel-install-xml-package-list.c:717
 #, c-format
 msgid "Could not parse the xml (length %d)"
 msgstr "Kunne ikke tolke xml (lengde %d)"
@@ -1213,11 +1214,11 @@ msgstr "Tiden er feil med %d, maks tillatt forskjell er %d"
 msgid "Could not read time-service config from %s"
 msgstr "Kunne ikke lese konfigurasjon for tidstjenesten fra %s"
 
-#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:442
+#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:443
 msgid "Could not initialize Bonobo"
 msgstr "Kunne ikke initiere Bonobo"
 
-#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:457
+#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:458
 #, c-format
 msgid "Can't write logfile %s -- using default log handler"
 msgstr "Kan ikke skrive loggfil %s -- bruker forvalgt logghåndterer"
@@ -1272,82 +1273,82 @@ msgstr "-adobe-helvetica-fet-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-extensions/nautilus-file.c:1742
+#: libnautilus-extensions/nautilus-file.c:1772
 msgid "today %-I:%M %p"
 msgstr "i dag %-I:%M %p"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:1747
+#: libnautilus-extensions/nautilus-file.c:1777
 msgid "yesterday %-I:%M %p"
 msgstr "i går %-I:%M %p"
 
 #. Current week, include day of week.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:1752
+#: libnautilus-extensions/nautilus-file.c:1782
 msgid "%A %-m/%-d/%y %-I:%M %p"
 msgstr "%A %-m/%-d/%y %-I:%M %p"
 
 #. Other dates.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:1757
+#: libnautilus-extensions/nautilus-file.c:1787
 msgid "%-m/%-d/%y %-I:%M %p"
 msgstr "%-m/%-d/%y %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:2760
+#: libnautilus-extensions/nautilus-file.c:2790
 msgid "0 items"
 msgstr "0 oppføringer"
 
-#: libnautilus-extensions/nautilus-file.c:2760
+#: libnautilus-extensions/nautilus-file.c:2790
 msgid "0 folders"
 msgstr "0 mapper"
 
-#: libnautilus-extensions/nautilus-file.c:2761
+#: libnautilus-extensions/nautilus-file.c:2791
 msgid "0 files"
 msgstr "0 filer"
 
-#: libnautilus-extensions/nautilus-file.c:2765
+#: libnautilus-extensions/nautilus-file.c:2795
 msgid "1 item"
 msgstr "1 oppføring"
 
-#: libnautilus-extensions/nautilus-file.c:2765
+#: libnautilus-extensions/nautilus-file.c:2795
 msgid "1 folder"
 msgstr "1 mappe"
 
-#: libnautilus-extensions/nautilus-file.c:2766
+#: libnautilus-extensions/nautilus-file.c:2796
 msgid "1 file"
 msgstr "1 fil"
 
-#: libnautilus-extensions/nautilus-file.c:2769
+#: libnautilus-extensions/nautilus-file.c:2799
 #, c-format
 msgid "%u items"
 msgstr "%u oppføringer"
 
-#: libnautilus-extensions/nautilus-file.c:2769
+#: libnautilus-extensions/nautilus-file.c:2799
 #, c-format
 msgid "%u folders"
 msgstr "%u mapper"
 
-#: libnautilus-extensions/nautilus-file.c:2770
+#: libnautilus-extensions/nautilus-file.c:2800
 #, c-format
 msgid "%u files"
 msgstr "%u filer"
 
-#: libnautilus-extensions/nautilus-file.c:3099
+#: libnautilus-extensions/nautilus-file.c:3112
 msgid "unknown type"
 msgstr "ukjent type"
 
-#: libnautilus-extensions/nautilus-file.c:3101
+#: libnautilus-extensions/nautilus-file.c:3114
 msgid "unknown MIME type"
 msgstr "ukjent MIME-type"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-extensions/nautilus-file.c:3106
+#: libnautilus-extensions/nautilus-file.c:3119
 msgid "unknown"
 msgstr "ukjent"
 
@@ -1355,17 +1356,17 @@ msgstr "ukjent"
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
-#: libnautilus-extensions/nautilus-file-operations.c:519
-#: libnautilus-extensions/nautilus-file.c:3122
+#: libnautilus-extensions/nautilus-file-operations.c:529
+#: libnautilus-extensions/nautilus-file.c:3135
 #, c-format
 msgid "link to %s"
 msgstr "lenke til %s"
 
-#: libnautilus-extensions/nautilus-file.c:3145
+#: libnautilus-extensions/nautilus-file.c:3158
 msgid "link (broken)"
 msgstr "lenke (ødelagt)"
 
-#: libnautilus-extensions/nautilus-file.c:3154
+#: libnautilus-extensions/nautilus-file.c:3167
 msgid "program"
 msgstr "program"
 
@@ -1377,42 +1378,50 @@ msgstr "Fra:"
 msgid "To:"
 msgstr "Til:"
 
-#: libnautilus-extensions/nautilus-file-operations.c:366
-#: libnautilus-extensions/nautilus-file-operations.c:373
+#: libnautilus-extensions/nautilus-file-operations.c:376
 #, c-format
 msgid ""
-"Error while %s \"%s\".\n"
-"The destination is read-only. Would you like to continue?"
+"Error while %s%s.\n"
+"The destination is read-only."
 msgstr ""
-"Feil %s under \"%s\".\n"
-"Målet er skrivebeskyttet. Vil du fortsette?"
+"Feil under %s%s.\n"
+"Målet er skrivebeskyttet."
 
-#: libnautilus-extensions/nautilus-file-operations.c:384
-#: libnautilus-extensions/nautilus-file-operations.c:411
+#: libnautilus-extensions/nautilus-file-operations.c:385
+#: libnautilus-extensions/nautilus-file-operations.c:404
+#: libnautilus-extensions/nautilus-file-operations.c:421
 msgid "Error while Copying"
 msgstr "Feil under kopiering"
 
-#: libnautilus-extensions/nautilus-file-operations.c:385
-#: libnautilus-extensions/nautilus-file-operations.c:412
-#: libnautilus-extensions/nautilus-file-operations.c:463
-#: libnautilus-extensions/nautilus-file-operations.c:477
+#: libnautilus-extensions/nautilus-file-operations.c:395
+#, c-format
+msgid ""
+"Error while %s%s.\n"
+"There is no space on the destination."
+msgstr ""
+"Feil under %s%s.\n"
+"Ingen plass på målet."
+
+#: libnautilus-extensions/nautilus-file-operations.c:411
+#, c-format
+msgid ""
+"Error \"%s\" while %s%s.\n"
+"Would you like to continue?"
+msgstr ""
+"Feil \"%s\" under %s%s.\n"
+"Vil du fortsette?"
+
+#: libnautilus-extensions/nautilus-file-operations.c:422
+#: libnautilus-extensions/nautilus-file-operations.c:473
+#: libnautilus-extensions/nautilus-file-operations.c:487
 msgid "Skip"
 msgstr "Hopp over"
 
-#: libnautilus-extensions/nautilus-file-operations.c:401
-#, c-format
-msgid ""
-"Error \"%s\" while %s \"%s\".\n"
-"Would you like to continue?"
-msgstr ""
-"Feil \"%s\" under %s \"%s\".\n"
-"Vil du fortsette?"
-
-#: libnautilus-extensions/nautilus-file-operations.c:412
+#: libnautilus-extensions/nautilus-file-operations.c:422
 msgid "Retry"
 msgstr "Prøv igjen"
 
-#: libnautilus-extensions/nautilus-file-operations.c:451
+#: libnautilus-extensions/nautilus-file-operations.c:461
 #, c-format
 msgid ""
 "File %s already exists.\n"
@@ -1421,21 +1430,21 @@ msgstr ""
 "Filen %s eksisterer allerede.\n"
 "Vil du erstatte den?"
 
-#: libnautilus-extensions/nautilus-file-operations.c:462
-#: libnautilus-extensions/nautilus-file-operations.c:476
+#: libnautilus-extensions/nautilus-file-operations.c:472
+#: libnautilus-extensions/nautilus-file-operations.c:486
 msgid "Conflict while Copying"
 msgstr "Konflikt under kopiering"
 
-#: libnautilus-extensions/nautilus-file-operations.c:463
-#: libnautilus-extensions/nautilus-file-operations.c:477
+#: libnautilus-extensions/nautilus-file-operations.c:473
+#: libnautilus-extensions/nautilus-file-operations.c:487
 msgid "Replace"
 msgstr "Erstatt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:477
+#: libnautilus-extensions/nautilus-file-operations.c:487
 msgid "Replace All"
 msgstr "Erstatt alle"
 
-#: libnautilus-extensions/nautilus-file-operations.c:522
+#: libnautilus-extensions/nautilus-file-operations.c:532
 #, c-format
 msgid "another link to %s"
 msgstr "en annen lenke til %s"
@@ -1444,368 +1453,368 @@ msgstr "en annen lenke til %s"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: libnautilus-extensions/nautilus-file-operations.c:538
+#: libnautilus-extensions/nautilus-file-operations.c:548
 #, c-format
 msgid "%dst link to %s"
 msgstr "%dste lenke til %s"
 
-#: libnautilus-extensions/nautilus-file-operations.c:541
+#: libnautilus-extensions/nautilus-file-operations.c:551
 #, c-format
 msgid "%dnd link to %s"
 msgstr "%dre lenke til %s"
 
-#: libnautilus-extensions/nautilus-file-operations.c:544
+#: libnautilus-extensions/nautilus-file-operations.c:554
 #, c-format
 msgid "%drd link to %s"
 msgstr "%ddje lenke til %s"
 
-#: libnautilus-extensions/nautilus-file-operations.c:547
+#: libnautilus-extensions/nautilus-file-operations.c:557
 #, c-format
 msgid "%dth link to %s"
 msgstr "%dde lenke til %s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: libnautilus-extensions/nautilus-file-operations.c:648
+#: libnautilus-extensions/nautilus-file-operations.c:658
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: libnautilus-extensions/nautilus-file-operations.c:656
+#: libnautilus-extensions/nautilus-file-operations.c:666
 #, c-format
 msgid " (%d"
 msgstr " (%d"
 
-#: libnautilus-extensions/nautilus-file-operations.c:806
-#: libnautilus-extensions/nautilus-file-operations.c:1249
+#: libnautilus-extensions/nautilus-file-operations.c:817
+#: libnautilus-extensions/nautilus-file-operations.c:1275
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Ukjent GnomeVFSXferProgressStatus %d"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1094
+#: libnautilus-extensions/nautilus-file-operations.c:1117
 msgid "Moving files"
 msgstr "Flytter filer"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1095
+#: libnautilus-extensions/nautilus-file-operations.c:1118
 msgid "moved"
 msgstr "flyttet"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1096
-#: libnautilus-extensions/nautilus-file-operations.c:1375
+#: libnautilus-extensions/nautilus-file-operations.c:1119
+#: libnautilus-extensions/nautilus-file-operations.c:1402
 msgid "Moving"
 msgstr "Flytter"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1097
+#: libnautilus-extensions/nautilus-file-operations.c:1120
 msgid "Preparing To Move..."
 msgstr "Forbereder flytting..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1098
+#: libnautilus-extensions/nautilus-file-operations.c:1121
 msgid "Finishing Move..."
 msgstr "Fullfører flytt..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1107
+#: libnautilus-extensions/nautilus-file-operations.c:1130
 msgid "Creating links to files"
 msgstr "Oppretter lenker til filer"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1108
+#: libnautilus-extensions/nautilus-file-operations.c:1131
 msgid "linked"
 msgstr "lenket"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1109
+#: libnautilus-extensions/nautilus-file-operations.c:1132
 msgid "Linking"
 msgstr "Lenker"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1110
+#: libnautilus-extensions/nautilus-file-operations.c:1133
 msgid "Preparing to Create Links..."
 msgstr "Forbereder oppretting av lenker..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1111
+#: libnautilus-extensions/nautilus-file-operations.c:1134
 msgid "Finishing Creating Links..."
 msgstr "Fullfører oppretting av lenker..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1117
+#: libnautilus-extensions/nautilus-file-operations.c:1140
 msgid "Copying files"
 msgstr "Kopierer filer"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1118
+#: libnautilus-extensions/nautilus-file-operations.c:1141
 msgid "copied"
 msgstr "kopiert"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1119
+#: libnautilus-extensions/nautilus-file-operations.c:1142
 msgid "Copying"
 msgstr "Kopierer"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1120
+#: libnautilus-extensions/nautilus-file-operations.c:1143
 msgid "Preparing To Copy..."
 msgstr "Forbereder kopiering..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1138
+#: libnautilus-extensions/nautilus-file-operations.c:1162
 msgid "You cannot copy items into the Trash."
 msgstr "Du kan ikke kopiere oppføringer til søppelkurven."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1139
+#: libnautilus-extensions/nautilus-file-operations.c:1163
 msgid "Can't Copy to Trash"
 msgstr "Kan ikke kopiere til søppelkurv"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1154
-#: libnautilus-extensions/nautilus-file-operations.c:1333
+#: libnautilus-extensions/nautilus-file-operations.c:1179
+#: libnautilus-extensions/nautilus-file-operations.c:1360
 msgid "The Trash must remain on the desktop."
 msgstr "Søppelkurven må befinne seg på skrivebordet."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1155
+#: libnautilus-extensions/nautilus-file-operations.c:1180
 msgid "You cannot copy the Trash."
 msgstr "Du kan ikke kopiere søppelkurven."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1157
-#: libnautilus-extensions/nautilus-file-operations.c:1334
+#: libnautilus-extensions/nautilus-file-operations.c:1182
+#: libnautilus-extensions/nautilus-file-operations.c:1361
 msgid "Can't Change Trash Location"
 msgstr "Kan ikke endre plassering av Søppelkurven"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1158
+#: libnautilus-extensions/nautilus-file-operations.c:1183
 msgid "Can't Copy Trash"
 msgstr "Kan ikke kopiere søppelkurven"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1175
+#: libnautilus-extensions/nautilus-file-operations.c:1201
 msgid "You cannot move a folder into itself."
 msgstr "Du kan ikke flytte en mappe til seg selv."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1176
+#: libnautilus-extensions/nautilus-file-operations.c:1202
 msgid "You cannot copy a folder into itself."
 msgstr "Du kan ikke kopiere en mappe over seg selv."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1177
+#: libnautilus-extensions/nautilus-file-operations.c:1203
 msgid "Can't Move Into Self"
 msgstr "Kan ikke flytte til seg selv"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1272
+#: libnautilus-extensions/nautilus-file-operations.c:1298
 msgid "untitled folder"
 msgstr "mappe uten navn"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1341
+#: libnautilus-extensions/nautilus-file-operations.c:1368
 #, c-format
 msgid "You cannot throw \"%s\" into the Trash."
 msgstr "Du kan ikke kaste \"%s\" i søppelkurven."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1345
+#: libnautilus-extensions/nautilus-file-operations.c:1372
 msgid "Error Moving to Trash"
 msgstr "Feil under flytting til søppelkurven"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1373
+#: libnautilus-extensions/nautilus-file-operations.c:1400
 msgid "Moving files to the Trash"
 msgstr "Flytter filer til søppelkurv"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1374
+#: libnautilus-extensions/nautilus-file-operations.c:1401
 msgid "thrown out"
 msgstr "kastet ut"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1376
+#: libnautilus-extensions/nautilus-file-operations.c:1403
 msgid "Preparing to Move to Trash..."
 msgstr "Forbereder flytting til søppel..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1417
+#: libnautilus-extensions/nautilus-file-operations.c:1444
 msgid "Deleting files"
 msgstr "Sletter filer"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1418
-#: libnautilus-extensions/nautilus-file-operations.c:1467
+#: libnautilus-extensions/nautilus-file-operations.c:1445
+#: libnautilus-extensions/nautilus-file-operations.c:1492
 msgid "deleted"
 msgstr "slettet"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1419
-#: libnautilus-extensions/nautilus-file-operations.c:1468
+#: libnautilus-extensions/nautilus-file-operations.c:1446
+#: libnautilus-extensions/nautilus-file-operations.c:1493
 msgid "Deleting"
 msgstr "Sletter"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1420
+#: libnautilus-extensions/nautilus-file-operations.c:1447
 msgid "Preparing to Delete files..."
 msgstr "Forbereder sletting av filer..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1466
+#: libnautilus-extensions/nautilus-file-operations.c:1491
 msgid "Emptying the Trash"
 msgstr "Tømmer søppelkurven"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1469
+#: libnautilus-extensions/nautilus-file-operations.c:1494
 msgid "Preparing to Empty the Trash..."
 msgstr "Forbereder tømming av søppelkurven..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1503
+#: libnautilus-extensions/nautilus-file-operations.c:1527
 msgid ""
 "Are you sure you want to permanently delete all of the items in the trash?"
 msgstr ""
 "Er du sikker på at du vil slette alle oppføringer i søppelkurven permanent?"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1505
+#: libnautilus-extensions/nautilus-file-operations.c:1529
 msgid "Delete Trash Contents?"
 msgstr "Slett innhold i søppelkurv?"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1506
+#: libnautilus-extensions/nautilus-file-operations.c:1530
 msgid "Empty"
 msgstr "Tom"
 
 #. test the next duplicate name generator
-#: libnautilus-extensions/nautilus-file-operations.c:1560
+#: libnautilus-extensions/nautilus-file-operations.c:1584
 msgid " (copy)"
 msgstr " (kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1560
+#: libnautilus-extensions/nautilus-file-operations.c:1584
 msgid " (another copy)"
 msgstr " (ny kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1561
+#: libnautilus-extensions/nautilus-file-operations.c:1585
 msgid "foo"
 msgstr "foo"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1561
-#: libnautilus-extensions/nautilus-file-operations.c:1569
+#: libnautilus-extensions/nautilus-file-operations.c:1585
+#: libnautilus-extensions/nautilus-file-operations.c:1593
 msgid "foo (copy)"
 msgstr "foo (kopiér)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1562
+#: libnautilus-extensions/nautilus-file-operations.c:1586
 msgid "foo foo"
 msgstr "foo foo"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1562
+#: libnautilus-extensions/nautilus-file-operations.c:1586
 msgid "foo foo (copy)"
 msgstr "foo foo (kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1563
+#: libnautilus-extensions/nautilus-file-operations.c:1587
 msgid "foo.txt"
 msgstr "foo.txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1563
-#: libnautilus-extensions/nautilus-file-operations.c:1570
+#: libnautilus-extensions/nautilus-file-operations.c:1587
+#: libnautilus-extensions/nautilus-file-operations.c:1594
 msgid "foo (copy).txt"
 msgstr "foo (kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1564
+#: libnautilus-extensions/nautilus-file-operations.c:1588
 msgid "foo foo.txt"
 msgstr "foo foo.txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1564
-#: libnautilus-extensions/nautilus-file-operations.c:1584
+#: libnautilus-extensions/nautilus-file-operations.c:1588
+#: libnautilus-extensions/nautilus-file-operations.c:1608
 msgid "foo foo (copy).txt"
 msgstr "foo foo (kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1565
+#: libnautilus-extensions/nautilus-file-operations.c:1589
 msgid "foo foo.txt txt"
 msgstr "foo foo.txt txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1565
+#: libnautilus-extensions/nautilus-file-operations.c:1589
 msgid "foo foo (copy).txt txt"
 msgstr "foo foo (kopi).txt txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1566
+#: libnautilus-extensions/nautilus-file-operations.c:1590
 msgid "foo...txt"
 msgstr "foo...txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1566
+#: libnautilus-extensions/nautilus-file-operations.c:1590
 msgid "foo.. (copy).txt"
 msgstr "foo.. (kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1567
+#: libnautilus-extensions/nautilus-file-operations.c:1591
 msgid "foo..."
 msgstr "foo..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1567
+#: libnautilus-extensions/nautilus-file-operations.c:1591
 msgid "foo... (copy)"
 msgstr "foo... (kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1568
+#: libnautilus-extensions/nautilus-file-operations.c:1592
 msgid "foo. (copy)"
 msgstr "foo. (kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1568
+#: libnautilus-extensions/nautilus-file-operations.c:1592
 msgid "foo. (another copy)"
 msgstr "foo. (ny kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1569
-#: libnautilus-extensions/nautilus-file-operations.c:1571
+#: libnautilus-extensions/nautilus-file-operations.c:1593
+#: libnautilus-extensions/nautilus-file-operations.c:1595
 msgid "foo (another copy)"
 msgstr "foo (ny kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1570
-#: libnautilus-extensions/nautilus-file-operations.c:1572
+#: libnautilus-extensions/nautilus-file-operations.c:1594
+#: libnautilus-extensions/nautilus-file-operations.c:1596
 msgid "foo (another copy).txt"
 msgstr "foo (ny kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1571
+#: libnautilus-extensions/nautilus-file-operations.c:1595
 msgid "foo (3rd copy)"
 msgstr "foo (3dje kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1572
+#: libnautilus-extensions/nautilus-file-operations.c:1596
 msgid "foo (3rd copy).txt"
 msgstr "foo (3dje kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1573
+#: libnautilus-extensions/nautilus-file-operations.c:1597
 msgid "foo foo (another copy).txt"
 msgstr "foo foo (ny kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1573
+#: libnautilus-extensions/nautilus-file-operations.c:1597
 msgid "foo foo (3rd copy).txt"
 msgstr "foo foo (3dje kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1574
+#: libnautilus-extensions/nautilus-file-operations.c:1598
 msgid "foo (21st copy)"
 msgstr "foo (21ste kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1574
-#: libnautilus-extensions/nautilus-file-operations.c:1576
+#: libnautilus-extensions/nautilus-file-operations.c:1598
+#: libnautilus-extensions/nautilus-file-operations.c:1600
 msgid "foo (22nd copy)"
 msgstr "foo (22ndre kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1575
+#: libnautilus-extensions/nautilus-file-operations.c:1599
 msgid "foo (21st copy).txt"
 msgstr "foo (21ste kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1575
-#: libnautilus-extensions/nautilus-file-operations.c:1577
+#: libnautilus-extensions/nautilus-file-operations.c:1599
+#: libnautilus-extensions/nautilus-file-operations.c:1601
 msgid "foo (22nd copy).txt"
 msgstr "foo (22ndre kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1576
-#: libnautilus-extensions/nautilus-file-operations.c:1578
+#: libnautilus-extensions/nautilus-file-operations.c:1600
+#: libnautilus-extensions/nautilus-file-operations.c:1602
 msgid "foo (23rd copy)"
 msgstr "foo (23dje kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1577
-#: libnautilus-extensions/nautilus-file-operations.c:1579
+#: libnautilus-extensions/nautilus-file-operations.c:1601
+#: libnautilus-extensions/nautilus-file-operations.c:1603
 msgid "foo (23rd copy).txt"
 msgstr "foo (23dje kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1578
-#: libnautilus-extensions/nautilus-file-operations.c:1580
+#: libnautilus-extensions/nautilus-file-operations.c:1602
+#: libnautilus-extensions/nautilus-file-operations.c:1604
 msgid "foo (24th copy)"
 msgstr "foo (24de kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1579
-#: libnautilus-extensions/nautilus-file-operations.c:1581
+#: libnautilus-extensions/nautilus-file-operations.c:1603
+#: libnautilus-extensions/nautilus-file-operations.c:1605
 msgid "foo (24th copy).txt"
 msgstr "foo (24de kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1580
+#: libnautilus-extensions/nautilus-file-operations.c:1604
 msgid "foo (25th copy)"
 msgstr "foo (25te kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1581
+#: libnautilus-extensions/nautilus-file-operations.c:1605
 msgid "foo (25th copy).txt"
 msgstr "foo (25te kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1582
+#: libnautilus-extensions/nautilus-file-operations.c:1606
 msgid "foo foo (24th copy)"
 msgstr "foo foo (24de kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1582
+#: libnautilus-extensions/nautilus-file-operations.c:1606
 msgid "foo foo (25th copy)"
 msgstr "foo foo (25te kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1583
+#: libnautilus-extensions/nautilus-file-operations.c:1607
 msgid "foo foo (24th copy).txt"
 msgstr "foo foo (24de kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1583
+#: libnautilus-extensions/nautilus-file-operations.c:1607
 msgid "foo foo (25th copy).txt"
 msgstr "foo foo (25te kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1584
+#: libnautilus-extensions/nautilus-file-operations.c:1608
 msgid "foo foo (100000000000000th copy).txt"
 msgstr "foo foo (100000000000000te kopi).txt"
 
@@ -1813,254 +1822,270 @@ msgstr "foo foo (100000000000000te kopi).txt"
 msgid "Font"
 msgstr "Skrifttype"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:112
+#: libnautilus-extensions/nautilus-global-preferences.c:117
 msgid "Folder Views"
 msgstr "Mappevisninger"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:113
+#: libnautilus-extensions/nautilus-global-preferences.c:118
 msgid "Folder Views Settings"
 msgstr "Innstillinger for mappevisninger"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:115
+#: libnautilus-extensions/nautilus-global-preferences.c:120
 msgid "Window Behavior"
 msgstr "Vindusoppførsel"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:122
+#: libnautilus-extensions/nautilus-global-preferences.c:127
 msgid "Click Behavior"
 msgstr "Klikk-oppførsel"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:129
+#: libnautilus-extensions/nautilus-global-preferences.c:134
 msgid "Trash Behavior"
 msgstr "Søppel-oppførsel"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:136
+#: libnautilus-extensions/nautilus-global-preferences.c:141
 msgid "Display"
 msgstr "Vis"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:157
+#: libnautilus-extensions/nautilus-global-preferences.c:162
 msgid "Sidebar Panels"
 msgstr "Sidelinjepaneler"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:158
+#: libnautilus-extensions/nautilus-global-preferences.c:163
 msgid "Sidebar Panels Description"
 msgstr "Beskrivelse for sidepanel"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:161
+#: libnautilus-extensions/nautilus-global-preferences.c:166
 msgid "Choose which panels should appear in the sidebar"
 msgstr "Velg hvilke paneler som skal vises på sidelinjen"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:198
+#: libnautilus-extensions/nautilus-global-preferences.c:203
 msgid "Appearance"
 msgstr "Utseende"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:199
+#: libnautilus-extensions/nautilus-global-preferences.c:204
 msgid "Appearance Settings"
 msgstr "Innstillinger for utseende"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:201
+#: libnautilus-extensions/nautilus-global-preferences.c:206
 msgid "Smoother Graphics"
 msgstr "Jevnere grafikk"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:208
+#: libnautilus-extensions/nautilus-global-preferences.c:213
 msgid "Fonts"
 msgstr "Skrifttyper"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:214
+#: libnautilus-extensions/nautilus-global-preferences.c:219
 msgid "Views"
 msgstr "Visninger"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:238
+#: libnautilus-extensions/nautilus-global-preferences.c:243
 msgid "Speed Tradeoffs"
-msgstr ""
+msgstr "Forsak hastighet"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:239
+#: libnautilus-extensions/nautilus-global-preferences.c:244
 msgid "Speed Tradeoffs Settings"
-msgstr ""
+msgstr "Innstillinger for forsaking av hastighet"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:241
+#: libnautilus-extensions/nautilus-global-preferences.c:246
 msgid "Show Text in Icons"
 msgstr "Vis tekst i ikoner"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:248
+#: libnautilus-extensions/nautilus-global-preferences.c:253
 msgid "Show Thumbnails for Image Files"
 msgstr "Vis miniatyrer for bildefiler"
 
 #. FIXME bugzilla.eazel.com 2560: This title phrase needs improvement.
-#: libnautilus-extensions/nautilus-global-preferences.c:256
+#: libnautilus-extensions/nautilus-global-preferences.c:261
 msgid "Make Folder Appearance Details Public"
 msgstr "Gjør detaljer om katalogutseende offentlig"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:268
+#: libnautilus-extensions/nautilus-global-preferences.c:273
 msgid "Search"
 msgstr "Søk"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:269
+#: libnautilus-extensions/nautilus-global-preferences.c:274
 msgid "Search Settings"
 msgstr "Innstillinger for søk"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:271
+#: libnautilus-extensions/nautilus-global-preferences.c:276
 msgid "Search Complexity Options"
 msgstr "Alternativer for kompleksitet i søk"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:277
+#: libnautilus-extensions/nautilus-global-preferences.c:282
 msgid "Search Tradeoffs"
-msgstr ""
+msgstr "Forsaking ved søk"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:285
+#: libnautilus-extensions/nautilus-global-preferences.c:290
 msgid "Search Locations"
 msgstr "Lokasjoner for søk"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:295
+#: libnautilus-extensions/nautilus-global-preferences.c:300
 msgid "Navigation"
 msgstr "Navigasjon"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:296
+#: libnautilus-extensions/nautilus-global-preferences.c:301
 msgid "Navigation Settings"
 msgstr "Innstillinger for navigasjon"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:298
+#: libnautilus-extensions/nautilus-global-preferences.c:303
 msgid "Home Location"
 msgstr "Hjemmeplassering"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:597
+#: libnautilus-extensions/nautilus-global-preferences.c:310
+msgid "Proxy Settings"
+msgstr "Proxy-innstillinger"
+
+#: libnautilus-extensions/nautilus-global-preferences.c:650
 msgid "always"
 msgstr "alltid"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:598
+#: libnautilus-extensions/nautilus-global-preferences.c:651
 msgid "Always"
 msgstr "Alltid"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:602
+#: libnautilus-extensions/nautilus-global-preferences.c:655
 msgid "local only"
 msgstr "kun lokalt"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:603
+#: libnautilus-extensions/nautilus-global-preferences.c:656
 msgid "Local Files Only"
 msgstr "Kun lokale filer"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:607
+#: libnautilus-extensions/nautilus-global-preferences.c:660
 msgid "never"
 msgstr "aldri"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:608
+#: libnautilus-extensions/nautilus-global-preferences.c:661
 msgid "Never"
 msgstr "Aldri"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:649
+#: libnautilus-extensions/nautilus-global-preferences.c:736
+msgid "Use HTTP Proxy"
+msgstr "Bruk HTTP-proxy"
+
+#: libnautilus-extensions/nautilus-global-preferences.c:742
+msgid "HTTP Proxy"
+msgstr "HTTP-proxy"
+
+#: libnautilus-extensions/nautilus-global-preferences.c:748
+msgid "HTTP Proxy Port"
+msgstr "Port for HTTP-proxy"
+
+#: libnautilus-extensions/nautilus-global-preferences.c:802
 msgid "current theme"
 msgstr "aktivt tema"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:661
+#: libnautilus-extensions/nautilus-global-preferences.c:814
 msgid "Open each item in a new window"
 msgstr "Åpne hver oppføring i et nytt vindu"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:668
+#: libnautilus-extensions/nautilus-global-preferences.c:821
 msgid "Ask before deleting items from the trash"
 msgstr "Spør før fjerning av oppføringer fra søppelkurven"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:675
+#: libnautilus-extensions/nautilus-global-preferences.c:828
 msgid "Click policy"
 msgstr "Klikk-regler"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:681
+#: libnautilus-extensions/nautilus-global-preferences.c:834
 msgid "single"
 msgstr "enkelt"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:682
+#: libnautilus-extensions/nautilus-global-preferences.c:835
 msgid "Activate items with a single click"
 msgstr "Aktivér oppføringer med enkeltklikk"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:686
+#: libnautilus-extensions/nautilus-global-preferences.c:839
 msgid "double"
 msgstr "dobbelt"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:687
+#: libnautilus-extensions/nautilus-global-preferences.c:840
 msgid "Activate items with a double click"
 msgstr "Aktivér oppføringer med dobbeltklikk"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:692
+#: libnautilus-extensions/nautilus-global-preferences.c:845
 msgid "Display text in icons"
 msgstr "Vis tekst i ikoner"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:698
+#: libnautilus-extensions/nautilus-global-preferences.c:851
 msgid "Show thumbnails for image files"
 msgstr "Vis miniatyrer for bildefiler"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:704
+#: libnautilus-extensions/nautilus-global-preferences.c:857
 msgid "Read and write metadata in each folder"
 msgstr "Les og skriv metadata i hver mappe"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:714
+#: libnautilus-extensions/nautilus-global-preferences.c:867
 msgid "Use smoother (but slower) graphics"
 msgstr "Bruk jevnere (men tregere) grafikk"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:720
+#: libnautilus-extensions/nautilus-global-preferences.c:873
 msgid "Font family used to display file names"
 msgstr "Skrifttypefamilie som brukes for å vise filnavn"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:727
+#: libnautilus-extensions/nautilus-global-preferences.c:880
 msgid "Display tool bar in new windows"
 msgstr "Vis verktøylinje i nye vinduer"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:733
+#: libnautilus-extensions/nautilus-global-preferences.c:886
 msgid "Display location bar in new windows"
 msgstr "Vis adresselinje i nye vinduer"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:739
+#: libnautilus-extensions/nautilus-global-preferences.c:892
 msgid "Display status bar in new windows"
 msgstr "Vis statuslinje i nye vinduer"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:745
+#: libnautilus-extensions/nautilus-global-preferences.c:898
 msgid "Display sidebar in new windows"
 msgstr "Vis sidelinje i nye vinduer"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:753
+#: libnautilus-extensions/nautilus-global-preferences.c:906
 msgid "Always do slow, complete search"
 msgstr "Alltid bruk tregt, komplett søk"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:760
+#: libnautilus-extensions/nautilus-global-preferences.c:913
 msgid "search type to do by default"
 msgstr "standard søketype"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:766
+#: libnautilus-extensions/nautilus-global-preferences.c:919
 msgid "search by text"
 msgstr "søk etter tekst"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:767
+#: libnautilus-extensions/nautilus-global-preferences.c:920
 msgid "Search for files by text only"
 msgstr "Kun søk etter filer med tekst"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:771
+#: libnautilus-extensions/nautilus-global-preferences.c:924
 msgid "search by text and properties"
 msgstr "søk etter tekst og egenskaper"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:772
+#: libnautilus-extensions/nautilus-global-preferences.c:925
 msgid "Search for files by text and by their properties"
 msgstr "Søk etter filer med tekstinnhold og egenskaper"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:777
+#: libnautilus-extensions/nautilus-global-preferences.c:930
 msgid "Search Web Location"
 msgstr "Søk på web"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:784
+#: libnautilus-extensions/nautilus-global-preferences.c:937
 msgid "Show hidden files (starting with \".\")"
 msgstr "Vis skjulte filer (begynner med \".\")"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:790
+#: libnautilus-extensions/nautilus-global-preferences.c:943
 msgid "Show backup files (ending with \"~\")"
 msgstr "Vis sikkerhetskopier (slutter med \"~\")"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:796
+#: libnautilus-extensions/nautilus-global-preferences.c:949
 msgid "Show special flags in Properties window"
 msgstr "Velg spesielle flagg i Egenskaper-vinduet"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:802
+#: libnautilus-extensions/nautilus-global-preferences.c:955
 msgid "Can add Content"
 msgstr "Kan legge til Innhold"
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:676
+#: libnautilus-extensions/nautilus-icon-dnd.c:678
 msgid ""
-"This directory uses automatic layout. Do you want to switch to manual layout "
+"This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
 "manual layout."
 msgstr ""
@@ -2068,27 +2093,24 @@ msgstr ""
 "plassering og la oppføringen bli hvor du slapp den? Dette vil ødelegge den "
 "lagrede manuelle plasseringen."
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:680
+#: libnautilus-extensions/nautilus-icon-dnd.c:682
 msgid ""
-"This directory uses automatic layout. Do you want to switch to manual layout "
+"This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
 "manual layout."
-msgstr ""
-"Denne katalogen bruker automatisk plassering. Ønsker du å bytte til manuell "
-"plassering og la disse oppføringen bli hvor du slapp dem? Dette vil ødelegge "
-"den lagrede manuelle plasseringen."
+msgstr "Denne katalogen bruker automatisk plassering. Ønsker du å bytte til manuell plassering og la disse oppføringene bli hvor du slapp dem? Dette vil ødelegge den lagrede manuelle plasseringen."
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:686
+#: libnautilus-extensions/nautilus-icon-dnd.c:688
 msgid ""
-"This directory uses automatic layout. Do you want to switch to manual layout "
+"This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
 msgstr ""
 "Denne katalogen bruker automatisk plassering. Ønsker du å bytte til manuell "
 "plassering og la denne oppføringen bli hvor du slapp den?"
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:689
+#: libnautilus-extensions/nautilus-icon-dnd.c:691
 msgid ""
-"This directory uses automatic layout. Do you want to switch to manual layout "
+"This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
 msgstr ""
 "Denne katalogen bruker automatisk plassering. Ønsker du å bytte til manuell "
@@ -2103,30 +2125,30 @@ msgstr "Bytt til manuell plassering?"
 msgid "Switch"
 msgstr "Bytt"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1505
+#: libnautilus-extensions/nautilus-icon-text-item.c:1498
 msgid "Rename"
 msgstr "Gi nytt navn"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1506
+#: libnautilus-extensions/nautilus-icon-text-item.c:1499
 msgid "Undo Typing"
 msgstr "Angre inntasting"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1507
+#: libnautilus-extensions/nautilus-icon-text-item.c:1500
 msgid "Restore the old name"
 msgstr "Gjenopprett det gamle navnet"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1508
+#: libnautilus-extensions/nautilus-icon-text-item.c:1501
 msgid "Redo Typing"
 msgstr "Gjenopprett inntasting"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1509
+#: libnautilus-extensions/nautilus-icon-text-item.c:1502
 msgid "Restore the changed name"
 msgstr "Gjenopprett det endrede navnet"
 
 #. FIXME bugzilla.eazel.com 1102: Embedded text should use preferences to determine
 #. * the font it uses
 #.
-#: libnautilus-extensions/nautilus-icon-factory.c:2150
+#: libnautilus-extensions/nautilus-icon-factory.c:2206
 msgid "-*-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*"
 msgstr "-*-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*"
 
@@ -2155,7 +2177,7 @@ msgid "Prefs Box"
 msgstr "Brukervalg-boks"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:188
-#: src/nautilus-window.c:725
+#: src/nautilus-window.c:697
 #, c-format
 msgid "View as %s"
 msgstr "Vis som %s"
@@ -2219,92 +2241,92 @@ msgstr "Er forvalgt for \"%s\" oppføringer."
 msgid "Is the default for all \"%s\" items."
 msgstr "Er forvalgt for alle \"%s\" oppføringer."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:985
+#: libnautilus-extensions/nautilus-program-chooser.c:1040
 #, c-format
 msgid "Modify \"%s\""
 msgstr "Endre \"%s\""
 
 #. Radio button for adding to short list for file type.
-#: libnautilus-extensions/nautilus-program-chooser.c:1009
+#: libnautilus-extensions/nautilus-program-chooser.c:1064
 #, c-format
 msgid "Include in the menu for \"%s\" items"
 msgstr "Inkluder i menyen for \"%s\" oppføringer."
 
 #. Radio button for setting default for file type.
-#: libnautilus-extensions/nautilus-program-chooser.c:1016
+#: libnautilus-extensions/nautilus-program-chooser.c:1071
 #, c-format
 msgid "Use as default for \"%s\" items"
 msgstr "Er i menyen for alle \"%s\" oppføringer."
 
 #. Radio button for adding to short list for specific file.
-#: libnautilus-extensions/nautilus-program-chooser.c:1023
+#: libnautilus-extensions/nautilus-program-chooser.c:1078
 #, c-format
 msgid "Include in the menu just for \"%s\""
 msgstr "Inkluder i menyen kun for \"%s\""
 
 #. Radio button for setting default for specific file.
-#: libnautilus-extensions/nautilus-program-chooser.c:1029
+#: libnautilus-extensions/nautilus-program-chooser.c:1084
 #, c-format
 msgid "Use as default just for \"%s\""
 msgstr "Bruk som forvalgt kun for \"%s\""
 
 #. Radio button for not including program in short list for type or file.
-#: libnautilus-extensions/nautilus-program-chooser.c:1036
+#: libnautilus-extensions/nautilus-program-chooser.c:1091
 #, c-format
 msgid "Don't include in the menu for \"%s\" items"
 msgstr "Ikke inlkluder i menyen for \"%s\" oppføringer."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1200
-#: src/file-manager/fm-list-view.c:1745
+#: libnautilus-extensions/nautilus-program-chooser.c:1255
+#: src/file-manager/fm-list-view.c:1757
 #: src/file-manager/fm-search-list-view.c:238
 #: src/nautilus-bookmarks-window.c:169 src/nautilus-search-bar-criterion.c:66
 msgid "Name"
 msgstr "Navn"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1203
+#: libnautilus-extensions/nautilus-program-chooser.c:1258
 msgid "Status"
 msgstr "Status"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1251
+#: libnautilus-extensions/nautilus-program-chooser.c:1306
 msgid "Open with Other"
 msgstr "Åpne med annet"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1252
+#: libnautilus-extensions/nautilus-program-chooser.c:1307
 #, c-format
 msgid "Choose an application with which to open \"%s\"."
 msgstr "Velg en applikasjon du vil åpne \"%s\" med."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1256
+#: libnautilus-extensions/nautilus-program-chooser.c:1311
 msgid "View as Other"
 msgstr "Vis som annet"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1257
+#: libnautilus-extensions/nautilus-program-chooser.c:1312
 #, c-format
 msgid "Choose a view for \"%s\"."
 msgstr "Velg en visning for \"%s\"."
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1264
+#: libnautilus-extensions/nautilus-program-chooser.c:1319
 msgid "Choose"
 msgstr "Velg"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1266
+#: libnautilus-extensions/nautilus-program-chooser.c:1321
 msgid "Done"
 msgstr "Ferdig"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1328
+#: libnautilus-extensions/nautilus-program-chooser.c:1383
 msgid "Modify..."
 msgstr "Endre..."
 
 #. Framed area with button to launch mime type editing capplet.
-#: libnautilus-extensions/nautilus-program-chooser.c:1339
+#: libnautilus-extensions/nautilus-program-chooser.c:1394
 msgid "File Types and Programs"
 msgstr "Filtyper og programmer"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1348
+#: libnautilus-extensions/nautilus-program-chooser.c:1403
 msgid "Go There"
 msgstr "Gå dit"
 
-#: libnautilus-extensions/nautilus-program-chooser.c:1357
+#: libnautilus-extensions/nautilus-program-chooser.c:1412
 msgid ""
 "You can configure which programs are offered for which file types in the "
 "GNOME Control Center."
@@ -2319,7 +2341,7 @@ msgstr ""
 #. * where to put it, and who would delete it
 #. * when done.
 #.
-#: libnautilus-extensions/nautilus-program-choosing.c:256
+#: libnautilus-extensions/nautilus-program-choosing.c:259
 #, c-format
 msgid ""
 "Sorry, %s can only open local files, and \"%s\" is remote. If you want to "
@@ -2328,7 +2350,7 @@ msgstr ""
 "Beklager, %s kan kun åpne lokale filer, og \"%s\" er ekstern. Hvis du ønsker "
 "å åpne den med %s, må du lage en lokal kopi først."
 
-#: libnautilus-extensions/nautilus-program-choosing.c:260
+#: libnautilus-extensions/nautilus-program-choosing.c:263
 msgid "Can't open remote file"
 msgstr "Kunne ikke åpne ekstern fil"
 
@@ -2510,20 +2532,20 @@ msgstr ""
 msgid "Items that have \"medusa\" in the name and are directories."
 msgstr "Oppføringer som har \"medusa\" i navnet og er kataloger."
 
-#: libnautilus-extensions/nautilus-stock-dialogs.c:375
+#: libnautilus-extensions/nautilus-stock-dialogs.c:403
 msgid "Warning"
 msgstr "Advarsel"
 
-#: libnautilus-extensions/nautilus-stock-dialogs.c:385
-#: libnautilus-extensions/nautilus-stock-dialogs.c:425
+#: libnautilus-extensions/nautilus-stock-dialogs.c:413
+#: libnautilus-extensions/nautilus-stock-dialogs.c:453
 msgid "Error"
 msgstr "Feil"
 
-#: libnautilus-extensions/nautilus-stock-dialogs.c:427
+#: libnautilus-extensions/nautilus-stock-dialogs.c:455
 msgid "Details"
 msgstr "Detaljer"
 
-#: libnautilus-extensions/nautilus-stock-dialogs.c:457
+#: libnautilus-extensions/nautilus-stock-dialogs.c:485
 msgid "Question"
 msgstr "Spørsmål"
 
@@ -2551,65 +2573,65 @@ msgstr "Gjenopprett redigering"
 msgid "Redo the edit"
 msgstr "Gjenopprett redigeringen"
 
-#: libnautilus-extensions/nautilus-user-level-manager.c:59
+#: libnautilus-extensions/nautilus-user-level-manager.c:61
 msgid "Beginner"
 msgstr "Begynner"
 
-#: libnautilus-extensions/nautilus-user-level-manager.c:60
+#: libnautilus-extensions/nautilus-user-level-manager.c:62
 msgid "Intermediate"
 msgstr "Viderekommen"
 
-#: libnautilus-extensions/nautilus-user-level-manager.c:61
+#: libnautilus-extensions/nautilus-user-level-manager.c:63
 msgid "Advanced"
 msgstr "Avansert"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:497
+#: libnautilus-extensions/nautilus-volume-monitor.c:505
 msgid "Unknown Volume"
 msgstr "Ukjent volum"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1158
+#: libnautilus-extensions/nautilus-volume-monitor.c:1165
 msgid "ISO 9660 Volume"
 msgstr "ISO 9660 volum"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1165
+#: libnautilus-extensions/nautilus-volume-monitor.c:1172
 msgid "Ext2 Volume"
 msgstr "Ext2 volum"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1171
+#: libnautilus-extensions/nautilus-volume-monitor.c:1178
 msgid "Floppy"
 msgstr "Diskett"
 
-#: libnautilus/nautilus-clipboard.c:116
-msgid "_Cut"
-msgstr "_Klipp ut"
+#: libnautilus/nautilus-clipboard.c:130 src/nautilus-window-menus.c:1461
+msgid "_Cut Text"
+msgstr "_Klipp ut tekst"
 
-#: libnautilus/nautilus-clipboard.c:117
-msgid "Remove selected text from selection"
-msgstr "Fjern valgt tekst fra utvalget"
+#: libnautilus/nautilus-clipboard.c:131 src/nautilus-window-menus.c:1462
+msgid "Cuts the selected text to the clipboard"
+msgstr "Klipper ut valgt tekst til utklippstavlen"
 
-#: libnautilus/nautilus-clipboard.c:121
-msgid "_Copy"
-msgstr "_Kopier"
+#: libnautilus/nautilus-clipboard.c:135 src/nautilus-window-menus.c:1473
+msgid "_Copy Text"
+msgstr "_Kopier tekst"
 
-#: libnautilus/nautilus-clipboard.c:122
-msgid "Copy selected text to the clipboard"
+#: libnautilus/nautilus-clipboard.c:136 src/nautilus-window-menus.c:1474
+msgid "Copies the selected text to the clipboard"
 msgstr "Kopierer valgt tekst til utklippstavlen"
 
-#: libnautilus/nautilus-clipboard.c:126
-msgid "_Paste"
-msgstr "_Lim inn"
+#: libnautilus/nautilus-clipboard.c:140 src/nautilus-window-menus.c:1485
+msgid "_Paste Text"
+msgstr "_Lim inn tekst"
 
-#: libnautilus/nautilus-clipboard.c:127
-msgid "Paste text from clipboard into text box"
-msgstr "Lim inn tekst fra utklippstavlen til tekstboksen"
+#: libnautilus/nautilus-clipboard.c:141 src/nautilus-window-menus.c:1486
+msgid "Pastes the text stored on the clipboard"
+msgstr "Limer inn teksten som er lagret på utklippstavlen"
 
-#: libnautilus/nautilus-clipboard.c:131
-msgid "_Clear"
-msgstr "_Tøm"
+#: libnautilus/nautilus-clipboard.c:145 src/nautilus-window-menus.c:1497
+msgid "C_lear Text"
+msgstr "F_jern tekst"
 
-#: libnautilus/nautilus-clipboard.c:132
-msgid "Clear the current selection"
-msgstr "Tøm aktivt utvalg"
+#: libnautilus/nautilus-clipboard.c:146 src/nautilus-window-menus.c:1498
+msgid "Removes the selected text without putting it on the clipboard"
+msgstr "Fjerner den valgte teksten uten å plassere den på utklippstavlen"
 
 #: src/file-manager/fm-desktop-icon-view.c:399
 msgid "Empty Trash"
@@ -2631,59 +2653,59 @@ msgstr "Nulltill skrivebordsbakgrunn"
 msgid "Change Desktop Background"
 msgstr "Endre skrivebordsbakgrunn"
 
-#: src/file-manager/fm-directory-view.c:399
+#: src/file-manager/fm-directory-view.c:396
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
 msgstr "Dette vil åpne %d separate vinduer. Er du sikker på at du vil dette?"
 
-#: src/file-manager/fm-directory-view.c:401
+#: src/file-manager/fm-directory-view.c:398
 #, c-format
 msgid "Open %d Windows?"
 msgstr "Åpne %d nye vinduer?"
 
-#: src/file-manager/fm-directory-view.c:1172
+#: src/file-manager/fm-directory-view.c:1178
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" valgt"
 
-#: src/file-manager/fm-directory-view.c:1174
+#: src/file-manager/fm-directory-view.c:1180
 msgid "1 folder selected"
 msgstr "1 mappe valgt"
 
-#: src/file-manager/fm-directory-view.c:1177
+#: src/file-manager/fm-directory-view.c:1183
 #, c-format
 msgid "%d folders selected"
 msgstr "%d mapper valgt"
 
-#: src/file-manager/fm-directory-view.c:1183
+#: src/file-manager/fm-directory-view.c:1189
 msgid " (containing 0 items)"
 msgstr " (inneholdende 0 oppføringer)"
 
-#: src/file-manager/fm-directory-view.c:1185
+#: src/file-manager/fm-directory-view.c:1191
 msgid " (containing 1 item)"
 msgstr " (inneholdende 1 oppføring)"
 
-#: src/file-manager/fm-directory-view.c:1187
+#: src/file-manager/fm-directory-view.c:1193
 #, c-format
 msgid " (containing %d items)"
 msgstr " (inneholdende %d oppføringer)"
 
-#: src/file-manager/fm-directory-view.c:1198
+#: src/file-manager/fm-directory-view.c:1204
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" valgt (%s)"
 
-#: src/file-manager/fm-directory-view.c:1202
+#: src/file-manager/fm-directory-view.c:1208
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d oppføringer valgt (%s)"
 
-#: src/file-manager/fm-directory-view.c:1209
+#: src/file-manager/fm-directory-view.c:1215
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 annen oppføring valgt (%s)"
 
-#: src/file-manager/fm-directory-view.c:1212
+#: src/file-manager/fm-directory-view.c:1218
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d andre oppføringer valgt (%s)"
@@ -2695,19 +2717,19 @@ msgstr "%d andre oppføringer valgt (%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1241
+#: src/file-manager/fm-directory-view.c:1247
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
 
-#: src/file-manager/fm-directory-view.c:2226
+#: src/file-manager/fm-directory-view.c:2232
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the trash. Do you want to delete it immediately?"
 msgstr ""
 "\"%s\" kan ikke flyttes til søppelkurven. Ønsker du å slette den med én gang?"
 
-#: src/file-manager/fm-directory-view.c:2231
+#: src/file-manager/fm-directory-view.c:2237
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the trash. Do you want to delete "
@@ -2716,7 +2738,7 @@ msgstr ""
 "De %d valgte oppføringene kan ikke flyttes til søppelkurven. Vil du slette "
 "dem med én gang?"
 
-#: src/file-manager/fm-directory-view.c:2235
+#: src/file-manager/fm-directory-view.c:2241
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the trash. Do you want to delete "
@@ -2725,21 +2747,21 @@ msgstr ""
 "%d av de valgte oppføringene kan ikke flyttes til søppelkurven. Vil du "
 "slette ddisse %d oppføringene med én gang?"
 
-#: src/file-manager/fm-directory-view.c:2243
+#: src/file-manager/fm-directory-view.c:2249
 msgid "Delete Immediately?"
 msgstr "Slett med én gang?"
 
-#: src/file-manager/fm-directory-view.c:2244
-#: src/file-manager/fm-directory-view.c:2285
+#: src/file-manager/fm-directory-view.c:2250
+#: src/file-manager/fm-directory-view.c:2291
 msgid "Delete"
 msgstr "Slett"
 
-#: src/file-manager/fm-directory-view.c:2274
+#: src/file-manager/fm-directory-view.c:2280
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Er du sikker på at du vil slette \"%s\" fra søppelkurven permanent?"
 
-#: src/file-manager/fm-directory-view.c:2278
+#: src/file-manager/fm-directory-view.c:2284
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
@@ -2748,173 +2770,173 @@ msgstr ""
 "Er du sikker på at du vil slette %d valgte oppføringer i søppelkurven "
 "permanent?"
 
-#: src/file-manager/fm-directory-view.c:2284
+#: src/file-manager/fm-directory-view.c:2290
 msgid "Delete From Trash?"
 msgstr "Slett fra søppelkurven?"
 
-#: src/file-manager/fm-directory-view.c:2574
+#: src/file-manager/fm-directory-view.c:2546
 msgid "_Open"
 msgstr "_Åpne"
 
-#: src/file-manager/fm-directory-view.c:2577
+#: src/file-manager/fm-directory-view.c:2549
 msgid "Open With"
 msgstr "Åpne med"
 
-#: src/file-manager/fm-directory-view.c:2580
+#: src/file-manager/fm-directory-view.c:2552
 msgid "Other Application..."
 msgstr "Annen applikasjon..."
 
-#: src/file-manager/fm-directory-view.c:2582
+#: src/file-manager/fm-directory-view.c:2554
 msgid "Other Viewer..."
 msgstr "Annet visningsprogram..."
 
-#: src/file-manager/fm-directory-view.c:2586
+#: src/file-manager/fm-directory-view.c:2558
 msgid "Open in _New Window"
 msgstr "Åpne i et _nytt vindu"
 
-#: src/file-manager/fm-directory-view.c:2588
+#: src/file-manager/fm-directory-view.c:2560
 #, c-format
 msgid "Open in %d _New Windows"
 msgstr "Åpne i %d _nye vinduer"
 
-#: src/file-manager/fm-directory-view.c:2600
+#: src/file-manager/fm-directory-view.c:2572
 msgid "New Folder"
 msgstr "Ny mappe"
 
-#: src/file-manager/fm-directory-view.c:2604
+#: src/file-manager/fm-directory-view.c:2576
 msgid "Delete from _Trash..."
 msgstr "Sle_tt fra søppelkurven..."
 
-#: src/file-manager/fm-directory-view.c:2606
+#: src/file-manager/fm-directory-view.c:2578
 msgid "Delete from _Trash"
 msgstr "Sle_tt fra søppelkurven"
 
-#: src/file-manager/fm-directory-view.c:2610
+#: src/file-manager/fm-directory-view.c:2582
 msgid "Move to _Trash"
 msgstr "Flyt_t til søppelkurv"
 
-#: src/file-manager/fm-directory-view.c:2613
+#: src/file-manager/fm-directory-view.c:2585
 msgid "_Duplicate"
 msgstr "_Dupliser"
 
-#: src/file-manager/fm-directory-view.c:2617
+#: src/file-manager/fm-directory-view.c:2589
 msgid "Create _Links"
 msgstr "Opprett _lenker"
 
-#: src/file-manager/fm-directory-view.c:2619
+#: src/file-manager/fm-directory-view.c:2591
 msgid "Create _Link"
 msgstr "Opprett _lenke"
 
 #. No ellipses here because this command does not require further
 #. * information to be completed.
 #.
-#: src/file-manager/fm-directory-view.c:2626
+#: src/file-manager/fm-directory-view.c:2598
 msgid "Show _Properties"
 msgstr "Vis egenska_per"
 
-#: src/file-manager/fm-directory-view.c:2630
+#: src/file-manager/fm-directory-view.c:2602
 msgid "_Empty Trash..."
 msgstr "_Tøm søppelkurv..."
 
-#: src/file-manager/fm-directory-view.c:2632
+#: src/file-manager/fm-directory-view.c:2604
 msgid "_Empty Trash"
 msgstr "_Tøm søppelkurv"
 
-#: src/file-manager/fm-directory-view.c:2636
+#: src/file-manager/fm-directory-view.c:2608
 msgid "_Select All Files"
 msgstr "_Velg alle filer"
 
-#: src/file-manager/fm-directory-view.c:2640
+#: src/file-manager/fm-directory-view.c:2612
 msgid "R_emove Custom Images"
 msgstr "Fje_rn egendefinerte bilder"
 
-#: src/file-manager/fm-directory-view.c:2642
+#: src/file-manager/fm-directory-view.c:2614
 msgid "R_emove Custom Image"
 msgstr "Fj_ern egendefinert bilde"
 
-#: src/file-manager/fm-directory-view.c:2646
+#: src/file-manager/fm-directory-view.c:2618
 msgid "Reset _Background"
 msgstr "Nulltill _bakgrunnen"
 
-#: src/file-manager/fm-directory-view.c:2801
+#: src/file-manager/fm-directory-view.c:2773
 msgid "Zoom In"
 msgstr "Zoom inn"
 
-#: src/file-manager/fm-directory-view.c:2803
+#: src/file-manager/fm-directory-view.c:2775
 msgid "Zoom Out"
 msgstr "Zoom ut"
 
-#: src/file-manager/fm-directory-view.c:2805
+#: src/file-manager/fm-directory-view.c:2777
 msgid "Normal Size"
 msgstr "Normal størrelse"
 
-#: src/file-manager/fm-directory-view.c:2815
+#: src/file-manager/fm-directory-view.c:2791
 msgid "_New Folder"
 msgstr "_Ny mappe"
 
-#: src/file-manager/fm-directory-view.c:2908
-#: src/file-manager/fm-directory-view.c:3167
+#: src/file-manager/fm-directory-view.c:2884
+#: src/file-manager/fm-directory-view.c:3148
 #, c-format
 msgid "%s Viewer"
 msgstr "Visningsprogram for %s"
 
-#: src/file-manager/fm-directory-view.c:3196
+#: src/file-manager/fm-directory-view.c:3177
 msgid "Move all selected items to the Trash"
 msgstr "Flytt alle valgte oppføringer til søppelkurven"
 
-#: src/file-manager/fm-directory-view.c:3205
+#: src/file-manager/fm-directory-view.c:3186
 msgid "Delete all selected items permanently"
 msgstr "Slett alle valgte oppføringer permanent"
 
-#: src/file-manager/fm-directory-view.c:3227
+#: src/file-manager/fm-directory-view.c:3209
 msgid "Choose a program with which to open the selected item"
 msgstr "Velg et program du vil åpne valgte oppføring med"
 
-#: src/file-manager/fm-directory-view.c:3247
+#: src/file-manager/fm-directory-view.c:3230
 msgid "Choose another application with which to open the selected item"
 msgstr "Velg en annen applikasjon som du vil åpne valgte oppføring med"
 
-#: src/file-manager/fm-directory-view.c:3269
+#: src/file-manager/fm-directory-view.c:3252
 msgid "Choose another viewer with which to view the selected item"
 msgstr "Velg et annet visningsprogram du vil vise valgt oppføring med"
 
-#: src/file-manager/fm-directory-view.c:3291
+#: src/file-manager/fm-directory-view.c:3276
 msgid "Create a new folder in this window"
 msgstr "Lag en ny mappe i dette vinduet"
 
-#: src/file-manager/fm-directory-view.c:3299
+#: src/file-manager/fm-directory-view.c:3284
 msgid "Open the selected item in this window"
 msgstr "Åpne valgt oppføring i dette vinduet"
 
-#: src/file-manager/fm-directory-view.c:3307
+#: src/file-manager/fm-directory-view.c:3292
 msgid "Open each selected item in a new window"
 msgstr "Åpne hver valgt oppføring i et nytt vindu"
 
-#: src/file-manager/fm-directory-view.c:3322
+#: src/file-manager/fm-directory-view.c:3307
 msgid "View or modify the properties of the selected items"
 msgstr "Vis eller modifiser egenskapene for de valgte oppføringene"
 
-#: src/file-manager/fm-directory-view.c:3333
+#: src/file-manager/fm-directory-view.c:3318
 msgid "Duplicate each selected item"
 msgstr "Duplisér alle valgte oppføringer"
 
-#: src/file-manager/fm-directory-view.c:3341
+#: src/file-manager/fm-directory-view.c:3326
 msgid "Create a symbolic link for each selected item"
 msgstr "Opprett en symbolsk lenke for hver valgt oppføring"
 
-#: src/file-manager/fm-directory-view.c:3355
+#: src/file-manager/fm-directory-view.c:3340
 msgid "Delete all items in the trash"
 msgstr "Slett alle oppføringer i søppelkurven"
 
-#: src/file-manager/fm-directory-view.c:3363
+#: src/file-manager/fm-directory-view.c:3348
 msgid "Select all items in this window"
 msgstr "Velg alle oppføringer i dette vinduet"
 
-#: src/file-manager/fm-directory-view.c:3377
+#: src/file-manager/fm-directory-view.c:3362
 msgid "Remove the custom image from each selected icon"
 msgstr "Fjern det egendefinerte bildet fra hvert valgte ikon"
 
-#: src/file-manager/fm-directory-view.c:3611
+#: src/file-manager/fm-directory-view.c:3604
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the trash?"
@@ -2922,7 +2944,7 @@ msgstr ""
 "Denne lenken kan ikke brukes fordi den ikke har noe mål. Ønsker du å flytte "
 "denne lenken til søppelkurven?"
 
-#: src/file-manager/fm-directory-view.c:3614
+#: src/file-manager/fm-directory-view.c:3607
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -2931,13 +2953,23 @@ msgstr ""
 "Denne lenken kan ikke brukes fordi målet, \"%s\", ikke eksisterer. Vil du "
 "legge denne lenken i søppelkurven?"
 
-#: src/file-manager/fm-directory-view.c:3620
+#: src/file-manager/fm-directory-view.c:3613
 msgid "Broken Link"
 msgstr "Ødelagt lenke"
 
-#: src/file-manager/fm-directory-view.c:3621
+#: src/file-manager/fm-directory-view.c:3614
 msgid "Throw Away"
 msgstr "Kast bort"
+
+#: src/file-manager/fm-directory-view.c:3677
+msgid ""
+"Sorry, but you can't execute commands from a remote site due to security "
+"considerations."
+msgstr "Beklager, men du kan ikke kjøre kommandoer fra en ekstern tjener av sikkerhetshensyn."
+
+#: src/file-manager/fm-directory-view.c:3678
+msgid "Can't execute remote links"
+msgstr "Kunne ikke kjøre eksterne lenker"
 
 #: src/file-manager/fm-error-reporting.c:50
 #, c-format
@@ -3004,55 +3036,55 @@ msgstr "Endrer navn for %s til %s."
 msgid "Cancel Rename?"
 msgstr "Avbryt endring av navn?"
 
-#: src/file-manager/fm-icon-text-window.c:75
+#: src/file-manager/fm-icon-text-window.c:76
 msgid "size"
 msgstr "størrelse"
 
-#: src/file-manager/fm-icon-text-window.c:76
+#: src/file-manager/fm-icon-text-window.c:77
 msgid "type"
 msgstr "type"
 
-#: src/file-manager/fm-icon-text-window.c:77
+#: src/file-manager/fm-icon-text-window.c:78
 msgid "date modified"
 msgstr "dato modifisert"
 
-#: src/file-manager/fm-icon-text-window.c:78
+#: src/file-manager/fm-icon-text-window.c:79
 msgid "date changed"
 msgstr "dato endret"
 
-#: src/file-manager/fm-icon-text-window.c:79
+#: src/file-manager/fm-icon-text-window.c:80
 msgid "date accessed"
 msgstr "dato aksessert"
 
-#: src/file-manager/fm-icon-text-window.c:80
+#: src/file-manager/fm-icon-text-window.c:81
 msgid "owner"
 msgstr "eier"
 
-#: src/file-manager/fm-icon-text-window.c:81
+#: src/file-manager/fm-icon-text-window.c:82
 msgid "group"
 msgstr "gruppe"
 
-#: src/file-manager/fm-icon-text-window.c:82
+#: src/file-manager/fm-icon-text-window.c:83
 msgid "permissions"
 msgstr "rettigheter"
 
-#: src/file-manager/fm-icon-text-window.c:83
+#: src/file-manager/fm-icon-text-window.c:84
 msgid "octal permissions"
 msgstr "oktale rettigheter"
 
-#: src/file-manager/fm-icon-text-window.c:84
+#: src/file-manager/fm-icon-text-window.c:85
 msgid "MIME type"
 msgstr "MIME-type"
 
-#: src/file-manager/fm-icon-text-window.c:85
+#: src/file-manager/fm-icon-text-window.c:86
 msgid "none"
 msgstr "ingen"
 
-#: src/file-manager/fm-icon-text-window.c:260
+#: src/file-manager/fm-icon-text-window.c:261
 msgid "Icon Captions"
 msgstr "Ikontekst"
 
-#: src/file-manager/fm-icon-text-window.c:267
+#: src/file-manager/fm-icon-text-window.c:268
 msgid ""
 "Choose the order for information to appear beneath icon names. More "
 "information appears as you zoom in closer."
@@ -3060,187 +3092,187 @@ msgstr ""
 "Velg rekkefølgen for informasjonen som skal vises under ikonnavnene. Mer "
 "informasjon vises etter hvert som du zoomer inn."
 
-#: src/file-manager/fm-icon-view.c:137
+#: src/file-manager/fm-icon-view.c:140
 msgid "by _Name"
 msgstr "etter _navn"
 
-#: src/file-manager/fm-icon-view.c:138
+#: src/file-manager/fm-icon-view.c:141
 msgid "Keep icons sorted by name in rows"
 msgstr "Behold ikoner sortert etter navn i rader"
 
-#: src/file-manager/fm-icon-view.c:144
+#: src/file-manager/fm-icon-view.c:147
 msgid "by _Size"
 msgstr "etter _størrelse"
 
-#: src/file-manager/fm-icon-view.c:145
+#: src/file-manager/fm-icon-view.c:148
 msgid "Keep icons sorted by size in rows"
 msgstr "Behold ikoner sortert etter størrelse i rader"
 
-#: src/file-manager/fm-icon-view.c:151
+#: src/file-manager/fm-icon-view.c:154
 msgid "by _Type"
 msgstr "etter _type"
 
-#: src/file-manager/fm-icon-view.c:152
+#: src/file-manager/fm-icon-view.c:155
 msgid "Keep icons sorted by type in rows"
 msgstr "Behold ikoner sortert etter type i rader"
 
-#: src/file-manager/fm-icon-view.c:158
+#: src/file-manager/fm-icon-view.c:161
 msgid "by Modification _Date"
 msgstr "etter modifikasjons_dato"
 
-#: src/file-manager/fm-icon-view.c:159
+#: src/file-manager/fm-icon-view.c:162
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Behold ikoner sortert etter modifikasjonsdato i rader"
 
-#: src/file-manager/fm-icon-view.c:165
+#: src/file-manager/fm-icon-view.c:168
 msgid "by _Emblems"
 msgstr "etter _emblemer"
 
-#: src/file-manager/fm-icon-view.c:166
+#: src/file-manager/fm-icon-view.c:169
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Behold ikoner sortert etter emblemer i rader"
 
-#: src/file-manager/fm-icon-view.c:435
+#: src/file-manager/fm-icon-view.c:437
 msgid "_Stretch Icon"
 msgstr "_Strekk ikon"
 
-#: src/file-manager/fm-icon-view.c:443
+#: src/file-manager/fm-icon-view.c:445
 msgid "_Restore Icons' Original Sizes"
 msgstr "_Gjenopprett ikonets opprinnelige størrelse"
 
-#: src/file-manager/fm-icon-view.c:445
+#: src/file-manager/fm-icon-view.c:447
 msgid "_Restore Icon's Original Size"
 msgstr "_Gjenopprett ikonets opprinnelige størrelse"
 
-#: src/file-manager/fm-icon-view.c:449
+#: src/file-manager/fm-icon-view.c:451
 msgid "_Icon Captions..."
 msgstr "_Ikon tekst..."
 
 #. Modify file name. We only allow this on a single file selection.
-#: src/file-manager/fm-icon-view.c:452
+#: src/file-manager/fm-icon-view.c:454
 msgid "_Rename"
 msgstr "End_re"
 
-#: src/file-manager/fm-icon-view.c:456
+#: src/file-manager/fm-icon-view.c:458
 msgid "_Clean Up by Name"
 msgstr "R_ydd opp etter navn"
 
-#: src/file-manager/fm-icon-view.c:459
+#: src/file-manager/fm-icon-view.c:461
 msgid "_Use Tighter Layout"
 msgstr "Br_uk tettere plassering"
 
-#: src/file-manager/fm-icon-view.c:463
+#: src/file-manager/fm-icon-view.c:465
 msgid "Re_versed Order"
 msgstr "Om_vendt rekkefølge"
 
-#: src/file-manager/fm-icon-view.c:467
+#: src/file-manager/fm-icon-view.c:469
 msgid "_Lay out items"
 msgstr "_Plassér oppføringer"
 
-#: src/file-manager/fm-icon-view.c:470
+#: src/file-manager/fm-icon-view.c:472
 msgid "_manually"
 msgstr "_manuell"
 
-#: src/file-manager/fm-icon-view.c:1533
+#: src/file-manager/fm-icon-view.c:1544
 msgid "Choose which information appears beneath each icon's name"
 msgstr "Velg hvilken informasjon som skal vises under hvert ikons navn"
 
-#: src/file-manager/fm-icon-view.c:1539
+#: src/file-manager/fm-icon-view.c:1550
 msgid "Make the selected icon stretchable"
 msgstr "Gjør valgt ikon strekkbart"
 
-#: src/file-manager/fm-icon-view.c:1545
+#: src/file-manager/fm-icon-view.c:1556
 msgid "Restore each selected icon to its original size"
 msgstr "Gjenopprett original størrelse for alle valgte ikoner"
 
-#: src/file-manager/fm-icon-view.c:1562
+#: src/file-manager/fm-icon-view.c:1573
 msgid "Choose an order for the icons in this folder"
 msgstr "Velg en rekkefølge for ikonene i denne mappen"
 
-#: src/file-manager/fm-icon-view.c:1568
+#: src/file-manager/fm-icon-view.c:1579
 msgid "Leave icons wherever they are dropped"
 msgstr "La ikoner bli hvor de slippes"
 
-#: src/file-manager/fm-icon-view.c:1591
+#: src/file-manager/fm-icon-view.c:1602
 msgid "Toggle using a tighter layout scheme"
 msgstr "Slå av/på bruk av tettere plassering"
 
-#: src/file-manager/fm-icon-view.c:1598
+#: src/file-manager/fm-icon-view.c:1609
 msgid "Display icons in the opposite order"
 msgstr "Vis ikoner i omvendt rekkefølge"
 
-#: src/file-manager/fm-icon-view.c:1607
+#: src/file-manager/fm-icon-view.c:1618
 msgid "Reposition icons to better fit in the window and avoid overlapping"
 msgstr ""
 "Reposisjonér ikonene slik at de passer bedre til vinduene og unngår "
 "overlapping"
 
-#: src/file-manager/fm-icon-view.c:1616
+#: src/file-manager/fm-icon-view.c:1627
 msgid "Rename selected item"
 msgstr "Gi nytt navn til valgt oppføring"
 
-#: src/file-manager/fm-icon-view.c:1827
+#: src/file-manager/fm-icon-view.c:1852
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "peker til \"%s\""
 
-#: src/file-manager/fm-list-view.c:1751
+#: src/file-manager/fm-list-view.c:1763
 #: src/file-manager/fm-search-list-view.c:250
 #: src/nautilus-search-bar-criterion.c:69
 msgid "Size"
 msgstr "Størrelse"
 
-#: src/file-manager/fm-list-view.c:1757
+#: src/file-manager/fm-list-view.c:1769
 #: src/file-manager/fm-search-list-view.c:256
 #: src/nautilus-search-bar-criterion.c:68
 msgid "Type"
 msgstr "Type"
 
-#: src/file-manager/fm-list-view.c:1763
+#: src/file-manager/fm-list-view.c:1775
 #: src/file-manager/fm-search-list-view.c:262
 msgid "Date Modified"
 msgstr "Dato endret"
 
-#: src/file-manager/fm-properties-window.c:458
+#: src/file-manager/fm-properties-window.c:456
 #, c-format
 msgid "%s Properties"
 msgstr "Egenskaper for %s"
 
-#: src/file-manager/fm-properties-window.c:590
+#: src/file-manager/fm-properties-window.c:588
 msgid "Cancel Group Change?"
 msgstr "Avbryt endring av gruppe?"
 
-#: src/file-manager/fm-properties-window.c:591
+#: src/file-manager/fm-properties-window.c:589
 msgid "Changing group"
 msgstr "Endrer gruppe"
 
-#: src/file-manager/fm-properties-window.c:736
+#: src/file-manager/fm-properties-window.c:734
 msgid "Cancel Owner Change?"
 msgstr "Avbryt endring av eier?"
 
-#: src/file-manager/fm-properties-window.c:737
+#: src/file-manager/fm-properties-window.c:735
 msgid "Changing owner"
 msgstr "Endrer eier"
 
-#: src/file-manager/fm-properties-window.c:894
+#: src/file-manager/fm-properties-window.c:892
 msgid "nothing"
 msgstr "ingenting"
 
-#: src/file-manager/fm-properties-window.c:896
+#: src/file-manager/fm-properties-window.c:894
 msgid "unreadable"
 msgstr "ulesbar"
 
-#: src/file-manager/fm-properties-window.c:905
+#: src/file-manager/fm-properties-window.c:903
 #, c-format
 msgid "1 item, with size %s"
 msgstr "1 oppføring, med størrelse %s"
 
-#: src/file-manager/fm-properties-window.c:907
+#: src/file-manager/fm-properties-window.c:905
 #, c-format
 msgid "%d items, totalling %s"
 msgstr "%d oppføringer, totalt %s"
 
-#: src/file-manager/fm-properties-window.c:913
+#: src/file-manager/fm-properties-window.c:911
 msgid "(some contents unreadable)"
 msgstr "(noe innhold ikke lesbart)"
 
@@ -3249,111 +3281,111 @@ msgstr "(noe innhold ikke lesbart)"
 #. * "Contents:" title to line up with the first line of the 2-line value.
 #. * Maybe there's a better way to do this, but I couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:927
+#: src/file-manager/fm-properties-window.c:925
 msgid "Contents:"
 msgstr "Innhold:"
 
-#: src/file-manager/fm-properties-window.c:1081
+#: src/file-manager/fm-properties-window.c:1079
 msgid "Basic"
 msgstr "Grunnleggende"
 
-#: src/file-manager/fm-properties-window.c:1145
+#: src/file-manager/fm-properties-window.c:1143
 msgid "Where:"
 msgstr "Hvor:"
 
-#: src/file-manager/fm-properties-window.c:1147
+#: src/file-manager/fm-properties-window.c:1145
 msgid "Type:"
 msgstr "Type:"
 
-#: src/file-manager/fm-properties-window.c:1153
+#: src/file-manager/fm-properties-window.c:1151
 msgid "Size:"
 msgstr "Størrelse:"
 
-#: src/file-manager/fm-properties-window.c:1156
+#: src/file-manager/fm-properties-window.c:1154
 msgid "Modified:"
 msgstr "Endret:"
 
-#: src/file-manager/fm-properties-window.c:1158
+#: src/file-manager/fm-properties-window.c:1156
 msgid "Accessed:"
 msgstr "Aksessert:"
 
-#: src/file-manager/fm-properties-window.c:1161
+#: src/file-manager/fm-properties-window.c:1159
 msgid "MIME type:"
 msgstr "MIME-type:"
 
-#: src/file-manager/fm-properties-window.c:1290
+#: src/file-manager/fm-properties-window.c:1293
 msgid "Emblems"
 msgstr "Emblemer"
 
-#: src/file-manager/fm-properties-window.c:1523
+#: src/file-manager/fm-properties-window.c:1526
 msgid "Special Flags:"
 msgstr "Spesielle flagg:"
 
-#: src/file-manager/fm-properties-window.c:1527
+#: src/file-manager/fm-properties-window.c:1530
 msgid "Set User ID"
 msgstr "Sett bruker-ID"
 
-#: src/file-manager/fm-properties-window.c:1531
+#: src/file-manager/fm-properties-window.c:1534
 msgid "Set Group ID"
 msgstr "Sett gruppe-ID"
 
-#: src/file-manager/fm-properties-window.c:1535
+#: src/file-manager/fm-properties-window.c:1538
 msgid "Sticky"
 msgstr "Klebrig"
 
-#: src/file-manager/fm-properties-window.c:1546
+#: src/file-manager/fm-properties-window.c:1549
 msgid "Permissions"
 msgstr "Rettigheter"
 
-#: src/file-manager/fm-properties-window.c:1552
+#: src/file-manager/fm-properties-window.c:1555
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Du er ikke eieren, du kan derfor ikke ender disse rettighetene."
 
-#: src/file-manager/fm-properties-window.c:1579
+#: src/file-manager/fm-properties-window.c:1582
 msgid "File Owner:"
 msgstr "Fileier:"
 
-#: src/file-manager/fm-properties-window.c:1589
+#: src/file-manager/fm-properties-window.c:1592
 msgid "File Group:"
 msgstr "Filgruppe:"
 
-#: src/file-manager/fm-properties-window.c:1607
+#: src/file-manager/fm-properties-window.c:1610
 msgid "Owner:"
 msgstr "Eier:"
 
-#: src/file-manager/fm-properties-window.c:1610
+#: src/file-manager/fm-properties-window.c:1613
 msgid "Group:"
 msgstr "Gruppe:"
 
-#: src/file-manager/fm-properties-window.c:1613
+#: src/file-manager/fm-properties-window.c:1616
 msgid "Others:"
 msgstr "Andre:"
 
-#: src/file-manager/fm-properties-window.c:1616
+#: src/file-manager/fm-properties-window.c:1619
 msgid "Text View:"
 msgstr "Tekstvisning:"
 
-#: src/file-manager/fm-properties-window.c:1619
+#: src/file-manager/fm-properties-window.c:1622
 msgid "Number View:"
 msgstr "Tallvisning:"
 
-#: src/file-manager/fm-properties-window.c:1622
+#: src/file-manager/fm-properties-window.c:1625
 msgid "Last Changed:"
 msgstr "Sist endret:"
 
-#: src/file-manager/fm-properties-window.c:1626
+#: src/file-manager/fm-properties-window.c:1629
 msgid "Read"
 msgstr "Lese"
 
-#: src/file-manager/fm-properties-window.c:1630
+#: src/file-manager/fm-properties-window.c:1633
 msgid "Write"
 msgstr "Skrive"
 
-#: src/file-manager/fm-properties-window.c:1634
+#: src/file-manager/fm-properties-window.c:1637
 msgid "Execute"
 msgstr "Kjøre"
 
-#: src/file-manager/fm-properties-window.c:1696
+#: src/file-manager/fm-properties-window.c:1699
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Rettighetene for \"%s\" kunne ikke bestemmes."
@@ -3383,7 +3415,7 @@ msgid "Reveal in %d _New Windows"
 msgstr "Åpne i %d _nye vinduer"
 
 #: src/file-manager/fm-search-list-view.c:451
-#: src/file-manager/nautilus-indexing-info.c:143
+#: src/file-manager/nautilus-indexing-info.c:282
 msgid "Indexing Info..."
 msgstr "Indekseringsinformasjon..."
 
@@ -3395,73 +3427,74 @@ msgstr "Vis infodialog for indeksering"
 msgid "Reveal each selected item in its original folder"
 msgstr "Vis hver valgt oppføring i sin opprinnelige mappe"
 
-#: src/file-manager/nautilus-indexing-info.c:57
+#: src/file-manager/nautilus-indexing-info.c:106
 msgid "Busy"
 msgstr "Opptatt"
 
-#: src/file-manager/nautilus-indexing-info.c:60
+#: src/file-manager/nautilus-indexing-info.c:109
 msgid "No response"
 msgstr "Ikke svar"
 
-#: src/file-manager/nautilus-indexing-info.c:63
+#: src/file-manager/nautilus-indexing-info.c:112
 msgid "No indexer present"
 msgstr "Ingen indekserer tilstede"
 
-#: src/file-manager/nautilus-indexing-info.c:71
+#: src/file-manager/nautilus-indexing-info.c:120
 #, c-format
 msgid "Error while trying to reindex: %s"
 msgstr "feil under forsøk på å reindeksere: %s"
 
-#: src/file-manager/nautilus-indexing-info.c:131
+#: src/file-manager/nautilus-indexing-info.c:163
+msgid "%I:%M %p, %x"
+msgstr "%I:%M %p, %x"
+
+#: src/file-manager/nautilus-indexing-info.c:179
+#, c-format
+msgid "Your files were last indexed at %s"
+msgstr "Dine filer ble sist indeksert %s"
+
+#: src/file-manager/nautilus-indexing-info.c:190
+msgid "Update Now"
+msgstr "Oppdatér nå"
+
+#: src/file-manager/nautilus-indexing-info.c:210
+msgid "Your files are currently being indexed:"
+msgstr "Filene dine blir indeksert nå:"
+
+#: src/file-manager/nautilus-indexing-info.c:270
 msgid "Search service not available"
 msgstr "Søketjenesten ikke tilgjengelig"
 
-#: src/file-manager/nautilus-indexing-info.c:156
+#: src/file-manager/nautilus-indexing-info.c:295
 msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast.  If you need to update your index now, click on the \"Update Now\" "
-"button for the appropriate index."
+"Once a day your files and text content are indexed so\n"
+"your searches are fast.  If you need to update your index\n"
+"now, click on the \"Update Now\" button for the\n"
+"appropriate index.\n"
 msgstr ""
-"En gang om dagen blir dine filer og tekstinnhold indeksert slik at dine søk "
-"blir raskere. Hvis du trenger å oppdatere din indeks nå, klikker du på "
-"\"Oppdatér nå\"-knappen for den ønskede indeksen."
-
-#: src/file-manager/nautilus-indexing-info.c:166
-msgid "Your files are being indexed now."
-msgstr "Dine filer blir indeksert nå."
-
-#: src/file-manager/nautilus-indexing-info.c:169
-#, c-format
-msgid "It is %d percent done."
-msgstr "%d prosent ferdig."
-
-#: src/file-manager/nautilus-indexing-info.c:177
-#, c-format
-msgid "Your files were last indexed at  %s"
-msgstr "Dine filer ble sist indeksert %s"
-
-#: src/file-manager/nautilus-indexing-info.c:186
-msgid "Update Now"
-msgstr "Oppdatér nå"
+"En gang om dagen blir dine filer og tekstinnhold indeksert \n"
+"slik at dine søk blir raskere. Hvis du trenger å oppdatere \n"
+"din indeks nå, klikker du på \"Oppdatér nå\"-knappen for den \n"
+"ønskede indeksen.\n"
 
 #. set the window title
 #: src/nautilus-about.c:142
 msgid "About Nautilus"
 msgstr "Om Nautilus"
 
-#: src/nautilus-application.c:218
+#: src/nautilus-application.c:222
 msgid "User Directory"
 msgstr "Brukerkatalog"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:227
 msgid "User Main Directory"
 msgstr "Brukers hovedkatalog"
 
-#: src/nautilus-application.c:228
+#: src/nautilus-application.c:232
 msgid "Desktop Directory"
 msgstr "Skrivebordskatalog"
 
-#: src/nautilus-application.c:243
+#: src/nautilus-application.c:247
 msgid "Missing Directories"
 msgstr "Mangler kataloger"
 
@@ -3475,7 +3508,7 @@ msgstr "Mangler kataloger"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:339
+#: src/nautilus-application.c:346
 msgid ""
 "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
 "again may fix the problem."
@@ -3484,7 +3517,7 @@ msgstr ""
 "datamaskinen eller installere Nautilus på nytt."
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:343
+#: src/nautilus-application.c:350
 msgid ""
 "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
 "again may fix the problem.\n"
@@ -3517,11 +3550,11 @@ msgstr ""
 #. * wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:368 src/nautilus-application.c:386
+#: src/nautilus-application.c:375 src/nautilus-application.c:393
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus kan ikke brukes nå, pga en uventet feil."
 
-#: src/nautilus-application.c:369
+#: src/nautilus-application.c:376
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to register the file manager view server."
@@ -3529,7 +3562,7 @@ msgstr ""
 "Nautilus kan ikke brukes nå pga en uventet feil fra OAF under forsøk på å "
 "registrere visningstjeneren i filbehandleren."
 
-#: src/nautilus-application.c:387
+#: src/nautilus-application.c:394
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the factory."
@@ -3537,7 +3570,7 @@ msgstr ""
 "Nautilus kan ikke brukes nå pga. en uventet feil fra OAF under forsøk på å "
 "finne factory."
 
-#: src/nautilus-application.c:528
+#: src/nautilus-application.c:535
 msgid ""
 "You are running Nautilus as root.\n"
 "\n"
@@ -3557,7 +3590,7 @@ msgstr "Bokmerker"
 msgid "Location"
 msgstr "Plassering"
 
-#: src/nautilus-bookmarks-window.c:195 src/nautilus-window-menus.c:795
+#: src/nautilus-bookmarks-window.c:195 src/nautilus-window-menus.c:794
 msgid "Remove"
 msgstr "Fjern"
 
@@ -3787,12 +3820,12 @@ msgid "Update Completed... Press Next to Continue."
 msgstr "Oppdatering fullført... Trykk neste for å fortsette."
 
 #. set the window title
-#: src/nautilus-link-set-window.c:188
+#: src/nautilus-link-set-window.c:191
 msgid "Link sets"
 msgstr "Lenkesett"
 
 #. add a descriptive label
-#: src/nautilus-link-set-window.c:200
+#: src/nautilus-link-set-window.c:203
 msgid "Add or remove sets of links by clicking on the checkboxes below."
 msgstr ""
 "Legg til eller fjern sett med lenker ved å klikke på avkrysningsboksene "
@@ -3803,134 +3836,190 @@ msgstr ""
 msgid "Do you want to view these %d locations in separate windows?"
 msgstr "Vil du vise disse %d lokasjonene i forskjellige vinduer?"
 
-#: src/nautilus-location-bar.c:137
+#: src/nautilus-location-bar.c:138
 msgid "View in Multiple Windows?"
 msgstr "Vis i flere vinduer?"
 
-#: src/nautilus-location-bar.c:445 src/nautilus-location-bar.c:572
+#: src/nautilus-location-bar.c:446 src/nautilus-location-bar.c:573
 msgid "Location:"
 msgstr "Plassering:"
 
-#: src/nautilus-location-bar.c:574
+#: src/nautilus-location-bar.c:575
 msgid "   Go To:"
 msgstr "   Gå til:"
 
-#: src/nautilus-main.c:137
+#: src/nautilus-main.c:139
 msgid "Perform high-speed self-check tests."
 msgstr "Utfør hurtige selvsjekk-tester."
 
-#: src/nautilus-main.c:139
+#: src/nautilus-main.c:141
 msgid "Quit Nautilus."
 msgstr "Avslutt Nautilus."
 
-#: src/nautilus-main.c:140
+#: src/nautilus-main.c:142
 msgid "Restart Nautilus."
 msgstr "Start Nautilus på nytt."
 
-#: src/nautilus-main.c:141
+#: src/nautilus-main.c:143
 msgid "Don't draw background and icons on desktop."
 msgstr "Ikke tegn bakgrunn og ikoner på skrivebordet."
 
-#: src/nautilus-main.c:142
+#: src/nautilus-main.c:144
 msgid "Draw background and icons on desktop."
 msgstr "Tegn bakgrunn og ikoner på skrivebordet."
 
-#: src/nautilus-main.c:175
+#: src/nautilus-main.c:177
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check kan ikke brukes med URIer.\n"
 
-#: src/nautilus-main.c:179
+#: src/nautilus-main.c:181
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check kan ikke brukes med sammen med andre flagg.\n"
 
-#: src/nautilus-main.c:183
+#: src/nautilus-main.c:185
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit kan ikke brukes med URIer.\n"
 
-#: src/nautilus-main.c:187
+#: src/nautilus-main.c:189
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --restart kan ikke brukes med URIer.\n"
 
-#: src/nautilus-main.c:191
+#: src/nautilus-main.c:193
 msgid "nautilus: --quit and --start-desktop cannot be used together.\n"
 msgstr "nautilus: --quit og --start-desktop kan ikke brukes sammen.\n"
 
-#: src/nautilus-main.c:195
+#: src/nautilus-main.c:197
 msgid "nautilus: --restart and --start-desktop cannot be used together.\n"
 msgstr "nautilus: --restart og --start-desktop kan ikke brukes sammen.\n"
 
-#: src/nautilus-main.c:199
+#: src/nautilus-main.c:201
 msgid "nautilus: --stop-desktop and --start-desktop cannot be used together.\n"
 msgstr "nautilus: --stop-desktop og --start-desktop kan ikke brukes sammen.\n"
 
 #. set the title
-#: src/nautilus-property-browser.c:210
-msgid "Nautilus Property Browser"
-msgstr "Nautilus egenskapsvisning"
+#: src/nautilus-property-browser.c:226
+msgid "Customization Options"
+msgstr "Alternativer for tilpasning"
 
 #. add the title label
-#: src/nautilus-property-browser.c:273 src/nautilus-property-browser.c:1725
+#: src/nautilus-property-browser.c:289 src/nautilus-property-browser.c:1726
 msgid "Select A Category:"
 msgstr "Velg en kategori:"
 
-#: src/nautilus-property-browser.c:308
+#: src/nautilus-property-browser.c:324
 msgid "Add new..."
 msgstr "Legg til ny..."
 
-#: src/nautilus-property-browser.c:319
+#: src/nautilus-property-browser.c:335
 msgid "Remove..."
 msgstr "Fjern..."
 
-#: src/nautilus-property-browser.c:846 src/nautilus-property-browser.c:941
+#: src/nautilus-property-browser.c:736
+#, c-format
+msgid "Sorry, but background %s couldn't be deleted."
+msgstr "Beklager, men bakgrunn %s kunne ikke slettes."
+
+#: src/nautilus-property-browser.c:737 src/nautilus-property-browser.c:766
+msgid "Couldn't delete background"
+msgstr "Kunne ikke slette bakgrunn"
+
+#: src/nautilus-property-browser.c:765
+#, c-format
+msgid "Sorry, but emblem %s couldn't be deleted."
+msgstr "Beklager, men emblem %s kunne ikke slettes."
+
+#: src/nautilus-property-browser.c:870 src/nautilus-property-browser.c:966
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Beklager, men '%s' er ikke en brukbar bildefil!"
 
-#: src/nautilus-property-browser.c:848 src/nautilus-property-browser.c:942
+#: src/nautilus-property-browser.c:872 src/nautilus-property-browser.c:967
 msgid "Not an Image"
 msgstr "Ikke et bilde"
 
-#: src/nautilus-property-browser.c:873
+#: src/nautilus-property-browser.c:897
 msgid "Create a New Emblem:"
 msgstr "Lag et nytt emblem:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:878
+#: src/nautilus-property-browser.c:902
 msgid "Keyword:"
 msgstr "Nøkkelord:"
 
 #. set up a gnome file entry to pick the image file
-#: src/nautilus-property-browser.c:895
+#: src/nautilus-property-browser.c:919
 msgid "Select an image file for the new emblem:"
 msgstr "Velg en bildefil for det nye emblemet:"
 
-#: src/nautilus-property-browser.c:1006
+#: src/nautilus-property-browser.c:999
+#, c-format
+msgid "Sorry, but the background %s couldn't be installed."
+msgstr "Beklager, men bakgrunn %s kunne ikke installeres."
+
+#: src/nautilus-property-browser.c:1000
+msgid "Couldn't install background"
+msgstr "Kunne ikke installere bakgrunn"
+
+#: src/nautilus-property-browser.c:1025
 msgid "Select an image file to add as a background:"
 msgstr "Velg en bildefil som skal legges til som bakgrunn:"
 
-#: src/nautilus-property-browser.c:1104
+#: src/nautilus-property-browser.c:1123
 msgid "Select a color to add:"
 msgstr "Velg en farge å legge til:"
 
-#: src/nautilus-property-browser.c:1733
+#: src/nautilus-property-browser.c:1158
+msgid "Sorry, but you must specify a keyword for the new emblem."
+msgstr "Beklager, men du må spesifisere et nøkkelord for det nye emblemet."
+
+#: src/nautilus-property-browser.c:1159 src/nautilus-property-browser.c:1187
+msgid "Couldn't install emblem"
+msgstr "Kunne ikke installere emblem"
+
+#: src/nautilus-property-browser.c:1186
+#, c-format
+msgid "Sorry, but the image at %s couldn't be installed as an emblem."
+msgstr "Beklager, men bildet på %s kunne ikke installeres som et emblem."
+
+#: src/nautilus-property-browser.c:1734 src/nautilus-theme-selector.c:491
 msgid "Cancel Remove"
 msgstr "Avbryt fjern"
 
-#: src/nautilus-property-browser.c:1735
-#, c-format
-msgid "Add a new %s"
-msgstr "Legg til en ny %s"
+#: src/nautilus-property-browser.c:1738
+msgid "Add a new background"
+msgstr "Legg til en ny bakgrunn"
 
-#. strip trailing s
-#: src/nautilus-property-browser.c:1750
-#, c-format
-msgid "Click on a %s to remove it"
-msgstr "Klikk på en %s for å fjerne den"
+#: src/nautilus-property-browser.c:1741
+msgid "Add a new color"
+msgstr "Legg til en ny farge"
 
-#: src/nautilus-property-browser.c:1762
-#, c-format
-msgid "Remove a %s"
-msgstr "Fjern en %s"
+#: src/nautilus-property-browser.c:1744
+msgid "Add a new emblem"
+msgstr "Legg til et nytt emblem"
+
+#: src/nautilus-property-browser.c:1768
+msgid "Click on a background to remove it"
+msgstr "Klikk på en bakgrunn for å fjerne den"
+
+#: src/nautilus-property-browser.c:1771
+msgid "Click on a color to remove it"
+msgstr "Klikk på en farge for å fjerne den"
+
+#: src/nautilus-property-browser.c:1774
+msgid "Click on an emblem to remove it"
+msgstr "Klikk på et emblem for å fjerne den"
+
+#: src/nautilus-property-browser.c:1796
+msgid "Remove a background"
+msgstr "Fjern en bakgrunn"
+
+#: src/nautilus-property-browser.c:1799
+msgid "Remove a color"
+msgstr "Fjern en farge"
+
+#: src/nautilus-property-browser.c:1802
+msgid "Remove an emblem"
+msgstr "Fjern et emblem"
 
 #: src/nautilus-search-bar-criterion.c:67
 msgid "Content"
@@ -4084,11 +4173,11 @@ msgstr ""
 "For mer informasjon, se http://nautilus.eazel.com."
 
 #. add the reset background item, possibly disabled
-#: src/nautilus-sidebar.c:431
+#: src/nautilus-sidebar.c:434
 msgid "Reset Background"
 msgstr "Nulltill bakgrunn"
 
-#: src/nautilus-sidebar.c:605
+#: src/nautilus-sidebar.c:608
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
 "image to set a custom icon."
@@ -4096,11 +4185,11 @@ msgstr ""
 "Du kan ikke tilegne mer enn ett egendefinert ikon om gangen! Vennligst dra "
 "kun ett bilde for å bestemme egendefinert ikon."
 
-#: src/nautilus-sidebar.c:607
+#: src/nautilus-sidebar.c:610
 msgid "More Than One Image"
 msgstr "Mer enn ett bilde"
 
-#: src/nautilus-sidebar.c:629
+#: src/nautilus-sidebar.c:632
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
 "custom icons."
@@ -4108,11 +4197,11 @@ msgstr ""
 "Filen du slapp er ikke lokal. Du kan kun bruke lokale bilder som "
 "egendefinerte ikoner."
 
-#: src/nautilus-sidebar.c:631
+#: src/nautilus-sidebar.c:634
 msgid "Local Images Only"
 msgstr "Kun lokale bilder"
 
-#: src/nautilus-sidebar.c:636
+#: src/nautilus-sidebar.c:639
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
 "custom icons."
@@ -4120,47 +4209,38 @@ msgstr ""
 "Filen du slapp er ikke et bilde. Du kan kun bruke lokale bilder som "
 "egendefinerte ikoner."
 
-#: src/nautilus-sidebar.c:638
+#: src/nautilus-sidebar.c:641
 msgid "Images Only"
 msgstr "Kun bilder"
 
-#: src/nautilus-sidebar.c:1188
+#: src/nautilus-sidebar.c:1196
 #, c-format
 msgid "Open with %s"
 msgstr "Åpne med %s"
 
 #. Catch-all button after all the others.
-#: src/nautilus-sidebar.c:1217
+#: src/nautilus-sidebar.c:1225
 msgid "Open with..."
 msgstr "Åpne med..."
 
 #. Create button first so we can use it for auto_click
-#: src/nautilus-simple-search-bar.c:101
+#: src/nautilus-simple-search-bar.c:103
 msgid "Find Them!"
 msgstr "Finn dem!"
 
-#: src/nautilus-switchable-search-bar.c:102
+#: src/nautilus-switchable-search-bar.c:107
 msgid "Search For:"
 msgstr "Søk etter:"
 
 #. set the title
-#: src/nautilus-theme-selector.c:144
+#: src/nautilus-theme-selector.c:146
 msgid "Nautilus Theme Selector"
 msgstr "Nautilus temavelger"
 
 #. add the title label
-#: src/nautilus-theme-selector.c:178
+#: src/nautilus-theme-selector.c:180
 msgid "Nautilus Theme:"
 msgstr "Nautilus tema:"
-
-#. add the help label
-#: src/nautilus-theme-selector.c:185
-msgid ""
-"Click on a theme to change the\n"
-"appearance of Nautilus."
-msgstr ""
-"Klikk på et tema for å endre\n"
-"Nautilus' utseende."
 
 #: src/nautilus-theme-selector.c:238
 msgid "Add new theme"
@@ -4170,47 +4250,100 @@ msgstr "Legg til et nytt tema"
 msgid "Remove theme"
 msgstr "Fjern tema"
 
-#: src/nautilus-theme-selector.c:380
+#: src/nautilus-theme-selector.c:383
+#, c-format
+msgid "Sorry, but %s is not a valid theme directory."
+msgstr "Beklager, men %s er ikke en gyldig temakatalog."
+
+#: src/nautilus-theme-selector.c:384
+msgid "Couldn't add theme"
+msgstr "Kunne ikke legge til tema"
+
+#: src/nautilus-theme-selector.c:412
+#, c-format
+msgid "Sorry, but the theme %s couldn't be installed."
+msgstr "Beklager, men temaet %s kunne ikke installeres."
+
+#: src/nautilus-theme-selector.c:413
+msgid "Couldn't install theme"
+msgstr "Kunne ikke installere tema"
+
+#: src/nautilus-theme-selector.c:454
 msgid "Select a theme directory to add as a new theme:"
 msgstr "Velg en temakatalog som skal legges til som nytt tema:"
 
-#: src/nautilus-theme-selector.c:535
+#: src/nautilus-theme-selector.c:487 src/nautilus-theme-selector.c:537
+msgid "Click on a theme to remove it."
+msgstr "Klikk på et tema for å fjerne det."
+
+#: src/nautilus-theme-selector.c:540
+msgid ""
+"Click on a theme to change the\n"
+"appearance of Nautilus."
+msgstr ""
+"Klikk på et tema for å endre\n"
+"Nautilus' utseende."
+
+#. change the add button label back to it's normal state
+#: src/nautilus-theme-selector.c:552
+msgid "Add New Theme"
+msgstr "Legg til nytt tema"
+
+#: src/nautilus-theme-selector.c:580
+msgid ""
+"Sorry, but you can't remove the current theme.  Please change to another "
+"theme before removing this one"
+msgstr "Beklager, men du kan ikke fjerne aktivt tema. Vennligst bytt til et annet tema før du fjerner dette"
+
+#: src/nautilus-theme-selector.c:581
+msgid "Can't delete current theme"
+msgstr "Kan ikke slette aktivt tema"
+
+#: src/nautilus-theme-selector.c:602
+msgid "Sorry, but that theme could not be removed!"
+msgstr "Beklager, men det temaet kunne ikke fjernes!"
+
+#: src/nautilus-theme-selector.c:603
+msgid "Couldn't remove theme"
+msgstr "Kunne ikke fjerne tema"
+
+#: src/nautilus-theme-selector.c:692
 #, c-format
 msgid "No information available for the  %s theme"
 msgstr "Ingen informasjon tilgjengelig for %s-temaet"
 
-#: src/nautilus-window.c:954
+#: src/nautilus-window.c:929
 #, c-format
 msgid "View as %s..."
 msgstr "Vis som %s..."
 
 #. Add "View as Other..." extra bonus choice.
-#: src/nautilus-window.c:976
+#: src/nautilus-window.c:951
 msgid "View as Other..."
 msgstr "Vis som annet..."
 
-#: src/nautilus-window.c:1523
+#: src/nautilus-window.c:1467
 msgid "Close"
 msgstr "Lukk"
 
-#: src/nautilus-window-manage-views.c:242 src/nautilus-window-menus.c:656
+#: src/nautilus-window-manage-views.c:246 src/nautilus-window-menus.c:656
 msgid "Nautilus"
 msgstr "Nautilus"
 
-#: src/nautilus-window-manage-views.c:697
+#: src/nautilus-window-manage-views.c:636
 #, c-format
 msgid "You do not have the permissions necessary to view \"%s\"."
 msgstr "Du har ikke nødvendige rettigheter til å vise \"%s\"."
 
-#: src/nautilus-window-manage-views.c:699
+#: src/nautilus-window-manage-views.c:638
 msgid "Inadequate Permissions"
 msgstr "Utilstrekkelige rettigheter"
 
-#: src/nautilus-window-manage-views.c:894
+#: src/nautilus-window-manage-views.c:799
 msgid "View Failed"
 msgstr "Visning feilet"
 
-#: src/nautilus-window-manage-views.c:907
+#: src/nautilus-window-manage-views.c:810
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -4218,7 +4351,7 @@ msgstr ""
 "Ett av sidepanelene ble utsatt for en feil og kan ikke fortsette. "
 "Beklageligvis kan jeg ikke si hvilket dette gjelder."
 
-#: src/nautilus-window-manage-views.c:911
+#: src/nautilus-window-manage-views.c:814
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -4227,31 +4360,30 @@ msgstr ""
 "Sidepanelet %s ble utsatt for en feil og kan ikke fortsette. Hvis dette "
 "fortsetter, kan du slå av dette panelet."
 
-#: src/nautilus-window-manage-views.c:918
+#: src/nautilus-window-manage-views.c:819
 msgid "Sidebar Panel Failed"
 msgstr "Sidelinjepanel feilet"
 
-#: src/nautilus-window-manage-views.c:1312
+#: src/nautilus-window-manage-views.c:1215
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr "Kunne ikke finne \"%s\". Vennligst sjekk stavingen og forsøk igjen."
 
-#: src/nautilus-window-manage-views.c:1318
+#: src/nautilus-window-manage-views.c:1221
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
 "\"%s\" er ikke en gyldig lokasjon. Vennligst sjekk stavingen og forsøk igjen."
 
-#: src/nautilus-window-manage-views.c:1336
+#: src/nautilus-window-manage-views.c:1239
 #, c-format
 msgid ""
-"Couldn't display \"%s\", because Nautilus cannot handle items of this type."
-msgstr ""
-"Kunne ikke vise \"%s\", fordi Nautilus ikke kan håndtere oppføringer av "
-"denne typen."
+"Couldn't display \"%s\", because Nautilus cannot handle items of this "
+"unknown type."
+msgstr "Kunne ikke vise \"%s\", fordi Nautilus ikke kan håndtere oppføringer av denne ukjente typen."
 
-#: src/nautilus-window-manage-views.c:1340
+#: src/nautilus-window-manage-views.c:1243
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot handle items of type \"%s\"."
@@ -4260,36 +4392,40 @@ msgstr ""
 "\"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1352
+#: src/nautilus-window-manage-views.c:1255
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Kunne ikke vise \"%s\", fordi Nautilus ikke kan håndtere %s: lokasjoner."
 
-#: src/nautilus-window-manage-views.c:1358
+#: src/nautilus-window-manage-views.c:1261
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "Kunne ikke vise \"%s\", fordi påloggingsforsøket feilet."
 
-#. FIXME bugzilla.eazel.com 2458: Need to give the user some advice about what to do here.
-#: src/nautilus-window-manage-views.c:1365
+#: src/nautilus-window-manage-views.c:1266
+#, c-format
+msgid "Couldn't display \"%s\", because access was denied."
+msgstr "Kunne ikke vise \"%s\", fordi tilgang ble nektet."
+
+#: src/nautilus-window-manage-views.c:1277
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
-"search service isn't running.  Be sure that you have started the Medusa "
+"search service isn't running. Be sure that you have started the Medusa "
 "search service, and if you don't have an index, that the Medusa indexer is "
 "running."
-msgstr ""
+msgstr "Søking er ikke tilgjengelig akkurat nå fordi du enten ikke har en indeks, eller så kjører ikke søketjenesten. Forsikre deg om at du har startet søketjenesten Medusa, og hvis du ikke har en indeks, at Medusa indekseringsmotoren kjører."
 
-#: src/nautilus-window-manage-views.c:1366
+#: src/nautilus-window-manage-views.c:1281
 msgid "Searching Unavailable"
 msgstr "Søk ikke tilgjengelig"
 
-#: src/nautilus-window-manage-views.c:1370
+#: src/nautilus-window-manage-views.c:1285
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus kan ikke vise \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1382
+#: src/nautilus-window-manage-views.c:1298
 msgid "Can't Display Location"
 msgstr "Kan ikke vise lokasjon"
 
@@ -4361,7 +4497,7 @@ msgid ""
 "None of the settings for the %s level can be edited. If you want to edit the "
 "settings you must choose the %s or %s level. Do you want to switch to the %s "
 "level now and edit its settings?"
-msgstr ""
+msgstr "Ingen av innstillingene for %s-nivået kan redigeres. Hvis du vil redigere innstillingene må du velge nivå %s eller %s. Vil du bytte til nivå %s nå, og redigere innstillingene?"
 
 #. Localizers: This is the title of the dialog that appears if the user chooses "Edit Beginner Settings".
 #. * The %s is the name of the middle user level ("Intermediate").
@@ -4383,7 +4519,7 @@ msgstr ""
 "å håndtere dine filer\n"
 "og resten av ditt system."
 
-#: src/nautilus-window-menus.c:790
+#: src/nautilus-window-menus.c:789
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -4392,132 +4528,100 @@ msgstr ""
 "Lokasjonen \"%s\" eksisterer ikke. Ønsker du å fjerne alle bokmerker med "
 "denne lokasjonen fra din liste?"
 
-#: src/nautilus-window-menus.c:794
+#: src/nautilus-window-menus.c:793
 msgid "Bookmark for Nonexistent Location"
 msgstr "Bokmerke for ikke-eksisterende lokasjon"
 
-#: src/nautilus-window-menus.c:808
+#: src/nautilus-window-menus.c:807
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Lokasjonen \"%s\" eksisterer ikke lenger."
 
-#: src/nautilus-window-menus.c:809
+#: src/nautilus-window-menus.c:808
 msgid "Go to Nonexistent Location"
 msgstr "Gå til ikke-eksisterende lokasjon"
 
-#: src/nautilus-window-menus.c:884
+#: src/nautilus-window-menus.c:883
 msgid "Go to the specified location"
 msgstr "Gå til spesifisert lokasjon"
 
-#: src/nautilus-window-menus.c:1145
+#: src/nautilus-window-menus.c:1144
 msgid "_File"
 msgstr "_Fil"
 
-#: src/nautilus-window-menus.c:1149
+#: src/nautilus-window-menus.c:1148
 msgid "_Edit"
 msgstr "_Rediger"
 
-#: src/nautilus-window-menus.c:1153
+#: src/nautilus-window-menus.c:1152
 msgid "_View"
 msgstr "_Vis"
 
-#: src/nautilus-window-menus.c:1157
+#: src/nautilus-window-menus.c:1156
 msgid "_Go"
 msgstr "_Gå"
 
-#: src/nautilus-window-menus.c:1161
+#: src/nautilus-window-menus.c:1160
 msgid "_Bookmarks"
 msgstr "_Bokmerker"
 
-#: src/nautilus-window-menus.c:1165
+#: src/nautilus-window-menus.c:1164
 msgid "_Help"
 msgstr "_Hjelp"
 
 #. Localizers: This is the menu hint for the user-level setting (%s is name of user
 #. * level, "Beginner", "Intermediate", or "Advanced")
 #.
-#: src/nautilus-window-menus.c:1335
+#: src/nautilus-window-menus.c:1334
 #, c-format
 msgid "Use %s settings"
 msgstr "Bruk %s-innstillinger"
 
-#: src/nautilus-window-menus.c:1377
+#: src/nautilus-window-menus.c:1376
 msgid "_New Window"
 msgstr "_Nytt vindu"
 
-#: src/nautilus-window-menus.c:1378
+#: src/nautilus-window-menus.c:1377
 msgid "Create a new window"
 msgstr "Åpne et nytt vindu"
 
-#: src/nautilus-window-menus.c:1392
+#: src/nautilus-window-menus.c:1391
 msgid "_Close Window"
 msgstr "_Lukk vindu"
 
-#: src/nautilus-window-menus.c:1393
+#: src/nautilus-window-menus.c:1392
 msgid "Close this window"
 msgstr "Lukk dette vinduet"
 
-#: src/nautilus-window-menus.c:1404
+#: src/nautilus-window-menus.c:1403
 msgid "Close _All Windows"
 msgstr "Lukk _alle vindu"
 
-#: src/nautilus-window-menus.c:1405
+#: src/nautilus-window-menus.c:1404
 msgid "Close all Nautilus windows"
 msgstr "Lukk alle Nautilus-vinduer"
 
-#: src/nautilus-window-menus.c:1433
+#: src/nautilus-window-menus.c:1432
 msgid "_Web Search"
 msgstr "_Web-søk"
 
-#: src/nautilus-window-menus.c:1448 src/nautilus-window-menus.c:1821
+#: src/nautilus-window-menus.c:1447 src/nautilus-window-menus.c:1833
 msgid "_Undo"
 msgstr "An_gre"
 
-#: src/nautilus-window-menus.c:1449 src/nautilus-window-menus.c:1821
+#: src/nautilus-window-menus.c:1448 src/nautilus-window-menus.c:1833
 msgid "Undo the last text change"
 msgstr "Angre forrige tekstendring"
 
-#: src/nautilus-window-menus.c:1462
-msgid "_Cut Text"
-msgstr "_Klipp ut tekst"
-
-#: src/nautilus-window-menus.c:1463
-msgid "Cuts the selected text to the clipboard"
-msgstr "Klipper ut valgt tekst til utklippstavlen"
-
-#: src/nautilus-window-menus.c:1474
-msgid "_Copy Text"
-msgstr "_Kopier tekst"
-
-#: src/nautilus-window-menus.c:1475
-msgid "Copies the selected text to the clipboard"
-msgstr "Kopierer valgt tekst til utklippstavlen"
-
-#: src/nautilus-window-menus.c:1486
-msgid "_Paste Text"
-msgstr "_Lim inn tekst"
-
-#: src/nautilus-window-menus.c:1487
-msgid "Pastes the text stored on the clipboard"
-msgstr "Limer inn teksten som er lagret på utklippstavlen"
-
-#: src/nautilus-window-menus.c:1498
-msgid "C_lear Text"
-msgstr "F_jern tekst"
-
-#: src/nautilus-window-menus.c:1499
-msgid "Removes the selected text without putting it on the clipboard"
-msgstr "Fjerner den valgte teksten uten å plassere den på utklippstavlen"
-
-#: src/nautilus-window-menus.c:1512
+#: src/nautilus-window-menus.c:1524
 msgid "_Select All"
 msgstr "_Velg alt"
 
-#: src/nautilus-window-menus.c:1526
-msgid "_Customize..."
-msgstr "_Tilpass..."
+#: src/nautilus-window-menus.c:1538
+msgid "_Customization..."
+msgstr "_Tilpasning..."
 
-#: src/nautilus-window-menus.c:1527
+#: src/nautilus-window-menus.c:1539
 msgid ""
 "Displays the Property Browser, to add properties to objects and customize "
 "appearance"
@@ -4525,163 +4629,163 @@ msgstr ""
 "Visning av egenskaper, for å tilegne objekter egenskaper og tilpasse "
 "fremtoningen"
 
-#: src/nautilus-window-menus.c:1538
+#: src/nautilus-window-menus.c:1550
 msgid "_Change Appearance..."
 msgstr "En_dre utseende..."
 
-#: src/nautilus-window-menus.c:1539
+#: src/nautilus-window-menus.c:1551
 msgid ""
 "Displays a list of alternative appearances, to allow you to change the "
 "appearance"
 msgstr "Viser en liste med alternative utseender, for å la deg endre dette"
 
-#: src/nautilus-window-menus.c:1555
+#: src/nautilus-window-menus.c:1567
 msgid "_Refresh"
 msgstr "Oppf_risk"
 
 #. Title computed dynamically
-#: src/nautilus-window-menus.c:1569
+#: src/nautilus-window-menus.c:1581
 msgid "Change the visibility of this window's sidebar"
 msgstr "Endre synligheten for dette vinduets sidelinje"
 
 #. Title computed dynamically
-#: src/nautilus-window-menus.c:1580
+#: src/nautilus-window-menus.c:1592
 msgid "Change the visibility of this window's tool bar"
 msgstr "Endre synligheten for dette vinduets verktøylinje"
 
 #. Title computed dynamically
-#: src/nautilus-window-menus.c:1591
+#: src/nautilus-window-menus.c:1603
 msgid "Change the visibility of this window's location bar"
 msgstr "Endre synligheten for dette vinduets adresselinje"
 
 #. Title computed dynamically
-#: src/nautilus-window-menus.c:1602
+#: src/nautilus-window-menus.c:1614
 msgid "Change the visibility of this window's status bar"
 msgstr "Endre synligheten for dette vinduets statuslinje"
 
-#: src/nautilus-window-menus.c:1618
+#: src/nautilus-window-menus.c:1630
 msgid "Zoom _In"
 msgstr "Zoom _inn"
 
-#: src/nautilus-window-menus.c:1619
+#: src/nautilus-window-menus.c:1631
 msgid "Show the contents in more detail"
 msgstr "Vis innhold med større grad av detaljer"
 
-#: src/nautilus-window-menus.c:1630
+#: src/nautilus-window-menus.c:1642
 msgid "Zoom _Out"
 msgstr "Zoom _ut"
 
-#: src/nautilus-window-menus.c:1631
+#: src/nautilus-window-menus.c:1643
 msgid "Show the contents in less detail"
 msgstr "Vis innholdet med mindre grad av detaljer"
 
-#: src/nautilus-window-menus.c:1642
+#: src/nautilus-window-menus.c:1654
 msgid "_Normal Size"
 msgstr "_Normal størrelse"
 
-#: src/nautilus-window-menus.c:1643
+#: src/nautilus-window-menus.c:1655
 msgid "Show the contents at the normal size"
 msgstr "Vis innholdet i normal størrelse"
 
-#: src/nautilus-window-menus.c:1658
+#: src/nautilus-window-menus.c:1670
 msgid "_Back"
 msgstr "_Tilbake"
 
-#: src/nautilus-window-menus.c:1670
+#: src/nautilus-window-menus.c:1682
 msgid "_Forward"
 msgstr "_Fremover"
 
-#: src/nautilus-window-menus.c:1682
+#: src/nautilus-window-menus.c:1694
 msgid "_Up a Level"
 msgstr "_Opp ett nivå"
 
-#: src/nautilus-window-menus.c:1694
+#: src/nautilus-window-menus.c:1706
 msgid "_Home"
 msgstr "_Hjem"
 
-#: src/nautilus-window-menus.c:1707
+#: src/nautilus-window-menus.c:1719
 msgid "For_get History"
 msgstr "_Glem historikk"
 
-#: src/nautilus-window-menus.c:1708
+#: src/nautilus-window-menus.c:1720
 msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "Tøm innhold av Go-menyen og fram/tilbake- listene"
 
-#: src/nautilus-window-menus.c:1723
+#: src/nautilus-window-menus.c:1735
 msgid "_Add Bookmark"
 msgstr "_Legg til bokmerke"
 
-#: src/nautilus-window-menus.c:1724
+#: src/nautilus-window-menus.c:1736
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Legg til et bokmerke for nåværende plassering i denne menyen"
 
-#: src/nautilus-window-menus.c:1735
+#: src/nautilus-window-menus.c:1747
 msgid "_Edit Bookmarks..."
 msgstr "R_ediger bokmerker..."
 
-#: src/nautilus-window-menus.c:1736
+#: src/nautilus-window-menus.c:1748
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Vis et vindu som tillater redigering av bokmerkene i denne menyen"
 
-#: src/nautilus-window-menus.c:1751
+#: src/nautilus-window-menus.c:1763
 msgid "_About Nautilus..."
 msgstr "_Om Nautilus..."
 
-#: src/nautilus-window-menus.c:1752
+#: src/nautilus-window-menus.c:1764
 msgid "Displays information about the Nautilus program"
 msgstr "Viser informasjon om Nautilus programmet"
 
-#: src/nautilus-window-menus.c:1805
+#: src/nautilus-window-menus.c:1817
 msgid "Edit Settings..."
 msgstr "Redigér innstillinger..."
 
-#: src/nautilus-window-menus.c:1806
+#: src/nautilus-window-menus.c:1818
 msgid "Edit Settings for the Current User Level"
 msgstr "Redigér innstillinger for aktivt brukernivå"
 
-#: src/nautilus-window-menus.c:1870
+#: src/nautilus-window-menus.c:1882
 msgid "_Browse"
 msgstr "_Bla gjennom"
 
-#: src/nautilus-window-menus.c:1871
+#: src/nautilus-window-menus.c:1883
 msgid "_Find"
 msgstr "_Finn"
 
-#: src/nautilus-window-toolbars.c:109
+#: src/nautilus-window-toolbars.c:110
 msgid "Back"
 msgstr "Tilbake"
 
-#: src/nautilus-window-toolbars.c:114
+#: src/nautilus-window-toolbars.c:115
 msgid "Forward"
 msgstr "Fremover"
 
-#: src/nautilus-window-toolbars.c:119
+#: src/nautilus-window-toolbars.c:120
 msgid "Up"
 msgstr "Opp"
 
-#: src/nautilus-window-toolbars.c:124
+#: src/nautilus-window-toolbars.c:125
 msgid "Refresh"
 msgstr "Gjenoppfrisk"
 
-#: src/nautilus-window-toolbars.c:131
+#: src/nautilus-window-toolbars.c:132
 msgid "Home"
 msgstr "Hjem"
 
-#: src/nautilus-window-toolbars.c:136
+#: src/nautilus-window-toolbars.c:137
 msgid "Find"
 msgstr "Finn"
 
-#: src/nautilus-window-toolbars.c:141
+#: src/nautilus-window-toolbars.c:142
 msgid "Web Search"
 msgstr "Web-søk"
 
-#: src/nautilus-window-toolbars.c:154
+#: src/nautilus-window-toolbars.c:155
 msgid "Services"
 msgstr "Tjenester"
 
 #. This is marked for localization in case the % sign is not
 #. * appropriate in some locale. I guess that's unlikely.
 #.
-#: src/nautilus-zoom-control.c:552
+#: src/nautilus-zoom-control.c:565
 msgid "%.0f%%"
 msgstr "%.0f%%"
