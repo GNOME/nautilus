@@ -8,6 +8,24 @@
 
 #include <gtk/gtk.h>
 
+static GdkPixbuf*
+create_pixbuf (const char *name)
+{
+	char *path;
+	GdkPixbuf *pixbuf;
+
+	g_return_val_if_fail (name != NULL, NULL);
+
+	path = g_strdup_printf ("/gnome/share/pixmaps/nautilus/%s", name);
+	
+	pixbuf = gdk_pixbuf_new_from_file (path);
+	g_free (path);
+
+	g_assert (pixbuf != NULL);
+	
+	return pixbuf;
+}
+
 static void test_radio_group                     (void);
 static void test_caption_table                   (void);
 static void test_string_picker                   (void);
@@ -42,17 +60,30 @@ main (int argc, char * argv[])
 static void
 test_radio_group (void)
 {
-	GtkWidget * window;
-	GtkWidget * buttons;
+	GtkWidget *window;
+	GtkWidget *buttons;
 
+	GdkPixbuf *pixbufs[3];
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
 	buttons = nautilus_radio_button_group_new ();
 
+	pixbufs[0] = create_pixbuf ("novice.png");
+	pixbufs[1] = create_pixbuf ("intermediate.png");
+	pixbufs[2] = create_pixbuf ("expert.png");
+
 	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (buttons), "Apples");
 	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (buttons), "Oranges");
 	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (buttons), "Strawberries");
+
+	nautilus_radio_button_group_set_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (buttons), 0, pixbufs[0]);
+	nautilus_radio_button_group_set_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (buttons), 1, pixbufs[1]);
+	nautilus_radio_button_group_set_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (buttons), 2, pixbufs[2]);
+
+	gdk_pixbuf_unref (pixbufs[0]);
+	gdk_pixbuf_unref (pixbufs[1]);
+	gdk_pixbuf_unref (pixbufs[2]);
 
 	gtk_signal_connect (GTK_OBJECT (buttons),
 			    "changed",

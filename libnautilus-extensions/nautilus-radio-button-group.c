@@ -24,10 +24,12 @@
 
 #include <config.h>
 #include "nautilus-radio-button-group.h"
+#include "nautilus-image.h"
 
 #include <gtk/gtkradiobutton.h>
 #include <gtk/gtksignal.h>
 #include "nautilus-gtk-macros.h"
+#include "nautilus-glib-extensions.h"
 
 static const gint RADIO_BUTTON_GROUP_INVALID = -1;
 
@@ -40,9 +42,16 @@ typedef enum
 
 struct _NautilusRadioButtonGroupDetails
 {
-	GList		*buttons;
+	GList		*rows;
 	GSList		*group;
+	guint		num_rows;
 };
+
+typedef struct
+{
+	GtkWidget	*button;
+	GtkWidget	*image;
+} TableRow;
 
 /* NautilusRadioButtonGroupClass methods */
 static void nautilus_radio_button_group_initialize_class (NautilusRadioButtonGroupClass *klass);
@@ -66,7 +75,7 @@ static void button_toggled                               (GtkWidget             
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusRadioButtonGroup,
 				   nautilus_radio_button_group,
-				   GTK_TYPE_VBOX)
+				   GTK_TYPE_TABLE)
 
 static guint radio_group_signals[LAST_SIGNAL] = { 0 };
 
@@ -82,7 +91,7 @@ nautilus_radio_button_group_initialize_class (NautilusRadioButtonGroupClass *rad
 	object_class = GTK_OBJECT_CLASS (radio_button_group_class);
 	widget_class = GTK_WIDGET_CLASS (radio_button_group_class);
 
- 	parent_class = gtk_type_class (gtk_vbox_get_type ());
+ 	parent_class = gtk_type_class (gtk_table_get_type ());
 
 	/* GtkObjectClass */
 	object_class->destroy = nautilus_radio_button_group_destroy;
@@ -106,15 +115,16 @@ nautilus_radio_button_group_initialize (NautilusRadioButtonGroup *button_group)
 {
 	button_group->details = g_new (NautilusRadioButtonGroupDetails, 1);
 
-	button_group->details->buttons = NULL;
+	button_group->details->rows = NULL;
 	button_group->details->group = NULL;
+	button_group->details->num_rows = 0;
 }
 
 /*
  * GtkObjectClass methods
  */
 static void
-nautilus_radio_button_group_destroy(GtkObject* object)
+nautilus_radio_button_group_destroy (GtkObject *object)
 {
 	NautilusRadioButtonGroup * button_group;
 	
@@ -154,12 +164,11 @@ radio_button_group_free_button_group (NautilusRadioButtonGroup *button_group)
 	g_assert (button_group != NULL);
 	g_assert (button_group->details != NULL);
 
-	if (button_group->details->buttons)
-	{
-		g_list_free (button_group->details->buttons);
+	if (button_group->details->rows) {
+		nautilus_g_list_free_deep (button_group->details->rows);
+		button_group->details->rows = NULL;
 	}
 
-	button_group->details->buttons = NULL;
 	button_group->details->group = NULL;
 }
 
@@ -203,41 +212,55 @@ nautilus_radio_button_group_new (void)
  * Returns: The index of the new button.
  */
 guint
-nautilus_radio_button_group_insert (NautilusRadioButtonGroup *button_group,
-				   const gchar             *label)
+nautilus_radio_button_group_insert (NautilusRadioButtonGroup	*button_group,
+				    const gchar			*label)
 {
-	GtkWidget	*button;
+	GtkTable	*table;
+	TableRow	*row;
 
 	g_return_val_if_fail (button_group != NULL, 0);
 	g_return_val_if_fail (NAUTILUS_IS_RADIO_BUTTON_GROUP (button_group), 0);
 	g_return_val_if_fail (label != NULL, 0);
-	
-	button = gtk_radio_button_new_with_label (button_group->details->group, label);
+
+	table = GTK_TABLE (button_group);
+
+	row = g_new (TableRow, 1);
+
+	row->button = gtk_radio_button_new_with_label (button_group->details->group, label);
+	row->image = NULL;
 
 	/*
 	 * For some crazy reason I dont grok, the group has to be fetched each
 	 * time from the previous button
 	 */
-	button_group->details->group = gtk_radio_button_group (GTK_RADIO_BUTTON (button));
+	button_group->details->group = gtk_radio_button_group (GTK_RADIO_BUTTON (row->button));
 
-	gtk_signal_connect (GTK_OBJECT (button),
+	gtk_signal_connect (GTK_OBJECT (row->button),
 			    "toggled",
 			    GTK_SIGNAL_FUNC (button_toggled),
 			    (gpointer) button_group);
 
-	gtk_box_pack_start (GTK_BOX (button_group),
-			    button,
-			    TRUE,
-			    TRUE,
-			    0);
+	button_group->details->num_rows++;
 
-	gtk_widget_show (button);
+	gtk_table_resize (table, button_group->details->num_rows, 2);
+
+	/* Column 2 */
+	gtk_table_attach (table, 
+			  row->button,				/* child */
+			  1,					/* left_attatch */
+			  2,					/* right_attatch */
+			  button_group->details->num_rows - 1,	/* top_attatch */
+			  button_group->details->num_rows,	/* bottom_attatch */
+			  (GTK_FILL|GTK_EXPAND),		/* xoptions */
+			  (GTK_FILL|GTK_EXPAND),		/* yoptions */
+			  0,					/* xpadding */
+			  0);					/* ypadding */
+
+	gtk_widget_show (row->button);
 	
-	button_group->details->buttons = g_list_append (button_group->details->buttons, 
-						    (gpointer) button);
-
-
-	return g_list_length (button_group->details->buttons) - 1;
+	button_group->details->rows = g_list_append (button_group->details->rows, row);
+	
+	return g_list_length (button_group->details->rows) - 1;
 }
 
 /**
@@ -257,13 +280,18 @@ nautilus_radio_button_group_get_active_index (NautilusRadioButtonGroup *button_g
 	
 	g_assert (button_group != NULL);
 
-	button_iterator = button_group->details->buttons;
+	button_iterator = button_group->details->rows;
 
 	while (button_iterator)
 	{
-		g_assert (GTK_TOGGLE_BUTTON (button_iterator->data));
+		TableRow *row;
 
-		if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button_iterator->data)))
+		row = button_iterator->data;
+		g_assert (row != NULL);
+		g_assert (row->button != NULL);
+		g_assert (GTK_TOGGLE_BUTTON (row->button));
+
+		if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (row->button)))
 		{
 			return i;
 		}
@@ -273,7 +301,7 @@ nautilus_radio_button_group_get_active_index (NautilusRadioButtonGroup *button_g
 		i++;
 	}
 
-	g_assert (0);
+	g_assert_not_reached ();
 
 	return 0;
 }
@@ -282,17 +310,57 @@ void
 nautilus_radio_button_group_set_active_index (NautilusRadioButtonGroup *button_group,
 					      guint active_index)
 {
-	GList	*node;
+	TableRow *row;
 
  	g_return_if_fail (button_group != NULL);
 	g_return_if_fail (NAUTILUS_IS_RADIO_BUTTON_GROUP (button_group));
 
-	node = g_list_nth (button_group->details->buttons, active_index);
+	row = g_list_nth_data (button_group->details->rows, active_index);
+	g_assert (row != NULL);
+	g_assert (row->button != NULL);
+	g_assert (GTK_TOGGLE_BUTTON (row->button));
 
-	g_assert (node != NULL);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (row->button), TRUE);
+}
 
-	g_assert (GTK_TOGGLE_BUTTON (node->data));
+/* Set an item's pixbuf. */
+void
+nautilus_radio_button_group_set_pixbuf (NautilusRadioButtonGroup *button_group,
+					guint                     index,
+					GdkPixbuf                *pixbuf)
+{
+	GtkTable	*table;
+	TableRow	*row;
 
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (node->data), TRUE);
+ 	g_return_if_fail (button_group != NULL);
+	g_return_if_fail (NAUTILUS_IS_RADIO_BUTTON_GROUP (button_group));
+	g_return_if_fail (index < g_list_length (button_group->details->rows));
+
+	table = GTK_TABLE (button_group);
+
+	row = g_list_nth_data (button_group->details->rows, index);
+	g_assert (row != NULL);
+
+	if (row->image == NULL)
+	{
+		row->image = nautilus_image_new ();
+		
+		gtk_table_attach (table,
+				  row->image,			/* child */
+				  0,				/* left_attatch */
+				  1,				/* right_attatch */
+				  index,			/* top_attatch */
+				  index + 1,			/* bottom_attatch */
+				  GTK_FILL,			/* xoptions */
+				  (GTK_FILL|GTK_EXPAND),	/* yoptions */
+				  0,				/* xpadding */
+				  0);				/* ypadding */
+		
+		gtk_widget_show (row->image);
+	}
+
+	g_assert (row->image != NULL);
+
+	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (row->image), pixbuf);
 }
 

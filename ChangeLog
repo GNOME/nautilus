@@ -1,3 +1,22 @@
+2000-07-18  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-radio-button-group.c:
+	(nautilus_radio_button_group_initialize_class),
+	(nautilus_radio_button_group_initialize),
+	(nautilus_radio_button_group_destroy),
+	(radio_button_group_free_button_group),
+	(nautilus_radio_button_group_insert),
+	(nautilus_radio_button_group_get_active_index),
+	(nautilus_radio_button_group_set_active_index),
+	(nautilus_radio_button_group_set_pixbuf):
+	* libnautilus-extensions/nautilus-radio-button-group.h:
+	Add support for displaying an option icon with each radio button
+	pixbuf.  Use NautilusImage for this.
+
+	* test/test-nautilus-widgets.c: (create_pixbuf),
+	(test_radio_group):
+	Update test to include icon support.
+	
 2000-07-17  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-list.c:

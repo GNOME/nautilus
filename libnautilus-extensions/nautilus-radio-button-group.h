@@ -25,13 +25,15 @@
 #ifndef NAUTILUS_RADIO_BUTTON_GROUP_H
 #define NAUTILUS_RADIO_BUTTON_GROUP_H
 
-#include <gtk/gtkvbox.h>
+#include <gtk/gtktable.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gnome.h>
 
 /*
- * NautilusRadioButtonGroup is a collection of radio buttons.
+ * NautilusRadioButtonGroup is a collection of radio buttons
+ * arranged into rows.  An optional icon can be displayed
+ * with each radio button entry.
  */
-
 BEGIN_GNOME_DECLS
 
 #define NAUTILUS_TYPE_RADIO_BUTTON_GROUP            (nautilus_radio_button_group_get_type ())
@@ -46,7 +48,7 @@ typedef struct _NautilusRadioButtonGroupDetails    NautilusRadioButtonGroupDetai
 struct _NautilusRadioButtonGroup
 {
 	/* Super Class */
-	GtkVBox				vbox;
+	GtkTable			table;
 	
 	/* Private stuff */
 	NautilusRadioButtonGroupDetails	*details;
@@ -54,7 +56,7 @@ struct _NautilusRadioButtonGroup
 
 struct _NautilusRadioButtonGroupClass
 {
-	GtkVBoxClass			parent_class;
+	GtkTableClass			parent_class;
 };
 
 typedef struct
@@ -65,16 +67,23 @@ typedef struct
 GtkType    nautilus_radio_button_group_get_type         (void);
 GtkWidget* nautilus_radio_button_group_new              (void);
 
+
 /* Insert a new item to the group.  Returns the new item's index */
-guint nautilus_radio_button_group_insert           (NautilusRadioButtonGroup *button_group,
-						    const gchar              *label);
+guint      nautilus_radio_button_group_insert           (NautilusRadioButtonGroup *button_group,
+							 const gchar              *label);
 
 /* Get the active item index. By law there always is an active item */
-guint nautilus_radio_button_group_get_active_index (NautilusRadioButtonGroup *button_group);
+guint      nautilus_radio_button_group_get_active_index (NautilusRadioButtonGroup *button_group);
+
 
 /* Set the active item index. */
-void  nautilus_radio_button_group_set_active_index (NautilusRadioButtonGroup *button_group,
-						    guint                     active_index);
+void       nautilus_radio_button_group_set_active_index (NautilusRadioButtonGroup *button_group,
+							 guint                     active_index);
+
+/* Set an item's pixbuf. */
+void       nautilus_radio_button_group_set_pixbuf       (NautilusRadioButtonGroup *button_group,
+							 guint                     index,
+							 GdkPixbuf                *pixbuf);
 
 BEGIN_GNOME_DECLS
 
