@@ -1658,6 +1658,86 @@ process_pending_file_attribute_requests (NautilusDirectory *directory)
 	g_free (uri);
 }
 
+void
+nautilus_directory_notify_files_added (GList *uris)
+{
+	GList *p;
+	for (p = uris; p != NULL; p = p->next) {
+#ifdef COPY_NOTIFY_TESTING
+		printf("added %s\n", (const char *)p->data);
+#endif
+		/*
+		FIXME:
+		
+		Find the parent directory of uri in directory_objects.
+	 	Create a new NautilusFile and add it to the directory.
+	 	Notify all observers of directory about new NautilusFile.
+	 	*/
+
+	}
+	nautilus_g_list_free_deep (uris);
+}
+
+void
+nautilus_directory_notify_files_removed (GList *uris)
+{
+	GList *p;
+	for (p = uris; p != NULL; p = p->next) {
+#ifdef COPY_NOTIFY_TESTING
+		printf("removed %s\n", (const char *)p->data);
+#endif
+		/*
+		FIXME:
+		
+		Find the parent directory of uri in directory_objects.
+	 	Look up NautilusFile for uri.
+	 	Notify all observers of directory that the NautilusFile is 
+	 	being removed.
+	 	Remove the NautilusFile from directory and delete it.
+	 	*/
+
+	}
+	nautilus_g_list_free_deep (uris);
+}
+
+void
+nautilus_directory_notify_files_moved (GList *uri_pairs)
+{
+	GList *p;
+	for (p = uri_pairs; p != NULL; p = p->next) {
+#ifdef COPY_NOTIFY_TESTING
+		URIPair *pair;
+
+		pair = p->data;
+		printf("moved %s to %s \n", pair->from_uri, pair->to_uri);
+#endif
+		/*
+		FIXME:
+		
+	 	Find the parent directory of pair->from_uri in directory_objects.
+	 	Find the parent directory of pair->from_to in directory_objects.
+	 	Look up NautilusFile for pair->from_uri.
+	 	??? 
+
+	 	*/
+
+	}
+
+	/* deep delete the list of pairs */
+	for (p = uri_pairs; p != NULL; p = p->next) {
+		URIPair *pair;
+
+		/* delete the strings in each pair */
+		pair = p->data;
+		g_free (pair->from_uri);
+		g_free (pair->to_uri);
+	}
+
+	/* delete the list and the now empty pair structs */
+	nautilus_g_list_free_deep (uri_pairs);
+
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static int data_dummy;

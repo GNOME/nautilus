@@ -27,6 +27,7 @@
 
 #include <gnome.h>
 #include "dfos-xfer.h"
+#include "libnautilus-extensions/nautilus-file-changes-queue.h"
 #include "fm-directory-view.h"
 
 
@@ -122,9 +123,14 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 				 progress_info->bytes_total);
 		return TRUE;
 				 
-	case GNOME_VFS_XFER_PHASE_XFERRING:
+	case GNOME_VFS_XFER_PHASE_MOVING:
+	case GNOME_VFS_XFER_PHASE_DELETESOURCE:
 	case GNOME_VFS_XFER_PHASE_OPENSOURCE:
 	case GNOME_VFS_XFER_PHASE_OPENTARGET:
+		nautilus_file_changes_consume_changes (FALSE);
+		/* fall through */
+
+	case GNOME_VFS_XFER_PHASE_COPYING:
 		if (progress_info->bytes_copied == 0) {
 			dfos_xfer_progress_dialog_new_file
 				(DFOS_XFER_PROGRESS_DIALOG
@@ -149,6 +155,7 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 		return TRUE;
 		
 	case GNOME_VFS_XFER_PHASE_COMPLETED:
+		nautilus_file_changes_consume_changes (TRUE);
 		gtk_widget_destroy (xfer_info->progress_dialog);
 		g_free (xfer_info);
 		return TRUE;
@@ -249,7 +256,7 @@ handle_xfer_duplicate (GnomeVFSXferProgressInfo *progress_info,
 }
 
 static int
-sync_xfer_callback (
+update_xfer_callback (GnomeVFSAsyncHandle *handle,
 	       GnomeVFSXferProgressInfo *progress_info,
 	       gpointer data)
 {
@@ -269,16 +276,40 @@ sync_xfer_callback (
 	default:
 		g_warning (_("Unknown GnomeVFSXferProgressStatus %d"),
 			   progress_info->status);
-		return FALSE;
+		return 0;
 	}
 }
 
+/* Low-level callback, called for every copy engine operation.
+ * Generates notifications about new, deleted and moved files.
+ */
 static int
-xfer_callback (GnomeVFSAsyncHandle *handle,
-	       GnomeVFSXferProgressInfo *progress_info,
-	       gpointer data)
+sync_xfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 {
-	return sync_xfer_callback (progress_info, data);
+	XferInfo *xfer_info;
+
+	xfer_info = (XferInfo *) data;
+
+	if (progress_info->status == GNOME_VFS_XFER_PROGRESS_STATUS_OK) {
+		switch (progress_info->phase) {
+		case GNOME_VFS_XFER_PHASE_OPENTARGET:
+			nautilus_file_changes_queue_file_added (progress_info->target_name);
+			break;
+
+		case GNOME_VFS_XFER_PHASE_MOVING:
+			nautilus_file_changes_queue_file_moved (progress_info->source_name,
+				progress_info->target_name);
+			break;
+
+		case GNOME_VFS_XFER_PHASE_DELETESOURCE:
+			nautilus_file_changes_queue_file_removed (progress_info->source_name);
+			break;
+
+		default:
+			break;
+		}
+	}
+	return 1;
 }
 
 
@@ -305,8 +336,9 @@ dfos_xfer (DFOS *dfos,
 				       options,
 				       GNOME_VFS_XFER_ERROR_MODE_QUERY,
 				       overwrite_mode,
-				       xfer_callback,
-				       xfer_info);
+				       update_xfer_callback,
+				       xfer_info,
+				       NULL, NULL);
 
 	if (result != GNOME_VFS_OK) {
 		gchar *message;
@@ -441,7 +473,8 @@ fs_xfer (const GList *item_uris,
 	      		      target_dir_uri_text, NULL,
 	      		      move_options, GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 	      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
-	      		      &xfer_callback, xfer_info);
+	      		      &update_xfer_callback, xfer_info,
+	      		      &sync_xfer_callback, xfer_info);
 
 	if (!target_dir)
 		g_free ((char *)target_dir_uri_text);

@@ -75,6 +75,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-entry.c			\
 	nautilus-file-utilities.c		\
 	nautilus-file.c				\
+	nautilus-file-changes-queue.c		\
 	nautilus-gdk-extensions.c		\
 	nautilus-gdk-pixbuf-extensions.c	\
 	nautilus-glib-extensions.c		\

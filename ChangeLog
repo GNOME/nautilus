@@ -1,3 +1,50 @@
+2000-04-17  Pavel Cisler  <pavel@eazel.com>
+
+	This checkin requires new gnome-vfs.
+
+	Plumbing for making copied/moved/deleted files show up update
+	in their respective new locations.
+
+	* libnautilus-extensions/nautilus-file-changes-queue.h
+	* libnautilus-extensions/nautilus-file-changes-queue.c
+	* libnautilus-extensions/Makefile.am
+	Shared queue used by the copy engine to send update notification
+	requests to NautilusDirectory during file copy/move/delete operations.
+
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_notify_files_added), 
+	(nautilus_directory_notify_files_removed),
+	(nautilus_directory_notify_files_moved):
+	Stub calls that will be hooked up to the NautilusDirectory
+	notification calls to dispatch the notification updates.
+	
+	* src/file-manager/dfos-xfer.c:
+	(sync_xfer_callback):
+	New callback that gets called in the async copy engine context
+	and produces change entries stuffing them into the file changes
+	queue.
+
+	* src/file-manager/dfos-xfer.c:
+	(handle_xfer_ok):
+	Added calls to the new nautilus_file_changes_consume_changes
+	from the progress update callback. This callback is called in
+	the user interface context and consumes the change entries
+	from the file changes queue, sending them in chunks to be
+	dispatched by to the individual Nautilus directory objects. 
+
+	* src/file-manager/dfos-xfer.c:
+	(handle_xfer_ok):
+	Updated to use new progress enum values.
+
+	* src/file-manager/dfos-xfer.c:
+	(update_xfer_callback):
+	Renamed from sync_xfer_callback.
+
+	* src/file-manager/dfos-xfer.c:
+	(gnome_vfs_async_xfer):
+	Pass in new sync_xfer_callback parameters.
+	
 2000-04-17  Darin Adler  <darin@eazel.com>
 
 	* components/services/install/.cvsignore: Generated files.

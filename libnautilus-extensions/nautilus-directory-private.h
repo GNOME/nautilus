@@ -81,6 +81,11 @@ typedef struct {
 	gpointer callback_data;
 } QueuedCallback;
 
+typedef struct {
+	char *from_uri;
+	char *to_uri;
+} URIPair;
+
 NautilusFile *nautilus_directory_find_file                (NautilusDirectory    *directory,
 							   const char           *file_name);
 char *        nautilus_directory_get_file_metadata        (NautilusDirectory    *directory,
@@ -102,6 +107,11 @@ void          nautilus_directory_cancel_callback_internal (NautilusDirectory    
 							   const QueuedCallback *callback);
 void          nautilus_directory_call_when_ready_internal (NautilusDirectory    *directory,
 							   const QueuedCallback *callback);
+
+/* Change notification calls */
+void	      nautilus_directory_notify_files_added	  (GList *uris);
+void	      nautilus_directory_notify_files_removed	  (GList *uris);
+void	      nautilus_directory_notify_files_moved	  (GList *uri_pairs);
 
 /* debugging functions */
 int           nautilus_directory_number_outstanding       (void);
