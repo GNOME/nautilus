@@ -62,6 +62,10 @@ fm_report_error_renaming_file (NautilusFile *file,
 		message = g_strdup_printf (_("You do not have the permissions necessary to rename \"%s.\""),
 					   original_name);
 		break;
+	case GNOME_VFS_ERROR_NOT_PERMITTED:
+		message = g_strdup_printf (_("The name \"%s.\" is not valid. \nPlease use a different name."),
+					   original_name);
+		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
 		g_warning ("Hit unhandled case %d in fm_report_error_renaming_file, tell sullivan@eazel.com", error);

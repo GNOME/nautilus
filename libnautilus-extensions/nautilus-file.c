@@ -933,12 +933,13 @@ nautilus_file_rename (NautilusFile *file,
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (new_name != NULL);
 	g_return_if_fail (callback != NULL);
-	
-	/* FIXME bugzilla.eazel.com 645: 
-	 * Make sure this returns an error for incoming names 
-	 * containing path separators.
-	 */
 
+	 /* Make return an error for incoming names containing path separators. */
+	 if (strstr (new_name, "/") != NULL) {
+		(* callback) (file, GNOME_VFS_ERROR_NOT_PERMITTED, callback_data);
+		return;
+	}
+	
 	/* Can't rename a file that's already gone.
 	 * We need to check this here because there may be a new
 	 * file with the same name.

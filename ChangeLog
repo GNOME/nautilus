@@ -1,3 +1,19 @@
+2000-12-04  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 645, nautilus_file_rename should handle path separators sensibly
+	
+	* libnautilus-extensions/nautilus-file.c: 
+	(nautilus_file_rename):
+	Check for the presence of the "/" path separator charcter. If one
+	exists, return an error.
+	
+	* src/file-manager/fm-error-reporting.c:
+	(fm_report_error_renaming_file):
+	Add a case to report an error if an illegal name has been specified
+	for the file to renamed to.
+
 2000-12-04  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
