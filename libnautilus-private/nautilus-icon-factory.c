@@ -504,14 +504,6 @@ make_full_icon_path (const char *path, const char *suffix)
 	return full_path;
 }
 
-/* Return true if the given suffix is a scalable image. */
-static gboolean
-suffix_is_scalable (const char *path)
-{
-	return nautilus_str_has_suffix (path, ".svg")
-		|| nautilus_str_has_suffix (path, ".SVG");
-}
-
 /* Pick a particular icon to use, trying all the various suffixes.
  * Return the path of the icon or NULL if no icon is found.
  */
@@ -757,6 +749,14 @@ nautilus_scalable_icon_equal (gconstpointer a,
 		&& nautilus_strcmp (icon_a->modifier, icon_b->modifier) == 0; 
 }
 
+/* Return true if the given suffix is a scalable image. */
+static gboolean
+str_has_svg_suffix (const char *path)
+{
+	return nautilus_str_has_suffix (path, ".svg")
+		|| nautilus_str_has_suffix (path, ".SVG");
+}
+
 NautilusScalableIcon *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifier)
 {
@@ -802,7 +802,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 	 * we should be checking the mime-type but for now we use the suffix, 
 	 * as the mime-type isn't defined in standard setups 
 	 */
-	if (uri == NULL && suffix_is_scalable (file_uri)) {
+	if (uri == NULL && str_has_svg_suffix (file_uri)) {
 		uri = g_strdup (file_uri);
 	}
 	
@@ -1162,7 +1162,7 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 		 */
 		if (nautilus_str_has_prefix (scalable_icon->uri, "file://")) {
 			/* FIXME bugzilla.eazel.com 641: should use MIME-type instead of suffix */
-			if (suffix_is_scalable (scalable_icon->uri)) {
+			if (str_has_svg_suffix (scalable_icon->uri)) {
 				memset (text_rect, 0, sizeof (*text_rect));
 				return load_specific_image_svg (scalable_icon->uri + 7, size_in_pixels);
 			}
@@ -1186,11 +1186,14 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 		if (path == NULL) {
 			return NULL;
 		}
-		if (suffix_is_scalable (path)) {
+
+		/* FIXME bugzilla.eazel.com 641: should use MIME-type instead of suffix */
+		if (str_has_svg_suffix (path)) {
 			image = load_specific_image_svg (path, size_in_pixels);
 		} else {
 			image = gdk_pixbuf_new_from_file (path);
 		}
+
 		g_free (path);
 		return image;
 	}

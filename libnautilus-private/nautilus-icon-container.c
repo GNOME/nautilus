@@ -68,10 +68,9 @@
 #define RUBBERBAND_BUTTON 1
 #define CONTEXTUAL_MENU_BUTTON 3
 
-/* Maximum size (multiplier) allowed for icons at the time
- * they are installed - the user can still stretch them further.
- */
-#define MAXIMUM_INITIAL_ICON_SIZE 2
+/* Maximum size (pixels) allowed for icons. */
+#define MAXIMUM_ICON_SIZE 1000
+#define MAXIMUM_EMBLEM_SIZE 100
 
 static void          activate_selected_items                  (NautilusIconContainer      *container);
 static void          nautilus_icon_container_initialize_class (NautilusIconContainerClass *class);
@@ -84,7 +83,6 @@ static NautilusIcon *get_nth_selected_icon                    (NautilusIconConta
 static gboolean      has_multiple_selection                   (NautilusIconContainer      *container);
 static void          icon_destroy                             (NautilusIconContainer      *container,
 							       NautilusIcon               *icon);
-static guint         icon_get_actual_size                     (NautilusIcon               *icon);
 static void          end_renaming_mode                        (NautilusIconContainer      *container,
 							       gboolean                    commit);
 static void          hide_rename_widget                       (NautilusIconContainer      *container,
@@ -138,7 +136,6 @@ icon_new (NautilusIconContainer *container,
 {
 	NautilusIcon *icon;
 	GnomeCanvas *canvas;
-	guint max_size, actual_size;
         
 	canvas = GNOME_CANVAS (container);
 	
@@ -156,23 +153,6 @@ icon_new (NautilusIconContainer *container,
 	icon->item->user_data = icon;
 
 	nautilus_icon_container_update_icon (container, icon);
-	
-	/* Enforce a maximum size for new icons by reducing the scale factor as necessary. */
-	/* FIXME bugzilla.eazel.com 621: 
-	 * This needs to be done again later when the image changes, so it's not
-	 * sufficient to just have this check here. Also, this should not be done by
-	 * changing the scale factor because we don't want a persistent change to that.
-	 * I think that the best way to implement this is probably to put something in
-	 * the icon factory that enforces this rule.
-	 */
-	max_size = nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
-		* MAXIMUM_INITIAL_ICON_SIZE;
-	actual_size = icon_get_actual_size (icon);
-	if (actual_size > max_size) {
-		icon->scale_x = max_size / (double) actual_size;
-		icon->scale_y = icon->scale_x;
-		nautilus_icon_container_update_icon (container, icon);
-	}
 	
 	return icon;
 }
@@ -234,22 +214,6 @@ icon_set_size (NautilusIconContainer *container,
 					icon->x, icon->y,
 					scale, scale,
 					FALSE);
-}
-
-/* return the size in pixels of the largest dimension of the pixmap associated with the icon */ 
-static guint
-icon_get_actual_size (NautilusIcon *icon)
-{
-	GdkPixbuf *pixbuf;
-	guint max_size;
-	
- 	pixbuf = nautilus_icon_canvas_item_get_image (icon->item, NULL);
-	max_size = gdk_pixbuf_get_width(pixbuf);
-	if (gdk_pixbuf_get_height(pixbuf) > max_size) {
-		max_size = gdk_pixbuf_get_height(pixbuf);
-	}
-
-	return max_size;
 }
 
 static void
@@ -2429,14 +2393,14 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 		(scalable_icon,
 		 icon_size_x, icon_size_y,
-		 G_MAXINT, G_MAXINT,
+		 MAXIMUM_ICON_SIZE, MAXIMUM_ICON_SIZE,
 		 &text_rect);
 	emblem_pixbufs = NULL;
 	for (p = emblem_icons; p != NULL; p = p->next) {
 		emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 			(p->data,
 			 icon_size_x, icon_size_y,
-			 G_MAXINT, G_MAXINT,
+			 MAXIMUM_EMBLEM_SIZE, MAXIMUM_EMBLEM_SIZE,
 			 NULL);
 		if (emblem_pixbuf != NULL) {
 			emblem_pixbufs = g_list_prepend

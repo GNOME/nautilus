@@ -143,13 +143,9 @@ nautilus_index_title_new (void)
 static void
 nautilus_index_title_update_icon (NautilusIndexTitle *index_title)
 {
-	int width, height;
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
 	GdkPixbuf *pixbuf;
-	double scale_factor;
-	double h_scale = 1.0;
-	double v_scale = 1.0;
 
 	/* NULL can happen because nautilus_file_get returns NULL for the root. */
 	if (index_title->details->file == NULL) {
@@ -158,31 +154,6 @@ nautilus_index_title_update_icon (NautilusIndexTitle *index_title)
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (index_title->details->file,
 							    NAUTILUS_ICON_SIZE_STANDARD);
 
-	/* even though we asked for standard size, it might still be really huge, if it's not
-	   part of the standard set, so scale it down if necessary */
-	
-	width  = gdk_pixbuf_get_width(pixbuf);
-	height = gdk_pixbuf_get_height(pixbuf);
-	if (width > MAX_ICON_WIDTH) {
-		h_scale = MAX_ICON_WIDTH / (double) width;
-	}
-	if (height > MAX_ICON_HEIGHT) {
-		v_scale = MAX_ICON_HEIGHT  / (double) height;
-	}
-	scale_factor = MIN (h_scale, v_scale);
-	
-	if (scale_factor < 1.0) {
-		GdkPixbuf *scaled_pixbuf;
-		int scaled_width  = floor(width * scale_factor + .5);
-		int scaled_height = floor(height * scale_factor + .5);
-				
-		scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf,
-							 scaled_width, scaled_height,
-							 GDK_INTERP_BILINEAR);	
-		gdk_pixbuf_unref (pixbuf);
-		pixbuf = scaled_pixbuf;
-	}
-	
 	/* make a pixmap and mask to pass to the widget */
         gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
 	gdk_pixbuf_unref (pixbuf);

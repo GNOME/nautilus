@@ -1,5 +1,21 @@
 2000-05-02  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-extensions/nautilus-icon-container.c (icon_new),
+	(nautilus_icon_container_update_icon):
+	Got rid of the old maximum size hack and use the new maximum size
+	parameter instead.
+	
+	* src/nautilus-index-title.c (nautilus_index_title_update_icon):
+	Took out maximum size hack and use the maximum size parameter
+	instead.
+
+	* libnautilus-extensions/nautilus-icon-factory.c
+	(str_has_svg_suffix), (nautilus_icon_factory_get_icon_for_file),
+	(load_specific_image): Renamed suffix_is_scalable to
+	str_has_svg_suffix to make it clearer what it does.
+	
+2000-05-02  Darin Adler  <darin@eazel.com>
+
 	* check-FIXME.pl: Added -print as suggested by Morten Welinder
 	<terra@diku.dk>.
 	* check-config-h.pl: Added -print and fixed broken message as
