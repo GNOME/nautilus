@@ -461,7 +461,7 @@ static void setup_overview_form (NautilusHardwareView *view)
                                 if(!strcmp(ide_media, "disk\n")) {
                                         file_name = nautilus_pixmap_file("i-blockdev.png");
                                 } else if(!strcmp(ide_media, "cdrom\n")) {
-                                        file_name = nautilus_pixmap_file("i-cdrom.png");
+                                        file_name = nautilus_pixmap_file("CD_drive.png");
                                 } else {
                                         /* some other device ... still set an icon */
                                         file_name = nautilus_pixmap_file("i-blockdev.png");
