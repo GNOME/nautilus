@@ -173,9 +173,11 @@ static void     nautilus_icon_canvas_item_init       (NautilusIconCanvasItem    
 /* private */
 static void     draw_or_measure_label_text           (NautilusIconCanvasItem        *item,
 						      GdkDrawable                   *drawable,
+						      gboolean                       create_mask,
 						      ArtIRect                       icon_rect);
 static void     draw_label_text                      (NautilusIconCanvasItem        *item,
 						      GdkDrawable                   *drawable,
+						      gboolean                       create_mask,
 						      ArtIRect                       icon_rect);
 static void     measure_label_text                   (NautilusIconCanvasItem        *item);
 static void     get_icon_canvas_rectangle            (NautilusIconCanvasItem        *item,
@@ -187,6 +189,10 @@ static gboolean emblem_layout_next                   (EmblemLayout              
 						      GdkPixbuf                    **emblem_pixbuf,
 						      ArtIRect                      *emblem_rect);
 static void     draw_pixbuf                          (GdkPixbuf                     *pixbuf,
+						      GdkDrawable                   *drawable,
+						      int                            x,
+						      int                            y);
+static void     draw_mask                            (GdkPixbuf                     *pixbuf,
 						      GdkDrawable                   *drawable,
 						      int                            x,
 						      int                            y);
@@ -448,25 +454,86 @@ nautilus_icon_canvas_item_get_property (GObject        *object,
 		break;
 	}
 }
-
+      
 GdkPixmap *
 nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
 				     GdkBitmap **mask)
 {
 	GdkPixmap *pixmap;
 	EelCanvas *canvas;
+	GdkScreen *screen;
+	GdkColormap *colormap;
+	GdkGC *gc;
+	int width, height;
+	int item_offset_x, item_offset_y;
+	ArtIRect icon_rect;
+	GdkPixbuf *pixbuf;
+	double item_x, item_y;
 	
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item), NULL);
 
 	canvas = EEL_CANVAS_ITEM (item)->canvas;
-	gdk_pixbuf_render_pixmap_and_mask_for_colormap (item->details->pixbuf,
-							gtk_widget_get_colormap (GTK_WIDGET (canvas)),
-							&pixmap,
-							mask,
-							128);
-	
-	draw_embedded_text (item, GDK_DRAWABLE (pixmap), 0,0);
+	colormap = gtk_widget_get_colormap (GTK_WIDGET (canvas));
+	screen = gdk_colormap_get_screen (colormap);
 
+	/* Assume we're updated so canvas item data is right */
+
+	/* Calculate the offset from the top-left corner of the
+	   new image to the item position (where the pixmap is placed) */
+	eel_canvas_world_to_window (canvas,
+				    item->details->x, item->details->y,
+				    &item_x, &item_y);
+
+	item_offset_x = item_x - EEL_CANVAS_ITEM (item)->x1;
+	item_offset_y = item_y - EEL_CANVAS_ITEM (item)->y1;
+
+	/* Calculate the width of the item */
+	width = EEL_CANVAS_ITEM (item)->x2 - EEL_CANVAS_ITEM (item)->x1;
+	height = EEL_CANVAS_ITEM (item)->y2 - EEL_CANVAS_ITEM (item)->y1;
+	
+	pixmap = gdk_pixmap_new (gdk_screen_get_root_window (screen),
+				 width,	height,
+				 gdk_colormap_get_visual (colormap)->depth);
+	gdk_drawable_set_colormap (GDK_DRAWABLE (pixmap), colormap);
+
+	pixbuf = item->details->pixbuf;
+	gc = gdk_gc_new (pixmap);
+	gdk_draw_rectangle (pixmap, GTK_WIDGET (canvas)->style->white_gc,
+			    TRUE,
+			    0, 0,
+			    width, height);
+	gdk_draw_pixbuf (pixmap, gc, pixbuf, 
+			 0, 0, item_offset_x, item_offset_y,
+			 gdk_pixbuf_get_width (pixbuf), gdk_pixbuf_get_height (pixbuf),
+			 GDK_RGB_DITHER_NORMAL,
+			 0, 0);
+	g_object_unref (gc);
+
+	*mask = gdk_pixmap_new (gdk_screen_get_root_window (screen),
+				width, height,
+				1);
+	gc = gdk_gc_new (*mask);
+	gdk_draw_rectangle (*mask, gc,
+			    TRUE,
+			    0, 0,
+			    width, height);
+	g_object_unref (gc);
+	  
+	gdk_pixbuf_render_threshold_alpha (pixbuf, *mask,
+					   0, 0, item_offset_x, item_offset_y,
+					   gdk_pixbuf_get_width (pixbuf), gdk_pixbuf_get_height (pixbuf),
+					   128);
+	
+	draw_embedded_text (item, GDK_DRAWABLE (pixmap),
+			    item_offset_x, item_offset_y);
+
+	icon_rect.x0 = item_offset_x;
+	icon_rect.y0 = item_offset_y;
+	icon_rect.x1 = item_offset_x + gdk_pixbuf_get_width (pixbuf);
+	icon_rect.y1 = item_offset_y + gdk_pixbuf_get_height (pixbuf);
+	draw_label_text (item, GDK_DRAWABLE (pixmap), FALSE, icon_rect);
+	draw_label_text (item, GDK_DRAWABLE (*mask), TRUE, icon_rect);
+	
 	return pixmap;
 }
 
@@ -780,6 +847,7 @@ static void
 draw_frame (NautilusIconCanvasItem *item,
 	    GdkDrawable *drawable,
 	    guint color,
+	    gboolean create_mask,
 	    int x, 
 	    int y,
 	    int width,
@@ -804,8 +872,11 @@ draw_frame (NautilusIconCanvasItem *item,
 				       5);
 		multiply_pixbuf_rgba (selection_pixbuf,
 				      color);
-		
-		draw_pixbuf (selection_pixbuf, drawable, x, y);
+		if (create_mask) {
+			draw_mask (selection_pixbuf, drawable, x, y);
+		} else {
+			draw_pixbuf (selection_pixbuf, drawable, x, y);
+		}
 		g_object_unref (selection_pixbuf);
 	} else {
 		gdk_draw_rectangle
@@ -824,6 +895,7 @@ draw_frame (NautilusIconCanvasItem *item,
 static void
 draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			    GdkDrawable *drawable,
+			    gboolean create_mask,
 			    ArtIRect icon_rect)
 {
 	NautilusIconCanvasItemDetails *details;
@@ -954,6 +1026,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		draw_frame (item,
 			    drawable,
 			    GTK_WIDGET_HAS_FOCUS (GTK_WIDGET (container)) ? container->details->highlight_color_rgba : container->details->active_color_rgba,
+			    create_mask,
 			    text_rect.x0,
 			    text_rect.y0,
 			    text_rect.x1 - text_rect.x0,
@@ -975,6 +1048,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 			draw_frame (item, 
 				    drawable,
 				    eel_gdk_color_to_rgb (&GTK_WIDGET (container)->style->base[GTK_STATE_NORMAL]),
+				    create_mask,
 				    text_rect.x0,
 				    text_rect.y0,
 				    text_rect.x1 - text_rect.x0,
@@ -1004,7 +1078,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 				   text_rect.y0 + editable_height + LABEL_LINE_SPACING + text_back_padding_y, gc);
 	}
 
-	if (item->details->is_highlighted_as_keyboard_focus) {
+	if (!create_mask && item->details->is_highlighted_as_keyboard_focus) {
 		gtk_paint_focus (GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas)->style,
 				 drawable,
 				 needs_highlight ? GTK_STATE_SELECTED : GTK_STATE_NORMAL,
@@ -1039,14 +1113,14 @@ measure_label_text (NautilusIconCanvasItem *item)
 		return;
 	}
 	
-	draw_or_measure_label_text (item, NULL, rect);
+	draw_or_measure_label_text (item, NULL, FALSE, rect);
 }
 
 static void
 draw_label_text (NautilusIconCanvasItem *item, GdkDrawable *drawable,
-		 ArtIRect icon_rect)
+		 gboolean create_mask, ArtIRect icon_rect)
 {
-	draw_or_measure_label_text (item, drawable, icon_rect);
+	draw_or_measure_label_text (item, drawable, create_mask, icon_rect);
 }
 
 static void
@@ -1254,6 +1328,16 @@ draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
 			 GDK_RGB_DITHER_NORMAL, 0, 0);
 }
 
+static void
+draw_mask (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
+{
+	gdk_pixbuf_render_threshold_alpha (pixbuf, drawable,
+					   0, 0, x, y,
+					   gdk_pixbuf_get_width (pixbuf),
+					   gdk_pixbuf_get_height (pixbuf),
+					   128);
+}
+
 /* shared code to highlight or dim the passed-in pixbuf */
 static GdkPixbuf *
 real_map_pixbuf (NautilusIconCanvasItem *icon_item)
@@ -1439,7 +1523,7 @@ nautilus_icon_canvas_item_draw (EelCanvasItem *item, GdkDrawable *drawable,
 	draw_stretch_handles (icon_item, drawable, &icon_rect);
 	
 	/* Draw the label text. */
-	draw_label_text (icon_item, drawable, icon_rect);
+	draw_label_text (icon_item, drawable, FALSE, icon_rect);
 }
 
 static PangoLayout *

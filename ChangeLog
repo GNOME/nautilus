@@ -1,5 +1,19 @@
 2004-10-22  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_get_image), (draw_frame),
+	(draw_or_measure_label_text), (measure_label_text),
+	(draw_label_text), (draw_mask), (nautilus_icon_canvas_item_draw):
+	Make the nautilus_icon_canvas_item_get_image return an image containing
+	icon + text. The image "start" changed to being from the item position to
+	from the item boundary.
+	
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_begin_drag):
+	Calculate icon offset from the boundary instead of icon position.
+
+2004-10-22  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-directory-view.c (rename_file):
 	Add ugly hack to make renames work on newly created files
 	in the list view. Don't look, you might go blind.

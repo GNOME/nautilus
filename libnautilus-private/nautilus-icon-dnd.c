@@ -1236,8 +1236,7 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
 	int x_offset, y_offset;
-	ArtDRect world_rect;
-	ArtIRect widget_rect;
+	double x1, y1, x2, y2, winx, winy;
 	
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_return_if_fail (event != NULL);
@@ -1260,14 +1259,11 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	   to it, with the hope that we get it back someday as X Windows improves */
 	
         /* compute the image's offset */
-	world_rect = nautilus_icon_canvas_item_get_icon_rectangle
-		(container->details->drag_icon->item);
-
-	canvas_rect_world_to_widget (EEL_CANVAS (container),
-				     &world_rect, &widget_rect);
-	
-        x_offset = dnd_info->drag_info.start_x - widget_rect.x0;
-        y_offset = dnd_info->drag_info.start_y - widget_rect.y0;
+	eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (container->details->drag_icon->item),
+				    &x1, &y1, &x2, &y2);
+	eel_canvas_world_to_window (canvas, x1, y1,  &winx, &winy);
+        x_offset = start_x - winx;
+        y_offset = start_y - winy;
         
 	/* start the drag */
 	context = gtk_drag_begin (GTK_WIDGET (container),
