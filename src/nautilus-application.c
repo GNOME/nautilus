@@ -113,11 +113,9 @@ create_object (PortableServer_Servant servant,
 	} else if (strcmp (iid, NAUTILUS_LIST_VIEW_IID) == 0) {
 		directory_view = FM_DIRECTORY_VIEW (g_object_new (fm_list_view_get_type (), NULL));
 		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
-#if GNOME2_CONVERSION_COMPLETE
 	} else if (strcmp (iid, SEARCH_LIST_VIEW_IID) == 0) {
 		directory_view = FM_DIRECTORY_VIEW (g_object_new (fm_search_list_view_get_type (), NULL));
 		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
-#endif
 	} else if (strcmp (iid, SHELL_IID) == 0) {
 		application = NAUTILUS_APPLICATION (bonobo_object_from_servant (servant));
 		object = BONOBO_OBJECT (nautilus_shell_new (application));

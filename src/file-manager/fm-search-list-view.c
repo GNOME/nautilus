@@ -50,8 +50,6 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 
-#if GNOME2_CONVERSION_COMPLETE
-
 /* FIXME bugzilla.gnome.org 42815: This code uses part of the
  * NautilusSearchBarCriterion class, which is really for complex
  * search bar user interface. We only need to do some non-UI
@@ -77,11 +75,12 @@ static void 	fm_search_list_view_class_init 	 (gpointer          klass);
 static void     real_destroy                             (GtkObject        *object);
 static void 	real_add_file				 (FMDirectoryView  *view,
 							  NautilusFile 	   *file);
+static gboolean real_file_still_belongs 		 (FMDirectoryView  *view, 
+							  NautilusFile 	   *file);
+#if GNOME2_CONVERSION_COMPLETE
 static void	real_adding_file 			 (FMListView 	   *view, 
 							  NautilusFile 	   *file);
 static void	real_removing_file 			 (FMListView 	   *view, 
-							  NautilusFile 	   *file);
-static gboolean real_file_still_belongs 		 (FMDirectoryView  *view, 
 							  NautilusFile 	   *file);
 static int  	real_get_number_of_columns           	 (FMListView       *list_view);
 static int  	real_get_emblems_column                	 (FMListView       *list_view);
@@ -90,6 +89,7 @@ static char *   real_get_default_sort_attribute      	 (FMListView       *view);
 static void 	real_get_column_specification        	 (FMListView       *list_view,
 						      	  int               column_number,
 						      	  FMListViewColumn *specification);
+#endif
 static EelStringList * real_get_emblem_names_to_exclude         (FMDirectoryView  *view);
 static void	real_file_limit_reached 		 (FMDirectoryView  *view);
 static void	real_merge_menus 		     	 (FMDirectoryView  *view);
@@ -360,6 +360,7 @@ fm_search_list_view_class_init (gpointer klass)
   	fm_directory_view_class->update_menus =	real_update_menus;
   	fm_directory_view_class->load_error = real_load_error;
 
+#if GNOME2_CONVERSION_COMPLETE
 	fm_list_view_class->adding_file = real_adding_file;
 	fm_list_view_class->removing_file = real_removing_file;
 	fm_list_view_class->get_number_of_columns = real_get_number_of_columns;
@@ -367,6 +368,7 @@ fm_search_list_view_class_init (gpointer klass)
 	fm_list_view_class->get_link_column = real_get_link_column;
 	fm_list_view_class->get_column_specification = real_get_column_specification;
 	fm_list_view_class->get_default_sort_attribute = real_get_default_sort_attribute;
+#endif
 }
 
 static void
@@ -377,8 +379,6 @@ fm_search_list_view_init (gpointer object,
 	NautilusView *nautilus_view;
 	FMDirectoryView *directory_view;
  
- 	g_assert (GTK_BIN (object)->child == NULL);
-
 	search_view = FM_SEARCH_LIST_VIEW (object);
   	directory_view = FM_DIRECTORY_VIEW (object);
 
@@ -407,6 +407,17 @@ real_destroy (GtkObject *object)
 
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
+
+static EelStringList *
+real_get_emblem_names_to_exclude (FMDirectoryView *view)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	/* Overridden to show even the trash emblem here */
+	return NULL;
+}
+
+#if GNOME2_CONVERSION_COMPLETE
 
 static int
 real_get_number_of_columns (FMListView *view)
@@ -454,15 +465,6 @@ real_get_default_sort_attribute (FMListView *view)
 	}
 
 	return sort_attribute;
-}
-
-static EelStringList *
-real_get_emblem_names_to_exclude (FMDirectoryView *view)
-{
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
-
-	/* Overridden to show even the trash emblem here */
-	return NULL;
 }
 
 static int
@@ -529,6 +531,8 @@ real_get_column_specification (FMListView *view,
 		g_assert_not_reached ();
 	}
 }
+
+#endif
 
 static void
 indexing_info_callback (BonoboUIComponent *component, gpointer data, const char *verb)
@@ -611,6 +615,8 @@ real_add_file (FMDirectoryView *view, NautilusFile *file)
 	nautilus_file_unref (real_file);
 }
 
+#if GNOME2_CONVERSION_COMPLETE
+
 static void
 real_adding_file (FMListView *view, NautilusFile *file)
 {
@@ -660,6 +666,8 @@ real_removing_file (FMListView *view, NautilusFile *file)
 		(GTK_OBJECT (file), G_CALLBACK (fm_directory_view_queue_file_change), view);
 	EEL_CALL_PARENT (FM_LIST_VIEW_CLASS, removing_file, (view, file));
 }
+
+#endif
 
 static gboolean
 real_file_still_belongs (FMDirectoryView *view, NautilusFile *file)
@@ -807,5 +815,3 @@ reveal_selected_items_callback (BonoboUIComponent *component, gpointer user_data
 
 	nautilus_file_list_free (selection);
 }
-
-#endif

@@ -32,6 +32,7 @@
 #include <gtk/gtkvbox.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
+#include <eel/eel-debug.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
@@ -75,8 +76,10 @@ get_index_percentage_complete (void)
 static void
 set_close_hides_for_dialog (GtkDialog *dialog)
 {
+#if GNOME2_CONVERSION_COMPLETE
         gtk_dialog_set_close (dialog, TRUE /*click_closes*/);
         gtk_dialog_close_hides (dialog, TRUE /*just_hide*/);
+#endif
 
 }
 
@@ -111,7 +114,9 @@ dialog_close_cover (gpointer dialog_data)
 {
         g_assert (GTK_IS_DIALOG (dialog_data));
 
+#if GNOME2_CONVERSION_COMPLETE
         gtk_dialog_close (dialog_data);
+#endif
 }
 
 static void
@@ -119,14 +124,16 @@ show_index_progress_dialog (void)
 {
         int callback_id;
         
+#if GNOME2_CONVERSION_COMPLETE
         gtk_dialog_close (dialogs->last_index_time_dialog);
+#endif
         gtk_widget_show_all (GTK_WIDGET (dialogs->index_in_progress_dialog));
         callback_id = medusa_execute_once_when_system_state_changes (dialog_close_cover,
                                                                      dialogs->index_in_progress_dialog);
-        gtk_signal_connect_object (GTK_OBJECT (dialogs->index_in_progress_dialog),
-                                   "destroy",
-                                   medusa_remove_state_changed_function,
-                                   GINT_TO_POINTER (callback_id));
+        g_signal_connect_object (G_OBJECT (dialogs->index_in_progress_dialog),
+				 "destroy",
+				 G_CALLBACK (medusa_remove_state_changed_function),
+				 GINT_TO_POINTER (callback_id), 0);
 }
 
 
@@ -135,14 +142,16 @@ show_last_index_time_dialog (void)
 {
         int callback_id;
 
+#if GNOME2_CONVERSION_COMPLETE
         gtk_dialog_close (dialogs->index_in_progress_dialog);
+#endif
         gtk_widget_show_all (GTK_WIDGET (dialogs->last_index_time_dialog));
         callback_id = medusa_execute_once_when_system_state_changes (dialog_close_cover,
                                                                      dialogs->last_index_time_dialog);
-        gtk_signal_connect_object (GTK_OBJECT (dialogs->last_index_time_dialog),
-                                   "destroy",
-                                   medusa_remove_state_changed_function,
-                                   GINT_TO_POINTER (callback_id));
+        g_signal_connect_object (G_OBJECT (dialogs->last_index_time_dialog),
+				 "destroy",
+				 G_CALLBACK (medusa_remove_state_changed_function),
+				 GINT_TO_POINTER (callback_id), 0);
 }
 
 static GtkDialog *
@@ -228,7 +237,7 @@ index_progress_dialog_new (void)
                                            g_free);
         g_signal_connect (progress_bar_hbox,
                             "destroy",
-                            timeout_remove_callback,
+			    G_CALLBACK (timeout_remove_callback),
                             GUINT_TO_POINTER (timeout_id));
         
         return dialog;
@@ -263,15 +272,15 @@ show_indexing_info_dialog (void)
                 
                 callback_id = medusa_execute_once_when_system_state_changes (dialog_close_cover,
                                                                              dialog_shown);
-                gtk_signal_connect_object (GTK_OBJECT (dialog_shown),
-                                           "destroy",
-                                           medusa_remove_state_changed_function,
-                                           GINT_TO_POINTER (callback_id));
+                g_signal_connect_object (G_OBJECT (dialog_shown),
+					 "destroy",
+					 G_CALLBACK (medusa_remove_state_changed_function),
+					 GINT_TO_POINTER (callback_id), 0);
                 return;
         }
 	if (dialogs == NULL) {
                 dialogs = g_new0 (IndexingInfoDialogs, 1);
-                eel_debug_call_at_shutdown (destroy_indexing_info_dialogs_on_exit, NULL);
+                eel_debug_call_at_shutdown (destroy_indexing_info_dialogs_on_exit);
                 
                 dialogs->last_index_time_dialog = last_index_time_dialog_new ();
                 dialogs->index_in_progress_dialog = index_progress_dialog_new ();

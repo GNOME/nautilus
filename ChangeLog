@@ -1,3 +1,24 @@
+2002-01-31  John Harper  <jsh@unfactored.org>
+
+	Make the search feature work again:
+
+	* configure.in: fixed how HAVE_MEDUSA is defined. Add
+	MEDUSA_CFLAGS to CORE_CFLAGS
+
+	* src/file-manager/fm-search-list-view.c: moved some of the
+	GNOME2_CONVERSION_COMPLETE ifdefs around so that we get a
+	functional object, just without some of the features of the
+	original
+
+	* src/nautilus-shell-ui.xml: copied search parts from nautilus
+	1 version
+
+	* src/nautilus-application.c (create_object): reenable
+	search-list-view creation
+
+	* src/file-manager/nautilus-indexing-info.c: random changes to
+	make it compile (untested as yet)
+
 2002-01-30  Darin Adler  <darin@bentspoon.com>
 
 	* configure.in: Bump eel version required.

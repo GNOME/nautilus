@@ -153,13 +153,15 @@ AC_SUBST(HAVE_JW)
 
 dnl ==========================================================================
 
-dnl medusa checking (this is the Gnome 1 version -- change to pkg-config)
+dnl medusa checking
 
 AC_MSG_CHECKING(for Medusa)
 
 PKG_CHECK_MODULES(MEDUSA, medusa-2.0 >= $MEDUSA_REQUIRED, have_medusa=yes, have_medusa=no)
-AM_CONDITIONAL(HAVE_MEDUSA, test x$have_medusa = xyes)
-AC_SUBST(HAVE_MEDUSA)
+if test "x$have_medusa" = "xyes"; then
+  AC_DEFINE(HAVE_MEDUSA,1)
+  EXTRA_CORE_MODULES="$EXTRA_CORE_MODULES medusa-2.0"
+fi
 
 dnl ==========================================================================
 
@@ -271,10 +273,10 @@ LIBNAUTILUS_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $LIBNAUTILUS_MODULES | 
 AC_SUBST(LIBNAUTILUS_IDL_INCLUDES)
 
 dnl core nautilus (must list bonobo-activation and libbonobo because idldir does not respect "requires")
-CORE_MODULES="eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 libbonoboui-2.0 esound"
+CORE_MODULES="eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 libbonoboui-2.0 esound $EXTRA_CORE_MODULES"
 CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES`"
 AC_SUBST(CORE_CFLAGS)
-CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES` $CDDA_LIBS $FAM_LIBS $LIBJPEG $MEDUSA_LIBS"
+CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES` $CDDA_LIBS $FAM_LIBS $LIBJPEG"
 AC_SUBST(CORE_LIBS)
 CORE_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $CORE_MODULES | $srcdir/add-include-prefix`"
 AC_SUBST(CORE_IDL_INCLUDES)
