@@ -1,3 +1,20 @@
+1999-12-20  John Sullivan  <sullivan@eazel.com>
+	* src/nautilus-bookmark.h,c: new files
+	* src/nautilus-bookmarklist.h,c: new files
+	* src/nautilus-bookmarks-menu.h,c: new files
+	* src/Makefile.am: added these six new files to nautilus_SOURCES
+	* src/ntl-window.c: now #includes nautilus-bookmarks-menu.h
+	  (bookmarks_menu_info[]): removed all items except GNOMEUIINFO_END;
+	  subtree is added dynamically later.
+	  (nautilus-window-constructed): insert bookmarks menu
+	  (nautilus-window-constructed): add padding to status bar so text
+	  isn't jammed against frame.
+
+	The bookmark menu is now limping along. The Add Bookmark item works,
+	and the items that get added do the right thing. Edit Bookmarks is
+	still insensitive, so there's no way to remove items. Except by
+	quitting, because they aren't yet being saved/restored across sessions.
+	
 1999-12-20  Havoc Pennington  <hp@redhat.com>
 
 	* src/file-manager/fm-icon-cache.c: Add inline RGB data for

@@ -17,7 +17,13 @@ LDADD=	file-manager/libntl-file-manager.la \
 	$(GDK_PIXBUF_LIBS) \
 	$(VFS_LIBS)
 
-nautilus_SOURCES=		\
+nautilus_SOURCES=			\
+	nautilus-bookmark.h	\
+	nautilus-bookmark.c	\
+	nautilus-bookmarklist.h	\
+	nautilus-bookmarklist.c	\
+	nautilus-bookmarks-menu.h	\
+	nautilus-bookmarks-menu.c	\
 	ntl-app.h		\
 	ntl-app.c		\
 	ntl-content-view.h	\

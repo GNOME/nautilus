@@ -27,6 +27,7 @@
 #include "config.h"
 #include <gnome.h>
 #include "nautilus.h"
+#include "nautilus-bookmarks-menu.h"
 #include "explorer-location-bar.h"
 #include "ntl-window-private.h"
 #include "ntl-miniicon.h"
@@ -197,23 +198,7 @@ static GnomeUIInfo edit_menu_info[] = {
 	GNOMEUIINFO_END
 };
 
-/* FIXME: This needs implementation. */
 static GnomeUIInfo bookmarks_menu_info[] = {
-        {
-            GNOME_APP_UI_ITEM,
-            N_("Add Bookmark"), N_("Create a new bookmark for the current location"),
-            NULL, NULL, NULL,
-            GNOME_APP_PIXMAP_NONE, NULL,
-            0, 0, NULL
-        },
-        {
-            GNOME_APP_UI_ITEM,
-            N_("Edit Bookmarks..."), N_("Open the bookmark-editing window"),
-            NULL, NULL, NULL,
-            GNOME_APP_PIXMAP_NONE, NULL,
-            0, 0, NULL
-        },
-	GNOMEUIINFO_SEPARATOR,
 	GNOMEUIINFO_END
 };
 
@@ -229,6 +214,8 @@ static GnomeUIInfo help_menu_info[] = {
 	GNOMEUIINFO_END
 };
 
+
+#define BOOKMARKS_MENU_INDEX	2
 static GnomeUIInfo main_menu[] = {
 	GNOMEUIINFO_MENU_FILE_TREE (file_menu_info),
 	GNOMEUIINFO_MENU_EDIT_TREE (edit_menu_info),
@@ -454,13 +441,16 @@ nautilus_window_constructed(NautilusWindow *window)
 
   gtk_widget_set_sensitive(help_menu_info[0].widget, FALSE); /* About */
 
-  nautilus_window_allow_stop(window, FALSE);
+  /* insert bookmarks menu */
+  gtk_menu_item_set_submenu(GTK_MENU_ITEM (main_menu[BOOKMARKS_MENU_INDEX].widget), 
+  			    nautilus_bookmarks_menu_new(window));
 
   /* set up toolbar */
-
   gnome_app_create_toolbar_with_data(app, toolbar_info, window);
   window->btn_back = toolbar_info[0].widget;
   window->btn_fwd = toolbar_info[1].widget;
+
+  nautilus_window_allow_stop(window, FALSE);
 
   /* set up location bar */
 
@@ -504,11 +494,9 @@ nautilus_window_constructed(NautilusWindow *window)
 
   /* set up status bar */
 
-  /* FIXME: The text in the statusbar is jammed up against the left edge of the frame.
-   * This looks ugly, but appears to be "standard appearance" in GTK.
-   * I haven't found a good workaround yet.
-   */
   gnome_app_set_statusbar(app, (statusbar = gtk_statusbar_new()));
+  /* insert a little padding so text isn't jammed against frame */
+  gtk_misc_set_padding(GTK_MISC ((GTK_STATUSBAR (statusbar))->label), GNOME_PAD, 0);
   window->statusbar_ctx = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "IhateGtkStatusbar");
   gnome_app_install_menu_hints(app, main_menu); /* This has to go here
                                                    after the statusbar
