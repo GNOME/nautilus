@@ -1,7 +1,16 @@
+SUBDIRS=file-manager
+
 bin_PROGRAMS=nautilus
 
-INCLUDES=-I$(top_srcdir) -I$(top_builddir) $(BONOBO_CFLAGS) $(GNORBA_CFLAGS) $(GNOMEUI_CFLAGS) -DVERSION="\"$(VERSION)\""
-LDADD=../libnautilus/libnautilus.la $(BONOBO_LIBS) $(GNORBA_LIBS) $(GNOMEUI_LIBS) $(BONOBO_LIBS)
+INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
+	$(BONOBO_CFLAGS) $(GNORBA_CFLAGS) \
+	$(GNOMEUI_CFLAGS) -DVERSION="\"$(VERSION)\""
+
+LDADD=	file-manager/libntl-file-manager.la \
+	../libnautilus/libnautilus.la \
+	$(BONOBO_LIBS) \
+	$(GNORBA_LIBS) \
+	$(GNOMEUI_LIBS)
 
 nautilus_SOURCES=		\
 	ntl-content-view.h	\

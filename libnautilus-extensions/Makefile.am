@@ -9,11 +9,24 @@ libnautilusincludedir=$(includedir)/libnautilus
 libnautilusinclude_HEADERS=			\
 	ntl-view-client.h			\
 	ntl-meta-view-client.h			\
-	nautilus.h
+	nautilus.h				\
+	gnome-icon-container-dnd.h		\
+	gnome-icon-container-layout.h		\
+	gnome-icon-container-private.h		\
+	gnome-icon-container.h			\
+	gnome-progressive-loader.c		\
+	gnome-progressive-loader.h		\
+	gtkflist.h				\
+	gtkscrollframe.h
 
 libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	ntl-view-client.c			\
-	ntl-meta-view-client.c
+	ntl-meta-view-client.c			\
+	gnome-icon-container-dnd.c		\
+	gnome-icon-container-layout.c		\
+	gnome-icon-container.c			\
+	gtkflist.c				\
+	gtkscrollframe.c
 
 $(nautilus_idl_sources): nautilus_idl_stamp
 
@@ -22,3 +35,4 @@ nautilus_idl_stamp: $(top_srcdir)/idl/nautilus.idl
 	touch nautilus_idl_stamp
 
 CLEANFILES=nautilus_idl_stamp
+
