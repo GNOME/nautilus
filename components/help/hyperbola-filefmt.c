@@ -49,7 +49,9 @@ static void fmt_scrollkeeper_populate_tree(HyperbolaDocTree *tree);
 static void make_treesection(HyperbolaDocTree *tree, char **path);
 
 static FormatHandler format_handlers[] = {
+#ifndef ENABLE_SCROLLKEEPER_SUPPORT
   {"help", fmt_help_populate_tree},
+#endif
   {"man", fmt_man_populate_tree},
   {"info", fmt_info_populate_tree},
 #ifdef ENABLE_SCROLLKEEPER_SUPPORT
@@ -346,7 +348,7 @@ extract_secnum_from_filename (const char *filename) {
 /* Caller must free this */
 static char *
 man_name_without_suffix (const char *filename) {
-	char *end_string;
+	char *end_string, *new_string, *ptr;
 
 	end_string = strstr (filename, ".gz");
 	if (end_string) {
@@ -354,7 +356,12 @@ man_name_without_suffix (const char *filename) {
 		return g_strndup (filename, end_string-filename-2);
 	} else {
 		/* e.g. manfile.1 would return manfile */
-		return g_strndup (filename, strlen (filename)-2);
+		ptr = strrchr(filename, (int)('.'));
+		if (ptr == NULL)
+		    new_string =  g_strdup (filename);
+		else
+		    new_string = g_strndup(filename, ptr-filename);	
+		return new_string;	
 	}
 }
 
@@ -391,6 +398,7 @@ fmt_man_populate_tree_for_subdir(HyperbolaDocTree *tree, const char *basedir, ch
       }
 
       manname = man_name_without_suffix (dent->d_name);
+            
       if (strstr (dent->d_name, ".gz")) {
 	      g_snprintf (namebuf, sizeof(namebuf), "%.*s", (int)strlen (manname), manname);
       } else {
@@ -465,11 +473,12 @@ translate_array(char **array)
                       GNU Public  License  and  many  people  are
                       working on changes to the kernel)
 ***/
+
 static char *man_path[] = {N_("Manual"), NULL};
-static char *cfg_path[] = {N_("System"), N_("Configuration"), N_("Config files"), NULL};
-static char *app_path[] = {N_("Applications"), N_("Command Line"), NULL};
-static char *dev_path[] = {N_("Development"), N_("APIs"), N_("Miscellaneous"), NULL };
-static char *syscall_path[] = {N_("Development"), N_("APIs"), N_("System Calls"), NULL };
+static char *cfg_path[] = {N_("Manual"), N_("System"), N_("Configuration"), N_("Config files"), NULL};
+static char *app_path[] = {N_("Manual"), N_("Applications"), N_("Command Line"), NULL};
+static char *dev_path[] = {N_("Manual"), N_("Development"), N_("APIs"), N_("Miscellaneous"), NULL };
+static char *syscall_path[] = {N_("Manual"), N_("Development"), N_("APIs"), N_("System Calls"), NULL };
 
 static void
 fmt_man_populate_tree_for_dir(HyperbolaDocTree *tree, const char *basedir)
@@ -565,7 +574,7 @@ fmt_man_populate_tree(HyperbolaDocTree *tree)
       for(; manpath[i]; i++)
 	fmt_man_populate_tree_for_dir(tree, manpath[i]);
     }
-  if(!manpath || !manpath[i]) {
+  if(!manpath || !manpath[0]) {
     fmt_man_populate_tree_for_dir (tree, "/usr/man");
     fmt_man_populate_tree_for_dir (tree, "/usr/share/man");
   }
@@ -613,7 +622,7 @@ fmt_info_populate_tree_for_subdir(HyperbolaDocTree *tree, const char *basedir, c
 
       thispath = fmt_map_entry(tree, dent->d_name, '!'); /* Yes, we use the manpage mapping stuff just
 							    because it is easier. */
-
+								
       if(thispath)
 	make_treesection(tree, thispath);
 
@@ -918,7 +927,7 @@ fmt_scrollkeeper_parse_doc_toc (HyperbolaDocTree *tree, char **ancestors,
   
   int pos;
 
-  unsigned int levels_to_process = 0;
+  unsigned int levels_to_process = 5;
   
   toc_doc = xmlParseFile (toc_file);
   
@@ -1009,7 +1018,7 @@ fmt_scrollkeeper_parse_document (HyperbolaDocTree *tree, char **ancestors,
       doc_uri = g_strconcat ("file://", doc_data[1], NULL);
   }
   else if (!g_strcasecmp ("text/sgml", doc_data[2])) {
-      doc_uri = g_strconcat ("help:", doc_data[1], NULL);
+      doc_uri = g_strconcat ("gnome-help:", doc_data[1], NULL);
   }
   else if (!g_strcasecmp ("info", doc_data[2])) {
       doc_uri = g_strconcat ("info:", doc_data[1], NULL);
@@ -1138,6 +1147,35 @@ fmt_scrollkeeper_parse_xml (HyperbolaDocTree *tree, char **defpath,
   return;	
 }
 
+/* trim empty (the ones that don't have docs in them ) branches from 
+   the xml tree 
+   
+   cl_node is the <sect> subsection to be checked; if it has
+   only one child node that is the title of the section then 
+   it has to be removed
+*/
+static void fmt_scrollkeeper_trim_empty_branches(xmlNodePtr cl_node)
+{
+    xmlNodePtr node, next;
+    
+    if (cl_node == NULL)
+        return;
+	    
+    for(node = cl_node; node != NULL; node = next)
+    {
+        next = node->next;
+    
+        if (!strcmp(node->name, "sect") && node->childs->next != NULL)
+	    fmt_scrollkeeper_trim_empty_branches(node->childs->next);
+	    
+	if (!strcmp(node->name, "sect") && node->childs->next == NULL)
+	{
+	    xmlUnlinkNode(node);
+	    xmlFreeNode(node);
+	}
+    }
+}
+
 
 /*
  * fmt_scrollkeeper_populate_tree
@@ -1188,6 +1226,7 @@ fmt_scrollkeeper_populate_tree (HyperbolaDocTree *tree)
     doc = xmlParseFile (xml_location); 
    
     if (doc) {
+      fmt_scrollkeeper_trim_empty_branches(doc->root->childs);
       fmt_scrollkeeper_parse_xml (tree, tree_path, doc);
     }
     else {
