@@ -1,3 +1,20 @@
+2000-04-26  John Sullivan  <sullivan@eazel.com>
+
+	More FIXME-to-bug work.
+
+	* src/nautilus-index-title.c,
+	* libnautilus-extensions/nautilus-gdk-extensions.h,
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	(select_font): Moved this function to gdk_extensions
+	and renamed it nautilus_get_largest_fitting_font.
+
+	* src/nautilus-index-tabs.c,
+	* src/nautilus-index-title.c,
+	* src/file-manager/fm-list-view.c,
+	* src/file-manager/fm-properties-window.c:
+	Wrote bug reports for all (other) FIXMEs in these files. Down to 
+	81 in Nautilus with no bug report.
+
 2000-04-26  Andy Hertzfeld <andy@eazel.com>
 
 	* src/ntl-index-panel.c:

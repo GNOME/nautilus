@@ -291,13 +291,13 @@ create_list (FMListView *list_view)
 	NautilusList *list;
 	GtkCList *clist;
 
-	/* FIXME:
+	/* FIXME bugzilla.eazel.com 666:
 	 * title setup should allow for columns not being resizable at all,
 	 * justification, editable or not, type/format,
 	 * not being usable as a sort order criteria, etc.
 	 * for now just set up name, min, max and current width
 	 * 
-	 * FIXME:
+	 * FIXME bugzilla.eazel.com 315:
 	 * the icon column should be set to the width of an icon at a given
 	 * zoom level or should be resizable when using nautilus theme icons
 	 */	

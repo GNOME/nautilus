@@ -104,7 +104,9 @@ nautilus_index_tabs_initialize_class (NautilusIndexTabsClass *class)
 	widget_class->size_allocate = nautilus_index_tabs_size_allocate;
 		
 	/* load the font */
-	/* FIXME: this shouldn't be hardwired - it should be fetched from preferences */
+	/* FIXME bugzilla.eazel.com 667: 
+	 * this shouldn't be hardwired - it should be fetched from preferences 
+	 */
 	tab_font = gdk_font_load ("-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");
 }
 
@@ -249,7 +251,9 @@ draw_one_tab (NautilusIndexTabs *index_tabs, GdkGC *gc,
 	int total_width = name_width + 2*TAB_MARGIN;
 	GtkWidget *widget = GTK_WIDGET (index_tabs);
 	
-	/* FIXME: we must "ellipsize" the name if it doesn't fit, for now, assume it does */
+	/* FIXME bugzilla.eazel.com 668: 
+	 * we must "ellipsize" the name if it doesn't fit, for now, assume it does 
+	 */
 		
 	/* fill the tab rectangle with the tab color */
 	

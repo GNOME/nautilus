@@ -473,6 +473,48 @@ nautilus_gdk_font_equal (GdkFont *font_a_null_allowed,
 	return gdk_font_equal (font_a_null_allowed, font_b_null_allowed);
 }
 
+GdkFont *
+nautilus_get_largest_fitting_font (const char *text_to_format, int width, const char* font_template)
+{
+	int font_index, this_width;
+	char *font_name;
+	const int font_sizes[5] = { 28, 24, 18, 14, 12 };
+	GdkFont *candidate_font = NULL;
+	char *alt_text_to_format = NULL;
+	char *temp_str = strdup(text_to_format);
+	char *cr_pos = strchr(temp_str, '\n');
+
+	if (cr_pos) {
+		*cr_pos = '\0';
+		alt_text_to_format = cr_pos + 1;
+	}
+	  
+	for (font_index = 0; font_index < NAUTILUS_N_ELEMENTS (font_sizes); font_index++) {
+		if (candidate_font != NULL) {
+			gdk_font_unref (candidate_font);
+		}
+		
+		font_name = g_strdup_printf (font_template, font_sizes[font_index]);
+		candidate_font = gdk_font_load (font_name);
+		g_free (font_name);
+		
+		this_width = gdk_string_width (candidate_font, temp_str);
+		if (alt_text_to_format != NULL) {
+			int alt_width = gdk_string_width (candidate_font, alt_text_to_format);
+			if (this_width <= width && alt_width <= width) {
+				break;
+			}
+		} else {
+			if (this_width <= width) {
+				break;
+			}
+		}
+	}
+	
+	g_free (temp_str);
+	return candidate_font;
+}
+
 /**
  * nautilus_stipple_bitmap:
  * 

@@ -72,7 +72,7 @@ get_pixmap_and_mask_for_properties_window (NautilusFile *file,
 
 	g_assert (NAUTILUS_IS_FILE (file));
 	
-	/* FIXME: Do something about giant icon sizes here */
+	/* FIXME bugzilla.eazel.com 413: Do something about giant icon sizes here */
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, NAUTILUS_ICON_SIZE_STANDARD);
         gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap_return, mask_return, 128);
 	gdk_pixbuf_unref (pixbuf);

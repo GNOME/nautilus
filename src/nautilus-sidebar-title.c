@@ -35,6 +35,7 @@
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
+#include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
@@ -47,9 +48,6 @@ static void     nautilus_index_title_destroy           (GtkObject               
 static void     nautilus_index_title_initialize         (NautilusIndexTitle      *pixmap);
 static gboolean nautilus_index_title_button_press_event (GtkWidget               *widget,
 							 GdkEventButton          *event);
-static GdkFont *select_font                             (const char              *text_to_format,
-							 int                      width,
-							 const char              *font_template);
 static void     nautilus_index_title_update_icon        (NautilusIndexTitle      *index_title);
 static void     nautilus_index_title_update_label       (NautilusIndexTitle      *index_title);
 static void     nautilus_index_title_update_info        (NautilusIndexTitle      *index_title);
@@ -201,50 +199,6 @@ nautilus_index_title_update_icon (NautilusIndexTitle *index_title)
 	}
 }
 
-/* utility routine (FIXME: should be located elsewhere) to find the largest font that fits */
-
-GdkFont *
-select_font (const char *text_to_format, int width, const char* font_template)
-{
-	int font_index, this_width;
-	char *font_name;
-	const int font_sizes[5] = { 28, 24, 18, 14, 12 };
-	GdkFont *candidate_font = NULL;
-	char *alt_text_to_format = NULL;
-	char *temp_str = strdup(text_to_format);
-	char *cr_pos = strchr(temp_str, '\n');
-
-	if (cr_pos) {
-		*cr_pos = '\0';
-		alt_text_to_format = cr_pos + 1;
-	}
-	  
-	for (font_index = 0; font_index < NAUTILUS_N_ELEMENTS (font_sizes); font_index++) {
-		if (candidate_font != NULL) {
-			gdk_font_unref (candidate_font);
-		}
-		
-		font_name = g_strdup_printf (font_template, font_sizes[font_index]);
-		candidate_font = gdk_font_load (font_name);
-		g_free (font_name);
-		
-		this_width = gdk_string_width (candidate_font, temp_str);
-		if (alt_text_to_format != NULL) {
-			int alt_width = gdk_string_width (candidate_font, alt_text_to_format);
-			if (this_width <= width && alt_width <= width) {
-				break;
-			}
-		} else {
-			if (this_width <= width) {
-				break;
-			}
-		}
-	}
-	
-	g_free (temp_str);
-	return candidate_font;
-}
-
 /* set up the filename label */
 static void
 nautilus_index_title_update_label (NautilusIndexTitle *index_title)
@@ -300,8 +254,10 @@ nautilus_index_title_update_label (NautilusIndexTitle *index_title)
 		gtk_box_reorder_child (GTK_BOX (index_title), index_title->details->title, 1);
 	}
 	
-	/* FIXME: don't use hardwired font like this - get it from preferences */
-	label_font = select_font (displayed_text, GTK_WIDGET (index_title)->allocation.width - 4,
+	/* FIXME bugzilla.eazel.com 667: 
+	 * don't use hardwired font like this - get it from preferences 
+	 */
+	label_font = nautilus_get_largest_fitting_font (displayed_text, GTK_WIDGET (index_title)->allocation.width - 4,
 				  "-bitstream-courier-medium-r-normal-*-%d-*-*-*-*-*-*-*");
 	
 	nautilus_gtk_widget_set_font (index_title->details->title, label_font);
@@ -356,7 +312,9 @@ nautilus_index_title_update_info (NautilusIndexTitle *index_title)
 		gtk_box_reorder_child (GTK_BOX (index_title), index_title->details->more_info, 2);
 	}   
 	
-	/* FIXME: shouldn't use hardwired font */     	
+	/* FIXME bugzilla.eazel.com 667: 
+	 * don't use hardwired font like this - get it from preferences 
+	 */
 	nautilus_gtk_widget_set_font_by_name (index_title->details->more_info,
 					      "-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");
 	
@@ -375,7 +333,9 @@ nautilus_index_title_update_info (NautilusIndexTitle *index_title)
 			gtk_box_reorder_child (GTK_BOX (index_title), index_title->details->notes, 3);
 		}
 		
-		/* FIXME: don't use hardwired font like this */
+		/* FIXME bugzilla.eazel.com 667: 
+		 * don't use hardwired font like this - get it from preferences 
+		 */
 		nautilus_gtk_widget_set_font_by_name (index_title->details->notes,
 						      "-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");
 		

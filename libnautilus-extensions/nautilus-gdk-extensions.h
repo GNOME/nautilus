@@ -95,7 +95,12 @@ void     nautilus_rectangle_inset                    (GdkRectangle       *rectan
 guint32  nautilus_interpolate_color                  (gdouble             ratio,
 						      guint32             start_rgb,
 						      guint32             end_rgb);
+
+/* Misc GdkFont helper functions */
 gboolean nautilus_gdk_font_equal                     (GdkFont            *font_a_null_allowed,
 						      GdkFont            *font_b_null_allowed);
+GdkFont *nautilus_get_largest_fitting_font	     (const char	 *text_to_format,
+						      int		  width,
+						      const char	 *font_format);
 
 #endif /* NAUTILUS_GDK_EXTENSIONS_H */
