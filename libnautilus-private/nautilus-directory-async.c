@@ -654,11 +654,17 @@ dequeue_pending_idle_callback (gpointer callback_data)
 	pending_file_info = directory->details->pending_file_info;
 	directory->details->pending_file_info = NULL;
 
+	if (pending_file_info == NULL) {
+		puts ("pending file info is NULL!");
+	}
+
+#if 0
 	/* Don't emit a signal if there are no new files. */
 	if (pending_file_info == NULL) {
 		nautilus_directory_async_state_changed (directory);
 		return FALSE;
 	}
+#endif
 
 	/* If we are no longer monitoring, then throw away these. */
 	if (!nautilus_directory_is_file_list_monitored (directory)) {
@@ -730,6 +736,12 @@ dequeue_pending_idle_callback (gpointer callback_data)
 	directory->details->files = g_list_concat
 		(directory->details->files, pending_files);
 
+	if (directory->details->directory_loaded && 
+	    !directory->details->directory_loaded_sent_notification) {
+		nautilus_directory_emit_done_loading (directory);
+		directory->details->directory_loaded_sent_notification = TRUE;
+	}
+
 	nautilus_directory_async_state_changed (directory);
 	return FALSE;
 }
@@ -771,6 +783,8 @@ directory_load_done (NautilusDirectory *directory,
 {
 	cancel_directory_load (directory);
 	directory->details->directory_loaded = TRUE;
+	directory->details->directory_loaded_sent_notification = FALSE;
+
 
 	/* Call the idle function right away. */
 	if (directory->details->dequeue_pending_idle_id != 0) {

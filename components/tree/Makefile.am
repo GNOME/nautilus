@@ -1,10 +1,12 @@
 CPPFLAGS =					\
-	-DPREFIX=\"$(prefix)\"
+	-DPREFIX=\"$(prefix)\"                  \
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DG_LOG_DOMAIN=\"Nautilus-Tree\"
 
 INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
+	$(VFS_CFLAGS) \
 	$(GCONF_CFLAGS) \
 	$(GNOMEUI_CFLAGS)                       \
 	$(WERROR)

@@ -66,6 +66,7 @@ struct NautilusDirectoryDetails
 
 	gboolean file_list_monitored;
 	gboolean directory_loaded;
+	gboolean directory_loaded_sent_notification;
 	GnomeVFSAsyncHandle *directory_load_in_progress;
 	GnomeVFSDirectoryListPosition directory_load_list_last_handled;
 
@@ -150,6 +151,8 @@ void          nautilus_directory_emit_files_added          (NautilusDirectory   
 							    GList                     *added_files);
 void          nautilus_directory_emit_files_changed        (NautilusDirectory         *directory,
 							    GList                     *changed_files);
+void          nautilus_directory_emit_done_loading         (NautilusDirectory         *directory);
+
 
 /* debugging functions */
 int           nautilus_directory_number_outstanding        (void);

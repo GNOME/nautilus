@@ -40,6 +40,7 @@ enum {
 	FILES_ADDED,
 	FILES_CHANGED,
 	METADATA_CHANGED,
+	DONE_LOADING,
 	LAST_SIGNAL
 };
 
@@ -98,6 +99,13 @@ nautilus_directory_initialize_class (gpointer klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, metadata_changed),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE, 0);
+	signals[DONE_LOADING] =
+		gtk_signal_new ("done_loading",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, done_loading),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
 
@@ -507,6 +515,14 @@ nautilus_directory_emit_metadata_changed (NautilusDirectory *directory)
 	nautilus_directory_emit_files_changed (directory,
 					       directory->details->files);
 }
+
+void
+nautilus_directory_emit_done_loading (NautilusDirectory *directory)
+{
+	gtk_signal_emit (GTK_OBJECT (directory),
+			 signals[DONE_LOADING]);
+}
+
 
 static char *
 uri_get_directory_part (const char *uri)

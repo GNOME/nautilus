@@ -30,6 +30,7 @@
 #define NAUTILUS_TREE_VIEW_H
 
 #include <libnautilus/nautilus-view.h>
+#include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkctree.h>
 
 typedef struct NautilusTreeView NautilusTreeView;
@@ -44,12 +45,12 @@ typedef struct NautilusTreeViewClass NautilusTreeViewClass;
 typedef struct NautilusTreeViewDetails NautilusTreeViewDetails;
 
 struct NautilusTreeView {
-	GtkCTree parent;
+	GtkScrolledWindow parent;
 	NautilusTreeViewDetails *details;
 };
 
 struct NautilusTreeViewClass {
-	GtkCTreeClass parent_class;
+	GtkScrolledWindowClass parent_class;
 };
 
 /* GtkObject support */

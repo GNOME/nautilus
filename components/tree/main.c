@@ -28,9 +28,13 @@
 
 #include "nautilus-tree-view.h"
 
-#include <gnome.h>
+#include <libnautilus-extensions/nautilus-debug.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-init.h>
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
+#include <libgnomevfs/gnome-vfs.h>
+
 
 static int object_count = 0;
 
@@ -72,10 +76,37 @@ main (int argc, char *argv[])
 	CORBA_ORB orb;
 	BonoboGenericFactory *factory;
 
+        puts ("XXX: In tree component.");        
+
+	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
+	 * Unfortunately, this has to be done explicitly for each domain.
+	 */
+	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
+		nautilus_make_warnings_and_criticals_stop_in_debugger
+			(G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", NULL);
+	}
+	
+	/* Initialize gettext support */
+#ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
+	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+	textdomain (PACKAGE);
+#endif
+	
+	/* Initialize the services that we use. */
+
+	g_thread_init (NULL);
+	
+        gnome_init_with_popt_table("nautilus-tree-view", VERSION, 
+				   argc, argv,
+				   oaf_popt_options, 0, NULL); 
+
         gnome_init_with_popt_table ("nautilus-tree-view", VERSION, 
 				    argc, argv,
 				    oaf_popt_options, 0, NULL); 
 	orb = oaf_init (argc, argv);
+
+	gnome_vfs_init ();
+	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
 	factory = bonobo_generic_factory_new_multi

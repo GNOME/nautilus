@@ -202,6 +202,16 @@ struct NautilusDirectoryClass
 	 * result in calls to files_changed.
 	 */
 	void   (* metadata_changed) (NautilusDirectory       *directory);
+
+
+	/* The done_loading signal is emitted when a directory load
+	 * request completes. This is needed because, at least in the
+	 * case where the directory is empty, the caller will receive
+	 * no kind of notification at all when a directory load
+	 * initiated by `nautilus_directory_file_monitor_add' completes.
+	 */
+
+	void   (* done_loading) (NautilusDirectory       *directory);
 };
 
 #endif /* NAUTILUS_DIRECTORY_H */

@@ -1,3 +1,31 @@
+2000-06-29  Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/tree/Makefile.am: Add VFS_CFLAGS
+
+	* components/tree/main.c (main): Initialize more libraries.
+	
+	* components/tree/nautilus-tree-view.h,
+	components/tree/nautilus-tree-view.c: Many changes. The upshot is
+	that basic tree loading now works, but many details remain to be
+	fleshed out (individual bugs were filed on these).
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(dequeue_pending_idle_callback), (directory_load_done): Try to
+	emit done signal exactly once when a monitor load is complete. But
+	I think this might be questionable, see below.
+
+	* libnautilus-extensions/nautilus-directory-private.h,
+	libnautilus-extensions/nautilus-directory.h,
+	libnautilus-extensions/nautilus-directory.c: Add the
+	"done_loading" signal for when a load initiated by monitoring is
+	done. I just realized this does the wrong thing when more than one
+	thing is monitoring at the same time (both get the signal), so
+	maybe it should be changed to a callback function passed to
+	nautilus_file_monitor_add, but that would be harder to implement.
+
+	(nautilus_directory_emit_done_loading): Function so the async code
+	can emit it.
+
 2000-06-29  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/mozilla/Makefile.am:
