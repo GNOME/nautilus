@@ -79,6 +79,7 @@
 #include <libnautilus-private/nautilus-file-dnd.h>
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-file-private.h> /* for nautilus_file_get_existing */
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-link.h>
@@ -5062,11 +5063,49 @@ should_show_empty_trash (FMDirectoryView *view)
 }
 
 static gboolean
-file_list_all_can_use_components (GList *file_list)
+file_list_all_are_folders (GList *file_list)
 {
 	GList *l;
+	NautilusFile *file, *linked_file;
+	char *activation_uri;
+	gboolean is_dir;
+	
 	for (l = file_list; l != NULL; l = l->next) {
-		if (!nautilus_file_is_directory (NAUTILUS_FILE (l->data)) && !NAUTILUS_IS_DESKTOP_ICON_FILE (l->data)) {
+		file = NAUTILUS_FILE (l->data);
+		if (nautilus_file_is_nautilus_link (file)) {
+			activation_uri = nautilus_file_get_activation_uri (file);
+			
+			if (activation_uri == NULL ||
+			    eel_str_has_prefix (activation_uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER) ||
+			    eel_str_has_prefix (activation_uri, NAUTILUS_COMMAND_SPECIFIER)) {
+				g_free (activation_uri);
+				return FALSE;
+			}
+
+			linked_file = nautilus_file_get_existing (activation_uri);
+
+			/* We might not actually know the type of the linked file yet,
+			 * however we don't want to schedule a read, since that might do things
+			 * like ask for password etc. This is a bit unfortunate, but I don't
+			 * know any way around it, so we do various heuristics here
+			 * to get things mostly right 
+			 */
+			is_dir =
+				(linked_file != NULL &&
+				 nautilus_file_is_directory (linked_file)) ||
+				nautilus_file_has_volume (file) ||
+				nautilus_file_has_drive (file) ||
+				(activation_uri != NULL &&
+				 activation_uri[strlen (activation_uri) - 1] == '/');
+			
+			nautilus_file_unref (linked_file);
+			g_free (activation_uri);
+			
+			if (!is_dir) {
+				return FALSE;
+			}
+		} else if (!(nautilus_file_is_directory (file) ||
+			     NAUTILUS_IS_DESKTOP_ICON_FILE (file))) {
 			return FALSE;
 		}
 	}
@@ -5258,7 +5297,7 @@ real_update_menus (FMDirectoryView *view)
 								  selection_count), 
 							 selection_count);
 	} else {
-		show_open_alternate = file_list_all_can_use_components (selection);
+		show_open_alternate = file_list_all_are_folders (selection);
 		if (selection_count <= 1) {
 			label_with_underscore = g_strdup (_("Browse Folder"));
 		} else {
