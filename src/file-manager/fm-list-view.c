@@ -90,6 +90,15 @@ list_activate_callback (GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewCo
 }
 
 static void
+event_after_callback (GtkWidget *widget, GdkEventAny *event, gpointer callback_data)
+{
+	if (event->type == GDK_BUTTON_PRESS && ((GdkEventButton *) event)->button == 3) {
+		fm_directory_view_pop_up_selection_context_menu
+			(FM_DIRECTORY_VIEW (callback_data), (GdkEventButton *) event);
+	}
+}
+
+static void
 create_and_set_up_tree_view (FMListView *view)
 {
 	GtkCellRenderer *cell;
@@ -101,6 +110,8 @@ create_and_set_up_tree_view (FMListView *view)
 
 	g_signal_connect (view->details->tree_view, "row_activated",
 			  G_CALLBACK (list_activate_callback), view);
+	g_signal_connect (view->details->tree_view, "event-after",
+			  G_CALLBACK (event_after_callback), view);
 	
 	view->details->model = g_object_new (FM_TYPE_LIST_MODEL, NULL);
 	gtk_tree_view_set_model (view->details->tree_view, GTK_TREE_MODEL (view->details->model));
@@ -307,6 +318,9 @@ fm_list_view_select_all (FMDirectoryView *view)
 static void
 fm_list_view_reset_to_defaults (FMDirectoryView *view)
 {
+	NautilusFile *file;
+
+	file = fm_directory_view_get_directory_as_file (view);
 	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN, NULL, NULL);
 	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED, NULL, NULL);
 
@@ -376,16 +390,14 @@ fm_list_view_finalize (GObject *object)
 }
 
 static void
-fm_list_view_class_init (FMListViewClass *klass)
+fm_list_view_class_init (FMListViewClass *class)
 {
 	FMDirectoryViewClass *fm_directory_view_class;
-	GObjectClass *gobject_class;
 
-	gobject_class = (GObjectClass *)klass;
-	fm_directory_view_class = (FMDirectoryViewClass *)klass;
+	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (class);
 
-	gobject_class->finalize = fm_list_view_finalize;
-	
+	G_OBJECT_CLASS (class)->finalize = fm_list_view_finalize;
+
 	fm_directory_view_class->add_file = fm_list_view_add_file;
 	fm_directory_view_class->begin_loading = fm_list_view_begin_loading;
 #if GNOME2_CONVERSION_COMPLETE

@@ -1635,7 +1635,6 @@ real_file_limit_reached (FMDirectoryView *view)
 
 	file = fm_directory_view_get_directory_as_file (view);
 	directory_name = nautilus_file_get_display_name (file);
-	nautilus_file_unref (file);
 
 	/* Note that the number of items actually displayed varies somewhat due
 	 * to the way files are collected in batches. So you can't assume that

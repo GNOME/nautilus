@@ -1,5 +1,15 @@
 2002-03-04  Darin Adler  <darin@bentspoon.com>
 
+	* src/file-manager/fm-directory-view.c: (real_file_limit_reached):
+	Fix a stray NautilusFile unref that could cause big trouble.
+
+	* src/file-manager/fm-list-view.c: (event_after_callback): New,
+	puts up a menu when you right-click.
+	(create_and_set_up_tree_view): Attach new handler.
+	(fm_list_view_reset_to_defaults): Make this compile.
+
+2002-03-04  Darin Adler  <darin@bentspoon.com>
+
 	* src/file-manager/fm-directory-view.c:
 	(real_get_selected_icon_locations): Put a default one in here, since
 	there are only really icon locations for FMIconView.
