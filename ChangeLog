@@ -1,3 +1,21 @@
+2000-05-31  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_denies_access_permission): Fixed a bug where I
+	accidentally treated root as "unable to access anything" instead
+	of "able to access everything".
+	
+	* src/nautilus-sidebar-tabs.h: Fixed file name in include guard.
+	I'll probably need to write a script to find the broken ones.
+	
+	* src/nautilus-window-manage-views.c: (handle_unreadable_location):
+	Fixed a bug where we unref's a file object before using it.
+	
+	* src/nautilus-window-private.h: Got rid of a straggler prototype
+	for a nonexistent function.
+
+	* RENAMING: Some are done.
+	
 2000-05-31  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/nautilus-sidebar-tabs.c:

@@ -322,13 +322,13 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 
 	g_assert (NAUTILUS_IS_FILE (file));
 
-	/* Once the file is gone, you can't do much of anything. */
+	/* Once the file is gone, you are denied permission to do anything. */
 	if (nautilus_file_is_gone (file)) {
 		return TRUE;
 	}
 
 	/* File system does not provide permission bits.
-	 * Can't determine specific permissions, so return FALSE.
+	 * Can't determine specific permissions, do not deny permission at all.
 	 */
 	if (!nautilus_file_can_get_permissions (file)) {
 		return FALSE;
@@ -337,9 +337,9 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 	/* Check the user. */
 	user_id = geteuid ();
 
-	/* Root can do anything. */
+	/* Root is not forbidden to do anything. */
 	if (user_id == 0) {
-		return TRUE;
+		return FALSE;
 	}
 
 	/* File owner's access is governed by the owner bits. */
@@ -386,7 +386,7 @@ nautilus_file_can_read (NautilusFile *file)
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
 	return !nautilus_file_denies_access_permission
-		(file, 
+		(file,
 		 GNOME_VFS_PERM_USER_READ,
 		 GNOME_VFS_PERM_GROUP_READ,
 		 GNOME_VFS_PERM_OTHER_READ);

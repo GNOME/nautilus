@@ -609,7 +609,8 @@ nautilus_window_load_sidebar_panel (NautilusWindow *window,
 }
 
 static gboolean
-handle_unreadable_location (NautilusWindow *window, const char *uri) {
+handle_unreadable_location (NautilusWindow *window, const char *uri)
+{
 	NautilusFile *file;
 	gboolean unreadable;
 	char *file_name;
@@ -625,16 +626,16 @@ handle_unreadable_location (NautilusWindow *window, const char *uri) {
 	}
 
 	unreadable = !nautilus_file_can_read (file);
-	nautilus_file_unref (file);
 
 	if (unreadable) {
 		file_name = nautilus_file_get_name (file);
-        	message = g_strdup_printf (_("You do not have the permissions necessary to view \"%s.\""), file_name);
-                gtk_widget_show (gnome_error_dialog_parented (message, 
-              					              GTK_WINDOW (window)));
+        	message = g_strdup_printf (_("You do not have the permissions necessary to view \"%s\"."), file_name);
                 g_free (file_name);
+                nautilus_error_dialog_parented (message, GTK_WINDOW (window));
                 g_free (message);
 	}
+
+	nautilus_file_unref (file);
 
 	return unreadable;
 }
@@ -643,7 +644,7 @@ void
 nautilus_window_request_location_change (NautilusWindow *window,
                                          Nautilus_NavigationRequestInfo *loc,
                                          NautilusViewFrame *requesting_view)
-{  
+{
         NautilusWindow *new_window;
         gboolean create_new_window;
 

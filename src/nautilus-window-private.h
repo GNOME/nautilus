@@ -42,7 +42,6 @@ void nautilus_window_begin_location_change(NautilusWindow *window,
 				           NautilusViewFrame *requesting_view,
 				      	   NautilusLocationChangeType type,
 				      	   guint distance);
-void nautilus_window_remove_meta_view_real(NautilusWindow *window, NautilusViewFrame *meta_view);
 void nautilus_window_load_content_view_menu (NautilusWindow *window, NautilusNavigationInfo *ni);
 NautilusViewFrame *nautilus_window_load_content_view(NautilusWindow *window,
                                   const char *iid,

@@ -22,8 +22,8 @@
  * This is the header file for the tabs widget for the index panel.
  */
 
-#ifndef NAUTILUS_INDEX_TABS_H
-#define NAUTILUS_INDEX_TABS_H
+#ifndef NAUTILUS_SIDEBAR_TABS_H
+#define NAUTILUS_SIDEBAR_TABS_H
 
 #include <gtk/gtkmisc.h>
 
@@ -88,4 +88,4 @@ void       nautilus_index_tabs_set_visible           (NautilusIndexTabs *index_t
 }
 #endif /* __cplusplus */
 
-#endif /* NAUTILUS_INDEX_TABS_H */
+#endif /* NAUTILUS_SIDEBAR_TABS_H */
