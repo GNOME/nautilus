@@ -490,6 +490,26 @@ nautilus_label_set_font (NautilusLabel		*label,
 	gtk_widget_queue_resize (GTK_WIDGET (label));
 }
 
+void
+nautilus_label_set_font_from_components (NautilusLabel	*label,
+					 const char	*family,
+					 const char	*weight,
+					 const char	*slant,
+					 const char	*set_width)
+{
+	NautilusScalableFont *font;
+
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+	g_return_if_fail (family != NULL);
+	
+	font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new (family, weight, slant, set_width));
+
+	if (font != NULL) {
+		nautilus_label_set_font (label, font);
+		gtk_object_unref (GTK_OBJECT (font));
+	}
+}
+
 NautilusScalableFont *
 nautilus_label_get_font (const NautilusLabel *label)
 {

@@ -1,3 +1,24 @@
+2000-08-28  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-label.c:
+	(nautilus_label_set_font_from_components):
+	* libnautilus-extensions/nautilus-label.h:
+	New convenient function to set the font from components.  
+	
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize), (add_play_controls):
+	Use new nautilus_label_set_font_from_components to avoid font
+	object leaks.
+	 
+	components/services/nautilus-dependent-shared/shared-service-widgets.c:
+	(create_label_widget), (create_services_title_widget):
+	Use new nautilus_label_set_font_from_components.
+	 
+	* src/nautilus-first-time-druid.c: (make_anti_aliased_label),
+	(make_hbox_user_level_radio_button), (set_up_update_feedback_page):
+	Use new nautilus_label_set_font_from_components to avoid font
+	object leaks.
+
 2000-08-28  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-first-time-druid.c: (make_anti_aliased_label),

@@ -200,8 +200,8 @@ make_anti_aliased_label (const char *description)
 	GtkWidget *label;
 	
 	label = nautilus_label_new ();
-	nautilus_label_set_font (NAUTILUS_LABEL (label),
-					 NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL)));
+
+	nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", "medium", NULL, NULL);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 14);
 	nautilus_label_set_text_justification (NAUTILUS_LABEL (label),
 			       GTK_JUSTIFY_LEFT);
@@ -266,8 +266,8 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (icon), icon_pixbuf);
 	gtk_box_pack_start (GTK_BOX (label_box), icon, FALSE, FALSE, 0);
 	label = make_anti_aliased_label (text);
-	nautilus_label_set_font (NAUTILUS_LABEL (label),
-					 NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL)));
+
+	nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", "bold", NULL, NULL);
 
 	gtk_box_pack_start (GTK_BOX (label_box), label, FALSE, FALSE, 0);
 
@@ -460,8 +460,7 @@ set_up_update_feedback_page (NautilusDruidPageEazel *page)
 		
 		
 	download_label = nautilus_label_new ();
-	nautilus_label_set_font (NAUTILUS_LABEL (download_label),
-					 NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL)));
+	nautilus_label_set_font_from_components (NAUTILUS_LABEL (download_label), "helvetica", "medium", NULL, NULL);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (download_label), 18);
 	nautilus_label_set_text (NAUTILUS_LABEL (download_label), _("Downloading Nautilus updates..."));
 	

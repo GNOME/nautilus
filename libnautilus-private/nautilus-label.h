@@ -70,35 +70,40 @@ struct _NautilusLabelClass
 	NautilusBufferedWidgetClass	parent_class;
 };
 
-GtkType               nautilus_label_get_type               (void);
-GtkWidget *           nautilus_label_new                    (void);
-void                  nautilus_label_set_text               (NautilusLabel        *label,
-							     const char           *text);
-char*                 nautilus_label_get_text               (NautilusLabel        *label);
-void                  nautilus_label_set_font               (NautilusLabel        *label,
-							     NautilusScalableFont *font);
-NautilusScalableFont *nautilus_label_get_font               (const NautilusLabel  *label);
-void                  nautilus_label_set_font_size          (NautilusLabel        *label,
-							     guint                 font_size);
-guint                 nautilus_label_get_font_size          (const NautilusLabel  *label);
-void                  nautilus_label_set_text_color         (NautilusLabel        *label,
-							     guint32               color);
-guint32               nautilus_label_get_text_color         (const NautilusLabel  *label);
-void                  nautilus_label_set_text_alpha         (NautilusLabel        *label,
-							     guchar                alpha);
-guchar                nautilus_label_get_text_alpha         (const NautilusLabel  *label);
-void                  nautilus_label_set_text_justification (NautilusLabel        *label,
-							     GtkJustification      justification);
-GtkJustification      nautilus_label_get_text_justification (const NautilusLabel  *label);
-void                  nautilus_label_set_line_offset        (NautilusLabel        *label,
-							     guint                 alpha);
-guint                 nautilus_label_get_line_offset        (const NautilusLabel  *label);
-void                  nautilus_label_set_drop_shadow_offset (NautilusLabel        *label,
-							     guint                 alpha);
-guint                 nautilus_label_get_drop_shadow_offset (const NautilusLabel  *label);
-void                  nautilus_label_set_drop_shadow_color  (NautilusLabel        *label,
-							     guint32               color);
-guint32               nautilus_label_get_drop_shadow_color  (const NautilusLabel  *label);
+GtkType               nautilus_label_get_type                 (void);
+GtkWidget *           nautilus_label_new                      (void);
+void                  nautilus_label_set_text                 (NautilusLabel        *label,
+							       const char           *text);
+char*                 nautilus_label_get_text                 (NautilusLabel        *label);
+void                  nautilus_label_set_font                 (NautilusLabel        *label,
+							       NautilusScalableFont *font);
+void                  nautilus_label_set_font_from_components (NautilusLabel        *label,
+							       const char           *family,
+							       const char           *weight,
+							       const char           *slant,
+							       const char           *set_width);
+NautilusScalableFont *nautilus_label_get_font                 (const NautilusLabel  *label);
+void                  nautilus_label_set_font_size            (NautilusLabel        *label,
+							       guint                 font_size);
+guint                 nautilus_label_get_font_size            (const NautilusLabel  *label);
+void                  nautilus_label_set_text_color           (NautilusLabel        *label,
+							       guint32               color);
+guint32               nautilus_label_get_text_color           (const NautilusLabel  *label);
+void                  nautilus_label_set_text_alpha           (NautilusLabel        *label,
+							       guchar                alpha);
+guchar                nautilus_label_get_text_alpha           (const NautilusLabel  *label);
+void                  nautilus_label_set_text_justification   (NautilusLabel        *label,
+							       GtkJustification      justification);
+GtkJustification      nautilus_label_get_text_justification   (const NautilusLabel  *label);
+void                  nautilus_label_set_line_offset          (NautilusLabel        *label,
+							       guint                 alpha);
+guint                 nautilus_label_get_line_offset          (const NautilusLabel  *label);
+void                  nautilus_label_set_drop_shadow_offset   (NautilusLabel        *label,
+							       guint                 alpha);
+guint                 nautilus_label_get_drop_shadow_offset   (const NautilusLabel  *label);
+void                  nautilus_label_set_drop_shadow_color    (NautilusLabel        *label,
+							       guint32               color);
+guint32               nautilus_label_get_drop_shadow_color    (const NautilusLabel  *label);
 
 
 END_GNOME_DECLS

@@ -221,8 +221,8 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	/* allocate a widget for the album title */
 	
 	music_view->details->album_title = nautilus_label_new ();
-	nautilus_label_set_font (NAUTILUS_LABEL (music_view->details->album_title),
-					 NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL)));
+	nautilus_label_set_font_from_components (NAUTILUS_LABEL (music_view->details->album_title),
+                                                 "helvetica", "medium", NULL, NULL);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (music_view->details->album_title), 20);
 
 	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->album_title, FALSE, FALSE, 0);	
@@ -1068,8 +1068,8 @@ add_play_controls (NautilusMusicView *music_view)
 	gtk_table_set_col_spacings(GTK_TABLE(table), 1);
 	
 	music_view->details->song_label = nautilus_label_new ();
-	nautilus_label_set_font (NAUTILUS_LABEL (music_view->details->song_label),
-					 NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL)));
+        nautilus_label_set_font_from_components (NAUTILUS_LABEL (music_view->details->song_label),
+                                                 "helvetica", "medium", NULL, NULL);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (music_view->details->song_label), 14);
 	
 	gtk_widget_show(music_view->details->song_label);

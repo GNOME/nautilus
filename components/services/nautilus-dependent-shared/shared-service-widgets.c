@@ -101,7 +101,6 @@ create_label_widget (const char		*text,
 		     gint		vertical_offset)
 {
 	GtkWidget		*label;
-	NautilusScalableFont	*font;
 
 	g_return_val_if_fail (text != NULL, NULL);
 	g_return_val_if_fail (font_size > 0, NULL);
@@ -109,12 +108,7 @@ create_label_widget (const char		*text,
 	label = nautilus_label_new ();
 
 	nautilus_label_set_text (NAUTILUS_LABEL (label), text);
-
-	font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", NULL, NULL, NULL));
-	g_assert (font != NULL);
-	nautilus_label_set_font (NAUTILUS_LABEL (label), font);
-	gtk_object_unref (GTK_OBJECT (font));
-
+        nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", NULL, NULL, NULL);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (label), font_size);
 	nautilus_label_set_text_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_WHITE);
 
@@ -155,7 +149,6 @@ create_services_title_widget (const char *title_text)
 	GtkWidget		*logo_image;
 	GtkWidget		*filler_image;
 	GtkWidget		*label;
-	NautilusScalableFont	*font;
 
 	g_return_val_if_fail (title_text != NULL, NULL);
 
@@ -167,14 +160,9 @@ create_services_title_widget (const char *title_text)
 
 	label = create_label_widget (title_text, 20, "eazel-services-logo-tile.png", 10, 0, 0, -4);
 
-	font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", NULL, NULL, NULL));
-	g_assert (font != NULL);
-
-	nautilus_label_set_font (NAUTILUS_LABEL (label), font);
+        nautilus_label_set_font_from_components (NAUTILUS_LABEL (title_text),"helvetica", NULL, NULL, NULL);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 20);
 	nautilus_label_set_text_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_WHITE);
-
-	gtk_object_unref (GTK_OBJECT (font));
 
 	gtk_widget_show (logo_image);
 	gtk_widget_show (filler_image);
