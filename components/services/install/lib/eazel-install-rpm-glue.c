@@ -92,6 +92,7 @@ install_new_packages (InstallOptions* iopts, TransferOptions* topts) {
 	problem_filter = 0;
 	
 	if (iopts->mode_test == TRUE) {
+		g_print ("Dry Run Mode Activated.  Packages will not actually be installed ...\n");
 		install_flags |= RPMTRANS_FLAG_TEST;
 	}
 
@@ -160,8 +161,7 @@ install_new_packages (InstallOptions* iopts, TransferOptions* topts) {
 				g_print ("Downloading %s...\n", rpmname);
 				rv = http_fetch_remote_file (url, targetname);
 				if (rv != TRUE) {
-					fprintf (stderr, "***Failed to retreive %s !***\n", url);
-					exit (1);
+					g_error ("*** Failed to retreive %s! ***\n", url);
 				}
 
 				g_free (rpmname);

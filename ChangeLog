@@ -1,3 +1,26 @@
+2000-05-22  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_new_packages):
+	* configure.in:
+	* nautilus-installer/.cvsignore:
+	* nautilus-installer/Makefile:
+	* nautilus-installer/Makefile.am:
+	* nautilus-installer/helixcode-utils.c: (xml_get_value),
+	(prune_xml), (check_for_root_user), (check_for_redhat),
+	(determine_redhat_version), (determine_mandrake_version),
+	(determine_turbolinux_version), (determine_suse_version),
+	(determine_debian_version), (determine_distribution_type),
+	(get_distribution_name):
+	* nautilus-installer/helixcode-utils.h:
+	* nautilus-installer/nautilus-installer.c: (show_usage),
+	(show_license), (init_default_iopts), (init_default_topts),
+	(create_temporary_directory), (fetch_remote_package_list), (main):
+
+	Adding a simple implementation of the nautilus-installer.  Beginning
+	of the fix for Bug # 863.  This is a statically linked command line
+	implementation only right now.
+
 2000-05-22  Eskil Heyn Olsen  <eskil@eazel.om>
 
 	* src/ntl-app.c (display_prototype_caveat): Changed to simply use
