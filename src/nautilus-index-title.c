@@ -24,6 +24,9 @@
  */
 
 #include <config.h>
+#include <ctype.h>
+#include <string.h>
+
 #include "nautilus-index-title.h"
 
 #include <gtk/gtklabel.h>
@@ -137,7 +140,7 @@ nautilus_index_title_set_up_icon (NautilusIndexTitle *index_title, NautilusFile 
 		gtk_box_pack_start (GTK_BOX (index_title), index_title->details->icon, 0, 0, 0);
 	}   
 	
-	/* we're done with the pixmap and icon */
+	/* we're done with the pixmap */
 	gdk_pixbuf_unref(pixbuf);
 }
 
@@ -146,12 +149,20 @@ nautilus_index_title_set_up_icon (NautilusIndexTitle *index_title, NautilusFile 
 GdkFont *
 select_font(const char *text_to_format, gint width, const char* font_template)
 {
-	GdkFont *candidate_font = NULL;
+	gint font_index, this_width;
 	char *font_name;
-	gint this_width;
 	gint font_sizes[5] = { 28, 24, 18, 14, 12 };
-	gint font_index;
-	
+	GdkFont *candidate_font = NULL;
+	char *alt_text_to_format = NULL;
+	char *temp_str = strdup(text_to_format);
+	char *cr_pos = strchr(temp_str, '\n');
+
+	if (cr_pos)
+	  {
+	  *cr_pos = '\0';
+	  alt_text_to_format = cr_pos + 1;
+	  }
+	  
 	for (font_index = 0; font_index < NAUTILUS_N_ELEMENTS (font_sizes); font_index++) {
 		if (candidate_font != NULL)
 			gdk_font_unref (candidate_font);
@@ -160,11 +171,25 @@ select_font(const char *text_to_format, gint width, const char* font_template)
 		candidate_font = gdk_font_load (font_name);
 		g_free (font_name);
 		
-		this_width = gdk_string_width (candidate_font, text_to_format);
-		if (this_width < width)
-			return candidate_font;
+		this_width = gdk_string_width (candidate_font, temp_str);
+		if (alt_text_to_format)
+		   {
+		     gint alt_width = gdk_string_width (candidate_font, alt_text_to_format);
+		     if ((this_width <= width) && (alt_width <= width))
+		     	{
+		     	  g_free(temp_str);
+		     	  return candidate_font;
+		   	}
+		   }
+		else
+		  if (this_width <= width)
+			{
+			  g_free(temp_str);
+			  return candidate_font;
+			}
 	}
 	
+	g_free(temp_str);
 	return candidate_font;
 }
 
@@ -180,15 +205,15 @@ set_up_font(GtkWidget *widget, GdkFont *font)
 }
 
 
-/* set up the label */
+/* set up the filename label */
 
 void
 nautilus_index_title_set_up_label (NautilusIndexTitle *index_title, const char *uri)
 {
 	GnomeVFSURI *vfs_uri;
-	char *file_name;
 	GdkFont *label_font;
-	
+	char *file_name;
+		
 	vfs_uri = gnome_vfs_uri_new (uri);
 	if (vfs_uri == NULL)
 		return;
@@ -199,6 +224,40 @@ nautilus_index_title_set_up_label (NautilusIndexTitle *index_title, const char *
 	if (file_name == NULL)
 		return;
 	
+	/* split the filename into two lines if necessary */
+	
+	if (strlen(file_name) >= 16)
+	  {
+	    /* find an appropriate split point if we can */
+	    gint index;
+	    gint mid_point = strlen(file_name) >> 1;
+	    gint quarter_point = mid_point >> 1;
+	    for (index = 0; index < quarter_point; index++)
+	      {
+	        gint split_offset = 0;
+	        
+	        if (!isalnum(file_name[mid_point + index]))
+	            split_offset = mid_point + index;
+	        else if (!isalnum(file_name[mid_point - index]))
+	            split_offset = mid_point - index;
+	        
+	        if (split_offset != 0) {
+	            char *buffer = (char *) g_malloc(strlen(file_name) + 1);
+	            
+	            /* build the new string, with a CR inserted, also remembering them separately for measuring */
+	            
+	            memcpy(buffer, file_name, split_offset);
+	            buffer[split_offset] = '\n';
+	            strcpy(&buffer[split_offset + 1], &file_name[split_offset]);
+	            
+	            /* free up the old string and replace it with the new one with the return inserted */
+	            
+	            g_free(file_name);
+	            file_name = buffer;		  
+	        } 
+	      }
+	  }
+	  
 	if (index_title->details->title != NULL)
 		gtk_label_set_text (GTK_LABEL (index_title->details->title), file_name);
 	else {  
@@ -208,7 +267,7 @@ nautilus_index_title_set_up_label (NautilusIndexTitle *index_title, const char *
 		gtk_box_pack_start (GTK_BOX (index_title), index_title->details->title, 0, 0, 0);
 	}   
 	
-	/* FIXME: don't use hardwired font like this */    	
+	/* FIXME: don't use hardwired font like this - get it from preferences */    	
 	label_font = select_font(file_name, GTK_WIDGET (index_title)->allocation.width - 4,
 				 "-bitstream-courier-medium-r-normal-*-%d-*-*-*-*-*-*-*");	
 	

@@ -1,3 +1,11 @@
+2000-02-15  Andu Hertzfeld <andy@eazel.com>
+
+	* src/ntl-index-panel.c:
+	removed test code that created extra tabs on right-click
+	* src/ntl-index-title.c:
+	added logic to break the title into two lines so it can use a larger font,
+	if it can find an appropriate breaking point.
+	
 2000-02-15  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/ntl-window.c (nautilus_window_init): gtk_quit_add_destroy

@@ -25,6 +25,8 @@
  */
 
 #include <config.h>
+#include <math.h>
+
 #include "ntl-index-panel.h"
 
 #include "ntl-meta-view.h"
@@ -39,7 +41,6 @@
 #include <libnautilus/nautilus-metadata.h>
 #include <libnautilus/nautilus-string.h>
 #include <gnome.h>
-#include <math.h>
 
 struct _NautilusIndexPanelDetails {
 	GtkWidget *index_container;
@@ -314,17 +315,7 @@ nautilus_index_panel_press_event (GtkWidget *widget, GdkEventButton *event)
 	NautilusIndexTabs *index_tabs = NAUTILUS_INDEX_TABS(index_panel->details->index_tabs);
 	NautilusIndexTabs *title_tab = NAUTILUS_INDEX_TABS(index_panel->details->title_tab);
 	gint rounded_y = floor(event->y + .5);
-	
-	/* FIXME: test code, will remove soon: create some more tabs if the right button is down */
-	
-	if (event->button == 3)	{
-		nautilus_index_tabs_add_view(index_tabs, "notes", NULL, 2);
-		nautilus_index_tabs_add_view(index_tabs, "file tree", NULL, 3);
-		nautilus_index_tabs_add_view(index_tabs, "credits", NULL, 4);
-		nautilus_index_tabs_add_view(index_tabs, "site map", NULL, 5);
-		nautilus_index_tabs_add_view(index_tabs, "table of contents", NULL, 6);
-	}
-	
+		
 	/* if the click is in the main tabs, tell them about it */
 	if (rounded_y >= index_panel->details->index_tabs->allocation.y) {
 		gint which_tab = nautilus_index_tabs_hit_test(index_tabs, event->x, event->y);
