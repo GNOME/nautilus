@@ -30,6 +30,7 @@
 #include "nautilus-icon-factory.h"
 #include "nautilus-icon-private.h"
 #include "nautilus-theme.h"
+#include "nautilus-multihead-hacks.h"
 #include <eel/eel-art-extensions.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
@@ -811,6 +812,7 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 	GdkGC *gc;
 	char *knob_filename;
 	GdkPixbuf *knob_pixbuf;
+	GdkBitmap *stipple;
 	int knob_width, knob_height;
 	
 	if (!item->details->show_stretch_handles) {
@@ -823,9 +825,12 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 	knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename, NULL);
 	knob_width = gdk_pixbuf_get_width (knob_pixbuf);
 	knob_height = gdk_pixbuf_get_height (knob_pixbuf);
+
+	stipple = eel_stipple_bitmap_for_screen (
+			gdk_drawable_get_screen (GDK_DRAWABLE (drawable)));
 	
 	/* first draw the box */		
-	gdk_gc_set_stipple (gc, eel_stipple_bitmap ());
+	gdk_gc_set_stipple (gc, stipple);
 	gdk_gc_set_fill (gc, GDK_STIPPLED);
 	gdk_draw_rectangle
 		(drawable, gc, FALSE,

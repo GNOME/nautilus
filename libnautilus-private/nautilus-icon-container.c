@@ -32,6 +32,7 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-marshal.h"
 #include "nautilus-theme.h"
+#include "nautilus-multihead-hacks.h"
 #include <atk/atkaction.h>
 #include <eel/eel-accessibility.h>
 #include <eel/eel-background.h>
@@ -208,10 +209,6 @@ enum {
 	LAST_SIGNAL
 };
 static guint signals[LAST_SIGNAL];
-
-/* Bitmap for stippled selection rectangles.  */
-static GdkBitmap *stipple;
-static char stipple_bits[] = { 0x02, 0x01 };
 
 /* Functions dealing with NautilusIcons.  */
 
@@ -2438,6 +2435,7 @@ realize (GtkWidget *widget)
 {
 	GtkStyle *style;
 	GtkWindow *window;
+	GdkBitmap *stipple;
 
 	GTK_WIDGET_CLASS (parent_class)->realize (widget);
 
@@ -2454,6 +2452,11 @@ realize (GtkWidget *widget)
  	g_assert (GTK_IS_WINDOW (gtk_widget_get_toplevel (widget)));
 	window = GTK_WINDOW (gtk_widget_get_toplevel (widget));
 	gtk_window_set_focus (window, widget);
+
+	stipple = eel_stipple_bitmap_for_screen (
+			gdk_drawable_get_screen (GDK_DRAWABLE (widget->window)));
+
+	nautilus_icon_dnd_set_stipple (NAUTILUS_ICON_CONTAINER (widget), stipple);
 }
 
 static void
@@ -3375,10 +3378,6 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 	widget_class->get_accessible = get_accessible;
 	widget_class->style_set = style_set;
 
-	/* Initialize the stipple bitmap.  */
-
-	stipple = gdk_bitmap_create_from_data (NULL, stipple_bits, 2, 2);
-
 	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
 				       &click_policy_auto_value);
 }
@@ -3415,7 +3414,7 @@ nautilus_icon_container_instance_init (NautilusIconContainer *container)
 	container->details = details;
 
 	/* Set up DnD.  */
-	nautilus_icon_dnd_init (container, stipple);
+	nautilus_icon_dnd_init (container, NULL);
 
 	/* Make sure that we find out if the icons change. */
 	g_signal_connect_object 

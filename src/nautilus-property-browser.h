@@ -31,6 +31,7 @@
 #ifndef NAUTILUS_PROPERTY_BROWSER_H
 #define NAUTILUS_PROPERTY_BROWSER_H
 
+#include <gdk/gdk.h>
 #include <gtk/gtkwindow.h>
 
 typedef struct NautilusPropertyBrowser NautilusPropertyBrowser;
@@ -60,10 +61,10 @@ struct NautilusPropertyBrowserClass
 	GtkWindowClass parent_class;
 };
 
-GtkType nautilus_property_browser_get_type (void);
-NautilusPropertyBrowser *nautilus_property_browser_new (void);
-void nautilus_property_browser_show (void);
-void nautilus_property_browser_set_path (NautilusPropertyBrowser *panel,
-					 const char         *new_path);
+GtkType                  nautilus_property_browser_get_type (void);
+NautilusPropertyBrowser *nautilus_property_browser_new      (GdkScreen               *screen);
+void                     nautilus_property_browser_show     (GdkScreen               *screen);
+void                     nautilus_property_browser_set_path (NautilusPropertyBrowser *panel,
+							     const char              *new_path);
 
 #endif /* NAUTILUS_PROPERTY_BROWSER_H */

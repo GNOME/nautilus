@@ -81,9 +81,6 @@ typedef struct {
 	 */
 	GList *selection_list;
 
-	/* Stipple for drawing icon shadows during DnD.  */
-	GdkBitmap *stipple;
-
         /* has the drop occured ? */
         gboolean drop_occured;
 
@@ -106,8 +103,7 @@ typedef void 		(* NautilusDragEachSelectedItemIterator)	(NautilusDragEachSelecte
 
 void                        nautilus_drag_init                          (NautilusDragInfo                     *drag_info,
 									 const GtkTargetEntry                 *drag_types,
-									 int                                   drag_type_count,
-									 GdkBitmap                            *stipple);
+									 int                                   drag_type_count);
 void                        nautilus_drag_finalize                      (NautilusDragInfo                     *drag_info);
 NautilusDragSelectionItem  *nautilus_drag_selection_item_new            (void);
 void                        nautilus_drag_destroy_selection_list        (GList                                *selection_list);

@@ -29,6 +29,8 @@
 #include "nautilus-mime-actions.h"
 #include "nautilus-program-chooser.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-multihead-hacks.h"
+#include "egg-screen-exec.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-vfs-extensions.h>
@@ -539,8 +541,9 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 			     NautilusFile *file,
 			     GtkWindow *parent_window)
 {
-	char *parameter;
-	char *uri_scheme, *uri;
+	GdkScreen *screen;
+	char      *parameter;
+	char      *uri_scheme, *uri;
 
 	uri_scheme = nautilus_file_get_uri_scheme (file);
 
@@ -586,7 +589,10 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 	}
 	g_free (uri_scheme);
 
-	nautilus_launch_application_from_command (application->name,
+	screen = gtk_window_get_screen (parent_window);
+
+	nautilus_launch_application_from_command (screen,
+						  application->name,
 						  application->command,
 						  parameter, 
 						  application->requires_terminal);
@@ -607,7 +613,8 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
  * @parameter: Passed as a parameter to the application as is.
  */
 void
-nautilus_launch_application_from_command (const char *name,
+nautilus_launch_application_from_command (GdkScreen  *screen,
+					  const char *name,
 					  const char *command_string, 
 					  const char *parameter, 
 					  gboolean use_terminal)
@@ -624,18 +631,19 @@ nautilus_launch_application_from_command (const char *name,
 	}
 
 	if (use_terminal) {
-		eel_gnome_open_terminal (full_command);
+		eel_gnome_screen_open_terminal (screen, full_command);
 	} else {
-	    	eel_gnome_shell_execute (full_command);
+	    	eel_gnome_screen_shell_execute (screen, full_command);
 	}
 
 	g_free (full_command);
 }
 
 void
-nautilus_launch_desktop_file (const char	*desktop_file_uri,
-				const GList	*parameter_uris,
-				GtkWindow	*parent_window)
+nautilus_launch_desktop_file (GdkScreen   *screen,
+			      const char  *desktop_file_uri,
+			      const GList *parameter_uris,
+			      GtkWindow   *parent_window)
 {
 	GError *error;
 	GnomeDesktopItem *ditem;
@@ -643,6 +651,7 @@ nautilus_launch_desktop_file (const char	*desktop_file_uri,
 	char *local_path, *message;
 	const GList *p;
 	int total, count;
+	char **envp;
 
 	/* strip the leading command specifier */
 	if (eel_str_has_prefix (desktop_file_uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
@@ -721,12 +730,15 @@ nautilus_launch_desktop_file (const char	*desktop_file_uri,
 				 parent_window);
 		}		
 	}
+
+	envp = egg_screen_exec_environment (screen);
 	
 	error = NULL;
-	gnome_desktop_item_launch (ditem, (GList *) parameter_uris,
-				   GNOME_DESKTOP_ITEM_LAUNCH_APPEND_URIS,
-				   &error);
-
+	gnome_desktop_item_launch_with_env (ditem,
+					    (GList *) parameter_uris,
+					    GNOME_DESKTOP_ITEM_LAUNCH_APPEND_URIS,
+					    envp,
+					    &error);
 	if (error != NULL) {
 		message = g_strconcat (_("There was an error launching the application.\n\n"
 					 "Details: "), error->message, NULL);
@@ -740,4 +752,5 @@ nautilus_launch_desktop_file (const char	*desktop_file_uri,
 	}
 	
 	gnome_desktop_item_unref (ditem);
+	g_strfreev (envp);
 }

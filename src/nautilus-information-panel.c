@@ -71,6 +71,7 @@
 #include <libnautilus-private/nautilus-sidebar-functions.h>
 #include <libnautilus-private/nautilus-theme.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
+#include <libnautilus-private/nautilus-multihead-hacks.h>
 #include <math.h>
 
 struct NautilusSidebarDetails {
@@ -562,6 +563,7 @@ nautilus_sidebar_create_context_menu (NautilusSidebar *sidebar)
 	has_background = background && !nautilus_sidebar_background_is_default (sidebar);
 	
 	menu = gtk_menu_new ();
+	gtk_menu_set_screen (GTK_MENU (menu), gtk_widget_get_screen (GTK_WIDGET (sidebar)));
 	
 	/* add the reset background item, possibly disabled */
 	menu_item = gtk_menu_item_new_with_label (_("Reset Background"));

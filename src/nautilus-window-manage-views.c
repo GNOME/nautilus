@@ -58,6 +58,7 @@
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-monitor.h>
 #include <libnautilus-private/nautilus-search-uri.h>
+#include <libnautilus-private/nautilus-multihead-hacks.h>
 
 /* FIXME bugzilla.gnome.org 41243: 
  * We should use inheritance instead of these special cases
@@ -691,8 +692,10 @@ open_location (NautilusWindow *window,
         }
 
         if (create_new_window) {
-                target_window = nautilus_application_create_window (window->application);
-        }
+                target_window = nautilus_application_create_window (
+						window->application,
+						gtk_window_get_screen (GTK_WINDOW (window)));
+	}
 
 	eel_g_list_free_deep (target_window->details->pending_selection);
         target_window->details->pending_selection = eel_g_str_list_copy (new_selection);

@@ -45,6 +45,7 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-multihead-hacks.h>
 #include <stdlib.h>
 
 /* Keep window from shrinking down ridiculously small; numbers are somewhat arbitrary */
@@ -124,7 +125,8 @@ open_window (NautilusShell *shell, const char *uri, const char *geometry)
 {
 	NautilusWindow *window;
 
-	window = nautilus_application_create_window (shell->details->application);
+	window = nautilus_application_create_window (shell->details->application,
+						     gdk_screen_get_default ());
 
 	if (geometry != NULL) {
 		eel_gtk_window_set_initial_geometry_from_string (GTK_WINDOW (window),
@@ -218,6 +220,7 @@ corba_quit (PortableServer_Servant servant,
 #define WINDOW_STATE_ATTRIBUTE_X	2
 #define WINDOW_STATE_ATTRIBUTE_Y	3
 #define WINDOW_STATE_ATTRIBUTE_LOCATION	4
+#define WINDOW_STATE_ATTRIBUTE_SCREEN	5
 
 static void
 save_window_states (void)
@@ -230,6 +233,7 @@ save_window_states (void)
 	int x, y, width, height;
 	char *location;
 	EelStringList *states;
+	int screen_num = -1;
 
 	states = NULL;
 	windows = nautilus_application_get_window_list ();
@@ -246,10 +250,14 @@ save_window_states (void)
 
 		location = nautilus_window_get_location (window);
 
-		window_attributes = g_strdup_printf ("%d,%d,%d,%d,%s", 
+		screen_num = gdk_screen_get_number (
+					gtk_window_get_screen (GTK_WINDOW (window)));
+
+		window_attributes = g_strdup_printf ("%d,%d,%d,%d,%s,%d", 
 						     width, height, 
 						     x, y, 
-						     location);
+						     location,
+						     screen_num);
 		g_free (location);
 		
 		if (states == NULL) {
@@ -276,6 +284,8 @@ restore_one_window_callback (const char *attributes,
 	int height;
 	char *location;
 	NautilusWindow *window;
+	GdkScreen *screen = NULL;
+	int screen_num;
 
 	g_return_if_fail (eel_strlen (attributes) > 0);
 	g_return_if_fail (NAUTILUS_IS_SHELL (callback_data));
@@ -289,8 +299,11 @@ restore_one_window_callback (const char *attributes,
 	eel_string_list_nth_as_integer (attribute_list, WINDOW_STATE_ATTRIBUTE_X, &x);
 	eel_string_list_nth_as_integer (attribute_list, WINDOW_STATE_ATTRIBUTE_Y, &y);
 	location = eel_string_list_nth (attribute_list, WINDOW_STATE_ATTRIBUTE_LOCATION);
+	eel_string_list_nth_as_integer (attribute_list, WINDOW_STATE_ATTRIBUTE_SCREEN, &screen_num);
 
-	window = nautilus_application_create_window (shell->details->application);
+	screen = gdk_display_get_screen (gdk_display_get_default (), screen_num);
+
+	window = nautilus_application_create_window (shell->details->application, screen);
 	
 	if (eel_strlen (location) > 0) {
 		nautilus_window_go_to (window, location);

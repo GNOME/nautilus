@@ -60,6 +60,7 @@
 #include <libgnomevfs/gnome-vfs-result.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libnautilus-private/egg-screen-exec.h>
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-directory.h>
@@ -76,6 +77,7 @@
 #include <libnautilus-private/nautilus-trash-directory.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
 #include <libnautilus-private/nautilus-view-identifier.h>
+#include <libnautilus-private/nautilus-multihead-hacks.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <math.h>
 #include <unistd.h>
@@ -749,13 +751,15 @@ other_viewer_callback (BonoboUIComponent *component, gpointer callback_data, con
 }
 
 static void
-edit_launcher (NautilusFile *file)
+edit_launcher (FMDirectoryView *view,
+	       NautilusFile    *file)
 {
 	char *uri;
 
 	uri = nautilus_file_get_uri (file);
 
-	nautilus_launch_application_from_command ("gnome-desktop-item-edit", 
+	nautilus_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (view)),
+						  "gnome-desktop-item-edit", 
 						  "gnome-desktop-item-edit",
 						  uri, 
 						  FALSE);
@@ -775,7 +779,7 @@ edit_launcher_callback (BonoboUIComponent *component, gpointer callback_data, co
        	selection = fm_directory_view_get_selection (view);
 
 	if (selection_contains_one_item_in_menu_callback (view, selection)) {
-		edit_launcher (NAUTILUS_FILE (selection->data));
+		edit_launcher (view, NAUTILUS_FILE (selection->data));
 	}
 
 	nautilus_file_list_free (selection);
@@ -982,7 +986,8 @@ new_launcher_callback (BonoboUIComponent *component, gpointer callback_data, con
 
 	parent_uri = fm_directory_view_get_uri (view);
 
-	nautilus_launch_application_from_command ("gnome-desktop-item-edit", 
+	nautilus_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (view)),
+						  "gnome-desktop-item-edit", 
 						  "gnome-desktop-item-edit --create-new",
 						  parent_uri, 
 						  FALSE);
@@ -3699,6 +3704,7 @@ static void
 run_script_callback (BonoboUIComponent *component, gpointer callback_data, const char *path)
 {
 	ScriptLaunchParameters *launch_parameters;
+	GdkScreen *screen;
 	GList *selected_files;
 	char *file_uri;
 	char *local_file_path;
@@ -3737,9 +3743,11 @@ run_script_callback (BonoboUIComponent *component, gpointer callback_data, const
 		command = g_strdup (quoted_path);
 	}
 
+	screen = gtk_widget_get_screen (GTK_WIDGET (launch_parameters->directory_view));
+
 	name = nautilus_file_get_name (launch_parameters->file);
 	/* FIXME: handle errors with dialog? Or leave up to each script? */
-	nautilus_launch_application_from_command (name, command, NULL, FALSE);
+	nautilus_launch_application_from_command (screen, name, command, NULL, FALSE);
 	g_free (name);
 	g_free (command);
 
@@ -4015,6 +4023,7 @@ create_popup_menu (FMDirectoryView *view, const char *popup_path)
 	GtkMenu *menu;
 	
 	menu = GTK_MENU (gtk_menu_new ());
+	gtk_menu_set_screen (menu, gtk_widget_get_screen (GTK_WIDGET (view)));
 	gtk_widget_show (GTK_WIDGET (menu));
 
 	bonobo_window_add_popup (get_bonobo_window (view), menu, popup_path);
@@ -4788,6 +4797,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	char *executable_path, *quoted_path, *name;
 	GnomeVFSMimeApplication *application;
 	ActivationAction action;
+	GdkScreen *screen;
 	
 	parameters = callback_data;
 
@@ -4799,6 +4809,8 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	action = ACTIVATION_ACTION_DISPLAY;
 
+	screen = gtk_widget_get_screen (GTK_WIDGET (view));
+
 	/* Note that we check for FILE_TYPE_SYMBOLIC_LINK only here,
 	 * not specifically for broken-ness, because the file type
 	 * will be the target's file type in the non-broken case.
@@ -4808,14 +4820,14 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		action = ACTIVATION_ACTION_DO_NOTHING;
 	} else if (eel_str_has_prefix (uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
 		file_uri = nautilus_file_get_uri (file);
-		nautilus_launch_desktop_file
-				(file_uri, NULL,
-				 fm_directory_view_get_containing_window (view));
+		nautilus_launch_desktop_file (
+				screen, file_uri, NULL,
+				fm_directory_view_get_containing_window (view));
 		g_free (file_uri);		 
 		action = ACTIVATION_ACTION_DO_NOTHING;
 	} else if (eel_str_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER)) {
 		uri += strlen (NAUTILUS_COMMAND_SPECIFIER);
-		nautilus_launch_application_from_command (NULL, uri, NULL, FALSE);
+		nautilus_launch_application_from_command (screen, NULL, uri, NULL, FALSE);
 		action = ACTIVATION_ACTION_DO_NOTHING;
 	}
 
@@ -4848,7 +4860,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 			quoted_path = g_shell_quote (executable_path);
 			name = nautilus_file_get_name (file);
 			nautilus_launch_application_from_command 
-						(name, quoted_path, NULL,
+						(screen, name, quoted_path, NULL,
 						 (action == ACTIVATION_ACTION_LAUNCH_IN_TERMINAL) /* use terminal */ );
 			g_free (name);
 			g_free (quoted_path);
@@ -5637,9 +5649,10 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 
 	/* special-case "command:" here instead of starting a move/copy */
 	if (eel_str_has_prefix (target_uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
-		nautilus_launch_desktop_file
-				(target_uri, item_uris,
-			 	 fm_directory_view_get_containing_window (view));
+		nautilus_launch_desktop_file (
+				gtk_widget_get_screen (GTK_WIDGET (view)),
+				target_uri, item_uris,
+				fm_directory_view_get_containing_window (view));
 		return;
 	} else if (eel_str_has_prefix (target_uri, NAUTILUS_COMMAND_SPECIFIER)) {
 		parameters = NULL;
@@ -5652,7 +5665,10 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 		}
 
 		target_uri += strlen (NAUTILUS_COMMAND_SPECIFIER);
-		nautilus_launch_application_from_command (NULL, target_uri, parameters, FALSE);
+
+		nautilus_launch_application_from_command (
+				gtk_widget_get_screen (GTK_WIDGET (view)),
+				NULL, target_uri, parameters, FALSE);
 		g_free (parameters);
 		
 		return;

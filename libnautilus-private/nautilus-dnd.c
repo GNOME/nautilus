@@ -68,15 +68,10 @@
 void
 nautilus_drag_init (NautilusDragInfo     *drag_info,
 		    const GtkTargetEntry *drag_types,
-		    int                   drag_type_count, 
-		    GdkBitmap            *stipple)
+		    int                   drag_type_count)
 {
 	drag_info->target_list = gtk_target_list_new (drag_types,
 						   drag_type_count);
-
-	if (stipple != NULL) {
-		drag_info->stipple = g_object_ref (stipple);
-	}
 
 	drag_info->drop_occured = FALSE;
 	drag_info->need_to_destroy = FALSE;
@@ -87,10 +82,6 @@ nautilus_drag_finalize (NautilusDragInfo *drag_info)
 {
 	gtk_target_list_unref (drag_info->target_list);
 	nautilus_drag_destroy_selection_list (drag_info->selection_list);
-
-	if (drag_info->stipple != NULL) {
-		g_object_unref (drag_info->stipple);
-	}
 
 	g_free (drag_info);
 }

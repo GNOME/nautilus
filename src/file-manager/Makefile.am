@@ -15,7 +15,6 @@ INCLUDES = 					\
 	-DGNOME_DISABLE_DEPRECATED \
 	$(NULL)	
 
-
 libnautilus_file_manager_la_SOURCES=	\
 	fm-desktop-icon-view.c		\
 	fm-directory-view.c		\

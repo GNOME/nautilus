@@ -34,6 +34,7 @@
 #include "nautilus-file-attributes.h"
 #include <eel/eel-string.h>
 #include "nautilus-theme.h"
+#include "nautilus-multihead-hacks.h"
 #include <X11/Xatom.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtkmain.h>
@@ -80,6 +81,9 @@ desktop_background_realized (NautilusIconContainer *icon_container, void *discon
         eel_background_set_is_constant_size (background, TRUE);
                                           
 	g_object_set_data (G_OBJECT (background), "icon_container", (gpointer) icon_container);
+
+	g_object_set_data (G_OBJECT (background), "screen",
+			   gtk_widget_get_screen (GTK_WIDGET (icon_container)));
 
 	nautilus_file_update_desktop_pixmaps (background);
 }
@@ -422,7 +426,7 @@ nautilus_file_background_receive_gconf_changes (EelBackground *background)
  * (copied from gnome-source/control-panels/capplets/background-properties/render-background.c)
  */
 static GdkPixmap *
-make_root_pixmap (gint width, gint height)
+make_root_pixmap (int screen, gint width, gint height)
 {
 	Display *display;
         char *display_name;
@@ -431,7 +435,7 @@ make_root_pixmap (gint width, gint height)
 
 	gdk_flush ();
 
-        display_name = DisplayString (GDK_DISPLAY ());
+	display_name = DisplayString (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
 	display = XOpenDisplay (display_name);
 
         if (display == NULL) {
@@ -443,9 +447,9 @@ make_root_pixmap (gint width, gint height)
 	XSetCloseDownMode (display, RetainPermanent);
 
 	result = XCreatePixmap (display,
-				DefaultRootWindow (display),
+				RootWindow (display, screen),
 				width, height,
-				DefaultDepthOfScreen (DefaultScreenOfDisplay (GDK_DISPLAY())));
+				DefaultDepth (display, screen));
 
 	XCloseDisplay (display);
 
@@ -464,21 +468,23 @@ make_root_pixmap (gint width, gint height)
  * (copied from gnome-source/control-panels/capplets/background-properties/render-background.c)
  */
 static void 
-set_root_pixmap (GdkPixmap *pixmap)
+set_root_pixmap (GdkPixmap *pixmap, int screen)
 {
-	int     result;
-	gint    format;
-	gulong  nitems;
-	gulong  bytes_after;
-	guchar *data_esetroot;
-	Pixmap  pixmap_id;
-	Atom type;
+	int      result;
+	gint     format;
+	gulong   nitems;
+	gulong   bytes_after;
+	guchar  *data_esetroot;
+	Pixmap   pixmap_id;
+	Atom     type;
+	Display *display;
 
 	data_esetroot = NULL;
+	display = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
 
-	XGrabServer (GDK_DISPLAY());
+	XGrabServer (display);
 
-	result = XGetWindowProperty (GDK_DISPLAY(), GDK_ROOT_WINDOW(),
+	result = XGetWindowProperty (display, RootWindow (display, screen),
 				     gdk_x11_get_xatom_by_name ("ESETROOT_PMAP_ID"),
 				     0L, 1L, False, XA_PIXMAP,
 				     &type, &format, &nitems, &bytes_after,
@@ -487,7 +493,7 @@ set_root_pixmap (GdkPixmap *pixmap)
 	if (data_esetroot != NULL) {
 		if (result == Success && type == XA_PIXMAP && format == 32 && nitems == 1) {
 			gdk_error_trap_push ();
-			XKillClient(GDK_DISPLAY(), *(Pixmap *)data_esetroot);
+			XKillClient (display, *(Pixmap *)data_esetroot);
 			gdk_flush ();
 			gdk_error_trap_pop ();
 		}
@@ -496,21 +502,21 @@ set_root_pixmap (GdkPixmap *pixmap)
 
 	pixmap_id = GDK_WINDOW_XWINDOW (pixmap);
 
-	XChangeProperty (GDK_DISPLAY(), GDK_ROOT_WINDOW(),
+	XChangeProperty (display, RootWindow (display, screen),
 			 gdk_x11_get_xatom_by_name ("ESETROOT_PMAP_ID"), XA_PIXMAP,
 			 32, PropModeReplace,
 			 (guchar *) &pixmap_id, 1);
-	XChangeProperty (GDK_DISPLAY(), GDK_ROOT_WINDOW(),
+	XChangeProperty (display, RootWindow (display, screen),
 			 gdk_x11_get_xatom_by_name ("_XROOTPMAP_ID"), XA_PIXMAP,
 			 32, PropModeReplace,
 			 (guchar *) &pixmap_id, 1);
 
-	XSetWindowBackgroundPixmap (GDK_DISPLAY (), GDK_ROOT_WINDOW (), pixmap_id);
-	XClearWindow (GDK_DISPLAY (), GDK_ROOT_WINDOW ());
+	XSetWindowBackgroundPixmap (display, RootWindow (display, screen), pixmap_id);
+	XClearWindow (display, RootWindow (display, screen));
 
-	XUngrabServer (GDK_DISPLAY());
+	XUngrabServer (display);
 	
-	XFlush(GDK_DISPLAY());
+	XFlush (display);
 }
 	
 static void
@@ -518,9 +524,11 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
 {
 	int	      width;
 	int	      height;
+	int           screen_num;
 	GdkGC        *gc;
 	GdkPixmap    *pixmap;
 	GdkWindow    *background_window;
+	GdkScreen    *screen;
 
         if (GPOINTER_TO_INT (disconnect_signal)) {
 		g_signal_handlers_disconnect_by_func
@@ -529,10 +537,14 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
                          disconnect_signal);
 	}
 
-	width  = gdk_screen_width ();
-	height = gdk_screen_height ();
+	screen = g_object_get_data (G_OBJECT (background), "screen");
+	if (screen == NULL)
+		return;
+	width = gdk_screen_get_width (screen);
+	height = gdk_screen_get_height (screen);
+	screen_num = gdk_screen_get_number (screen);
 
-	pixmap = make_root_pixmap (width, height);
+	pixmap = make_root_pixmap (screen_num, width, height);
         if (pixmap == NULL) {
                 return;
         }
@@ -541,7 +553,7 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
 	eel_background_draw_to_drawable (background, pixmap, gc, 0, 0, width, height, width, height);
 	g_object_unref (gc);
 
-	set_root_pixmap (pixmap);
+	set_root_pixmap (pixmap, screen_num);
 
 	background_window = background_get_desktop_background_window (background);
 	if (background_window != NULL) {

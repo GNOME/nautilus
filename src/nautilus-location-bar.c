@@ -49,6 +49,7 @@
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-private/nautilus-entry.h>
 #include <libnautilus-private/nautilus-icon-dnd.h>
+#include <libnautilus-private/nautilus-multihead-hacks.h>
 #include <libnautilus/nautilus-clipboard.h>
 #include <stdio.h>
 #include <string.h>
@@ -125,6 +126,8 @@ drag_data_received_callback (GtkWidget *widget,
 	NautilusApplication *application;
 	int name_count;
 	NautilusWindow *new_window;
+	NautilusWindow *window;
+	GdkScreen      *screen;
 	gboolean new_windows_for_extras;
 	char *prompt;
 
@@ -140,6 +143,7 @@ drag_data_received_callback (GtkWidget *widget,
 		return;
 	}
 
+	window = nautilus_location_bar_get_window (widget);
 	new_windows_for_extras = FALSE;
 	/* Ask user if they really want to open multiple windows
 	 * for multiple dropped URIs. This is likely to have been
@@ -153,7 +157,7 @@ drag_data_received_callback (GtkWidget *widget,
 		/* eel_run_simple_dialog should really take in pairs
 		 * like gtk_dialog_new_with_buttons() does. */
 		new_windows_for_extras = eel_run_simple_dialog 
-			(GTK_WIDGET (nautilus_location_bar_get_window (widget)),
+			(GTK_WIDGET (window),
 			 TRUE,
 			 prompt,
 			 _("View in Multiple Windows?"),
@@ -173,9 +177,11 @@ drag_data_received_callback (GtkWidget *widget,
 	nautilus_navigation_bar_location_changed (NAUTILUS_NAVIGATION_BAR (widget));
 
 	if (new_windows_for_extras) {
-		application = nautilus_location_bar_get_window (widget)->application;
+		application = window->application;
+		screen = gtk_window_get_screen (GTK_WINDOW (window));
+
 		for (node = names->next; node != NULL; node = node->next) {
-			new_window = nautilus_application_create_window (application);
+			new_window = nautilus_application_create_window (application, screen);
 			nautilus_window_go_to (new_window, node->data);
 		}
 	}

@@ -75,6 +75,7 @@
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-sidebar-functions.h>
+#include <libnautilus-private/nautilus-multihead-hacks.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus/nautilus-undo.h>
@@ -456,25 +457,28 @@ nautilus_window_zoom_to_fit (NautilusWindow *window)
  * (The user can still stretch the window taller if desired).
  */
 static guint
-get_max_forced_height (void)
+get_max_forced_height (GdkScreen *screen)
 {
-	return (gdk_screen_height () * 90) / 100;
+	return (gdk_screen_get_height (screen) * 90) / 100;
 }
 
 /* Code should never force the window wider than this size.
  * (The user can still stretch the window wider if desired).
  */
 static guint
-get_max_forced_width (void)
+get_max_forced_width (GdkScreen *screen)
 {
-	return (gdk_screen_width () * 90) / 100;
+	return (gdk_screen_get_width (screen) * 90) / 100;
 }
 
 static void
 set_initial_window_geometry (NautilusWindow *window)
 {
+	GdkScreen *screen;
 	guint max_width_for_screen, max_height_for_screen;
 
+	screen = gtk_window_get_screen (GTK_WINDOW (window));
+	
 	/* Don't let GTK determine the minimum size
 	 * automatically. It will insist that the window be
 	 * really wide based on some misguided notion about
@@ -490,9 +494,9 @@ set_initial_window_geometry (NautilusWindow *window)
 	 * probably remove this broken set_size_request() here.
 	 * - hp@redhat.com
 	 */
-	
-	max_width_for_screen = get_max_forced_width ();
-	max_height_for_screen = get_max_forced_height ();
+
+	max_width_for_screen = get_max_forced_width (screen);
+	max_height_for_screen = get_max_forced_height (screen);
 
 	gtk_widget_set_size_request (GTK_WIDGET (window), 
 				     MIN (NAUTILUS_WINDOW_MIN_WIDTH, 
@@ -892,6 +896,7 @@ static void
 nautilus_window_size_request (GtkWidget		*widget,
 			      GtkRequisition	*requisition)
 {
+	GdkScreen *screen;
 	guint max_width;
 	guint max_height;
 
@@ -899,6 +904,8 @@ nautilus_window_size_request (GtkWidget		*widget,
 	g_assert (requisition != NULL);
 
 	GTK_WIDGET_CLASS (parent_class)->size_request (widget, requisition);
+
+	screen = gtk_window_get_screen (GTK_WINDOW (widget));
 
 	/* Limit the requisition to be within 90% of the available screen 
 	 * real state.
@@ -913,8 +920,8 @@ nautilus_window_size_request (GtkWidget		*widget,
 	 * to be requested, should still be fixed.  This code is here only to 
 	 * prevent the extremely frustrating consequence of such bugs.
 	 */
-	max_width = get_max_forced_width ();
-	max_height = get_max_forced_height ();
+	max_width = get_max_forced_width (screen);
+	max_height = get_max_forced_height (screen);
 
 	if (requisition->width > (int) max_width) {
 		requisition->width = max_width;

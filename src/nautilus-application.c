@@ -64,6 +64,7 @@
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus-private/nautilus-volume-monitor.h>
 #include <libnautilus-private/nautilus-authn-manager.h>
+#include <libnautilus-private/nautilus-multihead-hacks.h>
 #include <bonobo-activation/bonobo-activation.h>
 
 /* Needed for the is_kdesktop_present check */
@@ -74,8 +75,8 @@
 #define SEARCH_LIST_VIEW_IID "OAFIID:Nautilus_File_Manager_Search_List_View"
 #define SHELL_IID	     "OAFIID:Nautilus_Shell"
 
-/* Keeps track of the one and only desktop window. */
-static NautilusDesktopWindow *nautilus_application_desktop_window;
+/* Keeps track of all the desktop windows. */
+static GList *nautilus_application_desktop_windows;
 
 /* Keeps track of all the nautilus windows. */
 static GList *nautilus_application_window_list;
@@ -574,11 +575,14 @@ nautilus_application_startup (NautilusApplication *application,
 }
 
 static void
-nautilus_application_create_desktop_window (NautilusApplication *application)
+nautilus_application_create_desktop_windows (NautilusApplication *application)
 {
 	static gboolean create_in_progress = FALSE;
+	GdkDisplay *display;
+	NautilusDesktopWindow *window;
+	int screens, i;
 
-	g_return_if_fail (nautilus_application_desktop_window == NULL);
+	g_return_if_fail (nautilus_application_desktop_windows == NULL);
 	g_return_if_fail (NAUTILUS_IS_APPLICATION (application));
 
 	if (create_in_progress) {
@@ -587,12 +591,21 @@ nautilus_application_create_desktop_window (NautilusApplication *application)
 
 	create_in_progress = TRUE;
 
-	nautilus_application_desktop_window = nautilus_desktop_window_new (application);
-	/* We realize it immediately so that the NAUTILUS_DESKTOP_WINDOW_ID
-	   property is set so gnome-settings-daemon doesn't try to set the
-	   background. And we do a gdk_flush() to be sure X gets it. */
-	gtk_widget_realize (GTK_WIDGET (nautilus_application_desktop_window));
-	gdk_flush ();
+	display = gdk_display_get_default ();
+	screens = gdk_display_get_n_screens (display);
+
+	for (i = 0; i < screens; i++) {
+		window = nautilus_desktop_window_new (application,
+						      gdk_display_get_screen (display, i));
+		/* We realize it immediately so that the NAUTILUS_DESKTOP_WINDOW_ID
+		   property is set so gnome-settings-daemon doesn't try to set the
+		   background. And we do a gdk_flush() to be sure X gets it. */
+		gtk_widget_realize (GTK_WIDGET (window));
+		gdk_flush ();
+
+		nautilus_application_desktop_windows =
+			g_list_prepend (nautilus_application_desktop_windows, window);
+	}
 
 	create_in_progress = FALSE;
 }
@@ -600,17 +613,19 @@ nautilus_application_create_desktop_window (NautilusApplication *application)
 void
 nautilus_application_open_desktop (NautilusApplication *application)
 {
-	if (nautilus_application_desktop_window == NULL) {
-		nautilus_application_create_desktop_window (application);
+	if (nautilus_application_desktop_windows == NULL) {
+		nautilus_application_create_desktop_windows (application);
 	}
 }
 
 void
 nautilus_application_close_desktop (void)
 {
-	if (nautilus_application_desktop_window != NULL) {
-		gtk_widget_destroy (GTK_WIDGET (nautilus_application_desktop_window));
-		nautilus_application_desktop_window = NULL;
+	if (nautilus_application_desktop_windows != NULL) {
+		g_list_foreach (nautilus_application_desktop_windows,
+				(GFunc) gtk_widget_destroy, NULL);
+		g_list_free (nautilus_application_desktop_windows);
+		nautilus_application_desktop_windows = NULL;
 	}
 }
 
@@ -693,7 +708,8 @@ nautilus_window_unrealize_event_callback (GtkWidget *widget,
 }
 
 NautilusWindow *
-nautilus_application_create_window (NautilusApplication *application)
+nautilus_application_create_window (NautilusApplication *application,
+				    GdkScreen           *screen)
 {
 	NautilusWindow *window;
 
@@ -701,8 +717,10 @@ nautilus_application_create_window (NautilusApplication *application)
 	
 	window = NAUTILUS_WINDOW (gtk_widget_new (nautilus_window_get_type (),
 						  "app", application,
-						  "app_id", "nautilus", NULL));
-	
+						  "app_id", "nautilus",
+						  "screen", screen,
+						  NULL));
+
 	g_signal_connect (window, "delete_event",
 			  G_CALLBACK (nautilus_window_delete_event_callback), NULL);
 
@@ -729,9 +747,9 @@ nautilus_application_create_window (NautilusApplication *application)
 static void
 desktop_location_changed_callback (gpointer user_data)
 {
-	if (nautilus_application_desktop_window != NULL) {
-		nautilus_desktop_window_update_directory
-			(nautilus_application_desktop_window);
+	if (nautilus_application_desktop_windows != NULL) {
+		g_list_foreach (nautilus_application_desktop_windows,
+				(GFunc) nautilus_desktop_window_update_directory, NULL);
 	}
 }
 
@@ -813,7 +831,7 @@ volume_mounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 	/* Open a window to the CD if the user has set that preference. */
 	if (nautilus_volume_get_device_type (volume) == NAUTILUS_DEVICE_CDROM_DRIVE
 		&& eel_gconf_get_boolean( "/apps/magicdev/do_fileman_window")) {
-		window = nautilus_application_create_window (application);
+		window = nautilus_application_create_window (application, gdk_screen_get_default ());
 		uri = gnome_vfs_get_uri_from_local_path (nautilus_volume_get_mount_path (volume));
 		nautilus_window_go_to (window, uri);
 		g_free (uri);
@@ -960,7 +978,7 @@ update_session (gpointer callback_data)
 			      * if we have a desktop window. Prevents the
 			      * session thrashing that's seen otherwise
 			      */
-			     && nautilus_application_desktop_window != NULL);
+			     && nautilus_application_desktop_windows != NULL);
 }
 
 static void

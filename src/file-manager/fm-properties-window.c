@@ -67,6 +67,7 @@
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
+#include <libnautilus-private/nautilus-multihead-hacks.h>
 #include <libnautilus/nautilus-undo.h>
 #include <string.h>
 
@@ -2169,6 +2170,8 @@ create_properties_window (StartupData *startup_data)
 	
   	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
 	gtk_window_set_wmclass (GTK_WINDOW (window), "file_properties", "Nautilus");
+	gtk_window_set_screen (GTK_WINDOW (window),
+			       gtk_widget_get_screen (GTK_WIDGET (startup_data->directory_view)));
 
 	/* Set initial window title */
 	update_properties_window_title (GTK_WINDOW (window), window->details->target_file);
@@ -2372,6 +2375,8 @@ fm_properties_window_present (NautilusFile *original_file, FMDirectoryView *dire
 	/* Look to see if there's already a window for this file. */
 	existing_window = g_hash_table_lookup (windows, original_file);
 	if (existing_window != NULL) {
+		gtk_window_set_screen (existing_window,
+				       gtk_widget_get_screen (GTK_WIDGET (directory_view)));
 		gtk_window_present (existing_window);
 		return;
 	}

@@ -32,6 +32,7 @@
 #include "nautilus-mime-actions.h"
 #include "nautilus-program-choosing.h"
 #include "nautilus-view-identifier.h"
+#include "nautilus-multihead-hacks.h"
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
@@ -916,12 +917,16 @@ set_default_for_item (ProgramFilePair *pair)
 }
 
 static void
-launch_mime_capplet (const char *mime_type)
+launch_mime_capplet (GtkDialog  *parent_dialog,
+		     const char *mime_type)
 {
+	GdkScreen *screen;
 	char *command;
 
+	screen = gtk_window_get_screen (GTK_WINDOW (parent_dialog));
+
 	command = g_strconcat (FILE_TYPES_CAPPLET_NAME, " ", mime_type, NULL);
-	nautilus_launch_application_from_command (FILE_TYPES_CAPPLET_NAME, command, NULL, FALSE);
+	nautilus_launch_application_from_command (screen, FILE_TYPES_CAPPLET_NAME, command, NULL, FALSE);
 	g_free (command);
 }
 
@@ -931,7 +936,7 @@ launch_mime_capplet_on_ok (GtkDialog *dialog, int response, gpointer callback_da
 	g_assert (GTK_IS_DIALOG (dialog));
 
 	if (response == GTK_RESPONSE_YES) {
-		launch_mime_capplet (callback_data);
+		launch_mime_capplet (dialog, callback_data);
 	}
 	gtk_object_destroy (GTK_OBJECT (dialog));
 }
@@ -946,7 +951,7 @@ launch_mime_capplet_and_close_dialog (GtkButton *button, gpointer callback_data)
 
 	file_pair = get_selected_program_file_pair (NAUTILUS_PROGRAM_CHOOSER (callback_data));
 	mime_type = nautilus_file_get_mime_type (file_pair->file);
-	launch_mime_capplet (mime_type);
+	launch_mime_capplet (GTK_DIALOG (callback_data), mime_type);
 	
 	g_free (mime_type);
 

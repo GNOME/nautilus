@@ -327,6 +327,18 @@ fi
 
 AM_GCONF_SOURCE_2
 
+dnl
+dnl Check for gtk+ with multihead support
+dnl
+AC_MSG_CHECKING([for gtk+ multihead support])
+if $PKG_CONFIG --atleast-version 2.1.0 gtk+-2.0; then
+   AC_DEFINE(HAVE_GTK_MULTIHEAD,,[gtk+ with multihead support found])
+   AC_MSG_RESULT(yes)
+else
+   AC_MSG_RESULT(no)
+fi
+
+
 AC_OUTPUT([
 Makefile
 components/Makefile
