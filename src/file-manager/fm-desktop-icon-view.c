@@ -76,7 +76,7 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView, fm_desktop_icon_view, FM_T
 static NautilusIconContainer *
 get_icon_container (FMDesktopIconView *icon_view)
 {
-	g_return_val_if_fail (FM_IS_DESKSTOP_ICON_VIEW (icon_view), NULL);
+	g_return_val_if_fail (FM_IS_DESKTOP_ICON_VIEW (icon_view), NULL);
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (GTK_BIN (icon_view)->child), NULL);
 
 	return NAUTILUS_ICON_CONTAINER (GTK_BIN (icon_view)->child);

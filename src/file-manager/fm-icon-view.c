@@ -703,7 +703,7 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	icon_container = GTK_WIDGET (get_icon_container (icon_view));
 
 	/* hackish way to tag the desktop so it can use a different background.  */	
-	if (FM_IS_DESKSTOP_ICON_VIEW (view)) {
+	if (FM_IS_DESKTOP_ICON_VIEW (view)) {
 		background = nautilus_get_widget_background (icon_container);
 		gtk_object_set_data (GTK_OBJECT (background), "desktop", view); 
 	}

@@ -22,8 +22,8 @@
    Authors: Mike Engber <engber@eazel.com>
 */
 
-#ifndef FM_DESKSTOP_ICON_VIEW_H
-#define FM_DESKSTOP_ICON_VIEW_H
+#ifndef FM_DESKTOP_ICON_VIEW_H
+#define FM_DESKTOP_ICON_VIEW_H
 
 #include "fm-icon-view.h"
 #include <libnautilus-extensions/nautilus-volume-monitor.h>
@@ -32,11 +32,11 @@ typedef struct FMDesktopIconView FMDesktopIconView;
 typedef struct FMDesktopIconViewClass FMDesktopIconViewClass;
 typedef struct FMDesktopIconViewDetails FMDesktopIconViewDetails;
 
-#define FM_TYPE_DESKSTOP_ICON_VIEW		(fm_desktop_icon_view_get_type ())
-#define FM_DESKTOP_ICON_VIEW(obj)		(GTK_CHECK_CAST ((obj), FM_TYPE_DESKSTOP_ICON_VIEW, FMDesktopIconView))
-#define FM_DESKSTOP_ICON_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_DESKSTOP_ICON_VIEW, FMDesktopIconViewClass))
-#define FM_IS_DESKSTOP_ICON_VIEW(obj)		(GTK_CHECK_TYPE ((obj), FM_TYPE_DESKSTOP_ICON_VIEW))
-#define FM_IS_DESKSTOP_ICON_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_DESKSTOP_ICON_VIEW))
+#define FM_TYPE_DESKTOP_ICON_VIEW		(fm_desktop_icon_view_get_type ())
+#define FM_DESKTOP_ICON_VIEW(obj)		(GTK_CHECK_CAST ((obj), FM_TYPE_DESKTOP_ICON_VIEW, FMDesktopIconView))
+#define FM_DESKTOP_ICON_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_DESKTOP_ICON_VIEW, FMDesktopIconViewClass))
+#define FM_IS_DESKTOP_ICON_VIEW(obj)		(GTK_CHECK_TYPE ((obj), FM_TYPE_DESKTOP_ICON_VIEW))
+#define FM_IS_DESKTOP_ICON_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_DESKTOP_ICON_VIEW))
 
 struct FMDesktopIconView {
 	FMIconView parent;
@@ -57,4 +57,4 @@ struct FMDesktopIconViewDetails
 /* GtkObject support */
 GtkType fm_desktop_icon_view_get_type (void);
 
-#endif /* FM_DESKSTOP_ICON_VIEW_H */
+#endif /* FM_DESKTOP_ICON_VIEW_H */
