@@ -1,3 +1,25 @@
+2002-10-21  James Willcox  <jwillcox@gnome.org>
+
+	* components/emblem/nautilus-emblem-view.c:
+	(nautilus_emblem_view_button_press_cb),
+	(nautilus_emblem_view_delete_cb), (rename_dialog_response_cb),
+	(create_rename_emblem_dialog), (nautilus_emblem_view_rename_cb),
+	(create_emblem_widget_with_pixbuf), (create_add_emblems_dialog),
+	(nautilus_emblem_view_drag_received_cb):
+	* libnautilus-private/nautilus-emblem-utils.c:
+	(nautilus_emblem_can_remove_emblem),
+	(nautilus_emblem_can_rename_emblem),
+	(nautilus_emblem_remove_emblem), (nautilus_emblem_rename_emblem):
+	* libnautilus-private/nautilus-emblem-utils.h:
+	* libnautilus-private/nautilus-icon-factory.c:
+	(nautilus_icon_factory_remove_from_cache):
+	* libnautilus-private/nautilus-icon-factory.h:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_destroy):
+
+	Add a popup menu to the emblems in the emblem sidebar that allows
+	renaming and removing of emblems.
+
 2002-10-21  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-container.c (lay_down_icons_horizontal):

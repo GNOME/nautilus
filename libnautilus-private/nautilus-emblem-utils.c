@@ -27,6 +27,7 @@
 #include <utime.h>
 #include <stdio.h>
 #include <time.h>
+#include <unistd.h>
 #include "nautilus-icon-factory.h"
 #include <eel/eel-string.h>
 #include <eel/eel-glib-extensions.h>
@@ -36,7 +37,6 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-icon-theme.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <gconf/gconf-client.h>
 #include "nautilus-emblem-utils.h"
 
 #define EMBLEM_NAME_TRASH   "emblem-trash"
@@ -182,9 +182,8 @@ nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
 				       GtkWindow *parent_window)
 {
 	GnomeVFSURI *vfs_uri;
-	char *path, *theme, *dir, *stat_dir;
+	char *path, *dir, *stat_dir;
 	FILE *file;
-	GConfClient *client;
 	char *error_string;
 	struct stat stat_buf;
 	struct utimbuf ubuf;
@@ -200,28 +199,21 @@ nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
 				       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
 		return;
 	} else if (is_reserved_keyword (keyword)) {
-		error_string = g_strdup_printf (_("Sorry, but \"%s\" is an existing keyword.  Please choose a different name for it."), keyword);
+		/* this really should never happen, as a user has no idea
+		 * what a keyword is, and people should be passing a unique
+		 * keyword to us anyway
+		 */
+		error_string = g_strdup_printf (_("Sorry, but there is already an emblem named \"%s\".  Please choose a different name for it."), display_name);
 		eel_show_error_dialog (error_string, 
 				       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
 		g_free (error_string);
 		return;
 	} 
 
-	client = gconf_client_get_default ();
-	 
-	theme = gconf_client_get_string (client,
-					 "/desktop/gnome/interface/icon_theme",
-					 NULL);
-
-	g_object_unref (client);
-
-	g_return_if_fail (theme != NULL);
-
-	dir = g_strdup_printf ("%s/.icons/%s/48x48/emblems",
-			       g_get_home_dir (), theme);
-	stat_dir = g_strdup_printf ("%s/.icons/%s",
-				    g_get_home_dir (), theme);
-	g_free (theme);
+	dir = g_strdup_printf ("%s/.icons/gnome/48x48/emblems",
+			       g_get_home_dir ());
+	stat_dir = g_strdup_printf ("%s/.icons/gnome",
+				    g_get_home_dir ());
 
 	vfs_uri = gnome_vfs_uri_new (dir);
 
@@ -273,4 +265,158 @@ nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
 	g_free (stat_dir);
 
 	return;
+}
+
+gboolean
+nautilus_emblem_can_remove_emblem (const char *keyword)
+{
+	char *path;
+	gboolean ret = TRUE;
+	
+	path = g_strdup_printf ("%s/.icons/gnome/48x48/emblems/emblem-%s.png",
+				g_get_home_dir (), keyword);
+
+	if (access (path, F_OK|W_OK) != 0) {
+		ret = FALSE;
+	}
+
+	g_free (path);
+
+	return ret;
+}
+
+gboolean
+nautilus_emblem_can_rename_emblem (const char *keyword)
+{
+	char *path;
+	gboolean ret = TRUE;
+	
+	path = g_strdup_printf ("%s/.icons/gnome/48x48/emblems/emblem-%s.png",
+				g_get_home_dir (), keyword);
+
+	if (access (path, F_OK|R_OK) != 0) {
+		ret = FALSE;
+	}
+
+	g_free (path);
+
+	return ret;
+}
+
+/* of course, this only works for custom installed emblems */
+gboolean
+nautilus_emblem_remove_emblem (const char *keyword)
+{
+	char *path, *dir, *stat_dir;
+	struct stat stat_buf;
+	struct utimbuf ubuf;
+	
+	 
+	dir = g_strdup_printf ("%s/.icons/gnome/48x48/emblems",
+			       g_get_home_dir ());
+	stat_dir = g_strdup_printf ("%s/.icons/gnome",
+				    g_get_home_dir ());
+
+	path = g_strdup_printf ("%s/emblem-%s.png", dir, keyword);
+
+	/* delete the image */
+	if (unlink (path) != 0) {
+		/* couldn't delete it */
+		g_free (dir);
+		g_free (stat_dir);
+		g_free (path);
+		return FALSE;
+	}
+
+	g_free (path);
+
+	path = g_strdup_printf ("%s/emblem-%s.icon", dir, keyword);
+
+	if (unlink (path) != 0) {
+		g_free (dir);
+		g_free (stat_dir);
+		g_free (path);
+		return FALSE;
+	}
+
+	/* Touch the toplevel dir */
+	if (stat (stat_dir, &stat_buf) == 0) {
+		ubuf.actime = stat_buf.st_atime;
+		ubuf.modtime = time (NULL);
+		utime (stat_dir, &ubuf);
+	}
+	
+	g_free (dir);
+	g_free (stat_dir);
+
+	return TRUE;
+}
+
+/* this only works for custom emblems as well */
+gboolean
+nautilus_emblem_rename_emblem (const char *keyword, const char *name)
+{
+	char *path, *dir, *stat_dir, *icon_name;
+	struct stat stat_buf;
+	struct utimbuf ubuf;
+	FILE *file;
+	
+	dir = g_strdup_printf ("%s/.icons/gnome/48x48/emblems",
+			       g_get_home_dir ());
+	stat_dir = g_strdup_printf ("%s/.icons/gnome",
+				    g_get_home_dir ());
+
+	path = g_strdup_printf ("%s/emblem-%s.icon", dir, keyword);
+
+	file = fopen (path, "w+");
+	g_free (path);
+		
+	if (file == NULL) {
+		g_free (dir);
+		g_free (stat_dir);
+		return FALSE;
+	}
+
+		
+	/* write the new icon description */
+	fprintf (file, "\n[Icon Data]\n\nDisplayName=%s\n", name);
+	fflush (file);
+	fclose (file);
+
+	icon_name = nautilus_emblem_get_icon_name_from_keyword (keyword);
+	nautilus_icon_factory_remove_from_cache (icon_name, NULL, NULL,
+						 NAUTILUS_ICON_SIZE_STANDARD);
+	
+	g_free (icon_name);
+
+	/* Touch the toplevel dir */
+	if (stat (stat_dir, &stat_buf) == 0) {
+		ubuf.actime = stat_buf.st_atime;
+		ubuf.modtime = time (NULL);
+		utime (stat_dir, &ubuf);
+	}
+	
+	g_free (dir);
+	g_free (stat_dir);
+
+	return TRUE;
+}
+
+char *
+nautilus_emblem_create_unique_keyword (const char *base)
+{
+	char *keyword;
+	time_t t;
+	int i;
+
+	time (&t);
+	i=0;
+
+	keyword = NULL;
+	do {
+		g_free (keyword);
+		keyword = g_strdup_printf ("user%s%d%d", base, (int)t, i++);
+	} while (is_reserved_keyword (keyword));
+
+	return keyword;
 }

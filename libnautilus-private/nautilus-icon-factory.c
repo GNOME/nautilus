@@ -1431,6 +1431,29 @@ nautilus_icon_factory_get_thumbnail_frame (void)
 	return get_icon_factory ()->thumbnail_frame;
 }
 
+gboolean
+nautilus_icon_factory_remove_from_cache (const char *icon_name,
+					 const char *modifier,
+					 const char *embedded_text,
+					 guint size)
+{
+	GHashTable *hash_table;
+	NautilusIconFactory *factory;
+	CacheKey lookup_key;
+
+	factory = get_icon_factory ();
+	hash_table = factory->icon_cache;
+
+	/* Check to see if it's already in the table. */
+	lookup_key.name = (char *)icon_name;
+	lookup_key.modifier = (char *)modifier;
+	lookup_key.embedded_text = (char *)embedded_text;
+	lookup_key.nominal_size = size;
+	
+	return g_hash_table_remove (hash_table, &lookup_key);
+}
+					 
+
 static gboolean
 embedded_text_rect_usable (GnomeIconData *icon_data)
 {

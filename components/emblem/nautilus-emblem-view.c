@@ -38,6 +38,7 @@
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-vfs-extensions.h>
+#include <eel/eel-stock-dialogs.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkeventbox.h>
@@ -49,9 +50,13 @@
 #include <gtk/gtkstock.h>
 #include <gtk/gtkimage.h>
 #include <gtk/gtkentry.h>
+#include <gtk/gtkimagemenuitem.h>
+#include <gtk/gtkmenu.h>
+#include <gtk/gtkmenushell.h>
 #include <librsvg/rsvg.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
+#include <libgnomeui/gnome-popup-menu.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <gconf/gconf-client.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
@@ -62,6 +67,13 @@
 struct NautilusEmblemViewDetails {
 	GConfClient *client;
 	GtkWidget *emblems_table;
+	GtkWidget *popup;
+	GtkWidget *popup_remove;
+	GtkWidget *popup_rename;
+
+	char *popup_emblem_keyword;
+	char *popup_emblem_display_name;
+	GdkPixbuf *popup_emblem_pixbuf;
 };
 
 #define ERASE_EMBLEM_KEYWORD			"erase"
@@ -72,6 +84,7 @@ static void     nautilus_emblem_view_class_init      (NautilusEmblemViewClass *o
 static void     nautilus_emblem_view_instance_init   (NautilusEmblemView *object);
 static void     nautilus_emblem_view_finalize        (GObject     *object);
 static void     nautilus_emblem_view_populate        (NautilusEmblemView *emblem_view);
+static void     nautilus_emblem_view_refresh         (NautilusEmblemView *emblem_view);
 
 static GtkTargetEntry drag_types[] = {
 	{"property/keyword", 0, 0 }
@@ -79,12 +92,14 @@ static GtkTargetEntry drag_types[] = {
 
 enum {
 	TARGET_URI_LIST,
-	TARGET_URL
+	TARGET_URI,
+	TARGET_NETSCAPE_URL
 };
 
 static GtkTargetEntry dest_types[] = {
 	{"text/uri-list", 0, TARGET_URI_LIST},
-	{"_NETSCAPE_URL", 0, TARGET_URL}
+	{"text/plain", 0, TARGET_URI},
+	{"_NETSCAPE_URL", 0, TARGET_NETSCAPE_URL}
 };
 
 typedef struct _Emblem {
@@ -141,6 +156,201 @@ nautilus_emblem_view_leave_notify_cb (GtkWidget *widget,
 	eel_labeled_image_set_pixbuf (EEL_LABELED_IMAGE (image), pixbuf);
 }
 
+static gboolean
+nautilus_emblem_view_button_press_cb (GtkWidget *widget,
+				      GdkEventButton *event,
+				      NautilusEmblemView *emblem_view)
+{
+	char *keyword, *name;
+	GdkPixbuf *pixbuf;
+
+	if (event->button == 3) {
+		keyword = g_object_get_data (G_OBJECT (widget),
+					     "emblem-keyword");
+		name = g_object_get_data (G_OBJECT (widget),
+					  "emblem-display-name");
+		pixbuf = g_object_get_data (G_OBJECT (widget),
+					    "original-pixbuf");
+
+		emblem_view->details->popup_emblem_keyword = keyword;
+		emblem_view->details->popup_emblem_display_name = name;
+		emblem_view->details->popup_emblem_pixbuf = pixbuf;
+
+		gtk_widget_set_sensitive (emblem_view->details->popup_remove,
+				nautilus_emblem_can_remove_emblem (keyword));
+		gtk_widget_set_sensitive (emblem_view->details->popup_rename,
+				nautilus_emblem_can_rename_emblem (keyword));
+
+
+		gnome_popup_menu_do_popup_modal (emblem_view->details->popup,
+						 NULL, NULL, event, NULL,
+						 widget);
+	}
+
+	return TRUE;
+}
+
+static void
+nautilus_emblem_view_delete_cb (GtkWidget *menu_item,
+				NautilusEmblemView *emblem_view)
+{
+	char *error;
+
+	if (nautilus_emblem_remove_emblem (emblem_view->details->popup_emblem_keyword)) {
+		nautilus_emblem_view_refresh (emblem_view);
+	} else {
+		error = g_strdup_printf (_("Couldn't remove emblem with name '%s'.  This is probably because the emblem is a permanent one, and not one you added yourself."), emblem_view->details->popup_emblem_display_name);
+		eel_show_error_dialog (error, _("Couldn't remove emblem"),
+				       NULL);
+		g_free (error);
+	}
+}
+
+static void
+rename_dialog_response_cb (GtkWidget *dialog, int response,
+			   NautilusEmblemView *emblem_view)
+{
+	GtkWidget *entry;
+	char *keyword, *name, *error;
+	
+	keyword = g_object_get_data (G_OBJECT (dialog), "emblem-keyword");
+
+	if (response == GTK_RESPONSE_CANCEL) {
+		g_free (keyword);
+		gtk_widget_destroy (dialog);
+		return;
+	} else if (response == GTK_RESPONSE_HELP) {
+		g_message ("Implement me!");
+		return;
+	}
+
+	
+	entry = g_object_get_data (G_OBJECT (dialog), "entry");
+
+	name = g_strdup (gtk_entry_get_text (GTK_ENTRY (entry)));
+
+	gtk_widget_destroy (dialog);
+
+	if (nautilus_emblem_rename_emblem (keyword, name)) {
+		nautilus_emblem_view_refresh (emblem_view);
+	} else {
+		error = g_strdup_printf (_("Couldn't rename emblem with name '%s'.  This is probably because the emblem is a permanent one, and not one that you added yourself."), name);
+		eel_show_error_dialog (error, _("Couldn't rename emblem"),
+				       NULL);
+		g_free (error);
+	}
+
+	g_free (keyword);
+	g_free (name);
+}
+
+static GtkWidget *
+create_rename_emblem_dialog (NautilusEmblemView *emblem_view,
+			     const char *keyword, const char *orig_name,
+			     GdkPixbuf *pixbuf)
+{
+	GtkWidget *dialog, *label, *image, *entry, *hbox;
+
+	image = gtk_image_new_from_pixbuf (pixbuf);
+	entry = gtk_entry_new ();
+
+	dialog = gtk_dialog_new_with_buttons (_("Rename Emblem"),
+					      NULL,
+					      0,
+					      GTK_STOCK_CANCEL,
+					      GTK_RESPONSE_CANCEL,
+					      GTK_STOCK_OK,
+					      GTK_RESPONSE_OK,
+					      GTK_STOCK_HELP,
+					      GTK_RESPONSE_HELP,
+					      NULL);
+
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+					 GTK_RESPONSE_OK);
+
+	g_object_set_data (G_OBJECT (dialog), "emblem-keyword",
+			   g_strdup (keyword));
+	g_object_set_data (G_OBJECT (dialog), "entry",
+			   entry);
+
+	label = gtk_label_new (_("Enter a new name for the displayed emblem:"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), label,
+			    FALSE, FALSE, GNOME_PAD);
+	
+	
+	hbox = gtk_hbox_new (FALSE, GNOME_PAD);
+	gtk_box_pack_start (GTK_BOX (hbox), image, TRUE, TRUE, GNOME_PAD);
+
+	gtk_entry_set_activates_default (GTK_ENTRY (entry), TRUE);
+
+	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, FALSE, GNOME_PAD);
+	gtk_widget_show_all (hbox);
+
+	/* it would be nice to have the text selected, ready to be overwritten
+	 * by the user, but that doesn't seem possible.
+	 */
+	gtk_widget_grab_focus (entry);
+	gtk_entry_set_text (GTK_ENTRY (entry), orig_name);
+
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox,
+			    TRUE, TRUE, GNOME_PAD);
+
+
+	return dialog;
+}
+
+static void
+nautilus_emblem_view_rename_cb (GtkWidget *menu_item,
+				NautilusEmblemView *emblem_view)
+{
+	GtkWidget *dialog;
+
+	dialog = create_rename_emblem_dialog (emblem_view,
+			emblem_view->details->popup_emblem_keyword,
+			emblem_view->details->popup_emblem_display_name,
+			emblem_view->details->popup_emblem_pixbuf);
+	g_signal_connect (dialog, "response",
+			  G_CALLBACK (rename_dialog_response_cb),
+			  emblem_view);
+	gtk_widget_show (dialog);
+}
+
+static void
+create_popup_menu (NautilusEmblemView *emblem_view)
+{
+	GtkWidget *popup, *menu_item, *menu_image;
+
+	popup = gtk_menu_new ();
+
+	/* add the "rename" menu item */
+	menu_image = gtk_image_new_from_stock (GTK_STOCK_PROPERTIES,
+					       GTK_ICON_SIZE_MENU);
+	gtk_widget_show (menu_image);
+	menu_item = gtk_image_menu_item_new_with_label (_("Rename"));
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item),
+				       menu_image);
+
+	g_signal_connect (menu_item, "activate",
+			  G_CALLBACK (nautilus_emblem_view_rename_cb),
+			  emblem_view);
+	gtk_widget_show (menu_item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (popup), menu_item);
+	emblem_view->details->popup_rename = menu_item;
+
+	/* add "delete" menu item */
+	menu_item = gtk_image_menu_item_new_from_stock (GTK_STOCK_DELETE,
+							NULL);
+	g_signal_connect (menu_item, "activate",
+			  G_CALLBACK (nautilus_emblem_view_delete_cb),
+			  emblem_view);
+	gtk_widget_show (menu_item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (popup), menu_item);
+	emblem_view->details->popup_remove = menu_item;
+
+	emblem_view->details->popup = popup;
+}
+
 static GtkWidget *
 create_emblem_widget_with_pixbuf (NautilusEmblemView *emblem_view,
 				  const char *keyword,
@@ -169,6 +379,11 @@ create_emblem_widget_with_pixbuf (NautilusEmblemView *emblem_view,
 
 	gtk_drag_source_set_icon_pixbuf (event_box, pixbuf);
 
+	
+
+	g_signal_connect (event_box, "button_press_event",
+			  G_CALLBACK (nautilus_emblem_view_button_press_cb),
+			  emblem_view);
 	g_signal_connect (event_box, "drag-data-get",
 			  G_CALLBACK (nautilus_emblem_view_drag_data_get_cb),
 			  emblem_view);
@@ -182,6 +397,9 @@ create_emblem_widget_with_pixbuf (NautilusEmblemView *emblem_view,
 	g_object_set_data_full (G_OBJECT (event_box),
 				"emblem-keyword",
 				g_strdup (keyword), g_free);
+	g_object_set_data_full (G_OBJECT (event_box),
+				"emblem-display-name",
+				g_strdup (display_name), g_free);
 	g_object_set_data_full (G_OBJECT (event_box),
 				"original-pixbuf",
 				pixbuf, g_object_unref);
@@ -268,10 +486,13 @@ static GtkWidget *
 create_add_emblems_dialog (NautilusEmblemView *emblem_view,
 			   GSList *emblems)
 {
-	GtkWidget *dialog, *label, *table, *image, *entry, *scroller, *hbox;
+	GtkWidget *dialog, *label, *table, *image;
+	GtkWidget *first_entry, *entry, *scroller, *hbox;
 	Emblem *emblem;
 	GSList *list;
 	int num_emblems;
+
+	first_entry = NULL;
 	
 	dialog = gtk_dialog_new_with_buttons (_("Add Emblems..."),
 					      NULL,
@@ -306,7 +527,7 @@ create_add_emblems_dialog (NautilusEmblemView *emblem_view,
 	num_emblems=0;
 	list = emblems;
 	while (list != NULL) {
-		/* walk through the list of emblems, and create a pixbuf
+		/* walk through the list of emblems, and create an image
 		 * and entry for each one
 		 */
 
@@ -327,6 +548,10 @@ create_add_emblems_dialog (NautilusEmblemView *emblem_view,
 		gtk_box_pack_start (GTK_BOX (hbox), entry, FALSE, FALSE, 0);
 		gtk_container_add (GTK_CONTAINER (table), hbox);
 
+		if (num_emblems == 0) {
+			first_entry = entry;
+		}
+
 		num_emblems++;
 	}
 
@@ -334,6 +559,8 @@ create_add_emblems_dialog (NautilusEmblemView *emblem_view,
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
 			    scroller, TRUE, TRUE, GNOME_PAD);
 	gtk_widget_show_all (scroller);
+
+	gtk_widget_grab_focus (first_entry);
 
 	/* we expand the window to hold up to about 4 emblems, but after that
 	 * let the scroller do its thing.  Is there a better way to do this?
@@ -371,6 +598,7 @@ add_emblems_dialog_response_cb (GtkWidget *dialog, int response,
 {
 	Emblem *emblem;
 	GSList *emblems;
+	char *keyword;
 
 	switch (response) {
 	case GTK_RESPONSE_CANCEL:
@@ -388,10 +616,13 @@ add_emblems_dialog_response_cb (GtkWidget *dialog, int response,
 		while (emblems != NULL) {
 			emblem = (Emblem *)emblems->data;
 
+			keyword = nautilus_emblem_create_unique_keyword (emblem->name);
 			nautilus_emblem_install_custom_emblem (emblem->pixbuf,
-							       emblem->name,
+							       keyword,
 							       emblem->name,
 							       GTK_WINDOW (dialog));
+
+			g_free (keyword);
 		
 			emblems = emblems->next;
 		}
@@ -437,9 +668,11 @@ nautilus_emblem_view_drag_received_cb (GtkWidget *widget,
 	GSList *emblems;
 	Emblem *emblem;
 	GdkPixbuf *pixbuf;
-	char *uri;
+	char *uri, *error, *uri_utf8;
 	GList *uris, *l;
+	gboolean had_failure;
 
+	had_failure = FALSE;
 	emblems = NULL;
 	
 	switch (info) {
@@ -454,8 +687,13 @@ nautilus_emblem_view_drag_received_cb (GtkWidget *widget,
 		uris = nautilus_icon_dnd_uri_list_extract_uris (data->data);
 		l = uris;
 		while (l != NULL) {
-			uri = l->data;
+			uri = eel_make_uri_canonical (l->data);
 			l = l->next;
+
+			if (uri == NULL) {
+				had_failure = TRUE;
+				continue;
+			}
 
 			pixbuf = nautilus_emblem_load_pixbuf_for_emblem (uri);
 
@@ -463,30 +701,78 @@ nautilus_emblem_view_drag_received_cb (GtkWidget *widget,
 				/* this one apparently isn't an image, or
 				 * at least not one that we know how to read
 				 */
+				had_failure = TRUE;
 				continue;
 			}
 
 			emblem = g_new (Emblem, 1);
-			emblem->uri = g_strdup (uri);
+			emblem->uri = uri;
 			emblem->name = NULL; /* created later on by the user */
 			emblem->pixbuf = pixbuf;
 
 			emblems = g_slist_prepend (emblems, emblem);
 		}
 		nautilus_icon_dnd_uri_list_free_strings (uris);
+
+		if (had_failure && emblems != NULL) {
+			eel_show_error_dialog (_("Some of the files could not be added as emblems because they did not appear to be valid images."), _("Couldn't add emblems"), NULL);
+		} else if (had_failure && emblems == NULL) {
+			eel_show_error_dialog (_("None of the files could not be added as emblems because they did not appear to be valid images."), _("Couldn't add emblems"), NULL);
+
+		}
  
 		if (emblems != NULL) {
 			show_add_emblems_dialog (emblem_view, emblems);
 		}
+
 		break;
 	
-	case TARGET_URL:
-		/* the point of this section is to allow people to drop URIs
-		 * from netscape/galeon/whatever, and add them as emblems.
-		 * However, eel_gdk_pixbuf_load() is failing, so it doesn't
-		 * work :/
-		 */
+	case TARGET_URI:
+		if (data->format != 8 ||
+		    data->length == 0) {
+			g_warning ("URI had wrong format (%d) or length (%d)\n",
+				   data->format, data->length);
+			return;
+		}
+
+		uri = g_strndup (data->data, data->length);
+
+		if (!eel_is_valid_uri (uri)) {
+			eel_show_error_dialog (_("The dragged text was not a valid file location."), _("Couldn't add emblem"), NULL);
+			break;
+		}
+
+		pixbuf = nautilus_emblem_load_pixbuf_for_emblem (uri);
+
+		if (pixbuf != NULL) {
+			emblem = g_new (Emblem, 1);
+			emblem->uri = uri;
+			emblem->name = NULL;
+			emblem->pixbuf = pixbuf;
+
+			emblems = g_slist_prepend (NULL, emblem);
+
+			show_add_emblems_dialog (emblem_view, emblems);
+		} else {
+			uri_utf8 = eel_format_uri_for_display (uri);
+
+			if (uri_utf8) {
+				error = g_strdup_printf (_("The file '%s' does not appear to be a valid image."), uri_utf8);
+				g_free (uri_utf8);
+			} else {
+				error = g_strdup (_("The dragged file does not appear to be a valid image."));
+			}
+			eel_show_error_dialog (error, _("Couldn't add emblem"),
+					       NULL);
+			g_free (error);
+			g_free (uri_utf8);
+		}
+
+		g_free (uri);
 		
+		break;	
+
+	case TARGET_NETSCAPE_URL:
 		if (data->format != 8 ||
 		    data->length == 0) {
 			g_message ("URI had wrong format (%d) or length (%d)\n",
@@ -494,8 +780,22 @@ nautilus_emblem_view_drag_received_cb (GtkWidget *widget,
 			return;
 		}
 
-		uri = g_strndup (data->data, data->length);
+		/* apparently, this is a URI/title pair?  or just a pair
+		 * of identical URIs?  Regardless, this seems to work...
+		 */
+		uris = nautilus_icon_dnd_uri_list_extract_uris (data->data);
+
+		if (uris == NULL) {
+			break;
+		}
 		
+		uri = uris->data;
+
+		if (uri == NULL) {
+			nautilus_icon_dnd_uri_list_free_strings (uris);
+			break;
+		}
+
 		pixbuf = nautilus_emblem_load_pixbuf_for_emblem (uri);
 
 		if (pixbuf != NULL) {
@@ -507,6 +807,13 @@ nautilus_emblem_view_drag_received_cb (GtkWidget *widget,
 			emblems = g_slist_prepend (NULL, emblem);
 
 			show_add_emblems_dialog (emblem_view, emblems);
+		} else {
+			g_warning ("Tried to load '%s', but failed.\n",
+				   uri);
+			error = g_strdup_printf (_("The file '%s' does not appear to be a valid image."), uri);
+			eel_show_error_dialog (error, _("Couldn't add emblem"),
+					       NULL);
+			g_free (error);
 		}
 		break;
 	}
@@ -565,6 +872,7 @@ nautilus_emblem_view_populate (NautilusEmblemView *emblem_view)
 
 
 	icons = nautilus_emblem_list_availible ();
+	icons = g_list_sort (icons, (GCompareFunc)eel_strcasecmp);
 
 	l = icons;
 	while (l != NULL) {
@@ -595,6 +903,8 @@ nautilus_emblem_view_instance_init (NautilusEmblemView *emblem_view)
 	emblem_view->details = g_new0 (NautilusEmblemViewDetails, 1);
 
 	emblem_view->details->client = gconf_client_get_default ();
+
+	create_popup_menu (emblem_view);
 
 	widget = nautilus_emblem_view_create_container (emblem_view);
 	nautilus_emblem_view_populate (emblem_view);
