@@ -1,3 +1,14 @@
+2001-02-12  Rebecca Schulman  <rebecka@eazel.com>
+	Fix bugzilla.eazel.com bug 4962 that open with
+	mpg123 fails.  The problem was a check for 
+	a file uri that had its logic backwards
+
+	reviewed by: Mike Engber <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(nautilus_launch_application):
+	Change if (file_uri) to if (!file_uri)
+
 2001-02-12  Michael Engber  <engber@eazel.com>
 
 	reviewed by: John Sullivan
