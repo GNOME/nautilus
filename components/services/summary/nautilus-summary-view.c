@@ -40,6 +40,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#define DEFAULT_BACKGROUND_COLOR	"rgb:FFFF/FFFF/FFFF"
+
 /* A NautilusContentView's private information. */
 struct _NautilusSummaryViewDetails {
 	char 		*uri;
@@ -47,6 +49,7 @@ struct _NautilusSummaryViewDetails {
 	GtkWidget	*form;
 	GtkWidget	*form_title;
 
+	/* Login Frame Widgets */
 	GtkWidget	*username_label;
 	GtkWidget	*password_label;
 	GtkWidget	*username_entry;
@@ -72,6 +75,10 @@ static void	maintenance_button_cb			(GtkWidget			*button,
 							 NautilusSummaryView		*view); 
 static void	entry_changed_cb			(GtkWidget			*entry,
 							 NautilusSummaryView		*view);
+static void	goto_vault_cb				(GtkWidget			*button,
+							 NautilusSummaryView		*view);
+static void	update_netscape_cb			(GtkWidget			*button,
+							 NautilusSummaryView		*view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, GTK_TYPE_EVENT_BOX)
 
@@ -83,7 +90,14 @@ generate_summary_form (NautilusSummaryView	*view)
 	GtkTable	*parent;
 	GtkWidget	*title;
 	GtkWidget	*temp_box;
+	GtkWidget	*temp_hbox;
+	GtkWidget	*temp_icon;
+	GtkWidget	*temp_label;
+	GtkWidget	*temp_button;
 	GtkTable	*login_table;
+	GtkTable	*services_table;
+	GtkTable	*service_news_table;
+	GtkTable	*updates_table;
 	GtkWidget	*button_box;
 	GdkFont		*font;
 
@@ -112,6 +126,45 @@ generate_summary_form (NautilusSummaryView	*view)
 			  GTK_FILL | GTK_EXPAND,
 			  0, 0);
 
+	/* create the parent services list box and its table */
+	temp_box = gtk_vbox_new (FALSE, 0);
+	services_table = GTK_TABLE (gtk_table_new (5, 3, FALSE));
+
+	/* Generate first column with fake icon */
+	temp_hbox = gtk_hbox_new (TRUE, 4);
+	temp_icon = create_image_widget ("emblem-encrypted.gif", DEFAULT_BACKGROUND_COLOR);
+	g_assert (temp_icon != NULL);
+	gtk_box_pack_start (GTK_BOX (temp_hbox), temp_icon, 0, 0, 0);
+	gtk_widget_show (temp_icon);
+	gtk_table_attach (services_table, temp_hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_widget_show (temp_hbox);
+
+	/* Generate second Column with fake service title and summary */
+	temp_label = gtk_label_new ("Vault Service:\n Your remote file storage");
+	font = nautilus_font_factory_get_font_from_preferences (12);
+	nautilus_gtk_widget_set_font (temp_label, font);
+	gdk_font_unref (font);
+	gtk_table_attach (services_table, temp_label, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_widget_show (temp_label);
+
+	/* Add the redirect button to the third column */
+	temp_button = gtk_button_new ();
+	temp_label = gtk_label_new (" Go to Vault ");
+	gtk_widget_show (temp_label);
+	gtk_container_add (GTK_CONTAINER (temp_button), temp_label);
+	temp_hbox = gtk_hbox_new (TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (temp_hbox), temp_button, FALSE, FALSE, 13);
+	gtk_signal_connect (GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (goto_vault_cb), view);
+	gtk_widget_show (temp_button);
+	gtk_table_attach (services_table, temp_hbox, 2, 3, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_widget_show (temp_hbox);
+
+	/* draw parent vbox and connect it to the login frame */
+	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (services_table), 0, 0, 0);
+	gtk_widget_show (GTK_WIDGET (services_table));
+	gtk_widget_show (temp_box);
+	gtk_container_add (GTK_CONTAINER (frame), temp_box);
+
 	/* Create the Login Frame */
 	frame = gtk_frame_new ("Login Placeholder");
 	gtk_widget_show (frame);
@@ -123,9 +176,12 @@ generate_summary_form (NautilusSummaryView	*view)
 			  GTK_FILL | GTK_EXPAND,
 			  GTK_FILL | GTK_EXPAND,
 			  0, 0);
+
+	/* create the parent login box and a table to hold the labels and text entries */
 	temp_box = gtk_vbox_new (FALSE, 0);
 	login_table = GTK_TABLE (gtk_table_new (4, 2, TRUE));
 
+	/* username label */
 	view->details->username_label = gtk_label_new ("User Name:");
 	font = nautilus_font_factory_get_font_from_preferences (16);
 	nautilus_gtk_widget_set_font (view->details->username_label, font);
@@ -133,10 +189,12 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_table_attach (login_table, view->details->username_label, 0, 2, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_widget_show (view->details->username_label);
 
+	/*username text entry */
 	view->details->username_entry = gtk_entry_new_with_max_length (36);
 	gtk_table_attach (login_table, view->details->username_entry, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_widget_show (view->details->username_entry);
 
+	/* password label */
 	view->details->password_label = gtk_label_new ("Password:");
 	font = nautilus_font_factory_get_font_from_preferences (16);
 	nautilus_gtk_widget_set_font (view->details->password_label, font);
@@ -144,6 +202,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_table_attach (login_table, view->details->password_label, 0, 2, 2, 3, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_widget_show (view->details->password_label);
 
+	/* password text entry */
 	view->details->password_entry = gtk_entry_new_with_max_length (36);
 	gtk_table_attach (login_table, view->details->password_entry, 1, 2, 3, 4, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_entry_set_visibility (GTK_ENTRY (view->details->password_entry), FALSE);
@@ -155,6 +214,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_signal_connect (GTK_OBJECT (view->details->username_entry), "changed", GTK_SIGNAL_FUNC (entry_changed_cb), view);
 	gtk_signal_connect (GTK_OBJECT (view->details->password_entry), "changed", GTK_SIGNAL_FUNC (entry_changed_cb), view);
 
+	/* login button */
 	view->details->login_button = gtk_button_new ();
 	view->details->login_label = gtk_label_new (" I'm ready to login! ");
 	gtk_widget_show (view->details->login_label);
@@ -167,6 +227,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_widget_show (button_box);
 	gtk_box_pack_start (GTK_BOX (temp_box), button_box, FALSE, FALSE, 4);
 
+	/* maintenance button */
 	view->details->maintenance_button = gtk_button_new ();
 	view->details->maintenance_label = gtk_label_new (" I need some help! ");
 	gtk_widget_show (view->details->maintenance_label);
@@ -179,7 +240,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_widget_show (button_box);
 	gtk_box_pack_start (GTK_BOX (temp_box), button_box, FALSE, FALSE, 4);
 
-
+	/* draw parent vbox and connect it to the login frame */
 	gtk_widget_show (temp_box);
 	gtk_container_add (GTK_CONTAINER (frame), temp_box);
 
@@ -195,6 +256,33 @@ generate_summary_form (NautilusSummaryView	*view)
 			  GTK_FILL | GTK_EXPAND,
 			  0, 0);
 
+	/* create the parent login box and a table to hold the labels and text entries */
+	temp_box = gtk_vbox_new (FALSE, 0);
+	service_news_table = GTK_TABLE (gtk_table_new (4, 2, FALSE));
+
+	/* Generate first column with fake icon */
+	temp_hbox = gtk_hbox_new (TRUE, 4);
+	temp_icon = create_image_widget ("emblem-changed.gif", DEFAULT_BACKGROUND_COLOR);
+	g_assert (temp_icon != NULL);
+	gtk_box_pack_start (GTK_BOX (temp_hbox), temp_icon, 0, 0, 0);
+	gtk_widget_show (temp_icon);
+	gtk_table_attach (service_news_table, temp_hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_widget_show (temp_hbox);
+
+	/* Generate second Column with fake service title and summary */
+	temp_label = gtk_label_new ("The Eazel servers will be down this Friday!");
+	font = nautilus_font_factory_get_font_from_preferences (12);
+	nautilus_gtk_widget_set_font (temp_label, font);
+	gdk_font_unref (font);
+	gtk_table_attach (service_news_table, temp_label, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_widget_show (temp_label);
+
+	/* draw parent vbox and connect it to the login frame */
+	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (service_news_table), 0, 0, 0);
+	gtk_widget_show (GTK_WIDGET (service_news_table));
+	gtk_widget_show (temp_box);
+	gtk_container_add (GTK_CONTAINER (frame), temp_box);
+
 	/* Create the Update News Frame */
 	frame = gtk_frame_new ("Update News Placeholder");
 	gtk_widget_show (frame);
@@ -206,6 +294,47 @@ generate_summary_form (NautilusSummaryView	*view)
 			  GTK_FILL | GTK_EXPAND,
 			  GTK_FILL | GTK_EXPAND,
 			  0, 0);
+
+	/* create the parent login box and a table to hold the labels and text entries */
+	temp_box = gtk_vbox_new (FALSE, 0);
+	updates_table = GTK_TABLE (gtk_table_new (4, 3, FALSE));
+
+	/* Generate first column with fake icon */
+	temp_hbox = gtk_hbox_new (TRUE, 4);
+	temp_icon = create_image_widget ("netscape.png", DEFAULT_BACKGROUND_COLOR);
+	g_assert (temp_icon != NULL);
+	gtk_box_pack_start (GTK_BOX (temp_hbox), temp_icon, 0, 0, 0);
+	gtk_widget_show (temp_icon);
+	gtk_table_attach (updates_table, temp_hbox, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_widget_show (temp_hbox);
+
+	/* Generate second Column with fake service title and summary */
+	temp_label = gtk_label_new ("Netscape Communicator 4.75\n Everyone's favorite web browser.");
+	font = nautilus_font_factory_get_font_from_preferences (12);
+	nautilus_gtk_widget_set_font (temp_label, font);
+	gdk_font_unref (font);
+	gtk_table_attach (updates_table, temp_label, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_widget_show (temp_label);
+
+	/* Add the redirect button to the third column */
+	temp_button = gtk_button_new ();
+	temp_label = gtk_label_new (" Update Netscape Now! ");
+	gtk_widget_show (temp_label);
+	gtk_container_add (GTK_CONTAINER (temp_button), temp_label);
+	temp_hbox = gtk_hbox_new (TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (temp_hbox), temp_button, FALSE, FALSE, 13);
+	gtk_signal_connect (GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (update_netscape_cb), view);
+	gtk_widget_show (temp_button);
+	gtk_table_attach (updates_table, temp_hbox, 2, 3, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_widget_show (temp_hbox);
+
+	/* draw parent vbox and connect it to the login frame */
+	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (updates_table), 0, 0, 0);
+	gtk_widget_show (GTK_WIDGET (updates_table));
+	gtk_widget_show (temp_box);
+	gtk_container_add (GTK_CONTAINER (frame), temp_box);
+
+	/* draw the parent frame box */
 	gtk_box_pack_start (GTK_BOX (view->details->form), GTK_WIDGET (parent), 0, 0, 4);
 	gtk_widget_show (GTK_WIDGET (parent));
 }
@@ -242,6 +371,24 @@ maintenance_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 {
 
 	go_to_uri (view->details->nautilus_view, "http://www.eazel.com/services.html");
+
+}
+
+/* callback to handle the goto vault button.  Right now only does a simple redirect. */
+static void
+goto_vault_cb (GtkWidget      *button, NautilusSummaryView    *view)
+{
+
+	go_to_uri (view->details->nautilus_view, "http://www.eazel.com/services.html");
+
+}
+
+/* callback to handle install netscape  button.  Right now only does a simple redirect. */
+static void
+update_netscape_cb (GtkWidget      *button, NautilusSummaryView    *view)
+{
+
+	go_to_uri (view->details->nautilus_view, "http://www.eazel.com");
 
 }
 
