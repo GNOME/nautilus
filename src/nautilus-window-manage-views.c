@@ -608,12 +608,6 @@ ref_now_unref_at_idle_time (GObject *object)
         g_idle_add (unref_callback, object);
 }
 
-static gboolean
-use_saved_window_positions (void)
-{
-        return eel_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW);
-}
-
 /* This is called when we have decided we can actually change to the new view/location situation. */
 static void
 location_has_really_changed (NautilusWindow *window)
@@ -658,8 +652,7 @@ location_has_really_changed (NautilusWindow *window)
          * metadata. Then tell the callback it needs to show the
          * window
          */
-        if (!use_saved_window_positions () ||
-            window->show_state == NAUTILUS_WINDOW_POSITION_SET) {
+        if (window->show_state == NAUTILUS_WINDOW_POSITION_SET) {
                 gtk_widget_show (GTK_WIDGET (window));
         } else {
                 window->show_state = NAUTILUS_WINDOW_SHOULD_SHOW;
@@ -1124,18 +1117,17 @@ position_and_show_window_callback (NautilusFile *file,
         
 	window = NAUTILUS_WINDOW (callback_data);
 
-	if (use_saved_window_positions ()) {
-		geometry_string = nautilus_file_get_metadata 
+	/* load the saved window geometry */
+	geometry_string = nautilus_file_get_metadata 
 			(file, NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY, NULL);
-		if (geometry_string != NULL) {
-			eel_gtk_window_set_initial_geometry_from_string 
-				(GTK_WINDOW (window), 
-				 geometry_string,
-				 NAUTILUS_WINDOW_MIN_WIDTH, 
-				 NAUTILUS_WINDOW_MIN_HEIGHT);
-		}
-		g_free (geometry_string);
+	if (geometry_string != NULL) {
+		eel_gtk_window_set_initial_geometry_from_string 
+			(GTK_WINDOW (window), 
+			 geometry_string,
+			 NAUTILUS_WINDOW_MIN_WIDTH, 
+			 NAUTILUS_WINDOW_MIN_HEIGHT);
 	}
+	g_free (geometry_string);
 
         /* If we finished constructing the window by now we need
          * to show the window here.
@@ -1190,22 +1182,20 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
 		 * windows), position and show it only after we've got the
 		 * metadata (since position info is stored there).
 		 */
-                if (use_saved_window_positions ()) {
-                        window->show_state = NAUTILUS_WINDOW_NOT_SHOWN;
-                        if (!GTK_WIDGET_VISIBLE (window)) {
-                                file = nautilus_file_get (location);
+		window->show_state = NAUTILUS_WINDOW_NOT_SHOWN;
+		if (!GTK_WIDGET_VISIBLE (window)) {
+			file = nautilus_file_get (location);
                                 
-                                attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
-                                nautilus_file_call_when_ready (file,
-                                                               attributes,
-                                                               position_and_show_window_callback,
-                                                               window);
-                                g_list_free (attributes);
-                        }
-                }
+			attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+			nautilus_file_call_when_ready (file,
+								attributes,
+								position_and_show_window_callback,
+								window);
+			g_list_free (attributes);
+		}
 
-                load_content_view (window, initial_view);
-                return;
+		load_content_view (window, initial_view);
+		return;
         }
         
         /* Some sort of failure occurred. How 'bout we tell the user? */

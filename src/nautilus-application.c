@@ -641,6 +641,57 @@ nautilus_window_delete_event_callback (GtkWidget *widget,
 	return TRUE;
 }				       
 
+static gboolean
+save_window_geometry_idle (gpointer callback_data)
+{
+	NautilusWindow *window;
+	
+	window = NAUTILUS_WINDOW (callback_data);
+	
+	nautilus_window_save_geometry (window);
+	
+	window->save_geometry_idle_id = 0;
+	return FALSE;
+}
+ 
+static gboolean
+nautilus_window_configure_event_callback (GtkWidget *widget,
+						GdkEventConfigure *event,
+						gpointer callback_data)
+{
+	NautilusWindow *window;
+	
+	window = NAUTILUS_WINDOW (widget);
+	
+	/* Only save the geometry when we are idle, 
+	 * since we receive configure events all the time.
+	 */
+	if (window->save_geometry_idle_id == 0) {
+		window->save_geometry_idle_id = 
+				g_idle_add (save_window_geometry_idle, window);
+	}
+
+	return FALSE;
+}
+
+static gboolean
+nautilus_window_unrealize_event_callback (GtkWidget *widget,
+						GdkEvent *event,
+						gpointer callback_data)
+{
+	NautilusWindow *window;
+	
+	window = NAUTILUS_WINDOW (widget);
+
+	if (window->save_geometry_idle_id != 0) {
+		g_source_remove (window->save_geometry_idle_id);
+		window->save_geometry_idle_id = 0;
+		nautilus_window_save_geometry (window);
+	}
+
+	return FALSE;
+}
+
 NautilusWindow *
 nautilus_application_create_window (NautilusApplication *application)
 {
@@ -657,6 +708,12 @@ nautilus_application_create_window (NautilusApplication *application)
 
 	g_signal_connect_object (window, "destroy",
 				 G_CALLBACK (nautilus_application_destroyed_window), application, 0);
+
+	g_signal_connect (window, "configure_event",
+				G_CALLBACK (nautilus_window_configure_event_callback), NULL);
+
+	g_signal_connect (window, "unrealize",
+				G_CALLBACK (nautilus_window_unrealize_event_callback), NULL);
 
 	nautilus_application_window_list = g_list_prepend (nautilus_application_window_list, window);
 

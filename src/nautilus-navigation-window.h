@@ -82,7 +82,8 @@ struct NautilusWindow {
         GtkWidget *navigation_bar;
         
         guint status_bar_clear_id;
-        
+        guint save_geometry_idle_id;
+	  
         /** CORBA-related elements **/
         NautilusApplication *application;
         
@@ -153,5 +154,6 @@ gboolean	 nautilus_window_sidebar_showing      (NautilusWindow    *window);
 void 		 nautilus_window_hide_status_bar      (NautilusWindow 	 *window);
 void 		 nautilus_window_show_status_bar      (NautilusWindow 	 *window);
 gboolean	 nautilus_window_status_bar_showing   (NautilusWindow    *window);
+void		 nautilus_window_save_geometry	  (NautilusWindow 	 *window);
 
 #endif

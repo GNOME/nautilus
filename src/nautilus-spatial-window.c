@@ -864,15 +864,14 @@ nautilus_window_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-static void
+void
 nautilus_window_save_geometry (NautilusWindow *window)
 {
 	char *geometry_string;
 
-        g_assert (NAUTILUS_IS_WINDOW (window));
-	g_assert (GTK_WIDGET_VISIBLE (window));
+	g_assert (NAUTILUS_IS_WINDOW (window));
 
-        geometry_string = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
+	geometry_string = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
 
 	nautilus_file_set_metadata (window->details->viewed_file,
 				    NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY,
@@ -884,15 +883,7 @@ nautilus_window_save_geometry (NautilusWindow *window)
 void
 nautilus_window_close (NautilusWindow *window)
 {
-        g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	/* Save the window position in the directory's metadata only if
-	 * we're in every-location-in-its-own-window mode. Otherwise it
-	 * would be too apparently random when the stored positions change.
-	 */
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW)) {
-	        nautilus_window_save_geometry (window);
-	}
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
 	gtk_widget_destroy (GTK_WIDGET (window));
 }
