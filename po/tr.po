@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tr\n"
-"POT-Creation-Date: 2002-10-14 12:54+0200\n"
+"POT-Creation-Date: 2002-10-31 20:27-0500\n"
 "PO-Revision-Date: 2002-07-28 19:57+0000\n"
 "Last-Translator: Görkem Çetin <gorkem@gelecek.com.tr>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
@@ -43,6 +43,134 @@ msgstr "Nautilus bileşen denetleyici mimarisi"
 #: components/adapter/main.c:100
 msgid "bonobo_ui_init() failed."
 msgstr ""
+
+# data/browser.xml.h:34 src/file-manager/fm-properties-window.c:1376
+#: components/emblem/Nautilus_View_emblem.server.in.in.h:1
+#: src/file-manager/fm-properties-window.c:1759
+#: src/file-manager/fm-search-list-view.c:500
+msgid "Emblems"
+msgstr "Logolar"
+
+# components/tree/Nautilus_View_tree.oaf.in.h:1
+#: components/emblem/Nautilus_View_emblem.server.in.in.h:2
+#, fuzzy
+msgid "Nautilus Emblem side pane"
+msgstr "Nautilus yan paneli"
+
+# components/sample/Nautilus_View_sample.oaf.in.h:1
+#: components/emblem/Nautilus_View_emblem.server.in.in.h:3
+#, fuzzy
+msgid "Nautilus Emblem view"
+msgstr "Nautilus Örnek Görünüm"
+
+#: components/emblem/nautilus-emblem-view.c:202
+#, c-format
+msgid ""
+"Couldn't remove emblem with name '%s'.  This is probably because the emblem "
+"is a permanent one, and not one you added yourself."
+msgstr ""
+
+# src/nautilus-theme-selector.c:616
+#: components/emblem/nautilus-emblem-view.c:203
+#, fuzzy
+msgid "Couldn't remove emblem"
+msgstr "Tema silinemedi"
+
+#: components/emblem/nautilus-emblem-view.c:237
+#, c-format
+msgid ""
+"Couldn't rename emblem with name '%s'.  This is probably because the emblem "
+"is a permanent one, and not one that you added yourself."
+msgstr ""
+
+# src/nautilus-property-browser.c:1421 src/nautilus-property-browser.c:1424
+# src/nautilus-property-browser.c:1428 src/nautilus-property-browser.c:1457
+#: components/emblem/nautilus-emblem-view.c:238
+#, fuzzy
+msgid "Couldn't rename emblem"
+msgstr "Logolar kurulamadı"
+
+# src/nautilus-property-browser.c:2255
+#: components/emblem/nautilus-emblem-view.c:257
+#, fuzzy
+msgid "Rename Emblem"
+msgstr "Bir Logoyu Sil..."
+
+# src/nautilus-property-browser.c:1033
+#: components/emblem/nautilus-emblem-view.c:276
+#, fuzzy
+msgid "Enter a new name for the displayed emblem:"
+msgstr "Yeni logo için bir resim dosyası belirleyin:"
+
+# libnautilus-private/nautilus-icon-text-item.c:1546
+# src/file-manager/nautilus-icon-view-ui.xml.h:14
+#: components/emblem/nautilus-emblem-view.c:330
+msgid "Rename"
+msgstr "Yeniden adlandır"
+
+# src/nautilus-property-browser.c:2187
+#: components/emblem/nautilus-emblem-view.c:497
+#, fuzzy
+msgid "Add Emblems..."
+msgstr "Yeni Bir Logo Ekle..."
+
+#: components/emblem/nautilus-emblem-view.c:513
+msgid ""
+"Enter a descriptive name next to each emblem.  This name will be used in "
+"other places to identify the emblem."
+msgstr ""
+
+#: components/emblem/nautilus-emblem-view.c:515
+msgid ""
+"Enter a descriptive name next to the emblem.  This name will be used in "
+"other places to identify the emblem."
+msgstr ""
+
+#: components/emblem/nautilus-emblem-view.c:718
+msgid ""
+"Some of the files could not be added as emblems because they did not appear "
+"to be valid images."
+msgstr ""
+
+# src/nautilus-theme-selector.c:397
+#: components/emblem/nautilus-emblem-view.c:718
+#: components/emblem/nautilus-emblem-view.c:720
+#, fuzzy
+msgid "Couldn't add emblems"
+msgstr "Tema eklenemiyor"
+
+#: components/emblem/nautilus-emblem-view.c:720
+msgid ""
+"None of the files could not be added as emblems because they did not appear "
+"to be valid images."
+msgstr ""
+
+#: components/emblem/nautilus-emblem-view.c:741
+msgid "The dragged text was not a valid file location."
+msgstr ""
+
+# src/nautilus-theme-selector.c:397
+#: components/emblem/nautilus-emblem-view.c:741
+#: components/emblem/nautilus-emblem-view.c:765
+#: components/emblem/nautilus-emblem-view.c:814
+#, fuzzy
+msgid "Couldn't add emblem"
+msgstr "Tema eklenemiyor"
+
+#: components/emblem/nautilus-emblem-view.c:760
+#: components/emblem/nautilus-emblem-view.c:813
+#, c-format
+msgid "The file '%s' does not appear to be a valid image."
+msgstr ""
+
+#: components/emblem/nautilus-emblem-view.c:763
+msgid "The dragged file does not appear to be a valid image."
+msgstr ""
+
+# data/browser.xml.h:36
+#: components/emblem/nautilus-emblem-view.c:878 data/browser.xml.h:35
+msgid "Erase"
+msgstr "Sil"
 
 # components/hardware/Nautilus_View_hardware.oaf.in.h:1
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:1
@@ -163,6 +291,42 @@ msgstr "Geçmiş yan çubuk paneli"
 #, fuzzy
 msgid "History side pane for Nautilus"
 msgstr "Nautilus için geçmiş yan çubuk paneli"
+
+# components/image-viewer/Nautilus_View_image.oaf.in.h:3
+#: components/image_properties/Nautilus_View_image_properties.server.in.in.h:1
+#, fuzzy
+msgid "Image"
+msgstr "Resim:"
+
+# components/sample/Nautilus_View_sample.oaf.in.h:4
+#: components/image_properties/Nautilus_View_image_properties.server.in.in.h:2
+#, fuzzy
+msgid "Image Properties content view component"
+msgstr "Örnek içerik görünüm bileşeni"
+
+# components/tree/Nautilus_View_tree.oaf.in.h:2
+#: components/image_properties/Nautilus_View_image_properties.server.in.in.h:3
+#, fuzzy
+msgid "Nautilus Image Properties view"
+msgstr "Nautilus Ağaç görünümü"
+
+#: components/image_properties/nautilus-image-properties-view.c:89
+#, fuzzy
+msgid "Failed to load image information"
+msgstr "Başlatıcı bilgisini düzenle"
+
+#: components/image_properties/nautilus-image-properties-view.c:141
+#, c-format
+msgid ""
+"<b>Image Type:</b> %s (%s)\n"
+"<b>Resolution:</b> %dx%d pixels\n"
+msgstr ""
+
+# src/nautilus-bookmarks-window.c:177
+#: components/image_properties/nautilus-image-properties-view.c:228
+#, fuzzy
+msgid "loading..."
+msgstr "Yükleniyor..."
 
 # components/loser/content/Nautilus_View_content-loser.oaf.in.h:1
 #: components/loser/content/Nautilus_View_content-loser.server.in.in.h:1
@@ -299,934 +463,6 @@ msgstr ""
 #: components/loser/sidebar/nautilus-sidebar-loser.c:187
 msgid "You have tried to kill the Sidebar Loser"
 msgstr "Yançubuk izleyicisini kapatmaya çalıştınız"
-
-# components/music/Nautilus_View_music.oaf.in.h:1
-#: components/music/Nautilus_View_music.server.in.in.h:1
-msgid "Factory for music view"
-msgstr "Müzik görüntüsü için mimari"
-
-# components/music/Nautilus_View_music.oaf.in.h:2
-#: components/music/Nautilus_View_music.server.in.in.h:2
-msgid "Music"
-msgstr "Müzik"
-
-# components/music/Nautilus_View_music.oaf.in.h:3
-#: components/music/Nautilus_View_music.server.in.in.h:3
-msgid "Music Viewer"
-msgstr "Müzik Görüntüleyici"
-
-# components/music/Nautilus_View_music.oaf.in.h:3
-#: components/music/Nautilus_View_music.server.in.in.h:4
-msgid "Music view"
-msgstr "Müzik görüntüsü"
-
-# components/music/Nautilus_View_music.oaf.in.h:4
-#: components/music/Nautilus_View_music.server.in.in.h:5
-msgid "Music view factory"
-msgstr "Müzik görünüm mimarisi"
-
-# libnautilus-private/nautilus-program-chooser.c:186
-# src/nautilus-window.c:860 src/nautilus-window.c:1096
-#: components/music/Nautilus_View_music.server.in.in.h:6
-msgid "View as Music"
-msgstr "Müzik olarak göster"
-
-# components/music/mpg123.c:29
-#: components/music/mpg123.c:30
-msgid "Blues"
-msgstr "Blues"
-
-# components/music/mpg123.c:29
-#: components/music/mpg123.c:30
-msgid "Classic Rock"
-msgstr "Klasik Rock"
-
-# components/music/mpg123.c:29
-#: components/music/mpg123.c:30
-msgid "Country"
-msgstr "Country"
-
-# components/music/mpg123.c:29
-#: components/music/mpg123.c:30
-msgid "Dance"
-msgstr "Dans"
-
-# components/music/mpg123.c:30
-#: components/music/mpg123.c:31
-msgid "Disco"
-msgstr "Disko"
-
-# components/music/mpg123.c:30
-#: components/music/mpg123.c:31
-msgid "Funk"
-msgstr "Funk"
-
-# components/music/mpg123.c:30
-#: components/music/mpg123.c:31
-msgid "Grunge"
-msgstr "Grunge"
-
-# components/music/mpg123.c:30
-#: components/music/mpg123.c:31
-msgid "Hip-Hop"
-msgstr "Hip-Hop"
-
-# components/music/mpg123.c:31
-#: components/music/mpg123.c:32
-msgid "Jazz"
-msgstr "Jaz"
-
-# components/music/mpg123.c:31
-#: components/music/mpg123.c:32
-msgid "Metal"
-msgstr "Metal"
-
-# components/music/mpg123.c:31
-#: components/music/mpg123.c:32
-msgid "New Age"
-msgstr "New Age"
-
-# components/music/mpg123.c:31
-#: components/music/mpg123.c:32
-msgid "Oldies"
-msgstr "Eskiler"
-
-#: components/music/mpg123.c:33
-msgid "Other"
-msgstr "Diğer"
-
-# components/music/mpg123.c:32
-#: components/music/mpg123.c:33
-msgid "Pop"
-msgstr "Pop"
-
-# components/music/mpg123.c:32
-#: components/music/mpg123.c:33
-msgid "R&B"
-msgstr "R&B"
-
-# components/music/mpg123.c:32
-#: components/music/mpg123.c:33
-msgid "Rap"
-msgstr "Rap"
-
-# components/music/mpg123.c:32
-#: components/music/mpg123.c:33
-msgid "Reggae"
-msgstr "Reggae"
-
-# components/music/mpg123.c:33
-#: components/music/mpg123.c:34
-msgid "Rock"
-msgstr "Rock"
-
-# components/music/mpg123.c:33
-#: components/music/mpg123.c:34
-msgid "Techno"
-msgstr "Tekno"
-
-# components/music/mpg123.c:33
-#: components/music/mpg123.c:34
-msgid "Industrial"
-msgstr "Endüstri"
-
-# components/music/mpg123.c:33
-#: components/music/mpg123.c:34
-msgid "Alternative"
-msgstr "Alternatif"
-
-# components/music/mpg123.c:34
-#: components/music/mpg123.c:35
-msgid "Ska"
-msgstr "Ska"
-
-# components/music/mpg123.c:34
-#: components/music/mpg123.c:35
-msgid "Death Metal"
-msgstr "Death Metal"
-
-# components/music/mpg123.c:34
-#: components/music/mpg123.c:35
-msgid "Pranks"
-msgstr "Pranks"
-
-# components/music/mpg123.c:34
-#: components/music/mpg123.c:35
-msgid "Soundtrack"
-msgstr "Soundtrack"
-
-# components/music/mpg123.c:35
-#: components/music/mpg123.c:36
-msgid "Euro-Techno"
-msgstr "Euro-Techno"
-
-# components/music/mpg123.c:35
-#: components/music/mpg123.c:36
-msgid "Ambient"
-msgstr "Ambient"
-
-# components/music/mpg123.c:35
-#: components/music/mpg123.c:36
-msgid "Trip-Hop"
-msgstr "Trip-Hop"
-
-# components/music/mpg123.c:35
-#: components/music/mpg123.c:36
-msgid "Vocal"
-msgstr "Vocal"
-
-# components/music/mpg123.c:36
-#: components/music/mpg123.c:37
-msgid "Jazz+Funk"
-msgstr "Jaz+Funk"
-
-# components/music/mpg123.c:36
-#: components/music/mpg123.c:37
-msgid "Fusion"
-msgstr "Fusion"
-
-# components/music/mpg123.c:36
-#: components/music/mpg123.c:37
-msgid "Trance"
-msgstr "Trance"
-
-# components/music/mpg123.c:36
-#: components/music/mpg123.c:37
-msgid "Classical"
-msgstr "Klasik"
-
-# components/music/mpg123.c:37
-#: components/music/mpg123.c:38
-msgid "Instrumental"
-msgstr "Enstrümantal"
-
-# components/music/mpg123.c:37
-#: components/music/mpg123.c:38
-msgid "Acid"
-msgstr "Acid"
-
-# components/music/mpg123.c:37
-#: components/music/mpg123.c:38
-msgid "House"
-msgstr "House"
-
-# components/music/mpg123.c:37
-#: components/music/mpg123.c:38
-msgid "Game"
-msgstr "Oyun"
-
-# components/music/mpg123.c:38
-#: components/music/mpg123.c:39
-msgid "Sound Clip"
-msgstr "Ses Klibi"
-
-# components/music/mpg123.c:38
-#: components/music/mpg123.c:39
-msgid "Gospel"
-msgstr "Gospel"
-
-# components/music/mpg123.c:38
-#: components/music/mpg123.c:39
-msgid "Noise"
-msgstr "Gürültü"
-
-# components/music/mpg123.c:38
-#: components/music/mpg123.c:39
-msgid "Alt"
-msgstr "Alt"
-
-# components/music/mpg123.c:39
-#: components/music/mpg123.c:40
-msgid "Bass"
-msgstr "Bas"
-
-# components/music/mpg123.c:39
-#: components/music/mpg123.c:40
-msgid "Soul"
-msgstr "Soul"
-
-# components/music/mpg123.c:39
-#: components/music/mpg123.c:40
-msgid "Punk"
-msgstr "Punk"
-
-# components/music/mpg123.c:39
-#: components/music/mpg123.c:40
-msgid "Space"
-msgstr "Space"
-
-# components/music/mpg123.c:40
-#: components/music/mpg123.c:41
-msgid "Meditative"
-msgstr "Mediative"
-
-# components/music/mpg123.c:40
-#: components/music/mpg123.c:41
-msgid "Instrumental Pop"
-msgstr "Enstrümantal Pop"
-
-# components/music/mpg123.c:41
-#: components/music/mpg123.c:42
-msgid "Instrumental Rock"
-msgstr "Enstrümantal Rock"
-
-# components/music/mpg123.c:41
-#: components/music/mpg123.c:42
-msgid "Ethnic"
-msgstr "Etnik"
-
-# components/music/mpg123.c:41
-#: components/music/mpg123.c:42
-msgid "Gothic"
-msgstr "Gotik"
-
-# components/music/mpg123.c:42
-#: components/music/mpg123.c:43
-msgid "Darkwave"
-msgstr "Darkwave"
-
-# components/music/mpg123.c:42
-#: components/music/mpg123.c:43
-msgid "Techno-Industrial"
-msgstr "Techno-Industrial"
-
-# components/music/mpg123.c:42
-#: components/music/mpg123.c:43
-msgid "Electronic"
-msgstr "Elektronik"
-
-# components/music/mpg123.c:43
-#: components/music/mpg123.c:44
-msgid "Pop-Folk"
-msgstr "Pop-Folk"
-
-# components/music/mpg123.c:43
-#: components/music/mpg123.c:44
-msgid "Eurodance"
-msgstr "Eurodance"
-
-# components/music/mpg123.c:43
-#: components/music/mpg123.c:44
-msgid "Dream"
-msgstr "Dream"
-
-# components/music/mpg123.c:44
-#: components/music/mpg123.c:45
-msgid "Southern Rock"
-msgstr "Southern Rock"
-
-# components/music/mpg123.c:44
-#: components/music/mpg123.c:45
-msgid "Comedy"
-msgstr "Komedi"
-
-# components/music/mpg123.c:44
-#: components/music/mpg123.c:45
-msgid "Cult"
-msgstr "Kes"
-
-# components/music/mpg123.c:45
-#: components/music/mpg123.c:46
-msgid "Gangsta Rap"
-msgstr "Gangsta Rap"
-
-# components/music/mpg123.c:45
-#: components/music/mpg123.c:46
-msgid "Top 40"
-msgstr "En iyi 40"
-
-# components/music/mpg123.c:45
-#: components/music/mpg123.c:46
-msgid "Christian Rap"
-msgstr "Hristiyan Rap"
-
-# components/music/mpg123.c:46
-#: components/music/mpg123.c:47
-msgid "Pop/Funk"
-msgstr "Pop/Funk"
-
-# components/music/mpg123.c:46
-#: components/music/mpg123.c:47
-msgid "Jungle"
-msgstr "Jungle"
-
-# components/music/mpg123.c:46
-#: components/music/mpg123.c:47
-msgid "Native American"
-msgstr "Native American"
-
-# components/music/mpg123.c:47
-#: components/music/mpg123.c:48
-msgid "Cabaret"
-msgstr "Kabare"
-
-# components/music/mpg123.c:47
-#: components/music/mpg123.c:48
-msgid "New Wave"
-msgstr "New Wave"
-
-# components/music/mpg123.c:47
-#: components/music/mpg123.c:48
-msgid "Psychedelic"
-msgstr "Psidelik"
-
-# components/music/mpg123.c:47
-#: components/music/mpg123.c:48
-msgid "Rave"
-msgstr "Rave"
-
-# components/music/mpg123.c:48
-#: components/music/mpg123.c:49
-msgid "Showtunes"
-msgstr "Showtunes"
-
-# components/music/mpg123.c:48
-#: components/music/mpg123.c:49
-msgid "Trailer"
-msgstr "Trailer"
-
-# components/music/mpg123.c:48
-#: components/music/mpg123.c:49
-msgid "Lo-Fi"
-msgstr "Lo-Fi"
-
-# components/music/mpg123.c:48
-#: components/music/mpg123.c:49
-msgid "Tribal"
-msgstr "Tribal"
-
-# components/music/mpg123.c:49
-#: components/music/mpg123.c:50
-msgid "Acid Punk"
-msgstr "Acid Punk"
-
-# components/music/mpg123.c:49
-#: components/music/mpg123.c:50
-msgid "Acid Jazz"
-msgstr "Acid Jaz"
-
-# components/music/mpg123.c:49
-#: components/music/mpg123.c:50
-msgid "Polka"
-msgstr "Polka"
-
-# components/music/mpg123.c:49
-#: components/music/mpg123.c:50
-msgid "Retro"
-msgstr "Retro"
-
-# components/music/mpg123.c:50
-#: components/music/mpg123.c:51
-msgid "Musical"
-msgstr "Müzikal"
-
-# components/music/mpg123.c:50
-#: components/music/mpg123.c:51
-msgid "Rock & Roll"
-msgstr "Rock & Roll"
-
-# components/music/mpg123.c:50
-#: components/music/mpg123.c:51
-msgid "Hard Rock"
-msgstr "Hard Rock"
-
-# components/music/mpg123.c:50
-#: components/music/mpg123.c:51
-msgid "Folk"
-msgstr "Halk müziği"
-
-# components/music/mpg123.c:51
-#: components/music/mpg123.c:52
-msgid "Folk/Rock"
-msgstr "Folk/Rock"
-
-# components/music/mpg123.c:51
-#: components/music/mpg123.c:52
-msgid "National Folk"
-msgstr "Ulusal Dans"
-
-# components/music/mpg123.c:51
-#: components/music/mpg123.c:52
-msgid "Swing"
-msgstr "Swing"
-
-# components/music/mpg123.c:52
-#: components/music/mpg123.c:53
-msgid "Fast-Fusion"
-msgstr "Fast-Fusion"
-
-# components/music/mpg123.c:52
-#: components/music/mpg123.c:53
-msgid "Bebob"
-msgstr "Bebob"
-
-# components/music/mpg123.c:52
-#: components/music/mpg123.c:53
-msgid "Latin"
-msgstr "Latin"
-
-# components/music/mpg123.c:52
-#: components/music/mpg123.c:53
-msgid "Revival"
-msgstr "Revival"
-
-# components/music/mpg123.c:53
-#: components/music/mpg123.c:54
-msgid "Celtic"
-msgstr "Celtic"
-
-# components/music/mpg123.c:53
-#: components/music/mpg123.c:54
-msgid "Bluegrass"
-msgstr "Bluegrass"
-
-# components/music/mpg123.c:53
-#: components/music/mpg123.c:54
-msgid "Avantgarde"
-msgstr "Avantgarde"
-
-# components/music/mpg123.c:54
-#: components/music/mpg123.c:55
-msgid "Gothic Rock"
-msgstr "Gotik Rock"
-
-# components/music/mpg123.c:54
-#: components/music/mpg123.c:55
-msgid "Progressive Rock"
-msgstr "Progressive Rock"
-
-# components/music/mpg123.c:55
-#: components/music/mpg123.c:56
-msgid "Psychedelic Rock"
-msgstr "Psyhedelic Rock"
-
-# components/music/mpg123.c:55
-#: components/music/mpg123.c:56
-msgid "Symphonic Rock"
-msgstr "Senfonik Rock"
-
-# components/music/mpg123.c:55
-#: components/music/mpg123.c:56
-msgid "Slow Rock"
-msgstr "Slow Rock"
-
-# components/music/mpg123.c:56
-#: components/music/mpg123.c:57
-msgid "Big Band"
-msgstr "Big Band"
-
-# components/music/mpg123.c:56
-#: components/music/mpg123.c:57
-msgid "Chorus"
-msgstr "Koro"
-
-# components/music/mpg123.c:56
-#: components/music/mpg123.c:57
-msgid "Easy Listening"
-msgstr "Easy Listening"
-
-# components/music/mpg123.c:57
-#: components/music/mpg123.c:58
-msgid "Acoustic"
-msgstr "Akustik"
-
-# components/music/mpg123.c:57
-#: components/music/mpg123.c:58
-msgid "Humour"
-msgstr "Humour"
-
-# components/music/mpg123.c:57
-#: components/music/mpg123.c:58
-msgid "Speech"
-msgstr "Speech"
-
-# components/music/mpg123.c:57
-#: components/music/mpg123.c:58
-msgid "Chanson"
-msgstr "Chanson"
-
-# components/music/mpg123.c:58
-#: components/music/mpg123.c:59
-msgid "Opera"
-msgstr "Opera"
-
-# components/music/mpg123.c:58
-#: components/music/mpg123.c:59
-msgid "Chamber Music"
-msgstr "Chamber"
-
-# components/music/mpg123.c:58
-#: components/music/mpg123.c:59
-msgid "Sonata"
-msgstr "Sonata"
-
-# components/music/mpg123.c:58
-#: components/music/mpg123.c:59
-msgid "Symphony"
-msgstr "Senfoni"
-
-# components/music/mpg123.c:59
-#: components/music/mpg123.c:60
-msgid "Booty Bass"
-msgstr "Booty Bass"
-
-# components/music/mpg123.c:59
-#: components/music/mpg123.c:60
-msgid "Primus"
-msgstr "Primus"
-
-# components/music/mpg123.c:59
-#: components/music/mpg123.c:60
-msgid "Porn Groove"
-msgstr "Porn Groove"
-
-# components/music/mpg123.c:60
-#: components/music/mpg123.c:61
-msgid "Satire"
-msgstr "Satire"
-
-# components/music/mpg123.c:60
-#: components/music/mpg123.c:61
-msgid "Slow Jam"
-msgstr "Slow Jam"
-
-# components/music/mpg123.c:60
-#: components/music/mpg123.c:61
-msgid "Club"
-msgstr "Club"
-
-# components/music/mpg123.c:60
-#: components/music/mpg123.c:61
-msgid "Tango"
-msgstr "Tango"
-
-# components/music/mpg123.c:61
-#: components/music/mpg123.c:62
-msgid "Samba"
-msgstr "Samba"
-
-# components/music/mpg123.c:61
-#: components/music/mpg123.c:62
-msgid "Folklore"
-msgstr "Folklor"
-
-# components/music/mpg123.c:61
-#: components/music/mpg123.c:62
-msgid "Ballad"
-msgstr "Ballad"
-
-# components/music/mpg123.c:61
-#: components/music/mpg123.c:62
-msgid "Power Ballad"
-msgstr "Power Ballad"
-
-# components/music/mpg123.c:62
-#: components/music/mpg123.c:63
-msgid "Rhythmic Soul"
-msgstr "Ritmik Soul"
-
-# components/music/mpg123.c:62
-#: components/music/mpg123.c:63
-msgid "Freestyle"
-msgstr "Freestyle"
-
-# components/music/mpg123.c:62
-#: components/music/mpg123.c:63
-msgid "Duet"
-msgstr "Düet"
-
-# components/music/mpg123.c:63
-#: components/music/mpg123.c:64
-msgid "Punk Rock"
-msgstr "Punk Rock"
-
-# components/music/mpg123.c:63
-#: components/music/mpg123.c:64
-msgid "Drum Solo"
-msgstr "Solo Davul"
-
-# components/music/mpg123.c:63
-#: components/music/mpg123.c:64
-msgid "A Cappella"
-msgstr "Cappelia"
-
-# components/music/mpg123.c:64
-#: components/music/mpg123.c:65
-msgid "Euro-House"
-msgstr "Euro-House"
-
-# components/music/mpg123.c:64
-#: components/music/mpg123.c:65
-msgid "Dance Hall"
-msgstr "Dance Hall"
-
-# components/music/mpg123.c:64
-#: components/music/mpg123.c:65
-msgid "Goa"
-msgstr "Goa"
-
-# components/music/mpg123.c:65
-#: components/music/mpg123.c:66
-msgid "Drum & Bass"
-msgstr "Davul & Bas"
-
-# components/music/mpg123.c:65
-#: components/music/mpg123.c:66
-msgid "Club-House"
-msgstr "Club-Housey"
-
-# components/music/mpg123.c:65
-#: components/music/mpg123.c:66
-msgid "Hardcore"
-msgstr "Hardcore"
-
-# components/music/mpg123.c:66
-#: components/music/mpg123.c:67
-msgid "Terror"
-msgstr "Terror"
-
-# components/music/mpg123.c:66
-#: components/music/mpg123.c:67
-msgid "Indie"
-msgstr "Indie"
-
-# components/music/mpg123.c:66
-#: components/music/mpg123.c:67
-msgid "BritPop"
-msgstr "BritPop"
-
-# components/music/mpg123.c:66
-#: components/music/mpg123.c:67
-msgid "Negerpunk"
-msgstr "Negerpunk"
-
-# components/music/mpg123.c:67
-#: components/music/mpg123.c:68
-msgid "Polsk Punk"
-msgstr "Polsk Punk"
-
-# components/music/mpg123.c:67
-#: components/music/mpg123.c:68
-msgid "Beat"
-msgstr "Beat"
-
-# components/music/mpg123.c:67
-#: components/music/mpg123.c:68
-msgid "Christian Gangsta Rap"
-msgstr "Christian Gangsta Rap"
-
-# components/music/mpg123.c:68
-#: components/music/mpg123.c:69
-msgid "Heavy Metal"
-msgstr "Heavy Metal"
-
-# components/music/mpg123.c:68
-#: components/music/mpg123.c:69
-msgid "Black Metal"
-msgstr "Black Metal"
-
-# components/music/mpg123.c:68
-#: components/music/mpg123.c:69
-msgid "Crossover"
-msgstr "Crossover"
-
-# components/music/mpg123.c:69
-#: components/music/mpg123.c:70
-msgid "Contemporary Christian"
-msgstr "Christian"
-
-# components/music/mpg123.c:69
-#: components/music/mpg123.c:70
-msgid "Christian Rock"
-msgstr "Christian Rock"
-
-# components/music/mpg123.c:70
-#: components/music/mpg123.c:71
-msgid "Merengue"
-msgstr "Merengue"
-
-# components/music/mpg123.c:70
-#: components/music/mpg123.c:71
-msgid "Salsa"
-msgstr "Salsa"
-
-# components/music/mpg123.c:70
-#: components/music/mpg123.c:71
-msgid "Thrash Metal"
-msgstr "Trash Metal"
-
-# components/music/mpg123.c:71
-#: components/music/mpg123.c:72
-msgid "Anime"
-msgstr "Anime"
-
-# components/music/mpg123.c:71
-#: components/music/mpg123.c:72
-msgid "JPop"
-msgstr "JPop"
-
-# components/music/mpg123.c:71
-#: components/music/mpg123.c:72
-msgid "Synthpop"
-msgstr "Synthpop"
-
-# libnautilus-private/nautilus-file.c:3629
-#: components/music/nautilus-music-view.c:299
-#: libnautilus-private/nautilus-volume-monitor.c:676
-msgid "Unknown"
-msgstr "Bilinmiyor"
-
-# components/music/nautilus-music-view.c:233
-#: components/music/nautilus-music-view.c:351
-msgid "Track"
-msgstr "Parça"
-
-# components/music/nautilus-music-view.c:233
-#: components/music/nautilus-music-view.c:362
-msgid "Title"
-msgstr "Başlık"
-
-# components/music/nautilus-music-view.c:233
-#: components/music/nautilus-music-view.c:372
-msgid "Artist"
-msgstr "Sanatçı"
-
-# components/music/nautilus-music-view.c:233
-#: components/music/nautilus-music-view.c:384
-msgid "Bit Rate"
-msgstr "Hız"
-
-# components/music/nautilus-music-view.c:233
-#: components/music/nautilus-music-view.c:397
-msgid "Time"
-msgstr "Süre"
-
-# components/music/nautilus-music-view.c:337
-#: components/music/nautilus-music-view.c:502
-msgid "Set Cover Image"
-msgstr "Kapak Resmini Tanımla"
-
-# components/music/nautilus-music-view.c:684
-#: components/music/nautilus-music-view.c:743
-#, c-format
-msgid "Sorry, but '%s' is not a usable image file."
-msgstr "`%s' kullanılabilir bir resim dosyası değil."
-
-# components/music/nautilus-music-view.c:686
-# src/file-manager/fm-properties-window.c:2140
-# src/nautilus-property-browser.c:986 src/nautilus-property-browser.c:1122
-# src/nautilus-property-browser.c:1135 src/nautilus-property-browser.c:1403
-#: components/music/nautilus-music-view.c:745
-#: src/nautilus-property-browser.c:1110 src/nautilus-property-browser.c:1313
-#: src/nautilus-property-browser.c:1329
-msgid "Not an Image"
-msgstr "Resim Dosyası Değil"
-
-# components/music/nautilus-music-view.c:734
-#: components/music/nautilus-music-view.c:791
-msgid "Select an image file for the album cover:"
-msgstr "Albüm kapağı için bir resim dosyası seçin:"
-
-# components/music/nautilus-music-view.c:1184
-#: components/music/nautilus-music-view.c:1216
-msgid ""
-"Sorry, but the music view is unable to play back sound right now. This is "
-"because the Enable sound server startup setting in the Sound section of the "
-"Control Center is turned off."
-msgstr ""
-"Üzgünüm, ancak müzik çalıcısı istediğiniz müziği çalamıyor. Denetim "
-"masasının 'Ses' bölümünde yeralan ve ses sunucusunu etkinleştirmek için "
-"kullanılan sekme işaretlenmemiş olabilir."
-
-# components/music/nautilus-music-view.c:1188
-#: components/music/nautilus-music-view.c:1219
-#: components/music/nautilus-music-view.c:1231
-msgid "Unable to Play File"
-msgstr "Dosya Çalınamıyor"
-
-# components/music/nautilus-music-view.c:1184
-#: components/music/nautilus-music-view.c:1227
-msgid ""
-"Sorry, but the music view is unable to play back sound right now. Either "
-"another program is using or blocking the sound card, or your sound card is "
-"not configured properly. Try quitting any applications that may be blocking "
-"use of the sound card."
-msgstr ""
-"Üzgünüm, ancak müzik çalıcısı istediğiniz müziği çalamıyor. Ses kartını "
-"başka bir program kullanıyor, ya da henüz ses kartı yapılandırılmamış "
-"olabilir. Ses kartının kullanılmasını engelleyen tüm programlardan çıkmayı "
-"deneyin."
-
-# components/music/nautilus-music-view.c:1209
-#: components/music/nautilus-music-view.c:1255
-msgid "Sorry, but the music view can't play non-local files yet."
-msgstr "Müzik görünümde yerel olmayan dosyalar çalınamaz."
-
-# components/music/nautilus-music-view.c:1210
-#: components/music/nautilus-music-view.c:1256
-msgid "Can't Play Remote Files"
-msgstr "Uzaktaki Dosyalar Çalınamaz"
-
-# components/music/nautilus-music-view.c:1514
-#: components/music/nautilus-music-view.c:1574
-msgid "Drag to seek within track"
-msgstr "Parça içinde gezmek için sürükleyin"
-
-# components/help/converters/gnome-db2html2/gdb3html.c:708
-# components/music/nautilus-music-view.c:1536
-#: components/music/nautilus-music-view.c:1601
-msgid "Previous"
-msgstr "Geri"
-
-# components/music/nautilus-music-view.c:1551
-#: components/music/nautilus-music-view.c:1616
-msgid "Play"
-msgstr "Çal"
-
-# components/music/nautilus-music-view.c:1566
-#: components/music/nautilus-music-view.c:1630
-msgid "Pause"
-msgstr "Beklet"
-
-# components/music/nautilus-music-view.c:1580
-# libnautilus-private/nautilus-file-operations.c:895
-# libnautilus-private/nautilus-file-operations.c:910
-# libnautilus-private/nautilus-file-operations.c:929
-# src/nautilus-shell-ui.xml.h:55
-#: components/music/nautilus-music-view.c:1644
-#: libnautilus-private/nautilus-file-operations.c:896
-#: libnautilus-private/nautilus-file-operations.c:911
-#: libnautilus-private/nautilus-file-operations.c:931
-#: src/nautilus-shell-ui.xml.h:44
-msgid "Stop"
-msgstr "Dur"
-
-# components/help/converters/gnome-db2html2/gdb3html.c:726
-# components/music/nautilus-music-view.c:1594
-#: components/music/nautilus-music-view.c:1658
-msgid "Next"
-msgstr "İleri"
-
-# components/music/nautilus-music-view.c:337
-#: components/music/nautilus-music-view.c:1696
-msgid "cover image"
-msgstr "Kapak Resmi"
-
-# components/music/nautilus-music-view.c:1709
-#: components/music/nautilus-music-view.c:1767
-#, c-format
-msgid "Sorry, but there was an error reading %s."
-msgstr "%s okunurken bir hata oluştu."
-
-# components/music/nautilus-music-view.c:1710
-#: components/music/nautilus-music-view.c:1768
-msgid "Can't Read Folder"
-msgstr "Dizin Okunamadı"
-
-#: components/music/nautilus-music-view.c:1868
-#, c-format
-msgid "<span size=\"xx-large\">%s - %s</span>"
-msgstr "<span size=\"xx-large\">%s - %s</span>"
 
 # components/notes/Nautilus_View_notes.oaf.in.h:4
 #: components/notes/Nautilus_View_notes.server.in.in.h:1
@@ -1695,11 +931,6 @@ msgstr "Karartı"
 #: data/browser.xml.h:34
 msgid "Envy"
 msgstr "Görkemli"
-
-# data/browser.xml.h:36
-#: data/browser.xml.h:35
-msgid "Erase"
-msgstr "Sil"
 
 # data/browser.xml.h:37
 #: data/browser.xml.h:36
@@ -2264,6 +1495,7 @@ msgstr ""
 # components/help/converters/gnome-db2html2/gdb3html.c:708
 # components/music/nautilus-music-view.c:1536
 #: libbackground/preview-file-selection.c:212
+#: src/nautilus-file-management-properties.glade.h:56
 msgid "Preview"
 msgstr "Önİzleme"
 
@@ -2413,6 +1645,40 @@ msgstr "XIAFS Biçimi"
 msgid "Xenix Volume"
 msgstr "Xenix Biçimi"
 
+#: libnautilus-private/egg-screen-help.c:174
+msgid "Unable to find the GNOME_FILE_DOMAIN_APP_HELP domain"
+msgstr ""
+
+#: libnautilus-private/egg-screen-help.c:187
+msgid "Unable to find the GNOME_FILE_DOMAIN_HELP domain."
+msgstr ""
+
+#: libnautilus-private/egg-screen-help.c:200
+#: libnautilus-private/egg-screen-help.c:215
+#, c-format
+msgid ""
+"Unable to show help as %s is not a directory.  Please check your "
+"installation."
+msgstr ""
+
+#: libnautilus-private/egg-screen-help.c:224
+#: libnautilus-private/egg-screen-help.c:240
+#, c-format
+msgid ""
+"Unable to find the help files in either %s or %s.  Please check your "
+"installation"
+msgstr ""
+
+#: libnautilus-private/egg-screen-help.c:315
+#, c-format
+msgid "Unable to find doc_id %s in the help path"
+msgstr ""
+
+#: libnautilus-private/egg-screen-help.c:336
+#, c-format
+msgid "Help document %s/%s not found"
+msgstr ""
+
 #: libnautilus-private/nautilus-authn-manager.c:60
 msgid "Your HTTP Proxy requires you to log in.\n"
 msgstr ""
@@ -2466,8 +1732,64 @@ msgstr "_Arkaplan Olarak Tanımla"
 
 # components/music/mpg123.c:29
 #: libnautilus-private/nautilus-dnd.c:589
+#: libnautilus-private/nautilus-dnd.c:642
 msgid "Cancel"
 msgstr "İptal"
+
+#: libnautilus-private/nautilus-dnd.c:628
+msgid "Set as background for _all directories"
+msgstr ""
+
+# src/nautilus-shell-ui.xml.h:41
+#: libnautilus-private/nautilus-dnd.c:633
+#, fuzzy
+msgid "Set as background for _this directory"
+msgstr "Görüntülenen konum için başka bir Nautilus penceresi aç"
+
+# src/nautilus-property-browser.c:1420
+#: libnautilus-private/nautilus-emblem-utils.c:194
+msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
+msgstr ""
+"Üzgünüm, ancak yeni logo için boş olmayan bir anahtar kelime girmelisiniz."
+
+# src/nautilus-property-browser.c:1421 src/nautilus-property-browser.c:1424
+# src/nautilus-property-browser.c:1428 src/nautilus-property-browser.c:1457
+#: libnautilus-private/nautilus-emblem-utils.c:195
+#: libnautilus-private/nautilus-emblem-utils.c:199
+#: libnautilus-private/nautilus-emblem-utils.c:208
+#: libnautilus-private/nautilus-emblem-utils.c:230
+#: libnautilus-private/nautilus-emblem-utils.c:245
+msgid "Couldn't install emblem"
+msgstr "Logolar kurulamadı"
+
+# src/nautilus-property-browser.c:1423
+#: libnautilus-private/nautilus-emblem-utils.c:198
+msgid ""
+"Sorry, but emblem keywords can only contain letters, spaces and numbers."
+msgstr ""
+"Üzgünüm, ancak logo anahtar kelimesi sadece harf, rakam ve boşluk karakteri "
+"içerebilir."
+
+# src/nautilus-property-browser.c:1426
+#. this really should never happen, as a user has no idea
+#. * what a keyword is, and people should be passing a unique
+#. * keyword to us anyway
+#.
+#: libnautilus-private/nautilus-emblem-utils.c:206
+#, fuzzy, c-format
+msgid ""
+"Sorry, but there is already an emblem named \"%s\".  Please choose a "
+"different name for it."
+msgstr ""
+"\"%s\" anahtar kelimesi daha önce kullanılmış. Lütfen farklı bir isim seçin."
+
+#: libnautilus-private/nautilus-emblem-utils.c:229
+msgid "Sorry, unable to save custom emblem."
+msgstr ""
+
+#: libnautilus-private/nautilus-emblem-utils.c:244
+msgid "Sorry, unable to save custom emblem name."
+msgstr ""
 
 # components/services/install/nautilus-view/nautilus-service-install-view.c:734
 #: libnautilus-private/nautilus-file-operations-progress.c:452
@@ -2788,6 +2110,18 @@ msgstr "Bağlantı yapılırken hata oluştu"
 msgid "Error while deleting."
 msgstr "Silinirken hata oluştu."
 
+# components/music/nautilus-music-view.c:1580
+# libnautilus-private/nautilus-file-operations.c:895
+# libnautilus-private/nautilus-file-operations.c:910
+# libnautilus-private/nautilus-file-operations.c:929
+# src/nautilus-shell-ui.xml.h:55
+#: libnautilus-private/nautilus-file-operations.c:896
+#: libnautilus-private/nautilus-file-operations.c:911
+#: libnautilus-private/nautilus-file-operations.c:931
+#: src/nautilus-shell-ui.xml.h:44
+msgid "Stop"
+msgstr "Dur"
+
 # libnautilus-private/nautilus-file-operations.c:910
 # libnautilus-private/nautilus-file-operations.c:929
 # libnautilus-private/nautilus-file-operations.c:1043
@@ -2874,7 +2208,7 @@ msgstr "Hepsinin üstüne yaz"
 # libnautilus-private/nautilus-file.c:3699
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1112
-#: libnautilus-private/nautilus-file.c:4280
+#: libnautilus-private/nautilus-file.c:4277
 #, c-format
 msgid "link to %s"
 msgstr "%s'e bağlantı yap"
@@ -2925,7 +2259,7 @@ msgstr "%2$s dosyasına %1$d. bağlantı"
 #.
 #. localizers: tag used to detect the first copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1164
-#: libnautilus-private/nautilus-file-operations.c:2278
+#: libnautilus-private/nautilus-file-operations.c:2281
 msgid " (copy)"
 msgstr " (kopya)"
 
@@ -2933,7 +2267,7 @@ msgstr " (kopya)"
 # libnautilus-private/nautilus-file-operations.c:2259
 #. localizers: tag used to detect the second copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1166
-#: libnautilus-private/nautilus-file-operations.c:2278
+#: libnautilus-private/nautilus-file-operations.c:2281
 msgid " (another copy)"
 msgstr " (diğer kopya)"
 
@@ -3025,183 +2359,183 @@ msgstr " (%d"
 # libnautilus-private/nautilus-file-operations.c:1437
 # libnautilus-private/nautilus-file-operations.c:1969
 #: libnautilus-private/nautilus-file-operations.c:1499
-#: libnautilus-private/nautilus-file-operations.c:2073
+#: libnautilus-private/nautilus-file-operations.c:2076
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Bilinmeyen GnomeVFSXferProgressStatus %d"
 
 # libnautilus-private/nautilus-file-operations.c:2099
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1817
+#: libnautilus-private/nautilus-file-operations.c:1820
 msgid "Moving files to the Trash"
 msgstr "Dosyalar çöp kutusuna taşınıyor"
 
 # libnautilus-private/nautilus-file-operations.c:2101
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1819
+#: libnautilus-private/nautilus-file-operations.c:1822
 msgid "Files thrown out:"
 msgstr "Silinen dosyalar:"
 
 # libnautilus-private/nautilus-file-operations.c:1757
 # libnautilus-private/nautilus-file-operations.c:2103
 #. localizers: label prepended to the name of the current file moved
-#: libnautilus-private/nautilus-file-operations.c:1821
-#: libnautilus-private/nautilus-file-operations.c:1832
+#: libnautilus-private/nautilus-file-operations.c:1824
+#: libnautilus-private/nautilus-file-operations.c:1835
 msgid "Moving"
 msgstr "Taşınıyor"
 
 # libnautilus-private/nautilus-file-operations.c:2104
-#: libnautilus-private/nautilus-file-operations.c:1822
+#: libnautilus-private/nautilus-file-operations.c:1825
 msgid "Preparing to Move to Trash..."
 msgstr "Çöp Kutusuna Taşımaya Hazırlık Yapılıyor..."
 
 # libnautilus-private/nautilus-file-operations.c:1753
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1828
+#: libnautilus-private/nautilus-file-operations.c:1831
 msgid "Moving files"
 msgstr "Dosyalar taşınıyor"
 
 # libnautilus-private/nautilus-file-operations.c:1755
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1830
+#: libnautilus-private/nautilus-file-operations.c:1833
 msgid "Files moved:"
 msgstr "Taşınan dosyalar:"
 
 # libnautilus-private/nautilus-file-operations.c:1758
-#: libnautilus-private/nautilus-file-operations.c:1833
+#: libnautilus-private/nautilus-file-operations.c:1836
 msgid "Preparing To Move..."
 msgstr "Taşımaya Hazırlanıyor..."
 
 # libnautilus-private/nautilus-file-operations.c:1759
-#: libnautilus-private/nautilus-file-operations.c:1834
+#: libnautilus-private/nautilus-file-operations.c:1837
 msgid "Finishing Move..."
 msgstr "Taşıma Bitiriliyor..."
 
 # libnautilus-private/nautilus-file-operations.c:1769
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1842
+#: libnautilus-private/nautilus-file-operations.c:1845
 msgid "Creating links to files"
 msgstr "Dosyalara bağlantı kuruluyor"
 
 # libnautilus-private/nautilus-file-operations.c:1771
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1844
+#: libnautilus-private/nautilus-file-operations.c:1847
 msgid "Files linked:"
 msgstr "Bağlantı kurulan dosyalar: "
 
 # libnautilus-private/nautilus-file-operations.c:1773
 #. localizers: label prepended to the name of the current file linked
-#: libnautilus-private/nautilus-file-operations.c:1846
+#: libnautilus-private/nautilus-file-operations.c:1849
 msgid "Linking"
 msgstr "Bağlanıyor"
 
 # libnautilus-private/nautilus-file-operations.c:1774
-#: libnautilus-private/nautilus-file-operations.c:1847
+#: libnautilus-private/nautilus-file-operations.c:1850
 msgid "Preparing to Create Links..."
 msgstr "Bağlantıları oluşturmaya Hazırlanıyorum..."
 
 # libnautilus-private/nautilus-file-operations.c:1775
-#: libnautilus-private/nautilus-file-operations.c:1848
+#: libnautilus-private/nautilus-file-operations.c:1851
 msgid "Finishing Creating Links..."
 msgstr "Bağlantı Oluşturma Tamamlanıyor..."
 
 # libnautilus-private/nautilus-file-operations.c:1782
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1854
+#: libnautilus-private/nautilus-file-operations.c:1857
 msgid "Copying files"
 msgstr "Dosyalar kopyalanıyor"
 
 # libnautilus-private/nautilus-file-operations.c:1784
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1856
+#: libnautilus-private/nautilus-file-operations.c:1859
 msgid "Files copied:"
 msgstr "Kopyalanan dosyalar:"
 
 # libnautilus-private/nautilus-file-operations.c:1786
 #. localizers: label prepended to the name of the current file copied
-#: libnautilus-private/nautilus-file-operations.c:1858
+#: libnautilus-private/nautilus-file-operations.c:1861
 msgid "Copying"
 msgstr "Kopyalanıyor"
 
 # libnautilus-private/nautilus-file-operations.c:1787
-#: libnautilus-private/nautilus-file-operations.c:1859
+#: libnautilus-private/nautilus-file-operations.c:1862
 msgid "Preparing To Copy..."
 msgstr "Kopyalamaya Hazırlıyorum..."
 
 # libnautilus-private/nautilus-file-operations.c:1805
-#: libnautilus-private/nautilus-file-operations.c:1875
+#: libnautilus-private/nautilus-file-operations.c:1878
 msgid "You cannot copy items into the Trash."
 msgstr "Dosyaları çöp kutusuna kopyalayamazsınız."
 
 # libnautilus-private/nautilus-file-operations.c:1806
-#: libnautilus-private/nautilus-file-operations.c:1876
+#: libnautilus-private/nautilus-file-operations.c:1879
 msgid "Can't Copy to Trash"
 msgstr "Çöpe Kopyalanamıyor."
 
 # libnautilus-private/nautilus-file-operations.c:1829
 # libnautilus-private/nautilus-file-operations.c:2059
-#: libnautilus-private/nautilus-file-operations.c:1903
+#: libnautilus-private/nautilus-file-operations.c:1906
 msgid "The Trash must remain on the desktop."
 msgstr "Çöp kutusu masaüstünde kalmalıdır."
 
 # libnautilus-private/nautilus-file-operations.c:1830
-#: libnautilus-private/nautilus-file-operations.c:1904
+#: libnautilus-private/nautilus-file-operations.c:1907
 msgid "You cannot move this trash folder."
 msgstr "Çöp kutusu taşınamaz."
 
 # libnautilus-private/nautilus-file-operations.c:1832
-#: libnautilus-private/nautilus-file-operations.c:1906
+#: libnautilus-private/nautilus-file-operations.c:1909
 msgid "You cannot copy the Trash."
 msgstr "Çöp kutusu kopyalanamaz."
 
 # libnautilus-private/nautilus-file-operations.c:1833
-#: libnautilus-private/nautilus-file-operations.c:1907
+#: libnautilus-private/nautilus-file-operations.c:1910
 msgid "You cannot copy this trash folder."
 msgstr "Bu çöp kutusunu kopyalayamazsınız."
 
 # libnautilus-private/nautilus-file-operations.c:1835
 # libnautilus-private/nautilus-file-operations.c:2060
-#: libnautilus-private/nautilus-file-operations.c:1909
+#: libnautilus-private/nautilus-file-operations.c:1912
 msgid "Can't Change Trash Location"
 msgstr "Çöpün Yeri Değiştirilemiyor"
 
 # libnautilus-private/nautilus-file-operations.c:1836
-#: libnautilus-private/nautilus-file-operations.c:1910
+#: libnautilus-private/nautilus-file-operations.c:1913
 msgid "Can't Copy Trash"
 msgstr "Çöp Kutusuna Kopyalanamıyor"
 
 # libnautilus-private/nautilus-file-operations.c:1854
-#: libnautilus-private/nautilus-file-operations.c:1933
+#: libnautilus-private/nautilus-file-operations.c:1936
 msgid "You cannot move a folder into itself."
 msgstr "Bir dizini kendi üzerine taşıyamazsınız."
 
 # libnautilus-private/nautilus-file-operations.c:1855
-#: libnautilus-private/nautilus-file-operations.c:1934
+#: libnautilus-private/nautilus-file-operations.c:1937
 msgid "You cannot copy a folder into itself."
 msgstr "Bir dizini kendi üzerine kopyalayamazsınız."
 
 # libnautilus-private/nautilus-file-operations.c:1856
-#: libnautilus-private/nautilus-file-operations.c:1936
+#: libnautilus-private/nautilus-file-operations.c:1939
 msgid "Can't Move Into Self"
 msgstr "Üzerine Taşınamaz"
 
 # libnautilus-private/nautilus-file-operations.c:1856
-#: libnautilus-private/nautilus-file-operations.c:1937
+#: libnautilus-private/nautilus-file-operations.c:1940
 msgid "Can't Copy Into Self"
 msgstr "Üzerine Kopyalanamaz"
 
 # libnautilus-private/nautilus-file-operations.c:1855
-#: libnautilus-private/nautilus-file-operations.c:1949
+#: libnautilus-private/nautilus-file-operations.c:1952
 msgid "You cannot copy a file over itself."
 msgstr "Bir dosyayı kendi üzerine kopyalayamazsınız."
 
 # libnautilus-private/nautilus-file-operations.c:1856
-#: libnautilus-private/nautilus-file-operations.c:1950
+#: libnautilus-private/nautilus-file-operations.c:1953
 msgid "Can't Copy Over Self"
 msgstr "Üzerine Kopyalanamaz"
 
 # libnautilus-private/nautilus-file-operations.c:1907
-#: libnautilus-private/nautilus-file-operations.c:2002
+#: libnautilus-private/nautilus-file-operations.c:2005
 msgid ""
 "Error creating new folder.\n"
 "\n"
@@ -3212,7 +2546,7 @@ msgstr ""
 "Hedef bölgeye yazma hakkınız yok"
 
 # libnautilus-private/nautilus-file-operations.c:1910
-#: libnautilus-private/nautilus-file-operations.c:2005
+#: libnautilus-private/nautilus-file-operations.c:2008
 msgid ""
 "Error creating new folder.\n"
 "\n"
@@ -3223,419 +2557,419 @@ msgstr ""
 "Hedef bölgede yeterli disk alanı yok."
 
 # libnautilus-private/nautilus-file-operations.c:1913
-#: libnautilus-private/nautilus-file-operations.c:2008
+#: libnautilus-private/nautilus-file-operations.c:2011
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Yeni dizin oluşturulurken hata: \"%s\""
 
 # libnautilus-private/nautilus-file-operations.c:1917
-#: libnautilus-private/nautilus-file-operations.c:2012
+#: libnautilus-private/nautilus-file-operations.c:2015
 msgid "Error creating new folder"
 msgstr "Yeni dizin oluşturulurken hata"
 
 # libnautilus-private/nautilus-file-operations.c:1994
 #. localizers: the initial name of a new folder
-#: libnautilus-private/nautilus-file-operations.c:2099
+#: libnautilus-private/nautilus-file-operations.c:2102
 msgid "untitled folder"
 msgstr "isimsiz dizin"
 
 # libnautilus-private/nautilus-file-operations.c:2146
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2132
+#: libnautilus-private/nautilus-file-operations.c:2135
 msgid "Deleting files"
 msgstr "Dosyaları siliyorum"
 
 # libnautilus-private/nautilus-file-operations.c:2148
 # libnautilus-private/nautilus-file-operations.c:2185
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2134
-#: libnautilus-private/nautilus-file-operations.c:2169
+#: libnautilus-private/nautilus-file-operations.c:2137
+#: libnautilus-private/nautilus-file-operations.c:2172
 msgid "Files deleted:"
 msgstr "Silinen dosyalar:"
 
 # libnautilus-private/nautilus-file-operations.c:2150
 # libnautilus-private/nautilus-file-operations.c:2187
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-private/nautilus-file-operations.c:2136
-#: libnautilus-private/nautilus-file-operations.c:2171
+#: libnautilus-private/nautilus-file-operations.c:2139
+#: libnautilus-private/nautilus-file-operations.c:2174
 msgid "Deleting"
 msgstr "Siliniyor"
 
 # libnautilus-private/nautilus-file-operations.c:2151
-#: libnautilus-private/nautilus-file-operations.c:2137
+#: libnautilus-private/nautilus-file-operations.c:2140
 msgid "Preparing to Delete files..."
 msgstr "Dosyalar Silinmek Üzere Hazırlanıyor..."
 
 # libnautilus-private/nautilus-file-operations.c:2183
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2167
+#: libnautilus-private/nautilus-file-operations.c:2170
 msgid "Emptying the Trash"
 msgstr "Çöp kutusu boşaltılıyor"
 
 # libnautilus-private/nautilus-file-operations.c:2188
-#: libnautilus-private/nautilus-file-operations.c:2172
+#: libnautilus-private/nautilus-file-operations.c:2175
 msgid "Preparing to Empty the Trash..."
 msgstr "Çöp kutusunu boşaltmaya hazırlanıyorum..."
 
 # src/file-manager/fm-desktop-icon-view.c:1093
 # src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
 # src/file-manager/nautilus-directory-view-ui.xml.h:11
-#: libnautilus-private/nautilus-file-operations.c:2206
-#: src/file-manager/fm-desktop-icon-view.c:1274
+#: libnautilus-private/nautilus-file-operations.c:2209
+#: src/file-manager/fm-desktop-icon-view.c:1275
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 msgid "Empty Trash"
 msgstr "Çöpü Boşalt"
 
 # libnautilus-private/nautilus-file-operations.c:2219
-#: libnautilus-private/nautilus-file-operations.c:2222
+#: libnautilus-private/nautilus-file-operations.c:2225
 msgid ""
 "Are you sure you want to permanently delete all of the items in the Trash?"
 msgstr "Gerçekten çöp kutusundaki herşeyi tümüyle silmek istiyor musunuz?"
 
 # libnautilus-private/nautilus-file-operations.c:2222
-#: libnautilus-private/nautilus-file-operations.c:2232
+#: libnautilus-private/nautilus-file-operations.c:2235
 msgid "_Empty"
 msgstr "_Boşalt"
 
 # libnautilus-private/nautilus-file-operations.c:2260
-#: libnautilus-private/nautilus-file-operations.c:2279
+#: libnautilus-private/nautilus-file-operations.c:2282
 msgid "foo"
 msgstr "dosya"
 
 # libnautilus-private/nautilus-file-operations.c:2260
 # libnautilus-private/nautilus-file-operations.c:2270
-#: libnautilus-private/nautilus-file-operations.c:2279
-#: libnautilus-private/nautilus-file-operations.c:2289
+#: libnautilus-private/nautilus-file-operations.c:2282
+#: libnautilus-private/nautilus-file-operations.c:2292
 msgid "foo (copy)"
 msgstr "dosya (kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2261
-#: libnautilus-private/nautilus-file-operations.c:2280
+#: libnautilus-private/nautilus-file-operations.c:2283
 msgid ".bashrc"
 msgstr ".bashrc"
 
 # libnautilus-private/nautilus-file-operations.c:2261
-#: libnautilus-private/nautilus-file-operations.c:2280
+#: libnautilus-private/nautilus-file-operations.c:2283
 msgid ".bashrc (copy)"
 msgstr ".bashrc (kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2262
-#: libnautilus-private/nautilus-file-operations.c:2281
+#: libnautilus-private/nautilus-file-operations.c:2284
 msgid ".foo.txt"
 msgstr ".dosya.txt"
 
 # libnautilus-private/nautilus-file-operations.c:2262
-#: libnautilus-private/nautilus-file-operations.c:2281
+#: libnautilus-private/nautilus-file-operations.c:2284
 msgid ".foo (copy).txt"
 msgstr ".dosya (kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2263
-#: libnautilus-private/nautilus-file-operations.c:2282
+#: libnautilus-private/nautilus-file-operations.c:2285
 msgid "foo foo"
 msgstr "dosya2"
 
 # libnautilus-private/nautilus-file-operations.c:2263
-#: libnautilus-private/nautilus-file-operations.c:2282
+#: libnautilus-private/nautilus-file-operations.c:2285
 msgid "foo foo (copy)"
 msgstr "dosya2 (kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2264
-#: libnautilus-private/nautilus-file-operations.c:2283
+#: libnautilus-private/nautilus-file-operations.c:2286
 msgid "foo.txt"
 msgstr "dosya.txt"
 
 # libnautilus-private/nautilus-file-operations.c:2264
 # libnautilus-private/nautilus-file-operations.c:2271
-#: libnautilus-private/nautilus-file-operations.c:2283
-#: libnautilus-private/nautilus-file-operations.c:2290
+#: libnautilus-private/nautilus-file-operations.c:2286
+#: libnautilus-private/nautilus-file-operations.c:2293
 msgid "foo (copy).txt"
 msgstr "dosya (kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2265
-#: libnautilus-private/nautilus-file-operations.c:2284
+#: libnautilus-private/nautilus-file-operations.c:2287
 msgid "foo foo.txt"
 msgstr "dosya2.txt"
 
 # libnautilus-private/nautilus-file-operations.c:2265
 # libnautilus-private/nautilus-file-operations.c:2285
-#: libnautilus-private/nautilus-file-operations.c:2284
-#: libnautilus-private/nautilus-file-operations.c:2306
+#: libnautilus-private/nautilus-file-operations.c:2287
+#: libnautilus-private/nautilus-file-operations.c:2309
 msgid "foo foo (copy).txt"
 msgstr "dosya2 (kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2266
-#: libnautilus-private/nautilus-file-operations.c:2285
+#: libnautilus-private/nautilus-file-operations.c:2288
 msgid "foo foo.txt txt"
 msgstr "dosya2.txt txt"
 
 # libnautilus-private/nautilus-file-operations.c:2266
-#: libnautilus-private/nautilus-file-operations.c:2285
+#: libnautilus-private/nautilus-file-operations.c:2288
 msgid "foo foo (copy).txt txt"
 msgstr "dosya2 (kopya).txt txt"
 
 # libnautilus-private/nautilus-file-operations.c:2267
-#: libnautilus-private/nautilus-file-operations.c:2286
+#: libnautilus-private/nautilus-file-operations.c:2289
 msgid "foo...txt"
 msgstr "dosya...txt"
 
 # libnautilus-private/nautilus-file-operations.c:2267
-#: libnautilus-private/nautilus-file-operations.c:2286
+#: libnautilus-private/nautilus-file-operations.c:2289
 msgid "foo.. (copy).txt"
 msgstr "dosya... (kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2268
-#: libnautilus-private/nautilus-file-operations.c:2287
+#: libnautilus-private/nautilus-file-operations.c:2290
 msgid "foo..."
 msgstr "dosya..."
 
 # libnautilus-private/nautilus-file-operations.c:2268
-#: libnautilus-private/nautilus-file-operations.c:2287
+#: libnautilus-private/nautilus-file-operations.c:2290
 msgid "foo... (copy)"
 msgstr "dosya... (kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2269
-#: libnautilus-private/nautilus-file-operations.c:2288
+#: libnautilus-private/nautilus-file-operations.c:2291
 msgid "foo. (copy)"
 msgstr "dosya. (kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2269
-#: libnautilus-private/nautilus-file-operations.c:2288
+#: libnautilus-private/nautilus-file-operations.c:2291
 msgid "foo. (another copy)"
 msgstr "dosya. (diğer kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2270
 # libnautilus-private/nautilus-file-operations.c:2272
-#: libnautilus-private/nautilus-file-operations.c:2289
-#: libnautilus-private/nautilus-file-operations.c:2291
+#: libnautilus-private/nautilus-file-operations.c:2292
+#: libnautilus-private/nautilus-file-operations.c:2294
 msgid "foo (another copy)"
 msgstr "dosya (diğer kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2271
 # libnautilus-private/nautilus-file-operations.c:2273
-#: libnautilus-private/nautilus-file-operations.c:2290
-#: libnautilus-private/nautilus-file-operations.c:2292
+#: libnautilus-private/nautilus-file-operations.c:2293
+#: libnautilus-private/nautilus-file-operations.c:2295
 msgid "foo (another copy).txt"
 msgstr "dosya (diğer kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2272
-#: libnautilus-private/nautilus-file-operations.c:2291
+#: libnautilus-private/nautilus-file-operations.c:2294
 msgid "foo (3rd copy)"
 msgstr "dosya (3. kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2273
-#: libnautilus-private/nautilus-file-operations.c:2292
+#: libnautilus-private/nautilus-file-operations.c:2295
 msgid "foo (3rd copy).txt"
 msgstr "dosya (3. kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2274
-#: libnautilus-private/nautilus-file-operations.c:2293
+#: libnautilus-private/nautilus-file-operations.c:2296
 msgid "foo foo (another copy).txt"
 msgstr "dosya2 (diğer kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2274
-#: libnautilus-private/nautilus-file-operations.c:2293
+#: libnautilus-private/nautilus-file-operations.c:2296
 msgid "foo foo (3rd copy).txt"
 msgstr "dosya2 (3. kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2275
-#: libnautilus-private/nautilus-file-operations.c:2294
-#: libnautilus-private/nautilus-file-operations.c:2311
+#: libnautilus-private/nautilus-file-operations.c:2297
+#: libnautilus-private/nautilus-file-operations.c:2314
 msgid "foo (13th copy)"
 msgstr "dosya (13. kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2279
 # libnautilus-private/nautilus-file-operations.c:2281
-#: libnautilus-private/nautilus-file-operations.c:2294
+#: libnautilus-private/nautilus-file-operations.c:2297
 msgid "foo (14th copy)"
 msgstr "dosya (14. kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2276
-#: libnautilus-private/nautilus-file-operations.c:2295
-#: libnautilus-private/nautilus-file-operations.c:2312
+#: libnautilus-private/nautilus-file-operations.c:2298
+#: libnautilus-private/nautilus-file-operations.c:2315
 msgid "foo (13th copy).txt"
 msgstr "dosya (13. kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2280
 # libnautilus-private/nautilus-file-operations.c:2282
-#: libnautilus-private/nautilus-file-operations.c:2295
+#: libnautilus-private/nautilus-file-operations.c:2298
 msgid "foo (14th copy).txt"
 msgstr "dosya (14. kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2275
-#: libnautilus-private/nautilus-file-operations.c:2296
+#: libnautilus-private/nautilus-file-operations.c:2299
 msgid "foo (21st copy)"
 msgstr "dosya (21. kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2275
 # libnautilus-private/nautilus-file-operations.c:2277
-#: libnautilus-private/nautilus-file-operations.c:2296
-#: libnautilus-private/nautilus-file-operations.c:2298
+#: libnautilus-private/nautilus-file-operations.c:2299
+#: libnautilus-private/nautilus-file-operations.c:2301
 msgid "foo (22nd copy)"
 msgstr "dosya (22. kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2276
-#: libnautilus-private/nautilus-file-operations.c:2297
+#: libnautilus-private/nautilus-file-operations.c:2300
 msgid "foo (21st copy).txt"
 msgstr "dosya (21. kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2276
 # libnautilus-private/nautilus-file-operations.c:2278
-#: libnautilus-private/nautilus-file-operations.c:2297
-#: libnautilus-private/nautilus-file-operations.c:2299
+#: libnautilus-private/nautilus-file-operations.c:2300
+#: libnautilus-private/nautilus-file-operations.c:2302
 msgid "foo (22nd copy).txt"
 msgstr "dosya (22. kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2277
 # libnautilus-private/nautilus-file-operations.c:2279
-#: libnautilus-private/nautilus-file-operations.c:2298
-#: libnautilus-private/nautilus-file-operations.c:2300
+#: libnautilus-private/nautilus-file-operations.c:2301
+#: libnautilus-private/nautilus-file-operations.c:2303
 msgid "foo (23rd copy)"
 msgstr "dosya (23. kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2278
 # libnautilus-private/nautilus-file-operations.c:2280
-#: libnautilus-private/nautilus-file-operations.c:2299
-#: libnautilus-private/nautilus-file-operations.c:2301
+#: libnautilus-private/nautilus-file-operations.c:2302
+#: libnautilus-private/nautilus-file-operations.c:2304
 msgid "foo (23rd copy).txt"
 msgstr "dosya (23. kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2279
 # libnautilus-private/nautilus-file-operations.c:2281
-#: libnautilus-private/nautilus-file-operations.c:2300
-#: libnautilus-private/nautilus-file-operations.c:2302
+#: libnautilus-private/nautilus-file-operations.c:2303
+#: libnautilus-private/nautilus-file-operations.c:2305
 msgid "foo (24th copy)"
 msgstr "dosya (24. kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2280
 # libnautilus-private/nautilus-file-operations.c:2282
-#: libnautilus-private/nautilus-file-operations.c:2301
-#: libnautilus-private/nautilus-file-operations.c:2303
+#: libnautilus-private/nautilus-file-operations.c:2304
+#: libnautilus-private/nautilus-file-operations.c:2306
 msgid "foo (24th copy).txt"
 msgstr "dosya (24. kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2281
-#: libnautilus-private/nautilus-file-operations.c:2302
+#: libnautilus-private/nautilus-file-operations.c:2305
 msgid "foo (25th copy)"
 msgstr "dosya (25. kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2282
-#: libnautilus-private/nautilus-file-operations.c:2303
+#: libnautilus-private/nautilus-file-operations.c:2306
 msgid "foo (25th copy).txt"
 msgstr "dosya (25. kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2283
-#: libnautilus-private/nautilus-file-operations.c:2304
+#: libnautilus-private/nautilus-file-operations.c:2307
 msgid "foo foo (24th copy)"
 msgstr "dosya2 (24. kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2283
-#: libnautilus-private/nautilus-file-operations.c:2304
+#: libnautilus-private/nautilus-file-operations.c:2307
 msgid "foo foo (25th copy)"
 msgstr "dosya (25. kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2284
-#: libnautilus-private/nautilus-file-operations.c:2305
+#: libnautilus-private/nautilus-file-operations.c:2308
 msgid "foo foo (24th copy).txt"
 msgstr "dosya (24. kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2284
-#: libnautilus-private/nautilus-file-operations.c:2305
+#: libnautilus-private/nautilus-file-operations.c:2308
 msgid "foo foo (25th copy).txt"
 msgstr "dosya (25. kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2285
-#: libnautilus-private/nautilus-file-operations.c:2306
+#: libnautilus-private/nautilus-file-operations.c:2309
 msgid "foo foo (100000000000000th copy).txt"
 msgstr "dosya (100000000000000. kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2275
-#: libnautilus-private/nautilus-file-operations.c:2307
+#: libnautilus-private/nautilus-file-operations.c:2310
 msgid "foo (10th copy)"
 msgstr "dosya (10. kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2275
-#: libnautilus-private/nautilus-file-operations.c:2307
-#: libnautilus-private/nautilus-file-operations.c:2309
+#: libnautilus-private/nautilus-file-operations.c:2310
+#: libnautilus-private/nautilus-file-operations.c:2312
 msgid "foo (11th copy)"
 msgstr "dosya (11. kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2276
-#: libnautilus-private/nautilus-file-operations.c:2308
+#: libnautilus-private/nautilus-file-operations.c:2311
 msgid "foo (10th copy).txt"
 msgstr "dosya (10. kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2276
-#: libnautilus-private/nautilus-file-operations.c:2308
-#: libnautilus-private/nautilus-file-operations.c:2310
+#: libnautilus-private/nautilus-file-operations.c:2311
+#: libnautilus-private/nautilus-file-operations.c:2313
 msgid "foo (11th copy).txt"
 msgstr "dosya (11. kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2279
 # libnautilus-private/nautilus-file-operations.c:2281
-#: libnautilus-private/nautilus-file-operations.c:2309
-#: libnautilus-private/nautilus-file-operations.c:2311
+#: libnautilus-private/nautilus-file-operations.c:2312
+#: libnautilus-private/nautilus-file-operations.c:2314
 msgid "foo (12th copy)"
 msgstr "dosya (12. kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2282
-#: libnautilus-private/nautilus-file-operations.c:2310
-#: libnautilus-private/nautilus-file-operations.c:2312
+#: libnautilus-private/nautilus-file-operations.c:2313
+#: libnautilus-private/nautilus-file-operations.c:2315
 msgid "foo (12th copy).txt"
 msgstr "dosya (12. kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2275
-#: libnautilus-private/nautilus-file-operations.c:2313
+#: libnautilus-private/nautilus-file-operations.c:2316
 msgid "foo (110th copy)"
 msgstr "dosya (110. kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2275
-#: libnautilus-private/nautilus-file-operations.c:2313
+#: libnautilus-private/nautilus-file-operations.c:2316
 msgid "foo (111th copy)"
 msgstr "dosya (111. kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2276
-#: libnautilus-private/nautilus-file-operations.c:2314
+#: libnautilus-private/nautilus-file-operations.c:2317
 msgid "foo (110th copy).txt"
 msgstr "dosya (110. kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2276
-#: libnautilus-private/nautilus-file-operations.c:2314
+#: libnautilus-private/nautilus-file-operations.c:2317
 msgid "foo (111th copy).txt"
 msgstr "dosya (111. kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2275
 # libnautilus-private/nautilus-file-operations.c:2277
-#: libnautilus-private/nautilus-file-operations.c:2315
+#: libnautilus-private/nautilus-file-operations.c:2318
 msgid "foo (122nd copy)"
 msgstr "dosya (122. kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2277
 # libnautilus-private/nautilus-file-operations.c:2279
-#: libnautilus-private/nautilus-file-operations.c:2315
-#: libnautilus-private/nautilus-file-operations.c:2317
+#: libnautilus-private/nautilus-file-operations.c:2318
+#: libnautilus-private/nautilus-file-operations.c:2320
 msgid "foo (123rd copy)"
 msgstr "dosya (123. kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2276
 # libnautilus-private/nautilus-file-operations.c:2278
-#: libnautilus-private/nautilus-file-operations.c:2316
+#: libnautilus-private/nautilus-file-operations.c:2319
 msgid "foo (122nd copy).txt"
 msgstr "dosya (122. kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2273
-#: libnautilus-private/nautilus-file-operations.c:2316
-#: libnautilus-private/nautilus-file-operations.c:2318
+#: libnautilus-private/nautilus-file-operations.c:2319
+#: libnautilus-private/nautilus-file-operations.c:2321
 msgid "foo (123rd copy).txt"
 msgstr "dosya (123. kopya).txt"
 
 # libnautilus-private/nautilus-file-operations.c:2279
 # libnautilus-private/nautilus-file-operations.c:2281
-#: libnautilus-private/nautilus-file-operations.c:2317
+#: libnautilus-private/nautilus-file-operations.c:2320
 msgid "foo (124th copy)"
 msgstr "dosya (124. kopya)"
 
 # libnautilus-private/nautilus-file-operations.c:2282
-#: libnautilus-private/nautilus-file-operations.c:2318
+#: libnautilus-private/nautilus-file-operations.c:2321
 msgid "foo (124th copy).txt"
 msgstr "dosya (124. kopya).txt"
 
@@ -3654,36 +2988,36 @@ msgstr "dosya (124. kopya).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2524
+#: libnautilus-private/nautilus-file.c:2521
 msgid "today at 00:00:00 PM"
 msgstr "bugün, 00:00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2242
-#: libnautilus-private/nautilus-file.c:2525
+#: libnautilus-private/nautilus-file.c:2522
 msgid "today at %-I:%M:%S %p"
 msgstr "bugün, %-I:%M %S %p"
 
 # libnautilus-private/nautilus-file.c:2242
-#: libnautilus-private/nautilus-file.c:2527
+#: libnautilus-private/nautilus-file.c:2524
 msgid "today at 00:00 PM"
 msgstr "bugün, 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2242
-#: libnautilus-private/nautilus-file.c:2528
+#: libnautilus-private/nautilus-file.c:2525
 msgid "today at %-I:%M %p"
 msgstr "bugün, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2530
+#: libnautilus-private/nautilus-file.c:2527
 msgid "today, 00:00 PM"
 msgstr "bugün, 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2242
-#: libnautilus-private/nautilus-file.c:2531
+#: libnautilus-private/nautilus-file.c:2528
 msgid "today, %-I:%M %p"
 msgstr "bugün, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2533
-#: libnautilus-private/nautilus-file.c:2534
+#: libnautilus-private/nautilus-file.c:2530
+#: libnautilus-private/nautilus-file.c:2531
 msgid "today"
 msgstr "bugün"
 
@@ -3691,37 +3025,37 @@ msgstr "bugün"
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2543
+#: libnautilus-private/nautilus-file.c:2540
 msgid "yesterday at 00:00:00 PM"
 msgstr "dün, 00:00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2247
-#: libnautilus-private/nautilus-file.c:2544
+#: libnautilus-private/nautilus-file.c:2541
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "dün, %-I:%M:%S %p"
 
 # libnautilus-private/nautilus-file.c:2247
-#: libnautilus-private/nautilus-file.c:2546
+#: libnautilus-private/nautilus-file.c:2543
 msgid "yesterday at 00:00 PM"
 msgstr "dün, 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2247
-#: libnautilus-private/nautilus-file.c:2547
+#: libnautilus-private/nautilus-file.c:2544
 msgid "yesterday at %-I:%M %p"
 msgstr "dün saat %-H:%M'de %p"
 
-#: libnautilus-private/nautilus-file.c:2549
+#: libnautilus-private/nautilus-file.c:2546
 msgid "yesterday, 00:00 PM"
 msgstr "dün, 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2247
-#: libnautilus-private/nautilus-file.c:2550
+#: libnautilus-private/nautilus-file.c:2547
 msgid "yesterday, %-I:%M %p"
 msgstr "dün, %-I:%M %p"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:118
-#: libnautilus-private/nautilus-file.c:2552
-#: libnautilus-private/nautilus-file.c:2553
+#: libnautilus-private/nautilus-file.c:2549
+#: libnautilus-private/nautilus-file.c:2550
 msgid "yesterday"
 msgstr "dün"
 
@@ -3730,112 +3064,112 @@ msgstr "dün"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2564
+#: libnautilus-private/nautilus-file.c:2561
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr ""
 
 # libnautilus-private/nautilus-file.c:2252
-#: libnautilus-private/nautilus-file.c:2565
+#: libnautilus-private/nautilus-file.c:2562
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%-d %B %Y %A, saat %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2567
+#: libnautilus-private/nautilus-file.c:2564
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr ""
 
 # libnautilus-private/nautilus-file.c:2252
-#: libnautilus-private/nautilus-file.c:2568
+#: libnautilus-private/nautilus-file.c:2565
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%-d %b %Y %a, saat %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2570
+#: libnautilus-private/nautilus-file.c:2567
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr ""
 
 # libnautilus-private/nautilus-file.c:2252
-#: libnautilus-private/nautilus-file.c:2571
+#: libnautilus-private/nautilus-file.c:2568
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y %a, saat %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2573
+#: libnautilus-private/nautilus-file.c:2570
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "Eki 00 0000 saat 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2257
-#: libnautilus-private/nautilus-file.c:2574
+#: libnautilus-private/nautilus-file.c:2571
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %m %Y saat %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2576
+#: libnautilus-private/nautilus-file.c:2573
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "Eki 00 0000, 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2257
-#: libnautilus-private/nautilus-file.c:2577
+#: libnautilus-private/nautilus-file.c:2574
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2579
+#: libnautilus-private/nautilus-file.c:2576
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 ÖS"
 
 # libnautilus-private/nautilus-file.c:2257
-#: libnautilus-private/nautilus-file.c:2580
+#: libnautilus-private/nautilus-file.c:2577
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d/%m/%y %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2582
+#: libnautilus-private/nautilus-file.c:2579
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2583
+#: libnautilus-private/nautilus-file.c:2580
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
 # libnautilus-private/nautilus-file.c:3294
-#: libnautilus-private/nautilus-file.c:3865
+#: libnautilus-private/nautilus-file.c:3862
 msgid "0 items"
 msgstr "0 öğe"
 
 # libnautilus-private/nautilus-file.c:3294
-#: libnautilus-private/nautilus-file.c:3865
+#: libnautilus-private/nautilus-file.c:3862
 msgid "0 folders"
 msgstr "0 dosya"
 
 # libnautilus-private/nautilus-file.c:3295
-#: libnautilus-private/nautilus-file.c:3866
+#: libnautilus-private/nautilus-file.c:3863
 msgid "0 files"
 msgstr "0 dosya"
 
 # libnautilus-private/nautilus-file.c:3299
-#: libnautilus-private/nautilus-file.c:3870
+#: libnautilus-private/nautilus-file.c:3867
 msgid "1 item"
 msgstr "1 öğe"
 
 # libnautilus-private/nautilus-file.c:3299
-#: libnautilus-private/nautilus-file.c:3870
+#: libnautilus-private/nautilus-file.c:3867
 msgid "1 folder"
 msgstr "1 dizin"
 
 # libnautilus-private/nautilus-file.c:3300
-#: libnautilus-private/nautilus-file.c:3871
+#: libnautilus-private/nautilus-file.c:3868
 msgid "1 file"
 msgstr "1 dosya"
 
 # libnautilus-private/nautilus-file.c:3303
-#: libnautilus-private/nautilus-file.c:3874
+#: libnautilus-private/nautilus-file.c:3871
 #, c-format
 msgid "%u items"
 msgstr "Toplam %u"
 
 # libnautilus-private/nautilus-file.c:3303
-#: libnautilus-private/nautilus-file.c:3874
+#: libnautilus-private/nautilus-file.c:3871
 #, c-format
 msgid "%u folders"
 msgstr "%u dizin"
 
 # libnautilus-private/nautilus-file.c:3304
-#: libnautilus-private/nautilus-file.c:3875
+#: libnautilus-private/nautilus-file.c:3872
 #, c-format
 msgid "%u files"
 msgstr "%u dosya"
@@ -3843,25 +3177,25 @@ msgstr "%u dosya"
 # libnautilus-private/nautilus-file.c:3604
 # libnautilus-private/nautilus-file.c:3618
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4182
-#: libnautilus-private/nautilus-file.c:4198
+#: libnautilus-private/nautilus-file.c:4179
+#: libnautilus-private/nautilus-file.c:4195
 msgid "? items"
 msgstr "? öğe"
 
 # libnautilus-private/nautilus-file.c:3604
 # libnautilus-private/nautilus-file.c:3618
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4188
+#: libnautilus-private/nautilus-file.c:4185
 msgid "? bytes"
 msgstr "? bayt"
 
 # libnautilus-private/nautilus-file.c:3622
-#: libnautilus-private/nautilus-file.c:4203
+#: libnautilus-private/nautilus-file.c:4200
 msgid "unknown type"
 msgstr "bilinmeyen tip"
 
 # libnautilus-private/nautilus-file.c:3624
-#: libnautilus-private/nautilus-file.c:4206
+#: libnautilus-private/nautilus-file.c:4203
 msgid "unknown MIME type"
 msgstr "bilinmeyen MIME türü"
 
@@ -3869,16 +3203,16 @@ msgstr "bilinmeyen MIME türü"
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4212
+#: libnautilus-private/nautilus-file.c:4209
 msgid "unknown"
 msgstr "bilinmiyor"
 
 # libnautilus-private/nautilus-file.c:3664
-#: libnautilus-private/nautilus-file.c:4244
+#: libnautilus-private/nautilus-file.c:4241
 msgid "program"
 msgstr "program"
 
-#: libnautilus-private/nautilus-file.c:4256
+#: libnautilus-private/nautilus-file.c:4253
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -3887,7 +3221,7 @@ msgstr ""
 "\"x-directory/normal\" için bir açıklama bulunamadı. Bunun anlamı, gnome-vfs."
 "keys dosyasının bulunamaması ya da hatalı bir yerde bulunmasıdır."
 
-#: libnautilus-private/nautilus-file.c:4260
+#: libnautilus-private/nautilus-file.c:4257
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -3897,19 +3231,19 @@ msgstr ""
 "gnome-vfs posta listesine iletin."
 
 # libnautilus-private/nautilus-file.c:3693
-#: libnautilus-private/nautilus-file.c:4274
+#: libnautilus-private/nautilus-file.c:4271
 msgid "link"
 msgstr "bağlantı"
 
 # libnautilus-private/nautilus-file.c:3713
-#: libnautilus-private/nautilus-file.c:4294
+#: libnautilus-private/nautilus-file.c:4291
 msgid "link (broken)"
 msgstr "link (kırık)"
 
 # data/linksets/desktop.xml.h:2 libnautilus-private/nautilus-file.c:4642
 # libnautilus-private/nautilus-trash-directory.c:301
 # src/file-manager/fm-desktop-icon-view.c:66
-#: libnautilus-private/nautilus-file.c:5355
+#: libnautilus-private/nautilus-file.c:5352
 #: libnautilus-private/nautilus-trash-directory.c:383
 #: src/file-manager/fm-desktop-icon-view.c:71
 msgid "Trash"
@@ -3931,78 +3265,94 @@ msgid "_Never"
 msgstr "H_iç bir zaman"
 
 #: libnautilus-private/nautilus-global-preferences.c:108
+#: src/nautilus-file-management-properties.glade.h:13
 #, no-c-format
 msgid "25%"
 msgstr "%%25"
 
 #: libnautilus-private/nautilus-global-preferences.c:110
+#: src/nautilus-file-management-properties.glade.h:19
 #, no-c-format
 msgid "50%"
 msgstr "%%50"
 
 #: libnautilus-private/nautilus-global-preferences.c:112
+#: src/nautilus-file-management-properties.glade.h:22
 #, no-c-format
 msgid "75%"
 msgstr "%%75"
 
 #: libnautilus-private/nautilus-global-preferences.c:114
+#: src/nautilus-file-management-properties.glade.h:7
 #, no-c-format
 msgid "100%"
 msgstr "%%100"
 
 #: libnautilus-private/nautilus-global-preferences.c:116
+#: src/nautilus-file-management-properties.glade.h:9
 #, no-c-format
 msgid "150%"
 msgstr "%%150"
 
 #: libnautilus-private/nautilus-global-preferences.c:118
+#: src/nautilus-file-management-properties.glade.h:11
 #, no-c-format
 msgid "200%"
 msgstr "%%200"
 
 #: libnautilus-private/nautilus-global-preferences.c:120
+#: src/nautilus-file-management-properties.glade.h:16
 #, no-c-format
 msgid "400%"
 msgstr "%%400"
 
 #: libnautilus-private/nautilus-global-preferences.c:125
+#: src/nautilus-file-management-properties.glade.h:4
 msgid "100 K"
 msgstr "100 K"
 
 #: libnautilus-private/nautilus-global-preferences.c:126
+#: src/nautilus-file-management-properties.glade.h:20
 msgid "500 K"
 msgstr "500 K"
 
 # components/hardware/nautilus-hardware-view.c:326
 #: libnautilus-private/nautilus-global-preferences.c:127
+#: src/nautilus-file-management-properties.glade.h:2
 msgid "1 MB"
 msgstr "1 MB"
 
 # components/hardware/nautilus-hardware-view.c:326
 #: libnautilus-private/nautilus-global-preferences.c:128
+#: src/nautilus-file-management-properties.glade.h:14
 msgid "3 MB"
 msgstr "3 MB"
 
 # components/hardware/nautilus-hardware-view.c:326
 #: libnautilus-private/nautilus-global-preferences.c:129
+#: src/nautilus-file-management-properties.glade.h:17
 msgid "5 MB"
 msgstr "5 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:130
+#: src/nautilus-file-management-properties.glade.h:3
 msgid "10 MB"
 msgstr "10 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:131
+#: src/nautilus-file-management-properties.glade.h:5
 msgid "100 MB"
 msgstr "100 MB"
 
 # libnautilus-private/nautilus-global-preferences.c:104
 #: libnautilus-private/nautilus-global-preferences.c:137
+#: src/nautilus-file-management-properties.glade.h:36
 msgid "Activate items with a _single click"
 msgstr "Öğ_eleri tek tıklamayla etkinleştir"
 
 # libnautilus-private/nautilus-global-preferences.c:109
 #: libnautilus-private/nautilus-global-preferences.c:141
+#: src/nautilus-file-management-properties.glade.h:35
 msgid "Activate items with a _double click"
 msgstr "Öğeler_i çift tıklamayla etkinleştir"
 
@@ -4015,6 +3365,7 @@ msgid "Display _files when they are clicked"
 msgstr "Tı_klandığında dosyaların içeriğini göster"
 
 #: libnautilus-private/nautilus-global-preferences.c:157
+#: src/nautilus-file-management-properties.glade.h:69
 msgid "_Ask each time"
 msgstr "_Her zaman sor"
 
@@ -4030,11 +3381,13 @@ msgstr "Dosyaları isme ve dosya özelliklerine göre ara"
 
 # src/file-manager/fm-directory-view.c:2961
 #: libnautilus-private/nautilus-global-preferences.c:176
+#: src/nautilus-file-management-properties.glade.h:51
 msgid "Icon View"
 msgstr "Simge Görünümü"
 
 # src/file-manager/fm-directory-view.c:2961
 #: libnautilus-private/nautilus-global-preferences.c:177
+#: src/nautilus-file-management-properties.glade.h:52
 msgid "List View"
 msgstr "Liste Görünümü"
 
@@ -4046,30 +3399,35 @@ msgstr "Elle"
 # src/file-manager/nautilus-icon-view-ui.xml.h:34
 #: libnautilus-private/nautilus-global-preferences.c:184
 #: libnautilus-private/nautilus-global-preferences.c:193
+#: src/nautilus-file-management-properties.glade.h:41
 msgid "By Name"
 msgstr "İsme Göre"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:35
 #: libnautilus-private/nautilus-global-preferences.c:185
 #: libnautilus-private/nautilus-global-preferences.c:194
+#: src/nautilus-file-management-properties.glade.h:42
 msgid "By Size"
 msgstr "Boya Göre"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:36
 #: libnautilus-private/nautilus-global-preferences.c:186
 #: libnautilus-private/nautilus-global-preferences.c:195
+#: src/nautilus-file-management-properties.glade.h:43
 msgid "By Type"
 msgstr "Türe Göre"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:32
 #: libnautilus-private/nautilus-global-preferences.c:187
 #: libnautilus-private/nautilus-global-preferences.c:196
+#: src/nautilus-file-management-properties.glade.h:40
 msgid "By Modification Date"
 msgstr "Değişim Tarihine Göre"
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:31
 #: libnautilus-private/nautilus-global-preferences.c:188
 #: libnautilus-private/nautilus-global-preferences.c:197
+#: src/nautilus-file-management-properties.glade.h:39
 msgid "By Emblems"
 msgstr "Logoya Göre"
 
@@ -4111,16 +3469,19 @@ msgstr "24"
 
 # src/file-manager/fm-icon-text-window.c:77
 #: libnautilus-private/nautilus-global-preferences.c:215
+#: src/nautilus-file-management-properties.glade.h:82
 msgid "size"
 msgstr "boyut"
 
 # src/file-manager/fm-icon-text-window.c:78
 #: libnautilus-private/nautilus-global-preferences.c:216
+#: src/nautilus-file-management-properties.glade.h:83
 msgid "type"
 msgstr "tür"
 
 # src/file-manager/fm-icon-text-window.c:79
 #: libnautilus-private/nautilus-global-preferences.c:217
+#: src/nautilus-file-management-properties.glade.h:76
 msgid "date modified"
 msgstr "düzenleme tarihi"
 
@@ -4131,36 +3492,43 @@ msgstr "değiştirme tarihi"
 
 # src/file-manager/fm-icon-text-window.c:81
 #: libnautilus-private/nautilus-global-preferences.c:219
+#: src/nautilus-file-management-properties.glade.h:75
 msgid "date accessed"
 msgstr "erişim tarihi"
 
 # src/file-manager/fm-icon-text-window.c:82
 #: libnautilus-private/nautilus-global-preferences.c:220
+#: src/nautilus-file-management-properties.glade.h:80
 msgid "owner"
 msgstr "sahibi"
 
 # src/file-manager/fm-icon-text-window.c:83
 #: libnautilus-private/nautilus-global-preferences.c:221
+#: src/nautilus-file-management-properties.glade.h:77
 msgid "group"
 msgstr "grup"
 
 # src/file-manager/fm-icon-text-window.c:84
 #: libnautilus-private/nautilus-global-preferences.c:222
+#: src/nautilus-file-management-properties.glade.h:81
 msgid "permissions"
 msgstr "erişim hakları"
 
 # src/file-manager/fm-icon-text-window.c:85
 #: libnautilus-private/nautilus-global-preferences.c:223
+#: src/nautilus-file-management-properties.glade.h:79
 msgid "octal permissions"
 msgstr "onaltılı erişim hakları"
 
 # src/file-manager/fm-icon-text-window.c:86
 #: libnautilus-private/nautilus-global-preferences.c:224
+#: src/nautilus-file-management-properties.glade.h:54
 msgid "MIME type"
 msgstr "MIME türü"
 
 # src/file-manager/fm-icon-text-window.c:87
 #: libnautilus-private/nautilus-global-preferences.c:225
+#: src/nautilus-file-management-properties.glade.h:78
 msgid "none"
 msgstr "yok"
 
@@ -4211,70 +3579,70 @@ msgid "whether we are highlighted for a D&D drop"
 msgstr ""
 
 # src/file-manager/nautilus-icon-view-ui.xml.h:12
-#: libnautilus-private/nautilus-icon-container.c:1712
+#: libnautilus-private/nautilus-icon-container.c:1715
 msgid "The selection rectangle"
 msgstr ""
 
 # libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:87
-#: libnautilus-private/nautilus-icon-container.c:3483
+#: libnautilus-private/nautilus-icon-container.c:3490
 #, fuzzy
 msgid "Frame Text"
 msgstr "Metni Yapıştır"
 
-#: libnautilus-private/nautilus-icon-container.c:3484
+#: libnautilus-private/nautilus-icon-container.c:3491
 msgid "Draw a frame around unselected text"
 msgstr ""
 
 # src/nautilus-property-browser.c:1319
-#: libnautilus-private/nautilus-icon-container.c:3490
+#: libnautilus-private/nautilus-icon-container.c:3497
 #, fuzzy
 msgid "Selection Box Color"
 msgstr "Eklenecek rengi belirleyin:"
 
 # src/nautilus-shell-ui.xml.h:29
-#: libnautilus-private/nautilus-icon-container.c:3491
+#: libnautilus-private/nautilus-icon-container.c:3498
 #, fuzzy
 msgid "Color of the selection box"
 msgstr "Başlangıç dizinine gidin"
 
 # src/nautilus-shell-ui.xml.h:92
-#: libnautilus-private/nautilus-icon-container.c:3496
+#: libnautilus-private/nautilus-icon-container.c:3503
 #, fuzzy
 msgid "Selection Box Alpha"
 msgstr "Hepsini Seç"
 
-#: libnautilus-private/nautilus-icon-container.c:3497
+#: libnautilus-private/nautilus-icon-container.c:3504
 msgid "Opacity of the selection box"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:3504
+#: libnautilus-private/nautilus-icon-container.c:3511
 msgid "Highlight Alpha"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:3505
+#: libnautilus-private/nautilus-icon-container.c:3512
 msgid "Opacity of the highlight for selected icons"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:3511
+#: libnautilus-private/nautilus-icon-container.c:3518
 msgid "Light Info Color"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:3512
+#: libnautilus-private/nautilus-icon-container.c:3519
 msgid "Color used for information text against a dark background"
 msgstr ""
 
 # data/browser.xml.h:25
-#: libnautilus-private/nautilus-icon-container.c:3517
+#: libnautilus-private/nautilus-icon-container.c:3524
 #, fuzzy
 msgid "Dark Info Color"
 msgstr "Mantar"
 
-#: libnautilus-private/nautilus-icon-container.c:3518
+#: libnautilus-private/nautilus-icon-container.c:3525
 msgid "Color used for information text against a light background"
 msgstr ""
 
 # libnautilus-private/nautilus-icon-dnd.c:720
-#: libnautilus-private/nautilus-icon-dnd.c:657
+#: libnautilus-private/nautilus-icon-dnd.c:725
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
@@ -4284,7 +3652,7 @@ msgstr ""
 "bıraktığınız yerde durmasını istiyor musunuz?"
 
 # libnautilus-private/nautilus-icon-dnd.c:724
-#: libnautilus-private/nautilus-icon-dnd.c:661
+#: libnautilus-private/nautilus-icon-dnd.c:729
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
@@ -4294,7 +3662,7 @@ msgstr ""
 "bıraktığınız yerde durmasını istiyor musunuz?"
 
 # libnautilus-private/nautilus-icon-dnd.c:730
-#: libnautilus-private/nautilus-icon-dnd.c:667
+#: libnautilus-private/nautilus-icon-dnd.c:735
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
@@ -4303,7 +3671,7 @@ msgstr ""
 "bıraktığınız yerde durmasını istiyor musunuz?"
 
 # libnautilus-private/nautilus-icon-dnd.c:733
-#: libnautilus-private/nautilus-icon-dnd.c:670
+#: libnautilus-private/nautilus-icon-dnd.c:738
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
@@ -4312,12 +3680,12 @@ msgstr ""
 "bıraktığınız yerde durmasını istiyor musunuz?"
 
 # libnautilus-private/nautilus-icon-dnd.c:738
-#: libnautilus-private/nautilus-icon-dnd.c:675
+#: libnautilus-private/nautilus-icon-dnd.c:743
 msgid "Switch to Manual Layout?"
 msgstr "Elle Düzenlemeye Geçeyim Mi?"
 
 # libnautilus-private/nautilus-icon-dnd.c:739
-#: libnautilus-private/nautilus-icon-dnd.c:676
+#: libnautilus-private/nautilus-icon-dnd.c:744
 msgid "Switch"
 msgstr "Geç"
 
@@ -4579,7 +3947,7 @@ msgstr ""
 msgid "Associate Application"
 msgstr "Bir Uygulama Tanımla"
 
-#: libnautilus-private/nautilus-program-choosing.c:494
+#: libnautilus-private/nautilus-program-choosing.c:495
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -4587,12 +3955,12 @@ msgid ""
 msgstr ""
 
 # src/nautilus-window-manage-views.c:1397
-#: libnautilus-private/nautilus-program-choosing.c:499
-#: libnautilus-private/nautilus-program-choosing.c:521
+#: libnautilus-private/nautilus-program-choosing.c:500
+#: libnautilus-private/nautilus-program-choosing.c:522
 msgid "Can't Open Location"
 msgstr "Adres Gösterilemiyor"
 
-#: libnautilus-private/nautilus-program-choosing.c:516
+#: libnautilus-private/nautilus-program-choosing.c:517
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -4601,7 +3969,7 @@ msgid ""
 msgstr ""
 
 # src/file-manager/fm-directory-view.c:3456
-#: libnautilus-private/nautilus-program-choosing.c:669
+#: libnautilus-private/nautilus-program-choosing.c:670
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
@@ -4610,13 +3978,13 @@ msgstr ""
 "çalıştıramazsınız."
 
 # src/file-manager/fm-directory-view.c:3457
-#: libnautilus-private/nautilus-program-choosing.c:671
+#: libnautilus-private/nautilus-program-choosing.c:672
 msgid "Can't execute remote links"
 msgstr "Uzaktaki bağlantılar çalıştırılamaz"
 
 # components/music/nautilus-music-view.c:1709
-#: libnautilus-private/nautilus-program-choosing.c:681
-#: libnautilus-private/nautilus-program-choosing.c:747
+#: libnautilus-private/nautilus-program-choosing.c:682
+#: libnautilus-private/nautilus-program-choosing.c:748
 #, fuzzy
 msgid ""
 "There was an error launching the application.\n"
@@ -4624,24 +3992,24 @@ msgid ""
 "Details: "
 msgstr "%s okunurken bir hata oluştu."
 
-#: libnautilus-private/nautilus-program-choosing.c:685
-#: libnautilus-private/nautilus-program-choosing.c:751
+#: libnautilus-private/nautilus-program-choosing.c:686
+#: libnautilus-private/nautilus-program-choosing.c:752
 msgid "Error launching application"
 msgstr "Uygulamayı çalıştırırken hata"
 
-#: libnautilus-private/nautilus-program-choosing.c:713
+#: libnautilus-private/nautilus-program-choosing.c:714
 msgid ""
 "This drop target only supports local files.\n"
 "\n"
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-choosing.c:716
-#: libnautilus-private/nautilus-program-choosing.c:728
+#: libnautilus-private/nautilus-program-choosing.c:717
+#: libnautilus-private/nautilus-program-choosing.c:729
 msgid "Drop target only supports local files"
 msgstr ""
 
-#: libnautilus-private/nautilus-program-choosing.c:725
+#: libnautilus-private/nautilus-program-choosing.c:726
 msgid ""
 "This drop target only supports local files.\n"
 "\n"
@@ -4989,6 +4357,11 @@ msgstr "%s olarak göster"
 msgid "%s Viewer"
 msgstr "%s İzleyici"
 
+# libnautilus-private/nautilus-file.c:3629
+#: libnautilus-private/nautilus-volume-monitor.c:676
+msgid "Unknown"
+msgstr "Bilinmiyor"
+
 # libnautilus-private/nautilus-volume-monitor.c:1328
 #. Populate table with items we know localized names for.
 #: libnautilus-private/nautilus-volume-monitor.c:803
@@ -5164,6 +4537,16 @@ msgstr "Başlangıç Dizini"
 msgid "View your home folder in the Nautilus file manager"
 msgstr "Nautilus dosya yöneticisinde başlangıç dizinini görün"
 
+#: nautilus-file-management-properties.desktop.in.h:1
+msgid "Change how files are managed"
+msgstr ""
+
+# src/file-manager/fm-properties-window.c:1677
+#: nautilus-file-management-properties.desktop.in.h:2
+#, fuzzy
+msgid "File Management"
+msgstr "Dosya adı"
+
 # src/Nautilus_shell.oaf.in.h:1
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -5275,24 +4658,28 @@ msgstr "Simge olarak göster"
 msgid "View as List"
 msgstr "Liste olarak göster"
 
+#: src/file-manager/egg-recent-vfs-utils.c:90
+msgid " (invalid Unicode)"
+msgstr ""
+
 # src/file-manager/nautilus-directory-view-ui.xml.h:30
 # src/nautilus-sidebar.c:482
-#: src/file-manager/fm-desktop-icon-view.c:784
+#: src/file-manager/fm-desktop-icon-view.c:785
 msgid "Background"
 msgstr "Arkaplan"
 
-#: src/file-manager/fm-desktop-icon-view.c:961
+#: src/file-manager/fm-desktop-icon-view.c:962
 #, c-format
 msgid "Error executing utility program '%s': %s"
 msgstr ""
 
 # src/file-manager/fm-properties-window.c:1733
-#: src/file-manager/fm-desktop-icon-view.c:1292
+#: src/file-manager/fm-desktop-icon-view.c:1293
 msgid "E_ject"
 msgstr "Çı_kart"
 
 # src/file-manager/fm-desktop-icon-view.c:1113
-#: src/file-manager/fm-desktop-icon-view.c:1392
+#: src/file-manager/fm-desktop-icon-view.c:1393
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
 msgid "_Unmount Volume"
 msgstr "_Diski Ayır"
@@ -5306,7 +4693,7 @@ msgstr "_Diski Ayır"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: src/file-manager/fm-desktop-icon-view.c:1516
+#: src/file-manager/fm-desktop-icon-view.c:1517
 #, c-format
 msgid "%s's Home"
 msgstr "%.0s Başlangıç"
@@ -5661,7 +5048,7 @@ msgstr "B_ağlantı Oluştur"
 #. FIXME: We don't use spaces to pad labels!
 #: src/file-manager/fm-directory-view.c:4393
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
-#: src/nautilus-information-panel.c:965
+#: src/nautilus-information-panel.c:1018
 msgid "_Empty Trash"
 msgstr "Çöp _Kutusunu Boşalt"
 
@@ -5995,15 +5382,15 @@ msgstr "S_imgeyi Asıl Boyutlarına Getir"
 msgid "pointing at \"%s\""
 msgstr "\"%s\" gösteriliyor"
 
-#: src/file-manager/fm-icon-view.c:2238
+#: src/file-manager/fm-icon-view.c:2237
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Sürükle ve bırak sadece yerel dosya sistemlerinde destekleniyor."
 
-#: src/file-manager/fm-icon-view.c:2239 src/file-manager/fm-icon-view.c:2257
+#: src/file-manager/fm-icon-view.c:2238 src/file-manager/fm-icon-view.c:2256
 msgid "Drag and Drop error"
 msgstr "Sürükle ve bırak hatası"
 
-#: src/file-manager/fm-icon-view.c:2256
+#: src/file-manager/fm-icon-view.c:2255
 msgid "An invalid drag type was used."
 msgstr ""
 
@@ -6036,8 +5423,8 @@ msgid "Date Modified"
 msgstr "Değişim tarihi"
 
 # src/nautilus-sidebar.c:655
-#: src/file-manager/fm-properties-window.c:313
-#: src/nautilus-information-panel.c:492
+#: src/file-manager/fm-properties-window.c:327
+#: src/nautilus-information-panel.c:506
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
 "image to set a custom icon."
@@ -6046,14 +5433,14 @@ msgstr ""
 "için tek bir resmi sürükleyiniz."
 
 # src/nautilus-sidebar.c:657
-#: src/file-manager/fm-properties-window.c:315
-#: src/nautilus-information-panel.c:494
+#: src/file-manager/fm-properties-window.c:329
+#: src/nautilus-information-panel.c:508
 msgid "More Than One Image"
 msgstr "Birden Fazla Resim"
 
 # src/nautilus-sidebar.c:676
-#: src/file-manager/fm-properties-window.c:324
-#: src/nautilus-information-panel.c:513
+#: src/file-manager/fm-properties-window.c:338
+#: src/nautilus-information-panel.c:527
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
 "custom icons."
@@ -6062,14 +5449,14 @@ msgstr ""
 "kullanılabilir."
 
 # src/nautilus-sidebar.c:678
-#: src/file-manager/fm-properties-window.c:326
-#: src/nautilus-information-panel.c:515
+#: src/file-manager/fm-properties-window.c:340
+#: src/nautilus-information-panel.c:529
 msgid "Local Images Only"
 msgstr "Sadece Yerel Resimler"
 
 # src/nautilus-sidebar.c:683
-#: src/file-manager/fm-properties-window.c:331
-#: src/nautilus-information-panel.c:520
+#: src/file-manager/fm-properties-window.c:345
+#: src/nautilus-information-panel.c:534
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
 "custom icons."
@@ -6078,61 +5465,61 @@ msgstr ""
 "alınan resimler kullanılabilir."
 
 # src/nautilus-sidebar.c:685
-#: src/file-manager/fm-properties-window.c:333
-#: src/nautilus-information-panel.c:522
+#: src/file-manager/fm-properties-window.c:347
+#: src/nautilus-information-panel.c:536
 msgid "Images Only"
 msgstr "Sadece Resimler"
 
 # src/file-manager/fm-properties-window.c:487
-#: src/file-manager/fm-properties-window.c:608
+#: src/file-manager/fm-properties-window.c:622
 #, c-format
 msgid "%s Properties"
 msgstr "%s Özellikleri"
 
 # src/file-manager/fm-properties-window.c:614
-#: src/file-manager/fm-properties-window.c:809
+#: src/file-manager/fm-properties-window.c:870
 msgid "Cancel Group Change?"
 msgstr "Grup Değişimi İptal Edilsin Mi?"
 
 # src/file-manager/fm-properties-window.c:615
-#: src/file-manager/fm-properties-window.c:810
+#: src/file-manager/fm-properties-window.c:871
 msgid "Changing group"
 msgstr "Grup değiştiriliyor"
 
 # src/file-manager/fm-properties-window.c:774
-#: src/file-manager/fm-properties-window.c:971
+#: src/file-manager/fm-properties-window.c:1032
 msgid "Cancel Owner Change?"
 msgstr "Sahip Değişimi İptal Edilsin Mi?"
 
 # src/file-manager/fm-properties-window.c:775
-#: src/file-manager/fm-properties-window.c:972
+#: src/file-manager/fm-properties-window.c:1033
 msgid "Changing owner"
 msgstr "Sahibi Değiştiriliyor"
 
 # src/file-manager/fm-properties-window.c:950
-#: src/file-manager/fm-properties-window.c:1154
+#: src/file-manager/fm-properties-window.c:1215
 msgid "nothing"
 msgstr "hiçbiri"
 
 # src/file-manager/fm-properties-window.c:952
-#: src/file-manager/fm-properties-window.c:1156
+#: src/file-manager/fm-properties-window.c:1217
 msgid "unreadable"
 msgstr "okunamıyor"
 
 # src/file-manager/fm-properties-window.c:961
-#: src/file-manager/fm-properties-window.c:1165
+#: src/file-manager/fm-properties-window.c:1226
 #, c-format
 msgid "1 item, with size %s"
 msgstr "1 dosya, boyutu %s"
 
 # src/file-manager/fm-properties-window.c:963
-#: src/file-manager/fm-properties-window.c:1167
+#: src/file-manager/fm-properties-window.c:1228
 #, c-format
 msgid "%d items, totalling %s"
 msgstr "%d dosya, toplam boyut %s"
 
 # src/file-manager/fm-properties-window.c:969
-#: src/file-manager/fm-properties-window.c:1173
+#: src/file-manager/fm-properties-window.c:1234
 msgid "(some contents unreadable)"
 msgstr "(bazı içerikler okunamadı)"
 
@@ -6142,12 +5529,12 @@ msgstr "(bazı içerikler okunamadı)"
 #. * "Contents:" title to line up with the first line of the 2-line value.
 #. * Maybe there's a better way to do this, but I couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1187
+#: src/file-manager/fm-properties-window.c:1248
 msgid "Contents:"
 msgstr "İçerik:"
 
 # src/file-manager/fm-properties-window.c:1200
-#: src/file-manager/fm-properties-window.c:1540
+#: src/file-manager/fm-properties-window.c:1601
 msgid "Basic"
 msgstr "Temel"
 
@@ -6156,170 +5543,180 @@ msgstr "Temel"
 # src/file-manager/fm-search-list-view.c:334
 # src/nautilus-bookmarks-window.c:164 src/nautilus-search-bar-criterion.c:67
 #. Name label
-#: src/file-manager/fm-properties-window.c:1567
+#: src/file-manager/fm-properties-window.c:1628
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "_Name:"
 msgstr "İ_sim:"
 
 # src/file-manager/fm-properties-window.c:1273
-#: src/file-manager/fm-properties-window.c:1625
+#: src/file-manager/fm-properties-window.c:1686
 msgid "Type:"
 msgstr "Tür:"
 
 # src/file-manager/fm-properties-window.c:1278
-#: src/file-manager/fm-properties-window.c:1630
+#: src/file-manager/fm-properties-window.c:1691
 msgid "Size:"
 msgstr "Büyüklük:"
 
 # src/nautilus-location-bar.c:60
-#: src/file-manager/fm-properties-window.c:1632 src/nautilus-location-bar.c:61
+#: src/file-manager/fm-properties-window.c:1693 src/nautilus-location-bar.c:61
 msgid "Location:"
 msgstr "Adres:"
 
 # src/nautilus-link-set-window.c:191
-#: src/file-manager/fm-properties-window.c:1634
+#: src/file-manager/fm-properties-window.c:1695
 msgid "Link target:"
 msgstr "Bağlantı hedefi:"
 
 # src/file-manager/fm-icon-text-window.c:86
-#: src/file-manager/fm-properties-window.c:1637
+#: src/file-manager/fm-properties-window.c:1698
 msgid "MIME type:"
 msgstr "MIME türü:"
 
 # src/file-manager/fm-properties-window.c:1288
-#: src/file-manager/fm-properties-window.c:1643
+#: src/file-manager/fm-properties-window.c:1704
 msgid "Modified:"
 msgstr "Değişim:"
 
 # src/file-manager/fm-properties-window.c:1289
-#: src/file-manager/fm-properties-window.c:1646
+#: src/file-manager/fm-properties-window.c:1707
 msgid "Accessed:"
 msgstr "Erişim:"
 
 # src/file-manager/fm-properties-window.c:1297
-#: src/file-manager/fm-properties-window.c:1655
+#: src/file-manager/fm-properties-window.c:1716
 msgid "_Select Custom Icon..."
 msgstr "Ö_zel Simge Seç..."
 
 # src/file-manager/fm-properties-window.c:1303
-#: src/file-manager/fm-properties-window.c:1661
+#: src/file-manager/fm-properties-window.c:1722
 msgid "_Remove Custom Icon"
 msgstr "Öz_el Simgeyi Sil"
 
-# data/browser.xml.h:34 src/file-manager/fm-properties-window.c:1376
-#: src/file-manager/fm-properties-window.c:1698
-#: src/file-manager/fm-search-list-view.c:500
-msgid "Emblems"
-msgstr "Logolar"
-
 # src/file-manager/fm-properties-window.c:1725
-#: src/file-manager/fm-properties-window.c:1865
+#: src/file-manager/fm-properties-window.c:1926
 msgid "_Read"
 msgstr "_Okuma"
 
 # src/file-manager/fm-properties-window.c:1729
-#: src/file-manager/fm-properties-window.c:1867
+#: src/file-manager/fm-properties-window.c:1928
 msgid "_Write"
 msgstr "_Yazma"
 
 # src/file-manager/fm-properties-window.c:1733
-#: src/file-manager/fm-properties-window.c:1869
+#: src/file-manager/fm-properties-window.c:1930
 msgid "E_xecute"
 msgstr "Ç_alıştırma"
 
 # src/file-manager/fm-properties-window.c:1636
-#: src/file-manager/fm-properties-window.c:1941
+#: src/file-manager/fm-properties-window.c:2002
 msgid "Set _user ID"
 msgstr "SUID"
 
 # src/file-manager/fm-properties-window.c:1637
-#: src/file-manager/fm-properties-window.c:1946
+#: src/file-manager/fm-properties-window.c:2007
 msgid "Special flags:"
 msgstr "Özel bayraklar:"
 
 # src/file-manager/fm-properties-window.c:1639
-#: src/file-manager/fm-properties-window.c:1949
+#: src/file-manager/fm-properties-window.c:2010
 msgid "Set gro_up ID"
 msgstr "SGID"
 
 # src/file-manager/fm-properties-window.c:1640
-#: src/file-manager/fm-properties-window.c:1951
+#: src/file-manager/fm-properties-window.c:2012
 msgid "_Sticky"
 msgstr "_Yapışık"
 
 # src/file-manager/fm-properties-window.c:1658
-#: src/file-manager/fm-properties-window.c:1979
+#: src/file-manager/fm-properties-window.c:2040
 msgid "Permissions"
 msgstr "Erişim hakları"
 
 # src/file-manager/fm-properties-window.c:1664
-#: src/file-manager/fm-properties-window.c:1985
+#: src/file-manager/fm-properties-window.c:2046
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Dosyanın sahibi olmadığınız için bu ayarları değiştiremezsiniz."
 
 # src/file-manager/fm-properties-window.c:1677
-#: src/file-manager/fm-properties-window.c:1998
+#: src/file-manager/fm-properties-window.c:2059
 msgid "File owner:"
 msgstr "Dosya sahibi:"
 
 # src/file-manager/fm-properties-window.c:1686
-#: src/file-manager/fm-properties-window.c:2009
+#: src/file-manager/fm-properties-window.c:2070
 msgid "_File group:"
 msgstr "_Dosya grubu:"
 
 # src/file-manager/fm-properties-window.c:1686
-#: src/file-manager/fm-properties-window.c:2018
+#: src/file-manager/fm-properties-window.c:2079
 msgid "File group:"
 msgstr "Dosya grubu:"
 
 # src/file-manager/fm-properties-window.c:1704
-#: src/file-manager/fm-properties-window.c:2026
+#: src/file-manager/fm-properties-window.c:2087
 msgid "Owner:"
 msgstr "Sahibi:"
 
 # src/file-manager/fm-properties-window.c:1705
-#: src/file-manager/fm-properties-window.c:2027
+#: src/file-manager/fm-properties-window.c:2088
 msgid "Group:"
 msgstr "Grubu:"
 
 # src/file-manager/fm-properties-window.c:1706
-#: src/file-manager/fm-properties-window.c:2028
+#: src/file-manager/fm-properties-window.c:2089
 msgid "Others:"
 msgstr "Diğerleri:"
 
 # components/text/Nautilus_View_text.oaf.in.h:3
-#: src/file-manager/fm-properties-window.c:2091
+#: src/file-manager/fm-properties-window.c:2152
 msgid "Text view:"
 msgstr "Metin görünüm:"
 
 # src/file-manager/fm-properties-window.c:1791
-#: src/file-manager/fm-properties-window.c:2092
+#: src/file-manager/fm-properties-window.c:2153
 msgid "Number view:"
 msgstr "Sayısal görünüm:"
 
 # src/file-manager/fm-properties-window.c:1792
-#: src/file-manager/fm-properties-window.c:2093
+#: src/file-manager/fm-properties-window.c:2154
 msgid "Last changed:"
 msgstr "Son değiştirme:"
 
 # src/file-manager/fm-properties-window.c:1796
-#: src/file-manager/fm-properties-window.c:2097
+#: src/file-manager/fm-properties-window.c:2158
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "\"%s\"nin erişim hakları belirlenemedi."
 
+# components/music/nautilus-music-view.c:1709
+#: src/file-manager/fm-properties-window.c:2347
+#: src/nautilus-bookmarks-window.c:138 src/nautilus-preferences-dialog.c:428
+#: src/nautilus-property-browser.c:1438 src/nautilus-window-menus.c:711
+#, fuzzy, c-format
+msgid ""
+"There was an error displaying help: \n"
+"%s"
+msgstr "%s okunurken bir hata oluştu."
+
+# src/nautilus-theme-selector.c:397
+#: src/file-manager/fm-properties-window.c:2349
+#, fuzzy
+msgid "Couldn't show help"
+msgstr "Tema eklenemiyor"
+
 # src/file-manager/fm-properties-window.c:2043
-#: src/file-manager/fm-properties-window.c:2403
+#: src/file-manager/fm-properties-window.c:2611
 msgid "Cancel Showing Properties Window?"
 msgstr "Özellikler Penceresi Kapatılsın Mı?"
 
 # src/file-manager/fm-properties-window.c:2044
-#: src/file-manager/fm-properties-window.c:2404
+#: src/file-manager/fm-properties-window.c:2612
 msgid "Creating Properties window"
 msgstr "Özellikler Penceresi Oluşturuluyor"
 
 # src/nautilus-property-browser.c:1319
-#: src/file-manager/fm-properties-window.c:2498
+#: src/file-manager/fm-properties-window.c:2706
 msgid "Select an icon:"
 msgstr "Bir simge seçin:"
 
@@ -6645,7 +6042,7 @@ msgstr "Seçilen aygıtı ayır"
 #. add the reset background item, possibly disabled
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:17
 #: src/file-manager/nautilus-directory-view-ui.xml.h:34
-#: src/nautilus-information-panel.c:329
+#: src/nautilus-information-panel.c:349
 msgid "Use _Default Background"
 msgstr "Ö_ntanımlı Arkaplanı Kullan"
 
@@ -7104,15 +6501,6 @@ msgid ""
 "restarting Nautilus may help fix the problem."
 msgstr ""
 
-# components/music/nautilus-music-view.c:1709
-#: src/nautilus-bookmarks-window.c:138 src/nautilus-preferences-dialog.c:428
-#: src/nautilus-property-browser.c:1438 src/nautilus-window-menus.c:702
-#, fuzzy, c-format
-msgid ""
-"There was an error displaying help: \n"
-"%s"
-msgstr "%s okunurken bir hata oluştu."
-
 #: src/nautilus-bookmarks-window.c:171
 msgid "No bookmarks defined"
 msgstr "Yer imi tanımlanmamış"
@@ -7149,6 +6537,220 @@ msgstr "Daha Az Seçenek"
 msgid "Find Them!"
 msgstr "Hepsini Bul!"
 
+#: src/nautilus-file-management-properties.glade.h:1
+msgid "    "
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:23
+msgid "<span weight=\"bold\">Behaviour</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:24
+msgid "<span weight=\"bold\">Default View</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:25
+#, fuzzy
+msgid "<span weight=\"bold\">Executable Text Files</span>"
+msgstr "Çalıştırılabilir Metin Dosyaları"
+
+#: src/nautilus-file-management-properties.glade.h:26
+msgid "<span weight=\"bold\">Folders</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:27
+msgid "<span weight=\"bold\">Icon Captions</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:28
+msgid "<span weight=\"bold\">Icon View Defaults</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:29
+msgid "<span weight=\"bold\">Image Files</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:30
+msgid "<span weight=\"bold\">List View Defaults</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:31
+msgid "<span weight=\"bold\">Sound Files</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:32
+msgid "<span weight=\"bold\">Text Files</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:33
+msgid "<span weight=\"bold\">Trash</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:34
+msgid "<span weight=\"bold\">Tree View Defaults</span>"
+msgstr ""
+
+# libnautilus-private/nautilus-global-preferences.c:886
+#: src/nautilus-file-management-properties.glade.h:37
+#, fuzzy
+msgid "Always"
+msgstr "_Her zaman"
+
+# libnautilus-private/nautilus-global-preferences.c:96
+#: src/nautilus-file-management-properties.glade.h:38
+#, fuzzy
+msgid "Ask before _emptying the Trash or deleting files"
+msgstr "Çö_p kutusunu boşaltmadan, ya da dosyaları silmeden önce sor"
+
+# src/file-manager/fm-icon-text-window.c:271
+#: src/nautilus-file-management-properties.glade.h:44
+#, fuzzy
+msgid ""
+"Choose the order of information to appear beneath icon names. More "
+"informations appear as you zoom in closer."
+msgstr ""
+"Simge altındaki bilgilerin sırasını seçin. Simgelere yaklaştıkça\n"
+"görüntülenecek bilgi miktarı artacaktır."
+
+#: src/nautilus-file-management-properties.glade.h:45
+#: src/nautilus-preferences-dialog.c:217
+msgid "Default _zoom level:"
+msgstr "Ön_tanımlı odaklama oranı:"
+
+#: src/nautilus-file-management-properties.glade.h:46
+#, fuzzy
+msgid "E_xecute scripts when they are clicked"
+msgstr "_Tıklandığında dosyaları çalıştır"
+
+# components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:4
+#: src/nautilus-file-management-properties.glade.h:47
+#, fuzzy
+msgid "File Management Preferences"
+msgstr "Tercihleri Yüklemek İçin Görünümü Yenileyin"
+
+# libnautilus-private/nautilus-file-operations.c:1994
+#: src/nautilus-file-management-properties.glade.h:48
+#, fuzzy
+msgid "Files and Folder"
+msgstr "isimsiz dizin"
+
+#: src/nautilus-file-management-properties.glade.h:49
+#, fuzzy
+msgid "I_nclude a Delete command that bypasses Trash"
+msgstr "Çö_pü kullanmayacak bir Silme komutunu içer"
+
+# src/file-manager/fm-icon-text-window.c:263
+#: src/nautilus-file-management-properties.glade.h:50
+#: src/nautilus-preferences-dialog.c:159 src/nautilus-preferences-dialog.c:384
+msgid "Icon Captions"
+msgstr "Simge Metinleri"
+
+# libnautilus-private/nautilus-global-preferences.c:890
+#: src/nautilus-file-management-properties.glade.h:53
+#, fuzzy
+msgid "Local Files Only"
+msgstr "_Sadece Yerel Dosyalar"
+
+# libnautilus-private/nautilus-global-preferences.c:894
+#: src/nautilus-file-management-properties.glade.h:55
+#, fuzzy
+msgid "Never"
+msgstr "H_iç bir zaman"
+
+# libnautilus-private/nautilus-global-preferences.c:616
+#: src/nautilus-file-management-properties.glade.h:57
+#, fuzzy
+msgid "Preview _sound files:"
+msgstr "Ses Dosyaları Önizleme"
+
+#: src/nautilus-file-management-properties.glade.h:58
+#, fuzzy
+msgid "Show _number of items:"
+msgstr "Dizinlerdeki Öğe Sayısını Göster"
+
+#: src/nautilus-file-management-properties.glade.h:59
+msgid "Show _only folders"
+msgstr ""
+
+# libnautilus-private/nautilus-global-preferences.c:609
+#: src/nautilus-file-management-properties.glade.h:60
+#, fuzzy
+msgid "Show _thumbnails:"
+msgstr "Resim Dosyaları İçin Küçükleri Göster"
+
+#: src/nautilus-file-management-properties.glade.h:61
+msgid "Show hidden and _backup files"
+msgstr ""
+
+# libnautilus-private/nautilus-global-preferences.c:602
+#: src/nautilus-file-management-properties.glade.h:62
+#, fuzzy
+msgid "Show te_xt in icons:"
+msgstr "Simgelerde Metni Göster"
+
+#: src/nautilus-file-management-properties.glade.h:63
+#, fuzzy
+msgid "Sort _folders before files"
+msgstr "Dizinleri dosyalardan önce göster"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:19
+#: src/nautilus-file-management-properties.glade.h:64
+#: src/nautilus-preferences-dialog.c:212
+#, fuzzy
+msgid "Sort in _reverse"
+msgstr "Ters sırala"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:21
+#: src/nautilus-file-management-properties.glade.h:65
+#, fuzzy
+msgid "Use _manual layout"
+msgstr "_Daha sıkışık görünüm kullan"
+
+#: src/nautilus-file-management-properties.glade.h:66
+#, fuzzy
+msgid "View _new folders using:"
+msgstr "Yeni dizinleri bunu kullanarak görüntüle:"
+
+# src/nautilus-shell-ui.xml.h:97
+#: src/nautilus-file-management-properties.glade.h:67
+#: src/nautilus-preferences-dialog.c:379
+#, fuzzy
+msgid "Views"
+msgstr "_Bakış"
+
+#: src/nautilus-file-management-properties.glade.h:68
+#, fuzzy
+msgid "_Arrange Items:"
+msgstr "Öğ_eleri Düzenle"
+
+#: src/nautilus-file-management-properties.glade.h:70
+#: src/nautilus-preferences-dialog.c:193
+msgid "_Default zoom level:"
+msgstr "Ö_ntanımlı odaklama oranı:"
+
+#: src/nautilus-file-management-properties.glade.h:71
+#, fuzzy
+msgid "_Only for files smaller than:"
+msgstr "Daha büyük dosyaların küçüklerini oluşturma:"
+
+# libnautilus-private/nautilus-global-preferences.c:92
+#: src/nautilus-file-management-properties.glade.h:72
+#: src/nautilus-preferences-dialog.c:74
+#, fuzzy
+msgid "_Open each file or folder in a new window"
+msgstr "_Her dizin ya da dosyayı ayrı pencerede aç"
+
+# src/file-manager/nautilus-icon-view-ui.xml.h:21
+#: src/nautilus-file-management-properties.glade.h:73
+#, fuzzy
+msgid "_Use compact layout"
+msgstr "_Daha sıkışık görünüm kullan"
+
+#: src/nautilus-file-management-properties.glade.h:74
+#, fuzzy
+msgid "_View scripts when they are clicked"
+msgstr "_Tıklandığında dosyaları çalıştır"
+
 # src/nautilus-first-time-druid.c:160
 #: src/nautilus-first-time-druid.c:40
 msgid ""
@@ -7159,14 +6761,14 @@ msgid ""
 msgstr ""
 
 # src/nautilus-sidebar.c:1237
-#: src/nautilus-information-panel.c:829
+#: src/nautilus-information-panel.c:882
 #, c-format
 msgid "Open with %s"
 msgstr "%s ile aç"
 
 # src/nautilus-sidebar.c:1271
 #. Catch-all button after all the others.
-#: src/nautilus-information-panel.c:858
+#: src/nautilus-information-panel.c:911
 msgid "Open with..."
 msgstr "Birlikte aç..."
 
@@ -7226,7 +6828,7 @@ msgstr "Nautilus'u yeniden başlat"
 # src/nautilus-window-menus.c:552
 #. Set initial window title
 #: src/nautilus-main.c:184 src/nautilus-window-manage-views.c:227
-#: src/nautilus-window-menus.c:662 src/nautilus-window.c:192
+#: src/nautilus-window-menus.c:671 src/nautilus-window.c:192
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -7264,12 +6866,6 @@ msgstr "Temalar"
 #: src/nautilus-preferences-dialog.c:72
 msgid "New Window Behavior"
 msgstr "Yeni Pencere Davranışı"
-
-# libnautilus-private/nautilus-global-preferences.c:92
-#: src/nautilus-preferences-dialog.c:74
-#, fuzzy
-msgid "_Open each file or folder in a new window"
-msgstr "_Her dizin ya da dosyayı ayrı pencerede aç"
 
 # src/nautilus-shell-ui.xml.h:39
 #: src/nautilus-preferences-dialog.c:77 src/nautilus-preferences-dialog.c:82
@@ -7368,11 +6964,6 @@ msgstr "Sırala"
 msgid "Fo_lders before files"
 msgstr "Dizinleri dosyalardan önce göster"
 
-# src/file-manager/fm-icon-text-window.c:263
-#: src/nautilus-preferences-dialog.c:159 src/nautilus-preferences-dialog.c:384
-msgid "Icon Captions"
-msgstr "Simge Metinleri"
-
 # src/file-manager/fm-icon-text-window.c:271
 #: src/nautilus-preferences-dialog.c:161
 msgid ""
@@ -7410,10 +7001,6 @@ msgstr "Öğ_eleri Düzenle"
 msgid "_Sort in reverse"
 msgstr "_Ters sırala"
 
-#: src/nautilus-preferences-dialog.c:193
-msgid "_Default zoom level:"
-msgstr "Ö_ntanımlı odaklama oranı:"
-
 # src/file-manager/nautilus-icon-view-ui.xml.h:21
 #: src/nautilus-preferences-dialog.c:199
 #, fuzzy
@@ -7431,16 +7018,6 @@ msgstr "Öntanımlı Liste Görünüm Özellikleri"
 #, fuzzy
 msgid "Arrange _items:"
 msgstr "Öğ_eleri düzenleme yöntemi:"
-
-# src/file-manager/nautilus-icon-view-ui.xml.h:19
-#: src/nautilus-preferences-dialog.c:212
-#, fuzzy
-msgid "Sort in _reverse"
-msgstr "Ters sırala"
-
-#: src/nautilus-preferences-dialog.c:217
-msgid "Default _zoom level:"
-msgstr "Ön_tanımlı odaklama oranı:"
 
 # libnautilus-private/nautilus-global-preferences.c:639
 #: src/nautilus-preferences-dialog.c:232
@@ -7587,12 +7164,6 @@ msgstr "Güncelleme Sıklığı"
 #, fuzzy
 msgid "_Update frequency in minutes"
 msgstr "Güncelleme sıklığı (dakika)"
-
-# src/nautilus-shell-ui.xml.h:97
-#: src/nautilus-preferences-dialog.c:379
-#, fuzzy
-msgid "Views"
-msgstr "_Bakış"
 
 # libnautilus-private/nautilus-global-preferences.c:554
 #: src/nautilus-preferences-dialog.c:380
@@ -7756,6 +7327,15 @@ msgstr "Desen kurulamadı"
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Sıfırlama resminin üzerine alamazsınız."
 
+# components/music/nautilus-music-view.c:686
+# src/file-manager/fm-properties-window.c:2140
+# src/nautilus-property-browser.c:986 src/nautilus-property-browser.c:1122
+# src/nautilus-property-browser.c:1135 src/nautilus-property-browser.c:1403
+#: src/nautilus-property-browser.c:1110 src/nautilus-property-browser.c:1313
+#: src/nautilus-property-browser.c:1329
+msgid "Not an Image"
+msgstr "Resim Dosyası Değil"
+
 # src/nautilus-property-browser.c:1163
 #: src/nautilus-property-browser.c:1141
 #, c-format
@@ -7793,77 +7373,77 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "`%s' bir resim dosyası değil!"
 
 # src/nautilus-property-browser.c:2169
-#: src/nautilus-property-browser.c:2033
+#: src/nautilus-property-browser.c:2035
 msgid "Select A Category:"
 msgstr "Bir Kategori Seçin:"
 
 # src/nautilus-property-browser.c:2177 src/nautilus-theme-selector.c:503
-#: src/nautilus-property-browser.c:2042
+#: src/nautilus-property-browser.c:2044
 #, fuzzy
 msgid "C_ancel Remove"
 msgstr "Silmeyi İptal Et"
 
 # src/nautilus-property-browser.c:2181
-#: src/nautilus-property-browser.c:2048
+#: src/nautilus-property-browser.c:2050
 msgid "_Add a New Pattern..."
 msgstr "_Yeni Bir Desen Ekle..."
 
 # src/nautilus-property-browser.c:2184
-#: src/nautilus-property-browser.c:2051
+#: src/nautilus-property-browser.c:2053
 #, fuzzy
 msgid "_Add a New Color..."
 msgstr "Yeni Bir Renk Ekle..."
 
 # src/nautilus-property-browser.c:2187
-#: src/nautilus-property-browser.c:2054
+#: src/nautilus-property-browser.c:2056
 #, fuzzy
 msgid "_Add a New Emblem..."
 msgstr "Yeni Bir Logo Ekle..."
 
 # src/nautilus-property-browser.c:2210
-#: src/nautilus-property-browser.c:2077
+#: src/nautilus-property-browser.c:2079
 msgid "Click on a pattern to remove it"
 msgstr "Silmek için bir desenin üzerine tıklayın"
 
 # src/nautilus-property-browser.c:2213
-#: src/nautilus-property-browser.c:2080
+#: src/nautilus-property-browser.c:2082
 msgid "Click on a color to remove it"
 msgstr "Silmek için bir rengin üzerine tıklayın"
 
 # src/nautilus-property-browser.c:2216
-#: src/nautilus-property-browser.c:2083
+#: src/nautilus-property-browser.c:2085
 msgid "Click on an emblem to remove it"
 msgstr "Silmek için bir logonun üzerine tıklayın"
 
 # src/nautilus-property-browser.c:2225
-#: src/nautilus-property-browser.c:2092
+#: src/nautilus-property-browser.c:2094
 msgid "Patterns:"
 msgstr "Desenler:"
 
 # src/nautilus-property-browser.c:2228
-#: src/nautilus-property-browser.c:2095
+#: src/nautilus-property-browser.c:2097
 msgid "Colors:"
 msgstr "Renkler:"
 
 # src/nautilus-property-browser.c:2231
-#: src/nautilus-property-browser.c:2098
+#: src/nautilus-property-browser.c:2100
 msgid "Emblems:"
 msgstr "Logolar:"
 
 # src/nautilus-property-browser.c:2249
-#: src/nautilus-property-browser.c:2118
+#: src/nautilus-property-browser.c:2120
 #, fuzzy
 msgid "_Remove a Pattern..."
 msgstr "Bir Deseni Sil..."
 
 # src/nautilus-property-browser.c:2252
-#: src/nautilus-property-browser.c:2121
+#: src/nautilus-property-browser.c:2123
 #, fuzzy
 msgid "_Remove a Color..."
 msgstr "Bir Rengi Sil..."
 
 # src/nautilus-property-browser.c:2255
-#: src/nautilus-property-browser.c:2124
+#: src/nautilus-property-browser.c:2126
 #, fuzzy
 msgid "_Remove an Emblem..."
 msgstr "Bir Logoyu Sil..."
@@ -8028,6 +7608,41 @@ msgstr " "
 #: src/nautilus-search-bar-criterion.c:159
 msgid "[File owner] is not [root]"
 msgstr "değil"
+
+#: src/nautilus-server-connect.c:127
+msgid ""
+"Couldn't execute nautilus\n"
+"Make sure nautilus is in your path and correctly installed"
+msgstr ""
+
+#: src/nautilus-server-connect.c:387
+#, c-format
+msgid ""
+"Couldn't connect to URI %s\n"
+"Please make sure that the address is correct and alternatively, type in this "
+"address in the file manager directly"
+msgstr ""
+
+#: src/nautilus-server-connect.c:452
+msgid ""
+"Glade file for the connect to server program is missing.\n"
+"Please check your installation of nautilus"
+msgstr ""
+
+#: src/nautilus-server-connect.desktop.in.h:1
+msgid "Add a new server to your Network Servers and connect to it"
+msgstr ""
+
+# components/music/mpg123.c:47
+#: src/nautilus-server-connect.desktop.in.h:2
+#: src/nautilus-server-connect.glade.h:2
+#, fuzzy
+msgid "New Server"
+msgstr "New Wave"
+
+#: src/nautilus-server-connect.glade.h:1
+msgid "*"
+msgstr ""
 
 # src/nautilus-shell-ui.xml.h:4
 #: src/nautilus-shell-ui.xml.h:1
@@ -8743,7 +8358,7 @@ msgstr "Geçmiş Silinsin mi?"
 #. * symbol characters -- do not translate the company
 #. * name, please.
 #.
-#: src/nautilus-window-menus.c:652
+#: src/nautilus-window-menus.c:661
 msgid "Copyright (C) 1999-2001 Eazel, Inc."
 msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 
@@ -8752,21 +8367,21 @@ msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window-menus.c:659 src/nautilus-window-menus.c:660
+#: src/nautilus-window-menus.c:668 src/nautilus-window-menus.c:669
 msgid "Translator Credits"
 msgstr ""
 "Çeviri: Görkem Çetin , Ömer Fadıl USTA , Fatih Demir\n"
 "gorkem@gelecek.com.tr , omer_fad@hotmail.com , kabalak@gmx.net"
 
 # src/nautilus-window-menus.c:562
-#: src/nautilus-window-menus.c:665
+#: src/nautilus-window-menus.c:674
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
 msgstr ""
 
 # src/nautilus-window-menus.c:716
-#: src/nautilus-window-menus.c:742
+#: src/nautilus-window-menus.c:751
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -8776,28 +8391,28 @@ msgstr ""
 "sileyim mi?"
 
 # src/nautilus-window-menus.c:720
-#: src/nautilus-window-menus.c:746
+#: src/nautilus-window-menus.c:755
 msgid "Bookmark for Nonexistent Location"
 msgstr "Bulunmayan Adres İçin Yer İmi"
 
 # src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:721
-#: src/nautilus-window-menus.c:747
+#: src/nautilus-window-menus.c:756
 msgid "Remove"
 msgstr "Sil"
 
 # src/nautilus-window-menus.c:734
-#: src/nautilus-window-menus.c:758
+#: src/nautilus-window-menus.c:767
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "\"%s\" için yer bilgisi bulunamadı."
 
 # src/nautilus-window-menus.c:735
-#: src/nautilus-window-menus.c:759
+#: src/nautilus-window-menus.c:768
 msgid "Go to Nonexistent Location"
 msgstr "Bulunmayan Adrese Git"
 
 # src/nautilus-window-menus.c:802
-#: src/nautilus-window-menus.c:828
+#: src/nautilus-window-menus.c:837
 msgid "Go to the location specified by this bookmark"
 msgstr "Bu yer imi tarafından belirtilen konuma git"
 
@@ -8823,21 +8438,21 @@ msgstr "Bu konumu \"%s\" ile göster"
 
 # components/help/hyperbola-filefmt.c:470
 # components/help/hyperbola-filefmt.c:758 data/linksets/apps.xml.h:1
-#: src/nautilus-window.c:2232
+#: src/nautilus-window.c:2240
 msgid "Application ID"
 msgstr "Uygulama IDsi"
 
-#: src/nautilus-window.c:2233
+#: src/nautilus-window.c:2241
 msgid "The application ID of the window."
 msgstr ""
 
 # components/help/hyperbola-filefmt.c:470
 # components/help/hyperbola-filefmt.c:758 data/linksets/apps.xml.h:1
-#: src/nautilus-window.c:2239
+#: src/nautilus-window.c:2247
 msgid "Application"
 msgstr "Uygulama"
 
-#: src/nautilus-window.c:2240
+#: src/nautilus-window.c:2248
 msgid "The NautilusApplication associated with this window."
 msgstr ""
 
@@ -8871,30 +8486,732 @@ msgstr "Odaklan"
 msgid "Set the zoom level of the current view"
 msgstr ""
 
-# src/nautilus-property-browser.c:1420
-#~ msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
-#~ msgstr ""
-#~ "Üzgünüm, ancak yeni logo için boş olmayan bir anahtar kelime girmelisiniz."
+# libnautilus-private/nautilus-global-preferences.c:894
+#: src/network-scheme.desktop.in.h:1
+#, fuzzy
+msgid "Network Servers"
+msgstr "Netraverse"
 
-# src/nautilus-property-browser.c:1421 src/nautilus-property-browser.c:1424
-# src/nautilus-property-browser.c:1428 src/nautilus-property-browser.c:1457
-#~ msgid "Couldn't install emblem"
-#~ msgstr "Logolar kurulamadı"
+# src/Nautilus_shell.oaf.in.h:1
+#: src/network-scheme.desktop.in.h:2
+#, fuzzy
+msgid "View your network servers in the Nautilus file manager"
+msgstr "Nautilus dosya yöneticisinde başlangıç dizinini görün"
 
-# src/nautilus-property-browser.c:1423
+# components/music/Nautilus_View_music.oaf.in.h:1
+#~ msgid "Factory for music view"
+#~ msgstr "Müzik görüntüsü için mimari"
+
+# components/music/Nautilus_View_music.oaf.in.h:2
+#~ msgid "Music"
+#~ msgstr "Müzik"
+
+# components/music/Nautilus_View_music.oaf.in.h:3
+#~ msgid "Music Viewer"
+#~ msgstr "Müzik Görüntüleyici"
+
+# components/music/Nautilus_View_music.oaf.in.h:3
+#~ msgid "Music view"
+#~ msgstr "Müzik görüntüsü"
+
+# components/music/Nautilus_View_music.oaf.in.h:4
+#~ msgid "Music view factory"
+#~ msgstr "Müzik görünüm mimarisi"
+
+# libnautilus-private/nautilus-program-chooser.c:186
+# src/nautilus-window.c:860 src/nautilus-window.c:1096
+#~ msgid "View as Music"
+#~ msgstr "Müzik olarak göster"
+
+# components/music/mpg123.c:29
+#~ msgid "Blues"
+#~ msgstr "Blues"
+
+# components/music/mpg123.c:29
+#~ msgid "Classic Rock"
+#~ msgstr "Klasik Rock"
+
+# components/music/mpg123.c:29
+#~ msgid "Country"
+#~ msgstr "Country"
+
+# components/music/mpg123.c:29
+#~ msgid "Dance"
+#~ msgstr "Dans"
+
+# components/music/mpg123.c:30
+#~ msgid "Disco"
+#~ msgstr "Disko"
+
+# components/music/mpg123.c:30
+#~ msgid "Funk"
+#~ msgstr "Funk"
+
+# components/music/mpg123.c:30
+#~ msgid "Grunge"
+#~ msgstr "Grunge"
+
+# components/music/mpg123.c:30
+#~ msgid "Hip-Hop"
+#~ msgstr "Hip-Hop"
+
+# components/music/mpg123.c:31
+#~ msgid "Jazz"
+#~ msgstr "Jaz"
+
+# components/music/mpg123.c:31
+#~ msgid "Metal"
+#~ msgstr "Metal"
+
+# components/music/mpg123.c:31
+#~ msgid "New Age"
+#~ msgstr "New Age"
+
+# components/music/mpg123.c:31
+#~ msgid "Oldies"
+#~ msgstr "Eskiler"
+
+#~ msgid "Other"
+#~ msgstr "Diğer"
+
+# components/music/mpg123.c:32
+#~ msgid "Pop"
+#~ msgstr "Pop"
+
+# components/music/mpg123.c:32
+#~ msgid "R&B"
+#~ msgstr "R&B"
+
+# components/music/mpg123.c:32
+#~ msgid "Rap"
+#~ msgstr "Rap"
+
+# components/music/mpg123.c:32
+#~ msgid "Reggae"
+#~ msgstr "Reggae"
+
+# components/music/mpg123.c:33
+#~ msgid "Rock"
+#~ msgstr "Rock"
+
+# components/music/mpg123.c:33
+#~ msgid "Techno"
+#~ msgstr "Tekno"
+
+# components/music/mpg123.c:33
+#~ msgid "Industrial"
+#~ msgstr "Endüstri"
+
+# components/music/mpg123.c:33
+#~ msgid "Alternative"
+#~ msgstr "Alternatif"
+
+# components/music/mpg123.c:34
+#~ msgid "Ska"
+#~ msgstr "Ska"
+
+# components/music/mpg123.c:34
+#~ msgid "Death Metal"
+#~ msgstr "Death Metal"
+
+# components/music/mpg123.c:34
+#~ msgid "Pranks"
+#~ msgstr "Pranks"
+
+# components/music/mpg123.c:34
+#~ msgid "Soundtrack"
+#~ msgstr "Soundtrack"
+
+# components/music/mpg123.c:35
+#~ msgid "Euro-Techno"
+#~ msgstr "Euro-Techno"
+
+# components/music/mpg123.c:35
+#~ msgid "Ambient"
+#~ msgstr "Ambient"
+
+# components/music/mpg123.c:35
+#~ msgid "Trip-Hop"
+#~ msgstr "Trip-Hop"
+
+# components/music/mpg123.c:35
+#~ msgid "Vocal"
+#~ msgstr "Vocal"
+
+# components/music/mpg123.c:36
+#~ msgid "Jazz+Funk"
+#~ msgstr "Jaz+Funk"
+
+# components/music/mpg123.c:36
+#~ msgid "Fusion"
+#~ msgstr "Fusion"
+
+# components/music/mpg123.c:36
+#~ msgid "Trance"
+#~ msgstr "Trance"
+
+# components/music/mpg123.c:36
+#~ msgid "Classical"
+#~ msgstr "Klasik"
+
+# components/music/mpg123.c:37
+#~ msgid "Instrumental"
+#~ msgstr "Enstrümantal"
+
+# components/music/mpg123.c:37
+#~ msgid "Acid"
+#~ msgstr "Acid"
+
+# components/music/mpg123.c:37
+#~ msgid "House"
+#~ msgstr "House"
+
+# components/music/mpg123.c:37
+#~ msgid "Game"
+#~ msgstr "Oyun"
+
+# components/music/mpg123.c:38
+#~ msgid "Sound Clip"
+#~ msgstr "Ses Klibi"
+
+# components/music/mpg123.c:38
+#~ msgid "Gospel"
+#~ msgstr "Gospel"
+
+# components/music/mpg123.c:38
+#~ msgid "Noise"
+#~ msgstr "Gürültü"
+
+# components/music/mpg123.c:38
+#~ msgid "Alt"
+#~ msgstr "Alt"
+
+# components/music/mpg123.c:39
+#~ msgid "Bass"
+#~ msgstr "Bas"
+
+# components/music/mpg123.c:39
+#~ msgid "Soul"
+#~ msgstr "Soul"
+
+# components/music/mpg123.c:39
+#~ msgid "Punk"
+#~ msgstr "Punk"
+
+# components/music/mpg123.c:39
+#~ msgid "Space"
+#~ msgstr "Space"
+
+# components/music/mpg123.c:40
+#~ msgid "Meditative"
+#~ msgstr "Mediative"
+
+# components/music/mpg123.c:40
+#~ msgid "Instrumental Pop"
+#~ msgstr "Enstrümantal Pop"
+
+# components/music/mpg123.c:41
+#~ msgid "Instrumental Rock"
+#~ msgstr "Enstrümantal Rock"
+
+# components/music/mpg123.c:41
+#~ msgid "Ethnic"
+#~ msgstr "Etnik"
+
+# components/music/mpg123.c:41
+#~ msgid "Gothic"
+#~ msgstr "Gotik"
+
+# components/music/mpg123.c:42
+#~ msgid "Darkwave"
+#~ msgstr "Darkwave"
+
+# components/music/mpg123.c:42
+#~ msgid "Techno-Industrial"
+#~ msgstr "Techno-Industrial"
+
+# components/music/mpg123.c:42
+#~ msgid "Electronic"
+#~ msgstr "Elektronik"
+
+# components/music/mpg123.c:43
+#~ msgid "Pop-Folk"
+#~ msgstr "Pop-Folk"
+
+# components/music/mpg123.c:43
+#~ msgid "Eurodance"
+#~ msgstr "Eurodance"
+
+# components/music/mpg123.c:43
+#~ msgid "Dream"
+#~ msgstr "Dream"
+
+# components/music/mpg123.c:44
+#~ msgid "Southern Rock"
+#~ msgstr "Southern Rock"
+
+# components/music/mpg123.c:44
+#~ msgid "Comedy"
+#~ msgstr "Komedi"
+
+# components/music/mpg123.c:44
+#~ msgid "Cult"
+#~ msgstr "Kes"
+
+# components/music/mpg123.c:45
+#~ msgid "Gangsta Rap"
+#~ msgstr "Gangsta Rap"
+
+# components/music/mpg123.c:45
+#~ msgid "Top 40"
+#~ msgstr "En iyi 40"
+
+# components/music/mpg123.c:45
+#~ msgid "Christian Rap"
+#~ msgstr "Hristiyan Rap"
+
+# components/music/mpg123.c:46
+#~ msgid "Pop/Funk"
+#~ msgstr "Pop/Funk"
+
+# components/music/mpg123.c:46
+#~ msgid "Jungle"
+#~ msgstr "Jungle"
+
+# components/music/mpg123.c:46
+#~ msgid "Native American"
+#~ msgstr "Native American"
+
+# components/music/mpg123.c:47
+#~ msgid "Cabaret"
+#~ msgstr "Kabare"
+
+# components/music/mpg123.c:47
+#~ msgid "Psychedelic"
+#~ msgstr "Psidelik"
+
+# components/music/mpg123.c:47
+#~ msgid "Rave"
+#~ msgstr "Rave"
+
+# components/music/mpg123.c:48
+#~ msgid "Showtunes"
+#~ msgstr "Showtunes"
+
+# components/music/mpg123.c:48
+#~ msgid "Trailer"
+#~ msgstr "Trailer"
+
+# components/music/mpg123.c:48
+#~ msgid "Lo-Fi"
+#~ msgstr "Lo-Fi"
+
+# components/music/mpg123.c:48
+#~ msgid "Tribal"
+#~ msgstr "Tribal"
+
+# components/music/mpg123.c:49
+#~ msgid "Acid Punk"
+#~ msgstr "Acid Punk"
+
+# components/music/mpg123.c:49
+#~ msgid "Acid Jazz"
+#~ msgstr "Acid Jaz"
+
+# components/music/mpg123.c:49
+#~ msgid "Polka"
+#~ msgstr "Polka"
+
+# components/music/mpg123.c:49
+#~ msgid "Retro"
+#~ msgstr "Retro"
+
+# components/music/mpg123.c:50
+#~ msgid "Musical"
+#~ msgstr "Müzikal"
+
+# components/music/mpg123.c:50
+#~ msgid "Rock & Roll"
+#~ msgstr "Rock & Roll"
+
+# components/music/mpg123.c:50
+#~ msgid "Hard Rock"
+#~ msgstr "Hard Rock"
+
+# components/music/mpg123.c:50
+#~ msgid "Folk"
+#~ msgstr "Halk müziği"
+
+# components/music/mpg123.c:51
+#~ msgid "Folk/Rock"
+#~ msgstr "Folk/Rock"
+
+# components/music/mpg123.c:51
+#~ msgid "National Folk"
+#~ msgstr "Ulusal Dans"
+
+# components/music/mpg123.c:51
+#~ msgid "Swing"
+#~ msgstr "Swing"
+
+# components/music/mpg123.c:52
+#~ msgid "Fast-Fusion"
+#~ msgstr "Fast-Fusion"
+
+# components/music/mpg123.c:52
+#~ msgid "Bebob"
+#~ msgstr "Bebob"
+
+# components/music/mpg123.c:52
+#~ msgid "Latin"
+#~ msgstr "Latin"
+
+# components/music/mpg123.c:52
+#~ msgid "Revival"
+#~ msgstr "Revival"
+
+# components/music/mpg123.c:53
+#~ msgid "Celtic"
+#~ msgstr "Celtic"
+
+# components/music/mpg123.c:53
+#~ msgid "Bluegrass"
+#~ msgstr "Bluegrass"
+
+# components/music/mpg123.c:53
+#~ msgid "Avantgarde"
+#~ msgstr "Avantgarde"
+
+# components/music/mpg123.c:54
+#~ msgid "Gothic Rock"
+#~ msgstr "Gotik Rock"
+
+# components/music/mpg123.c:54
+#~ msgid "Progressive Rock"
+#~ msgstr "Progressive Rock"
+
+# components/music/mpg123.c:55
+#~ msgid "Psychedelic Rock"
+#~ msgstr "Psyhedelic Rock"
+
+# components/music/mpg123.c:55
+#~ msgid "Symphonic Rock"
+#~ msgstr "Senfonik Rock"
+
+# components/music/mpg123.c:55
+#~ msgid "Slow Rock"
+#~ msgstr "Slow Rock"
+
+# components/music/mpg123.c:56
+#~ msgid "Big Band"
+#~ msgstr "Big Band"
+
+# components/music/mpg123.c:56
+#~ msgid "Chorus"
+#~ msgstr "Koro"
+
+# components/music/mpg123.c:56
+#~ msgid "Easy Listening"
+#~ msgstr "Easy Listening"
+
+# components/music/mpg123.c:57
+#~ msgid "Acoustic"
+#~ msgstr "Akustik"
+
+# components/music/mpg123.c:57
+#~ msgid "Humour"
+#~ msgstr "Humour"
+
+# components/music/mpg123.c:57
+#~ msgid "Speech"
+#~ msgstr "Speech"
+
+# components/music/mpg123.c:57
+#~ msgid "Chanson"
+#~ msgstr "Chanson"
+
+# components/music/mpg123.c:58
+#~ msgid "Opera"
+#~ msgstr "Opera"
+
+# components/music/mpg123.c:58
+#~ msgid "Chamber Music"
+#~ msgstr "Chamber"
+
+# components/music/mpg123.c:58
+#~ msgid "Sonata"
+#~ msgstr "Sonata"
+
+# components/music/mpg123.c:58
+#~ msgid "Symphony"
+#~ msgstr "Senfoni"
+
+# components/music/mpg123.c:59
+#~ msgid "Booty Bass"
+#~ msgstr "Booty Bass"
+
+# components/music/mpg123.c:59
+#~ msgid "Primus"
+#~ msgstr "Primus"
+
+# components/music/mpg123.c:59
+#~ msgid "Porn Groove"
+#~ msgstr "Porn Groove"
+
+# components/music/mpg123.c:60
+#~ msgid "Satire"
+#~ msgstr "Satire"
+
+# components/music/mpg123.c:60
+#~ msgid "Slow Jam"
+#~ msgstr "Slow Jam"
+
+# components/music/mpg123.c:60
+#~ msgid "Club"
+#~ msgstr "Club"
+
+# components/music/mpg123.c:60
+#~ msgid "Tango"
+#~ msgstr "Tango"
+
+# components/music/mpg123.c:61
+#~ msgid "Samba"
+#~ msgstr "Samba"
+
+# components/music/mpg123.c:61
+#~ msgid "Folklore"
+#~ msgstr "Folklor"
+
+# components/music/mpg123.c:61
+#~ msgid "Ballad"
+#~ msgstr "Ballad"
+
+# components/music/mpg123.c:61
+#~ msgid "Power Ballad"
+#~ msgstr "Power Ballad"
+
+# components/music/mpg123.c:62
+#~ msgid "Rhythmic Soul"
+#~ msgstr "Ritmik Soul"
+
+# components/music/mpg123.c:62
+#~ msgid "Freestyle"
+#~ msgstr "Freestyle"
+
+# components/music/mpg123.c:62
+#~ msgid "Duet"
+#~ msgstr "Düet"
+
+# components/music/mpg123.c:63
+#~ msgid "Punk Rock"
+#~ msgstr "Punk Rock"
+
+# components/music/mpg123.c:63
+#~ msgid "Drum Solo"
+#~ msgstr "Solo Davul"
+
+# components/music/mpg123.c:63
+#~ msgid "A Cappella"
+#~ msgstr "Cappelia"
+
+# components/music/mpg123.c:64
+#~ msgid "Euro-House"
+#~ msgstr "Euro-House"
+
+# components/music/mpg123.c:64
+#~ msgid "Dance Hall"
+#~ msgstr "Dance Hall"
+
+# components/music/mpg123.c:64
+#~ msgid "Goa"
+#~ msgstr "Goa"
+
+# components/music/mpg123.c:65
+#~ msgid "Drum & Bass"
+#~ msgstr "Davul & Bas"
+
+# components/music/mpg123.c:65
+#~ msgid "Club-House"
+#~ msgstr "Club-Housey"
+
+# components/music/mpg123.c:65
+#~ msgid "Hardcore"
+#~ msgstr "Hardcore"
+
+# components/music/mpg123.c:66
+#~ msgid "Terror"
+#~ msgstr "Terror"
+
+# components/music/mpg123.c:66
+#~ msgid "Indie"
+#~ msgstr "Indie"
+
+# components/music/mpg123.c:66
+#~ msgid "BritPop"
+#~ msgstr "BritPop"
+
+# components/music/mpg123.c:66
+#~ msgid "Negerpunk"
+#~ msgstr "Negerpunk"
+
+# components/music/mpg123.c:67
+#~ msgid "Polsk Punk"
+#~ msgstr "Polsk Punk"
+
+# components/music/mpg123.c:67
+#~ msgid "Beat"
+#~ msgstr "Beat"
+
+# components/music/mpg123.c:67
+#~ msgid "Christian Gangsta Rap"
+#~ msgstr "Christian Gangsta Rap"
+
+# components/music/mpg123.c:68
+#~ msgid "Heavy Metal"
+#~ msgstr "Heavy Metal"
+
+# components/music/mpg123.c:68
+#~ msgid "Black Metal"
+#~ msgstr "Black Metal"
+
+# components/music/mpg123.c:68
+#~ msgid "Crossover"
+#~ msgstr "Crossover"
+
+# components/music/mpg123.c:69
+#~ msgid "Contemporary Christian"
+#~ msgstr "Christian"
+
+# components/music/mpg123.c:69
+#~ msgid "Christian Rock"
+#~ msgstr "Christian Rock"
+
+# components/music/mpg123.c:70
+#~ msgid "Merengue"
+#~ msgstr "Merengue"
+
+# components/music/mpg123.c:70
+#~ msgid "Salsa"
+#~ msgstr "Salsa"
+
+# components/music/mpg123.c:70
+#~ msgid "Thrash Metal"
+#~ msgstr "Trash Metal"
+
+# components/music/mpg123.c:71
+#~ msgid "Anime"
+#~ msgstr "Anime"
+
+# components/music/mpg123.c:71
+#~ msgid "JPop"
+#~ msgstr "JPop"
+
+# components/music/mpg123.c:71
+#~ msgid "Synthpop"
+#~ msgstr "Synthpop"
+
+# components/music/nautilus-music-view.c:233
+#~ msgid "Track"
+#~ msgstr "Parça"
+
+# components/music/nautilus-music-view.c:233
+#~ msgid "Title"
+#~ msgstr "Başlık"
+
+# components/music/nautilus-music-view.c:233
+#~ msgid "Artist"
+#~ msgstr "Sanatçı"
+
+# components/music/nautilus-music-view.c:233
+#~ msgid "Bit Rate"
+#~ msgstr "Hız"
+
+# components/music/nautilus-music-view.c:233
+#~ msgid "Time"
+#~ msgstr "Süre"
+
+# components/music/nautilus-music-view.c:337
+#~ msgid "Set Cover Image"
+#~ msgstr "Kapak Resmini Tanımla"
+
+# components/music/nautilus-music-view.c:684
+#~ msgid "Sorry, but '%s' is not a usable image file."
+#~ msgstr "`%s' kullanılabilir bir resim dosyası değil."
+
+# components/music/nautilus-music-view.c:734
+#~ msgid "Select an image file for the album cover:"
+#~ msgstr "Albüm kapağı için bir resim dosyası seçin:"
+
+# components/music/nautilus-music-view.c:1184
 #~ msgid ""
-#~ "Sorry, but emblem keywords can only contain letters, spaces and numbers."
+#~ "Sorry, but the music view is unable to play back sound right now. This is "
+#~ "because the Enable sound server startup setting in the Sound section of "
+#~ "the Control Center is turned off."
 #~ msgstr ""
-#~ "Üzgünüm, ancak logo anahtar kelimesi sadece harf, rakam ve boşluk "
-#~ "karakteri içerebilir."
+#~ "Üzgünüm, ancak müzik çalıcısı istediğiniz müziği çalamıyor. Denetim "
+#~ "masasının 'Ses' bölümünde yeralan ve ses sunucusunu etkinleştirmek için "
+#~ "kullanılan sekme işaretlenmemiş olabilir."
 
-# src/nautilus-property-browser.c:1426
+# components/music/nautilus-music-view.c:1188
+#~ msgid "Unable to Play File"
+#~ msgstr "Dosya Çalınamıyor"
+
+# components/music/nautilus-music-view.c:1184
 #~ msgid ""
-#~ "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
-#~ "for it."
+#~ "Sorry, but the music view is unable to play back sound right now. Either "
+#~ "another program is using or blocking the sound card, or your sound card "
+#~ "is not configured properly. Try quitting any applications that may be "
+#~ "blocking use of the sound card."
 #~ msgstr ""
-#~ "\"%s\" anahtar kelimesi daha önce kullanılmış. Lütfen farklı bir isim "
-#~ "seçin."
+#~ "Üzgünüm, ancak müzik çalıcısı istediğiniz müziği çalamıyor. Ses kartını "
+#~ "başka bir program kullanıyor, ya da henüz ses kartı yapılandırılmamış "
+#~ "olabilir. Ses kartının kullanılmasını engelleyen tüm programlardan "
+#~ "çıkmayı deneyin."
+
+# components/music/nautilus-music-view.c:1209
+#~ msgid "Sorry, but the music view can't play non-local files yet."
+#~ msgstr "Müzik görünümde yerel olmayan dosyalar çalınamaz."
+
+# components/music/nautilus-music-view.c:1210
+#~ msgid "Can't Play Remote Files"
+#~ msgstr "Uzaktaki Dosyalar Çalınamaz"
+
+# components/music/nautilus-music-view.c:1514
+#~ msgid "Drag to seek within track"
+#~ msgstr "Parça içinde gezmek için sürükleyin"
+
+# components/help/converters/gnome-db2html2/gdb3html.c:708
+# components/music/nautilus-music-view.c:1536
+#~ msgid "Previous"
+#~ msgstr "Geri"
+
+# components/music/nautilus-music-view.c:1551
+#~ msgid "Play"
+#~ msgstr "Çal"
+
+# components/music/nautilus-music-view.c:1566
+#~ msgid "Pause"
+#~ msgstr "Beklet"
+
+# components/help/converters/gnome-db2html2/gdb3html.c:726
+# components/music/nautilus-music-view.c:1594
+#~ msgid "Next"
+#~ msgstr "İleri"
+
+# components/music/nautilus-music-view.c:337
+#~ msgid "cover image"
+#~ msgstr "Kapak Resmi"
+
+# components/music/nautilus-music-view.c:1709
+#~ msgid "Sorry, but there was an error reading %s."
+#~ msgstr "%s okunurken bir hata oluştu."
+
+# components/music/nautilus-music-view.c:1710
+#~ msgid "Can't Read Folder"
+#~ msgstr "Dizin Okunamadı"
+
+#~ msgid "<span size=\"xx-large\">%s - %s</span>"
+#~ msgstr "<span size=\"xx-large\">%s - %s</span>"
 
 # src/nautilus-property-browser.c:1456
 #~ msgid "Sorry, but the image at %s couldn't be installed as an emblem."
@@ -9149,11 +9466,6 @@ msgstr ""
 #~ msgid "Properties"
 #~ msgstr "Özellikler"
 
-# libnautilus-private/nautilus-icon-text-item.c:1546
-# src/file-manager/nautilus-icon-view-ui.xml.h:14
-#~ msgid "Rename"
-#~ msgstr "Yeniden adlandır"
-
 # src/file-manager/fm-directory-view.c:2961
 #~ msgid "Reset View to Default"
 #~ msgstr "Görünümleri Öntanımlı Hale Getir"
@@ -9404,10 +9716,6 @@ msgstr ""
 # src/file-manager/nautilus-directory-view-ui.xml.h:27
 #~ msgid "Remove Custom Images"
 #~ msgstr "Özel Resimleri Sil"
-
-# components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:4
-#~ msgid "Reset View to Match Preferences"
-#~ msgstr "Tercihleri Yüklemek İçin Görünümü Yenileyin"
 
 # components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:4
 #~ msgid "Reset View to Match _Preferences"

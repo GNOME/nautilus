@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 1.1.14\n"
-"POT-Creation-Date: 2002-10-14 12:54+0200\n"
+"POT-Creation-Date: 2002-10-31 20:27-0500\n"
 "PO-Revision-Date: 2002-05-15 11:34+0200\n"
 "Last-Translator: Gediminas Paulauskas <menesis@delfi.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
@@ -37,6 +37,120 @@ msgstr ""
 #: components/adapter/main.c:100
 msgid "bonobo_ui_init() failed."
 msgstr ""
+
+#: components/emblem/Nautilus_View_emblem.server.in.in.h:1
+#: src/file-manager/fm-properties-window.c:1759
+#: src/file-manager/fm-search-list-view.c:500
+msgid "Emblems"
+msgstr "Emblemos"
+
+#: components/emblem/Nautilus_View_emblem.server.in.in.h:2
+#, fuzzy
+msgid "Nautilus Emblem side pane"
+msgstr "Nautilus medþio ðoninis skydelis"
+
+#: components/emblem/Nautilus_View_emblem.server.in.in.h:3
+#, fuzzy
+msgid "Nautilus Emblem view"
+msgstr "Nautilus pavyzdinis vaizdas"
+
+#: components/emblem/nautilus-emblem-view.c:202
+#, c-format
+msgid ""
+"Couldn't remove emblem with name '%s'.  This is probably because the emblem "
+"is a permanent one, and not one you added yourself."
+msgstr ""
+
+#: components/emblem/nautilus-emblem-view.c:203
+#, fuzzy
+msgid "Couldn't remove emblem"
+msgstr "Negaliu iðmesti temos"
+
+#: components/emblem/nautilus-emblem-view.c:237
+#, c-format
+msgid ""
+"Couldn't rename emblem with name '%s'.  This is probably because the emblem "
+"is a permanent one, and not one that you added yourself."
+msgstr ""
+
+#: components/emblem/nautilus-emblem-view.c:238
+#, fuzzy
+msgid "Couldn't rename emblem"
+msgstr "Negaliu ádiegti emblemos"
+
+#: components/emblem/nautilus-emblem-view.c:257
+#, fuzzy
+msgid "Rename Emblem"
+msgstr "Iðmesti emblemà..."
+
+#: components/emblem/nautilus-emblem-view.c:276
+#, fuzzy
+msgid "Enter a new name for the displayed emblem:"
+msgstr "Nurodyk paveikslëlio bylà naujai emblemai:"
+
+#: components/emblem/nautilus-emblem-view.c:330
+msgid "Rename"
+msgstr "Pervadinti"
+
+#: components/emblem/nautilus-emblem-view.c:497
+#, fuzzy
+msgid "Add Emblems..."
+msgstr "Sukurti naujà Emblemà..."
+
+#: components/emblem/nautilus-emblem-view.c:513
+msgid ""
+"Enter a descriptive name next to each emblem.  This name will be used in "
+"other places to identify the emblem."
+msgstr ""
+
+#: components/emblem/nautilus-emblem-view.c:515
+msgid ""
+"Enter a descriptive name next to the emblem.  This name will be used in "
+"other places to identify the emblem."
+msgstr ""
+
+#: components/emblem/nautilus-emblem-view.c:718
+msgid ""
+"Some of the files could not be added as emblems because they did not appear "
+"to be valid images."
+msgstr ""
+
+#: components/emblem/nautilus-emblem-view.c:718
+#: components/emblem/nautilus-emblem-view.c:720
+#, fuzzy
+msgid "Couldn't add emblems"
+msgstr "Negaliu pridëti temos"
+
+#: components/emblem/nautilus-emblem-view.c:720
+msgid ""
+"None of the files could not be added as emblems because they did not appear "
+"to be valid images."
+msgstr ""
+
+#: components/emblem/nautilus-emblem-view.c:741
+msgid "The dragged text was not a valid file location."
+msgstr ""
+
+#: components/emblem/nautilus-emblem-view.c:741
+#: components/emblem/nautilus-emblem-view.c:765
+#: components/emblem/nautilus-emblem-view.c:814
+#, fuzzy
+msgid "Couldn't add emblem"
+msgstr "Negaliu pridëti temos"
+
+#: components/emblem/nautilus-emblem-view.c:760
+#: components/emblem/nautilus-emblem-view.c:813
+#, c-format
+msgid "The file '%s' does not appear to be a valid image."
+msgstr ""
+
+#: components/emblem/nautilus-emblem-view.c:763
+msgid "The dragged file does not appear to be a valid image."
+msgstr ""
+
+#: components/emblem/nautilus-emblem-view.c:878 data/browser.xml.h:35
+msgid "Erase"
+msgstr "Iðtrinti"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:1
 msgid "Factory for hardware view"
@@ -138,6 +252,37 @@ msgstr "Istorijos ðoninis skydelis"
 #, fuzzy
 msgid "History side pane for Nautilus"
 msgstr "Istorijos ðoninis skydelis Nautiliui"
+
+#: components/image_properties/Nautilus_View_image_properties.server.in.in.h:1
+#, fuzzy
+msgid "Image"
+msgstr "Paveikslël_is:"
+
+#: components/image_properties/Nautilus_View_image_properties.server.in.in.h:2
+#, fuzzy
+msgid "Image Properties content view component"
+msgstr "Pavyzdinis turinio perþiûros komponentas"
+
+#: components/image_properties/Nautilus_View_image_properties.server.in.in.h:3
+#, fuzzy
+msgid "Nautilus Image Properties view"
+msgstr "Nautilus medþio vaizdas"
+
+#: components/image_properties/nautilus-image-properties-view.c:89
+msgid "Failed to load image information"
+msgstr ""
+
+#: components/image_properties/nautilus-image-properties-view.c:141
+#, c-format
+msgid ""
+"<b>Image Type:</b> %s (%s)\n"
+"<b>Resolution:</b> %dx%d pixels\n"
+msgstr ""
+
+#: components/image_properties/nautilus-image-properties-view.c:228
+#, fuzzy
+msgid "loading..."
+msgstr "Ákeliama..."
 
 #: components/loser/content/Nautilus_View_content-loser.server.in.in.h:1
 msgid "Content Loser"
@@ -241,748 +386,6 @@ msgstr ""
 #: components/loser/sidebar/nautilus-sidebar-loser.c:187
 msgid "You have tried to kill the Sidebar Loser"
 msgstr ""
-
-#: components/music/Nautilus_View_music.server.in.in.h:1
-msgid "Factory for music view"
-msgstr "Muzikos vaizdo gamykla"
-
-#: components/music/Nautilus_View_music.server.in.in.h:2
-msgid "Music"
-msgstr "Muzika"
-
-#: components/music/Nautilus_View_music.server.in.in.h:3
-msgid "Music Viewer"
-msgstr "Muzikos þiûryklë"
-
-#: components/music/Nautilus_View_music.server.in.in.h:4
-msgid "Music view"
-msgstr "Muzikos vaizdas"
-
-#: components/music/Nautilus_View_music.server.in.in.h:5
-msgid "Music view factory"
-msgstr "Muzikos vaizdo gamykla"
-
-#: components/music/Nautilus_View_music.server.in.in.h:6
-msgid "View as Music"
-msgstr "Muzikos vaizdas"
-
-#: components/music/mpg123.c:30
-msgid "Blues"
-msgstr "Bliuzas"
-
-#: components/music/mpg123.c:30
-msgid "Classic Rock"
-msgstr "Klasikinis rokas"
-
-#: components/music/mpg123.c:30
-msgid "Country"
-msgstr "Kantri"
-
-#: components/music/mpg123.c:30
-msgid "Dance"
-msgstr "Ðokiø"
-
-#: components/music/mpg123.c:31
-msgid "Disco"
-msgstr "Disco"
-
-#: components/music/mpg123.c:31
-msgid "Funk"
-msgstr "Funk"
-
-#: components/music/mpg123.c:31
-msgid "Grunge"
-msgstr "Grunge"
-
-#: components/music/mpg123.c:31
-msgid "Hip-Hop"
-msgstr "Hip-Hop"
-
-#: components/music/mpg123.c:32
-msgid "Jazz"
-msgstr "Dþiazas"
-
-#: components/music/mpg123.c:32
-msgid "Metal"
-msgstr "Metalas"
-
-#: components/music/mpg123.c:32
-msgid "New Age"
-msgstr "New Age"
-
-#: components/music/mpg123.c:32
-msgid "Oldies"
-msgstr ""
-
-#: components/music/mpg123.c:33
-msgid "Other"
-msgstr "Kitas"
-
-#: components/music/mpg123.c:33
-msgid "Pop"
-msgstr "Pop"
-
-#: components/music/mpg123.c:33
-msgid "R&B"
-msgstr "R&B"
-
-#: components/music/mpg123.c:33
-msgid "Rap"
-msgstr "Repas"
-
-#: components/music/mpg123.c:33
-msgid "Reggae"
-msgstr "Regis"
-
-#: components/music/mpg123.c:34
-msgid "Rock"
-msgstr "Rokas"
-
-#: components/music/mpg123.c:34
-msgid "Techno"
-msgstr "Techno"
-
-#: components/music/mpg123.c:34
-msgid "Industrial"
-msgstr "Industrial"
-
-#: components/music/mpg123.c:34
-msgid "Alternative"
-msgstr "Alternatyva"
-
-#: components/music/mpg123.c:35
-msgid "Ska"
-msgstr "Ska"
-
-#: components/music/mpg123.c:35
-msgid "Death Metal"
-msgstr ""
-
-#: components/music/mpg123.c:35
-msgid "Pranks"
-msgstr ""
-
-#: components/music/mpg123.c:35
-msgid "Soundtrack"
-msgstr "Garso takelis"
-
-#: components/music/mpg123.c:36
-msgid "Euro-Techno"
-msgstr ""
-
-#: components/music/mpg123.c:36
-msgid "Ambient"
-msgstr ""
-
-#: components/music/mpg123.c:36
-msgid "Trip-Hop"
-msgstr "Trip-Hop"
-
-#: components/music/mpg123.c:36
-msgid "Vocal"
-msgstr ""
-
-#: components/music/mpg123.c:37
-msgid "Jazz+Funk"
-msgstr "Jazz+Funk"
-
-#: components/music/mpg123.c:37
-msgid "Fusion"
-msgstr ""
-
-#: components/music/mpg123.c:37
-msgid "Trance"
-msgstr "Trance"
-
-#: components/music/mpg123.c:37
-msgid "Classical"
-msgstr "Klasikinis"
-
-#: components/music/mpg123.c:38
-msgid "Instrumental"
-msgstr "Instrumentinis"
-
-#: components/music/mpg123.c:38
-msgid "Acid"
-msgstr "Acid"
-
-#: components/music/mpg123.c:38
-msgid "House"
-msgstr "House"
-
-#: components/music/mpg123.c:38
-msgid "Game"
-msgstr "Þaidimai"
-
-#: components/music/mpg123.c:39
-msgid "Sound Clip"
-msgstr ""
-
-#: components/music/mpg123.c:39
-msgid "Gospel"
-msgstr ""
-
-#: components/music/mpg123.c:39
-msgid "Noise"
-msgstr "Noise"
-
-#: components/music/mpg123.c:39
-msgid "Alt"
-msgstr "Alt"
-
-#: components/music/mpg123.c:40
-#, fuzzy
-msgid "Bass"
-msgstr "Þemi"
-
-#: components/music/mpg123.c:40
-msgid "Soul"
-msgstr "Soul"
-
-#: components/music/mpg123.c:40
-msgid "Punk"
-msgstr "Punk"
-
-#: components/music/mpg123.c:40
-msgid "Space"
-msgstr ""
-
-#: components/music/mpg123.c:41
-msgid "Meditative"
-msgstr ""
-
-#: components/music/mpg123.c:41
-msgid "Instrumental Pop"
-msgstr ""
-
-#: components/music/mpg123.c:42
-msgid "Instrumental Rock"
-msgstr "Instrumentinis rokas"
-
-#: components/music/mpg123.c:42
-msgid "Ethnic"
-msgstr ""
-
-#: components/music/mpg123.c:42
-msgid "Gothic"
-msgstr "Gotika"
-
-#: components/music/mpg123.c:43
-msgid "Darkwave"
-msgstr "Darkwave"
-
-#: components/music/mpg123.c:43
-msgid "Techno-Industrial"
-msgstr "Techno-Industrial"
-
-#: components/music/mpg123.c:43
-msgid "Electronic"
-msgstr "Elektronika"
-
-#: components/music/mpg123.c:44
-msgid "Pop-Folk"
-msgstr "Pop-Folk"
-
-#: components/music/mpg123.c:44
-msgid "Eurodance"
-msgstr ""
-
-#: components/music/mpg123.c:44
-msgid "Dream"
-msgstr ""
-
-#: components/music/mpg123.c:45
-msgid "Southern Rock"
-msgstr ""
-
-#: components/music/mpg123.c:45
-msgid "Comedy"
-msgstr "Komedija"
-
-#: components/music/mpg123.c:45
-msgid "Cult"
-msgstr ""
-
-#: components/music/mpg123.c:46
-msgid "Gangsta Rap"
-msgstr "Gangsta Rap"
-
-#: components/music/mpg123.c:46
-msgid "Top 40"
-msgstr "Top 40"
-
-#: components/music/mpg123.c:46
-msgid "Christian Rap"
-msgstr ""
-
-#: components/music/mpg123.c:47
-msgid "Pop/Funk"
-msgstr "Pop/Funk"
-
-#: components/music/mpg123.c:47
-msgid "Jungle"
-msgstr "Jungle"
-
-#: components/music/mpg123.c:47
-msgid "Native American"
-msgstr ""
-
-#: components/music/mpg123.c:48
-msgid "Cabaret"
-msgstr ""
-
-#: components/music/mpg123.c:48
-msgid "New Wave"
-msgstr ""
-
-#: components/music/mpg123.c:48
-msgid "Psychedelic"
-msgstr "Psichodelinë"
-
-#: components/music/mpg123.c:48
-msgid "Rave"
-msgstr "Reivas"
-
-#: components/music/mpg123.c:49
-msgid "Showtunes"
-msgstr ""
-
-#: components/music/mpg123.c:49
-msgid "Trailer"
-msgstr ""
-
-#: components/music/mpg123.c:49
-msgid "Lo-Fi"
-msgstr ""
-
-#: components/music/mpg123.c:49
-msgid "Tribal"
-msgstr ""
-
-#: components/music/mpg123.c:50
-msgid "Acid Punk"
-msgstr "Acid Punk"
-
-#: components/music/mpg123.c:50
-msgid "Acid Jazz"
-msgstr "Acid Jazz"
-
-#: components/music/mpg123.c:50
-msgid "Polka"
-msgstr "Polka"
-
-#: components/music/mpg123.c:50
-msgid "Retro"
-msgstr "Retro"
-
-#: components/music/mpg123.c:51
-msgid "Musical"
-msgstr ""
-
-#: components/music/mpg123.c:51
-msgid "Rock & Roll"
-msgstr "Rock & Roll"
-
-#: components/music/mpg123.c:51
-msgid "Hard Rock"
-msgstr ""
-
-#: components/music/mpg123.c:51
-msgid "Folk"
-msgstr "Folkloras"
-
-#: components/music/mpg123.c:52
-msgid "Folk/Rock"
-msgstr "Folk/Rock"
-
-#: components/music/mpg123.c:52
-msgid "National Folk"
-msgstr "Tautinis folkloras"
-
-#: components/music/mpg123.c:52
-msgid "Swing"
-msgstr "Svingas"
-
-#: components/music/mpg123.c:53
-msgid "Fast-Fusion"
-msgstr ""
-
-#: components/music/mpg123.c:53
-msgid "Bebob"
-msgstr ""
-
-#: components/music/mpg123.c:53
-msgid "Latin"
-msgstr "Lotynø"
-
-#: components/music/mpg123.c:53
-msgid "Revival"
-msgstr ""
-
-#: components/music/mpg123.c:54
-msgid "Celtic"
-msgstr "Keltø"
-
-#: components/music/mpg123.c:54
-msgid "Bluegrass"
-msgstr ""
-
-#: components/music/mpg123.c:54
-msgid "Avantgarde"
-msgstr "Avantgardas"
-
-#: components/music/mpg123.c:55
-msgid "Gothic Rock"
-msgstr "Gotikinis rokas"
-
-#: components/music/mpg123.c:55
-msgid "Progressive Rock"
-msgstr "Progresyvus rokas"
-
-#: components/music/mpg123.c:56
-msgid "Psychedelic Rock"
-msgstr "Psichodelinis rokas"
-
-#: components/music/mpg123.c:56
-msgid "Symphonic Rock"
-msgstr "Simfoninis rokas"
-
-#: components/music/mpg123.c:56
-msgid "Slow Rock"
-msgstr "Lëtas rokas"
-
-#: components/music/mpg123.c:57
-msgid "Big Band"
-msgstr ""
-
-#: components/music/mpg123.c:57
-msgid "Chorus"
-msgstr "Choras"
-
-#: components/music/mpg123.c:57
-msgid "Easy Listening"
-msgstr ""
-
-#: components/music/mpg123.c:58
-msgid "Acoustic"
-msgstr "Akustinë"
-
-#: components/music/mpg123.c:58
-msgid "Humour"
-msgstr "Humoras"
-
-#: components/music/mpg123.c:58
-msgid "Speech"
-msgstr "Kalba"
-
-#: components/music/mpg123.c:58
-msgid "Chanson"
-msgstr ""
-
-#: components/music/mpg123.c:59
-msgid "Opera"
-msgstr "Opera"
-
-#: components/music/mpg123.c:59
-msgid "Chamber Music"
-msgstr ""
-
-#: components/music/mpg123.c:59
-msgid "Sonata"
-msgstr "Sonata"
-
-#: components/music/mpg123.c:59
-msgid "Symphony"
-msgstr "Simfonija"
-
-#: components/music/mpg123.c:60
-msgid "Booty Bass"
-msgstr ""
-
-#: components/music/mpg123.c:60
-msgid "Primus"
-msgstr ""
-
-#: components/music/mpg123.c:60
-msgid "Porn Groove"
-msgstr ""
-
-#: components/music/mpg123.c:61
-msgid "Satire"
-msgstr "Satyra"
-
-#: components/music/mpg123.c:61
-msgid "Slow Jam"
-msgstr ""
-
-#: components/music/mpg123.c:61
-msgid "Club"
-msgstr "Klubinë"
-
-#: components/music/mpg123.c:61
-msgid "Tango"
-msgstr "Tango"
-
-#: components/music/mpg123.c:62
-msgid "Samba"
-msgstr "Samba"
-
-#: components/music/mpg123.c:62
-msgid "Folklore"
-msgstr "Folkloras"
-
-#: components/music/mpg123.c:62
-msgid "Ballad"
-msgstr "Baladë"
-
-#: components/music/mpg123.c:62
-msgid "Power Ballad"
-msgstr ""
-
-#: components/music/mpg123.c:63
-msgid "Rhythmic Soul"
-msgstr ""
-
-#: components/music/mpg123.c:63
-msgid "Freestyle"
-msgstr ""
-
-#: components/music/mpg123.c:63
-msgid "Duet"
-msgstr "Duetas"
-
-#: components/music/mpg123.c:64
-msgid "Punk Rock"
-msgstr ""
-
-#: components/music/mpg123.c:64
-msgid "Drum Solo"
-msgstr ""
-
-#: components/music/mpg123.c:64
-msgid "A Cappella"
-msgstr ""
-
-#: components/music/mpg123.c:65
-msgid "Euro-House"
-msgstr ""
-
-#: components/music/mpg123.c:65
-msgid "Dance Hall"
-msgstr ""
-
-#: components/music/mpg123.c:65
-msgid "Goa"
-msgstr "Goa"
-
-#: components/music/mpg123.c:66
-msgid "Drum & Bass"
-msgstr "Drum & Bass"
-
-#: components/music/mpg123.c:66
-msgid "Club-House"
-msgstr ""
-
-#: components/music/mpg123.c:66
-msgid "Hardcore"
-msgstr "Hardcore"
-
-#: components/music/mpg123.c:67
-msgid "Terror"
-msgstr "Terror"
-
-#: components/music/mpg123.c:67
-msgid "Indie"
-msgstr "Indie"
-
-#: components/music/mpg123.c:67
-msgid "BritPop"
-msgstr "BritPop"
-
-#: components/music/mpg123.c:67
-msgid "Negerpunk"
-msgstr ""
-
-#: components/music/mpg123.c:68
-msgid "Polsk Punk"
-msgstr ""
-
-#: components/music/mpg123.c:68
-msgid "Beat"
-msgstr ""
-
-#: components/music/mpg123.c:68
-msgid "Christian Gangsta Rap"
-msgstr ""
-
-#: components/music/mpg123.c:69
-msgid "Heavy Metal"
-msgstr ""
-
-#: components/music/mpg123.c:69
-msgid "Black Metal"
-msgstr "Juodas Metalas"
-
-#: components/music/mpg123.c:69
-msgid "Crossover"
-msgstr ""
-
-#: components/music/mpg123.c:70
-msgid "Contemporary Christian"
-msgstr ""
-
-#: components/music/mpg123.c:70
-msgid "Christian Rock"
-msgstr "Krikðèioniðkas rokas"
-
-#: components/music/mpg123.c:71
-msgid "Merengue"
-msgstr ""
-
-#: components/music/mpg123.c:71
-msgid "Salsa"
-msgstr "Salsa"
-
-#: components/music/mpg123.c:71
-msgid "Thrash Metal"
-msgstr ""
-
-#: components/music/mpg123.c:72
-msgid "Anime"
-msgstr ""
-
-#: components/music/mpg123.c:72
-msgid "JPop"
-msgstr ""
-
-#: components/music/mpg123.c:72
-msgid "Synthpop"
-msgstr ""
-
-#: components/music/nautilus-music-view.c:299
-#: libnautilus-private/nautilus-volume-monitor.c:676
-msgid "Unknown"
-msgstr "Neþinomas"
-
-#: components/music/nautilus-music-view.c:351
-msgid "Track"
-msgstr "Kûrinys"
-
-#: components/music/nautilus-music-view.c:362
-msgid "Title"
-msgstr "Pavadinimas"
-
-#: components/music/nautilus-music-view.c:372
-msgid "Artist"
-msgstr "Atlikëjas"
-
-#: components/music/nautilus-music-view.c:384
-msgid "Bit Rate"
-msgstr ""
-
-#: components/music/nautilus-music-view.c:397
-msgid "Time"
-msgstr "Trukmë"
-
-#: components/music/nautilus-music-view.c:502
-msgid "Set Cover Image"
-msgstr "Nustatyk virðelio vaizdà"
-
-#: components/music/nautilus-music-view.c:743
-#, c-format
-msgid "Sorry, but '%s' is not a usable image file."
-msgstr "Atsipraðau, bet '%s' nëra gera paveikslëlio byla."
-
-#: components/music/nautilus-music-view.c:745
-#: src/nautilus-property-browser.c:1110 src/nautilus-property-browser.c:1313
-#: src/nautilus-property-browser.c:1329
-msgid "Not an Image"
-msgstr "Nëra paveikslëlis"
-
-#: components/music/nautilus-music-view.c:791
-msgid "Select an image file for the album cover:"
-msgstr "Nurodyk paveikslëlá albumo virðeliui:"
-
-#: components/music/nautilus-music-view.c:1216
-msgid ""
-"Sorry, but the music view is unable to play back sound right now. This is "
-"because the Enable sound server startup setting in the Sound section of the "
-"Control Center is turned off."
-msgstr ""
-"Atsipraðau, bet dabar muzikos vaizdas negali groti, kadangi Gnome Valdymo "
-"Centre, garso skyriuje neájungtas 'Pradþioje paleisti garsø serverá' "
-"nustatymas."
-
-#: components/music/nautilus-music-view.c:1219
-#: components/music/nautilus-music-view.c:1231
-msgid "Unable to Play File"
-msgstr "Negaliu pagroti ðios bylos"
-
-#: components/music/nautilus-music-view.c:1227
-msgid ""
-"Sorry, but the music view is unable to play back sound right now. Either "
-"another program is using or blocking the sound card, or your sound card is "
-"not configured properly. Try quitting any applications that may be blocking "
-"use of the sound card."
-msgstr ""
-"Atsipraðau, bet muzikos vaizdas negali dabar groti. Gal kita programa "
-"naudoja ar blokuoja garso plokðtæ arba garso korta yra blogai "
-"sukonfigûruota. Pabandyk uþdaryti visas programas, kurios gali blokuoti "
-"garso kortà."
-
-#: components/music/nautilus-music-view.c:1255
-msgid "Sorry, but the music view can't play non-local files yet."
-msgstr "Atsipraðau, bet muzikos vaizdas negali dabar groti nevietiniø bylø."
-
-#: components/music/nautilus-music-view.c:1256
-msgid "Can't Play Remote Files"
-msgstr "Negaliu groti nutolusiø bylø"
-
-#: components/music/nautilus-music-view.c:1574
-msgid "Drag to seek within track"
-msgstr "Tempk kad nustatytum vietà dainoje"
-
-#: components/music/nautilus-music-view.c:1601
-msgid "Previous"
-msgstr "Praeitas"
-
-#: components/music/nautilus-music-view.c:1616
-msgid "Play"
-msgstr "Groti"
-
-#: components/music/nautilus-music-view.c:1630
-msgid "Pause"
-msgstr "Pauzë"
-
-#: components/music/nautilus-music-view.c:1644
-#: libnautilus-private/nautilus-file-operations.c:896
-#: libnautilus-private/nautilus-file-operations.c:911
-#: libnautilus-private/nautilus-file-operations.c:931
-#: src/nautilus-shell-ui.xml.h:44
-msgid "Stop"
-msgstr "Sustabdyti"
-
-#: components/music/nautilus-music-view.c:1658
-msgid "Next"
-msgstr "Kitas"
-
-#: components/music/nautilus-music-view.c:1696
-msgid "cover image"
-msgstr "virðelio paveikslëlis"
-
-#: components/music/nautilus-music-view.c:1767
-#, c-format
-msgid "Sorry, but there was an error reading %s."
-msgstr "Atsipraðau, bet ávyko klaida nuskaitant %s."
-
-#: components/music/nautilus-music-view.c:1768
-msgid "Can't Read Folder"
-msgstr "Negaliu nuskaityti katalogo"
-
-#: components/music/nautilus-music-view.c:1868
-#, c-format
-msgid "<span size=\"xx-large\">%s - %s</span>"
-msgstr "<span size=\"xx-large\">%s - %s</span>"
 
 #: components/notes/Nautilus_View_notes.server.in.in.h:1
 #, fuzzy
@@ -1360,10 +763,6 @@ msgstr ""
 #: data/browser.xml.h:34
 msgid "Envy"
 msgstr ""
-
-#: data/browser.xml.h:35
-msgid "Erase"
-msgstr "Iðtrinti"
 
 #: data/browser.xml.h:36
 msgid "Favorite"
@@ -1855,6 +1254,7 @@ msgid "Can't find an hbox, using a normal file selection"
 msgstr "Nepavyko rasti hbox, naudojamas paprastas bylos pasirinkimas"
 
 #: libbackground/preview-file-selection.c:212
+#: src/nautilus-file-management-properties.glade.h:56
 msgid "Preview"
 msgstr "Perþiûra"
 
@@ -1979,6 +1379,40 @@ msgstr "XIAFS skirsnis"
 msgid "Xenix Volume"
 msgstr "Xenix skirsnis"
 
+#: libnautilus-private/egg-screen-help.c:174
+msgid "Unable to find the GNOME_FILE_DOMAIN_APP_HELP domain"
+msgstr ""
+
+#: libnautilus-private/egg-screen-help.c:187
+msgid "Unable to find the GNOME_FILE_DOMAIN_HELP domain."
+msgstr ""
+
+#: libnautilus-private/egg-screen-help.c:200
+#: libnautilus-private/egg-screen-help.c:215
+#, c-format
+msgid ""
+"Unable to show help as %s is not a directory.  Please check your "
+"installation."
+msgstr ""
+
+#: libnautilus-private/egg-screen-help.c:224
+#: libnautilus-private/egg-screen-help.c:240
+#, c-format
+msgid ""
+"Unable to find the help files in either %s or %s.  Please check your "
+"installation"
+msgstr ""
+
+#: libnautilus-private/egg-screen-help.c:315
+#, c-format
+msgid "Unable to find doc_id %s in the help path"
+msgstr ""
+
+#: libnautilus-private/egg-screen-help.c:336
+#, c-format
+msgid "Help document %s/%s not found"
+msgstr ""
+
 #: libnautilus-private/nautilus-authn-manager.c:60
 msgid "Your HTTP Proxy requires you to log in.\n"
 msgstr ""
@@ -2024,8 +1458,55 @@ msgid "Set as _Background"
 msgstr "Naudoti _fonui"
 
 #: libnautilus-private/nautilus-dnd.c:589
+#: libnautilus-private/nautilus-dnd.c:642
 msgid "Cancel"
 msgstr "Atðaukti"
+
+#: libnautilus-private/nautilus-dnd.c:628
+msgid "Set as background for _all directories"
+msgstr ""
+
+#: libnautilus-private/nautilus-dnd.c:633
+#, fuzzy
+msgid "Set as background for _this directory"
+msgstr "Rodomai vietai atidaryti kità Nautilus langà."
+
+#: libnautilus-private/nautilus-emblem-utils.c:194
+msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
+msgstr "Atleiskite, bet jûs privalote naujai emblemai nurodyti netuðèià vardà."
+
+#: libnautilus-private/nautilus-emblem-utils.c:195
+#: libnautilus-private/nautilus-emblem-utils.c:199
+#: libnautilus-private/nautilus-emblem-utils.c:208
+#: libnautilus-private/nautilus-emblem-utils.c:230
+#: libnautilus-private/nautilus-emblem-utils.c:245
+msgid "Couldn't install emblem"
+msgstr "Negaliu ádiegti emblemos"
+
+#: libnautilus-private/nautilus-emblem-utils.c:198
+msgid ""
+"Sorry, but emblem keywords can only contain letters, spaces and numbers."
+msgstr ""
+"Atleiskite, bet emblemos pavadinime gali bûti tik raidës, tarpai ar skaièiai."
+
+#. this really should never happen, as a user has no idea
+#. * what a keyword is, and people should be passing a unique
+#. * keyword to us anyway
+#.
+#: libnautilus-private/nautilus-emblem-utils.c:206
+#, fuzzy, c-format
+msgid ""
+"Sorry, but there is already an emblem named \"%s\".  Please choose a "
+"different name for it."
+msgstr "Atleiskite, bet pavadinimas \"%s\" jau egzistuoja. Pasirinkite kitoká."
+
+#: libnautilus-private/nautilus-emblem-utils.c:229
+msgid "Sorry, unable to save custom emblem."
+msgstr ""
+
+#: libnautilus-private/nautilus-emblem-utils.c:244
+msgid "Sorry, unable to save custom emblem name."
+msgstr ""
 
 #: libnautilus-private/nautilus-file-operations-progress.c:452
 #, c-format
@@ -2317,6 +1798,13 @@ msgstr "Klaida darant nuorodà."
 msgid "Error while deleting."
 msgstr "Klaida trinant."
 
+#: libnautilus-private/nautilus-file-operations.c:896
+#: libnautilus-private/nautilus-file-operations.c:911
+#: libnautilus-private/nautilus-file-operations.c:931
+#: src/nautilus-shell-ui.xml.h:44
+msgid "Stop"
+msgstr "Sustabdyti"
+
 #: libnautilus-private/nautilus-file-operations.c:911
 #: libnautilus-private/nautilus-file-operations.c:931
 #: libnautilus-private/nautilus-file-operations.c:1044
@@ -2387,7 +1875,7 @@ msgstr "Pakeisti visus"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1112
-#: libnautilus-private/nautilus-file.c:4280
+#: libnautilus-private/nautilus-file.c:4277
 #, c-format
 msgid "link to %s"
 msgstr "padaryti nuorodà á %s"
@@ -2431,13 +1919,13 @@ msgstr "%dth nuoroda á %s"
 #.
 #. localizers: tag used to detect the first copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1164
-#: libnautilus-private/nautilus-file-operations.c:2278
+#: libnautilus-private/nautilus-file-operations.c:2281
 msgid " (copy)"
 msgstr " (kopija)"
 
 #. localizers: tag used to detect the second copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1166
-#: libnautilus-private/nautilus-file-operations.c:2278
+#: libnautilus-private/nautilus-file-operations.c:2281
 msgid " (another copy)"
 msgstr " (kita kopija)"
 
@@ -2515,148 +2003,148 @@ msgid " (%d"
 msgstr " (%d"
 
 #: libnautilus-private/nautilus-file-operations.c:1499
-#: libnautilus-private/nautilus-file-operations.c:2073
+#: libnautilus-private/nautilus-file-operations.c:2076
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Neþinomas GnomeVFSXferProgressStatus %d"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1817
+#: libnautilus-private/nautilus-file-operations.c:1820
 msgid "Moving files to the Trash"
 msgstr "Bylos perkeliamos á ðiukðlinæ"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1819
+#: libnautilus-private/nautilus-file-operations.c:1822
 msgid "Files thrown out:"
 msgstr ""
 
 #. localizers: label prepended to the name of the current file moved
-#: libnautilus-private/nautilus-file-operations.c:1821
-#: libnautilus-private/nautilus-file-operations.c:1832
+#: libnautilus-private/nautilus-file-operations.c:1824
+#: libnautilus-private/nautilus-file-operations.c:1835
 msgid "Moving"
 msgstr "Perkeliama"
 
-#: libnautilus-private/nautilus-file-operations.c:1822
+#: libnautilus-private/nautilus-file-operations.c:1825
 msgid "Preparing to Move to Trash..."
 msgstr "Pasiruoðiama perkëlimui á ðiukðlinæ"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1828
+#: libnautilus-private/nautilus-file-operations.c:1831
 msgid "Moving files"
 msgstr "Perkeliamos bylos"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1830
+#: libnautilus-private/nautilus-file-operations.c:1833
 msgid "Files moved:"
 msgstr "Bylø perkelta:"
 
-#: libnautilus-private/nautilus-file-operations.c:1833
+#: libnautilus-private/nautilus-file-operations.c:1836
 msgid "Preparing To Move..."
 msgstr "Pasiruoðiama perkëlimui..."
 
-#: libnautilus-private/nautilus-file-operations.c:1834
+#: libnautilus-private/nautilus-file-operations.c:1837
 msgid "Finishing Move..."
 msgstr "Baigiamas perkëlimas..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1842
+#: libnautilus-private/nautilus-file-operations.c:1845
 msgid "Creating links to files"
 msgstr "Kuriamos nuorodos á bylas"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1844
+#: libnautilus-private/nautilus-file-operations.c:1847
 msgid "Files linked:"
 msgstr "Sukurta nuorodø:"
 
 #. localizers: label prepended to the name of the current file linked
-#: libnautilus-private/nautilus-file-operations.c:1846
+#: libnautilus-private/nautilus-file-operations.c:1849
 msgid "Linking"
 msgstr "Sukuriamos nuorodos"
 
-#: libnautilus-private/nautilus-file-operations.c:1847
+#: libnautilus-private/nautilus-file-operations.c:1850
 msgid "Preparing to Create Links..."
 msgstr "Pasiruoðiama sukurti nuorodas..."
 
-#: libnautilus-private/nautilus-file-operations.c:1848
+#: libnautilus-private/nautilus-file-operations.c:1851
 msgid "Finishing Creating Links..."
 msgstr "Baigiama kurti nuorodas..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1854
+#: libnautilus-private/nautilus-file-operations.c:1857
 msgid "Copying files"
 msgstr "Kopijuojamos bylos"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1856
+#: libnautilus-private/nautilus-file-operations.c:1859
 msgid "Files copied:"
 msgstr "Nukopijuota bylø:"
 
 #. localizers: label prepended to the name of the current file copied
-#: libnautilus-private/nautilus-file-operations.c:1858
+#: libnautilus-private/nautilus-file-operations.c:1861
 msgid "Copying"
 msgstr "Kopijuojama"
 
-#: libnautilus-private/nautilus-file-operations.c:1859
+#: libnautilus-private/nautilus-file-operations.c:1862
 msgid "Preparing To Copy..."
 msgstr "Pasiruoðiama kopijavimui ..."
 
-#: libnautilus-private/nautilus-file-operations.c:1875
+#: libnautilus-private/nautilus-file-operations.c:1878
 msgid "You cannot copy items into the Trash."
 msgstr "Negalima kopijuoti elementø á ðiukðlinæ."
 
-#: libnautilus-private/nautilus-file-operations.c:1876
+#: libnautilus-private/nautilus-file-operations.c:1879
 msgid "Can't Copy to Trash"
 msgstr "Negaliu kopijuoti á ðiukðlinæ"
 
-#: libnautilus-private/nautilus-file-operations.c:1903
+#: libnautilus-private/nautilus-file-operations.c:1906
 msgid "The Trash must remain on the desktop."
 msgstr "Ðiukðlinë turi likti darbalaukyje."
 
-#: libnautilus-private/nautilus-file-operations.c:1904
+#: libnautilus-private/nautilus-file-operations.c:1907
 msgid "You cannot move this trash folder."
 msgstr "Negalima perkelti ðiukðlinës katalogo."
 
-#: libnautilus-private/nautilus-file-operations.c:1906
+#: libnautilus-private/nautilus-file-operations.c:1909
 msgid "You cannot copy the Trash."
 msgstr "Negalima kopijuoti ðiukðlinës."
 
-#: libnautilus-private/nautilus-file-operations.c:1907
+#: libnautilus-private/nautilus-file-operations.c:1910
 msgid "You cannot copy this trash folder."
 msgstr "Negalima kopijuoti ðiukðlinës katalogo."
 
-#: libnautilus-private/nautilus-file-operations.c:1909
+#: libnautilus-private/nautilus-file-operations.c:1912
 msgid "Can't Change Trash Location"
 msgstr "Negaliu pakeisti ðiukðlinës vietos."
 
-#: libnautilus-private/nautilus-file-operations.c:1910
+#: libnautilus-private/nautilus-file-operations.c:1913
 msgid "Can't Copy Trash"
 msgstr "Negaliu kopijuoti ðiukðlinës."
 
-#: libnautilus-private/nautilus-file-operations.c:1933
+#: libnautilus-private/nautilus-file-operations.c:1936
 msgid "You cannot move a folder into itself."
 msgstr "Tu negali perkelti katalogo á já patá."
 
-#: libnautilus-private/nautilus-file-operations.c:1934
+#: libnautilus-private/nautilus-file-operations.c:1937
 msgid "You cannot copy a folder into itself."
 msgstr "Tu negali nukopijuoti katalogo á já patá."
 
-#: libnautilus-private/nautilus-file-operations.c:1936
+#: libnautilus-private/nautilus-file-operations.c:1939
 msgid "Can't Move Into Self"
 msgstr "Negalima perkelti á save patá"
 
-#: libnautilus-private/nautilus-file-operations.c:1937
+#: libnautilus-private/nautilus-file-operations.c:1940
 msgid "Can't Copy Into Self"
 msgstr "Negalima kopijuoti á save patá"
 
-#: libnautilus-private/nautilus-file-operations.c:1949
+#: libnautilus-private/nautilus-file-operations.c:1952
 msgid "You cannot copy a file over itself."
 msgstr "Negali kopijuoti bylos á save paèià."
 
-#: libnautilus-private/nautilus-file-operations.c:1950
+#: libnautilus-private/nautilus-file-operations.c:1953
 msgid "Can't Copy Over Self"
 msgstr "Negalima kopijuoti ant savæs."
 
-#: libnautilus-private/nautilus-file-operations.c:2002
+#: libnautilus-private/nautilus-file-operations.c:2005
 msgid ""
 "Error creating new folder.\n"
 "\n"
@@ -2666,7 +2154,7 @@ msgstr ""
 "\n"
 "Jûs neturite teisiø áraðyti á norimà vietà"
 
-#: libnautilus-private/nautilus-file-operations.c:2005
+#: libnautilus-private/nautilus-file-operations.c:2008
 msgid ""
 "Error creating new folder.\n"
 "\n"
@@ -2676,326 +2164,326 @@ msgstr ""
 "\n"
 "Trûksta laisvos vietos."
 
-#: libnautilus-private/nautilus-file-operations.c:2008
+#: libnautilus-private/nautilus-file-operations.c:2011
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Klaida \"%s\" kuriant naujà katalogà."
 
-#: libnautilus-private/nautilus-file-operations.c:2012
+#: libnautilus-private/nautilus-file-operations.c:2015
 msgid "Error creating new folder"
 msgstr "Klaida kuriant naujà katalogà"
 
 #. localizers: the initial name of a new folder
-#: libnautilus-private/nautilus-file-operations.c:2099
+#: libnautilus-private/nautilus-file-operations.c:2102
 msgid "untitled folder"
 msgstr "bevardis katalogas"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2132
+#: libnautilus-private/nautilus-file-operations.c:2135
 msgid "Deleting files"
 msgstr "Trinamos bylos"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2134
-#: libnautilus-private/nautilus-file-operations.c:2169
+#: libnautilus-private/nautilus-file-operations.c:2137
+#: libnautilus-private/nautilus-file-operations.c:2172
 msgid "Files deleted:"
 msgstr "Iðtrintos bylos:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-private/nautilus-file-operations.c:2136
-#: libnautilus-private/nautilus-file-operations.c:2171
+#: libnautilus-private/nautilus-file-operations.c:2139
+#: libnautilus-private/nautilus-file-operations.c:2174
 msgid "Deleting"
 msgstr "Trinama"
 
-#: libnautilus-private/nautilus-file-operations.c:2137
+#: libnautilus-private/nautilus-file-operations.c:2140
 msgid "Preparing to Delete files..."
 msgstr "Ruoðiamasi trinti bylas..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2167
+#: libnautilus-private/nautilus-file-operations.c:2170
 msgid "Emptying the Trash"
 msgstr "Iðvaloma ðiukðlinë"
 
-#: libnautilus-private/nautilus-file-operations.c:2172
+#: libnautilus-private/nautilus-file-operations.c:2175
 msgid "Preparing to Empty the Trash..."
 msgstr "Ruoðiamasi iðvalyti ðiukðlinæ..."
 
-#: libnautilus-private/nautilus-file-operations.c:2206
-#: src/file-manager/fm-desktop-icon-view.c:1274
+#: libnautilus-private/nautilus-file-operations.c:2209
+#: src/file-manager/fm-desktop-icon-view.c:1275
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 msgid "Empty Trash"
 msgstr "Iðtuðtinti ðiukðlinæ"
 
-#: libnautilus-private/nautilus-file-operations.c:2222
+#: libnautilus-private/nautilus-file-operations.c:2225
 msgid ""
 "Are you sure you want to permanently delete all of the items in the Trash?"
 msgstr "Ar Jûs ið ties norite visiðkai iðtrinti visus elementus ið ðiukðlinës?"
 
-#: libnautilus-private/nautilus-file-operations.c:2232
+#: libnautilus-private/nautilus-file-operations.c:2235
 #, fuzzy
 msgid "_Empty"
 msgstr "Iðtuðtinti"
 
-#: libnautilus-private/nautilus-file-operations.c:2279
+#: libnautilus-private/nautilus-file-operations.c:2282
 msgid "foo"
 msgstr "foo"
 
-#: libnautilus-private/nautilus-file-operations.c:2279
-#: libnautilus-private/nautilus-file-operations.c:2289
+#: libnautilus-private/nautilus-file-operations.c:2282
+#: libnautilus-private/nautilus-file-operations.c:2292
 msgid "foo (copy)"
 msgstr "foo (kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2280
+#: libnautilus-private/nautilus-file-operations.c:2283
 msgid ".bashrc"
 msgstr ".bashrc"
 
-#: libnautilus-private/nautilus-file-operations.c:2280
+#: libnautilus-private/nautilus-file-operations.c:2283
 msgid ".bashrc (copy)"
 msgstr ".bashrc (kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2281
+#: libnautilus-private/nautilus-file-operations.c:2284
 msgid ".foo.txt"
 msgstr ".foo.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2281
+#: libnautilus-private/nautilus-file-operations.c:2284
 msgid ".foo (copy).txt"
 msgstr ".foo (kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2282
+#: libnautilus-private/nautilus-file-operations.c:2285
 msgid "foo foo"
 msgstr "foo foo"
 
-#: libnautilus-private/nautilus-file-operations.c:2282
+#: libnautilus-private/nautilus-file-operations.c:2285
 msgid "foo foo (copy)"
 msgstr "foo foo (kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2283
+#: libnautilus-private/nautilus-file-operations.c:2286
 msgid "foo.txt"
 msgstr "foo.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2283
-#: libnautilus-private/nautilus-file-operations.c:2290
+#: libnautilus-private/nautilus-file-operations.c:2286
+#: libnautilus-private/nautilus-file-operations.c:2293
 msgid "foo (copy).txt"
 msgstr "foo (kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2284
+#: libnautilus-private/nautilus-file-operations.c:2287
 msgid "foo foo.txt"
 msgstr "foo foo.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2284
-#: libnautilus-private/nautilus-file-operations.c:2306
+#: libnautilus-private/nautilus-file-operations.c:2287
+#: libnautilus-private/nautilus-file-operations.c:2309
 msgid "foo foo (copy).txt"
 msgstr "foo foo (kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2285
+#: libnautilus-private/nautilus-file-operations.c:2288
 msgid "foo foo.txt txt"
 msgstr "foo foo.txt txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2285
+#: libnautilus-private/nautilus-file-operations.c:2288
 msgid "foo foo (copy).txt txt"
 msgstr "foo foo (kopija).txt txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2286
+#: libnautilus-private/nautilus-file-operations.c:2289
 msgid "foo...txt"
 msgstr "foo...txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2286
+#: libnautilus-private/nautilus-file-operations.c:2289
 msgid "foo.. (copy).txt"
 msgstr "foo.. (kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2287
+#: libnautilus-private/nautilus-file-operations.c:2290
 msgid "foo..."
 msgstr "foo..."
 
-#: libnautilus-private/nautilus-file-operations.c:2287
+#: libnautilus-private/nautilus-file-operations.c:2290
 msgid "foo... (copy)"
 msgstr "foo... (kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2288
+#: libnautilus-private/nautilus-file-operations.c:2291
 msgid "foo. (copy)"
 msgstr "foo. (kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2288
+#: libnautilus-private/nautilus-file-operations.c:2291
 msgid "foo. (another copy)"
 msgstr "foo. (kita kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2289
-#: libnautilus-private/nautilus-file-operations.c:2291
+#: libnautilus-private/nautilus-file-operations.c:2292
+#: libnautilus-private/nautilus-file-operations.c:2294
 msgid "foo (another copy)"
 msgstr "foo (kita kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2290
-#: libnautilus-private/nautilus-file-operations.c:2292
+#: libnautilus-private/nautilus-file-operations.c:2293
+#: libnautilus-private/nautilus-file-operations.c:2295
 msgid "foo (another copy).txt"
 msgstr "foo (kita kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2291
+#: libnautilus-private/nautilus-file-operations.c:2294
 msgid "foo (3rd copy)"
 msgstr "foo (3-èia kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2292
+#: libnautilus-private/nautilus-file-operations.c:2295
 msgid "foo (3rd copy).txt"
 msgstr "foo (3-èia kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2293
+#: libnautilus-private/nautilus-file-operations.c:2296
 msgid "foo foo (another copy).txt"
 msgstr "foo foo (kita kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2293
+#: libnautilus-private/nautilus-file-operations.c:2296
 msgid "foo foo (3rd copy).txt"
 msgstr "foo foo (3-èia kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2294
-#: libnautilus-private/nautilus-file-operations.c:2311
+#: libnautilus-private/nautilus-file-operations.c:2297
+#: libnautilus-private/nautilus-file-operations.c:2314
 msgid "foo (13th copy)"
 msgstr "foo (13-a kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2294
+#: libnautilus-private/nautilus-file-operations.c:2297
 msgid "foo (14th copy)"
 msgstr "foo (14-a kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2295
-#: libnautilus-private/nautilus-file-operations.c:2312
+#: libnautilus-private/nautilus-file-operations.c:2298
+#: libnautilus-private/nautilus-file-operations.c:2315
 msgid "foo (13th copy).txt"
 msgstr "foo (13-a kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2295
+#: libnautilus-private/nautilus-file-operations.c:2298
 msgid "foo (14th copy).txt"
 msgstr "foo (14-a kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2296
+#: libnautilus-private/nautilus-file-operations.c:2299
 msgid "foo (21st copy)"
 msgstr "foo (21-a kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2296
-#: libnautilus-private/nautilus-file-operations.c:2298
+#: libnautilus-private/nautilus-file-operations.c:2299
+#: libnautilus-private/nautilus-file-operations.c:2301
 msgid "foo (22nd copy)"
 msgstr "foo (22-a kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2297
+#: libnautilus-private/nautilus-file-operations.c:2300
 msgid "foo (21st copy).txt"
 msgstr "foo (22-a kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2297
-#: libnautilus-private/nautilus-file-operations.c:2299
+#: libnautilus-private/nautilus-file-operations.c:2300
+#: libnautilus-private/nautilus-file-operations.c:2302
 msgid "foo (22nd copy).txt"
 msgstr "foo (22-a kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2298
-#: libnautilus-private/nautilus-file-operations.c:2300
+#: libnautilus-private/nautilus-file-operations.c:2301
+#: libnautilus-private/nautilus-file-operations.c:2303
 msgid "foo (23rd copy)"
 msgstr "foo (23-èia kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2299
-#: libnautilus-private/nautilus-file-operations.c:2301
+#: libnautilus-private/nautilus-file-operations.c:2302
+#: libnautilus-private/nautilus-file-operations.c:2304
 msgid "foo (23rd copy).txt"
 msgstr "foo (23-èia kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2300
-#: libnautilus-private/nautilus-file-operations.c:2302
+#: libnautilus-private/nautilus-file-operations.c:2303
+#: libnautilus-private/nautilus-file-operations.c:2305
 msgid "foo (24th copy)"
 msgstr "foo (24-a kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2301
-#: libnautilus-private/nautilus-file-operations.c:2303
+#: libnautilus-private/nautilus-file-operations.c:2304
+#: libnautilus-private/nautilus-file-operations.c:2306
 msgid "foo (24th copy).txt"
 msgstr "foo (24-a kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2302
+#: libnautilus-private/nautilus-file-operations.c:2305
 msgid "foo (25th copy)"
 msgstr "foo (25-a kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2303
+#: libnautilus-private/nautilus-file-operations.c:2306
 msgid "foo (25th copy).txt"
 msgstr "foo (25-a kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2304
+#: libnautilus-private/nautilus-file-operations.c:2307
 msgid "foo foo (24th copy)"
 msgstr "foo foo(24-a kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2304
+#: libnautilus-private/nautilus-file-operations.c:2307
 msgid "foo foo (25th copy)"
 msgstr "foo foo(25-a kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2305
+#: libnautilus-private/nautilus-file-operations.c:2308
 msgid "foo foo (24th copy).txt"
 msgstr "foo foo(24-a kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2305
+#: libnautilus-private/nautilus-file-operations.c:2308
 msgid "foo foo (25th copy).txt"
 msgstr "foo foo(25-a kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2306
+#: libnautilus-private/nautilus-file-operations.c:2309
 msgid "foo foo (100000000000000th copy).txt"
 msgstr "foo foo (100000000000000-oji kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2307
+#: libnautilus-private/nautilus-file-operations.c:2310
 msgid "foo (10th copy)"
 msgstr "foo (10-a kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2307
-#: libnautilus-private/nautilus-file-operations.c:2309
+#: libnautilus-private/nautilus-file-operations.c:2310
+#: libnautilus-private/nautilus-file-operations.c:2312
 msgid "foo (11th copy)"
 msgstr "foo (11-a kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2308
+#: libnautilus-private/nautilus-file-operations.c:2311
 msgid "foo (10th copy).txt"
 msgstr "foo (10-a kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2308
-#: libnautilus-private/nautilus-file-operations.c:2310
+#: libnautilus-private/nautilus-file-operations.c:2311
+#: libnautilus-private/nautilus-file-operations.c:2313
 msgid "foo (11th copy).txt"
 msgstr "foo (11-a kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2309
-#: libnautilus-private/nautilus-file-operations.c:2311
+#: libnautilus-private/nautilus-file-operations.c:2312
+#: libnautilus-private/nautilus-file-operations.c:2314
 msgid "foo (12th copy)"
 msgstr "foo (12-a kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2310
-#: libnautilus-private/nautilus-file-operations.c:2312
+#: libnautilus-private/nautilus-file-operations.c:2313
+#: libnautilus-private/nautilus-file-operations.c:2315
 msgid "foo (12th copy).txt"
 msgstr "foo (12-a kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2313
+#: libnautilus-private/nautilus-file-operations.c:2316
 msgid "foo (110th copy)"
 msgstr "foo (100-ji kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2313
+#: libnautilus-private/nautilus-file-operations.c:2316
 msgid "foo (111th copy)"
 msgstr "foo (111-a kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2314
+#: libnautilus-private/nautilus-file-operations.c:2317
 msgid "foo (110th copy).txt"
 msgstr "foo (111-a kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2314
+#: libnautilus-private/nautilus-file-operations.c:2317
 msgid "foo (111th copy).txt"
 msgstr "foo (111-a kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2315
+#: libnautilus-private/nautilus-file-operations.c:2318
 msgid "foo (122nd copy)"
 msgstr "foo (122-a kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2315
-#: libnautilus-private/nautilus-file-operations.c:2317
+#: libnautilus-private/nautilus-file-operations.c:2318
+#: libnautilus-private/nautilus-file-operations.c:2320
 msgid "foo (123rd copy)"
 msgstr "foo (123-èia kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2316
+#: libnautilus-private/nautilus-file-operations.c:2319
 msgid "foo (122nd copy).txt"
 msgstr "foo (122-a kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2316
-#: libnautilus-private/nautilus-file-operations.c:2318
+#: libnautilus-private/nautilus-file-operations.c:2319
+#: libnautilus-private/nautilus-file-operations.c:2321
 msgid "foo (123rd copy).txt"
 msgstr "foo (123-a kopija).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2317
+#: libnautilus-private/nautilus-file-operations.c:2320
 msgid "foo (124th copy)"
 msgstr "foo (124-a kopija)"
 
-#: libnautilus-private/nautilus-file-operations.c:2318
+#: libnautilus-private/nautilus-file-operations.c:2321
 msgid "foo (124th copy).txt"
 msgstr "foo (124-a kopija).txt"
 
@@ -3014,64 +2502,64 @@ msgstr "foo (124-a kopija).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2524
+#: libnautilus-private/nautilus-file.c:2521
 msgid "today at 00:00:00 PM"
 msgstr "ðiandien 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2525
+#: libnautilus-private/nautilus-file.c:2522
 msgid "today at %-I:%M:%S %p"
 msgstr "ðiandien %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2527
+#: libnautilus-private/nautilus-file.c:2524
 msgid "today at 00:00 PM"
 msgstr "ðiandien 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2528
+#: libnautilus-private/nautilus-file.c:2525
 msgid "today at %-I:%M %p"
 msgstr "ðiandien %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2530
+#: libnautilus-private/nautilus-file.c:2527
 msgid "today, 00:00 PM"
 msgstr "ðiandien, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2531
+#: libnautilus-private/nautilus-file.c:2528
 msgid "today, %-I:%M %p"
 msgstr "ðiandien, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2533
-#: libnautilus-private/nautilus-file.c:2534
+#: libnautilus-private/nautilus-file.c:2530
+#: libnautilus-private/nautilus-file.c:2531
 msgid "today"
 msgstr "ðiandien"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2543
+#: libnautilus-private/nautilus-file.c:2540
 msgid "yesterday at 00:00:00 PM"
 msgstr "vakar 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2544
+#: libnautilus-private/nautilus-file.c:2541
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "vakar %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2546
+#: libnautilus-private/nautilus-file.c:2543
 msgid "yesterday at 00:00 PM"
 msgstr "vakar 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2547
+#: libnautilus-private/nautilus-file.c:2544
 msgid "yesterday at %-I:%M %p"
 msgstr "vakar %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2549
+#: libnautilus-private/nautilus-file.c:2546
 msgid "yesterday, 00:00 PM"
 msgstr "vakar, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2550
+#: libnautilus-private/nautilus-file.c:2547
 msgid "yesterday, %-I:%M %p"
 msgstr "vakar, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2552
-#: libnautilus-private/nautilus-file.c:2553
+#: libnautilus-private/nautilus-file.c:2549
+#: libnautilus-private/nautilus-file.c:2550
 msgid "yesterday"
 msgstr "vakar"
 
@@ -3080,132 +2568,132 @@ msgstr "vakar"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2564
+#: libnautilus-private/nautilus-file.c:2561
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Treèiadienis, 0000 m. rugsëjo 00 d., 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2565
+#: libnautilus-private/nautilus-file.c:2562
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %Y m. %B %-d d., %H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2567
+#: libnautilus-private/nautilus-file.c:2564
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Pir, 0000 Sau 00, 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2568
+#: libnautilus-private/nautilus-file.c:2565
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %Y %b %d, %H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2570
+#: libnautilus-private/nautilus-file.c:2567
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Pir, 0000 Sau 00, 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2571
+#: libnautilus-private/nautilus-file.c:2568
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %Y %b %d, %H:%M"
 
-#: libnautilus-private/nautilus-file.c:2573
+#: libnautilus-private/nautilus-file.c:2570
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "0000 Sau 00, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2574
+#: libnautilus-private/nautilus-file.c:2571
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%Y %b %d, %H:%M"
 
-#: libnautilus-private/nautilus-file.c:2576
+#: libnautilus-private/nautilus-file.c:2573
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "0000 Sau 00, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2577
+#: libnautilus-private/nautilus-file.c:2574
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%Y %b %d, %H:%M"
 
-#: libnautilus-private/nautilus-file.c:2579
+#: libnautilus-private/nautilus-file.c:2576
 msgid "00/00/00, 00:00 PM"
 msgstr "0000-00-00 00:00"
 
-#: libnautilus-private/nautilus-file.c:2580
+#: libnautilus-private/nautilus-file.c:2577
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%Y-%m-%d %H:%M"
 
-#: libnautilus-private/nautilus-file.c:2582
+#: libnautilus-private/nautilus-file.c:2579
 msgid "00/00/00"
 msgstr "0000-00-00"
 
-#: libnautilus-private/nautilus-file.c:2583
+#: libnautilus-private/nautilus-file.c:2580
 msgid "%m/%d/%y"
 msgstr "%Y-%m-%d"
 
-#: libnautilus-private/nautilus-file.c:3865
+#: libnautilus-private/nautilus-file.c:3862
 msgid "0 items"
 msgstr "0 elementø"
 
-#: libnautilus-private/nautilus-file.c:3865
+#: libnautilus-private/nautilus-file.c:3862
 msgid "0 folders"
 msgstr "0 katalogø"
 
-#: libnautilus-private/nautilus-file.c:3866
+#: libnautilus-private/nautilus-file.c:3863
 msgid "0 files"
 msgstr "0 bylø"
 
-#: libnautilus-private/nautilus-file.c:3870
+#: libnautilus-private/nautilus-file.c:3867
 msgid "1 item"
 msgstr "1 elementas"
 
-#: libnautilus-private/nautilus-file.c:3870
+#: libnautilus-private/nautilus-file.c:3867
 msgid "1 folder"
 msgstr "1 katalogas"
 
-#: libnautilus-private/nautilus-file.c:3871
+#: libnautilus-private/nautilus-file.c:3868
 msgid "1 file"
 msgstr "1 byla"
 
-#: libnautilus-private/nautilus-file.c:3874
+#: libnautilus-private/nautilus-file.c:3871
 #, c-format
 msgid "%u items"
 msgstr "%u elementai"
 
-#: libnautilus-private/nautilus-file.c:3874
+#: libnautilus-private/nautilus-file.c:3871
 #, c-format
 msgid "%u folders"
 msgstr "%u katalogai"
 
-#: libnautilus-private/nautilus-file.c:3875
+#: libnautilus-private/nautilus-file.c:3872
 #, c-format
 msgid "%u files"
 msgstr "%u bylos"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4182
-#: libnautilus-private/nautilus-file.c:4198
+#: libnautilus-private/nautilus-file.c:4179
+#: libnautilus-private/nautilus-file.c:4195
 msgid "? items"
 msgstr "? elementø"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4188
+#: libnautilus-private/nautilus-file.c:4185
 msgid "? bytes"
 msgstr "? baitø"
 
-#: libnautilus-private/nautilus-file.c:4203
+#: libnautilus-private/nautilus-file.c:4200
 msgid "unknown type"
 msgstr "neþinomas tipas"
 
-#: libnautilus-private/nautilus-file.c:4206
+#: libnautilus-private/nautilus-file.c:4203
 msgid "unknown MIME type"
 msgstr "neþinomas MIME tipas"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4212
+#: libnautilus-private/nautilus-file.c:4209
 msgid "unknown"
 msgstr "neþinomas"
 
-#: libnautilus-private/nautilus-file.c:4244
+#: libnautilus-private/nautilus-file.c:4241
 msgid "program"
 msgstr "programa"
 
-#: libnautilus-private/nautilus-file.c:4256
+#: libnautilus-private/nautilus-file.c:4253
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -3214,7 +2702,7 @@ msgstr ""
 "Nerandu netgi \"x-directory/normal\" apraðymo. Greièiausiai, kad jûsø gnome-"
 "vfs.keys byla yra netinkamoje vietoje arba nerandama dël kitø prieþasèiø."
 
-#: libnautilus-private/nautilus-file.c:4260
+#: libnautilus-private/nautilus-file.c:4257
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -3223,15 +2711,15 @@ msgstr ""
 "Nerastas apraðymas mime tipui \"%s\" (byla yra \"%s\"), praðom praneðti "
 "gnome-vfs konferencijai."
 
-#: libnautilus-private/nautilus-file.c:4274
+#: libnautilus-private/nautilus-file.c:4271
 msgid "link"
 msgstr "nuoroda"
 
-#: libnautilus-private/nautilus-file.c:4294
+#: libnautilus-private/nautilus-file.c:4291
 msgid "link (broken)"
 msgstr "nuoroda (sugadinta)"
 
-#: libnautilus-private/nautilus-file.c:5355
+#: libnautilus-private/nautilus-file.c:5352
 #: libnautilus-private/nautilus-trash-directory.c:383
 #: src/file-manager/fm-desktop-icon-view.c:71
 msgid "Trash"
@@ -3252,73 +2740,89 @@ msgid "_Never"
 msgstr "_Niekada"
 
 #: libnautilus-private/nautilus-global-preferences.c:108
+#: src/nautilus-file-management-properties.glade.h:13
 #, no-c-format
 msgid "25%"
 msgstr "25%"
 
 #: libnautilus-private/nautilus-global-preferences.c:110
+#: src/nautilus-file-management-properties.glade.h:19
 #, no-c-format
 msgid "50%"
 msgstr "50%"
 
 #: libnautilus-private/nautilus-global-preferences.c:112
+#: src/nautilus-file-management-properties.glade.h:22
 #, no-c-format
 msgid "75%"
 msgstr "75%"
 
 #: libnautilus-private/nautilus-global-preferences.c:114
+#: src/nautilus-file-management-properties.glade.h:7
 #, no-c-format
 msgid "100%"
 msgstr "100%"
 
 #: libnautilus-private/nautilus-global-preferences.c:116
+#: src/nautilus-file-management-properties.glade.h:9
 #, no-c-format
 msgid "150%"
 msgstr "150%"
 
 #: libnautilus-private/nautilus-global-preferences.c:118
+#: src/nautilus-file-management-properties.glade.h:11
 #, no-c-format
 msgid "200%"
 msgstr "200%"
 
 #: libnautilus-private/nautilus-global-preferences.c:120
+#: src/nautilus-file-management-properties.glade.h:16
 #, no-c-format
 msgid "400%"
 msgstr "400%"
 
 #: libnautilus-private/nautilus-global-preferences.c:125
+#: src/nautilus-file-management-properties.glade.h:4
 msgid "100 K"
 msgstr "100 K"
 
 #: libnautilus-private/nautilus-global-preferences.c:126
+#: src/nautilus-file-management-properties.glade.h:20
 msgid "500 K"
 msgstr "500 K"
 
 #: libnautilus-private/nautilus-global-preferences.c:127
+#: src/nautilus-file-management-properties.glade.h:2
 msgid "1 MB"
 msgstr "1 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:128
+#: src/nautilus-file-management-properties.glade.h:14
 msgid "3 MB"
 msgstr "3 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:129
+#: src/nautilus-file-management-properties.glade.h:17
 msgid "5 MB"
 msgstr "5 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:130
+#: src/nautilus-file-management-properties.glade.h:3
 msgid "10 MB"
 msgstr "10 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:131
+#: src/nautilus-file-management-properties.glade.h:5
 msgid "100 MB"
 msgstr "100 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:137
+#: src/nautilus-file-management-properties.glade.h:36
 msgid "Activate items with a _single click"
 msgstr "Aktyvuoti elementus _vienu paspaudimu"
 
 #: libnautilus-private/nautilus-global-preferences.c:141
+#: src/nautilus-file-management-properties.glade.h:35
 msgid "Activate items with a _double click"
 msgstr "Aktyvuoti elementus _dvigubu paspaudimu."
 
@@ -3331,6 +2835,7 @@ msgid "Display _files when they are clicked"
 msgstr "_Rodyti bylas ant jø paspaudus"
 
 #: libnautilus-private/nautilus-global-preferences.c:157
+#: src/nautilus-file-management-properties.glade.h:69
 msgid "_Ask each time"
 msgstr "P_aklausti kiekvienà kartà"
 
@@ -3343,10 +2848,12 @@ msgid "Search for files by file name and file properties"
 msgstr "Ieðkoti bylø pagal jø vardus ir savybes"
 
 #: libnautilus-private/nautilus-global-preferences.c:176
+#: src/nautilus-file-management-properties.glade.h:51
 msgid "Icon View"
 msgstr "Piktogramø vaizdas"
 
 #: libnautilus-private/nautilus-global-preferences.c:177
+#: src/nautilus-file-management-properties.glade.h:52
 msgid "List View"
 msgstr "Sàraðo vaizdas"
 
@@ -3356,26 +2863,31 @@ msgstr "Rankiniu bûdu"
 
 #: libnautilus-private/nautilus-global-preferences.c:184
 #: libnautilus-private/nautilus-global-preferences.c:193
+#: src/nautilus-file-management-properties.glade.h:41
 msgid "By Name"
 msgstr "Pagal vardà"
 
 #: libnautilus-private/nautilus-global-preferences.c:185
 #: libnautilus-private/nautilus-global-preferences.c:194
+#: src/nautilus-file-management-properties.glade.h:42
 msgid "By Size"
 msgstr "Pagal dydá"
 
 #: libnautilus-private/nautilus-global-preferences.c:186
 #: libnautilus-private/nautilus-global-preferences.c:195
+#: src/nautilus-file-management-properties.glade.h:43
 msgid "By Type"
 msgstr "Pagal tipà"
 
 #: libnautilus-private/nautilus-global-preferences.c:187
 #: libnautilus-private/nautilus-global-preferences.c:196
+#: src/nautilus-file-management-properties.glade.h:40
 msgid "By Modification Date"
 msgstr "Pagal keitimo datà"
 
 #: libnautilus-private/nautilus-global-preferences.c:188
 #: libnautilus-private/nautilus-global-preferences.c:197
+#: src/nautilus-file-management-properties.glade.h:39
 msgid "By Emblems"
 msgstr "Pagal Emblemas"
 
@@ -3416,14 +2928,17 @@ msgid "24"
 msgstr "24"
 
 #: libnautilus-private/nautilus-global-preferences.c:215
+#: src/nautilus-file-management-properties.glade.h:82
 msgid "size"
 msgstr "dydis"
 
 #: libnautilus-private/nautilus-global-preferences.c:216
+#: src/nautilus-file-management-properties.glade.h:83
 msgid "type"
 msgstr "tipas"
 
 #: libnautilus-private/nautilus-global-preferences.c:217
+#: src/nautilus-file-management-properties.glade.h:76
 msgid "date modified"
 msgstr "modifikavimo data"
 
@@ -3432,30 +2947,37 @@ msgid "date changed"
 msgstr "pakeitimo data"
 
 #: libnautilus-private/nautilus-global-preferences.c:219
+#: src/nautilus-file-management-properties.glade.h:75
 msgid "date accessed"
 msgstr "naudojimo data"
 
 #: libnautilus-private/nautilus-global-preferences.c:220
+#: src/nautilus-file-management-properties.glade.h:80
 msgid "owner"
 msgstr "savininkas"
 
 #: libnautilus-private/nautilus-global-preferences.c:221
+#: src/nautilus-file-management-properties.glade.h:77
 msgid "group"
 msgstr "grupë"
 
 #: libnautilus-private/nautilus-global-preferences.c:222
+#: src/nautilus-file-management-properties.glade.h:81
 msgid "permissions"
 msgstr "teisës"
 
 #: libnautilus-private/nautilus-global-preferences.c:223
+#: src/nautilus-file-management-properties.glade.h:79
 msgid "octal permissions"
 msgstr "aðtuntainës teisës"
 
 #: libnautilus-private/nautilus-global-preferences.c:224
+#: src/nautilus-file-management-properties.glade.h:54
 msgid "MIME type"
 msgstr "MIME tipas"
 
 #: libnautilus-private/nautilus-global-preferences.c:225
+#: src/nautilus-file-management-properties.glade.h:78
 msgid "none"
 msgstr "niekas"
 
@@ -3504,65 +3026,65 @@ msgstr ""
 msgid "whether we are highlighted for a D&D drop"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:1712
+#: libnautilus-private/nautilus-icon-container.c:1715
 #, fuzzy
 msgid "The selection rectangle"
 msgstr "Paþymëtas piktogramas padaryti kintamo dydþio"
 
-#: libnautilus-private/nautilus-icon-container.c:3483
+#: libnautilus-private/nautilus-icon-container.c:3490
 #, fuzzy
 msgid "Frame Text"
 msgstr "Ádëti tekstà"
 
-#: libnautilus-private/nautilus-icon-container.c:3484
+#: libnautilus-private/nautilus-icon-container.c:3491
 msgid "Draw a frame around unselected text"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:3490
+#: libnautilus-private/nautilus-icon-container.c:3497
 #, fuzzy
 msgid "Selection Box Color"
 msgstr "Pasirinkite spalvà, kurià pridësite:"
 
-#: libnautilus-private/nautilus-icon-container.c:3491
+#: libnautilus-private/nautilus-icon-container.c:3498
 #, fuzzy
 msgid "Color of the selection box"
 msgstr "Eiti namo"
 
-#: libnautilus-private/nautilus-icon-container.c:3496
+#: libnautilus-private/nautilus-icon-container.c:3503
 #, fuzzy
 msgid "Selection Box Alpha"
 msgstr "Paþymëti visus"
 
-#: libnautilus-private/nautilus-icon-container.c:3497
+#: libnautilus-private/nautilus-icon-container.c:3504
 msgid "Opacity of the selection box"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:3504
+#: libnautilus-private/nautilus-icon-container.c:3511
 msgid "Highlight Alpha"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:3505
+#: libnautilus-private/nautilus-icon-container.c:3512
 #, fuzzy
 msgid "Opacity of the highlight for selected icons"
 msgstr "esamas paþymëjimas"
 
-#: libnautilus-private/nautilus-icon-container.c:3511
+#: libnautilus-private/nautilus-icon-container.c:3518
 msgid "Light Info Color"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:3512
+#: libnautilus-private/nautilus-icon-container.c:3519
 msgid "Color used for information text against a dark background"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:3517
+#: libnautilus-private/nautilus-icon-container.c:3524
 msgid "Dark Info Color"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-container.c:3518
+#: libnautilus-private/nautilus-icon-container.c:3525
 msgid "Color used for information text against a light background"
 msgstr ""
 
-#: libnautilus-private/nautilus-icon-dnd.c:657
+#: libnautilus-private/nautilus-icon-dnd.c:725
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
@@ -3572,7 +3094,7 @@ msgstr ""
 "iðdëstymà ir palikti ðá elementà ten, kur já padëjote? Tai sugadins "
 "iðsaugotà rankiná iðdëstymà."
 
-#: libnautilus-private/nautilus-icon-dnd.c:661
+#: libnautilus-private/nautilus-icon-dnd.c:729
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
@@ -3582,7 +3104,7 @@ msgstr ""
 "iðdëstymà ir palikti ðiuos elementus ten, kur juos padëjote? Tai sugadins "
 "iðsaugotà rankiná iðdëstymà."
 
-#: libnautilus-private/nautilus-icon-dnd.c:667
+#: libnautilus-private/nautilus-icon-dnd.c:735
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
@@ -3590,7 +3112,7 @@ msgstr ""
 "Ðis katalogas naudoja automatiná iðdëstymà. Ar norite perjungti á rankiná "
 "iðdëstymà ir palikti ðá elementà ten, kur já padëjote?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:670
+#: libnautilus-private/nautilus-icon-dnd.c:738
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
@@ -3598,11 +3120,11 @@ msgstr ""
 "Ðis katalogas naudoja automatiná iðdëstymà. Ar norite perjungti á rankiná "
 "iðdëstymà ir palikti ðiuos elementus ten, kur juos padëjote?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:675
+#: libnautilus-private/nautilus-icon-dnd.c:743
 msgid "Switch to Manual Layout?"
 msgstr "Perjungti á rankiná iðdëstymà ?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:676
+#: libnautilus-private/nautilus-icon-dnd.c:744
 msgid "Switch"
 msgstr "Perjungti"
 
@@ -3827,7 +3349,7 @@ msgstr ""
 msgid "Associate Application"
 msgstr "Mëgstamiausios programos"
 
-#: libnautilus-private/nautilus-program-choosing.c:494
+#: libnautilus-private/nautilus-program-choosing.c:495
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -3836,12 +3358,12 @@ msgstr ""
 "\"%s\" negali atidaryti \"%s\", nes \"%s\" negali pasiekti bylø \"%s\" "
 "vietose. Ar norite pasirinkti kità programà?"
 
-#: libnautilus-private/nautilus-program-choosing.c:499
-#: libnautilus-private/nautilus-program-choosing.c:521
+#: libnautilus-private/nautilus-program-choosing.c:500
+#: libnautilus-private/nautilus-program-choosing.c:522
 msgid "Can't Open Location"
 msgstr "Negali atidaryti vietos"
 
-#: libnautilus-private/nautilus-program-choosing.c:516
+#: libnautilus-private/nautilus-program-choosing.c:517
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -3852,7 +3374,7 @@ msgstr ""
 "vietose. Nëra kitø programø ðiai bylai perþiûrëti. Jei persikopijuosite ðià "
 "bylà á savo kompiuterá, jûs galësite jà atsidaryti."
 
-#: libnautilus-private/nautilus-program-choosing.c:669
+#: libnautilus-private/nautilus-program-choosing.c:670
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
@@ -3860,12 +3382,12 @@ msgstr ""
 "Atsipraðau, bet Jûs negalite ávykdyti komandø ið nutolusiø vietø saugumo "
 "sumetimais."
 
-#: libnautilus-private/nautilus-program-choosing.c:671
+#: libnautilus-private/nautilus-program-choosing.c:672
 msgid "Can't execute remote links"
 msgstr "Negaliu ávykdyti nutolusiø nuorodø"
 
-#: libnautilus-private/nautilus-program-choosing.c:681
-#: libnautilus-private/nautilus-program-choosing.c:747
+#: libnautilus-private/nautilus-program-choosing.c:682
+#: libnautilus-private/nautilus-program-choosing.c:748
 #, fuzzy
 msgid ""
 "There was an error launching the application.\n"
@@ -3873,25 +3395,25 @@ msgid ""
 "Details: "
 msgstr "Atsipraðau, bet ávyko klaida nuskaitant %s."
 
-#: libnautilus-private/nautilus-program-choosing.c:685
-#: libnautilus-private/nautilus-program-choosing.c:751
+#: libnautilus-private/nautilus-program-choosing.c:686
+#: libnautilus-private/nautilus-program-choosing.c:752
 #, fuzzy
 msgid "Error launching application"
 msgstr "Mëgstamiausios programos"
 
-#: libnautilus-private/nautilus-program-choosing.c:713
+#: libnautilus-private/nautilus-program-choosing.c:714
 msgid ""
 "This drop target only supports local files.\n"
 "\n"
 "To open non-local files copy them to a local folder and then drop them again."
 msgstr ""
 
-#: libnautilus-private/nautilus-program-choosing.c:716
-#: libnautilus-private/nautilus-program-choosing.c:728
+#: libnautilus-private/nautilus-program-choosing.c:717
+#: libnautilus-private/nautilus-program-choosing.c:729
 msgid "Drop target only supports local files"
 msgstr ""
 
-#: libnautilus-private/nautilus-program-choosing.c:725
+#: libnautilus-private/nautilus-program-choosing.c:726
 msgid ""
 "This drop target only supports local files.\n"
 "\n"
@@ -4191,6 +3713,10 @@ msgstr "Þiûrëti kaip %s"
 msgid "%s Viewer"
 msgstr "%s þiûryklë"
 
+#: libnautilus-private/nautilus-volume-monitor.c:676
+msgid "Unknown"
+msgstr "Neþinomas"
+
 #. Populate table with items we know localized names for.
 #: libnautilus-private/nautilus-volume-monitor.c:803
 msgid "Floppy"
@@ -4341,6 +3867,15 @@ msgstr "Namø katalogas"
 msgid "View your home folder in the Nautilus file manager"
 msgstr "Rodyti namø aplankà Nautilus bylø tvarkyklëje"
 
+#: nautilus-file-management-properties.desktop.in.h:1
+msgid "Change how files are managed"
+msgstr ""
+
+#: nautilus-file-management-properties.desktop.in.h:2
+#, fuzzy
+msgid "File Management"
+msgstr "Bylos pavadinimas"
+
 #: src/Nautilus_shell.server.in.h:1
 msgid "Factory for Nautilus shell and file manager"
 msgstr ""
@@ -4433,21 +3968,25 @@ msgstr "Piktogramø vaizdas"
 msgid "View as List"
 msgstr "Sàraðo vaizdas"
 
-#: src/file-manager/fm-desktop-icon-view.c:784
+#: src/file-manager/egg-recent-vfs-utils.c:90
+msgid " (invalid Unicode)"
+msgstr " (neteisingas Unikodas)"
+
+#: src/file-manager/fm-desktop-icon-view.c:785
 msgid "Background"
 msgstr "Fonas"
 
-#: src/file-manager/fm-desktop-icon-view.c:961
+#: src/file-manager/fm-desktop-icon-view.c:962
 #, c-format
 msgid "Error executing utility program '%s': %s"
 msgstr "Klaida paleidþiant pagalbinæ programà '%s': %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1292
+#: src/file-manager/fm-desktop-icon-view.c:1293
 #, fuzzy
 msgid "E_ject"
 msgstr "Vykdymas"
 
-#: src/file-manager/fm-desktop-icon-view.c:1392
+#: src/file-manager/fm-desktop-icon-view.c:1393
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
 #, fuzzy
 msgid "_Unmount Volume"
@@ -4461,7 +4000,7 @@ msgstr "Numontuoti Skirsná"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: src/file-manager/fm-desktop-icon-view.c:1516
+#: src/file-manager/fm-desktop-icon-view.c:1517
 #, c-format
 msgid "%s's Home"
 msgstr "%s namai"
@@ -4772,7 +4311,7 @@ msgstr "Padaryti nuorodà"
 #. FIXME: We don't use spaces to pad labels!
 #: src/file-manager/fm-directory-view.c:4393
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
-#: src/nautilus-information-panel.c:965
+#: src/nautilus-information-panel.c:1018
 msgid "_Empty Trash"
 msgstr "_Iðvalyti ðiukðlinæ"
 
@@ -5044,15 +4583,15 @@ msgstr "_Atstatyti piktogramos originalø dydá"
 msgid "pointing at \"%s\""
 msgstr "rodo á \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2238
+#: src/file-manager/fm-icon-view.c:2237
 msgid "Drag and drop is only supported to local file systems."
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:2239 src/file-manager/fm-icon-view.c:2257
+#: src/file-manager/fm-icon-view.c:2238 src/file-manager/fm-icon-view.c:2256
 msgid "Drag and Drop error"
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:2256
+#: src/file-manager/fm-icon-view.c:2255
 msgid "An invalid drag type was used."
 msgstr ""
 
@@ -5075,8 +4614,8 @@ msgstr "Tipas"
 msgid "Date Modified"
 msgstr "Keitimo data"
 
-#: src/file-manager/fm-properties-window.c:313
-#: src/nautilus-information-panel.c:492
+#: src/file-manager/fm-properties-window.c:327
+#: src/nautilus-information-panel.c:506
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
 "image to set a custom icon."
@@ -5084,13 +4623,13 @@ msgstr ""
 "Jûs negalite priskirti daugiau nei vienà papildomà piktogramà vienu metu ! "
 "Papildomos piktogramos nustatymui praðom tempti tik vienà paveikslëlá."
 
-#: src/file-manager/fm-properties-window.c:315
-#: src/nautilus-information-panel.c:494
+#: src/file-manager/fm-properties-window.c:329
+#: src/nautilus-information-panel.c:508
 msgid "More Than One Image"
 msgstr "Daugiau nei vienas paveikslëlis"
 
-#: src/file-manager/fm-properties-window.c:324
-#: src/nautilus-information-panel.c:513
+#: src/file-manager/fm-properties-window.c:338
+#: src/nautilus-information-panel.c:527
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
 "custom icons."
@@ -5098,13 +4637,13 @@ msgstr ""
 "Byla, kurià jûs pertempëte yra nevietinë. Kaip vartotojo pasirinktas "
 "piktogramas galima naudoti tik vietinius paveikslëlius."
 
-#: src/file-manager/fm-properties-window.c:326
-#: src/nautilus-information-panel.c:515
+#: src/file-manager/fm-properties-window.c:340
+#: src/nautilus-information-panel.c:529
 msgid "Local Images Only"
 msgstr "Tik vietinius paveikslëlius"
 
-#: src/file-manager/fm-properties-window.c:331
-#: src/nautilus-information-panel.c:520
+#: src/file-manager/fm-properties-window.c:345
+#: src/nautilus-information-panel.c:534
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
 "custom icons."
@@ -5112,51 +4651,51 @@ msgstr ""
 "Byla, kurià jûs pertempëte nëra paveikslëlis. Kaip vartotojo pasirinktas "
 "piktogramas galima naudoti tik vietinius paveikslëlius."
 
-#: src/file-manager/fm-properties-window.c:333
-#: src/nautilus-information-panel.c:522
+#: src/file-manager/fm-properties-window.c:347
+#: src/nautilus-information-panel.c:536
 msgid "Images Only"
 msgstr "Tik paveikslëlius"
 
-#: src/file-manager/fm-properties-window.c:608
+#: src/file-manager/fm-properties-window.c:622
 #, c-format
 msgid "%s Properties"
 msgstr "%s savybës"
 
-#: src/file-manager/fm-properties-window.c:809
+#: src/file-manager/fm-properties-window.c:870
 msgid "Cancel Group Change?"
 msgstr "Nutraukti grupës pakeitimà?"
 
-#: src/file-manager/fm-properties-window.c:810
+#: src/file-manager/fm-properties-window.c:871
 msgid "Changing group"
 msgstr "Keièiama grupë"
 
-#: src/file-manager/fm-properties-window.c:971
+#: src/file-manager/fm-properties-window.c:1032
 msgid "Cancel Owner Change?"
 msgstr "Nutraukti savininko pakeitimà?"
 
-#: src/file-manager/fm-properties-window.c:972
+#: src/file-manager/fm-properties-window.c:1033
 msgid "Changing owner"
 msgstr "Keièiamas savininkas"
 
-#: src/file-manager/fm-properties-window.c:1154
+#: src/file-manager/fm-properties-window.c:1215
 msgid "nothing"
 msgstr "niekas"
 
-#: src/file-manager/fm-properties-window.c:1156
+#: src/file-manager/fm-properties-window.c:1217
 msgid "unreadable"
 msgstr "neáskaitomas"
 
-#: src/file-manager/fm-properties-window.c:1165
+#: src/file-manager/fm-properties-window.c:1226
 #, c-format
 msgid "1 item, with size %s"
 msgstr "1 elementas, %s dydþio"
 
-#: src/file-manager/fm-properties-window.c:1167
+#: src/file-manager/fm-properties-window.c:1228
 #, fuzzy, c-format
 msgid "%d items, totalling %s"
 msgstr "%d elementø, sudaranèiø %s"
 
-#: src/file-manager/fm-properties-window.c:1173
+#: src/file-manager/fm-properties-window.c:1234
 msgid "(some contents unreadable)"
 msgstr "(kaþkiek turinio neáskaitoma)"
 
@@ -5165,165 +4704,174 @@ msgstr "(kaþkiek turinio neáskaitoma)"
 #. * "Contents:" title to line up with the first line of the 2-line value.
 #. * Maybe there's a better way to do this, but I couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1187
+#: src/file-manager/fm-properties-window.c:1248
 msgid "Contents:"
 msgstr "Turinys:"
 
-#: src/file-manager/fm-properties-window.c:1540
+#: src/file-manager/fm-properties-window.c:1601
 msgid "Basic"
 msgstr "Esmë"
 
 #. Name label
-#: src/file-manager/fm-properties-window.c:1567
+#: src/file-manager/fm-properties-window.c:1628
 #: src/nautilus-bookmarks-window.glade.h:4
 #, fuzzy
 msgid "_Name:"
 msgstr "_Pavadinimas"
 
-#: src/file-manager/fm-properties-window.c:1625
+#: src/file-manager/fm-properties-window.c:1686
 msgid "Type:"
 msgstr "Tipas:"
 
-#: src/file-manager/fm-properties-window.c:1630
+#: src/file-manager/fm-properties-window.c:1691
 msgid "Size:"
 msgstr "Dydis:"
 
-#: src/file-manager/fm-properties-window.c:1632 src/nautilus-location-bar.c:61
+#: src/file-manager/fm-properties-window.c:1693 src/nautilus-location-bar.c:61
 msgid "Location:"
 msgstr "Vieta:"
 
-#: src/file-manager/fm-properties-window.c:1634
+#: src/file-manager/fm-properties-window.c:1695
 #, fuzzy
 msgid "Link target:"
 msgstr "Nuorodos paskirtis:"
 
-#: src/file-manager/fm-properties-window.c:1637
+#: src/file-manager/fm-properties-window.c:1698
 #, fuzzy
 msgid "MIME type:"
 msgstr "MIME tipas"
 
-#: src/file-manager/fm-properties-window.c:1643
+#: src/file-manager/fm-properties-window.c:1704
 msgid "Modified:"
 msgstr "Keista:"
 
-#: src/file-manager/fm-properties-window.c:1646
+#: src/file-manager/fm-properties-window.c:1707
 msgid "Accessed:"
 msgstr "Naudota:"
 
-#: src/file-manager/fm-properties-window.c:1655
+#: src/file-manager/fm-properties-window.c:1716
 #, fuzzy
 msgid "_Select Custom Icon..."
 msgstr "Pasirinkti papildomà piktogramà..."
 
-#: src/file-manager/fm-properties-window.c:1661
+#: src/file-manager/fm-properties-window.c:1722
 #, fuzzy
 msgid "_Remove Custom Icon"
 msgstr "Iðmesti vartotojo pasirinktà (papildomà) piktogramà"
 
-#: src/file-manager/fm-properties-window.c:1698
-#: src/file-manager/fm-search-list-view.c:500
-msgid "Emblems"
-msgstr "Emblemos"
-
-#: src/file-manager/fm-properties-window.c:1865
+#: src/file-manager/fm-properties-window.c:1926
 #, fuzzy
 msgid "_Read"
 msgstr "Skaitymas"
 
-#: src/file-manager/fm-properties-window.c:1867
+#: src/file-manager/fm-properties-window.c:1928
 #, fuzzy
 msgid "_Write"
 msgstr "Raðymas"
 
-#: src/file-manager/fm-properties-window.c:1869
+#: src/file-manager/fm-properties-window.c:1930
 #, fuzzy
 msgid "E_xecute"
 msgstr "Vykdymas"
 
-#: src/file-manager/fm-properties-window.c:1941
+#: src/file-manager/fm-properties-window.c:2002
 #, fuzzy
 msgid "Set _user ID"
 msgstr "Nustatyti vartotojo ID"
 
-#: src/file-manager/fm-properties-window.c:1946
+#: src/file-manager/fm-properties-window.c:2007
 #, fuzzy
 msgid "Special flags:"
 msgstr "Specialios vëliavëlës:"
 
-#: src/file-manager/fm-properties-window.c:1949
+#: src/file-manager/fm-properties-window.c:2010
 #, fuzzy
 msgid "Set gro_up ID"
 msgstr "Nustatyti grupës ID"
 
-#: src/file-manager/fm-properties-window.c:1951
+#: src/file-manager/fm-properties-window.c:2012
 #, fuzzy
 msgid "_Sticky"
 msgstr "Lipnus"
 
-#: src/file-manager/fm-properties-window.c:1979
+#: src/file-manager/fm-properties-window.c:2040
 msgid "Permissions"
 msgstr "Teisës"
 
-#: src/file-manager/fm-properties-window.c:1985
+#: src/file-manager/fm-properties-window.c:2046
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Jûs nesate savininkas, todël negalite tø teisiø keisti."
 
-#: src/file-manager/fm-properties-window.c:1998
+#: src/file-manager/fm-properties-window.c:2059
 #, fuzzy
 msgid "File owner:"
 msgstr "Bylos savininkas:"
 
-#: src/file-manager/fm-properties-window.c:2009
+#: src/file-manager/fm-properties-window.c:2070
 #, fuzzy
 msgid "_File group:"
 msgstr "Bylos grupë:"
 
-#: src/file-manager/fm-properties-window.c:2018
+#: src/file-manager/fm-properties-window.c:2079
 #, fuzzy
 msgid "File group:"
 msgstr "Bylos grupë:"
 
-#: src/file-manager/fm-properties-window.c:2026
+#: src/file-manager/fm-properties-window.c:2087
 msgid "Owner:"
 msgstr "Savininkas:"
 
-#: src/file-manager/fm-properties-window.c:2027
+#: src/file-manager/fm-properties-window.c:2088
 msgid "Group:"
 msgstr "Grupë:"
 
-#: src/file-manager/fm-properties-window.c:2028
+#: src/file-manager/fm-properties-window.c:2089
 msgid "Others:"
 msgstr "Kiti:"
 
-#: src/file-manager/fm-properties-window.c:2091
+#: src/file-manager/fm-properties-window.c:2152
 #, fuzzy
 msgid "Text view:"
 msgstr "Teksto vaizdas"
 
-#: src/file-manager/fm-properties-window.c:2092
+#: src/file-manager/fm-properties-window.c:2153
 #, fuzzy
 msgid "Number view:"
 msgstr "Skaitinis vaizdas:"
 
-#: src/file-manager/fm-properties-window.c:2093
+#: src/file-manager/fm-properties-window.c:2154
 #, fuzzy
 msgid "Last changed:"
 msgstr "Paskutinis pakeitimas:"
 
-#: src/file-manager/fm-properties-window.c:2097
+#: src/file-manager/fm-properties-window.c:2158
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Neina nustatyti \"%s\" teisiø."
 
-#: src/file-manager/fm-properties-window.c:2403
+#: src/file-manager/fm-properties-window.c:2347
+#: src/nautilus-bookmarks-window.c:138 src/nautilus-preferences-dialog.c:428
+#: src/nautilus-property-browser.c:1438 src/nautilus-window-menus.c:711
+#, fuzzy, c-format
+msgid ""
+"There was an error displaying help: \n"
+"%s"
+msgstr "Atsipraðau, bet ávyko klaida nuskaitant %s."
+
+#: src/file-manager/fm-properties-window.c:2349
+#, fuzzy
+msgid "Couldn't show help"
+msgstr "Negaliu pridëti temos"
+
+#: src/file-manager/fm-properties-window.c:2611
 msgid "Cancel Showing Properties Window?"
 msgstr "Nutraukti savybiø lango rodymà?"
 
-#: src/file-manager/fm-properties-window.c:2404
+#: src/file-manager/fm-properties-window.c:2612
 msgid "Creating Properties window"
 msgstr "Kuriamas savybiø langas"
 
-#: src/file-manager/fm-properties-window.c:2498
+#: src/file-manager/fm-properties-window.c:2706
 msgid "Select an icon:"
 msgstr "Pasirink piktogramà:"
 
@@ -5623,7 +5171,7 @@ msgstr "Nautilus'ui nepavyko primontuoti nurodyto skirsnio."
 #. add the reset background item, possibly disabled
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:17
 #: src/file-manager/nautilus-directory-view-ui.xml.h:34
-#: src/nautilus-information-panel.c:329
+#: src/nautilus-information-panel.c:349
 #, fuzzy
 msgid "Use _Default Background"
 msgstr "Naudoti áprastà fonà"
@@ -6059,14 +5607,6 @@ msgstr ""
 "surasti apvalkalo objektà. oafd nuþudymas bei Nautilus paleidimas ið naujo "
 "gali padëti iðspræsti ðià problemà."
 
-#: src/nautilus-bookmarks-window.c:138 src/nautilus-preferences-dialog.c:428
-#: src/nautilus-property-browser.c:1438 src/nautilus-window-menus.c:702
-#, fuzzy, c-format
-msgid ""
-"There was an error displaying help: \n"
-"%s"
-msgstr "Atsipraðau, bet ávyko klaida nuskaitant %s."
-
 #: src/nautilus-bookmarks-window.c:171
 msgid "No bookmarks defined"
 msgstr ""
@@ -6099,6 +5639,203 @@ msgstr "Maþiau parametrø"
 msgid "Find Them!"
 msgstr "Rasti juos!"
 
+#: src/nautilus-file-management-properties.glade.h:1
+msgid "    "
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:23
+msgid "<span weight=\"bold\">Behaviour</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:24
+msgid "<span weight=\"bold\">Default View</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:25
+#, fuzzy
+msgid "<span weight=\"bold\">Executable Text Files</span>"
+msgstr "Vykdomosios tekstinës bylos"
+
+#: src/nautilus-file-management-properties.glade.h:26
+msgid "<span weight=\"bold\">Folders</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:27
+msgid "<span weight=\"bold\">Icon Captions</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:28
+msgid "<span weight=\"bold\">Icon View Defaults</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:29
+msgid "<span weight=\"bold\">Image Files</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:30
+msgid "<span weight=\"bold\">List View Defaults</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:31
+msgid "<span weight=\"bold\">Sound Files</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:32
+msgid "<span weight=\"bold\">Text Files</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:33
+msgid "<span weight=\"bold\">Trash</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:34
+msgid "<span weight=\"bold\">Tree View Defaults</span>"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:37
+#, fuzzy
+msgid "Always"
+msgstr "_Visada"
+
+#: src/nautilus-file-management-properties.glade.h:38
+#, fuzzy
+msgid "Ask before _emptying the Trash or deleting files"
+msgstr "Paklausti prieð iðvalant ðiukðlinæ arba iðtrinant bylas"
+
+#: src/nautilus-file-management-properties.glade.h:44
+#, fuzzy
+msgid ""
+"Choose the order of information to appear beneath icon names. More "
+"informations appear as you zoom in closer."
+msgstr ""
+"Pasirinkite tvarkà, kuria informacija bus pateikiama po piktogramø vardais. "
+"Daugiau informacijos bus pamatoma padidinus mastelá"
+
+#: src/nautilus-file-management-properties.glade.h:45
+#: src/nautilus-preferences-dialog.c:217
+#, fuzzy
+msgid "Default _zoom level:"
+msgstr "Standartinis mastelis:"
+
+#: src/nautilus-file-management-properties.glade.h:46
+#, fuzzy
+msgid "E_xecute scripts when they are clicked"
+msgstr "_Vykdyti bylas ant jø paspaudus"
+
+#: src/nautilus-file-management-properties.glade.h:47
+#, fuzzy
+msgid "File Management Preferences"
+msgstr "Darbalaukio parinktys"
+
+#: src/nautilus-file-management-properties.glade.h:48
+#, fuzzy
+msgid "Files and Folder"
+msgstr "bevardis katalogas"
+
+#: src/nautilus-file-management-properties.glade.h:49
+#, fuzzy
+msgid "I_nclude a Delete command that bypasses Trash"
+msgstr "Ádëti iðtrynimo komandà kuri aplenkia ðiukðlinæ"
+
+#: src/nautilus-file-management-properties.glade.h:50
+#: src/nautilus-preferences-dialog.c:159 src/nautilus-preferences-dialog.c:384
+msgid "Icon Captions"
+msgstr "Piktogramø pavadinimai"
+
+#: src/nautilus-file-management-properties.glade.h:53
+#, fuzzy
+msgid "Local Files Only"
+msgstr "_Tik vietinëms bylos"
+
+#: src/nautilus-file-management-properties.glade.h:55
+#, fuzzy
+msgid "Never"
+msgstr "_Niekada"
+
+#: src/nautilus-file-management-properties.glade.h:57
+#, fuzzy
+msgid "Preview _sound files:"
+msgstr "Garso bylø perþiûra"
+
+#: src/nautilus-file-management-properties.glade.h:58
+#, fuzzy
+msgid "Show _number of items:"
+msgstr "Rodyti elementø skaièiø kataloguose"
+
+#: src/nautilus-file-management-properties.glade.h:59
+msgid "Show _only folders"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:60
+msgid "Show _thumbnails:"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:61
+msgid "Show hidden and _backup files"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:62
+#, fuzzy
+msgid "Show te_xt in icons:"
+msgstr "Rodyti tekstà piktogramose"
+
+#: src/nautilus-file-management-properties.glade.h:63
+#, fuzzy
+msgid "Sort _folders before files"
+msgstr "Visada iðdëstyti katalogus prieð bylas"
+
+#: src/nautilus-file-management-properties.glade.h:64
+#: src/nautilus-preferences-dialog.c:212
+#, fuzzy
+msgid "Sort in _reverse"
+msgstr "Rikiuoti atvirkðtine tvarka"
+
+#: src/nautilus-file-management-properties.glade.h:65
+#, fuzzy
+msgid "Use _manual layout"
+msgstr "Naudoti glaustesná iðdëstymà"
+
+#: src/nautilus-file-management-properties.glade.h:66
+#, fuzzy
+msgid "View _new folders using:"
+msgstr "Þiûrëti naujus katalogus naudojant:"
+
+#: src/nautilus-file-management-properties.glade.h:67
+#: src/nautilus-preferences-dialog.c:379
+#, fuzzy
+msgid "Views"
+msgstr "_Rodyti"
+
+#: src/nautilus-file-management-properties.glade.h:68
+msgid "_Arrange Items:"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:70
+#: src/nautilus-preferences-dialog.c:193
+#, fuzzy
+msgid "_Default zoom level:"
+msgstr "Standartinis mastelis:"
+
+#: src/nautilus-file-management-properties.glade.h:71
+msgid "_Only for files smaller than:"
+msgstr ""
+
+#: src/nautilus-file-management-properties.glade.h:72
+#: src/nautilus-preferences-dialog.c:74
+#, fuzzy
+msgid "_Open each file or folder in a new window"
+msgstr "Atidaryti kiekvienà bylà ar katalogà atskirame lange"
+
+#: src/nautilus-file-management-properties.glade.h:73
+#, fuzzy
+msgid "_Use compact layout"
+msgstr "Naudoti glaustesná iðdëstymà"
+
+#: src/nautilus-file-management-properties.glade.h:74
+#, fuzzy
+msgid "_View scripts when they are clicked"
+msgstr "_Vykdyti bylas ant jø paspaudus"
+
 #: src/nautilus-first-time-druid.c:40
 #, fuzzy
 msgid ""
@@ -6112,13 +5849,13 @@ msgstr ""
 "\n"
 "Jûs galite iðtrinti ðià bylà, jei norite paleisti ðá vadovà ið naujo.\n"
 
-#: src/nautilus-information-panel.c:829
+#: src/nautilus-information-panel.c:882
 #, c-format
 msgid "Open with %s"
 msgstr "Atidaryti su %s"
 
 #. Catch-all button after all the others.
-#: src/nautilus-information-panel.c:858
+#: src/nautilus-information-panel.c:911
 msgid "Open with..."
 msgstr "Atidaryti su..."
 
@@ -6168,7 +5905,7 @@ msgstr "Paleisti Nautilus ið naujo."
 
 #. Set initial window title
 #: src/nautilus-main.c:184 src/nautilus-window-manage-views.c:227
-#: src/nautilus-window-menus.c:662 src/nautilus-window.c:192
+#: src/nautilus-window-menus.c:671 src/nautilus-window.c:192
 msgid "Nautilus"
 msgstr "Nautilus "
 
@@ -6202,11 +5939,6 @@ msgstr "_Times"
 #, fuzzy
 msgid "New Window Behavior"
 msgstr "Naujas langas"
-
-#: src/nautilus-preferences-dialog.c:74
-#, fuzzy
-msgid "_Open each file or folder in a new window"
-msgstr "Atidaryti kiekvienà bylà ar katalogà atskirame lange"
 
 #: src/nautilus-preferences-dialog.c:77 src/nautilus-preferences-dialog.c:82
 #: src/nautilus-preferences-dialog.c:87 src/nautilus-preferences-dialog.c:92
@@ -6301,10 +6033,6 @@ msgstr "Formatuoti"
 msgid "Fo_lders before files"
 msgstr "Visada iðdëstyti katalogus prieð bylas"
 
-#: src/nautilus-preferences-dialog.c:159 src/nautilus-preferences-dialog.c:384
-msgid "Icon Captions"
-msgstr "Piktogramø pavadinimai"
-
 #: src/nautilus-preferences-dialog.c:161
 msgid ""
 "Choose the order for information to appear beneath icon names.\n"
@@ -6337,11 +6065,6 @@ msgstr ""
 msgid "_Sort in reverse"
 msgstr "Rikiuoti atvirkðtine tvarka"
 
-#: src/nautilus-preferences-dialog.c:193
-#, fuzzy
-msgid "_Default zoom level:"
-msgstr "Standartinis mastelis:"
-
 #: src/nautilus-preferences-dialog.c:199
 #, fuzzy
 msgid "Use co_mpact layout"
@@ -6356,16 +6079,6 @@ msgstr "Sàraðo vaizdo standartai"
 #: src/nautilus-preferences-dialog.c:207
 msgid "Arrange _items:"
 msgstr ""
-
-#: src/nautilus-preferences-dialog.c:212
-#, fuzzy
-msgid "Sort in _reverse"
-msgstr "Rikiuoti atvirkðtine tvarka"
-
-#: src/nautilus-preferences-dialog.c:217
-#, fuzzy
-msgid "Default _zoom level:"
-msgstr "Standartinis mastelis:"
 
 #: src/nautilus-preferences-dialog.c:232
 msgid "Search Complexity Options"
@@ -6490,11 +6203,6 @@ msgstr "Atnaujinimo daþnumas"
 #, fuzzy
 msgid "_Update frequency in minutes"
 msgstr "Atnaujinimo daþnumas minutëmis"
-
-#: src/nautilus-preferences-dialog.c:379
-#, fuzzy
-msgid "Views"
-msgstr "_Rodyti"
 
 #: src/nautilus-preferences-dialog.c:380
 msgid "Appearance"
@@ -6625,6 +6333,11 @@ msgstr "Negaliu ádiegti ðablono"
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Atsipraðau, bet jûs negalite pakeisti atstatymo paveikslëlio."
 
+#: src/nautilus-property-browser.c:1110 src/nautilus-property-browser.c:1313
+#: src/nautilus-property-browser.c:1329
+msgid "Not an Image"
+msgstr "Nëra paveikslëlis"
+
 #: src/nautilus-property-browser.c:1141
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
@@ -6653,65 +6366,65 @@ msgstr "Pasirinkite spalvà, kurià pridësite:"
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Atsipraðau, bet '%s' nëra gera paveikslëlio byla."
 
-#: src/nautilus-property-browser.c:2033
+#: src/nautilus-property-browser.c:2035
 msgid "Select A Category:"
 msgstr "Iðsirinkite kategorijà:"
 
-#: src/nautilus-property-browser.c:2042
+#: src/nautilus-property-browser.c:2044
 #, fuzzy
 msgid "C_ancel Remove"
 msgstr "Nutraukti iðmetimà"
 
-#: src/nautilus-property-browser.c:2048
+#: src/nautilus-property-browser.c:2050
 #, fuzzy
 msgid "_Add a New Pattern..."
 msgstr "Pridëti naujà ðablonà..."
 
-#: src/nautilus-property-browser.c:2051
+#: src/nautilus-property-browser.c:2053
 #, fuzzy
 msgid "_Add a New Color..."
 msgstr "Sukurti naujà Spalvà..."
 
-#: src/nautilus-property-browser.c:2054
+#: src/nautilus-property-browser.c:2056
 #, fuzzy
 msgid "_Add a New Emblem..."
 msgstr "Sukurti naujà Emblemà..."
 
-#: src/nautilus-property-browser.c:2077
+#: src/nautilus-property-browser.c:2079
 msgid "Click on a pattern to remove it"
 msgstr "Spauskite ant ðablono kad já iðmestumëte"
 
-#: src/nautilus-property-browser.c:2080
+#: src/nautilus-property-browser.c:2082
 msgid "Click on a color to remove it"
 msgstr "Spauskite ant spalvos kad jà iðmestumëte"
 
-#: src/nautilus-property-browser.c:2083
+#: src/nautilus-property-browser.c:2085
 msgid "Click on an emblem to remove it"
 msgstr "Spauskite ant emblemos kad jà iðmestumëte"
 
-#: src/nautilus-property-browser.c:2092
+#: src/nautilus-property-browser.c:2094
 msgid "Patterns:"
 msgstr "Ðablonai:"
 
-#: src/nautilus-property-browser.c:2095
+#: src/nautilus-property-browser.c:2097
 msgid "Colors:"
 msgstr "Spalvos:"
 
-#: src/nautilus-property-browser.c:2098
+#: src/nautilus-property-browser.c:2100
 msgid "Emblems:"
 msgstr "Emblemos:"
 
-#: src/nautilus-property-browser.c:2118
+#: src/nautilus-property-browser.c:2120
 #, fuzzy
 msgid "_Remove a Pattern..."
 msgstr "Iðmesti ðablonà..."
 
-#: src/nautilus-property-browser.c:2121
+#: src/nautilus-property-browser.c:2123
 #, fuzzy
 msgid "_Remove a Color..."
 msgstr "Iðmesti spalvà... "
 
-#: src/nautilus-property-browser.c:2124
+#: src/nautilus-property-browser.c:2126
 #, fuzzy
 msgid "_Remove an Emblem..."
 msgstr "Iðmesti emblemà..."
@@ -6870,6 +6583,40 @@ msgstr "[File owner] yra [root]"
 #: src/nautilus-search-bar-criterion.c:159
 msgid "[File owner] is not [root]"
 msgstr "[File owner] nëra [root]"
+
+#: src/nautilus-server-connect.c:127
+msgid ""
+"Couldn't execute nautilus\n"
+"Make sure nautilus is in your path and correctly installed"
+msgstr ""
+
+#: src/nautilus-server-connect.c:387
+#, c-format
+msgid ""
+"Couldn't connect to URI %s\n"
+"Please make sure that the address is correct and alternatively, type in this "
+"address in the file manager directly"
+msgstr ""
+
+#: src/nautilus-server-connect.c:452
+msgid ""
+"Glade file for the connect to server program is missing.\n"
+"Please check your installation of nautilus"
+msgstr ""
+
+#: src/nautilus-server-connect.desktop.in.h:1
+msgid "Add a new server to your Network Servers and connect to it"
+msgstr ""
+
+#: src/nautilus-server-connect.desktop.in.h:2
+#: src/nautilus-server-connect.glade.h:2
+#, fuzzy
+msgid "New Server"
+msgstr "Interneto paslaugos"
+
+#: src/nautilus-server-connect.glade.h:1
+msgid "*"
+msgstr ""
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
@@ -7467,7 +7214,7 @@ msgstr "Iðvalyti istorijà?"
 #. * symbol characters -- do not translate the company
 #. * name, please.
 #.
-#: src/nautilus-window-menus.c:652
+#: src/nautilus-window-menus.c:661
 msgid "Copyright (C) 1999-2001 Eazel, Inc."
 msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 
@@ -7475,14 +7222,14 @@ msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window-menus.c:659 src/nautilus-window-menus.c:660
+#: src/nautilus-window-menus.c:668 src/nautilus-window-menus.c:669
 msgid "Translator Credits"
 msgstr ""
 "Á lietuviø kalbà iðvertë:\n"
 "Mantas Kriauèiûnas <mantelis@centras.lt>\n"
 "Eglë Girinaitë <eglyte@centras.lt>"
 
-#: src/nautilus-window-menus.c:665
+#: src/nautilus-window-menus.c:674
 #, fuzzy
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
@@ -7493,7 +7240,7 @@ msgstr ""
 "lengvai tvarkyti bylas\n"
 "ir visà sistemà."
 
-#: src/nautilus-window-menus.c:742
+#: src/nautilus-window-menus.c:751
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -7502,24 +7249,24 @@ msgstr ""
 "Vieta \"%s\" neegzistuoja. Ar jûs norite iðmesti visas þymeles, rodanèias á "
 "ðià vietà ið savo sàraðo?"
 
-#: src/nautilus-window-menus.c:746
+#: src/nautilus-window-menus.c:755
 msgid "Bookmark for Nonexistent Location"
 msgstr "Neegzistuojanèios vietos þymelë"
 
-#: src/nautilus-window-menus.c:747
+#: src/nautilus-window-menus.c:756
 msgid "Remove"
 msgstr "Iðmesti"
 
-#: src/nautilus-window-menus.c:758
+#: src/nautilus-window-menus.c:767
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Vieta \"%s\" daugiau neegzistuoja."
 
-#: src/nautilus-window-menus.c:759
+#: src/nautilus-window-menus.c:768
 msgid "Go to Nonexistent Location"
 msgstr "Eiti neegzistuojanèiu adresu"
 
-#: src/nautilus-window-menus.c:828
+#: src/nautilus-window-menus.c:837
 msgid "Go to the location specified by this bookmark"
 msgstr "Eiti á ðios þymelës rodom vietà"
 
@@ -7541,19 +7288,19 @@ msgstr "Tarptautinis"
 msgid "Display this location with \"%s\""
 msgstr "Rodyti ðià vietà su \"%s\""
 
-#: src/nautilus-window.c:2232
+#: src/nautilus-window.c:2240
 msgid "Application ID"
 msgstr "Programos ID"
 
-#: src/nautilus-window.c:2233
+#: src/nautilus-window.c:2241
 msgid "The application ID of the window."
 msgstr ""
 
-#: src/nautilus-window.c:2239
+#: src/nautilus-window.c:2247
 msgid "Application"
 msgstr "Programa"
 
-#: src/nautilus-window.c:2240
+#: src/nautilus-window.c:2248
 msgid "The NautilusApplication associated with this window."
 msgstr ""
 
@@ -7584,24 +7331,375 @@ msgstr "Keisti mastelá"
 msgid "Set the zoom level of the current view"
 msgstr ""
 
-#~ msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
-#~ msgstr ""
-#~ "Atleiskite, bet jûs privalote naujai emblemai nurodyti netuðèià vardà."
+#: src/network-scheme.desktop.in.h:1
+#, fuzzy
+msgid "Network Servers"
+msgstr "Netraverse"
 
-#~ msgid "Couldn't install emblem"
-#~ msgstr "Negaliu ádiegti emblemos"
+#: src/network-scheme.desktop.in.h:2
+#, fuzzy
+msgid "View your network servers in the Nautilus file manager"
+msgstr "Rodyti namø aplankà Nautilus bylø tvarkyklëje"
+
+#~ msgid "Factory for music view"
+#~ msgstr "Muzikos vaizdo gamykla"
+
+#~ msgid "Music"
+#~ msgstr "Muzika"
+
+#~ msgid "Music Viewer"
+#~ msgstr "Muzikos þiûryklë"
+
+#~ msgid "Music view"
+#~ msgstr "Muzikos vaizdas"
+
+#~ msgid "Music view factory"
+#~ msgstr "Muzikos vaizdo gamykla"
+
+#~ msgid "View as Music"
+#~ msgstr "Muzikos vaizdas"
+
+#~ msgid "Blues"
+#~ msgstr "Bliuzas"
+
+#~ msgid "Classic Rock"
+#~ msgstr "Klasikinis rokas"
+
+#~ msgid "Country"
+#~ msgstr "Kantri"
+
+#~ msgid "Dance"
+#~ msgstr "Ðokiø"
+
+#~ msgid "Disco"
+#~ msgstr "Disco"
+
+#~ msgid "Funk"
+#~ msgstr "Funk"
+
+#~ msgid "Grunge"
+#~ msgstr "Grunge"
+
+#~ msgid "Hip-Hop"
+#~ msgstr "Hip-Hop"
+
+#~ msgid "Jazz"
+#~ msgstr "Dþiazas"
+
+#~ msgid "Metal"
+#~ msgstr "Metalas"
+
+#~ msgid "New Age"
+#~ msgstr "New Age"
+
+#~ msgid "Other"
+#~ msgstr "Kitas"
+
+#~ msgid "Pop"
+#~ msgstr "Pop"
+
+#~ msgid "R&B"
+#~ msgstr "R&B"
+
+#~ msgid "Rap"
+#~ msgstr "Repas"
+
+#~ msgid "Reggae"
+#~ msgstr "Regis"
+
+#~ msgid "Rock"
+#~ msgstr "Rokas"
+
+#~ msgid "Techno"
+#~ msgstr "Techno"
+
+#~ msgid "Industrial"
+#~ msgstr "Industrial"
+
+#~ msgid "Alternative"
+#~ msgstr "Alternatyva"
+
+#~ msgid "Ska"
+#~ msgstr "Ska"
+
+#~ msgid "Soundtrack"
+#~ msgstr "Garso takelis"
+
+#~ msgid "Trip-Hop"
+#~ msgstr "Trip-Hop"
+
+#~ msgid "Jazz+Funk"
+#~ msgstr "Jazz+Funk"
+
+#~ msgid "Trance"
+#~ msgstr "Trance"
+
+#~ msgid "Classical"
+#~ msgstr "Klasikinis"
+
+#~ msgid "Instrumental"
+#~ msgstr "Instrumentinis"
+
+#~ msgid "Acid"
+#~ msgstr "Acid"
+
+#~ msgid "House"
+#~ msgstr "House"
+
+#~ msgid "Game"
+#~ msgstr "Þaidimai"
+
+#~ msgid "Noise"
+#~ msgstr "Noise"
+
+#~ msgid "Alt"
+#~ msgstr "Alt"
+
+#, fuzzy
+#~ msgid "Bass"
+#~ msgstr "Þemi"
+
+#~ msgid "Soul"
+#~ msgstr "Soul"
+
+#~ msgid "Punk"
+#~ msgstr "Punk"
+
+#~ msgid "Instrumental Rock"
+#~ msgstr "Instrumentinis rokas"
+
+#~ msgid "Gothic"
+#~ msgstr "Gotika"
+
+#~ msgid "Darkwave"
+#~ msgstr "Darkwave"
+
+#~ msgid "Techno-Industrial"
+#~ msgstr "Techno-Industrial"
+
+#~ msgid "Electronic"
+#~ msgstr "Elektronika"
+
+#~ msgid "Pop-Folk"
+#~ msgstr "Pop-Folk"
+
+#~ msgid "Comedy"
+#~ msgstr "Komedija"
+
+#~ msgid "Gangsta Rap"
+#~ msgstr "Gangsta Rap"
+
+#~ msgid "Top 40"
+#~ msgstr "Top 40"
+
+#~ msgid "Pop/Funk"
+#~ msgstr "Pop/Funk"
+
+#~ msgid "Jungle"
+#~ msgstr "Jungle"
+
+#~ msgid "Psychedelic"
+#~ msgstr "Psichodelinë"
+
+#~ msgid "Rave"
+#~ msgstr "Reivas"
+
+#~ msgid "Acid Punk"
+#~ msgstr "Acid Punk"
+
+#~ msgid "Acid Jazz"
+#~ msgstr "Acid Jazz"
+
+#~ msgid "Polka"
+#~ msgstr "Polka"
+
+#~ msgid "Retro"
+#~ msgstr "Retro"
+
+#~ msgid "Rock & Roll"
+#~ msgstr "Rock & Roll"
+
+#~ msgid "Folk"
+#~ msgstr "Folkloras"
+
+#~ msgid "Folk/Rock"
+#~ msgstr "Folk/Rock"
+
+#~ msgid "National Folk"
+#~ msgstr "Tautinis folkloras"
+
+#~ msgid "Swing"
+#~ msgstr "Svingas"
+
+#~ msgid "Latin"
+#~ msgstr "Lotynø"
+
+#~ msgid "Celtic"
+#~ msgstr "Keltø"
+
+#~ msgid "Avantgarde"
+#~ msgstr "Avantgardas"
+
+#~ msgid "Gothic Rock"
+#~ msgstr "Gotikinis rokas"
+
+#~ msgid "Progressive Rock"
+#~ msgstr "Progresyvus rokas"
+
+#~ msgid "Psychedelic Rock"
+#~ msgstr "Psichodelinis rokas"
+
+#~ msgid "Symphonic Rock"
+#~ msgstr "Simfoninis rokas"
+
+#~ msgid "Slow Rock"
+#~ msgstr "Lëtas rokas"
+
+#~ msgid "Chorus"
+#~ msgstr "Choras"
+
+#~ msgid "Acoustic"
+#~ msgstr "Akustinë"
+
+#~ msgid "Humour"
+#~ msgstr "Humoras"
+
+#~ msgid "Speech"
+#~ msgstr "Kalba"
+
+#~ msgid "Opera"
+#~ msgstr "Opera"
+
+#~ msgid "Sonata"
+#~ msgstr "Sonata"
+
+#~ msgid "Symphony"
+#~ msgstr "Simfonija"
+
+#~ msgid "Satire"
+#~ msgstr "Satyra"
+
+#~ msgid "Club"
+#~ msgstr "Klubinë"
+
+#~ msgid "Tango"
+#~ msgstr "Tango"
+
+#~ msgid "Samba"
+#~ msgstr "Samba"
+
+#~ msgid "Folklore"
+#~ msgstr "Folkloras"
+
+#~ msgid "Ballad"
+#~ msgstr "Baladë"
+
+#~ msgid "Duet"
+#~ msgstr "Duetas"
+
+#~ msgid "Goa"
+#~ msgstr "Goa"
+
+#~ msgid "Drum & Bass"
+#~ msgstr "Drum & Bass"
+
+#~ msgid "Hardcore"
+#~ msgstr "Hardcore"
+
+#~ msgid "Terror"
+#~ msgstr "Terror"
+
+#~ msgid "Indie"
+#~ msgstr "Indie"
+
+#~ msgid "BritPop"
+#~ msgstr "BritPop"
+
+#~ msgid "Black Metal"
+#~ msgstr "Juodas Metalas"
+
+#~ msgid "Christian Rock"
+#~ msgstr "Krikðèioniðkas rokas"
+
+#~ msgid "Salsa"
+#~ msgstr "Salsa"
+
+#~ msgid "Track"
+#~ msgstr "Kûrinys"
+
+#~ msgid "Title"
+#~ msgstr "Pavadinimas"
+
+#~ msgid "Artist"
+#~ msgstr "Atlikëjas"
+
+#~ msgid "Time"
+#~ msgstr "Trukmë"
+
+#~ msgid "Set Cover Image"
+#~ msgstr "Nustatyk virðelio vaizdà"
+
+#~ msgid "Sorry, but '%s' is not a usable image file."
+#~ msgstr "Atsipraðau, bet '%s' nëra gera paveikslëlio byla."
+
+#~ msgid "Select an image file for the album cover:"
+#~ msgstr "Nurodyk paveikslëlá albumo virðeliui:"
 
 #~ msgid ""
-#~ "Sorry, but emblem keywords can only contain letters, spaces and numbers."
+#~ "Sorry, but the music view is unable to play back sound right now. This is "
+#~ "because the Enable sound server startup setting in the Sound section of "
+#~ "the Control Center is turned off."
 #~ msgstr ""
-#~ "Atleiskite, bet emblemos pavadinime gali bûti tik raidës, tarpai ar "
-#~ "skaièiai."
+#~ "Atsipraðau, bet dabar muzikos vaizdas negali groti, kadangi Gnome Valdymo "
+#~ "Centre, garso skyriuje neájungtas 'Pradþioje paleisti garsø serverá' "
+#~ "nustatymas."
+
+#~ msgid "Unable to Play File"
+#~ msgstr "Negaliu pagroti ðios bylos"
 
 #~ msgid ""
-#~ "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
-#~ "for it."
+#~ "Sorry, but the music view is unable to play back sound right now. Either "
+#~ "another program is using or blocking the sound card, or your sound card "
+#~ "is not configured properly. Try quitting any applications that may be "
+#~ "blocking use of the sound card."
 #~ msgstr ""
-#~ "Atleiskite, bet pavadinimas \"%s\" jau egzistuoja. Pasirinkite kitoká."
+#~ "Atsipraðau, bet muzikos vaizdas negali dabar groti. Gal kita programa "
+#~ "naudoja ar blokuoja garso plokðtæ arba garso korta yra blogai "
+#~ "sukonfigûruota. Pabandyk uþdaryti visas programas, kurios gali blokuoti "
+#~ "garso kortà."
+
+#~ msgid "Sorry, but the music view can't play non-local files yet."
+#~ msgstr "Atsipraðau, bet muzikos vaizdas negali dabar groti nevietiniø bylø."
+
+#~ msgid "Can't Play Remote Files"
+#~ msgstr "Negaliu groti nutolusiø bylø"
+
+#~ msgid "Drag to seek within track"
+#~ msgstr "Tempk kad nustatytum vietà dainoje"
+
+#~ msgid "Previous"
+#~ msgstr "Praeitas"
+
+#~ msgid "Play"
+#~ msgstr "Groti"
+
+#~ msgid "Pause"
+#~ msgstr "Pauzë"
+
+#~ msgid "Next"
+#~ msgstr "Kitas"
+
+#~ msgid "cover image"
+#~ msgstr "virðelio paveikslëlis"
+
+#~ msgid "Sorry, but there was an error reading %s."
+#~ msgstr "Atsipraðau, bet ávyko klaida nuskaitant %s."
+
+#~ msgid "Can't Read Folder"
+#~ msgstr "Negaliu nuskaityti katalogo"
+
+#~ msgid "<span size=\"xx-large\">%s - %s</span>"
+#~ msgstr "<span size=\"xx-large\">%s - %s</span>"
 
 #~ msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 #~ msgstr "Atleiskite, bet %s paveikslëlis negali bûti ádiegtas kaip emblema."
@@ -7820,9 +7918,6 @@ msgstr ""
 #~ msgid "Properties"
 #~ msgstr "Savybës"
 
-#~ msgid "Rename"
-#~ msgstr "Pervadinti"
-
 #, fuzzy
 #~ msgid "Reset View to Default"
 #~ msgstr "Sàraðo vaizdo standartai"
@@ -7927,9 +8022,6 @@ msgstr ""
 
 #~ msgid "Show Location _Bar"
 #~ msgstr "Rodyti _adreso juostà"
-
-#~ msgid " (invalid Unicode)"
-#~ msgstr " (neteisingas Unikodas)"
 
 #~ msgid "Clear"
 #~ msgstr "Iðvalyti"

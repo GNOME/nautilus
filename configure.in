@@ -6,7 +6,7 @@ ART_REQUIRED=2.3.10
 BONOBO_ACTIVATION_REQUIRED=1.0.0
 BONOBO_REQUIRED=2.0.0
 BONOBO_UI_REQUIRED=2.0.0
-EEL_REQUIRED=2.1.1
+EEL_REQUIRED=2.1.2
 ESOUND_REQUIRED=0.2.27
 GLIB_REQUIRED=2
 GNOME_CANVAS_REQUIRED=2.0
@@ -28,7 +28,7 @@ AC_SUBST(XML_REQUIRED)
 
 dnl ===========================================================================
 
-AM_INIT_AUTOMAKE(nautilus, 2.1.1)
+AM_INIT_AUTOMAKE(nautilus, 2.1.2)
 AM_CONFIG_HEADER(config.h)
 
 AM_SANITY_CHECK
@@ -107,14 +107,6 @@ AC_CHECK_HEADERS(mntent.h sys/mnttab.h sys/vfstab.h sys/cdio.h sys/mount.h)
 dnl ==========================================================================
 
 AC_CHECK_FUNCS(setenv unsetenv putenv)
-
-dnl ==========================================================================
-
-dnl x86 checks (used by audio routines in music component)
-
-_system_is_x86="no"
-AC_CHECK_HEADER( asm/vm86.h, _system_is_x86="yes" )
-AM_CONDITIONAL(X86_OPTIMIZED, test "x$_system_is_x86" = "xyes")
 
 dnl ==========================================================================
 
@@ -284,13 +276,6 @@ AC_SUBST(COMPONENT_CFLAGS)
 COMPONENT_LIBS="`$PKG_CONFIG --libs $COMPONENT_MODULES`"
 AC_SUBST(COMPONENT_LIBS)
 
-dnl music component
-MUSIC_COMPONENT_MODULES="$COMPONENT_MODULES esound"
-MUSIC_COMPONENT_CFLAGS="`$PKG_CONFIG --cflags $MUSIC_COMPONENT_MODULES`"
-AC_SUBST(MUSIC_COMPONENT_CFLAGS)
-MUSIC_COMPONENT_LIBS="`$PKG_CONFIG --libs $MUSIC_COMPONENT_MODULES`"
-AC_SUBST(MUSIC_COMPONENT_LIBS)
-
 dnl emblems component
 EMBLEM_COMPONENT_MODULES="$COMPONENT_MODULES librsvg-2.0"
 EMBLEM_COMPONENT_CFLAGS="`$PKG_CONFIG --cflags $EMBLEM_COMPONENT_MODULES`"
@@ -349,7 +334,6 @@ components/history/Makefile
 components/loser/Makefile
 components/loser/content/Makefile
 components/loser/sidebar/Makefile
-components/music/Makefile
 components/notes/Makefile
 components/sample/Makefile
 components/text/Makefile
