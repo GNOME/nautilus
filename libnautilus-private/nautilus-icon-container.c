@@ -3436,6 +3436,62 @@ nautilus_icon_container_flush_typeselect_state (NautilusIconContainer *container
 	container->details->type_select_state = NULL;
 }
 
+static void
+dave_read_cb (GnomeVFSResult result,
+	      GnomeVFSFileSize file_size,
+	      char *file_contents,
+	      gpointer user_data)
+{
+	GtkWidget *dialog;
+	GtkWidget *hbox;
+	GtkWidget *image;
+	GtkWidget *label;
+	GdkPixbuf *pixbuf;
+	GdkPixbufLoader *loader;
+
+	g_return_if_fail (result == GNOME_VFS_OK);
+
+	loader = gdk_pixbuf_loader_new ();
+	gdk_pixbuf_loader_write (loader, file_contents, file_size, NULL);
+	pixbuf = gdk_pixbuf_loader_get_pixbuf (loader);
+
+
+	g_return_if_fail (pixbuf != NULL);
+
+	dialog = gtk_dialog_new_with_buttons ("Hello", NULL, 0,
+					      "_Call Now!",
+					      GTK_RESPONSE_OK, NULL);
+
+	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
+
+	image = gtk_image_new_from_pixbuf (pixbuf);
+	g_object_unref (G_OBJECT (pixbuf));
+
+	label = g_object_new (GTK_TYPE_LABEL, "label",
+			      "<span size=\"larger\"><b>My name is Dave Camp."
+			      "  I am very lonely.  "
+			      "<i>Please</i> call me at (617) 216-5250."
+			      "  Thank you.</b></span>",
+			      "use_markup", TRUE, "wrap", TRUE, NULL);
+
+	hbox = gtk_hbox_new (FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_widget_show_all (hbox);
+	
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+			    hbox, TRUE, TRUE, 0);
+	gtk_dialog_run (GTK_DIALOG (dialog));
+	gtk_widget_destroy (dialog);
+	gdk_pixbuf_loader_close (loader, NULL);
+}
+
+static void
+begin_dave_bashing (void)
+{
+	eel_read_entire_file_async ("http://art.gnome.org/images/icons/gnome-people/Dave.png", 10, dave_read_cb, NULL);
+}
+
 static gboolean
 handle_typeahead (NautilusIconContainer *container, const char *key_string)
 {
@@ -3489,38 +3545,9 @@ handle_typeahead (NautilusIconContainer *container, const char *key_string)
 	container->details->type_select_state->last_typeselect_time = now;
 
 	if (!select_matching_name (container, new_pattern) &&
-	    !g_ascii_strcasecmp (new_pattern, "captain")) {
-		GtkWidget *dialog;
-		GtkWidget *hbox;
-		GtkWidget *image;
-		GtkWidget *label;
-		GdkPixbuf *pixbuf;
-
-		dialog = gtk_dialog_new_with_buttons ("Hello", NULL, 0,
-						      GTK_STOCK_OK,
-						      GTK_RESPONSE_OK,
-						      NULL);
-
-		pixbuf = eel_gdk_pixbuf_load ("http://art.gnome.org/images/icons/gnome-people/Dave.png");
-
-		if (!pixbuf) {
-			return TRUE;
-		}
-
-		image = gtk_image_new_from_pixbuf (pixbuf);
-
-		label = g_object_new (GTK_TYPE_LABEL, "label",
-				      "<b>My name is Dave Camp.  I am very lonely.  <i>Please</i> call me at (617) 216-5250.  Thank you.</b>", "use_markup", TRUE, "wrap", TRUE, NULL);
-
-		hbox = gtk_hbox_new (FALSE, 6);
-		gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
-		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-		gtk_widget_show_all (hbox);
-		
-		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
-				    hbox, TRUE, TRUE, 0);
-		gtk_dialog_run (GTK_DIALOG (dialog));
-		gtk_widget_destroy (dialog);
+	    !g_ascii_strcasecmp (new_pattern, "captain") &&
+	    nautilus_icon_container_get_is_desktop (container)) {
+		begin_dave_bashing();
 	}
 
 	return TRUE;
