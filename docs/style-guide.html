@@ -1,0 +1,64 @@
+<html>
+
+<head>
+<title>Nautilus Coding Style Guide</title>
+</head>
+
+<body>
+
+<p>To make code written for Nautilus look and act in a predictable way,
+we follow a set of guidelines that specify some details of how we write code.
+To start, we follow all the guidelines outlined in the
+<a href="http://developer.gnome.org/doc/guides/programming-guidelines/">GNOME Programming Guidelines</a>.</p>
+
+<p>This document covers things that are not mentioned in the GNOME
+Programming Guidelines, and things that are mentioned there, but need
+to be re-emphasized, because people don't follow them often enough.</p>
+
+<p>I'm just getting started on this document. Feedback is welcome.
+Eventually I'd like better organization and tons of examples.</p>
+
+<p>At some point, this will probably be converted to DocBook format
+instead of HTML.</p>
+
+<blockquote>
+<p>-<a href="mailto:darin@eazel.com">Darin</a></p>
+</blockquote>
+
+<p><b>We use the most-recommended coding style from GNOME Programming
+Guidelines.</b> This means that we use the Linux kernel brace style with
+8-character tabs (not the GNU brace style), and we put spaces before
+the parentheses that introduce function argument lists.</p>
+
+<p><b>We prefer to use words rather than acronyms or abbreviations.</b> This means that
+we name classes with a prefix like Nautilus, not Ntl, for example.</p>
+
+<p><b>We strive to have a minimum number of local variables.</b> This makes it
+easier to move pieces of code around. For more on this, read
+<a href="recommended-books.html#Refactoring"><i>Refactoring</i></a>.</p>
+
+<p><b>We use type casts as little as possible.</b> There are many places in GTK programming
+where you have to cast to make the program work, but we do whatever we can
+to avoid this. Also, we prefer to cast data pointers, rather than casting
+function pointers, since there's so much more to get wrong with function
+pointer casts.</p>
+
+<p><b>We use typedefs from &lt;glib.h&gt; for things like guint and gpointer,
+but not gint, gchar, or gdouble.</b> Using these gives a false sense
+of portability. In all three cases, using system calls like printf requires
+knowing that these are the "real" int, char, and double, so there's not reason
+to use a typedef that's non-standard.</p>
+
+<p><b>We avoid in-band signaling.</b> This means that we avoid using special
+values to indicate errors, for example. This can lead to subtle bugs when a valid
+result is misinterpreted as an error, and can make it hard to tell if the code
+handles errors or not.</p>
+
+<p><b>We code for clarity first.</b></p>
+
+<p><b>We use for loops when they make the code easier to read.</b> It's true that
+"easy to read" is a subjective thing.</p>
+
+</body>
+
+</html>
