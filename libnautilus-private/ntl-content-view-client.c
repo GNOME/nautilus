@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 2 -*- */
 
 /*
- *  libnautilus: A library for nautilus clients.
+ *  libnautilus: A library for nautilus view implementations.
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
  *
@@ -22,14 +22,17 @@
  *  Author: Elliot Lee <sopwith@redhat.com>
  *
  */
-/* ntl-content-view-client.c: Implementation for object that represents a nautilus content view implementation. */
+
+/* ntl-content-view-client.c: Implementation for object that
+   represents the frame a nautilus content view plugs into. */
+
 #include "libnautilus.h"
 
 typedef struct {
   POA_Nautilus_View servant;
   gpointer gnome_object;
 
-  NautilusContentViewClient *view;
+  NautilusContentViewFrame *view;
 } impl_POA_Nautilus_ContentView;
 
 extern POA_Nautilus_View__epv libnautilus_Nautilus_View_epv;
@@ -48,55 +51,55 @@ static POA_Nautilus_ContentView__vepv impl_Nautilus_ContentView_vepv =
   &impl_Nautilus_ContentView_epv
 };
 
-static void nautilus_content_view_client_init       (NautilusContentViewClient      *view);
-static void nautilus_content_view_client_destroy    (NautilusContentViewClient      *view);
-static void nautilus_content_view_client_class_init (NautilusContentViewClientClass *klass);
+static void nautilus_content_view_frame_init       (NautilusContentViewFrame      *view);
+static void nautilus_content_view_frame_destroy    (NautilusContentViewFrame      *view);
+static void nautilus_content_view_frame_class_init (NautilusContentViewFrameClass *klass);
 
 GtkType
-nautilus_content_view_client_get_type (void)
+nautilus_content_view_frame_get_type (void)
 {
-  static GtkType view_client_type = 0;
+  static GtkType view_frame_type = 0;
 
-  if (!view_client_type)
+  if (!view_frame_type)
     {
-      const GtkTypeInfo view_client_info =
+      const GtkTypeInfo view_frame_info =
       {
-	"NautilusContentViewClient",
-	sizeof (NautilusContentViewClient),
-	sizeof (NautilusContentViewClientClass),
-	(GtkClassInitFunc) nautilus_content_view_client_class_init,
-	(GtkObjectInitFunc) nautilus_content_view_client_init,
+	"NautilusContentViewFrame",
+	sizeof (NautilusContentViewFrame),
+	sizeof (NautilusContentViewFrameClass),
+	(GtkClassInitFunc) nautilus_content_view_frame_class_init,
+	(GtkObjectInitFunc) nautilus_content_view_frame_init,
 	/* reserved_1 */ NULL,
 	/* reserved_2 */ NULL,
 	(GtkClassInitFunc) NULL,
       };
 
-      view_client_type = gtk_type_unique (nautilus_view_client_get_type(), &view_client_info);
+      view_frame_type = gtk_type_unique (nautilus_view_frame_get_type(), &view_frame_info);
     }
 	
-  return view_client_type;
+  return view_frame_type;
 }
 
 static void
-nautilus_content_view_client_init       (NautilusContentViewClient *view)
+nautilus_content_view_frame_init       (NautilusContentViewFrame *view)
 {
 }
 
 static void
-nautilus_content_view_client_destroy    (NautilusContentViewClient *view)
+nautilus_content_view_frame_destroy    (NautilusContentViewFrame *view)
 {  
-  NautilusViewClientClass *klass = NAUTILUS_VIEW_CLIENT_CLASS(GTK_OBJECT(view)->klass);
+  NautilusViewFrameClass *klass = NAUTILUS_VIEW_FRAME_CLASS(GTK_OBJECT(view)->klass);
 
   if(((GtkObjectClass *)klass->parent_class)->destroy)
     ((GtkObjectClass *)klass->parent_class)->destroy((GtkObject *)view);
 }
 
 static void
-nautilus_content_view_client_class_init (NautilusContentViewClientClass *klass)
+nautilus_content_view_frame_class_init (NautilusContentViewFrameClass *klass)
 {
-  NautilusViewClientClass *view_class = ((NautilusViewClientClass *)klass);
+  NautilusViewFrameClass *view_class = ((NautilusViewFrameClass *)klass);
 
-  GTK_OBJECT_CLASS(klass)->destroy = (void (*)(GtkObject *))nautilus_content_view_client_destroy;
+  GTK_OBJECT_CLASS(klass)->destroy = (void (*)(GtkObject *))nautilus_content_view_frame_destroy;
 
   view_class->servant_init_func = POA_Nautilus_ContentView__init;
   view_class->servant_destroy_func = POA_Nautilus_ContentView__fini;

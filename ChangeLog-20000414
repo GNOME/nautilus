@@ -1,8 +1,25 @@
+2000-01-09  Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus/ntl-view-client.c, libnautilus/ntl-view-client.h,
+	libnautilus/ntl-content-view-client.c,
+	libnautilus/ntl-content-view-client.h,
+	libnautilus/ntl-meta-view-client.c,
+	libnautilus/ntl-meta-view-client.h,: Rename NautilusViewClient to
+	NautilusViewFrame, NautilusContentViewClient to
+	NautilusContentViewFrame, and NautilusMetaViewClient to
+	NautilusMetaViewFrame.
+	* components/help/hyperbola-nav-tree.c,
+	components/history/ntl-history-view.c,
+	components/html/ntl-web-browser.c,
+	components/websearch/ntl-web-search.c, src/ntl-app.c,
+	src/file-manager/fm-directory-view.c,
+	src/file-manager/fm-directory-view.h: Reflect the above renaming.
+
 2000-01-09  Andy Hertzfeld <andy@eazel.com>
 
-	* src/ntl-index-panel.c"
-	    made dropping a color from the color picker set the background accordingly.  It doesn't
-	    save the meta-data yet, thought
+	* src/ntl-index-panel.c: made dropping a color from the color
+	picker set the background accordingly.  It doesn't save the
+	meta-data yet, thought
 	    
 2000-01-09  Maciej Stachowiak  <mjs@eazel.com>
 

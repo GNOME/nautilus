@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 2 -*- */
 
 /*
- *  libnautilus: A library for nautilus clients.
+ *  libnautilus: A library for nautilus view implementations.
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
  *
@@ -22,10 +22,12 @@
  *  Author: Elliot Lee <sopwith@redhat.com>
  *
  */
-/* ntl-view-client.h: Interface for object that represents a nautilus client. */
 
-#ifndef NTL_VIEW_CLIENT_H
-#define NTL_VIEW_CLIENT_H
+/* ntl-view-client.h: Interface of the object representing the frame a
+   data view plugs into. */
+
+#ifndef NTL_VIEW_FRAME_H
+#define NTL_VIEW_FRAME_H
 
 #include <gtk/gtk.h>
 
@@ -33,55 +35,55 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#define NAUTILUS_TYPE_VIEW_CLIENT			(nautilus_view_client_get_type ())
-#define NAUTILUS_VIEW_CLIENT(obj)			(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_VIEW_CLIENT, NautilusViewClient))
-#define NAUTILUS_VIEW_CLIENT_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_VIEW_CLIENT, NautilusViewClientClass))
-#define NAUTILUS_IS_VIEW_CLIENT(obj)			(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_VIEW_CLIENT))
-#define NAUTILUS_IS_VIEW_CLIENT_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_VIEW_CLIENT))
+#define NAUTILUS_TYPE_VIEW_FRAME			(nautilus_view_frame_get_type ())
+#define NAUTILUS_VIEW_FRAME(obj)			(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_VIEW_FRAME, NautilusViewFrame))
+#define NAUTILUS_VIEW_FRAME_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_VIEW_FRAME, NautilusViewFrameClass))
+#define NAUTILUS_IS_VIEW_FRAME(obj)			(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_VIEW_FRAME))
+#define NAUTILUS_IS_VIEW_FRAME_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_VIEW_FRAME))
 
-typedef struct _NautilusViewClient       NautilusViewClient;
-typedef struct _NautilusViewClientClass  NautilusViewClientClass;
+typedef struct _NautilusViewFrame       NautilusViewFrame;
+typedef struct _NautilusViewFrameClass  NautilusViewFrameClass;
 
-struct _NautilusViewClientClass
+struct _NautilusViewFrameClass
 {
   GtkBinClass parent_spot;
 
-  void (*notify_location_change)	(NautilusViewClient *view,
+  void (*notify_location_change)	(NautilusViewFrame *view,
 					 Nautilus_NavigationInfo *nav_context);
-  void (*notify_selection_change)	(NautilusViewClient *view,
+  void (*notify_selection_change)	(NautilusViewFrame *view,
 					 Nautilus_SelectionInfo *nav_context);
-  void (*load_state)                    (NautilusViewClient *view, const char *config_path);
-  void (*save_state)                    (NautilusViewClient *view, const char *config_path);
-  void (*show_properties)               (NautilusViewClient *view);
-  void (*stop_location_change)          (NautilusViewClient *view);
+  void (*load_state)                    (NautilusViewFrame *view, const char *config_path);
+  void (*save_state)                    (NautilusViewFrame *view, const char *config_path);
+  void (*show_properties)               (NautilusViewFrame *view);
+  void (*stop_location_change)          (NautilusViewFrame *view);
 
   GtkBinClass *parent_class;
 
   gpointer servant_init_func, servant_destroy_func, vepv;
 
-  guint view_client_signals[5];
+  guint view_frame_signals[5];
 };
 
-struct _NautilusViewClient
+struct _NautilusViewFrame
 {
   GtkBin parent;
 
   GtkWidget *main_window;
  
-  GnomeObject *control, *view_client;
+  GnomeObject *control, *view_server;
   Nautilus_ViewFrame view_frame;
 };
 
-GtkType nautilus_view_client_get_type                (void);
-void    nautilus_view_client_request_location_change (NautilusViewClient         *view,
+GtkType nautilus_view_frame_get_type                (void);
+void    nautilus_view_frame_request_location_change (NautilusViewFrame         *view,
 						      Nautilus_NavigationRequestInfo *loc);
-void    nautilus_view_client_request_selection_change (NautilusViewClient        *view,
+void    nautilus_view_frame_request_selection_change (NautilusViewFrame        *view,
 						       Nautilus_SelectionRequestInfo *loc);
-void    nautilus_view_client_request_status_change    (NautilusViewClient        *view,
+void    nautilus_view_frame_request_status_change    (NautilusViewFrame        *view,
 						       Nautilus_StatusRequestInfo *loc);
-void    nautilus_view_client_request_progress_change  (NautilusViewClient        *view,
+void    nautilus_view_frame_request_progress_change  (NautilusViewFrame        *view,
 						       Nautilus_ProgressRequestInfo *loc);
-GnomeObject *nautilus_view_client_get_gnome_object    (NautilusViewClient        *view);
+GnomeObject *nautilus_view_frame_get_gnome_object    (NautilusViewFrame        *view);
 
 #ifdef __cplusplus
 }

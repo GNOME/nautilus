@@ -57,7 +57,7 @@ typedef struct _FMDirectoryViewClass FMDirectoryViewClass;
 #define FM_IS_DIRECTORY_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), FM_TYPE_DIRECTORY_VIEW))
 
 struct _FMDirectoryView {
-	NautilusContentViewClient parent;
+	NautilusContentViewFrame parent;
 
 	FMDirectoryViewMode mode;
 
@@ -81,7 +81,7 @@ struct _FMDirectoryView {
 };
 
 struct _FMDirectoryViewClass {
-	NautilusContentViewClientClass parent_class;
+	NautilusContentViewFrameClass parent_class;
 };
 
 

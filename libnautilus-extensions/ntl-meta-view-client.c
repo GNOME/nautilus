@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 2 -*- */
 
 /*
- *  libnautilus: A library for nautilus clients.
+ *  libnautilus: A library for nautilus view implementations.
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
  *
@@ -22,14 +22,15 @@
  *  Author: Elliot Lee <sopwith@redhat.com>
  *
  */
-/* ntl-meta-view-client.c: Implementation for object that represents a nautilus meta view implementation. */
+/* ntl-meta-view-client.c: Implementation for object that represents a
+   nautilus meta view implementation. */
 #include "libnautilus.h"
 
 typedef struct {
   POA_Nautilus_View servant;
   gpointer gnome_object;
 
-  NautilusMetaViewClient *view;
+  NautilusMetaViewFrame *view;
 } impl_POA_Nautilus_MetaView;
 
 extern POA_Nautilus_View__epv libnautilus_Nautilus_View_epv;
@@ -48,55 +49,55 @@ static POA_Nautilus_MetaView__vepv impl_Nautilus_MetaView_vepv =
   &impl_Nautilus_MetaView_epv
 };
 
-static void nautilus_meta_view_client_init       (NautilusMetaViewClient      *view);
-static void nautilus_meta_view_client_destroy    (NautilusMetaViewClient      *view);
-static void nautilus_meta_view_client_class_init (NautilusMetaViewClientClass *klass);
+static void nautilus_meta_view_frame_init       (NautilusMetaViewFrame      *view);
+static void nautilus_meta_view_frame_destroy    (NautilusMetaViewFrame      *view);
+static void nautilus_meta_view_frame_class_init (NautilusMetaViewFrameClass *klass);
 
 GtkType
-nautilus_meta_view_client_get_type (void)
+nautilus_meta_view_frame_get_type (void)
 {
-  static GtkType view_client_type = 0;
+  static GtkType view_frame_type = 0;
 
-  if (!view_client_type)
+  if (!view_frame_type)
     {
-      const GtkTypeInfo view_client_info =
+      const GtkTypeInfo view_frame_info =
       {
-	"NautilusMetaViewClient",
-	sizeof (NautilusMetaViewClient),
-	sizeof (NautilusMetaViewClientClass),
-	(GtkClassInitFunc) nautilus_meta_view_client_class_init,
-	(GtkObjectInitFunc) nautilus_meta_view_client_init,
+	"NautilusMetaViewFrame",
+	sizeof (NautilusMetaViewFrame),
+	sizeof (NautilusMetaViewFrameClass),
+	(GtkClassInitFunc) nautilus_meta_view_frame_class_init,
+	(GtkObjectInitFunc) nautilus_meta_view_frame_init,
 	/* reserved_1 */ NULL,
 	/* reserved_2 */ NULL,
 	(GtkClassInitFunc) NULL,
       };
 
-      view_client_type = gtk_type_unique (nautilus_view_client_get_type(), &view_client_info);
+      view_frame_type = gtk_type_unique (nautilus_view_frame_get_type(), &view_frame_info);
     }
 	
-  return view_client_type;
+  return view_frame_type;
 }
 
 static void
-nautilus_meta_view_client_init       (NautilusMetaViewClient *view)
+nautilus_meta_view_frame_init       (NautilusMetaViewFrame *view)
 {
 }
 
 static void
-nautilus_meta_view_client_destroy    (NautilusMetaViewClient *view)
+nautilus_meta_view_frame_destroy    (NautilusMetaViewFrame *view)
 {  
-  NautilusViewClientClass *klass = NAUTILUS_VIEW_CLIENT_CLASS(GTK_OBJECT(view)->klass);
+  NautilusViewFrameClass *klass = NAUTILUS_VIEW_FRAME_CLASS(GTK_OBJECT(view)->klass);
 
   if(((GtkObjectClass *)klass->parent_class)->destroy)
     ((GtkObjectClass *)klass->parent_class)->destroy((GtkObject *)view);
 }
 
 static void
-nautilus_meta_view_client_class_init (NautilusMetaViewClientClass *klass)
+nautilus_meta_view_frame_class_init (NautilusMetaViewFrameClass *klass)
 {
-  NautilusViewClientClass *view_class = ((NautilusViewClientClass *)klass);
+  NautilusViewFrameClass *view_class = ((NautilusViewFrameClass *)klass);
 
-  GTK_OBJECT_CLASS(klass)->destroy = (void (*)(GtkObject *))nautilus_meta_view_client_destroy;
+  GTK_OBJECT_CLASS(klass)->destroy = (void (*)(GtkObject *))nautilus_meta_view_frame_destroy;
 
   view_class->servant_init_func = POA_Nautilus_MetaView__init;
   view_class->servant_destroy_func = POA_Nautilus_MetaView__fini;
@@ -104,12 +105,12 @@ nautilus_meta_view_client_class_init (NautilusMetaViewClientClass *klass)
 }
 
 void
-nautilus_meta_view_client_set_label(NautilusMetaViewClient *mvc, const char *label)
+nautilus_meta_view_frame_set_label(NautilusMetaViewFrame *mvc, const char *label)
 {
   GnomeObject *ctl;
   GnomePropertyBag *bag;
 
-  ctl = nautilus_view_client_get_gnome_object(NAUTILUS_VIEW_CLIENT(mvc));
+  ctl = nautilus_view_frame_get_gnome_object(NAUTILUS_VIEW_FRAME(mvc));
   bag = gnome_control_get_property_bag(GNOME_CONTROL(ctl));
   if(!bag)
     {

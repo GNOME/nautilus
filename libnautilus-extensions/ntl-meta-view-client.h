@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 2 -*- */
 
 /*
- *  libnautilus: A library for nautilus clients.
+ *  libnautilus: A library for nautilus view implementations.
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
  *
@@ -22,32 +22,33 @@
  *  Author: Elliot Lee <sopwith@redhat.com>
  *
  */
-/* ntl-meta-view-client.h: Interface for object that represents a nautilus meta view implementation. */
+/* ntl-meta-view-client.h: Interface for object that represents the
+   frame a nautilus meta view plugs into. */
 
-#ifndef NTL_META_VIEW_CLIENT_H
-#define NTL_META_VIEW_CLIENT_H
+#ifndef NTL_META_VIEW_FRAME_H
+#define NTL_META_VIEW_FRAME_H
 
 #include <libnautilus/ntl-view-client.h>
 
-#define NAUTILUS_TYPE_META_VIEW_CLIENT			(nautilus_meta_view_client_get_type ())
-#define NAUTILUS_META_VIEW_CLIENT(obj)			(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_META_VIEW_CLIENT, NautilusMetaViewClient))
-#define NAUTILUS_META_VIEW_CLIENT_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_META_VIEW_CLIENT, NautilusMetaViewClientClass))
-#define NAUTILUS_IS_META_VIEW_CLIENT(obj)			(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_META_VIEW_CLIENT))
-#define NAUTILUS_IS_META_VIEW_CLIENT_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_META_VIEW_CLIENT))
+#define NAUTILUS_TYPE_META_VIEW_FRAME			(nautilus_meta_view_frame_get_type ())
+#define NAUTILUS_META_VIEW_FRAME(obj)			(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_META_VIEW_FRAME, NautilusMetaViewFrame))
+#define NAUTILUS_META_VIEW_FRAME_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_META_VIEW_FRAME, NautilusMetaViewFrameClass))
+#define NAUTILUS_IS_META_VIEW_FRAME(obj)			(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_META_VIEW_FRAME))
+#define NAUTILUS_IS_META_VIEW_FRAME_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_META_VIEW_FRAME))
 
-typedef struct _NautilusMetaViewClient NautilusMetaViewClient;
-typedef struct _NautilusMetaViewClientClass NautilusMetaViewClientClass;
+typedef struct _NautilusMetaViewFrame NautilusMetaViewFrame;
+typedef struct _NautilusMetaViewFrameClass NautilusMetaViewFrameClass;
 
-struct _NautilusMetaViewClientClass {
-  NautilusViewClientClass parent_spot;
+struct _NautilusMetaViewFrameClass {
+  NautilusViewFrameClass parent_spot;
 };
 
-struct _NautilusMetaViewClient {
-  NautilusViewClient parent;
+struct _NautilusMetaViewFrame {
+  NautilusViewFrame parent;
 };
 
-GtkType nautilus_meta_view_client_get_type (void);
-void nautilus_meta_view_client_set_label(NautilusMetaViewClient *mvc,
+GtkType nautilus_meta_view_frame_get_type (void);
+void nautilus_meta_view_frame_set_label(NautilusMetaViewFrame *mvc,
 					 const char *label);
 
 #endif

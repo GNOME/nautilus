@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 2 -*- */
 
 /*
- *  libnautilus: A library for nautilus clients.
+ *  libnautilus: A library for nautilus view implementations.
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
  *
@@ -22,30 +22,32 @@
  *  Author: Elliot Lee <sopwith@redhat.com>
  *
  */
-/* ntl-content-view-client.h: Interface for object that represents a nautilus content view implementation. */
 
-#ifndef NTL_CONTENT_VIEW_CLIENT_H
-#define NTL_CONTENT_VIEW_CLIENT_H
+/* ntl-content-view-client.h: Interface for object that represents a
+   the frame a nautilus content view plugs into. */
+
+#ifndef NTL_CONTENT_VIEW_FRAME_H
+#define NTL_CONTENT_VIEW_FRAME_H
 
 #include <libnautilus/ntl-view-client.h>
 
-#define NAUTILUS_TYPE_CONTENT_VIEW_CLIENT			(nautilus_content_view_client_get_type ())
-#define NAUTILUS_CONTENT_VIEW_CLIENT(obj)			(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_CONTENT_VIEW_CLIENT, NautilusContentViewClient))
-#define NAUTILUS_CONTENT_VIEW_CLIENT_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_CONTENT_VIEW_CLIENT, NautilusContentViewClientClass))
-#define NAUTILUS_IS_CONTENT_VIEW_CLIENT(obj)			(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_CONTENT_VIEW_CLIENT))
-#define NAUTILUS_IS_CONTENT_VIEW_CLIENT_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_CONTENT_VIEW_CLIENT))
+#define NAUTILUS_TYPE_CONTENT_VIEW_FRAME			(nautilus_content_view_frame_get_type ())
+#define NAUTILUS_CONTENT_VIEW_FRAME(obj)			(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_CONTENT_VIEW_FRAME, NautilusContentViewFrame))
+#define NAUTILUS_CONTENT_VIEW_FRAME_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_CONTENT_VIEW_FRAME, NautilusContentViewFrameClass))
+#define NAUTILUS_IS_CONTENT_VIEW_FRAME(obj)			(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_CONTENT_VIEW_FRAME))
+#define NAUTILUS_IS_CONTENT_VIEW_FRAME_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_CONTENT_VIEW_FRAME))
 
-typedef struct _NautilusContentViewClient NautilusContentViewClient;
-typedef struct _NautilusContentViewClientClass NautilusContentViewClientClass;
+typedef struct _NautilusContentViewFrame NautilusContentViewFrame;
+typedef struct _NautilusContentViewFrameClass NautilusContentViewFrameClass;
 
-struct _NautilusContentViewClientClass {
-  NautilusViewClientClass parent_spot;
+struct _NautilusContentViewFrameClass {
+  NautilusViewFrameClass parent_spot;
 };
 
-struct _NautilusContentViewClient {
-  NautilusViewClient parent;
+struct _NautilusContentViewFrame {
+  NautilusViewFrame parent;
 };
 
-GtkType nautilus_content_view_client_get_type (void);
+GtkType nautilus_content_view_frame_get_type (void);
 
 #endif

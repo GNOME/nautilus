@@ -34,7 +34,7 @@ typedef struct {
 } EngineInfo;
 
 typedef struct {
-  NautilusViewClient *view;
+  NautilusViewFrame *view;
 
   GtkCList *clist;
 
@@ -51,7 +51,7 @@ typedef struct {
 static int object_count = 0;
 
 static void
-web_search_notify_location_change (NautilusViewClient *view,
+web_search_notify_location_change (NautilusViewFrame *view,
                                 Nautilus_NavigationInfo *loci,
                                 WebSearchView *hview)
 {
@@ -91,7 +91,7 @@ do_search(GtkWidget *widget, WebSearchView *hview)
   nri.new_window_suggested = Nautilus_V_FALSE;
   nri.new_window_enforced = Nautilus_V_UNKNOWN;
 
-  nautilus_view_client_request_location_change(hview->view, &nri);
+  nautilus_view_frame_request_location_change(hview->view, &nri);
 }
 
 static void
@@ -163,23 +163,23 @@ web_search_populate_engines(WebSearchView *hview)
 static GnomeObject *
 make_obj(GnomeGenericFactory *Factory, const char *goad_id, gpointer closure)
 {
-  GtkWidget *client, *vbox;
+  GtkWidget *frame, *vbox;
   GnomeObject *ctl;
   WebSearchView *hview;
 
   g_return_val_if_fail(!strcmp(goad_id, "ntl_websearch_view"), NULL);
 
   hview = g_new0(WebSearchView, 1);
-  client = gtk_widget_new(nautilus_meta_view_client_get_type(), NULL);
-  gtk_signal_connect(GTK_OBJECT(client), "destroy", do_destroy, NULL);
+  frame = gtk_widget_new(nautilus_meta_view_frame_get_type(), NULL);
+  gtk_signal_connect(GTK_OBJECT(frame), "destroy", do_destroy, NULL);
   object_count++;
 
-  ctl = nautilus_view_client_get_gnome_object(NAUTILUS_VIEW_CLIENT(client));
+  ctl = nautilus_view_frame_get_gnome_object(NAUTILUS_VIEW_FRAME(frame));
 
   vbox = gtk_vbox_new(FALSE, GNOME_PAD);
-  gtk_container_add(GTK_CONTAINER(client), vbox);
+  gtk_container_add(GTK_CONTAINER(frame), vbox);
 
-  hview->btn_search = gnome_pixmap_button(gnome_stock_pixmap_widget(client, GNOME_STOCK_PIXMAP_SEARCH), _("Search"));
+  hview->btn_search = gnome_pixmap_button(gnome_stock_pixmap_widget(frame, GNOME_STOCK_PIXMAP_SEARCH), _("Search"));
   gnome_button_can_default(GTK_BUTTON(hview->btn_search), TRUE);
   gtk_signal_connect(GTK_OBJECT(hview->btn_search), "clicked", do_search, hview);
   gtk_box_pack_start(GTK_BOX(vbox), hview->btn_search, FALSE, FALSE, GNOME_PAD);
@@ -212,16 +212,16 @@ make_obj(GnomeGenericFactory *Factory, const char *goad_id, gpointer closure)
   gtk_signal_connect(GTK_OBJECT(clist), "select_row", web_search_select_row, hview);
 #endif
 
-  gtk_widget_show_all(client);
+  gtk_widget_show_all(frame);
   
   /* handle events */
-  gtk_signal_connect(GTK_OBJECT(client), "notify_location_change", web_search_notify_location_change, hview);
+  gtk_signal_connect(GTK_OBJECT(frame), "notify_location_change", web_search_notify_location_change, hview);
 
   /* set description */
-  nautilus_meta_view_client_set_label(NAUTILUS_META_VIEW_CLIENT(client),
-				      _("WebSearch"));
+  nautilus_meta_view_frame_set_label(NAUTILUS_META_VIEW_FRAME(frame),
+                                     _("WebSearch"));
 
-  hview->view = (NautilusViewClient *)client;
+  hview->view = (NautilusViewFrame *)frame;
   hview->clist = NULL;
 
   return ctl;

@@ -3,7 +3,7 @@
 #include <gtk/gtk.h>
 
 typedef struct {
-  NautilusViewClient *vc;
+  NautilusViewFrame *view_frame;
 
   GtkWidget *ctree;
   HyperbolaDocTree *doc_tree;
@@ -19,7 +19,7 @@ static void hyperbola_navigation_tree_select_row(GtkCTree *ctree,
 						 GtkCTreeNode *node,
 						 gint column,
 						 HyperbolaNavigationTree *view);
-static void hyperbola_navigation_tree_notify_location_change (NautilusViewClient *vc,
+static void hyperbola_navigation_tree_notify_location_change (NautilusViewFrame *view_frame,
 							      Nautilus_NavigationInfo *navi,
 							      HyperbolaNavigationTree *hview);
 
@@ -72,11 +72,11 @@ hyperbola_navigation_tree_new(void)
   
   view = g_new0(HyperbolaNavigationTree, 1);
 
-  view->vc = NAUTILUS_VIEW_CLIENT(gtk_widget_new(nautilus_meta_view_client_get_type(), NULL));
-  gtk_signal_connect(GTK_OBJECT(view->vc), "notify_location_change", hyperbola_navigation_tree_notify_location_change,
+  view->view_frame = NAUTILUS_VIEW_FRAME(gtk_widget_new(nautilus_meta_view_frame_get_type(), NULL));
+  gtk_signal_connect(GTK_OBJECT(view->view_frame), "notify_location_change", hyperbola_navigation_tree_notify_location_change,
 		     view);
 
-  nautilus_meta_view_client_set_label(NAUTILUS_META_VIEW_CLIENT(view->vc), _("Help Contents"));
+  nautilus_meta_view_frame_set_label(NAUTILUS_META_VIEW_FRAME(view->view_frame), _("Help Contents"));
 
   view->ctree = gtk_ctree_new_with_titles(1, 0, (gchar **)titles);
   gtk_clist_freeze(GTK_CLIST(view->ctree));
@@ -90,7 +90,7 @@ hyperbola_navigation_tree_new(void)
   wtmp = gtk_scrolled_window_new(gtk_clist_get_hadjustment(GTK_CLIST(view->ctree)),
 				 gtk_clist_get_vadjustment(GTK_CLIST(view->ctree)));
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wtmp), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-  gtk_container_add(GTK_CONTAINER(view->vc), wtmp);
+  gtk_container_add(GTK_CONTAINER(view->view_frame), wtmp);
 
   gtk_container_add(GTK_CONTAINER(wtmp), view->ctree);
   gtk_clist_columns_autosize(GTK_CLIST(view->ctree));
@@ -98,11 +98,11 @@ hyperbola_navigation_tree_new(void)
   gtk_widget_show(view->ctree);
   gtk_widget_show(wtmp);
 
-  return nautilus_view_client_get_gnome_object(view->vc);
+  return nautilus_view_frame_get_gnome_object(view->view_frame);
 }
 
 static void
-hyperbola_navigation_tree_notify_location_change (NautilusViewClient *vc,
+hyperbola_navigation_tree_notify_location_change (NautilusViewFrame *view_frame,
 						  Nautilus_NavigationInfo *navi,
 						  HyperbolaNavigationTree *hview)
 {
@@ -140,7 +140,7 @@ static void hyperbola_navigation_tree_select_row(GtkCTree *ctree, GtkCTreeNode *
   memset(&nri, 0, sizeof(nri));
   nri.requested_uri = tnode->uri;
   nri.new_window_default = nri.new_window_suggested = nri.new_window_enforced = Nautilus_V_UNKNOWN;
-  nautilus_view_client_request_location_change(view->vc, &nri);
+  nautilus_view_frame_request_location_change(view->view_frame, &nri);
 
   view->notify_count--;
 }

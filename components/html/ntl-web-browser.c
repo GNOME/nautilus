@@ -29,7 +29,7 @@ extern GtkHTMLStreamHandle gtk_html_stream_ref(GtkHTMLStreamHandle handle);
 extern void gtk_html_stream_unref(GtkHTMLStreamHandle handle);
 
 typedef struct {
-  NautilusViewClient *vc;
+  NautilusViewFrame *view_frame;
   GtkWidget *htmlw;
   char *base_url, *base_target_url;
 
@@ -160,7 +160,7 @@ browser_url_load_done(GtkWidget *htmlw, BrowserInfo *bi)
 
   pri.type = Nautilus_PROGRESS_DONE_OK;
   pri.amount = 100.0;
-  nautilus_view_client_request_progress_change(bi->vc, &pri);
+  nautilus_view_frame_request_progress_change(bi->view_frame, &pri);
 }
 
 struct _HTStream {
@@ -357,7 +357,7 @@ browser_goto_url_real(GtkWidget *htmlw, const char *url, BrowserInfo *bi)
 
   gtk_html_begin(GTK_HTML(bi->htmlw), url);
   gtk_html_parse(GTK_HTML(bi->htmlw));
-  nautilus_view_client_request_progress_change(bi->vc, &pri);
+  nautilus_view_frame_request_progress_change(bi->view_frame, &pri);
 }
 
 static void
@@ -372,7 +372,7 @@ browser_goto_url(GtkWidget *htmlw, const char *url, BrowserInfo *bi)
 
   memset(&nri, 0, sizeof(nri));
   nri.requested_uri = real_url;
-  nautilus_view_client_request_location_change(bi->vc, &nri);
+  nautilus_view_frame_request_location_change(bi->view_frame, &nri);
   browser_goto_url_real(htmlw, real_url, bi);
   g_free(real_url);
 }
@@ -395,7 +395,7 @@ browser_select_url(GtkWidget *htmlw, const char *url, BrowserInfo *bi)
       si.selected_uris._length = 0;
     }
 
-  nautilus_view_client_request_selection_change(bi->vc, &si);
+  nautilus_view_frame_request_selection_change(bi->view_frame, &si);
   g_free(real_url);
   bi->prevsel = url?1:0;
 }
@@ -431,7 +431,7 @@ browser_submit(GtkWidget *htmlw, const char *method, const char *url, const char
 }
 
 static void
-browser_notify_location_change(NautilusViewClient *vc, Nautilus_NavigationInfo *ni, BrowserInfo *bi)
+browser_notify_location_change(NautilusViewFrame *view_frame, Nautilus_NavigationInfo *ni, BrowserInfo *bi)
 {
   if(ni->self_originated)
     return;
@@ -459,10 +459,10 @@ make_obj(GnomeGenericFactory *Factory, const char *goad_id, void *closure)
     return NULL;
 
   bi = g_new0(BrowserInfo, 1);
-  bi->vc = NAUTILUS_VIEW_CLIENT(gtk_widget_new(nautilus_content_view_client_get_type(), NULL));
-  gtk_signal_connect(GTK_OBJECT(bi->vc), "notify_location_change", browser_notify_location_change,
+  bi->view_frame = NAUTILUS_VIEW_FRAME(gtk_widget_new(nautilus_content_view_frame_get_type(), NULL));
+  gtk_signal_connect(GTK_OBJECT(bi->view_frame), "notify_location_change", browser_notify_location_change,
 		     bi);
-  gtk_signal_connect(GTK_OBJECT(bi->vc), "destroy", browser_do_destroy, NULL);
+  gtk_signal_connect(GTK_OBJECT(bi->view_frame), "destroy", browser_do_destroy, NULL);
   object_count++;
 
   bi->htmlw = gtk_html_new();
@@ -477,14 +477,14 @@ make_obj(GnomeGenericFactory *Factory, const char *goad_id, void *closure)
 
   wtmp = gtk_scrolled_window_new(NULL, NULL);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wtmp), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-  gtk_container_add(GTK_CONTAINER(bi->vc), wtmp);
+  gtk_container_add(GTK_CONTAINER(bi->view_frame), wtmp);
 
   gtk_container_add(GTK_CONTAINER(wtmp), bi->htmlw);
   gtk_widget_show(bi->htmlw);
   gtk_widget_show(wtmp);
-  gtk_widget_show(GTK_WIDGET(bi->vc));
+  gtk_widget_show(GTK_WIDGET(bi->view_frame));
 
-  return nautilus_view_client_get_gnome_object(bi->vc);
+  return nautilus_view_frame_get_gnome_object(bi->view_frame);
 }
 
 int main(int argc, char *argv[])

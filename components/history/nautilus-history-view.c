@@ -30,7 +30,7 @@
 #include <libnautilus/libnautilus.h>
 
 typedef struct {
-  NautilusViewClient *view;
+  NautilusViewFrame *view;
 
   GtkCList *clist;
 
@@ -40,7 +40,7 @@ typedef struct {
 } HistoryView;
 
 static void
-hyperbola_navigation_history_notify_location_change (NautilusViewClient *view,
+hyperbola_navigation_history_notify_location_change (NautilusViewFrame *view,
 						     Nautilus_NavigationInfo *loci,
 						     HistoryView *hview)
 {
@@ -119,7 +119,7 @@ hyperbola_navigation_history_select_row(GtkCList *clist, gint row, gint column, 
   reqi.new_window_default = reqi.new_window_suggested = Nautilus_V_FALSE;
   reqi.new_window_enforced = Nautilus_V_FALSE;
 
-  nautilus_view_client_request_location_change(hview->view, &reqi);
+  nautilus_view_frame_request_location_change(hview->view, &reqi);
 
   gtk_clist_thaw(clist);
 }
@@ -136,7 +136,7 @@ do_destroy(GtkObject *obj)
 
 static GnomeObject * make_obj(GnomeGenericFactory *Factory, const char *goad_id, gpointer closure)
 {
-  GtkWidget *client, *clist, *wtmp;
+  GtkWidget *frame, *clist, *wtmp;
   GnomeObject *ctl;
   char *col_titles[1];
   HistoryView *hview;
@@ -145,11 +145,11 @@ static GnomeObject * make_obj(GnomeGenericFactory *Factory, const char *goad_id,
 
   hview = g_new0(HistoryView, 1);
   hview->last_row = -1;
-  client = gtk_widget_new(nautilus_meta_view_client_get_type(), NULL);
-  gtk_signal_connect(GTK_OBJECT(client), "destroy", do_destroy, NULL);
+  frame = gtk_widget_new(nautilus_meta_view_frame_get_type(), NULL);
+  gtk_signal_connect(GTK_OBJECT(frame), "destroy", do_destroy, NULL);
   object_count++;
 
-  ctl = nautilus_view_client_get_gnome_object(NAUTILUS_VIEW_CLIENT(client));
+  ctl = nautilus_view_frame_get_gnome_object(NAUTILUS_VIEW_FRAME(frame));
 
   /* create interface */
   col_titles[0] = _("Path");
@@ -161,20 +161,20 @@ static GnomeObject * make_obj(GnomeGenericFactory *Factory, const char *goad_id,
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wtmp),
 				 GTK_POLICY_AUTOMATIC,
 				 GTK_POLICY_AUTOMATIC);
-  gtk_container_add(GTK_CONTAINER(client), wtmp);
+  gtk_container_add(GTK_CONTAINER(frame), wtmp);
   gtk_container_add(GTK_CONTAINER(wtmp), clist);
 
-  gtk_widget_show_all(client);
+  gtk_widget_show_all(frame);
   
   /* handle events */
-  gtk_signal_connect(GTK_OBJECT(client), "notify_location_change", hyperbola_navigation_history_notify_location_change, hview);
+  gtk_signal_connect(GTK_OBJECT(frame), "notify_location_change", hyperbola_navigation_history_notify_location_change, hview);
   gtk_signal_connect(GTK_OBJECT(clist), "select_row", hyperbola_navigation_history_select_row, hview);
 
   /* set description */
-  nautilus_meta_view_client_set_label(NAUTILUS_META_VIEW_CLIENT(client),
-				      _("History"));
+  nautilus_meta_view_frame_set_label(NAUTILUS_META_VIEW_FRAME(frame),
+                                     _("History"));
 
-  hview->view = (NautilusViewClient *)client;
+  hview->view = (NautilusViewFrame *)frame;
   hview->clist = (GtkCList *)clist;
 
 #if 0

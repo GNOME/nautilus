@@ -17,10 +17,10 @@ nautilus_make_object(GnomeGenericFactory *gfact, const char *goad_id, gpointer c
   if(GNOME_IS_OBJECT(theobj))
     return GNOME_OBJECT(theobj);
 
-  if(NAUTILUS_IS_VIEW_CLIENT(theobj))
+  if(NAUTILUS_IS_VIEW_FRAME(theobj))
     {
       gtk_widget_show(GTK_WIDGET(theobj));
-      return nautilus_view_client_get_gnome_object(NAUTILUS_VIEW_CLIENT(theobj));
+      return nautilus_view_frame_get_gnome_object(NAUTILUS_VIEW_FRAME(theobj));
     }
 
   gtk_object_destroy(theobj);

@@ -41,7 +41,7 @@
 #define DISPLAY_TIMEOUT_INTERVAL 500
 #define ENTRIES_PER_CB 1
 
-static NautilusViewClientClass *parent_class = NULL;
+static NautilusViewFrameClass *parent_class = NULL;
 
 /* FIXME this no longer has any reason to be global,
    given fm_get_current_icon_cache()
@@ -71,7 +71,7 @@ display_selection_info (FMDirectoryView *view,
 	if (count == 0) {
 	        memset(&sri, 0, sizeof(sri));
 	        sri.status_string = "";
-	        nautilus_view_client_request_status_change(NAUTILUS_VIEW_CLIENT(view), &sri);
+	        nautilus_view_frame_request_status_change(NAUTILUS_VIEW_FRAME(view), &sri);
 		return;
 	}
 
@@ -111,7 +111,7 @@ display_selection_info (FMDirectoryView *view,
 		    count, (count==1)?_("file"):_("files"), size_string);
 	memset(&sri, 0, sizeof(sri));
 	sri.status_string = msg;
-	nautilus_view_client_request_status_change(NAUTILUS_VIEW_CLIENT(view), &sri);
+	nautilus_view_frame_request_status_change(NAUTILUS_VIEW_FRAME(view), &sri);
         g_free (msg);
 
 	g_free (size_string);
@@ -199,7 +199,7 @@ icon_container_activate_cb (GnomeIconContainer *icon_container,
 	nri.requested_uri = gnome_vfs_uri_to_string(new_uri, 0);
 	nri.new_window_default = nri.new_window_suggested = Nautilus_V_FALSE;
 	nri.new_window_enforced = Nautilus_V_UNKNOWN;
-	nautilus_view_client_request_location_change(NAUTILUS_VIEW_CLIENT(directory_view),
+	nautilus_view_frame_request_location_change(NAUTILUS_VIEW_FRAME(directory_view),
 						     &nri);
 	g_free(nri.requested_uri);
 	gnome_vfs_uri_unref (new_uri);
@@ -398,7 +398,7 @@ flist_activate_cb (GtkFList *flist,
 	nri.requested_uri = gnome_vfs_uri_to_string(new_uri, 0);
 	nri.new_window_default = nri.new_window_suggested = Nautilus_V_FALSE;
 	nri.new_window_enforced = Nautilus_V_UNKNOWN;
-	nautilus_view_client_request_location_change(NAUTILUS_VIEW_CLIENT(directory_view),
+	nautilus_view_frame_request_location_change(NAUTILUS_VIEW_FRAME(directory_view),
 						     &nri);
 	g_free(nri.requested_uri);
 	gnome_vfs_uri_unref (new_uri);
@@ -498,14 +498,14 @@ setup_flist (FMDirectoryView *view,
 /* Signals.  */
 
 static void
-real_location_change(NautilusViewClient *directory_view, Nautilus_NavigationInfo *nav_context)
+real_location_change(NautilusViewFrame *directory_view, Nautilus_NavigationInfo *nav_context)
 {
 	g_message("Directory view is loading URL %s", nav_context->requested_uri);
 	fm_directory_view_load_uri(FM_DIRECTORY_VIEW(directory_view), nav_context->requested_uri);
 }
 
 static void
-real_stop_location_change(NautilusViewClient *directory_view)
+real_stop_location_change(NautilusViewFrame *directory_view)
 {
 	g_message("Directory view is stopping");
 	fm_directory_view_stop(FM_DIRECTORY_VIEW(directory_view));
@@ -548,10 +548,10 @@ static void
 class_init (FMDirectoryViewClass *class)
 {
 	GtkObjectClass *object_class;
-	NautilusViewClientClass *vc;
+	NautilusViewFrameClass *vc;
 
 	object_class = GTK_OBJECT_CLASS (class);
-	vc = NAUTILUS_VIEW_CLIENT_CLASS (class);
+	vc = NAUTILUS_VIEW_FRAME_CLASS (class);
 
 	parent_class = gtk_type_class (gtk_type_parent(object_class->type));
 	object_class->destroy = destroy;
@@ -624,7 +624,7 @@ stop_load (FMDirectoryView *view, gboolean error)
 	pri.amount = 100.0;
 	pri.type = error ? Nautilus_PROGRESS_DONE_ERROR : Nautilus_PROGRESS_DONE_OK;
 	
-	nautilus_view_client_request_progress_change(NAUTILUS_VIEW_CLIENT(view),
+	nautilus_view_frame_request_progress_change(NAUTILUS_VIEW_FRAME(view),
 						     &pri);
 }
 
@@ -844,7 +844,7 @@ fm_directory_view_get_type (void)
 		};
 
 		directory_view_type
-			= gtk_type_unique (nautilus_content_view_client_get_type (),
+			= gtk_type_unique (nautilus_content_view_frame_get_type (),
 					   &directory_view_info);
 	}
 
@@ -924,7 +924,7 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 	memset(&pri, 0, sizeof(pri));
 	pri.type = Nautilus_PROGRESS_UNDERWAY;
 	pri.amount = 0;
-	nautilus_view_client_request_progress_change(NAUTILUS_VIEW_CLIENT(view), &pri);
+	nautilus_view_frame_request_progress_change(NAUTILUS_VIEW_FRAME(view), &pri);
 
 	result = gnome_vfs_async_load_directory_uri
 		(&view->vfs_async_handle, 		/* handle */
