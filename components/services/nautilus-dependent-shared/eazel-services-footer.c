@@ -99,72 +99,121 @@ footer_destroy (GtkObject *object)
 
 	g_free (footer->details);
 
-	g_print ("%s()\n", __FUNCTION__);
-	
 	/* Chain destroy */
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* Private stuff */
-
 typedef struct
 {
-	GtkWidget *buffered_widget;
-	char *tile_name;
-	char *prelight_tile_name;
-	GdkPixbuf *tile_pixbuf;
-	GdkPixbuf *prelight_tile_pixbuf;
+	GtkWidget *widget;
+	char *name;
+	char *prelight_name;
+	GdkPixbuf *pixbuf;
+	GdkPixbuf *prelight_pixbuf;
 } PrelightData;
 
 static gint
-footer_item_enter_event (GtkWidget *event_box,
-			 GdkEventCrossing *event,
-			 gpointer client_data)
+label_enter_event (GtkWidget *event_box,
+		   GdkEventCrossing *event,
+		   gpointer client_data)
 {
 	PrelightData *data;
 
 	g_return_val_if_fail (GTK_IS_EVENT_BOX (event_box), TRUE);
 	g_return_val_if_fail (client_data != NULL, TRUE);
-
+	
 	data = (PrelightData *) client_data;
+	
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (data->widget), TRUE);
+	g_return_val_if_fail (data->prelight_name, TRUE);
 
-	g_return_val_if_fail (data->prelight_tile_name, TRUE);
-	g_return_val_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (data->buffered_widget), TRUE);
-
-	if (data->prelight_tile_pixbuf == NULL) {
-		data->prelight_tile_pixbuf = eazel_services_pixbuf_new (data->prelight_tile_name);
+	if (data->prelight_pixbuf == NULL) {
+		data->prelight_pixbuf = eazel_services_pixbuf_new (data->prelight_name);
 	}
-
-	if (data->prelight_tile_pixbuf != NULL) {
-		nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (data->buffered_widget),
-							  data->prelight_tile_pixbuf);
+	
+	if (data->prelight_pixbuf != NULL) {
+		nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (data->widget),
+							  data->prelight_pixbuf);
 	}
 
 	return TRUE;
 }
 
 static gint
-footer_item_leave_event (GtkWidget *event_box,
-			 GdkEventCrossing *event,
-			 gpointer client_data)
+label_leave_event (GtkWidget *event_box,
+		   GdkEventCrossing *event,
+		   gpointer client_data)
 {
 	PrelightData *data;
 
 	g_return_val_if_fail (GTK_IS_EVENT_BOX (event_box), TRUE);
 	g_return_val_if_fail (client_data != NULL, TRUE);
-
+	
 	data = (PrelightData *) client_data;
+	
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (data->widget), TRUE);
+	g_return_val_if_fail (data->name, TRUE);
 
-	g_return_val_if_fail (data->tile_name, TRUE);
-	g_return_val_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (data->buffered_widget), TRUE);
-
-	if (data->tile_pixbuf == NULL) {
-		data->tile_pixbuf = eazel_services_pixbuf_new (data->tile_name);
+	if (data->pixbuf == NULL) {
+		data->pixbuf = eazel_services_pixbuf_new (data->name);
 	}
 	
-	if (data->tile_pixbuf != NULL) {
-		nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (data->buffered_widget),
-							  data->tile_pixbuf);
+	if (data->pixbuf != NULL) {
+		nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (data->widget),
+							  data->pixbuf);
+	}
+
+	return TRUE;
+}
+
+static gint
+image_enter_event (GtkWidget *event_box,
+		   GdkEventCrossing *event,
+		   gpointer client_data)
+{
+	PrelightData *data;
+
+	g_return_val_if_fail (GTK_IS_EVENT_BOX (event_box), TRUE);
+	g_return_val_if_fail (client_data != NULL, TRUE);
+	
+	data = (PrelightData *) client_data;
+	
+	g_return_val_if_fail (NAUTILUS_IS_IMAGE (data->widget), TRUE);
+	g_return_val_if_fail (data->prelight_name, TRUE);
+
+	if (data->prelight_pixbuf == NULL) {
+		data->prelight_pixbuf = eazel_services_pixbuf_new (data->prelight_name);
+	}
+	
+	if (data->prelight_pixbuf != NULL) {
+		nautilus_image_set_pixbuf (NAUTILUS_IMAGE (data->widget), data->prelight_pixbuf);
+	}
+
+	return TRUE;
+}
+
+static gint
+image_leave_event (GtkWidget *event_box,
+		   GdkEventCrossing *event,
+		   gpointer client_data)
+{
+	PrelightData *data;
+
+	g_return_val_if_fail (GTK_IS_EVENT_BOX (event_box), TRUE);
+	g_return_val_if_fail (client_data != NULL, TRUE);
+	
+	data = (PrelightData *) client_data;
+	
+	g_return_val_if_fail (NAUTILUS_IS_IMAGE (data->widget), TRUE);
+	g_return_val_if_fail (data->name, TRUE);
+
+	if (data->pixbuf == NULL) {
+		data->pixbuf = eazel_services_pixbuf_new (data->name);
+	}
+	
+	if (data->pixbuf != NULL) {
+		nautilus_image_set_pixbuf (NAUTILUS_IMAGE (data->widget), data->pixbuf);
 	}
 
 	return TRUE;
@@ -196,8 +245,8 @@ footer_item_button_press_event (GtkWidget *widget,
 }
 
 static void
-footer_item_prelight_data_free_callback (GtkWidget *event_box,
-					 gpointer client_data)
+prelight_data_free_callback (GtkWidget *event_box,
+			     gpointer client_data)
 {
 	PrelightData *data;
 
@@ -206,10 +255,10 @@ footer_item_prelight_data_free_callback (GtkWidget *event_box,
 
 	data = (PrelightData *) client_data;
 
-	g_free (data->tile_name);
-	g_free (data->prelight_tile_name);
-	nautilus_gdk_pixbuf_unref_if_not_null (data->tile_pixbuf);
-	nautilus_gdk_pixbuf_unref_if_not_null (data->prelight_tile_pixbuf);
+	g_free (data->name);
+	g_free (data->prelight_name);
+	nautilus_gdk_pixbuf_unref_if_not_null (data->pixbuf);
+	nautilus_gdk_pixbuf_unref_if_not_null (data->prelight_pixbuf);
 	g_free (data);
 }
 
@@ -224,27 +273,51 @@ free_data_callback (GtkWidget *event_box,
 }
 
 static void
-buffered_widget_add_prelighting (GtkWidget *buffered_widget,
-				 GtkWidget *event_box,
-				 const char *tile_name,
-				 const char *prelight_tile_name)
+image_add_prelighting (NautilusImage *image,
+		       GtkWidget *event_box,
+		       const char *name,
+		       const char *prelight_name)
 {
 	PrelightData *data;
-
-	g_return_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (buffered_widget));
+	
+	g_return_if_fail (NAUTILUS_IS_IMAGE (image));
 	g_return_if_fail (GTK_IS_EVENT_BOX (event_box));
-	g_return_if_fail (tile_name != NULL);
-	g_return_if_fail (prelight_tile_name != NULL);
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (prelight_name != NULL);
 
 	data = g_new0 (PrelightData, 1);
+
+	data->widget = GTK_WIDGET (image);
+	data->name = g_strdup (name);
+	data->prelight_name = g_strdup (prelight_name);
 	
-	data->buffered_widget = buffered_widget;
-	data->tile_name = g_strdup (tile_name);
-	data->prelight_tile_name = g_strdup (prelight_tile_name);
+	gtk_signal_connect (GTK_OBJECT (event_box), "enter_notify_event", GTK_SIGNAL_FUNC (image_enter_event), data);
+	gtk_signal_connect (GTK_OBJECT (event_box), "leave_notify_event", GTK_SIGNAL_FUNC (image_leave_event), data);
+	gtk_signal_connect (GTK_OBJECT (event_box), "destroy", GTK_SIGNAL_FUNC (prelight_data_free_callback), data);
+}
+
+static void
+label_add_prelighting (NautilusLabel *label,
+		       GtkWidget *event_box,
+		       const char *name,
+		       const char *prelight_name)
+{
+	PrelightData *data;
 	
-	gtk_signal_connect (GTK_OBJECT (event_box), "enter_notify_event", GTK_SIGNAL_FUNC (footer_item_enter_event), data);
-	gtk_signal_connect (GTK_OBJECT (event_box), "leave_notify_event", GTK_SIGNAL_FUNC (footer_item_leave_event), data);
-	gtk_signal_connect (GTK_OBJECT (event_box), "destroy", GTK_SIGNAL_FUNC (footer_item_prelight_data_free_callback), data);
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+	g_return_if_fail (GTK_IS_EVENT_BOX (event_box));
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (prelight_name != NULL);
+
+	data = g_new0 (PrelightData, 1);
+
+	data->widget = GTK_WIDGET (label);
+	data->name = g_strdup (name);
+	data->prelight_name = g_strdup (prelight_name);
+	
+	gtk_signal_connect (GTK_OBJECT (event_box), "enter_notify_event", GTK_SIGNAL_FUNC (label_enter_event), data);
+	gtk_signal_connect (GTK_OBJECT (event_box), "leave_notify_event", GTK_SIGNAL_FUNC (label_leave_event), data);
+	gtk_signal_connect (GTK_OBJECT (event_box), "destroy", GTK_SIGNAL_FUNC (prelight_data_free_callback), data);
 }
 
 static GtkWidget *
@@ -264,19 +337,20 @@ footer_item_new (EazelServicesFooter *footer,
 	g_return_val_if_fail (EAZEL_SERVICES_IS_FOOTER (footer), NULL);
 	g_return_val_if_fail (text != NULL, NULL);
 	g_return_val_if_fail (text[0] != '\0', NULL);
-
+	
 	event_box = gtk_event_box_new ();
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (event_box), hbox);
 
 	if (has_left_bumper) {
 		left = eazel_services_image_new (EAZEL_SERVICES_NORMAL_LEFT_BUMPER, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
+		image_add_prelighting (NAUTILUS_IMAGE (left), event_box, EAZEL_SERVICES_NORMAL_LEFT_BUMPER, EAZEL_SERVICES_PRELIGHT_LEFT_BUMPER);
 	}
 	else {
 		left = eazel_services_image_new (EAZEL_SERVICES_NORMAL_FILL, NULL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
+		image_add_prelighting (NAUTILUS_IMAGE (left), event_box, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_PRELIGHT_FILL);
 	}
-
-	buffered_widget_add_prelighting (left, event_box, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_PRELIGHT_FILL);
+	
 	gtk_box_pack_start (GTK_BOX (hbox), left, FALSE, FALSE, 0);
 	gtk_widget_show (left);
 
@@ -299,13 +373,13 @@ footer_item_new (EazelServicesFooter *footer,
 	gtk_signal_connect (GTK_OBJECT (event_box), "button_press_event", GTK_SIGNAL_FUNC (footer_item_button_press_event), data);
 	gtk_signal_connect (GTK_OBJECT (event_box), "destroy", GTK_SIGNAL_FUNC (free_data_callback), data);
 
-	buffered_widget_add_prelighting (label, event_box, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_PRELIGHT_FILL);
+	label_add_prelighting (NAUTILUS_LABEL (label), event_box, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_PRELIGHT_FILL);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
 	if (has_right_bumper) {
 		GtkWidget *right;
 		right = eazel_services_image_new (EAZEL_SERVICES_NORMAL_RIGHT_BUMPER, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
-		buffered_widget_add_prelighting (right, event_box, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_PRELIGHT_FILL);
+		image_add_prelighting (NAUTILUS_IMAGE (right), event_box, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_PRELIGHT_FILL);
 		gtk_box_pack_start (GTK_BOX (hbox), right, FALSE, FALSE, 0);
 		gtk_widget_show (right);
 	}

@@ -1,5 +1,15 @@
 2000-10-26  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/services/nautilus-dependent-shared/eazel-services-footer.c:
+	(footer_destroy), (label_enter_event), (label_leave_event),
+	(image_enter_event), (image_leave_event),
+	(prelight_data_free_callback), (image_add_prelighting),
+	(label_add_prelighting), (footer_item_new):
+	Final arlification touches.  Make the footer item's left and right
+	bumpers prelight as well.
+	
+2000-10-26  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/mozilla/nautilus-mozilla-content-view.c:
 	(mozilla_is_uri_handled_by_nautilus):
 	Add "gnome-help" and "ghelp" to the list of uris handled by
