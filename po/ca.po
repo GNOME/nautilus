@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-06-28 17:50+0200\n"
-"PO-Revision-Date: 2003-06-28 17:53+0200\n"
+"POT-Creation-Date: 2003-07-06 12:17+0200\n"
+"PO-Revision-Date: 2003-07-06 12:28+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -395,15 +395,15 @@ msgstr "(Buit)"
 msgid "Loading..."
 msgstr "S'està carregant..."
 
-#: components/tree/nautilus-tree-view.c:503 nautilus.desktop.in.h:1
+#: components/tree/nautilus-tree-view.c:505 nautilus.desktop.in.h:1
 msgid "Home Folder"
 msgstr "Carpeta Inici"
 
-#: components/tree/nautilus-tree-view.c:505
+#: components/tree/nautilus-tree-view.c:507
 msgid "Filesystem"
 msgstr "Sistema de fitxers"
 
-#: components/tree/nautilus-tree-view.c:507
+#: components/tree/nautilus-tree-view.c:509
 msgid "Network Neighbourhood"
 msgstr "Entorn de xarxa"
 
@@ -1046,37 +1046,30 @@ msgstr "Previsualització"
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
 "actual number of captions shown depends on the zoom level. Possible values "
-"are: size, type, date_modified, date_changed, date_accessed, owner, group, "
-"permissions, octal_permissions and mime_type"
-msgstr ""
-"Una llista de títols sota una icona a la vista d'icones i a l'escriptori. El "
-"número actual de títols mostrats depen del nivell de zoom. Els valors "
-"possibles són: size, type, date_modified, date_changed, date_accessed, "
-"owner, group, permissions, octal_permissions i mime_type"
+"are: \"size\", \"type\", \"date_modified\", \"date_changed\", \"date_accessed"
+"\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" and "
+"\"mime_type\"."
+msgstr "Una llista de títols sota una icona a la vista d'icones i a l'escriptori. El número actual de títols mostrats depen del nivell de zoom. Els valors possibles són: «size», «type», «date_modified», «date_changed», «date_accessed», «owner», «group», «permissions», «octal_permissions» i «mime_type»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:2
-msgid "Add nautilus to session"
-msgstr "Afegeix nautilus a la sessió"
+msgid "Add Nautilus to session"
+msgstr "Afegeix Nautilus a la sessió"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:3
 msgid "Bring up a new window for every opened file"
 msgstr "Mostra una nova finestra per a cada fitxer obert"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:4
-msgid "Criteria for search bar searching."
-msgstr "Criteri per a les cerques de la barra de cerques."
+msgid "Criteria for search bar searching"
+msgstr "Criteri per a les cerques de la barra de cerques"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
 msgid ""
 "Criteria when matching files searched for in the search bar. If set to "
-"search_by_text, then nautilus will Search for files by file name only. If "
-"set to search_by_text_and_properties\", then nautilus will search for files "
-"by file name and file properties."
-msgstr ""
-"Criteris per a fer coincidir fitxers cercats a la barra de cerques. Si "
-"s'estableix a «search_by_text», aleshores nautilus cercarà fitxers només per "
-"nom de fitxer. Si s'estableix a «search_by_text_and_properties» aleshores "
-"nautilus cercarà fitxers per nom de fitxer i propietats del fitxer."
+"\"search_by_text\", then Nautilus will Search for files by file name only. "
+"If set to \"search_by_text_and_properties\", then Nautilus will search for "
+"files by file name and file properties."
+msgstr "Criteris per a fer coincidir fitxers cercats a la barra de cerques. Si s'estableix a «search_by_text», aleshores Nautilus cercarà fitxers només per nom de fitxer. Si s'estableix a «search_by_text_and_properties» aleshores Nautilus cercarà fitxers per nom de fitxer i propietats del fitxer."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 msgid "Current Nautilus theme (deprecated)"
@@ -1111,20 +1104,20 @@ msgid "Default folder viewer"
 msgstr "Vista de carpeta predeterminada"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
+msgid "Default icon zoom level"
+msgstr "Nivell de zoom predeterminat"
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
+msgid "Default list zoom level"
+msgstr "Nivell de zoom predeterminat a les llistes"
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
 msgid "Default sort order"
 msgstr "Criteri d'ordenació predeterminat"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
-msgid "Default zoom level used by the icon view"
-msgstr "Nivell de zoom predeterminat utilitzat en la vista d'icones"
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
 msgid "Default zoom level used by the icon view."
 msgstr "Nivell de zoom predeterminat utilitzat en la vista d'icones."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
-msgid "Default zoom level used by the list view"
-msgstr "Nivell de zoom predeterminat utilitzat en la vista de llista"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
 msgid "Default zoom level used by the list view."
@@ -1143,10 +1136,22 @@ msgid "Desktop trash icon name"
 msgstr "Nom de la icona de la paperera de l'escriptori"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
+msgid ""
+"Directories over this size will be truncated to around this size. The "
+"purpose of this is to avoid unintentionally blowing the heap and killing "
+"Nautilus on massive directories. A negative value denotes no limit. The "
+"limit is approximate due to the reading of directories chunk-wise."
+msgstr ""
+"Es truncaran els directoris gegants, per damunt d'aquesta mida. El propòsit "
+"d'açò és evitar que el sobrepasse el límit de memòria i que es mate nautilus "
+"en obrir directoris massius. Un valor negatiu vol dir que no hi ha cap "
+"límit. El límit és aproximat ja que es lligen els directoris troç a troç."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
 msgid "Enable 'special' flags in file preferences dialog"
 msgstr "Habilita els senyaladors especials al diàleg de preferències de fitxer"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
 msgid ""
 "Filename for the default directory background. Only used if background_set "
 "is true."
@@ -1154,7 +1159,7 @@ msgstr ""
 "Nom de fitxer per al fons del directori predeterminat. Només s'utilitza si "
 "background_set és vertader."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
@@ -1162,43 +1167,54 @@ msgstr ""
 "Nom del fitxer per al fons predeterminat de la barra lateral. Només "
 "s'utilitza si side_pane_background_set és vertader."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
-msgid "Hide default bookmarks in the bookmark menu."
-msgstr ""
-"Amaga les adreces d'interés predeterminades al menú de adreces d'interés."
-
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
+msgid "Hide default bookmarks in the bookmark menu"
+msgstr "Amaga les adreces d'interés predeterminades al menú de adreces d'interés"
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
 msgid "Home icon visible on desktop"
 msgstr "La icona de carpeta personal és visible a l'escriptori"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
 msgid ""
-"If set to true, Nautilus will show only show directories in the tree "
-"sidebar. Otherwise it will show both directories and files."
+"If set to true, Nautilus will show only show directories in the tree side "
+"pane. Otherwise it will show both directories and files."
 msgstr ""
 "Si és vertader, Nautilus només mostrarà directoris a la barra lateral de "
 "l'arbre. Si no, mostrarà tant els directoris com els fitxers."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr ""
 "Si és vertader, les finestres noves tindran la barra d'ubicació visible."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
-msgid "If set to true, newly opened windows will have the side bar visible."
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
+msgid "If set to true, newly opened windows will have the side pane visible."
 msgstr "Si és vertader, les finestres noves tindran la barra lateral visible."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
 msgid "If set to true, newly opened windows will have the status bar visible."
 msgstr "Si és vertader, les finestres noves tindran la barra d'estat visible."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
 msgid "If set to true, newly opened windows will have toolbars visible."
 msgstr ""
 "Si és vertader, les finestres noves tindran les barres d'eines visibles."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
+msgid ""
+"If set to true, then Nautilus lets you edit some of the more esoteric "
+"options of a file in the file preferences dialog."
+msgstr "Si és vertader, Nautilus vos permetrà editar algunes de les opcions més esotèriques d'un fitxer al diàleg de preferències del fitxer."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
+msgid ""
+"If set to true, then Nautilus shows directories prior to showing files in "
+"the icon and list views."
+msgstr "Si és vertader, Nautilus mostrarà directoris abans de mostrar els fitxers a la vista d'icones i llista."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "put files in the trash."
@@ -1206,7 +1222,17 @@ msgstr ""
 "Si és vertarder, Nautilus demanarà confirmació quan tracteu de ficar fitxers "
 "a la paperera."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
+msgid ""
+"If set to true, then Nautilus will bring up a new Nautilus window by default "
+"whenever an item is opened."
+msgstr "Si és vertader, nautilus mostrarà una nova finestra de Nautilus per defecte quan s'obre un element."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
+msgid "If set to true, then Nautilus will draw the icons on the desktop."
+msgstr "Si és vertader, Nautilus mostrarà les icones a l'escriptori."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
 msgid ""
 "If set to true, then Nautilus will have a feature allowing you to delete a "
 "file immediately and in-place, instead of moving it to the trash. This "
@@ -1216,7 +1242,19 @@ msgstr ""
 "un fitxer immediatament, sense moure'l a la paperera. Aquesta funcionalitat "
 "pot ser peligrosa, així que utilitzeu-la amb compte."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
+msgid ""
+"If set to true, then Nautilus will just show the user's bookmarks in the "
+"bookmark menu."
+msgstr "Si és vertader, Nautilus només mostrarà les adreces d'interés de l'usuari al menú d'adreces d'interés."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
+msgid ""
+"If set to true, then Nautilus will use the user's home directory as the "
+"desktop. If it is false, then it will use ~/Desktop as the desktop."
+msgstr "Si és vertader, Nautilus utilitzarà el directori personal de l'usuari com a escriptori. Si és fals, utilitzarà ~/Desktop com l'escriptori."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
 "If set to true, then backup files such as those created by Emacs are "
 "displayed. Currently, only files ending in a tilde (~) are considered backup "
@@ -1226,58 +1264,13 @@ msgstr ""
 "per Emacs. Ara mateix, només es consideren fitxers de còpia de seguretat "
 "aquells que acaben amb tilde (~)."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
-msgid ""
-"If set to true, then hidden files (dotfiles) are shown in the file manager."
-msgstr ""
-"Si és vertader, es mostraran els fitxers ocults (que comencen amb un punt) "
-"al gestor de fitxers."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
-msgid ""
-"If set to true, then nautilus lets you edit some of the more esoteric "
-"options of a file in the file preferences dialog."
-msgstr ""
-"Si és vertader, nautilus vos permetrà editar algunes de les opcions més "
-"esotèriques d'un fitxer al diàleg de preferències del fitxer."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
-msgid ""
-"If set to true, then nautilus shows directories prior to showing files in "
-"the icon and list views."
-msgstr ""
-"Si és vertader, nautilus mostrarà directoris abans de mostrar els fitxers a "
-"la vista d'icones i llista."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
-msgid ""
-"If set to true, then nautilus will bring up a new nautilus window by default "
-"whenever an item is opened."
-msgstr ""
-"Si és vertader, nautilus mostrarà una nova finestra de nautilus per defecte "
-"quan s'obre un element."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
-msgid "If set to true, then nautilus will draw the icons on the desktop."
-msgstr "Si és vertader, nautilus mostrarà les icones a l'escriptori."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
-msgid ""
-"If set to true, then nautilus will just show the user's bookmarks in the "
-"bookmark menu."
-msgstr ""
-"Si és vertader, nautilus només mostrarà les adreces d'interés de l'usuari al "
-"menú d'adreces d'interés."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
-msgid ""
-"If set to true, then nautilus will use the user's home directory as the "
-"desktop. If it is false, then it will use ~/Desktop as the desktop."
-msgstr ""
-"Si és vertader, nautilus utilitzarà el directori personal de l'usuari com a "
-"escriptori. Si és fals, utilitzarà ~/Desktop com l'escriptori."
-
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
+msgid ""
+"If set to true, then hidden files are shown in the file manager. Hidden "
+"files are either dotfiles or are listed in the directory's .hidden file."
+msgstr "Si és vertader, els fitxers ocults es mostraran al gestor de fitxers. Els fitxers ocults comencen o estan llistats al fitxer .hidden del directori."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid ""
 "If this is set to true, Nautilus adds itself to the session when it starts "
 "up. This means it will be started the next time you log in."
@@ -1285,7 +1278,7 @@ msgstr ""
 "Si s'estableix a vertader, Nautilus s'afegirà ell mateix a la sessió quan "
 "s'inicie. Açò vol dir que s'iniciarà la pròxima vegada que entreu."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
 "If this is set to true, an icon linking to the home directory will be put on "
 "the desktop."
@@ -1293,7 +1286,7 @@ msgstr ""
 "Si açò és vertader, s'afegirà a l'escriptori una icona que enllaçe amb el "
 "directori personal."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
@@ -1301,7 +1294,7 @@ msgstr ""
 "Si açò és vertader, s'afegirà a l'escriptori una icona que enllaçe amb la "
 "paperera."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -1311,7 +1304,7 @@ msgstr ""
 "invers. És a dir, si s'ordena per nom, en comptes d'ordenar els fitxers de "
 "la «a» a la «z», s'ordenaran de la «z» a la «a»."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
@@ -1323,27 +1316,26 @@ msgstr ""
 "la «a» a la «z», s'ordenaran de la «z» a la «a»; si s'ordena per mida, en "
 "comptes de ser incremental s'ordenara decrementalment."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid "If true, icons will be layed out tighter by default in new windows."
 msgstr ""
 "Si és vertader, les icones es dispondran més rígidament per defecte en les "
 "noves finestres."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
 msgid ""
-"If true, labels will be placed beside icons icons rather than underneath "
-"them."
+"If true, labels will be placed beside icons rather than underneath them."
 msgstr ""
 "Si és veritat, les etiquetes es ficaran al costat de les icones en comptes "
 "de sota d'elles."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid "If true, new windows will use manual layout by default."
 msgstr ""
 "Si és vertader, les noves finestres utilitzaran una disposició manual per "
 "defecte."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
@@ -1353,19 +1345,19 @@ msgstr ""
 "propòsit d'aquesta configuració és evitar que la creació de minuatures "
 "d'imatges grans tarde massa temps o utilitze massa memòria."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid "List of possible captions on icons"
 msgstr "Llista dels títols possibles a les icones"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
 msgid "Maximum handled files in a directory"
 msgstr "Màxim número de fitxers gestionats a un directori"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid "Maximum image size for thumbnailing"
 msgstr "Mida màxima de les imatges a miniaturitzar"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
@@ -1373,19 +1365,19 @@ msgstr ""
 "Nom del tema de Nautilus a utilitzar. Açò és desaconsellat des de Nautilus "
 "2.2. Si us plau, utilitzeu el tema d'icones en el seu lloc."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid "Nautilus handles drawing the desktop"
 msgstr "Nautilus gestiona la visualització de l'escriptori"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 msgid "Nautilus uses the users home directory as the desktop"
 msgstr "Nautilus utilitza el directori personal de l'usuari com l'escriptori"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid "Only show directories in the tree sidebar"
 msgstr "Només mostra directoris a la barra lateral d'arbre"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
@@ -1393,39 +1385,39 @@ msgstr ""
 "Els valors possibles són «single» per a llançar fitxers amb només un clic, o "
 "«double» per a llançar-los amb un doble clic."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid "Put labels beside icons"
 msgstr "Fica les etiquetes al costat de les icones"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
 msgid "Reverse sort order in new windows"
 msgstr "Inverteix el criteri d'ordenació a les finestres noves"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
 msgid "Show directories first in windows"
 msgstr "Mostra primer els directoris a les finestres"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
 msgid "Show location bar in new windows"
 msgstr "Mostra la barra d'ubicació a les noves finestres"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
-msgid "Show side bar in new windows"
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
+msgid "Show side pane in new windows"
 msgstr "Mostra la barra lateral a les noves finestres"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
 msgid "Show status bar in new windows"
 msgstr "Mostra la barra d'estat a les noves finestres"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
 msgid "Show toolbar in new windows"
 msgstr "Mostra la barra d'eines a les noves finestres"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid "Side pane view"
 msgstr "Vista de barra lateral"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid ""
 "Speed tradeoff for when to preview a sound file when mousing over a files "
 "icon. If set to \"always\" then always plays the sound, even if the file is "
@@ -1438,20 +1430,6 @@ msgstr ""
 "servidor remot. Si s'estableix a «local_only» aleshores només reprodueix les "
 "previsualitzacions a sistemes de fitxers locals. Si s'estableix a «never», "
 "mai previsualitza sons."
-
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
-msgid ""
-"Speed tradeoff for when to show a image files as a thumbnail. If set to "
-"\"always\" then always thumbnail, even if the directory is on a remote "
-"server. If set to \"local_only\" then only show thumbnails for local "
-"filesystems. If set to \"never\" then never bother to thumbnail images, just "
-"use a generic icon."
-msgstr ""
-"Penalització de velocitat per a quan es mostra un fitxer d'imatge com a "
-"miniatura. Si s'estableix a «always», sempre es miniaturitza, encara que el "
-"fitxer siga a un servidor remot. Si s'estableix a «local_only» aleshores "
-"només es mostren miniatures per a sistemes de fitxers locals. Si s'estableix "
-"a «never», només utilitza una icona genèrica."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid ""
@@ -1470,6 +1448,15 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid ""
+"Speed tradeoff for when to show an image file as a thumbnail. If set to "
+"\"always\" then always thumbnail, even if the directory is on a remote "
+"server. If set to \"local_only\" then only show thumbnails for local "
+"filesystems. If set to \"never\" then never bother to thumbnail images, just "
+"use a generic icon."
+msgstr "Penalització de velocitat per a quan es mostra un fitxer d'imatge com a miniatura. Si s'estableix a «always», sempre es miniaturitza, encara que el fitxer siga a un servidor remot. Si s'estableix a «local_only» aleshores només es mostren miniatures per a sistemes de fitxers locals. Si s'estableix a «never», no es molesta en fer miniatures, només utilitza una icona genèrica."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
+msgid ""
 "Speed tradeoff for when to show the number of items in a directory. If set "
 "to \"always\" then always show item counts, even if the directory is on a "
 "remote server. If set to \"local_only\" then only show counts for local "
@@ -1482,15 +1469,15 @@ msgstr ""
 "locals. Si s'estableix a «never», no es molesta en computar el compte "
 "d'elements."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid ""
-"The default sort-order for the item in the icon view. Possible values are "
-"name, size, type, modification_date, emblems."
+"The default sort-order for items in the icon view. Possible values are \"name"
+"\", \"size\", \"type\", \"modification_date\", \"emblems\"."
 msgstr ""
 "El criteri d'ordenació per defecte per als elements a la vista d'icones. Els "
 "valors possibles són «name», «size», «type», «modification_date», «emblems»."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid ""
 "The default sort-order for the item in the list view. Possible values are "
 "name, size, type, and modification_date."
@@ -1498,29 +1485,27 @@ msgstr ""
 "El criteri d'ordenació predeterminat per als elements a la vista de llista. "
 "Els valors possibles són «name», «size», «type» i «modification_date»."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
-msgid "The default width of the sidebar in new windows."
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
+msgid "The default width of the side pane in new windows."
 msgstr "L'amplada predeterminada de la barra lateral a les noves finestres."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "The font description used for the icons on the desktop."
 msgstr ""
 "La descripció del tipus de lletra utilitzada per a les icones de "
 "l'escriptori."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "The side pane view to show in newly opened windows."
 msgstr "La vista de barra lateral a mostrar a les noves finestres."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
-msgid ""
-"This name can be set if you want a custom name for the home link icon on the "
-"desktop."
-msgstr ""
-"Aquest nom es pot establir si voleu un nom personalitzat per a l'enllaç de "
-"la icona de carpeta personal de l'escriptori."
-
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
+msgid ""
+"This name can be set if you want a custom name for the home icon on the "
+"desktop."
+msgstr "Aquest nom es pot establir si voleu un nom personalitzat per a la icona de carpeta personal de l'escriptori."
+
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
@@ -1528,33 +1513,21 @@ msgstr ""
 "Aquest nom es pot establir si voleu un nom personalitzat per a la icona de "
 "la paperera de l'escriptori."
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid "Trash icon visible on desktop"
 msgstr "La icona de la paperera és visible a l'escriptori"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
+#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid "Type of click used to launch/open files"
 msgstr "Tipus de clic utilitzat per a llançar/obrir fitxers"
 
-#: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
-msgid "Use manual layout new windows"
-msgstr "Utilitza finestres amb disposició manual"
-
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
-msgid "Use tighter Layout in new windows"
-msgstr "Utilitza una disposició més rígida a les noves finestres"
+msgid "Use manual layout in new windows"
+msgstr "Utilitza la disposició manual a les noves finestres"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
-msgid ""
-"Vast directories, over this size will be truncated to around this size. The "
-"purpose of this is to avoid unintentionally blowing the heap and killing "
-"nautilus on massive directories. A negative value denotes no limit. The "
-"limit is approximate due to the reading of directories chunk-wise."
-msgstr ""
-"Es truncaran els directoris gegants, per damunt d'aquesta mida. El propòsit "
-"d'açò és evitar que el sobrepasse el límit de memòria i que es mate nautilus "
-"en obrir directoris massius. Un valor negatiu vol dir que no hi ha cap "
-"límit. El límit és aproximat ja que es lligen els directoris troç a troç."
+msgid "Use tighter Layout in new windows"
+msgstr "Utilitza una disposició més rígida a les noves finestres"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
 msgid "What to do with executable text files when activated"
@@ -1575,12 +1548,9 @@ msgstr ""
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
-"another view for that particular folder. Possible values are list_view and "
-"icon_view."
-msgstr ""
-"Quan es visita una carpeta, s'utilitza aquest visor a no ser que hagueu "
-"seleccionat una altra vista per a aqueixa carpeta en particular. Els valors "
-"possibles són «list_view» i «icon_view»."
+"another view for that particular folder. Possible values are \"list_view\" "
+"and \"icon_view\"."
+msgstr "Quan es visita una carpeta, s'utilitza aquest visor a no ser que hagueu seleccionat una altra vista per a aqueixa carpeta en particular. Els valors possibles són «list_view» i «icon_view»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
 msgid "When to show number of items in a directory"
@@ -1620,12 +1590,12 @@ msgid "Whether to show backup files"
 msgstr "Si s'han de mostrar els fitxers de còpia de seguretat"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
-msgid "Whether to show dotfiles"
-msgstr "Si s'han de mostrar els fitxers ocults"
+msgid "Whether to show hidden files"
+msgstr "Si s'ha de mostrar els fitxers ocults"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
-msgid "width of the sidebar"
-msgstr "amplada de la barra lateral"
+msgid "Width of the side pane"
+msgstr "Amplada de la barra lateral"
 
 #: libnautilus-private/filesystem-attributes.xml.h:1
 msgid "AFFS Volume"
@@ -3312,99 +3282,99 @@ msgstr "cap"
 msgid "%s's Home"
 msgstr "Directori de l'usuari %s"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2108
+#: libnautilus-private/nautilus-icon-canvas-item.c:2123
 msgid "file icon"
 msgstr "icona d'arxiu"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2481
+#: libnautilus-private/nautilus-icon-canvas-item.c:2496
 msgid "editable text"
 msgstr "text editable"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2482
+#: libnautilus-private/nautilus-icon-canvas-item.c:2497
 msgid "the editable label"
 msgstr "la etiqueta editable"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2489
+#: libnautilus-private/nautilus-icon-canvas-item.c:2504
 msgid "additional text"
 msgstr "text addicional"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2490
+#: libnautilus-private/nautilus-icon-canvas-item.c:2505
 msgid "some more text"
 msgstr "una mica més de text"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2497
+#: libnautilus-private/nautilus-icon-canvas-item.c:2512
 msgid "highlighted for selection"
 msgstr "ressaltat per sel·lecció"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2498
+#: libnautilus-private/nautilus-icon-canvas-item.c:2513
 msgid "whether we are highlighted for a selection"
 msgstr "si estem o no remarcats per una sel·lecció"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2505
+#: libnautilus-private/nautilus-icon-canvas-item.c:2520
 msgid "highlighted as keyboard focus"
 msgstr "ressaltats per focus de teclat"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2506
+#: libnautilus-private/nautilus-icon-canvas-item.c:2521
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "si estem o no remarcats per tenir el focus tel teclat"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2514
+#: libnautilus-private/nautilus-icon-canvas-item.c:2529
 msgid "highlighted for drop"
 msgstr "remarcat per soltar"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2515
+#: libnautilus-private/nautilus-icon-canvas-item.c:2530
 msgid "whether we are highlighted for a D&D drop"
 msgstr "si estem o no remarcats per un Arrastrar &i Soltar"
 
-#: libnautilus-private/nautilus-icon-container.c:2003
+#: libnautilus-private/nautilus-icon-container.c:2009
 msgid "The selection rectangle"
 msgstr "El rectangle de la sel·lecció"
 
-#: libnautilus-private/nautilus-icon-container.c:3937
+#: libnautilus-private/nautilus-icon-container.c:3943
 msgid "Frame Text"
 msgstr "Enmarca el text"
 
-#: libnautilus-private/nautilus-icon-container.c:3938
+#: libnautilus-private/nautilus-icon-container.c:3944
 msgid "Draw a frame around unselected text"
 msgstr "Dibuixa un marc al voltant del text no seleccionat"
 
-#: libnautilus-private/nautilus-icon-container.c:3944
+#: libnautilus-private/nautilus-icon-container.c:3950
 msgid "Selection Box Color"
 msgstr "Color de la caixa de selecció"
 
-#: libnautilus-private/nautilus-icon-container.c:3945
+#: libnautilus-private/nautilus-icon-container.c:3951
 msgid "Color of the selection box"
 msgstr "Color de la caixa de selecció"
 
-#: libnautilus-private/nautilus-icon-container.c:3950
+#: libnautilus-private/nautilus-icon-container.c:3956
 msgid "Selection Box Alpha"
 msgstr "Alfa de la caixa de selecció"
 
-#: libnautilus-private/nautilus-icon-container.c:3951
+#: libnautilus-private/nautilus-icon-container.c:3957
 msgid "Opacity of the selection box"
 msgstr "Opacitat de la caixa de selecció"
 
-#: libnautilus-private/nautilus-icon-container.c:3958
+#: libnautilus-private/nautilus-icon-container.c:3964
 msgid "Highlight Alpha"
 msgstr "Alfa resaltat"
 
-#: libnautilus-private/nautilus-icon-container.c:3959
+#: libnautilus-private/nautilus-icon-container.c:3965
 msgid "Opacity of the highlight for selected icons"
 msgstr "Opacitat del resaltat per a les icones seleccionades"
 
-#: libnautilus-private/nautilus-icon-container.c:3965
+#: libnautilus-private/nautilus-icon-container.c:3971
 msgid "Light Info Color"
 msgstr "Color d'informació clar"
 
-#: libnautilus-private/nautilus-icon-container.c:3966
+#: libnautilus-private/nautilus-icon-container.c:3972
 msgid "Color used for information text against a dark background"
 msgstr "El color que s'usa per a text informatiu amb un fons fosc"
 
-#: libnautilus-private/nautilus-icon-container.c:3971
+#: libnautilus-private/nautilus-icon-container.c:3977
 msgid "Dark Info Color"
 msgstr "Color d'informació fosc"
 
-#: libnautilus-private/nautilus-icon-container.c:3972
+#: libnautilus-private/nautilus-icon-container.c:3978
 msgid "Color used for information text against a light background"
 msgstr "El color que s'usa per a text informatiu amb un fons clar"
 
@@ -5661,7 +5631,9 @@ msgstr ""
 msgid ""
 "Move or copy files previously selected by a Cut Files or Copy Files command "
 "into the selected folder"
-msgstr "Mou o còpia els fitxers prèviament seleccionats mitjançant l'ordre Retalla fitxers o Còpia fitxers a la carpeta seleccionada"
+msgstr ""
+"Mou o còpia els fitxers prèviament seleccionats mitjançant l'ordre Retalla "
+"fitxers o Còpia fitxers a la carpeta seleccionada"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:21
 msgid "Open Wit_h"
@@ -5901,11 +5873,11 @@ msgstr "Mostra l'estat de la _indexació"
 msgid "Show status of indexing used when searching"
 msgstr "Mostra l'estat de la indexació utilitzat mentre s'està cercant"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:220
 msgid "Couldn't Create Required Folder"
 msgstr "No s'ha pogut crear la carpeta requerida"
 
-#: src/nautilus-application.c:224
+#: src/nautilus-application.c:221
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5916,11 +5888,11 @@ msgstr ""
 "el Nautilus, creeu aquesta carpeta, o especifiqueu els permisos per a que el "
 "Nautilus pugui crear-la."
 
-#: src/nautilus-application.c:229
+#: src/nautilus-application.c:226
 msgid "Couldn't Create Required Folders"
 msgstr "No s'han pogut crear les carpetes necessàries"
 
-#: src/nautilus-application.c:230
+#: src/nautilus-application.c:227
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5937,13 +5909,13 @@ msgstr ""
 "Abans d'executar el Nautilus, creeu aquesta carpeta, o especifiqueu els "
 "permisos per a que el Nautilus pugui crear-les."
 
-#: src/nautilus-application.c:301
+#: src/nautilus-application.c:298
 msgid "Link To Old Desktop"
 msgstr "Enllaç a l'escriptori vell"
 
-#: src/nautilus-application.c:317
+#: src/nautilus-application.c:314
 msgid ""
-"The location of the desktop directory has changed in Gnome 2.4. A link "
+"The location of the desktop directory has changed in GNOME 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
@@ -5951,7 +5923,7 @@ msgstr ""
 "creat un enllaç anomenat «Enllaç a l'escriptori vell» a l'escriptori. Podeu "
 "obrir-lo per a moure els fitxers que voleu i després eliminar l'enllaç."
 
-#: src/nautilus-application.c:320
+#: src/nautilus-application.c:317
 msgid "Migrated old desktop"
 msgstr "S'ha migrat l'escriptori vell"
 
@@ -5965,7 +5937,7 @@ msgstr "S'ha migrat l'escriptori vell"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:438
+#: src/nautilus-application.c:435
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5976,7 +5948,7 @@ msgstr ""
 "d'arrencar de nou l'ordinador o instal·lar de nou el Nautilus."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:444
+#: src/nautilus-application.c:441
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6023,14 +5995,14 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:474 src/nautilus-application.c:492
-#: src/nautilus-application.c:499
+#: src/nautilus-application.c:471 src/nautilus-application.c:489
+#: src/nautilus-application.c:496
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr ""
 "A causa d'un error inesperat, en aquest moment el Nautilus no es pot "
 "utilitzar."
 
-#: src/nautilus-application.c:475
+#: src/nautilus-application.c:472
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -6039,7 +6011,7 @@ msgstr ""
 "vistes del gestor de fitxers, en aquest moment no es pot utilitzar el "
 "Nautilus.\""
 
-#: src/nautilus-application.c:493
+#: src/nautilus-application.c:490
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -6050,7 +6022,7 @@ msgstr ""
 "activation-server i reiniciant el Nautilus potser ajudarà a arreglar el "
 "problema."
 
-#: src/nautilus-application.c:500
+#: src/nautilus-application.c:497
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -7439,11 +7411,11 @@ msgstr "Zoom per ajustar"
 msgid "Try to fit in window"
 msgstr "Tracta d'ajustar-se en la finestra"
 
-#: src/nautilus-zoom-control.c:794
+#: src/nautilus-zoom-control.c:796
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/nautilus-zoom-control.c:800
+#: src/nautilus-zoom-control.c:802
 msgid "Set the zoom level of the current view"
 msgstr "Estableix el nivell de zoom de la ubicació actual"
 
@@ -7455,6 +7427,19 @@ msgstr "Servidors de xarxa"
 msgid "View your network servers in the Nautilus file manager"
 msgstr ""
 "Visualitza els vostres servidors de xarxa en el gestor de fitxers Nautilus"
+
+#~ msgid "Default zoom level used by the icon view"
+#~ msgstr "Nivell de zoom predeterminat utilitzat en la vista d'icones"
+
+#~ msgid "Default zoom level used by the list view"
+#~ msgstr "Nivell de zoom predeterminat utilitzat en la vista de llista"
+
+#~ msgid ""
+#~ "If set to true, then hidden files (dotfiles) are shown in the file "
+#~ "manager."
+#~ msgstr ""
+#~ "Si és vertader, es mostraran els fitxers ocults (que comencen amb un "
+#~ "punt) al gestor de fitxers."
 
 #~ msgid "_New Folder"
 #~ msgstr "_Nova carpeta"
