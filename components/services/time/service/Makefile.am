@@ -21,6 +21,7 @@ INCLUDES = \
 	$(NULL)
 
 LDFLAGS = \
+	$(BONOBO_LIBS) \
 	$(OAF_LIBS) 	\
 	$(GHTTP_LIBS) 	\
 	$(NULL)
