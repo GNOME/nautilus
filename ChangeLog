@@ -1,6 +1,13 @@
 2000-10-04  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* configure.in:
+	Dont build the mozilla component for profiled builds cause the c++
+	compiler used for mozilla rpms is not binary compatible with the
+	one used for profiling.
+
+2000-10-04  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* configure.in:
 	Fix a typo and stop spewing profile cflags since there isnt any.
 	
 2000-10-04  Ramiro Estrugo  <ramiro@eazel.com>

@@ -122,6 +122,13 @@ AC_ARG_ENABLE(mozilla-component,
               [  --disable-mozilla-component=       Disable the mozilla component],
               mozilla_component_disabled="yes")
 
+dnl Dont build the mozilla component for profiled builds cause the c++ compiler
+dnl used for mozilla rpms is not binary compatible with the one used for profiling.
+if test "x$ENABLE_PROFILER" = "x1"
+then
+	mozilla_component_disabled="yes"
+fi
+
 found_mozilla=false
 
 echo mozilla_component_disabled is $mozilla_component_disabled
