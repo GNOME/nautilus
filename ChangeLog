@@ -1,3 +1,14 @@
+2002-09-22  Dave Camp  <dave@ximian.com>
+
+	* src/nautilus-side-pane.h: 
+	* src/nautilus-side-pane.c: (switch_page_callback),
+	(nautilus_side_pane_class_init): Added a switch_page signal to the
+	side pane.
+	(select_button_press_callback),
+	(select_button_key_press_callback), (menu_deactivate_callback),
+	(nautilus_side_pane_init): Depress the menu button while the menu
+	is popped up.
+
 2002-09-21  Dave Camp  <dave@ximian.com>
 
 	* src/nautilus-window.c (nautilus_window_tear_down_sidebar): Set

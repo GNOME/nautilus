@@ -45,6 +45,8 @@ typedef struct {
 	GtkVBoxClass parent_slot;
 
 	void (*close_requested) (NautilusSidePane *side_pane);
+	void (*switch_page) (NautilusSidePane *side_pane,
+			     GtkWidget *child);
 } NautilusSidePaneClass;
 
 GType                  nautilus_side_pane_get_type     (void);

@@ -26,6 +26,7 @@
 
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
+#include <gdk/gdkkeysyms.h>
 #include <gtk/gtkarrow.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkframe.h>
@@ -35,6 +36,7 @@
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkstock.h>
+#include <gtk/gtktogglebutton.h>
 
 typedef struct {
 	char *title;
@@ -58,6 +60,7 @@ static void nautilus_side_pane_finalize   (GObject        *object);
 
 enum {
 	CLOSE_REQUESTED,
+	SWITCH_PAGE,
 	LAST_SIGNAL
 };
 
@@ -106,6 +109,9 @@ switch_page_callback (GtkWidget *notebook,
 		gtk_label_set_text (GTK_LABEL (side_pane->details->title_label),
 				    panel->title);
 	}
+
+	g_signal_emit (side_pane, signals[SWITCH_PAGE], 0, 
+		       panel ? panel->widget : NULL);
 }
 
 static void
@@ -144,6 +150,15 @@ nautilus_side_pane_class_init (GtkObjectClass *object_klass)
 		 NULL, NULL,
 		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
+	signals[SWITCH_PAGE] = g_signal_new
+		("switch_page",
+		 G_TYPE_FROM_CLASS (object_klass),
+		 G_SIGNAL_RUN_LAST,
+		 G_STRUCT_OFFSET (NautilusSidePaneClass,
+				  switch_page),
+		 NULL, NULL,
+		 g_cclosure_marshal_VOID__OBJECT,
+		 G_TYPE_NONE, 1, GTK_TYPE_WIDGET);
 }
 
 static void
@@ -191,8 +206,11 @@ select_button_press_callback (GtkWidget *widget,
 	NautilusSidePane *side_pane;
 	
 	side_pane = NAUTILUS_SIDE_PANE (user_data);
-	
+
 	if ((event->type == GDK_BUTTON_PRESS) && event->button == 1) {
+		gtk_widget_grab_focus (widget);
+		
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), TRUE);
 		gtk_menu_popup (GTK_MENU (side_pane->details->menu),
 				NULL, NULL, menu_position_under, widget, 
 				event->button, event->time);
@@ -202,17 +220,27 @@ select_button_press_callback (GtkWidget *widget,
 	return FALSE;
 }
 
-static void
-select_button_clicked_callback (GtkWidget *widget,
-				gpointer user_data)
+static gboolean
+select_button_key_press_callback (GtkWidget *widget,
+				  GdkEventKey *event,
+				  gpointer user_data)
 {
 	NautilusSidePane *side_pane;
 	
 	side_pane = NAUTILUS_SIDE_PANE (user_data);
 
-	gtk_menu_popup (GTK_MENU (side_pane->details->menu),
-			NULL, NULL, menu_position_under, widget, 
-			0, GDK_CURRENT_TIME);	
+	if (event->keyval == GDK_space || 
+	    event->keyval == GDK_KP_Space ||
+	    event->keyval == GDK_Return ||
+	    event->keyval == GDK_KP_Enter) {
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget), TRUE);
+		gtk_menu_popup (GTK_MENU (side_pane->details->menu),
+				NULL, NULL, menu_position_under, widget, 
+				1, event->time);
+		return TRUE;
+	}
+	
+	return FALSE;
 }
 
 static void
@@ -224,6 +252,17 @@ close_clicked_callback (GtkWidget *widget,
 	side_pane = NAUTILUS_SIDE_PANE (user_data);
 
 	g_signal_emit (side_pane, signals[CLOSE_REQUESTED], 0);
+}
+
+static void
+menu_deactivate_callback (GtkWidget *widget,
+			  gpointer user_data)
+{
+	GtkWidget *menu_button;
+	
+	menu_button = GTK_WIDGET (user_data);
+		
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (menu_button), FALSE);
 }
 
 static void
@@ -250,7 +289,7 @@ nautilus_side_pane_init (GtkObject *object)
 	gtk_widget_show (hbox);
 	gtk_container_add (GTK_CONTAINER (frame), hbox);
 
-	select_button = gtk_button_new ();
+	select_button = gtk_toggle_button_new ();
 	gtk_button_set_relief (GTK_BUTTON (select_button), GTK_RELIEF_NONE);
 	gtk_widget_show (select_button);
 
@@ -258,9 +297,9 @@ nautilus_side_pane_init (GtkObject *object)
 			  "button_press_event",
 			  G_CALLBACK (select_button_press_callback),
 			  side_pane);
-	g_signal_connect (select_button, 
-			  "clicked",
-			  G_CALLBACK (select_button_clicked_callback),
+	g_signal_connect (select_button,
+			  "key_press_event",
+			  G_CALLBACK (select_button_key_press_callback),
 			  side_pane);
 	
 	select_hbox = gtk_hbox_new (FALSE, 0);
@@ -316,6 +355,10 @@ nautilus_side_pane_init (GtkObject *object)
 			    TRUE, TRUE, 0);
 
 	side_pane->details->menu = gtk_menu_new ();
+	g_signal_connect (side_pane->details->menu,
+			  "deactivate",
+			  G_CALLBACK (menu_deactivate_callback),
+			  select_button);
 	gtk_widget_show (side_pane->details->menu);
 }
 
