@@ -2,7 +2,7 @@
 
    nautilus-icon-factory.h: Class for obtaining icons for files and other objects.
  
- * Copyright (C) 1999, 2000 Red Hat Inc.
+   Copyright (C) 1999, 2000 Red Hat Inc.
    Copyright (C) 1999, 2000 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
@@ -27,7 +27,8 @@
 #define NAUTILUS_ICON_FACTORY_H
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <libnautilus/nautilus-directory.h>
+#include <libnautilus/nautilus-file.h>
+#include <gtk/gtkobject.h>
 
 /* NautilusIconFactory is a class that knows how to hand out icons to be
  * used for representing files and some other objects. It was designed
@@ -97,8 +98,8 @@ char *                nautilus_icon_factory_get_theme                    (void);
 void                  nautilus_icon_factory_set_theme                    (const char            *theme_name);
 
 /* Choose the appropriate icon, but don't render it yet. */
-NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file            (NautilusFile *file,
-									  void *controller);
+NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file            (NautilusFile          *file,
+									  void                  *controller);
 									  
 NautilusScalableIcon *nautilus_icon_factory_get_icon_by_name             (const char            *icon_name);
 GList *               nautilus_icon_factory_get_emblem_icons_for_file    (NautilusFile          *file);

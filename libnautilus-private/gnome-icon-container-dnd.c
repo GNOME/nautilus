@@ -816,12 +816,12 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
         gtk_object_getv (GTK_OBJECT (item), 1, &pixbuf_arg);
         pixbuf = GTK_VALUE_BOXED (pixbuf_arg);
         
-	transparent_pixbuf = make_semi_transparent(pixbuf);
+	transparent_pixbuf = make_semi_transparent (pixbuf);
 	gdk_pixbuf_render_pixmap_and_mask (transparent_pixbuf,
 					   &pixmap_for_dragged_file,
 					   &mask_for_dragged_file,
 					   128);
-	gdk_pixbuf_unref(transparent_pixbuf);
+	gdk_pixbuf_unref (transparent_pixbuf);
 	
         /* compute the image's offset */
 	nautilus_icons_view_icon_item_get_icon_window_rectangle

@@ -724,15 +724,17 @@ make_icon_visible (GnomeIconContainer *container,
 
 	icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
 
-	if (y1 < vadj->value)
+	if (y1 < vadj->value) {
 		gtk_adjustment_set_value (vadj, y1);
-	else if (y2 > vadj->value + allocation->height)
+	} else if (y2 > vadj->value + allocation->height) {
 		gtk_adjustment_set_value (vadj, y2 - allocation->height);
+	}
 
-	if (x1 < hadj->value)
+	if (x1 < hadj->value) {
 		gtk_adjustment_set_value (hadj, x1);
-	else if (x2 > hadj->value + allocation->width)
+	} else if (x2 > hadj->value + allocation->width) {
 		gtk_adjustment_set_value (hadj, x2 - allocation->width);
+	}
 }
 
 static gboolean
@@ -2145,6 +2147,17 @@ gnome_icon_container_initialize_class (GnomeIconContainerClass *class)
 	stipple = gdk_bitmap_create_from_data (NULL, stipple_bits, 2, 2);
 }
 
+static GdkFont *
+load_font (const char *name)
+{
+	GdkFont *font;
+
+	/* FIXME: Eventually we need a runtime check, but an assert is better than nothing. */
+	font = gdk_font_load (name);
+	g_assert (font != NULL);
+	return font;
+}
+
 static void
 gnome_icon_container_initialize (GnomeIconContainer *container)
 {
@@ -2159,15 +2172,15 @@ gnome_icon_container_initialize (GnomeIconContainer *container)
 
         details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
  
- 	/* font table - this isnt exactly proportional, but it looks better than computed */
+ 	/* font table - this isn't exactly proportional, but it looks better than computed */
         /* FIXME: read font from metadata and/or preferences */
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = gdk_font_load("-*-helvetica-medium-r-normal-*-8-*-*-*-*-*-*-*");
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = gdk_font_load("-*-helvetica-medium-r-normal-*-8-*-*-*-*-*-*-*");
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALL] = gdk_font_load("-*-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*");
-        details->label_font[NAUTILUS_ZOOM_LEVEL_STANDARD] = gdk_font_load("-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGE] = gdk_font_load("-*-helvetica-medium-r-normal-*-14-*-*-*-*-*-*-*");
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = gdk_font_load("-*-helveticar-medium-r-normal-*-18-*-*-*-*-*-*-*");
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = gdk_font_load("-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*");
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = load_font ("-*-helvetica-medium-r-normal-*-8-*-*-*-*-*-*-*");
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = load_font ("-*-helvetica-medium-r-normal-*-8-*-*-*-*-*-*-*");
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALL] = load_font ("-*-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*");
+        details->label_font[NAUTILUS_ZOOM_LEVEL_STANDARD] = load_font ("-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGE] = load_font ("-*-helvetica-medium-r-normal-*-14-*-*-*-*-*-*-*");
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = load_font ("-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*");
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = load_font ("-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*");
 
 	/* FIXME: Read these from preferences. */
 	details->linger_selection_mode = FALSE;

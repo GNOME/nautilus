@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* fm-icon-text-window.h - interface for window that lets user modify 
- 			   displayed icon text.
+/* fm-properties-window.h - interface for window that lets user modify 
+                            icon properties
 
    Copyright (C) 2000 Eazel, Inc.
 
@@ -20,14 +20,15 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Authors: John Sullivan <sullivan@eazel.com>
+   Authors: Darin Adler <darin@eazel.com>
 */
 
-#ifndef FM_ICON_TEXT_WINDOW_H
-#define FM_ICON_TEXT_WINDOW_H
+#ifndef FM_PROPERTIES_WINDOW_H
+#define FM_PROPERTIES_WINDOW_H
 
 #include <gtk/gtkwindow.h>
+#include <libnautilus/nautilus-file.h>
 
-GtkWindow *fm_icon_text_window_get_or_create (void);
+GtkWindow *fm_properties_window_get_or_create (NautilusFile *);
 
-#endif /* FM_ICON_TEXT_WINDOW_H */
+#endif /* FM_PROPERTIES_WINDOW_H */

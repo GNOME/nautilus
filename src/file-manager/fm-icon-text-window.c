@@ -36,8 +36,10 @@
 #include <gtk/gtktext.h>
 #include <gtk/gtkradiobutton.h>
 #include <gtk/gtkvbox.h>
+#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
+#include "fm-directory-view-icons.h"
 
 static void ensure_unique_attributes (int menu_index);
 static gboolean fm_icon_text_window_delete_event_cb (GtkWidget *widget,
@@ -288,14 +290,14 @@ fm_icon_text_window_delete_event_cb (GtkWidget *widget,
  * beneath icons.
  * 
  **/
-GtkWidget *
+GtkWindow *
 fm_icon_text_window_get_or_create (void)
 {
 	static GtkWidget *icon_text_window = NULL;
 	
-	if (icon_text_window == NULL)
+	if (icon_text_window == NULL) {
 		icon_text_window = create_icon_text_window ();
+	}
 	
-	g_assert (GTK_IS_WINDOW (icon_text_window));
-	return icon_text_window;
+	return GTK_WINDOW (icon_text_window);
 }

@@ -26,7 +26,6 @@
 #define NAUTILUS_DIRECTORY_H
 
 #include <gtk/gtkobject.h>
-#include <libgnomevfs/gnome-vfs-types.h>
 
 /* NautilusDirectory is a class that manages the model for a directory,
    real or virtual, for Nautilus, mainly the file-manager component. The directory is
@@ -56,21 +55,6 @@ typedef struct NautilusDirectoryClass NautilusDirectoryClass;
 	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_DIRECTORY))
 #define NAUTILUS_IS_DIRECTORY_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DIRECTORY))
-
-#define NAUTILUS_IS_FILE(object) \
-	((object) != NULL)
-
-typedef enum {
-	NAUTILUS_FILE_SORT_NONE,
-	NAUTILUS_FILE_SORT_BY_NAME,
-	NAUTILUS_FILE_SORT_BY_SIZE,
-	NAUTILUS_FILE_SORT_BY_TYPE,
-	NAUTILUS_FILE_SORT_BY_MTIME
-} NautilusFileSortType;	
-
-typedef struct NautilusFile NautilusFile;
-
-#define NAUTILUS_FILE(file) ((NautilusFile *)(file))
 
 typedef void (*NautilusFileListCallback) (NautilusDirectory *directory,
 					  GList             *files,
@@ -124,61 +108,6 @@ void               nautilus_directory_stop_monitoring      (NautilusDirectory   
 */
 gboolean           nautilus_directory_are_all_files_seen   (NautilusDirectory        *directory);
 
-/* Getting at a single file. */
-NautilusFile *     nautilus_file_get                       (const char               *uri);
-
-/* Basic operations on file objects. */
-void               nautilus_file_ref                       (NautilusFile             *file);
-void               nautilus_file_unref                     (NautilusFile             *file);
-void               nautilus_file_delete                    (NautilusFile             *file);
-
-/* Basic attributes for file objects. */
-char *             nautilus_file_get_name                  (NautilusFile             *file);
-char *             nautilus_file_get_uri                   (NautilusFile             *file);
-GnomeVFSFileSize   nautilus_file_get_size                  (NautilusFile             *file);
-GnomeVFSFileType   nautilus_file_get_type                  (NautilusFile             *file);
-const char *       nautilus_file_get_mime_type             (NautilusFile             *file);
-gboolean           nautilus_file_is_symbolic_link          (NautilusFile             *file);
-gboolean           nautilus_file_is_executable             (NautilusFile             *file);
-gboolean           nautilus_file_is_directory              (NautilusFile             *file);
-guint              nautilus_file_get_directory_item_count  (NautilusFile             *file,
-							    gboolean                  ignore_invisible_items);
-GList *            nautilus_file_get_keywords              (NautilusFile             *file);
-void               nautilus_file_set_keywords              (NautilusFile             *file,
-							    GList                    *keywords);
-
-/* Simple getting and setting top-level metadata. */
-char *             nautilus_file_get_metadata              (NautilusFile             *file,
-							    const char               *tag,
-							    const char               *default_metadata);
-void               nautilus_file_set_metadata              (NautilusFile             *file,
-							    const char               *tag,
-							    const char               *default_metadata,
-							    const char               *metadata);
-
-/* Attributes for file objects as user-displayable strings. */
-char *             nautilus_file_get_string_attribute      (NautilusFile             *file,
-							    const char               *attribute_name);
-
-/* Comparing two file objects for sorting */
-int                nautilus_file_compare_for_sort          (NautilusFile             *file_1,
-							    NautilusFile             *file_2,
-							    NautilusFileSortType      sort_type);
-int                nautilus_file_compare_for_sort_reversed (NautilusFile             *file_1,
-							    NautilusFile             *file_2,
-							    NautilusFileSortType      sort_type);
-
-/* Convenience functions for dealing with a list of NautilusFile objects that each have a ref. */
-void               nautilus_file_list_ref                  (GList                    *file_list);
-void               nautilus_file_list_unref                (GList                    *file_list);
-void               nautilus_file_list_free                 (GList                    *file_list);
-
-/* Return true if this file has already been deleted.
-   This object will be unref'd after sending the files_removed signal,
-   but it could hang around longer if someone ref'd it.
-*/
-gboolean           nautilus_file_is_gone                   (NautilusFile             *file);
-
 typedef struct NautilusDirectoryDetails NautilusDirectoryDetails;
 
 struct NautilusDirectory
@@ -201,10 +130,10 @@ struct NautilusDirectoryClass
 	   this is the last chance to forget about these file objects
 	   which are about to be unref'd.
 	*/
-	void   (* files_added)     (NautilusDirectory        *directory,
-				    GList                    *added_files);
-	void   (* files_removed)   (NautilusDirectory        *directory,
-				    GList                    *removed_files);
+	void   (* files_added)      (NautilusDirectory        *directory,
+				     GList                    *added_files);
+	void   (* files_removed)    (NautilusDirectory        *directory,
+				     GList                    *removed_files);
 
 	/* The files_changed signal is emitted as changes occur to
 	   existing files that are noticed by the synchronization framework.

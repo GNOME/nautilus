@@ -69,10 +69,12 @@ nautilus_has_prefix (const char *haystack_null_allowed, const char *needle_null_
 	h = haystack_null_allowed == NULL ? "" : haystack_null_allowed;
 	n = needle_null_allowed == NULL ? "" : needle_null_allowed;
 	do {
-		if (*n == '\0')
+		if (*n == '\0') {
 			return TRUE;
-		if (*h == '\0')
+		}
+		if (*h == '\0') {
 			return FALSE;
+		}
 	} while (*h++ == *n++);
 	return FALSE;
 }
@@ -82,19 +84,23 @@ nautilus_has_suffix (const char *haystack_null_allowed, const char *needle_null_
 {
 	const char *h, *n;
 
-	if (haystack_null_allowed == NULL)
+	if (needle_null_allowed == NULL) {
 		return TRUE;
-	if (needle_null_allowed == NULL)
-		return FALSE;
+	}
+	if (haystack_null_allowed == NULL) {
+		return needle_null_allowed[0] == '\0';
+	}
 		
 	/* Eat one character at a time. */
 	h = haystack_null_allowed + strlen(haystack_null_allowed);
 	n = needle_null_allowed + strlen(needle_null_allowed);
 	do {
-		if (n == needle_null_allowed)
+		if (n == needle_null_allowed) {
 			return TRUE;
-		if (h == haystack_null_allowed)
+		}
+		if (h == haystack_null_allowed) {
 			return FALSE;
+		}
 	} while (*--h == *--n);
 	return FALSE;
 }
@@ -144,23 +150,28 @@ nautilus_string_to_int (const char *string, int *integer)
 	char *parse_end;
 
 	/* Check for the case of an empty string. */
-	if (string == NULL || *string == '\0')
+	if (string == NULL || *string == '\0') {
 		return FALSE;
+	}
 	
 	/* Call the standard library routine to do the conversion. */
 	errno = 0;
 	result = strtol (string, &parse_end, 0);
 
 	/* Check that the result is in range. */
-	if ((result == G_MINLONG || result == G_MAXLONG) && errno == ERANGE)
+	if ((result == G_MINLONG || result == G_MAXLONG) && errno == ERANGE) {
 		return FALSE;
-	if (result < G_MININT || result > G_MAXINT)
+	}
+	if (result < G_MININT || result > G_MAXINT) {
 		return FALSE;
+	}
 
 	/* Check that all the trailing characters are spaces. */
-	while (*parse_end != '\0')
-		if (!isspace (*parse_end++))
+	while (*parse_end != '\0') {
+		if (!isspace (*parse_end++)) {
 			return FALSE;
+		}
+	}
 
 	/* Return the result. */
 	*integer = result;
@@ -170,27 +181,27 @@ nautilus_string_to_int (const char *string, int *integer)
 /**
  * nautilus_strstrip:
  * Remove all occurrences of a character from a string. The
- * original string is modified, and also returned for convenience.
+ * original string is modified in place, and also returned for convenience.
  * 
  * @string_null_allowed: The string to be stripped.
  * @remove_this: The char to remove from @string_null_allowed
  * 
  * Return value: @string_null_allowed, after removing all occurrences
- * of @remove_this. 
+ * of @remove_this.
  */
 char *
 nautilus_strstrip (char *string_null_allowed, char remove_this)
 {
         if (string_null_allowed != NULL) {
-	        char *pos;
+	        char *in, *out;
 
-	        pos = string_null_allowed;
-	        while (*pos != '\0') {
-	                if (*pos == remove_this) {
-	                        g_memmove (pos, pos + 1, strlen (pos));
+	        in = string_null_allowed;
+		out = string_null_allowed;
+		do {
+	                if (*in != remove_this) {
+				*out++ = *in;
 	                }
-	                ++pos;
-	        }
+	        } while (*in++ != '\0');
         }
 
         return string_null_allowed;        
@@ -232,7 +243,6 @@ void
 nautilus_self_check_string (void)
 {
 	int integer;
-	char *test_string;
 
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_strlen (NULL), 0);
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_strlen (""), 0);
@@ -283,6 +293,22 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_prefix ("aaa", "aaab"), FALSE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_prefix ("aaab", "aaa"), TRUE);
 
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix (NULL, NULL), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix (NULL, ""), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("", NULL), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("a", "a"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("aaab", "aaab"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix (NULL, "a"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("a", NULL), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("", "a"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("a", ""), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("a", "b"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("a", "ab"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("ab", "a"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("ab", "b"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("aaa", "baaa"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_has_suffix ("baaa", "aaa"), TRUE);
+
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_strdup_prefix (NULL, NULL), NULL);
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_strdup_prefix (NULL, "foo"), NULL);
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_strdup_prefix ("foo", NULL), "foo");
@@ -292,14 +318,11 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_strdup_prefix ("footle:bar", "tle:"), "foo");	
 
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (NULL, '_'), NULL);	
-	test_string = g_strdup ("foo");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (test_string, '_'), "foo");	
-	test_string = g_strdup ("_foo");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (test_string, '_'), "foo");	
-	test_string = g_strdup ("foo_");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (test_string, '_'), "foo");	
-	test_string = g_strdup ("_foo_");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (test_string, '_'), "foo");	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (g_strdup ("foo"), '_'), "foo");	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (g_strdup ("_foo"), '_'), "foo");	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (g_strdup ("foo_"), '_'), "foo");	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (g_strdup ("_foo_"), '_'), "foo");	
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_strstrip (g_strdup ("_f_o__o_"), '_'), "foo");	
         
 	#define TEST_INTEGER_CONVERSION_FUNCTIONS(string, boolean_result, integer_result) \
 		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_to_int (string, &integer), boolean_result); \

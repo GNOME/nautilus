@@ -49,11 +49,11 @@
 #define DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
 
 /* Paths to use when creating & referring to bonobo menu items */
-#define FM_DIRECTORY_VIEW_ICONS_MENU_PATH_BEFORE_STRETCH_SEPARATOR   "/Settings/Before Stretch Separator"
-#define FM_DIRECTORY_VIEW_ICONS_MENU_PATH_STRETCH_ICON   "/Settings/Stretch"
-#define FM_DIRECTORY_VIEW_ICONS_MENU_PATH_RESTORE_STRETCHED_ICONS   "/Settings/Restore"
-#define FM_DIRECTORY_VIEW_ICONS_MENU_PATH_AFTER_STRETCH_SEPARATOR   "/Settings/After Stretch Separator"
-#define FM_DIRECTORY_VIEW_ICONS_MENU_PATH_CUSTOMIZE_ICON_TEXT   "/Settings/Icon Text"
+#define MENU_PATH_BEFORE_STRETCH_SEPARATOR   "/Settings/Before Stretch Separator"
+#define MENU_PATH_STRETCH_ICON   "/Settings/Stretch"
+#define MENU_PATH_RESTORE_STRETCHED_ICONS   "/Settings/Restore"
+#define MENU_PATH_AFTER_STRETCH_SEPARATOR   "/Settings/After Stretch Separator"
+#define MENU_PATH_CUSTOMIZE_ICON_TEXT   "/Settings/Icon Text"
 
 
 /* forward declarations */
@@ -367,14 +367,14 @@ fm_directory_view_icons_compute_menu_item_info (FMDirectoryViewIcons *view,
 
 	icon_container = get_icon_container (view);
 
-	if (strcmp (FM_DIRECTORY_VIEW_ICONS_MENU_PATH_STRETCH_ICON, menu_path) == 0) {
+	if (strcmp (MENU_PATH_STRETCH_ICON, menu_path) == 0) {
                 *return_name = g_strdup (_("_Stretch Icon"));
 		/* Current stretching UI only works on one item at a time, so we'll
 		 * desensitize the menu item if that's not the case.
 		 */
         	*sensitive_return = g_list_length (files) == 1
         	                    && !gnome_icon_container_has_stretch_handles (icon_container);
-	} else if (strcmp (FM_DIRECTORY_VIEW_ICONS_MENU_PATH_RESTORE_STRETCHED_ICONS, menu_path) == 0) {
+	} else if (strcmp (MENU_PATH_RESTORE_STRETCHED_ICONS, menu_path) == 0) {
                 if (g_list_length (files) > 1) {
                         *return_name = g_strdup (_("_Restore Icons to Unstretched Size"));
                 } else {
@@ -383,7 +383,7 @@ fm_directory_view_icons_compute_menu_item_info (FMDirectoryViewIcons *view,
 
         	*sensitive_return = gnome_icon_container_is_stretched (icon_container);
 
-	} else if (strcmp (FM_DIRECTORY_VIEW_ICONS_MENU_PATH_CUSTOMIZE_ICON_TEXT, menu_path) == 0) {
+	} else if (strcmp (MENU_PATH_CUSTOMIZE_ICON_TEXT, menu_path) == 0) {
                 *return_name = g_strdup (_("Customize _Icon Text..."));
         	*sensitive_return = TRUE;
 	} else {
@@ -433,26 +433,20 @@ fm_directory_view_icons_append_selection_context_menu_items (FMDirectoryView *vi
 				    (view, menu, files));
 
         append_one_context_menu_item (FM_DIRECTORY_VIEW_ICONS (view), menu, files, 
-                                      FM_DIRECTORY_VIEW_ICONS_MENU_PATH_STRETCH_ICON, 
+                                      MENU_PATH_STRETCH_ICON, 
                                       GTK_SIGNAL_FUNC (show_stretch_handles_cb));
         append_one_context_menu_item (FM_DIRECTORY_VIEW_ICONS (view), menu, files, 
-                                      FM_DIRECTORY_VIEW_ICONS_MENU_PATH_RESTORE_STRETCHED_ICONS, 
+                                      MENU_PATH_RESTORE_STRETCHED_ICONS, 
                                       GTK_SIGNAL_FUNC (unstretch_icons_cb));
 }
 
-/**
- * Note that this is used both as a Bonobo menu callback and a signal callback.
+/* Note that this is used both as a Bonobo menu callback and a signal callback.
  * The first parameter is different in these cases, but we just ignore it anyway.
  */
 static void
-customize_icon_text_cb (gpointer ignored, gpointer view)
+customize_icon_text_cb (gpointer ignored1, gpointer ignored2)
 {
-	GtkWindow *window;
-
-	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (view));
-
-	window = GTK_WINDOW (fm_icon_text_window_get_or_create ());	
-	nautilus_gtk_window_present (window);
+	nautilus_gtk_window_present (fm_icon_text_window_get_or_create ());
 }
 
 static void
@@ -476,7 +470,7 @@ fm_directory_view_icons_append_background_context_menu_items (FMDirectoryView *v
 	gtk_menu_append (menu, menu_item);
 
         append_one_context_menu_item (FM_DIRECTORY_VIEW_ICONS (view), menu, NULL, 
-                                      FM_DIRECTORY_VIEW_ICONS_MENU_PATH_CUSTOMIZE_ICON_TEXT, 
+                                      MENU_PATH_CUSTOMIZE_ICON_TEXT, 
                                       GTK_SIGNAL_FUNC (customize_icon_text_cb));
 }
 
@@ -791,26 +785,26 @@ fm_directory_view_icons_merge_menus (FMDirectoryView *view)
         ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
 
         bonobo_ui_handler_menu_new_separator (ui_handler,
-                                              FM_DIRECTORY_VIEW_ICONS_MENU_PATH_BEFORE_STRETCH_SEPARATOR,
+                                              MENU_PATH_BEFORE_STRETCH_SEPARATOR,
                                               -1); 
 
         append_bonobo_menu_item (FM_DIRECTORY_VIEW_ICONS (view), ui_handler, selection,
-                                 FM_DIRECTORY_VIEW_ICONS_MENU_PATH_STRETCH_ICON,
+                                 MENU_PATH_STRETCH_ICON,
                                  _("Make the selected icon stretchable"),
-                                 (BonoboUIHandlerCallbackFunc)show_stretch_handles_cb, view);
+                                 (BonoboUIHandlerCallbackFunc) show_stretch_handles_cb, view);
         append_bonobo_menu_item (FM_DIRECTORY_VIEW_ICONS (view), ui_handler, selection,
-                                 FM_DIRECTORY_VIEW_ICONS_MENU_PATH_RESTORE_STRETCHED_ICONS,
+                                 MENU_PATH_RESTORE_STRETCHED_ICONS,
                                  _("Restore each selected icon to its original size"),
-                                 (BonoboUIHandlerCallbackFunc)unstretch_icons_cb, view);
+                                 (BonoboUIHandlerCallbackFunc) unstretch_icons_cb, view);
 
         bonobo_ui_handler_menu_new_separator (ui_handler,
-                                              FM_DIRECTORY_VIEW_ICONS_MENU_PATH_AFTER_STRETCH_SEPARATOR,
+                                              MENU_PATH_AFTER_STRETCH_SEPARATOR,
                                               -1); 
 
         append_bonobo_menu_item (FM_DIRECTORY_VIEW_ICONS (view), ui_handler, selection,
-                                 FM_DIRECTORY_VIEW_ICONS_MENU_PATH_CUSTOMIZE_ICON_TEXT,
+                                 MENU_PATH_CUSTOMIZE_ICON_TEXT,
                                  _("Choose which information appears beneath each icon's name"),
-                                 (BonoboUIHandlerCallbackFunc)customize_icon_text_cb, view);
+                                 (BonoboUIHandlerCallbackFunc) customize_icon_text_cb, view);
 
         nautilus_file_list_free (selection);
 }
@@ -842,9 +836,9 @@ fm_directory_view_icons_update_menus (FMDirectoryView *view)
         selection = fm_directory_view_get_selection (view);
         
         update_bonobo_menu_item (FM_DIRECTORY_VIEW_ICONS (view), ui_handler, selection, 
-                                 FM_DIRECTORY_VIEW_ICONS_MENU_PATH_STRETCH_ICON);
+                                 MENU_PATH_STRETCH_ICON);
         update_bonobo_menu_item (FM_DIRECTORY_VIEW_ICONS (view), ui_handler, selection, 
-                                 FM_DIRECTORY_VIEW_ICONS_MENU_PATH_RESTORE_STRETCHED_ICONS);
+                                 MENU_PATH_RESTORE_STRETCHED_ICONS);
         nautilus_file_list_free (selection);
 }
 

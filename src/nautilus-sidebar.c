@@ -37,6 +37,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libnautilus/nautilus-background.h>
 #include <libnautilus/nautilus-directory.h>
+#include <libnautilus/nautilus-file.h>
 #include <libnautilus/nautilus-glib-extensions.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-metadata.h>

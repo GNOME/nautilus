@@ -24,7 +24,8 @@
  */
 
 /* annotation metaview - allows you to annotate a directory or file */
-#include "config.h"
+
+#include <config.h>
 
 #include <libnautilus/libnautilus.h>
 #include <libnautilus/nautilus-metadata.h>
@@ -34,8 +35,9 @@
 #include <limits.h>
 #include <ctype.h>
 #include <libnautilus/nautilus-background.h>
+#include <libnautilus/nautilus-file.h>
 
-#define NOTES_DEFAULT_BACKGROUND_COLOR  "rgb:FFFF/FFFF/BBBB"
+#define NOTES_DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/BBBB"
 
 
 typedef struct {

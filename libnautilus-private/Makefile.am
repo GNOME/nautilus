@@ -27,8 +27,6 @@ libnautilusincludedir=$(includedir)/libnautilus
 libnautilusinclude_HEADERS=			\
 	bonobo-stream-vfs.h			\
 	gdk-extensions.h			\
-	gnome-icon-container-dnd.h		\
-	gnome-icon-container-private.h		\
 	gnome-icon-container.h			\
 	gtkflist.h				\
 	gtkscrollframe.h			\
@@ -38,13 +36,13 @@ libnautilusinclude_HEADERS=			\
 	nautilus-bookmark.h			\
 	nautilus-debug.h			\
 	nautilus-directory.h			\
+	nautilus-file.h				\
 	nautilus-file-utilities.h		\
 	nautilus-glib-extensions.h		\
 	nautilus-gtk-extensions.h		\
 	nautilus-icon-factory.h			\
 	nautilus-icons-controller.h		\
 	nautilus-icons-view-icon-item.h         \
-        nautilus-lib-self-check-functions.h	\
 	nautilus-metadata.h			\
 	nautilus-mime-type.h			\
 	nautilus-self-checks.h			\
@@ -68,6 +66,7 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	nautilus-default-file-icon.c		\
 	nautilus-default-file-icon.h		\
 	nautilus-directory.c			\
+	nautilus-file.c				\
 	nautilus-file-utilities.c		\
 	nautilus-glib-extensions.c		\
 	nautilus-gtk-extensions.c		\

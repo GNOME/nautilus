@@ -30,6 +30,7 @@
 #include <gtk/gtkscrolledwindow.h>
 #include <libnautilus/ntl-content-view-frame.h>
 #include <libnautilus/nautilus-directory.h>
+#include <libnautilus/nautilus-file.h>
 
 typedef struct _FMDirectoryView      FMDirectoryView;
 typedef struct _FMDirectoryViewClass FMDirectoryViewClass;

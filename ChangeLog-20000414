@@ -1,13 +1,53 @@
+2000-03-07  Darin Adler  <darin@eazel.com>
+
+	* components/music/nautilus-music-view.c,
+	components/notes/ntl-notes.c, libnautilus/Makefile.am,
+	libnautilus/nautilus-directory-private.h,
+	libnautilus/nautilus-directory.h,
+	libnautilus/nautilus-directory.c,
+	libnautilus/nautilus-file-private.h, libnautilus/nautilus-file.h,
+	libnautilus/nautilus-file.c, libnautilus/nautilus-icon-factory.h,
+	src/ntl-index-panel.c, src/file-manager/fm-directory-view.h:
+	Broke the file part of nautilus-directory.[ch] into
+	nautilus-file.[ch].
+
+	* libnautilus/nautilus-string.c (nautilus_strstrip): Added more
+	tests. Changed algorithm on strstrip so it's linear instead of
+	n^2.
+
+	* libnautilus/gnome-icon-container.c
+	(gnome_icon_container_initialize): Fixed font for "larger" zoom
+	level. Also made it assert if the font can't be loaded.
+
+	* components/help/hyperbola-nav-index.c (despace):
+	Fixed warning.
+
+	* libnautilus/gnome-icon-container-dnd.c,
+	libnautilus/nautilus-string.h: Whitespace.
+
+	* src/file-manager/Makefile.am,
+	src/file-manager/fm-directory-view.c,
+	src/file-manager/fm-properties-window.h,
+	src/file-manager/fm-properties-window.c: Added properties window
+	hook, but no window yet. The menu item still needs to be added to
+	the main menus as well as the context menus.
+
+	* src/file-manager/fm-directory-view.c,
+	src/file-manager/fm-directory-view-icons.c,
+	src/file-manager/fm-icon-text-window.h,
+	src/file-manager/fm-icon-text-window.c: A little cleanup. Shorter
+	names.
+
 2000-03-08  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/nautilus-prefs-group-radio.h,
 	src/nautilus-prefs-group-radio.h: Make the radio group emit proper
-	signals on changes. 
+	signals on changes.
 
-	* src/nautilus-prefs-pane.c,
-	src/nautilus-prefs-group.c
-	src/nautilus-prefs-box.c: Make everything prettier by using nice offsets. 
-	
+	* src/nautilus-prefs-pane.c, src/nautilus-prefs-group.c
+	src/nautilus-prefs-box.c: Make everything prettier by using nice
+	offsets.
+
 2000-03-08  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Added macros to check, assert and invoke class methods
@@ -17,9 +57,10 @@
 	(NAUTILUS_KLASS) Access the class for a given object
 	(NAUTILUS_INVOKE_METHOD) Invoke a method for a given object
 	(NAUTILUS_ACCESS_METHOD) Access a method.
-	(NAUTILUS_ASSERT_METHOD) Assert the non-nullness of a method for a given object
+	(NAUTILUS_ASSERT_METHOD) Assert the non-nullness of a method
+	for a given object
 	(NAUTILUS_INVOKE_METHOD_IF) Invoke a method if it aint null.
-	
+
 2000-03-08  Ramiro Estrugo  <ramiro@eazel.com>
 
 	First whack at having a better preferences ui.

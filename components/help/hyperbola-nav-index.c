@@ -366,7 +366,7 @@ despace(GString *s)
 	      ctmp = ctmp_s + 2;
 	      i--;
 	      if(i != strlen(ctmp))
-		g_error("i (%d) != strlen(ctmp) (%ld)", i, strlen(ctmp));
+		g_error("i (%d) != strlen(ctmp) (%ld)", i, (long)strlen(ctmp));
 	    }
 	  ctmp_s = NULL;
 	}

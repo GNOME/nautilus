@@ -47,8 +47,8 @@ char *   nautilus_strdup_prefix     (const char *source_null_allowed,
 gboolean nautilus_has_suffix        (const char *target_null_allowed,
 				     const char *suffix_null_allowed);
 
-char *   nautilus_strstrip          (char *string_null_allowed,
-                                     char remove_this);
+char *   nautilus_strstrip          (char       *string_null_allowed,
+                                     char        remove_this);
 
 
 /* Conversions to and from strings. */

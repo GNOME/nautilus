@@ -33,6 +33,8 @@ libntl_file_manager_la_SOURCES=	\
 	fm-icon-text-window.h		\
 	fm-icons-controller.c		\
 	fm-icons-controller.h		\
+	fm-properties-window.c		\
+	fm-properties-window.h		\
         fm-signaller.c 			\
         fm-signaller.h 		
 

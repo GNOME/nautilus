@@ -33,6 +33,7 @@
 
 #include <libnautilus/libnautilus.h>
 #include <libnautilus/nautilus-background.h>
+#include <libnautilus/nautilus-file.h>
 #include <libnautilus/nautilus-file-utilities.h>
 #include <libnautilus/nautilus-glib-extensions.h>
 #include <libnautilus/nautilus-gtk-macros.h>
