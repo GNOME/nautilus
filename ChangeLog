@@ -1,3 +1,17 @@
+2000-08-31  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 1699, get help stuff to render in mozilla.
+	
+	* components/mozilla/main.c: (main):
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_vfs_read_callback), (mozilla_vfs_callback),
+	Two new callbacks to handle streaming of data into
+	the mozilla component.
+	
+	(nautilus_mozilla_content_view_load_uri):
+	* components/mozilla/nautilus-mozilla-content-view.oafinfo:
+	Modified file so mozilla component will handle all types.
+
 2000-08-31  Rebecca Schulman  <rebecka@eazel.com>
 	Completed the rest of 2369 for the required
 	milestone.

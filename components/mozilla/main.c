@@ -29,6 +29,7 @@
 #include "nautilus-mozilla-content-view.h"
 
 #include <gnome.h>
+#include <libgnomevfs/gnome-vfs.h>
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
 
@@ -90,12 +91,14 @@ main (int argc, char *argv[])
 	gnome_init_with_popt_table("nautilus-mozilla-content-view", VERSION, 
 				   argc, argv,
 				   oaf_popt_options, 0, NULL); 
+
 	orb = oaf_init (argc, argv);
-
-
+	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 	factory = bonobo_generic_factory_new_multi ("OAFIID:nautilus_mozilla_content_view_factory:020a0285-6b96-4685-84a1-4a56eb6baa2b", mozilla_make_object, NULL);
-	
+
+	gnome_vfs_init ();
+
 	do {
 		bonobo_main ();
 	} while (object_count > 0);

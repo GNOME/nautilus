@@ -41,6 +41,7 @@
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
+#include <libgnomevfs/gnome-vfs.h>
 
 struct NautilusMozillaContentViewDetails {
 	char				 *uri;
@@ -251,6 +252,68 @@ nautilus_mozilla_content_view_get_nautilus_view (NautilusMozillaContentView *vie
 	return view->details->nautilus_view;
 }
 
+
+/**
+ * mozilla_vfs_read_callback:
+ *
+ * Read data from buffer and copy into mozilla stream.
+ **/
+
+static char vfs_read_buf[40960];
+
+static void
+mozilla_vfs_read_callback (GnomeVFSAsyncHandle *handle, GnomeVFSResult result, gpointer buffer,
+			   GnomeVFSFileSize bytes_requested,
+			   GnomeVFSFileSize bytes_read,
+			   gpointer data)
+{
+	NautilusMozillaContentView *view = data;
+
+#ifdef DEBUG_ramiro
+	g_print ("mozilla_vfs_read_callback: %ld/%ld bytes\n", (long) bytes_read, (long) bytes_requested);
+#endif
+
+	if (bytes_read != 0) {
+		gtk_moz_embed_append_data (GTK_MOZ_EMBED (view->details->mozilla), buffer, bytes_read);
+	}
+
+	if (bytes_read == 0 || result != GNOME_VFS_OK) {
+		gtk_moz_embed_close_stream (GTK_MOZ_EMBED (view->details->mozilla));
+		gnome_vfs_async_close (handle, (GnomeVFSAsyncCloseCallback) gtk_true, NULL);
+		nautilus_view_report_load_complete (view->details->nautilus_view);
+		return;
+    	}
+	
+	gnome_vfs_async_read (handle, vfs_read_buf, sizeof (vfs_read_buf), mozilla_vfs_read_callback, view);
+}
+
+/**
+ * mozilla_vfs_callback:
+ *
+ * Callback for gnome_vfs_async_open. Attempt to read data from handle
+ * and pass to mozilla streaming callback.
+ * 
+ **/
+static void
+mozilla_vfs_callback (GnomeVFSAsyncHandle *handle, GnomeVFSResult result, gpointer data)
+{
+	NautilusMozillaContentView *view = data;
+
+#ifdef DEBUG_ramiro
+	g_print ("mozilla_vfs_callback, result was %s\n", gnome_vfs_result_to_string (result));
+#endif
+
+	if (result != GNOME_VFS_OK)
+	{
+		nautilus_view_report_load_failed (view->details->nautilus_view);
+		gtk_moz_embed_close_stream (GTK_MOZ_EMBED (view->details->mozilla));
+	} else {
+		gtk_moz_embed_open_stream (GTK_MOZ_EMBED (view->details->mozilla), "file://", "text/html");
+		gnome_vfs_async_read (handle, vfs_read_buf, sizeof (vfs_read_buf), mozilla_vfs_read_callback, view);
+	}
+}
+
+
 /**
  * nautilus_mozilla_content_view_load_uri:
  *
@@ -262,6 +325,8 @@ void
 nautilus_mozilla_content_view_load_uri (NautilusMozillaContentView	*view,
 					const char			*uri)
 {
+	GnomeVFSAsyncHandle *async_handle;
+	
 	g_assert (uri != NULL);
 
 	if (view->details->uri) {
@@ -273,8 +338,14 @@ nautilus_mozilla_content_view_load_uri (NautilusMozillaContentView	*view,
 #ifdef DEBUG_ramiro
 	g_print ("nautilus_mozilla_content_view_load_uri (%s)\n", view->details->uri);
 #endif
-
-	gtk_moz_embed_load_url (GTK_MOZ_EMBED (view->details->mozilla), view->details->uri);
+	/* If the request is http, pass the uri to the mozilla component.  Otherwise, stream the data
+	 * into mozilla.
+	 */
+	if (strncmp (uri, "http:", 5) == 0) {
+		gtk_moz_embed_load_url (GTK_MOZ_EMBED (view->details->mozilla), view->details->uri);
+	} else {
+		gnome_vfs_async_open (&async_handle, uri, GNOME_VFS_OPEN_READ, mozilla_vfs_callback, view);	
+	}
 }
 
 static void
@@ -684,10 +755,7 @@ mozilla_open_uri_callback (GtkMozEmbed *mozilla,
  */
 static char *handled_by_nautilus[] =
 {
-	"ftp",
-	"finger",
-	"eazel",
-	"caca"
+	"ftp"
 };
 
 #define num_handled_by_nautilus (sizeof (handled_by_nautilus) / sizeof ((handled_by_nautilus)[0]))
