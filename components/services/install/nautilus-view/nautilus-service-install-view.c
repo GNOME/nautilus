@@ -175,7 +175,7 @@ install_message_new (NautilusServiceInstallView *view, const char *package_name)
 	gtk_widget_set_usize (im->progress_bar, -2, PROGRESS_BAR_HEIGHT);
 	gtk_widget_show (im->progress_bar);
 
-	im->progress_label = eazel_services_label_new (NULL, 0, 0.0, 0.0, 0, 0,
+	im->progress_label = eazel_services_label_new (NULL, 0, 0.0, 0.0, 0, 4,
 						       EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
 						       EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
 						       NULL, -2, TRUE);

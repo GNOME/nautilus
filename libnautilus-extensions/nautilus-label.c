@@ -39,7 +39,7 @@
 #define MIN_SMOOTH_FONT_SIZE 5
 #define MAX_SMOOTH_FONT_SIZE 64
 
-#define DEFAULT_FONT_SIZE 14
+#define DEFAULT_FONT_SIZE 30
 #define LINE_WRAP_SEPARATORS _(" -_,;.?/&")
 #define LINE_OFFSET 2
 
@@ -588,7 +588,12 @@ label_composite_pixbuf_callback (GtkWidget *widget,
 {
 	NautilusLabel *label;
 	ArtIRect text_frame;
+	ArtIRect text_bounds;
+	ArtIRect workaround_buffer_area;
 	GdkPixbuf *pixbuf;
+	GdkEventExpose *event;
+	ArtIRect text_dirty_area;
+	ArtIRect dirty_area;
 	
 	g_return_if_fail (NAUTILUS_IS_LABEL (widget));
 	g_return_if_fail (GTK_WIDGET_REALIZED (widget));
@@ -596,11 +601,14 @@ label_composite_pixbuf_callback (GtkWidget *widget,
 	g_return_if_fail (area != NULL && !art_irect_empty (area));
 
 	label = NAUTILUS_LABEL (widget);
+	event = (GdkEventExpose *) callback_data;
 
 	text_frame = label_get_text_frame (label);
+	text_bounds = label_get_text_bounds (label);
 	
 	g_return_if_fail (!art_irect_empty (&text_frame));
 
+	/* Optimize the case where the background is solid */
 	if (label_can_cache_contents (label)) {
 		if (label->detail->solid_cache_pixbuf == NULL) {
 			label->detail->solid_cache_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
@@ -629,30 +637,54 @@ label_composite_pixbuf_callback (GtkWidget *widget,
 		return;
 	}
 
+	/* We dont really need this information.  The point is to have
+	 * the "smooth widget" figure it out and feed us only the final 
+	 * content dirty rectangle.  We compute it now to workaround
+	 * bug 2784.  See fixme below.
+	 */
+	dirty_area = nautilus_irect_assign_gdk_rectangle (&event->area);
+	art_irect_intersect (&text_dirty_area, &text_bounds, &dirty_area);
+
 	/* FIXME bugzilla.eazel.com 2784: 
-	 * The reason we move the pixels around instead of
+	 * The reason we use a temporary buffer instead of
 	 * drawing directly into the destination_pixbuf is that
 	 * there currently is a serious bug in NautilusScalalbleFont
-	 * that prevents clipping from happening.
+	 * that prevents clipping from happening when drawing smooth
+	 * text.
 	 */
 	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, text_frame.x1, text_frame.y1);
 
+	/* Copy the dirty bits out of the destination to our temporary buffer */
+ 	workaround_buffer_area.x0 = text_dirty_area.x0 - text_bounds.x0;
+ 	workaround_buffer_area.y0 = text_dirty_area.y0 - text_bounds.y0;
+ 	workaround_buffer_area.x1 = workaround_buffer_area.x0 + gdk_pixbuf_get_width (destination_pixbuf);
+ 	workaround_buffer_area.y1 = workaround_buffer_area.y0 + gdk_pixbuf_get_height (destination_pixbuf);
+	
 	nautilus_gdk_pixbuf_draw_to_pixbuf (destination_pixbuf,
 					    pixbuf,
 					    area->x0,
 					    area->y0,
-					    &text_frame);
-	
+					    &workaround_buffer_area);
+
+	/* Now draw the full extent of the text to the buffer.  Once
+	 * bug 2784 is fixed, we can simply pass this function a
+	 * clip rectangle and lose the temporary buffer code above
+	 */
 	label_draw_text_to_pixbuf (label,
 				   pixbuf,
 				   &text_frame,
 				   0,
 				   0);
-	
+
+	/* And finally draw the composited bits back to the 
+	 * destination buffer - just the dirty area.
+	 * 
+	 * Again, when bug 2784 is fixed this step is not needed.
+	 */
 	nautilus_gdk_pixbuf_draw_to_pixbuf (pixbuf,
 					    destination_pixbuf,
-					    source_x,
-					    source_y,
+					    text_dirty_area.x0 - text_bounds.x0,
+					    text_dirty_area.y0 - text_bounds.y0,
 					    area);
 	
 	gdk_pixbuf_unref (pixbuf);
@@ -699,19 +731,8 @@ nautilus_label_expose_event (GtkWidget *widget,
 		return TRUE;
 	}
 
-	/* FIXME bugzilla.eazel.com 5608: 
-	 * The is a clipping problem in label_composite_pixbuf_callback that 
-	 * causes garbage to be displayed sometimes when drawing the label
-	 * background.  Im currently debugging that.  In the mean time a
-	 * workaround is to expose the whole widget area.
-	 */
-
 	/* Clip the dirty area to the screen */
-#if 0
 	dirty_area = nautilus_irect_assign_gdk_rectangle (&event->area);
-#else
-	dirty_area = widget_bounds;
-#endif
 	screen_dirty_area = nautilus_irect_gdk_window_clip_dirty_area_to_screen (event->window,
 										 &dirty_area);
 	/* Make sure the area is screen visible before painting */

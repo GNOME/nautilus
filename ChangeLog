@@ -1,5 +1,23 @@
 2001-01-19  Ramiro Estrugo  <ramiro@eazel.com>
 
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (install_message_new):
+	Add a tiny bit of padding to this label to prevent the bottom from
+	being cut off.  Im not sure exactly why the bottom is getting cut
+	off.  I suspect that the part container is constraining the widget
+	somehow, perhaps to match the geometry of the label on the right.
+	
+	* libnautilus-extensions/nautilus-label.c:
+	(label_composite_pixbuf_callback), (nautilus_label_expose_event):
+	Fix for bugs 5607, 5608 and 5611.  Remove previous workaround for
+	bug 5608.  Do the clipping of the area that we need to copy into
+	the temporary buffer more carefully.  The temporary buffer itself
+	is a workaround for a related bug (2784).
+
+2001-01-19  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/bug-5712-pr3-workaround--gdkimage.c:
 	(NAUTILUS_BUG_5712_PR3_WORKAROUND__gdk_image_get):
 	Remove a debug printf that I stupidly left in.
