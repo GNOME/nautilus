@@ -113,9 +113,12 @@ CORBA_Object nautilus_view_get_objref           (NautilusView *view);
 /* These functions correspond to methods of the Nautilus:View CORBAinterface */
 
 void nautilus_view_notify_location_change       (NautilusView *view,
-					         Nautilus_NavigationInfo *nav_context);
+					         Nautilus_NavigationInfo *nav_context,
+					         const char *initial_title);
 void nautilus_view_notify_selection_change      (NautilusView *view,
 					         Nautilus_SelectionInfo *sel_context);
+void nautilus_view_notify_title_change		(NautilusView *view,
+						 const char *new_title);
 void nautilus_view_load_state                   (NautilusView *view, 
                                                  const char *config_path);
 void nautilus_view_save_state                   (NautilusView *view, 

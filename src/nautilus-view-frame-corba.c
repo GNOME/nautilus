@@ -29,13 +29,6 @@
 #include "nautilus.h"
 #include "ntl-view-private.h"
 
-typedef struct {
-  POA_Nautilus_ViewFrame servant;
-  gpointer bonobo_object;
-
-  NautilusView *view;
-} impl_POA_Nautilus_ViewFrame;
-
 static Nautilus_ViewWindow
 impl_Nautilus_ViewFrame__get_main_window(impl_POA_Nautilus_ViewFrame *servant,
                                          CORBA_Environment *ev);

@@ -519,6 +519,12 @@ browser_select_url(GtkWidget *htmlw, const char *url, BrowserInfo *bi)
 }
 
 static void
+browser_title_changed(GtkWidget *htmlw, const char *new_title, BrowserInfo *bi)
+{
+  nautilus_content_view_frame_request_title_change (NAUTILUS_CONTENT_VIEW_FRAME (bi->view_frame), new_title);
+}
+
+static void
 browser_submit(GtkWidget *htmlw, const char *method, const char *url, const char *encoding, BrowserInfo *bi)
 {
   g_free(bi->post_data); bi->post_data = NULL;
@@ -587,6 +593,7 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, void *closure)
   gtk_signal_connect(GTK_OBJECT(bi->htmlw), "url_requested", browser_url_requested, bi);
   gtk_signal_connect(GTK_OBJECT(bi->htmlw), "on_url", browser_select_url, bi);
   gtk_signal_connect(GTK_OBJECT(bi->htmlw), "submit", browser_submit, bi);
+  gtk_signal_connect(GTK_OBJECT(bi->htmlw), "title_changed", browser_title_changed, bi);
 
   wtmp = gtk_scrolled_window_new(NULL, NULL);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wtmp), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);

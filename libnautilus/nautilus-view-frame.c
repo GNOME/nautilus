@@ -29,18 +29,15 @@
 
 #include <config.h>
 #include "ntl-view-frame.h"
+#include "nautilus-view-frame-private.h"
 
 #include <gtk/gtksignal.h>
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-control.h>
 
-struct _NautilusViewFramePrivate {
-  BonoboObject *control;
-  Nautilus_ViewFrame view_frame;
-};
-
 enum {
   NOTIFY_LOCATION_CHANGE,
+  NOTIFY_TITLE_CHANGE,
   NOTIFY_SELECTION_CHANGE,
   LOAD_STATE,
   SAVE_STATE,
@@ -83,8 +80,8 @@ impl_Nautilus_View_notify_location_change(impl_POA_Nautilus_View * servant,
 					  CORBA_Environment * ev);
 
 static void
-impl_Nautilus_View_show_properties(impl_POA_Nautilus_View * servant,
-				   CORBA_Environment * ev);
+impl_Nautilus_View_stop_location_change(impl_POA_Nautilus_View * servant,
+					CORBA_Environment * ev);
 
 static void
 impl_Nautilus_View_notify_selection_change(impl_POA_Nautilus_View * servant,
@@ -92,8 +89,13 @@ impl_Nautilus_View_notify_selection_change(impl_POA_Nautilus_View * servant,
 					   CORBA_Environment * ev);
 
 static void
-impl_Nautilus_View_stop_location_change(impl_POA_Nautilus_View * servant,
-					CORBA_Environment * ev);
+impl_Nautilus_View_notify_title_change(impl_POA_Nautilus_View * servant,
+				       const char * new_title,
+				       CORBA_Environment * ev);
+
+static void
+impl_Nautilus_View_show_properties(impl_POA_Nautilus_View * servant,
+				   CORBA_Environment * ev);
 
 POA_Nautilus_View__epv libnautilus_Nautilus_View_epv =
 {
@@ -101,9 +103,10 @@ POA_Nautilus_View__epv libnautilus_Nautilus_View_epv =
   (gpointer) & impl_Nautilus_View_save_state,
   (gpointer) & impl_Nautilus_View_load_state,
   (gpointer) & impl_Nautilus_View_notify_location_change,
-  (gpointer) & impl_Nautilus_View_show_properties,
+  (gpointer) & impl_Nautilus_View_stop_location_change,
   (gpointer) & impl_Nautilus_View_notify_selection_change,
-  (gpointer) & impl_Nautilus_View_stop_location_change
+  (gpointer) & impl_Nautilus_View_notify_title_change,
+  (gpointer) & impl_Nautilus_View_show_properties
 };
 
 static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
@@ -152,6 +155,14 @@ impl_Nautilus_View_notify_selection_change(impl_POA_Nautilus_View * servant,
 					   CORBA_Environment * ev)
 {
   gtk_signal_emit(GTK_OBJECT(servant->view), nautilus_view_frame_signals[NOTIFY_SELECTION_CHANGE], selinfo);
+}
+
+static void
+impl_Nautilus_View_notify_title_change(impl_POA_Nautilus_View * servant,
+				       const char * new_title,
+				       CORBA_Environment * ev)
+{
+  gtk_signal_emit(GTK_OBJECT(servant->view), nautilus_view_frame_signals[NOTIFY_TITLE_CHANGE], new_title);
 }
 
 static void
@@ -271,6 +282,13 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *klass)
 		   GTK_SIGNAL_OFFSET (NautilusViewFrameClass, notify_selection_change),
 		   gtk_marshal_NONE__BOXED,
 		   GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
+  nautilus_view_frame_signals[NOTIFY_TITLE_CHANGE] =
+    gtk_signal_new("notify_title_change",
+		   GTK_RUN_LAST,
+		   object_class->type,
+		   GTK_SIGNAL_OFFSET (NautilusViewFrameClass, notify_title_change),
+		   gtk_marshal_NONE__POINTER,
+		   GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
   nautilus_view_frame_signals[LOAD_STATE] = 
     gtk_signal_new("load_state",
 		   GTK_RUN_LAST,
@@ -382,7 +400,7 @@ nautilus_view_frame_destroy (NautilusViewFrame *view)
     ((GtkObjectClass *)klass->parent_class)->destroy((GtkObject *)view);
 }
 
-static gboolean
+gboolean
 nautilus_view_frame_ensure_view_frame (NautilusViewFrame *view)
 {
   CORBA_Environment ev;

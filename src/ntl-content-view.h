@@ -35,15 +35,27 @@
 #define NAUTILUS_IS_CONTENT_VIEW(obj)	        (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_CONTENT_VIEW))
 #define NAUTILUS_IS_CONTENT_VIEW_CLASS(klass)   (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_CONTENT_VIEW))
 
-typedef struct {
+typedef struct _NautilusContentView       NautilusContentView;
+typedef struct _NautilusContentViewClass  NautilusContentViewClass;
+
+struct _NautilusContentViewClass
+{
   NautilusViewClass parent_spot;
 
-  NautilusViewClass *parent_class;
-} NautilusContentViewClass;
+  /* 
+   * These signals correspond to the Nautilus:ContentViewFrame CORBA interface.
+   * They are requests that the underlying view may make of the framework.
+   */
 
-typedef struct {
+  void (*request_title_change)		(NautilusContentView *view,
+  					 const char *new_title);
+
+  NautilusViewClass *parent_class;
+};
+
+struct _NautilusContentView {
   NautilusView parent_object;
-} NautilusContentView;
+};
 
 GtkType nautilus_content_view_get_type   (void);
 

@@ -29,6 +29,7 @@
 
 #include <config.h>
 #include "ntl-content-view-frame.h"
+#include "nautilus-view-frame-private.h"
 #include <bonobo/bonobo-control.h>
 
 typedef struct {
@@ -129,4 +130,27 @@ nautilus_content_view_frame_class_init (NautilusContentViewFrameClass *klass)
   view_class->servant_init_func = POA_Nautilus_ContentView__init;
   view_class->servant_destroy_func = POA_Nautilus_ContentView__fini;
   view_class->vepv = &impl_Nautilus_ContentView_vepv;
+}
+
+void
+nautilus_content_view_frame_request_title_change (NautilusContentViewFrame *view,
+					          const char *new_title)
+{
+  CORBA_Environment ev;
+
+  g_return_if_fail (NAUTILUS_IS_CONTENT_VIEW_FRAME (view));
+  g_return_if_fail (new_title != NULL);
+
+  CORBA_exception_init(&ev);
+
+  if (nautilus_view_frame_ensure_view_frame (NAUTILUS_VIEW_FRAME (view))) {
+    Nautilus_ContentViewFrame_request_title_change (NAUTILUS_VIEW_FRAME (view)->private->view_frame, new_title, &ev);
+    if (ev._major != CORBA_NO_EXCEPTION)
+      {
+	CORBA_Object_release(NAUTILUS_VIEW_FRAME (view)->private->view_frame, &ev);
+	NAUTILUS_VIEW_FRAME (view)->private->view_frame = CORBA_OBJECT_NIL;
+      }
+  }
+
+  CORBA_exception_free(&ev);
 }

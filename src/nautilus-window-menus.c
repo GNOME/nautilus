@@ -487,12 +487,20 @@ nautilus_window_add_bookmark_for_current_location (NautilusWindow *window)
 
 	g_return_if_fail(NAUTILUS_IS_WINDOW (window));
 
-	bookmark = nautilus_bookmark_new (nautilus_window_get_requested_uri(window));
+	g_assert (strcmp (nautilus_bookmark_get_uri (window->current_location_bookmark), 
+		          nautilus_window_get_requested_uri(window)) == 0);
+
+	/* Use the first bookmark in the history list rather than creating a new one. */
+	bookmark = window->current_location_bookmark;
 
 	if (!nautilus_bookmark_list_contains (get_bookmark_list (), bookmark)) {
+		/* 
+		 * Only append bookmark if there's not already a copy of this one in there.
+		 * Maybe it would be better to remove the other one and always append?
+		 * This won't be a sensible rule if we have hierarchical menus.
+		 */
 		nautilus_bookmark_list_append (get_bookmark_list (), bookmark);
 	}
-	gtk_object_destroy(GTK_OBJECT(bookmark));
 }
 
 void

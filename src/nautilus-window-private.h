@@ -2,6 +2,7 @@
 #define NTL_WINDOW_PRIVATE_H 1
 
 #include "ntl-window.h"
+#include "ntl-content-view.h"
 #include <libnautilus/libnautilus.h>
 #include <gtk/gtk.h>
 
@@ -42,10 +43,14 @@ void nautilus_window_begin_location_change(NautilusWindow *window,
 				      	   NautilusLocationChangeType type,
 				      	   guint distance);
 void nautilus_window_remove_meta_view_real(NautilusWindow *window, NautilusView *meta_view);
+void nautilus_window_connect_content_view (NautilusWindow *window, 
+				           NautilusContentView *view);
 void nautilus_window_connect_view (NautilusWindow *window, 
 				   NautilusView *view);
 void nautilus_window_view_destroyed(NautilusView *view, NautilusWindow *window);
-void nautilus_add_to_history_list (const char *uri);
+
+void nautilus_send_history_list_changed (void);
+void nautilus_add_to_history_list (NautilusBookmark *bookmark);
 GSList *nautilus_get_history_list (void);
 
 void nautilus_window_add_bookmark_for_current_location (NautilusWindow *window);

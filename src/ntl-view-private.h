@@ -29,6 +29,14 @@
 
 #include "nautilus.h"
 
+typedef struct {
+  POA_Nautilus_ViewFrame servant;
+  gpointer bonobo_object;
+
+  NautilusView *view;
+} impl_POA_Nautilus_ViewFrame;
+
+
 extern POA_Nautilus_ViewFrame__vepv impl_Nautilus_ViewFrame_vepv;
 extern POA_Nautilus_ZoomableFrame__vepv impl_Nautilus_ZoomableFrame_vepv;
 
@@ -54,12 +62,13 @@ struct _NautilusViewComponentType {
   const char *primary_repoid;
   gboolean (* try_load)(NautilusView *view, CORBA_Object obj, CORBA_Environment *ev);
   void (* destroy) (NautilusView *view, CORBA_Environment *ev);
-  void (* show_properties)(NautilusView *view, CORBA_Environment *ev);
   void (* save_state)(NautilusView *view, const char *config_path, CORBA_Environment *ev);
   void (* load_state)(NautilusView *view, const char *config_path, CORBA_Environment *ev);
-  void (* notify_location_change)(NautilusView *view, Nautilus_NavigationInfo *nav_ctx, CORBA_Environment *ev);
-  void (* notify_selection_change)(NautilusView *view, Nautilus_SelectionInfo *nav_ctx, CORBA_Environment *ev);
+  void (* notify_location_change)(NautilusView *view, Nautilus_NavigationInfo *nav_ctx, const char *initial_title, CORBA_Environment *ev);
   void (* stop_location_change)(NautilusView *view, CORBA_Environment *ev);
+  void (* notify_selection_change)(NautilusView *view, Nautilus_SelectionInfo *nav_ctx, CORBA_Environment *ev);
+  void (* notify_title_change)(NautilusView *view, const char *new_title, CORBA_Environment *ev);
+  void (* show_properties)(NautilusView *view, CORBA_Environment *ev);
 
   char * (* get_label)(NautilusView *view, CORBA_Environment *ev);
 };

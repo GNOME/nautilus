@@ -57,6 +57,7 @@ static void     nautilus_index_title_set_up_info        (NautilusIndexTitle     
 
 struct _NautilusIndexTitleDetails {
 	char *uri;
+	char *requested_text;
 	GtkWidget *icon;
 	GtkWidget *title;
 	GtkWidget *more_info;
@@ -105,6 +106,7 @@ nautilus_index_title_finalize (GtkObject *object)
 	NautilusIndexTitle *index_title = NAUTILUS_INDEX_TITLE (object);
 
 	g_free (index_title->details->uri);
+	g_free (index_title->details->requested_text);
 	g_free (index_title->details);
   	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, finalize, (object));
@@ -245,56 +247,52 @@ set_up_font(GtkWidget *widget, GdkFont *font)
 void
 nautilus_index_title_set_up_label (NautilusIndexTitle *index_title)
 {
-	GnomeVFSURI *vfs_uri;
 	GdkFont *label_font;
-	char *file_name;
+	char *displayed_text;
 		
-	vfs_uri = gnome_vfs_uri_new (index_title->details->uri);
-	if (vfs_uri == NULL)
-		return;
-	
-	file_name = gnome_vfs_uri_extract_short_name (vfs_uri);
-	gnome_vfs_uri_unref (vfs_uri);
-	
-	if (file_name == NULL)
-		return;
+	if (index_title->details->requested_text == NULL) {
+		/* Use empty string to replace previous contents. */
+		displayed_text = g_strdup ("");
+	} else {
+		displayed_text = g_strdup (index_title->details->requested_text);
+	}
 	
 	/* split the filename into two lines if necessary */
 	
-	if (strlen(file_name) >= 16) {
+	if (strlen(displayed_text) >= 16) {
 		/* find an appropriate split point if we can */
 		gint index;
-		gint mid_point = strlen(file_name) >> 1;
+		gint mid_point = strlen(displayed_text) >> 1;
 		gint quarter_point = mid_point >> 1;
 		for (index = 0; index < quarter_point; index++) {
 			gint split_offset = 0;
 			
-			if (!isalnum(file_name[mid_point + index]))
+			if (!isalnum(displayed_text[mid_point + index]))
 				split_offset = mid_point + index;
-			else if (!isalnum(file_name[mid_point - index]))
+			else if (!isalnum(displayed_text[mid_point - index]))
 				split_offset = mid_point - index;
 			
 			if (split_offset != 0) {
-				char *buffer = (char *) g_malloc(strlen(file_name) + 2);
+				char *buffer = (char *) g_malloc(strlen(displayed_text) + 2);
 				
 				/* build the new string, with a CR inserted, also remembering them separately for measuring */
 				
-				memcpy(buffer, file_name, split_offset);
+				memcpy(buffer, displayed_text, split_offset);
 				buffer[split_offset] = '\n';
-				strcpy(&buffer[split_offset + 1], &file_name[split_offset]);
+				strcpy(&buffer[split_offset + 1], &displayed_text[split_offset]);
 				
 				/* free up the old string and replace it with the new one with the return inserted */
 				
-				g_free(file_name);
-				file_name = buffer;		  
+				g_free(displayed_text);
+				displayed_text = buffer;		  
 			} 
 		}
 	}
 	
 	if (index_title->details->title != NULL)
-		gtk_label_set_text (GTK_LABEL (index_title->details->title), file_name);
+		gtk_label_set_text (GTK_LABEL (index_title->details->title), displayed_text);
 	else {  
-		index_title->details->title = GTK_WIDGET (gtk_label_new (file_name));
+		index_title->details->title = GTK_WIDGET (gtk_label_new (displayed_text));
 		gtk_label_set_line_wrap (GTK_LABEL (index_title->details->title), TRUE);   
 		gtk_label_set_justify(GTK_LABEL(index_title->details->title), GTK_JUSTIFY_CENTER);
 		gtk_widget_show (index_title->details->title);
@@ -303,11 +301,11 @@ nautilus_index_title_set_up_label (NautilusIndexTitle *index_title)
 	}   
 	
 	/* FIXME: don't use hardwired font like this - get it from preferences */    	
-	label_font = select_font(file_name, GTK_WIDGET (index_title)->allocation.width - 4,
+	label_font = select_font(displayed_text, GTK_WIDGET (index_title)->allocation.width - 4,
 				 "-bitstream-courier-medium-r-normal-*-%d-*-*-*-*-*-*-*");	
 	
 	set_up_font(index_title->details->title, label_font);	
-	g_free (file_name);
+	g_free (displayed_text);
 }
 
 /* set up more info about the file */
@@ -392,14 +390,27 @@ nautilus_index_title_set_up_info (NautilusIndexTitle *index_title)
 /* here's the place where we set everything up passed on the passed in uri */
 
 void
-nautilus_index_title_set_uri(NautilusIndexTitle *index_title, const char* new_uri)
+nautilus_index_title_set_text (NautilusIndexTitle *index_title, const char* new_text)
+{
+	g_free (index_title->details->requested_text);
+	index_title->details->requested_text = g_strdup (new_text);
+
+	/* Recompute the displayed text. */
+	nautilus_index_title_set_up_label (index_title);
+}
+
+void
+nautilus_index_title_set_uri(NautilusIndexTitle *index_title, 
+			     const char* new_uri, 
+			     const char* initial_text)
 {
 	NautilusFile *file_object;
 
-	if (index_title->details->uri != NULL) {
-		g_free (index_title->details->uri);
-	}
+	g_free (index_title->details->uri);
 	index_title->details->uri = g_strdup (new_uri);
+
+	g_free (index_title->details->requested_text);
+	index_title->details->requested_text = g_strdup (initial_text);
 
 	file_object = nautilus_file_get(new_uri);
 

@@ -432,7 +432,8 @@ nautilus_view_load_client(NautilusView *view, const char *iid)
 
 void
 nautilus_view_notify_location_change(NautilusView *view,
-				     Nautilus_NavigationInfo *nav_context)
+				     Nautilus_NavigationInfo *nav_context,
+				     const char *initial_title)
 {
   Nautilus_NavigationInfo real_nav_ctx;
   CORBA_Environment ev;
@@ -453,7 +454,7 @@ nautilus_view_notify_location_change(NautilusView *view,
 
   CORBA_exception_init(&ev);
   if(view->component_class->notify_location_change)
-    view->component_class->notify_location_change(view, &real_nav_ctx, &ev);
+    view->component_class->notify_location_change(view, &real_nav_ctx, initial_title, &ev);
   CORBA_exception_free(&ev);
 }
 
@@ -471,6 +472,23 @@ nautilus_view_notify_selection_change(NautilusView *view,
 
   if(view->component_class->notify_selection_change)
     view->component_class->notify_selection_change(view, nav_context, &ev);
+
+  CORBA_exception_free(&ev);
+}
+
+void
+nautilus_view_notify_title_change(NautilusView *view,
+				  const char *new_title)
+{
+  CORBA_Environment ev;
+
+  g_return_if_fail(NAUTILUS_IS_VIEW(view));
+  g_return_if_fail(view->component_class);
+
+  CORBA_exception_init(&ev);
+
+  if(view->component_class->notify_title_change)
+    view->component_class->notify_title_change(view, new_title, &ev);
 
   CORBA_exception_free(&ev);
 }

@@ -26,12 +26,19 @@
 /* ntl-content-view.c: Implementation of the object representing a content view. */
 
 #include "ntl-content-view.h"
+#include "ntl-view-private.h"
 #include <gtk/gtksignal.h>
 
 static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
 
+static void
+impl_Nautilus_ContentViewFrame_request_title_change (impl_POA_Nautilus_ViewFrame * servant,
+                                              	    const char * new_info,
+                                               	    CORBA_Environment * ev);
+
 static POA_Nautilus_ContentViewFrame__epv impl_Nautilus_ContentViewFrame_epv = {
-  NULL
+   NULL,
+   (void(*))&impl_Nautilus_ContentViewFrame_request_title_change,
 };
 
 extern POA_Nautilus_ViewFrame__epv impl_Nautilus_ViewFrame_epv;
@@ -44,8 +51,25 @@ static POA_Nautilus_ContentViewFrame__vepv impl_Nautilus_ContentViewFrame_vepv =
    &impl_Nautilus_ContentViewFrame_epv
 };
 
+enum {
+  REQUEST_TITLE_CHANGE,
+  LAST_SIGNAL
+};
+
 static void nautilus_content_view_class_init (NautilusContentViewClass *klass);
 static void nautilus_content_view_init (NautilusContentView *view);
+static void nautilus_content_view_request_title_change (NautilusContentView *view,
+                                      	    		const char *new_title);
+
+static guint nautilus_content_view_signals[LAST_SIGNAL];
+
+static void
+impl_Nautilus_ContentViewFrame_request_title_change (impl_POA_Nautilus_ViewFrame * servant,
+                                              	    const char * new_info,
+                                               	    CORBA_Environment * ev)
+{
+  nautilus_content_view_request_title_change (NAUTILUS_CONTENT_VIEW (servant->view), new_info);
+}
 
 GtkType
 nautilus_content_view_get_type(void)
@@ -84,6 +108,16 @@ nautilus_content_view_class_init (NautilusContentViewClass *klass)
   NAUTILUS_VIEW_CLASS(klass)->servant_init_func = POA_Nautilus_ContentViewFrame__init;
   NAUTILUS_VIEW_CLASS(klass)->servant_destroy_func = POA_Nautilus_ContentViewFrame__fini;
   NAUTILUS_VIEW_CLASS(klass)->vepv = &impl_Nautilus_ContentViewFrame_vepv;
+
+  nautilus_content_view_signals[REQUEST_TITLE_CHANGE] = gtk_signal_new ("request_title_change",
+  								 	GTK_RUN_LAST,
+  								 	object_class->type,
+  								 	GTK_SIGNAL_OFFSET (NautilusContentViewClass,
+  								 			   request_title_change),
+  								 	gtk_marshal_NONE__POINTER,
+  								 	GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+
+  gtk_object_class_add_signals (object_class, nautilus_content_view_signals, LAST_SIGNAL);
 }
 
 static void
@@ -97,4 +131,11 @@ nautilus_content_view_set_active (NautilusContentView *view)
   bonobo_control_frame_control_activate 
     (BONOBO_CONTROL_FRAME (bonobo_object_query_local_interface 
                            (NAUTILUS_VIEW (view)->view_frame, "IDL:Bonobo/ControlFrame:1.0")));
+}
+
+static void
+nautilus_content_view_request_title_change (NautilusContentView *view,
+                                      	    const char *new_title)
+{
+  gtk_signal_emit (GTK_OBJECT(view), nautilus_content_view_signals[REQUEST_TITLE_CHANGE], new_title);
 }

@@ -1,3 +1,160 @@
+2000-03-27  John Sullivan <sullivan@eazel.com>
+
+	Made web page titles be used for the window title,
+	the index panel location name, and the menu item in
+	the Go menu (which is then used for the Bookmarks menu
+	too). This required lots of underpinnings work. Now any
+	content view (not just the web browser) can express its
+	opinion on what title for the current location should be
+	displayed to the user.
+
+	* idl/nautilus.idl: added View:notify_title_change; added
+	initial_title parameter to View:notify_location_change;
+	reordered functions in View to better group related items;
+	added ContentViewFrame:request_title_change.
+
+	* libnautilus/nautilus-view-frame-private.h: New file,
+	holds a struct and a function shared by NautilusViewFrame
+	and (now) NautilusContentViewFrame.
+
+	* libnautilus/ntl-view-frame.h: Reordered functions to
+	match idl (just for clarity); also added (notify_title_change).
+	* libnautilus/ntl-view-frame.c: Moved _NautilusViewFramePrivate
+	struct to new private .h file, added (notify_title_change);
+	reordered function pointers in epv to match idl.
+	(nautilus_view_frame_class_init): Set up signal for
+	notify_title_change.
+	(nautilus_view_frame_ensure_view_frame): No longer static since
+	it's in new private .h file.
+
+	* libnautilus/ntl-content-view-frame.h,
+	* libnautilus/ntl-content-view-frame.c:
+	(nautilus_content_view_frame_request_title_change):
+	New function that a content view calls on its frame
+	when it has an opinion about what the user-displayable
+	title for the current location should be.
+
+	* libnautilus/nautilus-bookmark.c,
+	* libnautilus/nautilus-bookmark.h:
+	(nautilus_bookmark_set_name): New function to change the name of
+	an existing bookmark.
+
+	* src/ntl-view-private.h: Moved definition of impl_POA_Nautilus_ViewFrame
+	here so it can be shared by NautilusContentView; reordered functions in
+	_NautilusViewComponentType to match idl and included notify_title_change.
+	* src/ntl-view-frame-svr.c: Moved definition of impl_POA_Nautilus_ViewFrame
+	out of here.
+	* src/ntl-view.h,
+	* src/ntl-view.c:
+	(nautilus_view_notify_location_change): Added initial_title parameter.
+	(nautilus_view_notify_title_change): New function.
+	* src/ntl-view-nautilus.c:
+	(nv_notify_location_change): Added initial_title parameter.
+	(nv_notify_title_change): New function.
+	nautilus_view_component_type: reordered function pointers to
+	match idl, and added new one for notify_title_change.
+	* src/ntl-view-bonobo-control.c:
+	(bonobo_control_notify_location_change): Added initial_title parameter.
+	bonobo_control_component_type: reordered function pointers to match idl
+	and added notify_title_change.
+	* src/ntl-view-bonobo-subdoc.c
+	(bonobo_subdoc_notify_location_change): Added initial_title parameter.
+	bonobo_subdoc_component_type: reordered function pointers to match idl
+	and added notify_title_change.
+
+	* src/nautilus-bookmark-list.c:
+	(destroy_bookmark): Removed this function.
+	(nautilus_bookmark_list_delete_item_at): unref where it was destroying.
+	(nautilus_list_load_file): use gtk_object_unref as foreach function
+	instead of destroy_bookmark.
+	
+	* src/nautilus-index-title.h,
+	* src/nautilus-index-title.c:
+	new field _NautilusIndexTitleDetails->requested_text.
+	(nautilus_index_title_set_uri): Added initial_text parameter;
+	store initial_text in requested_text field after freeing old value.
+	(nautilus_index_panel_set_text): New function, passes new text to
+	nautilus_index_title_set_up_label.
+	(nautilus_index_title_finalize): free requested_text.
+	(nautilus_index_title_set_up_label):
+	Use requested_text instead of extracting short name of URI here.
+	* src/ntl-index-panel.h,
+	* src/ntl-index-panel.c:
+	(nautilus_index_panel_set_uri): Added initial_title parameter.
+	(nautilus_index_panel_set_title): New function, called if the title
+	changes later on; pass new_title on to nautilus_index_title_set_text.
+	(nautilus_index_panel_set_up_info): Added initial_title parameter;
+	pass initial_title on to nautilus_index_title_set_uri.
+	
+	* src/ntl-content-view.h: Redid object & class struct definitions
+	to match others; added request_title_change signal definition.
+	* src/ntl-content-view.c:
+	added function pointer for request_title_change to epv;
+	added signal-definining enum & array;
+	(impl_Nautilus_ContentViewFrame_request_title_change): New function.
+	(nautilus_content_view_class_init): Define "request_title_change" signal.
+	(nautilus_content_view_request_title_change): New function, emits signal.
+		
+	* src/ntl-window.h: New fields for requested_title, default_title,
+	current_location_bookmark, last_location_bookmark.
+	* src/ntl-window.c:
+	(nautilus_send_history_list_changed): New convenience routine to
+	emit "history_list_changed" signal since it's emitted in more than
+	one place now.
+	(nautilus_add_to_history_list): Change parameter from a const char *
+	to a NautilusBookmark; call nautilus_send_history_list_changed.
+	(nautilus_window_request_title_change_callback): New function, calls
+	nautilus_window_request_title_change.
+	(nautilus_window_connect_view): Just variable renaming & reformatting.
+	(nautilus_window_connect_content_view): New function, calls
+	nautilus_window_connect_view then connects to "request_title_change: signal
+	also.
+	* src/ntl-window-private.h:
+	(nautilus_window_connect_content_view): New prototype.
+	(nautilus_send_history_list): New prototype.
+	(nautilus_add_to_history_list): Change parameter from const char * 
+	to NautilusBookmark *
+	* src/ntl-window-msgs.h: 
+	(nautilus_window_request_title_change): prototype for new function.
+	* src/ntl-window-msgs.c: 
+	(nautilus_window_refresh_title): Removed.
+	(compute_default_title), (nautilus_window_get_current_location_title),
+	(nautilus_window_update_title_internal), 
+	(nautilus_window_reset_title_internal), 
+	(nautilus_window_request_title_change): New functions having to do with
+	passing around the title-change request. Note that there's an unresolved
+	problem where calling nautilus_view_notify_title_change here doesn't work
+	properly for metaviews. There's a comment in the code and I'll write up
+	a bug report also. There are currently no metaviews that care.
+	(nautilus_window_update_internals): Use window->last_location_bookmark
+	instead of creating a new bookmark for back/forward lists (this means the
+	back/forward menus will respect any title change requests); remove one
+	of the two identical calls to nautilus_index_panel_set_uri; modify the
+	other one to pass current location title.
+	(nautilus_window_update_view): Pass current title to
+	nautilus_view_notify_location_change.
+	(nautilus_window_load_content_view): 
+	Call nautilus_window_connect_content_view instead of 	
+	nautilus_window_connect_view.
+	(nautilus_window_update_state): Call nautilus_window_reset_title_internal
+	at two spots where the location is changing.
+	* src/nautilus-window-menus.c:
+	(nautilus_window_add_bookmark_for_current_location): Use
+	window->current_location_bookmark instead of creating a new one
+	to take advantage of any requested title changes.	
+
+	* components/html/ntl-web-browser.c:
+	(browser_title_changed): New function, calls 
+	nautilus_content_view_frame_request_title_change.
+	(make_obj): Connect browser_title_changed to "title_changed" signal
+	of gtkhtml widget.
+
+	Fixed bug 353 (Removing all bookmark items from window can lead to crash)
+
+	* src/nautilus-bookmarks-window.c: (on_remove_button_clicked):
+	If we removed the last item, explicitly call repopulate since
+	no callback handles that case.
+
 2000-03-27  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus/nautilus-icon-canvas-item.c:

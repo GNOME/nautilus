@@ -63,6 +63,9 @@ void                nautilus_index_panel_add_meta_view    (NautilusIndexPanel *p
 void                nautilus_index_panel_remove_meta_view (NautilusIndexPanel *panel,
 							   NautilusView       *meta_view);
 void                nautilus_index_panel_set_uri          (NautilusIndexPanel *panel,
-							   const gchar        *new_uri);
+							   const char         *new_uri,
+							   const char	      *initial_title);
+void                nautilus_index_panel_set_title        (NautilusIndexPanel *panel,
+							   const char         *new_title);
 
 #endif /* NTL_INDEX_PANEL_H */

@@ -178,6 +178,24 @@ nautilus_bookmark_get_uri (const NautilusBookmark *bookmark)
 	return bookmark->details->uri;
 }
 
+
+/**
+ * nautilus_bookmark_set_name:
+ *
+ * Change the user-displayed name of a bookmark.
+ * @new_name: The new user-displayed name for this bookmark, mustn't be NULL.
+ * 
+ **/
+void
+nautilus_bookmark_set_name (NautilusBookmark *bookmark, const char *new_name)
+{
+	g_return_if_fail(NAUTILUS_IS_BOOKMARK (bookmark));
+	g_return_if_fail (new_name != NULL);
+
+	g_free (bookmark->details->name);
+	bookmark->details->name = g_strdup (new_name);
+}
+
 /**
  * nautilus_bookmark_new_with_name:
  *

@@ -29,6 +29,7 @@
 #define NTL_WINDOW_H
 
 #include <libgnomeui/gnome-app.h>
+#include <libnautilus/nautilus-bookmark.h>
 #include "ntl-types.h"
 #include "ntl-view.h"
 #include "ntl-index-panel.h"
@@ -75,11 +76,16 @@ struct _NautilusWindow {
   /* Information about current location/selection */
   Nautilus_NavigationInfo *ni;
   Nautilus_SelectionInfo *si;
+  char *requested_title;
+  char *default_title;
   
   /* Back/Forward chain, and history list. 
    * The data in these lists are NautilusBookmark pointers. 
    */
   GSList *back_list, *forward_list;
+
+  NautilusBookmark *current_location_bookmark; 
+  NautilusBookmark *last_location_bookmark;
 
   /* Current views stuff */
   NautilusView *content_view;

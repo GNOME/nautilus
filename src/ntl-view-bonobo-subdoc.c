@@ -43,7 +43,7 @@ destroy_bonobo_subdoc_view(NautilusView *view, CORBA_Environment *ev)
 }
 
 static void
-bonobo_subdoc_notify_location_change(NautilusView *view, Nautilus_NavigationInfo *real_nav_ctx, CORBA_Environment *ev)
+bonobo_subdoc_notify_location_change(NautilusView *view, Nautilus_NavigationInfo *real_nav_ctx, const char *new_title, CORBA_Environment *ev)
 {
   Bonobo_PersistStream persist;
 
@@ -109,12 +109,13 @@ NautilusViewComponentType bonobo_subdoc_component_type = {
   "IDL:Bonobo/Embeddable:1.0",
   &bonobo_subdoc_try_load_client, /* try_load */
   &destroy_bonobo_subdoc_view, /* destroy */
-  NULL, /* show_properties */
   NULL, /* save_state */
   NULL, /* load_state */
   &bonobo_subdoc_notify_location_change, /* notify_location_change */
-  NULL, /* notify_selection_change */
   NULL, /* stop_location_change */
+  NULL, /* notify_selection_change */
+  NULL, /* notify_title_change */
+  NULL, /* show_properties */
   NULL, /* get_label */
 };
 

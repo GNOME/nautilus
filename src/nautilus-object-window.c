@@ -793,18 +793,22 @@ nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 }
 
 void
-nautilus_add_to_history_list (const char *uri)
+nautilus_send_history_list_changed ()
+{
+	gtk_signal_emit_by_name (GTK_OBJECT (nautilus_signaller_get_current ()),
+			 	 "history_list_changed");
+}
+
+void
+nautilus_add_to_history_list (NautilusBookmark *bookmark)
 {
 	/* Note that the history is shared amongst all windows so
 	 * this is not a NautilusWindow function. Perhaps it belongs
 	 * in its own file.
 	 */
-	NautilusBookmark *bookmark;
 	GSList *found_link;
 
-	g_return_if_fail (nautilus_strlen(uri) > 0);
-
-	bookmark = nautilus_bookmark_new (uri);
+	g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
 
 	found_link = g_slist_find_custom (history_list, 
 					  bookmark,
@@ -818,13 +822,13 @@ nautilus_add_to_history_list (const char *uri)
 	}
 
 	/* New item goes first. */
+	gtk_object_ref (GTK_OBJECT (bookmark));
 	history_list = g_slist_prepend(history_list, bookmark);
 
 	/* Tell world that history list has changed. At least all the
 	 * NautilusWindows (not just this one) are listening.
 	 */
-	gtk_signal_emit_by_name (GTK_OBJECT (nautilus_signaller_get_current ()),
-			 	 "history_list_changed");
+	nautilus_send_history_list_changed ();
 }
 
 GSList *
@@ -867,31 +871,55 @@ nautilus_window_request_progress_change_cb (NautilusView *view,
   nautilus_window_request_progress_change(window, info, view);  
 }
 
+static void
+nautilus_window_request_title_change_callback (NautilusContentView *view,
+                                               const char *new_title,
+                                               NautilusWindow *window)
+{
+  nautilus_window_request_title_change(window, new_title, view);  
+}
+
 void
 nautilus_window_connect_view(NautilusWindow *window, NautilusView *view)
 {
-  GtkObject *viewo;
+  GtkObject *view_object;
 
-  viewo = GTK_OBJECT(view);
-  gtk_signal_connect(viewo,
+  view_object = GTK_OBJECT(view);
+  gtk_signal_connect(view_object,
                      "request_location_change", 
                      nautilus_window_request_location_change_cb, 
                      window);
-  gtk_signal_connect(viewo, 
+  gtk_signal_connect(view_object, 
                      "request_selection_change", 
                      nautilus_window_request_selection_change_cb, 
                      window);
-  gtk_signal_connect(viewo, 
+  gtk_signal_connect(view_object, 
                      "request_status_change", 
                      nautilus_window_request_status_change_cb, 
                      window);
-  gtk_signal_connect(viewo, 
+  gtk_signal_connect(view_object, 
                      "request_progress_change", 
                      nautilus_window_request_progress_change_cb, 
                      window);
-  gtk_signal_connect(viewo,
+  gtk_signal_connect(view_object,
                      "destroy",
                      nautilus_window_view_destroyed,
+                     window);
+}
+
+void
+nautilus_window_connect_content_view(NautilusWindow *window, NautilusContentView *view)
+{
+  GtkObject *view_object;
+
+  /* First connect with NautilusView signals. */
+  nautilus_window_connect_view (window, NAUTILUS_VIEW (view));
+
+  /* Now connect with NautilusContentView signals. */
+  view_object = GTK_OBJECT(view);
+  gtk_signal_connect(view_object,
+                     "request_title_change", 
+                     nautilus_window_request_title_change_callback, 
                      window);
 }
 

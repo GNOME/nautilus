@@ -415,6 +415,16 @@ on_remove_button_clicked (GtkButton *button,
 				   bookmark_list_changed_signalID);
 
 	gtk_clist_remove(GTK_CLIST(bookmark_list_widget), get_selected_row());
+
+	/*
+	 * If removing the selected row selected the next row, then we'll
+	 * get a callback. But if the list is now empty, we won't get a
+	 * callback, which will leave the Remove button and text fields
+	 * in the wrong state unless we fix them explicitly here.
+	 */
+	if (nautilus_bookmark_list_length (bookmarks) == 0) {
+		repopulate ();
+	}
 }
 
 
@@ -439,7 +449,7 @@ on_row_move (GtkCList *clist,
 	gtk_signal_handler_unblock(GTK_OBJECT(bookmarks), 
 				   bookmark_list_changed_signalID);
 
-	gtk_object_destroy(GTK_OBJECT(bookmark));
+	gtk_object_unref(GTK_OBJECT(bookmark));
 }
 
 static void
@@ -489,7 +499,7 @@ on_text_field_focus_out_event (GtkWidget *widget,
 		gtk_signal_handler_unblock (GTK_OBJECT (bookmarks), 
 					    bookmark_list_changed_signalID);
 
-		gtk_object_destroy (GTK_OBJECT (bookmark));
+		gtk_object_unref (GTK_OBJECT (bookmark));
 	}
 	
 	return FALSE;

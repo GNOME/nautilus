@@ -51,14 +51,17 @@ struct _NautilusViewFrameClass
 {
 	BonoboObjectClass parent_spot;
 
+	void (*save_state)              (NautilusViewFrame *view, const char *config_path);
+	void (*load_state)              (NautilusViewFrame *view, const char *config_path);
 	void (*notify_location_change)	(NautilusViewFrame *view,
-					 Nautilus_NavigationInfo *nav_context);
+					 Nautilus_NavigationInfo *nav_context,
+					 const char *initial_title);
+	void (*stop_location_change)    (NautilusViewFrame *view);
 	void (*notify_selection_change)	(NautilusViewFrame *view,
 					 Nautilus_SelectionInfo *nav_context);
-	void (*load_state)              (NautilusViewFrame *view, const char *config_path);
-	void (*save_state)              (NautilusViewFrame *view, const char *config_path);
+	void (*notify_title_change)	(NautilusViewFrame *view,
+					 const char *new_title);
 	void (*show_properties)         (NautilusViewFrame *view);
-	void (*stop_location_change)    (NautilusViewFrame *view);
 
 	BonoboObjectClass *parent_class;
 

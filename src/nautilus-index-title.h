@@ -55,7 +55,10 @@ struct _NautilusIndexTitleClass
 GtkType    nautilus_index_title_get_type (void);
 GtkWidget* nautilus_index_title_new      (void);
 void       nautilus_index_title_set_uri  (NautilusIndexTitle *index_title,
-					  const char         *new_uri);
+					  const char         *new_uri,
+					  const char	     *initial_text);
+void	   nautilus_index_title_set_text (NautilusIndexTitle *index_title,
+					  const char	     *new_title);
 
 
 #endif /* NAUTILUS_INDEX_TITLE_H */

@@ -53,4 +53,7 @@ GtkType                   nautilus_content_view_frame_get_type                 (
 NautilusContentViewFrame *nautilus_content_view_frame_new                      (GtkWidget *widget);
 NautilusContentViewFrame *nautilus_content_view_frame_new_from_bonobo_control  (BonoboObject *bonobo_control);
 
+void               	  nautilus_content_view_frame_request_title_change     (NautilusContentViewFrame *view,
+								 		const char *new_title);
+
 #endif

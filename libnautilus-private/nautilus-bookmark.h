@@ -63,6 +63,8 @@ NautilusBookmark *nautilus_bookmark_new                 (const char             
 NautilusBookmark *nautilus_bookmark_copy                (const NautilusBookmark  *bookmark);
 const char *      nautilus_bookmark_get_name            (const NautilusBookmark  *bookmark);
 const char *      nautilus_bookmark_get_uri             (const NautilusBookmark  *bookmark);
+void		  nautilus_bookmark_set_name 		(NautilusBookmark 	 *bookmark, 
+							 const char 		 *new_name);
 int               nautilus_bookmark_compare_with        (gconstpointer            a,
 							 gconstpointer            b);
 

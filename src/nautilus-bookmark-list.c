@@ -45,8 +45,6 @@ enum {
 /* forward declarations */
 static void        append_bookmark_node                 (gpointer              list_element,
 							 gpointer              user_data);
-static void        destroy_bookmark                     (gpointer              list_element,
-							 gpointer              user_data);
 static const char *nautilus_bookmark_list_get_file_path (NautilusBookmarkList *bookmarks);
 static void        nautilus_bookmark_list_load_file     (NautilusBookmarkList *bookmarks);
 static void        nautilus_bookmark_list_save_file     (NautilusBookmarkList *bookmarks);
@@ -108,21 +106,6 @@ append_bookmark_node (gpointer data, gpointer user_data)
 	bookmark_node = xmlNewChild (root_node, NULL, "bookmark", NULL);
 	xmlSetProp (bookmark_node, "name", nautilus_bookmark_get_name (bookmark));
 	xmlSetProp (bookmark_node, "uri", nautilus_bookmark_get_uri (bookmark));
-}
-
-/**
- * destroy_bookmark:
- * 
- * Foreach function; destroy a bookmark that was the data of a GList node.
- * @data: a NautilusBookmark * that is the data of a GList node.
- * @user_data: ignored.
- **/
-static void
-destroy_bookmark (gpointer data, gpointer user_data)
-{
-	g_assert (NAUTILUS_IS_BOOKMARK (data));
-
-	gtk_object_destroy (GTK_OBJECT (data));
 }
 
 /**
@@ -202,7 +185,7 @@ nautilus_bookmark_list_delete_item_at (NautilusBookmarkList *bookmarks,
 	bookmarks->list = g_list_remove_link (bookmarks->list, doomed);
 
 	g_assert (NAUTILUS_IS_BOOKMARK (doomed->data));
-	gtk_object_destroy (GTK_OBJECT (doomed->data));
+	gtk_object_unref (GTK_OBJECT (doomed->data));
 	
 	g_list_free (doomed);
 	
@@ -309,7 +292,7 @@ nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 	xmlNodePtr node;
 
 	/* Wipe out old list. */
-	g_list_foreach (bookmarks->list, destroy_bookmark, NULL);
+	g_list_foreach (bookmarks->list, (GFunc)gtk_object_unref, NULL);
 	g_list_free (bookmarks->list);
 	bookmarks->list = NULL;
 

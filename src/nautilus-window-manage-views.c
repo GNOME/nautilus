@@ -45,7 +45,6 @@ static void nautilus_window_notify_selection_change(NautilusWindow *window,
 						    NautilusView *view,
 						    Nautilus_SelectionInfo *loc,
 						    NautilusView *requesting_view);
-static void nautilus_window_refresh_title (NautilusWindow *window);
 static void nautilus_window_load_content_view_menu (NautilusWindow *window, NautilusNavigationInfo *ni);
 
 typedef enum { PROGRESS_INITIAL, PROGRESS_VIEWS, PROGRESS_DONE, PROGRESS_ERROR } ProgressType;
@@ -170,6 +169,146 @@ nautilus_window_request_progress_change(NautilusWindow *window,
   nautilus_window_set_state_info(window, item, (NautilusWindowStateItem)0);
 }
 
+static char *
+compute_default_title (const char *text_uri)
+{
+  GnomeVFSURI *vfs_uri;
+  char *short_name;
+	
+  if (text_uri != NULL)
+    {
+      vfs_uri = gnome_vfs_uri_new (text_uri);
+      if (vfs_uri != NULL)
+        {
+	  short_name = gnome_vfs_uri_extract_short_name (vfs_uri);
+	  gnome_vfs_uri_unref (vfs_uri);
+
+	  g_assert (short_name != NULL);
+	  return short_name;
+        }
+    }
+
+  return g_strdup(_("Nautilus"));
+}
+
+/*
+ * nautilus_window_get_current_location_title:
+ * 
+ * Get a newly allocated copy of the user-displayable title for the current
+ * location. Note that the window title is related to this but might not
+ * be exactly this.
+ * @window: The NautilusWindow in question.
+ * 
+ * Return value: A newly allocated string. Use g_free when done with it.
+ */
+static char *
+nautilus_window_get_current_location_title (NautilusWindow *window)
+{
+  return window->requested_title != NULL ? g_strdup (window->requested_title) : g_strdup (window->default_title);
+   
+}
+
+/*
+ * nautilus_window_update_title_internal:
+ * 
+ * Update the non-NautilusView objects that use the location's user-displayable
+ * title in some way. Called when the location or title has changed.
+ * @window: The NautilusWindow in question.
+ * @title: The new user-displayable title.
+ * 
+ */
+static void
+nautilus_window_update_title_internal (NautilusWindow *window, const char *title)
+{
+  char *window_title;
+
+  if (strcmp (title, _("Nautilus")) == 0)
+    {
+      gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
+    }
+  else
+    {
+      window_title = g_strdup_printf (_("Nautilus: %s"), title);
+      gtk_window_set_title (GTK_WINDOW (window), window_title);
+      g_free (window_title);
+    }
+  
+  nautilus_index_panel_set_title (window->index_panel, title);
+  nautilus_bookmark_set_name (window->current_location_bookmark, title);
+  /* Name of item in history list may have changed, tell listeners. */
+  nautilus_send_history_list_changed ();
+}
+
+/*
+ * nautilus_window_reset_title_internal:
+ * 
+ * Update the non-NautilusView objects that use the location's user-displayable
+ * title in some way. Called when the location or title has changed.
+ * @window: The NautilusWindow in question.
+ * @title: The new user-displayable title.
+ * 
+ */
+static void
+nautilus_window_reset_title_internal (NautilusWindow *window, const char *uri)
+{
+  g_free (window->requested_title);
+  window->requested_title = NULL;
+  g_free (window->default_title);
+  window->default_title = compute_default_title (uri);
+
+  if (window->current_location_bookmark == NULL || 
+  	strcmp (uri, nautilus_bookmark_get_uri (window->current_location_bookmark)) != 0)
+    {
+      /* We've changed locations, must recreate bookmark for current location. */
+      if (window->last_location_bookmark != NULL)
+        {
+          gtk_object_unref (GTK_OBJECT (window->last_location_bookmark));
+        }
+      window->last_location_bookmark = window->current_location_bookmark;
+      window->current_location_bookmark = nautilus_bookmark_new (uri);
+    }
+
+  nautilus_window_update_title_internal (window, window->default_title);
+}
+
+void
+nautilus_window_request_title_change(NautilusWindow *window,
+                                     const char *new_title,
+                                     NautilusContentView *requesting_view)
+{
+  GSList *cur;
+
+  g_return_if_fail (new_title != NULL);
+
+  g_free (window->requested_title);
+  window->requested_title = g_strdup (new_title);
+
+  /* 
+   * Tell the requesting content view also, to keep the code parallel. 
+   * Don't tell the view in window->content_view because it might be 
+   * the old one that's about to be removed.
+   */
+  nautilus_view_notify_title_change (NAUTILUS_VIEW (requesting_view), new_title);
+
+  for(cur = window->meta_views; cur; cur = cur->next)
+    {
+#if 0
+      /*
+       * This should tell metaviews of the new title, but
+       * something about it isn't right. If the metaview connects
+       * to the notify_title_change signal, its callback doesn't
+       * get called. And ORBit warns for each metaview about some
+       * unhandled message of type 1 (REPLY). Right now no metaviews
+       * use this anyway, but we need to fix it.
+       */
+      nautilus_view_notify_title_change (NAUTILUS_VIEW (cur->data), new_title);
+#endif
+    }
+
+  /* Now change the stuff that doesn't use the NautilusView API */
+  nautilus_window_update_title_internal (window, new_title);
+}
+
 /* The bulk of this file - location changing */
 
 static void
@@ -190,6 +329,7 @@ static void
 nautilus_window_update_internals(NautilusWindow *window, NautilusNavigationInfo *loci)
 {
   GnomeVFSURI *new_uri;
+  char *current_title;
 
   if(loci) /* This is a location change */
     {
@@ -197,9 +337,10 @@ nautilus_window_update_internals(NautilusWindow *window, NautilusNavigationInfo 
 
       /* Maintain history lists. */
       if (window->location_change_type != NAUTILUS_LOCATION_CHANGE_RELOAD)
-        {
-	  nautilus_add_to_history_list (loci->navinfo.requested_uri);
-        
+        {        
+	  /* Always add new location to history list. */
+	  nautilus_add_to_history_list (window->current_location_bookmark);
+
           if (window->location_change_type == NAUTILUS_LOCATION_CHANGE_BACK)
             {
               guint index;
@@ -210,8 +351,10 @@ nautilus_window_update_internals(NautilusWindow *window, NautilusNavigationInfo 
               g_assert(window->ni);
 
 	      /* Move current location to Forward list */
-              window->forward_list = g_slist_prepend (window->forward_list, 
-              					      nautilus_bookmark_new (window->ni->requested_uri));
+	      g_assert (strcmp (nautilus_bookmark_get_uri (window->last_location_bookmark), window->ni->requested_uri) == 0);
+	      /* Use the first bookmark in the history list rather than creating a new one. */
+              window->forward_list = g_slist_prepend (window->forward_list, window->last_location_bookmark);
+              gtk_object_ref (GTK_OBJECT (window->forward_list->data));
 
 	      /* Move extra links from Back to Forward list */
               for (index = 0; index < window->location_change_distance; ++index) 
@@ -237,8 +380,10 @@ nautilus_window_update_internals(NautilusWindow *window, NautilusNavigationInfo 
               g_assert(window->ni);
 
               /* Move current location to Back list */
-              window->back_list = g_slist_prepend (window->back_list,
-              					   nautilus_bookmark_new (window->ni->requested_uri));
+	      g_assert (strcmp (nautilus_bookmark_get_uri (window->last_location_bookmark), window->ni->requested_uri) == 0);
+	      /* Use the first bookmark in the history list rather than creating a new one. */
+              window->back_list = g_slist_prepend (window->back_list, window->last_location_bookmark);
+              gtk_object_ref (GTK_OBJECT (window->back_list->data));
 
 	      /* Move extra links from Forward to Back list */
               for (index = 0; index < window->location_change_distance; ++index) 
@@ -267,8 +412,10 @@ nautilus_window_update_internals(NautilusWindow *window, NautilusNavigationInfo 
               if (window->ni)
                 {
                   /* Store bookmark for current location in back list, unless there is no current location */
-                  window->back_list = g_slist_prepend(window->back_list, 
-						      nautilus_bookmark_new (window->ni->requested_uri));
+		  g_assert (strcmp (nautilus_bookmark_get_uri (window->last_location_bookmark), window->ni->requested_uri) == 0);
+  	          /* Use the first bookmark in the history list rather than creating a new one. */
+                  window->back_list = g_slist_prepend (window->back_list, window->last_location_bookmark);
+                  gtk_object_ref (GTK_OBJECT (window->back_list->data));
 		}
             }
         }
@@ -296,21 +443,22 @@ nautilus_window_update_internals(NautilusWindow *window, NautilusNavigationInfo 
       window->si = NULL;
 
       nautilus_window_load_content_view_menu (window, loci);
-
-      /* Notify the index panel of the location change. FIXME: Eventually,
-         this will not be necessary when we restructure the index panel to
-         be a NautilusView */
-      nautilus_index_panel_set_uri(window->index_panel, loci->navinfo.requested_uri);
     }
 
   nautilus_window_allow_back(window, window->back_list != NULL);
   nautilus_window_allow_forward(window, window->forward_list != NULL);
-  
+
   nautilus_location_bar_set_location(NAUTILUS_LOCATION_BAR(window->ent_uri),
                                      window->ni->requested_uri);
-  nautilus_index_panel_set_uri (NAUTILUS_INDEX_PANEL (window->index_panel), window->ni->requested_uri);
 
-  nautilus_window_refresh_title (window);
+  /*
+   * Notify the index panel of the location change. FIXME: Eventually,
+   * this will not be necessary when we restructure the index panel to
+   * be a NautilusView.
+   */
+  current_title = nautilus_window_get_current_location_title (window);
+  nautilus_index_panel_set_uri (window->index_panel, window->ni->requested_uri, current_title);
+  g_free (current_title);
 }
 
 static void
@@ -322,13 +470,17 @@ nautilus_window_update_view(NautilusWindow *window,
 			    NautilusView *content_view)
 {
   CORBA_Environment environment;
+  char *current_title;
   
   g_return_if_fail(view);
   
   loci->self_originated = (view == requesting_view);
-  
-  nautilus_view_notify_location_change(NAUTILUS_VIEW(view), loci);
-  
+
+  current_title = nautilus_window_get_current_location_title (window);
+  g_assert (current_title != NULL);
+  nautilus_view_notify_location_change (view, loci, current_title);
+  g_free (current_title);
+
   if(seli)
     {
       CORBA_exception_init(&environment);
@@ -347,37 +499,6 @@ nautilus_window_view_destroyed(NautilusView *view, NautilusWindow *window)
 {
   NautilusWindowStateItem item = VIEW_ERROR;
   nautilus_window_set_state_info(window, item, view, (NautilusWindowStateItem)0);
-}
-
-static void
-nautilus_window_refresh_title (NautilusWindow *window)
-{
-  GnomeVFSURI *vfs_uri;
-	
-  g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-	
-  vfs_uri = gnome_vfs_uri_new (nautilus_window_get_requested_uri (window));
-  if (vfs_uri == NULL)
-    {
-      gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
-    }
-  else
-    {
-      gchar *short_name;
-      gchar *new_title;
-
-      short_name = gnome_vfs_uri_extract_short_name (vfs_uri);
-      gnome_vfs_uri_unref (vfs_uri);
-
-      g_assert (short_name != NULL);
-
-      new_title = g_strdup_printf (_("Nautilus: %s"), short_name);
-      gtk_window_set_title (GTK_WINDOW (window), new_title);
-      g_free (new_title);
-		
-      g_free (short_name);
-    }
-
 }
 
 /* This is called when we have decided we can actually change to the new view/location situation. */
@@ -538,7 +659,7 @@ nautilus_window_load_content_view(NautilusWindow *window,
 
       new_view = NAUTILUS_VIEW(gtk_widget_new(nautilus_content_view_get_type(), "main_window", window, NULL));
 
-      nautilus_window_connect_view(window, new_view);
+      nautilus_window_connect_content_view (window, NAUTILUS_CONTENT_VIEW (new_view));
 
       if(!nautilus_view_load_client(new_view, iid))
 	{
@@ -670,6 +791,8 @@ nautilus_window_update_state(gpointer data)
 
       if(window->pending_ni)
         {
+          nautilus_window_reset_title_internal (window, window->ni->requested_uri);
+        
           /* Tell previously-notified views to go back to the old page */
           for(cur = window->meta_views; cur; cur = cur->next)
             {
@@ -741,6 +864,8 @@ nautilus_window_update_state(gpointer data)
               ni = window->ni;
               si = window->si;
             }
+
+	  nautilus_window_reset_title_internal (window, ni->requested_uri);
 
 #ifdef EXTREME_DEBUGGING
           g_message("!!! Sending update_view");

@@ -72,7 +72,7 @@ static void nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragC
 						     GtkSelectionData *selection_data,
 						     guint info, guint time);
 
-static void nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const char* new_uri);
+static void nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const char* new_uri, const char *initial_title);
 static void nautilus_index_panel_set_up_buttons (NautilusIndexPanel *index_panel, const char* new_uri);
 static void add_command_buttons(NautilusIndexPanel *index_panel, GList *command_list);
 
@@ -560,7 +560,9 @@ nautilus_index_panel_set_up_buttons (NautilusIndexPanel *index_panel, const char
 /* this routine populates the index panel with the per-uri information */
 
 void
-nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const char* new_uri)
+nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, 
+				  const char* new_uri,
+				  const char* initial_title)
 {
 	NautilusDirectory *directory;
 	NautilusBackground *background;
@@ -588,7 +590,7 @@ nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const char* n
 	g_free (background_color);
 	
 	/* tell the title widget about it */
-	nautilus_index_title_set_uri(NAUTILUS_INDEX_TITLE(index_panel->details->index_title), new_uri);
+	nautilus_index_title_set_uri(NAUTILUS_INDEX_TITLE(index_panel->details->index_title), new_uri, initial_title);
 			
 	/* add keywords if we got any */				
 
@@ -599,7 +601,9 @@ nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const char* n
 /* here is the key routine that populates the index panel with the appropriate information when the uri changes */
 
 void
-nautilus_index_panel_set_uri (NautilusIndexPanel *index_panel, const char* new_uri)
+nautilus_index_panel_set_uri (NautilusIndexPanel *index_panel, 
+			      const char* new_uri,
+			      const char* initial_title)
 {       
 	/* there's nothing to do if the uri is the same as the current one */ 
 	
@@ -610,5 +614,11 @@ nautilus_index_panel_set_uri (NautilusIndexPanel *index_panel, const char* new_u
 	index_panel->details->uri = g_strdup (new_uri);
 		
 	/* populate the per-uri box with the info */
-	nautilus_index_panel_set_up_info (index_panel, new_uri);  	
+	nautilus_index_panel_set_up_info (index_panel, new_uri, initial_title);  	
+}
+
+void
+nautilus_index_panel_set_title (NautilusIndexPanel *index_panel, const char* new_title)
+{       
+	nautilus_index_title_set_text (NAUTILUS_INDEX_TITLE(index_panel->details->index_title), new_title);
 }
