@@ -1,7 +1,7 @@
 NULL =
 
 INCLUDES =						\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
 	-DG_LOG_DOMAIN=\"Nautilus-Tree\"		\
 	-I$(top_srcdir)					\
 	$(DISABLE_DEPRECATED_CFLAGS)			\

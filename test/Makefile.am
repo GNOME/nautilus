@@ -4,7 +4,7 @@ INCLUDES =\
 	-I$(top_srcdir) \
 	$(CORE_CFLAGS) \
 	-DVERSION="\"$(VERSION)\"" \
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	$(NULL)
 

@@ -4,7 +4,7 @@ INCLUDES =						\
 	-DG_LOG_DOMAIN=\"Nautilus-Throbber\"		\
 	-DDATADIR=\""$(datadir)"\" 			\
 	-I$(top_srcdir)					\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(COMPONENT_CFLAGS)				\
 	$(NULL)

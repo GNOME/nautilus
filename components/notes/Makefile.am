@@ -3,7 +3,7 @@ NULL =
 INCLUDES=\
 	-DG_LOG_DOMAIN=\"Nautilus-Notes\" \
 	-I$(top_srcdir)		\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
 	$(COMPONENT_CFLAGS) \
 	$(NULL)	\
 	-DGTK_ENABLE_BROKEN

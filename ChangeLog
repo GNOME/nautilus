@@ -1,3 +1,18 @@
+2002-06-12  Damon Chaplin  <damon@ximian.com>
+
+	* test/Makefile.am (INCLUDES): 
+	* src/Makefile.am (INCLUDES): 
+	* components/tree/Makefile.am (INCLUDES): 
+	* components/throbber/Makefile.am (INCLUDES): 
+	* components/text/Makefile.am (INCLUDES): 
+	* components/notes/Makefile.am (INCLUDES): 
+	* components/news/Makefile.am (INCLUDES): 
+	* components/music/Makefile.am (INCLUDES): 
+	* components/history/Makefile.am (INCLUDES): 
+	* components/hardware/Makefile.am (INCLUDES): use
+	$(prefix)/${DATADIRNAME}/locale rather than $(datadir)/locale so
+	it works on Solaris.
+
 2002-06-03  David Emory Watson  <dwatson@cs.ucr.edu>
 
 	* src/file-manager/fm-list-view.c:

@@ -11,7 +11,7 @@ platform_source = decode.c dct64.c decode_i386.c dct64_i386.c
 INCLUDES =					\
 	-DG_LOG_DOMAIN=\"Nautilus-Music\"	\
 	-I$(top_srcdir)				\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
 	$(DISABLE_DEPRECATED_CFLAGS)		\
 	$(MUSIC_COMPONENT_CFLAGS)		\
 	$(NULL)

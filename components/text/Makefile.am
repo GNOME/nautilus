@@ -6,7 +6,7 @@ INCLUDES =					\
 	-DG_LOG_DOMAIN=\"Nautilus-Text\"	\
 	-DDATADIR=\""$(datadir)"\" 		\
 	-I$(top_srcdir)				\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
 	$(DISABLE_DEPRECATED_CFLAGS)		\
 	$(COMPONENT_CFLAGS)			\
 	-DGTK_ENABLE_BROKEN			\

@@ -2,7 +2,7 @@ NULL =
 
 INCLUDES=\
 	-I$(top_srcdir) \
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
 	$(COMPONENT_CFLAGS) \
 	$(NULL)
 

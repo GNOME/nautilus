@@ -10,7 +10,7 @@ INCLUDES =\
 	-I$(top_builddir)/libnautilus-private \
 	$(CORE_CFLAGS) \
 	-DDATADIR=\""$(datadir)"\" \
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
+	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
 	-DLIBDIR=\""$(libdir)"\" \
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" \

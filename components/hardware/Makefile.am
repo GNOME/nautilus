@@ -4,7 +4,7 @@ SUBDIRS=icons
 
 INCLUDES =						\
 	-DG_LOG_DOMAIN=\"Nautilus-Hardware\"		\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
 	-I$(top_srcdir)					\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(COMPONENT_CFLAGS)				\
