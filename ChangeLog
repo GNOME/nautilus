@@ -2,6 +2,24 @@
 
 	reviewed by: Ian McKellar  <ian@eazel.com>
 
+	Ubnbrkeak the build.
+
+	* components/services/inventory-view/nautilus-inventory-enable-page
+	.c: (nautilus_inventory_enable_page_destroy):
+	* components/services/inventory/eazel-inventory-upload-callback.c:
+	(eazel_inventory_upload_callback_initialize_class),
+	(eazel_inventory_upload_callback_initialize),
+	(eazel_inventory_upload_callback_destroy),
+	(eazel_inventory_upload_callback_new),
+	(impl_Trilobite_Eazel_InventoryUploadCallback_done_uploading),
+	(impl_Trilobite_Eazel_InventoryUploadCallback__destroy),
+	(impl_Trilobite_Eazel_InventoryUploadCallback__create):
+	* components/services/inventory/eazel-inventory-upload-callback.h:
+
+2001-02-23  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Ian McKellar  <ian@eazel.com>
+
 	Fixed bug 6185 (Inventory collection and upload is slow, blocks UI)
 	
 	* components/services/inventory-view/Makefile.am,
