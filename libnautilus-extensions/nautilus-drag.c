@@ -43,6 +43,8 @@
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-string.h>
 
+#define NAUTILUS_COMMAND_SPECIFIER "command:"
+
 void
 nautilus_drag_init (NautilusDragInfo *drag_info,
 		    const GtkTargetEntry *drag_types, int drag_type_count, 
@@ -319,6 +321,10 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 			*non_default_action = 0;
 			return;
 		}
+	} else if (nautilus_str_has_prefix (target_uri_string, NAUTILUS_COMMAND_SPECIFIER)) {
+		*default_action = GDK_ACTION_MOVE;
+		*non_default_action = GDK_ACTION_MOVE;
+		return;
 	} else {
 		target_uri = gnome_vfs_uri_new (target_uri_string);
 	}

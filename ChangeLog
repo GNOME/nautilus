@@ -1,3 +1,16 @@
+2001-02-23  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Ramiro Estrugo <ramiro@eazel.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_move_copy_items):
+	Special case activation of "command:" links, executing the
+	command and passing it uris.
+	
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_default_drop_action_for_icons):
+	Special case "command:" to always do a move.
+
 2001-02-23  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	reviewed by: Robey Pointer  <robey@eazel.com>

@@ -4308,12 +4308,15 @@ fm_directory_view_get_uri (FMDirectoryView *view)
 void
 fm_directory_view_move_copy_items (const GList *item_uris,
 				   GArray *relative_item_points,
-				   const char *target_dir,
+				   const char *target_uri,
 				   int copy_action,
 				   int x, int y,
 				   FMDirectoryView *view)
 {
 	CopyMoveDoneData *copy_move_done_data;
+	char *command_string, *scanner;
+	int length;
+	const GList *p;
 	
 	g_assert (relative_item_points->len == 0 
 		|| g_list_length ((GList *)item_uris) == relative_item_points->len);
@@ -4321,10 +4324,43 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 	/* add the drop location to the icon offsets */
 	offset_drop_points (relative_item_points, x, y);
 
+	/* special-case "command:" here instead of starting a move/copy */
+	if (nautilus_str_has_prefix (target_uri, NAUTILUS_COMMAND_SPECIFIER)) {
+		/* execute command, passing it the dragged uris */
+		
+		/* strip the leading "command:" */
+		target_uri += strlen (NAUTILUS_COMMAND_SPECIFIER);
+
+		/* how long will the command string be? */
+		length = strlen (target_uri) + 1;
+		for (p = item_uris; p != NULL; p = p->next) {
+			length += strlen ((const char *) p->data) + 1;
+		}
+		
+		command_string = g_malloc (length);
+		scanner = command_string;
+		
+		/* copy the command string */
+		strcpy (scanner, target_uri);
+		scanner += strlen (scanner);
+		
+		/* copy the uris */
+		for (p = item_uris; p != NULL; p = p->next) {
+			sprintf (scanner, " %s", (const char *) p->data);
+			scanner += strlen (scanner);
+		}
+		
+		/* execute the command */
+		nautilus_gnome_shell_execute (command_string);
+		
+		g_free (command_string);
+		return;
+	}
+	
 	copy_move_done_data = pre_copy_move (view);
 	nautilus_file_operations_copy_move
 		(item_uris, relative_item_points, 
-		 target_dir, copy_action, GTK_WIDGET (view),
+		 target_uri, copy_action, GTK_WIDGET (view),
 		 copy_move_done_callback, copy_move_done_data);
 }
 
