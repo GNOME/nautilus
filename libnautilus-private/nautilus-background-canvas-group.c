@@ -109,7 +109,7 @@ nautilus_background_canvas_group_draw (GnomeCanvasItem *item,
 		 */
 		gc = gdk_gc_new (drawable);
 
-		/* FIXME bugzilla.eazel.com 2280:
+		/* FIXME bugzilla.eazel.com 5349:
 		 * It shouldn't be necessary to call nautilus_background_pre_draw here.
 		 * However, nautilus_background_canvas_group_update (who should be the one
 		 * spot we call nautilus_background_pre_draw from) doesn't seemed to get
@@ -139,7 +139,7 @@ nautilus_background_canvas_group_render (GnomeCanvasItem *item, GnomeCanvasBuf *
 			
 	background = nautilus_get_widget_background (GTK_WIDGET (item->canvas));
 	if (background != NULL) {
-		/* FIXME bugzilla.eazel.com 2280:
+		/* FIXME bugzilla.eazel.com 5349:
 		 * It shouldn't be necessary to call nautilus_background_pre_draw here.
 		 * However, nautilus_background_canvas_group_update (who should be the one
 		 * spot we call nautilus_background_pre_draw from) doesn't seemed to get
