@@ -17,7 +17,8 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Author: Ramiro Estrugo <ramiro@eazel.com>
+ *  Authors: Ramiro Estrugo <ramiro@eazel.com>
+ *  	     Mike Fleming <mfleming@eazel.com>
  *
  */
 
@@ -901,10 +902,6 @@ is_uri_partial (const char *uri)
 }
 
 
-/* Note: I believe this function is only needed for gnome-vfs URI schemes's
- * (such as help:).  For http:, I believe Mozilla returns
- * full URL's
- */
 static char *
 make_full_uri_from_relative (const char *base_uri, const char *uri)
 {
@@ -1291,32 +1288,15 @@ static char *
 eazel_services_scheme_untranslate (NautilusMozillaContentView	*view, 
 				   const char			*uri)
 {
-	size_t uri_prefix_len;
-	static const char * uri_prefix = "http://localhost:";
-	char * ret;
+	AmmoniteError err;
+	char *ret;
 
-	uri_prefix_len = strlen (uri_prefix);
+	err = ammonite_eazel_url_for_http_url (uri, &ret);
 
-	if (0 == strncmp (uri, uri_prefix, uri_prefix_len) ) {
-		char *port_end;
-		unsigned long port;
-
-		/* FIXME mfleming -- rather than asking eazel-proxy what port is in use,
-		 * I just automatically convert ports >than 11600, which is where eazel-proxy
-		 * starts looking.
-		 */
-
-		port = strtoul (uri + uri_prefix_len, &port_end, 10);
-		if (port_end && port >= 11600) {
-			ret = g_strconcat ("eazel-services://", port_end, NULL);
-
+	if (ERR_Success == err) {
 #ifdef DEBUG_mfleming
-			g_message ("Mozilla: untranslated uri '%s' to '%s'", uri, ret );
+		g_message ("Mozilla: untranslated uri '%s' to '%s'", uri, ret );
 #endif
-
-		} else {
-			ret = g_strdup (uri);
-		}
 	} else {
 		ret = g_strdup (uri);
 	}
