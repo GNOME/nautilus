@@ -108,7 +108,8 @@ create_xfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 }
 
 static void
-progress_dialog_set_files_remaining_text ( NautilusFileOperationsProgress *dialog, const char *action_verb)
+progress_dialog_set_files_remaining_text ( NautilusFileOperationsProgress *dialog, 
+	const char *action_verb)
 {
 	char *text;
 
@@ -292,8 +293,9 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 		       XferInfo *xfer_info)
 {
 	/* Notice that the error mode in `xfer_info' is the one we have been
-           requested, but the transfer is always performed in mode
-           `GNOME_VFS_XFER_ERROR_MODE_QUERY'.  */
+         * requested, but the transfer is always performed in mode
+         * `GNOME_VFS_XFER_ERROR_MODE_QUERY'.
+         */
 
 	int result;
 	char *text;
@@ -424,7 +426,7 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 }
 
 /* Note that we have these two separate functions with separate format
- * strings for ease of localization. Resist the urge to "optimize them
+ * strings for ease of localization. Resist the urge to "optimize" them
  * for English.
  */
 
@@ -508,14 +510,18 @@ handle_xfer_duplicate (GnomeVFSXferProgressInfo *progress_info,
 {
 	switch (xfer_info->kind) {
 	case XFER_LINK:
-		/* FIXME bugzilla.eazel.com 2556: We overwrite the old name here. Is this a storage leak? */
+		/* FIXME bugzilla.eazel.com 2556: We overwrite the old name here. 
+		 * Is this a storage leak?
+		 */
 		progress_info->duplicate_name = get_link_name
 			(progress_info->duplicate_name,
 			 progress_info->duplicate_count);
 		break;
 
 	case XFER_COPY:
-		/* FIXME bugzilla.eazel.com 2556: We overwrite the old name here. Is this a storage leak? */
+		/* FIXME bugzilla.eazel.com 2556: We overwrite the old name here. 
+		 * Is this a storage leak? 
+		 */
 		progress_info->duplicate_name = get_duplicate_name
 			(progress_info->duplicate_name,
 			 progress_info->duplicate_count);
@@ -562,10 +568,23 @@ sync_xfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 	if (progress_info->status == GNOME_VFS_XFER_PROGRESS_STATUS_OK) {
 		switch (progress_info->phase) {
 		case GNOME_VFS_XFER_PHASE_OPENTARGET:
+			if (progress_info->top_level_item) {
+				/* this is one of the selected copied or moved items -- we need
+				 * to make sure it's metadata gets copied over
+				 */
+				g_assert (progress_info->source_name != NULL);
+				nautilus_file_changes_queue_schedule_metadata_copy 
+					(progress_info->source_name, progress_info->target_name);
+			}
 			nautilus_file_changes_queue_file_added (progress_info->target_name);
 			break;
 
 		case GNOME_VFS_XFER_PHASE_MOVING:
+			if (progress_info->top_level_item) {
+				g_assert (progress_info->source_name != NULL);
+				nautilus_file_changes_queue_schedule_metadata_move 
+					(progress_info->source_name, progress_info->target_name);
+			}
 			nautilus_file_changes_queue_file_moved (progress_info->source_name,
 				progress_info->target_name);
 			break;

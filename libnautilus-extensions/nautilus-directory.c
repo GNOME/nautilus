@@ -804,6 +804,35 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 	g_list_free (new_files_list);
 }
 
+#define METADATA_COPY_DEBUG
+void 
+nautilus_directory_schedule_metadata_copy (GList *uri_pairs)
+{
+	GList *p;
+	URIPair *pair;
+
+	for (p = uri_pairs; p != NULL; p = p->next) {
+		pair = p->data;
+#ifdef METADATA_COPY_DEBUG
+		g_print ("copy metadata from %s to %s\n", pair->from_uri, pair->to_uri);
+#endif
+	}
+}
+
+void 
+nautilus_directory_schedule_metadata_move (GList *uri_pairs)
+{
+	GList *p;
+	URIPair *pair;
+
+	for (p = uri_pairs; p != NULL; p = p->next) {
+		pair = p->data;
+#ifdef METADATA_COPY_DEBUG
+		g_print ("move metadata from %s to %s\n", pair->from_uri, pair->to_uri);
+#endif
+	}
+}
+
 gboolean
 nautilus_directory_contains_file (NautilusDirectory *directory,
 				  NautilusFile *file)

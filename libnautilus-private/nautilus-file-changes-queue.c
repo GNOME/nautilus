@@ -18,7 +18,8 @@
    License along with this program; if not, write to the
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
-  
+
+   Author: Pavel Cisler <pavel@eazel.com>
 */
 
 #include <config.h>
@@ -39,7 +40,9 @@ typedef enum {
 	CHANGE_FILE_INITIAL,
 	CHANGE_FILE_ADDED,
 	CHANGE_FILE_REMOVED,
-	CHANGE_FILE_MOVED
+	CHANGE_FILE_MOVED,
+	CHANGE_METADATA_COPY,
+	CHANGE_METADATA_MOVE
 } NautilusFileChangeKind;
 
 typedef struct {
@@ -175,6 +178,38 @@ nautilus_file_changes_queue_file_moved (const char *from, const char *to)
 	nautilus_file_changes_queue_add_common (queue, new_item);
 }
 
+void
+nautilus_file_changes_queue_schedule_metadata_copy (const char *from_uri,
+	const char *to_uri)
+{
+	NautilusFileChange *new_item;
+	NautilusFileChangesQueue *queue;
+
+	queue = nautilus_file_changes_queue_get ();
+
+	new_item = g_new (NautilusFileChange, 1);
+	new_item->kind = CHANGE_METADATA_COPY;
+	new_item->from_uri = g_strdup (from_uri);
+	new_item->to_uri = g_strdup (to_uri);
+	nautilus_file_changes_queue_add_common (queue, new_item);
+}
+
+void
+nautilus_file_changes_queue_schedule_metadata_move (const char *from_uri,
+	const char *to_uri)
+{
+	NautilusFileChange *new_item;
+	NautilusFileChangesQueue *queue;
+
+	queue = nautilus_file_changes_queue_get ();
+
+	new_item = g_new (NautilusFileChange, 1);
+	new_item->kind = CHANGE_METADATA_MOVE;
+	new_item->from_uri = g_strdup (from_uri);
+	new_item->to_uri = g_strdup (to_uri);
+	nautilus_file_changes_queue_add_common (queue, new_item);
+}
+
 static NautilusFileChange *
 nautilus_file_changes_queue_get_change (NautilusFileChangesQueue *queue)
 {
@@ -234,6 +269,7 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 	GList *additions;
 	GList *deletions;
 	GList *moves;
+	GList *metadata_copy_requests, *metadata_move_requests;
 	URIPair *pair;
 	int kind;
 	int chunk_count;
@@ -243,6 +279,8 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 	additions = NULL;
 	deletions = NULL;
 	moves = NULL;
+	metadata_copy_requests = NULL;
+	metadata_move_requests = NULL;
 	kind = CHANGE_FILE_INITIAL;
 
 	queue = nautilus_file_changes_queue_get();
@@ -268,7 +306,8 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 			 */
 
 			g_assert ((deletions != NULL) + (moves != NULL) 
-				+ (additions != NULL) <= 1);
+				+ (additions != NULL) + (metadata_copy_requests != NULL)
+				+ (metadata_move_requests != NULL) <= 1);
 				
 			if (deletions != NULL) {
 				nautilus_directory_notify_files_removed (deletions);
@@ -284,6 +323,16 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 				nautilus_directory_notify_files_added (additions);
 				nautilus_g_list_free_deep (additions);
 				additions = NULL;
+			}
+			if (metadata_copy_requests != NULL) {
+				nautilus_directory_schedule_metadata_copy (metadata_copy_requests);
+				pairs_list_free (metadata_copy_requests);
+				metadata_copy_requests = NULL;
+			}
+			if (metadata_move_requests != NULL) {
+				nautilus_directory_schedule_metadata_move (metadata_move_requests);
+				pairs_list_free (metadata_move_requests);
+				metadata_move_requests = NULL;
 			}
 		}
 
@@ -309,6 +358,20 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 			pair->from_uri = change->from_uri;
 			pair->to_uri = change->to_uri;
 			moves = g_list_append (moves, pair);
+			break;
+
+		case CHANGE_METADATA_COPY:
+			pair = g_new (URIPair, 1);
+			pair->from_uri = change->from_uri;
+			pair->to_uri = change->to_uri;
+			metadata_copy_requests = g_list_append (metadata_copy_requests, pair);
+			break;
+
+		case CHANGE_METADATA_MOVE:
+			pair = g_new (URIPair, 1);
+			pair->from_uri = change->from_uri;
+			pair->to_uri = change->to_uri;
+			metadata_move_requests = g_list_append (metadata_move_requests, pair);
 			break;
 
 		default:

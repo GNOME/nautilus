@@ -1,3 +1,23 @@
+2000-09-03  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-notify.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_schedule_metadata_copy),
+	(nautilus_directory_schedule_metadata_move):
+	* libnautilus-extensions/nautilus-file-changes-queue.c:
+	(nautilus_file_changes_queue_schedule_metadata_copy),
+	(nautilus_file_changes_queue_schedule_metadata_move),
+	(nautilus_file_changes_consume_changes):
+	* libnautilus-extensions/nautilus-file-changes-queue.h:
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(progress_dialog_set_files_remaining_text),
+	(handle_xfer_vfs_error), (handle_xfer_duplicate),
+	(sync_xfer_callback):
+	Work on task bugzilla task 330.
+	Add notification hooks for metadata copying to NautilusFileChangesQueue.
+	Using the new top_level_item, call the hooks from the copy engine 
+	synchronous callback. 
+
 2000-09-03  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/tree/nautilus-tree-view.c: (insert_hack_node,

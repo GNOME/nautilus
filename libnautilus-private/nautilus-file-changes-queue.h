@@ -18,7 +18,8 @@
    License along with this program; if not, write to the
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
-  
+
+   Author: Pavel Cisler <pavel@eazel.com>  
 */
 
 #ifndef NAUTILUS_FILE_CHANGES_QUEUE_H
@@ -26,11 +27,15 @@
 
 #include <glib.h>
 
-void nautilus_file_changes_queue_file_added   (const char *uri);
-void nautilus_file_changes_queue_file_removed (const char *uri);
-void nautilus_file_changes_queue_file_moved   (const char *from_uri,
-					       const char *to_uri);
+void nautilus_file_changes_queue_file_added		(const char *uri);
+void nautilus_file_changes_queue_file_removed		(const char *uri);
+void nautilus_file_changes_queue_file_moved		(const char *from_uri,
+							 const char *to_uri);
+void nautilus_file_changes_queue_schedule_metadata_copy	(const char *from_uri,
+							 const char *to_uri);
+void nautilus_file_changes_queue_schedule_metadata_move	(const char *from_uri,
+							 const char *to_uri);
 
-void nautilus_file_changes_consume_changes    (gboolean    consume_all);
+void nautilus_file_changes_consume_changes		(gboolean consume_all);
 
 #endif /* NAUTILUS_FILE_CHANGES_QUEUE_H */
