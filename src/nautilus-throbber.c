@@ -44,6 +44,7 @@
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 
@@ -53,6 +54,7 @@ struct NautilusThrobberDetails {
 	GList	*image_list;
 
 	GdkPixbuf *quiescent_pixbuf;
+	NautilusImage *image_widget;
 	
 	int	max_frame;
 	int	current_frame;	
@@ -69,10 +71,6 @@ static guint signals[LAST_SIGNAL];
 static void     nautilus_throbber_initialize_class	 (NautilusThrobberClass *klass);
 static void     nautilus_throbber_initialize		 (NautilusThrobber *throbber);
 static void	nautilus_throbber_destroy		 (GtkObject *object);
-static void     nautilus_throbber_draw			 (GtkWidget *widget, 
-							  GdkRectangle *box);
-static int      nautilus_throbber_expose 		 (GtkWidget *widget, 
-							  GdkEventExpose *event);
 static gboolean nautilus_throbber_button_press_event	 (GtkWidget *widget, 
 							  GdkEventButton *event);
 static void	nautilus_throbber_load_images		 (NautilusThrobber *throbber);
@@ -104,8 +102,6 @@ nautilus_throbber_initialize_class (NautilusThrobberClass *throbber_class)
 	
 	object_class->destroy = nautilus_throbber_destroy;
 
-	widget_class->draw = nautilus_throbber_draw;
-	widget_class->expose_event = nautilus_throbber_expose;
 	widget_class->button_press_event = nautilus_throbber_button_press_event;
 	widget_class->size_allocate = nautilus_throbber_size_allocate;
 	widget_class->size_request = nautilus_throbber_size_request;	
@@ -167,12 +163,13 @@ get_throbber_dimensions (NautilusThrobber *throbber, int *throbber_width, int* t
 static void
 nautilus_throbber_initialize (NautilusThrobber *throbber)
 {
+	
 	GtkWidget *widget = GTK_WIDGET (throbber);
 	GTK_WIDGET_UNSET_FLAGS (throbber, GTK_NO_WINDOW);
-
+	
 	gtk_widget_set_events (widget, 
 			       gtk_widget_get_events (widget) | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK);
-	
+
 	throbber->details = g_new0 (NautilusThrobberDetails, 1);
 	
 	/* set up the instance variables to appropriate defaults */
@@ -180,7 +177,13 @@ nautilus_throbber_initialize (NautilusThrobber *throbber)
 	
 	/* allocate the pixmap that holds the image */
 	nautilus_throbber_load_images (throbber);
+
+	throbber->details->image_widget = NAUTILUS_IMAGE (nautilus_image_new ());
+	gtk_widget_show (GTK_WIDGET (throbber->details->image_widget));
+	gtk_container_add (GTK_CONTAINER (throbber), GTK_WIDGET (throbber->details->image_widget));
 	
+	nautilus_image_set_pixbuf (throbber->details->image_widget, throbber->details->quiescent_pixbuf);
+		
 	/* add a callback for when the theme changes */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
 					  nautilus_throbber_theme_changed,
@@ -208,17 +211,6 @@ nautilus_throbber_theme_changed (gpointer user_data)
 }
 
 
-/* utility to simplify drawing */
-static void
-draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
-{
-	gdk_pixbuf_render_to_drawable_alpha (pixbuf, drawable, 0, 0, x, y,
-					     gdk_pixbuf_get_width (pixbuf),
-					     gdk_pixbuf_get_height (pixbuf),
-					     GDK_PIXBUF_ALPHA_BILEVEL, 128, GDK_RGB_DITHER_MAX,
-					     0, 0);
-}
-
 /* here's the routine that selects the image to draw, based on the throbber's state */
 
 static GdkPixbuf *
@@ -237,58 +229,22 @@ select_throbber_image (NautilusThrobber *throbber)
 	return (GdkPixbuf*) element->data;
 }
 
-/* draw the throbber into the passed-in rectangle */
-
-static void
-draw_throbber_image (GtkWidget *widget, GdkRectangle *box)
-{
-	NautilusThrobber *throbber;
-	GdkPixbuf *pixbuf;
-		
-	throbber = NAUTILUS_THROBBER (widget);
-
-	pixbuf = select_throbber_image (throbber);
-	
-	draw_pixbuf (pixbuf, widget->window, box->x, box->y);
-}
-
-static void
-nautilus_throbber_draw (GtkWidget *widget, GdkRectangle *box)
-{ 
-	g_return_if_fail (widget != NULL);
-	g_return_if_fail (NAUTILUS_IS_THROBBER (widget));
-	
-	draw_throbber_image (widget, box);	
-}
-
-/* handle expose events */
-
-static int
-nautilus_throbber_expose (GtkWidget *widget, GdkEventExpose *event)
-{
-	GdkRectangle box;
-	g_return_val_if_fail (widget != NULL, FALSE);
-	g_return_val_if_fail (NAUTILUS_IS_THROBBER (widget), FALSE);
-
-	box.x = 0; box.y = 0;
-	box.width = widget->allocation.width;
-	box.height = widget->allocation.height;
-
-	draw_throbber_image (widget, &box);	
-	
-	return FALSE;
-}
 
 /* here's the actual timeout task to bump the frame and schedule a redraw */
 
 static int 
 bump_throbber_frame (NautilusThrobber *throbber)
 {
+	GdkPixbuf *pixbuf;
+	
 	throbber->details->current_frame += 1;
 	if (throbber->details->current_frame > throbber->details->max_frame - 1) {
 		throbber->details->current_frame = 0;
 	}
 
+	pixbuf = select_throbber_image (throbber);
+	nautilus_image_set_pixbuf (throbber->details->image_widget, pixbuf);
+	
 	gtk_widget_queue_draw (GTK_WIDGET (throbber));
 	return TRUE;
 }
@@ -304,6 +260,8 @@ nautilus_throbber_start (NautilusThrobber *throbber)
 	
 	/* reset the frame count */
 	throbber->details->current_frame = 0;
+	nautilus_image_set_pixbuf (throbber->details->image_widget, throbber->details->quiescent_pixbuf);
+	
 	throbber->details->timer_task = gtk_timeout_add (THROBBER_TIMEOUT, (GtkFunction) bump_throbber_frame, throbber);
 }
 
@@ -320,6 +278,7 @@ void
 nautilus_throbber_stop (NautilusThrobber *throbber)
 {
 	nautilus_throbber_remove_update_callback (throbber);
+	nautilus_image_set_pixbuf (throbber->details->image_widget, throbber->details->quiescent_pixbuf);
 	gtk_widget_queue_draw (GTK_WIDGET (throbber));
 
 }

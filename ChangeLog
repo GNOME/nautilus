@@ -1,3 +1,12 @@
+2001-01-09  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-throbber.c: (nautilus_throbber_initialize_class),
+	(nautilus_throbber_initialize), (bump_throbber_frame),
+	(nautilus_throbber_start), (nautilus_throbber_stop):
+
+	made the throbber anti-aliased by using a nautilus_image widget
+	to do the drawing.
+	
 2001-01-04  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/rss-control/nautilus-rss-control.c:
