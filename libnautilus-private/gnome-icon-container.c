@@ -1065,6 +1065,13 @@ add_idle (GnomeIconContainer *container)
 
 /* Container-level icon handling functions.  */
 
+static gboolean
+button_event_modifies_selection (GdkEventButton *event)
+{
+	return event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK);
+}
+
+
 /* Select an icon.  Return TRUE if selection has changed.  */
 static gboolean
 select_icon (GnomeIconContainer *container,
@@ -1487,6 +1494,9 @@ kbd_move_to (GnomeIconContainer *container,
 	     GnomeIconContainerIcon *icon,
 	     GdkEventKey *event)
 {
+	/* Control key causes keyboard selection and "selected icon" to move separately.
+	 * This seems like a confusing and bad idea. 
+	 */
 	if (! (event->state & GDK_CONTROL_MASK)) {
 		gboolean selection_changed;
 
@@ -1891,7 +1901,7 @@ button_press_event (GtkWidget *widget,
 		return TRUE;
          
 	if (event->button == 1 && event->type == GDK_BUTTON_PRESS) {
-		if (! (event->state & GDK_CONTROL_MASK)) {
+		if (! button_event_modifies_selection (event)) {
 			gboolean selection_changed;
 
 			selection_changed = unselect_all (container);
@@ -1933,8 +1943,9 @@ button_release_event (GtkWidget *widget,
 
 	if (event->button == details->drag_button) {
 		details->drag_button = 0;
+		
 	        if (! details->doing_drag
-		    && ! (event->state & GDK_CONTROL_MASK)) {
+		    && ! button_event_modifies_selection (event)) {
 			gboolean selection_changed;
 
 			selection_changed
@@ -1950,9 +1961,12 @@ button_release_event (GtkWidget *widget,
 			gint elapsed_time = event->time - details->button_down_time;
                         set_kbd_current (container, details->drag_icon, TRUE);
 
-			/* if single-click mode, activate the icon */
-			if (details->single_click_mode && (elapsed_time < MAX_CLICK_TIME)) {
-			
+			/* If single-click mode, activate the icon, unless modifying
+			 * the selection or pressing for a very long time. */
+			if (details->single_click_mode && (elapsed_time < MAX_CLICK_TIME)
+				&& ! button_event_modifies_selection (event)) {
+
+			    /* FIXME: This should activate all selected icons, not just one */
 			    gtk_signal_emit (GTK_OBJECT (container),
 				 				signals[ACTIVATE],
 				 				details->drag_icon->text, details->drag_icon->data);
@@ -2249,8 +2263,8 @@ browser_select_timeout_cb (gpointer data)
 	return FALSE;
 }
 
-/* Conceptually, pressing button 1 together with CTRL toggles selection of a
-   single icon without affecting the other icons; without CTRL, it selects a
+/* Conceptually, pressing button 1 together with CTRL or SHIFT toggles selection of a
+   single icon without affecting the other icons; without CTRL or SHIFT, it selects a
    single icon and un-selects all the other icons.  But in this latter case,
    the de-selection should only happen when the button is released if the
    icon is already selected, because the user might select multiple icons and
@@ -2282,7 +2296,7 @@ handle_icon_button_press (GnomeIconContainer *container,
 	if (event->button != 1)
 		return FALSE;
 
-	if (event->state & GDK_CONTROL_MASK) {
+	if (button_event_modifies_selection (event)) {
 		toggle_icon (container, icon);
 		gtk_signal_emit (GTK_OBJECT (container),
 				 signals[SELECTION_CHANGED]);
@@ -2301,6 +2315,7 @@ handle_icon_button_press (GnomeIconContainer *container,
 		details->drag_button = 0;
 		details->drag_icon = NULL;
 
+		/* FIXME: This should activate all selected icons, not just one */
 		gtk_signal_emit (GTK_OBJECT (container),
 				 signals[ACTIVATE],
 				 icon->text, icon->data);

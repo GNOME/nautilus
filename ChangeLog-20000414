@@ -1,3 +1,18 @@
+2000-01-24  John Sullivan <sullivan@eazel.com>
+
+	* libnautilus/gnome-icon-container.c:
+	(button_event_modifies_selection): New function, encapsulates idea
+	of which button events modify the selection. Formerly this was
+	done in several places and the answer was "those with the Control
+	key down". Now the answer is "those with the Control or Shift key down"
+	to match list view (and traditional, i.e. Mac) behavior more closely.
+	(button_press_event), (button_release_event), (handle_icon_button_press):
+	Deployed button_event_modifies_selection.
+	(button_release_event): Check whether modifying selection and don't
+	activate on single-click if so.
+	(kbd_move_to): Just added comment.
+	
+
 2000-01-22  Havoc Pennington  <hp@pobox.com>
 
 	* configure.in: check for libwww
