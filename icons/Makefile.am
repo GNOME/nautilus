@@ -23,6 +23,7 @@ icon_DATA =\
 	nautilus-launch-icon.png \
 	nautilus-mini-logo.png \
 	nautilus-server-connect.png \
+	nautilus-file-management-properties.png \
 	note-indicator.png \
 	side_bar_image.png \
 	text-selection-frame.png \
