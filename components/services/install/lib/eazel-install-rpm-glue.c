@@ -236,7 +236,7 @@ install_new_packages (EazelInstall *service, GList *categories) {
 
 	if (categories == NULL) {
 		trilobite_debug (_("Reading the install package list %s"), eazel_install_get_package_list (service));
-		categories = parse_local_xml_package_list (eazel_install_get_package_list (service), NULL);
+		categories = parse_local_xml_package_list (eazel_install_get_package_list (service), NULL, NULL);
 	}
 
 	result = EAZEL_INSTALL_NOTHING;

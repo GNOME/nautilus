@@ -36,7 +36,7 @@
 #include <gnome-xml/parser.h>
 
 GList* parse_memory_xml_package_list (const char *mem, int size);
-GList* parse_local_xml_package_list (const char* pkg_list_file, char **splash_text);
+GList* parse_local_xml_package_list (const char* pkg_list_file, char **splash_text, char **finish_text);
 GList* parse_memory_transaction_file (const char *mem, int size);
 
 void free_categories (GList* categories);

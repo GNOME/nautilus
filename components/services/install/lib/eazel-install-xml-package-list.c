@@ -272,7 +272,7 @@ parse_memory_transaction_file (const char *mem,
 }
 
 GList*
-parse_local_xml_package_list (const char* pkg_list_file, char **splash_text)
+parse_local_xml_package_list (const char* pkg_list_file, char **splash_text, char **finish_text)
 {
 	xmlDocPtr doc;
 	xmlNodePtr base, node;
@@ -309,6 +309,12 @@ parse_local_xml_package_list (const char* pkg_list_file, char **splash_text)
 			if (splash_text != NULL) {
 				text = xmlNodeGetContent (node);
 				*splash_text = g_strdup (text);
+				free (text);
+			}
+		} else if (g_strcasecmp (node->name, "FINISH-TEXT") == 0) {
+			if (finish_text != NULL) {
+				text = xmlNodeGetContent (node);
+				*finish_text = g_strdup (text);
 				free (text);
 			}
 		} else {

@@ -1,3 +1,41 @@
+2000-10-03  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_new_packages):
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_local_xml_package_list):
+	* components/services/install/lib/eazel-install-xml-package-list.h:
+
+	Text for the "finished" screen of the bootstrap installer can now
+	be changed in the XML file.
+
+	* nautilus-installer/src/callbacks.c: (begin_install):
+	* nautilus-installer/src/installer.c: (gtk_label_new_with_font),
+	(create_install_page), (create_pixmap_widget),
+	(jump_to_error_page), (create_finish_page_good), (create_window),
+	(eazel_install_progress), (eazel_download_progress),
+	(get_detailed_errors_foreach), (get_detailed_errors),
+	(download_failed), (eazel_install_preflight),
+	(eazel_install_dep_check), (install_done), (check_if_next_okay),
+	(toggle_button_toggled), (eazel_installer_add_category),
+	(check_system), (eazel_installer_do_install),
+	(eazel_installer_finalize), (eazel_install_get_depends),
+	(eazel_installer_initialize):
+	* nautilus-installer/src/installer.h:
+	* nautilus-installer/src/link.sh:
+	* nautilus-installer/src/main.c: (esd_open_sound),
+	(esd_sample_getid), (esd_sample_play), (esd_sample_cache),
+	(esd_sample_free), (esd_confirm_sample_cache), (esd_close),
+	(afOpenFile), (afGetFrameCount), (afGetChannels), (afGetRate),
+	(afGetSampleFormat), (afReadFrames), (afCloseFile):
+
+	Remove last bits of unArloified screens in the bootstrap
+	installer, including the error page.  Clean up download progress
+	bars (and presumably the install ones too, though they haven't
+	been tested yet) to follow the screenshots.  Tried to minimize
+	flickering in the progress bars though that may be a lost cause.
+	Stub out previous esd/esound requirements.
+	
 2000-10-02  Andy Hertzfeld  <andy@eazel.com>
 
 	implemented sound process management using gconf to store the
