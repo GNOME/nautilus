@@ -1,3 +1,48 @@
+2001-04-12  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_get_pixbuf), (nautilus_bookmark_get_icon),
+	(nautilus_bookmark_icon_is_different),
+	(nautilus_bookmark_update_icon),
+	(nautilus_bookmark_set_icon_to_default),
+	(nautilus_bookmark_disconnect_file),
+	(nautilus_bookmark_new_with_icon):
+	* libnautilus-extensions/nautilus-dateedit-extensions.c:
+	(nautilus_gnome_date_edit_get_date_as_string):
+	* libnautilus-extensions/nautilus-dateedit-extensions.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_update_icon):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(cache_key_destroy), (nautilus_scalable_icon_get_text_pieces),
+	(nautilus_scalable_icon_new_from_text_pieces),
+	(nautilus_scalable_icon_ref), (nautilus_scalable_icon_unref),
+	(nautilus_icon_factory_get_icon_for_file),
+	(nautilus_icon_factory_get_emblem_icon_by_name),
+	(get_icon_from_cache), (nautilus_icon_factory_get_pixbuf_for_file),
+	(nautilus_icon_factory_get_pixbuf_from_name),
+	(load_icon_with_embedded_text), (nautilus_scalable_icon_list_free):
+	* libnautilus-extensions/nautilus-icon-factory.h:
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(launch_mime_capplet):
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(nautilus_launch_application),
+	(nautilus_launch_application_from_command):
+	* libnautilus-extensions/nautilus-program-choosing.h:
+	* src/file-manager/fm-desktop-icon-view.c:
+	(change_background_callback):
+	* src/file-manager/fm-directory-view.c: (run_script_callback),
+	(activate_callback):
+	* src/file-manager/fm-list-view.c:
+	(fm_list_view_get_emblem_pixbufs_for_file):
+	* src/nautilus-bookmark-list.c: (append_bookmark_node):
+	* src/nautilus-bookmark-parsing.c:
+	(nautilus_bookmark_new_from_node):
+	* src/nautilus-search-bar-criterion.c:
+	(nautilus_search_bar_criterion_get_location):
+	* src/nautilus-sidebar-title.c: (update_emblems):
+	Fix overeager search and replace of eel with nautilus.  These
+	functions got accidentally eel-ized.
+	
 2001-04-12  Seth Nickell  <snickell@stanford.edu>
 
 	* libnautilus-extensions/nautilus-monitor.c:

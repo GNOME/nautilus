@@ -548,7 +548,7 @@ change_background_callback (BonoboUIComponent *component,
 	  		    gpointer data, 
 			    const char *verb)
 {
-	eel_launch_application_from_command 
+	nautilus_launch_application_from_command 
 		("background-properties-capplet", NULL, FALSE);
 }
 

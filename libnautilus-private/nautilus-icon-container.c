@@ -3752,7 +3752,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		 &attach_points,
 		 TRUE);
 	
-	eel_scalable_icon_unref (scalable_icon);
+	nautilus_scalable_icon_unref (scalable_icon);
 
 	/*  in the rare case an image is too small, scale it up */
 	
@@ -3792,7 +3792,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		}
 	}
 	emblem_pixbufs = g_list_reverse (emblem_pixbufs);
-	eel_scalable_icon_list_free (emblem_scalable_icons);
+	nautilus_scalable_icon_list_free (emblem_scalable_icons);
 
 	/* Get both editable and non-editable icon text */
 	gtk_signal_emit (GTK_OBJECT (container),

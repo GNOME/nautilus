@@ -926,7 +926,7 @@ launch_mime_capplet (GtkWidget *button, gpointer callback_data)
 	
 	command = g_strdup_printf ("%s %s", FILE_TYPES_CAPPLET_NAME, (char *)callback_data);
 		
-	eel_launch_application_from_command (command, NULL, FALSE);
+	nautilus_launch_application_from_command (command, NULL, FALSE);
 	
 	g_free (command);
 }

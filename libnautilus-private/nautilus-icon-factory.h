@@ -155,22 +155,22 @@ GdkPixbuf *	      nautilus_icon_factory_get_pixbuf_from_name	 (const char		     
  * icon, you can compare two scalable icons to see if they are the same
  * with ==.
  */
-void                  eel_scalable_icon_ref                         (NautilusScalableIcon        *scalable_icon);
-void                  eel_scalable_icon_unref                       (NautilusScalableIcon        *scalable_icon);
+void                  nautilus_scalable_icon_ref                         (NautilusScalableIcon        *scalable_icon);
+void                  nautilus_scalable_icon_unref                       (NautilusScalableIcon        *scalable_icon);
 
 /* A scalable icon can be decomposed into text and reconstituted later
- * using eel_scalable_icon_new_from_text_pieces. This is the way 
+ * using nautilus_scalable_icon_new_from_text_pieces. This is the way 
  * to store scalable icons in metadata or other files.
  */
-void                  eel_scalable_icon_get_text_pieces             (NautilusScalableIcon        *scalable_icon,
+void                  nautilus_scalable_icon_get_text_pieces             (NautilusScalableIcon        *scalable_icon,
 									  char                       **uri_return,
 									  char                       **name_return,
 									  char                       **modifier_return,
 									  char                       **embedded_text_return);
 /* Get a scalable icon using the earlier results of
- * eel_scalable_icon_get_text_pieces.
+ * nautilus_scalable_icon_get_text_pieces.
  */
-NautilusScalableIcon *eel_scalable_icon_new_from_text_pieces        (const char                  *uri,
+NautilusScalableIcon *nautilus_scalable_icon_new_from_text_pieces        (const char                  *uri,
 									  const char                  *name,
 									  const char                  *modifier,
 									  const char                  *embedded_text,
@@ -179,6 +179,6 @@ NautilusScalableIcon *eel_scalable_icon_new_from_text_pieces        (const char 
 /* Convenience function for freeing a list of scalable icons.
  * Unrefs all the icons before freeing the list.
  */
-void                  eel_scalable_icon_list_free                   (GList                       *scalable_icon_list);
+void                  nautilus_scalable_icon_list_free                   (GList                       *scalable_icon_list);
 
 #endif /* NAUTILUS_ICON_FACTORY_H */

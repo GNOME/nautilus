@@ -155,10 +155,10 @@ append_bookmark_node (gpointer data, gpointer user_data)
 	icon = nautilus_bookmark_get_icon (bookmark);
 	if (icon != NULL) {
 		/* Don't bother storing modifier or embedded text for bookmarks. */
-		eel_scalable_icon_get_text_pieces (icon, &icon_uri, &icon_name, NULL, NULL);
+		nautilus_scalable_icon_get_text_pieces (icon, &icon_uri, &icon_name, NULL, NULL);
 		xmlSetProp (bookmark_node, "icon_uri", icon_uri);
 		xmlSetProp (bookmark_node, "icon_name", icon_name);
-		eel_scalable_icon_unref (icon);
+		nautilus_scalable_icon_unref (icon);
 		g_free (icon_uri);
 		g_free (icon_name);
 	}

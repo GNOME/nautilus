@@ -393,7 +393,7 @@ nautilus_icon_factory_initialize_class (NautilusIconFactoryClass *class)
 static void
 cache_key_destroy (CacheKey *key)
 {
-	eel_scalable_icon_unref (key->scalable_icon);
+	nautilus_scalable_icon_unref (key->scalable_icon);
 	g_free (key);
 }
 
@@ -1177,7 +1177,7 @@ mime_type_data_changed_callback (GnomeVFSMIMEMonitor *monitor, gpointer user_dat
 
 /* Decompose a scalable icon into its text pieces. */
 void
-eel_scalable_icon_get_text_pieces (NautilusScalableIcon *icon,
+nautilus_scalable_icon_get_text_pieces (NautilusScalableIcon *icon,
 				 	char **uri_return,
 				 	char **name_return,
 				 	char **modifier_return,
@@ -1201,7 +1201,7 @@ eel_scalable_icon_get_text_pieces (NautilusScalableIcon *icon,
 
 /* Get or create a scalable icon from text pieces. */
 NautilusScalableIcon *
-eel_scalable_icon_new_from_text_pieces (const char *uri,
+nautilus_scalable_icon_new_from_text_pieces (const char *uri,
 			    	      	     const char *name,
 			    	      	     const char *modifier,
 			    	      	     const char *embedded_text,
@@ -1249,12 +1249,12 @@ eel_scalable_icon_new_from_text_pieces (const char *uri,
 	}
 
 	/* Grab a reference and return it. */
-	eel_scalable_icon_ref (icon);
+	nautilus_scalable_icon_ref (icon);
 	return icon;
 }
 
 void
-eel_scalable_icon_ref (NautilusScalableIcon *icon)
+nautilus_scalable_icon_ref (NautilusScalableIcon *icon)
 {
 	g_return_if_fail (icon != NULL);
 
@@ -1262,7 +1262,7 @@ eel_scalable_icon_ref (NautilusScalableIcon *icon)
 }
 
 void
-eel_scalable_icon_unref (NautilusScalableIcon *icon)
+nautilus_scalable_icon_unref (NautilusScalableIcon *icon)
 {
 	GHashTable *hash_table;
 
@@ -1468,7 +1468,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 	top_left_text = nautilus_file_get_top_left_text (file);
 	
 	/* Create the icon or find it in the cache if it's already there. */
-	scalable_icon = eel_scalable_icon_new_from_text_pieces 
+	scalable_icon = nautilus_scalable_icon_new_from_text_pieces 
 		(uri, icon_name, modifier, top_left_text, anti_aliased);
 
 	g_free (uri);
@@ -1526,7 +1526,7 @@ nautilus_icon_factory_get_emblem_icon_by_name (const char *emblem_name, gboolean
 	char *name_with_prefix;
 
 	name_with_prefix = g_strconcat (EMBLEM_NAME_PREFIX, emblem_name, NULL);
-	scalable_icon = eel_scalable_icon_new_from_text_pieces 
+	scalable_icon = nautilus_scalable_icon_new_from_text_pieces 
 		(NULL, name_with_prefix, NULL, NULL, anti_aliased);
 	g_free (name_with_prefix);	
 
@@ -2179,7 +2179,7 @@ get_icon_from_cache (NautilusScalableIcon *scalable_icon,
 
 		/* Create the key and icon for the hash table. */
 		key = g_new (CacheKey, 1);
-		eel_scalable_icon_ref (scalable_icon);
+		nautilus_scalable_icon_ref (scalable_icon);
 		key->scalable_icon = scalable_icon;
 		key->size = *size;
 		
@@ -2323,7 +2323,7 @@ nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
 		 size_in_pixels, size_in_pixels,
 		 size_in_pixels, size_in_pixels,
 		 NULL, TRUE);
-	eel_scalable_icon_unref (icon);
+	nautilus_scalable_icon_unref (icon);
 
 	return pixbuf;
 }
@@ -2365,10 +2365,10 @@ GdkPixbuf * nautilus_icon_factory_get_pixbuf_from_name (const char *icon_name,
 	GdkPixbuf *pixbuf;
 	NautilusScalableIcon *icon;
 	
-	icon = eel_scalable_icon_new_from_text_pieces (NULL, icon_name, modifier, NULL, anti_aliased);
+	icon = nautilus_scalable_icon_new_from_text_pieces (NULL, icon_name, modifier, NULL, anti_aliased);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon, size_in_pixels, size_in_pixels,
 							    size_in_pixels, size_in_pixels, NULL, TRUE); 	
-	eel_scalable_icon_unref (icon);	
+	nautilus_scalable_icon_unref (icon);	
 	return pixbuf;
 }
 									  
@@ -2486,7 +2486,7 @@ load_icon_with_embedded_text (NautilusScalableIcon *scalable_icon,
 	g_assert (scalable_icon->embedded_text != NULL);
 	
 	/* Get the icon without text. */
-	scalable_icon_without_text = eel_scalable_icon_new_from_text_pieces
+	scalable_icon_without_text = nautilus_scalable_icon_new_from_text_pieces
 		(scalable_icon->uri,
 		 scalable_icon->name,
 		 scalable_icon->modifier,
@@ -2495,7 +2495,7 @@ load_icon_with_embedded_text (NautilusScalableIcon *scalable_icon,
 	icon_without_text = get_icon_from_cache
 		(scalable_icon_without_text, size,
 		 FALSE, FALSE);
-	eel_scalable_icon_unref (scalable_icon_without_text);
+	nautilus_scalable_icon_unref (scalable_icon_without_text);
 	
 	/* Create a pixbuf with the text in it. */
 	pixbuf_with_text = embed_text (icon_without_text->pixbuf,
@@ -2521,10 +2521,10 @@ load_icon_with_embedded_text (NautilusScalableIcon *scalable_icon,
 
 /* Convenience function for unrefing and then freeing an entire list. */
 void
-eel_scalable_icon_list_free (GList *icon_list)
+nautilus_scalable_icon_list_free (GList *icon_list)
 {
 	eel_g_list_free_deep_custom
-		(icon_list, (GFunc) eel_scalable_icon_unref, NULL);
+		(icon_list, (GFunc) nautilus_scalable_icon_unref, NULL);
 }
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)

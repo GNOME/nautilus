@@ -51,12 +51,12 @@ nautilus_bookmark_new_from_node (xmlNodePtr node)
 	if (icon_uri == NULL && icon_name == NULL) {
 		icon = NULL;
 	} else {
-		icon = eel_scalable_icon_new_from_text_pieces
+		icon = nautilus_scalable_icon_new_from_text_pieces
 			(icon_uri, icon_name, NULL, NULL, FALSE);
 	}
 	new_bookmark = nautilus_bookmark_new_with_icon (uri, name, icon);
 	if (icon != NULL) {
-		eel_scalable_icon_unref (icon);
+		nautilus_scalable_icon_unref (icon);
 	}
 
 	xmlFree (name);

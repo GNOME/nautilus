@@ -3462,7 +3462,7 @@ run_script_callback (BonoboUIComponent *component, gpointer callback_data, const
 	if (nautilus_directory_is_local (launch_parameters->directory_view->details->model)) {
 		parameters = get_file_names_as_parameter_string (selected_files);
 
-		/* FIXME: must append command and parameters here, because eel_launch_application_from_command
+		/* FIXME: must append command and parameters here, because nautilus_launch_application_from_command
 		 * quotes all parameters as if they are a single parameter. Should add or change API in
 		 * nautilus-program-choosing.c to support multiple parameters.
 		 */
@@ -3476,7 +3476,7 @@ run_script_callback (BonoboUIComponent *component, gpointer callback_data, const
 	}
 
 	/* FIXME: handle errors with dialog? Or leave up to each script? */
-	eel_launch_application_from_command (command, NULL, FALSE);
+	nautilus_launch_application_from_command (command, NULL, FALSE);
 	g_free (command);
 
 	nautilus_file_list_free (selected_files);
@@ -4480,7 +4480,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 			 * lame way to run command-line tools, since
 			 * there's no terminal for the output.
 			 */
-			eel_launch_application_from_command (quoted_path, NULL, FALSE);
+			nautilus_launch_application_from_command (quoted_path, NULL, FALSE);
 			g_free (quoted_path);
 		}
 		

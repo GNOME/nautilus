@@ -617,7 +617,7 @@ nautilus_search_bar_criterion_get_location (NautilusSearchBarCriterion *criterio
 	} else if (criterion->details->use_value_entry) {
 		value_text = gtk_entry_get_text (GTK_ENTRY (criterion->details->value_entry));
 	} else if (criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
-		value_text = eel_gnome_date_edit_get_date_as_string (criterion->details->date);
+		value_text = nautilus_gnome_date_edit_get_date_as_string (criterion->details->date);
 	}
 
 	switch (name_number) {

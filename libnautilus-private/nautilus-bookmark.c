@@ -240,7 +240,7 @@ nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
 	
 	result = nautilus_icon_factory_get_pixbuf_for_icon
 		(icon, icon_size, icon_size, icon_size, icon_size, NULL, TRUE);
-	eel_scalable_icon_unref (icon);
+	nautilus_scalable_icon_unref (icon);
 	
 	return result;
 }
@@ -254,7 +254,7 @@ nautilus_bookmark_get_icon (NautilusBookmark *bookmark)
 	nautilus_bookmark_connect_file (bookmark);
 
 	if (bookmark->details->icon != NULL) {
-		eel_scalable_icon_ref (bookmark->details->icon);
+		nautilus_scalable_icon_ref (bookmark->details->icon);
 	}
 	return bookmark->details->icon;
 }
@@ -311,14 +311,14 @@ nautilus_bookmark_icon_is_different (NautilusBookmark *bookmark,
 	g_assert (new_icon != NULL);
 
 	/* Bookmarks only care about the uri and name. */
-	eel_scalable_icon_get_text_pieces 
+	nautilus_scalable_icon_get_text_pieces 
 		(new_icon, &new_uri, &new_name, NULL, NULL);
 
 	if (bookmark->details->icon == NULL) {
 		result = !eel_str_is_empty (new_uri)
 			|| !eel_str_is_empty (new_name);
 	} else {
-		eel_scalable_icon_get_text_pieces 
+		nautilus_scalable_icon_get_text_pieces 
 			(bookmark->details->icon, &old_uri, &old_name, NULL, NULL);
 
 		result = eel_strcmp (old_uri, new_uri) != 0
@@ -354,12 +354,12 @@ nautilus_bookmark_update_icon (NautilusBookmark *bookmark)
 								    NULL, FALSE);
 		if (nautilus_bookmark_icon_is_different (bookmark, new_icon)) {
 			if (bookmark->details->icon != NULL) {
-				eel_scalable_icon_unref (bookmark->details->icon);
+				nautilus_scalable_icon_unref (bookmark->details->icon);
 			}
 			bookmark->details->icon = new_icon;
 			return TRUE;
 		}
-		eel_scalable_icon_unref (new_icon);
+		nautilus_scalable_icon_unref (new_icon);
 	}
 
 	return FALSE;
@@ -426,7 +426,7 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
 	const char *icon_name;
 
 	if (bookmark->details->icon != NULL) {
-		eel_scalable_icon_unref (bookmark->details->icon);
+		nautilus_scalable_icon_unref (bookmark->details->icon);
 	}
 
 	if (nautilus_bookmark_uri_known_not_to_exist (bookmark)) {
@@ -434,7 +434,7 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
 	} else {
 		icon_name = GENERIC_BOOKMARK_ICON_NAME;
 	}
-	bookmark->details->icon = eel_scalable_icon_new_from_text_pieces 
+	bookmark->details->icon = nautilus_scalable_icon_new_from_text_pieces 
 		(NULL, icon_name, NULL, NULL, FALSE);
 }
 
@@ -472,7 +472,7 @@ nautilus_bookmark_disconnect_file (NautilusBookmark *bookmark)
 	}
 
 	if (bookmark->details->icon != NULL) {
-		eel_scalable_icon_unref (bookmark->details->icon);
+		nautilus_scalable_icon_unref (bookmark->details->icon);
 		bookmark->details->icon = NULL;
 	}
 }
@@ -520,7 +520,7 @@ nautilus_bookmark_new_with_icon (const char *uri, const char *name,
 	new_bookmark->details->uri = g_strdup (uri);
 
 	if (icon != NULL) {
-		eel_scalable_icon_ref (icon);
+		nautilus_scalable_icon_ref (icon);
 	}
 	new_bookmark->details->icon = icon;
 

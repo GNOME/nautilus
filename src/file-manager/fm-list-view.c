@@ -2095,7 +2095,7 @@ fm_list_view_get_emblem_pixbufs_for_file (FMListView *list_view,
 	}
 	emblem_pixbufs = g_list_reverse (emblem_pixbufs);
 
-	eel_scalable_icon_list_free (emblem_icons);
+	nautilus_scalable_icon_list_free (emblem_icons);
 
 	return emblem_pixbufs;
 }

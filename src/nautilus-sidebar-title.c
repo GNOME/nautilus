@@ -645,7 +645,7 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 		}
 	}
 	
-	eel_scalable_icon_list_free (icons);
+	nautilus_scalable_icon_list_free (icons);
 }
 
 static void

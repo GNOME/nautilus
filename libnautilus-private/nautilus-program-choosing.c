@@ -584,7 +584,7 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 	}
 	g_free (uri_scheme);
 
-	eel_launch_application_from_command (application->command,
+	nautilus_launch_application_from_command (application->command,
 						  parameter, 
 						  application->requires_terminal);
 
@@ -592,7 +592,7 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 }
 
 /**
- * eel_launch_application_from_command:
+ * nautilus_launch_application_from_command:
  * 
  * Fork off a process to launch an application with a given uri as
  * a parameter.
@@ -602,7 +602,7 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
  * @parameter: Passed as a parameter to the application as is.
  */
 void
-eel_launch_application_from_command (const char *command_string, 
+nautilus_launch_application_from_command (const char *command_string, 
 					  const char *parameter, 
 					  gboolean    use_terminal)
 {
