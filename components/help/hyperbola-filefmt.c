@@ -1045,8 +1045,10 @@ fmt_scrollkeeper_parse_doc_toc (HyperbolaDocTree * tree, char **ancestors,
     	xmlDefaultSAXHandler.fatalError = xml_fatal_error_handler;
 
 	if (!toc_doc) {
+		/*
 		g_warning ("Unable to parse ScrollKeeper TOC XML file:\n\t%s",
 			   toc_file);
+		*/
 		return;
 	}
 
@@ -1627,7 +1629,9 @@ static int fmt_toplevel_populate_tree (HyperbolaDocTree * tree)
     	}
     	else {
 		retval = 0;
+		/*
         	g_warning ("Unable to locate toplevel XML file:\n\t%s", toplevel_file);
+		*/
     	}
 
     	xmlFreeDoc (toplevel_doc);
