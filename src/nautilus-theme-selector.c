@@ -394,6 +394,7 @@ add_theme_to_icons (GtkWidget *widget, gpointer *data)
 		directory_path = nautilus_make_path (user_directory, "themes");
 		g_free (user_directory);
 	
+		result = GNOME_VFS_OK;
 		if (!g_file_exists (directory_path)) {
 			result = gnome_vfs_make_directory (directory_path,
 					  	GNOME_VFS_PERM_USER_ALL
@@ -405,7 +406,7 @@ add_theme_to_icons (GtkWidget *widget, gpointer *data)
 		g_free(directory_path);
 			
 		/* copy the new theme into the themes directory */
-		if (result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_FILE_EXISTS) {
+		if (result == GNOME_VFS_OK) {
 			result = nautilus_copy_uri_simple (theme_path, theme_destination_path);
 		}
 		
@@ -551,9 +552,8 @@ exit_remove_mode (NautilusThemeSelector *theme_selector)
 	theme_selector->details->remove_mode = FALSE;
 	set_help_label (theme_selector, TRUE);
 	
-	/* change the add button label */
-	nautilus_label_set_text (NAUTILUS_LABEL(theme_selector->details->add_button_label),
-	_("Add New Theme"));
+	/* change the add button label back to it's normal state */
+	nautilus_label_set_text (NAUTILUS_LABEL(theme_selector->details->add_button_label), _("Add New Theme"));
 	
 	populate_list_with_themes (theme_selector);	
 }
@@ -579,11 +579,11 @@ theme_select_row_callback (GtkCList * clist, int row, int column, GdkEventButton
 		current_theme = nautilus_theme_get_theme();	
 		
 		if (nautilus_strcmp (theme_name, current_theme) == 0) {
+			g_free (current_theme);
 			exit_remove_mode (theme_selector);
 			nautilus_error_dialog (_("Sorry, but you can't remove the current theme.  Please change to another theme before removing this one"),
 				       _("Can't delete current theme"),
 				       GTK_WINDOW (theme_selector));
-			g_free (current_theme);
 			theme_selector->details->handling_theme_change = FALSE;	
 			
 			return;
@@ -605,7 +605,10 @@ theme_select_row_callback (GtkCList * clist, int row, int column, GdkEventButton
 		
 		gnome_vfs_uri_unref (theme_uri);
 		
-		if (result != GNOME_VFS_OK) {
+		/* for some reason, gnome-vfs is returning GNOME_VFS_ERROR_NOT_FOUND after successfully deleting the directory;
+		   we'll work around it by explicitly allowing that error, but we should fix gnome-vfs soon */
+		   
+		if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_NOT_FOUND) {
 			nautilus_error_dialog (_("Sorry, but that theme could not be removed!"), 
 					       _("Couldn't remove theme"), GTK_WINDOW (theme_selector));
 		
@@ -614,7 +617,6 @@ theme_select_row_callback (GtkCList * clist, int row, int column, GdkEventButton
 		g_free (user_directory);
 		g_free (themes_directory);
 		g_free (this_theme_directory);
-		g_free (theme_uri);
 		
 		/* exit remove mode */
 		exit_remove_mode (theme_selector);
@@ -884,7 +886,7 @@ populate_list_with_themes (NautilusThemeSelector *theme_selector)
 	if (selected_index >= 0) {
 		theme_selector->details->selected_row = selected_index;
 		gtk_clist_select_row (GTK_CLIST(theme_selector->details->theme_list), selected_index, 0);
-		gtk_clist_moveto (GTK_CLIST(theme_selector->details->theme_list), selected_index, 0, 0.0, 0.0);		
+		/* gtk_clist_moveto (GTK_CLIST(theme_selector->details->theme_list), selected_index, 0, 0.0, 0.0); */		
 	}
 	theme_selector->details->populating_theme_list = FALSE;
 }
