@@ -1,3 +1,20 @@
+2002-11-08  James Willcox  <jwillcox@gnome.org>
+
+	* components/image_properties/nautilus-image-properties-view.c:
+	(get_property), (set_property),
+	(nautilus_image_properties_view_init):
+	* components/image_properties/nautilus-image-properties-view.h:
+	* components/notes/nautilus-notes.c: (set_bonobo_properties),
+	(make_notes_view):
+	* libnautilus-private/nautilus-mime-actions.c:
+	(nautilus_mime_get_property_components_for_file):
+	* libnautilus-private/nautilus-mime-actions.h:
+	* src/file-manager/fm-properties-window.c:
+	(bonobo_page_activate_callback), (append_bonobo_pages):
+
+	Make bonobo property pages regular controls instead of NautilusViews.
+
+
 2002-11-07  James Willcox  <jwillcox@gnome.org>
 
 	* libnautilus-private/nautilus-mime-actions.c:

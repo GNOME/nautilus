@@ -35,12 +35,12 @@
 typedef struct NautilusImagePropertiesViewDetails NautilusImagePropertiesViewDetails;
 
 typedef struct {
-	NautilusView parent;
+	BonoboControl parent;
 	NautilusImagePropertiesViewDetails *details;
 } NautilusImagePropertiesView;
 
 typedef struct {
-	NautilusViewClass parent;
+	BonoboControlClass parent;
 } NautilusImagePropertiesViewClass;
 
 GType nautilus_image_properties_view_get_type (void);

@@ -44,8 +44,9 @@ struct NautilusImagePropertiesViewDetails {
 	char buffer[LOAD_BUFFER_SIZE];
 };
 
-BONOBO_CLASS_BOILERPLATE (NautilusImagePropertiesView, nautilus_image_properties_view,
-			  NautilusView, NAUTILUS_TYPE_VIEW)
+enum {
+	PROP_URI,
+};
 
 static void
 nautilus_image_properties_view_finalize (GObject *object)
@@ -194,23 +195,31 @@ load_location (NautilusImagePropertiesView *view,
 }
 
 static void
-image_load_location_callback (NautilusView *nautilus_view, 
-			      const char *location,
-			      gpointer user_data)
+get_property (BonoboPropertyBag *bag,
+	      BonoboArg         *arg,
+	      guint              arg_id,
+	      CORBA_Environment *ev,
+	      gpointer           user_data)
 {
-	NautilusImagePropertiesView *view;
-	
-	g_assert (NAUTILUS_IS_VIEW (nautilus_view));
-	g_assert (location != NULL);
-	
-	view = NAUTILUS_IMAGE_PROPERTIES_VIEW (nautilus_view);
-	
-	nautilus_view_report_load_underway (nautilus_view);
-	
-	/* Do the actual load. */
-	load_location (view, location);
-	
-	nautilus_view_report_load_complete (nautilus_view);
+	NautilusImagePropertiesView *view = user_data;
+
+	if (arg_id == PROP_URI) {
+		BONOBO_ARG_SET_STRING (arg, view->details->location);
+	}
+}
+
+static void
+set_property (BonoboPropertyBag *bag,
+	      const BonoboArg   *arg,
+	      guint              arg_id,
+	      CORBA_Environment *ev,
+	      gpointer           user_data)
+{
+	NautilusImagePropertiesView *view = user_data;
+
+	if (arg_id == PROP_URI) {
+		load_location (view, BONOBO_ARG_GET_STRING (arg));
+	}
 }
 
 static void
@@ -220,8 +229,10 @@ nautilus_image_properties_view_class_init (NautilusImagePropertiesViewClass *cla
 }
 
 static void
-nautilus_image_properties_view_instance_init (NautilusImagePropertiesView *view)
+nautilus_image_properties_view_init (NautilusImagePropertiesView *view)
 {
+	BonoboPropertyBag *pb;
+
 	view->details = g_new0 (NautilusImagePropertiesViewDetails, 1);
 
 	view->details->vbox = gtk_vbox_new (FALSE, 2);
@@ -233,9 +244,15 @@ nautilus_image_properties_view_instance_init (NautilusImagePropertiesView *view)
 	
 	gtk_widget_show_all (view->details->vbox);
 	
-	nautilus_view_construct (NAUTILUS_VIEW (view), view->details->vbox);
-	
-	g_signal_connect (view, "load_location",
-			  G_CALLBACK (image_load_location_callback), NULL);
+	bonobo_control_construct (BONOBO_CONTROL (view), view->details->vbox);
 
+	pb = bonobo_property_bag_new (get_property, set_property,
+				      view);
+	bonobo_property_bag_add (pb, "URI", 0, BONOBO_ARG_STRING,
+				 NULL, _("URI currently displayed"), 0);
+	bonobo_control_set_properties (BONOBO_CONTROL (view),
+				       BONOBO_OBJREF (pb), NULL);
+	bonobo_object_release_unref (BONOBO_OBJREF (pb), NULL);
 }
+
+BONOBO_TYPE_FUNC (NautilusImagePropertiesView, BONOBO_TYPE_CONTROL, nautilus_image_properties_view);

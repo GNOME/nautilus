@@ -2206,22 +2206,31 @@ bonobo_page_activate_callback (CORBA_Object obj,
 
 	if (obj != CORBA_OBJECT_NIL) {
 		Bonobo_Control control;
-		Nautilus_View view;
+		Bonobo_PropertyBag pb;
+		BonoboArg *arg;
 		char *uri;
 		
+		uri = nautilus_file_get_uri (window->details->target_file);
+
 		control = Bonobo_Unknown_queryInterface
 				(obj, "IDL:Bonobo/Control:1.0", &ev);
 
-		view = Bonobo_Unknown_queryInterface
-				(control, "IDL:Nautilus/View:1.0", &ev);
 
-		uri = nautilus_file_get_uri (window->details->target_file);
+		pb = Bonobo_Control_getProperties (control, &ev);
 
-		Nautilus_View_load_location (view, uri, &ev);
-		
 		if (!BONOBO_EX (&ev)) {
-			widget = bonobo_widget_new_control_from_objref
-						(control, CORBA_OBJECT_NIL);
+			arg = bonobo_arg_new (BONOBO_ARG_STRING);
+			BONOBO_ARG_SET_STRING (arg, uri);
+
+			bonobo_pbclient_set_value_async (pb, "URI", arg, &ev);
+			bonobo_arg_release (arg);
+			bonobo_object_release_unref (pb, NULL);
+
+			if (!BONOBO_EX (&ev)) {
+				widget = bonobo_widget_new_control_from_objref
+							(control, CORBA_OBJECT_NIL);
+				bonobo_object_release_unref (control, &ev);
+			}
 		}
 
 		g_free (uri);
@@ -2245,10 +2254,9 @@ append_bonobo_pages (FMPropertiesWindow *window)
 	GList *components, *l;
 	CORBA_Environment ev;
 
-	/* find all the property page views for this file */
-	components = nautilus_mime_get_all_components_for_file_extended
-		(window->details->target_file,
-		 "nautilus:property_page_name.defined()");
+	/* find all the property pages for this file */
+	components = nautilus_mime_get_property_components_for_file
+					(window->details->target_file);
 	
 	CORBA_exception_init (&ev);
 

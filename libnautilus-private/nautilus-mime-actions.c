@@ -842,6 +842,44 @@ nautilus_mime_get_popup_components_for_file (NautilusFile *file)
 	return info_list;
 }
 
+GList *
+nautilus_mime_get_property_components_for_file (NautilusFile *file)
+{
+        char *mime_type;
+        char *uri_scheme;
+        char *extra_reqs;
+        GList *item_mime_types;
+        GList *info_list;
+
+        if (!nautilus_mime_actions_check_if_minimum_attributes_ready (file)) {
+                return NULL;
+        }
+
+        uri_scheme = nautilus_file_get_uri_scheme (file);
+
+        mime_type = nautilus_file_get_mime_type (file);
+
+        if (!nautilus_mime_actions_check_if_full_attributes_ready (file) ||
+            !nautilus_file_get_directory_item_mime_types (file, &item_mime_types
+)) {
+                item_mime_types = NULL;
+        }
+
+        extra_reqs = "repo_ids.has ('IDL:Bonobo/Control:1.0') AND nautilus:property_page_name.defined()";
+
+        info_list = nautilus_do_component_query (mime_type, uri_scheme,
+                                                 item_mime_types, FALSE,
+                                                 NULL, NULL,
+                                                 extra_reqs, FALSE);
+
+        eel_g_list_free_deep (item_mime_types);
+
+        g_free (uri_scheme);
+        g_free (mime_type);
+
+        return info_list;
+}     
+
 static gboolean
 has_server_info_in_list (GList *list, Bonobo_ServerInfo *info)
 {

@@ -37,6 +37,7 @@
 #include <gtk/gtktextbuffer.h>
 #include <gtk/gtktextview.h>
 #include <gtk/gtkvbox.h>
+#include <gtk/gtkscrolledwindow.h>
 #include <bonobo/bonobo-property-bag.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file.h>
@@ -58,6 +59,7 @@
 /* property bag getting and setting routines */
 enum {
 	TAB_IMAGE,
+	NOTES_URI,
 };
 
 typedef struct {
@@ -75,6 +77,9 @@ static void  notes_save_metainfo         (Notes      *notes);
 static char *notes_get_indicator_image   (const char *notes_text);
 static void  notify_listeners_if_changed (Notes      *notes,
                                           char       *new_notes);
+static void  notes_load_location         (NautilusView *view,
+					  const char *location,
+					  Notes *notes);
 
 static void
 get_bonobo_properties (BonoboPropertyBag *bag,
@@ -111,7 +116,11 @@ set_bonobo_properties (BonoboPropertyBag *bag,
 			CORBA_Environment *ev,
 			gpointer callback_data)
 {
-	g_warning ("Can't set note property %u", arg_id);
+	if (arg_id == NOTES_URI) {
+		notes_load_location (NULL,
+				     BONOBO_ARG_GET_STRING (arg),
+				     (Notes *)callback_data);
+	}
 }
 
 static gboolean
@@ -353,7 +362,7 @@ notes_get_indicator_image (const char *notes_text)
 static BonoboObject *
 make_notes_view ()
 {
-        GtkWidget *vbox;
+        GtkWidget *vbox, *scroll;
         Notes *notes;
         notes = g_new0 (Notes, 1);
         notes->uri = g_strdup ("");
@@ -373,7 +382,14 @@ make_notes_view ()
 	gtk_text_view_set_editable (GTK_TEXT_VIEW (notes->note_text_field), TRUE);	
         gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (notes->note_text_field),
                                      GTK_WRAP_WORD);
-        gtk_box_pack_start (GTK_BOX (vbox), notes->note_text_field, TRUE, TRUE, 0);
+	scroll = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll),
+					GTK_POLICY_NEVER,
+					GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scroll),
+				      GTK_SHADOW_IN);
+	gtk_container_add (GTK_CONTAINER (scroll), notes->note_text_field);
+        gtk_box_pack_start (GTK_BOX (vbox), scroll, TRUE, TRUE, 0);
 
 	g_signal_connect (notes->note_text_field, "focus_out_event",
                           G_CALLBACK (on_text_field_focus_out_event), notes);
@@ -391,6 +407,9 @@ make_notes_view ()
 	bonobo_control_set_properties (nautilus_view_get_bonobo_control (notes->view), BONOBO_OBJREF (notes->property_bag), NULL);
 	bonobo_property_bag_add (notes->property_bag, "tab_image", TAB_IMAGE, BONOBO_ARG_STRING, NULL,
 				 "image indicating that a note is present", 0);
+	bonobo_property_bag_add (notes->property_bag, "URI",
+				 NOTES_URI, BONOBO_ARG_STRING,
+				 NULL, "URI of selected file", 0);
         /* handle events */
         g_signal_connect (notes->view, "load_location",
                           G_CALLBACK (notes_load_location), notes);
