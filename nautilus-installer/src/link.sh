@@ -58,10 +58,12 @@ RPM_MAJOR=`echo $RPM_VERSION | sed -e 's/\([0-9]\).*/\1/'`;
 if test "x$RPM_MAJOR" = "x3"; then
     echo "* RedHat 6.x build (RPM 3)"
     export PACKAGE_SYSTEM_OBJECT=eazel-package-system-rpm3.o
+    skipstep=22
 else
     if test "x$RPM_MAJOR" = "x4"; then
         echo "* RedHat 7.x build (RPM 4)"
-        export PACKAGE_SYSTEM_OBJECT=eazel-package-system-rpm4.o
+        export PACKAGE_SYSTEM_OBJECT="eazel-package-system-rpm3.o eazel-package-system-rpm4.o"
+        skipstep=26
     else
         echo "* RPM version $RPM_VERSION not supported (only 3 or 4)."
         exit 0
@@ -110,19 +112,7 @@ if test "x$FULL" = "xyes"; then
 fi
 
 make clean && \
-make CFLAGS="$OG_FLAG $WARN_FLAG -DBUILD_DATE=\\\"${BUILD_DATE}\\\" -DRPM_MAJOR=${RPM_MAJOR}" LDFLAGS="-static" && \
-gcc -static $OG_FLAG $WARN_FLAG -o eazel-installer \
-main.o callbacks.o installer.o proxy.o package-tree.o gtk-hackery.o			\
-../../components/services/install/lib/libeazelinstall_minimal.a 			\
-../../components/services/trilobite/libtrilobite/libtrilobite_minimal.a 		\
-../../libnautilus-extensions/nautilus-druid.o						\
-../../libnautilus-extensions/nautilus-druid-page-eazel.o				\
--L$GNOME/lib -lgnomecanvaspixbuf -lgdk_pixbuf 						\
--lgnomeui -lgnome -lart_lgpl 								\
--lgtk -lgdk -lgmodule -lglib -lgdk_imlib 						\
-$XLIBS \
--lghttp											\
--L/usr/lib -lrpm -lbz2 -lz -ldb1 -lpopt -lxml
+make CFLAGS="$OG_FLAG $WARN_FLAG -DBUILD_DATE=\\\"${BUILD_DATE}\\\" -DRPM_MAJOR=${RPM_MAJOR}"
 
 if test $? -ne 0; then
     echo "* Aborting."
@@ -141,11 +131,13 @@ gzexe eazel-installer
 echo "* Patching..."
 chmod 644 eazel-installer
 mv eazel-installer hest
-extraskip=`expr 22 + \`wc -l prescript|awk '{printf $1"\n"}'\``
+extraskip=`expr $skipstep + \`wc -l prescript|awk '{printf $1"\n"}'\``
 echo "#!/bin/sh" > eazel-installer.sh
 echo "skip=$extraskip" >> eazel-installer.sh
 cat prescript >> eazel-installer.sh
-tail +3 hest >> eazel-installer.sh
+# have to overcome the 'set -C' crap in RH7's gzexe :(
+# (it causes the uncompress to fail because mktemp already created the file)
+tail +3 hest | sed -e 's/set -C//' >> eazel-installer.sh
 rm hest
 
 if test "$1" = "push" -a $? = 0; then

@@ -85,12 +85,12 @@ void
 druid_cancel (GnomeDruid      *gnomedruid,
 	      EazelInstaller  *installer)
 {
-	if (installer != NULL) {
-		gtk_object_unref (GTK_OBJECT (installer));
-	}
 	g_mem_profile ();
-	if (ask_are_you_sure (installer)) {
-		exit (1);
+	if (installer != NULL) {
+		if (ask_are_you_sure (installer)) {
+			gtk_object_unref (GTK_OBJECT (installer));
+			exit (1);
+		}
 	}
 }
 
@@ -181,13 +181,14 @@ druid_finish (GnomeDruidPage  *gnomedruidpage,
 	      EazelInstaller  *installer)
 {
 	g_message ("Farewell!");
-	if (installer->downloaded_anything) {
-		ask_to_delete_rpms (installer);
-	}
 
 	if (installer != NULL) {
+		if (installer->downloaded_anything) {
+			ask_to_delete_rpms (installer);
+		}
 		gtk_object_unref (GTK_OBJECT (installer));
 	}
+
 	g_mem_profile ();
 	exit (0);
 }

@@ -379,6 +379,7 @@ dnl ====================================
 if test "x$EAZEL_SERVICES_ENABLED" = "xyes" ;
 then
 	rpm_libs=
+	rpm_xlibs=
 	have_rpm=no
 	AC_CHECK_LIB(bz2, bzread, [rpm_libs=-lbz2])
 	dnl <= Check for bzip2 > 1.0.0
@@ -406,9 +407,9 @@ then
 		  AC_CHECK_LIB(db, dbopen, [rpm_libs="$rpm_libs -ldb"],
 		    AC_MSG_ERROR([sorry rpm requires a db-1.85 API]))))))
 	               )
-	AC_CHECK_LIB(rpmio, Fdopen, [rpm_libs="$rpm_libs -lrpmio"],[],$rpm_libs)
+	AC_CHECK_LIB(rpmio, Fdopen, [rpm_xlibs="-lrpmio"],[rpm_xlibs=""],$rpm_libs)
 	AC_CHECK_LIB(rpm, rpmRunTransactions,[have_rpm=yes],
-	  [have_rpm=no], $rpm_libs)
+	  [have_rpm=no], [$rpm_libs $rpm_xlibs])
 	if test "x$have_rpm" = "xyes" ; then
 	  dnl FIXME
 	  dnl Ideally I should check for rpm and where it is
@@ -440,7 +441,7 @@ then
 	  if test "x$_found_valid_rpm" = "xyes"; then
 		AC_MSG_RESULT([found $RPM_VERSION, yes])
 		AC_DEFINE(HAVE_RPM)  	
-	  	RPM_LIBS="-lrpm -lz $rpm_libs"
+	  	RPM_LIBS="-lrpm -lz $rpm_xlibs $rpm_libs"
 		AC_SUBST(RPM_VERSION)
 		build_rpmview=yes
 		rpmversion="$RPM_VERSION"
@@ -791,6 +792,7 @@ libnautilus-adapter/Makefile
 libnautilus-extensions/Makefile
 src/Makefile
 src/file-manager/Makefile
+nautilus-installer/src/Makefile
 components/Makefile
 components/adapter/Makefile
 components/hardware/Makefile

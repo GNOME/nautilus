@@ -28,7 +28,7 @@ eazel_installer_SOURCES = \
 	proxy.c proxy.h \
 	installer.c installer.h 
 
-eazel_installer_LDFLAGS = -static
+eazel_installer_LDFLAGS = -all-static
 
 eazel_installer_LDADD = 	\
         $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 	\
@@ -36,22 +36,21 @@ eazel_installer_LDADD = 	\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite_minimal.a		\
 	$(top_builddir)/libnautilus-extensions/nautilus-druid.o						\
 	$(top_builddir)/libnautilus-extensions/nautilus-druid-page-eazel.o				\
-	-L/gnome/lib \
-	-lgdk_pixbuf	\
-	-lgnomecanvaspixbuf \
-	-lgnomeui \
-	-lgnome \
-	-lart_lgpl \
-	-lgdk_imlib \
-	-lgtk \
-	-lgdk \
-	-lgmodule \
-	-lglib \
-	-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE \
-	-lghttp \
-	-L/usr/lib -lrpm -lz -ldb1 \
-	-lpopt \
-	-lxml 
+	$(RPM_LIBS) \
+	$(GNOMECANVASPIXBUF_LIBS) \
+	$(GNOMEUI_LIBS) \
+	$(GDK_PIXBUF_LIBS) \
+	$(GHTTP_LIBS) \
+	$(XML_LIBS)
+
+#	$(GNOME_LIBS) \
+#	$(GTK_LIBS) \
+#	$(GLIB_LIBS) \
+#	$(GDK_PIXBUF_LIBS) \
+#	-lpopt \
+#	-lart_lgpl \
+#	-lgdk_imlib \
+#	-lgmodule \
 
 #
 #	/usr/lib/libesd.a \

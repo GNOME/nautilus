@@ -1703,9 +1703,11 @@ eazel_installer_finalize (GtkObject *object)
 	}
 	g_list_foreach (installer->categories, (GFunc)categorydata_destroy_foreach, NULL);
 	g_list_free (installer->categories);
+#if 0
 	if (installer->service != NULL) {
 		gtk_object_unref (GTK_OBJECT (installer->service));
 	}
+#endif
 	if (installer->problem != NULL) {
 		gtk_object_unref (GTK_OBJECT (installer->problem));
 	}
