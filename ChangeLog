@@ -1,9 +1,23 @@
 2001-01-19  John Sullivan  <sullivan@eazel.com>
 
+	reviewed by: <delete if not using a buddy>
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_visibility):
+
+2001-01-19  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_defaults):
+
+2001-01-19  John Sullivan  <sullivan@eazel.com>
+
 	reviewed by: Darin Adler  <darin@eazel.com>
 
 	Fixed bug 5807 (view switches to manual layout only after
-	hitting Refresh), and other metadata-related problems.
+	hitting Refresh), and other metadata-reading-related problems.
 
 	This was a long-standing race condition exposed by recent 
 	timing changes. The directory view was waiting for its

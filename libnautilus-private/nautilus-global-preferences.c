@@ -359,6 +359,9 @@ global_preferences_install_visibility (void)
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
 						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
 
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
+						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
 						     NAUTILUS_USER_LEVEL_HACKER);
 
