@@ -123,7 +123,8 @@ vfs_truncate (BonoboStream *stream,
 	     const CORBA_long new_size, 
 	     CORBA_Environment *ev)
 {
-	g_warning ("vfs_truncate NYI");
+	BonoboStreamVFS *sfs = BONOBO_STREAM_VFS (stream);
+	gnome_vfs_truncate_handle(sfs->fd, new_size);
 }
 
 static void
