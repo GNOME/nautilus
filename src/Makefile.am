@@ -6,6 +6,7 @@ INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(BONOBO_CFLAGS) $(GNORBA_CFLAGS) \
 	$(GNOMEUI_CFLAGS) $(GDK_PIXBUF_CFLAGS) \
 	$(VFS_CFLAGS) \
+	$(XML_CFLAGS) \
 	-DVERSION="\"$(VERSION)\"" \
 	$(WERROR)
 
@@ -15,7 +16,8 @@ LDADD=	file-manager/libntl-file-manager.la \
 	$(GNORBA_LIBS) \
 	$(GNOMEUI_LIBS) \
 	$(GDK_PIXBUF_LIBS) \
-	$(VFS_LIBS)
+	$(VFS_LIBS) \
+	$(XML_LIBS)
 
 nautilus_SOURCES=			\
 	nautilus-bookmark.h		\

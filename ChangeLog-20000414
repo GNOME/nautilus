@@ -1,5 +1,12 @@
 1999-12-30  John Sullivan  <sullivan@eazel.com>
 
+	Linked in GNOME-XML library, since I'll need it for bookmarks.
+
+	* configure.in: defined XML-related macros (copied from gconf)
+	* src/Makefile.am: included $(XML_CFLAGS) and $(XML_LIBS)
+
+1999-12-30  John Sullivan  <sullivan@eazel.com>
+
 	The bookmark-editing window is now functional, though simple.
 	It allows editing names & uris, reordering bookmarks via
 	dragging in the list, and removing bookmarks. Coming next:
