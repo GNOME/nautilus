@@ -41,6 +41,7 @@
 #include "nautilus-link.h"
 #include "nautilus-metadata.h"
 #include "nautilus-scalable-font.h"
+#include "nautilus-smooth-text-layout.h"
 #include "nautilus-string.h"
 #include "nautilus-theme.h"
 #include "nautilus-thumbnails.h"
@@ -127,19 +128,9 @@ static const char *icon_file_name_suffixes[] =
 /* Maximum size for either dimension at the standard zoom level. */
 #define MAXIMUM_ICON_SIZE                96
 
-/* FIXME bugzilla.eazel.com 1102: Embedded text should use preferences
- * to determine what font it uses instead of this set of constants.
- */
-/* Note to localizers: this font is used for text embedded in file icons */
-static const char untranslated_embedded_text_font_family[] = N_("helvetica");
-/* Note to localizers: this font is used for text embedded in file icons */
-static const char untranslated_embedded_text_font_weight[] = N_("medium");
-#define EMBEDDED_TEXT_FONT_FAMILY       _(untranslated_embedded_text_font_family)
-#define EMBEDDED_TEXT_FONT_WEIGHT       _(untranslated_embedded_text_font_weight)
-#define EMBEDDED_TEXT_FONT_SLANT        NULL
-#define EMBEDDED_TEXT_FONT_SET_WIDTH    NULL
+/* Embedded text font size and text line settings */
 #define EMBEDDED_TEXT_FONT_SIZE         9
-#define EMBEDDED_TEXT_LINE_OFFSET       1
+#define EMBEDDED_TEXT_LINE_SPACING      1
 #define EMBEDDED_TEXT_EMPTY_LINE_HEIGHT 4
 
 #define MINIMUM_EMBEDDED_TEXT_RECT_WIDTH	20
@@ -2385,6 +2376,7 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 	    const char *text)
 {
 	NautilusScalableFont *smooth_font;
+	NautilusSmoothTextLayout *smooth_text_layout;
 	GdkPixbuf *pixbuf_with_text;
 	
 	g_return_val_if_fail (pixbuf_without_text != NULL, NULL);
@@ -2396,9 +2388,7 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 	if (!embedded_text_rect_usable (embedded_text_rect) || nautilus_strlen (text) == 0) {
 		return NULL;
 	}
-		
-	pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
-	
+
 	/* FIXME bugzilla.eazel.com 1102: Embedded text should use preferences to determine
 	 * the font it uses
 	 */
@@ -2408,25 +2398,31 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 	 * a questionable improvement since at that tiny font size, anti aliased fonts
 	 * probably give a better preview of the content than non anti-aliased fonts.
 	 */
-	smooth_font = nautilus_scalable_font_new (EMBEDDED_TEXT_FONT_FAMILY,
-						  EMBEDDED_TEXT_FONT_WEIGHT,
-						  EMBEDDED_TEXT_FONT_SLANT,
-						  EMBEDDED_TEXT_FONT_SET_WIDTH);
+	smooth_font = nautilus_scalable_font_get_default_font ();
+	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (smooth_font), NULL);
 	
-	nautilus_scalable_font_draw_text_lines
-		(smooth_font,
-		 pixbuf_with_text,
-		 embedded_text_rect->x0,
-		 embedded_text_rect->y0,
-		 embedded_text_rect,
-		 EMBEDDED_TEXT_FONT_SIZE,
-		 text,
-		 GTK_JUSTIFY_LEFT,
-		 EMBEDDED_TEXT_LINE_OFFSET,
-		 EMBEDDED_TEXT_EMPTY_LINE_HEIGHT,
-		 NAUTILUS_RGB_COLOR_BLACK,
-		 NAUTILUS_OPACITY_FULLY_OPAQUE);
+	smooth_text_layout = nautilus_smooth_text_layout_new (text,
+							      nautilus_strlen (text),
+							      smooth_font,
+							      EMBEDDED_TEXT_FONT_SIZE,
+							      FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_SMOOTH_TEXT_LAYOUT (smooth_text_layout), NULL);
+	nautilus_smooth_text_layout_set_line_spacing (smooth_text_layout, EMBEDDED_TEXT_LINE_SPACING);
+	nautilus_smooth_text_layout_set_empty_line_height (smooth_text_layout, EMBEDDED_TEXT_EMPTY_LINE_HEIGHT);
 	
+	pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
+	
+	nautilus_smooth_text_layout_draw_to_pixbuf (smooth_text_layout,
+						    pixbuf_with_text,
+						    0,
+						    0,
+						    embedded_text_rect,
+						    GTK_JUSTIFY_LEFT,
+						    FALSE,
+						    NAUTILUS_RGB_COLOR_BLACK,
+						    NAUTILUS_OPACITY_FULLY_OPAQUE);
+	
+	gtk_object_unref (GTK_OBJECT (smooth_text_layout));
 	gtk_object_unref (GTK_OBJECT (smooth_font));
 
 	return pixbuf_with_text;
