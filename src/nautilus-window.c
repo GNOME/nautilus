@@ -506,9 +506,6 @@ nautilus_window_destroy (GtkObject *object)
 	if (window->status_bar_clear_id != 0) {
 		g_source_remove (window->status_bar_clear_id);
 	}
-	if (window->action_tag != 0) {
-		g_source_remove (window->action_tag);
-	}
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (GTK_OBJECT (window)));
 
@@ -1574,8 +1571,6 @@ window_update_sidebar_panels_from_preferences (NautilusWindow *window)
 		if (sidebar_panel != NULL) {
 			nautilus_window_disconnect_view	(window, sidebar_panel);
 			nautilus_window_remove_sidebar_panel (window, sidebar_panel);
-
-			gtk_widget_unref (GTK_WIDGET (sidebar_panel));
 		}
 	}
 

@@ -991,41 +991,18 @@ fm_directory_view_destroy (GtkObject *object)
 	 */
 	view->details->nautilus_view = NULL;
 
+	nautilus_file_list_free (view->details->pending_files_added);
+	view->details->pending_files_added = NULL;
+	nautilus_file_list_free (view->details->pending_files_changed);
+	view->details->pending_files_changed = NULL;
+	nautilus_g_list_free_deep (view->details->pending_uris_selected);
+	view->details->pending_uris_selected = NULL;
+
 	fm_directory_view_stop (view);
 	fm_directory_view_clear (view);
 
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-					      show_hidden_files_changed_callback,
-					      view);
-	
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_CAPTIONS,
-					      text_attribute_names_changed_callback,
-					      view);
-
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
-					      embedded_text_policy_changed_callback,
-					      view);
-
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
-					      image_display_policy_changed_callback,
-					      view);
-
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
-					      directory_view_font_family_changed_callback,
-					      view);
-
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					      click_policy_changed_callback,
-					      view);
-	
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-					      smooth_graphics_mode_changed_callback,
-					      view);
-
-	if (view->details->model != NULL) {
-		disconnect_model_handlers (view);
-		nautilus_directory_unref (view->details->model);
-	}
+	disconnect_model_handlers (view);
+	nautilus_directory_unref (view->details->model);
 
 	if (view->details->display_selection_idle_id != 0) {
 		gtk_idle_remove (view->details->display_selection_idle_id);
@@ -1035,7 +1012,27 @@ fm_directory_view_destroy (GtkObject *object)
 		gtk_idle_remove (view->details->update_menus_idle_id);
 	}
 
-	unschedule_display_of_pending_files (view);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+					      show_hidden_files_changed_callback,
+					      view);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_CAPTIONS,
+					      text_attribute_names_changed_callback,
+					      view);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
+					      embedded_text_policy_changed_callback,
+					      view);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
+					      image_display_policy_changed_callback,
+					      view);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
+					      directory_view_font_family_changed_callback,
+					      view);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
+					      click_policy_changed_callback,
+					      view);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
+					      smooth_graphics_mode_changed_callback,
+					      view);
 
 	g_free (view->details);
 

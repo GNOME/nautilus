@@ -1,3 +1,47 @@
+2000-09-14  Darin Adler  <darin@eazel.com>
+
+	To get started on a bug, I dismantled part of the state machine,
+	which we can replace with something much simpler. Just doing this
+	change seems to have fixed the bug I was going to tackle.
+
+	Fixes bug 2170 (hitting the "up" button a lot of times in a row
+	causes crash).
+
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_self_check_file_utilities): Quick tweak to these tests.
+	We need more thorough tests of nautilus_make_uri_from_input.
+	
+	* libnautilus-extensions/nautilus-search-bar-criterion-private.h:
+	Removed this long-obsolete file. There's another copy in the src
+	directory that's the "real" one.
+	
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_destroy): Fixed a problem I was seeing
+	switching out of the list view by emptying the "pending" lists so
+	doing the stop as part of destroy will not add items to the view
+	before destroying it.
+	
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_free_load_info): Got rid of "action_tag",
+	"made_changes", and "state".
+	(nautilus_window_update_state): Turned "made_changes" into a local
+	variable. Got rid of code setting "state" since nothing looked at
+	it. Got rid of code that sets up an idle.
+	(nautilus_window_set_state_info): Eliminated "do_sync" and made
+	the function always keep running update_state until it's done
+	instead of using an idle.
+	(nautilus_window_end_location_change_callback): Got rid of FIXME
+	since I now understand why gtk_object_destroy is OK for windows.
+	
+	* src/nautilus-window.h: Eliminated "action_tag", "made_changes",
+	and "state".
+	
+	* src/nautilus-window.c: (nautilus_window_destroy): No need to
+	deal with "action_tag" any more.
+	(window_update_sidebar_panels_from_preferences): Remove excess
+	unref that's not needed now that we have more careful handling of
+	sidebar references.
+
 2000-09-14  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3072 (crash right-clicking in icon view background)

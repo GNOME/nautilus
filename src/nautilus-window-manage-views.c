@@ -24,12 +24,6 @@
  *           John Sullivan <sullivan@eazel.com>
  */
 
-/* Main operations needed:
- *   Initiate location change
- *   Initiate content view change
- *   Cancel action
- */
-
 #include <config.h>
 #include "nautilus-window-manage-views.h"
 
@@ -646,12 +640,6 @@ nautilus_window_free_load_info (NautilusWindow *window)
         window->new_sidebar_panels = NULL;
         window->new_content_view = NULL;
         window->cancel_tag = NULL;
-        if (window->action_tag != 0) {
-		g_source_remove (window->action_tag);
-	        window->action_tag = 0;
-        }
-        window->made_changes = 0;
-        window->state = NW_IDLE;
         window->changes_pending = FALSE;
         window->views_shown = FALSE;
         window->view_bombed_out = FALSE;
@@ -953,29 +941,29 @@ nautilus_window_update_state (gpointer data)
 {
         NautilusWindow *window;
         GList *p;
-        gboolean result;
+        gboolean made_changes;
         GList *sidebar_panel_identifiers;
 	
         window = data;
 
         if (window->making_changes) {
-                x_message (("In the middle of making changes %d (action_tag %d) - RETURNING",
-                            window->making_changes, window->action_tag));
+                x_message (("In the middle of making changes %d - RETURNING",
+                            window->making_changes));
                 return FALSE;
         }
         
-        window->made_changes = 0;
+        made_changes = FALSE;
         window->making_changes++;
         
 #ifdef EXTREME_DEBUGGING
-        g_message(">>> nautilus_window_update_state (action tag is %d):", window->action_tag);
-        g_print("made_changes %d, making_changes %d\n", window->made_changes, window->making_changes);
-        g_print("changes_pending %d, location_change_type %d, views_shown %d, view_bombed_out %d, view_activation_complete %d\n",
-                window->changes_pending, window->location_change_type, window->views_shown,
-                window->view_bombed_out, window->view_activation_complete);
-        g_print("sent_update_view %d, cv_progress_initial %d, cv_progress_done %d, cv_progress_error %d, reset_to_idle %d\n",
-                window->sent_update_view, window->cv_progress_initial, window->cv_progress_done, window->cv_progress_error,
-                window->reset_to_idle);
+        g_message (">>> nautilus_window_update_state:");
+        g_print ("making_changes %d\n", window->making_changes);
+        g_print ("changes_pending %d, location_change_type %d, views_shown %d, view_bombed_out %d, view_activation_complete %d\n",
+                 window->changes_pending, window->location_change_type, window->views_shown,
+                 window->view_bombed_out, window->view_activation_complete);
+        g_print ("sent_update_view %d, cv_progress_initial %d, cv_progress_done %d, cv_progress_error %d, reset_to_idle %d\n",
+                 window->sent_update_view, window->cv_progress_initial, window->cv_progress_done, window->cv_progress_error,
+                 window->reset_to_idle);
 #endif
         
         /* Now make any needed state changes based on available information */
@@ -984,7 +972,7 @@ nautilus_window_update_state (gpointer data)
                         NautilusViewFrame *error_view = p->data;
                         
                         if (error_view == window->new_content_view) {
-                                window->made_changes++;
+                                made_changes = TRUE;
                                 window->reset_to_idle = TRUE;
                                 window->cv_progress_error = TRUE;
                         }
@@ -996,7 +984,7 @@ nautilus_window_update_state (gpointer data)
                                 }
                                 report_content_view_failure_to_user (window);
                                 window->content_view = NULL;
-                                window->made_changes++;
+                                made_changes = TRUE;
                                 window->cv_progress_error = TRUE;
                         }
 
@@ -1021,7 +1009,7 @@ nautilus_window_update_state (gpointer data)
                 x_message (("Reset to idle!"));
                 
                 window->changes_pending = FALSE;
-                window->made_changes++;
+                made_changes = TRUE;
                 window->reset_to_idle = FALSE;
                 
                 if (window->cancel_tag != NULL) {
@@ -1061,8 +1049,6 @@ nautilus_window_update_state (gpointer data)
         }
         
         if (window->changes_pending) {
-                window->state = NW_LOADING_VIEWS;
-                
                 x_message (("Changes pending"));
                 
                 if (window->pending_ni
@@ -1094,7 +1080,7 @@ nautilus_window_update_state (gpointer data)
                         nautilus_view_identifier_list_free (sidebar_panel_identifiers);
                         
                         window->view_activation_complete = TRUE;
-                        window->made_changes++;
+                        made_changes = TRUE;
                 }
                 
                 if (window->view_activation_complete
@@ -1135,7 +1121,7 @@ nautilus_window_update_state (gpointer data)
                         window->pending_selection = NULL;
                         
                         window->sent_update_view = TRUE;
-                        window->made_changes++;
+                        made_changes = TRUE;
                 }
                 
                 if (!window->cv_progress_error
@@ -1145,7 +1131,7 @@ nautilus_window_update_state (gpointer data)
                         
                         nautilus_window_has_really_changed (window);
                         window->views_shown = TRUE;
-                        window->made_changes++;
+                        made_changes = TRUE;
                 }
                 
                 if (window->cv_progress_error
@@ -1153,31 +1139,17 @@ nautilus_window_update_state (gpointer data)
 
                         x_message (("cv_progress_(error|done) kicking in"));
 
-                        window->made_changes++;
+                        made_changes = TRUE;
                         window->reset_to_idle = TRUE;
                 }
         }
         
-        if (window->made_changes) {
-                if (!window->action_tag) {
-                        window->action_tag = g_idle_add_full (G_PRIORITY_LOW,
-                                                              nautilus_window_update_state,
-                                                              window, NULL);
-                }
-                
-                result = TRUE;
-                window->made_changes = 0;
-        } else {
-                result = FALSE;
-                window->action_tag = 0;
-        }
-        
         window->making_changes--;
         
-        x_message(("update_state done (new action tag is %d, making_changes is %d) <<<",
-                   window->action_tag, window->making_changes));
+        x_message(("update_state done (making_changes is %d) <<<",
+                   window->making_changes));
         
-        return result;
+        return made_changes;
 }
 
 void
@@ -1186,18 +1158,10 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
         va_list args;
         NautilusWindowStateItem item_type;
         NautilusViewFrame *new_view;
-        gboolean do_sync;
 
         /* Ensure that changes happen in-order */
-        if (window->made_changes != 0) {
-                if (window->action_tag != 0) {
-                        g_source_remove(window->action_tag);
-                        window->action_tag = 0;
-                }
-                nautilus_window_update_state(window);
+        while (nautilus_window_update_state (window)) {
         }
-        
-        do_sync = FALSE;
         
         va_start (args, window);
         
@@ -1260,7 +1224,6 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
                 case RESET_TO_IDLE: /* Someone pressed the stop button or something */
                         x_message (("RESET_TO_IDLE"));
                         window->reset_to_idle = TRUE;
-                        do_sync = TRUE;
                         break;
 
                 default:
@@ -1270,27 +1233,7 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
         
         va_end (args);
         
-        window->made_changes++;
-        if (!window->making_changes) {
-                if (do_sync) {
-                        if (window->action_tag != 0) {
-                                x_message (("Doing sync - action_tag was %d",
-                                            window->action_tag));
-                                g_source_remove (window->action_tag);
-                                window->action_tag = 0;
-                        }
-                        if (nautilus_window_update_state (window)) {
-                                do_sync = FALSE;
-                        }
-                }
-                
-                if (window->action_tag == 0 && !do_sync) {
-                        window->action_tag = g_idle_add_full (G_PRIORITY_LOW,
-                                                              nautilus_window_update_state,
-                                                              window, NULL);
-                        x_message (("Added callback to update_state - tag is %d",
-                                    window->action_tag));
-                }
+        while (nautilus_window_update_state (window)) {
         }
 }
 
@@ -1435,7 +1378,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                 	nautilus_main_event_loop_register (GTK_OBJECT (dialog));
 		}
 
-                /* FIXME bugzilla.eazel.com 2459: Is a destroy really sufficient here? Who does the unref? */
+                /* Since this is a window, destroying it will also unref it. */
                 gtk_object_destroy (GTK_OBJECT (window));
         } else {
                 /* Clean up state of already-showing window */

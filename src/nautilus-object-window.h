@@ -123,13 +123,10 @@ struct NautilusWindow {
   GList *new_sidebar_panels;
   GList *error_views;
 
-  enum { NW_LOADING_INFO, NW_LOADING_VIEWS, NW_IDLE } state;
-
   NautilusNavigationInfo *cancel_tag;
   gboolean location_change_end_reached;
 
-  guint action_tag;
-  guint16 made_changes, making_changes;
+  guint16 making_changes;
 
   NautilusLocationChangeType location_change_type;
   guint location_change_distance;

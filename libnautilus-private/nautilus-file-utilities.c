@@ -717,28 +717,19 @@ nautilus_read_file_cancel (NautilusReadFileHandle *handle)
 void
 nautilus_self_check_file_utilities (void)
 {
-	char *tmp;
-
-	/* check to make sure the current implementation doesn't cause problems     */
+	/* nautilus_make_uri_from_input */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (""), "");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://null.stanford.edu"), "http://null.stanford.edu");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://null.stanford.edu:80"), "http://null.stanford.edu:80");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://seth@null.stanford.edu:80"), "http://seth@null.stanford.edu:80");
         NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http://null.stanford.edu/some file"), "http://null.stanford.edu/some%20file");
-
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:///home/joe/some file"), "file:///home/joe/some%20file");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file://home/joe/some file"), "file://home/joe/some%20file");
-
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("foo://foobar.txt"), "foo://foobar.txt");
-
-	/* now we test input we just want to make sure doesn't crash the function */
-	tmp = nautilus_make_uri_from_input (":://:://:::::::::::::::::");
-	g_free (tmp);		
-	tmp = nautilus_make_uri_from_input ("file:::::////");
-	g_free (tmp);
-	tmp = nautilus_make_uri_from_input ("http:::::::::");
-	g_free (tmp);
-	tmp = nautilus_make_uri_from_input ("::");
-	g_free (tmp);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("::"), "::");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input (":://:://:::::::::::::::::"), ":://%3A%3A//%3A%3A%3A%3A%3A%3A%3A%3A%3A%3A%3A%3A%3A%3A%3A%3A%3A");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("file:::::////"), "file:::::////");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_from_input ("http:::::::::"), "http:::::::::");
 
 	/* nautilus_make_uri_canonical */
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical (""), "file:");
