@@ -417,27 +417,31 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 			    GTK_SIGNAL_FUNC (event_callback),
 			    desktop_icon_view);
 
-	gtk_signal_connect (GTK_OBJECT (nautilus_trash_monitor_get ()),
-			    "trash_state_changed",
-			    fm_desktop_icon_view_trash_state_changed_callback,
-			    desktop_icon_view);
-
-	gtk_signal_connect (GTK_OBJECT (nautilus_volume_monitor_get ()),
-			    "volume_mounted",
-			    volume_mounted_callback,
-			    desktop_icon_view);
-
-	gtk_signal_connect (GTK_OBJECT (nautilus_volume_monitor_get ()),
-			    "volume_unmounted",
-			    volume_unmounted_callback,
-			    desktop_icon_view);
-			    
+	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_trash_monitor_get ()),
+					"trash_state_changed",
+					fm_desktop_icon_view_trash_state_changed_callback,
+					desktop_icon_view,
+					GTK_OBJECT (desktop_icon_view));
+	
+	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_volume_monitor_get ()),
+					"volume_mounted",
+					volume_mounted_callback,
+					desktop_icon_view,
+					GTK_OBJECT (desktop_icon_view));
+	
+	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_volume_monitor_get ()),
+					"volume_unmounted",
+					volume_unmounted_callback,
+					desktop_icon_view,
+					GTK_OBJECT (desktop_icon_view));
+	
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "create_nautilus_links",
 			    GTK_SIGNAL_FUNC (icon_view_create_nautilus_links),
 			    desktop_icon_view);
 
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_HOME_URI, home_uri_changed,
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_HOME_URI,
+					   home_uri_changed,
 				  	   desktop_icon_view);
 }
 

@@ -1,3 +1,12 @@
+2001-02-23  Darin Adler  <darin@eazel.com>
+
+	reviewed by: J Shane Culpepper <pepper@eazel.com>
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize): Fix some signal handlers that
+	were persisting after the desktop view itself was gone by using
+	gtk_signal_connect_while_alive.
+
 2001-02-23  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>
