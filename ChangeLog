@@ -1,3 +1,12 @@
+2000-11-02  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3613 (activating any file as root tries to
+	execute it)
+
+	* src/file-manager/fm-directory-view.c: (file_is_launchable):
+	Need to check nautilus_file_is_executable as well as
+	nautilus_file_can_execute.
+
 2000-11-02  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/music/Makefile.am: Install a nautilus-mpg123 symlink

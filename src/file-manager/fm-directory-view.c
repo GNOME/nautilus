@@ -3642,7 +3642,8 @@ file_is_launchable (NautilusFile *file)
 {
 	return !nautilus_file_is_directory (file) 
 		&& nautilus_file_can_get_permissions (file)
-		&& nautilus_file_can_execute (file);
+		&& nautilus_file_can_execute (file)
+		&& nautilus_file_is_executable (file);
 }
 
 static void
