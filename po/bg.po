@@ -8,13 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-04 20:16+0200\n"
-"PO-Revision-Date: 2004-09-04 23:25+0300\n"
+"POT-Creation-Date: 2004-09-07 21:39+0300\n"
+"PO-Revision-Date: 2004-09-07 21:29+0300\n"
 "Last-Translator: Vladimir Petkov <vpetkov@i-space.org>\n"
 "Language-Team: Bulgarian <dict@linux.zonebg.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: components/adapter/main.c:101
 msgid "bonobo_ui_init() failed."
@@ -231,11 +232,13 @@ msgstr "Софтуер"
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
+msgid_plural ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
-msgstr ""
+msgstr[0] ""
 "<b>Тип изображение:</b> %s (%s)\n"
 "<b>Разд. способност:</b> %dx%d пиксела\n"
+msgstr[1] ""
 "<b>Тип изображение:</b> %s (%s)\n"
 "<b>Разд. способност:</b> %dx%d пиксела\n"
 
@@ -356,11 +359,11 @@ msgstr "Черно"
 
 #: data/browser.xml.h:5
 msgid "Blue Ridge"
-msgstr ""
+msgstr "Сини райета"
 
 #: data/browser.xml.h:6
 msgid "Blue Rough"
-msgstr ""
+msgstr "Синя шкурка"
 
 #: data/browser.xml.h:7
 msgid "Blue Type"
@@ -436,7 +439,7 @@ msgstr "Тъмен GNOME"
 
 #: data/browser.xml.h:25
 msgid "Deep Teal"
-msgstr ""
+msgstr "Тъмно синьо-зелено"
 
 #: data/browser.xml.h:26
 msgid "Distinguished"
@@ -488,7 +491,7 @@ msgstr "Пожарна машина"
 
 #: data/browser.xml.h:39
 msgid "Fleur De Lis"
-msgstr ""
+msgstr "На орнаментчета"
 
 #: data/browser.xml.h:40
 msgid "Floral"
@@ -704,7 +707,7 @@ msgstr "Предпочитани"
 
 #: data/static_bookmarks.xml.h:1
 msgid "Allaire"
-msgstr ""
+msgstr "Алер"
 
 #: data/static_bookmarks.xml.h:2
 msgid "Binary Freedom"
@@ -1512,6 +1515,10 @@ msgid ""
 "on a remote server. If set to \"local_only\" then only plays previews on "
 "local filesystems. If set to \"never\" then it never previews sound."
 msgstr ""
+"Компромис за скоростта при преглед на аудио файлове, когато мишката е върху "
+"иконата им. Ако е зададено \"винаги\", тогава аудио файлът се пуска, дори и "
+"да ена отдалечен сървър. Аке е зададено \"само_локално\", тогава се пуска "
+"само, акое локален. Ако е зададено \"никога\", то никога не се пуска."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid ""
@@ -1521,6 +1528,11 @@ msgid ""
 "previews for local filesystems. If set to \"never\" then never bother to "
 "read preview data."
 msgstr ""
+"Компромис·за·скоростта·за·преглед·на·текстови·файлове,·чрез иконата им."
+"Ако·е·зададено·\"винаги\",·тогава·иконата на текстовия·файл·се·променя,"
+"·дори·файлът·да·е на·отдалечен·сървър.·Аке·е·зададено·\"само_локално\","
+"тогава·иконата се·променя за локални файлове.·Ако·е·зададено·\"никога\","
+"·то·иконата никога·не·се·променя."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid ""
@@ -1530,6 +1542,11 @@ msgid ""
 "set to \"never\" then never bother to thumbnail images, just use a generic "
 "icon."
 msgstr ""
+"Компромис·за·скоростта·за·преглед·на·файлове изображения,·чрез иконата им."
+"Ако·е·зададено·\"винаги\",·тогава·иконата на файла·се·променя,"
+"·дори·файлът·да·е на·отдалечен·сървър.·Аке·е·зададено·\"само_локално\","
+"тогава·иконата се·променя за локални файлове.·Ако·е·зададено·\"никога\","
+"·то·иконата никога·не·се·променя."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
 msgid ""
@@ -1538,6 +1555,11 @@ msgid ""
 "server. If set to \"local_only\" then only show counts for local "
 "filesystems. If set to \"never\" then never bother to compute item counts."
 msgstr ""
+"Компромис·за·скоростта·за·преброяване на обектите в папки. Ако·е·зададено·"
+"\"винаги\",·тогава·обектите се преброяват, дори·папката да·е "
+"на·отдалечен·сървър.·Ако·е·зададено·\"само_локално\", тогава·обектите се "
+"броят се·променя в локалните папки.·Ако·е·зададено·\"никога\",·то·обектите "
+"никога не броят."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid ""
@@ -1577,13 +1599,12 @@ msgstr ""
 "Изгледа на страничния панел, който да се показва в новоотворени прозорци."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
-#, fuzzy
 msgid ""
 "This name can be set if you want a custom name for the computer icon on the "
 "desktop."
 msgstr ""
-"Това име може да бъде променено, ако искате друго име за иконата на Личните "
-"файлове на работното място."
+"Това име може да бъде променено, ако искате друго име за иконата за "
+"компютъра на работното място."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
 msgid ""
@@ -2031,19 +2052,25 @@ msgstr "%m/%d/%y"
 
 #: libnautilus-private/nautilus-file.c:4298
 #: src/file-manager/fm-directory-view.c:1817
-#, fuzzy, c-format
+#, c-format
 msgid "%u item"
-msgstr "%u обект"
+msgid_plural "%u items"
+msgstr[0] "%u обект"
+msgstr[1] "%u обекта"
 
 #: libnautilus-private/nautilus-file.c:4299
-#, fuzzy, c-format
+#, c-format
 msgid "%u folder"
-msgstr "%u папка"
+msgid_plural "%u folders"
+msgstr[0] "%u папка"
+msgstr[1] "%u папки"
 
 #: libnautilus-private/nautilus-file.c:4300
-#, fuzzy, c-format
+#, c-format
 msgid "%u file"
-msgstr "%u файл"
+msgid_plural "%u files"
+msgstr[0] "%u файл"
+msgstr[1] "%u файла"
 
 #. This means no contents at all were readable
 #: libnautilus-private/nautilus-file.c:4625
@@ -3419,18 +3446,22 @@ msgid "Empty Trash"
 msgstr "Изпразване на кошчето"
 
 #: src/file-manager/fm-directory-view.c:528
-#, fuzzy, c-format
+#, c-format
 msgid "Open %d Window?"
-msgstr "Да се отвори прозорецът %d?"
+msgid_plural "Open %d Windows?"
+msgstr[0] "Да се отвори %d прозорец?"
+msgstr[1] "Да се отворят %d прозорци?"
 
 #: src/file-manager/fm-directory-view.c:529
 msgid "Are you sure you want to open all files?"
 msgstr "Сигурни ли сте, че искате да отворите всички файлове?"
 
 #: src/file-manager/fm-directory-view.c:530 src/nautilus-location-bar.c:158
-#, fuzzy, c-format
+#, c-format
 msgid "This will open %d separate window."
-msgstr "Това ще отвори %d отделен прозорец."
+msgid_plural "This will open %d separate windows."
+msgstr[0] "Това ще отвори %d отделен прозорец."
+msgstr[1] "Това ще отвори %d отделни прозорци."
 
 #: src/file-manager/fm-directory-view.c:854
 #, c-format
@@ -3438,10 +3469,13 @@ msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Сигурен ли сте, че искате да изтриете за постоянно \"%s\"?"
 
 #: src/file-manager/fm-directory-view.c:858
-#, fuzzy, c-format
+#, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
+msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items?"
-msgstr "Сигурен ли сте, че искате да изтриете за постоянно \"%s\"?"
+msgstr[0] "Сигурни ли сте, че искате окончателно да изтриете %d избран обект?"
+msgstr[1] ""
+"Сигурни ли сте, че искате окончателно да изтриете %d избрани обекта?"
 
 #: src/file-manager/fm-directory-view.c:866
 msgid "If you delete an item, it is permanently lost."
@@ -3465,20 +3499,26 @@ msgid "\"%s\" selected"
 msgstr "\"%s\" избрани"
 
 #: src/file-manager/fm-directory-view.c:1751
-#, fuzzy, c-format
+#, c-format
 msgid "%d folder selected"
-msgstr "%d избрана папка"
+msgid_plural "%d folders selected"
+msgstr[0] "%d избрана папка"
+msgstr[1] "%d избрани папки"
 
 #: src/file-manager/fm-directory-view.c:1761
-#, fuzzy, c-format
+#, c-format
 msgid " (containing %d item)"
-msgstr " (съдържаща %d обект)"
+msgid_plural " (containing %d items)"
+msgstr[0] " (съдържаща %d обект)"
+msgstr[1] " (съдържаща %d обекта)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
 #: src/file-manager/fm-directory-view.c:1772
-#, fuzzy, c-format
+#, c-format
 msgid " (containing a total of %d item)"
-msgstr " (съдържа общо %d обект)"
+msgid_plural " (containing a total of %d items)"
+msgstr[0] " (съдържащи общо %d обект)"
+msgstr[1] " (съдържащи общо %d обекта)"
 
 #: src/file-manager/fm-directory-view.c:1788
 #, c-format
@@ -3486,15 +3526,19 @@ msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" избрани (%s)"
 
 #: src/file-manager/fm-directory-view.c:1792
-#, fuzzy, c-format
+#, c-format
 msgid "%d item selected (%s)"
-msgstr "%d обект избран (%s)"
+msgid_plural "%d items selected (%s)"
+msgstr[0] "%d избран обект (%s)"
+msgstr[1] "%d избрани обекти (%s)"
 
 #. Folders selected also, use "other" terminology
 #: src/file-manager/fm-directory-view.c:1800
-#, fuzzy, c-format
+#, c-format
 msgid "%d other item selected (%s)"
-msgstr "%d друг избран обект (%s)"
+msgid_plural "%d other items selected (%s)"
+msgstr[0] "още %d избран обект (%s)"
+msgstr[1] "още %d избрани обекти (%s)"
 
 #: src/file-manager/fm-directory-view.c:1821
 #, c-format
@@ -3564,15 +3608,18 @@ msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Сигурен ли сте, че искате да изтриете за постоянно \"%s\" от кошчето?"
 
 #: src/file-manager/fm-directory-view.c:3307
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
+msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr ""
-"Сигурен ли сте, че искате да изтриете за постоянно \"%s\" от кошчето?"
-"Сигурен ли сте, че искате да изтриете за постоянно \"%s\" от кошчето?"
+msgstr[0] ""
+"Сигурни ли сте, че искате окончателно да изтриете %d избран обект от кошчето?"
+msgstr[1] ""
+"Сигурни ли сте, че искате окончателно да изтриете %d избрани обекта от "
+"кошчето?"
 
 #: src/file-manager/fm-directory-view.c:3316
 msgid "If you delete an item, it will be permanently lost."
@@ -3724,20 +3771,30 @@ msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" ще бъде копиран ако изберете командата поставяне на файлове"
 
 #: src/file-manager/fm-directory-view.c:5080
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
+msgid_plural ""
 "The %d selected items will be moved if you select the Paste Files command"
-msgstr ""
-"\"%s\" ще бъде преместен ако изберете командата поставяне на файлове"
-"\"%s\" ще бъде преместен ако изберете командата поставяне на файлове"
+msgstr[0] ""
+"%d избран обект ще бъде преместен, ако изберете командата \"Поставяне на "
+"файлове\""
+msgstr[1] ""
+"%d избрани обекта ще бъдат преместени, ако изберете командата \"Поставяне на "
+"файлове\""
 
 #: src/file-manager/fm-directory-view.c:5087
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
+msgid_plural ""
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr "\"%s\" ще бъде копиран ако изберете командата поставяне на файлове"
+msgstr[0] ""
+"%d избран обект ще бъде копиран, ако изберете командата \"Поставяне на "
+"файлове\""
+msgstr[1] ""
+"%d избрани обекта ще бъдат копирани, ако изберете командата \"Поставяне на "
+"файлове\""
 
 #: src/file-manager/fm-directory-view.c:5169
 #: src/file-manager/fm-tree-view.c:868
@@ -3794,7 +3851,9 @@ msgstr "_Отваряне"
 #: src/file-manager/fm-tree-view.c:960
 #, c-format
 msgid "Open in New Window"
-msgstr "Отваряне в нов прозорец"
+msgid_plural "Open in %d New Windows"
+msgstr[0] "Отваряне в %d нов прозорец"
+msgstr[1] "Отваряне в %d нови прозорци"
 
 #: src/file-manager/fm-directory-view.c:5964
 msgid "Browse Folder"
@@ -4209,9 +4268,11 @@ msgid "unreadable"
 msgstr "нечетимо"
 
 #: src/file-manager/fm-properties-window.c:1816
-#, fuzzy, c-format
+#, c-format
 msgid "%d item, with size %s"
-msgstr "%d обект, с големина %s"
+msgid_plural "%d items, totalling %s"
+msgstr[0] "%d обект, с размер %s"
+msgstr[1] "%d обектa, с общ размер %s"
 
 #: src/file-manager/fm-properties-window.c:1825
 msgid "(some contents unreadable)"
@@ -5403,9 +5464,11 @@ msgid "Go To:"
 msgstr "Отиване:"
 
 #: src/nautilus-location-bar.c:154
-#, fuzzy, c-format
+#, c-format
 msgid "Do you want to view %d location?"
-msgstr "Искате ли да видите местонахождението %d?"
+msgid_plural "Do you want to view %d locations?"
+msgstr[0] "Искате ли да видите %d местонахождение?"
+msgstr[1] "Искате ли да видите %d местонахождения?"
 
 #: src/nautilus-location-bar.c:170
 msgid "View in Multiple Windows?"
@@ -6456,6 +6519,40 @@ msgstr "Мрежови сървъри"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Преглед на вашите мрежови сървъри във файловия мениджър Nautilus"
+
+#~ msgid ""
+#~ "Are you sure you want to permanently delete the %d selected item?Are you "
+#~ "sure you want to permanently delete the %d selected items?"
+#~ msgstr ""
+#~ "Сигурни ли сте, че искате окончателно да изтриете %d избран обект?Сигурни "
+#~ "ли сте, че искате окончателно да изтриете %d избрани обекти?"
+
+#~ msgid ""
+#~ "Are you sure you want to permanently delete the %d selected item from the "
+#~ "trash?Are you sure you want to permanently delete the %d selected items "
+#~ "from the trash?"
+#~ msgstr ""
+#~ "Сигурни ли сте, че искате окончателно да изтриете %d избран обект от "
+#~ "кошчето?Сигурни ли сте, че искате окончателно да изтриете %d избрани "
+#~ "обекта от кошчето?"
+
+#~ msgid ""
+#~ "The %d selected item will be moved if you select the Paste Files "
+#~ "commandThe %d selected items will be moved if you select the Paste Files "
+#~ "command"
+#~ msgstr ""
+#~ "%d избран обект ще бъде преместен, ако изберете командата \"Поставяне на "
+#~ "файлове\"%d избрани обекти ще бъдат преместени, ако изберете командата "
+#~ "\"Поставяне на файлове\""
+
+#~ msgid ""
+#~ "The %d selected item will be copied if you select the Paste Files "
+#~ "commandThe %d selected items will be copied if you select the Paste Files "
+#~ "command"
+#~ msgstr ""
+#~ "%d избран обект ще бъде копиран, ако изберете командата \"Поставяне на "
+#~ "файлове\"%d избрани обекти ще бъдат копирани, ако изберете командата "
+#~ "\"Поставяне на файлове\""
 
 #~ msgid "Add Nautilus to session"
 #~ msgstr "Добавяне на Nautilus към сесията"
