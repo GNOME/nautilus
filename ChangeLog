@@ -1,3 +1,12 @@
+2001-02-08  Pavel Cisler  <pavel@eazel.com>
+	
+	Fix 6401 (Create Link yields "You cannot link a file to itself"
+		  error)
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(nautilus_file_operations_copy_move):
+	Remove a confused link to self check.
+	Pass the GNOME_VFS_XFER_USE_UNIQUE_NAMES option to xfer.
+
 2001-02-08  Fatih Demir	<kabalak@kabalak.net>
 
 	* components/services/install/lib/eazel-package-system-rpm3.c:

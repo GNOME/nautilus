@@ -1819,6 +1819,8 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		transfer_info->show_progress_dialog = 
 			!same_fs || g_list_length ((GList *)item_uris) > 20;
 	} else if ((move_options & GNOME_VFS_XFER_LINK_ITEMS) != 0) {
+		/* when creating links, handle name conflicts automatically */
+		move_options |= GNOME_VFS_XFER_USE_UNIQUE_NAMES;
 		/* localizers: progress dialog title */
 		transfer_info->operation_title = _("Creating links to files");
 		/* localizers: label prepended to the progress count */
@@ -1882,8 +1884,6 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				nautilus_run_simple_dialog
 					(parent_view, 
 					 FALSE,
-
-
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
 						 ? (is_desktop_trash_link
 						    ? _("The Trash must remain on the desktop.")
@@ -1920,21 +1920,16 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;
 				break;
 			}
-			if (((move_options & GNOME_VFS_XFER_LINK_ITEMS) != 0
-					|| (move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0
+			if (((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0
 					|| (move_options & GNOME_VFS_XFER_USE_UNIQUE_NAMES) == 0)
 				&& gnome_vfs_uri_is_parent (target_dir_uri, uri, FALSE)) {
 				nautilus_run_simple_dialog
 					(parent_view, 
 					 FALSE,
-					 ((move_options & GNOME_VFS_XFER_LINK_ITEMS) != 0) 
-					 ? _("You cannot link a file to itself.")
-					 : ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
+					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
 					 ? _("You cannot move a file onto itself.")
 					 : _("You cannot copy a file over itself."), 
-					 ((move_options & GNOME_VFS_XFER_LINK_ITEMS) != 0) 
-					 ? _("Can't Link To Self")
-					 : ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
+					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
 					 ? _("Can't Move Onto Self")
 					 : _("Can't Copy Over Self"), 
 					 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
