@@ -1,3 +1,16 @@
+2001-05-13  Yoann Vandoorselaere  <yoann@mandrakesoft.com>
+
+	* libnautilus-private/nautilus-directory-async.c (DIRECTORY_LOAD_ITEMS_PER_CALLBACK): 
+	Change from 32 item by callback to 10.
+	This is much better for UI response time and will prevent having
+	too much latency time when loading the directory.
+
+	* src/file-manager/fm-directory-view.c (DISPLAY_TIMEOUT_INTERVAL_MSECS): 
+	Change from 700 ms to 100 ms, this is much better for the user
+	as he won't see any latency time before drawing start.
+
+	Theses are the better experienced setting for now.
+	
 2001-05-13  Maciej Stachowiak  <mjs@eazel.com>
 
 	Integrated patch from Yoann Vandoorselaere

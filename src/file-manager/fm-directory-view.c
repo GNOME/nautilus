@@ -76,7 +76,7 @@
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <math.h>
 
-#define DISPLAY_TIMEOUT_INTERVAL_MSECS 700
+#define DISPLAY_TIMEOUT_INTERVAL_MSECS 100
 #define SILENT_WINDOW_OPEN_LIMIT	5
 
 #define DUPLICATE_HORIZONTAL_ICON_OFFSET 70
