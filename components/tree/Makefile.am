@@ -24,15 +24,17 @@ oaf_DATA =					\
 bin_PROGRAMS =					\
 	nautilus-tree-view
 
-nautilus_tree_view_SOURCES =	       \
-	nautilus-tree-view.h           \
-	nautilus-tree-view.c           \
-	nautilus-tree-model.h          \
-	nautilus-tree-model.c          \
-	nautilus-tree-node-private.h   \
-	nautilus-tree-node.h           \
-	nautilus-tree-node.c           \
-	main.c                         \
+nautilus_tree_view_SOURCES =	        \
+	nautilus-tree-view.h            \
+	nautilus-tree-view.c            \
+	nautilus-tree-model.h           \
+	nautilus-tree-model.c           \
+	nautilus-tree-node-private.h    \
+	nautilus-tree-node.h            \
+	nautilus-tree-node.c            \
+	nautilus-tree-expansion-state.h \
+	nautilus-tree-expansion-state.c \
+	main.c                          \
 	$(NULL)
 
 nautilus_tree_view_LDADD =			\
