@@ -209,11 +209,6 @@ static void     draw_pixbuf                                (GdkPixbuf           
 							    int                            y);
 static gboolean hit_test_stretch_handle                    (NautilusIconCanvasItem        *item,
 							    const ArtIRect                *canvas_rect);
-static void     draw_pixbuf_aa                             (GdkPixbuf                     *pixbuf,
-							    GnomeCanvasBuf                *buf,
-							    double                         affine[6],
-							    int                            x_offset,
-							    int                            y_offset);
 static gboolean icon_canvas_item_is_smooth                 (const NautilusIconCanvasItem  *icon_item);
 
 
@@ -1020,7 +1015,6 @@ draw_stretch_handles_aa (NautilusIconCanvasItem *item, GnomeCanvasBuf *buf,
 	GnomeCanvasItem *canvas_item;
 	char *knob_filename;
 	GdkPixbuf *knob_pixbuf;
-	double affine[6];
 	
 	if (!item->details->show_stretch_handles) {
 		return;
@@ -1032,20 +1026,18 @@ draw_stretch_handles_aa (NautilusIconCanvasItem *item, GnomeCanvasBuf *buf,
 	knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename);
 	knob_width = gdk_pixbuf_get_width (knob_pixbuf);
 	knob_height = gdk_pixbuf_get_height (knob_pixbuf);
-	
-	art_affine_identity (affine);
-	
+		
 	/* draw a box to connect the dots */
 	draw_outline_rectangle_aa (buf, rect->x0 + 1, rect->y0 + 1,
 				   rect->x1 - 1, rect->y1 - 1,
 				   NAUTILUS_RGBA_COLOR_PACK (153, 153, 153, 127));	
 
 	/* now draw the stretch handles themselves  */
-	draw_pixbuf_aa (knob_pixbuf, buf, affine, rect->x0, rect->y0);
-	draw_pixbuf_aa (knob_pixbuf, buf, affine, rect->x0,  rect->y1 - knob_height);
-	draw_pixbuf_aa (knob_pixbuf, buf, affine, rect->x1 - knob_width, rect->y0);
-	draw_pixbuf_aa (knob_pixbuf, buf, affine, rect->x1 - knob_width, rect->y1 - knob_height);
-		
+	nautilus_gnome_canvas_draw_pixbuf (buf, knob_pixbuf, rect->x0, rect->y0);
+	nautilus_gnome_canvas_draw_pixbuf (buf, knob_pixbuf, rect->x0, rect->y1 - knob_height);
+	nautilus_gnome_canvas_draw_pixbuf (buf, knob_pixbuf, rect->x1 - knob_width, rect->y0);
+	nautilus_gnome_canvas_draw_pixbuf (buf, knob_pixbuf, rect->x1 - knob_width, rect->y1 - knob_height);
+			
 	g_free(knob_filename);
 	gdk_pixbuf_unref(knob_pixbuf);	
 }
@@ -1207,12 +1199,6 @@ draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
 					     gdk_pixbuf_get_height (pixbuf),
 					     GDK_PIXBUF_ALPHA_BILEVEL, 128, GDK_RGB_DITHER_MAX,
 					     0, 0);
-}
-
-static void
-draw_pixbuf_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buf, double affine[6], int x_offset, int y_offset)
-{
-    nautilus_gnome_canvas_draw_pixbuf (buf, pixbuf, affine[4] + x_offset, affine[5] + y_offset);	
 }
 
 /* shared code to highlight or dim the passed-in pixbuf */
@@ -1557,7 +1543,7 @@ clear_rounded_corners (GdkPixbuf *destination_pixbuf, GdkPixbuf *corner_pixbuf, 
 }
 
 static void
-draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, double i2c[6], int x_delta)
+draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, int x, int y, int x_delta)
 {
 	GdkPixbuf *text_pixbuf;
 	NautilusIconContainer *container;
@@ -1592,12 +1578,16 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, doub
 	needs_highlight = icon_item->details->is_highlighted_for_selection
 		|| icon_item->details->is_highlighted_for_drop;
 
+	/* Optimizing out the allocation of this pixbuf on every call is a
+	 * measureable speed improvement, but only by around 5%.
+	 * draw_or_measure_label_text_aa accounts for about 90% of the time.
+	 */
 	text_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
 				TRUE,
 				8,
 				icon_item->details->text_width,
 				icon_item->details->text_height);
-	
+
 	if (needs_highlight) {
 		container = NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (icon_item)->canvas);	
 		nautilus_gdk_pixbuf_fill_rectangle_with_color (text_pixbuf, NULL,
@@ -1612,22 +1602,21 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, doub
 	draw_or_measure_label_text_aa (icon_item, text_pixbuf, x_delta, 0);
 	
 	/* Draw the pixbuf containing the label. */
-	i2c[4] -= x_delta;
-	draw_pixbuf_aa (text_pixbuf, buf, i2c, 0, LABEL_OFFSET);
-	gdk_pixbuf_unref (text_pixbuf);
+
+	nautilus_gnome_canvas_draw_pixbuf (buf, text_pixbuf, x - x_delta, y + LABEL_OFFSET);
+
+	gdk_pixbuf_unref (text_pixbuf);	
 
 	/* draw the keyboard selection focus indicator if necessary */
 	if (icon_item->details->is_highlighted_as_keyboard_focus) {
-		draw_outline_rectangle_aa (buf, i2c[4] + 1, i2c[5] + 1,
-					   i2c[4] + icon_item->details->text_width,
-					   i2c[5] + icon_item->details->text_height,
+		draw_outline_rectangle_aa (buf, x - x_delta + 1, y + 1,
+					   x - x_delta + icon_item->details->text_width,
+					   y + icon_item->details->text_height,
 					   NAUTILUS_RGBA_COLOR_PACK (153, 153, 153, 127));
 	}
-	i2c[4] += x_delta;	
 }
 
 /* draw the item for anti-aliased mode */
-
 static void
 nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 {
@@ -1635,7 +1624,6 @@ nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 	EmblemLayout emblem_layout;
 	GdkPixbuf *emblem_pixbuf, *temp_pixbuf;
 	NautilusIconCanvasItem *icon_item;
-	double i2c[6];
 	int x_delta;
 
 	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
@@ -1643,45 +1631,32 @@ nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 	/* map the pixbuf for selection or other effects */
 	temp_pixbuf = map_pixbuf (icon_item);
 
-	/* Compute the affine transform, but force the scale to 1.0
-	 * because the icon factory does the scaling for us.
-	 */
-	gnome_canvas_item_i2c_affine (item, i2c);
-	i2c[0] = 1.0;
-	i2c[3] = 1.0;
-	
-	/* force it to integer pixel boundaries to avoid losing some of the left edge */
-	i2c[4] = floor (i2c[4]);
-	i2c[5] = floor (i2c[5]);
+	get_icon_canvas_rectangle (icon_item, &icon_rect);
 	
 	if (buf->is_bg) {
 		gnome_canvas_buf_ensure_buf (buf);
 		buf->is_bg = FALSE;
 	}
-	
+
 	/* draw the icon */
-	draw_pixbuf_aa (temp_pixbuf, buf, i2c, 0, 0);
-	
+	nautilus_gnome_canvas_draw_pixbuf (buf, temp_pixbuf, icon_rect.x0, icon_rect.y0);
+
 	if (temp_pixbuf != icon_item->details->pixbuf) {
 		gdk_pixbuf_unref (temp_pixbuf);
 	}
 
-	/* draw the emblems */
-	get_icon_canvas_rectangle (icon_item, &icon_rect);
-	
+	/* draw the emblems */	
 	emblem_layout_reset (&emblem_layout, icon_item, &icon_rect);
 	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
-		draw_pixbuf_aa (emblem_pixbuf, buf, i2c, emblem_rect.x0 - icon_rect.x0, 
-				emblem_rect.y0 - icon_rect.y0);
+		nautilus_gnome_canvas_draw_pixbuf (buf, emblem_pixbuf, emblem_rect.x0, emblem_rect.y0);
 	}
 
 	/* draw the stretch handles */
 	draw_stretch_handles_aa (icon_item, buf, &icon_rect);
 		
 	/* draw the text */
-	i2c[5] += icon_rect.y1 - icon_rect.y0;
 	x_delta = (icon_item->details->text_width - (icon_rect.x1 - icon_rect.x0)) / 2;
-	draw_label_text_aa (icon_item, buf, i2c, x_delta);
+	draw_label_text_aa (icon_item, buf, icon_rect.x0, icon_rect.y1, x_delta);
 }
 
 

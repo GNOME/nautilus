@@ -1,3 +1,13 @@
+2001-01-12  Michael Engber  <engber@eazel.com>
+
+	reviewed by: Gene Z. Ragan
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_stretch_handles_aa), (draw_label_text_aa),
+	(nautilus_icon_canvas_item_render):
+	Removed last vestiges of affine/libart code which was
+	slowing up icon drawing - bug 5381.
+
 2001-01-12  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/services/install/nautilus-view/nautilus-service-install-view.c:
