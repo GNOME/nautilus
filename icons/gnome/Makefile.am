@@ -52,6 +52,7 @@ gnome_DATA =				\
 	i-nfs.png			\
 	i-regular-96-aa.png		\
 	i-regular.png			\
+	i-regular.xml			\
 	i-stalled.png			\
 	linux-penguin.png		\
 	rpm-directory.png		\

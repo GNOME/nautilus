@@ -76,6 +76,8 @@
 /* FIXME: Hard coded font size */
 #define DEFAULT_FONT_SIZE 12
 
+#define RIGHT_MARGIN_WIDTH 12
+
 /* data structures */
 
 typedef struct {
@@ -993,7 +995,8 @@ draw_or_layout_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean layout_only
 	int		y_top, fill_height;
 	int		total_width, total_height, tab_select;
 	int		piece_width, text_h_offset;
-	int		end_piece_width;
+	int		new_tab_width, end_piece_width;
+	int		dest_x, dest_y;
 	
 	gboolean	is_themed, changed_rows, needs_compositing;
 	gboolean	first_flag, prev_invisible;
@@ -1089,7 +1092,8 @@ draw_or_layout_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean layout_only
 		if (!is_themed)
 			x_pos += TAB_H_GAP;
 		
-		if (x_pos + get_tab_width (sidebar_tabs, this_item, is_themed, FALSE) > (total_width - end_piece_width - 8)) {
+		new_tab_width = get_tab_width (sidebar_tabs, this_item, is_themed, FALSE) - text_h_offset;		
+		if ((x_pos + new_tab_width) > (total_width - end_piece_width - RIGHT_MARGIN_WIDTH)) {
 			/* wrap to the next line */
 			x_pos = widget->allocation.x + sidebar_tabs->details->tab_left_offset;     
 			if (is_themed)
@@ -1159,11 +1163,11 @@ draw_or_layout_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean layout_only
 			if (tab_select >= 0) {	
 				GdkPixbuf *temp_pixbuf = sidebar_tabs->details->tab_piece_images[tab_select];
 				piece_width = gdk_pixbuf_get_width (temp_pixbuf);
+				dest_x = last_x_pos + tab_width - widget->allocation.x;
+				dest_y = last_y_pos - widget->allocation.y;
 				
 				if (!layout_only) {
 					if (needs_compositing) {
-						int dest_x = last_x_pos + tab_width - widget->allocation.x;
-						int dest_y = last_y_pos - widget->allocation.y;
 						int src_width = gdk_pixbuf_get_width (temp_pixbuf);
 						int src_height = gdk_pixbuf_get_height (temp_pixbuf);
 						int dest_width = gdk_pixbuf_get_width (tab_pixbuf);
@@ -1187,11 +1191,10 @@ draw_or_layout_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean layout_only
 								      1.0, 1.0,
 								      GDK_INTERP_BILINEAR,
 								      0xFF);	
+					
 					} else {
 						piece_width = draw_tab_piece_aa (sidebar_tabs, tab_pixbuf,  
-										 last_x_pos + tab_width - widget->allocation.x, 
-										 last_y_pos - widget->allocation.y, -1, 
-										 tab_select);
+										 				 dest_x, dest_y, -1, tab_select);
 					}
 				} 
 				prev_item->tab_rect.width = last_x_pos + tab_width + piece_width - prev_item->tab_rect.x;

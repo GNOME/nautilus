@@ -1,3 +1,13 @@
+2001-06-08  Andy Hertzfeld  <andy@differnet.com>
+
+	* icons/gnome/Makefile.am:
+	The "i-regular.xml" file that is needed to make
+	embedded text work properly was missing, so I added it.
+	
+	* src/nautilus-sidebar-tabs.c: (draw_or_layout_all_tabs):
+	fixed bug where the names of the rightmost tabs cound get cut
+	off by tweaking the layout code.
+	
 2001-06-08  Dan Mueth  <d-mueth@uchicago.edu>
 
 	Updating Nautilus Release Notes for 1.0.4.  Note that we
