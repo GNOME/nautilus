@@ -391,12 +391,6 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 		metadata_default = TRUE;
 	}
 	
-	/* FIXME bugzilla.eazel.com 1264: 
-	 * should return NULL for the following cases:
-	 * - Known URI scheme pointing to nonexistent location
-	 * - Syntactically invalid URI
-	 */
-	
 	sort_conditions = nautilus_mime_get_default_component_sort_conditions (file, default_component_string);
 
 	/* If the default is specified in the per-uri metadata,
