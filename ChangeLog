@@ -1,5 +1,17 @@
 2005-03-25  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/nautilus-connect-server-dialog.c: (connect_to_server):
+	* src/nautilus-location-bar.c:
+	(nautilus_location_bar_get_location),
+	(nautilus_location_bar_update_label):
+	* src/nautilus-location-dialog.c: (open_current_location):
+	Replace eel_make_uri_from_input with the gnome-vfs equivalent.
+	Closes bug #165743.
+
+	Patch from Christian Kellner <gicmo@gnome.org>
+
+2005-03-25  Martin Wehner  <martin.wehner@gmail.com>
+
 	* libnautilus-private/nautilus-bookmark.c:
 	(nautilus_bookmark_compare_with), (nautilus_bookmark_compare_uris),
 	(bookmark_file_changed_callback):

@@ -29,6 +29,7 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkstock.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include "nautilus-location-entry.h"
 #include "nautilus-desktop-window.h"
@@ -77,7 +78,7 @@ open_current_location (NautilusLocationDialog *dialog)
 	char *user_location;
 	
 	user_location = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->entry), 0, -1);
-	uri = eel_make_uri_from_input (user_location);
+	uri = gnome_vfs_make_uri_from_input (user_location);
 	g_free (user_location);
 
 	nautilus_window_go_to (dialog->details->window, uri);

@@ -130,7 +130,7 @@ connect_to_server (NautilusConnectServerDialog *dialog)
 
 	if (type == TYPE_URI) {
 		user_uri = gtk_editable_get_chars (GTK_EDITABLE (dialog->details->uri_entry), 0, -1);
-		uri = eel_make_uri_from_input (user_uri);
+		uri = gnome_vfs_make_uri_from_input (user_uri);
 		g_free (user_uri);
 	
 		vfs_uri = gnome_vfs_uri_new (uri);

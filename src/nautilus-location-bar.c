@@ -484,7 +484,7 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
  * @bar: A NautilusLocationBar.
  *
  * returns a newly allocated "string" containing the mangled
- * (by eel_make_uri_from_input) text that the user typed in...maybe a URI 
+ * (by gnome_vfs_make_uri_from_input) text that the user typed in...maybe a URI 
  * but not guaranteed.
  *
  **/
@@ -497,7 +497,7 @@ nautilus_location_bar_get_location (NautilusNavigationBar *navigation_bar)
 	bar = NAUTILUS_LOCATION_BAR (navigation_bar);
 	
 	user_location = gtk_editable_get_chars (GTK_EDITABLE (bar->details->entry), 0, -1);
-	best_uri = eel_make_uri_from_input (user_location);
+	best_uri = gnome_vfs_make_uri_from_input (user_location);
 	g_free (user_location);
 	return best_uri;
 }
@@ -515,7 +515,7 @@ nautilus_location_bar_update_label (NautilusLocationBar *bar)
 	char *current_location;
 	
 	current_text = gtk_entry_get_text (GTK_ENTRY (bar->details->entry));
-	current_location = eel_make_uri_from_input (current_text);
+	current_location = gnome_vfs_make_uri_from_input (current_text);
 	
 	if (gnome_vfs_uris_match (bar->details->last_location, current_location)) {
 		gtk_label_set_text (GTK_LABEL (bar->details->label), LOCATION_LABEL);
