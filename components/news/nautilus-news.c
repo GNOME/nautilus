@@ -126,6 +126,7 @@ typedef struct {
 	gboolean news_changed;
 	gboolean always_display_title;
 	gboolean configure_mode;
+	gboolean opened;
 		
 	guint timer_task;
 } News;
@@ -244,8 +245,8 @@ get_bonobo_properties (BonoboPropertyBag *bag,
                 break;
         }
         case CLOSE_NOTIFY: {
-		/* this shouldn't be read, but return FALSE anyway */
-		BONOBO_ARG_SET_BOOLEAN (arg, FALSE);
+		/* this shouldn't be read, but return it anyway */
+		BONOBO_ARG_SET_BOOLEAN (arg, news->opened);
 		break;
 	}
 	
@@ -274,9 +275,14 @@ set_bonobo_properties (BonoboPropertyBag *bag,
  
  	/* when closed, clear the changed flags; also, exit configure mode */
         case CLOSE_NOTIFY: {
-		nautilus_news_clear_changed_flags (news);
-		news->configure_mode = FALSE;
-		set_views_for_mode (news);
+		if (BONOBO_ARG_GET_BOOLEAN (arg)) {
+			news->opened = FALSE;
+			nautilus_news_clear_changed_flags (news);
+			news->configure_mode = FALSE;
+			set_views_for_mode (news);
+		} else {
+			news->opened = TRUE;
+		}
 		break;
 	}
 	
@@ -2021,7 +2027,11 @@ nautilus_news_load_location (NautilusView *view, const char *location, News *new
 {
 	g_free (news->uri);
 	news->uri = g_strdup (location);
-	update_size_and_redraw (news);
+	
+	/* only do work if we're open */
+	if (news->opened) {
+		update_size_and_redraw (news);
+	}
 }
 
 /* utility routine to determine the sort position of a checkbox */

@@ -930,7 +930,7 @@ nautilus_sidebar_remove_panel (NautilusSidebar *sidebar,
 }
 
 static void
-notify_current_sidebar_view (NautilusSidebar *sidebar, const char *property)
+notify_current_sidebar_view (NautilusSidebar *sidebar, const char *property, gboolean value)
 {
 	CORBA_Environment ev;
 	Bonobo_PropertyBag property_bag;
@@ -944,7 +944,7 @@ notify_current_sidebar_view (NautilusSidebar *sidebar, const char *property)
 		CORBA_exception_init (&ev);
 		property_bag = Bonobo_Control_getProperties (control, &ev);
 		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {
-			bonobo_property_bag_client_set_value_gboolean (property_bag, property, TRUE, &ev);
+			bonobo_property_bag_client_set_value_gboolean (property_bag, property, value, &ev);
 			bonobo_object_release_unref (property_bag, NULL);
 		}
 		CORBA_exception_free (&ev);
@@ -979,7 +979,7 @@ nautilus_sidebar_activate_panel (NautilusSidebar *sidebar, int which_view)
 					  FALSE, FALSE, 0);
 		}
 	} else {
-		notify_current_sidebar_view (sidebar, "close");
+		notify_current_sidebar_view (sidebar, "close", TRUE);
 	}
 	
 	sidebar->details->selected_index = which_view;
@@ -995,7 +995,7 @@ nautilus_sidebar_activate_panel (NautilusSidebar *sidebar, int which_view)
 	gtk_widget_hide (GTK_WIDGET (sidebar->details->title));
 	
 	gtk_notebook_set_page (notebook, which_view);
-	notify_current_sidebar_view (sidebar, "open");
+	notify_current_sidebar_view (sidebar, "close", FALSE);
 }
 
 /* utility to deactivate the active panel */
@@ -1005,7 +1005,7 @@ nautilus_sidebar_deactivate_panel (NautilusSidebar *sidebar)
 	if (sidebar->details->selected_index >= 0) {
 		gtk_widget_hide (GTK_WIDGET (sidebar->details->notebook));
 		gtk_widget_hide (GTK_WIDGET (sidebar->details->title_tab));
-		notify_current_sidebar_view (sidebar, "close");
+		notify_current_sidebar_view (sidebar, "close", TRUE);
 	}
 	
 	gtk_widget_show (GTK_WIDGET (sidebar->details->button_box_centerer));

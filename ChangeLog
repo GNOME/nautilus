@@ -1,3 +1,16 @@
+2001-05-15  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar.c: (notify_current_sidebar_view),
+	(nautilus_sidebar_activate_panel),
+	(nautilus_sidebar_deactivate_panel):
+	at Darin's urging, coalesced the open and closed properties into a
+	single one with a value.
+
+	* components/news/nautilus-news.c: (get_bonobo_properties),
+	(set_bonobo_properties), (nautilus_news_load_location):
+	made it maintain the closed state and made load_location only redraw
+	when opened.
+	
 2001-05-13  Yoann Vandoorselaere  <yoann@mandrakesoft.com>
 
 	* libnautilus-private/nautilus-directory-async.c (DIRECTORY_LOAD_ITEMS_PER_CALLBACK): 
