@@ -102,7 +102,7 @@ trilobite-eazel-time-view \
 
 if [ "$extreme" = "yes" ]
 then
-    AUX_PROGS="oafd gconfd-1 $AUX_PROGS"
+    AUX_PROGS="gconfd-1 $AUX_PROGS oafd"
 fi
 
 unset FOUND_ANY
