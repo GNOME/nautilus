@@ -3182,6 +3182,8 @@ nautilus_directory_cancel_loading_file_attributes (NautilusDirectory *directory,
 {
 	Request request;
 	
+	nautilus_directory_remove_file_from_work_queue (directory, file);
+
 	nautilus_directory_set_up_request (&request,
 					   file_attributes);
 
