@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-03-11 03:34+0100\n"
-"PO-Revision-Date: 2001-03-11 03:36+0100\n"
+"POT-Creation-Date: 2001-03-15 03:03+0100\n"
+"PO-Revision-Date: 2001-03-15 03:05+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1715,13 +1715,13 @@ msgstr "Visa som musik"
 #: components/notes/nautilus-notes.c:200
 #: components/text/nautilus-text-view.c:186
 #: libnautilus-extensions/nautilus-global-preferences.c:1118
-#: libnautilus-extensions/nautilus-icon-container.c:3332
 #: libnautilus-extensions/nautilus-icon-container.c:3333
 #: libnautilus-extensions/nautilus-icon-container.c:3334
 #: libnautilus-extensions/nautilus-icon-container.c:3335
 #: libnautilus-extensions/nautilus-icon-container.c:3336
 #: libnautilus-extensions/nautilus-icon-container.c:3337
 #: libnautilus-extensions/nautilus-icon-container.c:3338
+#: libnautilus-extensions/nautilus-icon-container.c:3339
 #: libnautilus-extensions/nautilus-preferences-item.c:482
 #: src/nautilus-sidebar-title.c:500
 msgid "helvetica"
@@ -2299,21 +2299,21 @@ msgstr "%s installerar version %s-%s"
 msgid "%s installs version %s"
 msgstr "%s installerar version %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:690
+#: components/services/install/lib/eazel-install-logic2.c:693
 #, c-format
 msgid "Loading package info from file %s"
 msgstr "Läser paketinformation från filen %s"
 
 #. I18N note: ok is for "package dependencies are ok", "not ok".. well guess...
-#: components/services/install/lib/eazel-install-logic2.c:1005
+#: components/services/install/lib/eazel-install-logic2.c:1010
 msgid "ok"
 msgstr "ok"
 
-#: components/services/install/lib/eazel-install-logic2.c:1005
+#: components/services/install/lib/eazel-install-logic2.c:1010
 msgid "not ok"
 msgstr "inte ok"
 
-#: components/services/install/lib/eazel-install-logic2.c:1171
+#: components/services/install/lib/eazel-install-logic2.c:1176
 #, c-format
 msgid "Checking dependencies for %s"
 msgstr "Kontrollerar beroenden för %s"
@@ -2321,52 +2321,52 @@ msgstr "Kontrollerar beroenden för %s"
 #. I18N note: both %s' are package names.
 #. related is in the sense that the two packages apparently
 #. are connected somehow, eg. foo and foo-devel
-#: components/services/install/lib/eazel-install-logic2.c:1778
+#: components/services/install/lib/eazel-install-logic2.c:1800
 #, c-format
 msgid "%s is related to %s"
 msgstr "%s är relaterad till %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1838
+#: components/services/install/lib/eazel-install-logic2.c:1876
 #, c-format
 msgid "updating %s to version %s-%s solves conflict"
 msgstr "att uppdatera %s till version %s-%s löser konflikten"
 
-#: components/services/install/lib/eazel-install-logic2.c:1854
+#: components/services/install/lib/eazel-install-logic2.c:1899
 #, c-format
 msgid "available update to %s (%s-%s) does not solves conflict"
 msgstr "den tillgängliga uppdateringen till %s, %s-%s, löser inte konflikten"
 
-#: components/services/install/lib/eazel-install-logic2.c:1861
+#: components/services/install/lib/eazel-install-logic2.c:1906
 #, c-format
 msgid "could not revive %s"
 msgstr "kunde inte återuppliva %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2016
+#: components/services/install/lib/eazel-install-logic2.c:2061
 #, c-format
 msgid "file uniqueness checking %s"
 msgstr "kontrollerar unikhet för %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2037
+#: components/services/install/lib/eazel-install-logic2.c:2082
 #, c-format
 msgid "Duplicate file : %s occurs in %s and %s"
 msgstr "Duplicerad fil: %s finns i %s och %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2049
-#: components/services/install/lib/eazel-install-logic2.c:2203
+#: components/services/install/lib/eazel-install-logic2.c:2094
+#: components/services/install/lib/eazel-install-logic2.c:2248
 msgid "... but it's ok, the packages are related"
 msgstr "...men det är ok, paketen är relaterade till varandra"
 
-#: components/services/install/lib/eazel-install-logic2.c:2057
+#: components/services/install/lib/eazel-install-logic2.c:2102
 #, c-format
 msgid "(there were %d other conflicts)"
 msgstr "(det fanns %d andra konflikter)"
 
-#: components/services/install/lib/eazel-install-logic2.c:2152
+#: components/services/install/lib/eazel-install-logic2.c:2197
 #, c-format
 msgid "file conflict checking %s"
 msgstr "kontrollerar filkonflikter i %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2189
+#: components/services/install/lib/eazel-install-logic2.c:2234
 #, c-format
 msgid "file conflict : package %s already provides file %s also provided by %s"
 msgstr ""
@@ -2375,56 +2375,56 @@ msgstr ""
 
 #. the owner of this file is a package that we're upgrading, and the
 #. * new version no longer has this file, so everything's okay.
-#: components/services/install/lib/eazel-install-logic2.c:2199
+#: components/services/install/lib/eazel-install-logic2.c:2244
 #, c-format
 msgid "...but it is okay, we're upgrading %s and it ditched that file"
 msgstr "...men det är okej, vi uppgraderar %s och den kastade den filen"
 
-#: components/services/install/lib/eazel-install-logic2.c:2291
+#: components/services/install/lib/eazel-install-logic2.c:2336
 #, c-format
 msgid "checking feature consistency of %s"
 msgstr "kontrollerar finesskonsistens i %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2359
+#: components/services/install/lib/eazel-install-logic2.c:2404
 #, c-format
 msgid ""
 "feature missing : %s breaks if %s is installed (feature %s would be lost"
 msgstr ""
 "finess saknas: %s går sönder om %s installeras (finessen %s skulle saknas"
 
-#: components/services/install/lib/eazel-install-logic2.c:2438
+#: components/services/install/lib/eazel-install-logic2.c:2483
 #, c-format
 msgid "downloading %d packages"
 msgstr "hämtar %d paket"
 
-#: components/services/install/lib/eazel-install-logic2.c:2707
+#: components/services/install/lib/eazel-install-logic2.c:2753
 #, c-format
 msgid "will upgrade %s"
 msgstr "kommer att uppgradera %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2710
+#: components/services/install/lib/eazel-install-logic2.c:2756
 #, c-format
 msgid "will downgrade %s"
 msgstr "kommer att nedgradera %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2713
+#: components/services/install/lib/eazel-install-logic2.c:2759
 #, c-format
 msgid "will install %s"
 msgstr "kommer att installera %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2716
+#: components/services/install/lib/eazel-install-logic2.c:2762
 #, c-format
 msgid "will uninstall %s"
 msgstr "kommer att avinstallera %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2801
+#: components/services/install/lib/eazel-install-logic2.c:2847
 #: components/services/install/lib/eazel-install-problem.c:339
 #: components/services/install/lib/eazel-install-problem.c:342
 #, c-format
 msgid "%s requires %s"
 msgstr "%s kräver %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2994
+#: components/services/install/lib/eazel-install-logic2.c:3040
 #, c-format
 msgid "failed %s"
 msgstr "misslyckades med %s"
@@ -4100,7 +4100,7 @@ msgstr "Skrivbord"
 
 #: data/linksets/desktop.xml.h:2 libnautilus-extensions/nautilus-file.c:4796
 #: libnautilus-extensions/nautilus-trash-directory.c:301
-#: src/file-manager/fm-desktop-icon-view.c:65
+#: src/file-manager/fm-desktop-icon-view.c:67
 msgid "Trash"
 msgstr "Papperskorg"
 
@@ -5821,7 +5821,7 @@ msgstr "Ingen markering gjord"
 msgid " -_,;.?/&"
 msgstr " -_,;.?/&"
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:766
+#: libnautilus-extensions/nautilus-icon-dnd.c:755
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
@@ -5831,7 +5831,7 @@ msgstr ""
 "lämna objektet där du släppte det? Detta kommer att skriva över den lagrade "
 "manuella layouten."
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:770
+#: libnautilus-extensions/nautilus-icon-dnd.c:759
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
@@ -5841,7 +5841,7 @@ msgstr ""
 "lämna dessa objekt där du släppte dem? Detta kommer att skriva över den "
 "lagrade manuella layouten."
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:776
+#: libnautilus-extensions/nautilus-icon-dnd.c:765
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
@@ -5849,7 +5849,7 @@ msgstr ""
 "Denna mapp använder automatisk layout. Vill du byta till manuell layout och "
 "lämna detta objekt där du släppte det?"
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:779
+#: libnautilus-extensions/nautilus-icon-dnd.c:768
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
@@ -5857,11 +5857,11 @@ msgstr ""
 "Denna mapp använder automatisk layout. Vill du byta till manuell layout och "
 "lämna dessa objekt där du släppte dem?"
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:784
+#: libnautilus-extensions/nautilus-icon-dnd.c:773
 msgid "Switch to Manual Layout?"
 msgstr "Byt till manuell layout?"
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:785
+#: libnautilus-extensions/nautilus-icon-dnd.c:774
 msgid "Switch"
 msgstr "Byt"
 
@@ -5902,15 +5902,15 @@ msgstr "courier"
 msgid "lucida"
 msgstr "lucida"
 
-#: libnautilus-extensions/nautilus-preferences.c:76
+#: libnautilus-extensions/nautilus-preferences.c:77
 msgid "Beginner"
 msgstr "Nybörjare"
 
-#: libnautilus-extensions/nautilus-preferences.c:77
+#: libnautilus-extensions/nautilus-preferences.c:78
 msgid "Intermediate"
 msgstr "Mellan"
 
-#: libnautilus-extensions/nautilus-preferences.c:78
+#: libnautilus-extensions/nautilus-preferences.c:79
 msgid "Advanced"
 msgstr "Avancerad"
 
@@ -6564,25 +6564,25 @@ msgstr "_Töm text"
 msgid "Copy the selected text to the clipboard"
 msgstr "Kopiera den markerade texten till urklipp"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:3 src/nautilus-shell-ui.xml.h:16
+#: libnautilus/nautilus-clipboard-ui.xml.h:3 src/nautilus-shell-ui.xml.h:15
+msgid "Cut _Text"
+msgstr "Klipp _ut text"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:4 src/nautilus-shell-ui.xml.h:16
 msgid "Cut the selected text to the clipboard"
 msgstr "Klipp ut den markerade texten till urklipp"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:4 src/nautilus-shell-ui.xml.h:46
+#: libnautilus/nautilus-clipboard-ui.xml.h:5 src/nautilus-shell-ui.xml.h:46
 msgid "Paste the text stored on the clipboard"
 msgstr "Klistra in texten som är sparad i urklipp"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:5
+#: libnautilus/nautilus-clipboard-ui.xml.h:6
 msgid "Remove the selected text without putting it on the clipboard"
 msgstr "Ta bort den markerade texten utan att lägga det i urklipp"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:80
+#: libnautilus/nautilus-clipboard-ui.xml.h:7 src/nautilus-shell-ui.xml.h:80
 msgid "_Copy Text"
 msgstr "K_opiera text"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:7
-msgid "_Cut Text"
-msgstr "_Klipp ut text"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:8 src/nautilus-shell-ui.xml.h:93
 msgid "_Paste Text"
@@ -6593,7 +6593,7 @@ msgstr "K_listra in text"
 #. * to change it when we upgrade to GTK 2.0.
 #.
 #: nautilus.desktop.in.h:1 src/nautilus-window-manage-views.c:254
-#: src/nautilus-window-menus.c:569
+#: src/nautilus-window-menus.c:573
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -6609,22 +6609,22 @@ msgstr "Filhanteraren och det grafiska skalet Nautilus"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: src/file-manager/fm-desktop-icon-view.c:735
+#: src/file-manager/fm-desktop-icon-view.c:786
 #, c-format
 msgid "%s's Home"
 msgstr "%.0sHemkatalog"
 
-#: src/file-manager/fm-desktop-icon-view.c:1021
+#: src/file-manager/fm-desktop-icon-view.c:1072
 msgid "Empty Trash..."
 msgstr "Töm papperskorgen..."
 
-#: src/file-manager/fm-desktop-icon-view.c:1023
+#: src/file-manager/fm-desktop-icon-view.c:1074
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
 msgid "Empty Trash"
 msgstr "Töm papperskorgen"
 
-#: src/file-manager/fm-desktop-icon-view.c:1043
+#: src/file-manager/fm-desktop-icon-view.c:1094
 msgid "Unmount Volume"
 msgstr "Avmontera volym"
 
@@ -7575,7 +7575,7 @@ msgstr "Plats"
 #: src/file-manager/fm-search-list-view.c:603
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:6
 msgid "_Reveal in New Window"
-msgstr "Visa _ikon i nytt fönster"
+msgstr "Visa _objekt i nytt fönster"
 
 #. "Reveal in n New Windows" means open the parent folder for each
 #. * selected item in a separate new window, select each selected
@@ -7586,7 +7586,7 @@ msgstr "Visa _ikon i nytt fönster"
 #: src/file-manager/fm-search-list-view.c:611
 #, c-format
 msgid "Reveal in %d _New Windows"
-msgstr "Visa _ikon i %d nya fönster"
+msgstr "Visa _objekt i %d nya fönster"
 
 #. Note that the number of items actually displayed varies somewhat due
 #. * to the way files are collected in batches. So you can't assume that
@@ -7887,7 +7887,7 @@ msgstr "Återställ ikoner till originalstorlekarna"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:29
 msgid "Restore each selected icon to its original size"
-msgstr "Återställ varje ikon till dess originalstorlek"
+msgstr "Återställ varje markerad ikon till dess originalstorlek"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:30
 msgid "Reversed Order"
@@ -7899,7 +7899,7 @@ msgstr "Sträck ut ikon"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:32
 msgid "Tighter Layout"
-msgstr "Kompakt layout"
+msgstr "Kompaktare layout"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:33
 msgid "Toggle using a tighter layout scheme"
@@ -7931,7 +7931,7 @@ msgstr "_Sträck ut ikon"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:41
 msgid "_Tighter Layout"
-msgstr "_Kompakt layout"
+msgstr "_Kompaktare layout"
 
 #: src/file-manager/nautilus-indexing-info.c:85
 msgid "Indexing is %d%% complete."
@@ -7946,7 +7946,7 @@ msgid ""
 "An indexer is not running, or is not responding to requests to reindex your "
 "computer."
 msgstr ""
-"En indexerare körs inte, eller så svarar den inte på begäran att indexera om "
+"Ingen indexerare körs, eller så svarar den inte på begäran att indexera om "
 "din dator."
 
 #: src/file-manager/nautilus-indexing-info.c:185
@@ -8009,7 +8009,7 @@ msgstr "Tyvärr, söktjänsten medusa är inte tillgänglig."
 
 #: src/file-manager/nautilus-indexing-info.c:426
 msgid "%I:%M %p, %x"
-msgstr "%H.%M, %x"
+msgstr "%x %H.%M"
 
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:1
 msgid "Reveal each selected item in its original folder"
@@ -8017,7 +8017,7 @@ msgstr "Visa varje markerat objekt i dess ursprungsmapp"
 
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:2
 msgid "Reveal in New Window"
-msgstr "Visa ikon i nytt fönster"
+msgstr "Visa objekt i nytt fönster"
 
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:3
 msgid "Show Indexing Status"
@@ -8192,7 +8192,7 @@ msgstr "Bokmärken"
 msgid "Location"
 msgstr "Plats"
 
-#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:763
+#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:767
 msgid "Remove"
 msgstr "Ta bort"
 
@@ -8699,7 +8699,7 @@ msgstr "Välj en bildfil att lägga till som mönster:"
 
 #: src/nautilus-property-browser.c:1173
 msgid "Sorry, but you must specify a non-blank name for the new color."
-msgstr "Tyvärr, du måste ange ett icke-tomt namn för det nya emblemet."
+msgstr "Tyvärr, du måste ange ett icke-tomt namn för den nya färgen."
 
 #: src/nautilus-property-browser.c:1174
 msgid "Couldn't install color"
@@ -8741,7 +8741,7 @@ msgstr ""
 #: src/nautilus-property-browser.c:1365
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
-msgstr "Tyvärr, bilden på %s kunde inte installeras som ett emblem."
+msgstr "Tyvärr, bilden i %s kunde inte installeras som ett emblem."
 
 #: src/nautilus-property-browser.c:2024
 msgid "Select A Category:"
@@ -8924,7 +8924,7 @@ msgstr "[Senaste modifieringsdatum] är inte [00-01-24]"
 
 #: src/nautilus-search-bar-criterion.c:133
 msgid "[Last modified date] is after [1/24/00]"
-msgstr "[Senaste modifieringsdatum] är efter"
+msgstr "[Senaste modifieringsdatum] är efter [00-01-24]"
 
 #: src/nautilus-search-bar-criterion.c:134
 msgid "[Last modified date] is before [1/24/00]"
@@ -9081,8 +9081,7 @@ msgid ""
 "Nautilus shell operations that can be done from subsequent command-line "
 "invocations"
 msgstr ""
-"Nautilus-skaloperationer som kan utföras genom upprepade "
-"kommandoradsanvändanden"
+"Nautilus-skaloperationer som kan utföras genom upprepade kommandoradsanrop"
 
 #: src/Nautilus_shell.oaf.in.h:18
 msgid "Produces metafile objects for accessing Nautilus metadata"
@@ -9148,10 +9147,6 @@ msgstr "Stäng alla Nautilus-fönster"
 msgid "Close this window"
 msgstr "Stäng detta fönster"
 
-#: src/nautilus-shell-ui.xml.h:15
-msgid "Cut _Text"
-msgstr "Klipp _ut text"
-
 #: src/nautilus-shell-ui.xml.h:17
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Visa ett fönster som tillåter redigering av bokmärkena i denna menyn"
@@ -9213,7 +9208,7 @@ msgstr "Gå till hemplatsen"
 
 #: src/nautilus-shell-ui.xml.h:31
 msgid "Go to the location that contains this one"
-msgstr "Gå till platsen som innehåller detta"
+msgstr "Gå till platsen som innehåller denna"
 
 #: src/nautilus-shell-ui.xml.h:32
 msgid "Go to the next visited location"
@@ -9223,19 +9218,19 @@ msgstr "Gå till nästa besökta plats"
 msgid "Go to the previous visited location"
 msgstr "Gå till föregående besökta plats"
 
-#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:442
+#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:446
 msgid "Hide Location _Bar"
 msgstr "Göm _adressrad"
 
-#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:424
+#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:428
 msgid "Hide St_atus Bar"
 msgstr "Göm _statusrad"
 
-#: src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:430
+#: src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:434
 msgid "Hide _Sidebar"
 msgstr "Göm sido_panel"
 
-#: src/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:436
+#: src/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:440
 msgid "Hide _Toolbar"
 msgstr "Göm _verktygsrad"
 
@@ -9413,7 +9408,7 @@ msgstr "_Redigera bokmärken..."
 msgid "_Feedback"
 msgstr "_Återkoppling"
 
-#: src/nautilus-shell-ui.xml.h:86 src/nautilus-window-menus.c:1358
+#: src/nautilus-shell-ui.xml.h:86 src/nautilus-window-menus.c:1362
 msgid "_Find"
 msgstr "_Sök"
 
@@ -9663,7 +9658,7 @@ msgid ""
 "Unfortunately I couldn't tell which one."
 msgstr ""
 "En av sidopanelerna råkade ut för ett fel och kan inte fortsätta. Tyvärr kan "
-"jag inte säga vilken."
+"jag inte avgöra vilken."
 
 #: src/nautilus-window-manage-views.c:997
 #, c-format
@@ -9771,46 +9766,46 @@ msgstr "Kan inte visa plats"
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-window-menus.c:313
+#: src/nautilus-window-menus.c:317
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
 msgstr ""
 "Är du säker på att du vill glömma historien? I så fall kommer du att vara "
-"dömd att återuppleva den."
+"dömd att återupprepa den."
 
-#: src/nautilus-window-menus.c:316
+#: src/nautilus-window-menus.c:320
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr ""
 "Är du säker på att du vill att Nautilus ska glömma de platser som du har "
 "besökt?"
 
-#: src/nautilus-window-menus.c:321
+#: src/nautilus-window-menus.c:325
 msgid "Forget History?"
 msgstr "Glöm historik?"
 
-#: src/nautilus-window-menus.c:322
+#: src/nautilus-window-menus.c:326
 msgid "Forget"
 msgstr "Glöm"
 
-#: src/nautilus-window-menus.c:425
+#: src/nautilus-window-menus.c:429
 msgid "Show St_atus Bar"
 msgstr "Visa _statusrad"
 
-#: src/nautilus-window-menus.c:431
+#: src/nautilus-window-menus.c:435
 msgid "Show _Sidebar"
 msgstr "Visa sido_panel"
 
-#: src/nautilus-window-menus.c:437
+#: src/nautilus-window-menus.c:441
 msgid "Show _Toolbar"
 msgstr "Visa _verktygsrad"
 
-#: src/nautilus-window-menus.c:443
+#: src/nautilus-window-menus.c:447
 msgid "Show Location _Bar"
 msgstr "Visa _adressrad"
 
-#: src/nautilus-window-menus.c:494
+#: src/nautilus-window-menus.c:498
 msgid "Preferences"
 msgstr "Inställningar"
 
@@ -9820,11 +9815,11 @@ msgstr "Inställningar"
 #. * not translate the
 #. * company name, please.
 #.
-#: src/nautilus-window-menus.c:577
+#: src/nautilus-window-menus.c:581
 msgid "Copyright © 1999-2001 Eazel, Inc."
 msgstr "Copyright © 1999-2001 Eazel, Inc."
 
-#: src/nautilus-window-menus.c:579
+#: src/nautilus-window-menus.c:583
 msgid ""
 "Nautilus is a graphical shell\n"
 "for GNOME that makes it\n"
@@ -9841,7 +9836,7 @@ msgstr ""
 #. * bottom of the about box to give credit
 #. * to the translator(s)
 #.
-#: src/nautilus-window-menus.c:588
+#: src/nautilus-window-menus.c:592
 msgid "Translator Credits"
 msgstr ""
 "Översättare:\n"
@@ -9850,7 +9845,7 @@ msgstr ""
 "Richard Hult\n"
 "Rapportera fel i översättningen till sv@li.org"
 
-#: src/nautilus-window-menus.c:758
+#: src/nautilus-window-menus.c:762
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -9859,24 +9854,24 @@ msgstr ""
 "Platsen \"%s\" finns inte. Vill du ta bort alla bokmärken med denna plats "
 "från din lista?"
 
-#: src/nautilus-window-menus.c:762
+#: src/nautilus-window-menus.c:766
 msgid "Bookmark for Nonexistent Location"
 msgstr "Bokmärke för icke-existerande plats"
 
-#: src/nautilus-window-menus.c:776
+#: src/nautilus-window-menus.c:780
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Platsen \"%s\" finns inte längre."
 
-#: src/nautilus-window-menus.c:777
+#: src/nautilus-window-menus.c:781
 msgid "Go to Nonexistent Location"
 msgstr "Gå till ickeexisterande plats"
 
-#: src/nautilus-window-menus.c:846
+#: src/nautilus-window-menus.c:850
 msgid "Go to the location specified by this bookmark"
 msgstr "Gå till platsen som detta bokmärke anger"
 
-#: src/nautilus-window-menus.c:1357
+#: src/nautilus-window-menus.c:1361
 msgid "_Browse"
 msgstr "_Bläddra"
 
@@ -9894,6 +9889,9 @@ msgstr "Framåt"
 #: src/nautilus-zoom-control.c:531
 msgid "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
+
+#~ msgid "_Cut Text"
+#~ msgstr "_Klipp ut text"
 
 #~ msgid "Welcome, %s!"
 #~ msgstr "Välkommen, %s!"
