@@ -1,5 +1,17 @@
 2000-03-08  Ramiro Estrugo  <ramiro@eazel.com>
 
+	Added macros to check, assert and invoke class methods
+	for a given GtkOject.
+
+	* libnautilus/nautilus-gtk-macros.h:
+	(NAUTILUS_KLASS) Access the class for a given object
+	(NAUTILUS_INVOKE_METHOD) Invoke a method for a given object
+	(NAUTILUS_ACCESS_METHOD) Access a method.
+	(NAUTILUS_ASSERT_METHOD) Assert the non-nullness of a method for a given object
+	(NAUTILUS_INVOKE_METHOD_IF) Invoke a method if it aint null.
+	
+2000-03-08  Ramiro Estrugo  <ramiro@eazel.com>
+
 	First whack at having a better preferences ui.
 
 	* src/nautilus-prefs-box.h,

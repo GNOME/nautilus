@@ -19,7 +19,8 @@
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
   
-   Author: Darin Adler <darin@eazel.com>
+   Authors: Darin Adler <darin@eazel.com>
+            Ramiro Estrugo <ramiro@eazel.com>
 */
 
 #ifndef NAUTILUS_GTK_MACROS_H
@@ -117,5 +118,39 @@ class_name_in_function_format##_unimplemented_##signal (void) \
 #endif /* G_DISABLE_ASSERT */
 
 
+/*
+ * Access the class for a given object
+ */
+#define NAUTILUS_KLASS(obj)			\
+(GTK_OBJECT (obj)->klass)
+
+/*
+ * Invoke a method for a given object
+ */
+#define NAUTILUS_INVOKE_METHOD(obj, gtk_type, structure, method)			\
+(*(GTK_CHECK_CLASS_CAST ((NAUTILUS_KLASS (obj)), gtk_type, structure)) -> method)
+
+/*
+ * Access a method.
+ */
+#define NAUTILUS_ACCESS_METHOD(obj, gtk_type, structure, method)			\
+((GTK_CHECK_CLASS_CAST ((NAUTILUS_KLASS (obj)), gtk_type, structure)) -> method)
+
+/*
+ * Assert the non-nullness of a method for a given object
+ */
+#ifndef G_DISABLE_ASSERT
+#define NAUTILUS_ASSERT_METHOD(obj, gtk_type, structure, method)			\
+g_assert (((GTK_CHECK_CLASS_CAST ((NAUTILUS_KLASS (obj)), gtk_type, structure)) -> method) != NULL)
+#else
+#define NAUTILUS_ASSERT_METHOD(obj, gtk_type, structure, method)
+#endif
+
+/*
+ * Invoke a method if it aint null.
+ */
+#define NAUTILUS_INVOKE_METHOD_IF(obj, gtk_type, structure, method)	\
+if (NAUTILUS_ACCESS_METHOD (obj, gtk_type, structure, method))		\
+	NAUTILUS_INVOKE_METHOD (obj, gtk_type, structure, method)
 
 #endif /* NAUTILUS_GTK_MACROS_H */
