@@ -79,12 +79,19 @@ static EelEnumerationEntry speed_tradeoff_enum_entries[] = {
 };
 
 static EelEnumerationEntry default_zoom_level_enum_entries[] = {
+	/* xgettext:no-c-format */
 	{ "smallest",	    N_("25%"),		NAUTILUS_ZOOM_LEVEL_SMALLEST },
+	/* xgettext:no-c-format */
 	{ "smaller",	    N_("50%"),		NAUTILUS_ZOOM_LEVEL_SMALLER },
+	/* xgettext:no-c-format */
 	{ "small",	    N_("75%"),		NAUTILUS_ZOOM_LEVEL_SMALL },
+	/* xgettext:no-c-format */
 	{ "standard",	    N_("100%"),		NAUTILUS_ZOOM_LEVEL_STANDARD },
+	/* xgettext:no-c-format */
 	{ "large",	    N_("150%"),		NAUTILUS_ZOOM_LEVEL_LARGE },
+	/* xgettext:no-c-format */
 	{ "larger",	    N_("200%"),		NAUTILUS_ZOOM_LEVEL_LARGER },
+	/* xgettext:no-c-format */
 	{ "largest",	    N_("400%"),		NAUTILUS_ZOOM_LEVEL_LARGEST },
 	{ NULL }
 };
