@@ -35,11 +35,7 @@
 #include "nsComponentManagerUtils.h"
 #include "nsILocalFile.h"
 
-#if (MOZILLA_MILESTONE >= 18)
 #define LOCAL_FILE_ID NS_LOCAL_FILE_CONTRACTID
-#else
-#define LOCAL_FILE_ID NS_LOCAL_FILE_PROGID
-#endif
 
 extern "C" gboolean
 mozilla_components_register_library (const char *class_uuid,
