@@ -1601,11 +1601,19 @@ footer_item_clicked_callback (GtkWidget *widget, int index, gpointer callback_da
 
 	switch (index) {
 	case FOOTER_REGISTER_OR_PREFERENCES:
-		register_button_cb (NULL, view);
+		if (!view->details->logged_in) {
+			register_button_cb (NULL, view);
+		} else {
+			preferences_button_cb (NULL, view);
+		}
 		break;
 
 	case FOOTER_LOGIN_OR_LOGOUT:
-		generate_login_dialog (view);
+		if (!view->details->logged_in) {
+			generate_login_dialog (view);
+		} else {
+			logout_button_cb (NULL, view);
+		}
 		break;
 
 	case FOOTER_TERMS_OF_USER:
