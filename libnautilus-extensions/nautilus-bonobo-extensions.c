@@ -150,10 +150,11 @@ nautilus_bonobo_get_hidden (BonoboUIComponent *ui,
 }
 
 void
-nautilus_bonobo_add_menu_item (BonoboUIComponent *ui, const char *id, const char *path, const char *label)
+nautilus_bonobo_add_menu_item (BonoboUIComponent *ui, const char *id, const char *path, 
+			       const char *label, GdkPixbuf *pixbuf)
 {
 	char *xml_string, *encoded_label, *verb_name;
-	char *name, *full_id;
+	char *name, *full_id, *pixbuf_data;
 
 	/* Because we are constructing the XML ourselves, we need to
          * encode the label.
@@ -167,10 +168,24 @@ nautilus_bonobo_add_menu_item (BonoboUIComponent *ui, const char *id, const char
 	name = gnome_vfs_escape_string (id);
 	verb_name = gnome_vfs_escape_string (full_id);
 
-	xml_string = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" verb=\"verb:%s\"/>\n", 
-				      name, encoded_label, verb_name);
+	if (pixbuf != NULL) {
+		/* Encode pixbuf type and data into XML string */			
+		pixbuf_data = bonobo_ui_util_pixbuf_to_xml (pixbuf);
+		
+		xml_string = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" verb=\"verb:%s\" pixtype=\"pixbuf\" pixname=\"%s\"/>\n", 
+						name, encoded_label, verb_name, pixbuf_data);	
+		g_free (pixbuf_data);
+	} else {
+		xml_string = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" verb=\"verb:%s\"/>\n", 
+						name, encoded_label, verb_name);
+	}
+	
 	bonobo_ui_component_set (ui, path, xml_string, NULL);
 
+	if (pixbuf != NULL) {
+		bonobo_ui_util_set_pixbuf (ui, path, pixbuf);
+	}
+	
 	g_free (encoded_label);
 	g_free (name);
 	g_free (verb_name);

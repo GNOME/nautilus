@@ -842,30 +842,24 @@ append_bookmark_to_menu (NautilusWindow *window,
 	g_free (raw_name);
 	g_free (truncated_name);
 
-	/* Add menu item */
-	nautilus_bonobo_add_menu_item (window->details->shell_ui, unique_id, menu_item_path, display_name);
+	/* Create menu item with pixbuf */
+	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS);
+	nautilus_bonobo_add_menu_item (window->details->shell_ui, unique_id, menu_item_path, display_name, pixbuf);
 	
 	/* Add the status tip */
 	escaped_id = gnome_vfs_escape_string (unique_id);	
 	ui_path = g_strdup_printf ("%s/%s", menu_item_path, escaped_id);
 	nautilus_bonobo_set_tip (window->details->shell_ui, ui_path, _("Go to the specified location"));
-
-	/* Set pixbuf */	
-	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS);
-	if (pixbuf != NULL) {
-		bonobo_ui_util_set_pixbuf (window->details->shell_ui, ui_path, pixbuf);
-	}
-	
-	g_free (escaped_id);
-	g_free (ui_path);
-	g_free (display_name);
-
+			
 	/* Add verb to new bookmark menu item */
 	ui_path = g_strdup_printf ("%s/%s", menu_item_path, unique_id);	
 	verb_name = nautilus_bonobo_get_menu_item_verb_name (ui_path);
 	bonobo_ui_component_add_verb_full (window->details->shell_ui, verb_name, 
 					   activate_bookmark_in_menu_item, bookmark_holder, 
 					   bookmark_holder_free_cover);
+	g_free (escaped_id);
+	g_free (ui_path);
+	g_free (display_name);
 	g_free (verb_name);
 }
 

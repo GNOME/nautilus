@@ -146,4 +146,8 @@ GdkGC *    nautilus_gdk_create_copy_area_gc            (GdkWindow          *wind
 void       nautilus_gdk_gc_ref_if_not_null             (GdkGC              *gc_or_null);
 void       nautilus_gdk_gc_unref_if_not_null           (GdkGC              *gc_or_null);
 
+void	   nautilus_gdk_window_set_wm_hints_input      (GdkWindow 	   *w, 
+							gboolean 	    status);
+
+
 #endif /* NAUTILUS_GDK_EXTENSIONS_H */

@@ -3053,7 +3053,7 @@ add_open_with_app_bonobo_menu_item (BonoboUIComponent *ui,
 	item_id = g_strdup_printf ("app%d", index);
 	nautilus_bonobo_add_menu_item (ui, item_id,
 				       FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER,
-				       escaped_label);
+				       escaped_label, NULL);
 	g_free (item_id);
 	
 	verb_name = nautilus_bonobo_get_menu_item_verb_name (label);
@@ -3078,7 +3078,7 @@ add_open_with_viewer_bonobo_menu_item (BonoboUIComponent *ui,
 	item_id = g_strdup_printf ("viewer%d", index);
 	nautilus_bonobo_add_menu_item (ui,item_id,
 				       FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER,
-				       escaped_label);
+				       escaped_label, NULL);
 	g_free (item_id);
 	
 	verb_name = g_strdup_printf ("verb:%s", label);

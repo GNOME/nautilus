@@ -641,6 +641,40 @@ nautilus_window_close (NautilusWindow *window)
 	gtk_widget_destroy (GTK_WIDGET (window));
 }
 
+#if 0
+#include <gdk/gdkx.h>
+#include <gdk/gdkprivate.h>
+
+static GdkFilterReturn
+nautilus_window_filter (GdkXEvent *xev, GdkEvent *event, gpointer data)
+{
+	XEvent *xevent = (XEvent *)xev;
+		
+	if ((Atom) xevent->xclient.data.l[0] == gdk_wm_delete_window) {
+		/* The delete window request specifies a window
+		*  to delete. We don't actually destroy the
+		*  window because "it is only a request". (The
+		*  window might contain vital data that the
+		*  program does not want destroyed). Instead
+		*  the event is passed along to the program,
+		*  which should then destroy the window.
+		*/
+		GDK_NOTE (EVENTS, g_message ("delete window:\t\twindow: %ld", xevent->xclient.window));
+      
+		event->any.type = GDK_DELETE;
+
+		return GDK_FILTER_TRANSLATE;
+	} else if ((Atom) xevent->xclient.data.l[0] == gdk_wm_take_focus) {
+		/* Check and see if we are in a drag. If not, Focus window and bring to front */
+		nautilus_gdk_window_bring_to_front (GTK_WIDGET (data)->window);
+		
+		return GDK_FILTER_TRANSLATE;
+	}
+
+	return GDK_FILTER_REMOVE;
+}
+#endif
+
 static void
 nautilus_window_realize (GtkWidget *widget)
 {
@@ -651,7 +685,13 @@ nautilus_window_realize (GtkWidget *widget)
         
         /* Create our GdkWindow */
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
-        
+
+	/* Set window manager hints so click-drag from window to window works */
+	nautilus_gdk_window_set_wm_hints_input (widget->window, FALSE);
+
+	/* Add custom message filter to handle WM_TAKE_FOCUS */
+	//gdk_add_client_message_filter (gdk_wm_protocols, nautilus_window_filter, widget);
+
         /* Set the mini icon */
         filename = nautilus_pixmap_file ("nautilus-mini-logo.png");
         if (filename != NULL) {
@@ -707,6 +747,7 @@ nautilus_window_size_request (GtkWidget		*widget,
 		requisition->height = max_height;
 	}
 }
+
 
 /*
  * Main API
@@ -892,7 +933,7 @@ view_menu_choose_view_callback (GtkWidget *widget, gpointer data)
 	 */
 	nautilus_window_synch_content_view_menu (window);
 
-	nautilus_choose_component_for_file (window->details->viewed_file, 
+	nautilus_choose_component_for_file (window->details->viewed_file,
 					    GTK_WINDOW (window), 
 					    chose_component_callback, 
 					    window);
@@ -1804,7 +1845,7 @@ nautilus_window_show (GtkWidget *widget)
 		nautilus_window_show_sidebar (window);
 	} else {
 		nautilus_window_hide_sidebar (window);
-	}	
+	}
 }
 
 Bonobo_UIContainer 

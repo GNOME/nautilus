@@ -773,6 +773,36 @@ nautilus_gdk_gc_unref_if_not_null (GdkGC *gc_or_null)
 	}
 }
 
+/**
+ * nautilus_gdk_window_set_wm_hints_input:
+ * 
+ * Set the WM_HINTS.input flag to the passed in value
+ */
+void
+nautilus_gdk_window_set_wm_hints_input (GdkWindow *window, gboolean status)
+{
+	Display *dpy;
+	Window id;
+	XWMHints *wm_hints;
+
+	g_return_if_fail (window != NULL);
+
+	dpy = GDK_WINDOW_XDISPLAY (window);
+	id = GDK_WINDOW_XWINDOW (window);
+
+	wm_hints = XGetWMHints (dpy, id);
+	if (wm_hints == 0) {
+		wm_hints = XAllocWMHints ();
+	}
+
+	wm_hints->flags |= InputHint;
+	wm_hints->input = status;
+
+	XSetWMHints (dpy, id, wm_hints);
+	XFree (wm_hints);
+}
+
+
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static char *

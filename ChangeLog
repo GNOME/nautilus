@@ -1,3 +1,41 @@
+2000-10-18  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 3705, Bookmark icons do not appear in the menu item
+
+	This was caused by a strange precedence issue in the setting of
+	UI component pixbuf data.  If a menu item has alread been created,
+	setting the pixbuf data will have no effect.  Either the verb for 
+	the item has to be set with the data or the item has to have
+	its XML contructed  with the pixbuf type and data included in it
+	at creation time. I have opted for the latter choice.
+	
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:	
+	(nautilus_bonobo_add_menu_item):
+	Added setting of bitmap data if it is present as a
+	valid argument passed into the function.
+		
+	* src/file-manager/fm-directory-view.c:
+	(add_open_with_app_bonobo_menu_item),
+	(add_open_with_viewer_bonobo_menu_item):
+	Call nautilus_bonobo_add_menu_item
+	
+	* src/nautilus-window-menus.c: (append_bookmark_to_menu):
+	Call nautilus_bonobo_add_menu_item
+	
+	* src/nautilus-window.c: (nautilus_window_filter),
+	(nautilus_window_realize), (view_menu_choose_view_callback),
+	(nautilus_window_show):
+	Work in progress to handle focus issues when performing
+	click drag operations in background windows.
+	
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	* libnautilus-extensions/nautilus-gdk-extensions.h:
+	(nautilus_gdk_window_set_wm_hints_input):
+	New function set input files of WM_HINTS. This 
+	will be used later to handle click drag in background
+	windows.
+
 2000-10-18  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/mozilla/nautilus-mozilla-content-view.c:
