@@ -549,6 +549,7 @@ fm_list_receive_dropped_icons (NautilusList *list,
 	char *target_item_uri;
 	NautilusFile *target_item;
 	GList *source_uris, *p;
+	GArray *dummy;
 
 	target_item_uri = NULL;
 	source_uris = NULL;
@@ -584,9 +585,12 @@ fm_list_receive_dropped_icons (NautilusList *list,
 			}
 			source_uris = g_list_reverse (source_uris);
 			
+			/* pass in a 0-item array of icon positions */
+			dummy = g_array_new (FALSE, TRUE, sizeof (GdkPoint));
 			/* start the copy */
-			fm_directory_view_move_copy_items (source_uris, NULL,
+			fm_directory_view_move_copy_items (source_uris, dummy,
 							   target_item_uri, action, x, y, directory_view);
+		        g_array_free (dummy, TRUE);
 		}
 	}
 	

@@ -3925,7 +3925,7 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 {
 	CopyMoveDoneData *copy_move_done_data;
 	
-	g_assert (relative_item_points == NULL 
+	g_assert (relative_item_points->len == 0 
 		|| g_list_length ((GList *)item_uris) == relative_item_points->len);
 
 	/* add the drop location to the icon offsets */

@@ -1,3 +1,21 @@
+2000-12-04  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Gene Z. Ragan <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(nautilus_file_operations_copy_move):
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_move_copy_items):
+	* src/file-manager/fm-list-view.c: (fm_list_receive_dropped_icons):
+	Fixed 4949:
+	Fix a crash when copying from an icon view to a list view -
+	my last fix to set icon positions properly during duplicate was sloppy
+	and broke this.
+	The change needed to add one more place that use an empty GArray instead
+	of a NULL.
+	Properly handle the case of an empty GArray in
+	nautilus_file_operations_copy_move.
+
 2000-12-04  Maciej Stachowiak  <mjs@eazel.com>
 
 	* README: Update OAF branch info.

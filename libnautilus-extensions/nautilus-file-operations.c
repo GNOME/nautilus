@@ -1465,7 +1465,9 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	xfer_info->parent_view = view;
 	xfer_info->progress_dialog = NULL;
 
-	icon_position_iterator = icon_position_iterator_new (relative_item_points, item_uris);
+	if (relative_item_points->len > 0) {
+		icon_position_iterator = icon_position_iterator_new (relative_item_points, item_uris);
+	}
 	
 	if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) {
 		/* localizers: progress dialog title */
