@@ -1,3 +1,20 @@
+2002-02-27  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-undo-manager.c
+	(corba_append, corba_forget, corba_undo): fix the
+	undo manager impl. to map the servant properly.
+
+2002-02-26  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-entry.c
+	(nautilus_entry_get_type): write out in full so we
+	can handle the editable interface.
+	(nautilus_entry_editable_init): setup the editable
+	interface.
+	(nautilus_entry_set_selection_bounds),
+	(nautilus_entry_insert_text),
+	(nautilus_entry_delete_text): re-instate.
+
 2002-02-26  Darin Adler  <darin@bentspoon.com>
 
 	* Many files:

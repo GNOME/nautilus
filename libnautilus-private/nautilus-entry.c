@@ -54,9 +54,8 @@ static guint signals[LAST_SIGNAL];
 static void nautilus_entry_init       (NautilusEntry      *entry);
 static void nautilus_entry_class_init (NautilusEntryClass *class);
 
-EEL_CLASS_BOILERPLATE (NautilusEntry,
-		       nautilus_entry,
-		       GTK_TYPE_ENTRY)
+static GObjectClass *parent_class = NULL;
+static GtkEditableClass *parent_editable_interface = NULL;
 
 static void
 emacs_shortcuts_preference_changed_callback (gpointer callback_data)
@@ -274,20 +273,15 @@ nautilus_entry_set_text (NautilusEntry *entry, const gchar *text)
 	g_signal_emit (entry, signals[SELECTION_CHANGED], 0);
 }
 
-#if GNOME2_CONVERSION_COMPLETE
-
 static void
 nautilus_entry_set_selection_bounds (GtkEditable *editable,
 				     int start_pos,
 				     int end_pos)
 {
-	EEL_CALL_PARENT (GTK_EDITABLE_CLASS, set_selection_bounds,
-			 (editable, start_pos, end_pos));
+	parent_editable_interface->set_selection_bounds (editable, start_pos, end_pos);
 
 	g_signal_emit (editable, signals[SELECTION_CHANGED], 0);
 }
-
-#endif
 
 static gboolean
 nautilus_entry_button_press (GtkWidget *widget,
@@ -321,8 +315,6 @@ nautilus_entry_button_release (GtkWidget *widget,
 	return result;
 }
 
-#if GNOME2_CONVERSION_COMPLETE
-
 static void
 nautilus_entry_insert_text (GtkEditable *editable, const gchar *text,
 			    int length, int *position)
@@ -336,8 +328,7 @@ nautilus_entry_insert_text (GtkEditable *editable, const gchar *text,
 		g_signal_emit (editable, signals[USER_CHANGED], 0);
 	}
 
-	EEL_CALL_PARENT (GTK_EDITABLE_CLASS, insert_text, 
-			      (editable, text, length, position));
+	parent_editable_interface->insert_text (editable, text, length, position);
 
 	g_signal_emit (editable, signals[SELECTION_CHANGED], 0);
 }
@@ -353,14 +344,11 @@ nautilus_entry_delete_text (GtkEditable *editable, int start_pos, int end_pos)
 	if (entry->details->user_edit) {
 		g_signal_emit (editable, signals[USER_CHANGED], 0);
 	}
-	
-	EEL_CALL_PARENT (GTK_EDITABLE_CLASS, delete_text, 
-			      (editable, start_pos, end_pos));
+
+	parent_editable_interface->delete_text (editable, start_pos, end_pos);
 
 	g_signal_emit (editable, signals[SELECTION_CHANGED], 0);
 }
-
-#endif
 
 /* Overridden to work around GTK bug. The selection_clear_event is queued
  * when the selection changes. Changing the selection to NULL and then
@@ -385,22 +373,32 @@ nautilus_entry_selection_clear (GtkWidget *widget,
 }
 
 static void
+nautilus_entry_editable_init (GtkEditableClass *iface)
+{
+	parent_editable_interface = g_type_interface_peek_parent (iface);
+
+	iface->insert_text = nautilus_entry_insert_text;
+	iface->delete_text = nautilus_entry_delete_text;
+	iface->set_selection_bounds = nautilus_entry_set_selection_bounds;
+
+	/* Otherwise we might need some memcpy loving */
+	g_assert (iface->do_insert_text != NULL);
+	g_assert (iface->get_position != NULL);
+	g_assert (iface->get_chars != NULL);
+}
+
+static void
 nautilus_entry_class_init (NautilusEntryClass *class)
 {
 	GtkWidgetClass *widget_class;
 	GtkObjectClass *object_class;
 	GObjectClass *gobject_class;
-	
-#if GNOME2_CONVERSION_COMPLETE
-	GtkEditableClass *editable_class;
-#endif
-		
+
+	parent_class = g_type_class_peek_parent (class);
+
 	widget_class = GTK_WIDGET_CLASS (class);
 	gobject_class = G_OBJECT_CLASS (class);
 	object_class = GTK_OBJECT_CLASS (class);
-#if GNOME2_CONVERSION_COMPLETE
-	editable_class = GTK_EDITABLE_CLASS (class);
-#endif
 		
 	widget_class->button_press_event = nautilus_entry_button_press;
 	widget_class->button_release_event = nautilus_entry_button_release;
@@ -409,12 +407,6 @@ nautilus_entry_class_init (NautilusEntryClass *class)
 	widget_class->selection_clear_event = nautilus_entry_selection_clear;
 	
 	gobject_class->finalize = nautilus_entry_finalize;
-	
-#if GNOME2_CONVERSION_COMPLETE
-	editable_class->insert_text = nautilus_entry_insert_text;
-	editable_class->delete_text = nautilus_entry_delete_text;
-	editable_class->set_selection_bounds = nautilus_entry_set_selection_bounds;
-#endif
 
 	/* Set up signals */
 	signals[USER_CHANGED] = g_signal_new
@@ -444,4 +436,39 @@ nautilus_entry_set_special_tab_handling (NautilusEntry *entry,
 	g_return_if_fail (NAUTILUS_IS_ENTRY (entry));
 
 	entry->details->special_tab_handling = special_tab_handling;
+}
+
+
+GType
+nautilus_entry_get_type (void)
+{
+	static GType entry_type = 0;
+
+	if (entry_type == 0) {						
+		static const GInterfaceInfo editable_info =
+		{
+			(GInterfaceInitFunc) nautilus_entry_editable_init,
+			NULL,
+			NULL
+		};
+
+		static const GTypeInfo object_info = {
+		    sizeof (NautilusEntryClass),
+		    NULL,		/* base_init */
+		    NULL,		/* base_finalize */		
+		    (GClassInitFunc) nautilus_entry_class_init,
+		    NULL,		/* class_finalize */		
+		    NULL,               /* class_data */		
+		    sizeof (NautilusEntry),					
+		    0,                  /* n_preallocs */		
+		    (GInstanceInitFunc) nautilus_entry_init
+		};							
+		entry_type = g_type_register_static (
+			GTK_TYPE_ENTRY, "NautilusEntry",
+			&object_info, 0);
+		g_type_add_interface_static (
+			entry_type, GTK_TYPE_EDITABLE, &editable_info);
+	}
+			
+	return entry_type;						
 }

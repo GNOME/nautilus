@@ -61,9 +61,11 @@ typedef struct {
 	char *no_undo_menu_item_hint;
 } UndoMenuHandlerConnection;
 
-BONOBO_CLASS_BOILERPLATE_FULL (NautilusUndoManager, nautilus_undo_manager,
+BONOBO_CLASS_BOILERPLATE_FULL (NautilusUndoManager,
+			       nautilus_undo_manager,
 			       Nautilus_Undo_Manager,
-			       BonoboObject, BONOBO_OBJECT_TYPE)
+			       BonoboObject,
+			       BONOBO_OBJECT_TYPE)
 
 static void
 release_transaction (NautilusUndoManager *manager)
@@ -84,14 +86,14 @@ release_transaction (NautilusUndoManager *manager)
 }
 
 static void
-corba_append (PortableServer_Servant servant,
+corba_append (PortableServer_Servant    servant,
 	      Nautilus_Undo_Transaction transaction,
-	      CORBA_Environment *ev)
+	      CORBA_Environment        *ev)
 {
 	NautilusUndoManager *manager;
 	Nautilus_Undo_Transaction duplicate_transaction;
 
-	manager = NAUTILUS_UNDO_MANAGER (bonobo_object_from_servant (bonobo_object));
+	manager = NAUTILUS_UNDO_MANAGER (bonobo_object_from_servant (servant));
 
 	/* Check, complain, and ignore the passed-in transaction if we
 	 * get more than one within a single undo operation. The single
@@ -118,13 +120,13 @@ corba_append (PortableServer_Servant servant,
 }
 
 static void
-corba_forget (PortableServer_Servant servant,
+corba_forget (PortableServer_Servant    servant,
 	      Nautilus_Undo_Transaction transaction,
-	      CORBA_Environment *ev)
+	      CORBA_Environment        *ev)
 {
 	NautilusUndoManager *manager;
 
-	manager = NAUTILUS_UNDO_MANAGER (bonobo_object_from_servant (bonobo_object));
+	manager = NAUTILUS_UNDO_MANAGER (bonobo_object_from_servant (servant));
 
 	/* Nothing to forget unless the item we are passed is the
 	 * transaction we are currently holding.
@@ -142,11 +144,11 @@ corba_forget (PortableServer_Servant servant,
 
 static void
 corba_undo (PortableServer_Servant servant,
-	    CORBA_Environment *ev)
+	    CORBA_Environment     *ev)
 {
 	NautilusUndoManager *manager;
 
-	manager = NAUTILUS_UNDO_MANAGER (bonobo_object_from_servant (bonobo_object));
+	manager = NAUTILUS_UNDO_MANAGER (bonobo_object_from_servant (servant));
 	nautilus_undo_manager_undo (manager);
 }
 
