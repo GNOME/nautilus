@@ -1896,8 +1896,6 @@ nautilus_file_invalidate_count_and_mime_list (NautilusFile *file)
 	file->details->directory_count_is_up_to_date = FALSE;
 	file->details->mime_list_is_up_to_date = FALSE;
 	
-	nautilus_file_unref (file);
-	
 	nautilus_directory_async_state_changed (parent_directory);
 }
 

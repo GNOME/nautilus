@@ -1,3 +1,15 @@
+2001-07-22  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* libnautilus-private/nautilus-directory-async.c
+	(nautilus_file_invalidate_count_and_mime_list): Avoid a ref
+	underflow. This was causing a crash noticed by Anders
+	Carlsson. I'm so embarassed!
+
+	* src/file-manager/fm-desktop-icon-view.c
+	(fm_desktop_icon_view_destroy, delayed_init): Make sure to
+	disconnect signals on destroy to avoid a possible crash when
+	turning the desktop off and back on, and not using fam.
+
 2001-07-22  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/music/nautilus-music-view.c (click_column_callback):

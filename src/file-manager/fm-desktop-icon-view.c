@@ -90,6 +90,7 @@ struct FMDesktopIconViewDetails
 	/* For the desktop rescanning
 	 */
 	guint delayed_init_signal;
+	guint done_loading_signal;
 	guint reload_desktop_timeout;
 	gboolean pending_rescan;
 };
@@ -235,6 +236,17 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 	/* Remove desktop rescan timeout. */
 	if (icon_view->details->reload_desktop_timeout != 0) {
 		gtk_timeout_remove (icon_view->details->reload_desktop_timeout);
+	}
+
+	if (icon_view->details->done_loading_signal != 0) {
+		gtk_signal_disconnect (GTK_OBJECT (fm_directory_view_get_model
+						   (FM_DIRECTORY_VIEW (icon_view))),
+				       icon_view->details->done_loading_signal);
+	}
+
+	if (icon_view->details->delayed_init_signal != 0) {
+		gtk_signal_disconnect (GTK_OBJECT (icon_view),
+				       icon_view->details->delayed_init_signal);
 	}
 	
 	/* Delete all of the link files. */
@@ -527,10 +539,11 @@ static void
 delayed_init (FMDesktopIconView *desktop_icon_view)
 {
 	/* Keep track of the load time. */
-	gtk_signal_connect (GTK_OBJECT (fm_directory_view_get_model
-					(FM_DIRECTORY_VIEW (desktop_icon_view))),
-			    "done_loading",
-			    GTK_SIGNAL_FUNC (done_loading), desktop_icon_view);
+	desktop_icon_view->details->done_loading_signal = 
+		gtk_signal_connect (GTK_OBJECT (fm_directory_view_get_model
+						(FM_DIRECTORY_VIEW (desktop_icon_view))),
+				    "done_loading",
+				    GTK_SIGNAL_FUNC (done_loading), desktop_icon_view);
 
 	/* Monitor desktop directory. */
 	desktop_icon_view->details->reload_desktop_timeout =
