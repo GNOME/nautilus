@@ -48,7 +48,6 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
-#include <libgnomevfs/gnome-vfs-mime.h>
 #include <libxml/parser.h>
 #include <pwd.h>
 #include <stdlib.h>

@@ -43,8 +43,8 @@
 #include <libxml/xmlmemory.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
-#include <libgnomevfs/gnome-vfs-mime.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
+#include <libgnomevfs/gnome-vfs-mime-utils.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <stdlib.h>
 
@@ -134,7 +134,7 @@ nautilus_link_local_set_icon (const char *path, const char *icon_name)
 	default:
 		result = FALSE;
 	}
-	
+
 	file = nautilus_file_get (path);
 	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
 	nautilus_file_invalidate_attributes (file, attributes);

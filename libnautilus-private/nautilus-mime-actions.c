@@ -31,7 +31,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <libgnomevfs/gnome-vfs-application-registry.h>
-#include <libgnomevfs/gnome-vfs-mime.h>
+#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <stdio.h>
 
 static int         gnome_vfs_mime_application_has_id             (GnomeVFSMimeApplication  *application,
