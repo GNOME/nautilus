@@ -6,5 +6,6 @@
 #include "ntl-view.h"
 #include "ntl-meta-view.h"
 #include "ntl-content-view.h"
+#include "ntl-uri-map.h"
 
 #endif

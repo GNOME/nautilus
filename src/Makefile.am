@@ -10,6 +10,8 @@ nautilus_SOURCES=		\
 	ntl-meta-view.h		\
 	ntl-meta-view.c		\
 	ntl-types.h		\
+	ntl-uri-map.h		\
+	ntl-uri-map.c		\
 	ntl-view.h		\
 	ntl-view.c		\
 	ntl-window.h		\

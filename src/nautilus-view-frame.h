@@ -37,18 +37,6 @@ extern "C" {
 typedef struct _NautilusView       NautilusView;
 typedef struct _NautilusViewClass  NautilusViewClass;
 
-struct _NautilusView
-{
-  GtkBin parent;
-
-  GtkWidget *main_window;
-
-  char *iid;
-  GtkWidget *client;
-
-  guint construct_arg_count;
-};
-
 struct _NautilusViewClass
 {
   GtkBinClass parent_spot;
@@ -64,6 +52,18 @@ struct _NautilusViewClass
   GtkBinClass *parent_class;
   guint view_signals[3];
   guint num_construct_args;
+};
+
+struct _NautilusView
+{
+  GtkBin parent;
+
+  GtkWidget *main_window;
+
+  char *iid;
+  GtkWidget *client;
+
+  guint construct_arg_count;
 };
 
 GtkType nautilus_view_get_type                (void);

@@ -4,6 +4,7 @@
 
 static void nautilus_window_class_init (NautilusWindowClass *klass);
 static void nautilus_window_init (NautilusWindow *window);
+static void nautilus_window_destroy (NautilusWindow *window);
 static void nautilus_window_back (NautilusWindow *window);
 static void nautilus_window_fwd (NautilusWindow *window);
 static void nautilus_window_set_arg (GtkObject      *object,
@@ -19,6 +20,8 @@ static void nautilus_window_real_request_location_change (NautilusWindow *window
 							  GtkWidget *requesting_view);
 
 #define CONTENTS_AS_HBOX
+/* six seconds */
+#define STATUSBAR_CLEAR_TIMEOUT 6000
 
 GtkType
 nautilus_window_get_type(void)
@@ -73,6 +76,7 @@ nautilus_window_class_init (NautilusWindowClass *klass)
   int i;
 
   object_class = (GtkObjectClass*) klass;
+  object_class->destroy = (void (*)(GtkObject *))nautilus_window_destroy;
   object_class->get_arg = nautilus_window_get_arg;
   object_class->set_arg = nautilus_window_set_arg;
 
@@ -100,6 +104,30 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 			   ARG_CONTENT_VIEW);
 }
 
+static gboolean
+nautilus_window_clear_status(NautilusWindow *window)
+{
+  gtk_statusbar_pop(GTK_STATUSBAR(GNOME_APP(window)->statusbar), window->statusbar_ctx);
+  window->statusbar_clear_id = 0;
+  return FALSE;
+}
+
+static void
+nautilus_window_set_status(NautilusWindow *window, const char *txt)
+{
+  if(window->statusbar_clear_id)
+    g_source_remove(window->statusbar_clear_id);
+
+  gtk_statusbar_pop(GTK_STATUSBAR(GNOME_APP(window)->statusbar), window->statusbar_ctx);
+  if(txt)
+    {
+      window->statusbar_clear_id = g_timeout_add(STATUSBAR_CLEAR_TIMEOUT, (GSourceFunc)nautilus_window_clear_status, window);
+      gtk_statusbar_push(GTK_STATUSBAR(GNOME_APP(window)->statusbar), window->statusbar_ctx, txt);
+    }
+  else
+    window->statusbar_clear_id = 0;
+}
+
 static void
 nautilus_window_constructed(NautilusWindow *window)
 {
@@ -109,7 +137,7 @@ nautilus_window_constructed(NautilusWindow *window)
   };
   GnomeUIInfo main_menu[] = {
     GNOMEUIINFO_MENU_CLOSE_ITEM(nautilus_window_close, NULL),
-    GNOMEUIINFO_SUBTREE_STOCK(N_("Actions"), dummy_menu, GNOME_STOCK_MENU_JUMP_TO),
+    GNOMEUIINFO_SUBTREE_STOCK(N_("_Actions"), dummy_menu, GNOME_STOCK_MENU_JUMP_TO),
     GNOMEUIINFO_END
   };
 #if 0
@@ -118,14 +146,14 @@ nautilus_window_constructed(NautilusWindow *window)
     GNOMEUIINFO_END
   };
 #endif
-  GtkWidget *menu_hbox, *menubar, *wtmp;
+  GtkWidget *menu_hbox, *menubar, *wtmp, *statusbar;
   GtkAccelGroup *ag;
 
   app = GNOME_APP(window);
 
-  ag = gtk_object_get_data(GTK_OBJECT(app), "GtkAccelGroup");
-  if (ag && !g_slist_find(gtk_accel_groups_from_object (GTK_OBJECT (app)), ag))
-    gtk_window_add_accel_group(GTK_WINDOW(app), ag);
+  ag = gtk_accel_group_new();
+  gtk_object_set_data(GTK_OBJECT(app), "GtkAccelGroup", ag);
+  gtk_window_add_accel_group(GTK_WINDOW(app), ag);
 
   menu_hbox = gtk_hbox_new(FALSE, GNOME_PAD);
   menubar = gtk_menu_bar_new();
@@ -181,7 +209,9 @@ nautilus_window_constructed(NautilusWindow *window)
   }
   gtk_widget_show (menu_hbox);
 
-  gnome_app_set_statusbar(app, gtk_statusbar_new());
+  gnome_app_set_statusbar(app, (statusbar = gtk_statusbar_new()));
+  window->statusbar_ctx = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "IhateGtkStatusbar");
+
   gnome_app_install_menu_hints(app, main_menu); /* This needs a statusbar in order to work */
 
   wtmp = gnome_stock_pixmap_widget(GTK_WIDGET(window), GNOME_STOCK_PIXMAP_BACK);
@@ -265,7 +295,8 @@ nautilus_window_set_arg (GtkObject      *object,
 #else
       gtk_paned_pack1(GTK_PANED(window->content_hbox), new_cv, TRUE, FALSE);
 #endif
-      gtk_widget_queue_resize(window->content_hbox);
+
+    gtk_widget_queue_resize(window->content_hbox);
     window->content_view = new_cv;
     break;
   }
@@ -291,6 +322,21 @@ nautilus_window_get_arg (GtkObject      *object,
 static void
 nautilus_window_init (NautilusWindow *window)
 {
+}
+
+static void nautilus_window_destroy (NautilusWindow *window)
+{
+  g_slist_free(window->meta_views);
+  g_free(window->current_uri);
+  g_free(window->actual_current_uri);
+  g_free(window->current_content_type);
+  g_slist_foreach(window->uris_prev, (GFunc)g_free, NULL);
+  g_slist_foreach(window->uris_next, (GFunc)g_free, NULL);
+  g_slist_free(window->uris_prev);
+  g_slist_free(window->uris_next);
+
+  if(window->statusbar_clear_id)
+    g_source_remove(window->statusbar_clear_id);
 }
 
 GtkWidget *
@@ -390,7 +436,19 @@ nautilus_window_change_location(NautilusWindow *window,
 {
   guint signum;
   GSList *cur;
+  GSList *discard_views, *keep_views, *notfound_views;
+
   NautilusNavigationInfo loci_spot, *loci;
+
+  loci = nautilus_navinfo_new(&loci_spot, loc, window->current_uri, window->actual_current_uri, window->current_content_type);
+
+  if(!loci)
+    {
+      char cbuf[1024];
+      g_snprintf(cbuf, sizeof(cbuf), _("Cannot load %s"), loc);
+      nautilus_window_set_status(window, cbuf);
+      return;
+    }
 
   /* Update history */
   if(is_back)
@@ -410,30 +468,59 @@ nautilus_window_change_location(NautilusWindow *window,
 	{
 	  append_val = g_strdup(loc);
 	  g_slist_foreach(window->uris_next, (GFunc)g_free, NULL);
-	  g_slist_free(window->uris_next);
+	  g_slist_free(window->uris_next); window->uris_next = NULL;
 	}
       window->uris_prev = g_slist_prepend(window->uris_prev, append_val);
     }
   gtk_widget_set_sensitive(window->btn_back, window->uris_prev?TRUE:FALSE);
   gtk_widget_set_sensitive(window->btn_fwd, window->uris_next?TRUE:FALSE);
 
-  memset(&loci_spot, 0, sizeof(loci_spot));
-  loci = &loci_spot;
-  loci->requested_uri = loci->actual_uri = loc;
-  loci->referring_uri = window->current_uri;
-  loci->actual_referring_uri = window->actual_current_uri;
-
   signum = gtk_signal_lookup("notify_location_change", nautilus_view_get_type());
 
-  for(cur = window->meta_views; cur; cur = cur->next)
-    gtk_signal_emit(GTK_OBJECT(cur->data), signum, loci, window->content_view, requesting_view);
+  /* If we need to load a different IID, do that before sending the location change request */
+  if(strcmp(NAUTILUS_VIEW(window->content_view)->iid, loci->content_iid))
+    nautilus_view_load_client(NAUTILUS_VIEW(window->content_view), loci->content_iid);
 
   gtk_signal_emit(GTK_OBJECT(window->content_view), signum, loci, window->content_view, requesting_view);
 
+  notfound_views = keep_views = discard_views = NULL;
+  for(cur = window->meta_views; cur; cur = cur->next)
+    {
+      NautilusView *view = cur->data;
+
+      if(g_slist_find_custom(loci->meta_iids, view->iid, (GCompareFunc)strcmp))
+	gtk_signal_emit(GTK_OBJECT(view), signum, loci, window->content_view, requesting_view);
+      else
+	discard_views = g_slist_prepend(discard_views, view);
+    }
+  for(cur = loci->meta_iids; cur; cur = cur->next)
+    {
+      GSList *curview;
+      for(curview = window->meta_views; curview; curview = curview->next)
+	{
+	  if(!strcmp(NAUTILUS_VIEW(curview->data)->iid, cur->data))
+	    break;
+	}
+      if(!curview)
+	{
+	  NautilusView *view;
+	  view = NAUTILUS_VIEW(gtk_widget_new(nautilus_meta_view_get_type(), "main_window", window, NULL));
+	  nautilus_view_load_client(view, cur->data);
+	  nautilus_window_add_meta_view(window, view);
+	}
+    }
+  for(cur = discard_views; cur; cur = cur->next)
+    nautilus_window_remove_meta_view(window, cur->data);
+  g_slist_free(discard_views);
+
+  g_free(window->current_content_type);
+  window->current_content_type = g_strdup(loci->content_type);
   g_free(window->current_uri);
-  window->current_uri = loci->requested_uri;
+  window->current_uri = g_strdup(loci->requested_uri);
   g_free(window->actual_current_uri);
-  window->actual_current_uri = loci->actual_uri;
+  window->actual_current_uri = g_strdup(loci->actual_uri);
+
+  nautilus_navinfo_free(loci);
 }
 
 static void

@@ -32,8 +32,11 @@ struct _NautilusWindow {
   GSList *meta_views;
   GtkWidget *meta_notebook, *content_hbox, *btn_back, *btn_fwd;
   NautilusLocationReference current_uri, actual_current_uri;
+  char *current_content_type;
 
   GSList *uris_prev, *uris_next;
+
+  guint statusbar_ctx, statusbar_clear_id;
 };
 
 GtkType nautilus_window_get_type(void);
