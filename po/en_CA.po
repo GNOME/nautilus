@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-05-15 19:20-0400\n"
-"PO-Revision-Date: 2004-05-15 19:22-0400\n"
-"Last-Translator: Alexander Winston <alexander.winston@comcast.net>\n"
+"POT-Creation-Date: 2004-05-24 14:37-0700\n"
+"PO-Revision-Date: 2004-05-24 14:38-0700\n"
+"Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: English/Canada <adamw@FreeBSD.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -247,13 +247,11 @@ msgstr "Software"
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
-msgid_plural ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
-msgstr[0] ""
+msgstr ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
-msgstr[1] ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
 
@@ -993,6 +991,7 @@ msgid "Label to display in the column"
 msgstr "Label to display in the column"
 
 #: libnautilus-extension/nautilus-column.c:196
+#: src/file-manager/fm-ditem-page.c:344 src/file-manager/fm-ditem-page.c:355
 msgid "Description"
 msgstr "Description"
 
@@ -1382,7 +1381,9 @@ msgstr ""
 msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
-msgstr "If this is set to true, icons linking to mounted volumes will be put on the desktop."
+msgstr ""
+"If this is set to true, icons linking to mounted volumes will be put on the "
+"desktop."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
@@ -3025,51 +3026,51 @@ msgstr "whether we are highlighted for a D&D drop"
 msgid "The selection rectangle"
 msgstr "The selection rectangle"
 
-#: libnautilus-private/nautilus-icon-container.c:4195
+#: libnautilus-private/nautilus-icon-container.c:4202
 msgid "Frame Text"
 msgstr "Frame Text"
 
-#: libnautilus-private/nautilus-icon-container.c:4196
+#: libnautilus-private/nautilus-icon-container.c:4203
 msgid "Draw a frame around unselected text"
 msgstr "Draw a frame around unselected text"
 
-#: libnautilus-private/nautilus-icon-container.c:4202
+#: libnautilus-private/nautilus-icon-container.c:4209
 msgid "Selection Box Color"
 msgstr "Selection Box Colour"
 
-#: libnautilus-private/nautilus-icon-container.c:4203
+#: libnautilus-private/nautilus-icon-container.c:4210
 msgid "Color of the selection box"
 msgstr "Colour of the selection box"
 
-#: libnautilus-private/nautilus-icon-container.c:4208
+#: libnautilus-private/nautilus-icon-container.c:4215
 msgid "Selection Box Alpha"
 msgstr "Selection Box Alpha"
 
-#: libnautilus-private/nautilus-icon-container.c:4209
+#: libnautilus-private/nautilus-icon-container.c:4216
 msgid "Opacity of the selection box"
 msgstr "Opacity of the selection box"
 
-#: libnautilus-private/nautilus-icon-container.c:4216
+#: libnautilus-private/nautilus-icon-container.c:4223
 msgid "Highlight Alpha"
 msgstr "Highlight Alpha"
 
-#: libnautilus-private/nautilus-icon-container.c:4217
+#: libnautilus-private/nautilus-icon-container.c:4224
 msgid "Opacity of the highlight for selected icons"
 msgstr "Opacity of the highlight for selected icons"
 
-#: libnautilus-private/nautilus-icon-container.c:4223
+#: libnautilus-private/nautilus-icon-container.c:4230
 msgid "Light Info Color"
 msgstr "Light Info Colour"
 
-#: libnautilus-private/nautilus-icon-container.c:4224
+#: libnautilus-private/nautilus-icon-container.c:4231
 msgid "Color used for information text against a dark background"
 msgstr "Colour used for information text against a dark background"
 
-#: libnautilus-private/nautilus-icon-container.c:4229
+#: libnautilus-private/nautilus-icon-container.c:4236
 msgid "Dark Info Color"
 msgstr "Dark Info Colour"
 
-#: libnautilus-private/nautilus-icon-container.c:4230
+#: libnautilus-private/nautilus-icon-container.c:4237
 msgid "Color used for information text against a light background"
 msgstr "Colour used for information text against a light background"
 
@@ -3293,10 +3294,6 @@ msgstr "There is no action associated with \"%s\"."
 msgid "No Action Associated"
 msgstr "No Action Associated"
 
-#. Note: This might be misleading in the components case, since the
-#. * user can't add components to the complete list even from the capplet.
-#. * (They can add applications though.)
-#.
 #: libnautilus-private/nautilus-program-chooser.c:1605
 msgid ""
 "You can configure GNOME to associate applications with file types. Do you "
@@ -3791,8 +3788,7 @@ msgstr "Are you sure you want to permanently delete \"%s\"?"
 #: src/file-manager/fm-directory-view.c:897
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
-msgid_plural ""
-"Are you sure you want to permanently delete the %d selected items?"
+msgid_plural "Are you sure you want to permanently delete the %d selected items?"
 msgstr[0] "Are you sure you want to permanently delete the %d selected item?"
 msgstr[1] "Are you sure you want to permanently delete the %d selected items?"
 
@@ -3876,10 +3872,6 @@ msgstr "%s, Free space: %s"
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
 
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
 #: src/file-manager/fm-directory-view.c:1972
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
@@ -3926,13 +3918,11 @@ msgstr "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
-msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr[0] ""
+msgstr ""
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
-msgstr[1] ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
 
@@ -4066,22 +4056,18 @@ msgstr "\"%s\" will be copied if you select the Paste Files command"
 #, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
-msgid_plural ""
 "The %d selected items will be moved if you select the Paste Files command"
-msgstr[0] ""
+msgstr ""
 "The %d selected item will be moved if you select the Paste Files command"
-msgstr[1] ""
 "The %d selected items will be moved if you select the Paste Files command"
 
 #: src/file-manager/fm-directory-view.c:4865
 #, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
-msgid_plural ""
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr[0] ""
+msgstr ""
 "The %d selected item will be copied if you select the Paste Files command"
-msgstr[1] ""
 "The %d selected items will be copied if you select the Paste Files command"
 
 #: src/file-manager/fm-directory-view.c:4947
@@ -4090,7 +4076,7 @@ msgid "There is nothing on the clipboard to paste."
 msgstr "There is nothing on the clipboard to paste."
 
 #: src/file-manager/fm-directory-view.c:5050
-#: src/file-manager/fm-directory-view.c:6123
+#: src/file-manager/fm-directory-view.c:6128
 msgid "Mount Error"
 msgstr "Mount Error"
 
@@ -4227,14 +4213,34 @@ msgstr "_Display"
 msgid "_Run"
 msgstr "_Run"
 
-#: src/file-manager/fm-directory-view.c:6259
+#: src/file-manager/fm-directory-view.c:6264
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Opening \"%s\"."
 
-#: src/file-manager/fm-directory-view.c:6266
+#: src/file-manager/fm-directory-view.c:6271
 msgid "Cancel Open?"
 msgstr "Cancel Open?"
+
+#: src/file-manager/fm-ditem-page.c:338 src/file-manager/fm-ditem-page.c:349
+msgid "Comment"
+msgstr "Comment"
+
+#: src/file-manager/fm-ditem-page.c:341
+msgid "URL"
+msgstr "URL"
+
+#: src/file-manager/fm-ditem-page.c:345
+msgid "Link"
+msgstr "Link"
+
+#: src/file-manager/fm-ditem-page.c:352
+msgid "Command"
+msgstr "Command"
+
+#: src/file-manager/fm-ditem-page.c:356
+msgid "Launcher"
+msgstr "Launcher"
 
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
@@ -5162,16 +5168,6 @@ msgstr ""
 msgid "Migrated Old Desktop"
 msgstr "Migrated Old Desktop"
 
-#. Can't register myself due to trouble locating the
-#. * Nautilus_Shell.server file. This has happened when you
-#. * launch Nautilus with an LD_LIBRARY_PATH that
-#. * doesn't include the directory containing the oaf
-#. * library. It could also happen if the
-#. * Nautilus_Shell.server file was not present for some
-#. * reason. Sometimes killing oafd and gconfd fixes
-#. * this problem but we don't exactly understand why,
-#. * since neither of the above causes explain it.
-#.
 #: src/nautilus-application.c:547
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -5182,7 +5178,6 @@ msgstr ""
 "console may fix the problem. If not, you can try rebooting the computer or "
 "installing Nautilus again."
 
-#. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:553
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -6496,7 +6491,7 @@ msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 #: src/nautilus-window-menus.c:598 src/nautilus-window-menus.c:599
 msgid "Translator Credits"
 msgstr ""
-"Adam Weinberger <adamw@gnome.org>\n"
+"Maintainer: Adam Weinberger <adamw@gnome.org>\n"
 "Alexander Winston <alexander.winston@comcast.net>"
 
 #: src/nautilus-window-menus.c:604
