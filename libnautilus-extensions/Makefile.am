@@ -56,9 +56,6 @@ nautilus_metafile_server_idl_sources =		\
 
 libnautilus_extensions_la_SOURCES = 		\
 	$(nautilus_metafile_server_idl_sources)	\
-	bug-5712-pr3-workaround--gdk-pixbuf-drawable.c \
-	bug-5712-pr3-workaround--gdk-pixbuf-private.h \
-	bug-5712-pr3-workaround--gdkimage.c \
 	nautilus-art-extensions.c		\
 	nautilus-art-gtk-extensions.c		\
 	nautilus-background-canvas-group.c	\

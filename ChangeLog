@@ -1,3 +1,22 @@
+2001-03-05  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	Fix bug 5813 - Remove workaround for bug 5712 when both GTK+ 1.2.9
+	and the new gdk-pixbuf are released and required by configure.in
+	and RPM spec file
+	
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/bug-5712-pr3-workaround--gdk-pixbuf-drawable.c:
+	* libnautilus-extensions/bug-5712-pr3-workaround--gdk-pixbuf-private.h:
+	* libnautilus-extensions/bug-5712-pr3-workaround--gdkimage.c:
+	Retire these workaround cut n pasted code.
+	
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_get_from_window_safe):
+	Remove the workaround, we can safely call the gdk and gdk-pixbuf
+	calls now that bugs in there have been fixed.
+	
 2001-03-04  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: George Lebl  <jirka@5z.com>
