@@ -1,3 +1,22 @@
+2000-03-09  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/gnome-icon-container.c (set_scroll_region):
+	It turns out that you aren't intended to reset the scroll region
+	once you have items in the canvas. We need to do that, so I had
+	to write some code that would update all the items when that happens.
+
+	* libnautilus/nautilus-icons-view-icon-item.c:
+	(recompute_bounding_box): Rewrote this to not assume that the
+	icon items are all top-level items.
+	(compute_text_rectangle, hit_test,
+	nautilus_icons_view_icon_item_bounds): Change hit testing so
+	it includes hits on the text. The rubberband still has to be
+	fixed so it doesn't have the same problem.
+
+	* libnautilus/nautilus-file.c: Improved a comment.
+	
+	* RENAMING: Some more name changes.
+
 2000-03-09  John Sullivan <sullivan@eazel.com>
 
         * libnautilus/nautilus-file.c:

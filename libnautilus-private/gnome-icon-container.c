@@ -933,6 +933,47 @@ set_kbd_current (GnomeIconContainer *container,
 /* Idle operation handler.  */
 
 static void
+nautilus_gnome_canvas_item_request_update_deep (GnomeCanvasItem *item)
+{
+	GList *p;
+
+	gnome_canvas_item_request_update (item);
+	if (GNOME_IS_CANVAS_GROUP (item)) {
+		for (p = GNOME_CANVAS_GROUP (item)->item_list; p != NULL; p = p->next) {
+			nautilus_gnome_canvas_item_request_update_deep (p->data);
+		}
+	}
+}
+
+static void
+nautilus_gnome_canvas_request_update_all (GnomeCanvas *canvas)
+{
+	nautilus_gnome_canvas_item_request_update_deep (canvas->root);
+}
+
+/* gnome_canvas_set_scroll_region doesn't do an update, even though it should.
+ * The update is in there with an #if 0 around it, with no explanation fo
+ * why it's commented out. For now, work around this by requesting an update
+ * explicitly.
+ */
+static void
+nautilus_gnome_canvas_set_scroll_region (GnomeCanvas *canvas,
+					 double x1, double y1,
+					 double x2, double y2)
+{
+	double old_x1, old_y1, old_x2, old_y2;
+
+	gnome_canvas_get_scroll_region (canvas, &old_x1, &old_y1, &old_x2, &old_y2);
+	if (old_x1 == x1 && old_y1 == y1 && old_x2 == x2 && old_y2 == y2) {
+		return;
+	}
+
+	gnome_canvas_set_scroll_region (canvas, x1, y1, x2, y2);
+	nautilus_gnome_canvas_request_update_all (canvas);
+	gnome_canvas_item_request_update (canvas->root);
+}
+
+static void
 set_scroll_region (GnomeIconContainer *container)
 {
 	double x1, y1, x2, y2;
@@ -954,10 +995,10 @@ set_scroll_region (GnomeIconContainer *container)
 	scroll_height = MAX (content_height, allocation->height);
 
 	/* FIXME: Why are we subtracting one from each dimension? */
-	gnome_canvas_set_scroll_region (GNOME_CANVAS (container),
-					x1, y1,
-					x1 + scroll_width - 1,
-					y1 + scroll_height - 1);
+	nautilus_gnome_canvas_set_scroll_region (GNOME_CANVAS (container),
+						 x1, y1,
+						 x1 + scroll_width - 1,
+						 y1 + scroll_height - 1);
 
 	hadj = GTK_LAYOUT (container)->hadjustment;
 	vadj = GTK_LAYOUT (container)->vadjustment;
@@ -2276,15 +2317,13 @@ handle_icon_button_press (GnomeIconContainer *container,
 {
 	GnomeIconContainerDetails *details;
 
-	if (event->button != DRAG_BUTTON && event->button != CONTEXTUAL_MENU_BUTTON)
-	{
+	if (event->button != DRAG_BUTTON && event->button != CONTEXTUAL_MENU_BUTTON) {
 		return TRUE;
 	}
 
 	details = container->details;
 
-	if (event->button == DRAG_BUTTON)
-	{
+	if (event->button == DRAG_BUTTON) {
 		details->drag_button = event->button;
 		details->drag_icon = icon;
 		details->drag_x = event->x;

@@ -418,22 +418,37 @@ nautilus_icons_view_icon_item_set_emblems (NautilusIconsViewIconItem *item,
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (item));
 }
 
-/* Recomputes the bounding box of a icon canvas item. */
+/* Recomputes the bounding box of a icon canvas item.
+ * This is a generic implementation that could be used for any canvas item
+ * class, it has no assumptions about how the item is used.
+ */
 static void
 recompute_bounding_box (NautilusIconsViewIconItem *icon_item)
 {
 	/* The bounds stored in the item is the same as what get_bounds
-	 * returns, except it's in canvas coordinates instead of world
-	 * coordinates.
+	 * returns, except it's in canvas coordinates instead of the item's
+	 * parent's coordinates.
 	 */
 
 	GnomeCanvasItem *item;
-	double x1, y1, x2, y2;
+	ArtPoint top_left, bottom_right;
+	double i2c[6];
 
 	item = GNOME_CANVAS_ITEM (icon_item);
-	gnome_canvas_item_get_bounds (item, &x1, &y1, &x2, &y2);
-	gnome_canvas_w2c_d (item->canvas, x1, y1, &item->x1, &item->y1);
-	gnome_canvas_w2c_d (item->canvas, x2, y2, &item->x2, &item->y2);
+
+	gnome_canvas_item_get_bounds (item,
+				      &top_left.x, &top_left.y,
+				      &bottom_right.x, &bottom_right.y);
+
+	gnome_canvas_item_i2c_affine (item->parent, i2c);
+
+	art_affine_point (&top_left, &top_left, i2c);
+	art_affine_point (&bottom_right, &bottom_right, i2c);
+
+	item->x1 = top_left.x;
+	item->y1 = top_left.y;
+	item->x2 = bottom_right.x;
+	item->y2 = bottom_right.y;
 }
 
 /* Update handler for the icon canvas item. */
@@ -952,6 +967,15 @@ nautilus_icons_view_icon_item_event (GnomeCanvasItem *item, GdkEvent *event)
 	return TRUE; /* eat up the event */
 }
 
+static void
+compute_text_rectangle (NautilusIconsViewIconItem *item, const ArtIRect *icon_rect, ArtIRect *text_rect)
+{
+	/* Compute text rectangle. */
+	text_rect->x0 = (icon_rect->x0 + icon_rect->x1) / 2 - item->details->text_width / 2;
+	text_rect->y0 = icon_rect->y1;
+	text_rect->x1 = text_rect->x0 + item->details->text_width;
+	text_rect->y1 = text_rect->y0 + item->details->text_height;
+}
 
 static gboolean
 hit_test_pixbuf (GdkPixbuf *pixbuf, int pixbuf_x, int pixbuf_y, int probe_x, int probe_y)
@@ -990,7 +1014,7 @@ static gboolean
 hit_test (NautilusIconsViewIconItem *icon_item, int cx, int cy)
 {
 	NautilusIconsViewIconItemDetails *details;
-	ArtIRect icon_rect, emblem_rect;
+	ArtIRect icon_rect, text_rect, emblem_rect;
 	EmblemLayout emblem_layout;
 	GdkPixbuf *emblem_pixbuf;
 	
@@ -1004,6 +1028,13 @@ hit_test (NautilusIconsViewIconItem *icon_item, int cx, int cy)
 	/* Check for hit in the icon. */
 	nautilus_icons_view_icon_item_get_icon_canvas_rectangle (icon_item, &icon_rect);
 	if (hit_test_pixbuf (details->pixbuf, icon_rect.x0, icon_rect.y0, cx, cy)) {
+		return TRUE;
+	}
+
+	/* Check for hit in the text. */
+	compute_text_rectangle (icon_item, &icon_rect, &text_rect);
+	if (cx >= text_rect.x0 && cx <= text_rect.x1
+	    && cy >= text_rect.y0 && cy <= text_rect.y1) {
 		return TRUE;
 	}
 
@@ -1065,10 +1096,7 @@ nautilus_icons_view_icon_item_bounds (GnomeCanvasItem *item, double *x1, double 
 	}
 	
 	/* Compute text rectangle. */
-	text_rect.x0 = icon_rect.x1 / 2 - details->text_width / 2;
-	text_rect.y0 = icon_rect.y1;
-	text_rect.x1 = text_rect.x0 + details->text_width;
-	text_rect.y1 = text_rect.y0 + details->text_height;
+	compute_text_rectangle (icon_item, &icon_rect, &text_rect);
 
 	/* Compute total rectangle, adding in emblem rectangles. */
 	art_irect_union (&total_rect, &icon_rect, &text_rect);

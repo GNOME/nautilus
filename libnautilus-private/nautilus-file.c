@@ -165,10 +165,10 @@ nautilus_file_unref (NautilusFile *file)
 	/* No references left, so it's time to release our hold on the directory. */
 	gtk_object_unref (GTK_OBJECT (file->directory));
 
+	/* Files that were deleted aren't referenced by the directory,
+	 * and need to be freed explicitly.
+	 */
 	if (goner) {
-                /* Files that were deleted aren't referenced by the directory,
-                 * need to free it explicitly.
-                 */
 		nautilus_file_free (file);
 	}
 }
