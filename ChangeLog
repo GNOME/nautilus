@@ -1,3 +1,27 @@
+2000-08-31  Robey Pointer  <robey@eazel.com>
+
+	* components/services/trilobite/libtrilobite/Makefile.am:
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_close_log), (trilobite_open_uri),
+	(trilobite_fetch_uri), (trilobite_fetch_uri_to_file):
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.h
+	:
+
+	Add trilobite_fetch_uri() and trilobite_fetch_uri_to_file() to the
+	core utils in libtrilobite.  This makes it easy to use gnome-vfs
+	to fetch a remote file into a buffer (hint: XML).
+	
+	* components/services/trilobite/libtrilobite/trilobite-redirect.c:
+	* components/services/trilobite/libtrilobite/trilobite-redirect.h:
+
+	Fetch the url redirection table from an XML file on the server and
+	store it in gconf for other views to use.
+	
+	* components/services/trilobite/libtrilobite/trilobite-root-client.
+	c: (trilobite_root_client_initialize):
+
+	Clarify the FIXME.
+
 2000-08-31  John Sullivan  <sullivan@eazel.com>
 
 	* components/tree/nautilus-tree-expansion-state.c:

@@ -51,6 +51,8 @@ trilobite_debug (const gchar *format, ...)
 
 
 int trilobite_pexec (const char *path, char * const argv[], int *stdin_fd, int *stdout_fd, int *stderr_fd);
+gboolean trilobite_fetch_uri (const char *uri_text, char **body, int *length);
+gboolean trilobite_fetch_uri_to_file (const char *uri_text, const char *filename);
 gboolean trilobite_init (const char *service_name, const char *version_name, const char *log_filename,
 			 int argc, char **argv, GData *options);
 
