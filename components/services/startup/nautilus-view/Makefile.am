@@ -14,6 +14,7 @@ INCLUDES =							\
 	$(GNOMEUI_CFLAGS)                       		\
 	$(GCONF_CFLAGS) 					\
 	$(GHTTP_CFLAGS) 					\
+	$(VFS_CFLAGS)	 					\
 	$(WERROR)						\
 	$(NULL)
 
