@@ -81,7 +81,7 @@ nautilus_bookmark_list_class_init (NautilusBookmarkListClass *class)
 		              G_STRUCT_OFFSET (NautilusBookmarkListClass, 
 						   contents_changed),
 		              NULL, NULL,
-		              gtk_marshal_VOID__VOID,
+		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 }
 
@@ -177,9 +177,9 @@ static void
 stop_monitoring_bookmark (NautilusBookmarkList *bookmarks,
 			  NautilusBookmark *bookmark)
 {
-	gtk_signal_disconnect_by_func (GTK_OBJECT (bookmark), 
-				       G_CALLBACK (bookmark_in_list_changed_callback),
-				       bookmarks);
+	g_signal_handlers_disconnect_by_func (bookmark,
+					      bookmark_in_list_changed_callback,
+					      bookmarks);
 }
 
 static void

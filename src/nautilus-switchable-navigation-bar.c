@@ -121,10 +121,10 @@ create_search_bar_if_non_existant (NautilusSwitchableNavigationBar *bar)
 
 	bar->details->search_bar = NAUTILUS_SWITCHABLE_SEARCH_BAR (nautilus_switchable_search_bar_new (bar->details->window));
 
-	gtk_signal_connect_object (GTK_OBJECT (bar->details->search_bar),
-				   "location_changed",
+	g_signal_connect_swapped (bar->details->search_bar,
+				  "location_changed",
 				   G_CALLBACK (nautilus_navigation_bar_location_changed),
-				   GTK_OBJECT (bar));
+				   bar);
 
 	gtk_box_pack_start (GTK_BOX (bar->details->hbox), GTK_WIDGET (bar->details->search_bar), TRUE, TRUE, 0);
 }
@@ -144,10 +144,10 @@ nautilus_switchable_navigation_bar_new (NautilusWindow *window)
 	switchable_navigation_bar->details->window = window;
 	switchable_navigation_bar->details->location_bar = NAUTILUS_LOCATION_BAR (nautilus_location_bar_new (window));
 
-	gtk_signal_connect_object (GTK_OBJECT (switchable_navigation_bar->details->location_bar),
-				   "location_changed",
-				   G_CALLBACK (nautilus_navigation_bar_location_changed),
-				   GTK_OBJECT (bar));
+	g_signal_connect_swapped (switchable_navigation_bar->details->location_bar,
+				  "location_changed",
+				  G_CALLBACK (nautilus_navigation_bar_location_changed),
+				  bar);
 	
 	gtk_box_pack_start  (GTK_BOX (switchable_navigation_bar->details->hbox),
 			     GTK_WIDGET (switchable_navigation_bar->details->location_bar), TRUE, TRUE, 0);

@@ -120,12 +120,16 @@ static GdkBitmap *mini_icon_mask;
 static void nautilus_window_class_init          (NautilusWindowClass *klass);
 static void nautilus_window_init                (NautilusWindow      *window);
 static void nautilus_window_destroy                   (GtkObject           *object);
-static void nautilus_window_set_arg                   (GtkObject           *object,
-						       GtkArg              *arg,
-						       guint                arg_id);
-static void nautilus_window_get_arg                   (GtkObject           *object,
-						       GtkArg              *arg,
-						       guint                arg_id);
+static void nautilus_window_set_property              (GObject             *object,
+						       guint                arg_id,
+						       const GValue        *value,
+						       GParamSpec          *pspec);
+
+static void nautilus_window_get_property              (GObject           *object,
+						       guint              arg_id,
+						       GValue            *value,
+						       GParamSpec        *pspec);
+
 static void nautilus_window_size_request              (GtkWidget           *widget,
 						       GtkRequisition      *requisition);
 static void nautilus_window_realize                   (GtkWidget           *widget);
@@ -143,38 +147,47 @@ EEL_CLASS_BOILERPLATE (NautilusWindow,
 static void
 unref_mini_icon (void)
 {
-	gdk_pixmap_unref (mini_icon_pixmap);
+	g_object_unref (mini_icon_pixmap);
 	if (mini_icon_mask != NULL) {
-		gdk_bitmap_unref (mini_icon_mask);
+		g_object_unref (mini_icon_mask);
 	}
 }
 
 static void
 nautilus_window_class_init (NautilusWindowClass *klass)
 {
+	GObjectClass   *gobject_class;
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 	char *filename;
 	GdkPixbuf *pixbuf;
 	
+	gobject_class = (GObjectClass *) klass;
 	object_class = (GtkObjectClass *) klass;
 	widget_class = (GtkWidgetClass *) klass;
 
 	object_class->destroy = nautilus_window_destroy;
-	object_class->get_arg = nautilus_window_get_arg;
-	object_class->set_arg = nautilus_window_set_arg;
+	gobject_class->get_property = nautilus_window_get_property;
+	gobject_class->set_property = nautilus_window_set_property;
 	
 	widget_class->show = nautilus_window_show;
 	widget_class->unrealize = nautilus_window_unrealize;
 	
-	gtk_object_add_arg_type ("NautilusWindow::app_id",
-				 G_TYPE_STRING,
-				 GTK_ARG_READWRITE | GTK_ARG_CONSTRUCT,
-				 ARG_APP_ID);
-	gtk_object_add_arg_type ("NautilusWindow::app",
-				 G_TYPE_OBJECT,
-				 GTK_ARG_READWRITE | GTK_ARG_CONSTRUCT,
-				 ARG_APP);
+	g_object_class_install_property (gobject_class,
+					 ARG_APP_ID,
+					 g_param_spec_string ("app_id",
+							      _("Application ID"),
+							      _("The application ID of the window."),
+							      NULL,
+							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+
+	g_object_class_install_property (gobject_class,
+					 ARG_APP,
+					 g_param_spec_object ("app",
+							      _("Application"),
+							      _("The NautilusApplication associated with this window."),
+							      NAUTILUS_TYPE_APPLICATION,
+							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 	
 	widget_class->realize = nautilus_window_realize;
 	widget_class->size_request = nautilus_window_size_request;
@@ -266,7 +279,7 @@ static inline void
 ui_install_idle_handler (NautilusWindow *window)
 {
 	if (window->details->ui_idle_id == 0) {
-		window->details->ui_idle_id = gtk_idle_add_priority (GTK_PRIORITY_LOW, ui_idle_handler, window);
+		window->details->ui_idle_id = g_idle_add_full (G_PRIORITY_LOW, ui_idle_handler, window, NULL);
 	}
 }
 
@@ -274,7 +287,7 @@ static inline void
 ui_remove_idle_handler (NautilusWindow *window)
 {
 	if (window->details->ui_idle_id != 0) {
-		gtk_idle_remove (window->details->ui_idle_id);
+		g_source_remove (window->details->ui_idle_id);
 		window->details->ui_idle_id = 0;
 	}
 }
@@ -587,7 +600,7 @@ set_dummy_initial_view_as_menu (NautilusWindow *window)
 	new_menu = gtk_menu_new ();
 	menu_item = gtk_menu_item_new_with_label (_("View as..."));
        	gtk_widget_show (menu_item);
-       	gtk_menu_append (GTK_MENU (new_menu), menu_item);
+       	gtk_menu_shell_append (GTK_MENU_SHELL (new_menu), menu_item);
 
         gtk_option_menu_set_menu (GTK_OPTION_MENU (window->view_as_option_menu),
                                   new_menu);
@@ -659,14 +672,14 @@ nautilus_window_constructed (NautilusWindow *window)
 	 * It gets shown later, if the view-frame contains something zoomable.
 	 */
 	window->zoom_control = nautilus_zoom_control_new ();
-	gtk_signal_connect_object (GTK_OBJECT (window->zoom_control), "zoom_in",
-				   G_CALLBACK (nautilus_window_zoom_in), GTK_OBJECT (window));
-	gtk_signal_connect_object (GTK_OBJECT (window->zoom_control), "zoom_out",
-				   G_CALLBACK (nautilus_window_zoom_out), GTK_OBJECT (window));
-	gtk_signal_connect_object (GTK_OBJECT (window->zoom_control), "zoom_to_level",
-				   G_CALLBACK (nautilus_window_zoom_to_level), GTK_OBJECT (window));
-	gtk_signal_connect_object (GTK_OBJECT (window->zoom_control), "zoom_to_fit",
-				   G_CALLBACK (nautilus_window_zoom_to_fit), GTK_OBJECT (window));
+	g_signal_connect_swapped (window->zoom_control, "zoom_in",
+				  G_CALLBACK (nautilus_window_zoom_in), window);
+	g_signal_connect_swapped (window->zoom_control, "zoom_out",
+				  G_CALLBACK (nautilus_window_zoom_out), window);
+	g_signal_connect_swapped (window->zoom_control, "zoom_to_level",
+				  G_CALLBACK (nautilus_window_zoom_to_level), window);
+	g_signal_connect_swapped (window->zoom_control, "zoom_to_fit",
+				  G_CALLBACK (nautilus_window_zoom_to_fit), window);
 	gtk_box_pack_end (GTK_BOX (location_bar_box), window->zoom_control, FALSE, FALSE, 0);
 	
 	gtk_widget_show (location_bar_box);
@@ -773,9 +786,10 @@ nautilus_window_constructed (NautilusWindow *window)
 }
 
 static void
-nautilus_window_set_arg (GtkObject *object,
-			 GtkArg *arg,
-			 guint arg_id)
+nautilus_window_set_property (GObject *object,
+			      guint arg_id,
+			      const GValue *value,
+			      GParamSpec *pspec)
 {
 	char *old_name;
 	NautilusWindow *window;
@@ -784,11 +798,11 @@ nautilus_window_set_arg (GtkObject *object,
 	
 	switch (arg_id) {
 	case ARG_APP_ID:
-		if (GTK_VALUE_STRING (*arg) == NULL) {
+		if (g_value_get_string (value) == NULL) {
 			return;
 		}
 		old_name = bonobo_window_get_name (BONOBO_WINDOW (window));
-		bonobo_window_set_name (BONOBO_WINDOW (window), GTK_VALUE_STRING (*arg));
+		bonobo_window_set_name (BONOBO_WINDOW (window), g_value_get_string (value));
 		/* This hack of using the time when the name first
 		 * goes non-NULL to be window-constructed time is
 		 * completely lame. But it works, so for now we leave
@@ -800,22 +814,25 @@ nautilus_window_set_arg (GtkObject *object,
 		g_free (old_name);
 		break;
 	case ARG_APP:
-		window->application = NAUTILUS_APPLICATION (GTK_VALUE_OBJECT (*arg));
+		window->application = NAUTILUS_APPLICATION (g_value_get_object (value));
 		break;
 	}
 }
 
 static void
-nautilus_window_get_arg (GtkObject *object,
-			 GtkArg *arg,
-			 guint arg_id)
+nautilus_window_get_property (GObject *object,
+			      guint arg_id,
+			      GValue *value,
+			      GParamSpec *pspec)
 {
 	switch (arg_id) {
 	case ARG_APP_ID:
-		GTK_VALUE_STRING (*arg) = bonobo_window_get_name (BONOBO_WINDOW (object));
+		g_value_set_string_take_ownership (
+			value,
+			bonobo_window_get_name (BONOBO_WINDOW (object)));
 		break;
 	case ARG_APP:
-		GTK_VALUE_OBJECT (*arg) = GTK_OBJECT (NAUTILUS_WINDOW (object)->application);
+		g_value_set_object (value, NAUTILUS_WINDOW (object)->application);
 		break;
 	}
 }
@@ -981,7 +998,7 @@ nautilus_window_update_launcher (GdkWindow *window)
 	/* Set a property on the root window to the time of day in seconds.
 	 * The launcher will monitor the root window for this property change
 	 * to update its launching state */
-	gdk_property_change (GDK_ROOT_PARENT (),
+	gdk_property_change (gdk_get_default_root_window (),
 			     gdk_atom_intern ("_NAUTILUS_LAST_WINDOW_REALIZE_TIME", FALSE),
 			     gdk_x11_xatom_to_atom (XA_CARDINAL),
 			     32,
@@ -993,7 +1010,9 @@ nautilus_window_update_launcher (GdkWindow *window)
 static void
 nautilus_window_realize (GtkWidget *widget)
 {
+#ifdef GNOME2_CONVERSION_COMPLETE
 	char *filename;
+#endif
 
         /* Create our GdkWindow */
 	EEL_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
@@ -1003,6 +1022,7 @@ nautilus_window_realize (GtkWidget *widget)
 		eel_set_mini_icon (widget->window, mini_icon_pixmap, mini_icon_mask);
 	}
 
+#ifdef GNOME2_CONVERSION_COMPLETE
 	/* Set the maxi icon */
 	filename = gnome_pixmap_file ("nautilus-launch-icon.png");
 	if (filename != NULL) {
@@ -1010,6 +1030,7 @@ nautilus_window_realize (GtkWidget *widget)
 						 filename);
 		g_free (filename);
 	}
+#endif
 
 	/* Notify the launcher that our window has been realized */
 	nautilus_window_update_launcher (widget->window);
@@ -1245,7 +1266,7 @@ update_extra_viewer_in_view_as_menus (NautilusWindow *window,
 		}
 	} else {
 		if (id != NULL) {
-			gtk_menu_prepend (GTK_MENU (menu), new_gtk_separator ());
+			gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), new_gtk_separator ());
 		}
 	}
 
@@ -1253,7 +1274,7 @@ update_extra_viewer_in_view_as_menus (NautilusWindow *window,
 	if (id != NULL) {
 		new_menu_item = create_view_as_menu_item (window, window->details->extra_viewer, 0);
 		g_object_set_data (G_OBJECT (new_menu_item), "extra viewer", GINT_TO_POINTER (TRUE));
-		gtk_menu_prepend (GTK_MENU (menu), new_menu_item);
+		gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), new_menu_item);
 	}
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (window->view_as_option_menu), menu);
@@ -1459,7 +1480,7 @@ load_view_as_menus_callback (NautilusFile *file,
         	 * historical and technical reasons.
         	 */
                 menu_item = create_view_as_menu_item (window, node->data, index);
-                gtk_menu_append (GTK_MENU (new_menu), menu_item);
+                gtk_menu_shell_append (GTK_MENU_SHELL (new_menu), menu_item);
 
 		/* Menu item in View menu. */
                 add_view_as_bonobo_menu_item (window, 
@@ -1470,7 +1491,7 @@ load_view_as_menus_callback (NautilusFile *file,
 
         /* Add/Show separator before "View as..." if there are any other viewers in menu. */
         if (window->details->short_list_viewers != NULL) {
-	        gtk_menu_append (GTK_MENU (new_menu), new_gtk_separator ());
+	        gtk_menu_shell_append (GTK_MENU_SHELL (new_menu), new_gtk_separator ());
         }
         nautilus_bonobo_set_hidden (window->details->shell_ui,
         			    NAUTILUS_MENU_PATH_AFTER_SHORT_LIST_SEPARATOR, 
@@ -1483,7 +1504,7 @@ load_view_as_menus_callback (NautilusFile *file,
         		    G_CALLBACK (view_as_menu_choose_view_callback),
         		    window);
        	gtk_widget_show (menu_item);
-       	gtk_menu_append (GTK_MENU (new_menu), menu_item);
+       	gtk_menu_shell_append (GTK_MENU_SHELL (new_menu), menu_item);
 
         /* We create and attach a new menu here because adding/removing
          * items from existing menu screws up the size of the option menu.

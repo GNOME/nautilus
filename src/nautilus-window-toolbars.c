@@ -70,7 +70,7 @@ activate_back_or_forward_menu_item (GtkMenuItem *menu_item,
 	g_assert (GTK_IS_MENU_ITEM (menu_item));
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	index = GPOINTER_TO_INT (gtk_object_get_user_data (GTK_OBJECT (menu_item)));
+	index = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (menu_item), "user_data"));
 	nautilus_window_back_or_forward (window, back, index);
 }
 
@@ -103,17 +103,17 @@ create_back_or_forward_menu (NautilusWindow *window, gboolean back)
 	while (list_link != NULL)
 	{
 		menu_item = nautilus_bookmark_menu_item_new (NAUTILUS_BOOKMARK (list_link->data));		
-		gtk_object_set_user_data (GTK_OBJECT (menu_item), GINT_TO_POINTER (index));
+		g_object_set_data (G_OBJECT (menu_item), "user_data", GINT_TO_POINTER (index));
 		gtk_widget_show (GTK_WIDGET (menu_item));
-  		gtk_signal_connect
-			(GTK_OBJECT(menu_item), 
+  		g_signal_connect
+			(menu_item,
 			 "activate",
 			 back
 			 ? G_CALLBACK (activate_back_menu_item_callback)
 			 : G_CALLBACK (activate_forward_menu_item_callback),
 			 window);
 		
-		gtk_menu_append (menu, menu_item);
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 		list_link = g_list_next (list_link);
 		++index;
 	}

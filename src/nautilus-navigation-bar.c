@@ -62,7 +62,7 @@ nautilus_navigation_bar_class_init (NautilusNavigationBarClass *klass)
 		 G_STRUCT_OFFSET (NautilusNavigationBarClass,
 				    activate),
 		 NULL, NULL,
-		 gtk_marshal_VOID__VOID,
+		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 
 	signals[LOCATION_CHANGED] = g_signal_new

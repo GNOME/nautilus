@@ -1203,7 +1203,7 @@ draw_or_layout_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean layout_only
 	
 	/* draw the off-screen buffer to the screen, then release it */
 	if (!layout_only) {
-		gdk_gc_unref(temp_gc);
+		g_object_unref(temp_gc);
 		if (is_themed) {
 			/* draw the pixbuf onto the widget and release it */
 			gdk_pixbuf_render_to_drawable_alpha (tab_pixbuf,
@@ -1303,7 +1303,7 @@ nautilus_sidebar_tabs_expose (GtkWidget *widget, GdkEventExpose *event)
 			draw_one_tab_plain (sidebar_tabs, temp_gc, sidebar_tabs->details->title, NULL,
 					    x_pos + TITLE_TAB_OFFSET, y_pos, sidebar_tabs->details->title_prelit, &sidebar_tabs->details->title_rect);
 		}
-		gdk_gc_unref (temp_gc);
+		g_object_unref (temp_gc);
 		
 	} else {
 		if (sidebar_tabs->details->tab_count > 0) {

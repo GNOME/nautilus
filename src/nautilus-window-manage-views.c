@@ -537,9 +537,9 @@ static void
 cancel_viewed_file_changed_callback (NautilusWindow *window)
 {
         if (window->details->viewed_file != NULL) {
-                gtk_signal_disconnect_by_func (GTK_OBJECT (window->details->viewed_file),
-                                               G_CALLBACK (viewed_file_changed_callback),
-                                               window);
+                g_signal_handlers_disconnect_by_func (window->details->viewed_file,
+                                                      G_CALLBACK (viewed_file_changed_callback),
+                                                      window);
         }
 }
 
@@ -1976,12 +1976,8 @@ view_loaded_callback (NautilusViewFrame *view,
 static void
 connect_view (NautilusWindow *window, NautilusViewFrame *view)
 {
-	GtkObject *view_object;
-	
-	view_object = GTK_OBJECT (view);
-
-	#define CONNECT(signal) gtk_signal_connect \
-        	(view_object, #signal, \
+	#define CONNECT(signal) g_signal_connect \
+        	(view, #signal, \
                  G_CALLBACK (signal##_callback), window);
         FOR_EACH_NAUTILUS_WINDOW_SIGNAL (CONNECT)
 	#undef CONNECT
@@ -1990,8 +1986,6 @@ connect_view (NautilusWindow *window, NautilusViewFrame *view)
 static void
 disconnect_view (NautilusWindow *window, NautilusViewFrame *view)
 {
-	GtkObject *view_object;
-	
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	if (view == NULL) {
@@ -2000,10 +1994,8 @@ disconnect_view (NautilusWindow *window, NautilusViewFrame *view)
 
 	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
 
-	view_object = GTK_OBJECT (view);
-
-#define DISCONNECT(signal) gtk_signal_disconnect_by_func \
-        	(view_object, \
+#define DISCONNECT(signal) g_signal_handlers_disconnect_by_func \
+        	(view, \
         	 G_CALLBACK (signal##_callback), window);
         FOR_EACH_NAUTILUS_WINDOW_SIGNAL (DISCONNECT)
 #undef DISCONNECT

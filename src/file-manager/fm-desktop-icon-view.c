@@ -226,7 +226,7 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 	icon_view = FM_DESKTOP_ICON_VIEW (object);
 
 	/* Remove the property filter */
-	gdk_window_remove_filter (GDK_ROOT_PARENT (),
+	gdk_window_remove_filter (gdk_get_default_root_window (),
 				  desktop_icon_view_property_filter,
 				  icon_view);
 
@@ -635,7 +635,7 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	panel_desktop_area_changed (desktop_icon_view);
 
 	/* Setup the property filter */
-	gdk_window_add_filter (GDK_ROOT_PARENT (),
+	gdk_window_add_filter (gdk_get_default_root_window (),
 			       desktop_icon_view_property_filter,
 			       desktop_icon_view);
 }

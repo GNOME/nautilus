@@ -155,13 +155,15 @@ drag_data_received_callback (GtkWidget *widget,
 		prompt = g_strdup_printf (_("Do you want to view these %d locations "
 					  "in separate windows?"), 
 					  name_count);
+		/* eel_run_simple_dialog should really take in pairs
+		 * like gtk_dialog_new_with_buttons() does. */
 		new_windows_for_extras = eel_run_simple_dialog 
 			(GTK_WIDGET (nautilus_location_bar_get_window (widget)),
 			 TRUE,
 			 prompt,
 			 _("View in Multiple Windows?"),
 			 GTK_STOCK_OK, GTK_STOCK_CANCEL,
-			 NULL) == GNOME_OK;
+			 NULL) == 0 /* GNOME_OK */;
 
 		g_free (prompt);
 		
@@ -671,9 +673,9 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 
 	nautilus_entry_set_special_tab_handling (NAUTILUS_ENTRY (entry), TRUE);
 	
-	gtk_signal_connect_object (GTK_OBJECT (entry), "activate",
-				   G_CALLBACK (nautilus_navigation_bar_location_changed),
-				   GTK_OBJECT (bar));
+	g_signal_connect_swapped (entry, "activate",
+				  G_CALLBACK (nautilus_navigation_bar_location_changed),
+				  bar);
 
 #if GNOME2_CONVERSION_COMPLETE
 	/* The callback uses the marshal interface directly
@@ -695,9 +697,9 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 			     GDK_BUTTON1_MASK | GDK_BUTTON3_MASK,
 			     drag_types, G_N_ELEMENTS (drag_types),
 			     GDK_ACTION_LINK);
-	gtk_signal_connect  (GTK_OBJECT (event_box), "drag_data_get",
-			     G_CALLBACK (drag_data_get_callback),
-			     bar);
+	g_signal_connect  (event_box, "drag_data_get",
+			   G_CALLBACK (drag_data_get_callback),
+			   bar);
 
 	/* Drag dest. */
 	gtk_drag_dest_set  (GTK_WIDGET (bar),

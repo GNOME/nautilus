@@ -1211,21 +1211,19 @@ fm_directory_view_init (FMDirectoryView *view)
 
 	g_signal_connect (view->details->nautilus_view, "selection_changed",
 			  G_CALLBACK (selection_changed_callback), view);
-
         g_signal_connect (fm_directory_view_get_bonobo_control (view), "activate",
-                            G_CALLBACK (bonobo_control_activate_callback), view);
-
+			  G_CALLBACK (bonobo_control_activate_callback), view);
 	g_signal_connect (view->details->zoomable, "zoom_in",
 			  G_CALLBACK (zoomable_zoom_in_callback), view);
 	g_signal_connect (view->details->zoomable, "zoom_out", 
 			  G_CALLBACK (zoomable_zoom_out_callback), view);
 	g_signal_connect (view->details->zoomable, "set_zoom_level", 
 			  G_CALLBACK (zoomable_set_zoom_level_callback), view);
-	g_signal_connect (view->details->zoomable, "zoom_to_fit", 
+	g_signal_connect (view->details->zoomable, "zoom_to_fit",
 			  G_CALLBACK (zoomable_zoom_to_fit_callback), view);
-	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_trash_monitor_get ()), "trash_state_changed",
-				        G_CALLBACK (fm_directory_view_trash_state_changed_callback), view,
-				        GTK_OBJECT (view));
+	g_signal_connect_object (nautilus_trash_monitor_get (), "trash_state_changed",
+				 G_CALLBACK (fm_directory_view_trash_state_changed_callback),
+				 view, 0);
 
 	gtk_widget_show (GTK_WIDGET (view));
 
@@ -1760,9 +1758,9 @@ debuting_uri_add_file_callback (FMDirectoryView *view,
 		if (g_hash_table_size (data->debuting_uris) == 0) {
 			fm_directory_view_set_selection (view, data->added_files);
 			fm_directory_view_reveal_selection (view);
-			gtk_signal_disconnect_by_func (GTK_OBJECT (view),
-						       G_CALLBACK (debuting_uri_add_file_callback),
-						       data);
+			g_signal_handlers_disconnect_by_func (view,
+							      G_CALLBACK (debuting_uri_add_file_callback),
+							      data);
 		}
 	}
 	
@@ -1884,9 +1882,9 @@ copy_move_done_callback (GHashTable *debuting_uris, gpointer data)
 		 * it will free data. We've already siphoned off the added_files we need, and stashed the
 		 * directory_view pointer.
 		 */
-		gtk_signal_disconnect_by_func (GTK_OBJECT (directory_view),
-					       G_CALLBACK (pre_copy_move_add_file_callback),
-					       data);
+		g_signal_handlers_disconnect_by_func (directory_view,
+						      G_CALLBACK (pre_copy_move_add_file_callback),
+						      data);
 	
 		/* Any items in the debuting_uris hash table that have
 		 * "FALSE" as their value aren't really being copied
@@ -1910,14 +1908,12 @@ copy_move_done_callback (GHashTable *debuting_uris, gpointer data)
 			 * operate on. The ADD_FILE signal is registered as G_SIGNAL_RUN_LAST, so we
 			 * must use connect_after.
 			 */
-			gtk_signal_connect_full (GTK_OBJECT (directory_view),
-						 "add_file",
-						 G_CALLBACK (debuting_uri_add_file_callback),
-						 NULL,
-						 debuting_uri_data,
-						 (GtkDestroyNotify) debuting_uri_data_free,
-						 FALSE,
-						 TRUE);
+			g_signal_connect_data (GTK_OBJECT (directory_view),
+					       "add_file",
+					       G_CALLBACK (debuting_uri_add_file_callback),
+					       debuting_uri_data,
+					       (GClosureNotify) debuting_uri_data_free,
+					       G_CONNECT_AFTER);
 		}
 	}
 
@@ -3082,9 +3078,9 @@ static void
 reveal_newly_added_folder (FMDirectoryView *view, NautilusFile *new_file, const char *target_uri)
 {
 	if (nautilus_file_matches_uri (new_file, target_uri)) {
-		gtk_signal_disconnect_by_func (GTK_OBJECT (view),
-					       G_CALLBACK (reveal_newly_added_folder),
-					       (void *) target_uri);
+		g_signal_handlers_disconnect_by_func (view,
+						      G_CALLBACK (reveal_newly_added_folder),
+						      (void *) target_uri);
 		/* no need to select because start_renaming_item selects
 		 * fm_directory_view_select_file (view, new_file);
 		 */
@@ -3105,14 +3101,12 @@ new_folder_done (const char *new_folder_uri, gpointer data)
 	 * operate on. The ADD_FILE signal is registered as G_SIGNAL_RUN_LAST, so we
 	 * must use connect_after.
 	 */
-	gtk_signal_connect_full (GTK_OBJECT (directory_view),
-				 "add_file",
-				 G_CALLBACK (reveal_newly_added_folder),
-				 NULL,
-				 g_strdup (new_folder_uri),
-				 g_free,
-				 FALSE,
-				 TRUE);
+	g_signal_connect_data (directory_view,
+			       "add_file",
+			       G_CALLBACK (reveal_newly_added_folder),
+			       g_strdup (new_folder_uri),
+			       (GClosureNotify)g_free,
+			       G_CONNECT_AFTER);
 }
 
 void
@@ -4119,10 +4113,10 @@ real_merge_menus (FMDirectoryView *view)
 
 	bonobo_ui_component_add_verb_list_with_data (view->details->ui, verbs, view);
 
-	gtk_signal_connect_object (GTK_OBJECT (fm_directory_view_get_background (view)),
-			    	   "settings_changed",
-			    	   G_CALLBACK (schedule_update_menus),
-			    	   GTK_OBJECT (view));
+	g_signal_connect_swapped (fm_directory_view_get_background (view),
+				  "settings_changed",
+				  G_CALLBACK (schedule_update_menus),
+				  view);
 
 	/* Do one-time state changes here; context-dependent ones go in update_menus */
 	if (!fm_directory_view_supports_zooming (view)) {
@@ -4900,8 +4894,8 @@ load_directory (FMDirectoryView *view,
 				   attributes);
 	g_list_free (attributes);
 
-	view->details->file_changed_handler_id = gtk_signal_connect
-		(GTK_OBJECT (view->details->directory_as_file), 
+	view->details->file_changed_handler_id = g_signal_connect
+		(view->details->directory_as_file,
 		 "changed",
 		 G_CALLBACK (file_changed_callback),
 		 view);
@@ -4925,12 +4919,12 @@ finish_loading (FMDirectoryView *view)
 	/* Start loading. */
 
 	/* Connect handlers to learn about loading progress. */
-	view->details->done_loading_handler_id = gtk_signal_connect
-		(GTK_OBJECT (view->details->model),
+	view->details->done_loading_handler_id = g_signal_connect
+		(view->details->model,
 		 "done_loading",
 		 G_CALLBACK (done_loading_callback), view);
-	view->details->load_error_handler_id = gtk_signal_connect
-		(GTK_OBJECT (view->details->model),
+	view->details->load_error_handler_id = g_signal_connect
+		(view->details->model,
 		 "load_error",
 		 G_CALLBACK (load_error_callback), view);
 
@@ -4958,12 +4952,12 @@ finish_loading (FMDirectoryView *view)
 
 	g_list_free (attributes);
 
-    	view->details->files_added_handler_id = gtk_signal_connect
-		(GTK_OBJECT (view->details->model),
+    	view->details->files_added_handler_id = g_signal_connect
+		(view->details->model,
 		 "files_added",
 		 G_CALLBACK (files_added_callback), view);
-	view->details->files_changed_handler_id = gtk_signal_connect
-		(GTK_OBJECT (view->details->model), 
+	view->details->files_changed_handler_id = g_signal_connect
+		(view->details->model, 
 		 "files_changed",
 		 G_CALLBACK (files_changed_callback), view);
 }
@@ -5055,7 +5049,7 @@ static void
 disconnect_handler (GtkObject *object, int *id)
 {
 	if (*id != 0) {
-		gtk_signal_disconnect (object, *id);
+		g_signal_handler_disconnect (object, *id);
 		*id = 0;
 	}
 }
@@ -5072,9 +5066,9 @@ remove_scripts_directory (FMDirectoryView *view, NautilusDirectory *directory)
 	view->details->scripts_directory_list = g_list_remove
 		(view->details->scripts_directory_list, directory);
 
-	gtk_signal_disconnect_by_func (GTK_OBJECT (directory),
-				       G_CALLBACK (scripts_added_or_changed_callback),
-				       view);
+	g_signal_handlers_disconnect_by_func (directory,
+					      G_CALLBACK (scripts_added_or_changed_callback),
+					      view);
 
 	nautilus_directory_file_monitor_remove (directory, &view->details->scripts_directory_list);
 
@@ -5674,7 +5668,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, add_file),
 		              NULL, NULL,
-		              gtk_marshal_VOID__OBJECT,
+		              g_cclosure_marshal_VOID__OBJECT,
 		              G_TYPE_NONE, 1, NAUTILUS_TYPE_FILE);
 	signals[BEGIN_FILE_CHANGES] =
 		g_signal_new ("begin_file_changes",
@@ -5682,7 +5676,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, begin_file_changes),
 		              NULL, NULL,
-		              gtk_marshal_VOID__VOID,
+		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 	signals[BEGIN_LOADING] =
 		g_signal_new ("begin_loading",
@@ -5690,7 +5684,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, begin_loading),
 		              NULL, NULL,
-		              gtk_marshal_VOID__VOID,
+		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 	signals[CLEAR] =
 		g_signal_new ("clear",
@@ -5698,7 +5692,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, clear),
 		              NULL, NULL,
-		              gtk_marshal_VOID__VOID,
+		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 	signals[END_FILE_CHANGES] =
 		g_signal_new ("end_file_changes",
@@ -5706,7 +5700,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, end_file_changes),
 		              NULL, NULL,
-		              gtk_marshal_VOID__VOID,
+		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 	signals[END_LOADING] =
 		g_signal_new ("end_loading",
@@ -5714,7 +5708,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, end_loading),
 		              NULL, NULL,
-		              gtk_marshal_VOID__VOID,
+		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 	signals[FILE_CHANGED] =
 		g_signal_new ("file_changed",
@@ -5722,7 +5716,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, file_changed),
 		              NULL, NULL,
-		              gtk_marshal_VOID__OBJECT,
+		              g_cclosure_marshal_VOID__OBJECT,
 		              G_TYPE_NONE, 1, NAUTILUS_TYPE_FILE);
 	signals[LOAD_ERROR] =
 		g_signal_new ("load_error",
@@ -5730,7 +5724,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, load_error),
 		              NULL, NULL,
-		              gtk_marshal_VOID__INT,
+		              g_cclosure_marshal_VOID__INT,
 		              G_TYPE_NONE, 1, G_TYPE_INT);
 	signals[REMOVE_FILE] =
 		g_signal_new ("remove_file",
@@ -5738,7 +5732,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, remove_file),
 		              NULL, NULL,
-		              gtk_marshal_VOID__OBJECT,
+		              g_cclosure_marshal_VOID__OBJECT,
 		              G_TYPE_NONE, 1, NAUTILUS_TYPE_FILE);
 
 	klass->accepts_dragged_files = real_accepts_dragged_files;

@@ -1,3 +1,40 @@
+2002-02-14  jacob berkman  <jacob@ximian.com>
+
+	* src/Makefile.am:
+	* src/file-manager/Makefile.am: add -DFOO_DISABLE_DEPRECATED to
+	disable glib, gtk, and gnome deprecated calls
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-properties-window.c:
+	* src/file-manager/fm-search-list-view.c:
+	* src/nautilus-about.c:
+	* src/nautilus-application.c:
+	* src/nautilus-bookmark-list.c:
+	* src/nautilus-bookmarks-window.c:
+	* src/nautilus-complex-search-bar.c:
+	* src/nautilus-location-bar.c:
+	* src/nautilus-main.c:
+	* src/nautilus-navigation-bar.c:
+	* src/nautilus-property-browser.c:
+	* src/nautilus-search-bar-criterion.c:
+	* src/nautilus-shell.c:
+	* src/nautilus-sidebar-tabs.c:
+	* src/nautilus-sidebar-title.c:
+	* src/nautilus-sidebar.c:
+	* src/nautilus-simple-search-bar.c:
+	* src/nautilus-switchable-navigation-bar.c:
+	* src/nautilus-switchable-search-bar.c:
+	* src/nautilus-theme-selector.c:
+	* src/nautilus-view-frame.c:
+	* src/nautilus-window-manage-views.c:
+	* src/nautilus-window-menus.c:
+	* src/nautilus-window-toolbars.c:
+	* src/nautilus-window.c:
+	* src/nautilus-zoom-control.c: port to non-deprecated calls.  This
+	was mostly GnomeDialog -> GtkDialog and gtk_signal -> g_signal
+
 2002-02-12  David Emory Watson  <dwatson@cvs.gnome.org>
 
 	* libnautilus-private/nautilus-bonobo-extensions.c:

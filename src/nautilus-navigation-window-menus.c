@@ -138,11 +138,11 @@ bookmark_holder_new (NautilusBookmark *bookmark,
 	new_bookmark_holder->prompt_for_removal = is_bookmarks_menu;
 
 	new_bookmark_holder->changed_handler_id = 
-		gtk_signal_connect_object (GTK_OBJECT (bookmark), "appearance_changed",
-				   	   is_bookmarks_menu
-				   	   ? G_CALLBACK (schedule_refresh_bookmarks_menu)
-				   	   : G_CALLBACK (schedule_refresh_go_menu),
-				   	   GTK_OBJECT (window));
+		g_signal_connect_swapped (bookmark, "appearance_changed",
+					  is_bookmarks_menu
+					  ? G_CALLBACK (schedule_refresh_bookmarks_menu)
+					  : G_CALLBACK (schedule_refresh_go_menu),
+					  window);
 
 	return new_bookmark_holder;
 }
@@ -150,8 +150,8 @@ bookmark_holder_new (NautilusBookmark *bookmark,
 static void
 bookmark_holder_free (BookmarkHolder *bookmark_holder)
 {
-	gtk_signal_disconnect (GTK_OBJECT (bookmark_holder->bookmark), 
-			       bookmark_holder->changed_handler_id);
+	g_signal_handler_disconnect (bookmark_holder->bookmark,
+				     bookmark_holder->changed_handler_id);
 	g_object_unref (bookmark_holder->bookmark);
 	g_free (bookmark_holder);
 }
@@ -818,12 +818,12 @@ get_static_bookmarks_file_path (void)
 	/* see if there is a static bookmarks file in the updates directory and get its mod-date */
 	user_directory_path = nautilus_get_user_directory ();
 	update_xml_file_path = g_strdup_printf ("%s/updates/%s", user_directory_path, STATIC_BOOKMARKS_FILE_NAME);
-	update_exists = g_file_exists (update_xml_file_path);
+	update_exists = g_file_test (update_xml_file_path, G_FILE_TEST_EXISTS);
 	g_free (user_directory_path);
 	
 	/* get the mod date of the built-in static bookmarks file */
 	built_in_xml_file_path = nautilus_make_path (NAUTILUS_DATADIR, STATIC_BOOKMARKS_FILE_NAME);
-	built_in_exists = g_file_exists (built_in_xml_file_path);
+	built_in_exists = g_file_test (built_in_xml_file_path, G_FILE_TEST_EXISTS);
 	
 	/* if we only have one file, return its path as the one to use */
 	if (built_in_exists && !update_exists) {

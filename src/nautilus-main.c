@@ -109,7 +109,7 @@ event_loop_unregister (GtkObject *object)
 void
 nautilus_main_event_loop_register (GtkObject *object)
 {
-	gtk_signal_connect (object, "destroy", G_CALLBACK (event_loop_unregister), NULL);
+	g_signal_connect (object, "destroy", G_CALLBACK (event_loop_unregister), NULL);
 	event_loop_registrants = g_slist_prepend (event_loop_registrants, object);
 }
 

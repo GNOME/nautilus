@@ -254,7 +254,7 @@ nautilus_property_browser_init (GtkObject *object)
 	g_free (temp_str);
 	
 	/* set the initial size of the property browser */
-	gtk_widget_set_usize (widget, PROPERTY_BROWSER_WIDTH, PROPERTY_BROWSER_HEIGHT);
+	gtk_widget_set_size_request (widget, PROPERTY_BROWSER_WIDTH, PROPERTY_BROWSER_HEIGHT);
 	gtk_container_set_border_width (GTK_CONTAINER (widget), 0);				
 
 	/* set the title and standard close accelerator */
@@ -469,7 +469,6 @@ nautilus_property_browser_new (void)
 		(gtk_widget_new (nautilus_property_browser_get_type (), NULL));
 	
 	gtk_container_set_border_width (GTK_CONTAINER (browser), 0);
-  	gtk_window_set_policy (GTK_WINDOW(browser), TRUE, TRUE, FALSE);
   	gtk_widget_show (GTK_WIDGET(browser));
 	
 	return browser;
@@ -579,7 +578,7 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 						   is_reset ? "patterns" : property_browser->details->category,
 						   property_browser->details->dragged_file);
 		
-		if (!g_file_exists (image_file_name)) {
+		if (!g_file_test (image_file_name, G_FILE_TEST_EXISTS)) {
 			char *user_directory;
 			g_free (image_file_name);
 
@@ -647,7 +646,7 @@ make_drag_image (NautilusPropertyBrowser *property_browser, const char* file_nam
 					   property_browser->details->category,
 					   file_name);
 	
-	if (!g_file_exists (image_file_name)) {
+	if (!g_file_test (image_file_name, G_FILE_TEST_EXISTS)) {
 		char *user_directory;
 		g_free (image_file_name);
 
@@ -722,7 +721,7 @@ category_clicked_callback (GtkWidget *widget, char *category_name)
 	gboolean save_flag;
 	NautilusPropertyBrowser *property_browser;
 	
-	property_browser = NAUTILUS_PROPERTY_BROWSER (gtk_object_get_user_data (GTK_OBJECT (widget)));
+	property_browser = NAUTILUS_PROPERTY_BROWSER (g_object_get_data (G_OBJECT (widget), "user_data"));
 	
 	/* special case the user clicking on the already selected button, since we don't want that to toggle */
 	if (widget == GTK_WIDGET(property_browser->details->selected_button)) {
@@ -928,13 +927,14 @@ nautilus_emblem_dialog_new (NautilusPropertyBrowser *property_browser)
 	gtk_widget_show(widget);
 	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 0, 1, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
 	
-  	property_browser->details->keyword = gtk_entry_new_with_max_length (24);
+  	property_browser->details->keyword = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (property_browser->details->keyword), 24);
 	gtk_widget_show(property_browser->details->keyword);
 	gtk_table_attach(GTK_TABLE(table), property_browser->details->keyword, 1, 2, 0, 1, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
 
 	/* default image is the generic emblem */
 	g_free(property_browser->details->image_path);		
-	property_browser->details->image_path = gnome_pixmap_file ("gnome-question.png"); 
+	property_browser->details->image_path = g_build_filename (NAUTILUS_PIXMAPDIR, "emblems.png", NULL);
 	
 	/* set up a gnome icon entry to pick the image file */
 	widget = gtk_label_new(_("Image:"));
@@ -982,7 +982,8 @@ nautilus_color_selection_dialog_new (NautilusPropertyBrowser *property_browser)
 	gtk_widget_show(widget);
 	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 0, 1, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
 	
-  	property_browser->details->color_name = gtk_entry_new_with_max_length (24);
+  	property_browser->details->color_name = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (property_browser->details->color_name), 24);
 	gtk_widget_show(property_browser->details->color_name);
 	gtk_table_attach(GTK_TABLE(table), property_browser->details->color_name, 1, 2, 0, 1, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
 
@@ -1058,7 +1059,7 @@ add_pattern_to_browser (const char *path_name, gpointer *data)
 	destination_name = nautilus_make_path (directory_path, source_file_name + 1);
 
 	/* make the directory if it doesn't exist */
-	if (!g_file_exists(directory_path)) {
+	if (!g_file_test(directory_path, G_FILE_TEST_EXISTS)) {
 		directory_uri = gnome_vfs_get_uri_from_local_path (directory_path);
 		gnome_vfs_make_directory (directory_uri,
 						 GNOME_VFS_PERM_USER_ALL
@@ -1143,7 +1144,7 @@ add_color_to_browser (GtkWidget *widget, int which_button, gpointer *data)
 	gdouble color[4];
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER (data);
 
-	if (which_button == GNOME_OK) {	
+	if (which_button == GTK_RESPONSE_OK) {
 		gnome_color_picker_get_d (GNOME_COLOR_PICKER (property_browser->details->color_picker), &color[0], &color[1], &color[2], &color[3]);		
 		color_spec = g_strdup_printf
 			("#%02X%02X%02X",
@@ -1173,17 +1174,17 @@ add_color_to_browser (GtkWidget *widget, int which_button, gpointer *data)
 static void
 show_color_selection_window (GtkWidget *widget, gpointer *data)
 {
-	gdouble color[4];
+	GdkColor color;
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(data);
 
-	gtk_color_selection_get_color (GTK_COLOR_SELECTION (GTK_COLOR_SELECTION_DIALOG (property_browser->details->dialog)->colorsel), color);
+	gtk_color_selection_get_current_color (GTK_COLOR_SELECTION (GTK_COLOR_SELECTION_DIALOG (property_browser->details->dialog)->colorsel), &color);
 	gtk_widget_destroy (property_browser->details->dialog);
 
 	/* allocate a new color selection dialog */
 	property_browser->details->dialog = nautilus_color_selection_dialog_new (property_browser);		
 
 	/* set the color to the one picked by the selector */
-	gnome_color_picker_set_d (GNOME_COLOR_PICKER (property_browser->details->color_picker), color[0], color[1], color[2], 1.0);
+	gnome_color_picker_set_i16 (GNOME_COLOR_PICKER (property_browser->details->color_picker), color.red, color.green, color.blue, 1.0);
 	
 	/* connect the signals to the new dialog */
 	
@@ -1219,10 +1220,10 @@ add_new_color (NautilusPropertyBrowser *property_browser)
 		g_signal_connect (color_dialog->ok_button,
 				    "clicked",
 				    (GtkSignalFunc) show_color_selection_window, property_browser);
-		gtk_signal_connect_object (GTK_OBJECT (color_dialog->cancel_button),
-					   "clicked",
-					   (GtkSignalFunc) gtk_widget_destroy,
-					   GTK_OBJECT (color_dialog));
+		g_signal_connect_swapped (color_dialog->cancel_button,
+					  "clicked",
+					  (GtkSignalFunc) gtk_widget_destroy,
+					  color_dialog);
 		gtk_widget_hide(color_dialog->help_button);
 
 		gtk_window_set_position (GTK_WINDOW (color_dialog), GTK_WIN_POS_MOUSE);
@@ -1276,7 +1277,7 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 	char *directory_uri, *error_string;
 	GnomeVFSResult result;
 	
-	if (which_button == GNOME_OK) {
+	if (which_button == GTK_RESPONSE_OK) {
 		char *destination_name, *extension;
 		const char *new_keyword;
 		char *stripped_keyword;
@@ -1330,7 +1331,7 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 			g_free (user_directory);
 
 			/* make the directory if it doesn't exist */
-			if (!g_file_exists (directory_path)) {
+			if (!g_file_test (directory_path, G_FILE_TEST_EXISTS)) {
 				directory_uri = gnome_vfs_get_uri_from_local_path (directory_path);
 				gnome_vfs_make_directory(directory_uri,
 						 	GNOME_VFS_PERM_USER_ALL
@@ -1871,16 +1872,13 @@ make_category_link (NautilusPropertyBrowser *property_browser,
 	property_browser->details->category_position += 1;
 	
 	/* add a signal to handle clicks */
-	gtk_object_set_user_data (GTK_OBJECT(button), property_browser);
-	gtk_signal_connect_full
-		(GTK_OBJECT (button),
+	g_object_set_data (G_OBJECT(button), "user_data", property_browser);
+	g_signal_connect_data
+		(button,
 		 "clicked",
 		 G_CALLBACK (category_clicked_callback),
-		 NULL,
 		 g_strdup (name),
-		 g_free,
-		 FALSE,
-		 FALSE);
+		 (GClosureNotify)g_free, 0);
 }
 
 /* update_contents populates the property browser with information specified by the path and other state variables */
@@ -2026,7 +2024,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		/* enable the "add new" button and update it's name */		
 		
 		if (text != NULL) {
-			gtk_label_set (GTK_LABEL(property_browser->details->add_button_label), text);
+			gtk_label_set_text (GTK_LABEL(property_browser->details->add_button_label), text);
 		}
 		if (show_buttons) {
 			gtk_widget_show (property_browser->details->add_button);
@@ -2098,7 +2096,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		else
 			gtk_widget_show(property_browser->details->remove_button);
 		if (text != NULL) {
-			gtk_label_set (GTK_LABEL(property_browser->details->remove_button_label), text);
+			gtk_label_set_text (GTK_LABEL(property_browser->details->remove_button_label), text);
 		}
 	}
 }

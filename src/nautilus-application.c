@@ -718,7 +718,7 @@ need_to_show_first_time_druid (void)
 	user_directory = nautilus_get_user_directory ();
 
 	druid_flag_file_name = g_strconcat (user_directory, "/first-time-flag", NULL);
-	result = !g_file_exists (druid_flag_file_name);	
+	result = !g_file_test (druid_flag_file_name, G_FILE_TEST_EXISTS);
 	g_free (druid_flag_file_name);
 
 	/* we changed the name of the flag for version 1.0, so we should

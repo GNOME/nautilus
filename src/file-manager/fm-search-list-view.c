@@ -632,10 +632,10 @@ real_adding_file (FMListView *view, NautilusFile *file)
 	 * and won't be specific to the search directory. Is that OK? 
 	 */
 
-	gtk_signal_connect_object (GTK_OBJECT (file),
-				   "changed",
-				   G_CALLBACK (fm_directory_view_queue_file_change),
-				   GTK_OBJECT (view));
+	g_signal_connect_swapped (GTK_OBJECT (file),
+				  "changed",
+				  G_CALLBACK (fm_directory_view_queue_file_change),
+				  view);
 
 	/* Monitor the things needed to get the right
 	 * icon. Also monitor a directory's item count because
@@ -662,8 +662,8 @@ real_removing_file (FMListView *view, NautilusFile *file)
 	g_assert (NAUTILUS_IS_FILE (file));
 
 	nautilus_file_monitor_remove (file, view);
-	gtk_signal_disconnect_by_func 
-		(GTK_OBJECT (file), G_CALLBACK (fm_directory_view_queue_file_change), view);
+	g_signal_handlers_disconnect_by_func 
+		(G_OBJECT (file), G_CALLBACK (fm_directory_view_queue_file_change), view);
 	EEL_CALL_PARENT (FM_LIST_VIEW_CLASS, removing_file, (view, file));
 }
 

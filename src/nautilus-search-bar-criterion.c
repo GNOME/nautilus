@@ -219,7 +219,7 @@ nautilus_search_bar_criterion_class_init (NautilusSearchBarCriterionClass *klass
 		 G_SIGNAL_RUN_LAST,
 		 0,
 		 NULL, NULL,
-		 gtk_marshal_VOID__VOID,
+		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 				
 }
@@ -315,7 +315,7 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 		g_object_set_data (G_OBJECT(item), "type", GINT_TO_POINTER(i));
 		g_signal_connect (item, "activate",
 				  G_CALLBACK (criterion_type_changed_callback), criterion);
-		gtk_menu_append (GTK_MENU (search_criteria_menu),
+		gtk_menu_shell_append (GTK_MENU_SHELL (search_criteria_menu),
 				 item);
 		gtk_widget_show (item);
 	}
@@ -359,8 +359,8 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 						    criterion);
 			}
 		}
-		gtk_menu_append (GTK_MENU (relation_menu),
-				 item);
+		gtk_menu_shell_append (GTK_MENU_SHELL (relation_menu),
+				       item);
 	}
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (relation_option_menu),
 				  relation_menu);
@@ -400,8 +400,8 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 			g_free (context_stripped_value);
 			gtk_widget_show (item);
 			g_object_set_data (G_OBJECT(item), "type", GINT_TO_POINTER(i));
-			gtk_menu_append (GTK_MENU (value_menu),
-					 item);
+			gtk_menu_shell_append (GTK_MENU_SHELL (value_menu),
+					       item);
 		}
 		gtk_option_menu_set_menu (GTK_OPTION_MENU (value_option_menu),
 					  value_menu);
@@ -714,8 +714,8 @@ nautilus_search_bar_criterion_update_valid_criteria_choices (NautilusSearchBarCr
 		
 		g_signal_connect (item, "activate",
 				  G_CALLBACK (criterion_type_changed_callback), criterion);
-		gtk_menu_append (GTK_MENU (new_menu),
-				 item);
+		gtk_menu_shell_append (GTK_MENU_SHELL (new_menu),
+				       item);
 		gtk_widget_show (item);
 		if (i == criterion->details->type) {
 			gtk_menu_set_active (GTK_MENU (new_menu), i);
@@ -1008,7 +1008,7 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 
 		gtk_container_add (GTK_CONTAINER (menu_item), image);
 		gtk_widget_show_all (menu_item);
-		gtk_menu_append (GTK_MENU (value_menu), menu_item);
+		gtk_menu_shell_append (GTK_MENU_SHELL (value_menu), menu_item);
 
 		g_object_unref (pixbuf);
 		g_free (label);

@@ -239,9 +239,9 @@ nautilus_complex_search_bar_init (NautilusComplexSearchBar *bar)
 			    1);
 
 	gtk_container_add (GTK_CONTAINER (bar->details->find_them), find_them_box);
-	gtk_signal_connect_object (GTK_OBJECT (bar->details->find_them), "clicked",
-				   G_CALLBACK (nautilus_navigation_bar_location_changed),
-				   GTK_OBJECT (bar));
+	g_signal_connect_swapped (bar->details->find_them, "clicked",
+				  G_CALLBACK (nautilus_navigation_bar_location_changed),
+				  bar);
 
 	gtk_wrap_box_pack (GTK_WRAP_BOX (hbox), 
 			   bar->details->find_them, 
@@ -390,17 +390,17 @@ attach_criterion_to_search_bar (NautilusComplexSearchBar *bar,
 	
 	if (criterion->details->use_value_entry) {
 		/* We want to track whether the entry text is empty or not. */
-		gtk_signal_connect_object (GTK_OBJECT (criterion->details->value_entry),
-					   "changed", 
-					   G_CALLBACK (update_find_button_state),
-					   GTK_OBJECT (bar));
+		g_signal_connect_swapped (criterion->details->value_entry,
+					  "changed", 
+					  G_CALLBACK (update_find_button_state),
+					  bar);
 		
 		/* We want to activate the "Find" button when any entry text is not empty */
 		g_assert (GTK_IS_BUTTON (bar->details->find_them));
-		gtk_signal_connect_object (GTK_OBJECT (criterion->details->value_entry), 
-					   "activate",
-					   G_CALLBACK (gtk_widget_activate),
-					   GTK_OBJECT (bar->details->find_them));
+		g_signal_connect_swapped (criterion->details->value_entry,
+					  "activate",
+					  G_CALLBACK (gtk_widget_activate),
+					  bar->details->find_them);
 	}
 	nautilus_complex_search_bar_queue_resize (bar);
 }

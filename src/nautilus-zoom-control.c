@@ -30,6 +30,7 @@
 
 
 #include <math.h>
+#include <string.h>
 #include <gnome.h>
 #include <gdk/gdk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -161,7 +162,7 @@ nautilus_zoom_control_init (NautilusZoomControl *zoom_control)
 	nautilus_zoom_control_load_images (zoom_control);
 	
 	zoom_width = get_zoom_width (zoom_control);
-	gtk_widget_set_usize (GTK_WIDGET (zoom_control), zoom_width, -1);
+	gtk_widget_set_size_request (GTK_WIDGET (zoom_control), zoom_width, -1);
 
 	/* add a callback for when the theme changes */
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
@@ -261,16 +262,18 @@ void draw_number (GtkWidget *widget, GdkRectangle *box)
 
 			x += char_width;
 		}
-	} else {				
+	} else {
+#ifdef GNOME2_CONVERSION_COMPLETE
 		x = num_h_offset + ((widget->allocation.width - gdk_string_width(zoom_control->details->label_font, buffer)) >> 1);  
 		gdk_draw_string (widget->window, zoom_control->details->label_font, temp_gc, x, y, &buffer[0]);
+#endif
 	}
 	
 	if (number_pixbuf != zoom_control->details->number_strip) {
 		g_object_unref (number_pixbuf);
 	}
 	
-	gdk_gc_unref(temp_gc);
+	g_object_unref(temp_gc);
 }
 
 /* utilities to simplify drawing */
@@ -407,8 +410,10 @@ nautilus_zoom_control_unload_images (NautilusZoomControl *zoom_control)
 	}
 
 	if (zoom_control->details->label_font != NULL) {
+#ifdef GNOME2_CONVERSION_COMPLETE
 		gdk_font_unref(zoom_control->details->label_font);
 		zoom_control->details->label_font = NULL;
+#endif
 	}
 
 }
@@ -445,10 +450,12 @@ nautilus_zoom_control_load_images (NautilusZoomControl *zoom_control)
 	zoom_control->details->number_strip = load_themed_image ("number_strip.png");
 	
 	if (zoom_control->details->number_strip == NULL) {
+#ifdef GNOME2_CONVERSION_COMPLETE
 		/* Note to localizers: this font is used for the number in the
 		 * zoom control widget.
 		 */
 		zoom_control->details->label_font = gdk_fontset_load (_("-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"));
+#endif
 	}
 
 	nautilus_zoom_control_update_offsets (zoom_control);
@@ -513,13 +520,12 @@ create_zoom_menu_item (GtkMenu *menu, GtkWidget *widget, float zoom_level,
 
 	radio_item_group = previous_radio_item == NULL
 		? NULL
-		: gtk_radio_menu_item_group (previous_radio_item);
+		: gtk_radio_menu_item_get_group (previous_radio_item);
 	menu_item = gtk_radio_menu_item_new_with_label (radio_item_group, item_text);
 
 	zoom_level_ptr = g_new (double, 1);
 	*zoom_level_ptr = zoom_level;
 
-	gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (menu_item), TRUE);
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), 
 					zoom_level == zoom_control->details->zoom_level);
 	
@@ -529,7 +535,7 @@ create_zoom_menu_item (GtkMenu *menu, GtkWidget *widget, float zoom_level,
 			    zoom_control);
 
   	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 
 	zoom_control->details->marking_menu_items = FALSE;
 
@@ -746,7 +752,7 @@ nautilus_zoom_control_class_init (NautilusZoomControlClass *zoom_control_class)
 		              G_STRUCT_OFFSET (NautilusZoomControlClass, 
 						   zoom_in),
 		              NULL, NULL,
-		              gtk_marshal_VOID__VOID,
+		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 
 	signals[ZOOM_OUT] =
@@ -756,7 +762,7 @@ nautilus_zoom_control_class_init (NautilusZoomControlClass *zoom_control_class)
 		              G_STRUCT_OFFSET (NautilusZoomControlClass, 
 						   zoom_out),
 		              NULL, NULL,
-		              gtk_marshal_VOID__VOID,
+		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 
 	signals[ZOOM_TO_LEVEL] =
@@ -778,6 +784,6 @@ nautilus_zoom_control_class_init (NautilusZoomControlClass *zoom_control_class)
 		              G_STRUCT_OFFSET (NautilusZoomControlClass, 
 						   zoom_to_fit),
 		              NULL, NULL,
-		              gtk_marshal_VOID__VOID,
+		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 }

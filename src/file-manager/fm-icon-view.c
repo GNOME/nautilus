@@ -2508,14 +2508,10 @@ create_icon_container (FMIconView *icon_view)
 			  G_CALLBACK (icon_container_preview_callback), icon_view);
 	g_signal_connect (icon_container, "renaming_icon",
 			  G_CALLBACK (renaming_icon_callback), directory_view);
-	gtk_signal_connect_object (GTK_OBJECT (icon_container),
-			           "icon_stretch_started",
-			           G_CALLBACK (fm_directory_view_update_menus),
-			           GTK_OBJECT (directory_view));
-	gtk_signal_connect_object (GTK_OBJECT (icon_container),
-			           "icon_stretch_ended",
-			           G_CALLBACK (fm_directory_view_update_menus),
-			           GTK_OBJECT (directory_view));
+	g_signal_connect_swapped (icon_container, "icon_stretch_started",
+				  G_CALLBACK (fm_directory_view_update_menus), directory_view);
+	g_signal_connect_swapped (icon_container, "icon_stretch_ended",
+				  G_CALLBACK (fm_directory_view_update_menus), directory_view);
 
 	gtk_container_add (GTK_CONTAINER (icon_view),
 			   GTK_WIDGET (icon_container));

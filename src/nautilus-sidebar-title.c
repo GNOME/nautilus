@@ -128,11 +128,11 @@ realize_callback (NautilusSidebarTitle *sidebar_title)
 
 	g_return_if_fail (background != NULL);
 
-	gtk_signal_connect_while_alive (GTK_OBJECT (background),
-					"appearance_changed",
-					G_CALLBACK (appearance_changed_callback),
-					sidebar_title,
-					GTK_OBJECT (sidebar_title));
+	g_signal_connect_object (background,
+				 "appearance_changed",
+				 G_CALLBACK (appearance_changed_callback),
+				 sidebar_title,
+				 0);
 }
 
 #if GNOME2_CONVERSION_COMPLETE
@@ -176,10 +176,10 @@ nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 	sidebar_title->details = g_new0 (NautilusSidebarTitleDetails, 1);
 
 	/* Register to find out about icon theme changes */
-	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
-					       "icons_changed",
-					       G_CALLBACK (update_icon),
-					       GTK_OBJECT (sidebar_title));
+	g_signal_connect_swapped (nautilus_icon_factory_get (),
+				  "icons_changed",
+				  G_CALLBACK (update_icon),
+				  sidebar_title);
 	g_signal_connect (sidebar_title, "realize",
 			    G_CALLBACK (realize_callback), NULL);
 
@@ -232,8 +232,8 @@ static void
 release_file (NautilusSidebarTitle *sidebar_title)
 {
 	if (sidebar_title->details->file_changed_connection != 0) {
-		gtk_signal_disconnect (GTK_OBJECT (sidebar_title->details->file),
-				       sidebar_title->details->file_changed_connection);
+		g_signal_handler_disconnect (sidebar_title->details->file,
+					     sidebar_title->details->file_changed_connection);
 		sidebar_title->details->file_changed_connection = 0;
 	}
 
@@ -790,10 +790,10 @@ nautilus_sidebar_title_set_file (NautilusSidebarTitle *sidebar_title,
 		/* attach file */
 		if (file != NULL) {
 			sidebar_title->details->file_changed_connection =
-				gtk_signal_connect_object (GTK_OBJECT (sidebar_title->details->file),
-							   "changed",
-							   G_CALLBACK (update_all),
-							   GTK_OBJECT (sidebar_title));
+				g_signal_connect_swapped (sidebar_title->details->file,
+							  "changed",
+							  G_CALLBACK (update_all),
+							  sidebar_title);
 			
 			/* Monitor the things needed to get the right
 			 * icon. Don't monitor a directory's item

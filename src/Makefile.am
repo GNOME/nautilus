@@ -7,6 +7,7 @@ bin_PROGRAMS=nautilus
 INCLUDES =\
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/cut-n-paste-code/widgets/gimphwrapbox \
+	-I$(top_builddir)/libnautilus-private \
 	$(CORE_CFLAGS) \
 	-DDATADIR=\""$(datadir)"\" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
@@ -16,6 +17,11 @@ INCLUDES =\
 	-DPREFIX=\""$(prefix)"\" \
 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
 	-DVERSION="\"$(VERSION)\"" \
+	-DG_DISABLE_DEPRECATED \
+	-DGDK_DISABLE_DEPRECATED \
+	-DGDK_PIXBUF_DISABLE_DEPRECATED \
+	-DGTK_DISABLE_DEPRECATED \
+	-DGNOME_DISABLE_DEPRECATED \
 	$(NULL)
 
 LDADD =\
@@ -138,6 +144,7 @@ EXTRA_DIST =					\
 	$(ui_DATA)				\
 	check-nautilus				\
 	nautilus-shell-interface.idl		\
+	nautilus-shell-marshal.list		\
 	run-nautilus				\
 	$(NULL)
 

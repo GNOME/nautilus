@@ -134,13 +134,13 @@ make_widgets_same_size (GtkWidget *one, GtkWidget *two)
 	one_dimensions = eel_gtk_widget_get_preferred_dimensions (one);
 	two_dimensions = eel_gtk_widget_get_preferred_dimensions (two);
 
-	gtk_widget_set_usize (one,
-			      MAX (one_dimensions.width, two_dimensions.width),
-			      MAX (one_dimensions.height, two_dimensions.height));
+	gtk_widget_set_size_request (one,
+				     MAX (one_dimensions.width, two_dimensions.width),
+				     MAX (one_dimensions.height, two_dimensions.height));
 
-	gtk_widget_set_usize (two,
-			      MAX (one_dimensions.width, two_dimensions.width),
-			      MAX (one_dimensions.height, two_dimensions.height));
+	gtk_widget_set_size_request (two,
+				     MAX (one_dimensions.width, two_dimensions.width),
+				     MAX (one_dimensions.height, two_dimensions.height));
 }
 
 static void
@@ -452,11 +452,11 @@ remove_theme_selector_changed_callback (EelImageChooser *image_chooser,
 
 	theme_to_remove = g_strdup ((const char *)eel_image_chooser_get_row_data (image_chooser, theme_to_remove_position));
 
-	gtk_signal_handler_block (GTK_OBJECT (theme_selector->details->remove_theme_selector),
-				  theme_selector->details->theme_selector_changed_connection);
+	g_signal_handler_block (theme_selector->details->remove_theme_selector,
+				theme_selector->details->theme_selector_changed_connection);
 	theme_selector_finish_remove (theme_selector);
-	gtk_signal_handler_unblock (GTK_OBJECT (theme_selector->details->remove_theme_selector),
-				    theme_selector->details->theme_selector_changed_connection);
+	g_signal_handler_unblock (theme_selector->details->remove_theme_selector,
+				  theme_selector->details->theme_selector_changed_connection);
 
 	selected_theme = theme_selector_get_selected_theme (theme_selector);
 	g_return_if_fail (selected_theme != NULL);

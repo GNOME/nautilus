@@ -142,11 +142,10 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	set_up_close_accelerator (window);
 	nautilus_undo_share_undo_manager (G_OBJECT (window), undo_manager_source);
 	gtk_window_set_wmclass (GTK_WINDOW (window), "bookmarks", "Nautilus");
-	gtk_widget_set_usize (window, 
-			      BOOKMARKS_WINDOW_MIN_WIDTH, 
-			      BOOKMARKS_WINDOW_MIN_HEIGHT);
+	gtk_widget_set_size_request (window, 
+				     BOOKMARKS_WINDOW_MIN_WIDTH, 
+				     BOOKMARKS_WINDOW_MIN_HEIGHT);
 	nautilus_bookmarks_window_restore_geometry (window);
-	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
 	
 	content_area = gtk_hbox_new (TRUE, GNOME_PAD);
 	gtk_widget_show (content_area);
@@ -284,8 +283,9 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 			  G_CALLBACK (on_remove_button_clicked), NULL);
 
 	/* Register to find out about icon theme changes */
-	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (), "icons_changed",
-					       repopulate, GTK_OBJECT (window));
+	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
+				 G_CALLBACK (repopulate), window,
+				 G_CONNECT_SWAPPED);
                       	    
 	gtk_tree_selection_set_mode (bookmark_selection,
 				     GTK_SELECTION_BROWSE);
@@ -425,12 +425,12 @@ on_remove_button_clicked (GtkButton *button,
 	 * This allows the selection to move to the next row, instead of leaping
 	 * back to the top.
 	 */
-	gtk_signal_handler_block(GTK_OBJECT(bookmarks), 
-				 bookmark_list_changed_signal_id);
+	g_signal_handler_block(bookmarks,
+			       bookmark_list_changed_signal_id);
 	selected_row = get_selected_row ();
 	nautilus_bookmark_list_delete_item_at(bookmarks, get_selected_row());
-	gtk_signal_handler_unblock(GTK_OBJECT(bookmarks), 
-				   bookmark_list_changed_signal_id);
+	g_signal_handler_unblock(bookmarks,
+				 bookmark_list_changed_signal_id);
 
 	/*
 	 * If removing the selected row selected the next row, then we'll
@@ -486,12 +486,12 @@ on_row_move (GtkCList *clist,
 	/* turn off list updating 'cuz otherwise the list-reordering code runs
 	 * after repopulate(), thus reordering the correctly-ordered list.
 	 */
-	gtk_signal_handler_block(GTK_OBJECT(bookmarks), 
-				 bookmark_list_changed_signal_id);
+	g_signal_handler_block(bookmarks,
+			       bookmark_list_changed_signal_id);
 	nautilus_bookmark_list_delete_item_at(bookmarks, old_row);
 	nautilus_bookmark_list_insert_item(bookmarks, bookmark, new_row);
-	gtk_signal_handler_unblock(GTK_OBJECT(bookmarks), 
-				   bookmark_list_changed_signal_id);
+	g_signal_handler_unblock(bookmarks, 
+				 bookmark_list_changed_signal_id);
 
 	g_object_unref (bookmark);
 }
@@ -537,12 +537,12 @@ update_bookmark_from_text (void)
 		/* turn off list updating 'cuz otherwise the list-reordering code runs
 		 * after repopulate(), thus reordering the correctly-ordered list.
 		 */
-		gtk_signal_handler_block (GTK_OBJECT (bookmarks), 
-					  bookmark_list_changed_signal_id);
+		g_signal_handler_block (bookmarks, 
+					bookmark_list_changed_signal_id);
 		nautilus_bookmark_list_delete_item_at (bookmarks, selected_row);
 		nautilus_bookmark_list_insert_item (bookmarks, bookmark, selected_row);
-		gtk_signal_handler_unblock (GTK_OBJECT (bookmarks), 
-					    bookmark_list_changed_signal_id);
+		g_signal_handler_unblock (bookmarks, 
+					  bookmark_list_changed_signal_id);
 
 		g_object_unref (bookmark);
 	}
@@ -679,17 +679,17 @@ repopulate (void)
 	    
 	if (!selection_exists) {
 		/* Block signals to avoid modifying nonexistent selected item. */
-		gtk_signal_handler_block (GTK_OBJECT (name_field), 
-					  name_field_changed_signal_id);
+		g_signal_handler_block (name_field, 
+					name_field_changed_signal_id);
 		nautilus_entry_set_text (NAUTILUS_ENTRY (name_field), "");
-		gtk_signal_handler_unblock (GTK_OBJECT (name_field), 
-					    name_field_changed_signal_id);
+		g_signal_handler_unblock (name_field, 
+					  name_field_changed_signal_id);
 
-		gtk_signal_handler_block (GTK_OBJECT (uri_field), 
-					  uri_field_changed_signal_id);
+		g_signal_handler_block (uri_field, 
+					uri_field_changed_signal_id);
 		nautilus_entry_set_text (NAUTILUS_ENTRY (uri_field), "");
-		gtk_signal_handler_unblock (GTK_OBJECT (uri_field), 
-					    uri_field_changed_signal_id);
+		g_signal_handler_unblock (uri_field,
+					  uri_field_changed_signal_id);
 	}
 	  
 }

@@ -298,8 +298,8 @@ restore_one_window_callback (const char *attributes,
 		nautilus_window_go_home (window);
 	}
 
-	gtk_widget_set_uposition (GTK_WIDGET (window), x, y);
-	gtk_widget_set_usize (GTK_WIDGET (window), width, height);
+	gtk_window_move (GTK_WINDOW (window), x, y);
+	gtk_widget_set_size_request (GTK_WIDGET (window), width, height);
 
 	g_free (location);
 	eel_string_list_free (attribute_list);

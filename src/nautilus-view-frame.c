@@ -35,6 +35,7 @@
 #include "nautilus-signaller.h"
 #include "nautilus-view-frame-private.h"
 #include "nautilus-window.h"
+#include <nautilus-marshal.h>
 #include <bonobo/bonobo-event-source.h>
 #include <bonobo/bonobo-control-frame.h>
 #include <bonobo/bonobo-zoomable-frame.h>
@@ -663,7 +664,7 @@ check_socket_gone_idle_callback (gpointer callback_data)
 	 * hierarchy between the widget returned by get_widget and the
 	 * actual plug.
 	 */
-	children = gtk_container_children (GTK_CONTAINER (widget));
+	children = gtk_container_get_children (GTK_CONTAINER (widget));
 	g_list_free (children);
 
 	/* If there's nothing inside the widget at all, that means
@@ -1380,7 +1381,7 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *class)
 		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
 				  change_selection),
 		 NULL, NULL,
-		 gtk_marshal_VOID__POINTER,
+		 g_cclosure_marshal_VOID__POINTER,
 		 G_TYPE_NONE, 1, G_TYPE_POINTER);
 	signals[CHANGE_STATUS] = g_signal_new
 		("change_status",
@@ -1398,7 +1399,7 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *class)
 		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
 				  failed),
 		 NULL, NULL,
-		 gtk_marshal_VOID__VOID,
+		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 	signals[GET_HISTORY_LIST] = g_signal_new
 		("get_history_list",
@@ -1416,7 +1417,7 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *class)
 		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
 				  go_back),
 		 NULL, NULL,
-		 gtk_marshal_VOID__VOID,
+		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 	signals[CLOSE_WINDOW] = g_signal_new
 		("close_window",
@@ -1425,7 +1426,7 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *class)
 		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
 				  close_window),
 		 NULL, NULL,
-		 gtk_marshal_VOID__VOID,
+		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 	signals[LOAD_COMPLETE] = g_signal_new
 		("load_complete",
@@ -1434,7 +1435,7 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *class)
 		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
 				  load_complete),
 		 NULL, NULL,
-		 gtk_marshal_VOID__VOID,
+		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 	signals[LOAD_PROGRESS_CHANGED] = g_signal_new
 		("load_progress_changed",
@@ -1443,7 +1444,7 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *class)
 		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
 				  load_progress_changed),
 		 NULL, NULL,
-		 gtk_marshal_VOID__VOID,
+		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 	signals[LOAD_UNDERWAY] = g_signal_new
 		("load_underway",
@@ -1452,7 +1453,7 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *class)
 		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
 				  load_underway),
 		 NULL, NULL,
-		 gtk_marshal_VOID__VOID,
+		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 	signals[OPEN_LOCATION_FORCE_NEW_WINDOW] = g_signal_new
 		("open_location_force_new_window",
@@ -1506,7 +1507,7 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *class)
 		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
 				  title_changed),
 		 NULL, NULL,
-		 gtk_marshal_VOID__VOID,
+		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 	signals[VIEW_LOADED] = g_signal_new
 		("view_loaded",
@@ -1515,7 +1516,7 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *class)
 		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
 				  view_loaded),
 		 NULL, NULL,
-		 gtk_marshal_VOID__VOID,
+		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 	signals[ZOOM_LEVEL_CHANGED] = g_signal_new
 		("zoom_level_changed",
@@ -1524,7 +1525,7 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *class)
 		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
 				  zoom_level_changed),
 		 NULL, NULL,
-		 gtk_marshal_VOID__VOID,
+		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 	signals[ZOOM_PARAMETERS_CHANGED] = g_signal_new
 		("zoom_parameters_changed",
@@ -1533,6 +1534,6 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *class)
 		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
 				  zoom_parameters_changed),
 		 NULL, NULL,
-		 gtk_marshal_VOID__VOID,
+		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 }

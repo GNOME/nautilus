@@ -143,8 +143,8 @@ nautilus_about_instance_init (NautilusAbout *about)
 	area_width  = gdk_pixbuf_get_width  (about->details->background_pixbuf);
 	area_height = gdk_pixbuf_get_height (about->details->background_pixbuf);
 	
-	gtk_widget_set_usize (GTK_WIDGET (about->details->drawing_area),
-			      area_width, area_height);
+	gtk_widget_set_size_request (GTK_WIDGET (about->details->drawing_area),
+				     area_width, area_height);
 	gtk_widget_set_events (about->details->drawing_area, GDK_EXPOSURE_MASK);
 
 	g_signal_connect (about->details->drawing_area, "expose_event",

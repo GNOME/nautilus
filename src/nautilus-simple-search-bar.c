@@ -132,17 +132,17 @@ nautilus_simple_search_bar_new (NautilusWindow *window)
 		 nautilus_window_get_ui_container (window),
 		 TRUE);
 	
-	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "activate",
-				   G_CALLBACK (gtk_widget_activate), 
-				   GTK_OBJECT (bar->details->find_button));
-	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "changed",
-				   G_CALLBACK (update_simple_find_button_state), GTK_OBJECT (bar));
+	g_signal_connect_swapped (bar->details->entry, "activate",
+				  G_CALLBACK (gtk_widget_activate), 
+				  bar->details->find_button);
+	g_signal_connect_swapped (bar->details->entry, "changed",
+				  G_CALLBACK (update_simple_find_button_state), bar);
 
 	gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (bar->details->entry), TRUE, TRUE, 0);
 
-	gtk_signal_connect_object (GTK_OBJECT (bar->details->find_button), "clicked",
-				   G_CALLBACK (nautilus_navigation_bar_location_changed),
-				   GTK_OBJECT (bar));
+	g_signal_connect_swapped (bar->details->find_button, "clicked",
+				  G_CALLBACK (nautilus_navigation_bar_location_changed),
+				  bar);
 	gtk_box_pack_start (GTK_BOX (hbox), bar->details->find_button, FALSE, TRUE, 1);
 	update_simple_find_button_state (bar);
 	

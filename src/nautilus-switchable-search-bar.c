@@ -133,14 +133,14 @@ nautilus_switchable_search_bar_new (NautilusWindow *window)
 	bar->complex_search_bar = nautilus_complex_search_bar_new (window);
 	bar->simple_search_bar = nautilus_simple_search_bar_new (window);
 
-	gtk_signal_connect_object (GTK_OBJECT (bar->complex_search_bar),
-				   "location_changed",
-				   G_CALLBACK (nautilus_navigation_bar_location_changed),
-				   GTK_OBJECT (bar));
-	gtk_signal_connect_object (GTK_OBJECT (bar->simple_search_bar),
-				   "location_changed",
-				   G_CALLBACK (nautilus_navigation_bar_location_changed),
-				   GTK_OBJECT (bar));
+	g_signal_connect_swapped (bar->complex_search_bar,
+				  "location_changed",
+				  G_CALLBACK (nautilus_navigation_bar_location_changed),
+				  bar);
+	g_signal_connect_swapped (bar->simple_search_bar,
+				  "location_changed",
+				  G_CALLBACK (nautilus_navigation_bar_location_changed),
+				  bar);
 
 	
 	gtk_box_pack_start  (GTK_BOX (hbox), bar->complex_search_bar, TRUE, TRUE,
