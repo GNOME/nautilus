@@ -853,7 +853,7 @@ selection_includes_trash (GList *selection_list)
 		/* FIXME bugzilla.eazel.com 3020: This does sync. I/O and works only locally. */
 		local_path = gnome_vfs_get_local_path_from_uri (uri);
 		trash_in_selection = local_path != NULL
-			|| nautilus_link_local_is_trash_link (local_path);
+			&& nautilus_link_local_is_trash_link (local_path);
 		g_free (local_path);
 		
 		if (trash_in_selection) {
@@ -889,7 +889,7 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 			action = GDK_ACTION_MOVE;
 		} else {
 			action = GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK;
-		}		
+		}
 		context->action = nautilus_drag_drop_action_ask (action);
 	}
 

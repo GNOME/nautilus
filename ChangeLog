@@ -1,3 +1,19 @@
+2000-09-14  Darin Adler  <darin@eazel.com>
+
+	Fixed bug 3079 (Cannot copy or link files or folders with current
+	build). This was just an || where there should be a &&.
+
+	Also took another crack at making the tinderbox succeed.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(selection_includes_trash): Change || to &&. Oops.
+	
+	* nautilus.spec.in: Removed unused directories.
+	* po/POTFILES.in: Removed unused files.
+
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_drop_action_ask): Formatting tweak.
+
 2000-09-14  Andy Hertzfeld  <andy@eazel.com>
 
 	changed the default click policy from single click to double click as

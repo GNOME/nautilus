@@ -438,15 +438,12 @@ nautilus_drag_drop_action_ask (GdkDragAction actions)
 	case 0:
 		action = GDK_ACTION_MOVE;
 		break;
-
 	case 1:
 		action = GDK_ACTION_COPY;
 		break;
-
 	case 2:
 		action = GDK_ACTION_LINK;
 		break;
-
 	default:
 		action = 0; 
 	}
