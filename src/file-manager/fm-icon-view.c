@@ -74,11 +74,11 @@
 #define MENU_PATH_UNSTRETCH_ICONS 		"/menu/Edit/Edit Items Placeholder/Unstretch"
 #define MENU_PATH_LAY_OUT			"/menu/View/View Items Placeholder/Lay Out"
 #define MENU_PATH_MANUAL_LAYOUT 		"/menu/View/View Items Placeholder/Lay Out/Manual Layout"
-#define MENU_PATH_AUTO_LAYOUT_PLACEHOLDER 	"/menu/View/View Items Placeholder/Lay Out/Auto Layout"
 #define MENU_PATH_TIGHTER_LAYOUT 		"/menu/View/View Items Placeholder/Lay Out/Tighter Layout"
 #define MENU_PATH_SORT_REVERSED			"/menu/View/View Items Placeholder/Lay Out/Reversed Order"
 #define MENU_PATH_CLEAN_UP			"/menu/View/View Items Placeholder/Clean Up"
 
+#define COMMAND_PREFIX                          "/commands/"
 #define COMMAND_RENAME 				"/commands/Rename"
 #define COMMAND_STRETCH_ICON 			"/commands/Stretch"
 #define COMMAND_UNSTRETCH_ICONS 		"/commands/Unstretch"
@@ -867,17 +867,9 @@ update_layout_menus (FMIconView *view)
 		view->details->updating_toggle_menu_item = TRUE;
 		
 		/* Mark sort criterion. */
-		/* FIXME: If there was a reasonable API for radio
-		 * groups, we wouldn't have to construct the path from
-		 * the ID in such an ugly way.
-		 */
-		if (is_auto_layout) {
-			path = g_strconcat (MENU_PATH_AUTO_LAYOUT_PLACEHOLDER "/",
-					    view->details->sort->id,
-					    NULL);
-		} else {
-			path = g_strdup (MENU_PATH_MANUAL_LAYOUT);
-		}
+		path = g_strconcat (COMMAND_PREFIX,
+				    is_auto_layout ? view->details->sort->id : ID_MANUAL_LAYOUT,
+				    NULL);
 		nautilus_bonobo_set_toggle_state (view->details->ui, path, TRUE);
 		g_free (path);
 

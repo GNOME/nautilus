@@ -1,3 +1,36 @@
+2000-10-11  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	(nautilus_bonobo_get_label): Fixed storage leak.
+	(nautilus_bonobo_get_hidden): Fixed bug where an item without a
+	hidden property would say it was hidden, but the default is to not
+	be hidden. Also fixed a storage leak.
+	(nautilus_bonobo_add_menu_item), (nautilus_bonobo_add_submenu):
+	Added code to encode the label. This is due to the hack added to
+	bonobo so we can handle 8-bit characters in labels without
+	updgrading to gnome-xml 2.
+	(nautilus_bonobo_set_icon): Removed the code to get the old value
+	of the icon before setting the new value.
+	Also improved return_if_fail checks a bit. If we're going to have
+	them, they should check the type, not just != NULL.
+	
+	* libnautilus-extensions/nautilus-bonobo-extensions.h: Fixed the
+	formatting and removed the old code in ifdef UIH.
+	
+	* po/XMLFILES.in: Added a bunch of XML files that will one-day
+	need localization.
+	
+	* src/file-manager/fm-icon-view.c: (update_layout_menus): Set up
+	the toggle state using the command rather than the menu item.
+	* src/nautilus-shell-ui.xml: First cut at making the location
+	bar expand rather than 
+	* src/nautilus-window.c: (nautilus_window_destroy):
+
+	* components/services/install/command-line/Makefile.am: Added a
+	bunch of unused files to this makefile to quiet down the
+	check-headers-in-Makefile.pl script. This is the one directory
+	where we had dead C code that's not mentioned in the makefile.
+	
 2000-10-11  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-bonobo-extensions.c:

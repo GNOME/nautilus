@@ -29,67 +29,44 @@
 
 #include <bonobo/bonobo-ui-component.h>
 
-void 		nautilus_bonobo_set_accelerator 		(BonoboUIComponent 	*ui_component,
-				      	 	 		 const char        	*path,
-				      	 	 		 const char		*accelerator);
-
-void 		nautilus_bonobo_set_description 		(BonoboUIComponent 	*ui_component,
-				      	 	 		 const char        	*path,
-				      	 	 		 const char		*description);
-
-char 	       *nautilus_bonobo_get_label 			(BonoboUIComponent 	*ui_component,
-					 	 		 const char        	*path);
-
-void 		nautilus_bonobo_set_label 			(BonoboUIComponent 	*ui_component,
-					 	 		 const char        	*path,
-					 	 		 const char	  	*label);
-
-void		nautilus_bonobo_set_tip 			(BonoboUIComponent 	*ui,
-			 					 const char 		*path,
-			 					 const char 		*tip);
-
-void 		nautilus_bonobo_set_sensitive 			(BonoboUIComponent 	*ui_component,
-				    	 	 		 const char        	*path,
-				    	 	 		 gboolean           	sensitive);
-
-void 		nautilus_bonobo_set_toggle_state 		(BonoboUIComponent 	*ui_component,
-				       				 const char        	*path,
-				       				 gboolean           	state);
-
-
-void 		nautilus_bonobo_set_hidden 			(BonoboUIComponent 	*ui,
-				 	 	 		 const char        	*path,
-				 	 	 		 gboolean           	hidden);
-
-gboolean	nautilus_bonobo_get_hidden 			(BonoboUIComponent 	*ui,
-				     	 	 		 const char        	*path);
-
-void	 	nautilus_bonobo_add_menu_item 			(BonoboUIComponent 	*ui, 
-					 	 		 const char 	  	*path, 
-			 		 	 		 const char 	  	*label);
-
-void		nautilus_bonobo_add_submenu 			(BonoboUIComponent 	*ui, 
-								 const char 		*path, 
-								 const char 		*label);
-
-
-void		nautilus_bonobo_add_menu_separator 		(BonoboUIComponent 	*ui, 
-								 const char 		*path);
-
-void	 	nautilus_bonobo_remove_menu_items 		(BonoboUIComponent 	*ui,
-				  	   			 const char 	     	*path);
-				  	   			 
-char 	 	*nautilus_bonobo_get_menu_item_verb_name 	(const char 		*label);
-
-void		nautilus_bonobo_set_icon 			(BonoboUIComponent 	*ui,
-			       					 const char        	*path,
-			       					 const char        	*icon_relative_path);
-
-
-#ifdef UIH
-void 	nautilus_bonobo_ui_handler_menu_set_toggle_appearance 	(BonoboUIHandler 	*uih,
-				      	   		    	 const char      	*path,
-				      	   		    	 gboolean         	new_value);
-#endif
+void     nautilus_bonobo_set_accelerator         (BonoboUIComponent *ui,
+						  const char        *path,
+						  const char        *accelerator);
+void     nautilus_bonobo_set_description         (BonoboUIComponent *ui,
+						  const char        *path,
+						  const char        *description);
+char *   nautilus_bonobo_get_label               (BonoboUIComponent *ui,
+						  const char        *path);
+void     nautilus_bonobo_set_label               (BonoboUIComponent *ui,
+						  const char        *path,
+						  const char        *label);
+void     nautilus_bonobo_set_tip                 (BonoboUIComponent *ui,
+						  const char        *path,
+						  const char        *tip);
+void     nautilus_bonobo_set_sensitive           (BonoboUIComponent *ui,
+						  const char        *path,
+						  gboolean           sensitive);
+void     nautilus_bonobo_set_toggle_state        (BonoboUIComponent *ui,
+						  const char        *path,
+						  gboolean           state);
+void     nautilus_bonobo_set_hidden              (BonoboUIComponent *ui,
+						  const char        *path,
+						  gboolean           hidden);
+gboolean nautilus_bonobo_get_hidden              (BonoboUIComponent *ui,
+						  const char        *path);
+void     nautilus_bonobo_add_menu_item           (BonoboUIComponent *ui,
+						  const char        *path,
+						  const char        *label);
+void     nautilus_bonobo_add_submenu             (BonoboUIComponent *ui,
+						  const char        *path,
+						  const char        *label);
+void     nautilus_bonobo_add_menu_separator      (BonoboUIComponent *ui,
+						  const char        *path);
+void     nautilus_bonobo_remove_menu_items       (BonoboUIComponent *ui,
+						  const char        *path);
+char *   nautilus_bonobo_get_menu_item_verb_name (const char        *label);
+void     nautilus_bonobo_set_icon                (BonoboUIComponent *ui,
+						  const char        *path,
+						  const char        *icon_relative_path);
 
 #endif /* NAUTILUS_BONOBO_EXTENSIONS_H */
