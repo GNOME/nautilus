@@ -43,8 +43,6 @@
 #include <libgnomevfs/gnome-vfs-module.h>
 #include <libgnomevfs/gnome-vfs-module-shared.h>
 
-#define ALI_DEBUG
-
 /* FIXME bugzilla.eazel.com 696: temporary var, until we get i18n involved */
 #define TOPHELPDIR "/usr/share/gnome/help/"
 
@@ -226,8 +224,8 @@ transform_absolute_file (const gchar *file)
 
 	/* Concaentation to TOPHELPDIR commented out because this is and
 	 * ABSOLUTE uri                                                   */
-	temp_file = g_concat_dir_and_file (TOPHELPDIR, temp_file_base);
-	//temp_file = g_strdup (temp_file_base);
+	/* temp_file = g_concat_dir_and_file (TOPHELPDIR, temp_file_base); */
+	temp_file = g_strdup (temp_file_base);
 	
 	if (convert_file_to_uri (help_uri, temp_file)) {
 		g_free (temp_file_base);
