@@ -1,3 +1,14 @@
+2000-09-20  Darin Adler  <darin@eazel.com>
+
+	Fixed bug that was preventing Show Properties from working.
+
+	* libnautilus-extensions/nautilus-icon-factory.c: (cache_icon_new):
+	Allow NULL for details to mean default details; keeps the fallback
+	icon code simpler.
+	(set_theme): A little more simplification.
+	(load_icon_for_scaling): Fix the fallback icon to create the cache
+	icon with cache_icon_new instead of rolling its own.
+
 2000-09-20  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus-extensions/bonobo-stream-vfs.c (vfs_read): Handle

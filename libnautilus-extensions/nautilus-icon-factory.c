@@ -407,7 +407,9 @@ cache_icon_new (GdkPixbuf *pixbuf,
 	icon->internal_ref_count = 1;
 	icon->custom = custom;
 	icon->scaled = scaled;
-	icon->details = *details;
+	if (details != NULL) {
+		icon->details = *details;
+	}
 
 	/* Put it into the hash table. */
 	g_hash_table_insert (factory->cache_icons, pixbuf, icon);
@@ -645,12 +647,11 @@ set_theme (const char *theme_name)
 
 	factory = get_icon_factory ();
 
-        nautilus_icon_factory_clear ();
-
-	if ((factory->theme_name == NULL && theme_name == NULL) ||
-	    nautilus_strcmp (theme_name, factory->theme_name) == 0) {
+	if (nautilus_strcmp (theme_name, factory->theme_name) == 0) {
 		return;
 	}
+
+        nautilus_icon_factory_clear ();
 
         g_free (factory->theme_name);
         factory->theme_name = g_strdup (theme_name);
@@ -1534,6 +1535,7 @@ load_icon_for_scaling (NautilusScalableIcon *scalable_icon,
 	CacheIcon *icon;
 	guint actual_size;
 	IconSizeRequest size_request;
+	GdkPixbuf *pixbuf;
 
 	size_request.maximum_width = MAXIMUM_ICON_SIZE * requested_size / NAUTILUS_ZOOM_LEVEL_STANDARD;
 	size_request.maximum_height = size_request.maximum_width;
@@ -1568,8 +1570,7 @@ load_icon_for_scaling (NautilusScalableIcon *scalable_icon,
 
 	/* Finally, fall back on the hard-coded image. */
 	if (fallback_icon == NULL) {
-		fallback_icon = g_new0 (CacheIcon, 1);
-		fallback_icon->pixbuf = gdk_pixbuf_new_from_data
+		pixbuf = gdk_pixbuf_new_from_data
 			(nautilus_default_file_icon,
 			 GDK_COLORSPACE_RGB,
 			 TRUE,
@@ -1579,6 +1580,7 @@ load_icon_for_scaling (NautilusScalableIcon *scalable_icon,
 			 nautilus_default_file_icon_width * 4, /* stride */
 			 NULL, /* don't destroy data */
 			 NULL);
+		fallback_icon = cache_icon_new (pixbuf, FALSE, FALSE, NULL);
 		g_atexit (destroy_fallback_icon);
 	}
 	cache_icon_ref (fallback_icon);
