@@ -24,20 +24,22 @@ INCLUDES =					\
 IDLDIR = $(top_srcdir)/components/services/time/idl
 IDL = $(IDLDIR)/trilobite-eazel-time-service.idl
 
-CORBA_GENERATED =   \
-	time-service-stubs.c    \
-	time-service-common.c   \
-	time-service-skels.c    \
+CORBA_GENERATED = \
+	trilobite-eazel-time-service.h 		\
+	trilobite-eazel-sample-service-common.c	\
+	trilobite-eazel-time-service-skels.c	\
+	trilobite-eazel-time-service-stubs.c	\
+	trilobite-eazel-time-service-common.c	\
 	$(NULL)
 
-CORBA_HEADER = trilobite-eazel-time-service.h
+$(CORBA_GENERATED): IDL_COMPILE
 
-$(CORBA_HEADER): $(IDL)
+IDL_COMPILE: $(IDL)
 	$(prefix)/bin/orbit-idl -I${datadir}/idl $(IDL)
 
-main.c trilobite-eazel-time-view.c $(CORBA_GENERATED): $(CORBA_HEADER)
+main.c trilobite-eazel-time-view.c: $(CORBA_GENERATED)
 
-CLEANFILES+=$(CORBA_GENERATED) $(CORBA_HEADER)
+CLEANFILES+=$(CORBA_GENERATED)
 
 
 

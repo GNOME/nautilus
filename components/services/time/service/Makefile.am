@@ -35,22 +35,26 @@ pixmap_DATA = trilobite-eazel-time-service.png
 oafdir = $(datadir)/oaf
 oaf_DATA = trilobite-eazel-time-service.oafinfo
 
-CORBA_GENERATED =	\
+CORBA_GENERATED = \
+	trilobite-eazel-time-service.h 		\
 	trilobite-eazel-sample-service-common.c	\
 	trilobite-eazel-time-service-skels.c	\
+	trilobite-eazel-time-service-stubs.c	\
+	trilobite-eazel-time-service-common.c	\
 	$(NULL)
 
-$(CORBA_GENERATED): trilobite-eazel-time-service.h
 
 IDLDIR = $(top_srcdir)/components/services/time/idl
 IDL = $(IDLDIR)/trilobite-eazel-time-service.idl
 
-trilobite-eazel-time-service.h: $(IDL)
+$(CORBA_GENERATED): IDL_COMPILE
+
+IDL_COMPILE: $(IDL)
 	$(prefix)/bin/orbit-idl -I $(IDLDIR)  -I${datadir}/idl $(IDL)
 
-trilobite-eazel-time-service.c main.c: trilobite-eazel-time-service.h
+trilobite-eazel-time-service.c main.c: $(CORBA_GENERATED)
 
-CLEANFILES+=$(CORBA_GENERATED) trilobite-eazel-time-service.h
+CLEANFILES+=$(CORBA_GENERATED)
 
 ## Binaries
 

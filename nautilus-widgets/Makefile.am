@@ -75,3 +75,5 @@ test_nautilus_preferences_SOURCES =\
 	$(NULL)
 
 test_nautilus_preferences_LDADD = $(test_ldd)
+
+../nautilus-widgets/libnautilus-widgets.la: libnautilus-widgets.la
