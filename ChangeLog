@@ -1,3 +1,8 @@
+2004-01-15  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file-utilities.c (nautilus_unique_temporary_file_name):
+	Use mkstemp, as its safer. From bug #130091.
+
 2004-01-14  Dave Camp  <dave@ximian.com>
 
 	* libnautilus-private/nautilus-global-preferences.c: Don't set

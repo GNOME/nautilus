@@ -37,6 +37,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 #define NAUTILUS_USER_DIRECTORY_NAME ".nautilus"
 #define DEFAULT_NAUTILUS_DIRECTORY_MODE (0755)
@@ -345,15 +346,18 @@ nautilus_unique_temporary_file_name (void)
 {
 	const char *prefix = "/tmp/nautilus-temp-file";
 	char *file_name;
-	static guint count = 1;
+	int fd;
 
 	file_name = g_strdup_printf ("%sXXXXXX", prefix);
 
-	if (mktemp (file_name) != file_name) {
+	fd = mkstemp (file_name); 
+	if (fd == -1) {
 		g_free (file_name);
-		file_name = g_strdup_printf ("%s-%d-%d", prefix, count++, getpid ());
+		file_name = NULL;
+	} else {
+		close (fd);
 	}
-
+	
 	return file_name;
 }
 
