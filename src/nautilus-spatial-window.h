@@ -90,4 +90,12 @@ void nautilus_window_remove_meta_view(NautilusWindow *window, NautilusView *meta
 void nautilus_window_goto_uri(NautilusWindow *window, const char *uri);
 const char *nautilus_window_get_requested_uri(NautilusWindow *window);
 
+void nautilus_window_allow_back (NautilusWindow *window, gboolean allow);
+void nautilus_window_allow_forward (NautilusWindow *window, gboolean allow);
+void nautilus_window_allow_up (NautilusWindow *window, gboolean allow);
+void nautilus_window_allow_reload (NautilusWindow *window, gboolean allow);
+void nautilus_window_allow_stop (NautilusWindow *window, gboolean allow);
+
+
+
 #endif

@@ -83,6 +83,8 @@ nautilus_window_request_location_change(NautilusWindow *window,
 static void
 nautilus_window_change_location_internal(NautilusWindow *window, NautilusNavigationInfo *loci, gboolean is_back)
 {
+  GnomeVFSURI *new_uri;
+
   CORBA_free(window->si); window->si = NULL;
 
   /* Maintain history lists. */
@@ -118,8 +120,13 @@ nautilus_window_change_location_internal(NautilusWindow *window, NautilusNavigat
 	window->uris_prev = g_slist_prepend(window->uris_prev, g_strdup(window->ni->requested_uri));
     }
 
-  gtk_widget_set_sensitive(window->btn_back, window->uris_prev?TRUE:FALSE);
-  gtk_widget_set_sensitive(window->btn_fwd, window->uris_next?TRUE:FALSE);
+  nautilus_window_allow_back(window, window->uris_prev?TRUE:FALSE);
+  nautilus_window_allow_forward(window, window->uris_next?TRUE:FALSE);
+  
+  new_uri = gnome_vfs_uri_new (loci->navinfo.requested_uri);
+  nautilus_window_allow_up(window, 
+			   gnome_vfs_uri_has_parent(new_uri));
+  gnome_vfs_uri_destroy(new_uri);
 
   CORBA_free(window->ni);
   window->ni = Nautilus_NavigationInfo__alloc();

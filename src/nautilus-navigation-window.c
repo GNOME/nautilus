@@ -106,6 +106,10 @@ static void nautilus_window_init (NautilusWindow *window);
 static void nautilus_window_destroy (NautilusWindow *window);
 static void nautilus_window_back (GtkWidget *btn, NautilusWindow *window);
 static void nautilus_window_fwd (GtkWidget *btn, NautilusWindow *window);
+static void nautilus_window_up (GtkWidget *btn, NautilusWindow *window);
+static void nautilus_window_reload (GtkWidget *btn, NautilusWindow *window);
+static void nautilus_window_home (GtkWidget *btn, NautilusWindow *window);
+static void nautilus_window_stop (GtkWidget *btn, NautilusWindow *window);
 static void nautilus_window_set_arg (GtkObject      *object,
                                      GtkArg         *arg,
                                      guint	      arg_id);
@@ -242,9 +246,24 @@ static GnomeUIInfo toolbar_info[] = {
 	GNOMEUIINFO_ITEM_STOCK
 		(N_("Forward"), N_("Go to the next directory"),
 		 nautilus_window_fwd, GNOME_STOCK_PIXMAP_FORWARD),
-	GNOMEUIINFO_END
+        GNOMEUIINFO_ITEM_STOCK
+        (N_("Up"), N_("Go up a level in the directory heirarchy"),
+         nautilus_window_up, GNOME_STOCK_PIXMAP_UP),
+        GNOMEUIINFO_ITEM_STOCK
+        (N_("Reload"), N_("Reload this view"),
+         nautilus_window_reload, GNOME_STOCK_PIXMAP_REFRESH),
+        GNOMEUIINFO_SEPARATOR,
+        GNOMEUIINFO_ITEM_STOCK
+        (N_("Home"), N_("Go to your home directory"),
+         nautilus_window_home, GNOME_STOCK_PIXMAP_HOME),
+        GNOMEUIINFO_SEPARATOR,
+        GNOMEUIINFO_ITEM_STOCK
+        (N_("Stop"), N_("Interrupt loading"),
+         nautilus_window_stop, GNOME_STOCK_PIXMAP_STOP),
+        GNOMEUIINFO_END
 };
 
+	
 GtkType
 nautilus_window_get_type(void)
 {
@@ -384,6 +403,7 @@ nautilus_window_goto_uri(NautilusWindow *window, const char *uri)
   navinfo.new_window_enforced = Nautilus_V_UNKNOWN;
 
   nautilus_window_request_location_change(window, &navinfo, NULL);
+  
 }
 
 static void
@@ -440,6 +460,8 @@ nautilus_window_constructed(NautilusWindow *window)
   gtk_widget_set_sensitive(bookmarks_menu_info[1].widget, FALSE); /* Edit Bookmarks */
 
   gtk_widget_set_sensitive(help_menu_info[0].widget, FALSE); /* About */
+
+  nautilus_window_allow_stop(window, FALSE);
 
   /* set up toolbar */
 
@@ -786,6 +808,8 @@ nautilus_window_remove_meta_view(NautilusWindow *window, NautilusView *meta_view
   gtk_notebook_remove_page(GTK_NOTEBOOK(window->meta_notebook), pagenum);
 }
 
+/* FIXME: Factor toolbar stuff out into ntl-window-toolbar.c */
+
 static void
 nautilus_window_back (GtkWidget *btn, NautilusWindow *window)
 {
@@ -811,4 +835,75 @@ nautilus_window_fwd (GtkWidget *btn, NautilusWindow *window)
   nri.requested_uri = window->uris_next->data;
   nri.new_window_default = nri.new_window_suggested = nri.new_window_enforced = Nautilus_V_FALSE;
   nautilus_window_change_location(window, &nri, NULL, FALSE);
+}
+
+
+static void
+nautilus_window_up (GtkWidget *btn, NautilusWindow *window)
+{
+  GnomeVFSURI *current_uri;
+  GnomeVFSURI *parent_uri;
+  char *parent_uri_string;
+
+  current_uri = gnome_vfs_uri_new (nautilus_window_get_requested_uri(window));
+  parent_uri = gnome_vfs_uri_get_parent (current_uri);
+  parent_uri_string = gnome_vfs_uri_to_string (parent_uri, GNOME_VFS_URI_HIDE_NONE);
+  
+  nautilus_window_goto_uri (window, parent_uri_string);
+
+  g_free (parent_uri_string);
+  gnome_vfs_uri_destroy (current_uri);
+  gnome_vfs_uri_destroy (parent_uri);  
+}
+
+
+static void
+nautilus_window_reload (GtkWidget *btn, NautilusWindow *window)
+{
+  /* Should enforce same window! */
+  nautilus_window_goto_uri (window,
+                           nautilus_window_get_requested_uri(window));
+}
+
+static void
+nautilus_window_home (GtkWidget *btn, NautilusWindow *window)
+{
+  nautilus_window_set_initial_state(window);
+}
+
+static void
+nautilus_window_stop (GtkWidget *btn, NautilusWindow *window)
+{
+
+}
+
+
+void
+nautilus_window_allow_back (NautilusWindow *window, gboolean allow)
+{
+   gtk_widget_set_sensitive(toolbar_info[0].widget, allow); 
+}
+
+void
+nautilus_window_allow_forward (NautilusWindow *window, gboolean allow)
+{
+   gtk_widget_set_sensitive(toolbar_info[1].widget, allow); 
+}
+
+void
+nautilus_window_allow_up (NautilusWindow *window, gboolean allow)
+{
+   gtk_widget_set_sensitive(toolbar_info[2].widget, allow); 
+}
+
+void
+nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
+{
+   gtk_widget_set_sensitive(toolbar_info[5].widget, allow); 
+}
+
+void
+nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
+{
+   gtk_widget_set_sensitive(toolbar_info[7].widget, allow); 
 }
