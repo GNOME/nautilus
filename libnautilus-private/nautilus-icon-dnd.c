@@ -1083,14 +1083,7 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	*/
 	canvas = GNOME_CANVAS (container);
 	dnd_info->drag_info.start_x = event->x - gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (canvas)));
-	dnd_info->drag_info.start_y = event->y - gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (canvas)));
-	
-	/* start the drag */
-	context = gtk_drag_begin (GTK_WIDGET (container),
-				  dnd_info->drag_info.target_list,
-				  actions,
-				  button,
-				  (GdkEvent *) event);
+	dnd_info->drag_info.start_y = event->y - gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (canvas)));	
 
         /* create a pixmap and mask to drag with */
         pixbuf = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item);
@@ -1106,8 +1099,17 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
         x_offset = dnd_info->drag_info.start_x - widget_rect.x0;
         y_offset = dnd_info->drag_info.start_y - widget_rect.y0;
         
-        /* set the icon for dragging */
-        gtk_drag_set_icon_pixbuf (context, pixbuf, x_offset, y_offset);
+	/* start the drag */
+	context = gtk_drag_begin (GTK_WIDGET (container),
+				  dnd_info->drag_info.target_list,
+				  actions,
+				  button,
+				  (GdkEvent *) event);
+
+	if (context) {
+		/* set the icon for dragging */
+		gtk_drag_set_icon_pixbuf (context, pixbuf, x_offset, y_offset);
+	}
 }
 
 static gboolean

@@ -78,9 +78,6 @@
  */
 #define MAX_CLICK_TIME 1500
 
-/* Distance you have to move before it becomes a drag. */
-#define SNAP_RESISTANCE 2 /* GMC has this set to 3, but it's too much for Ettore's taste. */
-
 /* Button assignments. */
 #define DRAG_BUTTON 1
 #define RUBBERBAND_BUTTON 1
@@ -2847,9 +2844,13 @@ motion_notify_event (GtkWidget *widget,
 			gnome_canvas_window_to_world
 				(GNOME_CANVAS (container), event->x, event->y, &world_x, &world_y);
 			
-			if (abs (details->drag_x - world_x) >= SNAP_RESISTANCE
-			    || abs (details->drag_y - world_y) >= SNAP_RESISTANCE) {
+			if (gtk_drag_check_threshold (widget, 
+						      details->drag_x,
+						      details->drag_y,
+						      world_x,
+						      world_y)) {
 				details->drag_started = TRUE;
+				details->drag_state = DRAG_STATE_MOVE_OR_COPY;
 
 				end_renaming_mode (container, TRUE);
 			
@@ -2862,7 +2863,6 @@ motion_notify_event (GtkWidget *widget,
 							      : GDK_ACTION_ASK,
 							      details->drag_button,
 							      event);
-				details->drag_state = DRAG_STATE_MOVE_OR_COPY;
 			}
 			break;
 		case DRAG_STATE_STRETCH:
