@@ -48,10 +48,10 @@ eazel_package_system_skeleton_load_package (EazelPackageSystemSkeleton *system,
 
 static GList*               
 eazel_package_system_skeleton_query (EazelPackageSystemSkeleton *system,
-				     const char *root,
+				     const char *dbpath,
 				     const gpointer key,
 				     EazelPackageSystemQueryEnum flag,
-				     int detail_level)
+				     unsigned long detail_level)
 {
 	GList *result = NULL;
 	g_assert (system);
@@ -63,10 +63,9 @@ eazel_package_system_skeleton_query (EazelPackageSystemSkeleton *system,
 
 static void                 
 eazel_package_system_skeleton_install (EazelPackageSystemSkeleton *system, 
-				       const char *root,
+				       const char *dbpath,
 				       GList* packages,
-				       long flags,
-				       gpointer userdata)
+				       unsigned long flags)
 {
 	g_assert (system);
 	g_assert (IS_EAZEL_PACKAGE_SYSTEM_SKELETON (system));
@@ -76,10 +75,9 @@ eazel_package_system_skeleton_install (EazelPackageSystemSkeleton *system,
 
 static void                 
 eazel_package_system_skeleton_uninstall (EazelPackageSystemSkeleton *system, 
-					 const char *root,
+					 const char *dbpath,
 					 GList* packages,
-					 long flags,
-					 gpointer userdata)
+					 unsigned long flags)
 {
 	g_assert (system);
 	g_assert (IS_EAZEL_PACKAGE_SYSTEM_SKELETON (system));
@@ -89,10 +87,9 @@ eazel_package_system_skeleton_uninstall (EazelPackageSystemSkeleton *system,
 
 static void                 
 eazel_package_system_skeleton_verify (EazelPackageSystemSkeleton *system, 
-				      const char *root,
+				      const char *dbpath,
 				      GList* packages,
-				      long flags,
-				      gpointer userdata)
+				      unsigned long flags)
 {
 	g_assert (system);
 	g_assert (IS_EAZEL_PACKAGE_SYSTEM_SKELETON (system));
@@ -163,7 +160,7 @@ eazel_package_system_skeleton_get_type() {
 }
 
 EazelPackageSystemSkeleton *
-eazel_package_system_skeleton_new (GList *roots) 
+eazel_package_system_skeleton_new (GList *dbpaths) 
 {
 	EazelPackageSystemSkeleton *system;
 
@@ -176,19 +173,28 @@ eazel_package_system_skeleton_new (GList *roots)
 }
 
 EazelPackageSystem*
-eazel_package_system_implementation (GList *roots)
+eazel_package_system_implementation (GList *dbpaths)
 {
 	EazelPackageSystem *result;
 
 	trilobite_debug ("eazel_package_system_implementation (skeleton)");
 
-	result = EAZEL_PACKAGE_SYSTEM (eazel_package_system_skeleton_new (roots));
+	result = EAZEL_PACKAGE_SYSTEM (eazel_package_system_skeleton_new (dbpaths));
 	
-	result->private->load_package = (EazelPackageSytem_load_package)eazel_package_system_skeleton_load_package;
-	result->private->query = (EazelPackageSytem_query)eazel_package_system_skeleton_query;
-	result->private->install = (EazelPackageSytem_install)eazel_package_system_skeleton_install;
-	result->private->uninstall = (EazelPackageSytem_uninstall)eazel_package_system_skeleton_uninstall;
-	result->private->verify = (EazelPackageSytem_verify)eazel_package_system_skeleton_verify;
+	result->private->load_package
+		= (EazelPackageSytemLoadPackageFunc)eazel_package_system_skeleton_load_package;
+
+	result->private->query
+		= (EazelPackageSytemQueryFunc)eazel_package_system_skeleton_query;
+
+	result->private->install
+		= (EazelPackageSytemInstallFunc)eazel_package_system_skeleton_install;
+
+	result->private->uninstall
+		= (EazelPackageSytemUninstallFunc)eazel_package_system_skeleton_uninstall;
+
+	result->private->verify
+		= (EazelPackageSytemVerifyFunc)eazel_package_system_skeleton_verify;
 
 	return result;
 }

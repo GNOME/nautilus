@@ -29,32 +29,51 @@
 #define EAZEL_PACKAGE_SYSTEM_PROGRESS_LONGS 6
 
 #define EPS_SANE(val) g_return_if_fail (val!=NULL); \
-                      g_return_if_fail (IS_EAZEL_PACKAGE_SYSTEM (val));
+                      g_return_if_fail (IS_EAZEL_PACKAGE_SYSTEM (val)); \
+                      g_return_if_fail (val->private); 
 
 #define EPS_SANE_VAL(val, v) g_return_val_if_fail (val!=NULL, v); \
-                             g_return_val_if_fail (IS_EAZEL_PACKAGE_SYSTEM (val), v);
+                             g_return_val_if_fail (IS_EAZEL_PACKAGE_SYSTEM (val), v); \
+                             g_return_val_if_fail (val->private, v); 
 
-#define EPS_API(val) g_assert (val!=NULL); g_assert (IS_EAZEL_PACKAGE_SYSTEM (val));
+#define EPS_API(val) g_assert (val!=NULL); g_assert (IS_EAZEL_PACKAGE_SYSTEM (val)); g_assert (val->private);
 
-typedef EazelPackageSystem*(*EazelPackageSystemConstructor) (GList*);
+#define info(system, s...) if (eazel_package_system_get_debug (EAZEL_PACKAGE_SYSTEM (system)) & EAZEL_PACKAGE_SYSTEM_DEBUG_INFO) { trilobite_debug (s); }
+#define fail(system, s...) if (eazel_package_system_get_debug (EAZEL_PACKAGE_SYSTEM (system)) & EAZEL_PACKAGE_SYSTEM_DEBUG_FAIL) { trilobite_debug (s); }
+#define verbose(system, s...) if (eazel_package_system_get_debug (EAZEL_PACKAGE_SYSTEM (system)) & EAZEL_PACKAGE_SYSTEM_DEBUG_VERBOSE) { trilobite_debug (s); }
 
-typedef	PackageData* (*EazelPackageSytem_load_package) (EazelPackageSystem*,
-							PackageData*, const char*, int);
-typedef GList* (*EazelPackageSytem_query) (EazelPackageSystem*, const char*, 
-					   gpointer key, EazelPackageSystemQueryEnum, int);
-typedef void (*EazelPackageSytem_install) (EazelPackageSystem*, const char*,
-					   GList*, long, gpointer);
-typedef void (*EazelPackageSytem_uninstall) (EazelPackageSystem*, const char *,
-					     GList*, long, gpointer);
-typedef void (*EazelPackageSytem_verify) (EazelPackageSystem*, const char*,
-					  GList*, long, gpointer);
+typedef EazelPackageSystem*(*EazelPackageSystemConstructorFunc) (GList*);
+
+typedef	PackageData* (*EazelPackageSytemLoadPackageFunc) (EazelPackageSystem*,
+							  PackageData*, 
+							  const char*, 
+							  unsigned long);
+typedef GList* (*EazelPackageSytemQueryFunc) (EazelPackageSystem*, 
+					      const char*, 
+					      gpointer key, 
+					      EazelPackageSystemQueryEnum, 
+					   unsigned long);
+typedef void (*EazelPackageSytemInstallFunc) (EazelPackageSystem*, 
+					      const char*,
+					      GList*, 
+					      unsigned long);
+typedef void (*EazelPackageSytemUninstallFunc) (EazelPackageSystem*, 
+						const char *,
+						GList*, 
+						unsigned long);
+typedef void (*EazelPackageSytemVerifyFunc) (EazelPackageSystem*, 
+					     const char*,
+					     GList*, 
+					     unsigned long);
 
 struct _EazelPackageSystemPrivate {	
-	EazelPackageSytem_load_package load_package;
-	EazelPackageSytem_query query;
-	EazelPackageSytem_install install;
-	EazelPackageSytem_uninstall uninstall;
-	EazelPackageSytem_verify verify;
+	EazelPackageSytemLoadPackageFunc load_package;
+	EazelPackageSytemQueryFunc query;
+	EazelPackageSytemInstallFunc install;
+	EazelPackageSytemUninstallFunc uninstall;
+	EazelPackageSytemVerifyFunc verify;
+
+	EazelPackageSystemDebug debug;
 };
 
 EazelPackageSystem  *eazel_package_system_new_real (void);
@@ -72,5 +91,14 @@ gboolean eazel_package_system_emit_failed (EazelPackageSystem*,
 gboolean eazel_package_system_emit_end (EazelPackageSystem*, 
 					EazelPackageSystemOperation, 
 					PackageData*);
+
+void eazel_package_system_marshal_BOOL__ENUM_POINTER (GtkObject *object,
+						      GtkSignalFunc func,
+						      gpointer func_data,
+						      GtkArg *args);
+void eazel_package_system_marshal_BOOL__ENUM_POINTER_POINTER (GtkObject *object,
+							      GtkSignalFunc func,
+							      gpointer func_data,
+							      GtkArg *args);
 
 #endif /* EAZEL_PACKAGE_SYSTEM_PRIVATE_H */

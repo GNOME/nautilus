@@ -107,7 +107,7 @@ libeazelpackagesystem_rpm3_la_SOURCES = 	\
 
 # libeazelsoftcat
 
-libeazelsoftcatincludedir=$(includedir)/libtrilobite/eazel/package-system/
+libeazelsoftcatincludedir=$(includedir)/libtrilobite/eazel/softcat/
 
 libeazelsoftcatinclude_HEADERS = 		\
 	eazel-install-types.h	 		\

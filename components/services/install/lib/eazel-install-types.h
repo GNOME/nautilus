@@ -242,6 +242,10 @@ const char *rpmname_from_packagedata (const PackageData *pack);
    from a given package */
 char *packagedata_get_readable_name (const PackageData *pack);
 
+/* This is now the authorative way to get a nice "real" name
+   from a given package, real meanign name[-version-[release]] string */
+char *packagedata_get_name (const PackageData *pack);
+
 void packagedata_destroy (PackageData *pd, gboolean deep);
 
 int packagedata_hash_equal (PackageData *a, PackageData *b);

@@ -652,6 +652,8 @@ eazel_install_do_transaction_add_to_transaction (EazelInstall *service,
 							pack);
 }
 
+/* FIXME: bugzilla.eazel.com 4936
+   kill off this sucker */
 static GList*
 eazel_install_start_transaction_make_argument_list (EazelInstall *service,
 						    GList *packages)
@@ -1094,7 +1096,9 @@ eazel_install_start_transaction (EazelInstall *service,
 
 	args = NULL;
 	res = 0;
-
+	
+	/* FIXME: bugzilla.eazel.com 4936
+	   keep this */
 	if (service->private->downloaded_files) {
 		/* I need to get the lenght here, because all_files_check can alter the list */
 		int l  = g_list_length (packages);

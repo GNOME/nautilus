@@ -50,7 +50,7 @@ struct _EazelPackageSystemSkeleton
 	EazelPackageSystem parent;
 };
 
-EazelPackageSystemSkeleton *eazel_package_system_skeleton_new (GList *roots);
+EazelPackageSystemSkeleton *eazel_package_system_skeleton_new (GList *dbpaths);
 GtkType              eazel_package_system_skeleton_get_type (void);
 
 #endif /* EAZEL_PACKAGE_SYSTEM_SKELETON_H */

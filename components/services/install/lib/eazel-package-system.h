@@ -84,23 +84,23 @@ typedef enum {
 enum {
 	/* Do operation in "test" mode. If package system does not have this, 
 	   don't do the operation */
-	EAZEL_INSTALL_PACKAGE_SYSTEM_OPERATION_TEST = 0x1,
+	EAZEL_PACKAGE_SYSTEM_OPERATION_TEST = 0x1,
 
 	/* Do operation is force mode if available, if not, you're screwed */
-	EAZEL_INSTALL_PACKAGE_SYSTEM_OPERATION_FORCE = 0x2,
+	EAZEL_PACKAGE_SYSTEM_OPERATION_FORCE = 0x2,
 
 	/* Allow upgrading packages (only used for install) */   
-	EAZEL_INSTALL_PACKAGE_SYSTEM_OPERATION_UPGRADE = 0x10, 
+	EAZEL_PACKAGE_SYSTEM_OPERATION_UPGRADE = 0x10, 
 
 	/* Allow downgrading packages (only used for install) */   
-	EAZEL_INSTALL_PACKAGE_SYSTEM_OPERATION_DOWNGRADE = 0x20
+	EAZEL_PACKAGE_SYSTEM_OPERATION_DOWNGRADE = 0x20
 };
 
 enum {
-	EAZEL_INSTALL_PACKAGE_SYSTEM_QUERY_DETAIL_DESCRIPTION = 0x1,
-	EAZEL_INSTALL_PACKAGE_SYSTEM_QUERY_DETAIL_SUMMARY = 0x2,
-	EAZEL_INSTALL_PACKAGE_SYSTEM_QUERY_DETAIL_FILES_PROVIDED = 0x4,
-	EAZEL_INSTALL_PACKAGE_SYSTEM_QUERY_DETAIL_PROVIDES = 0x8
+	EAZEL_PACKAGE_SYSTEM_QUERY_DETAIL_DESCRIPTION = 0x1,
+	EAZEL_PACKAGE_SYSTEM_QUERY_DETAIL_SUMMARY = 0x2,
+	EAZEL_PACKAGE_SYSTEM_QUERY_DETAIL_FILES_PROVIDED = 0x4,
+	EAZEL_PACKAGE_SYSTEM_QUERY_DETAIL_PROVIDES = 0x8
 };
 
 /* This enum is used in the signals, to let
@@ -130,6 +130,13 @@ struct _EazelPackageSystemClass
 			PackageData*);
 };
 
+typedef enum {
+	EAZEL_PACKAGE_SYSTEM_DEBUG_SILENT = 0x0,
+	EAZEL_PACKAGE_SYSTEM_DEBUG_INFO = 0x1,
+	EAZEL_PACKAGE_SYSTEM_DEBUG_FAIL = 0x2,
+	EAZEL_PACKAGE_SYSTEM_DEBUG_VERBOSE = 0xffff
+} EazelPackageSystemDebug;
+
 typedef struct _EazelPackageSystemPrivate EazelPackageSystemPrivate;
 
 struct _EazelPackageSystem
@@ -139,43 +146,34 @@ struct _EazelPackageSystem
 };
 
 EazelPackageSystemId eazel_package_system_suggest_id (void);
-EazelPackageSystem  *eazel_package_system_new (GList *roots);
-EazelPackageSystem  *eazel_package_system_new_with_id (EazelPackageSystemId, GList *roots);
+EazelPackageSystem  *eazel_package_system_new (GList *dbpaths);
+EazelPackageSystem  *eazel_package_system_new_with_id (EazelPackageSystemId, GList *dbpaths);
 GtkType              eazel_package_system_get_type (void);
+
+EazelPackageSystemDebug eazel_package_system_get_debug (EazelPackageSystem *system);
+void                    eazel_package_system_set_debug (EazelPackageSystem *system, EazelPackageSystemDebug d);
 
 PackageData         *eazel_package_system_load_package (EazelPackageSystem *package_system,
 							PackageData *in_package,
 							const char *filename,
-							int detail_level);
+							unsigned long detail_level);
 GList*               eazel_package_system_query (EazelPackageSystem *package_system,
-						 const char *root,
+						 const char *dbpath,
 						 const gpointer key,
 						 EazelPackageSystemQueryEnum flag,
-						 int detail_level);
+						 unsigned long detail_level);
 void                 eazel_package_system_install (EazelPackageSystem *package_system, 
-						   const char *root,
+						   const char *dbpath,
 						   GList* packages,
-						   long flags,
-						   gpointer userdata);
+						   unsigned long flags);
 void                 eazel_package_system_uninstall (EazelPackageSystem *package_system, 
-						     const char *root,
+						     const char *dbpath,
 						     GList* packages,
-						     long flags,
-						     gpointer userdata);
+						     unsigned long flags);
 void                 eazel_package_system_verify (EazelPackageSystem *package_system, 
-						  const char *root,
+						  const char *dbpath,
 						  GList* packages,
-						  long flags,
-						  gpointer userdata);
-
-void eazel_package_system_marshal_BOOL__POINTER_ENUM_POINTER (GtkObject *object,
-							      GtkSignalFunc func,
-							      gpointer func_data,
-							      GtkArg *args);
-void eazel_package_system_marshal_BOOL__POINTER_ENUM_POINTER_POINTER (GtkObject *object,
-								      GtkSignalFunc func,
-								      gpointer func_data,
-								      GtkArg *args);
+						  unsigned long flags);
 
 #endif /* EAZEL_PACKAGE_SYSTEM_PUBLIC_H */
 

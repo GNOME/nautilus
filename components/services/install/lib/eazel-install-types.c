@@ -721,7 +721,7 @@ packagedata_get_readable_name (const PackageData *pack)
 	} else if (pack->name) {
 		result = g_strdup_printf ("%s", pack->name);
 	} else if (pack->eazel_id) {
-		result = g_strdup_printf ("Eazel rpm id %s", pack->eazel_id);
+		result = g_strdup_printf ("Eazel Package #%s", pack->eazel_id);
 	} else if (pack->provides && pack->provides->data) {
 		result = g_strdup_printf ("file %s", (char*)(pack->provides->data));
 	} else {
@@ -729,6 +729,20 @@ packagedata_get_readable_name (const PackageData *pack)
 		result = g_strdup ("another package");
 	}
 	
+	return result;
+}
+
+char*
+packagedata_get_name (const PackageData *pack)
+{
+	char *result = NULL;
+	if (pack->name && pack->version && pack->minor) {
+		result = g_strdup_printf ("%s-%s-%s", pack->name, pack->version, pack->minor);
+	} else if (pack->name && pack->version) {
+		result = g_strdup_printf ("%s-%s", pack->name, pack->version);
+	} else if (pack->name) {
+		result = g_strdup (pack->name);
+	} 
 	return result;
 }
 

@@ -1,3 +1,87 @@
+2000-12-01  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	Migrated more code into eazel-package-system and finished
+	eazel-package-system-rpm3 (except for verify). This fixes 4858,
+	4851.
+	
+	* components/services/install/command-line/eazel-test-packsys.c:
+	(test_packagelist_prune), (test_package_load), (get_password_dude),
+	(init_package_system), (test_matches_query), (get_package_list),
+	(start_signal), (end_signal), (progress_signal), (is_installed),
+	(test_install), (test_uninstall), (test_verify), (main):D
+	All the code for the packagesytem test programs. It does test-
+	queries, install and uninstall.
+	
+	* components/services/install/lib/Makefile.am:
+	Moved softcat .h's files into
+	includedir/libtrilobite/eazel/package-sytem/
+	
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(eazel_install_callback_initialize):
+	Fixed the IDL rename, which broke the eazelinstall init.
+	
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_start_transaction):
+	Some comments about codepieces that needs removal.
+	
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_get_readable_name), (packagedata_get_name):
+	Changed get_readable's names output for rpmid's.
+	Added a function that returns name-version-release names.
+	
+	* components/services/install/lib/eazel-package-system-rpm3.h:
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(make_rpm_argument_list), (destroy_string_list),
+	(rpm_make_names_to_package_hash), (clear_name_to_package),
+	(get_total_size_of_packages), (monitor_rpm_process_pipe),
+	(rpm_create_db), (rpm_create_dbs), (rpm_open_db), (rpm_open_dbs),
+	(rpm_close_db), (rpm_close_dbs), (rpm_free_db), (rpm_free_dbs),
+	(rpm_packagedata_fill_from_rpm_header),
+	(rpm_packagedata_fill_from_file), (rpm_packagedata_new_from_file),
+	(eazel_package_system_rpm3_load_package),
+	(eazel_package_system_rpm3_query_impl),
+	(eazel_package_system_rpm3_query_substr),
+	(eazel_package_system_rpm3_query_foreach),
+	(eazel_package_system_rpm3_query), (display_arguments),
+	(monitor_subcommand_pipe), (eazel_package_system_rpm3_execute),
+	(eazel_package_system_rpm3_install_uninstall),
+	(eazel_package_system_rpm3_install),
+	(eazel_package_system_rpm3_uninstall),
+	(eazel_package_system_rpm3_verify),
+	(eazel_package_system_rpm3_finalize),
+	(eazel_package_system_rpm3_initialize),
+	(eazel_package_system_rpm3_new),
+	(eazel_package_system_implementation):
+	Finished the rpm3 library.
+
+	* components/services/install/lib/eazel-package-system-private.h:
+	* components/services/install/lib/eazel-package-system.h:
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_load_implementation),
+	(eazel_package_system_load_package), (eazel_package_system_query),
+	(eazel_package_system_install), (eazel_package_system_uninstall),
+	(eazel_package_system_verify), (eazel_package_system_emit_start),
+	(eazel_package_system_emit_progress),
+	(eazel_package_system_emit_failed),
+	(eazel_package_system_get_debug), (eazel_package_system_set_debug),
+	(eazel_package_system_class_initialize),
+	(eazel_package_system_initialize),
+	(eazel_package_system_marshal_BOOL__ENUM_POINTER_POINTER),
+	(eazel_package_system_marshal_BOOL__ENUM_POINTER):
+	Fixed the usual signal bloopers, added the arguments to _new that
+	lets the system get it's dbpaths/root sets, fixed other small bugs.
+
+	* components/services/install/lib/eazel-package-system-skeleton.h:
+	* components/services/install/lib/eazel-package-system-skeleton.c:
+	(eazel_package_system_skeleton_query),
+	(eazel_package_system_skeleton_install),
+	(eazel_package_system_skeleton_uninstall),
+	(eazel_package_system_skeleton_verify),
+	(eazel_package_system_skeleton_new),
+	(eazel_package_system_implementation):
+	Updated the skeleton library.
+
 2000-12-01  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: added libeazelsoftcat libs
