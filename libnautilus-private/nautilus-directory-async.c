@@ -1644,8 +1644,7 @@ should_look_for_dot_directory_file (NautilusFile *file)
 		"favorites:",
 		"start-here:",
 		"applications:",
-		"all-applications:",
-		NULL
+		"all-applications:"
 	};
 
 	uri = file->details->directory->details->uri;

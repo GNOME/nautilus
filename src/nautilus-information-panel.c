@@ -38,6 +38,7 @@
 #include <bonobo/bonobo-exception.h>
 
 #include <eel/eel-background.h>
+#include <eel/eel-background-style.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
@@ -123,6 +124,8 @@ static void     nautilus_sidebar_drag_data_received    (GtkWidget        *widget
 static void     nautilus_sidebar_read_theme            (NautilusSidebar  *sidebar);
 static void     nautilus_sidebar_size_allocate         (GtkWidget        *widget,
 							GtkAllocation    *allocation);
+static void     nautilus_sidebar_style_set             (GtkWidget        *widget,
+							GtkStyle         *previous_style);
 static void     nautilus_sidebar_theme_changed         (gpointer          user_data);
 static void     nautilus_sidebar_confirm_trash_changed (gpointer          user_data);
 static void     nautilus_sidebar_update_appearance     (NautilusSidebar  *sidebar);
@@ -201,6 +204,7 @@ nautilus_sidebar_class_init (GtkObjectClass *object_klass)
 	widget_class->button_press_event  = nautilus_sidebar_press_event;
 	widget_class->button_release_event  = nautilus_sidebar_release_event;
 	widget_class->size_allocate = nautilus_sidebar_size_allocate;
+	widget_class->style_set = nautilus_sidebar_style_set;
 
 	/* add the "location changed" signal */
 	signals[LOCATION_CHANGED] = g_signal_new
@@ -1485,9 +1489,7 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 	 * need a framework to allow protocols to add commands buttons */
 	if (eel_istr_has_prefix (sidebar->details->uri, "trash:")) {
 		/* FIXME: We don't use spaces to pad labels! */
-		temp_button = gtk_button_new_with_mnemonic (confirm_trash_auto_value 
-							 ? _("_Empty Trash...") 
-							 : _("_Empty Trash"));
+		temp_button = gtk_button_new_with_mnemonic (_("_Empty Trash"));
 
 		gtk_box_pack_start (GTK_BOX (sidebar->details->button_box), 
 					temp_button, FALSE, FALSE, 0);
@@ -1706,6 +1708,22 @@ nautilus_sidebar_size_allocate (GtkWidget *widget,
  		eel_preferences_set_integer (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
 					     widget->allocation.width);
 	}	
+}
+
+/* ::style_set handler for the sidebar */
+static void
+nautilus_sidebar_style_set (GtkWidget *widget, GtkStyle *previous_style)
+{
+	NautilusSidebar *sidebar;
+	GtkStyle *style;
+
+	sidebar = NAUTILUS_SIDEBAR (widget);
+
+	style = gtk_widget_get_style (widget);
+
+	/* This is slightly hackish */
+	if (!EEL_IS_BACKGROUND_STYLE (style))
+		nautilus_sidebar_theme_changed (sidebar);
 }
 
 void

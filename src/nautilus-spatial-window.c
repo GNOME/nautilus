@@ -180,6 +180,9 @@ nautilus_window_instance_init (NautilusWindow *window)
 	g_object_ref (G_OBJECT (window->details->tooltips));
 	gtk_object_sink (GTK_OBJECT (window->details->tooltips));
 
+	/* Set last geometry to NULL */
+	window->last_geometry = NULL;
+
 	/* Set initial window title */
 	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
 
@@ -880,6 +883,7 @@ nautilus_window_save_geometry (NautilusWindow *window)
 				    NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY,
 				    NULL,
 				    geometry_string);
+				    
 	g_free (geometry_string);
 }
 

@@ -29,7 +29,6 @@
 
 #include <config.h>
 
-#include <eel/eel-background.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-string.h>
@@ -53,8 +52,6 @@
 #if 0
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
 #endif
-
-#define NOTES_DEFAULT_BACKGROUND_COLOR "#FFFFBB"
 
 #define SAVE_TIMEOUT (3 * 1000)
 
@@ -358,7 +355,6 @@ make_notes_view ()
 {
         GtkWidget *vbox;
         Notes *notes;
-        EelBackground *background;
         notes = g_new0 (Notes, 1);
         notes->uri = g_strdup ("");
         
@@ -378,9 +374,6 @@ make_notes_view ()
         gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (notes->note_text_field),
                                      GTK_WRAP_WORD);
         gtk_box_pack_start (GTK_BOX (vbox), notes->note_text_field, TRUE, TRUE, 0);
-
-        background = eel_get_widget_background (notes->note_text_field);
-        eel_background_set_color (background, NOTES_DEFAULT_BACKGROUND_COLOR);
 
 	g_signal_connect (notes->note_text_field, "focus_out_event",
                           G_CALLBACK (on_text_field_focus_out_event), notes);

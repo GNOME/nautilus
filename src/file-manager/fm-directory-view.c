@@ -4392,7 +4392,7 @@ real_update_menus (FMDirectoryView *view)
 	reset_bonobo_open_with_menu (view, selection);
 
 	if (all_selected_items_in_trash (view)) {
-		label = confirm_trash_auto_value ? _("_Delete from Trash...") : _("_Delete from Trash");
+		label = _("_Delete from Trash");
 		accelerator = "";
 		tip = _("Delete all selected items permanently");
 		show_separate_delete_command = FALSE;
@@ -4423,8 +4423,7 @@ real_update_menus (FMDirectoryView *view)
 	if (show_separate_delete_command) {
 		nautilus_bonobo_set_label
 			(view->details->ui,
-			 FM_DIRECTORY_VIEW_COMMAND_DELETE,
-			 confirm_trash_auto_value ? _("_Delete...") : _("_Delete"));
+			 FM_DIRECTORY_VIEW_COMMAND_DELETE, _("_Delete"));
 		nautilus_bonobo_set_sensitive (view->details->ui, 
 					       FM_DIRECTORY_VIEW_COMMAND_DELETE,
 					       can_delete_files);
@@ -4458,9 +4457,7 @@ real_update_menus (FMDirectoryView *view)
 	nautilus_bonobo_set_label
 		(view->details->ui,
 		 FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH,
-		 confirm_trash_auto_value
-			? _("_Empty Trash...")
-			: _("_Empty Trash"));
+		 _("_Empty Trash"));
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH,
 				       !nautilus_trash_monitor_is_empty ());

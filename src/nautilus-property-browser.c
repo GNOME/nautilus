@@ -32,7 +32,6 @@
 #include "nautilus-property-browser.h"
 
 #include "nautilus-signaller.h"
-#include <eel/eel-background.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
@@ -191,10 +190,6 @@ static void     element_clicked_callback                        (GtkWidget      
 								 gpointer                       callback_data);
 
 
-#define BROWSER_BACKGROUND_COLOR "#FFFFFF"
-
-#define THEME_SELECT_COLOR "#FF9999"
-
 #define BROWSER_CATEGORIES_FILE_NAME "browser.xml"
 
 #define PROPERTY_BROWSER_WIDTH 540
@@ -273,7 +268,6 @@ nautilus_property_browser_init (GtkObject *object)
 	gtk_window_set_title (GTK_WINDOW (widget), _("Backgrounds and Emblems"));
 	gtk_window_set_wmclass (GTK_WINDOW (widget), "property_browser", "Nautilus");
 	eel_gtk_window_set_up_close_accelerator (GTK_WINDOW (widget));
-		
 
 	/* create the main vbox. */
   	vbox = gtk_vbox_new (FALSE, 0);
@@ -1965,7 +1959,6 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 {
 	xmlNodePtr cur_node;
  	xmlDocPtr document;
- 	EelBackground *background;
 	GtkWidget *viewport;
 	GtkRadioButton *group;
 	gboolean got_categories;
@@ -1989,8 +1982,6 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
  	viewport = gtk_viewport_new (NULL, NULL);
 	gtk_widget_show(viewport);
 	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_IN);
-	background = eel_get_widget_background (viewport);
-	eel_background_set_color (background, BROWSER_BACKGROUND_COLOR);	
 	gtk_container_add (GTK_CONTAINER (property_browser->details->content_container), property_browser->details->content_frame);
 	gtk_widget_show (property_browser->details->content_frame);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (property_browser->details->content_frame),

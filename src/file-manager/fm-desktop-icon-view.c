@@ -1363,6 +1363,8 @@ real_update_menus (FMDirectoryView *view)
 	FMDesktopIconView *desktop_view;
 	char *label;
 	gboolean include_empty_trash, include_media_commands;
+	NautilusDeviceType media_type;
+	char *unmount_label;
 	
 	g_assert (FM_IS_DESKTOP_ICON_VIEW (view));
 
@@ -1389,11 +1391,7 @@ real_update_menus (FMDirectoryView *view)
 		 DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL,
 		 !include_empty_trash);
 	if (include_empty_trash) {
-		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH)) {
-			label = g_strdup (_("Empty Trash..."));
-		} else {
-			label = g_strdup (_("Empty Trash"));
-		}
+		label = g_strdup (_("Empty Trash"));
 		nautilus_bonobo_set_label
 			(desktop_view->details->ui, 
 			 DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL,
@@ -1408,38 +1406,17 @@ real_update_menus (FMDirectoryView *view)
 	/* Unmount Volume */
 	include_media_commands = volume_link_is_selection (view);
 
-	nautilus_bonobo_set_hidden
-		(desktop_view->details->ui,
-		 DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL,
-		 !include_media_commands);
-
-	nautilus_bonobo_set_hidden
-		(desktop_view->details->ui,
-		 DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL,
-		 !include_media_commands);
-
-	nautilus_bonobo_set_hidden
-		(desktop_view->details->ui,
-		 DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL,
-		 !include_media_commands);
-
-	nautilus_bonobo_set_hidden
-		(desktop_view->details->ui,
-		 DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL,
-		 !include_media_commands);
-
 	if (include_media_commands) {
-		NautilusDeviceType media_type;
-
 		media_type = volume_link_device_type (view);
 
-		nautilus_bonobo_set_sensitive
-			(desktop_view->details->ui,
-			DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL, TRUE);
- 	
+		unmount_label = _("E_ject");
+		
 		switch(media_type) {
 		case NAUTILUS_DEVICE_FLOPPY_DRIVE:
 			if (have_volume_format_app ()) {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, FALSE);
 				nautilus_bonobo_set_sensitive
 					(desktop_view->details->ui,
 					DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, TRUE);
@@ -1450,6 +1427,9 @@ real_update_menus (FMDirectoryView *view)
 			}
 
 			if (have_volume_properties_app ()) {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					 DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, FALSE);
 				nautilus_bonobo_set_sensitive
 					(desktop_view->details->ui,
 			 		DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
@@ -1462,7 +1442,6 @@ real_update_menus (FMDirectoryView *view)
 			nautilus_bonobo_set_hidden
 				(desktop_view->details->ui,
 				DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL, TRUE);
-
 			break;
 		
 		case NAUTILUS_DEVICE_CDROM_DRIVE:
@@ -1475,6 +1454,9 @@ real_update_menus (FMDirectoryView *view)
 				DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, TRUE);
 
 			if (have_volume_properties_app ()) {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, FALSE);
 				nautilus_bonobo_set_sensitive
 					(desktop_view->details->ui,
 					DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
@@ -1487,8 +1469,10 @@ real_update_menus (FMDirectoryView *view)
 		
 		case NAUTILUS_DEVICE_ZIP_DRIVE:
 		case NAUTILUS_DEVICE_JAZ_DRIVE:
-
 			if (have_volume_format_app ()) {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					 DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, FALSE);
 				nautilus_bonobo_set_sensitive
 					(desktop_view->details->ui,
 					DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL, TRUE);
@@ -1499,6 +1483,9 @@ real_update_menus (FMDirectoryView *view)
 			}
 
 			if (have_volume_properties_app ()) {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, FALSE);
 				nautilus_bonobo_set_sensitive
 					(desktop_view->details->ui,
 					 DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL, TRUE);
@@ -1509,6 +1496,9 @@ real_update_menus (FMDirectoryView *view)
 			}
 
 			if (have_volume_protection_app ()) {
+				nautilus_bonobo_set_hidden
+					(desktop_view->details->ui,
+					 DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL, FALSE);
 				nautilus_bonobo_set_sensitive
 					(desktop_view->details->ui,
 					 DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL, TRUE);
@@ -1519,8 +1509,43 @@ real_update_menus (FMDirectoryView *view)
 			}
 			break;
 		default:
+			unmount_label = _("_Unmount Volume");
 			break;
 		}
+
+		/* We always want a unmount entry */
+		nautilus_bonobo_set_hidden
+			(desktop_view->details->ui,
+			 DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL,
+			 FALSE);
+		nautilus_bonobo_set_sensitive
+			(desktop_view->details->ui,
+			DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL, TRUE);
+
+		/* But call it eject for removable media */
+		nautilus_bonobo_set_label
+			(desktop_view->details->ui, 
+			 DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL, unmount_label);
+	} else {
+		nautilus_bonobo_set_hidden
+			(desktop_view->details->ui,
+			 DESKTOP_COMMAND_PROTECT_VOLUME_CONDITIONAL,
+			 TRUE);
+		
+		nautilus_bonobo_set_hidden
+			(desktop_view->details->ui,
+			 DESKTOP_COMMAND_FORMAT_VOLUME_CONDITIONAL,
+			 TRUE);
+		
+		nautilus_bonobo_set_hidden
+			(desktop_view->details->ui,
+			 DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL,
+			 TRUE);
+		
+		nautilus_bonobo_set_hidden
+			(desktop_view->details->ui,
+			 DESKTOP_COMMAND_UNMOUNT_VOLUME_CONDITIONAL,
+			 TRUE);
 	}
 	
 	bonobo_ui_component_thaw (desktop_view->details->ui, NULL);

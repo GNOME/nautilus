@@ -1,3 +1,106 @@
+2002-07-22  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	Add major news items
+
+	* configure.in:
+	Bump version to 2.0.1
+	Require eel 2.0.1
+
+2002-07-22  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/nautilus-shell-ui.xml:
+	* src/nautilus-sidebar.c:
+	Fixup usage of ellipses.
+	Patch from Gregory Merchan  <merchan@phys.lsu.edu>
+
+2002-07-22  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file.c (rename_guts):
+	Allow renaming desktop files to have a slash in them.
+
+2002-07-22  Alexander Larsson  <alexl@redhat.com>
+
+	* components/history/Nautilus_View_history.server.in.in: 
+	* components/notes/Nautilus_View_notes.server.in.in:
+	Fix wrong location.
+
+2002-07-22  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	Fix for #86073. Don't show removable media options for non
+	removable media. Also name the unmount menu item "Eject" for
+	removable media.
+	
+2002-07-19  Federico Mena Quintero  <federico@ximian.com>
+
+	Fixes the Nautilus part of #46238; see eel for the other part.
+
+	* components/hardware/nautilus-hardware-view.c
+	(nautilus_hardware_view_init): Do not set a hardcoded background
+	color; just use the color from the GTK+ theme.  We still set up
+	the EelBackground as this handles dragged colors, but it does not
+	save them anywhere.
+
+	* components/notes/nautilus-notes.c (make_notes_view): Do not set
+	up an EelBackground at all for the text view; just let it use the
+	default color from the GTK+ theme.  This code did not handle
+	dragged colors or anything, anyways.
+
+	* src/nautilus-property-browser.c
+	(nautilus_property_browser_init): Do not set a hardcoded
+	background color.
+
+	* src/nautilus-sidebar.c (nautilus_sidebar_style_set):
+	::style_set() handler; we act as if the theme changed.
+
+	* icons/gnome/gnome.xml: Removed hardcoded colors and background
+	images so that we follow the current GTK+ theme.  It's bland but good.
+
+2002-07-17  Frank Worsley  <fworsley@shaw.ca>
+
+	* src/nautilus-application.c: (save_window_geometry_timeout),
+	(nautilus_window_configure_event_callback),
+	(nautilus_window_unrealize_event_callback):
+	improve saving of geometry. only save it if we really resize
+	a window, not when a window is first shown or viewport change
+
+	* src/nautilus-shell.c: (open_window):
+	* src/nautilus-bookmarks-window.c:
+	(nautilus_bookmarks_window_restore_geometry):
+	update for changed eel function
+	
+
+	* src/nautilus-window-manage-views.c:
+	(pending_location_already_showing): added new
+	(position_and_show_window_callback):
+	ignore saved window position if same window already showing
+	
+	* src/nautilus-window.c: (nautilus_window_instance_init),
+	(nautilus_window_save_geometry):
+	* src/nautilus-window.h:
+	updated for new eel function and changes described above
+
+2002-07-17  jacob berkman  <jacob@ximian.com>
+
+	* components/adapter/Makefile.am (EXTRA_DIST): fixup
+
+2002-07-17  Michael Meeks  <michael@ximian.com>
+
+	* components/hardware/Makefile.am
+	(server_in_files): fixup name.
+
+2002-07-17  Bastien Nocera  <hadess@hadess.net>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(should_look_for_dot_directory_file): fix function not to run
+	eel_str_has_prefix against NULL, either we use a NULL terminator to
+	the array, or G_N_ELEMENTS. Makes rio500: work, and should speed up
+	most network methods. (Closes: #78951)
+
 2002-07-11  Michael Meeks  <michael@ximian.com>
 
 	* components/*/.server.in -> *.server.in.in

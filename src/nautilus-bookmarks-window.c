@@ -396,7 +396,7 @@ nautilus_bookmarks_window_restore_geometry (GtkWidget *window)
 	if (window_geometry != NULL) {	
 		eel_gtk_window_set_initial_geometry_from_string 
 			(GTK_WINDOW (window), window_geometry, 
-			 BOOKMARKS_WINDOW_MIN_WIDTH, BOOKMARKS_WINDOW_MIN_HEIGHT);
+			 BOOKMARKS_WINDOW_MIN_WIDTH, BOOKMARKS_WINDOW_MIN_HEIGHT, FALSE);
 
 	} else {
 		/* use default since there was no stored geometry */

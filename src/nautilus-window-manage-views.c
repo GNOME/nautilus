@@ -45,6 +45,7 @@
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
+#include <gdk/gdkx.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dialog-util.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
@@ -1116,13 +1117,41 @@ cancel_location_change (NautilusWindow *window)
         end_location_change (window);
 }
 
+
+static gboolean
+pending_location_already_showing (NautilusWindow *window)
+{
+	char *temp;
+	char *location;
+	GList *list, *item;
+	
+	temp = window->details->pending_location;
+	list = nautilus_application_get_window_list ();
+	for (item = list; item != NULL; item = item->next) {
+		location = nautilus_window_get_location (NAUTILUS_WINDOW (item->data));
+
+		if (!NAUTILUS_IS_DESKTOP_WINDOW (item->data)
+		    && location != NULL
+		    && item->data != window
+		    && !strcmp (temp, location)) {
+		    	g_free (location);
+			return TRUE;
+		}
+		
+		g_free (location);
+	}
+	
+	return FALSE;
+}
+
+
 static void
 position_and_show_window_callback (NautilusFile *file,
                        		   gpointer callback_data)
 {
 	NautilusWindow *window;
 	char *geometry_string;
-        
+   
 	window = NAUTILUS_WINDOW (callback_data);
 
         if (!NAUTILUS_IS_DESKTOP_WINDOW (window)) {
@@ -1130,11 +1159,16 @@ position_and_show_window_callback (NautilusFile *file,
                 geometry_string = nautilus_file_get_metadata 
 			(file, NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY, NULL);
                 if (geometry_string != NULL) {
+			/* Ignore saved window position if a window with the same
+			 * location is already showing. That way the two windows
+			 * wont appear at the exact same location on the screen.
+			 */
                         eel_gtk_window_set_initial_geometry_from_string 
                                 (GTK_WINDOW (window), 
                                  geometry_string,
                                  NAUTILUS_WINDOW_MIN_WIDTH, 
-                                 NAUTILUS_WINDOW_MIN_HEIGHT);
+                                 NAUTILUS_WINDOW_MIN_HEIGHT,
+				 pending_location_already_showing (window));
                 }
                 g_free (geometry_string);
         }

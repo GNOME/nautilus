@@ -81,8 +81,10 @@ struct NautilusWindow {
         GtkWidget *view_as_option_menu;
         GtkWidget *navigation_bar;
         
+	char *last_geometry;
+	
         guint status_bar_clear_id;
-        guint save_geometry_idle_id;
+        guint save_geometry_timeout_id;
 	  
         /** CORBA-related elements **/
         NautilusApplication *application;
