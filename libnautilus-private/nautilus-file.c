@@ -2366,7 +2366,7 @@ nautilus_file_get_activation_uri (NautilusFile *file)
 
 	/* If the file is a symbolic link, we return the file the link points at */
 	if (nautilus_file_is_symbolic_link (file)) {
-		return nautilus_file_get_symbolic_link_target_path (file);
+		return nautilus_file_get_symbolic_link_target_uri (file);
 	}
 	
 	return nautilus_file_get_uri (file);
@@ -4471,11 +4471,40 @@ nautilus_file_is_broken_symbolic_link (NautilusFile *file)
 char *
 nautilus_file_get_symbolic_link_target_path (NautilusFile *file)
 {
-	g_return_val_if_fail (nautilus_file_is_symbolic_link (file), NULL);
+        g_return_val_if_fail (nautilus_file_is_symbolic_link (file), NULL);
 
-	return nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SYMLINK_NAME)
-		? NULL
-		: g_strdup (file->details->info->symlink_name);
+        return nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SYMLINK_NAME)
+                ? NULL
+                : g_strdup (file->details->info->symlink_name);
+}
+
+/**
+ * nautilus_file_get_symbolic_link_target_uri
+ * 
+ * Get the uri of the target of a symbolic link. It is an error 
+ * to call this function on a file that isn't a symbolic link.
+ * @file: NautilusFile representing the symbolic link in question.
+ * 
+ * Returns: newly-allocated copy of the uri of the target of the symbolic link.
+ */
+char *
+nautilus_file_get_symbolic_link_target_uri (NautilusFile *file)
+{
+	char *file_uri;
+	char *target;
+	
+        g_return_val_if_fail (nautilus_file_is_symbolic_link (file), NULL);
+
+	if (nautilus_file_info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SYMLINK_NAME)) {
+		return NULL;
+	} else {
+		file_uri = nautilus_file_get_uri (file);
+		target = gnome_vfs_uri_make_full_from_relative 
+			(file_uri,
+			 file->details->info->symlink_name);
+		g_free (file_uri);
+		return target;
+	}
 }
 
 /**
