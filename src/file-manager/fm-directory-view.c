@@ -4038,7 +4038,9 @@ activate_check_mime_types (FMDirectoryView *view,
 			(mime_type);
 		guessed_default_app = gnome_vfs_mime_get_default_application
 			(guessed_mime_type);
-		if (default_app->id == NULL ||
+		if (default_app == NULL ||
+		    default_app->id == NULL ||
+		    guessed_default_app == NULL ||
 		    guessed_default_app->id == NULL ||
 		    strcmp (default_app->id, guessed_default_app->id) != 0) {
 			warn_mismatched_mime_types (view, file);
