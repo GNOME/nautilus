@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 2.5.2\n"
+"Project-Id-Version: nautilus 2.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 10:55+0200\n"
-"PO-Revision-Date: 2004-08-21 00:59+0200\n"
+"POT-Creation-Date: 2004-09-13 22:08+0200\n"
+"PO-Revision-Date: 2004-09-13 22:20+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Nynorsk <i18n-nb@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -2416,25 +2416,25 @@ msgstr "en annen lenke til %s"
 #: libnautilus-private/nautilus-file-operations.c:1214
 #, c-format
 msgid "%dst link to %s"
-msgstr "%dste lenke til %s"
+msgstr "%d. lenke til %s"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1218
 #, c-format
 msgid "%dnd link to %s"
-msgstr "%dre lenke til %s"
+msgstr "%d. lenke til %s"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1222
 #, c-format
 msgid "%drd link to %s"
-msgstr "%ddje lenke til %s"
+msgstr "%d. lenke til %s"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1226
 #, c-format
 msgid "%dth link to %s"
-msgstr "%dde lenke til %s"
+msgstr "%d. lenke til %s"
 
 #. Localizers:
 #. * Feel free to leave out the st, nd, rd and th suffix or
@@ -2459,22 +2459,22 @@ msgstr " (ny kopi)"
 #: libnautilus-private/nautilus-file-operations.c:1256
 #: libnautilus-private/nautilus-file-operations.c:1266
 msgid "th copy)"
-msgstr "de (kopi)"
+msgstr ". (kopi)"
 
 #. localizers: tag used to detect the x1st copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1259
 msgid "st copy)"
-msgstr "ste (kopi)"
+msgstr ". (kopi)"
 
 #. localizers: tag used to detect the x2nd copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1261
 msgid "nd copy)"
-msgstr "dre (kopi)"
+msgstr ". (kopi)"
 
 #. localizers: tag used to detect the x3rd copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1263
 msgid "rd copy)"
-msgstr "dje (kopi)"
+msgstr ". (kopi)"
 
 #. localizers: appended to first file copy
 #: libnautilus-private/nautilus-file-operations.c:1280
@@ -2498,25 +2498,25 @@ msgstr "%s (ny kopi)%s"
 #: libnautilus-private/nautilus-file-operations.c:1298
 #, c-format
 msgid "%s (%dth copy)%s"
-msgstr "%s (%dte kopi)%s"
+msgstr "%s (%d. kopi)%s"
 
 #. localizers: appended to x1st file copy
 #: libnautilus-private/nautilus-file-operations.c:1292
 #, c-format
 msgid "%s (%dst copy)%s"
-msgstr "%s (%dste kopi)%s"
+msgstr "%s (%d. kopi)%s"
 
 #. localizers: appended to x2nd file copy
 #: libnautilus-private/nautilus-file-operations.c:1294
 #, c-format
 msgid "%s (%dnd copy)%s"
-msgstr "%s (%dndre kopi)%s"
+msgstr "%s (%d. kopi)%s"
 
 #. localizers: appended to x3rd file copy
 #: libnautilus-private/nautilus-file-operations.c:1296
 #, c-format
 msgid "%s (%drd copy)%s"
-msgstr "%s (%ddje kopi)%s"
+msgstr "%s (%d. kopi)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
 #: libnautilus-private/nautilus-file-operations.c:1396
@@ -3642,12 +3642,12 @@ msgstr "_Vis"
 msgid "_Run"
 msgstr "Kjø_r"
 
-#: src/file-manager/fm-directory-view.c:4126
+#: src/file-manager/fm-directory-view.c:4128
 #, c-format
 msgid "Cannot open %s"
 msgstr "Kan ikke åpne %s"
 
-#: src/file-manager/fm-directory-view.c:4129
+#: src/file-manager/fm-directory-view.c:4131
 #, c-format
 msgid ""
 "The filename \"%s\" indicates that this file is of type \"%s\". The contents "
@@ -3668,21 +3668,21 @@ msgstr ""
 "åpne filen på normal måte. Alternativt kan du bruke «Åpne med»-menyen for å "
 "velge en spesifikk applikasjon for filen."
 
-#: src/file-manager/fm-directory-view.c:4515
+#: src/file-manager/fm-directory-view.c:4517
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Kjør «%s» på valgte oppføringer"
 
-#: src/file-manager/fm-directory-view.c:4749
+#: src/file-manager/fm-directory-view.c:4751
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Opprett dokument fra mal «%s»"
 
-#: src/file-manager/fm-directory-view.c:4933
+#: src/file-manager/fm-directory-view.c:4935
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr "Alle kjørbare filer i denne mappen vil vises i Skript-menyen."
 
-#: src/file-manager/fm-directory-view.c:4935
+#: src/file-manager/fm-directory-view.c:4937
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -3690,11 +3690,11 @@ msgstr ""
 "Ved å velge et skript fra denne menyen vil du kjøre dette skriptet med "
 "eventuelle markerte oppføringer som inndata."
 
-#: src/file-manager/fm-directory-view.c:4937
+#: src/file-manager/fm-directory-view.c:4939
 msgid "About Scripts"
 msgstr "Om skript"
 
-#: src/file-manager/fm-directory-view.c:4938
+#: src/file-manager/fm-directory-view.c:4940
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -3735,19 +3735,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: posisjon og størrelse for aktivt vindu"
 
-#: src/file-manager/fm-directory-view.c:5069
+#: src/file-manager/fm-directory-view.c:5071
 #: src/file-manager/fm-tree-view.c:788
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "«%s» vil bli flyttet hvis du velger kommandoen Lim inn filer"
 
-#: src/file-manager/fm-directory-view.c:5073
+#: src/file-manager/fm-directory-view.c:5075
 #: src/file-manager/fm-tree-view.c:792
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "«%s» vil bli kopiert hvis du velger kommandoen Lim inn filer"
 
-#: src/file-manager/fm-directory-view.c:5080
+#: src/file-manager/fm-directory-view.c:5082
 #, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
@@ -3759,7 +3759,7 @@ msgstr[1] ""
 "De %d valgte oppføringene vil bli flyttet hvis du velger kommandoen Lim inn "
 "filer"
 
-#: src/file-manager/fm-directory-view.c:5087
+#: src/file-manager/fm-directory-view.c:5089
 #, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
@@ -3771,58 +3771,58 @@ msgstr[1] ""
 "De %d valgte oppføringene vil bli flyttet hvis du velger kommandoen Lim inn "
 "filer"
 
-#: src/file-manager/fm-directory-view.c:5169
+#: src/file-manager/fm-directory-view.c:5171
 #: src/file-manager/fm-tree-view.c:868
 msgid "There is nothing on the clipboard to paste."
 msgstr "Ingenting å lime inn fra utklippstavlen."
 
-#: src/file-manager/fm-directory-view.c:5272
-#: src/file-manager/fm-directory-view.c:6507
+#: src/file-manager/fm-directory-view.c:5274
+#: src/file-manager/fm-directory-view.c:6510
 msgid "Mount Error"
 msgstr "Monteringsfeil"
 
-#: src/file-manager/fm-directory-view.c:5334
+#: src/file-manager/fm-directory-view.c:5336
 msgid "Eject Error"
 msgstr "Feil under utløsing"
 
-#: src/file-manager/fm-directory-view.c:5337
+#: src/file-manager/fm-directory-view.c:5339
 msgid "Unmount Error"
 msgstr "Feil under avmontering"
 
-#: src/file-manager/fm-directory-view.c:5461
+#: src/file-manager/fm-directory-view.c:5463
 #, c-format
 msgid "Connect to Server %s"
 msgstr "Koble til tjener %s"
 
-#: src/file-manager/fm-directory-view.c:5466
+#: src/file-manager/fm-directory-view.c:5468
 msgid "_Connect"
 msgstr "_Koble til"
 
-#: src/file-manager/fm-directory-view.c:5480
+#: src/file-manager/fm-directory-view.c:5482
 msgid "Link _name:"
 msgstr "_Navn på lenke:"
 
-#: src/file-manager/fm-directory-view.c:5792
+#: src/file-manager/fm-directory-view.c:5795
 msgid "E_ject"
 msgstr "Løs _ut"
 
-#: src/file-manager/fm-directory-view.c:5792
+#: src/file-manager/fm-directory-view.c:5795
 #: src/file-manager/nautilus-directory-view-ui.xml.h:66
 msgid "_Unmount Volume"
 msgstr "_Avmonter volum"
 
-#: src/file-manager/fm-directory-view.c:5936
+#: src/file-manager/fm-directory-view.c:5939
 #, c-format
 msgid "_Open with \"%s\""
 msgstr "Åpne med «%s»"
 
-#: src/file-manager/fm-directory-view.c:5948
+#: src/file-manager/fm-directory-view.c:5951
 #: src/file-manager/nautilus-directory-view-ui.xml.h:59
 msgid "_Open"
 msgstr "_Åpne"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5957
+#: src/file-manager/fm-directory-view.c:5960
 #: src/file-manager/fm-tree-view.c:960
 #, c-format
 msgid "Open in New Window"
@@ -3830,93 +3830,93 @@ msgid_plural "Open in %d New Windows"
 msgstr[0] "Åpne i nytt vindu"
 msgstr[1] "Åpne i %d nye vinduer"
 
-#: src/file-manager/fm-directory-view.c:5964
+#: src/file-manager/fm-directory-view.c:5967
 msgid "Browse Folder"
 msgstr "Vis mappe"
 
-#: src/file-manager/fm-directory-view.c:5966
+#: src/file-manager/fm-directory-view.c:5969
 msgid "Browse Folders"
 msgstr "Vis mapper"
 
-#: src/file-manager/fm-directory-view.c:5989
+#: src/file-manager/fm-directory-view.c:5992
 msgid "_Delete from Trash"
 msgstr "Sle_tt fra papirkurven"
 
-#: src/file-manager/fm-directory-view.c:5991
+#: src/file-manager/fm-directory-view.c:5994
 msgid "Delete all selected items permanently"
 msgstr "Slett alle valgte oppføringer permanent"
 
-#: src/file-manager/fm-directory-view.c:5994
-#: src/file-manager/fm-directory-view.c:6339
+#: src/file-manager/fm-directory-view.c:5997
+#: src/file-manager/fm-directory-view.c:6342
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Mo_ve to Trash"
 msgstr "Fl_ytt til papirkurv"
 
-#: src/file-manager/fm-directory-view.c:5996
+#: src/file-manager/fm-directory-view.c:5999
 #: src/file-manager/nautilus-directory-view-ui.xml.h:24
 msgid "Move each selected item to the Trash"
 msgstr "Flytt hver valgt oppføring til papirkurven"
 
-#: src/file-manager/fm-directory-view.c:6020
+#: src/file-manager/fm-directory-view.c:6023
 #: src/file-manager/nautilus-directory-view-ui.xml.h:54
 msgid "_Delete"
 msgstr "Sle_tt"
 
-#: src/file-manager/fm-directory-view.c:6040
+#: src/file-manager/fm-directory-view.c:6043
 msgid "Ma_ke Links"
 msgstr "Opprett _lenker"
 
-#: src/file-manager/fm-directory-view.c:6041
+#: src/file-manager/fm-directory-view.c:6044
 #: src/file-manager/nautilus-directory-view-ui.xml.h:19
 msgid "Ma_ke Link"
 msgstr "Opprett _lenke"
 
-#: src/file-manager/fm-directory-view.c:6054
+#: src/file-manager/fm-directory-view.c:6057
 #: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "_Empty Trash"
 msgstr "_Tøm papirkurv"
 
-#: src/file-manager/fm-directory-view.c:6070
+#: src/file-manager/fm-directory-view.c:6073
 msgid "Cu_t File"
 msgstr "Klipp u_t fil"
 
-#: src/file-manager/fm-directory-view.c:6071
+#: src/file-manager/fm-directory-view.c:6074
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
 msgid "Cu_t Files"
 msgstr "Klipp u_t filer"
 
-#: src/file-manager/fm-directory-view.c:6080
+#: src/file-manager/fm-directory-view.c:6083
 msgid "_Copy File"
 msgstr "_Kopier fil"
 
-#: src/file-manager/fm-directory-view.c:6081
+#: src/file-manager/fm-directory-view.c:6084
 #: src/file-manager/nautilus-directory-view-ui.xml.h:53
 msgid "_Copy Files"
 msgstr "_Kopier filer"
 
-#: src/file-manager/fm-directory-view.c:6330
+#: src/file-manager/fm-directory-view.c:6333
 msgid "The link is broken, do you want to move it to the Trash?"
 msgstr "Lenken er ødelagt. Vil du flytte den til papirkurven?"
 
-#: src/file-manager/fm-directory-view.c:6332
+#: src/file-manager/fm-directory-view.c:6335
 msgid "This link can't be used, because it has no target."
 msgstr "Denne lenken kan ikke brukes fordi den ikke har noe mål."
 
-#: src/file-manager/fm-directory-view.c:6334
+#: src/file-manager/fm-directory-view.c:6337
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "Denne lenken kan ikke brukes fordi målet, «%s», ikke eksisterer."
 
-#: src/file-manager/fm-directory-view.c:6339
+#: src/file-manager/fm-directory-view.c:6342
 msgid "Broken Link"
 msgstr "Ødelagt lenke"
 
-#: src/file-manager/fm-directory-view.c:6643
+#: src/file-manager/fm-directory-view.c:6646
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Åpner «%s»."
 
-#: src/file-manager/fm-directory-view.c:6650
+#: src/file-manager/fm-directory-view.c:6653
 msgid "Cancel Open?"
 msgstr "Avbryt åpning?"
 
