@@ -4688,7 +4688,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 {
 	ActivateParameters *parameters;
 	FMDirectoryView *view;
-	char *uri, *command, *executable_path, *quoted_path, *name, *file_uri;
+	char *uri, *command, *executable_path, *quoted_path, *name, *file_uri, *file_uri_scheme;
 	GnomeVFSMimeApplication *application;
 	ActivationAction action;
 	GnomeDesktopItem *desktop_item;
@@ -4712,11 +4712,15 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		report_broken_symbolic_link (view, file);
 		action = ACTIVATION_ACTION_DO_NOTHING;
 	} else if (eel_istr_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER)) {
-		/* Don't allow command execution from remote locations
+		/* Don't allow command execution from remote locations where the
+		 * uri scheme isn't file:// (This is because files on for example
+		 * nfs are treated as remote)
 		 * to partially mitigate the security risk of
 		 * executing arbitrary commands.
 		 */
-		if (!nautilus_file_is_local (file)) {
+		file_uri_scheme = nautilus_file_get_uri_scheme (file);
+		
+		if (!nautilus_file_is_local (file) && strcmp (file_uri_scheme, "file") != 0) {
 			eel_show_error_dialog
 				(_("Sorry, but you can't execute commands from "
 				   "a remote site due to security considerations."), 
@@ -4749,6 +4753,8 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 			action = ACTIVATION_ACTION_DO_NOTHING;
 		}
+
+		g_free (file_uri_scheme);
 	}
 	if (action != ACTIVATION_ACTION_DO_NOTHING && file_is_launchable (file)) {
 

@@ -804,7 +804,7 @@ volume_ops_callback (BonoboUIComponent *component, gpointer data, const char *ve
 	GError *error;
 	GtkWidget *dialog;
 
-			    
+
         g_assert (FM_IS_DIRECTORY_VIEW (data));
         
         view = FM_DIRECTORY_VIEW (data);
@@ -816,7 +816,8 @@ volume_ops_callback (BonoboUIComponent *component, gpointer data, const char *ve
 	selection = fm_directory_view_get_selection (view);
 	
 	file = NAUTILUS_FILE (selection->data);
-	if (nautilus_file_is_local (file)) {
+	
+	if (!nautilus_file_is_local (file)) {
 		nautilus_file_list_free (selection);
 		return;
 	}

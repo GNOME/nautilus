@@ -1,3 +1,18 @@
+2002-05-24  Anders Carlsson  <andersca@gnu.org>
+
+	* src/file-manager/fm-desktop-icon-view.c: (volume_ops_callback):
+	Don't exit if the file is local. Sigh, won't people test their code?
+
+	* src/file-manager/fm-directory-view.c: (activate_callback):
+	Special case "file" type URIs, so that people can still open
+	their nfs mounted directories.
+	
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-toolbars.c:
+	(nautilus_window_initialize_toolbars):
+	* src/nautilus-window.c: (nautilus_window_finalize):
+	Remove un-needed theme code.
+	
 2002-05-24  Michael Meeks  <michael@ximian.com>
 
 	* components/tree/nautilus-tree-view.c

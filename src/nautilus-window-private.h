@@ -144,7 +144,6 @@ void               nautilus_window_go_back                               (Nautil
 void               nautilus_window_go_forward                            (NautilusWindow    *window);
 void               nautilus_window_go_up                                 (NautilusWindow    *window);
 void               nautilus_window_update_find_menu_item                 (NautilusWindow    *window);
-void               nautilus_window_toolbar_remove_theme_callback         (NautilusWindow    *window);
 void               nautilus_window_remove_bookmarks_menu_callback        (NautilusWindow    *window);
 void               nautilus_window_remove_go_menu_callback               (NautilusWindow    *window);
 void               nautilus_window_remove_bookmarks_menu_items           (NautilusWindow    *window);

@@ -202,21 +202,6 @@ back_or_forward_key_pressed_callback (GtkWidget *widget,
 	return FALSE;
 }
 
-/* handle theme changes */
-static void
-theme_changed_callback (gpointer callback_data)
-{
-	NautilusWindow *window;
-	
-	window = NAUTILUS_WINDOW (callback_data);
-	
-	/* if the toolbar is visible, toggle it's visibility to force a relayout */
-	if (nautilus_window_toolbar_showing (window)) {
-		nautilus_window_hide_toolbar (window);
-		nautilus_window_show_toolbar (window);
-	}
-}
-
 static void
 back_or_forward_toolbar_item_property_set_cb (BonoboPropertyBag *bag,
 					      const BonoboArg   *arg,
@@ -487,18 +472,5 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 		(window, _("Go forward a number of pages"),
 		 "/Toolbar/ForwardMenu");
 
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, 
-				      theme_changed_callback,
-				      window);
-
 	nautilus_window_ui_thaw (window);
-}
- 
-void
-nautilus_window_toolbar_remove_theme_callback (NautilusWindow *window)
-{
-	eel_preferences_remove_callback
-		(NAUTILUS_PREFERENCES_THEME,
-		 theme_changed_callback,
-		 window);
 }
