@@ -48,11 +48,13 @@ enum {
 	PROP_URI,
 };
 
+static GObjectClass *parent_class = NULL;
+
 static void
 nautilus_image_properties_view_finalize (GObject *object)
 {
 	NautilusImagePropertiesView *view;
-	
+
 	view = NAUTILUS_IMAGE_PROPERTIES_VIEW (object);
 
 	if (view->details->vfs_handle != NULL)
@@ -62,7 +64,7 @@ nautilus_image_properties_view_finalize (GObject *object)
 
 	g_free (view->details);
 
-	G_OBJECT_CLASS (object)->finalize (object);
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
@@ -225,6 +227,8 @@ set_property (BonoboPropertyBag *bag,
 static void
 nautilus_image_properties_view_class_init (NautilusImagePropertiesViewClass *class)
 {
+	parent_class = g_type_class_peek_parent (class);
+	
 	G_OBJECT_CLASS (class)->finalize = nautilus_image_properties_view_finalize;
 }
 

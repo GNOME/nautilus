@@ -1,3 +1,11 @@
+2003-01-13  Dave Camp  <dave@ximian.com>
+
+	* components/image_properties/nautilus-image-properties-view.c
+	(nautilus_image_properties_view_class_init): Save the parent
+	class.
+	(nautilus_image_properties_view_finalize): Chain to the parent
+	class.
+
 2003-01-12  Dave Camp  <dave@ximian.com>
 
 	* src/file-manager/fm-list-view.c (key_press_callback): Only
