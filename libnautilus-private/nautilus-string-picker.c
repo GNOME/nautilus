@@ -170,8 +170,9 @@ nautilus_string_picker_new (void)
 /**
  * nautilus_string_picker_set_string_list:
  * @string_picker: A NautilusStringPicker
+ * @string_list: A list of strings
  *
- * Returns: The index of the active button.  There is always one active by law.
+ * Returns: nope
  */
 void
 nautilus_string_picker_set_string_list (NautilusStringPicker		*string_picker,
@@ -217,6 +218,24 @@ nautilus_string_picker_set_string_list (NautilusStringPicker		*string_picker,
 	}
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (string_picker->detail->option_menu), string_picker->detail->menu);
+}
+
+/**
+ * nautilus_string_picker_get_string_list:
+ * @string_picker: A NautilusStringPicker
+ *
+ * Returns: A copy of the list of strings for the string picker.  Need to free it.
+ */
+NautilusStringList*
+nautilus_string_picker_get_string_list (const NautilusStringPicker *string_picker)
+{
+
+ 	g_return_val_if_fail (string_picker != NULL, NULL);
+	g_return_val_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker), NULL);
+
+	return (string_picker->detail->string_list != NULL) ?
+		nautilus_string_list_new_from_string_list (string_picker->detail->string_list) :
+		NULL;
 }
 
 /* FIXME bugzilla.eazel.com 1556: 

@@ -60,20 +60,22 @@ struct _NautilusStringPickerClass
 	NautilusCaptionClass		parent_class;
 };
 
-GtkType    nautilus_string_picker_get_type        (void);
-GtkWidget* nautilus_string_picker_new             (void);
+GtkType             nautilus_string_picker_get_type        (void);
+GtkWidget*          nautilus_string_picker_new             (void);
 
-/* String list mutator. */
-void  nautilus_string_picker_set_string_list (NautilusStringPicker     *string_picker,
-					      const NautilusStringList *string_list);
+/* Set the list of strings. */
+void                nautilus_string_picker_set_string_list (NautilusStringPicker       *string_picker,
+							    const NautilusStringList   *string_list);
+
+/* Access a copy of the list of strings. */
+NautilusStringList *nautilus_string_picker_get_string_list (const NautilusStringPicker *string_picker);
 
 /* Entry text accesor. */
-char *nautilus_string_picker_get_text        (NautilusStringPicker     *string_picker);
-
+char *              nautilus_string_picker_get_text        (NautilusStringPicker       *string_picker);
 
 /* Entry text mutator. */
-void  nautilus_string_picker_set_text        (NautilusStringPicker     *string_picker,
-					      const char               *text);
+void                nautilus_string_picker_set_text        (NautilusStringPicker       *string_picker,
+							    const char                 *text);
 
 BEGIN_GNOME_DECLS
 
