@@ -665,8 +665,8 @@ nautilus_icons_view_draw_text_box (GnomeCanvasItem* item, GdkDrawable *drawable,
 
 	gdk_gc_unref(temp_gc);   
 
-	priv->text_width = (double) line_width;
-	priv->text_height = (double) line_height;
+	priv->text_width = item->canvas->pixels_per_unit * line_width;
+	priv->text_height = item->canvas->pixels_per_unit * (double) line_height;
 }
 
 /* draw the icon item */
@@ -744,7 +744,7 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
           }
           
 	  /* now compute the position of the label and draw it */
-          icon_height = priv->pixbuf->art_pixbuf->height;
+          icon_height = priv->pixbuf->art_pixbuf->height * item->canvas->pixels_per_unit;
           nautilus_icons_view_draw_text_box(item, drawable, title_font, priv->label, item->x1 - x, 
                                             item->y1 - y  + icon_height, priv->is_selected, TRUE);       	
         }
