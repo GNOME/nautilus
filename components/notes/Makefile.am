@@ -17,15 +17,15 @@ LDADD=\
 
 nautilus_notes_SOURCES=nautilus-notes.c
 
-oafdir = $(datadir)/oaf
-oaf_in_files =					\
-	Nautilus_View_notes.oaf.in		\
+serverdir = $(datadir)/server
+server_in_files =					\
+	Nautilus_View_notes.server.in		\
 	$(NULL)
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+server_DATA = $(server_in_files:.server.in=.server)
 
-@XML_I18N_MERGE_OAF_RULE@
+@INTLTOOL_SERVER_RULE@
 
 EXTRA_DIST= \
-	$(oaf_DATA)\
-	$(oaf_in_files) \
+	$(server_DATA)\
+	$(server_in_files) \
 	$(NULL)

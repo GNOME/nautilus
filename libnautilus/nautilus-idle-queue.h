@@ -27,9 +27,8 @@
 #define NAUTILUS_IDLE_QUEUE_H
 
 #include <glib.h>
-#include <libgnome/gnome-defs.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 typedef struct NautilusIdleQueue NautilusIdleQueue;
 
@@ -41,6 +40,6 @@ void               nautilus_idle_queue_add     (NautilusIdleQueue *queue,
 						GFreeFunc          free_callback_data);
 void               nautilus_idle_queue_destroy (NautilusIdleQueue *queue);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* NAUTILUS_IDLE_QUEUE_H */

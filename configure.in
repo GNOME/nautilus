@@ -7,58 +7,96 @@ dnl it too, or it will never make it into the spec file!
 dnl
 dnl ==========================================================================
 
-BONOBO_REQUIRED=1.0.9
+ART_REQUIRED=2.3.6
+BONOBO_ACTIVATION_REQUIRED=0.9.2
+BONOBO_REQUIRED=1.103
 EEL_REQUIRED=1.0.2
 ESOUND_REQUIRED=0.2.22
 GCONF_REQUIRED=0.12
-GDK_PIXBUF_REQUIRED=0.10.0
-GLIB_REQUIRED=1.2.9
-GNOME_LIBS_REQUIRED=1.2.11
-GNOME_REQUIRED=1.2.8
-GNOME_VFS_REQUIRED=1.0.3
-GTK_REQUIRED=1.2.9
+GDK_PIXBUF_REQUIRED=1.3.9
+GLIB_REQUIRED=1.3.9
+GNOME_CANVAS_REQUIRED=1.104
+GNOME_REQUIRED=1.104
+GNOME_UI_REQUIRED=1.104
+GNOME_VFS_REQUIRED=1.1
+GTK_REQUIRED=1.3.9
 IMLIB_REQUIRED=1.9.8
-LIBRSVG_REQUIRED=1.0.1
-LIBXML_REQUIRED=1.8.10
 MEDUSA_REQUIRED=0.5.1
-OAF_REQUIRED=0.6.5
 ORBIT_REQUIRED=0.5.7
 POPT_REQUIRED=1.5
+RSVG_REQUIRED=1.1
 SCROLLKEEPER_REQUIRED=0.1.4
+XML_REQUIRED=2.4.6
 
 AC_SUBST(EEL_REQUIRED)
 AC_SUBST(ESOUND_REQUIRED)
 AC_SUBST(GNOME_VFS_REQUIRED)
 AC_SUBST(IMLIB_REQUIRED)
-AC_SUBST(LIBRSVG_REQUIRED)
-AC_SUBST(LIBXML_REQUIRED)
 AC_SUBST(MEDUSA_REQUIRED)
 AC_SUBST(ORBIT_REQUIRED)
 AC_SUBST(POPT_REQUIRED)
+AC_SUBST(RSVG_REQUIRED)
 AC_SUBST(SCROLLKEEPER_REQUIRED)
+AC_SUBST(XML_REQUIRED)
 
 dnl ===========================================================================
 
 AM_INIT_AUTOMAKE(nautilus, 1.0.5)
 AM_CONFIG_HEADER(config.h)
 
+AM_SANITY_CHECK
 AM_MAINTAINER_MODE
 
-AM_DISABLE_STATIC
-AM_PROG_LIBTOOL
-
-AM_PROG_XML_I18N_TOOLS
-
-AM_SANITY_CHECK
+AC_C_BIGENDIAN
+AC_C_CONST
+AC_ISC_POSIX
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
+AC_PROG_INTLTOOL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-AC_ISC_POSIX
-AM_PATH_ESD
+AM_DISABLE_STATIC
+AM_PROG_LIBTOOL
 
-AM_PATH_ORBIT
+AM_PATH_ESD
+AM_PATH_ORBIT2
+
+GNOME_PLATFORM_GNOME_2(yes)
+
+PKG_CHECK_MODULES(ALL, \
+	bonobo-activation-2.0 >= $BONOBO_ACTIVATION_REQUIRED \
+	eel-2.0 >= $EEL_REQUIRED \
+	glib-2.0 >= $GLIB_REQUIRED \
+	gnome-vfs-2.0 >= $GNOME_VFS_REQUIRED \
+	gtk+-2.0 >= $GTK_REQUIRED \
+	libart-2.0 >= $ART_REQUIRED \
+	libbonobo-2.0 >= $BONOBO_REQUIRED \
+	libbonoboui-2.0 >= $BONOBO_REQUIRED \
+	libgnome-2.0 >= $GNOME_REQUIRED \
+	libgnomecanvas-2.0 >= $GNOME_CANVAS_REQUIRED \
+	libgnomeui-2.0 >= $GNOME_UI_REQUIRED \
+	librsvg-2.0 >= $RSVG_REQUIRED \
+	libxml-2.0 >= $XML_REQUIRED)
+
+dnl libnautilus
+
+LIBNAUTILUS_MODULES="\
+	bonobo-activation-2.0 \
+	eel-2.0 \
+	glib-2.0 \
+	gnome-vfs-2.0 \
+	gtk+-2.0 \
+	libbonobo-2.0 \
+	libbonoboui-2.0"
+LIBNAUTILUS_CFLAGS="`$PKG_CONFIG --cflags $LIBNAUTILUS_MODULES`"
+AC_SUBST(LIBNAUTILUS_CFLAGS)
+LIBNAUTILUS_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_MODULES`"
+AC_SUBST(LIBNAUTILUS_LIBS)
+LIBNAUTILUS_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $LIBNAUTILUS_MODULES | $srcdir/add-include-prefix`"
+AC_SUBST(LIBNAUTILUS_IDL_INCLUDES)
+
+dnl libnautilus-private
 
 dnl ====================================
 dnl = Begin profiling support
@@ -333,122 +371,6 @@ AC_CHECK_HEADERS(cdda_interface.h cdda_paranoia.h, [
 	])
 
 dnl ====================================
-dnl Gnome libraries.
-dnl ====================================
-
-AM_PATH_GLIB($GLIB_REQUIRED,,
-AC_MSG_ERROR([
-*** GLIB $GLIB_REQUIRED or better is required. The latest version of GLIB
-*** is always available from ftp://ftp.gtk.org/.]))
-
-AC_SUBST(GLIB_REQUIRED)
-
-AM_PATH_GTK($GTK_REQUIRED,,
-AC_MSG_ERROR([
-*** Gtk+ $GTK_REQUIRED or better is required. The latest version of GTK
-*** is always available from ftp://ftp.gtk.org/.]))
-
-AC_SUBST(GTK_REQUIRED)
-
-AM_PATH_GNOME($GNOME_REQUIRED,,AC_MSG_ERROR([*** GNOME $GNOME_REQUIRED or better is required.]), vfs xml bonobo bonobox bonobox_print idl gnomeui gtk gdk_pixbuf gnomecanvaspixbuf eel librsvg)
-
-AC_SUBST(GNOME_REQUIRED)
-
-AC_PATH_PROG(GNOME_CONFIG,gnome-config,no)
-if test x$GNOME_CONFIG = xno; then
-  AC_MSG_ERROR(Couldn't find gnome-config. Please install the GNOME package)
-fi
-
-NAUTILUS_VERSION_INSIST(gnome-libs, $GNOME_CONFIG --version | awk '{print $2}', >=, GNOME_LIBS_REQUIRED)
-
-NAUTILUS_VERSION_INSIST(bonobo, $GNOME_CONFIG --modversion bonobo | awk -F- '{print $2}', >=, BONOBO_REQUIRED)
-
-AC_SUBST(GNOMECANVASPIXBUF_LIBS)
-AC_SUBST(GNOMECANVASPIXBUF_CFLAGS)
-AC_SUBST(BONOBO_CFLAGS)
-AC_SUBST(BONOBO_LIBS)
-AC_SUBST(BONOBOX_CFLAGS)
-AC_SUBST(BONOBOX_LIBS)
-AC_SUBST(BONOBO_PRINT_CFLAGS)
-AC_SUBST(BONOBO_PRINT_LIBS)
-AC_SUBST(VFS_CFLAGS)
-AC_SUBST(VFS_LIBS)
-AC_SUBST(LIBRSVG_LIBS)
-AC_SUBST(LIBRSVG_CFLAGS)
-AC_SUBST(EEL_LIBS)
-AC_SUBST(EEL_CFLAGS)
-
-dnl   Rediscover CFLAGS for GTK, because gnome-config won't know
-dnl   all the necessary flags if GTK has been upgraded more recently than
-dnl   it has. See bugzilla.gnome.org bug 47315.
-
-AC_PATH_PROG(GTK_CONFIG,gtk-config,false)
-AC_MSG_CHECKING(for gtk-config cflags)
-GTK_CFLAGS=`$GTK_CONFIG --cflags`
-AC_MSG_RESULT($GTK_CFLAGS)
-GNOMEUI_CFLAGS="$GNOMEUI_CFLAGS $GTK_CFLAGS"
-AC_SUBST(GNOMEUI_CFLAGS)
-
-IDL_CFLAGS="${IDL_CFLAGS} -I\$(top_srcdir) -I\$(top_builddir)"
-
-echo "IDL_CFLAGS: $IDL_CFLAGS"
-
-AC_SUBST(IDL_CFLAGS)
-
-AM_PATH_OAF($OAF_REQUIRED)
-AC_SUBST(OAF_REQUIRED)
-
-AM_PATH_GCONF($GCONF_REQUIRED,,,gconf-gtk)
-AC_SUBST(GCONF_REQUIRED)
-
-AC_PATH_PROG(XML_CONFIG,xml-config,no)
-if test x$XML_CONFIG = xno; then
-  AC_MSG_ERROR(Couldn't find xml-config please install the gnome-xml package)
-fi
-
-XML_VERSION="`$XML_CONFIG --version`"
-case "$XML_VERSION" in
-	1.*)
-		:
-  	;;
-
-	*)
-		AC_ERROR(Nautilus needs gnome-xml version 1.x not $XML_VERSION)
-	;;
-esac
-
-XML_LIBS=`$XML_CONFIG --libs`
-XML_CFLAGS=`$XML_CONFIG --cflags`
-AC_SUBST(XML_LIBS)
-AC_SUBST(XML_CFLAGS)
-
-#BUILD_GNOME_DB2HTML3=yes
-if test x$BUILD_GNOME_DB2HTML3 = xyes; then
-	AC_PATH_PROG(XML2_CONFIG,xml2-config,no)
-	if test x$XML2_CONFIG = xno; then
-  	    AC_MSG_ERROR(Couldn't find xml2-config please install the libxml2 package)
-	fi
-
-	XML2_LIBS=`$XML2_CONFIG --libs`
-	XML2_CFLAGS=`$XML2_CONFIG --cflags`
-	AC_SUBST(XML2_LIBS)
-	AC_SUBST(XML2_CFLAGS)
-
-	AC_PATH_PROG(XSLT_CONFIG,xslt-config,no)
-	if test x$XSLT_CONFIG = xno; then
-	  AC_MSG_ERROR(Couldn't find xslt-config please install the libxslt package)
-	fi
-
-	XSLT_LIBS=`$XSLT_CONFIG --libs`
-	XSLT_CFLAGS=`$XSLT_CONFIG --cflags`
-	AC_SUBST(XSLT_LIBS)
-	AC_SUBST(XSLT_CFLAGS)
-
-	GNOME_DB2HTML3_FLAG=-DUSE_GNOME_DB2HTML3
-	AC_SUBST(GNOME_DB2HTML3_FLAG)
-fi
-
-dnl ====================================
 dnl = Begin tests for scrollkeeper
 dnl ====================================
 
@@ -474,47 +396,6 @@ AM_CONDITIONAL(HAVE_JW, test "x$HAVE_JW" = "xyes")
 AC_SUBST(HAVE_JW)
 dnl ====================================
 dnl = End tests for jw
-dnl ====================================
-
-dnl ====================================
-dnl = begin applet checks
-dnl ====================================
-AC_MSG_CHECKING(for applets)
-APPLETS_CFLAGS=
-APPLETS_LIBS=
-HAVE_APPLETS="no"
-
-gnome-config | grep applets > /dev/null 2>&1
-
-if test $? -eq 0
-then
-	HAVE_APPLETS="yes"
-	APPLETS_CFLAGS=`gnome-config --cflags applets`
-	APPLETS_LIBS=`gnome-config --libs applets`	
-	AC_MSG_RESULT(yes)
-else
-	HAVE_APPLETS="no"
-	AC_MSG_RESULT(no)
-fi
-
-AM_CONDITIONAL(HAVE_APPLETS, test "x$HAVE_APPLETS" = "xyes")
-
-AC_SUBST(HAVE_APPLETS)
-AC_SUBST(APPLETS_CFLAGS)
-AC_SUBST(APPLETS_LIBS)
-dnl ====================================
-dnl = begin applet checks
-dnl ====================================
-
-dnl ====================================
-dnl = begin gdk-pixbuf checks
-dnl ====================================
-AM_PATH_GDK_PIXBUF($GDK_PIXBUF_REQUIRED,,
-AC_MSG_ERROR([*** gdk_pixbuf $GDK_PIXBUF_REQUIRED or better is required.]))
-
-AC_SUBST(GDK_PIXBUF_REQUIRED)
-dnl ====================================
-dnl = end gdk-pixbuf checks
 dnl ====================================
 
 dnl ====================================
@@ -604,17 +485,17 @@ dnl =======================
 
 dnl Checks for i18n
 ALL_LINGUAS="az ca cs da de el en_GB es fi fr ga gl hu it ja ko lt lv nl nn no pl pt pt_BR ro ru sk sl sv ta tr uk zh_TW"
-AM_GNOME_GETTEXT
-# AM_GNOME_GETTEXT above substs $DATADIRNAME
+AM_GNOME2_GETTEXT
+# AM_GNOME2_GETTEXT above substs $DATADIRNAME
 # this is the directory where the *.{mo,gmo} files are installed
 gnomelocaledir='${prefix}/${DATADIRNAME}/locale'
 AC_SUBST(gnomelocaledir)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
-AC_C_BIGENDIAN
 
+dnl
 dnl Turn on the additional warnings last, so -Werror doesn't affect other tests.
+dnl
 
 AC_ARG_ENABLE(more-warnings,
 [  --enable-more-warnings  Maximum compiler warnings],
@@ -655,52 +536,6 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 else
 	AC_MSG_RESULT(no)
 fi
-
-dnl
-dnl Define the build message (used in the Nautilus about box)
-dnl CVSVERSION overrides
-dnl
-
-NAUTILUS_BUILD_MESSAGE=""
-AC_ARG_WITH(build-message, [  --with-build-message=MESSAGE		Build (about box) message], NAUTILUS_BUILD_MESSAGE=$withval)
-
-if test -n "$is_cvs_version"
-then
-	NAUTILUS_BUILD_MESSAGE="Development Build"
-fi
-
-AC_DEFINE_UNQUOTED(NAUTILUS_BUILD_MESSAGE, "$NAUTILUS_BUILD_MESSAGE")
-
-NAUTILUS_SOURCE_DIRECTORY=`(cd $srcdir && pwd)`
-AC_DEFINE_UNQUOTED(NAUTILUS_SOURCE_DIRECTORY, "$NAUTILUS_SOURCE_DIRECTORY")
-
-dnl
-dnl Define the build timestamp if given in the environment.
-dnl
-if test -n "$EAZEL_BUILD_TIMESTAMP"
-then
-  AC_DEFINE_UNQUOTED(EAZEL_BUILD_TIMESTAMP,"$EAZEL_BUILD_TIMESTAMP")
-fi
-
-dnl Flags for libraries that Nautilus depends on
-NAUTILUS_DEPENDENCY_CFLAGS="`$GNOME_CONFIG --cflags bonobo bonobox bonobox_print gnomecanvaspixbuf xml vfs eel`"
-NAUTILUS_DEPENDENCY_LIBS="`$GNOME_CONFIG --libs bonobo bonobox bonobox_print gnomecanvaspixbuf xml vfs eel`"
-AC_SUBST(NAUTILUS_DEPENDENCY_CFLAGS)
-AC_SUBST(NAUTILUS_DEPENDENCY_LIBS)
-
-dnl Flags for modules that depend on Nautilus
-NAUTILUS_LIBDIR='-L${libdir}'
-NAUTILUS_INCLUDEDIR="-I${includedir} ${NAUTILUS_DEPENDENCY_CFLAGS}"
-NAUTILUS_LIBS="-lnautilus ${NAUTILUS_DEPENDENCY_LIBS}"
-AC_SUBST(NAUTILUS_LIBDIR)
-AC_SUBST(NAUTILUS_INCLUDEDIR)
-AC_SUBST(NAUTILUS_LIBS)
-
-dnl Flags for libraries that private parts of Nautilus depend on (like components)
-NAUTILUS_PRIVATE_CFLAGS="${NAUTILUS_DEPENDENCY_CFLAGS}"
-NAUTILUS_PRIVATE_LIBS="${NAUTILUS_DEPENDENCY_LIBS}"
-AC_SUBST(NAUTILUS_PRIVATE_CFLAGS)
-AC_SUBST(NAUTILUS_PRIVATE_LIBS)
 
 AC_OUTPUT([
 nautilus.spec

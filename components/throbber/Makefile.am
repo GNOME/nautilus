@@ -22,15 +22,15 @@ nautilus_throbber_LDADD =			\
 	$(NAUTILUS_PRIVATE_LIBS) \
 	$(NULL)
 
-oafdir = $(datadir)/oaf
-oaf_in_files =					\
-	Nautilus_Control_throbber.oaf.in	\
+serverdir = $(datadir)/server
+server_in_files =					\
+	Nautilus_Control_throbber.server.in	\
 	$(NULL)
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+server_DATA = $(server_in_files:.server.in=.server)
 
-@XML_I18N_MERGE_OAF_RULE@
+@INTLTOOL_SERVER_RULE@
 
 EXTRA_DIST = 			\
-	$(oaf_in_files)		\
-	$(oaf_DATA)		\
+	$(server_in_files)		\
+	$(server_DATA)		\
 	$(NULL)

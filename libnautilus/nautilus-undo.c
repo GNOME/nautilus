@@ -30,7 +30,7 @@
 #include "nautilus-undo-transaction.h"
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
-#include <libgnomeui/gnome-canvas.h>
+#include <libgnomecanvas/gnome-canvas.h>
 
 #define NAUTILUS_UNDO_MANAGER_DATA "Nautilus undo manager"
 

@@ -36,6 +36,7 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtktext.h>
+#include <string.h>
 
 typedef void (* EditableFunction) (GtkEditable *editable);
 
@@ -70,7 +71,7 @@ do_with_fake_current_event (EditableFunction function,
 	fake_widget = gtk_invisible_new ();
 	gtk_signal_connect_object (GTK_OBJECT (fake_widget),
 				   "client_event",
-				   function,
+				   G_CALLBACK (function),
 				   GTK_OBJECT (editable));
 	gtk_widget_realize (fake_widget);
 
@@ -142,9 +143,11 @@ select_all (GtkEditable *editable)
 	 * passed in to set_position.
 	 */
 	end = -1;
+#if GNOME2_CONVERSION_COMPLETE
 	if (GTK_IS_TEXT (editable)) {
 		end = gtk_text_get_length (GTK_TEXT (editable));
 	}
+#endif
 	
 	gtk_editable_set_position (editable, end);
 	gtk_editable_select_region (editable, 0, end);
@@ -283,8 +286,7 @@ merge_in_clipboard_menu_items (GtkObject *widget_as_object,
 	container = target_data->container;
 	add_selection_callback = target_data->editable_shares_selection_changes;
 
-	bonobo_ui_component_set_container (ui,
-					   container);
+	bonobo_ui_component_set_container (ui, container, NULL);
 	bonobo_ui_component_freeze (ui, NULL);
 	bonobo_ui_util_set_ui (ui,
 			       DATADIR,
@@ -293,7 +295,7 @@ merge_in_clipboard_menu_items (GtkObject *widget_as_object,
 	
 	if (add_selection_callback) {
 		gtk_signal_connect_after (GTK_OBJECT (widget_as_object), "selection_changed",
-					  selection_changed_callback, target_data);
+					  G_CALLBACK (selection_changed_callback), target_data);
 		selection_changed_callback (GTK_WIDGET (widget_as_object),
 					    target_data);
 			
@@ -316,11 +318,11 @@ merge_out_clipboard_menu_items (GtkObject *widget_as_object,
 	g_assert (target_data != NULL);
 	ui = BONOBO_UI_COMPONENT (target_data->component);
 	selection_callback_was_added = target_data->editable_shares_selection_changes;
-	bonobo_ui_component_unset_container (ui);
+	bonobo_ui_component_unset_container (ui, NULL);
 
 	if (selection_callback_was_added) {
 		gtk_signal_disconnect_by_func (GTK_OBJECT (widget_as_object),
-					       selection_changed_callback,
+					       G_CALLBACK (selection_changed_callback),
 					       target_data);
 	}
 	set_clipboard_items_are_merged_in (widget_as_object, FALSE);
@@ -362,6 +364,7 @@ selection_changed_callback (GtkWidget *widget,
 	TargetCallbackData *target_data;
 	BonoboUIComponent *component;
 	GtkEditable *editable;
+	int start, end;
 
 	target_data = (TargetCallbackData *) callback_data;
 	g_assert (target_data != NULL);
@@ -369,7 +372,7 @@ selection_changed_callback (GtkWidget *widget,
 	component = target_data->component;
 	editable = GTK_EDITABLE (widget);
 
-	if (editable->selection_start_pos != editable->selection_end_pos) {
+	if (gtk_editable_get_selection_bounds (editable, &start, &end) && start != end) {
 		set_clipboard_menu_items_sensitive (component);
 	} else {
 		set_clipboard_menu_items_insensitive (component);
@@ -389,7 +392,7 @@ target_destroy_callback (GtkObject *object,
 	/* Disconnect the component from the container, and then free
 	 * everything.
 	 */
-	bonobo_ui_component_unset_container (target_data->component);
+	bonobo_ui_component_unset_container (target_data->component, NULL);
 	bonobo_object_unref (BONOBO_OBJECT (target_data->component));
 	bonobo_object_release_unref (target_data->container, NULL);
 	g_free (target_data);
@@ -445,12 +448,12 @@ nautilus_clipboard_set_up_editable (GtkEditable *target,
 		 shares_selection_changes);
 
 	gtk_signal_connect_after (GTK_OBJECT (target), "focus_in_event",
-				  focus_changed_callback, target_data);
+				  G_CALLBACK (focus_changed_callback), target_data);
 	gtk_signal_connect_after (GTK_OBJECT (target), "focus_out_event",
-				  focus_changed_callback, target_data);
+				  G_CALLBACK (focus_changed_callback), target_data);
 
 	gtk_signal_connect (GTK_OBJECT (target), "destroy",
-			    target_destroy_callback, target_data);
+			    G_CALLBACK (target_destroy_callback), target_data);
 	
 	/* Call the focus changed callback once to merge if the window is
 	 * already in focus.
@@ -481,7 +484,7 @@ first_focus_callback (GtkWidget *widget,
 	/* Do the rest of the setup. */
 	nautilus_clipboard_set_up_editable
 		(GTK_EDITABLE (widget),
-		 bonobo_control_get_remote_ui_container (BONOBO_CONTROL (callback_data)),
+		 bonobo_control_get_remote_ui_container (BONOBO_CONTROL (callback_data), NULL),
 		 widget_was_set_up_with_selection_sensitivity (widget));
 }
 
@@ -504,7 +507,7 @@ nautilus_clipboard_set_up_editable_in_control (GtkEditable *target,
 	if (GTK_WIDGET_HAS_FOCUS (target)) {
 		nautilus_clipboard_set_up_editable
 			(target,
-			 bonobo_control_get_remote_ui_container (control),
+			 bonobo_control_get_remote_ui_container (control, NULL),
 			 shares_selection_changes);
 		return;
 	}
@@ -521,11 +524,11 @@ nautilus_clipboard_set_up_editable_in_control (GtkEditable *target,
 			     GINT_TO_POINTER (shares_selection_changes));
 	gtk_signal_connect (GTK_OBJECT (target),
 			    "focus_in_event",
-			    first_focus_callback,
+			    G_CALLBACK (first_focus_callback),
 			    control);
 	gtk_signal_connect (GTK_OBJECT (target),
 			    "destroy",
-			    control_destroyed_callback,
+			    G_CALLBACK (control_destroyed_callback),
 			    control);
 }
 
@@ -534,9 +537,9 @@ disconnect_set_up_in_control_handlers (GtkObject *object,
 				       gpointer callback_data)
 {
 	gtk_signal_disconnect_by_func (object,
-				       first_focus_callback,
+				       G_CALLBACK (first_focus_callback),
 				       callback_data);
 	gtk_signal_disconnect_by_func (object,
-				       control_destroyed_callback,
+				       G_CALLBACK (control_destroyed_callback),
 				       callback_data);
 }

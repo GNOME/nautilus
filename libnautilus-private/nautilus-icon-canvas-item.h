@@ -31,7 +31,7 @@
 #include "nautilus-icon-factory.h"
 #include <eel/eel-scalable-font.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_ICON_CANVAS_ITEM \
 	(nautilus_icon_canvas_item_get_type ())
@@ -93,6 +93,6 @@ void        nautilus_icon_canvas_item_set_smooth_font          (NautilusIconCanv
 void        nautilus_icon_canvas_item_set_smooth_font_size     (NautilusIconCanvasItem       *item,
 								int                           font_size);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* NAUTILUS_ICON_CANVAS_ITEM_H */

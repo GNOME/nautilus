@@ -7,14 +7,14 @@ INCLUDES =					\
 	$(NAUTILUS_PRIVATE_CFLAGS) \
 	$(NULL)
 
-oafdir = $(datadir)/oaf
-oaf_in_files =						\
-	Nautilus_ComponentAdapterFactory_std.oaf.in	\
+serverdir = $(datadir)/server
+server_in_files =						\
+	Nautilus_ComponentAdapterFactory_std.server.in	\
 	$(NULL)
 
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+server_DATA = $(server_in_files:.server.in=.server)
 
-@XML_I18N_MERGE_OAF_RULE@
+@INTLTOOL_SERVER_RULE@
 
 bin_PROGRAMS =					\
 	nautilus-adapter			\
@@ -54,5 +54,5 @@ nautilus_adapter_LDADD =							\
 	$(NAUTILUS_PRIVATE_LIBS)						\
 	$(NULL)
 
-EXTRA_DIST = $(oaf_in_files) $(oaf_DATA)
+EXTRA_DIST = $(server_in_files) $(server_DATA)
 

@@ -27,7 +27,7 @@
 #include <bonobo/bonobo-stream.h>
 #include <libgnomevfs/gnome-vfs.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 struct BonoboStreamVFS;
 typedef struct BonoboStreamVFS BonoboStreamVFS;
@@ -58,6 +58,6 @@ BonoboStream *  bonobo_stream_vfs_construct    (BonoboStreamVFS         *stream,
 BonoboStream *  bonobo_stream_vfs_open         (const char              *uri, 
 						Bonobo_Storage_OpenMode  mode);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* _BONOBO_STREAM_VFS_H_ */

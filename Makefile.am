@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.shared
 
-@XML_I18N_MERGE_DESKTOP_RULE@
+@INTLTOOL_DESKTOP_RULE@
 
 DESKTOP_IN_FILES=nautilus.desktop.in nautilus-help.desktop.in
 DESKTOP_FILES=$(DESKTOP_IN_FILES:.desktop.in=.desktop)
@@ -12,19 +12,22 @@ endif
 SUBDIRS =			\
 	data 			\
 	icons 			\
-	cut-n-paste-code 	\
 	libnautilus 		\
 	libnautilus-adapter	\
 	libnautilus-private 	\
+	src 			\
+	po 			\
+	$(NULL)
+
+XXX = \
+	cut-n-paste-code 	\
+	components		\
 	helper-utilities 	\
 	helper-scripts		\
-	src 			\
-	components		\
 	$(APPLETS_SUBDIRS)	\
 	test 			\
 	user-guide		\
 	help			\
-	po 			\
 	omf-install		\
 	$(NULL)
 
@@ -43,16 +46,15 @@ EXTRA_DIST=					\
 	nautilus-launch-icon.png		\
 	gnome-starthere-96.png			\
 	gnome-starthere.png			\
-	nautilusConf.sh.in			\
-	nautilus-config.in			\
 	ChangeLog-20000414			\
 	ChangeLog-20000625			\
 	ChangeLog-20000831			\
 	ChangeLog-20001018			\
-	xml-i18n-extract.in			\
-	xml-i18n-merge.in			\
-	xml-i18n-update.in			\
+	intltool-extract.in			\
+	intltool-merge.in			\
+	intltool-update.in			\
 	Makefile.shared				\
+	add-include-prefix			\
 	$(DESKTOP_IN_FILES)			\
 	$(DESKTOP_FILES)			\
 	$(NULL)

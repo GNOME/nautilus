@@ -27,7 +27,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnomeui/gnome-druid.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_DRUID            (nautilus_druid_get_type ())
 #define NAUTILUS_DRUID(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_DRUID, NautilusDruid))
@@ -52,6 +52,6 @@ struct NautilusDruidClass
 GtkType    nautilus_druid_get_type              (void);
 GtkWidget *nautilus_druid_new                   (void);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* NAUTILUS_DRUID_H */

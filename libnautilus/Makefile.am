@@ -6,7 +6,7 @@ INCLUDES=\
 	-I$(builddir) \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
-	$(NAUTILUS_DEPENDENCY_CFLAGS) \
+	$(LIBNAUTILUS_CFLAGS) \
 	-DDATADIR=\""$(datadir)"\" \
 	$(NULL)
 
@@ -56,13 +56,13 @@ libnautilus_la_SOURCES=					\
 
 $(nautilus_view_component_idl_sources): nautilus_view_component_idl_stamp
 nautilus_view_component_idl_stamp: nautilus-view-component.idl
-	$(ORBIT_IDL) $(IDL_CFLAGS) --define=NAUTILUS_VIEW_COMPONENT_COMPILATION $(srcdir)/nautilus-view-component.idl
-	touch nautilus_view_component_idl_stamp
+	$(ORBIT_IDL) $(LIBNAUTILUS_IDL_INCLUDES) --define=NAUTILUS_VIEW_COMPONENT_COMPILATION $<
+	touch $@
 
 $(nautilus_distributed_undo_idl_sources): nautilus_distributed_undo_idl_stamp
 nautilus_distributed_undo_idl_stamp: nautilus-distributed-undo.idl
-	$(ORBIT_IDL) $(IDL_CFLAGS) $(srcdir)/nautilus-distributed-undo.idl
-	touch nautilus_distributed_undo_idl_stamp
+	$(ORBIT_IDL) $(LIBNAUTILUS_IDL_INCLUDES) $<
+	touch $@
 
 $(libnautilus_la_OBJECTS): nautilus_view_component_idl_stamp nautilus_distributed_undo_idl_stamp
 

@@ -34,11 +34,11 @@ libnautilus_tree_view_la_SOURCES =         \
 	libmain.c                          \
 	$(NULL)
 
-oafdir = $(datadir)/oaf
-oaf_in_files = Nautilus_View_tree.oaf.in
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+serverdir = $(datadir)/server
+server_in_files = Nautilus_View_tree.server.in
+server_DATA = $(server_in_files:.server.in=.server)
 
-@XML_I18N_MERGE_OAF_RULE@
+@INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST = $(oaf_in_files) $(oaf_DATA)
+EXTRA_DIST = $(server_in_files) $(server_DATA)
 

@@ -32,7 +32,7 @@
 #include <gtk/gtkwindow.h>
 #include <libgnome/gnome-defs.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_THEME_SELECTOR (nautilus_theme_selector_get_type ())
 #define NAUTILUS_THEME_SELECTOR(obj) (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_THEME_SELECTOR, NautilusThemeSelector))
@@ -64,6 +64,6 @@ void       nautilus_theme_selector_set_selected_theme (NautilusThemeSelector    
 void       nautilus_theme_selector_set_parent_window  (NautilusThemeSelector       *theme_selector,
 						       GtkWindow                   *parent_window);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* NAUTILUS_THEME_SELECTOR_H */

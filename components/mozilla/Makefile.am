@@ -47,19 +47,19 @@ nautilus_mozilla_content_view_LDFLAGS = \
 	$(MOZILLA_COMPONENT_RPATH_FLAGS) \
 	$(NULL)
 
-oafdir = $(datadir)/oaf
+serverdir = $(datadir)/server
 
-oaf_in_files =					\
-	Nautilus_View_mozilla.oaf.in		\
+server_in_files =					\
+	Nautilus_View_mozilla.server.in		\
 	$(NULL)
 
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+server_DATA = $(server_in_files:.server.in=.server)
 
-@XML_I18N_MERGE_OAF_RULE@
+@INTLTOOL_SERVER_RULE@
 
 uidir = $(datadir)/gnome/ui
 ui_DATA =					\
 	nautilus-mozilla-ui.xml			\
 	$(NULL)
 
-EXTRA_DIST = $(oaf_DATA) $(ui_DATA) $(oaf_in_files)
+EXTRA_DIST = $(server_DATA) $(ui_DATA) $(server_in_files)

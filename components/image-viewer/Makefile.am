@@ -18,14 +18,14 @@ nautilus_image_view_LDADD = 			\
 	$(NAUTILUS_PRIVATE_LIBS) \
 	$(NULL)
 
-oafdir = $(datadir)/oaf
+serverdir = $(datadir)/server
 
-oaf_in_files =					\
-	Nautilus_View_image.oaf.in		\
+server_in_files =					\
+	Nautilus_View_image.server.in		\
 	$(NULL)
 
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+server_DATA = $(server_in_files:.server.in=.server)
 
-@XML_I18N_MERGE_OAF_RULE@
+@INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST=$(oaf_DATA) $(oaf_in_files)
+EXTRA_DIST=$(server_DATA) $(server_in_files)

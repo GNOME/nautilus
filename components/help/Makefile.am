@@ -40,11 +40,11 @@ modulesdir = $(libdir)/vfs/modules
 
 libvfs_help_la_SOURCES = help-method.c help-method.h
 libvfs_help_la_LDFLAGS = $(module_flags)
-libvfs_help_la_LIBADD  = $(GLIB_LIBS)
+libvfs_help_la_LIBADD  = 
 
 
 test_help_method_SOURCES = test-help-method.c
-test_help_method_LIBASS =  $(GLIB_LIBS)
+test_help_method_LDADD = 
 
 
 modulesconfdir=$(sysconfdir)/vfs/modules
@@ -53,13 +53,13 @@ modulesconf_DATA = help-methods.conf
 hyperboladir=$(datadir)/nautilus/components/hyperbola
 hyperbola_DATA=topleveldocs.xml
 
-oafdir = $(datadir)/oaf
-oaf_in_files =					\
-	Nautilus_View_help.oaf.in		\
+serverdir = $(datadir)/server
+server_in_files =					\
+	Nautilus_View_help.server.in		\
 	$(NULL)
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+server_DATA = $(server_in_files:.server.in=.server)
 
-@XML_I18N_MERGE_OAF_RULE@
+@INTLTOOL_SERVER_RULE@
 
 
-EXTRA_DIST=pages.map $(oaf_in_files) $(oaf_DATA) help-methods.conf topleveldocs.xml
+EXTRA_DIST=pages.map $(server_in_files) $(server_DATA) help-methods.conf topleveldocs.xml

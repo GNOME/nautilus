@@ -10,9 +10,7 @@ INCLUDES =						\
 	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\"	\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
-	$(GNOMEUI_CFLAGS)                       	\
-	$(BONOBO_CFLAGS)				\
-	$(OAF_CFLAGS)
+	$(MODULE_CFLAGS)
 
 bin_PROGRAMS =						\
 	nautilus-sample-content-view
@@ -24,20 +22,17 @@ nautilus_sample_content_view_SOURCES =			\
 
 nautilus_sample_content_view_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
-	$(BONOBO_LIBS)					\
-	$(BONOBOX_LIBS)					\
-	$(VFS_LIBS)					\
-	$(OAF_LIBS)
+	$(MODULE_LIBS)
 
 uidir = $(datadir)/gnome/ui
 ui_DATA = nautilus-sample-content-view-ui.xml
 
-oafdir = $(datadir)/oaf
-oaf_in_files =						\
-	Nautilus_View_sample.oaf.in			\
+serverdir = $(datadir)/server
+server_in_files =						\
+	Nautilus_View_sample.server.in			\
 	$(NULL)
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+server_DATA = $(server_in_files:.server.in=.server)
 
-@XML_I18N_MERGE_OAF_RULE@
+@INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST = $(oaf_in_files) $(oaf_DATA) $(ui_DATA) 
+EXTRA_DIST = $(server_in_files) $(server_DATA) $(ui_DATA) 

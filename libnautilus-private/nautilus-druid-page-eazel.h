@@ -28,7 +28,7 @@
 #include <libgnomeui/gnome-druid-page.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_DRUID_PAGE_EAZEL            (nautilus_druid_page_eazel_get_type ())
 #define NAUTILUS_DRUID_PAGE_EAZEL(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_DRUID_PAGE_EAZEL, NautilusDruidPageEazel))
@@ -95,6 +95,6 @@ void       nautilus_druid_page_eazel_set_sidebar_image (NautilusDruidPageEazel *
 void       nautilus_druid_page_eazel_set_background_image(NautilusDruidPageEazel *druid_page_eazel,
 							  GdkPixbuf          *background_image);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* NAUTILUS_DRUID_PAGE_EAZEL_H */

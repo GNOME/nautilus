@@ -34,11 +34,8 @@
 #include <bonobo/bonobo-main.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-init.h>
 #include <libgnomevfs/gnome-vfs-init.h>
-#include <liboaf/liboaf.h>
 #include <gdk/gdkx.h>
 #include <X11/Xlib.h>
 #include <stdlib.h>

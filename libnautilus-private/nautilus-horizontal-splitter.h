@@ -28,7 +28,7 @@
 #include <libgnome/gnome-defs.h>
 #include "e-hpaned.h"
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_HORIZONTAL_SPLITTER            (nautilus_horizontal_splitter_get_type ())
 #define NAUTILUS_HORIZONTAL_SPLITTER(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_HORIZONTAL_SPLITTER, NautilusHorizontalSplitter))
@@ -55,6 +55,6 @@ void	   nautilus_horizontal_splitter_collapse	(NautilusHorizontalSplitter *split
 void	   nautilus_horizontal_splitter_expand		(NautilusHorizontalSplitter *splitter);
 void	   nautilus_horizontal_splitter_toggle_position	(NautilusHorizontalSplitter *splitter);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* NAUTILUS_HORIZONTAL_SPLITTER_H */

@@ -62,17 +62,17 @@ nautilus_music_view_LDADD =			\
 	$(NAUTILUS_PRIVATE_LIBS) \
 	$(NULL)
 
-oafdir = $(datadir)/oaf
+serverdir = $(datadir)/server
 
-oaf_in_files =					\
-	Nautilus_View_music.oaf.in		\
+server_in_files =					\
+	Nautilus_View_music.server.in		\
 	$(NULL)
 
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+server_DATA = $(server_in_files:.server.in=.server)
 
-@XML_I18N_MERGE_OAF_RULE@
+@INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST=$(oaf_DATA) $(oaf_in_files) $(platform_source) \
+EXTRA_DIST=$(server_DATA) $(server_in_files) $(platform_source) \
 	configure.c \
 	fileinfo.c \
 	getbits.c

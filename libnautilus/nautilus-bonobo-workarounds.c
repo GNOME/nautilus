@@ -79,42 +79,6 @@ typedef struct {
 	guint destroy_handler_id;
 } DestroyLaterData;
 
-POA_Bonobo_Unknown__epv *
-nautilus_bonobo_object_get_epv (void)
-{
-	static POA_Bonobo_Unknown__epv bonobo_object_epv;
-	static gboolean set_up;
-	POA_Bonobo_Unknown__epv *epv;
-
-	/* Make our own copy. */
- 	if (!set_up) {
-		epv = bonobo_object_get_epv ();
-		bonobo_object_epv = *epv;
-		g_free (epv);
-		set_up = TRUE;
-	}
-
-	return &bonobo_object_epv;
-}
-
-POA_Bonobo_Stream__epv *
-nautilus_bonobo_stream_get_epv (void)
-{
-	static POA_Bonobo_Stream__epv bonobo_stream_epv;
-	static gboolean set_up;
-	POA_Bonobo_Stream__epv *epv;
-
-	/* Make our own copy. */
- 	if (!set_up) {
-		epv = bonobo_stream_get_epv ();
-		bonobo_stream_epv = *epv;
-		g_free (epv);
-		set_up = TRUE;
-	}
-
-	return &bonobo_stream_epv;
-}
-
 /* The following is the most evil function in the world. But on the
  * other hand, it works and prevents us from having tons of lingering
  * processes when Nautilus crashes. It's unsafe to call it if there
@@ -245,9 +209,9 @@ nautilus_bonobo_object_force_destroy_later (BonoboObject *object)
 	data->timeout_id = gtk_timeout_add
 		(MINIMIZE_RACE_CONDITIONS_DELAY,
 		 destroy_later_callback, data);
-	data->destroy_handler_id = gtk_signal_connect
-		(GTK_OBJECT (object), "destroy",
-		 destroyed_before_timeout_callback, data);
+	data->destroy_handler_id = g_signal_connect
+		(G_OBJECT (object), "destroy",
+		 G_CALLBACK (destroyed_before_timeout_callback), data);
 }
 
 /* Same as bonobo_unknown_ping, but this one works. */
@@ -380,9 +344,9 @@ nautilus_bonobo_object_call_when_remote_object_disappears (BonoboObject *object,
 			 remote_check_timed_callback, data);
 	}
 	if (data->destroy_handler_id == 0) {
-		data->destroy_handler_id = gtk_signal_connect
-			(GTK_OBJECT (object), "destroy",
-			 remote_check_destroy_callback, data);
+		data->destroy_handler_id = g_signal_connect
+			(G_OBJECT (object), "destroy",
+			 G_CALLBACK (remote_check_destroy_callback), data);
 	}
 
 	gtk_object_set_data (GTK_OBJECT (object), REMOTE_CHECK_DATA_KEY, data);

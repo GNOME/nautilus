@@ -5,7 +5,6 @@ INCLUDES =\
 	-DDATADIR=\""$(datadir)"\" \
 	-DBINDIR=\""$(bindir)"\" \
 	-I$(top_srcdir) \
-	$(APPLETS_CFLAGS) \
 	$(NAUTILUS_PRIVATE_CFLAGS) \
 	$(NULL)
 
@@ -18,7 +17,6 @@ nautilus_preferences_applet_SOURCES =\
 nautilus_preferences_applet_LDADD =	\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la \
-	$(APPLETS_LIBS) \
 	$(NAUTILUS_PRIVATE_LIBS) \
 	$(NULL)
 

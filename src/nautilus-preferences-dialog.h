@@ -27,10 +27,10 @@
 
 #include <libnautilus-private/nautilus-global-preferences.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 void nautilus_preferences_dialog_show (void);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* NAUTILUS_PREFERENCES_DIALOG_H */

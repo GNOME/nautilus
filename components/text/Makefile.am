@@ -27,14 +27,14 @@ nautilus_text_view_LDADD =			\
 uidir = $(datadir)/gnome/ui
 ui_DATA = nautilus-text-view-ui.xml
 
-oafdir = $(datadir)/oaf
-oaf_in_files =					\
-	Nautilus_View_text.oaf.in		\
+serverdir = $(datadir)/server
+server_in_files =					\
+	Nautilus_View_text.server.in		\
 	$(NULL)
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+server_DATA = $(server_in_files:.server.in=.server)
 
-@XML_I18N_MERGE_OAF_RULE@
+@INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST = $(oaf_in_files) $(oaf_DATA) $(ui_DATA) 
+EXTRA_DIST = $(server_in_files) $(server_DATA) $(ui_DATA) 
 
 

@@ -9,15 +9,15 @@ INCLUDES =						\
 	$(NAUTILUS_PRIVATE_CFLAGS) \
 	$(NULL)
 
-oafdir = $(datadir)/oaf
+serverdir = $(datadir)/server
 
-oaf_in_files =					\
-	Nautilus_View_hardware.oaf.in		\
+server_in_files =					\
+	Nautilus_View_hardware.server.in		\
 	$(NULL)
 
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+server_DATA = $(server_in_files:.server.in=.server)
 
-@XML_I18N_MERGE_OAF_RULE@
+@INTLTOOL_SERVER_RULE@
 
 bin_PROGRAMS =					\
 	nautilus-hardware-view
@@ -33,5 +33,5 @@ nautilus_hardware_view_LDADD =			\
 	$(NAUTILUS_PRIVATE_LIBS) \
 	$(NULL)
 
-EXTRA_DIST = $(oaf_DATA) $(oaf_in_files)
+EXTRA_DIST = $(server_DATA) $(server_in_files)
 

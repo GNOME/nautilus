@@ -121,11 +121,11 @@ $(nautilus_OBJECTS): nautilus_shell_interface_idl_stamp
 
 TESTS=check-nautilus
 
-oafdir = $(datadir)/oaf
-oaf_in_files = Nautilus_shell.oaf.in
-oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+serverdir = $(datadir)/server
+server_in_files = Nautilus_shell.server.in
+server_DATA = $(server_in_files:.server.in=.server)
 
-@XML_I18N_MERGE_OAF_RULE@
+@INTLTOOL_SERVER_RULE@
 
 uidir = $(datadir)/gnome/ui
 ui_DATA = 					\
@@ -138,8 +138,8 @@ CLEANFILES = \
 	$(NULL)
 
 EXTRA_DIST =					\
-	$(oaf_in_files)				\
-	$(oaf_DATA)				\
+	$(server_in_files)				\
+	$(server_DATA)				\
 	$(ui_DATA)				\
 	check-nautilus				\
 	nautilus-shell-interface.idl		\

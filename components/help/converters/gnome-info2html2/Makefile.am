@@ -1,10 +1,7 @@
 ## Process this file with automake to produce Makefile.in.
 
-INCLUDES = 			\
-	$(GNOMEUI_CFLAGS)	
-
-LDADD = \
-	$(GNOME_LIBS) $(Z_LIBS) $(BZ_LIBS)
+INCLUDES = 
+LDADD = 
 
 bin_PROGRAMS = gnome-info2html2
 

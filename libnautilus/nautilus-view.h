@@ -32,7 +32,7 @@
 #include <libnautilus/nautilus-view-component.h>
 #include <bonobo/bonobo-control.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_VIEW	      (nautilus_view_get_type ())
 #define NAUTILUS_VIEW(obj)	      (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_VIEW, NautilusView))
@@ -115,6 +115,6 @@ NautilusView *     nautilus_view_construct                            (NautilusV
 NautilusView *     nautilus_view_construct_from_bonobo_control        (NautilusView           *view,
 								       BonoboControl          *bonobo_control);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* NAUTILUS_VIEW_H */

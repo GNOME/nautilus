@@ -28,7 +28,7 @@
 
 #include <eel/eel-preferences.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 /* Which theme is active */
 #define NAUTILUS_PREFERENCES_THEME				"preferences/theme"
@@ -198,6 +198,6 @@ struct EelScalableFont *nautilus_global_preferences_get_default_smooth_bold_font
 void                    nautilus_global_preferences_set_default_folder_viewer    (const char *iid);
 
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* NAUTILUS_PREFS_GLOBAL_H */

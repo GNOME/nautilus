@@ -1,12 +1,9 @@
 ## Process this file with automake to produce Makefile.in.
 
 INCLUDES = 						\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
-	$(GNOMEUI_CFLAGS)					\
-	$(XML_CFLAGS)
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"
 
-LDADD = \
-	$(GNOME_LIBS) $(XML_LIBS)
+LDADD = 
 
 bin_PROGRAMS = gnome-db2html2
 

@@ -30,7 +30,7 @@
 #include <libgnome/gnome-defs.h>
 #include <gtk/gtkentry.h>
 
-BEGIN_GNOME_DECLS
+G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_ENTRY \
 	(nautilus_entry_get_type ())
@@ -67,6 +67,6 @@ void        nautilus_entry_select_all_at_idle       (NautilusEntry *entry);
 void        nautilus_entry_set_special_tab_handling (NautilusEntry *entry,
 						     gboolean       special_tab_handling);
 
-END_GNOME_DECLS
+G_END_DECLS
 
 #endif /* NAUTILUS_ENTRY_H */
