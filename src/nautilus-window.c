@@ -35,7 +35,6 @@
 #include "nautilus-information-panel.h"
 #include "nautilus-main.h"
 #include "nautilus-signaller.h"
-#include "nautilus-switchable-navigation-bar.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-zoom-control.h"
 #include <bonobo/bonobo-exception.h>
@@ -441,14 +440,6 @@ void
 nautilus_window_go_home (NautilusWindow *window)
 {
 	char *home_uri;
-
-#if !NEW_UI_COMPLETE
-	/* Hrm, this probably belongs in any location switch, not 
-	 * just when going home. */
-	if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
-		nautilus_navigation_window_set_search_mode (NAUTILUS_NAVIGATION_WINDOW (window), FALSE);
-	}
-#endif
 
 	home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
 	

@@ -37,7 +37,6 @@
 #include "nautilus-location-dialog.h"
 #include "nautilus-main.h"
 #include "nautilus-signaller.h"
-#include "nautilus-switchable-navigation-bar.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-zoom-control.h"
 #include <bonobo/bonobo-exception.h>

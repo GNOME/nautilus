@@ -36,7 +36,6 @@
 #include "nautilus-file-management-properties.h"
 #include "nautilus-property-browser.h"
 #include "nautilus-signaller.h"
-#include "nautilus-switchable-navigation-bar.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include <bonobo/bonobo-ui-util.h>
@@ -102,38 +101,6 @@ static void                  schedule_refresh_bookmarks_menu               (Naut
 static void                  edit_bookmarks                                (NautilusNavigationWindow   *window);
 static void                  add_bookmark_for_current_location             (NautilusNavigationWindow   *window);
 static void                  schedule_refresh_go_menu                      (NautilusWindow *window);
-
-#ifdef HAVE_MEDUSA
-static void
-file_menu_find_callback (BonoboUIComponent *component, 
-			 gpointer user_data, 
-			 const char *verb)
-{
-	NautilusWindow *window;
-
-	window = NAUTILUS_WINDOW (user_data);
-
-	if (!window->details->updating_bonobo_state) {
-		nautilus_window_show_location_bar_temporarily
-			(window, TRUE);
-	}
-}
-
-static void
-toolbar_toggle_find_mode_callback (BonoboUIComponent *component, 
-			             gpointer user_data, 
-			             const char *verb)
-{
-	NautilusWindow *window;
-
-	window = NAUTILUS_WINDOW (user_data);
-
-	if (!window->details->updating_bonobo_state) {
-		nautilus_window_show_location_bar_temporarily
-			(window, !nautilus_window_get_search_mode (window));
-	}
-}
-#endif
 
 static void
 file_menu_close_all_windows_callback (BonoboUIComponent *component, 
@@ -644,10 +611,6 @@ nautilus_navigation_window_initialize_menus_part_1 (NautilusNavigationWindow *na
 	NautilusWindow *window;
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("Close All Windows", file_menu_close_all_windows_callback),
-#ifdef HAVE_MEDUSA
-		BONOBO_UI_VERB ("Find", file_menu_find_callback),
-		BONOBO_UI_VERB ("Toggle Find Mode", toolbar_toggle_find_mode_callback),
-#endif
 		BONOBO_UI_VERB ("Back", go_menu_back_callback),
 		BONOBO_UI_VERB ("Forward", go_menu_forward_callback),
 		BONOBO_UI_VERB ("Clear History", go_menu_forget_history_callback),

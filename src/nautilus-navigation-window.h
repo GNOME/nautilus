@@ -77,9 +77,6 @@ struct _NautilusNavigationWindowClass {
 };
 
 GType    nautilus_navigation_window_get_type             (void);
-gboolean nautilus_navigation_window_get_search_mode      (NautilusNavigationWindow *window);
-void     nautilus_navigation_window_set_search_mode      (NautilusNavigationWindow *window,
-                                                          gboolean                  search_mode);
 void     nautilus_navigation_window_go_home              (NautilusNavigationWindow *window);
 void     nautilus_navigation_window_allow_back           (NautilusNavigationWindow *window,
                                                           gboolean                  allow);

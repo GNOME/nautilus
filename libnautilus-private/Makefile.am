@@ -146,8 +146,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-link.h \
 	nautilus-marshal.c \
 	nautilus-marshal.h \
-	nautilus-medusa-support.c \
-	nautilus-medusa-support.h \
 	nautilus-merged-directory.c \
 	nautilus-merged-directory.h \
 	nautilus-metadata.h \
@@ -165,8 +163,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-program-choosing.h \
 	nautilus-recent.h \
 	nautilus-recent.c \
-	nautilus-search-uri.c \
-	nautilus-search-uri.h \
 	nautilus-sidebar-provider.c \
 	nautilus-sidebar-provider.h \
 	nautilus-sidebar.c \

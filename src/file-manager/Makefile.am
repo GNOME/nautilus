@@ -38,8 +38,6 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-tree-model.h			\
 	fm-tree-view.c			\
 	fm-tree-view.h			\
-	nautilus-indexing-info.c	\
-	nautilus-indexing-info.h 	\
 	$(NULL)
 
 
@@ -49,7 +47,6 @@ ui_DATA =					\
 	nautilus-directory-view-ui.xml		\
 	nautilus-icon-view-ui.xml		\
 	nautilus-list-view-ui.xml		\
-	nautilus-search-list-view-ui.xml	\
 	$(NULL)
 
 EXTRA_DIST = $(ui_DATA)

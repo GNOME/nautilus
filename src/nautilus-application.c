@@ -33,7 +33,6 @@
 #include "file-manager/fm-desktop-icon-view.h"
 #include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-list-view.h"
-#include "file-manager/fm-search-list-view.h"
 #include "file-manager/fm-tree-view.h"
 #include "nautilus-information-panel.h"
 #include "nautilus-history-sidebar.h"

@@ -30,7 +30,6 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
-#include "nautilus-search-uri.h"
 #include "nautilus-thumbnails.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
@@ -1645,8 +1644,7 @@ allow_metafile (NautilusMetafile *metafile)
 	 * access inside gnome-vfs.
 	 */
 	uri = metafile->details->directory_uri;
-	if (nautilus_is_search_uri (uri)
-	    || eel_istr_has_prefix (uri, "ghelp:")
+	if (eel_istr_has_prefix (uri, "ghelp:")
 	    || eel_istr_has_prefix (uri, "gnome-help:")
 	    || eel_istr_has_prefix (uri, "help:")
 	    || eel_istr_has_prefix (uri, "info:")

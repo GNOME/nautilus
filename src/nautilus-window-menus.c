@@ -34,7 +34,6 @@
 #include "nautilus-file-management-properties.h"
 #include "nautilus-property-browser.h"
 #include "nautilus-signaller.h"
-#include "nautilus-switchable-navigation-bar.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-desktop-window.h"
@@ -282,38 +281,6 @@ have_burn_uri (void)
 	}
 	return res;
 }
-
-#ifdef HAVE_MEDUSA
-static void
-file_menu_find_callback (BonoboUIComponent *component, 
-			 gpointer user_data, 
-			 const char *verb)
-{
-	NautilusWindow *window;
-
-	window = NAUTILUS_WINDOW (user_data);
-
-	if (!window->details->updating_bonobo_state) {
-		nautilus_window_show_location_bar_temporarily
-			(window, TRUE);
-	}
-}
-
-static void
-toolbar_toggle_find_mode_callback (BonoboUIComponent *component, 
-			             gpointer user_data, 
-			             const char *verb)
-{
-	NautilusWindow *window;
-
-	window = NAUTILUS_WINDOW (user_data);
-
-	if (!window->details->updating_bonobo_state) {
-		nautilus_window_show_location_bar_temporarily
-			(window, !nautilus_window_get_search_mode (window));
-	}
-}
-#endif
 
 static void
 go_menu_location_callback (BonoboUIComponent *component,
@@ -651,10 +618,6 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB ("New Window", file_menu_new_window_callback),
 		BONOBO_UI_VERB ("Close", file_menu_close_window_callback),
 		BONOBO_UI_VERB ("Connect to Server", connect_to_server_callback),
-#ifdef HAVE_MEDUSA
-		BONOBO_UI_VERB ("Find", file_menu_find_callback),
-		BONOBO_UI_VERB ("Toggle Find Mode", toolbar_toggle_find_mode_callback),
-#endif
 		BONOBO_UI_VERB ("Undo", edit_menu_undo_callback),
 		BONOBO_UI_VERB ("Backgrounds and Emblems", backgrounds_and_emblems_callback),
 		BONOBO_UI_VERB ("Up", go_menu_up_callback),

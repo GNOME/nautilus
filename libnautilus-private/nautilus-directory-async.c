@@ -34,7 +34,6 @@
 #include "nautilus-link.h"
 #include "nautilus-marshal.h"
 #include "nautilus-metafile.h"
-#include "nautilus-search-uri.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <gtk/gtkmain.h>
@@ -1944,75 +1943,6 @@ mark_all_files_unconfirmed (NautilusDirectory *directory)
 		set_file_unconfirmed (file, TRUE);
 	}
 }
-
-#if GNOME2_HAS_MEDUSA
-
-static gboolean
-should_display_file_name (const char *name,
-			  GnomeVFSDirectoryFilterOptions options)
-{
-	/* Note that the name is URI-encoded, but this should not
-	 * affect the . or the ~.
-	 */
-
-	if ((options & GNOME_VFS_DIRECTORY_FILTER_NODOTFILES) != 0
-	    && nautilus_file_name_matches_hidden_pattern (name)) {
-		return FALSE;
-	}
-
-	if ((options & GNOME_VFS_DIRECTORY_FILTER_NOBACKUPFILES) != 0
-	    && nautilus_file_name_matches_backup_pattern (name)) {
-		return FALSE;
-	}
-	
-	/* Note that we don't bother to check for "." or ".." here, because
-	 * this function is used only for search results, which never include
-	 * those special files. If we later use this function more generally,
-	 * we might have to change this.
-	 */
-	return TRUE;
-}
-
-/* Filter search results based on user preferences. This must be done
- * differently than filtering other files because the search results
- * are encoded: the entire file path is encoded and stored as the file
- * name.
- */
-static gboolean
-filter_search_uri (const GnomeVFSFileInfo *info, gpointer data)
-{
-	GnomeVFSDirectoryFilterOptions options;
-	char *real_file_uri, *filename;
-	gboolean result;
-
-	options = GPOINTER_TO_INT (data);
-	
-	real_file_uri = nautilus_get_target_uri_from_search_result_name (info->name);
-	filename = g_path_get_basename (real_file_uri);
-	result = should_display_file_name (filename, options);	
-	g_free (real_file_uri);
-	g_free (filename);
-
-	return result;
-}
-
-static GnomeVFSDirectoryFilter *
-get_file_count_filter (NautilusDirectory *directory)
-{
-	if (nautilus_is_search_uri (directory->details->uri)) {
-		return gnome_vfs_directory_filter_new_custom
-			(filter_search_uri,
-			 GNOME_VFS_DIRECTORY_FILTER_NEEDS_NAME,
-			 GINT_TO_POINTER (get_filter_options_for_directory_count ()));
-	}
-
-	return gnome_vfs_directory_filter_new
-		(GNOME_VFS_DIRECTORY_FILTER_NONE,
-		 get_filter_options_for_directory_count (),
-		 NULL);
-}
-
-#endif
 
 static void
 read_dot_hidden_file (NautilusDirectory *directory)

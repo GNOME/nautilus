@@ -35,7 +35,7 @@
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-main.h"
 #include "nautilus-signaller.h"
-#include "nautilus-switchable-navigation-bar.h"
+#include "nautilus-location-bar.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-zoom-control.h"
 #include <bonobo/bonobo-exception.h>
@@ -103,11 +103,6 @@
 #define TOOLBAR_PATH            "/Toolbar"
 #define MENU_BAR_PATH           "/menu"
 
-#define NAUTILUS_COMMAND_TOGGLE_FIND_MODE	"/commands/Toggle Find Mode"
-
-#define COMMAND_PATH_TOGGLE_FIND_MODE                   "/commands/Find"
-#define COMMAND_PATH_TOGGLE_FIND_MODE_WITH_STATE        "/commands/Toggle Find Mode"
-
 enum {
 	ARG_0,
 	ARG_APP_ID,
@@ -168,27 +163,6 @@ navigation_bar_location_changed_callback (GtkWidget *widget,
 	}
 
 	nautilus_window_go_to (NAUTILUS_WINDOW (window), uri);
-}
-
-static void
-navigation_bar_mode_changed_callback (GtkWidget *widget,
-				      NautilusSwitchableNavigationBarMode mode,
-				      NautilusNavigationWindow *window)
-{
-	NAUTILUS_WINDOW (window)->details->updating_bonobo_state = TRUE;
-
-	g_assert (mode == NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION 
-		  || mode == NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH);
-
-	nautilus_window_ui_freeze (NAUTILUS_WINDOW (window));
-
-	nautilus_bonobo_set_toggle_state (NAUTILUS_WINDOW (window)->details->shell_ui,
-					  NAUTILUS_COMMAND_TOGGLE_FIND_MODE,
-					  mode == NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH);
-	
-	NAUTILUS_WINDOW (window)->details->updating_bonobo_state = FALSE;
-
-	nautilus_window_ui_thaw (NAUTILUS_WINDOW (window));
 }
 
 static void
@@ -474,30 +448,9 @@ nautilus_navigation_window_go_forward (NautilusNavigationWindow *window)
 }
 
 void
-nautilus_navigation_window_set_search_mode (NautilusNavigationWindow *window,
-				 gboolean search_mode)
-{
-	nautilus_switchable_navigation_bar_set_mode
-		(NAUTILUS_SWITCHABLE_NAVIGATION_BAR (window->navigation_bar),
-		 search_mode
-		 ? NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH
-		 : NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION);
-}
-
-gboolean
-nautilus_navigation_window_get_search_mode (NautilusNavigationWindow *window)
-{
-	return nautilus_switchable_navigation_bar_get_mode 
-		(NAUTILUS_SWITCHABLE_NAVIGATION_BAR (window->navigation_bar)) 
-	== NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH;
-}
-
-void
 nautilus_navigation_window_go_home (NautilusNavigationWindow *window)
 {
 	char *home_uri;
-
-	nautilus_navigation_window_set_search_mode (window, FALSE);
 
 	home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
 	
@@ -717,13 +670,11 @@ real_merge_menus (NautilusWindow *nautilus_window)
 	location_bar_box = gtk_hbox_new (FALSE, GNOME_PAD);
 	gtk_container_set_border_width (GTK_CONTAINER (location_bar_box), GNOME_PAD_SMALL);
 	
-	window->navigation_bar = nautilus_switchable_navigation_bar_new (window);
+	window->navigation_bar = nautilus_location_bar_new (window);
 	gtk_widget_show (GTK_WIDGET (window->navigation_bar));
 
 	g_signal_connect_object (window->navigation_bar, "location_changed",
 				 G_CALLBACK (navigation_bar_location_changed_callback), window, 0);
-	g_signal_connect_object (window->navigation_bar, "mode_changed",
-				 G_CALLBACK (navigation_bar_mode_changed_callback), window, 0);
 
 	gtk_box_pack_start (GTK_BOX (location_bar_box), window->navigation_bar,
 			    TRUE, TRUE, GNOME_PAD_SMALL);
@@ -767,25 +718,6 @@ real_merge_menus (NautilusWindow *nautilus_window)
 					NULL);
 
 	bonobo_object_unref (location_bar_wrapper);
-
-
-#ifndef HAVE_MEDUSA
-	/* Hide medusa menu items if medusa is not installed */
-	nautilus_bonobo_set_hidden (NAUTILUS_WINDOW (window)->details->shell_ui,
-				    COMMAND_PATH_TOGGLE_FIND_MODE,
-				    TRUE);
-	nautilus_bonobo_set_hidden (NAUTILUS_WINDOW (window)->details->shell_ui,
-				    COMMAND_PATH_TOGGLE_FIND_MODE_WITH_STATE,
-				    TRUE);
-	/* Also set these items insensitive so that keyboard shortcuts do not trigger
-	   warnings */
-	nautilus_bonobo_set_sensitive (NAUTILUS_WINDOW (window)->details->shell_ui,
-				       COMMAND_PATH_TOGGLE_FIND_MODE,
-				       FALSE);
-	nautilus_bonobo_set_sensitive (NAUTILUS_WINDOW (window)->details->shell_ui,
-				       COMMAND_PATH_TOGGLE_FIND_MODE_WITH_STATE,
-				       FALSE);
-#endif
 
 	bonobo_ui_component_thaw (NAUTILUS_WINDOW (window)->details->shell_ui,
 				  NULL);
@@ -894,10 +826,8 @@ nautilus_navigation_window_show_location_bar_temporarily (NautilusNavigationWind
 		nautilus_navigation_window_show_location_bar (window, FALSE);
 		window->details->temporary_navigation_bar = TRUE;
 	}
-	nautilus_navigation_window_set_search_mode 
-		(window, in_search_mode);
-	nautilus_switchable_navigation_bar_activate 
-		(NAUTILUS_SWITCHABLE_NAVIGATION_BAR (window->navigation_bar));
+	nautilus_navigation_bar_activate 
+		(NAUTILUS_NAVIGATION_BAR (window->navigation_bar));
 }
 
 static void

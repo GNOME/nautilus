@@ -60,8 +60,6 @@ nautilus_SOURCES = \
 	nautilus-bookmark-parsing.h		\
 	nautilus-bookmarks-window.c		\
 	nautilus-bookmarks-window.h		\
-	nautilus-complex-search-bar.c		\
-	nautilus-complex-search-bar.h		\
 	nautilus-connect-server-dialog.c	\
 	nautilus-connect-server-dialog.h	\
 	nautilus-desktop-window.c		\
@@ -95,12 +93,6 @@ nautilus_SOURCES = \
 	nautilus-profiler.h			\
 	nautilus-property-browser.c     	\
 	nautilus-property-browser.h		\
-	nautilus-search-bar-criterion-private.h	\
-	nautilus-search-bar-criterion.c		\
-	nautilus-search-bar-criterion.h		\
-	nautilus-search-bar-private.h		\
-	nautilus-search-bar.c			\
-	nautilus-search-bar.h			\
 	nautilus-self-check-functions.c 	\
 	nautilus-self-check-functions.h 	\
 	nautilus-shell.c			\
@@ -111,14 +103,8 @@ nautilus_SOURCES = \
 	nautilus-sidebar-title.h		\
 	nautilus-signaller.c			\
 	nautilus-signaller.h			\
-	nautilus-simple-search-bar.c		\
-	nautilus-simple-search-bar.h		\
 	nautilus-spatial-window.c               \
 	nautilus-spatial-window.h               \
-	nautilus-switchable-navigation-bar.c	\
-	nautilus-switchable-navigation-bar.h	\
-	nautilus-switchable-search-bar.c	\
-	nautilus-switchable-search-bar.h	\
 	nautilus-image-properties-page.c	\
 	nautilus-image-properties-page.h	\
 	nautilus-window-manage-views.c		\

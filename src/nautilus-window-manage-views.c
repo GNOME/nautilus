@@ -61,7 +61,6 @@
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-monitor.h>
-#include <libnautilus-private/nautilus-search-uri.h>
 #include <libnautilus-private/nautilus-theme.h>
 #include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-window-info.h>
@@ -1429,21 +1428,6 @@ display_view_selection_failure (NautilusWindow *window, NautilusFile *file,
 		break;
 		
 	case GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE:
-		if (nautilus_is_search_uri (location)) {
-			/* FIXME bugzilla.gnome.org 42458: Need to give
-			 * the user better advice about what to do
-			 * here.
-			 */
-			error_message = g_strdup_printf
-				(_("Searching is unavailable right now, because you either have no index, "
-				   "or the search service isn't running."));
-			detail_message = g_strdup
-				(_("Be sure that you have started the Medusa search service, and if you "
-				   "don't have an index, that the Medusa indexer is running."));
-			dialog_title = g_strdup (_("Searching Unavailable"));
-			break;
-		} 
-		/* else fall through */
 	default:
 		error_message = g_strdup_printf (_("Nautilus cannot display \"%s\"."),
 						 uri_for_display);
