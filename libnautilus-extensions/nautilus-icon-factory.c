@@ -706,7 +706,7 @@ nautilus_icon_cache_key_hash (gconstpointer p)
 	const NautilusIconCacheKey *key;
 
 	key = p;
-	return (guint)key->scalable_icon ^ key->size_in_pixels;
+	return GPOINTER_TO_UINT(key->scalable_icon) ^ key->size_in_pixels;
 }
 
 static gboolean
