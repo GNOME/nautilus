@@ -991,7 +991,6 @@ nautilus_application_present_spatial_window (NautilusApplication *application,
 
 		if (eel_uris_match (existing_location, location)) {
 			gtk_window_present (GTK_WINDOW (existing_window));
-			g_object_ref (existing_window);
 			return existing_window;
 		}
 	}
