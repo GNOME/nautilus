@@ -1,3 +1,12 @@
+2001-06-01  Darin Adler  <darin@bentspoon.com>
+
+	Integrated revised version of patch by zilch.am@home.se to fix
+	problems typing characters with values > 127 on some systems.
+
+	* libnautilus-private/nautilus-icon-container.c: (match_best_name):
+	Cast the result of tolower to a (char) before comparing it with
+	another char.
+
 2001-05-31  Darin Adler  <darin@bentspoon.com>
 
 	Integrated patch by limval@yahoo.com to make typing and clicking

@@ -2169,10 +2169,11 @@ match_best_name (NautilusIconContainer *container,
 		}
 
 		/* Require the match pattern to already be lowercase. */
-		g_assert (tolower ((guchar) match_state->name[match_length]) 
+		g_assert (((char) tolower ((guchar) match_state->name[match_length]))
 			  == match_state->name[match_length]);
 			
-		if (tolower ((guchar) name[match_length]) != match_state->name[match_length]) {
+		if (((char) tolower ((guchar) name[match_length]))
+		    != match_state->name[match_length]) {
 			break;
 		}
 	}
