@@ -155,7 +155,7 @@ static void     initiate_file_download           (GnomeDruid 	*druid);
 static gboolean set_http_proxy                   (const char 	*proxy_url);
 static gboolean attempt_http_proxy_autoconfigure (void);
 static gboolean check_network_connectivity	 (void);
-static void	convert_gmc_desktop_icons 	 (void);
+static gint	convert_gmc_desktop_icons 	 (gpointer       unused_data);
 static void	update_finished_label		 (void);
 
 static void
@@ -199,10 +199,24 @@ druid_set_first_time_file_flag (void)
 	g_free (druid_flag_file_name);
 }
 
+static gint
+create_services_link_callback (gpointer data)
+{
+	char *desktop_path;
+
+	/* Create default services icon on the desktop */
+	desktop_path = nautilus_get_desktop_directory ();
+	nautilus_link_local_create (desktop_path, _("Eazel Services"), "hand.png", 
+				    "eazel:", NULL, NAUTILUS_LINK_GENERIC);
+	g_free (desktop_path);
+
+	return FALSE;
+}
+
 static void
 druid_finished (GtkWidget *druid_page)
 {
-	char *user_main_directory, *desktop_path;
+	char *user_main_directory;
 	const char *signup_uris[3];
 	
 	
@@ -246,18 +260,21 @@ druid_finished (GtkWidget *druid_page)
 	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP, draw_desktop);	
 	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_ADD_TO_SESSION, add_to_session);	
 	if (transfer_gmc_icons) {
-		convert_gmc_desktop_icons ();
+		/* Do this at idle time, once nautilus has initialized
+		 * itself. Otherwise we may spawn a second nautilus
+		 * process when looking for a metadata factory..
+		 */
+		gtk_idle_add (convert_gmc_desktop_icons, NULL);
 	}
 
 	/* Do the Medusa config */
 	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_USE_FAST_SEARCH, launch_medusa);
 	nautilus_medusa_enable_services (launch_medusa);
 	
-	/* Create default services icon on the desktop */
-	desktop_path = nautilus_get_desktop_directory ();
-	nautilus_link_local_create (desktop_path, _("Eazel Services"), "hand.png", 
-				    "eazel:", NULL, NAUTILUS_LINK_GENERIC);
-	g_free (desktop_path);
+	/* Arrange to create default services icon on the desktop. Do this
+	 * at idle time for the same reason as when converting gmc icons
+	 */
+	gtk_idle_add (create_services_link_callback, NULL);
 	
 	/* Time to start. Hooray! */
 	nautilus_application_startup (save_application, FALSE, FALSE, draw_desktop, 
@@ -813,8 +830,8 @@ next_proxy_configuration_page_callback (GtkWidget *button, GnomeDruid *druid)
 }
 
 
-static void
-convert_gmc_desktop_icons (void)
+static gint
+convert_gmc_desktop_icons (gpointer unused_data)
 {
 	const char *home_dir;
 	char *gmc_desktop_dir,*nautilus_desktop_dir, *link_path;
@@ -825,26 +842,26 @@ convert_gmc_desktop_icons (void)
 	
 	home_dir = g_get_home_dir ();
 	if (home_dir == NULL) {
-		return;
+		return FALSE;
 	}
 		
 	gmc_desktop_dir = g_strdup_printf ("%s/.gnome-desktop", home_dir);
 	
 	if (stat (gmc_desktop_dir, &st) != 0) {
 		g_free (gmc_desktop_dir);
-		return;
+		return FALSE;
 	}
 	
 	if (!S_ISDIR (st.st_mode)) {
 		g_free (gmc_desktop_dir);
 		g_message ("Not a dir");
-		return;
+		return FALSE;
 	}
 	
 	dir = opendir (gmc_desktop_dir);
 	if (dir == NULL) {
 		g_free (gmc_desktop_dir);
-		return;
+		return FALSE;
 	}
 
 	nautilus_desktop_dir = nautilus_get_desktop_directory ();
@@ -870,6 +887,7 @@ convert_gmc_desktop_icons (void)
 	g_free (gmc_desktop_dir);
 	g_free (nautilus_desktop_dir);	
 
+	return FALSE;
 }
 
 /* handle the "next" signal for the update feedback page to skip the error page */

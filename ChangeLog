@@ -1,3 +1,14 @@
+2001-04-04  John Harper  <jsh@eazel.com>
+
+	Fixed bug 7950 (After running First-Time Druid there are two
+	Nautilus windows displaying the home directory):
+
+	* src/nautilus-first-time-druid.c (druid_finished): moved all
+	nautilus link creation to idle handlers. Otherwise we may try
+	to get a metadata factory before nautilus is fully initialized.
+	(This means that oafd will spawn an additional nautilus
+	process, giving the extra window)
+
 2001-04-04  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bugs 3681, 4705, 5154, all having to do with the funky
