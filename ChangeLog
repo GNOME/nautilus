@@ -1,3 +1,11 @@
+2000-09-13  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3039 (Clicking in edited file name exits rename mode)
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(button_press_event): Moved the grab_focus call until after
+	the inherited call, and only do it if not in renaming mode.
+
 2000-09-13  Darin Adler  <darin@eazel.com>
 
 	Fixed bug 1462 (File names containing spaces don't launch right)

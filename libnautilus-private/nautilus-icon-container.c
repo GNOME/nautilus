@@ -2086,15 +2086,12 @@ button_press_event (GtkWidget *widget,
 	NautilusIconContainer *container;
 	gboolean selection_changed;
 	gboolean return_value;
+	gboolean clicked_on_icon;
 	int click_mode;
 	gint64 current_time;
 	static gint64 last_click_time = 0;
 	static gint click_count = 0;
 	
-  	if (!GTK_WIDGET_HAS_FOCUS (widget)) {
-    		gtk_widget_grab_focus (widget);
-    	}
-
 	/* Determine click count */
 	current_time = nautilus_get_system_time ();
 	if (current_time - last_click_time < DOUBLE_CLICK_TIME) {
@@ -2126,10 +2123,20 @@ button_press_event (GtkWidget *widget,
 	nautilus_icon_container_flush_typeselect_state (container);
 	
 	/* Invoke the canvas event handler and see if an item picks up the event. */
-	if (NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_press_event, (widget, event))) {
+	clicked_on_icon = NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_press_event, (widget, event));
+	
+	/* Move focus to icon container, unless we're still renaming (to avoid exiting
+	 * renaming mode)
+	 */
+  	if (!GTK_WIDGET_HAS_FOCUS (widget) && !nautilus_icon_container_is_renaming (container)) {
+    		gtk_widget_grab_focus (widget);
+    	}
+
+	if (clicked_on_icon) {
 		return TRUE;
 	}
-	
+
+
 	/* An item didn't take the press, so it's a background press.
          * We ignore double clicks on the desktop for now.
 	 */
