@@ -1,3 +1,10 @@
+2003-09-11  Bastien Nocera  <hadess@hadess.net>
+
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(get_iso9660_volume_name_data_track_offset),
+	(get_iso9660_volume_name): get the volume name correctly on CDs
+	where the data track is not the first track (Linux only)
+
 === nautilus 2.4.0 ===
 
 2003-09-08  Alexander Larsson  <alexl@redhat.com>
