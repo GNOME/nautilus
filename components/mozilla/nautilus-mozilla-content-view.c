@@ -563,13 +563,22 @@ mozilla_open_uri_callback (GtkMozEmbed *mozilla,
 	return abort_uri_open;
 }
 
+/*
+ * The issue here is that mozilla handles some protocols "natively" just as nautilus
+ * does thanks to gnome-vfs magic.
+ *
+ * The embedded mozilla beast provides a mechanism for aborting url loading (ie, the
+ * thing that happens when a user boinks on a hyperlink).
+ *
+ * We use this feature to abort uri loads for the following protocol(s):
+ *
+ */
 static char *handled_by_nautilus[] =
 {
-	"file",
-	"ftp"
+	"ftp",
 };
 
-#define num_handled_by_nautilus 2
+#define num_handled_by_nautilus (sizeof (handled_by_nautilus) / sizeof ((handled_by_nautilus)[0]))
 
 static gboolean
 mozilla_is_uri_handled_by_nautilus (const char *uri)
