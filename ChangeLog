@@ -1,3 +1,12 @@
+2000-08-14  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(lay_down_icons_tblr):
+	Made sure that an icon is added to the layout grid when it is
+	postioned during a multi-icon placement.
+	Freeze the icon positions after we are done placing them using
+	this layout mode.
+
 2000-08-14  Darin Adler  <darin@eazel.com>
 
 	More prep work for the trash directory.

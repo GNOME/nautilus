@@ -1000,9 +1000,12 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 
 		/* Place unplaced icons in the best locations */
 		for (p = unplaced_icons; p != NULL; p = p->next) {
-			get_best_empty_grid_location (p->data, icon_grid, num_rows, num_columns,
+			icon = p->data;
+			get_best_empty_grid_location (icon, icon_grid, num_rows, num_columns,
 						      &x, &y);
-			icon_set_position (p->data, x, y);
+			icon_set_position (icon, x, y);
+			/* Add new placed icon to grid */
+			mark_icon_location_in_grid (icon, icon_grid, num_rows, num_columns);
 		}
 
 		/* Clean up */
@@ -1038,6 +1041,9 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 			}
 		}
 	}
+
+	/* This mode is special.  We freeze all of our positions after we do the layout. */
+	nautilus_icon_container_freeze_icon_positions (container);
 }
 
 
