@@ -296,6 +296,10 @@ nautilus_music_view_destroy (GtkObject *object)
 {
 	NautilusMusicView *music_view = NAUTILUS_MUSIC_VIEW (object);
 
+	/* we'd rather allow the song to keep playing, but it's hard to main state */
+	/* so we stop things on exit for now, and improve it post 1.0 */
+	stop_playing_file();
+
 	g_free (music_view->details->uri);
 	g_free (music_view->details);
 
@@ -1399,6 +1403,7 @@ nautilus_music_view_drag_data_received (GtkWidget *widget, GdkDragContext *conte
 	switch (info) {
         case TARGET_GNOME_URI_LIST:
         case TARGET_URI_LIST: 	
+                /* FIXME: the music view should accept mp3 files */
                 g_message ("dropped data on music_view: %s", selection_data->data); 			
                 break;
   		
