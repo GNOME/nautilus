@@ -5,12 +5,17 @@ omf_dir=$(top_srcdir)/omf-install
 
 EXTRA_DIST = $(htmls) $(omffiles) $(figs)
 
+CLEANFILES = omf_timestamp
+
 all: omf
 
-omf: $(omffiles)
+omf: omf_timestamp
+
+omf_timestamp: $(omffiles)
 	-for omffile in $(omffiles); do \
 	  scrollkeeper-preinstall $(DESTDIR)$(helpdir)/index.html $$omffile $(omf_dir)/$$omffile; \
 	done
+	touch omf_timestamp
 
 app-dist-hook:
 	-$(mkinstalldirs) $(distdir)/figures
@@ -29,5 +34,4 @@ install-data-am: omf
 	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
 	  $(INSTALL_DATA) $$file $(DESTDIR)$(helpdir)/figures/$$basefile; \
 	done
-
 

@@ -1,3 +1,16 @@
+2001-02-26  Dan Mueth  <dan@eazel.com>
+
+	reviewed by: Eric Fischer <eric@eazel.com>
+
+	Added a timestamp file so that OMF files only get
+	built at build time and not at install time.
+	* help/docs.make: 
+	* help/htmldocs.make:
+
+	Added explicit dependency on ScrollKeeper and added
+	"make -k ; make test" in place of "make -k test".
+	* nautilus.spec.in:
+
 2001-02-26  Andy Hertzfeld  <andy@eazel.com>
 
 	* data/linksets/home.xml:

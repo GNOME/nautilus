@@ -7,12 +7,17 @@ omf_dir=$(top_srcdir)/omf-install
 
 EXTRA_DIST = $(docname).sgml $(help_DATA) $(omffiles) $(figs)
 
+CLEANFILES = omf_timestamp
+
 all: index.html omf
 
-omf: $(omffiles)
+omf: omf_timestamp
+
+omf_timestamp: $(omffiles)
 	-for omffile in $(omffiles); do \
 	  scrollkeeper-preinstall $(helpdir)/$(docname).sgml $$omffile $(omf_dir)/$$omffile; \
 	done
+	touch omf_timestamp
 
 index.html: $(docname)/index.html
 	-cp $(docname)/index.html .
