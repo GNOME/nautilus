@@ -182,8 +182,8 @@ got_metadata_callback (NautilusDirectory *directory,
         info->files = nautilus_file_list_copy (files);
         async_get_file_info_text (&info->ah,
                                   info->location,
-                                  (GNOME_VFS_FILE_INFO_GETMIMETYPE
-                                   | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
+                                  (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+                                   | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
                                   got_file_info_callback,
                                   info);
 }

@@ -1406,7 +1406,7 @@ path_represents_svg_image (const char *path)
 
 	uri = nautilus_get_uri_from_local_path (path);
 	gnome_vfs_file_info_init (&file_info);
-	gnome_vfs_get_file_info (uri, &file_info, GNOME_VFS_FILE_INFO_GETMIMETYPE, NULL);
+	gnome_vfs_get_file_info (uri, &file_info, GNOME_VFS_FILE_INFO_GET_MIME_TYPE, NULL);
 	g_free (uri);
 	is_svg = nautilus_strcmp (file_info.mime_type, "image/svg") == 0;
 	gnome_vfs_file_info_clear (&file_info);

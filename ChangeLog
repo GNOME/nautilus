@@ -1,3 +1,28 @@
+2000-06-24  Pavel  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(nautilus_directory_get_info_for_new_files),
+	(start_monitoring_file_list), (start_getting_file_info):
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_update_from_uri):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(path_represents_svg_image):
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(get_mime_type_from_uri):
+	* src/file-manager/dfos-corba.c: (convert_options):
+	* src/file-manager/fm-properties-window.c:
+	(get_property_names_from_uri):
+	* src/nautilus-applicable-views.c: (got_metadata_callback):
+	* src/nautilus-link-set-window.c: (get_link_set_names):
+	* src/nautilus-property-browser.c: (ensure_uri_is_image),
+	(make_properties_from_directory_path):
+	Switched to match new GnomeVFS renamings. 
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(start_monitoring_file_list):
+	Changed to use default mime type rather than forcing the
+	fast mode.
+
 2000-06-23  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-horizontal-splitter.c:

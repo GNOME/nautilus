@@ -1096,8 +1096,8 @@ nautilus_directory_get_info_for_new_files (NautilusDirectory *directory,
 	gnome_vfs_async_get_file_info
 		(&handle,
 		 vfs_uri_list,
-		 (GNOME_VFS_FILE_INFO_GETMIMETYPE
-		  | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
+		 (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+		  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
 		 NULL,
 		 new_files_callback,
 		 directory);
@@ -1410,9 +1410,8 @@ start_monitoring_file_list (NautilusDirectory *directory)
 		gnome_vfs_async_load_directory
 			(&directory->details->directory_load_in_progress, /* handle */
 			 directory->details->uri_text,                    /* uri */
-			 (GNOME_VFS_FILE_INFO_GETMIMETYPE	          /* options */
-			  | GNOME_VFS_FILE_INFO_FASTMIMETYPE
-			  | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
+			 (GNOME_VFS_FILE_INFO_GET_MIME_TYPE	          /* options */
+			  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
 			 NULL, 					          /* meta_keys */
 			 NULL, 					          /* sort_rules */
 			 FALSE, 				          /* reverse_order */
@@ -1980,8 +1979,8 @@ start_getting_file_info (NautilusDirectory *directory)
 	gnome_vfs_async_get_file_info
 		(&directory->details->get_info_in_progress,
 		 &fake_list,
-		 (GNOME_VFS_FILE_INFO_GETMIMETYPE
-		  | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
+		 (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+		  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
 		 NULL,
 		 get_info_callback,
 		 directory);

@@ -1451,8 +1451,8 @@ get_mime_type_from_uri (const char *text_uri)
 		file_info = gnome_vfs_file_info_new ();
 		
 		result = gnome_vfs_get_file_info_uri (vfs_uri, file_info,
-						      GNOME_VFS_FILE_INFO_GETMIMETYPE
-						      | GNOME_VFS_FILE_INFO_FOLLOWLINKS, 
+						      GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+						      | GNOME_VFS_FILE_INFO_FOLLOW_LINKS, 
 						      NULL);
 		if (result == GNOME_VFS_OK) {
 			ctype = gnome_vfs_file_info_get_mime_type (file_info);

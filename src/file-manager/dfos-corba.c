@@ -76,7 +76,7 @@ convert_options (GNOME_Desktop_FileOperationService_XferOptions options)
 	if (options & GNOME_Desktop_FileOperationService_XferOptionPreserve) 
 		returned_options |= GNOME_VFS_XFER_PRESERVE;
 	if (options & GNOME_Desktop_FileOperationService_XferOptionFollowLinks) 
-		returned_options |= GNOME_VFS_XFER_FOLLOWLINKS;
+		returned_options |= GNOME_VFS_XFER_FOLLOW_LINKS;
 	if (options & GNOME_Desktop_FileOperationService_XferOptionWithParents) 
 		returned_options |= GNOME_VFS_XFER_WITHPARENTS;
 	if (options & GNOME_Desktop_FileOperationService_XferOptionRecursive) 

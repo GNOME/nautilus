@@ -419,9 +419,8 @@ ensure_uri_is_image(const char *uri)
 	file_info = gnome_vfs_file_info_new ();
 	result = gnome_vfs_get_file_info
 		(uri, file_info,
-		 GNOME_VFS_FILE_INFO_GETMIMETYPE
-		 | GNOME_VFS_FILE_INFO_FASTMIMETYPE
-		 | GNOME_VFS_FILE_INFO_FOLLOWLINKS, NULL);
+		 GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+		 | GNOME_VFS_FILE_INFO_FOLLOW_LINKS, NULL);
         is_image = nautilus_str_has_prefix (file_info->mime_type, "image/");
 	gnome_vfs_file_info_unref (file_info);
 	return is_image;
@@ -1178,7 +1177,7 @@ make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, c
 		
 		
 	result = gnome_vfs_directory_list_load (&list, directory_uri,
-						GNOME_VFS_FILE_INFO_GETMIMETYPE, NULL, NULL);
+						GNOME_VFS_FILE_INFO_GET_MIME_TYPE, NULL, NULL);
 	if (result != GNOME_VFS_OK) {
 		return index;
 	}

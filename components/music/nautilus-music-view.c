@@ -1261,7 +1261,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	/* iterate through the directory, collecting mp3 files and extracting id3 data if present */
 
 	result = gnome_vfs_directory_list_load (&list, uri,
-						GNOME_VFS_FILE_INFO_GETMIMETYPE, 
+						GNOME_VFS_FILE_INFO_GET_MIME_TYPE, 
 						NULL, NULL);
 	if (result != GNOME_VFS_OK) {
 		/* FIXME bugzilla.eazel.com 1280: need to show an alert here */
