@@ -45,12 +45,6 @@ enum
 	ARG_TITLE_STRING
 };
 
-enum
-{
-	ACTIVATE,
-	LAST_SIGNAL
-};
-
 static const guint PREFERENCES_ITEM_TITLE_SPACING = 4;
 static const guint PREFERENCES_ITEM_FRAME_BORDER_WIDTH = 6;
 static const gint PREFERENCES_ITEM_UNDEFINED_ITEM = -1;
@@ -488,7 +482,7 @@ preferences_item_create_font_family (NautilusPreferencesItem	*item,
 	g_assert (current_value != NULL);
 	g_assert (nautilus_string_list_contains (font_list, current_value));
 
-	nautilus_string_picker_set_text (NAUTILUS_STRING_PICKER (item->details->child), current_value);
+	nautilus_string_picker_set_selected_string (NAUTILUS_STRING_PICKER (item->details->child), current_value);
 
 	g_free (current_value);
 
@@ -612,7 +606,7 @@ preferences_item_create_theme (NautilusPreferencesItem	*item,
 	g_assert (current_value != NULL);
 	g_assert (nautilus_string_list_contains (theme_list, current_value));
 	
-	nautilus_string_picker_set_text (NAUTILUS_STRING_PICKER (item->details->child), current_value);
+	nautilus_string_picker_set_selected_string (NAUTILUS_STRING_PICKER (item->details->child), current_value);
 
 	g_free (current_value);
 
@@ -694,7 +688,7 @@ text_item_changed_callback (GtkWidget *button, gpointer user_data)
 	g_assert (item->details->child != NULL);
 	g_assert (NAUTILUS_IS_STRING_PICKER (item->details->child));
 
-	text = nautilus_string_picker_get_text (NAUTILUS_STRING_PICKER (item->details->child));
+	text = nautilus_string_picker_get_selected_string (NAUTILUS_STRING_PICKER (item->details->child));
 
 	if (text != NULL)
 	{

@@ -1,5 +1,28 @@
 2000-08-17  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-string-picker.c:
+	(nautilus_string_picker_initialize),
+	(nautilus_string_picker_destroy),
+	(nautilus_string_picker_set_string_list),
+	(nautilus_string_picker_get_string_list),
+	(nautilus_string_picker_get_selected_string),
+	(nautilus_string_picker_set_selected_string),
+	(nautilus_string_picker_insert_string):
+	* libnautilus-extensions/nautilus-string-picker.h:
+	New function to insert a string without having to access the
+	string list first.  Also renamed some poorly named functions.
+
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(preferences_item_create_font_family),
+	(preferences_item_create_theme), (text_item_changed_callback):
+	Update for string picker api changes.
+	
+	* test/test-nautilus-widgets.c: (test_string_picker),
+	(string_picker_changed_callback):
+	Update for string picker api changes.
+
+2000-08-17  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-string-list.c:
 	(nautilus_string_list_new_from_string_list),
 	(nautilus_string_list_assign_from_string_list),

@@ -225,7 +225,7 @@ test_string_picker (void)
 			    GTK_SIGNAL_FUNC (string_picker_changed_callback),
 			    (gpointer) NULL);
 
-	nautilus_string_picker_set_text (NAUTILUS_STRING_PICKER (picker), "Fixed");
+	nautilus_string_picker_set_selected_string (NAUTILUS_STRING_PICKER (picker), "Fixed");
 
 	gtk_widget_show_all (window);
 }
@@ -262,7 +262,7 @@ string_picker_changed_callback (GtkWidget *string_picker, gpointer user_data)
 	g_assert (string_picker != NULL);
 	g_assert (NAUTILUS_IS_STRING_PICKER (string_picker));
 
-	text = nautilus_string_picker_get_text (NAUTILUS_STRING_PICKER (string_picker));
+	text = nautilus_string_picker_get_selected_string (NAUTILUS_STRING_PICKER (string_picker));
 
 	g_print ("string_picker_changed_callback(%s)\n", text);
 

@@ -103,7 +103,7 @@ nautilus_string_picker_initialize (NautilusStringPicker *string_picker)
 	gtk_box_set_homogeneous (GTK_BOX (string_picker), FALSE);
 	gtk_box_set_spacing (GTK_BOX (string_picker), STRING_PICKER_SPACING);
 
-	string_picker->detail->string_list = NULL;
+	string_picker->detail->string_list = nautilus_string_list_new ();
 	string_picker->detail->menu = NULL;
 
 	string_picker->detail->option_menu = gtk_option_menu_new ();
@@ -127,9 +127,7 @@ nautilus_string_picker_destroy (GtkObject* object)
 	
 	string_picker = NAUTILUS_STRING_PICKER (object);
 
-	if (string_picker->detail->string_list != NULL) {
-		nautilus_string_list_free (string_picker->detail->string_list);
-	}
+	nautilus_string_list_free (string_picker->detail->string_list);
 
 	g_free (string_picker->detail);
 
@@ -183,40 +181,52 @@ nautilus_string_picker_set_string_list (NautilusStringPicker		*string_picker,
  	g_return_if_fail (string_picker != NULL);
 	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
 
-	string_picker->detail->string_list = nautilus_string_list_new_from_string_list (string_list);
-
+	nautilus_string_list_assign_from_string_list (string_picker->detail->string_list, string_list);
+	
 	/* Kill the old menu if alive */
 	if (string_picker->detail->menu != NULL) {
 		gtk_option_menu_remove_menu (GTK_OPTION_MENU (string_picker->detail->option_menu));
-		gtk_widget_destroy (string_picker->detail->menu);
+
+		/* The widget gets unrefed in the above call */
 		string_picker->detail->menu = NULL;
 	}
 
 	/* Make a new menu */
 	string_picker->detail->menu = gtk_menu_new ();
+	
+	if (nautilus_string_list_get_length (string_picker->detail->string_list) > 0) {
+		for (i = 0; i < nautilus_string_list_get_length (string_picker->detail->string_list); i++) {
+			GtkWidget *menu_item;
+			char *item_label = nautilus_string_list_nth (string_picker->detail->string_list, i);
+			g_assert (item_label != NULL);
+			
+			menu_item = gtk_menu_item_new_with_label (item_label);
+			g_free (item_label);
 
-	for (i = 0; i < nautilus_string_list_get_length (string_picker->detail->string_list); i++) {
-		GtkWidget *menu_item;
-		char *item_label = nautilus_string_list_nth (string_picker->detail->string_list, i);
-		g_assert (item_label != NULL);
+			/* Save the index so we can later use it to retrieve the nth label from the list */
+			gtk_object_set_data (GTK_OBJECT (menu_item), "index", GINT_TO_POINTER (i));
+			
+			gtk_signal_connect (GTK_OBJECT (menu_item),
+					    "activate",
+					    GTK_SIGNAL_FUNC (option_menu_activate_callback),
+					    string_picker);
+			
+			gtk_widget_show (menu_item);
+			
+			gtk_menu_append (GTK_MENU (string_picker->detail->menu), menu_item);
+		}
 
-		menu_item = gtk_menu_item_new_with_label (item_label);
-		g_free (item_label);
-
-		/* Save the index so we can later use it to retrieve the nth label from the list */
-		gtk_object_set_data (GTK_OBJECT (menu_item), "index", GINT_TO_POINTER (i));
-
-		gtk_signal_connect (GTK_OBJECT (menu_item),
-				    "activate",
-				    GTK_SIGNAL_FUNC (option_menu_activate_callback),
-				    string_picker);
-		
-		gtk_widget_show (menu_item);
-		
-		gtk_menu_append (GTK_MENU (string_picker->detail->menu), menu_item);
-		
 	}
 
+	/* Allow the string picker to be sensitive only if there is a choice */
+	if (nautilus_string_list_get_length (string_picker->detail->string_list) > 1) {
+		gtk_widget_set_sensitive (GTK_WIDGET (string_picker), TRUE);
+	}
+	else {
+		gtk_widget_set_sensitive (GTK_WIDGET (string_picker), FALSE);
+	}
+
+	/* Attatch the menu to the option button */
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (string_picker->detail->option_menu), string_picker->detail->menu);
 }
 
@@ -233,9 +243,7 @@ nautilus_string_picker_get_string_list (const NautilusStringPicker *string_picke
  	g_return_val_if_fail (string_picker != NULL, NULL);
 	g_return_val_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker), NULL);
 
-	return (string_picker->detail->string_list != NULL) ?
-		nautilus_string_list_new_from_string_list (string_picker->detail->string_list) :
-		NULL;
+	return nautilus_string_list_new_from_string_list (string_picker->detail->string_list);
 }
 
 /* FIXME bugzilla.eazel.com 1556: 
@@ -243,13 +251,13 @@ nautilus_string_picker_get_string_list (const NautilusStringPicker *string_picke
  */
 
 /**
- * nautilus_string_picker_get_text
+ * nautilus_string_picker_get_selected_string
  * @string_picker: A NautilusStringPicker
  *
  * Returns: A copy of the currently selected text.  Need to g_free() it.
  */
 char *
-nautilus_string_picker_get_text (NautilusStringPicker *string_picker)
+nautilus_string_picker_get_selected_string (NautilusStringPicker *string_picker)
 {
 	gint		item_index;
 	GtkWidget	*option_menu;
@@ -268,21 +276,18 @@ nautilus_string_picker_get_text (NautilusStringPicker *string_picker)
 }
 
 /**
- * nautilus_string_picker_set_text
+ * nautilus_string_picker_set_selected_string
  * @string_picker: A NautilusStringPicker
  *
  * Set the active item corresponding to the given text.
  */
 void
-nautilus_string_picker_set_text (NautilusStringPicker	*string_picker,
-				 const char		*text)
+nautilus_string_picker_set_selected_string (NautilusStringPicker	*string_picker,
+					    const char			*text)
 {
 	gint item_index;
 
- 	g_return_if_fail (string_picker != NULL);
 	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
-
-	g_return_if_fail (string_picker->detail->string_list != NULL);
 	g_return_if_fail (nautilus_string_list_contains (string_picker->detail->string_list, text));
 
 	item_index = nautilus_string_list_get_index_for_string (string_picker->detail->string_list, text);
@@ -290,3 +295,19 @@ nautilus_string_picker_set_text (NautilusStringPicker	*string_picker,
 
 	gtk_option_menu_set_history (GTK_OPTION_MENU (string_picker->detail->option_menu), item_index);
 }
+
+/* Add a new string to the picker. */
+void
+nautilus_string_picker_insert_string (NautilusStringPicker       *string_picker,
+				      const char                 *string)
+{
+	NautilusStringList *new_string_list;
+
+	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
+
+	new_string_list = nautilus_string_list_new_from_string_list (string_picker->detail->string_list);
+	nautilus_string_list_insert (new_string_list, string);
+	nautilus_string_picker_set_string_list (string_picker, new_string_list);
+	nautilus_string_list_free (new_string_list);
+}
+
