@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.3.3\n"
 "POT-Creation-Date: 2003-06-05 18:41+0200\n"
-"PO-Revision-Date: 2003-06-05 19:08+0200\n"
+"PO-Revision-Date: 2003-06-07 14:00+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -325,12 +325,12 @@ msgstr "Vista de text original"
 
 #: components/text/Nautilus_View_text.server.in.in.h:6
 msgid "View as Text"
-msgstr "Veure com a text"
+msgstr "Visualitza com a text"
 
 #: components/text/nautilus-text-view-ui.xml.h:1
 #: libnautilus/nautilus-clipboard-ui.xml.h:2
 msgid "Copy the selected text to the clipboard"
-msgstr "Copia el text seleccionat al porta-retalls"
+msgstr "Còpia el text seleccionat al porta-retalls"
 
 #: components/text/nautilus-text-view-ui.xml.h:2
 #: libnautilus/nautilus-clipboard-ui.xml.h:10 src/nautilus-shell-ui.xml.h:64
@@ -1035,7 +1035,7 @@ msgid ""
 "actual number of captions shown depends on the zoom level. Possible values "
 "are: size, type, date_modified, date_changed, date_accessed, owner, group, "
 "permissions, octal_permissions and mime_type"
-msgstr ""
+msgstr "Una llista de títols sota una icona a la vista d'icones i a l'escriptori. El número actual de títols mostrats depen del nivell de zoom. Els valors possibles són: size, type, date_modified, date_changed, date_accessed, owner, group, permissions, octal_permissions i mime_type"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:2
 msgid "Add nautilus to session"
@@ -1047,7 +1047,7 @@ msgstr "Mostra una nova finestra per a cada fitxer obert"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:4
 msgid "Criteria for search bar searching."
-msgstr ""
+msgstr "Criteri per a les cerques de la barra de cerques."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
 msgid ""
@@ -1055,7 +1055,7 @@ msgid ""
 "search_by_text, then nautilus will Search for files by file name only. If "
 "set to search_by_text_and_properties\", then nautilus will search for files "
 "by file name and file properties."
-msgstr ""
+msgstr "Criteris per a fer coincidir fitxers cercats a la barra de cerques. Si s'estableix a «search_by_text», aleshores nautilus cercarà fitxers només per nom de fitxer. Si s'estableix a «search_by_text_and_properties» aleshores nautilus cercarà fitxers per nom de fitxer i propietats del fitxer."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 msgid "Current Nautilus theme (deprecated)"
@@ -1063,11 +1063,11 @@ msgstr "Tema del Nautilus actual (desaconsellat)"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:7
 msgid "Custom Background Set"
-msgstr "Joc de fons personalitzat"
+msgstr "Fons personalitzat establert"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:8
 msgid "Custom Side Pane Background Set"
-msgstr ""
+msgstr "Fons personalitzat de la barra lateral establert"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:9
 msgid "Default Background Color"
@@ -1078,13 +1078,12 @@ msgid "Default Background Filename"
 msgstr "Nom del fitxer de fons per defecte"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:11
-#, fuzzy
 msgid "Default Side Pane Background Color"
-msgstr "Utilitza el fons per _defecte"
+msgstr "Color predeterminat per al fons de la barra lateral"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:12
 msgid "Default Side Pane Background Filename"
-msgstr ""
+msgstr "Nom del fitxer del fons per defecte de la barra lateral"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:13
 msgid "Default folder viewer"
@@ -1095,24 +1094,20 @@ msgid "Default sort order"
 msgstr "Criteri d'ordenació predeterminat"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
-#, fuzzy
 msgid "Default zoom level used by the icon view"
-msgstr "Estableix el nivell de zoom de la ubicació actual"
+msgstr "Nivell de zoom predeterminat utilitzat en la vista d'icones"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
-#, fuzzy
 msgid "Default zoom level used by the icon view."
-msgstr "Estableix el nivell de zoom de la ubicació actual"
+msgstr "Nivell de zoom predeterminat utilitzat en la vista d'icones."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
-#, fuzzy
 msgid "Default zoom level used by the list view"
-msgstr "Estableix el nivell de zoom de la ubicació actual"
+msgstr "Nivell de zoom predeterminat utilitzat en la vista de llista"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
-#, fuzzy
 msgid "Default zoom level used by the list view."
-msgstr "Estableix el nivell de zoom de la ubicació actual"
+msgstr "Nivell de zoom predeterminat utilitzat en la vista de llista."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:19
 msgid "Desktop font"
@@ -1140,124 +1135,122 @@ msgstr "Nom de fitxer per al fons del directori predeterminat. Només s'utilitza
 msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
-msgstr ""
+msgstr "Nom del fitxer per al fons predeterminat de la barra lateral. Només s'utilitza si side_pane_background_set és vertader."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
-#, fuzzy
 msgid "Hide default bookmarks in the bookmark menu."
-msgstr ""
-"_No incloguis les adreces d'interès integrades en el menú d'adreces d'interès"
+msgstr "Amaga les adreces d'interés predeterminades al menú de adreces d'interés."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
 msgid "Home icon visible on desktop"
-msgstr ""
+msgstr "La icona de carpeta personal és visible a l'escriptori"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
 msgid ""
 "If set to true, Nautilus will show only show directories in the tree "
 "sidebar. Otherwise it will show both directories and files."
-msgstr ""
+msgstr "Si és vertader, Nautilus només mostrarà directoris a la barra lateral de l'arbre. Si no, mostrarà tant els directoris com els fitxers."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
-msgstr ""
+msgstr "Si és vertader, les finestres noves tindran la barra d'ubicació visible."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid "If set to true, newly opened windows will have the side bar visible."
-msgstr ""
+msgstr "Si és vertader, les finestres noves tindran la barra lateral visible."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
 msgid "If set to true, newly opened windows will have the status bar visible."
-msgstr ""
+msgstr "Si és vertader, les finestres noves tindran la barra d'estat visible."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
 msgid "If set to true, newly opened windows will have toolbars visible."
-msgstr ""
+msgstr "Si és vertader, les finestres noves tindran les barres d'eines visibles."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "put files in the trash."
-msgstr ""
+msgstr "Si és vertarder, Nautilus demanarà confirmació quan tracteu de ficar fitxers a la paperera."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
 msgid ""
 "If set to true, then Nautilus will have a feature allowing you to delete a "
 "file immediately and in-place, instead of moving it to the trash. This "
 "feature can be dangerous, so use caution."
-msgstr ""
+msgstr "Si és vertader, Nautilus tindrà una funcionalitat que vos permetrà suprimir un fitxer immediatament, sense moure'l a la paperera. Aquesta funcionalitat pot ser peligrosa, així que utilitzeu-la amb compte."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
 msgid ""
 "If set to true, then backup files such as those created by Emacs are "
 "displayed. Currently, only files ending in a tilde (~) are considered backup "
 "files."
-msgstr ""
+msgstr "Si és vertader, es mostraran fitxers de còpia de seguretat, com els creats per Emacs. Ara mateix, només es consideren fitxers de còpia de seguretat aquells que acaben amb tilde (~)."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
 msgid ""
 "If set to true, then hidden files (dotfiles) are shown in the file manager."
-msgstr ""
+msgstr "Si és vertader, es mostraran els fitxers ocults (que comencen amb un punt) al gestor de fitxers."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
 msgid ""
 "If set to true, then nautilus lets you edit some of the more esoteric "
 "options of a file in the file preferences dialog."
-msgstr ""
+msgstr "Si és vertader, nautilus vos permetrà editar algunes de les opcions més esotèriques d'un fitxer al diàleg de preferències del fitxer."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
 msgid ""
 "If set to true, then nautilus shows directories prior to showing files in "
 "the icon and list views."
-msgstr ""
+msgstr "Si és vertader, nautilus mostrarà directoris abans de mostrar els fitxers a la vista d'icones i llista."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
 msgid ""
 "If set to true, then nautilus will bring up a new nautilus window by default "
 "whenever an item is opened."
-msgstr ""
+msgstr "Si és vertader, nautilus mostrarà una nova finestra de nautilus per defecte quan s'obre un element."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
 msgid "If set to true, then nautilus will draw the icons on the desktop."
-msgstr ""
+msgstr "Si és vertader, nautilus mostrarà les icones a l'escriptori."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
 msgid ""
 "If set to true, then nautilus will just show the user's bookmarks in the "
 "bookmark menu."
-msgstr ""
+msgstr "Si és vertader, nautilus només mostrarà les adreces d'interés de l'usuari al menú d'adreces d'interés."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
 "If set to true, then nautilus will use the user's home directory as the "
 "desktop. If it is false, then it will use ~/.gnome-desktop as the desktop."
-msgstr ""
+msgstr "Si és vertader, nautilus utilitzarà el directori personal de l'usuari com a escriptori. Si és fals, utilitzarà ~/Desktop com l'escriptori."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
 msgid ""
 "If this is set to true, Nautilus adds itself to the session when it starts "
 "up. This means it will be started the next time you log in."
-msgstr ""
+msgstr "Si s'estableix a vertader, Nautilus s'afegirà ell mateix a la sessió quan s'inicie. Açò vol dir que s'iniciarà la pròxima vegada que entreu."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid ""
 "If this is set to true, an icon linking to the home directory will be put on "
 "the desktop."
-msgstr ""
+msgstr "Si açò és vertader, s'afegirà a l'escriptori una icona que enllaçe amb el directori personal."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
-msgstr ""
+msgstr "Si açò és vertader, s'afegirà a l'escriptori una icona que enllaçe amb la paperera."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
 "sorted from \"z\" to \"a\"."
-msgstr ""
+msgstr "Si és vertader, els fitxers a les noves finestres s'ordenaran en ordre invers. És a dir, si s'ordena per nom, en comptes d'ordenar els fitxers de la «a» a la «z», s'ordenaran de la «z» a la «a»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid ""
@@ -1265,95 +1258,86 @@ msgid ""
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
 "sorted from \"z\" to \"a\"; if sorted by size, instead of being "
 "incrementally they will be sorted decrementally."
-msgstr ""
+msgstr "Si és vertader, els fitxers a les noves finestres s'ordenaran en ordre invers. És a dir, si s'ordena per nom, en comptes d'ordenar els fitxers de la «a» a la «z», s'ordenaran de la «z» a la «a»; si s'ordena per mida, en comptes de ser incremental s'ordenara decrementalment."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
 msgid "If true, icons will be layed out tighter by default in new windows."
-msgstr ""
+msgstr "Si és vertader, les icones es dispondran més rígidament per defecte en les noves finestres."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid "If true, new windows will use manual layout by default."
-msgstr ""
+msgstr "Si és vertader, les noves finestres utilitzaran una disposició manual per defecte."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
 "load or use lots of memory."
-msgstr ""
+msgstr "No es farà miniatures d'imatges més grans que aquesta mida (en bytes). El propòsit d'aquesta configuració és evitar que la creació de minuatures d'imatges grans tarde massa temps o utilitze massa memòria."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid "List of possible captions on icons"
-msgstr ""
+msgstr "Llista dels títols possibles a les icones"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid "Maximum handled files in a directory"
-msgstr ""
+msgstr "Màxim número de fitxers gestionats a un directori"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid "Maximum image size for thumbnailing"
-msgstr ""
+msgstr "Mida màxima de les imatges a miniaturitzar"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
 msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
-msgstr ""
+msgstr "Nom del tema de Nautilus a utilitzar. Açò és desaconsellat des de Nautilus 2.2. Si us plau, utilitzeu el tema d'icones en el seu lloc."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
-#, fuzzy
 msgid "Nautilus handles drawing the desktop"
-msgstr "_Utilitza el Nautilus per dibuixar l'escriptori"
+msgstr "Nautilus gestiona la visualització de l'escriptori"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
-#, fuzzy
 msgid "Nautilus uses the users home directory as the desktop"
-msgstr "Utilitzeu la vostra carpeta d'usuar_i com l'escriptori"
+msgstr "Nautilus utilitza el directori personal de l'usuari com l'escriptori"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid "Only show directories in the tree sidebar"
-msgstr ""
+msgstr "Només mostra directoris a la barra lateral d'arbre"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
-msgstr ""
+msgstr "Els valors possibles són «single» per a llançar fitxers amb només un clic, o «double» per a llançar-los amb un doble clic."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
-#, fuzzy
 msgid "Reverse sort order in new windows"
-msgstr "_Obre cada fitxer o carpeta en una finestra nova"
+msgstr "Inverteix el criteri d'ordenació a les finestres noves"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
-#, fuzzy
 msgid "Show directories first in windows"
-msgstr "Tracta d'ajustar-se en la finestra"
+msgstr "Mostra primer els directoris a les finestres"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
-#, fuzzy
 msgid "Show location bar in new windows"
-msgstr "Mo_stra la barra lateral en una nova finestra"
+msgstr "Mostra la barra d'ubicació a les noves finestres"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
-#, fuzzy
 msgid "Show side bar in new windows"
-msgstr "Mo_stra la barra lateral en una nova finestra"
+msgstr "Mostra la barra lateral a les noves finestres"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
-#, fuzzy
 msgid "Show status bar in new windows"
-msgstr "Mostra la barra d'est_at en una nova finestra"
+msgstr "Mostra la barra d'estat a les noves finestres"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
-#, fuzzy
 msgid "Show toolbar in new windows"
-msgstr "Mostra la barra d'est_at en una nova finestra"
+msgstr "Mostra la barra d'eines a les noves finestres"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
-#, fuzzy
 msgid "Side pane view"
-msgstr "Barra lateral"
+msgstr "Vista de barra lateral"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
 msgid ""
@@ -1361,7 +1345,7 @@ msgid ""
 "icon. If set to \"always\" then always plays the sound, even if the file is "
 "on a remote server. If set to \"local_only\" then only plays previews on "
 "local filesystems. If set to \"never\" then it never previews sound."
-msgstr ""
+msgstr "Penalització de velocitat per a quan es previsualitza un fitxer de so en passar el punter per damunt de la icona del fitxer. Si s'estableix a «always», sempre es reprodueix el so, encara que el fitxer siga a un servidor remot. Si s'estableix a «local_only» aleshores només reprodueix les previsualitzacions a sistemes de fitxers locals. Si s'estableix a «never», mai previsualitza sons."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
 msgid ""
@@ -1370,7 +1354,7 @@ msgid ""
 "server. If set to \"local_only\" then only show thumbnails for local "
 "filesystems. If set to \"never\" then never bother to thumbnail images, just "
 "use a generic icon."
-msgstr ""
+msgstr "Penalització de velocitat per a quan es mostra un fitxer d'imatge com a miniatura. Si s'estableix a «always», sempre es miniaturitza, encara que el fitxer siga a un servidor remot. Si s'estableix a «local_only» aleshores només es mostren miniatures per a sistemes de fitxers locals. Si s'estableix a «never», només utilitza una icona genèrica."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid ""
@@ -1379,7 +1363,7 @@ msgid ""
 "directory is on a remote server. If set to \"local_only\" then only show "
 "previews for local filesystems. If set to \"never\" then never bother to "
 "read preview data."
-msgstr ""
+msgstr "Penalització de velocitat per a quan es previsualitza un fitxer de text a la icona del fitxer. Si s'estableix a «always», sempre es mostra la previsualització, encara que el directori siga a un servidor remot. Si s'estableix a «local_only» aleshores només mostra les previsualitzacions a sistemes de fitxers locals. Si s'estableix a «never», no es molesta en llegir les dades de previsualització."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid ""
@@ -1387,66 +1371,59 @@ msgid ""
 "to \"always\" then always show item counts, even if the directory is on a "
 "remote server. If set to \"local_only\" then only show counts for local "
 "filesystems. If set to \"never\" then never bother to compute item counts."
-msgstr ""
+msgstr "Penalització de velocitat per a quan es mostra el número d'elements a un directori. Si s'estableix a «always», sempre mostra el compte d'elements, encara que el directori siga a un servidor remot. Si s'estableix a «local_only» aleshores només mostra els comptes per a sistemes de fitxers locals. Si s'estableix a «never», no es molesta en computar el compte d'elements."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid ""
 "The default sort-order for the item in the icon view. Possible values are "
 "name, size, type, modification_date, emblems."
-msgstr ""
+msgstr "El criteri d'ordenació per defecte per als elements a la vista d'icones. Els valors possibles són «name», «size», «type», «modification_date», «emblems»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid ""
 "The default sort-order for the item in the list view. Possible values are "
 "name, size, type, and modification_date."
-msgstr ""
+msgstr "El criteri d'ordenació predeterminat per als elements a la vista de llista. Els valors possibles són «name», «size», «type» i «modification_date»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
-#, fuzzy
 msgid "The default width of the sidebar in new windows."
-msgstr "Mo_stra la barra lateral en una nova finestra"
+msgstr "L'amplada predeterminada de la barra lateral a les noves finestres."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
-#, fuzzy
 msgid "The font description used for the icons on the desktop."
-msgstr "La Paperera ha de romandre a l'escriptori."
+msgstr "La descripció del tipus de lletra utilitzada per a les icones de l'escriptori."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid "The side pane view to show in newly opened windows."
-msgstr ""
+msgstr "La vista de barra lateral a mostrar a les noves finestres."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
-#, fuzzy
 msgid ""
 "This name can be set if you want a custom name for the home link icon on the "
 "desktop."
-msgstr "La Paperera ha de romandre a l'escriptori."
+msgstr "Aquest nom es pot establir si voleu un nom personalitzat per a l'enllaç de la icona de carpeta personal de l'escriptori."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
-#, fuzzy
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
-msgstr "La Paperera ha de romandre a l'escriptori."
+msgstr "Aquest nom es pot establir si voleu un nom personalitzat per a la icona de la paperera de l'escriptori."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
-#, fuzzy
 msgid "Trash icon visible on desktop"
-msgstr "Dibuixa el fons i les icones sobre l'escriptori."
+msgstr "La icona de la paperera és visible a l'escriptori"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid "Type of click used to launch/open files"
-msgstr ""
+msgstr "Tipus de clic utilitzat per a llançar/obrir fitxers"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
-#, fuzzy
 msgid "Use manual layout new windows"
-msgstr "Utilitza un format _manual"
+msgstr "Utilitza finestres amb disposició manual"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
-#, fuzzy
 msgid "Use tighter Layout in new windows"
-msgstr "_Obre cada element activat en una nova finestra"
+msgstr "Utilitza una disposició més rígida a les noves finestres"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid ""
@@ -1454,12 +1431,11 @@ msgid ""
 "purpose of this is to avoid unintentionally blowing the heap and killing "
 "nautilus on massive directories. A negative value denotes no limit. The "
 "limit is approximate due to the reading of directories chunk-wise."
-msgstr ""
+msgstr "Es truncaran els directoris gegants, per damunt d'aquesta mida. El propòsit d'açò és evitar que el sobrepasse el límit de memòria i que es mate nautilus en obrir directoris massius. Un valor negatiu vol dir que no hi ha cap límit. El límit és aproximat ja que es lligen els directoris troç a troç."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
-#, fuzzy
 msgid "What to do with executable text files when activated"
-msgstr "_Mostra els fitxers de text executables quan se'ls faci clic"
+msgstr "Què fer amb fitxers de text executables quan s'activen"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid ""
@@ -1467,63 +1443,58 @@ msgid ""
 "double clicked). Possible values are \"launch\" to launch them as programs, "
 "\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
 "text files."
-msgstr ""
+msgstr "Què fer amb fitxers de text executables quan s'activen (simple o doble clic). Els valors possibles són «launch» per a llançar-los com programes, «ask» per a preguntar què fer mitjançant un diàleg i «display» per a mostrar-los com fitxers de text."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are list_view and "
 "icon_view."
-msgstr ""
+msgstr "Quan es visita una carpeta, s'utilitza aquest visor a no ser que hagueu seleccionat una altra vista per a aqueixa carpeta en particular. Els valors possibles són «list_view» i «icon_view»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
-#, fuzzy
 msgid "When to show number of items in a directory"
-msgstr "Mostra el nombre d'elements en les carpetes"
+msgstr "Quan es mostra el número d'elements d'un directori"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
-#, fuzzy
 msgid "When to show preview text in icons"
-msgstr "Mostra te_xt en les icones:"
+msgstr "Quan es mostra text de previsualització a les icones"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
-#, fuzzy
 msgid "When to show thumbnails of image files"
-msgstr "Mostra les miniatures dels fitxers d'imatge"
+msgstr "Quan mostrar miniatures de fitxers d'imatge"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
-#, fuzzy
 msgid "Whether a custom default directory background has been set."
-msgstr "Utilitza el fons de l'escriptori per defecte"
+msgstr "Si s'ha establert un fons de directori predeterminat."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
 msgid "Whether a custom default side pane background has been set."
-msgstr ""
+msgstr "Si s'ha establert un fons de barra lateral predeterminat."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
 msgid "Whether to ask for confirmation when moving files to trash"
-msgstr ""
+msgstr "Si s'ha de demanar confirmació quan es mouen fitxers a la paperera"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:90
 msgid "Whether to enable immediate deletion"
-msgstr ""
+msgstr "Si s'ha d'habilitar la supressió immediata"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
 msgid "Whether to preview sounds when mousing over an icon"
-msgstr ""
+msgstr "Si s'han de previsualitzar sons quan es mou el punter per damunt d'una icona"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
 msgid "Whether to show backup files"
-msgstr ""
+msgstr "Si s'han de mostrar els fitxers de còpia de seguretat"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
 msgid "Whether to show dotfiles"
-msgstr ""
+msgstr "Si s'han de mostrar els fitxers ocults"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
-#, fuzzy
 msgid "width of the sidebar"
-msgstr "Amaga la barra lateral"
+msgstr "amplada de la barra lateral"
 
 #: libnautilus-private/filesystem-attributes.xml.h:1
 msgid "AFFS Volume"
@@ -1655,12 +1626,11 @@ msgstr "a l'escriptori"
 msgid ""
 "You cannot delete a volume icon. If you want to eject the volume, please use "
 "Eject in the right-click menu of the volume."
-msgstr ""
+msgstr "No podeu suprimir una icona de volum. Si voleu ejectar el volum, si us plau, utilitzeu «Ejecta» al menú del botó dret del volum."
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:107
-#, fuzzy
 msgid "Can't delete volume"
-msgstr "No es pot suprimir el tema actual"
+msgstr "No es pot suprimir el volum"
 
 #: libnautilus-private/nautilus-desktop-link.c:139
 #: libnautilus-private/nautilus-file.c:5576
@@ -1822,8 +1792,7 @@ msgid ""
 msgstr ""
 "S'ha produït un error en moure.\n"
 "\n"
-"\"%s\" no es pot moure a la Paperera perquè no teniu permís per canviar-lo a "
-"la seva carpeta pare."
+"\"%s\" no es pot moure a la paperera perquè no teniu permís per canviar-lo a la seva carpeta pare."
 
 #: libnautilus-private/nautilus-file-operations.c:631
 #, c-format
@@ -2243,7 +2212,7 @@ msgstr "GnomeVFSXferProgressStatus %d desconegut"
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:1852
 msgid "Moving files to the Trash"
-msgstr "S'estan movent els fitxers a la Paperera"
+msgstr "S'estan movent els fitxers a la paperera"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1854
@@ -2258,7 +2227,7 @@ msgstr "S'està movent"
 
 #: libnautilus-private/nautilus-file-operations.c:1857
 msgid "Preparing to Move to Trash..."
-msgstr "S'està preparant per a moure a la Paperera..."
+msgstr "S'està preparant per a moure a la paperera..."
 
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:1863
@@ -2322,27 +2291,27 @@ msgstr "S'està preparant per copiar..."
 
 #: libnautilus-private/nautilus-file-operations.c:1910
 msgid "You cannot copy items into the Trash."
-msgstr "No podeu copiar elements a la Paperera"
+msgstr "No podeu copiar elements a la paperera"
 
 #: libnautilus-private/nautilus-file-operations.c:1911
 msgid "Can't Copy to Trash"
-msgstr "No podeu copiar la Paperera."
+msgstr "No podeu copiar la paperera."
 
 #: libnautilus-private/nautilus-file-operations.c:1933
 msgid "You cannot move this trash folder."
-msgstr "No podeu moure la Paperera."
+msgstr "No podeu moure la paperera."
 
 #: libnautilus-private/nautilus-file-operations.c:1934
 msgid "You cannot copy this trash folder."
-msgstr "No podeu copiar la Paperera."
+msgstr "No podeu copiar la paperera."
 
 #: libnautilus-private/nautilus-file-operations.c:1936
 msgid "Can't Change Trash Location"
-msgstr "No podeu canviar la ubicació de la Paperera"
+msgstr "No podeu canviar la ubicació de la paperera"
 
 #: libnautilus-private/nautilus-file-operations.c:1937
 msgid "Can't Copy Trash"
-msgstr "No podeu copiar la Paperera."
+msgstr "No podeu copiar la paperera."
 
 #: libnautilus-private/nautilus-file-operations.c:1960
 msgid "You cannot move a folder into itself."
@@ -2426,24 +2395,22 @@ msgstr "S'està preparant per a suprimir els fitxers..."
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:2224
 msgid "Emptying the Trash"
-msgstr "S'està buidant la Paperera"
+msgstr "S'està buidant la paperera"
 
 #: libnautilus-private/nautilus-file-operations.c:2229
 msgid "Preparing to Empty the Trash..."
-msgstr "S'està preparant per a buidar la Paperera..."
+msgstr "S'està preparant per a buidar la paperera..."
 
 #: libnautilus-private/nautilus-file-operations.c:2263
 #: src/file-manager/fm-desktop-icon-view.c:977
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 msgid "Empty Trash"
-msgstr "Buida la Paperera"
+msgstr "Buida la paperera"
 
 #: libnautilus-private/nautilus-file-operations.c:2279
 msgid ""
 "Are you sure you want to permanently delete all of the items in the Trash?"
-msgstr ""
-"Esteu segurs que voleu eliminar permanentment tots els elements de la "
-"Paperera?"
+msgstr "Esteu segurs que voleu eliminar permanentment tots els elements de la paperera?"
 
 #: libnautilus-private/nautilus-file-operations.c:2289
 msgid "_Empty"
@@ -3188,7 +3155,7 @@ msgstr "permisos en octal"
 #: libnautilus-private/nautilus-global-preferences.c:225
 #: src/nautilus-file-management-properties.glade.h:53
 msgid "MIME type"
-msgstr "tipus MIME"
+msgstr "Tipus MIME"
 
 #: libnautilus-private/nautilus-global-preferences.c:226
 #: src/nautilus-file-management-properties.glade.h:79
@@ -3621,7 +3588,7 @@ msgid "Invalid Action Associated"
 msgstr "Acció associada invàlida"
 
 #: libnautilus-private/nautilus-program-chooser.c:1658
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s\n"
 "\n"
@@ -3631,8 +3598,7 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"Podeu configurar el GNOME per a que associe aplicacions amb tipus de "
-"fitxers. Voleu associar una aplicació amb aquest tipus de fitxer ara?"
+"Podeu configurar el GNOME per a que associe una aplicació o visor diferent amb aquest tipus de fitxer. Voleu associar una aplicació o visor amb aquest tipus de fitxer ara?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1665
 msgid "Associate Action"
@@ -3643,18 +3609,14 @@ msgstr "Associa una acció"
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations.  Would you like to choose another application?"
-msgstr ""
-"\"%s\" no pot obrir \"%s\" perquè \"%s\" no pot accedir als fitxers a les "
-"ubicacions \"%s\". Voleu escollir un altra aplicació?"
+msgstr "«%s» no pot obrir «%s» perquè «%s» no pot accedir als fitxers a les ubicacions «%s». Voleu escollir un altra aplicació?"
 
 #: libnautilus-private/nautilus-program-choosing.c:500
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations.  Would you like to choose another action?"
-msgstr ""
-"\"%s\" no pot obrir \"%s\" perquè \"%s\" no pot accedir als fitxers a les "
-"ubicacions \"%s\". Voleu escollir un altra aplicació?"
+msgstr "L'acció predeterminada no pot obrir «%s» perquè no pot accedir als fitxers a les ubicacions «%s». Voleu escollir un altra acció?"
 
 #: libnautilus-private/nautilus-program-choosing.c:506
 #: libnautilus-private/nautilus-program-choosing.c:537
@@ -3673,15 +3635,12 @@ msgstr ""
 "fitxer. Si copieu aquest fitxer al vostre ordinador, potser podreu obrir-lo."
 
 #: libnautilus-private/nautilus-program-choosing.c:531
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations.  No other actions are available to view this file.  If you copy "
 "this file onto your computer, you may be able to open it."
-msgstr ""
-"\"%s\" no pot obrir \"%s\" perquè \"%s\" no pot accedir als fitxers a les "
-"ubicacions \"%s\". No hi ha cap aplicació disponible per visualitzar aquest "
-"fitxer. Si copieu aquest fitxer al vostre ordinador, potser podreu obrir-lo."
+msgstr "L'acció predeterminada no pot obrir «%s» perque no pot accedir als fitxers a les ubicacions «%s». No hi ha altres accions disponibles per visualitzar aquest fitxer. Si copieu aquest fitxer al vostre ordinador, potser podreu obrir-lo."
 
 #: libnautilus-private/nautilus-program-choosing.c:801
 msgid ""
@@ -3989,7 +3948,7 @@ msgstr "S'estan cercant discs"
 
 #: libnautilus-private/nautilus-trash-directory.c:70
 msgid "Nautilus is searching your disks for trash folders."
-msgstr "Nautilus està cercants carpetes de Paperera en els vostres discs."
+msgstr "Nautilus està cercants carpetes de paperera en els vostres discs."
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -4014,7 +3973,7 @@ msgstr "Refés l'edició"
 #: libnautilus-private/nautilus-view-identifier.c:62
 #, c-format
 msgid "View as %s"
-msgstr "Veure com %s"
+msgstr "Visualitza com %s"
 
 #: libnautilus-private/nautilus-view-identifier.c:68
 #, c-format
@@ -4023,7 +3982,7 @@ msgstr "Visualitzador %s"
 
 #: libnautilus-private/nautilus-volume-monitor.c:831
 msgid "Unknown"
-msgstr "desconegut"
+msgstr "Desconegut"
 
 #. Populate table with items we know localized names for.
 #: libnautilus-private/nautilus-volume-monitor.c:958
@@ -4037,7 +3996,7 @@ msgstr "CD-ROM"
 
 #: libnautilus-private/nautilus-volume-monitor.c:960
 msgid "Zip Drive"
-msgstr "unitat Zip"
+msgstr "Unitat Zip"
 
 #: libnautilus-private/nautilus-volume-monitor.c:975
 #: libnautilus-private/nautilus-volume-monitor.c:1019
@@ -4054,7 +4013,7 @@ msgstr "S'ha produït un error de muntatge"
 
 #: libnautilus-private/nautilus-volume-monitor.c:1689
 msgid "Unmount Error"
-msgstr "S'ha produït un error de desmuntatge."
+msgstr "S'ha produït un error de desmuntatge"
 
 #. Handle floppy case
 #: libnautilus-private/nautilus-volume-monitor.c:1762
@@ -4109,7 +4068,7 @@ msgstr "Volum ISO 9660"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:1 src/nautilus-shell-ui.xml.h:3
 msgid "C_lear Text"
-msgstr "N_eteja el text"
+msgstr "_Neteja el text"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:3
 msgid "Cut Text"
@@ -4399,47 +4358,41 @@ msgstr "Massa fitxers"
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
-msgstr "\"%s\" no es pot moure a la Paperera. Voleu suprimir-lo immediatament?"
+msgstr "\"%s\" no es pot moure a la paperera. Voleu suprimir-lo immediatament?"
 
 #: src/file-manager/fm-directory-view.c:3058
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the Trash. Do you want to delete "
 "them immediately?"
-msgstr ""
-"Els %d elements seleccionats no es poden moure a la Paperera. Voleu suprimir-"
-"los immediatament?"
+msgstr "Els %d elements seleccionats no es poden moure a la paperera. Voleu suprimir-los immediatament?"
 
 #: src/file-manager/fm-directory-view.c:3062
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
 "those %d items immediately?"
-msgstr ""
-"%d dels elements seleccionats no es poden moure a la Paperera. Voleu "
-"suprimir aquests %d elements immediatament?"
+msgstr "%d dels elements seleccionats no es poden moure a la paperera. Voleu suprimir aquests %d elements immediatament?"
 
 #: src/file-manager/fm-directory-view.c:3070
 msgid "Delete Immediately?"
-msgstr "Suprimeixo immediatament?"
+msgstr "Voleu suprimir immediatament?"
 
 #: src/file-manager/fm-directory-view.c:3102
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
-msgstr "Esteu segur de que voleu suprimir permanentment \"%s\" de la Paperera?"
+msgstr "Esteu segur de que voleu suprimir permanentment \"%s\" de la paperera?"
 
 #: src/file-manager/fm-directory-view.c:3106
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "Trash?"
-msgstr ""
-"Esteu segur de que voleu suprimir permanentment els %d elements seleccionats "
-"de la Paperera?"
+msgstr "Esteu segur de que voleu suprimir permanentment els %d elements seleccionats de la paperera?"
 
 #: src/file-manager/fm-directory-view.c:3112
 msgid "Delete From Trash?"
-msgstr "Suprimeixo des de la Paperera?"
+msgstr "Suprimeixo des de la paperera?"
 
 #: src/file-manager/fm-directory-view.c:3399
 #: src/file-manager/fm-directory-view.c:3441
@@ -4572,7 +4525,7 @@ msgstr "Obre _en aquesta Finestra"
 #: src/file-manager/fm-directory-view.c:4723
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Open _in New Window"
-msgstr "Obre en una nova finestra"
+msgstr "Obre en una nova f_inestra"
 
 #: src/file-manager/fm-directory-view.c:4725
 #, c-format
@@ -4581,7 +4534,7 @@ msgstr "Obre _en %d _noves finestres"
 
 #: src/file-manager/fm-directory-view.c:4743
 msgid "_Delete from Trash"
-msgstr "_Suprimeix des de la Paperera"
+msgstr "_Suprimeix de la paperera"
 
 #: src/file-manager/fm-directory-view.c:4745
 msgid "Delete all selected items permanently"
@@ -4591,7 +4544,7 @@ msgstr "Suprimeix tots els elements seleccionats permanentment"
 #: src/file-manager/fm-directory-view.c:5023
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
 msgid "Mo_ve to Trash"
-msgstr "Mo_u a la Paperera"
+msgstr "Mo_u a la paperera"
 
 #: src/file-manager/fm-directory-view.c:4750
 #: src/file-manager/nautilus-directory-view-ui.xml.h:16
@@ -4615,7 +4568,7 @@ msgstr "Crea un _enllaç"
 #: src/file-manager/fm-directory-view.c:4808
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "_Empty Trash"
-msgstr "_Buida la Paperera"
+msgstr "_Buida la paperera"
 
 #: src/file-manager/fm-directory-view.c:4821
 msgid "Cu_t File"
@@ -4628,29 +4581,25 @@ msgstr "Re_talla els fitxer"
 
 #: src/file-manager/fm-directory-view.c:4831
 msgid "_Copy File"
-msgstr "_Copia el fitxer"
+msgstr "_Còpia el fitxer"
 
 #: src/file-manager/fm-directory-view.c:4832
 #: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "_Copy Files"
-msgstr "_Copia els fitxers"
+msgstr "_Còpia els fitxers"
 
 #: src/file-manager/fm-directory-view.c:5014
 msgid ""
 "This link can't be used, because it has no target. Do you want to move this "
 "link to the Trash?"
-msgstr ""
-"Aquest enllaç no es pot usar, perquè no té cap destinació. Voleu moure "
-"aquest enllaç a la Paperera?"
+msgstr "Aquest enllaç no es pot usar, perquè no té cap destinació. Voleu moure aquest enllaç a la paperera?"
 
 #: src/file-manager/fm-directory-view.c:5017
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
 "want to move this link to the Trash?"
-msgstr ""
-"Aquest enllaç no es pot utilitzar, perquè el seu objectiu «%s» no existeix. "
-"Voleu moure aquest enllaç a la Paperera?"
+msgstr "Aquest enllaç no es pot utilitzar, perquè el seu objectiu «%s» no existeix. Voleu moure aquest enllaç a la paperera?"
 
 #: src/file-manager/fm-directory-view.c:5023
 msgid "Broken Link"
@@ -4671,7 +4620,7 @@ msgstr "Voleu executar-lo o visualitzar-lo?"
 
 #: src/file-manager/fm-directory-view.c:5087
 msgid "_Display"
-msgstr "_Visualitza"
+msgstr "_Mostra"
 
 #: src/file-manager/fm-directory-view.c:5088
 msgid "Run in _Terminal"
@@ -4794,7 +4743,7 @@ msgstr "No s'ha pogut canviar el propietari de \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:211
 msgid "Error Setting Owner"
-msgstr "S'ha produït un error especificant el propietari"
+msgstr "S'ha produït un error en especificar el propietari"
 
 #: src/file-manager/fm-error-reporting.c:233
 #, c-format
@@ -4811,7 +4760,7 @@ msgstr "No s'han pogut canviar els permissos de \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:243
 msgid "Error Setting Permissions"
-msgstr "Error especificant els permisos"
+msgstr "S'ha produït un error en especificar els permissos"
 
 #: src/file-manager/fm-error-reporting.c:309
 #, c-format
@@ -4829,7 +4778,7 @@ msgstr "per _nom"
 #: src/file-manager/fm-icon-view.c:158
 #: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by name in rows"
-msgstr "Mantenir les icones ordenades per nom en files"
+msgstr "Mantingues les icones ordenades per nom en files"
 
 #: src/file-manager/fm-icon-view.c:164
 msgid "by _Size"
@@ -4838,7 +4787,7 @@ msgstr "per _mida"
 #: src/file-manager/fm-icon-view.c:165
 #: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by size in rows"
-msgstr "Mantenir les icones ordenades per mida en files"
+msgstr "Mantingues les icones ordenades per mida en files"
 
 #: src/file-manager/fm-icon-view.c:171
 msgid "by _Type"
@@ -4856,7 +4805,7 @@ msgstr "per _data de modificació"
 #: src/file-manager/fm-icon-view.c:179
 #: src/file-manager/nautilus-icon-view-ui.xml.h:12
 msgid "Keep icons sorted by modification date in rows"
-msgstr "Mantenir les icones ordenades per data de modificació en files"
+msgstr "Mantingues les icones ordenades per data de modificació en files"
 
 #: src/file-manager/fm-icon-view.c:185
 msgid "by _Emblems"
@@ -4865,7 +4814,7 @@ msgstr "per _distintius"
 #: src/file-manager/fm-icon-view.c:186
 #: src/file-manager/nautilus-icon-view-ui.xml.h:11
 msgid "Keep icons sorted by emblems in rows"
-msgstr "Mantenir les icones ordenades per distintius en files"
+msgstr "Mantingues les icones ordenades per distintius en files"
 
 #: src/file-manager/fm-icon-view.c:1554
 #: src/file-manager/nautilus-icon-view-ui.xml.h:20
@@ -5401,7 +5350,7 @@ msgstr "Crea una nova llençadora"
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:3
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "Delete all items in the Trash"
-msgstr "Suprimeix tots els elements de la Paperera"
+msgstr "Suprimeix tots els elements de la paperera"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
 msgid "Dis_ks"
@@ -5496,7 +5445,7 @@ msgstr "D_uplica"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Delete each selected item, without moving to the Trash"
-msgstr "Suprimeix cada element seleccionat, sense moure'ls a la Paperera"
+msgstr "Suprimeix cada element seleccionat, sense moure'ls a la paperera"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
 msgid "Duplicate each selected item"
@@ -5579,7 +5528,7 @@ msgstr "Visualitza o modifica les propietats de cada element seleccionat"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "_New Folder"
-msgstr "_Nova Carpeta"
+msgstr "_Nova carpeta"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
 msgid "_Open"
@@ -5675,7 +5624,7 @@ msgstr "Commuta utilitzant un esquema de format ajustat"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:24
 msgid "_Keep Aligned"
-msgstr ""
+msgstr "_Mantingues aliniat"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:25
 msgid "_Manually"
@@ -6018,7 +5967,7 @@ msgstr "Sempre"
 
 #: src/nautilus-file-management-properties.glade.h:37
 msgid "Ask before _emptying the Trash or deleting files"
-msgstr "Pregunta'm a_bans de buidar la Paperera o suprimir els fitxers"
+msgstr "Pregunta'm a_bans de buidar la paperera o suprimir els fitxers"
 
 #: src/nautilus-file-management-properties.glade.h:38
 msgid "Behavior"
@@ -6046,7 +5995,7 @@ msgstr "Preferències de gestió de fitxers"
 
 #: src/nautilus-file-management-properties.glade.h:48
 msgid "I_nclude a Delete command that bypasses Trash"
-msgstr "I_nclou una ordre Suprimeix que no tingui en compte la Paperera"
+msgstr "I_nclou una ordre Suprimeix que no tingui en compte la paperera"
 
 #: src/nautilus-file-management-properties.glade.h:49
 msgid "Icon Captions"
@@ -6074,7 +6023,7 @@ msgstr "Mostra les _miniatures:"
 
 #: src/nautilus-file-management-properties.glade.h:59
 msgid "Show hidden and _backup files"
-msgstr "Mostra els fitxers ocults i de còpia de seguretat"
+msgstr "Mostra els fitxers ocults i de _còpia de seguretat"
 
 #: src/nautilus-file-management-properties.glade.h:60
 msgid "Show te_xt in icons:"
@@ -6086,7 +6035,7 @@ msgstr "Ordena les car_petes abans que els fitxers"
 
 #: src/nautilus-file-management-properties.glade.h:62
 msgid "Sort in _reverse"
-msgstr "Ordena en ordre reve_rs"
+msgstr "Ordena en ordre inve_rs"
 
 #: src/nautilus-file-management-properties.glade.h:63
 msgid "Use _manual layout"
@@ -6174,7 +6123,7 @@ msgstr "No es pot llançar el gravador de cd"
 #. FIXME: We don't use spaces to pad labels!
 #: src/nautilus-information-panel.c:1042
 msgid "Empty _Trash"
-msgstr "Buida la _Paperera"
+msgstr "Buida la _paperera"
 
 #. FIXME: We don't use spaces to pad labels!
 #: src/nautilus-information-panel.c:1058
@@ -6258,15 +6207,15 @@ msgstr "nautilus: --la geometria no es pot utilitzar amb més d'una URI.\n"
 
 #: src/nautilus-profiler.c:209
 msgid "Print"
-msgstr "Imprimir"
+msgstr "Imprimeix"
 
 #: src/nautilus-profiler.c:210
 msgid "Save"
-msgstr "Desar"
+msgstr "Desa"
 
 #: src/nautilus-profiler.c:246
 msgid "Profile Dump"
-msgstr "Volcat de Perfil "
+msgstr "Volcat del perfilat"
 
 #. set the title and standard close accelerator
 #: src/nautilus-property-browser.c:270
@@ -6275,7 +6224,7 @@ msgstr "Fons i distintius"
 
 #: src/nautilus-property-browser.c:386
 msgid "_Remove..."
-msgstr "_Elimina..."
+msgstr "_Suprimeix..."
 
 #: src/nautilus-property-browser.c:407
 msgid "_Add new..."
@@ -6666,7 +6615,7 @@ msgstr "Neteja els continguts del menú Vés i les llistes endarrere/endavant"
 
 #: src/nautilus-shell-ui.xml.h:10
 msgid "Close _All Windows"
-msgstr "Tanca _totes les finestres"
+msgstr "Ta_nca totes les finestres"
 
 #: src/nautilus-shell-ui.xml.h:11
 msgid "Close all Nautilus windows"
@@ -6755,7 +6704,7 @@ msgstr "Nova _finestra"
 
 #: src/nautilus-shell-ui.xml.h:32
 msgid "Normal Si_ze"
-msgstr "M_ida normal"
+msgstr "_Mida normal"
 
 #: src/nautilus-shell-ui.xml.h:33
 msgid "Open another Nautilus window for the displayed location"
@@ -6771,11 +6720,11 @@ msgstr "Actualitza"
 
 #: src/nautilus-shell-ui.xml.h:36
 msgid "Report Profiling"
-msgstr ""
+msgstr "Mostra el perfilat"
 
 #: src/nautilus-shell-ui.xml.h:37
 msgid "Reset Profiling"
-msgstr ""
+msgstr "Reinicia el perfilat"
 
 #: src/nautilus-shell-ui.xml.h:38
 msgid "Search this computer for files"
@@ -6799,15 +6748,15 @@ msgstr "Barra d'est_at"
 
 #: src/nautilus-shell-ui.xml.h:44
 msgid "Start Profiling"
-msgstr "Inicia el"
+msgstr "Comença el perfilat"
 
 #: src/nautilus-shell-ui.xml.h:45
 msgid "Stop"
-msgstr "Aturar"
+msgstr "Atura"
 
 #: src/nautilus-shell-ui.xml.h:46
 msgid "Stop Profiling"
-msgstr "Atura"
+msgstr "Atura el perfilat"
 
 #: src/nautilus-shell-ui.xml.h:47
 msgid "Stop loading this location"
@@ -6825,7 +6774,7 @@ msgstr "Amunt"
 #: src/nautilus-shell-ui.xml.h:50 src/nautilus-window.c:522
 #: src/nautilus-window.c:1500
 msgid "View as..."
-msgstr "Veure com a..."
+msgstr "Visualitza com a..."
 
 #: src/nautilus-shell-ui.xml.h:51
 msgid "Write contents to a CD"
@@ -6837,11 +6786,11 @@ msgstr "Escriu a un CD"
 
 #: src/nautilus-shell-ui.xml.h:53
 msgid "Zoom _In"
-msgstr "_Amplia el Zoom"
+msgstr "Amplia el _zoom"
 
 #: src/nautilus-shell-ui.xml.h:54
 msgid "Zoom _Out"
-msgstr "_Redueix el Zoom"
+msgstr "_Redueix el zoom"
 
 #: src/nautilus-shell-ui.xml.h:55
 msgid "_About"
@@ -6865,11 +6814,11 @@ msgstr "_Adreces d'interès"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
-msgstr "Creador de _CD"
+msgstr "Creador de C_D"
 
 #: src/nautilus-shell-ui.xml.h:61
 msgid "_Clear History"
-msgstr "Obl_idat de l'historial"
+msgstr "Obl_ida't de l'historial"
 
 #: src/nautilus-shell-ui.xml.h:62
 msgid "_Close Window"
@@ -6925,11 +6874,11 @@ msgstr "Ac_tualitza"
 
 #: src/nautilus-shell-ui.xml.h:77
 msgid "_Report Profiling"
-msgstr ""
+msgstr "_Mostra el perfilat"
 
 #: src/nautilus-shell-ui.xml.h:78
 msgid "_Reset Profiling"
-msgstr "_Reinicia el perfil"
+msgstr "_Reinicia el perfilat"
 
 #: src/nautilus-shell-ui.xml.h:79
 msgid "_Side Pane"
@@ -6941,7 +6890,7 @@ msgstr "_Comenceu aquí"
 
 #: src/nautilus-shell-ui.xml.h:81
 msgid "_Start Profiling"
-msgstr "_Inicia el perfil"
+msgstr "_Inicia el perfilat"
 
 #: src/nautilus-shell-ui.xml.h:82
 msgid "_Stop"
@@ -6949,7 +6898,7 @@ msgstr "A_tura"
 
 #: src/nautilus-shell-ui.xml.h:83
 msgid "_Stop Profiling"
-msgstr "_Atura el perfil"
+msgstr "_Atura el perfilat"
 
 #: src/nautilus-shell-ui.xml.h:84
 msgid "_Toolbar"
@@ -6969,7 +6918,7 @@ msgstr "_Amunt"
 
 #: src/nautilus-shell-ui.xml.h:88
 msgid "_View"
-msgstr "_Visualitza"
+msgstr "Vi_sualitza"
 
 #: src/nautilus-shell-ui.xml.h:89
 msgid "_View as..."
@@ -7333,10 +7282,10 @@ msgstr ""
 #~ msgstr "Es requereix identificació"
 
 #~ msgid "The Trash must remain on the desktop."
-#~ msgstr "La Paperera ha de romandre a l'escriptori."
+#~ msgstr "La paperera ha de romandre a l'escriptori."
 
 #~ msgid "You cannot copy the Trash."
-#~ msgstr "No podeu copiar la Paperera."
+#~ msgstr "No podeu copiar la paperera."
 
 #~ msgid "_Location:"
 #~ msgstr "_Ubicació:"
@@ -7387,7 +7336,7 @@ msgstr ""
 #~ msgstr "Neteja el text"
 
 #~ msgid "Copy Text"
-#~ msgstr "Copia el text"
+#~ msgstr "Còpia el text"
 
 #~ msgid "Paste Text"
 #~ msgstr "Enganxa el text"
@@ -7492,7 +7441,7 @@ msgstr ""
 #~ msgstr "Mostra original del component de vista de contingut"
 
 #~ msgid "View as Sample"
-#~ msgstr "Veure com a mostra"
+#~ msgstr "Visualitza com a mostra"
 
 #~ msgid "This is a sample merged menu item"
 #~ msgstr "Això és un element de mostra del menú combinat"
@@ -7561,10 +7510,10 @@ msgstr ""
 #~ msgstr "Mostra la barra d'estat"
 
 #~ msgid "_Ask before emptying the Trash or deleting files"
-#~ msgstr "Pregunt_a'm abans de buidar la Paperera o suprimir els fitxers"
+#~ msgstr "Pregunt_a'm abans de buidar la paperera o suprimir els fitxers"
 
 #~ msgid "_Include a Delete command that bypasses Trash"
-#~ msgstr "_Inclou una ordre Suprimeix que no tingui en compte la Paperera"
+#~ msgstr "_Inclou una ordre Suprimeix que no tingui en compte la paperera"
 
 #~ msgid "Click Behavior"
 #~ msgstr "Comportament en fer clic"
@@ -7602,7 +7551,7 @@ msgstr ""
 #~ msgstr "Vista de les icones predeterminada"
 
 #~ msgid "_Sort in reverse"
-#~ msgstr "Ordena en ordre rever_s"
+#~ msgstr "Ordena en ordre inver_s"
 
 #~ msgid "Use co_mpact layout"
 #~ msgstr "Utilitza un format co_mpacte"
@@ -8279,16 +8228,16 @@ msgstr ""
 #~ msgstr "Elimina qualsevol imatge personalitzada de les icones seleccionades"
 
 #~ msgid "Empty Trash..."
-#~ msgstr "Buida la Paperera..."
+#~ msgstr "Buida la paperera..."
 
 #~ msgid "_Delete from Trash..."
-#~ msgstr "_Suprimeix des de la Paperera..."
+#~ msgstr "_Suprimeix des de la paperera..."
 
 #~ msgid "_Delete..."
 #~ msgstr "_Suprimeix..."
 
 #~ msgid "_Empty Trash..."
-#~ msgstr "_Buida la Paperera"
+#~ msgstr "_Buida la paperera"
 
 #~ msgid "_Backgrounds and Emblems..."
 #~ msgstr "_Fons i distintius..."
@@ -8431,7 +8380,7 @@ msgstr ""
 #~ "Voleu anar-hi ara?"
 
 #~ msgid "Move to _Trash"
-#~ msgstr "Mou a la _Paperera"
+#~ msgstr "Mou a la _paperera"
 
 #~ msgid "De_lete"
 #~ msgstr "Su_primeix"
@@ -8474,7 +8423,7 @@ msgstr ""
 #~ msgstr "Retalla els fitxers"
 
 #~ msgid "New Folder"
-#~ msgstr "Nova Carpeta"
+#~ msgstr "Nova carpeta"
 
 #~ msgid "New La_uncher"
 #~ msgstr "No_va llençadora"
@@ -8507,7 +8456,7 @@ msgstr ""
 #~ msgstr "Selecciona tots els fitxers"
 
 #~ msgid "Show the contents of the Trash"
-#~ msgstr "Mostra els continguts de la Paperera"
+#~ msgstr "Mostra els continguts de la paperera"
 
 #~ msgid "_Duplicate"
 #~ msgstr "_Duplica"
@@ -8516,7 +8465,7 @@ msgstr ""
 #~ msgstr "Crea una enllaç"
 
 #~ msgid "_Show Trash"
-#~ msgstr "_Mostra la Paperera"
+#~ msgstr "_Mostra la paperera"
 
 #~ msgid "Reversed Order"
 #~ msgstr "Ordre invers"
@@ -8591,7 +8540,7 @@ msgstr ""
 #~ msgstr "Original per a la vista d'anotacions"
 
 #~ msgid "Delete Trash Contents?"
-#~ msgstr "Voleu suprimir el contingut de la Paperera?"
+#~ msgstr "Voleu suprimir el contingut de la paperera?"
 
 #~ msgid "_Restore Icons' Original Sizes"
 #~ msgstr "_Restaura les icones a la mida sense estirar"
@@ -9598,40 +9547,7 @@ msgstr ""
 #~ msgstr "No hi ha carpeta de seqüències"
 
 #~ msgid "Move all selected items to the Trash"
-#~ msgstr "Mou tots els elements seleccionats a la Paperera"
-
-#~ msgid "Go to the Eazel Services Summary Page"
-#~ msgstr "Vés a la pàgina del sumari del serveis de l'Eazel"
-
-#~ msgid "Go to the Eazel Software Catalog"
-#~ msgstr "Vés al catàleg del programari de l'Eazel"
-
-#~ msgid "Go to your online storage repository"
-#~ msgstr "Va al vostre lloc de dipòsit en línea"
-
-#~ msgid "Software _Catalog"
-#~ msgstr "_Catàleg de programari"
-
-#~ msgid "_Eazel Services Home"
-#~ msgstr "Pagina inicial dels serveis de l'Eazel"
-
-#~ msgid "_Online Storage"
-#~ msgstr "_Emmagatzematge en línia"
-
-#~ msgid "_Services"
-#~ msgstr "_Serveis"
-
-#~ msgid "Display support information for Nautilus and Eazel Services"
-#~ msgstr "Mostra la informació de suport del Nautilus i dels Serveis Eazel"
-
-#~ msgid "Go to Eazel Services"
-#~ msgstr "Va al Serveis Eazel"
-
-#~ msgid "_Community Support"
-#~ msgstr "Suport a la _comunitat"
-
-#~ msgid "Eazel Services"
-#~ msgstr "Serveis de l'Eazel"
+#~ msgstr "Mou tots els elements seleccionats a la paperera"
 
 #~ msgid "GConf Error"
 #~ msgstr "S'ha produït un error a GConf"
@@ -10688,10 +10604,10 @@ msgstr ""
 #~ msgstr "No podeu moure un element a sobre d'ell mateix."
 
 #~ msgid "You cannot throw \"%s\" into the Trash."
-#~ msgstr "No podeu llançar \"%s\" a la Paperera."
+#~ msgstr "No podeu llançar \"%s\" a la paperera."
 
 #~ msgid "Error Moving to Trash"
-#~ msgstr "Hi ha hagut un error en moure a la Paperera"
+#~ msgstr "Hi ha hagut un error en moure a la paperera"
 
 #~ msgid "current theme"
 #~ msgstr "tema actual"
@@ -10844,7 +10760,7 @@ msgstr ""
 #~ msgstr "Cerca a la web"
 
 #~ msgid "  Empty Trash  "
-#~ msgstr " Buida la Paperera"
+#~ msgstr " Buida la paperera"
 
 #~ msgid "View as Other..."
 #~ msgstr "Veure com altres..."
@@ -11404,7 +11320,7 @@ msgstr ""
 #~ "%s"
 
 #~ msgid "You cannot throw away the Trash."
-#~ msgstr "No podeu llançar la Paperera."
+#~ msgstr "No podeu llançar la paperera."
 
 #~ msgid "Deleting items"
 #~ msgstr "S'estan suprimint els elements"
