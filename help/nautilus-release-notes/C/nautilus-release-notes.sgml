@@ -129,15 +129,6 @@
 
    <listitem>
     <para>
-     Nautilus includes a fast <guimenuitem>find</guimenuitem> feature
-     that indexes your hard disk so you can quickly search for a file
-     by content as well as file name, creation date, and other file
-     attributes.
-    </para>
-   </listitem>
-
-   <listitem>
-    <para>
      Nautilus has several <guimenuitem>customization</guimenuitem>
      features: You can change backgrounds, personalize icons, and
      switch themes.
@@ -246,35 +237,6 @@
     3. Restart Nautilus.
    </para>
 
-   <para><guimenuitem>Medusa Off by Default</guimenuitem></para>
-
-   <para>The Medusa daemon, which indexes your hard disk so fast
-   searches can be performed, is turned off by default. To turn it on,
-   follow these steps:
-   </para>
-
-   <para>
-    1. Open the preferences menu and choose Preferences.
-   </para>
-
-   <para>
-    2. Click Search in the left-hand column of the Preferences dialog box.
-   </para>
-
-   <para>
-    3. In the Fast Search section, make sure that the button next to
-    Enable fast search is turned on.
-   </para>
-
-   <para>
-    4. Click OK to close the Preferences dialog box.
-   </para>
-
-   <para>Note: For Medusa to perform its indexing task, the crond
-   program must also be running. If you have turned off crond, Medusa
-   won't work.
-   </para>
-
   </sect1>
 
   <sect1 id="session">
@@ -374,7 +336,27 @@
 
    </orderedlist>
 
- </sect1>
+  </sect1>
+
+  <sect1 id="mozilla">
+   <title>Mozilla</title>
+
+   <para>
+    Note that there are some problems using Mozilla 0.8.1 with 
+    this release of Nautilus.  You should use Mozilla 0.8 only 
+    with this release of Nautilus.
+   </para>
+  </sect1>
+
+  <sect1 id="searching">
+   <title>Searching</title>
+
+   <para>
+    The find features used to search the files on your local machine 
+    are not available in Nautilus 1.0.  These features will be
+    available in another release soon. 
+   </para>
+  </sect1>
 
 </article>
 
