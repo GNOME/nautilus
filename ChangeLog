@@ -1,3 +1,10 @@
+Sun Jan  4 14:39:49 2004  Soeren Sandmann  <sandmann@daimi.au.dk>
+
+	* cut-n-paste-code/gsequence/gsequence.c
+	(g_sequence_ptr_is_begin): Compare to ptr instead of NULL, since
+	g_sequence_node_prev() never returns NULL. (pointed out by
+	Jeffrey Yasskin).
+
 2004-01-04  Martin Wehner  <martin.wehner@epost.de>
 
 	* libnautilus-private/nautilus-file-operations-progress.[ch]:
