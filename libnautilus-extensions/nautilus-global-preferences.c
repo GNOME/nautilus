@@ -226,7 +226,7 @@ global_preferences_create_dialog (void)
 							     "Search Settings");
 
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
-					     "Search Speed");
+					     "Search Tradeoffs");
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
 							 0,
 							 NAUTILUS_PREFERENCES_SEARCH_SPEED_SETTINGS,
@@ -550,7 +550,7 @@ global_preferences_register_for_ui (void)
 							   "standard");
 
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SEARCH_SPEED_SETTINGS,
-							   "look on disk after searching the index",
+							   "find very new files by doing a slow search on disk after a fast search",
 							   FALSE,
 							   FALSE,
 							   FALSE);
