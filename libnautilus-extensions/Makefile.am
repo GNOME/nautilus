@@ -19,16 +19,8 @@ libnautilus_extensions_la_LDFLAGS=\
 	$(GNOMECANVASPIXBUF_LIBS) \
 	$(VFS_LIBS) \
 	$(XML_LIBS) \
-	$(LIBPNG) \	
+	$(LIBPNG) \
 	$(top_src_dir)/libnautilus/.libs/libnautilus.so
-
-fsextension_idl_sources = 	\
-	fsextension-stubs.c 	\
-	fsextension-skels.c 	\
-	fsextension-common.c 	\
-	fsextension.h
-	
-BUILT_SOURCES = $(fsextension_idl_sources)
 
 libnautilus_extensionsincludedir=$(includedir)/libnautilus-extensions
 
@@ -118,14 +110,4 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-string-list.c			\
 	nautilus-string.c			\
 	nautilus-xml-extensions.c		\
-	$(fsextension_idl_sources)		\
 	$(NULL)
-
-$(fsextension_idl_sources): fsextension_idl_stamp
-fsextension_idl_stamp: $(top_srcdir)/idl/fsextension.idl
-	orbit-idl -I${datadir}/idl `gnome-config --cflags idl` $(top_srcdir)/idl/fsextension.idl
-	touch fsextension_idl_stamp
-	
-CLEANFILES = fsextension_idl_stamp
-
-EXTRA_DIST = $(top_srcdir)/idl/fsextension.idl $(top_srcdir)/idl/GNOME_Desktop_FileOperationService.idl

@@ -317,6 +317,11 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 {
 	g_assert (NAUTILUS_IS_FILE (file));
 
+	/* Once the file is gone, you can't do much of anything. */
+	if (nautilus_file_is_gone (file)) {
+		return TRUE;
+	}
+
 	if (!nautilus_file_can_get_permissions (file)) {
 		/* 
 		 * File's permissions field is not valid.
@@ -442,6 +447,11 @@ nautilus_file_can_rename (NautilusFile *file)
 	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
+	/* Nonexistent files can't be renamed. */
+	if (nautilus_file_is_gone (file)) {
+		return FALSE;
+	}
+
 	/* User must have write permissions for the parent directory. */
 	parent = get_file_for_parent_directory (file);
 
@@ -460,24 +470,143 @@ nautilus_file_can_rename (NautilusFile *file)
 	return result;
 }
 
+typedef struct {
+	NautilusFile *file;
+	GnomeVFSAsyncHandle *handle;
+	NautilusFileOperationCallback callback;
+	gpointer callback_data;
+
+	/* Operation-specific data. */
+	char *new_name; /* rename */
+} FileOperationState;
+
+static FileOperationState *
+file_operation_state_new (NautilusFile *file,
+			  NautilusFileOperationCallback callback,
+			  gpointer callback_data)
+{
+	FileOperationState *state;
+
+	nautilus_file_ref (file);
+
+	state = g_new0 (FileOperationState, 1);
+	state->file = file;
+	state->callback = callback;
+	state->callback_data = callback_data;
+
+	return state;
+}
+
+static void
+file_operation_state_free (FileOperationState *state)
+{
+	nautilus_file_unref (state->file);
+	g_free (state->new_name);
+	g_free (state);
+}
+
+static void
+file_operation_state_complete (FileOperationState *state,
+			       GnomeVFSResult result)
+{
+	/* Claim that something changed even if the operation failed.
+	 * This makes it easier for some clients who see the "reverting"
+	 * as "changing back".
+	 */
+	nautilus_file_changed (state->file);
+	(* state->callback) (state->file, result, state->callback_data);
+	file_operation_state_free (state);
+}
+
+static void
+rename_update_info_and_metafile (FileOperationState *state)
+{
+	xmlNode *file_node;
+
+	file_node = nautilus_directory_get_file_metadata_node 
+		(state->file->details->directory,
+		 state->file->details->info->name,
+		 FALSE);
+	
+	if (file_node != NULL) {
+		xmlSetProp (file_node,
+			    METADATA_NODE_NAME_FOR_FILE_NAME,
+			    state->new_name);
+		nautilus_directory_request_write_metafile
+			(state->file->details->directory);
+	}
+	
+	g_free (state->file->details->info->name);
+	state->file->details->info->name = g_strdup (state->new_name);
+}
+
+static int
+rename_callback (GnomeVFSAsyncHandle *handle,
+		 GnomeVFSXferProgressInfo *info,
+		 gpointer callback_data)
+{
+	FileOperationState *state;
+
+	state = callback_data;
+	g_assert (handle == state->handle);
+	g_assert (info != NULL);
+
+	/* We aren't really interested in progress, but we do need to see
+	 * when the transfer is done or fails.
+	 */
+
+	switch (info->status) {
+	case GNOME_VFS_XFER_PROGRESS_STATUS_OK:
+		if (info->phase == GNOME_VFS_XFER_PHASE_COMPLETED) {
+			/* Here's the case where we are done renaming and we succeed. */
+			rename_update_info_and_metafile (state);
+			file_operation_state_complete (state, GNOME_VFS_OK);
+		}
+		break;
+	case GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR:
+		/* Here's the case where we are done renaming and we fail. */
+		file_operation_state_complete (state, info->vfs_status);
+		return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
+	default:
+		break;
+	}
+
+	/* FIXME: Pavel says I should return this, but he promises
+	 * he will fix the API.
+	 */
+	return 1;
+}
+
 void
 nautilus_file_rename (NautilusFile *file,
 		      const char *new_name,
 		      NautilusFileOperationCallback callback,
 		      gpointer callback_data)
 {
-	GnomeVFSURI *new_uri;
-	char *old_uri_text;
-	char *new_uri_text;
+	char *directory_uri_text;
+	GList *source_name_list, *target_name_list;
 	GnomeVFSResult result;
-	xmlNode *file_node;
+	FileOperationState *state;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (new_name != NULL);
 	g_return_if_fail (callback != NULL);
 	
-	/* Can't rename a file that's already gone. */
+	/* FIXME bugzilla.eazel.com 645: 
+	 * Make sure this returns an error for incoming names 
+	 * containing path separators.
+	 */
+
+	/* Can't rename a file that's already gone.
+	 * We need to check this here because there may be a new
+	 * file with the same name.
+	 */
 	if (nautilus_file_is_gone (file)) {
+	       	/* Claim that something changed even if the rename failed.
+		 * This makes it easier for some clients who see the "reverting"
+		 * to the old name as "changing back".
+		 */
+		nautilus_file_changed (file);
 		(* callback) (file, GNOME_VFS_ERROR_NOTFOUND, callback_data);
 		return;
 	}
@@ -491,45 +620,36 @@ nautilus_file_rename (NautilusFile *file,
 		return;
 	}
 
-	old_uri_text = nautilus_file_get_uri (file);
-	new_uri = gnome_vfs_uri_append_path
-		(file->details->directory->details->uri, new_name);
-	new_uri_text = gnome_vfs_uri_to_string (new_uri, GNOME_VFS_URI_HIDE_NONE);
-	gnome_vfs_uri_unref (new_uri);
+	state = file_operation_state_new (file, callback, callback_data);
+	state->new_name = g_strdup (new_name);
 
-	/* FIXME bugzilla.eazel.com 435: 
-	 * Should handle possibility of slow asynch call here. 
-	 */
-	result = gnome_vfs_move (old_uri_text, new_uri_text, FALSE);
-	if (result == GNOME_VFS_OK) {
-		file_node = nautilus_directory_get_file_metadata_node 
-			(file->details->directory,
-			 file->details->info->name,
-			 FALSE);
+	directory_uri_text = nautilus_directory_get_uri (file->details->directory);
+	source_name_list = g_list_prepend (NULL, file->details->info->name);
+	target_name_list = g_list_prepend (NULL, (char *) new_name);
+	result = gnome_vfs_async_xfer
+		(&state->handle,
+		 directory_uri_text, source_name_list,
+		 directory_uri_text, target_name_list,
+		 GNOME_VFS_XFER_SAMEFS | GNOME_VFS_XFER_REMOVESOURCE,
+		 GNOME_VFS_XFER_ERROR_MODE_QUERY,
+		 GNOME_VFS_XFER_OVERWRITE_MODE_ABORT,
+		 rename_callback, state,
+		 NULL, NULL);
+	g_free (directory_uri_text);
+	g_list_free (source_name_list);
+	g_list_free (target_name_list);
 
-		if (file_node != NULL) {
-			xmlSetProp (file_node, METADATA_NODE_NAME_FOR_FILE_NAME, new_name);
-			nautilus_directory_request_write_metafile (file->details->directory);
-		}
-		
-		/* FIXME bugzilla.eazel.com 645: 
-		 * Make sure this does something sensible with incoming names 
-		 * containing path separators.
+	if (result != GNOME_VFS_OK) {
+		file_operation_state_free (state);
+
+	       	/* Claim that something changed even if the rename failed.
+		 * This makes it easier for some clients who see the "reverting"
+		 * to the old name as "changing back".
 		 */
-		g_free (file->details->info->name);
-		file->details->info->name = g_strdup (new_name);
+		nautilus_file_changed (file);
+		(* callback) (file, result, callback_data);
+		return;
 	}
-
-	g_free (old_uri_text);
-	g_free (new_uri_text);
-
-	/* Claim that something changed even if the rename failed.
-	 * This makes it easier for some clients who see the "reverting"
-	 * to the old name as "changing back".
-	 */
-	nautilus_file_changed (file);
-
-	(* callback) (file, result, callback_data);
 }
 
 gboolean         
@@ -563,8 +683,9 @@ nautilus_file_matches_uri (NautilusFile *file, const char *uri_string)
 gboolean
 nautilus_file_update (NautilusFile *file, GnomeVFSFileInfo *info)
 {
-	if (gnome_vfs_file_info_matches (file->details->info, info))
+	if (gnome_vfs_file_info_matches (file->details->info, info)) {
 		return FALSE;
+	}
 
 	gnome_vfs_file_info_unref (file->details->info);
 	gnome_vfs_file_info_ref (info);
@@ -827,13 +948,11 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 	}
 
 	if (reversed) {
-		return gnome_vfs_file_info_compare_for_sort_reversed (file_1->details->info,
-								      file_2->details->info,
-								      rules);
+		return gnome_vfs_file_info_compare_for_sort_reversed
+			(file_1->details->info, file_2->details->info, rules);
 	} else {
-		return gnome_vfs_file_info_compare_for_sort (file_1->details->info,
-							     file_2->details->info,
-							     rules);
+		return gnome_vfs_file_info_compare_for_sort
+			(file_1->details->info, file_2->details->info, rules);
 	}
 }
 
@@ -967,9 +1086,8 @@ nautilus_file_monitor_remove (NautilusFile         *file,
 
 /* return the uri associated with the passed-in file, which may not be the actual uri if
    the file is an old-style gmc link or a nautilus xml file */
-
 char *
-nautilus_file_get_mapped_uri(NautilusFile *file)
+nautilus_file_get_mapped_uri (NautilusFile *file)
 {
 	char* actual_uri;
 	GnomeVFSResult result;
@@ -978,26 +1096,26 @@ nautilus_file_get_mapped_uri(NautilusFile *file)
 	GnomeVFSFileSize bytes_read;
 
 	/* first get the actual uri */
-	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 		
-	actual_uri = nautilus_file_get_uri(file);
-	if (actual_uri == NULL)
+	actual_uri = nautilus_file_get_uri (file);
+	if (actual_uri == NULL) {
 		return NULL;
+	}
 		
+	/* FIXME: Need to use async. I/O. */
 	/* see if it's a gmc style URI by reading the first part of the file */
-
 	result = gnome_vfs_open (&handle, actual_uri, GNOME_VFS_OPEN_READ);
 	if (result == GNOME_VFS_OK) {
 		result = gnome_vfs_read (handle, buffer, sizeof (buffer), &bytes_read);
 		if (result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_EOF) {
-			if (nautilus_str_has_prefix(buffer, "URL: ")) {
-				char *eol = strchr(buffer, '\n');
+			if (nautilus_str_has_prefix (buffer, "URL: ")) {
+				char *eol = strchr (buffer, '\n');
 				if (eol)
 					*eol = '\0';
-				if (strlen(buffer) <= bytes_read) {
-					g_free(actual_uri);
-					actual_uri = g_strdup(buffer + 5);
+				if (strlen (buffer) <= bytes_read) {
+					g_free (actual_uri);
+					actual_uri = g_strdup (buffer + 5);
 				}
 			}
 		}
@@ -1005,11 +1123,10 @@ nautilus_file_get_mapped_uri(NautilusFile *file)
 	}
 	
 	/* see if it's a nautilus link xml file - if so, open and parse the file to fetch the uri */
-	
-	if (nautilus_link_is_link_file(actual_uri)) {
+	if (nautilus_link_is_link_file (actual_uri)) {
 		char *old_uri = actual_uri;
-		actual_uri = nautilus_link_get_link_uri(actual_uri);
-		g_free(old_uri);
+		actual_uri = nautilus_link_get_link_uri (actual_uri);
+		g_free (old_uri);
 	}
 		
 	/* all done so return the result */
@@ -1025,8 +1142,9 @@ nautilus_file_get_uri (NautilusFile *file)
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	uri = gnome_vfs_uri_append_path (file->details->directory->details->uri,
-					 file->details->info->name);
+	uri = gnome_vfs_uri_append_path
+		(file->details->directory->details->uri,
+		 file->details->info->name);
 	uri_text = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
 	gnome_vfs_uri_unref (uri);
 	return uri_text;
@@ -1166,6 +1284,9 @@ nautilus_file_get_size (NautilusFile *file)
 gboolean
 nautilus_file_can_get_permissions (NautilusFile *file)
 {
+	if (nautilus_file_is_gone (file)) {
+		return FALSE;
+	}
 	return (file->details->info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS) != 0;
 }
 
@@ -1207,7 +1328,8 @@ nautilus_file_can_set_permissions (NautilusFile *file)
 }
 
 GnomeVFSFilePermissions
-nautilus_file_get_permissions (NautilusFile *file) {
+nautilus_file_get_permissions (NautilusFile *file)
+{
 	g_return_val_if_fail (nautilus_file_can_get_permissions (file), 0);
 
 	return file->details->info->permissions;
@@ -1236,6 +1358,16 @@ nautilus_file_set_permissions (NautilusFile *file,
 	GnomeVFSResult result;
 	GnomeVFSFileInfo *partial_file_info;
 	char *uri;
+
+	if (!nautilus_file_can_set_permissions (file)) {
+		/* Claim that something changed even if the permission change failed.
+		 * This makes it easier for some clients who see the "reverting"
+		 * to the old permissions as "changing back".
+		 */
+		nautilus_file_changed (file);
+		(* callback) (file, GNOME_VFS_ERROR_ACCESSDENIED, callback_data);
+		return;
+	}
 			       
 	if (new_permissions == file->details->info->permissions) {
 		(* callback) (file, GNOME_VFS_OK, callback_data);
@@ -1261,7 +1393,6 @@ nautilus_file_set_permissions (NautilusFile *file,
 	 * to the old permissions as "changing back".
 	 */
 	nautilus_file_changed (file);
-
 	(* callback) (file, result, callback_data);
 }
 

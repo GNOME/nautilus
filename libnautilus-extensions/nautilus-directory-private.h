@@ -70,12 +70,14 @@ struct NautilusDirectoryDetails
 	GList *pending_file_info; /* list of GnomeVFSFileInfo's that are pending */
         guint dequeue_pending_idle_id;
 
-	GList *get_file_infos_in_progress; /* list of GnomeVFSAsyncHandle* */
+	GList *get_file_infos_in_progress; /* list of GnomeVFSAsyncHandle * */
 
 	GnomeVFSAsyncHandle *count_in_progress;
 	NautilusFile *count_file;
 
 	TopLeftTextReadState *top_left_read_state;
+
+	GList *file_operations_in_progress; /* list of FileOperation * */
 };
 
 typedef struct {

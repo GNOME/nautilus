@@ -1,3 +1,2 @@
-EXTRA_DIST=					\
-	GNOME_Desktop_FileOperationService.idl	\
-	fsextension.idl
+EXTRA_DIST =					\
+	GNOME_Desktop_FileOperationService.idl

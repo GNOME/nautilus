@@ -1,3 +1,35 @@
+2000-05-11  Darin Adler  <darin@eazel.com>
+
+	* idl/Makefile.am:
+	* idl/fsextension.idl:
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/.cvsignore:
+	Removed the fsextension IDL, which was a work in progress that no
+	one is working on.
+	
+	* libnautilus/.cvsignore:
+	Added the undo manager stuff.
+
+	* libnautilus-extensions/.cvsignore:
+	Removed the undo manager stuff.
+	
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_denies_access_permission): Handle deleted file case.
+	(nautilus_file_can_rename): Handle deleted file case.
+	(file_operation_state_new), (file_operation_state_free),
+	(file_operation_state_complete),
+	(rename_update_info_and_metafile), (rename_callback),
+	(nautilus_file_rename): Put in a basic framework for file
+	operations that can take a while.  Used it to make renaming async.
+	(nautilus_file_can_get_permissions): Handle deleted file case.
+	(nautilus_file_set_permissions): Handle case where you can't get
+	permissions properly. I inadvertently delete this last time.
+	
+	* libnautilus-extensions/nautilus-metadata.h:
+	Added a metadata key for the icon view sort. Still need to write
+	the code to save this.
+	
 Thu May 11 16:52:14 2000  Raph Levien  <raph@acm.org>
 
 	* librsvg/rsvg.c (rsvg_render_bpath): Added a check to avoid
@@ -105,31 +137,29 @@ Thu May 11 16:52:14 2000  Raph Levien  <raph@acm.org>
 
 2000-05-10  Gene Z. Ragan  <gzr@eazel.com>
 
-	*libnautilus/nautilus-undo-manager-component.idl
-	*libnautilus/nautilus-undo-manager-private.h
-	*libnautilus/nautilus-undo-manager.c
-	*libnautilus/nautilus-undo-manager.h
-	*libnautilus/nautilus-undo-transaction.c
-	*libnautilus/nautilus-undo-transaction.h
-	*libnautilus/nautilus-undoable.c
-	*libnautilus/nautilus-undoable.h
-
+	* libnautilus/nautilus-undo-manager-component.idl:
+	* libnautilus/nautilus-undo-manager-private.h:
+	* libnautilus/nautilus-undo-manager.c:
+	* libnautilus/nautilus-undo-manager.h:
+	* libnautilus/nautilus-undo-transaction.c:
+	* libnautilus/nautilus-undo-transaction.h:
+	* libnautilus/nautilus-undoable.c:
+	* libnautilus/nautilus-undoable.h:
 	Moved files to libnautilus so IDL compilation would work properly
 	and at the suggestion of mjs.
 
-	*libnautilus-extensions/Makefile.am
+	* libnautilus-extensions/Makefile.am:
 	Removed undo files.
 
-	*libnautilus/Makefile.am
+	* libnautilus/Makefile.am:
 	Added undo files.
 
-	*libnautilus/nautilus-undo-manager-component.idl
+	* libnautilus/nautilus-undo-manager-component.idl:
 	Additional fixes so a clean build would occuer properly.
 	
 2000-05-10  J Shane Culpepper  <pepper@eazel.com>
 
-	*libnautilus-extensions/nautilus-undo-manger-component.idl
-
+	* libnautilus-extensions/nautilus-undo-manger-component.idl:
 	Moved the includes to top of the file so that the idl would compile
 	correctly.
 
