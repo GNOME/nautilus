@@ -492,11 +492,6 @@ create_one_mount_link (const NautilusVolume *volume, gpointer callback_data)
 }
 
 static void
-event_callback (GtkWidget *widget, GdkEvent *event, FMDesktopIconView *desktop_icon_view)
-{
-}
-
-static void
 unrealized_callback (GtkWidget *widget, FMDesktopIconView *desktop_icon_view)
 {
 	g_return_if_fail (desktop_icon_view->details->root_window != NULL);
@@ -719,8 +714,6 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	
 	g_signal_connect_object (icon_container, "middle_click",
 				 G_CALLBACK (fm_desktop_icon_view_handle_middle_click), desktop_icon_view, 0);
-	g_signal_connect_object (desktop_icon_view, "event",
-				 G_CALLBACK (event_callback), desktop_icon_view, 0);
 	g_signal_connect_object (nautilus_trash_monitor_get (), "trash_state_changed",
 				 G_CALLBACK (fm_desktop_icon_view_trash_state_changed_callback), desktop_icon_view, 0);	
 	g_signal_connect_object (nautilus_volume_monitor_get (), "volume_mounted",
