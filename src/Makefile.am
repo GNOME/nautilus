@@ -4,8 +4,8 @@ SUBDIRS=file-manager
 
 bin_PROGRAMS=					\
 	nautilus				\
-	nautilus-file-management-properties     \
-	nautilus-server-connect
+	nautilus-file-management-properties	\
+	$(NULL)
 
 INCLUDES =							\
 	-I$(top_srcdir) 					\
@@ -37,12 +37,9 @@ LDADD =\
 
 @INTLTOOL_DESKTOP_RULE@
 
-nautilus_server_connect_SOURCES = nautilus-server-connect.c
-
-desktop_in_files=nautilus-server-connect.desktop.in network-scheme.desktop.in
+desktop_in_files=network-scheme.desktop.in
 desktop_files=$(desktop_in_files:.desktop.in=.desktop)
 desktopdir = $(datadir)/gnome/network/
-desktop_DATA = nautilus-server-connect.desktop
 
 schemedir = $(datadir)/applications
 scheme_DATA = network-scheme.desktop
@@ -167,7 +164,6 @@ gladedir = $(datadir)/nautilus/glade
 glade_DATA = \
 	nautilus-bookmarks-window.glade			\
 	nautilus-file-management-properties.glade	\
-	nautilus-server-connect.glade                   \
 	$(NULL)
 
 CLEANFILES = \
