@@ -44,6 +44,8 @@
 #include <libart_lgpl/art_rgb_rgba_affine.h>
 #include <libart_lgpl/art_svp_vpath.h>
 
+#include <stdio.h>
+
 static void nautilus_background_initialize_class (gpointer            klass);
 static void nautilus_background_initialize       (gpointer            object,
 						  gpointer            klass);
@@ -297,8 +299,8 @@ nautilus_background_draw (NautilusBackground *background,
 		buffer.rect.x1 = rectangle->x + rectangle->width;
 		buffer.rect.y1 = rectangle->y + rectangle->height;
 		buffer.bg_color = 0xFFFFFFFF;
+		buffer.is_bg = TRUE;
 		buffer.is_buf = FALSE;
-		buffer.is_bg = FALSE;
 		
 		/* invoke the anti-aliased code to do the work */
 		nautilus_background_draw_aa (background, &buffer, rectangle->width, rectangle->height);
@@ -536,7 +538,7 @@ nautilus_background_draw_aa (NautilusBackground *background,
 
 	remaining_width = 0;
 	remaining_height = 0;
-	
+
 	if (!buffer->is_buf) {
 		if (!nautilus_background_image_fully_obscures (background, entire_width, entire_height, TRUE)) {
 			/* get the initial color */
@@ -645,6 +647,7 @@ nautilus_background_draw_aa (NautilusBackground *background,
 			}
 		}
 						
+		buffer->is_bg = FALSE;
 		buffer->is_buf = TRUE;
 	}
 }
