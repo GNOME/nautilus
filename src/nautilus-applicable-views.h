@@ -4,6 +4,7 @@
  *  Nautilus
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
+ *  Coypright (C) 2000, 2001 Eazel, Inc.
  *
  *  Nautilus is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
@@ -19,7 +20,9 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Author: Elliot Lee <sopwith@redhat.com>
+ *  Authors: Elliot Lee <sopwith@redhat.com>
+ *           Darin Adler <darin@eazel.com>
+ *           Maciej Stachowiak <mjs@eazel.com>
  *
  */
 
@@ -31,40 +34,36 @@
 
 #include <libnautilus-extensions/nautilus-view-identifier.h>
 
-typedef struct NautilusNavigationInfo NautilusNavigationInfo;
+typedef struct NautilusDetermineViewHandle NautilusDetermineViewHandle;
 
-/* These are the different ways that Nautilus can fail to
- * display the contents of a given uri. NAUTILUS_NAVIGATION_RESULT_OK
- * means the uri was displayed successfully. These are similar to
- * GnomeVFSResults but there are nautilus-specific codes and many of
+/* These are the different ways that Nautilus can fail to locate an
+ * initial view for a given location NAUTILUS_DETERMINE_VIEW_OK means
+ * the uri was displayed successfully. These are similar to
+ * GnomeVFSResults but there are Nautilus-specific codes and many of
  * the GnomeVFSResults are treated the same here.
  */
 typedef enum {
-	NAUTILUS_NAVIGATION_RESULT_UNDEFINED = -1,
-	NAUTILUS_NAVIGATION_RESULT_OK,
-	NAUTILUS_NAVIGATION_RESULT_UNSPECIFIC_ERROR,
-	NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE,
-	NAUTILUS_NAVIGATION_RESULT_NOT_FOUND,
-	NAUTILUS_NAVIGATION_RESULT_UNSUPPORTED_SCHEME,
-	NAUTILUS_NAVIGATION_RESULT_INVALID_URI,
-	NAUTILUS_NAVIGATION_RESULT_LOGIN_FAILED,
-	NAUTILUS_NAVIGATION_RESULT_SERVICE_NOT_AVAILABLE,
-	NAUTILUS_NAVIGATION_RESULT_ACCESS_DENIED,
-	NAUTILUS_NAVIGATION_RESULT_HOST_NOT_FOUND,
-	NAUTILUS_NAVIGATION_RESULT_HOST_HAS_NO_ADDRESS,
-} NautilusNavigationResult;
+	NAUTILUS_DETERMINE_VIEW_OK,
+	NAUTILUS_DETERMINE_VIEW_UNSPECIFIC_ERROR,
+	NAUTILUS_DETERMINE_VIEW_NO_HANDLER_FOR_TYPE,
+	NAUTILUS_DETERMINE_VIEW_NOT_FOUND,
+	NAUTILUS_DETERMINE_VIEW_UNSUPPORTED_SCHEME,
+	NAUTILUS_DETERMINE_VIEW_INVALID_URI,
+	NAUTILUS_DETERMINE_VIEW_LOGIN_FAILED,
+	NAUTILUS_DETERMINE_VIEW_SERVICE_NOT_AVAILABLE,
+	NAUTILUS_DETERMINE_VIEW_ACCESS_DENIED,
+	NAUTILUS_DETERMINE_VIEW_HOST_NOT_FOUND,
+	NAUTILUS_DETERMINE_VIEW_HOST_HAS_NO_ADDRESS,
+} NautilusDetermineViewResult;
 
-typedef void (*NautilusNavigationCallback) (NautilusNavigationResult result,
-                                            NautilusNavigationInfo  *info,
-                                            gboolean                 final,
-                                            gpointer                 callback_data);
+typedef void (* NautilusDetermineViewCallback) (NautilusDetermineViewHandle  *handle,
+                                                NautilusDetermineViewResult   result,
+                                                const NautilusViewIdentifier *initial_view,
+                                                gpointer                      callback_data);
 
-NautilusNavigationInfo *nautilus_navigation_info_new                    (const char                 *location,
-                                                                         NautilusNavigationCallback  ready_callback,
-                                                                         gpointer                    callback_data);
-void                    nautilus_navigation_info_cancel                 (NautilusNavigationInfo     *info);
-void                    nautilus_navigation_info_free                   (NautilusNavigationInfo     *info);
-char *                  nautilus_navigation_info_get_location           (NautilusNavigationInfo     *info);
-NautilusViewIdentifier *nautilus_navigation_info_get_initial_content_id (NautilusNavigationInfo     *info);
+NautilusDetermineViewHandle *nautilus_determine_initial_view        (const char                    *location,
+                                                                     NautilusDetermineViewCallback  callback,
+                                                                     gpointer                       callback_data);
+void                         nautilus_determine_initial_view_cancel (NautilusDetermineViewHandle   *handle);
 
 #endif /* NAUTILUS_APPLICABLE_VIEWS_H */

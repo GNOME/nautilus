@@ -59,33 +59,34 @@ typedef struct {
         /* These roughly correspond to CORBA calls, but in some cases they are higher level. */
 
         /* This happens only just after load_view. */
-        void               (* view_loaded)                 (NautilusViewFrame *view);
+        void               (* view_loaded)                          (NautilusViewFrame *view);
 
         /* These can happen pretty much any time. */
-        void               (* load_underway)               (NautilusViewFrame *view);
-        void               (* failed)                      (NautilusViewFrame *view);
+        void               (* load_underway)                        (NautilusViewFrame *view);
+        void               (* failed)                               (NautilusViewFrame *view);
 
         /* These will only happen after load_underway (guaranteed). */
-        void               (* open_location_in_this_window)
-                                                           (NautilusViewFrame *view,
-                                                            const char        *location);
-        void               (* open_location_prefer_existing_window)
-                                                           (NautilusViewFrame *view,
-                                                            const char        *location);
-        void               (* open_location_force_new_window)
-                                                           (NautilusViewFrame *view,
-                                                            const char        *location,
-                                                            GList             *selection); /* list of char * */
-        void               (* change_selection)            (NautilusViewFrame *view,
-                                                            GList             *selection); /* list of char * */
-        void               (* change_status)               (NautilusViewFrame *view,
-                                                            const char        *status);
-        void               (* load_progress_changed)       (NautilusViewFrame *view);
-        void               (* load_complete)               (NautilusViewFrame *view);
-        void               (* title_changed)               (NautilusViewFrame *view);
-        void               (* zoom_level_changed)          (NautilusViewFrame *view);
-        void               (* zoom_parameters_changed)     (NautilusViewFrame *view);
-	Nautilus_History * (* get_history_list)            (NautilusViewFrame *view);
+        void               (* open_location_in_this_window)         (NautilusViewFrame *view,
+                                                                     const char        *location);
+        void               (* open_location_prefer_existing_window) (NautilusViewFrame *view,
+                                                                     const char        *location);
+        void               (* open_location_force_new_window)       (NautilusViewFrame *view,
+                                                                     const char        *location,
+                                                                     GList             *selection); /* list of char * */
+        void               (* report_location_change)               (NautilusViewFrame *view,
+                                                                     const char        *location,
+                                                                     GList             *selection, /* list of char * */
+                                                                     const char        *title);
+        void               (* change_selection)                     (NautilusViewFrame *view,
+                                                                     GList             *selection); /* list of char * */
+        void               (* change_status)                        (NautilusViewFrame *view,
+                                                                     const char        *status);
+        void               (* load_progress_changed)                (NautilusViewFrame *view);
+        void               (* load_complete)                        (NautilusViewFrame *view);
+        void               (* title_changed)                        (NautilusViewFrame *view);
+        void               (* zoom_level_changed)                   (NautilusViewFrame *view);
+        void               (* zoom_parameters_changed)              (NautilusViewFrame *view);
+	Nautilus_History * (* get_history_list)                     (NautilusViewFrame *view);
 } NautilusViewFrameClass;
 
 /* basic view management */

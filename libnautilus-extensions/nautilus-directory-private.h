@@ -68,6 +68,9 @@ struct NautilusDirectoryDetails
 	GList *call_when_ready_list;
 	GList *monitor_list;
 
+	gboolean in_async_service_loop;
+	gboolean state_changed;
+
 	gboolean file_list_monitored;
 	gboolean directory_loaded;
 	gboolean directory_loaded_sent_notification;

@@ -63,6 +63,7 @@ enum {
 	OPEN_LOCATION_FORCE_NEW_WINDOW,
 	OPEN_LOCATION_IN_THIS_WINDOW,
 	OPEN_LOCATION_PREFER_EXISTING_WINDOW,
+	REPORT_LOCATION_CHANGE,
 	TITLE_CHANGED,
 	VIEW_LOADED,
 	ZOOM_LEVEL_CHANGED,
@@ -232,6 +233,14 @@ nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
 				    open_location_in_this_window),
 		 gtk_marshal_NONE__STRING,
 		 GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
+	signals[REPORT_LOCATION_CHANGE] = gtk_signal_new
+		("report_location_change",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
+				    report_location_change),
+		 nautilus_gtk_marshal_NONE__STRING_POINTER_STRING,
+		 GTK_TYPE_NONE, 3, GTK_TYPE_STRING, GTK_TYPE_POINTER, GTK_TYPE_STRING);
 	signals[TITLE_CHANGED] = gtk_signal_new
 		("title_changed",
 		 GTK_RUN_LAST,
@@ -1072,6 +1081,27 @@ nautilus_view_frame_open_location_force_new_window (NautilusViewFrame *view,
 	gtk_signal_emit (GTK_OBJECT (view),
 			 signals[OPEN_LOCATION_FORCE_NEW_WINDOW],
 			 location, selection);
+}
+
+void
+nautilus_view_frame_report_location_change (NautilusViewFrame *view,
+					    const char *location,
+					    GList *selection,
+					    const char *title)
+{
+	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
+	if (view->details->state == VIEW_FRAME_FAILED) {
+		return;
+	}
+
+	g_free (view->details->title);
+	view->details->title = g_strdup (title);
+
+	view_frame_wait_is_over (view);
+	gtk_signal_emit (GTK_OBJECT (view),
+			 signals[REPORT_LOCATION_CHANGE],
+			 location, selection, title);
 }
 
 void

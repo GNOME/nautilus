@@ -63,25 +63,25 @@
 #define SEARCH_LIST_VIEW_IID "OAFIID:nautilus_file_manager_search_list_view:b186e381-198e-43cf-9c46-60b6bb35db0b"
 #define SHELL_IID	"OAFIID:nautilus_shell:cd5183b2-3913-4b74-9b8e-10528b0de08d"
 
-static CORBA_boolean manufactures                                (PortableServer_Servant    servant,
-								  const CORBA_char         *iid,
-								  CORBA_Environment        *ev);
-static CORBA_Object  create_object                               (PortableServer_Servant    servant,
-								  const CORBA_char         *iid,
-								  const GNOME_stringlist  *params,
-								  CORBA_Environment        *ev);
-static void          nautilus_application_initialize             (NautilusApplication      *application);
-static void          nautilus_application_initialize_class       (NautilusApplicationClass *klass);
-static void          nautilus_application_destroy                (GtkObject                *object);
-static gboolean	     check_for_and_run_as_super_user 		 (void);
-static gboolean	     need_to_show_first_time_druid		 (void);
-static void	     desktop_changed_callback 		         (gpointer 		   user_data);
-static void	     volume_mounted_callback 			 (NautilusVolumeMonitor    *monitor,
-								  NautilusVolume 	   *volume,
-			  	 				  NautilusApplication 	   *application);
-static void	     volume_unmounted_callback 			 (NautilusVolumeMonitor    *monitor,
-								  NautilusVolume 	   *volume,
-			  	 				  NautilusApplication 	   *application);
+static CORBA_boolean manufactures                          (PortableServer_Servant    servant,
+							    const CORBA_char         *iid,
+							    CORBA_Environment        *ev);
+static CORBA_Object  create_object                         (PortableServer_Servant    servant,
+							    const CORBA_char         *iid,
+							    const GNOME_stringlist   *params,
+							    CORBA_Environment        *ev);
+static void          nautilus_application_initialize       (NautilusApplication      *application);
+static void          nautilus_application_initialize_class (NautilusApplicationClass *klass);
+static void          nautilus_application_destroy          (GtkObject                *object);
+static gboolean      confirm_ok_to_run_as_root             (void);
+static gboolean      need_to_show_first_time_druid         (void);
+static void          desktop_changed_callback              (gpointer                  user_data);
+static void          volume_mounted_callback               (NautilusVolumeMonitor    *monitor,
+							    NautilusVolume           *volume,
+							    NautilusApplication      *application);
+static void          volume_unmounted_callback             (NautilusVolumeMonitor    *monitor,
+							    NautilusVolume           *volume,
+							    NautilusApplication      *application);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusApplication, nautilus_application, BONOBO_OBJECT_TYPE)
@@ -342,8 +342,10 @@ nautilus_application_startup (NautilusApplication *application,
 	num_failures = 0;
 
 	/* Perform check for nautilus being run as super user */
-	if (!check_for_and_run_as_super_user ()) {
-		return;
+	if (!(kill_shell || restart_shell)) {
+		if (!confirm_ok_to_run_as_root ()) {
+			return;
+		}
 	}
 
 	/* Run the first time startup druid if needed. */
@@ -403,7 +405,8 @@ nautilus_application_startup (NautilusApplication *application,
 					     "with a missing Nautilus_Shell.oaf file.\n\n"
 					     "Sometimes killing oafd and gconfd fixes "
 					     "the problem, but we don't know why.\n\n"
-					     "We need a much less confusing message here for Nautilus 1.0.");
+					     "We have also seen this error when a faulty "
+					     "version of oaf was installed.");
 			break;
 		default:
 			/* This should never happen. */
@@ -587,35 +590,33 @@ nautilus_application_create_window (NautilusApplication *application)
 }
 
 /*
- * check_for_super_user:
+ * confirm_ok_to_run_as_root:
  *
  * Puts out a warning if the user is running nautilus as root.
  */
 static gboolean
-check_for_and_run_as_super_user (void)
+confirm_ok_to_run_as_root (void)
 {
-	GtkWidget *warning_dlg;
-	gint result;
+	GtkWidget *dialog;
+	int result;
 
 	if (geteuid () != 0) {
 		return TRUE;
 	}
 
-	warning_dlg = gnome_message_box_new
-		(_("You are running Nautilus as root.\n\n"
+	if (g_getenv ("NAUTILUS_OK_TO_RUN_AS_ROOT") != NULL) {
+		return TRUE;
+	}
+
+	dialog = gnome_message_box_new
+		(_("You are about to run Nautilus as root.\n\n"
 		   "As root, you can damage your system if you are not careful, and\n"
 		   "Nautilus will not stop you from doing it."),
 		 GNOME_MESSAGE_BOX_WARNING,
-		 GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL);
+		 GNOME_STOCK_BUTTON_OK, _("Quit"), NULL);
+	result = gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 	
-	result = gnome_dialog_run_and_close (GNOME_DIALOG (warning_dlg));
-	
-	/* If they pressed cancel, quit the application */
-	if (result == 1) {
-		return FALSE;
-	}
-	
-	return TRUE;
+	return result == 0;
 }
 
 /* callback for showing or hiding the desktop based on the user's preference */

@@ -61,7 +61,9 @@ void          nautilus_view_frame_open_location_force_new_window       (Nautilus
                                                                         const char                *location,
                                                                         GList                     *selection);
 void          nautilus_view_frame_report_location_change               (NautilusViewFrame         *view,
-                                                                        const char                *location);
+                                                                        const char                *location,
+                                                                        GList                     *selection,
+                                                                        const char                *title);
 void          nautilus_view_frame_report_selection_change              (NautilusViewFrame         *view,
                                                                         GList                     *selection);
 void          nautilus_view_frame_report_status                        (NautilusViewFrame         *view,

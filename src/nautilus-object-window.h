@@ -20,7 +20,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Author: Elliot Lee <sopwith@redhat.com>
+ *  Authors: Elliot Lee <sopwith@redhat.com>
+ *           Darin Adler <darin@eazel.com>
  *
  */
 /* nautilus-window.h: Interface of the main window object */
@@ -58,18 +59,8 @@ typedef struct {
 	 * NautilusWindow's idea of the "current location" to the history
 	 * list, or nothing at all.
 	 */
-        void (* add_current_location_to_history_list)	(NautilusWindow *window);
-        
+        void (* add_current_location_to_history_list) (NautilusWindow *window);
 } NautilusWindowClass;
-
-typedef struct NautilusWindowStateInfo NautilusWindowStateInfo;
-
-typedef enum {
-        NAUTILUS_LOCATION_CHANGE_STANDARD,
-        NAUTILUS_LOCATION_CHANGE_BACK,
-        NAUTILUS_LOCATION_CHANGE_FORWARD,
-        NAUTILUS_LOCATION_CHANGE_RELOAD
-} NautilusLocationChangeType;
 
 typedef struct NautilusWindowDetails NautilusWindowDetails;
 
@@ -92,8 +83,6 @@ struct NautilusWindow {
         /** State information **/
         
         /* Information about current location/selection */
-        char *location;
-        GList *selection;
         
         /* Back/Forward chain, and history list. 
          * The data in these lists are NautilusBookmark pointers. 
@@ -113,20 +102,14 @@ struct NautilusWindow {
         Bonobo_Unknown throbber;
         
         /* Pending changes */
-        NautilusNavigationInfo *pending_ni;
         NautilusViewFrame *new_content_view;
-        GList *pending_selection;
-        NautilusNavigationInfo *cancel_tag;
-        gboolean location_change_end_reached;
-        
-        NautilusLocationChangeType location_change_type;
-        guint location_change_distance;
 };
 
 GtkType          nautilus_window_get_type             (void);
 void             nautilus_window_close                (NautilusWindow    *window);
-void             nautilus_window_goto_uri             (NautilusWindow    *window,
-                                                       const char        *uri);
+char *           nautilus_window_get_location         (NautilusWindow    *window);
+void             nautilus_window_go_to                (NautilusWindow    *window,
+                                                       const char        *location);
 gboolean         nautilus_window_get_search_mode      (NautilusWindow    *window);
 void             nautilus_window_set_search_mode      (NautilusWindow    *window,
                                                        gboolean           search_mode);

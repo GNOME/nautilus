@@ -1,3 +1,144 @@
+2001-02-02  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fixed bug 6163 (Need NautilusViewFrame ::
+	report_location_changed). This is re-adding a feature we also had
+	long ago, where a view reports a location change, but does not
+	want the location change to come back to it in the form of a
+	load_location call.
+
+	* src/nautilus-applicable-views.h:
+	* src/nautilus-applicable-views.c:
+	(get_view_result_from_gnome_vfs_result), (got_file_info_callback),
+	(got_minimum_file_info_callback),
+	(nautilus_determine_initial_view),
+	(nautilus_determine_initial_view_cancel): Changed this entire file
+	to have a much easier-to-understand API.
+	
+	* src/nautilus-view-frame-private.h:
+	* src/nautilus-view-frame-corba.c: (free_location_plus_callback):
+	Change existing structure so it can be used for the location-change
+	case, which includes a title too.
+	(open_force_new_window): Use new structure.
+	(report_location_change): Implement new call.
+	(impl_Nautilus_ViewFrame_open_location_force_new_window): Use new
+	structure.
+	(impl_Nautilus_ViewFrame_report_location_change): Implement new
+	call.
+	
+	* libnautilus/nautilus-view-component.idl: Add the new call.
+	* libnautilus/nautilus-view.h:
+	* libnautilus/nautilus-view.c:
+	(nautilus_view_report_location_change): Add the new call.
+
+	* src/nautilus-view-frame.h:
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_initialize_class): Add new signal.
+	(nautilus_view_frame_report_location_change): Implement new call.
+	
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-manage-views.h:
+	* src/nautilus-window-manage-views.c: (update_for_new_location):
+	Got rid of obsolete assert. Also, no longer clear the selection.
+	The selection is set properly earlier, and clearing it at this
+	point serves no purpose.
+	(location_has_really_changed): Call free_location_change to share
+	more code. Also no reason to free "pending_ni" any more, because
+	we don't keep it around in the success case.
+	(load_new_location_in_one_view): New name.
+	(load_new_location_in_sidebar_panels): New name. Also take a
+	parameter of a view to skip.
+	(load_new_location_in_all_views): New function.
+	(set_to_pending_location_and_selection): New name, and removed
+	code to handle the case where there is no pending location, since
+	that doesn't happen. Also take a parameter of a view to skip. Also
+	broke out the guts into load_new_location_in_all_views.
+	(free_location_change): Free things by their new names. There's
+	also less to free now.
+	(cancel_location_change): Key off pending_location instead of
+	pending_ni. Also save code by using new function that skips a
+	view.
+	(determined_initial_view_callback): Changed name, and use new
+	interface. No longer need "end_reached" trick, because the new
+	interface handles that.
+	(begin_location_change): Made a static after moving all the
+	functions that use it in here. Also moved some of the reload
+	code out into nautilus_window_reload.
+	(report_location_change_callback): New function. Does all the
+	steps neede for a location change in place.
+	(nautilus_window_back_or_forward), (nautilus_window_reload): Moved
+	these two functions in here from nautilus-window.c so we could
+	make begin_location_change more private.
+	
+	* src/nautilus-window.h:
+	* src/nautilus-window.c: (nautilus_window_go_to): Changed the name.
+	(nautilus_window_get_location): New function for callers that used
+	to get the location field directly.
+	(go_to_callback): Changed name.
+
+	* src/nautilus-desktop-window.c: (nautilus_desktop_window_new):
+	* src/nautilus-location-bar.c: (drag_data_received_callback):
+	* src/nautilus-shell.c: (open_window), (save_window_states),
+	(restore_window_states):
+	* src/nautilus-window-menus.c: (services_button_callback),
+	(help_menu_nautilus_manual_callback),
+	(help_menu_nautilus_license_callback),
+	(help_menu_nautilus_feedback_callback),
+	(activate_bookmark_in_menu_item):
+	* src/nautilus-window-service-ui.c: (goto_services_summary),
+	(goto_online_storage), (goto_software_catalog),
+	(goto_services_support):
+	* src/nautilus-window.c: (location_change_at_idle_callback),
+	(nautilus_window_constructed), (view_as_menu_vfs_method_callback),
+	(nautilus_window_go_web_search), (nautilus_window_go_home):
+	Use nautilus_go_to under its new name.
+	
+	* src/nautilus-shell.c: (restore_window_states): Use
+	nautilus_istr_has_prefix instead of g_strncasecmp. Also did other
+	code cleanup.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.h: Added a new
+	marshal function that I needed.
+	
+	* libnautilus-extensions/nautilus-thumbnails.c: Added a FIXME.
+	
+	* libnautilus-extensions/nautilus-view-identifier.h:
+	* libnautilus-extensions/nautilus-view-identifier.c:
+	(nautilus_view_identifier_copy),
+	(nautilus_view_identifier_compare): Use const.
+	
+	* src/nautilus-application.c: (nautilus_application_startup): Only
+	check for root if we are actually running nautilus, not if we are
+	just killing off an existing copy.
+	(confirm_ok_to_run_as_root): Changed name of the function and
+	improved the wording of the message and button. Also added an
+	environment variable you can set to get rid of this. (Probably
+	should have been a preference instead, but I am officially being
+	lazy about this.)
+
+	Fixed bug that was revealed by the change in the loading sequence
+	I made. John didn't review this part:
+	
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(load_directory_state_destroy), (load_directory_done):
+	Separate out code to free the partly-done state so it can
+	be used in the cancel case.
+	(dequeue_pending_idle_callback): Ref the directory object
+	so that we won't get messed up if the callback destroys it.
+	(directory_load_cancel): Separated out the old part of
+	file_list_cancel so that we can cancel the idle part too
+	when we want to.
+	(file_list_cancel): Use the new calls to cancel the idle
+	part of directory loading.
+	(directory_load_done): Use directory_load_cancel instead of
+	file_list_cancel.
+	(nautilus_directory_stop_monitoring_file_list): Use
+	directory_load_cancel instead of file_list_cancel.
+	(nautilus_directory_async_state_changed): Added state variables to
+	protect cases where we re-enter this function.
+
 2001-02-02  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Michael Engber  <engber@eazel.com>
@@ -349,14 +490,14 @@
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>
 	
-	Fixed bug 6941, 'Clean Up By Name' feature on the desktop keep switching
-	file locations after being 'cleaned up'
+	Fixed bug 6941, 'Clean Up By Name' feature on the desktop keep
+	switching file locations after being 'cleaned up'
 	
 	* src/file-manager/fm-desktop-icon-view.c:
 	(desktop_icons_compare_callback):
 	In the case of identical links tpyes, compare by name.	
 		
-	More work on gmc transtion tool
+	More work on gmc transition tool
 	
 	* src/nautilus-first-time-druid.c:
 	(druid_finished):

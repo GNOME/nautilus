@@ -209,17 +209,25 @@ nautilus_window_set_status (NautilusWindow *window, const char *text)
 }
 
 void
-nautilus_window_goto_uri (NautilusWindow *window, const char *uri)
+nautilus_window_go_to (NautilusWindow *window, const char *uri)
 {
 	nautilus_window_open_location (window, uri);
 }
 
-static void
-goto_uri_callback (GtkWidget *widget,
-		   const char *uri,
-		   GtkWidget *window)
+char *
+nautilus_window_get_location (NautilusWindow *window)
 {
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (window), uri);
+	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NULL);
+
+	return g_strdup (window->details->location);
+}
+
+static void
+go_to_callback (GtkWidget *widget,
+		const char *uri,
+		GtkWidget *window)
+{
+	nautilus_window_go_to (NAUTILUS_WINDOW (window), uri);
 }
 
 static void
@@ -404,7 +412,7 @@ location_change_at_idle_callback (gpointer callback_data)
 	window->details->location_to_change_to_at_idle = NULL;
 	window->details->location_change_at_idle_id = 0;
 
-	nautilus_window_goto_uri (window, location);
+	nautilus_window_go_to (window, location);
 	g_free (location);
 
 	return FALSE;
@@ -473,7 +481,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	gtk_widget_show (GTK_WIDGET (window->navigation_bar));
 
 	gtk_signal_connect (GTK_OBJECT (window->navigation_bar), "location_changed",
-			    goto_uri_callback, window);
+			    go_to_callback, window);
 
 	gtk_signal_connect (GTK_OBJECT (window->navigation_bar), "mode_changed",
 			    navigation_bar_mode_changed_callback, window);
@@ -488,7 +496,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	gtk_widget_show (view_as_menu_vbox);
 	gtk_box_pack_end (GTK_BOX (location_bar_box), view_as_menu_vbox, FALSE, FALSE, 0);
 	
-	window->view_as_option_menu = gtk_option_menu_new();
+	window->view_as_option_menu = gtk_option_menu_new ();
 	gtk_box_pack_end (GTK_BOX (view_as_menu_vbox), window->view_as_option_menu, TRUE, FALSE, 0);
 	gtk_widget_show (window->view_as_option_menu);
 	
@@ -538,7 +546,7 @@ nautilus_window_constructed (NautilusWindow *window)
         if (!NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 		gtk_widget_show (GTK_WIDGET (window->sidebar));
 		gtk_signal_connect (GTK_OBJECT (window->sidebar), "location_changed",
-				    goto_uri_callback, window);
+				    go_to_callback, window);
 		e_paned_pack1 (E_PANED (window->content_hbox),
 			       GTK_WIDGET (window->sidebar),
 			       FALSE, FALSE);
@@ -699,9 +707,9 @@ nautilus_window_destroy (GtkObject *object)
 
 	nautilus_view_identifier_free (window->content_view_id);
 	
-	g_free (window->location);
-	nautilus_g_list_free_deep (window->selection);
-	nautilus_g_list_free_deep (window->pending_selection);
+	g_free (window->details->location);
+	nautilus_g_list_free_deep (window->details->selection);
+	nautilus_g_list_free_deep (window->details->pending_selection);
 
 	nautilus_window_clear_back_list (window);
 	nautilus_window_clear_forward_list (window);
@@ -994,7 +1002,8 @@ nautilus_window_synch_view_as_menu (NautilusWindow *window)
 		content_view_iid = nautilus_view_frame_get_view_iid (window->content_view);
 
 		for (child = children, index = 0; child != NULL; child = child->next, ++index) {
-			item_id = (NautilusViewIdentifier *) gtk_object_get_data (GTK_OBJECT (child->data), "identifier");
+			item_id = (NautilusViewIdentifier *) gtk_object_get_data
+				(GTK_OBJECT (child->data), "identifier");
 			if (item_id != NULL && strcmp (content_view_iid, item_id->iid) == 0) {
 				matching_index = index;
 				break;
@@ -1076,7 +1085,7 @@ view_as_menu_vfs_method_callback (GtkWidget *widget, gpointer callback_data)
 	gpointer object_data;
         NautilusWindow *window;
 	char *new_location;
-	char *method;
+	const char *method;
         
         g_return_if_fail (GTK_IS_MENU_ITEM (widget));
 
@@ -1084,11 +1093,11 @@ view_as_menu_vfs_method_callback (GtkWidget *widget, gpointer callback_data)
         g_return_if_fail (NAUTILUS_IS_WINDOW (object_data));
         window = NAUTILUS_WINDOW (object_data);
 
-        method = (char *) gtk_object_get_data (GTK_OBJECT (widget), "method");
+        method = (const char *) gtk_object_get_data (GTK_OBJECT (widget), "method");
 	g_return_if_fail (method != NULL);
 
-	new_location = g_strdup_printf ("%s#%s:/",window->location,method);
-	nautilus_window_goto_uri (window, new_location);
+	new_location = g_strdup_printf ("%s#%s:/", window->details->location, method);
+	nautilus_window_go_to (window, new_location);
 	g_free (new_location);
 }
 
@@ -1229,25 +1238,6 @@ nautilus_window_remove_sidebar_panel (NautilusWindow *window, NautilusViewFrame 
 }
 
 void
-nautilus_window_back_or_forward (NautilusWindow *window, gboolean back, guint distance)
-{
-	GList *list;
-	char *uri;
-	
-	list = back ? window->back_list : window->forward_list;
-	g_assert (g_list_length (list) > distance);
-
-	uri = nautilus_bookmark_get_uri (g_list_nth_data (list, distance));
-	nautilus_window_begin_location_change
-		(window,
-		 uri,
-		 back ? NAUTILUS_LOCATION_CHANGE_BACK : NAUTILUS_LOCATION_CHANGE_FORWARD,
-		 distance);
-
-	g_free (uri);
-}
-
-void
 nautilus_window_go_back (NautilusWindow *window)
 {
 	nautilus_window_back_or_forward (window, TRUE, 0);
@@ -1266,10 +1256,11 @@ nautilus_window_go_up (NautilusWindow *window)
 	GnomeVFSURI *parent_uri;
 	char *parent_uri_string;
 	
-	if (window->location == NULL)
+	if (window->details->location == NULL) {
 		return;
+	}
 	
-	current_uri = gnome_vfs_uri_new (window->location);
+	current_uri = gnome_vfs_uri_new (window->details->location);
 	parent_uri = gnome_vfs_uri_get_parent (current_uri);
 	gnome_vfs_uri_unref (current_uri);
 
@@ -1281,7 +1272,7 @@ nautilus_window_go_up (NautilusWindow *window)
 	parent_uri_string = gnome_vfs_uri_to_string (parent_uri, GNOME_VFS_URI_HIDE_NONE);
 	gnome_vfs_uri_unref (parent_uri);  
 	
-	nautilus_window_goto_uri (window, parent_uri_string);
+	nautilus_window_go_to (window, parent_uri_string);
 	
 	g_free (parent_uri_string);
 }
@@ -1317,7 +1308,7 @@ nautilus_window_go_web_search (NautilusWindow *window)
 	search_web_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_SEARCH_WEB_URI);
 	g_assert (search_web_uri != NULL);
 	
-	nautilus_window_goto_uri (window, search_web_uri);
+	nautilus_window_go_to (window, search_web_uri);
 	g_free (search_web_uri);
 }
 
@@ -1331,7 +1322,7 @@ nautilus_window_go_home (NautilusWindow *window)
 	home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
 	
 	g_assert (home_uri != NULL);
-	nautilus_window_goto_uri (window, home_uri);
+	nautilus_window_go_to (window, home_uri);
 	g_free (home_uri);
 }
 
@@ -1583,15 +1574,6 @@ nautilus_window_set_content_view_widget (NautilusWindow *window,
 	}
 
 	window->content_view = new_view;
-}
-
-/* reload the contents of the window */
-void
-nautilus_window_reload (NautilusWindow *window)
-{
-	nautilus_window_begin_location_change
-		(window, window->location,
-		 NAUTILUS_LOCATION_CHANGE_RELOAD, 0);
 }
 
 /**

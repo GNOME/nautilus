@@ -37,8 +37,8 @@ goto_services_summary (BonoboUIComponent *component,
 		       gpointer callback_data, 
 		       const char *verb)
 {
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (callback_data),
-				  "eazel:");
+	nautilus_window_go_to (NAUTILUS_WINDOW (callback_data),
+			       "eazel:");
 }
 
 static void
@@ -65,7 +65,7 @@ goto_online_storage (BonoboUIComponent *component,
 		g_free (user_name);
 		user_name = NULL;
 	}
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (callback_data), url);
+	nautilus_window_go_to (NAUTILUS_WINDOW (callback_data), url);
 	g_free (url);
 	url = NULL;
 }
@@ -95,7 +95,7 @@ goto_software_catalog (BonoboUIComponent *component,
 		url = g_strdup ("eazel-services:///catalog");
 	}
 
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (callback_data), url);
+	nautilus_window_go_to (NAUTILUS_WINDOW (callback_data), url);
 	g_free (url);
 	url = NULL;
 
@@ -106,8 +106,8 @@ goto_services_support (BonoboUIComponent *component,
 		       gpointer callback_data, 
 		       const char *verb)
 {
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (callback_data),
-				  "http://services.eazel.com/support");
+	nautilus_window_go_to (NAUTILUS_WINDOW (callback_data),
+			       "http://services.eazel.com/support");
 
 }
 

@@ -225,6 +225,10 @@ compare_thumbnail_info (gconstpointer a, gconstpointer b)
 /* utility to create a placeholder thumbnail uri (which indicates that a
  * previous thumbnailing attempt has failed)
  */
+/* FIXME: A .x extension might exist on a real file, and we might
+ * recognize it by magic number even if it doesn't have the right
+ * extension.
+ */
 static char *
 make_invalid_thumbnail_uri (const char *thumbnail_uri)
 {

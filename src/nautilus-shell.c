@@ -39,13 +39,14 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
+#include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <stdlib.h>
 
@@ -282,7 +283,7 @@ open_window (NautilusShell *shell, const char *uri, const char *geometry)
 	if (uri == NULL) {
 		nautilus_window_go_home (window);
 	} else {
-		nautilus_window_goto_uri (window, uri);
+		nautilus_window_go_to (window, uri);
 	}
 	display_caveat_first_time (shell, window);
 }
@@ -359,36 +360,44 @@ static void
 save_window_states (void)
 {
 	GList *windows, *iter;
-	GList *out = NULL;
+	GList *out;
+	NautilusWindow *window;
+	GdkWindow *gdk_window;
+	char *window_info;
+	int x, y, width, height;
+	char *location;
 
+	out = NULL;
 	windows = nautilus_application_get_window_list ();
 	for (iter = windows; iter; iter = g_list_next (iter)) {
-		NautilusWindow *window = (NautilusWindow *) (iter->data);
-		GdkWindow *gdk_window = GTK_WIDGET (window)->window;
-		char *window_info;
-		int x, y, width, height;
+		window = (NautilusWindow *) (iter->data);
 
-		/* need root origin (origin of all the window dressing) */
-		gdk_window_get_root_origin (gdk_window, &x, &y);
 		width = GTK_WIDGET (window)->allocation.width;
 		height = GTK_WIDGET (window)->allocation.height;
+
+		/* need root origin (origin of all the window dressing) */
+		gdk_window = GTK_WIDGET (window)->window;
+		gdk_window_get_root_origin (gdk_window, &x, &y);
+
+		location = nautilus_window_get_location (window);
 
 		/* FIXME bugzilla.eazel.com 4375
 		   This hardcoded subst should be parameterized
 		   at some point. This ensures that when eazel-install:nautilus
 		   restarts nautilus, it doesn't go to eazel-install:nautilus but
 		   to eazel: instead */
-		if (g_strncasecmp (window->location, "eazel-install:", 14) == 0) {
-			window_info = g_strdup_printf ("%dx%d+%d+%d %s", 
-						       width, height, 
-						       x, y, 
-						       "eazel:"); 
-		} else {
-			window_info = g_strdup_printf ("%dx%d+%d+%d %s", 
-						       width, height, 
-						       x, y, 
-						       window->location); 
+		if (nautilus_istr_has_prefix (location, "eazel-install:")) {
+			g_free (location);
+			location = g_strdup ("eazel:");
 		}
+
+		window_info = g_strdup_printf ("%dx%d+%d+%d %s", 
+					       width, height, 
+					       x, y, 
+					       location);
+
+		g_free (location);
+
 		out = g_list_prepend (out, window_info);
 	}
 
@@ -437,7 +446,7 @@ restore_window_states (NautilusShell *shell)
 		if (uri == NULL) {
 			nautilus_window_go_home (window);
 		} else {
-			nautilus_window_goto_uri (window, uri);
+			nautilus_window_go_to (window, uri);
 		}
 
 		gtk_widget_set_uposition (GTK_WIDGET (window), x, y);

@@ -95,6 +95,20 @@ module Nautilus {
 		oneway void open_location_force_new_window (in URI location,
 							    in URIList selection);
 
+		/* Called by a view component when the location
+		 * changes, but the view component is handling it
+		 * directly. This differs from
+		 * "open_location_in_this_window" in that it
+		 * understands that the same component is reused, and
+		 * also it treats the load as "already underway" and
+		 * does not send a "load_location",
+		 * "selection_changed", or "title_changed" to the view
+		 * that initiates this.
+		 */
+		oneway void report_location_change (in URI location,
+						    in URIList selection,
+						    in string title);
+
 		/* Called by a view component to announce a change in the
 		 * selection. This selection change will be reported back
 		 * to the original view along with the others.

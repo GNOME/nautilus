@@ -164,7 +164,7 @@ drag_data_received_callback (GtkWidget *widget,
 		application = nautilus_location_bar_get_window (widget)->application;
 		for (node = names->next; node != NULL; node = node->next) {
 			new_window = nautilus_application_create_window (application);
-			nautilus_window_goto_uri (new_window, node->data);
+			nautilus_window_go_to (new_window, node->data);
 		}
 	}
 						  

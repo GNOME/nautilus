@@ -245,7 +245,7 @@ services_button_callback (BonoboUIComponent *component,
 			       gpointer user_data, 
 			       const char *verb)
 {
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (user_data), "eazel:");
+	nautilus_window_go_to (NAUTILUS_WINDOW (user_data), "eazel:");
 }
 #endif
 
@@ -579,17 +579,19 @@ help_menu_nautilus_manual_callback (BonoboUIComponent *component,
 			              gpointer user_data, 
 			              const char *verb)
 {
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (user_data), "help:nautilus");
+	nautilus_window_go_to (NAUTILUS_WINDOW (user_data), "help:nautilus");
 }
 
 static void
 help_menu_nautilus_license_callback (BonoboUIComponent *component, 
-			              gpointer user_data, 
-			              const char *verb)
+				     gpointer user_data, 
+				     const char *verb)
 {
 	char *uri;
-	uri = g_strdup_printf ("file://%s/%s", DATADIR, "gnome/help/nautilus/C/license.html");	
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (user_data), uri);
+
+	uri = gnome_vfs_get_uri_from_local_path (DATADIR
+						 "/gnome/help/nautilus/C/license.html");	
+	nautilus_window_go_to (NAUTILUS_WINDOW (user_data), uri);
 	g_free (uri);
 }
 
@@ -598,7 +600,8 @@ help_menu_nautilus_feedback_callback (BonoboUIComponent *component,
 			              gpointer user_data, 
 			              const char *verb)
 {
-	nautilus_window_goto_uri (NAUTILUS_WINDOW (user_data), "http://www.eazel.com/feedback.html");
+	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
+			       "http://www.eazel.com/feedback.html");
 }
 
 /* utility routine to return an image corresponding to the passed-in user level */
@@ -753,7 +756,7 @@ activate_bookmark_in_menu_item (BonoboUIComponent *component, gpointer user_data
 		show_bogus_bookmark_window (holder);
 	} else {
 	        uri = nautilus_bookmark_get_uri (holder->bookmark);
-	        nautilus_window_goto_uri (holder->window, uri);
+	        nautilus_window_go_to (holder->window, uri);
 	        g_free (uri);
         }
 }

@@ -1166,7 +1166,7 @@ get_filter_options_for_directory_count (void)
 }
 
 static void
-load_directory_done (NautilusDirectory *directory)
+load_directory_state_destroy (NautilusDirectory *directory)
 {
 	NautilusFile *file;
 
@@ -1189,7 +1189,12 @@ load_directory_done (NautilusDirectory *directory)
 
 	gnome_vfs_directory_filter_destroy (directory->details->load_file_count_filter);
 	directory->details->load_file_count_filter = NULL;
-	
+}
+
+static void
+load_directory_done (NautilusDirectory *directory)
+{
+	load_directory_state_destroy (directory);
 	nautilus_directory_async_state_changed (directory);
 }
 
@@ -1205,6 +1210,8 @@ dequeue_pending_idle_callback (gpointer callback_data)
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 
+	nautilus_directory_ref (directory);
+
 	directory->details->dequeue_pending_idle_id = 0;
 
 	/* Handle the files in the order we saw them. */
@@ -1215,6 +1222,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 	if (!nautilus_directory_is_file_list_monitored (directory)) {
 		gnome_vfs_file_info_list_free (pending_file_info);
 		load_directory_done (directory);
+		nautilus_directory_unref (directory);
 		return FALSE;
 	}
 
@@ -1315,6 +1323,8 @@ dequeue_pending_idle_callback (gpointer callback_data)
 
 	/* Get the state machine running again. */
 	nautilus_directory_async_state_changed (directory);
+
+	nautilus_directory_unref (directory);
 	return FALSE;
 }
 
@@ -1343,7 +1353,7 @@ directory_load_one (NautilusDirectory *directory,
 }
 
 static void
-file_list_cancel (NautilusDirectory *directory)
+directory_load_cancel (NautilusDirectory *directory)
 {
 	if (directory->details->directory_load_in_progress != NULL) {
 		gnome_vfs_async_cancel (directory->details->directory_load_in_progress);
@@ -1353,12 +1363,30 @@ file_list_cancel (NautilusDirectory *directory)
 }
 
 static void
+file_list_cancel (NautilusDirectory *directory)
+{
+	directory_load_cancel (directory);
+	
+	if (directory->details->dequeue_pending_idle_id != 0) {
+		gtk_idle_remove (directory->details->dequeue_pending_idle_id);
+		directory->details->dequeue_pending_idle_id = 0;
+	}
+
+	if (directory->details->pending_file_info != NULL) {
+		gnome_vfs_file_info_list_free (directory->details->pending_file_info);
+		directory->details->pending_file_info = NULL;
+	}
+
+	load_directory_state_destroy (directory);
+}
+
+static void
 directory_load_done (NautilusDirectory *directory,
 		     GnomeVFSResult result)
 {
 	GList *node;
 
-	file_list_cancel (directory);
+	directory_load_cancel (directory);
 	directory->details->directory_loaded = TRUE;
 	directory->details->directory_loaded_sent_notification = FALSE;
 
@@ -1408,10 +1436,9 @@ directory_load_callback (GnomeVFSAsyncHandle *handle,
 		directory_load_one (directory, element->data);
 	}
 
-	if (nautilus_directory_file_list_length_reached (directory) ||
-	    result != GNOME_VFS_OK) {
-		directory_load_done (directory, 
-				     result);
+	if (nautilus_directory_file_list_length_reached (directory)
+	    || result != GNOME_VFS_OK) {
+		directory_load_done (directory, result);
 	}
 }
 
@@ -2133,7 +2160,7 @@ nautilus_directory_stop_monitoring_file_list (NautilusDirectory *directory)
 	}
 
 	directory->details->file_list_monitored = FALSE;
-	file_list_cancel (directory);
+	directory_load_cancel (directory);
 	nautilus_file_list_unref (directory->details->file_list);
 	directory->details->directory_loaded = FALSE;
 }
@@ -3147,11 +3174,22 @@ nautilus_directory_async_state_changed (NautilusDirectory *directory)
 	 * I/O state again so that we can release or cancel I/O that
 	 * is not longer needed once the callbacks are satisfied.
 	 */
+
+	if (directory->details->in_async_service_loop) {
+		directory->details->state_changed = TRUE;
+		return;
+	}
+	directory->details->in_async_service_loop = TRUE;
 	nautilus_directory_ref (directory);
 	do {
+		directory->details->state_changed = FALSE;
 		start_or_stop_io (directory);
-	} while (call_ready_callbacks (directory));
+		if (call_ready_callbacks (directory)) {
+			directory->details->state_changed = TRUE;
+		}
+	} while (directory->details->state_changed);
 	nautilus_directory_unref (directory);
+	directory->details->in_async_service_loop = FALSE;
 
 	/* Check if any directories should wake up. */
 	async_job_wake_up ();

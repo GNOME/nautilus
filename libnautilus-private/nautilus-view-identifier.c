@@ -46,7 +46,7 @@ nautilus_view_identifier_new (const char *iid, const char *name)
 }
 
 NautilusViewIdentifier *
-nautilus_view_identifier_copy (NautilusViewIdentifier *identifier)
+nautilus_view_identifier_copy (const NautilusViewIdentifier *identifier)
 {
 	if (identifier == NULL) {
 		return NULL;
@@ -197,7 +197,8 @@ nautilus_view_identifier_list_free (GList *list)
 }
 
 int
-nautilus_view_identifier_compare (NautilusViewIdentifier *a, NautilusViewIdentifier *b)
+nautilus_view_identifier_compare (const NautilusViewIdentifier *a,
+				  const NautilusViewIdentifier *b)
 {
 	int result;
 
@@ -206,4 +207,4 @@ nautilus_view_identifier_compare (NautilusViewIdentifier *a, NautilusViewIdentif
 		return result;
 	}
 	return strcmp (a->name, b->name);
-} 
+}

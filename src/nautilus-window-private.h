@@ -32,6 +32,13 @@
 #include <bonobo/bonobo-ui-container.h>
 #include <bonobo/bonobo-ui-toolbar-button-item.h>
 
+typedef enum {
+        NAUTILUS_LOCATION_CHANGE_STANDARD,
+        NAUTILUS_LOCATION_CHANGE_BACK,
+        NAUTILUS_LOCATION_CHANGE_FORWARD,
+        NAUTILUS_LOCATION_CHANGE_RELOAD
+} NautilusLocationChangeType;
+
 /* FIXME bugzilla.eazel.com 2575: Migrate more fields into here. */
 struct NautilusWindowDetails
 {
@@ -49,8 +56,17 @@ struct NautilusWindowDetails
 	BonoboUIToolbarButtonItem *forward_button_item;
 
         /* Current location. */
+        char *location;
+        GList *selection;
 	char *title;
 	NautilusFile *viewed_file;
+
+        /* New location. */
+        NautilusLocationChangeType location_change_type;
+        guint location_change_distance;
+        char *pending_location;
+        GList *pending_selection;
+        NautilusDetermineViewHandle *determine_view_handle;
 
         /* Throbber. */
 	Bonobo_EventSource_ListenerId throbber_location_change_request_listener_id;
@@ -88,9 +104,6 @@ struct NautilusWindowDetails
 
 void               nautilus_window_set_status                     (NautilusWindow    *window,
                                                                    const char        *status);
-void               nautilus_window_back_or_forward                (NautilusWindow    *window,
-                                                                   gboolean           back,
-                                                                   guint              distance);
 void               nautilus_window_load_view_as_menu              (NautilusWindow    *window);
 void               nautilus_window_synch_view_as_menu             (NautilusWindow    *window);
 void               nautilus_window_initialize_menus               (NautilusWindow    *window);
