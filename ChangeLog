@@ -1,3 +1,20 @@
+2000-08-10  Andy Hertzfeld  <andy@eazel.com>
+
+	added a text color paramter to nautilus_gdk_pixbuf_draw_text,
+	as part of making the sidebar tabs use anti-aliased text, which
+	will be checked in soon.
+	
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
+	added a text color parameter to nautilus_gdk_pixbuf_draw_text
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_draw_text):
+	set up the text color in the gc before drawing the text
+	* libnautilus-extensions/nautilus-icon-factory.c: (embed_text):
+	added a black text color parameter in the call to draw_text
+	* libnautilus-extensions/nautilus-image.c:
+	(nautilus_image_size_allocate):
+	added a black text color parameter in the call to draw_text
+	
 2000-08-10  Arlo Rose  <arlo@eazel.com>
 
 	* icons/arlo/arlo.xml:

@@ -2224,7 +2224,8 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 
 	pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
 
-	nautilus_gdk_pixbuf_draw_text (pixbuf_with_text, font, .3333, embedded_text_rect, text, 0xFF);
+	nautilus_gdk_pixbuf_draw_text (pixbuf_with_text, font, .3333, embedded_text_rect, 
+					text, NAUTILUS_RGB_COLOR_BLACK, 0xFF);
 	return pixbuf_with_text;
 }
 

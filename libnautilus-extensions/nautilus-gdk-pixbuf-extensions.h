@@ -73,6 +73,7 @@ void                      nautilus_gdk_pixbuf_draw_text                (GdkPixbu
 									const double		   font_scale,
 									const ArtIRect             *destination_rect,
 									const char                 *text,
+									guint 			   text_color,
 									guint			   overall_alpha);
 
 #endif /* NAUTILUS_GDK_PIXBUF_EXTENSIONS_H */

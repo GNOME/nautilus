@@ -426,6 +426,7 @@ nautilus_gdk_pixbuf_draw_text (GdkPixbuf	*pixbuf,
 			       const double	font_scale,
 			       const ArtIRect	*destination_rect,
 			       const char	*text,
+			       guint		text_color,
 			       guint		overall_alpha)
 {
 	ArtIRect	pixbuf_rect;
@@ -476,11 +477,11 @@ nautilus_gdk_pixbuf_draw_text (GdkPixbuf	*pixbuf,
 	gc = gdk_gc_new (pixmap);
 
 	/* Set up a white background. */
-	gdk_rgb_gc_set_foreground (gc, NAUTILUS_RGB_COLOR_WHITE);
+	gdk_rgb_gc_set_foreground (gc, text_color == NAUTILUS_RGB_COLOR_WHITE ? NAUTILUS_RGB_COLOR_BLACK : NAUTILUS_RGB_COLOR_WHITE);
 	gdk_draw_rectangle (pixmap, gc, TRUE, 0, 0, width, height);
 	
-	/* Draw black text. */
-	gdk_rgb_gc_set_foreground (gc, NAUTILUS_RGB_COLOR_BLACK);
+	/* Set up the text color. */
+	gdk_rgb_gc_set_foreground (gc, text_color);
 	gdk_gc_set_font (gc, (GdkFont *) font);
 	line = text;
 

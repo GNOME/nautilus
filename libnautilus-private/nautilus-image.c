@@ -606,6 +606,7 @@ nautilus_image_size_allocate (GtkWidget *widget, GtkAllocation* allocation)
 					       1.0,
 					       &text_rect,
 					       image->detail->label_text,
+					       NAUTILUS_RGB_COLOR_BLACK,
 					       image->detail->overall_alpha);
 	}
 }
