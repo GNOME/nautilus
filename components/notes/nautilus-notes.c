@@ -59,9 +59,47 @@ typedef struct {
         GtkWidget *note_text_field;
         char *uri;
         NautilusFile *file;
+        guint save_timeout_id;
 } Notes;
 
+static void notes_save_metainfo (Notes *notes);
+
 static int notes_object_count = 0;
+
+#define SAVE_TIMEOUT (3 * 1000)
+
+static gboolean
+schedule_save_callback (gpointer data)
+{
+	Notes *notes;
+
+	notes = data;
+
+	/* Zero out save_timeout_id so no one will try to cancel our in-progress timeout callback.
+	 */
+	notes->save_timeout_id = 0;
+	
+	notes_save_metainfo (notes);
+	
+	return FALSE;
+}
+
+static void
+cancel_pending_save (Notes *notes)
+{
+	if (notes->save_timeout_id != 0) {
+		gtk_timeout_remove (notes->save_timeout_id);
+		notes->save_timeout_id = 0;
+	}
+}
+
+static void
+schedule_save (Notes *notes)
+{
+	cancel_pending_save (notes);
+	
+	notes->save_timeout_id = gtk_timeout_add (SAVE_TIMEOUT, schedule_save_callback, notes);
+}
 
 static void
 set_note_text_from_metadata (NautilusFile *file,
@@ -81,6 +119,8 @@ set_note_text_from_metadata (NautilusFile *file,
 	 * metadata has actually changed.
 	 */
         if (strcmp (saved_text, current_text) != 0) {
+        	cancel_pending_save (notes);
+        	
 	        gtk_editable_delete_text (GTK_EDITABLE (notes->note_text_field), 0, -1);
 	        
 	        position = 0;
@@ -104,6 +144,8 @@ set_note_text_from_metadata (NautilusFile *file,
 static void
 done_with_file (Notes *notes)
 {
+	cancel_pending_save (notes);
+
 	if (notes->file != NULL) {
 		nautilus_file_monitor_remove (notes->file, notes);
 		gtk_signal_disconnect_by_func (GTK_OBJECT (notes->file),
@@ -153,6 +195,8 @@ notes_save_metainfo (Notes *notes)
                 return;
         }
 
+	cancel_pending_save (notes);
+	
         /* Block the handler, so we don't respond to our own change.
          */
         gtk_signal_handler_block_by_func (GTK_OBJECT (notes->file),
@@ -198,6 +242,11 @@ on_text_field_focus_out_event (GtkWidget *widget,
 	return FALSE;
 }
 
+static void
+on_changed (GtkEditable *editable, Notes *notes)
+{
+	schedule_save (notes);
+}
                               
 static void
 do_destroy (GtkObject *obj, Notes *notes)
@@ -252,6 +301,9 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
 
 	gtk_signal_connect (GTK_OBJECT (notes->note_text_field), "focus_out_event",
       	              	    GTK_SIGNAL_FUNC (on_text_field_focus_out_event),
+                            notes);
+	gtk_signal_connect (GTK_OBJECT (notes->note_text_field), "changed",
+      	              	    GTK_SIGNAL_FUNC (on_changed),
                             notes);
      
         gtk_widget_show_all (vbox);

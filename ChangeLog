@@ -1,3 +1,14 @@
+2001-03-29  Michael Engber  <engber@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* components/notes/nautilus-notes.c: (schedule_save_callback),
+	(cancel_pending_save), (schedule_save),
+	(set_note_text_from_metadata), (done_with_file),
+	(notes_save_metainfo), (on_changed), (make_notes_view):
+	Notes now saves changes after a timeout instead of waiting
+	until focus change - bug 6884.
+
 2001-03-29  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
@@ -16,6 +27,7 @@
 
 2001-03-29  John Sullivan  <sullivan@eazel.com>
 
+>>>>>>> 1.4304
 	reviewed by: Ramiro Estrugo  <ramiro@eazel.com>
 
 	Fixed bug 3328 (Need a preference to specify upper bounds for
