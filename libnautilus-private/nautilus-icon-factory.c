@@ -54,6 +54,7 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-info.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
+#include <libgnomevfs/gnome-vfs-mime-monitor.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <librsvg/rsvg.h>
@@ -268,6 +269,8 @@ static void       nautilus_icon_factory_initialize_class (NautilusIconFactoryCla
 static void       nautilus_icon_factory_initialize       (NautilusIconFactory      *factory);
 static void       nautilus_icon_factory_destroy          (GtkObject                *object);
 static void       icon_theme_changed_callback            (gpointer                  user_data);
+static void       mime_type_data_changed_callback        (GnomeVFSMIMEMonitor	   *monitor,
+							  gpointer                  user_data);
 static guint      nautilus_scalable_icon_hash            (gconstpointer             p);
 static gboolean   nautilus_scalable_icon_equal           (gconstpointer             a,
 							  gconstpointer             b);
@@ -311,6 +314,11 @@ get_icon_factory (void)
 		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
 						   icon_theme_changed_callback,
 						   NULL);
+
+		gtk_signal_connect (GTK_OBJECT (gnome_vfs_mime_monitor_get ()),
+				    "data_changed",
+				    mime_type_data_changed_callback,
+				    NULL);
 
 		g_atexit (destroy_icon_factory);
         }
@@ -1116,6 +1124,19 @@ icon_theme_changed_callback (gpointer user_data)
 	g_free (theme_preference);
 	g_free (icon_theme);
 }
+
+static void       
+mime_type_data_changed_callback (GnomeVFSMIMEMonitor *monitor, gpointer user_data)
+{
+	g_assert (monitor != NULL);
+	g_assert (user_data == NULL);
+
+	/* We don't know which data changed, so we have to assume that
+	 * any or all icons might have changed.
+	 */
+	gtk_signal_emit (GTK_OBJECT (get_icon_factory ()), 
+			 signals[ICONS_CHANGED]);
+}				 
 
 /* Decompose a scalable icon into its text pieces. */
 void

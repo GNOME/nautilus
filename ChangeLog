@@ -1,3 +1,16 @@
+2000-12-22  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	Nautilus part of fix for bug 4798 (icon changes in MIME
+	type capplet aren't reflected automatically in Nautilus)
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(get_icon_factory): connect to gnome_vfs_mime_monitor's
+	"data_changed" signal. 
+	(mime_type_data_changed_callback): emit "icons_changed"
+	signal when gnome_vfs_mime_monitor says data has changed.
+
 2000-12-21  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>
