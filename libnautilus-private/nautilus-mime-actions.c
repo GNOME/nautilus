@@ -82,6 +82,7 @@ nautilus_mime_get_default_action_type_for_uri (const char *uri)
 	char *mime_type;
 	NautilusDirectory *directory;
 	char *action_type_string;
+	GnomeVFSMimeActionType action_type;
 
 	directory = nautilus_directory_get (uri);
 	nautilus_directory_wait_until_ready (directory, NULL, TRUE);
@@ -98,14 +99,9 @@ nautilus_mime_get_default_action_type_for_uri (const char *uri)
                    over and over in the process of finding info on a
                    target URI. */
 		mime_type = get_mime_type_from_uri (uri);
-
-		if (mime_type != NULL) {
-			return gnome_vfs_mime_get_default_action_type (mime_type);
-		} else {
-			return GNOME_VFS_MIME_ACTION_TYPE_NONE;
-		}
-
+		action_type = gnome_vfs_mime_get_default_action_type (mime_type);
 		g_free (mime_type);
+		return action_type;
 	} else {
 		if (strcasecmp (action_type_string, "application") == 0) {
 			return GNOME_VFS_MIME_ACTION_TYPE_APPLICATION;
@@ -181,12 +177,7 @@ nautilus_mime_get_default_application_for_uri_internal (const char *uri, gboolea
                    over and over in the process of finding info on a
                    target URI. */
 		mime_type = get_mime_type_from_uri (uri);
-
-		if (mime_type != NULL) {
-			result = gnome_vfs_mime_get_default_application (mime_type);
-		} else {
-			result = NULL;
-		}
+		result = gnome_vfs_mime_get_default_application (mime_type);
 		g_free (mime_type);
 		used_user_chosen_info = FALSE;
 	} else {
@@ -415,13 +406,7 @@ nautilus_mime_get_short_list_applications_for_uri (const char *uri)
 	nautilus_directory_unref (directory);
 
 	mime_type = get_mime_type_from_uri (uri);
-
-	if (mime_type != NULL) {
-		result = gnome_vfs_mime_get_short_list_applications (mime_type);
-	} else {
-		result = NULL;
-	}
-
+	result = gnome_vfs_mime_get_short_list_applications (mime_type);
 	g_free (mime_type);
 
 	result = nautilus_g_list_partition (result, (NautilusGPredicateFunc) gnome_vfs_mime_application_has_id_not_in_list, 
@@ -493,13 +478,7 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 	nautilus_directory_unref (directory);
 
 	mime_type = get_mime_type_from_uri (uri);
-
-	if (mime_type != NULL) {
-		servers = gnome_vfs_mime_get_short_list_components (mime_type);
-	} else {
-		servers = NULL;
-	}
-
+	servers = gnome_vfs_mime_get_short_list_components (mime_type);
 	iids = NULL;
 
 	for (p = servers; p != NULL; p = p->next) {
@@ -581,16 +560,12 @@ nautilus_mime_get_all_applications_for_uri (const char *uri)
 
 	mime_type = get_mime_type_from_uri (uri);
 
-	if (mime_type != NULL) {
-		result = gnome_vfs_mime_get_all_applications (mime_type);
-		/* FIXME bugzilla.eazel.com 1268: 
-		 * temporary hack; the non_uri code should do this merge 
-		 */
-		if (result == NULL) {
-			result = gnome_vfs_mime_get_short_list_applications (mime_type);
-		}
-	} else {
-		result = NULL;
+	result = gnome_vfs_mime_get_all_applications (mime_type);
+	/* FIXME bugzilla.eazel.com 1268: 
+	 * temporary hack; the non_uri code should do this merge 
+	 */
+	if (result == NULL) {
+		result = gnome_vfs_mime_get_short_list_applications (mime_type);
 	}
 
 	for (p = metadata_application_ids; p != NULL; p = p->next) {
@@ -758,13 +733,7 @@ nautilus_mime_set_short_list_applications_for_uri (const char *uri,
 	/* get per-mime short list */
 
 	mime_type = get_mime_type_from_uri (uri);
-
-	if (mime_type != NULL) {
-		normal_short_list = gnome_vfs_mime_get_short_list_applications (mime_type);
-	} else {
-		normal_short_list = NULL;
-	}
-
+	normal_short_list = gnome_vfs_mime_get_short_list_applications (mime_type);
 	g_free (mime_type);
 
 	normal_short_list_ids = NULL;
@@ -806,13 +775,7 @@ nautilus_mime_set_short_list_components_for_uri (const char *uri,
 	/* get per-mime short list */
 
 	mime_type = get_mime_type_from_uri (uri);
-
-	if (mime_type != NULL) {
-		normal_short_list = gnome_vfs_mime_get_short_list_components (mime_type);
-	} else {
-		normal_short_list = NULL;
-	}
-
+	normal_short_list = gnome_vfs_mime_get_short_list_components (mime_type);
 	g_free (mime_type);
 	
 	normal_short_list_ids = NULL;

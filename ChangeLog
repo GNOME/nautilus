@@ -1,3 +1,15 @@
+2000-06-16  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_action_type_for_uri),
+	(nautilus_mime_get_default_application_for_uri_internal),
+	(nautilus_mime_get_short_list_applications_for_uri),
+	(nautilus_mime_get_short_list_components_for_uri),
+	(nautilus_mime_get_all_applications_for_uri),
+	(nautilus_mime_set_short_list_applications_for_uri),
+	(nautilus_mime_set_short_list_components_for_uri):
+	Simplify the handling of NULL MIME type.
+
 2000-06-16  Rebecka Schulman  <set EMAIL_ADDRESS environment variable>
 
 	* icons/Makefile.am:
