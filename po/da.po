@@ -1,4 +1,5 @@
-# Copyright (C) 2000 Free Software Foundation, Inc.
+# Danish translation of Nautilus strings.
+# Copyright (C) 2000, 2001 Free Software Foundation, Inc.
 # Kenneth Christiansen <kenneth@gnu.org>, 2000, 2001.
 # Keld Simonsen <keld@dkuug.dk>, 2000.
 # Kim Schulz <kim@schulz.dk>, 2001.
@@ -12,17 +13,20 @@
 # Konventioner:
 #
 #   items -> filer, objekter, elementer
-#   location -> sted, placering
+#   location -> placering, sted
 #   link -> henvisning (ifølge ordlisten), (som udsagnsord) kæde sammen
 #   trash -> papirkurven
 #   lay out -> arrangere (f.eks. objekterne i ikonfremvisningen)
 #   custom -> (ofte) eget/egen
+#   service -> tjeneste
+#   side bar -> sidepanel (alle andre 'bar' er linjer)
+#   go menu -> navigationsmenu
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2001-05-04 02:09-0700\n"
-"PO-Revision-Date: 2001-04-26 17:18+02:00\n"
+"POT-Creation-Date: 2001-05-05 13:00+0200\n"
+"PO-Revision-Date: 2001-05-05 12:49+02:00\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -963,15 +967,15 @@ msgstr "Mozilla indholdsvisningskomponentfabrik"
 
 #: components/mozilla/Nautilus_View_mozilla.oaf.in.h:5
 msgid "View as Web Page"
-msgstr "Vis som webside"
+msgstr "Vis som internetside"
 
 #: components/mozilla/Nautilus_View_mozilla.oaf.in.h:6
 msgid "Web Page"
-msgstr "Webside"
+msgstr "Internetside"
 
 #: components/mozilla/Nautilus_View_mozilla.oaf.in.h:7
 msgid "Web Page Viewer"
-msgstr "Websideviser"
+msgstr "Internetsideviser"
 
 #: components/music/mpg123.c:29
 msgid "Blues"
@@ -1724,42 +1728,40 @@ msgid "View as Music"
 msgstr "Vis som musik"
 
 #: components/news/nautilus-news.c:1284
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't load %s"
-msgstr "Kunne ikke tilføje tema"
+msgstr "Kunne ikke indlæse %s"
 
 #. put up a title that's displayed while we wait
 #: components/news/nautilus-news.c:1524
-#, fuzzy, c-format
+#, c-format
 msgid "Loading %s"
-msgstr "Henter \"%s\""
+msgstr "Indlæser %s"
 
 #: components/news/nautilus-news.c:1861
-#, fuzzy
 msgid "Sorry, but you have not specified a name for the site!"
-msgstr "Beklager, men du skal angive et ikke-tomt navn for den nye farve."
+msgstr "Beklager, men du har ikke angivet et navn til stedet!"
 
 #: components/news/nautilus-news.c:1861
 msgid "Missing Site Name Error"
-msgstr ""
+msgstr "Manglende navn på sted-fejl"
 
 #: components/news/nautilus-news.c:1865
-#, fuzzy
 msgid "Sorry, but you have not specified a URL for the site!"
-msgstr "Beklager, men du skal angive et ikke-tomt navn for den nye farve."
+msgstr "Beklager, men du har ikke angivet en adresse for stedet!"
 
 #: components/news/nautilus-news.c:1865
 msgid "Missing URL Error"
-msgstr ""
+msgstr "Manglende URL-fejl"
 
 #: components/news/nautilus-news.c:1882
 msgid "Sorry, but the specified url doesn't seem to be a valid RSS file!"
 msgstr ""
+"Beklager, men den angivne adresse ser ikke ud til at være en gyldig RSS-fil!"
 
 #: components/news/nautilus-news.c:1882
-#, fuzzy
 msgid "Invalid RSS URL"
-msgstr "Ugyldig uri!"
+msgstr "Ugyldig RSS-URL"
 
 #: components/news/nautilus-news.c:1964
 #: libnautilus-private/nautilus-undo-signal-handlers.c:175
@@ -1767,35 +1769,30 @@ msgid "Edit"
 msgstr "Redigér"
 
 #: components/news/nautilus-news.c:2223
-#, fuzzy
 msgid "Remove Site"
-msgstr "Fjern"
+msgstr "Fjern sted"
 
 #. allocate the name field
 #: components/news/nautilus-news.c:2243
-#, fuzzy
 msgid "Site Name:"
-msgstr "Brugernavn:"
+msgstr "Navn på sted:"
 
 #: components/news/nautilus-news.c:2254
 msgid "Site RSS URL:"
-msgstr ""
+msgstr "RSS-adresse på sted:"
 
 #: components/news/nautilus-news.c:2269
-#, fuzzy
 msgid "Add New Site"
-msgstr "Tilføj nyt tema..."
+msgstr "Tilføj nyt sted"
 
 #. make the add new site label
 #: components/news/nautilus-news.c:2292
-#, fuzzy
 msgid "Add a New Site:"
-msgstr "Tilføj nyt mønster..."
+msgstr "Tilføj et nyt sted:"
 
 #: components/news/nautilus-news.c:2301
-#, fuzzy
 msgid "Remove a Site:"
-msgstr "Fjern et mønster..."
+msgstr "Tilføj et sted:"
 
 #. add the button box at the bottom with a cancel button
 #: components/news/nautilus-news.c:2309
@@ -1805,9 +1802,8 @@ msgstr "Annullér"
 
 #. add a descriptive label
 #: components/news/nautilus-news.c:2326
-#, fuzzy
 msgid "Select Sites:"
-msgstr "Vælg alle filer"
+msgstr "Vælg steder:"
 
 #. allocate the button box for the done button
 #: components/news/nautilus-news.c:2341
@@ -1822,31 +1818,29 @@ msgid ""
 "The News panel displays current headlines from your favorite websites.  "
 "Click the 'Select Sites' button to select the sites to display."
 msgstr ""
+"Nyhedspanelet viser de nuværende overskrifter fra dine favoritnetsteder. "
+"Klik på 'Vælg steder'-knappen for at vælge de steder der skal vises."
 
 #. create a button box to hold the command buttons
 #: components/news/nautilus-news.c:2397
-#, fuzzy
 msgid "Select Sites"
-msgstr "Vælg alle filer"
+msgstr "Vælg steder"
 
 #: components/news/Nautilus_View_news.oaf.in.h:1
-#, fuzzy
 msgid "Factory for news view"
-msgstr "Fabrik for tekstvisning"
+msgstr "Fabrik for nyhedsvisning"
 
 #: components/news/Nautilus_View_news.oaf.in.h:2
-#, fuzzy
 msgid "News"
-msgstr "Ny"
+msgstr "Nyheder"
 
 #: components/news/Nautilus_View_news.oaf.in.h:3
-#, fuzzy
 msgid "News sidebar panel"
-msgstr "Notesidepanel"
+msgstr "Nyhedssidepanel"
 
 #: components/news/Nautilus_View_news.oaf.in.h:4
 msgid "News sidebar panel fetches and displays RSS feeds"
-msgstr ""
+msgstr "Nyhedssidepanelet henter og viser RSS-fødninger"
 
 #: components/notes/Nautilus_View_notes.oaf.in.h:1
 msgid "Factory for annotation view"
@@ -2412,7 +2406,7 @@ msgstr "Computer"
 
 #: data/linksets/home.xml.h:2
 msgid "Home Directory"
-msgstr "Hjemmekatalog"
+msgstr "Hjemmemappen"
 
 #: data/linksets/home.xml.h:3 src/nautilus-service-ui.xml.h:4
 msgid "Services"
@@ -4091,7 +4085,7 @@ msgid ""
 "and leave this item where you dropped it? This will clobber the stored "
 "manual layout."
 msgstr ""
-"Dette katalog bruger automatisk placering. Ønsker du at skifte til manuel "
+"Denne mappe bruger automatisk placering. Ønsker du at skifte til manuel "
 "placering og lade punktet blive hvor du slap det? Dette vil ødelægge den "
 "gemte manuelle placering."
 
@@ -4101,7 +4095,7 @@ msgid ""
 "and leave these items where you dropped them? This will clobber the stored "
 "manual layout."
 msgstr ""
-"Dette katalog bruger automatisk placering. Ønsker du at skifte til manuel "
+"Denne mappe bruger automatisk placering. Ønsker du at skifte til manuel "
 "placering og lade disse filer blive hvor du slap dem? Dette vil ødelægge den "
 "gemte manuelle placering."
 
@@ -4110,7 +4104,7 @@ msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
 msgstr ""
-"Dette katalog bruger automatisk placering. Ønsker du at skifte til manuel "
+"Denne mappe bruger automatisk placering. Ønsker du at skifte til manuel "
 "placering og lade filen blive hvor du slap den?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:768
@@ -4118,7 +4112,7 @@ msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
 msgstr ""
-"Dette katalog bruger automatisk placering. Ønsker du at skifte til manuel "
+"Denne mappe bruger automatisk placering. Ønsker du at skifte til manuel "
 "placering og lade disse filer blive hvor du slap dem?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:773
@@ -4359,10 +4353,9 @@ msgid ""
 "locations.  No other applications are available to view this file.  If you "
 "copy this file onto your computer, you may be able to open it."
 msgstr ""
-"\"%s\" kan ikke åbne \"%s\" fordie \"%s\" ikke kan få adgang til filer "
-"placeret på \"%s\". Der er ikke adgang til andre programmer som kan vise "
-"denne fil. Hvis du kopierer filen over på din computer, så kan du måske åbne "
-"den."
+"'%s' kan ikke åbne '%s' fordi '%s' ikke kan få adgang til filer placeret på "
+"'%s'. Der er ikke adgang til andre programmer som kan vise denne fil. Hvis "
+"du kopierer filen over på din computer, så kan du måske åbne den."
 
 #. Human readable description for a criterion in a search for
 #. files. Bracketed items are context, and are message
@@ -4879,7 +4872,8 @@ msgstr ""
 #: src/Nautilus_shell.oaf.in.h:9
 msgid "Nautilus file manager component that shows a two-dimensional icon space"
 msgstr ""
-"Nautilus filhåndteringskomponent der viser et 2-dimensionalt rum med ikoner"
+"Nautilus filhåndteringskomponent der viser et to-dimensionalt areal med "
+"ikoner"
 
 #: src/Nautilus_shell.oaf.in.h:10
 msgid "Nautilus file manager component that shows icons on the desktop"
@@ -4914,7 +4908,8 @@ msgid ""
 "Nautilus shell operations that can be done from subsequent command-line "
 "invocations"
 msgstr ""
-"Nautilus skaloperationer der kan gøres fra efterfølgende kommandolinjekørsler"
+"Nautilus skaloperationer der kan udføres fra efterfølgende "
+"kommandolinjekørsler"
 
 #: src/Nautilus_shell.oaf.in.h:18
 msgid "Produces metafile objects for accessing Nautilus metadata"
@@ -5582,13 +5577,13 @@ msgstr "Hold ikoner sorteret efter emblemer i rækker"
 #: src/file-manager/fm-icon-view.c:1415
 #: src/file-manager/nautilus-icon-view-ui.xml.h:37
 msgid "_Restore Icons' Original Sizes"
-msgstr "_Genopret ikonets oprindelige størrelser"
+msgstr "_Genopret ikonernes oprindelige størrelser"
 
 #: src/file-manager/fm-icon-view.c:1416
 msgid "_Restore Icon's Original Size"
 msgstr "_Genopret ikonets oprindelige størrelse"
 
-#: src/file-manager/fm-icon-view.c:1700
+#: src/file-manager/fm-icon-view.c:1705
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "peger på \"%s\""
@@ -5619,7 +5614,7 @@ msgstr "Fortryd ændring af gruppe?"
 
 #: src/file-manager/fm-properties-window.c:718
 msgid "Changing group"
-msgstr "Ændrer gruppe"
+msgstr "Skifter gruppe"
 
 #: src/file-manager/fm-properties-window.c:879
 msgid "Cancel Owner Change?"
@@ -5627,25 +5622,27 @@ msgstr "Fortryd ændring af ejer?"
 
 #: src/file-manager/fm-properties-window.c:880
 msgid "Changing owner"
-msgstr "Ændrer ejer"
+msgstr "Skifter ejer"
 
+# der står 'Indhold:' foran
 #: src/file-manager/fm-properties-window.c:1063
 msgid "nothing"
-msgstr "ingenting"
+msgstr "intet"
 
+# ditto
 #: src/file-manager/fm-properties-window.c:1065
 msgid "unreadable"
-msgstr "ulæselig"
+msgstr "ulæseligt"
 
 #: src/file-manager/fm-properties-window.c:1074
 #, c-format
 msgid "1 item, with size %s"
-msgstr "1 ting, med størrelse %s"
+msgstr "1 element med størrelsen %s"
 
 #: src/file-manager/fm-properties-window.c:1076
 #, c-format
 msgid "%d items, totalling %s"
-msgstr "%d ting, totalt %s"
+msgstr "%d elementer, totalt %s"
 
 #: src/file-manager/fm-properties-window.c:1082
 msgid "(some contents unreadable)"
@@ -5660,9 +5657,10 @@ msgstr "(noget indhold ulæseligt)"
 msgid "Contents:"
 msgstr "Indhold:"
 
+# er den første fane under egenskaberne for en fil - 'basal' ser ikke godt ud
 #: src/file-manager/fm-properties-window.c:1443
 msgid "Basic"
-msgstr "Basal"
+msgstr "Generelt"
 
 #: src/file-manager/fm-properties-window.c:1522
 msgid "Type:"
@@ -5679,7 +5677,7 @@ msgstr "Placering:"
 
 #: src/file-manager/fm-properties-window.c:1531
 msgid "Link Target:"
-msgstr "Henvisningmål:"
+msgstr "Henvisningsmål:"
 
 #: src/file-manager/fm-properties-window.c:1534
 msgid "MIME Type:"
@@ -5816,14 +5814,14 @@ msgid "Search Service Not Available"
 msgstr "Søgetjeneste ikke tilgængelig"
 
 #: src/file-manager/fm-search-list-view.c:189
-#, fuzzy
 msgid ""
 "The search you have selected is newer than the index on your system.  The "
 "search will return no results right now.  You can create a new  index by "
 "running \"medusa-indexd\" as root on the command line."
 msgstr ""
-"Søgningen som du har valgt er nyere end indekset på dit system. Søgningen "
-"vil ikke give noget resultat nu. Vil du oprette et nyt index nu?"
+"Den søgning du har valgt, er nyere end indekset på dit system. Søgningen vil "
+"ikke give noget resultat nu. Du kan oprette et nyt indeks ved at køre "
+"'medusa-indexd' som root ved kommandolinjen."
 
 #: src/file-manager/fm-search-list-view.c:195
 msgid "Search for items that are too new"
@@ -5847,19 +5845,18 @@ msgstr "Fejl under søgning"
 #. FIXME: This dialog does not get shown because a slow search
 #. will be performed and will not return an error.
 #: src/file-manager/fm-search-list-view.c:209
-#, fuzzy
 msgid ""
 "Find cannot open your file system index.  Your index may be missing or "
 "corrupt.  You can create a new index by running \"medusa-indexd\" as root on "
 "the command line."
 msgstr ""
-"Programmet der laver et indeks, er ikke indstillet rigtigt. Du kan oprette "
-"et indeks manuelt ved at køre \"medusa-indexd\" som root fra kommandolinjen."
+"Søgningen kan ikke åbne dit filsystemsindeks. Indekset mangler måske eller "
+"er beskadiget. Du kan oprette et indeks manuelt ved at køre "
+"\"medusa-indexd\" som root fra kommandolinjen."
 
 #: src/file-manager/fm-search-list-view.c:213
-#, fuzzy
 msgid "Error reading file index"
-msgstr "Fejl ved oprettelse af ny mappe"
+msgstr "Fejl ved læsning af filindeks"
 
 #: src/file-manager/fm-search-list-view.c:219
 #, c-format
@@ -5896,7 +5893,6 @@ msgid "Content searches are not available"
 msgstr "Søgninger efter indhold ikke tilgængelige"
 
 #: src/file-manager/fm-search-list-view.c:256
-#, fuzzy
 msgid ""
 "Your index files are available but the Medusa search daemon, which handles "
 "index requests, isn't running.  To start this program, log in as root and "
@@ -5907,6 +5903,7 @@ msgstr ""
 "Din indeksfiler er tilgængelige, men Medusa søgedæmonen som håndterer "
 "indeksforespørgsler, kører ikke. Start dette program ved at logge ind som "
 "root og indtaste følgende kommando ved kommandolinjen:\n"
+"\n"
 "medusa-searchd"
 
 #: src/file-manager/fm-search-list-view.c:270
@@ -6539,8 +6536,8 @@ msgstr ""
 "Nautilus kan måske løse problemet.\n"
 "\n"
 "OAF kunne ikke finde filen Nautilus_shell.oaf. En årsag til dette kunne være "
-"en LD_LIBRARY_PATH som ikke indeholder kataloget med OAF's bibliotek. En "
-"anden mulig årsag kunne være en uheldig installering med en manglende "
+"en LD_LIBRARY_PATH som ikke indeholder mappen med OAF's bibliotek. En anden "
+"mulig årsag kunne være en uheldig installering med en manglende "
 "Nautilus_Shell.oaf-fil.\n"
 "\n"
 "Kørsel af \"nautilus-clean.sh -x\" vil dræbe alle OAF- og GConf-processer "
@@ -6956,11 +6953,11 @@ msgstr "nautilus: --geometry kan ikke bruges med mere end én URI.\n"
 
 #: src/nautilus-preferences-dialog.c:52
 msgid "Smoother Graphics"
-msgstr "Jævnere grafik"
+msgstr "Udjævnet grafik"
 
 #: src/nautilus-preferences-dialog.c:54
 msgid "Use smoother (but slower) graphics"
-msgstr "Brug jævnere (men langsommere) grafik"
+msgstr "Brug udjævnet (men langsommere) grafik"
 
 #: src/nautilus-preferences-dialog.c:57 src/nautilus-preferences-dialog.c:62
 msgid "Fonts"
@@ -6975,9 +6972,8 @@ msgid "Default non-smooth font:"
 msgstr "Ikke-udjævnet standardskrifttype:"
 
 #: src/nautilus-preferences-dialog.c:67
-#, fuzzy
 msgid "Nautilus Themes"
-msgstr "Nautilus tema:"
+msgstr "Nautilus-temaer:"
 
 #: src/nautilus-preferences-dialog.c:82
 msgid "Use Nautilus to draw the desktop"
@@ -7015,7 +7011,7 @@ msgstr "Vis sidepanel i nye vinduer"
 
 #: src/nautilus-preferences-dialog.c:115 src/nautilus-preferences-dialog.c:120
 msgid "Trash Behavior"
-msgstr "Papirkurvs-opførsel"
+msgstr "Papirkurvsopførsel"
 
 #: src/nautilus-preferences-dialog.c:117
 msgid "Ask before emptying the Trash or deleting files"
@@ -7193,10 +7189,11 @@ msgstr "Lav ikke miniature for filer større end:"
 msgid "Preview Sound Files"
 msgstr "Smughør lydfiler"
 
+# dækker vist bedre over hvad det drejer sig om
 #. FIXME bugzilla.eazel.com 2560: This title phrase needs improvement.
 #: src/nautilus-preferences-dialog.c:368
 msgid "Make Folder Appearance Details Public"
-msgstr "Gør detaljer om katalogudseende offentlig"
+msgstr "Husk udseendet af mapper"
 
 #: src/nautilus-preferences-dialog.c:377
 msgid "Tabs"
@@ -7208,19 +7205,19 @@ msgstr "Vis kun mapper (ikke filer) i træet"
 
 #: src/nautilus-preferences-dialog.c:395
 msgid "Maximum items per site"
-msgstr ""
+msgstr "Maksimalt antal objekter pr. sted"
 
 #: src/nautilus-preferences-dialog.c:397
 msgid "Maximum number of items displayed per site"
-msgstr ""
+msgstr "Det maksimale antal objekter der bliver vist hvert sted"
 
 #: src/nautilus-preferences-dialog.c:400
 msgid "Update Minutes"
-msgstr ""
+msgstr "Opdateringsinterval"
 
 #: src/nautilus-preferences-dialog.c:402
 msgid "Update frequency in minutes"
-msgstr ""
+msgstr "Tidsrummet i minutter der går mellem opdateringer"
 
 #: src/nautilus-preferences-dialog.c:411
 msgid "View Preferences"
@@ -7255,9 +7252,8 @@ msgid "Speed Tradeoffs"
 msgstr "Hastighedsvalg"
 
 #: src/nautilus-preferences-dialog.c:420
-#, fuzzy
 msgid "News Panel"
-msgstr "Nyheder og media"
+msgstr "Nyhedspanel"
 
 #: src/nautilus-preferences-dialog.c:447
 msgid "Preferences"
@@ -7613,11 +7609,11 @@ msgstr " er ikke "
 
 #: src/nautilus-service-ui.xml.h:1
 msgid "Go to the Eazel Services Summary Page"
-msgstr "Gå til Eazel tjenesters sammendrag-side"
+msgstr "Gå til en side med en oversigt over Eazels tjenester"
 
 #: src/nautilus-service-ui.xml.h:2
 msgid "Go to the Eazel Software Catalog"
-msgstr "Gå til Eazel's programmelkatalog"
+msgstr "Gå til Eazels katalog over programmer"
 
 #: src/nautilus-service-ui.xml.h:3
 msgid "Go to your online storage repository"
@@ -7625,11 +7621,11 @@ msgstr "Gå til dit lagringsområde på nettet"
 
 #: src/nautilus-service-ui.xml.h:5
 msgid "Software _Catalog"
-msgstr "Programvarekatalog"
+msgstr "Programkatalog"
 
 #: src/nautilus-service-ui.xml.h:6
 msgid "_Eazel Services Home"
-msgstr "_Eazel tjenesters indeks"
+msgstr "_Eazel-tjenester"
 
 #: src/nautilus-service-ui.xml.h:7
 msgid "_Online Storage"
@@ -7657,19 +7653,19 @@ msgstr "Tilføj et bogmærke for det nuværende sted til denne menu"
 
 #: src/nautilus-shell-ui.xml.h:6
 msgid "Change the visibility of this window's location bar"
-msgstr "Ændr synligheden for dette vindues adresselinje"
+msgstr "Skift mellem om dette vindues adresselinje er vist"
 
 #: src/nautilus-shell-ui.xml.h:7
 msgid "Change the visibility of this window's sidebar"
-msgstr "Ændr synligheden for dette vindues sidepanel"
+msgstr "Skift mellem om dette vindues sidepanel er vist"
 
 #: src/nautilus-shell-ui.xml.h:8
 msgid "Change the visibility of this window's status bar"
-msgstr "Ændr synligheden for dette vindues statuslinje"
+msgstr "Skift mellem om dette vindues statuslinje er vist"
 
 #: src/nautilus-shell-ui.xml.h:9
 msgid "Change the visibility of this window's toolbar"
-msgstr "Ændr synligheden af dette vindues værktøjsbar"
+msgstr "Skift mellem om dette vindues værktøjslinje er vist"
 
 # håber det er rigtigt
 #: src/nautilus-shell-ui.xml.h:10
@@ -7678,7 +7674,7 @@ msgstr "Vælg en visning for dette sted eller ændr hvilke der er tilrådighed"
 
 #: src/nautilus-shell-ui.xml.h:11
 msgid "Clear contents of Go menu and Back/Forward lists"
-msgstr "Tøm indhold af Go-menuen og frem/tilbage-listerne"
+msgstr "Tøm indholdet af navigationsmenuen og frem/tilbage-listerne"
 
 #: src/nautilus-shell-ui.xml.h:12
 msgid "Close _All Windows"
@@ -7686,7 +7682,7 @@ msgstr "Luk _alle vinduer"
 
 #: src/nautilus-shell-ui.xml.h:13
 msgid "Close all Nautilus windows"
-msgstr "Luk alle Nautilus vinduer"
+msgstr "Luk alle Nautilus-vinduer"
 
 #: src/nautilus-shell-ui.xml.h:14
 msgid "Close this window"
@@ -7698,7 +7694,7 @@ msgstr "Vis et vindue der tillader redigering af bogmærker i denne menu"
 
 #: src/nautilus-shell-ui.xml.h:17
 msgid "Display credits for the creators of Nautilus"
-msgstr "Vis information om dem som lavede Nautilus"
+msgstr "Vis information om udviklerne bag Nautilus"
 
 #: src/nautilus-shell-ui.xml.h:18
 msgid "Display on-line help for Nautilus"
@@ -7713,7 +7709,7 @@ msgstr ""
 
 #: src/nautilus-shell-ui.xml.h:20
 msgid "Display quick reference pages for Nautilus"
-msgstr "Vis hurtig-reference siderne for Nautilus"
+msgstr "Vis referencesiderne for Nautilus"
 
 #: src/nautilus-shell-ui.xml.h:21
 msgid "Display release notes for Nautilus"
@@ -7721,15 +7717,17 @@ msgstr "Vis udgivelsesbemærkninger til Nautilus"
 
 #: src/nautilus-shell-ui.xml.h:22
 msgid "Display support information for Nautilus and Eazel Services"
-msgstr "Vis support information for Nautilus og Eazel servicerne."
+msgstr "Vis support information for Nautilus og Eazel-tjenesterne"
 
+# denne er svær at få rigtig - test evt. ændringer
 #: src/nautilus-shell-ui.xml.h:23
 msgid "Display the latest contents of the current location"
-msgstr "Vis det nyeste indhold ved den nuværende placering"
+msgstr "Vis denne placering igen"
 
+# redigér passer ikke ind
 #: src/nautilus-shell-ui.xml.h:24
 msgid "Edit various Nautilus preferences"
-msgstr "Redigér forskellige Nautilus-indstillinger"
+msgstr "Ændr på forskellige Nautilus-indstillinger"
 
 #: src/nautilus-shell-ui.xml.h:25
 msgid "Find"
@@ -7745,15 +7743,15 @@ msgstr "Gå til Eazel tjenester"
 
 #: src/nautilus-shell-ui.xml.h:28
 msgid "Go to the home location"
-msgstr "Gå til hjemstedet"
+msgstr "Gå til hjemmemappen"
 
 #: src/nautilus-shell-ui.xml.h:29
 msgid "Go to the next visited location"
-msgstr "Gå til næste besøgte lokation"
+msgstr "Gå til næste besøgte sted"
 
 #: src/nautilus-shell-ui.xml.h:30
 msgid "Go to the previous visited location"
-msgstr "Gå til forrige besøgte placering"
+msgstr "Gå til forrige besøgte sted"
 
 #: src/nautilus-shell-ui.xml.h:31
 msgid "Go up to the location that contains the displayed location"
@@ -7769,7 +7767,7 @@ msgstr "Skjul _statuslinjen"
 
 #: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:480
 msgid "Hide _Sidebar"
-msgstr "Skjul s_idebjælken"
+msgstr "Skjul s_idepanel"
 
 #: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:486
 msgid "Hide _Toolbar"
@@ -7785,7 +7783,7 @@ msgstr "Nautilus udgivelsesbemærkninger"
 
 #: src/nautilus-shell-ui.xml.h:39
 msgid "Nautilus User _Manual"
-msgstr "Nautilus brugerhåndbog"
+msgstr "Nautilus brugervejledning"
 
 #: src/nautilus-shell-ui.xml.h:40
 msgid "New Window"
@@ -7799,9 +7797,10 @@ msgstr "Nyt vindue"
 msgid "Normal Size"
 msgstr "Normal størrelse"
 
+# nuværende bedre end viste
 #: src/nautilus-shell-ui.xml.h:43
 msgid "Open another Nautilus window for the displayed location"
-msgstr "Opret et nyt Nautilus-vindue for det viste netsted"
+msgstr "Opret et nyt Nautilus-vindue for den nuværende placering"
 
 #: src/nautilus-shell-ui.xml.h:44
 msgid "Refresh"
@@ -7821,7 +7820,7 @@ msgstr "Søg på internettet"
 
 #: src/nautilus-shell-ui.xml.h:48
 msgid "Search this computer for files"
-msgstr "Søg efter filer på denne datamaskine"
+msgstr "Søg efter filer på denne maskine"
 
 #: src/nautilus-shell-ui.xml.h:50
 msgid ""
@@ -7853,7 +7852,7 @@ msgstr "Stop profilering"
 
 #: src/nautilus-shell-ui.xml.h:57
 msgid "Stop loading this location"
-msgstr "Stop indlæsning af denne lokation"
+msgstr "Stop indlæsning af denne placering"
 
 #: src/nautilus-shell-ui.xml.h:58
 msgid "Undo the last text change"
@@ -7940,7 +7939,7 @@ msgstr "_Redigér"
 
 #: src/nautilus-shell-ui.xml.h:79
 msgid "_Edit Bookmarks..."
-msgstr "_Ændr bogmærker..."
+msgstr "_Redigér bogmærker..."
 
 #: src/nautilus-shell-ui.xml.h:80
 msgid "_Edit Preferences..."
@@ -7948,7 +7947,7 @@ msgstr "_Ændr indstillinger..."
 
 #: src/nautilus-shell-ui.xml.h:81
 msgid "_Feedback"
-msgstr "Tilbagemeldinger"
+msgstr "_Tilbagemeldinger"
 
 #: src/nautilus-shell-ui.xml.h:83
 msgid "_Find"
@@ -7958,10 +7957,10 @@ msgstr "_Find"
 msgid "_Forward"
 msgstr "_Fremad"
 
-# RETMIG: tjek hvad dette er
+# er et menunavn - gå er desværre misvisende, navigation benyttes også i Galeon
 #: src/nautilus-shell-ui.xml.h:85
 msgid "_Go"
-msgstr "_Go"
+msgstr "Navi_gation"
 
 #: src/nautilus-shell-ui.xml.h:86
 msgid "_Help"
@@ -8112,11 +8111,8 @@ msgid "Click on a theme to remove it."
 msgstr "Klik på et tema for at fjerne det."
 
 #: src/nautilus-theme-selector.c:248
-#, fuzzy
 msgid "Click on a theme to change the appearance of Nautilus."
-msgstr ""
-"Klik på et tema for at at ændre\n"
-"Nautilus' udseende."
+msgstr "Klik på et tema for at at ændre Nautilus' udseende."
 
 #: src/nautilus-theme-selector.c:276
 #, c-format
@@ -8186,7 +8182,7 @@ msgstr ""
 #: src/nautilus-window-manage-views.c:855
 #, c-format
 msgid "The %s view encountered an error while starting up."
-msgstr "%s visningen blev udsat for en fejl ved opstart."
+msgstr "%s-visningen støde på en fejl ved opstart."
 
 #: src/nautilus-window-manage-views.c:1016
 msgid ""
@@ -8383,7 +8379,7 @@ msgstr "Stedet \"%s\" eksisterer ikke længere."
 
 #: src/nautilus-window-menus.c:832
 msgid "Go to Nonexistent Location"
-msgstr "Gå til ikke-eksisterende lokation"
+msgstr "Gå til ikke-eksisterende placering"
 
 #: src/nautilus-window-menus.c:901
 msgid "Go to the location specified by this bookmark"
@@ -8400,7 +8396,7 @@ msgstr "Fremad"
 #: src/nautilus-window.c:1265
 #, c-format
 msgid "Display this location with \"%s\""
-msgstr "Vis dette sted med \"%s\""
+msgstr "Vis denne placering med '%s'"
 
 #: src/nautilus-window.c:1971
 msgid "Close"
@@ -8669,21 +8665,6 @@ msgstr "%d%%"
 #~ msgid "About to revert a total of %d packages, %d KB\n"
 #~ msgstr "På vej til at forkaste %d pakker, %d KB\n"
 
-#~ msgid "\t· %s and it's dependencies\n"
-#~ msgstr "\t %s og dets afhængigheder\n"
-
-#~ msgid "\t· %s\n"
-#~ msgstr "\t· %s\n"
-
-#~ msgid "Save transaction report ? (y/n) "
-#~ msgstr "Gem overførselsrapport ? (j/n) "
-
-#~ msgid "y"
-#~ msgstr "j"
-
-#~ msgid "Dependency : %s needs %s\n"
-#~ msgstr "Afhængighed : %s behøver %s\n"
-
 #~ msgid "Package %s failed md5 check!\n"
 #~ msgstr "MD5-tjek af pakken %s fejlede!\n"
 
@@ -8698,12 +8679,6 @@ msgstr "%d%%"
 
 #~ msgid "Should I delete the RPM files? (y/n) "
 #~ msgstr "Skal RPM-filerne slettes? (j/n) "
-
-#~ msgid "Operation ok\n"
-#~ msgstr "Operation forløb fint\n"
-
-#~ msgid "Operation failed\n"
-#~ msgstr "Operationen mislykkedes!\n"
 
 #~ msgid "Installing"
 #~ msgstr "Installerer"
@@ -8825,15 +8800,6 @@ msgstr "%d%%"
 #~ msgid "Loading package info from file %s"
 #~ msgstr "Henter information om pakke fra filen %s"
 
-#~ msgid "ok"
-#~ msgstr "i orden"
-
-#~ msgid "not ok"
-#~ msgstr "ikke i orden"
-
-#~ msgid "Checking dependencies for %s"
-#~ msgstr "Kontrollerer afhængigheder for %s"
-
 #~ msgid "%s is related to %s"
 #~ msgstr "%s er relateret til %s"
 
@@ -8867,9 +8833,6 @@ msgstr "%d%%"
 #~ msgstr ""
 #~ "fil konflikt:  pakken %s tilføjer filen %s som også allerede er tilføjet af "
 #~ "%s"
-
-#~ msgid "...but it is okay, we're upgrading %s and it ditched that file"
-#~ msgstr "... men det er ok, for vi opgraderer %s og det fjerne den fil"
 
 #~ msgid "checking feature consistency of %s"
 #~ msgstr "kontrollerer facilitetskonsistentheden af %s"
