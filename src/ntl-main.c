@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
 
 /*
  *  Nautilus
@@ -36,54 +36,54 @@
 
 int main(int argc, char *argv[])
 {
-  poptContext ctx;
-  CORBA_Environment ev;
-  CORBA_ORB orb;
+	poptContext ctx;
+	CORBA_Environment ev;
+	CORBA_ORB orb;
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
-  gboolean check = FALSE;
+	gboolean check = FALSE;
 #endif
-  const char **args;
+	const char **args;
 
-  struct poptOption options[] = {
+	struct poptOption options[] = {
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
-    { "check", '\0', POPT_ARG_NONE, &check, 0, N_("Perform high-speed self-check tests."), NULL },
-    POPT_AUTOHELP
+		{ "check", '\0', POPT_ARG_NONE, &check, 0, N_("Perform high-speed self-check tests."), NULL },
+		POPT_AUTOHELP
 #endif
-    { NULL, '\0', 0, NULL, 0, NULL, NULL }
-  };
+		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
+	};
 
-  /* FIXME: This should also include G_LOG_LEVEL_WARNING, but I had to take it
-   * out temporarily so we could continue to work on other parts of the software
-   * until the only-one-icon-shows-up problem is fixed
-   */
-  if (getenv("NAUTILUS_DEBUG"))
-    g_log_set_always_fatal (G_LOG_FATAL_MASK | G_LOG_LEVEL_CRITICAL);
-
-  CORBA_exception_init(&ev);
-  orb = gnome_CORBA_init_with_popt_table ("nautilus", VERSION, &argc, argv, options, 0, &ctx, GNORBA_INIT_SERVER_FUNC, &ev);
-  bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-  g_thread_init (NULL);
-  gnome_vfs_init ();
-
-  args = poptGetArgs (ctx);
+	/* Make criticals and warnings into errors if NAUTILUS_DEBUG is set.  */
+	if (getenv("NAUTILUS_DEBUG") != NULL)
+		g_log_set_always_fatal (G_LOG_FATAL_MASK | G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING);
+	
+	/* Initialize the services that we use. */
+	CORBA_exception_init(&ev);
+	orb = gnome_CORBA_init_with_popt_table ("nautilus", VERSION, &argc, argv, options,
+						0, &ctx, GNORBA_INIT_SERVER_FUNC, &ev);
+	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+	g_thread_init (NULL);
+	gnome_vfs_init ();
+	
+	args = poptGetArgs (ctx);
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
-  if (check) {
-    /* Run the checks for nautilus and libnautilus. */
-    nautilus_run_self_checks ();
-    nautilus_run_lib_self_checks ();
-    if (nautilus_self_checks_failed ())
-      return 1;
-  } else
+	if (check) {
+		/* Run the checks for nautilus and libnautilus. */
+		nautilus_run_self_checks ();
+		nautilus_run_lib_self_checks ();
+		if (nautilus_self_checks_failed ())
+			return EXIT_FAILURE;
+	} else {
 #endif
-  {
-    nautilus_app_init (args ? args[0] : NULL);
 
-    bonobo_main();
+		/* Run the nautilus application. */
+		nautilus_app_init (args ? args[0] : NULL);
+		bonobo_main();
+		nautilus_app_exiting();
 
-    /* One last chance for cleanup before program finishes. */
-    nautilus_app_exiting();
-  }
+#if !defined (NAUTILUS_OMIT_SELF_CHECK)
+	}
+#endif
 
-  return 0;
+	return EXIT_SUCCESS;
 }

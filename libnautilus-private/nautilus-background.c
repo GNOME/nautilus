@@ -157,6 +157,14 @@ nautilus_background_draw (NautilusBackground *background,
 						&start_color, &end_color, horizontal_gradient);
 }
 
+char *
+nautilus_background_get_color (NautilusBackground *background)
+{
+	g_return_val_if_fail (NAUTILUS_IS_BACKGROUND (background), NULL);
+
+	return g_strdup (background->details->color);
+}
+
 void
 nautilus_background_set_color (NautilusBackground *background,
 			       const char *color)
@@ -215,6 +223,8 @@ nautilus_background_draw_flat_box (GtkStyle *style,
 {
 	gboolean call_parent;
 	NautilusBackground *background;
+	GdkGC *gc;
+	GdkRectangle rectangle;
 
 	call_parent = TRUE;
 
@@ -224,12 +234,27 @@ nautilus_background_draw_flat_box (GtkStyle *style,
 			call_parent = FALSE;
 	}
 
-	if (!call_parent)
-		g_warning ("gradient fills not yet hooked up in nautilus_background");
+	if (call_parent) {
+		(* nautilus_gtk_style_get_default_class()->draw_flat_box)
+			(style, window, state_type, shadow_type, area, widget,
+			 detail, x, y, width, height);
+		return;
+	}
 
-	(* nautilus_gtk_style_get_default_class()->draw_flat_box)
-		(style, window, state_type, shadow_type, area, widget,
-		 detail, x, y, width, height);
+	gc = gdk_gc_new (window);
+
+	nautilus_gdk_window_update_sizes (window, &width, &height);
+	
+	rectangle.x = x;
+	rectangle.y = y;
+	rectangle.width = width;
+	rectangle.height = height;
+	
+	nautilus_background_draw (background, window, gc,
+				  gtk_widget_get_colormap(widget),
+				  &rectangle);
+	
+	gdk_gc_unref (gc);
 }
 
 static GtkStyleClass *
@@ -318,6 +343,16 @@ nautilus_widget_background_changed (GtkWidget *widget, NautilusBackground *backg
 	gtk_widget_queue_clear (widget);
 }
 
+/* Gets the background attached to a widget.
+
+   If the widget doesn't already have a NautilusBackground object,
+   this will create one. To change the widget's background, you can
+   just call nautilus_background methods on the widget.
+
+   Later, we might want a call to find out if we already have a background,
+   or a way to share the same background among multiple widgets; both would
+   be straightforward.
+*/
 NautilusBackground *
 nautilus_get_widget_background (GtkWidget *widget)
 {
@@ -349,6 +384,56 @@ nautilus_get_widget_background (GtkWidget *widget)
 	nautilus_widget_background_changed (widget, background);
 
 	return background;
+}
+
+void
+nautilus_background_receive_dropped_color (NautilusBackground *background,
+					   GtkWidget *widget,
+					   int drop_location_x,
+					   int drop_location_y,
+					   const GtkSelectionData *selection_data)
+{
+	guint16 *channels;
+	char *color_spec;
+	char *new_gradient_spec;
+	int left_border, right_border, top_border, bottom_border;
+
+	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
+	g_return_if_fail (GTK_IS_WIDGET (widget));
+	g_return_if_fail (selection_data != NULL);
+
+	/* Convert the selection data into a color spec. */
+	if (selection_data->length != 8 || selection_data->format != 16) {
+		g_warning ("received invalid color data");
+		return;
+	}
+	channels = (guint16 *)selection_data->data;
+	color_spec = g_strdup_printf ("rgb:%04hX/%04hX/%04hX", channels[0], channels[1], channels[2]);
+
+	/* Figure out if the color was dropped close enough to an edge to create a gradient.
+	   For the moment, this is hard-wired, but later the widget will have to have some
+	   say in where the borders are.
+	*/
+	left_border = 32;
+	right_border = widget->allocation.width - 32;
+	top_border = 32;
+	bottom_border = widget->allocation.height - 32;
+	if (drop_location_x < left_border && drop_location_x <= right_border)
+		new_gradient_spec = nautilus_gradient_set_left_color_spec (background->details->color, color_spec);
+	else if (drop_location_x >= left_border && drop_location_x > right_border)
+		new_gradient_spec = nautilus_gradient_set_right_color_spec (background->details->color, color_spec);
+	else if (drop_location_y < top_border && drop_location_y <= bottom_border)
+		new_gradient_spec = nautilus_gradient_set_top_color_spec (background->details->color, color_spec);
+	else if (drop_location_y >= top_border && drop_location_y > bottom_border)
+		new_gradient_spec = nautilus_gradient_set_bottom_color_spec (background->details->color, color_spec);
+	else
+		new_gradient_spec = g_strdup (color_spec);
+	
+	g_free (color_spec);
+
+	nautilus_background_set_color (background, new_gradient_spec);
+	
+	g_free (new_gradient_spec);
 }
 
 /* self check code */

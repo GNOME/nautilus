@@ -40,8 +40,9 @@ struct _NautilusIndexPanelDetails {
 	GtkWidget *index_container;
 	GtkWidget *per_uri_container;
 	GtkWidget *meta_tabs;
-	gchar *uri;
+	char *uri;
 	NautilusDirectory *directory;
+	int background_connection;
 };
 
 static void nautilus_index_panel_initialize_class (gpointer klass);
@@ -182,7 +183,6 @@ nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 {
 	char *color_spec;
 	guint16 *data;
-	NautilusBackground *background;
 
 	g_return_if_fail (NAUTILUS_IS_INDEX_PANEL (widget));
 
@@ -203,17 +203,10 @@ nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 			/* handle colors - for now, just use a simple color, and don't save it in the meta-data yet */
       
 		case TARGET_COLOR:
-			data = (guint16 *)selection_data->data;
-			color_spec = g_strdup_printf ("rgb:%04hX/%04hX/%04hX", data[0], data[1], data[2]);
-
-			nautilus_directory_set_metadata (NAUTILUS_INDEX_PANEL (widget)->details->directory,
-							 "index_panel_background_color",
-							  DEFAULT_BACKGROUND_COLOR,
-							 color_spec);
-			background = nautilus_get_widget_background (widget);
-			nautilus_background_set_color (background, color_spec);
-
-			g_free (color_spec);
+			/* Let the background change based on the dropped color. */
+			nautilus_background_receive_dropped_color
+				(nautilus_get_widget_background (widget),
+				 widget, x, y, selection_data);
 			break;
       
 		default:
@@ -223,7 +216,8 @@ nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 }
 
 /* add a new meta-view to the index panel */
-void nautilus_index_panel_add_meta_view (NautilusIndexPanel *index_panel, NautilusView *meta_view)
+void
+nautilus_index_panel_add_meta_view (NautilusIndexPanel *index_panel, NautilusView *meta_view)
 {
 	GtkWidget *label;
 	const char *description;
@@ -250,7 +244,8 @@ void nautilus_index_panel_add_meta_view (NautilusIndexPanel *index_panel, Nautil
 }
 
 /* remove the passed-in meta-view from the index panel */
-void nautilus_index_panel_remove_meta_view (NautilusIndexPanel *index_panel, NautilusView *meta_view)
+void
+nautilus_index_panel_remove_meta_view (NautilusIndexPanel *index_panel, NautilusView *meta_view)
 {
 	gint page_num;
 
@@ -260,7 +255,8 @@ void nautilus_index_panel_remove_meta_view (NautilusIndexPanel *index_panel, Nau
 }
 
 /* set up the logo image */
-void nautilus_index_panel_set_up_logo (NautilusIndexPanel *index_panel, const gchar *logo_path)
+void
+nautilus_index_panel_set_up_logo (NautilusIndexPanel *index_panel, const gchar *logo_path)
 {
 	gchar *file_name;
 	GtkWidget *pix_widget;
@@ -274,7 +270,8 @@ void nautilus_index_panel_set_up_logo (NautilusIndexPanel *index_panel, const gc
 
 /* utility routine (FIXME: should be located elsewhere) to find the largest font that fits */
 
-GdkFont *select_font(const gchar *text_to_format, gint width, const gchar* font_template)
+GdkFont *
+select_font(const gchar *text_to_format, gint width, const gchar* font_template)
 {
 	GdkFont *candidate_font = NULL;
 	gchar *font_name;
@@ -338,9 +335,25 @@ nautilus_index_panel_set_up_label (NautilusIndexPanel *index_panel, const gchar 
 	g_free (file_name);
 }
 
+static void
+nautilus_index_panel_background_changed (NautilusIndexPanel *index_panel)
+{
+	NautilusBackground *background;
+	char *color_spec;
+	
+	background = nautilus_get_widget_background (GTK_WIDGET (index_panel));
+	color_spec = nautilus_background_get_color (background);
+	nautilus_directory_set_metadata (index_panel->details->directory,
+					 "index_panel_background_color",
+					 DEFAULT_BACKGROUND_COLOR,
+					 color_spec);
+	g_free (color_spec);
+}
+
 /* this routine populates the index panel with the per-uri information */
 
-void nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const gchar* new_uri)
+void
+nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const gchar* new_uri)
 {
 	NautilusDirectory *directory;
 	NautilusBackground *background;
@@ -351,8 +364,16 @@ void nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const gc
 		gtk_object_unref (GTK_OBJECT (index_panel->details->directory));
 	index_panel->details->directory = directory;
 	
-	/* Set up the background from the metadata. */
+	/* Connect the background changed signal to code that writes the color. */
 	background = nautilus_get_widget_background (GTK_WIDGET (index_panel));
+        if (index_panel->details->background_connection == 0)
+		index_panel->details->background_connection =
+			gtk_signal_connect_object (GTK_OBJECT (background),
+						   "changed",
+						   nautilus_index_panel_background_changed,
+						   GTK_OBJECT (index_panel));
+
+	/* Set up the background color from the metadata. */
 	background_color = nautilus_directory_get_metadata (directory,
 							    "index_panel_background_color",
 							    DEFAULT_BACKGROUND_COLOR);
@@ -376,7 +397,8 @@ void nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const gc
 
 /* here is the key routine that populates the index panel with the appropriate information when the uri changes */
 
-void nautilus_index_panel_set_uri (NautilusIndexPanel *index_panel, const gchar* new_uri)
+void
+nautilus_index_panel_set_uri (NautilusIndexPanel *index_panel, const gchar* new_uri)
 {       
 	/* there's nothing to do if the uri is the same as the current one */ 
 	

@@ -57,34 +57,35 @@ typedef struct _NautilusBackgroundClass NautilusBackgroundClass;
 #define NAUTILUS_IS_BACKGROUND_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_BACKGROUND))
 
-GtkType             nautilus_background_get_type           (void);
-NautilusBackground *nautilus_background_new                (void);
+GtkType             nautilus_background_get_type              (void);
+NautilusBackground *nautilus_background_new                   (void);
 
-void                nautilus_background_set_color          (NautilusBackground *background,
-							    const char         *color_or_gradient);
-void                nautilus_background_set_tile_image_uri (NautilusBackground *background,
-							    const char         *image_uri);
+/* Calls to change a background. */
+void                nautilus_background_set_color             (NautilusBackground     *background,
+							       const char             *color_or_gradient);
+void                nautilus_background_set_tile_image_uri    (NautilusBackground     *background,
+							       const char             *image_uri);
 
-char *              nautilus_background_get_color          (NautilusBackground *background);
-char *              nautilus_background_get_tile_image_uri (NautilusBackground *background);
+/* Calls to interrogate the current state of a background. */
+char *              nautilus_background_get_color             (NautilusBackground     *background);
+char *              nautilus_background_get_tile_image_uri    (NautilusBackground     *background);
 
-void                nautilus_background_draw               (NautilusBackground *background,
-							    GdkDrawable        *drawable,
-							    GdkGC              *gc,
-							    GdkColormap        *colormap,
-							    const GdkRectangle *rectangle);
+/* Explicitly fills a rectangle with a background. */
+void                nautilus_background_draw                  (NautilusBackground     *background,
+							       GdkDrawable            *drawable,
+							       GdkGC                  *gc,
+							       GdkColormap            *colormap,
+							       const GdkRectangle     *rectangle);
 
-/* Gets the background attached to a widget.
+/* Handles a dragged color being dropped on a widget to change the background color. */
+void		    nautilus_background_receive_dropped_color (NautilusBackground     *background,
+							       GtkWidget              *widget,
+							       int                     drop_location_x,
+							       int                     drop_location_y,
+							       const GtkSelectionData *dropped_color);
 
-   If the widget doesn't already have a NautilusBackground object,
-   this will create one. To change the widget's background, you can
-   just call nautilus_background methods on the widget.
-
-   Later, we might want a call to find out if we already have a background,
-   or a way to share the same background among multiple widgets; both would
-   be straightforward.
-*/
-NautilusBackground *nautilus_get_widget_background         (GtkWidget          *widget);
+/* Gets or creates a background so that it's attached to a widget. */
+NautilusBackground *nautilus_get_widget_background            (GtkWidget              *widget);
 
 typedef struct _NautilusBackgroundDetails NautilusBackgroundDetails;
 
@@ -99,7 +100,7 @@ struct _NautilusBackgroundClass
 	GtkObjectClass parent_class;
 
 	/* This signal is emitted when the background image is
-	   finished loading.  This allows a window to draw with a
+	   finished loading. This allows a window to draw with a
 	   color background if the image takes a lot time to load.
 	*/
 	void (* changed) (NautilusBackground *);

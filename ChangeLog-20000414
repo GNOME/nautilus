@@ -1,5 +1,36 @@
 2000-01-14  Darin Adler  <darin@eazel.com>
 
+	Turned on gradients for backgrounds.
+	
+	* src/ntl-index-panel.c:
+	(nautilus_index_panel_drag_data_received): Use the new
+	accept_dropped_color function in NautilusBackground instead of
+	code in here. (nautilus_index_panel_background_changed):
+	(nautilus_index_panel_set_up_info): Save background to metadata
+	when the NautilusBackground object emits the changed signal.
+
+	* libnautilus/nautilus-background.h:
+	libnautilus/nautilus-background.c:
+	(nautilus_background_accept_dropped_color): Moved logic about
+	dropping a color coupon to change the background into the
+	NautilusBackground class. This includes a first cut at the rules
+	about gradients.
+
+	* libnautilus/nautilus-background.c:
+	(nautilus_background_get_color): Implemented this missing
+	function. It's used by the code in index panel now to save the
+	current background.
+
+	* libnautilus/nautilus-background.c:
+	(nautilus_background_draw_flat_box): Implemented gradient fills
+	through the GtkStyle subclass.
+
+	* src/ntl-main.c: (main): Made criticals and warnings be always
+	fatal. Next step is to make them drop into the debugger, but not
+	result in a core dump if the debugger is not running.
+	
+2000-01-14  Darin Adler  <darin@eazel.com>
+
 	* src/ntl-index-panel.c: (nautilus_index_panel_set_up_label):
 	Changed code to use the new gnome_vfs_uri_extract_short_name
 	instead of its own private function.
