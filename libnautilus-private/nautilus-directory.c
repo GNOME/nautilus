@@ -1230,7 +1230,8 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 	GList *new_files_list, *unref_list;
 	GHashTable *added_lists, *changed_lists;
 	char *name;
-
+	GList *cancel_attributes;
+	
 	/* Make a list of added and changed files in each directory. */
 	new_files_list = NULL;
 	added_lists = g_hash_table_new (NULL, NULL);
@@ -1239,6 +1240,8 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 
 	/* Make a list of parent directories that will need their counts updated. */
 	parent_directories = g_hash_table_new (NULL, NULL);
+
+	cancel_attributes = nautilus_file_get_all_attributes ();
 
 	for (p = uri_pairs; p != NULL; p = p->next) {
 		pair = p->data;
@@ -1277,6 +1280,10 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 			/* Handle notification in the old directory. */
 			old_directory = file->details->directory;
 			collect_parent_directories (parent_directories, old_directory);
+
+			/* Cancel loading of attributes in the old directory */
+			nautilus_directory_cancel_loading_file_attributes
+				(old_directory, file, cancel_attributes);
 
 			/* Locate the new directory. */
 			new_directory = get_parent_directory (pair->to_uri);
@@ -1326,6 +1333,8 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 	/* Separate handling for brand new file objects. */
 	nautilus_directory_notify_files_added (new_files_list);
 	g_list_free (new_files_list);
+
+	g_list_free (cancel_attributes);
 }
 
 void 
