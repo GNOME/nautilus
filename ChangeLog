@@ -1,3 +1,20 @@
+2000-05-08  Darin Adler  <darin@eazel.com>
+
+	* check-FIXME.pl:
+	* check-config-h.pl: Added "." parameter to "find" so it works
+	with non-GNU versions of find. This was for Morten, who wanted
+	to run check-config-h.pl on Gnumeric.
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(start_getting_top_lefts): Turn embedded text back on.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_get_metadata): Fixed a bug that was showing
+	up in "make check".
+	(nautilus_self_check_directory): Got rid of GNOME VFS tests,
+	since I moved the same tests into test-async-cancel in the
+	gnome-vfs module.
+
 2000-05-08  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus/nautilus-clipboard.c:
@@ -8,12 +25,11 @@
 	trying to use a view that has already been trashed.
 	
 	Thanks to Carbamide <linuxfan@ionet.net> for finding the problem.
-	
 
 2000-05-08  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* configure.in,
-	  HACKING: Remove libglade check and hacking blurb.  We dont
+	* HACKING: Remove libglade check and hacking blurb.  We don't
 	use libglade no more,
 
 2000-05-08  Andy Hertzfeld <andy@eazel.com>
@@ -27,14 +43,14 @@
 	new image to serve as goback button in browser title bar
 	* icons/Makefile.am:
 	added new image to Makefile
-	
+
 2000-05-08  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:
 	(key_press_event):
 	Fixed bug introduced by Pavel's new super cool keyboard icon
-	selection feature.  An icon in renaming mode no longer received
-	keyboard events.  A check is now made to see if the icon container
+	selection feature. An icon in renaming mode no longer received
+	keyboard events. A check is now made to see if the icon container
 	is in renaming mode before processing event for icon selection.
 
 2000-05-08  Maciej Stachowiak  <mjs@eazel.com>

@@ -37,7 +37,7 @@ my $edit = 0;
 # default to all the files starting from the current directory
 if (!@ARGV)
   {
-    @ARGV = `find -name '*.c' -print`;
+    @ARGV = `find . -name '*.c' -print`;
   }
 
 # locate all of the target lines
