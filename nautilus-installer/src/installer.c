@@ -607,6 +607,8 @@ install_failed (EazelInstall *service,
 		const PackageData *pd,
 		EazelInstaller *installer)
 {
+	/* FIXME:
+	   This is bad, we lose the previous one */
 	installer->failure_info = get_detailed_errors (pd);		
 }
 
