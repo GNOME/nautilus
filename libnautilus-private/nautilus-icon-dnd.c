@@ -32,6 +32,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <gtk/gtksignal.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-gnome-extensions.h"
@@ -523,71 +524,211 @@ drag_end_callback (GtkWidget *widget,
 	dnd_info->selection_list = NULL;
 }
 
-/* Utility routine to extract the directory from an item_uri
-   (which may have geometry info attached).
-*/
+static NautilusIcon *
+nautilus_icon_container_item_at (NautilusIconContainer *container,
+				 int x, int y)
+{
+	GList *p;
+	ArtDRect point;
+
+	/* hit test a single pixel rectangle */
+	point.x0 = x;
+	point.y0 = y;
+	point.x1 = x + 1;
+	point.y1 = y + 1;
+
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		NautilusIcon *icon;
+		icon = p->data;
+		if (nautilus_icon_canvas_item_hit_test_rectangle
+			(icon->item, &point)) {
+			return icon;
+		}
+	}
+
+	return NULL;
+}
+
+static char *
+get_container_uri (const NautilusIconContainer *container)
+{
+	char *uri;
+
+	/* get the URI associated with the container */
+	uri = NULL;
+	gtk_signal_emit_by_name (GTK_OBJECT (container),
+			 "get_container_uri",
+			 &uri);
+	return uri;
+}
+
+static gboolean
+nautilus_icon_container_selection_items_local (const NautilusIconContainer *container,
+					       const GList *items)
+{
+	/* check if the first item on the list has the container as a parent
+	 * we should really test each item but that would be slow for large selections
+	 * and currently dropped items can only be from the same container
+	 */
+	char *container_uri_string;
+	GnomeVFSURI *container_uri;
+	GnomeVFSURI *item_uri;
+	GnomeVFSURI *item_parent_uri;
+	gboolean result;
+
+	/* must have at least one item */
+	g_assert (items);
+
+	result = FALSE;
+
+	/* get the URI associated with the container */
+	container_uri_string = get_container_uri (container);
+	g_assert (container_uri_string);
+	container_uri = gnome_vfs_uri_new (container_uri_string);
+
+	/* get the parent URI of the first item in the selection */
+	item_uri = gnome_vfs_uri_new (((DndSelectionItem *)items->data)->uri);
+	item_parent_uri = gnome_vfs_uri_get_parent (item_uri);
+
+	if (item_parent_uri != NULL) {
+		result = gnome_vfs_uri_equal (item_parent_uri, container_uri);
+	}
+	
+	gnome_vfs_uri_unref (item_uri);
+	gnome_vfs_uri_unref (container_uri);
+	gnome_vfs_uri_unref (item_parent_uri);
+	g_free (container_uri_string);
+	
+	return result;
+}
+
+static gboolean
+nautilus_icon_canvas_item_can_accept_item (const NautilusIcon *drop_target_item,
+					   const char *item_uri)
+{
+	/* FIXME:
+	 * 
+	 * should have NautilusFile answer whether it can handle icon URI
+	 * 
+	 * For now:
+	 */
+	return TRUE;
+}
+					       
+static gboolean
+nautilus_icon_canvas_item_can_accept_items (NautilusIconContainer *container,
+					    const NautilusIcon *drop_target_item,
+					    const GList *items)
+{
+	for (; items != NULL; items = items->next) {
+		if (!nautilus_icon_canvas_item_can_accept_item (drop_target_item, 
+						((DndSelectionItem *)items->data)->uri))
+			return FALSE;
+	}
+
+	return TRUE;		
+}
 
 static void
 nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 					       GdkDragContext *context,
 					       int x, int y)
 {
-	NautilusIconDndInfo *dnd_info;
 	GList *p;
+	NautilusIcon *drop_target_icon;
+	gboolean local_move_only;
+	DndSelectionItem *item;
+	NautilusIcon *icon;
+	GList *source_uris;
+	char *target_uri;
+	double world_x, world_y;
+		
+	local_move_only = FALSE;
 
-	dnd_info = container->details->dnd_info;
-	if (dnd_info->selection_list == NULL)
+	if (container->details->dnd_info->selection_list == NULL)
 		return;
 
-	/* Move files. */
-	if (context->action != GDK_ACTION_MOVE) {
-		/* FIXME: We want to copy files here, I think. */
-		g_warning ("non-move action not implemented yet");
-	} else {
-		GList *icons_to_select;
-		
-		icons_to_select = NULL;
-		for (p = dnd_info->selection_list; p != NULL; p = p->next) {
-			DndSelectionItem *item;
-			NautilusIcon *icon;
+	gnome_canvas_window_to_world (GNOME_CANVAS (container),
+				      x, y, &world_x, &world_y);
 
+	/* find the item we hit with our drop, if any */
+	drop_target_icon = nautilus_icon_container_item_at (container, world_x, world_y);
+
+
+	if (drop_target_icon != NULL && !nautilus_icon_canvas_item_can_accept_items 
+		(container, drop_target_icon, container->details->dnd_info->selection_list)) {
+		/* the item we dropped our selection on cannot accept the items,
+		 * do the same thing as if we just dropped the items on the canvas
+		 */
+		drop_target_icon = NULL;
+	}
+
+	if (drop_target_icon == NULL && context->action == GDK_ACTION_MOVE) {
+		/* we can just move the icon positions if the move ended up in
+		 * the item's parent container
+		 */
+		local_move_only = nautilus_icon_container_selection_items_local
+			(container, container->details->dnd_info->selection_list);
+	}
+
+	if (local_move_only) {
+		GList *icons_to_select;
+
+		icons_to_select = NULL;
+
+		/* handle the simple case -- just change item locations */
+		for (p = container->details->dnd_info->selection_list; p != NULL; p = p->next) {
 			item = p->data;
 			icon = nautilus_icon_container_get_icon_by_uri
 				(container, item->uri);
-			
-			if (icon == NULL) {
-				/* FIXME: Do we ever get a MOVE between windows?
-				 * If so, we need to move files here.
-				 */
-				g_warning ("drag between containers not implemented yet");
-				continue;
-			}
-			
-			if (item->got_icon_position) {
-				double world_x, world_y;
 
-				gnome_canvas_window_to_world (GNOME_CANVAS (container),
-							      x + item->icon_x,
-							      y + item->icon_y,
-							      &world_x, &world_y);
+			if (item->got_icon_position) {
+
 				nautilus_icon_container_move_icon
 					(container, icon,
-					 world_x, world_y,
+					 world_x + item->icon_x, world_y + item->icon_y,
 					 icon->scale_x, icon->scale_y,
 					 TRUE);   
 
 			}
-			
 			icons_to_select = g_list_prepend (icons_to_select, icon);
+		}		
+		if (icons_to_select != NULL) {
+			nautilus_icon_container_select_list_unselect_others (container, 
+									     icons_to_select);
+			g_list_free (icons_to_select);
 		}
-		
-		nautilus_icon_container_select_list_unselect_others (container, icons_to_select);
+	} else {		
+		source_uris = NULL;
+		target_uri = NULL;
 
-		g_list_free (icons_to_select);
+		/* get the URI of either the item or the container we hit */
+		if (drop_target_icon != NULL) {
+			target_uri = nautilus_icon_container_get_icon_uri
+				(container, drop_target_icon);
+		} else {
+			target_uri = get_container_uri (container);
+		}
+			
+		for (p = container->details->dnd_info->selection_list; p != NULL; p = p->next) {
+			/* do a shallow copy of all the uri strings of the copied files */
+			source_uris = g_list_append (source_uris, ((DndSelectionItem *)p->data)->uri);
+		}
+
+		if (source_uris != NULL) {
+			/* start the copy */
+			gtk_signal_emit_by_name (GTK_OBJECT (container), "move_copy_items",
+						 source_uris,
+						 target_uri,
+						 context->action,
+						 x, y);
+			g_list_free (source_uris);
+		}
+		g_free (target_uri);
 	}
-	
-	destroy_selection_list (dnd_info->selection_list);
-	dnd_info->selection_list = NULL;
+
+	destroy_selection_list (container->details->dnd_info->selection_list);
+	container->details->dnd_info->selection_list = NULL;
 }
 
 static void

@@ -36,6 +36,9 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-xfer.h>
+#include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libnautilus/nautilus-metadata.h>
 #include <libnautilus/nautilus-gtk-extensions.h>
 #include <libnautilus/nautilus-gtk-macros.h>
@@ -101,6 +104,7 @@ static void                   fm_icon_view_select_all                           
 static void                   fm_icon_view_set_zoom_level                       (FMIconView               *view,
 										 NautilusZoomLevel         new_level);
 static void                   fm_icon_view_update_menus                         (FMDirectoryView          *view);
+
 static NautilusIconContainer *get_icon_container                                (FMIconView               *icon_view);
 static void                   icon_container_activate_callback                  (NautilusIconContainer    *container,
 										 NautilusFile             *icon_data,
@@ -220,9 +224,11 @@ static NautilusIconContainer *
 create_icon_container (FMIconView *icon_view)
 {
 	NautilusIconContainer *icon_container;
+	FMDirectoryView *directory_view;
 
 	icon_container = NAUTILUS_ICON_CONTAINER (nautilus_icon_container_new ());
-	
+	directory_view = FM_DIRECTORY_VIEW (icon_view);
+
 	GTK_WIDGET_SET_FLAGS (icon_container, GTK_CAN_FOCUS);
 	
 	gtk_signal_connect (GTK_OBJECT (icon_container),
@@ -261,11 +267,18 @@ create_icon_container (FMIconView *icon_view)
 			    "get_icon_property",
 			    GTK_SIGNAL_FUNC (get_icon_property_callback),
 			    icon_view);
-
 	gtk_signal_connect (GTK_OBJECT (nautilus_get_widget_background (GTK_WIDGET (icon_container))),
 			    "changed",
 			    GTK_SIGNAL_FUNC (fm_icon_view_background_changed_callback),
 			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "move_copy_items",
+			    GTK_SIGNAL_FUNC (fm_directory_view_move_copy_items),
+			    directory_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "get_container_uri",
+			    GTK_SIGNAL_FUNC (fm_directory_view_get_container_uri),
+			    directory_view);
 
 	gtk_container_add (GTK_CONTAINER (icon_view), GTK_WIDGET (icon_container));
 

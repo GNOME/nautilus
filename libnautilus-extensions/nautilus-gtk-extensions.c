@@ -233,6 +233,22 @@ nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE (GtkObject *object,
 }
 
 void
+nautilus_gtk_marshal_NONE__POINTER_POINTER_INT_INT_INT (GtkObject *object,
+							GtkSignalFunc func,
+							gpointer func_data,
+							GtkArg *args)
+{
+	(* (void (*)(GtkObject *, gpointer, gpointer, int, int, int, gpointer)) func)
+		(object,
+		 GTK_VALUE_POINTER (args[0]),
+		 GTK_VALUE_POINTER (args[1]),
+		 GTK_VALUE_INT (args[2]),
+		 GTK_VALUE_INT (args[3]),
+		 GTK_VALUE_INT (args[4]),
+		 func_data);
+}
+
+void
 nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE (GtkObject *object,
 							  GtkSignalFunc func,
 							  gpointer func_data,
@@ -257,6 +273,18 @@ nautilus_gtk_marshal_NONE__DOUBLE (GtkObject *object,
 	(* (void (*)(GtkObject *, double, gpointer)) func)
 		(object,
 		 GTK_VALUE_DOUBLE (args[0]),
+		 func_data);
+}
+
+void
+nautilus_gtk_marshal_STRING__NONE (GtkObject *object,
+				   GtkSignalFunc func,
+				   gpointer func_data,
+				   GtkArg *args)
+{
+	* GTK_RETLOC_POINTER (args[0]) =
+		(* (char * (*)(GtkObject *, gpointer)) func) 
+		 (object,
 		 func_data);
 }
 

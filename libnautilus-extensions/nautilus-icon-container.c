@@ -105,6 +105,8 @@ enum {
 	GET_ICON_URI,
 	ICON_CHANGED,
 	SELECTION_CHANGED,
+	MOVE_COPY_ITEMS,
+	GET_CONTAINER_URI,
 	LAST_SIGNAL
 };
 static guint signals[LAST_SIGNAL];
@@ -1838,6 +1840,29 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  GTK_TYPE_STRING, 2,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_STRING);
+	signals[MOVE_COPY_ITEMS] 
+		= gtk_signal_new ("move_copy_items",
+       				 GTK_RUN_LAST,
+                    		 object_class->type,
+                    		 GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
+                    		 		    move_copy_items),
+		    		 nautilus_gtk_marshal_NONE__POINTER_POINTER_INT_INT_INT,
+		    		 GTK_TYPE_NONE, 5, 
+		    		 GTK_TYPE_POINTER, 
+		    		 GTK_TYPE_POINTER, 
+		    		 GTK_TYPE_INT, 
+		    		 GTK_TYPE_INT, 
+		    		 GTK_TYPE_INT);
+	signals[GET_CONTAINER_URI] 
+		= gtk_signal_new ("get_container_uri",
+       				 GTK_RUN_LAST,
+                    		 object_class->type,
+                    		 GTK_SIGNAL_OFFSET (NautilusIconContainerClass, 
+                    		 		    get_container_uri),
+		    		 nautilus_gtk_marshal_STRING__NONE,
+		    		 GTK_TYPE_STRING, 0);
+
+
 
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 

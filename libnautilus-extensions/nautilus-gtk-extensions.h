@@ -72,7 +72,15 @@ void              nautilus_gtk_marshal_NONE__DOUBLE                        (GtkO
 									    GtkSignalFunc           func,
 									    gpointer                func_data,
 									    GtkArg                 *args);
+void              nautilus_gtk_marshal_STRING__NONE                        (GtkObject              *object,
+									    GtkSignalFunc           func,
+									    gpointer                func_data,
+									    GtkArg                 *args);
 void              nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE        (GtkObject              *object,
+									    GtkSignalFunc           func,
+									    gpointer                func_data,
+									    GtkArg                 *args);
+void              nautilus_gtk_marshal_NONE__POINTER_POINTER_INT_INT_INT   (GtkObject              *object,
 									    GtkSignalFunc           func,
 									    gpointer                func_data,
 									    GtkArg                 *args);

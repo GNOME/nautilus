@@ -1,3 +1,41 @@
+2000-03-28  Pavel Cisler  <pavel@eazel.com>
+
+	Started on copy/move operations
+
+	* libnautilus/nautilus-icon-dnd.c:
+	(nautilus_icon_container_item_at), (get_container_uri),
+	(nautilus_icon_container_selection_items_local),
+	(nautilus_icon_canvas_item_can_accept_item),
+	(nautilus_icon_canvas_item_can_accept_items),
+	(nautilus_icon_container_receive_dropped_icons):
+	Handle drops by starting a move operation. Add new calls that
+	help determine the drop target.
+
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-directory-view.h:
+	(xfer_callback), (fm_directory_view_move_copy_items):
+	Initial version of calls that start the gnome-vfs-xfer job.
+
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-directory-view.h:
+	(fm_directory_view_get_container_uri):
+	Added new call needed to determine type of move operation.
+
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-icon-view.h:
+	Connect "move_copy_items" and "get_container_uri" signals
+	with new calls in FMDirectoryView.
+	
+	* nautilus-gtk-extensions.c
+	* nautilus-gtk-extensions.h
+	(nautilus_gtk_marshal_NONE__POINTER_POINTER_INT_INT_INT),
+	(nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE):
+	Add new binder glue that I needed for new signal calls.
+
+	* libnautilus/nautilus-icon-container.c:
+	* libnautilus/nautilus-icon-container.h:
+	Add new signals "move_copy_items" and "get_container_uri".
+	
 2000-03-28  Darin Adler  <darin@eazel.com>
 
 	* libnautilus/nautilus-background.h:

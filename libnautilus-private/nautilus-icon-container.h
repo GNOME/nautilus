@@ -67,6 +67,8 @@ struct NautilusIconContainerClass {
 							     int x, int y,
 							     double scale_x, double scale_y);
 	
+	char *		       (* get_container_uri)	    (NautilusIconContainer *container);
+
 	/* Connect to these signals to supply information about icons.
 	 * They are called as needed after the icons are inserted.
 	 */
@@ -80,6 +82,12 @@ struct NautilusIconContainerClass {
 	char *  	       (* get_icon_property)        (NautilusIconContainer *container,
 							     NautilusIconData *data,
 							     const char *property_name);
+	void		       (* move_copy_items)	    (NautilusIconContainer *container,
+							     const GList *item_uris,
+							     const char *target_uri,
+							     int copy_action,
+							     int x,
+							     int y);
 };
 
 /* GtkObject */
@@ -115,11 +123,13 @@ gboolean   nautilus_icon_container_is_stretched            (NautilusIconContaine
 void       nautilus_icon_container_show_stretch_handles    (NautilusIconContainer *container);
 void       nautilus_icon_container_unstretch               (NautilusIconContainer *container);
 
+
 /* options */
 int        nautilus_icon_container_get_zoom_level          (NautilusIconContainer *view);
 void       nautilus_icon_container_set_zoom_level          (NautilusIconContainer *view,
 							    int                    new_zoom_level);
 void       nautilus_icon_container_enable_linger_selection (NautilusIconContainer *view,
 							    gboolean               enable);
+
 
 #endif

@@ -31,6 +31,7 @@
 #include <libnautilus/ntl-content-view-frame.h>
 #include <libnautilus/nautilus-directory.h>
 #include <libnautilus/nautilus-file.h>
+#include <libnautilus/nautilus-icon-container.h>
 
 typedef struct _FMDirectoryView      FMDirectoryView;
 typedef struct _FMDirectoryViewClass FMDirectoryViewClass;
@@ -115,7 +116,7 @@ struct _FMDirectoryViewClass {
 	void 	(* append_background_context_menu_items) 	 
 					 (FMDirectoryView *view,
 					  GtkMenu *menu);
-
+	 
 	/* Function pointers that don't have corresponding signals */
 
 	/* get_selection is not a signal; it is just a function pointer for
@@ -169,6 +170,8 @@ void                      fm_directory_view_load_uri                      (FMDir
 									   const char      *uri);
 
 /* Functions callable from the user interface and elsewhere. */
+char *		   	  fm_directory_view_get_container_uri		  (NautilusIconContainer *container,
+									   FMDirectoryView 	 *view);
 GList *                   fm_directory_view_get_selection                 (FMDirectoryView *view);
 void                      fm_directory_view_stop                          (FMDirectoryView *view);
 gboolean                  fm_directory_view_can_zoom_in                   (FMDirectoryView *view);
@@ -176,6 +179,13 @@ gboolean                  fm_directory_view_can_zoom_out                  (FMDir
 void                      fm_directory_view_bump_zoom_level               (FMDirectoryView *view,
 									   int              zoom_increment);
 void                      fm_directory_view_select_all                    (FMDirectoryView *view);
+void			  fm_directory_view_move_copy_items		  (NautilusIconContainer  *container,
+									   const GList 		  *item_uris,
+									   const char 		  *target_uri,
+									   int 			  copy_action,
+									   int 			  x,
+									   int 			  y,
+									   FMDirectoryView 	  *view);
 
 /* Wrappers for signal emitters. These are normally called 
  * only by FMDirectoryView itself. They have corresponding signals
