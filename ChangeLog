@@ -1,8 +1,26 @@
+2000-08-04  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c: (relayout),
+	(size_allocate), (finish_adding_new_icons),
+	(nautilus_icon_container_set_zoom_level),
+	(nautilus_icon_container_set_auto_layout):
+	Changed relayout so it will update the scroll region. This fixes
+	bug 1907 (layout options sometimes move icons out of window).
+	
+	* libnautilus/nautilus-clipboard.c: (add_menu_items_callback):
+	Fix leak of remote UI handler. This fixes the rest of bug 1259,
+	which was just a bug about the FIXME that said "remote UI handler
+	leaks here, right?".
+
+	* libnautilus-extensions/nautilus-directory-async.c: (lacks_info),
+	(get_info_callback): Fixed infinite loop when you hit a file and
+	you can't get info for it. Related to the bug Mike Fleming is
+	looking at.
+	
 2000-08-04  Robey Pointer  <robey@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-utilities.c:
 	(nautilus_make_uri_from_input):
-
 	Use new gnome-vfs call to correctly escape the uri (fix
 	quoted-colon bug in entering urls)
 
@@ -35,7 +53,6 @@
 	Fixed the mysterious resizing flashing bug. lay_down_icons
 	computed canvas_width wrong. bug #1929
 
->>>>>>> 1.1261
 2000-08-04  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:

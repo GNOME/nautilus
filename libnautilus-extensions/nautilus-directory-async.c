@@ -1391,7 +1391,8 @@ static gboolean
 lacks_info (NautilusFile *file)
 {
 	return file->details->info == NULL
-		&& !file->details->is_gone;
+		&& !file->details->is_gone
+		&& !file->details->get_info_failed;
 }
 
 static gboolean
@@ -2118,7 +2119,9 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 	directory->details->get_info_in_progress = NULL;
 	
 	result = results->data;
-	if (result->result == GNOME_VFS_OK) {
+	if (result->result != GNOME_VFS_OK) {
+		get_info_file->details->get_info_failed = TRUE;
+	} else {
 		nautilus_file_update_info (get_info_file, result->file_info);
 		nautilus_file_changed (get_info_file);
 	}

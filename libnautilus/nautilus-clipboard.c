@@ -99,35 +99,39 @@ add_menu_items_callback (GtkWidget *widget,
 			 GdkEventAny *event,
 			 gpointer callback_data)
 {
-	BonoboUIHandler *ui_handler;
+        BonoboUIHandler *local_ui_handler;
+	Bonobo_UIHandler remote_ui_handler;
+	CORBA_Environment ev;
 
 	g_assert (GTK_IS_EDITABLE (widget));
 	
-	ui_handler = bonobo_control_get_ui_handler (BONOBO_CONTROL (callback_data));
+	local_ui_handler = bonobo_control_get_ui_handler (BONOBO_CONTROL (callback_data));
 
-	/* I wish I understsood better why we have to do this. */
-	/* FIXME bugzilla.eazel.com 1259: Doesn't the remote UI handler leak here? */
-	bonobo_ui_handler_set_container
-		(ui_handler, 
-		 bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (callback_data)));
+	/* I wish I understood better why we have to do this. */
+	CORBA_exception_init (&ev);
+	remote_ui_handler = bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (callback_data));
+	bonobo_ui_handler_set_container (local_ui_handler, remote_ui_handler);
+	Bonobo_UIHandler_unref (remote_ui_handler, &ev);
+	CORBA_Object_release (remote_ui_handler, &ev);
+	CORBA_exception_free (&ev);
 
 	/* FIXME bugzilla.eazel.com 733: We never mark any of these items insensitive. */
-	add_menu_item (ui_handler,
+	add_menu_item (local_ui_handler,
 		       NAUTILUS_MENU_PATH_CUT_ITEM,
 		       _("_Cut"),
 		       _("Remove selected text from selection"),
 		       cut_callback, widget);
-	add_menu_item (ui_handler,
+	add_menu_item (local_ui_handler,
 		       NAUTILUS_MENU_PATH_COPY_ITEM,
 		       _("_Copy"),
 		       _("Copy selected text to the clipboard"),
 		       copy_callback, widget);
-	add_menu_item (ui_handler,
+	add_menu_item (local_ui_handler,
 		       NAUTILUS_MENU_PATH_PASTE_ITEM,
 		       _("_Paste"),
 		       _("Paste text from clipboard into text box"),
 		       paste_callback, widget);
-	add_menu_item (ui_handler,
+	add_menu_item (local_ui_handler,
 		       NAUTILUS_MENU_PATH_CLEAR_ITEM,
 		       _("_Clear"),
 		       _("Clear the current selection"),

@@ -611,21 +611,18 @@ relayout (NautilusIconContainer *container)
 {
 	finish_adding_new_icons (container);
 
-	if (!container->details->auto_layout) {
-		return;
-	}
-
 	/* Don't do any re-laying-out during stretching. Later we
 	 * might add smart logic that does this and leaves room for
 	 * the stretched icon, but if we do it we want it to be fast
 	 * and only re-lay-out when it's really needed.
 	 */
-	if (container->details->drag_state == DRAG_STATE_STRETCH) {
-		return;
+	if (container->details->auto_layout
+	    && container->details->drag_state != DRAG_STATE_STRETCH) {
+		resort (container);
+		lay_down_icons (container, container->details->icons, 0);
 	}
 
-	resort (container);
-	lay_down_icons (container, container->details->icons, 0);
+	update_scroll_region (container);
 }
 
 static void
@@ -1664,18 +1661,12 @@ size_request (GtkWidget *widget,
 }
 
 static void
-world_width_changed (NautilusIconContainer *container, int new_width)
-{
-	relayout (container);
-	update_scroll_region (container);
-}
-
-static void
 size_allocate (GtkWidget *widget,
 	       GtkAllocation *allocation)
 {
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
-	world_width_changed (NAUTILUS_ICON_CONTAINER (widget), widget->allocation.width);
+
+	relayout (NAUTILUS_ICON_CONTAINER (widget));
 }
 
 static void
@@ -2905,7 +2896,6 @@ finish_adding_new_icons (NautilusIconContainer *container)
 
 	/* Now the rest of the housekeeping. */
 	relayout (container);
-	update_scroll_region (container);
 }
 
 static gboolean
@@ -3072,7 +3062,7 @@ nautilus_icon_container_set_zoom_level (NautilusIconContainer *container, int ne
 
 	nautilus_icon_container_request_update_all (container);
 
-	world_width_changed (container, GTK_WIDGET (container)->allocation.width);
+	relayout (container);
 }
 
 /**
@@ -3519,12 +3509,13 @@ nautilus_icon_container_set_auto_layout (NautilusIconContainer *container,
 
 	container->details->auto_layout = auto_layout;
 
-	if (auto_layout) {
-		relayout (container);
-	} else {
+	if (!auto_layout) {
 		reload_icon_positions (container);
 		nautilus_icon_container_freeze_icon_positions (container);
 	}
+
+	relayout (container);
+
 	gtk_signal_emit (GTK_OBJECT (container), signals[LAYOUT_CHANGED]);
 }
 
