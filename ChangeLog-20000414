@@ -1,3 +1,11 @@
+2000-01-28  Andy Hertzfeld <andy@eazel.com>
+
+	* libnautilus/nautilus_icons_view_icon_item.c,h:
+	made icons be centered in their box by adding a center_offset method
+	and using it where appropriate.
+	* libnautilus/gnome-icon-container-dnd.c:
+	used center_offset in drag offset calculation
+	
 2000-01-28  John Sullivan  <sullivan@eazel.com>
 
 	Moved FMIconCache to libnautilus, renaming it

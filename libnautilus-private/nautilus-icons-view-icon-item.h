@@ -53,6 +53,7 @@ struct _NautilusIconsViewIconItemClass {
 };
 
 GtkType nautilus_icons_view_icon_item_get_type (void);
+gint nautilus_icons_view_icon_item_center_offset(GnomeCanvasItem *item);
 
 END_GNOME_DECLS
 

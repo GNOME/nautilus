@@ -28,6 +28,7 @@
 #endif
 
 #include "gnome-icon-container-dnd.h"
+#include "nautilus-icons-view-icon-item.h"
 
 #include "gnome-icon-container-private.h"
 #include "nautilus-background.h"
@@ -112,7 +113,7 @@ create_selection_shadow (GnomeIconContainer *container,
 		y1 = item->icon_y;
 		x2 = x1 + item->icon_width;
 		y2 = y1 + item->icon_height;
-        				
+			
 		if (x2 >= min_x && x1 <= max_x && y2 >= min_y && y1 <= max_y) {
 			GnomeCanvasItem *rect;
 
@@ -745,7 +746,7 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 	GdkPixbuf *temp_pixbuf, *scaled_pixbuf;
 	GdkPixmap *pixmap_for_dragged_file;
 	GdkBitmap *mask_for_dragged_file;
-	gint x_offset, y_offset;
+	gint x_offset, y_offset, center_offset;
 	
 	g_return_if_fail (container != NULL);
 	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
@@ -781,6 +782,9 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
         x_offset = floor(event->x -  pixbuf_item->x1 + .5);
         y_offset = floor(event->y -  pixbuf_item->y1 + .5);
         
+        center_offset = nautilus_icons_view_icon_item_center_offset(container->details->drag_icon->item);
+        x_offset -= center_offset;
+        
         /* if the scale factor isn't 1.0, we have to scale the pixmap */
 	/* FIXME: eventually need to get the size, if any, from the metadata here */
 	
@@ -790,7 +794,7 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 	    gint old_width, old_height;
 	    gint new_width, new_height;
 	   
-            x_offset = floor(event->x * canvas->pixels_per_unit -  pixbuf_item->x1 + .5);
+            x_offset = floor(event->x * canvas->pixels_per_unit - center_offset - pixbuf_item->x1 + .5);
             y_offset = floor(event->y * canvas->pixels_per_unit -  pixbuf_item->y1 + .5);
 	    	    
 	    old_width = gdk_pixbuf_get_width (temp_pixbuf);

@@ -636,7 +636,7 @@ nautilus_icons_view_draw_text_box (GnomeCanvasItem* item, GdkDrawable *drawable,
         gint line_width = gdk_string_width(title_font, label);
 	gint line_height = gdk_string_height(title_font, label);
 	
-	if (line_width < MAX_LABEL_WIDTH)
+	if (line_width < floor(MAX_LABEL_WIDTH * item->canvas->pixels_per_unit))
 	  {
 	    gint item_width = floor(item->x2 - item->x1);
             box_left = icon_left + ((item_width - line_width) >> 1);
@@ -647,14 +647,16 @@ nautilus_icons_view_draw_text_box (GnomeCanvasItem* item, GdkDrawable *drawable,
 	else
 	  {	
 	    box_left = icon_left;
-            icon_text_info = gnome_icon_layout_text(title_font, label, " -_,;.:?/&", MAX_LABEL_WIDTH, TRUE);
+            icon_text_info = gnome_icon_layout_text(title_font, label, " -_,;.:?/&",
+                                                    floor(MAX_LABEL_WIDTH * item->canvas->pixels_per_unit),
+                                                    TRUE);
 	    if (real_draw)
                 gnome_icon_paint_text(icon_text_info, drawable, temp_gc, box_left, icon_bottom, GTK_JUSTIFY_CENTER);
 	    line_width = icon_text_info->width;
             line_height = icon_text_info->height;
  	    gnome_icon_text_info_free(icon_text_info);
          }
-			         
+			                 
         /* invert to indicate selection if necessary */
         if (is_selected && real_draw)
 	  {
@@ -665,8 +667,8 @@ nautilus_icons_view_draw_text_box (GnomeCanvasItem* item, GdkDrawable *drawable,
 
 	gdk_gc_unref(temp_gc);   
 
-	priv->text_width = item->canvas->pixels_per_unit * line_width;
-	priv->text_height = item->canvas->pixels_per_unit * (double) line_height;
+	priv->text_width  =  (double) line_width;
+	priv->text_height =  (double) line_height;
 }
 
 /* draw the icon item */
@@ -682,6 +684,7 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 	GdkPixbuf *pixbuf;
 	ArtIRect p_rect, a_rect, d_rect;
 	gint w, h, icon_height;
+        gint center_offset = 0;
         GnomeIconContainer *container = GNOME_ICON_CONTAINER(item->canvas);
  	GdkFont *title_font = container->details->label_font;
        
@@ -692,11 +695,8 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
         
 	if (priv->pixbuf)
           {
-	    gint box_width = floor(item->x2 - item->x1);
-            gint center_offset = (box_width - priv->pixbuf->art_pixbuf->width) >> 1;
+            center_offset = nautilus_icons_view_icon_item_center_offset(item);
             
-            center_offset = 0;  /* FIXME:  disabled for now, as it was causing glitches */
-
             gnome_canvas_item_i2c_affine (item, i2c);
 	    compute_render_affine (icon_view_item, render_affine, i2c);
 
@@ -707,9 +707,9 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 	    p_rect.x1 = item->x2;
 	    p_rect.y1 = item->y2;
 
-	    a_rect.x0 = x;
+	    a_rect.x0 = x - center_offset;
 	    a_rect.y0 = y;
-	    a_rect.x1 = x + width;
+	    a_rect.x1 = x + width - center_offset;
 	    a_rect.y1 = y + height;
 
 	    art_irect_intersect (&d_rect, &p_rect, &a_rect);
@@ -717,7 +717,7 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 		    return;
 
 	    /* Create a temporary buffer and transform the pixbuf there */
-	    /* FIXME: only do this if a transform is in effect */
+	    /* FIXME: only do this if really necessary */
 	    
 	    w = d_rect.x1 - d_rect.x0;
 	    h = d_rect.y1 - d_rect.y0;
@@ -731,7 +731,7 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 
 	    pixbuf = gdk_pixbuf_new_from_data (buf, ART_PIX_RGB, TRUE, w, h, w * 4, NULL, NULL);
 
-	    gdk_pixbuf_render_to_drawable_alpha (pixbuf, drawable,
+            gdk_pixbuf_render_to_drawable_alpha (pixbuf, drawable,
 					        0, 0,
 					        d_rect.x0 - x + center_offset, d_rect.y0 - y,
 					        w, h,
@@ -744,10 +744,24 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
           }
           
 	  /* now compute the position of the label and draw it */
-          icon_height = priv->pixbuf->art_pixbuf->height * item->canvas->pixels_per_unit;
-          nautilus_icons_view_draw_text_box(item, drawable, title_font, priv->label, item->x1 - x, 
-                                            item->y1 - y  + icon_height, priv->is_selected, TRUE);       	
+          if (container->details->zoom_level != NAUTILUS_ZOOM_LEVEL_SMALLEST)
+            {
+              icon_height = priv->pixbuf->art_pixbuf->height * item->canvas->pixels_per_unit;
+              nautilus_icons_view_draw_text_box(item, drawable, title_font, priv->label, item->x1 - x, 
+                                                item->y1 - y  + icon_height, priv->is_selected, TRUE);       	
+            }
         }
+
+/* return the center offset for this icon */
+gint
+nautilus_icons_view_icon_item_center_offset(GnomeCanvasItem *item)
+{
+  NautilusIconsViewIconItem *icon_view_item = NAUTILUS_ICONS_VIEW_ICON_ITEM (item);
+  IconItemPrivate *priv = icon_view_item->priv;
+  gint box_width = floor(item->x2 - item->x1);      
+  gint center_offset = (box_width - floor(priv->pixbuf->art_pixbuf->width * item->canvas->pixels_per_unit)) / 2;
+  return center_offset;
+}
 
 /* Render handler for the icon canvas item */
 static void
@@ -787,13 +801,15 @@ nautilus_icons_view_icon_item_point (GnomeCanvasItem *item, double x, double y, 
 	IconItemPrivate *priv;
 	double i2c[6], render_affine[6], inv[6];
 	ArtPoint c, p;
-	int px, py;
-	double no_hit;
+	gint px, py;
+	gint center_offset;
+        double no_hit;
 	ArtPixBuf *apb;
 	guchar *src;
 
 	icon_view_item = NAUTILUS_ICONS_VIEW_ICON_ITEM (item);
 	priv = icon_view_item->priv;
+        center_offset = nautilus_icons_view_icon_item_center_offset(item);
 
 	*actual_item = item;
 
@@ -808,7 +824,7 @@ nautilus_icons_view_icon_item_point (GnomeCanvasItem *item, double x, double y, 
 	compute_render_affine (icon_view_item, render_affine, i2c);
 	art_affine_invert (inv, render_affine);
 
-	c.x = cx;
+	c.x = cx - center_offset;
 	c.y = cy;
 	art_affine_point (&p, &c, inv);
 	px = p.x;
