@@ -335,17 +335,29 @@ icon_get_bounding_box (NautilusIcon *icon,
 
 /* Utility functions for NautilusIconContainer.  */
 
-void
+gboolean
 nautilus_icon_container_scroll (NautilusIconContainer *container,
 				int delta_x, int delta_y)
 {
 	GtkAdjustment *hadj, *vadj;
+	int old_h_value, old_v_value;
 
 	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (container));
 	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
 
+	/* Store the old ajustment values so we can tell if we
+	 * ended up actually scrolling. We may not have in a case
+	 * where the resulting value got pinned to the adjustment
+	 * min or max.
+	 */
+	old_h_value = hadj->value;
+	old_v_value = vadj->value;
+	
 	nautilus_gtk_adjustment_set_value (hadj, hadj->value + delta_x);
 	nautilus_gtk_adjustment_set_value (vadj, vadj->value + delta_y);
+
+	/* return TRUE if we did scroll */
+	return hadj->value != old_h_value || vadj->value != old_v_value;
 }
 
 static void

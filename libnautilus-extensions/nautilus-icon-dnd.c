@@ -333,9 +333,9 @@ nautilus_icon_container_position_shadow (NautilusIconContainer *container,
 	if (shadow == NULL) {
 		return;
 	}
-
 	gnome_canvas_window_to_world (GNOME_CANVAS (container),
 				      x, y, &world_x, &world_y);
+
 	set_shadow_position (shadow, world_x, world_y);
 	gnome_canvas_item_show (shadow);
 }
@@ -650,8 +650,13 @@ auto_scroll_timeout_callback (gpointer data)
 		/* no work */
 		return TRUE;
 	}
-	
-	nautilus_icon_container_scroll (container, (int)x_scroll_delta, (int)y_scroll_delta);
+
+	if (!nautilus_icon_container_scroll (container, (int)x_scroll_delta, (int)y_scroll_delta)) {
+		/* the scroll value got pinned to a min or max adjustment value,
+		 * we ended up not scrolling
+		 */
+		return TRUE;
+	}
 
 	/* update cached drag start offsets */
 	container->details->dnd_info->drag_info.start_x -= x_scroll_delta;
@@ -773,7 +778,6 @@ handle_local_move (NautilusIconContainer *container,
 			(container, item->uri);
 
 		if (item->got_icon_position) {
-
 			nautilus_icon_container_move_icon
 				(container, icon,
 				 world_x + item->icon_x, world_y + item->icon_y,

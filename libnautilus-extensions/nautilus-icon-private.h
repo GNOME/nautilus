@@ -216,7 +216,7 @@ gboolean      nautilus_icon_container_has_stored_icon_positions   (NautilusIconC
 gboolean      nautilus_icon_container_emit_preview_signal         (NautilusIconContainer *view,
 								   NautilusIcon          *icon,
 								   gboolean               start_flag);
-void          nautilus_icon_container_scroll                      (NautilusIconContainer *container,
+gboolean      nautilus_icon_container_scroll                      (NautilusIconContainer *container,
 								   int                    delta_x,
 								   int                    delta_y);
 void          nautilus_icon_container_update_scroll_region        (NautilusIconContainer *container);

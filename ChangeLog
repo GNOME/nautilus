@@ -1,3 +1,20 @@
+2000-10-12  Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_scroll):
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_container_position_shadow),
+	(auto_scroll_timeout_callback), (handle_local_move):
+	* libnautilus-extensions/nautilus-icon-private.h:
+	Fix a bug where the drag&drop selection shadow would sometimes
+	run away from the dragged icons. This is kind-of related to 3406
+	that I fixed earlier today. The problem happened when
+	an autoscroll didn't actually happen because the adjustment
+	values got clamped but the adjustment delta did get applied to
+	the initial cached drag start location.
+	Made nautilus_icon_container_scroll return a boolean determining
+	if a scroll actually happened.
+
 2000-10-12  Robey Pointer  <robey@eazel.com>
 
 	* nautilus-installer/src/callbacks.c: (begin_install),
