@@ -4428,10 +4428,10 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	}
 
 	eel_canvas_item_set (EEL_CANVAS_ITEM (icon->item),
-			       "editable_text", editable_text,
-			       "additional_text", additional_text,
-			       "highlighted_for_drop", icon == details->drop_target,
-			       NULL);
+			     "editable_text", editable_text,
+			     "additional_text", additional_text,
+			     "highlighted_for_drop", icon == details->drop_target,
+			     NULL);
 	
 	nautilus_icon_canvas_item_set_image (icon->item, pixbuf);
 	nautilus_icon_canvas_item_set_attach_points (icon->item, &attach_points);
@@ -4555,9 +4555,9 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 	icon->scale_y = 1.0;
  	icon->item = NAUTILUS_ICON_CANVAS_ITEM
 		(eel_canvas_item_new (EEL_CANVAS_GROUP (EEL_CANVAS (container)->root),
-					nautilus_icon_canvas_item_get_type (),
-					NULL));
-	eel_canvas_item_hide (EEL_CANVAS_ITEM (icon->item));
+				      nautilus_icon_canvas_item_get_type (),
+				      "visible", FALSE,
+				      NULL));
 	icon->item->user_data = icon;
 
 	/* Make sure the icon is under the selection_rectangle */
@@ -4577,6 +4577,15 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 	schedule_redo_layout (container);
 	
 	return TRUE;
+}
+
+void
+nautilus_icon_container_layout_now (NautilusIconContainer *container)
+{
+	if (container->details->idle_id != 0) {
+		unschedule_redo_layout (container);
+		redo_layout_internal (container);
+	}
 }
 
 /**

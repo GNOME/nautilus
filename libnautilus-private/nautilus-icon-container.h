@@ -182,6 +182,7 @@ GtkWidget *       nautilus_icon_container_new                           (void);
 void              nautilus_icon_container_clear                         (NautilusIconContainer  *view);
 gboolean          nautilus_icon_container_add                           (NautilusIconContainer  *view,
 									 NautilusIconData       *data);
+void              nautilus_icon_container_layout_now                    (NautilusIconContainer *container);
 gboolean          nautilus_icon_container_remove                        (NautilusIconContainer  *view,
 									 NautilusIconData       *data);
 void              nautilus_icon_container_for_each                      (NautilusIconContainer  *view,

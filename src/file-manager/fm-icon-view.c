@@ -246,18 +246,7 @@ fm_icon_view_finalize (GObject *object)
 static NautilusIconContainer *
 get_icon_container (FMIconView *icon_view)
 {
-	GtkBin *bin;
-
-	g_return_val_if_fail (FM_IS_ICON_VIEW (icon_view), NULL);
-
-	bin = GTK_BIN (icon_view);
-	if (bin->child) {
-		g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (GTK_BIN (icon_view)->child), NULL);
-		
-		return NAUTILUS_ICON_CONTAINER (GTK_BIN (icon_view)->child);
-	} else {
-		return NULL;
-	}
+	return NAUTILUS_ICON_CONTAINER (GTK_BIN (icon_view)->child);
 }
 
 static gboolean
@@ -536,17 +525,23 @@ fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file)
 	    !should_show_file_on_screen (view, file)) {
 			return;
 	}
-	
+
 	/* Reset scroll region for the first icon added when loading a directory. */
 	if (icon_view->details->loading && nautilus_icon_container_is_empty (icon_container)) {
 		nautilus_icon_container_reset_scroll_region (icon_container);
 	}
+	
 	if (nautilus_icon_container_add (icon_container,
 					 NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
 		nautilus_file_ref (file);
 	}
 }
 
+static void
+fm_icon_view_flush_added_files (FMDirectoryView *view)
+{
+	nautilus_icon_container_layout_now (get_icon_container (FM_ICON_VIEW (view)));
+}
 
 static void
 fm_icon_view_file_changed (FMDirectoryView *view, NautilusFile *file)
@@ -2492,6 +2487,7 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 	G_OBJECT_CLASS (klass)->finalize = fm_icon_view_finalize;
 	
 	fm_directory_view_class->add_file = fm_icon_view_add_file;
+	fm_directory_view_class->flush_added_files = fm_icon_view_flush_added_files;
 	fm_directory_view_class->begin_loading = fm_icon_view_begin_loading;
 	fm_directory_view_class->bump_zoom_level = fm_icon_view_bump_zoom_level;
 	fm_directory_view_class->can_rename_file = fm_icon_view_can_rename_file;

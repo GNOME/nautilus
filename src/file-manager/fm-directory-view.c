@@ -91,8 +91,8 @@
  * we add to the list or change at once.
  */
 #define FILES_TO_PROCESS_AT_ONCE 300
-
-#define DISPLAY_TIMEOUT_INTERVAL_MSECS 1000
+#define DISPLAY_TIMEOUT_FIRST_MSECS 1000
+#define DISPLAY_TIMEOUT_INTERVAL_MSECS 10*1000
 
 #define SILENT_WINDOW_OPEN_LIMIT 5
 
@@ -167,6 +167,7 @@ enum {
 	BEGIN_LOADING,
 	CLEAR,
 	END_FILE_CHANGES,
+	FLUSH_ADDED_FILES,
 	END_LOADING,
 	FILE_CHANGED,
 	LOAD_ERROR,
@@ -327,7 +328,8 @@ static void     schedule_update_menus_callback                 (gpointer        
 static void     remove_update_menus_timeout_callback           (FMDirectoryView      *view);
 static void     schedule_idle_display_of_pending_files         (FMDirectoryView      *view);
 static void     unschedule_idle_display_of_pending_files       (FMDirectoryView      *view);
-static void     schedule_timeout_display_of_pending_files      (FMDirectoryView      *view);
+static void     schedule_timeout_display_of_pending_files      (FMDirectoryView      *view,
+								gboolean              first);
 static void     unschedule_timeout_display_of_pending_files    (FMDirectoryView      *view);
 static void     unschedule_display_of_pending_files            (FMDirectoryView      *view);
 static void     disconnect_model_handlers                      (FMDirectoryView      *view);
@@ -2342,6 +2344,9 @@ display_pending_timeout_callback (gpointer data)
 		schedule_idle_display_of_pending_files (view);
 	}
 
+	g_signal_emit (view,
+		       signals[FLUSH_ADDED_FILES], 0);
+
 	g_object_unref (G_OBJECT (view));
 
 	return FALSE;
@@ -2355,15 +2360,16 @@ schedule_idle_display_of_pending_files (FMDirectoryView *view)
 		return;
 	}
 
-	/* An idle takes precedence over a timeout. */
-	unschedule_timeout_display_of_pending_files (view);
-
+	/* We want higher priority than the idle that handles the relayout
+	   to avoid a resort on each add. But we still want to allow repaints
+	   and other hight prio events while we have pending files to show. */
 	view->details->display_pending_idle_id =
-		g_idle_add_full (G_PRIORITY_LOW, display_pending_idle_callback, view, NULL);
+		g_idle_add_full (G_PRIORITY_DEFAULT_IDLE - 20,
+				 display_pending_idle_callback, view, NULL);
 }
 
 static void
-schedule_timeout_display_of_pending_files (FMDirectoryView *view)
+schedule_timeout_display_of_pending_files (FMDirectoryView *view, gboolean first)
 {
 	/* No need to schedule a timeout if there's already one pending. */
 	if (view->details->display_pending_timeout_id != 0) {
@@ -2375,9 +2381,15 @@ schedule_timeout_display_of_pending_files (FMDirectoryView *view)
 		return;
 	}
 
-	view->details->display_pending_timeout_id =
-		g_timeout_add (DISPLAY_TIMEOUT_INTERVAL_MSECS,
-			       display_pending_timeout_callback, view);
+	if (first) {
+		view->details->display_pending_timeout_id =
+			g_timeout_add (DISPLAY_TIMEOUT_FIRST_MSECS,
+				       display_pending_timeout_callback, view);
+	} else {
+		view->details->display_pending_timeout_id =
+			g_timeout_add (DISPLAY_TIMEOUT_INTERVAL_MSECS,
+				       display_pending_timeout_callback, view);
+	}
 }
 
 static void
@@ -2421,10 +2433,12 @@ queue_pending_files (FMDirectoryView *view,
 	*pending_list = g_list_concat (*pending_list,
 				       nautilus_file_list_copy (files));
 
-	if (view->details->loading)
-		schedule_timeout_display_of_pending_files (view);
-	else
+	if (view->details->loading) {
 		schedule_idle_display_of_pending_files (view);
+		schedule_timeout_display_of_pending_files (view, FALSE);
+	} else {
+		schedule_idle_display_of_pending_files (view);
+	}
 }
 
 static void
@@ -5401,11 +5415,11 @@ finish_loading (FMDirectoryView *view)
 	if (nautilus_directory_are_all_files_seen (view->details->model)) {
 		schedule_idle_display_of_pending_files (view);		
 	} else {
-		schedule_timeout_display_of_pending_files (view);
+		schedule_timeout_display_of_pending_files (view, TRUE);
 	}
 	
 	view->details->loading = TRUE;
-
+	
 	/* Start loading. */
 
 	/* Connect handlers to learn about loading progress. */
@@ -6122,6 +6136,14 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_TYPE_FROM_CLASS (klass),
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, end_file_changes),
+		              NULL, NULL,
+		              g_cclosure_marshal_VOID__VOID,
+		              G_TYPE_NONE, 0);
+	signals[FLUSH_ADDED_FILES] =
+		g_signal_new ("flush_added_files",
+		              G_TYPE_FROM_CLASS (klass),
+		              G_SIGNAL_RUN_LAST,
+		              G_STRUCT_OFFSET (FMDirectoryViewClass, flush_added_files),
 		              NULL, NULL,
 		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);

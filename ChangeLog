@@ -1,3 +1,16 @@
+2003-04-07  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.[ch]:
+	Create canvas items hidden.
+	New function nautilus_icon_container_layout_now().
+	
+	* src/file-manager/fm-directory-view.[ch]:
+	Added virtual function flush_added_files.
+	Tuned directory loading to avoid lots of relayouts on load.
+	
+	* src/file-manager/fm-icon-view.c:
+	Implement flush_added_files using nautilus_icon_container_layout_now()
+
 2003-04-02  Dave Camp  <dave@ximian.com>
 
 	* src/file-manager/fm-list-view.c (motion_notify_callback): Only 

@@ -97,6 +97,8 @@ struct FMDirectoryViewClass {
 	 */
 	void 	(* end_file_changes)    (FMDirectoryView *view);
 	
+	void    (* flush_added_files)	 (FMDirectoryView *view);
+	
 	/* The 'begin_loading' signal is emitted before any of the contents
 	 * of a directory are added to the view. It can be replaced by a 
 	 * subclass to do any necessary preparation to start dealing with a
