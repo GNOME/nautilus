@@ -104,7 +104,7 @@ is_nfs_filesystem (const char *uri)
 		 * don't exist when you throw something away;
 		 * so silently ignore the error in that case.
 		 */
-		if (errno != EEXIST)
+		if (errno != ENOENT)
 			g_warning ("Could not statfs %s: %s",
 				   local_path, strerror (errno));
 	} else {
