@@ -27,11 +27,15 @@
 
 #include <gtk/gtkaccellabel.h>
 #include <gtk/gtksignal.h>
+
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-util.h>
 #include <libgnomeui/gtkpixmapmenuitem.h>
 
+#include "nautilus-file-utilities.h"
+#include "nautilus-gtk-macros.h"
 #include "nautilus-icon-factory.h"
 #include "nautilus-string.h"
-#include "nautilus-gtk-macros.h"
 
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
@@ -40,6 +44,9 @@ enum {
 	CHANGED,
 	LAST_SIGNAL
 };
+
+#define GENERIC_BOOKMARK_ICON_NAME	"i-bookmark"
+#define MISSING_BOOKMARK_ICON_NAME	"i-bookmark-missing"
 
 static guint signals[LAST_SIGNAL];
 
@@ -323,14 +330,19 @@ bookmark_file_changed_callback (NautilusFile *file, NautilusBookmark *bookmark)
 static void
 nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
 {
+	const char *icon_name;
+
 	if (bookmark->details->icon != NULL) {
 		nautilus_scalable_icon_unref (bookmark->details->icon);
 	}
 
-	/* FIXME bugzilla.eazel.com 461:
-	 * Need some sort of bookmark icon as a default.
-	 */ 
-	bookmark->details->icon = NULL;
+	if (nautilus_bookmark_uri_known_not_to_exist (bookmark)) {
+		icon_name = MISSING_BOOKMARK_ICON_NAME;
+	} else {
+		icon_name = GENERIC_BOOKMARK_ICON_NAME;
+	}
+	bookmark->details->icon = nautilus_scalable_icon_new_from_text_pieces 
+		(NULL, icon_name, NULL, NULL);
 }
 
 /**
@@ -440,4 +452,22 @@ nautilus_bookmark_menu_item_new (NautilusBookmark *bookmark)
 	gtk_widget_show (accel_label);
 
 	return menu_item;
+}
+
+gboolean
+nautilus_bookmark_uri_known_not_to_exist (NautilusBookmark *bookmark)
+{
+	char *path_name;
+	gboolean exists;
+
+	/* Convert to a path, returning FALSE if not local. */
+	path_name = nautilus_get_local_path_from_uri (bookmark->details->uri);
+	if (path_name == NULL) {
+		return FALSE;
+	}
+
+	/* Now check if the file exists (sync. call OK because it is local). */
+	exists = g_file_exists (path_name);
+	g_free (path_name);
+	return !exists;
 }

@@ -43,7 +43,6 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-user-level-manager.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
 
 static GtkWindow *bookmarks_window = NULL;
 
@@ -407,24 +406,6 @@ show_bogus_bookmark_window (BookmarkHolder *holder)
 	g_free (prompt);
 }
 
-static gboolean
-uri_known_not_to_exist (const char *uri) 
-{
-	char *path_name;
-	gboolean exists;
-
-	/* Convert to a path, returning FALSE if not local. */
-	path_name = nautilus_get_local_path_from_uri (uri);
-	if (path_name == NULL) {
-		return FALSE;
-	}
-
-	/* Now check if the file exists (sync. call OK because it is local). */
-	exists = g_file_exists (path_name);
-	g_free (path_name);
-	return !exists;
-}
-
 static void
 activate_bookmark_in_menu_item (BonoboUIHandler *uih, gpointer user_data, const char *path)
 {
@@ -432,15 +413,14 @@ activate_bookmark_in_menu_item (BonoboUIHandler *uih, gpointer user_data, const 
         char *uri;
 
         holder = (BookmarkHolder *)user_data;
-        uri = nautilus_bookmark_get_uri (holder->bookmark);
 
-	if (uri_known_not_to_exist (uri)) {
+	if (nautilus_bookmark_uri_known_not_to_exist (holder->bookmark)) {
 		show_bogus_bookmark_window (holder);
 	} else {
+	        uri = nautilus_bookmark_get_uri (holder->bookmark);
 	        nautilus_window_goto_uri (holder->window, uri);
+	        g_free (uri);
         }
-
-        g_free (uri);
 }
 
 static void

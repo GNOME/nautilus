@@ -1,3 +1,34 @@
+2000-06-27  John Sullivan  <sullivan@eazel.com>
+
+	Finished task 461 (bookmarks to "Bad URI" should have
+	an icon). I picked arbitrary existing icons (gnome foot
+	for "generic bookmark", gnome-foot-question-mark for
+	"bookmark with known-bad URI"); Arlo and/or Susan will
+	have to come up with real ones. I'll write a separate
+	bug report about that.
+
+	* icons/i-bookmark.png:
+	* icons/i-bookmark-20.png:
+	* icons/i-bookmark-missing.png:
+	* icons/i-bookmark-missing-20.png: New icons to use
+	for bookmarks. I supplied the base size and the 20
+	pixel size because that's the one used in menus, where
+	bookmarks usually appear. These need to be replaced with
+	better images.
+	
+	* icons/Makefile.am: Add new icons to installed set.
+	
+	* libnautilus-extensions/nautilus-bookmark.h,
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_uri_known_not_to_exist): New public
+	function, moved some code from elsewhere to encapsulate this.
+	(nautilus_bookmark_set_icon_to_default): Choose between the
+	generic and bad-URI icon if there's no better icon.
+
+	* src/nautilus-window-menus.c: (activate_bookmark_in_menu_item):
+	Now calls nautilus_bookmark_uri_known_not_to_exist instead
+	of doing the work here.
+
 2000-06-27  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/startup/nautilus-view/Makefile.am:

@@ -105,6 +105,10 @@ icon_DATA =\
 	hand.svg \
 	home.png \
 	i-blockdev.png \
+	i-bookmark-20.png \
+	i-bookmark.png \
+	i-bookmark-missing-20.png \
+	i-bookmark-missing.png \
 	i-cdrom.png \
 	i-chardev.png \
 	i-core.png \
