@@ -62,7 +62,13 @@ void     nautilus_art_ipoint_assign        (NautilusArtIPoint *point,
 					    int                y);
 int      nautilus_art_irect_get_width      (const ArtIRect    *rect);
 int      nautilus_art_irect_get_height     (const ArtIRect    *rect);
-
+ArtIRect nautilus_art_irect_align          (const ArtIRect    *container,
+					    int                aligned_width,
+					    int                aligned_height,
+					    float              x_alignment,
+					    float              y_alignment,
+					    int                x_padding,
+					    int                y_padding);
 END_GNOME_DECLS
 
 #endif /* NAUTILUS_ART_EXTENSIONS_H */

@@ -1,3 +1,18 @@
+2001-01-11  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Mike Fleming  <mfleming@eazel.com>
+
+	* libnautilus-extensions/nautilus-art-extensions.c:
+	(nautilus_art_irect_align):
+	* libnautilus-extensions/nautilus-art-extensions.h:
+	New function to align a rectangle within another.
+	
+	* libnautilus-extensions/nautilus-image.c:
+	(image_get_pixbuf_bounds):
+	* libnautilus-extensions/nautilus-label.c: (label_get_text_bounds):
+	Share more code between these two widgets by using a common
+	alignment routine.
+	
 2001-01-11  Michael Meeks  <michael@helixcode.com>
 
 	* components/adapter/nautilus-adapter-embeddable-embed-strategy.c

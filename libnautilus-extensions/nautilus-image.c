@@ -532,37 +532,27 @@ image_get_pixbuf_frame (const NautilusImage *image)
 static ArtIRect
 image_get_pixbuf_bounds (const NautilusImage *image)
 {
+	ArtIRect pixbuf_frame;
 	ArtIRect pixbuf_bounds;
-	GtkWidget *widget;
-	GtkMisc *misc;
-	int width;
-	int height;
+	ArtIRect bounds;
 
 	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), NAUTILUS_ART_IRECT_EMPTY);
 
-	if (!image->detail->pixbuf) {
+	pixbuf_frame = image_get_pixbuf_frame (image);
+
+	if (art_irect_empty (&pixbuf_frame)) {
 		return NAUTILUS_ART_IRECT_EMPTY;
 	}
-
-	widget = GTK_WIDGET (image);
-	misc = GTK_MISC (image);
-
-	width = gdk_pixbuf_get_width (image->detail->pixbuf);
-	height = gdk_pixbuf_get_height (image->detail->pixbuf);
-
-	pixbuf_bounds.x0 = (widget->allocation.x * (1.0 - misc->xalign) +
-			    (widget->allocation.x + widget->allocation.width
-			     - (width - misc->xpad * 2)) *
-			    misc->xalign) + 0.5;
 	
-	pixbuf_bounds.y0 = (widget->allocation.y * (1.0 - misc->yalign) +
-			    (widget->allocation.y + widget->allocation.height
-			     - (height - misc->ypad * 2)) *
-			    misc->yalign) + 0.5;
-
-	pixbuf_bounds.x1 = pixbuf_bounds.x0 + width;
-
-	pixbuf_bounds.y1 = pixbuf_bounds.y0 + height;
+	bounds = nautilus_irect_gtk_widget_get_bounds (GTK_WIDGET (image));
+	
+	pixbuf_bounds = nautilus_art_irect_align (&bounds,
+						  pixbuf_frame.x1,
+						  pixbuf_frame.y1,
+						  GTK_MISC (image)->xalign,
+						  GTK_MISC (image)->yalign,
+						  GTK_MISC (image)->xpad,
+						  GTK_MISC (image)->ypad);
 
 	return pixbuf_bounds;
 }

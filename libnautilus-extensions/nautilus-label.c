@@ -881,8 +881,7 @@ label_get_text_bounds (const NautilusLabel *label)
 {
 	ArtIRect text_frame;
 	ArtIRect text_bounds;
-	GtkWidget *widget;
-	GtkMisc *misc;
+	ArtIRect bounds;
 
 	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), NAUTILUS_ART_IRECT_EMPTY);
 
@@ -892,21 +891,16 @@ label_get_text_bounds (const NautilusLabel *label)
 		return NAUTILUS_ART_IRECT_EMPTY;
 	}
 	
-	widget = GTK_WIDGET (label);
-	misc = GTK_MISC (label);
+	bounds = nautilus_irect_gtk_widget_get_bounds (GTK_WIDGET (label));
 
-	text_bounds.x0 = (widget->allocation.x * (1.0 - misc->xalign) +
-			  (widget->allocation.x + widget->allocation.width
-			   - (text_frame.x1 - misc->xpad * 2)) *
-			  misc->xalign) + 0.5;
-	
-	text_bounds.y0 = (widget->allocation.y * (1.0 - misc->yalign) +
-			  (widget->allocation.y + widget->allocation.height
-			   - (text_frame.y1 - misc->ypad * 2)) *
-			  misc->yalign) + 0.5;
-
-	text_bounds.x1 = text_bounds.x0 + text_frame.x1;
-	text_bounds.y1 = text_bounds.y0 + text_frame.y1;
+	text_bounds = nautilus_art_irect_align (&bounds,
+						text_frame.x1,
+						text_frame.y1,
+						GTK_MISC (label)->xalign,
+						GTK_MISC (label)->yalign,
+						GTK_MISC (label)->xpad,
+						GTK_MISC (label)->ypad);
+		
 
 	return text_bounds;
 }
