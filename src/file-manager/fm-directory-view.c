@@ -381,6 +381,9 @@ static void     monitor_file_for_open_with                     (FMDirectoryView 
 static void     create_scripts_directory                       (void);
 static void     activate_activation_uri_ready_callback         (NautilusFile         *file,
 								gpointer              callback_data);
+static gboolean activate_check_mime_types                      (FMDirectoryView *view,
+								NautilusFile *file,
+								gboolean warn_on_mismatch);
 
 EEL_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 
@@ -3869,9 +3872,13 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 		uri = nautilus_file_get_uri (file);
 
 		other_applications_visible = !can_use_component_for_file (file);
-		
+
 		action = get_activation_action (file);
-		if (action == ACTIVATION_ACTION_OPEN_IN_APPLICATION) {
+		/* Only use the default app for open if there is not
+		   a mime mismatch, otherwise we can't use it in the
+		   open with menu */
+		if (action == ACTIVATION_ACTION_OPEN_IN_APPLICATION &&
+		    activate_check_mime_types (view, file, FALSE)) {
 			default_app = nautilus_mime_get_default_application_for_file (file);
 		} else {
 			default_app = NULL;
@@ -4150,15 +4157,18 @@ warn_mismatched_mime_types (FMDirectoryView *view,
 
 static gboolean
 activate_check_mime_types (FMDirectoryView *view,
-			   NautilusFile *file)
+			   NautilusFile *file,
+			   gboolean warn_on_mismatch)
 {
 	char *guessed_mime_type;
 	char *mime_type;
 	gboolean ret;
 	GnomeVFSMimeApplication *default_app;
 	GnomeVFSMimeApplication *guessed_default_app;
-	
-	g_return_val_if_fail (nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE), FALSE);
+
+	if (!nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE)) {
+		return FALSE;
+	}
 
 	ret = TRUE;
 
@@ -4175,7 +4185,9 @@ activate_check_mime_types (FMDirectoryView *view,
 		    guessed_default_app == NULL ||
 		    guessed_default_app->id == NULL ||
 		    strcmp (default_app->id, guessed_default_app->id) != 0) {
-			warn_mismatched_mime_types (view, file);
+			if (warn_on_mismatch) {
+				warn_mismatched_mime_types (view, file);
+			}
 			ret = FALSE;
 		}
 	}
@@ -5967,7 +5979,11 @@ real_update_menus (FMDirectoryView *view)
 		
 		action = get_activation_action (file);
 		
-		if (action == ACTIVATION_ACTION_OPEN_IN_APPLICATION) {
+		/* Only use the default app for open if there is not
+		   a mime mismatch, otherwise we can't use it in the
+		   open with menu */
+		if (action == ACTIVATION_ACTION_OPEN_IN_APPLICATION &&
+		    activate_check_mime_types (view, file, FALSE)) {
 			GnomeVFSMimeApplication *app;
 
 			app = nautilus_mime_get_default_application_for_file (file);
@@ -6443,7 +6459,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	view = FM_DIRECTORY_VIEW (parameters->view);
 
-	if (!activate_check_mime_types (view, file)) {
+	if (!activate_check_mime_types (view, file, TRUE)) {
 		nautilus_file_unref (file);
 		g_free (parameters);
 		
