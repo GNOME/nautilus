@@ -300,13 +300,6 @@ static EelPreferencesItemDescription tradeoffs_items[] = {
 	  NULL,
 	  EEL_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
 	},
-
-	/* FIXME bugzilla.gnome.org 42560: This title phrase needs improvement. */
-	{ N_("Make Folder Appearance Details Public"),
-	  NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
-	  NULL,
-	  EEL_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
-	},
 	{ NULL }
 };
 

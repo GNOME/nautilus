@@ -219,35 +219,6 @@
     </schema>
 
     
-   <schema>
-      <key>/schemas/apps/nautilus/preferences/use_public_metadata</key>
-      <applyto>/apps/nautilus/preferences/use_public_metadata</applyto>
-      <owner>nautilus</owner>
-      <type>string</type>
-      <default>local_only</default>
-      <locale name="C">
-         <short>Whether to store metadata in each directory, or in a single global location</short>
-         <long>
-          Nautilus records information about each directory you visit, such 
-          as its background color, emblems, zoom level, and so on. 
-          This information can be stored in one location in your home
-          directory, or it can be stored in each directory in hidden files.
-          The advantages of storing per-directory are that it's more robust 
-          (can't be deleted in one go) and that for folders used by 
-          multiple users, the metadata will be shared. So for example 
-          all users can see emblems applied to files.
-
-          If this setting is "local_only", for local filesystems metadata 
-          will be stored per-directory, and for remote connections 
-          it will be stored in the user's home directory. If it's "never" 
-          then all metadata will go in the user's home directory; if it's 
-          "always" then all metadata will go in the directory being described. 
-          (However, for read-only directories, metadata always goes in the
-          user's home directory.)
-         </long>
-      </locale>
-    </schema>
-
     <schema>
       <key>/schemas/apps/nautilus/preferences/preview_sound</key>
       <applyto>/apps/nautilus/preferences/preview_sound</applyto>

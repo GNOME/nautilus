@@ -278,7 +278,6 @@ int                     nautilus_file_compare_display_name              (Nautilu
 /* filtering functions for use by various directory views */
 gboolean                nautilus_file_is_hidden_file                    (NautilusFile                   *file);
 gboolean                nautilus_file_is_backup_file                    (NautilusFile                   *file);
-gboolean                nautilus_file_is_metafile                       (NautilusFile                   *file);
 gboolean                nautilus_file_should_show                       (NautilusFile                   *file,
 									 gboolean                        show_hidden,
 									 gboolean                        show_backup);

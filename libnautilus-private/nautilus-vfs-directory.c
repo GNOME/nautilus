@@ -163,19 +163,10 @@ vfs_are_all_files_seen (NautilusDirectory *directory)
 static gboolean
 vfs_is_not_empty (NautilusDirectory *directory)
 {
-	GList *node;
-
 	g_return_val_if_fail (NAUTILUS_IS_VFS_DIRECTORY (directory), FALSE);
 	g_return_val_if_fail (nautilus_directory_is_anyone_monitoring_file_list (directory), FALSE);
 
-	for (node = directory->details->file_list; node != NULL; node = node->next) {
-		if (!nautilus_file_is_metafile (NAUTILUS_FILE (node->data))) {
-			/* Return TRUE if the directory contains anything besides a metafile. */
-			return TRUE;
-		}
-	}
-
-	return FALSE;
+	return directory->details->file_list != NULL;
 }
 
 static void

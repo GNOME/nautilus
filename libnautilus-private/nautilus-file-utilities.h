@@ -30,7 +30,6 @@
 /* Recognizing special file names. */
 gboolean nautilus_file_name_matches_hidden_pattern   (const char *name_or_relative_uri);
 gboolean nautilus_file_name_matches_backup_pattern   (const char *name_or_relative_uri);
-gboolean nautilus_file_name_matches_metafile_pattern (const char *name_or_relative_uri);
 
 /* FIXME bugzilla.gnome.org 42424: 
  * This is the same as gnome-libs g_concat_dir_and_file except

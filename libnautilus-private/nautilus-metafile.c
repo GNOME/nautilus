@@ -47,7 +47,7 @@
 #include <unistd.h>
 
 #define METAFILE_XML_VERSION "1.0"
-#define METAFILE_PERMISSIONS 0666
+#define METAFILE_PERMISSIONS 0600
 #define METAFILES_DIRECTORY_NAME "metafiles"
 
 static char    *get_file_metadata                  (NautilusMetafile *metafile,
@@ -94,13 +94,11 @@ BONOBO_CLASS_BOILERPLATE_FULL (NautilusMetafile, nautilus_metafile,
 			       BonoboObject, BONOBO_OBJECT_TYPE)
 
 typedef struct MetafileReadState {
-	gboolean use_public_metafile;
 	EelReadFileHandle *handle;
 	GnomeVFSAsyncHandle *get_file_info_handle;
 } MetafileReadState;
 
 typedef struct MetafileWriteState {
-	gboolean use_public_metafile;
 	GnomeVFSAsyncHandle *handle;
 	xmlChar *buffer;
 	GnomeVFSFileSize size;
@@ -122,7 +120,6 @@ struct NautilusMetafileDetails {
 	GList *monitors;
 
 	char *private_uri;
-	char *public_uri;
 	char *directory_uri;
 	GnomeVFSURI *directory_vfs_uri;
 };
@@ -161,7 +158,6 @@ finalize (GObject *object)
 	g_assert (metafile->details->write_idle_id == 0);
 
 	g_free (metafile->details->private_uri);
-	g_free (metafile->details->public_uri);
 	g_free (metafile->details->directory_uri);
 
 	g_free (metafile->details);
@@ -180,7 +176,7 @@ construct_private_metafile_uri (const char *uri)
 	user_directory = nautilus_get_user_directory ();
 	metafiles_directory = g_build_filename (user_directory, METAFILES_DIRECTORY_NAME, NULL);
 	g_free (user_directory);
-	mkdir (metafiles_directory, 0777);
+	mkdir (metafiles_directory, 0700);
 
 	/* Construct a file name from the URI. */
 	escaped_uri = gnome_vfs_escape_slashes (uri);
@@ -213,14 +209,9 @@ nautilus_metafile_set_directory_uri (NautilusMetafile *metafile,
 	}
 	metafile->details->directory_vfs_uri = gnome_vfs_uri_new (directory_uri);
 
-	g_free (metafile->details->public_uri);
-	metafile->details->public_uri = g_build_filename
-		(directory_uri, NAUTILUS_METAFILE_NAME_SUFFIX, NULL);
-
 	g_free (metafile->details->private_uri);
 	metafile->details->private_uri
 		= construct_private_metafile_uri (directory_uri);
-
 }
 
 static NautilusMetafile *
@@ -1554,33 +1545,6 @@ metafile_read_cancel (NautilusMetafile *metafile)
 	}
 }
 
-static gboolean
-can_use_public_metafile (NautilusMetafile *metafile)
-{
-	NautilusSpeedTradeoffValue preference_value;
-	
-	g_return_val_if_fail (NAUTILUS_IS_METAFILE (metafile), FALSE);
-
-	if (metafile->details->public_uri == NULL) {
-		return FALSE;
-	}
-
-	preference_value = eel_preferences_get_enum (NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA);
-
-	if (preference_value == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
-		return TRUE;
-	}
-	
-	if (preference_value == NAUTILUS_SPEED_TRADEOFF_NEVER) {
-		return FALSE;
-	}
-
-	g_assert (preference_value == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
-
-	return metafile->details->directory_vfs_uri == NULL ||
-	       gnome_vfs_uri_is_local (metafile->details->directory_vfs_uri);
-}
-
 static void
 metafile_read_mark_done (NautilusMetafile *metafile)
 {
@@ -1605,109 +1569,11 @@ metafile_read_done (NautilusMetafile *metafile)
 }
 
 static void
-metafile_read_try_public_metafile (NautilusMetafile *metafile)
-{
-	metafile->details->read_state->use_public_metafile = TRUE;
-	metafile_read_restart (metafile);
-}
-
-static void
-metafile_read_check_for_directory_callback (GnomeVFSAsyncHandle *handle,
-					    GList *results,
-					    gpointer callback_data)
-{
-	NautilusMetafile *metafile;
-	GnomeVFSGetFileInfoResult *result;
-
-	metafile = NAUTILUS_METAFILE (callback_data);
-
-	g_assert (metafile->details->read_state->get_file_info_handle == handle);
-	g_assert (eel_g_list_exactly_one_item (results));
-
-	metafile->details->read_state->get_file_info_handle = NULL;
-
-	result = results->data;
-
-	if (result->result == GNOME_VFS_OK
-	    && ((result->file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_TYPE) != 0)
-	    && result->file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
-		/* Is a directory. */
-		metafile_read_try_public_metafile (metafile);
-	} else {
-		/* Not a directory. */
-		metafile_read_done (metafile);
-	}
-}
-
-static void
-metafile_read_check_for_directory (NautilusMetafile *metafile)
-{
-	GList fake_list;
-
-	/* We only get here if the public metafile is in question,
-	 * which in turn only happens if the URI is one that gnome-vfs
-	 * can handle.
-	 */
-	if (metafile->details->directory_vfs_uri == NULL) {
-		metafile_read_done (metafile);
-		return;
-	}
-
-	/* We have to do a get_info call to check if this a directory. */
-	fake_list.data = metafile->details->directory_vfs_uri;
-	fake_list.next = NULL;
-	fake_list.prev = NULL;
-	gnome_vfs_async_get_file_info
-		(&metafile->details->read_state->get_file_info_handle,
-		 &fake_list,
-		 GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
-		 GNOME_VFS_PRIORITY_DEFAULT,
-		 metafile_read_check_for_directory_callback,
-		 metafile);
-}
-
-static void
 metafile_read_failed (NautilusMetafile *metafile)
 {
-	NautilusFile *file;
-	gboolean need_directory_check, is_directory;
-
 	g_assert (NAUTILUS_IS_METAFILE (metafile));
 
 	metafile->details->read_state->handle = NULL;
-
-	if (!metafile->details->read_state->use_public_metafile
-	    && can_use_public_metafile (metafile)) {
-		/* The goal here is to read the real metafile, but
-		 * only if the directory is actually a directory.
-		 */
-
-		/* First, check if we already know if it a directory. */
-		file = nautilus_file_get (metafile->details->directory_uri);
-		if (file == NULL || file->details->is_gone) {
-			need_directory_check = FALSE;
-			is_directory = FALSE;
-		} else if (file->details->info == NULL) {
-			need_directory_check = TRUE;
-			is_directory = TRUE;
-		} else {
-			need_directory_check = FALSE;
-			is_directory = nautilus_file_is_directory (file);
-		}
-		nautilus_file_unref (file);
-
-		/* Do the directory check if we don't know. */
-		if (need_directory_check) {
-			metafile_read_check_for_directory (metafile);
-			return;
-		}
-
-		/* Try for the public metafile if it is a directory. */
-		if (is_directory) {
-			metafile_read_try_public_metafile (metafile);
-			return;
-		}
-	}
 
 	metafile_read_done (metafile);
 }
@@ -1751,9 +1617,7 @@ static void
 metafile_read_restart (NautilusMetafile *metafile)
 {
 	metafile->details->read_state->handle = eel_read_entire_file_async
-		(metafile->details->read_state->use_public_metafile
-		 ? metafile->details->public_uri
-		 : metafile->details->private_uri,
+		(metafile->details->private_uri,
 		 GNOME_VFS_PRIORITY_DEFAULT,
 		 metafile_read_done_callback, metafile);
 }
@@ -1830,105 +1694,13 @@ metafile_write_done (NautilusMetafile *metafile)
 static void
 metafile_write_failed (NautilusMetafile *metafile)
 {
-	if (metafile->details->write_state->use_public_metafile) {
-		metafile->details->write_state->use_public_metafile = FALSE;
-		metafile_write_start (metafile);
-		return;
-	}
-
 	metafile_write_done (metafile);
 }
 
 static void
 metafile_write_succeeded (NautilusMetafile *metafile)
 {
-
-	/* Now that we have finished writing, it is time to delete the
-	 * private file if we wrote the public one.
-	 */
-	if (metafile->details->write_state->use_public_metafile) {
-		/* A synchronous unlink is OK here because the private
-		 * metafiles are local, so an unlink is very fast.
-		 */
-		gnome_vfs_unlink (metafile->details->private_uri);
-	}
-
 	metafile_write_done (metafile);
-}
-
-static void
-metafile_write_failure_close_callback (GnomeVFSAsyncHandle *handle,
-				       GnomeVFSResult result,
-				       gpointer callback_data)
-{
-	NautilusMetafile *metafile;
-
-	metafile = NAUTILUS_METAFILE (callback_data);
-
-	metafile_write_failed (metafile);
-}
-
-static void
-metafile_write_success_close_callback (GnomeVFSAsyncHandle *handle,
-				       GnomeVFSResult result,
-				       gpointer callback_data)
-{
-	NautilusMetafile *metafile;
-
-	metafile = NAUTILUS_METAFILE (callback_data);
-	g_assert (metafile->details->write_state->handle == NULL);
-
-	if (result != GNOME_VFS_OK) {
-		metafile_write_failed (metafile);
-	} else {
-		metafile_write_succeeded (metafile);
-	}
-}
-
-static void
-metafile_write_callback (GnomeVFSAsyncHandle *handle,
-			 GnomeVFSResult result,
-			 gconstpointer buffer,
-			 GnomeVFSFileSize bytes_requested,
-			 GnomeVFSFileSize bytes_read,
-			 gpointer callback_data)
-{
-	NautilusMetafile *metafile;
-
-	metafile = NAUTILUS_METAFILE (callback_data);
-	g_assert (metafile->details->write_state->handle == handle);
-	g_assert (metafile->details->write_state->buffer == buffer);
-	g_assert (metafile->details->write_state->size == bytes_requested);
-
-	g_assert (metafile->details->write_state->handle != NULL);
-	gnome_vfs_async_close (metafile->details->write_state->handle,
-			       result == GNOME_VFS_OK
-			       ? metafile_write_success_close_callback
-			       : metafile_write_failure_close_callback,
-			       metafile);
-	metafile->details->write_state->handle = NULL;
-}
-
-static void
-metafile_write_create_callback (GnomeVFSAsyncHandle *handle,
-				GnomeVFSResult result,
-				gpointer callback_data)
-{
-	NautilusMetafile *metafile;
-	
-	metafile = NAUTILUS_METAFILE (callback_data);
-	g_assert (metafile->details->write_state->handle == handle);
-	
-	if (result != GNOME_VFS_OK) {
-		metafile_write_failed (metafile);
-		return;
-	}
-
-	gnome_vfs_async_write (metafile->details->write_state->handle,
-			       metafile->details->write_state->buffer,
-			       metafile->details->write_state->size,
-			       metafile_write_callback,
-			       metafile);
 }
 
 static int
@@ -2008,22 +1780,13 @@ metafile_write_start (NautilusMetafile *metafile)
 
 	metafile->details->write_state->write_again = FALSE;
 
-	metafile_uri = metafile->details->write_state->use_public_metafile
-		? metafile->details->public_uri
-		: metafile->details->private_uri;
+	metafile_uri = metafile->details->private_uri;
 
 	metafile_path = gnome_vfs_get_local_path_from_uri (metafile_uri);
-	if (metafile_path == NULL) {
-		gnome_vfs_async_create
-			(&metafile->details->write_state->handle,
-			 metafile_uri,
-			 GNOME_VFS_OPEN_WRITE, FALSE, METAFILE_PERMISSIONS,
-			 GNOME_VFS_PRIORITY_DEFAULT,
-			 metafile_write_create_callback, metafile);
-	} else {
-		metafile_write_local (metafile, metafile_path);
-		g_free (metafile_path);
-	}
+	g_assert (metafile_path != NULL);
+	
+	metafile_write_local (metafile, metafile_path);
+	g_free (metafile_path);
 }
 
 static void
@@ -2053,8 +1816,6 @@ metafile_write (NautilusMetafile *metafile)
 
 	/* Create the write state. */
 	metafile->details->write_state = g_new0 (MetafileWriteState, 1);
-	metafile->details->write_state->use_public_metafile
-		= can_use_public_metafile (metafile);
 	xmlDocDumpMemory (metafile->details->xml,
 			  &metafile->details->write_state->buffer,
 			  &xml_doc_size);

@@ -104,25 +104,9 @@ uri_is_local (const char *uri)
 static gboolean
 prefer_global_thumbnails_location (const char *image_uri)
 {
-	static int public_metadata_preference;
-	static gboolean public_metadata_preference_registered;
-
-	if (!public_metadata_preference_registered) {
-		eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
-					       &public_metadata_preference);
-		public_metadata_preference_registered = TRUE;
-	}
-
-	if (public_metadata_preference == NAUTILUS_SPEED_TRADEOFF_NEVER) {
-		return TRUE;
-	}
-
-	if (public_metadata_preference == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
-		return FALSE;
-	}
-
-	g_assert (public_metadata_preference == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
-	return !uri_is_local (image_uri);
+	/* We always prefer global thumbnails since we removed public
+	   metadata. */
+	return TRUE;
 }
 
 /* this functions looks for a password in a uri and changes it for 6 'x' */

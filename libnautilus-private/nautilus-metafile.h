@@ -50,7 +50,4 @@ GtkType nautilus_metafile_get_type (void);
 
 NautilusMetafile *nautilus_metafile_get (const char *directory_uri);
 
-/* Specifications for in-directory metafile. */
-#define NAUTILUS_METAFILE_NAME_SUFFIX ".nautilus-metafile.xml"
-
 #endif /* NAUTILUS_METAFILE_H */

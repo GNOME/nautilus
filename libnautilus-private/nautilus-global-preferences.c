@@ -374,12 +374,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  NULL, NULL,
 	  "file_size"
 	},
-	{ NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
-	  PREFERENCE_STRING,
-	  "local_only",
-	  NULL, NULL,
-	  "speed_tradeoff"
-	},
 	{ NAUTILUS_PREFERENCES_PREVIEW_SOUND,
 	  PREFERENCE_STRING,
 	  "local_only",
