@@ -503,17 +503,6 @@ nautilus_search_bar_criterion_hide (NautilusSearchBarCriterion *criterion)
 	}
 }
 
-char *
-nautilus_search_bar_criterion_human_from_uri (const char *location_uri)
-{
-	
-
-
-	return g_strdup ("this is a test");
-
-
-}
-
 static char *                              
 get_name_location_for (int relation_number, char *name_text)
 {
@@ -603,7 +592,6 @@ get_owner_location_for (int relation_number,
 	return g_strdup_printf ("owner %s %s", possible_relations[relation_number], owner_text);
 	
 }
-
 
 
 
