@@ -27,6 +27,7 @@
 
 #include <libgnomeui/gnome-canvas.h>
 #include "nautilus-icon-factory.h"
+#include "nautilus-icon-canvas-item.h"
 
 typedef struct NautilusIconContainer NautilusIconContainer;
 typedef struct NautilusIconContainerClass NautilusIconContainerClass;
@@ -112,6 +113,8 @@ gboolean   nautilus_icon_container_remove                  (NautilusIconContaine
 							    NautilusIconData      *data);
 void       nautilus_icon_container_request_update          (NautilusIconContainer *view,
 							    NautilusIconData      *data);
+void       nautilus_icon_container_request_update_by_item  (NautilusIconContainer *view,
+							    NautilusIconCanvasItem *item);
 void       nautilus_icon_container_request_update_all      (NautilusIconContainer *container);
 
 /* operations on all icons */

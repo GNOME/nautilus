@@ -113,6 +113,7 @@ static void                   icon_container_context_click_background_callback  
 static NautilusScalableIcon * get_icon_images_callback                          (NautilusIconContainer    *container,
 										 NautilusFile             *icon_data,
 										 GList                   **emblem_icons,
+										 gchar 					  *modifier,
 										 FMIconView               *icon_view);
 static char *                 get_icon_uri_callback                             (NautilusIconContainer    *container,
 										 NautilusFile             *icon_data,
@@ -969,6 +970,7 @@ static NautilusScalableIcon *
 get_icon_images_callback (NautilusIconContainer *container,
 			  NautilusFile *file,
 			  GList **emblem_icons,
+			  gchar *modifier,
 			  FMIconView *icon_view)
 {
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
@@ -980,7 +982,7 @@ get_icon_images_callback (NautilusIconContainer *container,
 	if (emblem_icons != NULL) {
 		*emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file);
 	}
-	return nautilus_icon_factory_get_icon_for_file (file);
+	return nautilus_icon_factory_get_icon_for_file (file, modifier);
 }
 
 static char *

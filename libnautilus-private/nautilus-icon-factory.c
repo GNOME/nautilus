@@ -158,6 +158,7 @@ struct NautilusScalableIcon {
 
 	char *uri;
 	char *name;
+	char *modifier;
 };
 
 /* The key to a hash table that holds the scaled icons as pixbufs.
@@ -190,7 +191,8 @@ static char *                nautilus_icon_factory_get_thumbnail_uri (NautilusFi
 static NautilusIconFactory * nautilus_icon_factory_new               (const char               *theme_name);
 static void                  nautilus_icon_factory_set_theme         (const char               *theme_name);
 static NautilusScalableIcon *nautilus_scalable_icon_get              (const char               *uri,
-								      const char               *name);
+								      const char               *name,
+								      const char	       *modifier);
 static guint                 nautilus_scalable_icon_hash             (gconstpointer             p);
 static gboolean              nautilus_scalable_icon_equal            (gconstpointer             a,
 								      gconstpointer             b);
@@ -467,11 +469,11 @@ nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 /* Get the icon name for a file. */
 static const char *
 nautilus_icon_factory_get_icon_name_for_file (NautilusFile *file)
-{
+{	
 	/* Get an icon name based on the file's type. */
         switch (nautilus_file_get_file_type (file)) {
         case GNOME_VFS_FILE_TYPE_DIRECTORY:
-                return ICON_NAME_DIRECTORY;
+		return ICON_NAME_DIRECTORY;
         case GNOME_VFS_FILE_TYPE_FIFO:
                 return ICON_NAME_FIFO;
         case GNOME_VFS_FILE_TYPE_SOCKET:
@@ -586,7 +588,7 @@ get_themed_icon_file_path (const char *theme_name,
 
 /* Choose the file name to load, taking into account theme vs. non-theme icons. */
 static char *
-get_icon_file_path (const char *name, guint size_in_pixels, ArtIRect *text_rect)
+get_icon_file_path (const char *name, const char* modifier, guint size_in_pixels, ArtIRect *text_rect)
 {
 	gboolean use_theme_icon;
 	const char *theme_name;
@@ -611,6 +613,19 @@ get_icon_file_path (const char *name, guint size_in_pixels, ArtIRect *text_rect)
 	}
 	
 	/* Now we know whether or not to use the theme. */
+	/* if there's a modifier, try using that first */
+	
+	if (modifier && strlen(modifier)) {
+		gchar* modified_name = g_strdup_printf("%s-%s", name, modifier);
+		path = get_themed_icon_file_path (use_theme_icon ? theme_name : NULL,
+					  		modified_name,
+					  		size_in_pixels, 
+					  		text_rect);
+		g_free(modified_name);
+		if (path)
+		    return path;
+	}
+	
 	return get_themed_icon_file_path (use_theme_icon ? theme_name : NULL,
 					  name,
 					  size_in_pixels,
@@ -634,7 +649,8 @@ icon_theme_changed_callback (NautilusPreferences *preferences,
 /* Get or create a scalable icon. */
 static NautilusScalableIcon *
 nautilus_scalable_icon_get (const char *uri,
-			    const char *name)
+			    const char *name,
+			    const char *modifier)
 {
 	GHashTable *hash_table;
 	NautilusScalableIcon icon_key, *icon;
@@ -645,12 +661,14 @@ nautilus_scalable_icon_get (const char *uri,
 	/* Check to see if it's already in the table. */
 	icon_key.uri = (char *) uri;
 	icon_key.name = (char *) name;
+	icon_key.modifier = (char *) modifier;
 	icon = g_hash_table_lookup (hash_table, &icon_key);
 	if (icon == NULL) {
 		/* Not in the table, so create it and put it in. */
 		icon = g_new0 (NautilusScalableIcon, 1);
 		icon->uri = g_strdup (uri);
 		icon->name = g_strdup (name);
+		icon->modifier = g_strdup (modifier);
 		g_hash_table_insert (hash_table, icon, icon);
 	}
 
@@ -684,6 +702,8 @@ nautilus_scalable_icon_unref (NautilusScalableIcon *icon)
 	
 	g_free (icon->uri);
 	g_free (icon->name);
+	if (icon->modifier)
+		g_free(icon->modifier);
 	g_free (icon);
 }
 
@@ -705,6 +725,11 @@ nautilus_scalable_icon_hash (gconstpointer p)
 		hash ^= g_str_hash (icon->name);
 	}
 
+	hash <<= 4;
+	if (icon->modifier != NULL) {
+		hash ^= g_str_hash (icon->modifier);
+	}
+
 	return hash;
 }
 
@@ -718,11 +743,12 @@ nautilus_scalable_icon_equal (gconstpointer a,
 	icon_b = b;
 
 	return nautilus_strcmp (icon_a->uri, icon_b->uri) == 0
-		&& nautilus_strcmp (icon_a->name, icon_b->name) == 0;
+		&& nautilus_strcmp (icon_a->name, icon_b->name) == 0 
+		&& nautilus_strcmp (icon_a->modifier, icon_b->modifier) == 0; 
 }
 
 NautilusScalableIcon *
-nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
+nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifier)
 {
 	char *uri, *file_uri;
         const char *name;
@@ -754,7 +780,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
         name = nautilus_icon_factory_get_icon_name_for_file (file);
 	
 	/* Create the icon or find it in the cache if it's already there. */
-	scalable_icon = nautilus_scalable_icon_get (uri, name);
+	scalable_icon = nautilus_scalable_icon_get (uri, name, modifier);
 	g_free (uri);
 	
 	return scalable_icon;
@@ -766,7 +792,7 @@ add_emblem (GList **icons, const char *name)
 	char *name_with_prefix;
 
 	name_with_prefix = g_strconcat (EMBLEM_NAME_PREFIX, name, NULL);
-	*icons = g_list_prepend (*icons, nautilus_scalable_icon_get (NULL, name_with_prefix));
+	*icons = g_list_prepend (*icons, nautilus_scalable_icon_get (NULL, name_with_prefix, NULL));
 	g_free (name_with_prefix);
 }
 
@@ -901,6 +927,7 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file)
 	
 	/* return the uri to the "loading image" icon */
 	return get_icon_file_path (ICON_NAME_THUMBNAIL_LOADING,
+				   NULL,
 				   NAUTILUS_ICON_SIZE_STANDARD,
 				   NULL);
 }
@@ -1013,6 +1040,7 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 		GdkPixbuf *image;
 		
 		path = get_icon_file_path (scalable_icon->name,
+					   scalable_icon->modifier,
 					   size_in_pixels,
 					   text_rect);
 		if (path == NULL) {
@@ -1358,7 +1386,7 @@ nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
 
 	g_return_val_if_fail (file != NULL, NULL);
 
-	icon = nautilus_icon_factory_get_icon_for_file (file);
+	icon = nautilus_icon_factory_get_icon_for_file (file, NULL);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon,
 							    size_in_pixels,
 							    size_in_pixels,

@@ -86,7 +86,8 @@ GtkObject *           nautilus_icon_factory_get                          (void);
 guint                 nautilus_get_icon_size_for_zoom_level              (NautilusZoomLevel      zoom_level);
 
 /* Choose the appropriate icon, but don't render it yet. */
-NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file            (NautilusFile          *file);
+NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file            (NautilusFile          *file,
+									  const char		*modifier);
 									  
 NautilusScalableIcon *nautilus_icon_factory_get_icon_by_name             (const char            *icon_name);
 GList *               nautilus_icon_factory_get_emblem_icons_for_file    (NautilusFile          *file);

@@ -54,6 +54,7 @@ struct NautilusIconCanvasItemDetails {
 	GdkFont *font;
 	ArtIRect embedded_text_rect;
 	char *embedded_text_file_URI;
+	char *modifier;
 	
 	/* Size of the text at current font. */
 	int text_width;
@@ -75,7 +76,8 @@ enum {
     	ARG_HIGHLIGHTED_FOR_SELECTION,
     	ARG_HIGHLIGHTED_AS_KEYBOARD_FOCUS,
     	ARG_HIGHLIGHTED_FOR_DROP,
-    	ARG_TEXT_SOURCE
+    	ARG_TEXT_SOURCE,
+    	ARG_MODIFIER
 };
 
 typedef enum {
@@ -136,6 +138,8 @@ static void     nautilus_icon_canvas_item_bounds           (GnomeCanvasItem     
 								double                          *y1,
 								double                          *x2,
 								double                          *y2);
+static void	nautilus_icon_canvas_item_set_modifier	  (NautilusIconCanvasItem *item, 
+								const char* modifier);
 
 /* private */
 static void     draw_or_measure_label_text                     (NautilusIconCanvasItem       *item,
@@ -186,6 +190,8 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_FOR_DROP);
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::text_source",
 				 GTK_TYPE_STRING, GTK_ARG_READWRITE, ARG_TEXT_SOURCE);
+	gtk_object_add_arg_type	("NautilusIconCanvasItem::modifier",
+				 GTK_TYPE_STRING, GTK_ARG_READWRITE, ARG_MODIFIER);
 
 	object_class->destroy = nautilus_icon_canvas_item_destroy;
 	object_class->set_arg = nautilus_icon_canvas_item_set_arg;
@@ -248,7 +254,13 @@ nautilus_icon_canvas_item_destroy (GtkObject *object)
 	if (details->font != NULL) {
 		gdk_font_unref (details->font);
 	}
-			
+	
+	if (details->embedded_text_file_URI)
+		g_free(details->embedded_text_file_URI);
+	
+	if (details->modifier)
+		g_free(details->modifier);
+				
 	g_free (details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -323,6 +335,8 @@ nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 			return;
 		}
 		details->is_highlighted_for_drop = GTK_VALUE_BOOL (*arg);
+		nautilus_icon_canvas_item_set_modifier(NAUTILUS_ICON_CANVAS_ITEM (object),
+			details->is_highlighted_for_drop ? "accept" : "");
 		break;
         
         case ARG_TEXT_SOURCE:
@@ -332,6 +346,14 @@ nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 		
 		g_free (details->embedded_text_file_URI);
 		details->embedded_text_file_URI = g_strdup (GTK_VALUE_STRING (*arg));
+		break;
+
+        case ARG_MODIFIER:
+		if (nautilus_strcmp (details->modifier, GTK_VALUE_STRING (*arg)) == 0) {
+			return;
+		}
+		
+		nautilus_icon_canvas_item_set_modifier(NAUTILUS_ICON_CANVAS_ITEM (object), GTK_VALUE_STRING (*arg)); 
 		break;
 		
 	default:
@@ -375,6 +397,10 @@ nautilus_icon_canvas_item_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
         case ARG_TEXT_SOURCE:
 		GTK_VALUE_STRING (*arg) = g_strdup (details->embedded_text_file_URI);
                 break;
+        
+        case ARG_MODIFIER:
+		GTK_VALUE_STRING (*arg) = g_strdup (details->modifier);
+                break;
 		
         default:
 		arg->type = GTK_TYPE_INVALID;
@@ -396,6 +422,33 @@ nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
 		*embedded_text_rect = details->embedded_text_rect;
 	}
 	return details->pixbuf;
+}
+
+const char*
+nautilus_icon_canvas_item_get_modifier(NautilusIconCanvasItem *item)
+{
+	return item->details->modifier;
+}
+
+void
+nautilus_icon_canvas_item_set_modifier(NautilusIconCanvasItem *item, const char* modifier)
+{
+	GnomeCanvasItem *canvas_item;
+	
+	/* if they're the same, there's nothing to do */
+	
+	if (!modifier && !item->details->modifier)
+		return;
+	if (modifier && item->details->modifier && !strcmp(modifier, item->details->modifier))
+		return;
+		
+	if (item->details->modifier != NULL)
+		g_free(item->details->modifier);
+	item->details->modifier = strdup(modifier);
+
+	/* we must update the image, since the modifier has changed */
+	canvas_item = GNOME_CANVAS_ITEM(item);
+	nautilus_icon_container_request_update_by_item(NAUTILUS_ICON_CONTAINER(canvas_item->canvas), item);	
 }
 
 void

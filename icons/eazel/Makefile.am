@@ -6,6 +6,7 @@ eazel_DATA =					\
 	i-directory-36.png			\
 	i-directory-72.png			\
 	i-directory-96.png			\
+	i-directory-accept.png			\
 	i-regular.png				\
 	i-regular.xml				\
 	i-regular-36.png			\

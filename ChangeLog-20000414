@@ -1,8 +1,26 @@
-2000-04-12  John Sullivan  <sullivan@eazel.com>
+2000-04-12  Andy Hertzfeld <andy@eazel.com>
 
-	* data/mime/nautilus.keys:
-	Prefixed all the MIME type descriptions with [en_US].
-	Now others are free to localize away.
+	added a framework for using custom images for icons to reflect their
+	highlited states.  Made folders in the eazel theme open up to reflect
+	drop highliting.
+	
+	* icons/eazel/Makefile.am:
+	added icon for open folder at standard size
+	* icons/eazel/i-directory-accept.png:
+	icon of open folder for drop-highlighting
+	* libnautilus/nautilus-icon-canvas-item.c,h:
+	added a "modifier" text string attribute with appropriate accessors
+	when modifier is changed, update the icon
+	* libnautilus/nautilus-icon-container.c,h:
+	added modifier parameter to "get_icon_images" signal
+	added nautilus_icon_container_request_update_by_item to update
+	the icon corresponding to a given item.
+	* libnautilus/nautilus-icon-factory.c,h:
+	added modifier field to NautilusScalableIcon; modified appropriate
+	lifetime and hashing routines accordingly;
+	use the modifier to select the proper image in get_icon_file_path
+	* src/file-manager/fm-icon-view.c:
+	pass in the modifier from signal to icon_factory_get_icon_for_file.
 	
 2000-04-12  John Sullivan  <sullivan@eazel.com>
 

@@ -1815,8 +1815,9 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
 						     get_icon_images),
-				  nautilus_gtk_marshal_POINTER__POINTER_POINTER,
-				  GTK_TYPE_POINTER, 2,
+				  nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER,
+				  GTK_TYPE_POINTER, 3,
+				  GTK_TYPE_POINTER,
 				  GTK_TYPE_POINTER,
 				  GTK_TYPE_POINTER);
 	signals[GET_ICON_TEXT]
@@ -2231,6 +2232,7 @@ update_icon (NautilusIconContainer *container, NautilusIcon *icon)
 			 signals[GET_ICON_IMAGES],
 			 icon->data,
 			 &emblem_icons,
+			 nautilus_icon_canvas_item_get_modifier(icon->item),
 			 &scalable_icon);
 	g_assert (scalable_icon != NULL);
 
@@ -2395,6 +2397,32 @@ nautilus_icon_container_request_update (NautilusIconContainer *container,
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		icon = p->data;
 		if (icon->data == data) {
+			update_icon (container, icon);
+			return;
+		}
+	}
+}
+
+/**
+ * nautilus_icon_container_request_update_by_item:
+ * @container: A NautilusIconContainer.
+ * @item: Icon canvas item.
+ * 
+ * Update the icon with this data.
+ **/
+void
+nautilus_icon_container_request_update_by_item (NautilusIconContainer *container,
+				     NautilusIconCanvasItem *item)
+{
+	NautilusIcon *icon;
+	GList *p;
+
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+	g_return_if_fail (item != NULL);
+
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		icon = p->data;
+		if (icon->item == item) {
 			update_icon (container, icon);
 			return;
 		}
