@@ -44,6 +44,7 @@ EXTRA_DIST=					\
 	intltool-extract.in			\
 	intltool-merge.in			\
 	intltool-update.in			\
+	intltool-modules/XML/Parser/Style/OrigTree.pm \
 	Makefile.shared				\
 	add-include-prefix			\
 	$(DESKTOP_IN_FILES)			\
