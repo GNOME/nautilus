@@ -256,7 +256,9 @@ main (int argc, char *argv[])
 	/* Check for argument consistency. */
 	args = poptGetArgs (popt_context);
 	if (perform_self_check && args != NULL) {
-		fprintf (stderr, _("nautilus: --check cannot be used with URIs.\n"));
+		/* translators: %s is an option (e.g. --check) */
+		fprintf (stderr, _("nautilus: %s cannot be used with URIs.\n"),
+			"--check");
 		return EXIT_FAILURE;
 	}
 	if (perform_self_check && (kill_shell || restart_shell)) {
@@ -264,11 +266,13 @@ main (int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 	if (kill_shell && args != NULL) {
-		fprintf (stderr, _("nautilus: --quit cannot be used with URIs.\n"));
+		fprintf (stderr, _("nautilus: %s cannot be used with URIs.\n"),
+			"--quit");
 		return EXIT_FAILURE;
 	}
 	if (restart_shell && args != NULL) {
-		fprintf (stderr, _("nautilus: --restart cannot be used with URIs.\n"));
+		fprintf (stderr, _("nautilus: %s cannot be used with URIs.\n"),
+			"--restart");
 		return EXIT_FAILURE;
 	}
 	if (geometry != NULL && args != NULL && args[0] != NULL && args[1] != NULL) {
