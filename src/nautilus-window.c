@@ -1335,7 +1335,8 @@ nautilus_window_hide_status_bar (NautilusWindow *window)
 	hide_dock_item (window, STATUS_BAR_PATH);
 
 	nautilus_window_update_show_hide_menu_items (window);
-	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR)) {
+	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR) &&
+	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR)) {
 		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR, FALSE);
 	}
 }
@@ -1346,7 +1347,8 @@ nautilus_window_show_status_bar (NautilusWindow *window)
 	show_dock_item (window, STATUS_BAR_PATH);
 
 	nautilus_window_update_show_hide_menu_items (window);
-	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR)) {
+	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR) &&
+	    !eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR)) {
 		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR, TRUE);
 	}
 }
