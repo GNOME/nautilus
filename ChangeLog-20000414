@@ -1,3 +1,12 @@
+2000-02-15  Maciej Stachowiak  <mjs@eazel.com>
+
+	* src/ntl-index-panel.c: sink and ref the notebook and unref in
+	the destructor, so it gets destroyed even if it never ends up
+	getting added to the index panel.
+
+	* src/ntl-view-nautilus.c: Don't ref the Control interface we just
+	QI'd; query_interface implicitly refs.
+	
 2000-02-15  Elliot Lee  <sopwith@redhat.com>
 
 	* libnautilus/nautilus-directory.c: Pay attention to the

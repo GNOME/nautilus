@@ -144,6 +144,9 @@ nautilus_index_panel_initialize (GtkObject *object)
 	/* allocate and install the meta-tabs */
   
 	index_panel->details->notebook = gtk_notebook_new ();
+	gtk_widget_ref (index_panel->details->notebook);
+	gtk_object_sink (GTK_OBJECT (index_panel->details->notebook));
+
 	gtk_widget_set_usize (index_panel->details->notebook, INDEX_PANEL_WIDTH, 200);
 	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(index_panel->details->notebook), FALSE);
 	  
@@ -159,6 +162,8 @@ nautilus_index_panel_destroy (GtkObject *object)
 	NautilusIndexPanel *index_panel;
 
 	index_panel = NAUTILUS_INDEX_PANEL (object);
+
+	gtk_widget_unref (index_panel->details->notebook);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -243,7 +248,7 @@ nautilus_index_panel_add_meta_view (NautilusIndexPanel *index_panel, NautilusVie
 	
 	gtk_notebook_append_page (GTK_NOTEBOOK (index_panel->details->notebook), GTK_WIDGET (meta_view), label);
 	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (index_panel->details->notebook), GTK_WIDGET (meta_view));
-	
+
 	/* tell the index tabs about it */
 	nautilus_index_tabs_add_view(NAUTILUS_INDEX_TABS(index_panel->details->index_tabs),
 				     description, GTK_WIDGET(meta_view), page_num);

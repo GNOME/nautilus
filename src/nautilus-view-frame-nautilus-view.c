@@ -50,7 +50,6 @@ nautilus_view_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Enviro
     goto out;
 
   nvi->view_client = CORBA_Object_duplicate(obj, ev);
-  Bonobo_Unknown_ref(nvi->view_client, ev);
 
   nvi->control_frame = BONOBO_OBJECT(bonobo_control_frame_new());
   bonobo_object_add_interface(BONOBO_OBJECT(nvi->control_frame), view->view_frame);
