@@ -346,3 +346,50 @@ nautilus_user_level_manager_get_gconf_client (void)
 	return GTK_OBJECT (manager->gconf_client);
 }
 
+char *
+nautilus_user_level_manager_make_gconf_key (const char *preference_name,
+					    int user_level)
+{
+	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
+
+	char *key;
+	char *user_level_string;
+
+	g_return_val_if_fail (preference_name != NULL, NULL);
+	g_return_val_if_fail (user_level < manager->num_user_levels, NULL);
+	g_return_val_if_fail (user_level < nautilus_string_list_get_length (manager->user_level_names), NULL);
+	
+	user_level_string = nautilus_string_list_nth (manager->user_level_names, user_level);
+	g_assert (user_level_string != NULL);
+
+	key = g_strdup_printf ("%s/%s/%s",
+			       USER_LEVEL_PATH,
+			       user_level_string,
+			       preference_name);
+
+	g_free (user_level_string);
+
+	return key;
+}
+
+char *
+nautilus_user_level_manager_make_current_gconf_key (const char *preference_name)
+{
+	char *key;
+	char *user_level_string;
+
+	g_return_val_if_fail (preference_name != NULL, NULL);
+
+	user_level_string = gconf_get_user_level_string ();
+	g_assert (user_level_string != NULL);
+
+	key = g_strdup_printf ("%s/%s/%s",
+			       USER_LEVEL_PATH,
+			       user_level_string,
+			       preference_name);
+
+	g_free (user_level_string);
+
+	return key;
+}
+
