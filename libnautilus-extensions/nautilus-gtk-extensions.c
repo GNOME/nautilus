@@ -89,6 +89,34 @@ nautilus_gtk_clist_get_last_selected_row (GtkCList *list)
 }
 
 /**
+ * nautilus_gtk_signal_connect_free_data_custom:
+ * 
+ * Attach a function pointer and user data to a signal, and call a
+ * a destroy function on the user data when the signal is disconnected.
+ * @object: the object which emits the signal. For example, a button in the button press signal.
+ * @name: the name of the signal.
+ * @func: function pointer to attach to the signal.
+ * @data: the user data associated with the function.
+ * @destroy_func: the function to call on the user data when the signal
+ * is disconnected.
+ **/
+guint nautilus_gtk_signal_connect_free_data_custom (GtkObject *object,
+				  	     	    const gchar *name,
+				  	     	    GtkSignalFunc func,
+				  	     	    gpointer data,
+				  	     	    GtkDestroyNotify destroy_func)
+{
+	return gtk_signal_connect_full (object, 
+					name, 
+					func, 
+					NULL, /* marshal */
+					data, 
+					destroy_func, 
+					FALSE, /* is this an object signal? */
+					FALSE); /* invoke func after signal? */
+}
+
+/**
  * nautilus_gtk_signal_connect_free_data:
  * 
  * Attach a function pointer and user data to a signal, and free
@@ -104,14 +132,8 @@ guint nautilus_gtk_signal_connect_free_data (GtkObject *object,
 				  	     GtkSignalFunc func,
 				  	     gpointer data)
 {
-	return gtk_signal_connect_full (object, 
-					name, 
-					func, 
-					NULL, /* marshal */
-					data, 
-					(GtkDestroyNotify)g_free, 
-					FALSE, /* is this an object signal? */
-					FALSE); /* invoke func after signal? */
+	return nautilus_gtk_signal_connect_free_data_custom
+		(object, name, func, data, (GtkDestroyNotify) g_free);
 }
 
 /**

@@ -1,5 +1,53 @@
 2000-06-05  John Sullivan  <sullivan@eazel.com>
 
+	Cleaned up the directory view code that launches applications 
+	or switches to viewers so that when bugs 1053 and 1072 are
+	fixed it will be trivial to finish this code.
+
+	* libnautilus-extensions/nautilus-gtk-extensions.h,
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_signal_connect_free_data_custom): New function
+	to specify a GtkDestroyNotify function when connecting to a
+	signal, without having to specify everything else in
+	gtk_signal_connect_full.
+	(nautilus_gtk_signal_connect_free_data): Changed to call
+	nautilus_gtk_signal_connect_free_data_custom.
+
+	* libnautilus-extensions/nautilus-view-identifier.c:
+	(nautilus_view_identifier_copy): Made it handle NULL parameter.
+	
+	* src/file-manager/fm-directory-view.c:
+	(application_launch_parameters_new),
+	(application_launch_parameters_free),
+	(viewer_launch_parameters_new), 
+	(viewer_launch_parameters_free): New helper functions for
+	dealing with the structs needed to launch an app or viewer.
+	
+	(fm_directory_view_launch_application): New wrapper for
+	nautilus_launch_application that will let us handle
+	errors in a single place.
+
+	(switch_location_and_view): New bottleneck function or going
+	to a particular location with a particular viewer. This 
+	doesn't work yet (bug 1053) and it currently puts up a
+	message box telling the user so.
+
+	(fm_directory_view_chose_application_callback),
+	(fm_directory_view_chose_component_callback), (choose_program),
+	(choose_application), (choose_component),
+	(launch_application_from_menu_item), (view_uri_from_menu_item),
+	(add_application_to_gtk_menu), (add_component_to_gtk_menu),
+	(create_open_with_gtk_menu), (bonobo_launch_application_callback),
+	(add_application_to_bonobo_menu),
+	(bonobo_open_location_with_viewer_callback),
+	(add_component_to_bonobo_menu):
+	Reworked to pass around launch_parameters structs instead of other
+	bits and pieces of info. Darin will be happy to know that info
+	needed for menu item callbacks is now bundled up and passed as
+	the callback data instead of sneaking in as gtk_object_data.
+
+2000-06-05  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 1118: Generic error message for bogus ftp location
 
 	* src/nautilus-applicable-views.h: 

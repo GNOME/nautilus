@@ -48,6 +48,10 @@ nautilus_view_identifier_new (const char *iid, const char *name)
 NautilusViewIdentifier *
 nautilus_view_identifier_copy (NautilusViewIdentifier *identifier)
 {
+	if (identifier == NULL) {
+		return NULL;
+	}
+	
 	return nautilus_view_identifier_new (identifier->iid, identifier->name);
 }
 

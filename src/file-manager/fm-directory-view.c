@@ -268,6 +268,76 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, set_selection);
 }
 
+typedef struct {
+	GnomeVFSMimeApplication *application;
+	char *uri;
+	FMDirectoryView *directory_view;
+} ApplicationLaunchParameters;
+
+typedef struct {
+	NautilusViewIdentifier *identifier;
+	char *uri;
+	FMDirectoryView *directory_view;
+} ViewerLaunchParameters;
+
+static ApplicationLaunchParameters *
+application_launch_parameters_new (GnomeVFSMimeApplication *application,
+			      	   const char *uri,
+			           FMDirectoryView *directory_view)
+{
+	ApplicationLaunchParameters *result;
+
+	result = g_new0 (ApplicationLaunchParameters, 1);
+	result->application = gnome_vfs_mime_application_copy (application);
+	/* FIXME bugzilla.eazel.com 1072: 
+	 * It would be cleaner to ref the directory view here and
+	 * unref it in application_launch_parameters_free, but until bug 1072
+	 * is fixed this would leak the FMDirectoryView object, which
+	 * would be very bad.
+	 */
+	result->directory_view = directory_view;
+	result->uri = g_strdup (uri);
+
+	return result;
+}
+
+static void
+application_launch_parameters_free (ApplicationLaunchParameters *parameters)
+{
+	gnome_vfs_mime_application_free (parameters->application);
+	g_free (parameters->uri);
+	g_free (parameters);
+}			      
+
+static ViewerLaunchParameters *
+viewer_launch_parameters_new (NautilusViewIdentifier *identifier,
+			      const char *uri,
+			      FMDirectoryView *directory_view)
+{
+	ViewerLaunchParameters *result;
+
+	result = g_new0 (ViewerLaunchParameters, 1);
+	result->identifier = nautilus_view_identifier_copy (identifier);
+	/* FIXME bugzilla.eazel.com 1072: 
+	 * It would be cleaner to ref the directory view here and
+	 * unref it in viewer_launch_parameters_free, but until bug 1072
+	 * is fixed this would leak the FMDirectoryView object, which
+	 * would be very bad.
+	 */
+	result->directory_view = directory_view;
+	result->uri = g_strdup (uri);
+
+	return result;
+}
+
+static void
+viewer_launch_parameters_free (ViewerLaunchParameters *parameters)
+{
+	nautilus_view_identifier_free (parameters->identifier);
+	g_free (parameters->uri);
+	g_free (parameters);
+}			      
+
 static void
 bonobo_menu_open_callback (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
 {
@@ -307,66 +377,125 @@ bonobo_menu_open_in_new_window_callback (BonoboUIHandler *ui_handler, gpointer u
 }
 
 static void
+fm_directory_view_launch_application (GnomeVFSMimeApplication *application,
+				      const char *uri,
+				      FMDirectoryView *directory_view)
+{
+	g_assert (application != NULL);
+	g_assert (uri != NULL);
+	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
+
+	/* Might want to handle errors here someday, perhaps using
+	 * a parented dialog.
+	 */
+	nautilus_launch_application (application->command, uri);
+	
+}				      
+
+static void
 fm_directory_view_chose_application_callback (GnomeVFSMimeApplication *application, 
 					      gpointer callback_data)
 {
-	NautilusFile *file;
-	char *uri;
+	ApplicationLaunchParameters *launch_parameters;
 
-	g_return_if_fail (NAUTILUS_IS_FILE (callback_data));
+	g_assert (callback_data != NULL);
 
-	file = NAUTILUS_FILE (callback_data);
+	launch_parameters = (ApplicationLaunchParameters *)callback_data;
+	g_assert (launch_parameters->application == NULL);
 
 	if (application != NULL) {
-		uri = nautilus_file_get_uri (file);
-		nautilus_launch_application (application->command, uri);
-		g_free (uri);
+		fm_directory_view_launch_application 
+			(application, /* NOT the (empty) application in launch_parameters */
+			 launch_parameters->uri, 
+			 launch_parameters->directory_view);
 	}
 
-	nautilus_file_unref (file);
+	application_launch_parameters_free (launch_parameters);
+}
+
+static void
+switch_location_and_view (NautilusViewIdentifier *identifier, 
+			  const char *new_uri, 
+			  FMDirectoryView *directory_view)
+{
+	/* FIXME bugzilla.eazel.com 1053: 
+	 * Need a way to view a location with a specified viewer. 
+	 */
+	nautilus_error_dialog_parented 
+		((_("Sorry, switching location and view at the same time "
+		    "doesn't work yet (bugzilla.eazel.com 1053). "
+		    "For now, switch locations first, then use the "
+		    "\"View as\" menu to switch views.")),
+		 GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (directory_view))));
 }
 
 static void
 fm_directory_view_chose_component_callback (NautilusViewIdentifier *identifier, 
 					    gpointer callback_data)
 {
-	g_return_if_fail (NAUTILUS_IS_FILE (callback_data));
+	ViewerLaunchParameters *launch_parameters;
+
+	g_assert (callback_data != NULL);
+
+	launch_parameters = (ViewerLaunchParameters *)callback_data;
+	g_assert (launch_parameters->identifier == NULL);
 
 	if (identifier != NULL) {
-		/* FIXME bugzilla.eazel.com 1053: 
-		 * Need a way to view a location with a specified viewer. 
-		 */
-		g_message ("Doh! Not yet implemented (bugzilla.eazel.com 1053)");
+		switch_location_and_view (identifier, /* NOT the (empty) identifier in launch_parameters */
+					  launch_parameters->uri, 
+					  launch_parameters->directory_view);
 	}
+
+	viewer_launch_parameters_free (launch_parameters);
+}
+
+static void
+choose_program (FMDirectoryView *view,
+		NautilusFile *file,
+		GnomeVFSMimeActionType type)
+{
+	char *uri;
+
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT ||
+		  type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
+
+	nautilus_file_ref (file);
+	uri = nautilus_file_get_uri (file);
+
+	if (type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
+		nautilus_choose_component_for_file 
+			(file,
+			 GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))),
+			 fm_directory_view_chose_component_callback,
+			 viewer_launch_parameters_new
+			 	(NULL, uri, view));
+	} else {
+		nautilus_choose_application_for_file 
+			(file,
+			 GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))),
+			 fm_directory_view_chose_application_callback,
+			 application_launch_parameters_new
+			 	(NULL, uri, view));
+	}
+
+	g_free (uri);
+	nautilus_file_unref (file);	
 }
 
 static void
 choose_application (FMDirectoryView *view, 
 		    NautilusFile *file)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	g_assert (NAUTILUS_IS_FILE (file));
-
-	nautilus_file_ref (file);
-	nautilus_choose_application_for_file 
-		(file,
-		 GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))),
-		 fm_directory_view_chose_application_callback,
-		 file);
+	choose_program (view, file, GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
 }
 
 static void
 choose_component (FMDirectoryView *view, 
 		  NautilusFile *file)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	g_assert (NAUTILUS_IS_FILE (file));
-
-	nautilus_choose_component_for_file 
-		(file,
-		 GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))),
-		 fm_directory_view_chose_component_callback,
-		 file);
+	choose_program (view, file, GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
 }
 
 static void
@@ -1864,50 +1993,42 @@ add_open_with_gtk_menu_item (GtkMenu *menu, const char *label)
 static void
 launch_application_from_menu_item (GtkMenuItem *menu_item, gpointer user_data)
 {
-	GnomeVFSMimeApplication *application;
-	char *uri;
+	ApplicationLaunchParameters *launch_parameters;
 
 	g_assert (GTK_IS_MENU_ITEM (menu_item));
-	g_assert (user_data == NULL);
+	g_assert (user_data != NULL);
 
-	application = (GnomeVFSMimeApplication *)gtk_object_get_data (GTK_OBJECT (menu_item), 
-								      "application");
-	g_assert (application != NULL);
+	launch_parameters = (ApplicationLaunchParameters *)user_data;
 
-	uri = (char *)gtk_object_get_data (GTK_OBJECT (menu_item), "uri");
-	g_assert (uri != NULL);
-
-	nautilus_launch_application (application->command, uri);
+	fm_directory_view_launch_application 
+		(launch_parameters->application, 
+		 launch_parameters->uri, 
+		 launch_parameters->directory_view);
 }
 
 static void
 view_uri_from_menu_item (GtkMenuItem *menu_item, gpointer user_data)
 {
-	NautilusViewIdentifier *identifier;
-	char *uri;
+	ViewerLaunchParameters *launch_parameters;
 
 	g_assert (GTK_IS_MENU_ITEM (menu_item));
-	g_assert (user_data == NULL);
+	g_assert (user_data != NULL);
 
-	identifier = (NautilusViewIdentifier *)gtk_object_get_data 
-		(GTK_OBJECT (menu_item), "identifier");
-	g_assert (identifier != NULL);
+	launch_parameters = (ViewerLaunchParameters *)user_data;
 
-	uri = (char *)gtk_object_get_data (GTK_OBJECT (menu_item), "uri");
-	g_assert (uri != NULL);
-
-	/* FIXME: Need to switch to new viewer, opening new window if user's
-	 * preference is set that way, with the given uri.
-	 */
-	g_message ("POOF! (switch to \"%s\" with viewer \"%s\" here)", uri, identifier->iid);
+	switch_location_and_view (launch_parameters->identifier,
+				  launch_parameters->uri,
+				  launch_parameters->directory_view);
 }
 
 static void
-add_application_to_gtk_menu (GtkMenu *menu, 
+add_application_to_gtk_menu (FMDirectoryView *directory_view,
+			     GtkMenu *menu, 
 			     GnomeVFSMimeApplication *application, 
 			     const char *uri)
 {
 	GtkWidget *menu_item;
+	ApplicationLaunchParameters *launch_parameters;
 	char *label_string;
 
 	g_assert (GTK_IS_MENU (menu));
@@ -1916,32 +2037,28 @@ add_application_to_gtk_menu (GtkMenu *menu,
 	menu_item = gtk_menu_item_new_with_label (label_string);
 	g_free (label_string);
 
-	gtk_object_set_data_full (GTK_OBJECT (menu_item),
-				  "application",
-				  gnome_vfs_mime_application_copy (application),
-				  (GtkDestroyNotify)gnome_vfs_mime_application_free);
+	launch_parameters = application_launch_parameters_new
+		(application, uri, directory_view);
 
-	gtk_object_set_data_full (GTK_OBJECT (menu_item),
-				  "uri",
-				  g_strdup (uri),
-				  g_free);
-
-	gtk_signal_connect
+	nautilus_gtk_signal_connect_free_data_custom
 		(GTK_OBJECT (menu_item),
 		 "activate",
 		 launch_application_from_menu_item,
-		 NULL);
+		 launch_parameters,
+		 (GtkDestroyNotify) application_launch_parameters_free);
 
 	finish_adding_menu_item (menu, menu_item, TRUE);
 }
 
 static void
-add_component_to_gtk_menu (GtkMenu *menu, 
+add_component_to_gtk_menu (FMDirectoryView *directory_view,
+			   GtkMenu *menu, 
 			   OAF_ServerInfo *component, 
 			   const char *uri)
 {
 	GtkWidget *menu_item;
 	NautilusViewIdentifier *identifier;
+	ViewerLaunchParameters *launch_parameters;
 	char *label;
 
 	g_assert (GTK_IS_MENU (menu));
@@ -1952,21 +2069,16 @@ add_component_to_gtk_menu (GtkMenu *menu,
 	menu_item = gtk_menu_item_new_with_label (label);
 	g_free (label);
 
-	gtk_object_set_data_full (GTK_OBJECT (menu_item),
-				  "identifier",
-				  identifier,
-				  (GtkDestroyNotify)nautilus_view_identifier_free);
+	launch_parameters = viewer_launch_parameters_new
+		(identifier, uri, directory_view);
+	nautilus_view_identifier_free (identifier);
 
-	gtk_object_set_data_full (GTK_OBJECT (menu_item),
-				  "uri",
-				  g_strdup (uri),
-				  g_free);
-
-	gtk_signal_connect
+	nautilus_gtk_signal_connect_free_data_custom
 		(GTK_OBJECT (menu_item),
 		 "activate",
 		 view_uri_from_menu_item,
-		 NULL);
+		 launch_parameters,
+		 (GtkDestroyNotify) viewer_launch_parameters_free);
 
 	finish_adding_menu_item (menu, menu_item, TRUE);
 }
@@ -1990,7 +2102,7 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
 			nautilus_mime_get_short_list_applications_for_uri (uri);
 
 		for (node = applications; node != NULL; node = node->next) {
-			add_application_to_gtk_menu (open_with_menu, node->data, uri);
+			add_application_to_gtk_menu (view, open_with_menu, node->data, uri);
 		}
 
 		gnome_vfs_mime_application_list_free (applications); 
@@ -2007,7 +2119,7 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
 			nautilus_mime_get_short_list_components_for_uri (uri);
 
 		for (node = components; node != NULL; node = node->next) {
-			add_component_to_gtk_menu (open_with_menu, node->data, uri);
+			add_component_to_gtk_menu (view, open_with_menu, node->data, uri);
 		}
 
 		gnome_vfs_mime_component_list_free (components); 
@@ -2129,11 +2241,6 @@ add_open_with_bonobo_menu_item (BonoboUIHandler *ui_handler,
 	g_free (path);
 }
 
-typedef struct {
-	GnomeVFSMimeApplication *application;
-	char *file_uri;
-} ApplicationLaunchParameters;
-
 static void
 bonobo_launch_application_callback (BonoboUIHandler *ui_handler, 
 				    gpointer user_data, 
@@ -2143,14 +2250,17 @@ bonobo_launch_application_callback (BonoboUIHandler *ui_handler,
 
 	launch_parameters = (ApplicationLaunchParameters *)user_data;
 
-	nautilus_launch_application (launch_parameters->application->command,
-				     launch_parameters->file_uri);
+	fm_directory_view_launch_application 
+		(launch_parameters->application,
+		 launch_parameters->uri,
+		 launch_parameters->directory_view);
 }				    
 
 static void
 add_application_to_bonobo_menu (BonoboUIHandler *ui_handler, 
 				GnomeVFSMimeApplication *application, 
-				const char *uri)
+				const char *uri,
+				FMDirectoryView *directory_view)
 {
 	ApplicationLaunchParameters *launch_parameters;
 
@@ -2158,21 +2268,14 @@ add_application_to_bonobo_menu (BonoboUIHandler *ui_handler,
 	 * need a version of Bonobo menu item setup that takes a 
 	 * DestroyNotify type function.
 	 */
-	launch_parameters = g_new0 (ApplicationLaunchParameters, 1);
-	launch_parameters->application = 
-		gnome_vfs_mime_application_copy (application);
-	launch_parameters->file_uri = g_strdup (uri);	
+	launch_parameters = application_launch_parameters_new 
+		(application, uri, directory_view);
 	
 	add_open_with_bonobo_menu_item (ui_handler, 
 					application->name,
 					bonobo_launch_application_callback,
 					launch_parameters);
 }
-
-typedef struct {
-	NautilusViewIdentifier *identifier;
-	char *file_uri;
-} ViewerLaunchParameters;
 
 static void
 bonobo_open_location_with_viewer_callback (BonoboUIHandler *ui_handler, 
@@ -2183,28 +2286,30 @@ bonobo_open_location_with_viewer_callback (BonoboUIHandler *ui_handler,
 
 	launch_parameters = (ViewerLaunchParameters *)user_data;
 
-	/* FIXME bugzilla.eazel.com 1053: 
-	 * Need a way to view a location with a specified viewer. 
-	 */
-	g_message ("Doh! Not yet implemented (bugzilla.eazel.com 1053)");
+	switch_location_and_view (launch_parameters->identifier,
+				  launch_parameters->uri,
+				  launch_parameters->directory_view);
 }				    
 
 static void
 add_component_to_bonobo_menu (BonoboUIHandler *ui_handler, 
-			      OAF_ServerInfo *component, 
-			      const char *uri)
+			      OAF_ServerInfo *content_view, 
+			      const char *uri,
+			      FMDirectoryView *directory_view)
 {
+	NautilusViewIdentifier *identifier;
 	ViewerLaunchParameters *launch_parameters;
 	char *label;
+
+	identifier = nautilus_view_identifier_new_from_content_view (content_view);
 
 	/* FIXME bugzilla.eazel.com 1072: This struct is never freed; 
 	 * need a version of Bonobo menu item setup that takes a 
 	 * DestroyNotify type function.
 	 */
-	launch_parameters = g_new0 (ViewerLaunchParameters, 1);
-	launch_parameters->identifier = 
-		nautilus_view_identifier_new_from_content_view (component);
-	launch_parameters->file_uri = g_strdup (uri);
+	launch_parameters = viewer_launch_parameters_new
+		(identifier, uri, directory_view);
+	nautilus_view_identifier_free (identifier);
 
 	label = g_strdup_printf (_("%s Viewer"),
 				 launch_parameters->identifier->name);
@@ -2268,7 +2373,7 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler,
 		applications = nautilus_mime_get_short_list_applications_for_uri (uri);
 
 		for (node = applications; node != NULL; node = node->next) {
-			add_application_to_bonobo_menu (ui_handler, node->data, uri);
+			add_application_to_bonobo_menu (ui_handler, node->data, uri, view);
 		}
 
 		gnome_vfs_mime_application_list_free (applications); 
@@ -2289,7 +2394,7 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler,
 		components = nautilus_mime_get_short_list_components_for_uri (uri);
 
 		for (node = components; node != NULL; node = node->next) {
-			add_component_to_bonobo_menu (ui_handler, node->data, uri);
+			add_component_to_bonobo_menu (ui_handler, node->data, uri, view);
 		}
 
 		gnome_vfs_mime_component_list_free (components); 

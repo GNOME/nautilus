@@ -43,6 +43,12 @@ guint             nautilus_gtk_signal_connect_free_data (GtkObject              
 							 GtkSignalFunc           func,
 							 gpointer                data);
 
+guint             nautilus_gtk_signal_connect_free_data_custom (GtkObject              *object,
+							 	const gchar            *name,
+							 	GtkSignalFunc           func,
+							 	gpointer                data,
+							 	GtkDestroyNotify        destroy_func);
+
 /* list of GtkObject */
 GList *           nautilus_gtk_object_list_ref          (GList                  *list);
 void              nautilus_gtk_object_list_unref        (GList                  *list);
