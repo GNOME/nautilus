@@ -168,7 +168,7 @@ generate_install_form (NautilusServiceInstallView	*view)
 	gtk_widget_show (temp_box);
 	view->details->overall_feedback_text = nautilus_label_new (" ");
 	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->overall_feedback_text), GTK_JUSTIFY_LEFT);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->overall_feedback_text), 10);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->overall_feedback_text), 11);
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->overall_feedback_text, FALSE, FALSE, 30);
 
 	/* filler blob to separate the top from the bottom */
@@ -585,7 +585,6 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 			spin_cylon (view);
 		}
 	}
-usleep (10000);
 }
 
 
@@ -776,7 +775,6 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 	if ((package_progress == package_total) && (package_total > 0)) {
 		current_progress_bar_complete (view, _("Complete!"));
 	}
-usleep (30000);
 }
 
 static void
