@@ -555,22 +555,22 @@ nautilus_list_dnd_initialize (NautilusList *list)
 	
 	gtk_signal_connect (GTK_OBJECT (list), 
 			    "drag_end", 
-			    GTK_SIGNAL_FUNC(nautilus_list_drag_end), 
+			    GTK_SIGNAL_FUNC (nautilus_list_drag_end), 
 			    list);
 	
 	gtk_signal_connect (GTK_OBJECT (list), 
 			    "drag_leave", 
-			    GTK_SIGNAL_FUNC(nautilus_list_drag_leave), 
+			    GTK_SIGNAL_FUNC (nautilus_list_drag_leave), 
 			    list);
 
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "drag_motion", 
-			    GTK_SIGNAL_FUNC(nautilus_list_drag_motion), 
+			    GTK_SIGNAL_FUNC (nautilus_list_drag_motion), 
 			    list);
 
 	gtk_signal_connect (GTK_OBJECT (list), 
 			    "drag_drop", 
-			    GTK_SIGNAL_FUNC(nautilus_list_drag_drop), 
+			    GTK_SIGNAL_FUNC (nautilus_list_drag_drop), 
 			    list);
 
 	gtk_signal_connect (GTK_OBJECT (list), 
@@ -586,8 +586,6 @@ nautilus_list_dnd_initialize (NautilusList *list)
 			   NAUTILUS_N_ELEMENTS (nautilus_list_dnd_target_table),
 			   GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK
 			   | GDK_ACTION_ASK);
-
-
 
 }
 
@@ -2210,9 +2208,14 @@ last_column_index (NautilusCList *clist)
 	return result;
 }
 
-static void
-get_cell_rectangle (NautilusCList *clist, int row_index, int column_index, GdkRectangle *result)
+void
+nautilus_list_get_cell_rectangle (NautilusList *list, int row_index, int column_index, GdkRectangle *result)
 {
+	NautilusCList *clist;
+	
+	g_return_if_fail (NAUTILUS_IS_LIST (list));
+
+	clist = NAUTILUS_CLIST (list);
 	result->x = clist->column[column_index].area.x + clist->hoffset;
 	result->y = ROW_TOP_YPIXEL (clist, row_index);
 	result->width = clist->column[column_index].area.width;
@@ -2260,7 +2263,7 @@ draw_cell (NautilusCList *clist, GdkRectangle *area, int row_index, int column_i
 
 	get_cell_style (NAUTILUS_LIST(clist), row, row->state, row_index, 
 		column_index, &style, &fg_gc, &bg_gc, &bg_rgb);
-	get_cell_rectangle (clist, row_index, column_index, &cell_rectangle);
+	nautilus_list_get_cell_rectangle (NAUTILUS_LIST (clist), row_index, column_index, &cell_rectangle);
 	get_cell_greater_rectangle (&cell_rectangle, &erase_rectangle, 
 		column_index == last_column_index (clist));
 
@@ -2602,7 +2605,7 @@ nautilus_list_clear_from_row (NautilusList *list, int row_index,
 	}
 
 	/* calculate the rectangle for the selected column */
-	get_cell_rectangle (clist, 0, selected_column_index (list), &tmp);
+	nautilus_list_get_cell_rectangle (list, 0, selected_column_index (list), &tmp);
 	get_cell_greater_rectangle (&tmp, &tmp, 
 		selected_column_index (list) == last_column_index (clist));
 	tmp.y = clip_area.y;
@@ -3630,15 +3633,16 @@ nautilus_list_each_selected_row (NautilusList *list, NautilusEachRowFunction fun
 {
 	NautilusCListRow *row;
 	GList *p;
+	int row_index;
 
 	g_assert (NAUTILUS_IS_LIST (list));
 
-	for (p = NAUTILUS_CLIST (list)->row_list; p != NULL; p = p->next) {
+	for (p = NAUTILUS_CLIST (list)->row_list, row_index = 0; p != NULL; p = p->next, row_index++) {
 		row = p->data;
 		if (row->state != GTK_STATE_SELECTED) 
 			continue;
 
-		if (!function(row, data))
+		if (!function(row, row_index, data))
 			return;
 	}
 }
@@ -3742,16 +3746,23 @@ nautilus_list_set_drag_prelight_row (NautilusList *list, int y)
 		/* Redraw old cell */
 		if (last_row != NULL) {
 			row_index = g_list_index (clist->row_list, last_row);
-			get_cell_rectangle (clist, row_index, 0, &rect);
+			nautilus_list_get_cell_rectangle (list, row_index, 0, &rect);
 			gtk_widget_draw (GTK_WIDGET (list), &rect);			
 		}
 		
 		/* Draw new cell */
 		if (list->details->drag_prelight_row != NULL) {
 			row_index = g_list_index (clist->row_list, list->details->drag_prelight_row);
-			get_cell_rectangle (clist, row_index, 0, &rect);
+			nautilus_list_get_cell_rectangle (list, row_index, 0, &rect);
 			gtk_widget_draw (GTK_WIDGET (list), &rect);			
 		}
 	}
+}
+
+void 
+nautilus_list_get_initial_drag_offset (NautilusList *list, int *x, int *y)
+{
+	*x = list->details->dnd_press_x;// + NAUTILUS_CLIST (list)->hoffset;
+	*y = list->details->dnd_press_y;// + NAUTILUS_CLIST (list)->voffset;
 }
 

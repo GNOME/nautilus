@@ -118,7 +118,6 @@ create_selection_shadow (NautilusIconContainer *container,
 	int max_x, max_y;
 	int min_x, min_y;
 	GList *p;
-	double pixels_per_unit;
 
 	if (list == NULL) {
 		return NULL;
@@ -151,7 +150,6 @@ create_selection_shadow (NautilusIconContainer *container,
 					gnome_canvas_group_get_type (),
 					NULL));
 	
-	pixels_per_unit = canvas->pixels_per_unit;
 	for (p = list; p != NULL; p = p->next) {
 		DragSelectionItem *item;
 		int x1, y1, x2, y2;
@@ -171,10 +169,10 @@ create_selection_shadow (NautilusIconContainer *container,
 			gnome_canvas_item_new
 				(group,
 				 gnome_canvas_rect_get_type (),
-				 "x1", (double) x1 / pixels_per_unit,
-				 "y1", (double) y1 / pixels_per_unit,
-				 "x2", (double) x2 / pixels_per_unit,
-				 "y2", (double) y2 / pixels_per_unit,
+				 "x1", (double) x1,
+				 "y1", (double) y1,
+				 "x2", (double) x2,
+				 "y2", (double) y2,
 				 "outline_color", "black",
 				 "outline_stipple", stipple,
 				 "width_pixels", 1,
@@ -239,10 +237,17 @@ icon_get_data_binder (NautilusIcon *icon, gpointer data)
 		return TRUE;
 	}
 
+	window_rect = nautilus_art_irect_offset_by (window_rect, 
+		- container->details->dnd_info->drag_info.start_x,
+		- container->details->dnd_info->drag_info.start_y);
+
+	window_rect = nautilus_art_irect_scale_by (window_rect, 
+		1 / GNOME_CANVAS (container)->pixels_per_unit);
+	
 	/* pass the uri, mouse-relative x/y and icon width/height */
 	context->iteratee (uri, 
-			   (int) (window_rect.x0 - container->details->dnd_info->drag_info.start_x),
-			   (int) (window_rect.y0 - container->details->dnd_info->drag_info.start_y),
+			   (int) window_rect.x0,
+			   (int) window_rect.y0,
 			   window_rect.x1 - window_rect.x0,
 			   window_rect.y1 - window_rect.y0,
 			   context->iteratee_data);

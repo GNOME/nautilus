@@ -33,6 +33,8 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-pixmap.h>
 #include <libgnomeui/gnome-uidefs.h>
+#include <libnautilus-extensions/nautilus-art-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-art-extensions.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-drag.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
@@ -776,16 +778,21 @@ fm_list_handle_dropped_items (NautilusList *list,
 /* iteration glue struct */
 typedef struct {
 	NautilusDragEachSelectedItemDataGet iteratee;
+	NautilusList *list;
 	gpointer iteratee_data;
 } RowGetDataBinderContext;
 
 static gboolean
-row_get_data_binder (NautilusCListRow * row, gpointer data)
+row_get_data_binder (NautilusCListRow *row, int row_index, gpointer data)
 {
 	RowGetDataBinderContext *context;
 	char *uri;
+	ArtIRect icon_rect;
+	GdkRectangle cell_rectangle;
+	int drag_offset_x, drag_offset_y;
 
 	context = (RowGetDataBinderContext *) data;
+	
 
 	uri = nautilus_file_get_uri (NAUTILUS_FILE (row->data));
 	if (uri == NULL) {
@@ -793,8 +800,30 @@ row_get_data_binder (NautilusCListRow * row, gpointer data)
 		return TRUE;
 	}
 
+	nautilus_list_get_cell_rectangle (context->list, row_index, 0, &cell_rectangle);
+	
+	nautilus_list_get_initial_drag_offset (context->list, &drag_offset_x, &drag_offset_y);
+
+	/* adjust the icons to be vertically relative to the initial mouse click position */
+	icon_rect = nautilus_art_irect_offset_by (nautilus_gdk_rectangle_to_art_irect (&cell_rectangle),
+		0, -drag_offset_y);
+
+	/* horizontally just center the outline rectangles -- this will make the outlines align with
+	 * the drag icon
+	 */
+	icon_rect = nautilus_art_irect_offset_to (icon_rect,
+		- (icon_rect.x1 - icon_rect.x0) / 2, icon_rect.y0);
+	
+	/* add some extra spacing in between the icon outline rects */
+	icon_rect = nautilus_art_irect_inset (icon_rect, 2, 2);
+
 	/* pass the uri */
-	(* context->iteratee) (uri, 0, 0, 0, 0, context->iteratee_data);
+	(* context->iteratee) (uri,
+		icon_rect.x0,
+		icon_rect.y0,
+		icon_rect.x1 - icon_rect.x0,
+		icon_rect.y1 - icon_rect.y0,
+		context->iteratee_data);
 
 	g_free (uri);
 
@@ -814,6 +843,7 @@ each_icon_get_data_binder (NautilusDragEachSelectedItemDataGet iteratee,
 	g_assert (NAUTILUS_IS_LIST (iterator_context));
 
 	context.iteratee = iteratee;
+	context.list = NAUTILUS_LIST (iterator_context);
 	context.iteratee_data = data;
 	nautilus_list_each_selected_row (NAUTILUS_LIST (iterator_context), 
 		row_get_data_binder, &context);

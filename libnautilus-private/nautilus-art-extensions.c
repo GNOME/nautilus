@@ -253,6 +253,118 @@ nautilus_art_irect_assign_dimensions (int x,
 	return rectangle;
 }
 
+ArtIRect 
+nautilus_art_irect_offset_by (ArtIRect rectangle, int x, int y)
+{
+	rectangle.x0 += x;
+	rectangle.x1 += x;
+	rectangle.y0 += y;
+	rectangle.y1 += y;
+	
+	return rectangle;
+}
+
+ArtIRect 
+nautilus_art_irect_offset_to (ArtIRect rectangle, int x, int y)
+{
+	rectangle.x1 = rectangle.x1 - rectangle.x0 + x;
+	rectangle.x0 = x;
+	rectangle.y1 = rectangle.y1 - rectangle.y0 + y;
+	rectangle.y0 = y;
+	
+	return rectangle;
+}
+
+ArtIRect 
+nautilus_art_irect_scale_by (ArtIRect rectangle, double scale)
+{
+	rectangle.x0 *= scale;
+	rectangle.x1 *= scale;
+	rectangle.y0 *= scale;
+	rectangle.y1 *= scale;
+	
+	return rectangle;
+}
+
+ArtIRect 
+nautilus_art_irect_inset (ArtIRect rectangle, int horizontal_inset, int vertical_inset)
+{
+	rectangle.x0 += horizontal_inset;
+	rectangle.x1 -= horizontal_inset;
+	rectangle.y0 += vertical_inset;
+	rectangle.y1 -= vertical_inset;
+	
+	return rectangle;
+}
+
+
+ArtDRect 
+nautilus_art_drect_offset_by (ArtDRect rectangle, double x, double y)
+{
+	rectangle.x0 += x;
+	rectangle.x1 += x;
+	rectangle.y0 += y;
+	rectangle.y1 += y;
+	
+	return rectangle;
+}
+
+ArtDRect 
+nautilus_art_drect_offset_to (ArtDRect rectangle, double x, double y)
+{
+	rectangle.x1 = rectangle.x1 - rectangle.x0 + x;
+	rectangle.x0 = x;
+	rectangle.y1 = rectangle.y1 - rectangle.y0 + y;
+	rectangle.y0 = y;
+	
+	return rectangle;
+}
+
+ArtIRect 
+nautilus_art_irect_offset_by_point (ArtIRect rectangle, NautilusArtIPoint point)
+{
+	rectangle.x0 += point.x;
+	rectangle.x1 += point.x;
+	rectangle.y0 += point.y;
+	rectangle.y1 += point.y;
+	
+	return rectangle;
+}
+
+ArtIRect 
+nautilus_art_irect_offset_to_point (ArtIRect rectangle, NautilusArtIPoint point)
+{
+	rectangle.x1 = rectangle.x1 - rectangle.x0 + point.x;
+	rectangle.x0 = point.x;
+	rectangle.y1 = rectangle.y1 - rectangle.y0 + point.y;
+	rectangle.y0 = point.y;
+	
+	return rectangle;
+}
+
+ArtDRect 
+nautilus_art_drect_scale_by (ArtDRect rectangle, double scale)
+{
+	rectangle.x0 *= scale;
+	rectangle.x1 *= scale;
+	rectangle.y0 *= scale;
+	rectangle.y1 *= scale;
+	
+	return rectangle;
+}
+
+ArtDRect 
+nautilus_art_drect_inset (ArtDRect rectangle, double horizontal_inset, double vertical_inset)
+{
+	rectangle.x0 += horizontal_inset;
+	rectangle.x1 -= horizontal_inset;
+	rectangle.y0 += vertical_inset;
+	rectangle.y1 -= vertical_inset;
+	
+	return rectangle;
+}
+
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 void

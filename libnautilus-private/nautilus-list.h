@@ -136,51 +136,59 @@ struct NautilusListClass {
 
 };
 
-typedef gboolean (* NautilusEachRowFunction) (NautilusCListRow *, gpointer);
+typedef gboolean (* NautilusEachRowFunction) (NautilusCListRow *, int, gpointer);
 
-GtkType      nautilus_list_get_type              (void);
-GtkWidget *  nautilus_list_new_with_titles       (int                      columns,
-						  const char * const      *titles);
-GList *      nautilus_list_get_selection         (NautilusList            *list);
-void         nautilus_list_set_selection         (NautilusList            *list,
-						  GList                   *selection);
-void	     nautilus_list_reveal_row		 (NautilusList		  *list,
-						  int			   row);
-gboolean     nautilus_list_is_row_selected       (NautilusList            *list,
-						  int                      row);
-void         nautilus_list_set_pixbuf_list       (NautilusList            *list,
-						  gint                     row,
-						  gint                     column,
-						  GList                   *pixbufs);
-void	     nautilus_list_set_pixbuf		 (NautilusList		  *list,
-						  int			   row_index,
-						  int			   column_index,
-						  GdkPixbuf		  *pixbuf);
-GdkPixbuf   *nautilus_list_get_pixbuf		 (NautilusList		  *list,
-						  int			   row_index,
-						  int			   column_index);
-void         nautilus_list_mark_cell_as_link     (NautilusList            *list,
-						  gint                     row,
-						  gint                     column);
-void         nautilus_list_set_single_click_mode (NautilusList            *list,
-						  gboolean                 single_click_mode);
-void         nautilus_list_select_row            (NautilusList            *list,
-						  int                      row);
-NautilusCListRow *nautilus_list_row_at                (NautilusList            *list,
-						  int                      y);
-int	     nautilus_list_get_first_selected_row (NautilusList		  *list);
-int	     nautilus_list_get_last_selected_row (NautilusList		  *list);
-void         nautilus_list_each_selected_row     (NautilusList            *list,
-						  NautilusEachRowFunction  function,
-						  gpointer                 data);
-gboolean     nautilus_list_rejects_dropped_icons (NautilusList		  *list);
-void	     nautilus_list_set_rejects_dropped_icons (NautilusList	  *list,
-						      gboolean		   new_value);
-void 	     nautilus_list_set_drag_prelight_row (NautilusList		  *list,
-						  int			  y);
+GtkType      nautilus_list_get_type                  (void);
+GtkWidget *  nautilus_list_new_with_titles           (int                      columns,
+						      const char * const      *titles);
+GList *      nautilus_list_get_selection             (NautilusList            *list);
+void         nautilus_list_set_selection             (NautilusList            *list,
+						      GList                   *selection);
+void	     nautilus_list_reveal_row		     (NautilusList	      *list,
+						      int		       row);
+gboolean     nautilus_list_is_row_selected           (NautilusList            *list,
+						      int                      row);
+void	     nautilus_list_get_cell_rectangle	     (NautilusList 	      *clist,
+						      int		       row_index,
+						      int 		       column_index,
+						      GdkRectangle 	      *result);
+void         nautilus_list_set_pixbuf_list           (NautilusList            *list,
+						      gint                     row,
+						      gint                     column,
+						      GList                   *pixbufs);
+void	     nautilus_list_set_pixbuf		     (NautilusList	      *list,
+						      int		       row_index,
+						      int		       column_index,
+						      GdkPixbuf		      *pixbuf);
+GdkPixbuf   *nautilus_list_get_pixbuf		     (NautilusList	      *list,
+						      int		       row_index,
+						      int		       column_index);
+void         nautilus_list_mark_cell_as_link         (NautilusList            *list,
+						      gint                     row,
+						      gint                     column);
+void         nautilus_list_set_single_click_mode     (NautilusList            *list,
+						      gboolean                 single_click_mode);
+void         nautilus_list_select_row                (NautilusList            *list,
+						      int                      row);
+NautilusCListRow *nautilus_list_row_at               (NautilusList            *list,
+						      int                      y);
+int	     nautilus_list_get_first_selected_row    (NautilusList	      *list);
+int	     nautilus_list_get_last_selected_row     (NautilusList	      *list);
+void         nautilus_list_each_selected_row         (NautilusList            *list,
+						      NautilusEachRowFunction  function,
+						      gpointer                 data);
+gboolean     nautilus_list_rejects_dropped_icons     (NautilusList	      *list);
+void	     nautilus_list_set_rejects_dropped_icons (NautilusList	      *list,
+						      gboolean		       new_value);
+void 	     nautilus_list_set_drag_prelight_row     (NautilusList	      *list,
+						      int		       y);
+void 	     nautilus_list_get_initial_drag_offset   (NautilusList	      *list,
+						      int		      *x,
+						      int		      *y);
 
-void	     nautilus_list_set_anti_aliased_mode (NautilusList		  *list,
-						  gboolean		   anti_aliased_mode);
+void	     nautilus_list_set_anti_aliased_mode     (NautilusList	      *list,
+						      gboolean		       anti_aliased_mode);
+
 
 #endif /* NAUTILUS_LIST_H */
 

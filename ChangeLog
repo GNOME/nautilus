@@ -1,3 +1,56 @@
+2001-02-22  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Gene Z. Ragan <gzr@eazel.com>
+
+	Fix 5540 Dragging a group of files in zoomed icon view has
+		 strange effect
+	Fix 6461 Dropped icons in manual layout land at the wrong
+		 coordinates at high zoom levels
+	Fix 6845 Dropping multiple icons from list view to icon view
+		 piles them on top of each other
+		 
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(create_selection_shadow),
+	(icon_get_data_binder):
+	Send outline rectangles for dragged icons off to a drag in a 100%
+	zoom level scale.
+	Scale outline rectangles in drag shadows using the scaling factor
+	for the target view.
+	
+	* libnautilus-extensions/nautilus-list.h:
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_get_cell_rectangle),
+	(draw_cell), (nautilus_list_clear_from_row),
+	(nautilus_list_set_drag_prelight_row),
+	Make the call public, change the callers to pass NautilusList.
+	
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_each_selected_row):
+	Add the row index parameter to the iteratee.
+	
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_get_initial_drag_offset):
+	Add a way to get the intial mouse drag offset.
+	
+	* src/file-manager/fm-list-view.c: (row_get_data_binder),
+	(each_icon_get_data_binder):
+	Calculate outline rectangles for icons and pass them to the
+	drag&drop machinery.
+
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_dnd_initialize):
+	Tweaks.
+	
+	* libnautilus-extensions/nautilus-art-extensions.h:
+	* libnautilus-extensions/nautilus-art-extensions.c:
+	(nautilus_art_irect_offset_by), (nautilus_art_irect_offset_to),
+	(nautilus_art_irect_scale_by), (nautilus_art_irect_inset),
+	(nautilus_art_drect_offset_by), (nautilus_art_drect_offset_to),
+	(nautilus_art_irect_offset_by_point),
+	(nautilus_art_irect_offset_to_point),
+	(nautilus_art_drect_scale_by), (nautilus_art_drect_inset):
+	Add a few convenience calls.
+
 2001-02-22  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	reviewed by: Robey Pointer  <robey@eazel.com>

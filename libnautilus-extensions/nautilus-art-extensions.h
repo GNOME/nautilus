@@ -77,6 +77,34 @@ ArtIRect nautilus_art_irect_assign_dimensions (int                       x,
 					       int                       y,
 					       const NautilusDimensions *dimensions);
 
+ArtIRect nautilus_art_irect_offset_by	      (ArtIRect			 rect,
+					       int			 x,
+					       
+					       int			 y);
+ArtIRect nautilus_art_irect_offset_to	      (ArtIRect			 rect,
+					       int			 x,
+					       int			 y);
+ArtIRect nautilus_art_irect_scale_by	      (ArtIRect			 rect,
+					       double			 scale);
+ArtIRect nautilus_art_irect_inset	      (ArtIRect			 rect,
+					       int			 horizontal_inset,
+					       int			 vertical_inset);
+ArtDRect nautilus_art_drect_offset_by	      (ArtDRect			 rect,
+					       double			 x,
+					       double			 y);
+ArtDRect nautilus_art_drect_offset_to	      (ArtDRect			 rect,
+					       double			 x,
+					       double			 y);
+ArtDRect nautilus_art_drect_scale_by	      (ArtDRect			 rect,
+					       double			 scale);
+ArtDRect nautilus_art_drect_inset	      (ArtDRect			 rect,
+					       double			 horizontal_inset,
+					       double			 vertical_inset);
+ArtIRect nautilus_art_irect_offset_by_point   (ArtIRect			 rect,
+					       NautilusArtIPoint	 point);
+ArtIRect nautilus_art_irect_offset_to_point   (ArtIRect			 rect,
+					       NautilusArtIPoint	 point);
+					      
 END_GNOME_DECLS
 
 #endif /* NAUTILUS_ART_EXTENSIONS_H */
