@@ -31,6 +31,7 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "nautilus-file.h"
 #include "nautilus-link-set.h"
 #include "nautilus-metadata.h"
@@ -1188,6 +1189,23 @@ nautilus_copy_uri_simple ( const char *source_uri, const char *dest_uri)
 	gnome_vfs_uri_unref (real_dest_uri);
 		
 	return  result;
+}
+
+char *
+nautilus_unique_temporary_file_name (void)
+{
+	const char *prefix = "/tmp/nautilus-temp-file";
+	char *file_name;
+	static guint count = 1;
+
+	file_name = g_strdup_printf ("%sXXXXXX", prefix);
+
+	if (mktemp (file_name) != file_name) {
+		g_free (file_name);
+		file_name = g_strdup_printf ("%s-%d-%d", prefix, count++, getpid ());
+	}
+
+	return file_name;
 }
 
 #ifdef EAZEL_BUILD_TIMESTAMP
