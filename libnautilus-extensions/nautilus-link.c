@@ -292,6 +292,8 @@ nautilus_link_local_get_additional_text (const char *path)
 static char *
 make_local_path (const char *image_uri)
 {
+	GnomeVFSResult result;
+	
 	char *escaped_uri, *local_directory_path, *local_directory_uri, *local_file_path;
 	
 	escaped_uri = gnome_vfs_escape_slashes (image_uri);		
@@ -303,11 +305,16 @@ make_local_path (const char *image_uri)
 
 	/* We must create the directory if it doesn't exist. */
 	local_directory_uri = gnome_vfs_get_uri_from_local_path (local_directory_path);
-	/* FIXME bugzilla.eazel.com 2494: Is it OK to ignore the error here? */
-	gnome_vfs_make_directory (local_directory_uri, REMOTE_ICON_DIR_PERMISSIONS);
-	g_free (local_directory_uri);
-
+	result = gnome_vfs_make_directory (local_directory_uri, REMOTE_ICON_DIR_PERMISSIONS);
+	if (result != GNOME_VFS_OK) {
+		g_free (local_directory_uri);
+		g_free (escaped_uri);
+		g_free (local_directory_path);
+		return NULL;
+	}
+			
 	local_file_path = nautilus_make_path (local_directory_path, escaped_uri);
+	g_free (local_directory_uri);
 	g_free (escaped_uri);
 	g_free (local_directory_path);
 

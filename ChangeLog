@@ -1,5 +1,15 @@
 2000-12-18  Gene Z. Ragan  <gzr@eazel.com>
 
+	Fixed bug 2494, Error ignored when making icon directory for link file
+	
+	We now check the GnomeVFSResult. If it does != GNOME_VFS_OK, NULL
+	is returned. The callers of this function can properly handle a NULL
+	result.
+	
+	* libnautilus-extensions/nautilus-link.c: (make_local_path):
+
+2000-12-18  Gene Z. Ragan  <gzr@eazel.com>
+
 	Fixed bug 2526, Error case ignored when creating desktop link file
 	
 	I remvoed the error check in the three cases th ebug referenced.
