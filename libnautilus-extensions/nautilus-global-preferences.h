@@ -65,6 +65,9 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_TOOLBAR_ICON_THEME			"preferences/toolbar_icon_theme"
 #define NAUTILUS_PREFERENCES_ICON_THEME				"preferences/icon_theme"
 
+/* File Indexing */
+#define NAUTILUS_PREFERENCES_SEARCH_SPEED_SETTINGS              "preferences/do_slow_search"
+
 enum
 {
 	NAUTILUS_CLICK_POLICY_SINGLE,

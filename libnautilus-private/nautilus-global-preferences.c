@@ -85,6 +85,7 @@ global_preferences_create_dialog (void)
 	GtkWidget		*directory_views_pane;
 	GtkWidget		*sidebar_panels_pane;
 	GtkWidget		*appearance_pane;
+	GtkWidget		*file_indexing_pane;
 	GtkWidget		*tradeoffs_pane;
 	GtkWidget		*navigation_pane;
 
@@ -218,7 +219,21 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
 	/*
-	 * Tradeoffs
+	 * File Indexing 
+	 */
+	file_indexing_pane = nautilus_preferences_box_add_pane (preference_box,
+							     "Search",
+							     "Search Settings");
+
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
+					     "Search Speed");
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
+							 0,
+							 NAUTILUS_PREFERENCES_SEARCH_SPEED_SETTINGS,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+					
+	/*
+	 * Navigation
 	 */
 	navigation_pane = nautilus_preferences_box_add_pane (preference_box,
 							    "Navigation",
@@ -533,6 +548,12 @@ global_preferences_register_for_ui (void)
 							   "standard",
 							   "standard",
 							   "standard");
+
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SEARCH_SPEED_SETTINGS,
+							   "look on disk after searching the index",
+							   FALSE,
+							   FALSE,
+							   FALSE);
 
 	/*
 	 * These dont have a UI (yet ? maybe in the advanced settings ?).
