@@ -1896,9 +1896,6 @@ mount_volume_add_filesystem (NautilusVolume *volume, GList *volume_list)
 		mounted = mount_volume_xenix_add (volume);
 	} else if (strcmp (volume->filesystem, "xiafs") == 0) {
 		mounted = mount_volume_xiafs_add (volume);
-	} else {
-		g_message (_("Nautilus doesn't know about mount type %s. Please email this message to gzr@eazel.com."),
-			      volume->filesystem);
 	}
 	
 	if (mounted) {
