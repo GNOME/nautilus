@@ -1,3 +1,103 @@
+2000-11-29  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bugs 4385 (Nautilus doesn't gracefully handle deleting
+	in-use image file), 3240 (reloading a directory doesn't update
+	directory counts of the entries) and 4683 (embedded text on icon
+	isn't updated when text changes) by implementing forgetting of
+	file attributes and using it when appropriate.
+
+	Also fixed various other bugs cought by testing of these fixes or
+	reading the code.
+
+	* libnautilus-extensions/nautilus-file.c: 
+	(nautilus_file_forget_attributes): New function that makes the
+	file forget the specified attributes, including cancelling
+	possible in-progress I/O for them, and kicking off new I/O if
+	anyone is monitoring any of the attributes or has a pending
+	call_when_ready.
+	(nautilus_file_forget_attributes_internal): Forget all attributes
+	of this file, *not* including cancelling in-progress I/O, or
+	kicking off new I/O. This is for the benefit of NautilusDirectory
+	being able to forget the attributes of all files it is monitoring
+	at one go.
+	(nautilus_file_forget_all_attributes): Forget all attributes of
+	this file, including cancelling in-progress I/O, and kicking off
+	new I/O.
+	(forget_directory_count, forget_deep_counts, forget_mime_list,
+	forget_top_left_text, forget_file_info, forget_activation_uri):
+	Helper functions to forget individual attributes.
+	(nautilus_file_forget_activation_uri): Removed as obsolete.
+	(destroy): use `nautilus_g_list_free_deep' to free the mime list.
+
+	* libnautilus-extensions/nautilus-directory-notify.h: Remove
+	prototype for `nautilus_file_forget_activation_uri'.
+
+	* libnautilus-extensions/nautilus-file-private.h: Prototype
+	`nautilus_file_forget_attributes_internal'.
+
+	* libnautilus-extensions/nautilus-file.h:
+	`nautilus_file_forget_attributes' and
+	`nautilus_file_forget_all_attributes'.
+
+	* libnautilus-extensions/nautilus-link.c
+	(nautilus_link_local_set_link_uri): Use
+	`nautilus_file_forget_attributes', not
+	`nautilus_file_forget_activation_uri' to ensure reload of the
+	activation URI.
+	(forget_file_activation_uri): Helper function for the above.
+		
+	* libnautilus-extensions/nautilus-directory-async.c
+	(nautilus_directory_cancel_loading_file_attributes): Function to
+	cancel in-progress I/O for a given set of attributes but only if
+	it is in progress for the specified file. This function is used to
+	implement part of `nautilus_file_forget_attributes'.
+	(cancel_directory_count_for_file, cancel_deep_counts_for_file,
+	cancel_mime_list_for_file, cancel_top_left_text_for_file,
+	cancel_file_info_for_file, cancel_activation_uri_for_file): Helper
+	functions for the above.
+	(nautilus_directory_force_reload): Add a `file_attributes'
+	argument and make sure to forget the specified
+	attributes. Forgetting the attributes fixes bugs 3240 and 4683.
+	(nautilus_directory_forget_file_attributes): Function to forget
+	the specified attributes for all files. It makes sure to only
+	cancel and kick off new I/O once.
+	(cancel_loading_attributes): helper function for the above that
+	cancels in-progress loads for the specified attributes, regardless
+	of for what file.
+	(request_is_satisfied): The request is not satisfied if the
+	request calls for top left text and the file lacks it.	
+	(top_left_read_callback): Set 1got_top_left_text' field of the
+	NautilusFile to TRUE. This problem was masked by the problem with
+	`request_is_satisfied' fixed above.
+	(set_up_request_by_file_attributes): Make sure to request the
+	file_info as well if top left text is requested, since
+	applicability of top left text depends on the mime type.
+	(get_info_callback): Mark the file gone if we get
+	GNOME_VFS_ERROR_NOT_FOUND; we can only get this error for files
+	gnome-vfs should know about but that do not exist. This is needed
+	to detect files that are removed on a reload.
+
+	* libnautilus-extensions/nautilus-directory-private.h: Update
+	prototype for `nautilus_directory_force_reload'; Prototype
+	`nautilus_directory_cancel_loading_file_attributes'
+
+	* libnautilus-extensions/nautilus-vfs-directory.c
+	(vfs_file_monitor_add): Pass the file attributes to
+	`nautilus_directory_force_reload' since it now wants them.
+
+	* src/nautilus-window-manage-views.c
+	(viewed_file_changed_callback): Cancel location change before
+	closing the window, since detecting the file is gone is now likely
+	to happen in the middle of an in-progress reload, and we get
+	crashes if this is not done.	
+	(nautilus_window_begin_location_change): If we're doing a reload,
+	forget all file attributes of the NautilusFile for the currently
+	viewed location. This is to make sure we detect if the file is
+	gone, and also update the sidebar panel icon and other info
+	appropriately. This fixes bug 4385.
+
 2000-11-29  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/command-line/Makefile.am:

@@ -128,6 +128,10 @@ static gboolean request_is_satisfied  (NautilusDirectory *directory,
 				       NautilusFile      *file,
 				       Request           *request);
 
+static void     cancel_loading_attributes (NautilusDirectory *directory,
+					   GList             *file_attributes);
+
+
 /* Some helpers for case-insensitive strings.
  * Move to nautilus-glib-extensions?
  */
@@ -1007,10 +1011,6 @@ set_up_request_by_file_attributes (Request *request,
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES,
 		 nautilus_str_compare) != NULL;
-	request->top_left_text = g_list_find_custom
-		(file_attributes,
-		 NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT,
-		 nautilus_str_compare) != NULL;
 	request->file_info = g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE,
@@ -1023,6 +1023,14 @@ set_up_request_by_file_attributes (Request *request,
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE,
 		 nautilus_str_compare) != NULL;
+
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT,
+				nautilus_str_compare) != NULL) {
+		request->top_left_text = TRUE;
+		request->file_info = TRUE;
+	}
+
 	if (g_list_find_custom (file_attributes,
 				NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI,
 				nautilus_str_compare) != NULL) {
@@ -1920,7 +1928,13 @@ request_is_satisfied (NautilusDirectory *directory,
 			return FALSE;
 		}
 	}
-	
+
+	if (request->top_left_text) {
+		if (has_problem (directory, file, lacks_top_left)) {
+			return FALSE;
+		}
+	}
+
 	if (request->deep_count) {
 		if (has_problem (directory, file, lacks_deep_count)) {
 			return FALSE;
@@ -2132,9 +2146,32 @@ nautilus_directory_invalidate_counts (NautilusDirectory *directory)
 	}
 }
 
-void
-nautilus_directory_force_reload (NautilusDirectory *directory)
+static void
+nautilus_directory_forget_file_attributes (NautilusDirectory *directory,
+					   GList             *file_attributes)
 {
+	GList *node;
+
+	cancel_loading_attributes (directory, file_attributes);
+
+	for (node = directory->details->file_list; node != NULL; node = node->next) {
+		nautilus_file_forget_attributes_internal (NAUTILUS_FILE (p->data),
+							  file_attributes);
+	}
+
+	if (directory->details->as_file != NULL) {
+		nautilus_file_forget_attributes_internal (directory->details->as_file,
+							  file_attributes);
+	}
+}
+
+void
+nautilus_directory_force_reload (NautilusDirectory *directory,
+				 GList             *file_attributes)
+{
+	/* forget attributes that are getting reloaded for all files */
+	nautilus_directory_forget_file_attributes (directory, file_attributes);
+
 	/* Start a new directory load. */
 	file_list_cancel (directory);
 	directory->details->directory_loaded = FALSE;
@@ -2690,6 +2727,8 @@ top_left_read_callback (GnomeVFSResult result,
 		directory->details->top_left_read_state->file->details->top_left_text =
 			nautilus_extract_top_left_text (file_contents, bytes_read);
 		
+		directory->details->top_left_read_state->file->details->got_top_left_text = TRUE;
+
 		nautilus_file_changed (directory->details->top_left_read_state->file);
 		
 		g_free (file_contents);
@@ -2776,15 +2815,29 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 	
 	directory->details->get_info_file = NULL;
 	directory->details->get_info_in_progress = NULL;
+
+	/* ref here because we might be removing the last ref when we
+	 * mark the file gone below, but we need to keep a ref at
+	 * least long enough to send the change notification. 
+	 */
+	nautilus_file_ref (get_info_file);
 	
 	result = results->data;
 	if (result->result != GNOME_VFS_OK) {
 		get_info_file->details->get_info_failed = TRUE;
 		get_info_file->details->get_info_error = result->result;
+		if (result->result == GNOME_VFS_ERROR_NOT_FOUND) {
+			/* mark file as gone */
+
+			get_info_file->details->is_gone = TRUE;
+			nautilus_directory_remove_file (directory, get_info_file);
+		}
 	} else {
 		nautilus_file_update_info (get_info_file, result->file_info);
 	}
+
 	nautilus_file_changed (get_info_file);
+	nautilus_file_unref (get_info_file);
 
 	async_job_end (directory, "file info");
 	nautilus_directory_async_state_changed (directory);
@@ -3084,3 +3137,220 @@ nautilus_directory_cancel (NautilusDirectory *directory)
 	/* Check if any directories should wake up. */
 	async_job_wake_up ();
 }
+
+
+static void
+cancel_directory_count_for_file (NautilusDirectory *directory,
+				 NautilusFile      *file)
+{
+	if (directory->details->count_file == file) {
+		directory_count_cancel (directory);
+	}
+}
+
+
+static void
+cancel_deep_counts_for_file (NautilusDirectory *directory,
+			     NautilusFile      *file)
+{
+	if (directory->details->deep_count_file == file) {
+		deep_count_cancel (directory);
+	}
+}
+
+
+static void
+cancel_mime_list_for_file (NautilusDirectory *directory,
+			   NautilusFile      *file)
+{
+	if (directory->details->mime_list_file == file) {
+		mime_list_cancel (directory);
+	}
+}
+
+static void
+cancel_top_left_text_for_file (NautilusDirectory *directory,
+			       NautilusFile      *file)
+{
+	if (directory->details->top_left_read_state != NULL &&
+	    directory->details->top_left_read_state->file == file) {
+		top_left_cancel (directory);
+	}
+}
+
+static void
+cancel_file_info_for_file (NautilusDirectory *directory,
+			   NautilusFile      *file)
+{
+	if (directory->details->get_info_file == file) {
+		file_info_cancel (directory);
+	}
+}
+
+static void
+cancel_activation_uri_for_file (NautilusDirectory *directory,
+				NautilusFile      *file)
+{
+	if (directory->details->activation_uri_read_state != NULL &&
+	    directory->details->activation_uri_read_state->file == file) {
+		activation_uri_cancel (directory);
+	}
+}
+
+
+static void
+cancel_loading_attributes (NautilusDirectory *directory,
+			   GList             *file_attributes)
+{
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT,
+				nautilus_str_compare) != NULL) {
+		directory_count_cancel (directory);
+	}
+
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS,
+				nautilus_str_compare) != NULL) {
+		deep_count_cancel (directory);
+	}
+
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES,
+				nautilus_str_compare) != NULL) {
+		mime_list_cancel (directory);
+	}
+
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT,
+				nautilus_str_compare) != NULL) {
+		/* clear file info, since applicability of top left
+		 * text depends on it. 
+		 */
+		file_info_cancel (directory);
+
+		/* cancel top left text */
+		top_left_cancel (directory);
+	}
+
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE,
+				nautilus_str_compare) != NULL ||
+	    g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE,
+				nautilus_str_compare) != NULL ||
+	    g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY,
+				nautilus_str_compare) != NULL) {
+		file_info_cancel (directory);
+	}
+
+
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI,
+				nautilus_str_compare) != NULL) {
+
+		/* clear file info, since applicability of activation
+		 * URI depends on it 
+		 */
+		file_info_cancel (directory);
+
+		/* cancel activation URI */
+		file_info_cancel (directory);
+	}
+	
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_METADATA,
+				nautilus_str_compare) != NULL ||
+	    /* FIXME bugzilla.eazel.com 2435:
+	     * Some file attributes are really pieces of metadata.
+	     * This is a confusing/broken design, since other metadata
+	     * pieces are handled separately from file attributes...
+	     */
+	    g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON,
+				nautilus_str_compare) != NULL) {
+		/* FIXME: implement cancelling metadata when we
+                   implement forgetting metadata */
+	}
+}
+
+void
+nautilus_directory_cancel_loading_file_attributes (NautilusDirectory *directory,
+						   NautilusFile      *file,
+						   GList             *file_attributes)
+{
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT,
+				nautilus_str_compare) != NULL) {
+		cancel_directory_count_for_file (directory, file);
+	}
+
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS,
+				nautilus_str_compare) != NULL) {
+		cancel_deep_counts_for_file (directory, file);
+	}
+
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES,
+				nautilus_str_compare) != NULL) {
+		cancel_mime_list_for_file (directory, file);
+	}
+
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT,
+				nautilus_str_compare) != NULL) {
+		/* clear file info, since applicability of top left
+		 * text depends on it. 
+		 */
+		cancel_file_info_for_file (directory, file);
+
+		/* cancel top left text */
+		cancel_top_left_text_for_file (directory, file);
+	}
+
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE,
+				nautilus_str_compare) != NULL ||
+	    g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE,
+				nautilus_str_compare) != NULL ||
+	    g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY,
+				nautilus_str_compare) != NULL) {
+		cancel_file_info_for_file (directory, file);
+	}
+
+
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI,
+				nautilus_str_compare) != NULL) {
+
+		/* clear file info, since applicability of activation
+		 * URI depends on it 
+		 */
+		cancel_file_info_for_file (directory, file);
+
+		/* cancel activation URI */
+		cancel_activation_uri_for_file (directory, file);
+	}
+	
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_METADATA,
+				nautilus_str_compare) != NULL ||
+	    /* FIXME bugzilla.eazel.com 2435:
+	     * Some file attributes are really pieces of metadata.
+	     * This is a confusing/broken design, since other metadata
+	     * pieces are handled separately from file attributes...
+	     */
+	    g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON,
+				nautilus_str_compare) != NULL) {
+		/* FIXME: implement cancelling metadata when we
+                   implement forgetting metadata */
+	}
+}
+
+
+
+

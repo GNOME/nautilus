@@ -111,6 +111,12 @@ void                    nautilus_file_cancel_call_when_ready    (NautilusFile   
 								 gpointer                       callback_data);
 gboolean		nautilus_file_check_if_ready		(NautilusFile		       *file,
 								 GList			       *attributes);
+void                    nautilus_file_forget_attributes         (NautilusFile                  *file,
+								 GList                         *file_attributes);
+void                    nautilus_file_forget_all_attributes     (NautilusFile                  *file);
+
+
+
 
 /* Basic attributes for file objects. */
 char *                  nautilus_file_get_name                  (NautilusFile                  *file);

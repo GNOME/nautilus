@@ -52,5 +52,3 @@ void nautilus_directory_schedule_position_setting (GList *position_setting_list)
  * it needs to be used for code like the thumbnail generation.
  */
 void nautilus_file_changed                   	  (NautilusFile *file);
-
-void nautilus_file_forget_activation_uri       	  (NautilusFile *file);

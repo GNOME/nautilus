@@ -97,3 +97,10 @@ gboolean      nautilus_file_update_name              (NautilusFile      *file,
  * fetched, according to the preference settings.
  */
 gboolean      nautilus_file_should_get_top_left_text (NautilusFile      *file);
+
+/* Forget specified attributes for this file without canceling current
+ * I/O or kicking off new I/O.
+ */
+void          nautilus_file_forget_attributes_internal (NautilusFile *file,
+							GList        *file_attributes);
+

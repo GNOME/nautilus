@@ -24,6 +24,7 @@
 
 #include <config.h>
 #include "nautilus-file-private.h"
+#include "nautilus-file-attributes.h"
 
 #include "nautilus-directory-metafile.h"
 #include "nautilus-directory-notify.h"
@@ -420,8 +421,7 @@ destroy (GtkObject *object)
 	g_free (file->details->top_left_text);
 	g_free (file->details->activation_uri);
 
-	g_list_foreach (file->details->mime_list, (GFunc) g_free, NULL);
-	g_list_free (file->details->mime_list);
+	nautilus_g_list_free_deep (file->details->mime_list);
 
 	g_free (file->details);
 
@@ -4137,34 +4137,6 @@ nautilus_file_changed (NautilusFile *file)
 	}
 }
 
-/**
- * nautilus_file_forget_activation_uri
- * 
- * Invalidate the activation URI and force a reload.
- * @file: NautilusFile representing the file in question.
- **/
-void
-nautilus_file_forget_activation_uri (NautilusFile *file)
-{
-	char *file_uri;
-	NautilusDirectory *directory;
-	
-	g_free (file->details->activation_uri);
-	file->details->activation_uri = NULL;
-
-	file->details->got_activation_uri = FALSE;
-
-	/* Inform directory that its state has changed */
-	file_uri = nautilus_file_get_uri (file);
-	if (file_uri != NULL) {
-		directory = nautilus_directory_get (file_uri);
-		if (directory != NULL) {
-			nautilus_directory_async_state_changed (directory);
-			nautilus_directory_unref (directory);
-		}
-		g_free (file_uri);
-	}
-}
 
 /**
  * nautilus_file_emit_changed
@@ -4283,6 +4255,192 @@ nautilus_file_cancel_call_when_ready (NautilusFile *file,
 		 callback,
 		 callback_data);
 }
+
+static void
+forget_directory_count (NautilusFile *file)
+{
+	file->details->directory_count_failed = FALSE;
+	file->details->directory_count = 0;
+	file->details->got_directory_count = FALSE;
+}
+
+
+static void
+forget_deep_counts (NautilusFile *file)
+{
+	file->details->deep_directory_count = 0;
+	file->details->deep_file_count = 0;
+	file->details->deep_unreadable_count = 0;
+	file->details->deep_size = 0;
+	file->details->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
+}
+
+static void
+forget_mime_list (NautilusFile *file)
+{
+	nautilus_g_list_free_deep (file->details->mime_list);
+	file->details->mime_list = NULL;
+	file->details->got_mime_list = FALSE;
+	file->details->mime_list_failed = FALSE;
+}
+
+static void
+forget_top_left_text (NautilusFile *file)
+{
+	g_free (file->details->top_left_text);
+	file->details->top_left_text = NULL;
+	file->details->got_top_left_text = FALSE;
+}
+
+static void
+forget_file_info (NautilusFile *file)
+{
+	remove_from_link_hash_table (file);
+
+	if (file->details->info != NULL) {
+		gnome_vfs_file_info_unref (file->details->info);
+		file->details->info = NULL;
+	}
+	file->details->get_info_failed = FALSE;
+	file->details->get_info_error = GNOME_VFS_OK;
+}
+
+static void
+forget_activation_uri (NautilusFile *file)
+{
+	g_free (file->details->activation_uri);
+	file->details->activation_uri = NULL;
+	file->details->got_activation_uri = FALSE;
+}
+
+
+void
+nautilus_file_forget_attributes_internal (NautilusFile *file,
+					  GList        *file_attributes)
+{
+	if (file == NULL) {
+		return;
+	}
+
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT,
+				nautilus_str_compare) != NULL) {
+		forget_directory_count (file);
+	}
+
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS,
+				nautilus_str_compare) != NULL) {
+		forget_deep_counts (file);
+	}
+
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES,
+				nautilus_str_compare) != NULL) {
+		forget_mime_list (file);
+	}
+
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE,
+				nautilus_str_compare) != NULL ||
+	    g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE,
+				nautilus_str_compare) != NULL ||
+	    g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY,
+				nautilus_str_compare) != NULL) {
+		forget_file_info (file);
+	}
+
+
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT,
+				nautilus_str_compare) != NULL) {
+		/* Forget file info too, since applicability of 
+		 * activation URI depends on it. 
+		 */
+		forget_file_info (file);
+
+		/* Forget actual activation top left text */
+		forget_top_left_text (file);
+	}
+
+
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI,
+				nautilus_str_compare) != NULL) {
+		/* Forget file info too, since applicability of 
+		 * activation URI depends on it. 
+		 */
+		forget_file_info (file);
+		
+		/* Forget actual activation URI info */
+		forget_activation_uri (file);
+	}
+	
+	if (g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_METADATA,
+				nautilus_str_compare) != NULL ||
+	    /* FIXME bugzilla.eazel.com 2435:
+	     * Some file attributes are really pieces of metadata.
+	     * This is a confusing/broken design, since other metadata
+	     * pieces are handled separately from file attributes...
+	     */
+	    g_list_find_custom (file_attributes,
+				NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON,
+				nautilus_str_compare) != NULL) {
+		/* FIXME: implement forgetting metadata */
+		
+		/* ?? reload the directory's metafile ?? */
+	}
+}
+
+
+/**
+ * nautilus_file_forget_attributes
+ * 
+ * Invalidate the specified attributes and force a reload.
+ * @file: NautilusFile representing the file in question.
+ * @file_attributes: attributes to froget.
+ **/
+
+void
+nautilus_file_forget_attributes (NautilusFile *file,
+				 GList        *file_attributes)
+{
+	/* Cancel possible in-progress loads of any of these attributes */
+	nautilus_directory_cancel_loading_file_attributes (file->details->directory,
+							   file,
+							   file_attributes);
+
+	/* Actually forget the values */
+	nautilus_file_forget_attributes_internal (file, file_attributes);
+	
+	/* Kick off I/O if necessary */
+	nautilus_directory_async_state_changed (file->details->directory);
+}
+
+void
+nautilus_file_forget_all_attributes (NautilusFile *file)
+{
+	GList *attributes;
+
+	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
+	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON);
+        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS);
+        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
+        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
+        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
+        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
+        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE);
+        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES);
+        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+	
+	nautilus_file_forget_attributes (file, attributes);
+
+	g_list_free (attributes);
+}
+
 
 /**
  * nautilus_file_dump

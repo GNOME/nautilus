@@ -135,7 +135,7 @@ void               nautilus_directory_monitor_remove_internal         (NautilusD
 								       gconstpointer              client);
 void               nautilus_directory_get_info_for_new_files          (NautilusDirectory         *directory,
 								       GList                     *vfs_uris);
-NautilusFile	  *   nautilus_directory_get_existing_corresponding_file (NautilusDirectory         *directory);
+NautilusFile *     nautilus_directory_get_existing_corresponding_file (NautilusDirectory         *directory);
 void               nautilus_directory_invalidate_counts               (NautilusDirectory         *directory);
 gboolean           nautilus_directory_is_file_list_monitored          (NautilusDirectory         *directory);
 gboolean           nautilus_directory_is_anyone_monitoring_file_list  (NautilusDirectory         *directory);
@@ -147,7 +147,12 @@ void               nautilus_directory_stop_monitoring_file_list       (NautilusD
 void               nautilus_directory_cancel                          (NautilusDirectory         *directory);
 void               nautilus_metafile_write_start                      (NautilusDirectory         *directory);
 void               nautilus_async_destroying_file                     (NautilusFile              *file);
-void               nautilus_directory_force_reload                    (NautilusDirectory         *directory);
+void               nautilus_directory_force_reload                    (NautilusDirectory         *directory,
+								       GList                     *file_attributes);
+void               nautilus_directory_cancel_loading_file_attributes  (NautilusDirectory         *directory,
+								       NautilusFile              *file,
+								       GList                     *file_attributes);
+
 
 /* Calls shared between directory, file, and async. code. */
 void               nautilus_directory_emit_metadata_changed           (NautilusDirectory         *directory);
@@ -185,3 +190,4 @@ void               nautilus_directory_handle_directory_moved          (NautilusD
 
 /* debugging functions */
 int                nautilus_directory_number_outstanding              (void);
+

@@ -109,7 +109,8 @@ vfs_file_monitor_add (NautilusDirectory *directory,
 	g_assert (client != NULL);
 
 	if (force_reload) {
-		nautilus_directory_force_reload (directory);
+		nautilus_directory_force_reload (directory,
+						 file_attributes);
 	}
 
 	nautilus_directory_monitor_add_internal

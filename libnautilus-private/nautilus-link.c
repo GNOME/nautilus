@@ -29,6 +29,7 @@
 #include "nautilus-directory.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
+#include "nautilus-file-attributes.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
 #include "nautilus-preferences.h"
@@ -245,6 +246,17 @@ nautilus_link_local_set_icon (const char *path, const char *icon_name)
 					NULL);
 }
 
+
+static void
+forget_file_activation_uri (NautilusFile *file)
+{
+	GList *attributes;
+
+	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
+	nautilus_file_forget_attributes (file, attributes);
+	g_list_free (attributes);
+}
+
 /* Set the link uri for a link file. This can only be called on local
  * paths, and only on files known to be link files.
  */
@@ -254,7 +266,7 @@ nautilus_link_local_set_link_uri (const char *path, const char *link_uri)
 	return local_set_root_property (path,
 					"LINK",
 					link_uri,
-					nautilus_file_forget_activation_uri);
+					forget_file_activation_uri);
 }
 
 gboolean

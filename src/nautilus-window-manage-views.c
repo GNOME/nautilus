@@ -81,10 +81,12 @@
  */
 #define MAX_URI_IN_DIALOG_LENGTH 60
 
-static void connect_view    (NautilusWindow    *window,
-                             NautilusViewFrame *view);
-static void disconnect_view (NautilusWindow    *window,
-                             NautilusViewFrame *view);
+static void connect_view           (NautilusWindow    *window, 
+                                    NautilusViewFrame *view);
+static void disconnect_view        (NautilusWindow    *window,
+                                    NautilusViewFrame *view);
+static void cancel_location_change (NautilusWindow    *window);
+
 
 static void
 change_selection (NautilusWindow *window,
@@ -419,11 +421,18 @@ viewed_file_changed_callback (NautilusFile *file,
 	g_assert (NAUTILUS_IS_WINDOW (window));
 	g_assert (window->details->viewed_file == file);
 
+
 	/* Close window if the file it's viewing has been deleted. */
-        /* FIXME: Is closing the window really the right thing to do
-         * for all cases?
-         */
 	if (nautilus_file_is_gone (file)) {
+                /* detecting a file is gone may happen in the middle
+                 * of a pending location change, we need to cancel it
+                 * before closing the window or things break.
+                 */
+                cancel_location_change (window);
+
+                /* FIXME: Is closing the window really the right thing to do
+                 * for all cases?
+                 */
 		nautilus_window_close (window);
 	}
 }
@@ -1326,7 +1335,7 @@ nautilus_window_begin_location_change (NautilusWindow *window,
                                        guint distance)
 {
         NautilusNavigationInfo *navigation_info;
-        
+
         g_assert (NAUTILUS_IS_WINDOW (window));
         g_assert (location != NULL);
         g_assert (type == NAUTILUS_LOCATION_CHANGE_BACK
@@ -1339,12 +1348,18 @@ nautilus_window_begin_location_change (NautilusWindow *window,
         window->location_change_distance = distance;
         
         nautilus_window_allow_stop (window, TRUE);
-        
+
+        if (type == NAUTILUS_LOCATION_CHANGE_RELOAD && window->details->viewed_file != NULL) {
+                /* If we are reloading, forget all we know about the
+                 * file so we learn about new mime types, contents, etc. 
+                 */
+                nautilus_file_forget_all_attributes (window->details->viewed_file);
+        }        
+
         /* If we just set the cancel tag in the obvious way here we run into
          * a problem where the cancel tag is set to point to bogus data, because
          * the navigation info is freed by the callback before _new returns.
-         * To reproduce this problem, just use any illegal URI.
-         */
+         * To reproduce this problem, just use any illegal URI.  */
         g_assert (window->cancel_tag == NULL);
         window->location_change_end_reached = FALSE;
         navigation_info = nautilus_navigation_info_new
