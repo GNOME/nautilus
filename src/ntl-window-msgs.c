@@ -35,6 +35,7 @@
 #include "ntl-window-private.h"
 #include "ntl-index-panel.h"
 #include "explorer-location-bar.h"
+#include <libnautilus/nautilus-bookmark.h>
 #include <libnautilus/nautilus-gtk-extensions.h>
 #include <libnautilus/nautilus-string.h>
 #include <stdarg.h>

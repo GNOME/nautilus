@@ -30,7 +30,7 @@
 #include <gnome.h>
 #include <math.h>
 #include "nautilus.h"
-#include "nautilus-bookmarks-menu.h"
+#include "nautilus-bookmarks-window.h"
 #include "nautilus-signaller.h"
 #include "explorer-location-bar.h"
 #include "ntl-index-panel.h"
@@ -280,11 +280,6 @@ static GnomeUIInfo edit_menu_info[] = {
   GNOMEUIINFO_END
 };
 
-#define GO_MENU_BACK_ITEM_INDEX		0
-#define GO_MENU_FORWARD_ITEM_INDEX	1
-#define GO_MENU_UP_ITEM_INDEX		2
-#define GO_MENU_HOME_ITEM_INDEX		3
-#define GO_MENU_SEPARATOR_ITEM_INDEX	4
 static GnomeUIInfo go_menu_info[] = {
   {
     GNOME_APP_UI_ITEM,
@@ -314,11 +309,36 @@ static GnomeUIInfo go_menu_info[] = {
     GNOME_APP_PIXMAP_NONE, NULL,
     'H', GDK_CONTROL_MASK, NULL
   },
-  GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_END
 };
 
+static void
+add_bookmark_cb (GtkMenuItem* item, gpointer func_data)
+{
+	g_return_if_fail(NAUTILUS_IS_WINDOW (func_data));
+
+        nautilus_window_add_bookmark_for_current_location (NAUTILUS_WINDOW (func_data));
+}
+
+static void
+edit_bookmarks_cb(GtkMenuItem* item, gpointer user_data)
+{
+        g_return_if_fail (NAUTILUS_IS_WINDOW (user_data));
+
+        nautilus_window_edit_bookmarks (NAUTILUS_WINDOW (user_data));
+}
+
 static GnomeUIInfo bookmarks_menu_info[] = {
+  { 
+    GNOME_APP_UI_ITEM, 
+    N_("_Add Bookmark"),
+    N_("Add a bookmark for the current location to this menu."),
+    (gpointer)add_bookmark_cb, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL, 0, (GdkModifierType) 0, NULL
+  },
+  GNOMEUIINFO_ITEM_NONE(N_("_Edit Bookmarks..."), 
+  		        N_("Display a window that allows editing the bookmarks in this menu."), 
+		        edit_bookmarks_cb),
   GNOMEUIINFO_END
 };
 
@@ -385,87 +405,7 @@ static GnomeUIInfo toolbar_info[] = {
   GNOMEUIINFO_END
 };
 
-static void
-clear_go_menu_history (NautilusWindow *window)
-{
-	GList *children;
-	GList *iterator;
-	GtkMenu *go_menu;
-	gboolean found_dynamic_items;
 
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	go_menu = GTK_MENU (window->go_menu);
-
-	/* Remove all the old history items */
-	children = gtk_container_children (GTK_CONTAINER (go_menu));
-	iterator = children;
-	found_dynamic_items = FALSE;
-
-	while (iterator != NULL)
-	{
-		if (found_dynamic_items)
-		{
-			gtk_container_remove (GTK_CONTAINER (go_menu), iterator->data);
-		}
-		else if (iterator->data == window->go_menu_separator_item)
-		{
-			found_dynamic_items = TRUE;
-		}
-		iterator = g_list_next (iterator);
-	}
-
-	g_assert (found_dynamic_items);
-	g_list_free (children);
-}
-
-static void
-activate_bookmark_in_menu_item (GtkMenuItem *menu_item, NautilusWindow *window)
-{
-	g_assert (GTK_IS_MENU_ITEM (menu_item));
-	g_assert (NAUTILUS_IS_WINDOW (window));
-	g_assert (NAUTILUS_IS_BOOKMARK (gtk_object_get_user_data (GTK_OBJECT (menu_item))));
-
-	nautilus_window_goto_uri (window, nautilus_bookmark_get_uri (
-		NAUTILUS_BOOKMARK (gtk_object_get_user_data (GTK_OBJECT (menu_item)))));
-}
-
-static void
-refresh_history_list_in_go_menu (NautilusWindow *window)
-{
-	GSList *iterator;
-	GtkMenu *go_menu;
-
-	g_assert (NAUTILUS_IS_WINDOW (window));
-
-	/* Remove old set of history items. */
-	clear_go_menu_history (window);
-
-	go_menu = GTK_MENU (window->go_menu);
-
-	/* Add in a new set of history items. */
-	for (iterator = history_list; iterator != NULL; iterator = g_slist_next (iterator))
-	{
-		NautilusBookmark *bookmark;
-		GtkWidget *menu_item;
-
-		bookmark = NAUTILUS_BOOKMARK (iterator->data);
-		menu_item = nautilus_bookmark_menu_item_new (bookmark);
-		/* Store the history list's bookmark in the menu item's data.
-		 * The menu item holds no ref, but that's OK because the
-		 * history list owns the bookmark and the menu item will be
-		 * destroyed when the history list changes.
-		 */
-		gtk_object_set_user_data (GTK_OBJECT (menu_item), bookmark);
-		gtk_widget_show (GTK_WIDGET (menu_item));
-  		gtk_signal_connect(GTK_OBJECT(menu_item), 
-  			"activate",
-                     	activate_bookmark_in_menu_item, 
-                     	window);
-		
-		gtk_menu_append (go_menu, menu_item);
-	}	
-}
 
 	
 GtkType
@@ -554,17 +494,6 @@ static void
 nautilus_window_init (NautilusWindow *window)
 {
   gtk_quit_add_destroy (1, GTK_OBJECT (window));
-
-  gtk_signal_connect_object_while_alive (GTK_OBJECT (nautilus_signaller_get_current ()),
-  				         "history_list_changed",
-  				         refresh_history_list_in_go_menu,
-  				         GTK_OBJECT (window));
-
-  gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
-				         "theme_changed",
-				         refresh_history_list_in_go_menu,
-				         GTK_OBJECT (window));
-				         
 }
 
 static gboolean
@@ -715,6 +644,7 @@ nautilus_window_constructed(NautilusWindow *window)
   GtkWidget *location_bar_box, *statusbar;
   GtkWidget *temp_frame, *zoom_control;
   GtkWidget *toolbar;
+  BonoboUIHandlerMenuItem *menu_items;
   
   app = GNOME_APP(window);
 
@@ -803,27 +733,34 @@ nautilus_window_constructed(NautilusWindow *window)
   window->uih = bonobo_ui_handler_new();
 
   /* set up menu bar */
-  gnome_app_create_menus_with_data(app, main_menu, window);
+  bonobo_ui_handler_set_app(window->uih, app);
+  bonobo_ui_handler_set_toolbar(window->uih, "Main", toolbar);
+  bonobo_ui_handler_set_statusbar(window->uih, statusbar);
+  bonobo_ui_handler_create_menubar(window->uih);
+  menu_items = bonobo_ui_handler_menu_parse_uiinfo_list_with_data(main_menu, window);
+  bonobo_ui_handler_menu_add_list(window->uih, "/", menu_items);
+  bonobo_ui_handler_menu_free_list(menu_items);
 
   /* desensitize the items that haven't yet been implemented
-   * FIXME: these all need to be implemented. I'm using hardwired numbers
-   * rather than enum symbols here just 'cuz the enums aren't needed (I think)
-   * once we've implemented things. If it turns out they are, we'll define 'em.
+   * FIXME: these all need to be implemented.
    */
 
-  gtk_widget_set_sensitive(edit_menu_info[0].widget, FALSE); /* Undo */
-  gtk_widget_set_sensitive(edit_menu_info[2].widget, FALSE); /* Cut */
-  gtk_widget_set_sensitive(edit_menu_info[3].widget, FALSE); /* Copy */
-  gtk_widget_set_sensitive(edit_menu_info[4].widget, FALSE); /* Paste */
-  gtk_widget_set_sensitive(edit_menu_info[5].widget, FALSE); /* Clear */
-  gtk_widget_set_sensitive(edit_menu_info[7].widget, FALSE); /* Select All */
+  bonobo_ui_handler_menu_set_sensitivity(window->uih,
+                                         "/Edit/Undo", FALSE);
+  bonobo_ui_handler_menu_set_sensitivity(window->uih,
+                                         "/Edit/Cut", FALSE);
+  bonobo_ui_handler_menu_set_sensitivity(window->uih,
+                                         "/Edit/Copy", FALSE);
+  bonobo_ui_handler_menu_set_sensitivity(window->uih,
+                                         "/Edit/Paste", FALSE);
+  bonobo_ui_handler_menu_set_sensitivity(window->uih,
+                                         "/Edit/Clear", FALSE);
+  bonobo_ui_handler_menu_set_sensitivity(window->uih,
+                                         "/Edit/Select All", FALSE);
 
-  /* insert bookmarks menu */
-  gtk_menu_item_set_submenu(GTK_MENU_ITEM (main_menu[BOOKMARKS_MENU_INDEX].widget), 
-  			    nautilus_bookmarks_menu_new(window));
-  gnome_app_install_menu_hints(app, main_menu); /* This has to go here
-                                                   after the statusbar
-                                                   creation */
+  /* Initialize dynamic menus. */
+  nautilus_window_initialize_bookmarks_menu (window);
+  nautilus_window_initialize_go_menu (window);
 
   /* Remember some widgets now so their state can be changed later */
   window->back_button = toolbar_info[TOOLBAR_BACK_BUTTON_INDEX].widget;
@@ -831,13 +768,6 @@ nautilus_window_constructed(NautilusWindow *window)
   window->up_button = toolbar_info[TOOLBAR_UP_BUTTON_INDEX].widget;
   window->reload_button = toolbar_info[TOOLBAR_RELOAD_BUTTON_INDEX].widget;
   window->stop_button = toolbar_info[TOOLBAR_STOP_BUTTON_INDEX].widget;
-
-  window->go_menu = GTK_MENU_ITEM (main_menu[GO_MENU_INDEX].widget)->submenu;
-
-  window->back_menu_item = go_menu_info[GO_MENU_BACK_ITEM_INDEX].widget;
-  window->forward_menu_item = go_menu_info[GO_MENU_FORWARD_ITEM_INDEX].widget;
-  window->up_menu_item = go_menu_info[GO_MENU_UP_ITEM_INDEX].widget;
-  window->go_menu_separator_item = go_menu_info[GO_MENU_SEPARATOR_ITEM_INDEX].widget;
 
   gtk_signal_connect (GTK_OBJECT (window->back_button),
 		      "button_press_event",
@@ -855,11 +785,6 @@ nautilus_window_constructed(NautilusWindow *window)
   nautilus_window_allow_back(window, FALSE);
   nautilus_window_allow_forward(window, FALSE);
   nautilus_window_allow_stop(window, FALSE);
-
-  bonobo_ui_handler_set_menubar(window->uih, app->menubar);
-  bonobo_ui_handler_set_app(window->uih, app);
-  bonobo_ui_handler_set_statusbar(window->uih, statusbar);
-  bonobo_ui_handler_set_toolbar(window->uih, "Main", toolbar);
 }
 
 static void
@@ -1248,21 +1173,21 @@ void
 nautilus_window_allow_back (NautilusWindow *window, gboolean allow)
 {
    gtk_widget_set_sensitive(window->back_button, allow); 
-   gtk_widget_set_sensitive(window->back_menu_item, allow); 
+   bonobo_ui_handler_menu_set_sensitivity(window->uih, "/Go/Back", allow);
 }
 
 void
 nautilus_window_allow_forward (NautilusWindow *window, gboolean allow)
 {
    gtk_widget_set_sensitive(window->forward_button, allow); 
-   gtk_widget_set_sensitive(window->forward_menu_item, allow); 
+   bonobo_ui_handler_menu_set_sensitivity(window->uih, "/Go/Forward", allow);
 }
 
 void
 nautilus_window_allow_up (NautilusWindow *window, gboolean allow)
 {
    gtk_widget_set_sensitive(window->up_button, allow); 
-   gtk_widget_set_sensitive(window->up_menu_item, allow); 
+   bonobo_ui_handler_menu_set_sensitivity(window->uih, "/Go/Up", allow);
 }
 
 void
@@ -1312,7 +1237,11 @@ nautilus_add_to_history_list (const char *uri)
 			 	 "history_list_changed");
 }
 
-
+GSList *
+nautilus_get_history_list ()
+{
+  return history_list;
+}
 
 
 static void

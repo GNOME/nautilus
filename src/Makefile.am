@@ -24,8 +24,6 @@ nautilus_SOURCES=			\
 	explorer-location-bar.h		\
 	nautilus-bookmarklist.c		\
 	nautilus-bookmarklist.h		\
-	nautilus-bookmarks-menu.c	\
-	nautilus-bookmarks-menu.h	\
 	nautilus-bookmarks-window.c	\
 	nautilus-bookmarks-window.h	\
         nautilus-index-tabs.c		\
@@ -36,6 +34,7 @@ nautilus_SOURCES=			\
         nautilus-self-check-functions.h \
 	nautilus-signaller.c		\
 	nautilus-signaller.h		\
+        nautilus-window-menus.c         \
 	nautilus-zoom-control.c		\
 	nautilus-zoom-control.h		\
 	ntl-app.c			\

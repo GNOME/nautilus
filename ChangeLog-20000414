@@ -1,4 +1,54 @@
-2000-02-06  Andy Hertzfeld <andy@eazel.com>
+2000-02-28  John Sullivan <sullivan@eazel.com>
+
+        Switched NautilusWindow over to using BonoboUIHandler-style
+        menus. Everything works except that the Go and Bookmarks
+        menu items don't show icons for now. Apparently the part of
+        Bonobo that would support using arbitrary GdkPixbufs as
+        menu item icons is not yet implemented. Other than the
+        missing items problem, this change has no visible effect,
+        but is required to support merging items into the standard
+        menus.
+
+        * src/nautilus-bookmarks-menu.h: Deleted this file.
+        * src/nautilus-bookmarks-menu.c: Deleted this file, moved/morphed its
+          code into ntl-window.c and nautilus-window-menus.c as appropriate.
+        * src/nautilus-window-menus.c: New file, avoids making ntl-window.c
+          any huger by keeping some of the menu-specific stuff in here. Right
+          now this file includes only stuff I had to change or create for this
+          checkin. I will soon make another pass at moving a bunch of old menu 
+          code into here.
+        * src/Makefile.am: Removed deleted files, added new file.
+        * src/nautilus.h: Removed #include nautilus-bookmarks-menu.h.
+        * src/ntl-window-msgs.c: Added #include <libnautilus/nautilus-bookmark.h>
+          that became necessary when nautilus.h changed.
+        * src/ntl-app.c: (nautilus_app_exiting):
+          Changed nautilus_bookmarks_menu_exiting to nautilus_bookmarks_exiting,
+          since there's no menu involved in this code now.
+        * src/ntl-window-private.h: Added prototypes for functions called
+          between ntl-window.c and nautilus-window-menus.c.
+        * src/ntl-window.h: Added prototype for nautilus_bookmarks_exiting;
+          removed fields for various stored menu items.          
+        * src/ntl-window.c:
+          Removed #defines for GO_MENU_<foo>_ITEM_INDEX, since menu-item
+          accessing is now done with paths the Bonobo way.
+          Removed separator from static part of Go menu; the separator is
+          now added when the dynamic items are added.
+          Added static items in Bookmarks menu to GnomeUIInfo array.
+          (add_bookmark_cb), (edit_bookmarks_cb): New callback functions used
+          by the static part of the Bookmarks menu.
+          (clear_go_menu_history), (activate_bookmark_in_menu_item),
+          (refresh_history_list_in_go_menu): Removed functions; new versions 
+          are in nautilus-window-menus.c.
+          (nautilus_window_init): Removed go-menu signal connections; new
+          versions are in nautilus-window-menus.c.
+          (nautilus_window_constructed): Create and access menus the Bonobo way;
+          also call functions to initialize the two dynamic menus.
+          (nautilus_window_allow_back), (nautilus_window_allow_forward),
+          (nautilus_window_allow_up): Access menu items with paths, the Bonobo way.
+          (nautilus_get_history_list): New function, wrapper around static
+          variable so it can be accessed from nautilus-window-menus.c.
+
+2000-02-26  Andy Hertzfeld <andy@eazel.com>
 
 	fixed bug where title tab was initially pre-lit
 	

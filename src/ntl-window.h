@@ -83,11 +83,6 @@ struct _NautilusWindow {
   GtkWidget *up_button;
   GtkWidget *reload_button;
   GtkWidget *stop_button;
-  GtkWidget *back_menu_item;
-  GtkWidget *forward_menu_item;
-  GtkWidget *up_menu_item;
-  GtkWidget *go_menu;
-  GtkWidget *go_menu_separator_item;
 
   /* Pending changes */
   NautilusNavigationInfo *pending_ni;
@@ -135,5 +130,7 @@ void nautilus_window_allow_forward (NautilusWindow *window, gboolean allow);
 void nautilus_window_allow_up (NautilusWindow *window, gboolean allow);
 void nautilus_window_allow_reload (NautilusWindow *window, gboolean allow);
 void nautilus_window_allow_stop (NautilusWindow *window, gboolean allow);
+
+void nautilus_bookmarks_exiting (void);
 
 #endif

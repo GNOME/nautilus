@@ -44,5 +44,12 @@ void nautilus_window_connect_view (NautilusWindow *window,
 				   NautilusView *view);
 void nautilus_window_view_destroyed(NautilusView *view, NautilusWindow *window);
 void nautilus_add_to_history_list (const char *uri);
+GSList *nautilus_get_history_list (void);
+
+void nautilus_window_add_bookmark_for_current_location (NautilusWindow *window);
+void nautilus_window_edit_bookmarks (NautilusWindow *window);
+void nautilus_window_initialize_bookmarks_menu (NautilusWindow *window);
+void nautilus_window_initialize_go_menu (NautilusWindow *window);
+
 
 #endif
