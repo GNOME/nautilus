@@ -2441,7 +2441,7 @@ permission_change_callback (NautilusFile *file, GnomeVFSResult result, gpointer 
 	FMPropertiesWindow *window;
 	g_assert (callback_data != NULL);
 
-	*window = (FMPropertiesWindow *)callback_data;
+	window = (FMPropertiesWindow *)callback_data;
 	if (window->details->long_operation_underway == 1) {
 		/* finished !! */
 		gdk_window_set_cursor (GTK_WIDGET (window)->window, NULL);
