@@ -256,7 +256,9 @@ footer_item_new (EazelServicesFooter *footer,
 {
 	GtkWidget *hbox;
 	GtkWidget *event_box;
-  	GtkWidget *label;
+	GtkWidget *left;
+	GtkWidget *label;
+/* 	GtkWidget *right; */
 	ButtonPressData *data;
 
 	g_return_val_if_fail (EAZEL_SERVICES_IS_FOOTER (footer), NULL);
@@ -268,18 +270,23 @@ footer_item_new (EazelServicesFooter *footer,
 	gtk_container_add (GTK_CONTAINER (event_box), hbox);
 
 	if (has_left_bumper) {
-		GtkWidget *left;
 		left = eazel_services_image_new (EAZEL_SERVICES_NORMAL_LEFT_BUMPER, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
-		buffered_widget_add_prelighting (left, event_box, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_PRELIGHT_FILL);
-		gtk_box_pack_start (GTK_BOX (hbox), left, FALSE, FALSE, 0);
-		gtk_widget_show (left);
 	}
+	else {
+		left = eazel_services_image_new (EAZEL_SERVICES_NORMAL_FILL, NULL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
+	}
+
+	buffered_widget_add_prelighting (left, event_box, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_PRELIGHT_FILL);
+	gtk_box_pack_start (GTK_BOX (hbox), left, FALSE, FALSE, 0);
+	gtk_widget_show (left);
 
 	label = eazel_services_label_new (text,
 					  EAZEL_SERVICES_FOOTER_FONT_WEIGHT,
 					  EAZEL_SERVICES_FOOTER_FONT_SIZE,
-					  5, 0,
-					  2, 0,
+					  EAZEL_SERVICES_FOOTER_X_PADDING,
+					  EAZEL_SERVICES_FOOTER_Y_PADDING,
+					  EAZEL_SERVICES_FOOTER_VERTICAL_OFFSET,
+					  EAZEL_SERVICES_FOOTER_HORIZONTAL_OFFSET,
 					  EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
 					  EAZEL_SERVICES_NORMAL_FILL);
 	
@@ -352,7 +359,7 @@ eazel_services_footer_update (EazelServicesFooter *footer,
 	GtkWidget *remainder;
 	guint i;
 	char *date_string;
-
+	
 	g_return_if_fail (EAZEL_SERVICES_IS_FOOTER (footer));
 	g_return_if_fail (items != NULL);
 	g_return_if_fail (num_items > 0);
@@ -374,8 +381,10 @@ eazel_services_footer_update (EazelServicesFooter *footer,
 	footer->details->date = eazel_services_label_new (date_string,
 							  EAZEL_SERVICES_FOOTER_FONT_WEIGHT,
 							  EAZEL_SERVICES_FOOTER_FONT_SIZE,
-							  8, 0,
-							  2, 0,
+							  EAZEL_SERVICES_FOOTER_DATE_X_PADDING,
+							  EAZEL_SERVICES_FOOTER_DATE_Y_PADDING,
+							  EAZEL_SERVICES_FOOTER_DATE_VERTICAL_OFFSET,
+							  EAZEL_SERVICES_FOOTER_DATE_HORIZONTAL_OFFSET,
 							  EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
 							  EAZEL_SERVICES_NORMAL_FILL);
 	g_free (date_string);

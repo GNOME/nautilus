@@ -53,11 +53,36 @@
 
 #define EAZEL_SERVICES_FONT_FAMILY			"helvetica"
 
+/*
+ * X_PADDING: Amount of extra horizontal pad to give each item.  The x padding
+ * is divided evenly on the left/right margins of the item.
+ *
+ * Y_PADDING: Amount of extra vertical pad to give each item.  The y padding
+ * is divided evenly on the top/bottom margins of the item.
+ *
+ * VERTICAL_OFFSET: Positive or negative amount to offset the item vertically.
+ *
+ * HORIZONTAL_OFFSET: Positive or negative amount to offset the item horizontally.
+ */
+#define EAZEL_SERVICES_FOOTER_FONT_SIZE			13
+#define EAZEL_SERVICES_FOOTER_FONT_WEIGHT		"medium"
+
+#define EAZEL_SERVICES_FOOTER_X_PADDING			2
+#define EAZEL_SERVICES_FOOTER_Y_PADDING			0
+#define EAZEL_SERVICES_FOOTER_VERTICAL_OFFSET		2
+#define EAZEL_SERVICES_FOOTER_HORIZONTAL_OFFSET		0
+
+#define EAZEL_SERVICES_FOOTER_DATE_X_PADDING		5
+#define EAZEL_SERVICES_FOOTER_DATE_Y_PADDING		0
+#define EAZEL_SERVICES_FOOTER_DATE_VERTICAL_OFFSET	2
+#define EAZEL_SERVICES_FOOTER_DATE_HORIZONTAL_OFFSET	-5
+
 #define EAZEL_SERVICES_HEADER_FONT_SIZE			18
 #define EAZEL_SERVICES_HEADER_FONT_WEIGHT		"bold"
-
-#define EAZEL_SERVICES_FOOTER_FONT_SIZE			13
-#define EAZEL_SERVICES_FOOTER_FONT_WEIGHT		"normal"
+#define EAZEL_SERVICES_HEADER_X_PADDING			10
+#define EAZEL_SERVICES_HEADER_Y_PADDING			0
+#define EAZEL_SERVICES_HEADER_VERTICAL_OFFSET		2
+#define EAZEL_SERVICES_HEADER_HORIZONTAL_OFFSET		0
 
 BEGIN_GNOME_DECLS
 

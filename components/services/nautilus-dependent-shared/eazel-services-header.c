@@ -94,8 +94,10 @@ eazel_services_header_new (const char *text)
 	header->details->text = eazel_services_label_new (text,
 							  EAZEL_SERVICES_HEADER_FONT_WEIGHT,
 							  EAZEL_SERVICES_HEADER_FONT_SIZE,
-							  10, 0,
-							  4, 0,
+							  EAZEL_SERVICES_HEADER_X_PADDING,
+							  EAZEL_SERVICES_HEADER_Y_PADDING,
+							  EAZEL_SERVICES_HEADER_VERTICAL_OFFSET,
+							  EAZEL_SERVICES_HEADER_HORIZONTAL_OFFSET,
 							  EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
 							  EAZEL_SERVICES_LOGO_LEFT_SIDE_REPEAT_ICON);
 
