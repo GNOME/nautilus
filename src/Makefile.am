@@ -140,7 +140,7 @@ nautilus_SOURCES = \
 
 $(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp
 nautilus_shell_interface_idl_stamp: $(ORBIT_IDL) nautilus-shell-interface.idl $(top_srcdir)/libnautilus/nautilus-view-component.idl
-	$(ORBIT_IDL) $(IDL_CFLAGS) -I$(top_srcdir) nautilus-shell-interface.idl
+	$(ORBIT_IDL) $(IDL_CFLAGS) -I$(top_srcdir) $(srcdir)/nautilus-shell-interface.idl
 	touch $@
 
 TESTS=check-nautilus
