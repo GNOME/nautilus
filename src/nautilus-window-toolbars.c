@@ -24,6 +24,7 @@
 */
 
 #include <config.h>
+#include "nautilus-window.h"
 #include "nautilus-window-private.h"
 #include "nautilus-application.h"
 
@@ -283,12 +284,7 @@ nautilus_preferences_remove_callback(NAUTILUS_PREFERENCES_TOOLBAR_ICON_THEME,
 static void
 toolbar_reload_callback (GtkWidget *widget, NautilusWindow *window)
 {
-	Nautilus_NavigationRequestInfo nri;
-
-	memset(&nri, 0, sizeof(nri));
-	nri.requested_uri = (char *)nautilus_window_get_requested_uri (window);
-	nri.new_window_requested = FALSE;
-	nautilus_window_begin_location_change (window, &nri, NULL, NAUTILUS_LOCATION_CHANGE_RELOAD, 0);
+	nautilus_window_reload (window);
 }
 
 static void

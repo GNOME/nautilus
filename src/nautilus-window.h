@@ -161,5 +161,5 @@ void             nautilus_window_allow_reload         (NautilusWindow    *window
 void             nautilus_window_allow_stop           (NautilusWindow    *window,
                                                        gboolean           allow);
 void             nautilus_bookmarks_exiting           (void);
-
+void		 nautilus_window_reload		      (NautilusWindow	 *window);
 #endif

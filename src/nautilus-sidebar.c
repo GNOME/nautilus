@@ -41,7 +41,6 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-keep-last-vertical-box.h>
-#include <libnautilus-extensions/nautilus-link-set.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-string.h>
@@ -49,6 +48,7 @@
 #include <libnautilus-extensions/nautilus-preferences.h>
 #include "nautilus-sidebar-tabs.h"
 #include "nautilus-sidebar-title.h"
+#include "nautilus-link-set-window.h"
 
 struct NautilusSidebarDetails {
 	GtkVBox *container;

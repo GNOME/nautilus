@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
 
-   nautilus-link-set.h: xml-based sets of link files
+   nautilus-link-set-window.h: window for configuring link sets
  
    Copyright (C) 2000 Eazel, Inc.
 
@@ -22,17 +22,14 @@
    Authors: Andy Hertzfeld <andy@eazel.com>
 */
 
-#ifndef NAUTILUS_LINK_SET_H
-#define NAUTILUS_LINK_SET_H
+#ifndef NAUTILUS_LINK_SET_WINDOW_H
+#define NAUTILUS_LINK_SET_WINDOW_H
 
 #include <glib.h>
+#include <libnautilus-extensions/nautilus-link-set.h>
 #include <gtk/gtkwindow.h>
 
-gboolean	nautilus_link_set_install (const char *directory_path,
-				    	const char *link_set_name);
-void		nautilus_link_set_remove  (const char *directory_path,
-				    	const char *link_set_name);
-gboolean	nautilus_link_set_is_installed (const char *directory_path, 
-					const char *link_set_name);
-					
+GtkWindow	*nautilus_link_set_configure_window (const char *directory_path, 
+							GtkWindow *window);
+
 #endif /* NAUTILUS_LINK_SET_H */

@@ -1,3 +1,22 @@
+2000-06-12  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-link-set.c,h:
+	(nautilus_link_set_remove):
+	removed the link_set_configure_window routine from here
+	* src/Makefile.am:
+	* src/nautilus-link-set-window.c,h: (link_set_check_box_toggled),
+	(make_link_set_check_box), (get_link_set_names),
+	(nautilus_link_set_configure_window):
+	added a new file  to hold the nautilus-link-set-configure-window,
+	and made it call reload after installing or removing a link set
+	* src/nautilus-sidebar.c:
+	updated since the location of the configure window changed
+	* src/nautilus-window.c,h: (nautilus_window_reload):
+	added nautilus_window_reload to allow external routines to
+	request a reload
+	* src/nautilus-window-toolbars.c: (toolbar_reload_callback):
+	made it use nautilus_window_reload
+
 2000-06-12  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-undo-signal-handlers.c:

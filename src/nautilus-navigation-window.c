@@ -1245,6 +1245,18 @@ nautilus_window_real_set_content_view (NautilusWindow *window, NautilusViewFrame
 	window->content_view = new_view;
 }
 
+/* reload the contents of the window */
+void
+nautilus_window_reload (NautilusWindow *window)
+{
+	Nautilus_NavigationRequestInfo nri;
+
+	memset(&nri, 0, sizeof(nri));
+	nri.requested_uri = (char *)nautilus_window_get_requested_uri (window);
+	nri.new_window_requested = FALSE;
+	nautilus_window_begin_location_change (window, &nri, NULL, NAUTILUS_LOCATION_CHANGE_RELOAD, 0);
+}
+
 /**
  * window_find_sidebar_panel_by_identifier:
  * @window:	A NautilusWindow

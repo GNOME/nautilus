@@ -45,6 +45,8 @@ nautilus_SOURCES =\
 	nautilus-sidebar-tabs.h			\
 	nautilus-sidebar-title.c		\
 	nautilus-sidebar-title.h		\
+	nautilus-link-set-window.c		\
+	nautilus-link-set-window.h		\
 	nautilus-location-bar.c         	\
 	nautilus-location-bar.h			\
 	nautilus-property-browser.c     	\
