@@ -42,13 +42,15 @@ typedef struct NautilusDesktopWindowDetails NautilusDesktopWindowDetails;
 typedef struct {
 	NautilusWindow parent_spot;
 	NautilusDesktopWindowDetails *details;
+        gboolean affect_desktop_on_next_location_change;
 } NautilusDesktopWindow;
 
 typedef struct {
 	NautilusWindowClass parent_spot;
 } NautilusDesktopWindowClass;
 
-GtkType                nautilus_desktop_window_get_type (void);
-NautilusDesktopWindow *nautilus_desktop_window_new      (NautilusApplication *application);
+GtkType                nautilus_desktop_window_get_type            (void);
+NautilusDesktopWindow *nautilus_desktop_window_new                 (NautilusApplication *application);
+void                   nautilus_desktop_window_update_directory    (NautilusDesktopWindow *window);
 
 #endif /* NAUTILUS_DESKTOP_WINDOW_H */

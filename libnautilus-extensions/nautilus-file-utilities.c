@@ -25,6 +25,7 @@
 #include <config.h>
 #include "nautilus-file-utilities.h"
 
+#include "nautilus-global-preferences.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-link-set.h"
 #include "nautilus-metadata.h"
@@ -138,9 +139,13 @@ nautilus_get_desktop_directory (void)
 {
 	char *desktop_directory, *user_directory;
 
-	user_directory = nautilus_get_user_directory ();
-	desktop_directory = nautilus_make_path (user_directory, DESKTOP_DIRECTORY_NAME);
-	g_free (user_directory);
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
+		desktop_directory = strdup (g_get_home_dir());
+	} else {
+		user_directory = nautilus_get_user_directory ();
+		desktop_directory = nautilus_make_path (user_directory, DESKTOP_DIRECTORY_NAME);
+		g_free (user_directory);
+	}
 
 	if (!g_file_exists (desktop_directory)) {
 		mkdir (desktop_directory, DEFAULT_DESKTOP_DIRECTORY_MODE);

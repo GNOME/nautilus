@@ -715,14 +715,16 @@ open_location (NautilusWindow *window,
          * the topmost window, or create a new window if the desktop
          * is the topmost (and only).
          */
-        if (!create_new_window
-            && NAUTILUS_IS_DESKTOP_WINDOW (window)
-            && window->content_view != NULL) {
-                target_window = get_topmost_nautilus_window ();
-                if (target_window == window) {
-                        create_new_window = TRUE;
+        if (!create_new_window && NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+                if (NAUTILUS_DESKTOP_WINDOW(window)->affect_desktop_on_next_location_change == FALSE) {
+                        target_window = get_topmost_nautilus_window ();
+                        if (target_window == window) {
+                                create_new_window = TRUE;
+                        } else {
+                                eel_gtk_window_present (GTK_WINDOW (target_window));
+                        }
                 } else {
-                        eel_gtk_window_present (GTK_WINDOW (target_window));
+                        NAUTILUS_DESKTOP_WINDOW(window)->affect_desktop_on_next_location_change = FALSE;
                 }
         }
 

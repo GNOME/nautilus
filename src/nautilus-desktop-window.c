@@ -110,12 +110,27 @@ nautilus_desktop_window_delete_event (NautilusDesktopWindow *window)
 	return TRUE;
 }
 
+void
+nautilus_desktop_window_update_directory (NautilusDesktopWindow *window)
+{
+	char *desktop_directory_path;
+	char *desktop_directory_uri;
+
+	g_assert (NAUTILUS_IS_DESKTOP_WINDOW (window));
+
+	desktop_directory_path = nautilus_get_desktop_directory ();
+	
+	desktop_directory_uri = gnome_vfs_get_uri_from_local_path (desktop_directory_path);
+	g_free (desktop_directory_path);
+	window->affect_desktop_on_next_location_change = TRUE;
+	nautilus_window_go_to (NAUTILUS_WINDOW (window), desktop_directory_uri);
+	g_free (desktop_directory_uri);
+}
+
 NautilusDesktopWindow *
 nautilus_desktop_window_new (NautilusApplication *application)
 {
 	NautilusDesktopWindow *window;
-	char *desktop_directory_path;
-	char *desktop_directory_uri;
 
 	window = NAUTILUS_DESKTOP_WINDOW
 		(gtk_widget_new (nautilus_desktop_window_get_type(),
@@ -129,16 +144,11 @@ nautilus_desktop_window_new (NautilusApplication *application)
 	gtk_signal_connect (GTK_OBJECT (window), "realize", GTK_SIGNAL_FUNC (nautilus_desktop_window_realized), NULL);
 	gtk_signal_connect (GTK_OBJECT (window), "delete_event", GTK_SIGNAL_FUNC (nautilus_desktop_window_delete_event), NULL);
 
-	desktop_directory_path = nautilus_get_desktop_directory ();
-	
 	/* Point window at the desktop folder.
 	 * Note that nautilus_desktop_window_initialize is too early to do this.
 	 */
-	desktop_directory_uri = gnome_vfs_get_uri_from_local_path (desktop_directory_path);
-	g_free (desktop_directory_path);
-	nautilus_window_go_to (NAUTILUS_WINDOW (window), desktop_directory_uri);
-	g_free (desktop_directory_uri);
-	
+	nautilus_desktop_window_update_directory (window);
+
 	gtk_widget_show (GTK_WIDGET (window));
 
 	return window;

@@ -433,6 +433,12 @@ static const PreferenceDefault preference_defaults[] = {
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
 	  { USER_LEVEL_NONE }
 	},
+	{ NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+	  PREFERENCE_BOOLEAN,
+	  NAUTILUS_USER_LEVEL_ADVANCED,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  { USER_LEVEL_NONE }
+	},
 	{ NAUTILUS_PREFERENCES_CAN_ADD_CONTENT,
 	  PREFERENCE_BOOLEAN,
 	  NAUTILUS_USER_LEVEL_NOVICE,
@@ -927,6 +933,11 @@ static PreferenceDialogItem windows_and_desktop_items[] = {
 	{ N_("Desktop"),
 	  NAUTILUS_PREFERENCES_SHOW_DESKTOP,
 	  N_("Use Nautilus to draw the desktop"),
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
+	},
+        { N_("Desktop"),
+	  NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+	  N_("Use your home folder as the desktop"),
 	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Opening New Windows"),

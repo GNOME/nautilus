@@ -1,3 +1,34 @@
+2001-04-19  Seth Nickell  <snickell@stanford.edu>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Add a preference for having the desktop directory point at the
+	Unix homedir rather than the default Nautilus desktop directory.
+	
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_desktop_directory):
+	Check the preference and return the appropriate directory.
+	
+	* src/nautilus-application.c: (nautilus_application_startup),
+	(confirm_ok_to_run_as_root), (desktop_location_changed_callback):
+	Add a callback for updating the desktop when the preference
+	changes.
+
+	* src/nautilus-desktop-window.h:
+	* src/nautilus-desktop-window.c:
+	(nautilus_desktop_window_update_directory),
+	(nautilus_desktop_window_new):
+	Add boolean variable affect_desktop_on_next_location_change to
+	allow reloading of the desktop dir (rather than loading on open
+	in to a new/toplevel window). Add a function for telling the
+	desktop window to point to the updated destkop location.
+	
+	* src/nautilus-window-manage-views.c: (open_location):
+	Check whether this open should be done in the desktop itself or
+	if we should open a new window (/ recycle an existing window).
+
 2001-04-19  Darin Adler  <darin@eazel.com>
 
 	Fix bug 8082 (Dragging a file to a treeview destination causes

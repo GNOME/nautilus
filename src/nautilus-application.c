@@ -82,6 +82,7 @@ static void          nautilus_application_destroy          (GtkObject           
 static gboolean      confirm_ok_to_run_as_root             (void);
 static gboolean      need_to_show_first_time_druid         (void);
 static void          desktop_changed_callback              (gpointer                  user_data);
+static void          desktop_location_changed_callback     (gpointer                  user_data);
 static void          volume_mounted_callback               (NautilusVolumeMonitor    *monitor,
 							    NautilusVolume           *volume,
 							    NautilusApplication      *application);
@@ -531,6 +532,13 @@ nautilus_application_startup (NautilusApplication *application,
 							       application,
 							       GTK_OBJECT (application));
 
+		/* Monitor the preference to have the desktop */
+		/* point to the Unix home folder */
+		nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+							       desktop_location_changed_callback,
+							       nautilus_application_desktop_window,
+							       GTK_OBJECT (application));
+
 		nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, 
 						   	       default_folder_viewer_changed_callback, 
 						   	       NULL,
@@ -678,6 +686,16 @@ confirm_ok_to_run_as_root (void)
 	result = gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 	
 	return result == 0;
+}
+
+/* callback for changing the directory the desktop points to */
+static void
+desktop_location_changed_callback (gpointer user_data)
+{
+	NautilusDesktopWindow *desktop_window;
+	desktop_window = NAUTILUS_DESKTOP_WINDOW (user_data);
+
+	nautilus_desktop_window_update_directory (desktop_window);
 }
 
 /* callback for showing or hiding the desktop based on the user's preference */

@@ -47,6 +47,7 @@ BEGIN_GNOME_DECLS
 
 /* Desktop options */
 #define NAUTILUS_PREFERENCES_SHOW_DESKTOP			"preferences/show_desktop"
+#define NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR                "preferences/desktop_is_home_dir"
 
 /* Display  */
 #define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"preferences/show_hidden_files"
