@@ -223,21 +223,22 @@ nautilus_application_check_user_directories (NautilusApplication *application)
 	dir_list = nautilus_string_list_new (TRUE);
 	
 	/* FIXME bugzilla.eazel.com 1115: Need better name for "User Directory"
-	 * and "User Data Directory".
+	 * and "User Data Directory". Perhaps it's OK to use the word "directory"
+	 * instead of "folder" in this technical error case.
 	 */
 
 	if (!g_file_test (user_directory, G_FILE_TEST_ISDIR)) {
-		nautilus_string_list_insert (dir_list, "User Directory");
+		nautilus_string_list_insert (dir_list, _("User Directory"));
 	}
 	g_free (user_directory);
 	    
 	if (!g_file_test (user_main_directory, G_FILE_TEST_ISDIR)) {
-		nautilus_string_list_insert (dir_list, "User Main Directory");
+		nautilus_string_list_insert (dir_list, _("User Main Directory"));
 	}
 	g_free (user_main_directory);
 	    
 	if (!g_file_test (desktop_directory, G_FILE_TEST_ISDIR)) {
-		nautilus_string_list_insert (dir_list, "Desktop Directory");
+		nautilus_string_list_insert (dir_list, _("Desktop Directory"));
 	}
 	g_free (desktop_directory);
 
@@ -252,7 +253,7 @@ nautilus_application_check_user_directories (NautilusApplication *application)
 						dir_list_concatenated,
 						"Please restart Nautilus to fix this problem.");
 
-		nautilus_error_dialog (error_string, NULL);
+		nautilus_error_dialog (error_string, _("Nautilus: Missing directories"), NULL);
 
 		g_free (dir_list_concatenated);
 		g_free (error_string);
@@ -401,7 +402,7 @@ nautilus_application_startup (NautilusApplication *application,
 		}
 
 		if (message != NULL) {
-			dialog = nautilus_error_dialog_with_details (message, detailed_message, NULL);
+			dialog = nautilus_error_dialog_with_details (message, NULL, detailed_message, NULL);
 			/* We need the main event loop so the user has a chance to see the dialog. */
 			nautilus_main_event_loop_register (GTK_OBJECT (dialog));
 			goto out;

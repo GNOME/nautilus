@@ -45,6 +45,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-debug.h>
 #include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
@@ -699,7 +700,7 @@ handle_unreadable_location (NautilusWindow *window, const char *uri)
 		file_name = nautilus_file_get_name (file);
         	message = g_strdup_printf (_("You do not have the permissions necessary to view \"%s\"."), file_name);
                 g_free (file_name);
-                nautilus_error_dialog (message, GTK_WINDOW (window));
+                nautilus_error_dialog (message, _("Nautilus: Inadequate permissions"), GTK_WINDOW (window));
                 g_free (message);
 	}
 
@@ -896,7 +897,7 @@ report_content_view_failure_to_user (NautilusWindow *window)
 	message = g_strdup_printf ("The %s view encountered an error and can't continue. "
 				   "You can choose another view or go to a different location.", 
 				   window->content_view_id->name);
-	nautilus_error_dialog (message, GTK_WINDOW (window));
+	nautilus_error_dialog (message, _("Nautilus: View failed"), GTK_WINDOW (window));
 	g_free (message);
 }
 
@@ -912,7 +913,7 @@ report_sidebar_panel_failure_to_user (NautilusWindow *window, NautilusViewFrame 
 			           name);
 	g_free (name);
 
-	nautilus_error_dialog (message, GTK_WINDOW (window));
+	nautilus_error_dialog (message, _("Nautilus: Sidebar panel failed"), GTK_WINDOW (window));
 
 	g_free (message);
 }
@@ -1271,16 +1272,19 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                                               NautilusNavigationInfo *navi,
                                               gpointer data)
 {
-        NautilusWindow *window = data;
+        NautilusWindow *window;
         NautilusFile *file;
         char *requested_uri;
+        char *uri_for_display;
         char *error_message;
         char *scheme_string;
         char *type_string;
+        char *dialog_title;
  	GnomeDialog *dialog;
        
         g_assert (navi != NULL);
         
+        window = NAUTILUS_WINDOW (data);
         window->location_change_end_reached = TRUE;
         
         if (result_code == NAUTILUS_NAVIGATION_RESULT_OK) {
@@ -1300,19 +1304,22 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
         
         /* Some sort of failure occurred. How 'bout we tell the user? */
         requested_uri = navi->location;
+	uri_for_display = nautilus_format_uri_for_display (requested_uri);
+
+	dialog_title = NULL;
         
         switch (result_code) {
 
         case NAUTILUS_NAVIGATION_RESULT_NOT_FOUND:
                 error_message = g_strdup_printf
                         (_("Couldn't find \"%s\". Please check the spelling and try again."),
-                         requested_uri);
+                         uri_for_display);
                 break;
 
         case NAUTILUS_NAVIGATION_RESULT_INVALID_URI:
                 error_message = g_strdup_printf
                         (_("\"%s\" is not a valid location. Please check the spelling and try again."),
-                         requested_uri);
+                         uri_for_display);
                 break;
 
         case NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE:
@@ -1330,11 +1337,11 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                 if (type_string == NULL) {
 	                error_message = g_strdup_printf
                                 (_("Couldn't display \"%s\", because Nautilus cannot handle items of this type."),
-                                 requested_uri);
+                                 uri_for_display);
         	} else {
 	                error_message = g_strdup_printf
                                 (_("Couldn't display \"%s\", because Nautilus cannot handle items of type \"%s\"."),
-                                 requested_uri, type_string);
+                                 uri_for_display, type_string);
 			g_free (type_string);
         	}
                 break;
@@ -1346,23 +1353,24 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                 scheme_string = nautilus_str_get_prefix (requested_uri, ":");
                 g_assert (scheme_string != NULL);  /* Shouldn't have gotten this error unless there's a : separator. */
                 error_message = g_strdup_printf (_("Couldn't display \"%s\", because Nautilus cannot handle %s: locations."),
-                                                 requested_uri, scheme_string);
+                                                 uri_for_display, scheme_string);
                 g_free (scheme_string);
                 break;
 
 	case NAUTILUS_NAVIGATION_RESULT_LOGIN_FAILED:
                 error_message = g_strdup_printf (_("Couldn't display \"%s\", because the attempt to log in failed."),
-                                                 requested_uri);		
+                                                 uri_for_display);		
 		break;
 
 	case NAUTILUS_NAVIGATION_RESULT_SERVICE_NOT_AVAILABLE:
 		if (nautilus_is_search_uri (requested_uri)) {
 			/* FIXME bugzilla.eazel.com 2458: Need to give the user some advice about what to do here. */
 			error_message = g_strdup_printf (_("Sorry, searching can't be used now. In the future this message will be more helpful."));
+			dialog_title = g_strdup (_("Nautilus: Searching unavailable"));
 			break;
 		} /* else fall through */
         default:
-                error_message = g_strdup_printf (_("Nautilus cannot display \"%s\"."), requested_uri);
+                error_message = g_strdup_printf (_("Nautilus cannot display \"%s\"."), uri_for_display);
         }
         
         if (navi != NULL) {
@@ -1373,12 +1381,16 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                 nautilus_navigation_info_free (navi);
         }
         
+        if (dialog_title == NULL) {
+		dialog_title = g_strdup (_("Nautilus: Can't display location"));
+        }
+
         if (!GTK_WIDGET_VISIBLE (GTK_WIDGET (window))) {
                 /* Destroy never-had-a-chance-to-be-seen window. This case
                  * happens when a new window cannot display its initial URI. 
                  */
 
-                dialog = nautilus_error_dialog (error_message, NULL);
+                dialog = nautilus_error_dialog (error_message, dialog_title, NULL);
                 
                 /* If window is the sole window open, destroying it will
                  * kill the main event loop and the dialog will go away
@@ -1394,7 +1406,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
         } else {
                 /* Clean up state of already-showing window */
                 nautilus_window_allow_stop (window, FALSE);
-                nautilus_error_dialog (error_message, GTK_WINDOW (window));
+                nautilus_error_dialog (error_message, dialog_title, GTK_WINDOW (window));
 
                 /* Leave the location bar showing the bad location that the user
                  * typed (or maybe achieved by dragging or something). Many times
@@ -1402,7 +1414,9 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                  * can choose "Refresh" to get the original URI back in the location bar.
                  */
         }
-        
+
+	g_free (dialog_title);
+	g_free (uri_for_display);
         g_free (error_message);
 }
 

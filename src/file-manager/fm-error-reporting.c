@@ -66,7 +66,7 @@ fm_report_error_renaming_file (NautilusFile *file,
 		g_free (original_name);
 	}
 
-	nautilus_error_dialog (message, NULL);
+	nautilus_error_dialog (message, _("Nautilus: Error renaming file"), NULL);
 	g_free (message);
 }
 
@@ -94,7 +94,7 @@ fm_report_error_setting_group (NautilusFile *file,
 		g_free (file_name);
 	}
 
-	nautilus_error_dialog (message, NULL);
+	nautilus_error_dialog (message, _("Nautilus: Error setting group"), NULL);
 	g_free (message);
 }		
 
@@ -116,7 +116,7 @@ fm_report_error_setting_owner (NautilusFile *file,
 		g_free (file_name);
 	}
 
-	nautilus_error_dialog (message, NULL);
+	nautilus_error_dialog (message, _("Nautilus: Error setting owner"), NULL);
 	g_free (message);
 }		
 
@@ -138,7 +138,7 @@ fm_report_error_setting_permissions (NautilusFile *file,
 		g_free (file_name);
 	}
 
-	nautilus_error_dialog (message, NULL);
+	nautilus_error_dialog (message, _("Nautilus: Error setting permissions"), NULL);
 	g_free (message);
 }		
 

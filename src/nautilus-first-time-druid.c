@@ -701,7 +701,7 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 	}
 		
 	/* set up the initial page */
-	file = nautilus_pixmap_file (_("druid_welcome.png"));
+	file = nautilus_pixmap_file ("druid_welcome.png");
 	if (file != NULL) {
 		pixbuf = gdk_pixbuf_new_from_file (file);
 	} else {

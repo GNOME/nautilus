@@ -1459,15 +1459,18 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 	char *prompt;
 	char *unavailable_message;
 	char *file_name;
+	char *dialog_title;
 	GnomeDialog *dialog;
 
 	file_name = nautilus_file_get_name (file);
 
 	if (action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
 		unavailable_message = g_strdup_printf ("No viewers are available for %s.", file_name);		
+		dialog_title = g_strdup ("Nautilus: No available viewers");
 	} else {
 		g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
 		unavailable_message = g_strdup_printf ("No applications are available for %s.", file_name);		
+		dialog_title = g_strdup ("Nautilus: No available applications");
 	}
 
 	/* Note: This might be misleading in the components case, since the
@@ -1480,11 +1483,12 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 				  "Programs\" part of the GNOME Control Center. Do "
 				  "you want to go there now?", unavailable_message);
 	dialog = nautilus_yes_no_dialog 
-		(prompt, GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, parent_window);
+		(prompt, dialog_title, GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, parent_window);
 
 	gnome_dialog_button_connect (dialog, GNOME_OK, launch_mime_capplet, NULL);
 
 	g_free (unavailable_message);
 	g_free (file_name);
 	g_free (prompt);
+	g_free (dialog_title);
 }

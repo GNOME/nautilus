@@ -246,8 +246,7 @@ nautilus_launch_application_parented (GnomeVFSMimeApplication *application,
 						    "\"%s\" is remote. If you want to open it "
 						    "with %s, make a local copy first."), 
 						  application->name, uri, application->name);
-			dialog = nautilus_error_dialog (prompt, parent);
-			gtk_window_set_title (GTK_WINDOW (dialog), _("Can't open remote file"));
+			dialog = nautilus_error_dialog (prompt, _("Can't open remote file"), parent);
 			g_free (prompt);
 			return;
 		}

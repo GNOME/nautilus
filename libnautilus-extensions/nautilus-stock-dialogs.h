@@ -45,19 +45,24 @@ int          nautilus_simple_dialog             (GtkWidget              *parent,
 						 ...);
 
 /* Variations on gnome stock dialogs; these do line wrapping, we don't
- * bother with non-parented versions, and we return GnomeDialog
- * pointers instead of GtkWidget pointers.
+ * bother with non-parented versions, we allow setting the title,
+ * and we return GnomeDialog pointers instead of GtkWidget pointers.
  */
 GnomeDialog *nautilus_info_dialog               (const char             *informative_message,
+						 const char		*dialog_title,
 						 GtkWindow              *parent);
 GnomeDialog *nautilus_warning_dialog            (const char             *warning_message,
+						 const char		*dialog_title,
 						 GtkWindow              *parent);
 GnomeDialog *nautilus_error_dialog              (const char             *error_message,
+						 const char		*dialog_title,
 						 GtkWindow              *parent);
 GnomeDialog *nautilus_error_dialog_with_details (const char             *error_message,
+						 const char		*dialog_title,
 						 const char             *detailed_error_message,
 						 GtkWindow              *parent);
 GnomeDialog *nautilus_yes_no_dialog             (const char             *question,
+						 const char		*dialog_title,
 						 const char             *yes_label,
 						 const char             *no_label,
 						 GtkWindow              *parent);

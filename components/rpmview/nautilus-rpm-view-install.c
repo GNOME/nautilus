@@ -170,7 +170,8 @@ nautilus_rpm_view_install_done (EazelInstallCallback *service,
 	eazel_install_callback_unref (GTK_OBJECT (service));
 
 	if (!result) {
-		char *title;
+		char *dialog_title;
+		char *terse;
 		char *detailed;
 
 		GnomeDialog *d;
@@ -182,20 +183,24 @@ nautilus_rpm_view_install_done (EazelInstallCallback *service,
 		detailed = (char*)gtk_object_get_data (GTK_OBJECT (rpm_view), "details");
 	
 		if (nautilus_rpm_view_get_installed (rpm_view)) {
-			title = g_strdup (_("Uninstall failed..."));
+			terse = g_strdup (_("Uninstall failed..."));
+			dialog_title = g_strdup (_("Nautilus: Uninstall failed"));
 		} else {
-			title = g_strdup (_("Install failed..."));
+			terse = g_strdup (_("Install failed..."));
+			dialog_title = g_strdup (_("Nautilus: Install failed"));
 		}
 
 		window = gtk_widget_get_toplevel (GTK_WIDGET (rpm_view));
 		g_assert (window);
 		g_assert (GTK_IS_WINDOW (window));
-		d = nautilus_error_dialog_with_details (title, 
+		d = nautilus_error_dialog_with_details (terse, 
+							dialog_title,
 							detailed,
 							GTK_WINDOW (window));
 							
 		/* gnome_dialog_run_and_close (d); */
-		g_free (title);
+		g_free (terse);
+		g_free (dialog_title);
 		g_free (detailed);
 		nautilus_view_report_load_failed (nautilus_rpm_view_get_view (rpm_view));
 	} else {

@@ -318,6 +318,7 @@ find_message_label_callback (GtkWidget *widget, gpointer callback_data)
 
 static GnomeDialog *
 show_message_box (const char *message,
+		  const char *dialog_title,
 		  const char *type,
 		  const char *button_one,
 		  const char *button_two,
@@ -326,7 +327,10 @@ show_message_box (const char *message,
 	GtkWidget *box;
 	GtkLabel *message_label;
 
+	g_assert (dialog_title != NULL);
+
 	box = gnome_message_box_new (message, type, button_one, button_two, NULL);
+	gtk_window_set_title (GTK_WINDOW (box), dialog_title);
 	
 	/* A bit of a hack. We want to use gnome_message_box_new,
 	 * but we want the message to be wrapped. So, we search
@@ -345,31 +349,41 @@ show_message_box (const char *message,
 
 static GnomeDialog *
 show_ok_box (const char *message,
+	     const char *dialog_title,
 	     const char *type,
 	     GtkWindow *parent)
 {  
-	return show_message_box	(message, type, GNOME_STOCK_BUTTON_OK, NULL, parent);
+	return show_message_box	(message, dialog_title, type, GNOME_STOCK_BUTTON_OK, NULL, parent);
 }
 
 GnomeDialog *
 nautilus_info_dialog (const char *info,
+	 	      const char *dialog_title,
 		      GtkWindow *parent)
 {
-	return show_ok_box (info, GNOME_MESSAGE_BOX_INFO, parent);
+	return show_ok_box (info, 
+			    dialog_title == NULL ? _("Nautilus: Info") : dialog_title, 
+			    GNOME_MESSAGE_BOX_INFO, parent);
 }
 
 GnomeDialog *
 nautilus_warning_dialog (const char *warning,
+	 	      	 const char *dialog_title,
 			 GtkWindow *parent)
 {
-	return show_ok_box (warning, GNOME_MESSAGE_BOX_WARNING, parent);
+	return show_ok_box (warning, 
+			    dialog_title == NULL ? _("Nautilus: Warning") : dialog_title, 
+			    GNOME_MESSAGE_BOX_WARNING, parent);
 }
 
 GnomeDialog *
 nautilus_error_dialog (const char *error,
+	 	       const char *dialog_title,
 		       GtkWindow *parent)
 {
-	return show_ok_box (error, GNOME_MESSAGE_BOX_ERROR, parent);
+	return show_ok_box (error,
+			    dialog_title == NULL ? _("Nautilus: Error") : dialog_title, 
+			    GNOME_MESSAGE_BOX_ERROR, parent);
 }
 
 static void
@@ -393,6 +407,7 @@ clicked_callback (GnomeDialog *dialog,
 
 GnomeDialog *
 nautilus_error_dialog_with_details (const char *error_message,
+				    const char *dialog_title,
 				    const char *detailed_error_message,
 				    GtkWindow *parent)
 {
@@ -403,10 +418,12 @@ nautilus_error_dialog_with_details (const char *error_message,
 
 	if (detailed_error_message == NULL
 	    || strcmp (error_message, detailed_error_message) == 0) {
-		return nautilus_error_dialog (error_message, parent);
+		return nautilus_error_dialog (error_message, dialog_title, parent);
 	}
 
-	dialog = show_message_box (error_message, GNOME_MESSAGE_BOX_ERROR,
+	dialog = show_message_box (error_message, 
+				   dialog_title == NULL ? _("Nautilus: Error") : dialog_title,
+				   GNOME_MESSAGE_BOX_ERROR,
 				   _("Details"), GNOME_STOCK_BUTTON_OK, parent);
 
 	/* Show the details when you click on the details button. */
@@ -431,11 +448,13 @@ nautilus_error_dialog_with_details (const char *error_message,
  */
 GnomeDialog *
 nautilus_yes_no_dialog (const char *question, 
+		    	const char *dialog_title,
 			const char *yes_label,
 			const char *no_label,
 			GtkWindow *parent)
 {
-	return show_message_box (question, 
+	return show_message_box (question,
+				 dialog_title == NULL ? _("Nautilus: Question") : dialog_title, 
 				 GNOME_MESSAGE_BOX_QUESTION,
 				 yes_label,
 				 no_label,

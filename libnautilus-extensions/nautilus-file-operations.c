@@ -1086,11 +1086,11 @@ confirm_empty_trash (GtkWidget *parent_view)
 	dialog = nautilus_yes_no_dialog (
 		_("Are you sure you want to permanently delete "
 		  "all of the items in the trash?"),
+		_("Nautilus: Delete trash contents?"),
 		_("Empty"),
 		GNOME_STOCK_BUTTON_CANCEL,
 		parent_window);
 
-	gtk_window_set_title (GTK_WINDOW (dialog), _("Delete Trash Contents?"));
 	gnome_dialog_set_default (dialog, GNOME_CANCEL);
 
 	return gnome_dialog_run (dialog) == GNOME_OK;
