@@ -476,6 +476,134 @@ eazel_install_categorydata_to_xml (const CategoryData *category)
 	return node;
 }
 
+void
+osd_parse_implementation (PackageData *pack,
+			  xmlNodePtr node)
+{
+	xmlNodePtr child;
+
+	child = node->childs;
+	while (child) {
+		if (g_strcasecmp (child->name, "PROCESSOR")==0) {
+			pack->archtype = g_strdup (xmlGetProp (child, "VALUE"));
+		} else if (g_strcasecmp (child->name, "OS")==0) {
+			pack->distribution.name = trilobite_get_distribution_enum (xmlGetProp (child, "VALUE"),
+										   TRUE);
+		} else if (g_strcasecmp (child->name, "CODEBASE")==0) {			
+			pack->filename = g_strdup (xmlGetProp (child, "HREF"));
+			{
+				char *tmp;
+				tmp = xmlGetProp (child, "SIZE");
+				if (tmp) {
+					pack->bytesize = atoi (tmp);
+				} else {
+					pack->bytesize = 0;
+				}
+			}
+		} else {
+			g_warning ("unparsed tag \"%s\" in IMPLEMENTATION", child->name);
+		}
+		child = child->next;
+	}
+}
+
+PackageData*
+osd_parse_softpkg (xmlNodePtr softpkg)
+{
+	PackageData *result;
+	xmlNodePtr child;
+
+	result = packagedata_new ();
+
+	result->name = g_strdup (xmlGetProp (softpkg, "NAME"));
+	result->version = g_strdup (xmlGetProp (softpkg, "VERSION"));
+	
+	child = softpkg->childs;
+	while (child) {
+		if (g_strcasecmp (child->name, "ABSTRACT")==0) {
+			result->summary = g_strdup (xmlNodeGetContent (child));
+		} else if (g_strcasecmp (child->name, "IMPLEMENTATION")==0) {
+			osd_parse_implementation (result, child);
+		} else {
+			g_warning ("unparsed tag \"%s\" in SOFTPKG", child->name);
+		}
+		child = child->next;
+	}
+	
+	return result;
+}
+
+GList*
+osd_parse_shared (xmlDocPtr doc)
+{
+	GList *result;
+	xmlNodePtr base, child;
+
+	result = NULL;
+
+	base = doc->root;
+	if (base == NULL) {
+		g_warning (_("*** The osd xml contains no data! ***\n"));
+		return result;
+	}
+
+	if (g_strcasecmp (base->name, "PACKAGES")) {
+		g_warning (_("*** Bailing from osd parse! ***\n"));
+		return result;
+	}
+
+	child = base->childs;
+	while (child) {
+		if (g_strcasecmp (child->name, "SOFTPKG") == 0) {
+			PackageData *pack;
+			pack = osd_parse_softpkg (child);
+			if (pack) {
+				result = g_list_prepend (result, pack);
+			} else {
+				g_warning ("SOFTPKG parse failed");
+			}
+		} else {
+			g_warning ("child is not a SOFTPKG, but a \"%s\"", child->name);
+		}
+		child = child->next;
+	}
+
+	return result;
+}
+
+GList*
+parse_osd_xml_from_memory (const char *mem, 
+			   int size)
+{
+	xmlDocPtr doc;
+	GList *result;
+	char *ptr;
+
+	result = NULL;
+	if (mem==NULL) {
+		return result;
+	}
+
+	mem [size] = 0;
+
+	ptr = strstr (mem, "<?xml");
+	if (ptr == NULL) {
+		g_warning ("Could not find <?xml tag in string");
+		return result;
+	}
+	doc = xmlParseMemory ((char*)ptr, size);
+
+	if (doc == NULL) {
+		g_warning ("XML =\"%s\"", ptr);
+		g_warning ("parse_osd_xml_from_memory, doc == NULL");
+		return result;
+	}
+	
+	result = osd_parse_shared (doc);	
+	xmlFreeDoc (doc);
+
+	return result;
+}
 
 
 

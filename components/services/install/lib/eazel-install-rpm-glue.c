@@ -55,6 +55,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#define PERCENTS_PER_RPM_HASH 2
+
 typedef void (*rpm_install_cb)(char* name, char* group, void* user_data);
 
 static gboolean download_all_packages (EazelInstall *service,
@@ -67,8 +69,8 @@ typedef void* (*RpmCallbackFunc) (const Header, const rpmCallbackType,
 				  const unsigned long, const unsigned long, 
 				  const void*, void*);
 
-static int do_rpm_transaction (EazelInstall *service, 
-			       GList* packages);
+static int eazel_install_start_transaction (EazelInstall *service, 
+					    GList* packages);
 
 static gboolean eazel_install_ensure_deps (EazelInstall *service, 
 					   GList **filenames, 
@@ -265,8 +267,8 @@ install_all_packages (EazelInstall *service,
 			eazel_install_free_package_system (service);
 
 			g_message (_("Category = %s, %d packages"), cat->name, g_list_length (packages));
-			do_rpm_transaction (service,
-					    packages);
+			eazel_install_start_transaction (service,
+							 packages);
 			
 			g_list_free (packages);
 		}
@@ -294,8 +296,8 @@ uninstall_all_packages (EazelInstall *service,
 		failed = NULL;
 		eazel_uninstall_globber (service, &cat->packages, &failed);
 
-		do_rpm_transaction (service, 
-				    cat->packages);
+		eazel_install_start_transaction (service, 
+						 cat->packages);
 
 		categories = categories->next;
 	}
@@ -451,7 +453,7 @@ revert_transaction (EazelInstall *service,
 }
 
 static void
-eazel_install_do_rpm_transaction_fill_hash (EazelInstall *service,
+eazel_install_do_transaction_fill_hash (EazelInstall *service,
 					GList *packages)
 {
 	GList *iterator;
@@ -460,7 +462,7 @@ eazel_install_do_rpm_transaction_fill_hash (EazelInstall *service,
 		PackageData *pack;
 
 		pack = (PackageData*)iterator->data;
-		tmp = g_strdup_printf ("%s-%s-%s", pack->name, pack->version, pack->minor);
+		tmp = g_strdup_printf ("%s", pack->name);
 		g_hash_table_insert (service->private->name_to_package_hash,
 				     tmp,
 				     iterator->data);
@@ -468,7 +470,7 @@ eazel_install_do_rpm_transaction_fill_hash (EazelInstall *service,
 }
 
 static void
-eazel_install_do_rpm_transaction_get_total_size (EazelInstall *service,
+eazel_install_do_transaction_get_total_size (EazelInstall *service,
 					     GList *packages)
 {
 	GList *iterator;
@@ -480,9 +482,42 @@ eazel_install_do_rpm_transaction_get_total_size (EazelInstall *service,
 	}
 }
 
+static void
+eazel_install_do_transaction_add_to_transaction (EazelInstall *service,
+						 PackageData *pack)
+{
+	service->private->transaction = g_list_prepend (service->private->transaction,
+							pack);
+}
+
+static void
+eazel_install_start_transaction_make_rpm_argument_list (EazelInstall *service,
+							GList **args)
+{
+	if (eazel_install_get_test (service)) {
+		g_message ("Dry run mode!");
+		(*args) = g_list_prepend (*args, g_strdup ("--test"));
+	} 
+	if (eazel_install_get_force (service)) {
+		g_warning ("Force install mode!");
+		(*args) = g_list_prepend (*args, g_strdup ("--force"));
+		(*args) = g_list_prepend (*args, g_strdup ("--nodeps"));
+	} 
+	if (eazel_install_get_uninstall (service)) {
+		(*args) = g_list_prepend (*args, g_strdup ("-ev"));
+	} else 	if (eazel_install_get_update (service)) {
+		(*args) = g_list_prepend (*args, g_strdup ("-Uvh"));
+	} else if (eazel_install_get_downgrade (service)) {
+		(*args) = g_list_prepend (*args, g_strdup ("--oldpackage"));
+		(*args) = g_list_prepend (*args, g_strdup ("-Uvh"));
+	} else {
+		(*args) = g_list_prepend (*args, g_strdup ("-ivh"));
+	}
+}
+
 static GList*
-eazel_install_do_rpm_transaction_make_argument_list (EazelInstall *service,
-						     GList *packages)
+eazel_install_start_transaction_make_argument_list (EazelInstall *service,
+						    GList *packages)
 {
 	GList *args;
 	GList *iterator;
@@ -506,124 +541,28 @@ eazel_install_do_rpm_transaction_make_argument_list (EazelInstall *service,
 			pack->modify_status = PACKAGE_MOD_INSTALLED;
 			args = g_list_prepend (args, g_strdup (pack->filename));
 		}
+		/* NOTE: rpm does not generate hash/percent output for
+		   - uninstall
+		   thus, I add them to the transaction report here */
+		if (pack->toplevel &&
+		    eazel_install_get_uninstall (service)) {
+			eazel_install_do_transaction_add_to_transaction (service, pack);
+		}
 	}
 	
 	/* Set the RPM parameters */
-	if (eazel_install_get_test (service)) {
-		g_message ("Dry run mode!");
-		args = g_list_prepend (args, g_strdup ("--test"));
-	} 
-	if (eazel_install_get_force (service)) {
-		g_warning ("Force install mode!");
-		args = g_list_prepend (args, g_strdup ("--force"));
-		args = g_list_prepend (args, g_strdup ("--nodeps"));
-	} 
-	if (eazel_install_get_uninstall (service)) {
-		args = g_list_prepend (args, g_strdup ("-ev"));
-	} else 	if (eazel_install_get_update (service)) {
-		args = g_list_prepend (args, g_strdup ("--percent"));
-		args = g_list_prepend (args, g_strdup ("-Uv"));
-	} else if (eazel_install_get_downgrade (service)) {
-		args = g_list_prepend (args, g_strdup ("--percent"));
-		args = g_list_prepend (args, g_strdup ("--oldpackage"));
-		args = g_list_prepend (args, g_strdup ("-Uv"));
-	} else {
-		args = g_list_prepend (args, g_strdup ("--percent"));
-		args = g_list_prepend (args, g_strdup ("-iv"));
+	switch (eazel_install_get_package_system (service)) {
+	case EAZEL_INSTALL_USE_RPM:
+		eazel_install_start_transaction_make_rpm_argument_list (service, &args);
+		break;
 	}
 
 	return args;
 }
 
-static void
-eazel_install_do_rpm_transaction_process_pipe (EazelInstall *service,
-					       int fd) 
-{
-	char *tmp;
-	FILE *pipe;
-	PackageData *pack;
-	
-	/* Get the helpers stdout */
-	pipe = fdopen (fd, "r");
-	fflush (pipe);
-	tmp = g_new0 (char, 1024);
-	pack = NULL;
-	
-	/* while something there... */
-	while (!feof (pipe)) {
-		fflush (pipe);
-		fgets (tmp, 1023, pipe);
-		if (feof (pipe)) {
-			break;
-		}
-
-		if (tmp) {
-			g_message ("READ \"%s\"", tmp);
-			/* Percentage output, parse and emit... */
-			if (tmp[0]=='%' && tmp[1]=='%') {
-				char *ptr;
-				int pct;
-				int amount;
-
-
-				if (pack == NULL) {
-					continue;
-				}
-				ptr = tmp + 3;
-				pct = strtol (ptr, NULL, 10);
-				if (pct == 100) {
-					amount = pack->bytesize;
-				} else {
-					amount = (pack->bytesize * pct) / 100;
-				}
-				if (pack && amount) {
-					eazel_install_emit_install_progress (service, 
-									     pack, 
-									     service->private->packsys.rpm.packages_installed, 
-									     service->private->packsys.rpm.num_packages,
-									     amount, 
-									     pack->bytesize,
-									     service->private->packsys.rpm.current_installed_size + amount,
-									     service->private->packsys.rpm.total_size);
-				}
-					/* By invalidating the pointer here, we
-					   only emit with amount==total once */
-				if (pct==100) {
-					service->private->packsys.rpm.current_installed_size += pack->bytesize;
-					/* If a toplevel pacakge completed, add to transction list */
-					if (pack->toplevel) {
-						service->private->transaction = g_list_prepend (service->private->transaction,
-												pack);
-					}
-					pack = NULL;
-				}
-			}  else if (strlen (tmp)) {
-					/* Not percantage mark, that means filename, step ahead one file */
-				tmp [ strlen (tmp) - 1] = 0;
-				pack = g_hash_table_lookup (service->private->name_to_package_hash, tmp);
-				if (pack==NULL) {						
-					g_warning ("lookup \"%s\" failed", tmp);
-				} else {
-					service->private->packsys.rpm.packages_installed ++;
-					eazel_install_emit_install_progress (service, 
-									     pack, 
-									     service->private->packsys.rpm.packages_installed, 
-									     service->private->packsys.rpm.num_packages,
-									     0, 
-									     pack->bytesize,
-									     service->private->packsys.rpm.current_installed_size,
-									     service->private->packsys.rpm.total_size);
-				}
-			}
-		} 
-	}
-
-	fclose (pipe);
-}
-
 #ifndef EAZEL_INSTALL_SLIM
 static void
-eazel_install_do_rpm_transaction_save_report_helper (xmlNodePtr node,
+eazel_install_do_transaction_save_report_helper (xmlNodePtr node,
 						     GList *packages)
 {
 	GList *iterator;
@@ -645,18 +584,20 @@ eazel_install_do_rpm_transaction_save_report_helper (xmlNodePtr node,
 			break;
 		}
 		if (pack->modifies) {
-			eazel_install_do_rpm_transaction_save_report_helper (node, pack->modifies);
+			eazel_install_do_transaction_save_report_helper (node, pack->modifies);
 		}
 	}
 }
 
 static void
-eazel_install_do_rpm_transaction_save_report (EazelInstall *service) 
+eazel_install_do_transaction_save_report (EazelInstall *service) 
 {
 	FILE *outfile;
 	xmlDocPtr doc;
 	xmlNodePtr node, root;
 	char *name;
+
+	g_message ("writing transaction...");
 	
 	/* Ensure the transaction dir is present */
 	if (! g_file_test (eazel_install_get_transaction_dir (service), G_FILE_TEST_ISDIR)) {
@@ -696,7 +637,7 @@ eazel_install_do_rpm_transaction_save_report (EazelInstall *service)
 		g_free (tmp);
 	}
 
-	eazel_install_do_rpm_transaction_save_report_helper (node, service->private->transaction);
+	eazel_install_do_transaction_save_report_helper (node, service->private->transaction);
 
 	xmlDocDump (outfile, doc);
 	
@@ -704,9 +645,153 @@ eazel_install_do_rpm_transaction_save_report (EazelInstall *service)
 	g_free (name);}
 #endif /* EAZEL_INSTALL_SLIM */
 
+static gboolean
+eazel_install_monitor_rpm_propcess_pipe (GIOChannel *source,
+					 GIOCondition condition,
+					 EazelInstall *service)
+{
+	char         tmp;
+	static       int package_name_length = 80;
+	static       char package_name [80];
+	ssize_t      bytes_read;
+	static       PackageData *pack = NULL;
+	static       int pct;
+	
+	g_io_channel_read (source, &tmp, 1, &bytes_read);
+	
+	if (bytes_read) {
+		/* g_message ("READ '%c'", tmp); */
+		/* Percentage output, parse and emit... */
+		if (tmp=='#') {
+			int amount;
+			if (pack == NULL) {
+				return TRUE;
+			}
+			pct += PERCENTS_PER_RPM_HASH;
+			if (pct == 100) {
+				amount = pack->bytesize;
+			} else {
+				amount = (pack->bytesize * pct) / 100;
+			}
+			if (pack && amount) {
+				eazel_install_emit_install_progress (service, 
+								     pack, 
+								     service->private->packsys.rpm.packages_installed, 
+								     service->private->packsys.rpm.num_packages,
+								     amount, 
+								     pack->bytesize,
+								     service->private->packsys.rpm.current_installed_size + amount,
+								     service->private->packsys.rpm.total_size);
+			}
+					/* By invalidating the pointer here, we
+					   only emit with amount==total once */
+			if (pct==100) {
+				service->private->packsys.rpm.current_installed_size += pack->bytesize;
+					/* If a toplevel pacakge completed, add to transction list */
+				if (pack->toplevel) {
+					eazel_install_do_transaction_add_to_transaction (service, pack);
+				}
+				pack = NULL;
+				pct = 0;
+				package_name [0] = 0;
+			}
+		}  else  if (tmp != ' ') {
+			/* Read untill we hit a space */
+			while (bytes_read && tmp != ' ') {
+				if (strlen (package_name) < package_name_length) {
+					/* Add char to package */
+					int x;
+					x = strlen (package_name);
+					if (!isspace (tmp)) {
+						package_name [x] = tmp;
+						package_name [x+1] = 0;
+					}
+				}
+					/* read next byte */
+				g_io_channel_read (source, &tmp, 1, &bytes_read);
+			}
+			
+			/* Not percantage mark, that means filename, step ahead one file */
+			pack = g_hash_table_lookup (service->private->name_to_package_hash, package_name);
+			if (pack==NULL) {						
+				g_warning ("lookup \"%s\" failed", package_name);
+			} else {
+				g_message ("matched \"%s\"", package_name);
+				pct = 0;
+				service->private->packsys.rpm.packages_installed ++;
+				eazel_install_emit_install_progress (service, 
+								     pack, 
+								     service->private->packsys.rpm.packages_installed, 
+								     service->private->packsys.rpm.num_packages,
+								     0, 
+								     pack->bytesize,
+								     service->private->packsys.rpm.current_installed_size,
+								     service->private->packsys.rpm.total_size);
+			}
+		}
+	} 
+	if (bytes_read == 0) {
+#ifndef EAZEL_INSTALL_SLIM
+		eazel_install_do_transaction_save_report (service);
+#endif /* EAZEL_INSTALL_SLIM     */
+		return FALSE;
+	} else {
+		return TRUE;
+	}
+}
+
+/* 1.39 has the code to parse --percent output */
+static gboolean
+eazel_install_monitor_process_pipe (GIOChannel *source,
+				    GIOCondition condition,
+				    EazelInstall *service)
+{
+	if (condition == (G_IO_ERR | G_IO_NVAL | G_IO_HUP)) {
+		service->private->subcommand_running = FALSE;
+	} else {
+		switch (eazel_install_get_package_system (service)) {
+		case EAZEL_INSTALL_USE_RPM:
+			service->private->subcommand_running = eazel_install_monitor_rpm_propcess_pipe (source, 
+													condition, 
+													service);
+			break;
+		}
+	}
+	return service->private->subcommand_running;
+}
+
+void
+eazel_install_display_arguments (GList *args) 
+{
+	GList *iterator;
+	fprintf (stdout, "\nARGS: ");
+	for (iterator = args; iterator; iterator = iterator->next) {
+		fprintf (stdout, "%s ", (char*)iterator->data);
+	}
+	fprintf (stdout, "\n");
+}
+
+void
+eazel_install_monitor_subcommand_pipe (EazelInstall *service,
+				       int fd,
+				       GIOFunc monitor_func)
+{
+	GIOChannel *channel;
+	channel = g_io_channel_unix_new (fd);
+	g_message ("beginning monitor on %d", fd);
+	service->private->subcommand_running = TRUE;
+	g_io_add_watch (channel, G_IO_IN | G_IO_ERR | G_IO_NVAL | G_IO_HUP, 
+			monitor_func, 
+			service);
+	while (service->private->subcommand_running) {
+		g_main_iteration (TRUE);
+	}
+	g_message ("ending monitor on %d", fd);
+}
+
 int
-do_rpm_transaction (EazelInstall *service,
-		    GList* packages) 
+eazel_install_start_transaction (EazelInstall *service,
+				 GList* packages) 
 {
 #ifndef EAZEL_INSTALL_SLIM
 	TrilobiteRootHelper *root_helper;
@@ -727,23 +812,15 @@ do_rpm_transaction (EazelInstall *service,
 	args = NULL;
 	res = 0;
 
-	eazel_install_do_rpm_transaction_fill_hash (service, packages);
-	eazel_install_do_rpm_transaction_get_total_size (service, packages);
-	args = eazel_install_do_rpm_transaction_make_argument_list (service, packages);
+	eazel_install_do_transaction_fill_hash (service, packages);
+	eazel_install_do_transaction_get_total_size (service, packages);
+	args = eazel_install_start_transaction_make_argument_list (service, packages);
 
 	eazel_install_emit_preflight_check (service, 					     
 					    service->private->packsys.rpm.total_size,
 					    service->private->packsys.rpm.num_packages);
 
-	{
-		GList *iterator;
-		fprintf (stdout, "\nARGS: ");
-		for (iterator = args; iterator; iterator = iterator->next) {
-			fprintf (stdout, "%s ", (char*)iterator->data);
-		}
-		fprintf (stdout, "\n");
-	}
-
+	eazel_install_display_arguments (args);
 #ifdef EAZEL_INSTALL_SLIM
 	{
 		char **argv;
@@ -790,18 +867,17 @@ do_rpm_transaction (EazelInstall *service,
 	}
 
 #endif /* EAZEL_INSTALL_SLIM     */
-	if (res==0) {
-		eazel_install_do_rpm_transaction_process_pipe (service, fd);
-#ifndef EAZEL_INSTALL_SLIM
-		eazel_install_do_rpm_transaction_save_report (service);
-#endif /* EAZEL_INSTALL_SLIM     */
+	if (res==0) {		
+		eazel_install_monitor_subcommand_pipe (service,
+						       fd,
+						       (GIOFunc)eazel_install_monitor_process_pipe);
 	}
 
 	g_list_foreach (args, (GFunc)g_free, NULL);
 	g_list_free (args);
 
 	return res;
-} /* end do_rpm_transaction */
+} /* end start_transaction */
 
 /*
   The helper for eazel_install_prune_packages.

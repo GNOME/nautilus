@@ -28,6 +28,7 @@
 
 #include "eazel-install-protocols.h"
 #include "eazel-install-private.h"
+#include "eazel-install-xml-package-list.h"
 #include <config.h>
 #include <sys/utsname.h>
 #include <errno.h>
@@ -36,8 +37,14 @@
    It should contain a %s for the server name, and later 
    a %d for the portnumber. In this order, no other
    order */
+
+#define EI_PROT_USE_NEW_CGI
+
+#ifndef EI_PROT_USE_NEW_CGI
 #define CGI_BASE "http://%s:%d/cgi-bin/rpmsearch.cgi" 
-/* #define CGI_BASE "http://%s:%d/catalog/find" */
+#else /* EI_PROT_USE_NEW_CGI */
+#define CGI_BASE "http://%s:%d/catalog/find" 
+#endif /* EI_PROT_USE_NEW_CGI */
 
 gboolean http_fetch_remote_file (EazelInstall *service,
 				 char* url, 
@@ -248,11 +255,10 @@ eazel_install_fetch_package (EazelInstall *service,
 	gboolean result;
 	char* url;
 	char* targetname;
-	
+
 	result = FALSE;
 	url = NULL;
 	
-
 	switch (eazel_install_get_protocol (service)) {
 	case PROTOCOL_FTP:
 	case PROTOCOL_HTTP: 
@@ -268,19 +274,35 @@ eazel_install_fetch_package (EazelInstall *service,
 	if (url == NULL) {
 		g_warning (_("Could not get a URL for %s"), rpmfilename_from_packagedata (package));
 	} else {
-		/* FIXME bugzilla.eazel.com 1315:
-		   Loose the check once a proper rpmsearch.cgi is up and running */
-		if (filename_from_url (url) && strlen (filename_from_url (url))>1) {
-			targetname = g_strdup_printf ("%s/%s",
-						      eazel_install_get_tmp_dir (service),
-						      filename_from_url (url));
-			/* package->filename = g_strdup (targetname); */
-			result = eazel_install_fetch_file (service, url, targetname);
-			if (result==TRUE) {
-				packagedata_fill_from_file (package, targetname); 
+		targetname = g_strdup_printf ("%s/%s",
+					      eazel_install_get_tmp_dir (service),
+					      filename_from_url (url));
+		g_message ("%s resolved", package->name);
+#ifdef EI_PROT_USE_NEW_CGI
+		if (g_file_test (targetname, G_FILE_TEST_ISFILE)) {
+			/* Uh, file already exists, check the size to see if we can reuse it */
+			struct stat sbuf;
+			stat (targetname, &sbuf);
+			g_message ("File already exists, checking %d vs %d", package->bytesize, sbuf.st_size);
+			if (sbuf.st_size == package->bytesize) {
+				g_message ("Size checks out");
+				result = TRUE;
+			} else {
+				result = eazel_install_fetch_file (service, url, targetname);
 			}
-			g_free (targetname);
+		} else {
+				result = eazel_install_fetch_file (service, url, targetname);
 		}
+#else /*  EI_PROT_USE_NEW_CGI */
+		if (filename_from_url (url) && strlen (filename_from_url (url))>1) {
+			result = eazel_install_fetch_file (service, url, targetname);
+		}
+#endif /* EI_PROT_USE_NEW_CGI */
+		if (result==TRUE) {
+			packagedata_fill_from_file (package, targetname); 
+		}
+
+		g_free (targetname);
 		g_free (url);
 	}
 	
@@ -357,7 +379,7 @@ add_to_url (char **url,
 char*
 get_url_for_package  (EazelInstall *service, 
 		      RpmSearchEntry entry,
-		      const gpointer data)
+		      gpointer data)
 {
 	char *search_url;
 	char *url;
@@ -373,6 +395,7 @@ get_url_for_package  (EazelInstall *service,
                 g_warning (_("Could not create an http request !"));
         } else {
 	
+		ghttp_set_header (request, http_hdr_User_Agent, "Trilobite");
 		if (ghttp_set_uri (request, search_url) != 0) {
 			g_warning (_("Invalid uri"));
 		} else {
@@ -397,15 +420,44 @@ get_url_for_package  (EazelInstall *service,
 						break;
 					}
 				case ghttp_done:
-					/* 404 or did we get something usefull ? */
-					/* FIXME bugzilla.eazel.com 1718:
-					   Once the rpmsearch script is done, revamp this to parse the 
-					   xml returned */
 					if (ghttp_status_code (request) != 404) {
+#ifdef EI_PROT_USE_NEW_CGI
+						/* Parse the returned xml */
+						GList *packages;
+						
+						packages = parse_osd_xml_from_memory (ghttp_get_body (request),
+										      ghttp_get_body_len (request));
+						if (g_list_length (packages) == 0) {
+							g_warning ("No url for file");
+						} else if (g_list_length (packages) > 1) {
+							g_warning ("Ugh, more then one match, using first");
+						} else {						
+							/* Get the first package returned */
+							PackageData *pack;
+							
+							g_assert (packages->data != NULL);
+							pack = (PackageData*)packages->data;
+							url = g_strdup (pack->filename);
+							
+							/* Update the given package */
+							if (entry==RPMSEARCH_ENTRY_NAME) {
+								PackageData *pack2;
+								pack2 = (PackageData*)data;
+								g_message ("setting bytesize to %d", pack->bytesize);
+								pack2->bytesize = pack->bytesize;
+							}
+							
+							g_list_foreach (packages, 
+									(GFunc)packagedata_destroy_foreach, 
+									NULL);
+						}						
+#else /* EI_PROT_USE_NEW_CGI */
 						url = g_strdup (ghttp_get_body (request));
 						if (url) {
 							url [ ghttp_get_body_len (request)] = 0;
 						}
+#endif /* EI_PROT_USE_NEW_CGI */
+
 					} else {
 						url = NULL;
 					}
@@ -432,11 +484,6 @@ char* get_search_url_for_package (EazelInstall *service,
 			       eazel_install_get_server (service),
 			       eazel_install_get_server_port (service));
 
-/*
-  FIXME bugzilla.eazel.com 1333:
-  We need to send distro name at some point. Depends on the rpmsearch cgi script
-*/
-
 	dist = trilobite_get_distribution ();
 
 	switch (entry) {
@@ -449,7 +496,7 @@ char* get_search_url_for_package (EazelInstall *service,
 		add_to_url (&url, "&version>=", pack->version);
 		if (pack->distribution.name != DISTRO_UNKNOWN) {
 			dist = pack->distribution;
-		}
+		} 
 	}
 	break;
 	case RPMSEARCH_ENTRY_PROVIDES: {
@@ -461,15 +508,15 @@ char* get_search_url_for_package (EazelInstall *service,
 	break;
 	}
 
-/*
+#ifdef EI_PROT_USE_NEW_CGI
 	if (dist.name != DISTRO_UNKNOWN) {
 		char *distro;
-		distro = g_strdup_printf ("\"%s\"", 
+		distro = g_strdup_printf ("%s", 
 					  trilobite_get_distribution_name (dist, TRUE, TRUE));
 		add_to_url (&url, "&distro=", distro);
 		g_free (distro);
 	}
-*/
+#endif /* EI_PROT_USE_NEW_CGI */
 
 	switch (eazel_install_get_protocol (service)) {
 	case PROTOCOL_HTTP:

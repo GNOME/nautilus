@@ -294,7 +294,7 @@ int main(int argc, char *argv[]) {
 	bonobo_main ();
 
 	/* Corba cleanup */
-	eazel_install_callback_destroy (GTK_OBJECT (cb));
+	eazel_install_callback_unref (GTK_OBJECT (cb));
 	CORBA_exception_free (&ev);
        
 	return 0;

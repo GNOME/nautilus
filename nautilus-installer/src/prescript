@@ -19,6 +19,8 @@ if test $UID -ne 0; then
     xhost + localhost
     su - -c "export DISPLAY=$DISPLAY && cd $PWD && echo Uncompressing... && sh $0 $* $USER"
     xhost - localhost
+    cp -f /usr/share/gnome/apps/Applications/nautilus.desktop ~/.gnome-desktop/
+    chmod -f 644 ~/.gnome-desktop/nautilus.desktop
     exit
 fi
 if ! test -d /var/eazel/services; then

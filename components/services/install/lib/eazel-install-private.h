@@ -64,9 +64,13 @@ struct _EazelInstallPrivate {
 	   Entries are added in eazel-install-rpm-glue.c, as
 	   stuff is done */
 	GList *transaction;
-
+	
+	/* The logfile used for the object */
 	FILE *logfile;
 	char *logfilename;
+	
+        /* TRUE if the rpm subcommand is running */
+	gboolean subcommand_running;
 };
 
 #endif /* EAZEL_INSTALL_PRIVATE_H */

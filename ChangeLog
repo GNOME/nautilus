@@ -1,3 +1,104 @@
+2000-08-10  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(nautilus_rpm_view_install_done):
+	Use unref instead of destroy in eazelinstallcorbacallback
+	
+	* components/services/install/command-line/eazel-alt-install-corba.c:
+	(set_parameters_from_command_line), (main):
+	Defaults to ham.eazel.com:8888 instead of testmachine.eazel.com:80
+	now.
+	Also added reversion support
+	
+	* components/services/install/command-line/eazel-package-query.c:
+	(main):
+	use the unref instead of destroy 
+	
+	* components/services/install/command-line/eazel-revert.c: (main):
+	Fixed the --port arg
+	use unref instead of destroy
+	
+	* components/services/install/command-line/eazel-uninstall.c:
+	(main):
+	use unref instead of destroy
+	
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(eazel_install_callback_unref), (eazel_install_callback_finalize),
+	(eazel_install_callback_class_initialize):
+	A unref instead of destroy
+	
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(packagedata_from_corba_packagedatastruct):
+	Fixed for the new get_distribution_enum
+	
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_unref), (eazel_install_finalize),
+	(eazel_install_class_initialize):
+	A unref instead of a destroy
+	
+	* components/services/install/lib/eazel-install-private.h:
+	A boolean to indicate that the subcommand is running
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package), (get_url_for_package),
+	(get_search_url_for_package):
+	Stuff to call the new OSD xml parsing. Plus some logic to check
+	for a existing file. (used when EI_PROT_USE_NEW_CGI is set)
+	Proper transfer of distro name (bug 1333)
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_all_packages), (uninstall_all_packages),
+	(eazel_install_do_transaction_fill_hash),
+	(eazel_install_do_transaction_get_total_size),
+	(eazel_install_do_transaction_add_to_transaction),
+	(eazel_install_start_transaction_make_rpm_argument_list),
+	(eazel_install_start_transaction_make_argument_list),
+	(eazel_install_do_transaction_save_report_helper),
+	(eazel_install_do_transaction_save_report),
+	(eazel_install_monitor_rpm_propcess_pipe),
+	(eazel_install_monitor_process_pipe),
+	(eazel_install_display_arguments),
+	(eazel_install_monitor_subcommand_pipe),
+	(eazel_install_start_transaction):
+	Lot of renaming & some slashing to accomodate other package
+	systems then rpm.
+	New pipe parser for rpm -hv args, since --percent proved useless.
+	
+	* components/services/install/lib/eazel-install-xml-package-list.h:
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(osd_parse_implementation), (osd_parse_softpkg),
+	(osd_parse_shared), (parse_osd_xml_from_memory):
+	Implemented parsing of the OSD xml.
+	 
+	* components/services/install/nautilus-view/nautilus-service-install.
+	c: (nautilus_service_install_done):
+	Use the unref instead of destroy
+	 
+	* components/services/trilobite/libtrilobite/trilobite-core-distribut
+	ion.h:
+	* components/services/trilobite/libtrilobite/trilobite-core-distribut
+	ion.c: (trilobite_get_distribution_enum_compact),
+	(trilobite_get_distribution_enum_verbose),
+	(trilobite_get_distribution_enum):
+	Changed get_distro_enum to parse compact names.	
+	 
+	* nautilus-installer/src/callbacks.c: (begin_install),
+	(prep_install):
+	* nautilus-installer/src/callbacks.h:
+	* nautilus-installer/src/installer.c: (eazel_install_progress),
+	(eazel_download_progress), (download_failed),
+	(eazel_install_preflight), (installer):
+	* nautilus-installer/src/interface.c: (create_what_to_do_page),
+	(create_install_page), (create_finish_page), (create_window):
+	* nautilus-installer/src/main.c:
+	* nautilus-installer/src/prescript:
+	Some reslashing of the installer
+	
+	* po/da.po:
+	Came across some missing translations
+
 2000-08-10  John Sullivan  <sullivan@eazel.com>
 
 	I accidentally committed before writing ChangeLog (wrong

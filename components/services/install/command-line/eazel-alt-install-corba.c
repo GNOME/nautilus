@@ -39,8 +39,8 @@
 #define PACKAGE_FILE_NAME "package-list.xml"
 #define DEFAULT_CONFIG_FILE "/var/eazel/services/eazel-services-config.xml"
 
-#define DEFAULT_HOSTNAME "testmachine.eazel.com"
-#define DEFAULT_PORT_NUMBER 80
+#define DEFAULT_HOSTNAME "ham.eazel.com"
+#define DEFAULT_PORT_NUMBER 8888
 #define DEFAULT_PROTOCOL PROTOCOL_HTTP
 #define DEFAULT_TMP_DIR "/tmp/eazel-install"
 #define DEFAULT_RPMRC "/usr/lib/rpm/rpmrc"
@@ -67,7 +67,8 @@ int     arg_dry_run,
 	arg_upgrade,
 	arg_downgrade,
 	arg_erase,
-	arg_query;
+	arg_query,
+	arg_revert;
 char    *arg_server,
 	*arg_config_file,
 	*arg_package_list,
@@ -90,6 +91,7 @@ static const struct poptOption options[] = {
 	{"packagefile", '\0', POPT_ARG_STRING, &arg_package_list, 0, N_("Specify package file"), NULL},
 	{"port", '\0', POPT_ARG_INT, &arg_port, 0 , N_("Set port numer (80)"), NULL},
 	{"query", 'q', POPT_ARG_NONE, &arg_query, 0, N_("Run Query"), NULL},
+	{"revert", 'r', POPT_ARG_NONE, &arg_revert, 0, N_("Revert"), NULL},
 	{"server", '\0', POPT_ARG_STRING, &arg_server, 0, N_("Specify server"), NULL},
 	{"test", 't', POPT_ARG_NONE, &arg_dry_run, 0, N_("Test run"), NULL},
 	{"tmp", '\0', POPT_ARG_STRING, &arg_tmp_dir, 0, N_("Set tmp dir (/tmp/eazel-install)"), NULL},
@@ -125,8 +127,8 @@ set_parameters_from_command_line (Trilobite_Eazel_Install service)
 		Trilobite_Eazel_Install__set_protocol (service, Trilobite_Eazel_PROTOCOL_HTTP, &ev);
 		check_ev ("set_protocol");
 	}
-	if (arg_downgrade + arg_upgrade + arg_erase > 1) {
-			fprintf (stderr, "*** Upgrade and erase ? Yeah rite....\n");
+	if (arg_downgrade + arg_upgrade + arg_erase +arg_revert > 1) {
+			fprintf (stderr, "*** Upgrade, downgrade, revert and erase ? This is not a all-in-one tool");
 			exit (1);
 	}
 	if (arg_upgrade) {
@@ -466,7 +468,7 @@ int main(int argc, char *argv[]) {
 	gtk_signal_connect (GTK_OBJECT (cb), "delete_files", (void *)delete_files, NULL);
 	gtk_signal_connect (GTK_OBJECT (cb), "done", done, NULL);
 
-	if (arg_erase + arg_query > 1) {
+	if (arg_erase + arg_query + arg_downgrade + arg_upgrade + arg_revert > 1) {
 		g_error ("Only one operation at a time please.");
 	}
 
@@ -484,6 +486,11 @@ int main(int argc, char *argv[]) {
 				fprintf (stdout, "%s %s %50.50s", p->name, p->version, p->summary);
 			}
 		}
+	} else if (arg_revert) {
+		GList *iterator;
+		for (iterator = strs; iterator; iterator = iterator->next) {
+			eazel_install_callback_revert_transaction (cb, (char*)iterator->data, &ev);
+		}
 	} else {
 		eazel_install_callback_install_packages (cb, categories, &ev);
 	}
@@ -493,7 +500,7 @@ int main(int argc, char *argv[]) {
 		bonobo_main ();
 	}
 
-	eazel_install_callback_destroy (GTK_OBJECT (cb));
+	eazel_install_callback_unref (GTK_OBJECT (cb));
 
 	/* Corba cleanup */
 	CORBA_exception_free (&ev);

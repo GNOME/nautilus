@@ -74,7 +74,7 @@ CORBA_Environment ev;
 static const struct poptOption options[] = {
 	{"debug", 'd', POPT_ARG_NONE, &arg_debug, 0 , N_("Show debug output"), NULL},
 	{"delay", '\0', POPT_ARG_NONE, &arg_delay, 0 , N_("10 sec delay after starting service"), NULL},
-	{"port", '\0', POPT_ARG_NONE, &arg_port, 0 , N_("Set port numer (80)"), NULL},
+	{"port", '\0', POPT_ARG_INT, &arg_port, 0 , N_("Set port numer (80)"), NULL},
 	{"test", 't', POPT_ARG_NONE, &arg_dry_run, 0, N_("Test run"), NULL},
 	{"tmp", '\0', POPT_ARG_STRING, &arg_tmp_dir, 0, N_("Set tmp dir (/tmp/eazel-install)"), NULL},
 	{"server", '\0', POPT_ARG_STRING, &arg_server, 0, N_("Specify server"), NULL},
@@ -411,7 +411,7 @@ int main(int argc, char *argv[]) {
 	fprintf (stdout, "\nEntering main loop...\n");
 	bonobo_main ();
 
-	eazel_install_callback_destroy (GTK_OBJECT (cb)); 
+	eazel_install_callback_unref (GTK_OBJECT (cb)); 
 
 	/* Corba cleanup */
 	CORBA_exception_free (&ev);

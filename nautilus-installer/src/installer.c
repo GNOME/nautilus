@@ -32,10 +32,10 @@ static char *package_list[LAST] = {
 	"/package-uninstall-list.xml",
 };
 
-char *failure_info;
-int installer_debug;
-int installer_test;
-int installer_local;
+static char *failure_info = NULL;
+int installer_debug = 0;
+int installer_test = 0;
+int installer_local = 0;
 
 static void 
 eazel_install_progress (EazelInstall *service, 
@@ -57,19 +57,22 @@ eazel_install_progress (EazelInstall *service,
 	if (amount == 0) {
 		gtk_label_set_text (action_label, "Install :");
 		gtk_label_set_text (package_label, pack->name);
-		gtk_progress_set_format_string (GTK_PROGRESS (progressbar), "%p%% - %v kb/%u kb");
+		gtk_progress_set_format_string (GTK_PROGRESS (progressbar), "%p%% - %vkb/%ukb");
 		gtk_progress_configure (GTK_PROGRESS (progressbar), 0, 0, (float)(total/1024));		
 	}
 
 	if (installer_debug) {
 		float pct;
 		pct = ( (total > 0) ? ((float) ((((float) amount) / total) * 100)): 100.0);
-		fprintf (stdout, "Install Progress - %s - %d %d %% %f\r", 
-			 pack->name?pack->name:"(null)", amount, total, pct);
+		fprintf (stdout, "Install Progress - %s - %d %d (%d %d) %% %f\r", 
+			 pack->name?pack->name:"(null)", 
+			 amount, total, 
+			 total_size_completed, total_size, 
+			 pct);
 	}
 
-	gtk_progress_set_value (GTK_PROGRESS (progressbar), (float)(amount/1024));
-	gtk_progress_set_value (GTK_PROGRESS (progress_overall), (float)package_num-1);
+	gtk_progress_set_value (GTK_PROGRESS (progressbar), (float)(amount/1024 > total/1024 ? total/1024 : amount/1024));
+	gtk_progress_set_value (GTK_PROGRESS (progress_overall), (float)total_size_completed>total_size ? total_size : total_size_completed);
 	g_main_iteration (FALSE);  
 
 	fflush (stdout);
@@ -96,9 +99,13 @@ eazel_download_progress (EazelInstall *service,
 	progressbar = gtk_object_get_data (GTK_OBJECT (widget), "progressbar_single");
 
 	if (amount == 0) {
-		gtk_label_set_text (package_label, name);
+		char *tmp;
+		tmp = g_strdup_printf ("Retrieving %s", name);
+		gtk_label_set_text (package_label, tmp);
+		g_free (tmp);
+
 		gtk_label_set_text (action_label, "Download :");
-		gtk_progress_set_format_string (GTK_PROGRESS (progressbar), "%p%% - %v kb/%u kb");
+		gtk_progress_set_format_string (GTK_PROGRESS (progressbar), "%p%% (%v of %u kb)");
 		gtk_progress_configure (GTK_PROGRESS (progressbar), 0, 0, (float)(total/1024));
 	}
 
@@ -208,7 +215,11 @@ download_failed (EazelInstall *service,
 		 const char *name,
 		 char **output)
 {
-	(*output) = g_strdup_printf ("Download of %s failed", name);
+	if (*output) {		
+		(*output) = g_strdup_printf ("%s\nDownload of %s failed", *output, name);
+	} else {
+		(*output) = g_strdup_printf ("Download of %s failed", name);
+	}
 }
 
 static void
@@ -226,9 +237,8 @@ eazel_install_preflight (EazelInstall *service,
 	package_label = gtk_object_get_data (GTK_OBJECT (widget), "package_label");
 	progress_overall = gtk_object_get_data (GTK_OBJECT (widget), "progressbar_overall");
 
-	gtk_progress_set_format_string (GTK_PROGRESS (progress_overall), "%p%% - package %v of %u");
-	gtk_progress_configure (GTK_PROGRESS (progress_overall), 0, 0, (float)num_packages);
-	gtk_widget_show (GTK_WIDGET (progress_overall));
+	gtk_progress_set_format_string (GTK_PROGRESS (progress_overall), "Total completion %p%%");
+	gtk_progress_configure (GTK_PROGRESS (progress_overall), 0, 0, (float)total_size);
 
 	tmp = g_strdup_printf ("Preparing RPM, %d packages (%d mb)", num_packages, total_size/(1024*1024));
 
@@ -238,7 +248,6 @@ eazel_install_preflight (EazelInstall *service,
 
 	gtk_label_set_text (action_label, "Install :");
 	gtk_label_set_text (package_label, tmp);
-	g_main_iteration (FALSE);
 	g_main_iteration (FALSE);
 }
 
@@ -308,8 +317,6 @@ void installer (GtkWidget *window,
 	GtkLabel *package_label;
 	GtkLabel *action_label;
 
-	make_dirs ();
-
 	if (method==UPGRADE) {
 		gnome_warning_dialog ("We don't do UPGRADE yet");
 		return;
@@ -341,6 +348,7 @@ void installer (GtkWidget *window,
 						 "rpmrc_file", RPMRC,
 						 "server", HOSTNAME,
 						 "rpm_storage_path", REMOTE_RPM_DIR,
+						 "package_list", installer_local, 
 						 "package_list_storage_path", package_list [ method ],
 						 "server_port", PORT_NUMBER,
 						 NULL));
@@ -363,11 +371,9 @@ void installer (GtkWidget *window,
 	gtk_signal_connect (GTK_OBJECT (service), "delete_files", 
 			    GTK_SIGNAL_FUNC (eazel_install_delete_files), window);
 	gtk_signal_connect (GTK_OBJECT (service), "download_failed", 
-			    GTK_SIGNAL_FUNC (download_failed), &failure_info); 
+			    download_failed, &failure_info); 
 	gtk_signal_connect (GTK_OBJECT (service), "install_failed", 
 			    GTK_SIGNAL_FUNC (install_failed), &failure_info);
-
-	failure_info = g_new0 (char, 8192);
 
 	switch (method) {
 	case FULL_INST:

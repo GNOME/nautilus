@@ -258,14 +258,25 @@ eazel_install_callback_create_corba_object (BonoboObject *service) {
 *****************************************/
 
 void
-eazel_install_callback_destroy (GtkObject *object)
+eazel_install_callback_unref (GtkObject *object)
 {
 	EazelInstallCallback *service;
 
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (EAZEL_INSTALL_CALLBACK (object));
 	
-	g_message ("in eazel_install_callback_destroy");
+	bonobo_object_unref (BONOBO_OBJECT (object));
+}
+
+void
+eazel_install_callback_finalize (GtkObject *object)
+{
+	EazelInstallCallback *service;
+
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (EAZEL_INSTALL_CALLBACK (object));
+	
+	g_message ("in eazel_install_callback_finalize");
 
 	service = EAZEL_INSTALL_CALLBACK (object);
 
@@ -284,7 +295,7 @@ eazel_install_callback_destroy (GtkObject *object)
 	if (GTK_OBJECT_CLASS (eazel_install_callback_parent_class)->destroy) {
 		GTK_OBJECT_CLASS (eazel_install_callback_parent_class)->destroy (object);
 	}
-	g_message ("out eazel_install_callback_destroy");
+	g_message ("out eazel_install_callback_finalize");
 }
 
 static void
@@ -293,7 +304,7 @@ eazel_install_callback_class_initialize (EazelInstallCallbackClass *klass)
 	GtkObjectClass *object_class;
 
 	object_class = (GtkObjectClass*)klass;
-	object_class->destroy = (void(*)(GtkObject*))eazel_install_callback_destroy;
+	object_class->finalize = eazel_install_callback_finalize;
 
 	eazel_install_callback_parent_class = gtk_type_class (bonobo_object_get_type ());
 	klass->servant_vepv = g_new0 (POA_Trilobite_Eazel_InstallCallback__vepv,1);

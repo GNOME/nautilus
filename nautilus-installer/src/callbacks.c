@@ -23,16 +23,13 @@ druid_cancel                           (GnomeDruid      *gnomedruid,
 }
 
 
-void
-begin_install                          (GtkButton       *button,
-                                        gpointer         window)
+gboolean
+begin_install                          (gpointer         window)
 {
 	GnomeDruid *druid;
 
 	druid = GNOME_DRUID (gtk_object_get_data (GTK_OBJECT (window), "druid"));
 	gnome_druid_set_buttons_sensitive(druid,TRUE,FALSE,TRUE);
-
-	gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
 	if (GTK_TOGGLE_BUTTON (gtk_object_get_data (GTK_OBJECT (window), 
 						    "fullbutton"))->active) {
@@ -57,6 +54,8 @@ begin_install                          (GtkButton       *button,
 	} 
 
 	gnome_druid_set_buttons_sensitive(druid,TRUE,TRUE,TRUE);
+	
+	return FALSE;
 }
 
 
@@ -76,10 +75,7 @@ prep_install                           (GnomeDruidPage  *gnomedruidpage,
 	GnomeDruid *druid;
 	GtkButton *button;
 
-	button = GTK_BUTTON (gtk_object_get_data (GTK_OBJECT (window), "begin_button"));
-	gtk_widget_set_sensitive (GTK_WIDGET (button), TRUE);
-	druid = GNOME_DRUID (gtk_object_get_data (GTK_OBJECT (window), "druid"));
-	gnome_druid_set_buttons_sensitive(druid,TRUE,FALSE,TRUE);
+	g_timeout_add (0, (GSourceFunc)begin_install, window);
 }
 
 void

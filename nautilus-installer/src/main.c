@@ -16,12 +16,12 @@
 
 extern int installer_debug;
 extern int installer_test;
-extern int installer_local;
+extern char* installer_local;
 
 static const struct poptOption options[] = {
 	{"debug", 'd', POPT_ARG_NONE, &installer_debug, 0 , N_("Show debug output"), NULL},
 	{"test", 't', POPT_ARG_NONE, &installer_test, 0, N_("Test run"), NULL},
-	{"local", 'l', POPT_ARG_NONE, &installer_local, 0, N_("Read local rpm's."), NULL},
+	{"local", '\0', POPT_ARG_STRING, &installer_local, 0, N_("Use local, specify xml file to yse"), NULL},
 	{NULL, '\0', 0, NULL, 0}
 };
 

@@ -146,7 +146,7 @@ packagedata_from_corba_packagedatastruct (const Trilobite_Eazel_PackageDataStruc
 	pack->toplevel = corbapack.toplevel;
 	pack->bytesize = corbapack.bytesize;
 
-	pack->distribution.name = trilobite_get_distribution_enum (corbapack.distribution.name);
+	pack->distribution.name = trilobite_get_distribution_enum (corbapack.distribution.name, FALSE);
 	pack->distribution.version_major = corbapack.distribution.major;
 	pack->distribution.version_minor = corbapack.distribution.minor;
 	

@@ -145,7 +145,7 @@ nautilus_rpm_view_install_done (EazelInstallCallback *service,
 				NautilusRPMView *rpm_view)
 {
 	char *tmp;
-	eazel_install_callback_destroy (GTK_OBJECT (service));
+	eazel_install_callback_unref (GTK_OBJECT (service));
 	tmp = g_strdup (rpm_view->details->current_uri);
 	nautilus_rpm_view_load_uri (rpm_view, tmp);
 	g_free (tmp);

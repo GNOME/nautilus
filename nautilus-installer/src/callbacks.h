@@ -10,9 +10,8 @@ druid_finish                           (GnomeDruidPage  *gnomedruidpage,
                                         gpointer         arg1,
                                         gpointer         user_data);
 
-void
-begin_install                          (GtkButton       *button,
-                                        gpointer         user_data);
+gboolean
+begin_install                          (gpointer         user_data);
 
 void
 prep_install                           (GnomeDruidPage  *gnomedruidpage,

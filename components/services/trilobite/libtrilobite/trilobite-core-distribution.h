@@ -66,7 +66,7 @@ char* trilobite_get_distribution_name (DistributionInfo distinfo,
   returns. The version part (if show_version = TRUE was used) is
   _not_ parsed */
 
-DistributionName trilobite_get_distribution_enum (const char *name);
+DistributionName trilobite_get_distribution_enum (const char *name, gboolean compact);
 
 #endif /* EAZEL_SERVICES_DISTRIBUTION_H */
 

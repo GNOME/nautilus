@@ -95,7 +95,7 @@ struct _EazelInstallCallback
 /* Create a new eazel-install-callback object */
 EazelInstallCallback          *eazel_install_callback_new (void);
 /* Destroy the eazel-install-callback object */
-void                           eazel_install_callback_destroy    (GtkObject *object);
+void                           eazel_install_callback_unref    (GtkObject *object);
 
 /* Request the installation of a set of packages in categories.
    If categories = NULL, the service tries to fetch the packagelist

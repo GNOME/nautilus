@@ -156,12 +156,20 @@ xml_from_packagedata (const PackageData *pack) {
   GTK+ object stuff
 *****************************************/
 
+void eazel_install_unref (GtkObject *object) 
+{
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (EAZEL_INSTALL (object));
+
+	bonobo_object_unref (BONOBO_OBJECT (object));
+}
+
 void
-eazel_install_destroy (GtkObject *object)
+eazel_install_finalize (GtkObject *object)
 {
 	EazelInstall *service;
 
-	g_message ("in eazel_install_destroy");
+	g_message ("in eazel_install_finalize");
 
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (EAZEL_INSTALL (object));
@@ -189,7 +197,7 @@ eazel_install_destroy (GtkObject *object)
 		GTK_OBJECT_CLASS (eazel_install_parent_class)->destroy (object);
 	}
 
-	g_message ("out eazel_install_destroy");
+	g_message ("out eazel_install_finalize");
 }
 
 static void
@@ -271,7 +279,7 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 	GtkObjectClass *object_class;
 
 	object_class = (GtkObjectClass*)klass;
-	object_class->destroy = (void(*)(GtkObject*))eazel_install_destroy;
+	object_class->finalize = eazel_install_finalize;
 	object_class->set_arg = eazel_install_set_arg;
 	
 #ifdef EAZEL_INSTALL_NO_CORBA
@@ -305,13 +313,14 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				GTK_SIGNAL_OFFSET (EazelInstallClass, install_progress),
 				eazel_install_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT,
 				GTK_TYPE_NONE, 7, GTK_TYPE_POINTER, 
-				GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
+				GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, 
+				GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
 	signals[DOWNLOAD_FAILED] = 
 		gtk_signal_new ("download_failed",
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallClass, download_failed),
-				gtk_marshal_NONE__POINTER_POINTER,
+				gtk_marshal_NONE__POINTER,
 				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
 	signals[INSTALL_FAILED] = 
 		gtk_signal_new ("install_failed",

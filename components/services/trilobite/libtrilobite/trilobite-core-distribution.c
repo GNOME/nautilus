@@ -252,8 +252,32 @@ trilobite_get_distribution_name (DistributionInfo distinfo,
 	return result;
 }
 
-DistributionName 
-trilobite_get_distribution_enum (const char *name)
+static DistributionName 
+trilobite_get_distribution_enum_compact (const char *name)
+{
+	g_return_val_if_fail (name!=NULL, DISTRO_UNKNOWN);
+	if (strncmp (name, RHATc, strlen (RHATc)) == 0) {
+		return DISTRO_REDHAT;
+	} else if (strncmp (name, DEBIc, strlen (DEBIc)) == 0) {
+		return DISTRO_DEBIAN;
+	} else if (strncmp (name, CALDc, strlen (CALDc)) == 0) {
+		return DISTRO_CALDERA;
+	} else if (strncmp (name, SUSEc, strlen (SUSEc)) == 0) {
+		return DISTRO_SUSE;
+	} else if (strncmp (name, LPPCc, strlen (LPPCc)) == 0) {
+		return DISTRO_LINUXPPC;
+	} else if (strncmp (name, TURBc, strlen (TURBc)) == 0) {
+		return DISTRO_TURBOLINUX;
+	} else if (strncmp (name, CORLc, strlen (CORLc)) == 0) {
+		return DISTRO_COREL;
+	} else if (strncmp (name, MANDc, strlen (MANDc)) == 0) {
+		return DISTRO_MANDRAKE;
+	} 
+	return DISTRO_UNKNOWN;
+}
+
+static DistributionName 
+trilobite_get_distribution_enum_verbose (const char *name)
 {
 	g_return_val_if_fail (name!=NULL, DISTRO_UNKNOWN);
 	if (strncmp (name, RHAT, strlen (RHAT)) == 0) {
@@ -274,4 +298,14 @@ trilobite_get_distribution_enum (const char *name)
 		return DISTRO_MANDRAKE;
 	} 
 	return DISTRO_UNKNOWN;
+}
+
+DistributionName 
+trilobite_get_distribution_enum (const char *name, gboolean compact)
+{
+	if (compact) {
+		return trilobite_get_distribution_enum_compact (name);
+	} else {
+		return trilobite_get_distribution_enum_verbose (name);
+	}
 }

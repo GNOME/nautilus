@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
 		g_list_free (result);
 	}
 							
-	eazel_install_destroy (GTK_OBJECT (service));
+	eazel_install_unref (GTK_OBJECT (service));
 
 	return 0;
 };
