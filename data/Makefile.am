@@ -4,7 +4,6 @@ nautilusdatadir = $(datadir)/nautilus
 
 nautilusdata_DATA = \
 	browser.xml 			\
-	static_bookmarks.xml 		\
 	nautilus-extras.placeholder 	\
 	nautilus-suggested.placeholder 	\
 	$(NULL)
