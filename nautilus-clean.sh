@@ -85,6 +85,7 @@ nautilus-inventory-view \
 nautilus-mozilla-content-view \
 nautilus-mpg123 \
 nautilus-music-view \
+nautilus-news \
 nautilus-notes \
 nautilus-rpm-view \
 nautilus-sample-content-view \
