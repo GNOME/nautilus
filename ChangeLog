@@ -1,5 +1,15 @@
 2003-03-17  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-file-management-properties.c
+	(nautilus_file_management_properties_dialog_setup):
+	Correctly handle cases where one widget controls several keys
+	by using new _slave stuff in eel.
+
+	* libnautilus-private/apps_nautilus_preferences.schemas:
+	Correct paths for show_backup_files & show_hidden_files
+	
+2003-03-17  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-container.c (lay_down_icons_tblr):
 	Fix clean up by name layout.
 	
