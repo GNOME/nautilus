@@ -1,3 +1,13 @@
+2000-09-19  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_startup_form), (generate_summary_form),
+	(authn_cb_succeeded), (authn_cb_failed), (am_i_logged_in),
+	(preferences_button_cb):
+
+	Fixed view so that it queries ammonite for its current login state
+	and the login table is not drawn in a user is already logged in.
+
 2000-09-19  Darin Adler  <darin@eazel.com>
 
 	* components/image-viewer/io-png.c: (image_save): Use volatile to
