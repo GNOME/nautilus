@@ -149,16 +149,20 @@ static void  nautilus_tree_view_ensure_drag_data (NautilusTreeView *tree_view,
 static void  nautilus_tree_view_expand_maybe_later (NautilusTreeView *tree_view,
 						    int x, 
 						    int y);
-static void  nautilus_tree_view_get_drop_action (NautilusTreeView *tree_view, 
-						 GdkDragContext *context,
-						 int x, int y,
-						 int *default_action,
-						 int *non_default_action);
-static void  nautilus_tree_view_collapse_all    (NautilusTreeView *tree_view,
-						 NautilusCTreeNode *current_node);
+static void  nautilus_tree_view_get_drop_action (NautilusTreeView    *tree_view, 
+						 GdkDragContext      *context,
+						 int                  x, 
+						 int                  y,
+						 int                 *default_action,
+						 int                 *non_default_action);
+static void  nautilus_tree_view_collapse_all    (NautilusTreeView    *tree_view,
+						 NautilusCTreeNode   *current_node);
 
-static void nautilus_tree_view_drag_destroy     (NautilusTreeView      *tree_view);
-static void nautilus_tree_view_drag_destroy_real (NautilusTreeView *tree_view);
+static void  nautilus_tree_view_set_dnd_icon    (NautilusTreeView    *tree_view,
+						 GdkDragContext      *context);
+
+static void nautilus_tree_view_drag_destroy     (NautilusTreeView    *tree_view);
+static void nautilus_tree_view_drag_destroy_real (NautilusTreeView   *tree_view);
 
 static GtkTargetEntry nautilus_tree_view_dnd_target_table[] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
@@ -296,7 +300,11 @@ nautilus_tree_view_drag_begin (GtkWidget *widget, GdkDragContext *context,
 				      "drag_begin");
 
 	dnd->drag_info->got_drop_data_type = FALSE;
+
+	nautilus_tree_view_set_dnd_icon (NAUTILUS_TREE_VIEW (tree_view), context);
 }
+
+
 
 static void
 nautilus_tree_view_drag_end (GtkWidget *widget, GdkDragContext *context,
@@ -785,6 +793,45 @@ nautilus_tree_view_motion_notify (GtkWidget *widget, GdkEventButton *event)
    helper functions
    -----------------------------------------------------------------------
 */
+
+
+static void 
+nautilus_tree_view_set_dnd_icon (NautilusTreeView *tree_view, GdkDragContext *context)
+{
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
+	NautilusCTreeNode *node;
+	gchar       *text;
+	guint8       spacing;
+	GdkPixmap   *pixmap_opened;
+	GdkBitmap   *mask_opened;
+	gboolean     is_leaf;
+	gboolean     expanded;
+	NautilusTreeViewDndDetails *dnd;
+	
+	g_assert (tree_view != NULL);
+	g_assert (NAUTILUS_IS_TREE_VIEW (tree_view));
+
+	dnd = tree_view->details->dnd;
+
+	node = nautilus_tree_view_tree_node_at (NAUTILUS_TREE_VIEW (tree_view),
+						dnd->press_x,
+						dnd->press_y);
+		
+	nautilus_ctree_get_node_info (NAUTILUS_CTREE (tree_view->details->tree),
+				      node, &text,
+				      &spacing, &pixmap,
+				      &mask, &pixmap_opened,
+				      &mask_opened, &is_leaf, 
+				      &expanded);
+
+	gtk_drag_set_icon_pixmap (context, 
+				  gdk_rgb_get_cmap (),
+				  pixmap, mask,
+				  10, 10);
+}
+
+
 
 static void 
 nautilus_tree_view_make_prelight_if_file_operation (NautilusTreeView *tree_view, 

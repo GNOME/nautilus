@@ -1,5 +1,15 @@
 2000-11-14  Mathieu Lacage  <mathieu@eazel.com>
 
+	Buddy: john harper.
+	FIX bug 2946: no icon under cursor when dragging from 
+	tree view.
+	* components/tree/nautilus-tree-view-dnd.c:
+	(nautilus_tree_view_drag_begin), call new function below
+	(nautilus_tree_view_set_dnd_icon): sets the icon for the 
+	just-started drag.
+
+2000-11-14  Mathieu Lacage  <mathieu@eazel.com>
+
 	* components/tree/nautilus-tree-view-dnd.c:
 	(nautilus_tree_view_drag_motion),
 	(nautilus_tree_view_motion_notify),
