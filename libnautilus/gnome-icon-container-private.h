@@ -49,7 +49,7 @@ struct _GnomeIconContainerIcon {
 	guint width, height;	/* FIXME we could actually do without this if
                                    we assume the size is always given by
                                    GnomeIconContainer.cell_width*/
-
+        
 	/* Whether this item is selected (i.e. highlighted) for operation.  */
 	gboolean is_selected : 1;
 
@@ -150,6 +150,9 @@ struct _GnomeIconContainerPrivate {
            double-clicking still works.)  */
 	gint kbd_icon_visibility_timer_tag;
 
+        /* the time the mouse button went down in milliseconds */
+        guint32 button_down_time;
+        
 	/* Position of the pointer during the last click.  */
 	gint drag_x, drag_y;
 

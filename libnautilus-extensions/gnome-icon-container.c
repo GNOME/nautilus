@@ -2,7 +2,8 @@
 /* gnome-icon-container.c - Icon container widget.
 
    Copyright (C) 1999, 2000 Free Software Foundation
-
+   Copyright (C) 2000 Eazel, Inc.
+   
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
    published by the Free Software Foundation; either version 2 of the
@@ -46,6 +47,9 @@ static GnomeCanvasClass *parent_class;
 /* Timeout for selecting an icon in "browser mode" (i.e. by just placing the
    pointer over the icon, without pressing any button).  */
 #define BROWSER_MODE_SELECTION_TIMEOUT 800
+
+/* maximum amount of milliseconds the mouse button is allowed to stay down and still be considered a click */
+#define MAX_CLICK_TIME 1500
 
 
 /* WARNING: Keep this in sync with the `GnomeIconContainerIconMode' enum in
@@ -1864,15 +1868,15 @@ button_press_event (GtkWidget *widget,
 		    GdkEventButton *event)
 {
 	gboolean return_value;
-	GnomeIconContainer *container;
+	GnomeIconContainer *container = GNOME_ICON_CONTAINER (widget);
+        
+        container->priv->button_down_time = event->time;
 
 	/* Invoke the canvas event handler and see if an item picks up the
            event.  */
 	if ((* GTK_WIDGET_CLASS (parent_class)->button_press_event) (widget, event))
 		return TRUE;
-
-	container = GNOME_ICON_CONTAINER (widget);
-
+         
 	if (event->button == 1 && event->type == GDK_BUTTON_PRESS) {
 		if (! (event->state & GDK_CONTROL_MASK)) {
 			gboolean selection_changed;
@@ -1924,10 +1928,11 @@ button_release_event (GtkWidget *widget,
 		}
 
 		if ((priv->drag_icon != NULL) && (!priv->doing_drag)) {
-			set_kbd_current (container, priv->drag_icon, TRUE);
+			gint elapsed_time = event->time - priv->button_down_time;
+                        set_kbd_current (container, priv->drag_icon, TRUE);
 
 			/* if single-click mode, activate the icon */
-			if (priv->single_click_mode) {
+			if (priv->single_click_mode && (elapsed_time < MAX_CLICK_TIME)) {
 			
 			    gtk_signal_emit (GTK_OBJECT (container),
 				 				signals[ACTIVATE],

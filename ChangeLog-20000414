@@ -1,3 +1,11 @@
+2000-01-18  Andy Hertzfeld <andy@eazel.com>
+
+        * libnautilus/gnome-icon-container-private.h:
+        added "button_down_time" field to private data structure
+        * libnautilus/gnome-icon-container.c
+        made it not activate objects if the button was held down too long
+        by remember the mouse down time and comparing it with the up time
+
 2000-01-18  John Sullivan <sullivan@eazel.com>
 
 	* src/file-manager/fm-directory-view.c:
