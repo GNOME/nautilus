@@ -1,3 +1,21 @@
+2000-09-12  Robey Pointer  <robey@eazel.com>
+
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(nautilus_rpm_view_finished_working),
+	(nautilus_rpm_view_install_done), (nautilus_service_need_password),
+	(nautilus_service_try_again),
+	(nautilus_rpm_view_install_package_callback),
+	(nautilus_rpm_view_uninstall_package_callback):
+	* components/rpmview/nautilus-rpm-view-private.h:
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_destroy), (nautilus_rpm_view_update_from_uri):
+
+	Move private fields to a shared header.  Make the password query
+	dialog work just like the installer's (ability to abort, stop
+	trying after 3 times, etc).  Grey out install/uninstall buttons
+	while working.  Clean up resources to avoid coredumps or getting
+	into a screwy state.
+
 2000-09-12  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.c:

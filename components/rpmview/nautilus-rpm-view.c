@@ -57,8 +57,12 @@
 
 #ifdef EAZEL_SERVICES
 #include <libeazelinstall.h>
+#include <libtrilobite/libtrilobite.h>
 #include "nautilus-rpm-view-install.h"
 #endif /* EAZEL_SERVICES */        
+
+/* must be after any services includes */
+#include "nautilus-rpm-view-private.h"
 
 
 #define RPM_VIEW_DEFAULT_BACKGROUND_COLOR  "rgb:DDDD/DDDD/BBBB"
@@ -74,44 +78,6 @@ enum {
    Don't forgot to fix the places its used, so
    the description and summary are in gtk_label_new */
 #define LONG_FIELDS_IN_GTK_LABEL
-
-struct NautilusRPMViewDetails {
-	char *current_uri;
-	char *package_name;
-	
-	NautilusView *nautilus_view;
-        
-	GtkWidget *package_image;
-	GtkWidget *package_title;
-	GtkWidget *package_release;
-	GtkWidget *package_summary;
-	GtkWidget *package_size;
-	GtkWidget *package_idate;
-	GtkWidget *package_license;
-	GtkWidget *package_bdate;
-	GtkWidget *package_distribution;
-	GtkWidget *package_vendor;      
-	GtkWidget *package_description;    
-        
-	GtkWidget *package_installed_message;
-	GtkWidget *package_install_button;
-	GtkWidget *package_update_button;
-	GtkWidget *package_uninstall_button;
-	GtkWidget *package_verify_button;
-	
-	GtkWidget *verify_window;
-	
-	GtkVBox   *package_container;
-	GtkWidget *go_to_button;
-	
-	GtkWidget *package_file_list;
-	gboolean  package_installed;
-	
-	int background_connection;
-	int file_count;
-	int last_file_index;
-	int selected_file;	
-};
 
 
 static GtkTargetEntry rpm_dnd_target_table[] = {
@@ -448,11 +414,20 @@ nautilus_rpm_view_destroy (GtkObject *object)
 #endif /* EAZEL_SERVICES */        
 
 #ifdef EAZEL_SERVICES
-        pack = (PackageData*)gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
+        pack = (PackageData *) gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
         if (pack) {
                 packagedata_destroy (pack, TRUE);
         }
-#endif /* EAZEL_SERVICES */        
+
+	if (rpm_view->details->root_client) {
+		trilobite_root_client_unref (GTK_OBJECT (rpm_view->details->root_client));
+	}
+	if (rpm_view->details->installer) {
+		eazel_install_callback_unref (GTK_OBJECT (rpm_view->details->installer));
+	}
+
+	g_free (rpm_view->details->remembered_password);
+#endif /* EAZEL_SERVICES */
 
 	if (rpm_view->details->verify_window) {
 		gtk_object_destroy (GTK_OBJECT (rpm_view->details->verify_window));
@@ -762,9 +737,9 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
                 PackageData *pack;        
                 char *ptr;
 
-                pack = (PackageData*)gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
+                pack = (PackageData *) gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
                 if (pack != NULL) {
-/* Destroy the old */
+                        /* Destroy the old */
                         packagedata_destroy (pack, TRUE);
                 } 
                 pack = packagedata_new ();
@@ -783,8 +758,8 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
         }
 #endif /* EAZEL_SERVICES */              
         
-        g_free(temp_version);
-        g_free(temp_release);
+        g_free (temp_version);
+        g_free (temp_release);
 	
 }
 

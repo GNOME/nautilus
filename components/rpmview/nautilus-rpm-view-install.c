@@ -25,6 +25,8 @@
 #include <libeazelinstall.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-password-dialog.h>
+#include <libtrilobite/libtrilobite.h>
+#include "nautilus-rpm-view-private.h"
 
 #define OAF_ID "OAFIID:trilobite_eazel_install_service:8ff6e815-1992-437c-9771-d932db3b4a17"
 
@@ -161,14 +163,27 @@ nautilus_rpm_view_dependency_check (EazelInstallCallback *service,
 	nautilus_view_report_load_underway (nautilus_rpm_view_get_view (rpm_view));
 }
 
+/* get rid of the installer and root client, and reactivate buttons */
+static void
+nautilus_rpm_view_finished_working (NautilusRPMView *rpm_view)
+{
+	eazel_install_callback_unref (GTK_OBJECT (rpm_view->details->installer));
+	rpm_view->details->installer = NULL;
+	trilobite_root_client_unref (GTK_OBJECT (rpm_view->details->root_client));
+	rpm_view->details->root_client = NULL;
+
+	gtk_widget_set_sensitive (GTK_WIDGET (rpm_view->details->package_install_button), TRUE);
+	gtk_widget_set_sensitive (GTK_WIDGET (rpm_view->details->package_uninstall_button), TRUE);
+
+	rpm_view->details->password_attempts = 0;
+}
+
 static void
 nautilus_rpm_view_install_done (EazelInstallCallback *service,
 				gboolean result,
 				NautilusRPMView *rpm_view)
 {
 	char *tmp;	
-
-	eazel_install_callback_unref (GTK_OBJECT (service));
 
 	if (!result) {
 		char *dialog_title;
@@ -177,11 +192,8 @@ nautilus_rpm_view_install_done (EazelInstallCallback *service,
 
 		GnomeDialog *d;
 		GtkWidget *window;
-		PackageData *pack;
 
-		pack = (PackageData*)gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
-		g_assert (pack);
-		detailed = (char*)gtk_object_get_data (GTK_OBJECT (rpm_view), "details");
+		detailed = (char *) gtk_object_get_data (GTK_OBJECT (rpm_view), "details");
 	
 		if (nautilus_rpm_view_get_installed (rpm_view)) {
 			terse = g_strdup (_("Uninstall failed..."));
@@ -208,8 +220,9 @@ nautilus_rpm_view_install_done (EazelInstallCallback *service,
 		nautilus_view_report_load_complete (nautilus_rpm_view_get_view (rpm_view));
 	}
 
-	tmp = g_strdup (nautilus_rpm_view_get_uri (rpm_view));
+	nautilus_rpm_view_finished_working (rpm_view);
 
+	tmp = g_strdup (nautilus_rpm_view_get_uri (rpm_view));
 	nautilus_rpm_view_load_uri (rpm_view, tmp);
 	g_free (tmp);
 }
@@ -226,19 +239,34 @@ nautilus_service_need_password (GtkObject *object, const char *prompt,
 	gboolean okay;
 	char *out;
 
+	if (view->details->remembered_password) {
+		return g_strdup (view->details->remembered_password);
+	}
+
+	if (view->details->password_attempts > 0) {
+		message = _("Incorrect password.");
+	}
 
 	dialog = nautilus_password_dialog_new ("Authenticate Me", message, prompt, "", TRUE);
 	okay = nautilus_password_dialog_run_and_block (NAUTILUS_PASSWORD_DIALOG (dialog));
 
 	if (! okay) {
 		/* cancel */
+		view->details->password_attempts = 0;
 		out = g_strdup ("");
 	} else {
 		out = nautilus_password_dialog_get_password (NAUTILUS_PASSWORD_DIALOG (dialog));
+		if (nautilus_password_dialog_get_remember (NAUTILUS_PASSWORD_DIALOG (dialog))) {
+			view->details->remembered_password = g_strdup (out);
+		}
 	}
 
 	gtk_widget_destroy (dialog);
 	gtk_main_iteration ();
+
+	if (okay) {
+		view->details->password_attempts++;
+	}
 
 	return out;
 }
@@ -248,6 +276,20 @@ static gboolean
 nautilus_service_try_again (GtkObject *object, 
 			    NautilusRPMView*view)
 {
+	if (view->details->password_attempts == 0) {
+		/* user hit "cancel" */
+		return FALSE;
+	}
+
+	/* a wrong password shouldn't be remembered :) */
+	g_free (view->details->remembered_password);
+	view->details->remembered_password = NULL;
+
+	if (view->details->password_attempts >= 3) {
+		/* give up. */
+		view->details->password_attempts = 0;
+		return FALSE;
+	}
 	return TRUE;
 }
 
@@ -297,26 +339,31 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 	PackageData *pack;
 	CategoryData *category;
 	CORBA_Environment ev;
-	EazelInstallCallback *cb;		
+	EazelInstallCallback *cb;
+
+	/* Check that we're on a redhat system */
+	if (check_for_redhat () == FALSE) {
+		fprintf (stderr, "*** This tool can only be used on RedHat.\n");
+		return;
+	}
 
 	CORBA_exception_init (&ev);
 
 	categories = NULL;
 
-	pack = (PackageData*)gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
+	gtk_widget_set_sensitive (GTK_WIDGET (rpm_view->details->package_install_button), FALSE);
+	gtk_widget_set_sensitive (GTK_WIDGET (rpm_view->details->package_uninstall_button), FALSE);
+
+	pack = (PackageData *) gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
 	g_assert (pack);
 
 	category = categorydata_new ();
 	category->packages = g_list_prepend (NULL, pack);
 	categories = g_list_prepend (NULL, category);
 
-	/* Check that we're on a redhat system */
-	if (check_for_redhat () == FALSE) {
-		fprintf (stderr, "*** This tool can only be used on RedHat.\n");
-	}
-
 	cb = eazel_install_callback_new ();
-	set_root_client (eazel_install_callback_bonobo (cb), rpm_view);
+	rpm_view->details->installer = cb;
+	rpm_view->details->root_client = set_root_client (eazel_install_callback_bonobo (cb), rpm_view);
 	
 	Trilobite_Eazel_Install__set_protocol (eazel_install_callback_corba_objref (cb), Trilobite_Eazel_PROTOCOL_HTTP, &ev);
 	Trilobite_Eazel_Install__set_server (eazel_install_callback_corba_objref (cb), "testmachine.eazel.com", &ev);
@@ -330,7 +377,7 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 	gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", nautilus_rpm_view_dependency_check, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "done", nautilus_rpm_view_install_done, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "delete_files", GTK_SIGNAL_FUNC (delete_files), NULL);
-	
+
 	eazel_install_callback_install_packages (cb, categories, NULL, &ev);
 
 	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
@@ -349,23 +396,28 @@ nautilus_rpm_view_uninstall_package_callback (GtkWidget *widget,
 	CORBA_Environment ev;
 	EazelInstallCallback *cb;		
 
+	/* Check that we're on a redhat system */
+	if (check_for_redhat () == FALSE) {
+		fprintf (stderr, "*** This tool can only be used on RedHat.\n");
+		return;
+	}
+
 	CORBA_exception_init (&ev);
 
 	categories = NULL;
 
-	pack = gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
+	gtk_widget_set_sensitive (GTK_WIDGET (rpm_view->details->package_install_button), FALSE);
+	gtk_widget_set_sensitive (GTK_WIDGET (rpm_view->details->package_uninstall_button), FALSE);
+
+	pack = (PackageData *) gtk_object_get_data (GTK_OBJECT (rpm_view), "packagedata");
 	g_assert (pack);
 	category = categorydata_new ();
 	category->packages = g_list_prepend (NULL, pack);
 	categories = g_list_prepend (NULL, category);
 
-	/* Check that we're on a redhat system */
-	if (check_for_redhat () == FALSE) {
-		fprintf (stderr, "*** This tool can only be used on RedHat.\n");
-	}
-
 	cb = eazel_install_callback_new ();
-	set_root_client (eazel_install_callback_bonobo (cb), rpm_view);
+	rpm_view->details->installer = cb;
+	rpm_view->details->root_client = set_root_client (eazel_install_callback_bonobo (cb), rpm_view);
 	
 	Trilobite_Eazel_Install__set_protocol (eazel_install_callback_corba_objref (cb), Trilobite_Eazel_PROTOCOL_HTTP, &ev);
 	Trilobite_Eazel_Install__set_tmp_dir (eazel_install_callback_corba_objref (cb), "/tmp/eazel-install", &ev);
