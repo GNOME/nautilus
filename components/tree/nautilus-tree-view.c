@@ -48,7 +48,7 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-drag.h>
 #include <libnautilus-extensions/nautilus-file.h>
-
+#include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
@@ -61,7 +61,7 @@
 #include <stdio.h>
 
 /* timeout for the automatic expand in tree view */
-#define EXPAND_TIMEOUT 200
+#define EXPAND_TIMEOUT 800
 
 
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
@@ -193,12 +193,11 @@ static gboolean nautilus_tree_view_drag_drop    (GtkWidget            *widget,
 						 gpointer              user_data);
 static void     nautilus_tree_view_drag_data_received   (GtkWidget            *widget,
 							 GdkDragContext       *context,
-							 int                   x,
-							 int                   y,
+							 gint                   x,
+							 gint                   y,
 							 GtkSelectionData     *data,
 							 guint                 info,
-							 guint                 time,
-							 gpointer              user_data);
+							 guint                 time);
 
 static void     nautilus_tree_view_drag_data_get        (GtkWidget            *widget,
 							 GdkDragContext       *context,
@@ -246,6 +245,9 @@ static void    nautilus_tree_view_stop_auto_scroll        (NautilusTreeView     
 static void    nautilus_tree_view_real_scroll             (NautilusTreeView      *tree_view, 
 							   float                  x_delta, 
 							   float                  y_delta);
+
+static void    nautilus_tree_view_free_drag_data          (NautilusTreeView      *tree_view);
+
 
 
 static void nautilus_tree_view_initialize_class (NautilusTreeViewClass *klass);
@@ -748,7 +750,12 @@ nautilus_tree_view_load_from_filesystem (NautilusTreeView *view)
 }
 
 static GtkTargetEntry nautilus_tree_view_dnd_target_table[] = {
-	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST }
+	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
+	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
+	{ NAUTILUS_ICON_DND_COLOR_TYPE, 0, NAUTILUS_ICON_DND_COLOR },
+	{ NAUTILUS_ICON_DND_BGIMAGE_TYPE, 0, NAUTILUS_ICON_DND_BGIMAGE },
+	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD }
+
 };
 
 
@@ -795,7 +802,7 @@ nautilus_tree_view_init_dnd (NautilusTreeView *view)
 	view->details->dnd = g_new0 (NautilusTreeViewDndDetails, 1);
 	view->details->dnd->motion_queue = nautilus_queue_new ();
 	view->details->dnd->target_list = gtk_target_list_new (nautilus_tree_view_dnd_target_table, 
-							       1);
+							       NAUTILUS_N_ELEMENTS (nautilus_tree_view_dnd_target_table));
 
 	view->details->dnd->drag_info = g_new0 (NautilusDragInfo, 1);
 	nautilus_drag_init (view->details->dnd->drag_info,
@@ -843,6 +850,7 @@ nautilus_tree_view_init_dnd (NautilusTreeView *view)
 			    "drag_data_received", 
 			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_data_received), 
 			    view);
+
 	gtk_signal_connect (GTK_OBJECT (view->details->tree), 
 			    "drag_data_get", 
 			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_data_get), 
@@ -976,6 +984,7 @@ nautilus_tree_view_destroy (GtkObject *object)
 		gtk_style_unref(view->details->dnd->highlight_style);
 	}
 	nautilus_drag_finalize (view->details->dnd->drag_info);
+	gtk_entry_list_unref (view->details->dnd->target_list);
 	g_free (view->details->dnd);
 	/* FIXME bugzilla.eazel.com 2422: destroy drag_info */
 
@@ -1381,13 +1390,18 @@ nautilus_tree_view_drag_begin (GtkWidget *widget, GdkDragContext *context,
 	dnd = tree_view->details->dnd;
 
 	/* The drag is started. reinit the drag data. */
-	tree_view->details->dnd->drag_pending = FALSE;
+	dnd->drag_pending = FALSE;
+
+	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
+				      "drag_begin");
 }
 
 static void
 nautilus_tree_view_drag_end (GtkWidget *widget, GdkDragContext *context,
 			     gpointer user_data)
 {
+	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
+				      "drag_end");
 
 }
 
@@ -1413,8 +1427,11 @@ nautilus_tree_view_drag_leave (GtkWidget *widget,
 	dnd->current_prelighted_node = NULL;
 
 	/* stop autoscroll */
-
 	nautilus_tree_view_stop_auto_scroll (tree_view);
+
+	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
+				      "drag_leave");
+
 }
 
 static int motion_time_callback (gpointer data);
@@ -1473,7 +1490,8 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 
 
 	/* make the thing under us prelighted. */
-
+	/* FIXME: we should do this only for certain kinds
+	   of drags. ie: files, keywords... not colors or backgrounds */
 	node = nautilus_tree_view_tree_node_at (NAUTILUS_TREE_VIEW (tree_view), x, y);
 	is_directory = nautilus_tree_view_is_tree_node_directory (NAUTILUS_TREE_VIEW (tree_view), node);
 
@@ -1497,6 +1515,7 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 	dnd->current_prelighted_node = node;
 
 
+
 	/* update dragging cursor. */
 	/* FIXME bugzilla.eazel.com 2417: this does not work */
 #if 0
@@ -1506,12 +1525,14 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 	gdk_drag_status (context, context->suggested_action, time);
 
 
+	/* auto scroll */
 	nautilus_tree_view_start_auto_scroll (tree_view);
 
-	return FALSE;
+	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
+				      "drag_motion");
+	return TRUE;
 }
 
-#define MAT 0
 
 static gboolean 
 nautilus_tree_view_drag_drop (GtkWidget *widget,
@@ -1527,102 +1548,186 @@ nautilus_tree_view_drag_drop (GtkWidget *widget,
 
 	/* critical piece of code. this ensures that our 
 	 * drag_data_received callback is going to be called 
-	 * soon.
+	 * soon and it will execute the right actions since the 
+	 * drop occured.
 	 */
-	gtk_drag_get_data (GTK_WIDGET (tree_view->details->tree), context,
+	dnd->drag_info->drop_occured = TRUE;
+	gtk_drag_get_data (GTK_WIDGET (widget), context,
 			   GPOINTER_TO_INT (context->targets->data),
 			   time);
-	return FALSE;
+
+
+	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
+				      "drag_drop");
+
+	return TRUE;
 }
 
-static void nautilus_tree_view_drag_data_received (GtkWidget *widget,
-						   GdkDragContext *context,
-						   int x, int y,
-						   GtkSelectionData *data,
-						   guint info, guint time,
-						   gpointer user_data)
+
+static void
+nautilus_tree_view_receive_dropped_icons (NautilusTreeView *view,
+					  GdkDragContext *context,
+					  int x, int y)
+{
+	NautilusDragInfo *drag_info;
+	NautilusTreeView *tree_view;
+	gboolean local_move_only;
+	char *drop_target_uri;
+
+	tree_view = NAUTILUS_TREE_VIEW (view);
+	drag_info = tree_view->details->dnd->drag_info;
+
+	drop_target_uri = NULL;
+
+	if (drag_info->selection_list == NULL) {
+		return;
+	}
+
+	if (context->action == GDK_ACTION_ASK) {
+		context->action = nautilus_drag_drop_action_ask 
+			(GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
+	}
+
+	if (context->action > 0) {
+		drop_target_uri = nautilus_tree_view_find_drop_target (tree_view, 
+								       drag_info->selection_list,
+								       context, 
+								       x, y);
+		if (drop_target_uri == NULL) {
+			nautilus_drag_destroy_selection_list (drag_info->selection_list);
+			return;
+		}
+
+		local_move_only = FALSE;
+		/* calculate if we ended to drop into the orignal source... */
+		local_move_only = nautilus_drag_items_local (drop_target_uri, 
+							     drag_info->selection_list);
+		
+		/* do nothing for the local case: we do not reorder. */
+		if (!local_move_only) {
+			{
+				char *action_string;
+				switch (context->action) {
+				case GDK_ACTION_MOVE:
+					action_string = "move";
+					break;
+				case GDK_ACTION_COPY:
+					action_string = "copy";
+					break;
+				case GDK_ACTION_LINK:
+					action_string = "link";
+					break;
+				default:
+					g_assert_not_reached ();
+					action_string = "error";
+					break;
+				}
+				
+				g_print ("%s selection in %s\n", 
+					 action_string, drop_target_uri);
+			}
+			nautilus_tree_view_move_copy_files (tree_view, drag_info->selection_list, 
+							    context, drop_target_uri);
+		}
+		g_free (drop_target_uri);
+		nautilus_drag_destroy_selection_list (drag_info->selection_list);
+		drag_info->selection_list = NULL;
+	}
+}
+
+
+static void
+nautilus_tree_view_dropped_keyword (NautilusTreeView *tree_view, const char *keyword, int x, int y)
+{
+	/* FIXME: implementing this is going to be some kind of pain.
+	   Need to think about it.
+	 */
+}
+
+static void 
+nautilus_tree_view_drag_data_received (GtkWidget *widget,
+				       GdkDragContext *context,
+				       gint x, gint y,
+				       GtkSelectionData *data,
+				       guint info, guint time)
 {
 	NautilusTreeViewDndDetails *dnd;
+	NautilusDragInfo *drag_info;
 	NautilusTreeView *tree_view;
-	GList *selection_list;
 
 	tree_view = NAUTILUS_TREE_VIEW (gtk_object_get_data (GTK_OBJECT (widget), "tree_view"));
 	dnd = tree_view->details->dnd;
+	drag_info = dnd->drag_info;
 
+	drag_info->data_type = info;
+	drag_info->got_drop_data_type = TRUE;
+
+
+	/* save operation for drag motion events */
 	switch (info) {
-	case NAUTILUS_ICON_DND_URI_LIST:
-
-		selection_list = nautilus_drag_build_selection_list (data);
-		if (context->action == GDK_ACTION_ASK) {
-			context->action = nautilus_drag_drop_action_ask 
-				(GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
-		}
-
-		if (context->action > 0) {
-			char *drop_target_uri;
-			gboolean local_move_only;
-			
-			drop_target_uri = nautilus_tree_view_find_drop_target (tree_view, 
-									       selection_list,
-									       context, 
-									       x, y);
-			if (drop_target_uri == NULL) {
-				nautilus_drag_destroy_selection_list (selection_list);
-				break;
-			}
-
-			local_move_only = FALSE;
-			/* calculate if we ended to drop into the orignal source... */
-			local_move_only = nautilus_drag_items_local (drop_target_uri, 
-								     selection_list);
-
-#if DND_DEBUG
-			if (local_move_only)
-				g_print ("destination same as source\n");
-#endif
-
-			/* do nothing for the local case: we do not reorder. */
-			if (!local_move_only) {
-#if DND_DEBUG			
-				{
-					char *action_string;
-					switch (context->action) {
-					case GDK_ACTION_MOVE:
-						action_string = "move";
-						break;
-					case GDK_ACTION_COPY:
-						action_string = "copy";
-						break;
-					case GDK_ACTION_LINK:
-						action_string = "link";
-						break;
-					default:
-						g_assert_not_reached ();
-						action_string = "error";
-						break;
-					}
-			
-					g_print ("%s selection in %s\n", 
-						 action_string, drop_target_uri);
-				}
-#endif /* DNDDEBUG */
-				nautilus_tree_view_move_copy_files (tree_view, selection_list, 
-								    context, drop_target_uri);
-			}
-			g_free (drop_target_uri);
-		}
-
-
-		nautilus_drag_destroy_selection_list (selection_list);
-
-		gtk_drag_finish (context, TRUE, FALSE, time);
-		break;
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-		/* not supported but... */
+		drag_info->selection_list = nautilus_drag_build_selection_list (data);
+		break;
+	case NAUTILUS_ICON_DND_URI_LIST:
+		drag_info->selection_list = nautilus_drag_build_selection_list (data);
+		break;
+	case NAUTILUS_ICON_DND_COLOR:
+		break;
+	case NAUTILUS_ICON_DND_BGIMAGE:	
+		break;
+	case NAUTILUS_ICON_DND_KEYWORD:	
+		break;
 	default:
-		gtk_drag_finish (context, FALSE, FALSE, time);
+
 		break;
 	}
+
+
+	/* drop occured: do actual operations on the data */
+	if (drag_info->drop_occured == TRUE) {
+		switch (info) {
+		case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+			nautilus_tree_view_receive_dropped_icons
+				(NAUTILUS_TREE_VIEW (tree_view),
+				 context, x, y);
+			gtk_drag_finish (context, TRUE, FALSE, time);
+			break;
+		case NAUTILUS_ICON_DND_URI_LIST:
+			nautilus_tree_view_receive_dropped_icons
+				(NAUTILUS_TREE_VIEW (tree_view),
+				 context, x, y);
+			gtk_drag_finish (context, TRUE, FALSE, time);
+			break;
+		case NAUTILUS_ICON_DND_COLOR:
+			nautilus_background_receive_dropped_color
+				(nautilus_get_widget_background (widget),
+				 widget, x, y, data);
+			gtk_drag_finish (context, TRUE, FALSE, time);
+			break;
+		case NAUTILUS_ICON_DND_BGIMAGE:
+			nautilus_background_receive_dropped_background_image
+				(nautilus_get_widget_background (widget),
+				 (char *)data);
+			gtk_drag_finish (context, FALSE, FALSE, time);
+			break;
+		case NAUTILUS_ICON_DND_KEYWORD:
+			nautilus_tree_view_dropped_keyword
+				(NAUTILUS_TREE_VIEW (tree_view),
+				 (char *)data, x, y);
+			gtk_drag_finish (context, FALSE, FALSE, time);
+			break;
+		default:
+			gtk_drag_finish (context, FALSE, FALSE, time);
+		}
+		
+		nautilus_tree_view_free_drag_data (NAUTILUS_TREE_VIEW (tree_view));
+		
+		/* reinitialise it for the next dnd */
+		drag_info->drop_occured = FALSE;
+	}
+
+	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
+				      "drag_data_received");
 
 }
 
@@ -1644,12 +1749,15 @@ static void nautilus_tree_view_drag_data_get (GtkWidget *widget,
 	uri = nautilus_tree_view_get_drag_uri (tree_view);
 	selection_string = g_strconcat (uri, "\r\n", NULL);
 
-	g_print ("%s\n", selection_string);
 
 	gtk_selection_data_set (data,
 				data->target,
 				8, selection_string, strlen(selection_string));
 	g_free (uri);
+
+	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
+				      "drag_data_get");
+
 }
 
 
@@ -1715,7 +1823,7 @@ nautilus_tree_view_button_press (GtkWidget *widget, GdkEventButton *event)
 	}
 
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget), "button-press-event");
-	return FALSE;
+	return TRUE;
 }
 
 #define RADIUS 200
@@ -1772,7 +1880,7 @@ nautilus_tree_view_button_release (GtkWidget *widget, GdkEventButton *event)
 
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget), "button-release-event");
 
-	return FALSE;
+	return TRUE;
 
 }
 
@@ -1781,15 +1889,14 @@ nautilus_tree_view_button_release (GtkWidget *widget, GdkEventButton *event)
 static int
 nautilus_tree_view_motion_notify (GtkWidget *widget, GdkEventButton *event)
 {
-	int retval;
 	GtkCList *clist;
 	NautilusTreeView *tree_view;
 
 	clist = GTK_CLIST (widget);
-	retval = FALSE;
+
 
 	if (event->window != clist->clist_window)
-		return retval;
+		return FALSE;
 
 	tree_view = NAUTILUS_TREE_VIEW (gtk_object_get_data (GTK_OBJECT (widget), "tree_view"));
 
@@ -1816,7 +1923,10 @@ nautilus_tree_view_motion_notify (GtkWidget *widget, GdkEventButton *event)
 					(GdkEvent *) event);
 		}
 	} 
-	return retval;
+
+	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget), "motion-notify-event");
+
+	return TRUE;
 }
 
 
@@ -1901,6 +2011,7 @@ nautilus_tree_view_expand_or_collapse_row (GtkCTree *tree, int row)
 
 }
 
+/* it actually also supports links */
 static void
 nautilus_tree_view_move_copy_files (NautilusTreeView *tree_view,
 				    GList *selection_list,
@@ -1934,25 +2045,32 @@ nautilus_tree_view_find_drop_target (NautilusTreeView *tree_view,
 				     GdkDragContext *context,
 				     int x, int y)
 {
-	NautilusFile *file;
 	char *target_uri;
+	NautilusFile *file;
+	GtkCTreeNode *node;
+	gboolean is_directory;
+	NautilusTreeNode *current_node;
+	
+	node = nautilus_tree_view_tree_node_at (NAUTILUS_TREE_VIEW (tree_view), x, y);
+	is_directory = nautilus_tree_view_is_tree_node_directory (NAUTILUS_TREE_VIEW (tree_view), node);
 
-	target_uri = nautilus_tree_view_item_at (tree_view, x, y);
+	if (is_directory == FALSE) {
+		NautilusTreeNode *parent_node;
+		current_node = view_node_to_model_node (tree_view, node);
+		parent_node = nautilus_tree_node_get_parent (current_node);
+		file = nautilus_tree_node_get_file (parent_node);
+	} else {
+		file = nautilus_tree_node_get_file (current_node);
+	}
 
-	if (target_uri == NULL) {
+
+	if ( !nautilus_drag_can_accept_items 
+	     (file, selection_list)) {	
+		nautilus_file_unref (file);
 		return NULL;
 	}
 
-	file = nautilus_file_get (target_uri);
-
-	if ( !nautilus_drag_can_accept_items 
-	     (file, selection_list)) {
-		/* the item we dropped our selection on cannot accept the items,
-		 * do the same thing as if we just dropped the items on the canvas
-		 */
-		g_free (target_uri);
-		target_uri = NULL;
-	}
+	target_uri = nautilus_file_get_uri (file);
 
 	nautilus_file_unref (file);
 
@@ -2049,6 +2167,15 @@ nautilus_tree_view_get_drag_uri  (NautilusTreeView *tree_view)
 
 
 
+
+
+
+
+
+
+
+
+
 /***********************************************************************
  * scrolling helper code. stolen and modified from nautilus-icon-dnd.c *
  ***********************************************************************/
@@ -2130,4 +2257,28 @@ nautilus_tree_view_real_scroll (NautilusTreeView *tree_view, float delta_x, floa
 	nautilus_gtk_adjustment_set_value (hadj, hadj->value + delta_x);
 	nautilus_gtk_adjustment_set_value (vadj, vadj->value + delta_y);
 
+}
+
+
+
+
+static void
+nautilus_tree_view_free_drag_data (NautilusTreeView *tree_view)
+{
+	NautilusDragInfo *drag_info;
+	
+	drag_info = tree_view->details->dnd->drag_info;
+	
+	drag_info->got_drop_data_type = FALSE;
+#if 0	
+	if (dnd_info->shadow != NULL) {
+		gtk_object_destroy (GTK_OBJECT (dnd_info->shadow));
+		dnd_info->shadow = NULL;
+	}
+#endif /* 0 */
+
+	if (drag_info->selection_data != NULL) {
+		nautilus_gtk_selection_data_free_deep (drag_info->selection_data);
+		drag_info->selection_data = NULL;
+	}
 }

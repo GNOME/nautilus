@@ -1,3 +1,15 @@
+2000-09-07  Mathieu Lacage  <mathieu@eazel.com>
+
+	Moves the tree view to the new standard way of dnd.
+	This now makes it consistant with the rest of the icon
+	and list view.
+	Fixes a number of bugs in the process: 2897, 2905, 2353
+	
+	* components/tree/nautilus-tree-view.c: it just changes 
+	a lot of things and cleans the code. Dnd should be now fully 
+	functional for file drag and drops. Please, test and report
+	bugs.
+
 2000-09-07  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/tree/nautilus-tree-model.c
