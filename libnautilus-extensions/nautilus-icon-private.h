@@ -166,6 +166,9 @@ struct NautilusIconContainerDetails {
 	NautilusScalableFont *smooth_label_font;
 	guint smooth_font_size[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
 
+	/* pixbuf for label highlighting */
+	GdkPixbuf *highlight_frame;
+	
 	/* color for text labels */
 	guint32 label_color;
 	guint32 label_info_color;

@@ -1418,8 +1418,9 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 static void
 draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, double i2c[6], int x_delta)
 {
-	GdkPixbuf *text_pixbuf, *temp_pixbuf;
-	char *text_frame_path;
+	GdkPixbuf *text_pixbuf;
+	NautilusIconContainer *container;
+	
 	gboolean needs_highlight;
 	gboolean have_editable;
 	gboolean have_additional;
@@ -1450,24 +1451,13 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, doub
 	/* Set up the background. */
 	needs_highlight = icon_item->details->is_highlighted_for_selection
 		|| icon_item->details->is_highlighted_for_drop;
-
-	text_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
-				      TRUE,
-				      8,
-				      icon_item->details->text_width,
-				      icon_item->details->text_height);
 	
 	if (needs_highlight) {
-		text_frame_path = nautilus_theme_get_image_path ("text-selection-frame.png");
-		temp_pixbuf = gdk_pixbuf_new_from_file (text_frame_path);
-		g_free (text_frame_path);
-		
-		
-		text_pixbuf = nautilus_stretch_frame_image (temp_pixbuf, 9, 8, 9, 8,
+		container = NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (icon_item)->canvas);
+
+		text_pixbuf = nautilus_stretch_frame_image (container->details->highlight_frame, 9, 8, 9, 8,
 							    icon_item->details->text_width,
-							    icon_item->details->text_height, TRUE);
-		
-		gdk_pixbuf_unref (temp_pixbuf);					    
+							    icon_item->details->text_height, TRUE);		
 	} else {
 		text_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
 				      TRUE,

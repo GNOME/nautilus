@@ -2021,6 +2021,7 @@ destroy (GtkObject *object)
         if (container->details->idle_id != 0) {
 		gtk_idle_remove (container->details->idle_id);
 	}
+       
         for (i = 0; i < NAUTILUS_N_ELEMENTS (container->details->label_font); i++) {
        		if (container->details->label_font[i] != NULL)
         		gdk_font_unref (container->details->label_font[i]);
@@ -2030,6 +2031,10 @@ destroy (GtkObject *object)
 		gtk_object_unref (GTK_OBJECT (container->details->smooth_label_font));
 	}
 
+	if (container->details->highlight_frame != NULL) {
+		gdk_pixbuf_unref (container->details->highlight_frame);
+	}
+	
 	nautilus_icon_container_flush_typeselect_state (container);
 	
 	g_free (container->details);
@@ -2907,6 +2912,7 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 {
 	NautilusIconContainerDetails *details;
 	NautilusBackground *background;
+	char *text_frame_path;
 	
 	details = g_new0 (NautilusIconContainerDetails, 1);
 
@@ -2951,6 +2957,11 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 		 "appearance_changed",
 		 update_label_color,
 		 GTK_OBJECT (container));	
+
+	/* fetch the highlight frame */
+	text_frame_path = nautilus_theme_get_image_path ("text-selection-frame.png");
+	container->details->highlight_frame = gdk_pixbuf_new_from_file (text_frame_path);
+	g_free (text_frame_path);
 	
 	container->details->rename_widget = NULL;
 	container->details->original_text = NULL;

@@ -1,3 +1,20 @@
+2000-09-23  Andy Hertzfeld  <andy@eazel.com>
+
+	optimized the new selection highlighting by fetching the
+	highlight frame once for the icon canvas instead of for each
+	selected item
+
+	* libnautilus-extensions/nautilus-icon-private.h:
+	added field for highlight frame
+	
+	* libnautilus-extensions/nautilus-icon-container.c: (destroy),
+	(nautilus_icon_container_initialize):
+	load and destroy the highlight frame as necessary
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_label_text_aa):
+	use the highlight frame from the canvas
+	
 2000-09-22  Maciej Stachowiak  <mjs@eazel.com>
 
 	Register all the below components per display. I didn't make
