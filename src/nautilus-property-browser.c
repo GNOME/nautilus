@@ -175,6 +175,9 @@ nautilus_property_browser_initialize (GtkObject *object)
 	gtk_widget_set_usize (widget, PROPERTY_BROWSER_WIDTH, PROPERTY_BROWSER_HEIGHT);
 	gtk_container_set_border_width (GTK_CONTAINER (widget), 0);				
 
+	/* set the title */
+	gtk_window_set_title(GTK_WINDOW(widget), _("Nautilus Property Browser"));
+	
 	/* set up the background */
 	
 	background = nautilus_get_widget_background (GTK_WIDGET (property_browser));

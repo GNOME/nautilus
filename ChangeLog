@@ -1,3 +1,29 @@
+2000-05-31  Andy Hertzfeld  <andy@eazel.com>
+
+	first checkin for link-sets, which are still incomplete and
+	not hooked up yet.
+	
+	* configure.in:
+	* data/Makefile.am:
+	* data/linksets/.cvsignore:
+	* data/linksets/Makefile.am:
+	* data/linksets/apps.xml:
+	added data directory for link sets and one actual set
+	
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-link-set.c: (make_new_link),
+	(nautilus_link_set_install), (nautilus_link_set_remove):
+	* libnautilus-extensions/nautilus-link-set.h:
+	first, incomplete implementation of link sets
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize):
+	added a title to the property browser window
+	
+	* data/browser.xml:
+	improved the default colors in the property browser to ones
+	suggested by Susan
+	
 2000-05-31  Seth Nickell  <snickell@stanford.edu>
 
 	* libnautilus-extensions/nautilus-directory.c:

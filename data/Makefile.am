@@ -11,5 +11,6 @@ EXTRA_DIST = $(info_DATA)
 SUBDIRS = \
 	backgrounds \
 	emblems \
+	linksets \
 	top \
 	$(NULL)
