@@ -87,21 +87,19 @@ install_new_packages (InstallOptions* iopts) {
 
 			if (iopts->protocol == PROTOCOL_HTTP) {
 				int rv;
-				char* hostname;
 				char* rpmname;
 				char* targetname;
 				char* url;
 
-				hostname = g_strdup ("10.1.1.5");
 				rpmname = g_strdup_printf ("%s-%s-%s.%s.rpm", pack->name,
 															 pack->version,
 															 pack->minor,
 															 pack->archtype);
 	
 				targetname = g_strdup_printf ("%s/%s", iopts->install_tmpdir, rpmname);
-				url = g_strdup_printf ("http://%s%s/%s", hostname,
-															 iopts->rpm_storage_dir,
-															 rpmname);
+				url = g_strdup_printf ("http://%s%s/%s", iopts->hostname,
+														 iopts->rpm_storage_dir,
+														 rpmname);
 				
 				g_print ("Downloading %s...\n", rpmname);
 				rv = urlGetFile (url, targetname);
@@ -110,7 +108,6 @@ install_new_packages (InstallOptions* iopts) {
 					exit (1);
 				}
 
-				g_free (hostname);
 				g_free (rpmname);
 				g_free (targetname);
 				g_free (url);

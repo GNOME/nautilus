@@ -67,6 +67,8 @@ dump_install_options (InstallOptions* iopts) {
 	g_print ("depend = %d\n", iopts->mode_depend);
 	g_print ("uninstall = %d\n", iopts->mode_uninstall);
 	g_print ("update = %d\n", iopts->mode_update);
+	g_print ("port_number = %d\n", iopts->port_number);
+	g_print ("hostname = %s\n", iopts->hostname);
 	g_print ("rpmrc_file = %s\n", iopts->rpmrc_file);
 	g_print ("pkg_list = %s\n", iopts->pkg_list_file);
 	g_print ("rpm_storage_dir = %s\n", iopts->rpm_storage_dir);

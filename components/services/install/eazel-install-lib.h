@@ -56,6 +56,7 @@ struct _InstallOptions {
 	gboolean mode_uninstall;	/* Uninstall the package list */
 	gboolean mode_update;		/* If package is already installed, update it */
 	guint port_number;			/* Connection port */
+	char* hostname;
 	char* rpmrc_file;			/* Points to the rpmrc file */
 	char* pkg_list_file;		/* Absolute path to package-list.xml */
 	char* rpm_storage_dir;		/* Absolute path to remote RPM directory */

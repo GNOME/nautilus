@@ -46,13 +46,16 @@ static void
 show_usage (int exitcode, char* error) {
 	fprintf (stderr, "Usage: eazel-install [options]\n"
 			"Valid options are:\n"
-			"	-h --help       : show help\n"
-			"	-L --License    : show license\n"
-			"	-l --local      : use local file\n"
-			"	-w --http       : use http\n"
-			"	-f --ftp        : use ftp\n"
-			"	-t --test       : dry run - don't actually install\n"
-			"	-u --uninstall	: uninstall the package list\n");
+			"	--help            : show help\n"
+			"	--License         : show license\n"
+			"	--local           : use local files\n"
+			"	--http            : use http\n"
+			"	--ftp             : use ftp\n"
+			"	--test            : dry run - don't actually install\n"
+			"	--uninstall       : uninstall the package list\n"
+			"	--tmpdir <dir>    : temporary directory to store rpms\n"
+			"	--server <url>)   : url of remote server\n\n"
+			"Example: eazel-install --http --server www.eazel.com --tmpdir /tmp\n");
 			
 	if (error) {
 		fprintf (stderr, "%s\n", error);
@@ -94,7 +97,8 @@ main (int argc, char* argv[]) {
 	InstallOptions *iopts;
 	poptContext pctx;
 	char* config_file;
-	char* hostname;
+	char* popt_tmpdir;
+	char* popt_server;
 	char* remote_path;
 		
 	struct poptOption optionsTable[] = {
@@ -105,6 +109,8 @@ main (int argc, char* argv[]) {
 		{ "ftp", 'f', 0, NULL, 'f' },
 		{ "test", 't', 0, NULL, 't' },
 		{ "uninstall", 'u', 0, NULL, 'u' },
+		{ "tmpdir", 'T', POPT_ARG_STRING, &popt_tmpdir, 'T' },
+		{ "server", 's', POPT_ARG_STRING, &popt_server, 's' },
 		{ NULL, '\0', 0, NULL, 0 }
 	};
 
@@ -114,9 +120,10 @@ main (int argc, char* argv[]) {
 	USE_FTP = FALSE;
 	TEST_MODE = FALSE;
 	UNINSTALL_MODE = FALSE;
+	popt_server = NULL;
+	popt_tmpdir = NULL;
 
 	config_file = g_strdup ("/etc/eazel/services/eazel-services-config.xml");
-	hostname = g_strdup ("10.1.1.5");
 	remote_path = g_strdup ("/package-list.xml");
 	
 /*
@@ -149,6 +156,10 @@ main (int argc, char* argv[]) {
 			case 'u':
 				UNINSTALL_MODE = TRUE;
 				break;
+			case 'T':
+				break;
+			case 's':
+				break;
 		}
 	}
 
@@ -180,11 +191,6 @@ main (int argc, char* argv[]) {
 	g_print ("Reading the eazel services configuration ...\n");
 	iopts = init_default_install_configuration (config_file);
 
-/*
-	if (iopts->mode_debug == TRUE) {
-		dump_install_options (iopts);
-	}
-*/
 
 	if ( USE_FTP == TRUE ) {
 		fprintf (stderr, "***FTP installs are not currently supported !***\n");
@@ -206,12 +212,34 @@ main (int argc, char* argv[]) {
 	if (TEST_MODE == TRUE) {
 		iopts->mode_test = TRUE;
 	}
+
+	if (popt_server) {
+		iopts->hostname = g_strdup_printf ("%s", popt_server);
+	}
+
+	if (popt_tmpdir) {
+		iopts->install_tmpdir = g_strdup_printf ("%s", popt_tmpdir);
+	}
+
+	if (!g_file_exists (iopts->install_tmpdir)) {
+		int retval;
+
+		g_print("Creating temporary download directory ...\n");
+
+		retval = mkdir (iopts->install_tmpdir, 0755);
+		if (retval < 0) {
+			if (errno != EEXIST) {
+				fprintf (stderr, "***Could not create temporary directory !***\n");
+				exit (1);
+			}
+		}
+	}
 	
 	if (iopts->protocol == PROTOCOL_HTTP) {
 
 		g_print ("Getting package-list.xml from remote server ...\n");
 		
-		retval = http_fetch_xml_package_list (hostname,
+		retval = http_fetch_xml_package_list (iopts->hostname,
 											  iopts->port_number,
 											  remote_path,
 											  iopts->pkg_list_file);

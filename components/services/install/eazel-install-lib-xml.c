@@ -33,7 +33,7 @@
 static PackageData* parse_package (xmlNode* package);
 static CategoryData* parse_category (xmlNode* cat);
 static xmlDoc* prune_xml (char* xmlbuf);
-static gboolean create_default_configuration_metafile (void);
+static gboolean create_default_configuration_metafile (const char* target_file);
 
 char*
 xml_get_value (xmlNode* node, const char* name) {
@@ -80,7 +80,7 @@ init_default_install_configuration (const char* config_file) {
 			}
 		}
 
-		rv = create_default_configuration_metafile();
+		rv = create_default_configuration_metafile(config_file);
 		if (rv == FALSE) {
 			fprintf(stderr, "***Could not create the default configuration file !***\n");
 			exit (1);
@@ -169,6 +169,7 @@ init_default_install_configuration (const char* config_file) {
 		rv->mode_update = FALSE;
 	}
 	rv->port_number = atoi (xml_get_value (base, "PORT"));
+	rv->hostname = g_strdup (xml_get_value (base, "HOSTNAME"));
 	rv->rpmrc_file = g_strdup (xml_get_value (base, "RPMRC_FILE"));
 	rv->pkg_list_file = g_strdup (xml_get_value (base, "PKG_LIST_FILE"));
 	rv->rpm_storage_dir = g_strdup (xml_get_value (base, "RPM_STORAGE_DIR"));
@@ -458,14 +459,11 @@ free_categories (GList* categories) {
 } /* end free_categories */
 
 static gboolean
-create_default_configuration_metafile () {
+create_default_configuration_metafile (const char* target_file) {
 
 	xmlDocPtr doc;
 	xmlNodePtr tree;
-	char* target_file;
 
-	target_file = g_strdup("/etc/eazel/services/eazel-services-config.xml");
-	
 	doc = xmlNewDoc ("1.0");
 	doc->root = xmlNewDocNode (doc, NULL, "EAZEL_INSTALLER", NULL);
 	tree = xmlNewChild (doc->root, NULL, "PROTOCOL", "LOCAL");
@@ -477,9 +475,10 @@ create_default_configuration_metafile () {
 	tree = xmlNewChild (doc->root, NULL, "UNINSTALL", "FALSE");
 	tree = xmlNewChild (doc->root, NULL, "UPDATE", "TRUE");
 	tree = xmlNewChild (doc->root, NULL, "PORT", "80");
+	tree = xmlNewChild (doc->root, NULL, "HOSTNAME", "10.1.1.5");
 	tree = xmlNewChild (doc->root, NULL, "RPMRC_FILE", "/usr/lib/rpm/rpmrc");
 	tree = xmlNewChild (doc->root, NULL, "PKG_LIST_FILE", "/etc/eazel/services/package-list.xml");
-	tree = xmlNewChild (doc->root, NULL, "RPM_STORAGE_DIR", "/tmp/eazel-install");
+	tree = xmlNewChild (doc->root, NULL, "RPM_STORAGE_DIR", "/RPMS");
 	tree = xmlNewChild (doc->root, NULL, "TMPDIR", "/tmp/eazel-install");
 
 	if (doc == NULL) {
@@ -490,7 +489,6 @@ create_default_configuration_metafile () {
 
 	xmlSaveFile (target_file, doc);
 	xmlFreeDoc (doc);
-	g_free (target_file);
 
 	return TRUE;
 
