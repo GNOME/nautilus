@@ -46,7 +46,8 @@ typedef struct _TrilobiteRootHelperClass TrilobiteRootHelperClass;
 /* used only internally */
 typedef enum {
 	TRILOBITE_ROOT_HELPER_STATE_NEW = 0,
-	TRILOBITE_ROOT_HELPER_STATE_CONNECTED
+	TRILOBITE_ROOT_HELPER_STATE_CONNECTED,
+	TRILOBITE_ROOT_HELPER_STATE_PIPE	/* gave stdout pipe to caller */
 } TrilobiteRootHelperState;
 
 typedef enum {
@@ -62,7 +63,8 @@ typedef enum {
 
 /* commands that can be sent to the root helper, once it's running */
 typedef enum {
-	TRILOBITE_ROOT_HELPER_RUN_RPM
+	TRILOBITE_ROOT_HELPER_RUN_RPM = 1,	/* argv: args to rpm -- fd: pipe from rpm */
+	TRILOBITE_ROOT_HELPER_RUN_SET_TIME	/* argv: list of 1 string containing a time_t -- fd: unused */
 } TrilobiteRootHelperCommand;
 
 struct _TrilobiteRootHelperClass

@@ -33,6 +33,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <sys/poll.h>
+#include <time.h>
 #include <gtk/gtk.h>
 #include "trilobite-core-utils.h"
 #include "trilobite-root-helper.h"
@@ -325,6 +326,14 @@ trilobite_root_helper_start (TrilobiteRootHelper *root_helper)
 		/* already connected, dude. */
 		return TRILOBITE_ROOT_HELPER_SUCCESS;
 	}
+	if (root_helper->state == TRILOBITE_ROOT_HELPER_STATE_PIPE) {
+		/* starting over from a previous operation */
+		/* won't hurt to error on close, just don't want to leak fd's in case the
+		 * caller forgot to close stdout */
+		close (root_helper->pipe_stdout);
+		root_helper->pipe_stdin = root_helper->pipe_stdout = -1;
+		root_helper->state = TRILOBITE_ROOT_HELPER_STATE_NEW;
+	}
 
 	err = eazel_helper_start (&root_helper->pipe_stdin, &root_helper->pipe_stdout);
 	switch (err) {
@@ -412,10 +421,57 @@ trilobite_root_helper_rpm (TrilobiteRootHelper *root_helper, GList *argv, int *f
 	 */
 	make_blocking (root_helper->pipe_stdout);
 	*fd = root_helper->pipe_stdout;
+	close (root_helper->pipe_stdin);
+	root_helper->state = TRILOBITE_ROOT_HELPER_STATE_PIPE;
 	return TRILOBITE_ROOT_HELPER_SUCCESS;
 
 bail:
 	/* unable to write everything to the pipe */
+	close (root_helper->pipe_stdin);
+	close (root_helper->pipe_stdout);
+	root_helper->state = TRILOBITE_ROOT_HELPER_STATE_NEW;
+	return TRILOBITE_ROOT_HELPER_LOST_PIPE;
+}
+
+/* this is horrible.  you should never set your time this way.  use NTP.  please. */
+/* ie, this is for demonstration purposes only. */
+static TrilobiteRootHelperStatus
+trilobite_root_helper_set_time (TrilobiteRootHelper *root_helper, GList *argv, int *fd)
+{
+	GList *item;
+	char *out;
+	char ch;
+
+	if (fd) {
+		*fd = -1;
+	}
+
+	item = g_list_first (argv);
+	if (!item || g_list_next (argv)) {
+		g_warning ("TrilobiteRootHelper: set time: needs exactly 1 arg");
+		return TRILOBITE_ROOT_HELPER_BAD_ARGS;
+	}
+
+	out = g_strdup_printf ("set-time %s\n", (char *)item->data);
+	if (write (root_helper->pipe_stdin, out, strlen (out)) < strlen (out)) {
+		g_free (out);
+		goto bail;
+	}
+	g_free (out);
+
+	ch = eazel_helper_response (root_helper->pipe_stdout);
+	if (ch != '*') {
+		goto bail;
+	}
+
+	/* success, but pipe isn't needed anymore */
+	close (root_helper->pipe_stdin);
+	close (root_helper->pipe_stdout);
+	root_helper->state = TRILOBITE_ROOT_HELPER_STATE_NEW;
+	return TRILOBITE_ROOT_HELPER_SUCCESS;
+
+bail:
+	/* unable to write anything to the pipe */
 	close (root_helper->pipe_stdin);
 	close (root_helper->pipe_stdout);
 	root_helper->state = TRILOBITE_ROOT_HELPER_STATE_NEW;
@@ -434,6 +490,8 @@ trilobite_root_helper_run (TrilobiteRootHelper *root_helper, TrilobiteRootHelper
 	switch (command) {
 	case TRILOBITE_ROOT_HELPER_RUN_RPM:
 		return trilobite_root_helper_rpm (root_helper, argv, fd);
+	case TRILOBITE_ROOT_HELPER_RUN_SET_TIME:
+		return trilobite_root_helper_set_time (root_helper, argv, fd);
 	default:
 		g_warning ("unknown TrilobiteRootHelper command: 0x%02X", command);
 		return TRILOBITE_ROOT_HELPER_BAD_COMMAND;

@@ -1,3 +1,16 @@
+2000-07-10  Robey Pointer  <robey@eazel.com>
+
+	* components/services/trilobite/helper/eazel-helper.c: (main):
+	*
+	components/services/trilobite/libtrilobite/trilobite-root-helper.c:
+	(trilobite_root_helper_start), (trilobite_root_helper_rpm),
+	(trilobite_root_helper_set_time), (trilobite_root_helper_run):
+	*
+	components/services/trilobite/libtrilobite/trilobite-root-helper.h:
+
+	Make sure TrilobiteRootHelper can be restarted after each use
+	(same object, new session).  Add _set_time function.
+
 2000-07-10  Andy Hertzfeld  <andy@eazel.com>
 
 	added a "web search" button to the toolbar
