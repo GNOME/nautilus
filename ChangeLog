@@ -2,6 +2,60 @@
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>
 
+	Improve New Window performance when the tree view is enabled, to
+	partially address bug 4922 (Opening new windows is really slow
+	when the tree view is enabled). This affects only the New Window
+	case, not the initial window. Here's some timings before and after
+	on my laptop with a bunch of stuff expanded (times in seconds):
+
+	                          First window    New window
+	Tree View Off                  8              5
+	w/ Tree Before My Change      16              37
+	w/ Tree After My Change       16	      20
+
+	I made this change by altering tree view semantics slightly. The
+	tree view used to do a force reload any time it expanded a
+	directory. Now it does a normal load the first time any given
+	directory is expanded (as at startup, or when you first expand the
+	node), but a force reload on subsequent collapse and
+	expansion. This is more in line with the way the rest of Nautilus
+	works.
+	
+	* components/tree/nautilus-tree-expansion-state.h,
+	components/tree/nautilus-tree-expansion-state.c:
+	(nautilus_tree_expansion_state_was_ever_expanded): New function to
+	see if a node was ever expanded. Being initially expanded does not
+	count; only being expanded through an API call to
+	`nautilus_tree_expansion_state_expand_node' does.
+	(nautilus_tree_expansion_state_load_foreach_callback,
+	nautilus_tree_expansion_state_initialize,
+	nautilus_tree_expansion_state_destroy,
+	nautilus_tree_expansion_state_expand_node_internal,
+	nautilus_tree_expansion_state_expand_node): Adjusted to track
+	"was_ever_expanded" property right.
+
+	* components/tree/nautilus-tree-model.h,
+	components/tree/nautilus-tree-model.c
+	(nautilus_tree_model_monitor_node): Add force_reload parameter.
+	(nautilus_tree_model_node_begin_monitoring_no_connect): New helper
+	function.
+	(nautilus_tree_model_node_begin_monitoring,
+	nautilus_tree_model_node_end_monitoring): Slightly adjusted helper
+	functions.
+
+	* components/tree/nautilus-tree-view.c:
+	(filtering_changed_callback): Do a reload of the whole tree, but
+	not a force reload.
+	(expand_uri_sequence_and_select_end): Simplify logic a bit.
+	(expand_node_for_file): Force reload only if this node has been
+	expanded before.
+	(reload_model_node, reload_model_node_recursive,
+	reload_whole_tree): Make force reload an option.
+
+2000-12-12  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
 	Fix an infinite loop problem that my last change caused:
 	
 	* libnautilus-extensions/nautilus-directory-async.c:

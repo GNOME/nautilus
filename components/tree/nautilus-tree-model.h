@@ -82,7 +82,8 @@ void               nautilus_tree_model_monitor_remove           (NautilusTreeMod
 
 void               nautilus_tree_model_monitor_node             (NautilusTreeModel         *model,
 								 NautilusTreeNode          *node,
-								 gconstpointer              client); 
+								 gconstpointer              client,
+								 gboolean                   force_reload); 
 
 void               nautilus_tree_model_stop_monitoring_node     (NautilusTreeModel         *model,
 								 NautilusTreeNode          *node,

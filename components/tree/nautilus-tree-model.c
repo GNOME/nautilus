@@ -371,14 +371,33 @@ nautilus_tree_model_node_has_monitor_clients (NautilusTreeModel         *model,
 {
 	return (node->details->monitor_clients != NULL);
 }
+
+
+static void
+nautilus_tree_model_node_begin_monitoring_no_connect (NautilusTreeModel         *model,
+						      NautilusTreeNode          *node,
+						      gboolean                   force_reload)
+{
+	GList             *monitor_attributes;
+	NautilusDirectory *directory;
+
+	directory = nautilus_tree_node_get_directory (node);
+
+	monitor_attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
+	nautilus_directory_file_monitor_add (directory,
+					     model,
+					     monitor_attributes,
+					     force_reload);
+	g_list_free (monitor_attributes);
+}
+
+
 				 
 static void
 nautilus_tree_model_node_begin_monitoring (NautilusTreeModel         *model,
-					   NautilusTreeNode          *node)
+					   NautilusTreeNode          *node,
+					   gboolean                   force_reload)
 {
-	GList             *monitor_attributes;
-
-
 	NautilusDirectory *directory;
 	directory = nautilus_tree_node_get_directory (node);
 
@@ -402,12 +421,7 @@ nautilus_tree_model_node_begin_monitoring (NautilusTreeModel         *model,
 		 nautilus_tree_model_directory_done_loading_callback,
 		 model);
 
-	monitor_attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
-	nautilus_directory_file_monitor_add (directory,
-					     model,
-					     monitor_attributes,
-					     TRUE);
-	g_list_free (monitor_attributes);
+	nautilus_tree_model_node_begin_monitoring_no_connect (model, node, force_reload);
 }
 
 static void
@@ -417,7 +431,11 @@ nautilus_tree_model_node_end_monitoring (NautilusTreeModel         *model,
 	gtk_signal_disconnect (GTK_OBJECT (node->details->directory), node->details->files_added_id);
 	gtk_signal_disconnect (GTK_OBJECT (node->details->directory), node->details->files_changed_id);
 	gtk_signal_disconnect (GTK_OBJECT (node->details->directory), node->details->done_loading_id);
-	
+
+	node->details->files_added_id = 0;
+	node->details->files_changed_id = 0;
+	node->details->done_loading_id = 0;
+
 	nautilus_directory_file_monitor_remove (node->details->directory,
 						model);
 }
@@ -427,7 +445,8 @@ nautilus_tree_model_node_end_monitoring (NautilusTreeModel         *model,
 void
 nautilus_tree_model_monitor_node (NautilusTreeModel         *model,
 				  NautilusTreeNode          *node,
-				  gconstpointer              client)
+				  gconstpointer              client,
+				  gboolean                   force_reload)
 {
 	if (!nautilus_file_is_directory (nautilus_tree_node_get_file (node))) {
 		report_done_loading (model, node);
@@ -435,7 +454,9 @@ nautilus_tree_model_monitor_node (NautilusTreeModel         *model,
 	}
 
 	if (! nautilus_tree_model_node_has_monitor_clients (model, node)) {
-		nautilus_tree_model_node_begin_monitoring (model, node);
+		nautilus_tree_model_node_begin_monitoring (model, node, force_reload);
+	} else if (force_reload) {
+		nautilus_tree_model_node_begin_monitoring_no_connect (model, node, force_reload);
 	}
 
 	if (! g_list_find (node->details->monitor_clients, (gpointer) client)) {

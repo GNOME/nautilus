@@ -34,6 +34,7 @@
 
 struct NautilusTreeExpansionStateDetails {
 	GHashTable *table;
+	GHashTable *ever_expanded_table;
 };
 
 
@@ -50,6 +51,9 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTreeExpansionState, nautilus_tree_exp
 static gboolean	          expansion_table_hash_remove_func               (gpointer key,
 									  gpointer value,
 									  gpointer user_data);
+
+static void           nautilus_tree_expansion_state_expand_node_internal (NautilusTreeExpansionState *expansion_state,
+									  const char                 *uri);
 
 
 
@@ -75,7 +79,7 @@ static void
 nautilus_tree_expansion_state_load_foreach_callback (char *uri,
 						     NautilusTreeExpansionState *expansion_state)
 {
-	nautilus_tree_expansion_state_expand_node (expansion_state, uri);
+	nautilus_tree_expansion_state_expand_node_internal (expansion_state, uri);
 }
 
 static void 
@@ -137,6 +141,7 @@ nautilus_tree_expansion_state_initialize (gpointer object, gpointer klass)
 	expansion_state->details = g_new0 (NautilusTreeExpansionStateDetails, 1);
 
 	expansion_state->details->table = g_hash_table_new (g_str_hash, g_str_equal);
+	expansion_state->details->ever_expanded_table = g_hash_table_new (g_str_hash, g_str_equal);
 	
 	nautilus_tree_expansion_state_load_table_from_gconf (expansion_state);
 }
@@ -152,8 +157,12 @@ nautilus_tree_expansion_state_destroy (GtkObject *object)
 	g_hash_table_foreach_remove (expansion_state->details->table,
 				     expansion_table_hash_remove_func,
 				     NULL);
-
 	g_hash_table_destroy (expansion_state->details->table);
+
+	g_hash_table_foreach_remove (expansion_state->details->ever_expanded_table,
+				     expansion_table_hash_remove_func,
+				     NULL);
+	g_hash_table_destroy (expansion_state->details->ever_expanded_table);
 
 	g_free (expansion_state->details);
 	
@@ -182,9 +191,18 @@ nautilus_tree_expansion_state_is_node_expanded (NautilusTreeExpansionState *expa
 }
 
 
-void
-nautilus_tree_expansion_state_expand_node (NautilusTreeExpansionState *expansion_state,
-					   const char                 *uri)
+gboolean
+nautilus_tree_expansion_state_was_ever_expanded (NautilusTreeExpansionState *expansion_state,
+						 const char                 *uri)
+{
+	return (g_hash_table_lookup (expansion_state->details->ever_expanded_table,
+				     uri) != NULL);
+}
+
+
+static void
+nautilus_tree_expansion_state_expand_node_internal (NautilusTreeExpansionState *expansion_state,
+						    const char                 *uri)
 {
 	gpointer orig_key;
 	gpointer value;
@@ -193,7 +211,29 @@ nautilus_tree_expansion_state_expand_node (NautilusTreeExpansionState *expansion
 					   uri,
 					   &orig_key,
 					   &value)) {
-		g_hash_table_insert (expansion_state->details->table, g_strdup (uri), GINT_TO_POINTER (1));
+		g_hash_table_insert (expansion_state->details->table, 
+				     g_strdup (uri), 
+				     GINT_TO_POINTER (1));
+	}
+}
+
+void
+nautilus_tree_expansion_state_expand_node (NautilusTreeExpansionState *expansion_state,
+					   const char                 *uri)
+{
+	gpointer orig_key;
+	gpointer value;
+
+	nautilus_tree_expansion_state_expand_node_internal (expansion_state,
+							    uri);
+
+	if (!g_hash_table_lookup_extended (expansion_state->details->ever_expanded_table,
+					   uri,
+					   &orig_key,
+					   &value)) {
+		g_hash_table_insert (expansion_state->details->ever_expanded_table, 
+				     g_strdup (uri), 
+				     GINT_TO_POINTER (1));
 	}
 }
 
@@ -237,7 +277,3 @@ expansion_table_hash_remove_func (gpointer key,
 	g_free (key);
 	return TRUE;
 }
-
-
-
-
