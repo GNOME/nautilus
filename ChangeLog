@@ -1,3 +1,23 @@
+2000-10-17  Darin Adler  <darin@eazel.com>
+
+	Fix assert introduced with my last check-in.
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(async_job_start), (async_job_end): Added a debugging feature to
+	match up starts with ends.
+	(directory_count_cancel), (deep_count_cancel), (mime_list_cancel),
+	(top_left_cancel), (activation_uri_cancel), (file_info_cancel),
+	(metafile_read_cancel), (file_list_cancel),
+	(directory_count_callback), (start_monitoring_file_list),
+	(directory_count_start), (deep_count_callback),
+	(deep_count_start), (mime_list_callback), (mime_list_start),
+	(top_left_read_done), (top_left_start), (get_info_callback),
+	(file_info_start), (activation_uri_done), (activation_uri_start):
+	Pass additional parameters to make debugging feature work.
+	(metafile_read_mark_done), (metafile_read_done),
+	(metafile_read_start): Broke out the read complete code to fix a
+	case where we would end a thread that we didn't start.
+
 2000-10-17  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3828 (switching views makes torn-off menus disappear)

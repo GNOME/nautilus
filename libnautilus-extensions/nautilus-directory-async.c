@@ -50,6 +50,10 @@
 #define DEBUG_LOAD_DIRECTORY
 */
 
+/* comment this back in to check if async. job calls are balanced
+#define DEBUG_ASYNC_JOBS
+*/
+
 struct MetafileReadState {
 	gboolean use_public_metafile;
 	NautilusReadFileHandle *handle;
@@ -112,6 +116,9 @@ typedef gboolean (* FileCheck) (NautilusFile *);
 /* Current number of async. jobs. */
 static int async_job_count;
 static GHashTable *waiting_directories;
+#ifdef DEBUG_ASYNC_JOBS
+static GHashTable *async_jobs;
+#endif
 
 /* Forward declarations for functions that need them. */
 static void     deep_count_load       (NautilusDirectory *directory,
@@ -126,8 +133,13 @@ static gboolean request_is_satisfied  (NautilusDirectory *directory,
  * number of requests is unbounded.
  */
 static gboolean
-async_job_start (NautilusDirectory *directory)
+async_job_start (NautilusDirectory *directory,
+		 const char *job)
 {
+#ifdef DEBUG_ASYNC_JOBS
+	char *key;
+#endif
+
 	g_assert (async_job_count >= 0);
 	g_assert (async_job_count <= MAX_ASYNC_JOBS);
 
@@ -145,15 +157,50 @@ async_job_start (NautilusDirectory *directory)
 		return FALSE;
 	}
 
+#ifdef DEBUG_ASYNC_JOBS
+	if (async_jobs == NULL) {
+		async_jobs = nautilus_g_hash_table_new_free_at_exit
+			(g_str_hash, g_str_equal,
+			 "nautilus-directory-async.c: async_jobs");
+	}
+	key = g_strconcat (directory->details->uri, ": ", job, NULL);
+	if (g_hash_table_lookup (async_jobs, key) != NULL) {
+		g_warning ("same job twice: %s in %s",
+			   job,
+			   directory->details->uri);
+	}
+	g_hash_table_insert (async_jobs, key, directory);
+#endif	
+
 	async_job_count += 1;
 	return TRUE;
 }
 
 /* End a job. */
 static void
-async_job_end (void)
+async_job_end (NautilusDirectory *directory,
+	       const char *job)
 {
+#ifdef DEBUG_ASYNC_JOBS
+	char *key;
+	gpointer table_key, value;
+#endif
+
 	g_assert (async_job_count > 0);
+
+#ifdef DEBUG_ASYNC_JOBS
+	g_assert (async_jobs != NULL);
+	key = g_strconcat (directory->details->uri, ": ", job, NULL);
+	if (!g_hash_table_lookup_extended (async_jobs, key, &table_key, &value)) {
+		g_warning ("ending job we didn't start: %s in %s",
+			   job,
+			   directory->details->uri);
+	} else {
+		g_hash_table_remove (async_jobs, key);
+		g_free (table_key);
+	}
+	g_free (key);
+#endif
 
 	async_job_count -= 1;
 }
@@ -210,7 +257,7 @@ directory_count_cancel (NautilusDirectory *directory)
 		directory->details->count_file = NULL;
 		directory->details->count_in_progress = NULL;
 
-		async_job_end ();
+		async_job_end (directory, "directory count");
 	}
 }
 
@@ -231,7 +278,7 @@ deep_count_cancel (NautilusDirectory *directory)
 		nautilus_g_list_free_deep (directory->details->deep_count_subdirectories);
 		directory->details->deep_count_subdirectories = NULL;
 
-		async_job_end ();
+		async_job_end (directory, "deep count");
 	}
 }
 
@@ -248,7 +295,7 @@ mime_list_cancel (NautilusDirectory *directory)
 		g_free (directory->details->mime_list_uri);
 		directory->details->mime_list_uri = NULL;
 
-		async_job_end ();
+		async_job_end (directory, "MIME list");
 	}
 }
 
@@ -260,7 +307,7 @@ top_left_cancel (NautilusDirectory *directory)
 		g_free (directory->details->top_left_read_state);
 		directory->details->top_left_read_state = NULL;
 
-		async_job_end ();
+		async_job_end (directory, "top left");
 	}
 }
 
@@ -272,7 +319,7 @@ activation_uri_cancel (NautilusDirectory *directory)
 		g_free (directory->details->activation_uri_read_state);
 		directory->details->activation_uri_read_state = NULL;
 
-		async_job_end ();
+		async_job_end (directory, "activation URI");
 	}
 }
 
@@ -284,7 +331,7 @@ file_info_cancel (NautilusDirectory *directory)
 		directory->details->get_info_file = NULL;
 		directory->details->get_info_in_progress = NULL;
 
-		async_job_end ();
+		async_job_end (directory, "file info");
 	}
 }
 
@@ -301,7 +348,7 @@ metafile_read_cancel (NautilusDirectory *directory)
 		g_free (directory->details->metafile_read_state);
 		directory->details->metafile_read_state = NULL;
 
-		async_job_end ();
+		async_job_end (directory, "metafile read");
 	}
 }
 
@@ -333,7 +380,7 @@ can_use_public_metafile (NautilusDirectory *directory)
 }
 
 static void
-metafile_read_done (NautilusDirectory *directory)
+metafile_read_mark_done (NautilusDirectory *directory)
 {
 	g_free (directory->details->metafile_read_state);
 	directory->details->metafile_read_state = NULL;	
@@ -347,8 +394,14 @@ metafile_read_done (NautilusDirectory *directory)
 	nautilus_directory_emit_metadata_changed (directory);
 
 	/* Let the callers that were waiting for the metafile know. */
-	async_job_end ();
 	nautilus_directory_async_state_changed (directory);
+}
+
+static void
+metafile_read_done (NautilusDirectory *directory)
+{
+	async_job_end (directory, "metafile read");
+	metafile_read_mark_done (directory);
 }
 
 static void
@@ -586,9 +639,9 @@ metafile_read_start (NautilusDirectory *directory)
 	}
 
 	if (!allow_metafile (directory)) {
-		metafile_read_done (directory);
+		metafile_read_mark_done (directory);
 	} else {
-		if (!async_job_start (directory)) {
+		if (!async_job_start (directory, "metafile read")) {
 			return;
 		}
 		directory->details->metafile_read_state = g_new0 (MetafileReadState, 1);
@@ -1153,7 +1206,7 @@ file_list_cancel (NautilusDirectory *directory)
 	if (directory->details->directory_load_in_progress != NULL) {
 		gnome_vfs_async_cancel (directory->details->directory_load_in_progress);
 		directory->details->directory_load_in_progress = NULL;
-		async_job_end ();
+		async_job_end (directory, "file list");
 	}
 }
 
@@ -1463,7 +1516,7 @@ directory_count_callback (GnomeVFSAsyncHandle *handle,
 	nautilus_file_changed (count_file);
 
 	/* Start up the next one. */
-	async_job_end ();
+	async_job_end (directory, "directory count");
 	nautilus_directory_async_state_changed (directory);
 }
 
@@ -1847,7 +1900,7 @@ start_monitoring_file_list (NautilusDirectory *directory)
 		return;
 	}
 
-	if (!async_job_start (directory)) {
+	if (!async_job_start (directory, "file list")) {
 		return;
 	}
 
@@ -2137,7 +2190,7 @@ directory_count_start (NautilusDirectory *directory)
 		return;
 	}
 
-	if (!async_job_start (directory)) {
+	if (!async_job_start (directory, "directory count")) {
 		return;
 	}
 
@@ -2252,7 +2305,7 @@ deep_count_callback (GnomeVFSAsyncHandle *handle,
 	nautilus_file_changed (file);
 
 	if (done) {
-		async_job_end ();
+		async_job_end (directory, "deep count");
 		nautilus_directory_async_state_changed (directory);
 	}
 }
@@ -2315,7 +2368,7 @@ deep_count_start (NautilusDirectory *directory)
 		return;
 	}
 
-	if (!async_job_start (directory)) {
+	if (!async_job_start (directory, "deep count")) {
 		return;
 	}
 
@@ -2394,12 +2447,12 @@ mime_list_callback (GnomeVFSAsyncHandle *handle,
 
 	/* Send file-changed even if getting the item type list
 	 * failed, so interested parties can distinguish between
-	 * unknowable and not-yet-known cases.  */
-
+	 * unknowable and not-yet-known cases.
+	 */
 	nautilus_file_changed (file);
 
 	/* Start up the next one. */
-	async_job_end ();
+	async_job_end (directory, "MIME list");
 	nautilus_directory_async_state_changed (directory);
 }
 
@@ -2461,7 +2514,7 @@ mime_list_start (NautilusDirectory *directory)
 		return;
 	}
 
-	if (!async_job_start (directory)) {
+	if (!async_job_start (directory, "MIME list")) {
 		return;
 	}
 
@@ -2498,7 +2551,7 @@ top_left_read_done (NautilusDirectory *directory)
 	g_free (directory->details->top_left_read_state);
 	directory->details->top_left_read_state = NULL;
 
-	async_job_end ();
+	async_job_end (directory, "top left");
 	nautilus_directory_async_state_changed (directory);
 }
 
@@ -2572,7 +2625,7 @@ top_left_start (NautilusDirectory *directory)
 		return;
 	}
 
-	if (!async_job_start (directory)) {
+	if (!async_job_start (directory, "top left")) {
 		return;
 	}
 
@@ -2618,7 +2671,7 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 	}
 	nautilus_file_changed (get_info_file);
 
-	async_job_end ();
+	async_job_end (directory, "file info");
 	nautilus_directory_async_state_changed (directory);
 }
 
@@ -2674,7 +2727,7 @@ file_info_start (NautilusDirectory *directory)
 	} while (vfs_uri == NULL);
 
 	/* Found one we need to get the info for. */
-	if (!async_job_start (directory)) {
+	if (!async_job_start (directory, "file info")) {
 		return;
 	}
 	directory->details->get_info_file = file;
@@ -2705,7 +2758,7 @@ activation_uri_done (NautilusDirectory *directory,
 	g_free (file->details->activation_uri);
 	file->details->activation_uri = g_strdup (uri);
 
-	async_job_end ();
+	async_job_end (directory, "activation URI");
 	nautilus_directory_async_state_changed (directory);
 }
 
@@ -2824,7 +2877,7 @@ activation_uri_start (NautilusDirectory *directory)
 		return;
 	}
 
-	if (!async_job_start (directory)) {
+	if (!async_job_start (directory, "activation URI")) {
 		return;
 	}
 
