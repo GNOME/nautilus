@@ -1999,14 +1999,16 @@ static gboolean
 filter_search_uri (const GnomeVFSFileInfo *info, gpointer data)
 {
 	GnomeVFSDirectoryFilterOptions options;
-	char *real_file_uri;
+	char *real_file_uri, *filename;
 	gboolean result;
 
 	options = GPOINTER_TO_INT (data);
 	
 	real_file_uri = nautilus_get_target_uri_from_search_result_name (info->name);
-	result = should_display_file_name (g_path_get_basename (real_file_uri), options);	
+	filename = g_path_get_basename (real_file_uri);
+	result = should_display_file_name (filename, options);	
 	g_free (real_file_uri);
+	g_free (filename);
 
 	return result;
 }
