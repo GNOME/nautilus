@@ -464,6 +464,53 @@ mozilla_vfs_callback (GnomeVFSAsyncHandle *handle, GnomeVFSResult result, gpoint
 		gnome_vfs_async_read (handle, vfs_read_buf, sizeof (vfs_read_buf), mozilla_vfs_read_callback, view);
 	}
 }
+
+/* Check whether two uris are "equal".  Equal means:
+ *
+ * Same uri regardless of mozilla canonicalization
+ *
+ * What happens is that mozilla internall canonicalizes
+ * uris and appends trailing slashes to those that it 
+ * knows to be directories.  Unfortunately this is 
+ * different from Nautilus.
+ */
+static gboolean 
+uris_are_equal (const char *uri_one, const char *uri_two)
+{
+	guint length_one;
+	guint length_two;
+
+	if (uri_one == NULL && uri_two == NULL) {
+		return TRUE;
+	}
+
+	if (uri_one == NULL || uri_two == NULL) {
+		return FALSE;
+	}
+
+	length_one = strlen (uri_one);
+	length_two = strlen (uri_two);
+
+	if (length_one == 0 && length_two == 0) {
+		return TRUE;
+	}
+
+	if (length_one == 0 || length_two == 0) {
+		return FALSE;
+	}
+
+	/* Drop the trailing slashes */
+	if (uri_one[length_one - 1] == '/') {
+		length_one--;
+	}
+
+	if (uri_two[length_two - 1] == '/') {
+		length_two--;
+	}
+
+	return strncmp (uri_one, uri_two, MIN (length_one, length_two)) == 0;
+}
+ 
 /**
  * nautilus_mozilla_content_view_load_uri:
  *
@@ -476,10 +523,16 @@ nautilus_mozilla_content_view_load_uri (NautilusMozillaContentView	*view,
 					const char			*uri)
 {
 	GnomeVFSAsyncHandle *async_handle;
+	gboolean same_uri = FALSE;
 
 	g_assert (uri != NULL);
 
 	view->details->got_called_by_nautilus = TRUE;
+
+	/* Check whether its the same uri.  Ignore the mozilla
+	 * added canonicalization.
+	 */
+	same_uri = uris_are_equal (view->details->uri, uri);
 
 	if (view->details->uri) {
 		g_free (view->details->uri);
@@ -488,14 +541,23 @@ nautilus_mozilla_content_view_load_uri (NautilusMozillaContentView	*view,
 	view->details->uri = g_strdup (uri);
 
 #ifdef DEBUG_ramiro
-	g_print ("nautilus_mozilla_content_view_load_uri (%s)\n", view->details->uri);
+	g_print ("nautilus_mozilla_content_view_load_uri (uri = %s, same = )\n", 
+		 view->details->uri, same_uri);
 #endif
 	/* If the request can be handled by mozilla, pass the uri as is.  Otherwise,
 	 * use gnome-vfs to open the uri and later stream the data into the gtkmozembed
 	 * widget.
 	 */
 	if (mozilla_is_uri_handled_by_mozilla (uri)) {
-		gtk_moz_embed_load_url (GTK_MOZ_EMBED (view->details->mozilla), view->details->uri);
+
+		if (same_uri) {
+			gtk_moz_embed_reload (GTK_MOZ_EMBED (view->details->mozilla),
+					      GTK_MOZ_EMBED_FLAG_RELOADBYPASSCACHE);
+		}
+		else {
+			gtk_moz_embed_load_url (GTK_MOZ_EMBED (view->details->mozilla),
+						view->details->uri);
+		}
 	} else {
 		nautilus_view_report_load_underway (view->details->nautilus_view);
 		gnome_vfs_async_open (&async_handle, uri, GNOME_VFS_OPEN_READ, mozilla_vfs_callback, view);	
