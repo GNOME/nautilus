@@ -1,3 +1,47 @@
+2000-04-07  John Sullivan <sullivan@eazel.com>
+
+	Fixed bug Andy pointed out where list view "links" could
+	be activated by clicking in white space past the name.
+	Also started making changes in the direction of getting
+	keyboard selection working properly in list view (but
+	most of the work remains).
+
+	* libnautilus/nautilus-gdk-extensions.h,
+	* libnautilus/nautilus-gdk-extensions.c:
+	(nautilus_stipple_bitmap): New function, returns pointer to
+	static 50% stipple bitmap.
+	* libnautilus/nautilus-icon-cvanvas-item.c:
+	remove global stipple object;
+	(nautilus_icon_canvas_item_initialize_class): Remove initialization
+	of global stipple object.
+	(draw_or_measure_label_text), (draw_stretch_handles): Use
+	nautilus_stipple_bitmap () in lieu of global stipple object
+	in this file.
+	* libnautilus/nautilus-list.c:
+	(get_cell_horizontal_start_position): New function, extracted
+	from draw_row so I could use it elsewhere.
+	(nautilus_list_key): Removed function.
+	(nautilus_list_draw_focus): New function, draws keyboard-focussed
+	row with the same stipple outline used in icon view.
+	(nautilus_list_move_function_row): New function, copied & simplified
+	from GtkCList. Will probably rewrite entirely or eliminate very soon.
+	(nautilus_list_scroll_vertical): New function, copied & simplified
+	from GtkCList. Handles various keyboard commands, though not yet with
+	the behavior we actually want.
+	(nautilus_list_initialize_class): Begin to override and eliminate
+	GtkCList key bindings that we want to change. I've just started this
+	work -- all I've done so far is make space do nothing but Control-space
+	toggle the selection status of the keyboard-focussed row. I need to
+	go through and fix up all the bad inherited bindings. Also in this
+	function replace GtkCList's scroll_vertical and draw_focus function 
+	pointers, and removed the key_press_event and key_release_event
+	overrides that were deliberately preventing us from inheriting any
+	of GtkCList's keyboard behavior.
+	(nautilus_list_button_release): Only activate link-text if the click
+	is in the horizontal bounds of the text.
+	(draw_row) Use get_cell_horizontal_start_position that was extracted
+	from this function.
+
 2000-04-07  Andy Hertzfeld <andy@eazel.com>
 
 	* components/services/startup/nautilus-service-startup-view.c:

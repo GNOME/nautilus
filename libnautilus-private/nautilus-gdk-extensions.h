@@ -80,6 +80,8 @@ void     nautilus_fill_rectangle_with_gradient       (GdkDrawable        *drawab
 						      guint32             start_rgb,
 						      guint32             end_rgb,
 						      gboolean            horizontal_gradient);
+/* A routine to get a 50% gray stippled bitmap for use in some types of highlighting. */
+GdkBitmap *nautilus_stipple_bitmap		     (void);
 
 /* Misc GdkRectangle helper functions */
 gboolean nautilus_rectangle_contains                 (const GdkRectangle *rectangle,

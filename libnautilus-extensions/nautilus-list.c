@@ -29,6 +29,8 @@
 #include <config.h>
 #include "nautilus-list.h"
 
+#include <gdk/gdkkeysyms.h>
+#include <gtk/gtkbindings.h>
 #include <gtk/gtkdnd.h>
 #include <glib.h>
 #include "nautilus-gdk-extensions.h"
@@ -124,6 +126,11 @@ static GtkTargetEntry nautilus_list_dnd_target_table[] = {
 };
 
 static void activate_row (NautilusList *list, gint row);
+static int get_cell_horizontal_start_position (GtkCList *clist, GtkCListRow *clist_row, 
+					       int column, int content_width);
+static void get_cell_style (GtkCList *clist, GtkCListRow *clist_row,
+			    gint state, gint column, GtkStyle **style,
+			    GdkGC **fg_gc, GdkGC **bg_gc);
 
 static void nautilus_list_initialize_class (NautilusListClass *class);
 static void nautilus_list_initialize (NautilusList *list);
@@ -131,7 +138,6 @@ static void nautilus_list_initialize (NautilusList *list);
 static gint nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event);
 static gint nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event);
 static gint nautilus_list_motion (GtkWidget *widget, GdkEventMotion *event);
-static gint nautilus_list_key (GtkWidget *widget, GdkEventKey *event);
 static void nautilus_list_drag_begin (GtkWidget *widget, GdkDragContext *context);
 static void nautilus_list_drag_end (GtkWidget *widget, GdkDragContext *context);
 static void nautilus_list_drag_data_get (GtkWidget *widget, GdkDragContext *context,
@@ -144,6 +150,7 @@ static gboolean nautilus_list_drag_drop (GtkWidget *widget, GdkDragContext *cont
 static void nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 					  gint x, gint y, GtkSelectionData *data,
 					  guint info, guint time);
+static void nautilus_list_draw_focus      (GtkWidget *widget);
 static void select_or_unselect_row_callback (GtkCList *clist, gint row, gint column, 
 				       GdkEvent *event);
 
@@ -151,6 +158,9 @@ static void nautilus_list_clear (GtkCList *clist);
 static void draw_row (GtkCList *list, GdkRectangle *area, gint row, GtkCListRow *clist_row);
 
 static void nautilus_list_realize (GtkWidget *widget);
+static void nautilus_list_scroll_vertical (GtkCList *clist,
+					   GtkScrollType scroll_type,
+					   gfloat position);
 static void nautilus_list_set_cell_contents (GtkCList    *clist,
 		   	   		     GtkCListRow *clist_row,
 		   		 	     gint         column,
@@ -179,6 +189,9 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 	GtkWidgetClass *widget_class;
 	GtkCListClass *clist_class;
 	NautilusListClass *list_class;
+
+	GtkBindingSet *clist_binding_set;
+	GtkBindingSet *list_binding_set;
 
 	object_class = (GtkObjectClass *) klass;
 	widget_class = (GtkWidgetClass *) klass;
@@ -226,6 +239,15 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 
 	gtk_object_class_add_signals (object_class, list_signals, LAST_SIGNAL);
 
+	/* Add new key bindings. Some of these clobber GtkCList ones that we don't like. */
+	list_binding_set = gtk_binding_set_by_class (list_class);
+	gtk_binding_entry_add_signal (list_binding_set, GDK_space, GDK_CONTROL_MASK,
+				      "toggle_focus_row", 0);
+
+	/* Turn off the GtkCList key bindings that we want entirely unbound. */
+	clist_binding_set = gtk_binding_set_by_class (clist_class);
+	gtk_binding_entry_clear (clist_binding_set, GDK_space, 0);
+
 	list_class->column_resize_track_start = nautilus_list_column_resize_track_start;
 	list_class->column_resize_track = nautilus_list_column_resize_track;
 	list_class->column_resize_track_end = nautilus_list_column_resize_track_end;
@@ -233,13 +255,12 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 	clist_class->clear = nautilus_list_clear;
 	clist_class->draw_row = draw_row;
   	clist_class->resize_column = nautilus_list_resize_column;
+	clist_class->scroll_vertical = nautilus_list_scroll_vertical;
   	clist_class->set_cell_contents = nautilus_list_set_cell_contents;
 
 	widget_class->button_press_event = nautilus_list_button_press;
 	widget_class->button_release_event = nautilus_list_button_release;
 	widget_class->motion_notify_event = nautilus_list_motion;
-	widget_class->key_press_event = nautilus_list_key;
-	widget_class->key_release_event = nautilus_list_key;
 	widget_class->drag_begin = nautilus_list_drag_begin;
 	widget_class->drag_end = nautilus_list_drag_end;
 	widget_class->drag_data_get = nautilus_list_drag_data_get;
@@ -247,6 +268,7 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 	widget_class->drag_motion = nautilus_list_drag_motion;
 	widget_class->drag_drop = nautilus_list_drag_drop;
 	widget_class->drag_data_received = nautilus_list_drag_data_received;
+	widget_class->draw_focus = nautilus_list_draw_focus;
 	widget_class->realize = nautilus_list_realize;
 	widget_class->size_request = nautilus_list_size_request;
 }
@@ -476,6 +498,8 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 	GtkCListRow *clist_row;
 	int on_row;
 	gint row, col;
+	GtkStyle *style;
+	int text_x, text_width;
 	int retval;
 
 	g_return_val_if_fail (NAUTILUS_IS_LIST (widget), FALSE);
@@ -520,7 +544,15 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 			{
 				clist_row = ROW_ELEMENT (clist, row)->data;
 				if (clist_row->cell[col].type == NAUTILUS_CELL_LINK_TEXT) {
-					activate_row (list, row);
+					/* One final test. Check whether the click was in the
+					 * horizontal bounds of the displayed text.
+					 */
+					get_cell_style (clist, clist_row, GTK_STATE_NORMAL, col, &style, NULL, NULL);
+					text_width = gdk_string_width (style->font, GTK_CELL_TEXT (clist_row->cell[col])->text);
+					text_x = get_cell_horizontal_start_position (clist, clist_row, col, text_width);
+					if (event->x >= text_x && event->x <= text_x + text_width) {
+						activate_row (list, row);
+					}
 				}
 			}
 		}		
@@ -756,6 +788,39 @@ size_allocate_title_buttons (GtkCList *clist)
 }
 
 static void
+nautilus_list_draw_focus (GtkWidget *widget)
+{
+	GdkGCValues saved_values;
+	GtkCList *clist;
+
+	g_return_if_fail (NAUTILUS_IS_LIST (widget));
+
+	if (!GTK_WIDGET_DRAWABLE (widget) || !GTK_WIDGET_CAN_FOCUS (widget)) {
+  		return;
+  	}
+
+	clist = GTK_CLIST (widget);
+	if (clist->focus_row < 0) {
+		return;
+	}
+  
+  	gdk_gc_get_values (clist->xor_gc, &saved_values);
+
+  	gdk_gc_set_stipple (clist->xor_gc, nautilus_stipple_bitmap ());
+  	gdk_gc_set_fill (clist->xor_gc, GDK_STIPPLED);
+
+    	gdk_draw_rectangle (clist->clist_window, clist->xor_gc, FALSE,
+		0, ROW_TOP_YPIXEL(clist, clist->focus_row),
+		clist->clist_window_width - 1,
+		clist->row_height - 1);
+	/* Resetting the stipple to the saved value causes death
+	 * deep in Bonobo X handling, believe it or not. Fortunately
+	 * we don't need to.
+	 */
+  	gdk_gc_set_fill (clist->xor_gc, saved_values.fill);
+}
+
+static void
 get_cell_style (GtkCList *clist, GtkCListRow *clist_row,
 		gint state, gint column, GtkStyle **style,
 		GdkGC **fg_gc, GdkGC **bg_gc)
@@ -880,6 +945,39 @@ draw_cell_pixbuf (GdkWindow *window, GdkRectangle *clip_rectangle, GdkGC *fg_gc,
 
 	return x + intersect_rectangle.width;
 }
+
+/**
+ * get_cell_horizontal_start_position:
+ * 
+ * Get the leftmost x value at which the contents of this cell are painted.
+ * 
+ * @clist: The list in question.
+ * @row: The row data structure for the target cell.
+ * @column: The column of the target cell.
+ * @content_width: The already-computed width of the cell contents.
+ * 
+ * Return value: x value at which the contents of this cell are painted.
+ */
+static int
+get_cell_horizontal_start_position (GtkCList *clist, GtkCListRow *clist_row, int column, int content_width)
+{
+	int initial_offset;
+
+	initial_offset = clist->column[column].area.x + 
+			 clist->hoffset + 
+			 clist_row->cell[column].horizontal;
+	
+	switch (clist->column[column].justification) {
+		case GTK_JUSTIFY_LEFT:
+			return initial_offset;
+		case GTK_JUSTIFY_RIGHT:
+			return initial_offset + clist->column[column].area.width - content_width;
+		case GTK_JUSTIFY_CENTER:
+		case GTK_JUSTIFY_FILL:
+		default:
+			return initial_offset + (clist->column[column].area.width - content_width)/2;
+	}
+} 
 
 static void
 draw_row (GtkCList     *clist,
@@ -1082,21 +1180,7 @@ draw_row (GtkCList     *clist,
 	  break;
 	}
 
-      switch (clist->column[i].justification)
-	{
-	case GTK_JUSTIFY_LEFT:
-	  offset = clip_rectangle.x + clist_row->cell[i].horizontal;
-	  break;
-	case GTK_JUSTIFY_RIGHT:
-	  offset = (clip_rectangle.x + clist_row->cell[i].horizontal +
-		    clip_rectangle.width - width);
-	  break;
-	case GTK_JUSTIFY_CENTER:
-	case GTK_JUSTIFY_FILL:
-	  offset = (clip_rectangle.x + clist_row->cell[i].horizontal +
-		    (clip_rectangle.width / 2) - (width / 2));
-	  break;
-	};
+      offset = get_cell_horizontal_start_position (clist, clist_row, i, width);
 
       /* Draw Text and/or Pixmap */
       switch ((NautilusCellType)clist_row->cell[i].type)
@@ -1507,14 +1591,104 @@ nautilus_list_column_resize_track_end (GtkWidget *widget, int column)
 	clist->drag_pos = -1;
 }
 
-/* Our handler for key_press and key_release events.  We do nothing, and we do
- * this to avoid GtkCList's broken behavior.
- */
-static gint
-nautilus_list_key (GtkWidget *widget, GdkEventKey *event)
+static void
+nautilus_list_move_focus_row (NautilusList      *list,
+		GtkScrollType  scroll_type,
+		gfloat         position)
 {
-	return FALSE;
+	/* FIXME: Moved over from gtkclist.c. Should
+	 * be cleaned up stylistically and possibly
+	 * eliminated as a concept. Instead, determine
+	 * destination position and then determine whether
+	 * it should be selected or just focused. I'll do
+	 * this in the next few days (John Sullivan, 4/7/00)
+	 */
+  GtkCList *clist;
+  GtkWidget *widget;
+
+  g_return_if_fail (NAUTILUS_IS_LIST (list));
+
+  clist = GTK_CLIST (list);
+  widget = GTK_WIDGET (list);
+
+  switch (scroll_type)
+    {
+    case GTK_SCROLL_STEP_BACKWARD:
+      if (clist->focus_row <= 0)
+	return;
+      gtk_widget_draw_focus (widget);
+      clist->focus_row--;
+      gtk_widget_draw_focus (widget);
+      break;
+    case GTK_SCROLL_STEP_FORWARD:
+      if (clist->focus_row >= clist->rows - 1)
+	return;
+      gtk_widget_draw_focus (widget);
+      clist->focus_row++;
+      gtk_widget_draw_focus (widget);
+      break;
+    case GTK_SCROLL_PAGE_BACKWARD:
+      if (clist->focus_row <= 0)
+	return;
+      gtk_widget_draw_focus (widget);
+      clist->focus_row = MAX (0, clist->focus_row -
+			      (2 * clist->clist_window_height -
+			       clist->row_height - CELL_SPACING) / 
+			      (2 * (clist->row_height + CELL_SPACING)));
+      gtk_widget_draw_focus (widget);
+      break;
+    case GTK_SCROLL_PAGE_FORWARD:
+      if (clist->focus_row >= clist->rows - 1)
+	return;
+      gtk_widget_draw_focus (widget);
+      clist->focus_row = MIN (clist->rows - 1, clist->focus_row + 
+			      (2 * clist->clist_window_height -
+			       clist->row_height - CELL_SPACING) / 
+			      (2 * (clist->row_height + CELL_SPACING)));
+      gtk_widget_draw_focus (widget);
+      break;
+    case GTK_SCROLL_JUMP:
+      if (position >= 0 && position <= 1)
+	{
+          gtk_widget_draw_focus (widget);
+	  clist->focus_row = position * (clist->rows - 1);
+          gtk_widget_draw_focus (widget);
+	}
+      break;
+    default:
+      break;
+    }
 }
+
+static void 
+nautilus_list_scroll_vertical (GtkCList *clist,
+			       GtkScrollType scroll_type,
+			       gfloat position)
+{
+	/* Pulled over from GtkCList and simplified for our purposes. May
+	 * eliminate this entirely by replacing all the key bindings.
+	 */
+	g_return_if_fail (clist != NULL);
+	g_return_if_fail (NAUTILUS_IS_LIST (clist));
+	g_return_if_fail (clist->selection_mode == GTK_SELECTION_MULTIPLE);
+
+	/* Stolen from scroll_vertical in gtkclist.c. I don't know 
+	 * exactly what this is for.
+	 */
+	if (gdk_pointer_is_grabbed () && GTK_WIDGET_HAS_GRAB (clist))
+		return;
+
+
+	nautilus_list_move_focus_row (NAUTILUS_LIST (clist), scroll_type, position);
+
+	if (ROW_TOP_YPIXEL (clist, clist->focus_row) + clist->row_height > 
+			           clist->clist_window_height) {
+		gtk_clist_moveto (clist, clist->focus_row, -1, 1, 0);
+	}
+      else if (ROW_TOP_YPIXEL (clist, clist->focus_row) < 0) {
+		gtk_clist_moveto (clist, clist->focus_row, -1, 0, 0);
+      }
+}			    
 
 /* We override the drag_begin signal to do nothing */
 static void

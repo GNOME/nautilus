@@ -100,10 +100,6 @@ enum {
 };
 static guint signals[LAST_SIGNAL];
 
-/* Bitmap for stippled selection rectangles. */
-static GdkBitmap *stipple;
-static const char stipple_bits[] = { 0x02, 0x01 };
-
 static GdkFont *embedded_text_font;
 
 /* GtkObject */
@@ -214,8 +210,6 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 	item_class->bounds = nautilus_icon_canvas_item_bounds;
 	item_class->event = nautilus_icon_canvas_item_event;
 
-	stipple = gdk_bitmap_create_from_data (NULL, stipple_bits, 2, 2);
-	
         /* FIXME: the font shouldn't be hard-wired like this */
         embedded_text_font = gdk_font_load("-bitstream-charter-medium-r-normal-*-9-*-*-*-*-*-*-*");
 }
@@ -627,7 +621,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		
 		/* indicate keyboard selection by framing the text with a gray-stippled rectangle */
 		if (details->is_highlighted_as_keyboard_focus) {
-			gdk_gc_set_stipple (gc, stipple);
+			gdk_gc_set_stipple (gc, nautilus_stipple_bitmap ());
 			gdk_gc_set_fill (gc, GDK_STIPPLED);
 			gdk_draw_rectangle (drawable, gc, FALSE,
 					    box_left, icon_bottom - 2,
@@ -775,7 +769,7 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 			    STRETCH_HANDLE_THICKNESS,
 			    STRETCH_HANDLE_THICKNESS);
 	
-	gdk_gc_set_stipple (gc, stipple);
+	gdk_gc_set_stipple (gc, nautilus_stipple_bitmap ());
 	gdk_gc_set_fill (gc, GDK_STIPPLED);
 	gdk_draw_rectangle (drawable, gc, FALSE,
 			    rect->x0 + (STRETCH_HANDLE_THICKNESS - 1) / 2,

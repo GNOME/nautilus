@@ -465,6 +465,25 @@ nautilus_gdk_font_equal (GdkFont *font_a_null_allowed,
 	return gdk_font_equal (font_a_null_allowed, font_b_null_allowed);
 }
 
+/**
+ * nautilus_stipple_bitmap:
+ * 
+ * Get pointer to singleton 50% stippled bitmap.
+ * This is a global object; do not free.
+ */
+GdkBitmap *
+nautilus_stipple_bitmap ()
+{
+	static GdkBitmap *stipple = NULL;
+
+	if (stipple == NULL) {
+		char stipple_bits[] = { 0x02, 0x01 };
+		stipple = gdk_bitmap_create_from_data (NULL, stipple_bits, 2, 2);	
+	}
+
+	return stipple;
+}
+
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static char *
