@@ -3922,6 +3922,13 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 		submenu_visible = (num_applications > 3);
 	}
 
+	/* This label is either displayed inside the submenu, or below the other open with entries */
+	nautilus_bonobo_set_label (view->details->ui,
+				   FM_DIRECTORY_VIEW_COMMAND_OTHER_APPLICATION,
+				   submenu_visible
+				   ? _("_Other Application...")
+				   : _("Open _With..."));
+
 	/* It's OK to set the visibility of the menu items (rather than the verbs)
 	 * here because these are submenu titles, not items with verbs.
 	 */
