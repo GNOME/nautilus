@@ -535,7 +535,10 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *eve
 		gtk_object_ref (GTK_OBJECT (zoom_menu));
 		gtk_object_sink (GTK_OBJECT (zoom_menu));
 		
-		gtk_menu_popup (zoom_menu, NULL, NULL, NULL, NULL, 3, GDK_CURRENT_TIME);
+		nautilus_pop_up_context_menu (zoom_menu, 
+					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT, 
+					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT, 
+					      CONTEXTUAL_MENU_BUTTON);
 		gtk_object_unref (GTK_OBJECT (zoom_menu));
 		return TRUE;	  
  	}

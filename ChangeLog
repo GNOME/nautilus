@@ -1,5 +1,14 @@
 2000-08-29  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 2182 (right-clicking on zoom control changes zoom level)
+
+	* src/nautilus-zoom-control.c:
+	(nautilus_zoom_control_button_press_event): Made the zoom
+	control use Ramiro's nifty nautilus_pop_up_context_menu code
+	to offset the menu position slightly.
+
+2000-08-29  John Sullivan  <sullivan@eazel.com>
+
 	Redid changes that converted "Ascending/Descending" menu items
 	into single "Reversed Order" menu item. Andy accidentally
 	clobbered my entire set of changes with a more recent check-in.
