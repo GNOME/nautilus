@@ -1,3 +1,11 @@
+2001-04-03  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_populate_pane): Added missing calls to
+	_() so things in the pane are translated.
+
 2001-04-02  Mike Fleming  <mfleming@eazel.com>
 
 	* README:
@@ -144,7 +152,7 @@
 	(nautilus_entry_set_text), (nautilus_entry_insert_text),
 	(nautilus_entry_delete_text), (nautilus_entry_initialize_class),
 	(nautilus_entry_set_special_tab_handling):
-	Make all the attributes private.	
+	Make all the attributes private.
 	
 	* libnautilus-extensions/nautilus-font-manager.c:
 	(at_exit_handler), (nautilus_free_static_storage_at_exit),
@@ -173,7 +181,7 @@
 	(nautilus_smooth_widget_global_set_is_smooth),
 	(nautilus_smooth_widget_register):
 	Dont use preferences to track global smoothness changes.  Add a
-	function to that instead.  
+	function to that instead.
 
 	* src/nautilus-location-bar.c: (nautilus_location_bar_initialize):
 	Update for privatized NautilusEntry attributes.

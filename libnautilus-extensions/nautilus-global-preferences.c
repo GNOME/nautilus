@@ -1384,16 +1384,17 @@ global_preferences_populate_pane (NautilusPreferencesBox *preference_box,
 		if (!nautilus_string_list_contains (group_names, preference_dialog_item[i].group_name)) {
 			nautilus_string_list_insert (group_names, preference_dialog_item[i].group_name);
 			nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (pane),
-							     preference_dialog_item[i].group_name);
+							     _(preference_dialog_item[i].group_name));
 		}
 	}
 
 	for (i = 0; preference_dialog_item[i].group_name != NULL; i++) {
 		group_index = start_group_index + 
-			nautilus_string_list_get_index_for_string (group_names, preference_dialog_item[i].group_name);
+			nautilus_string_list_get_index_for_string (group_names,
+								   preference_dialog_item[i].group_name);
 
 		nautilus_preferences_set_description (preference_dialog_item[i].preference_name,
-						      preference_dialog_item[i].preference_description);
+						      _(preference_dialog_item[i].preference_description));
 
 		enumeration_values = preference_dialog_item[i].enumeration_values;
 		while (enumeration_values != NULL && enumeration_values->stored_value != NULL) {
