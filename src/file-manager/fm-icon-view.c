@@ -1358,6 +1358,33 @@ fm_icon_view_get_selection (FMDirectoryView *view)
 }
 
 static void
+count_item (NautilusIconData *icon_data,
+	    gpointer callback_data)
+{
+	guint *count;
+
+	count = callback_data;
+	(*count)++;
+}
+
+static guint
+fm_icon_view_get_item_count (FMDirectoryView *view)
+{
+	guint count;
+
+	g_return_val_if_fail (FM_IS_ICON_VIEW (view), 0);
+
+	count = 0;
+	
+	nautilus_icon_container_for_each
+		(get_icon_container (FM_ICON_VIEW (view)),
+		 count_item, &count);
+
+	return count;
+}
+
+
+static void
 set_sort_criterion_by_id (FMIconView *icon_view, const char *id)
 {
 	const SortCriterion *sort;
@@ -2750,6 +2777,7 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 	fm_directory_view_class->get_background_widget = fm_icon_view_get_background_widget;
 	fm_directory_view_class->get_selected_icon_locations = fm_icon_view_get_selected_icon_locations;
 	fm_directory_view_class->get_selection = fm_icon_view_get_selection;
+	fm_directory_view_class->get_item_count = fm_icon_view_get_item_count;
 	fm_directory_view_class->is_empty = fm_icon_view_is_empty;
 	fm_directory_view_class->remove_file = fm_icon_view_remove_file;
 	fm_directory_view_class->reset_to_defaults = fm_icon_view_reset_to_defaults;

@@ -1,5 +1,18 @@
 2004-01-06  Alexander Larsson <alexl@redhat.com>
 
+	* src/file-manager/fm-directory-view.[ch]: 
+	Add get_item_count virtual method.
+	Add item count and free space to status bar
+
+	* src/file-manager/fm-icon-view.c (fm_icon_view_get_item_count): 
+	* src/file-manager/fm-list-view.c (fm_list_view_get_item_count): 
+	Implement get_iem_count
+
+	* src/file-manager/fm-list-model.[ch] (fm_list_model_get_length): 
+	Add new function.
+
+2004-01-06  Alexander Larsson <alexl@redhat.com>
+
 	* libnautilus-private/apps_nautilus_preferences.schemas.in: 
 	Make desktop font Sans 10 by default. This is the same as
 	the normal UI font default, and fits more stuff on the desktop. 

@@ -223,6 +223,7 @@ struct FMDirectoryViewDetails
 
 	guint display_selection_idle_id;
 	guint update_menus_timeout_id;
+	guint update_status_idle_id;
 	
 	guint display_pending_idle_id;
 	
@@ -347,6 +348,8 @@ static void     zoomable_zoom_to_fit_callback                  (BonoboZoomable  
 static void     schedule_update_menus                          (FMDirectoryView      *view);
 static void     schedule_update_menus_callback                 (gpointer              callback_data);
 static void     remove_update_menus_timeout_callback           (FMDirectoryView      *view);
+static void     schedule_update_status                          (FMDirectoryView      *view);
+static void     remove_update_status_idle_callback             (FMDirectoryView *view); 
 static void     schedule_idle_display_of_pending_files         (FMDirectoryView      *view);
 static void     unschedule_idle_display_of_pending_files       (FMDirectoryView      *view);
 static void     unschedule_display_of_pending_files            (FMDirectoryView      *view);
@@ -378,6 +381,7 @@ EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, file_changed)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_background_widget)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
+EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_item_count)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, is_empty)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, reset_to_defaults)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, restore_default_zoom_level)
@@ -1649,6 +1653,7 @@ fm_directory_view_finalize (GObject *object)
 	}
 
 	remove_update_menus_timeout_callback (view);
+	remove_update_status_idle_callback (view);
 
 	fm_directory_view_ignore_hidden_file_preferences (view);
 
@@ -1692,7 +1697,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 	GnomeVFSFileSize non_folder_size;
 	guint non_folder_count, folder_count, folder_item_count;
 	gboolean folder_item_count_known;
-	guint item_count;
+	guint file_item_count;
 	GList *p;
 	char *first_item_name;
 	char *non_folder_str;
@@ -1719,8 +1724,8 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 		file = p->data;
 		if (nautilus_file_is_directory (file)) {
 			folder_count++;
-			if (nautilus_file_get_directory_item_count (file, &item_count, NULL)) {
-				folder_item_count += item_count;
+			if (nautilus_file_get_directory_item_count (file, &file_item_count, NULL)) {
+				folder_item_count += file_item_count;
 			} else {
 				folder_item_count_known = FALSE;
 			}
@@ -1807,7 +1812,23 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 	}
 
 	if (folder_count == 0 && non_folder_count == 0)	{
-		status_string = g_strdup ("");
+		char *free_space_str;
+		char *item_count_str;
+		guint item_count;
+
+		item_count = fm_directory_view_get_item_count (view);
+		
+		item_count_str = g_strdup_printf (ngettext ("%u item", "%u items", item_count), item_count);
+
+		free_space_str = nautilus_file_get_volume_free_space (view->details->directory_as_file);
+		if (free_space_str != NULL) {
+			status_string = g_strdup_printf (_("%s, Free space: %s"), item_count_str, free_space_str);
+			g_free (free_space_str);
+			g_free (item_count_str);
+		} else {
+			status_string = item_count_str;
+		}
+
 	} else if (folder_count == 0) {
 		status_string = g_strdup (non_folder_str);
 	} else if (non_folder_count == 0) {
@@ -1987,6 +2008,7 @@ done_loading (FMDirectoryView *view)
 	if (view->details->nautilus_view != NULL) {
 		nautilus_view_report_load_complete (view->details->nautilus_view);
 		schedule_update_menus (view);
+		schedule_update_status (view);
 		check_for_directory_hard_limit (view);
 
 		uris_selected = view->details->pending_uris_selected;
@@ -2606,6 +2628,9 @@ files_added_callback (NautilusDirectory *directory,
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 	queue_pending_files (view, files, &view->details->new_added_files);
+
+	/* The number of items could have changed */
+	schedule_update_status (view);
 }
 
 static void
@@ -2618,6 +2643,9 @@ files_changed_callback (NautilusDirectory *directory,
 	view = FM_DIRECTORY_VIEW (callback_data);
 	queue_pending_files (view, files, &view->details->new_changed_files);
 	
+	/* The free space or the number of items could have changed */
+	schedule_update_status (view);
+
 	/* A change in MIME type could affect the Open with menu, for
 	 * one thing, so we need to update menus when files change.
 	 */
@@ -2926,6 +2954,16 @@ fm_directory_view_get_selection (FMDirectoryView *view)
 	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 get_selection, (view));
+}
+
+guint
+fm_directory_view_get_item_count (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), 0);
+
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 get_item_count, (view));
 }
 
 /**
@@ -5778,6 +5816,47 @@ schedule_update_menus (FMDirectoryView *view)
 	}
 }
 
+static void
+remove_update_status_idle_callback (FMDirectoryView *view) 
+{
+	if (view->details->update_status_idle_id != 0) {
+		g_source_remove (view->details->update_status_idle_id);
+		view->details->update_status_idle_id = 0;
+	}
+}
+
+static gboolean
+update_status_idle_callback (gpointer data)
+{
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (data);
+	fm_directory_view_display_selection_info (view);
+	view->details->update_status_idle_id = 0;
+	return FALSE;
+}
+
+static void
+schedule_update_status (FMDirectoryView *view) 
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	/* Make sure we haven't already destroyed it */
+	g_assert (view->details->nautilus_view != NULL);
+
+	if (view->details->loading) {
+		/* Don't update status bar while loading the dir */
+		return;
+	}
+
+	if (view->details->update_status_idle_id == 0) {
+		view->details->update_status_idle_id =
+			g_idle_add_full (G_PRIORITY_DEFAULT_IDLE - 20,
+					 update_status_idle_callback, view, NULL);
+	}
+}
+
+
 /**
  * fm_directory_view_notify_selection_changed:
  * 
@@ -6262,6 +6341,7 @@ file_changed_callback (NautilusFile *file, gpointer callback_data)
 	FMDirectoryView *view = FM_DIRECTORY_VIEW (callback_data);
 
 	schedule_update_menus (view);
+	schedule_update_status (view);
 
 	/* We might have different capabilities, so we need to update
 	   relative icon emblems . (Writeable etc) */
@@ -7167,6 +7247,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, file_changed);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_background_widget);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selection);
+	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_item_count);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, is_empty);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, reset_to_defaults);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, restore_default_zoom_level);

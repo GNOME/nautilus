@@ -674,6 +674,13 @@ fm_list_model_is_empty (FMListModel *model)
 	return (g_sequence_get_length (model->details->files) == 0);
 }
 
+guint
+fm_list_model_get_length (FMListModel *model)
+{
+	return g_sequence_get_length (model->details->files);
+}
+
+
 static void
 fm_list_model_remove (FMListModel *model, GtkTreeIter *iter)
 {

@@ -1013,6 +1013,15 @@ fm_list_view_get_selection (FMDirectoryView *view)
 	return list;
 }
 
+
+static guint
+fm_list_view_get_item_count (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_LIST_VIEW (view), 0);
+
+	return fm_list_model_get_length (FM_LIST_VIEW (view)->details->model);
+}
+
 static gboolean
 fm_list_view_is_empty (FMDirectoryView *view)
 {
@@ -1526,6 +1535,7 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->file_changed = fm_list_view_file_changed;
 	fm_directory_view_class->get_background_widget = fm_list_view_get_background_widget;
 	fm_directory_view_class->get_selection = fm_list_view_get_selection;
+	fm_directory_view_class->get_item_count = fm_list_view_get_item_count;
 	fm_directory_view_class->is_empty = fm_list_view_is_empty;
 	fm_directory_view_class->remove_file = fm_list_view_remove_file;
 	fm_directory_view_class->reset_to_defaults = fm_list_view_reset_to_defaults;
