@@ -360,7 +360,7 @@ nautilus_window_end_location_change(NautilusWindow *window)
 	  gtk_object_unref(cur->data);
 	  /* nautilus_view_set_active_errors(cur->data, FALSE); */
 	}
-      for(cur = window->meta_views; cur; cur = cur->next)
+      for(discard_views = NULL, cur = window->meta_views; cur; cur = cur->next)
 	if(!g_slist_find(window->load_info->new_meta_views, cur->data))
 	  discard_views = g_slist_prepend(discard_views, cur->data);
 

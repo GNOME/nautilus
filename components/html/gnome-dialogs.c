@@ -19,9 +19,11 @@
 static const char * HTDialogs[HT_MSG_ELEMENTS] = {
 	HT_MSG_ENGLISH_INITIALIZER
 };
+#if 0
 static HTErrorMessage HTErrors[HTERR_ELEMENTS] = {
 	HTERR_ENGLISH_INITIALIZER
 };
+#endif
 
 typedef struct _ProgressInfo ProgressInfo;
 struct _ProgressInfo {
@@ -172,7 +174,7 @@ glibwww_progress(HTRequest *request, HTAlertOpcode op,
 			int *raw_read = input ? (int *)input : NULL;
 
 			if (b_read > 0)
-				text = g_strdup_printf(_("Read %d bytes"), b_read);
+				text = g_strdup_printf(_("Read %ld bytes"), b_read);
 			else if (raw_read && *raw_read > 0)
 				text = g_strdup_printf(_("Read %d bytes"), *raw_read);
 			else
@@ -191,7 +193,7 @@ glibwww_progress(HTRequest *request, HTAlertOpcode op,
 				long b_write = HTRequest_bodyWritten(request);
 				gfloat pcnt = (double)b_write/cl;
 
-				text = g_strdup_printf(_("Writing %d%%%% of %l"), (int)pcnt, cl);
+				text = g_strdup_printf(_("Writing %d%%%% of %ld"), (int)pcnt, cl);
 				gtk_progress_set_format_string(info->progress, text);
 				g_free(text);
 				gtk_progress_set_activity_mode(info->progress, FALSE);
@@ -201,7 +203,7 @@ glibwww_progress(HTRequest *request, HTAlertOpcode op,
 				int *raw_write = input ? (int *)input : NULL;
 
 				if (b_write > 0)
-					text = g_strdup_printf(_("Writing %d bytes"), b_write);
+					text = g_strdup_printf(_("Writing %ld bytes"), b_write);
 				else if (raw_write && *raw_write > 0)
 					text = g_strdup_printf(_("Writing %d bytes"), *raw_write);
 				else
