@@ -12,6 +12,7 @@ SUBDIRS = 					\
 	image-viewer 				\
 	loser 					\
 	music 					\
+	news					\
 	notes 					\
 	sample 					\
 	text 					\
