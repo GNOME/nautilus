@@ -1,49 +1,52 @@
-This file contains the build instructions for Nautilus, the grand new 
-GNOME file manager.
+This file contains build instructions for Nautilus, the GNOME shell
+and file manager.
 
 ====================
-0: Table of Contents
+0: Table of contents
 ====================
 
-0: Table of Contents
+0: Table of contents
 1: Hacking
-2: Intro
-3: Distribution Specific Notes
-4: compiling
-5: Issues When Running Nautilus
+2: Introduction
+3: Distribution-specific notes
+4: Compiling
+5: Running
 
 ==========
 1: Hacking
 ==========
 
-If you are willing to hack on nautilus, or have patches, please mail, 
-the nautilus maintainer: DArin Adler: <darin@eazel.com>. Patches should
-also be sent to the nautilus mailing list: <nautilus-list@lists.eazel.com>
+If you would like to hack on Nautilus, or have patches, please send
+mail to the Nautilus maintainer: Darin Adler<darin@eazel.com>.
+Patches should also be sent to the Nautilus mailing list:
+<nautilus-list@lists.eazel.com>
 
-The HACKING file contains the relevant bits you should know when hacking 
-on nautilus and when contributing code. Please, make sure you check
-the coding style document in docs/style-guide.html and more generally
-the "docs" directory.
+The HACKING file contains other things you should know when hacking on
+Nautilus and when contributing code. Please, make sure you check the
+coding style document in docs/style-guide.html and other documents
+found in the "docs" directory.
 
-
-========
-2: Intro
-========
+===============
+2: Introduction
+===============
 
 To build Nautilus without interfering with an existing Gnome install,
 you will need to build several components either from CVS or from 
 tarballs into a separate prefix. Detailed instructions on how
 to accomplish this are available in section 4.
 
-=============================
-3: Distribution Specific Notes
-=============================
+==============================
+3: Distribution-specific notes
+==============================
 
-Basic libraries needed:
+The following describes the libraries that Nautilus hackers use for
+development and what we have tested with. At the moment, we make no
+guarantees one way or another about whether Nautilus will work with
+other versions.
 
-Here is what has been tested
-You will also need the library package that is associated with each development package,
-these versions are for RedHat 6.2 and Debian "potato":
+You will also need the library package that is associated with each
+development package, these versions are for RedHat 6.2 and Debian
+"potato":
 
 library         RedHat                   Debian                          Implied Version
 --------------  ----------------------   ------------------------------  ------------------
@@ -79,7 +82,7 @@ If you need to get a copy of popt from source:
 	The default passwd is a carriage return.  You should do a cvs co popt
 
 ============
-4: compiling
+4: Compiling
 ============
 
 First, make sure you have installed the packages detailed below. If you are running
@@ -91,7 +94,6 @@ Then, make sure you have no old version of the packages nautilus depends on on y
 system. You can check the version of the relevant packages by trying to execute 
 "package-config --version" (ie: gnome-config --version will report gnome-libs version, 
 gconf-config --version will report gconf's version).
-
 
 	Compiling from tarballs.
 	------------------------
@@ -125,32 +127,34 @@ The folowing lists the packages and the versions they should report.
 RH6.2 == Version from Red Hat 6.2 OK
 HC1.2 == Version from Helix Code Gnome 1.2 OK
 
-If you are running HelixCode's GNOME, you should be able not to recompile the
-"HC1.2" packages provided you have installed the relevant development packages.
+If you are running Helix Code's GNOME, you should not need recompile
+the packages marked "HC1.2" provided you have installed the
+corresponding development packages.
 
-We will assume you want to install these packages in another prefix than /usr 
-since you want to keep a working system. We will assume in the folowing that 
-you install in /usr/local. ie: ${prefix}=/usr/local
+We assume you want to install these packages in another prefix than
+/usr since you want to keep a working system. For the following, we
+assume you are installing in /usr/local. ie: ${prefix}=/usr/local
 
-Redefine you PATH env variable: 
+Redefine your PATH env variable: 
 	export PATH=$PATH:${prefix}/bin
 Redefine your LD_LIBRARY_PATH env variable: 
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${prefix}/lib
 Redefine your GNOME_PATH env variable: 
 	export GNOME_PATH=$GNOME_PATH:${prefix}
 
-In the order defined above and with the specific options detailed above, 
-you should run the configure scripts with: "./configure --prefix=${prefix} --special-options"
-Then, run make; get root and run make install.
+In the order defined above and with the specific options detailed
+above, you should run the configure scripts with: "./configure
+--prefix=${prefix} --special-options" Then, run make; get root and run
+make install.
 
-you should get a running nautilus soon then :)
+You should get a running nautilus soon after. :)
 
 	Compiling from cvs.
 	-------------------
-Compiling from cvs usually requires more work and some packages may not
-compile... Do so at your own risk!!
+Compiling from cvs usually requires more work and some packages may
+not compile. Do so at your own risk!!
 
-The folowing lists the packages and the versions they should report.
+The folowing lists the packages and the versions that are required.
 
     module             branch             configure options      dist.
     ------             ------             -----------------      -----
@@ -178,11 +182,14 @@ The folowing lists the packages and the versions they should report.
 RH6.2 == Version from Red Hat 6.2 OK
 HC1.2 == Version from Helix Code Gnome 1.2 OK
 
-The main difference between tarball and cvs compilation is that when you get stuff from cvs,
-you don't get a configure script. This script has to be generated.
-This script is usually generated with the help of another script available from cvs named
-"autogen.sh". For those interested, "autogen.sh" will run in turn aclocal, automake, autoconf
-and configure. You thus need versions of the GNU tools for the folowing packages:
+One difference between tarball and cvs compilation is that when you
+get stuff from cvs, you don't get a configure script. This script has
+to be generated.  This script is usually generated with the help of
+another script available from cvs named "autogen.sh". For those
+interested, "autogen.sh" will run in turn aclocal, automake, autoconf
+and configure. You thus need versions of the GNU tools for the
+folowing packages:
+
 	package		version		command
 	-------		-------		-------
 	automake	1.4		automake --version
@@ -190,19 +197,24 @@ and configure. You thus need versions of the GNU tools for the folowing packages
 
 Earlier versions might work but no one has tested them.
 
-Once you have these tools, you need to folow the compilation instructions detailed above for
-tarballs but instead of running "./configure --stuff", you will run "./autogen.sh --stuff"
-Using this also requires you to create the ${prefix}/share/aclocal directory before compiling
-any package and setup the folowing env variable:
+Once you have these tools, you need to folow the compilation
+instructions detailed above for tarballs but instead of running
+"./configure --stuff", you will run "./autogen.sh --stuff" Using this
+also requires you to create the ${prefix}/share/aclocal directory
+before compiling any package and setup the folowing env variable:
+
 	export ACLOCAL_FLAGS="$ACLOCAL_FLAGS -I ${prefix}/share/aclocal"
 
-This should be be all.
+Besides these differences, building from CVS should be otherwise
+like building from released packages as described above.
 
 ===============================
-5: Issues When Running Nautilus
+5: Issues when running Nautilus
 ===============================
 
-Also, you need to run nautilus-clean.sh sometimes before 
-running Nautilus if OAF or GConf changed.
+There's a script named nautilus-clean.sh, at the top level of the
+Nautilus sources. If OAF or GConf changes, you may need to run this
+script to get Nautilus to work properly. One way to invoke it is
+like this:
 
-
+	./nautilus-clean.sh -x
