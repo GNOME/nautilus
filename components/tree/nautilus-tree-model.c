@@ -164,7 +164,8 @@ nautilus_tree_model_destroy (GtkObject *object)
 
 	model = (NautilusTreeModel *) object;
 
-	/* FIXME: Free all the key strings and unref all the value nodes in
+	/* FIXME bugzilla.eazel.com 2411: 
+	 * Free all the key strings and unref all the value nodes in
            the uri_to_node_map */
 
 	g_hash_table_destroy (model->details->uri_to_node_map);
@@ -281,7 +282,8 @@ nautilus_tree_model_monitor_remove (NautilusTreeModel         *model,
 	model->details->monitor_clients = g_list_remove (model->details->monitor_clients, (gpointer) client);
 
 	if (model->details->monitor_clients == NULL) {
-		/* FIXME: stop monitoring root node file, dunno what else */
+		/* FIXME bugzilla.eazel.com 2412: 
+		 * stop monitoring root node file, dunno what else */
 	}
 }
 
@@ -465,7 +467,8 @@ report_node_added (NautilusTreeModel *model,
 				 signals[NODE_ADDED],
 				 node);
 	} else {
-		/* FIXME: reconstruct internals and report that it changed?? */
+		/* FIXME bugzilla.eazel.com 2413: 
+		 * reconstruct internals and report that it changed?? */
 	}
 }
 
@@ -484,7 +487,8 @@ report_node_changed (NautilusTreeModel *model,
 		node->details->directory = nautilus_directory_get (uri);
 	}
 
-	/* FIXME: if the node is no longer a directory, we should free
+	/* FIXME bugzilla.eazel.com 2414: 
+	 * if the node is no longer a directory, we should free
            disconnect from it's NautilusDirectory and unref it; need
            to figure out how to do this safely) */
 	
@@ -588,7 +592,8 @@ report_done_loading (NautilusTreeModel *model,
 static void
 nautilus_tree_stop_monitoring_internal (NautilusTreeModel *model)
 {
-	/* FIXME: stop monitoring everything; we should probably
+	/* FIXME bugzilla.eazel.com 2415: 
+	 * stop monitoring everything; we should probably
            forget everything in the hash table too. */
 
 }

@@ -267,7 +267,7 @@ nautilus_tree_view_should_skip_file (NautilusTreeView *view,
 
 	should_skip = FALSE;
 
-	/* FIXME: maybe this should track the "show hidden files" preference? */
+	/* FIXME bugzilla.eazel.com 2419: maybe this should track the "show hidden files" preference? */
 
 	if (!view->details->show_hidden_files) {
 
@@ -447,7 +447,7 @@ nautilus_tree_view_remove_model_node (NautilusTreeView *view, NautilusTreeNode *
 		gtk_ctree_remove_node (GTK_CTREE (view->details->tree),
 				       view_node);
 		
-		/* FIXME: free the original key */
+		/* FIXME bugzilla.eazel.com 2420: free the original key */
 		g_hash_table_remove (view->details->uri_to_node_map, uri); 
 	}
 
@@ -516,7 +516,8 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 					    mask);
 		
 #if 0
-		/* FIXME: should switch to this call so we can set open/closed pixamps */
+		/* FIXME bugzilla.eazel.com 2421: 
+		 * should switch to this call so we can set open/closed pixamps */
 		void gtk_ctree_set_node_info  (GtkCTree     *ctree,
 					       GtkCTreeNode *node,
 					       const gchar  *text,
@@ -897,7 +898,7 @@ nautilus_tree_view_destroy (GtkObject *object)
 	/* you do not need to unref the normal style */
         gtk_style_unref(view->details->dnd->highlight_style);
 	g_free (view->details->dnd);
-	/* FIXME: destroy drag_info */
+	/* FIXME bugzilla.eazel.com 2422: destroy drag_info */
 
 	disconnect_model_handlers (view);
 
@@ -1329,7 +1330,7 @@ nautilus_tree_view_drag_leave (GtkWidget *widget,
 
 /* this function is used to detect when you spend some time 
    over a row so that we can expand it 
-   FIXME:
+   FIXME bugzilla.eazel.com 2416:
    The actual expanding code is disabled because expanding the tree
    makes it crash... Needs to be fixed eventually so that Arlo is 
    happy.
@@ -1414,7 +1415,7 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 
 
 	/* update dragging cursor. */
-	/* FIXME: this does not work */
+	/* FIXME bugzilla.eazel.com 2417: this does not work */
 #if 0
 	resulting_action = nautilus_drag_modifier_based_action (GDK_ACTION_COPY, 
 								GDK_ACTION_MOVE);
@@ -1422,7 +1423,7 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 	gdk_drag_status (context, context->suggested_action, time);
 
 
-	/* FIXME: handle scrolling if we are in a border of the widget */
+	/* FIXME bugzilla.eazel.com 2418: handle scrolling if we are in a border of the widget */
 
 	return FALSE;
 }

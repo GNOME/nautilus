@@ -1,5 +1,20 @@
 2000-08-28  John Sullivan  <sullivan@eazel.com>
 
+	Added more bug numbers to FIXMEs. 207 to go.
+
+	* components/tree/nautilus-tree-model.c:
+	(nautilus_tree_model_destroy),
+	(nautilus_tree_model_monitor_remove), (report_node_added),
+	(report_node_changed), (nautilus_tree_stop_monitoring_internal):
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_should_skip_file): Added bug numbers to FIXMEs.
+	
+	* src/file-manager/fm-directory-view.c: Doh! Added a forward
+	declaration for a function that I changed from public to private
+	earlier and checked in without building accidentally.
+
+2000-08-28  John Sullivan  <sullivan@eazel.com>
+
 	Wrote new bug reports for FIXMEs, and added bug numbers.
 	Now there are 219 Nautilus FIXMEs without bug numbers.
 

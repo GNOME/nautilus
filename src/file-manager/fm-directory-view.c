@@ -134,6 +134,8 @@ static void           fm_directory_view_activate_file	                          
 										   gboolean                  use_new_window);
 static void           fm_directory_view_create_background_context_menu_items      (FMDirectoryView          *view,
 										   GtkMenu                  *menu);
+static void	      fm_directory_view_load_uri 				  (FMDirectoryView 	    *view,
+			    							   const char 		    *uri);
 static void           fm_directory_view_merge_menus                               (FMDirectoryView          *view);
 static void	      real_create_background_context_menu_background_items        (FMDirectoryView	    *view, 
 							                           GtkMenu		    *menu);
