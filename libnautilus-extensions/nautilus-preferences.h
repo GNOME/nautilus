@@ -52,6 +52,12 @@ void                nautilus_preferences_set_enum             (const char       
 							       int                           value);
 int                 nautilus_preferences_get_enum             (const char                   *name,
 							       int                           default_value);
+
+void                nautilus_preferences_set_string_list      (const char                   *name,
+							       GSList                       *value);
+/* default value is NULL */
+GSList *            nautilus_preferences_get_string_list      (const char                   *name);
+
 void                nautilus_preferences_set                  (const char                   *name,
 							       const char                   *value);
 char *              nautilus_preferences_get                  (const char                   *name,

@@ -56,13 +56,15 @@ GtkType                     nautilus_tree_expansion_state_get_type         (void
 
 NautilusTreeExpansionState *nautilus_tree_expansion_state_new              (void);
 
-gboolean                    nautilus_tree_expansion_state_is_node_expanded (const char *uri);
-void                        nautilus_tree_expansion_state_expand_node      (const char *uri);
-void                        nautilus_tree_expansion_state_collapse_node    (const char *uri);
-void                        nautilus_tree_expansion_state_remove_node      (const char *uri);
-
-void                        nautilus_tree_expansion_state_save             (void);
-
+gboolean                    nautilus_tree_expansion_state_is_node_expanded (NautilusTreeExpansionState *expansion_state,
+									    const char                 *uri);
+void                        nautilus_tree_expansion_state_expand_node      (NautilusTreeExpansionState *expansion_state,
+									    const char                 *uri);
+void                        nautilus_tree_expansion_state_collapse_node    (NautilusTreeExpansionState *expansion_state,
+									    const char                 *uri);
+void                        nautilus_tree_expansion_state_remove_node      (NautilusTreeExpansionState *expansion_state,
+									    const char                 *uri);
+void                        nautilus_tree_expansion_state_save             (NautilusTreeExpansionState *expansion_state);
 
 
 

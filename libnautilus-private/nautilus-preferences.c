@@ -36,8 +36,10 @@
 #include <gconf/gconf-client.h>
 
 #include <gtk/gtksignal.h>
-
+ 
 static const char PREFERENCES_GCONF_PATH[] = "/apps/nautilus";
+
+#include <gtk/gtksignal.h>
 
 /*
  * PreferencesHashNode:
@@ -736,6 +738,63 @@ nautilus_preferences_get_boolean (const char	*name,
 
 	return result;
 }
+
+
+void
+nautilus_preferences_set_string_list (const char	*name,
+				      GSList            *string_list_value)
+{
+	char		*key;
+
+	gboolean gconf_result;
+
+	g_return_if_fail (name != NULL);
+
+	preferences_initialize_if_needed ();
+
+	key = nautilus_user_level_manager_make_current_gconf_key (name);
+	g_assert (key != NULL);
+
+	/* FIXME: Make sure the preference value is indeed different
+           before setting, like the other functions */
+
+	/* FIXME: we are passing NULL for the last argument and thus
+	   missing out on any opportunity to handle errors. */
+
+	gconf_result = gconf_client_set_list (GLOBAL.gconf_client, key,
+					      GCONF_VALUE_STRING,
+					      string_list_value,
+					      NULL);
+
+	/* FIXME: wrong to assert this, what if there is an error? */
+	g_assert (gconf_result);
+
+	gconf_client_suggest_sync (GLOBAL.gconf_client, NULL);
+
+	g_free (key);
+}
+
+GSList *
+nautilus_preferences_get_string_list (const char	*name)
+{
+	GSList *result;
+	char   *key;
+
+	g_return_val_if_fail (name != NULL, FALSE);
+
+	preferences_initialize_if_needed ();
+
+	key = nautilus_user_level_manager_make_current_gconf_key (name);
+	g_assert (key != NULL);
+
+	result = gconf_client_get_list (GLOBAL.gconf_client, key, 
+					GCONF_VALUE_STRING, NULL);
+
+	g_free (key);
+
+	return result;
+}
+
 
 void
 nautilus_preferences_set_enum (const char    *name,

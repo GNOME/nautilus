@@ -280,6 +280,34 @@ nautilus_g_list_free_deep (GList *list)
 	nautilus_g_list_free_deep_custom (list, (GFunc) g_free, NULL);
 }
 
+/**
+ * nautilus_g_list_free_deep_custom
+ *
+ * Frees the elements of a list and then the list, using a custom free function.
+ *
+ * @list: List of elements that can be freed with the provided free function.
+ * @element_free_func: function to call with the data pointer and user_data to free it.
+ * @user_data: User data to pass to element_free_func
+ **/
+void
+nautilus_g_slist_free_deep_custom (GSList *list, GFunc element_free_func, gpointer user_data)
+{
+	g_slist_foreach (list, element_free_func, user_data);
+	g_slist_free (list);
+}
+
+/**
+ * nautilus_g_slist_free_deep
+ *
+ * Frees the elements of a list and then the list.
+ * @list: List of elements that can be freed with g_free.
+ **/
+void
+nautilus_g_slist_free_deep (GSList *list)
+{
+	nautilus_g_slist_free_deep_custom (list, (GFunc) g_free, NULL);
+}
+
 
 /**
  * nautilus_g_strv_find

@@ -1,3 +1,49 @@
+2000-08-11  Maciej Stachowiak  <mjs@eazel.com>
+
+	Fixes for bugzilla tasks 1525 and 1530.
+	
+	* components/tree/nautilus-tree-expansion-state.h,
+	components/tree/nautilus-tree-expansion-state.c: New files
+	implementing the NautilusTreeExpansionState class, a class to
+	track the expansion state of various nodes in the tree, and
+	save/load it to/from GConf.
+	* components/tree/nautilus-tree-model.h,
+	components/tree/nautilus-tree-model.c
+	(nautilus_tree_model_stop_monitoring_node_recursive): New function
+	to stop monitoring a node and any children of it's that you may be
+	monitoring all at one go.	
+	(nautilus_tree_model_stop_monitoring_node): Disconnect signal
+	handlers from the proper object (D'oh!) and avoid disconnecting
+	more than once if you stop monitoring more than once (D'oh!).
+
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_insert_model_node,
+	nautilus_tree_view_remove_model_node,
+	nautilus_tree_view_update_model_node),
+	nautilus_tree_view_initialize, nautilus_tree_view_destroy,
+	tree_expand_callback, tree_collapse_callback): Track expansion
+	state using the new class, and make sure that when a node is
+	expanded it gets reloaded recursively.
+	(ctree_is_node_expanded): Convenience function to check if a
+	GtkCTreeNode is currenly expanded.
+	(reload_node_for_uri): New function to force reload of a node.
+	(expand_node_for_uri): New function to do everything necessary
+	associated with the expansion of a node.
+		
+	* libnautilus-extensions/nautilus-glib-extensions.h,
+	libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_g_slist_free_deep_custom, nautilus_g_slist_free_deep):
+	New functions for freeing GSLists, similar to the GList versions.
+	* libnautilus-extensions/nautilus-preferences.h,
+	libnautilus-extensions/nautilus-preferences.c
+	(nautilus_preferences_set_string_list,
+	nautilus_preferences_get_string_list): New functions for
+	manipulating preferences that are a list of strings.
+	* libnautilus-extensions/nautilus-volume-monitor.c
+	(mntent_is_removable_fs): Added some FIXMEs
+	* src/nautilus-view-frame.c: Remove a stary character from the
+	copyright notice.
+
 2000-08-10  Mathieu Lacage <mathieu@eazel.com>
 
 	* HACKING: update it for upcoming release.

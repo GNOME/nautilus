@@ -31,6 +31,7 @@
 #include "nautilus-tree-view.h"
 
 #include "nautilus-tree-model.h"
+#include "nautilus-tree-expansion-state.h"
 
 #include <bonobo/bonobo-control.h>
 #include <gtk/gtksignal.h>
@@ -64,6 +65,8 @@ struct NautilusTreeViewDetails {
 	GHashTable *uri_to_hack_node_map;
 
 	gboolean show_hidden_files;
+
+	NautilusTreeExpansionState *expansion_state;
 };
 
 #define TREE_SPACING 5
@@ -72,6 +75,11 @@ static char         *nautilus_tree_view_uri_to_name      (const char       *uri)
 static GtkCTreeNode *nautilus_tree_view_find_parent_node (NautilusTreeView *view, 
 							  const char       *uri);
 
+static void reload_node_for_uri                 (NautilusTreeView *view,
+						 const char       *uri);
+
+static void expand_node_for_uri                 (NautilusTreeView *view,
+						 const char       *uri);
 
 static void tree_load_location_callback         (NautilusView          *nautilus_view,
 						 const char            *location,
@@ -313,7 +321,12 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 			/* Gratuitous hack so node can be expandable w/o
 			   immediately inserting all the real children. */
 
-			insert_hack_node (view, uri);
+			if (nautilus_tree_expansion_state_is_node_expanded (view->details->expansion_state, uri)) {
+				gtk_ctree_expand (GTK_CTREE (GTK_CTREE (view->details->tree)),
+						  view_node);
+			} else {
+				insert_hack_node (view, uri);
+			}
 		}
 	}
 
@@ -348,7 +361,34 @@ nautilus_tree_view_remove_model_node (NautilusTreeView *view, NautilusTreeNode *
 		g_hash_table_remove (view->details->uri_to_node_map, uri); 
 	}
 
+	nautilus_tree_expansion_state_remove_node (view->details->expansion_state,
+						   uri);
+
 	g_free (uri);
+}
+
+
+
+
+static gboolean
+ctree_is_node_expanded (GtkCTree     *ctree,
+			GtkCTreeNode *node)
+{
+	gchar     *text;
+	guint8     spacing;
+	GdkPixmap *pixmap_closed;
+	GdkBitmap *mask_closed;
+	GdkPixmap *pixmap_opened;
+	GdkBitmap *mask_opened;
+	gboolean   is_leaf;
+	gboolean   expanded;
+
+	gtk_ctree_get_node_info (ctree, node,
+				 &text, &spacing,
+				 &pixmap_closed, &mask_closed,
+				 &pixmap_opened, &mask_opened,
+				 &is_leaf, &expanded);
+	return expanded;
 }
 
 static void
@@ -363,7 +403,6 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 	
 	file = nautilus_tree_node_get_file (node);
 
-	/* FIXME: leaks non-canonical URI */
 	uri = nautilus_file_get_uri (file);
 
 	view_node = g_hash_table_lookup (view->details->uri_to_node_map, uri); 
@@ -399,6 +438,20 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 					       gboolean      is_leaf,
 					       gboolean      expanded);
 #endif	
+
+		if (nautilus_file_is_directory (nautilus_tree_node_get_file (node))) {
+			if (nautilus_tree_expansion_state_is_node_expanded (view->details->expansion_state, uri)) {
+				if (!ctree_is_node_expanded (GTK_CTREE (GTK_CTREE (view->details->tree)),
+							     view_node)) {
+					gtk_ctree_expand (GTK_CTREE (GTK_CTREE (view->details->tree)),
+							  view_node);
+				} else {
+					reload_node_for_uri (view, uri);
+				}
+			} else {
+				insert_hack_node (view, uri);
+			}
+		}
 	} else {
 		g_free (uri);
 	}
@@ -500,6 +553,7 @@ nautilus_tree_view_load_from_filesystem (NautilusTreeView *view)
 static void
 nautilus_tree_view_initialize (NautilusTreeView *view)
 {
+	/* set up scrolled window */
 	gtk_scrolled_window_set_hadjustment (GTK_SCROLLED_WINDOW (view), NULL);
 	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW (view), NULL);
 
@@ -509,6 +563,11 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 						
 	view->details = g_new0 (NautilusTreeViewDetails, 1);
 
+	/* set up expansion state */
+	view->details->expansion_state = nautilus_tree_expansion_state_new ();
+	
+
+	/* set up ctree */
 	view->details->tree = gtk_ctree_new (1, 0);
 
         gtk_clist_set_selection_mode (GTK_CLIST (view->details->tree), GTK_SELECTION_BROWSE);
@@ -537,6 +596,7 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 			    GTK_SIGNAL_FUNC (tree_select_row_callback), 
 			    view);
 
+	/* set up view */
 	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 	
 	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
@@ -580,6 +640,12 @@ nautilus_tree_view_destroy (GtkObject *object)
 	view = NAUTILUS_TREE_VIEW (object);
 	
 	disconnect_model_handlers (view);
+
+
+	nautilus_tree_expansion_state_save (view->details->expansion_state);
+
+	gtk_object_unref (GTK_OBJECT (view->details->expansion_state));
+
 
 	g_free (view->details);
 	
@@ -645,6 +711,35 @@ tree_load_location_callback (NautilusView *nautilus_view,
 }
 
 
+static void
+reload_node_for_uri (NautilusTreeView *view,
+		     const char *uri)
+{
+	GList *p;
+
+	nautilus_tree_model_monitor_node (view->details->model,
+					  nautilus_tree_model_get_node (view->details->model,
+									uri),
+					  view);
+
+	for (p = nautilus_tree_node_get_children 
+		(nautilus_tree_model_get_node (view->details->model, uri)); p != NULL; p = p->next) {
+		nautilus_tree_view_update_model_node (view, (NautilusTreeNode *) p->data);
+	}
+}
+
+static void
+expand_node_for_uri (NautilusTreeView *view,
+		     const char *uri)
+{
+
+	freeze_if_have_hack_node (view, uri);
+
+	nautilus_tree_expansion_state_expand_node (view->details->expansion_state,
+						   uri);
+
+	reload_node_for_uri (view, uri);
+}
 
 static void
 tree_expand_callback (GtkCTree         *ctree,
@@ -656,12 +751,7 @@ tree_expand_callback (GtkCTree         *ctree,
 	uri = (const char *) gtk_ctree_node_get_row_data (GTK_CTREE (view->details->tree),
 							  node);
 
-	freeze_if_have_hack_node (view, uri);
-
-	nautilus_tree_model_monitor_node (view->details->model,
-					  nautilus_tree_model_get_node (view->details->model,
-									uri),
-					  view);
+	expand_node_for_uri (view, uri);
 }
 
 
@@ -676,10 +766,13 @@ tree_collapse_callback (GtkCTree         *ctree,
 	uri = (const char *) gtk_ctree_node_get_row_data (GTK_CTREE (view->details->tree),
 							  node);
 
-	nautilus_tree_model_stop_monitoring_node (view->details->model,
-						  nautilus_tree_model_get_node (view->details->model,
-										uri),
-						  view);
+	nautilus_tree_expansion_state_collapse_node (view->details->expansion_state,
+						     uri);
+
+	nautilus_tree_model_stop_monitoring_node_recursive (view->details->model,
+							    nautilus_tree_model_get_node (view->details->model,
+											  uri),
+							    view);
 }
 
 

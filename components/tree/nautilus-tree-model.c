@@ -351,15 +351,34 @@ nautilus_tree_model_stop_monitoring_node (NautilusTreeModel *model,
 		return;
 	}
 
+	if (g_list_find (node->details->monitor_clients, (gpointer) client) == NULL) {
+		return;
+	}
+
 	node->details->monitor_clients = g_list_remove (node->details->monitor_clients, (gpointer) client);
 
 	if (node->details->monitor_clients == NULL) {
-		gtk_signal_disconnect (GTK_OBJECT (node), node->details->files_added_id);
-		gtk_signal_disconnect (GTK_OBJECT (node), node->details->files_changed_id);
-		gtk_signal_disconnect (GTK_OBJECT (node), node->details->done_loading_id);
+		gtk_signal_disconnect (GTK_OBJECT (node->details->directory), node->details->files_added_id);
+		gtk_signal_disconnect (GTK_OBJECT (node->details->directory), node->details->files_changed_id);
+		gtk_signal_disconnect (GTK_OBJECT (node->details->directory), node->details->done_loading_id);
 		
 		nautilus_directory_file_monitor_remove (node->details->directory,
 							model);
+	}
+}
+
+
+void
+nautilus_tree_model_stop_monitoring_node_recursive (NautilusTreeModel *model,
+						    NautilusTreeNode  *node,
+						    gconstpointer      client)
+{
+	GList *p;
+
+	nautilus_tree_model_stop_monitoring_node (model, node, client);
+
+	for (p = nautilus_tree_node_get_children (node); p != NULL; p = p->next) {
+		nautilus_tree_model_stop_monitoring_node_recursive (model, (NautilusTreeNode *) p->data, client);
 	}
 }
 

@@ -88,15 +88,22 @@ void               nautilus_tree_model_stop_monitoring_node     (NautilusTreeMod
 								 NautilusTreeNode          *node,
 								 gconstpointer              client);
 
+void
+nautilus_tree_model_stop_monitoring_node_recursive (NautilusTreeModel *model,
+						    NautilusTreeNode  *node,
+						    gconstpointer      client);
+
+
 NautilusTreeNode  *nautilus_tree_model_get_node                 (NautilusTreeModel *model,
 								 const char *uri);
 
+#if 0
 NautilusTreeNode  *nautilus_tree_model_get_nearest_parent_node  (NautilusTreeModel *model,
 								 const char *uri);
 
 
 NautilusTreeNode  *nautilus_tree_model_get_root_node            (NautilusTreeModel *model);
-
+#endif
 
 
 

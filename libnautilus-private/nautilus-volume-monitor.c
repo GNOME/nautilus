@@ -779,6 +779,14 @@ add_mount_device (NautilusVolumeMonitor *monitor, struct mntent *ent)
 static gboolean
 mntent_is_removable_fs (struct mntent *ent)
 {
+	/* FIXME: this does not detect removable volumes that are not
+           CDs or floppies (e.g. zip drives, DVD-ROMs, those weird 20M
+           super floppies, etc) */
+
+	/* FIXME: it's incorrect to assume that all ISO9660 volumes
+           are removable; you could create one as a "filesystem in a
+           file" for testing purposes. */
+
 	if (strcmp (ent->mnt_type, MOUNT_TYPE_ISO9660) == 0) {
 		return TRUE;
 	}
