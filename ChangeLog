@@ -1,3 +1,18 @@
+2000-12-21  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 5218, The desktop is missing devices. (cdrom & vfat volume)
+	
+	Try and be more intelligent about determing the name of mounted
+	volumes.  Until we can get the device name from the partition,
+	we instead derive the name form the mount path.  If that fails, we fall
+	back on a hrad coded string.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(mount_volume_get_name), (get_ext2_volume_name),
+	(get_msdos_volume_name), (get_nfs_volume_name),
+	(get_floppy_volume_name), (get_generic_volume_name):
+	New and modified functions to return volume names.
+	
 2000-12-21  John Sullivan  <sullivan@eazel.com>
 
 	* components/sample/main.c: (main): Changed

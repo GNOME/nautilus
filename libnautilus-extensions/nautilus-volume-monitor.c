@@ -89,7 +89,9 @@ static void     	get_iso9660_volume_name                         (NautilusVolume
 									 int                             volume_fd);
 static void     	get_ext2_volume_name                         	(NautilusVolume             	*volume);
 static void     	get_msdos_volume_name                         	(NautilusVolume             	*volume);
-static void     	get_floppy_volume_name                           (NautilusVolume             	*volume);
+static void     	get_nfs_volume_name                         	(NautilusVolume             	*volume);
+static void     	get_floppy_volume_name                         	(NautilusVolume             	*volume);
+static void     	get_generic_volume_name                         (NautilusVolume             	*volume);
 static void		mount_volume_get_name 				(NautilusVolume 		*volume);
 static void		mount_volume_activate 				(NautilusVolumeMonitor 	  	*view, 
 									 NautilusVolume 		*volume);
@@ -214,7 +216,7 @@ nautilus_volume_monitor_volume_is_removable (NautilusVolume *volume)
 	return volume->is_removable;
 }
 
-/* nautilus_volume_monitor_get_volume_name
+/* nautilus_volume_monitor_get_removable_volumes
  *	
  * Returns a list a device paths.
  * Caller needs to free these as well as the list.
@@ -411,23 +413,26 @@ mount_volume_get_name (NautilusVolume *volume)
 		get_ext2_volume_name (volume);
 		break;
 
+	case NAUTILUS_VOLUME_FAT:
+	case NAUTILUS_VOLUME_VFAT:
 	case NAUTILUS_VOLUME_MSDOS:
 		get_msdos_volume_name (volume);
 		break;
+	
+	case NAUTILUS_VOLUME_NFS:
+		get_nfs_volume_name (volume);
+		break;
 		
 	case NAUTILUS_VOLUME_AFFS:
-	case NAUTILUS_VOLUME_FAT:
 	case NAUTILUS_VOLUME_HPFS:
 	case NAUTILUS_VOLUME_MINIX:
-	case NAUTILUS_VOLUME_NFS:
 	case NAUTILUS_VOLUME_SMB:
 	case NAUTILUS_VOLUME_UDF:
 	case NAUTILUS_VOLUME_UFS:
 	case NAUTILUS_VOLUME_UNSDOS:
-	case NAUTILUS_VOLUME_VFAT:
 	case NAUTILUS_VOLUME_XENIX:
 	case NAUTILUS_VOLUME_XIAFS:
-		volume->volume_name = g_strdup (_("Unknown Volume"));
+		get_generic_volume_name (volume);
 		break;
 		
 	default:
@@ -1003,19 +1008,76 @@ get_iso9660_volume_name (NautilusVolume *volume, int fd)
 static void
 get_ext2_volume_name (NautilusVolume *volume)
 {
-	volume->volume_name = g_strdup (_("Ext2 Volume"));
+	char *name;
+		
+	name = strrchr (volume->mount_path, '/');
+	if (name != NULL) {
+		/* Handle special case for "/" */
+		if (strlen (name) == 1 && strcmp (name, "/") == 0) {
+			volume->volume_name = g_strdup (_("Root"));
+		} else {		
+			name++;
+			volume->volume_name = g_strdup (name);
+		}
+	} else {
+		volume->volume_name = g_strdup (_("Ext2 Volume"));
+	}
 }
 
 static void
 get_msdos_volume_name (NautilusVolume *volume)
 {
-	volume->volume_name = g_strdup (_("MSDOS Volume"));
+	char *name;
+	
+	name = strrchr (volume->mount_path, '/');
+	if (name != NULL) {
+		name++;
+		volume->volume_name = g_strdup (name);
+	} else {
+		volume->volume_name = g_strdup (_("MSDOS Volume"));
+	}
+}
+
+static void
+get_nfs_volume_name (NautilusVolume *volume)
+{
+	char *name;
+	
+	name = strrchr (volume->mount_path, '/');
+	if (name != NULL) {
+		name++;
+		volume->volume_name = g_strdup (name);
+	} else {
+		volume->volume_name = g_strdup (_("NFS Volume"));
+	}
 }
 
 static void
 get_floppy_volume_name (NautilusVolume *volume)
 {
-	volume->volume_name = g_strdup (_("Floppy"));
+	char *name;
+	
+	name = strrchr (volume->mount_path, '/');
+	if (name != NULL) {
+		name++;
+		volume->volume_name = g_strdup (name);
+	} else {
+		volume->volume_name = g_strdup (_("Floppy"));
+	}
+}
+
+static void
+get_generic_volume_name (NautilusVolume *volume)
+{
+	char *name;
+	
+	name = strrchr (volume->mount_path, '/');
+	if (name != NULL) {
+		name++;
+		volume->volume_name = g_strdup (name);
+	} else {
+		volume->volume_name = g_strdup (_("Unknown Volume"));
+	}
 }
 
 static gboolean
