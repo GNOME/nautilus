@@ -623,7 +623,7 @@ eazel_install_fetch_package (EazelInstall *service,
 	char *name = g_strdup (package->name);
 	char *version = g_strdup (package->version);
 
-	if (package->suite_id != NULL) {
+	if (packagedata_is_suite (package)) {
 		trilobite_debug ("suites has no urls...");
 		g_free (name);
 		g_free (version);

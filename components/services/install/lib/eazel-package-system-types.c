@@ -1028,7 +1028,7 @@ flatten_packagedata_dependency_tree (GList *packages)
 		}
 
 		/* Don't add suites */
-		if (pack->suite_id == NULL) {
+		if (!packagedata_is_suite (pack)) {
 			result = g_list_prepend (result, pack);
 		}
 	}
@@ -1079,6 +1079,23 @@ packagedata_list_prune (GList **input,
 			}
 		}
 	}
+}
+
+gboolean 
+packagedata_is_suite (PackageData *package)
+{
+	gboolean result = FALSE;
+
+	g_assert (package);
+	g_assert (IS_PACKAGEDATA (package));
+
+	if (package->suite_id) {
+		if (strncmp (package->suite_id, "S:", 2)==0) {
+			result = TRUE;
+		}
+	}
+
+	return result;
 }
 
 PackageRequirement* 

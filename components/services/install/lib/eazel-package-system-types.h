@@ -290,6 +290,8 @@ GList *flatten_packagedata_dependency_tree (GList *packages);
 */
 void packagedata_list_prune (GList **input, GList *remove_list, gboolean destroy, gboolean deep);
 
+gboolean packagedata_is_suite (PackageData *package);
+
 /*************************************************************************************************/
 
 typedef enum {

@@ -201,7 +201,9 @@ prune_failed_packages_helper (EazelInstall *service,
 	}
 
 	/* If it's a suite and no dependencies, cancel it */
-	if (pack->suite_id && g_list_length (pack->depends)==0 && pack->status == PACKAGE_PARTLY_RESOLVED) {
+	if (packagedata_is_suite (pack) && 
+	    g_list_length (pack->depends)==0 && 
+	    pack->status == PACKAGE_PARTLY_RESOLVED) {
 		pack->status = PACKAGE_ALREADY_INSTALLED;
 	}
 
@@ -771,7 +773,7 @@ get_softcat_info (EazelInstall *service,
 			}
 		}
 	}
-	if ((result != NO_SOFTCAT_HIT) && ((*package)->suite_id == NULL)) {
+	if ((result != NO_SOFTCAT_HIT) && !packagedata_is_suite ((*package))) {
 		post_get_softcat_info (service, package, result);
 	}
 	return result;
@@ -817,7 +819,7 @@ post_check (EazelInstall *service,
 	
 	(*package)->status = PACKAGE_PARTLY_RESOLVED;
 	
-	if ((*package)->md5==NULL && (*package)->suite_id!=NULL) {
+	if ((*package)->md5==NULL && packagedata_is_suite ((*package))) {
 		return result;
 	}
 
@@ -1345,7 +1347,7 @@ check_dependencies_foreach (EazelInstall *service,
 		return;
 	}
 
-	if (package->suite_id!=NULL) {
+	if (packagedata_is_suite (package)) {
 		for (iterator = package->depends; iterator; iterator = g_list_next (iterator)) {
 			PackageDependency *dep = PACKAGEDEPENDENCY (iterator->data);
 			dep->package->fillflag = PACKAGE_FILL_INVALID;
@@ -1483,7 +1485,7 @@ do_dep_check_internal (EazelInstall *service,
 		for (diterator = pack->depends; diterator; diterator = g_list_next (diterator)) {
 			PackageDependency *dep = PACKAGEDEPENDENCY (diterator->data);
 			if (((~dep->package->fillflag & MUST_HAVE) ||
-			    (pack->suite_id)) && 
+			    packagedata_is_suite (pack)) && 
 			    (g_list_find (K, dep->package)==NULL)) {
 				K = g_list_prepend (K, dep);
 			}
@@ -2278,7 +2280,7 @@ check_no_two_packages_has_same_file (EazelInstall *service,
 
 		pack = PACKAGEDATA (iter->data);
 
-		if (pack->suite_id) {
+		if (packagedata_is_suite (pack)) {
 			continue;
 		}
 
@@ -2413,7 +2415,7 @@ check_conflicts_against_already_installed_packages (EazelInstall *service,
 	for (iter = g_list_first (flat_packages); iter != NULL; iter = g_list_next (iter)) {
 		pack = PACKAGEDATA (iter->data);
 
-		if (pack->conflicts_checked || pack->suite_id) {
+		if (pack->conflicts_checked || packagedata_is_suite (pack)) {
 			continue;
 		}
 

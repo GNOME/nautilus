@@ -1,3 +1,21 @@
+2001-03-28  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-package-system-types.h:
+	* components/services/install/lib/eazel-package-system-types.c:
+	(flatten_packagedata_dependency_tree), (packagedata_list_prune),
+	(packagedata_is_suite):
+	Added a (bool)packagedata_is_suite call which checks if the
+	suite_id field is actually a suite or something else.
+	
+	* components/services/install/lib/eazel-install-logic2.c:
+	(prune_failed_packages_helper), (get_softcat_info), (post_check),
+	(check_dependencies_foreach), (do_dep_check_internal),
+	(check_no_two_packages_has_same_file),
+	(check_conflicts_against_already_installed_packages):
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package):
+	Use the packagedata_is_suite call.
+
 2001-03-28  Jason Leach  <jasonleach@usa.net>
 
 	reviewed by: Darin Adler <darin@eazel.com>
