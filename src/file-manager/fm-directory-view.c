@@ -6233,9 +6233,9 @@ real_update_menus (FMDirectoryView *view)
 		}
 	} else {
 		if (selection_count <= 1) {
-			label_with_underscore = g_strdup (_("Browse Folder"));
+			label_with_underscore = g_strdup (_("_Browse Folder"));
 		} else {
-			label_with_underscore = g_strdup_printf (_("Browse Folders"));
+			label_with_underscore = g_strdup_printf (_("_Browse Folders"));
 		}
 	}
 

@@ -683,7 +683,7 @@ real_update_menus (FMDirectoryView *view)
 	gtk_action_set_visible (action, 
 				include_empty_trash);
 	if (include_empty_trash) {
-		label = g_strdup (_("Empty Trash"));
+		label = g_strdup (_("E_mpty Trash"));
 		g_object_set (action , "label", label, NULL);
 		gtk_action_set_sensitive (action,
 					  !nautilus_trash_monitor_is_empty ());
