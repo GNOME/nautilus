@@ -9,6 +9,7 @@ INCLUDES =						\
 	-I$(top_builddir)				\
 	-I$(top_srcdir)/components/services/inventory	\
 	-I$(top_builddir)/components/services/inventory	\
+	-I$(top_srcdir)/components/services/nautilus-dependent-shared   \
 	$(GNOMEUI_CFLAGS)				\
 	$(BONOBO_CFLAGS)				\
 	$(OAF_CFLAGS)
@@ -27,11 +28,15 @@ nautilus_inventory_view_SOURCES =		\
 	nautilus-inventory-view.c		\
 	nautilus-inventory-enable-page.h	\
 	nautilus-inventory-enable-page.c	\
+	nautilus-inventory-disable-page.h	\
+	nautilus-inventory-disable-page.c	\
 	main.c
 
 nautilus_inventory_view_LDADD =								\
 	$(top_builddir)/libnautilus/libnautilus.la					\
 	$(top_builddir)/components/services/inventory/libtrilobite-inventory-service.la	\
+	$(top_builddir)/components/services/nautilus-dependent-shared/libnautilusdepshared.a \
+	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la 		\
 	$(GNOMEUI_LIBS)									\
 	$(BONOBO_LIBS)									\
 	$(GCONF_LIBS)									\

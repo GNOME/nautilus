@@ -28,9 +28,7 @@
 #include "nautilus-inventory-view.h"
 
 #include "nautilus-inventory-enable-page.h"
-#if 0
 #include "nautilus-inventory-disable-page.h"
-#endif
 
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
@@ -44,6 +42,7 @@
 struct NautilusInventoryViewDetails {
 	GtkWidget *notebook;
 	GtkWidget *enable_page;
+	GtkWidget *disable_page;
 };
 
 static void nautilus_inventory_view_initialize_class (NautilusInventoryViewClass *klass);
@@ -85,11 +84,13 @@ nautilus_inventory_view_initialize (NautilusInventoryView *view)
 
 	view->details->enable_page = nautilus_inventory_enable_page_new (NAUTILUS_VIEW (view),
 									 "eazel-services:/inventory/updates");
+	view->details->disable_page = nautilus_inventory_disable_page_new (NAUTILUS_VIEW (view),
+									 "eazel-services:/inventory/updates");
 	gtk_notebook_append_page (GTK_NOTEBOOK (view->details->notebook),
 				  view->details->enable_page,
 				  gtk_label_new (""));
 	gtk_notebook_append_page (GTK_NOTEBOOK (view->details->notebook),
-				  gtk_label_new ("Disable page"),
+				  view->details->disable_page,
 				  gtk_label_new (""));
 
 	gtk_widget_show_all (view->details->notebook);

@@ -1,3 +1,26 @@
+2001-02-24  Ian McKellar  <ian@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	* components/services/inventory-view/Makefile.am:
+	* components/services/inventory-view/nautilus-inventory-disable-pag
+	e.c: (nautilus_inventory_disable_page_initialize_class),
+	(yes_callback), (no_callback),
+	(nautilus_inventory_disable_page_initialize),
+	(nautilus_inventory_disable_page_new),
+	(nautilus_inventory_disable_page_run),
+	(nautilus_inventory_disable_page_destroy):
+	* components/services/inventory-view/nautilus-inventory-disable-pag
+	e.h:
+	* components/services/inventory-view/nautilus-inventory-view.c:
+	(nautilus_inventory_view_initialize),
+	(inventory_load_location_callback):
+	Added inventory disable page.
+
+	* components/services/summary/nautilus-summary-view.c:
+	(inventory_load_callback):
+	Don't pop up a dialog if the inventory upload fails.
+
 2001-02-04  Robey Pointer  <robey@eazel.com>
 	
 	reviewed by: Eskil Heyn Olsen <eskil@eazel.com>

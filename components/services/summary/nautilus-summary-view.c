@@ -887,11 +887,6 @@ inventory_load_callback (EazelInventory *inventory,
 
 	view = NAUTILUS_SUMMARY_VIEW (callback_data);
 
-	if (!succeeded) {
-		nautilus_summary_show_error_dialog 
-			(view, _("Failed to upload system inventory."));
-	}
-
 	gtk_object_unref (GTK_OBJECT (inventory));
 
 	fetch_summary_data (view);
