@@ -22,8 +22,6 @@
    Authors: Maciej Stachowiak <mjs@eazel.com>
 */
 
-#define DEBUG_MJS
-
 #include <config.h>
 #include "nautilus-mime-actions.h"
 
