@@ -417,8 +417,6 @@ nautilus_window_constructed(NautilusWindow *window)
   GtkWidget *location_bar_box, *statusbar;
   GtkWidget *temp_frame;
   
-  g_message("XXX Constructed.\n");
-  
   app = GNOME_APP(window);
 
   /* set up toolbar */
@@ -781,13 +779,13 @@ nautilus_window_up (GtkWidget *btn, NautilusWindow *window)
 
   current_uri = gnome_vfs_uri_new (nautilus_window_get_requested_uri(window));
   parent_uri = gnome_vfs_uri_get_parent (current_uri);
+  gnome_vfs_uri_unref (current_uri);
   parent_uri_string = gnome_vfs_uri_to_string (parent_uri, GNOME_VFS_URI_HIDE_NONE);
+  gnome_vfs_uri_unref (parent_uri);  
   
   nautilus_window_goto_uri (window, parent_uri_string);
-
+  
   g_free (parent_uri_string);
-  gnome_vfs_uri_destroy (current_uri);
-  gnome_vfs_uri_destroy (parent_uri);  
 }
 
 static void

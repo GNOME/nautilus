@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
 
 /*
  *  Nautilus
@@ -23,85 +23,84 @@
  *
  */
 
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
-#include <libnautilus/libnautilus.h>
-
-#include "fm-directory-view.h"
 #include "fm-directory-view-icons.h"
 #include "fm-directory-view-list.h"
+#include <libnautilus/nautilus-debug.h>
+#include <libgnorba/gnorba.h>
+#include <bonobo/gnome-object.h>
+#include <bonobo/gnome-generic-factory.h>
+#include <bonobo/gnome-main.h>
+#include <libgnomevfs/gnome-vfs-init.h>
 
 static int object_count = 0;
 
 static void
-do_destroy(GtkObject *obj)
+do_destroy (GtkObject *obj)
 {
-  object_count--;
-  if(object_count <= 0)
-    gtk_main_quit();
+        object_count--;
+        if (object_count <= 0)
+                gtk_main_quit();
 }
 
-static GnomeObject *make_obj(GnomeGenericFactory *Factory, const char *goad_id, gpointer closure)
+static GnomeObject *
+make_obj (GnomeGenericFactory *Factory, const char *goad_id, gpointer closure)
 {
-  FMDirectoryView *dir_view;
-  NautilusContentViewFrame *view_frame;
-  GnomeObject *ctl;
-  
-  g_return_val_if_fail(strcmp(goad_id, "ntl_file_manager_icon_view") == 0 ||
-  		       strcmp(goad_id, "ntl_file_manager_list_view") == 0, NULL);
-
-  if (strcmp (goad_id, "ntl_file_manager_icon_view") == 0)
-  {
-    dir_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_directory_view_icons_get_type(), NULL));
-  }
-  else
-  {
-    dir_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_directory_view_list_get_type(), NULL));
-  }
-
-  g_return_val_if_fail(dir_view, NULL);
-
-  view_frame = fm_directory_view_get_view_frame (dir_view);
-
-  if(GNOME_IS_OBJECT(view_frame))
-    return GNOME_OBJECT(view_frame);
-
-  gtk_signal_connect(GTK_OBJECT(view_frame), "destroy", do_destroy, NULL);
-
-  gtk_widget_show(GTK_WIDGET(view_frame));
-
-  ctl = nautilus_view_frame_get_gnome_object(NAUTILUS_VIEW_FRAME(view_frame));
-
-  object_count++;
-
-  printf("%x\n", (unsigned) ctl);
-  
-  return ctl;
+        FMDirectoryView *dir_view;
+        NautilusContentViewFrame *view_frame;
+        
+        g_return_val_if_fail (strcmp (goad_id, "ntl_file_manager_icon_view") == 0 ||
+			      strcmp (goad_id, "ntl_file_manager_list_view") == 0, NULL);
+        
+        if (strcmp (goad_id, "ntl_file_manager_icon_view") == 0)
+                 dir_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_directory_view_icons_get_type (), NULL));
+        else
+                 dir_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_directory_view_list_get_type (), NULL));
+        
+        g_return_val_if_fail(dir_view, NULL);
+        
+        view_frame = fm_directory_view_get_view_frame (dir_view);
+        
+        if (GNOME_IS_OBJECT (view_frame))
+                return GNOME_OBJECT (view_frame);
+        
+        gtk_signal_connect (GTK_OBJECT (view_frame), "destroy", do_destroy, NULL);
+        gtk_widget_show (GTK_WIDGET (view_frame));
+        
+        object_count++;
+        
+        return nautilus_view_frame_get_gnome_object (NAUTILUS_VIEW_FRAME (view_frame));
 }
-
 
 int main(int argc, char *argv[])
 {
-  GnomeGenericFactory *factory;
-  CORBA_ORB orb;
-  CORBA_Environment ev;
-
-  CORBA_exception_init(&ev);
-
-  if (getenv("NAUTILUS_DEBUG"))
-    g_log_set_always_fatal (G_LOG_FATAL_MASK | G_LOG_LEVEL_CRITICAL);
-
-  orb = gnome_CORBA_init_with_popt_table("ntl-file-manager", VERSION, &argc, argv, NULL, 0, NULL,
-					 GNORBA_INIT_SERVER_FUNC, &ev);
-  bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-  g_thread_init (NULL);
-  gnome_vfs_init ();
-
-  factory = gnome_generic_factory_new_multi("ntl_file_manager_factory", make_obj, NULL);
-
-  do {
-    bonobo_main();
-  } while(object_count > 0);
-
-  return 0;
+        CORBA_Environment ev;
+        CORBA_ORB orb;
+        GnomeGenericFactory *factory;
+        
+        CORBA_exception_init(&ev);
+        
+	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
+	   Unfortunately, this has to be done explicitly for each domain.
+	*/
+	if (getenv("NAUTILUS_DEBUG") != NULL)
+		nautilus_make_warnings_and_criticals_stop_in_debugger
+			(G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", NULL);
+        
+        orb = gnome_CORBA_init_with_popt_table("ntl-file-manager", VERSION, &argc, argv, NULL, 0, NULL,
+                                               GNORBA_INIT_SERVER_FUNC, &ev);
+        bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+        g_thread_init (NULL);
+        gnome_vfs_init ();
+        
+        factory = gnome_generic_factory_new_multi("ntl_file_manager_factory", make_obj, NULL);
+        
+        do
+                bonobo_main();
+        while (object_count > 0);
+        
+        return EXIT_SUCCESS;
 }

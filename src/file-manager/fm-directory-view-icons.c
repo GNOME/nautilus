@@ -26,13 +26,9 @@
 #include "config.h"
 #endif
 
-#include <gnome.h>
-
-#include <libnautilus/nautilus-gtk-macros.h>
-
-#include "fm-directory-view.h"
 #include "fm-directory-view-icons.h"
 #include "fm-icon-cache.h"
+#include <libnautilus/nautilus-gtk-macros.h>
 
 
 /* forward declarations */
@@ -134,19 +130,6 @@ fm_directory_view_icons_initialize (gpointer object, gpointer klass)
 }
 
 NAUTILUS_DEFINE_GET_TYPE_FUNCTION (FMDirectoryViewIcons, fm_directory_view_icons, FM_TYPE_DIRECTORY_VIEW);
-
-/**
- * fm_directory_view_icons_new:
- *
- * Create a new FMDirectoryViewIcons.
- * 
- * Return value: The newly-allocated FMDirectoryViewIcons.
- **/
-GtkWidget *
-fm_directory_view_icons_new (void)
-{
-	return gtk_widget_new (fm_directory_view_icons_get_type (), NULL);
-}
 
 
 static GnomeIconContainer *

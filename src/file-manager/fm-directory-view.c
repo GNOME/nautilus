@@ -27,15 +27,15 @@
 #endif
 
 #include "fm-directory-view.h"
-#include "fm-public-api.h"
 
-#include <gnome.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkmain.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomevfs/gnome-vfs-async-ops.h>
+#include <libgnomevfs/gnome-vfs-directory-list.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <libnautilus/libnautilus.h>
 #include <libnautilus/nautilus-gtk-macros.h>
-
-
-#define FM_DEBUG(x) g_message x
 
 #define DISPLAY_TIMEOUT_INTERVAL 500
 #define ENTRIES_PER_CB 1
@@ -79,10 +79,10 @@ static void notify_location_change_cb 		(NautilusViewFrame *view_frame,
 						 Nautilus_NavigationInfo *nav_context, 
 						 FMDirectoryView *directory_view);
 
-NAUTILUS_DEFINE_GET_TYPE_FUNCTION (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW);
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_entry);
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear);
-NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection);
+NAUTILUS_DEFINE_GET_TYPE_FUNCTION (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_entry)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
 
 static void
 fm_directory_view_initialize_class (gpointer klass)
@@ -174,8 +174,6 @@ fm_directory_view_initialize (gpointer object, gpointer klass)
 					     (nautilus_content_view_frame_get_type(), 
 					      NULL));
 	
-	printf("*********** A %x\n", (unsigned) directory_view);
-
 	gtk_signal_connect (GTK_OBJECT(directory_view->details->view_frame), 
 			    "stop_location_change",
 			    GTK_SIGNAL_FUNC (stop_location_change_cb),
@@ -197,8 +195,6 @@ fm_directory_view_destroy (GtkObject *object)
 {
 	FMDirectoryView *view;
 
-	FM_DEBUG (("Entering function."));
-
 	view = FM_DIRECTORY_VIEW (object);
 
 	if (view->details->directory_list != NULL)
@@ -207,10 +203,8 @@ fm_directory_view_destroy (GtkObject *object)
 	if (view->details->uri != NULL)
 		gnome_vfs_uri_unref (view->details->uri);
 
-	if (view->details->vfs_async_handle != NULL) {
-		FM_DEBUG (("Cancelling VFS operation."));
+	if (view->details->vfs_async_handle != NULL)
 		gnome_vfs_async_cancel (view->details->vfs_async_handle);
-	}
 
 	if (view->details->display_timeout_id != 0)
 		gtk_timeout_remove (view->details->display_timeout_id);
@@ -251,6 +245,8 @@ display_selection_info (FMDirectoryView *view)
 		size += info->size;
 	}
 
+	g_list_free (selection);
+
 	if (count == 0) {
 	        memset(&sri, 0, sizeof(sri));
 	        sri.status_string = "";
@@ -260,17 +256,18 @@ display_selection_info (FMDirectoryView *view)
 	}
 
 	size_string = gnome_vfs_file_size_to_string (size);
+	if (count == 1)
+		msg = g_strdup_printf (_("1 file selected -- %s"), size_string);
+	else
+		msg = g_strdup_printf (_("%d files selected -- %s"), count, size_string);
+	g_free (size_string);
 
-	msg = g_strdup_printf (_("%d %s selected -- %s"),
-		    count, (count==1)?_("file"):_("files"), size_string);
 	memset(&sri, 0, sizeof(sri));
 	sri.status_string = msg;
 	nautilus_view_frame_request_status_change
 		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &sri);
-        g_free (msg);
 
-	g_free (size_string);
-	g_list_free (selection);
+        g_free (msg);
 }
 
 
@@ -278,17 +275,12 @@ display_selection_info (FMDirectoryView *view)
 static void
 notify_location_change_cb (NautilusViewFrame *view_frame, Nautilus_NavigationInfo *nav_context, FMDirectoryView *directory_view)
 {
-	puts("******* XXX notify_location_change");
-	g_message("Directory view is loading URL %s", nav_context->requested_uri);
 	fm_directory_view_load_uri(directory_view, nav_context->requested_uri);
 }
 
 static void
 stop_location_change_cb (NautilusViewFrame *view_frame, FMDirectoryView *directory_view)
 {
-	printf("*********** B %x\n", (unsigned) directory_view);
-
-	g_message("Directory view is stopping");
 	fm_directory_view_stop(directory_view);
 }
 
@@ -456,26 +448,9 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 	if (result == GNOME_VFS_ERROR_EOF) {
 		display_pending_entries (view);
 		stop_load (view, FALSE);
-		/* gtk_signal_emit (GTK_OBJECT (view), signals[LOAD_DONE]); */
 	} else if (result != GNOME_VFS_OK) {
 		stop_load (view, TRUE);
-		/* gtk_signal_emit (GTK_OBJECT (view), signals[LOAD_FAILED],
-		   result); */
-		return;
 	}
-}
-
-/**
- * fm_directory_view_new:
- *
- * Create a new FMDirectoryView.
- * 
- * Return value: The newly-allocated FMDirectoryView.
- **/
-GtkWidget *
-fm_directory_view_new (void)
-{
-	return gtk_widget_new(fm_directory_view_get_type (), NULL);
 }
 
 
@@ -797,7 +772,6 @@ fm_directory_view_sort (FMDirectoryView *view,
 		return;
 	}
 
-	FM_DEBUG (("Sorting."));
 	gnome_vfs_directory_list_sort (view->details->directory_list, FALSE, rules);
 
 	fm_directory_view_populate (view);

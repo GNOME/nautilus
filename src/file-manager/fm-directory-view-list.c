@@ -26,14 +26,11 @@
 #include "config.h"
 #endif
 
-#include <gnome.h>
-
-#include <libnautilus/gtkflist.h>
-#include <libnautilus/nautilus-gtk-macros.h>
-
-#include "fm-directory-view.h"
 #include "fm-directory-view-list.h"
 #include "fm-icon-cache.h"
+#include <libgnome/gnome-i18n.h>
+#include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus/gtkflist.h>
 
 static FMDirectoryViewClass *parent_class = NULL;
 
@@ -102,7 +99,6 @@ fm_directory_view_list_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
-
 
 
 #define LIST_VIEW_COLUMN_ICON		0
@@ -111,13 +107,8 @@ fm_directory_view_list_destroy (GtkObject *object)
 #define LIST_VIEW_COLUMN_DATE_MODIFIED	3
 #define LIST_VIEW_COLUMN_COUNT		4
 
-GtkWidget *
-fm_directory_view_list_new (void)
-{
-	return gtk_widget_new (fm_directory_view_list_get_type (), NULL);
-}
-
 
+
 static GtkFList *
 create_flist (FMDirectoryViewList *list_view)
 {

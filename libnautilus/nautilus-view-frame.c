@@ -27,6 +27,8 @@
 /* ntl-view-frame.c: Implementation for object that represents a
    nautilus view implementation. */
 
+#include "ntl-view-frame.h"
+
 #include <gtk/gtk.h>
 #include "libnautilus.h"
 

@@ -22,11 +22,11 @@
    Authors: John Sullivan <sullivan@eazel.com>
 */
 
-#ifndef __FM_DIRECTORY_VIEW_ICONS_H__
-#define __FM_DIRECTORY_VIEW_ICONS_H__
+#ifndef FM_DIRECTORY_VIEW_ICONS_H
+#define FM_DIRECTORY_VIEW_ICONS_H
 
+#include "fm-directory-view.h"
 #include <libnautilus/gnome-icon-container.h>
-
 
 typedef struct _FMDirectoryViewIcons      FMDirectoryViewIcons;
 typedef struct _FMDirectoryViewIconsClass FMDirectoryViewIconsClass;
@@ -48,22 +48,16 @@ struct _FMDirectoryViewIconsClass {
 	FMDirectoryViewClass parent_class;
 };
 
-
 /* GtkObject support */
-GtkType    fm_directory_view_icons_get_type (void);
-GtkWidget *fm_directory_view_icons_new      (void);
-
+GtkType                   fm_directory_view_icons_get_type        (void);
 
 /* User interface related calls.
  * FIXME: None of these are currently used. Remove them eventually if
  * we're not going to use them.
  */
-GnomeIconContainerLayout *
-	   fm_directory_view_icons_get_icon_layout (FMDirectoryViewIcons *view);
-void	   fm_directory_view_icons_set_icon_layout (FMDirectoryViewIcons *view,
-					     	    const GnomeIconContainerLayout
-					     	    *icon_layout);
-void	   fm_directory_view_icons_line_up_icons   (FMDirectoryViewIcons *view);
+GnomeIconContainerLayout *fm_directory_view_icons_get_icon_layout (FMDirectoryViewIcons           *view);
+void                      fm_directory_view_icons_set_icon_layout (FMDirectoryViewIcons           *view,
+								   const GnomeIconContainerLayout *icon_layout);
+void                      fm_directory_view_icons_line_up_icons   (FMDirectoryViewIcons           *view);
 
-
-#endif /* __FM_DIRECTORY_VIEW_ICONS_H__ */
+#endif /* FM_DIRECTORY_VIEW_ICONS_H */

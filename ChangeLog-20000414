@@ -1,3 +1,67 @@
+2000-01-18  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/nautilus-directory.c:
+	(nautilus_directory_read_metafile):
+	(nautilus_directory_try_to_read_metafile):
+	(nautilus_directory_write_metafile):
+	(nautilus_directory_try_to_write_metafile):
+	(nautilus_directory_switch_to_alternate_metafile_uri):
+	(nautilus_directory_escape_slashes):
+	(nautilus_make_directory_and_parents): Added first cut at code to
+	put metafiles in the user's home directory if the directory is not
+	accessible and you can't read and write a metafile in the
+	directory itself. We'll have to refine this later to handle cases
+	where you end up with two metafiles.
+
+	* libnautilus/Makefile.am: libnautilus/nautilus-debug.h:
+	libnautilus/nautilus-debug.c: Took trick for getting into the
+	debugger and put it into a public header file so it can be used
+	outside of the nautilus executable.
+
+	* src/ntl-main.c: (stop_in_debugger):
+	(nautilus_stop_after_default_log_handler): (main): Use the new
+	calls from libnautilus to set up the drop into debugger for
+	criticals and warnings.
+
+	* src/file-manager/fm-main.c: (main): Minimized includes and used
+	the new calls from libnautilus to set up the drop into debugger
+	for criticals and warnings.
+
+	* src/ntl-uri-map.c: (nautilus_navinfo_add_mapping):
+	src/ntl-window.c: (nautilus_window_constructed):
+	src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize): (fm_directory_view_destroy):
+	(notify_location_change_cb): (stop_location_change_cb):
+	(fm_directory_view_sort): Removed some messages that aren't so
+	useful.
+
+	* libnautilus/ntl-view-frame.h: Minimized includes.
+	* libnautilus/ntl-view-frame.c: Include "ntl-view-frame.h" first
+	so it tests to see that it has sufficient includes in it.
+
+	* src/ntl-view.c: (nautilus_view_load_client): Changed function so
+	that NULL for an iid is allowed and simply results in a failed
+	load instead of being illegal.
+
+	* src/ntl-window-msgs.c:
+	(nautilus_window_change_location_internal): src/ntl-window.c:
+	(nautilus_window_up): Got rid of calls to gnome_vfs_uri_destroy;
+	use gnome_vfs_uri_unref instead since it's safer and Federico is
+	getting rid of gnome_vfs_uri_destroy.
+
+	* src/file-manager/fm-directory-view-icons.h:
+	src/file-manager/fm-directory-view-icons.c:
+	(fm_directory_view_icons_new):
+	src/file-manager/fm-directory-view-list.h:
+	src/file-manager/fm-directory-view-list.c:
+	(fm_directory_view_list_new):
+	src/file-manager/fm-directory-view.h:
+	src/file-manager/fm-directory-view.c: (fm_directory_view_new):
+	Minimized includes and got rid of the unused _new functions.
+
+	* libnautilus/nautilus-directory.h: Added a missing 2000 copyright
+	date.
+
 2000-01-17  John Sullivan  <sullivan@eazel.com>
 	First steps towards making the list view non-degenerate.
 

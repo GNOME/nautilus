@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
 
 /*
  *  libnautilus: A library for nautilus view implementations.
@@ -30,7 +30,9 @@
 #ifndef NTL_VIEW_FRAME_H
 #define NTL_VIEW_FRAME_H
 
-#include <gtk/gtk.h>
+#include <gtk/gtkbin.h>
+#include "nautilus.h"
+#include <bonobo/gnome-object.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,42 +49,42 @@ typedef struct _NautilusViewFrameClass  NautilusViewFrameClass;
 
 struct _NautilusViewFrameClass
 {
-  GtkBinClass parent_spot;
+	GtkBinClass parent_spot;
 
-  void (*notify_location_change)	(NautilusViewFrame *view,
+	void (*notify_location_change)	(NautilusViewFrame *view,
 					 Nautilus_NavigationInfo *nav_context);
-  void (*notify_selection_change)	(NautilusViewFrame *view,
+	void (*notify_selection_change)	(NautilusViewFrame *view,
 					 Nautilus_SelectionInfo *nav_context);
-  void (*load_state)                    (NautilusViewFrame *view, const char *config_path);
-  void (*save_state)                    (NautilusViewFrame *view, const char *config_path);
-  void (*show_properties)               (NautilusViewFrame *view);
-  void (*stop_location_change)          (NautilusViewFrame *view);
+	void (*load_state)              (NautilusViewFrame *view, const char *config_path);
+	void (*save_state)              (NautilusViewFrame *view, const char *config_path);
+	void (*show_properties)         (NautilusViewFrame *view);
+	void (*stop_location_change)    (NautilusViewFrame *view);
 
-  GtkBinClass *parent_class;
+	GtkBinClass *parent_class;
 
-  gpointer servant_init_func, servant_destroy_func, vepv;
+	gpointer servant_init_func, servant_destroy_func, vepv;
 };
 
 struct _NautilusViewFrame
 {
-  GtkBin parent;
+	GtkBin parent;
 
-  GtkWidget *main_window;
+	GtkWidget *main_window;
  
-  GnomeObject *control, *view_server;
-  Nautilus_ViewFrame view_frame;
+	GnomeObject *control, *view_server;
+	Nautilus_ViewFrame view_frame;
 };
 
-GtkType nautilus_view_frame_get_type                (void);
-void    nautilus_view_frame_request_location_change (NautilusViewFrame         *view,
-						      Nautilus_NavigationRequestInfo *loc);
-void    nautilus_view_frame_request_selection_change (NautilusViewFrame        *view,
-						       Nautilus_SelectionRequestInfo *loc);
-void    nautilus_view_frame_request_status_change    (NautilusViewFrame        *view,
-						       Nautilus_StatusRequestInfo *loc);
-void    nautilus_view_frame_request_progress_change  (NautilusViewFrame        *view,
-						       Nautilus_ProgressRequestInfo *loc);
-GnomeObject *nautilus_view_frame_get_gnome_object    (NautilusViewFrame        *view);
+GtkType      nautilus_view_frame_get_type                 (void);
+void         nautilus_view_frame_request_location_change  (NautilusViewFrame              *view,
+							   Nautilus_NavigationRequestInfo *loc);
+void         nautilus_view_frame_request_selection_change (NautilusViewFrame              *view,
+							   Nautilus_SelectionRequestInfo  *loc);
+void         nautilus_view_frame_request_status_change    (NautilusViewFrame              *view,
+							   Nautilus_StatusRequestInfo     *loc);
+void         nautilus_view_frame_request_progress_change  (NautilusViewFrame              *view,
+							   Nautilus_ProgressRequestInfo   *loc);
+GnomeObject *nautilus_view_frame_get_gnome_object         (NautilusViewFrame              *view);
 
 #ifdef __cplusplus
 }

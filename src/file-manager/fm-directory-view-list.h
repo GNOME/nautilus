@@ -22,10 +22,10 @@
    Authors: John Sullivan <sullivan@eazel.com>
 */
 
-#ifndef __FM_DIRECTORY_VIEW_LIST_H__
-#define __FM_DIRECTORY_VIEW_LIST_H__
+#ifndef FM_DIRECTORY_VIEW_LIST_H
+#define FM_DIRECTORY_VIEW_LIST_H
 
-
+#include "fm-directory-view.h"
 
 typedef struct _FMDirectoryViewList      FMDirectoryViewList;
 typedef struct _FMDirectoryViewListClass FMDirectoryViewListClass;
@@ -44,9 +44,7 @@ struct _FMDirectoryViewListClass {
 	FMDirectoryViewClass parent_class;
 };
 
-
 /* GtkObject support */
-GtkType    fm_directory_view_list_get_type (void);
-GtkWidget *fm_directory_view_list_new      (void);
+GtkType fm_directory_view_list_get_type (void);
 
-#endif /* __FM_DIRECTORY_VIEW_LIST_H__ */
+#endif /* FM_DIRECTORY_VIEW_LIST_H */

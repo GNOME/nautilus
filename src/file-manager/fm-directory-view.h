@@ -21,13 +21,16 @@
  *
  * Author: Ettore Perazzoli
  */
-#ifndef __FM_DIRECTORY_VIEW_H__
-#define __FM_DIRECTORY_VIEW_H__
 
-#include <libgnomevfs/gnome-vfs.h>
-#include <libnautilus/libnautilus.h>
+#ifndef FM_DIRECTORY_VIEW_H
+#define FM_DIRECTORY_VIEW_H
+
+#include <gtk/gtkscrolledwindow.h>
+#include <libgnomevfs/gnome-vfs-types.h>
+#include <libnautilus/ntl-content-view-frame.h>
 
 
+
 enum _FMDirectoryViewSortType {
 	FM_DIRECTORY_VIEW_SORT_BYNAME,
 	FM_DIRECTORY_VIEW_SORT_BYSIZE,
@@ -72,6 +75,7 @@ struct _FMDirectoryViewClass {
 	 */
 	void 	(* add_entry) 		 (FMDirectoryView *view, 
 					  GnomeVFSFileInfo *info);
+
 	/* The 'done_adding_entries' signal is emitted after a set of entries
 	 * are added to the view. It can be replaced by a subclass to do any 
 	 * necessary cleanup (typically, cleanup for code in begin_adding_entries).
@@ -98,7 +102,6 @@ struct _FMDirectoryViewClass {
 
 /* GtkObject support */
 GtkType     fm_directory_view_get_type 			(void);
-GtkWidget  *fm_directory_view_new      			(void);
 
 /* Component embedding support */
 NautilusContentViewFrame 
@@ -140,5 +143,4 @@ void	     fm_directory_view_populate 		(FMDirectoryView *view);
 gchar 	    *nautilus_file_date_as_string 		(time_t date);
 gchar 	    *nautilus_file_size_as_string 		(GnomeVFSFileSize bytes);
 
-
-#endif /* __FM_DIRECTORY_VIEW_H__ */
+#endif /* FM_DIRECTORY_VIEW_H */

@@ -31,36 +31,9 @@
 #include "config.h"
 #include "nautilus.h"
 #include "nautilus-self-check-functions.h"
+#include <libnautilus/nautilus-debug.h>
 #include <libnautilus/nautilus-lib-self-check-functions.h>
 #include <libnautilus/nautilus-self-checks.h>
-
-/* Raise a SIGINT signal to get the attention of the debugger.
-   When not running under the debugger, we don't want to stop,
-   so we ignore the signal for just the moment that we raise it.
-*/
-static void
-stop_in_debugger (void)
-{
-	void (* saved_handler) (int);
-
-	saved_handler = signal (SIGINT, SIG_IGN);
-	raise (SIGINT);
-	signal (SIGINT, saved_handler);
-}
-
-/* Stop in the debugger after running the default log handler.
-   This makes certain kinds of messages stop in the debugger
-   without making them fatal.
-*/
-static void
-nautilus_stop_after_default_log_handler (const char *domain,
-					 GLogLevelFlags level,
-					 const char *message,
-					 gpointer data)
-{
-	g_log_default_handler (domain, level, message, data);
-	stop_in_debugger ();
-}
 
 int
 main(int argc, char *argv[])
@@ -81,10 +54,12 @@ main(int argc, char *argv[])
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
 	};
 	
-	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.  */
+	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
+	   Unfortunately, this has to be done explicitly for each domain.
+	*/
 	if (getenv("NAUTILUS_DEBUG") != NULL)
-		g_log_set_handler (NULL, G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_WARNING,
-				   nautilus_stop_after_default_log_handler, NULL);
+		nautilus_make_warnings_and_criticals_stop_in_debugger
+			(G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "GnomeVFS", NULL);
 	
 	/* Initialize the services that we use. */
 	CORBA_exception_init(&ev);

@@ -351,7 +351,7 @@ nautilus_window_change_location_internal(NautilusWindow *window, Nautilus_Naviga
   new_uri = gnome_vfs_uri_new (loci->requested_uri);
   nautilus_window_allow_up(window, 
 			   gnome_vfs_uri_has_parent(new_uri));
-  gnome_vfs_uri_destroy(new_uri);
+  gnome_vfs_uri_unref(new_uri);
 
   if (window->ni != loci)
     {

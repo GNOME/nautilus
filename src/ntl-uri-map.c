@@ -124,9 +124,6 @@ navinfo_read_map_file(const char *fn)
       if(!strcasecmp(mimetype, "NULL"))
         mimetype = NULL;
 
-      g_message("Adding mapping of %s -> [%s, %s, %s]",
-                sname, type, mimetype, data);
-
       nautilus_navinfo_add_mapping(sname, typeval, data, mimetype);
     }
   

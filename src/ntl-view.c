@@ -344,7 +344,8 @@ nautilus_view_load_client(NautilusView *view, const char *iid)
     NULL
   };
 
-  g_return_val_if_fail(iid, FALSE);
+  if (iid == NULL)
+    return FALSE;
 
   CORBA_exception_init(&ev);
 

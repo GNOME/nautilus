@@ -32,6 +32,7 @@ libnautilusinclude_HEADERS=			\
 	gtkscrollframe.h			\
 	nautilus.h				\
 	nautilus-background.h			\
+	nautilus-debug.h			\
 	nautilus-directory.h			\
 	nautilus-file-utilities.h		\
 	nautilus-gtk-extensions.h		\
@@ -51,6 +52,7 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	gtkscrollframe.c			\
 	nautilus-background.c			\
 	nautilus-background-canvas-group.c	\
+	nautilus-debug.c			\
 	nautilus-directory.c			\
 	nautilus-file-utilities.c		\
 	nautilus-gtk-extensions.c		\
