@@ -2397,7 +2397,6 @@ unschedule_idle_display_of_pending_files (FMDirectoryView *view)
 {
 	/* Get rid of idle if it's active. */
 	if (view->details->display_pending_idle_id != 0) {
-		g_assert (view->details->display_pending_timeout_id == 0);
 		g_source_remove (view->details->display_pending_idle_id);
 		view->details->display_pending_idle_id = 0;
 	}
@@ -2408,7 +2407,6 @@ unschedule_timeout_display_of_pending_files (FMDirectoryView *view)
 {
 	/* Get rid of timeout if it's active. */
 	if (view->details->display_pending_timeout_id != 0) {
-		g_assert (view->details->display_pending_idle_id == 0);
 		g_source_remove (view->details->display_pending_timeout_id);
 		view->details->display_pending_timeout_id = 0;
 	}

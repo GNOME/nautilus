@@ -1,5 +1,11 @@
 2003-04-07  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-directory-view.c (unschedule_timeout_display_of_pending_files) 
+	(unschedule_idle_display_of_pending_files):
+	Remove no longer correct asserts.
+
+2003-04-07  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-container.[ch]:
 	Create canvas items hidden.
 	New function nautilus_icon_container_layout_now().
