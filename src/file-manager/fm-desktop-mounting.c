@@ -44,6 +44,9 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+/* FIXME: Remove messages when this code is done. */
+#define MESSAGE g_message
+
 const char * const state_names[] = { 
 	"ACTIVE", 
 	"INACTIVE", 
@@ -69,6 +72,7 @@ static void     mount_device_deactivate                                   (FMDes
 									   DeviceInfo             *device);
 static void     mount_device_activate_floppy                              (FMDesktopIconView      *view,
 									   DeviceInfo             *device);
+static gboolean	mntent_is_removable_fs					  (struct mntent 	  *ent);
 
 void 
 fm_desktop_rescan_floppy (GtkMenuItem *item, FMDirectoryView *view)
@@ -84,9 +88,6 @@ fm_desktop_rescan_floppy (GtkMenuItem *item, FMDirectoryView *view)
 	for (element = icon_view->details->devices; element != NULL; element = element->next) {
 		device = element->data;
 		if (strncmp ("/dev/fd", device->fsname, strlen("/dev/fd")) == 0) {
-			/* FIXME: Remove messages when this code is done. */
-			g_message ("Mounting floppy: %s", device->mount_path);
-
 			argv[1] = device->mount_path;
 			argv[2] = NULL;
 
@@ -97,11 +98,64 @@ fm_desktop_rescan_floppy (GtkMenuItem *item, FMDirectoryView *view)
 
 				mount_device_deactivate (icon_view, device);
 			}
-			
+
 			/* Mount the device */
 			mount_device_activate_floppy (icon_view, device);
 		}
-	}    	
+	}
+}
+
+GList *
+fm_desktop_get_removable_list (void)
+{
+	GList *list;
+	FILE *mef;
+	struct mntent *ent;
+
+	list = NULL;
+
+	mef = setmntent (_PATH_MNTTAB, "r");
+	g_return_val_if_fail (mef, NULL);
+
+	while ((ent = getmntent (mef))) {
+		if (mntent_is_removable_fs (ent)) {
+			list = g_list_append (list, g_strdup (ent->mnt_dir));
+			continue;
+		}
+	}
+  	endmntent (mef);
+
+  	return list;	
+}
+
+void
+fm_desktop_mount_unmount_removable (GtkMenuItem *item)
+{
+}
+
+gboolean
+fm_desktop_volume_is_mounted (const char *mount_point)
+{
+	FILE *fh;
+	char line[PATH_MAX * 3];
+	char mntpoint[PATH_MAX], devname[PATH_MAX];
+	
+	/* Open mtab */
+	fh = fopen (_PATH_MOUNTED, "r");
+	if (!fh) {		
+    		return FALSE;
+    	}
+    	
+	while (fgets (line, sizeof(line), fh)) {
+		sscanf(line, "%s %s", devname, mntpoint);
+		if (strcmp (mntpoint, mount_point) == 0) {
+			fclose (fh);	
+			return TRUE;
+		}
+	}
+	
+	fclose (fh);
+	return FALSE;
 }
 
 static gboolean
@@ -264,7 +318,7 @@ mount_device_mount (FMDesktopIconView *view, DeviceInfo *device)
 	if (result) {
 		device->link_uri = nautilus_make_path (desktop_path, device->volume_name);
 	} else {
-		g_message ("Unable to create mount link");
+		MESSAGE ("Unable to create mount link");
 	}
 	
 	g_free (desktop_path);
@@ -299,7 +353,7 @@ mount_device_activate_cdrom (FMDesktopIconView *icon_view, DeviceInfo *device)
 			break;
 
 		default:
-			g_message ("Unknown CDROM type");
+			MESSAGE ("Unknown CDROM type");
     			break;
   	}
 
@@ -317,8 +371,6 @@ mount_device_activate_floppy (FMDesktopIconView *view, DeviceInfo *device)
 	/* Get volume name */
 	get_floppy_volume_name (device);
 
-	g_message ("Mounting floppy: %s", device->mount_path);
-	
 	argv[0] = "/bin/mount";
 	argv[1] = device->mount_path;
 	argv[2] = NULL;
@@ -412,8 +464,7 @@ mount_device_check_change (gpointer data, gpointer callback_data)
   	if (old_state != device->state) {
     		f = state_transitions[device->state][old_state];
 
-		/* FIXME: Remove messages when this code is done. */
-    		g_message ("State on %s changed from %s to %s, running %p",
+    		MESSAGE ("State on %s changed from %s to %s, running %p",
 			   device->fsname, state_names[old_state], state_names[device->state], f);
 			
 		(* f) (icon_view, device);
@@ -428,18 +479,19 @@ mount_devices_update_is_mounted (FMDesktopIconView *icon_view)
 	GList *ltmp;
 	DeviceInfo *device;
 
+	/* Toggle mount state to off and then recheck in mtab. */
 	for (ltmp = icon_view->details->devices; ltmp; ltmp = ltmp->next) {
 		device = ltmp->data;
-
 		device->is_mounted = FALSE;
 	}
 
+	/* Open mtab */
 	fh = fopen (_PATH_MOUNTED, "r");
-	if (!fh) {
+	if (!fh) {		
     		return;
     	}
 
-	while (fgets(line, sizeof(line), fh)) {
+	while (fgets (line, sizeof(line), fh)) {
 		sscanf(line, "%s %s", devname, mntpoint);
     		device = g_hash_table_lookup (icon_view->details->devices_by_fsname, devname);
 
@@ -469,7 +521,7 @@ mount_devices_check_status (FMDesktopIconView *icon_view)
  * filesystems right.
  */
 static gboolean
-my_g_check_permissions (gchar *filename, int mode)
+check_permissions (gchar *filename, int mode)
 {
 	int euid = geteuid();
 	int egid = getegid();
@@ -501,7 +553,7 @@ my_g_check_permissions (gchar *filename, int mode)
 static gboolean
 mount_device_floppy_add (DeviceInfo *device)
 {
-	if (my_g_check_permissions (device->fsname, R_OK)) {
+	if (check_permissions (device->fsname, R_OK)) {
 		return FALSE;
 	}
 
@@ -513,7 +565,7 @@ mount_device_floppy_add (DeviceInfo *device)
 static gboolean
 mount_device_ext2_add (DeviceInfo *device)
 {
-	if (my_g_check_permissions (device->fsname, R_OK)) {		
+	if (check_permissions (device->fsname, R_OK)) {		
 		return FALSE;
 	}
 
@@ -533,11 +585,7 @@ cdrom_ioctl_frenzy (int fd)
 {
 	ioctl(fd, CDROM_CLEAR_OPTIONS, CDO_LOCK|CDO_AUTO_CLOSE | CDO_AUTO_EJECT);
 	ioctl(fd, CDROM_SET_OPTIONS, CDO_USE_FFLAGS | CDO_CHECK_TYPE);
-#ifdef CDROM_LOCKDOOR
 	ioctl(fd, CDROM_LOCKDOOR, 0);
-#else
-	#warning "Need Linux kernel >= 2.2.4 to work with IDE."
-#endif
 }
 
 
@@ -620,14 +668,13 @@ add_mount_device (FMDesktopIconView *icon_view, struct mntent *ent)
 		mounted = mount_device_ext2_add (newdev);
 	} else {
 		/* FIXME: Is this a reasonable way to report this error? */
-		g_message ("Unknown file system: %s", ent->mnt_type);
+		MESSAGE ("Unknown file system: %s", ent->mnt_type);
 	}
 	
 	if (mounted) {
 		icon_view->details->devices = g_list_append (icon_view->details->devices, newdev);
-		mount_device_add_aliases (icon_view, newdev->fsname, newdev);
-		/* FIXME: Remove messages when this code is done. */
-		g_message ("Device %s came through (type %s)", newdev->fsname, type_names[newdev->type]);
+		mount_device_add_aliases (icon_view, newdev->fsname, newdev);		
+		MESSAGE ("Device %s came through (type %s)", newdev->fsname, type_names[newdev->type]);
 	} else {
 		close (newdev->device_fd);
 		g_free (newdev->fsname);
@@ -636,23 +683,21 @@ add_mount_device (FMDesktopIconView *icon_view, struct mntent *ent)
 	}
 }
 
-#if 0
 static gboolean
-mntent_is_removable_fs(struct mntent *ent)
+mntent_is_removable_fs (struct mntent *ent)
 {
 	if (strcmp (ent->mnt_type, MOUNT_TYPE_ISO9660) == 0) {
 		return TRUE;
 	}
-
-#ifdef FLOPPY_SUPPORT
+	
 	if (!strncmp (ent->mnt_fsname, "/dev/fd", strlen("/dev/fd"))) {
 		return TRUE;
 	}
-#endif
-
+	
 	return FALSE;
 }
 
+#if 0
 static gboolean
 mntent_has_option(const char *optlist, const char *option)
 {
@@ -685,8 +730,7 @@ fm_desktop_find_mount_devices (FMDesktopIconView *icon_view, const char *fstab_p
 	g_return_if_fail (mef);
 
 	while ((ent = getmntent (mef))) {
-		/* FIXME: Remove messages when this code is done. */
-		g_message ("Checking device %s", ent->mnt_fsname);
+		MESSAGE ("Checking device %s", ent->mnt_fsname);
 
 #if 0
 		/* Think some more about these checks */
@@ -727,7 +771,7 @@ remove_mount_link (DeviceInfo *device)
 		result = gnome_vfs_unlink (device->link_uri);
 		if (result != GNOME_VFS_OK) {
 			/* FIXME: Is a message to the console acceptable here? */
-			g_message ("Unable to remove mount link: %s", gnome_vfs_result_to_string (result));
+			MESSAGE ("Unable to remove mount link: %s", gnome_vfs_result_to_string (result));
 		}
 		g_free (device->link_uri);
 		device->link_uri = NULL;
@@ -834,7 +878,7 @@ fm_desktop_place_home_directory (FMDesktopIconView *icon_view)
 		g_free (home_dir_uri);
 		if (result != GNOME_VFS_OK) {
 			/* FIXME: Is a message to the console acceptable here? */
-			g_message ("Unable to create home link: %s", gnome_vfs_result_to_string (result));
+			MESSAGE ("Unable to create home link: %s", gnome_vfs_result_to_string (result));
 		}
 	}
 	

@@ -63,14 +63,17 @@ typedef struct {
 	gboolean did_mount;
 } DeviceInfo;
 
-void	fm_desktop_remove_mount_links		(DeviceInfo             *device,
-						 FMDesktopIconView      *icon_view);
-void	fm_desktop_place_home_directory		(FMDesktopIconView      *icon_view);
-void	fm_desktop_rescan_floppy 		(GtkMenuItem 		*item, 
-						 FMDirectoryView 	*view);
-void	fm_desktop_free_device_info             (DeviceInfo             *device,
-						 FMDesktopIconView      *icon_view);
-void	fm_desktop_find_mount_devices        	(FMDesktopIconView      *icon_view,
-						 const char             *fstab_path);
+GList 		*fm_desktop_get_removable_list 		(void);
+void		fm_desktop_remove_mount_links		(DeviceInfo             *device,
+						 	 FMDesktopIconView      *icon_view);
+void		fm_desktop_place_home_directory		(FMDesktopIconView      *icon_view);
+void		fm_desktop_rescan_floppy 		(GtkMenuItem 		*item, 
+						 	 FMDirectoryView 	*view);
+void		fm_desktop_free_device_info             (DeviceInfo             *device,
+						 	 FMDesktopIconView      *icon_view);
+void		fm_desktop_find_mount_devices        	(FMDesktopIconView      *icon_view,
+						 	 const char             *fstab_path);
+void		fm_desktop_mount_unmount_removable 	(GtkMenuItem 		*item);
+gboolean	fm_desktop_volume_is_mounted 		(const char 		*mount_point);
 
 #endif

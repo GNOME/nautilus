@@ -33,6 +33,7 @@
 #include <fcntl.h>
 #include <gdk/gdkx.h>
 #include <gnome.h>
+#include <gtk/gtk.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
@@ -208,19 +209,52 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 		 create_background_context_menu_items, 
 		 (view, menu));
 
-	/* Add item to check floppy mount status */
+	/* Add Disks item to show state of removable volumes */
 	menu_item = gtk_menu_item_new ();
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
-	menu_item = gtk_menu_item_new_with_label (_("Rescan Floppy"));
-	gtk_signal_connect (GTK_OBJECT (menu_item),
-			    "activate",
-			    GTK_SIGNAL_FUNC (fm_desktop_rescan_floppy),
-			    view);
+	menu_item = gtk_menu_item_new_with_label (_("Disks"));
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
+	{
+		GtkMenu *sub_menu;
+		GList *disk_list;
+		GList *element;
+		GtkWidget *check_menu_item;
+		
+		/* Get a list containing the mount point of all removable volumes in fstab */
+		disk_list = fm_desktop_get_removable_list ();
+
+		/* Create submenu to place them in */
+		sub_menu = GTK_MENU (gtk_menu_new ());
+		gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item), GTK_WIDGET (sub_menu));
+
+		/* Iterate list and populate menu with removable volumes */
+		for (element = disk_list; element != NULL; element = element->next) {			
+			check_menu_item = gtk_check_menu_item_new_with_label (element->data);
+
+			/* Add check mark if volume is mounted */
+			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (check_menu_item), 
+							fm_desktop_volume_is_mounted (element->data));
+			
+			/* Add some data to the menu item for later mount operations */
+			gtk_object_set_data_full (GTK_OBJECT (check_menu_item), "mount_point",
+						  g_strdup (element->data), g_free);
+			
+			gtk_signal_connect (GTK_OBJECT (check_menu_item),
+			    "activate",
+			     GTK_SIGNAL_FUNC (fm_desktop_mount_unmount_removable),
+			     NULL);
+			     			
+			gtk_menu_append (sub_menu, check_menu_item);
+			gtk_widget_show (check_menu_item);
+			g_free (element->data);
+		}
+		g_list_free (disk_list);
+	}
+	
 	menu_item = gtk_menu_item_new ();
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
