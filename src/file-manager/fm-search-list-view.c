@@ -54,24 +54,21 @@ static void 	real_get_column_specification        (FMListView       *list_view,
 						      FMListViewColumn *specification);
 static void	real_merge_menus 		     (FMDirectoryView *view);
 static gboolean real_supports_properties 	     (FMDirectoryView *view);
+static void 	load_location_callback               (NautilusView *nautilus_view, 
+						      char *location);
 static void	real_update_menus 		     (FMDirectoryView *view);
-static void 	begin_loading_callback               (FMDirectoryView *view);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMSearchListView,
 				   fm_search_list_view,
 				   FM_TYPE_LIST_VIEW)
+
 static void
-begin_loading_callback (FMDirectoryView *view)
+load_location_callback (NautilusView *nautilus_view, char *location)
 {
 	char *human_string;
-	NautilusView *nautilus_view;
-	char *uri;
 	
-	uri = fm_directory_view_get_uri (view);
-
-	nautilus_view = fm_directory_view_get_nautilus_view (view);
-	
-	human_string = nautilus_search_bar_criterion_human_from_uri (uri);
+	human_string = nautilus_search_bar_criterion_human_from_uri (location);
 
 	nautilus_view_set_title (nautilus_view, human_string);
 
@@ -105,17 +102,18 @@ static void
 fm_search_list_view_initialize (gpointer object,
 				gpointer klass)
 {
+	NautilusView *nautilus_view;
 	FMDirectoryView *directory_view;
+ 
+ 	g_assert (GTK_BIN (object)->child == NULL);
+ 
+ 	directory_view = FM_DIRECTORY_VIEW (object);
 
+	nautilus_view = fm_directory_view_get_nautilus_view (directory_view);
 
-	g_assert (GTK_BIN (object)->child == NULL);
-
-	directory_view = FM_DIRECTORY_VIEW (object);
-
-
-	gtk_signal_connect (GTK_OBJECT(directory_view),
-			    "begin_loading",
-			    GTK_SIGNAL_FUNC (begin_loading_callback),
+	gtk_signal_connect (GTK_OBJECT(nautilus_view),
+			    "load_location",
+			    GTK_SIGNAL_FUNC (load_location_callback),
 			    NULL);
 
 }
