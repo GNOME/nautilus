@@ -1431,7 +1431,8 @@ nautilus_sidebar_tabs_connect_view (NautilusSidebarTabs *sidebar_tabs, GtkWidget
 	if (property_bag != CORBA_OBJECT_NIL) {
 		tab_item->listener = bonobo_event_source_client_add_listener_full
 			(property_bag,
-			 g_cclosure_new (G_CALLBACK (tab_indicator_changed_callback), sidebar_tabs, NULL), 
+			 g_cclosure_new (G_CALLBACK (tab_indicator_changed_callback),
+					 sidebar_tabs, NULL), 
 			 "Bonobo/Property:change:tab_image", NULL); 
 		bonobo_object_release_unref (property_bag, NULL);
 	}

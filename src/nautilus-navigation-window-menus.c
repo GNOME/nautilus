@@ -869,7 +869,7 @@ create_menu_item_from_node (NautilusWindow *window,
 
 	if (strcmp (node->name, "bookmark") == 0) {
 		bookmark = nautilus_bookmark_new_from_node (node);
-		append_bookmark_to_menu (window, bookmark, menu_path, *index, TRUE);		
+		append_bookmark_to_menu (window, bookmark, menu_path, *index, TRUE);
 		g_object_unref (bookmark);
 	} else if (strcmp (node->name, "separator") == 0) {
 		append_separator (window, menu_path);
@@ -1003,7 +1003,9 @@ refresh_bookmarks_menu (NautilusWindow *window)
 	/* Unregister any pending call to this function. */
 	nautilus_window_remove_bookmarks_menu_callback (window);
 
+	g_object_ref (G_OBJECT (window));
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
+
 	nautilus_window_remove_bookmarks_menu_items (window);				
 
 	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS)) {
@@ -1011,7 +1013,9 @@ refresh_bookmarks_menu (NautilusWindow *window)
 	}
 
 	append_dynamic_bookmarks (window);
+
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
+	g_object_unref (G_OBJECT (window));
 }
 
 /**

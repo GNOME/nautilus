@@ -94,21 +94,6 @@ list_selection_changed_callback (GtkTreeSelection *selection, gpointer user_data
 	fm_directory_view_notify_selection_changed (view);
 }
 
-static void
-list_activate_callback (GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewColumn *column, gpointer user_data)
-{
-	FMDirectoryView *view;
-	GList *file_list;
-	
-	view = FM_DIRECTORY_VIEW (user_data);
-
-	if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_DOUBLE) {
-		file_list = fm_list_view_get_selection (view);
-		fm_directory_view_activate_files (view, file_list);
-		nautilus_file_list_free (file_list);
-	}
-}
-
 /* Move these to eel? */
 
 static void
@@ -141,9 +126,17 @@ tree_view_has_selection (GtkTreeView *view)
 static void
 event_after_callback (GtkWidget *widget, GdkEventAny *event, gpointer callback_data)
 {
+	GList *file_list;
 	FMDirectoryView *view;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
+
+	if (event->type == GDK_2BUTTON_PRESS &&
+	    click_policy_auto_value == NAUTILUS_CLICK_POLICY_DOUBLE) {
+		file_list = fm_list_view_get_selection (view);
+		fm_directory_view_activate_files (view, file_list);
+		nautilus_file_list_free (file_list);
+	}
 
 	if (event->type == GDK_BUTTON_PRESS
 	    && event->window == gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget))
@@ -300,8 +293,6 @@ create_and_set_up_tree_view (FMListView *view)
 				 "changed",
 				 G_CALLBACK (list_selection_changed_callback), view, 0);
 
-	g_signal_connect_object (view->details->tree_view, "row_activated",
-				 G_CALLBACK (list_activate_callback), view, 0);
 	g_signal_connect_object (view->details->tree_view, "event-after",
 				 G_CALLBACK (event_after_callback), view, 0);
 	g_signal_connect_object (view->details->tree_view, "button_press_event",

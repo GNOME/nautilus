@@ -1,3 +1,18 @@
+2002-05-21  Michael Meeks  <michael@ximian.com>
+
+	* src/file-manager/fm-list-view.c
+	(list_activate_callback): move this code
+	(event_after_callback): into here, it seems we get
+	the event after the callback whether handled or not.
+	(create_and_set_up_tree_view): unhook list_activate.
+
+2002-05-20  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-window-menus.c
+	(refresh_bookmarks_menu): hold refs on the window,
+	in case we re-enter during bookmark build and destroy
+	it.
+
 2002-05-20  Alex Graveley  <alex@ximian.com>
 
 	* libnautilus-private/nautilus-link-desktop-file.c
