@@ -1103,7 +1103,7 @@ map_pixbuf (NautilusIconCanvasItem *icon_item)
 					 0, 0,
 					 gdk_pixbuf_get_width (temp_pixbuf),
 					 gdk_pixbuf_get_height(temp_pixbuf),
-					 4, 4,
+					 0, 0,
 					 canvas->pixels_per_unit,
 					 canvas->pixels_per_unit,
 					 GDK_INTERP_BILINEAR, 0xFF);

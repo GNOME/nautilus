@@ -1,3 +1,18 @@
+2000-08-11  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar-tabs.c: (draw_or_layout_all_tabs):
+	fixed "hole" in sidebar tabs in the arlo theme by using gdk_pixbuf_composite
+	instead of gdk_pixbuf_copy_area for the edge pieces, so the alpha gets used instead
+	of copied.
+	
+	* src/nautilus-sidebar.c: (nautilus_sidebar_motion_event):
+	fixed bug where tabs were stay prelighted if you moved the mouse out quickly enough;
+	fixed by setting the prelight state even when we're outside of the tabs
+		
+	* libnautilus-extensions/nautilus-icon-canvas-item.c: (map_pixbuf):
+	fixed a problem drawing the audio preview icon now that I understand how
+	composite works better
+
 2000-08-11  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:

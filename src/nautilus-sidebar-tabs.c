@@ -783,7 +783,7 @@ draw_or_layout_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean layout_only
 	int		piece_width, text_h_offset;
 	int		end_piece_width;
 	
-	gboolean	is_themed;
+	gboolean	is_themed, changed_rows, needs_compositing;
 	gboolean	first_flag, prev_invisible;
 	
 	g_assert (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
@@ -887,7 +887,10 @@ draw_or_layout_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean layout_only
 	
 		/* finish drawing the right edge */
 		if (is_themed) {	
-			if (y_pos != last_y_pos && this_item != NULL /* && this_item->visible */) {
+			changed_rows = y_pos != last_y_pos;
+			needs_compositing = FALSE;
+			
+			if (changed_rows && this_item != NULL /* && this_item->visible */) {
 				if (prev_item->prelit) {
 					tab_select = TAB_PRELIGHT_RIGHT;
 					extra_fill = TAB_PRELIGHT_FILL;
@@ -911,9 +914,10 @@ draw_or_layout_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean layout_only
 						cur_x_pos += extra_width;
 					}
 				}
-			} else if ((this_item == NULL) || !this_item->visible)
+			} else if ((this_item == NULL) || !this_item->visible) {
 				tab_select = prev_item->prelit ? TAB_PRELIGHT_EDGE : TAB_NORMAL_EDGE;
-			else {
+				needs_compositing = TRUE;
+			} else {
 				if (prev_item->prelit) {
 					tab_select = TAB_PRELIGHT_NEXT;
 				} else if (this_item->prelit) {
@@ -923,26 +927,44 @@ draw_or_layout_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean layout_only
 				}
 			}	
 			if (!prev_item->visible)
-				tab_select = ((y_pos == last_y_pos) && this_item) ? TAB_NORMAL_LEFT : -1;
+				tab_select = (!changed_rows && this_item) ? TAB_NORMAL_LEFT : -1;
 			
 			if (tab_select >= 0) {	
-				if (!layout_only)
-					piece_width = draw_tab_piece_aa (sidebar_tabs, tab_pixbuf,  
+				if (!layout_only) {
+					if (needs_compositing) {
+						GdkPixbuf *temp_pixbuf = sidebar_tabs->details->tab_piece_images[tab_select];
+						int dest_x = last_x_pos + tab_width - widget->allocation.x;
+						int dest_y = last_y_pos - widget->allocation.y;
+						
+						gdk_pixbuf_composite (temp_pixbuf, tab_pixbuf,
+							dest_x,
+							dest_y,
+							gdk_pixbuf_get_width (temp_pixbuf),
+							gdk_pixbuf_get_height (temp_pixbuf),
+							dest_x,
+							dest_y,
+							1.0, 1.0,
+							GDK_INTERP_BILINEAR,
+							0xFF);	
+					} else {
+						piece_width = draw_tab_piece_aa (sidebar_tabs, tab_pixbuf,  
 									last_x_pos + tab_width - widget->allocation.x, 
 									last_y_pos - widget->allocation.y, -1, 
 									tab_select);
-				else
+					}
+				} else {
 					piece_width = 0;
+				}
 				prev_item->tab_rect.width = last_x_pos + tab_width + piece_width - prev_item->tab_rect.x;
 			} else {
 				piece_width = 0;
 			}	
-			if (y_pos == last_y_pos)
+			if (!changed_rows)
 				x_pos += piece_width;
 		}
 	}  
 	
-	/* draw the off-screen buffer to the screen if necessary, then release it */
+	/* draw the off-screen buffer to the screen, then release it */
 	if (!layout_only) {
 		gdk_gc_unref(temp_gc);
 		if (is_themed) {

@@ -874,12 +874,14 @@ nautilus_sidebar_motion_event (GtkWidget *widget, GdkEventMotion *event)
 
 	gtk_widget_get_pointer(widget, &x, &y);
 	
-	/* if the click is in the main tabs, tell them about it */
+	/* if the motion is in the main tabs, tell them about it */
 	sidebar_tabs = sidebar->details->sidebar_tabs;
 	if (y >= GTK_WIDGET (sidebar_tabs)->allocation.y) {
 		which_tab = nautilus_sidebar_tabs_hit_test (sidebar_tabs, x, y);
 		nautilus_sidebar_tabs_prelight_tab (sidebar_tabs, which_tab);
-	}
+	} else
+		nautilus_sidebar_tabs_prelight_tab (sidebar_tabs, -1);
+	
 
 	/* also handle prelighting in the title tab if necessary */
 	if (sidebar->details->selected_index >= 0) {
