@@ -188,6 +188,8 @@ static void	goto_update_cb				(GtkWidget			*button,
 static void	register_button_cb			(GtkWidget			*button,
 							 NautilusSummaryView		*view);
 static gboolean	am_i_logged_in				(NautilusSummaryView		*view);
+static gint	logged_in_callback			(gpointer			raw);
+static gint	logged_out_callback			(gpointer			raw);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, GTK_TYPE_EVENT_BOX)
 
@@ -812,6 +814,7 @@ static void
 authn_cb_succeeded (const EazelProxy_User *user, gpointer state, CORBA_Environment *ev)
 {
 	NautilusSummaryView    *view;
+	gint			timeout;
 
 	view = NAUTILUS_SUMMARY_VIEW (state);
 
@@ -821,7 +824,7 @@ authn_cb_succeeded (const EazelProxy_User *user, gpointer state, CORBA_Environme
 	gtk_widget_set_sensitive (view->details->login_button, TRUE);
 	
 	g_message ("Login succeeded");
-	view->details->logged_in = TRUE;
+	timeout = gtk_timeout_add (100, logged_in_callback, view);
 
 	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 	g_print ("finish success callback\n");
@@ -901,17 +904,6 @@ login_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 		g_free (password);
 
 	}
-	while (view->details->logged_in != TRUE && CORBA_Object_non_existent (view->details->user_control, &ev) != TRUE) {
-		g_print ("foo");
-		gtk_main_iteration ();
-	}
-	/* dispose of startup form that was shown */
-	gtk_widget_destroy (view->details->form);
-	view->details->form = NULL;
-
-
-	g_print ("bar");
-	generate_startup_form (view);
 	
 	CORBA_exception_free (&ev);
 
@@ -921,10 +913,10 @@ login_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 static void
 logout_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 {
-	CORBA_Environment ev;
-	EazelProxy_UserList *users;
-	CORBA_unsigned_long i;
-
+	CORBA_Environment	ev;
+	EazelProxy_UserList	*users;
+	CORBA_unsigned_long	i;
+	gint			timeout;
 	CORBA_exception_init (&ev);
 
 	if (CORBA_OBJECT_NIL != view->details->user_control) {
@@ -958,7 +950,7 @@ logout_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 		CORBA_free (users);
 	}
 
-/*	go_to_uri (view->details->nautilus_view, "eazel-inventory:"); */
+	timeout = gtk_timeout_add (100, logged_out_callback, view);
 
 	CORBA_exception_free (&ev);
 }
@@ -992,6 +984,40 @@ am_i_logged_in (NautilusSummaryView	*view)
 	CORBA_exception_free (&ev);
 	return rv;
 } /* end am_i_logged_in */
+
+static gint
+logged_in_callback (gpointer	raw)
+{
+
+	NautilusSummaryView	*view;
+
+	view = NAUTILUS_SUMMARY_VIEW (raw);
+	view->details->logged_in = TRUE;
+	/* dispose of startup form that was shown */
+	gtk_widget_destroy (view->details->form);
+	view->details->form = NULL;
+
+	generate_startup_form (view);
+
+	return (FALSE);
+}
+
+static gint
+logged_out_callback (gpointer	raw)
+{
+
+	NautilusSummaryView	*view;
+
+	view = NAUTILUS_SUMMARY_VIEW (raw);
+	view->details->logged_in = FALSE;
+	/* dispose of startup form that was shown */
+	gtk_widget_destroy (view->details->form);
+	view->details->form = NULL;
+
+	generate_startup_form (view);
+
+	return (FALSE);
+}
 
 /* callback to handle the maintenance button.  Right now only does a simple redirect. */
 static void

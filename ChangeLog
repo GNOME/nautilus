@@ -1,3 +1,12 @@
+2000-09-19  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (authn_cb_succeeded), (login_button_cb), (logout_button_cb),
+	(logged_in_callback), (logged_out_callback):
+
+	Removed the evil gtk_main_iteration crap so that the logged in state
+	is much more reliable.  Hokked up the logout button to do the right thing.
+
 2000-09-19  Michael Engber  <engber@eazel.com>
 
 	First cut at speeding up background drawing. Images now scaled
