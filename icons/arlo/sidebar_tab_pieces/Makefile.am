@@ -1,6 +1,8 @@
+NULL=
+
 arlotabdir = $(datadir)/pixmaps/nautilus/arlo/sidebar_tab_pieces
 
-arlo_tab_DATA =					\
+arlotab_DATA = \
 	fill-active.png				\
 	fill-empty-space.png			\
 	fill-prelight.png			\
@@ -15,6 +17,7 @@ arlo_tab_DATA =					\
 	right-empty-space.png			\
 	right-top-active.png			\
 	right-top-prelight.png			\
-	right-top.png
+	right-top.png				\
+	$(NULL)
 		
-EXTRA_DIST = $(arlo_tab_DATA)
+EXTRA_DIST = $(arlotab_DATA)
