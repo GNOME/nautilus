@@ -27,11 +27,12 @@
 #include <sys/un.h>
 #include <fcntl.h>
 #include <unistd.h>
-
+#include <gtk/gtkmain.h>
+#include <gdk/gdk.h>
 #include <libgnomevfs/gnome-vfs-types.h>
-#include <pthread.h>
 #include <nautilus-directory-private.h>
 #include <medusa-search-service.h>
+#include <glib.h>
 
 #include "nautilus-search-async.h"
 
@@ -39,20 +40,15 @@
 #include <config.h>
 #endif
 
-/* FIXME:  use class macros for search thread closure */
-typedef struct {
-	pthread_t *thread;
-	pthread_attr_t thread_attributes;
-	char *search_uri;
-} NautilusSearchThreadClosure;
 
 
-
-
-static void *           run_search                        (void *data);
+static GnomeVFSResult   request_search                    (char *search_uri);
 static int              initialize_socket                 (struct sockaddr_un *daemon_address);
 static int              get_key_from_cookie               (void);
-static void             parse_results                     (char *transmission);
+void                    parse_results                     (char *transmission);
+static void             search_results_received_callback  (GIOChannel *source,
+							   GIOCondition condition,
+							   gpointer data);
 
 /* this procedure is meant to mimic the behavior of the
    async load directory uri calls, so it takes
@@ -63,47 +59,37 @@ nautilus_async_medusa_search (GnomeVFSAsyncHandle **handle_return,
 			      GnomeVFSAsyncDirectoryLoadCallback callback,
 			      gpointer data)
 {
-	NautilusSearchThreadClosure *search_data;
+	GnomeVFSResult result;
 
 	g_return_val_if_fail (handle_return != NULL, GNOME_VFS_ERROR_BADPARAMS);
 	g_return_val_if_fail (search_uri_text != NULL, GNOME_VFS_ERROR_BADPARAMS);
 	g_return_val_if_fail (nautilus_uri_is_search_uri (search_uri_text) == TRUE,
 			      GNOME_VFS_ERROR_BADPARAMS);
 
-	search_data = g_new (NautilusSearchThreadClosure, 1);
+	/* the sending of the request is done synchronously,
+	   and the nautilus receives the results over a channel. */
+	result = request_search (search_uri_text);
 	
-	pthread_attr_init (&search_data->thread_attributes);
-	pthread_attr_setdetachstate (&search_data->thread_attributes,
-				     PTHREAD_CREATE_DETACHED);
-	search_data->search_uri = g_strdup (search_uri_text);
-	if (pthread_create (search_data->thread, 
-			    &search_data->thread_attributes,
-			    run_search, search_data) != 0) {
-		g_warning ("Impossible to allocate a new Search thread.");
-		return GNOME_VFS_ERROR_INTERNAL;
-	}
-	/* FIXME:  This has to get freed somewhere */
-	/* g_free (search_data); */
-	return GNOME_VFS_OK;
+	return result;
 }
 
-static void *
-run_search (void *data) 
+static GnomeVFSResult
+request_search (char *search_uri) 
 {
-	NautilusSearchThreadClosure *closure;
 	int search_request_port;
 	struct sockaddr_un *server_address;
 	char cookie_request[MAX_LINE];
 	char request_field[MAX_LINE];
-	char results[MAX_LINE];
 	int key;
+	GIOChannel *result_channel;
 
 	
-	closure = (NautilusSearchThreadClosure *) data;
 	printf ("help!! I'm trying to run a search!\n");
-
-	g_return_val_if_fail (closure->search_uri != NULL, NULL);
-	g_return_val_if_fail (nautilus_uri_is_search_uri (closure->search_uri), NULL);
+	/* FIXME:  This crap will be replaced by
+	   the new medusa search service API */
+	g_return_val_if_fail (search_uri != NULL, GNOME_VFS_ERROR_INVALIDURI);
+	g_return_val_if_fail (nautilus_uri_is_search_uri (search_uri), 
+			      GNOME_VFS_ERROR_INVALIDURI);
 
 
 	/* For now run a dummy search */
@@ -113,7 +99,9 @@ run_search (void *data)
 	/* Send request for cookie */
 	sprintf (cookie_request, "%s\t%d\t%d\n", COOKIE_REQUEST, getuid (), getpid());
 	printf ("Sending %s\n", cookie_request);
-	write (search_request_port, cookie_request, strlen (cookie_request));
+	g_return_val_if_fail (write (search_request_port, cookie_request, 
+				     strlen (cookie_request)) > 0,
+			      GNOME_VFS_ERROR_DIRECTORYBUSY);
 
 	
 
@@ -123,18 +111,25 @@ run_search (void *data)
 	
 	printf ("Sending %s", request_field);
 	g_return_val_if_fail (write (search_request_port, request_field, 
-				     strlen(request_field)) > 0, NULL);
+				     strlen(request_field)) > 0, 
+			      GNOME_VFS_ERROR_DIRECTORYBUSY);
 	
 	memset (request_field, 0, MAX_LINE);
 	sprintf (request_field,"%d %d %d\tDONE\n", getuid (), getpid (), key);
+	g_return_val_if_fail (write (search_request_port, request_field, 
+				     strlen(request_field)) > 0, 
+			      GNOME_VFS_ERROR_DIRECTORYBUSY);
+	
+	/* Results are gotten in a different place */
+	/* Set up a watch on the result socket */
+	/* FIXME:  Is there a right macro here for these function casts? */
+	result_channel = g_io_channel_unix_new (search_request_port);
+	g_io_add_watch (result_channel,
+			G_IO_IN,
+			(GIOFunc) search_results_received_callback,
+			search_uri);
 
-
-	/* Wait for results */
-	for (; ;) {
-		read (search_request_port, results, MAX_LINE);
-		parse_results (results);
-  }
-	return NULL;
+	return GNOME_VFS_OK;
 }
 
 
@@ -184,7 +179,7 @@ get_key_from_cookie ()
 
 
 
-static void
+void
 parse_results (char *transmission)
 {
   char *line;
@@ -203,3 +198,16 @@ parse_results (char *transmission)
     line++;
   }
 }
+
+static void
+search_results_received_callback (GIOChannel *source,
+				  GIOCondition condition,
+				  gpointer data)
+{
+	
+	g_assert (condition == G_IO_IN);
+	/* Make sure source is a valid file descriptor */
+	printf ("Received search results\n");
+
+}
+
