@@ -1,3 +1,17 @@
+2001-01-15  J Shane Culpepper  <pepper@eazel.com>
+
+	reviewed by: Michael Engber <engber@eazel.com>
+
+	* src/nautilus-application.c: (nautilus_application_startup):
+	* src/nautilus-application.h:
+	* src/nautilus-first-time-druid.c: (druid_finished):
+	* src/nautilus-main.c: (main):
+
+	Fix for bug #1555.  There is already an error dialog but there
+	was an infinite loop problem hiding it.  If the first time druid
+	failed to create .nautilus, etc it would just run over and over
+	again.
+
 2001-01-15  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 5635, RPM view crashed if click "Install"

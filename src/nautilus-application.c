@@ -333,6 +333,7 @@ nautilus_application_startup (NautilusApplication *application,
 			      gboolean restart_shell,
 			      gboolean start_desktop,
 			      gboolean no_default_window,
+			      gboolean do_first_time_druid_check,
 			      const char *geometry,
 			      const char *urls[])
 {
@@ -350,7 +351,7 @@ nautilus_application_startup (NautilusApplication *application,
 	}
 
 	/* Run the first time startup druid if needed. */
-	if (need_to_show_first_time_druid ()) {
+	if (do_first_time_druid_check && need_to_show_first_time_druid ()) {
 		nautilus_first_time_druid_show (application, start_desktop, urls);
 		return;
 	}

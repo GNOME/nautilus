@@ -44,6 +44,7 @@
 #include <libnautilus-extensions/nautilus-radio-button-group.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-user-level-manager.h>
+#include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <nautilus-main.h>
 #include <netdb.h>
 #include <string.h>
@@ -174,12 +175,6 @@ druid_finished (GtkWidget *druid_page)
 	
 	user_main_directory = nautilus_get_user_main_directory ();
 
-	/* FIXME bugzilla.eazel.com 1555:
-	 * Need to post a error dialog if the user's main directory was not created
-	 */
-	if (!g_file_exists (user_main_directory)) {
-		g_warning ("Need to post a error dialog since the user's main directory was not created");
-	}
 	g_free (user_main_directory);
 
 	/* write out the first time file to indicate that we've successfully traversed the druid */
@@ -221,7 +216,7 @@ druid_finished (GtkWidget *druid_page)
 	signup_uris[1] = NULL;
 	
 	nautilus_application_startup (save_application, FALSE, FALSE, save_manage_desktop, 
-				      FALSE, NULL, (signup_uris[0] != NULL) ? signup_uris : NULL);
+				      FALSE, FALSE, NULL, (signup_uris[0] != NULL) ? signup_uris : NULL);
 	
 	/* Destroy druid last because it may be the only thing keeping the main event loop alive. */
 	gtk_widget_destroy (gtk_widget_get_toplevel (druid_page));
