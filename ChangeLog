@@ -1,5 +1,13 @@
 2002-01-15  Darin Adler  <darin@bentspoon.com>
 
+	* configure.in: Bump required eel version number. Get rid of
+	ORBIT_REQUIRED.
+
+	* libnautilus/Makefile.am: Remove unneeded "-I$(builddir)" since
+	it is screwing up "make distcheck".
+
+2002-01-15  Darin Adler  <darin@bentspoon.com>
+
 	* src/Makefile.am:
 	* src/nautilus-profiler.c:
 	Do an ifdef in the profiler code rather than in the makefile.
