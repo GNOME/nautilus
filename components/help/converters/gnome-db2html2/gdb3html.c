@@ -1,6 +1,7 @@
 #include "gdb3html.h"
 #include "toc-elements.h"
 #include "sect-elements.h"
+#include "sect-preparse.h"
 #include "gnome.h"
 
 #if 0
@@ -357,17 +358,25 @@ parse_file (gchar *filename, gchar *section)
 
 	if (section) {
 		context->target_section = g_strdup (section);
-		context->elements = sect_elements;
+		context->elements = sect_preparse;
 		context->data = sect_init_data ();
 		context->base_file = g_strdup (filename);
+
+		if (xmlSAXUserParseFile (&parser, context, context->base_file) < 0) {
+			g_error ("error\n");
+		};
+		context->elements = sect_elements;
+		if (xmlSAXUserParseFile (&parser, context, context->base_file) < 0) {
+			g_error ("error\n");
+		};
 	} else {
 		context->elements = toc_elements;
 		context->data = toc_init_data ();
 		context->base_file = g_strdup (filename);
+		if (xmlSAXUserParseFile (&parser, context, context->base_file) < 0) {
+			g_error ("error\n");
+		};
 	}
-	if (xmlSAXUserParseFile (&parser, context, context->base_file) < 0) {
-		g_print ("error\n");
-	};
 }
 
 int
@@ -375,8 +384,6 @@ main (int argc, char *argv[])
 {
 	gchar *section = NULL;
 	gchar *ptr;
-
-//	gnome_init ("gnome-db2html2", "0.1", argc, argv);
 
 	if (argc != 2) {
 		g_print ("Usage:  gnome-db2html2 FILE[#SECTIONID]\n\n");

@@ -50,7 +50,9 @@ typedef enum ElementIndex {
 	IMPORTANT, /* 40 */
 	NOTE,
 	CDATA,
-	UNDEFINED /* 43 */
+	SCREENSHOT,
+	SCREENINFO,
+	UNDEFINED /* 45 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;

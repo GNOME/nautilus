@@ -15,5 +15,7 @@ gnome_db2html2_SOURCES = \
 	gdb3html.h \
 	sect-elements.c \
 	sect-elements.h \
+	sect-preparse.c \
+	sect-preparse.h \
 	toc-elements.c \
 	toc-elements.h

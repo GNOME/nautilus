@@ -6,6 +6,24 @@
 extern ElementInfo sect_elements[];
 
 gpointer sect_init_data (void);
-void sect_article_end_element (Context *context, const gchar *name);
+
+typedef enum SectContextState {
+	LOOKING_FOR_SECT,
+	LOOKING_FOR_SECT_TITLE,
+	IN_SECT,
+	LOOKING_FOR_POST_SECT,
+	DONE_WITH_SECT
+} SectContextState;
+
+typedef struct _SectContext SectContext;
+struct _SectContext {
+	HeaderInfo *header;
+	gchar *prev;
+	gchar *previd;
+	SectContextState state;
+	GHashTable *title_hash;
+	/* A list full of GStrings. */
+	GList *footnotes;
+};
 
 #endif

@@ -3,26 +3,9 @@
 #include "gnome.h"
 
 #define IS_IN_SECT(context) (((SectContext *)context->data)->state == IN_SECT)
-typedef enum SectContextState {
-	LOOKING_FOR_SECT,
-	LOOKING_FOR_SECT_TITLE,
-	IN_SECT,
-	LOOKING_FOR_POST_SECT,
-	DONE_WITH_SECT
-} SectContextState;
-
-typedef struct _SectContext SectContext;
-struct _SectContext {
-	HeaderInfo *header;
-	gchar *prev;
-	gchar *previd;
-	SectContextState state;
-	/* A list full of GStrings. */
-	GList *footnotes;
-};
-
 
 static void sect_write_characters (Context *context, const gchar *chars, int len);
+static void sect_article_end_element (Context *context, const gchar *name);
 static void sect_sect_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 static void sect_sect_end_element (Context *context, const gchar *name);
 static void sect_para_start_element (Context *context, const gchar *name, const xmlChar **atrs);
@@ -105,6 +88,8 @@ sect_init_data (void)
 	SectContext *retval = g_new0 (SectContext, 1);
 	retval->header = g_new0 (HeaderInfo, 1);
 	retval->state = LOOKING_FOR_SECT;
+	retval->title_hash = g_hash_table_new (g_str_hash,
+					       g_str_equal);
 	return (gpointer) retval;
 }
 
@@ -119,7 +104,7 @@ sect_write_characters (Context *context,
 	write_characters (context, chars, len);
 }
 
-void
+static void
 sect_article_end_element (Context *context, const gchar *name)
 {
 	if (context->footnotes) {
@@ -647,6 +632,7 @@ sect_xref_start_element (Context *context,
 			const xmlChar **atrs)
 {
 	gchar **atrs_ptr;
+	gchar *title = NULL;
 
 	if (!IS_IN_SECT (context))
 		return;
@@ -661,7 +647,14 @@ sect_xref_start_element (Context *context,
 		}
 		atrs_ptr += 2;
 	}
-	g_print ("\">the section here</A>");
+
+	if (*atrs_ptr)
+		title = g_hash_table_lookup (((SectContext *)context->data)->title_hash, *atrs_ptr);
+
+	if (title == NULL)
+		g_print ("\">the section here</A>");
+	else
+		g_print ("\">the section <EM>%s</EM></A>", title);
 }
 
 static void
