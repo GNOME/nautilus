@@ -18,12 +18,12 @@ static void fmt_man_populate_tree(HyperbolaDocTree *tree);
 
 static void fmt_info_populate_tree(HyperbolaDocTree *tree);
 
-static void fmt_ghelp_populate_tree(HyperbolaDocTree *tree);
+static void fmt_help_populate_tree(HyperbolaDocTree *tree);
 
 static void make_treesection(HyperbolaDocTree *tree, char **path);
 
 static FormatHandler format_handlers[] = {
-  {"ghelp", fmt_ghelp_populate_tree},
+  {"help", fmt_help_populate_tree},
   {"man", fmt_man_populate_tree},
   {"info", fmt_info_populate_tree},
   {NULL, NULL}
@@ -565,9 +565,9 @@ fmt_info_populate_tree(HyperbolaDocTree *tree)
   fmt_free_tree_info(tree);
 }
 
-/******* ghelp: ******/
+/******* help: ******/
 static void
-fmt_ghelp_populate_tree_from_subdir(HyperbolaDocTree *tree, const char *dirname, char **defpath)
+fmt_help_populate_tree_from_subdir(HyperbolaDocTree *tree, const char *dirname, char **defpath)
 {
   DIR *dirh;
   struct dirent *dent;
@@ -599,7 +599,7 @@ fmt_ghelp_populate_tree_from_subdir(HyperbolaDocTree *tree, const char *dirname,
       if(!g_file_exists(afile))
 	continue;
 
-      g_snprintf(uribuf, sizeof(uribuf), "ghelp:%s", dent->d_name);
+      g_snprintf(uribuf, sizeof(uribuf), "help:%s", dent->d_name);
 
       hyperbola_doc_tree_add(tree, HYP_TREE_NODE_BOOK, (const char **)defpath, dent->d_name, uribuf);
 
@@ -641,7 +641,7 @@ fmt_ghelp_populate_tree_from_subdir(HyperbolaDocTree *tree, const char *dirname,
 	      else
 		ctmp = NULL;
 
-	      g_snprintf(uribuf, sizeof(uribuf), "ghelp:%s/%s", dent->d_name, pieces[0]);
+	      g_snprintf(uribuf, sizeof(uribuf), "help:%s/%s", dent->d_name, pieces[0]);
 
 	      if(ctmp)
 		{
@@ -666,7 +666,7 @@ fmt_ghelp_populate_tree_from_subdir(HyperbolaDocTree *tree, const char *dirname,
 }
 
 static void
-fmt_ghelp_populate_tree(HyperbolaDocTree *tree)
+fmt_help_populate_tree(HyperbolaDocTree *tree)
 {
   char *app_path[] = {N_("Applications"), NULL};
   char *dirname;
@@ -677,6 +677,6 @@ fmt_ghelp_populate_tree(HyperbolaDocTree *tree)
   dirname = gnome_datadir_file("gnome/help");
 
   if(dirname)
-    fmt_ghelp_populate_tree_from_subdir(tree, dirname, app_path);
+    fmt_help_populate_tree_from_subdir(tree, dirname, app_path);
   g_free(dirname);
 }
