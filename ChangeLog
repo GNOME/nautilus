@@ -1,5 +1,32 @@
 2000-05-10  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-file.c: (nautilus_file_rename):
+	(nautilus_file_set_permissions): Changed to do both rename and set
+	permissions with an interface that will work for async. Also
+	improved the handling of deleted files, empty-string names, and
+	files you can't change permissions on: they are considering
+	runtime errors instead of coding mistakes now. Also send out
+	file_changed even if the call fails.
+	
+	* src/file-manager/fm-error-reporting.h:
+	* src/file-manager/fm-error-reporting.c: (show_error_message_box),
+	(fm_report_error_renaming_file),
+	(fm_report_error_setting_permissions): Simplified interface to
+	these calls. Now we don't require the caller to pass anything we
+	can compute ourselves and you can call these with GNOME_VFS_OK
+	and they will do nothing. Also merged common code to put up the
+	error message box into a helper function.
+	
+	* src/file-manager/fm-icon-view.c: (rename_callback),
+	(fm_icon_view_icon_text_changed_callback):
+	* src/file-manager/fm-properties-window.c: (rename_callback),
+	(name_field_done_editing), (permission_change_callback),
+	(permissions_check_button_toggled):
+	Updated callers to use the new calls.
+
+2000-05-10  Darin Adler  <darin@eazel.com>
+
 	* fm-icon-view.c: (update_layout_menus), (sort_callback),
 	(manual_layout_callback), (fm_icon_view_merge_menus),
 	(update_one_menu_item), (fm_icon_view_update_menus),

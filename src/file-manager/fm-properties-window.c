@@ -102,6 +102,8 @@ enum {
 	COLUMN_COUNT
 };
 
+static void name_field_update_to_match_file (NautilusEntry *name_field);
+
 static void
 add_prompt (GtkVBox *vbox, const char *prompt_text, gboolean pack_at_start)
 {
@@ -192,48 +194,41 @@ create_pixmap_widget_for_file (NautilusFile *file)
 }
 
 static void
+rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
+{
+	char *new_name;
+
+	new_name = callback_data;
+
+	/* Complain to user if rename failed. */
+	fm_report_error_renaming_file (file, new_name, result);
+	
+	g_free (new_name);
+}
+
+static void
 name_field_done_editing (NautilusEntry *name_field)
 {
 	NautilusFile *file;
-	GnomeVFSResult rename_result;
-	const char *new_name;
-	char *original_name;
-	gboolean empty_name;
+	char *new_name;
 	
 	g_assert (NAUTILUS_IS_ENTRY (name_field));
 
 	file = gtk_object_get_data (GTK_OBJECT (name_field), "nautilus_file");
 
 	g_assert (NAUTILUS_IS_FILE (file));
-	if (nautilus_file_is_gone (file)) {
-		return;
-	}
 
 	new_name = gtk_entry_get_text (GTK_ENTRY (name_field));
 
 	/* Special case: silently revert text if new text is empty. */
 	if (strlen (new_name) == 0) {
-		empty_name = TRUE;
+		name_field_update_to_match_file (NAUTILUS_ENTRY (name_field));
 	} else {
-		rename_result = nautilus_file_rename (file, new_name);
-
-		if (rename_result == GNOME_VFS_OK) {
-			return;
-		}
-	}	
-
-	/* Rename failed; restore old name, complain to user. */
-	original_name = nautilus_file_get_name (file);
-	gtk_entry_set_text (GTK_ENTRY (name_field), original_name);
-
-
-	if (!empty_name) {
-		fm_report_error_renaming_file (original_name,
-			 		       new_name,
-			 		       rename_result);
+		nautilus_file_rename (file, new_name,
+				      rename_callback, g_strdup (new_name));
 	}
-	
-	g_free (original_name);
+
+	g_free (new_name);
 }
 
 static gboolean
@@ -865,11 +860,19 @@ update_permissions_check_button_state (GtkWidget *check_button, NautilusFile *fi
 }
 
 static void
+permission_change_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
+{
+	g_assert (callback_data == NULL);
+	
+	/* Report the error if it's an error. */
+	fm_report_error_setting_permissions (file, result);
+}
+
+static void
 permissions_check_button_toggled (GtkToggleButton *toggle_button, gpointer user_data)
 {
 	NautilusFile *file;
-	GnomeVFSFilePermissions permissions, permission_bit;
-	GnomeVFSResult result;
+	GnomeVFSFilePermissions permissions, permission_mask;
 
 	g_assert (NAUTILUS_IS_FILE (user_data));
 
@@ -877,27 +880,23 @@ permissions_check_button_toggled (GtkToggleButton *toggle_button, gpointer user_
 	g_assert (nautilus_file_can_get_permissions (file));
 	g_assert (nautilus_file_can_set_permissions (file));
 
-	permission_bit = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (toggle_button),
+	permission_mask = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (toggle_button),
 					  "permission"));
 
 	/* Modify the file's permissions according to the state of this check button. */
 	permissions = nautilus_file_get_permissions (file);
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (toggle_button))) {
 		/* Turn this specific permission bit on. */
-		permissions |= permission_bit;
+		permissions |= permission_mask;
 	} else {
 		/* Turn this specific permission bit off. */
-		permissions &= ~permission_bit;
+		permissions &= ~permission_mask;
 	}
 
 	/* Try to change file permissions. If this fails, complain to user. */
-	result = nautilus_file_set_permissions (file, permissions);
-	if (result != GNOME_VFS_OK) {
-		fm_report_error_setting_permissions (file, result);
-		
-		/* Reset check button state to match file permissions. */
-		update_permissions_check_button_state (GTK_WIDGET (toggle_button), file);
-	}
+	nautilus_file_set_permissions
+		(file, permissions,
+		 permission_change_callback, NULL);
 }
 
 static void

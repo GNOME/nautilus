@@ -460,8 +460,11 @@ nautilus_file_can_rename (NautilusFile *file)
 	return result;
 }
 
-GnomeVFSResult
-nautilus_file_rename (NautilusFile *file, const char *new_name)
+void
+nautilus_file_rename (NautilusFile *file,
+		      const char *new_name,
+		      NautilusFileOperationCallback callback,
+		      gpointer callback_data)
 {
 	GnomeVFSURI *new_uri;
 	char *old_uri_text;
@@ -469,22 +472,28 @@ nautilus_file_rename (NautilusFile *file, const char *new_name)
 	GnomeVFSResult result;
 	xmlNode *file_node;
 
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), GNOME_VFS_ERROR_BADPARAMS);
-	g_return_val_if_fail (!nautilus_file_is_gone (file), GNOME_VFS_ERROR_BADPARAMS);
-	g_return_val_if_fail (nautilus_strlen (new_name) > 0, GNOME_VFS_ERROR_BADPARAMS);
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	g_return_if_fail (new_name != NULL);
+	g_return_if_fail (callback != NULL);
+	
+	/* Can't rename a file that's already gone. */
+	if (nautilus_file_is_gone (file)) {
+		(* callback) (file, GNOME_VFS_ERROR_NOTFOUND, callback_data);
+		return;
+	}
 
 	/* Test the name-hasn't-changed case explicitly, for two reasons.
 	 * (1) gnome_vfs_move returns an error if new & old are same.
 	 * (2) We don't want to send file-changed signal if nothing changed.
 	 */
 	if (strcmp (new_name, file->details->info->name) == 0) {
-		return GNOME_VFS_OK;
+		(* callback) (file, GNOME_VFS_OK, callback_data);
+		return;
 	}
 
 	old_uri_text = nautilus_file_get_uri (file);
-
-	new_uri = gnome_vfs_uri_append_path (file->details->directory->details->uri,
-					     new_name);
+	new_uri = gnome_vfs_uri_append_path
+		(file->details->directory->details->uri, new_name);
 	new_uri_text = gnome_vfs_uri_to_string (new_uri, GNOME_VFS_URI_HIDE_NONE);
 	gnome_vfs_uri_unref (new_uri);
 
@@ -509,14 +518,18 @@ nautilus_file_rename (NautilusFile *file, const char *new_name)
 		 */
 		g_free (file->details->info->name);
 		file->details->info->name = g_strdup (new_name);
-
-		nautilus_file_changed (file);
 	}
 
 	g_free (old_uri_text);
 	g_free (new_uri_text);
-	
-	return result;
+
+	/* Claim that something changed even if the rename failed.
+	 * This makes it easier for some clients who see the "reverting"
+	 * to the old name as "changing back".
+	 */
+	nautilus_file_changed (file);
+
+	(* callback) (file, result, callback_data);
 }
 
 gboolean         
@@ -1214,18 +1227,19 @@ nautilus_file_get_permissions (NautilusFile *file) {
  * trying to change the file's permissions.
  * 
  **/
-GnomeVFSResult
+void
 nautilus_file_set_permissions (NautilusFile *file, 
-			       GnomeVFSFilePermissions new_permissions) {
+			       GnomeVFSFilePermissions new_permissions,
+			       NautilusFileOperationCallback callback,
+			       gpointer callback_data)
+{
 	GnomeVFSResult result;
 	GnomeVFSFileInfo *partial_file_info;
 	char *uri;
 			       
-	g_return_val_if_fail (nautilus_file_can_set_permissions (file), 
-			      GNOME_VFS_ERROR_ACCESSDENIED);
-
 	if (new_permissions == file->details->info->permissions) {
-		return GNOME_VFS_OK;
+		(* callback) (file, GNOME_VFS_OK, callback_data);
+		return;
 	}
 
 	/* Change the file-on-disk permissions. */
@@ -1240,10 +1254,15 @@ nautilus_file_set_permissions (NautilusFile *file,
 	/* Update the permissions in our NautilusFile object. */
 	if (result == GNOME_VFS_OK) {
 		file->details->info->permissions = new_permissions;
-		nautilus_file_changed (file);
 	}
 
-	return result;
+	/* Claim that something changed even if the permission change failed.
+	 * This makes it easier for some clients who see the "reverting"
+	 * to the old permissions as "changing back".
+	 */
+	nautilus_file_changed (file);
+
+	(* callback) (file, result, callback_data);
 }
 
 /**

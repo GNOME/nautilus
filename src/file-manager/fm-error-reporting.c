@@ -31,65 +31,69 @@
 #include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-stock.h>
 
+static void
+show_error_message_box (const char *message)
+{
+	GtkWidget *message_box;
+
+	message_box = gnome_message_box_new
+		(message, GNOME_MESSAGE_BOX_ERROR,
+		 GNOME_STOCK_BUTTON_OK, NULL);
+	gtk_widget_show (message_box);
+}
+
 void
-fm_report_error_renaming_file (const char *original_name,
+fm_report_error_renaming_file (NautilusFile *file,
 			       const char *new_name,
 			       GnomeVFSResult error)
 {
-	GtkWidget *message_box;
+	char *original_name;
 	char *message;
 
-	g_return_if_fail (error != GNOME_VFS_OK);
-
 	switch (error) {
-		case GNOME_VFS_ERROR_FILEEXISTS:
-			message = g_strdup_printf (_("The name \"%s\" is already used in this directory.\nPlease use a different name."), 
-						   new_name);
-			break;
-		case GNOME_VFS_ERROR_ACCESSDENIED:
-			message = g_strdup_printf (_("You do not have the right permissions to rename \"%s.\""), original_name);
-			break;
-		default:
-			/* We should invent decent error messages for every case we actually experience. */
-			g_warning ("Hit unhandled case %d in fm_report_error_renaming_file, tell sullivan@eazel.com", error);
-			
-			message = g_strdup_printf (_("Sorry, couldn't rename \"%s\" to \"%s\"."), original_name, new_name);
+	case GNOME_VFS_OK:
+		return;
+	case GNOME_VFS_ERROR_FILEEXISTS:
+		message = g_strdup_printf (_("The name \"%s\" is already used in this directory.\nPlease use a different name."), 
+					   new_name);
+		break;
+	case GNOME_VFS_ERROR_ACCESSDENIED:
+		original_name = nautilus_file_get_name (file);
+		message = g_strdup_printf (_("You do not have the right permissions to rename \"%s.\""),
+					   original_name);
+		g_free (original_name);
+		break;
+	default:
+		/* We should invent decent error messages for every case we actually experience. */
+		g_warning ("Hit unhandled case %d in fm_report_error_renaming_file, tell sullivan@eazel.com", error);
+		original_name = nautilus_file_get_name (file);
+		message = g_strdup_printf (_("Sorry, couldn't rename \"%s\" to \"%s\"."),
+					   original_name, new_name);
+		g_free (original_name);
 	}
 
-	message_box = gnome_message_box_new (message,
-					     GNOME_MESSAGE_BOX_ERROR,
-					     GNOME_STOCK_BUTTON_OK,
-					     NULL);
+	show_error_message_box (message);
 	g_free (message);
-	
-	gtk_widget_show (message_box);
-}		
+}
 
 void
 fm_report_error_setting_permissions (NautilusFile *file,
 			       	     GnomeVFSResult error)
 {
-	GtkWidget *message_box;
-	char *message;
 	char *file_name;
-
-	g_return_if_fail (error != GNOME_VFS_OK);
+	char *message;
 
 	switch (error) {
-		default:
-			/* We should invent decent error messages for every case we actually experience. */
-			g_warning ("Hit unhandled case %d in fm_report_error_setting_permissions, tell sullivan@eazel.com", error);
-			file_name = nautilus_file_get_name (file);
-			message = g_strdup_printf (_("Sorry, couldn't change the permissions of \"%s\"."), file_name);
-			g_free (file_name);
+	case GNOME_VFS_OK:
+		return;
+	default:
+		/* We should invent decent error messages for every case we actually experience. */
+		g_warning ("Hit unhandled case %d in fm_report_error_setting_permissions, tell sullivan@eazel.com", error);
+		file_name = nautilus_file_get_name (file);
+		message = g_strdup_printf (_("Sorry, couldn't change the permissions of \"%s\"."), file_name);
+		g_free (file_name);
 	}
 
-	message_box = gnome_message_box_new (message,
-					     GNOME_MESSAGE_BOX_ERROR,
-					     GNOME_STOCK_BUTTON_OK,
-					     NULL);
+	show_error_message_box (message);
 	g_free (message);
-	
-	gtk_widget_show (message_box);
 }		
-

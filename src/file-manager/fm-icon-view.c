@@ -1036,6 +1036,21 @@ icon_position_changed_callback (NautilusIconContainer *container,
 	setlocale (LC_NUMERIC, locale);
 }
 
+static void
+rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
+{
+	char *new_name;
+
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (callback_data != NULL);
+
+	new_name = (char *) callback_data;
+
+	/* If rename failed, notify the user. */
+	fm_report_error_renaming_file (file, new_name, result);
+
+	g_free (new_name);
+}
 
 /* Attempt to change the filename to the new text.  Notify user if operation fails. */
 static void
@@ -1044,31 +1059,18 @@ fm_icon_view_icon_text_changed_callback (NautilusIconContainer *container,
 					 char *new_name,
 					 FMIconView *icon_view)
 {
-	GnomeVFSResult rename_result;
-	char *original_name;
-	
 	g_assert (NAUTILUS_IS_FILE (file));
-	if (nautilus_file_is_gone (file)) {
-		return;
-	}
 
 	/* Don't allow a rename with an empty string. Revert to original 
-	 * without notifying user
+	 * without notifying the user.
 	 */
 	if (nautilus_strlen (new_name) == 0) {
 		return;
 	}
 	
-	rename_result = nautilus_file_rename (file, new_name);
-	if (rename_result == GNOME_VFS_OK) {
-		return;
-	}
-	
-	/* Rename failed. Notify the user. */
-	original_name = nautilus_file_get_name (file);
-	fm_report_error_renaming_file
-		(original_name, new_name, rename_result);
-	g_free (original_name);
+	/* Start the rename. */
+	nautilus_file_rename (file, new_name,
+			      rename_callback, g_strdup (new_name));
 }
 
 static NautilusScalableIcon *
