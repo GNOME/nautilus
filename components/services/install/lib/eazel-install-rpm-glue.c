@@ -252,7 +252,7 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 
 		/* Locate the package that caused the conflict */
 		pack_entry = g_list_find_custom (*packages, 
-						 conflict.byName,
+						 (char*)conflict.byName,
 						 (GCompareFunc)eazel_install_package_name_compare);
 
 		/* first time through, only do immediate matches */
@@ -288,12 +288,12 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 
 		/* Locate the package that caused the conflict */
 		pack_entry = g_list_find_custom (*packages, 
-						 conflict.byName,
+						 (char*)conflict.byName,
 						 (GCompareFunc)eazel_install_package_name_compare);
 		if (pack_entry == NULL) {
 			/* try our brand-new list of required packages, too */
 			pack_entry = g_list_find_custom (*requirements,
-							 conflict.byName,
+							 (char*)conflict.byName,
 							 (GCompareFunc)eazel_install_requirement_dep_name_compare);
 			if (pack_entry != NULL) {
 				trilobite_debug (_("package %s is already in requirements, whew!"), conflict.byName);

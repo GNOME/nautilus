@@ -299,7 +299,7 @@ eazel_package_system_implementation (GList *dbpaths)
 	result->private->uninstall = (EazelPackageSytemUninstallFunc)eazel_package_system_rpm3_uninstall;
 	result->private->verify = (EazelPackageSytemVerifyFunc)eazel_package_system_rpm3_verify;
 	result->private->compare_version = 
-		(EazelPackageSytemCompareVersionFunc)eazel_package_system_rpm3_compare_version;
+		(EazelPackageSystemCompareVersionFunc)eazel_package_system_rpm3_compare_version;
 
 	return result;
 }
