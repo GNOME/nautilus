@@ -117,7 +117,8 @@ static void           fm_directory_view_initialize                              
  */
 static void           fm_directory_view_delete_with_confirm                       (FMDirectoryView          *view,
 										   GList                    *files);
-#endif                fm_directory_view_duplicate_selection                       (FMDirectoryView          *view,
+#endif
+static void           fm_directory_view_duplicate_selection                       (FMDirectoryView          *view,
 										   GList                    *files);
 static void           fm_directory_view_trash_selection                           (FMDirectoryView          *view,
 										   GList                    *files);
