@@ -89,6 +89,9 @@ nautilus_link_local_set_icon (const char *path, const char *icon_name)
 	mime_type = get_uri_mime_type_full (path);
 	retval = FALSE;
 
+	if (mime_type == NULL)
+		return retval;
+
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
 		retval = nautilus_link_impl_local_set_icon (path, icon_name);
 	} else if (strcmp (mime_type, "application/x-gnome-app-info") == 0) {
@@ -106,6 +109,9 @@ nautilus_link_local_set_link_uri (const char *path, const char *link_uri)
 
 	mime_type = get_uri_mime_type_full (path);
 	retval = FALSE;
+
+	if (mime_type == NULL)
+		return retval;
 
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
 		retval = nautilus_link_impl_local_set_link_uri (path, link_uri);
@@ -126,6 +132,9 @@ nautilus_link_local_set_type (const char *path,
 	mime_type = get_uri_mime_type_full (path);
 	retval = FALSE;
 
+	if (mime_type == NULL)
+		return retval;
+
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
 		retval = nautilus_link_impl_local_set_type (path, type);
 	} else if (strcmp (mime_type, "application/x-gnome-app-info") == 0) {
@@ -145,6 +154,9 @@ nautilus_link_local_get_additional_text (const char *path)
 	mime_type = get_uri_mime_type_full (path);
 	retval = NULL;
 
+	if (mime_type == NULL)
+		return retval;
+
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
 		retval = nautilus_link_impl_local_get_additional_text (path);
 	} else if (strcmp (mime_type, "application/x-gnome-app-info") == 0) {
@@ -162,6 +174,9 @@ nautilus_link_local_get_image_uri (const char *path)
 
 	mime_type = get_uri_mime_type_full (path);
 	retval = NULL;
+
+	if (mime_type == NULL)
+		return retval;
 
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
 		retval = nautilus_link_impl_local_get_image_uri (path);
@@ -182,6 +197,9 @@ nautilus_link_local_get_link_uri (const char *path)
 	mime_type = get_uri_mime_type_full (path);
 	retval = NULL;
 
+	if (mime_type == NULL)
+		return retval;
+
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
 		retval = nautilus_link_impl_local_get_link_uri (path);
 	} else if (strcmp (mime_type, "application/x-gnome-app-info") == 0) {
@@ -201,6 +219,9 @@ nautilus_link_local_get_link_type (const char *path)
 	mime_type = get_uri_mime_type_full (path);
 	retval = NAUTILUS_LINK_GENERIC;
 
+	if (mime_type == NULL)
+		return retval;
+
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
 		retval = nautilus_link_impl_local_get_link_type (path);
 	} else if (strcmp (mime_type, "application/x-gnome-app-info") == 0) {
@@ -214,7 +235,7 @@ char *
 nautilus_link_get_link_uri_given_file_contents (const char *file_contents,
 						int file_size)
 {
-//	const gchar *mime_type;
+	//	const gchar *mime_type;
 	gchar *retval;
 
 //	mime_type = get_uri_mime_type_full (file_contents);
@@ -238,6 +259,9 @@ nautilus_link_local_is_volume_link (const char *path)
 	mime_type = get_uri_mime_type_full (path);
 	retval = FALSE;
 
+	if (mime_type == NULL)
+		return retval;
+
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
 		retval = nautilus_link_impl_local_is_volume_link (path);
 	} else if (strcmp (mime_type, "application/x-gnome-app-info") == 0) {
@@ -256,6 +280,9 @@ nautilus_link_local_is_home_link (const char *path)
 	mime_type = get_uri_mime_type_full (path);
 	retval = FALSE;
 
+	if (mime_type == NULL)
+		return retval;
+
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
 		retval = nautilus_link_impl_local_is_home_link (path);
 	} else if (strcmp (mime_type, "application/x-gnome-app-info") == 0) {
@@ -273,6 +300,9 @@ nautilus_link_local_is_trash_link (const char *path)
 
 	mime_type = get_uri_mime_type_full (path);
 	retval = FALSE;
+
+	if (mime_type == NULL)
+		return retval;
 
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
 		retval = nautilus_link_impl_local_is_trash_link (path);

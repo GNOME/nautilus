@@ -2010,7 +2010,6 @@ get_icon_text_callback (NautilusIconContainer *container,
 			char **additional_text,
 			FMIconView *icon_view)
 {
-	char *actual_uri;
 	char *attribute_names;
 	char **text_array;
 	int i , slot_index;
@@ -2032,12 +2031,18 @@ get_icon_text_callback (NautilusIconContainer *container,
 	
 	/* Handle link files specially. */
 	if (nautilus_file_is_nautilus_link (file)) {
+#if 0
+		gchar *description;
+		char *actual_uri;
 		/* FIXME bugzilla.eazel.com 2531: Does sync. I/O and works only locally. */
 		actual_uri = nautilus_file_get_uri (file);
 		*additional_text = NULL;
-		/* This looks pretty bad.  It would be nice to get the additional text to only appear if
-		 * you zoom in a lot */
-		/* *additional_text = nautilus_link_local_get_additional_text (actual_uri); */
+		description = nautilus_link_local_get_additional_text (actual_uri);
+		if (description)
+			*additional_text = g_strdup_printf (" \n%s\n ", description);
+		g_free (description);
+#endif
+		*additional_text = NULL;
 		return;
 	}
 

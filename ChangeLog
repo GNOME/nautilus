@@ -1,3 +1,11 @@
+Wed Aug  1 04:58:35 2001  Jonathan Blandford  <jrb@redhat.com>
+
+	* libnautilus-private/nautilus-link.c: Fix a crash when some files
+	could return NULL as a mime-type.
+
+	* src/file-manager/fm-icon-view.c (get_icon_text_callback):
+	Disable additional_text for .desktop files.
+
 2001-07-31  Alex Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-link-impl-desktop.c (nautilus_link_impl_desktop_get_link_uri_from_desktop):

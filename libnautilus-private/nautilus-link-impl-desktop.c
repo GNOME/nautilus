@@ -338,7 +338,6 @@ nautilus_link_impl_desktop_local_get_image_uri (const char *path)
 	char *local_path, *local_uri;
 	NautilusLinkIconNotificationInfo *info;
 
-	g_print ("in nautilus_link_impl_desktop_local_get_image_uri:%s\n", path);
 	icon_uri = slurp_key_string (path, "X-Nautilus-Icon");
 
 	if (icon_uri == NULL) {
@@ -361,10 +360,8 @@ nautilus_link_impl_desktop_local_get_image_uri (const char *path)
 			icon_uri = NULL;
 		g_free (icon_name);
 
-		g_print ("icon_uri1:%s\n", icon_uri);
 		return icon_uri;
 	}
-	g_print ("icon_uri:%s\n", icon_uri);
 
 	/* if the image is remote, see if we can find it in our local cache */
 	if (eel_is_remote_uri (icon_uri)) {
