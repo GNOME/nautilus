@@ -1,3 +1,29 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+
+/*
+ *  Nautilus
+ *
+ *  Copyright (C) 1999 Red Hat, Inc.
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public
+ *  License along with this library; if not, write to the Free
+ *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ *  Author: Elliot Lee <sopwith@redhat.com>
+ *
+ */
+/* ntl-window.c: Implementation of the main window object */
+
 #include "config.h"
 #include <gnome.h>
 #include "nautilus.h"
@@ -8,13 +34,13 @@ static void nautilus_window_destroy (NautilusWindow *window);
 static void nautilus_window_back (NautilusWindow *window);
 static void nautilus_window_fwd (NautilusWindow *window);
 static void nautilus_window_set_arg (GtkObject      *object,
-				      GtkArg         *arg,
-				      guint	      arg_id);
+                                     GtkArg         *arg,
+                                     guint	      arg_id);
 static void nautilus_window_get_arg (GtkObject      *object,
-				      GtkArg         *arg,
-				      guint	      arg_id);
+                                     GtkArg         *arg,
+                                     guint	      arg_id);
 static void nautilus_window_close (GtkWidget *widget,
-				    GtkWidget *window);
+                                   GtkWidget *window);
 static void nautilus_window_real_request_location_change (NautilusWindow *window,
 							  Nautilus_NavigationRequestInfo *loc,
 							  GtkWidget *requesting_view);

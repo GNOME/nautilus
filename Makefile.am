@@ -1,1 +1,3 @@
 SUBDIRS=libnautilus src
+
+EXTRA_DIST=COPYING.LIB
