@@ -267,9 +267,10 @@ pref_hash_info_remove_callback (PrefHashInfo			*pref_hash_info,
 		if (callback_info->callback_proc == callback_proc &&
 		    callback_info->user_data == user_data)
 		{
-			g_list_remove (pref_hash_info->callback_list, 
-				       (gpointer) callback_info);
-
+			pref_hash_info->callback_list = 
+				g_list_remove (pref_hash_info->callback_list, 
+					       (gpointer) callback_info);
+			
 			pref_callback_info_free (callback_info);
 		}
 	}

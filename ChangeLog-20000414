@@ -1,4 +1,14 @@
 2000-03-12  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* nautilus-widgets/nautilus-preferences.c:
+	(pref_hash_info_remove_callback) Properly remove the item from
+	the list so that we dont crash later trying to munge a NULL node.
+
+	* libnautilus/nautilus-global-preferences.h:
+	(NAUTILUS_PREFERENCES_USER_LEVEL) Make sure the user level
+	defaults to hacker.
+	
+2000-03-12  Ramiro Estrugo  <ramiro@eazel.com>
 	*libnautilus/Makefile.am: Added nautilus_string_table
 
 	*libnautilus/nautilus-lib-self-check-functions.h: Added string

@@ -31,7 +31,7 @@
 BEGIN_GNOME_DECLS
 
 /* User level */
-#define NAUTILUS_PREFERENCES_USER_LEVEL				"/nautilus/preferences/user_level"
+#define NAUTILUS_PREFERENCES_USER_LEVEL				"/nautilus/preferences/user_level=2"
 
 /* Window options */
 #define NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW			"/nautilus/preferences/window_always_new"
