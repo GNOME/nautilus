@@ -2637,7 +2637,7 @@ load_icon_with_embedded_text (NautilusScalableIcon *scalable_icon,
 	
 	/* Get the icon without text. */
 	scalable_icon_without_text = nautilus_scalable_icon_new_from_text_pieces
-		(NULL,
+		(scalable_icon->uri,
 		 scalable_icon->mime_type,
 		 scalable_icon->name,
 		 scalable_icon->modifier,
