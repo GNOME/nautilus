@@ -125,10 +125,23 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
        * (notify_ready function is responsible for freeing navinfo).
        */
       navinfo->result_code = get_nautilus_navigation_result_from_gnome_vfs_result (result);
-      goto out;
+      if(navinfo->result_code == NAUTILUS_NAVIGATION_RESULT_UNSUPPORTED_SCHEME
+         || navinfo->result_code == NAUTILUS_NAVIGATION_RESULT_INVALID_URI)
+        {
+          /* Special scheme mapping stuff */
+          if(!strncmp(navinfo->navinfo.requested_uri, "irc://", 6))
+            {
+              navinfo->navinfo.content_type = g_strdup("special/x-irc-session");
+              navinfo->result_code = NAUTILUS_NAVIGATION_RESULT_OK;
+            }
+          else
+            goto out;
+        }
+      else
+        goto out;
     }
-
-  navinfo->navinfo.content_type = g_strdup(gnome_vfs_file_info_get_mime_type(vfs_fileinfo));
+  else
+    navinfo->navinfo.content_type = g_strdup(gnome_vfs_file_info_get_mime_type(vfs_fileinfo));
 
   /* Given a content type and a URI, what do we do? Basically the "expert system" below
      tries to answer that question
@@ -179,6 +192,13 @@ my_notify_when_ready(GnomeVFSAsyncHandle *ah, GnomeVFSResult result,
       navinfo->content_identifiers = g_slist_append (
                                                      navinfo->content_identifiers, 
                                                      nautilus_view_identifier_new (navinfo->default_content_iid, "Image"));
+    }
+  else if(!strcmp(navinfo->navinfo.content_type, "special/x-irc-session"))
+    {
+      navinfo->default_content_iid = "xchat";
+      navinfo->content_identifiers = g_slist_append (
+                                                     navinfo->content_identifiers, 
+                                                     nautilus_view_identifier_new (navinfo->default_content_iid, "Chat room"));
     }
   else if(!strcmp(navinfo->navinfo.content_type, "special/directory")
           || !strcmp(navinfo->navinfo.content_type, "application/x-nautilus-vdir"))
@@ -290,9 +310,9 @@ nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
       /* Note: Not sure if or when this case ever occurs. res == GNOME_VFS_OK
        * for normally-handled uris, for non-existent uris, and for uris for which
        * Nautilus has no content viewer.
-       */    
-      navinfo->result_code = get_nautilus_navigation_result_from_gnome_vfs_result (res);
-      notify_when_ready(navinfo, notify_data);
+       */
+      navinfo->ah = NULL;
+      my_notify_when_ready(NULL, res, NULL, navinfo);
     }
 
   return navinfo?navinfo->ah:NULL;
