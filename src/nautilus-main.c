@@ -191,8 +191,6 @@ main (int argc, char *argv[])
 
 	popt_context = g_value_get_pointer (&context_as_value);
 
-	eel_setenv ("DISPLAY", DisplayString (GDK_DISPLAY ()), TRUE);
-
 	/* Check for argument consistency. */
 	args = poptGetArgs (popt_context);
 	if (perform_self_check && args != NULL) {
@@ -219,7 +217,7 @@ main (int argc, char *argv[])
 	/* Initialize the services that we use. */
 	LIBXML_TEST_VERSION
 	gnome_vfs_init ();
-	bonobo_init (&argc, argv);
+	bonobo_ui_init ("nautilus", VERSION, &argc, argv);
 
 	if (g_getenv ("NAUTILUS_ENABLE_TEST_COMPONENTS") != NULL) {
 		bonobo_activation_set_test_components_enabled (TRUE);

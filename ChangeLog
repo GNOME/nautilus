@@ -1,3 +1,14 @@
+2002-03-08  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-main.c (main): do a bonobo_ui_init,
+	we shouldn't need it but libgnomeui has escaped from
+	doing this for some reason.
+	Remove eel_setenv DISPLAY chicanery
+
+	* libnautilus/nautilus-view-standard-main.c
+	(nautilus_view_standard_main_multi): remove double
+	bonobo_ui_init.
+
 2002-03-07  Darin Adler  <darin@bentspoon.com>
 
 	* components/tree/nautilus-tree-model.h:
