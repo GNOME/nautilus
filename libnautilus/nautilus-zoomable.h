@@ -70,21 +70,27 @@ struct NautilusZoomable
 };
 
 GtkType            nautilus_zoomable_get_type                  (void);
-NautilusZoomable  *nautilus_zoomable_new                       (GtkWidget        *widget, 
-							        gdouble           min_zoom_level,
-							        gdouble           max_zoom_level,
-							       gboolean          is_continuous);
-NautilusZoomable  *nautilus_zoomable_new_from_bonobo_control   (BonoboControl    *bonobo_control, 
-							        gdouble           min_zoom_level,
-							        gdouble           max_zoom_level,
-							        gboolean          is_continuous);
-void               nautilus_zoomable_set_parameters	       (NautilusZoomable *view,
-							        double           zoom_level,
+NautilusZoomable  *nautilus_zoomable_new                       (GtkWidget       *widget, 
 							        double           min_zoom_level,
-							        double           max_zoom_level);
+							        double           max_zoom_level,
+							       gboolean          is_continuous,
+							       double		*preferred_zoom_levels,
+							       int num_preferred_zoom_levels);
+NautilusZoomable  *nautilus_zoomable_new_from_bonobo_control   (BonoboControl   *bonobo_control, 
+							        double           min_zoom_level,
+							        double           max_zoom_level,
+							        gboolean         is_continuous,
+							        double		*preferred_zoom_levels,
+							        int		 num_preferred_zoom_levels);
+void               nautilus_zoomable_set_parameters	       (NautilusZoomable *view,
+							        double            zoom_level,
+							        double            min_zoom_level,
+							        double            max_zoom_level);
 void               nautilus_zoomable_set_zoom_level            (NautilusZoomable *view,
-							        gdouble           zoom_level);
+							        double            zoom_level);
 BonoboControl     *nautilus_zoomable_get_bonobo_control        (NautilusZoomable *view);
+
+GList *nautilus_g_list_from_ZoomLevelList (const Nautilus_ZoomLevelList *zoom_level_list);
 
 #ifdef __cplusplus
 }

@@ -1,3 +1,32 @@
+2000-06-27  Michael Engber  <engber@eazel.com>
+
+	* libnautilus/nautilus-view-component.idl:
+	* libnautilus/nautilus-zoomable.c:
+	(nautilus_g_list_from_ZoomLevelList),
+	(nautilus_ZoomLevelList_from_zoom_levels),
+	(impl_Nautilus_Zoomable__get_is_continuous),
+	(impl_Nautilus_Zoomable__get_preferred_zoom_level_list),
+	(nautilus_zoomable_initialize_class), (nautilus_zoomable_set_arg),
+	(nautilus_zoomable_get_arg), (nautilus_zoomable_new),
+	(nautilus_zoomable_new_from_bonobo_control),
+	(nautilus_zoomable_destroy):
+	* libnautilus/nautilus-zoomable.h:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize):
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_get_max_zoom_level),
+	(nautilus_view_frame_get_preferred_zoom_levels):
+	* src/nautilus-view-frame.h:
+	* src/nautilus-window.c:
+	(nautilus_window_zoom_level_changed_callback):
+	* src/nautilus-zoom-control.c: (nautilus_zoom_control_initialize),
+	(create_zoom_menu_item), (create_zoom_menu),
+	(nautilus_zoom_control_set_max_zoom_level),
+	(nautilus_zoom_control_set_preferred_zoom_levels):
+	* src/nautilus-zoom-control.h:
+	Added get_preferred_zoom_levels. Fixed zoom-control to
+	use this info to generate it's right click menu.
+
 2000-06-27  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.c:

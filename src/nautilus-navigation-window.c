@@ -1140,6 +1140,7 @@ nautilus_window_zoom_level_changed_callback (NautilusViewFrame *view,
 	if (!GTK_WIDGET_VISIBLE(window->zoom_control)) {
 		nautilus_zoom_control_set_min_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control), nautilus_view_frame_get_min_zoom_level (view));
 		nautilus_zoom_control_set_max_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control), nautilus_view_frame_get_max_zoom_level (view));
+		nautilus_zoom_control_set_preferred_zoom_levels (NAUTILUS_ZOOM_CONTROL (window->zoom_control), nautilus_view_frame_get_preferred_zoom_levels (view));
 		gtk_widget_show (window->zoom_control);
 	}
 }

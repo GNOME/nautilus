@@ -48,6 +48,7 @@ struct NautilusZoomControl {
 	double zoom_level;
 	double min_zoom_level;	 
 	double max_zoom_level;
+	GList *preferred_zoom_levels;
 };
 
 struct NautilusZoomControlClass {
@@ -68,6 +69,9 @@ void       nautilus_zoom_control_set_min_zoom_level (NautilusZoomControl *zoom_c
 						     double               zoom_level);
 void       nautilus_zoom_control_set_max_zoom_level (NautilusZoomControl *zoom_control,
 						     double               zoom_level);
+void	   nautilus_zoom_control_set_preferred_zoom_levels
+ 						    (NautilusZoomControl *zoom_control,
+ 						     GList* zoom_levels);
 
 double     nautilus_zoom_control_get_zoom_level     (NautilusZoomControl *zoom_control);
 double     nautilus_zoom_control_get_min_zoom_level (NautilusZoomControl *zoom_control);

@@ -684,6 +684,16 @@ bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointe
          */
 }
 
+static double fm_directory_view_preferred_zoom_levels[] = {
+	(double) NAUTILUS_ICON_SIZE_SMALLEST	/ NAUTILUS_ICON_SIZE_STANDARD,
+	(double) NAUTILUS_ICON_SIZE_SMALLER	/ NAUTILUS_ICON_SIZE_STANDARD,
+	(double) NAUTILUS_ICON_SIZE_SMALL	/ NAUTILUS_ICON_SIZE_STANDARD,
+	(double) NAUTILUS_ICON_SIZE_STANDARD	/ NAUTILUS_ICON_SIZE_STANDARD,
+	(double) NAUTILUS_ICON_SIZE_LARGE	/ NAUTILUS_ICON_SIZE_STANDARD,
+	(double) NAUTILUS_ICON_SIZE_LARGER	/ NAUTILUS_ICON_SIZE_STANDARD,
+	(double) NAUTILUS_ICON_SIZE_LARGEST	/ NAUTILUS_ICON_SIZE_STANDARD,
+};
+
 static void
 fm_directory_view_initialize (FMDirectoryView *directory_view)
 {
@@ -697,8 +707,13 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 
 	directory_view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (directory_view));
 
-	directory_view->details->zoomable = nautilus_zoomable_new_from_bonobo_control
-		(get_bonobo_control (directory_view), .25, 4.0, FALSE);		
+	directory_view->details->zoomable = nautilus_zoomable_new_from_bonobo_control (
+		get_bonobo_control (directory_view),
+		.25,
+		4.0,
+		FALSE,
+		fm_directory_view_preferred_zoom_levels,
+		sizeof (fm_directory_view_preferred_zoom_levels) / sizeof (*fm_directory_view_preferred_zoom_levels));		
 
 	gtk_signal_connect (GTK_OBJECT (directory_view->details->nautilus_view), 
 			    "stop_loading",

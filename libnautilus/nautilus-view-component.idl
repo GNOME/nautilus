@@ -87,8 +87,8 @@ module Nautilus {
 		oneway void set_title (in string new_title);
 	};
 	
-	/* FIXME: Implement "preferred zoom levels" or delete. */
-	typedef sequence<double> ZoomLevelList;
+	typedef double ZoomLevel;
+	typedef sequence<ZoomLevel> ZoomLevelList;
 	
 	/* The interface for something zoomable. Nautilus looks for
 	 * this interface on Bonobo controls that it uses as views. If
@@ -104,8 +104,7 @@ module Nautilus {
 		readonly attribute double min_zoom_level;
 		readonly attribute double max_zoom_level;
 		readonly attribute boolean is_continuous;
-		/* FIXME: Implement "preferred zoom levels" or delete. */
-		/* readonly attribute ZoomLevelList preferred_zoom_levels; */
+		readonly attribute ZoomLevelList preferred_zoom_levels;
 		
 		/* High level operations.
 		 * These can cause a change in the zoom level.

@@ -38,6 +38,7 @@
 #include <gtk/gtk.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <libnautilus/nautilus-view.h>
+#include <libnautilus/nautilus-zoomable.h>
 
 enum {
   OPEN_LOCATION,
@@ -499,6 +500,30 @@ nautilus_view_frame_get_max_zoom_level (NautilusViewFrame *view)
     retval = Nautilus_Zoomable__get_max_zoom_level (view->zoomable, &ev);
   } else {
     retval = 1.0;
+  }
+
+  CORBA_exception_free (&ev);
+
+  return retval;
+}
+
+GList *
+nautilus_view_frame_get_preferred_zoom_levels (NautilusViewFrame *view)
+{
+  CORBA_Environment ev;
+  GList *retval;
+  Nautilus_ZoomLevelList *zoom_levels;
+
+  g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), 0);
+
+  CORBA_exception_init (&ev);
+
+  if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
+    zoom_levels = Nautilus_Zoomable__get_preferred_zoom_levels (view->zoomable, &ev);
+    retval = nautilus_g_list_from_ZoomLevelList (zoom_levels);
+    CORBA_free (zoom_levels);
+  } else {
+    retval = NULL;
   }
 
   CORBA_exception_free (&ev);

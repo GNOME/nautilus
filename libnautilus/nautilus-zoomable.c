@@ -38,10 +38,12 @@ NautilusZoomable *foo;
 struct NautilusZoomableDetails {
 	BonoboControl *control;
 	
-	gdouble zoom_level;
-	gdouble min_zoom_level;
-	gdouble max_zoom_level;
+	double zoom_level;
+	double min_zoom_level;
+	double max_zoom_level;
 	gboolean is_continuous;
+
+	Nautilus_ZoomLevelList *preferred_zoom_levels;
 	
 	Nautilus_ZoomableFrame zoomable_frame;
 };
@@ -60,6 +62,7 @@ enum {
 	ARG_MIN_ZOOM_LEVEL,
 	ARG_MAX_ZOOM_LEVEL,
 	ARG_IS_CONTINUOUS,
+	ARG_PREFERRED_ZOOM_LEVELS,
 };
 
 static guint signals[LAST_SIGNAL];
@@ -85,6 +88,9 @@ static CORBA_double  impl_Nautilus_Zoomable__get_max_zoom_level (impl_POA_Nautil
 								 CORBA_Environment          *ev);
 static CORBA_boolean impl_Nautilus_Zoomable__get_is_continuous (impl_POA_Nautilus_Zoomable *servant,
 								 CORBA_Environment          *ev);
+static Nautilus_ZoomLevelList* impl_Nautilus_Zoomable__get_preferred_zoom_level_list
+							        (impl_POA_Nautilus_Zoomable *servant,
+								 CORBA_Environment          *ev);
 static void          impl_Nautilus_Zoomable_zoom_in             (impl_POA_Nautilus_Zoomable *servant,
 								 CORBA_Environment          *ev);
 static void          impl_Nautilus_Zoomable_zoom_out            (impl_POA_Nautilus_Zoomable *servant,
@@ -100,6 +106,7 @@ POA_Nautilus_Zoomable__epv libnautilus_Nautilus_Zoomable_epv =
 	(gpointer) &impl_Nautilus_Zoomable__get_min_zoom_level,
 	(gpointer) &impl_Nautilus_Zoomable__get_max_zoom_level,
 	(gpointer) &impl_Nautilus_Zoomable__get_is_continuous,
+	(gpointer) &impl_Nautilus_Zoomable__get_preferred_zoom_level_list,
 	(gpointer) &impl_Nautilus_Zoomable_zoom_in,
 	(gpointer) &impl_Nautilus_Zoomable_zoom_out,
 	(gpointer) &impl_Nautilus_Zoomable_zoom_to_fit
@@ -112,6 +119,41 @@ static POA_Nautilus_Zoomable__vepv impl_Nautilus_Zoomable_vepv =
 	NULL,
 	&libnautilus_Nautilus_Zoomable_epv
 };
+
+
+GList *
+nautilus_g_list_from_ZoomLevelList (const Nautilus_ZoomLevelList *zoom_level_list)
+{
+	GList *list;
+	int i;
+	double* zoom_level_ptr;
+
+	list = NULL;
+	for (i = 0; i < zoom_level_list->_length; ++i) {
+		zoom_level_ptr = g_new (double, 1);
+		*zoom_level_ptr = zoom_level_list->_buffer[i];
+		list = g_list_prepend (list, zoom_level_ptr);
+	}
+	return g_list_reverse (list);
+}
+
+static Nautilus_ZoomLevelList *
+nautilus_ZoomLevelList_from_zoom_levels (const double *zoom_levels, int num_levels)
+{
+	int i;
+	Nautilus_ZoomLevelList *list;
+
+	list = Nautilus_ZoomLevelList__alloc ();
+	list->_maximum = num_levels;
+	list->_length = num_levels;
+	list->_buffer = CORBA_sequence_Nautilus_ZoomLevel_allocbuf (num_levels);
+	for (i = 0; i < num_levels; ++i) {
+		list->_buffer[i] = zoom_levels[i];
+	}
+	CORBA_sequence_set_release (list, TRUE);
+
+	return list;
+}
 
 static CORBA_double
 impl_Nautilus_Zoomable__get_zoom_level (impl_POA_Nautilus_Zoomable *servant,
@@ -144,9 +186,16 @@ impl_Nautilus_Zoomable__get_max_zoom_level (impl_POA_Nautilus_Zoomable *servant,
 
 static CORBA_boolean
 impl_Nautilus_Zoomable__get_is_continuous (impl_POA_Nautilus_Zoomable *servant,
-					    CORBA_Environment      *ev)
+					   CORBA_Environment      *ev)
 {
 	return servant->gtk_object->details->is_continuous;
+}
+
+static Nautilus_ZoomLevelList *
+impl_Nautilus_Zoomable__get_preferred_zoom_level_list (impl_POA_Nautilus_Zoomable *servant,
+					    		  CORBA_Environment      *ev)
+{
+	return servant->gtk_object->details->preferred_zoom_levels;
 }
 
 static void
@@ -303,6 +352,10 @@ nautilus_zoomable_initialize_class (NautilusZoomableClass *klass)
 				 GTK_TYPE_BOOL,
 				 GTK_ARG_READWRITE | GTK_ARG_CONSTRUCT | GTK_ARG_CONSTRUCT_ONLY,
 				 ARG_IS_CONTINUOUS);
+	gtk_object_add_arg_type ("NautilusZoomable::preferred_zoom_levels",
+				 GTK_TYPE_POINTER,
+				 GTK_ARG_READWRITE | GTK_ARG_CONSTRUCT | GTK_ARG_CONSTRUCT_ONLY,
+				 ARG_PREFERRED_ZOOM_LEVELS);
 }
 
 static void
@@ -329,6 +382,9 @@ nautilus_zoomable_set_arg (GtkObject      *object,
 	case ARG_IS_CONTINUOUS:
 		zoomable->details->is_continuous = GTK_VALUE_BOOL (*arg);
 		break;
+	case ARG_PREFERRED_ZOOM_LEVELS:
+		zoomable->details->preferred_zoom_levels = GTK_VALUE_POINTER (*arg);
+		break;
 	}
 }
 
@@ -354,6 +410,9 @@ nautilus_zoomable_get_arg (GtkObject      *object,
 	case ARG_IS_CONTINUOUS:
 		GTK_VALUE_BOOL (*arg) = NAUTILUS_ZOOMABLE (object)->details->is_continuous;
 		break;
+	case ARG_PREFERRED_ZOOM_LEVELS:
+		GTK_VALUE_POINTER (*arg) = NAUTILUS_ZOOMABLE (object)->details->preferred_zoom_levels;
+		break;
 	}
 }
 
@@ -372,22 +431,29 @@ nautilus_zoomable_initialize (NautilusZoomable *zoomable)
 
 NautilusZoomable *
 nautilus_zoomable_new (GtkWidget *widget, 
-		       gdouble min_zoom_level, 
-		       gdouble max_zoom_level, 
-		       gboolean is_continuous)
+		       double min_zoom_level, 
+		       double max_zoom_level, 
+		       gboolean is_continuous,
+		       double *preferred_zoom_levels,
+		       int num_preferred_zoom_levels)
+
 {
 	return nautilus_zoomable_new_from_bonobo_control
 		(bonobo_control_new (widget),
 		 min_zoom_level, 
-		 max_zoom_level, 
-		 is_continuous);
+		 max_zoom_level,
+		 is_continuous,
+		 preferred_zoom_levels,
+		 num_preferred_zoom_levels);
 }
 
 NautilusZoomable *
 nautilus_zoomable_new_from_bonobo_control (BonoboControl *bonobo_control,
-					   gdouble min_zoom_level, 
-					   gdouble max_zoom_level, 
-					   gboolean is_continuous)
+					   double min_zoom_level, 
+					   double max_zoom_level, 
+					   gboolean is_continuous,
+					   double *preferred_zoom_levels,
+					   int	num_preferred_zoom_levels)
 {
 	NautilusZoomable *zoomable;
 	
@@ -396,6 +462,7 @@ nautilus_zoomable_new_from_bonobo_control (BonoboControl *bonobo_control,
 						      "min_zoom_level", min_zoom_level,
 						      "max_zoom_level", max_zoom_level,
 						      "is_continuous",  is_continuous,
+						      "preferred_zoom_levels", nautilus_ZoomLevelList_from_zoom_levels (preferred_zoom_levels, num_preferred_zoom_levels),
 						      NULL));
 	
 	return zoomable;
@@ -404,6 +471,7 @@ nautilus_zoomable_new_from_bonobo_control (BonoboControl *bonobo_control,
 static void
 nautilus_zoomable_destroy (NautilusZoomable *view)
 {
+	CORBA_free (view->details->preferred_zoom_levels);
 	g_free (view->details);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, GTK_OBJECT (view));

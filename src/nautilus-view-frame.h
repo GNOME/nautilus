@@ -131,6 +131,9 @@ void               nautilus_view_frame_set_zoom_level     (NautilusViewFrame   *
 gdouble            nautilus_view_frame_get_min_zoom_level (NautilusViewFrame   *view);
 gdouble            nautilus_view_frame_get_max_zoom_level (NautilusViewFrame   *view);
 gboolean           nautilus_view_frame_get_is_continuous  (NautilusViewFrame   *view);
+GList *		   nautilus_view_frame_get_preferred_zoom_levels
+							  (NautilusViewFrame *view);
+
 void               nautilus_view_frame_zoom_in            (NautilusViewFrame   *view);
 void               nautilus_view_frame_zoom_out           (NautilusViewFrame   *view);
 void               nautilus_view_frame_zoom_to_fit        (NautilusViewFrame   *view);
