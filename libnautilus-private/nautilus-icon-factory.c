@@ -2109,15 +2109,9 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 			else {
 				/* gdk-pixbuf couldn't load the image, so trying using ImageMagick */
 				char *temp_str = g_strdup_printf ("png:%s", factory->new_thumbnail_path + 7);
-				char *temp_file = g_strdup_printf("%s.tmp", factory->new_thumbnail_path + 7);
 				
 				/* scale the image, then draw a border and frame */
 				execlp ("convert", "convert", "-geometry",  "96x96", info->thumbnail_uri + 7, temp_str, NULL);
-				execlp ("convert", "convert", "-bordercolor", "white", "-border", "8x8", info->thumbnail_uri + 7, temp_file, NULL);
-				execlp ("convert", "convert", "-mattecolor", "gray", "-frame", "2x2", temp_file, info->thumbnail_uri + 7);
-				unlink(temp_file);
-				g_free(temp_file);
-				g_free (temp_str);
 			}
 			
 			_exit(0);

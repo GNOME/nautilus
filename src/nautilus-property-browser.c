@@ -40,6 +40,7 @@
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
@@ -56,12 +57,21 @@ struct NautilusPropertyBrowserDetails {
 	GtkWidget *title_box;
 	GtkWidget *title_label;
 	
+	GtkWidget *add_button;
+	GtkWidget *add_button_label;	
+	GtkWidget *remove_button;
+	GtkWidget *remove_button_label;
+	
+	GtkWidget *dialog;
+	
 	char *path;
 	char *category;
 	char *dragged_file;
-        char *drag_type;
+	char *drag_type;
 
+	int  remove_mode;
 	int  keep_around;
+	int  has_local;
 };
 
 static void     nautilus_property_browser_initialize_class   (GtkObjectClass     *object_klass);
@@ -77,6 +87,10 @@ static void	nautilus_property_browser_set_drag_type      (NautilusPropertyBrowse
 static void     title_clicked_cb			     (GtkWidget *widget, 
                                                               GdkEventButton *event,
 							      NautilusPropertyBrowser *propery_browser);
+static void	add_new_button_cb			     (GtkWidget *widget, 
+							       NautilusPropertyBrowser *property_browser);
+static void	remove_button_cb			     (GtkWidget *widget, 
+							       NautilusPropertyBrowser *property_browser);
 
 static void	nautilus_property_browser_drag_end	     (GtkWidget *widget, GdkDragContext *context);
 static void	nautilus_property_browser_drag_data_get      (GtkWidget *widget,
@@ -84,11 +98,15 @@ static void	nautilus_property_browser_drag_data_get      (GtkWidget *widget,
 							      GtkSelectionData *selection_data,
 							      guint info,
 							      guint32 time);
-static char*	strip_extension				     (const char* string_to_strip);
+
+/* misc utilities */
+
+static char*	strip_extension				(const char* string_to_strip);
+static char*	get_xml_path				(NautilusPropertyBrowser *property_browser);
 
 #define BROWSER_BACKGROUND_COLOR "rgb:DDDD/EEEE/FFFF"
-#define BROWSER_TITLE_IMAGE "white_marble.jpg"
-#define BROWSER_CATEGORIES_FILE_NAME "nautilus/browser.xml"
+#define BROWSER_TITLE_COLOR "rgb:FFFF/FFFF/FFFF"
+#define BROWSER_CATEGORIES_FILE_NAME "browser.xml"
 
 #define PROPERTY_BROWSER_WIDTH 480
 #define PROPERTY_BROWSER_HEIGHT 360
@@ -131,8 +149,7 @@ nautilus_property_browser_initialize (GtkObject *object)
 {
 	NautilusBackground *background;
 	NautilusPropertyBrowser *property_browser;
-	char *background_path, *background_uri;
-	GtkWidget* widget, *temp_hbox, *temp_frame;
+ 	GtkWidget* widget, *temp_hbox, *temp_frame;
 	
 	property_browser = NAUTILUS_PROPERTY_BROWSER (object);
 	widget = GTK_WIDGET (object);
@@ -164,14 +181,12 @@ nautilus_property_browser_initialize (GtkObject *object)
   	/* create the title box */
   	
   	property_browser->details->title_box = gtk_event_box_new();
+	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->title_box), 0);				
+ 
   	gtk_widget_show(property_browser->details->title_box);
 	
-	background_path = gnome_datadir_file ("nautilus/backgrounds");
-	background_uri = g_strdup_printf("file://%s/%s", background_path, BROWSER_TITLE_IMAGE);	
 	background = nautilus_get_widget_background(property_browser->details->title_box);
-	nautilus_background_set_tile_image_uri(background, background_uri);
-	g_free(background_path);
-	g_free(background_uri);	
+	nautilus_background_set_color(background, BROWSER_TITLE_COLOR);
 	
 	gtk_box_pack_start (GTK_BOX(property_browser->details->container), property_browser->details->title_box, FALSE, FALSE, 0);
 	gtk_signal_connect(GTK_OBJECT (property_browser->details->title_box), "button_press_event", 
@@ -191,6 +206,29 @@ nautilus_property_browser_initialize (GtkObject *object)
   	gtk_widget_show(property_browser->details->title_label);
 	gtk_box_pack_start (GTK_BOX(temp_hbox), property_browser->details->title_label, FALSE, FALSE, 8);
   	
+  	/* create the "add new" button */
+  	property_browser->details->add_button = gtk_button_new();
+	gtk_widget_show(property_browser->details->add_button);
+	
+	property_browser->details->add_button_label = gtk_label_new("Add new...");
+	gtk_widget_show(property_browser->details->add_button_label);
+	gtk_container_add (GTK_CONTAINER(property_browser->details->add_button), property_browser->details->add_button_label);
+	gtk_box_pack_end (GTK_BOX(temp_hbox), property_browser->details->add_button, FALSE, FALSE, 4);
+ 	  
+ 	gtk_signal_connect(GTK_OBJECT (property_browser->details->add_button), "clicked", GTK_SIGNAL_FUNC (add_new_button_cb), property_browser);
+	
+	/* now create the "remove" button */
+  	property_browser->details->remove_button = gtk_button_new();
+	gtk_widget_show(property_browser->details->remove_button);
+	
+	property_browser->details->remove_button_label = gtk_label_new("Remove...");
+	gtk_widget_show(property_browser->details->remove_button_label);
+	gtk_container_add (GTK_CONTAINER(property_browser->details->remove_button), property_browser->details->remove_button_label);
+	gtk_box_pack_end (GTK_BOX(temp_hbox), property_browser->details->remove_button, FALSE, FALSE, 4);
+ 	  
+ 	gtk_signal_connect(GTK_OBJECT (property_browser->details->remove_button), "clicked", GTK_SIGNAL_FUNC (remove_button_cb), property_browser);
+
+	/* the actual contents are created when necessary */	
   	property_browser->details->content_frame = NULL;
 
 	/* initially, display the top level */
@@ -224,7 +262,7 @@ nautilus_property_browser_new (void)
 {
 	NautilusPropertyBrowser *browser = NAUTILUS_PROPERTY_BROWSER (gtk_type_new (nautilus_property_browser_get_type ()));
 	
-	gtk_container_set_border_width (GTK_CONTAINER (browser), 2);
+	gtk_container_set_border_width (GTK_CONTAINER (browser), 0);
   	gtk_window_set_policy (GTK_WINDOW(browser), FALSE, FALSE, FALSE);
   	gtk_widget_show (GTK_WIDGET(browser));
 	
@@ -258,7 +296,7 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 			guint info,
 			guint32 time)
 {
-	char *temp_str, *path, *image_file_uri;
+	char *temp_str, *path, *image_file_name, *image_file_uri;
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(widget);
 	
 	g_return_if_fail (widget != NULL);
@@ -293,12 +331,21 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 		
 		temp_str = g_strdup_printf("nautilus/%s", property_browser->details->category);
 		path = gnome_datadir_file (temp_str);
-		image_file_uri = g_strdup_printf("file://%s/%s", path, property_browser->details->dragged_file);
+		image_file_name = g_strdup_printf("%s/%s", path, property_browser->details->dragged_file);
 		
+	
+		if (!g_file_exists(image_file_name)) {
+			g_free(image_file_name);
+			image_file_name = g_strdup_printf("%s/%s/%s", nautilus_user_directory(), property_browser->details->category, 
+							  property_browser->details->dragged_file);	
+		}
+
+		image_file_uri = g_strdup_printf("file://%s", image_file_name);
 		gtk_selection_data_set(selection_data, selection_data->target, 8, image_file_uri, strlen(image_file_uri));
 		
 		g_free(temp_str);
 		g_free(path);
+		g_free(image_file_name);
 		g_free(image_file_uri);
 		
 		break;
@@ -357,7 +404,13 @@ make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name
 	char *temp_str = g_strdup_printf("nautilus/%s", property_browser->details->category);
 	char *path = gnome_datadir_file (temp_str);
 
-	char *image_file_name = g_strdup_printf("%s/%s", path, file_name);
+	char *image_file_name = nautilus_make_path(path, file_name);
+	
+	if (!g_file_exists(image_file_name)) {
+		g_free(image_file_name);
+		image_file_name = g_strdup_printf("%s/%s/%s", nautilus_user_directory(), property_browser->details->category, file_name);	
+	}
+	
 	pixbuf = scale_pixbuf_to_fit(gdk_pixbuf_new_from_file(image_file_name));			
 
 	g_free(image_file_name);
@@ -378,8 +431,11 @@ make_color_drag_image(NautilusPropertyBrowser *property_browser, const char* col
 	int row, col, stride;
 	char *pixels, *row_pixels;
 	GdkColor color;
-			
+	
 	gdk_color_parse(property_browser->details->dragged_file, &color);
+	color.red >>= 8;
+	color.green >>= 8;
+	color.blue >>= 8;
 	
 	pixels = gdk_pixbuf_get_pixels (color_square);
 	stride = gdk_pixbuf_get_rowstride (color_square);
@@ -411,7 +467,320 @@ static void
 title_clicked_cb(GtkWidget *widget, GdkEventButton *event, NautilusPropertyBrowser *property_browser)
 {
 	/* for now, all clicks on the title bar return to the main level */
+	property_browser->details->remove_mode = 0;
 	nautilus_property_browser_set_category(property_browser, NULL);
+}
+
+/* routines to remove specific category types.  First, handle colors */
+/* having trouble removing nodes, so instead I'll mark it invisible - eventually this needs to be fixed */
+
+static void
+remove_color(NautilusPropertyBrowser *property_browser, const char* color_value)
+{
+	/* load the local xml file to remove the color */
+	xmlNodePtr cur_node;
+	char* xml_path = get_xml_path(property_browser);
+	xmlDocPtr document = xmlParseFile (xml_path);
+	g_free(xml_path);
+
+	if (document == NULL)
+		return;
+
+	/* find the colors category */
+	cur_node = document->root->childs;
+	while (cur_node != NULL) {
+		if (!strcmp(cur_node->name, "category")) {
+			char* category_name =  xmlGetProp (cur_node, "name");
+			if (!strcmp(category_name, "colors")) {
+				
+				/* loop through the colors to find one that matches */
+				xmlNodePtr color_node = cur_node->childs;
+				while (color_node != NULL) {
+					char* color_content = xmlNodeGetContent(color_node);
+					if (color_content && !strcmp(color_content, color_value)) {
+						xmlSetProp(color_node, "deleted", "1");
+						break;
+					}
+					else
+						color_node = color_node->next;
+				}
+				break;
+			}
+		}
+		cur_node = cur_node->next;
+	}
+	
+	/* write the document back out to the file in the user's home directory */
+	
+	xml_path = nautilus_make_path(nautilus_user_directory(), property_browser->details->path);
+	xmlSaveFile(xml_path, document);
+	xmlFreeDoc(document);
+	g_free(xml_path);
+}
+
+/* remove the background matching the passed in name */
+
+static void
+remove_background(NautilusPropertyBrowser *property_browser, const char* background_name)
+{
+	/* build the pathname of the background */
+	char *background_uri = g_strdup_printf("file://%s/backgrounds/%s", nautilus_user_directory(), background_name);
+		
+	/* delete the background from the background directory */
+	if (gnome_vfs_unlink(background_uri) != GNOME_VFS_OK) {
+		g_warning("couldnt delete background %s", background_uri);
+	}
+	
+	g_free(background_uri);
+}
+
+/* remove the emblem matching the passed in name */
+
+static void
+remove_emblem(NautilusPropertyBrowser *property_browser, const char* emblem_name)
+{
+	/* build the pathname of the emblem */
+	
+	/* delete the emblem from the emblem directory */
+}
+
+
+/* handle removing the passed in element */
+
+static void
+nautilus_property_browser_remove_element(NautilusPropertyBrowser *property_browser, const char* element_name)
+{
+	/* lookup category and get mode, then case out and handle the modes */
+	if (!strcmp(property_browser->details->category, "backgrounds")) {
+		remove_background(property_browser, element_name);
+	}
+	else if (!strcmp(property_browser->details->category, "colors")) {
+		remove_color(property_browser, element_name);
+	}
+	else if (!strcmp(property_browser->details->category, "emblems")) {
+		remove_emblem(property_browser, element_name);
+	}
+
+}
+
+/* Callback used when the color selection dialog is destroyed */
+static gboolean
+dialog_destroy (GtkWidget *widget, gpointer data)
+{
+	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(data);
+	property_browser->details->dialog = NULL;
+	return FALSE;
+}
+
+/* fetch the path of the xml file.  First, try to find it in the home directory, but it
+   we can't find it there, try the shared directory */
+   
+static char*
+get_xml_path(NautilusPropertyBrowser *property_browser)
+{
+	char *temp_str;
+	/* first try the user's home directory */
+	char *xml_path = nautilus_make_path(nautilus_user_directory(), property_browser->details->path);
+	
+	if (g_file_exists(xml_path))
+		return xml_path;
+	
+	/* next try the shared directory */
+	
+	g_free(xml_path);
+	temp_str = g_strdup_printf("nautilus/%s", property_browser->details->path);
+	xml_path = gnome_datadir_file (temp_str);
+	g_free(temp_str);
+	return xml_path;
+}
+
+/* add the newly selected file to the browser images */
+
+static void
+add_background_to_browser (GtkWidget *widget, gpointer *data)
+{
+	char *directory_path, *source_file_name, *destination_name;
+	char *command_str;
+	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(data);
+
+	/* get the file path from the file selection widget */
+	char *path_name =g_strdup(gtk_file_selection_get_filename (GTK_FILE_SELECTION (property_browser->details->dialog)));
+	
+	gtk_widget_destroy (property_browser->details->dialog);
+	property_browser->details->dialog = NULL;
+
+	/* fetch the mime type and make sure that the file is an image */
+	
+	/* copy the image file to the backgrounds directory */
+	/* FIXME: do we need to do this with gnome-vfs? */
+
+	directory_path = nautilus_make_path(nautilus_user_directory(), property_browser->details->category);
+	source_file_name = strrchr(path_name, '/');
+	destination_name = nautilus_make_path(directory_path, source_file_name + 1);
+	
+	/* make the directory if it doesn't exist */
+	if (!g_file_exists(directory_path)) {
+		char *directory_uri = g_strdup_printf("file://%s", directory_path);
+		gnome_vfs_make_directory(directory_uri, GNOME_VFS_PERM_USER_ALL | GNOME_VFS_PERM_GROUP_ALL | GNOME_VFS_PERM_OTHER_READ);
+		g_free(directory_uri);
+	}
+		
+	g_free(directory_path);
+	
+	command_str = g_strdup_printf("cp '%s' '%s'", path_name, destination_name);
+	
+	if (system(command_str) != 0) {
+		g_warning("couldnt copy background %s", path_name);
+	}
+				
+	g_free(command_str);
+	g_free(path_name);	
+	g_free(destination_name);
+	
+	/* update the property browser's contents to show the new one */
+	nautilus_property_browser_update_contents(property_browser);
+}
+
+/* here's where we initiate adding a new background by putting up a file selector */
+
+static void
+add_new_background(NautilusPropertyBrowser *property_browser)
+{
+	if (property_browser->details->dialog) {
+		gtk_widget_show(property_browser->details->dialog);
+		if (property_browser->details->dialog->window)
+			gdk_window_raise(property_browser->details->dialog->window);
+
+	} else {
+		GtkFileSelection *file_dialog;
+
+		property_browser->details->dialog = gtk_file_selection_new ("Select an image file to add as a background:");
+		file_dialog = GTK_FILE_SELECTION (property_browser->details->dialog);
+		
+		gtk_signal_connect (GTK_OBJECT (property_browser->details->dialog), "destroy", (GtkSignalFunc) dialog_destroy, property_browser);
+		gtk_signal_connect (GTK_OBJECT (file_dialog->ok_button), "clicked", (GtkSignalFunc) add_background_to_browser, property_browser);
+		gtk_signal_connect_object (GTK_OBJECT (file_dialog->cancel_button), "clicked", (GtkSignalFunc) gtk_widget_destroy, GTK_OBJECT(file_dialog));
+
+		gtk_window_set_position (GTK_WINDOW (file_dialog), GTK_WIN_POS_MOUSE);
+		gtk_widget_show (GTK_WIDGET(file_dialog));
+	}
+}
+
+/* here's where we add the passed in color to the file that defines the colors */
+
+static void
+add_color_to_file(NautilusPropertyBrowser *property_browser, const char *color_spec)
+{
+	xmlNodePtr cur_node;
+	char* xml_path = get_xml_path(property_browser);
+	xmlDocPtr document = xmlParseFile (xml_path);
+	g_free(xml_path);
+
+	if (document == NULL)
+		return;
+
+	/* find the colors category */
+	cur_node = document->root->childs;
+	while (cur_node != NULL) {
+		if (!strcmp(cur_node->name, "category")) {
+			char* category_name =  xmlGetProp (cur_node, "name");
+			if (!strcmp(category_name, "colors")) {
+				/* add a new color node */
+				xmlNodePtr new_color_node = xmlNewChild(cur_node, NULL, "color", NULL);
+				xmlNodeSetContent(new_color_node, color_spec);
+				xmlSetProp(new_color_node, "local", "1");
+				break;
+			}
+		}
+		cur_node = cur_node->next;
+	}
+	
+	/* write the document back out to the file in the user's home directory */
+	xml_path = nautilus_make_path(nautilus_user_directory(), property_browser->details->path);
+	xmlSaveFile(xml_path, document);
+	xmlFreeDoc(document);
+	g_free(xml_path);
+}
+
+/* handle the OK button being pushed on the color selector */
+static void
+add_color_to_browser (GtkWidget *widget, gpointer *data)
+{
+	char* color_spec;
+	gdouble color[4];
+	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(data);
+	
+	gtk_color_selection_get_color (GTK_COLOR_SELECTION (GTK_COLOR_SELECTION_DIALOG (property_browser->details->dialog)->colorsel), color);
+	gtk_widget_destroy (property_browser->details->dialog);
+	property_browser->details->dialog = NULL;	
+
+	color_spec = g_strdup_printf ("rgb:%04hX/%04hX/%04hX", (gushort) (color[0] * 65535.0 + 0.5),  (gushort) (color[1] * 65535.0 + 0.5),  (gushort) (color[2] * 65535.0 + 0.5));
+	add_color_to_file(property_browser, color_spec);
+	nautilus_property_browser_update_contents(property_browser);
+	g_free(color_spec);	
+}
+
+
+/* here's the routine to add a new color, by putting up a color selector */
+
+static void
+add_new_color(NautilusPropertyBrowser *property_browser)
+{
+	if (property_browser->details->dialog) {
+		gtk_widget_show(property_browser->details->dialog);
+		if (property_browser->details->dialog->window)
+			gdk_window_raise(property_browser->details->dialog->window);
+
+	} else {
+		GtkColorSelectionDialog *color_dialog;
+
+		property_browser->details->dialog = gtk_color_selection_dialog_new ("Select a color to add:");
+		color_dialog = GTK_COLOR_SELECTION_DIALOG (property_browser->details->dialog);
+		
+		gtk_signal_connect (GTK_OBJECT (property_browser->details->dialog), "destroy", (GtkSignalFunc)  dialog_destroy, property_browser);
+		gtk_signal_connect (GTK_OBJECT (color_dialog->ok_button), "clicked", (GtkSignalFunc) add_color_to_browser, property_browser);
+		gtk_signal_connect_object (GTK_OBJECT (color_dialog->cancel_button), "clicked", (GtkSignalFunc) gtk_widget_destroy, GTK_OBJECT(color_dialog));
+		gtk_widget_hide(color_dialog->help_button);
+
+		gtk_window_set_position (GTK_WINDOW (color_dialog), GTK_WIN_POS_MOUSE);
+		gtk_widget_show (GTK_WIDGET(color_dialog));
+	}
+}
+
+
+/* handle the add_new button */
+
+static void
+add_new_button_cb(GtkWidget *widget, NautilusPropertyBrowser *property_browser)
+{
+	/* handle remove mode, where we act as a cance button */
+	if (property_browser->details->remove_mode) {
+		property_browser->details->remove_mode = 0;
+		nautilus_property_browser_update_contents(property_browser);
+		return;
+	}
+	
+	/* case out on the category */
+	if (!strcmp(property_browser->details->category, "backgrounds")) {
+		add_new_background(property_browser);
+	}
+	else if (!strcmp(property_browser->details->category, "colors")) {
+		add_new_color(property_browser);
+	}
+	else if (!strcmp(property_browser->details->category, "emblems")) {
+		g_message("create new emblem");
+	}
+}
+
+/* handle the "remove" button */
+static void
+remove_button_cb(GtkWidget *widget, NautilusPropertyBrowser *property_browser)
+{
+	if (property_browser->details->remove_mode)
+		return;
+	
+	property_browser->details->remove_mode = 1;
+	nautilus_property_browser_update_contents(property_browser);	
 }
 
 /* this callback handles clicks on the image or color based content content elements */
@@ -428,6 +797,15 @@ element_clicked_cb(GtkWidget *widget, GdkEventButton *event, char *element_name)
 	int pixmap_width, pixmap_height;
 	int x_delta, y_delta;
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(gtk_object_get_user_data(GTK_OBJECT(widget)));
+	
+	/* handle remove mode by removing the element */
+	if (property_browser->details->remove_mode) {
+		nautilus_property_browser_remove_element(property_browser, element_name);
+		property_browser->details->remove_mode = 0;
+		nautilus_property_browser_update_contents(property_browser);
+		
+		return;
+	}
 	
 	/* set up the drag and drop type corresponding to the category */
 	drag_types[0].target = property_browser->details->drag_type;
@@ -515,26 +893,19 @@ add_to_content_table(NautilusPropertyBrowser *property_browser, GtkWidget* widge
 
 /* make_properties_from_directory generates widgets corresponding all of the objects in the passed in directory */
 
-static void
-make_properties_from_directory(NautilusPropertyBrowser *property_browser, const char* path)
+static int
+make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, const char* directory_uri, int index)
 {
 	NautilusBackground *background;
-	int index = 0;
 	GnomeVFSResult result;
 	GnomeVFSFileInfo *current_file_info;
 	GnomeVFSDirectoryList *list;
 		
-	char *temp_str = g_strdup_printf("nautilus/%s", property_browser->details->category);
-	char *directory_path = gnome_datadir_file (temp_str);
-	char *directory_uri = g_strdup_printf("file://%s", directory_path);
 		
 	result = gnome_vfs_directory_list_load(&list, directory_uri, GNOME_VFS_FILE_INFO_GETMIMETYPE, NULL, NULL);
-	g_free(temp_str);
-	g_free(directory_uri);
 		
 	if (result != GNOME_VFS_OK) {
-		g_free(directory_path);
-		return;
+		return index;
 	}	
 	/* interate through the directory for each file */
 	current_file_info = gnome_vfs_directory_list_first(list);
@@ -549,7 +920,7 @@ make_properties_from_directory(NautilusPropertyBrowser *property_browser, const 
 			GtkWidget *event_box, *temp_vbox;
 			GtkWidget *pixmap_widget, *label;
 
-			image_file_name = g_strdup_printf("%s/%s", directory_path, current_file_info->name);
+			image_file_name = g_strdup_printf("%s/%s", directory_uri+7, current_file_info->name);
 			pixbuf = gdk_pixbuf_new_from_file(image_file_name);
 			g_free(image_file_name);
 			
@@ -591,7 +962,37 @@ make_properties_from_directory(NautilusPropertyBrowser *property_browser, const 
 	}
 	
 	gnome_vfs_directory_list_destroy(list);
-	g_free(directory_path);
+	return index;
+}
+
+/* make_properties_from_directory generates widgets corresponding all of the objects in both the home and shared directories */
+
+static void
+make_properties_from_directory(NautilusPropertyBrowser *property_browser, const char* path)
+{
+	char *temp_str, *directory_path, *directory_uri;
+	int new_index;
+	int index = 0;
+	
+	/* first, make properties from the shared space */
+	if (!property_browser->details->remove_mode) {
+		temp_str = g_strdup_printf("nautilus/%s", property_browser->details->category);
+		directory_path = gnome_datadir_file (temp_str);
+		directory_uri = g_strdup_printf("file://%s", directory_path);
+		
+		index = make_properties_from_directory_path(property_browser, directory_uri, index);
+	
+		g_free(temp_str);
+		g_free(directory_path);
+		g_free(directory_uri);
+	}
+	
+	/* next, make them from the local space, if it exists */
+	directory_uri = g_strdup_printf("file://%s/%s", nautilus_user_directory(), property_browser->details->category);
+	new_index = make_properties_from_directory_path(property_browser, directory_uri,index);
+	g_free(directory_uri);	
+
+	property_browser->details->has_local = new_index != index;
 }
 
 /* generate properties from the children of the passed in node */
@@ -602,26 +1003,38 @@ make_properties_from_xml_node(NautilusPropertyBrowser *property_browser, xmlNode
 {
 	xmlNode *current_node = node->childs;
 	int index = 0;
+	int local_only = property_browser->details->remove_mode;
+	
+	property_browser->details->has_local = 0;
+	
 	while (current_node != NULL) {
 		NautilusBackground *background;
 		GtkWidget *frame;
 		char* color_str = xmlNodeGetContent(current_node);
-		GtkWidget *event_box = gtk_event_box_new();
-		gtk_widget_set_usize(event_box, 48, 48);
-		gtk_widget_show(event_box);
-
-		frame = gtk_frame_new(NULL);
-  		gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_OUT);
-		gtk_widget_show(frame);
-		gtk_container_add(GTK_CONTAINER(frame), event_box);
+		char* local = xmlGetProp(current_node, "local");
+		char* deleted = xmlGetProp(current_node, "deleted");
 		
-		background = nautilus_get_widget_background (GTK_WIDGET (event_box));
-		nautilus_background_set_color (background, color_str);	
+		if (local && !deleted)
+			property_browser->details->has_local = 1;
 			
-		gtk_signal_connect(GTK_OBJECT (event_box), "button_press_event", 
+		if (!deleted && (!local_only || (local != NULL))) {
+			GtkWidget *event_box = gtk_event_box_new();
+			gtk_widget_set_usize(event_box, 48, 48);
+			gtk_widget_show(event_box);
+
+			frame = gtk_frame_new(NULL);
+  			gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_OUT);
+			gtk_widget_show(frame);
+			gtk_container_add(GTK_CONTAINER(frame), event_box);
+		
+			background = nautilus_get_widget_background (GTK_WIDGET (event_box));
+			nautilus_background_set_color (background, color_str);	
+			
+			gtk_signal_connect(GTK_OBJECT (event_box), "button_press_event", 
 					GTK_SIGNAL_FUNC(element_clicked_cb), g_strdup(color_str));
-                gtk_object_set_user_data(GTK_OBJECT(event_box), property_browser);
-		add_to_content_table(property_browser, frame, index++, 12);				
+                	gtk_object_set_user_data(GTK_OBJECT(event_box), property_browser);
+			add_to_content_table(property_browser, frame, index++, 12);				
+		}
 		
 		current_node = current_node->next;
 	}
@@ -683,7 +1096,7 @@ make_category_link(NautilusPropertyBrowser *property_browser, char* name, char* 
 void
 nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_browser)
 {
- 	char   *xml_path;
+ 	char *xml_path;
 	xmlNodePtr cur_node;
  	xmlDocPtr document;
  	NautilusBackground *background;
@@ -691,9 +1104,10 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	gint index = 0;
 	
 	/* load the xml document corresponding to the path and selection */
-	xml_path = gnome_datadir_file (property_browser->details->path);
+	xml_path = get_xml_path(property_browser);
 	document = xmlParseFile (xml_path);
 	g_free(xml_path);
+	
 	if (document == NULL)
 		return;
 		
@@ -706,6 +1120,8 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	/* allocate a new container, with a scrollwindow and viewport */
 	
 	property_browser->details->content_frame = gtk_scrolled_window_new (NULL, NULL);
+	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->content_frame), 6);				
+ 	
  	viewport = gtk_viewport_new(NULL, NULL);
 	gtk_widget_show(viewport);
 	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
@@ -747,15 +1163,56 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	if (document)
 		xmlFreeDoc(document);
 
-	/* update the title */
-	if (property_browser->details->category == NULL)
-		gtk_label_set_text(GTK_LABEL(property_browser->details->title_label), "Select A Category:");
-	else {
-		char *label_text = g_strdup_printf("Categories: %s", property_browser->details->category);
-		gtk_label_set_text(GTK_LABEL(property_browser->details->title_label), label_text);
-		g_free(label_text);
-	}	
+	/* update the title and button */
 
+	if (property_browser->details->category == NULL) {
+		gtk_label_set_text(GTK_LABEL(property_browser->details->title_label), "Select A Category:");
+		gtk_widget_hide(property_browser->details->add_button);
+		gtk_widget_hide(property_browser->details->remove_button);
+	
+	} else {
+		char *label_text, *temp_str;
+				
+		if (property_browser->details->remove_mode) {
+			temp_str = g_strdup("Cancel Remove");		
+		} else {
+			temp_str = g_strdup_printf("Add a new %s", property_browser->details->category);	
+			temp_str[strlen(temp_str) - 1] = '\0'; /* trim trailing s */
+		}
+		
+		/* enable the "add new" button and update it's name */		
+		
+		gtk_label_set(GTK_LABEL(property_browser->details->add_button_label), temp_str);
+		gtk_widget_show(property_browser->details->add_button);
+		
+		if (property_browser->details->remove_mode) {
+			char *temp_category = g_strdup(property_browser->details->category);
+			temp_category[strlen(temp_category) - 1] = '\0'; /* strip trailing s */
+			label_text = g_strdup_printf("Click on a %s to remove it", temp_category);		
+			g_free(temp_category);
+		} else {
+		
+			label_text = g_strdup_printf("Categories: %s", property_browser->details->category);		
+		}
+		
+		gtk_label_set_text(GTK_LABEL(property_browser->details->title_label), label_text);
+
+		/* enable the remove button (if necessary) and update its name */
+		
+		g_free(temp_str);
+		temp_str = g_strdup_printf("Remove a %s", property_browser->details->category);		
+				
+		if (property_browser->details->remove_mode || !property_browser->details->has_local)
+			gtk_widget_hide(property_browser->details->remove_button);
+		else
+			gtk_widget_show(property_browser->details->remove_button);
+		
+		temp_str[strlen(temp_str) - 1] = '\0'; /* trim trailing s */
+		gtk_label_set(GTK_LABEL(property_browser->details->remove_button_label), temp_str);
+		
+		g_free(label_text);
+		g_free(temp_str);
+	}
 }
 
 /* set the category and regenerate contents as necessary */
