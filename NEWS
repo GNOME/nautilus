@@ -6,3 +6,58 @@ that doesn't make sense any more.
 We won't be porting Nautilus to GNOME 2 until the library freeze date
 (at the request of the library developers, Michael Meeks mainly) so
 this is still a GNOME 1 source tree for now.
+
+Changes since Nautilus 1.0.3:
+
+	Fixes to bugs and other changes to speed up Nautilus's
+	display of new directories (Yoann, Darin, Maciej)
+
+	FreeBSD compile fixes (Darin, Gene)
+
+	Fixes to compile with C compilers that don't allow empty
+	structures (Darin)
+
+	Fix to the MOZILLA_FIVE_HOME setting code to make the Mozilla
+	component work in more configurations. (peter@ximian.com, Darin)
+
+	Make thumbnails always go in the home directory if "Make
+	Folder Appearance Details
+	Public" is set to Never (John, Michael Rothwell)
+
+	Fixed a few small i18n problems. (Darin)
+
+	Use Bonobo to handle additional key bindings, instead of using
+	our own hack code. (Darin)
+
+	Make default Web Search use google instead of the defunct
+	Eazel search page. (Darin)
+
+	Fix bug reading track info from MP3 files. (Jon K Hellan)
+
+	Make News panel flash less. (Andy)
+
+	Fixed bug in throbber destruction process (Darin, Owen)
+
+	Added prelighting and tracking to the throbber (Anders, Darin)
+
+	Use Control keys rather than Alt keys to move around in the
+	file manager windows because Sawfish changed to use Alt again
+	(John Harper)
+
+	Fix MIME bug that might lead to the wrong default component
+	getting used. This could have been what caused some people to
+	get the text view instead of the web page view. (Darin)
+
+	Fix problems typing non-ASCII characters on some systems
+	(Johan Dahlin, Darin)
+
+	Install IDL files for non-C component programmers (Johan
+	Dahlin, Darin)
+
+	Support trash on XFS volumes (Caleb J. Land, Darin)
+
+	Updated lots of icons, including most of the ones in the
+	classic GNOME theme (Ben FrantzDale, Seth Nickell)
+
+	Some other small bug fixes (Juan Pablo Mendoza,
+	limval@yahoo.com, Frederic Devernay, Darin)
