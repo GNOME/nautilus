@@ -25,12 +25,13 @@
 #include <config.h>
 #include "nautilus-directory-metafile.h"
 
+#include "nautilus-directory-private.h"
+#include "nautilus-glib-extensions.h"
+#include "nautilus-metadata.h"
+#include "nautilus-string.h"
+#include "nautilus-xml-extensions.h"
 #include <stdlib.h>
 #include <xmlmemory.h>
-#include "nautilus-string.h"
-#include "nautilus-glib-extensions.h"
-#include "nautilus-xml-extensions.h"
-#include "nautilus-directory-private.h"
 
 #define METAFILE_XML_VERSION "1.0"
 
@@ -736,7 +737,7 @@ nautilus_directory_set_file_metadata_list (NautilusDirectory *directory,
 }
 
 void
-nautilus_directory_update_file_metadata (NautilusDirectory *directory,
+nautilus_directory_rename_file_metadata (NautilusDirectory *directory,
 					 const char *old_file_name,
 					 const char *new_file_name)
 {
@@ -914,4 +915,61 @@ nautilus_directory_set_integer_metadata (NautilusDirectory *directory,
 
 	g_free (value_as_string);
 	g_free (default_as_string);
+}
+
+static void
+copy_file_metadata_for_key (NautilusDirectory *source_directory,
+			    const char *source_file_name,
+			    NautilusDirectory *destination_directory,
+			    const char *destination_file_name,
+			    const char *key)
+{
+	char *data;
+
+	data = nautilus_directory_get_file_metadata
+		(source_directory, source_file_name,
+		 key, NULL);
+	nautilus_directory_set_file_metadata
+		(destination_directory, destination_file_name,
+		 key, NULL, data);
+	g_free (data);
+}
+
+void
+nautilus_directory_copy_file_metadata (NautilusDirectory *source_directory,
+				       const char *source_file_name,
+				       NautilusDirectory *destination_directory,
+				       const char *destination_file_name)
+{
+	/* FIXME bugzilla.eazel.com 2808: This hard-coded set of keys is not right. */
+	/* FIXME bugzilla.eazel.com 3343: This does nothing to ensure
+	 * the source directory metadata is read in.
+	 */
+	copy_file_metadata_for_key
+		(source_directory, source_file_name,
+		 destination_directory, destination_file_name,
+		 NAUTILUS_METADATA_KEY_NOTES);
+	copy_file_metadata_for_key
+		(source_directory, source_file_name,
+		 destination_directory, destination_file_name,
+		 NAUTILUS_METADATA_KEY_ICON_SCALE);
+	copy_file_metadata_for_key
+		(source_directory, source_file_name,
+		 destination_directory, destination_file_name,
+		 NAUTILUS_METADATA_KEY_ICON_POSITION);
+	copy_file_metadata_for_key
+		(source_directory, source_file_name,
+		 destination_directory, destination_file_name,
+		 NAUTILUS_METADATA_KEY_ANNOTATION);
+	copy_file_metadata_for_key
+		(source_directory, source_file_name,
+		 destination_directory, destination_file_name,
+		 NAUTILUS_METADATA_KEY_CUSTOM_ICON);
+}
+
+void
+nautilus_directory_remove_file_metadata (NautilusDirectory *directory,
+					 const char *file_name)
+{
+	/* FIXME bugzilla.eazel.com 2807: This is not implemented. */
 }

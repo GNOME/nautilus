@@ -1,3 +1,65 @@
+2000-09-28  Darin Adler  <darin@eazel.com>
+
+	Fixed renaming bug with names with unusual characters and problems
+	caused by the clipboard code, and started work on metadata copying
+	and removing implementation and cleanup.
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(nautilus_file_operations_new_folder): Use
+	gnome_vfs_uri_append_file_name instead of
+	gnome_vfs_uri_append_path, since we are appending a file name, not
+	a path in URI format.
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_user_main_directory): Use
+	gnome_vfs_uri_append_file_name instead of
+	gnome_vfs_uri_append_path, since we are appending a file name, not
+	a path in URI format.
+	* libnautilus-extensions/nautilus-file.c:
+	(rename_update_info_and_metafile): Use metadata call by new name.
+	(nautilus_file_rename): Use gnome_vfs_uri_append_file_name instead
+	of gnome_vfs_uri_append_path, since we are appending a file name,
+	not a path in URI format. This should fix the renaming problems we
+	were seeing.
+	
+	* libnautilus/nautilus-clipboard.h:
+	* libnautilus/nautilus-clipboard.c:
+	(set_paste_sensitive_if_clipboard_contains_data),
+	(set_clipboard_menu_items_sensitive),
+	(set_clipboard_menu_items_insensitive): Removed unused window
+	parameter.
+	(menu_activated_callback): Changed this function to find the
+	window using gtk_widget_toplevel instead of from a global. This
+	works in all the cases where the old code would have worked, and
+	doesn't have the problem with multiple windows.
+	(menu_deactivated_callback): Removed unused window parameter.
+	(nautilus_clipboard_set_up_editable_from_bonobo_control): Added
+	check for NULL menubar. This shows a design problem too, but at
+	least it 
+	(nautilus_clipboard_set_up_host_ui_handler): Got rid of global.
+	* src/nautilus-window.c: (nautilus_window_constructed): Use
+	clipboard call by new name.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_schedule_metadata_copy),
+	(nautilus_directory_schedule_metadata_move),
+	(nautilus_directory_schedule_metadata_remove),
+	(nautilus_directory_schedule_position_setting): Tighten up these
+	routines a bit and have them do as much work as possible through
+	functions in nautilus-directory-metafile.[ch]. This is preparation
+	for doing full implementation of the actual metadata copying.
+	
+	* libnautilus-extensions/nautilus-directory-metafile.h:
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(nautilus_directory_rename_file_metadata),
+	(copy_file_metadata_for_key),
+	(nautilus_directory_copy_file_metadata),
+	(nautilus_directory_remove_file_metadata): New functions to doteh
+	metadata copying, and a new name for an old function.  Now I have
+	to actually make them work better.
+	
+	* nautilus.spec.in: Do a "make check" instead of a "make" when
+	building RPMs.
+
 2000-09-28  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-md5.c:

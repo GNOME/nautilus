@@ -1268,7 +1268,7 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 
 	/* pass in the target directory and the new folder name as a destination URI */
 	parent_uri = gnome_vfs_uri_new (parent_dir);
-	uri = gnome_vfs_uri_append_path (parent_uri, _("untitled folder"));
+	uri = gnome_vfs_uri_append_file_name (parent_uri, _("untitled folder"));
 	target_uri_list = g_list_append (NULL, uri);
 	
 	gnome_vfs_async_xfer (&state->handle, NULL, target_uri_list,
@@ -1453,9 +1453,7 @@ do_empty_trash (GtkWidget *parent_view)
 		&trash_dir_uri, FALSE, FALSE, 0777);
 
 	if (result == GNOME_VFS_OK) {
-
 		g_assert (trash_dir_uri != NULL);
-
 
 		/* set up the move parameters */
 		xfer_info = g_new (XferInfo, 1);
@@ -1480,7 +1478,6 @@ do_empty_trash (GtkWidget *parent_view)
 		      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
 		      		      &update_xfer_callback, xfer_info,
 		      		      &sync_xfer_callback, NULL);
-
 	}
 
 	gnome_vfs_uri_list_free (trash_dir_list);

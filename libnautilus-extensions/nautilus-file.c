@@ -780,7 +780,7 @@ operation_cancel (Operation *op)
 static void
 rename_update_info_and_metafile (Operation *op)
 {
-	nautilus_directory_update_file_metadata
+	nautilus_directory_rename_file_metadata
 		(op->file->details->directory,
 		 op->file->details->name,
 		 op->new_name);
@@ -843,8 +843,8 @@ nautilus_file_rename (NautilusFile *file,
 		      NautilusFileOperationCallback callback,
 		      gpointer callback_data)
 {
-	char *directory_uri_path;
-	GnomeVFSURI *directory_uri;
+	char *directory_uri;
+	GnomeVFSURI *directory_vfs_uri;
 	GList *source_uri_list, *target_uri_list;
 	GnomeVFSResult result;
 	Operation *op;
@@ -904,14 +904,16 @@ nautilus_file_rename (NautilusFile *file,
 	 * This call could use gnome_vfs_async_set_file_info
 	 * instead and it might be simpler.
 	 */
-	directory_uri_path = nautilus_directory_get_uri (file->details->directory);
-	directory_uri = gnome_vfs_uri_new (directory_uri_path);
-	g_free (directory_uri_path);
-	source_uri_list = g_list_prepend (NULL, gnome_vfs_uri_append_path (directory_uri,
-		file->details->name));
-	target_uri_list = g_list_prepend (NULL, gnome_vfs_uri_append_path (directory_uri,
-		new_name));
-	gnome_vfs_uri_unref (directory_uri);
+	directory_uri = nautilus_directory_get_uri (file->details->directory);
+	directory_vfs_uri = gnome_vfs_uri_new (directory_uri);
+	g_free (directory_uri);
+	source_uri_list = g_list_prepend
+		(NULL, gnome_vfs_uri_append_file_name (directory_vfs_uri,
+						       file->details->name));
+	target_uri_list = g_list_prepend
+		(NULL, gnome_vfs_uri_append_file_name (directory_vfs_uri,
+						       new_name));
+	gnome_vfs_uri_unref (directory_vfs_uri);
 
 	result = gnome_vfs_async_xfer
 		(&op->handle, source_uri_list, target_uri_list,
