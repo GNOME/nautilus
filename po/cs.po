@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.0.98\n"
-"POT-Creation-Date: 2001-05-19 14:47-0700\n"
+"POT-Creation-Date: 2001-05-19 22:45-0700\n"
 "PO-Revision-Date: 2001-02-02 23:19-0800\n"
 "Last-Translator: George Lebl <jirka@5z.com>\n"
 "Language-Team: czech <cs@li.org>\n"
@@ -909,6 +909,11 @@ msgid ""
 "\n"
 "Try viewing the page in a different web browser, such as Mozilla."
 msgstr ""
+"Funkce JavaScriptu (malý softvérový program) na této stránce se pokusil "
+"otevøít nové okno, ale Nautilus nepodporuje otevírání nových oken z "
+"JavaSkrpitu.\n"
+"\n"
+"Zkuste se na tuto stránku podívat jiným prohlí¾eèem, jako je tøeba Mozilla."
 
 #: components/mozilla/nautilus-mozilla-content-view.c:768
 msgid "Nautilus JavaScript Warning"
@@ -928,11 +933,11 @@ msgstr "Továrna na pohled Mozilla pro Nautilus"
 
 #: components/mozilla/Nautilus_View_mozilla.oaf.in.h:3
 msgid "Mozilla content view component"
-msgstr ""
+msgstr "Komponent pro pohled Mozilla"
 
 #: components/mozilla/Nautilus_View_mozilla.oaf.in.h:4
 msgid "Mozilla content view component's factory"
-msgstr ""
+msgstr "Továrna na komponent pro pohled Mozilla"
 
 #: components/mozilla/Nautilus_View_mozilla.oaf.in.h:5
 msgid "View as Web Page"
@@ -1703,19 +1708,19 @@ msgstr "Naèítám %s"
 
 #: components/news/nautilus-news.c:1867
 msgid "Sorry, but you have not specified a name for the site!"
-msgstr ""
+msgstr "Lituji, ale nespecifikoval(a) jste jméno pro server!"
 
 #: components/news/nautilus-news.c:1867
 msgid "Missing Site Name Error"
-msgstr ""
+msgstr "Chybìjící jméno serveru"
 
 #: components/news/nautilus-news.c:1871
 msgid "Sorry, but you have not specified a URL for the site!"
-msgstr ""
+msgstr "Lituji, ale nespecifikoval(a) jste URL pro server!"
 
 #: components/news/nautilus-news.c:1871
 msgid "Missing URL Error"
-msgstr ""
+msgstr "Chybìjící URL serveru"
 
 #: components/news/nautilus-news.c:1888
 msgid "Sorry, but the specified url doesn't seem to be a valid RSS file!"
@@ -1780,6 +1785,8 @@ msgid ""
 "The News panel displays current headlines from your favorite websites.  "
 "Click the 'Select Sites' button to select the sites to display."
 msgstr ""
+"Panel zpráv ukazuje aktuální titulky z va¹ich oblíbených webových stránek.  "
+"Zmaèknìte tlaèítko 'Vybrat servery' k výbìru servernù které ukazovat."
 
 #. create a button box to hold the command buttons
 #: components/news/nautilus-news.c:2407
@@ -1800,7 +1807,7 @@ msgstr "Zprávy boèní panel"
 
 #: components/news/Nautilus_View_news.oaf.in.h:4
 msgid "News sidebar panel fetches and displays RSS feeds"
-msgstr ""
+msgstr "Boèní panel zpráv ztahuje a ukazuje zdroje RSS"
 
 #: components/notes/Nautilus_View_notes.oaf.in.h:1
 msgid "Factory for annotation view"
@@ -1875,7 +1882,7 @@ msgstr "Ukázkový prohlí¾ecí komponent"
 
 #: components/sample/Nautilus_View_sample.oaf.in.h:6
 msgid "Sample content view component's factory"
-msgstr ""
+msgstr "Továrna na ukázkový prohlí¾ecí komponent"
 
 #: components/sample/Nautilus_View_sample.oaf.in.h:7
 msgid "View as Sample"
@@ -2877,6 +2884,9 @@ msgid ""
 "\n"
 "\"%s\" cannot be moved because it is on a read-only disk."
 msgstr ""
+"Chyba pøi pøesunu.\n"
+"\n"
+"\"%s\" nelze pøesunout jeliko¾ je na disku který je pouze ke ètení."
 
 #: libnautilus-private/nautilus-file-operations.c:618
 #, c-format
@@ -2903,6 +2913,10 @@ msgid ""
 "\"%s\" cannot be moved because you do not have permissions to change it or "
 "its parent folder."
 msgstr ""
+"Chyba pøi pøesunu.\n"
+"\n"
+"\"%s\" nelze pøesunout jeliko¾ nemáte práva zmìnit jej nebo jeho rodièovský "
+"adresáø."
 
 #: libnautilus-private/nautilus-file-operations.c:662
 #, c-format
@@ -2912,6 +2926,10 @@ msgid ""
 "\"%s\" cannot be moved to the Trash because you do not have permissions to "
 "change it or its parent folder."
 msgstr ""
+"Chyba pøi pøesunu.\n"
+"\n"
+"\"%s\" nelze pøesunout do ko¹e jeliko¾ nemáte práva zmìnit jej nebo jeho "
+"rodièovský adresáø."
 
 #: libnautilus-private/nautilus-file-operations.c:686
 #, c-format
@@ -2920,6 +2938,9 @@ msgid ""
 "\n"
 "\"%s\" cannot be copied because you do not have permissions to read it."
 msgstr ""
+"Chyba pøi kopírování.\n"
+"\n"
+"\"%s\" nelze pøekopírovat jeliko¾ nemáte práva na jeho ètení."
 
 #: libnautilus-private/nautilus-file-operations.c:708
 #, c-format
@@ -3429,6 +3450,9 @@ msgid ""
 "\n"
 "There is no space on the destination."
 msgstr ""
+"Nelze vytvoøit nový adresáø.\n"
+"\n"
+"Na místì urèení ji¾ není místo."
 
 #: libnautilus-private/nautilus-file-operations.c:2027
 #, c-format
@@ -4235,6 +4259,8 @@ msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations.  Would you like to choose another application?"
 msgstr ""
+"\"%s\" nemù¾e otevøít \"%s\" proto¾e \"%s\" nemù¾e èíst soubory na polohách "
+"\"%s\".  Chcete vybrat jinou aplikaci?"
 
 #: libnautilus-private/nautilus-program-choosing.c:499
 #: libnautilus-private/nautilus-program-choosing.c:520
@@ -4248,6 +4274,9 @@ msgid ""
 "locations.  No other applications are available to view this file.  If you "
 "copy this file onto your computer, you may be able to open it."
 msgstr ""
+"\"%s\" nemù¾e otevøít \"%s\" proto¾e \"%s\" nemù¾e èíst soubory na polohách "
+"\"%s\".  ®ádné jiné aplikace pro tento soubor nejsou k dispozici.  Pokud "
+"zkopírujete tento soubor na vá¹ poèítaè budete ho moci otevøít."
 
 #. Human readable description for a criterion in a search for
 #. files. Bracketed items are context, and are message
@@ -4335,14 +4364,14 @@ msgstr "[Items ]které jsou %s"
 #: libnautilus-private/nautilus-search-uri.c:287
 #, c-format
 msgid "[Items ]not owned by \"%s\""
-msgstr ""
+msgstr "[Items ]nevlastnìné \"%s\""
 
 #. "%s" here is the name of user on a Linux machine, such as
 #. "root"
 #: libnautilus-private/nautilus-search-uri.c:292
 #, c-format
 msgid "[Items ]owned by \"%s\""
-msgstr ""
+msgstr "[Items ]vlastnìné \"%s\""
 
 #: libnautilus-private/nautilus-search-uri.c:295
 #, c-format
@@ -4362,40 +4391,40 @@ msgstr ""
 #: libnautilus-private/nautilus-search-uri.c:312
 #, c-format
 msgid "[Items ]smaller than %s bytes"
-msgstr ""
+msgstr "[Items ]men¹í ne¾ %s bytù"
 
 #: libnautilus-private/nautilus-search-uri.c:315
 #, c-format
 msgid "[Items ]of %s bytes"
-msgstr ""
+msgstr "[Items ]velikosti %s bytù"
 
 #: libnautilus-private/nautilus-search-uri.c:326
 msgid "[Items ]modified today"
-msgstr ""
+msgstr "[Items ]zmìnìné dnes"
 
 #: libnautilus-private/nautilus-search-uri.c:329
 msgid "[Items ]modified yesterday"
-msgstr ""
+msgstr "[Items ]zmìnìné vèera"
 
 #: libnautilus-private/nautilus-search-uri.c:332
 #, c-format
 msgid "[Items ]modified on %s"
-msgstr ""
+msgstr "[Items ]zmìnìné %s"
 
 #: libnautilus-private/nautilus-search-uri.c:334
 #, c-format
 msgid "[Items ]not modified on %s"
-msgstr ""
+msgstr "[Items ]nezmìnìné %s"
 
 #: libnautilus-private/nautilus-search-uri.c:337
 #, c-format
 msgid "[Items ]modified before %s"
-msgstr ""
+msgstr "[Items ]zmìnìné pøed %s"
 
 #: libnautilus-private/nautilus-search-uri.c:340
 #, c-format
 msgid "[Items ]modified after %s"
-msgstr ""
+msgstr "[Items ]zmìnìné po %s"
 
 #: libnautilus-private/nautilus-search-uri.c:343
 #, c-format
@@ -4582,13 +4611,15 @@ msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
 msgstr ""
+"Nautilus nemohl pøipojit disketovou mechaniku.  Pravdìpodobnì v ní není "
+"disketa."
 
 #. All others
 #: libnautilus-private/nautilus-volume-monitor.c:1677
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
-msgstr ""
+msgstr "Nautilus nemohl pøipojit zaøízení.  Pravdìpodobnì v nìm není médium."
 
 #: libnautilus-private/nautilus-volume-monitor.c:1680
 msgid "wrong fs type, bad option, bad superblock on"
@@ -4608,16 +4639,16 @@ msgstr ""
 
 #: libnautilus-private/nautilus-volume-monitor.c:1691
 msgid "Nautilus was unable to mount the selected floppy drive."
-msgstr ""
+msgstr "Nautilus nemohl pøipojit vybranou disketu."
 
 #: libnautilus-private/nautilus-volume-monitor.c:1693
 msgid "Nautilus was unable to mount the selected volume."
-msgstr ""
+msgstr "Nautilus nemohl pøipojit vybrané zaøízení."
 
 #. FIXME: Should we parse this message and report something more meaningful?
 #: libnautilus-private/nautilus-volume-monitor.c:1698
 msgid "Nautilus was unable to unmount the selected volume."
-msgstr ""
+msgstr "Nautilus nemohl odpojit vybrané zaøízení."
 
 #: libnautilus-private/nautilus-volume-monitor.c:1868
 msgid "ISO 9660 Volume"
@@ -4823,65 +4854,65 @@ msgstr "Pozadí"
 #: src/file-manager/fm-desktop-icon-view.c:981
 #, c-format
 msgid "%s's Home"
-msgstr ""
+msgstr "Domov %s"
 
 #: src/file-manager/fm-desktop-icon-view.c:1266 src/nautilus-sidebar.c:1465
 msgid "Empty Trash..."
-msgstr ""
+msgstr "Vyprázdnit ko¹..."
 
 #: src/file-manager/fm-desktop-icon-view.c:1268
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
 #: src/nautilus-sidebar.c:1466
 msgid "Empty Trash"
-msgstr ""
+msgstr "Vyprázdnit ko¹"
 
 #: src/file-manager/fm-desktop-icon-view.c:1288
 msgid "Unmount Volume"
-msgstr ""
+msgstr "Odpojit zaøízení"
 
 #: src/file-manager/fm-directory-view.c:450
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
-msgstr ""
+msgstr "Toto otevøe %d separátních oken. Jste si jist(a) ¾e to chcete provést?"
 
 #: src/file-manager/fm-directory-view.c:452
 #, c-format
 msgid "Open %d Windows?"
-msgstr ""
+msgstr "Otevøít %d oken?"
 
 #: src/file-manager/fm-directory-view.c:759
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
-msgstr ""
+msgstr "Jste si jist(a) ¾e chcete permanentnì smazat \"%s\"?"
 
 #: src/file-manager/fm-directory-view.c:763
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected items?"
-msgstr ""
+msgstr "Jste si jist(a) ¾e chcete permanentnì smazat vybraných %d polo¾ek?"
 
 #: src/file-manager/fm-directory-view.c:769
 msgid "Delete?"
-msgstr ""
+msgstr "Smazat?"
 
 #: src/file-manager/fm-directory-view.c:770
 #: src/file-manager/fm-directory-view.c:2833
 #: src/file-manager/fm-directory-view.c:2873
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Delete"
-msgstr ""
+msgstr "Smazat"
 
 #. Localizers: This is the name of a directory that's created in ~/Nautilus, and
 #. * stores the scripts that appear in the Scripts submenu.
 #.
 #: src/file-manager/fm-directory-view.c:1080
 msgid "scripts"
-msgstr ""
+msgstr "skripty"
 
 #: src/file-manager/fm-directory-view.c:1387
 #, c-format
 msgid "\"%s\" selected"
-msgstr ""
+msgstr "\"%s\" vybrán"
 
 #: src/file-manager/fm-directory-view.c:1389
 msgid "1 folder selected"
@@ -4894,36 +4925,36 @@ msgstr "%d adresáøù vybráno"
 
 #: src/file-manager/fm-directory-view.c:1398
 msgid " (containing 0 items)"
-msgstr ""
+msgstr " (obsahuje 0 polo¾ek)"
 
 #: src/file-manager/fm-directory-view.c:1400
 msgid " (containing 1 item)"
-msgstr ""
+msgstr " (obsahuje 1 polo¾ku)"
 
 #: src/file-manager/fm-directory-view.c:1402
 #, c-format
 msgid " (containing %d items)"
-msgstr ""
+msgstr " (obsahuje %d polo¾ek)"
 
 #: src/file-manager/fm-directory-view.c:1413
 #, c-format
 msgid "\"%s\" selected (%s)"
-msgstr ""
+msgstr "\"%s\" vybrán (%s)"
 
 #: src/file-manager/fm-directory-view.c:1417
 #, c-format
 msgid "%d items selected (%s)"
-msgstr ""
+msgstr "%d polo¾ek vybráno (%s)"
 
 #: src/file-manager/fm-directory-view.c:1424
 #, c-format
 msgid "1 other item selected (%s)"
-msgstr ""
+msgstr "1 jiná polo¾ka vybrána (%s)"
 
 #: src/file-manager/fm-directory-view.c:1427
 #, c-format
 msgid "%d other items selected (%s)"
-msgstr ""
+msgstr "%d jiných polo¾ek vybráno (%s)"
 
 #. This is marked for translation in case a localizer
 #. * needs to change ", " to something else. The comma
@@ -4935,7 +4966,7 @@ msgstr ""
 #: src/file-manager/fm-directory-view.c:1456
 #, c-format
 msgid "%s%s, %s"
-msgstr ""
+msgstr "%s%s, %s"
 
 #. Note that the number of items actually displayed varies somewhat due
 #. * to the way files are collected in batches. So you can't assume that
@@ -4979,7 +5010,7 @@ msgstr "Vymazat ihned?"
 #: src/file-manager/fm-directory-view.c:2862
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
-msgstr ""
+msgstr "Jste si jist(a) ¾e chcete z ko¹e permanentnì vymazat \"%s\"?"
 
 #: src/file-manager/fm-directory-view.c:2866
 #, c-format
@@ -4987,6 +5018,7 @@ msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "Trash?"
 msgstr ""
+"Jste si jist(a) ¾e chcete z ko¹e permanentnì vymazat %d vybraných polo¾ek?"
 
 #: src/file-manager/fm-directory-view.c:2872
 msgid "Delete From Trash?"
@@ -4996,7 +5028,7 @@ msgstr "Vymazat z ko¹e?"
 #: src/file-manager/fm-directory-view.c:3210
 #, c-format
 msgid "Use \"%s\" to open the selected item"
-msgstr ""
+msgstr "Pou¾ít \"%s\" k otevøení vybrané polo¾ky"
 
 #: src/file-manager/fm-directory-view.c:3292
 #: src/file-manager/nautilus-directory-view-ui.xml.h:32
@@ -5060,11 +5092,11 @@ msgstr ""
 #: src/file-manager/fm-directory-view.c:3667
 #, c-format
 msgid "Nautilus was unable to create the directory %s."
-msgstr ""
+msgstr "Nautilus nemohl vytvoøit adresáø %s."
 
 #: src/file-manager/fm-directory-view.c:3668
 msgid "No Scripts Folder"
-msgstr ""
+msgstr "®ádný adresáø skriptù"
 
 #: src/file-manager/fm-directory-view.c:3723
 #, c-format
@@ -5248,12 +5280,12 @@ msgstr "Nemáte dostateèné práva na prohlí¾ení obsahu \"%s\"."
 #: src/file-manager/fm-error-reporting.c:62
 #, c-format
 msgid "\"%s\" couldn't be found. Perhaps it has recently been deleted."
-msgstr ""
+msgstr "\"%s\" nebyl nalezen. Mo¾ná byl nedávno vymazán."
 
 #: src/file-manager/fm-error-reporting.c:69
 #, c-format
 msgid "Sorry, couldn't display all the contents of \"%s\"."
-msgstr ""
+msgstr "Lituji, nemù¾i zobrazit celý obsah \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:72
 msgid "Error Displaying Folder"
@@ -5264,6 +5296,7 @@ msgstr "Chyba pøi zobrazování adresáøe"
 msgid ""
 "The name \"%s\" is already used in this folder. Please use a different name."
 msgstr ""
+"Jméno \"%s\" je v tomto adresáøi ji¾ pou¾ité. Prosím pou¾ijte jiné jméno."
 
 #: src/file-manager/fm-error-reporting.c:108
 #, c-format
@@ -5274,7 +5307,7 @@ msgstr ""
 #: src/file-manager/fm-error-reporting.c:113
 #, c-format
 msgid "You do not have the permissions necessary to rename \"%s\"."
-msgstr ""
+msgstr "Nemáte dostateèné práva k pøejmenování \"%s\""
 
 #: src/file-manager/fm-error-reporting.c:118
 #, c-format
@@ -5286,7 +5319,7 @@ msgstr ""
 #: src/file-manager/fm-error-reporting.c:122
 #, c-format
 msgid "The name \"%s\" is not valid. Please use a different name."
-msgstr ""
+msgstr "Jméno \"%s\" není platné. Pou¾ijte prosím jiné jméno."
 
 #: src/file-manager/fm-error-reporting.c:128
 #, c-format
@@ -5296,7 +5329,7 @@ msgstr ""
 #: src/file-manager/fm-error-reporting.c:137
 #, c-format
 msgid "Sorry, couldn't rename \"%s\" to \"%s\"."
-msgstr ""
+msgstr "Lituji, nelze pøejmenovat \"%s\" na \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:144
 msgid "Renaming Error"
@@ -5533,7 +5566,7 @@ msgstr ""
 
 #: src/file-manager/fm-properties-window.c:1891
 msgid "Special Flags:"
-msgstr ""
+msgstr "Speciální:"
 
 #: src/file-manager/fm-properties-window.c:1894
 msgid "Set Group ID"
@@ -5549,7 +5582,7 @@ msgstr "Práva"
 
 #: src/file-manager/fm-properties-window.c:1928
 msgid "You are not the owner, so you can't change these permissions."
-msgstr ""
+msgstr "Nejste vlastník a proto nemù¾ete mìnit tyto práva."
 
 #: src/file-manager/fm-properties-window.c:1941
 msgid "File Owner:"
