@@ -363,6 +363,15 @@ nautilus_sidebar_active_panel_matches_id (NautilusSidebar *sidebar, const char *
 	return nautilus_strcmp (current_iid, id) == 0;	
 }
 
+/* if the active panel matches the passed in id, hide it. */
+void
+nautilus_sidebar_hide_active_panel_if_matches (NautilusSidebar *sidebar, const char *sidebar_id)
+{
+	if (nautilus_sidebar_active_panel_matches_id (sidebar, sidebar_id)) {
+		nautilus_sidebar_deactivate_panel (sidebar);
+	}
+}
+
 /* callback for sidebar panel menu items to toggle their visibility */
 static void
 toggle_sidebar_panel (GtkWidget *widget, char *sidebar_id)
@@ -372,10 +381,8 @@ toggle_sidebar_panel (GtkWidget *widget, char *sidebar_id)
 	
 	sidebar = NAUTILUS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (widget)));
 
-	if (nautilus_sidebar_active_panel_matches_id (sidebar, sidebar_id)) {
-		nautilus_sidebar_deactivate_panel (sidebar);
-	}
-	
+	nautilus_sidebar_hide_active_panel_if_matches (sidebar, sidebar_id);
+		
 	key = nautilus_sidebar_get_sidebar_panel_key (sidebar_id);
 	nautilus_preferences_set_boolean (key, !nautilus_preferences_get_boolean (key, FALSE));
 	g_free (key); 

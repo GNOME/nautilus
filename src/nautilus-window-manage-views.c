@@ -890,9 +890,12 @@ static void
 handle_view_failure (NautilusWindow *window,
                      NautilusViewFrame *view)
 {
+	const char* current_iid;
 	if (view_frame_is_sidebar_panel (view)) {
                 report_sidebar_panel_failure_to_user (window, view);
-                disconnect_view_and_destroy (window, view);
+		current_iid = nautilus_view_frame_get_iid (view);
+		nautilus_sidebar_hide_active_panel_if_matches (window->sidebar, current_iid);
+		disconnect_view_and_destroy (window, view);
         	nautilus_window_remove_sidebar_panel (window, view);
 	} else {
 	        if (view == window->content_view) {
@@ -1531,6 +1534,7 @@ nautilus_window_set_sidebar_panels (NautilusWindow *window,
 	GList *node, *next, *found_node;
 	NautilusViewFrame *sidebar_panel;
 	NautilusViewIdentifier *identifier;
+	const char *current_iid;
 	gboolean load_succeeded;
 
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
@@ -1548,6 +1552,8 @@ nautilus_window_set_sidebar_panels (NautilusWindow *window,
 						 (char *) nautilus_view_frame_get_iid (sidebar_panel),
 						 compare_view_identifier_with_iid);
 		if (found_node == NULL) {
+			current_iid = nautilus_view_frame_get_iid (sidebar_panel);
+			nautilus_sidebar_hide_active_panel_if_matches (window->sidebar, current_iid);
 			disconnect_view_and_destroy (window, sidebar_panel);
 			nautilus_window_remove_sidebar_panel (window, sidebar_panel);
 		} else {

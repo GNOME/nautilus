@@ -62,6 +62,9 @@ void             nautilus_sidebar_add_panel    (NautilusSidebar   *sidebar,
 						NautilusViewFrame *panel);
 GtkWidget 	*nautilus_sidebar_create_context_menu (NautilusSidebar *sidebar);
 
+void		 nautilus_sidebar_hide_active_panel_if_matches (NautilusSidebar *sidebar,
+							  	const char *sidebar_id);
+
 void             nautilus_sidebar_remove_panel (NautilusSidebar   *sidebar,
 						NautilusViewFrame *panel);
 void             nautilus_sidebar_set_uri      (NautilusSidebar   *sidebar,

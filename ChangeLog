@@ -1,3 +1,23 @@
+2001-01-12  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 5198, removing an active sidebar panel messes up the 
+	remaining ones . I had already fixed this but missed the case
+	when multiple windows were open. Fixed by adding a sidebar call to
+	close the active panel if it matches a passed-in id, and used that in
+	nautilus window to close the panel if necessary before destroying it.
+	
+	* src/nautilus-sidebar.c:
+	(nautilus_sidebar_hide_active_panel_if_matches),
+	(toggle_sidebar_panel):
+	added routine to close the active panel if it matches a passed-in
+	id.
+	* src/nautilus-sidebar.h:
+	added above mentioned routine
+	
+	* src/nautilus-window-manage-views.c: (handle_view_failure),
+	(nautilus_window_set_sidebar_panels):
+	close the active panel if necessary before destroying it.
+	
 2001-01-12  John Sullivan  <sullivan@eazel.com>
 
 	Fixed the corner of bug 3405 that valiant bug verifier Brett
