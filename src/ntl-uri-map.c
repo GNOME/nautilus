@@ -328,7 +328,7 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                          nautilus_view_identifier_new ("OAFIID:nautilus_service_startup_view:a8f1b0ef-a39f-4f92-84bc-1704f0321a82", "Service"));      
         /* FIXME: This mozilla-hack should be short lived until http issues are solved */
         } else if (strcmp(navinfo->navinfo.content_type, "special/mozilla-hack") == 0) {
-                fallback_iid = "nautilus_mozilla_content_view";
+                fallback_iid = "OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1";
                 navinfo->content_identifiers = g_slist_append
                         (navinfo->content_identifiers, 
                          nautilus_view_identifier_new ("OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1",

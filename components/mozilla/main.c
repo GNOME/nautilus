@@ -98,7 +98,6 @@ main (int argc, char *argv[])
 {
 	BonoboGenericFactory *factory;
 	CORBA_ORB orb;
-	CORBA_Environment ev;
 
 	mozilla_hack_environment ();
 
