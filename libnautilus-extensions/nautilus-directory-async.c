@@ -234,11 +234,17 @@ get_one_value (GHashTable *table)
 static void
 async_job_wake_up (void)
 {
+	static gboolean already_waking_up = FALSE;
 	gpointer value;
 
 	g_assert (async_job_count >= 0);
 	g_assert (async_job_count <= MAX_ASYNC_JOBS);
 
+	if (already_waking_up) {
+		return;
+	}
+	
+	already_waking_up = TRUE;
 	while (async_job_count < MAX_ASYNC_JOBS) {
 		value = get_one_value (waiting_directories);
 		if (value == NULL) {
@@ -247,6 +253,7 @@ async_job_wake_up (void)
 		nautilus_directory_async_state_changed
 			(NAUTILUS_DIRECTORY (value));
 	}
+	already_waking_up = TRUE;
 }
 
 static void

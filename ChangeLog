@@ -1,5 +1,10 @@
 2000-10-17  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(async_job_wake_up): Fix reentrancy problem.
+
+2000-10-17  Darin Adler  <darin@eazel.com>
+
 	* libnautilus-extensions/nautilus-icon-container.c: (icon_free),
 	(stop_rubberbanding), (destroy): Fixed a bunch of FIXMEs now that
 	I "get" widget ref. counting.
