@@ -1,3 +1,219 @@
+2001-06-03  Seth Nickell  <snickell@stanford.edu>
+
+	Added Ben FrantzDale's <bfrantzdale@hmc.edu> revisions
+	of the classic GNOME theme as well as his slightly revised
+	classic icons for mime types (where they replace something
+	that wasn't modified since GMC). Basically these add
+	drop shadows and some higher resolution versions, as well
+	as an attractive sidebar. I've made some alterations to his
+	theme to make it sit better with our original and added 
+	the build stuff.
+
+	* configure.in:
+	Update configure.in to add a Makefile for the new sidebar tabs
+	directory in the GNOME theme.
+	
+	* icons/gnome-application-encapsulated_postscript.png:
+	* icons/gnome-application-pdf-192.png:
+	* icons/gnome-application-pdf.png:
+	* icons/gnome-application-pgp-192.png:
+	* icons/gnome-application-pgp.png:
+	* icons/gnome-application-postscript-192.png:
+	* icons/gnome-application-postscript-72.png:
+	* icons/gnome-application-postscript-96.png:
+	* icons/gnome-application-postscript.png:
+	* icons/gnome-application-x-c-header.png:
+	* icons/gnome-application-x-c-source.png:
+	* icons/gnome-application-x-cc-source.png:
+	* icons/gnome-application-x-e-theme.png:
+	* icons/gnome-application-x-generic-spreadsheet.png:
+	* icons/gnome-application-x-gnome-app-info.png:
+	* icons/gnome-application-x-java-source.png:
+	* icons/gnome-application-x-kde-app-info.png:
+	* icons/gnome-application-x-php.png:
+	* icons/gnome-application-x-reject.png:
+	* icons/gnome-application-x-scheme-source.png:
+	* icons/gnome-application-x-sql.png:
+	* icons/gnome-audio-basic.png:
+	* icons/gnome-audio-midi.png:
+	* icons/gnome-audio-ulaw.png:
+	* icons/gnome-audio-x-aiff.png:
+	* icons/gnome-audio-x-mod-192.png:
+	* icons/gnome-audio-x-mod.png:
+	* icons/gnome-audio-x-mp3-192.png:
+	* icons/gnome-audio-x-mp3.png:
+	* icons/gnome-audio-x-ogg-192.png:
+	* icons/gnome-audio-x-ogg.png:
+	* icons/gnome-audio-x-pn-realaudio.png:
+	* icons/gnome-audio-x-real-192.png:
+	* icons/gnome-audio-x-s3m-192.png:
+	* icons/gnome-audio-x-s3m.png:
+	* icons/gnome-audio-x-stm-192.png:
+	* icons/gnome-audio-x-stm.png:
+	* icons/gnome-audio-x-voc.png:
+	* icons/gnome-audio-x-wav.png:
+	* icons/gnome-audio-x-xi-192.png:
+	* icons/gnome-audio-x-xi.png:
+	* icons/gnome-audio-x-xm.png:
+	* icons/gnome-compressed-192.png:
+	* icons/gnome-compressed.png:
+	* icons/gnome-core.png:
+	* icons/gnome-emacs-192.png:
+	* icons/gnome-font-afm.png:
+	* icons/gnome-font-ttf.png:
+	* icons/gnome-font-x-pcf.png:
+	* icons/gnome-http-url.png:
+	* icons/gnome-image-bmp.png:
+	* icons/gnome-image-generic.png:
+	* icons/gnome-image-gif.png:
+	* icons/gnome-image-ief.png:
+	* icons/gnome-image-jpeg.png:
+	* icons/gnome-image-pbm.png:
+	* icons/gnome-image-pgm.png:
+	* icons/gnome-image-png.png:
+	* icons/gnome-image-pnm.png:
+	* icons/gnome-image-ppm.png:
+	* icons/gnome-image-psd.png:
+	* icons/gnome-image-ras.png:
+	* icons/gnome-image-rgb.png:
+	* icons/gnome-image-tga.png:
+	* icons/gnome-image-tiff.png:
+	* icons/gnome-image-x-xfig.png:
+	* icons/gnome-image-xbm.png:
+	* icons/gnome-image-xcf.png:
+	* icons/gnome-image-xpm.png:
+	* icons/gnome-image-xwd.png:
+	* icons/gnome-library.png:
+	* icons/gnome-manpage.png:
+	* icons/gnome-objectfile.png:
+	* icons/gnome-pack-deb.png:
+	* icons/gnome-pack-rpm.png:
+	* icons/gnome-package.png:
+	* icons/gnome-tex-192.png:
+	* icons/gnome-tex.png:
+	* icons/gnome-text-html-192.png:
+	* icons/gnome-text-html.png:
+	* icons/gnome-text-x-authors.png:
+	* icons/gnome-text-x-copying.png:
+	* icons/gnome-text-x-credits.png:
+	* icons/gnome-text-x-install.png:
+	* icons/gnome-text-x-makefile-192.png:
+	* icons/gnome-text-x-makefile.png:
+	* icons/gnome-text-x-readme.png:
+	* icons/gnome-textfile.png:
+	* icons/gnome-video-mpeg.png:
+	* icons/gnome-video-quicktime.png:
+	* icons/gnome-video-x-msvideo.png:
+	* icons/gnome-word-192.png:
+
+	Ben's revisions of classic mime type icons that
+	we didn't modify (basically he added alpha blended
+	drop shadows), and some high res versions.
+
+	* icons/gnome/Makefile.am:
+	* icons/gnome/application-x-e-cfg.png:
+	* icons/gnome/audio-192.png:
+	* icons/gnome/emblem-nowrite-72.png:
+	* icons/gnome/emblem-nowrite-96.png:
+	* icons/gnome/emblem-nowrite.png:
+	* icons/gnome/gnome.xml:
+	* icons/gnome/i-core.png:
+	* icons/gnome/i-dirclosed.png:
+	* icons/gnome/i-directory-12-aa.png:
+	* icons/gnome/i-directory-192-aa.png:
+	* icons/gnome/i-directory-20-aa.png:
+	* icons/gnome/i-directory-20.png:
+	* icons/gnome/i-directory-24-aa.png:
+	* icons/gnome/i-directory-36-aa.png:
+	* icons/gnome/i-directory-72-aa.png:
+	* icons/gnome/i-directory-96-aa.png:
+	* icons/gnome/i-directory-aa.png:
+	* icons/gnome/i-directory-accept-12-aa.png:
+	* icons/gnome/i-directory-accept-12.png:
+	* icons/gnome/i-directory-accept-192-aa.png:
+	* icons/gnome/i-directory-accept-192.png:
+	* icons/gnome/i-directory-accept-20-aa.png:
+	* icons/gnome/i-directory-accept-20.png:
+	* icons/gnome/i-directory-accept-24-aa.png:
+	* icons/gnome/i-directory-accept-24.png:
+	* icons/gnome/i-directory-accept-36-aa.png:
+	* icons/gnome/i-directory-accept-36.png:
+	* icons/gnome/i-directory-accept-72-aa.png:
+	* icons/gnome/i-directory-accept-72.png:
+	* icons/gnome/i-directory-accept-96-aa.png:
+	* icons/gnome/i-directory-accept-96.png:
+	* icons/gnome/i-directory-accept-aa.png:
+	* icons/gnome/i-directory-accept.png:
+	* icons/gnome/i-executable.png:
+	* icons/gnome/i-music-192.png:
+	* icons/gnome/i-music.png:
+	* icons/gnome/i-nfs.png:
+	* icons/gnome/i-regular-12.png:
+	* icons/gnome/i-regular-192.png:
+	* icons/gnome/i-regular-24.png:
+	* icons/gnome/i-regular-36.png:
+	* icons/gnome/i-regular-72.png:
+	* icons/gnome/i-regular-96-aa.png:
+	* icons/gnome/i-regular.png:
+	* icons/gnome/i-regular.xml:
+	* icons/gnome/i-stalled.png:
+	* icons/gnome/linux-penguin.png:
+	* icons/gnome/rpm-directory.png:
+	* icons/gnome/sidebar_tab_pieces/.cvsignore:
+	* icons/gnome/sidebar_tab_pieces/Makefile.am:
+	* icons/gnome/sidebar_tab_pieces/fill-active-prelight.png:
+	* icons/gnome/sidebar_tab_pieces/fill-active.png:
+	* icons/gnome/sidebar_tab_pieces/fill-empty-space.png:
+	* icons/gnome/sidebar_tab_pieces/fill-prelight.png:
+	* icons/gnome/sidebar_tab_pieces/fill.png:
+	* icons/gnome/sidebar_tab_pieces/left-bumper-active-prelight.png:
+	* icons/gnome/sidebar_tab_pieces/left-bumper-active.png:
+	* icons/gnome/sidebar_tab_pieces/left-bumper-prelight.png:
+	* icons/gnome/sidebar_tab_pieces/left-bumper.png:
+	* icons/gnome/sidebar_tab_pieces/middle-normal-normal.png:
+	* icons/gnome/sidebar_tab_pieces/middle-normal-prelight.png:
+	* icons/gnome/sidebar_tab_pieces/middle-prelight-normal.png:
+	* icons/gnome/sidebar_tab_pieces/right-bumper-prelight.png:
+	* icons/gnome/sidebar_tab_pieces/right-bumper.png:
+	* icons/gnome/sidebar_tab_pieces/right-empty-space.png:
+	* icons/gnome/sidebar_tab_pieces/right-top-active-prelight.png:
+	* icons/gnome/sidebar_tab_pieces/right-top-active.png:
+	* icons/gnome/sidebar_tab_pieces/right-top-prelight.png:
+	* icons/gnome/sidebar_tab_pieces/right-top.png:
+	* icons/gnome/theme_preview.png:
+	* icons/gnome/throbber/001.png:
+	* icons/gnome/throbber/002.png:
+	* icons/gnome/throbber/003.png:
+	* icons/gnome/throbber/004.png:
+	* icons/gnome/throbber/005.png:
+	* icons/gnome/throbber/006.png:
+	* icons/gnome/throbber/007.png:
+	* icons/gnome/throbber/008.png:
+	* icons/gnome/throbber/009.png:
+	* icons/gnome/throbber/010.png:
+	* icons/gnome/throbber/011.png:
+	* icons/gnome/throbber/012.png:
+	* icons/gnome/throbber/013.png:
+	* icons/gnome/throbber/014.png:
+	* icons/gnome/throbber/015.png:
+	* icons/gnome/throbber/Makefile.am:
+	* icons/gnome/throbber/rest.png:
+	* icons/gnome/trash-empty-192.png:
+	* icons/gnome/trash-empty-accept-192.png:
+	* icons/gnome/trash-empty-accept.png:
+	* icons/gnome/trash-empty.png:
+	* icons/gnome/trash-full-192.png:
+	* icons/gnome/trash-full.png:
+	* icons/i-cdrom-192.png:
+	* icons/i-cdrom.png:
+	* icons/i-chardev.png:
+	* icons/i-floppy.png:
+	* icons/i-printer.png:
+	* icons/i-sock.png:
+	* icons/i-zip.png:
+
+	Revision of the classic GNOME theme.
+
 2001-06-02  Darin Adler  <darin@bentspoon.com>
 
 	* src/nautilus-window-manage-views.c: (update_for_new_location),
