@@ -1,3 +1,22 @@
+2000-08-10  Rebecca Schulman  <rebecka@eazel.com>
+	Fixed bug 2072, to make the size search field
+	have an entry where the user can enter the
+	number of "K" they want.
+
+	* libnautilus-extensions/nautilus-search-bar-criterion-private.h:
+	added field to include labels after the entry in a search
+	criterion, if needed
+	* libnautilus-extensions/nautilus-search-bar-criterion.c:
+	(nautilus_search_bar_criterion_new_from_values),
+	(nautilus_search_bar_criterion_next_new),
+	(nautilus_search_bar_criterion_first_new), (get_size_location_for):
+	use suffix to create new criteria now, and parse
+	the size entry's text to mean K, rather than bytes.
+	
+	* src/nautilus-complex-search-bar.c:
+	(attach_criterion_to_search_bar):
+	attach the suffix as part of the value entry, if it exists.
+
 2000-08-10  Ali Abdin  <aliabdin@aucegypt.edu>
 
         * components/help/converters/gnome-db2html2/gdb3html.h:

@@ -24,6 +24,13 @@
    Author: Rebecca Schulman <rebecka@eazel.com>
 */
 
+#ifndef NAUTILUS_SEARCH_BAR_CRITERION_PRIVATE_H
+#define NAUTILUS_SEARCH_BAR_CRITERION_PRIVATE_H
+
+#include "nautilus-search-bar-criterion.h"
+#include <gtk/gtkentry.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtkoptionmenu.h>
 
 struct NautilusSearchBarCriterionDetails {
 	NautilusSearchBarCriterionType type;
@@ -35,9 +42,13 @@ struct NautilusSearchBarCriterionDetails {
 	GtkEntry *value_entry;
 	gboolean use_value_menu;
 	GtkOptionMenu *value_menu;
+	gboolean use_value_suffix;
+	GtkLabel *value_suffix;
 
 	/* callback to be called when the criterion type changes */
 	NautilusSearchBarCriterionCallback callback;
 	gpointer callback_data;
 
 };
+
+#endif /* NAUTILUS_SEARCH_BAR_CRITERION_PRIVATE_H */

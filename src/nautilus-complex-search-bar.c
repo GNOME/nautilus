@@ -277,7 +277,8 @@ attach_criterion_to_search_bar (NautilusComplexSearchBar *bar,
 				NautilusSearchBarCriterion *criterion,
 				int row)
 {
-
+	GtkWidget *hbox;
+	
 	g_return_if_fail (NAUTILUS_IS_COMPLEX_SEARCH_BAR (bar));
 
 	gtk_table_attach_defaults (bar->details->table,
@@ -290,9 +291,28 @@ attach_criterion_to_search_bar (NautilusComplexSearchBar *bar,
 	g_assert (criterion->details->use_value_entry + 
 		  criterion->details->use_value_menu == 1);
 	if (criterion->details->use_value_entry) {
+		/* If there is a suffix, we want to take the space from
+		   the entry, to keep things neat.  So make a box 
+		   for the entry and the suffix together */
+		if (criterion->details->use_value_suffix) {
+			hbox = gtk_hbox_new (0, FALSE);
+			gtk_box_pack_start (GTK_BOX (hbox),
+					    GTK_WIDGET (criterion->details->value_entry),
+					    TRUE, TRUE,
+					    GNOME_PAD_SMALL);
+			gtk_box_pack_start (GTK_BOX (hbox),
+					    GTK_WIDGET (criterion->details->value_suffix),
+					    FALSE, TRUE, GNOME_PAD_SMALL);
+			gtk_widget_show_all (hbox);
+			gtk_table_attach_defaults (bar->details->table,
+						   GTK_WIDGET (hbox),
+						   2, 3, row - 1, row);
+		}
+		else {
 		gtk_table_attach_defaults (bar->details->table,
 					   GTK_WIDGET (criterion->details->value_entry),
 					   2, 3, row - 1, row);
+		}
 		/* We want to track whether the entry text is empty or not. */
 		gtk_signal_connect_object (GTK_OBJECT (criterion->details->value_entry),
 				    	   "changed", 

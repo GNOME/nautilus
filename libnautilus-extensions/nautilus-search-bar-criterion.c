@@ -29,10 +29,12 @@
 #include "nautilus-search-bar-criterion-private.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <gtk/gtksignal.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkoptionmenu.h>
+#include <gtk/gtklabel.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 #include <libgnome/gnome-defs.h>
@@ -102,18 +104,6 @@ static char *size_relations [] = {
 	NULL
 };
 
-static char *size_objects [] = {
-	N_("1 KB"),
-	N_("10 KB"),
-	N_("100 KB"),
-	N_("1 MB"),
-	N_("10 MB"),
-	N_("100 MB"),
-	NULL
-};
-
-
-
 static char *emblem_relations [] = {
 	N_("marked with"),
 	N_("not marked with"),
@@ -152,7 +142,9 @@ static NautilusSearchBarCriterion * nautilus_search_bar_criterion_new_from_value
 										    char *operator_options[],
 										    gboolean use_value_entry,
 										    gboolean use_value_menu,
-										    char *value_options[]);
+										    char *value_options[],
+										    gboolean use_value_suffix,
+										    char *value_suffix);
 
 NautilusSearchBarCriterionType      get_next_default_search_criterion_type         (NautilusSearchBarCriterionType type) ;
 
@@ -221,7 +213,9 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 					       char *relation_options[],
 					       gboolean use_value_entry,
 					       gboolean use_value_menu,
-					       char *value_options[])
+					       char *value_options[],
+					       gboolean use_value_suffix,
+					       char *value_suffix)
 {
 	NautilusSearchBarCriterion *criterion;
 	GtkWidget *search_criteria_option_menu, *search_criteria_menu; 
@@ -252,8 +246,6 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 				  search_criteria_menu);
 	criterion->details->available_criteria = GTK_OPTION_MENU (search_criteria_option_menu);
 	gtk_widget_show_all (GTK_WIDGET(search_criteria_option_menu));
-
-
 
 	relation_option_menu = gtk_option_menu_new ();
 	relation_menu = gtk_menu_new ();
@@ -294,7 +286,12 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 		criterion->details->value_menu = GTK_OPTION_MENU (value_option_menu);
 		gtk_widget_show_all (GTK_WIDGET(criterion->details->value_menu));
 	}
-
+	criterion->details->use_value_suffix = use_value_suffix;
+	if (use_value_suffix) {
+		g_return_val_if_fail (value_suffix != NULL, NULL);
+		criterion->details->value_suffix = GTK_LABEL (gtk_label_new (value_suffix));
+		gtk_widget_show_all (GTK_WIDGET (criterion->details->value_suffix));
+	}
 	return criterion;
 }
 
@@ -313,12 +310,16 @@ nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionType criterion
 									       name_relations,
 									       TRUE,
 									       FALSE,
+									       NULL,
+									       FALSE,
 									       NULL);
  		break; 
 	case NAUTILUS_CONTENT_SEARCH_CRITERION:
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_CONTENT_SEARCH_CRITERION,
 									       content_relations,
 									       TRUE,
+									       FALSE,
+									       NULL,
 									       FALSE,
 									       NULL);
 		break;
@@ -327,40 +328,52 @@ nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionType criterion
 									       type_relations,
 									       FALSE,
 									       TRUE,
-									       type_objects);
+									       type_objects,
+									       FALSE,
+									       NULL);
 		break;
 	case NAUTILUS_LOCATION_SEARCH_CRITERION:
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_LOCATION_SEARCH_CRITERION,
 									       location_relations,
 									       FALSE,
 									       TRUE,
-									       location_objects);
+									       location_objects,
+									       FALSE,
+									       NULL);
 		break;
 	case NAUTILUS_SIZE_SEARCH_CRITERION:
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_SIZE_SEARCH_CRITERION,
 									       size_relations,
-									       FALSE,
 									       TRUE,
-									       size_objects);
+									       FALSE,
+									       NULL,
+									       TRUE,
+									       "K");
 		break;
 	case NAUTILUS_EMBLEM_SEARCH_CRITERION:
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_EMBLEM_SEARCH_CRITERION,
 									       emblem_relations,
 									       FALSE,
 									       TRUE,
-									       emblem_objects);
+									       emblem_objects,
+									       FALSE,
+									       NULL);
 		break;
 	case NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION:
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION,
 									       modified_relations,
 									       FALSE,
 									       TRUE,
-									       modified_objects);
+									       modified_objects,
+									       FALSE,
+									       NULL);
 		break;
 	case NAUTILUS_OWNER_SEARCH_CRITERION:
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_OWNER_SEARCH_CRITERION,
 									       owner_relations,
 									       TRUE,
+									       FALSE,
+									       NULL,
 									       FALSE,
 									       NULL);
 		break;
@@ -378,6 +391,8 @@ nautilus_search_bar_criterion_first_new (void)
 	return nautilus_search_bar_criterion_new_from_values (NAUTILUS_FILE_NAME_SEARCH_CRITERION,
 							      name_relations,
 							      TRUE,
+							      FALSE,
+							      NULL,
 							      FALSE,
 							      NULL); 	
 }
@@ -591,12 +606,17 @@ get_size_location_for (int relation_number,
 		       char *size_text)
 {
 	const char *possible_relations[] = { "larger_than", "smaller_than" };
+	int entered_size;
 	
 	g_assert (relation_number == 0 || relation_number == 1);
-	/* FIXME:  Need checks for appropriate size here */
-	return g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_SIZE, 
+	/* We put a 'K' after the size, so multiply what the user
+	   entered by 1000 */
+	entered_size = strtol (size_text, NULL, 10);
+	/* FIXME:  Need error handling here */
+	g_return_val_if_fail (entered_size >= 0, NULL);
+	return g_strdup_printf ("%s %s %d", NAUTILUS_SEARCH_URI_TEXT_SIZE, 
 				possible_relations[relation_number], 
-				size_text);
+				entered_size * 1000);
 
 }
 
