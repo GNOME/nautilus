@@ -1692,7 +1692,7 @@ make_property_tile (NautilusPropertyBrowser *property_browser,
 			(NAUTILUS_LABEL (label), NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR);
 		nautilus_label_set_solid_background_color
 			(NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_WHITE);		
-		nautilus_label_make_smaller (NAUTILUS_LABEL (label), 2);
+		nautilus_label_make_smaller (NAUTILUS_LABEL (label), 3);
 		gtk_box_pack_end (GTK_BOX (temp_vbox), label, FALSE, FALSE, 2);
 		gtk_widget_show (label);
 	}
@@ -1996,16 +1996,21 @@ make_category_link (NautilusPropertyBrowser *property_browser, char* name, char 
 }
 
 /* return the width of the current category for layout */
+
+/* FIXME: this is bogus - we really have to measure the text labels to figure
+ * out the category width
+ */
+ 
 static int
 nautilus_property_browser_get_category_width (NautilusPropertyBrowser *property_browser)
 {
 	int category_width;
 	switch (property_browser->details->category_type) {
 		case NAUTILUS_PROPERTY_PATTERN:
-			category_width = 86;
+			category_width = 80;
 			break;
 		case NAUTILUS_PROPERTY_COLOR:
-			category_width = 79;
+			category_width = 80;
 			break;
 		case NAUTILUS_PROPERTY_EMBLEM:
 			category_width = 64;

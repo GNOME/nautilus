@@ -345,7 +345,7 @@ nautilus_sidebar_title_theme_changed (gpointer user_data)
 		sidebar_title->details->shadow_offset = atoi (shadow_offset_str);	
 		g_free (shadow_offset_str);
 	} else {
-		sidebar_title->details->shadow_offset = 0;	
+		sidebar_title->details->shadow_offset = 1;	
 	}
 	
 	nautilus_sidebar_title_select_text_color (sidebar_title);

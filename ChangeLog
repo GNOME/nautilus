@@ -1,3 +1,46 @@
+2001-01-21  Andy Hertzfeld  <andy@eazel.com>
+
+	removed the "vector" theme at Arlo's request, and many of the
+	least popular patterns
+	
+	* configure.in:
+	removed vector from the build
+	* data/browser.xml:
+	* data/patterns/Makefile.am:
+	removed lots of specific patterns
+	* icons/Makefile.am:
+	removed vector theme
+	* icons/ardmore/ardmore.xml:
+	* icons/gnome/gnome.xml:
+	fixed bug 5868, GNOME theme has white text on light background, by
+	setting the text color in the theme
+	
+	* icons/vector/.cvsignore:
+	* icons/vector/Makefile.am:
+	* icons/vector/i-directory-accept.svg:
+	* icons/vector/i-directory.svg:
+	* icons/vector/i-regular.svg:
+	* icons/vector/i-regular.xml:
+	* icons/vector/vector.xml:
+	the vector theme is no more
+	
+	* nautilus.spec.in:
+	removed the vector theme from the rpm spec file
+	* po/POTFILES.in:
+	removed the vector theme from the localized files
+	
+	* src/nautilus-property-browser.c: (make_property_tile),
+	(nautilus_property_browser_get_category_width):
+	tweaked the layout
+	
+	* src/nautilus-sidebar-title.c:
+	(nautilus_sidebar_title_theme_changed):
+	changed default shadow to 1 pixel
+	
+	* src/nautilus-theme-selector.c: (done_button_callback),
+	(nautilus_theme_selector_initialize):
+	added a done button like the property browser
+	
 2001-01-20  Pavel Cisler <pavel@eazel.com>
 
 	* Makefile.am:

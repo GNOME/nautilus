@@ -142,8 +142,14 @@ nautilus_theme_selector_initialize_class (GtkObjectClass *object_klass)
 	object_klass->destroy = nautilus_theme_selector_destroy;
 }
 
-/* initialize the instance's fields, create the necessary subviews, etc. */
+/* handle the "done" button by destroying the window */
+static void
+done_button_callback (GtkWidget *widget, GtkWidget *theme_selector)
+{
+	gtk_widget_destroy (theme_selector);
+}
 
+/* initialize the instance's fields, create the necessary subviews, etc. */
 static void
 nautilus_theme_selector_initialize (GtkObject *object)
 {
@@ -152,6 +158,7 @@ nautilus_theme_selector_initialize (GtkObject *object)
 	GtkWidget *scrollwindow;
 	GtkWidget *title_box;
 	GtkWidget *bottom_box;
+	GtkWidget *temp_button, *temp_label;
 	
 	theme_selector = NAUTILUS_THEME_SELECTOR (object);
 	widget = GTK_WIDGET (object);
@@ -256,7 +263,16 @@ nautilus_theme_selector_initialize (GtkObject *object)
 	gtk_container_set_border_width (GTK_CONTAINER (bottom_box), 4);
 	gtk_box_pack_end (GTK_BOX(theme_selector->details->container), temp_box, FALSE, FALSE, 0);
   	gtk_container_add (GTK_CONTAINER (temp_frame), bottom_box);
-  	
+ 
+ 	/* create the done button */
+ 	temp_button = gtk_button_new ();
+	gtk_widget_show(temp_button);
+	temp_label = gtk_label_new (_("  Done  "));
+	gtk_widget_show(temp_label);
+	gtk_container_add (GTK_CONTAINER(temp_button), temp_label);
+	gtk_box_pack_end (GTK_BOX(bottom_box), temp_button, FALSE, FALSE, 4);  
+ 	gtk_signal_connect(GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (done_button_callback), theme_selector);
+ 	
   	/* create the "add new" button */
   	theme_selector->details->add_button = gtk_button_new ();
 	gtk_widget_show(theme_selector->details->add_button);
