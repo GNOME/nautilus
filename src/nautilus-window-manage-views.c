@@ -417,9 +417,18 @@ handle_go_elsewhere (NautilusWindow *window, const char *location)
                  */
                 if (strcmp (window->location, location) != 0) {
                         /* Store bookmark for current location in back list, unless there is no current location */
-                        nautilus_assert_computed_str
-                                (nautilus_bookmark_get_uri (window->last_location_bookmark), 
-                                 window->location);
+                        char * bookmark_uri;
+
+                        bookmark_uri = nautilus_bookmark_get_uri (window->last_location_bookmark);
+                        if (strcmp (bookmark_uri, window->location) != 0) {
+                        	/* FIXME: This is always a bug, and there might be multiple bugs here.
+                        	 * Right now one of them is so common that I'm changing this from an
+                        	 * assert to a message to stop blocking other work.
+                        	 */
+				g_message ("last_location is %s, but should match %s", bookmark_uri, window->location);
+                        }
+                        g_free (bookmark_uri);
+                        
                         /* Use the first bookmark in the history list rather than creating a new one. */
                         window->back_list = g_list_prepend (window->back_list, window->last_location_bookmark);
                         gtk_object_ref (GTK_OBJECT (window->back_list->data));

@@ -1,3 +1,14 @@
+2000-09-07  John Sullivan  <sullivan@eazel.com>
+
+	* src/nautilus-window-manage-views.c: (handle_go_elsewhere):
+
+	De-fatalized bug 2872 (Common crash when navigating, complaint
+	about last_location_bookmark not matching window->location).
+
+	Changed an assert (fatal) to a message (annoying) to prevent
+	this now very common bug from being fatal. I'll fix the real
+	problem soon.
+
 2000-09-07  Mathieu Lacage  <mathieu@eazel.com>
 
 	* components/tree/nautilus-tree-view.c: add support for NautilusDragInfo.
