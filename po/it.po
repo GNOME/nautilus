@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.2.x\n"
-"POT-Creation-Date: 2003-06-10 16:17-0400\n"
-"PO-Revision-Date: 2003-03-27 13:06+0100\n"
+"POT-Creation-Date: 2003-06-16 11:16+0200\n"
+"PO-Revision-Date: 2003-06-16 11:21+0200\n"
 "Last-Translator: Luca Ferretti <elle.uca@infinito.it>\n"
 "Language-Team: Italiano <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -387,11 +387,11 @@ msgstr "Vista ad albero di Nautilus"
 msgid "Tree"
 msgstr "Albero"
 
-#: components/tree/nautilus-tree-model.c:1065
+#: components/tree/nautilus-tree-model.c:1067
 msgid "(Empty)"
 msgstr "(Vuoto)"
 
-#: components/tree/nautilus-tree-model.c:1065
+#: components/tree/nautilus-tree-model.c:1067
 msgid "Loading..."
 msgstr "Caricamento..."
 
@@ -1038,6 +1038,7 @@ msgstr "Impossibile trovare un hbox, è in uso una normale selezione di file"
 msgid "Preview"
 msgstr "Anteprima"
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:1
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
@@ -1045,234 +1046,313 @@ msgid ""
 "are: size, type, date_modified, date_changed, date_accessed, owner, group, "
 "permissions, octal_permissions and mime_type"
 msgstr ""
+"Una lista di didascalie sotto una icona nella vista a icone e sul dekstop. "
+"Il numero di didascalie mostrate nella realtà dipende dal livello di "
+"ingrandimento. Valori possibili sono: size, date_modified, date_changed, "
+"date_accessed, owner, group, permissions, octal_permissions and mime_type."
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:2
 msgid "Add nautilus to session"
-msgstr ""
+msgstr "Aggiungi Nautilus alla sessione"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:3
 msgid "Bring up a new window for every opened file"
-msgstr ""
+msgstr "Richiamare una nuova finestra per ogni file aperto"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:4
 msgid "Criteria for search bar searching."
-msgstr ""
+msgstr "Criteri di ricerca nella barra ricerca."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
 msgid ""
 "Criteria when matching files searched for in the search bar. If set to "
 "search_by_text, then nautilus will Search for files by file name only. If "
 "set to search_by_text_and_properties\", then nautilus will search for files "
 "by file name and file properties."
-msgstr ""
+msgstr "Criteri cui far corrispondere i file ricercati nella barra di ricerca. Se impostata a \"search_by_text\" allora nautilus ricercherà i file solo per nome. Se impostata a \"search_by_text_and_properties\", allora nautilus ricercherà file per nome e proprietà."
 
+# :new -??
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 msgid "Current Nautilus theme (deprecated)"
-msgstr ""
+msgstr "Tema corrente di Nautilus (deprecato)"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:7
-#, fuzzy
 msgid "Custom Background Set"
-msgstr "Sfondo"
+msgstr "Impostazione sfondo personalizzato"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:8
-#, fuzzy
 msgid "Custom Side Pane Background Set"
-msgstr "Imposta come _sfondo"
+msgstr "Impostazione sfondo personalizzato pannello laterale"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:9
-#, fuzzy
 msgid "Default Background Color"
-msgstr "Usa sfondo _predefinito"
+msgstr "Colore di sfondo predefinito"
 
+# new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:10
-#, fuzzy
 msgid "Default Background Filename"
-msgstr "Usa sfondo _predefinito"
+msgstr "Nome del file di sfondo predefinito"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:11
-#, fuzzy
 msgid "Default Side Pane Background Color"
-msgstr "Usa sfondo _predefinito"
+msgstr "Colore di sfondo del riquadro laterale predefinito"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:12
 msgid "Default Side Pane Background Filename"
-msgstr ""
+msgstr "Nome del file di sfondo del riquadro laterale predefinito"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:13
-#, fuzzy
 msgid "Default folder viewer"
-msgstr "_Livello di ingrandimento predefinito:"
+msgstr "Visualizzatore cartelle predefinito"
 
+# :new -short
+#
+# un po' infedele, ma nei menù di nautius abbiamo disposizione per riferirci a questa caratt, quindi...
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
-#, fuzzy
 msgid "Default sort order"
-msgstr "predefinito per questo file"
+msgstr "Ordine di disposizione predefinito"
 
+# new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
-#, fuzzy
 msgid "Default zoom level used by the icon view"
-msgstr "Imposta il livello di ingrandimento di questa vista"
+msgstr "Livello di ingrandimento prefedinito usato nella vista a icone"
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
-#, fuzzy
 msgid "Default zoom level used by the icon view."
-msgstr "Imposta il livello di ingrandimento di questa vista"
+msgstr "Livello di ingrandimento predefinito usato nella vista a icone."
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
-#, fuzzy
 msgid "Default zoom level used by the list view"
-msgstr "Imposta il livello di ingrandimento di questa vista"
+msgstr "Livello di ingrandimento predefinito usato nella vista a lista"
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
-#, fuzzy
 msgid "Default zoom level used by the list view."
-msgstr "Imposta il livello di ingrandimento di questa vista"
+msgstr "Livello di ingrandimento predefinito usato nella vista a lista."
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:19
-#, fuzzy
 msgid "Desktop font"
-msgstr "Desktop"
+msgstr "Tipo di carattere del desktop"
 
+# :new --??
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:20
 msgid "Desktop home icon name"
-msgstr ""
+msgstr "Nome della icona home sul desktop"
 
+# :new --??
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:21
 msgid "Desktop trash icon name"
-msgstr ""
+msgstr "Nome della icona cestino sul desktop"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
 msgid "Enable 'special' flags in file preferences dialog"
 msgstr ""
+"Abilitazione dei flag \"speciali\" nelle finestra di proprietà del file"
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
 msgid ""
 "Filename for the default directory background. Only used if background_set "
 "is true."
 msgstr ""
+"Nome del file per lo sfondo predefinito delle directory. Viene utilizzato "
+"solo se \"background_set\" è attivato."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
 msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
 msgstr ""
+"Nome del file per lo sfondo predefinito del riquadro laterale. Viene usato "
+"solo se \"side_pane_background_set\" è attivato."
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid "Hide default bookmarks in the bookmark menu."
-msgstr ""
+msgstr "Nascondi segnalibri predefiniti nel menù segnalibri."
 
+# :new --??
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
 msgid "Home icon visible on desktop"
-msgstr ""
+msgstr "Icona home visibile sul desktop"
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
 msgid ""
 "If set to true, Nautilus will show only show directories in the tree "
 "sidebar. Otherwise it will show both directories and files."
 msgstr ""
+"Se attivato, Nautilus mostrerà soltato le directory nel riquadro laterale "
+"\"Albero\". In caso contrario saranno mostrati sia le directory che i file."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr ""
+"Se attivato, le nuove finestre aperte avranno la barra della posizione "
+"visibile."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid "If set to true, newly opened windows will have the side bar visible."
 msgstr ""
+"Se attivato, le nuove finestre aperte avranno il riquadro laterale visibile."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
 msgid "If set to true, newly opened windows will have the status bar visible."
 msgstr ""
+"Se attivato, le nuove finestre aperte avranno la barra di stato visibile."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
 msgid "If set to true, newly opened windows will have toolbars visible."
 msgstr ""
+"Se attivato, le nuove finestre avranno la barra degli strumenti visibile."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "put files in the trash."
 msgstr ""
+"Se attivato, sarà richiesta una conferma ogniqualvolta si sposti un file nel "
+"cestino."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
 msgid ""
 "If set to true, then Nautilus will have a feature allowing you to delete a "
 "file immediately and in-place, instead of moving it to the trash. This "
 "feature can be dangerous, so use caution."
 msgstr ""
+"Se attivato, sarà abilitata la possibilità di eliminare un file "
+"immediatamente e \"sul posto\", invece che spostarlo nel cestino. Questa "
+"funzionalità può risultare dannosa, quindi usarla con attenzione."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
 msgid ""
 "If set to true, then backup files such as those created by Emacs are "
 "displayed. Currently, only files ending in a tilde (~) are considered backup "
 "files."
 msgstr ""
+"Se attivato, verrano visualizzati file di backup come quelli creati da "
+"Emacs. Al momento solo i file che terminano con la tilde (~) sono "
+"considerati file di backup."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
 msgid ""
 "If set to true, then hidden files (dotfiles) are shown in the file manager."
 msgstr ""
+"Se attivato, i file nascosti (dotfile) saranno mostrati nel file manager."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
 msgid ""
 "If set to true, then nautilus lets you edit some of the more esoteric "
 "options of a file in the file preferences dialog."
 msgstr ""
+"Se attivato, sarà possibile modificare alcune caratteristiche avanzate dei "
+"file nella finestra delle proprietà del file."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
 msgid ""
 "If set to true, then nautilus shows directories prior to showing files in "
 "the icon and list views."
 msgstr ""
+"Se abilitato, le directory saranno sempre elencate prima degli altri file "
+"nella vista a icone ed in quella a lista."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
 msgid ""
 "If set to true, then nautilus will bring up a new nautilus window by default "
 "whenever an item is opened."
 msgstr ""
+"Se attivato, allora Nautilus richiamerà in modo predefinito una nuova "
+"finestra ogni qual volta un oggette viene aperto."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
 msgid "If set to true, then nautilus will draw the icons on the desktop."
-msgstr ""
+msgstr "Se attivato, allora Nautilus disegnerà le icone sul desktop."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
 msgid ""
 "If set to true, then nautilus will just show the user's bookmarks in the "
 "bookmark menu."
 msgstr ""
+"Se attivato, nel menù segnalibri di Nautilus saranno mostrati solo i "
+"segnalibri dell'utente."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
 "If set to true, then nautilus will use the user's home directory as the "
 "desktop. If it is false, then it will use ~/.gnome-desktop as the desktop."
 msgstr ""
+"Se attivato, allora Nautilus userà la directory home dell'utente come "
+"desktop. Se non attivato, allora verrà utilizzata ~/.gnome-desktop come "
+"desktop."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
 msgid ""
 "If this is set to true, Nautilus adds itself to the session when it starts "
 "up. This means it will be started the next time you log in."
 msgstr ""
+"Se attivato, Nautilus sarà aggiunto alla sessione quando questa avrà inizio. "
+"In pratica verrà avviato al prossimo login."
 
+# :new --long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid ""
 "If this is set to true, an icon linking to the home directory will be put on "
 "the desktop."
 msgstr ""
+"Se attivato, sarà presente sul desktop una icona che rimando alla directory "
+"home."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
 msgstr ""
+"Se attivato, sarà presente sul desktop una icona che rimanda al cestino."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
 "sorted from \"z\" to \"a\"."
 msgstr ""
+"Se attivata, i file nelle nuove finestre verranno disposti in ordine "
+"inverso. Per esempio, se si dispongono per nome, invece di ordinarli dalla "
+"\"A\" alla \"Z\", saranno ordinati dalla \"Z\" alla \"A\"."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
@@ -1280,101 +1360,131 @@ msgid ""
 "sorted from \"z\" to \"a\"; if sorted by size, instead of being "
 "incrementally they will be sorted decrementally."
 msgstr ""
+"Se attivata, i file nelle nuove finestre verranno disposti in ordine "
+"inverso. Per esempio, se si dispongono per nome, invece di ordinarli dalla "
+"\"A\" alla \"Z\", saranno ordinati dalla \"Z\" alla \"A\"; se disposti per "
+"dimensione, invece che in ordine cresente saranno dispoti in ordine "
+"decrescente."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
 msgid "If true, icons will be layed out tighter by default in new windows."
 msgstr ""
+"Se attivato, le icone saranno disposte più vicine l'una all'altra in modo "
+"predefinito nelle nuove finestre"
 
+# :new
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid ""
 "If true, labels will be placed beside icons icons rather than underneath "
 "them."
 msgstr ""
+"Se attivato, le etichette saranno poste accanto alle icone invece che al di "
+"sotto."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
 msgid "If true, new windows will use manual layout by default."
 msgstr ""
+"Se attivato, nelle nuove finestre sarà usata in modo predefinito la "
+"disposizione manuale."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
 "load or use lots of memory."
 msgstr ""
+"Immagini di dimensione maggiore di questa (in byte) non avranno la "
+"miniatura. Lo scopo di questa impostazione è di evitare il processo di "
+"creazione di miniature di immagini grani, che può richiedere un lungo tempo "
+"di esecuzione e un consistente uso della memoria."
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid "List of possible captions on icons"
-msgstr ""
+msgstr "Lista di possibili didascalie delle icone"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid "Maximum handled files in a directory"
-msgstr ""
+msgstr "Numero massimo di file gestibili in una directory"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
 msgid "Maximum image size for thumbnailing"
-msgstr ""
+msgstr "Dimensione massima per creare miniatura di una immagine"
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
 msgstr ""
+"Nome del tema di Nautilus da usare. È una opzione deprecata per Nautilus 2.2 "
+"e superiori. Fare riferimento al tema della icone."
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
-#, fuzzy
 msgid "Nautilus handles drawing the desktop"
-msgstr "Vista ad icone per il desktop del file manager Nautilus"
+msgstr "Gestione di Nautilus del tracciamento il desktop "
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
 msgid "Nautilus uses the users home directory as the desktop"
-msgstr ""
+msgstr "Uso della directory home dell'utente in Nautilus come desktop"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 msgid "Only show directories in the tree sidebar"
-msgstr ""
+msgstr "Mostrare solo le directory nel riquadro laterale"
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
 msgstr ""
+"Valori ammessi sono \"single\" per avviare file con un singolo clic, o "
+"\"double\" per lanciarli con un doppio clic."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid "Put labels beside icons"
-msgstr ""
+msgstr "Pone etichette accanto alle icone"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
-#, fuzzy
 msgid "Reverse sort order in new windows"
-msgstr "Rivela in una nuova finestra"
+msgstr "Disposizione invertita nelle nuove finestre"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
-#, fuzzy
 msgid "Show directories first in windows"
-msgstr "Adatta il contenuto alle dimensioni della finestra"
+msgstr "Elencare le directory per prima nelle finestre"
 
-# :revi ho impressione che non sia corretta
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
-#, fuzzy
 msgid "Show location bar in new windows"
-msgstr "L'ID dell'applicazione della finestra."
+msgstr "Mostrare la barra della posizione nelle nuove finestre"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
 msgid "Show side bar in new windows"
-msgstr ""
+msgstr "Mostrare la barra laterale nelle nuove finestre"
 
+# :new --short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
 msgid "Show status bar in new windows"
-msgstr ""
+msgstr "Mostrare la barra di stato nelle nuove finestre"
 
+# :new --short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
 msgid "Show toolbar in new windows"
-msgstr ""
+msgstr "Mostrare la barra degli strumenti nelle nuove finestre"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
-#, fuzzy
 msgid "Side pane view"
-msgstr "Riquadro laterale"
+msgstr "Vista nel riquadro laterale"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid ""
@@ -1383,6 +1493,12 @@ msgid ""
 "on a remote server. If set to \"local_only\" then only plays previews on "
 "local filesystems. If set to \"never\" then it never previews sound."
 msgstr ""
+"Compromesso per la velocizzazione sull'anteprima di file audio quando il "
+"mouse si trova sopra l'icona del file per motivi di velocità. Se impostata "
+"ad \"always\", allora l'audio sarà riprodotto in ogni caso, anche per "
+"directory su server remoti. Se impostata a \"local_only\", saranno "
+"riprodotti solo file sui i filesystem locali. Se impostata a \"never\" "
+"allora in nessun caso sarà possibile avere una anteprima del suono."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid ""
@@ -1392,7 +1508,14 @@ msgid ""
 "filesystems. If set to \"never\" then never bother to thumbnail images, just "
 "use a generic icon."
 msgstr ""
+"Compromesso sulla visualizzazione delle miniature di file di immagine per "
+"motivi di velocità. Se impostata ad \"always\", allora la miniatura sarà "
+"generata in ogni caso, anche per directory su server remoti. Se impostata a "
+"\"local_only\", saranno mostrate le miniature solo per i filesystem locali. "
+"Se impostata a \"never\" allora in nessun caso sarà possibile avere una "
+"miniatura delle immagini, ma solo icone generiche."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid ""
 "Speed tradeoff for when to show a preview of text file contents in the "
@@ -1401,7 +1524,14 @@ msgid ""
 "previews for local filesystems. If set to \"never\" then never bother to "
 "read preview data."
 msgstr ""
+"Compromesso sulla visualizzazione di anteprime del contenuto dei file di "
+"testo nella icona del file per motivi di velocità.  Se impostata ad \"always"
+"\", allora l'anteprima sarà mostrata in ogni caso, anche per directory su "
+"server remoti. Se impostata a \"local_only\", saranno mostrate solo "
+"anteprime per i filesystem locali. Se impostata a \"never\" allora in nessun "
+"caso sarà possibile avere una anteprima del contenuto."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid ""
 "Speed tradeoff for when to show the number of items in a directory. If set "
@@ -1409,64 +1539,85 @@ msgid ""
 "remote server. If set to \"local_only\" then only show counts for local "
 "filesystems. If set to \"never\" then never bother to compute item counts."
 msgstr ""
+"Compromesso sulla visualizzazione del numero di oggetti in una directory per "
+"motivi di velocità. Se impostata ad \"always\", allora il numero totale di "
+"oggetti sarà mostrato in ogni caso, anche per directory su server remoti. Se "
+"impostata a \"local_only\", allora il conteggio sarà effettuato solo sui "
+"filesystem locali. Se impostata a \"never\" allora in nessun caso sarà "
+"disponibile il conteggio degli oggetti."
 
+# new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid ""
 "The default sort-order for the item in the icon view. Possible values are "
 "name, size, type, modification_date, emblems."
 msgstr ""
+"L'ordine di disposizione predefinito per gli oggetti nella vista a icone. "
+"Valori possibili sono: name, size, type, modification_date, emblems."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid ""
 "The default sort-order for the item in the list view. Possible values are "
 "name, size, type, and modification_date."
 msgstr ""
+"L'ordine di disposizione predefinito per gli oggetti nella vista a lista. "
+"Valori possibili sono: name, size, type, modification_date, emblems."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid "The default width of the sidebar in new windows."
-msgstr ""
+msgstr "La larghezza predefinita del riquadro lateranel nelle nuove finestre."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
-#, fuzzy
 msgid "The font description used for the icons on the desktop."
-msgstr "Il cestino deve rimanere sul desktop."
+msgstr "Descrizione del font usato per le icone sul desktop."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "The side pane view to show in newly opened windows."
 msgstr ""
+"La vista nel riquadro laterale da mostrare nelle nuove finestre aperte."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
-#, fuzzy
 msgid ""
 "This name can be set if you want a custom name for the home link icon on the "
 "desktop."
-msgstr "Il cestino deve rimanere sul desktop."
+msgstr ""
+"Impostare questo nome se si vuole un nome personalizzato per l'icona sul "
+"desktop che rimanda alla home."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
-#, fuzzy
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
-msgstr "Il cestino deve rimanere sul desktop."
+msgstr ""
+"Impostare questo nome se si vuole un nome personalizzato per l'icona sul "
+"desktop che rimanda al cestino"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid "Trash icon visible on desktop"
-msgstr ""
+msgstr "Icona del cestino visibile sul desktop"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid "Type of click used to launch/open files"
-msgstr ""
+msgstr "Tipo di clic usato per avviare o per aprire i file"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
-#, fuzzy
 msgid "Use manual layout new windows"
-msgstr "Usare la disposizione _manuale"
+msgstr "Uso della disposizione manuale nelle nuove finestre"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
-#, fuzzy
 msgid "Use tighter Layout in new windows"
-msgstr "Ap_rire ogni oggetto attivato in una nuova finestra"
+msgstr "Uso della disposizione stretta nelle nuove finestre"
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid ""
 "Vast directories, over this size will be truncated to around this size. The "
@@ -1475,11 +1626,12 @@ msgid ""
 "limit is approximate due to the reading of directories chunk-wise."
 msgstr ""
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
-#, fuzzy
 msgid "What to do with executable text files when activated"
-msgstr "_Mostrare i file di testo eseguibili quando vengono cliccati"
+msgstr "Azione all'attivazione di file di testo eseguibili"
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 msgid ""
 "What to do with executable text files when they are activated (single or "
@@ -1487,59 +1639,77 @@ msgid ""
 "\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
 "text files."
 msgstr ""
+"Azione associata alla attivazione (singolo o doppio clic) di file di testo "
+"eseguibili. Valori ammessi sono \"launch\" per avviarli come comuni "
+"programmi, \"ask\" per decidere di volta in volta per mezzo di una finestra "
+"di dialogo, e \"display\" per visualizzarli come file di testo."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are list_view and "
 "icon_view."
 msgstr ""
+"Quando una cartella viene esplorata, è usata questa vista, a meno che non "
+"sia stata scelta una vista precisa per quella cartella. Valori possibili "
+"sono \"list_view\" e \"icon_view\"."
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
 msgid "When to show number of items in a directory"
-msgstr ""
+msgstr "Quando mostrare il numero degli oggetti in una directory"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
-#, fuzzy
 msgid "When to show preview text in icons"
-msgstr "Mostrare il _testo nelle icone:"
+msgstr "Quando mostrare anteprima del testo nelle icone"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
 msgid "When to show thumbnails of image files"
-msgstr ""
+msgstr "Quando mostrare miniature di file di immagine"
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
-#, fuzzy
 msgid "Whether a custom default directory background has been set."
-msgstr "Usa lo sfondo predefinito del desktop"
+msgstr "Attiva l'impostazione di un sfondo personalizzato delle directory."
 
+# :new -long
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:90
 msgid "Whether a custom default side pane background has been set."
 msgstr ""
+"Attiva l'impostazione di uno sfondo personalizzato del riquadro laterale."
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
 msgid "Whether to ask for confirmation when moving files to trash"
-msgstr ""
+msgstr "Conferma dello spostamento dei file nel cestino"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
 msgid "Whether to enable immediate deletion"
-msgstr ""
+msgstr "Abilitazione dell'eliminazione immediata"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
 msgid "Whether to preview sounds when mousing over an icon"
-msgstr ""
+msgstr "Abilitazione dell'anteprima audio al passaggio del mouse sull'icona"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
 msgid "Whether to show backup files"
-msgstr ""
+msgstr "Visualizzazione dei file di backup"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
 msgid "Whether to show dotfiles"
-msgstr ""
+msgstr "Visualizzazione dei dotfile"
 
+# :new -short
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
 msgid "width of the sidebar"
-msgstr ""
+msgstr "Larghezza del riquadro laterale"
 
 #: libnautilus-private/filesystem-attributes.xml.h:1
 msgid "AFFS Volume"
@@ -1672,11 +1842,13 @@ msgid ""
 "You cannot delete a volume icon. If you want to eject the volume, please use "
 "Eject in the right-click menu of the volume."
 msgstr ""
+"Non è possibile eliminare l'icona di un volume. Se lo si vuole espellere, "
+"usare la voce «Espelli» dal menù contestuale (clic col tasto destro) del "
+"volume."
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:107
-#, fuzzy
 msgid "Can't delete volume"
-msgstr "Formatta il volume selezionato."
+msgstr "Impossibile eliminare il volume"
 
 #: libnautilus-private/nautilus-desktop-link.c:139
 #: libnautilus-private/nautilus-file.c:5576
@@ -3254,51 +3426,51 @@ msgstr "Home di %s"
 
 # qui finisce la prima parte delle stringhe delle impostazioni.
 # Continua più oltre
-#: libnautilus-private/nautilus-icon-canvas-item.c:2092
+#: libnautilus-private/nautilus-icon-canvas-item.c:2108
 msgid "file icon"
 msgstr "icona del file"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2465
+#: libnautilus-private/nautilus-icon-canvas-item.c:2481
 msgid "editable text"
 msgstr "testo modificabile"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2466
+#: libnautilus-private/nautilus-icon-canvas-item.c:2482
 msgid "the editable label"
 msgstr "l'etichetta modificabile"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2473
+#: libnautilus-private/nautilus-icon-canvas-item.c:2489
 msgid "additional text"
 msgstr "testo addizionale"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2474
+#: libnautilus-private/nautilus-icon-canvas-item.c:2490
 msgid "some more text"
 msgstr "altro testo"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2481
+#: libnautilus-private/nautilus-icon-canvas-item.c:2497
 msgid "highlighted for selection"
 msgstr "evidenziazione per la selezione"
 
 # Si tratta di una proprietà di questo oggetto ed è booleana.
 # È una stringa per i programmatori, non verrà mai visualizzata.
 # Idem per tutte quelle del medesimo file che iniziano per whether.
-#: libnautilus-private/nautilus-icon-canvas-item.c:2482
+#: libnautilus-private/nautilus-icon-canvas-item.c:2498
 msgid "whether we are highlighted for a selection"
 msgstr "se la selezione rende evidenziato"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2489
+#: libnautilus-private/nautilus-icon-canvas-item.c:2505
 msgid "highlighted as keyboard focus"
 msgstr "evidenziazione al focus della tastiera"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2490
+#: libnautilus-private/nautilus-icon-canvas-item.c:2506
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "se il focus da tastiera lo rende evidenziato"
 
 # bruttissimo!!!! e se si usasse solo trascinamento
-#: libnautilus-private/nautilus-icon-canvas-item.c:2498
+#: libnautilus-private/nautilus-icon-canvas-item.c:2514
 msgid "highlighted for drop"
 msgstr "evidenziato per il rilascio"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2499
+#: libnautilus-private/nautilus-icon-canvas-item.c:2515
 msgid "whether we are highlighted for a D&D drop"
 msgstr "se il D&D lo rende evidenziato"
 
@@ -3614,22 +3786,24 @@ msgstr "Nessuna applicazione associata con «%s»."
 msgid "No Application Associated"
 msgstr "Nessuna applicazione associata"
 
+# :new
 #: libnautilus-private/nautilus-program-chooser.c:1607
-#, fuzzy, c-format
+#, c-format
 msgid "There is no action associated with \"%s\"."
-msgstr "Nessuna applicazione associata con «%s»."
+msgstr "Nessuna azione associata con «%s»."
 
+# :new
 #: libnautilus-private/nautilus-program-chooser.c:1608
-#, fuzzy
 msgid "No Action Associated"
-msgstr "Nessuna applicazione associata"
+msgstr "Nessuna azione associata"
 
+# :new
 #. Note: This might be misleading in the components case, since the
 #. * user can't add components to the complete list even from the capplet.
 #. * (They can add applications though.)
 #.
 #: libnautilus-private/nautilus-program-chooser.c:1615
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s\n"
 "\n"
@@ -3638,44 +3812,50 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"GNOME può associare una determinata applicazione a un certo tipo di file.\n"
+"È possibile configurare GNOME per associare una applicazione a un tipo di "
+"file.\n"
 "Associare ora una applicazione a questo tipo di file?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1622
 msgid "Associate Application"
 msgstr "Applicazioni associate"
 
+# :new
 #: libnautilus-private/nautilus-program-chooser.c:1648
-#, fuzzy, c-format
+#, c-format
 msgid "The viewer associated with \"%s\" is invalid."
-msgstr "Nessuna applicazione associata con «%s»."
+msgstr "Il visualizzatore associato con «%s» non è valido."
 
+# :new
 #: libnautilus-private/nautilus-program-chooser.c:1649
 msgid "Invalid Viewer Associated"
-msgstr ""
+msgstr "Visualizzatore associato non valido"
 
+# :new
 #: libnautilus-private/nautilus-program-chooser.c:1651
-#, fuzzy, c-format
+#, c-format
 msgid "The application associated with \"%s\" is invalid."
-msgstr "Nessuna applicazione associata con «%s»."
+msgstr "L'applicazione associata con «%s» non è valida."
 
+# :new
 #: libnautilus-private/nautilus-program-chooser.c:1652
-#, fuzzy
 msgid "Invalid Application Associated"
-msgstr "Nessuna applicazione associata"
+msgstr "Applicazione associata non valida"
 
+# :new
 #: libnautilus-private/nautilus-program-chooser.c:1654
-#, fuzzy, c-format
+#, c-format
 msgid "The action associated with \"%s\" is invalid."
-msgstr "Nessuna applicazione associata con «%s»."
+msgstr "L'azione associata con «%s» non è valida."
 
+# :new
 #: libnautilus-private/nautilus-program-chooser.c:1655
-#, fuzzy
 msgid "Invalid Action Associated"
-msgstr "Nessuna applicazione associata"
+msgstr "Azione associata non valida"
 
+# :new
 #: libnautilus-private/nautilus-program-chooser.c:1658
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s\n"
 "\n"
@@ -3685,16 +3865,16 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"GNOME può associare una determinata applicazione a un certo tipo di file.\n"
-"Associare ora una applicazione a questo tipo di file?"
+"È possibile configurare GNOME per associare una diversa applicazione o "
+"visualizzatore a questo tipo di file.\n"
+"Associare ora una applicazione o un visualizzatore a questo tipo di file?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1665
-#, fuzzy
 msgid "Associate Action"
-msgstr "Applicazioni associate"
+msgstr "Azioni associate"
 
 # :modi
-#: libnautilus-private/nautilus-program-choosing.c:495
+#: libnautilus-private/nautilus-program-choosing.c:504
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -3703,23 +3883,23 @@ msgstr ""
 "L'applicazione «%s» non può aprire «%s» perché «%s» non può accedere ai file "
 "nelle posizioni %s.  Scegliere un'altra applicazione?"
 
-# :modi
-#: libnautilus-private/nautilus-program-choosing.c:500
-#, fuzzy, c-format
+# :new
+#: libnautilus-private/nautilus-program-choosing.c:509
+#, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations.  Would you like to choose another action?"
 msgstr ""
-"L'applicazione «%s» non può aprire «%s» perché «%s» non può accedere ai file "
-"nelle posizioni %s.  Scegliere un'altra applicazione?"
+"Impossibile aprire «%s» con l'azione predefinita, perché questa non può "
+"accedere ai file nelle posizioni %s.  Scegliere un'altra azione?"
 
-#: libnautilus-private/nautilus-program-choosing.c:506
-#: libnautilus-private/nautilus-program-choosing.c:537
+#: libnautilus-private/nautilus-program-choosing.c:515
+#: libnautilus-private/nautilus-program-choosing.c:546
 msgid "Can't Open Location"
 msgstr "Impossibile aprire la posizione"
 
 # :modi
-#: libnautilus-private/nautilus-program-choosing.c:525
+#: libnautilus-private/nautilus-program-choosing.c:534
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -3732,31 +3912,37 @@ msgstr ""
 "essere aperto."
 
 # :modi
-#: libnautilus-private/nautilus-program-choosing.c:531
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-program-choosing.c:540
+#, c-format, fuzzy
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations.  No other actions are available to view this file.  If you copy "
 "this file onto your computer, you may be able to open it."
 msgstr ""
-"L'applicazione «%s» non può aprire «%s» perché «%s» non può avere accesso ai "
-"file nelle posizioni %s.  Nessun'altra applicazione è disponibile per "
-"visualizzare questo file.  Copiando questo file nel proprio computer, potrà  "
-"essere aperto."
+"L'azione predefinita non può aprire «%s» perché tale azione può avere "
+"accesso ai file nelle posizioni «%s».  Nessun'altra azione è disponibile "
+"per visualizzare questo file.  Copiando questo file sul proprio computer, "
+"probabilmente potrà essere aperto."
 
-#: libnautilus-private/nautilus-program-choosing.c:801
+#: libnautilus-private/nautilus-program-choosing.c:800
+#: libnautilus-private/nautilus-program-choosing.c:1017
+#, c-format
+msgid "Opening %s"
+msgstr "Apertura di «%s»"
+
+#: libnautilus-private/nautilus-program-choosing.c:1161
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
 msgstr ""
 "Impossibile eseguire dei comandi da un sito remoto per motivi di sicurezza."
 
-#: libnautilus-private/nautilus-program-choosing.c:803
+#: libnautilus-private/nautilus-program-choosing.c:1163
 msgid "Can't execute remote links"
 msgstr "Impossibile eseguire collegamenti remoti"
 
-#: libnautilus-private/nautilus-program-choosing.c:813
-#: libnautilus-private/nautilus-program-choosing.c:879
+#: libnautilus-private/nautilus-program-choosing.c:1173
+#: libnautilus-private/nautilus-program-choosing.c:1239
 msgid ""
 "There was an error launching the application.\n"
 "\n"
@@ -3766,12 +3952,12 @@ msgstr ""
 "\n"
 "Dettagli:"
 
-#: libnautilus-private/nautilus-program-choosing.c:817
-#: libnautilus-private/nautilus-program-choosing.c:883
+#: libnautilus-private/nautilus-program-choosing.c:1177
+#: libnautilus-private/nautilus-program-choosing.c:1243
 msgid "Error launching application"
 msgstr "Errore nell'avvio di una applicazione"
 
-#: libnautilus-private/nautilus-program-choosing.c:845
+#: libnautilus-private/nautilus-program-choosing.c:1205
 msgid ""
 "This drop target only supports local files.\n"
 "\n"
@@ -3782,12 +3968,12 @@ msgstr ""
 "Per aprire file non locali copiarli in una cartella locale e trascinarli di "
 "nuovo."
 
-#: libnautilus-private/nautilus-program-choosing.c:848
-#: libnautilus-private/nautilus-program-choosing.c:860
+#: libnautilus-private/nautilus-program-choosing.c:1208
+#: libnautilus-private/nautilus-program-choosing.c:1220
 msgid "Drop target only supports local files"
 msgstr "La destinazione del trascinamento supporta solo file locali."
 
-#: libnautilus-private/nautilus-program-choosing.c:857
+#: libnautilus-private/nautilus-program-choosing.c:1217
 msgid ""
 "This drop target only supports local files.\n"
 "\n"
@@ -4955,21 +5141,21 @@ msgstr "Errore di drag and drop"
 msgid "An invalid drag type was used."
 msgstr "È stato usato un tipo non valido di trascinamento."
 
-#: src/file-manager/fm-list-view.c:729
+#: src/file-manager/fm-list-view.c:731
 msgid "File name"
 msgstr "Nome del file"
 
-#: src/file-manager/fm-list-view.c:753
+#: src/file-manager/fm-list-view.c:755
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Dimensione"
 
-#: src/file-manager/fm-list-view.c:764
+#: src/file-manager/fm-list-view.c:766
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Tipo"
 
-#: src/file-manager/fm-list-view.c:775
+#: src/file-manager/fm-list-view.c:777
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Data di modifica"
@@ -5017,9 +5203,8 @@ msgid "Images Only"
 msgstr "Solo immagini"
 
 #: src/file-manager/fm-properties-window.c:893
-#, fuzzy
 msgid "Properties"
-msgstr "Pr_oprietà"
+msgstr "Proprietà"
 
 #: src/file-manager/fm-properties-window.c:896
 #, c-format
@@ -5078,9 +5263,8 @@ msgid "Basic"
 msgstr "Generali"
 
 #: src/file-manager/fm-properties-window.c:2157
-#, fuzzy
 msgid "_Names:"
-msgstr "_Nome:"
+msgstr "_Nomi:"
 
 #: src/file-manager/fm-properties-window.c:2159
 msgid "_Name:"
@@ -5105,7 +5289,7 @@ msgstr "Tipo:"
 #: src/file-manager/fm-properties-window.c:2929
 #: src/file-manager/fm-properties-window.c:2933
 msgid "--"
-msgstr ""
+msgstr "--"
 
 #: src/file-manager/fm-properties-window.c:2222
 msgid "Size:"
@@ -5229,9 +5413,8 @@ msgid "The permissions of \"%s\" could not be determined."
 msgstr "I permessi di «%s» non possono essere determinati."
 
 #: src/file-manager/fm-properties-window.c:2941
-#, fuzzy
 msgid "The permissions of the selected file could not be determined."
-msgstr "I permessi di «%s» non possono essere determinati."
+msgstr "I permessi del file selezionato non possono essere determinati."
 
 #: src/file-manager/fm-properties-window.c:3257
 #: src/nautilus-bookmarks-window.c:146
@@ -5257,11 +5440,10 @@ msgstr "Annullare la finestra delle proprietà?"
 msgid "Creating Properties window"
 msgstr "Creazione della finestra delle proprietà"
 
-# titolo di scelta icona per personalizzazione
-#: src/file-manager/fm-properties-window.c:3716
-#, fuzzy
+# :newtitolo di scelta icona per personalizzazione
+#: src/file-manager/fm-properties-window.c:3717
 msgid "Select an icon"
-msgstr "Selezione di un'icona:"
+msgstr "Selezionare un'icona"
 
 #: src/file-manager/fm-search-list-view.c:124
 #, c-format
@@ -5745,10 +5927,10 @@ msgstr "D_isposizione stretta"
 msgid "Display icons in the opposite order"
 msgstr "Attiva/Disattiva l'ordinamento al contrario"
 
+# :new
 #: src/file-manager/nautilus-icon-view-ui.xml.h:10
-#, fuzzy
 msgid "Keep icons lined up on a grid"
-msgstr "Mantiene le icone in righe ordinate per nome"
+msgstr "Mantiene le icone allineate in una griglia"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:16
 msgid "Leave icons wherever they are dropped"
@@ -5782,7 +5964,7 @@ msgstr "Attiva/Disattiva la disposizione stretta"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:24
 msgid "_Keep Aligned"
-msgstr ""
+msgstr "Mantieni a_llineate"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:25
 msgid "_Manually"
@@ -5901,9 +6083,8 @@ msgstr ""
 "modo che Nautilus possa crearle."
 
 #: src/nautilus-application.c:301
-#, fuzzy
 msgid "Link To Old Desktop"
-msgstr "sul desktop"
+msgstr "Collegamento al vecchio desktop"
 
 #: src/nautilus-application.c:317
 msgid ""
@@ -5911,10 +6092,15 @@ msgid ""
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
+"La posizione della directory del desktop è stata cambiata in GNOME 2.4. Un "
+"collegamento di nome «Collegamento al vecchio desktop» è stato creato sul "
+"desktop: è possibile aprirlo e recuperare i file voluti, quindi eliminare "
+"tale link."
 
+# :new
 #: src/nautilus-application.c:320
 msgid "Migrated old desktop"
-msgstr ""
+msgstr "Migrazione dal vecchio desktop"
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.server file. This has happened when you
@@ -6028,18 +6214,16 @@ msgid "No bookmarks defined"
 msgstr "Nessun segnalibro definito"
 
 #: src/nautilus-bookmarks-window.glade.h:1
-#, fuzzy
 msgid "<b>_Bookmarks</b>"
-msgstr "_Segnalibri"
+msgstr "<b>_Segnalibri</b>"
 
 #: src/nautilus-bookmarks-window.glade.h:2
-#, fuzzy
 msgid "<b>_Location</b>"
-msgstr "_Posizione:"
+msgstr "<b>_Posizione</b>"
 
 #: src/nautilus-bookmarks-window.glade.h:3
 msgid "<b>_Name</b>"
-msgstr ""
+msgstr "<b>_Nome</b>"
 
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
@@ -6241,7 +6425,7 @@ msgstr "_Singolo clic per attivare gli oggetti"
 
 #: src/nautilus-file-management-properties.glade.h:74
 msgid "_Text beside icons"
-msgstr ""
+msgstr "_Testo accanto alle icone"
 
 #: src/nautilus-file-management-properties.glade.h:75
 msgid "_Use compact layout"
@@ -6273,26 +6457,33 @@ msgstr "Apri con %s"
 msgid "Open with..."
 msgstr "Apri con..."
 
+# :new
 #: src/nautilus-information-panel.c:994 src/nautilus-window-menus.c:229
 #, c-format
 msgid ""
 "Unable to launch the cd burner application:\n"
 "%s"
 msgstr ""
+"Impossibile avviare l'applicazione per la masterizzazione di CD:\n"
+"%s"
 
+# :new
 #: src/nautilus-information-panel.c:996 src/nautilus-window-menus.c:231
 msgid "Can't launch cd burner"
-msgstr ""
+msgstr "Impossibile avviare il masterizzatore di CD"
 
 #. FIXME: We don't use spaces to pad labels!
 #: src/nautilus-information-panel.c:1042
 msgid "Empty _Trash"
 msgstr "S_vuota cestino"
 
+# :new
+#
+# pulsante nel riquadro laterale nella posizione burn:///
 #. FIXME: We don't use spaces to pad labels!
 #: src/nautilus-information-panel.c:1058
 msgid "_Write contents to CD"
-msgstr ""
+msgstr "_Scrivi contenuto su CD"
 
 #: src/nautilus-location-bar.c:62
 msgid "Go To:"
@@ -6488,7 +6679,6 @@ msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Il file «%s» non è un file di immagine usabile!"
 
 #: src/nautilus-property-browser.c:2037
-#, fuzzy
 msgid "Select a Category:"
 msgstr "Seleziona una categoria:"
 
@@ -6743,9 +6933,8 @@ msgid "*"
 msgstr "*"
 
 #: src/nautilus-server-connect.glade.h:3
-#, fuzzy
 msgid "_Connect"
-msgstr "Conectiva"
+msgstr "_Connetti"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
@@ -6830,10 +7019,11 @@ msgstr "Trova"
 msgid "Forward"
 msgstr "Avanti"
 
+# :new
+# suggerimento della voce in "Vai"
 #: src/nautilus-shell-ui.xml.h:22
-#, fuzzy
 msgid "Go to Empty CD folder"
-msgstr "Va alla cartella del cestino"
+msgstr "Va alla cartella \"CD vuoto\""
 
 #: src/nautilus-shell-ui.xml.h:23
 msgid "Go to the Start Here folder"
@@ -6946,13 +7136,19 @@ msgstr "Su"
 msgid "View as..."
 msgstr "Vedi come..."
 
+# :new
+#
+# suggerimento pulsante barra strumenti
 #: src/nautilus-shell-ui.xml.h:51
 msgid "Write contents to a CD"
-msgstr ""
+msgstr "Scrive il contenuto su un CD"
 
+# :new
+#
+# Etichetta pulsante barra strumenti
 #: src/nautilus-shell-ui.xml.h:52
 msgid "Write to CD"
-msgstr ""
+msgstr "Scrivi su CD"
 
 #: src/nautilus-shell-ui.xml.h:53
 msgid "Zoom _In"
@@ -6982,9 +7178,12 @@ msgstr "Sfondi e sim_boli"
 msgid "_Bookmarks"
 msgstr "_Segnalibri"
 
+# :new
+#
+# Voce nel menù "Vai"
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
-msgstr ""
+msgstr "C_reazione CD"
 
 #: src/nautilus-shell-ui.xml.h:61
 msgid "_Clear History"
@@ -7095,10 +7294,12 @@ msgstr "_Visualizza"
 msgid "_View as..."
 msgstr "_Vedi come..."
 
+# :new
+#
+# Voce di menù sotto "File"
 #: src/nautilus-shell-ui.xml.h:90
-#, fuzzy
 msgid "_Write to CD"
-msgstr "_Scrittura"
+msgstr "_Scrivi su CD"
 
 #: src/nautilus-side-pane.c:395
 msgid "Close the side pane"
@@ -7457,6 +7658,12 @@ msgstr "Mostra i server della rete nel file manager Nautilus"
 
 #~ msgid "You cannot copy the Trash."
 #~ msgstr "Non è possibile copiare il cestino."
+
+#~ msgid "Last modified:"
+#~ msgstr "Ultima modifica"
+
+#~ msgid "Last accessed:"
+#~ msgstr "Ultimo accesso"
 
 # Questo ed i successivi riferiti ai caratteri erano di nautilus per GNOME1
 #~ msgid "F_onts"
