@@ -1282,7 +1282,7 @@ value_field_update (FMPropertiesWindow *window, GtkLabel *label)
 	gboolean use_original;	
 
 	ellipsize_text = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (label), "ellipsize_text"));
-	use_original = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (label), "use_original"));
+	use_original = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (label), "show_original"));
 
 	value_field_update_internal (label, 
 				     (use_original ?
@@ -2339,7 +2339,7 @@ create_basic_page (FMPropertiesWindow *window)
 	append_title_and_ellipsizing_value (window, table, _("Location:"), 
 					    "where",
 					    _("--"),
-					    FALSE);
+					    TRUE);
 	
 	if (should_show_free_space (window)) {
 		append_title_and_ellipsizing_value (window, table, 
