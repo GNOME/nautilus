@@ -311,6 +311,7 @@ nautilus_application_startup (NautilusApplication *application,
 			      gboolean restart_shell,
 			      gboolean start_desktop,
 			      gboolean no_default_window,
+			      const char *geometry,
 			      const char *urls[])
 {
 	CORBA_Environment ev;
@@ -319,6 +320,7 @@ nautilus_application_startup (NautilusApplication *application,
 	const char *message, *detailed_message;
 	GnomeDialog *dialog;
 	Nautilus_URIList *url_list;
+	const CORBA_char *corba_geometry;
 
 	/* Perform check for nautilus being run as super user */
 	if (!check_for_and_run_as_super_user ()) {
@@ -438,13 +440,17 @@ nautilus_application_startup (NautilusApplication *application,
 			Nautilus_Shell_start_desktop (shell, &ev);
 		}
 
+		/* CORBA C mapping doesn't allow NULL to be passed
+		   for string parameters */
+		corba_geometry = (geometry != NULL) ? geometry : "";
+
 	  	/* Create the other windows. */
 		if (urls != NULL) {
 			url_list = nautilus_make_uri_list_from_strv (urls);
-			Nautilus_Shell_open_windows (shell, url_list, &ev);
+			Nautilus_Shell_open_windows (shell, url_list, corba_geometry, &ev);
 			CORBA_free (url_list);
 		} else if (!no_default_window) {
-			Nautilus_Shell_open_default_window (shell, &ev);
+			Nautilus_Shell_open_default_window (shell, corba_geometry, &ev);
 		}
 	}
 

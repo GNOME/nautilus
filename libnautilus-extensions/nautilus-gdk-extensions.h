@@ -53,6 +53,18 @@
 #define NAUTILUS_RGBA_COLOR_GET_B(color) (((color) >> 0) & 0xff)
 #define NAUTILUS_RGBA_COLOR_GET_A(color) (((color) >> 24) & 0xff)
 
+/* Bits returned by nautilus_gdk_parse_geometry */
+typedef enum {
+	NAUTILUS_GDK_NO_VALUE     = 0x00,
+	NAUTILUS_GDK_X_VALUE      = 0x01,
+	NAUTILUS_GDK_Y_VALUE      = 0x02,
+	NAUTILUS_GDK_WIDTH_VALUE  = 0x04,
+	NAUTILUS_GDK_HEIGHT_VALUE = 0x08,
+	NAUTILUS_GDK_ALL_VALUES   = 0x0f,
+	NAUTILUS_GDK_X_NEGATIVE   = 0x10,
+	NAUTILUS_GDK_Y_NEGATIVE   = 0x20,
+} NautilusGdkGeometryFlags;
+
 /* A gradient spec. is a string that contains a specifier for either a
    color or a gradient. If the string has a "-" in it, then it's a gradient.
    The gradient is vertical by default and the spec. can end with ":v" to indicate that.
@@ -153,5 +165,12 @@ void	   nautilus_gdk_window_set_wm_hints_input      (GdkWindow 	   *w,
 char *	   nautilus_string_ellipsize_start	       (const char 	   *original,
 							GdkFont		   *font,
 							int		   length);
-						
+
+/* Wrapper for XParseGeometry */
+NautilusGdkGeometryFlags nautilus_gdk_parse_geometry   (const char         *string,
+							int 		   *x_return,
+							int		   *y_return,
+							guint		   *width_return,
+							guint		   *height_return);
+
 #endif /* NAUTILUS_GDK_EXTENSIONS_H */

@@ -221,7 +221,7 @@ druid_finished (GtkWidget *druid_page)
 	signup_uris[1] = NULL;
 	
 	nautilus_application_startup (save_application, FALSE, FALSE, save_manage_desktop, 
-				      FALSE, (signup_uris[0] != NULL) ? signup_uris : NULL);
+				      FALSE, NULL, (signup_uris[0] != NULL) ? signup_uris : NULL);
 	
 	/* Destroy druid last because it may be the only thing keeping the main event loop alive. */
 	gtk_widget_destroy (gtk_widget_get_toplevel (druid_page));

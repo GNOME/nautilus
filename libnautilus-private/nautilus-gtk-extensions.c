@@ -359,21 +359,11 @@ nautilus_gtk_window_set_up_close_accelerator (GtkWindow *window)
 }
 
 static void
-sanity_check_window_geometry (int *left, int *top, int *width, int *height)
+sanity_check_window_position (int *left, int *top)
 {
 	g_assert (left != NULL);
 	g_assert (top != NULL);
-	g_assert (width != NULL);
-	g_assert (height != NULL);
 
-	/* Pin the size of the window to the screen, so we don't end up in
-	 * a state where the window is so big essential parts of it can't
-	 * be reached (might not be necessary with all window managers,
-	 * but seems reasonable anyway).
-	 */
-	*width = MIN (*width, gdk_screen_width());
-	*height = MIN (*height, gdk_screen_height());
-	
 	/* Make sure the top of the window is on screen, for
 	 * draggability (might not be necessary with all window managers,
 	 * but seems reasonable anyway). Make sure the top of the window
@@ -396,6 +386,20 @@ sanity_check_window_geometry (int *left, int *top, int *width, int *height)
 	*left = CLAMP (*left, 0, gdk_screen_width() - MINIMUM_ON_SCREEN_WIDTH);
 }
 
+static void
+sanity_check_window_dimensions (int *width, int *height)
+{
+	g_assert (width != NULL);
+	g_assert (height != NULL);
+
+	/* Pin the size of the window to the screen, so we don't end up in
+	 * a state where the window is so big essential parts of it can't
+	 * be reached (might not be necessary with all window managers,
+	 * but seems reasonable anyway).
+	 */
+	*width = MIN (*width, gdk_screen_width());
+	*height = MIN (*height, gdk_screen_height());
+}
 
 /**
  * nautilus_gtk_window_set_initial_geometry:
@@ -406,6 +410,8 @@ sanity_check_window_geometry (int *left, int *top, int *width, int *height)
  * some sanity-checking on the passed-in values.
  * 
  * @window: A non-visible GtkWindow
+ * @geometry_flags: A NautilusGdkGeometryFlags value defining which of
+ * the following parameters have defined values
  * @left: pixel coordinate for left of window
  * @top: pixel coordinate for top of window
  * @width: width of window in pixels
@@ -413,13 +419,17 @@ sanity_check_window_geometry (int *left, int *top, int *width, int *height)
  */
 void
 nautilus_gtk_window_set_initial_geometry (GtkWindow *window, 
+					  NautilusGdkGeometryFlags geometry_flags,
 					  int left,
 					  int top,
-					  int width,
-					  int height)
+					  guint width,
+					  guint height)
 {
+	int real_left, real_top;
+
 	g_return_if_fail (GTK_IS_WINDOW (window));
-	g_return_if_fail (width > 0 && height > 0);
+	g_return_if_fail (!(geometry_flags & NAUTILUS_GDK_WIDTH_VALUE) || width > 0);
+	g_return_if_fail (!(geometry_flags & NAUTILUS_GDK_HEIGHT_VALUE) || height > 0);
 
 	/* Setting the default size doesn't work when the window is already showing.
 	 * Someday we could make this move an already-showing window, but we don't
@@ -427,10 +437,31 @@ nautilus_gtk_window_set_initial_geometry (GtkWindow *window,
 	 */
 	g_return_if_fail (!GTK_WIDGET_VISIBLE (window));
 
-	sanity_check_window_geometry (&left, &top, &width, &height);
-			    		
-	gtk_widget_set_uposition (GTK_WIDGET (window), left, top);
-	gtk_window_set_default_size (GTK_WINDOW (window), width, height);
+	if ((geometry_flags & NAUTILUS_GDK_X_VALUE) && (geometry_flags & NAUTILUS_GDK_Y_VALUE)) {
+		real_left = left;
+		real_top = top;
+
+		/* This is sub-optimal. GDK doesn't allow us to set win_gravity
+		 * to South/East types, which should be done if using negative
+		 * positions (so that the right or bottom edge of the window
+		 * appears at the specified position, not the left or top).
+		 * However it does seem to be consistent with other GNOME apps.
+		 */
+		if (geometry_flags & NAUTILUS_GDK_X_NEGATIVE) {
+			real_left = gdk_screen_width () - real_left;
+		}
+		if (geometry_flags & NAUTILUS_GDK_Y_NEGATIVE) {
+			real_top = gdk_screen_height () - real_top;
+		}
+
+		sanity_check_window_position (&real_left, &real_top);
+		gtk_widget_set_uposition (GTK_WIDGET (window), real_left, real_top);
+	}
+
+	if ((geometry_flags & NAUTILUS_GDK_WIDTH_VALUE) && (geometry_flags & NAUTILUS_GDK_HEIGHT_VALUE)) {
+		sanity_check_window_dimensions (&width, &height);
+		gtk_window_set_default_size (GTK_WINDOW (window), width, height);
+	}
 }
 
 /**
@@ -455,8 +486,9 @@ nautilus_gtk_window_set_initial_geometry_from_string (GtkWindow *window,
 					  	      guint minimum_width,
 					  	      guint minimum_height)
 {
-	int left, top, width, height;
-	gboolean parsed;
+	int left, top;
+	guint width, height;
+	NautilusGdkGeometryFlags geometry_flags;
 
 	g_return_if_fail (GTK_IS_WINDOW (window));
 	g_return_if_fail (geometry_string != NULL);
@@ -467,18 +499,19 @@ nautilus_gtk_window_set_initial_geometry_from_string (GtkWindow *window,
 	 */
 	g_return_if_fail (!GTK_WIDGET_VISIBLE (window));
 
-	parsed = gnome_parse_geometry (geometry_string, &left, &top, &width, &height);
-
-	/* Bogus string, dude. */
-	g_return_if_fail (parsed);
+	geometry_flags = nautilus_gdk_parse_geometry (geometry_string, &left, &top, &width, &height);
 
 	/* Make sure the window isn't smaller than makes sense for this window.
 	 * Other sanity checks are performed in set_initial_geometry.
 	 */
-	width = MAX (width, (int) minimum_width);
-	height = MAX (height, (int) minimum_height);
+	if (geometry_flags & NAUTILUS_GDK_WIDTH_VALUE) {
+		width = MAX (width, minimum_width);
+	}
+	if (geometry_flags & NAUTILUS_GDK_HEIGHT_VALUE) {
+		height = MAX (height, minimum_height);
+	}
 
-	nautilus_gtk_window_set_initial_geometry (window, left, top, width, height);
+	nautilus_gtk_window_set_initial_geometry (window, geometry_flags, left, top, width, height);
 }
 
 /**

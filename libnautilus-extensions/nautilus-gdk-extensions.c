@@ -1071,4 +1071,46 @@ nautilus_self_check_gdk_extensions (void)
 	gdk_font_unref (font);
 }
 
+NautilusGdkGeometryFlags
+nautilus_gdk_parse_geometry (const char *string, int *x_return, int *y_return,
+			     guint *width_return, guint *height_return)
+{
+	int x11_flags;
+	NautilusGdkGeometryFlags gdk_flags;
+
+	g_return_val_if_fail (string != NULL, NAUTILUS_GDK_NO_VALUE);
+	g_return_val_if_fail (x_return != NULL, NAUTILUS_GDK_NO_VALUE);
+	g_return_val_if_fail (y_return != NULL, NAUTILUS_GDK_NO_VALUE);
+	g_return_val_if_fail (width_return != NULL, NAUTILUS_GDK_NO_VALUE);
+	g_return_val_if_fail (height_return != NULL, NAUTILUS_GDK_NO_VALUE);
+
+	x11_flags = XParseGeometry (string, x_return, y_return,
+				    width_return, height_return);
+
+	gdk_flags = NAUTILUS_GDK_NO_VALUE;
+	if (x11_flags & NoValue) {
+		gdk_flags |= NAUTILUS_GDK_NO_VALUE;
+	}
+	if (x11_flags & XValue) {
+		gdk_flags |= NAUTILUS_GDK_X_VALUE;
+	}
+	if (x11_flags & YValue) {
+		gdk_flags |= NAUTILUS_GDK_Y_VALUE;
+	}
+	if (x11_flags & WidthValue) {
+		gdk_flags |= NAUTILUS_GDK_WIDTH_VALUE;
+	}
+	if (x11_flags & HeightValue) {
+		gdk_flags |= NAUTILUS_GDK_HEIGHT_VALUE;
+	}
+	if (x11_flags & XNegative) {
+		gdk_flags |= NAUTILUS_GDK_X_NEGATIVE;
+	}
+	if (x11_flags & YNegative) {
+		gdk_flags |= NAUTILUS_GDK_Y_NEGATIVE;
+	}
+
+	return gdk_flags;
+}
+
 #endif /* ! NAUTILUS_OMIT_SELF_CHECK */

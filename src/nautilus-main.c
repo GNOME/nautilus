@@ -128,6 +128,7 @@ main (int argc, char *argv[])
 	gboolean restart_shell;
 	gboolean start_desktop;
 	gboolean no_default_window;
+	char *geometry;
 	gboolean perform_self_check;
 	poptContext popt_context;
 	const char **args;
@@ -142,6 +143,7 @@ main (int argc, char *argv[])
 		{ "quit", '\0', POPT_ARG_NONE, &kill_shell, 0, N_("Quit Nautilus."), NULL },
 		{ "restart", '\0', POPT_ARG_NONE, &restart_shell, 0, N_("Restart Nautilus."), NULL },
 		{ "no-default-window", '\0', POPT_ARG_NONE, &no_default_window, 0, N_("Only create Nautilus windows for explicity specified URIs."), NULL },
+		{ "geometry", '\0', POPT_ARG_STRING, &geometry, 0, N_("Create the initial window with the given geometry."), N_("GEOMETRY") },
 		{ NULL, '\0', POPT_ARG_INCLUDE_TABLE, &oaf_popt_options, 0, NULL, NULL },
 		POPT_AUTOHELP
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
@@ -207,6 +209,10 @@ main (int argc, char *argv[])
 		fprintf (stderr, _("nautilus: --restart cannot be used with URIs.\n"));
 		return EXIT_FAILURE;
 	}
+	if (geometry != NULL && args != NULL && args[0] != NULL && args[1] != NULL) {
+		fprintf (stderr, _("nautilus: --geometry cannot be used with more than one URI.\n"));
+		return EXIT_FAILURE;
+	}
 
 	/* Initialize the services that we use. */
 	LIBXML_TEST_VERSION
@@ -244,7 +250,7 @@ main (int argc, char *argv[])
 		application = nautilus_application_new ();
 		nautilus_application_startup
 			(application,
-			 kill_shell, restart_shell, start_desktop, no_default_window,
+			 kill_shell, restart_shell, start_desktop, no_default_window, geometry,
 			 args);
 		if (is_event_loop_needed ()) {
 			bonobo_main ();

@@ -59,6 +59,7 @@ void                 nautilus_application_startup       (NautilusApplication *ap
 							 gboolean	      restart_shell,
 							 gboolean             start_desktop,
 							 gboolean             no_default_window,
+							 const char          *default_geometry,
 							 const char          *urls[]);
 						 
 GSList		*nautilus_application_windows (void);

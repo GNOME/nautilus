@@ -33,6 +33,7 @@
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkpixmap.h>
 #include <gtk/gtkwindow.h>
+#include <libnautilus-extensions/nautilus-gdk-extensions.h>
 
 #define NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT 	2
 #define NAUTILUS_STANDARD_CLOSE_WINDOW_CONTROL_KEY 	'w'
@@ -100,10 +101,11 @@ void		  nautilus_gtk_container_foreach_deep	       (GtkContainer	       *contain
 
 /* GtkWindow */
 void		  nautilus_gtk_window_set_initial_geometry     (GtkWindow	       *window,
+								NautilusGdkGeometryFlags geometry_flags,
 								int			left,
 								int			top,
-								int			width,
-								int			height);
+								guint			width,
+								guint			height);
 void		  nautilus_gtk_window_set_initial_geometry_from_string     
 							       (GtkWindow	       *window,
 								const char	       *geometry_string,

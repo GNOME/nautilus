@@ -39,6 +39,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
@@ -59,8 +60,10 @@ static void nautilus_shell_initialize_class (NautilusShellClass     *klass);
 static void destroy                         (GtkObject              *shell);
 static void corba_open_windows              (PortableServer_Servant  servant,
 					     const Nautilus_URIList *list,
+					     const CORBA_char       *geometry,
 					     CORBA_Environment      *ev);
 static void corba_open_default_window       (PortableServer_Servant  servant,
+					     const CORBA_char       *geometry,
 					     CORBA_Environment      *ev);
 static void corba_start_desktop             (PortableServer_Servant  servant,
 					     CORBA_Environment      *ev);
@@ -71,6 +74,10 @@ static void corba_quit	                    (PortableServer_Servant  servant,
 static void corba_restart                    (PortableServer_Servant  servant,
 					     CORBA_Environment      *ev);
 static gboolean restore_window_states	    (NautilusShell *shell);
+
+/* Keep window from shrinking down ridiculously small; numbers are somewhat arbitrary */
+#define APPLICATION_WINDOW_MIN_WIDTH	300
+#define APPLICATION_WINDOW_MIN_HEIGHT	100
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusShell, nautilus_shell, BONOBO_OBJECT_TYPE)
 
@@ -243,11 +250,19 @@ display_caveat_first_time (NautilusShell *shell, NautilusWindow *window)
 }
 
 static void
-open_window (NautilusShell *shell, const char *uri)
+open_window (NautilusShell *shell, const char *uri, const char *geometry)
 {
 	NautilusWindow *window;
 
 	window = nautilus_application_create_window (shell->details->application);
+
+	if (geometry != NULL) {
+		nautilus_gtk_window_set_initial_geometry_from_string (GTK_WINDOW (window),
+								      geometry,
+								      APPLICATION_WINDOW_MIN_WIDTH,
+								      APPLICATION_WINDOW_MIN_HEIGHT);
+	}
+
 	if (uri == NULL) {
 		nautilus_window_go_home (window);
 	} else {
@@ -259,6 +274,7 @@ open_window (NautilusShell *shell, const char *uri)
 static void
 corba_open_windows (PortableServer_Servant servant,
 		    const Nautilus_URIList *list,
+		    const CORBA_char *geometry,
 		    CORBA_Environment *ev)
 {
 	NautilusShell *shell;
@@ -269,12 +285,13 @@ corba_open_windows (PortableServer_Servant servant,
 	/* Open windows at each requested location. */
 	for (i = 0; i < list->_length; i++) {
 		g_assert (list->_buffer[i] != NULL);
-		open_window (shell, list->_buffer[i]);
+		open_window (shell, list->_buffer[i], geometry);
 	}
 }
 
 static void
 corba_open_default_window (PortableServer_Servant servant,
+			   const CORBA_char *geometry,
 			   CORBA_Environment *ev)
 {
 	NautilusShell *shell;
@@ -283,7 +300,7 @@ corba_open_default_window (PortableServer_Servant servant,
 
 	if (!restore_window_states (shell)) {
 		/* Open a window pointing at the default location. */
-		open_window (shell, NULL);
+		open_window (shell, NULL, geometry);
 	}
 }
 

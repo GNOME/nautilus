@@ -1,3 +1,54 @@
+2000-12-21  John Harper  <jsh@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Work to allow geometry of initial window to be specified on
+	command line. Fixes bug #5135
+
+	* src/nautilus-shell.c (open_window): new arg `geometry'. When
+	non-null, use nautilus_gtk_window_set_initial_geometry_from_string
+	to affect the geometry of the unmapped window
+
+	(corba_open_default_window, corba_open_windows): new arg,
+	`geometry', passed to open_window () if a non-null string
+
+	* src/nautilus-shell-interface.idl (open_windows,
+	open_default_window): added `geometry' parameter. Pass a
+	zero-length string to show no specified geometry
+
+	* src/nautilus-main.c (main): new option `--geometry=GEOMETRY'.
+	Pass the value to nautilus_application_startup (). This option
+	is only allowed when no more than one URI is given on the
+	command line (to prevent multiple windows appearing on top of
+	one another)
+
+	* src/nautilus-application.c, src/nautilus-application.h
+	(nautilus_application_startup): added parameter `geometry', a
+	string describing the geometry to give any created windows
+
+	* src/nautilus-first-time-druid.c (druid_finished): pass null
+	geometry parameter to nautilus_application_startup ()
+
+	* libnautilus/nautilus-gdk-extensions.c,
+	libnautilus/nautilus-gdk-extensions.h
+	(NautilusGdkGeometryFlags, nautilus_gdk_parse_geometry): a
+	wrapper for XParseGeometry () and associated bit definitions.
+	Required since gnome_parse_geometry () offers no reliable way
+	of detecting which of the geometry components were parsed
+	successfully
+
+	* libnautilus/nautilus-gtk-extensions.c,
+	libnautilus/nautilus-gtk-extensions.h
+	(nautilus_gtk_window_set_initial_geometry): takes an extra
+	parameter, a NautilusGdkGeometryFlags value specifying which of
+	the geometry parameters are valid
+
+	(nautilus_gtk_window_set_initial_geometry_from_string): changed
+	to allow the geometry string to specify one or both of position
+	and dimensions. Also doesn't use g_return_if_fail to test for
+	validity of input string (since it may come from the user),
+	instead just use the parseable parts of the geometry string
+
 2000-12-22  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>
