@@ -124,27 +124,6 @@ struct FMDirectoryViewClass {
 	void    (* load_error)           (FMDirectoryView *view,
 					  GnomeVFSResult result);
 
-	/* The 'create_selection_context_menu_items' signal is emitted 
-	 * when creating a context menu for the selected items. @files is
-	 * the list of selected files; it isn't destroyed until the menu
-	 * is destroyed so it can be used in callbacks.
-	 * Subclasses might want to override this function to
-	 * modify the menu contents.
-	 */
-	void 	(* create_selection_context_menu_items) 	 
-					 (FMDirectoryView *view,
-					  GtkMenu *menu,
-					  GList *files);
-
-	/* The 'create_background_context_menu_items' signal is emitted 
-	 * when creating a context menu, either an item-specific one or
-	 * a background one. Subclasses might want to override this to
-	 * modify the menu contents.
-	 */
-	void 	(* create_background_context_menu_items) 	 
-					 (FMDirectoryView *view,
-					  GtkMenu *menu);
-	 
 	/* Function pointers that don't have corresponding signals */
 
 	/* get_selection is not a signal; it is just a function pointer for
@@ -316,8 +295,6 @@ void               fm_directory_view_move_copy_items                (const GList
 								     int                    x,
 								     int                    y,
 								     FMDirectoryView       *view);
-gint               fm_directory_view_get_context_menu_index         (GtkMenu 		   *menu,
-								     const char            *verb_path);
 gboolean	   fm_directory_link_type_in_selection 		    (FMDirectoryView 	   *view, 
 								     NautilusLinkType 	   link_type);
 
@@ -348,13 +325,6 @@ NautilusBackground *fm_directory_view_get_background		    (FMDirectoryView 	   *
 void               fm_directory_view_pop_up_background_context_menu (FMDirectoryView       *view);
 void               fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView       *view); 
 void               fm_directory_view_update_menus                   (FMDirectoryView       *view);
-GtkMenuItem 	  *fm_directory_view_insert_context_menu_item	    (FMDirectoryView 	   *view, 
-								     GtkMenu 		   *menu, 
-								     const char 	   *label,
-								     const char 	   *identifier,
-								     int		    position,
-								     void 		  (* callback) (GtkMenuItem *, FMDirectoryView *),
-								     gboolean 		   sensitive);
 void		   fm_directory_view_new_folder			    (FMDirectoryView       *view);
 
 #endif /* FM_DIRECTORY_VIEW_H */

@@ -1,5 +1,85 @@
 2000-11-16  John Sullivan  <sullivan@eazel.com>
 
+	Removed a ton of code that was used only for the gtk
+	context menus, which are gone now that we're using
+	Bonobo for context menus. There's still some reworking
+	of code formerly shared by gtk & Bonobo menus to do, but
+	I'll do that in a separate pass.
+
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize_class): Removed signal definitions
+	and function assignments for create_selection_context_menu_items
+	and create_background_context_menu_items.
+
+	(compute_menu_item_info): Do special_link_in_selection tests here;
+	previously they were done only for the gtk context menus (so for
+	the past day we've had an as-yet-unnoticed bug where certain
+	context menu items on the desktop were sensitive but shouldn't
+	have been).
+	(fm_directory_view_pop_up_selection_context_menu),
+	(fm_directory_view_pop_up_background_context_menu):
+	Removed the iffed-out case that used the gtk context menus.
+
+	(zoom_in_callback), (zoom_out_callback), (zoom_default_callback),
+	(finish_inserting_menu_item), (finish_appending_menu_item),
+	(set_menu_item_path), (append_gtk_menu_item),
+	(append_selection_menu_subtree),
+	(fm_directory_view_insert_context_menu_item),
+	(fm_directory_view_append_context_menu_item),
+	(create_background_context_menu_items),
+	(real_create_background_context_menu_items),
+	(launch_application_from_menu_item), (view_uri_from_menu_item),
+	(add_application_to_gtk_menu), (add_component_to_gtk_menu),
+	(create_open_with_gtk_menu), 
+	(real_create_selection_context_menu_items),
+	(create_selection_context_menu),
+	(fm_directory_view_create_background_context_menu_items),
+	(create_background_context_menu), (menu_item_matches_path),
+	(fm_directory_view_get_context_menu_index): 
+	Removed obsolete functions.
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize_class): Removed obsolete
+	virtual function overrides.
+	(real_update_menus): Removed debugging spam I had accidentally
+	left in.
+
+	(new_terminal_menu_item_callback),
+	(reset_desktop_background_menu_item_callback),
+	(change_desktop_background_menu_item_callback),
+	(quit_nautilus_desktop_menu_item_callback),
+	(empty_trash_menu_item_callback),
+	(fm_desktop_icon_view_create_selection_context_menu_items),
+	(fm_desktop_icon_view_create_background_context_menu_items),
+	(mount_unmount_removable): Removed obsolete functions.
+	
+	* src/file-manager/fm-icon-view.c: 
+	(special_link_in_selection): Just moved this function up.
+	(compute_menu_item_info): Check special_link_in_function for
+	rename menu item; formerly this only happened for the gtk
+	context	menu.
+	(fm_icon_view_initialize_class): Removed obsolete virtual 
+	function overrides.
+
+	(gtk_tighter_layout_callback), (gtk_sort_reversed_callback),
+	(context_menu_layout_radio_item_callback),
+	(append_one_context_menu_layout_item),
+	(insert_one_context_menu_item), (append_one_context_menu_item),
+	(append_one_toggle_context_menu_item),
+	(fm_icon_view_create_selection_context_menu_items),
+	(fm_icon_view_create_background_context_menu_items):
+	Removed obsolete functions.
+	
+	* src/file-manager/fm-search-list-view.c:
+	(fm_search_list_view_initialize_class): Removed obsolete
+	virtual function override.
+
+	(real_create_selection_context_menu_items): 
+	Removed obsolete function.
+
+2000-11-16  John Sullivan  <sullivan@eazel.com>
+
 	* libnautilus-extensions/nautilus-file-utilities.h:
 	Added #define NAUTILUS_TRASH_URI "trash:"
 	

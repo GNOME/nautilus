@@ -70,9 +70,6 @@ static void 	fm_search_list_view_initialize_class 	 (gpointer          klass);
 static void     real_destroy                             (GtkObject        *object);
 static void 	real_add_file				 (FMDirectoryView  *view,
 							  NautilusFile 	   *file);
-static void	real_create_selection_context_menu_items (FMDirectoryView  *view,
-					  		  GtkMenu 	   *menu,
-					  		  GList 	   *selection);
 static void	real_adding_file 			 (FMListView 	   *view, 
 							  NautilusFile 	   *file);
 static void	real_removing_file 			 (FMListView 	   *view, 
@@ -169,8 +166,6 @@ fm_search_list_view_initialize_class (gpointer klass)
 	object_class->destroy = real_destroy;
 
   	fm_directory_view_class->add_file = real_add_file;
-	fm_directory_view_class->create_selection_context_menu_items = 
-		real_create_selection_context_menu_items;
 	fm_directory_view_class->get_emblem_names_to_exclude = 
 		real_get_emblem_names_to_exclude;
   	fm_directory_view_class->merge_menus = real_merge_menus;
@@ -425,39 +420,6 @@ real_add_file (FMDirectoryView *view, NautilusFile *file)
 	g_free (fake_file_name);
 	g_free (real_file_uri);
 	nautilus_file_unref (real_file);
-}
-
-static void
-real_create_selection_context_menu_items (FMDirectoryView *view,
-					  GtkMenu *menu,
-					  GList *selection)
-{
-	GtkWidget *menu_item;
-	char *name;
-	gboolean sensitive;
-	gint position;
-	
-	g_assert (FM_IS_SEARCH_LIST_VIEW (view));
-	g_assert (GTK_IS_MENU (menu));
-
-	NAUTILUS_CALL_PARENT_CLASS
-		(FM_DIRECTORY_VIEW_CLASS, 
-		 create_selection_context_menu_items,
-		 (view, menu, selection));
-
-	/* The Reveal item is inserted directly after the
-	 * existing Open With item.
-	 */
-	position = fm_directory_view_get_context_menu_index
-		(menu, FM_DIRECTORY_VIEW_COMMAND_OPEN_WITH) + 1;
-	compute_reveal_item_name_and_sensitivity (selection, NULL, &name, &sensitive);
-        menu_item = gtk_menu_item_new_with_label (name);
-        g_free (name);
-        gtk_widget_set_sensitive (menu_item, sensitive);
-	gtk_widget_show (menu_item);
-
-	gtk_signal_connect (GTK_OBJECT (menu_item), "activate", reveal_selected_items_callback, view);
-	gtk_menu_insert (menu, menu_item, position);
 }
 
 static void

@@ -414,40 +414,6 @@ set_tighter_layout (FMIconView *icon_view, gboolean new_value)
 }
 
 static void
-gtk_tighter_layout_callback (GtkWidget *menu_item, gpointer user_data)
-{
-	FMIconView *icon_view;
-
-	icon_view = FM_ICON_VIEW (user_data);
-
-	/* This callback is called only by the context menu. It will
-	 * go away when we switch the context menus to use Bonobo.
-	 * This callback is only called when the user has actually chosen
-	 * the menu item, so we can be confident that the desired new
-	 * value is the opposite of the current value.
-	 */
-	set_tighter_layout (icon_view, !fm_icon_view_using_tighter_layout (icon_view));
-}
-
-static void
-gtk_sort_reversed_callback (GtkWidget *menu_item, gpointer user_data)
-{
-	FMIconView *icon_view;
-
-	icon_view = FM_ICON_VIEW (user_data);
-
-	/* This callback is called only by the context menu. It will
-	 * go away when we switch the context menus to use Bonobo.
-	 * This callback is only called when the user has actually chosen
-	 * the menu item, so we can be confident that the desired new
-	 * value is the opposite of the current value.
-	 */
-	if (set_sort_reversed (icon_view, !icon_view->details->sort_reversed)) {
-		nautilus_icon_container_sort (get_icon_container (icon_view));
-	}
-}
-
-static void
 tighter_layout_state_changed_callback (BonoboUIComponent   *component,
 				       const char          *path,
 				       Bonobo_UIComponent_EventType type,
@@ -478,6 +444,27 @@ fm_icon_view_using_tighter_layout (FMIconView *icon_view)
 {
 	return nautilus_icon_container_is_tighter_layout 
 		(get_icon_container (icon_view));
+}
+
+/* special_link_in_selection
+ * 
+ * Return TRUE is one of our special links is the selection.
+ * Special links include the following: 
+ *	 NAUTILUS_LINK_TRASH, NAUTILUS_LINK_HOME, NAUTILUS_LINK_MOUNT
+ */
+ 
+static gboolean
+special_link_in_selection (FMIconView *view)
+{
+	if (fm_directory_link_type_in_selection (FM_DIRECTORY_VIEW (view), NAUTILUS_LINK_TRASH)) {
+		return TRUE;
+	}
+
+	if (fm_directory_link_type_in_selection (FM_DIRECTORY_VIEW (view), NAUTILUS_LINK_MOUNT)) {
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 static void
@@ -524,7 +511,8 @@ compute_menu_item_info (FMIconView *view,
 		/* Modify file name. We only allow this on a single file selection. */
 		name_with_underscore = g_strdup (_("_Rename"));
 		sensitive = nautilus_g_list_exactly_one_item (selection)
-			&& nautilus_file_can_rename (selection->data);
+			&& nautilus_file_can_rename (selection->data)
+			&& !special_link_in_selection (view);
 	} else if (strcmp (MENU_PATH_CLEAN_UP, menu_path) == 0) {
 		name_with_underscore = g_strdup (_("_Clean Up by Name"));
 		sensitive = !fm_icon_view_using_auto_layout (view);
@@ -577,176 +565,6 @@ handle_radio_item (FMIconView *view,
 	}
 }
 
-static void
-context_menu_layout_radio_item_callback (GtkWidget *menu_item, gpointer user_data)
-{
-	FMIconView *icon_view;
-	const char *id;
-
-	icon_view = FM_ICON_VIEW (user_data);
-
-	id = (const char *) gtk_object_get_data (GTK_OBJECT (menu_item), "id");
-	g_assert (id != NULL);
-	handle_radio_item (icon_view, id);
-}
-
-static GtkMenuItem *
-append_one_context_menu_layout_item (FMIconView *view,
-                              	     GtkMenu *menu,
-                              	     GtkRadioMenuItem *item_in_group,
-                              	     const char *id,
-                              	     const char *menu_label)
-{
-	GtkWidget *menu_item;
-	char *label_for_display;
-
-	label_for_display = nautilus_str_strip_chr (menu_label, '_');
-        menu_item = gtk_radio_menu_item_new_with_label (
-        	item_in_group ? gtk_radio_menu_item_group (item_in_group) : NULL,
-        	label_for_display);
-        g_free (label_for_display);
-
-	/* Match appearance of Bonobo menu items, where unchosen items are still marked. */
-       	gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (menu_item), TRUE);
-
-        /* Attach id to menu item so we can check it in the callback. */
-        gtk_object_set_data_full (GTK_OBJECT (menu_item), "id",
-				  g_strdup (id), g_free);
-        
-	gtk_widget_show (menu_item);
-	gtk_signal_connect (GTK_OBJECT (menu_item), "activate", context_menu_layout_radio_item_callback, view);
-	gtk_menu_append (menu, menu_item);
-
-	return GTK_MENU_ITEM (menu_item);
-}
-
-static GtkMenuItem *
-insert_one_context_menu_item (FMIconView *view,
-                              GtkMenu *menu,
-                              GList *selection,
-                              const char *menu_path,
-                              gint position,
-                              GtkSignalFunc callback,
-                              gboolean initial_state)
-{
-	GtkWidget *menu_item;
-	char *label;
-	gboolean sensitive;
-	MenuItemType type;
-        
-        compute_menu_item_info (view, selection, menu_path, NULL, &label, &sensitive, &type);
-
-        switch (type) {
-        case MENU_ITEM_TYPE_CHECK:
-        	menu_item = gtk_check_menu_item_new_with_label (label);
-        	/* Match appearance of Bonobo toggle items, where inactive
-        	 * check items are still marked.
-        	 */
-        	gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (menu_item), TRUE);
-		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), 
-					   	initial_state); 
-        	break;
-
-        case MENU_ITEM_TYPE_TREE:
-        case MENU_ITEM_TYPE_STANDARD:
-		menu_item = gtk_menu_item_new_with_label (label);
-		break;
-
-	case MENU_ITEM_TYPE_RADIO:	/* Not handled here due to required group parameter */
-        default:
-        	g_assert_not_reached ();
-		menu_item = NULL;
-        }
-
-        g_free (label);
-        gtk_widget_set_sensitive (menu_item, sensitive);
-	gtk_widget_show (menu_item);
-	gtk_signal_connect (GTK_OBJECT (menu_item), "activate", callback, view);
-	gtk_menu_insert (menu, menu_item, position);
-
-	return GTK_MENU_ITEM (menu_item);
-}
-
-static GtkMenuItem *
-append_one_context_menu_item (FMIconView *view,
-                              GtkMenu *menu,
-                              GList *selection,
-                              const char *menu_path,
-                              GtkSignalFunc callback)
-{
-	return insert_one_context_menu_item (view, menu, selection, menu_path, -1, callback, FALSE);
-}
-
-static GtkMenuItem *
-append_one_toggle_context_menu_item (FMIconView *view,
-                                     GtkMenu *menu,
-                                     GList *selection,
-                                     const char *menu_path,
-                                     GtkSignalFunc callback,
-                                     gboolean initial_state)
-{
-	return insert_one_context_menu_item (view, menu, selection, menu_path, -1, callback, initial_state);
-}
-
-/* special_link_in_selection
- * 
- * Return TRUE is one of our special links is the selection.
- * Special links include the following: 
- *	 NAUTILUS_LINK_TRASH, NAUTILUS_LINK_HOME, NAUTILUS_LINK_MOUNT
- */
- 
-static gboolean
-special_link_in_selection (FMDirectoryView *view)
-{
-	if (fm_directory_link_type_in_selection (view, NAUTILUS_LINK_TRASH)) {
-		return TRUE;
-	}
-
-	if (fm_directory_link_type_in_selection (view, NAUTILUS_LINK_MOUNT)) {
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
-static void
-fm_icon_view_create_selection_context_menu_items (FMDirectoryView *view,
-						  GtkMenu *menu,
-						  GList *selection)
-{
-	gint position;
-
-	g_assert (FM_IS_ICON_VIEW (view));
-	g_assert (GTK_IS_MENU (menu));
-
-	NAUTILUS_CALL_PARENT_CLASS
-		(FM_DIRECTORY_VIEW_CLASS, 
-		 create_selection_context_menu_items,
-		 (view, menu, selection));
-
-        append_one_context_menu_item
-		(FM_ICON_VIEW (view), menu, selection,
-		 MENU_PATH_STRETCH_ICON,
-		 GTK_SIGNAL_FUNC (show_stretch_handles_callback));
-        append_one_context_menu_item
-		(FM_ICON_VIEW (view), menu, selection,
-		 MENU_PATH_UNSTRETCH_ICONS,
-		 GTK_SIGNAL_FUNC (unstretch_icons_callback));
-	
-	/* The Rename item is inserted directly after the
-	 * Duplicate item created by the FMDirectoryView.
-	 */
-	if (!special_link_in_selection (view)) {
-		position = fm_directory_view_get_context_menu_index
-				(menu, FM_DIRECTORY_VIEW_COMMAND_DUPLICATE) + 1;
-     		insert_one_context_menu_item
-				(FM_ICON_VIEW (view), menu, selection, 
-		 		 MENU_PATH_RENAME, position,
-		 		 GTK_SIGNAL_FUNC (rename_icon_callback),
-		 		 FALSE);
-	}
-}
-
 /* Note that this is used both as a Bonobo menu callback and a signal callback.
  * The first parameter is different in these cases, but we just ignore it anyway.
  */
@@ -754,104 +572,6 @@ static void
 customize_icon_text_callback (gpointer ignored1, gpointer ignored2)
 {
 	nautilus_gtk_window_present (fm_icon_text_window_get_or_create ());
-}
-
-static void
-fm_icon_view_create_background_context_menu_items (FMDirectoryView *view,
-						   GtkMenu *menu)
-{
-	FMIconView *icon_view;
-	char *manual_item_label;
-	GtkMenuItem *lay_out_item;
-	GtkMenuItem *toggle_item;
-	GtkRadioMenuItem *manual_item;
-	GtkMenu *layout_submenu;
-	gboolean is_auto_layout;
-	int position;
-	guint i;
-
-	g_assert (GTK_IS_MENU (menu));
-
-	icon_view = FM_ICON_VIEW (view);
-
-	NAUTILUS_CALL_PARENT_CLASS
-		(FM_DIRECTORY_VIEW_CLASS, 
-		 create_background_context_menu_items, 
-		 (view, menu));
-
-	position = fm_directory_view_get_context_menu_index
-		(menu, FM_DIRECTORY_VIEW_COMMAND_NEW_FOLDER) + 1;
-
-	nautilus_gtk_menu_insert_separator (menu, position++);
-
-	if (fm_icon_view_supports_auto_layout (icon_view)) {
-
-		is_auto_layout = fm_icon_view_using_auto_layout (icon_view);
-
-	     	lay_out_item = GTK_MENU_ITEM (insert_one_context_menu_item
-			(icon_view, menu, NULL, 
-			 MENU_PATH_LAY_OUT, position++,
-			 NULL,
-			 FALSE));
-		layout_submenu = GTK_MENU (gtk_menu_new ());
-
-		/* Compute label the standard bonobo_or_gtk way, to avoid
-		 * duplicating string constant.
-		 */
-		compute_menu_item_info (icon_view, 
-					NULL, 
-					MENU_PATH_MANUAL_LAYOUT,
-					NULL, 
-					&manual_item_label, 
-					NULL, 
-					NULL);
-		manual_item = GTK_RADIO_MENU_ITEM (append_one_context_menu_layout_item 
-			(icon_view, layout_submenu, NULL, 
-			 ID_MANUAL_LAYOUT, manual_item_label));
-		g_free (manual_item_label);
-		if (!is_auto_layout) {
-			gtk_check_menu_item_set_active 
-				(GTK_CHECK_MENU_ITEM (manual_item), TRUE);
-		}
-
-		nautilus_gtk_menu_append_separator (layout_submenu);
-
-		for (i = 0; i < NAUTILUS_N_ELEMENTS (sort_criteria); i++) {
-			toggle_item = append_one_context_menu_layout_item 
-				(icon_view, layout_submenu, manual_item, 
-			 	sort_criteria[i].id,
-			 	sort_criteria[i].menu_label);		
-			if (is_auto_layout && strcmp (icon_view->details->sort->id, 
-						      sort_criteria[i].id) == 0) {
-				gtk_check_menu_item_set_active 
-					(GTK_CHECK_MENU_ITEM (toggle_item), TRUE);
-			}
-		}
-	 
-		nautilus_gtk_menu_append_separator (layout_submenu);
-
-		/* No callback here, since that is handled by the bonobo "id" field */
-	     	toggle_item = append_one_toggle_context_menu_item
-			(icon_view, layout_submenu, NULL, 
-			 MENU_PATH_TIGHTER_LAYOUT,
-			 gtk_tighter_layout_callback,
-			 fm_icon_view_using_tighter_layout (icon_view));
-		
-
-	     	toggle_item = append_one_toggle_context_menu_item
-			(icon_view, layout_submenu, NULL, 
-			 MENU_PATH_SORT_REVERSED,
-			 gtk_sort_reversed_callback,
-			 icon_view->details->sort_reversed);
-		
-		gtk_menu_item_set_submenu (lay_out_item, GTK_WIDGET (layout_submenu));
-	}
-
-     	insert_one_context_menu_item
-		(icon_view, menu, NULL, 
-		 MENU_PATH_CLEAN_UP, position++,
-		 GTK_SIGNAL_FUNC (clean_up_callback),
-		 FALSE);
 }
 
 static void
@@ -2181,10 +1901,6 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
 	fm_directory_view_class->select_all = fm_icon_view_select_all;
 	fm_directory_view_class->set_selection = fm_icon_view_set_selection;
 	fm_directory_view_class->reveal_selection = fm_icon_view_reveal_selection;
-        fm_directory_view_class->create_background_context_menu_items =
-		fm_icon_view_create_background_context_menu_items;
-        fm_directory_view_class->create_selection_context_menu_items =
-		fm_icon_view_create_selection_context_menu_items;
         fm_directory_view_class->merge_menus = fm_icon_view_merge_menus;
         fm_directory_view_class->update_menus = fm_icon_view_update_menus;
         fm_directory_view_class->start_renaming_item = fm_icon_view_start_renaming_item;

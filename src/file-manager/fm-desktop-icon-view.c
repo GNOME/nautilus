@@ -83,11 +83,6 @@ typedef struct {
 
 static void     fm_desktop_icon_view_initialize                           (FMDesktopIconView      *desktop_icon_view);
 static void     fm_desktop_icon_view_initialize_class                     (FMDesktopIconViewClass *klass);
-static void     fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView        *view,
-									   GtkMenu                *menu);
-static void	fm_desktop_icon_view_create_selection_context_menu_items  (FMDirectoryView 	  *view, 
-									   GtkMenu 		  *menu, 
-									   GList 		  *files);
 static void     fm_desktop_icon_view_trash_state_changed_callback         (NautilusTrashMonitor   *trash,
 									   gboolean                state,
 									   gpointer                callback_data);
@@ -102,8 +97,6 @@ static void	icon_view_create_nautilus_links 			  (NautilusIconContainer  *contai
 			   	 					   int 			  x, 
 			   	 					   int 			  y, 
 			   	 					   FMDirectoryView 	  *view);
-static void     mount_unmount_removable                                   (GtkCheckMenuItem       *item,
-									   FMDesktopIconView      *icon_view);
 static void     place_home_directory                                      (FMDesktopIconView      *icon_view);
 static void     remove_old_mount_links                                    (void);
 static int      desktop_icons_compare_callback                            (NautilusIconContainer  *container,
@@ -164,8 +157,6 @@ fm_desktop_icon_view_initialize_class (FMDesktopIconViewClass *klass)
 
 	object_class->destroy = fm_desktop_icon_view_destroy;
 
-        fm_directory_view_class->create_background_context_menu_items = fm_desktop_icon_view_create_background_context_menu_items;
-	fm_directory_view_class->create_selection_context_menu_items = fm_desktop_icon_view_create_selection_context_menu_items;
 	fm_directory_view_class->merge_menus = real_merge_menus;
 	fm_directory_view_class->update_menus = real_update_menus;
 	fm_directory_view_class->supports_zooming = real_supports_zooming;
@@ -403,54 +394,6 @@ quit_desktop_callback (BonoboUIComponent *component,
 	nautilus_application_close_desktop ();
 }
 
-/* FIXME bugzilla.eazel.com 3579:
- * This is obsolete when the context menus are converted to Bonobo.
- */
-static void
-new_terminal_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
-{
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	nautilus_gnome_open_terminal (NULL);
-}
-
-/* FIXME bugzilla.eazel.com 3579:
- * This is obsolete when the context menus are converted to Bonobo.
- */
-static void
-reset_desktop_background_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
-{
-	nautilus_background_reset (fm_directory_view_get_background (view));
-}
-
-/* FIXME bugzilla.eazel.com 3579:
- * This is obsolete when the context menus are converted to Bonobo.
- */
-static void
-change_desktop_background_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
-{
-	nautilus_launch_application_from_command ("background-properties-capplet", NULL, FALSE);
-}
-
-/* FIXME bugzilla.eazel.com 3579:
- * This is obsolete when the context menus are converted to Bonobo.
- */
-static void
-quit_nautilus_desktop_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
-{
-	nautilus_application_close_desktop ();
-}
-
-/* FIXME bugzilla.eazel.com 3579:
- * This is obsolete when the context menus are converted to Bonobo.
- */
-static void 
-empty_trash_menu_item_callback (gpointer ignored, gpointer view)
-{
-        g_assert (FM_IS_DIRECTORY_VIEW (view));
-
-	nautilus_file_operations_empty_trash (GTK_WIDGET (FM_DIRECTORY_VIEW (view)));
-}
-
 static gboolean
 trash_link_is_selection (FMDirectoryView *view)
 {
@@ -479,148 +422,6 @@ trash_link_is_selection (FMDirectoryView *view)
 	nautilus_file_list_free (selection);
 
 	return result;
-}
-
-static void
-fm_desktop_icon_view_create_selection_context_menu_items (FMDirectoryView *view, GtkMenu *menu, GList *files)
-{
-	GtkWidget *menu_item;
-	
-	g_assert (FM_IS_ICON_VIEW (view));
-	g_assert (GTK_IS_MENU (menu));
-
-	NAUTILUS_CALL_PARENT_CLASS
-		(FM_DIRECTORY_VIEW_CLASS, 
-		 create_selection_context_menu_items,
-		 (view, menu, files));
-	
-	/* Add Empty Trash item if only the trash link is the selection */
-	if (trash_link_is_selection (view))  {
-		/* add a separator for more clarity */
-		menu_item = gtk_menu_item_new ();
-		gtk_widget_show (menu_item);
-		gtk_menu_append (menu, menu_item);
-
-		menu_item = gtk_menu_item_new_with_label (_("Empty Trash"));
-		gtk_widget_show (menu_item);
-		gtk_menu_append (menu, menu_item);
-                gtk_signal_connect (GTK_OBJECT (menu_item),
-                                    "activate",
-                                    empty_trash_menu_item_callback,
-                                    view);
-		gtk_widget_set_sensitive (menu_item, !nautilus_trash_monitor_is_empty ());
-	}
-}
-
-static void
-fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view, GtkMenu *menu)
-{	
-	GtkWidget *menu_item;
-	int position;
-
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	g_assert (GTK_IS_MENU (menu));
-
-	NAUTILUS_CALL_PARENT_CLASS
-		(FM_DIRECTORY_VIEW_CLASS, 
-		 create_background_context_menu_items, 
-		 (view, menu));
-
-	position = fm_directory_view_get_context_menu_index
-			(menu, FM_DIRECTORY_VIEW_COMMAND_NEW_FOLDER) + 1;
-	fm_directory_view_insert_context_menu_item 
-		(view, menu, 
-		 _("New Terminal"), 
-		 NULL, 
-		 position,
-		 new_terminal_menu_item_callback,
-		 TRUE);
-
-	/* Add Disks item to show state of removable volumes */
-	nautilus_gtk_menu_append_separator (menu);
-
-	menu_item = gtk_menu_item_new_with_label (_("Disks"));
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
-
-	{
-		GtkMenu *sub_menu;
-		GList *disk_list;
-		GList *element;
-		GtkWidget *check_menu_item;
-		gboolean active;
-		char *name;
-		NautilusVolume *volume;
-		
-		/* Get a list containing the all removable volumes in the volume monitor */
-		disk_list = nautilus_volume_monitor_get_removable_volumes (nautilus_volume_monitor_get ());
-
-		/* Create submenu to place them in */
-		sub_menu = GTK_MENU (gtk_menu_new ());
-		gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item), GTK_WIDGET (sub_menu));
-
-		/* Iterate list and populate menu with removable volumes */
-		for (element = disk_list; element != NULL; element = element->next) {
-			volume = element->data;
-
-			 /* Create item with human readable name */
-			name = strrchr (volume->mount_path, '/');
-			if (name != NULL) {
-				check_menu_item = gtk_check_menu_item_new_with_label (name + 1);
-			} else {
-				check_menu_item = gtk_check_menu_item_new_with_label (volume->mount_path);
-			}
-
-			/* Add check mark if volume is mounted */
-			active = nautilus_volume_monitor_volume_is_mounted (volume);
-			gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (check_menu_item), TRUE);
-			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (check_menu_item), active);
-			
-			/* Add some data to the menu item for later mount operations */
-			gtk_object_set_data_full (GTK_OBJECT (check_menu_item), "mount_point",
-						  g_strdup (volume->mount_path), g_free);
-			
-			gtk_signal_connect (GTK_OBJECT (check_menu_item),
-					    "activate",
-					    GTK_SIGNAL_FUNC (mount_unmount_removable),
-					    FM_DESKTOP_ICON_VIEW (view));
-			
-			gtk_menu_append (sub_menu, check_menu_item);
-			gtk_widget_show (check_menu_item);
-		}
-		g_list_free (disk_list);
-	}
-	
-	position = fm_directory_view_get_context_menu_index
-			(menu, FM_DIRECTORY_VIEW_COMMAND_RESET_BACKGROUND);
-	/* Hide the old Reset Background item so we can replace it with one of our own */
-	nautilus_gtk_menu_set_item_visibility (menu, position, FALSE);
-	
-	fm_directory_view_insert_context_menu_item 
-		(view, menu, 
-		 _("Reset Desktop Background"), 
-		 NULL, 
-		 position++,
-		 reset_desktop_background_menu_item_callback,
-		 nautilus_file_background_is_set (fm_directory_view_get_background (view)));
-
-	fm_directory_view_insert_context_menu_item 
-		(view, menu, 
-		 _("Change Desktop Background"), 
-		 NULL, 
-		 position++,
-		 change_desktop_background_menu_item_callback,
-		 TRUE);
-
-	nautilus_gtk_menu_insert_separator (menu, position++);
-
-	fm_directory_view_insert_context_menu_item 
-		(view, menu, 
-		 _("Quit Nautilus Desktop"), 
-		 NULL, 
-		 position++,
-		 quit_nautilus_desktop_menu_item_callback,
-		 TRUE);
 }
 
 static void
@@ -829,25 +630,6 @@ icon_view_create_nautilus_links (NautilusIconContainer *container, const GList *
 	g_free (desktop_path);
 }
 
-
-static void
-mount_unmount_removable (GtkCheckMenuItem *item, FMDesktopIconView *icon_view)
-{
-	gboolean is_mounted;
-	char *mount_point;
-	
-	is_mounted = FALSE;
-	
-	/* Locate our mount point data */
-	mount_point = gtk_object_get_data (GTK_OBJECT (item), "mount_point");
-	if (mount_point != NULL) {
-		is_mounted = nautilus_volume_monitor_mount_unmount_removable 
-			(nautilus_volume_monitor_get (), mount_point); 
-	}
-	
-	/* Set the check state of menu item even thought the user may not see it */
-	gtk_check_menu_item_set_active (item, is_mounted);
-}
 
 static gboolean
 find_and_update_home_link (void)
@@ -1263,7 +1045,6 @@ real_update_menus (FMDirectoryView *view)
 		} else {
 			label = g_strdup (_("Empty Trash"));
 		}
-		g_message ("calling nautilus_bonobo_set_label on %s with %s", DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL, label);
 		nautilus_bonobo_set_label
 			(desktop_view->details->ui, 
 			 DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL,
