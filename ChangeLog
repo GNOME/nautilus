@@ -1,5 +1,11 @@
 2004-01-15  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-window-menus.c (help_menu_nautilus_manual_callback):
+	Open toplevel help with F1 on desktop.
+	Patch from balamurali.viswanathan@wipro.com (bug #126882)
+
+2004-01-15  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-file-utilities.c (nautilus_unique_temporary_file_name):
 	Use mkstemp, as its safer. From bug #130091.
 

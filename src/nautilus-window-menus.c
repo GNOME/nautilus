@@ -37,6 +37,7 @@
 #include "nautilus-switchable-navigation-bar.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
+#include "nautilus-desktop-window.h"
 #include <bonobo/bonobo-ui-util.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
@@ -49,6 +50,7 @@
 #include <libxml/parser.h>
 #include <gtk/gtkmain.h>
 #include <libegg/egg-screen-help.h>
+#include <libegg/egg-screen-exec.h>
 #include <libgnome/gnome-help.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
@@ -628,9 +630,15 @@ help_menu_nautilus_manual_callback (BonoboUIComponent *component,
 	error = NULL;
 	window = NAUTILUS_WINDOW (user_data);
 
-	egg_help_display_desktop_on_screen (
-		NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-21",
-		gtk_window_get_screen (GTK_WINDOW (window)), &error);
+	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+		egg_screen_execute_command_line_async (
+			gtk_window_get_screen (GTK_WINDOW (window)),
+			"gnome-help", &error);
+	} else {
+		egg_help_display_desktop_on_screen (
+			NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-21",
+			gtk_window_get_screen (GTK_WINDOW (window)), &error);
+	}
 
 	if (error) {
 		dialog = gtk_message_dialog_new (GTK_WINDOW (window),
