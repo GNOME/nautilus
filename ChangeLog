@@ -1,3 +1,90 @@
+2001-03-30  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 7913 (fm_get_text_attribute_names_preference
+	should cache preference value for speed)
+
+	Fixed bug 7914 (nautilus_icon_canvas_item_initialize
+	should cache smooth_font for speed)
+
+	Added a new way to stay up-to-date with the value of a
+	preference: you register a (typically global) variable
+	with a particular preference, and the preferences machinery
+	updates its value automatically whenever the preference
+	changes. This is a replacement for using 
+	nautilus_preferences_get (and _get_integer and _get_boolean)
+	repeatedly, and is much more efficient. We might eventually 
+	replace all the callers of _get_xxx with calls to this, and 
+	remove those calls entirely.
+
+	I deployed this in the two specific cases Pavel found with
+	profiling (bugs 7913 & 7914) and some more places. I'll
+	deploy it in more places still later.
+
+	* libnautilus-extensions/nautilus-preferences.h:
+	* libnautilus-extensions/nautilus-preferences.c:
+	(update_auto_string), (update_auto_integer_or_boolean): 
+	New helper functions to	update an individual auto-storage variable.
+	(preferences_entry_update_auto_storage): New function, updates
+	all auto-storage variables for a particular preference.
+	(preferences_something_changed_notice): update auto-storage variables
+	before calling callbacks.
+	(preferences_entry_ensure_gconf_connection): New function, extracted
+	from preferences_entry_add_callback.
+	(preferences_entry_add_callback): Now calls extracted function.
+	(preferences_entry_add_auto_storage): New function, adds a single
+	auto-storage variable for a given preference.
+	(preferences_entry_check_remove_connection): New function, extracted
+	from preferences_entry_remove_callback.
+	(preferences_entry_remove_callback): Now calls extracted function.
+	(preferences_entry_remove_auto_storage): New function, removes a single
+	auto-storage variable for a given preference.
+	(preferences_entry_free): Free the auto-storage list.
+	(nautilus_preferences_add_auto_string),
+	(nautilus_preferences_add_auto_integer),
+	(nautilus_preferences_add_auto_boolean),
+	(nautilus_preferences_remove_auto_string),
+	(nautilus_preferences_remove_auto_integer),
+	(nautilus_preferences_remove_auto_boolean): Public cover functions
+	for the three basic types of auto-storage variables.
+	(nautilus_preferences_remove_callback): Fixed small bug where this
+	function would unnecessarily add an entry before removing it.
+	
+	* libnautilus-extensions/nautilus-font-factory.c:
+	(nautilus_font_factory_get_font_from_preferences):
+	Reworked to use auto-storage variable.
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(nautilus_global_preferences_initialize): Set up auto-storage
+	variables for icon view & default smooth font preferences.
+	(global_preferences_get_smooth_font),
+	(global_preferences_get_smooth_bold_font): Changed to take
+	font file name instead of preferences name.
+	(nautilus_global_preferences_get_icon_view_smooth_font),
+	(nautilus_global_preferences_get_default_smooth_font),
+	(nautilus_global_preferences_get_default_smooth_bold_font):
+	Use auto-storage variables.
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_initialize_class): Set up
+	auto-storage variable for click policy preference.
+	(in_single_click_mode): Use auto-storage variable.
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(should_display_image_file_as_itself): Use auto-storage
+	variable for thumbnail policy.
+
+	* src/file-manager/fm-icon-text-window.c:
+	(fm_get_text_attribute_names_preference): Use auto-storage
+	variable for icon captions.
+
+	* src/file-manager/fm-icon-view.c: 
+	(should_preview_sound): Use auto-storage variable for
+	sound-preview preference.
+	(fm_icon_view_initialize_class): Set up auto-storage variable
+	for sound-preview preference.
+
 2001-03-29  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

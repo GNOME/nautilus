@@ -99,6 +99,20 @@ void     nautilus_preferences_remove_callback                 (const char       
 							       NautilusPreferencesCallback  callback,
 							       gpointer                     callback_data);
 
+/* Variables that are automatically updated (lightweight "callbacks") */
+void     nautilus_preferences_add_auto_string		      (const char		   *name,
+							       const char		   **storage);
+void     nautilus_preferences_add_auto_integer		      (const char		   *name,
+							       int		   	   *storage);
+void     nautilus_preferences_add_auto_boolean		      (const char		   *name,
+							       gboolean		   	   *storage);
+void     nautilus_preferences_remove_auto_string	      (const char		   *name,
+							       const char		   **storage);
+void     nautilus_preferences_remove_auto_integer	      (const char		   *name,
+							       int		   	   *storage);
+void     nautilus_preferences_remove_auto_boolean	      (const char		   *name,
+							       int		   	   *storage);
+
 /* Preferences attributes */
 int      nautilus_preferences_get_visible_user_level          (const char                  *name);
 void     nautilus_preferences_set_visible_user_level          (const char                  *name,

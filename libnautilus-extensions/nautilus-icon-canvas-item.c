@@ -147,6 +147,8 @@ static	guint32 highlight_background_color = NAUTILUS_RGBA_COLOR_PACK (0x00, 0x00
 static	guint32 highlight_text_color	   = NAUTILUS_RGBA_COLOR_PACK (0xFF, 0xFF, 0xFF, 0xFF);
 static  guint32 highlight_text_info_color  = NAUTILUS_RGBA_COLOR_PACK (0xCC, 0xCC, 0xCC, 0xFF);
 
+static int click_policy_auto_value;
+
 /* GtkObject */
 static void     nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass   *class);
 static void     nautilus_icon_canvas_item_initialize       (NautilusIconCanvasItem        *item);
@@ -284,6 +286,9 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 	item_class->point = nautilus_icon_canvas_item_point;
 	item_class->bounds = nautilus_icon_canvas_item_bounds;
 	item_class->event = nautilus_icon_canvas_item_event;
+
+	nautilus_preferences_add_auto_integer (NAUTILUS_PREFERENCES_CLICK_POLICY,
+					       &click_policy_auto_value);
 }
 
 /* Object initialization function for the icon item. */
@@ -719,8 +724,7 @@ gnome_icon_underline_text (GnomeIconTextInfo *text_info,
 static gboolean
 in_single_click_mode ()
 {
-	/* Perhaps this should be computed elsewhere and passed in. */
-	return nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_CLICK_POLICY) == NAUTILUS_CLICK_POLICY_SINGLE;
+	return click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE;
 }
 
 /* Keep these for a bit while we work on performance of draw_or_measure_label_text. */

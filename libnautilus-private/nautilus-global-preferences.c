@@ -81,6 +81,8 @@ static GtkWidget *global_preferences_populate_pane                      (Nautilu
 									 const PreferenceDialogItem *preference_dialog_item);
 
 static GtkWidget *global_prefs_dialog = NULL;
+static const char *default_smooth_font_auto_value;
+static const char *icon_view_smooth_font_auto_value;
 
 /* An enumeration used for installing type specific preferences defaults. */
 typedef enum
@@ -1563,33 +1565,25 @@ nautilus_global_preferences_set_dialog_title (const char *title)
 }
 
 static NautilusScalableFont *
-global_preferences_get_smooth_font (const char *preference_name)
+global_preferences_get_smooth_font (const char *smooth_font_file_name)
 {
 	NautilusScalableFont *smooth_font;
-	char *smooth_font_file_name;
 
-	g_return_val_if_fail (preference_name != NULL, NULL);
-
-	smooth_font_file_name = nautilus_preferences_get (preference_name);
-	
-	smooth_font = (smooth_font_file_name && g_file_exists (smooth_font_file_name)) ?
+	smooth_font = (smooth_font_file_name != NULL && g_file_exists (smooth_font_file_name)) ?
 		nautilus_scalable_font_new (smooth_font_file_name) :
 		nautilus_scalable_font_get_default_font ();
-	g_free (smooth_font_file_name);
 	
 	g_assert (NAUTILUS_IS_SCALABLE_FONT (smooth_font));
 	return smooth_font;
 }
 
 static NautilusScalableFont *
-global_preferences_get_smooth_bold_font (const char *preference_name)
+global_preferences_get_smooth_bold_font (const char *file_name)
 {
 	NautilusScalableFont *plain_font;
 	NautilusScalableFont *bold_font;
 
-	g_return_val_if_fail (preference_name != NULL, NULL);
-
-	plain_font = global_preferences_get_smooth_font (preference_name);
+	plain_font = global_preferences_get_smooth_font (file_name);
 	g_assert (NAUTILUS_IS_SCALABLE_FONT (plain_font));
 
 	bold_font = nautilus_scalable_font_make_bold (plain_font);
@@ -1613,7 +1607,7 @@ global_preferences_get_smooth_bold_font (const char *preference_name)
 NautilusScalableFont *
 nautilus_global_preferences_get_icon_view_smooth_font (void)
 {
-	return global_preferences_get_smooth_font (NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT);
+	return global_preferences_get_smooth_font (icon_view_smooth_font_auto_value);
 }
 
 /**
@@ -1625,7 +1619,7 @@ nautilus_global_preferences_get_icon_view_smooth_font (void)
 NautilusScalableFont *
 nautilus_global_preferences_get_default_smooth_font (void)
 {
-	return global_preferences_get_smooth_font (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT);
+	return global_preferences_get_smooth_font (default_smooth_font_auto_value);
 }
 
 /**
@@ -1639,7 +1633,7 @@ nautilus_global_preferences_get_default_smooth_font (void)
 NautilusScalableFont *
 nautilus_global_preferences_get_default_smooth_bold_font (void)
 {
-	return global_preferences_get_smooth_bold_font (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT);
+	return global_preferences_get_smooth_bold_font (default_smooth_font_auto_value);
 }
 
 void
@@ -1655,4 +1649,10 @@ nautilus_global_preferences_initialize (void)
 
 	/* Install defaults */
 	global_preferences_install_defaults ();
+
+	/* Set up storage for values accessed in this file */
+	nautilus_preferences_add_auto_string (NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
+					      &icon_view_smooth_font_auto_value);
+	nautilus_preferences_add_auto_string (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
+					      &default_smooth_font_auto_value);
 }

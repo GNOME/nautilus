@@ -273,12 +273,20 @@ nautilus_font_factory_get_font_by_family (const char *family,
 GdkFont *
 nautilus_font_factory_get_font_from_preferences (guint size_in_pixels)
 {
-	char	*family;
-	GdkFont *font;
+	static gboolean icon_view_font_auto_value_registered;
+	static const char *icon_view_font_auto_value;
 
-	family = nautilus_preferences_get (NAUTILUS_PREFERENCES_ICON_VIEW_FONT);
-	font = nautilus_font_factory_get_font_by_family (family, size_in_pixels);
-	g_free (family);
+	/* Can't initialize this in initialize_class, because no font factory
+	 * instance may yet exist when this is called.
+	 */
+	if (!icon_view_font_auto_value_registered) {
+		nautilus_preferences_add_auto_string (NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
+						      &icon_view_font_auto_value);
+		icon_view_font_auto_value_registered = TRUE;
+	}
 
-	return font;
+	/* FIXME: We hardwire icon view font here, but some callers probably
+	 * expect default font instead.
+	 */
+	return nautilus_font_factory_get_font_by_family (icon_view_font_auto_value, size_in_pixels);
 }

@@ -150,6 +150,8 @@ static void font_changed_callback (gpointer callback_data);
 static void smooth_font_changed_callback (gpointer callback_data);
 static void standard_font_size_changed_callback (gpointer callback_data);
 
+static int preview_sound_auto_value;
+
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMIconView,
 				   fm_icon_view,
 				   FM_TYPE_DIRECTORY_VIEW)
@@ -1442,11 +1444,7 @@ preview_audio (FMIconView *icon_view, NautilusFile *file, gboolean start_flag)
 
 static gboolean
 should_preview_sound (NautilusFile *file) {
-	int preview_mode;
-	
-	preview_mode = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_PREVIEW_SOUND);
-
-	if (preview_mode == NAUTILUS_SPEED_TRADEOFF_NEVER) {
+	if (preview_sound_auto_value == NAUTILUS_SPEED_TRADEOFF_NEVER) {
 		return FALSE;
 	}
 	/* the following is disabled until we can preview remote sounds, which we currently can't do */
@@ -1970,6 +1968,9 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
         klass->get_directory_tighter_layout = fm_icon_view_real_get_directory_tighter_layout;
         klass->set_directory_tighter_layout = fm_icon_view_real_set_directory_tighter_layout;
 	klass->supports_auto_layout = real_supports_auto_layout;
+
+	nautilus_preferences_add_auto_integer (NAUTILUS_PREFERENCES_PREVIEW_SOUND,
+					       &preview_sound_auto_value);
 }
 
 static void

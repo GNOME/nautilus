@@ -367,8 +367,8 @@ static void
 fm_icon_text_window_destroy_callback (GtkObject *object,
 				      gpointer user_data)
 {
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_CAPTIONS,
-					      synch_menus_with_preference,
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_CAPTIONS, 
+					      synch_menus_with_preference, 
 					      NULL);
 }
 
@@ -394,27 +394,43 @@ fm_icon_text_window_get_or_create (void)
 	return GTK_WINDOW (icon_text_window);
 }
 
+/* fm_get_text_attribute_names_preference:
+ *
+ * Get the preference for which caption text should appear
+ * beneath icons. This function validates the raw preference
+ * and returns a default value if the raw preference is
+ * nonsensical.
+ */
 char *
 fm_get_text_attribute_names_preference (void)
 {
-	/* FIXME: This string leaks at exit, which matters only if you're
-	 * using a leak checker.
-	 */
-	static char *icon_captions = NULL;
-	char *new_icon_captions;
+	static const char *auto_preferences_value;
+	static char *last_checked_value;
+	static gboolean auto_preferences_value_is_registered;
+	static char *captions_as_string;
+
+	/* Register auto-storage value the first time it's asked for */
+	if (!auto_preferences_value_is_registered) {
+		nautilus_preferences_add_auto_string (NAUTILUS_PREFERENCES_ICON_CAPTIONS,
+						      &auto_preferences_value);
+		auto_preferences_value_is_registered = TRUE;
+	}
+
+	/* Validate preferences value the first time we see it */
+	if (last_checked_value == NULL || strcmp (last_checked_value, auto_preferences_value) != 0) {
+		if (attribute_names_string_is_good (auto_preferences_value)) {
+			g_free (captions_as_string);
+			captions_as_string = g_strdup (auto_preferences_value);
+		}
 		
-	new_icon_captions = nautilus_preferences_get (NAUTILUS_PREFERENCES_ICON_CAPTIONS);
-	
-	if (attribute_names_string_is_good (new_icon_captions)) {
-		g_free (icon_captions);
-		icon_captions = g_strdup (new_icon_captions);
+		g_free (last_checked_value);
+		last_checked_value = g_strdup (auto_preferences_value);		
 	}
 
-	g_free (new_icon_captions);
-
-	if (icon_captions == NULL) {
-		icon_captions = g_strdup (DEFAULT_ATTRIBUTE_NAMES);
+	/* If the preferences value was bad or nonexistent, use default value */
+	if (captions_as_string == NULL) {
+		captions_as_string = g_strdup (DEFAULT_ATTRIBUTE_NAMES);
 	}
 
-	return g_strdup (icon_captions);
+	return g_strdup (captions_as_string);
 }

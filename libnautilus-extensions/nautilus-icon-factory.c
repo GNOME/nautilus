@@ -1333,15 +1333,18 @@ nautilus_scalable_icon_equal (gconstpointer a,
 		&& icon_a->aa_mode == icon_b->aa_mode;
 }
 
-
 static gboolean
 should_display_image_file_as_itself (NautilusFile *file, gboolean anti_aliased)
 {
-	NautilusSpeedTradeoffValue preference_value;
-	
-	preference_value = nautilus_preferences_get_integer
-		(NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS);
+	static int show_thumbnails_auto_value;
+	static gboolean show_thumbnail_auto_value_registered;
 
+	if (!show_thumbnail_auto_value_registered) {
+		nautilus_preferences_add_auto_integer (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
+						       &show_thumbnails_auto_value);
+		show_thumbnail_auto_value_registered = TRUE;
+	}
+	
 	/* see if there's a proxy thumbnail to indicate that thumbnailing
 	 * failed, in which case we shouldn't use the thumbnail.
 	 */
@@ -1354,15 +1357,15 @@ should_display_image_file_as_itself (NautilusFile *file, gboolean anti_aliased)
 		return FALSE;
 	}
 	
-	if (preference_value == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
+	if (show_thumbnails_auto_value == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
 		return TRUE;
 	}
 	
-	if (preference_value == NAUTILUS_SPEED_TRADEOFF_NEVER) {
+	if (show_thumbnails_auto_value == NAUTILUS_SPEED_TRADEOFF_NEVER) {
 		return FALSE;
 	}
 
-	g_assert (preference_value == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
+	g_assert (show_thumbnails_auto_value == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
 	return nautilus_file_is_local (file);
 }
 

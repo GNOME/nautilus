@@ -44,6 +44,17 @@
 
 #define DEFAULT_USER_LEVEL	NAUTILUS_USER_LEVEL_INTERMEDIATE
 
+/* An enumeration used for updating auto-storage variables in a type-specific way. 
+ * FIXME: there is another enumeration like this in nautilus-global-preferences.c,
+ * used for different purposes but in a related way. Should we combine them?
+ */
+typedef enum
+{
+	PREFERENCE_BOOLEAN = 1,
+	PREFERENCE_INTEGER,
+	PREFERENCE_STRING
+} PreferenceType;
+
 /*
  * PreferencesEntry:
  *
@@ -54,7 +65,9 @@
 typedef struct {
 	char *name;
 	char *description;
+	PreferenceType type;
 	GList *callback_list;
+	GList *auto_storage_list;
 	int gconf_connection_id;
 	NautilusEnumeration *enumeration;
 } PreferencesEntry;
@@ -509,7 +522,7 @@ nautilus_preferences_get (const char *name)
 {
  	char *result;
 	char *key;
-	
+
 	g_return_val_if_fail (name != NULL, NULL);
 
 	key = preferences_key_make_for_getter (name);
@@ -746,6 +759,63 @@ preferences_callback_entry_invoke_function (gpointer data,
 }
 
 static void
+update_auto_string (gpointer data, gpointer callback_data)
+{
+	char **storage;
+	const char *value;
+
+	g_return_if_fail (data != NULL);
+	g_return_if_fail (callback_data != NULL);
+
+	storage = (char **)data;
+	value = (const char *)callback_data;
+
+	g_free (*storage);
+	*(char **)storage = g_strdup (value);
+}
+
+static void
+update_auto_integer_or_boolean (gpointer data, gpointer callback_data)
+{
+	g_return_if_fail (data != NULL);
+	g_return_if_fail (callback_data != NULL);
+
+	*(int *)data = GPOINTER_TO_INT (callback_data);
+}
+
+static void
+preferences_entry_update_auto_storage (PreferencesEntry *entry)
+{
+	char *new_string_value;
+	int new_int_value;
+	gboolean new_boolean_value;
+
+	switch (entry->type) {
+	case PREFERENCE_STRING:
+		new_string_value = nautilus_preferences_get (entry->name);
+		g_list_foreach (entry->auto_storage_list,
+				update_auto_string,
+				new_string_value);
+		g_free (new_string_value);
+		break;
+	case PREFERENCE_INTEGER:
+		new_int_value = nautilus_preferences_get_integer (entry->name);
+		g_list_foreach (entry->auto_storage_list,
+				update_auto_integer_or_boolean,
+				GINT_TO_POINTER (new_int_value));
+		break;
+	case PREFERENCE_BOOLEAN:
+		new_boolean_value = nautilus_preferences_get_boolean (entry->name);
+		g_list_foreach (entry->auto_storage_list,
+				update_auto_integer_or_boolean,
+				GINT_TO_POINTER (new_boolean_value));
+		break;
+	default:
+		g_warning ("unexpected preferences type %d in preferences_entry_update_auto_storage", entry->type);
+	}
+}
+
+static void
 preferences_something_changed_notice (GConfClient *client, 
 				      guint connection_id, 
 				      GConfEntry *entry, 
@@ -758,17 +828,19 @@ preferences_something_changed_notice (GConfClient *client,
 	g_return_if_fail (notice_data != NULL);
 	
 	preferences_entry = notice_data;
+
+	if (preferences_entry->auto_storage_list != NULL) {
+		preferences_entry_update_auto_storage (preferences_entry);			
+	}
 	
 	/* FIXME bugzilla.eazel.com 5875: 
 	 * We need to make sure that the value has actually changed before 
 	 * invoking the callbacks.
 	 */
 	/* Invoke callbacks for this entry */
-	if (preferences_entry->callback_list) {
-		g_list_foreach (preferences_entry->callback_list,
-				preferences_callback_entry_invoke_function,
-				NULL);
-	}
+	g_list_foreach (preferences_entry->callback_list,
+			preferences_callback_entry_invoke_function,
+			NULL);
 }
 
 static void
@@ -823,14 +895,52 @@ preferences_user_level_changed_notice (GConfClient *client,
 			      NULL);
 }
 
+static void
+preferences_entry_ensure_gconf_connection (PreferencesEntry *entry)
+{
+	GError *error;
+	GConfClient *client;
+	char *key;
+	
+	/*
+	 * We install only one gconf notification for each preference entry.
+	 * Otherwise, we would invoke the installed callbacks more than once
+	 * per registered callback.
+	 */
+	if (entry->gconf_connection_id != 0) {
+		return;
+	}
+		
+	g_return_if_fail (entry->name != NULL);
+
+	client = preferences_global_client_get ();
+
+	g_return_if_fail (client != NULL);
+
+	key = preferences_key_make (entry->name);
+
+	error = NULL;
+	entry->gconf_connection_id = gconf_client_notify_add (client,
+							     key,
+							     preferences_something_changed_notice,
+							     entry,
+							     NULL,
+							     &error);
+	if (nautilus_gconf_handle_error (&error)) {
+		entry->gconf_connection_id = 0;
+	}
+
+	g_free (key);
+}
+
 /**
  * preferences_entry_add_callback
  *
  * Add a callback to a pref node.  Callbacks are fired whenever
  * the pref value changes.
  * @preferences_entry: The hash node.
- * @callback: The user supplied callback.
- * @callback_data: The user supplied closure.
+ * @callback: The user-supplied callback.
+ * @callback_data: The user-supplied closure.
  **/
 static void
 preferences_entry_add_callback (PreferencesEntry *entry,
@@ -850,36 +960,56 @@ preferences_entry_add_callback (PreferencesEntry *entry,
 	
 	entry->callback_list = g_list_append (entry->callback_list, callback_entry);
 
+	preferences_entry_ensure_gconf_connection (entry);
+}
+
+/**
+ * preferences_entry_add_auto_storage
+ *
+ * Add an auto-storage variable to a pref node.  The variable will
+ * be updated to match the pref value whenever the pref 
+ * the pref value changes.
+ * @preferences_entry: The hash node.
+ * @storage: The user-supplied location at which to store the value.
+ * @type: Which type of variable this is.
+ **/
+static void
+preferences_entry_add_auto_storage (PreferencesEntry *entry,
+				    gpointer storage,
+				    PreferenceType type)
+{
+	g_return_if_fail (entry != NULL);
+	g_return_if_fail (storage != NULL);
+	g_return_if_fail (entry->type == 0 || entry->type == type);
+	g_return_if_fail (g_list_find (entry->auto_storage_list, storage) == NULL);
+
+	entry->type = type;
+	
+	entry->auto_storage_list = g_list_append (entry->auto_storage_list, storage);
+
+	preferences_entry_ensure_gconf_connection (entry);
+}
+
+static void
+preferences_entry_check_remove_connection (PreferencesEntry *entry)
+{
+	GConfClient *client;
+
 	/*
-	 * We install only one gconf notification for each preference entry.
-	 * Otherwise, we would invoke the installed callbacks more than once
-	 * per registered callback.
+	 * If there are no callbacks or auto-storage variables left in the entry, 
+	 * remove the gconf notification.
 	 */
-	if (entry->gconf_connection_id == 0) {
-		GError *error = NULL;
-		GConfClient *client;
-		char *key;
-		
-		g_return_if_fail (entry->name != NULL);
-
-		client = preferences_global_client_get ();
-
-		g_return_if_fail (client != NULL);
-
-		key = preferences_key_make (entry->name);
-
-		entry->gconf_connection_id = gconf_client_notify_add (client,
-								     key,
-								     preferences_something_changed_notice,
-								     entry,
-								     NULL,
-								     &error);
-		if (nautilus_gconf_handle_error (&error)) {
-			entry->gconf_connection_id = 0;
-		}
-
-		g_free (key);
+	if (entry->callback_list != NULL || entry->auto_storage_list != NULL) {
+		return;
 	}
+
+	client = preferences_global_client_get ();
+	
+	if (entry->gconf_connection_id != 0) {
+		gconf_client_notify_remove (client, entry->gconf_connection_id);
+	}
+	
+	entry->gconf_connection_id = 0;
 }
 
 /**
@@ -888,8 +1018,8 @@ preferences_entry_add_callback (PreferencesEntry *entry,
  * remove a callback from a pref entry.  Both the callback and the callback_data must
  * match in order for a callback to be removed from the entry.
  * @preferences_entry: The hash entry.
- * @callback: The user supplied callback.
- * @callback_data: The user supplied closure.
+ * @callback: The user-supplied callback.
+ * @callback_data: The user-supplied closure.
  **/
 static void
 preferences_entry_remove_callback (PreferencesEntry *entry,
@@ -920,22 +1050,57 @@ preferences_entry_remove_callback (PreferencesEntry *entry,
 	}
 
 	g_list_free (new_list);
-	
-	/*
-	 * If there are no callbacks left in the entry, remove the gconf 
-	 * notification as well.
-	 */
-	if (entry->callback_list == NULL) {
-		GConfClient *client;
 
-		client = preferences_global_client_get ();
+	preferences_entry_check_remove_connection (entry);
+}
+
+/**
+ * preferences_entry_remove_auto_storage
+ *
+ * remove an auto-storage variable from a pref entry.
+ * @preferences_entry: The hash entry.
+ * @storage: The user-supplied location.
+ **/
+static void
+preferences_entry_remove_auto_storage (PreferencesEntry *entry,
+				       gpointer storage)
+{
+	GList *new_list;
+	GList *iterator;
+	gpointer storage_in_entry;
+
+	g_return_if_fail (entry != NULL);
+	g_return_if_fail (storage != NULL);
+	g_return_if_fail (entry->auto_storage_list != NULL);
+	
+	new_list = g_list_copy (entry->auto_storage_list);
+	
+	for (iterator = new_list; iterator != NULL; iterator = iterator->next) {
+		storage_in_entry = iterator->data;
 		
-		if (entry->gconf_connection_id != 0) {
-			gconf_client_notify_remove (client, entry->gconf_connection_id);
+		g_return_if_fail (storage_in_entry != NULL);
+		
+		if (storage_in_entry == storage) {
+			entry->auto_storage_list = g_list_remove (entry->auto_storage_list, 
+							          storage);
+
+			switch (entry->type) {
+			case PREFERENCE_STRING:
+				update_auto_string (storage, NULL);
+				break;
+			case PREFERENCE_BOOLEAN:
+			case PREFERENCE_INTEGER:
+				update_auto_integer_or_boolean (storage, 0);
+				break;
+			default:
+				g_warning ("unexpected preference type %d in preferences_entry_remove_auto_storage", entry->type);
+			}
 		}
-		
-		entry->gconf_connection_id = 0;
 	}
+
+	g_list_free (new_list);
+
+	preferences_entry_check_remove_connection (entry);
 }
 
 /**
@@ -975,7 +1140,7 @@ preferences_callback_entry_free_func (gpointer	data,
 /**
  * preferences_entry_free
  *
- * Free a preference hash node members along with the node itself.
+ * Free a preference hash node's members along with the node itself.
  * @preferences_hash_node: The node to free.
  **/
 static void
@@ -992,11 +1157,13 @@ preferences_entry_free (PreferencesEntry *entry)
 		gconf_client_notify_remove (client, entry->gconf_connection_id);
 		entry->gconf_connection_id = 0;
 	}
-	
+
+	g_list_free (entry->auto_storage_list);
 	nautilus_g_list_free_deep_custom (entry->callback_list,
 					  preferences_callback_entry_free_func,
 					  NULL);
 	
+	entry->auto_storage_list = NULL;
 	entry->callback_list = NULL;
 
 	g_free (entry->name);
@@ -1112,6 +1279,118 @@ nautilus_preferences_add_callback (const char *name,
 	preferences_entry_add_callback (entry, callback, callback_data);
 }
 
+void
+nautilus_preferences_add_auto_string (const char *name,
+				      const char **storage)
+{
+	PreferencesEntry *entry;
+	char *value;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (storage != NULL);
+
+	entry = preferences_global_table_lookup_or_insert (name);
+	g_assert (entry != NULL);
+
+	preferences_entry_add_auto_storage (entry, storage, PREFERENCE_STRING);
+
+	value = nautilus_preferences_get (entry->name);
+	update_auto_string (storage, value);
+	g_free (value);
+}
+
+void
+nautilus_preferences_add_auto_integer (const char *name,
+				       int *storage)
+{
+	PreferencesEntry *entry;
+	int value;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (storage != NULL);
+
+	entry = preferences_global_table_lookup_or_insert (name);
+	g_assert (entry != NULL);
+
+	preferences_entry_add_auto_storage (entry, storage, PREFERENCE_INTEGER);
+
+	value = nautilus_preferences_get_integer (entry->name);
+	update_auto_integer_or_boolean (storage, GINT_TO_POINTER (value));
+}
+
+void
+nautilus_preferences_add_auto_boolean (const char *name,
+				       gboolean *storage)
+{
+	PreferencesEntry *entry;
+	gboolean value;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (storage != NULL);
+
+	entry = preferences_global_table_lookup_or_insert (name);
+	g_assert (entry != NULL);
+
+	preferences_entry_add_auto_storage (entry, storage, PREFERENCE_BOOLEAN);
+
+	value = nautilus_preferences_get_boolean (entry->name);
+	update_auto_integer_or_boolean (storage, GINT_TO_POINTER (value));
+}
+
+void
+nautilus_preferences_remove_auto_string (const char *name,
+				         const char **storage)
+{
+	PreferencesEntry *entry;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (storage != NULL);
+
+	entry = preferences_global_table_lookup (name);
+	if (entry == NULL) {
+		g_warning ("Trying to remove auto-string for %s without adding it first.", name);
+		return;
+	}
+
+	preferences_entry_remove_auto_storage (entry, storage);
+}
+
+void
+nautilus_preferences_remove_auto_integer (const char *name,
+				          int *storage)
+{
+	PreferencesEntry *entry;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (storage != NULL);
+
+	entry = preferences_global_table_lookup (name);
+	if (entry == NULL) {
+		g_warning ("Trying to remove auto-integer for %s without adding it first.", name);
+		return;
+	}
+
+	preferences_entry_remove_auto_storage (entry, storage);
+}
+
+void
+nautilus_preferences_remove_auto_boolean (const char *name,
+				          gboolean *storage)
+{
+	PreferencesEntry *entry;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (storage != NULL);
+
+	entry = preferences_global_table_lookup (name);
+	if (entry == NULL) {
+		g_warning ("Trying to remove auto-boolean for %s without adding it first.", name);
+		return;
+	}
+
+	preferences_entry_remove_auto_storage (entry, storage);
+}
+
 typedef struct
 {
 	char *name;
@@ -1172,10 +1451,10 @@ nautilus_preferences_remove_callback (const char *name,
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (callback != NULL);
 
-	entry = preferences_global_table_lookup_or_insert (name);
+	entry = preferences_global_table_lookup (name);
 
 	if (entry == NULL) {
-		g_warning ("Trying to remove a callback without adding it first.");
+		g_warning ("Trying to remove a callback for %s without adding it first.", name);
 		return;
 	}
 	
