@@ -726,9 +726,10 @@ notify_selection_change_callback (NautilusViewFrame *view_frame,
 		if (!directory_view->details->loading) {
 			/* If we aren't still loading, set the selection right now. */
 			for (i = 0; i < selection_context->selected_uris._length; i++) {
+				NautilusFile* file;
 				file = nautilus_file_get (selection_context->selected_uris._buffer[i]);
 				if (file != NULL) {
-					selection = g_list_prepend (selection, list);
+					selection = g_list_prepend (selection, file);
 				}
 			}
 			
@@ -857,7 +858,7 @@ display_pending_files (FMDirectoryView *view)
 	gtk_signal_emit (GTK_OBJECT (view), signals[DONE_ADDING_FILES]);
 
 	if (nautilus_directory_are_all_files_seen (view->details->model)
-	    && view->details->uris_selected != NULL) {
+	    && view->details->pending_uris_selected != NULL) {
 		selection = NULL;
 		view->details->pending_uris_selected = NULL;
 		
