@@ -1,3 +1,28 @@
+2000-09-21  Pavel Cisler  <pavel@eazel.com>
+
+	* tools/profiler/Makefile:
+	* tools/profiler/funcsummary.C:
+	* tools/profiler/funcsummary.h:
+	* tools/profiler/machine-profile.S:
+	* tools/profiler/machine-profile.h:
+	* tools/profiler/machine-profileP.h:
+	* tools/profiler/nautilus-leak-symbol-lookup.C:
+	* tools/profiler/nautilus-leak-symbol-lookup.h:
+	* tools/profiler/profile.C:
+	* tools/profiler/profile.h:
+	* tools/profiler/profileP.h:
+	* tools/profiler/profiledata.C:
+	* tools/profiler/profiledata.h:
+	* tools/profiler/symbol-table.h:
+	* tools/profiler/test.cpp:
+	* tools/profiler/totaltime.C:
+	* tools/profiler/totaltime.h:
+	
+	First pass at a profiler that handles threading and shared libraries.
+	Adapted from Corel's cprof.
+	It works on my machine but there are still a quite a few hardcoded 
+	things.
+
 2000-09-20  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-operations.c:
