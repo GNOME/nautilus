@@ -921,10 +921,14 @@ set_up_gmc_transition_page (NautilusDruidPageEazel *page)
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), transfer_gmc_icons);	
 	gtk_signal_connect (GTK_OBJECT (checkbox), "toggled", GTK_SIGNAL_FUNC (transition_value_changed), &transfer_gmc_icons);
 
+#if 0
+	/* This option is currently disabled, per bugzilla.eazel.com 7557 */
+
 	checkbox = gtk_check_button_new_with_label (_("Launch Nautilus when GNOME starts up."));
 	gtk_box_pack_start (GTK_BOX (main_box), checkbox, FALSE, FALSE, 0);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (checkbox), add_to_session);
 	gtk_signal_connect (GTK_OBJECT (checkbox), "toggled", GTK_SIGNAL_FUNC (transition_value_changed), &add_to_session);
+#endif
 	
 	gtk_widget_show_all (main_box);
 }

@@ -1,5 +1,15 @@
 2001-03-08  John Harper  <jsh@eazel.com>
 
+	reviewed by: Seth Nickell  <seth@eazel.com>
+
+	Fixed bug 7557 (Nautilus does not automatically start on GNOME
+	startup after installation):
+
+	* src/nautilus-first-time-druid.c (set_up_gmc_transition_page):
+	don't display the `add nautilus to session' option
+	
+2001-03-08  John Harper  <jsh@eazel.com>
+
 	reviewed by: Robin * Slomkowski <rslomkow@eazel.com>
 
 	Fixed bug 7550 (SOLARIS: text drawn incorrectly in anti-aliased
