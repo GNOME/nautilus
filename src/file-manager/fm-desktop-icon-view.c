@@ -699,7 +699,7 @@ static GtkActionEntry desktop_view_entries[] = {
     N_("Open a new GNOME terminal window"),                   /* tooltip */ 
     G_CALLBACK (action_new_terminal_callback) },
   { "New Launcher Desktop", NULL,                  /* name, stock id */
-    N_("Create L_auncher"), NULL,                /* label, accelerator */
+    N_("Create L_auncher..."), NULL,                /* label, accelerator */
     N_("Create a new launcher"),                   /* tooltip */ 
     G_CALLBACK (action_new_launcher_callback) },
   { "Change Background", NULL,                  /* name, stock id */

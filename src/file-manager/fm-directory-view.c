@@ -5734,7 +5734,7 @@ static GtkActionEntry directory_view_entries[] = {
     N_("Create a new empty file inside this folder"),                   /* tooltip */ 
     G_CALLBACK (action_new_empty_file_callback) },
   { "New Launcher", NULL,                  /* name, stock id */
-    N_("Create L_auncher"), NULL,                /* label, accelerator */
+    N_("Create L_auncher..."), NULL,                /* label, accelerator */
     N_("Create a new launcher"),                   /* tooltip */ 
     G_CALLBACK (action_new_launcher_callback) },
   { "Open", GTK_STOCK_OPEN,                  /* name, stock id */
