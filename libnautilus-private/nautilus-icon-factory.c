@@ -543,11 +543,15 @@ nautilus_icon_factory_scale (NautilusIconFactory *factory,
 	new_width = (old_width * size_in_pixels) / NAUTILUS_ICON_SIZE_STANDARD;
 	new_height = (old_height * size_in_pixels) / NAUTILUS_ICON_SIZE_STANDARD;
 
-	/* This creates scaled icon with ref. count of 1. */
+	/* This creates scaled icon with ref. count of 1.
+	 * Use ART_FILTER_NEAREST because others such as ART_FILTER_BILINEAR
+	 * cause scaled icons used as pixmaps/masks (e.g. in list view) to
+	 * appear nearly black.
+	 */
 	result = gdk_pixbuf_scale_simple (standard_sized_pixbuf, 
 					  new_width, 
 					  new_height, 
-					  ART_FILTER_BILINEAR);
+					  ART_FILTER_NEAREST);
 
 	return result;
 }

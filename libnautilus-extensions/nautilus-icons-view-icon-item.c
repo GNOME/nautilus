@@ -113,11 +113,23 @@ static double nautilus_icons_view_icon_item_point (GnomeCanvasItem *item, double
 static void nautilus_icons_view_icon_item_bounds (GnomeCanvasItem *item, double *x1, double *y1, double *x2, double *y2);
 
 /* private */
-static GdkFont* get_font_for_item(GnomeCanvasItem *item);
-static void nautilus_icons_view_draw_text_box (GnomeCanvasItem* item, GdkDrawable *drawable,
-					       GdkFont *title_font, const char* label, 
-                                               int icon_left, int icon_bottom,
-					       gboolean real_draw);
+static GdkFont* get_font_for_item 		 (GnomeCanvasItem *item);
+static void draw_or_measure_text_box 		 (GnomeCanvasItem* item, 
+						  GdkDrawable *drawable,
+				       		  GdkFont *title_font, 
+				       		  const char* label, 
+                                       		  int icon_left, 
+                                       		  int icon_bottom,
+				       		  gboolean do_draw);
+static void nautilus_icons_view_draw_text_box    (GnomeCanvasItem* item, 
+						  GdkDrawable *drawable,
+				   		  GdkFont *title_font, 
+				   		  const char *label, 
+                                   		  int icon_left, 
+                                   		  int icon_bottom);
+static void nautilus_icons_view_measure_text_box (GnomeCanvasItem* item, 
+				      		  GdkFont *title_font, 
+				      		  const char *label);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconsViewIconItem, nautilus_icons_view_icon_item, GNOME_TYPE_CANVAS_ITEM)
 
@@ -508,7 +520,7 @@ nautilus_icons_view_icon_item_update (GnomeCanvasItem *item, double *affine, Art
  	title_font = get_font_for_item(item);
 
 	/* make sure the text box measurements are set up before recalculating the bounding box */
-	nautilus_icons_view_draw_text_box(item, NULL, title_font, details->label, 0, 0, FALSE);       	
+	nautilus_icons_view_measure_text_box(item, title_font, details->label);       	
 	recompute_bounding_box(icon_view_item);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GNOME_CANVAS_ITEM_CLASS, update, (item, affine, clip_path, flags));
@@ -591,59 +603,71 @@ transform_pixbuf (guchar *dest, int x, int y, int width, int height, int rowstri
 
 /* Draw the label in a box, using gnomelib routines. */
 static void
-nautilus_icons_view_draw_text_box (GnomeCanvasItem* item, GdkDrawable *drawable,
-				   GdkFont *title_font, const char *label, 
-                                   int icon_left, int icon_bottom, gboolean real_draw)
+draw_or_measure_text_box (GnomeCanvasItem* item, 
+			  GdkDrawable *drawable,
+			  GdkFont *title_font, 
+			  const char *label, 
+                          int icon_left, 
+                          int icon_bottom, 
+                          gboolean do_draw)
 {
 	NautilusIconsViewIconItem *icon_view_item;
 	NautilusIconsViewIconItemDetails *details;
-        int text_width, text_height;
+        int width_so_far, height_so_far;
         GdkGC* gc;
 	int max_label_width;
 	int item_width, box_left;
 	GnomeIconTextInfo *icon_text_info;
-	
+	gchar **pieces;
+	const char *label_piece;
+	guint piece_index;
+
 	icon_view_item = NAUTILUS_ICONS_VIEW_ICON_ITEM (item);
 	details = icon_view_item->details;
-	
-        text_width = gdk_string_width (title_font, label);
-	text_height = gdk_string_height (title_font, label);
-	
-	if (real_draw) {
-		item_width = floor (item->x2 - item->x1);
-		gc = gdk_gc_new (item->canvas->layout.bin_window);
-	}
-	
-	max_label_width = floor (MAX_LABEL_WIDTH * item->canvas->pixels_per_unit);
-	if (text_width < max_label_width) {
-		if (real_draw) {
-			box_left = icon_left + (item_width - text_width) / 2;
-			gdk_draw_string (drawable, title_font, gc,
-					 box_left, icon_bottom + text_height, label);
+		
+	pieces = g_strsplit (label, "\n", 0);
+	piece_index = 0;
+	label_piece = pieces[piece_index];
+	width_so_far = 0;
+	height_so_far = 0;
+	while (label_piece != NULL) {
+		if (do_draw) {
+			item_width = floor (item->x2 - item->x1);
+			gc = gdk_gc_new (item->canvas->layout.bin_window);
 		}
-	} else {	
+		
+		max_label_width = floor (MAX_LABEL_WIDTH * item->canvas->pixels_per_unit);
+
 		icon_text_info = gnome_icon_layout_text
-			(title_font, label, " -_,;.:?/&", max_label_width, TRUE);
+			(title_font, label_piece, " -_,;.:?/&", max_label_width, TRUE);
 		
-		text_width = icon_text_info->width;
-		text_height = icon_text_info->height;
-		
-		if (real_draw) {
-			box_left = icon_left + (item_width - text_width) / 2;
+		if (do_draw) {
+			box_left = icon_left + (item_width - icon_text_info->width) / 2;
 			gnome_icon_paint_text (icon_text_info, drawable, gc,
-					       box_left, icon_bottom, GTK_JUSTIFY_CENTER);
+					       box_left, icon_bottom + height_so_far, GTK_JUSTIFY_CENTER);
 		}
 		
 		gnome_icon_text_info_free (icon_text_info);
+
+		width_so_far = MAX (width_so_far, icon_text_info->width);
+		height_so_far += icon_text_info->height;
+
+		label_piece = pieces[++piece_index];
 	}
+	g_strfreev (pieces);
 	
-	text_height += 4; /* extra slop for nicer highlighting */
+	height_so_far += 4; /* extra slop for nicer highlighting */
 	
-	if (real_draw) {
+	if (do_draw) {
+
+		/* Current calculations should match what we measured before drawing */
+		g_assert (height_so_far == details->text_height);
+		g_assert (width_so_far == details->text_width);
+	
 		/* invert to indicate selection if necessary */
 		if (details->is_selected) {
 			gdk_gc_set_function (gc, GDK_INVERT); 
-			gdk_draw_rectangle (drawable, gc, TRUE, box_left, icon_bottom - 2, text_width, text_height);	    
+			gdk_draw_rectangle (drawable, gc, TRUE, box_left, icon_bottom - 2, width_so_far, height_so_far);	    
 			gdk_gc_set_function (gc, GDK_COPY); 
 		}
 		
@@ -651,14 +675,45 @@ nautilus_icons_view_draw_text_box (GnomeCanvasItem* item, GdkDrawable *drawable,
 		if (details->is_alt_selected) {
 			gdk_gc_set_stipple(gc, stipple);
 			gdk_gc_set_fill(gc, GDK_STIPPLED);
-			gdk_draw_rectangle (drawable, gc, FALSE, box_left, icon_bottom - 2, text_width, text_height);	    
+			gdk_draw_rectangle (drawable, gc, FALSE, box_left, icon_bottom - 2, width_so_far, height_so_far);	    
 		}
 		
 		gdk_gc_unref (gc);
 	}
-	
-	details->text_width  = (double) text_width;
-	details->text_height = (double) text_height;
+	else
+	{
+		/* If measuring, remember the width & height. */
+		details->text_width  = (double) width_so_far;
+		details->text_height = (double) height_so_far;
+	}
+}
+
+static void
+nautilus_icons_view_measure_text_box (GnomeCanvasItem* item, 
+				      GdkFont *title_font, 
+				      const char *label)
+{
+	draw_or_measure_text_box (item, 
+				  NULL, 
+				  title_font, 
+				  label, 
+				  0, 
+				  0, 
+				  FALSE);
+}
+
+static void
+nautilus_icons_view_draw_text_box (GnomeCanvasItem* item, GdkDrawable *drawable,
+				   GdkFont *title_font, const char *label, 
+                                   int icon_left, int icon_bottom)
+{
+	draw_or_measure_text_box (item, 
+			          drawable, 
+				  title_font, 
+				  label, 
+				  icon_left, 
+				  icon_bottom, 
+				  TRUE);
 }
 
 /* draw the icon item */
@@ -736,7 +791,7 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
 	if (container->details->zoom_level != NAUTILUS_ZOOM_LEVEL_SMALLEST) {
 		icon_height = details->pixbuf->art_pixbuf->height * item->canvas->pixels_per_unit;
 		nautilus_icons_view_draw_text_box(item, drawable, title_font, details->label, item->x1 - x, 
-						  item->y1 - y + icon_height, TRUE);       	
+						  item->y1 - y + icon_height);       	
 	}
 }
 
