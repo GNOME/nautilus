@@ -51,6 +51,8 @@ struct _NautilusSidePaneDetails {
 	GtkWidget *notebook;
 	GtkWidget *menu;
 	
+	GtkWidget *title_frame;
+	GtkWidget *title_hbox;
 	GtkWidget *title_label;
 	GtkWidget *shortcut_box;
 	GtkTooltips *tooltips;
@@ -130,6 +132,32 @@ select_panel (NautilusSidePane *side_pane, SidePanel *panel)
 		(GTK_NOTEBOOK (side_pane->details->notebook), page_num);
 }
 
+static void
+nautilus_side_pane_size_allocate (GtkWidget *widget,
+				  GtkAllocation *allocation)
+{
+	int width;
+	GtkAllocation child_allocation;
+	NautilusSidePane *pane;
+	GtkWidget *frame;
+	GtkWidget *hbox;
+	GtkRequisition child_requisition;
+
+	GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, allocation);
+
+	pane = NAUTILUS_SIDE_PANE(widget);
+	frame = pane->details->title_frame;
+	hbox = pane->details->title_hbox;
+
+	gtk_widget_get_child_requisition (hbox, &child_requisition);
+	width = child_requisition.width;
+
+	child_allocation = frame->allocation;
+	child_allocation.width = MAX (width, frame->allocation.width);
+
+	gtk_widget_size_allocate (frame, &child_allocation);
+}
+
 /* initializing the class object by installing the operations we override */
 static void
 nautilus_side_pane_class_init (GtkObjectClass *object_klass)
@@ -145,6 +173,7 @@ nautilus_side_pane_class_init (GtkObjectClass *object_klass)
 	
 	gobject_class->finalize = nautilus_side_pane_finalize;
 	object_klass->destroy = nautilus_side_pane_destroy;
+	widget_class->size_allocate = nautilus_side_pane_size_allocate;
 
 	signals[CLOSE_REQUESTED] = g_signal_new
 		("close_requested",
@@ -298,10 +327,12 @@ nautilus_side_pane_init (GtkObject *object)
 	side_pane->details = g_new0 (NautilusSidePaneDetails, 1);
 
 	frame = gtk_frame_new (NULL);
+	side_pane->details->title_frame = frame;
 	gtk_widget_show (frame);
 	gtk_box_pack_start (GTK_BOX (side_pane), frame, FALSE, FALSE, 0);
 
 	hbox = gtk_hbox_new (FALSE, 0);
+	side_pane->details->title_hbox = hbox;
 	gtk_widget_show (hbox);
 	gtk_container_add (GTK_CONTAINER (frame), hbox);
 

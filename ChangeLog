@@ -1,3 +1,11 @@
+2004-05-13  Marco Pesenti Gritti  <marco@gnome.org>
+
+	* src/nautilus-side-pane.c: (nautilus_side_pane_size_allocate),
+	(nautilus_side_pane_class_init), (nautilus_side_pane_init):
+
+	Do not overlap close icon and text label when the sidepane
+	is very small. (Fixes #107205)
+
 2004-05-07  Martin Wehner  <martin.wehner@epost.de>
 
 	* src/file-manager/fm-properties-window.c (properties_window_update),
