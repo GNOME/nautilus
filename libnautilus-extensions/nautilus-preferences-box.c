@@ -47,6 +47,7 @@ struct _NautilusPreferencesBoxDetails
 	GtkWidget *pane_notebook;
 	GList *panes;
 	char *selected_pane;
+	guint select_row_signal_id;
 };
 
 /* NautilusPreferencesBoxClass methods */
@@ -161,13 +162,16 @@ preferences_box_select_pane (NautilusPreferencesBox *preferences_box,
  			gtk_widget_show (info->pane_widget);
  			gtk_notebook_set_page (GTK_NOTEBOOK (preferences_box->details->pane_notebook), 
  					       g_list_position (preferences_box->details->panes, pane_iterator));
+
+			g_free (preferences_box->details->selected_pane);
+			preferences_box->details->selected_pane = g_strdup (pane_name);
+			return;
 		}
 		
 		pane_iterator = pane_iterator->next;
 	}
 
-	g_free (preferences_box->details->selected_pane);
-	preferences_box->details->selected_pane = g_strdup (pane_name);
+	g_warning ("Pane '%s' could not be found.", pane_name);
 }
 
 int
@@ -196,6 +200,13 @@ preferences_box_category_list_recreate (NautilusPreferencesBox *preferences_box)
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_BOX (preferences_box));
 	g_return_if_fail (GTK_IS_CLIST (preferences_box->details->category_list));
 
+	/* Block the select_row signal so that the 1st item doesnt get selected.
+	 * Otherwise, we lose the selected_pane.
+	 */
+	g_assert (preferences_box->details->select_row_signal_id != 0);
+	gtk_signal_handler_block (GTK_OBJECT (preferences_box->details->category_list),
+				  preferences_box->details->select_row_signal_id);
+
 	gtk_clist_clear (GTK_CLIST (preferences_box->details->category_list));
 
 	for (iterator = preferences_box->details->panes; iterator != NULL; iterator = iterator->next) {
@@ -211,15 +222,19 @@ preferences_box_category_list_recreate (NautilusPreferencesBox *preferences_box)
 			gtk_clist_append (GTK_CLIST (preferences_box->details->category_list), text_array);
 
 			if (nautilus_str_is_equal (info->pane_name, preferences_box->details->selected_pane)) {
-				row = preferences_box_find_row (GTK_CLIST (preferences_box->details->category_list), info->pane_name);
-
+				row = preferences_box_find_row (GTK_CLIST (preferences_box->details->category_list),
+								info->pane_name);
+				
 				if (row == -1) {
 					row = 0;
 				}
 			}
 		}
 	}
-
+	
+	gtk_signal_handler_unblock (GTK_OBJECT (preferences_box->details->category_list),
+				    preferences_box->details->select_row_signal_id);
+	
 	/* You have to do this to get the highlighted row in the clist to change for some reason */
 	gtk_clist_select_row (GTK_CLIST (preferences_box->details->category_list), row, 0);
 
@@ -297,11 +312,12 @@ nautilus_preferences_box_new (const char *box_title)
 
 	/* The category list */
 	preferences_box->details->category_list = gtk_clist_new (NUM_CATEGORY_COLUMNS);
-	
-	gtk_signal_connect (GTK_OBJECT (preferences_box->details->category_list), 
-			    "select_row",
-			    GTK_SIGNAL_FUNC (category_list_select_row_callback),
-			    preferences_box);
+
+	preferences_box->details->select_row_signal_id =
+		gtk_signal_connect (GTK_OBJECT (preferences_box->details->category_list), 
+				    "select_row",
+				    GTK_SIGNAL_FUNC (category_list_select_row_callback),
+				    preferences_box);
 
 	gtk_clist_set_selection_mode (GTK_CLIST (preferences_box->details->category_list), 
 				      GTK_SELECTION_BROWSE);
@@ -393,4 +409,3 @@ nautilus_preferences_box_find_pane (const NautilusPreferencesBox *preferences_bo
 
 	return NULL;
 }
-

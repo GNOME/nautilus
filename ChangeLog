@@ -1,5 +1,19 @@
 2001-03-31  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-preferences-box.c:
+	(preferences_box_select_pane),
+	(preferences_box_category_list_recreate),
+	(nautilus_preferences_box_new),
+	(nautilus_preferences_box_find_pane):
+	If the preferences dialog is currently selecting a pane, then make
+	sure that pane gets selected again (if visible) after a user level
+	change.
+
+	* libnautilus-extensions/nautilus-preferences-box.h:
+	Small paramater name tweaking.
+	
+2001-03-31  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-preferences-item.h:
 	* libnautilus-extensions/nautilus-preferences-item.c:
 	(nautilus_preferences_item_update_showing): New function to update
