@@ -1,3 +1,12 @@
+2000-11-01  Darin Adler  <darin@eazel.com>
+
+	Fixed bug 4335 (music view does not work with Services:Vault)
+
+	* components/music/nautilus-music-view.oafinfo:
+	Added the requirement that the URL must be file scheme, since
+	the music view doesn't know how to deal with MP3s that are not
+	on the local hard disk.
+
 2000-11-01  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 4343 (crash clicking "Back" deep in software catalog)
