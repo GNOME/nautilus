@@ -33,7 +33,6 @@
 #include "shared-service-widgets.h"
 #include "shared-service-utilities.h"
 
-#include <ghttp.h>
 #include <unistd.h>
 #include <gnome-xml/tree.h>
 #include <gtk/gtkpixmap.h>
@@ -51,6 +50,7 @@
 #include <libnautilus-extensions/nautilus-image.h>
 #include <stdio.h>
 
+char 	*redirect_location;
 
 struct _NautilusServiceStartupViewDetails {
 	char		*uri;
@@ -259,25 +259,28 @@ nautilus_service_startup_view_load_uri (NautilusServiceStartupView	*view,
 		generate_startup_form (view);
 	}
 	else if (is_location (document_name, "login")) {
-		go_to_uri (view->details->nautilus_view, "eazel-login:");
+		redirect_location = g_strdup_printf ("eazel-login:");
 	}
 	else if (is_location(document_name, "summary")) {
-		go_to_uri (view->details->nautilus_view, "eazel-summary:");
+		redirect_location = g_strdup_printf ("eazel-summary:");
 	}
 	else if (is_location(document_name, "inventory")) {
-		go_to_uri (view->details->nautilus_view, "eazel-inventory:");
+		redirect_location = g_strdup_printf ("eazel-inventory:");
 	}
 	else if (is_location(document_name, "install")) {
-		go_to_uri (view->details->nautilus_view, "eazel-install:");
+		redirect_location = g_strdup_printf ("eazel-install:");
 	}
 	else if (is_location(document_name, "time")) {
-		go_to_uri (view->details->nautilus_view, "eazel-time:");
+		redirect_location = g_strdup_printf ("eazel-time:");
 	}
 	else if (is_location(document_name, "vault")) {
-		go_to_uri (view->details->nautilus_view, "eazel-vault:");
+		redirect_location = g_strdup_printf ("eazel-vault:");
 	}
 	else if (is_location(document_name, "register")) {
-		go_to_uri (view->details->nautilus_view, "http://www.eazel.com");
+		redirect_location = g_strdup_printf ("http://www.eazel.com/registration.html");
+	}
+	else if (is_location(document_name, "serviceinfo")) {
+		redirect_location = g_strdup_printf ("http://www.eazel.com/services.html");
 	}
 	else {
 		generate_startup_form (view); /* eventually, this should be setup_bad_location_form */
@@ -292,5 +295,6 @@ service_load_location_callback (NautilusView			*view,
 	nautilus_view_report_load_underway (services->details->nautilus_view);
 	nautilus_service_startup_view_load_uri (services, location);
 	nautilus_view_report_load_complete (services->details->nautilus_view);
+	go_to_uri (view, redirect_location);
 }
 

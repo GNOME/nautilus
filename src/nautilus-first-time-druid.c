@@ -78,7 +78,7 @@ druid_finished (GtkWidget *druid_page)
 
 	if (last_signup_choice < 2) {
 		if (last_signup_choice == 0)
-			signup_uris[0] = "eazel:registerinfo";
+			signup_uris[0] = "eazel:serviceinfo";
 		else
 			signup_uris[0] = "eazel:register";
 		signup_uris[1] = NULL;

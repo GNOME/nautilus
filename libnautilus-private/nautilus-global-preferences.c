@@ -42,7 +42,7 @@
 #define GLOBAL_PREFERENCES_DIALOG_TITLE _("Nautilus Preferences")
 
 /* default web search uri - this will soon be changed to point to our service */
-#define DEFAULT_SEARCH_WEB_URI "http://eazel1.eazel.com/services/websearch.html"
+#define DEFAULT_SEARCH_WEB_URI "http://www.eazel.com/websearch.html"
 
 /* Private stuff */
 static GtkWidget *global_preferences_create_dialog                      (void);
