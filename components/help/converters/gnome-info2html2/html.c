@@ -18,6 +18,8 @@
 
 #define USE_FILE_URLS
 
+int inTable=0;
+
 char *BaseFilename=NULL;
 char *OverrideBaseFilename=NULL;
 
@@ -161,11 +163,26 @@ void start_html_content( FILE *f )
 /* we want to put links to next, prev, and up nodes */
 void make_nav_links( FILE *f, NODE *node )
 {
+#if 0
   fprintf(f,"<PRE>\n");
   write_node_link_html( f, node->filename, "Next:", node->next );
   write_node_link_html( f, node->filename, "Prev:", node->prev );
   write_node_link_html( f, node->filename, "Up:", node->up );
   fprintf(f,"</PRE>\n");
+#else
+  fprintf(f,"<TABLE border=2 cellspacing=1 cellpadding=4 width=95%>");
+  fprintf(f,"<TR bgcolor=\"#eeeee0\">");
+  fprintf(f,"<TH align=center width=33%>");
+  write_node_link_html( f, node->filename, "Next:", node->next );
+  fprintf(f,"</TH>");
+  fprintf(f,"<TH align=center width=33%>");
+  write_node_link_html( f, node->filename, "Prev:", node->prev );
+  fprintf(f,"<TH align=center width=33%>");
+  write_node_link_html( f, node->filename, "Up:", node->up );
+  fprintf(f,"</TH>");
+  fprintf(f,"</TR></TABLE>");
+#endif
+
 }
 
 /* s is error message */
@@ -727,13 +744,27 @@ void open_menu_html( FILE *f, char *p )
   if (*p != '\000')
     fprintf(f, "<H2>%s</H2>\n",p);
   /*  fprintf(f, "<UL>\n"); */
+#if 0
     fprintf(f, "<dl>\n"); 
+#else
+    if (inTable)
+	    fprintf(stderr, "In a table and starting new one!\n");
+    inTable = 1;
+    fprintf(f, "<table width=95%><tr><td>&nbsp;</td></tr>\n");
+#endif
 }
 
 void close_menu_html( FILE *f )
 {
   /* fprintf(f, "</UL>\n"); */
-  fprintf(f, "</dl>\n"); 
+#if 0
+    fprintf(f, "</dl>\n");
+#else
+    if (!inTable)
+	    fprintf(stderr, "Not in a table and closing one!\n");
+    inTable = 0;
+    fprintf(f, "</table>\n");
+#endif
 }
 
 /* writes menu entry contained in string p */
@@ -805,13 +836,24 @@ void write_menu_entry_html( FILE *f, char *p, char *nodefile, char **menu_end )
   fprintf(f,"<dt><A HREF=\"../%s/%s.html\">%s</A>\n",
 	  reffile, converted_nodename, escaped_refname);
 #endif
+
   href = form_info_tag_href( reffile, converted_nodename );
+#if 0
   fprintf(f,"<dt><A %s>%s</A>\n", href, escaped_refname );
   fprintf(f,"<dd>");
   if (*end == '.' && *(end+1) == '\n')
     fprintf(f,"%s.\n",escaped_refnode);
   else
     fwrite(end+1, 1, *menu_end - end - 1, f);
+#else
+  fprintf(f,"<tr><td width=30%><A %s>%s</A></td><td width=70%>", 
+	  href, escaped_refname );
+  if (*end == '.' && *(end+1) == '\n')
+    fprintf(f,"%s.\n",escaped_refnode);
+  else
+    fwrite(end+1, 1, *menu_end - end - 1, f);
+  fprintf(f,"</td></tr>\n");
+#endif
 
   if (href)
     g_free(href);
