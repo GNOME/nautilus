@@ -1787,32 +1787,34 @@ nautilus_file_compare_name (NautilusFile *file,
 	return result;
 }
 
+gboolean
+nautilus_file_name_matches_hidden_pattern (const char *name_or_relative_uri)
+{
+	g_return_val_if_fail (name_or_relative_uri != NULL, FALSE);
 
+	return name_or_relative_uri[0] == '.';
+}
+
+gboolean
+nautilus_file_name_matches_backup_pattern (const char *name_or_relative_uri)
+{
+	g_return_val_if_fail (name_or_relative_uri != NULL, FALSE);
+
+	return nautilus_str_has_suffix (name_or_relative_uri, "~");
+}
 
 gboolean
 nautilus_file_is_hidden_file (NautilusFile *file)
 {
-	char *name;
-	gboolean is_hidden;
-
-	name = nautilus_file_get_name (file);
-	is_hidden = nautilus_str_has_prefix (name, ".");
-	g_free (name);
-
-	return is_hidden;
+	return nautilus_file_name_matches_hidden_pattern
+		(file->details->relative_uri);
 }
 
 gboolean 
 nautilus_file_is_backup_file (NautilusFile *file)
 {
-	char *name;
-	gboolean is_backup;
-
-	name = nautilus_file_get_name (file);
-	is_backup = nautilus_str_has_suffix (name, "~");
-	g_free (name);
-
-	return is_backup;
+	return nautilus_file_name_matches_backup_pattern
+		(file->details->relative_uri);
 }
 
 gboolean 
@@ -2075,8 +2077,7 @@ nautilus_file_monitor_add (NautilusFile *file,
 
 	nautilus_directory_monitor_add_internal
 		(file->details->directory, file,
-		 client,
-		 attributes);
+		 client, TRUE, TRUE, attributes);
 }   
 			   
 void

@@ -102,6 +102,8 @@ vfs_cancel_callback (NautilusDirectory *directory,
 static void
 vfs_file_monitor_add (NautilusDirectory *directory,
 		      gconstpointer client,
+		      gboolean monitor_hidden_files,
+		      gboolean monitor_backup_files,
 		      GList *file_attributes,
 		      gboolean force_reload)
 {
@@ -116,6 +118,8 @@ vfs_file_monitor_add (NautilusDirectory *directory,
 	nautilus_directory_monitor_add_internal
 		(directory, NULL,
 		 client,
+		 monitor_hidden_files,
+		 monitor_backup_files,
 		 file_attributes);
 }
 

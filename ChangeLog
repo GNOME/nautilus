@@ -1,3 +1,86 @@
+2001-01-04  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Rebecca Schulman  <rebecka@eazel.com>
+
+	Fixed bug 3811 (shallow file counts and top-left text are fetched
+	even for non-displayed hidden/backup items).
+
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(allow_metafile): Add "ghelp:" and "gnome-help:" to the
+	unfortunate list of hard-coded schemes. If we hard-code "help:" we
+	have to hard-code its synonyms too.
+	(find_monitor): Use g_new0 so fields in the Monitor are not
+	uninitialized in this case (the fields in question are ignored,
+	but it's still nicer this way).
+	(nautilus_directory_monitor_add_internal): Set up the "monitor
+	hidden files" and "monitor backup files" in the Monitor structure
+	based on new parameters.
+	(should_display_file_name): Use
+	nautilus_file_name_matches_hidden_pattern and
+	nautilus_file_name_matches_backup_pattern.
+	(monitor_includes_file): New function that encapsulates the rule
+	about which monitor includes which file. Handles the new flags for
+	not monitoring hidden or backup files.
+	(is_needy): Call monitor_includes_file.
+	(select_needy_file): Call monitor_includes_file.
+	
+	* libnautilus-extensions/nautilus-file-private.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_name_matches_hidden_pattern),
+	(nautilus_file_name_matches_backup_pattern): New functions to
+	share with the directory code.
+	(nautilus_file_is_hidden_file), (nautilus_file_is_backup_file):
+	Use the new functions and use the raw relative_uri -- no need to
+	unescape to change to a file name since the "." and "~" characters
+	are not encoded.
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize): Share more code with the
+	filtering_changed_callback. Handle the desktop view better by
+	never setting the "show hidden" and "show backup" flags (so they
+	are both FALSE) and not setting up the callbacks.
+	(fm_directory_view_destroy): Since we don't set up the callbacks
+	for desktop windows, don't remove them for desktop windows.
+	(queue_pending_files): Remove the desktop special case from
+	here. It was strange to set the flags up then wait until this
+	moment to clear them both. It's better to keep them FALSE.
+	(finish_loading): Renamed and changed to pass the appropriate
+	values in to the nautilus_directory_file_monitor_add call -- this
+	is the actual bug fix.
+	(filtering_changed_callback): Remove the desktop special case,
+	since this function will now never be called for the desktop.
+	
+	* libnautilus-extensions/nautilus-directory.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_file_monitor_add): Pass through the new
+	"monitor hidden files" and "monitor backup files" parameters.
+	(nautilus_self_check_directory): Pass TRUE for both.
+	* libnautilus-extensions/nautilus-vfs-directory.c:
+	(vfs_file_monitor_add): Pass through the new "monitor hidden
+	files" and "monitor backup files" parameters.
+	
+	* libnautilus-extensions/nautilus-merged-directory.c:
+	(merged_file_monitor_add), (monitor_add_directory): Store the
+	"monitor hidden files" and "monitor backup files" and pass them
+	through to the individual directory monitor calls.
+	
+	* components/tree/nautilus-tree-model.c:
+	(nautilus_tree_model_node_begin_monitoring_no_connect):
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_monitor_add):
+	* libnautilus-extensions/nautilus-trash-monitor.c:
+	(nautilus_trash_monitor_initialize):
+	* src/nautilus-applicable-views.c:
+	(got_minimum_file_info_callback):
+	Pass in TRUE for "monitor hidden files" and "monitor backup files"
+	to get the same behavior as before. (In some cases the booleans
+	are just ignored, in other cases we just monitor all files as we
+	used to.)
+	
+	* RENAMING: Remind myself to change the name of the
+	NAUTILUS_CALL_VIRTUAL macro to NAUTILUS_CALL_METHOD some day.
+
 2001-01-04  John Harper  <jsh@eazel.com>
 
 	* libnautilus-extensions/nautilus-gdk-extensions.c,
@@ -308,7 +391,7 @@ Wed Jan 03 04:11:01 2001  George Lebl <jirka@5z.com>
 
 2001-01-03  Ramiro Estrugo  <ramiro@eazel.com>
 
-	reviewed by: Pavel Cisler<pavel@eazel.com>
+	reviewed by: Pavel Cisler <pavel@eazel.com>
 
 	Fix bugs 4677, 3031.
 	
@@ -902,7 +985,7 @@ Wed Jan 03 04:11:01 2001  George Lebl <jirka@5z.com>
 
 2000-12-23  Gene Z. Ragan  <gzr@eazel.com>
 
-	reviewed by: Pavel Cisler<pavel@eazel.com>
+	reviewed by: Pavel Cisler <pavel@eazel.com>
 
 	Fixed bug 4158, dropping a file onto gnome-terminal
 	doesn't insert a path name.
@@ -938,7 +1021,7 @@ Wed Jan 03 04:11:01 2001  George Lebl <jirka@5z.com>
 	
 2000-12-22  Gene Z. Ragan  <gzr@eazel.com>
 
-	reviewed by: Pavel Cisler<pavel@eazel.com>
+	reviewed by: Pavel Cisler <pavel@eazel.com>
 	
 	Fixed bug 4951, No error given selecting unmountable "Disks" volume.
 	

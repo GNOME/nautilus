@@ -1393,6 +1393,8 @@ nautilus_directory_cancel_callback (NautilusDirectory *directory,
 void
 nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 				     gconstpointer client,
+				     gboolean monitor_hidden_files,
+				     gboolean monitor_backup_files,
 				     GList *file_attributes,
 				     gboolean force_reload)
 {
@@ -1402,6 +1404,8 @@ nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 	NAUTILUS_CALL_VIRTUAL
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 file_monitor_add, (directory, client,
+				    monitor_hidden_files,
+				    monitor_backup_files,
 				    file_attributes,
 				    force_reload));
 }
@@ -1477,6 +1481,7 @@ nautilus_self_check_directory (void)
 
 	nautilus_directory_file_monitor_add
 		(directory, &data_dummy,
+		 TRUE, TRUE,
 		 NULL, FALSE);
 
 	got_metadata_flag = FALSE;

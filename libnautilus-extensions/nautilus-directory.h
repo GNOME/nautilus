@@ -38,9 +38,6 @@
           set of known files changes.
        2) An abstract interface for getting attributes and performing
           operations on files.
-       3) An interface that folds together the cached information that's
-          kept in the metafile with "trustworthy" versions of the same
-          information available from other means.
 */
 
 #define NAUTILUS_TYPE_DIRECTORY \
@@ -121,6 +118,8 @@ typedef struct
 					  gpointer                   callback_data);
 	void     (* file_monitor_add)    (NautilusDirectory          *directory,
 					  gconstpointer              client,
+					  gboolean                   monitor_hidden_files,
+					  gboolean                   monitor_backup_files,
 					  GList                     *monitor_attributes,
 					  gboolean                   force_reload);
 	void     (* file_monitor_remove) (NautilusDirectory         *directory,
@@ -179,6 +178,8 @@ void               nautilus_directory_cancel_callback          (NautilusDirector
 /* Monitor the files in a directory. */
 void               nautilus_directory_file_monitor_add         (NautilusDirectory         *directory,
 								gconstpointer              client,
+								gboolean                   monitor_hidden_files,
+								gboolean                   monitor_backup_files,
 								GList                     *monitor_attributes,
 								gboolean                   force_reload);
 void               nautilus_directory_file_monitor_remove      (NautilusDirectory         *directory,

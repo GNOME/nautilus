@@ -385,6 +385,7 @@ nautilus_tree_model_node_begin_monitoring_no_connect (NautilusTreeModel         
 	monitor_attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
 	nautilus_directory_file_monitor_add (directory,
 					     model,
+					     TRUE, TRUE,
 					     monitor_attributes,
 					     force_reload);
 	g_list_free (monitor_attributes);

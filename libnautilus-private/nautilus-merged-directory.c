@@ -54,6 +54,8 @@ typedef struct {
 typedef struct {
 	NautilusMergedDirectory *merged;
 
+	gboolean monitor_hidden_files;
+	gboolean monitor_backup_files;
 	GList *monitor_attributes;
 	gboolean force_reload;
 } MergedMonitor;
@@ -305,6 +307,8 @@ merged_cancel_callback (NautilusDirectory *directory,
 static void
 merged_file_monitor_add (NautilusDirectory *directory,
 			 gconstpointer client,
+			 gboolean monitor_hidden_files,
+			 gboolean monitor_backup_files,
 			 GList *file_attributes,
 			 gboolean force_reload)
 {
@@ -327,6 +331,8 @@ merged_file_monitor_add (NautilusDirectory *directory,
 		g_hash_table_insert (merged->details->monitors,
 				     (gpointer) client, monitor);
 	}
+	monitor->monitor_hidden_files = monitor_hidden_files;
+	monitor->monitor_backup_files = monitor_backup_files;
 	monitor->monitor_attributes = nautilus_g_str_list_copy (file_attributes);
 	monitor->force_reload = force_reload;
 	
@@ -334,6 +340,7 @@ merged_file_monitor_add (NautilusDirectory *directory,
 	for (p = merged->details->directories; p != NULL; p = p->next) {
 		nautilus_directory_file_monitor_add
 			(p->data, monitor,
+			 monitor_hidden_files, monitor_backup_files,
 			 file_attributes, force_reload);
 	}
 }
@@ -457,6 +464,8 @@ monitor_add_directory (gpointer key,
 	monitor = value;
 	nautilus_directory_file_monitor_add
 		(NAUTILUS_DIRECTORY (callback_data), monitor,
+		 monitor->monitor_hidden_files,
+		 monitor->monitor_backup_files,
 		 monitor->monitor_attributes,
 		 monitor->force_reload);
 }

@@ -128,3 +128,7 @@ gboolean      nautilus_file_should_get_top_left_text       (NautilusFile      *f
  */
 void          nautilus_file_invalidate_attributes_internal (NautilusFile      *file,
 							    GList             *file_attributes);
+
+/* Recognizing special file names. */
+gboolean      nautilus_file_name_matches_hidden_pattern    (const char        *name_or_relative_uri);
+gboolean      nautilus_file_name_matches_backup_pattern    (const char        *name_or_relative_uri);

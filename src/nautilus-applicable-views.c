@@ -201,7 +201,7 @@ got_minimum_file_info_callback (NautilusFile *file,
          * components.
          */
         nautilus_directory_file_monitor_add (info->directory, info,
-                                             NULL, FALSE);
+                                             TRUE, TRUE, NULL, FALSE);
         
         if (nautilus_mime_actions_file_needs_full_file_attributes (file)) {
                 if (got_file_info_callback_common (file, data, FALSE)) {

@@ -957,119 +957,120 @@ static float fm_directory_view_preferred_zoom_levels[] = {
 };
 
 static void
-fm_directory_view_initialize (FMDirectoryView *directory_view)
+fm_directory_view_initialize (FMDirectoryView *view)
 {
-	directory_view->details = g_new0 (FMDirectoryViewDetails, 1);
+	view->details = g_new0 (FMDirectoryViewDetails, 1);
 	
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (directory_view),
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view),
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_hadjustment (GTK_SCROLLED_WINDOW (directory_view), NULL);
-	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW (directory_view), NULL);
+	gtk_scrolled_window_set_hadjustment (GTK_SCROLLED_WINDOW (view), NULL);
+	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW (view), NULL);
 
-	directory_view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (directory_view));
+	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 
-	directory_view->details->zoomable = bonobo_zoomable_new ();
-	bonobo_zoomable_set_parameters_full (directory_view->details->zoomable,
+	view->details->zoomable = bonobo_zoomable_new ();
+	bonobo_zoomable_set_parameters_full (view->details->zoomable,
 					     0.0, .25, 4.0, TRUE, TRUE, FALSE,
 					     fm_directory_view_preferred_zoom_levels, NULL,
 					     NAUTILUS_N_ELEMENTS (fm_directory_view_preferred_zoom_levels));
-	bonobo_object_add_interface (BONOBO_OBJECT (directory_view->details->nautilus_view),
-				     BONOBO_OBJECT (directory_view->details->zoomable));
+	bonobo_object_add_interface (BONOBO_OBJECT (view->details->nautilus_view),
+				     BONOBO_OBJECT (view->details->zoomable));
 
-	gtk_signal_connect (GTK_OBJECT (directory_view->details->nautilus_view), 
+	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
 			    "stop_loading",
 			    GTK_SIGNAL_FUNC (stop_loading_callback),
-			    directory_view);
-	gtk_signal_connect (GTK_OBJECT (directory_view->details->nautilus_view), 
+			    view);
+	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
 			    "load_location",
 			    GTK_SIGNAL_FUNC (load_location_callback), 
-			    directory_view);
-	gtk_signal_connect (GTK_OBJECT (directory_view->details->nautilus_view), 
+			    view);
+	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
 			    "selection_changed",
 			    GTK_SIGNAL_FUNC (selection_changed_callback), 
-			    directory_view);
+			    view);
 
-        gtk_signal_connect (GTK_OBJECT (get_bonobo_control (directory_view)),
+        gtk_signal_connect (GTK_OBJECT (get_bonobo_control (view)),
                             "activate",
                             bonobo_control_activate_callback,
-                            directory_view);
+                            view);
 
-	gtk_signal_connect (GTK_OBJECT (directory_view->details->zoomable), 
+	gtk_signal_connect (GTK_OBJECT (view->details->zoomable), 
 			    "zoom_in",
 			    zoomable_zoom_in_callback,
-			    directory_view);
-	gtk_signal_connect (GTK_OBJECT (directory_view->details->zoomable), 
+			    view);
+	gtk_signal_connect (GTK_OBJECT (view->details->zoomable), 
 			    "zoom_out", 
 			    zoomable_zoom_out_callback,
-			    directory_view);
-	gtk_signal_connect (GTK_OBJECT (directory_view->details->zoomable), 
+			    view);
+	gtk_signal_connect (GTK_OBJECT (view->details->zoomable), 
 			    "set_zoom_level", 
 			    GTK_SIGNAL_FUNC (zoomable_set_zoom_level_callback),
-			    directory_view);
-	gtk_signal_connect (GTK_OBJECT (directory_view->details->zoomable), 
+			    view);
+	gtk_signal_connect (GTK_OBJECT (view->details->zoomable), 
 			    "zoom_to_fit", 
 			    zoomable_zoom_to_fit_callback,
-			    directory_view);
+			    view);
 	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_trash_monitor_get ()),
 				        "trash_state_changed",
 				        fm_directory_view_trash_state_changed_callback,
-				        directory_view,
-				        GTK_OBJECT (directory_view));
+				        view,
+				        GTK_OBJECT (view));
 
-	gtk_widget_show (GTK_WIDGET (directory_view));
+	gtk_widget_show (GTK_WIDGET (view));
 
-	/* Obtain the filtering preferences */
-	directory_view->details->show_hidden_files = 
-		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES, FALSE);
+	/* Desktop always filters out hidden files */
+	/* FIXME bugzilla.eazel.com 5060: Should use methods instead
+	 * of hardcoding desktop knowledge in here.
+	 */
+	if (!FM_IS_DESKTOP_ICON_VIEW (view)) {
+		filtering_changed_callback (view);
 
-	directory_view->details->show_backup_files = 
-		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES, FALSE);
-
-	/* Keep track of changes in this pref to filter files accordingly. */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-					   filtering_changed_callback,
-					   directory_view);
-	
-	/* Keep track of changes in this pref to filter files accordingly. */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-					   filtering_changed_callback,
-					   directory_view);
+		/* Keep track of changes in this pref to filter files accordingly. */
+		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+						   filtering_changed_callback,
+						   view);
+		
+		/* Keep track of changes in this pref to filter files accordingly. */
+		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+						   filtering_changed_callback,
+						   view);
+	}
 	
 	/* Keep track of changes in this pref to display menu names correctly. */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
 					   schedule_update_menus_callback,
-					   directory_view);
+					   view);
 	
 	/* Keep track of changes in text attribute names */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_CAPTIONS,
 					   text_attribute_names_changed_callback,
-					   directory_view);
+					   view);
 
 	/* Keep track of changes in embedded text policy */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
 					   embedded_text_policy_changed_callback,
-					   directory_view);
+					   view);
 
 	/* Keep track of changes in image display policy */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 					   image_display_policy_changed_callback,
-					   directory_view);
+					   view);
 
 	/* Keep track of changes in the font family */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
 					   directory_view_font_family_changed_callback, 
-					   directory_view);
+					   view);
 
 	/* Keep track of changes in clicking policy */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
 					   click_policy_changed_callback,
-					   directory_view);
+					   view);
 	
 	/* Keep track of changes in graphics trade offs */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
 					   smooth_graphics_mode_changed_callback, 
-					   directory_view);
+					   view);
 }
 
 static void
@@ -1110,12 +1111,18 @@ fm_directory_view_destroy (GtkObject *object)
 		gtk_idle_remove (view->details->update_menus_idle_id);
 	}
 
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-					      filtering_changed_callback,
-					      view);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-					      filtering_changed_callback,
-					      view);
+	/* FIXME bugzilla.eazel.com 5060: Should use methods instead
+	 * of hardcoding desktop knowledge in here.
+	 */
+	if (!FM_IS_DESKTOP_ICON_VIEW (view)) {
+		nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+						      filtering_changed_callback,
+						      view);
+		nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+						      filtering_changed_callback,
+						      view);
+	}
+
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
 					      schedule_update_menus_callback,
 					      view);
@@ -1938,15 +1945,6 @@ queue_pending_files (FMDirectoryView *view,
 {
 	GList *filtered_files;
 
-	/* Desktop always filters out hidden files */
-	/* FIXME bugzilla.eazel.com 5060: Should use methods instead
-	 * of hardcoding desktop knowledge in here.
-	 */
-	if (FM_IS_DESKTOP_ICON_VIEW (view)) {
-		view->details->show_hidden_files = FALSE;
-		view->details->show_backup_files = FALSE;
-	}
-	
 	/* Filter out hidden files if needed */
 	filtered_files = nautilus_file_list_filter_hidden_and_backup
 		(files,
@@ -3694,7 +3692,7 @@ load_directory (FMDirectoryView *view,
 }
 
 static void
-finish_loading_uri (FMDirectoryView *view)
+finish_loading (FMDirectoryView *view)
 {
 	GList *attributes;
 
@@ -3746,6 +3744,8 @@ finish_loading_uri (FMDirectoryView *view)
 
 	nautilus_directory_file_monitor_add (view->details->model,
 					     view,
+					     view->details->show_hidden_files,
+					     view->details->show_backup_files,
 					     attributes,
 					     view->details->force_reload);
 	view->details->force_reload = FALSE;
@@ -3764,7 +3764,7 @@ metadata_ready_callback (NautilusFile *file,
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	g_assert (view->details->directory_as_file == file);
 
-	finish_loading_uri (view);
+	finish_loading (view);
 }
 
 NautilusStringList *
@@ -4089,16 +4089,6 @@ filtering_changed_callback (gpointer callback_data)
 
 	directory_view = FM_DIRECTORY_VIEW (callback_data);
 
-	/* Hidden files are never shown on the desktop */
-	/* FIXME bugzilla.eazel.com 5060: Should use methods instead
-	 * of hardcoding desktop knowledge in here.
-	 */
-	if (FM_IS_DESKTOP_ICON_VIEW (directory_view)) {
-		directory_view->details->show_hidden_files = FALSE;
-		directory_view->details->show_backup_files = FALSE;
-		return;
-	}
-	
 	directory_view->details->show_hidden_files = 
 		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES, FALSE);
 	

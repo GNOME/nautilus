@@ -41,13 +41,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+/* turn this on to see messages about each load_directory call: */
 #if 0
-/* comment this back in to see messages about each load_directory call: */
 #define DEBUG_LOAD_DIRECTORY
 #endif
 
+/* turn this on to check if async. job calls are balanced */
 #if 0
-/* comment this back in to check if async. job calls are balanced */
 #define DEBUG_ASYNC_JOBS
 #endif
 
@@ -96,6 +96,8 @@ typedef struct {
 
 typedef struct {
 	NautilusFile *file; /* Which file, NULL means all. */
+	gboolean monitor_hidden_files; /* defines whether "all" includes hidden files */
+	gboolean monitor_backup_files; /* defines whether "all" includes backup files */
 	gconstpointer client;
 	Request request;
 } Monitor;
@@ -111,13 +113,12 @@ static GHashTable *async_jobs;
 #endif
 
 /* Forward declarations for functions that need them. */
-static void     deep_count_load       (NautilusDirectory *directory,
-				       const char        *uri);
-static void     metafile_read_restart (NautilusDirectory *directory);
-static gboolean request_is_satisfied  (NautilusDirectory *directory,
-				       NautilusFile      *file,
-				       Request           *request);
-
+static void     deep_count_load           (NautilusDirectory *directory,
+					   const char        *uri);
+static void     metafile_read_restart     (NautilusDirectory *directory);
+static gboolean request_is_satisfied      (NautilusDirectory *directory,
+					   NautilusFile      *file,
+					   Request           *request);
 static void     cancel_loading_attributes (NautilusDirectory *directory,
 					   GList             *file_attributes);
 
@@ -654,11 +655,14 @@ allow_metafile (NautilusDirectory *directory)
 	 * access inside gnome-vfs.
 	 */
 	uri = directory->details->uri;
-	if (nautilus_istr_has_prefix (uri, "info:")
+	if (nautilus_is_search_uri (uri)
+	    || nautilus_istr_has_prefix (uri, "ghelp:")
+	    || nautilus_istr_has_prefix (uri, "gnome-help:")
 	    || nautilus_istr_has_prefix (uri, "help:")
+	    || nautilus_istr_has_prefix (uri, "info:")
 	    || nautilus_istr_has_prefix (uri, "man:")
 	    || nautilus_istr_has_prefix (uri, "pipe:")
-	    || nautilus_is_search_uri (uri)) {
+	    ) {
 		return FALSE;
 	}
 	
@@ -950,7 +954,7 @@ find_monitor (NautilusDirectory *directory,
 	GList *result;
 	Monitor *monitor;
 
-	monitor = g_new (Monitor, 1);
+	monitor = g_new0 (Monitor, 1);
 	monitor->client = client;
 	monitor->file = file;
 
@@ -1083,6 +1087,8 @@ void
 nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 					 NautilusFile *file,
 					 gconstpointer client,
+					 gboolean monitor_hidden_files,
+					 gboolean monitor_backup_files,
 					 GList *file_attributes)
 {
 	Monitor *monitor;
@@ -1096,6 +1102,8 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 	/* Add the new monitor. */
 	monitor = g_new (Monitor, 1);
 	monitor->file = file;
+	monitor->monitor_hidden_files = monitor_hidden_files;
+	monitor->monitor_backup_files = monitor_backup_files;
 	monitor->client = client;
 	nautilus_directory_set_up_request (&monitor->request, file_attributes);
 
@@ -2029,18 +2037,21 @@ mark_all_files_unconfirmed (NautilusDirectory *directory)
 }
 
 static gboolean
-should_display_file_name (const char *name, GnomeVFSDirectoryFilterOptions options)
+should_display_file_name (const char *name,
+			  GnomeVFSDirectoryFilterOptions options)
 {
-	if (options & GNOME_VFS_DIRECTORY_FILTER_NODOTFILES) {
-		if (name[0] == '.') {
-			return FALSE;
-		}
+	/* Note that the name is URI-encoded, but this should not
+	 * affect the . or the ~.
+	 */
+
+	if ((options & GNOME_VFS_DIRECTORY_FILTER_NODOTFILES) != 0
+	    && nautilus_file_name_matches_hidden_pattern (name)) {
+		return FALSE;
 	}
 
-	if (options & GNOME_VFS_DIRECTORY_FILTER_NOBACKUPFILES) {
-		if (name[strlen (name) - 1] == '~') {
-			return FALSE;
-		}
+	if ((options & GNOME_VFS_DIRECTORY_FILTER_NOBACKUPFILES) != 0
+	    && nautilus_file_name_matches_backup_pattern (name)) {
+		return FALSE;
 	}
 	
 	/* Note that we don't bother to check for "." or ".." here, because
@@ -2229,6 +2240,24 @@ nautilus_directory_force_reload (NautilusDirectory *directory,
 }
 
 static gboolean
+monitor_includes_file (const Monitor *monitor,
+		       NautilusFile *file)
+{
+	if (monitor->file == file) {
+		return TRUE;
+	}
+	if (monitor->file != NULL) {
+		return FALSE;
+	}
+	if (file == file->details->directory->details->as_file) {
+		return FALSE;
+	}
+	return nautilus_file_should_show (file,
+					  monitor->monitor_hidden_files,
+					  monitor->monitor_backup_files);
+}
+
+static gboolean
 is_needy (NautilusFile *file,
 	  FileCheck check_missing,
 	  RequestCheck check_wanted)
@@ -2262,11 +2291,7 @@ is_needy (NautilusFile *file,
 	     node != NULL; node = node->next) {
 		monitor = node->data;
 		if ((* check_wanted) (&monitor->request)) {
-			if (monitor->file == file) {
-				return TRUE;
-			}
-			if (monitor->file == NULL
-			    && file != directory->details->as_file) {
+			if (monitor_includes_file (monitor, file)) {
 				return TRUE;
 			}
 		}
@@ -2324,7 +2349,7 @@ select_needy_file (NautilusDirectory *directory,
 			for (node_2 = directory->details->monitor_list;
 			     node_2 != NULL; node_2 = node_2->next) {
 				monitor = node_2->data;
-				if ((monitor->file == NULL || monitor->file == file)
+				if (monitor_includes_file (monitor, file)
 				    && (* check_wanted) (&monitor->request)) {
 					break;
 				}
