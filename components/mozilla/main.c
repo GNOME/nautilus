@@ -190,6 +190,41 @@ set_up_MOZILLA_FIVE_HOME (void)
 	g_free (mozilla_path);
 }
 
+/* The "Mozilla Profile" directory is the place where mozilla stores 
+ * things like cookies and cache.  Here we tell the mozilla embedding
+ * widget to use ~/.nautilus/MozillaProfile for this purpose.
+ *
+ * We need mozilla 0.8 to support this feature.
+ */
+
+static void
+set_up_mozilla_profile(void)
+{
+	const char *profile_directory_name = "MozillaProfile";
+	char *profile_base_path;
+	char *profile_path;
+	char *cache_path;
+	
+	profile_base_path = g_strdup_printf ("%s/.nautilus", g_get_home_dir ());
+	profile_path = g_strdup_printf ("%s/.nautilus/%s", g_get_home_dir (), profile_directory_name);
+	cache_path = g_strdup_printf ("%s/.nautilus/%s/Cache", g_get_home_dir (), profile_directory_name);
+
+	/* Create directories if they don't already exist */ 
+	mkdir (profile_path, 0777);
+	mkdir (cache_path, 0777);
+
+#ifdef MOZILLA_HAVE_PROFILES_SUPPORT
+	/* this will be in Mozilla 0.8 */
+	/* Its a bug in mozilla embedding that we need to cast the const away */
+	gtk_moz_embed_set_profile_path (profile_base_path, (char *) profile_directory_name);
+#endif
+
+	g_free (cache_path);
+	g_free (profile_path);
+	g_free (profile_base_path);
+}
+
+
 int
 main (int argc, char *argv[])
 {
@@ -200,6 +235,12 @@ main (int argc, char *argv[])
 	char *fake_argv[] = { "nautilus-mozilla-content-view", NULL };
 
 	DEBUG_MSG (("nautilus-mozilla-content-view: starting...\n"));
+
+	/* Set up the default mozilla profile directory.  This has to
+           happen before push_startup below otherwise the profile
+           directory will never be set so things like the cache and
+           global history won't work. */
+	set_up_mozilla_profile();
 
 	/* set MOZILLA_FIVE_HOME if it's not already set */
 	set_up_MOZILLA_FIVE_HOME();

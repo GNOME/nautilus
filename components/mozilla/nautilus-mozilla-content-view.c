@@ -234,7 +234,6 @@ static gint	string_list_get_index_of_string 		(const char			*string_list[],
 								 guint				num_strings,
 								 const char 			*string);
 
-static void	pre_widget_initialize				(void);
 static void	post_widget_initialize				(void);
 
 /* BonoboControl callbacks */
@@ -255,8 +254,6 @@ nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass 
 	object_class = GTK_OBJECT_CLASS (klass);
 
 	object_class->destroy = nautilus_mozilla_content_view_destroy;
-
-	pre_widget_initialize ();
 }
 
 
@@ -1897,46 +1894,6 @@ string_list_get_index_of_string (const char *string_list[], guint num_strings, c
 	}
 	
 	return STRING_LIST_NOT_FOUND;
-}
-
-
-/*
- * one-time initialization that need to happen before the first GtkMozEmbed widget
- * is created
- */ 
-
-/* The "Mozilla Profile" directory is the place where mozilla stores 
- * things like cookies and cache.  Here we tell the mozilla embedding
- * widget to use ~/.nautilus/MozillaProfile for this purpose.
- *
- * We need mozilla 0.8 to support this feature.
- */
-
-static void
-pre_widget_initialize (void)
-{
-	const char *profile_directory_name = "MozillaProfile";
-	char *profile_base_path;
-	char *profile_path;
-	char *cache_path;
-	
-	profile_base_path = g_strdup_printf ("%s/.nautilus", g_get_home_dir ());
-	profile_path = g_strdup_printf ("%s/.nautilus/%s", g_get_home_dir (), profile_directory_name);
-	cache_path = g_strdup_printf ("%s/.nautilus/%s/Cache", g_get_home_dir (), profile_directory_name);
-
-	/* Create directories if they don't already exist */ 
-	mkdir (profile_path, 0777);
-	mkdir (cache_path, 0777);
-
-#ifdef MOZILLA_HAVE_PROFILES_SUPPORT
-	/* this will be in Mozilla 0.8 */
-	/* Its a bug in mozilla embedding that we need to cast the const away */
-	gtk_moz_embed_set_profile_path (profile_base_path, (char *) profile_directory_name);
-#endif
-
-	g_free (cache_path);
-	g_free (profile_path);
-	g_free (profile_base_path);
 }
 
 

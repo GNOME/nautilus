@@ -1,3 +1,18 @@
+2002-01-08  Christopher Blizzard  <blizzard@redhat.com>
+
+	* components/mozilla/nautilus-mozilla-content-view.c
+	(pre_widget_initialize): Removed function - moved to main.c.
+	
+	* components/mozilla/nautilus-mozilla-content-view.c
+	(nautilus_mozilla_content_view_initialize_class): Removed call to
+	pre_widget_initialize.
+
+	* components/mozilla/main.c (set_up_mozilla_profile): New function
+	that initializes the mozilla profile information.
+
+	* components/mozilla/main.c (main): Call set_up_mozilla_profile
+	before any embedded widget initialization is done.
+	
 2002-01-07  Darin Adler  <darin@bentspoon.com>
 
 	* configure.in: Removed the gnome-configuration directory.
