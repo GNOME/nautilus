@@ -1,3 +1,19 @@
+2001-02-23  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: John Harper  <jsh@eazel.com>
+
+	Fix bug 6881 (Non-translated strings in services).
+
+	* components/services/summary/nautilus-summary-view.c:
+	(localize_items), (update_header), (update_footer),
+	(create_footer), (summary_load_location_callback): Call gettext on
+	the strings marked with N_.
+
+	* components/services/trilobite/libtrilobite/trilobite-file-utilities.c:
+	(trilobite_read_entire_file, read_file_succeeded): Realloc to
+	include an extra byte at the end to make it safe to NULL-terminate
+	the file contents if desired.
+
 2001-02-23  Dan Mueth  <dan@eazel.com>
 
 	reviewed by: Ian McKellar  <ian@eazel.com>

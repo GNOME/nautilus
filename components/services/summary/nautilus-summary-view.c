@@ -120,11 +120,28 @@ static const char *footer_offline_items[] =
 	N_("Privacy Statement")
 };
 
+
+static char **
+localize_items (const char **items, 
+		int nitems)
+{
+	int i;
+	char **retval;
+
+	retval = g_new0 (char *, nitems);
+
+	for (i = 0; i < nitems; i++) {
+		retval[i] = gettext (items[i]);
+	}
+
+	return retval;
+}
+
+
 static void
 update_header (NautilusSummaryView *view)
 {
 	char *text;
-
 	if (view->details->logged_in) {
 		g_free (view->details->user_name);
 		view->details->user_name = ammonite_get_default_user_username ();
@@ -147,15 +164,21 @@ create_header (NautilusSummaryView *view)
 static void
 update_footer (NautilusSummaryView *view)
 {
-	if (view->details->logged_in) {
-		eazel_services_footer_update (EAZEL_SERVICES_FOOTER (view->details->footer),
-					      footer_online_items,
-					      NAUTILUS_N_ELEMENTS (footer_online_items));
+	char **localized_items;
+	int size;
+
+	if (view->details->logged_in) {	
+		size = NAUTILUS_N_ELEMENTS (footer_online_items);
+		localized_items = localize_items (footer_online_items, size);
 	} else {
-		eazel_services_footer_update (EAZEL_SERVICES_FOOTER (view->details->footer),
-					      footer_offline_items,
-					      NAUTILUS_N_ELEMENTS (footer_offline_items));
+		size = NAUTILUS_N_ELEMENTS (footer_offline_items);
+		localized_items = localize_items (footer_offline_items, size);
 	}
+	
+	eazel_services_footer_update (EAZEL_SERVICES_FOOTER (view->details->footer),
+				      (const char **) localized_items,
+				      size);
+	g_free (localized_items);
 }
 
 static void
@@ -163,12 +186,10 @@ create_footer (NautilusSummaryView *view)
 {
 	view->details->footer = eazel_services_footer_new ();
 
-	eazel_services_footer_update (EAZEL_SERVICES_FOOTER (view->details->footer),
-				      footer_offline_items,
-				      NAUTILUS_N_ELEMENTS (footer_offline_items));
-
 	gtk_signal_connect (GTK_OBJECT (view->details->footer), "item_clicked", 
 			    GTK_SIGNAL_FUNC (footer_item_clicked_callback), view);
+
+	update_footer (view);
 }
 
 
@@ -932,7 +953,7 @@ summary_load_location_callback (NautilusView		*nautilus_view,
 	
 	nautilus_view_report_load_underway (nautilus_view);
 
-	nautilus_view_set_title (nautilus_view, "Eazel Services");
+	nautilus_view_set_title (nautilus_view, _("Eazel Services"));
 	
 	nautilus_summary_view_load_uri (view, location);
 }

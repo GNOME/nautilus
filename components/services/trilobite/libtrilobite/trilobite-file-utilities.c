@@ -26,6 +26,7 @@
 #include <config.h>
 #include "trilobite-file-utilities.h"
 
+#include <stdio.h>
 
 /* FIXME: cut and pasted from libnautilus-extensions/nautilus-file-utilities.c */
 
@@ -95,7 +96,7 @@ trilobite_read_entire_file (const char *uri,
 
 	/* Return the file. */
 	*file_size = total_bytes_read;
-	*file_contents = g_realloc (buffer, total_bytes_read);
+	*file_contents = g_realloc (buffer, total_bytes_read + 1);
 	return GNOME_VFS_OK;
 }
 
@@ -136,7 +137,7 @@ read_file_succeeded (TrilobiteReadFileHandle *read_handle)
 	(* read_handle->callback) (GNOME_VFS_OK,
 				   read_handle->bytes_read,
 				   g_realloc (read_handle->buffer,
-					      read_handle->bytes_read),
+					      read_handle->bytes_read + 1),
 				   read_handle->callback_data);
 
 	g_free (read_handle);
