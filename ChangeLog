@@ -1,3 +1,23 @@
+2000-08-11  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(icon_set_position), (lay_down_icons),
+	(nautilus_icon_container_initialize),
+	(nautilus_icon_container_set_layout_mode):
+	Removed layout code that was being designed for the desktop.
+	The desktop has no auto layout at the present.
+
+	(nautilus_icon_container_get_is_fixed_size),
+	(nautilus_icon_container_set_is_fixed_size):
+	New functions to set and get the icon containers
+	fixed size attribute.  This attribute should be checked
+	whenever an operation that would change the size
+	of the container is called.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize):
+	Removed layout mode code.
+
 2000-08-11  Ali Abdin  <aliabdin@aucegypt.edu>
 
         * components/help/converters/gnome-db2html2/gdb3html.h:

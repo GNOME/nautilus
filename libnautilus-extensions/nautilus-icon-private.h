@@ -177,7 +177,10 @@ struct NautilusIconContainerDetails {
 	gboolean auto_layout;
 
 	/* Layout mode */
-	NautilusIconCanvasLayoutMode layout_mode;
+	NautilusIconContainerLayoutMode layout_mode;
+
+	/* Is the container fixed or resizable */
+	gboolean is_fixed_size;
 };
 
 /* Private functions shared by mutiple files. */

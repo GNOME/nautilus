@@ -52,9 +52,8 @@ typedef struct {
 } NautilusIconPosition;
 
 typedef enum {
-	NAUTILUS_ICON_CANVAS_LAYOUT_HORIZONTAL,
-	NAUTILUS_ICON_CANVAS_LAYOUT_VERTICAL_CLIPPED
-} NautilusIconCanvasLayoutMode;
+	NAUTILUS_ICON_CONTAINER_LAYOUT_HORIZONTAL
+} NautilusIconContainerLayoutMode;
 
 typedef struct NautilusIconContainerDetails NautilusIconContainerDetails;
 
@@ -154,7 +153,7 @@ gboolean   nautilus_icon_container_is_auto_layout                (NautilusIconCo
 void       nautilus_icon_container_set_auto_layout               (NautilusIconContainer *container,
 								  gboolean               auto_layout);
 void       nautilus_icon_container_set_layout_mode               (NautilusIconContainer *container,
-								  NautilusIconCanvasLayoutMode mode);
+								  NautilusIconContainerLayoutMode mode);
 void       nautilus_icon_container_sort                          (NautilusIconContainer *container);
 void       nautilus_icon_container_freeze_icon_positions         (NautilusIconContainer *container);
 
@@ -194,5 +193,8 @@ void       nautilus_icon_container_set_anti_aliased_mode         (NautilusIconCo
 void       nautilus_icon_container_set_label_font_for_zoom_level (NautilusIconContainer *container,
 								  int                    zoom_level,
 								  GdkFont               *font);
+gboolean   nautilus_icon_container_get_is_fixed_size 		 (NautilusIconContainer *container);
+void   	   nautilus_icon_container_set_is_fixed_size 		 (NautilusIconContainer *container,
+								  gboolean		is_fixed_size);
 
 #endif /* NAUTILUS_ICON_CONTAINER_H */

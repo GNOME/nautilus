@@ -156,7 +156,7 @@ icon_free (NautilusIcon *icon)
 static void
 icon_set_position (NautilusIcon *icon,
 		   double x, double y)
-{
+{		
 	if (icon->x == x && icon->y == y) {
 		return;
 	}
@@ -505,26 +505,6 @@ get_icon_space_width (const ArtDRect *bounds)
 	return power_of_two_width;
 }
 
-static int
-get_icon_space_height (const ArtDRect *bounds)
-{
-	/*double world_height;
-	int power_of_two_height;
-
-	world_height = ICON_PAD_LEFT + (bounds->y1 - bounds->y0) + ICON_PAD_RIGHT;
-	for (power_of_two_height = ICON_BASE_WIDTH;
-	     power_of_two_height < world_height;
-	     power_of_two_height += power_of_two_height) {
-		g_return_val_if_fail (power_of_two_height >= ICON_BASE_WIDTH, ICON_BASE_WIDTH);
-	}
-	return power_of_two_height;*/
-
-	double world_height;
-	world_height = ICON_PAD_LEFT + (bounds->y1 - bounds->y0) + ICON_PAD_RIGHT;
-
-	return world_height;
-}
-
 static void
 lay_down_one_line (NautilusIconContainer *container,
 		   GList *line_start,
@@ -587,70 +567,6 @@ lay_down_one_line (NautilusIconContainer *container,
 }
 
 static void
-lay_down_one_line_vertical (NautilusIconContainer *container,
-		   GList *line_start,
-		   GList *line_end,
-		   double *x)
-{
-	GList *p;
-	double max_width_left, max_width_right;
-	NautilusIcon *icon;
-	ArtDRect bounds, icon_bounds;
-	double width_left, width_right, y, height;
-
-	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_assert (line_end == NULL || g_list_first (line_start) == g_list_first (line_end));
-	g_assert (x != NULL);
-
-	/* Compute the total width to the right and left of the baseline. */
-	max_width_left = 0;
-	max_width_right = 0;
-	for (p = line_start; p != line_end; p = p->next) {
-		icon = p->data;
-
-		nautilus_gnome_canvas_item_get_world_bounds
-			(GNOME_CANVAS_ITEM (icon->item), &bounds);
-		nautilus_icon_canvas_item_get_icon_rectangle (icon->item, &icon_bounds);
-		width_left = icon_bounds.x1 - bounds.x0;
-		width_right = bounds.x1 - icon_bounds.x1;
-
-		if (width_left > max_width_left) {
-			max_width_left = width_left;
-		}
-		if (width_left > max_width_left) {
-			max_width_left = width_left;
-		}
-	}
-
-	/* Advance to the baseline. */
-	*x += ICON_PAD_TOP + max_width_left;
-
-	/* Lay out the icons vertically along the baseline. */
-	y = 0;
-	for (p = line_start; p != line_end; p = p->next) {
-		icon = p->data;
-
-		nautilus_gnome_canvas_item_get_world_bounds
-			(GNOME_CANVAS_ITEM (icon->item), &bounds);
-		nautilus_icon_canvas_item_get_icon_rectangle (icon->item, &icon_bounds);		
-		height = get_icon_space_height (&bounds);
-
-		icon_set_position
-			(icon,
-			 *x - (icon_bounds.x1 - icon_bounds.x0),
-			 y + (height - (icon_bounds.y1 - icon_bounds.y0)) / 2);
-			 
-
-
-		y += height;
-	}
-
-	/* Advance to next line. */
-	*x += max_width_right + ICON_PAD_BOTTOM;
-}
-
-
-static void
 lay_down_icons_horizontal (NautilusIconContainer *container,
 		GList *icons,
 		double start_y)
@@ -690,62 +606,14 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 	}
 }
 
-static void
-lay_down_icons_vertical (NautilusIconContainer *container, GList *icons, double start_y)
-{
-	GList *p, *line_start;
-	NautilusIcon *icon;
-	ArtDRect bounds;
-	double canvas_width, line_height, space_height, y;
-	double canvas_height;
-
-	/* Lay out icons a line at a time. */
-	gnome_canvas_c2w (GNOME_CANVAS (container),
-			  GTK_WIDGET (container)->allocation.width, 0,
-			  &canvas_width, NULL);
-
-	gnome_canvas_c2w (GNOME_CANVAS (container),
-			  GTK_WIDGET (container)->allocation.height, 0,
-			  &canvas_height, NULL);
-
-	line_height = 0;
-	line_start = icons;
-	y = start_y;
-	for (p = icons; p != NULL; p = p->next) {
-		icon = p->data;
-
-		/* Get the height of the icon. */
-		nautilus_gnome_canvas_item_get_world_bounds (GNOME_CANVAS_ITEM (icon->item), &bounds);
-		space_height = get_icon_space_height (&bounds);
-
-		/* If this icon doesn't fit, lay out the line that's queued up. */
-		if (line_start != p && line_height + space_height > canvas_height) {
-			lay_down_one_line_vertical (container, line_start, p, &y);
-			line_height = 0;
-			line_start = p;
-		}
-
-		/* Add this icon. */
-		line_height += space_height;
-	}
-
-	/* Lay down that last line of icons. */
-	if (line_start != NULL) {
-		lay_down_one_line_vertical (container, line_start, NULL, &y);
-	}
-}
 
 static void
 lay_down_icons (NautilusIconContainer *container, GList *icons, double start_y)
 {
 	switch (container->details->layout_mode)
 	{
-		case NAUTILUS_ICON_CANVAS_LAYOUT_HORIZONTAL:
+		case NAUTILUS_ICON_CONTAINER_LAYOUT_HORIZONTAL:
 			lay_down_icons_horizontal (container, icons, start_y);
-			break;
-
-		case NAUTILUS_ICON_CANVAS_LAYOUT_VERTICAL_CLIPPED:
-			lay_down_icons_vertical (container, icons, start_y);
 			break;
 
 		default:
@@ -2628,9 +2496,10 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 	details = g_new0 (NautilusIconContainerDetails, 1);
 
         details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
+	details->is_fixed_size = FALSE;
  
 	/* Set default layout mode */
-	details->layout_mode = NAUTILUS_ICON_CANVAS_LAYOUT_HORIZONTAL;
+	details->layout_mode = NAUTILUS_ICON_CONTAINER_LAYOUT_HORIZONTAL;
 	
  	/* font table - this isn't exactly proportional, but it looks better than computed */
         details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = nautilus_font_factory_get_font_by_family ("helvetica", 8);
@@ -3731,7 +3600,7 @@ nautilus_icon_container_set_auto_layout (NautilusIconContainer *container,
 
 void
 nautilus_icon_container_set_layout_mode (NautilusIconContainer *container,
-					 NautilusIconCanvasLayoutMode mode)
+					 NautilusIconContainerLayoutMode mode)
 {
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
@@ -4055,6 +3924,28 @@ update_label_color (NautilusBackground *background,
 		container->details->label_color = 0x000000;
 		container->details->label_info_color = dark_info_value;
 	}
+}
+
+
+/* Return if the icon container is a fixed size */
+gboolean
+nautilus_icon_container_get_is_fixed_size (NautilusIconContainer *container)
+{
+	g_return_val_if_fail (container != NULL, FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
+
+	return container->details->is_fixed_size;
+}
+
+/* Set the icon container to be a fixed size */
+void
+nautilus_icon_container_set_is_fixed_size (NautilusIconContainer *container,
+					   gboolean is_fixed_size)
+{
+	g_return_if_fail (container != NULL);
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	container->details->is_fixed_size = is_fixed_size;
 }
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
