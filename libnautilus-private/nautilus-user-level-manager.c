@@ -24,8 +24,8 @@
 
 #include <config.h>
 #include "nautilus-user-level-manager.h"
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include "nautilus-gtk-macros.h"
+#include "nautilus-glib-extensions.h"
 
 #include <gtk/gtksignal.h>
 

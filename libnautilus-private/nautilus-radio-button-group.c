@@ -23,11 +23,11 @@
 */
 
 #include <config.h>
-#include <nautilus-widgets/nautilus-radio-button-group.h>
+#include "nautilus-radio-button-group.h"
 
 #include <gtk/gtkradiobutton.h>
 #include <gtk/gtksignal.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include "nautilus-gtk-macros.h"
 
 static const gint RADIO_BUTTON_GROUP_INVALID = -1;
 

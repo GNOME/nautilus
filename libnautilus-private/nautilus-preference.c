@@ -28,11 +28,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-string-list.h>
-#include "nautilus-widgets-self-check-functions.h"
-
-#include <nautilus-widgets/nautilus-user-level-manager.h>
+#include "nautilus-gtk-macros.h"
+#include "nautilus-string-list.h"
+#include "nautilus-user-level-manager.h"
+#include "nautilus-lib-self-check-functions.h"
 
 /*
  * PreferenceHashNode:
@@ -791,7 +790,7 @@ nautilus_preference_enum_add_entry_by_name (const char	*name,
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 void
-nautilus_widgets_self_check_preference (void)
+nautilus_self_check_preference (void)
 {
 	NautilusPreference *preference;
 

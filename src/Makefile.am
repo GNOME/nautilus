@@ -22,7 +22,6 @@ INCLUDES =\
 
 LDADD =\
 	file-manager/libntl-file-manager.la \
-	../nautilus-widgets/libnautilus-widgets.la \
 	../libnautilus/libnautilus.la \
 	../libnautilus-extensions/libnautilus-extensions.la \
 	../librsvg/librsvg.la \

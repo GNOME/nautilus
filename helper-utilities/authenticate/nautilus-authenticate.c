@@ -27,7 +27,7 @@
 #include <config.h>
 #include "nautilus-authenticate.h"
 
-#include <nautilus-widgets/nautilus-password-dialog.h>
+#include <libnautilus-extensions/nautilus-password-dialog.h>
 
 #include <libgnomeui/gnome-init.h>
 

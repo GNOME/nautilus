@@ -48,6 +48,7 @@ void nautilus_run_lib_self_checks (void);
 	macro (nautilus_self_check_file) \
 	macro (nautilus_self_check_icon_container) \
 	macro (nautilus_self_check_icon_factory) \
+	macro (nautilus_self_check_preference) \
 /* Add new self-check functions to the list above this line. */
 
 /* Generate prototypes for all the functions. */

@@ -26,7 +26,7 @@
 #define NAUTILUS_PREFERENCES_DIALOG_H
 
 #include <libgnomeui/gnome-dialog.h>
-#include <nautilus-widgets/nautilus-preferences-box.h>
+#include <libnautilus-extensions/nautilus-preferences-box.h>
 
 BEGIN_GNOME_DECLS
 

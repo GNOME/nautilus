@@ -1,4 +1,4 @@
-NULL =
+ NULL =
 
 CPPFLAGS = \
 	-DPREFIX=\"$(prefix)\" \
@@ -20,7 +20,6 @@ nautilus_authenticate_SOURCES =\
 	$(NULL)
 
 nautilus_authenticate_LDFLAGS =	\
-	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
 	$(top_builddir)/librsvg/librsvg.la \
 	$(GNOMEUI_LIBS)	\

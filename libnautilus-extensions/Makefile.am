@@ -32,16 +32,20 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-background.c			\
 	nautilus-bonobo-extensions.c		\
 	nautilus-bookmark.c			\
+	nautilus-caption-table.c		\
+	nautilus-caption.c			\
 	nautilus-debug.c			\
 	nautilus-default-file-icon.c		\
 	nautilus-directory-async.c		\
 	nautilus-directory-background.c		\
 	nautilus-directory-metafile.c		\
 	nautilus-directory.c			\
+	nautilus-drag.c				\
 	nautilus-entry.c			\
 	nautilus-file-changes-queue.c		\
 	nautilus-file-utilities.c		\
 	nautilus-file.c				\
+	nautilus-font-factory.c			\
 	nautilus-gdk-extensions.c		\
 	nautilus-gdk-pixbuf-extensions.c	\
 	nautilus-generous-bin.c			\
@@ -52,27 +56,37 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-gtk-extensions.c		\
 	nautilus-icon-canvas-item.c       	\
 	nautilus-icon-container.c		\
-	nautilus-drag.c				\
 	nautilus-icon-dnd.c			\
 	nautilus-icon-factory.c			\
-	nautilus-font-factory.c			\
 	nautilus-icon-grid.c			\
 	nautilus-icon-text-item.c		\
 	nautilus-keep-last-vertical-box.c	\
 	nautilus-lib-self-check-functions.c	\
-	nautilus-link.c				\
 	nautilus-link-set.c			\
+	nautilus-link.c				\
 	nautilus-list-column-title.c		\
 	nautilus-list.c                         \
 	nautilus-mime-actions.c			\
 	nautilus-mini-icon.c			\
+	nautilus-password-dialog.c		\
+	nautilus-preference.c			\
+	nautilus-preferences-box.c		\
+	nautilus-preferences-dialog.c		\
+	nautilus-preferences-group.c		\
+	nautilus-preferences-item.c		\
+	nautilus-preferences-pane.c		\
+	nautilus-preferences.c			\
 	nautilus-program-chooser.c		\
 	nautilus-program-choosing.c		\
+	nautilus-radio-button-group.c		\
 	nautilus-self-checks.c			\
 	nautilus-string-list.c			\
+	nautilus-string-picker.c		\
 	nautilus-string.c			\
+	nautilus-text-caption.c			\
 	nautilus-undo-context.c			\
 	nautilus-undo-manager.c			\
+	nautilus-user-level-manager.c		\
 	nautilus-view-identifier.c		\
 	nautilus-xml-extensions.c		\
 	$(NULL)
@@ -88,6 +102,8 @@ noinst_HEADERS =				\
 	nautilus-background.h			\
 	nautilus-bonobo-extensions.h		\
 	nautilus-bookmark.h			\
+	nautilus-caption-table.h		\
+	nautilus-caption.h			\
 	nautilus-debug.h			\
 	nautilus-default-file-icon.h		\
 	nautilus-directory-background.h		\
@@ -127,13 +143,25 @@ noinst_HEADERS =				\
 	nautilus-metadata.h			\
 	nautilus-mime-actions.h			\
 	nautilus-mini-icon.h			\
+	nautilus-password-dialog.h		\
+	nautilus-preference.h			\
+	nautilus-preferences-box.h		\
+	nautilus-preferences-dialog.h		\
+	nautilus-preferences-group.h		\
+	nautilus-preferences-item.h		\
+	nautilus-preferences-pane.h		\
+	nautilus-preferences.h			\
 	nautilus-program-chooser.h		\
 	nautilus-program-choosing.h		\
+	nautilus-radio-button-group.h		\
 	nautilus-self-checks.h			\
 	nautilus-string-list.h			\
+	nautilus-string-picker.h		\
 	nautilus-string.h			\
+	nautilus-text-caption.h			\
 	nautilus-undo-context.h			\
 	nautilus-undo-manager.h			\
+	nautilus-user-level-manager.h		\
 	nautilus-view-identifier.h		\
 	nautilus-xml-extensions.h		\
 	$(NULL)

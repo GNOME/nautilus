@@ -35,7 +35,6 @@
 #include <libnautilus-extensions/nautilus-debug.h>
 #include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
 #include <libnautilus-extensions/nautilus-self-checks.h>
-#include <nautilus-widgets/nautilus-widgets-self-check-functions.h>
 #include <popt.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-init.h>
@@ -92,7 +91,6 @@ main(int argc, char *argv[])
 		/* Run the checks for nautilus and libnautilus. */
 		nautilus_run_self_checks ();
 		nautilus_run_lib_self_checks ();
-		nautilus_widgets_run_self_checks ();
 		nautilus_exit_if_self_checks_failed ();
 #endif
 	} else {

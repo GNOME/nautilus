@@ -28,7 +28,7 @@
 #include <gtk/gtkobject.h>
 #include <libgnome/gnome-defs.h>
 
-#include <nautilus-widgets/nautilus-preference.h>
+#include <libnautilus-extensions/nautilus-preference.h>
 
 BEGIN_GNOME_DECLS
 

@@ -38,7 +38,7 @@
 #include "nautilus-string.h"
 #include "nautilus-xml-extensions.h"
 #include "nautilus-global-preferences.h"
-#include <nautilus-widgets/nautilus-preferences.h>
+#include "nautilus-preferences.h"
 
 /* routine to create a new .link file in the specified directory */
 static gboolean

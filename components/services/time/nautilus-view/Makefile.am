@@ -4,8 +4,7 @@ CPPFLAGS =					    	    	\
 	-DPREFIX=\"$(prefix)\"	    	    	    	    	\
 	-DG_LOG_DOMAIN=\"trilobite-eazel-time-service\"     	\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"    	    	\
-    	${NULL}
-	
+	${NULL}
 
 INCLUDES =					\
 	-I$(top_srcdir)				\
@@ -71,7 +70,6 @@ trilobite_eazel_time_view_LDADD =	\
 
 
 trilobite_eazel_time_view_LDFLAGS =			\
-	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la \
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
 	$(top_builddir)/librsvg/librsvg.la		\

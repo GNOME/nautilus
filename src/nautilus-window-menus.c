@@ -40,7 +40,7 @@
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <nautilus-widgets/nautilus-user-level-manager.h>
+#include <libnautilus-extensions/nautilus-user-level-manager.h>
 
 static GtkWindow *bookmarks_window = NULL;
 

@@ -24,9 +24,9 @@
 
 #include <config.h>
 
-#include <nautilus-widgets/nautilus-string-picker.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include "nautilus-string-picker.h"
+#include "nautilus-gtk-macros.h"
+#include "nautilus-glib-extensions.h"
 
 #include <gtk/gtklabel.h>
 #include <gtk/gtkcombo.h>

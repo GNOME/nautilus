@@ -28,7 +28,7 @@
 #include <gtk/gtkentry.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtklabel.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include "nautilus-gtk-macros.h"
 
 struct _NautilusCaptionTableDetail
 {

@@ -28,9 +28,9 @@
 #include "nautilus-preferences.h"
 #include "nautilus-user-level-manager.h"
 
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include "nautilus-gtk-macros.h"
+#include "nautilus-glib-extensions.h"
+#include "nautilus-string.h"
 
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>

@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_TEXT_CAPTION_H
 #define NAUTILUS_TEXT_CAPTION_H
 
-#include <nautilus-widgets/nautilus-caption.h>
+#include <libnautilus-extensions/nautilus-caption.h>
 
 /*
  * NautilusTextCaption is made up of 2 widgets. 

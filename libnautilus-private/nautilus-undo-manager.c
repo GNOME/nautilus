@@ -25,8 +25,8 @@
 #include <config.h>
 #include "nautilus-undo-manager.h"
 
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include "nautilus-gtk-macros.h"
+#include "nautilus-gtk-extensions.h"
 #include <gtk/gtksignal.h>
 #include <bonobo/bonobo-main.h>
 #include <libnautilus/nautilus-undo-private.h>

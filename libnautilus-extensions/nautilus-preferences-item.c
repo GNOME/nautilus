@@ -25,9 +25,9 @@
 #include <config.h>
 #include "nautilus-preferences-item.h"
 #include "nautilus-preferences.h"
-#include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include "nautilus-file-utilities.h"
+#include "nautilus-glib-extensions.h"
+#include "nautilus-gtk-macros.h"
 #include <libgnomevfs/gnome-vfs.h>
 
 #include <gtk/gtkcheckbutton.h>

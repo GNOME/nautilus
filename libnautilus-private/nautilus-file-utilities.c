@@ -35,7 +35,7 @@
 #include "nautilus-metadata.h"
 
 
-#include <libnautilus-extensions/nautilus-string.h>
+#include "nautilus-string.h"
 #include <libgnomevfs/gnome-vfs-utils.h>
 
 #define NAUTILUS_USER_DIRECTORY_NAME ".nautilus"

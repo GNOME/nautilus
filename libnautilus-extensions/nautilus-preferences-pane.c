@@ -24,8 +24,8 @@
 
 
 #include <config.h>
-#include <nautilus-widgets/nautilus-preferences-pane.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include "nautilus-preferences-pane.h"
+#include "nautilus-gtk-macros.h"
 
 #include <gtk/gtklabel.h>
 #include <gtk/gtkframe.h>

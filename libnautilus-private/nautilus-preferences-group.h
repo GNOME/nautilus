@@ -28,8 +28,8 @@
 #include <gtk/gtkframe.h>
 #include <gnome.h>
 
-#include <nautilus-widgets/nautilus-preferences.h>
-#include <nautilus-widgets/nautilus-preferences-item.h>
+#include <libnautilus-extensions/nautilus-preferences.h>
+#include <libnautilus-extensions/nautilus-preferences-item.h>
 
 BEGIN_GNOME_DECLS
 

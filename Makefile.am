@@ -8,7 +8,6 @@ SUBDIRS =\
 	libnautilus \
 	libnautilus-extensions \
 	librsvg \
-	nautilus-widgets \
 	helper-utilities \
 	components \
 	po \

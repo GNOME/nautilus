@@ -1,3 +1,100 @@
+2000-06-09  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* Makefile.am:
+	* components/hardware/Makefile.am:
+	* components/help/Makefile.am:
+	* components/history/Makefile.am:
+	* components/html/Makefile.am:
+	* components/loser/content/Makefile.am:
+	* components/loser/sidebar/Makefile.am:
+	* components/music/Makefile.am:
+	* components/notes/Makefile.am:
+	* components/rpmview/Makefile.am:
+	* components/sample/Makefile.am:
+	* components/services/startup/nautilus-view/Makefile.am:
+	* components/services/time/nautilus-view/Makefile.am:
+	* components/services/trilobite/sample/nautilus-view/Makefile.am:
+	* components/websearch/Makefile.am:
+	* configure.in:
+	* helper-utilities/authenticate/Makefile.am:
+	* helper-utilities/authenticate/nautilus-authenticate.c:
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-caption-table.c:
+	* libnautilus-extensions/nautilus-caption.c:
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-lib-self-check-functions.h:
+	* libnautilus-extensions/nautilus-link-set.c:
+	* libnautilus-extensions/nautilus-link.c:
+	* libnautilus-extensions/nautilus-password-dialog.c:
+	* libnautilus-extensions/nautilus-preference.c:
+	(nautilus_self_check_preference):
+	* libnautilus-extensions/nautilus-preferences-box.c:
+	* libnautilus-extensions/nautilus-preferences-box.h:
+	* libnautilus-extensions/nautilus-preferences-dialog.c:
+	* libnautilus-extensions/nautilus-preferences-dialog.h:
+	* libnautilus-extensions/nautilus-preferences-group.c:
+	* libnautilus-extensions/nautilus-preferences-group.h:
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	* libnautilus-extensions/nautilus-preferences-item.h:
+	* libnautilus-extensions/nautilus-preferences-pane.c:
+	* libnautilus-extensions/nautilus-preferences-pane.h:
+	* libnautilus-extensions/nautilus-preferences.c:
+	* libnautilus-extensions/nautilus-preferences.h:
+	* libnautilus-extensions/nautilus-radio-button-group.c:
+	* libnautilus-extensions/nautilus-string-picker.c:
+	* libnautilus-extensions/nautilus-string-picker.h:
+	* libnautilus-extensions/nautilus-text-caption.c:
+	* libnautilus-extensions/nautilus-text-caption.h:
+	* libnautilus-extensions/nautilus-undo-manager.c:
+	* libnautilus-extensions/nautilus-user-level-manager.c:
+	* libnautilus-extensions/nautilus-user-level-manager.h:
+	* libnautilus-extensions/nautilus-widgets-self-check-functions.c:
+	* libnautilus-extensions/nautilus-widgets-self-check-functions.h:
+	* libnautilus-extensions/test-nautilus-preferences.c:
+	* libnautilus-extensions/test-preferences.c:
+	* nautilus-widgets/Makefile.am:
+	* nautilus-widgets/nautilus-caption-table.c:
+	* nautilus-widgets/nautilus-caption-table.h:
+	* nautilus-widgets/nautilus-caption.c:
+	* nautilus-widgets/nautilus-caption.h:
+	* nautilus-widgets/nautilus-password-dialog.c:
+	* nautilus-widgets/nautilus-password-dialog.h:
+	* nautilus-widgets/nautilus-preference.c:
+	* nautilus-widgets/nautilus-preference.h:
+	* nautilus-widgets/nautilus-preferences-box.c:
+	* nautilus-widgets/nautilus-preferences-box.h:
+	* nautilus-widgets/nautilus-preferences-dialog.c:
+	* nautilus-widgets/nautilus-preferences-dialog.h:
+	* nautilus-widgets/nautilus-preferences-group.c:
+	* nautilus-widgets/nautilus-preferences-group.h:
+	* nautilus-widgets/nautilus-preferences-item.c:
+	* nautilus-widgets/nautilus-preferences-item.h:
+	* nautilus-widgets/nautilus-preferences-pane.c:
+	* nautilus-widgets/nautilus-preferences-pane.h:
+	* nautilus-widgets/nautilus-preferences.c:
+	* nautilus-widgets/nautilus-preferences.h:
+	* nautilus-widgets/nautilus-radio-button-group.c:
+	* nautilus-widgets/nautilus-radio-button-group.h:
+	* nautilus-widgets/nautilus-string-picker.c:
+	* nautilus-widgets/nautilus-string-picker.h:
+	* nautilus-widgets/nautilus-text-caption.c:
+	* nautilus-widgets/nautilus-text-caption.h:
+	* nautilus-widgets/nautilus-user-level-manager.c:
+	* nautilus-widgets/nautilus-user-level-manager.h:
+	* nautilus-widgets/nautilus-widgets-self-check-functions.c:
+	* nautilus-widgets/nautilus-widgets-self-check-functions.h:
+	* nautilus-widgets/test-nautilus-preferences.c:
+	* nautilus-widgets/test-nautilus-widgets.c:
+	* nautilus-widgets/test-preferences.c:
+	* src/Makefile.am:
+	* src/nautilus-main.c: (main):
+	* src/nautilus-sidebar.c:
+	* src/nautilus-window-menus.c:
+	* test/Makefile.am:
+	Move the nautilus-widgets classes to libnautilus-extensions.
+
 2000-06-09  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/nautilus-applicable-views.c (got_file_info_callback): Do not

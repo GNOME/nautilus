@@ -1,11 +1,11 @@
 
 #include <config.h>
-#include <nautilus-widgets/nautilus-radio-button-group.h>
-#include <nautilus-widgets/nautilus-caption-table.h>
-#include <nautilus-widgets/nautilus-password-dialog.h>
-#include <nautilus-widgets/nautilus-preferences-group.h>
-#include <nautilus-widgets/nautilus-preferences-item.h>
-#include <nautilus-widgets/nautilus-preferences.h>
+#include "nautilus-radio-button-group.h"
+#include "nautilus-caption-table.h"
+#include "nautilus-password-dialog.h"
+#include "nautilus-preferences-group.h"
+#include "nautilus-preferences-item.h"
+#include "nautilus-preferences.h"
 
 #include <gtk/gtk.h>
 

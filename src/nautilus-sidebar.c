@@ -45,7 +45,7 @@
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-mime-actions.h>
-#include <nautilus-widgets/nautilus-preferences.h>
+#include <libnautilus-extensions/nautilus-preferences.h>
 #include "nautilus-sidebar-tabs.h"
 #include "nautilus-sidebar-title.h"
 

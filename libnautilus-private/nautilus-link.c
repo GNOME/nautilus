@@ -38,7 +38,7 @@
 #include "nautilus-string.h"
 #include "nautilus-xml-extensions.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-widgets/nautilus-preferences.h"
+#include "nautilus-preferences.h"
 
 #define REMOTE_ICON_DIR_PERMISSIONS (GNOME_VFS_PERM_USER_ALL | GNOME_VFS_PERM_GROUP_ALL | GNOME_VFS_PERM_OTHER_ALL)
 

@@ -29,7 +29,7 @@
 #include <libgnomeui/gnome-stock.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include "nautilus-gtk-macros.h"
 
 struct _NautilusPasswordDialogDetail
 {

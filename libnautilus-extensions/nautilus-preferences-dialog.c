@@ -23,8 +23,8 @@
 */
 
 #include <config.h>
-#include <nautilus-widgets/nautilus-preferences-dialog.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include "nautilus-preferences-dialog.h"
+#include "nautilus-gtk-macros.h"
 
 /* #include "caption-table.h" */
 

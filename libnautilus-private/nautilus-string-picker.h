@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_STRING_PICKER_H
 #define NAUTILUS_STRING_PICKER_H
 
-#include <nautilus-widgets/nautilus-caption.h>
+#include <libnautilus-extensions/nautilus-caption.h>
 #include <libnautilus-extensions/nautilus-string-list.h>
 
 /*

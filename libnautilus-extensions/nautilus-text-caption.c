@@ -24,9 +24,9 @@
 
 #include <config.h>
 
-#include <nautilus-widgets/nautilus-text-caption.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include "nautilus-text-caption.h"
+#include "nautilus-gtk-macros.h"
+#include "nautilus-glib-extensions.h"
 
 #include <gtk/gtklabel.h>
 #include <gtk/gtkentry.h>

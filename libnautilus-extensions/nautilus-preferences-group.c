@@ -28,7 +28,7 @@
 #include <gnome.h>
 #include <gtk/gtkradiobutton.h>
 #include <gtk/gtksignal.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include "nautilus-gtk-macros.h"
 
 /* Signals */
 typedef enum
