@@ -166,31 +166,27 @@ nautilus_window_initialize (NautilusWindow *window)
 }
 
 static gboolean
-nautilus_window_clear_status (NautilusWindow *window)
+nautilus_window_clear_status (gpointer callback_data)
 {
-#ifdef UIH
-	gtk_statusbar_pop (GTK_STATUSBAR (GNOME_APP (window)->statusbar), window->status_bar_context_id);
-#endif
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (callback_data);
+	bonobo_ui_component_set_status (window->details->shell_ui, "", NULL);
 	window->status_bar_clear_id = 0;
 	return FALSE;
 }
 
 void
-nautilus_window_set_status (NautilusWindow *window, const char *txt)
+nautilus_window_set_status (NautilusWindow *window, const char *text)
 {
 	if (window->status_bar_clear_id != 0) {
 		g_source_remove (window->status_bar_clear_id);
 	}
 	
-#ifdef UIH
-	gtk_statusbar_pop (GTK_STATUSBAR (GNOME_APP (window)->statusbar), window->status_bar_context_id);
-#endif
-	if (txt != NULL && txt[0] != '\0') {
+	if (text != NULL && text[0] != '\0') {
+		bonobo_ui_component_set_status (window->details->shell_ui, text, NULL);
 		window->status_bar_clear_id = g_timeout_add
-			(STATUS_BAR_CLEAR_TIMEOUT, (GSourceFunc) nautilus_window_clear_status, window);
-#ifdef UIH
-		gtk_statusbar_push (GTK_STATUSBAR (GNOME_APP (window)->statusbar), window->status_bar_context_id, txt);
-#endif
+			(STATUS_BAR_CLEAR_TIMEOUT, nautilus_window_clear_status, window);
 	} else {
 		window->status_bar_clear_id = 0;
 	}
@@ -217,7 +213,7 @@ navigation_bar_mode_changed_callback (GtkWidget *widget,
 {
 	nautilus_window_update_find_menu_item (NAUTILUS_WINDOW (window));
 
-	/*
+#ifdef UIH
 	switch (mode) {
 	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION:
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (NAUTILUS_WINDOW (window)->search_local_button), FALSE);
@@ -228,7 +224,7 @@ navigation_bar_mode_changed_callback (GtkWidget *widget,
 	default:
 		g_assert_not_reached ();
 	}
-	*/
+#endif
 }
 
 void
@@ -395,11 +391,6 @@ nautilus_window_constructed (NautilusWindow *window)
 	gtk_box_pack_end (GTK_BOX (location_bar_box), window->zoom_control, FALSE, FALSE, 0);
 	
 	gtk_widget_show (location_bar_box);
-	
-#ifdef UIH
-	window->status_bar_context_id = gtk_statusbar_get_context_id (GTK_STATUSBAR (status_bar),
-							      "IhateGtkStatusbar");
-#endif
 	
 	/* FIXME bugzilla.eazel.com 1243: 
 	 * We should use inheritance instead of these special cases

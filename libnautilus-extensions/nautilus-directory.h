@@ -140,7 +140,10 @@ GtkType            nautilus_directory_get_type             (void);
  */
 NautilusDirectory *nautilus_directory_get                  (const char                *uri);
 
-/* Convenience functions, since we do a lot of ref'ing and unref'ing. */
+/* Covers for gtk_object_ref and gtk_object_unref that provide two conveniences:
+ * 1) You don't have to cast to GtkObject *, so using these is type safe.
+ * 2) You are allowed to call these with NULL,
+ */
 void               nautilus_directory_ref                  (NautilusDirectory         *directory);
 void               nautilus_directory_unref                (NautilusDirectory         *directory);
 

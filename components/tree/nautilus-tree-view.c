@@ -583,12 +583,12 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 								    &mask);
 		
 		nautilus_ctree_node_set_pixtext (NAUTILUS_CTREE (view->details->tree),
-					    view_node,
-					    0,
-					    name,
-					    TREE_SPACING,
-					    pixmap,
-					    mask);
+						 view_node,
+						 0,
+						 name,
+						 TREE_SPACING,
+						 pixmap,
+						 mask);
 
 		gdk_pixmap_unref (pixmap);
 		if (mask != NULL) {
@@ -1432,11 +1432,14 @@ static char *
 nautilus_tree_view_uri_to_name (const char *uri)
 {
 	GnomeVFSURI *gnome_vfs_uri;
+	char *escaped_name;
 	char *name;
 	
 	gnome_vfs_uri = gnome_vfs_uri_new (uri);
-	name = gnome_vfs_uri_extract_short_path_name (gnome_vfs_uri);
+	escaped_name = gnome_vfs_uri_extract_short_path_name (gnome_vfs_uri);
 	gnome_vfs_uri_unref (gnome_vfs_uri);
+	name = gnome_vfs_unescape_string_for_display (escaped_name);
+	g_free (escaped_name);
 
 	return name;
 }

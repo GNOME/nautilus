@@ -84,7 +84,10 @@ GtkType                 nautilus_file_get_type                  (void);
 /* Getting at a single file. */
 NautilusFile *          nautilus_file_get                       (const char                    *uri);
 
-/* Basic operations on file objects. */
+/* Covers for gtk_object_ref and gtk_object_unref that provide two conveniences:
+ * 1) You don't have to cast to GtkObject *, so using these is type safe.
+ * 2) You are allowed to call these with NULL,
+ */
 NautilusFile *          nautilus_file_ref                       (NautilusFile                  *file);
 void                    nautilus_file_unref                     (NautilusFile                  *file);
 
@@ -241,7 +244,9 @@ int                     nautilus_file_compare_name		(NautilusFile               
  */
 char *                  nautilus_file_get_activation_uri        (NautilusFile                  *file);
 
-/* Convenience functions for dealing with a list of NautilusFile objects that each have a ref. */
+/* Convenience functions for dealing with a list of NautilusFile objects that each have a ref.
+ * These are just convenient names for functions that work on lists of GtkObject *.
+ */
 GList *                 nautilus_file_list_ref                  (GList                         *file_list);
 void                    nautilus_file_list_unref                (GList                         *file_list);
 void                    nautilus_file_list_free                 (GList                         *file_list);

@@ -1,3 +1,33 @@
+2000-10-09  Darin Adler  <darin@eazel.com>
+
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_uri_to_name): Unescape the names of files for
+	display in the tree view.  Fixes bug 2892 (tree displays files
+	with escaped characters).
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(dequeue_pending_idle_callback): Fixed the structure here to make
+	it more clear that it's handling ref. counts correctly.
+	
+	* libnautilus-extensions/nautilus-directory.h:
+	* libnautilus-extensions/nautilus-file.h:
+	Wrote better comments to explain the convenience cover functions.
+	
+	* src/nautilus-window-menus.c: Got rid of some UIH stuff.
+	
+	* src/nautilus-window-toolbars.c: (set_up_button),
+	(nautilus_window_initialize_toolbars),
+	(nautilus_window_toolbar_remove_theme_callback):
+	Changed commented-out code back to ifdef UIH.
+	
+	* src/nautilus-window.c: (nautilus_window_clear_status),
+	(nautilus_window_set_status): Change to use the new Bonobo call
+	for setting status.
+	(navigation_bar_mode_changed_callback): Changed commented-out code
+	back to ifdef UIH.
+	(nautilus_window_constructed): Removed some status-bar-related
+	code.
+
 2000-10-09  Mathieu Lacage  <mathieu@eazel.com>
 
 	Fix bugs 3498, 3523 and the nautilus part of 3497

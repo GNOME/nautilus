@@ -901,21 +901,23 @@ dequeue_pending_idle_callback (gpointer callback_data)
 			next = p->next;
 
 			if (file->details->unconfirmed) {
+				nautilus_file_ref (file);
+				changed_files = g_list_prepend (changed_files, file);
+
 				file->details->is_gone = TRUE;
 				directory->details->files = g_list_remove_link
 					(directory->details->files, p);
 				g_list_free_1 (p);
 
-				if (!nautilus_directory_is_file_list_monitored (directory)) {
-					/* FIXME: is this right?
-					 * I would expect to have to ref a file if the directory is monitored,
-					 * not the other way around.
-					 * 
-					 * If it's correct, a comment here would help.
-					 */
-					nautilus_file_ref (file);
+				/* Since we removed from the files
+				 * list, we must unref in the case
+				 * where the directory was monitored
+				 * (holding a ref on each item in the
+				 * files list).
+				 */
+				if (nautilus_directory_is_file_list_monitored (directory)) {
+					nautilus_file_unref (file);
 				}
-				changed_files = g_list_prepend (changed_files, file);
 			}
 		}
 	}

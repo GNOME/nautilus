@@ -34,7 +34,7 @@
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window.h"
-#include <bonobo.h>
+#include <bonobo/bonobo-control.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtktogglebutton.h>
 #include <libgnome/gnome-i18n.h>
@@ -49,11 +49,8 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 
-/* forward declarations */
+#ifdef UIH
 
-#define GNOME_STOCK_PIXMAP_WEBSEARCH "SearchWeb"
-
-/*
 static void
 activate_back_or_forward_menu_item (GtkMenuItem *menu_item, 
 				    NautilusWindow *window,
@@ -141,18 +138,19 @@ back_or_forward_button_clicked_callback (GtkWidget *widget,
 	return FALSE;
 	
 }
-*/
+
+#endif /* UIH */
 
 /* set up the toolbar info based on the current theme selection from preferences */
 
 static void
-set_up_button (NautilusWindow *window, const char *item_path, const char* icon_name)
+set_up_button (NautilusWindow *window, const char *item_path, const char *icon_name)
 {
 	char *full_name, *icon_theme, *path_name;
 
 	/* look in the theme to see if there's a redirection found */
 	icon_theme = nautilus_theme_get_theme_data ("toolbar", "ICON_THEME");
-	if (icon_theme) {
+	if (icon_theme != NULL) {
 		path_name = g_strdup_printf ("%s/%s.png", icon_theme, icon_name);
 		full_name = nautilus_pixmap_file (path_name);
 		g_free (path_name);
@@ -162,21 +160,17 @@ set_up_button (NautilusWindow *window, const char *item_path, const char* icon_n
 	}
 		
 	/* set up the toolbar component with the new image */
-
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
-		
 	bonobo_ui_component_set_prop (window->details->shell_ui, 
 				      item_path,
 				      "pixtype",
 				      full_name == NULL ? "stock" : "filename",
 			      	      NULL);
-	
 	bonobo_ui_component_set_prop (window->details->shell_ui, 
 				      item_path,
 				      "pixname",
 				      full_name == NULL ? icon_name : full_name,
 			      	      NULL);
-	
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 
 	g_free (full_name);
@@ -225,7 +219,7 @@ set_up_throbber_frame_type (NautilusWindow *window)
 	return frame;
 }
 
-static GtkWidget*
+static GtkWidget *
 allocate_throbber (void)
 {
 	GtkWidget *throbber, *frame;
@@ -278,8 +272,7 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 	
 	bonobo_object_unref (BONOBO_OBJECT (throbber_wrapper));
 
-
-	/*
+#ifdef UIH
 	gtk_signal_connect (GTK_OBJECT (window->back_button),
 			    "button_press_event",
 			    GTK_SIGNAL_FUNC (back_or_forward_button_clicked_callback), 
@@ -289,7 +282,7 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 			    "button_press_event",
 			    GTK_SIGNAL_FUNC (back_or_forward_button_clicked_callback), 
 			    window);
-	*/
+#endif
 	
 	/* add callback for preference changes */
 	nautilus_preferences_add_callback

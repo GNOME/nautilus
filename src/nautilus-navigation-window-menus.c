@@ -111,11 +111,6 @@
 
 static GtkWindow *bookmarks_window = NULL;
 
-#ifdef UIH
-static void                  activate_bookmark_in_menu_item                 (BonoboUIHandler        *uih,
-									     gpointer                user_data,
-									     const char             *path);
-#endif
 static void                  append_bookmark_to_menu                        (NautilusWindow         *window,
 									     NautilusBookmark *bookmark,
 									     const char             *menu_item_path,
@@ -751,6 +746,7 @@ switch_to_user_level (NautilusWindow *window, int new_user_level)
 	nautilus_user_level_manager_set_user_level (new_user_level);
 	
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
+
 	/* change the item icons to reflect the new user level */
 	old_user_level_icon_name = get_user_level_icon_name (old_user_level, FALSE);
 	nautilus_bonobo_set_icon (window->details->shell_ui,
@@ -774,6 +770,7 @@ switch_to_user_level (NautilusWindow *window, int new_user_level)
 				  new_user_level_icon_name);
 #endif
 	g_free (new_user_level_icon_name);
+
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 } 
  
@@ -797,8 +794,7 @@ remove_bookmarks_for_uri (GtkWidget *button, gpointer callback_data)
 	g_assert (GTK_IS_WIDGET (button));
 	g_assert (callback_data != NULL);
 
-	uri = (const char *)callback_data;
-
+	uri = (const char *) callback_data;
 	nautilus_bookmark_list_delete_items_with_uri (get_bookmark_list (), uri);
 }
 
@@ -1749,11 +1745,11 @@ get_customize_user_level_string (void)
 		nautilus_user_level_manager_get_user_level_name_for_display 
 			(nautilus_user_level_manager_get_user_level ());
 
-	/* Localizers: This is the label for the menu item that brings up the
-	 * user-level settings dialog. %s will be replaced with the name of a
-	 * user level ("Beginner", "Intermediate", or "Advanced").
+	/* Localizers: This is the title of the user-level settings
+	 * dialog. %s will be replaced with the name of a user level
+	 * ("Beginner", "Intermediate", or "Advanced").
 	 */
-	title = g_strdup_printf ("Edit %s Settings", user_level_string_for_display);
+	title = g_strdup_printf (_("Edit %s Settings"), user_level_string_for_display);
 
 	g_free (user_level_string_for_display);
 
@@ -1763,17 +1759,23 @@ get_customize_user_level_string (void)
 static char *
 get_customize_user_level_settings_menu_string (void)
 {
+	char *user_level_string_for_display;
 	char *title;
-	char *ellipse_suffixed_title;
+	
+	user_level_string_for_display = 
+		nautilus_user_level_manager_get_user_level_name_for_display 
+			(nautilus_user_level_manager_get_user_level ());
 
-	title = get_customize_user_level_string ();
-	g_assert (title != NULL);
+	/* Localizers: This is the label for the menu item that brings
+	 * up the user-level settings dialog. %s will be replaced with
+	 * the name of a user level ("Beginner", "Intermediate", or
+	 * "Advanced").
+	 */
+	title = g_strdup_printf (_("Edit %s Settings..."), user_level_string_for_display);
 
-	ellipse_suffixed_title = g_strdup_printf ("%s...", title);
+	g_free (user_level_string_for_display);
 
-	g_free (title);
-
-	return ellipse_suffixed_title;
+	return title;
 }
 
 static void
