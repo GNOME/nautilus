@@ -13,22 +13,22 @@
          _label="Restore Icons' Original Sizes"
 	 _tip="Restore each selected icon to its original size"/>
 	<cmd name="Manual Layout"
-         _label="manually"
+         _label="Manually"
 	 _tip="Leave icons wherever they are dropped"/>
 	<cmd name="Sort by Name"
-         _label="by Name"
+         _label="By Name"
 	 _tip="Keep icons sorted by name in rows"/>
 	<cmd name="Sort by Size"
-         _label="by Size"
+         _label="By Size"
 	 _tip="Keep icons sorted by size in rows"/>
 	<cmd name="Sort by Type"
-         _label="by Type"
+         _label="By Type"
 	 _tip="Keep icons sorted by type in rows"/>
 	<cmd name="Sort by Modification Date"
-         _label="by Modification Date"
+         _label="By Modification Date"
 	 _tip="Keep icons sorted by modification date in rows"/>
 	<cmd name="Sort by Emblems"
-         _label="by Emblems"
+         _label="By Emblems"
 	 _tip="Keep icons sorted by emblems in rows"/>
 	<cmd name="Tighter Layout"
          _label="Tighter Layout"
@@ -69,30 +69,30 @@
 
 	<submenu name="View">
 		<placeholder name="View Items Placeholder">
-			<submenu name="Lay Out" _label="_Lay out items">
+			<submenu name="Lay Out" _label="_Lay Out Items">
 				<menuitem name="Manual Layout" 
-					  _label="_manually" 
+					  _label="_Manually" 
 					  type="radio" group="layout group"
 					  id="Manual Layout"/>
 				<placeholder name="Auto Layout" delimit="top">
 					<menuitem name="Sort by Name" 
-						  _label="by _Name" 
+						  _label="By _Name" 
 						  type="radio" group="layout group"
 						  id="Sort by Name"/>
 					<menuitem name="Sort by Size" 
-						  _label="by _Size" 
+						  _label="By _Size" 
 						  type="radio" group="layout group"
 						  id="Sort by Size"/>
 					<menuitem name="Sort by Type" 
-						  _label="by _Type" 
+						  _label="By _Type" 
 						  type="radio" group="layout group"
 						  id="Sort by Type"/>
 					<menuitem name="Sort by Modification Date" 
-						  _label="by Modification _Date" 
+						  _label="By Modification _Date" 
 						  type="radio" group="layout group"
 						  id="Sort by Modification Date"/>
 					<menuitem name="Sort by Emblems" 
-						  _label="by _Emblems" 
+						  _label="By _Emblems" 
 						  type="radio" group="layout group"
 						  id="Sort by Emblems"/>
 				</placeholder>
@@ -117,7 +117,7 @@
 	<popup name="background">
 		<placeholder name="Before Zoom Items">
 			<placeholder name="View Items">
-				<submenu name="Lay Out" _label="Lay out items" tearoff="0">
+				<submenu name="Lay Out" _label="Lay Out Items" tearoff="0">
 					<menuitem name="Manual Layout" 
 						  type="radio" group="context menu layout group"
 						  id="Manual Layout"/>
