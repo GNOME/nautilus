@@ -52,11 +52,7 @@ libtrilobiteinclude_HEADERS =			\
 	libtrilobite.h				\
 	trilobite-core-messaging.h		\
 	trilobite-core-distribution.h		\
-	trilobite-core-metadata-manager.h	\
 	trilobite-core-network.h		\
-	trilobite-core-package-manager.h	\
-	trilobite-core-security-manager.h	\
-	trilobite-core-tests.h			\
 	trilobite-core-utils.h			\
 	trilobite-root-helper.h			\
 	trilobite-root-client-public.h		\
@@ -68,11 +64,7 @@ libtrilobite_la_SOURCES =			\
 	$(TRILOBITE_CORBA_GENERATED)		\
 	trilobite-core-messaging.c		\
 	trilobite-core-distribution.c		\
-	trilobite-core-metadata-manager.c	\
 	trilobite-core-network.c		\
-	trilobite-core-package-manager.c	\
-	trilobite-core-security-manager.c	\
-	trilobite-core-tests.c			\
 	trilobite-core-utils.c			\
 	trilobite-root-helper.c			\
 	trilobite-root-client.c			\
