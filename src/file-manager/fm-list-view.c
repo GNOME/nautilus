@@ -108,7 +108,7 @@ static void              context_click_selection_callback         (GtkCList     
 								   FMListView         *list_view);
 static void              context_click_background_callback        (GtkCList           *clist,
 								   FMListView         *list_view);
-static NautilusList *    create_list                              (FMListView         *list_view);
+static void		 create_list                              (FMListView         *list_view);
 static void              list_activate_callback                   (NautilusList       *list,
 								   GList              *file_list,
 								   gpointer            data);
@@ -128,6 +128,7 @@ static void              fm_list_view_zoom_to_level               (FMDirectoryVi
 static void              fm_list_view_restore_default_zoom_level  (FMDirectoryView    *view);
 static gboolean          fm_list_view_can_zoom_in                 (FMDirectoryView    *view);
 static gboolean          fm_list_view_can_zoom_out                (FMDirectoryView    *view);
+static GtkWidget *       fm_list_view_get_background_widget       (FMDirectoryView    *view);
 static void              fm_list_view_clear                       (FMDirectoryView    *view);
 static guint             fm_list_view_get_icon_size               (FMListView         *list_view);
 static GList *           fm_list_view_get_selection               (FMDirectoryView    *view);
@@ -177,6 +178,7 @@ fm_list_view_initialize_class (gpointer klass)
 	fm_directory_view_class->restore_default_zoom_level = fm_list_view_restore_default_zoom_level;
 	fm_directory_view_class->can_zoom_in = fm_list_view_can_zoom_in;
 	fm_directory_view_class->can_zoom_out = fm_list_view_can_zoom_out;
+	fm_directory_view_class->get_background_widget = fm_list_view_get_background_widget;
 	fm_directory_view_class->clear = fm_list_view_clear;
 	fm_directory_view_class->done_adding_files = fm_list_view_done_adding_files;
 	fm_directory_view_class->file_changed = fm_list_view_file_changed;
@@ -606,7 +608,7 @@ fm_list_drag_data_get (GtkWidget *widget, GdkDragContext *context,
 		info, time, widget, each_icon_get_data_binder);
 }
 
-static NautilusList *
+static void
 create_list (FMListView *list_view)
 {
 	NautilusList *list;
@@ -656,7 +658,7 @@ create_list (FMListView *list_view)
 
 	int i;
 
-	g_return_val_if_fail (FM_IS_LIST_VIEW (list_view), NULL);
+	g_return_if_fail (FM_IS_LIST_VIEW (list_view));
 
 	list = NAUTILUS_LIST (nautilus_list_new_with_titles (LIST_VIEW_COLUMN_COUNT, titles));
 	clist = GTK_CLIST (list);
@@ -751,8 +753,6 @@ create_list (FMListView *list_view)
 			    NULL);
 
 	gtk_widget_show (GTK_WIDGET (list));
-
-	return list;
 }
 
 static void
@@ -898,6 +898,14 @@ fm_list_view_can_zoom_out (FMDirectoryView *view)
 		> NAUTILUS_ZOOM_LEVEL_SMALLEST;
 }
 
+
+static GtkWidget * 
+fm_list_view_get_background_widget (FMDirectoryView *view) 
+{
+	g_return_val_if_fail (FM_IS_LIST_VIEW (view), FALSE);
+
+	return GTK_WIDGET (get_list (FM_LIST_VIEW (view)));
+}
 
 static void
 fm_list_view_clear (FMDirectoryView *view)
