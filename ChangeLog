@@ -1,3 +1,32 @@
+2002-12-19  James Willcox  <jwillcox@gnome.org>
+
+	* libnautilus-private/nautilus-directory-notify.h:
+	* libnautilus-private/nautilus-directory.c:
+	(nautilus_directory_schedule_position_set):
+	* libnautilus-private/nautilus-file-changes-queue.c:
+	(nautilus_file_changes_queue_schedule_position_set),
+	(nautilus_file_changes_consume_changes):
+	* libnautilus-private/nautilus-file-changes-queue.h:
+	* libnautilus-private/nautilus-file-operations.c:
+	(icon_position_iterator_new), (apply_one_position),
+	(nautilus_file_operations_copy_move):
+	* libnautilus-private/nautilus-icon-dnd.c: (handle_local_move),
+	(handle_nonlocal_move):
+	* libnautilus-private/nautilus-metadata.h:
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_init):
+	* src/file-manager/fm-directory-view.c: (new_folder_done),
+	(file_changed_callback):
+	* src/file-manager/fm-icon-view.c: (should_show_file_on_screen),
+	(fm_icon_view_remove_file), (fm_icon_view_add_file),
+	(fm_icon_view_file_changed), (fm_icon_view_filter_by_screen),
+	(fm_icon_view_instance_init):
+	* src/file-manager/fm-icon-view.h:
+
+	Make the desktop icon view store the screen number with the icon
+	positions.  Now, a given icon appears on one screen only, and you
+	can drag them between screens, etc.
+
 2002-12-19  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-directory-background.c (image_loading_done_callback):

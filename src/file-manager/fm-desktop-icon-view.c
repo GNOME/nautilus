@@ -665,8 +665,8 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 		desktop_directory_changed_callback (NULL);
 	}
 
+	fm_icon_view_filter_by_screen (FM_ICON_VIEW (desktop_icon_view), TRUE);
 	icon_container = get_icon_container (desktop_icon_view);
-
 	nautilus_icon_container_set_use_drop_shadows (icon_container, TRUE);
 	fm_icon_container_set_sort_desktop (FM_ICON_CONTAINER (icon_container), TRUE);
 

@@ -91,5 +91,6 @@ GtkType fm_icon_view_get_type      (void);
 int     fm_icon_view_compare_files (FMIconView   *icon_view,
 				    NautilusFile *a,
 				    NautilusFile *b);
+void    fm_icon_view_filter_by_screen (FMIconView *icon_view, gboolean filter);
 
 #endif /* FM_ICON_VIEW_H */

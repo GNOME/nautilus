@@ -33,6 +33,7 @@
 #include "nautilus-file-dnd.h"
 #include "nautilus-icon-private.h"
 #include "nautilus-link.h"
+#include "nautilus-metadata.h"
 #include <eel/eel-background.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
@@ -758,6 +759,9 @@ handle_local_move (NautilusIconContainer *container,
 	GList *moved_icons, *p;
 	NautilusDragSelectionItem *item;
 	NautilusIcon *icon;
+	NautilusFile *file;
+	char *screen_string;
+	GdkScreen *screen;
 
 	if (container->details->auto_layout) {
 		if (!confirm_switch_to_manual_layout (container)) {
@@ -766,6 +770,7 @@ handle_local_move (NautilusIconContainer *container,
 		nautilus_icon_container_freeze_icon_positions (container);
 	}
 
+
 	/* Move and select the icons. */
 	moved_icons = NULL;
 	for (p = container->details->dnd_info->drag_info.selection_list; p != NULL; p = p->next) {
@@ -773,6 +778,29 @@ handle_local_move (NautilusIconContainer *container,
 		
 		icon = nautilus_icon_container_get_icon_by_uri
 			(container, item->uri);
+
+		if (icon == NULL) {
+			/* probably dragged from another screen.  Add it to
+			 * this screen
+			 */
+
+			file = nautilus_file_get (item->uri);
+
+			screen = gtk_widget_get_screen (GTK_WIDGET (container));
+			screen_string = g_strdup_printf ("%d",
+						gdk_screen_get_number (screen));
+			nautilus_file_set_metadata (file,
+					NAUTILUS_METADATA_KEY_SCREEN,
+					NULL, screen_string);
+
+			g_free (screen_string);
+
+			nautilus_icon_container_add (container,
+					NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
+			
+			icon = nautilus_icon_container_get_icon_by_uri
+				(container, item->uri);
+		}
 
 		if (item->got_icon_position) {
 			nautilus_icon_container_move_icon
@@ -804,7 +832,7 @@ handle_nonlocal_move (NautilusIconContainer *container,
 	if (container->details->dnd_info->drag_info.selection_list == NULL) {
 		return;
 	}
-	
+
 	source_uris = NULL;
 	for (p = container->details->dnd_info->drag_info.selection_list; p != NULL; p = p->next) {
 		/* do a shallow copy of all the uri strings of the copied files */

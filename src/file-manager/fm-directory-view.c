@@ -3200,9 +3200,22 @@ static void
 new_folder_done (const char *new_folder_uri, gpointer data)
 {
 	FMDirectoryView *directory_view;
+	NautilusFile *file;
+	char *screen_string;
+	GdkScreen *screen;
 
 	directory_view = (FMDirectoryView *) data;
 	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
+
+	screen = gtk_widget_get_screen (GTK_WIDGET (directory_view));
+	screen_string = g_strdup_printf ("%d", gdk_screen_get_number (screen));
+
+	file = nautilus_file_get (new_folder_uri);
+	nautilus_file_set_metadata
+		(file, NAUTILUS_METADATA_KEY_SCREEN,
+		 NULL,
+		 screen_string);
+	g_free (screen_string);
 
 	/* We need to run after the default handler adds the folder we want to
 	 * operate on. The ADD_FILE signal is registered as G_SIGNAL_RUN_LAST, so we
@@ -5244,7 +5257,7 @@ static void
 file_changed_callback (NautilusFile *file, gpointer callback_data)
 {
 	FMDirectoryView *view = FM_DIRECTORY_VIEW (callback_data);
-	
+
 	schedule_update_menus (view);
 
 	/* We might have different capabilities, so we need to update

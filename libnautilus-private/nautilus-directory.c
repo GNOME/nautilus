@@ -1447,6 +1447,7 @@ nautilus_directory_schedule_position_set (GList *position_setting_list)
 	const NautilusFileChangesQueuePosition *item;
 	NautilusFile *file;
 	char *position_string;
+	char *screen_string;
 
 	for (p = position_setting_list; p != NULL; p = p->next) {
 		item = (NautilusFileChangesQueuePosition *) p->data;
@@ -1465,6 +1466,14 @@ nautilus_directory_schedule_position_set (GList *position_setting_list)
 			 NULL,
 			 position_string);
 		g_free (position_string);
+
+		screen_string = g_strdup_printf ("%d", item->screen);
+		nautilus_file_set_metadata
+			(file,
+			 NAUTILUS_METADATA_KEY_SCREEN,
+			 NULL,
+			 screen_string);
+		g_free (screen_string);
 		
 		nautilus_file_unref (file);
 	}

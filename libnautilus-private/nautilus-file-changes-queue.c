@@ -52,6 +52,7 @@ typedef struct {
 	char *from_uri;
 	char *to_uri;
 	GdkPoint point;
+	int screen;
 } NautilusFileChange;
 
 typedef struct {
@@ -242,7 +243,8 @@ nautilus_file_changes_queue_schedule_metadata_remove (const char *uri)
 
 void
 nautilus_file_changes_queue_schedule_position_set (const char *uri, 
-						   GdkPoint point)
+						   GdkPoint point,
+						   int screen)
 {
 	NautilusFileChange *new_item;
 	NautilusFileChangesQueue *queue;
@@ -253,6 +255,7 @@ nautilus_file_changes_queue_schedule_position_set (const char *uri,
 	new_item->kind = CHANGE_POSITION_SET;
 	new_item->from_uri = g_strdup (uri);
 	new_item->point = point;
+	new_item->screen = screen;
 	nautilus_file_changes_queue_add_common (queue, new_item);
 }
 
@@ -529,6 +532,7 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 			position_set->uri = change->from_uri;
 			position_set->set = TRUE;
 			position_set->point = change->point;
+			position_set->screen = change->screen;
 			position_set_requests = g_list_prepend (position_set_requests,
 								position_set);
 			break;

@@ -71,6 +71,7 @@
 #define NAUTILUS_METADATA_KEY_ICON_POSITION              	"icon_position"
 #define NAUTILUS_METADATA_KEY_ICON_SCALE                 	"icon_scale"
 #define NAUTILUS_METADATA_KEY_CUSTOM_ICON                	"custom_icon"
+#define NAUTILUS_METADATA_KEY_SCREEN				"screen"
 
 /* per link file */
 

@@ -28,6 +28,7 @@
 #include "fm-icon-container.h"
 #include "fm-desktop-icon-view.h"
 #include "fm-error-reporting.h"
+#include <stdlib.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <eel/eel-background.h>
 #include <eel/eel-glib-extensions.h>
@@ -132,6 +133,9 @@ struct FMIconViewDetails
 	NautilusAudioPlayerData *audio_player_data;
 	int audio_preview_timeout;
 	NautilusFile *audio_preview_file;
+
+	gboolean filter_by_screen;
+	int num_screens;
 };
 
 
@@ -463,23 +467,31 @@ fm_icon_view_clear (FMDirectoryView *view)
 	nautilus_icon_container_clear (icon_container);
 }
 
-static void
-fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file)
+
+static gboolean
+should_show_file_on_screen (FMDirectoryView *view, NautilusFile *file)
 {
+	char *screen_string;
+	int screen_num;
 	FMIconView *icon_view;
-	NautilusIconContainer *icon_container;
+	GdkScreen *screen;
 
 	icon_view = FM_ICON_VIEW (view);
-	icon_container = get_icon_container (icon_view);
-	
-	/* Reset scroll region for the first icon added when loading a directory. */
-	if (icon_view->details->loading && nautilus_icon_container_is_empty (icon_container)) {
-		nautilus_icon_container_reset_scroll_region (icon_container);
+
+	/* Get the screen for this icon from the metadata. */
+	screen_string = nautilus_file_get_metadata
+		(file, NAUTILUS_METADATA_KEY_SCREEN, "0");
+	screen_num = atoi (screen_string);
+	g_free (screen_string);
+	screen = gtk_widget_get_screen (GTK_WIDGET (view));
+
+	if (screen_num != gdk_screen_get_number (screen) &&
+	    (screen_num < icon_view->details->num_screens ||
+	     gdk_screen_get_number (screen) > 0)) {
+		return FALSE;
 	}
-	if (nautilus_icon_container_add (icon_container,
-					 NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
-		nautilus_file_ref (file);
-	}
+
+	return TRUE;
 }
 
 static void
@@ -492,11 +504,53 @@ fm_icon_view_remove_file (FMDirectoryView *view, NautilusFile *file)
 }
 
 static void
+fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file)
+{
+	FMIconView *icon_view;
+	NautilusIconContainer *icon_container;
+	
+	icon_view = FM_ICON_VIEW (view);
+	icon_container = get_icon_container (icon_view);
+
+	if (icon_view->details->filter_by_screen &&
+	    !should_show_file_on_screen (view, file)) {
+			return;
+	}
+	
+	/* Reset scroll region for the first icon added when loading a directory. */
+	if (icon_view->details->loading && nautilus_icon_container_is_empty (icon_container)) {
+		nautilus_icon_container_reset_scroll_region (icon_container);
+	}
+	if (nautilus_icon_container_add (icon_container,
+					 NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
+		nautilus_file_ref (file);
+	}
+}
+
+
+static void
 fm_icon_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 {
-	nautilus_icon_container_request_update
-		(get_icon_container (FM_ICON_VIEW (view)),
-		 NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
+	FMIconView *icon_view;
+
+	g_return_if_fail (view != NULL);
+	icon_view = FM_ICON_VIEW (view);
+
+	if (!icon_view->details->filter_by_screen) {
+		nautilus_icon_container_request_update
+			(get_icon_container (icon_view),
+			 NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
+		return;
+	}
+	
+	if (!should_show_file_on_screen (view, file)) {
+		fm_icon_view_remove_file (view, file);
+	} else {
+
+		nautilus_icon_container_request_update
+			(get_icon_container (icon_view),
+			 NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
+	}
 }
 
 static gboolean
@@ -1756,6 +1810,14 @@ fm_icon_view_compare_files (FMIconView   *icon_view,
 		 icon_view->details->sort_reversed);
 }
 
+void
+fm_icon_view_filter_by_screen (FMIconView *icon_view,
+			       gboolean filter)
+{
+	icon_view->details->filter_by_screen = filter;
+	icon_view->details->num_screens = gdk_display_get_n_screens (gtk_widget_get_display (GTK_WIDGET (icon_view)));
+}
+
 static int
 compare_files_cover (gconstpointer a, gconstpointer b, gpointer callback_data)
 {
@@ -2416,6 +2478,7 @@ fm_icon_view_instance_init (FMIconView *icon_view)
 
 	icon_view->details = g_new0 (FMIconViewDetails, 1);
 	icon_view->details->sort = &sort_criteria[0];
+	icon_view->details->filter_by_screen = FALSE;
 
 	create_icon_container (icon_view);
 

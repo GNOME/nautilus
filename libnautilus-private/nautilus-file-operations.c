@@ -117,10 +117,12 @@ typedef struct {
 	int last_icon_position_index;
 	GList *uris;
 	const GList *last_uri;
+	int screen;
 } IconPositionIterator;
 
 static IconPositionIterator *
-icon_position_iterator_new (GArray *icon_positions, const GList *uris)
+icon_position_iterator_new (GArray *icon_positions, const GList *uris,
+			    int screen)
 {
 	IconPositionIterator *result;
 	guint index;
@@ -137,6 +139,7 @@ icon_position_iterator_new (GArray *icon_positions, const GList *uris)
 
 	result->uris = eel_g_str_list_copy ((GList *)uris);
 	result->last_uri = result->uris;
+	result->screen = screen;
 
 	return result;
 }
@@ -1525,7 +1528,7 @@ apply_one_position (IconPositionIterator *position_iterator,
 	GdkPoint point;
 
 	if (icon_position_iterator_get_next (position_iterator, source_name, &point)) {
-		nautilus_file_changes_queue_schedule_position_set (target_name, point);
+		nautilus_file_changes_queue_schedule_position_set (target_name, point, position_iterator->screen);
 	} else {
 		nautilus_file_changes_queue_schedule_position_remove (target_name);
 	}
@@ -1715,6 +1718,9 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	
 	IconPositionIterator *icon_position_iterator;
 
+	GdkScreen *screen;
+	int screen_num;
+
 	g_assert (item_uris != NULL);
 
 	target_dir_uri = NULL;
@@ -1834,11 +1840,13 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	/* set up the copy/move parameters */
 	transfer_info = transfer_info_new (parent_view);
 	if (relative_item_points != NULL && relative_item_points->len > 0) {
+		screen = gtk_widget_get_screen (GTK_WIDGET (parent_view));
+		screen_num = gdk_screen_get_number (screen);
 		/* FIXME: we probably don't need an icon_position_iterator
 		 * here at all.
 		 */
 		icon_position_iterator = icon_position_iterator_new
-			(relative_item_points, item_uris);
+			(relative_item_points, item_uris, screen_num);
 	} else {
 		icon_position_iterator = NULL;
 	}

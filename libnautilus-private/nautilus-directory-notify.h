@@ -34,6 +34,7 @@ typedef struct {
 	char *uri;
 	gboolean set;
 	GdkPoint point;
+	int screen;
 } NautilusFileChangesQueuePosition;
 
 /* Almost-public change notification calls */

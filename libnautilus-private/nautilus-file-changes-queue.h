@@ -36,7 +36,8 @@ void nautilus_file_changes_queue_schedule_metadata_move   (const char *from_uri,
 							   const char *to_uri);
 void nautilus_file_changes_queue_schedule_metadata_remove (const char *uri);
 void nautilus_file_changes_queue_schedule_position_set    (const char *uri,
-							   GdkPoint    point);
+							   GdkPoint    point,
+							   int screen);
 void nautilus_file_changes_queue_schedule_position_remove (const char *uri);
 
 void nautilus_file_changes_consume_changes                (gboolean    consume_all);
