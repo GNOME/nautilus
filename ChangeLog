@@ -1,3 +1,63 @@
+2001-02-26  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 5812 (Some preferences widgets don't display correct
+	values when Preferences dialog first displayed at Beginner level)
+
+	The bug here was that all the widgets only had their state set
+	when they were created. They are created when the Preferences
+	dialog is first shown, even for the preferences that aren't
+	displayed at this user level. So changing the user level to a
+	higher one where there preference now appears but has a different
+	value would leave the widget displaying the "hidden" value instead
+	of the correct value. Fixed by making the code that updates the
+	visibility also update the displayed values.
+
+	* libnautilus-extensions/nautilus-preferences-item.h:
+	Public prototype for nautilus_preferences_item_update_displayed_value.
+
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	Added change_signal_ID to Details struct.
+	
+	(preferences_item_construct): Store the item type in the
+	Details. Surprisingly, this wasn't being done before. Also,
+	call nautilus_preferences_item_update_displayed_value after
+	creating the item.
+
+	(preferences_item_update_enum),
+	(preferences_item_create_enum),
+	(preferences_item_update_short_enum),
+	(preferences_item_create_short_enum),
+	(preferences_item_update_boolean),
+	(preferences_item_create_boolean),
+	(preferences_item_update_editable_string),
+	(preferences_item_create_editable_string),
+	(preferences_item_update_integer),
+	(preferences_item_create_integer),
+	(preferences_item_update_font_family),
+	(preferences_item_create_font_family),
+	(preferences_item_update_theme), 
+	(preferences_item_create_theme): Extract the code that sets
+	the displayed widget value from _create_ to new function
+	_update_. It's now called at the end of preferences_item_construct
+	instead of in each _create_ function. Also, store the ID for each
+	signal handler that monitors widget changes in Details.
+	
+	(nautilus_preferences_item_update_displayed_value): Call appropriate
+	update function for item type. Block "change" signal handler while
+	updating widgetry to avoid redundant preference changed notices.
+
+	* libnautilus-extensions/nautilus-preferences-group.c:
+	(nautilus_preferences_group_update): Call
+	nautilus_preferences_item_update_displayed_value
+
+
+	Other changes:
+	
+	* src/nautilus-shell-ui.xml: Return of the ellipsis in "About Nautilus...",
+	by popular demand.
+
 2001-02-26  Rebecca Schulman  <rebecka@eazel.com>
 
 	reviewed by: Laszlo Kovacs  <laszlo.kovacs@sun.com>

@@ -231,13 +231,16 @@ void
 nautilus_preferences_group_update (NautilusPreferencesGroup *group)
 {
 	GList *iterator;
+	NautilusPreferencesItem *preferences_item;
 
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group));
 
 	for (iterator = group->details->items; iterator != NULL; iterator = iterator->next) {
 		char *name;
 
-		name = nautilus_preferences_item_get_name (NAUTILUS_PREFERENCES_ITEM (iterator->data));
+		preferences_item = NAUTILUS_PREFERENCES_ITEM (iterator->data);
+		name = nautilus_preferences_item_get_name (preferences_item);
+		nautilus_preferences_item_update_displayed_value (preferences_item);
 
 		if (nautilus_preferences_is_visible (name)) {
 			gtk_widget_show (GTK_WIDGET (iterator->data));
