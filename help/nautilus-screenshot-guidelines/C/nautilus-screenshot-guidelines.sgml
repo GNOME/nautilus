@@ -113,7 +113,13 @@
     should allow 34 pixels for each side with a callout instead of the
     7 or 11 pixels for the drop shadow. (eg. A screenshot for a
     figure with a callout on the left should be at most 646-11-34=601
-    pixels across.)
+    pixels across. For one with a callout on the bottom, is should be
+    at most 418-7-34=377 high.)
+   </para>
+   <para>
+    When specifying the geometry of a Nautilus window, remember the
+    geometry does not include the border decorations.  Using <command>
+    nautilus --geometry 520x335</command> works nicely.
    </para>
   </sect2>
 
