@@ -302,47 +302,71 @@ GdkFont *select_font(const gchar *text_to_format, gint width, const gchar* font_
 	return candidate_font;
 }
 
+/* Workaround for gnome_vfs problem. */
+static char *
+nautilus_gnome_vfs_uri_extract_basename (GnomeVFSURI *uri)
+{
+	gchar *start;
+	gchar *end;
+
+	g_return_val_if_fail (uri != NULL, NULL);
+
+	g_assert (uri->text != NULL);
+
+	/* Skip any trailing directory separators. */
+	end = uri->text + strlen (uri->text);
+	while (end != uri->text && end[-1] == G_DIR_SEPARATOR)
+		--end;
+
+	/* Include all non-directory-separator characters. */
+	start = end;
+	while (start != uri->text && start[-1] != G_DIR_SEPARATOR)
+		--start;
+
+	if (start == end)
+		return g_strdup ("/");
+
+	return g_strndup (start, end - start);
+}
+
 /* set up the label */
 
-void nautilus_index_panel_set_up_label (NautilusIndexPanel *index_panel, const gchar *uri)
+void
+nautilus_index_panel_set_up_label (NautilusIndexPanel *index_panel, const gchar *uri)
 {
-	GtkWidget *label_widget;
-	const gchar *file_name;
 	GnomeVFSURI *vfs_uri;
+	GnomeVFSURI *parent_vfs_uri;
+	GtkWidget *label_widget;
+	char *file_name;
 	GdkFont *label_font;
-	char *temp_uri; 
-	int slash_pos;
 	
-	/* remove the trailing slash so vfs_get_basename will work right for us */
-	temp_uri = g_strdup (uri);
-	slash_pos = strlen (temp_uri) - 1;
-	if (slash_pos > 0 && temp_uri[slash_pos] == '/')
-		temp_uri[slash_pos] = '\0';
+	vfs_uri = gnome_vfs_uri_new (uri);
+	if (vfs_uri == NULL)
+		return;
 	
-	vfs_uri = gnome_vfs_uri_new(temp_uri);
-	g_free(temp_uri);
-	
-	file_name = gnome_vfs_uri_get_basename (vfs_uri);	
-	
-	if (file_name != NULL) {
-		label_widget = gtk_label_new (file_name);
-		gtk_box_pack_start (GTK_BOX (index_panel->per_uri_container), label_widget, 0, 0, 0);
-		
-		label_font = select_font(file_name, GTK_WIDGET (index_panel)->allocation.width - 4,
-					 "-bitstream-courier-medium-r-normal-*-%d-*-*-*-*-*-*-*");
-		
-		if (label_font != NULL) {
-			GtkStyle *temp_style;
-			gtk_widget_realize (label_widget);	
-			temp_style = gtk_style_new ();	  	
-			temp_style->font = label_font;
-			gtk_widget_set_style (label_widget, gtk_style_attach (temp_style, label_widget->window));
-		}
-		
-		gtk_widget_show(label_widget);
-	}
-
+	file_name = nautilus_gnome_vfs_uri_extract_basename (vfs_uri);
 	gnome_vfs_uri_unref (vfs_uri);
+
+	if (file_name == NULL)
+		return;
+
+	label_widget = gtk_label_new (file_name);
+	gtk_box_pack_start (GTK_BOX (index_panel->per_uri_container), label_widget, 0, 0, 0);
+	
+	label_font = select_font(file_name, GTK_WIDGET (index_panel)->allocation.width - 4,
+				 "-bitstream-courier-medium-r-normal-*-%d-*-*-*-*-*-*-*");
+	
+	if (label_font != NULL) {
+		GtkStyle *temp_style;
+		gtk_widget_realize (label_widget);	
+		temp_style = gtk_style_new ();	  	
+		temp_style->font = label_font;
+		gtk_widget_set_style (label_widget, gtk_style_attach (temp_style, label_widget->window));
+	}
+	
+	gtk_widget_show(label_widget);
+
+	g_free (file_name);
 }
 
 /* this routine populates the index panel with the per-uri information */
