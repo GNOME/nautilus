@@ -1,5 +1,16 @@
 2002-05-22  Michael Meeks  <michael@ximian.com>
 
+	* src/file-manager/fm-directory-view.c
+	(display_selection_info_idle_callback): hold a ref
+	during the duration of the call, to guard against
+	re-enterancy related sudden death #72991
+	(display_pending_timeout_callback),
+	(update_menus_timeout_callback),
+	(display_pending_idle_callback): ditto for good 
+	measure.
+
+2002-05-22  Michael Meeks  <michael@ximian.com>
+
 	* src/nautilus-window.c (ui_idle_handler): hold a ref
 	on the window while we do a load of possibly
 	re-enterant stuff. #82050

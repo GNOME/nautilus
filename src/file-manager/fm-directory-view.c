@@ -2139,11 +2139,15 @@ display_selection_info_idle_callback (gpointer data)
 	
 	view = FM_DIRECTORY_VIEW (data);
 
+	g_object_ref (G_OBJECT (view));
+
 	view->details->display_selection_idle_id = 0;
 	fm_directory_view_display_selection_info (view);
 	if (view->details->send_selection_change_to_shell) {
 		fm_directory_view_send_selection_change (view);
 	}
+
+	g_object_unref (G_OBJECT (view));
 
 	return FALSE;
 }
@@ -2175,8 +2179,12 @@ update_menus_timeout_callback (gpointer data)
 	
 	view = FM_DIRECTORY_VIEW (data);
 
+	g_object_ref (G_OBJECT (view));
+
 	view->details->update_menus_timeout_id = 0;
 	fm_directory_view_update_menus (view);
+
+	g_object_unref (G_OBJECT (view));
 
 	return FALSE;
 }
@@ -2184,16 +2192,24 @@ update_menus_timeout_callback (gpointer data)
 static gboolean
 display_pending_idle_callback (gpointer data)
 {
+	gboolean ret;
 	FMDirectoryView *view;
 		
 	view = FM_DIRECTORY_VIEW (data);
 
+	g_object_ref (G_OBJECT (view));
+
 	if (display_pending_files (view)) {
-		return TRUE;
+		ret = TRUE;
+	} else {
+		ret = FALSE;
 	}
 
 	view->details->display_pending_idle_id = 0;
-	return FALSE;
+
+	g_object_unref (G_OBJECT (view));
+
+	return ret;
 }
 
 static gboolean
@@ -2203,12 +2219,16 @@ display_pending_timeout_callback (gpointer data)
 
 	view = FM_DIRECTORY_VIEW (data);
 
+	g_object_ref (G_OBJECT (view));
+
 	view->details->display_pending_timeout_id = 0;
 
 	/* If we have more files to do, use an idle, not another timeout. */
 	if (display_pending_files (view)) {
 		schedule_idle_display_of_pending_files (view);
 	}
+
+	g_object_unref (G_OBJECT (view));
 
 	return FALSE;
 }
