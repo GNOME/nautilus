@@ -1,6 +1,12 @@
 2000-05-11  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	improved the look of the highlighting by adding more margins to the box, and tightened things
+	up vertically in the non-highlighted case.
+	
+2000-05-11  Andy Hertzfeld <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
 	fixed bug #758, selected items difficult to see at a glance, by going back to drawing a
 	filled box around the text to indicate selection. I kept the emboldening, since it improves
 	readability. This time it doesn't use XOR and has a settable color, which I'll make a preference

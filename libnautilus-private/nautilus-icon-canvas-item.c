@@ -663,14 +663,15 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		gnome_icon_text_info_free (icon_text_info);
 	}
 	g_strfreev (pieces);
-
-	if (needs_highlight && drawable != NULL)
-		gdk_gc_set_foreground(gc, &save_gc.foreground);
 	
-	height_so_far += 2; /* extra slop for nicer highlighting */
-	if (needs_highlight)
-		width_so_far += 2; /* account for emboldening */
-		
+	if (needs_highlight) {
+		if (drawable != NULL)
+			gdk_gc_set_foreground(gc, &save_gc.foreground);
+
+		height_so_far += 2; /* extra slop for nicer highlighting */	
+		width_so_far += 4; /* account for emboldening, plus extra to make it look nicer */
+	}	
+	
 	if (drawable != NULL) {
 		/* Current calculations should match what we measured before drawing.
 		 * This assumes that we will always make a separate call to measure
