@@ -138,11 +138,7 @@ nautilus_string_list_free (NautilusStringList *string_list)
 {
 	g_assert (string_list != NULL);
 
-	if (string_list->strings)
-	{
-		g_list_foreach (string_list->strings, (GFunc) g_free, NULL);
-		g_list_free (string_list->strings);
-	}
+	nautilus_string_list_clear (string_list);
 
 	g_free (string_list);
 }
