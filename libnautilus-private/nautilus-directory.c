@@ -861,12 +861,11 @@ nautilus_directory_notify_files_added (GList *uris)
 	const char *uri;
 	GnomeVFSResult result;
 
-	/* FIXME bugzilla.eazel.com 651: 
+	/* FIXME bugzilla.eazel.com 465: 
 	   gnome_vfs_file_info calls need to be
 	   called asynchronously. We probably need a new gnome_vfs call that 
 	   takes a list of URIs and generates a list of file info structures.
 	 */
-
 	for (p = uris; p != NULL; p = p->next) {
 		uri = (const char *) p->data;
 
@@ -1017,7 +1016,7 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 				g_assert (g_list_find (*files, file) != NULL);
 				*files = g_list_remove (*files, file);
 				
-				/* FIXME bugzilla.eazel.com 652: 
+				/* FIXME bugzilla.eazel.com 465: 
 				 * Need to call get info in async mode. 
 				 */
 				info = gnome_vfs_file_info_new ();

@@ -170,17 +170,15 @@ metafile_read_complete (NautilusDirectory *directory)
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 	
 	/* FIXME: the following assertion shouldn't be disabled, but
-	 * it fires in the way when you set metadata before the
-	 * metafile is completely read.  Currently, the old metadata
-	 * in the file will be lost.
+	 * it gets in the way when you set metadata before the
+	 * metafile is completely read. Currently, the old metadata
+	 * in the file will be lost. One way to test this is to
+	 * remove the metafile from your home directory and the
+	 * ~/Nautilus directory and then start the program.
 	 */
 	/* g_assert (directory->details->metafile == NULL); */
 	
-	/* The gnome-xml parser requires a zero-terminated array.
-	 * Also, we don't want to allocate an empty buffer
-	 * because it would be NULL and gnome-xml won't parse
-	 * NULL properly.
-	 */
+	/* The gnome-xml parser requires a zero-terminated array. */
 	size = directory->details->read_state->bytes_read;
 	buffer = g_realloc (directory->details->read_state->buffer, size + 1);
 	buffer[size] = '\0';
@@ -191,7 +189,6 @@ metafile_read_complete (NautilusDirectory *directory)
 
 	directory->details->metafile_read = TRUE;
 	directory->details->read_state = NULL;
-
 
 	/* Let the callers that were waiting for the metafile know. */
 	metafile_read_done (directory);
@@ -692,7 +689,6 @@ nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 {
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (client != NULL);
-	g_return_if_fail (attributes != NULL || metadata_keys != NULL);
 	g_return_if_fail (callback != NULL);
 
 	nautilus_directory_file_monitor_add_internal (directory,
