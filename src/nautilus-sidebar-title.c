@@ -356,7 +356,7 @@ update_font (NautilusSidebarTitle *sidebar_title)
 			 "-adobe-helvetica-bold-r-normal-*-%d-*-*-*-*-*-*-*");
 		
 		nautilus_gtk_widget_set_font (sidebar_title->details->normal_title_label, label_font);
-		/* FIXME bugzilla.eazel.com 2499: Is there a font leak here? */
+		gdk_font_unref (label_font);
 	}
 }
 
