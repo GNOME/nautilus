@@ -1,3 +1,10 @@
+2002-08-29  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-application.c (volume_mounted_callback):
+	Allow other apps that do their own CD switching to temporary disable
+	nautilus from popping up CD windows by grabbing the
+	_NAUTILUS_DISABLE_MOUNT_WINDOW selection.
+
 === nautilus 2.0.6 ===
 	
 2002-08-28  Alexander Larsson  <alexl@redhat.com>
