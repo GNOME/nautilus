@@ -75,8 +75,27 @@ struct _NautilusView
   GtkWidget *main_window;
 
   char *iid;
-  GtkWidget *client;
-  CORBA_Object view_client;
+
+  enum { NV_NONE, NV_NAUTILUS_VIEW, NV_BONOBO_SUBDOC, NV_BONOBO_CONTROL } type;
+
+  union {
+    struct {
+      CORBA_Object view_client;
+      GnomeObject *control_frame;
+
+    } nautilus_view_info;
+    struct {
+      GnomeObject *container, *client_site, *view_frame;
+
+    } bonobo_subdoc_info;
+    struct {
+      GnomeObject *control_frame;
+
+    } bonobo_control_info;
+  } u; 
+
+  GnomeObjectClient *client_object;
+  GtkWidget *client_widget;
 
   GnomeObject *view_frame;
 
@@ -90,10 +109,12 @@ void    nautilus_view_request_selection_change (NautilusView              *view,
 						Nautilus_SelectionRequestInfo *loc);
 void    nautilus_view_request_status_change    (NautilusView              *view,
                                                 Nautilus_StatusRequestInfo *loc);
-void    nautilus_view_load_client              (NautilusView              *view,
-                                                const char *               iid);
+gboolean nautilus_view_load_client              (NautilusView              *view,
+                                                 const char *               iid);
 const char *nautilus_view_get_iid(NautilusView *view);
 CORBA_Object nautilus_view_get_client_objref(NautilusView *view);
+GnomeObject *nautilus_view_get_control_frame(NautilusView *view);
+CORBA_Object nautilus_view_get_objref(NautilusView *view);
 
 /* This is a "protected" operation */
 void    nautilus_view_construct_arg_set(NautilusView *view);
