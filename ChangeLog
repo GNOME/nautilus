@@ -1,3 +1,16 @@
+2001-02-26  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	sleepy reviewer: Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(check_no_two_packages_has_same_file), (install_packages):
+	when adding extrapackges to main packageslist, check that we're
+	not adding duplicates.
+	
+	* components/services/install/lib/eazel-package-system-types.c:
+	(eazel_install_package_compare):
+	remopved debug outpu
+
 2001-02-26  Robey Pointer  <robey@eazel.com>
 
 	reviewed by: Eskil Heyn Olsen <eskil@eazel.com>

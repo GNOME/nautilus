@@ -1957,9 +1957,8 @@ check_no_two_packages_has_same_file (EazelInstall *service,
 				} else {
 					other_conflicts++;
 				}
-				/* FIXME: bugzilla.eazel.com 7024
-				   reinsert this command once softcat is rebuild */
-				/* add_file_conflict (pack, pack_other, filename); */
+
+				add_file_conflict (pack, pack_other, filename); 
 			} else {
 				/* file is okay */
 				g_hash_table_insert (file_table, filename, pack);
@@ -2915,7 +2914,17 @@ install_packages (EazelInstall *service, GList *categories)
 		extra_packages = NULL;
 		install_packages_helper (service, &packages, &extra_packages);
 		if (extra_packages) {
-			packages = g_list_concat (packages, extra_packages);
+			GList *iterator;
+			/* add the contents of extra_packages, but avoid inserting
+			   dupes */
+			for (iterator = extra_packages; iterator; iterator = g_list_next (iterator)) {
+				PackageData *p = PACKAGEDATA (iterator->data);
+				if (g_list_find_custom (packages, p,
+							(GCompareFunc)eazel_install_package_compare)==NULL) {
+					packages = g_list_prepend (packages, p);
+				}
+			}
+
 		}
 	} while (extra_packages != NULL);
 

@@ -1030,7 +1030,6 @@ eazel_install_package_compare (PackageData *pack,
 	char *a, *b;
 	a = packagedata_get_readable_name (pack);
 	b = packagedata_get_readable_name (other);
-	g_message ("\t%s vs %s", a, b);
 
 	/* For the field sets, if they both exists, compare them,
 	   if one has it and the other doesn't, not equal */
