@@ -1711,11 +1711,60 @@ nautilus_icon_canvas_item_accessible_get_description (AtkObject *accessible)
 	return item->details->additional_text;
 }
 
+static AtkObject *
+nautilus_icon_canvas_item_accessible_get_parent (AtkObject *accessible)
+{
+	NautilusIconCanvasItem *item;
+	
+	item = eel_accessibility_get_gobject (accessible);
+	if (!item) {
+		return NULL;
+	}
+
+	return gtk_widget_get_accessible (GTK_WIDGET (GNOME_CANVAS_ITEM (item)->canvas));
+}
+
+static int
+nautilus_icon_canvas_item_accessible_get_index_in_parent (AtkObject *accessible)
+{
+	NautilusIconCanvasItem *item;
+	NautilusIconContainer *container;
+	GList *l;
+	NautilusIcon *icon;
+	int i;
+
+	item = eel_accessibility_get_gobject (accessible);
+	if (!item) {
+		return -1;
+	}
+	
+	container = NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (item)->canvas);
+	
+	l = container->details->icons;
+	i = 0;
+	while (l) {
+		icon = l->data;
+		
+		if (icon->item == item) {
+			return i;
+		}
+		
+		i++;
+		l = l->next;
+	}
+
+
+	return -1;
+}
+
+
 static void
 nautilus_icon_canvas_item_accessible_class_init (AtkObjectClass *klass)
 {
 	klass->get_name = nautilus_icon_canvas_item_accessible_get_name;
 	klass->get_description = nautilus_icon_canvas_item_accessible_get_description;
+	klass->get_parent = nautilus_icon_canvas_item_accessible_get_parent;
+	klass->get_index_in_parent = nautilus_icon_canvas_item_accessible_get_index_in_parent;
 }
 
 

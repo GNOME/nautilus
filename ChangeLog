@@ -1,3 +1,48 @@
+2002-03-30  Dave Camp  <dave@ximian.com>
+
+        * libnautilus-private/nautilus-icon-canvas-item.c:
+        (nautilus_icon_canvas_item_accessible_get_parent):
+        (nautilus_icon_canvas_item_accessible_get_index_in_parent): New
+        functions.
+        (nautilus_icon_canvas_item_accessible_class_init): Initialize
+        get_parent and get_index_in_parent.
+
+        * libnautilus-private/nautilus-icon-container.c: (get_accessible),
+        (nautilus_icon_container_class_init): Init get_accessible, add
+        icon_added, icon_removed, and cleared signals.
+        (finish_adding_icon): Emit icon_added.
+        (nautilus_icon_container_remove): Emit icon_removed.
+        (accessible_get_priv),
+        (nautilus_icon_container_accessible_do_action),
+        (nautilus_icon_container_accessible_get_n_actions),
+        (nautilus_icon_container_accessible_action_get_description),
+        (nautilus_icon_container_accessible_action_get_name),
+        (nautilus_icon_container_accessible_action_get_keybinding),
+        (nautilus_icon_container_accessible_action_set_description),
+        (nautilus_icon_container_accessible_action_interface_init),
+        (nautilus_icon_container_accessible_update_selection),
+        (nautilus_icon_container_accessible_selection_changed_cb),
+        (nautilus_icon_container_accessible_icon_added_cb),
+        (nautilus_icon_container_accessible_icon_removed_cb),
+        (nautilus_icon_container_accessible_cleared_cb),
+        (nautilus_icon_container_accessible_add_selection),
+        (nautilus_icon_container_accessible_clear_selection),
+        (nautilus_icon_container_accessible_ref_selection),
+        (nautilus_icon_container_accessible_get_selection_count),
+        (nautilus_icon_container_accessible_is_child_selected),
+        (nautilus_icon_container_accessible_remove_selection),
+        (nautilus_icon_container_accessible_select_all_selection),
+        (nautilus_icon_container_accessible_selection_interface_init),
+        (nautilus_icon_container_accessible_get_n_children),
+        (nautilus_icon_container_accessible_ref_child),
+        (nautilus_icon_container_accessible_initialize),
+        (nautilus_icon_container_accessible_finalize),
+        (nautilus_icon_container_accessible_class_init),
+        (nautilus_icon_container_accessible_get_type): New functions.
+
+        * libnautilus-private/nautilus-icon-container.h: Added class
+        members for the icon_added, icon_removed, and cleared signals.
+
 2002-03-30  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-metafile.c: (write_all): New.

@@ -32,6 +32,8 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-marshal.h"
 #include "nautilus-theme.h"
+#include <atk/atkaction.h>
+#include <eel/eel-accessibility.h>
 #include <eel/eel-background.h>
 #include <eel/eel-canvas-rect.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
@@ -43,6 +45,7 @@
 #include <libgnomecanvas/gnome-canvas-rect-ellipse.h>
 #include <libgnomeui/gnome-icon-item.h>
 #include <gdk/gdkkeysyms.h>
+#include <gtk/gtkaccessible.h>
 #include <gtk/gtklayout.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
@@ -119,6 +122,18 @@ enum {
 	 */
 };
 
+enum {
+	ACTION_ACTIVATE,
+	LAST_ACTION
+};
+
+typedef struct {
+	GList *selection;
+	char *action_descriptions[LAST_ACTION];
+} NautilusIconContainerAccessiblePrivate;
+
+static GType         nautilus_icon_container_accessible_get_type (void);
+
 static void          activate_selected_items               (NautilusIconContainer      *container);
 static void          nautilus_icon_container_theme_changed (gpointer                    user_data);
 static void          compute_stretch                       (StretchState               *start,
@@ -145,6 +160,20 @@ static gboolean      is_renaming_pending                   (NautilusIconContaine
 static void          process_pending_icon_to_rename        (NautilusIconContainer      *container);
 
 static int click_policy_auto_value;
+
+gpointer accessible_parent_class;
+
+static GQuark accessible_private_data_quark = 0;
+
+static const char *nautilus_icon_container_accessible_action_names[] = {
+	"activate",
+	NULL
+};
+
+static const char *nautilus_icon_container_accessible_action_descriptions[] = {
+	"Activate selected items",
+	NULL
+};
 
 GNOME_CLASS_BOILERPLATE (NautilusIconContainer, nautilus_icon_container,
 			 GnomeCanvas, GNOME_TYPE_CANVAS)
@@ -176,7 +205,10 @@ enum {
 	MOVE_COPY_ITEMS,
 	HANDLE_URI_LIST,
 	PREVIEW,
-	SELECTION_CHANGED,	
+	SELECTION_CHANGED,
+	ICON_ADDED,
+	ICON_REMOVED,
+	CLEARED,
 	LAST_SIGNAL
 };
 static guint signals[LAST_SIGNAL];
@@ -2984,6 +3016,21 @@ key_press_event (GtkWidget *widget,
 	return handled;
 }
 
+static AtkObject *
+get_accessible (GtkWidget *widget)
+{
+	AtkObject *accessible;
+	
+	if ((accessible = eel_accessibility_get_atk_object (widget))) {
+		return accessible;
+	}
+	
+	accessible = g_object_new 
+		(nautilus_icon_container_accessible_get_type (), NULL);
+	
+	return eel_accessibility_set_atk_object_return (widget, accessible);
+}
+
 /* Initialization.  */
 
 static void
@@ -3271,6 +3318,34 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                NULL, NULL,
 		                g_cclosure_marshal_VOID__VOID,
 		                G_TYPE_NONE, 0);
+	signals[ICON_ADDED]
+		= g_signal_new ("icon_added",
+		                G_TYPE_FROM_CLASS (class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
+						 icon_added),
+		                NULL, NULL,
+		                g_cclosure_marshal_VOID__POINTER,
+		                G_TYPE_NONE, 1, G_TYPE_POINTER);
+	signals[ICON_REMOVED]
+		= g_signal_new ("icon_removed",
+		                G_TYPE_FROM_CLASS (class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
+						 icon_added),
+		                NULL, NULL,
+		                g_cclosure_marshal_VOID__POINTER,
+		                G_TYPE_NONE, 1, G_TYPE_POINTER);
+
+	signals[CLEARED]
+		= g_signal_new ("cleared",
+		                G_TYPE_FROM_CLASS (class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass,
+						 cleared),
+		                NULL, NULL,
+		                g_cclosure_marshal_VOID__VOID,
+		                G_TYPE_NONE, 0);
 
 	/* GtkWidget class.  */
 
@@ -3283,6 +3358,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 	widget_class->button_release_event = button_release_event;
 	widget_class->motion_notify_event = motion_notify_event;
 	widget_class->key_press_event = key_press_event;
+	widget_class->get_accessible = get_accessible;
 
 	/* Initialize the stipple bitmap.  */
 
@@ -3828,6 +3904,8 @@ finish_adding_icon (NautilusIconContainer *container,
 
 	g_signal_connect_object (icon->item, "event",
 				 G_CALLBACK (item_event_callback), container, 0);
+
+	g_signal_emit (container, signals[ICON_ADDED], 0, icon->data);
 }
 
 static void
@@ -3942,6 +4020,8 @@ nautilus_icon_container_remove (NautilusIconContainer *container,
 
 	icon_destroy (container, icon);
 	schedule_redo_layout (container);
+
+	g_signal_emit (container, signals[ICON_REMOVED], 0, icon);
 
 	return TRUE;
 }
@@ -5091,6 +5171,543 @@ nautilus_icon_container_set_font_size_table (NautilusIconContainer *container,
 		invalidate_label_sizes (container);
 		nautilus_icon_container_request_update_all (container);
 	}
+}
+
+/* NautilusIconContainerAccessible */
+
+static NautilusIconContainerAccessiblePrivate *
+accessible_get_priv (AtkObject *accessible)
+{
+	NautilusIconContainerAccessiblePrivate *priv;
+	
+	priv = g_object_get_qdata (G_OBJECT (accessible), 
+				   accessible_private_data_quark);
+
+	return priv;
+}
+
+/* AtkAction interface */
+
+static gboolean
+nautilus_icon_container_accessible_do_action (AtkAction *accessible, int i)
+{
+	GtkWidget *widget;
+	NautilusIconContainer *container;
+	GList *selection;
+
+	g_return_val_if_fail (i < LAST_ACTION, FALSE);
+
+	widget = GTK_ACCESSIBLE (accessible)->widget;
+	if (!widget) {
+		return FALSE;
+	}
+	
+	switch (i) {
+	case ACTION_ACTIVATE :
+		container = NAUTILUS_ICON_CONTAINER (widget);
+		selection = nautilus_icon_container_get_selection (container);
+
+		if (selection) {
+			g_signal_emit_by_name (container, "activate", selection);
+			g_list_free (selection);
+		}
+
+		return TRUE;
+	default :
+		g_warning ("Invalid action passed to NautilusIconContainerAccessible::do_action");
+		return FALSE;
+	}
+}
+
+static int
+nautilus_icon_container_accessible_get_n_actions (AtkAction *accessible)
+{
+	return LAST_ACTION;
+}
+
+static const char *
+nautilus_icon_container_accessible_action_get_description (AtkAction *accessible, 
+							   int i)
+{
+	NautilusIconContainerAccessiblePrivate *priv;
+	
+	g_return_val_if_fail (i < LAST_ACTION, NULL);
+
+	priv = accessible_get_priv (ATK_OBJECT (accessible));
+	
+	if (priv->action_descriptions[i]) {
+		return priv->action_descriptions[i];
+	} else {
+		return nautilus_icon_container_accessible_action_descriptions[i];
+	}
+}
+
+static const char *
+nautilus_icon_container_accessible_action_get_name (AtkAction *accessible, int i)
+{
+	g_return_val_if_fail (i < LAST_ACTION, NULL);
+
+	return nautilus_icon_container_accessible_action_names[i];
+}
+
+static const char *
+nautilus_icon_container_accessible_action_get_keybinding (AtkAction *accessible, 
+							  int i)
+{
+	g_return_val_if_fail (i < LAST_ACTION, NULL);
+
+	return NULL;
+}
+
+static gboolean
+nautilus_icon_container_accessible_action_set_description (AtkAction *accessible, 
+							   int i, 
+							   const char *description)
+{
+	NautilusIconContainerAccessiblePrivate *priv;
+
+	g_return_val_if_fail (i < LAST_ACTION, FALSE);
+
+	priv = accessible_get_priv (ATK_OBJECT (accessible));
+
+	if (priv->action_descriptions[i]) {
+		g_free (priv->action_descriptions[i]);
+	}
+	priv->action_descriptions[i] = g_strdup (description);
+
+	return FALSE;
+}
+
+static void
+nautilus_icon_container_accessible_action_interface_init (AtkActionIface *iface)
+{
+	iface->do_action = nautilus_icon_container_accessible_do_action;
+	iface->get_n_actions = nautilus_icon_container_accessible_get_n_actions;
+	iface->get_description = nautilus_icon_container_accessible_action_get_description;
+	iface->get_name = nautilus_icon_container_accessible_action_get_name;
+	iface->get_keybinding = nautilus_icon_container_accessible_action_get_keybinding;
+	iface->set_description = nautilus_icon_container_accessible_action_set_description;
+}
+
+/* AtkSelection interface */
+
+static void
+nautilus_icon_container_accessible_update_selection (AtkObject *accessible)
+{
+	NautilusIconContainer *container;
+	NautilusIconContainerAccessiblePrivate *priv;
+	GList *l;
+	NautilusIcon *icon;
+
+	container = NAUTILUS_ICON_CONTAINER (GTK_ACCESSIBLE (accessible)->widget);
+
+	priv = accessible_get_priv (accessible);
+
+	if (priv->selection) {
+		g_list_free (priv->selection);
+		priv->selection = NULL;
+	}
+	
+	for (l = container->details->icons; l != NULL; l = l->next) {
+		icon = l->data;
+		if (icon->is_selected) {
+			priv->selection = g_list_prepend (priv->selection, 
+							  icon);
+		}
+	}
+
+	priv->selection = g_list_reverse (priv->selection);
+}
+
+static void
+nautilus_icon_container_accessible_selection_changed_cb (NautilusIconContainer *container,
+							 gpointer data)
+{
+	nautilus_icon_container_accessible_update_selection 
+		(ATK_OBJECT (data));	
+	
+	g_signal_emit_by_name (data, "selection_changed");
+}
+
+static void
+nautilus_icon_container_accessible_icon_added_cb (NautilusIconContainer *container,
+						  NautilusIconData *icon_data,
+						  gpointer data)
+{
+	NautilusIcon *icon;
+	AtkObject *atk_parent;
+	AtkObject *atk_child;
+	int index;
+
+	icon = g_hash_table_lookup (container->details->icon_set, icon_data);
+	if (icon) {
+		atk_parent = ATK_OBJECT (data);
+		atk_child = atk_gobject_accessible_for_object 
+			(G_OBJECT (icon->item));
+		index = g_list_index (container->details->icons, icon);
+		
+		g_signal_emit_by_name (atk_parent, "children_changed::add",
+				       index, atk_child, NULL);
+	}
+}
+
+static void
+nautilus_icon_container_accessible_icon_removed_cb (NautilusIconContainer *container,
+						    NautilusIconData *icon_data,
+						    gpointer data)
+{
+	NautilusIcon *icon;
+	AtkObject *atk_parent;
+	AtkObject *atk_child;
+	int index;
+	
+	icon = g_hash_table_lookup (container->details->icon_set, icon_data);
+	if (icon) {
+		atk_parent = ATK_OBJECT (data);
+		atk_child = atk_gobject_accessible_for_object 
+			(G_OBJECT (icon->item));
+		index = g_list_index (container->details->icons, icon);
+		
+		g_signal_emit_by_name (atk_parent, "children_changed::remove",
+				       index, atk_child, NULL);
+	}
+}
+
+static void
+nautilus_icon_container_accessible_cleared_cb (NautilusIconContainer *container, 
+					       gpointer data)
+{
+	g_signal_emit_by_name (data, "children_changed", 0, NULL, NULL);
+}
+
+
+static gboolean 
+nautilus_icon_container_accessible_add_selection (AtkSelection *accessible, 
+						  int i)
+{
+	GtkWidget *widget;
+	NautilusIconContainer *container;
+	GList *l;
+	GList *selection;
+	NautilusIcon *icon;
+
+	widget = GTK_ACCESSIBLE (accessible)->widget;
+	if (!widget) {
+		return FALSE;
+	}
+
+        container = NAUTILUS_ICON_CONTAINER (widget);
+	
+	l = g_list_nth (container->details->icons, i);
+	if (l) {
+		icon = l->data;
+		
+		selection = nautilus_icon_container_get_selection (container);
+		selection = g_list_prepend (selection, 
+					    icon->data);
+		nautilus_icon_container_set_selection (container, selection);
+		
+		g_list_free (selection);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static gboolean
+nautilus_icon_container_accessible_clear_selection (AtkSelection *accessible)
+{
+	GtkWidget *widget;
+	NautilusIconContainer *container;
+
+	widget = GTK_ACCESSIBLE (accessible)->widget;
+	if (!widget) {
+		return FALSE;
+	}
+
+        container = NAUTILUS_ICON_CONTAINER (widget);
+
+	nautilus_icon_container_unselect_all (container);
+
+	return TRUE;
+}
+
+static AtkObject *
+nautilus_icon_container_accessible_ref_selection (AtkSelection *accessible, 
+						  int i)
+{
+	AtkObject *atk_object;
+	NautilusIconContainerAccessiblePrivate *priv;
+	GList *item;
+	NautilusIcon *icon;
+
+	priv = accessible_get_priv (ATK_OBJECT (accessible));
+
+	item = (g_list_nth (priv->selection, i));
+
+	if (item) {
+		icon = item->data;
+		atk_object = atk_gobject_accessible_for_object (G_OBJECT (icon->item));
+		if (atk_object) {
+			g_object_ref (atk_object);
+		}
+
+		return atk_object;
+	} else {
+		return NULL;
+	}
+}
+
+static int
+nautilus_icon_container_accessible_get_selection_count (AtkSelection *accessible)
+{
+	int count;
+	NautilusIconContainerAccessiblePrivate *priv;
+
+	priv = accessible_get_priv (ATK_OBJECT (accessible));
+
+	count = g_list_length (priv->selection);
+	
+	return count;
+}
+
+static gboolean
+nautilus_icon_container_accessible_is_child_selected (AtkSelection *accessible,
+						      int i)
+{
+	NautilusIconContainer *container;
+	GList *l;
+	NautilusIcon *icon;
+	GtkWidget *widget;
+
+	widget = GTK_ACCESSIBLE (accessible)->widget;
+	if (!widget) {
+		return FALSE;
+	}
+
+        container = NAUTILUS_ICON_CONTAINER (widget);
+
+	l = g_list_nth (container->details->icons, i);
+	if (l) {
+		icon = l->data;
+		return icon->is_selected;
+	}
+	return FALSE;
+}
+
+static gboolean
+nautilus_icon_container_accessible_remove_selection (AtkSelection *accessible,
+						     int i)
+{
+	NautilusIconContainer *container;
+	NautilusIconContainerAccessiblePrivate *priv;
+	GList *l;
+	GList *selection;
+	NautilusIcon *icon;
+	GtkWidget *widget;
+
+	widget = GTK_ACCESSIBLE (accessible)->widget;
+	if (!widget) {
+		return FALSE;
+	}
+
+	priv = accessible_get_priv (ATK_OBJECT (accessible));
+
+        container = NAUTILUS_ICON_CONTAINER (widget);
+	
+	l = g_list_nth (priv->selection, i);
+	if (l) {
+		icon = l->data;
+		
+		selection = nautilus_icon_container_get_selection (container);
+		selection = g_list_remove (selection, icon->data);
+		nautilus_icon_container_set_selection (container, selection);
+		
+		g_list_free (selection);
+		return TRUE;
+	}
+
+	return FALSE;	
+}
+
+static gboolean
+nautilus_icon_container_accessible_select_all_selection (AtkSelection *accessible)
+{
+	NautilusIconContainer *container;
+	GtkWidget *widget;
+
+	widget = GTK_ACCESSIBLE (accessible)->widget;
+	if (!widget) {
+		return FALSE;
+	}
+
+        container = NAUTILUS_ICON_CONTAINER (widget);
+
+	nautilus_icon_container_select_all (container);
+
+	return TRUE;
+}
+
+static void 
+nautilus_icon_container_accessible_selection_interface_init (AtkSelectionIface *iface)
+{
+	iface->add_selection = nautilus_icon_container_accessible_add_selection;
+	iface->clear_selection = nautilus_icon_container_accessible_clear_selection;
+	iface->ref_selection = nautilus_icon_container_accessible_ref_selection;
+	iface->get_selection_count = nautilus_icon_container_accessible_get_selection_count;
+	iface->is_child_selected = nautilus_icon_container_accessible_is_child_selected;
+	iface->remove_selection = nautilus_icon_container_accessible_remove_selection;
+	iface->select_all_selection = nautilus_icon_container_accessible_select_all_selection;
+}
+
+
+static gint 
+nautilus_icon_container_accessible_get_n_children (AtkObject *accessible)
+{
+	NautilusIconContainer *container;
+	GtkWidget *widget;
+	
+	widget = GTK_ACCESSIBLE (accessible)->widget;
+	if (!widget) {
+		return FALSE;
+	}
+
+	container = NAUTILUS_ICON_CONTAINER (widget);
+
+	return g_hash_table_size (container->details->icon_set);
+}
+
+static AtkObject* 
+nautilus_icon_container_accessible_ref_child (AtkObject *accessible, int i)
+{
+        AtkObject *atk_object;
+        NautilusIconContainer *container;
+        GList *item;
+        NautilusIcon *icon;
+	GtkWidget *widget;
+        
+	widget = GTK_ACCESSIBLE (accessible)->widget;
+	if (!widget) {
+		return NULL;
+	}
+
+        container = NAUTILUS_ICON_CONTAINER (widget);
+        
+        item = (g_list_nth (container->details->icons, i));
+        
+        if (item) {
+                icon = item->data;
+                
+                atk_object = atk_gobject_accessible_for_object (G_OBJECT (icon->item));
+                g_object_ref (atk_object);
+                
+                return atk_object;
+        } else {
+                return NULL;
+        }
+}
+
+static void
+nautilus_icon_container_accessible_initialize (AtkObject *accessible, 
+					       gpointer data)
+{
+	NautilusIconContainer *container;
+	NautilusIconContainerAccessiblePrivate *priv;
+
+	ATK_OBJECT_CLASS (accessible_parent_class)->initialize (accessible, data);
+
+	priv = g_new0 (NautilusIconContainerAccessiblePrivate, 1);
+	g_object_set_qdata (G_OBJECT (accessible), 
+			    accessible_private_data_quark, 
+			    priv);
+
+	nautilus_icon_container_accessible_update_selection 
+		(ATK_OBJECT (accessible));
+
+	container = NAUTILUS_ICON_CONTAINER (GTK_ACCESSIBLE (accessible)->widget);
+	g_signal_connect (G_OBJECT (container), "selection_changed",
+			  G_CALLBACK (nautilus_icon_container_accessible_selection_changed_cb), 
+			  accessible);
+	g_signal_connect (G_OBJECT (container), "icon_added",
+			  G_CALLBACK (nautilus_icon_container_accessible_icon_added_cb), 
+			  accessible);
+	g_signal_connect (G_OBJECT (container), "icon_removed",
+			  G_CALLBACK (nautilus_icon_container_accessible_icon_removed_cb), 
+			  accessible);
+	g_signal_connect (G_OBJECT (container), "cleared",
+			  G_CALLBACK (nautilus_icon_container_accessible_cleared_cb), 
+			  accessible);
+
+}
+
+static void
+nautilus_icon_container_accessible_finalize (GObject *object)
+{
+	NautilusIconContainerAccessiblePrivate *priv;
+	int i;
+
+	priv = accessible_get_priv (ATK_OBJECT (object));
+	if (priv->selection) {
+		g_list_free (priv->selection);
+	}
+
+	for (i = 0; i < LAST_ACTION; i++) {
+		if (priv->action_descriptions[i]) {
+			g_free (priv->action_descriptions[i]);
+		}
+	}
+	
+	g_free (priv);
+
+	G_OBJECT_CLASS (accessible_parent_class)->finalize (object);
+}
+
+static void
+nautilus_icon_container_accessible_class_init (AtkObjectClass *klass)
+{
+	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+
+	accessible_parent_class = g_type_class_peek_parent (klass);
+
+	gobject_class->finalize = nautilus_icon_container_accessible_finalize;
+
+	klass->get_n_children = nautilus_icon_container_accessible_get_n_children;
+	klass->ref_child = nautilus_icon_container_accessible_ref_child;
+	klass->initialize = nautilus_icon_container_accessible_initialize;
+
+	accessible_private_data_quark = g_quark_from_static_string ("icon-container-accessible-private-data");
+}
+
+static GType
+nautilus_icon_container_accessible_get_type (void)
+{
+        static GType type = 0;
+
+        if (!type) {
+                static GInterfaceInfo atk_action_info = {
+                        (GInterfaceInitFunc) nautilus_icon_container_accessible_action_interface_init,
+                        (GInterfaceFinalizeFunc) NULL,
+                        NULL
+                };              
+		
+                static GInterfaceInfo atk_selection_info = {
+                        (GInterfaceInitFunc) nautilus_icon_container_accessible_selection_interface_init,
+                        (GInterfaceFinalizeFunc) NULL,
+                        NULL
+                };              
+
+		type = eel_accessibility_create_derived_type 
+			("NautilusIconContainerAccessible",
+			 GNOME_TYPE_CANVAS,
+			 nautilus_icon_container_accessible_class_init);
+		
+                g_type_add_interface_static (type, ATK_TYPE_ACTION,
+                                             &atk_action_info);
+                g_type_add_interface_static (type, ATK_TYPE_SELECTION,
+                                             &atk_selection_info);
+        }
+
+        return type;
 }
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)

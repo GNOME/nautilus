@@ -148,6 +148,11 @@ typedef struct {
 	int	     (* preview)		  (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   gboolean start_flag);
+        void         (* icon_added)               (NautilusIconContainer *container,
+                                                   NautilusIconData *data);
+        void         (* icon_removed)             (NautilusIconContainer *container,
+                                                   NautilusIconData *data);
+        void         (* cleared)                  (NautilusIconContainer *container);
 } NautilusIconContainerClass;
 
 /* GtkObject */
