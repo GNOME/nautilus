@@ -625,12 +625,12 @@ nautilus_drag_drop_background_ask (GdkDragAction actions)
 	 */
 	menu = gtk_menu_new ();
 	
-	append_drop_action_menu_item (menu, _("Set as background for _all directories"),
+	append_drop_action_menu_item (menu, _("Set as background for _all folders"),
 				      NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND,
 				      (actions & NAUTILUS_DND_ACTION_SET_AS_GLOBAL_BACKGROUND) != 0,
 				      &damd);
 
-	append_drop_action_menu_item (menu, _("Set as background for _this directory"),
+	append_drop_action_menu_item (menu, _("Set as background for _this folder"),
 				      NAUTILUS_DND_ACTION_SET_AS_BACKGROUND,
 				      (actions & NAUTILUS_DND_ACTION_SET_AS_BACKGROUND) != 0,
 				      &damd);
