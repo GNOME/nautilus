@@ -1,3 +1,35 @@
+2000-12-08  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed 5074: Should give a NULL description in cases where the mime
+	type isn't known.
+
+	* libnautilus-extensions/nautilus-file.c: (get_description):
+	It is now an error for a MIME type to ever be NULL. Added an assert,
+	removed a special case code for handling directories even when
+	we do not know the mime type.
+	
+	Fixed 5073: old code to give type "program" for some files (unkown
+	MIME type) is not triggering any more.
+
+	* libnautilus-extensions/nautilus-file.c: (get_description):
+	Changed the check that looked for an empty MIME string to a
+	compare for a MIME type of "application/octet-stream".
+	
+	Fixed 5021: Create Link in View as List -> Nautilus Crashes.
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_create_links_for_files):
+	This was just a broken assert that didn't cover the case of an
+	empty drop point list.
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_mime_type):	
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(is_known_mime_type):
+	Use a symbolic name for "application/octet-stream".
+
 2000-12-08  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

@@ -47,6 +47,7 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-mime-info.h>
+#include <libgnomevfs/gnome-vfs-mime.h>
 #include <pwd.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -3625,35 +3626,16 @@ get_description (NautilusFile *file)
 	g_assert (NAUTILUS_IS_FILE (file));
 
 	if (file->details->info == NULL) {
-		mime_type = NULL;
-	} else {
-		mime_type = file->details->info->mime_type;
-	}
-
-	/* FIXME bugzilla.eazel.com 5073: When this code was originally written, 
-	 *  unknown types
-	 * were represented by NULL, but now they are represented by
-	 * "application/octet-string". Perhaps we want to check for
-	 * that here, so "program" will appear more often.
-	 */
-	if (nautilus_strlen (mime_type) == 0) {
-		/* No MIME type, anything else interesting we can say about this? */
-		/* FIXME bugzilla.eazel.com 5074: Maybe we should always return NULL 
-		 * when the
-		 * MIME type is unknown.
-		 */
-		/* If it's a directory, call it "folder" before
-		 * looking at the executable bit, since the executable
-		 * bit means something else for directories.
-		 */
-		if (nautilus_file_is_directory (file)) {
-			return _("folder");
-		}
-		if (nautilus_file_is_executable (file)) {
-			return _("program");
-		}
-
 		return NULL;
+	}
+	
+	mime_type = file->details->info->mime_type;
+
+	g_assert (mime_type != NULL && mime_type[0] != '\0');
+
+	if (g_strcasecmp (mime_type, GNOME_VFS_MIME_TYPE_UNKNOWN) == 0
+		&& nautilus_file_is_executable (file)) {
+		return _("program");
 	}
 
 	description = gnome_vfs_mime_get_description (mime_type);
@@ -3743,7 +3725,7 @@ nautilus_file_get_mime_type (NautilusFile *file)
 			return g_strdup (file->details->info->mime_type);
 		}
 	}
-	return g_strdup ("application/octet-stream");
+	return g_strdup (GNOME_VFS_MIME_TYPE_UNKNOWN);
 }
 
 /**

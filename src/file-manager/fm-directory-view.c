@@ -2230,7 +2230,8 @@ fm_directory_view_create_links_for_files (FMDirectoryView *view, GList *files,
 {
 	GList *uris;
 	CopyMoveDoneData *copy_move_done_data;
-	g_assert (g_list_length (files) == relative_item_points->len);
+	g_assert (relative_item_points->len == 0
+		|| g_list_length (files) == relative_item_points->len);
 	
         g_assert (FM_IS_DIRECTORY_VIEW (view));
         g_assert (files != NULL);

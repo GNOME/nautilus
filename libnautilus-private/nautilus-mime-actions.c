@@ -67,7 +67,7 @@ is_known_mime_type (const char *mime_type)
 		return FALSE;
 	}
 	
-	if (strcasecmp (mime_type, "application/octet-stream") == 0) {
+	if (strcasecmp (mime_type, "GNOME_VFS_MIME_TYPE_UNKNOWN") == 0) {
 		return FALSE;
 	}
 	
