@@ -1,3 +1,13 @@
+2001-04-27  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/news/nautilus-news.c: (go_to_uri):
+	fixed bug 8186, clicking on a title while it's loading crashes
+	the news panel; fixed by checking for NULL.
+	
+	* components/news/news_channels.xml:
+	removed the Dan Gillmor channel since it just moved and I can't
+	find where the rss file is on the new site.
+	
 2001-04-27  John Harper  <jsh@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

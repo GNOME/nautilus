@@ -748,7 +748,9 @@ nautilus_news_set_prelight_index (RSSChannelData *channel_data, int new_prelight
 static void
 go_to_uri (News* news_data, const char* uri)
 {
-	nautilus_view_open_location_in_this_window (news_data->view, uri);
+	if (uri != NULL) {
+		nautilus_view_open_location_in_this_window (news_data->view, uri);
+	}
 }
 
 /* utility routine to toggle the open state of the passed in channel */
