@@ -40,6 +40,10 @@ char *   nautilus_get_desktop_directory_uri          (void);
 char *   nautilus_get_gmc_desktop_directory          (void);
 char *   nautilus_get_pixmap_directory               (void);
 
+/* This function returns something that needs to be freed with g_free,
+ * is not NULL, but is not garaunteed to exist */
+char *   nautilus_get_desktop_directory_uri_no_create (void);
+
 /* A version of gnome's gnome_pixmap_file that works for the nautilus prefix.
  * Otherwise similar to gnome_pixmap_file in that it checks to see if the file
  * exists and returns NULL if it doesn't.

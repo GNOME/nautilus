@@ -90,6 +90,17 @@ nautilus_get_user_directory (void)
 	return user_directory;
 }
 
+static char *
+get_desktop_path (void)
+{
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
+		return g_strdup (g_get_home_dir());
+	} else {
+		return g_build_filename (g_get_home_dir (), DESKTOP_DIRECTORY_NAME, NULL);
+	}
+	
+}
+
 /**
  * nautilus_get_desktop_directory:
  * 
@@ -101,11 +112,11 @@ char *
 nautilus_get_desktop_directory (void)
 {
 	char *desktop_directory;
+	
+	desktop_directory = get_desktop_path ();
 
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
-		desktop_directory = g_strdup (g_get_home_dir());
-	} else {
-		desktop_directory = g_build_filename (g_get_home_dir (), DESKTOP_DIRECTORY_NAME, NULL);
+	/* Don't try to create a home directory */
+	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
 		if (!g_file_test (desktop_directory, G_FILE_TEST_EXISTS)) {
 			mkdir (desktop_directory, DEFAULT_DESKTOP_DIRECTORY_MODE);
 			/* FIXME bugzilla.gnome.org 41286: 
@@ -136,6 +147,19 @@ nautilus_get_desktop_directory_uri (void)
 	char *desktop_uri;
 	
 	desktop_path = nautilus_get_desktop_directory ();
+	desktop_uri = gnome_vfs_get_uri_from_local_path (desktop_path);
+	g_free (desktop_path);
+
+	return desktop_uri;
+}
+
+char *
+nautilus_get_desktop_directory_uri_no_create (void)
+{
+	char *desktop_path;
+	char *desktop_uri;
+	
+	desktop_path = get_desktop_path ();
 	desktop_uri = gnome_vfs_get_uri_from_local_path (desktop_path);
 	g_free (desktop_path);
 

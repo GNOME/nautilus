@@ -44,6 +44,7 @@
 #define EMBLEM_NAME_NOREAD  "emblem-noread"
 #define EMBLEM_NAME_NOWRITE "emblem-nowrite"
 #define EMBLEM_NAME_NOTE    "emblem-note"
+#define EMBLEM_NAME_DESKTOP "emblem-desktop"
 
 GList *
 nautilus_emblem_list_availible (void)
@@ -98,6 +99,9 @@ is_reserved_keyword (const char *keyword)
 	if (eel_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_NOTE) == 0) {
 		return TRUE;
 	}
+	if (eel_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_DESKTOP) == 0) {
+		return TRUE;
+	}
 
 	availible = nautilus_emblem_list_availible ();
 	icon_name = nautilus_emblem_get_icon_name_from_keyword (keyword);
@@ -126,6 +130,9 @@ nautilus_emblem_should_show_in_list (const char *emblem)
 		return FALSE;
 	}
 	if (strcmp (emblem, EMBLEM_NAME_NOTE) == 0) {
+		return FALSE;
+	}
+	if (strcmp (emblem, EMBLEM_NAME_DESKTOP) == 0) {
 		return FALSE;
 	}
 
