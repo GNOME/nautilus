@@ -1,3 +1,29 @@
+2001-01-27  Rebecca Schulman  <rebecka@eazel.com>
+	Fix bugs 4094, 4425, 5201 and 4106 about inappopriate
+	applications being offered to view remote files.
+	This change filters applications that don't support
+	a uri scheme from a file's short list.
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_actions_get_minimum_file_attributes),
+	(nautilus_mime_get_short_list_applications_for_file),
+	(application_supports_uri_scheme):
+	Filter out applications from the short list that do not
+	support the uri scheme for the file in question.
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(nautilus_launch_application):
+	Change "can_open_uris" to "expects_uris" to go along with
+	the gnome vfs change
+	* test/test-nautilus-mime-actions.c: (append_comma_and_scheme),
+	(format_supported_uri_schemes_for_display), (print_application):
+	update the tests similarly to the way the gnome-vfs tests were
+	updated, so that all of the fields of the GnomeVFSMimeApplication
+	structure are correctly printed.
+
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	Correct spelling and naming error in a comment
 2001-01-25  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

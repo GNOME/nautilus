@@ -513,7 +513,7 @@ nautilus_g_list_safe_for_each (GList *list, GFunc function, gpointer user_data)
  * @list: List to partition.
  * @predicate: Function to call on each element.
  * @user_data: Data to pass to function.  
- * @removed: The GList * variable pinted to by this argument will be
+ * @failed: The GList * variable pointed to by this argument will be
  * set to the list of elements for which the predicate returned
  * false. */
 

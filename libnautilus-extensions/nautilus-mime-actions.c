@@ -47,6 +47,8 @@ static gboolean    string_not_in_list                            (const char    
 static char       *mime_type_get_supertype                       (const char               *mime_type);
 static GList      *get_explicit_content_view_iids_from_metafile  (NautilusFile             *file);
 static gboolean    server_has_content_requirements               (OAF_ServerInfo           *server);
+static gboolean   application_supports_uri_scheme                (gpointer                 data,
+								  gpointer                 uri_scheme);
 static GList      *nautilus_do_component_query                   (const char               *mime_type,
 								  const char               *uri_scheme,
 								  GList                    *content_mime_types,
@@ -107,6 +109,7 @@ nautilus_mime_actions_get_minimum_file_attributes (void)
 	GList *attributes;
 
 	attributes = NULL;
+	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
 	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_METADATA);
 	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
 
@@ -333,8 +336,6 @@ nautilus_mime_get_default_component_sort_conditions (NautilusFile *file, char *d
 	return sort_conditions;
 }	
 
-
-
 static OAF_ServerInfo *
 nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 						       gboolean     *user_chosen)
@@ -470,6 +471,7 @@ GList *
 nautilus_mime_get_short_list_applications_for_file (NautilusFile      *file)
 {
 	char *mime_type;
+	char *uri_scheme;
 	GList *result;
 	GList *removed;
 	GList *metadata_application_add_ids;
@@ -482,6 +484,17 @@ nautilus_mime_get_short_list_applications_for_file (NautilusFile      *file)
 		return NULL;
 	}
 
+	mime_type = nautilus_file_get_mime_type (file);
+	result = gnome_vfs_mime_get_short_list_applications (mime_type);
+	g_free (mime_type);
+
+	/* First remove applications that cannot support this location */
+	uri_scheme = nautilus_file_get_uri_scheme (file);
+	g_assert (uri_scheme != NULL);
+	result = nautilus_g_list_partition (result, application_supports_uri_scheme,
+					    uri_scheme, &removed);
+	gnome_vfs_mime_application_list_free (removed);
+
 	CORBA_exception_init (&ev);
 
 	metadata_application_add_ids = nautilus_file_get_metadata_list 
@@ -493,13 +506,10 @@ nautilus_mime_get_short_list_applications_for_file (NautilusFile      *file)
 		 NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_REMOVE,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
 
-	mime_type = nautilus_file_get_mime_type (file);
-	result = gnome_vfs_mime_get_short_list_applications (mime_type);
-	g_free (mime_type);
 
 	result = nautilus_g_list_partition (result, (NautilusPredicateFunction) gnome_vfs_mime_application_has_id_not_in_list, 
 					    metadata_application_remove_ids, &removed);
-
+	
 	gnome_vfs_mime_application_list_free (removed);
 
 	for (p = metadata_application_add_ids; p != NULL; p = p->next) {
@@ -1629,4 +1639,25 @@ strv_concat (char **a,
 	result[j] = NULL;
 
 	return result;
+}
+
+static gboolean
+application_supports_uri_scheme (gpointer data,
+				 gpointer uri_scheme)
+{
+	GnomeVFSMimeApplication *application;
+
+	g_assert (data != NULL);
+	application = (GnomeVFSMimeApplication *) data;
+
+	/* The default supported uri scheme is "file" */
+	if (application->supported_uri_schemes == NULL &&
+	    strcmp (uri_scheme, "file") == 0) {
+		return TRUE;
+	}
+	return (g_list_find_custom (application->supported_uri_schemes,
+				    uri_scheme,
+				    (GCompareFunc) strcmp) != NULL);
+
+	
 }

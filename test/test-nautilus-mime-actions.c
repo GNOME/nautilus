@@ -32,16 +32,46 @@
 
 static gboolean ready = FALSE;
 
+
+static void
+append_comma_and_scheme (gpointer scheme,
+			 gpointer user_data)
+{
+	char **string;
+
+	string = (char **) user_data;
+	if (strlen (*string) > 0) {
+		*string = g_strconcat (*string, ", ", scheme, NULL);
+	}
+	else {
+		*string = g_strdup (scheme);
+	}
+}
+
+
+static char *
+format_supported_uri_schemes_for_display (GList *supported_uri_schemes)
+{
+	char *string;
+
+	string = g_strdup ("");
+	g_list_foreach (supported_uri_schemes,
+			append_comma_and_scheme,
+			&string);
+	return string;
+}
+
 static void
 print_application (GnomeVFSMimeApplication *application)
 {
         if (application == NULL) {
 	        puts ("(none)");
 	} else {
-	        printf ("name: %s\ncommand: %s\ncan_open_multiple_files: %s\ncan_open_uris: %s\nrequires_terminal: %s\n", 
+	        printf ("name: %s\ncommand: %s\ncan_open_multiple_files: %s\nexpects_uris: %s\nsupported_uri_schemes: %s\nrequires_terminal: %s\n", 
 			application->name, application->command, 
 			(application->can_open_multiple_files ? "TRUE" : "FALSE"),
-			(application->can_open_uris ? "TRUE" : "FALSE"),
+			(application->expects_uris ? "TRUE" : "FALSE"),
+			format_supported_uri_schemes_for_display (application->supported_uri_schemes),
 			(application->requires_terminal ? "TRUE" : "FALSE"));
 	}
 }

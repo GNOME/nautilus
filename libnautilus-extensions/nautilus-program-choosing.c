@@ -429,7 +429,7 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 	 * prevents any possible ambiguity for cases where a path
 	 * would looks like a URI.
 	 */
-	if (application->can_open_uris) {
+	if (application->expects_uris) {
 		parameter = g_strdup (uri);
 	} else {
 		parameter = gnome_vfs_get_local_path_from_uri (uri);
