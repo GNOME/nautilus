@@ -1,3 +1,4 @@
+#include <config.h>
 #include <libnautilus/libnautilus.h>
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <gnome.h>

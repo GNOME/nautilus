@@ -1,3 +1,4 @@
+#include <config.h>
 #ifdef ENABLE_SCROLLKEEPER_SUPPORT
 #include "hyperbola-types.h"
 #else
