@@ -130,6 +130,8 @@ struct NautilusMusicViewDetails {
 
 	PlayerState player_state;
 	PlayerState last_player_state;
+
+        guint value_changed_update_handler;
 };
 
 
@@ -230,7 +232,8 @@ static void set_player_state 				      (NautilusMusicView      *music_view,
 
 static void list_reveal_row                                   (GtkTreeView            *view, 
                                                                int                     row_index);
-
+static void slider_changed_callback                           (GtkWidget              *bar, 
+                                                               NautilusMusicView      *music_view);
 
 static void nautilus_music_view_load_uri (NautilusMusicView *view,
                                           const char        *uri);
@@ -528,6 +531,11 @@ nautilus_music_view_destroy (BonoboObject *object)
 		gtk_timeout_remove (music_view->details->status_timeout);
 		music_view->details->status_timeout = 0;
 	}
+
+        if (music_view->details->value_changed_update_handler) {
+                g_source_remove (music_view->details->value_changed_update_handler);
+                music_view->details->value_changed_update_handler = 0;
+        }
 
         detach_file (music_view);
 
@@ -1080,11 +1088,25 @@ update_play_controls_status (NautilusMusicView *music_view, PlayerState state)
 	}
 }
 
+static void
+set_adjustment_value (NautilusMusicView *music_view,
+                      gdouble value)
+{
+        g_signal_handlers_block_by_func (G_OBJECT (music_view->details->playtime_bar),
+                                         slider_changed_callback,
+                                         music_view);
+        gtk_adjustment_set_value (GTK_ADJUSTMENT (music_view->details->playtime_adjustment),
+                                  value);
+        g_signal_handlers_unblock_by_func (G_OBJECT (music_view->details->playtime_bar),
+                                           slider_changed_callback,
+                                           music_view);
+}
+
 /* utility to reset the playtime to the inactive state */
 static void
 reset_playtime (NautilusMusicView *music_view)
 {
-	gtk_adjustment_set_value (GTK_ADJUSTMENT (music_view->details->playtime_adjustment), 0.0);
+        set_adjustment_value (music_view, 0.0);
  	gtk_range_set_adjustment (GTK_RANGE (music_view->details->playtime_bar),
                                   GTK_ADJUSTMENT (music_view->details->playtime_adjustment));	
 	gtk_widget_set_sensitive (music_view->details->playtime_bar, FALSE);	
@@ -1135,7 +1157,7 @@ play_status_display (NautilusMusicView *music_view)
 												
 				percentage = (float) ((float)current_time / (float)music_view->details->current_duration) * 100.0;
 				
-				gtk_adjustment_set_value (GTK_ADJUSTMENT (music_view->details->playtime_adjustment), percentage);
+				set_adjustment_value (music_view, percentage);
 				gtk_range_set_adjustment (GTK_RANGE (music_view->details->playtime_bar),
                                 			  GTK_ADJUSTMENT(music_view->details->playtime_adjustment));	
 
@@ -1417,6 +1439,36 @@ slider_release_callback (GtkWidget *bar, GdkEvent *event, NautilusMusicView *mus
         return FALSE;
 }
 
+static gboolean
+changed_idle_callback (gpointer data)
+{
+        float multiplier;
+        int time;
+        NautilusMusicView *music_view;
+
+        music_view = NAUTILUS_MUSIC_VIEW (data);
+        
+        multiplier = GTK_ADJUSTMENT (music_view->details->playtime_adjustment)->value / 100.0;
+        time = (int) (multiplier * (float)music_view->details->current_duration);
+        mpg123_seek (time / 1000);
+
+        music_view->details->slider_dragging = FALSE;
+        music_view->details->value_changed_update_handler = 0;
+
+        return FALSE;
+}
+
+static void
+slider_changed_callback (GtkWidget *bar, 
+                         NautilusMusicView *music_view)
+{
+        if (!music_view->details->slider_dragging && !music_view->details->value_changed_update_handler) {
+                music_view->details->slider_dragging = TRUE;
+                music_view->details->value_changed_update_handler = 
+                        g_idle_add (changed_idle_callback, music_view);
+        }       
+}
+
 /* create a button with an xpm label */
 static GtkWidget *
 xpm_label_box (NautilusMusicView *music_view, char * xpm_data[])
@@ -1515,6 +1567,8 @@ add_play_controls (NautilusMusicView *music_view)
                                  G_CALLBACK (slider_release_callback), music_view, 0);
  	g_signal_connect_object (music_view->details->playtime_bar, "motion_notify_event",
                                  G_CALLBACK (slider_moved_callback), music_view, 0);
+        g_signal_connect_object (music_view->details->playtime_bar, "value_changed",
+                                 G_CALLBACK (slider_changed_callback), music_view, 0);
    
    	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), music_view->details->playtime_bar,
                               _("Drag to seek within track"), NULL);

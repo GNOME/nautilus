@@ -1,5 +1,17 @@
 2002-09-15  Dave Camp  <dave@ximian.com>
 
+	Fixes bug #88596.
+	
+	* components/music/nautilus-music-view.c:
+	(set_adjustment_value): New function, blocks the value_changed handler.
+	(reset_playtime), (play_status_display): Use set_adjustment_value.
+	(nautilus_music_view_destroy),  (changed_idle_callback),
+	(slider_changed_callback): When the value changes and the slider isn't being dragged,
+	queue a seek in an idle handler.
+	(add_play_controls): Tweak the page size.
+
+2002-09-15  Dave Camp  <dave@ximian.com>
+
 	* src/nautilus-preferences-dialog.c: Provide accessible
 	descriptions for the speed tradeoff items.
 
