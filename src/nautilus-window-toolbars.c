@@ -123,8 +123,8 @@ get_forward_button (NautilusWindow *window)
 
 static int
 back_or_forward_button_pressed_callback (GtkWidget *widget, 
-				   GdkEventButton *event, 
-				   gpointer *user_data)
+					 GdkEventButton *event, 
+					 gpointer *user_data)
 {
 	NautilusWindow *window;
 	gboolean back;

@@ -77,6 +77,8 @@ static void impl_Nautilus_ViewFrame_report_load_failed                   (Portab
 static void impl_Nautilus_ViewFrame_set_title                            (PortableServer_Servant  servant,
 									  const CORBA_char       *title,
 									  CORBA_Environment      *ev);
+static void impl_Nautilus_ViewFrame_go_back                              (PortableServer_Servant  servant,
+									  CORBA_Environment      *ev);
 
 POA_Nautilus_ViewFrame__epv impl_Nautilus_ViewFrame_epv =
 {
@@ -92,6 +94,7 @@ POA_Nautilus_ViewFrame__epv impl_Nautilus_ViewFrame_epv =
 	&impl_Nautilus_ViewFrame_report_load_complete,
 	&impl_Nautilus_ViewFrame_report_load_failed,
 	&impl_Nautilus_ViewFrame_set_title,
+	&impl_Nautilus_ViewFrame_go_back,
 };
 
 static PortableServer_ServantBase__epv base_epv;
@@ -255,6 +258,13 @@ set_title (NautilusViewFrame *view,
 }
 
 static void
+go_back (NautilusViewFrame *view,
+	 gpointer callback_data)
+{
+	nautilus_view_frame_go_back (view);
+}
+
+static void
 impl_Nautilus_ViewFrame_open_location_in_this_window (PortableServer_Servant servant,
 						      Nautilus_URI location,
 						      CORBA_Environment *ev)
@@ -401,4 +411,12 @@ impl_Nautilus_ViewFrame_set_title (PortableServer_Servant servant,
 		 set_title,
 		 g_strdup (title),
 		 g_free);
+}
+
+static void
+impl_Nautilus_ViewFrame_go_back (PortableServer_Servant servant,
+				 CORBA_Environment *ev)
+{
+	nautilus_view_frame_queue_incoming_call
+		(servant, go_back, NULL, NULL);
 }

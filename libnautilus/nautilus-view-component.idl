@@ -139,6 +139,16 @@ module Nautilus {
 
 		/* Called by a view component to change the title. */
 		oneway void set_title (in string new_title);
+
+		/* Called when a view component wants to make the
+		 * window it's in "go back". At some point we may add a more
+		 * complete set of operations. This one is very useful for
+		 * components that do something and then return.
+		 * If there's nowhere to go back to, it goes home, which
+		 * is not quite the same as the "back" button in the UI,
+		 * which does nothing if there's nowhere to go.
+		 */
+		oneway void go_back ();
 	};
 
 };

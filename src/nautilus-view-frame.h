@@ -87,6 +87,7 @@ typedef struct {
         void               (* zoom_level_changed)                   (NautilusViewFrame *view);
         void               (* zoom_parameters_changed)              (NautilusViewFrame *view);
 	Nautilus_History * (* get_history_list)                     (NautilusViewFrame *view);
+        void               (* go_back)                              (NautilusViewFrame *view);
 } NautilusViewFrameClass;
 
 /* basic view management */

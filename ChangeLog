@@ -1,3 +1,27 @@
+2001-02-16  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fixed bug 6477 (no way for intall view to send user "back where
+	they came from") by adding a "go back" command for views.
+	
+	* libnautilus/nautilus-view-component.idl: Add "go back".
+	* libnautilus/nautilus-view.h:
+	* libnautilus/nautilus-view.c: (nautilus_view_go_back): Add "go
+	back".
+	* src/nautilus-view-frame-private.h:
+	* src/nautilus-view-frame-corba.c: (go_back),
+	(impl_Nautilus_ViewFrame_go_back): Add "go back".
+	* src/nautilus-view-frame.h:
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_initialize_class),
+	(nautilus_view_frame_go_back): Add "go back".
+	* src/nautilus-window-manage-views.c: (go_back_callback): Add code
+	to either go back or go home.
+	
+	* src/nautilus-window-toolbars.c:
+	(back_or_forward_button_pressed_callback): Formatting tweak.
+
 2001-02-16  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Mike Engber <engber@eazel.com>

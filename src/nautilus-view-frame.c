@@ -57,6 +57,7 @@ enum {
 	CHANGE_STATUS,
 	FAILED,
 	GET_HISTORY_LIST,
+	GO_BACK,
 	LOAD_COMPLETE,
 	LOAD_PROGRESS_CHANGED,
 	LOAD_UNDERWAY,
@@ -185,6 +186,14 @@ nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
 				    get_history_list),
 		 nautilus_gtk_marshal_POINTER__NONE,
 		 GTK_TYPE_POINTER, 0);
+	signals[GO_BACK] = gtk_signal_new
+		("go_back",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
+				    go_back),
+		 gtk_marshal_NONE__NONE,
+		 GTK_TYPE_NONE, 0);
 	signals[LOAD_COMPLETE] = gtk_signal_new
 		("load_complete",
 		 GTK_RUN_LAST,
@@ -1171,6 +1180,14 @@ nautilus_view_frame_report_load_failed (NautilusViewFrame *view)
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
 	view_frame_failed (view);
+}
+
+void
+nautilus_view_frame_go_back (NautilusViewFrame *view)
+{
+	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
+	gtk_signal_emit (GTK_OBJECT (view), signals[GO_BACK]);
 }
 
 void

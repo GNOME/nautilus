@@ -646,6 +646,19 @@ nautilus_view_set_title (NautilusView *view,
 	view_frame_call_end (view_frame, &ev);
 }
 
+void
+nautilus_view_go_back (NautilusView *view)
+{
+	CORBA_Environment ev;
+	Nautilus_ViewFrame view_frame;
+	
+	view_frame = view_frame_call_begin (view, &ev);
+	if (view_frame != CORBA_OBJECT_NIL) {
+		Nautilus_ViewFrame_go_back (view_frame, &ev);
+	}
+	view_frame_call_end (view_frame, &ev);
+}
+
 BonoboControl *
 nautilus_view_get_bonobo_control (NautilusView *view)
 {
