@@ -1727,7 +1727,10 @@ metafile_read_check_for_directory (NautilusMetafile *metafile)
 	 * which in turn only happens if the URI is one that gnome-vfs
 	 * can handle.
 	 */
-	g_assert (metafile->details->directory_vfs_uri != NULL);
+	if (metafile->details->directory_vfs_uri == NULL) {
+		metafile_read_done (metafile);
+		return;
+	}
 
 	/* We have to do a get_info call to check if this a directory. */
 	fake_list.data = metafile->details->directory_vfs_uri;

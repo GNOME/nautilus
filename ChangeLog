@@ -1,3 +1,9 @@
+2002-04-05  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-metafile.c:
+	(metafile_read_check_for_directory): fix bug 77520 by replacing assert
+	with conditional call to metafile_read_done.
+
 2002-04-01  Havoc Pennington  <hp@redhat.com>
 
 	* libnautilus-private/nautilus-thumbnails.c: backport fix to use 
