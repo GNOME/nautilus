@@ -26,19 +26,21 @@
 #include "nautilus-global-preferences.h"
 
 #include "nautilus-file-utilities.h"
+#include "nautilus-font-manager.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-extensions.h"
+#include "nautilus-medusa-support.h"
 #include "nautilus-preferences-dialog.h"
 #include "nautilus-preferences-group.h"
 #include "nautilus-preferences-item.h"
+#include "nautilus-scalable-font.h"
 #include "nautilus-string.h"
-#include "nautilus-medusa-support.h"
 #include "nautilus-view-identifier.h"
-#include "nautilus-font-manager.h"
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 #include <gtk/gtkbox.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-util.h>
 #include <liboaf/liboaf.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
@@ -1106,19 +1108,19 @@ global_preferences_install_home_location_defaults (void)
 static void
 global_preferences_install_font_defaults (void)
 {
-	char *fallback_smooth_font;
+	char *default_smooth_font;
 
 	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
 						 NAUTILUS_USER_LEVEL_NOVICE,
 						 _("helvetica"));
 
 	/* The default smooth font */
-	fallback_smooth_font = nautilus_font_manager_get_fallback_font ();
+	default_smooth_font = nautilus_font_manager_get_default_font ();
 	
 	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT,
 						 NAUTILUS_USER_LEVEL_NOVICE,
-						 fallback_smooth_font);
-	g_free (fallback_smooth_font);
+						 default_smooth_font);
+	g_free (default_smooth_font);
 }
 
 static void
@@ -1207,6 +1209,25 @@ nautilus_global_preferences_set_dialog_title (const char *title)
 	dialog = global_preferences_get_dialog ();
 
 	gtk_window_set_title (GTK_WINDOW (dialog), title);
+}
+
+NautilusScalableFont *
+nautilus_global_preferences_get_smooth_font (void)
+{
+	NautilusScalableFont *scalable_font;
+	char *font_file_name;
+
+	font_file_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT);
+	
+	scalable_font = 
+		(font_file_name && g_file_exists (font_file_name)) ?
+		nautilus_scalable_font_new (font_file_name) :
+		nautilus_scalable_font_get_default_font ();
+	g_free (font_file_name);
+	
+	g_assert (NAUTILUS_IS_SCALABLE_FONT (scalable_font));
+
+	return scalable_font;
 }
 
 void

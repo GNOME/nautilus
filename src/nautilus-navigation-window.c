@@ -1073,7 +1073,7 @@ create_view_as_menu_item (NautilusWindow *window, NautilusViewIdentifier *identi
 	GtkWidget *menu_item;
         char *menu_label;
 
-	menu_label = g_strdup (identifier->view_as_label);
+	menu_label = g_strdup (_(identifier->view_as_label));
 	menu_item = gtk_menu_item_new_with_label (menu_label);
 	g_free (menu_label);
 

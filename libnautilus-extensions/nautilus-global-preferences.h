@@ -136,13 +136,14 @@ typedef enum
 /* Gnome session management */
 #define NAUTILUS_PREFERENCES_ADD_TO_SESSION		"preferences/add_to_session"
 
-void   nautilus_global_preferences_initialize                                 (void);
-void   nautilus_global_preferences_show_dialog                                (void);
-void   nautilus_global_preferences_hide_dialog                                (void);
-void   nautilus_global_preferences_set_dialog_title                           (const char *title);
+void                         nautilus_global_preferences_initialize                                 (void);
+void                         nautilus_global_preferences_show_dialog                                (void);
+void                         nautilus_global_preferences_hide_dialog                                (void);
+void                         nautilus_global_preferences_set_dialog_title                           (const char *title);
 
 /* Sidebar */
-GList *nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers (void);
+GList *                      nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers (void);
+struct NautilusScalableFont *nautilus_global_preferences_get_smooth_font                            (void);
 
 END_GNOME_DECLS
 

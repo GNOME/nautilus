@@ -36,7 +36,7 @@ typedef struct
 	GList *style_list;
 } Entry;
 
-static void
+static gboolean
 font_iterator_callback (const char *font_file_name,
 			NautilusFontType font_type,
 			const char *foundry,
@@ -54,15 +54,15 @@ font_iterator_callback (const char *font_file_name,
 
 	GHashTable *font_table;
 
-	g_return_if_fail (font_file_name != NULL);
-	g_return_if_fail (foundry != NULL);
-	g_return_if_fail (family != NULL);
-	g_return_if_fail (weight != NULL);
-	g_return_if_fail (slant != NULL);
-	g_return_if_fail (set_width != NULL);
-	g_return_if_fail (char_set_registry != NULL);
-	g_return_if_fail (char_set_encoding != NULL);
-	g_return_if_fail (callback_data != NULL);
+	g_return_val_if_fail (font_file_name != NULL, FALSE);
+	g_return_val_if_fail (foundry != NULL, FALSE);
+	g_return_val_if_fail (family != NULL, FALSE);
+	g_return_val_if_fail (weight != NULL, FALSE);
+	g_return_val_if_fail (slant != NULL, FALSE);
+	g_return_val_if_fail (set_width != NULL, FALSE);
+	g_return_val_if_fail (char_set_registry != NULL, FALSE);
+	g_return_val_if_fail (char_set_encoding != NULL, FALSE);
+	g_return_val_if_fail (callback_data != NULL, FALSE);
 
 	font_table = callback_data;
 
@@ -100,6 +100,8 @@ font_iterator_callback (const char *font_file_name,
 			 char_set_registry,
 			 char_set_encoding);
 	}
+
+	return TRUE;
 }
 
 static void

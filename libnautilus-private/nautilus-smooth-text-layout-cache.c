@@ -288,7 +288,7 @@ cache_trim (NautilusSmoothTextLayoutCache *cache)
  * @cache: The layout cache being queried
  * @text: The string to be rendered
  * @text_length: The number of bytes to draw
- * @font: The desired smooth font family.
+ * @font: The desired smooth font.
  * @font_size: The pixel size of the font
  * @wrap:
  * @line_spacing:
@@ -445,11 +445,6 @@ nautilus_smooth_text_layout_cache_destroy (GtkObject *object)
 #include <stdlib.h>
 #include <stdio.h>
 
-/* Have to disable the tests by default for now - NautilusScalableFont
- * can't handle loading fonts before `make install' has happened :-(
- */
-#ifdef FIXED_LOADING_FONTS_BEFORE_MAKE_INSTALL
-
 static NautilusSmoothTextLayoutCache *test_cache;
 static NautilusScalableFont *test_font;
 
@@ -567,7 +562,6 @@ struct test_case {
 #define MIN_LINES 1
 #define MAX_LINES 10
 
-#define FONT_FAMILY "helvetica"
 #define MIN_FONT_SIZE 8
 #define MAX_FONT_SIZE 48
 
@@ -730,7 +724,7 @@ nautilus_self_check_smooth_text_layout_cache (void)
 	int i, index;
 
 	test_cache = nautilus_smooth_text_layout_cache_new ();
-	test_font = nautilus_scalable_font_new (FONT_FAMILY, NULL, NULL, NULL);
+	test_font = nautilus_scalable_font_get_default_font ();
 
 	/* initialize the random number generator to a known state */
 	srandom (1);
@@ -764,12 +758,4 @@ nautilus_self_check_smooth_text_layout_cache (void)
 	gtk_object_destroy (GTK_OBJECT (test_cache));
 }
 
-#else /* FIXED_LOADING_FONTS_BEFORE_MAKE_INSTALL */
-
-void
-nautilus_self_check_smooth_text_layout_cache (void)
-{
-}
-
-#endif /* FIXED_LOADING_FONTS_BEFORE_MAKE_INSTALL */
 #endif /* NAUTILUS_OMIT_SELF_CHECK */

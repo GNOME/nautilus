@@ -36,6 +36,7 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtkpixmap.h>
 #include <gtk/gtksignal.h>
+#include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libnautilus-extensions/nautilus-background.h>
@@ -453,7 +454,7 @@ update_font (NautilusSidebarTitle *sidebar_title)
 	/* FIXME bugzilla.eazel.com 1103: Hard coded font family. */
 	
 	/* Update the regular font */
-	template_font = nautilus_font_factory_get_font_by_family ("helvetica", maximum_acceptable_font_size);
+	template_font = nautilus_font_factory_get_font_by_family (_("helvetica"), maximum_acceptable_font_size);
 	g_assert (template_font != NULL);
 
 	bold_template_font = nautilus_gdk_font_get_bold (template_font);

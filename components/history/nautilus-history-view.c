@@ -30,6 +30,7 @@
 #include <bonobo/bonobo-ui-util.h>
 #include <gtk/gtkclist.h>
 #include <gtk/gtkscrolledwindow.h>
+#include <gnome.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
@@ -293,6 +294,12 @@ nautilus_history_view_destroy (GtkObject *object)
 int
 main (int argc, char *argv[])
 {
+/* Initialize gettext support */
+#ifdef ENABLE_NLS
+	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+	textdomain (PACKAGE);
+#endif
+
 	return nautilus_view_standard_main ("nautilus_history-view", VERSION,
 					    argc, argv,
 					    "OAFIID:nautilus_history_view_factory:912d6634-d18f-40b6-bb83-bdfe16f1d15e",

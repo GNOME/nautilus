@@ -507,12 +507,12 @@ handle_service_menu_item (BonoboUIComponent *ui, gpointer user_data, const char 
 static void
 nautilus_text_view_set_font (NautilusTextView *text_view, const char *font_family)
 {
-	if (nautilus_strcmp (text_view->details->font_name, font_family) == 0) {
+	if (nautilus_strcmp (text_view->details->font_name, _(font_family)) == 0) {
 		return;
 	}
 
 	g_free (text_view->details->font_name);
-	text_view->details->font_name = g_strdup (font_family);
+	text_view->details->font_name = g_strdup (_(font_family));
 	
 	nautilus_text_view_update_font (text_view);				
 }

@@ -351,7 +351,7 @@ nautilus_about_draw_info (NautilusAbout	*about,
 	
 	/* draw the name and version */
 	display_str = g_strdup_printf ("%s %s", title, version);
-	draw_aa_string (bold_font, pixbuf, 24, 12, 10, white, black, display_str, 1);
+	draw_aa_string (bold_font, pixbuf, 24, 12, 5, white, black, display_str, 1);
 	g_free (display_str);
 	
 	/* draw the copyright notice */

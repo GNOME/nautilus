@@ -47,6 +47,7 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtklayout.h>
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
+#include <libgnome/gnome-i18n.h>
 #include <libnautilus/nautilus-clipboard.h>
 #include <math.h>
 #include <stdio.h>
@@ -3315,13 +3316,14 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
  	/* font table - this isn't exactly proportional, but it looks better than computed */
 	/* FIXME bugzilla.eazel.com 5093: Font name is hard-coded here. */
 	/* FIXME bugzilla.eazel.com 5101: Font size is hard-coded here. */
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = nautilus_font_factory_get_font_by_family ("helvetica", 8);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = nautilus_font_factory_get_font_by_family ("helvetica", 8);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALL] = nautilus_font_factory_get_font_by_family ("helvetica", 10);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_STANDARD] = nautilus_font_factory_get_font_by_family ("helvetica", 12);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGE] = nautilus_font_factory_get_font_by_family ("helvetica", 14);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = nautilus_font_factory_get_font_by_family ("helvetica", 18);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = nautilus_font_factory_get_font_by_family ("helvetica", 18);
+	/* FIXME bugzilla.eazel.com xxxx: Fonts marked for localization in disparate places. */
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = nautilus_font_factory_get_font_by_family (_("helvetica"), 8);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = nautilus_font_factory_get_font_by_family (_("helvetica"), 8);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALL] = nautilus_font_factory_get_font_by_family (_("helvetica"), 10);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_STANDARD] = nautilus_font_factory_get_font_by_family (_("helvetica"), 12);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGE] = nautilus_font_factory_get_font_by_family (_("helvetica"), 14);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = nautilus_font_factory_get_font_by_family (_("helvetica"), 18);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = nautilus_font_factory_get_font_by_family (_("helvetica"), 18);
 
         details->smooth_label_font = nautilus_scalable_font_get_default_font ();
 

@@ -840,7 +840,7 @@ nautilus_sidebar_add_panel (NautilusSidebar *sidebar, NautilusViewFrame *panel)
 
 	/* tell the index tabs about it */
 	nautilus_sidebar_tabs_add_view (sidebar->details->sidebar_tabs,
-				      description, GTK_WIDGET (panel), page_num);
+					_(description), GTK_WIDGET (panel), page_num);
 	
 	g_free (description);
 
@@ -867,7 +867,7 @@ nautilus_sidebar_remove_panel (NautilusSidebar *sidebar,
 	}
 	
 	/* Remove the tab associated with this panel */
-	nautilus_sidebar_tabs_remove_view (sidebar->details->sidebar_tabs, description);
+	nautilus_sidebar_tabs_remove_view (sidebar->details->sidebar_tabs, _(description));
 	if (page_num <= sidebar->details->selected_index) {
 		sidebar->details->selected_index -= 1;
 	}

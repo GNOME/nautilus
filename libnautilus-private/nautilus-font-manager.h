@@ -39,20 +39,25 @@ typedef enum {
 /*
  * A callback which can be invoked for each font available in the system.
  */
-typedef void (*NautilusFontManagerCallback) (const char *font_file_name,
-					     NautilusFontType font_type,
-					     const char *foundry,
-					     const char *family,
-					     const char *weight,
-					     const char *slant,
-					     const char *set_width,
-					     const char *char_set_registry,
-					     const char *char_set_encoding,
-					     gpointer callback_data);
+typedef gboolean (*NautilusFontManagerCallback) (const char *font_file_name,
+						 NautilusFontType font_type,
+						 const char *foundry,
+						 const char *family,
+						 const char *weight,
+						 const char *slant,
+						 const char *set_width,
+						 const char *char_set_registry,
+						 const char *char_set_encoding,
+						 gpointer callback_data);
 
-void  nautilus_font_manager_for_each_font     (NautilusFontManagerCallback callback,
-					       gpointer                    callback_data);
-char *nautilus_font_manager_get_fallback_font (void);
+void     nautilus_font_manager_for_each_font         (NautilusFontManagerCallback  callback,
+						      gpointer                     callback_data);
+char *   nautilus_font_manager_get_default_font      (void);
+char *   nautilus_font_manager_get_default_bold_font (void);
+gboolean nautilus_font_manager_file_is_scalable_font (const char                  *file_name);
+char *   nautilus_font_manager_get_bold              (const char                  *plain_font);
+char *   nautilus_font_manager_get_italic            (const char                  *plain_font);
+gboolean nautilus_font_manager_weight_is_bold        (const char                  *weight);
 
 END_GNOME_DECLS
 

@@ -32,6 +32,8 @@
 #include "nautilus-string.h"
 #include "nautilus-font-manager.h"
 
+#include <libgnome/gnome-i18n.h>
+
 #include <gtk/gtklabel.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtksignal.h>
@@ -43,26 +45,82 @@
 typedef struct {
 	char *name;
 	char *font_file_name;
-} FontStyle;
+} FontStyleEntry;
 
 typedef struct {
-	char *title;
-	char *foundry;
-	char *family;
 	char *name;
+	char *family;
+	char *name_for_display;
 	GList *style_list;
 } FontEntry;
 
-static const char *black_listed_fonts[] = {
-	"microsoft Webdings",
-	"microsoft Wingdings",
-	"monotype OCR",
-	"URW Zapf Dingbats",
-	"URW Symbol",
-	"xfree86 cursor"
+/* These font families are black listed, because they 
+ * arent useful at all to display "normal" text - at 
+ * least in the context of Nautilus.
+ */
+static const char *black_listed_font_families[] = {
+	"Webdings",
+	"Wingdings",
+	"OCR",
+	"Zapf Dingbats",
+	"Symbol",
+	"cursor",
+
+	"mincho",
+	"gothic"
+};
+
+static const char *black_listed_font_foundries[] = {
+ 	"greek",
+ 	"grinet",
+	/* Abisource fonts are black listed because they
+	 * appear to simply be copies of the URW fonts,
+	 * and listing them would waste valuable font picker
+	 * space for no purpose.
+	 */
+	"Abisource"
+};
+
+typedef struct
+{
+	const char *name;
+	const char *mapped;
+} StyleMap;
+
+static const char *normal_style = N_("Normal");
+static const char *unknown_style = N_("Unknown");
+
+static const StyleMap font_weight_map[] = {
+       	{ "",	      NULL },
+       	{ "medium",   NULL },
+	{ "regular",  NULL },
+	{ "bold",     N_("Bold") },
+	{ "book",     N_("Book") },
+	{ "black",    N_("Black") },
+	{ "demibold", N_("Demibold") },
+	{ "light",    N_("Light") }
+};
+
+static const StyleMap font_slant_map[] = {
+       	{ "",	      NULL },
+	{ "r",	      NULL },
+	{ "i",	      N_("Italic"), },
+	{ "o",	      N_("Oblique"), },
+	{ "ri",	      N_("Reverse Italic"), },
+	{ "ro",	      N_("Reverse Oblique"), },
+	{ "ot",	      N_("Other"), }
+};
+
+static const StyleMap font_set_width_map[] = {
+       	{ "",                 NULL },
+	{ "normal",	      NULL },
+	{ "condensed",	      N_("Condensed"), },
+	{ "semicondensed",    N_("Semicondensed"), }
 };
 
 static const gint FONT_PICKER_SPACING = 10;
+
+static GList *global_font_list = NULL;
 
 /* Signals */
 typedef enum
@@ -75,35 +133,37 @@ struct NautilusFontPickerDetails
 {
 	NautilusStringPicker *font_name_picker;
 	NautilusStringPicker *style_picker;
-	GList *font_entry_list;
 	GtkWidget *title_label;
 };
 
 /* GtkObjectClass methods */
-static void nautilus_font_picker_initialize_class (NautilusFontPickerClass *font_picker_class);
-static void nautilus_font_picker_initialize       (NautilusFontPicker      *font_picker);
-static void nautilus_font_picker_destroy          (GtkObject               *object);
-static void font_picker_update                    (NautilusFontPicker      *font_picker);
+static void         nautilus_font_picker_initialize_class (NautilusFontPickerClass *font_picker_class);
+static void         nautilus_font_picker_initialize       (NautilusFontPicker      *font_picker);
+static void         nautilus_font_picker_destroy          (GtkObject               *object);
+
+/* Private methods */
+static void         font_picker_update_styles             (NautilusFontPicker      *font_picker);
+static void         font_picker_populate                  (NautilusFontPicker      *font_picker);
 
 /* Callbacks */
-static void font_name_picker_changed_callback     (GtkWidget               *string_picker,
-						   gpointer                 callback_data);
-static void style_picker_changed_callback         (GtkWidget               *string_picker,
-						   gpointer                 callback_data);
-static void font_manager_callback                 (const char              *font_file_name,
-						   NautilusFontType         font_type,
-						   const char              *foundry,
-						   const char              *family,
-						   const char              *weight,
-						   const char              *slant,
-						   const char              *set_width,
-						   const char              *char_set_registry,
-						   const char              *char_set_encoding,
-						   gpointer                 callback_data);
-static void font_entry_list_for_each_callback     (gpointer                 data,
-						   gpointer                 callback_data);
-static void style_list_for_each_callback          (gpointer                 data,
-						   gpointer                 callback_data);
+static void         font_picker_font_changed_callback     (GtkWidget               *string_picker,
+							   gpointer                 callback_data);
+static void         font_picker_style_changed_callback    (GtkWidget               *string_picker,
+							   gpointer                 callback_data);
+
+/* Global font list */
+static const GList *global_font_list_get                  (void);
+static void         global_font_list_free                 (void);
+static gboolean     global_font_list_populate_callback    (const char              *font_file_name,
+							   NautilusFontType         font_type,
+							   const char              *foundry,
+							   const char              *family,
+							   const char              *weight,
+							   const char              *slant,
+							   const char              *set_width,
+							   const char              *char_set_registry,
+							   const char              *char_set_encoding,
+							   gpointer                 callback_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusFontPicker, nautilus_font_picker, GTK_TYPE_VBOX)
 
@@ -163,12 +223,12 @@ nautilus_font_picker_initialize (NautilusFontPicker *font_picker)
 
 	gtk_signal_connect (GTK_OBJECT (font_picker->details->font_name_picker),
 			    "changed",
-			    GTK_SIGNAL_FUNC (font_name_picker_changed_callback),
+			    GTK_SIGNAL_FUNC (font_picker_font_changed_callback),
 			    font_picker);
 
 	gtk_signal_connect (GTK_OBJECT (font_picker->details->style_picker),
 			    "changed",
-			    GTK_SIGNAL_FUNC (style_picker_changed_callback),
+			    GTK_SIGNAL_FUNC (font_picker_style_changed_callback),
 			    font_picker);
 
 	gtk_widget_show (GTK_WIDGET (font_picker->details->font_name_picker));
@@ -176,14 +236,7 @@ nautilus_font_picker_initialize (NautilusFontPicker *font_picker)
 	gtk_widget_show (font_picker->details->title_label);
 	gtk_widget_show (hbox);
 
-	/* Populate the font table */
-	nautilus_font_manager_for_each_font (font_manager_callback, font_picker);
-
-	/* Populate the font name (foundry+family) picker */
-	g_list_foreach (font_picker->details->font_entry_list, font_entry_list_for_each_callback, font_picker);
-
-	/* Update the font picker */
-	font_picker_update (font_picker);;
+	font_picker_populate (font_picker);
 }
 
 /* GtkObjectClass methods */
@@ -203,45 +256,95 @@ nautilus_font_picker_destroy (GtkObject* object)
 }
 
 static FontEntry *
-font_entry_list_find (GList *font_entry_list,
-		      const char *font_name)
+font_list_find (const GList *font_list,
+		const char *font_name)
 {
-	while (font_entry_list != NULL) {
-		FontEntry *entry;
-		g_assert (font_entry_list->data != NULL);
-		entry = font_entry_list->data;
+	const GList *node;
+	FontEntry *entry;
+
+	/* First check the foundry qualified font names */
+	for (node = font_list; node != NULL; node = node->next) {
+		g_assert (node->data != NULL);
+		entry = node->data;
+
 		if (nautilus_istr_is_equal (font_name, entry->name)) {
 			return entry;
 		}
-		
-		font_entry_list = font_entry_list->next;
 	}
-	
+
+	/* First check the foundry qualified font names */
+	for (node = font_list; node != NULL; node = node->next) {
+		g_assert (node->data != NULL);
+		entry = node->data;
+
+		if (nautilus_istr_is_equal (font_name, entry->family)) {
+			return entry;
+		}
+	}
+
 	return NULL;
 }
 
 static void
-font_picker_update (NautilusFontPicker *font_picker)
+font_picker_update_styles (NautilusFontPicker *font_picker)
 {
+	const GList *font_list;
 	char *selected_font;
-	const FontEntry *entry;
-
+	const FontEntry *font_entry;
+	const FontStyleEntry *style_entry;
+	const GList *node;
+	
 	g_return_if_fail (NAUTILUS_IS_FONT_PICKER (font_picker));
 	
 	selected_font = nautilus_string_picker_get_selected_string (font_picker->details->font_name_picker);
 
-	entry = font_entry_list_find (font_picker->details->font_entry_list, selected_font);
-	g_return_if_fail (entry != NULL);
+	font_list = global_font_list_get ();
+	g_assert (font_list != NULL);
+
+	font_entry = font_list_find (font_list, selected_font);
+	g_return_if_fail (font_entry != NULL);
 
 	nautilus_string_picker_clear (font_picker->details->style_picker);
-		
-	g_list_foreach (entry->style_list, style_list_for_each_callback, font_picker);
-		
+
+	for (node = font_entry->style_list; node != NULL; node = node->next) {
+		g_assert (node->data != NULL);
+		style_entry = node->data;
+		nautilus_string_picker_insert_string (font_picker->details->style_picker,
+						      style_entry->name);
+	}
+	
 	g_free (selected_font);
 }
 
 static void
-font_name_picker_changed_callback (GtkWidget *string_picker,
+font_picker_populate (NautilusFontPicker *font_picker)
+{
+ 	const GList *font_list;
+ 	const GList *node;
+	const FontEntry *font_entry;
+
+	g_return_if_fail (NAUTILUS_IS_FONT_PICKER (font_picker));
+
+	font_list = global_font_list_get ();
+	g_assert (font_list != NULL);
+
+	nautilus_string_picker_clear (font_picker->details->font_name_picker);
+
+	for (node = font_list; node != NULL; node = node->next) {
+		g_assert (node->data != NULL);
+		font_entry = node->data;
+
+		nautilus_string_picker_insert_string (font_picker->details->font_name_picker,
+						      font_entry->name_for_display);
+	}
+	
+	/* Update the styles picker */
+	font_picker_update_styles (font_picker);;
+}
+
+/* Callbacks */
+static void
+font_picker_font_changed_callback (GtkWidget *string_picker,
 				   gpointer callback_data)
 {
 	NautilusFontPicker *font_picker;
@@ -251,16 +354,16 @@ font_name_picker_changed_callback (GtkWidget *string_picker,
 
 	font_picker = NAUTILUS_FONT_PICKER (callback_data);
 
-	font_picker_update (font_picker);
+	font_picker_update_styles (font_picker);
 
 	gtk_signal_emit (GTK_OBJECT (font_picker), font_picker_signals[CHANGED]);
 }
 
 static void
-style_picker_changed_callback (GtkWidget *string_picker, gpointer callback_data)
+font_picker_style_changed_callback (GtkWidget *string_picker, gpointer callback_data)
 {
-	NautilusFontPicker	*font_picker;
-
+	NautilusFontPicker *font_picker;
+	
 	g_return_if_fail (NAUTILUS_IS_FONT_PICKER (callback_data));
 	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
 
@@ -269,21 +372,43 @@ style_picker_changed_callback (GtkWidget *string_picker, gpointer callback_data)
 	gtk_signal_emit (GTK_OBJECT (font_picker), font_picker_signals[CHANGED]);
 }
 
-static gboolean
-ignore_font (const char *font_file_name,
-	     const char *foundry,
-	     const char *family,
-	     const char *entry_name) 
+static const char *
+font_find_style (const StyleMap *style_map,
+		 guint num_styles,
+		 const char *style)
 {
 	guint i;
 
-	g_return_val_if_fail (font_file_name != NULL, TRUE);
+	g_return_val_if_fail (style_map != NULL, NULL);
+	g_return_val_if_fail (num_styles > 0, NULL);
+	g_return_val_if_fail (style != NULL, NULL);
+
+	for (i = 0; i < num_styles; i++) {
+		if (nautilus_istr_is_equal (style, style_map[i].name)) {
+			return _(style_map[i].mapped);
+		}
+	}
+
+	return NULL;
+}
+
+static gboolean
+ignore_font (const char *foundry,
+	     const char *family) 
+{
+	guint i;
+
 	g_return_val_if_fail (foundry != NULL, TRUE);
 	g_return_val_if_fail (family != NULL, TRUE);
-	g_return_val_if_fail (entry_name != NULL, TRUE);
 
-	for (i = 0; i < NAUTILUS_N_ELEMENTS (black_listed_fonts); i++) {
-		if (nautilus_istr_is_equal (entry_name, black_listed_fonts[i])) {
+	for (i = 0; i < NAUTILUS_N_ELEMENTS (black_listed_font_families); i++) {
+		if (nautilus_istr_is_equal (family, black_listed_font_families[i])) {
+			return TRUE;
+		}
+	}
+
+	for (i = 0; i < NAUTILUS_N_ELEMENTS (black_listed_font_foundries); i++) {
+		if (nautilus_istr_is_equal (foundry, black_listed_font_foundries[i])) {
 			return TRUE;
 		}
 	}
@@ -291,92 +416,215 @@ ignore_font (const char *font_file_name,
 	return FALSE;
 }
 
-static void
-font_manager_callback (const char *font_file_name,
-		       NautilusFontType font_type,
-		       const char *foundry,
-		       const char *family,
-		       const char *weight,
-		       const char *slant,
-		       const char *set_width,
-		       const char *char_set_registry,
-		       const char *char_set_encoding,
-		       gpointer callback_data)
+static char *
+font_make_name (const char *foundry,
+		const char *family)
 {
-	NautilusFontPicker *font_picker;
-	char *entry_name;
-	FontEntry *entry;
-	FontStyle *style;
+	g_return_val_if_fail (foundry != NULL, NULL);
+	g_return_val_if_fail (family != NULL, NULL);
+	
+	return g_strdup_printf ("%s %s", foundry, family);
+}
 
-	g_return_if_fail (font_file_name != NULL);
-	g_return_if_fail (foundry != NULL);
-	g_return_if_fail (family != NULL);
-	g_return_if_fail (weight != NULL);
-	g_return_if_fail (slant != NULL);
-	g_return_if_fail (set_width != NULL);
-	g_return_if_fail (char_set_registry != NULL);
-	g_return_if_fail (char_set_encoding != NULL);
-	g_return_if_fail (NAUTILUS_IS_FONT_PICKER (callback_data));
+static char *
+font_make_style (const char *weight,
+		 const char *slant,
+		 const char *set_width,
+		 const char *char_set_registry,
+		 const char *char_set_encoding)
+{
+	const char *mapped_weight;
+	const char *mapped_slant;
+	const char *mapped_set_width;
 
-	font_picker = NAUTILUS_FONT_PICKER (callback_data);
+	g_return_val_if_fail (weight != NULL, NULL);
+	g_return_val_if_fail (slant != NULL, NULL);
+	g_return_val_if_fail (set_width != NULL, NULL);
+	g_return_val_if_fail (char_set_registry != NULL, NULL);
+	g_return_val_if_fail (char_set_encoding != NULL, NULL);
 
-	entry_name = g_strdup_printf ("%s %s", foundry, family);
+	mapped_weight = font_find_style (font_weight_map,
+					 NAUTILUS_N_ELEMENTS (font_weight_map),
+					 weight);
 
-	if (ignore_font (font_file_name, foundry, family, entry_name)) {
-		g_free (entry_name);
+	mapped_slant = font_find_style (font_slant_map,
+					NAUTILUS_N_ELEMENTS (font_slant_map),
+					slant);
+
+	mapped_set_width = font_find_style (font_set_width_map,
+					    NAUTILUS_N_ELEMENTS (font_set_width_map),
+					    set_width);
+	
+	if (mapped_weight != NULL) {
+		/* "abnormal" weight */
+		if (mapped_slant == NULL && mapped_set_width == NULL) {
+			return g_strdup (mapped_weight);
+		} else if (mapped_slant != NULL && mapped_set_width != NULL) {
+			return g_strdup_printf ("%s %s %s", mapped_weight, mapped_slant, mapped_set_width);
+		} else if (mapped_slant != NULL) {
+			return g_strdup_printf ("%s %s", mapped_weight, mapped_slant);
+		}
+
+		return g_strdup_printf ("%s %s", mapped_weight, mapped_set_width);
+	} else {
+		/* normal weight */
+		if (mapped_slant == NULL && mapped_set_width == NULL) {
+			return g_strdup (_(normal_style));
+		} else if (mapped_slant != NULL && mapped_set_width != NULL) {
+			return g_strdup_printf ("%s %s", mapped_slant, mapped_set_width);
+		} else if (mapped_slant != NULL) {
+			return g_strdup_printf ("%s", mapped_slant);
+		}
+		
+		return g_strdup_printf ("%s", mapped_set_width);
+	}
+
+	return g_strdup (_(unknown_style));
+}
+
+/* Global font list */
+static void
+global_font_list_free (void)
+{
+ 	GList *font_node;
+	FontEntry *font_entry;
+ 	GList *style_node;
+	FontStyleEntry *style_entry;
+
+	if (global_font_list == NULL) {
 		return;
 	}
 
-	entry = font_entry_list_find (font_picker->details->font_entry_list, entry_name);
+	for (font_node = global_font_list; font_node != NULL; font_node = font_node->next) {
+		g_assert (font_node->data != NULL);
+		font_entry = font_node->data;
+		
+		g_free (font_entry->name);
+		g_free (font_entry->family);
+		g_free (font_entry->name_for_display);
+
+		for (style_node = font_entry->style_list; style_node != NULL; style_node = style_node->next) {
+			g_assert (style_node->data != NULL);
+			style_entry = style_node->data;
+			g_free (style_entry->name);
+			g_free (style_entry->font_file_name);
+			g_free (style_entry);
+		}
+		g_list_free (font_entry->style_list);
+
+		g_free (font_entry);
+	}
+
+	global_font_list = NULL;
+}
+
+static guint
+font_list_count_families (const GList *font_list,
+			  const char *family)
+{
+	guint count = 0;
+	const GList *node;
+	const FontEntry *entry;
+
+	g_return_val_if_fail (font_list != NULL, 0);
+	g_return_val_if_fail (family != NULL, 0);
+	
+	for (node = font_list; node != NULL; node = node->next) {
+		g_assert (node->data != NULL);
+		entry = node->data;
+
+		if (nautilus_istr_is_equal (family, entry->family)) {
+			count++;
+		}
+	}
+
+	return count;
+}
+
+static const GList *
+global_font_list_get (void)
+{
+	guint family_count = 0;
+	GList *node;
+	FontEntry *entry;
+
+	if (global_font_list != NULL) {
+		return global_font_list;
+	}
+
+	nautilus_font_manager_for_each_font (global_font_list_populate_callback, &global_font_list);
+	g_assert (global_font_list != NULL);
+
+	for (node = global_font_list; node != NULL; node = node->next) {
+		g_assert (node->data != NULL);
+		entry = node->data;
+
+		g_assert (entry->name_for_display == NULL);
+		
+		family_count = font_list_count_families (global_font_list, entry->family);
+		g_assert (family_count > 0);
+
+		entry->name_for_display = (family_count > 1) ? g_strdup (entry->name) : g_strdup (entry->family);
+	}
+
+	g_atexit (global_font_list_free);
+
+	return global_font_list;
+}
+
+static gboolean
+global_font_list_populate_callback (const char *font_file_name,
+				    NautilusFontType font_type,
+				    const char *foundry,
+				    const char *family,
+				    const char *weight,
+				    const char *slant,
+				    const char *set_width,
+				    const char *char_set_registry,
+				    const char *char_set_encoding,
+				    gpointer callback_data)
+{
+	GList **font_list;
+	char *entry_name;
+	FontEntry *entry;
+	FontStyleEntry *style;
+
+	g_return_val_if_fail (font_file_name != NULL, FALSE);
+	g_return_val_if_fail (foundry != NULL, FALSE);
+	g_return_val_if_fail (family != NULL, FALSE);
+	g_return_val_if_fail (weight != NULL, FALSE);
+	g_return_val_if_fail (slant != NULL, FALSE);
+	g_return_val_if_fail (set_width != NULL, FALSE);
+	g_return_val_if_fail (char_set_registry != NULL, FALSE);
+	g_return_val_if_fail (char_set_encoding != NULL, FALSE);
+	g_return_val_if_fail (callback_data != NULL, FALSE);
+
+	font_list = callback_data;
+
+	if (ignore_font (foundry, family)) {
+		return TRUE;
+	}
+
+	entry_name = font_make_name (foundry, family);
+	entry = font_list_find (*font_list, entry_name);
 
 	if (entry == NULL) {
 		entry = g_new0 (FontEntry, 1);
 		entry->name = g_strdup (entry_name);
-		entry->foundry = g_strdup (foundry);
 		entry->family = g_strdup (family);
-		font_picker->details->font_entry_list = g_list_prepend (font_picker->details->font_entry_list, entry);
+		*font_list = g_list_append (*font_list, entry);
 	}
 	g_assert (entry != NULL);
-	g_assert (font_entry_list_find (font_picker->details->font_entry_list, entry_name) == entry);
+	g_assert (font_list_find (*font_list, entry_name) == entry);
 	g_free (entry_name);
-	
-	style = g_new0 (FontStyle, 1);
-	style->name = g_strdup_printf ("%s %s %s", weight, slant, set_width);
+
+	style = g_new0 (FontStyleEntry, 1);
+	style->name = font_make_style (weight, slant, set_width, char_set_registry, char_set_encoding);
 	style->font_file_name = g_strdup (font_file_name);
 
 	entry->style_list = g_list_append (entry->style_list, style);
-}
 
-static void
-style_list_for_each_callback (gpointer data,
-			      gpointer callback_data)
-{
-	NautilusFontPicker *font_picker;
-	FontStyle *style;
-
-	g_return_if_fail (data != NULL);
-	g_return_if_fail (NAUTILUS_IS_FONT_PICKER (callback_data));
-
-	style = data;
-	font_picker = NAUTILUS_FONT_PICKER (callback_data);
-
-	nautilus_string_picker_insert_string (font_picker->details->style_picker, style->name);
-}
-static void
-font_entry_list_for_each_callback (gpointer data,
-				   gpointer callback_data)
-{
-	NautilusFontPicker *font_picker;
-	FontEntry *entry;
-
-	g_return_if_fail (data != NULL);
-	g_return_if_fail (NAUTILUS_IS_FONT_PICKER (callback_data));
-
-	font_picker = NAUTILUS_FONT_PICKER (callback_data);
-
- 	entry = data;
-	nautilus_string_picker_insert_string (font_picker->details->font_name_picker,
-					      entry->name);
+	return TRUE;
 }
 
 /* NautilusFontPicker public methods */
@@ -389,13 +637,17 @@ nautilus_font_picker_new (void)
 char *
 nautilus_font_picker_get_selected_font (const NautilusFontPicker *font_picker)
 {
+	const GList *font_list;
 	char *result = NULL;
 	char *selected_font;
 	char *selected_style;
 	const FontEntry *entry;
-	GList *node;
+	const GList *node;
 
 	g_return_val_if_fail (NAUTILUS_IS_FONT_PICKER (font_picker), NULL);
+
+	font_list = global_font_list_get ();
+	g_assert (font_list != NULL);
 	
 	selected_font = nautilus_string_picker_get_selected_string (font_picker->details->font_name_picker);
 	g_return_val_if_fail (selected_font != NULL, NULL);
@@ -403,12 +655,12 @@ nautilus_font_picker_get_selected_font (const NautilusFontPicker *font_picker)
 	selected_style = nautilus_string_picker_get_selected_string (font_picker->details->style_picker);
 	g_return_val_if_fail (selected_style != NULL, NULL);
 	
-	entry = font_entry_list_find (font_picker->details->font_entry_list, selected_font);
+	entry = font_list_find (font_list, selected_font);
 	g_return_val_if_fail (entry != NULL, NULL);
 
 	node = entry->style_list;
 	while (node != NULL && result == NULL) {
-		const FontStyle *style;
+		const FontStyleEntry *style;
 		g_assert (node->data != NULL);
 		style = node->data;
 
@@ -428,14 +680,18 @@ void
 nautilus_font_picker_set_selected_font (NautilusFontPicker *font_picker,
 					const char *font_name)
 {
+	const GList *font_list;
 	const FontEntry *entry;
-	const FontStyle *style;
-	GList *font_list_node;
-	GList *style_list_node;
+	const FontStyleEntry *style;
+	const GList *font_list_node;
+	const GList *style_list_node;
 
 	g_return_if_fail (NAUTILUS_IS_FONT_PICKER (font_picker));
+
+	font_list = global_font_list_get ();
+	g_assert (font_list != NULL);
 	
-	font_list_node = font_picker->details->font_entry_list;
+	font_list_node = font_list;
 	while (font_list_node != NULL) {
 		g_assert (font_list_node->data != NULL);
 		entry = font_list_node->data;
@@ -447,8 +703,8 @@ nautilus_font_picker_set_selected_font (NautilusFontPicker *font_picker,
 			
 			if (nautilus_istr_is_equal (style->font_file_name, font_name)) {
 				nautilus_string_picker_set_selected_string (font_picker->details->font_name_picker,
-									    entry->name);
-				font_picker_update (font_picker);
+									    entry->name_for_display);
+				font_picker_update_styles (font_picker);
 				gtk_signal_emit (GTK_OBJECT (font_picker), font_picker_signals[CHANGED]);
 				return;
 			}

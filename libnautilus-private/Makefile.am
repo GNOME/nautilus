@@ -21,6 +21,7 @@ INCLUDES = 						\
 	-D_REENTRANT 					\
 	-DDATADIR=\""$(datadir)"\" 			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	\
+	-DSOURCE_DATADIR=\""$(top_srcdir)/data"\" 	\
 	$(NULL)
 
 dependency_static_libs = \

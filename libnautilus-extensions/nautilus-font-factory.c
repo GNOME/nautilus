@@ -223,13 +223,21 @@ nautilus_font_factory_get_font_by_family (const char *family,
 
 	factory = nautilus_get_current_font_factory ();
 	while (*iter) {
-		font_name = nautilus_gdk_font_xlfd_string_new ("*", 
-							       *iter,
-							       "medium",
-							       "r",
-							       "normal",
-							       "*",
-							       size_in_pixels);
+		/* FIXME bugzilla.eazel.com xxxx: 
+		 * Its a hack that we check for "-" prefixes in font names.
+		 * We do this in order not to break transalted font families.
+		 */
+		if (!nautilus_str_has_prefix (*iter, "-")) {
+			font_name = nautilus_gdk_font_xlfd_string_new ("*", 
+								       *iter,
+								       "medium",
+								       "r",
+								       "normal",
+								       "*",
+								       size_in_pixels);
+		} else {
+			font_name = g_strdup (*iter);
+		}
 	
 		g_free (*iter);
 		*iter = font_name;
@@ -262,7 +270,7 @@ nautilus_font_factory_get_font_from_preferences (guint size_in_pixels)
 
 	family = nautilus_preferences_get (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY);
 
-	font = nautilus_font_factory_get_font_by_family (family, size_in_pixels);
+	font = nautilus_font_factory_get_font_by_family (_(family), size_in_pixels);
 
 	g_free (family);
 

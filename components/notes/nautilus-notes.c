@@ -37,6 +37,9 @@
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-font-factory.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+
 /* FIXME bugzilla.eazel.com 4436: 
  * Undo not working in notes-view.
  */
@@ -182,6 +185,7 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         GtkWidget *vbox;
         Notes *notes;
         NautilusBackground *background;
+        GdkFont *font;
          
         g_return_val_if_fail (strcmp (goad_id, "OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185") == 0, NULL);
         notes = g_new0 (Notes, 1);
@@ -192,6 +196,11 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         
         /* create the text container */               
         notes->note_text_field = gtk_text_new (NULL, NULL);
+        
+        font = nautilus_font_factory_get_font_by_family (_("helvetica"), 14);
+        nautilus_gtk_widget_set_font (notes->note_text_field, font);
+        gdk_font_unref (font);
+
         gtk_text_set_editable (GTK_TEXT (notes->note_text_field), TRUE);	
         gtk_box_pack_start (GTK_BOX (vbox), notes->note_text_field, TRUE, TRUE, 0);
         background = nautilus_get_widget_background (notes->note_text_field);

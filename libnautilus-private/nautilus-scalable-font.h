@@ -55,30 +55,26 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_IS_SCALABLE_FONT(obj)		(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SCALABLE_FONT))
 #define NAUTILUS_IS_SCALABLE_FONT_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SCALABLE_FONT))
 
-typedef struct _NautilusScalableFont	       NautilusScalableFont;
-typedef struct _NautilusScalableFontClass      NautilusScalableFontClass;
-typedef struct _NautilusScalableFontDetail     NautilusScalableFontDetail;
+typedef struct NautilusScalableFont	      NautilusScalableFont;
+typedef struct NautilusScalableFontClass      NautilusScalableFontClass;
+typedef struct NautilusScalableFontDetails    NautilusScalableFontDetails;
 
-struct _NautilusScalableFont
+struct NautilusScalableFont
 {
 	/* Superclass */
-	GtkObject		object;
+	GtkObject object;
 
 	/* Private things */
-	NautilusScalableFontDetail	*detail;
+	NautilusScalableFontDetails *details;
 };
 
-struct _NautilusScalableFontClass
+struct NautilusScalableFontClass
 {
-	GtkObjectClass		parent_class;
+	GtkObjectClass parent_class;
 };
 
 GtkType                nautilus_scalable_font_get_type                  (void);
-NautilusScalableFont  *nautilus_scalable_font_new                       (const char                  *family,
-									 const char                  *weight,
-									 const char                  *slant,
-									 const char                  *set_width);
-NautilusScalableFont * nautilus_scalable_font_new_from_file_name (const char *file_name);
+NautilusScalableFont * nautilus_scalable_font_new                       (const char                  *file_name);
 NautilusDimensions     nautilus_scalable_font_measure_text              (const NautilusScalableFont  *font,
 									 int                          font_size,
 									 const char                  *text,
@@ -104,11 +100,6 @@ int                    nautilus_scalable_font_largest_fitting_font_size (const N
 									 int                          maximum_acceptable_font_size);
 NautilusScalableFont  *nautilus_scalable_font_get_default_font          (void);
 NautilusScalableFont  *nautilus_scalable_font_get_default_bold_font     (void);
-NautilusStringList *   nautilus_scalable_font_get_font_family_list      (void);
-gboolean               nautilus_scalable_font_query_font                (const char                  *family,
-									 NautilusStringList         **weights,
-									 NautilusStringList         **slants,
-									 NautilusStringList         **set_widths);
 NautilusScalableFont  *nautilus_scalable_font_make_bold                 (NautilusScalableFont        *font);
 
 END_GNOME_DECLS
