@@ -54,7 +54,6 @@
 #include <string.h>
 
 /* forward declarations */
-static void add_sidebar_panel_identifiers       (NautilusNavigationInfo            *navinfo);
 static void async_get_file_info_text            (GnomeVFSAsyncHandle              **handle,
                                                  const char                        *text_uri,
                                                  GnomeVFSFileInfoOptions            options,
@@ -615,8 +614,6 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
 #endif
         }
   
-        add_sidebar_panel_identifiers (navinfo);
-        
         /* Now that all the content_identifiers are in place, we're ready to choose
          * the initial one.
          */
@@ -628,37 +625,6 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
 }
 
 /* The following routine uses metadata associated with the current url to add content view components specified in the metadata */
-
-
-static gboolean
-sidebar_panel_preference_is_on (NautilusViewIdentifier *identifier,
-                                gpointer ignore)
-{
-	g_assert (identifier != NULL);
-	g_assert (identifier->iid != NULL);
-
-	return nautilus_global_preferences_is_sidebar_panel_enabled (identifier->iid);
-}
-
-static void
-add_sidebar_panel_identifiers (NautilusNavigationInfo *navinfo)
-{
-	GList *view_identifiers;
-	GList *disabled_view_identifiers;
-        
-	g_assert (navinfo != NULL);
-	
-	view_identifiers = nautilus_global_preferences_get_sidebar_panel_view_identifiers ();
-        
-        view_identifiers = nautilus_g_list_partition (view_identifiers,
-                                                      (NautilusGPredicateFunc) sidebar_panel_preference_is_on,
-                                                      NULL,
-                                                      &disabled_view_identifiers);
-
-        navinfo->sidebar_panel_identifiers = view_identifiers;
-
-        nautilus_view_identifier_free_list (disabled_view_identifiers);
-}
 
 static void
 got_metadata_callback (NautilusDirectory *directory,
@@ -744,7 +710,6 @@ nautilus_navigation_info_free (NautilusNavigationInfo *info)
         
         nautilus_navigation_info_cancel (info);
 
-        nautilus_view_identifier_free_list (info->sidebar_panel_identifiers);
         nautilus_view_identifier_free_list (info->content_identifiers);
         nautilus_g_list_free_deep (info->explicit_iids);
 

@@ -44,6 +44,7 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include "ntl-app.h"
 #include "ntl-uri-map.h"
 #include "ntl-window-private.h"
@@ -835,24 +836,33 @@ nautilus_window_update_state (gpointer data)
                 
                 if (window->pending_ni && !window->new_content_view && !window->cv_progress_error
                     && !window->view_activation_complete) {
+			GList *sidebar_panel_identifiers = NULL;
+
                         window->new_content_view = nautilus_window_load_content_view
                                 (window, window->pending_ni->initial_content_iid,
                                  &window->pending_ni->navinfo,
                                  &window->new_requesting_view);
-                        
-                        for (p = window->pending_ni->sidebar_panel_identifiers; p != NULL; p = p->next) {
-                                NautilusViewFrame *meta_view;
-                                NautilusViewIdentifier *identifier;
 
-                                identifier = (NautilusViewIdentifier *) p->data;
+			sidebar_panel_identifiers = 
+				nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers ();
 
-                                meta_view = nautilus_window_load_meta_view
-                                        (window, identifier->iid, window->new_requesting_view);
-                                if (meta_view != NULL) {
-                                        nautilus_view_frame_set_label (meta_view, identifier->name);
-                                        window->new_meta_views = g_list_prepend (window->new_meta_views, meta_view);
-                                }
-                        }
+                        if (sidebar_panel_identifiers != NULL) {
+				for (p = sidebar_panel_identifiers; p != NULL; p = p->next) {
+					NautilusViewFrame *meta_view;
+					NautilusViewIdentifier *identifier;
+					
+					identifier = (NautilusViewIdentifier *) p->data;
+					
+					meta_view = nautilus_window_load_meta_view
+						(window, identifier->iid, window->new_requesting_view);
+					if (meta_view != NULL) {
+						nautilus_view_frame_set_label (meta_view, identifier->name);
+						window->new_meta_views = g_list_prepend (window->new_meta_views, meta_view);
+					}
+				}
+
+				nautilus_view_identifier_free_list (sidebar_panel_identifiers);
+			}
                         
                         window->view_activation_complete = TRUE;
                         window->made_changes++;

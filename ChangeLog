@@ -1,5 +1,31 @@
 2000-05-26  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog),
+	(global_preferences_get_sidebar_panel_view_identifiers),
+	(nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers),
+	(global_preferences_register_sidebar_panels_preferences_for_ui),
+	(global_preferences_is_sidebar_panel_enabled),
+	(nautilus_global_preferences_shutdown):
+	* libnautilus-extensions/nautilus-global-preferences.h:
+
+	Expose only a single function to deal with sidebar panels.  Return
+	a list of enabled view indentifiers, saving callers the work and
+	complication of figuring out which panels are on.
+
+	Make NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE cause i need it
+	to later keep track of sidebar panel changes in NautilusWindow.
+
+	* src/ntl-uri-map.c: (got_file_info_callback),
+	(nautilus_navigation_info_free):
+	* src/ntl-uri-map.h:
+	* src/ntl-window-msgs.c: (nautilus_window_update_state):
+	Exorcise the 'sidebar_panel_identifiers' member.  Instead of
+	complicating life by managing this list, simply obtain it when
+	needed from global preferences.
+	
+2000-05-26  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* src/nautilus-index-tabs.c: (nautilus_index_tabs_initialize),
 	(nautilus_index_tabs_size_request), (draw_one_tab),
 	(draw_or_hit_test_all_tabs), (tab_item_find_by_name),

@@ -39,9 +39,6 @@
 /* User level */
 #define NAUTILUS_PREFERENCES_USER_LEVEL_KEY			"/nautilus/preferences/user_level"
 
-/* Sidebar panels */
-#define NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE		"/nautilus/sidebar-panels"
-
 enum
 {
 	/* Start at something other than zero - which is reserved as the unspecified default value. */
@@ -51,11 +48,17 @@ enum
 };
 
 /* Private stuff */
-static GtkWidget *global_preferences_create_dialog         (void);
-static GtkWidget *global_preferences_get_dialog            (void);
-static void       global_preferences_register_for_ui       (void);
-static void       user_level_changed_callback              (gpointer    user_data);
-static char *     global_preferences_get_sidebar_panel_key (const char *panel_iid);
+static GtkWidget *global_preferences_create_dialog                      (void);
+static GtkWidget *global_preferences_get_dialog                         (void);
+static void       global_preferences_register_for_ui                    (void);
+static char *     global_preferences_get_sidebar_panel_key              (const char             *panel_iid);
+static gboolean   global_preferences_is_sidebar_panel_enabled           (NautilusViewIdentifier *panel_identifier,
+									 gpointer                ignore);
+static GList *    global_preferences_get_sidebar_panel_view_identifiers (void);
+
+/* Preference change callbacks */
+static void       user_level_changed_callback                           (gpointer                user_data);
+
 
 /*
  * Private stuff
@@ -139,8 +142,7 @@ global_preferences_create_dialog (void)
 		GList *p;
 		NautilusViewIdentifier *identifier;
 
-		view_identifiers = nautilus_global_preferences_get_sidebar_panel_view_identifiers ();
-
+		view_identifiers = global_preferences_get_sidebar_panel_view_identifiers ();
 
 		for (p = view_identifiers; p != NULL; p = p->next) {
 			identifier = (NautilusViewIdentifier *) (p->data);
@@ -189,8 +191,8 @@ global_preferences_create_dialog (void)
  * For now turn on all the ones we know about.
  */
 
-GList *
-nautilus_global_preferences_get_sidebar_panel_view_identifiers (void)
+static GList *
+global_preferences_get_sidebar_panel_view_identifiers (void)
 {
 	CORBA_Environment ev;
 	const char *query;
@@ -224,36 +226,22 @@ nautilus_global_preferences_get_sidebar_panel_view_identifiers (void)
 	return view_identifiers;
 }
 
-
-/* 
- * Presumably, the following would be registered
- * only if the component was present.  Once we
- * have smarter activation, that will be case.
- * 
- * For now turn on all the ones we know about.
- */
-
-NautilusStringList *
-nautilus_global_preferences_get_sidebar_view_iids (void)
+GList *
+nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers (void)
 {
-	NautilusStringList *sidebar_view_names;
 	GList *view_identifiers;
-	GList *p;
-	NautilusViewIdentifier *identifier;
-
-	view_identifiers = nautilus_global_preferences_get_sidebar_panel_view_identifiers ();
-
-	sidebar_view_names = nautilus_string_list_new ();
-
-	for (p = view_identifiers; p != NULL; p = p->next) {
-		identifier = (NautilusViewIdentifier *) (p->data);
-		nautilus_string_list_insert (sidebar_view_names, 
-					     identifier->iid);
-	}
+	GList *disabled_view_identifiers;
+        
+	view_identifiers = global_preferences_get_sidebar_panel_view_identifiers ();
+        
+        view_identifiers = nautilus_g_list_partition (view_identifiers,
+                                                      (NautilusGPredicateFunc) global_preferences_is_sidebar_panel_enabled,
+                                                      NULL,
+                                                      &disabled_view_identifiers);
 	
-	nautilus_view_identifier_free_list (view_identifiers);
+        nautilus_view_identifier_free_list (disabled_view_identifiers);
 
-	return sidebar_view_names;
+        return view_identifiers;
 }
 
 static GtkWidget *
@@ -280,7 +268,7 @@ global_preferences_register_sidebar_panels_preferences_for_ui (void)
 	NautilusViewIdentifier *identifier;
 	char *preference_key;
 
-	view_identifiers = nautilus_global_preferences_get_sidebar_panel_view_identifiers ();
+	view_identifiers = global_preferences_get_sidebar_panel_view_identifiers ();
 
 	for (p = view_identifiers; p != NULL; p = p->next) {
 		identifier = (NautilusViewIdentifier *) (p->data);
@@ -308,15 +296,17 @@ global_preferences_get_sidebar_panel_key (const char *panel_iid)
 	return g_strdup_printf ("%s/%s", NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE, panel_iid);
 }
 
-gboolean
-nautilus_global_preferences_is_sidebar_panel_enabled (const char *panel_iid)
+static gboolean
+global_preferences_is_sidebar_panel_enabled (NautilusViewIdentifier *panel_identifier,
+					     gpointer ignore)
 {
 	gboolean enabled;
         gchar	 *key;
 
-	g_return_val_if_fail (panel_iid != NULL, FALSE);
+	g_return_val_if_fail (panel_identifier != NULL, FALSE);
+	g_return_val_if_fail (panel_identifier->iid != NULL, FALSE);
 
-	key = global_preferences_get_sidebar_panel_key (panel_iid);
+	key = global_preferences_get_sidebar_panel_key (panel_identifier->iid);
 	
 	g_assert (key != NULL);
 
@@ -502,6 +492,10 @@ nautilus_global_preferences_shutdown (void)
 	/* Free the dialog first, cause it has refs to preferences */
 	GtkWidget * global_prefs_dialog = global_preferences_get_dialog ();
 	gtk_widget_destroy (global_prefs_dialog);
+
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_USER_LEVEL_KEY,
+					      user_level_changed_callback,
+					      NULL);
 
 	/* Now free the preferences tables and stuff */
 	nautilus_preferences_shutdown ();
