@@ -32,6 +32,7 @@
 #include <libnautilus-extensions/nautilus-bookmark.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-theme.h>
 
 /* forward declarations */
 static void toolbar_reload_callback (GtkWidget *widget, NautilusWindow *window);
@@ -258,7 +259,7 @@ setup_button(GtkWidget* button,  const char *theme_name, const char *icon_name)
 	GtkWidget *widget;
 	char *full_name;
 	
-	if (strcmp(theme_name, "standard") == 0) {
+	if ((theme_name == NULL) || (strcmp(theme_name, "default") == 0)) {
 		full_name = g_strdup (icon_name);
 	} else {
 		full_name = g_strdup_printf ("nautilus/%s/%s.png", theme_name, icon_name);
@@ -267,7 +268,7 @@ setup_button(GtkWidget* button,  const char *theme_name, const char *icon_name)
 	widget = get_stock_widget (GTK_CONTAINER (GTK_BIN (button)->child));
 	gnome_stock_set_icon (GNOME_STOCK (widget), full_name);
 	g_free (full_name);
-	gtk_widget_queue_resize (button); 
+	gtk_widget_queue_resize (button);
 }
 
 
@@ -276,8 +277,8 @@ setup_toolbar_images(NautilusWindow *window)
 {
 	char *theme_name;
 	
-	theme_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_TOOLBAR_ICON_THEME, "standard");
-	
+	theme_name = nautilus_theme_get_theme_data ("toolbar", "ICON_THEME");
+
 	setup_button (window->back_button, theme_name, GNOME_STOCK_PIXMAP_BACK);
 	setup_button (window->forward_button, theme_name, GNOME_STOCK_PIXMAP_FORWARD);
 	setup_button (window->up_button, theme_name, GNOME_STOCK_PIXMAP_UP);
@@ -318,7 +319,7 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 	      window);
 
 	/* add callback for preference changes */
-	nautilus_preferences_add_callback(NAUTILUS_PREFERENCES_TOOLBAR_ICON_THEME, 
+	nautilus_preferences_add_callback(NAUTILUS_PREFERENCES_THEME, 
 						(NautilusPreferencesCallback) setup_toolbar_images, 
 						window);
 }
@@ -327,7 +328,7 @@ void
 nautilus_window_toolbar_remove_theme_callback (void)
 {
 	nautilus_preferences_remove_callback
-		(NAUTILUS_PREFERENCES_TOOLBAR_ICON_THEME,
+		(NAUTILUS_PREFERENCES_THEME,
 		 (NautilusPreferencesCallback) setup_toolbar_images, NULL);
 }
  

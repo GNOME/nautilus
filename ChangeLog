@@ -1,3 +1,28 @@
+2000-06-30  Andy Hertzfeld  <andy@eazel.com>
+
+	eliminated the separate toolbar icon theme; instead they are
+	incorporated into the general theming mechanism
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	got rid of NAUTILUS_PREFERENCES_TOOLBAR_ICON_THEME
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog),
+	(global_preferences_register_for_ui):
+	got rid of the toolbar_icon preference and the associated widgetry
+	* libnautilus-extensions/nautilus-preferences-item.c,h:
+	(preferences_item_construct), (preferences_item_create_theme):
+	got rid of the preference item for the toolbar icon theme
+	* src/nautilus-window-toolbars.c: (setup_button),
+	(setup_toolbar_images), (nautilus_window_initialize_toolbars),
+	(nautilus_window_toolbar_remove_theme_callback):
+	use the general theming framework to determine the toolbar icons
+	to use
+	* icons/vector/vector.xml:
+	made the vector theme use Susan's toolbar icons
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_draw):
+	a little bit of clean-up
+		
 2000-06-30  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/bonobo-stream-vfs.c:

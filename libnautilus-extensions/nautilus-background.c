@@ -179,7 +179,7 @@ nautilus_background_new (void)
 }
 
 /* this routine is for gdk style rendering, which doesn't naturally support transparency, so we
-   draw into a pixbuf offscreen if necessary (coming soon */
+   draw into a pixbuf offscreen if necessary */
    
 void
 nautilus_background_draw (NautilusBackground *background,
@@ -225,6 +225,9 @@ nautilus_background_draw (NautilusBackground *background,
 		return;
 	}
 	
+	/* handle the normal, uncombined mode by prefering a tile if we have one but
+	   otherwise using the background color */
+	   
 	if (background->details->tile_image != NULL) {
 		nautilus_gdk_pixbuf_render_to_drawable_tiled (background->details->tile_image,
 							      drawable,

@@ -192,12 +192,7 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), "Icon Themes");
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
-							 1,
-							 NAUTILUS_PREFERENCES_TOOLBAR_ICON_THEME,
-							 NAUTILUS_PREFERENCE_ITEM_TOOLBAR_ICON_THEME);
-
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), "Themes");
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
 							 1,
 							 NAUTILUS_PREFERENCES_THEME,
@@ -544,7 +539,7 @@ global_preferences_register_for_ui (void)
 							   FALSE);
 
 	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_THEME,
-							  "theme for file icons:      ",
+							  "current theme",
 							  "default",
 							  "default",
 							  "default");
@@ -554,14 +549,6 @@ global_preferences_register_for_ui (void)
 							  "helvetica",
 							  "helvetica",
 							  "helvetica");
-	
-	/* toolbar icons */
-	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_TOOLBAR_ICON_THEME,
-							   "theme for toolbar icons:",
-							   "standard",
-							   "standard",
-							   "standard");
-
 	/* search tradeoffs */
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SEARCH_METHOD,
 							   "Always do slow, complete search",

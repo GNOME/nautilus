@@ -90,8 +90,6 @@ static void preferences_item_create_font_family               (NautilusPreferenc
 							const NautilusPreference     *prefrence);
 static void preferences_item_create_theme	       (NautilusPreferencesItem      *item,
 							const NautilusPreference     *preference);
-static void preferences_item_create_toolbar_icon_theme (NautilusPreferencesItem      *item,
-							const NautilusPreference     *preference);
 static void enum_radio_group_changed_callback          (GtkWidget                    *button_group,
 							GtkWidget                    *button,
 							gpointer                      user_data);
@@ -284,11 +282,7 @@ preferences_item_construct (NautilusPreferencesItem	*item,
 		break;
 	case NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING:
 		preferences_item_create_editable_string (item, preference);
-		break;
-	
-	case NAUTILUS_PREFERENCE_ITEM_TOOLBAR_ICON_THEME:
-		preferences_item_create_toolbar_icon_theme (item, preference);
-		break;
+		break;	
 	}
 
 	gtk_object_unref (GTK_OBJECT (preference));
@@ -575,53 +569,6 @@ preferences_item_create_theme (NautilusPreferencesItem	*item,
  			    GTK_SIGNAL_FUNC (text_item_changed_callback),
  			    (gpointer) item);
 }
-
-
-static void
-preferences_item_create_toolbar_icon_theme (NautilusPreferencesItem	*item,
-				     		const NautilusPreference	*preference)
-{
-	char			*description;
-	char			*current_value;
-	NautilusStringList	*theme_list;
-
-	g_assert (item != NULL);
-	g_assert (preference != NULL);
-
-	g_assert (item->details->preference_name != NULL);
-	description = nautilus_preference_get_description (preference);
-
-	g_assert (description != NULL);
-
-	item->details->child = nautilus_string_picker_new ();
-
-	nautilus_caption_set_title_label (NAUTILUS_CAPTION (item->details->child), description);
-	
-	g_free (description);
-
-	theme_list = nautilus_string_list_new ();
-	nautilus_string_list_insert (theme_list, "standard");
-	add_icon_themes(theme_list, "Up");
-	
-	nautilus_string_picker_set_string_list (NAUTILUS_STRING_PICKER (item->details->child), theme_list);
-
-	current_value = nautilus_preferences_get (item->details->preference_name, "standard");
-
-	g_assert (current_value != NULL);
-	g_assert (nautilus_string_list_contains (theme_list, current_value));
-	
-	nautilus_string_picker_set_text (NAUTILUS_STRING_PICKER (item->details->child), current_value);
-
-	g_free (current_value);
-
-	nautilus_string_list_free (theme_list);
-	
- 	gtk_signal_connect (GTK_OBJECT (item->details->child),
- 			    "changed",
- 			    GTK_SIGNAL_FUNC (text_item_changed_callback),
- 			    (gpointer) item);
-}
-
 
 /* NautilusPreferencesItem public methods */
 GtkWidget *
