@@ -1,3 +1,47 @@
+2000-08-23  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(get_info_callback): Added missing call to nautilus_file_changed
+	for the case where get_file_info fails.
+	(start_getting_file_info): Fixed broken logic that was recursing
+	instead of looping when get_file_info fails and added missing call
+	to nautilus_file_changed.
+	(nautilus_directory_async_state_changed): Moved the check for
+	ready callbacks to the end of the function. This fixed the problem
+	with the trash properties never showing up.
+	
+	* src/file-manager/dfos-xfer.c: (get_link_name),
+	(get_duplicate_name), (handle_xfer_duplicate):
+	Redid the duplicate names functions so they are easier to localize
+	and marked the strings that need localizing with _().
+
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_get_combine_mode),
+	(nautilus_background_set_combine_mode),
+	(nautilus_background_get_image_placement),
+	(nautilus_background_set_image_placement): Added return_if_fail
+	calls as appropriate.
+	(nautilus_background_image_fully_obscures): Simplified nested if
+	statements a bit.
+	(nautilus_background_draw), (draw_pixbuf_aa): Added return_if_fail
+	calls as appropriate.,
+	(nautilus_background_draw_aa), (nautilus_background_is_set),
+	(nautilus_background_is_loaded), (nautilus_background_reset) :
+	Added return_if_fail calls as appropriate.
+	(nautilus_background_real_reset): Added code to emit changed signals.
+	(nautilus_background_is_dark): Added return_if_fail calls as appropriate.
+	* libnautilus-extensions/nautilus-background.h:
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(nautilus_directory_background_get_default_settings),
+	(nautilus_directory_background_read_desktop_settings),
+	(nautilus_directory_background_write_desktop_settings),
+	(nautilus_directory_background_write_desktop_default_settings),
+	(nautilus_directory_background_is_set),
+	(saved_settings_changed_callback):
+	Changed the type "nautilus_background_image_placement" to
+	"NautilusBackgroundImagePlacement" to match our style guidelines
+	(inherited from GNOME of course).
+
 2000-08-23  John Sullivan  <sullivan@eazel.com>
 
 	Checked in this patch from Ken Kocienda, which fixes

@@ -442,64 +442,107 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 	return 0;					
 }
 
-static char*
-get_duplicate_lettering (int count) 
+/* Note that we have these two separate functions with separate format
+ * strings for ease of localization. Resist the urge to "optimize them
+ * for English.
+ */
+
+static char *
+get_link_name (const char *name, int count) 
 {
-	if (count > 20) {
-		switch (count % 10) {
-		case 1: return g_strdup_printf ("%d1st", count / 10);
-		case 2: return g_strdup_printf ("%d2nd", count / 10);
-		case 3: return g_strdup_printf ("%d3rd", count / 10);
-		default: return g_strdup_printf ("%dth", count);
-		}
-	} else {
-		switch (count) {
-		case 1: return g_strdup ("");
-		case 2: return g_strdup ("another");
-		case 3: return g_strdup ("3rd");
-		default: return g_strdup_printf ("%dth", count);
-		}
+	g_assert (name != NULL);
+
+	if (count < 1) {
+		g_warning ("bad count in get_link_name");
+		count = 1;
 	}
+
+	/* Handle special cases for low numbers.
+	 * Perhaps for some locales we will need to add more.
+	 */
+	switch (count) {
+	case 1:
+		return g_strdup_printf (_("link to %s"), name);
+	case 2:
+		return g_strdup_printf (_("another link to %s"), name);
+	}
+
+	/* Handle special cases for the first few numbers of each ten.
+	 * For locales where getting this exactly right is difficult,
+	 * these can just be made all the same as the general case below.
+	 */
+	switch (count % 10) {
+	case 1:
+		return g_strdup_printf (_("%dst link to %s"), count, name);
+	case 2:
+		return g_strdup_printf (_("%dnd link to %s"), count, name);
+	case 3:
+		return g_strdup_printf (_("%drd link to %s"), count, name);
+	}
+
+	/* The general case. */
+	return g_strdup_printf (_("%dth link to %s"), count, name);
+}
+
+static char *
+get_duplicate_name (const char *name, int count) 
+{
+	g_assert (name != NULL);
+
+	if (count < 1) {
+		g_warning ("bad count in get_duplicate_name");
+		count = 1;
+	}
+
+	/* Handle special cases for low numbers.
+	 * Perhaps for some locales we will need to add more.
+	 */
+	switch (count) {
+	case 1:
+		return g_strdup_printf (_("%s (copy)"), name);
+	case 2:
+		return g_strdup_printf (_("%s (another copy)"), name);
+	}
+
+	/* Handle special cases for the first few numbers of each ten.
+	 * For locales where getting this exactly right is difficult,
+	 * these can just be made all the same as the general case below.
+	 */
+	switch (count % 10) {
+	case 1:
+		return g_strdup_printf (_("%s (%dst copy)"), name, count);
+	case 2:
+		return g_strdup_printf (_("%s (%dnd copy)"), name, count);
+	case 3:
+		return g_strdup_printf (_("%s (%drd copy)"), name, count);
+	}
+
+	/* The general case. */
+	return g_strdup_printf (_("%s (%dth copy)"), name, count);
 }
 
 static int
 handle_xfer_duplicate (GnomeVFSXferProgressInfo *progress_info,
 		       XferInfo *xfer_info)
 {
-	char *old_name = progress_info->duplicate_name;
-	char *hold_number;
-
 	switch (xfer_info->kind) {
-
 	case XFER_LINK:
-		if (progress_info->duplicate_count < 2) {
-			progress_info->duplicate_name = g_strdup_printf ("link to %s",
-									 progress_info->duplicate_name);
-		} else {
-			hold_number = get_duplicate_lettering (progress_info->duplicate_count);
-			progress_info->duplicate_name = g_strdup_printf ("%s link to %s",
-									 hold_number,
-									 progress_info->duplicate_name);
-			g_free (hold_number);
-		}
+		/* FIXME: We overwrite the old name here. Is this a storage leak? */
+		progress_info->duplicate_name = get_link_name
+			(progress_info->duplicate_name,
+			 progress_info->duplicate_count);
 		break;
 
 	case XFER_COPY:
-		if (progress_info->duplicate_count < 2) {
-			progress_info->duplicate_name = g_strdup_printf ("%s (copy)", 
-									 progress_info->duplicate_name);
-		} else {
-			hold_number = get_duplicate_lettering (progress_info->duplicate_count);
-			progress_info->duplicate_name = g_strdup_printf ("%s (%s copy)", 
-									 progress_info->duplicate_name,
-									 hold_number);
-			g_free (hold_number);
-		}
+		/* FIXME: We overwrite the old name here. Is this a storage leak? */
+		progress_info->duplicate_name = get_duplicate_name
+			(progress_info->duplicate_name,
+			 progress_info->duplicate_count);
 		break;
-	default:
-	}
 
-	g_free (old_name);
+	default:
+		/* For all other cases we use the name as-is. */
+	}
 
 	return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
 }

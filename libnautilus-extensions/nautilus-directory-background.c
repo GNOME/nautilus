@@ -110,7 +110,7 @@ static void
 nautilus_directory_background_get_default_settings (const char* theme_source,
 						    char **color,
 						    char **image,
-						    nautilus_background_image_placement *placement,
+						    NautilusBackgroundImagePlacement *placement,
 						    gboolean *combine)
 {
 	char *combine_str;
@@ -152,14 +152,14 @@ enum {
 static void
 nautilus_directory_background_read_desktop_settings (char **color,
 						     char **image,
-						     nautilus_background_image_placement *placement,
+						     NautilusBackgroundImagePlacement *placement,
 						     gboolean *combine)
 {
 	int	 image_alignment;
 	char*	 image_local_path;
 	char*	 default_image_file;
 	gboolean no_alignment;
-	nautilus_background_image_placement default_placement;
+	NautilusBackgroundImagePlacement default_placement;
 	
 	char	*end_color;
 	char	*start_color;
@@ -234,7 +234,7 @@ nautilus_directory_background_read_desktop_settings (char **color,
 }
 
 static void
-nautilus_directory_background_write_desktop_settings (char *color, char *image, nautilus_background_image_placement placement, gboolean combine)
+nautilus_directory_background_write_desktop_settings (char *color, char *image, NautilusBackgroundImagePlacement placement, gboolean combine)
 {
 	char *end_color;
 	char *start_color;
@@ -288,7 +288,7 @@ nautilus_directory_background_write_desktop_default_settings ()
 	char *color;
 	char *image;
 	gboolean combine;
-	nautilus_background_image_placement placement;
+	NautilusBackgroundImagePlacement placement;
 	nautilus_directory_background_get_default_settings (desktop_theme_source, &color, &image, &placement, &combine);
 	nautilus_directory_background_write_desktop_settings (color, image, placement, combine);
 }
@@ -504,8 +504,8 @@ nautilus_directory_background_is_set (NautilusBackground *background)
 	gboolean combine;
 	gboolean default_combine;
 	
-	nautilus_background_image_placement placement;
-	nautilus_background_image_placement default_placement;
+	NautilusBackgroundImagePlacement placement;
+	NautilusBackgroundImagePlacement default_placement;
 
 	color = nautilus_background_get_color (background);
 	image = nautilus_background_get_image_uri (background);
@@ -586,7 +586,7 @@ saved_settings_changed_callback (NautilusDirectory *directory,
         char *color;
         char *image;
 	gboolean combine;
-	nautilus_background_image_placement placement;
+	NautilusBackgroundImagePlacement placement;
 	
         g_assert (NAUTILUS_IS_DIRECTORY (directory));
         g_assert (NAUTILUS_IS_BACKGROUND (background));

@@ -59,78 +59,77 @@ typedef struct NautilusBackgroundClass NautilusBackgroundClass;
 #define NAUTILUS_IS_BACKGROUND_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_BACKGROUND))
 
-GtkType             nautilus_background_get_type                         (void);
-NautilusBackground *nautilus_background_new                              (void);
-
 typedef enum {
 	NAUTILUS_BACKGROUND_TILED = 0, /* zero makes this the default placement */
 	NAUTILUS_BACKGROUND_CENTERED,
 	NAUTILUS_BACKGROUND_SCALED,
 	NAUTILUS_BACKGROUND_SCALED_ASPECT
-} nautilus_background_image_placement;
+} NautilusBackgroundImagePlacement;
+
+GtkType                          nautilus_background_get_type                         (void);
+NautilusBackground *             nautilus_background_new                              (void);
 
 /* Calls to change a background. */
-void                                nautilus_background_set_color                        (NautilusBackground                  *background,
-											  const char                          *color_or_gradient);
-void                                nautilus_background_set_image_uri                    (NautilusBackground                  *background,
-											  const char                          *image_uri);
-void                                nautilus_background_reset                            (NautilusBackground                  *background);
-void                                nautilus_background_set_combine_mode                 (NautilusBackground                  *background,
-											  gboolean                             combine);
-void                                nautilus_background_set_image_placement              (NautilusBackground                  *background,
-											  nautilus_background_image_placement  placement);
+void                             nautilus_background_set_color                        (NautilusBackground               *background,
+										       const char                       *color_or_gradient);
+void                             nautilus_background_set_image_uri                    (NautilusBackground               *background,
+										       const char                       *image_uri);
+void                             nautilus_background_reset                            (NautilusBackground               *background);
+void                             nautilus_background_set_combine_mode                 (NautilusBackground               *background,
+										       gboolean                          combine);
+void                             nautilus_background_set_image_placement              (NautilusBackground               *background,
+										       NautilusBackgroundImagePlacement  placement);
 
 
 /* Calls to interrogate the current state of a background. */
-char *                              nautilus_background_get_color                        (NautilusBackground                  *background);
-char *                              nautilus_background_get_image_uri                    (NautilusBackground                  *background);
-gboolean                            nautilus_background_get_combine_mode                 (NautilusBackground                  *background);
-nautilus_background_image_placement nautilus_background_get_image_placement              (NautilusBackground                  *background);
-gboolean                            nautilus_background_is_dark                          (NautilusBackground                  *background);
-gboolean                            nautilus_background_is_set                           (NautilusBackground                  *background);
-gboolean                            nautilus_background_is_loaded                        (NautilusBackground                  *background);
+char *                           nautilus_background_get_color                        (NautilusBackground               *background);
+char *                           nautilus_background_get_image_uri                    (NautilusBackground               *background);
+gboolean                         nautilus_background_get_combine_mode                 (NautilusBackground               *background);
+NautilusBackgroundImagePlacement nautilus_background_get_image_placement              (NautilusBackground               *background);
+gboolean                         nautilus_background_is_dark                          (NautilusBackground               *background);
+gboolean                         nautilus_background_is_set                           (NautilusBackground               *background);
+gboolean                         nautilus_background_is_loaded                        (NautilusBackground               *background);
 
 
 /* Explicitly fills a rectangle with a background. */
-void                                nautilus_background_draw                             (NautilusBackground                  *background,
-											  GdkDrawable                         *drawable,
-											  GdkGC                               *gc,
-											  const GdkRectangle                  *rectangle,
-											  int                                  origin_x,
-											  int                                  origin_y);
+void                             nautilus_background_draw                             (NautilusBackground               *background,
+										       GdkDrawable                      *drawable,
+										       GdkGC                            *gc,
+										       const GdkRectangle               *rectangle,
+										       int                               origin_x,
+										       int                               origin_y);
 
 
 /* Explicitly fills a rectangle with a background on the anti-aliased canvas. */
-void                                nautilus_background_draw_aa                          (NautilusBackground                  *background,
-											  GnomeCanvasBuf                      *buffer,
-											  int                                  entire_width,
-											  int                                  entire_height);
+void                             nautilus_background_draw_aa                          (NautilusBackground               *background,
+										       GnomeCanvasBuf                   *buffer,
+										       int                               entire_width,
+										       int                               entire_height);
 
 							       
 /* Handles a dragged color being dropped on a widget to change the background color. */
-void                                nautilus_background_receive_dropped_color            (NautilusBackground                  *background,
-											  GtkWidget                           *widget,
-											  int                                  drop_location_x,
-											  int                                  drop_location_y,
-											  const GtkSelectionData              *dropped_color);
+void                             nautilus_background_receive_dropped_color            (NautilusBackground               *background,
+										       GtkWidget                        *widget,
+										       int                               drop_location_x,
+										       int                               drop_location_y,
+										       const GtkSelectionData           *dropped_color);
 
 
 /* Handles a special-case image name that means "reset to default background" too. */
-void                                nautilus_background_receive_dropped_background_image (NautilusBackground                  *background,
-											  const char                          *image_uri);
+void                             nautilus_background_receive_dropped_background_image (NautilusBackground               *background,
+										       const char                       *image_uri);
 
 
 /* Gets or creates a background so that it's attached to a widget. */
-NautilusBackground *                nautilus_get_widget_background                       (GtkWidget                           *widget);
+NautilusBackground *             nautilus_get_widget_background                       (GtkWidget                        *widget);
 
 
 /* Return whether a background has beed attatched to the given widget. */
-gboolean                            nautilus_widget_has_attached_background              (GtkWidget                           *widget);
+gboolean                         nautilus_widget_has_attached_background              (GtkWidget                        *widget);
 
 
 /* Find out if a nautilus background is too complex for GtkStyle, so that we have to draw it ourselves */
-gboolean                            nautilus_background_is_too_complex_for_gtk_style     (NautilusBackground                  *background);
-
+gboolean                         nautilus_background_is_too_complex_for_gtk_style     (NautilusBackground               *background);
 
 typedef struct NautilusBackgroundDetails NautilusBackgroundDetails;
 

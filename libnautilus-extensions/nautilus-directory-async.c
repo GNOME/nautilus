@@ -2178,8 +2178,8 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 		get_info_file->details->get_info_failed = TRUE;
 	} else {
 		nautilus_file_update_info (get_info_file, result->file_info);
-		nautilus_file_changed (get_info_file);
 	}
+	nautilus_file_changed (get_info_file);
 
 	nautilus_directory_async_state_changed (directory);
 }
@@ -2222,7 +2222,7 @@ start_getting_file_info (NautilusDirectory *directory)
 		
 		if (vfs_uri == NULL) {
 			file->details->get_info_failed = TRUE;
-			start_getting_file_info (directory);
+			nautilus_file_changed (file);
 		}
 	} while (vfs_uri == NULL);
 
@@ -2404,9 +2404,6 @@ start_getting_activation_uris (NautilusDirectory *directory)
 void
 nautilus_directory_async_state_changed (NautilusDirectory *directory)
 {
-	/* Check if any callbacks are satisifed and call them if they are. */
-	call_ready_callbacks (directory);
-
 	/* Start or stop getting file info. */
 	start_getting_file_info (directory);
 
@@ -2429,5 +2426,14 @@ nautilus_directory_async_state_changed (NautilusDirectory *directory)
 	/* Start or stop getting top left pieces of files. */
 	start_getting_top_lefts (directory);
 
+	/* Start or stop getting activation URIs, which includes
+	 * reading the contents of Nautilus and GMC link files.
+	 */
 	start_getting_activation_uris (directory);
+
+	/* Check if any callbacks are satisifed and call them if they
+	 * are. Do this last so that any changes are done in the above
+	 * functions immediately (not in callbacks) are considered.
+	 */
+	call_ready_callbacks (directory);
 }
