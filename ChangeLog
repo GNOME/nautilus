@@ -1,3 +1,15 @@
+2000-07-30  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(button_press_event), (nautilus_icon_container_initialize_class):
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_handle_middle_click),
+	(fm_desktop_icon_view_initialize):
+	Add support for the window manager middle mouse click menu on the desktop.
+	Capture the middle mouse click, create a new XEvent and send it to the
+	root window.
+
 2000-07-30  Andy Hertzfeld  <andy@eazel.com>
 
 	* data/top/Computer.link:

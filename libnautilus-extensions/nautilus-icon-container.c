@@ -75,6 +75,7 @@
 /* Button assignments. */
 #define DRAG_BUTTON 1
 #define RUBBERBAND_BUTTON 1
+#define MIDDLE_BUTTON 2
 #define CONTEXTUAL_MENU_BUTTON 3
 
 /* Maximum size (pixels) allowed for icons at the standard zoom level. */
@@ -122,6 +123,7 @@ enum {
 	COMPARE_ICONS,
 	CONTEXT_CLICK_BACKGROUND,
 	CONTEXT_CLICK_SELECTION,
+	MIDDLE_CLICK,
 	GET_CONTAINER_URI,
 	GET_ICON_IMAGES,
 	GET_ICON_TEXT,
@@ -1784,10 +1786,15 @@ button_press_event (GtkWidget *widget,
 		return TRUE;
 	}
 	
+	/* Button 2 may be passed to the window manager. */
+	if (event->button == MIDDLE_BUTTON) {
+		gtk_signal_emit (GTK_OBJECT (widget), signals[MIDDLE_CLICK], event);
+		return TRUE;
+	}
+
 	/* Button 3 does a contextual menu. */
 	if (event->button == CONTEXTUAL_MENU_BUTTON) {
-		gtk_signal_emit (GTK_OBJECT (widget),
-				 signals[CONTEXT_CLICK_BACKGROUND]);
+		gtk_signal_emit (GTK_OBJECT (widget), signals[CONTEXT_CLICK_BACKGROUND]);
 		return TRUE;
 	}
 	
@@ -2276,6 +2283,15 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 						     context_click_background),
 				  gtk_marshal_NONE__NONE,
 				  GTK_TYPE_NONE, 0);
+	signals[MIDDLE_CLICK]
+		= gtk_signal_new ("middle_click",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+						     middle_click),
+				  gtk_marshal_NONE__POINTER,
+				  GTK_TYPE_NONE, 1,
+				  GTK_TYPE_POINTER);
 	signals[ICON_POSITION_CHANGED]
 		= gtk_signal_new ("icon_position_changed",
 				  GTK_RUN_LAST,

@@ -64,6 +64,8 @@ struct NautilusIconContainerClass {
 	int          (* button_press) 	          (NautilusIconContainer *container,
 						   GdkEventButton *event);
 	void         (* context_click_background) (NautilusIconContainer *container);
+	void         (* middle_click) 		  (NautilusIconContainer *container,
+						   GdkEventButton *event);
 
 	/* Operations on icons. */
 	void         (* activate)	  	  (NautilusIconContainer *container,

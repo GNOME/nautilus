@@ -48,6 +48,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <gdk/gdkx.h>
 
 
 
@@ -200,6 +201,43 @@ fm_desktop_icon_view_initialize_class (FMDesktopIconViewClass *klass)
 }
 
 static void
+fm_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
+	GdkEventButton *event, FMDesktopIconView *desktop_icon_view)
+{
+	XButtonEvent x_event;
+	
+	/* During a mouse click we have the pointer and keyboard grab.
+	 * We will send a fake event to the root window which will cause it
+	 * to try to get the grab so we need to let go ourselves.
+	 */
+	gdk_pointer_ungrab (GDK_CURRENT_TIME);
+	gdk_keyboard_ungrab (GDK_CURRENT_TIME);
+
+	/* Stop the event because we don't want anyone else dealing with it. */	
+	gdk_flush();
+	gtk_signal_emit_stop_by_name( GTK_OBJECT(icon_container), "middle_click");
+
+	/* build an X event to represent the middle click. */
+	x_event.type = ButtonPress;
+	x_event.send_event = True;
+	x_event.display = GDK_DISPLAY ();
+	x_event.window = GDK_ROOT_WINDOW ();
+	x_event.root = GDK_ROOT_WINDOW ();
+	x_event.subwindow = 0;
+	x_event.time = event->time;
+	x_event.x = event->x;
+	x_event.y = event->y;
+	x_event.x_root = event->x_root;
+	x_event.y_root = event->y_root;
+	x_event.state = event->state;
+	x_event.button = event->button;
+	x_event.same_screen = True;
+	
+	/* Send it to the root window, the window manager will handle it. */
+	XSendEvent (GDK_DISPLAY (), GDK_ROOT_WINDOW (), True, ButtonPressMask, (XEvent *)&x_event);
+}
+
+static void
 fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 {
 	NautilusIconContainer *icon_container;
@@ -214,6 +252,11 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	/* Setup home directory link */
 	place_home_directory (desktop_icon_view);
 	
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "middle_click",
+			    GTK_SIGNAL_FUNC (fm_desktop_icon_view_handle_middle_click),
+			    desktop_icon_view);
+
 	/* Check for mountable devices */
 	find_mount_devices (desktop_icon_view, _PATH_MNTTAB);
 }
