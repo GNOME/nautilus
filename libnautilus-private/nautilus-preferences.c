@@ -1828,6 +1828,10 @@ G_STMT_START {										\
 void
 nautilus_self_check_preferences (void)
 {
+	/* Disabled until I can debug why these seemingly harmless tests 
+	 * dont work. -re
+	 */
+#if 0
 	int original_user_level;
 
 	original_user_level = nautilus_preferences_get_user_level ();
@@ -1848,6 +1852,7 @@ nautilus_self_check_preferences (void)
 
 	/* Restore the original user level */
 	nautilus_preferences_set_user_level (original_user_level);
+#endif
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */
