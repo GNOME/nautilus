@@ -1,0 +1,38 @@
+#ifndef __TRILOBITE_IDL__
+#define __TRILOBITE_IDL__
+
+module Trilobite {
+	interface Service {
+	  
+		/* Should return the name of the service, eg. "TimeService" */
+		string get_name();
+    
+		/* Should return the version of the service, eg. "1.0" */
+		string get_version();
+    
+		/* Should return the company/organization who's responsible for the service, 
+		   eg. "Eazel, inc."
+		*/
+		string get_vendor_name();
+
+		/* Should return URL of the company/organization who's responsible for the service, 
+		   eg. "http://www.eazel.com"
+		*/
+		string get_vendor_url();
+    
+		/* Should give a URL for the service. This should either contain 
+		   a decription or a page containing account info or whatnor for the service
+		*/
+		string get_url();
+	  
+		/* Should return a URI for an icon for the service 
+		 */
+		string get_icon();
+
+		/* Inform the service that we're done with it
+		 */
+		void done();
+	};
+};
+
+#endif
