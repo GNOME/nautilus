@@ -15,18 +15,16 @@
 #   link -> henvisning (ifølge ordlisten), (som udsagnsord) kæde sammen
 #   location -> placering, sted
 #   permissions -> rettigheder
-#   script -> program (BEMÆRK!)
+#   script -> program, tekstprogram (når distinktion er nødvendig)
 #   service -> tjeneste
 #   side bar -> sidepanel (alle andre 'bar' er linjer)
 #   trash -> papirkurven
 #
-# RETMIG: der er brug for en grundig gennemlæsning af alle teksterne
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2002-11-25 21:44-0500\n"
-"PO-Revision-Date: 2002-11-25 23:00+0100\n"
+"POT-Creation-Date: 2002-11-27 00:15+0100\n"
+"PO-Revision-Date: 2002-11-27 00:13+0100\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -51,7 +49,7 @@ msgstr ""
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:4
 msgid "Nautilus component adapter factory"
-msgstr "Nautilus komponentindpasningsfabrik"
+msgstr "Komponentindpasningsfabrik til Nautilus"
 
 #: components/adapter/main.c:100
 msgid "bonobo_ui_init() failed."
@@ -65,11 +63,11 @@ msgstr "Emblemer"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:2
 msgid "Nautilus Emblem side pane"
-msgstr "Nautilus emblem-sidepanel"
+msgstr "Emblemsidepanel til Nautilus"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:3
 msgid "Nautilus Emblem view"
-msgstr "Nautilus emblem-visning"
+msgstr "Emblemvisning til Nautilus"
 
 #: components/emblem/nautilus-emblem-view.c:202
 #, c-format
@@ -77,6 +75,8 @@ msgid ""
 "Couldn't remove emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one you added yourself."
 msgstr ""
+"Kunne ikke slette emblemet med navnet '%s'. Dette skyldes sandsynligvis at "
+"emblemet er permanent og ikke et du selv har tilføjet."
 
 #: components/emblem/nautilus-emblem-view.c:203
 msgid "Couldn't remove emblem"
@@ -88,6 +88,8 @@ msgid ""
 "Couldn't rename emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one that you added yourself."
 msgstr ""
+"Kunne ikke omdøbe emblemet med navnet '%s'. Dette skyldes sandsynligvis at "
+"emblemet er permanent og ikke et du selv har tilføjet."
 
 #: components/emblem/nautilus-emblem-view.c:238
 msgid "Couldn't rename emblem"
@@ -114,18 +116,24 @@ msgid ""
 "Enter a descriptive name next to each emblem.  This name will be used in "
 "other places to identify the emblem."
 msgstr ""
+"Indtast et beskrivende navn ud for hvert emblem. Dette navn vil blive brugt "
+"andre steder til at identificere emblemet."
 
 #: components/emblem/nautilus-emblem-view.c:515
 msgid ""
 "Enter a descriptive name next to the emblem.  This name will be used in "
 "other places to identify the emblem."
 msgstr ""
+"Indtast et beskrivende navn ud for emblemet. Dette navn vil blive brugt "
+"andre steder til at identificere emblemet."
 
 #: components/emblem/nautilus-emblem-view.c:718
 msgid ""
 "Some of the files could not be added as emblems because they did not appear "
 "to be valid images."
 msgstr ""
+"Nogle af filerne kunne ikke tilføjes som emblemer fordi de ikke så ud til at "
+"være gyldige billeder."
 
 #: components/emblem/nautilus-emblem-view.c:718
 #: components/emblem/nautilus-emblem-view.c:720
@@ -137,10 +145,12 @@ msgid ""
 "None of the files could not be added as emblems because they did not appear "
 "to be valid images."
 msgstr ""
+"Ingen af filerne kunne tilføjes som emblemer fordi de ikke så ud til at være "
+"gyldige billeder."
 
 #: components/emblem/nautilus-emblem-view.c:741
 msgid "The dragged text was not a valid file location."
-msgstr ""
+msgstr "Den trækkede tekst var ikke en gyldig filplacering."
 
 #: components/emblem/nautilus-emblem-view.c:741
 #: components/emblem/nautilus-emblem-view.c:765
@@ -152,11 +162,11 @@ msgstr "Kunne ikke tilføje emblem"
 #: components/emblem/nautilus-emblem-view.c:813
 #, c-format
 msgid "The file '%s' does not appear to be a valid image."
-msgstr ""
+msgstr "Filen '%s' ser ikke ud til at være et gyldigt billede."
 
 #: components/emblem/nautilus-emblem-view.c:763
 msgid "The dragged file does not appear to be a valid image."
-msgstr ""
+msgstr "Den trækkede fil ser ikke ud til at være et gyldigt billede."
 
 #: components/emblem/nautilus-emblem-view.c:878 data/browser.xml.h:35
 msgid "Erase"
@@ -266,19 +276,16 @@ msgid "Image"
 msgstr "Billede"
 
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:2
-#, fuzzy
 msgid "Image Properties content view component"
-msgstr "Prøve-indholdsvisningskomponent"
+msgstr "Indholdsvisningskomponent til billedegenskaber"
 
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:3
-#, fuzzy
 msgid "Nautilus Image Properties view"
-msgstr "Nautilus trævisning"
+msgstr "Billedegenskabsvisning til Nautilus"
 
 #: components/image_properties/nautilus-image-properties-view.c:90
-#, fuzzy
 msgid "Failed to load image information"
-msgstr "Redigér oplysningerne i genvejen"
+msgstr "Kunne ikke indlæse billedinformation"
 
 #: components/image_properties/nautilus-image-properties-view.c:142
 #, c-format
@@ -429,11 +436,11 @@ msgstr "giver en visuel status"
 
 #: components/tree/Nautilus_View_tree.server.in.in.h:1
 msgid "Nautilus Tree side pane"
-msgstr "Nautilus træ-sidepanel"
+msgstr "Træsidepanel til Nautilus"
 
 #: components/tree/Nautilus_View_tree.server.in.in.h:2
 msgid "Nautilus Tree view"
-msgstr "Nautilus trævisning"
+msgstr "Trævisning til Nautilus"
 
 #: components/tree/Nautilus_View_tree.server.in.in.h:3
 msgid "Tree"
@@ -1283,13 +1290,13 @@ msgstr ""
 #. * keyword to us anyway
 #.
 #: libnautilus-private/nautilus-emblem-utils.c:206
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Sorry, but there is already an emblem named \"%s\".  Please choose a "
 "different name for it."
 msgstr ""
-"Desværre, navnet \"%s\" er et eksisterende nøgleord. Benyt venligst et andet "
-"navn."
+"Desværre, der eksisterer allerede et emblem med navnet \"%s\". Vælg venligst "
+"et andet navn."
 
 #: libnautilus-private/nautilus-emblem-utils.c:229
 msgid "Sorry, unable to save custom emblem."
@@ -2830,49 +2837,44 @@ msgid "Draw a frame around unselected text"
 msgstr "Tegn en ramme omkring ikke-markeret tekst"
 
 #: libnautilus-private/nautilus-icon-container.c:3499
-#, fuzzy
 msgid "Selection Box Color"
-msgstr "Markering i indholds_fanebladet"
+msgstr "Markeringsboksens farve"
 
 #: libnautilus-private/nautilus-icon-container.c:3500
-#, fuzzy
 msgid "Color of the selection box"
-msgstr "Gå til hjemmemappen"
+msgstr "Farven for markeringsboksen"
 
 #: libnautilus-private/nautilus-icon-container.c:3505
-#, fuzzy
 msgid "Selection Box Alpha"
-msgstr "Vælg alt"
+msgstr "Markeringsboksens alfa"
 
 #: libnautilus-private/nautilus-icon-container.c:3506
 msgid "Opacity of the selection box"
-msgstr ""
+msgstr "Uigennemsigtigheden af markeringsboksen"
 
 #: libnautilus-private/nautilus-icon-container.c:3513
 msgid "Highlight Alpha"
-msgstr ""
+msgstr "Fremhævningsalfa"
 
 #: libnautilus-private/nautilus-icon-container.c:3514
-#, fuzzy
 msgid "Opacity of the highlight for selected icons"
-msgstr "fremhævet til markering"
+msgstr "Uigennemsigtigheden af fremhævningen for markerede ikoner"
 
 #: libnautilus-private/nautilus-icon-container.c:3520
 msgid "Light Info Color"
-msgstr ""
+msgstr "Lys infofarve"
 
 #: libnautilus-private/nautilus-icon-container.c:3521
 msgid "Color used for information text against a dark background"
-msgstr ""
+msgstr "Farve der benyttes til infotekst mod en mørk baggrund"
 
 #: libnautilus-private/nautilus-icon-container.c:3526
-#, fuzzy
 msgid "Dark Info Color"
-msgstr "Mørk kork"
+msgstr "Mørk infofarve"
 
 #: libnautilus-private/nautilus-icon-container.c:3527
 msgid "Color used for information text against a light background"
-msgstr ""
+msgstr "Farve der benyttes til infotekst mod en lys baggrund"
 
 #: libnautilus-private/nautilus-icon-dnd.c:725
 msgid ""
@@ -3711,45 +3713,46 @@ msgstr "Fabrik for Nautilus"
 
 #: src/Nautilus_shell.server.in.h:7
 msgid "Nautilus file manager component that shows a scrollable list"
-msgstr "Nautilus filhåndteringskomponent der viser en liste med rullebjælke."
+msgstr ""
+"Filhåndteringskomponent til Nautilus der viser en liste med rullebjælke."
 
 #: src/Nautilus_shell.server.in.h:8
 msgid ""
 "Nautilus file manager component that shows a scrollable list for search "
 "results"
 msgstr ""
-"Nautilus filhåndteringskomponent der viser en liste med rullebjælke til "
+"Filhåndteringskomponent til Nautilus der viser en liste med rullebjælke til "
 "søgeresultater."
 
 #: src/Nautilus_shell.server.in.h:9
 msgid "Nautilus file manager component that shows a two-dimensional icon space"
 msgstr ""
-"Nautilus filhåndteringskomponent der viser et to-dimensionalt areal med "
+"Filhåndteringskomponent til Nautilus der viser et to-dimensionalt areal med "
 "ikoner"
 
 #: src/Nautilus_shell.server.in.h:10
 msgid "Nautilus file manager component that shows icons on the desktop"
-msgstr "Nautilus filhåndteringskomponent der viser ikoner på skrivebordet"
+msgstr "Filhåndteringskomponent til Nautilus der viser ikoner på skrivebordet"
 
 #: src/Nautilus_shell.server.in.h:11
 msgid "Nautilus file manager desktop icon view"
-msgstr "Nautilus filhåndteringsskrivebordsikonvisning"
+msgstr "Filhåndteringsskrivebordsikonvisning til Nautilus"
 
 #: src/Nautilus_shell.server.in.h:12
 msgid "Nautilus file manager icon view"
-msgstr "Nautilus filhåndteringsikonvisning"
+msgstr "Filhåndteringsikonvisning til Nautilus"
 
 #: src/Nautilus_shell.server.in.h:13
 msgid "Nautilus file manager list view"
-msgstr "Nautilus filhåndteringslistevisning"
+msgstr "Filhåndteringslistevisning til Nautilus"
 
 #: src/Nautilus_shell.server.in.h:14
 msgid "Nautilus file manager search results list view"
-msgstr "Nautilus filhåndteringssøgeresultat-listevisning"
+msgstr "filhåndteringssøgeresultat-listevisning til Nautilus"
 
 #: src/Nautilus_shell.server.in.h:15
 msgid "Nautilus metafile factory"
-msgstr "Nautilus metafilsfabrik"
+msgstr "Metafilsfabrik til Nautilus"
 
 #: src/Nautilus_shell.server.in.h:16
 msgid "Nautilus shell"
@@ -3760,7 +3763,7 @@ msgid ""
 "Nautilus shell operations that can be done from subsequent command-line "
 "invocations"
 msgstr ""
-"Nautilus skaloperationer der kan udføres fra efterfølgende "
+"Skaloperationer til Nautilus der kan udføres fra efterfølgende "
 "kommandolinjekørsler"
 
 #: src/Nautilus_shell.server.in.h:18
@@ -3772,14 +3775,12 @@ msgid "Search List"
 msgstr "Søgeliste"
 
 #: src/Nautilus_shell.server.in.h:20
-#, fuzzy
 msgid "View as _Icons"
-msgstr "Vis som ikoner"
+msgstr "Vis som _ikoner"
 
 #: src/Nautilus_shell.server.in.h:21
-#, fuzzy
 msgid "View as _List"
-msgstr "Vis som liste"
+msgstr "Vis som _liste"
 
 #: src/file-manager/fm-desktop-icon-view.c:785
 msgid "Background"
@@ -4182,16 +4183,15 @@ msgid "_Copy Files"
 msgstr "_Kopiér filer"
 
 #: src/file-manager/fm-directory-view.c:4928
-#, fuzzy
 msgid ""
 "This link can't be used, because it has no target. Do you want to move this "
 "link to the Trash?"
 msgstr ""
-"Denne henvisning kan ikke benyttes da den ikke har et mål i den anden ende. "
-"Ønsker du at smide henvisningen i papirkurven? "
+"Denne henvisning kan ikke benyttes da den ikke har en destination. Ønsker du "
+"at smide henvisningen i papirkurven? "
 
 #: src/file-manager/fm-directory-view.c:4931
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
 "want to move this link to the Trash?"
@@ -4691,9 +4691,8 @@ msgstr ""
 "%s"
 
 #: src/file-manager/fm-properties-window.c:2359
-#, fuzzy
 msgid "Couldn't show help"
-msgstr "Kunne ikke tilføje tema"
+msgstr "Kunne ikke vise hjælp"
 
 #: src/file-manager/fm-properties-window.c:2621
 msgid "Cancel Showing Properties Window?"
@@ -5475,39 +5474,39 @@ msgstr "<span weight=\"bold\">Kørbare tekstfiler</span>"
 
 #: src/nautilus-file-management-properties.glade.h:26
 msgid "<span weight=\"bold\">Folders</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Mapper</span>"
 
 #: src/nautilus-file-management-properties.glade.h:27
 msgid "<span weight=\"bold\">Icon Captions</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Ikontekster</span>"
 
 #: src/nautilus-file-management-properties.glade.h:28
 msgid "<span weight=\"bold\">Icon View Defaults</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Ikonvisningsforvalg</span>"
 
 #: src/nautilus-file-management-properties.glade.h:29
 msgid "<span weight=\"bold\">Image Files</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Billedfiler</span>"
 
 #: src/nautilus-file-management-properties.glade.h:30
 msgid "<span weight=\"bold\">List View Defaults</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Listevisningsforvalg</span>"
 
 #: src/nautilus-file-management-properties.glade.h:31
 msgid "<span weight=\"bold\">Sound Files</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Lydfiler</span>"
 
 #: src/nautilus-file-management-properties.glade.h:32
 msgid "<span weight=\"bold\">Text Files</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Tekstfiler</span>"
 
 #: src/nautilus-file-management-properties.glade.h:33
 msgid "<span weight=\"bold\">Trash</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Papirkurv</span>"
 
 #: src/nautilus-file-management-properties.glade.h:34
 msgid "<span weight=\"bold\">Tree View Defaults</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Trævisningsforvalg</span>"
 
 #: src/nautilus-file-management-properties.glade.h:37
 msgid "Always"
@@ -5518,37 +5517,32 @@ msgid "Ask before _emptying the Trash or deleting files"
 msgstr "Spørg før _tømning af papirkurven eller sletning af filer"
 
 #: src/nautilus-file-management-properties.glade.h:44
-#, fuzzy
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
 msgstr ""
-"Vælg rækkefølgen for information der skal vises under ikonnavnene.\n"
-"Mere information dukker op når du zoomer nærmere ind."
+"Vælg rækkefølgen af oplysninger der vises under ikonnavnene. Yderligere "
+"oplysninger dukker op når du zoomer ind."
 
 #: src/nautilus-file-management-properties.glade.h:45
 msgid "Default _zoom level:"
 msgstr "Start_zoomniveau"
 
 #: src/nautilus-file-management-properties.glade.h:46
-#, fuzzy
 msgid "E_xecute scripts when they are clicked"
-msgstr "_Kør filer når der klikkes på dem"
+msgstr "_Kør tekstprogrammer når der klikkes på dem"
 
 #: src/nautilus-file-management-properties.glade.h:47
-#, fuzzy
 msgid "File Management Preferences"
-msgstr "Nulstil til visningens standardindstillinger"
+msgstr "Indstillinger for filhåndtering"
 
 #: src/nautilus-file-management-properties.glade.h:48
-#, fuzzy
 msgid "Files and Folders"
-msgstr "mappe uden navn"
+msgstr "Filer og mapper"
 
 #: src/nautilus-file-management-properties.glade.h:49
-#, fuzzy
 msgid "I_nclude a Delete command that bypasses Trash"
-msgstr "_Medtag en slet-kommando der ikke benytter papirkurven"
+msgstr "_Medtag en sletkommando der ikke benytter papirkurven"
 
 # en smule tekst under hvert ikon
 #: src/nautilus-file-management-properties.glade.h:50
@@ -5556,94 +5550,80 @@ msgid "Icon Captions"
 msgstr "Ikontekster"
 
 #: src/nautilus-file-management-properties.glade.h:53
-#, fuzzy
 msgid "Local Files Only"
-msgstr "Kun _lokale filer"
+msgstr "Kun lokale filer"
 
 #: src/nautilus-file-management-properties.glade.h:55
-#, fuzzy
 msgid "Never"
-msgstr "_Aldrig"
+msgstr "Aldrig"
 
 #: src/nautilus-file-management-properties.glade.h:57
-#, fuzzy
 msgid "Preview _sound files:"
-msgstr "Smughør lydfiler"
+msgstr "Smughør _lydfiler:"
 
 #: src/nautilus-file-management-properties.glade.h:58
-#, fuzzy
 msgid "Show _number of items:"
-msgstr "Vis antallet af objekter i mapper"
+msgstr "Vis _antallet af objekter i mapper:"
 
 #: src/nautilus-file-management-properties.glade.h:59
-#, fuzzy
 msgid "Show _only folders"
-msgstr "_Vis kun mapper"
+msgstr "Vis kun _mapper"
 
 #: src/nautilus-file-management-properties.glade.h:60
-#, fuzzy
 msgid "Show _thumbnails:"
-msgstr "Vis miniaturer for billedfiler"
+msgstr "Vis m_iniaturer:"
 
 #: src/nautilus-file-management-properties.glade.h:61
 msgid "Show hidden and _backup files"
-msgstr ""
+msgstr "Vis skjulte filer og sikkerheds_kopier"
 
 #: src/nautilus-file-management-properties.glade.h:62
-#, fuzzy
 msgid "Show te_xt in icons:"
-msgstr "Vis tekst i ikoner"
+msgstr "Vis t_ekst i ikoner:"
 
 #: src/nautilus-file-management-properties.glade.h:63
-#, fuzzy
 msgid "Sort _folders before files"
-msgstr "Mapper _før filer"
+msgstr "Sortér mapper f_ør filer"
 
 #: src/nautilus-file-management-properties.glade.h:64
 msgid "Sort in _reverse"
 msgstr "Sortér i om_vendt rækkefølge"
 
 #: src/nautilus-file-management-properties.glade.h:65
-#, fuzzy
 msgid "Use _manual layout"
-msgstr "Benyt _tættere placering"
+msgstr "Benyt manuel _placering"
 
 #: src/nautilus-file-management-properties.glade.h:66
-#, fuzzy
 msgid "View _new folders using:"
-msgstr "_Vis nye mapper med:"
+msgstr "Vis _nye mapper med:"
 
 #: src/nautilus-file-management-properties.glade.h:67
 msgid "Views"
 msgstr "Visninger"
 
 #: src/nautilus-file-management-properties.glade.h:68
-#, fuzzy
 msgid "_Arrange Items:"
-msgstr "_Arrangér objekter"
+msgstr "_Arrangér objekter:"
 
 #: src/nautilus-file-management-properties.glade.h:70
 msgid "_Default zoom level:"
-msgstr "S_tartzoomniveau"
+msgstr "S_tartzoomniveau:"
 
 #: src/nautilus-file-management-properties.glade.h:71
-#, fuzzy
 msgid "_Only for files smaller than:"
-msgstr "_Opret ikke miniaturer for filer større end:"
+msgstr "Kun for filer _mindre end:"
 
 #: src/nautilus-file-management-properties.glade.h:72
 msgid "_Open each file or folder in a new window"
 msgstr "_Åbn hver fil eller mappe i et nyt vindue"
 
 #: src/nautilus-file-management-properties.glade.h:73
-#, fuzzy
 msgid "_Use compact layout"
 msgstr "Benyt _tættere placering"
 
 #: src/nautilus-file-management-properties.glade.h:74
-#, fuzzy
 msgid "_View scripts when they are clicked"
-msgstr "_Kør filer når der klikkes på dem"
+msgstr "_Vis tekstprogrammer når der klikkes på dem"
 
 #: src/nautilus-first-time-druid.c:40
 msgid ""
@@ -6072,6 +6052,8 @@ msgid ""
 "Couldn't execute nautilus\n"
 "Make sure nautilus is in your path and correctly installed"
 msgstr ""
+"Kunne ikke køre Nautilus\n"
+"Kontrollér at \"nautilus\" er i din PATH og er korrekt installeret"
 
 #: src/nautilus-server-connect.c:387
 #, c-format
@@ -6080,16 +6062,21 @@ msgid ""
 "Please make sure that the address is correct and alternatively, type in this "
 "address in the file manager directly"
 msgstr ""
+"Kunne ikke tilkoble til URI'en %s\n"
+"Kontroller at adressen er korrekt og prøv evt. at skrive adressen direkte in "
+"i filhåndteringen"
 
 #: src/nautilus-server-connect.c:452
 msgid ""
 "Glade file for the connect to server program is missing.\n"
 "Please check your installation of nautilus"
 msgstr ""
+"Glade-fil til forbindelsens til serverprogrammet mangler.\n"
+"Kontrollér installationen af Nautilus"
 
 #: src/nautilus-server-connect.desktop.in.h:1
 msgid "Add a new server to your Network Servers and connect to it"
-msgstr ""
+msgstr "Tilføj en ny server til dine netværksservere og tilkobl til den"
 
 #: src/nautilus-server-connect.desktop.in.h:2
 #: src/nautilus-server-connect.glade.h:2
@@ -6098,7 +6085,7 @@ msgstr "Ny server"
 
 #: src/nautilus-server-connect.glade.h:1
 msgid "*"
-msgstr ""
+msgstr "*"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
@@ -6423,14 +6410,13 @@ msgid "_View as..."
 msgstr "_Vis som..."
 
 #: src/nautilus-side-pane.c:395
-#, fuzzy
 msgid "Close the side pane"
-msgstr "Notesidepanel"
+msgstr "Luk sidepanelet"
 
 #: src/nautilus-side-pane.c:566
-#, fuzzy, c-format
+#, c-format
 msgid "Show %s"
-msgstr "Vis papirkurv"
+msgstr "Vis %s"
 
 #: src/nautilus-switchable-search-bar.c:129
 msgid "Find:"
@@ -6687,9 +6673,8 @@ msgid "Go forward a number of pages"
 msgstr "Gå nogle sider fremad"
 
 #: src/nautilus-window.c:669
-#, fuzzy
 msgid "Information"
-msgstr "International"
+msgstr "Information"
 
 #: src/nautilus-window.c:1183
 #, c-format
@@ -6737,99 +6722,12 @@ msgid "Set the zoom level of the current view"
 msgstr "Angiv zoomniveuaet for den aktuelle visning"
 
 #: src/network-scheme.desktop.in.h:1
-#, fuzzy
 msgid "Network Servers"
-msgstr "Netraverse"
+msgstr "Netværksservere"
 
 #: src/network-scheme.desktop.in.h:2
-#, fuzzy
 msgid "View your network servers in the Nautilus file manager"
-msgstr "Vis din hjemmemappe i filhåndteringen Nautilus"
-
-#~ msgid "Content Loser"
-#~ msgstr "Indholdstaber"
-
-#~ msgid "Content Loser Viewer"
-#~ msgstr "Indholdstaber-viser"
-
-#~ msgid "Nautilus Content Loser"
-#~ msgstr "Nautilus indholdstaber"
-
-#~ msgid "Nautilus content loser component's factory"
-#~ msgstr "Fabrik for Nautilus indholdstaber-komponenten"
-
-#~ msgid "Nautilus content loser factory"
-#~ msgstr "Nautilus indholdstaber-komponent"
-
-#~ msgid "Nautilus content view that fails on command"
-#~ msgstr "Nautilus indholdsvisning som fejlede ved kommando"
-
-#~ msgid "View as Content Loser"
-#~ msgstr "Vis som indholdstaber"
-
-#~ msgid "Kill Content Loser"
-#~ msgstr "Dræb indholdstaber"
-
-#~ msgid "Kill the Loser content view"
-#~ msgstr "Dræb taberens indholdsvisning"
-
-#~ msgid "_Kill Content Loser"
-#~ msgstr "_Dræb indholdstaber"
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "This is a Nautilus content view that fails on demand."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Dette er en indholdsvisningskomponent for Nautilus som fejler når det "
-#~ "kræves."
-
-#~ msgid "You have tried to kill the Content Loser"
-#~ msgstr "Du har forsøgt at dræbe indholdstaberen"
-
-#~ msgid "Nautilus Sidebar Loser"
-#~ msgstr "Dræb sidepanelstaber"
-
-#~ msgid "Nautilus sidebar loser component's factory"
-#~ msgstr "Fabrik for Nautilus sidepanelstaber-komponenten"
-
-#~ msgid "Nautilus sidebar loser factory"
-#~ msgstr "Fabrik for Nautilus sidepanelstaber"
-
-#~ msgid "Nautilus sidebar view that fails on command"
-#~ msgstr "Nautilus sidepanelsvisning som fejler på kommando"
-
-#~ msgid "Sidebar Loser"
-#~ msgstr "Sidepanelstaber"
-
-#~ msgid "Kill Sidebar Loser"
-#~ msgstr "Dræb sidepanelstaber"
-
-#~ msgid "Kill the Loser sidebar panel"
-#~ msgstr "Dræb sidepanelstaberen"
-
-#~ msgid "_Kill Sidebar Loser"
-#~ msgstr "_Dræb tabersidepanelet"
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "Loser sidebar."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Taber-sidepanel."
-
-#~ msgid "You have tried to kill the Sidebar Loser"
-#~ msgstr "Du har prøvet at dræbe sidepanelstaberen"
-
-#~ msgid "Nautilus Sample view"
-#~ msgstr "Nautilus prøvevisning"
-
-#~ msgid "Nautilus Sample view factory"
-#~ msgstr "Fabrik for Nautilus prøvevisning"
+msgstr "Vis dine netværksservere i Nautilus-filhåndteringen"
 
 #~ msgid "Sample"
 #~ msgstr "Prøve"
@@ -6968,87 +6866,14 @@ msgstr "Vis din hjemmemappe i filhåndteringen Nautilus"
 #~ msgid "Icon View Defaults"
 #~ msgstr "Ikonvisningsforvalg"
 
-#~ msgid "_Arrange items:"
-#~ msgstr "_Arrangér objekter:"
-
-#~ msgid "_Sort in reverse"
-#~ msgstr "_Sortér i omvendt rækkefølge"
-
-#~ msgid "Use co_mpact layout"
-#~ msgstr "Benyt _tættere placering"
-
 #~ msgid "List View Defaults"
 #~ msgstr "Listevisningsforvalg"
-
-#~ msgid "Arrange _items:"
-#~ msgstr "_Arrangér objekter:"
-
-#~ msgid "Search Complexity Options"
-#~ msgstr "Indstillinger for søgningskompleksitet"
-
-#~ msgid "search type to do by default"
-#~ msgstr "standard-søgetype"
 
 #~ msgid "Built-in Bookmarks"
 #~ msgstr "Indbyggede bogmærker"
 
 #~ msgid "_Don't include the built-in bookmarks in the Bookmarks menu"
 #~ msgstr "_Medtag ikke indbyggede bogmærker i bogmærkemenuen"
-
-#, fuzzy
-#~ msgid "Always show text in icons"
-#~ msgstr "Vis tekst i ikoner"
-
-#, fuzzy
-#~ msgid "Show text in icons for local files"
-#~ msgstr "Slippedestination understøtter kun lokale filer"
-
-#, fuzzy
-#~ msgid "Never show text in icons"
-#~ msgstr "Vis tekst i ikoner"
-
-#, fuzzy
-#~ msgid "Always show the number of items in folders"
-#~ msgstr "Vis antallet af objekter i mapper"
-
-#, fuzzy
-#~ msgid "Show the number of items in local folders"
-#~ msgstr "Vis antallet af objekter i mapper"
-
-#, fuzzy
-#~ msgid "Never show the number of items in folders"
-#~ msgstr "Vis antallet af objekter i mapper"
-
-#, fuzzy
-#~ msgid "Show thumbnails for local files"
-#~ msgstr "Vis miniaturer for billedfiler"
-
-#, fuzzy
-#~ msgid "Always preview sound files"
-#~ msgstr "Smughør lydfiler"
-
-#, fuzzy
-#~ msgid "Preview local sound files"
-#~ msgstr "Smughør lydfiler"
-
-#, fuzzy
-#~ msgid "Never preview sound files"
-#~ msgstr "Smughør lydfiler"
-
-#~ msgid "Show Text in Icons"
-#~ msgstr "Vis tekst i ikoner"
-
-#~ msgid "Show Number of Items in Folders"
-#~ msgstr "Vis antallet af objekter i mapper"
-
-#~ msgid "Show Thumbnails for Image Files"
-#~ msgstr "Vis miniaturer for billedfiler"
-
-#~ msgid "_Do not make thumbnails for files larger than:"
-#~ msgstr "_Opret ikke miniaturer for filer større end:"
-
-#~ msgid "Preview Sound Files"
-#~ msgstr "Smughør lydfiler"
 
 #~ msgid "Tabs"
 #~ msgstr "Faner"
