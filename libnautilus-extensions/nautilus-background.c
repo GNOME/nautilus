@@ -210,8 +210,7 @@ nautilus_background_set_combine_mode (NautilusBackground *background, gboolean n
 NautilusBackgroundImagePlacement
 nautilus_background_get_image_placement (NautilusBackground *background)
 {
-	g_return_val_if_fail (NAUTILUS_IS_BACKGROUND (background),
-			      NAUTILUS_BACKGROUND_TILED);
+	g_return_val_if_fail (NAUTILUS_IS_BACKGROUND (background), NAUTILUS_BACKGROUND_TILED);
 
 	return background->details->image_placement;
 }
@@ -258,7 +257,7 @@ reset_cached_color_info (NautilusBackground *background)
 }
 
 static void
-ensure_gradient_buffered (NautilusBackground *background, int new_width, int new_height)
+ensure_gradient_buffered (NautilusBackground *background, int dest_width, int dest_height)
 {
 	int num_pixels;
 
@@ -274,7 +273,7 @@ ensure_gradient_buffered (NautilusBackground *background, int new_width, int new
 		return;
 	}
 
-	num_pixels = background->details->gradient_is_horizontal ? new_width : new_height;
+	num_pixels = background->details->gradient_is_horizontal ? dest_width : dest_height;
 
 	if (background->details->gradient_num_pixels == num_pixels) {
 		return;
@@ -368,46 +367,66 @@ gradient_helper_h (GnomeCanvasBuf *buf, art_u8 *gradient_buff)
 static void
 fill_canvas_from_gradient_buffer (GnomeCanvasBuf *buf, NautilusBackground *background)
 {
+	int buf_edge;
+	
 	g_return_if_fail (background->details->gradient_buffer != NULL);
 
 	/* FIXME bugzilla.eazel.com 415: This hack is needed till we fix it so the
 	 * background doesn't scroll.
-	 * 
+	 *
 	 * I.e. currently you can scroll off the end of the gradient - and we
 	 * handle this by pegging it the the last rgb value.
+	 *
+	 * It might be needed permanently after depending on how this is fixed.
+	 * If we tie gradients to the boundry of icon placement (as opposed to
+	 * window size) then when dragging an icon you might scroll off the
+	 * end of the gradient - which will get recaluated after the drop.
 	 */
-	if (background->details->gradient_is_horizontal) {
-		if (buf->rect.x1 > background->details->gradient_num_pixels) {
-			art_u8 *rgb = background->details->gradient_buffer + (background->details->gradient_num_pixels - 1) * 3;
-			nautilus_gnome_canvas_fill_rgb (buf, rgb[0], rgb[1], rgb[2]);
-			return;
-		}
-	} else {
-		if (buf->rect.y1 > background->details->gradient_num_pixels) {
-			art_u8 *rgb = background->details->gradient_buffer + (background->details->gradient_num_pixels - 1) * 3;
-			nautilus_gnome_canvas_fill_rgb (buf, rgb[0], rgb[1], rgb[2]);
-			return;
-		}
+	buf_edge = background->details->gradient_is_horizontal ? buf->rect.x1 : buf->rect.y1;
+	if (buf_edge > background->details->gradient_num_pixels) {
+		art_u8 *rgb = background->details->gradient_buffer + (background->details->gradient_num_pixels - 1) * 3;
+		nautilus_gnome_canvas_fill_rgb (buf, rgb[0], rgb[1], rgb[2]);
+		return;
 	}
 
 	(background->details->gradient_is_horizontal ? gradient_helper_h : gradient_helper_v) (buf, background->details->gradient_buffer);
 }
 
+/* Initializes a pseudo-canvas buf so canvas drawing routines can be used to draw into a pixbuf.
+ */
 static void
-ensure_image_scaled (NautilusBackground *background, int new_width, int new_height)
+canvas_buf_from_pixmap (GnomeCanvasBuf* buf, GdkPixbuf *pixbuf, int x, int y, int width, int height)
 {
-	if (background->details->image != NULL) {
+	buf->buf =  gdk_pixbuf_get_pixels (pixbuf);
+	buf->buf_rowstride =  gdk_pixbuf_get_rowstride (pixbuf);
+	buf->rect.x0 = x;
+	buf->rect.y0 = y;
+	buf->rect.x1 = x + width;
+	buf->rect.y1 = y + height;
+	buf->bg_color = 0xFFFFFFFF;
+	buf->is_bg = TRUE;
+	buf->is_buf = FALSE;
+}
 
-		int cur_width;
-		int cur_height;
+static void
+ensure_image_scaled (NautilusBackground *background, int dest_width, int dest_height, GdkRectangle *image_rect)
+{
+	if (background->details->image == NULL) {
+		image_rect->x = 0;
+		image_rect->y = 0;
+		image_rect->width = 0;
+		image_rect->height = 0;
+	} else {
+		int image_width;
+		int image_height;
 		gboolean cur_scaled;
 		gboolean reload_image;
 		GdkPixbuf *scaled_pixbuf;
 
-		cur_width = gdk_pixbuf_get_width (background->details->image);
-		cur_height = gdk_pixbuf_get_height (background->details->image);
-		cur_scaled = cur_width != background->details->image_width_unscaled ||
-			     cur_height != background->details->image_height_unscaled;
+		image_width = gdk_pixbuf_get_width (background->details->image);
+		image_height = gdk_pixbuf_get_height (background->details->image);
+		cur_scaled = image_width != background->details->image_width_unscaled ||
+			     image_height != background->details->image_height_unscaled;
 		reload_image = FALSE;
 		scaled_pixbuf = NULL;
 	
@@ -417,31 +436,28 @@ ensure_image_scaled (NautilusBackground *background, int new_width, int new_heig
 			reload_image = cur_scaled;
 			break;
 		case NAUTILUS_BACKGROUND_SCALED:
-			if (cur_width != new_width || cur_height != new_height) {
+			if (image_width != dest_width || image_height != dest_height) {
 				if (cur_scaled) {
 					reload_image = TRUE;
 				} else {
-					scaled_pixbuf = gdk_pixbuf_scale_simple (background->details->image, new_width, new_height, GDK_INTERP_BILINEAR);
+					scaled_pixbuf = gdk_pixbuf_scale_simple (background->details->image, dest_width, dest_height, GDK_INTERP_BILINEAR);
 					gdk_pixbuf_unref (background->details->image);
 					background->details->image = scaled_pixbuf;
+					image_width = gdk_pixbuf_get_width (scaled_pixbuf);
+					image_height = gdk_pixbuf_get_height (scaled_pixbuf);
 				}
 			}
 			break;
 		case NAUTILUS_BACKGROUND_SCALED_ASPECT:
-			/* It's not scaled with aspect ration if: 
-			 *    cur_width/cur_height != image_width_unscaled/image_height_unscaled
-			 * or
-			 *    cur_width != new_width && cur_height != new_height
-			 *  (do this test avoiding the division)
-			 */
-			if ((cur_width*background->details->image_height_unscaled != cur_height*background->details->image_width_unscaled) ||
-			    (cur_width != new_width && cur_height != new_height)) {
+			if (!nautilus_gdk_pixbuf_is_scaled_to_fit (background->details->image, dest_width, dest_height)) {
 				if (cur_scaled) {
 					reload_image = TRUE;
 				} else {
-					scaled_pixbuf = nautilus_gdk_pixbuf_scale_to_fit (background->details->image, new_width, new_height);
+					scaled_pixbuf = nautilus_gdk_pixbuf_scale_to_fit (background->details->image, dest_width, dest_height);
 					gdk_pixbuf_unref (background->details->image);
 					background->details->image = scaled_pixbuf;
+					image_width = gdk_pixbuf_get_width (scaled_pixbuf);
+					image_height = gdk_pixbuf_get_height (scaled_pixbuf);
 				}
 			}
 			break;
@@ -451,45 +467,21 @@ ensure_image_scaled (NautilusBackground *background, int new_width, int new_heig
 			gdk_pixbuf_unref (background->details->image);
 			background->details->image = NULL;
 			start_loading_image (background);
+			image_rect->x = 0;
+			image_rect->y = 0;
+			image_rect->width = 0;
+			image_rect->height = 0;
+		} else if (background->details->image_placement == NAUTILUS_BACKGROUND_TILED) {
+			image_rect->x = 0;
+			image_rect->y = 0;
+			image_rect->width = dest_width;
+			image_rect->height = dest_height;
+		} else {
+			image_rect->x = (dest_width - image_width) / 2;
+			image_rect->y = (dest_height - image_height) / 2;
+			image_rect->width = image_width;
+			image_rect->height = image_height;
 		}
-	}
-}
-
-static gboolean
-nautilus_background_image_fully_obscures (NautilusBackground *background,
-					  int dest_width,
-					  int dest_height,
-					  gboolean use_alpha)
-{
-	int image_width;
-	int image_height;
-
-	/* This test is currently unnecessary since ensure_image_scaled
-	 * is called prior to each spot that calls this fn.
-	 */
-	ensure_image_scaled (background, dest_width, dest_height);
-
-	if (background->details->image == NULL) {
-		return FALSE;
-	}
-	
-	if (use_alpha && gdk_pixbuf_get_has_alpha (background->details->image)) {
-		return FALSE;
-	}
-	 
-	image_width = gdk_pixbuf_get_width (background->details->image);
-	image_height = gdk_pixbuf_get_height (background->details->image);
-	
-	switch (background->details->image_placement) {
-	case NAUTILUS_BACKGROUND_TILED:
-		return TRUE;
-	case NAUTILUS_BACKGROUND_SCALED:
-	case NAUTILUS_BACKGROUND_SCALED_ASPECT:
-	case NAUTILUS_BACKGROUND_CENTERED:
-		return !(image_width < dest_width || image_height < dest_height);
-	default:
-		g_assert_not_reached ();
-		return FALSE;
 	}
 }
 
@@ -505,6 +497,7 @@ nautilus_background_draw (NautilusBackground *background,
 			  int origin_x,
 			  int origin_y)
 {
+	GdkRectangle image_rect;
 	GdkPixbuf *pixbuf;
 	GnomeCanvasBuf buffer;
 	int image_width;
@@ -520,15 +513,7 @@ nautilus_background_draw (NautilusBackground *background,
 		pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, rectangle->width, rectangle->height);
 		
 		/* contrive a CanvasBuf structure to point to it */
-		buffer.buf =  gdk_pixbuf_get_pixels (pixbuf);
-		buffer.buf_rowstride =  gdk_pixbuf_get_rowstride (pixbuf);
-		buffer.rect.x0 = rectangle->x;
-		buffer.rect.y0 = rectangle->y;
-		buffer.rect.x1 = rectangle->x + rectangle->width;
-		buffer.rect.y1 = rectangle->y + rectangle->height;
-		buffer.bg_color = 0xFFFFFFFF;
-		buffer.is_bg = TRUE;
-		buffer.is_buf = FALSE;
+		canvas_buf_from_pixmap (&buffer, pixbuf, rectangle->x, rectangle->y, rectangle->width, rectangle->height);
 		
 		/* invoke the anti-aliased code to do the work */
 		nautilus_background_draw_aa (background, &buffer, rectangle->width, rectangle->height);
@@ -544,13 +529,17 @@ nautilus_background_draw (NautilusBackground *background,
 		
 		return;
 	}
+	
+	ensure_image_scaled (background, rectangle->width, rectangle->height, &image_rect);
 
-	ensure_image_scaled (background, rectangle->width, rectangle->height);
-	/* Not needed till we stop using nautilus_fill_rectangle_with_gradient
-	ensure_gradient_buffered (background, rectangle->width, rectangle->height);
-	*/
-
-	if (!nautilus_background_image_fully_obscures (background, rectangle->width, rectangle->height, FALSE)) {
+	/* FIXME bugzill.eazel.com 2280:
+	 * The rectangle we get passed here seems to be bogus.
+	 * It works since we end up drawing the whole image every time.
+	 * I think if we fix up the call (made in nautilus-background-canvas-group.c)
+	 * to pass the rect that needs updating, then we can optimize this.
+	 */
+	
+	if (!background->details->image || image_rect.width < rectangle->width || image_rect.height < rectangle->height) {
 		start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
 		end_color_spec = nautilus_gradient_get_end_color_spec (background->details->color);
 		horizontal_gradient = nautilus_gradient_is_horizontal (background->details->color);
@@ -640,29 +629,32 @@ draw_pixbuf_tiled_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer)
 }
 
 /* draw the background on the anti-aliased canvas */
-/* we support n-point gradients by looping on the color string */
-
 void
 nautilus_background_draw_aa (NautilusBackground *background,
 			     GnomeCanvasBuf *buffer,
 			     int entire_width,
 			     int entire_height)
 {
-	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
+	GdkRectangle image_rect;
 	
-	ensure_image_scaled (background, entire_width, entire_height);
+	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
 
+	ensure_image_scaled (background, entire_width, entire_height, &image_rect);
 
-	/* FIXME bugzilla.eazel.com 2280:
-	 * Now we may draw each update buffer twice: first with color/gradient, then
-	 * with the image. To fix this we should have the color/gradient drawn in the
-	 * cached image AND then be smart about if the update rect is background or
-	 * image or both.
-	 * 
-	 * Another thing to do is cache the nautilus_background_image_fully_obscures
-	 * value - there's no need to be recomputing it all the time.
+	/* If the image has alpha - we always draw the gradient behind it.
+	 * In principle, we could do better by having already drawn gradient behind
+	 * the scaled image. However, this would add a significant amount of
+	 * complexity to our image scaling/caching logic. I.e. it would tie the
+	 * scaled image to a location on the screen because it holds a gradient.
+	 * This is especially problematic for tiled images with alpha.
 	 */
-	if (!nautilus_background_image_fully_obscures (background, entire_width, entire_height, TRUE)) {
+
+	if (!background->details->image ||
+	     gdk_pixbuf_get_has_alpha (background->details->image) ||
+	     buffer->rect.x0  < image_rect.x ||
+	     buffer->rect.y0  < image_rect.y ||
+	     buffer->rect.x1  > (image_rect.x + image_rect.width) ||
+	     buffer->rect.y1  > (image_rect.y + image_rect.height)) {
 		if (background->details->is_solid_color) {
 			nautilus_gnome_canvas_fill_rgb (buffer,
 							background->details->solid_color.red,
