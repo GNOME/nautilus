@@ -149,7 +149,7 @@ enum {
 
 /* sort modes */
 enum {
-	SORT_BY_NUMBER,
+	SORT_BY_NUMBER = 0,
 	SORT_BY_TITLE,
 	SORT_BY_ARTIST,
 	SORT_BY_YEAR,
@@ -205,6 +205,7 @@ static PlayerState get_player_state 			      (NautilusMusicView      *music_view
 static void set_player_state 				      (NautilusMusicView      *music_view, 
 							       PlayerState 	      state);
 
+
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMusicView,
                                    nautilus_music_view,
                                    GTK_TYPE_EVENT_BOX)
@@ -229,6 +230,7 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 {
 	GtkWidget *scrollwindow, *label;
 	GtkWidget *button;
+	GtkCList *clist;
         /* FIXME: I think this is not portable. It works in gcc, but not other C compilers. */
 	char *titles[] = {N_("Track "), N_("Title"), N_("Artist"), N_("Year"), N_("Bitrate "), N_("Time "), N_("Album"),  N_("Comment"), N_("Channels"),  N_("Sample Rate"),};
 	int i;
@@ -312,6 +314,15 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	gtk_widget_show (music_view->details->song_list);
 	gtk_widget_show (scrollwindow);
 
+	/* Stash column sort modes for later retreival */
+	clist = GTK_CLIST (music_view->details->song_list);
+	gtk_object_set_data (GTK_OBJECT (clist->column[0].button), "SortMode", (gpointer)SORT_BY_NUMBER);
+	gtk_object_set_data (GTK_OBJECT (clist->column[1].button), "SortMode", (gpointer)SORT_BY_TITLE);
+	gtk_object_set_data (GTK_OBJECT (clist->column[2].button), "SortMode", (gpointer)SORT_BY_ARTIST);
+	gtk_object_set_data (GTK_OBJECT (clist->column[3].button), "SortMode", (gpointer)SORT_BY_YEAR);
+	gtk_object_set_data (GTK_OBJECT (clist->column[4].button), "SortMode", (gpointer)SORT_BY_BITRATE);
+	gtk_object_set_data (GTK_OBJECT (clist->column[5].button), "SortMode", (gpointer)SORT_BY_TIME);
+	
 	/* We have to know when we the adjustment is changed to cause a redraw due to a lame CList bug */
 	gtk_signal_connect (GTK_OBJECT (gtk_clist_get_vadjustment (GTK_CLIST (music_view->details->song_list))),
 			    "value-changed", value_changed_callback, music_view->details->song_list);
@@ -427,7 +438,7 @@ static void
 selection_callback (GtkCList *clist, int row, int column, GdkEventButton *event, NautilusMusicView *music_view)
 {
 	gboolean is_playing_or_paused;
-	char *song_name;
+	SongInfo *song_info;
 	PlayerState state;
 	
 	state = get_player_state (music_view);
@@ -442,8 +453,8 @@ selection_callback (GtkCList *clist, int row, int column, GdkEventButton *event,
 		stop_playing_file (music_view);
         }
         
-        song_name = gtk_clist_get_row_data (clist, row);
-	if (song_name == NULL) {
+        song_info = gtk_clist_get_row_data (clist, row);
+	if (song_info == NULL) {
 		return;
         }
 
@@ -467,15 +478,165 @@ value_changed_callback (GtkAdjustment *adjustment, GtkCList *clist)
 }
 
 
+static gint
+compare_song_numbers (GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
+{
+	GtkCListRow *row1, *row2;
+	SongInfo *info1, *info2;
+	
+	row1 = (GtkCListRow *) ptr1;
+	row2 = (GtkCListRow *) ptr2;
+	
+	info1 = row1->data;
+	info2 = row2->data;
+	
+	if (info1 == NULL || info2 == NULL) {
+		return 0;
+	}
+		
+	return (int) info1->track_number - info2->track_number;
+}
+
+static int
+compare_song_titles (GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
+{
+	SongInfo *info1, *info2;
+	GtkCListRow *row1, *row2;
+	
+	row1 = (GtkCListRow *) ptr1;
+	row2 = (GtkCListRow *) ptr2;
+	
+	info1 = row1->data;
+	info2 = row2->data;
+
+	if (info1 == NULL || info2 == NULL) {
+		return 0;
+	}
+
+	return nautilus_strcoll (info1->title, info2->title);
+}
+
+static int
+compare_song_artists (GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
+{
+	SongInfo *info1, *info2;
+	GtkCListRow *row1, *row2;
+	
+	row1 = (GtkCListRow *) ptr1;
+	row2 = (GtkCListRow *) ptr2;
+	
+	info1 = row1->data;
+	info2 = row2->data;
+
+	if (info1 == NULL || info2 == NULL) {
+		return 0;
+	}
+
+	return nautilus_strcoll (info1->artist, info2->artist);
+}
+
+static int
+compare_song_times (GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
+{
+	SongInfo *info1, *info2;
+	GtkCListRow *row1, *row2;
+	
+	row1 = (GtkCListRow *) ptr1;
+	row2 = (GtkCListRow *) ptr2;
+	
+	info1 = row1->data;
+	info2 = row2->data;
+
+	if (info1 == NULL || info2 == NULL) {
+		return 0;
+	}
+
+	return info1->track_time - info2->track_time;
+}
+
+static int
+compare_song_years (GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
+{
+	SongInfo *info1, *info2;
+	GtkCListRow *row1, *row2;
+	
+	row1 = (GtkCListRow *) ptr1;
+	row2 = (GtkCListRow *) ptr2;
+	
+	info1 = row1->data;
+	info2 = row2->data;
+
+	if (info1 == NULL || info2 == NULL) {
+		return 0;
+	}
+
+	return nautilus_strcoll (info1->year, info2->year);	
+}
+
+static int
+compare_song_bitrates (GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
+{
+	SongInfo *info1, *info2;
+	GtkCListRow *row1, *row2;
+	
+	row1 = (GtkCListRow *) ptr1;
+	row2 = (GtkCListRow *) ptr2;
+	
+	info1 = row1->data;
+	info2 = row2->data;
+
+	if (info1 == NULL || info2 == NULL) {
+		return 0;
+	}
+
+	return info1->bitrate - info2->bitrate;
+}
+
+
 /* handle clicks in the songlist columns */
 static void
-click_column_callback (GtkCList * clist, int column, NautilusMusicView *music_view)
-{
+click_column_callback (GtkCList *clist, int column, NautilusMusicView *music_view)
+{	
+	GList *row;
+			
 	if (music_view->details->sort_mode == column) {
 		return;
         }
-	music_view->details->sort_mode = column;
-	nautilus_music_view_update (music_view);
+        
+        music_view->details->sort_mode = (int)gtk_object_get_data (GTK_OBJECT (clist->column[column].button), "SortMode");
+        
+	/* sort by the specified criteria */	
+	switch (music_view->details->sort_mode) {
+        case SORT_BY_NUMBER:
+		gtk_clist_set_compare_func (clist, compare_song_numbers);
+                break;
+        case SORT_BY_TITLE:
+		gtk_clist_set_compare_func (clist, compare_song_titles);
+                break;
+        case SORT_BY_ARTIST:
+		gtk_clist_set_compare_func (clist, compare_song_artists);
+                break;
+        case SORT_BY_YEAR:
+		gtk_clist_set_compare_func (clist, compare_song_years);
+                break;
+        case SORT_BY_BITRATE:
+        	gtk_clist_set_compare_func (clist, compare_song_bitrates);
+                break;
+        case SORT_BY_TIME:
+        	gtk_clist_set_compare_func (clist, compare_song_times);
+                break;
+        default:
+                g_warning ("unknown sort mode");
+                break;
+	}
+		
+	gtk_clist_sort (clist);
+	
+	/* Determine current selection index */
+        row = clist->selection;
+        if (row != NULL) {
+		music_view->details->selected_index = (int)row->data;
+	} 
 }
 
 /* utility routine to check if the passed-in uri is an image file */
@@ -816,75 +977,6 @@ fetch_song_info (const char *song_uri, GnomeVFSFileInfo *file_info, int file_ord
 	return	info;
 }
 
-/* sort comparison routines */
-
-static int
-sort_by_track_number (gconstpointer ap, gconstpointer bp)
-{
-	SongInfo *a, *b;
-
-	a = (SongInfo *) ap;
-	b = (SongInfo *) bp;
-
-	return (int) a->track_number - b->track_number;
-}
-
-static int
-sort_by_title (gconstpointer ap, gconstpointer bp)
-{
-	SongInfo *a, *b;
-
-	a = (SongInfo *) ap;
-	b = (SongInfo *) bp;
-
-	return nautilus_strcoll (a->title, b->title);
-}
-
-static int
-sort_by_artist (gconstpointer ap, gconstpointer bp)
-{
-	SongInfo *a, *b;
-
-	a = (SongInfo *) ap;
-	b = (SongInfo *) bp;
-
-	return nautilus_strcoll (a->artist, b->artist);
-}
-
-static int
-sort_by_time (gconstpointer ap, gconstpointer bp)
-{
-	SongInfo *a, *b;
-
-	a = (SongInfo *) ap;
-	b = (SongInfo *) bp;
-
-	return a->track_time - b->track_time;
-}
-
-static int
-sort_by_year (gconstpointer ap, gconstpointer bp)
-{
-	SongInfo *a, *b;
-
-	a = (SongInfo *) ap;
-	b = (SongInfo *) bp;
-
-	return nautilus_strcoll (a->year, b->year);	
-}
-
-static int
-sort_by_bitrate (gconstpointer ap, gconstpointer bp)
-{
-	SongInfo *a, *b;
-
-	a = (SongInfo *) ap;
-	b = (SongInfo *) bp;
-
-	return a->bitrate - b->bitrate;
-}
-
-
 /* utility routine to determine most common attribute in song list.  The passed in boolean selects
    album or artist. Return NULL if they are heterogenous */
 static char *
@@ -911,38 +1003,6 @@ determine_attribute (GList *song_list, gboolean is_artist)
 		}
 	}
 	return current_attribute;
-}
-
-/* utility routine to sort the song list */
-static GList *
-sort_song_list(NautilusMusicView *music_view, GList* song_list)
-{
-	/* sort by the specified criteria */	
-	switch (music_view->details->sort_mode) {
-        case SORT_BY_NUMBER:
-                song_list = g_list_sort (song_list, sort_by_track_number);
-                break;
-        case SORT_BY_TITLE:
-                song_list = g_list_sort (song_list, sort_by_title);
-                break;
-        case SORT_BY_ARTIST:
-                song_list = g_list_sort (song_list, sort_by_artist);
-                break;
-        case SORT_BY_YEAR:
-                song_list = g_list_sort (song_list, sort_by_year);
-                break;
-        case SORT_BY_BITRATE:
-                song_list = g_list_sort (song_list, sort_by_bitrate);
-                break;
-        case SORT_BY_TIME:
-                song_list = g_list_sort (song_list, sort_by_time);
-                break;
-        default:
-                g_warning ("unknown sort mode");
-                break;
-	}
-	
-	return song_list;
 }
 
 /* update the status feedback of the play controls */
@@ -1047,7 +1107,8 @@ play_status_display (NautilusMusicView *music_view)
 static void
 play_current_file (NautilusMusicView *music_view, gboolean from_start)
 {
-	char *song_filename, *song_uri, *title;
+	char *song_filename, *title;
+	SongInfo *song_info;
         GnomeVFSResult result;
         GnomeVFSFileInfo file_info;
 	int length;
@@ -1064,12 +1125,12 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
        
 	gtk_clist_select_row (GTK_CLIST(music_view->details->song_list), music_view->details->selected_index, 0);
 	
-	song_uri = gtk_clist_get_row_data (GTK_CLIST (music_view->details->song_list),
+	song_info = gtk_clist_get_row_data (GTK_CLIST (music_view->details->song_list),
                                                 music_view->details->selected_index);
-	if (song_uri == NULL) {
+	if (song_info == NULL) {
 		return;
 	}
-	song_filename = gnome_vfs_get_local_path_from_uri (song_uri);
+	song_filename = gnome_vfs_get_local_path_from_uri (song_info->path_uri);
 
 	/* for now, we can only play local files, so apologize to the user and give up */	
 	if (song_filename == NULL) {
@@ -1085,7 +1146,7 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 	music_view->details->current_duration = length;
 	g_free (title);
 	
-        result = gnome_vfs_get_file_info (song_uri, &file_info, GNOME_VFS_FILE_INFO_DEFAULT);
+        result = gnome_vfs_get_file_info (song_info->path_uri, &file_info, GNOME_VFS_FILE_INFO_DEFAULT);
 	if (result != GNOME_VFS_OK) {
 		/* File must be unavailable for some reason. Let's yank it from the list */
 		gtk_clist_remove (GTK_CLIST (music_view->details->song_list), music_view->details->selected_index);
@@ -1627,8 +1688,6 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 	}
 	gnome_vfs_directory_list_destroy(list);
 	
-	song_list = sort_song_list(music_view, song_list);
-		
 	/* populate the clist */	
 	gtk_clist_clear (GTK_CLIST (music_view->details->song_list));
 	
@@ -1660,9 +1719,9 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 		if (info->samprate > 0)
 			clist_entry[9] = g_strdup_printf ("%d", info->samprate);
 			
-		gtk_clist_append(GTK_CLIST(music_view->details->song_list), clist_entry);
-		gtk_clist_set_row_data(GTK_CLIST(music_view->details->song_list),
-					track_index, g_strdup(info->path_uri));
+		gtk_clist_append(GTK_CLIST(music_view->details->song_list), clist_entry);		
+		gtk_clist_set_row_data_full (GTK_CLIST(music_view->details->song_list),
+					track_index, info, (GtkDestroyNotify)release_song_info);
 
 		for (i = 0; i < 10; i ++) {
 			g_free (clist_entry[i]);
@@ -1717,10 +1776,10 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 	music_view_set_selected_song_title (music_view, 0);
 	
 	/* release the song list */
-	for (p = song_list; p != NULL; p = p->next) {
-		info = (SongInfo *) p->data;
-		release_song_info(info);
-	}
+	//for (p = song_list; p != NULL; p = p->next) {
+	//	info = (SongInfo *) p->data;
+	//	release_song_info (info);
+	//}
 	g_list_free (song_list);
 
         g_free (uri);

@@ -1,3 +1,19 @@
+2000-12-17  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 3890, Resort columns while MP3 plays,
+	active song changes.
+	
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize), (selection_callback),
+	(compare_song_numbers), (compare_song_titles),
+	(compare_song_artists), (compare_song_times), (compare_song_years),
+	(compare_song_bitrates), (click_column_callback),
+	(play_current_file), (nautilus_music_view_update):
+	Change the way the list is sorted. Use column sorting functions
+	that are set when the column button is clicked.  Don't reload list
+	to resort. Make sure current selection index is updated
+	when the list is resorted.
+
 2000-12-15  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-sidebar.c:
@@ -17,7 +33,7 @@
 2000-12-15  Gene Z. Ragan  <gzr@eazel.com>
 
 	* src/file-manager/fm-desktop-icon-view.c: (create_mount_link):
-	Test and see how users respong to a more lenient mount policy.
+	Test and see how users respond to a more lenient mount policy.
 	We now will mount a lot of things. Just curious.
 
 2000-12-15  Gene Z. Ragan  <gzr@eazel.com>
