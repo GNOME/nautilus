@@ -1,3 +1,30 @@
+2000-02-18  Darin Adler  <darin@eazel.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(use_eazel_theme_icons_cb), (finish_adding_menu_item),
+	(add_menu_item), (add_check_menu_item),
+	(fm_directory_view_real_append_background_context_menu_items):
+	Hooked up the menu item for using the Eazel Theme Icons so people
+	can try out the icons that are tuned at different sizes.
+
+	* libnautilus/nautilus-icon-factory.h:
+	* libnautilus/nautilus-icon-factory.c,
+	(nautilus_icon_factory_get), (nautilus_icon_factory_new),
+	(nautilus_icon_factory_initialize),
+	(nautilus_icon_factory_initialize_class),
+	(nautilus_icon_factory_get_theme),
+	(nautilus_icon_factory_set_theme): Added a signal "theme_changed"
+	to the icon factory, and had to add a visible icon factory object
+	so clients can connect to the signal.
+
+	* libnautilus/gnome-icon-container.c,
+	(gnome_icon_container_initialize),
+	(gnome_icon_container_request_update_all): Update all icons when
+	the theme changes.
+
+	* docs/recommended-books.html: Added this since
+	style-guide.html refers to it.
+
 2000-02-18  John Sullivan  <sullivan@eazel.com>
 
 	Made bookmarks (including in history list) for file system
@@ -73,29 +100,31 @@
 
 2000-02-17  Andy Hertzfeld <andy@eazel.com>
 
-	improved index panel command buttons.  There's still a problem with the button box removal, though.
+	Improved index panel command buttons. There's still a problem
+	with the button box removal, though.
 	
 	* libnautilus/nautilus-mime-type.c:
-	changed how command strings are structured to a simpler scheme with no substitution
+	Changed how command strings are structured to a simpler scheme
+	with no substitution.
 	
 	* src/ntl-index-panel.c:
-	improved the way commands are launched and fixed a bug in the button removal code, but
-	there's still some problems.
+	Improved the way commands are launched and fixed a bug in the
+	button removal code, but there's still some problems.
 	
 2000-02-17  Andy Hertzfeld <andy@eazel.com>
 
 	implemented command buttons for the index panel.
 	
-	* libnautilus/nautilus-mime-type.c,h:
-	this is interim code for associating applications with mime-types; we
+	* libnautilus/nautilus-mime-type.c, libnautilus/nautilus-mime-type.h:
+	This is interim code for associating applications with mime-types; we
 	will eventually keep this in OAF or GConf or at least in a file
-	somewhere, but for now it's just scaffolding so we can work on the UI
+	somewhere, but for now it's just scaffolding so we can work on the UI.
 	* libnautilus/Makefile.am:
-	make nautilus-mime-type.c,h build
+	Make nautilus-mime-type.c,h build.
 	* stc/ntl-index-panel.c:
-	added code to call nautilus-mime-types to get relevant commands based
+	Added code to call nautilus-mime-types to get relevant commands based
 	on the mime-type, and then generate corresponding buttons in the index
-	panel
+	panel.
 	
 2000-02-17  Darin Adler  <darin@eazel.com>
 

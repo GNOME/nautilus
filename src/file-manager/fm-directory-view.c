@@ -28,7 +28,7 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenu.h>
-#include <gtk/gtkmenuitem.h>
+#include <gtk/gtkcheckmenuitem.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-directory-list.h>
@@ -36,8 +36,10 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus/nautilus-alloc.h>
+#include <libnautilus/nautilus-string.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-gtk-extensions.h>
+#include <libnautilus/nautilus-icon-factory.h>
 
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
 
@@ -405,9 +407,16 @@ zoom_out_cb (GtkMenuItem *item, FMDirectoryView *directory_view)
 }
 
 static void
-use_eazel_theme_icons_cb (GtkMenuItem *item, FMDirectoryView *directory_view)
+use_eazel_theme_icons_cb (GtkCheckMenuItem *item, FMDirectoryView *directory_view)
 {
-	/* FIXME: This isn't implemented yet. */
+	char *theme;
+
+	theme = nautilus_icon_factory_get_theme ();
+	if (nautilus_strcmp (theme, "eazel") == 0)
+		nautilus_icon_factory_set_theme (NULL);
+	else
+		nautilus_icon_factory_set_theme ("eazel");
+	g_free (theme);
 }
 
 static gboolean
@@ -795,8 +804,16 @@ open_in_new_window_cb (GtkMenuItem *item, NautilusFile *file)
 }
 
 static void
+finish_adding_menu_item (GtkMenu *menu, GtkWidget *menu_item, gboolean sensitive)
+{
+	gtk_widget_set_sensitive (menu_item, sensitive);
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+}
+
+static void
 add_menu_item (FMDirectoryView *view, GtkMenu *menu, const char *label,
-	       void (*activate_handler) (GtkMenuItem *, FMDirectoryView *),
+	       void (* activate_handler) (GtkMenuItem *, FMDirectoryView *),
 	       gboolean sensitive)
 {
 	GtkWidget *menu_item;
@@ -804,19 +821,42 @@ add_menu_item (FMDirectoryView *view, GtkMenu *menu, const char *label,
 	menu_item = gtk_menu_item_new_with_label (label);
 	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
 			    GTK_SIGNAL_FUNC (activate_handler), view);
-	gtk_widget_set_sensitive (menu_item, sensitive);
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
+	finish_adding_menu_item (menu, menu_item, sensitive);
+}
+
+static void
+add_check_menu_item (FMDirectoryView *view, GtkMenu *menu, const char *label,
+		     void (* toggled_handler) (GtkCheckMenuItem *, FMDirectoryView *),
+		     gboolean sensitive,
+		     gboolean active)
+{
+	GtkWidget *menu_item;
+
+	menu_item = gtk_check_menu_item_new_with_label (label);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), active);
+	gtk_signal_connect (GTK_OBJECT (menu_item), "toggled",
+			    GTK_SIGNAL_FUNC (toggled_handler), view);
+	finish_adding_menu_item (menu, menu_item, sensitive);
 }
 
 static void
 fm_directory_view_real_append_background_context_menu_items (FMDirectoryView *view, 
 							     GtkMenu *menu)
 {
+	char *theme;
+
+	theme = nautilus_icon_factory_get_theme ();
+
 	add_menu_item (view, menu, _("Select All"), select_all_cb, TRUE);
-	add_menu_item (view, menu, _("Zoom In"), zoom_in_cb, fm_directory_view_can_zoom_in (view));
-	add_menu_item (view, menu, _("Zoom Out"), zoom_out_cb, fm_directory_view_can_zoom_out (view));
-	add_menu_item (view, menu, _("Use Eazel Theme Icons"), use_eazel_theme_icons_cb, FALSE);
+	add_menu_item (view, menu, _("Zoom In"), zoom_in_cb,
+		       fm_directory_view_can_zoom_in (view));
+	add_menu_item (view, menu, _("Zoom Out"), zoom_out_cb,
+		       fm_directory_view_can_zoom_out (view));
+	add_check_menu_item (view, menu, _("Use Eazel Theme Icons"),
+			     use_eazel_theme_icons_cb,
+			     TRUE, nautilus_strcmp (theme, "eazel") == 0);
+
+	g_free (theme);
 }
 
 static void

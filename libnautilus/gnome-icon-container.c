@@ -2077,6 +2077,12 @@ gnome_icon_container_initialize (GnomeIconContainer *container)
 
 	/* Request update.  */
 	add_idle (container);
+
+	/* Make sure that we find out if the theme changes. */
+	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
+					       "theme_changed",
+					       gnome_icon_container_request_update_all,
+					       GTK_OBJECT (container));
 }
 
 
@@ -2464,6 +2470,8 @@ void
 gnome_icon_container_request_update_all (GnomeIconContainer *container)
 {
 	GList *p;
+
+	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
 
 	for (p = container->details->icons; p != NULL; p = p->next)
 		update_icon (container, p->data);
