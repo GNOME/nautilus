@@ -337,6 +337,7 @@ add_icon_if_already_positioned (FMIconView *icon_view,
 		return;
 	}
 
+	nautilus_file_ref (file);
 	nautilus_icon_container_add (get_icon_container (icon_view),
 				     NAUTILUS_ICON_CONTAINER_ICON_DATA (file),
 				     x, y, scale_x, scale_y);
@@ -346,6 +347,7 @@ static void
 add_icon_at_free_position (FMIconView *icon_view,
 			   NautilusFile *file)
 {
+	nautilus_file_ref (file);
 	nautilus_icon_container_add_auto (get_icon_container (icon_view),
 					  NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
 }
@@ -545,7 +547,7 @@ static void
 fm_icon_view_remove_file (FMDirectoryView *view, NautilusFile *file)
 {
 	if (nautilus_icon_container_remove (get_icon_container (FM_ICON_VIEW (view)),
-					 NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
+					    NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
 		nautilus_file_unref (file);
 	}
 }
@@ -554,7 +556,7 @@ static void
 fm_icon_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 {
 	nautilus_icon_container_request_update (get_icon_container (FM_ICON_VIEW (view)),
-					     NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
+						NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
 }
 
 static void

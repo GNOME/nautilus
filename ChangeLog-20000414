@@ -1,5 +1,15 @@
 2000-03-30  Darin Adler  <darin@eazel.com>
 
+	* src/file-manager/fm-icon-view.c: (add_icon_if_already_positioned),
+	(add_icon_at_free_position): Added missing ref that caused very bad
+	things to happen now that the file ref. counts are working.
+
+	* components/music/nautilus-music-view.c:
+	Did a bunch of cleanup and fixed some memory trashing bugs where
+	the result of g_basename was passed to g_free.
+
+2000-03-30  Darin Adler  <darin@eazel.com>
+
 	* libnautilus/nautilus-directory.c:
 	* libnautilus/nautilus-directory.h:
 	(nautilus_directory_ref), (nautilus_directory_unref):

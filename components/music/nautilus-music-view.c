@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*- */
 
 /*
  *  Copyright (C) 2000 Eazel, Inc.
@@ -47,14 +47,14 @@
 #include <limits.h>
 
 struct _NautilusMusicViewDetails {
-  char *current_uri;
-  NautilusContentViewFrame *view_frame;
-  
-  GtkVBox   *album_container;
-  GtkWidget *album_title;
-  GtkWidget *song_list;
-  GtkWidget *album_image;
-  int background_connection;
+        char *current_uri;
+        NautilusContentViewFrame *view_frame;
+        
+        GtkVBox *album_container;
+        GtkWidget *album_title;
+        GtkWidget *song_list;
+        GtkWidget *album_image;
+        int background_connection;
 };
 
 /* structure for holding song info */
@@ -83,25 +83,28 @@ static GtkTargetEntry music_dnd_target_table[] = {
 	{ "special/x-gnome-icon-list",  0, TARGET_GNOME_URI_LIST }
 };
 
-static void nautilus_music_view_background_changed (NautilusMusicView *music_view);
-static void nautilus_music_view_drag_data_received (GtkWidget *widget, GdkDragContext *context,
-						     int x, int y,
-						     GtkSelectionData *selection_data,
-						     guint info, guint time);
-
-static void nautilus_music_view_initialize_class (NautilusMusicViewClass *klass);
-static void nautilus_music_view_initialize       (NautilusMusicView *view);
-static void nautilus_music_view_destroy          (GtkObject *object);
-static void nautilus_music_view_realize          (GtkWidget *widget);
-static void setup_title_font			 (NautilusMusicView *music_view);
+static void nautilus_music_view_background_changed     (NautilusMusicView        *music_view);
+static void nautilus_music_view_drag_data_received     (GtkWidget                *widget,
+                                                        GdkDragContext           *context,
+                                                        int                       x,
+                                                        int                       y,
+                                                        GtkSelectionData         *selection_data,
+                                                        guint                     info,
+                                                        guint                     time);
+static void nautilus_music_view_initialize_class       (NautilusMusicViewClass   *klass);
+static void nautilus_music_view_initialize             (NautilusMusicView        *view);
+static void nautilus_music_view_destroy                (GtkObject                *object);
+static void nautilus_music_view_realize                (GtkWidget                *widget);
+static void setup_title_font                           (NautilusMusicView        *music_view);
+static void music_view_notify_location_change_callback (NautilusContentViewFrame *view,
+                                                        Nautilus_NavigationInfo  *navinfo,
+                                                        NautilusMusicView        *music_view);
+static void selection_callback                         (GtkCList                 *clist,
+                                                        int                       row,
+                                                        int                       column,
+                                                        GdkEventButton           *event);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMusicView, nautilus_music_view, GTK_TYPE_EVENT_BOX)
-
-static void 
-music_view_notify_location_change_cb(NautilusContentViewFrame  *view, 
-				     Nautilus_NavigationInfo   *navinfo, 
-				     NautilusMusicView *music_view);
-static void selection_callback(GtkCList * clist, int row, int column, GdkEventButton * event);
 
 static void
 nautilus_music_view_initialize_class (NautilusMusicViewClass *klass)
@@ -133,33 +136,33 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 
 	gtk_signal_connect (GTK_OBJECT (music_view->details->view_frame), 
 			    "notify_location_change",
-			    GTK_SIGNAL_FUNC (music_view_notify_location_change_cb), 
+			    GTK_SIGNAL_FUNC (music_view_notify_location_change_callback), 
 			    music_view);
 
 	music_view->details->current_uri = NULL;
 	music_view->details->background_connection = 0;
 
 	/* set up the default background color */
-  	background = nautilus_get_widget_background (GTK_WIDGET(music_view));
+  	background = nautilus_get_widget_background (GTK_WIDGET (music_view));
   	nautilus_background_set_color (background, MUSIC_VIEW_DEFAULT_BACKGROUND_COLOR);
 	 
 	/* allocate a vbox to contain all of the views */
 	
-	music_view->details->album_container = GTK_VBOX(gtk_vbox_new(FALSE, 0));
-	gtk_container_add(GTK_CONTAINER(music_view), GTK_WIDGET(music_view->details->album_container));
-	gtk_widget_show(GTK_WIDGET(music_view->details->album_container));
+	music_view->details->album_container = GTK_VBOX (gtk_vbox_new (FALSE, 0));
+	gtk_container_add (GTK_CONTAINER (music_view), GTK_WIDGET (music_view->details->album_container));
+	gtk_widget_show (GTK_WIDGET (music_view->details->album_container));
 	
 	/* allocate a widget for the album title */
 	
-	music_view->details->album_title = gtk_label_new("Album Title");
-	gtk_box_pack_start(GTK_BOX(music_view->details->album_container), music_view->details->album_title, 0, 0, 0);	
-	gtk_widget_show(music_view->details->album_title);
+	music_view->details->album_title = gtk_label_new ("Album Title");
+	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->album_title, 0, 0, 0);	
+	gtk_widget_show (music_view->details->album_title);
 	
 	/* allocate an hbox to hold the optional album cover and the song list */
 	
-	song_box = gtk_hbox_new(FALSE, 4);
-	gtk_box_pack_start(GTK_BOX(music_view->details->album_container), song_box, 0, 0, 2);	
-	gtk_widget_show(song_box);
+	song_box = gtk_hbox_new (FALSE, 4);
+	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), song_box, 0, 0, 2);	
+	gtk_widget_show (song_box);
 	
 	/* allocate a placeholder widget for the album cover, but don't show it yet */
   	file_name = gnome_pixmap_file ("nautilus/i-directory.png");
@@ -169,24 +172,25 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	
 	/* allocate a widget to hold the song list */
 
-	music_view->details->song_list = gtk_clist_new_with_titles(4, titles);
+	music_view->details->song_list = gtk_clist_new_with_titles (4, titles);
 		
-	gtk_clist_set_column_width(GTK_CLIST(music_view->details->song_list), 0, 32);
-	gtk_clist_set_column_width(GTK_CLIST(music_view->details->song_list), 1, 172);
-	gtk_clist_set_column_width(GTK_CLIST(music_view->details->song_list), 2, 96);
-	gtk_clist_set_column_width(GTK_CLIST(music_view->details->song_list), 3, 42);
+	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 0, 32);
+	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 1, 172);
+	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 2, 96);
+	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 3, 42);
  	
- 	gtk_signal_connect(GTK_OBJECT(music_view->details->song_list), "select_row", GTK_SIGNAL_FUNC(selection_callback), NULL);
+ 	gtk_signal_connect (GTK_OBJECT (music_view->details->song_list),
+                            "select_row", GTK_SIGNAL_FUNC (selection_callback), NULL);
  
-	scrollwindow = gtk_scrolled_window_new(NULL, gtk_clist_get_vadjustment(GTK_CLIST(music_view->details->song_list)));
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);   
-	gtk_widget_set_usize(scrollwindow, 384, 232);
-	gtk_container_add(GTK_CONTAINER (scrollwindow), music_view->details->song_list);	
-	gtk_clist_set_selection_mode(GTK_CLIST(music_view->details->song_list), GTK_SELECTION_BROWSE);
+	scrollwindow = gtk_scrolled_window_new (NULL, gtk_clist_get_vadjustment (GTK_CLIST (music_view->details->song_list)));
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);   
+	gtk_widget_set_usize (scrollwindow, 384, 232);
+	gtk_container_add (GTK_CONTAINER (scrollwindow), music_view->details->song_list);	
+	gtk_clist_set_selection_mode (GTK_CLIST (music_view->details->song_list), GTK_SELECTION_BROWSE);
 
-	gtk_box_pack_start(GTK_BOX(song_box), scrollwindow, 0, 0, 4);	
-	gtk_widget_show(music_view->details->song_list);
-	gtk_widget_show(scrollwindow);
+	gtk_box_pack_start (GTK_BOX (song_box), scrollwindow, 0, 0, 4);	
+	gtk_widget_show (music_view->details->song_list);
+	gtk_widget_show (scrollwindow);
 
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (music_view),
@@ -202,6 +206,8 @@ nautilus_music_view_destroy (GtkObject *object)
 {
 	NautilusMusicView *music_view = NAUTILUS_MUSIC_VIEW (object);
 
+        bonobo_object_unref (BONOBO_OBJECT (music_view->details->view_frame));
+
 	g_free (music_view->details->current_uri);
 	g_free (music_view->details);
 
@@ -214,14 +220,17 @@ static void
 selection_callback(GtkCList * clist, int row, int column, GdkEventButton * event)
 {
         pid_t play_pid;
-	char* song_name = gtk_clist_get_row_data(clist, row);
-	if (!song_name)
+	char *song_name;
+
+        song_name = gtk_clist_get_row_data (clist, row);
+	if (song_name == NULL) {
 		return;
+        }
 		
 	/* fork off a task to play the sound file */
 	if (!(play_pid = fork())) {
-		execlp("xmms", "xmms", song_name, NULL);
-   	   	exit(0); 
+		execlp ("xmms", "xmms", song_name, NULL);
+   	   	exit (0); 
    	}		
 } 
 
@@ -233,16 +242,18 @@ nautilus_music_view_get_view_frame (NautilusMusicView *music_view)
 	return music_view->details->view_frame;
 }
 
-
 /* utility routine to set up the font for the album title, called after we're realized */
 static void
 setup_title_font(NautilusMusicView *music_view)
 {
-	GtkStyle *temp_style = gtk_style_new();
+	GtkStyle *temp_style;
 
-	gtk_widget_realize(music_view->details->album_title);	
-	temp_style->font = gdk_font_load("-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); ;
-	gtk_widget_set_style(music_view->details->album_title, gtk_style_attach(temp_style, music_view->details->album_title->window));
+        temp_style = gtk_style_new();
+
+	gtk_widget_realize (music_view->details->album_title);	
+	temp_style->font = gdk_font_load ("-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); ;
+	gtk_widget_set_style (music_view->details->album_title,
+                              gtk_style_attach (temp_style, music_view->details->album_title->window));
 }
 
 /* set up fonts, colors, etc after we're realized */
@@ -252,10 +263,11 @@ nautilus_music_view_realize(GtkWidget *widget)
 	NautilusMusicView *music_view;
 	NautilusBackground *background;
  
-  	music_view = NAUTILUS_MUSIC_VIEW(widget);
  	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
 	
-	setup_title_font(music_view);
+  	music_view = NAUTILUS_MUSIC_VIEW (widget);
+
+	setup_title_font (music_view);
   
 	background = nautilus_get_widget_background (widget);
 	nautilus_background_set_color (background, MUSIC_VIEW_DEFAULT_BACKGROUND_COLOR);
@@ -266,113 +278,109 @@ nautilus_music_view_realize(GtkWidget *widget)
 /* initialize a songinfo structure */
 
 static void
-initialize_song_info(SongInfo *info)
+initialize_song_info (SongInfo *info)
 {
+        /* Only called after g_new0. */
 	info->track_number = -1;
-	info->title = '\0';
-	info->artist = '\0';
-	info->album = '\0';
-	info->year = '\0';
-	info->comment = '\0';
-	info->path_name = '\0';
 }
 
 /* deallocate a songinfo structure */
 
 static void
-release_song_info(SongInfo *info)
+release_song_info (SongInfo *info)
 {
-	if (info->title)
-		g_free(info->title);
-	if (info->artist)
-		g_free(info->artist);
-	if (info->album)
-		g_free(info->album);
-	if (info->year)
-		g_free(info->year);
-	if (info->comment)
-		g_free(info->comment);
-	
-	g_free(info);
+        g_free (info->title);
+        g_free (info->artist);
+        g_free (info->album);
+        g_free (info->year);
+        g_free (info->comment);
+        g_free (info->path_name);
+	g_free (info);
 }
 
 /* determine if the passed in filename is an mp3 file by looking at the extension */
 static gboolean
-is_mp3_file(char *song_path)
+is_mp3_file(const char *song_path)
 {
 	return nautilus_str_has_suffix(song_path, ".mp3")
-          || nautilus_str_has_suffix(song_path, ".MP3");
+                || nautilus_str_has_suffix(song_path, ".MP3");
 }
 
 /* read the id3 tag of the file if present */
 /* FIXME: need to use gnome vfs for this */
 
 static gboolean
-read_id_tag(char* song_path, SongInfo* song_info)
+read_id_tag (const char *song_path, SongInfo *song_info)
 {
 	int mp3_file;
 
 	char tag_buffer[129];
-	char temp_str[255];
+	char temp_str[31];
 
 	mp3_file = open(song_path, O_RDONLY);
-	if ( mp3_file == 0 )
+	if (mp3_file == 0) {
 		return FALSE;
+        }
   
-	lseek(mp3_file, -128, SEEK_END);
+	lseek (mp3_file, -128, SEEK_END);
   
-	if (read(mp3_file, tag_buffer, 129) <= 0) {
-  		close(mp3_file);
+	if (read (mp3_file, tag_buffer, 129) <= 0) {
+  		close (mp3_file);
   		return FALSE;
 	}
-	close(mp3_file);
+	close (mp3_file);
 
-	if ((tag_buffer[0] != 'T') || (tag_buffer[1] != 'A') || (tag_buffer[2] != 'G'))
+	if (tag_buffer[0] != 'T' || tag_buffer[1] != 'A' || tag_buffer[2] != 'G')
 		return FALSE;
 	
-	temp_str[31] = '\0';
+	temp_str[30] = '\0';
 	strncpy (temp_str, &tag_buffer[3], 30);
-	song_info->title = strdup(temp_str);
+	song_info->title = g_strdup(temp_str);
   
 	strncpy (temp_str, &tag_buffer[33], 30);
-	song_info->artist = strdup(temp_str);
+	song_info->artist = g_strdup(temp_str);
 
 	strncpy (temp_str, &tag_buffer[63], 30);
-	song_info->album = strdup(temp_str); 
+	song_info->album = g_strdup(temp_str); 
 
+	temp_str[4] = '\0';
 	strncpy (temp_str, &tag_buffer[93], 4);
-	song_info->year = strdup(temp_str);
+	song_info->year = g_strdup(temp_str);
 
 	strncpy (temp_str, &tag_buffer[97], 30);
-	song_info->comment = strdup(temp_str);
+	song_info->comment = g_strdup(temp_str);
 
-    	if (tag_buffer[97 + 28] == 0)
+    	if (tag_buffer[97 + 28] == 0) {
         	song_info->track_number = tag_buffer[97 + 29];
-    	else song_info->track_number = -1;
+        } else {
+                song_info->track_number = -1;
+        }
 
 	return TRUE;
 }
 
 /* allocate a return a song info record, from an mp3 tag if present, or from intrinsic info */
 
-static SongInfo* 
-fetch_song_info(char *song_path, int file_order) 
+static SongInfo *
+fetch_song_info (const char *song_path, int file_order) 
 {
 	gboolean has_info = FALSE;
 	SongInfo *info; 
 
-	if (!is_mp3_file(song_path))
+	if (!is_mp3_file (song_path)) {
 		return NULL;
+        }
 
 	info = g_new0 (SongInfo, 1); 
-	initialize_song_info(info);
+	initialize_song_info (info);
 	
-	if (is_mp3_file(song_path))
-		has_info = read_id_tag(song_path, info);
+	if (is_mp3_file (song_path)) {
+		has_info = read_id_tag (song_path, info);
+        }
 	
 	/* there was no id3 tag, so set up the info heuristically from the file name and file order */
 	if (!has_info) {
-		info->title = g_basename(song_path);	
+		info->title = g_strdup (g_basename (song_path));
 		info->track_number = file_order;
 	}	
 	
@@ -382,17 +390,16 @@ fetch_song_info(char *song_path, int file_order)
 /* format_play_time takes the pathname to a file and returns the play time formated as mm:ss */
 /* FIXME: assumes 128k bits/second.  Must read header and factor in bitrate */
 
-static char*
-format_play_time(char* song_path_name)
+static char *
+format_play_time (const char *song_path_name)
 {
-	NautilusFile *file = nautilus_file_get(song_path_name);
- 	GnomeVFSFileSize file_size = nautilus_file_get_size(file);       			
+	NautilusFile *file = nautilus_file_get (song_path_name);
+ 	GnomeVFSFileSize file_size = nautilus_file_get_size (file);       			
 	int seconds = (file_size - 512) / 16384;
 	int minutes = seconds / 60;
 	int remain_seconds = seconds - (60 * minutes);
-	char *result = g_strdup_printf("%d:%02d", minutes, remain_seconds);
-	
-	nautilus_file_unref(file);
+	char *result = g_strdup_printf ("%d:%02d", minutes, remain_seconds);
+	nautilus_file_unref (file);
 	return result;
 }
 
@@ -413,21 +420,21 @@ sort_by_track_number (gconstpointer ap, gconstpointer bp)
    album or artist. Return NULL if no names or too heterogenous.   This first cut just captures 
    the first one it can - soon, we'll use a hash table and count them up */
 
-static char*
-determine_attribute(GList *song_list, gboolean is_artist)
+static char *
+determine_attribute (GList *song_list, gboolean is_artist)
 {
 	SongInfo *info;
-	char *attribute_value = NULL;
-	GList *next_item = song_list;
-	while ((next_item != NULL) && (attribute_value == NULL)) {
-		info = (SongInfo*) next_item->data;
-		if (is_artist && info->artist)
-			attribute_value = strdup(info->artist);
-		else if (!is_artist && info->album)
-			attribute_value = strdup(info->album);
-		next_item = next_item->next;
+	GList *p;
+
+        for (p = song_list; p != NULL; p = p->next) {
+		info = (SongInfo *) p->data;
+		if (is_artist && info->artist != NULL) {
+			return g_strdup (info->artist);
+                } else if (!is_artist && info->album) {
+			return g_strdup (info->album);
+                }
 	}
-	return attribute_value;
+                return NULL;
 }
 
 /* here's where we do most of the real work of populating the view with info from the new uri */
@@ -442,52 +449,49 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	char *background_color;
 	NautilusBackground *background;
 	NautilusDirectory *directory;
-	GList *this_song;
+	GList *p;
 	GList *song_list = NULL ;
 	SongInfo *info;
 	char *path_name;
 	char *image_path_name = NULL;
 	int file_index = 1;
 	int track_index = 0;
+
 	/* iterate through the directory, collecting mp3 files and extracting id3 data if present */
 	/* soon we'll use gnomevfs, but at first just the standard unix stuff */
 	
-	if (!(dir = opendir(uri + 7)))
+	if ((dir = opendir (uri + 7)) == NULL)
 		g_warning("cant open %s in music_view_update", uri);
 	else {
-  		while ((entry = readdir(dir))) {
+  		while ((entry = readdir(dir)) != NULL) {
 			/* skip invisible files, for now */
 			
-			if (entry->d_name[0] == '.')
+			if (entry->d_name[0] == '.') {
 				continue;
+                        }
 			
 			path_name = nautilus_make_path(uri + 7, entry->d_name);
 			
 			/* fetch info and queue it if it's an mp3 file */
-			info = fetch_song_info(path_name, file_index);
+			info = fetch_song_info (path_name, file_index);
 			if (info) {
 				info->path_name = path_name;
 				file_index += 1;
-				if (song_list)
-					song_list = g_list_append(song_list, info);
-				else {
-					song_list = g_list_alloc();
-					song_list->data = info;
-				}
-			}
-		        else {
+                                song_list = g_list_append (song_list, info);
+			} else {
 		        	/* it's not an mp3 file, so see if it's an image */
-		        	NautilusFile *file = nautilus_file_get(path_name);
+		        	NautilusFile *file = nautilus_file_get (path_name);
         			const char *mime_type = nautilus_file_get_mime_type (file);
 		        	
-		        	if (nautilus_str_has_prefix(mime_type, "image/")) {
+		        	if (nautilus_str_has_prefix (mime_type, "image/")) {
 		        		/* for now, just keep the first image */
-		        		if (image_path_name == NULL)
-		        			image_path_name = strdup(path_name);
+		        		if (image_path_name == NULL) {
+		        			image_path_name = g_strdup (path_name);
+                                        }
 		        	}
 		        	
-		        	nautilus_file_unref(file);
-		        	g_free(path_name);
+		        	nautilus_file_unref (file);
+		        	g_free (path_name);
 			}
 		}
 		
@@ -495,15 +499,14 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	 }
 	
 	/* sort by track number */	
-	song_list =  g_list_sort(song_list, sort_by_track_number);
+	song_list = g_list_sort (song_list, sort_by_track_number);
 	
 	/* populate the clist */
 	
-	gtk_clist_clear(GTK_CLIST(music_view->details->song_list));	
+	gtk_clist_clear (GTK_CLIST (music_view->details->song_list));
 	
-	this_song = song_list;
-	while (this_song != NULL) {
-		info = (SongInfo*) this_song->data;
+	for (p = song_list; p != NULL; p = p->next) {
+		info = (SongInfo *)p->data;
 		
 		clist_entry[0] = malloc(4);
 		if (info->track_number > 0)
@@ -516,41 +519,39 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 		clist_entry[3] = NULL;
 		
 		if (info->title)
-			clist_entry[1] = strdup(info->title);
+			clist_entry[1] = g_strdup(info->title);
 		if (info->artist)
-			clist_entry[2] = strdup(info->artist);
+			clist_entry[2] = g_strdup(info->artist);
 		if (info->path_name)
 		clist_entry[3] = format_play_time(info->path_name);
 			
 		gtk_clist_append(GTK_CLIST(music_view->details->song_list), clist_entry);
-		gtk_clist_set_row_data(GTK_CLIST(music_view->details->song_list), track_index, strdup(info->path_name));
+		gtk_clist_set_row_data(GTK_CLIST(music_view->details->song_list), track_index, g_strdup(info->path_name));
 		
 		track_index += 1;
-		this_song = this_song->next;
 	}
 	
 	/* install the album cover */
 	
 	if (image_path_name) {
-
 		gnome_pixmap_load_file(GNOME_PIXMAP(music_view->details->album_image), image_path_name);			
-		
 		/* show the pixmap widget */
 		gtk_widget_show(music_view->details->album_image);
  		g_free(image_path_name);
-	}
-	else
+	} else {
 		gtk_widget_hide(music_view->details->album_image);
+        }
 	
 	/* set up background color */
 	
 	background = nautilus_get_widget_background (GTK_WIDGET (music_view));
-	if (music_view->details->background_connection == 0)
+	if (music_view->details->background_connection == 0) {
 		music_view->details->background_connection =
 			gtk_signal_connect_object (GTK_OBJECT (background),
 						   "changed",
 						   nautilus_music_view_background_changed,
 						   GTK_OBJECT (music_view));
+        }
 
 	/* Set up the background color from the metadata. */
 	directory = nautilus_directory_get(music_view->details->current_uri);
@@ -565,28 +566,30 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	
 	if (music_view->details->album_title) {
 		char *artist_name, *temp_str;
-		char* album_name = determine_attribute(song_list, FALSE);
-		if (album_name == NULL)
-			album_name = g_basename(uri);
+		char* album_name;
+
+                album_name = determine_attribute (song_list, FALSE);
+		if (album_name == NULL) {
+			album_name = g_strdup (g_basename (uri));
+                }
 		
-		artist_name = determine_attribute(song_list, TRUE);
-		if (artist_name) {
-			temp_str = g_strdup_printf("%s by %s", album_name, artist_name);
-			g_free(artist_name);
-		} else
-			temp_str = g_strdup(album_name);
-		gtk_label_set(GTK_LABEL(music_view->details->album_title), temp_str);
+		artist_name = determine_attribute (song_list, TRUE);
+		if (artist_name != NULL) {
+			temp_str = g_strdup_printf ("%s by %s", album_name, artist_name);
+			g_free (artist_name);
+		} else {
+			temp_str = g_strdup (album_name);
+                }
+		gtk_label_set (GTK_LABEL (music_view->details->album_title), temp_str);
 		
-		g_free(temp_str);
-		g_free(album_name);
+		g_free (temp_str);
+		g_free (album_name);
 	}
 	
 	/* release the song list */
-	this_song = song_list;
-	while (this_song != NULL) {
-		info = (SongInfo*) this_song->data;
+	for (p = song_list; p != NULL; p = p->next) {
+		info = (SongInfo *) p->data;
 		release_song_info(info);
-		this_song = this_song->next;
 	}
 	
 }
@@ -595,35 +598,34 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 void
 nautilus_music_view_load_uri (NautilusMusicView *music_view, const char *uri)
 {
-	if (music_view->details->current_uri != NULL)
-  		g_free(music_view->details->current_uri);
+	g_free(music_view->details->current_uri);
   
 	music_view->details->current_uri = g_strdup (uri);	
 	nautilus_music_view_update_from_uri(music_view, uri);
 }
 
 static void
-music_view_notify_location_change_cb (NautilusContentViewFrame  *view, 
-				  Nautilus_NavigationInfo   *navinfo, 
-				  NautilusMusicView *music_view)
+music_view_notify_location_change_callback (NautilusContentViewFrame *view, 
+                                            Nautilus_NavigationInfo *navinfo, 
+                                            NautilusMusicView *music_view)
 {
-	Nautilus_ProgressRequestInfo pri;
+	Nautilus_ProgressRequestInfo progress;
 
- 	memset(&pri, 0, sizeof(pri));
+ 	memset(&progress, 0, sizeof(progress));
 
 	/* send required PROGRESS_UNDERWAY signal */
   
-	pri.type = Nautilus_PROGRESS_UNDERWAY;
-	pri.amount = 0.0;
-	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (music_view->details->view_frame), &pri);
+	progress.type = Nautilus_PROGRESS_UNDERWAY;
+	progress.amount = 0.0;
+	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (music_view->details->view_frame), &progress);
 
 	/* do the actual work here */
 	nautilus_music_view_load_uri (music_view, navinfo->actual_uri);
 
 	/* send the required PROGRESS_DONE signal */
-	pri.type = Nautilus_PROGRESS_DONE_OK;
-	pri.amount = 100.0;
-	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (music_view->details->view_frame), &pri);
+	progress.type = Nautilus_PROGRESS_DONE_OK;
+	progress.amount = 100.0;
+	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (music_view->details->view_frame), &progress);
 }
 
 /* handle drag and drop */
@@ -637,13 +639,13 @@ nautilus_music_view_background_changed (NautilusMusicView *music_view)
 		
 	background = nautilus_get_widget_background (GTK_WIDGET (music_view));
 	color_spec = nautilus_background_get_color (background);
-	directory = nautilus_directory_get(music_view->details->current_uri);
+	directory = nautilus_directory_get (music_view->details->current_uri);
 	nautilus_directory_set_metadata (directory,
 					 ICON_VIEW_BACKGROUND_COLOR_METADATA_KEY,
 					 MUSIC_VIEW_DEFAULT_BACKGROUND_COLOR,
 					 color_spec);
 	g_free (color_spec);		
-	gtk_object_unref(GTK_OBJECT(directory));
+	nautilus_directory_unref (directory);
 }
 
 static void  
@@ -653,21 +655,21 @@ nautilus_music_view_drag_data_received (GtkWidget *widget, GdkDragContext *conte
 {
 	g_return_if_fail (NAUTILUS_IS_MUSIC_VIEW (widget));
 
-	switch (info)
-		{
-		case TARGET_GNOME_URI_LIST:
-		case TARGET_URI_LIST: 	
-			g_message("dropped data on music_view: %s", selection_data->data); 			
-			break;
+	switch (info) {
+        case TARGET_GNOME_URI_LIST:
+        case TARGET_URI_LIST: 	
+                g_message ("dropped data on music_view: %s", selection_data->data); 			
+                break;
   		
-      
- 		case TARGET_COLOR:
-			/* Let the background change based on the dropped color. */
-			nautilus_background_receive_dropped_color(nautilus_get_widget_background (widget), widget, x, y, selection_data);
-			break;
-      
-		default:
-			g_warning ("unknown drop type");
-			break;	
-		}
+                
+        case TARGET_COLOR:
+                /* Let the background change based on the dropped color. */
+                nautilus_background_receive_dropped_color (nautilus_get_widget_background (widget),
+                                                           widget, x, y, selection_data);
+                break;
+                
+        default:
+                g_warning ("unknown drop type");
+                break;
+        }
 }
