@@ -315,8 +315,10 @@ create_package (char *name, int local_file)
 	pack = packagedata_new ();
 	if (local_file) {
 		pack->filename = g_strdup (name);
-	} else if (strncmp (name, "rpm_id%3D", 9)==0) {
+	} else if (strncmp (name, "rpm_id%3D", 9) == 0) {
 		pack->eazel_id = g_strdup (name+9);
+	} else if (strncmp (name, "rpm_id=", 7) == 0) {
+		pack->eazel_id = g_strdup (name+7);
 	} else {
 		pack->name = g_strdup (name);
 	}

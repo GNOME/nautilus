@@ -1,3 +1,11 @@
+2000-10-23  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (create_package):
+
+	Nautilus doesn't always encode "rpm_id=" into "rpm_id%3D", so
+	check for both.
+
 2000-10-23  Darin Adler  <darin@eazel.com>
 
 	* Makefile.shared: Fix extra dependency that was causing the xml.h
