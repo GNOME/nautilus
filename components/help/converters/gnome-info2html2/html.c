@@ -170,17 +170,18 @@ void make_nav_links( FILE *f, NODE *node )
   write_node_link_html( f, node->filename, "Up:", node->up );
   fprintf(f,"</PRE>\n");
 #else
-  fprintf(f,"<TABLE border=2 cellspacing=1 cellpadding=4 width=95%>");
-  fprintf(f,"<TR bgcolor=\"#eeeee0\">");
-  fprintf(f,"<TH align=center width=33%>");
+  fprintf(f,"<TABLE border=2 cellspacing=1 cellpadding=4 width=100%%>\n");
+  fprintf(f,"<TR bgcolor=\"#eeeee0\">\n");
+  fprintf(f,"\t<TH align=center width=33%%>\n\t");
   write_node_link_html( f, node->filename, "Next:", node->next );
-  fprintf(f,"</TH>");
-  fprintf(f,"<TH align=center width=33%>");
+  fprintf(f,"\t</TH>\n");
+  fprintf(f,"\t<TH align=center width=33%%>\n\t");
   write_node_link_html( f, node->filename, "Prev:", node->prev );
-  fprintf(f,"<TH align=center width=33%>");
+  fprintf(f,"\t</TH>\n");
+  fprintf(f,"\t<TH align=center width=34%%>\n\t");
   write_node_link_html( f, node->filename, "Up:", node->up );
-  fprintf(f,"</TH>");
-  fprintf(f,"</TR></TABLE>");
+  fprintf(f,"\t</TH>\n");
+  fprintf(f,"</TR>\n</TABLE>\n");
 #endif
 
 }
@@ -304,7 +305,7 @@ void dump_html_for_node( NODE *node )
   /* make an anchor */
   escaped_nodename = escape_html_chars( node->nodename );
   map_spaces_to_underscores( escaped_nodename );
-  fprintf(f, "<A name=\"%s\">\n",escaped_nodename);
+  fprintf(f, "<A name=\"%s\"></A>\n",escaped_nodename);
   g_free(escaped_nodename);
 
   /* links to other immediate nodes */
@@ -750,7 +751,7 @@ void open_menu_html( FILE *f, char *p )
     if (inTable)
 	    fprintf(stderr, "In a table and starting new one!\n");
     inTable = 1;
-    fprintf(f, "<table width=95%><tr><td>&nbsp;</td></tr>\n");
+    fprintf(f, "<table width=100%%><tr><td>&nbsp;</td></tr>\n");
 #endif
 }
 
@@ -846,13 +847,14 @@ void write_menu_entry_html( FILE *f, char *p, char *nodefile, char **menu_end )
   else
     fwrite(end+1, 1, *menu_end - end - 1, f);
 #else
-  fprintf(f,"<tr><td width=30%><A %s>%s</A></td><td width=70%>", 
+  fprintf(f,"<tr>\n\t<td width=30%%>\n\t\t<A %s>%s</A>\n\t</td>\n"
+	  "\t<td width=70%%>\n\t\t", 
 	  href, escaped_refname );
   if (*end == '.' && *(end+1) == '\n')
     fprintf(f,"%s.\n",escaped_refnode);
   else
     fwrite(end+1, 1, *menu_end - end - 1, f);
-  fprintf(f,"</td></tr>\n");
+  fprintf(f,"\n\t</td>\n</tr>\n");
 #endif
 
   if (href)
