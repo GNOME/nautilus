@@ -598,7 +598,6 @@ parse_osd_xml_from_memory (const char *mem,
 	if (end) {
 		end = strchr (end, '\n');
 		if (end) {
-			g_message ("Cutting at \"%s\"", end);
 			*end = 0;
 			size = strlen (ptr);
 		}

@@ -212,22 +212,27 @@ static int
 gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 			 EazelInstall *service)
 {
+	static gboolean initial_emit;
+	static gboolean last_emit;
+
 	switch (info->status) {
 	case GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR:
 		g_message ("VFS Error: %s\n",
 			   gnome_vfs_result_to_string (info->vfs_status));
-		exit (1);
+		return TRUE;
 		break;
 	case GNOME_VFS_XFER_PROGRESS_STATUS_OVERWRITE:
 		g_message ("Overwriting `%s' with `%s'",
 			   info->target_name, info->source_name);
-		exit (1);
+		return TRUE;
 		break;
 	case GNOME_VFS_XFER_PROGRESS_STATUS_OK:
-		g_message ("Status: OK");
+		/* g_message ("Status: OK"); */
 		switch (info->phase) {
 		case GNOME_VFS_XFER_PHASE_INITIAL:
 			g_message ("Initial phase");
+			initial_emit = TRUE;
+			last_emit = FALSE;
 			return TRUE;
 		case GNOME_VFS_XFER_PHASE_COLLECTING:
 			g_message ("Collecting file list");
@@ -242,6 +247,26 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 			g_message ("Opening target");
 			return TRUE;
 		case GNOME_VFS_XFER_PHASE_COPYING:
+			if (initial_emit && info->file_size>0) {
+				initial_emit = FALSE;
+				eazel_install_emit_download_progress (service, 
+								      info->source_name,
+								      0,
+								      info->file_size);
+			} else if (!last_emit && info->bytes_copied == info->file_size) {
+				last_emit = TRUE;
+				eazel_install_emit_download_progress (service, 
+								      info->source_name,
+								      info->file_size,
+								      info->file_size);
+			} else {
+				eazel_install_emit_download_progress (service, 
+								      info->source_name,
+								      info->bytes_copied,
+								      info->file_size);
+
+			}
+			/*
 			g_message ("Transferring `%s' to `%s' (file %ld/%ld, byte %ld/%ld in file, "
 				   "%" GNOME_VFS_SIZE_FORMAT_STR "/%" GNOME_VFS_SIZE_FORMAT_STR " total)",
 				   info->source_name,
@@ -252,6 +277,7 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 				   (glong) info->file_size,
 				   info->total_bytes_copied,
 				   info->bytes_total);
+			*/
 			return TRUE;
 		case GNOME_VFS_XFER_PHASE_CLOSESOURCE:
 			g_message ("Closing source");
@@ -264,6 +290,13 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 				   info->source_name, info->target_name);
 			return TRUE;
 		case GNOME_VFS_XFER_PHASE_COMPLETED:
+			if (!last_emit) {
+				last_emit = TRUE;
+				eazel_install_emit_download_progress (service, 
+								      info->source_name,
+								      info->file_size,
+								      info->file_size);
+			}
 			g_message ("All done.");
 			return TRUE;
 		default:
