@@ -1,3 +1,19 @@
+2001-03-05  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fix for bugs 7375 and 7370.
+	
+	* libnautilus-extensions/nautilus-font-manager.c:
+	(font_ignore_directory): Black list the ISO8859-2 and ISO8859-7
+	encoded fonts which it turns out are missing all kinds of glyphs.
+	Also add another instance of the same Abisource fonts, but from an
+	older package that had a slightly different name.
+	
+	* libnautilus-extensions/nautilus-font-picker.c:
+	Black list the Bookmark URW font which causes crashes on old
+	version of the urw package.
+	
 2001-03-05  John Harper  <jsh@eazel.com>
 
 	reviewed & checked in by: Darin Adler <darin@eazel.com>

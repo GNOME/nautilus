@@ -876,8 +876,11 @@ font_ignore_directory (const char *font_directory)
 		"75dpi",
 		"misc",
 		"abisource/fonts",
+		"AbiSuite/fonts",
 		"fonts/Speedo",
-		"fonts/cyrillic"
+		"fonts/cyrillic",
+		"ISO8859-2/Type1",
+		"ISO8859-7/Type1"
 	};
 
 	g_return_val_if_fail (string_is_valid (font_directory), TRUE);

@@ -59,13 +59,13 @@ typedef struct {
  * least in the context of Nautilus.
  */
 static const char *black_listed_font_families[] = {
+	"Bookman",
 	"Webdings",
 	"Wingdings",
 	"OCR",
 	"Zapf Dingbats",
 	"Symbol",
 	"cursor",
-
 	"mincho",
 	"gothic"
 };
