@@ -448,6 +448,7 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 					GNOME_PAD_SMALL);
 	label = gtk_label_new (_("Location:"));
 	gtk_container_add   (GTK_CONTAINER (event_box), label);
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
 
 
 	gtk_box_pack_start  (GTK_BOX (hbox), event_box, FALSE, TRUE,
@@ -577,7 +578,7 @@ nautilus_location_bar_update_label (NautilusLocationBar *bar)
 		gtk_label_set_text (GTK_LABEL (bar->label), _("Location:"));
 		
 	} else {		 
-		gtk_label_set_text (GTK_LABEL (bar->label), _("Go To:"));
+		gtk_label_set_text (GTK_LABEL (bar->label), _("   Go To:"));
 
 	}	
 	g_free (current_location);
