@@ -111,10 +111,13 @@ struct _PackageData {
 	char* archtype;
 	DistributionInfo distribution;
 	int bytesize;
-	char* summary;
+	char* summary;	
 	GList* soft_depends;
 	GList* hard_depends;
 	GList* breaks; 
+
+	char *filename;
+	
 	/* 
 	   toplevel = TRUE if this a package the user requested.
 	   It's used to ensure that a "install_failed" signal is

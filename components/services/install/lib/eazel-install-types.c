@@ -29,6 +29,14 @@
 #include <config.h>
 #include "eazel-install-types.h"
 
+#include <rpm/rpmlib.h>
+#include <rpm/rpmmacro.h>
+#include <rpm/dbindex.h>
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 const char*
 protocol_as_string (URLType protocol) 
 {
@@ -67,7 +75,18 @@ packagedata_new ()
 {
 	PackageData *pack;
 	pack = g_new0 (PackageData, 1);
+
+	pack->name = NULL;
+	pack->version = NULL;
+	pack->minor = NULL;
+	pack->archtype = NULL;
+	pack->summary = NULL;
+	pack->bytesize = 0;
 	pack->distribution = trilobite_get_distribution ();
+	pack->filename = NULL;
+	pack->soft_depends = NULL;
+	pack->hard_depends = NULL;
+	pack->breaks = NULL;
 	return pack;
 }
 
@@ -76,7 +95,7 @@ packagedata_new_from_rpm_conflict (struct rpmDependencyConflict conflict)
 {
 	PackageData *result;
 	
-	result = g_new0 (PackageData,1);
+	result = packagedata_new ();
 
 	result->name = g_strdup (conflict.needsName);
 	result->version = (conflict.needsVersion && (strlen (conflict.needsVersion) > 1)) ? g_strdup (conflict.needsVersion) : NULL;
@@ -88,7 +107,7 @@ packagedata_new_from_rpm_conflict_reversed (struct rpmDependencyConflict conflic
 {
 	PackageData *result;
 	
-	result = g_new0 (PackageData,1);
+	result = packagedata_new ();
 
 	result->name = g_strdup (conflict.byName);
 	result->version = (conflict.byVersion && (strlen (conflict.byVersion) > 1)) ? g_strdup (conflict.byVersion) : NULL;
@@ -100,7 +119,7 @@ packagedata_new_from_rpm_header (Header *hd)
 {
 	PackageData *pack;
 
-	pack = g_new0 (PackageData, 1);
+	pack = packagedata_new ();
 
 	packagedata_fill_from_rpm_header (pack, hd);
 
@@ -135,60 +154,70 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 }
 
 void 
-packagedata_destroy_foreach (PackageData *pd, gpointer unused)
+packagedata_destroy_foreach (PackageData *pack, gpointer unused)
 {
-	g_return_if_fail (pd != NULL);
-	g_free (pd->name);
-	pd->name = NULL;
-	g_free (pd->version);
-	pd->version = NULL;
-	g_free (pd->minor);
-	pd->minor = NULL;
-	g_free (pd->archtype);
-	pd->archtype = NULL;
-	g_free (pd->summary);
-	pd->summary = NULL;
-	pd->bytesize = 0;
-	g_list_foreach (pd->soft_depends, (GFunc)packagedata_destroy_foreach, NULL);
-	g_list_foreach (pd->hard_depends, (GFunc)packagedata_destroy_foreach, NULL);
-	g_list_foreach (pd->breaks, (GFunc)packagedata_destroy_foreach, NULL);
+	g_return_if_fail (pack != NULL);
+	g_free (pack->name);
+	pack->name = NULL;
+	g_free (pack->version);
+	pack->version = NULL;
+	g_free (pack->minor);
+	pack->minor = NULL;
+	g_free (pack->archtype);
+	pack->archtype = NULL;
+	g_free (pack->summary);
+	pack->summary = NULL;
+	pack->bytesize = 0;
+	g_free (pack->filename);
+	pack->filename = NULL;
+
+	g_list_foreach (pack->soft_depends, (GFunc)packagedata_destroy_foreach, NULL);
+	g_list_foreach (pack->hard_depends, (GFunc)packagedata_destroy_foreach, NULL);
+	g_list_foreach (pack->breaks, (GFunc)packagedata_destroy_foreach, NULL);
+	pack->soft_depends = NULL;
+	pack->hard_depends = NULL;
+	pack->breaks = NULL;
 }
 
 void 
-packagedata_destroy (PackageData *pd)
+packagedata_destroy (PackageData *pack)
 {
-	packagedata_destroy_foreach (pd, NULL);
+	packagedata_destroy_foreach (pack, NULL);
 }
 
 const char*
 rpmfilename_from_packagedata (const PackageData *pack)
 {
 	static char *filename = NULL;
-
+	
 	g_free (filename);
-	if (pack->version && pack->minor) {
-		filename = g_strdup_printf ("%s-%s-%s.%s.rpm",
-					    pack->name,
-					    pack->version,
-					    pack->minor,
-					    pack->archtype);
-	} else if (pack->archtype) {
-		filename = g_strdup_printf ("%s.%s.rpm",
-					    pack->name,
-					    pack->archtype);
+	if (pack->filename) {
+		filename = g_strdup (pack->filename);
 	} else {
-		filename = g_strconcat (pack->name,".rpm", NULL); 
+		if (pack->version && pack->minor) {
+			filename = g_strdup_printf ("%s-%s-%s.%s.rpm",
+						    pack->name,
+						    pack->version,
+						    pack->minor,
+						    pack->archtype);
+		} else if (pack->archtype) {
+			filename = g_strdup_printf ("%s.%s.rpm",
+						    pack->name,
+						    pack->archtype);
+		} else {
+			filename = g_strconcat (pack->name,".rpm", NULL); 
+		}
 	}
 
 	return filename;
 }
 
 int 
-packagedata_hash (PackageData *pd)
+packagedata_hash (PackageData *pack)
 {
-	g_assert (pd!=NULL);
-	g_assert (pd->name!=NULL);
-	return strlen (pd->name);
+	g_assert (pack!=NULL);
+	g_assert (pack->name!=NULL);
+	return strlen (pack->name);
 }
 
 int 

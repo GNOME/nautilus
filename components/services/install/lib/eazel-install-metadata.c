@@ -28,6 +28,9 @@
 #include <config.h>
 #include "eazel-install-metadata.h"
 
+#define EAZEL_SERVICES_DIR_HOME "/var/eazel"
+#define EAZEL_SERVICES_DIR EAZEL_SERVICES_DIR_HOME "/services"
+
 static void create_default_metadata (const char* config_file);
 static gboolean create_default_configuration_metafile (const char* target_file);
 static gboolean xml_doc_sanity_checks (xmlDocPtr doc);
@@ -42,10 +45,22 @@ create_default_metadata (const char* config_file) {
 
 	g_print (_("Creating default configuration file ...\n"));
 
-	retval = mkdir ("/var/eazel/services", 0755);
-	if (retval < 0) {
-		if (errno != EEXIST) {
-			g_error (_("*** Could not create services directory! ***\n"));
+	/* Ensure our services dir exists */
+	if (! g_file_test (EAZEL_SERVICES_DIR, G_FILE_TEST_ISDIR)) {
+		if (! g_file_test (EAZEL_SERVICES_DIR_HOME, G_FILE_TEST_ISDIR)) {
+			retval = mkdir (EAZEL_SERVICES_DIR_HOME, 0755);		       
+			if (retval < 0) {
+				if (errno != EEXIST) {
+					g_error (_("*** Could not create services directory (%s)! ***\n"), EAZEL_SERVICES_DIR_HOME);
+				}
+			}
+		}
+
+		retval = mkdir (EAZEL_SERVICES_DIR, 0755);
+		if (retval < 0) {
+			if (errno != EEXIST) {
+				g_error (_("*** Could not create services directory (%s)! ***\n"), EAZEL_SERVICES_DIR);
+			}
 		}
 	}
 	rv = create_default_configuration_metafile (config_file);

@@ -37,12 +37,13 @@ gcc -static -g -Wall -Wno-uninitialized -Wchar-subscripts -Wmissing-declarations
 #include <sys/utsname.h>
 
 #include "eazel-install-public.h"
+#include "eazel-install-xml-package-list.h"
 #include <libtrilobite/helixcode-utils.h>
 
 #define PACKAGE_FILE_NAME "package-list.xml"
 #define DEFAULT_CONFIG_FILE "/var/eazel/services/eazel-services-config.xml"
 
-#define DEFAULT_HOSTNAME "vorlon.eazel.com"
+#define DEFAULT_HOSTNAME "toothgnasher.eazel.com"
 #define DEFAULT_PORT_NUMBER 80
 #define DEFAULT_PROTOCOL PROTOCOL_HTTP
 #define DEFAULT_TMP_DIR "/tmp/eazel-install"
@@ -51,46 +52,89 @@ gcc -static -g -Wall -Wno-uninitialized -Wchar-subscripts -Wmissing-declarations
 #define DEFAULT_REMOTE_RPM_DIR "/RPMS"
 #define DEFAULT_LOG_FILE "/tmp/eazel-install/log"
 
+/* This ensure that if the arch is detected as i[3-9]86, the
+   requested archtype will be set to i386 */
 #define ASSUME_ix86_IS_i386 
 
+
+/* Popt stuff */
 int     arg_dry_run,
 	arg_http,
 	arg_ftp,
 	arg_local,
-	arg_debug;
+	arg_debug,
+	arg_port;
 char    *arg_server,
 	*arg_config_file,
-	*arg_local_list;
+	*arg_local_list, 
+	*arg_tmp_dir,
+	*arg_input_list;
 
 static const struct poptOption options[] = {
-	{"debug", 0, POPT_ARG_NONE, &arg_debug, 0 , N_("Show debug output"), NULL},
+	{"debug", '\0', POPT_ARG_NONE, &arg_debug, 0 , N_("Show debug output"), NULL},
+	{"port", '\0', POPT_ARG_NONE, &arg_port, 0 , N_("Set port numer (80)"), NULL},
 	{"test", 't', POPT_ARG_NONE, &arg_dry_run, 0, N_("Test run"), NULL},
+	{"tmp", '\0', POPT_ARG_STRING, &arg_tmp_dir, 0, N_("Set tmp dir (/tmp/eazel-install)"), NULL},
 	{"server", '\0', POPT_ARG_STRING, &arg_server, 0, N_("Specify server"), NULL},
 	{"http", 'h', POPT_ARG_NONE, &arg_http, 0, N_("Use http"), NULL},
 	{"ftp", 'f', POPT_ARG_NONE, &arg_ftp, 0, N_("Use ftp"), NULL},
 	{"local", 'l', POPT_ARG_NONE, &arg_local, 0, N_("Use local"), NULL},
-	{"packagelist", '\0', POPT_ARG_STRING, &arg_local_list, 0, N_("Specify package list to use (/var/eazel/service/package-list.xml"), NULL},
-	{"config", '\0', POPT_ARG_STRING, &arg_config_file, 0, N_("Specify config file"), NULL},
+	{"packagelist", '\0', POPT_ARG_STRING, &arg_local_list, 0, N_("Specify package list to use (/var/eazel/service/package-list.xml)"), NULL},
+	{"config", '\0', POPT_ARG_STRING, &arg_config_file, 0, N_("Specify config file (/var/eazel/services/eazel-services-config.xml)"), NULL},
+	{"genpkglist", '\0', POPT_ARG_STRING, &arg_input_list, 0, N_("Use specified file to generate a package list, requires --packagelist"), NULL},
 	{NULL, '\0', 0, NULL, 0}
 };
 
 static void
 set_parameters_from_command_line (EazelInstall *service)
 {
+	if (!arg_debug) {
+		eazel_install_open_log (service, DEFAULT_LOG_FILE); 
+	}
+
 	/* We only want 1 protocol type */
 	if (arg_http + arg_ftp + arg_local > 1) {
 			fprintf (stderr, "*** You cannot specify more then one protocol type.\n");
 			exit (1);
 	}
-
-	/* Set the procol */
 	if (arg_http) {
 		eazel_install_set_protocol (service, PROTOCOL_HTTP);
 	} else if (arg_ftp) {
 		eazel_install_set_protocol (service, PROTOCOL_FTP);
 	} else if (arg_local) {
 		eazel_install_set_protocol (service, PROTOCOL_LOCAL);
+	} else {
+		eazel_install_set_protocol (service, PROTOCOL_HTTP);
 	}
+	if (arg_server == NULL) {
+		arg_server = g_strdup (DEFAULT_HOSTNAME);
+	}
+	if (arg_tmp_dir == NULL) {
+		arg_tmp_dir = g_strdup (DEFAULT_TMP_DIR);
+	}
+	if (arg_port == 0) {
+		arg_port = DEFAULT_PORT_NUMBER;
+	}
+	if (arg_dry_run) {
+		eazel_install_set_test (service, TRUE);
+	}
+	if (arg_local_list) {
+		eazel_install_set_package_list (service, arg_local_list);
+	}
+	if (arg_input_list) {
+		if (arg_local_list == NULL) {
+			fprintf (stderr, "Use of --genpkglist requires --packagelist\n");
+			exit (1);
+		}
+		generate_xml_package_list (arg_input_list, arg_local_list);
+	}
+
+	eazel_install_set_hostname (service, arg_server);
+	eazel_install_set_rpmrc_file (service, DEFAULT_RPMRC);
+	eazel_install_set_package_list_storage_path (service, DEFAULT_REMOTE_PACKAGE_LIST);
+	eazel_install_set_rpm_storage_path (service, DEFAULT_REMOTE_RPM_DIR);
+	eazel_install_set_tmp_dir (service, arg_tmp_dir);
+	eazel_install_set_port_number (service, arg_port);
 }
 
 static void 
@@ -118,6 +162,9 @@ download_failed (EazelInstall *service,
 	fprintf (stdout, "Download of %s FAILED\n", name);
 }
 
+/*
+  This dumps the entire tree for the failed package.
+ */
 static void
 install_failed (EazelInstall *service,
 		const PackageData *pd,
@@ -163,7 +210,6 @@ install_failed (EazelInstall *service,
 	}
 }
 
-
 static void
 dep_check (EazelInstall *service,
 	   const PackageData *package,
@@ -202,11 +248,15 @@ int main(int argc, char *argv[]) {
 	GList *packages;
 	GList *categories;
 	char *str;
-	
-	gnome_init_with_popt_table ("trilobite-eazel-time-service-cli", "1.0",argc, argv, options, 0, &ctxt);	
+
+	gtk_type_init ();
+	gnomelib_init ("Eazel Install", "1.0");
+	gnomelib_register_popt_table (options, "Eazel Install");
+	ctxt = gnomelib_parse_args (argc, argv, 0);
 
 	packages = NULL;
 	categories = NULL;
+	/* If there are more args, get them and parse them as packages */
 	while ((str = poptGetArg (ctxt)) != NULL) {
 		packages = g_list_prepend (packages, create_package (str));
 	}
@@ -219,45 +269,29 @@ int main(int argc, char *argv[]) {
 		g_message ("Using remote list ");
 	}
 
+	/* Chech that we're root and on a redhat system */
 	if (check_for_root_user() == FALSE) {
 		fprintf (stderr, "*** This tool requires root access.\n");
 	}
-
 	if (check_for_redhat () == FALSE) {
 		fprintf (stderr, "*** This tool can only be used on RedHat.\n");
 	}
 
+
+	/* Get the config file, and create the object */
 	if (arg_config_file == NULL) {
 		arg_config_file = g_strdup (DEFAULT_CONFIG_FILE);
 	}
 	service = eazel_install_new_with_config (arg_config_file);
 	g_assert (service != NULL);
+	set_parameters_from_command_line (service);
 
+	/* Bind the callbacks */
 	gtk_signal_connect (GTK_OBJECT (service), "download_progress", eazel_progress_signal, "Download progress");
 	gtk_signal_connect (GTK_OBJECT (service), "install_progress", eazel_progress_signal, "Install progress");
 	gtk_signal_connect (GTK_OBJECT (service), "install_failed", install_failed, "");
 	gtk_signal_connect (GTK_OBJECT (service), "download_failed", download_failed, NULL);
 	gtk_signal_connect (GTK_OBJECT (service), "dependency_check", dep_check, NULL);
-
-	if (!arg_debug) {
-		eazel_install_open_log (service, DEFAULT_LOG_FILE); 
-	}
-	eazel_install_set_hostname (service, DEFAULT_HOSTNAME);
-	eazel_install_set_rpmrc_file (service, DEFAULT_RPMRC);
-	eazel_install_set_package_list_storage_path (service, DEFAULT_REMOTE_PACKAGE_LIST);
-	eazel_install_set_rpm_storage_path (service, DEFAULT_REMOTE_RPM_DIR);
-	eazel_install_set_tmp_dir (service, DEFAULT_TMP_DIR);
-	eazel_install_set_port_number (service, DEFAULT_PORT_NUMBER);
-	eazel_install_set_protocol (service, DEFAULT_PROTOCOL);
-
-	if (arg_dry_run) {
-		eazel_install_set_test (service, TRUE);
-	}
-	if (arg_local_list) {
-		eazel_install_set_package_list (service, arg_local_list);
-	}
-	
-	set_parameters_from_command_line (service);
 
 	eazel_install_install_packages (service, categories);
 							

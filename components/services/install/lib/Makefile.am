@@ -57,7 +57,7 @@ IDLDIR = $(top_srcdir)/components/services/install/idl
 IDL = $(IDLDIR)/trilobite-eazel-install.idl
 
 trilobite-eazel-install.h: $(IDL)
-	$(prefix)/bin/orbit-idl -I $(IDLDIR)  -I${datadir}/idl $(IDL)
+	$(ORBIT_IDL) -I $(IDLDIR)  -I${datadir}/idl $(IDL)
 
 eazel-install-object.c : trilobite-eazel-install.h
 

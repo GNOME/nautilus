@@ -87,7 +87,26 @@ set_images  (GtkWidget *window)
 {
 
 	GnomeDruidPage *page;
-
+/*
+	gtk_rc_parse_string ("style \"default\" "
+			     "{"
+			     "bg[SELECTED] = { 0.80, 0.80, 0.80 }"
+			     "fg[SELECTED] = { 0.00, 0.33, 0.99 }"
+			     "bg[ACTIVE] = { 0.80, 0.80, 0.80 }"
+			     "fg[ACTIVE] = { 0.00, 0.33, 0.99 }"
+			     
+			     "bg[NORMAL] = { 0.99, 0.99, 0.99 }"
+			     "bg[PRELIGHT] = { 0.94, 0.94, 0.94 }"
+			     "fg[PRELIGHT] = { 0.00, 0.33, 0.99 }"
+			     "bg[INSENSITIVE] = { 0.80, 0.80, 0.80 }"
+			     
+			     "fg[NORMAL] = { 0.00, 0.00, 0.00 }"
+			     
+			     "}"
+			     
+			     "widget_class \"*\" style \"default\""
+		);
+	*/
 	page = GNOME_DRUID_PAGE (gtk_object_get_data(GTK_OBJECT (window), "start_page"));
 	gnome_druid_page_start_set_logo (GNOME_DRUID_PAGE_START (page), gdk_imlib_create_image_from_xpm_data (step_one_top));
 	gnome_druid_page_start_set_watermark (GNOME_DRUID_PAGE_START (page), gdk_imlib_create_image_from_xpm_data (banner_left));
@@ -103,3 +122,15 @@ set_images  (GtkWidget *window)
 	gnome_druid_page_finish_set_watermark (GNOME_DRUID_PAGE_FINISH (page), gdk_imlib_create_image_from_xpm_data (banner_left));
 }
 
+
+void set_white_stuff (GtkWidget *w) {
+	GtkStyle *style;
+	GdkColor *color;
+
+	style = gtk_style_copy (w->style);
+	style->bg[GTK_STATE_NORMAL].red = 65000;
+	style->bg[GTK_STATE_NORMAL].blue = 65000;
+	style->bg[GTK_STATE_NORMAL].green = 65000;
+	gtk_widget_set_style (w, style);
+        gtk_style_unref (style);
+}

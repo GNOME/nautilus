@@ -64,13 +64,14 @@ static void* rpm_show_progress (const Header h,
                                 const unsigned long total,
                                 const void* pkgKey,
                                 void* service);
-
+/*
 static int rpm_install (EazelInstall *service,
 			char* root_dir,
                         char* file_name,
                         char* location,
                         rpm_install_cb callback,
                         void* user_data);
+*/
 
 static int rpm_uninstall (EazelInstall *service, 
 			  char* root_dir,
@@ -218,6 +219,7 @@ install_all_packages (EazelInstall *service,
 		}
 
 		g_message ("Category = %s, %d packages", cat->name, g_list_length (pkgs));
+/*
 		if (pkgs == NULL) {
 		}
 		while (pkgs) {
@@ -245,6 +247,13 @@ install_all_packages (EazelInstall *service,
 			}
 			pkgs = pkgs->next;
 		}
+*/
+		do_rpm_install (service,
+				"/",
+				pkgs,
+				NULL,
+				NULL,
+				NULL);
 		categories = categories->next;
 	}
 
@@ -472,11 +481,13 @@ do_rpm_install (EazelInstall *service,
 	unsigned long* sizep;
 	FD_t fd;
 	struct rpmDependencyConflict* conflicts;
+	GList *iterator;
 
 	stop_install = 0;
 	num_binary_packages = 0;
 	num_source_packages = 0;
 	num_failed = 0;
+	num_packages = 0;
 	total_size = 0;
 	rpmdep = NULL;
 	probs = NULL;
@@ -493,8 +504,11 @@ do_rpm_install (EazelInstall *service,
 	pkgs = g_new (char *, pkg_count + 1);
 	binary_headers = g_new (Header, pkg_count + 1);
 	/* First load all rpm headers */
-	for (num_packages = 0; packages != NULL; packages = packages->next) {
-		pkg_file = packages->data;
+	for (iterator = packages; iterator ; iterator = iterator->next) {
+		pkg_file = g_strdup_printf ("%s/%s", 
+					    eazel_install_get_tmp_dir (service),
+					    rpmfilename_from_packagedata ((PackageData*)iterator->data));
+		g_message ("Installing %s...", pkg_file);
 		fd = fdOpen (pkg_file, O_RDONLY, 0644);
 		if (fdFileno (fd) < 0) {
 			num_failed++;
@@ -507,43 +521,8 @@ do_rpm_install (EazelInstall *service,
                                            &is_source,
                                            NULL,
                                            NULL);
-
-		/* Fail source packages */
-		if (is_source) {
-			PackageData *pd;
-			g_warning ("Source Package installs not supported!"
-                                     "Package %s skipped.", pkg_file);	
-			
-			/*
-			  FIXME bugzilla.eazel.com 1093:
-			  this call fails.
-			  pd = packagedata_new_from_rpm_header (binary_headers[num_binary_packages]);
-			*/
-			pd = packagedata_new ();
-			headerGetEntry (binary_headers[num_binary_packages],
-					RPMTAG_NAME, NULL,
-					(void **) &pd->name, NULL);
-			headerGetEntry (binary_headers[num_binary_packages],
-					RPMTAG_VERSION, NULL,
-					(void **) &pd->version, NULL);
-			headerGetEntry (binary_headers[num_binary_packages],
-					RPMTAG_RELEASE, NULL,
-					(void **) &pd->minor, NULL);
-			headerGetEntry (binary_headers[num_binary_packages],
-					RPMTAG_ARCH, NULL,
-					(void **) &pd->archtype, NULL);
-			headerGetEntry (binary_headers[num_binary_packages],
-					RPMTAG_SIZE, NULL,
-					(void **) &pd->bytesize, NULL);
-			headerGetEntry (binary_headers[num_binary_packages],
-					RPMTAG_SUMMARY, NULL,
-					(void **) &pd->summary, NULL);
-			
-			pd->status = PACKAGE_SOURCE_NOT_SUPPORTED;
-			eazel_install_emit_install_failed (service, pd);
-			packagedata_destroy (pd);
-		}
 		fdClose (fd);
+
 		/* Get the size tag */
 		if (binary_headers[num_binary_packages]) {
 			if (headerGetEntry (binary_headers[num_binary_packages],
@@ -671,6 +650,8 @@ do_rpm_install (EazelInstall *service,
 	if (rpmdep != NULL) {
 		rpmtransFree (rpmdep);
 	}
+
+	g_message ("num_failed = %d", num_failed);
 
 	return num_failed;
 } /* end do_rpm_install */
@@ -1164,6 +1145,15 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 
 		conflict = service->private->packsys.rpm.conflicts[iterator];
 
+		/* FIXME bugzilla.eazel.com 1316
+		   Need to find a solid way to capture file dependencies, and once they do not
+		   appear at this point anymore, remove them. And in the end, check the list is
+		   empty. */
+		if (strncmp (conflict.needsName, "lib",3)==0 && strstr (conflict.needsName, ".so")) {
+			g_warning ("LIB dependency");
+			continue;
+		}
+
 		pack_entry = g_list_find_custom (*packages, 
 						 (gpointer)&conflict,
 						 (GCompareFunc)eazel_install_package_conflict_compare);
@@ -1200,14 +1190,14 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 		dep->archtype = g_strdup (pack->archtype);
 				
 		/* 
-		   FIXME: bugzilla.eazel.com 
+		   FIXME: bugzilla.eazel.com 1300
 		   We need the service to accept a url of a format
 		   that specifies, that this package is to be resolved,
 		   as in 
 		   "get package name=pack->name && version>=pack->version && arch=pack->archtype && highest release-number"
 		*/
 				
-		g_message ("Doing deps for %s - %s", conflict.byName, dep->name);
+		g_message ("Processing dep for %s : requires %s", pack->name, dep->name);
 
 		if (eazel_install_fetch_package (service, dep)) {
 			/* if it succeeds, add to a list of extras for this package 
@@ -1239,6 +1229,7 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 
 			pack->status = PACKAGE_DEPENDENCY_FAIL;
 			dep->status = PACKAGE_CANNOT_OPEN;
+			pack->soft_depends = g_list_prepend (pack->soft_depends, dep);
 
 			extralist = g_hash_table_lookup (extras, pack->name);
 			g_list_foreach (extralist, (GFunc)packagedata_destroy_foreach, NULL);
@@ -1249,8 +1240,6 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 				(*failedpackages) = g_list_prepend (*failedpackages, pack);
 			}
 			to_remove = g_list_remove (to_remove, pack);
-
-			pack->soft_depends = g_list_prepend (pack->soft_depends, dep);
 		}
 	}
 	
@@ -1264,7 +1253,6 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 		(*packages) = g_list_remove (*packages, remove_iterator->data);
 	}
 	g_list_free (to_remove);
-
 
 	rpmdepFreeConflicts (service->private->packsys.rpm.conflicts, service->private->packsys.rpm.num_conflicts);
 
@@ -1356,11 +1344,18 @@ eazel_install_ensure_deps (EazelInstall *service,
 
 	g_return_val_if_fail (g_list_length (*packages)>=1, FALSE);
 	result = TRUE;
-
+	
+	/* First we load headers and prepare them.
+	   The datastructures depend on the packagesystem,
+	   and are places in service->private->packsys.
+	*/
 	eazel_install_load_headers (service, packages);
 	eazel_install_prepare_package_system (service);
 	eazel_install_add_headers_to_set (service, *packages);
 
+	/* Weak attempt at making it easy to extend to other
+	   package formats (debian). 
+	*/
 	switch (eazel_install_get_package_system (service)) {
 	case EAZEL_INSTALL_USE_RPM: {
 		rpmTransactionSet *set;
@@ -1371,15 +1366,20 @@ eazel_install_ensure_deps (EazelInstall *service,
 		num_conflicts = &service->private->packsys.rpm.num_conflicts;
 		conflicts = &service->private->packsys.rpm.conflicts;
 
+		/* Reorder the packages as per. deps and do the dep check */
 		rpmdepOrder (*set);		
 		rpmdepCheck (*set, conflicts, num_conflicts);
 
+		/* Free stuff for the package system */
 		eazel_install_free_package_system (service);
 
 		if (num_conflicts != 0) {
 			GList *extrapackages;
 			GList *iterator;
 
+			extrapackages = NULL;
+
+			/* For all the packages, set state to partly_resolved. */
 			for (iterator=*packages; iterator; iterator = iterator->next) {
 				PackageData *pack;
 				pack = (PackageData*)iterator->data;
@@ -1387,23 +1387,29 @@ eazel_install_ensure_deps (EazelInstall *service,
 			}
 
 			g_message ("%d deps failed!", *num_conflicts);
-			/* DO MAGIC HERE */
-			extrapackages = NULL;
+			
+			/* Fetch the needed stuff. 
+			   "extrapackages" gets the new packages added,
+			   packages in "failedpackages" are packages moved from 
+			   "packages" that could not be resolved. */
 			eazel_install_fetch_dependencies (service, 
 							  packages,
 							  &extrapackages,
 							  failedpackages);
+
+			/* Some debug printing */
 			print_package_list ("Packages to install (a)", *packages, FALSE);
 			print_package_list ("Packages that were fetched", extrapackages, FALSE);
 			print_package_list ("Packages that failed", *failedpackages, TRUE);		       		       
 
 			/* If there was failedpackages, prune them from the tree 
-			   and the extra packages.
+			   and the "extrapackages".
 			   We need to strip from "extrapackages" as well, since :
 			   while installing A & B, C was added for A, D was
 			   added for B but B also needs E. Therefore
 			   we strip D from "extrapackages" and B is stripped
-			   from "packages"
+			   from "packages". Keeping D around would
+			   install a non-needed package
 			*/
 			if (*failedpackages) {
 				GList *iterator;
@@ -1416,25 +1422,28 @@ eazel_install_ensure_deps (EazelInstall *service,
 			} 
 			if (extrapackages) {
 				GList *iterator;
-				GList *sub_failedpackages;
 
-				sub_failedpackages = NULL;
-
+				/* Add to "packages" */
 				for (iterator = extrapackages; iterator; iterator = iterator->next) {
 					(*packages) = g_list_prepend (*packages, iterator->data);
 				}
-				eazel_install_ensure_deps (service, packages, &sub_failedpackages);
+				
+				/* Now recurse into eazel_install_ensure_deps with
+				   the new "packages" list */
+				eazel_install_ensure_deps (service, packages, failedpackages);
 
-				/* Now remove the packages that failed from "packages" */
-				for (iterator = sub_failedpackages; iterator; iterator = iterator->next) {
+				/* Now remove the packages that failed from "packages" 
+				   and copy them into "failedpackages".  */
+				for (iterator = *failedpackages; iterator; iterator = iterator->next) {
 					PackageData *pack;
 					pack = (PackageData*)iterator->data;
 					(*packages) = g_list_remove (*packages, pack);					
-					packagedata_destroy (pack);
 				}
 			}
 		} else {
 			GList *iterator;
+
+			/* Deps are fine, set all packages to resolved */
 			for (iterator=*packages; iterator; iterator = iterator->next) {
 				PackageData *pack;
 				pack = (PackageData*)iterator->data;
@@ -1449,6 +1458,7 @@ eazel_install_ensure_deps (EazelInstall *service,
 	return result;
 }
 
+/*
 static int
 rpm_install (EazelInstall *service, 
 	     char* root_dir,
@@ -1470,7 +1480,7 @@ rpm_install (EazelInstall *service,
                                  user_data);
 	g_list_free (list);
 	return result;
-} /* end rpm_install */
+	} */ /* end rpm_install */
 
 static int
 rpm_uninstall (EazelInstall *service, 

@@ -161,6 +161,7 @@ noinst_HEADERS =				\
 	nautilus-string.h			\
 	nautilus-text-caption.h			\
 	nautilus-undo-context.h			\
+	nautilus-undo-signal-handlers.h		\
 	nautilus-undo-manager.h			\
 	nautilus-user-level-manager.h		\
 	nautilus-view-identifier.h		\

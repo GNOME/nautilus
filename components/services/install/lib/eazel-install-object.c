@@ -486,7 +486,6 @@ eazel_install_new_with_config (const char *config_file)
 							   "hostname", topts->hostname,
 							   "rpm_storage_path", topts->rpm_storage_path,
 							   "package_list_storage_path", topts->pkg_list_storage_path,
-							   "package_list", iopts->pkg_list,
 							   "port_number", topts->port_number,
 							   NULL));
 
@@ -520,7 +519,7 @@ eazel_install_fetch_remote_package_list (EazelInstall *service)
 	
 	SANITY_VAL(service, FALSE);
 
-	g_print (_("Getting package-list.xml from remote server ...\n"));
+	g_print (_("Getting package list from remote server ...\n"));
 
 	url = g_strdup_printf ("http://%s%s", 
 			       eazel_install_get_hostname (service),
@@ -638,7 +637,8 @@ eazel_install_install_packages (EazelInstall *service, GList *categories)
 		create_temporary_directory (eazel_install_get_tmp_dir (service));
 	}
 	
-	if (categories == NULL) {
+	if (categories == NULL && eazel_install_get_package_list (service) == NULL) {
+		eazel_install_set_package_list (service, "/var/eazel/services/package-list.xml");
 		switch (service->private->iopts->protocol) {
 		case PROTOCOL_HTTP:
 			eazel_install_fetch_remote_package_list (service);

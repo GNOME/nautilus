@@ -1,3 +1,62 @@
+2000-06-12  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install.c:
+	(set_parameters_from_command_line), (main):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_new_with_config),
+	(eazel_install_fetch_remote_package_list),
+	(eazel_install_install_packages):
+	* components/services/install/lib/eazel-install-protocols.c:
+	(http_fetch_remote_file), (filename_from_url),
+	(eazel_install_fetch_package), (get_url_for_package),
+	(get_search_url_for_package):
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_all_packages), (do_rpm_install),
+	(eazel_install_fetch_rpm_dependencies),
+	(eazel_install_ensure_deps):
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_new), (packagedata_new_from_rpm_conflict),
+	(packagedata_new_from_rpm_conflict_reversed),
+	(packagedata_new_from_rpm_header), (packagedata_destroy_foreach),
+	(packagedata_destroy), (rpmfilename_from_packagedata),
+	(packagedata_hash):
+	* components/services/install/lib/eazel-install-types.h:
+	Did most of the work for bug 1300 & 1090. It now uses an
+	rpmsearch.cgi script on a server to query for packages as
+	dependency fails occur.
+	
+	* components/services/install/lib/eazel-install-metadata.c:
+	(create_default_metadata):
+	Fixed bug 1310.
+
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(generate_xml_package_list):
+	Fixed bug 1284.
+	
+	* nautilus-installer/src/callbacks.c: (set_images),
+	(set_white_stuff):
+	* nautilus-installer/src/callbacks.h:
+	* nautilus-installer/src/installer.c: (create_package),
+	(create_categories), (installer):
+	* nautilus-installer/src/interface.c: (create_window):
+	Update to the new apt-get alike stuff in libinstall. Also make
+	things white to please Arlo.
+	
+	* components/services/install/lib/Makefile.am:
+	* components/services/time/command-line/Makefile.am:
+	* components/services/time/nautilus-view/Makefile.am:
+	* components/services/time/service/Makefile.am:
+	* components/services/trilobite/libtrilobite/Makefile.am:
+	* components/services/trilobite/sample/command-line/Makefile.am:
+	* components/services/trilobite/sample/service/Makefile.am:
+	* libnautilus-extensions/Makefile.am:
+	* nautilus-installer/src/Makefile:
+	* nautilus.spec.in:
+	* po/POTFILES.in:
+	More patchine to make the rpm building succeed. Basically a
+	removed files that where no longer in existence (POTFILES), and
+	adding missing .h files to Makefile.am's.
+
 2000-06-12  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-link-set-window.c,h:

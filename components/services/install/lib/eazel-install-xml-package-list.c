@@ -226,10 +226,21 @@ generate_xml_package_list (const char* pkg_template_file,
 		return FALSE;
 	}
 
-	/* FIXME bugzilla.eazel.com 1284: 
-	 * this should check to see if target_file already exists and save a copy. 
-	 */
-
+	/* Check for existing file and if, rename, trying to find a .x
+	   extension (x being a number) that isn't taken */
+	if (g_file_exists (target_file)) {
+		char *new_name;
+		int c;
+		c = 0;
+		new_name = NULL;
+		do {
+			g_free (new_name);
+			c++;
+			new_name = g_strdup_printf ("%s.%d", target_file, c);
+		} while (g_file_exists (new_name));		
+		rename (target_file, new_name);
+		g_free (new_name);
+	}
 	xmlSaveFile (target_file, doc);
 	xmlFreeDoc (doc);
 	return TRUE;

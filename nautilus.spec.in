@@ -11,17 +11,19 @@ Summary:	Nautilus is an open-source file manager and graphical shell.
 Version: 	%ver
 Release: 	%rel
 Copyright: 	GPL
-Group:		System Environment/Libraries
+Group:		User Interface/Desktop
 Source: 	%{name}-%{ver}.tar.gz
 URL: 		http://nautilus.eazel.com/
 BuildRoot:	/var/tmp/%{name}-%{ver}-root
 Docdir: 	%{prefix}/doc
-Requires:	gnome-libs
-Requires:	gnome-vfs
-Requires:	gtkhtml
-Requires:	gdk-pixbuf
-Requires:	bonobo
-Requires:	eog
+Requires:	GConf >= 0.5
+Requires:	gnet >= 1.0.3
+Requires:	oaf >= 0.3.0
+Requires:	gnome-vfs >= 0.1
+Requires:	gtkhtml >= 0.4
+Requires:	gdk-pixbuf >= 0.8.0
+Requires:	bonobo >= 0.15
+Requires:	eog >= 0.3
 
 %description
 Nautilus is an open-source file manager and graphical shell being
@@ -90,29 +92,21 @@ fi
 %postun -p /sbin/ldconfig
 
 %files
+
 %defattr(0555, bin, bin)
-%dir %{prefix}/
-
-
 %doc AUTHORS COPYING COPYING.LIB ChangeLog NEWS README
 %{prefix}/bin/*
 %{prefix}/lib/lib*.so.*
 
 %defattr (0444, bin, bin)
-%{prefix}/share/locale/*/LC_MESSAGES/*
-%{prefix}/share/oaf/*
+%{prefix}/share/*
+%config /etc/vfs/*
 
 %files devel
 
 %defattr(0555, bin, bin)
-%dir %{prefix}/include/libnautilus
-%{prefix}/lib/*.so
 %{prefix}/lib/*.la
 
 %defattr(0444, bin, bin)
-%{prefix}/include/libnautilus/*
-%{prefix}/include/libnautilus-extensions/*
-%{prefix}/include/librsvg/*
-%{prefix}/include/libtrilobite/*
-%{prefix}/include/nautilus-widgets/*
+%{prefix}/include/*
 %{prefix}/idl/*.idl

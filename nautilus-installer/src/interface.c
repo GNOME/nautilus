@@ -90,6 +90,9 @@ create_window (void)
   gnome_druid_page_start_set_text (GNOME_DRUID_PAGE_START (start_page), _("This is the internal Nautilus installer.\n\nLots of text should go here letting you know what you need\nto have installed before you should even begin to think about\nusing this. For example:\n\n  * Helix Gnome\n  * GTK+ Development Environment\n  * Other stuff\n\nIf you meet these requirements, hit the \"Next\" button to continue!\n\n"));
 
   what_to_do_page = gnome_druid_page_standard_new_with_vals ("", NULL);
+
+  set_white_stuff (GTK_WIDGET (what_to_do_page));
+
   gtk_widget_set_name (what_to_do_page, "what_to_do_page");
   gtk_widget_ref (what_to_do_page);
   gtk_object_set_data_full (GTK_OBJECT (window), "what_to_do_page", what_to_do_page,
@@ -102,6 +105,7 @@ create_window (void)
   gnome_druid_page_standard_set_title (GNOME_DRUID_PAGE_STANDARD (what_to_do_page), _("What to do ?"));
 
   druid_vbox1 = GNOME_DRUID_PAGE_STANDARD (what_to_do_page)->vbox;
+  set_white_stuff (GTK_WIDGET (druid_vbox1));
   gtk_widget_set_name (druid_vbox1, "druid_vbox1");
   gtk_widget_ref (druid_vbox1);
   gtk_object_set_data_full (GTK_OBJECT (window), "druid_vbox1", druid_vbox1,
@@ -126,6 +130,7 @@ create_window (void)
   gtk_label_set_justify (GTK_LABEL (label10), GTK_JUSTIFY_LEFT);
 
   fixed3 = gtk_fixed_new ();
+  set_white_stuff (GTK_WIDGET (fixed3));
   gtk_widget_set_name (fixed3, "fixed3");
   gtk_widget_ref (fixed3);
   gtk_object_set_data_full (GTK_OBJECT (window), "fixed3", fixed3,
@@ -189,6 +194,7 @@ create_window (void)
   gtk_widget_set_usize (uninstall_button, 0, 0);
 
   install_page = gnome_druid_page_standard_new_with_vals ("", NULL);
+  set_white_stuff (GTK_WIDGET (install_page));
   gtk_widget_set_name (install_page, "install_page");
   gtk_widget_ref (install_page);
   gtk_object_set_data_full (GTK_OBJECT (window), "install_page", install_page,
@@ -208,6 +214,7 @@ create_window (void)
   gtk_widget_show (druid_vbox2);
 
   vbox5 = gtk_vbox_new (FALSE, 0);
+  set_white_stuff (GTK_WIDGET (vbox5));
   gtk_widget_set_name (vbox5, "vbox5");
   gtk_widget_ref (vbox5);
   gtk_object_set_data_full (GTK_OBJECT (window), "vbox5", vbox5,
@@ -224,6 +231,7 @@ create_window (void)
   gtk_box_pack_start (GTK_BOX (vbox5), label11, TRUE, FALSE, 0);
 
   table2 = gtk_table_new (2, 2, TRUE);
+  set_white_stuff (GTK_WIDGET (table2));
   gtk_widget_set_name (table2, "table2");
   gtk_widget_ref (table2);
   gtk_object_set_data_full (GTK_OBJECT (window), "table2", table2,
@@ -242,7 +250,7 @@ create_window (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
-  action_label = gtk_label_new (_("(action) :"));
+  action_label = gtk_label_new (_(""));
   gtk_widget_set_name (action_label, "action_label");
   gtk_widget_ref (action_label);
   gtk_object_set_data_full (GTK_OBJECT (window), "action_label", action_label,
@@ -262,7 +270,7 @@ create_window (void)
                     (GtkAttachOptions) (0),
                     (GtkAttachOptions) (0), 0, 0);
 
-  package_label = gtk_label_new (_("0/0 - bla.rpm"));
+  package_label = gtk_label_new (_(""));
   gtk_widget_set_name (package_label, "package_label");
   gtk_widget_ref (package_label);
   gtk_object_set_data_full (GTK_OBJECT (window), "package_label", package_label,
@@ -274,6 +282,7 @@ create_window (void)
 
   fixed1 = gtk_fixed_new ();
   gtk_widget_set_name (fixed1, "fixed1");
+  set_white_stuff (GTK_WIDGET (fixed1));
   gtk_widget_ref (fixed1);
   gtk_object_set_data_full (GTK_OBJECT (window), "fixed1", fixed1,
                             (GtkDestroyNotify) gtk_widget_unref);

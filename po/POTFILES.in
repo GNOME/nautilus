@@ -3,7 +3,6 @@ components/help/hyperbola-nav-index.c
 components/help/hyperbola-types.h
 components/history/nautilus-history-view.c
 components/html/gnome-dialogs.c
-components/html/main.c
 components/html/ntl-web-browser.c
 components/loser/content/nautilus-content-loser.c
 components/loser/sidebar/nautilus-sidebar-loser.c
@@ -13,7 +12,11 @@ components/notes/nautilus-notes.c
 components/rpmview/nautilus-rpm-view.c
 components/sample/nautilus-sample-content-view.c
 components/services/install/command-line/eazel-alt-install.c
-components/services/install/command-line/eazel-install.c
+components/services/time/service/main.c
+components/services/time/service/trilobite-eazel-time-service.c
+components/services/time/command-line/main.c
+components/services/time/nautilus-view/main.c
+components/services/time/nautilus-view/trilobite-eazel-time-view.c
 components/services/install/lib/eazel-install-metadata.c
 components/services/install/lib/eazel-install-object.c
 components/services/install/lib/eazel-install-protocols.c
@@ -22,7 +25,6 @@ components/services/install/lib/eazel-install-tests.c
 components/services/install/lib/eazel-install-xml-package-list.c
 components/services/time/command-line/main.c
 components/services/time/nautilus-view/trilobite-eazel-time-view.c
-components/shell/shell.c
 components/websearch/ntl-web-search.c
 libnautilus-extensions/nautilus-entry.c
 libnautilus-extensions/nautilus-file.c
@@ -32,8 +34,6 @@ libnautilus-extensions/nautilus-icon-dnd.c
 libnautilus-extensions/nautilus-icon-text-item.c
 libnautilus-extensions/nautilus-program-chooser.c
 libnautilus/nautilus-clipboard.c
-nautilus-installer/src/interface.c
-nautilus-installer/src/support.c
 libnautilus-extensions/nautilus-preferences-dialog.c
 src/file-manager/dfos-corba.c
 src/file-manager/dfos-xfer.c

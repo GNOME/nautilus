@@ -37,7 +37,7 @@ IDL = $(IDLDIR)/trilobite-eazel-time-service.idl
 $(CORBA_GENERATED): trilobite_eazel_time_service_idl_stamp
 
 trilobite_eazel_time_service_idl_stamp: $(IDL)
-	$(prefix)/bin/orbit-idl -I${datadir}/idl $(IDL)
+	$(ORBIT_IDL) -I${datadir}/idl $(IDL)
 	touch trilobite_eazel_time_service_idl_stamp
 
 main.c: $(CORBA_GENERATED)

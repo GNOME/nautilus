@@ -19,6 +19,7 @@ prep_install                           (GnomeDruidPage  *gnomedruidpage,
                                         gpointer         arg1,
                                         gpointer         user_data);
 
+void set_white_stuff (GtkWidget *w);
 
 void set_images  (GtkWidget *window);
 

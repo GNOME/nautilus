@@ -43,8 +43,8 @@ gboolean local_fetch_remote_file (EazelInstall *service,
 gboolean
 http_fetch_remote_file (EazelInstall *service,
 			char* url, 
-			const char* target_file) {
-
+			const char* target_file) 
+{
         int length, get_failed;
         ghttp_request* request;
         ghttp_status status;
@@ -124,7 +124,6 @@ http_fetch_remote_file (EazelInstall *service,
 	else {
 		return TRUE;
 	}
-
 } /* end http_fetch_remote_file */
 
 gboolean
@@ -180,6 +179,26 @@ eazel_install_fetch_file (EazelInstall *service,
 	return result;
 }
 
+
+static const char*
+filename_from_url (char *url)
+{
+	static char *filename = NULL;
+	char *ptr;
+
+	//g_return_val_if_fail (url!=NULL, NULL);
+
+	g_free (filename);
+
+	ptr = url + strlen (url);
+	while ((ptr != url) && (*ptr != '/')) { 
+		ptr--; 
+	}
+	filename = g_strdup (ptr + 1);
+	
+	return filename;
+}
+
 gboolean
 eazel_install_fetch_package (EazelInstall *service, 
 			     PackageData* package) 
@@ -191,22 +210,12 @@ eazel_install_fetch_package (EazelInstall *service,
 	result = FALSE;
 	url = NULL;
 	
-	targetname = g_strdup_printf ("%s/%s",
-				      eazel_install_get_tmp_dir (service),
-				      rpmfilename_from_packagedata (package));
 
 	switch (eazel_install_get_protocol (service)) {
 	case PROTOCOL_FTP:
 	case PROTOCOL_HTTP: 
 	{
-		url = g_strdup_printf ("%s://%s%s/%s",
-				       protocol_as_string (eazel_install_get_protocol (service)),
-                                       eazel_install_get_hostname (service),
-                                       eazel_install_get_rpm_storage_path (service),
-                                       rpmfilename_from_packagedata (package));
-		/*
 		url = get_url_for_package (service, package);
-		*/
 	}
 	break;
 	case PROTOCOL_LOCAL:
@@ -217,11 +226,19 @@ eazel_install_fetch_package (EazelInstall *service,
 	if (url == NULL) {
 		g_warning (_("Could not get a URL for %s"), rpmfilename_from_packagedata (package));
 	} else {
-		result = eazel_install_fetch_file (service, url, targetname);
+		/* FIXME: bugzilla.eazel.com 1315
+		   Loose the check once a proper rpmsearch.cgi is up and running */
+		if (filename_from_url (url) && strlen (filename_from_url (url))>1) {
+			targetname = g_strdup_printf ("%s/%s",
+						      eazel_install_get_tmp_dir (service),
+						      filename_from_url (url));
+			package->filename = g_strdup (filename_from_url (url));
+			result = eazel_install_fetch_file (service, url, targetname);
+			g_free (targetname);
+		}
 		g_free (url);
 	}
 	
-	g_free (targetname);
 
 	return result;
 }
@@ -246,7 +263,7 @@ add_to_url (char **url,
 
 char*
 get_url_for_package  (EazelInstall *service, 
-				  PackageData *package)
+		      PackageData *package)
 {
 	char *search_url;
 	char *url;
@@ -265,9 +282,6 @@ get_url_for_package  (EazelInstall *service,
 		if (ghttp_set_uri (request, search_url) != 0) {
 			g_warning (_("Invalid uri"));
 		} else {
-			ghttp_set_header (request, http_hdr_Connection, "close");
-			ghttp_set_header (request, http_hdr_User_Agent, USER_AGENT_STRING);
-			ghttp_set_type (request, ghttp_type_get);
 			if (ghttp_prepare (request) != 0) {
 				g_warning (_("Could not prepare http request !"));
 			} else {
@@ -281,7 +295,14 @@ get_url_for_package  (EazelInstall *service,
 				case ghttp_done:
 					if (ghttp_status_code (request) != 404) {
 						url = g_strdup (ghttp_get_body (request));
+						url [ ghttp_get_body_len (request)] = 0;
 					} else {
+						/*
+						url = g_strdup_printf("http://%s%s/%s",
+								      eazel_install_get_hostname (service),
+								      eazel_install_get_rpm_storage_path (service),
+								      rpmfilename_from_packagedata (package));
+						*/
 						url = NULL;
 					}
 					break;
@@ -301,11 +322,11 @@ char* get_search_url_for_package (EazelInstall *service,
 				  PackageData *pack)
 {
 	char *url;
-	url = g_strdup_printf ("http://%s/rpmsearch.cgi",
+	url = g_strdup_printf ("http://%s/cgi-bin/rpmsearch.cgi",
 			       eazel_install_get_hostname (service));
 	add_to_url (&url, "?name=", pack->name);
 	add_to_url (&url, "&arch=", pack->archtype);
-	add_to_url (&url, "&version>=", pack->version);
+	/* add_to_url (&url, "&version>=", pack->version); */
 
 	switch (eazel_install_get_protocol (service)) {
 	case PROTOCOL_HTTP:
@@ -317,13 +338,13 @@ char* get_search_url_for_package (EazelInstall *service,
 	default:
 		break;
 	}
-
+/*
 	if (pack->name != DISTRO_UNKNOWN) {
 		char *distro;
 		distro = g_strconcat ("\"", trilobite_get_distribution_name (pack->distribution, TRUE), "\"", NULL);
 		add_to_url (&url, "&distro=", distro);
 		g_free (distro);
 	}
-
+*/
 	return url;
 }
