@@ -1,3 +1,12 @@
+2000-09-15  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_make_uri_from_input):
+	fixed bug 2204, ~ shortcut for home directory doesn't work
+	in location bar, by expanding '~' and '~user' in make_uri_from_input
+	* src/nautilus-location-bar.c: (try_to_expand_path):
+	made the expand code handle '~' properly
+	
 2000-09-15  Robey Pointer  <robey@eazel.com>
 
 	* components/services/trilobite/libtrilobite/trilobite-redirect.c:

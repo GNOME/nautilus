@@ -238,7 +238,11 @@ try_to_expand_path(GtkEditable *editable)
 	char *expand_name;
 	
 	user_location = gtk_editable_get_chars (editable, 0, -1);
- 	
+	
+	/* if it's just '~' or '~/', don't expand because slash shouldn't be appended */
+	if (!nautilus_strcmp (user_location, "~") || !nautilus_strcmp (user_location, "~/") ) {
+		return;
+	}	
 	current_path = nautilus_make_uri_from_input (user_location);
 
 	if (!nautilus_istr_has_prefix (current_path, "file://")) {

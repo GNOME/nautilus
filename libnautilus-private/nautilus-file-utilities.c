@@ -111,7 +111,7 @@ nautilus_format_uri_for_display (const char *uri)
 char *
 nautilus_make_uri_from_input (const char *location)
 {
-	char *toreturn, *escaped;
+	char *path, *toreturn, *escaped;
 	const char *no_method;
 	int method_length;
 
@@ -119,6 +119,19 @@ nautilus_make_uri_from_input (const char *location)
 		escaped = gnome_vfs_escape_path_string (location);
 		toreturn = g_strconcat (DEFAULT_SCHEME, escaped, NULL);
 		g_free (escaped);
+	} else if (location[0] == '~') {
+		if (location[1] == '/') {
+			path = g_strconcat (g_get_home_dir (), &location[1], NULL);
+		} else if (location[1]) {
+			path = g_strconcat ("/home/", &location[1], NULL);
+		} else {
+			path = g_strdup (g_get_home_dir ());
+		}
+		escaped = gnome_vfs_escape_path_string (path);
+		toreturn = g_strconcat (DEFAULT_SCHEME, escaped, NULL);
+		g_free (path);
+		g_free (escaped);
+		
 	} else {
 		no_method = strchr (location, ':');
 		if (no_method == NULL) {
