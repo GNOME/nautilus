@@ -44,6 +44,7 @@
 #include "callbacks.h"
 #include "installer.h"
 #include "support.h"
+#include "proxy.h"
 
 
 /* Include the pixmaps */
@@ -65,6 +66,15 @@
 #define RPMRC "/usr/lib/rpm/rpmrc"
 #define REMOTE_RPM_DIR "/RPMS"
 #define CATEGORY_DEPENDS_LIST "package-list-depends.xml"
+
+#define DIALOG_NEED_TO_SET_PROXY _("I can't reach the Eazel servers.  This could be\n" \
+				   "because the Eazel servers are down, or more likely,\n" \
+				   "because you need to use a web proxy to access external\n" \
+				   "web servers, and I couldn't figure out your proxy\n" \
+ 				   "configuration.\n\n" \
+				   "If you know you have a web proxy, you can try again by\n" \
+				   "setting the environment variable 'http_proxy' to your\n" \
+				   "proxy server, and restarting the Nautilus install.")
 
 int installer_debug = 0;
 int installer_output = 0;
@@ -1162,7 +1172,7 @@ eazel_installer_class_initialize (EazelInstallerClass *klass)
 }
 
 static void
-eazel_install_get_depends (EazelInstaller *installer)
+eazel_install_get_depends (EazelInstaller *installer, const char *dest_dir)
 {
 	char *url;
 	char *destination;
@@ -1173,12 +1183,22 @@ eazel_install_get_depends (EazelInstaller *installer)
 			       eazel_install_get_server_port (installer->service),
 			       CATEGORY_DEPENDS_LIST);
 
-	destination = g_strdup (CATEGORY_DEPENDS_LIST);
-	
-	retval = eazel_install_fetch_file (installer->service, 
-					   url, 
-					   "package list", 
-					   destination);
+	destination = g_strdup_printf ("%s/%s", dest_dir, CATEGORY_DEPENDS_LIST);
+
+	if (! eazel_install_fetch_file (installer->service, url, "package list", destination)) {
+		/* try again with proxy config */
+		unlink (destination);
+		if (! attempt_http_proxy_autoconfigure () ||
+		    ! eazel_install_fetch_file (installer->service, url, "package list", destination)) {
+			GnomeDialog *d;
+
+			d = GNOME_DIALOG (gnome_warning_dialog_parented (DIALOG_NEED_TO_SET_PROXY,
+									  GTK_WINDOW (installer->window)));
+			gnome_dialog_run_and_close (d);
+			exit (1);
+		}
+	}
+
 	eazel_installer_load_dependencies (installer, destination);
 	if (retval == FALSE) {
 		g_warning (_("Unable to retrieve dependency xml!\n"));
@@ -1186,7 +1206,6 @@ eazel_install_get_depends (EazelInstaller *installer)
 
 	g_free (destination);
 	g_free (url);
-	
 }
 
 static void
@@ -1195,18 +1214,27 @@ eazel_installer_initialize (EazelInstaller *object) {
 	GList *iterator;
 	char *tmpdir;
 	char *package_destination;
+	int tries;
 
 	g_assert (object != NULL);
 	g_assert (IS_EAZEL_INSTALLER (object));
 
 	installer = EAZEL_INSTALLER (object);
 
-	/* The manpage says not to use this, but I can't be arsed */
-	tmpdir = g_strdup ("/tmp/eazel-installer.XXXXXX");
-	mktemp (tmpdir);
-
-	if (!tmpdir || mkdir (tmpdir, 0700) != 0) {
-		g_error (_("Cannot create %s"), tmpdir);
+	/* attempt to create a directory we can use */
+#define RANDCHAR ('@' + (rand () % 31))
+	srand (time (NULL));
+	for (tries = 0; tries < 50; tries++) {
+		tmpdir = g_strdup_printf ("/tmp/eazel-installer.%c%c%c%c%c%c%d",
+					  RANDCHAR, RANDCHAR, RANDCHAR, RANDCHAR,
+					  RANDCHAR, RANDCHAR, (rand () % 1000));
+		if (mkdir (tmpdir, 0700) == 0) {
+			break;
+		}
+		g_free (tmpdir);
+	}
+	if (tries == 50) {
+		g_error (_("Cannot create temporary directory"));
 	}
 
 	package_destination = g_strdup_printf ("%s/package-list.xml", tmpdir);
@@ -1289,10 +1317,11 @@ eazel_installer_initialize (EazelInstaller *object) {
 		g_free (log);
 	}
 
+	/* do this first, so we can check for proxies, etc */
+	eazel_install_get_depends (installer, tmpdir);
+
 	eazel_install_fetch_remote_package_list (installer->service);
 	installer->categories = parse_local_xml_package_list (package_destination);
-	
-	eazel_install_get_depends (installer);
 	
 	if (!installer->categories) {
 		CategoryData *cat = categorydata_new ();

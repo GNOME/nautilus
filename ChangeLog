@@ -1,3 +1,18 @@
+2000-09-21  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	* nautilus-installer/src/Makefile.am:
+	* nautilus-installer/src/installer.c: (eazel_install_get_depends),
+	(eazel_installer_initialize):
+	* nautilus-installer/src/link.sh:
+	* nautilus-installer/src/prescript:
+	* nautilus-installer/src/proxy.c:
+	* nautilus-installer/src/proxy.h:
+	
+	Add proxy autodetect from the nautilus first-time druid, and
+	support for the install lib to use proxies.  Clean up some of the
+	temp dir stuff for security reasons.
+	
 2000-09-21  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:

@@ -55,6 +55,9 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <unistd.h>
+#ifdef EAZEL_INSTALL_SLIM
+#include <sys/wait.h>
+#endif
 
 #define PERCENTS_PER_RPM_HASH 2
 
