@@ -26,6 +26,7 @@
 #include "fm-properties-window.h"
 
 #include "fm-error-reporting.h"
+#include <eel/eel-accessibility.h>
 #include <eel/eel-ellipsizing-label.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
@@ -2672,10 +2673,12 @@ static void
 add_permissions_checkbox (FMPropertiesWindow *window,
 			  GtkTable *table, 
 			  int row, int column, 
-			  GnomeVFSFilePermissions permission_to_check)
+			  GnomeVFSFilePermissions permission_to_check,
+			  GtkLabel *label_for)
 {
 	GtkWidget *check_button;
 	gchar *label;
+	gboolean a11y_enabled;
 
 	if (column == PERMISSIONS_CHECKBOXES_READ_COLUMN) {
 		label = _("_Read");
@@ -2696,6 +2699,12 @@ add_permissions_checkbox (FMPropertiesWindow *window,
 	set_up_permissions_checkbox (window, 
 				     check_button, 
 				     permission_to_check);
+
+	a11y_enabled = GTK_IS_ACCESSIBLE (gtk_widget_get_accessible (check_button));
+	if (a11y_enabled) {
+		eel_accessibility_set_up_label_widget_relation (GTK_WIDGET (label_for),
+								check_button);
+	}
 }
 
 static GtkWidget *
@@ -2850,8 +2859,12 @@ create_permissions_page (FMPropertiesWindow *window)
 	guint checkbox_titles_row;
 	GtkLabel *group_label;
 	GtkLabel *owner_label;
+	GtkLabel *owner_perm_label;
+	GtkLabel *group_perm_label;
+	GtkLabel *other_perm_label;
 	GtkOptionMenu *group_menu;
 	GtkOptionMenu *owner_menu;
+	GtkWidget *check_box;
 	GList *file_list;
 
 	vbox = create_page_with_vbox (window->details->notebook,
@@ -2882,7 +2895,7 @@ create_permissions_page (FMPropertiesWindow *window)
 			owner_label = attach_title_field (page_table, last_row, _("File _owner:"));
 			/* Option menu in this case. */
 			owner_menu = attach_owner_menu (page_table, last_row, get_target_file (window));
-			gtk_label_set_mnemonic_widget (GTK_LABEL (owner_label),
+			gtk_label_set_mnemonic_widget (owner_label,
 						       GTK_WIDGET (owner_menu));
 		} else {
 			attach_title_field (page_table, last_row, _("File owner:"));
@@ -2901,7 +2914,7 @@ create_permissions_page (FMPropertiesWindow *window)
 			/* Option menu in this case. */
 			group_menu = attach_group_menu (page_table, last_row,
 							get_target_file (window));
-			gtk_label_set_mnemonic_widget (GTK_LABEL (group_label),
+			gtk_label_set_mnemonic_widget (group_label,
 						       GTK_WIDGET (group_menu));
 		} else {
 			last_row = append_title_field (page_table,
@@ -2917,9 +2930,9 @@ create_permissions_page (FMPropertiesWindow *window)
 
 		append_separator (page_table);
 		
-		checkbox_titles_row = append_title_field (page_table, _("Owner:"), NULL);
-		append_title_field (page_table, _("Group:"), NULL);
-		append_title_field (page_table, _("Others:"), NULL);
+		checkbox_titles_row = append_title_field (page_table, _("Owner:"), &owner_perm_label);
+		append_title_field (page_table, _("Group:"), &group_perm_label);
+		append_title_field (page_table, _("Others:"), &other_perm_label);
 		
 		check_button_table = GTK_TABLE (gtk_table_new 
 						   (PERMISSIONS_CHECKBOXES_ROW_COUNT, 
@@ -2937,55 +2950,64 @@ create_permissions_page (FMPropertiesWindow *window)
 					  check_button_table, 
 					  PERMISSIONS_CHECKBOXES_OWNER_ROW,
 					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
-					  GNOME_VFS_PERM_USER_READ);
+					  GNOME_VFS_PERM_USER_READ,
+					  owner_perm_label);
 
 		add_permissions_checkbox (window,
 					  check_button_table, 
 					  PERMISSIONS_CHECKBOXES_OWNER_ROW,
 					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
-					  GNOME_VFS_PERM_USER_WRITE);
+					  GNOME_VFS_PERM_USER_WRITE,
+					  owner_perm_label);
 
 		add_permissions_checkbox (window,
 					  check_button_table, 
 					  PERMISSIONS_CHECKBOXES_OWNER_ROW,
 					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
-					  GNOME_VFS_PERM_USER_EXEC);
+					  GNOME_VFS_PERM_USER_EXEC,
+					  owner_perm_label);
 
 		add_permissions_checkbox (window,
 					  check_button_table, 
 					  PERMISSIONS_CHECKBOXES_GROUP_ROW,
 					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
-					  GNOME_VFS_PERM_GROUP_READ);
+					  GNOME_VFS_PERM_GROUP_READ,
+					  group_perm_label);
 
 		add_permissions_checkbox (window,
 					  check_button_table, 
 					  PERMISSIONS_CHECKBOXES_GROUP_ROW,
 					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
-					  GNOME_VFS_PERM_GROUP_WRITE);
+					  GNOME_VFS_PERM_GROUP_WRITE,
+					  group_perm_label);
 
 		add_permissions_checkbox (window,
 					  check_button_table, 
 					  PERMISSIONS_CHECKBOXES_GROUP_ROW,
 					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
-					  GNOME_VFS_PERM_GROUP_EXEC);
+					  GNOME_VFS_PERM_GROUP_EXEC,
+					  group_perm_label);
 
 		add_permissions_checkbox (window,
 					  check_button_table, 
 					  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
 					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
-					  GNOME_VFS_PERM_OTHER_READ);
+					  GNOME_VFS_PERM_OTHER_READ,
+					  other_perm_label);
 
 		add_permissions_checkbox (window,
 					  check_button_table, 
 					  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
 					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
-					  GNOME_VFS_PERM_OTHER_WRITE);
+					  GNOME_VFS_PERM_OTHER_WRITE,
+					  other_perm_label);
 
 		add_permissions_checkbox (window,
 					  check_button_table, 
 					  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
 					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
-					  GNOME_VFS_PERM_OTHER_EXEC);
+					  GNOME_VFS_PERM_OTHER_EXEC,
+					  other_perm_label);
 
 		append_separator (page_table);
 
