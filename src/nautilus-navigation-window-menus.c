@@ -765,7 +765,7 @@ help_menu_nautilus_manual_callback (BonoboUIComponent *component,
 		dialog = gtk_message_dialog_new (GTK_WINDOW (window),
 						 GTK_DIALOG_MODAL,
 						 GTK_MESSAGE_ERROR,
-						 GTK_BUTTONS_CLOSE,
+						 GTK_BUTTONS_OK,
 						 _("There was an error displaying help: \n%s"),
 						 error->message);
 		g_signal_connect (G_OBJECT (dialog), "response",

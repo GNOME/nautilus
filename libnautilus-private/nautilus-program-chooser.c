@@ -189,7 +189,7 @@ help_cb (GtkWidget *button, NautilusProgramChooser *program_chooser)
 		err_dialog = gtk_message_dialog_new (GTK_WINDOW (program_chooser),
 						     GTK_DIALOG_MODAL,
 						     GTK_MESSAGE_ERROR,
-						     GTK_BUTTONS_CLOSE,
+						     GTK_BUTTONS_OK,
 						     _("There was an error displaying help: %s"),
 						     error->message);
 

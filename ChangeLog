@@ -1,3 +1,15 @@
+2003-06-08  Greg Merchan  <merchan@phys.lsu.edu>
+	* libnautilus-private/nautilus-program-chooser.c,
+	  src/file-manager/fm-desktop-icon-view.c,
+	  src/nautilus-bookmarks-window.c,
+	  src/nautilus-property-browser.c,
+	  src/nautilus-window-menus.c,
+	  src/nautilus-window.c,
+	  src/nautilus-file-management-properties.c,
+	  src/nautilus-server-connect.c
+	Change GTK_BUTTONS_CLOSE to GTK_BUTTONS_OK for HIG compliance
+	Fixes bug 112207
+	
 2003-06-06  Samúel Jón Gunnarsson  <sammi@techattack.nu>
 
 	* configure.in: Added "is" into ALL_LINGUAS

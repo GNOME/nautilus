@@ -142,7 +142,7 @@ nautilus_bookmarks_window_response_callback (GtkDialog *dialog,
 			err_dialog = gtk_message_dialog_new (GTK_WINDOW (dialog),
 							     GTK_DIALOG_DESTROY_WITH_PARENT,
 							     GTK_MESSAGE_ERROR,
-							     GTK_BUTTONS_CLOSE,
+							     GTK_BUTTONS_OK,
 							     _("There was an error displaying help: \n%s"),
 							     error->message);
 

@@ -737,7 +737,7 @@ volume_ops_callback (BonoboUIComponent *component, gpointer data, const char *ve
 			status = egg_screen_execute_command_line_async (screen, command, &error);
 			if (!status) {
 				dialog = gtk_message_dialog_new (NULL, 0,
-								 GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, 
+								 GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, 
 								 _("Error executing utility program '%s': %s"), command, error->message);
 				g_signal_connect (G_OBJECT (dialog), "response", 
 						  G_CALLBACK (gtk_widget_destroy), NULL);

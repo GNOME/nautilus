@@ -1440,7 +1440,7 @@ help_button_callback (GtkWidget *widget, GtkWidget *property_browser)
 		dialog = gtk_message_dialog_new (GTK_WINDOW (property_browser),
 						 GTK_DIALOG_DESTROY_WITH_PARENT,
 						 GTK_MESSAGE_ERROR,
-						 GTK_BUTTONS_CLOSE,
+						 GTK_BUTTONS_OK,
 						 _("There was an error displaying help: \n%s"),
 						 error->message);
 
