@@ -13,8 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.1\n"
-"POT-Creation-Date: 2000-09-19 23:38+0200\n"
-"PO-Revision-Date: 2000-09-19 23:40+0200\n"
+"POT-Creation-Date: 2000-09-20 10:29+0200\n"
+"PO-Revision-Date: 2000-09-20 10:33+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -127,6 +127,10 @@ msgstr " (se \""
 #: components/help/hyperbola-nav-index.c:484
 msgid " (see also \""
 msgstr " (se även \""
+
+#: components/image-viewer/nautilus-image-view.c:685
+msgid "I could not initialize Bonobo"
+msgstr "Jag kunde inte initiera Bonobo"
 
 #: components/loser/content/nautilus-content-loser.c:140
 #, c-format
@@ -259,66 +263,74 @@ msgstr "Mozilla"
 msgid "This is a mozilla merged toolbar button"
 msgstr "Det här är en mozilla-sammanslagen verktygsradsknapp"
 
-#: components/music/nautilus-music-view.c:200
+#: components/music/nautilus-music-view.c:201
 msgid "Track "
 msgstr "Spår "
 
-#: components/music/nautilus-music-view.c:200
+#: components/music/nautilus-music-view.c:201
 msgid "Title"
 msgstr "Titel"
 
-#: components/music/nautilus-music-view.c:200
+#: components/music/nautilus-music-view.c:201
 msgid "Artist"
 msgstr "Artist"
 
-#: components/music/nautilus-music-view.c:200
+#: components/music/nautilus-music-view.c:201
 msgid "Year"
 msgstr "År"
 
-#: components/music/nautilus-music-view.c:200
+#: components/music/nautilus-music-view.c:201
 msgid "Bitrate "
 msgstr "Bithastighet "
 
-#: components/music/nautilus-music-view.c:200
+#: components/music/nautilus-music-view.c:201
 msgid "Time "
 msgstr "Tid "
 
-#: components/music/nautilus-music-view.c:200
+#: components/music/nautilus-music-view.c:201
 msgid "Album"
 msgstr "Album"
 
-#: components/music/nautilus-music-view.c:200
+#: components/music/nautilus-music-view.c:201
 msgid "Comment"
 msgstr "Kommentar"
 
-#: components/music/nautilus-music-view.c:200
+#: components/music/nautilus-music-view.c:201
 msgid "Channels"
 msgstr "Kanaler"
 
-#: components/music/nautilus-music-view.c:200
+#: components/music/nautilus-music-view.c:201
 msgid "Sample Rate"
 msgstr "Samplingsfrekvens"
 
-#: components/music/nautilus-music-view.c:1146
+#: components/music/nautilus-music-view.c:845
+msgid "Sorry, but the music view can't play non-local files yet! "
+msgstr "Tyvärr, musikvyn kan inte spela icke-lokala filer än! "
+
+#: components/music/nautilus-music-view.c:846
+msgid "Nautilus: Can't play non-local files"
+msgstr "Nautilus: Kan inte spela icke-lokala filer"
+
+#: components/music/nautilus-music-view.c:1157
 msgid "Previous"
 msgstr "Föregående"
 
-#: components/music/nautilus-music-view.c:1158
+#: components/music/nautilus-music-view.c:1169
 msgid "Play"
 msgstr "Spela upp"
 
-#: components/music/nautilus-music-view.c:1170
+#: components/music/nautilus-music-view.c:1181
 msgid "Pause"
 msgstr "Pausa"
 
-#: components/music/nautilus-music-view.c:1182
+#: components/music/nautilus-music-view.c:1193
 #: libnautilus-extensions/nautilus-file-operations.c:385
 #: libnautilus-extensions/nautilus-file-operations.c:412
 #: src/nautilus-window-toolbars.c:147
 msgid "Stop"
 msgstr "Stopp"
 
-#: components/music/nautilus-music-view.c:1194
+#: components/music/nautilus-music-view.c:1205
 msgid "Next"
 msgstr "Nästa"
 
@@ -1890,139 +1902,139 @@ msgstr "Navigationsinställningar"
 msgid "Home Location"
 msgstr "Hemplats"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:580
+#: libnautilus-extensions/nautilus-global-preferences.c:597
 msgid "always"
 msgstr "alltid"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:581
+#: libnautilus-extensions/nautilus-global-preferences.c:598
 msgid "Always"
 msgstr "Alltid"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:585
+#: libnautilus-extensions/nautilus-global-preferences.c:602
 msgid "local only"
 msgstr "endast lokalt"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:586
+#: libnautilus-extensions/nautilus-global-preferences.c:603
 msgid "Local Files Only"
 msgstr "Endast lokala filer"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:590
+#: libnautilus-extensions/nautilus-global-preferences.c:607
 msgid "never"
 msgstr "aldrig"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:591
+#: libnautilus-extensions/nautilus-global-preferences.c:608
 msgid "Never"
 msgstr "Aldrig"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:632
+#: libnautilus-extensions/nautilus-global-preferences.c:649
 msgid "current theme"
 msgstr "aktuellt tema"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:644
+#: libnautilus-extensions/nautilus-global-preferences.c:661
 msgid "Open each item in a new window"
 msgstr "Öppna varje objekt i ett nytt fönster"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:651
+#: libnautilus-extensions/nautilus-global-preferences.c:668
 msgid "Ask before deleting items from the trash"
 msgstr "Fråga innan objekt i papperskorgen tas bort"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:658
+#: libnautilus-extensions/nautilus-global-preferences.c:675
 msgid "Click policy"
 msgstr "Klickpolicy"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:664
+#: libnautilus-extensions/nautilus-global-preferences.c:681
 msgid "single"
 msgstr "enkel"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:665
+#: libnautilus-extensions/nautilus-global-preferences.c:682
 msgid "Activate items with a single click"
 msgstr "Aktivera objekt med ett enkelklick"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:669
+#: libnautilus-extensions/nautilus-global-preferences.c:686
 msgid "double"
 msgstr "dubbel"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:670
+#: libnautilus-extensions/nautilus-global-preferences.c:687
 msgid "Activate items with a double click"
 msgstr "Aktivera objekt med ett dubbelklick"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:675
+#: libnautilus-extensions/nautilus-global-preferences.c:692
 msgid "Display text in icons"
 msgstr "Visa text i ikoner"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:681
+#: libnautilus-extensions/nautilus-global-preferences.c:698
 msgid "Show thumbnails for image files"
 msgstr "Visa tumnaglar för bildfiler"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:687
+#: libnautilus-extensions/nautilus-global-preferences.c:704
 msgid "Read and write metadata in each folder"
 msgstr "Läs och skriv metadata i varje mapp"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:697
+#: libnautilus-extensions/nautilus-global-preferences.c:714
 msgid "Use smoother (but slower) graphics"
 msgstr "Använd mjukare (men långsammare) grafik"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:703
+#: libnautilus-extensions/nautilus-global-preferences.c:720
 msgid "Font family used to display file names"
 msgstr "Typsnittsfamilj som används för att visa filnamn"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:710
+#: libnautilus-extensions/nautilus-global-preferences.c:727
 msgid "Display tool bar in new windows"
 msgstr "Visa verktygsrad i nya fönster"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:716
+#: libnautilus-extensions/nautilus-global-preferences.c:733
 msgid "Display location bar in new windows"
 msgstr "Visa platsrad i nya fönster"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:722
+#: libnautilus-extensions/nautilus-global-preferences.c:739
 msgid "Display status bar in new windows"
 msgstr "Visa statusrad i nya fönster"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:728
+#: libnautilus-extensions/nautilus-global-preferences.c:745
 msgid "Display sidebar in new windows"
 msgstr "Visa sidorad i nya fönster"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:736
+#: libnautilus-extensions/nautilus-global-preferences.c:753
 msgid "Always do slow, complete search"
 msgstr "Gör alltid en långsam, komplett sökning"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:743
+#: libnautilus-extensions/nautilus-global-preferences.c:760
 msgid "search type to do by default"
 msgstr "sökningstyp som ska utföras som standard"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:749
+#: libnautilus-extensions/nautilus-global-preferences.c:766
 msgid "search by text"
 msgstr "sök på text"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:750
+#: libnautilus-extensions/nautilus-global-preferences.c:767
 msgid "Search for files by text only"
 msgstr "Sök efter filer endast på text"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:754
+#: libnautilus-extensions/nautilus-global-preferences.c:771
 msgid "search by text and properties"
 msgstr "sök på text och egenskaper"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:755
+#: libnautilus-extensions/nautilus-global-preferences.c:772
 msgid "Search for files by text and by their properties"
 msgstr "Sök efter filer på text och på deras egenskaper"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:760
+#: libnautilus-extensions/nautilus-global-preferences.c:777
 msgid "Search Web Location"
 msgstr "Sök webbplats"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:767
+#: libnautilus-extensions/nautilus-global-preferences.c:784
 msgid "Show hidden files (starting with \".\")"
 msgstr "Visa dolda filer (som börjar med \".\")"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:773
+#: libnautilus-extensions/nautilus-global-preferences.c:790
 msgid "Show backup files (ending with \"~\")"
 msgstr "Visa säkerhetskopior (som slutar med \"~\")"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:779
+#: libnautilus-extensions/nautilus-global-preferences.c:796
 msgid "Show special flags in Properties window"
 msgstr "Visa specialflaggor i fönstret Egenskaper"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:785
+#: libnautilus-extensions/nautilus-global-preferences.c:802
 msgid "Can add Content"
 msgstr "Kan lägga till innehåll"
 
@@ -2091,7 +2103,7 @@ msgstr "Gör om inmatning"
 msgid "Restore the changed name"
 msgstr "Återställ det ändrade namnet"
 
-#: libnautilus-extensions/nautilus-preferences.c:1088
+#: libnautilus-extensions/nautilus-preferences.c:1091
 #, c-format
 msgid ""
 "GConf error:\n"
@@ -2100,7 +2112,7 @@ msgstr ""
 "GConf-fel:\n"
 "  %s"
 
-#: libnautilus-extensions/nautilus-preferences.c:1095
+#: libnautilus-extensions/nautilus-preferences.c:1098
 #, c-format
 msgid ""
 "GConf error:\n"
@@ -2216,7 +2228,7 @@ msgid "Don't include in the menu for \"%s\" items"
 msgstr "Inkludera inte i menyn för \"%s\"-objekt"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:1200
-#: src/file-manager/fm-list-view.c:1738
+#: src/file-manager/fm-list-view.c:1739
 #: src/file-manager/fm-search-list-view.c:238
 #: src/nautilus-bookmarks-window.c:175 src/nautilus-search-bar-criterion.c:66
 msgid "Name"
@@ -2491,6 +2503,10 @@ msgstr "Detaljer"
 #: libnautilus-extensions/nautilus-stock-dialogs.c:457
 msgid "Nautilus: Question"
 msgstr "Nautilus: Fråga"
+
+#: libnautilus-extensions/nautilus-trash-directory.c:285
+msgid "Trash"
+msgstr "Papperskorg"
 
 #: libnautilus-extensions/nautilus-undo-signal-handlers.c:175
 msgid "Edit"
@@ -3140,24 +3156,24 @@ msgstr ""
 msgid "Rename selected item"
 msgstr "Byt namn på markerat objekt"
 
-#: src/file-manager/fm-icon-view.c:1819
+#: src/file-manager/fm-icon-view.c:1821
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "pekar på \"%s\""
 
-#: src/file-manager/fm-list-view.c:1744
+#: src/file-manager/fm-list-view.c:1745
 #: src/file-manager/fm-search-list-view.c:250
 #: src/nautilus-search-bar-criterion.c:69
 msgid "Size"
 msgstr "Storlek"
 
-#: src/file-manager/fm-list-view.c:1750
+#: src/file-manager/fm-list-view.c:1751
 #: src/file-manager/fm-search-list-view.c:256
 #: src/nautilus-search-bar-criterion.c:68
 msgid "Type"
 msgstr "Typ"
 
-#: src/file-manager/fm-list-view.c:1756
+#: src/file-manager/fm-list-view.c:1757
 #: src/file-manager/fm-search-list-view.c:262
 msgid "Date Modified"
 msgstr "Modifieringsdatum"
@@ -3401,19 +3417,19 @@ msgstr "Uppdatera nu"
 msgid "About Nautilus"
 msgstr "Om Nautilus"
 
-#: src/nautilus-application.c:227
+#: src/nautilus-application.c:218
 msgid "User Directory"
 msgstr "Användarkatalog"
 
-#: src/nautilus-application.c:232
+#: src/nautilus-application.c:223
 msgid "User Main Directory"
 msgstr "Användarens huvudkatalog"
 
-#: src/nautilus-application.c:237
+#: src/nautilus-application.c:228
 msgid "Desktop Directory"
 msgstr "Skrivbordskatalog"
 
-#: src/nautilus-application.c:252
+#: src/nautilus-application.c:243
 msgid "Nautilus: Missing directories"
 msgstr "Nautilus: Felande kataloger"
 
@@ -3427,7 +3443,7 @@ msgstr "Nautilus: Felande kataloger"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:348
+#: src/nautilus-application.c:339
 msgid ""
 "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
 "again may fix the problem."
@@ -3436,7 +3452,7 @@ msgstr ""
 "av Nautilus kan lösa problemet."
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:352
+#: src/nautilus-application.c:343
 msgid ""
 "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
 "again may fix the problem.\n"
@@ -3472,11 +3488,11 @@ msgstr ""
 #. * wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:377 src/nautilus-application.c:395
+#: src/nautilus-application.c:368 src/nautilus-application.c:386
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus kan inte användas just nu på grund av ett oväntat fel."
 
-#: src/nautilus-application.c:378
+#: src/nautilus-application.c:369
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to register the file manager view server."
@@ -3484,7 +3500,7 @@ msgstr ""
 "Nautilus kan inte användas just nu på grund av ett oväntat fel från OAF "
 "inträffade när ett försök gjordes att registrera filhanterarens vyserver."
 
-#: src/nautilus-application.c:396
+#: src/nautilus-application.c:387
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the factory."
@@ -3492,7 +3508,7 @@ msgstr ""
 "Nautilus kan inte användas just nu på grund av ett oväntat fel inträffade "
 "när ett försök gjordes att hitta fabriken."
 
-#: src/nautilus-application.c:519
+#: src/nautilus-application.c:510
 msgid ""
 "You are running Nautilus as root.\n"
 "\n"
@@ -3765,52 +3781,52 @@ msgstr "Visa i flera fönster?"
 msgid "Location:"
 msgstr "Plats:"
 
-#: src/nautilus-main.c:111
+#: src/nautilus-main.c:137
 msgid "Perform high-speed self-check tests."
 msgstr "Utför höghastighetssjälvkontroller."
 
-#: src/nautilus-main.c:113
+#: src/nautilus-main.c:139
 msgid "Quit Nautilus."
 msgstr "Avsluta Nautilus."
 
-#: src/nautilus-main.c:114
+#: src/nautilus-main.c:140
 msgid "Restart Nautilus."
 msgstr "Starta om Nautilus."
 
-#: src/nautilus-main.c:115
+#: src/nautilus-main.c:141
 msgid "Don't draw background and icons on desktop."
 msgstr "Rita inte bakgrund och ikoner på skrivbordet."
 
-#: src/nautilus-main.c:116
+#: src/nautilus-main.c:142
 msgid "Draw background and icons on desktop."
 msgstr "Rita bakgrund och ikoner på skrivbordet."
 
-#: src/nautilus-main.c:149
+#: src/nautilus-main.c:175
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check kan inte användas med URI:er.\n"
 
-#: src/nautilus-main.c:153
+#: src/nautilus-main.c:179
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check kan inte användas med andra flaggor.\n"
 
-#: src/nautilus-main.c:157
+#: src/nautilus-main.c:183
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit kan inte användas med URI:er.\n"
 
-#: src/nautilus-main.c:161
+#: src/nautilus-main.c:187
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --restart kan inte användas med URI:er.\n"
 
-#: src/nautilus-main.c:165
+#: src/nautilus-main.c:191
 msgid "nautilus: --quit and --start-desktop cannot be used together.\n"
 msgstr "nautilus: --quit och --start-desktop kan inte användas tillsammans.\n"
 
-#: src/nautilus-main.c:169
+#: src/nautilus-main.c:195
 msgid "nautilus: --restart and --start-desktop cannot be used together.\n"
 msgstr ""
 "nautilus: --restart och --start-desktop kan inte användas tillsammans.\n"
 
-#: src/nautilus-main.c:173
+#: src/nautilus-main.c:199
 msgid "nautilus: --stop-desktop and --start-desktop cannot be used together.\n"
 msgstr ""
 "nautilus: --stop-desktop och --start-desktop kan inte användas tillsammans.\n"
@@ -3835,8 +3851,8 @@ msgstr "Ta bort..."
 
 #: src/nautilus-property-browser.c:846 src/nautilus-property-browser.c:941
 #, c-format
-msgid "Sorry, but '%s' is not an image file!"
-msgstr "Tyvärr, men \"%s\" är inte en bildfil!"
+msgid "Sorry, but '%s' is not a usable image file!"
+msgstr "Tyvärr, men \"%s\" är inte en användbar bildfil!"
 
 #: src/nautilus-property-browser.c:848 src/nautilus-property-browser.c:942
 msgid "Nautilus: Not an image"
