@@ -330,11 +330,13 @@ install_theme_button_clicked_callback (GtkWidget *button,
 
 	theme_selector = NAUTILUS_THEME_SELECTOR (callback_data);
 	file_selection_dialog = gtk_file_selection_new (_("Select a theme folder to add as a new theme:"));
-	
+
+	eel_gtk_window_set_up_close_accelerator (GTK_WINDOW (file_selection_dialog));
+
 	gtk_object_set_data (GTK_OBJECT (file_selection_dialog),
 			     THEME_SELECTOR_DATA_KEY,
 			     callback_data);
-	
+
 	gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (file_selection_dialog)->ok_button),
 			    "clicked",
 			    GTK_SIGNAL_FUNC (file_selection_ok_clicked_callback),
@@ -344,7 +346,7 @@ install_theme_button_clicked_callback (GtkWidget *button,
 			    "clicked",
 			    GTK_SIGNAL_FUNC (file_selection_cancel_clicked_callback),
 			    file_selection_dialog);
-	
+
 	gtk_window_set_position (GTK_WINDOW (file_selection_dialog), GTK_WIN_POS_MOUSE);
 	if (theme_selector->details->parent_window != NULL) {
 		gtk_window_set_transient_for (GTK_WINDOW (file_selection_dialog),
