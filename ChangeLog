@@ -1,5 +1,23 @@
 2000-08-25  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* test/test-nautilus-label.c:
+	(red_label_color_value_changed_callback),
+	(green_label_color_value_changed_callback),
+	(blue_label_color_value_changed_callback),
+	(alpha_label_color_value_changed_callback),
+	(red_background_color_value_changed_callback),
+	(green_background_color_value_changed_callback),
+	(blue_background_color_value_changed_callback),
+	(alpha_background_color_value_changed_callback),
+	(widget_set_nautilus_background_image),
+	(widget_set_nautilus_background_color),
+	(widget_get_nautilus_background_color),
+	(background_changed_callback), (main):
+
+	Fix the background color test.
+	
+2000-08-25  Ramiro Estrugo  <ramiro@eazel.com>
+
 	components/services/nautilus-dependent-shared/shared-service-widgets.c:
 	(create_label_widget), (create_services_title_widget),
 	(create_services_header_widget):

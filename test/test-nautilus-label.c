@@ -20,15 +20,19 @@
 #include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-image.h>
 
+static char *widget_get_nautilus_background_color (GtkWidget  *widget);
+static void  widget_set_nautilus_background_image (GtkWidget  *widget,
+						   const char *image_name);
+static void  widget_set_nautilus_background_color (GtkWidget  *widget,
+						   const char *color);
+
 static void
 red_label_color_value_changed_callback (GtkAdjustment *adjustment, gpointer client_data)
 {
 	NautilusLabel	 *label;
 	guint32		  color;
 
-	g_return_if_fail (adjustment != NULL);
 	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-	g_return_if_fail (client_data != NULL);
 	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
 
 	label = NAUTILUS_LABEL (client_data);
@@ -49,9 +53,7 @@ green_label_color_value_changed_callback (GtkAdjustment *adjustment, gpointer cl
 	NautilusLabel	 *label;
 	guint32		  color;
 
-	g_return_if_fail (adjustment != NULL);
 	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-	g_return_if_fail (client_data != NULL);
 	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
 
 	label = NAUTILUS_LABEL (client_data);
@@ -72,9 +74,7 @@ blue_label_color_value_changed_callback (GtkAdjustment *adjustment, gpointer cli
 	NautilusLabel	 *label;
 	guint32		  color;
 
-	g_return_if_fail (adjustment != NULL);
 	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-	g_return_if_fail (client_data != NULL);
 	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
 
 	label = NAUTILUS_LABEL (client_data);
@@ -94,9 +94,7 @@ alpha_label_color_value_changed_callback (GtkAdjustment *adjustment, gpointer cl
 {
 	NautilusLabel	 *label;
 
-	g_return_if_fail (adjustment != NULL);
 	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-	g_return_if_fail (client_data != NULL);
 	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
 
 	label = NAUTILUS_LABEL (client_data);
@@ -108,69 +106,87 @@ static void
 red_background_color_value_changed_callback (GtkAdjustment *adjustment, gpointer client_data)
 {
 	NautilusLabel	 *label;
-	guint32		  color;
+	guint32		  current_color;
+	char		  *current_color_spec;
+	char		  *new_color_spec;
 
-	g_return_if_fail (adjustment != NULL);
 	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-	g_return_if_fail (client_data != NULL);
 	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
 
 	label = NAUTILUS_LABEL (client_data);
-	
-	color = nautilus_label_get_text_color (label);
 
-	color = NAUTILUS_RGBA_COLOR_PACK ((guchar) adjustment->value,
-					  NAUTILUS_RGBA_COLOR_GET_G (color),
-					  NAUTILUS_RGBA_COLOR_GET_B (color),
-					  NAUTILUS_RGBA_COLOR_GET_A (color));
+	current_color_spec = widget_get_nautilus_background_color (nautilus_gtk_widget_find_windowed_ancestor (GTK_WIDGET (label)));
+
+	current_color = nautilus_parse_rgb_with_white_default (current_color_spec);
+
+	g_free (current_color_spec);
+
+	new_color_spec = g_strdup_printf ("rgb:%04hx/%04hx/%04hx",
+					  (guint16) (adjustment->value / 255.0 * 65535.0),
+					  (guint16) ((double) NAUTILUS_RGBA_COLOR_GET_G (current_color) / 255.0 * 65535.0),
+					  (guint16) ((double) NAUTILUS_RGBA_COLOR_GET_B (current_color) / 255.0 * 65535.0));
+
+	widget_set_nautilus_background_color (nautilus_gtk_widget_find_windowed_ancestor (GTK_WIDGET (label)), new_color_spec);
 	
-	nautilus_label_set_text_color (label, color);
+	g_free (new_color_spec);
 }
 
 static void
 green_background_color_value_changed_callback (GtkAdjustment *adjustment, gpointer client_data)
 {
 	NautilusLabel	 *label;
-	guint32		  color;
+	guint32		  current_color;
+	char		  *current_color_spec;
+	char		  *new_color_spec;
 
-	g_return_if_fail (adjustment != NULL);
 	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-	g_return_if_fail (client_data != NULL);
 	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
 
 	label = NAUTILUS_LABEL (client_data);
-	
-	color = nautilus_label_get_text_color (label);
 
-	color = NAUTILUS_RGBA_COLOR_PACK (NAUTILUS_RGBA_COLOR_GET_R (color),
-					  (guchar) adjustment->value,
-					  NAUTILUS_RGBA_COLOR_GET_B (color),
-					  NAUTILUS_RGBA_COLOR_GET_A (color));
+	current_color_spec = widget_get_nautilus_background_color (nautilus_gtk_widget_find_windowed_ancestor (GTK_WIDGET (label)));
+
+	current_color = nautilus_parse_rgb_with_white_default (current_color_spec);
+
+	g_free (current_color_spec);
+
+	new_color_spec = g_strdup_printf ("rgb:%04hx/%04hx/%04hx",
+					  (guint16) ((double) NAUTILUS_RGBA_COLOR_GET_R (current_color) / 255.0 * 65535.0),
+					  (guint16) (adjustment->value / 255.0 * 65535.0),
+					  (guint16) ((double) NAUTILUS_RGBA_COLOR_GET_B (current_color) / 255.0 * 65535.0));
+
+	widget_set_nautilus_background_color (nautilus_gtk_widget_find_windowed_ancestor (GTK_WIDGET (label)), new_color_spec);
 	
-	nautilus_label_set_text_color (label, color);
+	g_free (new_color_spec);
 }
 
 static void
 blue_background_color_value_changed_callback (GtkAdjustment *adjustment, gpointer client_data)
 {
 	NautilusLabel	 *label;
-	guint32		  color;
+	guint32		  current_color;
+	char		  *current_color_spec;
+	char		  *new_color_spec;
 
-	g_return_if_fail (adjustment != NULL);
 	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-	g_return_if_fail (client_data != NULL);
 	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
 
 	label = NAUTILUS_LABEL (client_data);
-	
-	color = nautilus_label_get_text_color (label);
 
-	color = NAUTILUS_RGBA_COLOR_PACK (NAUTILUS_RGBA_COLOR_GET_R (color),
-					  NAUTILUS_RGBA_COLOR_GET_G (color),
-					  (guchar) adjustment->value,
-					  NAUTILUS_RGBA_COLOR_GET_A (color));
+	current_color_spec = widget_get_nautilus_background_color (nautilus_gtk_widget_find_windowed_ancestor (GTK_WIDGET (label)));
+
+	current_color = nautilus_parse_rgb_with_white_default (current_color_spec);
+
+	g_free (current_color_spec);
+
+	new_color_spec = g_strdup_printf ("rgb:%04hx/%04hx/%04hx",
+					  (guint16) ((double) NAUTILUS_RGBA_COLOR_GET_R (current_color) / 255.0 * 65535.0),
+					  (guint16) ((double) NAUTILUS_RGBA_COLOR_GET_G (current_color) / 255.0 * 65535.0),
+					  (guint16) (adjustment->value / 255.0 * 65535.0));
+
+	widget_set_nautilus_background_color (nautilus_gtk_widget_find_windowed_ancestor (GTK_WIDGET (label)), new_color_spec);
 	
-	nautilus_label_set_text_color (label, color);
+	g_free (new_color_spec);
 }
 
 static void
@@ -178,9 +194,7 @@ alpha_background_color_value_changed_callback (GtkAdjustment *adjustment, gpoint
 {
 	NautilusLabel	 *label;
 
-	g_return_if_fail (adjustment != NULL);
 	g_return_if_fail (GTK_IS_ADJUSTMENT (adjustment));
-	g_return_if_fail (client_data != NULL);
 	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
 
 	label = NAUTILUS_LABEL (client_data);
@@ -465,7 +479,7 @@ create_text_caption_frame (const char		*title,
 }
 
 static void
-widget_set_background_image (GtkWidget *widget, const char *image_name)
+widget_set_nautilus_background_image (GtkWidget *widget, const char *image_name)
 {
 	NautilusBackground	*background;
 	char			*background_uri;
@@ -484,7 +498,7 @@ widget_set_background_image (GtkWidget *widget, const char *image_name)
 }
 
 static void
-widget_set_background_color (GtkWidget *widget, const char *color)
+widget_set_nautilus_background_color (GtkWidget *widget, const char *color)
 {
 	NautilusBackground	*background;
 
@@ -495,6 +509,18 @@ widget_set_background_color (GtkWidget *widget, const char *color)
 	
 	nautilus_background_reset (background);
 	nautilus_background_set_color (background, color);
+}
+
+static char *
+widget_get_nautilus_background_color (GtkWidget *widget)
+{
+	NautilusBackground *background;
+	
+	g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
+
+	background = nautilus_get_widget_background (widget);
+
+	return nautilus_background_get_color (background);
 }
 
 static void
@@ -520,15 +546,15 @@ background_changed_callback (NautilusStringPicker *string_picker, gpointer clien
  	string = nautilus_string_picker_get_selected_string (string_picker);
 
 	if (nautilus_str_has_prefix (string, "Image - ")) {
-		widget_set_background_image (nautilus_gtk_widget_find_windowed_ancestor (GTK_WIDGET (client_data)),
+		widget_set_nautilus_background_image (nautilus_gtk_widget_find_windowed_ancestor (GTK_WIDGET (client_data)),
 					     string + strlen ("Image - "));
 	}
 	else if (nautilus_str_has_prefix (string, "Gradient - ")) {
-		widget_set_background_color (nautilus_gtk_widget_find_windowed_ancestor (GTK_WIDGET (client_data)),
+		widget_set_nautilus_background_color (nautilus_gtk_widget_find_windowed_ancestor (GTK_WIDGET (client_data)),
 					     string + strlen ("Gradient - "));
 	}
 	else if (nautilus_str_has_prefix (string, "Solid - ")) {
-		widget_set_background_color (nautilus_gtk_widget_find_windowed_ancestor (GTK_WIDGET (client_data)),
+		widget_set_nautilus_background_color (nautilus_gtk_widget_find_windowed_ancestor (GTK_WIDGET (client_data)),
 					     string + strlen ("Solid - "));
 	}
 	else if (nautilus_str_has_prefix (string, "Reset")) {
@@ -628,7 +654,7 @@ main (int argc, char* argv[])
 	gtk_box_pack_start (GTK_BOX (main_box), label, TRUE, TRUE, 10);
 	gtk_box_pack_end (GTK_BOX (main_box), bottom_box, TRUE, TRUE, 10);
 
-	widget_set_background_image (nautilus_gtk_widget_find_windowed_ancestor (label), "pale_coins.png");
+	widget_set_nautilus_background_image (nautilus_gtk_widget_find_windowed_ancestor (label), "pale_coins.png");
 	
 	label_color_picker_frame = create_color_picker_frame ("Label Color",
 							      red_label_color_value_changed_callback,
