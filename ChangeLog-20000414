@@ -1,3 +1,37 @@
+2000-03-21  Darin Adler  <darin@eazel.com>
+
+	Fixed arrow keys and worked on the icon grid.
+	Fixes bugs #314, #324, and #325.
+
+	* components/help/hyperbola.goad:
+	Corrected repo_ids -> repo_id, reported by Richard Hult.
+
+	* src/nautilus.goad:
+	Added missing = character, reported by Richard Hult.
+
+	* libnautilus/gnome-icon-container-grid.c:
+	* libnautilus/gnome-icon-container-grid.h:
+	* libnautilus/gnome-icon-container.c:
+	* libnautilus/gnome-icon-container-private.h:
+	Made the icon grid handle negative coordinates.
+	Removed most of the icon grid code.
+	Reimplemented the arrow keys. They should work again.
+
+	* libnautilus/nautilus-gnome-extensions.c:
+	* libnautilus/nautilus-gnome-extensions.h:
+	(nautilus_art_irect_contains_irect):
+	Added another helper function.
+
+	* libnautilus/nautilus-icons-view-icon-item.c:
+	
+	* libnautilus/nautilus-icons-view-icon-item.h:
+	* libnautilus/gnome-icon-container.c:
+	* libnautilus/gnome-icon-container-private.h:
+	Added user data to each canvas item and got rid of the hash table
+	that maps canvas items to icons.
+
+	* RENAMING: Tweaks.
+
 2000-03-20  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus/nautilus-list-column-title.c

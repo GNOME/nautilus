@@ -25,8 +25,8 @@
 #include <config.h>
 #include "gnome-icon-container.h"
 
+#include <math.h>
 #include <string.h>
-#include <stdio.h>
 
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
@@ -37,6 +37,7 @@
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gtk-extensions.h"
+#include "nautilus-gnome-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-lib-self-check-functions.h"
 
@@ -47,10 +48,10 @@
 #define RUBBERBAND_TIMEOUT_INTERVAL 10
 
 /* Timeout for making the icon currently selected for keyboard operation
- * visible.  FIXME: This *must* be higher than the double-click time in GDK,
+ * visible. FIXME: This *must* be higher than the double-click time in GDK,
  * but there is no way to access its value from outside.
  */
-#define KBD_ICON_VISIBILITY_TIMEOUT 300
+#define KEYBOARD_ICON_REVEAL_TIMEOUT 300
 
 /* Maximum amount of milliseconds the mouse button is allowed to stay down
  * and still be considered a click.
@@ -65,7 +66,9 @@
 #define RUBBERBAND_BUTTON 1
 #define CONTEXTUAL_MENU_BUTTON 3
 
-/* maximum size allowed for icons at the time they are installed - the user can still stretch them further */
+/* Maximum size (multiplier) allowed for icons at the time
+ * they are installed - the user can still stretch them further.
+ */
 #define MAXIMUM_INITIAL_ICON_SIZE 2
 
 static void                    activate_selected_items               (GnomeIconContainer      *container);
@@ -78,13 +81,13 @@ static void                    compute_stretch                       (StretchSta
 static GnomeIconContainerIcon *get_first_selected_icon               (GnomeIconContainer      *container);
 static GnomeIconContainerIcon *get_nth_selected_icon                 (GnomeIconContainer      *container,
 								      int                      index);
+#if 0
+static gboolean                has_selection                         (GnomeIconContainer      *container);
+#endif
 static gboolean                has_multiple_selection                (GnomeIconContainer      *container);
 static void                    icon_destroy                          (GnomeIconContainer      *container,
 								      GnomeIconContainerIcon  *icon);
 static guint                   icon_get_actual_size                  (GnomeIconContainerIcon  *icon);
-static void                    set_kbd_current                       (GnomeIconContainer      *container,
-								      GnomeIconContainerIcon  *icon,
-								      gboolean                 schedule_visibility);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (GnomeIconContainer, gnome_icon_container, GNOME_TYPE_CANVAS)
 
@@ -124,26 +127,26 @@ static GnomeIconContainerIcon *
 icon_new (GnomeIconContainer *container,
 	  GnomeIconContainerIconData *data)
 {
-	GnomeIconContainerIcon *new;
+	GnomeIconContainerIcon *icon;
         GnomeCanvas *canvas;
 	guint max_size, actual_size;
         
 	canvas = GNOME_CANVAS (container);
 	
-	new = g_new0 (GnomeIconContainerIcon, 1);
+	icon = g_new0 (GnomeIconContainerIcon, 1);
 	
-	new->scale_x = 1.0;
-	new->scale_y = 1.0;
-	new->layout_done = TRUE;
+	icon->scale_x = 1.0;
+	icon->scale_y = 1.0;
 	
-	new->data = data;
+	icon->data = data;
 
-        new->item = NAUTILUS_ICONS_VIEW_ICON_ITEM
+        icon->item = NAUTILUS_ICONS_VIEW_ICON_ITEM
 		(gnome_canvas_item_new (GNOME_CANVAS_GROUP (canvas->root),
 					nautilus_icons_view_icon_item_get_type (),
 					NULL));
+	icon->item->user_data = icon;
 
-	update_icon (container, new);
+	update_icon (container, icon);
 	
 	/* Enforce a maximum size for new icons by reducing the scale factor as necessary.
 	 * FIXME: This needs to be done again later when the image changes, so it's not
@@ -154,14 +157,14 @@ icon_new (GnomeIconContainer *container,
 	 */
 	max_size = nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
 		* MAXIMUM_INITIAL_ICON_SIZE;
-	actual_size = icon_get_actual_size (new);
+	actual_size = icon_get_actual_size (icon);
 	if (actual_size > max_size) {
-		new->scale_x = max_size / (double) actual_size;
-		new->scale_y = new->scale_x;
-		update_icon (container, new);
+		icon->scale_x = max_size / (double) actual_size;
+		icon->scale_y = icon->scale_x;
+		update_icon (container, icon);
 	}
 	
-	return new;
+	return icon;
 }
 
 static void
@@ -288,21 +291,6 @@ icon_set_selected (GnomeIconContainer *container,
 	return TRUE;
 }
 
-static gboolean
-icon_is_in_region (GnomeIconContainer *container,
-		   GnomeIconContainerIcon *icon,
-		   int x0, int y0,
-		   int x1, int y1)
-{
-	ArtDRect rect;
-	rect.x0 = x0;
-	rect.x1 = x1;
-	rect.y0 = y0;
-	rect.y1 = y1;
-	return nautilus_icons_view_icon_item_hit_test_rectangle
-		(icon->item, &rect);
-}
-
 static void
 icon_get_bounding_box (GnomeIconContainerIcon *icon,
 		       int *x1_return, int *y1_return,
@@ -337,8 +325,8 @@ scroll (GnomeIconContainer *container,
 }
 
 static void
-make_icon_visible (GnomeIconContainer *container,
-		   GnomeIconContainerIcon *icon)
+reveal_icon (GnomeIconContainer *container,
+	     GnomeIconContainerIcon *icon)
 {
 	GnomeIconContainerDetails *details;
 	GtkAllocation *allocation;
@@ -367,18 +355,27 @@ make_icon_visible (GnomeIconContainer *container,
 }
 
 static gboolean
-kbd_icon_visibility_timeout_callback (gpointer data)
+keyboard_icon_reveal_timeout_callback (gpointer data)
 {
 	GnomeIconContainer *container;
+	GnomeIconContainerIcon *icon;
 
 	GDK_THREADS_ENTER ();
 
 	container = GNOME_ICON_CONTAINER (data);
+	icon = container->details->keyboard_icon_to_reveal;
 
-	if (container->details->kbd_current != NULL) {
-		make_icon_visible (container, container->details->kbd_current);
+	g_assert (icon != NULL);
+
+	/* Only reveal the icon if it's still the keyboard focus
+	 * or if it's still selected.
+	 * FIXME: Need to unschedule this if the user scrolls explicitly.
+	 */
+	if (icon == container->details->keyboard_focus
+	    || icon->is_selected) {
+		reveal_icon (container, icon);
 	}
-	container->details->kbd_icon_visibility_timer_id = 0;
+	container->details->keyboard_icon_reveal_timer_id = 0;
 
 	GDK_THREADS_LEAVE ();
 
@@ -386,62 +383,64 @@ kbd_icon_visibility_timeout_callback (gpointer data)
 }
 
 static void
-unschedule_kbd_icon_visibility (GnomeIconContainer *container)
+unschedule_keyboard_icon_reveal (GnomeIconContainer *container)
 {
 	GnomeIconContainerDetails *details;
 
 	details = container->details;
 
-	if (details->kbd_icon_visibility_timer_id != 0) {
-		gtk_timeout_remove (details->kbd_icon_visibility_timer_id);
+	if (details->keyboard_icon_reveal_timer_id != 0) {
+		gtk_timeout_remove (details->keyboard_icon_reveal_timer_id);
 	}
 }
 
 static void
-schedule_kbd_icon_visibility (GnomeIconContainer *container)
+schedule_keyboard_icon_reveal (GnomeIconContainer *container,
+			       GnomeIconContainerIcon *icon)
 {
 	GnomeIconContainerDetails *details;
 
 	details = container->details;
 
-	unschedule_kbd_icon_visibility (container);
+	unschedule_keyboard_icon_reveal (container);
 
-	details->kbd_icon_visibility_timer_id
-		= gtk_timeout_add (KBD_ICON_VISIBILITY_TIMEOUT,
-				   kbd_icon_visibility_timeout_callback,
+	details->keyboard_icon_to_reveal = icon;
+	details->keyboard_icon_reveal_timer_id
+		= gtk_timeout_add (KEYBOARD_ICON_REVEAL_TIMEOUT,
+				   keyboard_icon_reveal_timeout_callback,
 				   container);
 }
 
-/* Set `icon' as the icon currently selected for keyboard operations.  */
 static void
-set_kbd_current (GnomeIconContainer *container,
-		 GnomeIconContainerIcon *icon,
-		 gboolean schedule_visibility)
+clear_keyboard_focus (GnomeIconContainer *container)
 {
-	GnomeIconContainerDetails *details;
-
-	details = container->details;
-
-        if (details->kbd_current != NULL)
-		gnome_canvas_item_set (GNOME_CANVAS_ITEM (details->kbd_current->item),
-				       "highlighted_for_keyboard_selection", 0,
+        if (container->details->keyboard_focus != NULL) {
+		gnome_canvas_item_set (GNOME_CANVAS_ITEM (container->details->keyboard_focus->item),
+				       "highlighted_as_keyboard_focus", 0,
 				       NULL);
-	
-	details->kbd_current = icon;
-	
-	if (icon != NULL) {
-		gnome_canvas_item_set (GNOME_CANVAS_ITEM (details->kbd_current->item),
-				       "highlighted_for_keyboard_selection", 1,
-				       NULL);
-		 
-		icon_raise (icon);
 	}
 	
-	if (icon != NULL && schedule_visibility) {
-		schedule_kbd_icon_visibility (container);
-	} else {
-		unschedule_kbd_icon_visibility (container);
+	container->details->keyboard_focus = NULL;
+}
+
+/* Set `icon' as the icon currently selected for keyboard operations. */
+static void
+set_keyboard_focus (GnomeIconContainer *container,
+		    GnomeIconContainerIcon *icon)
+{
+	g_assert (icon != NULL);
+
+	if (icon == container->details->keyboard_focus) {
+		return;
 	}
+
+	clear_keyboard_focus (container);
+
+	container->details->keyboard_focus = icon;
+
+	gnome_canvas_item_set (GNOME_CANVAS_ITEM (container->details->keyboard_focus->item),
+			       "highlighted_as_keyboard_focus", 1,
+			       NULL);
 }
 
 
@@ -502,8 +501,8 @@ set_scroll_region (GnomeIconContainer *container)
 	gnome_canvas_item_get_bounds (GNOME_CANVAS (container)->root,
 				      &x1, &y1, &x2, &y2);
 
-	content_width = x2 - x1 + GNOME_ICON_CONTAINER_CELL_SPACING (container);
-	content_height = y2 - y1 + GNOME_ICON_CONTAINER_CELL_SPACING (container);
+	content_width = x2 - x1;
+	content_height = y2 - y1;
 
 	allocation = &GTK_WIDGET (container)->allocation;
 
@@ -621,12 +620,6 @@ gnome_icon_container_move_icon (GnomeIconContainer *container,
 
 	if (x != icon->x || y != icon->y) {
 		icon_set_position (icon, x, y);
-		
-		/* Update the keyboard selection indicator.  */
-		if (details->kbd_current == icon) {
-			set_kbd_current (container, icon, FALSE);
-		}
-
 		emit_signal = TRUE;
 	}
 	
@@ -650,91 +643,36 @@ gnome_icon_container_move_icon (GnomeIconContainer *container,
 
 /* Implementation of rubberband selection.  */
 
-static gboolean
-rubberband_select_in_cell (GnomeIconContainer *container,
-			   GList *cell,
-			   double curr_x1, double curr_y1,
-			   double curr_x2, double curr_y2,
-			   double prev_x1, double prev_y1,
-			   double prev_x2, double prev_y2)
-{
-	GList *p;
-	gboolean selection_changed;
-
-	selection_changed = FALSE;
-
-	for (p = cell; p != NULL; p = p->next) {
-		GnomeIconContainerIcon *icon;
-		gboolean in_curr_region;
-		gboolean in_prev_region;
-
-		icon = p->data;
-
-		in_curr_region = icon_is_in_region (container, icon,
-						    curr_x1, curr_y1,
-						    curr_x2, curr_y2);
-
-		in_prev_region = icon_is_in_region (container, icon,
-						    prev_x1, prev_y1,
-						    prev_x2, prev_y2);
-
-		if (in_curr_region && ! in_prev_region) {
-			selection_changed |= icon_set_selected (container, icon,
-								!icon->was_selected_before_rubberband);
-		} else if (in_prev_region && ! in_curr_region) {
-			selection_changed |= icon_set_selected (container, icon,
-								icon->was_selected_before_rubberband);
-		}
-	}
-
-	return selection_changed;
-}
-
 static void
 rubberband_select (GnomeIconContainer *container,
-		   double curr_x1, double curr_y1,
-		   double curr_x2, double curr_y2,
-		   double prev_x1, double prev_y1,
-		   double prev_x2, double prev_y2)
+		   const ArtDRect *previous_rect,
+		   const ArtDRect *current_rect)
 {
-	GList **p;
-	GnomeIconContainerGrid *grid;
-	int curr_grid_x1, curr_grid_y1;
-	int curr_grid_x2, curr_grid_y2;
-	int prev_grid_x1, prev_grid_y1;
-	int prev_grid_x2, prev_grid_y2;
-	int grid_x1, grid_y1;
-	int grid_x2, grid_y2;
-	int i, j;
+	ArtDRect both_rects;
+	GList *icons, *p;
 	gboolean selection_changed;
-
-	grid = container->details->grid;
-
-	gnome_icon_container_world_to_grid (container->details->grid, curr_x1, curr_y1, &curr_grid_x1, &curr_grid_y1);
-	gnome_icon_container_world_to_grid (container->details->grid, curr_x2, curr_y2, &curr_grid_x2, &curr_grid_y2);
-	gnome_icon_container_world_to_grid (container->details->grid, prev_x1, prev_y1, &prev_grid_x1, &prev_grid_y1);
-	gnome_icon_container_world_to_grid (container->details->grid, prev_x2, prev_y2, &prev_grid_x2, &prev_grid_y2);
-
-	grid_x1 = MIN (curr_grid_x1, prev_grid_x1);
-	grid_x2 = MAX (curr_grid_x2, prev_grid_x2);
-	grid_y1 = MIN (curr_grid_y1, prev_grid_y1);
-	grid_y2 = MAX (curr_grid_y2, prev_grid_y2);
-
+	GnomeIconContainerIcon *icon;
+	gboolean is_in;
+		
+	/* As an optimization, ask the grid which icons intersect the rectangles. */
+	art_drect_union (&both_rects, previous_rect, current_rect);
+	icons = gnome_icon_container_grid_get_intersecting_icons (container->details->grid,
+								  &both_rects);
+	
 	selection_changed = FALSE;
 
-	p = gnome_icon_container_grid_get_element_ptr (grid, grid_x1, grid_y1);
-	for (i = 0; i <= grid_y2 - grid_y1; i++) {
-		for (j = 0; j <= grid_x2 - grid_x1; j++) {
-			if (rubberband_select_in_cell (container, p[j],
-						       curr_x1, curr_y1,
-						       curr_x2, curr_y2,
-						       prev_x1, prev_y1,
-						       prev_x2, prev_y2))
-				selection_changed = TRUE;
-		}
+	for (p = icons; p != NULL; p = p->next) {
+		icon = p->data;
 
-		p += grid->width;
+		is_in = nautilus_icons_view_icon_item_hit_test_rectangle
+			(icon->item, current_rect);
+		if (icon_set_selected (container, icon,
+				       is_in ^ icon->was_selected_before_rubberband)) {
+			selection_changed = TRUE;
+		}
 	}
+
+	g_list_free (icons);
 
 	if (selection_changed) {
 		gtk_signal_emit (GTK_OBJECT (container),
@@ -752,6 +690,7 @@ rubberband_timeout_callback (gpointer data)
 	double x1, y1, x2, y2;
 	double world_x, world_y;
 	int x_scroll, y_scroll;
+	ArtDRect selection_rect;
 
 	GDK_THREADS_ENTER ();
 
@@ -818,17 +757,19 @@ rubberband_timeout_callback (gpointer data)
 			       "y2", y2,
 			       NULL);
 
+	selection_rect.x0 = x1;
+	selection_rect.y0 = y1;
+	selection_rect.x1 = x2;
+	selection_rect.y1 = y2;
+
 	rubberband_select (container,
-			   x1, y1, x2, y2,
-			   band_info->prev_x1, band_info->prev_y1,
-			   band_info->prev_x2, band_info->prev_y2);
+			   &band_info->prev_rect,
+			   &selection_rect);
 
 	band_info->prev_x = x;
 	band_info->prev_y = y;
-	band_info->prev_x1 = x1;
-	band_info->prev_y1 = y1;
-	band_info->prev_x2 = x2;
-	band_info->prev_y2 = y2;
+
+	band_info->prev_rect = selection_rect;
 
 	GDK_THREADS_LEAVE ();
 
@@ -870,8 +811,8 @@ start_rubberbanding (GnomeIconContainer *container,
 					 "width_pixels", 2,
 					 NULL);
 
-	band_info->prev_x = band_info->prev_x1 = band_info->prev_x2 = event->x;
-	band_info->prev_y = band_info->prev_y1 = band_info->prev_y2 = event->y;
+	band_info->prev_x = event->x;
+	band_info->prev_y = event->y;
 
 	band_info->active = TRUE;
 
@@ -910,402 +851,472 @@ stop_rubberbanding (GnomeIconContainer *container,
 
 /* Keyboard navigation.  */
 
+typedef gboolean (* IsBetterIconFunction) (GnomeIconContainer *container,
+					   GnomeIconContainerIcon *start_icon,
+					   GnomeIconContainerIcon *best_so_far,
+					   GnomeIconContainerIcon *candidate);
+
+static GnomeIconContainerIcon *
+find_best_icon (GnomeIconContainer *container,
+		GnomeIconContainerIcon *start_icon,
+		IsBetterIconFunction function)
+{
+	GList *p;
+	GnomeIconContainerIcon *best, *candidate;
+
+	best = NULL;
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		candidate = p->data;
+
+		if (candidate != start_icon) {
+			if ((* function) (container, start_icon, best, candidate)) {
+				best = candidate;
+			}
+		}
+	}
+	return best;
+}
+
+static GnomeIconContainerIcon *
+find_best_selected_icon (GnomeIconContainer *container,
+			 GnomeIconContainerIcon *start_icon,
+			 IsBetterIconFunction function)
+{
+	GList *p;
+	GnomeIconContainerIcon *best, *candidate;
+
+	best = NULL;
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		candidate = p->data;
+
+		if (candidate != start_icon && candidate->is_selected) {
+			if ((* function) (container, start_icon, best, candidate)) {
+				best = candidate;
+			}
+		}
+	}
+	return best;
+}
+
+static int
+compare_icons_by_uri (GnomeIconContainer *container,
+		      GnomeIconContainerIcon *icon_a,
+		      GnomeIconContainerIcon *icon_b)
+{
+	char *uri_a, *uri_b;
+	int result;
+
+	g_assert (GNOME_IS_ICON_CONTAINER (container));
+	g_assert (icon_a != NULL);
+	g_assert (icon_b != NULL);
+	g_assert (icon_a != icon_b);
+
+	uri_a = gnome_icon_container_get_icon_uri (container, icon_a);
+	uri_b = gnome_icon_container_get_icon_uri (container, icon_b);
+	result = strcmp (uri_a, uri_b);
+	g_assert (result != 0);
+	g_free (uri_a);
+	g_free (uri_b);
+	
+	return result;
+}
+
+static int
+compare_icons_horizontal_first (GnomeIconContainer *container,
+				GnomeIconContainerIcon *icon_a,
+				GnomeIconContainerIcon *icon_b)
+{
+	if (icon_a->x < icon_b->x) {
+		return -1;
+	}
+	if (icon_a->x > icon_b->x) {
+		return 1;
+	}
+	if (icon_a->y < icon_b->y) {
+		return -1;
+	}
+	if (icon_a->y > icon_b->y) {
+		return 1;
+	}
+	return compare_icons_by_uri (container, icon_a, icon_b);
+}
+
+static int
+compare_icons_vertical_first (GnomeIconContainer *container,
+			      GnomeIconContainerIcon *icon_a,
+			      GnomeIconContainerIcon *icon_b)
+{
+	if (icon_a->y < icon_b->y) {
+		return -1;
+	}
+	if (icon_a->y > icon_b->y) {
+		return 1;
+	}
+	if (icon_a->x < icon_b->x) {
+		return -1;
+	}
+	if (icon_a->x > icon_b->x) {
+		return 1;
+	}
+	return compare_icons_by_uri (container, icon_a, icon_b);
+}
+
+static gboolean
+leftmost_in_top_row (GnomeIconContainer *container,
+		     GnomeIconContainerIcon *start_icon,
+		     GnomeIconContainerIcon *best_so_far,
+		     GnomeIconContainerIcon *candidate)
+{
+	if (best_so_far == NULL) {
+		return TRUE;
+	}
+	return compare_icons_vertical_first (container, best_so_far, candidate) > 0;
+}
+
+static gboolean
+rightmost_in_bottom_row (GnomeIconContainer *container,
+			 GnomeIconContainerIcon *start_icon,
+			 GnomeIconContainerIcon *best_so_far,
+			 GnomeIconContainerIcon *candidate)
+{
+	if (best_so_far == NULL) {
+		return TRUE;
+	}
+	return compare_icons_vertical_first (container, best_so_far, candidate) < 0;
+}
+
+static int
+compare_with_start_row (GnomeIconContainer *container,
+			GnomeIconContainerIcon *icon)
+{
+	ArtIRect bounds;
+
+	nautilus_gnome_canvas_item_get_current_canvas_bounds (GNOME_CANVAS_ITEM (icon->item),
+							      &bounds);
+	if (container->details->arrow_key_start < bounds.y0) {
+		return -1;
+	}
+	if (container->details->arrow_key_start > bounds.y1) {
+		return 1;
+	}
+	return 0;
+}
+
+static int
+compare_with_start_column (GnomeIconContainer *container,
+			   GnomeIconContainerIcon *icon)
+{
+	ArtIRect bounds;
+	
+	nautilus_gnome_canvas_item_get_current_canvas_bounds (GNOME_CANVAS_ITEM (icon->item),
+							      &bounds);
+	if (container->details->arrow_key_start < bounds.x0) {
+		return -1;
+	}
+	if (container->details->arrow_key_start > bounds.x1) {
+		return 1;
+	}
+	return 0;
+}
+
+static gboolean
+same_row_right_side_leftmost (GnomeIconContainer *container,
+			      GnomeIconContainerIcon *start_icon,
+			      GnomeIconContainerIcon *best_so_far,
+			      GnomeIconContainerIcon *candidate)
+{
+	/* Candidates not on the start row do not qualify. */
+	if (compare_with_start_row (container, candidate) != 0) {
+		return FALSE;
+	}
+
+	/* Candidates that are farther right lose out. */
+	if (best_so_far != NULL) {
+		if (compare_icons_horizontal_first (container,
+						    best_so_far,
+						    candidate) < 0) {
+			return FALSE;
+		}
+	}
+
+	/* Candidate to the left of the start do not qualify. */
+	if (compare_icons_horizontal_first (container,
+					    candidate,
+					    start_icon) <= 0) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
+same_row_left_side_rightmost (GnomeIconContainer *container,
+			      GnomeIconContainerIcon *start_icon,
+			      GnomeIconContainerIcon *best_so_far,
+			      GnomeIconContainerIcon *candidate)
+{
+	/* Candidates not on the start row do not qualify. */
+	if (compare_with_start_row (container, candidate) != 0) {
+		return FALSE;
+	}
+
+	/* Candidates that are farther left lose out. */
+	if (best_so_far != NULL) {
+		if (compare_icons_horizontal_first (container,
+						    best_so_far,
+						    candidate) > 0) {
+			return FALSE;
+		}
+	}
+
+	/* Candidate to the right of the start do not qualify. */
+	if (compare_icons_horizontal_first (container,
+					    candidate,
+					    start_icon) >= 0) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
+same_column_above_lowest (GnomeIconContainer *container,
+			  GnomeIconContainerIcon *start_icon,
+			  GnomeIconContainerIcon *best_so_far,
+			  GnomeIconContainerIcon *candidate)
+{
+	/* Candidates not on the start column do not qualify. */
+	if (compare_with_start_column (container, candidate) != 0) {
+		return FALSE;
+	}
+
+	/* Candidates that are higher lose out. */
+	if (best_so_far != NULL) {
+		if (compare_icons_vertical_first (container,
+						  best_so_far,
+						  candidate) > 0) {
+			return FALSE;
+		}
+	}
+
+	/* Candidates below the start do not qualify. */
+	if (compare_icons_vertical_first (container,
+					  candidate,
+					  start_icon) >= 0) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
+same_column_below_highest (GnomeIconContainer *container,
+			  GnomeIconContainerIcon *start_icon,
+			  GnomeIconContainerIcon *best_so_far,
+			  GnomeIconContainerIcon *candidate)
+{
+	/* Candidates not on the start column do not qualify. */
+	if (compare_with_start_column (container, candidate) != 0) {
+		return FALSE;
+	}
+
+	/* Candidates that are lower lose out. */
+	if (best_so_far != NULL) {
+		if (compare_icons_vertical_first (container,
+						  best_so_far,
+						  candidate) < 0) {
+			return FALSE;
+		}
+	}
+
+	/* Candidate above the start do not qualify. */
+	if (compare_icons_vertical_first (container,
+					  candidate,
+					  start_icon) <= 0) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 static void
-kbd_move_to (GnomeIconContainer *container,
-	     GnomeIconContainerIcon *icon,
+keyboard_move_to (GnomeIconContainer *container,
+		  GnomeIconContainerIcon *icon,
+		  GdkEventKey *event)
+{
+	if (icon == NULL) {
+		return;
+	}
+
+	if ((event->state & GDK_CONTROL_MASK) == 0) {
+		/* Select icons and get rid of the special keyboard focus. */
+		select_one_unselect_others (container, icon);
+		clear_keyboard_focus (container);
+	} else {
+		/* Move the keyboard focus. */
+		set_keyboard_focus (container, icon);
+	}
+	schedule_keyboard_icon_reveal (container, icon);
+}
+
+static void
+keyboard_home (GnomeIconContainer *container,
+	       GdkEventKey *event)
+{
+	/* Home selects the first icon.
+	 * Control-Home sets the keyboard focus to the first icon.
+	 */
+	container->details->arrow_key_axis = AXIS_NONE;
+	keyboard_move_to (container,
+			  find_best_icon (container,
+					  NULL,
+					  leftmost_in_top_row),
+			  event);
+}
+
+static void
+keyboard_end (GnomeIconContainer *container,
+	      GdkEventKey *event)
+{
+	/* End selects the last icon.
+	 * Control-End sets the keyboard focus to the last icon.
+	 */
+	container->details->arrow_key_axis = AXIS_NONE;
+	keyboard_move_to (container,
+			  find_best_icon (container,
+					  NULL,
+					  rightmost_in_bottom_row),
+			  event);
+}
+
+static void
+record_arrow_key_start (GnomeIconContainer *container,
+			GnomeIconContainerIcon *icon,
+			Axis arrow_key_axis)
+{
+	ArtDRect world_rect;
+
+	if (container->details->arrow_key_axis == arrow_key_axis) {
+		return;
+	}
+
+	nautilus_icons_view_icon_item_get_icon_rectangle (icon->item,
+							  &world_rect);
+	gnome_canvas_w2c (GNOME_CANVAS (container),
+			  (world_rect.x0 + world_rect.x1) / 2,
+			  (world_rect.y0 + world_rect.y1) / 2,
+			  arrow_key_axis == AXIS_VERTICAL ? &container->details->arrow_key_start : NULL,
+			  arrow_key_axis == AXIS_HORIZONTAL ? &container->details->arrow_key_start : NULL);
+	container->details->arrow_key_axis = arrow_key_axis;
+}
+
+static void
+keyboard_arrow_key (GnomeIconContainer *container,
+		    GdkEventKey *event,
+		    Axis axis,
+		    IsBetterIconFunction better_start,
+		    IsBetterIconFunction better_destination)
+{
+	GnomeIconContainerIcon *icon;
+
+	/* Chose the icon to start with.
+	 * If we have a keyboard focus, start with it.
+	 * Otherwise, use the single selected icon.
+	 * If there's multiple selection, use the icon farthest toward the end.
+	 */
+	icon = container->details->keyboard_focus;
+	if (icon == NULL) {
+		if (has_multiple_selection (container)) {
+			icon = find_best_selected_icon (container,
+							NULL,
+							better_start);
+		} else {
+			icon = get_first_selected_icon (container);
+		}
+	}
+
+	/* If there's no icon, select the icon farthest toward the end.
+	 * If there is an icon, select the next icon based on the arrow direction.
+	 */
+	if (icon == NULL) {
+		container->details->arrow_key_axis = AXIS_NONE;
+		icon = find_best_icon (container,
+				       NULL,
+				       better_start);
+	} else {
+		record_arrow_key_start (container, icon, axis);
+		icon = find_best_icon (container,
+				       icon,
+				       better_destination);
+	}
+
+	keyboard_move_to (container, icon, event);
+}
+
+static void
+keyboard_right (GnomeIconContainer *container,
+		GdkEventKey *event)
+{
+	/* Right selects the next icon in the same row.
+	 * Control-Right sets the keyboard focus to the next icon in the same row.
+	 */
+	keyboard_arrow_key (container,
+			    event,
+			    AXIS_HORIZONTAL,
+			    rightmost_in_bottom_row,
+			    same_row_right_side_leftmost);
+}
+
+static void
+keyboard_left (GnomeIconContainer *container,
+	       GdkEventKey *event)
+{
+	/* Left selects the next icon in the same row.
+	 * Control-Left sets the keyboard focus to the next icon in the same row.
+	 */
+	keyboard_arrow_key (container,
+			    event,
+			    AXIS_HORIZONTAL,
+			    leftmost_in_top_row,
+			    same_row_left_side_rightmost);
+}
+
+static void
+keyboard_down (GnomeIconContainer *container,
+	       GdkEventKey *event)
+{
+	/* Down selects the next icon in the same column.
+	 * Control-Down sets the keyboard focus to the next icon in the same column.
+	 */
+	keyboard_arrow_key (container,
+			    event,
+			    AXIS_VERTICAL,
+			    rightmost_in_bottom_row,
+			    same_column_below_highest);
+}
+
+static void
+keyboard_up (GnomeIconContainer *container,
 	     GdkEventKey *event)
 {
-	/* Control key causes keyboard selection and "selected icon" to move separately.
+	/* Up selects the next icon in the same column.
+	 * Control-Up sets the keyboard focus to the next icon in the same column.
 	 */
-	if (! (event->state & GDK_CONTROL_MASK)) {
-		gboolean selection_changed;
-
-		selection_changed = unselect_all (container);
-		selection_changed |= icon_set_selected (container, icon, TRUE);
-
-		if (selection_changed) {
-			gtk_signal_emit (GTK_OBJECT (container),
-					 signals[SELECTION_CHANGED]);
-		}
-	}
-
-	set_kbd_current (container, icon, FALSE);
-	make_icon_visible (container, icon);
+	keyboard_arrow_key (container,
+			    event,
+			    AXIS_VERTICAL,
+			    leftmost_in_top_row,
+			    same_column_above_lowest);
 }
 
 static void
-kbd_home (GnomeIconContainer *container,
-	  GdkEventKey *event)
+keyboard_space (GnomeIconContainer *container,
+		GdkEventKey *event)
 {
-	GnomeIconContainerIcon *first;
-
-	first = gnome_icon_container_grid_find_first (container->details->grid, FALSE);
-	if (first != NULL) {
-		kbd_move_to (container, first, event);
-	}
-}
-
-static void
-kbd_end (GnomeIconContainer *container,
-	 GdkEventKey *event)
-{
-	GnomeIconContainerIcon *last;
-
-	last = gnome_icon_container_grid_find_last (container->details->grid, FALSE);
-	if (last != NULL) {
-		kbd_move_to (container, last, event);
-	}
-}
-
-static void
-set_kbd_current_to_single_selected_icon (GnomeIconContainer *container)
-{
-        GnomeIconContainerIcon *icon;
-
-        if (container->details->kbd_current != NULL) {
-		return;
-        }
-
-        if (has_multiple_selection (container)) {
-                return;
-        }
-
-        icon = get_first_selected_icon (container);
-        if (icon != NULL) {
-                set_kbd_current (container, icon, FALSE);
-        }
-}
-
-static void
-kbd_left (GnomeIconContainer *container,
-	  GdkEventKey *event)
-{
-	GnomeIconContainerDetails *details;
-	GnomeIconContainerGrid *grid;
-	GnomeIconContainerIcon *nearmost;
-	GList **e;
-	int grid_x, grid_y;
-	int x, y;
-	int max_x;
-
-	details = container->details;
-	grid = details->grid;
-
-	set_kbd_current_to_single_selected_icon (container);
-
-	if (details->kbd_current == NULL) {
-		GnomeIconContainerIcon *first;
-		
-		first = gnome_icon_container_grid_find_first
-			(container->details->grid, has_multiple_selection (container));
-		if (first != NULL) {
-			kbd_move_to (container, first, event);
-		}
-		return;
-	}
-
-	gnome_icon_container_world_to_grid (container->details->grid,
-					    details->kbd_current->x,
-					    details->kbd_current->y,
-					    &grid_x, &grid_y);
-	gnome_icon_container_grid_to_world (container->details->grid, grid_x, grid_y, &x, &y);
-
-	e = gnome_icon_container_grid_get_element_ptr (grid, 0, grid_y);
-	nearmost = NULL;
-
-	max_x = details->kbd_current->x;
-
-	while (1) {
-		while (1) {
-			GList *p;
-
-			for (p = e[grid_x]; p != NULL; p = p->next) {
-				GnomeIconContainerIcon *icon;
-
-				icon = p->data;
-				if (icon == details->kbd_current
-				    || icon->x < x
-				    || icon->y < y) {
-					continue;
-				}
-
-				if (icon->x <= max_x
-				    && (nearmost == NULL
-					|| icon->x > nearmost->x)) {
-					nearmost = icon;
-				}
-			}
- 
-			if (nearmost != NULL) {
-				kbd_move_to (container, nearmost, event);
-				return;
-			}
-
-			if (grid_x == 0) {
-				break;
-			}
-
-			grid_x--;
-			x -= GNOME_ICON_CONTAINER_CELL_WIDTH (container);
-		}
-
-		if (grid_y == 0) {
-			break;
-		}
-
-		grid_x = grid->width - 1;
-		max_x = G_MAXINT;
-		gnome_icon_container_grid_to_world (container->details->grid, grid_x, 0, &x, NULL);
-
-		e -= grid->width;
-		grid_y--;
-		y -= GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
-	}
-}
-
-static void
-kbd_up (GnomeIconContainer *container,
-	GdkEventKey *event)
-{
-	GnomeIconContainerDetails *details;
-	GnomeIconContainerGrid *grid;
-	GnomeIconContainerIcon *nearmost;
-	GList **e;
-	int grid_x, grid_y;
-	int x, y;
-
-	details = container->details;
-	grid = details->grid;
-
-	set_kbd_current_to_single_selected_icon (container);
-
-	if (details->kbd_current == NULL) {
-		GnomeIconContainerIcon *first;
-		
-		first = gnome_icon_container_grid_find_first
-			(container->details->grid, has_multiple_selection (container));
-		if (first != NULL) {
-			kbd_move_to (container, first, event);
-		}
-		return;
-	}
-
-	gnome_icon_container_world_to_grid (container->details->grid,
-					    details->kbd_current->x,
-					    details->kbd_current->y,
-					    &grid_x, &grid_y);
-	gnome_icon_container_grid_to_world (container->details->grid, grid_x, grid_y, &x, &y);
-
-	e = gnome_icon_container_grid_get_element_ptr (grid, grid_x, grid_y);
-	nearmost = NULL;
-
-	while (1) {
-		GList *p;
-
-		p = *e;
-
-		for (; p != NULL; p = p->next) {
-			GnomeIconContainerIcon *icon;
-
-			icon = p->data;
-			if (icon == details->kbd_current
-			    || icon->x < x
-			    || icon->y < y) {
-				continue;
-			}
-
-			if (icon->y <= details->kbd_current->y
-			    && (nearmost == NULL || icon->y > nearmost->y)) {
-				nearmost = icon;
-			}
-		}
-
-		if (nearmost != NULL) {
-			break;
-		}
-
-		if (grid_y == 0) {
-			break;
-		}
-
-		e -= grid->width;
-		grid_y--;
-		y -= GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
-	}
-
-	if (nearmost != NULL) {
-		kbd_move_to (container, nearmost, event);
-	}
-}
-
-static void
-kbd_right (GnomeIconContainer *container,
-	   GdkEventKey *event)
-{
-	GnomeIconContainerDetails *details;
-	GnomeIconContainerGrid *grid;
-	GnomeIconContainerIcon *nearmost;
-	GList **e;
-	int grid_x, grid_y;
-	int x, y;
-	int min_x;
-
-	details = container->details;
-	grid = details->grid;
-
-	set_kbd_current_to_single_selected_icon (container);
-
-	if (details->kbd_current == NULL) {
-		GnomeIconContainerIcon *last;
-		
-		last = gnome_icon_container_grid_find_last
-			(container->details->grid, has_multiple_selection (container));
-		if (last != NULL) {
-			kbd_move_to (container, last, event);
-		}
-		return;
-	}
-
-	gnome_icon_container_world_to_grid (container->details->grid,
-					    details->kbd_current->x,
-					    details->kbd_current->y,
-					    &grid_x, &grid_y);
-	gnome_icon_container_grid_to_world (container->details->grid, grid_x, grid_y, &x, &y);
-
-	e = gnome_icon_container_grid_get_element_ptr (grid, 0, grid_y);
-	nearmost = NULL;
-
-	min_x = details->kbd_current->x;
-
-	while (grid_y < grid->height) {
-		while (grid_x < grid->width) {
-			GList *p;
-
-			for (p = e[grid_x]; p != NULL; p = p->next) {
-				GnomeIconContainerIcon *icon;
-
-				icon = p->data;
-				if (icon == details->kbd_current
-				    || icon->x < x
-				    || icon->y < y) {
-					continue;
-				}
-
-				if (icon->x >= min_x
-				    && (nearmost == NULL
-					|| icon->x < nearmost->x)) {
-					nearmost = icon;
-				}
-			}
- 
-			if (nearmost != NULL) {
-				kbd_move_to (container, nearmost, event);
-				return;
-			}
-
-			grid_x++;
-			x += GNOME_ICON_CONTAINER_CELL_WIDTH (container);
-		}
-
-		grid_x = 0;
-		min_x = 0;
-		x = 0;
-
-		e += grid->width;
-		grid_y++;
-		y += GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
-	}
-}
-
-static void
-kbd_down (GnomeIconContainer *container,
-	  GdkEventKey *event)
-{
-	GnomeIconContainerDetails *details;
-	GnomeIconContainerGrid *grid;
-	GnomeIconContainerIcon *nearmost;
-	GList **e;
-	int grid_x, grid_y;
-	int x, y;
-
-	details = container->details;
-	grid = details->grid;
-
-	set_kbd_current_to_single_selected_icon (container);
-
-	if (details->kbd_current == NULL) {
-		GnomeIconContainerIcon *last;
-		
-		last = gnome_icon_container_grid_find_last
-			(container->details->grid, has_multiple_selection (container));
-		if (last != NULL) {
-			kbd_move_to (container, last, event);
-		}
-		return;
-	}
-
-	gnome_icon_container_world_to_grid (container->details->grid,
-					    details->kbd_current->x,
-					    details->kbd_current->y,
-					    &grid_x, &grid_y);
-	gnome_icon_container_grid_to_world (container->details->grid, grid_x, grid_y, &x, &y);
-
-	e = gnome_icon_container_grid_get_element_ptr (grid, grid_x, grid_y);
-	nearmost = NULL;
-
-	while (grid_y < grid->height) {
-		GList *p;
-
-		p = *e;
-
-		for (; p != NULL; p = p->next) {
-			GnomeIconContainerIcon *icon;
-
-			icon = p->data;
-			if (icon == details->kbd_current
-			    || icon->x < x
-			    || icon->y < y) {
-				continue;
-			}
-
-			if (icon->y >= details->kbd_current->y
-			    && (nearmost == NULL || icon->y < nearmost->y)) {
-				nearmost = icon;
-			}
-		}
-
-		if (nearmost != NULL) {
-			break;
-		}
-
-		e += grid->width;
-		grid_y++;
-		y += GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
-	}
-
-	if (nearmost != NULL) {
-		kbd_move_to (container, nearmost, event);
-	}
-}
-
-static void
-kbd_space (GnomeIconContainer *container,
-	   GdkEventKey *event)
-{
-	GnomeIconContainerDetails *details;
-
-	details = container->details;
-	if (details->icons != NULL && details->kbd_current == NULL) {
-                GnomeIconContainerIcon *icon;
-
-                icon = gnome_icon_container_grid_find_first
-			(container->details->grid, 
-			 get_first_selected_icon (container) != NULL);
-		set_kbd_current (container, icon, TRUE);
-	}	
-
-	if (details->kbd_current != NULL) {
-		icon_toggle_selected (container, details->kbd_current);
+	/* Control-space toggles the selection state of the current icon. */
+	if (container->details->keyboard_focus != NULL &&
+	    (event->state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK) {
+		icon_toggle_selected (container, container->details->keyboard_focus);
 		gtk_signal_emit (GTK_OBJECT (container), signals[SELECTION_CHANGED]);
 	}
 }
@@ -1325,8 +1336,7 @@ destroy (GtkObject *object)
         gnome_icon_container_clear (container);
 
 	gnome_icon_container_grid_destroy (container->details->grid);
-	g_hash_table_destroy (container->details->canvas_item_to_icon);
-	unschedule_kbd_icon_visibility (container);
+	unschedule_keyboard_icon_reveal (container);
 	
 	if (container->details->rubberband_info.timer_id != 0) {
 		gtk_timeout_remove (container->details->rubberband_info.timer_id);
@@ -1340,7 +1350,7 @@ destroy (GtkObject *object)
 	}
         for (i = 0; i < NAUTILUS_N_ELEMENTS (container->details->label_font); i++) {
         	if (container->details->label_font[i] != NULL) {
-                	gdk_font_unref(container->details->label_font[i]);
+                	gdk_font_unref (container->details->label_font[i]);
 		}
 	}
 	
@@ -1367,18 +1377,18 @@ size_allocate (GtkWidget *widget,
 {
 	GnomeIconContainer *container;
 	GnomeIconContainerGrid *grid;
-	guint visible_width, visible_height;
+	double world_width;
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 
 	container = GNOME_ICON_CONTAINER (widget);
 	grid = container->details->grid;
 
-	gnome_icon_container_world_to_grid (container->details->grid,
-					    allocation->width, 0,
-					    &visible_width, &visible_height);
+	gnome_canvas_c2w (GNOME_CANVAS (container),
+			  allocation->width, 0,
+			  &world_width, NULL);
 
-	gnome_icon_container_grid_set_visible_width (grid, visible_width);
+	gnome_icon_container_grid_set_visible_width (grid, world_width);
 
 	set_scroll_region (container);
 }
@@ -1410,7 +1420,10 @@ button_press_event (GtkWidget *widget,
         container->details->button_down_time = event->time;
 	
         /* Forget about the old keyboard selection now that we've started mousing. */
-        set_kbd_current (container, NULL, FALSE);
+        clear_keyboard_focus (container);
+
+	/* Forget about where we began with the arrow keys now that we're mousing. */
+	container->details->arrow_key_axis = AXIS_NONE;
 	
 	/* Invoke the canvas event handler and see if an item picks up the event. */
 	if (NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_press_event, (widget, event))) {
@@ -1672,35 +1685,36 @@ key_press_event (GtkWidget *widget,
 {
 	GnomeIconContainer *container;
 
-	if (NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, key_press_event, (widget, event)))
+	if (NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, key_press_event, (widget, event))) {
 		return TRUE;
+	}
 
 	container = GNOME_ICON_CONTAINER (widget);
 
 	switch (event->keyval) {
 	case GDK_Home:
-		kbd_home (container, event);
+		keyboard_home (container, event);
 		break;
 	case GDK_End:
-		kbd_end (container, event);
+		keyboard_end (container, event);
 		break;
 	case GDK_Left:
-		kbd_left (container, event);
+		keyboard_left (container, event);
 		break;
 	case GDK_Up:
-		kbd_up (container, event);
+		keyboard_up (container, event);
 		break;
 	case GDK_Right:
-		kbd_right (container, event);
+		keyboard_right (container, event);
 		break;
 	case GDK_Down:
-		kbd_down (container, event);
+		keyboard_down (container, event);
 		break;
 	case GDK_space:
-		kbd_space (container, event);
+		keyboard_space (container, event);
 		break;
 	case GDK_Return:
-		activate_selected_items(container);
+		activate_selected_items (container);
 		break;
 	default:
 		return FALSE;
@@ -1861,9 +1875,6 @@ gnome_icon_container_initialize (GnomeIconContainer *container)
 
 	details->grid = gnome_icon_container_grid_new ();
 
-	details->canvas_item_to_icon = g_hash_table_new (g_direct_hash,
-							 g_direct_equal);
-
         details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
  
  	/* font table - this isn't exactly proportional, but it looks better than computed */
@@ -1876,7 +1887,7 @@ gnome_icon_container_initialize (GnomeIconContainer *container)
         details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = load_font ("-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*");
         details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = load_font ("-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*");
 
-	/* FIXME: Read these from preferences. */
+	/* FIXME: Read this from preferences. */
 	details->single_click_mode = TRUE;
 
 	container->details = details;
@@ -1982,8 +1993,8 @@ handle_icon_button_press (GnomeIconContainer *container,
 
 static int
 item_event_callback (GnomeCanvasItem *item,
-	       GdkEvent *event,
-	       gpointer data)
+		     GdkEvent *event,
+		     gpointer data)
 {
 	GnomeIconContainer *container;
 	GnomeIconContainerDetails *details;
@@ -1992,7 +2003,7 @@ item_event_callback (GnomeCanvasItem *item,
 	container = GNOME_ICON_CONTAINER (data);
 	details = container->details;
 
-	icon = g_hash_table_lookup (details->canvas_item_to_icon, item);
+	icon = NAUTILUS_ICONS_VIEW_ICON_ITEM (item)->user_data;
 	g_return_val_if_fail (icon != NULL, FALSE);
 
 	switch (event->type) {
@@ -2039,7 +2050,7 @@ gnome_icon_container_clear (GnomeIconContainer *container)
 
 	details = container->details;
 
-	set_kbd_current (container, NULL, FALSE);
+	clear_keyboard_focus (container);
 	details->stretch_icon = NULL;
 
 	for (p = details->icons; p != NULL; p = p->next) {
@@ -2047,7 +2058,6 @@ gnome_icon_container_clear (GnomeIconContainer *container)
 	}
 	g_list_free (details->icons);
 	details->icons = NULL;
-	details->num_icons = 0;
 
 	gnome_icon_container_grid_clear (details->grid);
 }
@@ -2063,17 +2073,18 @@ icon_destroy (GnomeIconContainer *container,
 	
 	details = container->details;
 
-	details->icons = g_list_remove(details->icons, icon);
-	details->num_icons--;
+	details->icons = g_list_remove (details->icons, icon);
 
 	was_selected = icon->is_selected;
 
-	if (details->kbd_current == icon) {
-        	set_kbd_current (container, NULL, FALSE);
+	if (details->keyboard_focus == icon) {
+        	clear_keyboard_focus (container);
+	}
+	if (details->keyboard_icon_to_reveal == icon) {
+		unschedule_keyboard_icon_reveal (container);
 	}
 
 	gnome_icon_container_grid_remove (details->grid, icon);
- 	g_hash_table_remove (details->canvas_item_to_icon, icon->item);
 	
 	icon_free (icon);
 
@@ -2113,7 +2124,7 @@ bounds_changed_callback (NautilusIconsViewIconItem *item,
 	g_assert (old_bounds != NULL);
 	g_assert (GNOME_IS_ICON_CONTAINER (container));
 
-	icon = g_hash_table_lookup (container->details->canvas_item_to_icon, item);
+	icon = item->user_data;
 	g_assert (icon != NULL);
 
 	gnome_icon_container_grid_remove (container->details->grid, icon);
@@ -2121,17 +2132,14 @@ bounds_changed_callback (NautilusIconsViewIconItem *item,
 }
 
 static void
-setup_icon_in_container (GnomeIconContainer *container,
-			 GnomeIconContainerIcon *icon)
+set_up_icon_in_container (GnomeIconContainer *container,
+			  GnomeIconContainerIcon *icon)
 {
 	GnomeIconContainerDetails *details;
 
 	details = container->details;
 
 	details->icons = g_list_prepend (details->icons, icon);
-	details->num_icons++;
-
-	g_hash_table_insert (details->canvas_item_to_icon, icon->item, icon);
 
 	nautilus_icons_view_icon_item_update_bounds (icon->item);
 	gnome_icon_container_grid_add (details->grid, icon);
@@ -2244,7 +2252,7 @@ gnome_icon_container_add (GnomeIconContainer *container,
 	new_icon->scale_x = scale_x;
 	new_icon->scale_y = scale_y;
 
-	setup_icon_in_container (container, new_icon);
+	set_up_icon_in_container (container, new_icon);
 
 	request_idle (container);
 
@@ -2264,7 +2272,7 @@ gnome_icon_container_add_auto (GnomeIconContainer *container,
 			       GnomeIconContainerIconData *data)
 {
 	GnomeIconContainerIcon *new_icon;
-	int x, y;
+	ArtPoint position;
 
 	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
 	g_return_if_fail (data != NULL);
@@ -2273,11 +2281,11 @@ gnome_icon_container_add_auto (GnomeIconContainer *container,
 
 	gnome_icon_container_grid_get_position (container->details->grid,
 						new_icon,
-						&x, &y);
+						&position);
 
-	icon_set_position (new_icon, x, y);
+	icon_set_position (new_icon, position.x, position.y);
 
-	setup_icon_in_container (container, new_icon);
+	set_up_icon_in_container (container, new_icon);
 
 	request_idle (container);
 }
@@ -2390,304 +2398,6 @@ gnome_icon_container_request_update_all (GnomeIconContainer *container)
 		update_icon (container, p->data);
 	}
 }
-
-#if 0
-
-static void
-prepare_for_layout (GnomeIconContainer *container)
-{
-	GnomeIconContainerDetails *details;
-	GList *p;
-
-	details = container->details;
-
-	for (p = details->icons; p != NULL; p = p->next) {
-		GnomeIconContainerIcon *icon;
-
-		icon = p->data;
-		icon->layout_done = FALSE;
-	}
-}
-
-static int
-icon_compare_by_x (gconstpointer ap,
-		   gconstpointer bp)
-{
-	GnomeIconContainerIcon *a, *b;
-	
-	a = (GnomeIconContainerIcon *) ap;
-	b = (GnomeIconContainerIcon *) bp;
-	
-	return (int) a->x - b->x;
-}
-
-/**
- * gnome_icon_container_relayout:
- * @container: An icon container.
- * 
- * Relayout the icons in @container according to the allocation we are given.
- * This is done by just collecting icons from top to bottom, from left to
- * right, and tiling them in the same direction.  The tiling is done in such a
- * way that no horizontal scrolling is needed to see all the icons.
- **/
-void
-gnome_icon_container_relayout (GnomeIconContainer *container)
-{
-	GnomeIconContainerDetails *details;
-	GnomeIconContainerGrid *old_grid, *new_grid;
-	GList **sp, **dp;
-	int i, j;
-	int dx, dy;
-	int sx, sy;
-	int cols;
-	int lines;
-
-	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
-
-	details = container->details;
-	old_grid = details->grid;
-
-	g_return_if_fail (old_grid->visible_width > 0);
-
-	prepare_for_layout (container);
-
-	new_grid = gnome_icon_container_grid_new ();
-
-	if (details->num_icons % old_grid->visible_width != 0) {
-		gnome_icon_container_grid_resize (new_grid,
-						  old_grid->visible_width,
-						  (details->num_icons
-						   / old_grid->visible_width) + 1);
-	} else {
-		gnome_icon_container_grid_resize (new_grid,
-						  old_grid->visible_width,
-						  details->num_icons / old_grid->visible_width);
-	}
-
-	sp = old_grid->elems;
-	dp = new_grid->elems;
-	sx = sy = 0;
-	dx = dy = 0;
-	cols = lines = 0;
-	for (i = 0; i < old_grid->height; i++) {
-		for (j = 0; j < old_grid->width; j++) {
-			GList *p;
-
-			/* Make sure the icons are sorted by increasing X
-			   position.  */
-			sp[j] = g_list_sort (sp[j], icon_compare_by_x);
-
-			for (p = sp[j]; p != NULL; p = p->next) {
-				GnomeIconContainerIcon *icon;
-
-				icon = p->data;
-
-				/* Make sure icons are not moved twice, and
-				   ignore icons whose upper left corner is not
-				   in this cell, unless the icon is partly
-				   outside the container.  */
-				if (icon->layout_done
-				    || (icon->x >= 0 && icon->x < sx)
-				    || (icon->y >= 0 && icon->y < sy)) {
-					continue;
-				}
-
-				dp[cols] = g_list_alloc ();
-				dp[cols]->data = icon;
-
-				icon_set_position (icon, dx, dy);
-
-				icon->layout_done = TRUE;
-
-				if (++cols == new_grid->visible_width) {
-					cols = 0, lines++;
-					dx = 0, dy += GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
-					dp += new_grid->alloc_width;
-				} else {
-					dx += GNOME_ICON_CONTAINER_CELL_WIDTH (container);
-				}
-			}
-
-			sx += GNOME_ICON_CONTAINER_CELL_WIDTH (container);
-		}
-
-		sx = 0, sy += GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
-
-		sp += old_grid->alloc_width;
-	}
-
-	if (cols < new_grid->visible_width && lines < new_grid->height) {
-		new_grid->first_free_x = cols;
-		new_grid->first_free_y = lines;
-	} else {
-		new_grid->first_free_x = -1;
-		new_grid->first_free_y = -1;
-	}
-
-	gnome_icon_container_grid_destroy (details->grid);
-	details->grid = new_grid;
-
-	if (details->kbd_current != NULL) {
-		set_kbd_current (container, details->kbd_current, FALSE);
-	}
-
-	request_idle (container);
-}
-
-
-/**
- * gnome_icon_container_line_up:
- * @container: An icon container.
- * 
- * Line up icons in @container.
- **/
-void
-gnome_icon_container_line_up (GnomeIconContainer *container)
-{
-	GnomeIconContainerDetails *details;
-	GnomeIconContainerGrid *grid;
-	GnomeIconContainerGrid *new_grid;
-	GList **p, **q;
-	int new_grid_width;
-	int i, j, k, m;
-	int x, y, dx;
-
-	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
-
-	details = container->details;
-	grid = details->grid;
-
-	/* Mark all icons as "not moved yet".  */
-
-	prepare_for_layout (container);
-
-	/* Calculate the width for the resulting new grid.  This is the maximum
-           width across all the lines.  */
-
-	new_grid_width = 0;
-	p = grid->elems;
-	x = y = 0;
-	for (i = 0; i < grid->height; i++) {
-		int line_width;
-
-		line_width = grid->width;
-		for (j = 0; j < grid->width; j++) {
-			GList *e;
-			int count;
-
-			count = 0;
-			for (e = p[j]; e != NULL; e = e->next) {
-				GnomeIconContainerIcon *icon;
-
-				icon = e->data;
-				if (icon->x >= x && icon->y >= y) {
-					count++;
-				}
-			}
-
-			if (count > 1) {
-				new_grid_width += count - 1;
-			}
-
-			x += GNOME_ICON_CONTAINER_CELL_WIDTH (container);
-		}
-
-		new_grid_width = MAX (new_grid_width, line_width);
-		p += grid->alloc_width;
-
-		y += GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
-		x = 0;
-	}
-
-	/* Create the new grid.  */
-
-	new_grid = gnome_icon_container_grid_new ();
-	gnome_icon_container_grid_resize (new_grid, new_grid_width, grid->height);
-
-	/* Allocate the icons in the new grid, one per cell.  */
-
-	p = grid->elems;
-	q = new_grid->elems;
-	k = 0;
-	x = y = dx = 0;
-	for (i = 0; i < grid->height; i++) {
-		m = 0;
-		for (j = 0; j < grid->width; j++) {
-			GList *e;
-			int count;
-
-			/* Make sure the icons are sorted by increasing X
-                           position.  */
-			p[j] = g_list_sort (p[j], icon_compare_by_x);
-
-			count = 0;
-			for (e = p[j]; e != NULL; e = e->next) {
-				GnomeIconContainerIcon *icon;
-
-				icon = e->data;
-					
-				/* Make sure icons are not moved twice, and
-				   ignore icons whose upper left corner is not
-				   in this cell, unless the icon is partly
-				   outside the container.  */
-				if (icon->layout_done
-				    || (icon->x >= 0 && icon->x < x)
-				    || (icon->y >= 0 && icon->y < y)) {
-					continue;
-				}
-
-				icon_set_position (icon, dx, y);
-				icon->layout_done = TRUE;
-
-				q[k] = g_list_alloc ();
-				q[k]->data = icon;
-				dx += GNOME_ICON_CONTAINER_CELL_WIDTH (container);
-
-				k++;
-
-				if (count > 0)
-					m++;
-
-				count++;
-			}
-
-			if (count == 0) {
-				if (m > 0) {
-					m--;
-				} else {
-					k++;
-					dx += GNOME_ICON_CONTAINER_CELL_WIDTH (container);
-				}
-			}
-		}
-
-		x += GNOME_ICON_CONTAINER_CELL_WIDTH (container);
-
-		p += grid->alloc_width;
-
-		q += new_grid->alloc_width;
-		k = 0;
-
-		y += GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
-		x = 0;
-
-		dx = 0;
-	}
-
-	/* Done: use the new grid.  */
-
-	gnome_icon_container_grid_destroy (details->grid);
-	details->grid = new_grid;
-
-	/* Update the keyboard selection indicator.  */
-	if (details->kbd_current != NULL) {
-		set_kbd_current (container, details->kbd_current, FALSE);
-	}
-
-	request_idle (container);
-}
-
-#endif
 
 
 
@@ -2856,10 +2566,9 @@ get_nth_selected_icon (GnomeIconContainer *container, int index)
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		icon = p->data;
 		if (icon->is_selected) {
-		        ++selection_count;
-		}
-		if (selection_count == index) {
-                        return icon;
+			if (++selection_count == index) {
+				return icon;
+			}
 		}
 	}
 	return NULL;
@@ -2870,6 +2579,16 @@ get_first_selected_icon (GnomeIconContainer *container)
 {
         return get_nth_selected_icon (container, 1);
 }
+
+#if 0
+
+static gboolean
+has_selection (GnomeIconContainer *container)
+{
+	return get_first_selected_icon (container) != NULL;
+}
+
+#endif
 
 static gboolean
 has_multiple_selection (GnomeIconContainer *container)

@@ -75,6 +75,19 @@ nautilus_gnome_canvas_world_to_canvas_rectangle (GnomeCanvas *canvas,
 }
 
 gboolean
+nautilus_art_irect_contains_irect (const ArtIRect *outer_rect,
+				   const ArtIRect *inner_rect)
+{
+	g_return_val_if_fail (outer_rect != NULL, FALSE);
+	g_return_val_if_fail (inner_rect != NULL, FALSE);
+
+	return outer_rect->x0 <= inner_rect->x0
+		&& outer_rect->y0 <= inner_rect->y0
+		&& outer_rect->x1 >= inner_rect->x1
+		&& outer_rect->y1 >= inner_rect->y1; 
+}
+
+gboolean
 nautilus_art_irect_hits_irect (const ArtIRect *rect_a,
 			       const ArtIRect *rect_b)
 {

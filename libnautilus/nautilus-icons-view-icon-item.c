@@ -42,6 +42,7 @@
 
 #define STRETCH_HANDLE_THICKNESS 5
 #define EMBLEM_SPACING 2
+#define MAX_TEXT_WIDTH 80
 
 /* Private part of the NautilusIconsViewIconItem structure */
 struct NautilusIconsViewIconItemDetails {
@@ -59,7 +60,7 @@ struct NautilusIconsViewIconItemDetails {
 	
     	/* Highlight state. */
    	guint is_highlighted_for_selection : 1;
-	guint is_highlighted_for_keyboard_selection: 1;
+	guint is_highlighted_as_keyboard_focus: 1;
    	guint is_highlighted_for_drop : 1;
 	guint show_stretch_handles : 1;
 	guint is_prelit : 1;
@@ -71,7 +72,7 @@ enum {
 	ARG_TEXT,
 	ARG_FONT,
     	ARG_HIGHLIGHTED_FOR_SELECTION,
-    	ARG_HIGHLIGHTED_FOR_KEYBOARD_SELECTION,
+    	ARG_HIGHLIGHTED_AS_KEYBOARD_FOCUS,
     	ARG_HIGHLIGHTED_FOR_DROP,
     	ARG_TEXT_SOURCE
 };
@@ -97,13 +98,10 @@ enum {
 };
 static guint signals[LAST_SIGNAL];
 
-/* constants */
-
-#define MAX_TEXT_WIDTH 80
-
 /* Bitmap for stippled selection rectangles. */
 static GdkBitmap *stipple;
-static char stipple_bits[] = { 0x02, 0x01 };
+static const char stipple_bits[] = { 0x02, 0x01 };
+
 static GdkFont *embedded_text_font;
 
 /* GtkObject */
@@ -164,7 +162,7 @@ static void     draw_pixbuf                                    (GdkPixbuf       
 								GdkDrawable                     *drawable,
 								int                              x,
 								int                              y);
-static gboolean hit_stretch_handle                             (NautilusIconsViewIconItem       *item,
+static gboolean hit_test_stretch_handle                        (NautilusIconsViewIconItem       *item,
 								const ArtIRect                  *canvas_rect);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconsViewIconItem, nautilus_icons_view_icon_item, GNOME_TYPE_CANVAS_ITEM)
@@ -185,8 +183,8 @@ nautilus_icons_view_icon_item_initialize_class (NautilusIconsViewIconItemClass *
 				 GTK_TYPE_BOXED, GTK_ARG_READWRITE, ARG_FONT);
 	gtk_object_add_arg_type	("NautilusIconsViewIconItem::highlighted_for_selection",
 				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_FOR_SELECTION);
-	gtk_object_add_arg_type	("NautilusIconsViewIconItem::highlighted_for_keyboard_selection",
-				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_FOR_KEYBOARD_SELECTION);
+	gtk_object_add_arg_type	("NautilusIconsViewIconItem::highlighted_as_keyboard_focus",
+				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_AS_KEYBOARD_FOCUS);
 	gtk_object_add_arg_type	("NautilusIconsViewIconItem::highlighted_for_drop",
 				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_FOR_DROP);
 	gtk_object_add_arg_type	("NautilusIconsViewIconItem::text_source",
@@ -316,11 +314,11 @@ nautilus_icons_view_icon_item_set_arg (GtkObject *object, GtkArg *arg, guint arg
 		details->is_highlighted_for_selection = GTK_VALUE_BOOL (*arg);
 		break;
          
-        case ARG_HIGHLIGHTED_FOR_KEYBOARD_SELECTION:
-		if (!details->is_highlighted_for_keyboard_selection == !GTK_VALUE_BOOL (*arg)) {
+        case ARG_HIGHLIGHTED_AS_KEYBOARD_FOCUS:
+		if (!details->is_highlighted_as_keyboard_focus == !GTK_VALUE_BOOL (*arg)) {
 			return;
 		}
-		details->is_highlighted_for_keyboard_selection = GTK_VALUE_BOOL (*arg);
+		details->is_highlighted_as_keyboard_focus = GTK_VALUE_BOOL (*arg);
 		break;
 		
         case ARG_HIGHLIGHTED_FOR_DROP:
@@ -369,8 +367,8 @@ nautilus_icons_view_icon_item_get_arg (GtkObject *object, GtkArg *arg, guint arg
                 GTK_VALUE_BOOL (*arg) = details->is_highlighted_for_selection;
                 break;
 		
-        case ARG_HIGHLIGHTED_FOR_KEYBOARD_SELECTION:
-                GTK_VALUE_BOOL (*arg) = details->is_highlighted_for_keyboard_selection;
+        case ARG_HIGHLIGHTED_AS_KEYBOARD_FOCUS:
+                GTK_VALUE_BOOL (*arg) = details->is_highlighted_as_keyboard_focus;
                 break;
 		
         case ARG_HIGHLIGHTED_FOR_DROP:
@@ -627,7 +625,7 @@ draw_or_measure_label_text (NautilusIconsViewIconItem *item,
 		}
 		
 		/* indicate keyboard selection by framing the text with a gray-stippled rectangle */
-		if (details->is_highlighted_for_keyboard_selection) {
+		if (details->is_highlighted_as_keyboard_focus) {
 			gdk_gc_set_stipple (gc, stipple);
 			gdk_gc_set_fill (gc, GDK_STIPPLED);
 			gdk_draw_rectangle (drawable, gc, FALSE,
@@ -1123,7 +1121,7 @@ hit_test (NautilusIconsViewIconItem *icon_item, const ArtIRect *canvas_rect)
 	details = icon_item->details;
 
 	/* Check for hits in the stretch handles. */
-	if (hit_stretch_handle (icon_item, canvas_rect)) {
+	if (hit_test_stretch_handle (icon_item, canvas_rect)) {
 		return TRUE;
 	}
 	
@@ -1260,7 +1258,7 @@ nautilus_icons_view_icon_item_get_icon_rectangle (NautilusIconsViewIconItem *ite
 /* Get the rectangle of the icon only, in canvas coordinates. */
 void
 get_icon_canvas_rectangle (NautilusIconsViewIconItem *item,
-							 ArtIRect *rect)
+			   ArtIRect *rect)
 {
 	double i2c[6];
 	ArtPoint art_point;
@@ -1301,7 +1299,7 @@ nautilus_icons_view_icon_item_set_show_stretch_handles (NautilusIconsViewIconIte
 
 /* Check if one of the stretch handles was hit. */
 static gboolean
-hit_stretch_handle (NautilusIconsViewIconItem *item,
+hit_test_stretch_handle (NautilusIconsViewIconItem *item,
 		    const ArtIRect *probe_canvas_rect)
 {
 	ArtIRect icon_rect;
@@ -1342,7 +1340,7 @@ nautilus_icons_view_icon_item_hit_test_stretch_handles  (NautilusIconsViewIconIt
 			  &canvas_rect.y0);
 	canvas_rect.x1 = canvas_rect.x0 + 1;
 	canvas_rect.y1 = canvas_rect.y0 + 1;
-	return hit_stretch_handle (item, &canvas_rect);
+	return hit_test_stretch_handle (item, &canvas_rect);
 }
 
 gboolean

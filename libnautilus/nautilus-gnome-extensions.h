@@ -29,6 +29,11 @@
 
 #include <libgnomeui/gnome-canvas.h>
 
+typedef struct {
+	int x;
+	int y;
+} NautilusArtIPoint;
+
 /* This is more handy than gnome_canvas_item_get_bounds because it
  * always returns the bounds * in world coordinates and it returns
  * them in a single rectangle.
@@ -60,11 +65,13 @@ void     nautilus_gnome_canvas_request_redraw_rectangle       (GnomeCanvas     *
 void     nautilus_gnome_canvas_item_request_redraw            (GnomeCanvasItem *item);
 
 /* More functions for ArtIRect and ArtDRect. */
-gboolean nautilus_art_irect_hits_irect                        (const ArtIRect  *rect_a,
-							       const ArtIRect  *rect_b);
 gboolean nautilus_art_irect_equal                             (const ArtIRect  *rect_a,
 							       const ArtIRect  *rect_b);
 gboolean nautilus_art_drect_equal                             (const ArtDRect  *rect_a,
 							       const ArtDRect  *rect_b);
+gboolean nautilus_art_irect_hits_irect                        (const ArtIRect  *rect_a,
+							       const ArtIRect  *rect_b);
+gboolean nautilus_art_irect_contains_irect                    (const ArtIRect  *outer_rect,
+							       const ArtIRect  *inner_rect);
 
 #endif /* NAUTILUS_GNOME_EXTENSIONS_H */

@@ -38,6 +38,24 @@
 
 #define FIRST_FREE_NONE G_MININT
 
+struct GnomeIconContainerGrid {
+	/* The grid. This is automatically sized to fit all the
+	 * icons, so it doesn't need to be explicitly allocated.
+	 */
+	ArtIRect bounds;
+	GList **elements;
+
+	/* This is the number or grid positions that we actually use
+	 * for finding positions for new icons.
+	 */
+	int visible_width;
+
+	/* Position of the first free cell (used to speed up get_position).
+	 * Set first_free_x to FIRST_FREE_NONE to indicate no free cell.
+	 */
+	int first_free_x, first_free_y;
+};
+
 GnomeIconContainerGrid *
 gnome_icon_container_grid_new (void)
 {
@@ -47,19 +65,16 @@ gnome_icon_container_grid_new (void)
 void
 gnome_icon_container_grid_clear (GnomeIconContainerGrid *grid)
 {
-	int i;
+	int i, num_elements;
 
-	for (i = 0; i < grid->width * grid->height; i++) {
-		g_list_free (grid->elems[i]);
+	num_elements = (grid->bounds.x1 - grid->bounds.x0)
+		* (grid->bounds.y1 - grid->bounds.y0);
+	for (i = 0; i < num_elements; i++) {
+		g_list_free (grid->elements[i]);
 	}
-	g_free (grid->elems);
-	grid->elems = NULL;
+	g_free (grid->elements);
 
-	grid->width = 0;
-	grid->height = 0;
-
-	grid->first_free_x = 0;
-	grid->first_free_y = 0;
+	memset (grid, 0, sizeof (*grid));
 }
 
 void
@@ -69,118 +84,86 @@ gnome_icon_container_grid_destroy (GnomeIconContainerGrid *grid)
 	g_free (grid);
 }
 
-GList **
-gnome_icon_container_grid_get_element_ptr (GnomeIconContainerGrid *grid,
-					   int x, int y)
+static GList **
+get_element_ptr (GList **elements,
+		 const ArtIRect *bounds,
+		 int x, int y)
 {
-	g_assert (x >= 0);
-	g_assert (y >= 0);
-	g_assert (x < grid->width);
-	g_assert (y < grid->height);
+	g_assert (x >= bounds->x0);
+	g_assert (y >= bounds->y0);
+	g_assert (x < bounds->x1);
+	g_assert (y < bounds->y1);
 
-	return &grid->elems[y * grid->width + x];
+	return &elements[(y - bounds->y0)
+			* (bounds->x1 - bounds->x0)
+			+ (x - bounds->x0)];
+}
+
+static GList **
+grid_get_element_ptr (GnomeIconContainerGrid *grid,
+		      int x, int y)
+{
+	return get_element_ptr (grid->elements, &grid->bounds, x, y);
 }
 
 static void
 resize (GnomeIconContainerGrid *grid,
-	int new_width,
-	int new_height)
+	const ArtIRect *new_bounds)
 {
-	GList **new_elems;
-	int i, j;
 	int new_size;
+	GList **new_elements;
+	int x, y;
 
-	g_assert (new_width >= grid->width);
-	g_assert (new_height >= grid->height);
-	g_assert (new_width >= grid->visible_width);
+	g_assert (nautilus_art_irect_contains_irect (new_bounds, &grid->bounds));
+	g_assert (new_bounds->x1 >= grid->visible_width);
 
-	new_size = new_width * new_height;
-	new_elems = g_new (GList *, new_size);
+	new_size = (new_bounds->x1 - new_bounds->x0) * (new_bounds->y1 - new_bounds->y0);
+	new_elements = g_new0 (GList *, new_size);
 
-	if (grid->elems == NULL || grid->width == 0 || grid->height == 0) {
-		memset (new_elems, 0, sizeof (*new_elems) * new_size);
-	} else {
-		GList **sp, **dp;
-		int copy_width, copy_height;
-
-		/* Copy existing elements into the new array.  */
-
-		sp = grid->elems;
-		dp = new_elems;
-		copy_width = MIN (grid->width, new_width);
-		copy_height = MIN (grid->height, new_height);
-		
-		for (i = 0; i < copy_height; i++) {
-			for (j = 0; j < copy_width; j++) {
-				dp[j] = sp[j];
-			}
-
-			for (j = copy_width; j < new_width; j++) {
-				dp[j] = NULL;
-			}
-
-			for (j = copy_width; j < grid->width; j++) {
-				g_list_free (sp[j]);
-			}
-
-			sp += grid->width;
-			dp += new_width;
-		}
-
-		/* If there are other lines left, zero them as well.  */
-
-		if (i < new_height) {
-			int elems_left;
-
-			elems_left = new_size - (dp - new_elems);
-			memset (dp, 0, sizeof (*new_elems) * elems_left);
+	for (x = grid->bounds.x0; x < grid->bounds.x1; x++) {
+		for (y = grid->bounds.y0; y < grid->bounds.y1; y++) {
+			*get_element_ptr (new_elements, new_bounds, x, y) =
+				*grid_get_element_ptr (grid, x, y);
 		}
 	}
 
-	g_free (grid->elems);
-	grid->elems = new_elems;
+	g_free (grid->elements);
+	grid->elements = new_elements;
 
 	/* We might have a newly-free position if we are making the grid taller. */
-	if (new_height > grid->height && grid->first_free_x == FIRST_FREE_NONE) {
+	if (new_bounds->y1 > grid->bounds.y1
+	    && grid->first_free_x == FIRST_FREE_NONE) {
 		grid->first_free_x = 0;
-		grid->first_free_y = grid->height;
+		grid->first_free_y = grid->bounds.y1;
 	}
 
-	grid->width = new_width;
-	grid->height = new_height;
+	grid->bounds = *new_bounds;
 }
 
 static void
 update_first_free_forward (GnomeIconContainerGrid *grid)
 {
-	GList **p;
-	int start_x, start_y;
 	int x, y;
 
 	if (grid->first_free_x == FIRST_FREE_NONE) {
-		start_x = start_y = 0;
-		p = grid->elems;
+		x = 0;
+		y = 0;
 	} else {
-		start_x = grid->first_free_x;
-		start_y = grid->first_free_y;
-		p = gnome_icon_container_grid_get_element_ptr (grid, start_x, start_y);
+		x = grid->first_free_x;
+		y = grid->first_free_y;
 	}
 
-	x = start_x;
-	y = start_y;
-	while (y < grid->height) {
-		if (*p == NULL) {
+	while (y < grid->bounds.y1) {
+		if (*grid_get_element_ptr (grid, x, y) == NULL) {
 			grid->first_free_x = x;
 			grid->first_free_y = y;
 			return;
 		}
 
-		x++, p++;
-
+		x++;
 		if (x >= grid->visible_width) {
 			x = 0;
 			y++;
-			p += grid->width - grid->visible_width;
 		}
 	}
 
@@ -190,17 +173,24 @@ update_first_free_forward (GnomeIconContainerGrid *grid)
 
 void
 gnome_icon_container_grid_set_visible_width (GnomeIconContainerGrid *grid,
-					     int visible_width)
+					     double world_visible_width)
 {
-	if (visible_width > grid->width) {
-		resize (grid, visible_width, grid->height);
+	int visible_width;
+	ArtIRect bounds;
+
+	visible_width = floor (world_visible_width / GRID_CELL_WIDTH);
+
+	if (visible_width > grid->bounds.x1) {
+		bounds = grid->bounds;
+		bounds.x1 = visible_width;
+		resize (grid, &bounds);
 	}
 
 	/* Check and see if there are newly-free positions because
 	 * the layout part of the grid is getting wider.
 	 */
 	if (visible_width > grid->visible_width
-	    && grid->height > 0
+	    && grid->bounds.y1 > 0
 	    && grid->first_free_x == FIRST_FREE_NONE) {
 		grid->first_free_x = visible_width;
 		grid->first_free_y = 0;
@@ -213,7 +203,7 @@ gnome_icon_container_grid_set_visible_width (GnomeIconContainerGrid *grid,
 	 */
 	if (grid->first_free_x >= visible_width) {
 		g_assert (grid->first_free_x != FIRST_FREE_NONE);
-		if (grid->first_free_y == grid->height - 1) {
+		if (grid->first_free_y == grid->bounds.y1 - 1) {
 			grid->first_free_x = FIRST_FREE_NONE;
 		} else {
 			grid->first_free_x = 0;
@@ -227,36 +217,38 @@ static void
 maybe_resize (GnomeIconContainerGrid *grid,
 	      int x, int y)
 {
-	int new_width, new_height;
+	ArtIRect new_bounds;
 
-	if (x < grid->width && y < grid->height) {
-		return;
-	}
+	new_bounds = grid->bounds;
 
-	new_width = grid->width;
-	if (x >= new_width) {
-		if (new_width == 0) {
-			new_width = grid->visible_width;
-			if (new_width == 0) {
-				new_width = INITIAL_GRID_WIDTH;
-			}
-		}
-		while (x >= new_width) {
-			new_width *= 2;
+	if (new_bounds.x0 == new_bounds.x1) {
+		if (grid->visible_width != 0) {
+			new_bounds.x1 = grid->visible_width;
+		} else {
+			new_bounds.x1 = INITIAL_GRID_WIDTH;
 		}
 	}
 
-	new_height = grid->height;
-	if (y >= new_height) {
-		if (new_height == 0) {
-			new_height = INITIAL_GRID_HEIGHT;
-		}
-		while (y >= new_height) {
-			new_height *= 2;
-		}
+	if (new_bounds.y0 == new_bounds.y1) {
+		new_bounds.y1 = INITIAL_GRID_HEIGHT;
 	}
 
-	resize (grid, new_width, new_height);
+	while (x < new_bounds.x0) {
+		new_bounds.x0 -= new_bounds.x1 - new_bounds.x0;
+	}
+	while (x >= new_bounds.x1) {
+		new_bounds.x1 += new_bounds.x1 - new_bounds.x0;
+	}
+	while (y < new_bounds.y0) {
+		new_bounds.y0 -= new_bounds.y1 - new_bounds.y0;
+	}
+	while (y >= new_bounds.y1) {
+		new_bounds.y1 += new_bounds.y1 - new_bounds.y0;
+	}
+
+	if (!nautilus_art_irect_equal (&new_bounds, &grid->bounds)) {
+		resize (grid, &new_bounds);
+	}
 }
 
 static void
@@ -268,7 +260,7 @@ grid_add_one (GnomeIconContainerGrid *grid,
 
 	maybe_resize (grid, x, y);
 
-	elem_ptr = gnome_icon_container_grid_get_element_ptr (grid, x, y);
+	elem_ptr = grid_get_element_ptr (grid, x, y);
 	g_assert (g_list_find (*elem_ptr, icon) == NULL);
 	*elem_ptr = g_list_prepend (*elem_ptr, icon);
 
@@ -284,7 +276,7 @@ grid_remove_one (GnomeIconContainerGrid *grid,
 {
 	GList **elem_ptr;
 	
-	elem_ptr = gnome_icon_container_grid_get_element_ptr (grid, x, y);
+	elem_ptr = grid_get_element_ptr (grid, x, y);
 	g_assert (g_list_find (*elem_ptr, icon) != NULL);
 	*elem_ptr = g_list_remove (*elem_ptr, icon);
 
@@ -333,24 +325,6 @@ gnome_icon_container_grid_add (GnomeIconContainerGrid *grid,
 	icon->grid_rectangle.x1 = ceil (world_bounds.x1 / GRID_CELL_WIDTH);
 	icon->grid_rectangle.y1 = ceil (world_bounds.y1 / GRID_CELL_HEIGHT);
 
-	/* FIXME: We can't handle negative coordinates yet. */
-	if (icon->grid_rectangle.x0 != icon->grid_rectangle.x1) {
-		if (icon->grid_rectangle.x0 < 0) {
-			icon->grid_rectangle.x0 = 0;
-		}
-		if (icon->grid_rectangle.x1 < 1) {
-			icon->grid_rectangle.x1 = 1;
-		}
-	}
-	if (icon->grid_rectangle.y0 != icon->grid_rectangle.y1) {
-		if (icon->grid_rectangle.y0 < 0) {
-			icon->grid_rectangle.y0 = 0;
-		}
-		if (icon->grid_rectangle.y1 < 1) {
-			icon->grid_rectangle.y1 = 1;
-		}
-	}
-
 	add_or_remove (grid, icon, TRUE);
 }
 
@@ -364,139 +338,86 @@ gnome_icon_container_grid_remove (GnomeIconContainerGrid *grid,
 void
 gnome_icon_container_grid_get_position (GnomeIconContainerGrid *grid,
 					GnomeIconContainerIcon *icon,
-					int *x_return, int *y_return)
+					ArtPoint *position)
 {
 	int grid_x, grid_y;
 
 	g_return_if_fail (grid != NULL);
-	g_return_if_fail (x_return != NULL);
-	g_return_if_fail (y_return != NULL);
+	g_return_if_fail (position != NULL);
 
 	if (grid->first_free_x == FIRST_FREE_NONE) {
 		grid_x = 0;
-		grid_y = grid->height;
+		grid_y = grid->bounds.y1;
 	} else {
 		grid_x = grid->first_free_x;
 		grid_y = grid->first_free_y;
 	}
 
-	gnome_icon_container_grid_to_world (grid,
-					    grid_x, grid_y,
-					    x_return, y_return);
+	position->x = (double) grid_x * GRID_CELL_WIDTH;
+	position->y = (double) grid_y * GRID_CELL_HEIGHT;
 }
 
-void
-gnome_icon_container_world_to_grid (GnomeIconContainerGrid *grid,
-				    int world_x, int world_y,
-				    int *grid_x_return, int *grid_y_return)
+static int
+nautilus_compare_pointers_as_integers (gconstpointer a, gconstpointer b)
 {
-	if (grid_x_return != NULL) {
-		if (world_x < 0)
-			*grid_x_return = 0;
-		else
-			*grid_x_return = world_x / GNOME_ICON_CONTAINER_CELL_WIDTH (container);
+	int ai, bi;
+
+	ai = GPOINTER_TO_INT (a);
+	bi = GPOINTER_TO_INT (b);
+	if (ai < bi) {
+		return -1;
 	}
-
-	if (grid_y_return != NULL) {
-		if (world_y < 0)
-			*grid_y_return = 0;
-		else
-			*grid_y_return = world_y / GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
+	if (ai > bi) {
+		return 1;
 	}
+	return 0;
 }
 
-void
-gnome_icon_container_grid_to_world (GnomeIconContainerGrid *grid,
-				    int grid_x, int grid_y,
-				    int *world_x_return, int *world_y_return)
+static GList *
+nautilus_g_list_remove_duplicates (GList *list)
 {
-	if (world_x_return != NULL)
-		*world_x_return
-			= grid_x * GNOME_ICON_CONTAINER_CELL_WIDTH (container);
+	GList *p, *next;
+	gpointer previous_data;
 
-	if (world_y_return != NULL)
-		*world_y_return
-			= grid_y * GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
-}
+	list = g_list_sort (list, nautilus_compare_pointers_as_integers);
 
-/* Find the "first" icon (in left-to-right, top-to-bottom order) in
-   `container'.  */
-GnomeIconContainerIcon *
-gnome_icon_container_grid_find_first (GnomeIconContainerGrid *grid,
-				      gboolean selected_only)
-{
-	GnomeIconContainerIcon *first;
-	GList **p;
-	int i, j;
+	previous_data = NULL;
+	for (p = list; p != NULL; p = next) {
+		next = p->next;
 
-	if (grid->width == 0 || grid->height == 0)
-		return NULL;
-
-	first = NULL;
-	p = grid->elems;
-	for (i = 0; i < grid->height; i++) {
-		for (j = 0; j < grid->width; j++) {
-			GList *q;
-
-			for (q = p[j]; q != NULL; q = q->next) {
-				GnomeIconContainerIcon *icon;
-
-				icon = q->data;
-				if (selected_only && !icon->is_selected) {
-					continue;
-				}
-				
-				if (first == NULL
-				    || icon->y < first->y
-				    || (icon->y == first->y
-					&& icon->x < first->x))
-					first = icon;
-			}
+		g_assert (p->data != NULL);
+		if (previous_data != p->data) {
+			previous_data = p->data;
+		} else {
+			list = g_list_remove_link (list, p);
+			g_list_free_1 (p);
 		}
-
-		p += grid->width;
 	}
-
-	return first;
+	return list;
 }
 
-GnomeIconContainerIcon *
-gnome_icon_container_grid_find_last (GnomeIconContainerGrid *grid,
-				     gboolean selected_only)
+GList *
+gnome_icon_container_grid_get_intersecting_icons (GnomeIconContainerGrid *grid,
+						  const ArtDRect *world_rect)
 {
-	GnomeIconContainerIcon *last;
-	GList **p;
-	int i, j;
+	ArtIRect test_rect;
+	int x, y;
+	GList *list;
+	GList *cell_list;
 
-	last = NULL;
+	test_rect.x0 = floor (world_rect->x0 / GRID_CELL_WIDTH);
+	test_rect.y0 = floor (world_rect->y0 / GRID_CELL_HEIGHT);
+	test_rect.x1 = ceil (world_rect->x1 / GRID_CELL_WIDTH);
+	test_rect.y1 = ceil (world_rect->y1 / GRID_CELL_HEIGHT);
 
-	if (grid->height == 0 || grid->width == 0) {
-		return NULL;
-	}
+	art_irect_intersect (&test_rect, &test_rect, &grid->bounds);
 
-	p = gnome_icon_container_grid_get_element_ptr (grid, 0, grid->height - 1);
-
-	for (i = grid->height - 1; i >= 0; i--) {
-		for (j = grid->width - 1; j >= 0; j--) {
-			GList *q;
-
-			for (q = p[j]; q != NULL; q = q->next) {
-				GnomeIconContainerIcon *icon;
-
-				icon = q->data;
-				if (selected_only && !icon->is_selected) {
-					continue;
-				}
-				if (last == NULL
-				    || icon->y > last->y
-				    || (icon->y == last->y
-					&& icon->x >= last->x))
-					last = icon;
-			}
+	list = NULL;
+	for (x = test_rect.x0; x < test_rect.x1; x++) {
+		for (y = test_rect.y0; y < test_rect.y1; y++) {
+			cell_list = *grid_get_element_ptr (grid, x, y);
+			list = g_list_concat (list, g_list_copy (cell_list));
 		}
-
-		p -= grid->width;
 	}
-
-	return last;
+	return nautilus_g_list_remove_duplicates (list);
 }

@@ -45,14 +45,8 @@ typedef struct {
 	/* Scale factor (stretches icon). */
 	double scale_x, scale_y;
 
-	/* Whether this item is selected for operation. */
+	/* Whether this item is selected. */
 	gboolean is_selected : 1;
-
-	/* Whether this item is selected for keyboard navigation. */
-	gboolean is_current : 1;
-
-	/* Whether this item has been repositioned during layout already. */
-	gboolean layout_done : 1;
 
 	/* Whether this item was selected before rubberbanding. */
 	gboolean was_selected_before_rubberband : 1;
@@ -71,11 +65,11 @@ typedef struct {
 	double start_x, start_y;
 
 	GnomeCanvasItem *selection_rectangle;
+
 	guint timer_id;
 
 	guint prev_x, prev_y;
-	guint prev_x1, prev_y1;
-	guint prev_x2, prev_y2;
+	ArtDRect prev_rect;
 } GnomeIconContainerRubberbandInfo;
 
 typedef enum {
@@ -92,29 +86,26 @@ typedef struct {
 	guint icon_size;
 } StretchState;
 
+typedef enum {
+	AXIS_NONE,
+	AXIS_HORIZONTAL,
+	AXIS_VERTICAL
+} Axis;
+
 typedef struct GnomeIconContainerGrid GnomeIconContainerGrid;
 
 struct GnomeIconContainerDetails {
-	/* linger selection mode setting. */
-	gboolean linger_selection_mode;
-
 	/* single-click mode setting */
 	gboolean single_click_mode;
 	
 	/* List of icons. */
 	GList *icons;
-	guint num_icons;
 
 	/* The grid. */
 	GnomeIconContainerGrid *grid;
 
-	/* FIXME: This is *ugly*, but more efficient (both memory- and
-	   speed-wise) than using gtk_object_{set,get}_data() for all the
-	   icon items. */
-	GHashTable *canvas_item_to_icon;
-
 	/* Current icon for keyboard navigation. */
-	GnomeIconContainerIcon *kbd_current;
+	GnomeIconContainerIcon *keyboard_focus;
 
 	/* Current icon with stretch handles, so we have only one. */
 	GnomeIconContainerIcon *stretch_icon;
@@ -126,7 +117,8 @@ struct GnomeIconContainerDetails {
 	 * period of time. (The timeout is needed to make sure
 	 * double-clicking still works.)
 	 */
-	guint kbd_icon_visibility_timer_id;
+	guint keyboard_icon_reveal_timer_id;
+	GnomeIconContainerIcon *keyboard_icon_to_reveal;
 
 	/* Remembered information about the start of the current event. */
 	guint32 button_down_time;
@@ -156,20 +148,13 @@ struct GnomeIconContainerDetails {
 	
 	/* default fonts used to draw labels */
 	GdkFont *label_font[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
+
+	/* State used so arrow keys don't wander if icons aren't lined up.
+	 * Keeps track of last axis arrow key was used on.
+	 */
+	Axis arrow_key_axis;
+	int arrow_key_start;
 };
-
-/* Layout and icon size constants.
-   These will change based on the zoom level eventually, so they
-   should probably become function calls instead of macros.
-*/
-
-#define GNOME_ICON_CONTAINER_CELL_WIDTH(container)     80
-#define GNOME_ICON_CONTAINER_CELL_HEIGHT(container)    80
-
-#define GNOME_ICON_CONTAINER_CELL_SPACING(container)    4
-
-#define GNOME_ICON_CONTAINER_ICON_WIDTH(container)     NAUTILUS_ICON_LEVEL_STANDARD
-#define GNOME_ICON_CONTAINER_ICON_HEIGHT(container)    NAUTILUS_ICON_LEVEL_STANDARD
 
 /* Private functions shared by mutiple files. */
 GnomeIconContainerIcon *gnome_icon_container_get_icon_by_uri             (GnomeIconContainer     *container,

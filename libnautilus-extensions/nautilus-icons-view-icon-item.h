@@ -49,6 +49,7 @@ typedef struct NautilusIconsViewIconItemDetails NautilusIconsViewIconItemDetails
 struct NautilusIconsViewIconItem {
 	GnomeCanvasItem item;
 	NautilusIconsViewIconItemDetails *details;
+	gpointer user_data;
 };
 
 struct NautilusIconsViewIconItemClass {
