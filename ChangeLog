@@ -1,3 +1,16 @@
+2001-01-24  Pavel Cisler  <pavel@eazel.com>
+
+	[checkin for pavel -ramiro ]
+
+	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
+
+	Fix 5976 Dragging file into new folder crashes Nautilus.
+	
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(nautilus_directory_remove_file_metadata):
+	
+	Check if a metadata hash table is present before trying to use it.
+	
 2001-01-24  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: moved location of ORBit depenency
