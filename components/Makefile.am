@@ -22,6 +22,7 @@ SUBDIRS = \
 	notes \
 	$(RPMVIEW_COMPONENT_SUBDIRS) \
 	sample \
+	tree \
 	websearch \
 	$(SERVICE_SUBDIRS) \
 	$(MOZILLA_COMPONENT_SUBDIRS) \
