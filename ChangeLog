@@ -1,3 +1,33 @@
+2000-10-18  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3862 (Icon view reversed after looking at list view)
+	Fixed bug 916 (workaround for Bonobo radio item bug)
+	Also fixed bug where the "tighter layout" and "reversed order"
+	items in the context menu were doing nothing at all.
+
+	* src/file-manager/fm-icon-view.c: 
+	Removed "updating_toggle_menu_item" from Details struct.
+	(set_tighter_layout): New helper function, handles the code
+	common to the Bonobo and GTK menu callbacks.
+	(gtk_tighter_layout_callback), (gtk_sort_reversed_callback),
+	New functions used for GTK context menu. Will go away when 
+	we use Bonobo for context menus.
+	(tighter_layout_state_changed_callback),
+	(sort_reversed_state_changed_callback): Use passed state value,
+	including checking for empty state (empty state happens when
+	component is removed from container). This lets us eliminate the
+	checks for "updating_toggle_item".	
+	(handle_radio_item): Removed check for updating_toggle_menu_item.
+	This already worked correctly without this check.
+	(insert_one_context_menu_item),	(append_one_context_menu_item),
+	(append_one_toggle_context_menu_item): Tweaked these to pass in
+	an initial toggle state for toggle menu items, to avoid setting
+	the toggle state after the callback has been attached. All this
+	code will be removed when we switch to Bonobo for context menus.
+	(fm_icon_view_create_selection_context_menu_items),
+	(fm_icon_view_create_background_context_menu_items),
+	(update_layout_menus):
+
 2000-10-18  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-preferences-item.c:
