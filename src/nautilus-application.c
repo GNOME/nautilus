@@ -311,7 +311,7 @@ migrate_old_nautilus_files (void)
 			close (fd);
 		}
 		
-		eel_show_info_dialog (_("The location of the desktop directory has changed in Gnome 2.4. "
+		eel_show_info_dialog (_("The location of the desktop directory has changed in GNOME 2.4. "
 					"A link called \"Link To Old Desktop\" has been created on the desktop. "
 					"You can open this to move over the files you want, then delete the link."),
 				      _("Migrated old desktop"),

@@ -164,7 +164,7 @@
       <locale name="C">
          <short>When to show thumbnails of image files</short>
          <long>
-           Speed tradeoff for when to show a image files as a thumbnail.
+           Speed tradeoff for when to show an image file as a thumbnail.
            If set to "always" then always thumbnail, 
            even if the directory is on a remote server.
            If set to "local_only" then only show thumbnails for local filesystems.
@@ -200,9 +200,9 @@
       <locale name="C">
          <short>Maximum handled files in a directory</short>
          <long>
-	  Vast directories, over this size will be truncated to
+	  Directories over this size will be truncated to
 	  around this size. The purpose of this is to avoid unintentionally
-	  blowing the heap and killing nautilus on massive directories.
+	  blowing the heap and killing Nautilus on massive directories.
 	  A negative value denotes no limit. The limit is approximate due
 	  to the reading of directories chunk-wise.
          </long>
@@ -237,7 +237,7 @@
       <locale name="C">
          <short>Enable 'special' flags in file preferences dialog</short>
 	 <long>
-	  If set to true, then nautilus lets you edit some of the more
+	  If set to true, then Nautilus lets you edit some of the more
 	  esoteric options of a file in the file preferences dialog.
          </long>
       </locale>
@@ -252,7 +252,7 @@
       <locale name="C">
          <short>Show directories first in windows</short>
 	 <long>
-	  If set to true, then nautilus shows directories prior to
+	  If set to true, then Nautilus shows directories prior to
 	  showing files in the icon and list views.
          </long>
       </locale>
@@ -267,7 +267,7 @@
       <locale name="C">
          <short>Nautilus handles drawing the desktop</short>
 	 <long>
-	  If set to true, then nautilus will draw the icons on the
+	  If set to true, then Nautilus will draw the icons on the
 	  desktop.
          </long>
       </locale>
@@ -296,7 +296,7 @@
       <locale name="C">
          <short>Nautilus uses the users home directory as the desktop</short>
 	 <long>
-	  If set to true, then nautilus will use the user's home
+	  If set to true, then Nautilus will use the user's home
 	  directory as the desktop.  If it is false, then it will use
 	  ~/Desktop as the desktop.
          </long>
@@ -310,12 +310,12 @@
       <type>string</type>
       <default>search_by_text</default>
       <locale name="C">
-         <short>Criteria for search bar searching.</short>
+         <short>Criteria for search bar searching</short>
 	 <long>
 	  Criteria when matching files searched for in the search bar.
-	  If set to search_by_text, then nautilus will Search for files
+	  If set to "search_by_text", then Nautilus will Search for files
 	  by file name only.
-	  If set to search_by_text_and_properties", then nautilus will
+	  If set to "search_by_text_and_properties", then Nautilus will
 	  search for files by file name and file properties. 
          </long>
       </locale>
@@ -330,7 +330,7 @@
       <locale name="C">
          <short>Bring up a new window for every opened file</short>
 	 <long>
-	  If set to true, then nautilus will bring up a new nautilus
+	  If set to true, then Nautilus will bring up a new Nautilus
 	  window by default whenever an item is opened.
 	</long>
       </locale>
@@ -455,7 +455,7 @@
       <locale name="C">
          <short>Default sort order</short>
          <long>
-           The default sort-order for the item in the icon view. Possible
+           The default sort-order for items in the icon view. Possible
 	   values are "name", "size", "type", "modification_date", "emblems".
          </long>
       </locale>
@@ -502,7 +502,8 @@
       <locale name="C">
          <short>Put labels beside icons</short>
          <long>
-           If true, labels will be placed beside icons icons rather than underneath them.
+           If true, labels will be placed beside icons rather than
+	   underneath them.
          </long>
       </locale>
     </schema>
@@ -514,7 +515,7 @@
       <type>bool</type>
       <default>false</default>
       <locale name="C">
-         <short>Use manual layout new windows</short>
+         <short>Use manual layout in new windows</short>
          <long>
            If true, new windows will use manual layout by default.
          </long>
@@ -589,9 +590,9 @@
       <type>bool</type>
       <default>false</default>
       <locale name="C">
-         <short>Hide default bookmarks in the bookmark menu.</short>
+         <short>Hide default bookmarks in the bookmark menu</short>
 	 <long>
-	  If set to true, then nautilus will just show the user's
+	  If set to true, then Nautilus will just show the user's
 	  bookmarks in the bookmark menu.
 	</long>
       </locale>
@@ -707,7 +708,7 @@
       <type>bool</type>
       <default>true</default>
       <locale name="C">
-         <short>Add nautilus to session</short>
+         <short>Add Nautilus to session</short>
          <long>
           If this is set to true, Nautilus adds itself to the session
 	  when it starts up. This means it will be started the next
@@ -755,7 +756,7 @@
          <short>Desktop home icon name</short>
          <long>
           This name can be set if you want a custom name
-	  for the home link icon on the desktop.
+	  for the home icon on the desktop.
          </long>
       </locale>
     </schema>
