@@ -5,7 +5,12 @@ bin_PROGRAMS=hyperbola
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(GNOMEUI_CFLAGS) $(BONOBO_CFLAGS) \
 	-DINFODIR=\"$(infodir)\"
-LDADD=$(top_builddir)/libnautilus/libnautilus.la $(BONOBO_LIBS) $(GNOMEUI_LIBS)
+
+LDADD =\
+	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la \
+	$(top_builddir)/libnautilus/libnautilus.la	\
+	$(BONOBO_LIBS)					\
+	$(GNOMEUI_LIBS)
 
 hyperbola_SOURCES=		\
 	hyperbola-nav-tree.c 	\

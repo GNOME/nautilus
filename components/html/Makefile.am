@@ -29,6 +29,7 @@ ntl_web_browser_SOURCES =		\
 	gnome-dialogs.c
 
 ntl_web_browser_LDFLAGS =				\
+	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la \
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(GTKHTML_LIBS)					\
 	$(BONOBO_LIBS)					\

@@ -23,6 +23,7 @@ nautilus_sample_content_view_SOURCES =		\
 	main.c
 
 nautilus_sample_content_view_LDFLAGS =			\
+	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la \
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(BONOBO_LIBS)					\
 	$(GNOMEUI_LIBS)					\
