@@ -1,3 +1,16 @@
+2000-08-22  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bugs 643 and 605, by not accepting multiple or remote images
+	as custom icons, and displaying informative error messages.
+	
+	* src/nautilus-sidebar.c: (receive_dropped_uri_list):
+	added separate checks for multiple uris and remote files and displayed
+	an appropriate message using nautilus_error_dialog.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(load_specific_image):
+	removed a fixme now that it's fixed
+	
 2000-08-22  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-background.c:

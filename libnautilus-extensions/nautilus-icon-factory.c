@@ -1584,11 +1584,7 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 
 		memset (&icon_info->text_rect, 0, sizeof (icon_info->text_rect));
 		icon_info->has_attach_points = FALSE;
-		
-		/* FIXME bugzilla.eazel.com 643: we can't load svgs asynchronously, so this
-		 *  only works for local files
-		 */
-		
+				
 		/* we use the suffix instead of mime-type here since it may be non-local */	
 		if (nautilus_istr_has_suffix (scalable_icon->uri, ".svg")) {
 			image_path = nautilus_get_local_path_from_uri (scalable_icon->uri);		

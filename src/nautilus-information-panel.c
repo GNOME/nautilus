@@ -51,6 +51,7 @@
 #include <libnautilus-extensions/nautilus-keep-last-vertical-box.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
+#include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-mime-actions.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
@@ -565,10 +566,12 @@ receive_dropped_uri_list (NautilusSidebar *sidebar,
 	char **uris;
 	gboolean exactly_one;
 	NautilusFile *file;
-
+	GtkWindow *window;
+	
 	uris = g_strsplit (selection_data->data, "\r\n", 0);
 	exactly_one = uris[0] != NULL && uris[1] == NULL;
-
+	window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (sidebar)));
+	
 	switch (hit_test (sidebar, x, y)) {
 	case NO_PART:
 	case BACKGROUND_PART:
@@ -594,8 +597,15 @@ receive_dropped_uri_list (NautilusSidebar *sidebar,
 		 * Need feedback for cases where there is more than one URI 
 		 * and where the URI is not a local image.
 		 */
-		if (exactly_one && uri_is_local_image (uris[0])) {
+		
+		if (!exactly_one) {
+			nautilus_error_dialog (_("You can't assign more than one custom icon at a time! Please drag just one image to set a custom icon."), window);
+			break;
+		}
+		
+		if (uri_is_local_image (uris[0])) {
 			file = nautilus_file_get (sidebar->details->uri);
+						
 			if (file != NULL) {
 				nautilus_file_set_metadata (file,
 							    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
@@ -607,7 +617,14 @@ receive_dropped_uri_list (NautilusSidebar *sidebar,
 							    NULL);
 				nautilus_file_unref (file);
 			}
-		}
+		} else {	
+			if (nautilus_is_remote_uri (uris[0])) {
+				nautilus_error_dialog (_("The file that you dropped is not local.  You can only use local images as custom icons."), window);
+			
+			} else {
+				nautilus_error_dialog (_("The file that you dropped is not an image.  You can only use local images as custom icons."), window);
+			}
+		}	
 		break;
 	}
 
