@@ -318,8 +318,10 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 		uri = nautilus_file_get_uri (sidebar_title->details->file);
 	}	
 	
-	if (nautilus_istr_has_prefix (uri, "eazel:")) {
+	if (nautilus_istr_has_prefix (uri, "eazel:") || nautilus_istr_has_prefix (uri, "eazel-services:")) {
 		icon_path = nautilus_theme_get_image_path ("big_services_icon.png");
+	} else if (nautilus_istr_has_prefix (uri, "man:")) {
+		icon_path = nautilus_theme_get_image_path ("manual.png");
 	}
 	
 	if (icon_path != NULL) {

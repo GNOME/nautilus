@@ -1,5 +1,16 @@
 2000-10-30  Andy Hertzfeld  <andy@eazel.com>
 
+	* src/nautilus-sidebar-title.c: (update_icon):
+	added "eazel-services:" and "man:" to the schemes with custom
+	sidebar icons via the recently implemented hack (which will be
+	replaced by a real framework after PR2).
+	
+	* icons/Makefile.am:
+	* icons/manual.png:
+	added icon for man: scheme
+
+2000-10-30  Andy Hertzfeld  <andy@eazel.com>
+
 	cleaned up the sidebar for the summary view by putting in a
 	temporary hack to get the right icon and giving the view
 	a shorter title.

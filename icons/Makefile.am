@@ -175,6 +175,7 @@ icon_DATA =\
 	knob.png \
 	leftarrow.png \
 	loading.png \
+	manual.png \
 	multi-ok.png \
 	nautilus-logo.png \
 	nautilus-mini-logo.png \
