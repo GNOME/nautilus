@@ -1,5 +1,11 @@
 2002-07-24  Michael Meeks  <michael@ximian.com>
 
+	* src/nautilus-window-manage-views.c
+	(update_title): only set the location bookmark if
+	it's non NULL. #87889
+
+2002-07-24  Michael Meeks  <michael@ximian.com>
+
 	* src/nautilus-window.c (nautilus_window_destroy):
 	NULL various elements, including the sidebar
 	here: #87414

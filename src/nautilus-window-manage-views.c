@@ -231,7 +231,7 @@ update_title (NautilusWindow *window)
         	nautilus_sidebar_set_title (window->sidebar, title);
 	}
         
-        if (title [0] != '\0' &&
+        if (title [0] != '\0' && window->current_location_bookmark &&
             nautilus_bookmark_set_name (window->current_location_bookmark, title)) {
                 /* Name of item in history list changed, tell listeners. */
                 nautilus_send_history_list_changed ();
