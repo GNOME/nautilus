@@ -842,24 +842,22 @@ paint_label_smooth (NautilusLabel *label,
 	} else {
 		/* Paint the text if needed */
 		text_bounds = label_get_text_bounds (label);
-		if (!art_irect_empty (&text_bounds)) {
-			nautilus_smooth_widget_paint (GTK_WIDGET (label),
-						      GTK_WIDGET (label)->style->white_gc,
-						      TRUE,
-						      label->details->background_mode,
-						      label->details->solid_background_color,
-						      label->details->tile_pixbuf,
-						      tile_bounds,
-						      label->details->tile_opacity,
-						      label->details->tile_mode_vertical,
-						      label->details->tile_mode_horizontal,
-						      &text_bounds,
-						      label->details->text_opacity,
-						      screen_dirty_area,
-						      label_paint_pixbuf_callback,
-						      label_composite_text_callback,
-						      NULL);
-		}
+		nautilus_smooth_widget_paint (GTK_WIDGET (label),
+					      GTK_WIDGET (label)->style->white_gc,
+					      TRUE,
+					      label->details->background_mode,
+					      label->details->solid_background_color,
+					      label->details->tile_pixbuf,
+					      tile_bounds,
+					      label->details->tile_opacity,
+					      label->details->tile_mode_vertical,
+					      label->details->tile_mode_horizontal,
+					      &text_bounds,
+					      label->details->text_opacity,
+					      screen_dirty_area,
+					      label_paint_pixbuf_callback,
+					      label_composite_text_callback,
+					      NULL);
 	}
 }
 
@@ -1214,30 +1212,20 @@ nautilus_label_get_smooth_font_size (const NautilusLabel *label)
  * GtkLabel to flush its cached requisition dimensions.  GtkLabel
  * caches these for efficiency.  Unfortunately, there is no public
  * way to do this for GtkLabel.  So, instead we trick the GtkLabel
- * into thinking that its justification has changed.  As a result
- * of this phony change, GtkLabel will flush the requisition cache
- * Of course, we don't really change the justification.  We hack 
- * the old one to a different value and tell GtkLabel to use the 
- * old real justification.
+ * into thinking that its 'pattern' has changed.  As a result
+ * of this phony change, GtkLabel will flush the requisition cache.
+ * Of course, we don't really change the pattern, we just set the
+ * old one.
  */
 static void
 label_force_cached_requisition_flush (NautilusLabel *label)
 {
-	GtkJustification real_justification;
-	GtkJustification phony_justification;
-
+	char *same_pattern;
 	g_return_if_fail (NAUTILUS_IS_LABEL (label));
-	
-	real_justification = GTK_LABEL (label)->jtype;
 
-	phony_justification = real_justification + 1;
-
-	if (phony_justification >= GTK_JUSTIFY_FILL) {
-		real_justification = GTK_JUSTIFY_LEFT;
-	}
-
-	GTK_LABEL (label)->jtype = phony_justification;
-	gtk_label_set_justify (GTK_LABEL (label), real_justification);
+	same_pattern = g_strdup (GTK_LABEL (label)->pattern);
+	gtk_label_set_pattern (GTK_LABEL (label), same_pattern);
+	g_free (same_pattern);
 }
 
 void

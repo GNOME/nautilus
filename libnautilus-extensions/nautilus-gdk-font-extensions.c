@@ -112,19 +112,25 @@ nautilus_gdk_font_get_italic (GdkFont *font)
 	char *slant_pattern;
 	GdkFont *result = NULL;
 	char *pattern_match;
-	NautilusStringList *font_list;
+	const NautilusStringList *font_list;
 
 	name = font_get_name (font);
 
 	/* Replace the slant with a wildard */
 	slant_pattern = xlfd_string_replace_nth (name, XLFD_SLANT_INDEX, "*");
 
-	font_list = font_list_fonts (slant_pattern);
+	if (slant_pattern == NULL) {
+		g_free (name);
+		gdk_font_ref (font);
+		return font;
+	}
+
+	font_list = font_list_fonts_cached (slant_pattern, NULL);
 	
-	/* Find one with an italic slant */
-	pattern_match = nautilus_string_list_find_by_function (font_list,
-							       font_entry_has_italic_slant_test,
-							       NULL);
+ 	/* Find one with an italic slant */
+ 	pattern_match = nautilus_string_list_find_by_function (font_list,
+ 							       font_entry_has_italic_slant_test,
+ 							       NULL);
 
 	if (pattern_match != NULL) {
 		char *slant_name;
@@ -146,11 +152,10 @@ nautilus_gdk_font_get_italic (GdkFont *font)
 		g_free (slant_name);
 	} else {
 		/* If no font was found, return the source font */
-		gdk_font_ref ((GdkFont *) font);
-		result = (GdkFont *) font;
+		gdk_font_ref (font);
+		result = font;
 	}
 
-	nautilus_string_list_free (font_list);	
 	g_free (pattern_match);
 	g_free (slant_pattern);
 	g_free (name);
@@ -250,7 +255,7 @@ font_scalable_get_by_size (const char *xlfd_string,
 			   guint target_size,
 			   guint index)
 {
-	GdkFont *larger_font;
+	GdkFont *larger_font = NULL;
 	char *larger_size_string;
 	char *larger_font_name;
 	
@@ -263,9 +268,10 @@ font_scalable_get_by_size (const char *xlfd_string,
 	larger_font_name = xlfd_string_replace_nth (xlfd_string,
 						    index,
 						    larger_size_string);
-
-	larger_font = gdk_fontset_load (larger_font_name);
-	g_assert (larger_font != NULL);
+	
+	if (larger_font_name != NULL) {
+		larger_font = gdk_fontset_load (larger_font_name);
+	}
 	
 	g_free (larger_size_string);
 	g_free (larger_font_name);
@@ -292,6 +298,10 @@ font_bitmap_get_by_size (const char *xlfd_string,
 	g_return_val_if_fail (compare_function != NULL, NULL);
 	
  	larger_pattern_xlfd = xlfd_string_replace_nth (xlfd_string, index, "*");
+
+	if (larger_pattern_xlfd == NULL) {
+		return NULL;
+	}
 
 	/* Make a query */
 	font_list = font_list_fonts_cached (larger_pattern_xlfd, compare_function);
@@ -333,14 +343,13 @@ font_bitmap_get_by_size (const char *xlfd_string,
 			i++;
 		}
 
-		g_assert (found_size > 0);
-		
-		size_string = g_strdup_printf ("%d", found_size);
-		larger_font_name = xlfd_string_replace_nth (xlfd_string, index, size_string);
-		g_free (size_string);
-		larger_font = gdk_fontset_load (larger_font_name);
-		g_free (larger_font_name);
-		
+		if (found_size > 0) {
+			size_string = g_strdup_printf ("%d", found_size);
+			larger_font_name = xlfd_string_replace_nth (xlfd_string, index, size_string);
+			g_free (size_string);
+			larger_font = gdk_fontset_load (larger_font_name);
+			g_free (larger_font_name);
+		}
 	}
 	
  	g_free (larger_pattern_xlfd);
@@ -449,8 +458,8 @@ nautilus_gdk_font_get_larger (GdkFont *font,
 
 	/* If no font was found, return the source font */
 	if (result == NULL) {
-		gdk_font_ref ((GdkFont *) font);
-		result = (GdkFont *)font;
+		gdk_font_ref (font);
+		result = font;
 	}
 
 	g_assert (result != NULL);
@@ -556,16 +565,16 @@ nautilus_gdk_font_get_largest_fitting (GdkFont *font,
 								  candidate_size,
 								  XLFD_SIZE_IN_PIXELS_INDEX,
 								  compare_xlfd_by_size_in_pixels);
-			g_assert (candidate_font != NULL);
-
-			candidate_width = gdk_string_width (candidate_font, longest_string);
-
-			if ((candidate_width <= available_width) 
-			    || (candidate_size <= minimum_acceptable_font_size)) {
-				done = TRUE;
-				largest_fitting_font = candidate_font;
-			} else {
-				gdk_font_unref (candidate_font);
+			if (candidate_font != NULL) {
+				candidate_width = gdk_string_width (candidate_font, longest_string);
+				
+				if ((candidate_width <= available_width) 
+				    || (candidate_size <= minimum_acceptable_font_size)) {
+					done = TRUE;
+					largest_fitting_font = candidate_font;
+				} else {
+					gdk_font_unref (candidate_font);
+				}
 			}
 			
 			candidate_size--;
@@ -640,14 +649,22 @@ font_get_bold (GdkFont *font)
 	char *weight_pattern;
 	GdkFont *result = NULL;
 	char *pattern_match;
-	NautilusStringList *font_list;
+	const NautilusStringList *font_list;
+
+	g_return_val_if_fail (font != NULL, NULL);
 
 	name = font_get_name (font);
 
 	/* Replace the weight with a wildard */
 	weight_pattern = xlfd_string_replace_nth (name, XLFD_WEIGHT_INDEX, "*");
 
-	font_list = font_list_fonts (weight_pattern);
+	if (weight_pattern == NULL) {
+		g_free (name);
+		gdk_font_ref (font);
+		return font;
+	}
+
+	font_list = font_list_fonts_cached (weight_pattern, NULL);
 	
 	/* Find one with a bold weight */
 	pattern_match = nautilus_string_list_find_by_function (font_list,
@@ -674,8 +691,8 @@ font_get_bold (GdkFont *font)
 		g_free (weight_name);
 	} else {
 		/* If no font was found, return the source font */
-		gdk_font_ref ((GdkFont *) font);
-		result = (GdkFont *) font;
+		gdk_font_ref (font);
+		result = font;
 	}
 
 	g_free (pattern_match);
@@ -842,12 +859,10 @@ font_get_size_in_pixels (const GdkFont *font)
 	g_return_val_if_fail (font != NULL, 0);
 
 	name = font_get_name (font);
-
 	size_in_pixels = xlfd_string_get_nth_as_int (name, XLFD_SIZE_IN_PIXELS_INDEX);
-
 	g_free (name);
 
-	return size_in_pixels;
+	return (size_in_pixels != XLFD_INVALID_VALUE) ? size_in_pixels : 0;
 }
 
 static GdkFont *fixed_font = NULL;
@@ -857,6 +872,16 @@ unref_fixed_font (void)
 {
 	gdk_font_unref (fixed_font);
 }
+
+
+/* FIXME bugzilla.eazel.com 7204:
+ * Instead of picking fixed, we could create a temporary GtkStyle
+ * and fetch the default font from there.  That way we wash our
+ * hands on the matter and let gtk be the one to pick the fallback
+ * font.  One tricky aspect of this strategy is where to put such
+ * a call since this file contains on gdk_font stuff.  Perhaps
+ * nautilus-gtk-extensions.[ch] ?
+ */
 
 /**
  * nautilus_gdk_font_get_fixed

@@ -1,3 +1,48 @@
+2001-03-01  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fix bug 7155 - Nautilus dies trying to get bold font at startup if
+	using Finish locale. 
+	
+	Many bulletproofing fixes to make sure Nautilus doesnt crash in
+	systems with broken or limited font setups.
+	
+	* libnautilus-extensions/nautilus-gdk-font-extensions.c:
+	(nautilus_gdk_font_get_italic): Use the cached font list as we do
+	for bold fonts.  Make sure the slant_pattern is valid.  If its
+	not, then return the source font.  Remove some not needed casts.
+	(font_scalable_get_by_size): Bulletproof.  Dont assert that the
+	font load always works - it doesnt.  
+	(font_bitmap_get_by_size): Bulletproof.  Dont do any work if a
+	valid larger_font pattern cant be determined - simply return NULL
+	in this case, the callers should deal with that case.  Make sure
+	we actually found a matching (or close) font size.  Before we were
+	assuming that there would be at least one match.  Not so for
+	really broken font setups.
+	(nautilus_gdk_font_get_larger): Remove some not needed casts.
+	(nautilus_gdk_font_get_largest_fitting): Check that the candidate
+	font is not NULL before proceeding to check that it matches.
+	(font_get_bold): Use the cached font lists to make bold font
+	queries.  Remove some not needed casts.
+	(font_get_size_in_pixels):  Check for invalid XLFD names and
+	return 0 (not found indicator) for such cases.
+
+	Also added a FIXME for an improvement for the fallback font
+	strategy.
+
+	Fix two tiny regressions:
+
+	7206 - Sidebar title does not properly center justify
+	7198 - Zero length NautilusLabel doens't draw background tile
+
+	* libnautilus-extensions/nautilus-label.c: 
+	(paint_label_smooth): We need to draw the background tile even if
+	the string has zero length.
+	(label_force_cached_requisition_flush): Remove the broken "phony
+	justification" hack.  Replace it with a simpler "phony pattern"
+	hack that works.
+	
 2001-03-01  Robey Pointer  <robey@eazel.com>
 
 	reviewed by: Eskil Heyn Olsen <eskil@eazel.com>
