@@ -1,3 +1,39 @@
+2000-09-15  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 2194, no scrollbars in image view
+	Fixed bug 2215, image viewer needs to erase background
+	when loading image.
+
+	I fixed these bugs by writing a new image component.  Is this bad?
+	I don't know.  What is bad is the current state of the EOG bonobo
+	component.  I don't think it is worth our time to fix it right now.
+	This component will also support the zoomable interface when
+	Maciej finishes the work there. It is doubtful the EOG bonobo
+	component would have a Nautilus specific dependency.
+	
+	* components/Makefile.am:
+	* components/image-viewer/.cvsignore:
+	* components/image-viewer/Makefile.am:
+	* components/image-viewer/io-png.c: (png_write_data_fn),
+	(png_flush_fn), (image_save):
+	* components/image-viewer/io-png.h:
+	* components/image-viewer/nautilus-image-view.c:
+	(release_pixbuf_cb), (release_pixbuf), (bod_destroy_cb),
+	(get_pixbuf), (render_pixbuf), (redraw_view), (configure_size),
+	(resize_all_cb), (view_update), (save_image_to_stream),
+	(load_image_from_stream), (destroy_view),
+	(zoomable_zoom_in_callback), (zoomable_zoom_out_callback),
+	(zoomable_set_zoom_level_callback),
+	(zoomable_zoom_to_fit_callback), (drawing_area_exposed),
+	(view_size_allocate_cb), (scrolled_view_size_allocate_cb),
+	(view_factory_common), (scaled_view_factory),
+	(scrollable_view_factory), (bonobo_object_factory),
+	(init_bonobo_image_generic_factory), (init_server_factory), (main):
+	* components/image-viewer/nautilus-image-view.oafinfo:
+	* configure.in:
+
+	New files and functions.
+
 2000-09-15  Mathieu Lacage  <mathieu@eazel.com>
 
 	fix bug 2874

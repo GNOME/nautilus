@@ -22,6 +22,7 @@ SUBDIRS = \
 	hardware \
 	help \
 	history \
+	image-viewer \
 	loser \
 	music \
 	notes \
