@@ -844,7 +844,12 @@ initialize_background_from_settings (NautilusFile *file,
                                           file);
 
 	eel_background_set_color (background, color);     
-	eel_background_set_image_uri (background, image);
+        if (background_is_desktop(background)) {
+                eel_background_set_image_uri_sync (background, image);
+        }
+        else {
+                eel_background_set_image_uri (background, image);
+        }
         eel_background_set_image_placement (background, placement);
 	
 	/* Unblock the handler. */

@@ -343,10 +343,6 @@ realize (GtkWidget *widget)
 static void
 map (GtkWidget *widget)
 {
-	NautilusDesktopWindow *window;
-
-	window = NAUTILUS_DESKTOP_WINDOW (widget);
-	
 	set_window_background (widget, FALSE, FALSE, None, 0);
 	
 	/* Chain up to realize our children */

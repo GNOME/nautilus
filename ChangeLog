@@ -1,3 +1,15 @@
+2002-01-02  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* configure.in: Requires eel 1.0.3 (need for removing
+	flash starting bug)
+	
+	* libnautilus-private/nautilus-directory-background.c:
+	(desktop_background_realized),
+	(initialize_background_from_settings): Remove flash when
+	Nautilus desktop is started with a pixmap background
+	
+	* src/nautilus-desktop-window.c: (map): Remove unneeded variable
+
 2001-12-12  Darin Adler  <darin@bentspoon.com>
 
 	* src/file-manager/fm-directory-view.c: (real_update_menus):
