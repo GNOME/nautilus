@@ -385,8 +385,8 @@ nautilus_background_draw (NautilusBackground *background,
 }
 
 static void
-draw_pixbuf_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buf, double affine[6],
-		int x_offset, int y_offset)
+draw_pixbuf_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buf,
+		int x_offset, int y_offset, double h_scale, double v_scale)
 {
 	void (* affine_function)
 		(art_u8 *dst, int x0, int y0, int x1, int y1, int dst_rowstride,
@@ -394,6 +394,11 @@ draw_pixbuf_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buf, double affine[6],
 		 const double affine[6],
 		 ArtFilterLevel level,
 		 ArtAlphaGamma *alpha_gamma);
+
+	double affine[6];
+	
+	art_affine_identity (affine);
+	art_affine_scale (affine, h_scale, v_scale);
 
 	affine[4] += x_offset;
 	affine[5] += y_offset;
@@ -414,9 +419,6 @@ draw_pixbuf_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buf, double affine[6],
 		 affine,
 		 ART_FILTER_NEAREST,
 		 NULL);
-
-	affine[4] -= x_offset;
-	affine[5] -= y_offset;
 }
 
 static void
@@ -429,34 +431,29 @@ draw_pixbuf_scaled_aspect_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer,
 	int image_top;
 
 	double scale;
-	double affine[6];
 
 	image_width = gdk_pixbuf_get_width (pixbuf);
 	image_height = gdk_pixbuf_get_height (pixbuf);
 
 	scale = MIN ((double) entire_width / image_width, (double) entire_height / image_height);
 
-	art_affine_identity (affine);
-	art_affine_scale (affine, scale, scale);
-
 	image_left = (entire_width - floor (image_width * scale + 0.5)) / 2;
 	image_top = (entire_height - floor (image_height * scale + 0.5)) / 2;
 	
-	draw_pixbuf_aa (pixbuf, buffer, affine, image_left, image_top);
+	draw_pixbuf_aa (pixbuf, buffer, image_left, image_top, scale, scale);
 }
 
 static void
 draw_pixbuf_scaled_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer,
 		       int entire_width, int entire_height)
 {
-	double affine[6];
-
-	art_affine_identity (affine);
-	art_affine_scale (affine,
-			  (double) entire_width / gdk_pixbuf_get_width (pixbuf),
-			  (double) entire_height / gdk_pixbuf_get_height (pixbuf));
+	double h_scale;
+	double v_scale;
+	
+	h_scale = (double) entire_width / gdk_pixbuf_get_width (pixbuf);
+	v_scale = (double) entire_height / gdk_pixbuf_get_height (pixbuf);
 			  
-	draw_pixbuf_aa (pixbuf, buffer, affine, 0, 0);	
+	draw_pixbuf_aa (pixbuf, buffer, 0, 0, h_scale, v_scale);	
 }
 
 static void
@@ -467,17 +464,13 @@ draw_pixbuf_centered_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer,
 	int image_height;
 	int image_left;
 	int image_top;
-	
-	double affine[6];
-
-	art_affine_identity (affine);
-	
+		
 	image_width = gdk_pixbuf_get_width (pixbuf);
 	image_height = gdk_pixbuf_get_height (pixbuf);
 	image_left = (entire_width - image_width) / 2;
 	image_top = (entire_height - image_height) / 2;
 
-	draw_pixbuf_aa (pixbuf, buffer, affine, image_left, image_top);
+	draw_pixbuf_aa (pixbuf, buffer, image_left, image_top, 1, 1);
 }
 
 /* fill the canvas buffer with a tiled pixmap */
@@ -493,10 +486,6 @@ draw_pixbuf_tiled_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer)
 	int blit_width, blit_height;
 	int tile_offset_x, tile_offset_y;
 	
-	double affine[6];
-	
-	art_affine_identity (affine);
-
 	tile_width = gdk_pixbuf_get_width (pixbuf);
 	tile_height = gdk_pixbuf_get_height (pixbuf);
 	
@@ -518,7 +507,7 @@ draw_pixbuf_tiled_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer)
 			tile_y = blit_y - y;
 			blit_height = MIN (tile_height, end_y - y) - tile_y;
 			
-			draw_pixbuf_aa (pixbuf, buffer, affine, x, y);
+			draw_pixbuf_aa (pixbuf, buffer, x, y, 1, 1);
 		}
 	}
 }
