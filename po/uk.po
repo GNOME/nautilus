@@ -2507,9 +2507,9 @@ msgid "%s, which is older, needs upgrade and upgrade is not enabled"
 msgstr "%s, що ╓ стар╕шим, вже встановлено, а поновлення заборонено"
 
 #: components/services/install/lib/eazel-install-problem.c:346
-#, fuzzy, c-format
+#, c-format
 msgid "%s is not installed and could not be found on server"
-msgstr "%s не вдалося знайти на сервер╕"
+msgstr "%s не встановлено ╕ не вдалося знайти на сервер╕"
 
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. %s is a package name or filename
@@ -4004,7 +4004,7 @@ msgstr "Мандарин"
 
 #: data/browser.xml.h:76
 msgid "Terracotta"
-msgstr ""
+msgstr "Терракотта"
 
 #: data/browser.xml.h:77
 msgid "Urgent"
@@ -4461,7 +4461,7 @@ msgstr "посилання на %s"
 
 #: libnautilus-extensions/nautilus-file.c:3832
 msgid "link (broken)"
-msgstr ""
+msgstr "посилання (зламане)"
 
 #. "From" dialog label, source path gets placed next to it in the dialog
 #: libnautilus-extensions/nautilus-file-operations.c:385
@@ -5345,9 +5345,8 @@ msgid "%ld of %ld"
 msgstr "%ld з %ld"
 
 #: libnautilus-extensions/nautilus-font-picker.c:94
-#, fuzzy
 msgid "Normal"
-msgstr "Звичайний розм╕р"
+msgstr "Звичайний"
 
 #: libnautilus-extensions/nautilus-font-picker.c:95
 #: libnautilus-extensions/nautilus-volume-monitor.c:516
@@ -5356,51 +5355,44 @@ msgid "Unknown"
 msgstr "Нев╕домо"
 
 #: libnautilus-extensions/nautilus-font-picker.c:101
-#, fuzzy
 msgid "Bold"
-msgstr "Borland"
+msgstr "Жирний"
 
 #: libnautilus-extensions/nautilus-font-picker.c:102
-#, fuzzy
 msgid "Book"
-msgstr "гаразд"
+msgstr "Книжний"
 
 #: libnautilus-extensions/nautilus-font-picker.c:104
 msgid "Demibold"
-msgstr ""
+msgstr "Нап╕вжирний"
 
 #: libnautilus-extensions/nautilus-font-picker.c:105
-#, fuzzy
 msgid "Light"
-msgstr "Список"
+msgstr "Легкий"
 
 #: libnautilus-extensions/nautilus-font-picker.c:111
-#, fuzzy
 msgid "Italic"
-msgstr "Балт╕йський"
+msgstr "Курсивний"
 
 #: libnautilus-extensions/nautilus-font-picker.c:112
-#, fuzzy
 msgid "Oblique"
-msgstr "Стара"
+msgstr "Похилий"
 
 #: libnautilus-extensions/nautilus-font-picker.c:113
 msgid "Reverse Italic"
-msgstr ""
+msgstr "Обернений курсивний"
 
 #: libnautilus-extensions/nautilus-font-picker.c:114
-#, fuzzy
 msgid "Reverse Oblique"
-msgstr "Зворотн╕й порядок"
+msgstr "Обернений похилий"
 
 #: libnautilus-extensions/nautilus-font-picker.c:121
-#, fuzzy
 msgid "Condensed"
-msgstr "Вм╕ст:"
+msgstr "Ущ╕льнений"
 
 #: libnautilus-extensions/nautilus-font-picker.c:122
 msgid "Semicondensed"
-msgstr ""
+msgstr "Нап╕вущ╕льнений"
 
 #: libnautilus-extensions/nautilus-font-picker.c:224
 msgid "Font"
@@ -5416,7 +5408,7 @@ msgstr "Помилка GConf"
 #.
 #: libnautilus-extensions/nautilus-gdk-font-extensions.c:956
 msgid "fixed"
-msgstr ""
+msgstr "моноширний"
 
 #. localizers: These strings are part of the strftime
 #. * self-check code and must be changed to match what strtfime
@@ -5543,7 +5535,7 @@ msgstr "Показувати панель ╕нструмент╕в у нових в╕кнах"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:170
 msgid "Display location bar in new windows"
-msgstr "Показувати панель розм╕щення у нових в╕кнах"
+msgstr "Показувати панель положення у нових в╕кнах"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:173
 msgid "Display status bar in new windows"
@@ -6036,7 +6028,7 @@ msgstr "Нема╓ програм"
 #. * (They can add applications though.)
 #.
 #: libnautilus-extensions/nautilus-program-chooser.c:1497
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s\n"
 "\n"
@@ -6065,14 +6057,15 @@ msgid "Can't Open Location"
 msgstr "Неможливо в╕дкрити м╕сце"
 
 #: libnautilus-extensions/nautilus-program-choosing.c:513
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations.  No other applications are available to view this file.  If you "
 "copy this file onto your computer, you may be able to open it."
 msgstr ""
 "\"%s\" не може в╕дкрити \"%s\" тому, що \"%s\" не ма╓ доступу до файл╕в на "
-"\"%s\".  Хочете вибрати ╕ншу програму?"
+"\"%s\".  Нема╓ ╕нших доступних програм для показу цього файлу.  Якщо ви "
+"скоп╕ю╓те цей файл на ваш комп'ютер, ви напевно зможете в╕дкрити його."
 
 #. Human readable description for a criterion in a search for
 #. files. Bracketed items are context, and are message
@@ -6718,12 +6711,11 @@ msgstr "Використати \"%s\" для в╕дкривання вибраного елементу"
 
 #: src/file-manager/fm-directory-view.c:3192
 #: src/file-manager/nautilus-directory-view-ui.xml.h:19
-#, fuzzy
 msgid "Open _in New Window"
 msgstr "В╕дкрити у новому в╕кн╕"
 
 #: src/file-manager/fm-directory-view.c:3194
-#, fuzzy, c-format
+#, c-format
 msgid "Open _in %d New Windows"
 msgstr "В╕дкрити в %d нових в╕кнах"
 
@@ -7583,7 +7575,6 @@ msgid "Open"
 msgstr "В╕дкрити"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
-#, fuzzy
 msgid "Open Wit_h"
 msgstr "В╕дкрити за допомогою"
 
@@ -7642,7 +7633,6 @@ msgid "Select All Files"
 msgstr "Вибрати вс╕ файли"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:33
-#, fuzzy
 msgid "Select _All Files"
 msgstr "Вибрати вс╕ файли"
 
@@ -7675,7 +7665,6 @@ msgid "_Duplicate"
 msgstr "Дублювати"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:42
-#, fuzzy
 msgid "_New Folder"
 msgstr "Нова тека"
 
@@ -8074,24 +8063,33 @@ msgid ""
 "using GNOME and Linux. Choose a level that's comfortable for\n"
 "you - you can always change it later."
 msgstr ""
+"Ваш р╕вень вказу╓ Наут╕лусу ваш ступ╕нь досв╕ду використання\n"
+"GNOME ╕ Linux. Вибер╕ть р╕вень, що вам п╕дходить - ви завжди\n"
+"зможете зм╕нити його п╕зн╕ше."
 
 #: src/nautilus-first-time-druid.c:495
 msgid ""
 "For users who have no previous experience with GNOME\n"
 "and Linux."
 msgstr ""
+"Для користувач╕в, що не мають попереднього досв╕ду\n"
+"роботи з GNOME ╕ Linux."
 
 #: src/nautilus-first-time-druid.c:501
 msgid ""
 "For users who are comfortable with GNOME and Linux,\n"
 "but don't describe themselves as ``technical.''"
 msgstr ""
+"Для нетехн╕чних користувач╕в, що мають досв╕д роботи\n"
+"з GNOME ╕ Linux."
 
 #: src/nautilus-first-time-druid.c:507
 msgid ""
 "For users who have GNOME and Linux experience, and\n"
 "like to see every detail of the operating system."
 msgstr ""
+"Для користувач╕в, що мають досв╕д роботи з GNOME ╕ Linux та\n"
+"хочуть бачити ус╕ подробиц╕ операц╕йно╖ системи."
 
 #: src/nautilus-first-time-druid.c:545
 msgid ""
@@ -8107,11 +8105,11 @@ msgstr ""
 
 #: src/nautilus-first-time-druid.c:559
 msgid "Verify my connection and check for updates"
-msgstr ""
+msgstr "Перев╕рити з'╓днання ╕ пошукати поновлення"
 
 #: src/nautilus-first-time-druid.c:560
 msgid "Don't verify my connection or check for updates"
-msgstr ""
+msgstr "Не перев╕ряти з'╓днання ╕ не шукати поновлення"
 
 #: src/nautilus-first-time-druid.c:625
 msgid ""
@@ -8135,7 +8133,7 @@ msgstr "Адреса прокс╕:"
 
 #: src/nautilus-first-time-druid.c:725
 msgid "Verifying your Internet connection and checking for updates..."
-msgstr ""
+msgstr "Перев╕рити ваше з'╓днання з ╤тернетом ╕ пошукати поновлення..."
 
 #: src/nautilus-first-time-druid.c:733
 msgid "Downloading Nautilus updates..."
@@ -8147,6 +8145,9 @@ msgid ""
 "these settings move your desktop icons to Nautilus and\n"
 "make Nautilus the default desktop.\n"
 msgstr ""
+"Якщо ви використову╓те GNOME Midnight Commander, ц╕ установки\n"
+"перенесуть ваш╕ п╕ктограми робочого столу Наут╕лус ╕ зроблять\n"
+"Наут╕лус типовим робочим столом.\n"
 
 #: src/nautilus-first-time-druid.c:909
 msgid "Use Nautilus to draw the desktop."
@@ -8168,6 +8169,12 @@ msgid ""
 "takes time but is performed only when your computer is idle.\n"
 "Fast search requires that the cron daemon on your system be running.\n"
 msgstr ""
+"Швидкий пошук ╕ндексу╓ вс╕ елементи на вашому жорсткому диску. Це\n"
+"пришвидшу╓ пошук та дозволя╓ вам шукати файли за вм╕стом та само,\n"
+"як ╕ за назвою, датою та ╕ншими властивостями. ╤ндексац╕я займа╓\n"
+"певний час, але вона в╕дбува╓ться лише п╕д час простою вашого\n"
+"комп'ютера. Швидкому пошуку необх╕дно, щоб на вашому комп'ютер╕\n"
+"було запущено демон cron.\n"
 
 #: src/nautilus-first-time-druid.c:964
 msgid ""
@@ -8176,6 +8183,10 @@ msgid ""
 "as well as filename, date, and other file properties. The indexing\n"
 "takes time but is performed only when your computer is idle.\n"
 msgstr ""
+"Швидкий пошук ╕ндексу╓ вс╕ елементи на вашому жорсткому диску. Це\n"
+"пришвидшу╓ пошук та дозволя╓ вам шукати файли за вм╕стом та само,\n"
+"як ╕ за назвою, датою та ╕ншими властивостями. ╤ндексац╕я займа╓\n"
+"певний час, але вона в╕дбува╓ться лише п╕д час простою вашого комп'ютера.\n"
 
 #: src/nautilus-first-time-druid.c:973
 msgid "Enable fast search"
@@ -8183,7 +8194,7 @@ msgstr "Ув╕мкнути швидкий пошук"
 
 #: src/nautilus-first-time-druid.c:974
 msgid "Turn fast search on when cron is enabled"
-msgstr ""
+msgstr "Запускати швидкий пошук, якщо запущено cron"
 
 #: src/nautilus-first-time-druid.c:1020
 msgid ""
@@ -8874,7 +8885,7 @@ msgstr "Додати закладку до поточного розм╕щення у це меню"
 
 #: src/nautilus-shell-ui.xml.h:6
 msgid "Change the visibility of this window's location bar"
-msgstr "Зм╕нити видим╕сть панел╕ розм╕щення цього в╕кна"
+msgstr "Зм╕нити видим╕сть панел╕ положення цього в╕кна"
 
 #: src/nautilus-shell-ui.xml.h:7
 msgid "Change the visibility of this window's sidebar"
@@ -8970,7 +8981,7 @@ msgstr "Перейти до дому"
 
 #: src/nautilus-shell-ui.xml.h:31
 msgid "Go to the location that contains this one"
-msgstr ""
+msgstr "Перейти до м╕сця що м╕ститься тут"
 
 #: src/nautilus-shell-ui.xml.h:32
 msgid "Go to the next visited location"
@@ -8981,22 +8992,18 @@ msgid "Go to the previous visited location"
 msgstr "Перейти до попереднього в╕дв╕даного м╕сця"
 
 #: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:442
-#, fuzzy
 msgid "Hide Location _Bar"
-msgstr "Прибрати панель розм╕щення"
+msgstr "Прибрати панель положення"
 
 #: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:424
-#, fuzzy
 msgid "Hide St_atus Bar"
 msgstr "Прибрати панель стану"
 
 #: src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:430
-#, fuzzy
 msgid "Hide _Sidebar"
 msgstr "Прибрати б╕чну панель"
 
 #: src/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:436
-#, fuzzy
 msgid "Hide _Toolbar"
 msgstr "Прибрати панель ╕нструмент╕в"
 
@@ -9017,7 +9024,6 @@ msgid "New Window"
 msgstr "Нове в╕кно"
 
 #: src/nautilus-shell-ui.xml.h:43
-#, fuzzy
 msgid "New _Window"
 msgstr "Нове в╕кно"
 
@@ -9058,7 +9064,6 @@ msgid "Search this computer for files"
 msgstr "Пошук файл╕в на цьому комп'ютер╕"
 
 #: src/nautilus-shell-ui.xml.h:54
-#, fuzzy
 msgid "Select _All"
 msgstr "Вибрати все"
 
@@ -9115,9 +9120,8 @@ msgid "Use Intermediate settings"
 msgstr "Викоритовувати пром╕жков╕ установки"
 
 #: src/nautilus-shell-ui.xml.h:68
-#, fuzzy
 msgid "We_b Search"
-msgstr "Пошук у WWW"
+msgstr "Пошук у _WWW"
 
 #: src/nautilus-shell-ui.xml.h:69
 msgid "Web Search"
@@ -9547,24 +9551,20 @@ msgid "Forget"
 msgstr "Забути"
 
 #: src/nautilus-window-menus.c:425
-#, fuzzy
 msgid "Show St_atus Bar"
 msgstr "Показати панель стану"
 
 #: src/nautilus-window-menus.c:431
-#, fuzzy
 msgid "Show _Sidebar"
 msgstr "Показати б╕чну панель"
 
 #: src/nautilus-window-menus.c:437
-#, fuzzy
 msgid "Show _Toolbar"
 msgstr "Показати панель ╕нструмент╕в"
 
 #: src/nautilus-window-menus.c:443
-#, fuzzy
 msgid "Show Location _Bar"
-msgstr "Показати панель розм╕щення"
+msgstr "Показати панель положення"
 
 #: src/nautilus-window-menus.c:494
 msgid "Preferences"
