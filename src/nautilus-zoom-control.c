@@ -344,26 +344,6 @@ draw_zoom_control_image (GtkWidget *widget, GdkRectangle *box)
 	}
 }
 
-#if GNOME2_CONVERSION_COMPLETE
-
-static void
-nautilus_zoom_control_draw (GtkWidget *widget, GdkRectangle *box)
-{
-	g_return_if_fail (widget != NULL);
-	g_return_if_fail (NAUTILUS_IS_ZOOM_CONTROL (widget));
-
-	/* Clear the widget get the default widget background before drawing our stuff */
-	gdk_window_clear_area (widget->window,
-			       0,
-			       0,
-			       widget->allocation.width,
-			       widget->allocation.height);
-	draw_zoom_control_image (widget, box);	
-	draw_number (widget, box);
-}
-
-#endif
-
 /* handle expose events */
 
 static int
@@ -740,9 +720,6 @@ nautilus_zoom_control_class_init (NautilusZoomControlClass *zoom_control_class)
 	
 	object_class->destroy = nautilus_zoom_control_destroy;
 
-#if GNOME2_CONVERSION_COMPLETE
-	widget_class->draw = nautilus_zoom_control_draw;
-#endif
 	widget_class->expose_event = nautilus_zoom_control_expose;
 	widget_class->button_press_event = nautilus_zoom_control_button_press_event;
   	widget_class->leave_notify_event = nautilus_zoom_control_leave_notify;

@@ -371,7 +371,7 @@ forget_history_if_confirmed (NautilusWindow *window)
 					 _("Cancel"),
 					 GTK_WINDOW (window));
 	g_free (prompt);					 
-
+	
 #if GNOME2_CONVERSION_COMPLETE
 	gtk_signal_connect
 		(GTK_OBJECT (eel_gnome_dialog_get_button_by_index

@@ -3545,9 +3545,7 @@ set_script_environment_variables (FMDirectoryView *view, GList *selected_files)
 	char *file_paths;
 	char *uris;
 	char *uri;
-#if GNOME2_CONVERSION_COMPLETE
 	char *geometry_string;
-#endif
 
 	if (nautilus_directory_is_local (view->details->model)) {
 		file_paths = get_file_paths_as_newline_delimited_string (selected_files);
@@ -3565,12 +3563,10 @@ set_script_environment_variables (FMDirectoryView *view, GList *selected_files)
 	eel_setenv ("NAUTILUS_SCRIPT_CURRENT_URI", uri, TRUE);
 	g_free (uri);
 
-#if GNOME2_CONVERSION_COMPLETE
-	geometry_string = gnome_geometry_string 
-		(GTK_WIDGET (fm_directory_view_get_containing_window (view))->window);
+	geometry_string = eel_gtk_window_get_geometry_string 
+		(GTK_WINDOW (fm_directory_view_get_containing_window (view)));
 	eel_setenv ("NAUTILUS_SCRIPT_WINDOW_GEOMETRY", geometry_string, TRUE);
 	g_free (geometry_string);
-#endif
 }
 
 /* Unset all the special script environment variables. */

@@ -32,7 +32,7 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkaccellabel.h>
-#include <gtk/gtksignal.h>
+#include <gtk/gtkimagemenuitem.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
@@ -564,24 +564,15 @@ nautilus_bookmark_menu_item_new (NautilusBookmark *bookmark)
 	GtkWidget *pixmap_widget;
 	GtkWidget *label;
 	char *display_name;
-
-	/* Could check gnome_preferences_get_menus_have_icons here, but these
-	 * are more important than stock menu icons, since they're connected to
-	 * user data. For now let's not let them be turn-offable and see if
-	 * anyone objects strenuously.
-	 */
-#if GNOME2_CONVERSION_COMPLETE
-	menu_item = gtk_pixmap_menu_item_new ();
-#else
-	menu_item = NULL;
-#endif
+	
+	menu_item = gtk_image_menu_item_new ();
 
 	pixmap_widget = create_pixmap_widget_for_bookmark (bookmark);
 	if (pixmap_widget != NULL) {
 		gtk_widget_show (pixmap_widget);
-#if GNOME2_CONVERSION_COMPLETE
-		gtk_pixmap_menu_item_set_pixmap (GTK_PIXMAP_MENU_ITEM (menu_item), pixmap_widget);
-#endif
+
+		gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item), \
+					       pixmap_widget);
 	}
 	display_name = eel_truncate_text_for_menu_item (bookmark->details->name);
 	label = gtk_label_new (display_name);

@@ -136,21 +136,9 @@ clear_callback (BonoboUIComponent *ui,
 
 static void
 select_all (GtkEditable *editable)
-{
-	int end;
-
-	/* Workaround for bug in GtkText. It can't handle a -1
-	 * passed in to set_position.
-	 */
-	end = -1;
-#if GNOME2_CONVERSION_COMPLETE
-	if (GTK_IS_TEXT (editable)) {
-		end = gtk_text_get_length (GTK_TEXT (editable));
-	}
-#endif
-	
-	gtk_editable_set_position (editable, end);
-	gtk_editable_select_region (editable, 0, end);
+{	
+	gtk_editable_set_position (editable, -1);
+	gtk_editable_select_region (editable, 0, -1);
 }
 
 static gboolean

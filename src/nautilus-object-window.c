@@ -506,91 +506,31 @@ set_initial_window_geometry (NautilusWindow *window)
 	 * is evil. So we choose semi-arbitrary initial and
 	 * minimum widths instead of letting GTK decide.
 	 */
-
+	/* FIXME - the above comment suggests that the size request
+	 * of the content view area is wrong, probably because of
+	 * another stupid set_usize someplace. If someone gets the
+	 * content view area's size request right then we can
+	 * probably remove this broken set_size_request() here.
+	 * - hp@redhat.com
+	 */
+	
 	max_width_for_screen = get_max_forced_width ();
 	max_height_for_screen = get_max_forced_height ();
 
-	gtk_widget_set_usize (GTK_WIDGET (window), 
-			      MIN (NAUTILUS_WINDOW_MIN_WIDTH, 
-			           max_width_for_screen),
-			      MIN (NAUTILUS_WINDOW_MIN_HEIGHT, 
-			           max_height_for_screen));
+	gtk_widget_set_size_request (GTK_WIDGET (window), 
+				     MIN (NAUTILUS_WINDOW_MIN_WIDTH, 
+					  max_width_for_screen),
+				     MIN (NAUTILUS_WINDOW_MIN_HEIGHT, 
+					  max_height_for_screen));
 
 	gtk_window_set_default_size (GTK_WINDOW (window), 
 				     MIN (NAUTILUS_WINDOW_DEFAULT_WIDTH, 
 				          max_width_for_screen), 
 				     MIN (NAUTILUS_WINDOW_DEFAULT_HEIGHT, 
 				          max_height_for_screen));
-
-	gtk_window_set_policy (GTK_WINDOW (window), 
-			       FALSE,  /* don't let window be stretched 
-			                  smaller than usize */
-			       TRUE,   /* do let the window be stretched 
-			                  larger than default size */
-			       FALSE); /* don't shrink the window 
-			                  automatically to fit contents */
-
 }
 
 #if GNOME2_CONVERSION_COMPLETE
-
-static void
-menu_bar_no_resize_hack_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
-{
-	/* do nothing */
-}
-
-static void
-menu_bar_no_resize_hack_menu_bar_finder (GtkWidget *child, gpointer data)
-{
-	if (GTK_IS_MENU_BAR (child)) {
-		* (GtkObject **) data = GTK_OBJECT (child);
-	}
-}
-
-/* Since there's only one desktop at a time, we can keep track
- * of our faux-class with a single static.
- */
-static GtkObjectClass *menu_bar_no_resize_hack_class;
-
-static void
-menu_bar_no_resize_hack_class_free (void)
-{
-	g_free (menu_bar_no_resize_hack_class);
-}
-
-/* This call is used to keep the desktop menu bar from resizing.
- * It patches out its class with one where the size_allocate
- * method has been replaced with a no-op.
- */
-static void
-menu_bar_no_resize_hack (NautilusWindow *window)
-{
-	GtkObject *menu_bar;
-	GtkTypeQuery *type_query;
-	
-	menu_bar = NULL;
-	
-	eel_gtk_container_foreach_deep (GTK_CONTAINER (window),
-					     menu_bar_no_resize_hack_menu_bar_finder,
-					     &menu_bar);
-
-	g_return_if_fail (menu_bar != NULL);
-
-	if (menu_bar_no_resize_hack_class == NULL) {
-		g_atexit (menu_bar_no_resize_hack_class_free);
-	}
-	
-	type_query = gtk_type_query (menu_bar->klass->type);
-	g_free (menu_bar_no_resize_hack_class);
-	menu_bar_no_resize_hack_class = g_memdup (menu_bar->klass, type_query->class_size);
-	g_free (type_query);
-	
-	((GtkWidgetClass *) menu_bar_no_resize_hack_class)->size_allocate
-		= menu_bar_no_resize_hack_size_allocate;
-
-	menu_bar->klass = menu_bar_no_resize_hack_class;
-}
 
 static gboolean
 location_change_at_idle_callback (gpointer callback_data)
@@ -787,14 +727,6 @@ nautilus_window_constructed (NautilusWindow *window)
 					    STATUS_BAR_PATH, TRUE);
 		nautilus_bonobo_set_hidden (window->details->shell_ui,
 					    MENU_BAR_PATH, TRUE);
-
-#if GNOME2_CONVERSION_COMPLETE
-		/* FIXME bugzilla.gnome.org 44752:
-		 * If we ever get the unsigned math errors in
-		 * gtk_menu_item_size_allocate fixed this can be removed.
-		 */
-		menu_bar_no_resize_hack (window);
-#endif
 	}
 
 	/* Wrap the location bar in a control and set it up. */
@@ -1012,19 +944,18 @@ nautilus_window_destroy (GtkObject *object)
 static void
 nautilus_window_save_geometry (NautilusWindow *window)
 {
-#if GNOME2_CONVERSION_COMPLETE
 	char *geometry_string;
 
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 	g_return_if_fail (GTK_WIDGET_VISIBLE (window));
 
-        geometry_string = gnome_geometry_string (GTK_WIDGET (window)->window);
+        geometry_string = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
+
 	nautilus_file_set_metadata (window->details->viewed_file,
 				    NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY,
 				    NULL,
 				    geometry_string);
 	g_free (geometry_string);
-#endif
 }
 
 void

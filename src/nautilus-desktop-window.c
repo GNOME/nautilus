@@ -71,30 +71,17 @@ nautilus_desktop_window_init (NautilusDesktopWindow *window)
 {
 	window->details = g_new0 (NautilusDesktopWindowDetails, 1);
 
-	/* FIXME bugzilla.gnome.org 41251: 
-	 * Although Havoc had this call to set_default_size in
-	 * his code, it seems to have no effect for me. But the
-	 * set_usize below does seem to work.
-	 */
-	gtk_window_set_default_size (GTK_WINDOW (window),
+	gtk_widget_set_size_request (GTK_WIDGET (window),
 				     gdk_screen_width (),
 				     gdk_screen_height ());
 
-	/* These calls seem to have some effect, but it's not clear if
-	 * they are the right thing to do.
-	 */
-	gtk_widget_set_uposition (GTK_WIDGET (window), 0, 0);
-	gtk_widget_set_usize (GTK_WIDGET (window),
-			      gdk_screen_width (),
-			      gdk_screen_height ());
+	gtk_window_move (GTK_WINDOW (window), 0, 0);
 
-	/* Tell the window manager to never resize this. This is not
-	 * known to have any specific beneficial effect with any
-	 * particular window manager for the case of the desktop
-	 * window, but it doesn't seem to do any harm.
+	/* shouldn't really be needed given our semantic type
+	 * of _NET_WM_TYPE_DESKTOP, but why not
 	 */
-	gtk_window_set_policy (GTK_WINDOW (window),
-			       FALSE, FALSE, FALSE);
+	gtk_window_set_resizable (GTK_WINDOW (window),
+				  FALSE);
 }
 
 static void
@@ -295,51 +282,6 @@ realize (GtkWidget *widget)
 
 	/* This is the new way to set up the desktop window */
 	set_wmspec_desktop_hint (widget->window);
-	
-#if GNOME2_CONVERSION_COMPLETE
-	/* FIXME all this gnome_win_hints stuff is legacy cruft */
-	
-	/* Put this window behind all the others. */
-	gnome_win_hints_set_layer (widget, WIN_LAYER_DESKTOP);
-	
-	/* Make things like the task list ignore this window and make
-	 * it clear that it it's at its full size.
-	 *
-	 * We originally included WIN_STATE_HIDDEN here, but IceWM
-	 * interprets that (wrongly, imho) as meaning `don't display
-	 * this window'. Not including this bit seems to make
-	 * no difference though, so..
-	 */
-	gnome_win_hints_set_state (widget,
-				   WIN_STATE_STICKY
-				   | WIN_STATE_MAXIMIZED_VERT
-				   | WIN_STATE_MAXIMIZED_HORIZ
-				   | WIN_STATE_FIXED_POSITION
-				   | WIN_STATE_ARRANGE_IGNORE);
-
-	/* Make sure that focus, and any window lists or task bars also
-	 * skip the window.
-	 */
-	gnome_win_hints_set_hints (widget,
-				   WIN_HINTS_SKIP_WINLIST
-				   | WIN_HINTS_SKIP_TASKBAR
-				   | WIN_HINTS_SKIP_FOCUS);
-#endif
-
-	/* FIXME bugzilla.gnome.org 41255: 
-	 * Should we do a gdk_window_move_resize here, in addition to
-	 * the calls in initialize above that set the size?
-	 */
-	gdk_window_move_resize (widget->window,
-				0, 0,
-				gdk_screen_width (),
-				gdk_screen_height ());
-
-	/* Get rid of the things that window managers add to resize
-	 * and otherwise manipulate the window.
-	 */
-        gdk_window_set_decorations (widget->window, 0);
-        gdk_window_set_functions (widget->window, 0);
 }
 
 static void

@@ -1,3 +1,42 @@
+2001-11-01  Havoc Pennington  <hp@pobox.com>
+
+	* libnautilus/nautilus-clipboard.c (select_all): remove GtkText
+	workaround (I'm also checking in a fix for the bug being worked
+	around)
+
+	* libnautilus-private/nautilus-bookmark.c
+	(nautilus_bookmark_menu_item_new): replace some PixmapMenuItem
+	with ImageMenuItem
+
+	* src/file-manager/fm-directory-view.c
+	(set_script_environment_variables): use
+	eel_gtk_window_get_geometry_string
+
+	* src/nautilus-zoom-control.c: just nuke the draw method, it ain't
+	coming back
+
+	* src/nautilus-window.c (set_initial_window_geometry): remove 
+	gtk_window_set_policy() that was useless, and replace set_usize
+	with set_size_request.
+	(nautilus_window_constructed): remove menu_bar_no_resize_hack, I
+	have no idea what GTK bug it's talking about, neither does the
+	referenced bug report say, but if we see it
+	again we'll fix it. (plus it says the bug is unsigned math, 
+	and GTK 2 pretty much did a global s/uint/int/, especially 
+	in the size request/alloc code)
+
+	* src/nautilus-desktop-window.c (realize): just remove the 
+	gnome_win_hints stuff, as the FIXME says, it's dead.
+	(realize): remove the set_decorations, set_functions, and 
+	the move_resize, all cruft
+	(nautilus_desktop_window_init): simplify some cruft in here
+
+	* src/nautilus-bookmarks-window.c
+	(nautilus_bookmarks_window_save_geometry):
+	use eel_gtk_window_get_geometry_string
+
+	* src/nautilus-window.c (nautilus_window_save_geometry): ditto
+	
 2001-11-01  Darin Adler  <darin@bentspoon.com>
 
 	More changes to make Nautilus get closer to running.
