@@ -959,6 +959,10 @@ nautilus_sidebar_press_event (GtkWidget *widget, GdkEventButton *event)
 	int rounded_y;
 	int which_tab;
 		
+	if (widget->window != event->window) {
+		return FALSE;
+	}
+
 	sidebar = NAUTILUS_SIDEBAR (widget);
 
 	/* handle the context menu */
