@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "POT-Creation-Date: 2000-05-03 01:04+0200\n"
-"PO-Revision-Date: 2000-05-05 00:38+02:00\n"
+"PO-Revision-Date: 2000-05-05 12:38+02:00\n"
 "Last-Translator: Keld Simonsen <keld@dkuug.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -31,7 +31,7 @@ msgstr "Placering"
 msgid "Remove"
 msgstr "Fjern"
 
-#: src/nautilus-location-bar.c:212
+#: src/file-manager/fm-properties-window.c:488 src/nautilus-location-bar.c:212
 msgid "Location:"
 msgstr "Placering:"
 
@@ -620,8 +620,8 @@ msgid "_Duplicate"
 msgstr "_Duplikér"
 
 #: src/file-manager/fm-directory-view.c:1593
-msgid "Set _Properties..."
-msgstr "Sæt _egenskaber..."
+msgid "Show _Properties"
+msgstr "Vis _egenskaber..."
 
 #: src/file-manager/fm-directory-view.c:1596
 #: src/file-manager/fm-directory-view.c:1768
@@ -649,8 +649,8 @@ msgid "Open each selected item in a new window"
 msgstr "Åbn hver valgt ting i et nyt vindue"
 
 #: src/file-manager/fm-directory-view.c:1715
-msgid "Set Properties..."
-msgstr "Sæt egenskaber..."
+msgid "Show Properties"
+msgstr "Vis egenskaber..."
 
 #: src/file-manager/fm-directory-view.c:1716
 msgid "View or modify the properties of the selected items"
@@ -813,21 +813,33 @@ msgstr "Type"
 msgid "Date Modified"
 msgstr "Dato for ændring"
 
-#: src/file-manager/fm-properties-window.c:315
+#: src/file-manager/fm-properties-window.c:331
 #, c-format
 msgid "Nautilus: %s Properties"
 msgstr "Nautilus: %s egenskaber"
 
-#: src/file-manager/fm-properties-window.c:371
+#: src/file-manager/fm-properties-window.c:428
 msgid "Basic"
 msgstr "Basal"
 
-#: src/file-manager/fm-properties-window.c:429
+#: src/file-manager/fm-properties-window.c:492
+msgid "Type:"
+msgstr "Type:"
+
+#: src/file-manager/fm-properties-window.c:496
+msgid "Size:"
+msgstr "Størrelse:"
+
+#: src/file-manager/fm-properties-window.c:500
+msgid "Date Modified:"
+msgstr "Dato for ændring:"
+
+#: src/file-manager/fm-properties-window.c:516
 msgid "Emblems"
 msgstr "Emblemer"
 
 #. The prompt.
-#: src/file-manager/fm-properties-window.c:433
+#: src/file-manager/fm-properties-window.c:520
 msgid ""
 "This is a placeholder for the final emblems design. For now, you can turn "
 "some hard-wired properties with corresponding emblems on and off."
@@ -840,62 +852,62 @@ msgid "Prefs Box"
 msgstr "Boks for indstillinger"
 
 #. today, use special word
-#: libnautilus-extensions/nautilus-file.c:1038
+#: libnautilus-extensions/nautilus-file.c:1061
 msgid "today %-I:%M %p"
 msgstr "i dag  %-I:%M %p"
 
 #. yesterday, use special word
-#: libnautilus-extensions/nautilus-file.c:1041
+#: libnautilus-extensions/nautilus-file.c:1064
 msgid "yesterday %-I:%M %p"
 msgstr "i går %-I:%M %p"
 
 #. current week, include day of week
-#: libnautilus-extensions/nautilus-file.c:1044
+#: libnautilus-extensions/nautilus-file.c:1067
 msgid "%A %-m/%-d/%y %-I:%M %p"
 msgstr "%A %Y-%-m-%-d %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:1046
+#: libnautilus-extensions/nautilus-file.c:1069
 msgid "%-m/%-d/%y %-I:%M %p"
 msgstr "%Y-%-m-%-d %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:1164
+#: libnautilus-extensions/nautilus-file.c:1187
 msgid "unknown owner"
 msgstr "ukendt ejer"
 
-#: libnautilus-extensions/nautilus-file.c:1195
+#: libnautilus-extensions/nautilus-file.c:1218
 msgid "unknown group"
 msgstr "ukendt gruppe"
 
-#: libnautilus-extensions/nautilus-file.c:1224
+#: libnautilus-extensions/nautilus-file.c:1247
 msgid "unknown MIME type"
 msgstr "ukendt MIME type"
 
-#: libnautilus-extensions/nautilus-file.c:1248
+#: libnautilus-extensions/nautilus-file.c:1271
 msgid "xxx"
 msgstr "xxx"
 
-#: libnautilus-extensions/nautilus-file.c:1248
+#: libnautilus-extensions/nautilus-file.c:1271
 msgid "--"
 msgstr "--"
 
-#: libnautilus-extensions/nautilus-file.c:1251
+#: libnautilus-extensions/nautilus-file.c:1274
 msgid "0 items"
 msgstr "0 ting"
 
-#: libnautilus-extensions/nautilus-file.c:1254
+#: libnautilus-extensions/nautilus-file.c:1277
 msgid "1 item"
 msgstr "1 ting"
 
-#: libnautilus-extensions/nautilus-file.c:1256
+#: libnautilus-extensions/nautilus-file.c:1279
 #, c-format
 msgid "%u items"
 msgstr "%u ting"
 
-#: libnautilus-extensions/nautilus-file.c:1357
+#: libnautilus-extensions/nautilus-file.c:1388
 msgid "program"
 msgstr "program"
 
-#: libnautilus-extensions/nautilus-file.c:1360
+#: libnautilus-extensions/nautilus-file.c:1391
 msgid "unknown type"
 msgstr "ukendt type"
 
