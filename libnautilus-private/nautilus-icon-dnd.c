@@ -82,8 +82,9 @@ static void     receive_dropped_keyword                          (NautilusIconCo
 								  char* keyword, 
 								  int x, 
 								  int y);
-static void     receive_dropped_uri_list                          (NautilusIconContainer *container, 
+static void     receive_dropped_uri_list                         (NautilusIconContainer *container, 
 								  char* keyword, 
+								  GdkDragAction action,
 								  int x, 
 								  int y);
 static void     nautilus_icon_container_free_drag_data           (NautilusIconContainer *container);
@@ -461,7 +462,7 @@ drag_data_received_callback (GtkWidget *widget,
 		case EEL_ICON_DND_URL:
 			receive_dropped_uri_list
 				(NAUTILUS_ICON_CONTAINER (widget),
-				 (char*) data->data, x, y);
+				 (char*) data->data, context->action, x, y);
 			gtk_drag_finish (context, TRUE, FALSE, time);
 			break;
 
@@ -660,7 +661,7 @@ receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x,
 
 /* handle dropped uri list */
 static void
-receive_dropped_uri_list (NautilusIconContainer *container, char *uri_list, int x, int y)
+receive_dropped_uri_list (NautilusIconContainer *container, char *uri_list, GdkDragAction action, int x, int y)
 {	
 	if (uri_list == NULL) {
 		return;
@@ -668,6 +669,7 @@ receive_dropped_uri_list (NautilusIconContainer *container, char *uri_list, int 
 	
 	gtk_signal_emit_by_name (GTK_OBJECT (container), "handle_uri_list",
 				 uri_list,
+				 action,
 				 x, y);
 }
 

@@ -1,3 +1,19 @@
+2001-09-04  Alex Larsson  <alexl@redhat.com>
+	
+	Merge some stuff from the redhat-outstanding-patches branch
+
+	* libnautilus-private/nautilus-icon-container.c:
+	* libnautilus-private/nautilus-icon-dnd.c:
+	Change signature of the "handle_uri_list" callback to include the
+	drag action.
+	
+	* src/file-manager/fm-icon-view.c (icon_view_handle_uri_list):
+	Handle uri's more gracefully.
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(icon_view_handle_uri_list): Remove.  Now handled in the
+	parent class.
+
 2001-09-03  Alex Larsson  <alexl@redhat.com>
 
 	Merge some stuff from the redhat-outstanding-patches branch

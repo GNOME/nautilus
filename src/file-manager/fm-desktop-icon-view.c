@@ -109,11 +109,6 @@ static void     volume_mounted_callback                           (NautilusVolum
 static void     volume_unmounted_callback                         (NautilusVolumeMonitor  *monitor,
 								   NautilusVolume         *volume,
 								   FMDesktopIconView      *icon_view);
-static void     icon_view_handle_uri_list                   	  (NautilusIconContainer  *container,
-								   const char             *item_uris,
-								   int                     x,
-								   int                     y,
-								   FMDirectoryView        *view);
 static int      desktop_icons_compare_callback                    (NautilusIconContainer  *container,
 								   NautilusFile           *file_a,
 								   NautilusFile           *file_b,
@@ -651,11 +646,6 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 					desktop_icon_view,
 					GTK_OBJECT (desktop_icon_view));
 	
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "handle_uri_list",
-			    GTK_SIGNAL_FUNC (icon_view_handle_uri_list),
-			    desktop_icon_view);
-
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_HOME_URI,
 					   home_uri_changed,
 				  	   desktop_icon_view);
@@ -863,70 +853,6 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor,
 
 	g_free (volume_name);
 	g_free (link_path);
-}
-
-static void
-icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_uris,
-			   int x, int y, FMDirectoryView *view)
-{
-	GList *uri_list, *node;
-	GnomeDesktopEntry *entry;
-	GdkPoint point;
-	char *uri, *local_path;
-	char *stripped_uri;
-	const char *last_slash, *link_name;
-	
-	if (item_uris == NULL) {
-		return;
-	}
-	
-	point.x = x;
-	point.y = y;
-		
-	uri_list = gnome_uri_list_extract_uris (item_uris);
-
-	for (node = uri_list; node != NULL; node = node->next) {
-		/* Most of what comes in here is not really URIs, but
-		 * rather paths that have a file: prefix in them.
-		 */
-		uri = eel_make_uri_from_half_baked_uri (node->data);
-
-		/* Make a link using the desktop file contents? */
-		local_path = gnome_vfs_get_local_path_from_uri (uri);
-		if (local_path != NULL) {
-			entry = gnome_desktop_entry_load (local_path);		
-			if (entry != NULL) {
-				/* FIXME: Handle name conflicts? */
-				nautilus_link_local_create_from_gnome_entry (entry, desktop_directory, &point);
-				gnome_desktop_entry_free (entry);
-			}
-			g_free (local_path);
-			if (entry != NULL) {
-				continue;
-			}
-		}
-		
-		/* Make a link from the URI alone. Generate the file
-		 * name by extracting the basename of the URI.
-		 */
-		/* FIXME: This should be using eel_uri_get_basename
-		 * instead of a "roll our own" solution.
-		 */
-		stripped_uri = eel_str_strip_trailing_chr (uri, '/');
-		last_slash = strrchr (stripped_uri, '/');
-		link_name = last_slash == NULL ? NULL : last_slash + 1;
-		
-		if (!eel_str_is_empty (link_name)) {
-			/* FIXME: Handle name conflicts? */
-			nautilus_link_local_create (desktop_directory, link_name,
-						    "gnome-http-url", uri,
-						    &point, NAUTILUS_LINK_GENERIC);
-		}
-		
-		g_free (stripped_uri);
-	}
-	
-	gnome_uri_list_free_strings (uri_list);
 }
 
 /* update_link_and_delete_copies
