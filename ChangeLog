@@ -1,5 +1,11 @@
 2000-12-01  Andy Hertzfeld  <andy@eazel.com>
 
+	* src/nautilus-property-browser.c: (category_clicked_callback):
+	fixed bug 4937, changing pane in remove mode crashes Nautilus,
+	by exiting remove mode when switching categories.
+	
+2000-12-01  Andy Hertzfeld  <andy@eazel.com>
+
 	* src/nautilus-window-toolbars.c: (theme_changed_callback):
 	fixed bug where throbber was mispositioned after theme changes by
 	forcing a toolbar resize when the theme changes.

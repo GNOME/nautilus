@@ -710,7 +710,11 @@ category_clicked_callback (GtkWidget *widget, char *category_name)
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (property_browser->details->selected_button), TRUE);		
 		return;
 	}	
-	
+
+	/* exit remove mode when the user switches categories, since there might be nothing to remove
+	   in the new category */
+	property_browser->details->remove_mode = FALSE;
+		
 	save_flag = property_browser->details->toggle_button_flag;
 	property_browser->details->toggle_button_flag = TRUE;	
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (property_browser->details->selected_button), FALSE);
