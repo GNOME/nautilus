@@ -350,7 +350,7 @@ void
 show_feedback (GtkWidget	*widget, 
 	       char		*error_message) 
 {
-	gtk_label_set_text (GTK_LABEL (widget), error_message);
+	nautilus_label_set_text (NAUTILUS_LABEL (widget), error_message);
 	gtk_widget_show (widget);
 }
 

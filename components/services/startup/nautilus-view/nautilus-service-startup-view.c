@@ -83,8 +83,6 @@ generate_startup_form (NautilusServiceStartupView	*view)
 	GtkWidget		*temp_box;
 	GtkWidget		*align;
 	int			counter;
-	char			*font_color;
-	GdkFont			*font;
 
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
@@ -112,13 +110,9 @@ generate_startup_form (NautilusServiceStartupView	*view)
 	gtk_widget_show (temp_widget);
 
 	/* Add a label for error status messages */
-	view->details->feedback_text = gtk_label_new ("");
-	font = nautilus_font_factory_get_font_from_preferences (12);
-	font_color = g_strdup ("rgb:FFFF/FFFF/FFFF");
-	set_widget_foreground_color (view->details->feedback_text, font_color);
-	g_free (font_color);
-	nautilus_gtk_widget_set_font (view->details->feedback_text, font);
-	gdk_font_unref (font);
+	view->details->feedback_text = nautilus_label_new ("");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->feedback_text), 12);
+	nautilus_label_set_text_color (NAUTILUS_LABEL (view->details->feedback_text), NAUTILUS_RGB_COLOR_WHITE);
 	gtk_box_pack_end (GTK_BOX (view->details->form), view->details->feedback_text, 0, 0, 15);
 
 	/* Create a center alignment object */

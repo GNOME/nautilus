@@ -107,7 +107,6 @@ generate_login_form (NautilusLoginView	*view)
 	GtkWidget	*login_label;
 	GtkWidget	*maintenance_button;
 	GtkWidget	*maintenance_label;
-	GdkFont		*font;
 	GtkWidget	*title;
 
 	/* allocate a box to hold everything */
@@ -130,11 +129,8 @@ generate_login_form (NautilusLoginView	*view)
 	table = GTK_TABLE (gtk_table_new (4, 3, TRUE));
 
 	/* username */
-	temp_widget = gtk_label_new ("User Name: ");
-
-	font = nautilus_font_factory_get_font_from_preferences (16);
-	nautilus_gtk_widget_set_font (temp_widget, font);
-	gdk_font_unref (font);
+	temp_widget = nautilus_label_new ("User Name: ");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), 16);
 
 	gtk_table_attach (table, temp_widget, 0, 2, 0, 1, GTK_FILL, GTK_FILL, 2, 2);
 	gtk_widget_show (temp_widget);
@@ -144,10 +140,8 @@ generate_login_form (NautilusLoginView	*view)
 	gtk_widget_show (view->details->account_name);
 
 	/* old password */
-	temp_widget = gtk_label_new ("Current password: ");
-	font = nautilus_font_factory_get_font_from_preferences (16);
-	nautilus_gtk_widget_set_font (temp_widget, font);
-	gdk_font_unref (font);
+	temp_widget = nautilus_label_new ("Current password: ");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), 16);
 	gtk_table_attach (table, temp_widget, 0, 2, 2, 3, GTK_FILL, GTK_FILL, 2, 2);
 	gtk_widget_show (temp_widget);
 
@@ -157,10 +151,8 @@ generate_login_form (NautilusLoginView	*view)
 	gtk_widget_show (view->details->account_old_password);
 
 	/* new password */
-	temp_widget = gtk_label_new ("New password: ");
-	font = nautilus_font_factory_get_font_from_preferences (16);
-	nautilus_gtk_widget_set_font (temp_widget, font);
-	gdk_font_unref (font);
+	temp_widget = nautilus_label_new ("New password: ");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), 16);
 	gtk_table_attach (table, temp_widget, 0, 2, 4, 5, GTK_FILL, GTK_FILL, 2, 2);
 	gtk_widget_show (temp_widget);
 
@@ -170,10 +162,8 @@ generate_login_form (NautilusLoginView	*view)
 	gtk_widget_show (view->details->account_new_password);
 
 	/* repeat password */
-	temp_widget = gtk_label_new ("New password (again): ");
-	font = nautilus_font_factory_get_font_from_preferences (16);
-	nautilus_gtk_widget_set_font (temp_widget, font);
-	gdk_font_unref (font);
+	temp_widget = nautilus_label_new ("New password (again): ");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), 16);
 	gtk_table_attach (table, temp_widget, 0, 2, 6, 7, GTK_FILL, GTK_FILL, 2, 2);
 	gtk_widget_show (temp_widget);
 
@@ -195,7 +185,8 @@ generate_login_form (NautilusLoginView	*view)
 	/* allocate the command buttons - first the login button */
 
 	view->details->login_button = gtk_button_new ();
-	login_label = gtk_label_new (" I'm ready to login! ");
+	login_label = nautilus_label_new (" I'm ready to login! ");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (login_label), 12);
 	gtk_widget_show (login_label);
 	gtk_container_add (GTK_CONTAINER (view->details->login_button), login_label);
 
@@ -213,7 +204,8 @@ generate_login_form (NautilusLoginView	*view)
         /* now allocate the account maintenance button */
 
         maintenance_button = gtk_button_new ();
-        maintenance_label = gtk_label_new ("  I need some help!  ");
+        maintenance_label = nautilus_label_new ("  I need some help!  ");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (maintenance_label), 12);
         gtk_widget_show (maintenance_label);
         gtk_container_add (GTK_CONTAINER (maintenance_button), maintenance_label);
 	temp_box = gtk_hbox_new (TRUE, 0);
@@ -225,7 +217,8 @@ generate_login_form (NautilusLoginView	*view)
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 4);
 
         /* add a label for error messages, but don't show it until there's an error */
-        view->details->feedback_text = gtk_label_new ("");
+        view->details->feedback_text = nautilus_label_new ("");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->feedback_text), 12);
         gtk_box_pack_end (GTK_BOX (view->details->form), view->details->feedback_text, 0, 0, 8);
 }
 

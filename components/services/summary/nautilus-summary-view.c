@@ -128,7 +128,6 @@ generate_summary_form (NautilusSummaryView	*view)
 	GtkTable	*service_news_table;
 	GtkTable	*updates_table;
 	GtkWidget	*button_box;
-	GdkFont		*font;
 
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
@@ -175,16 +174,15 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_widget_show (temp_hbox);
 
 	/* Generate second Column with fake service title and summary */
-	temp_label = gtk_label_new ("Vault Service:\n Your remote file storage");
-	font = nautilus_font_factory_get_font_from_preferences (12);
-	nautilus_gtk_widget_set_font (temp_label, font);
-	gdk_font_unref (font);
+	temp_label = nautilus_label_new ("Vault Service:\n Your remote file storage");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_label), 12);
 	gtk_table_attach (services_table, temp_label, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_widget_show (temp_label);
 
 	/* Add the redirect button to the third column */
 	temp_button = gtk_button_new ();
-	temp_label = gtk_label_new (" Go to Vault ");
+	temp_label = nautilus_label_new (" Go to Vault ");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_label), 12);
 	gtk_widget_show (temp_label);
 	gtk_container_add (GTK_CONTAINER (temp_button), temp_label);
 	temp_hbox = gtk_hbox_new (TRUE, 0);
@@ -222,10 +220,8 @@ generate_summary_form (NautilusSummaryView	*view)
 	login_table = GTK_TABLE (gtk_table_new (4, 2, TRUE));
 
 	/* username label */
-	view->details->username_label = gtk_label_new ("User Name:");
-	font = nautilus_font_factory_get_font_from_preferences (16);
-	nautilus_gtk_widget_set_font (view->details->username_label, font);
-	gdk_font_unref (font);
+	view->details->username_label = nautilus_label_new ("User Name:");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->username_label), 16);
 	gtk_table_attach (login_table, view->details->username_label, 0, 2, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_widget_show (view->details->username_label);
 
@@ -235,10 +231,8 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_widget_show (view->details->username_entry);
 
 	/* password label */
-	view->details->password_label = gtk_label_new ("Password:");
-	font = nautilus_font_factory_get_font_from_preferences (16);
-	nautilus_gtk_widget_set_font (view->details->password_label, font);
-	gdk_font_unref (font);
+	view->details->password_label = nautilus_label_new ("Password:");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->password_label), 16);
 	gtk_table_attach (login_table, view->details->password_label, 0, 2, 2, 3, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_widget_show (view->details->password_label);
 
@@ -256,7 +250,8 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	/* login button */
 	view->details->login_button = gtk_button_new ();
-	view->details->login_label = gtk_label_new (" I'm ready to login! ");
+	view->details->login_label = nautilus_label_new (" I'm ready to login! ");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->login_label), 12);
 	gtk_widget_show (view->details->login_label);
 	gtk_container_add (GTK_CONTAINER (view->details->login_button), view->details->login_label);
 	button_box = gtk_hbox_new (TRUE, 0);
@@ -269,7 +264,8 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	/* register button */
 	view->details->register_button = gtk_button_new ();
-	view->details->register_label = gtk_label_new (" Register Now! ");
+	view->details->register_label = nautilus_label_new (" Register Now! ");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->register_label), 12);
 	gtk_widget_show (view->details->register_label);
 	gtk_container_add (GTK_CONTAINER (view->details->register_button), view->details->register_label);
 	button_box = gtk_hbox_new (TRUE, 0);
@@ -283,7 +279,8 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	/* maintenance button */
 	view->details->maintenance_button = gtk_button_new ();
-	view->details->maintenance_label = gtk_label_new (" I need some help! ");
+	view->details->maintenance_label = nautilus_label_new (" I need some help! ");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->maintenance_label), 12);
 	gtk_widget_show (view->details->maintenance_label);
 	gtk_container_add (GTK_CONTAINER (view->details->maintenance_button), view->details->maintenance_label);
 	button_box = gtk_hbox_new (TRUE, 0);
@@ -296,7 +293,8 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	/* logout button */
 	view->details->logout_button = gtk_button_new ();
-	view->details->logout_label = gtk_label_new (" Log me out! ");
+	view->details->logout_label = nautilus_label_new (" Log me out! ");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->logout_label), 12);
 	gtk_widget_show (view->details->logout_label);
 	gtk_container_add (GTK_CONTAINER (view->details->logout_button), view->details->logout_label);
 	button_box = gtk_hbox_new (TRUE, 0);
@@ -309,7 +307,8 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	/* community button */
 	view->details->community_button = gtk_button_new ();
-	view->details->community_label = gtk_label_new (" Go to Eazel Community! ");
+	view->details->community_label = nautilus_label_new (" Go to Eazel Community! ");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->community_label), 12);
 	gtk_widget_show (view->details->community_label);
 	gtk_container_add (GTK_CONTAINER (view->details->community_button), view->details->community_label);
 	button_box = gtk_hbox_new (TRUE, 0);
@@ -359,10 +358,8 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_widget_show (temp_hbox);
 
 	/* Generate second Column with fake service title and summary */
-	temp_label = gtk_label_new ("The Eazel servers will be down this Friday!");
-	font = nautilus_font_factory_get_font_from_preferences (12);
-	nautilus_gtk_widget_set_font (temp_label, font);
-	gdk_font_unref (font);
+	temp_label = nautilus_label_new ("The Eazel servers will be down this Friday!");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_label), 12);
 	gtk_table_attach (service_news_table, temp_label, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_widget_show (temp_label);
 
@@ -403,16 +400,15 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_widget_show (temp_hbox);
 
 	/* Generate second Column with fake service title and summary */
-	temp_label = gtk_label_new ("Netscape Communicator 4.75\n Everyone's favorite web browser.");
-	font = nautilus_font_factory_get_font_from_preferences (12);
-	nautilus_gtk_widget_set_font (temp_label, font);
-	gdk_font_unref (font);
+	temp_label = nautilus_label_new ("Netscape Communicator 4.75\n Everyone's favorite web browser.");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_label), 12);
 	gtk_table_attach (updates_table, temp_label, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_widget_show (temp_label);
 
 	/* Add the redirect button to the third column */
 	temp_button = gtk_button_new ();
-	temp_label = gtk_label_new (" Update Netscape Now! ");
+	temp_label = nautilus_label_new (" Update Netscape Now! ");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_label), 12);
 	gtk_widget_show (temp_label);
 	gtk_container_add (GTK_CONTAINER (temp_button), temp_label);
 	temp_hbox = gtk_hbox_new (TRUE, 0);
