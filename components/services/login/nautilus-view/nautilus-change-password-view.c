@@ -44,6 +44,7 @@
 #include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
+#include <libnautilus-extensions/nautilus-viewport.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <libtrilobite/eazelproxy.h>
@@ -62,6 +63,7 @@ typedef enum {
 struct _NautilusChangePasswordViewDetails {
 	char 		*uri;
 	NautilusView	*nautilus_view;
+	GtkWidget	*viewport;
 	GtkWidget	*form;
 	GtkWidget	*form_title;
 	PasswordBox	*account_name;
@@ -137,7 +139,10 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	GtkWidget	*maintenance_button;
 	GtkWidget	*title;
 	GtkWidget	*filler;
+	GtkWidget	*pane;
+	GtkWidget	*subform;
 	char		*username;
+	NautilusBackground *background;
 
 	/* allocate a box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
@@ -146,9 +151,24 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 
 	/* Setup the title */
 	title = eazel_services_header_title_new (_("Please Change Your Eazel Password"));
-
         gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
         gtk_widget_show (title);
+
+	/* make an opportunistic scrollbar panel for it all */
+        pane = gtk_scrolled_window_new (NULL, NULL);
+        gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (pane), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	view->details->viewport = nautilus_viewport_new (NULL, NULL);
+	gtk_viewport_set_shadow_type (GTK_VIEWPORT (view->details->viewport), GTK_SHADOW_NONE);
+	gtk_container_add (GTK_CONTAINER (pane), view->details->viewport);
+	gtk_widget_show (view->details->viewport);
+	gtk_container_add (GTK_CONTAINER (view->details->form), pane);
+        gtk_widget_show (pane);
+	background = nautilus_get_widget_background (GTK_WIDGET (view->details->viewport));
+	nautilus_background_set_color (background, EAZEL_SERVICES_BACKGROUND_COLOR_SPEC);
+
+	subform = gtk_vbox_new (FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (view->details->viewport), subform);
+	gtk_widget_show (subform);
 
 	/* add password boxes */
 	view->details->account_name = password_box_new (_("User Name:"));
@@ -156,28 +176,28 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), view->details->account_name->table, TRUE, TRUE, 75);
 	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (view->details->form), hbox, FALSE, FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (subform), hbox, FALSE, FALSE, 6);
 
 	view->details->account_old_password = password_box_new (_("Current Password:"));
 	gtk_widget_show (view->details->account_old_password->table);
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), view->details->account_old_password->table, TRUE, TRUE, 75);
 	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (view->details->form), hbox, FALSE, FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (subform), hbox, FALSE, FALSE, 6);
 
 	view->details->account_new_password = password_box_new (_("New Password:"));
 	gtk_widget_show (view->details->account_new_password->table);
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), view->details->account_new_password->table, TRUE, TRUE, 75);
 	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (view->details->form), hbox, FALSE, FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (subform), hbox, FALSE, FALSE, 6);
 
 	view->details->account_repeat_password = password_box_new (_("Confirm New Password:"));
 	gtk_widget_show (view->details->account_repeat_password->table);
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), view->details->account_repeat_password->table, TRUE, TRUE, 75);
 	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (view->details->form), hbox, FALSE, FALSE, 6);
+	gtk_box_pack_start (GTK_BOX (subform), hbox, FALSE, FALSE, 6);
 
 	/* set up text entries */
 	username = user_logged_in (view);
@@ -228,7 +248,7 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	gtk_box_pack_start (GTK_BOX (hbox_buttons), vbox_buttons, FALSE, FALSE, 75);
 	gtk_widget_show (hbox_buttons);
 
-	gtk_box_pack_start (GTK_BOX (view->details->form), hbox_buttons, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (subform), hbox_buttons, FALSE, FALSE, 0);
 }
 
 /* callback to enable/disable the change_password button when something is typed in the field */
@@ -450,7 +470,7 @@ change_password_button_cb (GtkWidget	*button, NautilusChangePasswordView	*view)
 		password_box_show_error (view->details->account_new_password, TRUE);
 		password_box_show_error (view->details->account_repeat_password, FALSE);
 		gtk_widget_grab_focus (view->details->account_new_password->entry);
-		
+
 		gtk_entry_set_text (GTK_ENTRY (view->details->account_new_password->entry), "");
 		gtk_entry_set_text (GTK_ENTRY (view->details->account_repeat_password->entry), "");
 		gtk_widget_set_sensitive (view->details->change_password_button, FALSE);
