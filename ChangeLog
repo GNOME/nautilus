@@ -1,3 +1,37 @@
+2000-07-13  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_initialize),
+	(nautilus_icon_factory_destroy),
+	(anti_aliased_mode_changed_callback), (get_themed_icon_file_path),
+	(nautilus_scalable_icon_new_from_text_pieces),
+	(nautilus_scalable_icon_hash), (nautilus_scalable_icon_equal):
+	made the icon factory support optimized icons for anti-aliased mode.
+	Added a field to nautilus_scalable_icon and included it in the
+	cache key calculation; arranged for notification when aa-mode
+	changes so we can emit the "icons_changed" signal.
+	
+	* icons/eazel/Makefile.am:
+	* icons/eazel/i-regular-12-aa.png:
+	* icons/eazel/i-regular-24-aa.png:
+	* icons/eazel/i-regular-36-aa.png:
+	* icons/eazel/i-regular-72-aa.png:
+	* icons/eazel/i-regular-96-aa.png:
+	* icons/eazel/i-regular-aa.png:
+	* icons/eazel/i-directory-12-aa.png:
+	* icons/eazel/i-directory-24-aa.png:
+	* icons/eazel/i-directory-36-aa.png:
+	* icons/eazel/i-directory-72-aa.png:
+	* icons/eazel/i-directory-96-aa.png:
+	* icons/eazel/i-directory-aa.png:
+	* icons/eazel/i-directory-accept-12-aa.png:
+	* icons/eazel/i-directory-accept-24-aa.png:
+	* icons/eazel/i-directory-accept-36-aa.png:
+	* icons/eazel/i-directory-accept-72-aa.png:
+	* icons/eazel/i-directory-accept-96-aa.png:
+	* icons/eazel/i-directory-accept-aa.png:
+	added a bunch of new anti-aliased icons from Susan to the eazel theme
+	 
 2000-07-13  Robey Pointer  <robey@eazel.com>
 
 	*

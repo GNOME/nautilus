@@ -145,6 +145,9 @@ typedef struct {
 	guint recently_used_count;
         guint sweep_timer;
 
+	/* remember the anti-aliased canvas boolean here for efficiency */
+	gboolean aa_mode;
+	
 	/* thumbnail task state */
 	GList *thumbnails;
 	char *new_thumbnail_path;
@@ -174,6 +177,7 @@ struct NautilusScalableIcon {
 	char *name;
 	char *modifier;
 	char *embedded_text;
+	gboolean aa_mode;
 };
 
 /* A request for an icon of a particular size. */
@@ -194,6 +198,7 @@ typedef struct {
 
 	NautilusCircularList recently_used_node;
 	time_t	 cache_time;
+	gboolean aa_mode;
 	gboolean custom;
 	gboolean scaled;
 	ArtIRect text_rect;
@@ -225,6 +230,8 @@ static GdkPixbuf *           get_image_from_cache                    (NautilusSc
 								      gboolean                  picky,
 								      gboolean                  custom,
 								      ArtIRect                 *text_rect);
+static void		     anti_aliased_mode_changed_callback      (gpointer user_data);
+
 static gboolean              check_for_thumbnails                    (NautilusIconFactory      *factory);
 static int                   nautilus_icon_factory_make_thumbnails   (gpointer                  data);
 static GdkPixbuf *           load_image_with_embedded_text           (NautilusScalableIcon     *scalable_icon,
@@ -285,6 +292,16 @@ nautilus_icon_factory_initialize (NautilusIconFactory *factory)
 	/* Empty out the recently-used list. */
 	factory->recently_used_dummy_head.next = &factory->recently_used_dummy_head;
 	factory->recently_used_dummy_head.prev = &factory->recently_used_dummy_head;
+
+	/* see if we're in anti-aliased mode and register for notification */
+
+	factory->aa_mode = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
+							      FALSE);
+
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS, 
+					   anti_aliased_mode_changed_callback, 
+					   factory);
+	
 }
 
 static void
@@ -349,6 +366,10 @@ nautilus_icon_factory_destroy (NautilusIconFactory *factory)
 
         nautilus_icon_factory_clear ();
         g_hash_table_destroy (factory->icon_cache);
+
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
+					      anti_aliased_mode_changed_callback,
+					      factory);
 
         g_free (factory->theme_name);
         g_free (factory);
@@ -474,6 +495,23 @@ nautilus_icon_factory_clear_image(const char *image_uri)
 				     (gpointer) image_uri);
 }
 
+/* callback for anti-aliased mode changing */
+static void
+anti_aliased_mode_changed_callback (gpointer user_data)
+{
+	NautilusIconFactory *factory;
+	
+	g_assert (user_data != NULL);
+	factory = (NautilusIconFactory *) user_data;
+	
+	factory->aa_mode = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
+							      FALSE);
+	
+	/* emit the icons changed signal so mode-dependent icons can be selected */
+	gtk_signal_emit (GTK_OBJECT (factory),
+			 signals[ICONS_CHANGED]);
+}
+
 /* Change the theme. */
 void
 nautilus_icon_factory_set_theme (const char *theme_name)
@@ -568,12 +606,13 @@ get_themed_icon_file_path (const char *theme_name,
 {
 	int i;
 	gboolean include_size;
-	char *themed_icon_name, *partial_path, *path, *xml_path;
+	char *themed_icon_name, *partial_path, *path, *aa_path, *xml_path;
 	xmlDocPtr doc;
 	xmlNodePtr node;
 	char *size_as_string, *property;
 	ArtIRect parsed_rect;
-
+	NautilusIconFactory *factory;
+	
 	g_assert (icon_name != NULL);
 
 	if (theme_name == NULL || icon_name[0] == '/') {
@@ -583,7 +622,8 @@ get_themed_icon_file_path (const char *theme_name,
 	}
 
 	include_size = icon_size != NAUTILUS_ICON_SIZE_STANDARD;
-
+	factory = (NautilusIconFactory*) nautilus_icon_factory_get();
+	
 	/* Try each suffix. */
 	for (i = 0; i < NAUTILUS_N_ELEMENTS (icon_file_name_suffixes); i++) {
 
@@ -594,6 +634,22 @@ get_themed_icon_file_path (const char *theme_name,
 							icon_size);
 		} else {
 			partial_path = g_strdup (themed_icon_name);
+		}
+		
+		/* if we're in anti-aliased mode, try for an optimized one first */
+		if (factory->aa_mode) {
+			aa_path = g_strdup_printf ("%s-aa", partial_path);
+			path = make_full_icon_path (aa_path,
+					    icon_file_name_suffixes[i]);
+			g_free (aa_path);
+		
+			/* Return the path if the file exists. */
+			if (path != NULL && g_file_exists (path)) {
+				break;
+			}
+			
+			g_free (path);
+			path = NULL;
 		}
 						
 		path = make_full_icon_path (partial_path,
@@ -768,7 +824,9 @@ nautilus_scalable_icon_new_from_text_pieces (const char *uri,
 {
 	GHashTable *hash_table;
 	NautilusScalableIcon icon_key, *icon;
-
+	NautilusIconFactory *factory;
+	
+	factory = (NautilusIconFactory*) nautilus_icon_factory_get ();
 	/* Make empty strings canonical. */
 	if (uri != NULL && uri[0] == '\0') {
 		uri = NULL;
@@ -791,6 +849,8 @@ nautilus_scalable_icon_new_from_text_pieces (const char *uri,
 	icon_key.name = (char *) name;
 	icon_key.modifier = (char *) modifier;
 	icon_key.embedded_text = (char *) embedded_text;
+	icon_key.aa_mode = factory->aa_mode;
+	
 	icon = g_hash_table_lookup (hash_table, &icon_key);
 	if (icon == NULL) {
 		/* Not in the table, so create it and put it in. */
@@ -799,6 +859,7 @@ nautilus_scalable_icon_new_from_text_pieces (const char *uri,
 		icon->name = g_strdup (name);
 		icon->modifier = g_strdup (modifier);
 		icon->embedded_text = g_strdup (embedded_text);
+		icon->aa_mode = factory->aa_mode;
 		g_hash_table_insert (hash_table, icon, icon);
 	}
 
@@ -865,6 +926,10 @@ nautilus_scalable_icon_hash (gconstpointer p)
 		hash ^= g_str_hash (icon->embedded_text);
 	}
 
+	if (icon->aa_mode) {
+		hash ^= 1;
+	}
+	
 	return hash;
 }
 
@@ -880,7 +945,8 @@ nautilus_scalable_icon_equal (gconstpointer a,
 	return nautilus_strcmp (icon_a->uri, icon_b->uri) == 0
 		&& nautilus_strcmp (icon_a->name, icon_b->name) == 0 
 		&& nautilus_strcmp (icon_a->modifier, icon_b->modifier) == 0
-		&& nautilus_strcmp (icon_a->embedded_text, icon_b->embedded_text) == 0;
+		&& nautilus_strcmp (icon_a->embedded_text, icon_b->embedded_text) == 0
+		&& icon_a->aa_mode == icon_b->aa_mode;
 }
 
 
