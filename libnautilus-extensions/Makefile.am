@@ -175,6 +175,7 @@ noinst_HEADERS = \
 	nautilus-icon-text-item.h \
 	nautilus-iso9660.h \
 	nautilus-keep-last-vertical-box.h \
+	nautilus-lib-self-check-functions.h \
 	nautilus-link-set.h \
 	nautilus-link.h \
 	nautilus-list-column-title.h \
