@@ -37,7 +37,8 @@ GList                   *nautilus_mime_get_short_list_applications_for_uri   (co
 GList                   *nautilus_mime_get_short_list_components_for_uri     (const char             *uri);
 GList                   *nautilus_mime_get_all_applications_for_uri          (const char             *uri);
 GList                   *nautilus_mime_get_all_components_for_uri            (const char             *uri);
-
+gboolean		 nautilus_mime_has_any_components_for_uri	     (const char	     *uri);
+gboolean		 nautilus_mime_has_any_applications_for_uri	     (const char	     *uri);
 
 void                     nautilus_mime_set_default_action_type_for_uri       (const char             *uri,
 									      GnomeVFSMimeActionType  action_type);

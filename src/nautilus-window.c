@@ -885,10 +885,14 @@ nautilus_window_load_content_view_menu (NautilusWindow *window,
                 ++index;
         }
 
-        /* Add "View as Other..." extra bonus choice, with separator before it. */
-        menu_item = gtk_menu_item_new ();
-        gtk_widget_show (menu_item);
-        gtk_menu_append (GTK_MENU (new_menu), menu_item);
+        /* Add "View as Other..." extra bonus choice, with separator before it.
+         * Leave separator out if there are no viewers in menu by default. 
+         */
+        if (ni->content_identifiers != NULL) {
+	        menu_item = gtk_menu_item_new ();
+	        gtk_widget_show (menu_item);
+	        gtk_menu_append (GTK_MENU (new_menu), menu_item);
+        }
 
        	menu_item = gtk_menu_item_new_with_label (_("View as Other..."));
         /* Store reference to window in item; no need to free this. */

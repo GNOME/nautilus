@@ -510,6 +510,19 @@ nautilus_mime_get_all_applications_for_uri (const char *uri)
 	return result;
 }
 
+gboolean
+nautilus_mime_has_any_applications_for_uri (const char *uri)
+{
+	GList *list;
+	gboolean result;
+
+	list = nautilus_mime_get_all_applications_for_uri (uri);
+	result = list != NULL;
+	gnome_vfs_mime_application_list_free (list);
+
+	return result;
+}
+
 GList *
 nautilus_mime_get_all_components_for_uri (const char *uri)
 {
@@ -546,6 +559,18 @@ nautilus_mime_get_all_components_for_uri (const char *uri)
 	return info_list;
 }
 
+gboolean
+nautilus_mime_has_any_components_for_uri (const char *uri)
+{
+	GList *list;
+	gboolean result;
+
+	list = nautilus_mime_get_all_components_for_uri (uri);
+	result = list != NULL;
+	gnome_vfs_mime_component_list_free (list);
+
+	return result;
+}
 
 
 void

@@ -1,3 +1,28 @@
+2000-06-07  John Sullivan  <sullivan@eazel.com>
+
+Fixed bug 1299 (view-and-location switching fails if short list empty)
+
+	* libnautilus-extensions/nautilus-mime-actions.h,
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_has_any_applications_for_uri),
+	(nautilus_mime_has_any_components_for_uri): New functions,
+	return a gboolean. Currently they just get the whole list
+	and check if it's non-NULL, but perhaps this can be
+	optimized later.
+	
+	* src/nautilus-sidebar.c: (nautilus_sidebar_update_buttons):
+	Deploy nautilus_mime_has_any_applications_for_uri where it
+	was already doing this kind of check.
+
+	* src/nautilus-applicable-views.c: 
+	(set_initial_content_id): removed an obsolete assert.
+	(got_file_info_callback): Don't report no handler just because
+	preferred list is empty; if any component is available use it.
+
+	* src/nautilus-window.c: (nautilus_window_load_content_view_menu):
+	Leave out the divider below the preferred list if the preferred
+	list is empty.
+
 2000-06-07  Mike Fleming  <mfleming@eazel.com>
 
 	* components/services/time/nautilus-view/Makefile.am:

@@ -126,7 +126,6 @@ set_initial_content_id (NautilusNavigationInfo *navinfo,
 	GList *node;
 
 	g_assert (default_id != NULL);
-	g_assert (g_list_length (navinfo->content_identifiers) > 0);
 
 	new_id = NULL;
 
@@ -237,12 +236,17 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
                 result_code = get_nautilus_navigation_result_from_gnome_vfs_result (vfs_result_code);
         } else {
                 /* Map GnomeVFSResult to one of the types that Nautilus knows how to handle. */
-                if (vfs_result_code == GNOME_VFS_OK && navinfo->content_identifiers == NULL) {
+                if (vfs_result_code == GNOME_VFS_OK && default_id == NULL) {
+                	/* If the complete list is non-empty, the default shouldn't have been NULL */
+                    	g_assert (!nautilus_mime_has_any_components_for_uri (navinfo->navinfo.requested_uri));
                         result_code = NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE;
                 }
-                goto out;
-        }
 
+		/* As long as we have any usable id, we can view this location. */
+                if (default_id == NULL) {
+	                goto out;
+                }
+        }
                
         /* Now that all the content_identifiers are in place, we're ready to choose
          * the initial one.
