@@ -27,6 +27,17 @@
 #include <config.h>
 #include "nautilus-bonobo-extensions.h"
 
+void
+nautilus_bonobo_set_sensitive (BonoboUIComponent *ui,
+			       const char *path,
+			       gboolean sensitive)
+{
+	bonobo_ui_component_set_prop (ui, path,
+				      "sensitive",
+				      sensitive ? "1" : "0",
+				      NULL);
+}
+
 #ifdef UIH
 
 /**

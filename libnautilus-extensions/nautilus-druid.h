@@ -24,7 +24,6 @@
 #ifndef NAUTILUS_DRUID_H
 #define NAUTILUS_DRUID_H
 
-#include <gtk/gtk.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnomeui/gnome-druid.h>
 

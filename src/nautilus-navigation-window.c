@@ -45,9 +45,6 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkoptionmenu.h>
-#ifndef UIH
-#include <gtk/gtkstatusbar.h>
-#endif
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkvbox.h>
 #include <libgnome/gnome-i18n.h>
@@ -57,6 +54,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-any-width-bin.h>
+#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
@@ -185,9 +183,10 @@ nautilus_window_set_status (NautilusWindow *window, const char *txt)
 	gtk_statusbar_pop (GTK_STATUSBAR (GNOME_APP (window)->statusbar), window->status_bar_context_id);
 #endif
 	if (txt != NULL && txt[0] != '\0') {
-		window->status_bar_clear_id = g_timeout_add(STATUS_BAR_CLEAR_TIMEOUT, (GSourceFunc)nautilus_window_clear_status, window);
+		window->status_bar_clear_id = g_timeout_add
+			(STATUS_BAR_CLEAR_TIMEOUT, (GSourceFunc) nautilus_window_clear_status, window);
 #ifdef UIH
-		gtk_statusbar_push(GTK_STATUSBAR(GNOME_APP(window)->statusbar), window->status_bar_context_id, txt);
+		gtk_statusbar_push (GTK_STATUSBAR (GNOME_APP (window)->statusbar), window->status_bar_context_id, txt);
 #endif
 	} else {
 		window->status_bar_clear_id = 0;
@@ -348,7 +347,7 @@ set_initial_window_geometry (NautilusWindow *window)
 static void
 nautilus_window_constructed (NautilusWindow *window)
 {
-	GtkWidget *location_bar_box, *status_bar;
+	GtkWidget *location_bar_box;
 	GtkWidget *view_as_menu_vbox;
   	int sidebar_width;
 	BonoboControl *location_bar_wrapper;
@@ -405,16 +404,12 @@ nautilus_window_constructed (NautilusWindow *window)
 	
 	gtk_widget_show (location_bar_box);
 	
-	/* set up status bar */
-	status_bar = gtk_statusbar_new ();
 #ifdef UIH
-	install_status_bar (app, status_bar);
-#endif
-
-	/* insert a little padding so text isn't jammed against frame */
+	/* insert a little padding so status bar text isn't jammed against frame */
 	gtk_misc_set_padding (GTK_MISC (GTK_STATUSBAR (status_bar)->label), GNOME_PAD, 0);
 	window->status_bar_context_id = gtk_statusbar_get_context_id (GTK_STATUSBAR (status_bar),
 							      "IhateGtkStatusbar");
+#endif
 	
 	/* FIXME bugzilla.eazel.com 1243: 
 	 * We should use inheritance instead of these special cases
@@ -456,9 +451,6 @@ nautilus_window_constructed (NautilusWindow *window)
 	window->details->ui_container = bonobo_ui_container_new ();
 	bonobo_ui_container_set_win (window->details->ui_container,
 				     BONOBO_WIN (window));
-#ifdef UIH
-	bonobo_ui_handler_set_statusbar (window->ui_handler, status_bar);
-#endif
 
 	/* Load the user interface from the XML file. */
 	window->details->shell_ui = bonobo_ui_component_new ("Nautilus Shell");
@@ -1158,54 +1150,54 @@ nautilus_window_go_home (NautilusWindow *window)
 void
 nautilus_window_allow_back (NautilusWindow *window, gboolean allow)
 {
-	gtk_widget_set_sensitive (window->back_button, allow); 
-#ifdef UIH
-	bonobo_ui_handler_menu_set_sensitivity
-		(window->ui_handler, NAUTILUS_MENU_PATH_BACK_ITEM, allow);
-#endif
+	/* Because of verbs, we set the sensitivity of the menu to
+	 * control both the menu and toolbar.
+	 */
+	nautilus_bonobo_set_sensitive (window->details->shell_ui,
+				       "/menu/Go/Back", allow);
 }
 
 void
 nautilus_window_allow_forward (NautilusWindow *window, gboolean allow)
 {
-	gtk_widget_set_sensitive (window->forward_button, allow); 
-#ifdef UIH
-	bonobo_ui_handler_menu_set_sensitivity
-		(window->ui_handler, NAUTILUS_MENU_PATH_FORWARD_ITEM, allow);
-#endif
+	/* Because of verbs, we set the sensitivity of the menu to
+	 * control both the menu and toolbar.
+	 */
+	nautilus_bonobo_set_sensitive (window->details->shell_ui,
+				       "/menu/Go/Forward", allow);
 }
 
 void
 nautilus_window_allow_up (NautilusWindow *window, gboolean allow)
 {
-	gtk_widget_set_sensitive (window->up_button, allow); 
-#ifdef UIH
-	bonobo_ui_handler_menu_set_sensitivity
-		(window->ui_handler, NAUTILUS_MENU_PATH_UP_ITEM, allow);
-#endif
+	/* Because of verbs, we set the sensitivity of the menu to
+	 * control both the menu and toolbar.
+	 */
+	nautilus_bonobo_set_sensitive (window->details->shell_ui,
+				       "/menu/Go/Up", allow);
 }
 
 void
 nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
 {
-	gtk_widget_set_sensitive (window->reload_button, allow); 
-#ifdef UIH
-	bonobo_ui_handler_menu_set_sensitivity
-		(window->ui_handler, NAUTILUS_MENU_PATH_RELOAD_ITEM, allow);
-#endif
+	/* Because of verbs, we set the sensitivity of the menu to
+	 * control both the menu and toolbar.
+	 */
+	nautilus_bonobo_set_sensitive (window->details->shell_ui,
+				       "/menu/View/Reload", allow);
 }
 
 void
 nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 {
-	gtk_widget_set_sensitive (window->stop_button, allow);
-	if (window->throbber == NULL)
-		return;
-		
-	if (allow) {
-		nautilus_throbber_start (NAUTILUS_THROBBER (window->throbber));
-	} else {
-		nautilus_throbber_stop (NAUTILUS_THROBBER (window->throbber));
+	nautilus_bonobo_set_sensitive (window->details->shell_ui,
+				       "/Tool Bar/Stop", allow);
+	if (window->throbber != NULL) {
+		if (allow) {
+			nautilus_throbber_start (NAUTILUS_THROBBER (window->throbber));
+		} else {
+			nautilus_throbber_stop (NAUTILUS_THROBBER (window->throbber));
+		}
 	}
 }
 
@@ -1410,17 +1402,13 @@ nautilus_window_zoom_level_changed_callback (NautilusViewFrame *view,
 
 	}
 
-#ifdef UIH
-	bonobo_ui_handler_menu_set_sensitivity (window->ui_handler,
-						NAUTILUS_MENU_PATH_ZOOM_IN_ITEM,
-						zoom_level < nautilus_view_frame_get_max_zoom_level (view));
-	bonobo_ui_handler_menu_set_sensitivity (window->ui_handler,
-						NAUTILUS_MENU_PATH_ZOOM_OUT_ITEM,
-						zoom_level > nautilus_view_frame_get_min_zoom_level (view));
-	bonobo_ui_handler_menu_set_sensitivity (window->ui_handler,
-						NAUTILUS_MENU_PATH_ZOOM_NORMAL_ITEM,
-						TRUE);
-#endif
+	nautilus_bonobo_set_sensitive (window->details->shell_ui,
+				       "/menu/View/Zoom In",
+				       zoom_level < nautilus_view_frame_get_max_zoom_level (view));
+	nautilus_bonobo_set_sensitive (window->details->shell_ui,
+				       "/menu/View/Zoom Out",
+				       zoom_level > nautilus_view_frame_get_min_zoom_level (view));
+	/* FIXME bugzilla.eazel.com 3442: Desensitize "Zoom Normal"? */
 }
 
 static Nautilus_HistoryList *

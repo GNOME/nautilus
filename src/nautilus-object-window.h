@@ -74,7 +74,7 @@ struct NautilusWindow {
         GtkWidget *view_as_option_menu;
         GtkWidget *navigation_bar;
         
-        guint status_bar_context_id, status_bar_clear_id;
+        guint status_bar_clear_id;
         
         /** CORBA-related elements **/
         NautilusApplication *application;

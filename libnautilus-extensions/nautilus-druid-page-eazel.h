@@ -24,7 +24,6 @@
 #ifndef NAUTILUS_DRUID_PAGE_EAZEL_H
 #define NAUTILUS_DRUID_PAGE_EAZEL_H
 
-#include <gtk/gtk.h>
 #include <libgnomeui/gnome-canvas.h>
 #include <libgnomeui/gnome-druid-page.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>

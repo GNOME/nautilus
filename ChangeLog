@@ -1,3 +1,27 @@
+2000-10-05  Darin Adler  <darin@eazel.com>
+
+	* README: Change required versions.
+
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	(nautilus_bonobo_set_sensitive):
+	Added new function that works with the new UI framework.
+
+	* libnautilus-extensions/nautilus-druid-page-eazel.h:
+	* libnautilus-extensions/nautilus-druid.h:
+
+	* src/nautilus-shell-ui.xml: Make Select All insensitive.
+	
+	* src/nautilus-window.c: (nautilus_window_constructed):
+	Get rid of some more of the old status bar code.
+	(nautilus_window_allow_back), (nautilus_window_allow_forward),
+	(nautilus_window_allow_up), (nautilus_window_allow_reload),
+	(nautilus_window_allow_stop),
+	(nautilus_window_zoom_level_changed_callback): Set shell
+	menu item sensitivity with the new API.
+
+	* src/nautilus-window.h: Remove status_bar_context_id.
+	
 2000-10-05  Andy Hertzfeld  <andy@eazel.com>
 	
 	* libnautilus-extensions/nautilus-customization-data.c:

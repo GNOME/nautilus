@@ -27,6 +27,12 @@
 #ifndef NAUTILUS_BONOBO_EXTENSIONS_H
 #define NAUTILUS_BONOBO_EXTENSIONS_H
 
+#include <bonobo/bonobo-ui-component.h>
+
+void nautilus_bonobo_set_sensitive (BonoboUIComponent *ui_component,
+				    const char        *path,
+				    gboolean           sensitive);
+
 #ifdef UIH
 void nautilus_bonobo_ui_handler_menu_set_toggle_appearance (BonoboUIHandler *uih,
 				      	   		    const char      *path,
