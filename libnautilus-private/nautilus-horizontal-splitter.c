@@ -38,8 +38,8 @@ struct NautilusHorizontalSplitterDetails {
 #define BAR_WIDTH 7
 #define CLOSED_THRESHOLD 4
 #define NOMINAL_SIZE 148
-#define SPLITTER_CLICK_SLOP 3
-#define SPLITTER_CLICK_TIMEOUT	1500
+#define SPLITTER_CLICK_SLOP 1
+#define SPLITTER_CLICK_TIMEOUT	400
 
 /* NautilusHorizontalSplitterClass methods */
 static void     nautilus_horizontal_splitter_initialize_class (NautilusHorizontalSplitterClass *horizontal_splitter_class);

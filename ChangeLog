@@ -1,3 +1,25 @@
+2000-07-06  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar-tabs.c: (nautilus_sidebar_tabs_remove_view):
+	fixed long-standing bug where sidebar tabs would invoke the
+	wrong views, by decrementing subsequent indexes when a panel is
+	removed.
+	* src/nautilus-sidebar.c: (nautilus_sidebar_initialize),
+	(nautilus_sidebar_activate_panel),
+	(nautilus_sidebar_deactivate_panel),
+	(nautilus_sidebar_update_buttons):
+	fixed problem of sidebar views changing their position as you
+	navigate, and also gave them more space, by hiding the title
+	info when a sidebar view is showing, allowing them to take up
+	the entire space of the sidebar.
+	* libnautilus-extensions/nautilus-horizontal-splitter.c:
+	reduced the slop threshold and time threshold for toggling the
+	sidebar so it doesn't happen accidentally
+	* icons/backgrounds.png:
+	* icons/colors.png:
+	* icons/emblems.png:
+	new images from Susan
+	
 2000-07-06  Michael Engber  <engber@eazel.com>
 
 	* src/nautilus-zoom-control.c: (nautilus_zoom_control_destroy):

@@ -230,7 +230,7 @@ nautilus_sidebar_initialize (GtkObject *object)
 			    GTK_WIDGET (sidebar->details->title),
 			    FALSE, FALSE, GNOME_PAD);
 	
-	/* first, allocate the index tabs */
+	/* allocate the index tabs */
 	sidebar->details->sidebar_tabs = NAUTILUS_SIDEBAR_TABS (nautilus_sidebar_tabs_new ());
 	sidebar->details->selected_index = -1;
 
@@ -825,7 +825,8 @@ nautilus_sidebar_activate_panel (NautilusSidebar *sidebar, int which_view)
 	g_free (title);
 	
 	/* hide the buttons, since they look confusing when partially overlapped */
-	gtk_widget_hide (GTK_WIDGET (sidebar->details->button_box));
+	gtk_widget_hide (GTK_WIDGET (sidebar->details->button_box_centerer));
+	gtk_widget_hide (GTK_WIDGET (sidebar->details->title));
 	
 	gtk_notebook_set_page (notebook, which_view);
 }
@@ -839,7 +840,8 @@ nautilus_sidebar_deactivate_panel(NautilusSidebar *sidebar)
 		gtk_widget_hide (GTK_WIDGET (sidebar->details->title_tab));
 	}
 	
-	gtk_widget_show (GTK_WIDGET (sidebar->details->button_box));
+	gtk_widget_show (GTK_WIDGET (sidebar->details->button_box_centerer));
+	gtk_widget_show (GTK_WIDGET (sidebar->details->title));
 	sidebar->details->selected_index = -1;
 	nautilus_sidebar_tabs_select_tab (sidebar->details->sidebar_tabs, -1);
 }
@@ -1251,7 +1253,8 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 
 		/* Hide button box if a sidebar panel is showing. */
 		if (sidebar->details->selected_index != -1) {
-			gtk_widget_hide (GTK_WIDGET (sidebar->details->button_box));
+			gtk_widget_hide (GTK_WIDGET (sidebar->details->button_box_centerer));
+			gtk_widget_hide (GTK_WIDGET (sidebar->details->title));
 		}
 	}
 }

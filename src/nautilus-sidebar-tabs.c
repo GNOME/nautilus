@@ -776,8 +776,10 @@ nautilus_sidebar_tabs_get_title_from_index (NautilusSidebarTabs *sidebar_tabs, i
 void
 nautilus_sidebar_tabs_remove_view (NautilusSidebarTabs *sidebar_tabs, const char *name)
 {
+	GList *next_tab;
 	TabItem *tab_item;
-
+	int old_page_number;
+	
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
 	g_return_if_fail (name != NULL);
 
@@ -792,7 +794,15 @@ nautilus_sidebar_tabs_remove_view (NautilusSidebarTabs *sidebar_tabs, const char
 	/* Remove the item from the list */
 	sidebar_tabs->details->tab_items = g_list_remove (sidebar_tabs->details->tab_items, tab_item);
 
+	old_page_number = tab_item->notebook_page;
  	tab_item_destroy (tab_item);
+	
+	/* decrement all page numbers greater than the one we're removing */
+	for (next_tab = sidebar_tabs->details->tab_items; next_tab != NULL; next_tab = next_tab->next) {
+		TabItem *item = next_tab->data;
+		if (item->notebook_page >= old_page_number)
+			item->notebook_page -= 1;
+	}
 	
 	sidebar_tabs->details->tab_count -= 1;
 	
