@@ -1,6 +1,18 @@
 2001-03-09  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
+                     Pavel Cisler <pavel@eazel.com>
+
+	Fix bug 7609 (closing Show Properties window when new name
+	conflicts leads to crash):
+
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	(nautilus_run_simple_dialog), (create_message_box): Don't use
+	an already-destroyed window as a parent.
+
+2001-03-09  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
 
 	Fix bug 7587 (Copying text in Notes with menu item kills Notes
 	[also Text viewer, etc]):

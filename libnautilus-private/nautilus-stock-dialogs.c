@@ -384,7 +384,7 @@ nautilus_run_simple_dialog (GtkWidget *parent, gboolean ignore_close_box,
 	/* Parent it if asked to. */
         if (parent != NULL) {
 		top_widget = gtk_widget_get_toplevel (parent);
-		if (GTK_IS_WINDOW (top_widget)) {
+		if (GTK_IS_WINDOW (top_widget) && !GTK_OBJECT_DESTROYED (top_widget)) {
 			gnome_dialog_set_parent (GNOME_DIALOG (dialog), GTK_WINDOW (top_widget));
 		}
 	}
@@ -458,7 +458,7 @@ create_message_box (const char *message,
 	message_label = GTK_LABEL (gtk_object_get_data (GTK_OBJECT (box), "message label"));
 	gtk_label_set_line_wrap (message_label, TRUE);
 
-	if (parent != NULL) {
+	if (parent != NULL && !GTK_OBJECT_DESTROYED (parent)) {
 		gnome_dialog_set_parent (GNOME_DIALOG (box), parent);
 	}
 	return GNOME_DIALOG (box);
