@@ -1171,7 +1171,11 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 						 folder_item_count_str);
 	} else {
 		/* This is marked for translation in case a localizer
-		 * needs to change ", " to something else.
+		 * needs to change ", " to something else. The comma
+		 * is between the message about the number of folders
+		 * and the number of items in those folders and the
+		 * message about the number of other items and the
+		 * total size of those items.
 		 */
 		status_string = g_strdup_printf (_("%s%s, %s"), 
 						 folder_count_str, 

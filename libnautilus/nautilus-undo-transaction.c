@@ -303,7 +303,8 @@ nautilus_undo_transaction_undo (NautilusUndoTransaction *transaction)
 }
 
 void
-nautilus_undo_transaction_add_to_undo_manager (NautilusUndoTransaction *transaction,					       Nautilus_Undo_Manager manager)
+nautilus_undo_transaction_add_to_undo_manager (NautilusUndoTransaction *transaction,
+					       Nautilus_Undo_Manager manager)
 {
 	CORBA_Environment ev;
 

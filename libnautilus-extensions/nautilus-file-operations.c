@@ -346,64 +346,79 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 	char *text;
 	char *unescaped_name;
 	char *current_operation;
-	const char *read_only_reason;
-
-	current_operation = NULL;
 
 	switch (xfer_info->error_mode) {
 	case GNOME_VFS_XFER_ERROR_MODE_QUERY:
 
-		unescaped_name = gnome_vfs_unescape_string_for_display (progress_info->source_name);
 		/* transfer error, prompt the user to continue or stop */
 
+		unescaped_name = gnome_vfs_unescape_string_for_display (progress_info->source_name);
 		current_operation = g_strdup (xfer_info->progress_verb);
 
 		g_strdown (current_operation);
 		if (progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM
-			|| progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY
-			|| progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
-
-			read_only_reason = progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED
-				? "You do not have the required permissions to do that"
-				: "The destination is read-only";
-
-			text = g_strdup_printf ( _("Error while %s \"%s\".\n"
-				"%s. "
-				"Would you like to continue?"),
-				current_operation,
-				unescaped_name,
-				read_only_reason);
-
+		    || progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY
+		    || progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
+			
+			if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
+				text = g_strdup_printf
+					(_("Error while %s \"%s\".\n"
+					   "The destination is read-only. "
+					   "Would you like to continue?"),
+					 current_operation,
+					 unescaped_name);
+			} else {
+				text = g_strdup_printf
+					(_("Error while %s \"%s\".\n"
+					   "The destination is read-only. "
+					   "Would you like to continue?"),
+					 current_operation,
+					 unescaped_name);
+			}
+			g_free (current_operation);
+			g_free (unescaped_name);
+			
 			result = nautilus_simple_dialog
 				(xfer_info->parent_view, text, 
-				 _("File copy error"),
+				 _("Nautilus: File copy error"),
 				 _("Skip"), _("Stop"), NULL);
 
-			g_free (current_operation);
+			g_free (text);
 
 			switch (result) {
 			case 0:
 				return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
+			default:
+				g_assert_not_reached ();
+				/* fall through */
 			case 1:
 				return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 			}						
 		} else {
 
-			text = g_strdup_printf ( _("Error \"%s\" copying file %s.\n"
-				"Would you like to continue?"), 
-				gnome_vfs_result_to_string (progress_info->vfs_status),
-				unescaped_name);
+			text = g_strdup_printf
+				(_("Error \"%s\" while %s \"%s\".\n"
+				   "Would you like to continue?"), 
+				 gnome_vfs_result_to_string (progress_info->vfs_status),
+				 current_operation,
+				 unescaped_name);
+			g_free (current_operation);
 			g_free (unescaped_name);
+
 			result = nautilus_simple_dialog
 				(xfer_info->parent_view, text, 
-				 _("File copy error"),
+				 _("Nautilus: File copy error"),
 				 _("Skip"), _("Retry"), _("Stop"), NULL);
+			g_free (text);
 
 			switch (result) {
 			case 0:
 				return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
 			case 1:
 				return GNOME_VFS_XFER_ERROR_ACTION_RETRY;
+			default:
+				g_assert_not_reached ();
+				/* fall through */
 			case 2:
 				return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 			}						
@@ -412,10 +427,10 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 	case GNOME_VFS_XFER_ERROR_MODE_ABORT:
 	default:
 		if (xfer_info->progress_dialog != NULL) {
-			nautilus_file_operations_progress_freeze (NAUTILUS_FILE_OPERATIONS_PROGRESS
-							  (xfer_info->progress_dialog));
-			nautilus_file_operations_progress_thaw (NAUTILUS_FILE_OPERATIONS_PROGRESS
-							(xfer_info->progress_dialog));
+			nautilus_file_operations_progress_freeze
+				(NAUTILUS_FILE_OPERATIONS_PROGRESS (xfer_info->progress_dialog));
+			nautilus_file_operations_progress_thaw
+				(NAUTILUS_FILE_OPERATIONS_PROGRESS (xfer_info->progress_dialog));
 			gtk_widget_destroy (xfer_info->progress_dialog);
 		}
 		return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
@@ -432,9 +447,9 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 	char *unescaped_name;
 
 	unescaped_name = gnome_vfs_unescape_string_for_display (progress_info->target_name);
-	text = g_strdup_printf ( _("File %s already exists.\n"
-		"Would you like to replace it?"), 
-		unescaped_name);
+	text = g_strdup_printf (_("File %s already exists.\n"
+				  "Would you like to replace it?"), 
+				unescaped_name);
 	g_free (unescaped_name);
 
 	if (progress_info->duplicate_count == 1) {
@@ -443,18 +458,21 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		 */
 		result = nautilus_simple_dialog
 			(xfer_info->parent_view, text, 
-			 _("File copy conflict"),
+			 _("Nautilus: File copy conflict"),
 			 _("Replace"), _("Skip"), NULL);
 		switch (result) {
 		case 0:
 			return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE;
+		default:
+			g_assert_not_reached ();
+			/* fall through */
 		case 1:
 			return GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP;
 		}
 	} else {
 		result = nautilus_simple_dialog
 			(xfer_info->parent_view, text, 
-			 _("File copy conflict"),
+			 _("Nautilus: File copy conflict"),
 			 _("Replace All"), _("Replace"), _("Skip"), NULL);
 
 		switch (result) {
@@ -462,12 +480,13 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 			return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE_ALL;
 		case 1:
 			return GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE;
+		default:
+			g_assert_not_reached ();
+			/* fall through */
 		case 2:
 			return GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP;
 		}
 	}
-
-	return 0;					
 }
 
 /* Note that we have these two separate functions with separate format
@@ -1038,10 +1057,11 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) == 0) {
 		/* don't allow copying into Trash */
 		if (check_target_directory_is_or_in_trash (trash_dir_uri, target_dir_uri)) {
-			nautilus_simple_dialog (view, 
-				_("You cannot copy items into the Trash."), 
-				_("Error copying"),
-				_("OK"), NULL, NULL);			
+			nautilus_simple_dialog
+				(view, 
+				 _("You cannot copy items into the Trash."), 
+				 _("Nautilus: Error copying"),
+				 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
 			result = GNOME_VFS_ERROR_NOT_PERMITTED;
 		}
 	}
@@ -1052,12 +1072,13 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 
 			/* Check that the Trash is not being moved/copied */
 			if (trash_dir_uri != NULL && gnome_vfs_uri_equal (uri, trash_dir_uri)) {
-				nautilus_simple_dialog (view, 
-					((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
-					? _("You cannot move the Trash.")
-					: _("You cannot copy the Trash."), 
-					_("Error moving to Trash"),
-					_("OK"), NULL, NULL);			
+				nautilus_simple_dialog
+					(view, 
+					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
+					 ? _("You cannot move the Trash.")
+					 : _("You cannot copy the Trash."), 
+					 _("Nautilus: Error moving to Trash"),
+					 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
 
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;
 				break;
@@ -1070,12 +1091,13 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 			if ((move_options & GNOME_VFS_XFER_LINK_ITEMS) == 0
 				&& (gnome_vfs_uri_equal (uri, target_dir_uri)
 					|| gnome_vfs_uri_is_parent (uri, target_dir_uri, TRUE))) {
-				nautilus_simple_dialog (view, 
-					((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
-					? _("You cannot move an item into itself.")
-					: _("You cannot copy an item into itself."), 
-					_("Error moving to Trash"),
-					_("OK"), NULL, NULL);			
+				nautilus_simple_dialog
+					(view, 
+					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
+					 ? _("You cannot move an item into itself.")
+					 : _("You cannot copy an item into itself."), 
+					 _("Nautilus: Error moving into self"),
+					 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
 
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;
 				break;
@@ -1228,20 +1250,22 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 		target_uri_list = g_list_prepend (target_uri_list, append_basename (trash_dir_uri, source_uri));
 		
 		if (gnome_vfs_uri_equal (source_uri, trash_dir_uri)) {
-			nautilus_simple_dialog (parent_view, 
-				_("You cannot throw away the Trash."), 
-				_("Error moving to Trash"),
-				_("OK"), NULL, NULL);			
+			nautilus_simple_dialog
+				(parent_view, 
+				 _("You cannot throw away the Trash."), 
+				 _("Nautilus: Error throwing away Trash"),
+				 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
 			bail = TRUE;
 		} else if (gnome_vfs_uri_is_parent (source_uri, trash_dir_uri, TRUE)) {
 			item_name = nautilus_convert_to_unescaped_string_for_display 
 				(gnome_vfs_uri_extract_short_name (source_uri));
-			text = g_strdup_printf ( _("You cannot throw \"%s\" "
-				"into the Trash."), item_name);
-
-			nautilus_simple_dialog (parent_view, text, 
-				_("Error moving to Trash"),
-				_("OK"), NULL, NULL);			
+			text = g_strdup_printf
+				(_("You cannot throw \"%s\" into the Trash."),
+				 item_name);
+			nautilus_simple_dialog
+				(parent_view, text, 
+				 _("Nautilus: Error moving to Trash"),
+				 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
 			bail = TRUE;
 			g_free (text);
 			g_free (item_name);

@@ -1,3 +1,18 @@
+2000-09-14  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(handle_xfer_vfs_error), (handle_xfer_overwrite),
+	(nautilus_file_operations_copy_move),
+	(nautilus_file_operations_move_to_trash): Fix wording and make it
+	a little easier to translate some of these dialogs.  John said he
+	will make a pass to make them even better, but I got rid of some
+	of the egregious problems and added Nautilus: to all the titles.
+	* libnautilus/nautilus-undo-transaction.c:
+	(nautilus_undo_transaction_add_to_undo_manager): Tiny format
+	tweak.
+	* src/file-manager/fm-directory-view.c: Improved comment for
+	localizers.
+
 2000-09-14  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 2373 (Select All Files scrolls to bottom)
@@ -53,6 +68,7 @@
 	* libnautilus-extensions/nautilus-background.c:
 	(nautilus_background_draw), (nautilus_background_draw_aa):
 
+>>>>>>> 1.1892
 2000-09-14  Robey Pointer  <robey@eazel.com>
 
 	* components/services/trilobite/doc/gconf.txt:
