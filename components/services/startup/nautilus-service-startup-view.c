@@ -22,7 +22,7 @@
  */
 
 /* nautilus-services-content-view.c - services content view
-   component. This component supplies some UI for the service and
+   component. This component supplies some UI for service registration
    invokes other functions like configuration upload */
    
 #include <config.h>
@@ -37,6 +37,7 @@
 #include <libnautilus/nautilus-glib-extensions.h>
 #include <libnautilus/nautilus-global-preferences.h>
 #include <libnautilus/nautilus-file-utilities.h>
+#include <libnautilus/nautilus-string.h>
 
 #include <stdio.h>
 
@@ -49,7 +50,7 @@ struct _NautilusServicesContentViewDetails {
 	GtkWidget		  *account_password;
 	GtkWidget		  *confirm_password;
 	GtkWidget		  *register_button;
-	GtkWidget		  *error_text;
+	GtkWidget		  *feedback_text;
 };
 
 
@@ -64,9 +65,19 @@ static void nautilus_service_startup_view_destroy          (GtkObject *object);
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusServicesContentView, nautilus_service_startup_view, 
 				   GTK_TYPE_EVENT_BOX)
      
-static void service_main_notify_location_change_cb              (NautilusContentViewFrame  *view, 
-							   Nautilus_NavigationInfo   *navinfo, 
-							   NautilusServicesContentView *services);
+static void service_main_notify_location_change_cb (NautilusContentViewFrame  *view, 
+							Nautilus_NavigationInfo   *navinfo, 
+							NautilusServicesContentView *services);
+/* utility routine to go to another uri */
+
+static void
+go_to_uri(NautilusServicesContentView* view, gchar *uri)
+{
+	Nautilus_NavigationRequestInfo nri;	
+	memset(&nri, 0, sizeof(nri));
+ 	nri.requested_uri = uri;
+  	nautilus_view_frame_request_location_change((NautilusViewFrame*)view->details->view_frame, &nri);
+}
 
 /* temporary callback to handle the configuration button */    
 static void
@@ -140,20 +151,66 @@ make_http_post_request(gchar *uri, gchar *post_body)
     return request;
 }
 
-/* callback to handle the configuration button */    
-static void
-gather_config_button_cb (GtkWidget *button, char *data)
-{
-	g_message("gather configuration button clicked");
-}
-
 /* utility routine to show an error message */
 
 static void
-show_error(NautilusServicesContentView *view, gchar* error_message)
+show_feedback(NautilusServicesContentView *view, gchar* error_message)
 {
-	gtk_label_set_text(GTK_LABEL(view->details->error_text), error_message);
-	gtk_widget_show(view->details->error_text);
+	gtk_label_set_text(GTK_LABEL(view->details->feedback_text), error_message);
+	gtk_widget_show(view->details->feedback_text);
+}
+
+
+/* callback to handle the configuration button.  First, make the configuration xml file,
+   then feed it to the service over HTTP.  Display an error message, or move on to the summary
+   screen if successful */
+/* FIXME: text strings should be gotten from a file */      
+
+static void
+gather_config_button_cb (GtkWidget *button, NautilusServicesContentView *view)
+{
+	FILE* config_file;
+	gchar buffer[256];
+	gchar *config_file_name, *config_string;
+	GString* config_data;
+	xmlDocPtr config_doc;
+	
+	show_feedback(view, "gathering configuration data...");
+	
+	config_doc = create_configuration_metafile();
+	if (config_doc == NULL) {
+		show_feedback(view, "Sorry, there was an error during the gathering");
+		return;
+	}
+
+	/* save the configuration file */	
+  	
+	config_file_name = g_strdup_printf("%s/.nautilus/configuration.xml", g_get_home_dir());
+	xmlSaveFile(config_file_name, config_doc);
+  	xmlFreeDoc(config_doc);
+
+	/* load the config file text into memory */
+	
+	config_data = g_string_new("");
+	config_file = fopen(config_file_name, "r");
+	
+	while (fgets(buffer, 255, config_file) != NULL) {
+		g_string_append(config_data, buffer);		
+	}
+	fclose(config_file);	
+	config_string = strdup(config_data->str);
+	g_string_free(config_data, TRUE);
+	g_free(config_file_name);
+	
+	/* move into transmission phase by changing the feedback message */
+	
+	show_feedback(view, "transmitting configuration data...");
+	
+	/* send the config file to the server via HTTP */
+	
+	/* give error feedback or go to the summary form if successful */
+	g_free(config_string);
+	show_feedback(view, "done transmitting configuration data.");
 }
 
 /* handle the registration command */
@@ -162,7 +219,6 @@ show_error(NautilusServicesContentView *view, gchar* error_message)
 static void
 register_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 {
-	Nautilus_NavigationRequestInfo nri;	
 	ghttp_request *request;	
 	gchar *response_str, *body, *uri;
 	gchar *email = gtk_entry_get_text(GTK_ENTRY(view->details->account_name));
@@ -173,28 +229,28 @@ register_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 	/* see if the email address is valid; if not, display an error */
 	
 	if (!strlen(email) || !strchr(email,'@')) {
-		show_error(view, "You have not typed a valid email address!  Please correct it and try again.");
+		show_feedback(view, "You have not typed a valid email address!  Please correct it and try again.");
 		return;
 	}
 	
 	/* see if the passwords are valid and matching; if not, display an error */
 	
 	if (!strlen(password) || !strlen(confirm)) {
-		show_error(view, "You have not typed a valid password!  Please correct it and try again.");
+		show_feedback(view, "You have not typed a valid password!  Please correct it and try again.");
 		return;
 	}
 
 	if (strcmp(password, confirm)) {
-		show_error(view, "The passwords don't match!  Please correct them and try again.");
+		show_feedback(view, "The passwords don't match!  Please correct them and try again.");
 		return;
 	}
 		
 	/* hide the error text and give feedback in the status area during the request */
-	gtk_widget_hide(view->details->error_text);
+	gtk_widget_hide(view->details->feedback_text);
 		
 	/* FIXME: need to url-encode the arguments here */
 	body = g_strdup_printf("email=%s&pwd=%s", email, password);
-	uri = g_strdup_printf("http://%s/temp.pl", SERVICE_DOMAIN_NAME);
+	uri = g_strdup_printf("http://%s/new.pl", SERVICE_DOMAIN_NAME);
 	 
 	request = make_http_post_request(uri, body);
 	response_str = ghttp_get_body(request);
@@ -203,17 +259,41 @@ register_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 	if (strstr(response_str, "<ERROR field=") == response_str) {
 		if (strstr(response_str, "email")) {
 			if (strstr(response_str, "taken"))
-				show_error(view, "That email address is already registered!  Please change it and try again.");
+				show_feedback(view, "That email address is already registered!  Please change it and try again.");
 			else
-				show_error(view, "That email address is invalid!  Please change it and try again.");
+				show_feedback(view, "That email address is invalid!  Please change it and try again.");
 		}
 	}
 	else {
 	/* check for a cookie that indicates success */
 		const gchar* cookie = ghttp_get_header(request, "Set-Cookie");
-		g_message("cookie is %s", cookie);
 		
 	/* we found the cookie, so save it in the services file */
+		gchar* token_start = strstr(cookie, "token=");
+		if (token_start) {
+			gchar *temp_str = strdup(token_start + strlen("token="));
+			gchar *token_end = strchr(temp_str, ';');
+			if (token_end) {
+				xmlDoc *service_doc;
+				xmlNode *service_node;
+				gchar *temp_filename;
+			
+				*token_end = '\0';
+	
+				service_doc = xmlNewDoc((const CHAR*)"1.0");
+				service_node = xmlNewDocNode(service_doc, NULL, (const CHAR*) "SERVICE", NULL);
+				service_doc->root = service_node;
+	                        xmlSetProp(service_node, "domain", SERVICE_DOMAIN_NAME);
+	                        xmlSetProp(service_node, "token", temp_str);
+  		
+				temp_filename = g_strdup_printf("%s/.nautilus/service.xml", g_get_home_dir());
+				xmlSaveFile(temp_filename, service_doc);
+  				xmlFreeDoc(service_doc);
+  				g_free(temp_filename);
+			} 
+			g_free(temp_str);
+		}
+		
 		registered_ok = TRUE;
 	}
 	
@@ -222,11 +302,8 @@ register_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 	ghttp_request_destroy(request);
 	
 	/* we succeeded in registering, so advance to the configuration form */	
-	if (registered_ok) {
-  		memset(&nri, 0, sizeof(nri));
-  		nri.requested_uri = "eazel:config";
-  		 nautilus_view_frame_request_location_change((NautilusViewFrame*)view->details->view_frame, &nri);
-	}
+	if (registered_ok)
+  		go_to_uri(view, "eazel:config?signup");
 }
 
 /* FIXME: this routine should be someone else, and should take user preferences into account */
@@ -239,13 +316,9 @@ get_home_uri()
 /* callback to handle the register later button */    
 static void
 register_later_cb (GtkWidget *button, NautilusServicesContentView *view)
-{
-	Nautilus_NavigationRequestInfo nri;
-	
+{	
 	gchar* home_path = get_home_uri(); 
-  	memset(&nri, 0, sizeof(nri));
-  	nri.requested_uri = home_path;
-  	nautilus_view_frame_request_location_change((NautilusViewFrame*)view->details->view_frame, &nri);
+	go_to_uri(view, home_path);
 	g_free(home_path);
 }
 
@@ -324,7 +397,7 @@ static void setup_signup_form(NautilusServicesContentView *view)
 
 	/* set up the title */	
 	setup_form_title(GTK_BOX(view->details->form), "Eazel Service Registration Form");
-
+	
 	/* display a descriptive message */
 	/* FIXME: get the text from a file or from the service */
 	message = "Use this form to register for the Eazel Service, free of charge.  It will give you a storage space on the web that is easily accessed from Nautilus, and access to a customized software catalog that will allow you to install new applications with a single click.";
@@ -352,7 +425,7 @@ static void setup_signup_form(NautilusServicesContentView *view)
   	gtk_misc_set_alignment(GTK_MISC(temp_widget), 1.0, 0.5);
   	gtk_table_attach(table, temp_widget, 0,1, 1,2, GTK_FILL, GTK_FILL, 2,2);
   	gtk_widget_show(temp_widget);
-  	view->details->account_password = gtk_entry_new_with_max_length(20);
+  	view->details->account_password = gtk_entry_new_with_max_length(36);
   	gtk_table_attach(table, view->details->account_password, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4,4);
   	gtk_entry_set_visibility(GTK_ENTRY(view->details->account_password), FALSE);
 	gtk_widget_show(view->details->account_password);
@@ -362,7 +435,7 @@ static void setup_signup_form(NautilusServicesContentView *view)
   	gtk_misc_set_alignment(GTK_MISC(temp_widget), 1.0, 0.5);
   	gtk_table_attach(table, temp_widget, 0,1, 2,3, GTK_FILL, GTK_FILL, 2,2);
   	gtk_widget_show(temp_widget);
-  	view->details->confirm_password = gtk_entry_new_with_max_length(20);
+  	view->details->confirm_password = gtk_entry_new_with_max_length(36);
   	gtk_table_attach(table, view->details->confirm_password, 1, 2, 2,3, GTK_FILL, GTK_FILL, 4,4);
    	gtk_entry_set_visibility(GTK_ENTRY(view->details->confirm_password), FALSE);
  	gtk_widget_show(view->details->confirm_password);
@@ -408,8 +481,8 @@ static void setup_signup_form(NautilusServicesContentView *view)
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 16);
 
 	/* add a label for error messages, but don't show it until there's an error */
-	view->details->error_text = gtk_label_new ("");	
-	gtk_box_pack_start(GTK_BOX(view->details->form), view->details->error_text, 0, 0, 8);			 	
+	view->details->feedback_text = gtk_label_new ("");	
+	gtk_box_pack_start(GTK_BOX(view->details->form), view->details->feedback_text, 0, 0, 8);			 	
 }
 
 /* create the config form */
@@ -427,6 +500,17 @@ static void setup_config_form(NautilusServicesContentView *view)
 
 	/* set up the title */	
 	setup_form_title(GTK_BOX(view->details->form), "Eazel Service Configuration Gathering");
+
+	/* if we came from signup, add a congrats message */
+	/* FIXME: get the text from a file or from the service */
+	
+	if (nautilus_str_has_suffix(view->details->uri, "signup")) {
+		message = "Congratulations, you have successfully signed up with the Eazel service!";
+		temp_widget = gtk_label_new (message);
+ 	
+		gtk_box_pack_start(GTK_BOX(view->details->form), temp_widget, 0, 0, 12);			
+ 		gtk_widget_show (temp_widget);
+	}
 	
 	/* make label containing text about uploading the configuration data */
 	/* FIXME: It should get this text from a file or from the service */
@@ -465,6 +549,11 @@ static void setup_config_form(NautilusServicesContentView *view)
 	/* show the buttons */
 	gtk_widget_show(temp_box);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 16);
+	
+	/* add a label for feedback, but don't show it until there's an error */
+	view->details->feedback_text = gtk_label_new ("");	
+	gtk_box_pack_start(GTK_BOX(view->details->form), view->details->feedback_text, 0, 0, 8);			 	
+
 }
 
 static void
