@@ -1,3 +1,12 @@
+2002-05-30  Damon Chaplin  <damon@ximian.com>
+
+	* src/nautilus-bookmarks-window.c: Added support for DnD using
+	GtkTreeView. I added on_row_changed() and on_row_deleted() and removed
+	the old on_row_move(). I also added an extra column to the table to
+	store a pointer to the bookmark object, so we can handle DnD.
+	And a few hacks to keep the list store in sync with the bookmarks
+	list. Fixes bug #80986.
+
 2002-05-30  Alex Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-container.c (size_allocate):
