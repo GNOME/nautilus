@@ -1541,6 +1541,7 @@ nautilus_gtk_label_make_bold (GtkLabel *label)
 
 	g_return_if_fail (GTK_IS_LABEL (label));
 
+	gtk_widget_ensure_style (GTK_WIDGET (label));
 	style = gtk_widget_get_style (GTK_WIDGET (label));
 
 	bold_font = nautilus_gdk_font_get_bold (style->font);
@@ -1566,6 +1567,7 @@ nautilus_gtk_label_make_larger (GtkLabel *label,
 
 	g_return_if_fail (GTK_IS_LABEL (label));
 
+	gtk_widget_ensure_style (GTK_WIDGET (label));
 	style = gtk_widget_get_style (GTK_WIDGET (label));
 
 	larger_font = nautilus_gdk_font_get_larger (style->font, num_steps);
@@ -1591,6 +1593,7 @@ nautilus_gtk_label_make_smaller (GtkLabel *label,
 
 	g_return_if_fail (GTK_IS_LABEL (label));
 
+	gtk_widget_ensure_style (GTK_WIDGET (label));
 	style = gtk_widget_get_style (GTK_WIDGET (label));
 
 	smaller_font = nautilus_gdk_font_get_smaller (style->font, num_steps);

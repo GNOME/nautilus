@@ -1,3 +1,12 @@
+2001-02-22  John Harper  <jsh@eazel.com>
+
+	reviewed by: Ramiro Estrugo <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-gtk-extensions.c
+	(nautilus_gtk_label_make_bold, nautilus_gtk_label_make_larger,
+	nautilus_gtk_label_make_smaller): call gtk_widget_ensure_style
+	() before trying to fetch the style
+
 2001-02-22  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
