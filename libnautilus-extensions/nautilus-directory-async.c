@@ -1087,6 +1087,27 @@ update_file_info_in_list_if_needed (GList *list,
 	return TRUE;
 }
 
+static void
+set_file_unconfirmed (NautilusFile *file, gboolean unconfirmed)
+{
+	NautilusDirectory *directory;
+
+	g_assert (NAUTILUS_IS_FILE (file));
+	if (file->details->unconfirmed == unconfirmed) {
+		return;
+	}
+	file->details->unconfirmed = unconfirmed;
+
+	directory = file->details->directory;
+	if (unconfirmed) {
+		directory->details->confirmed_file_count--;
+	}
+	else {
+		directory->details->confirmed_file_count++;
+	}
+}
+
+
 static gboolean
 dequeue_pending_idle_callback (gpointer callback_data)
 {
@@ -1124,7 +1145,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		file = nautilus_directory_find_file (directory, file_info->name);
 		if (file != NULL) {
 			/* file already exists, check if it changed */
-			file->details->unconfirmed = FALSE;
+			set_file_unconfirmed (file, FALSE);
 			if (nautilus_file_update_info (file, file_info, FALSE)) {
 				/* File changed, notify about the change. */
 				nautilus_file_ref (file);
@@ -1203,7 +1224,7 @@ directory_load_one (NautilusDirectory *directory,
 		return;
 	}
 	gnome_vfs_file_info_ref (info);
-        directory->details->pending_file_info
+	directory->details->pending_file_info
 		= g_list_prepend (directory->details->pending_file_info, info);
 	nautilus_directory_schedule_dequeue_pending (directory);
 }
@@ -1236,7 +1257,7 @@ directory_load_done (NautilusDirectory *directory,
 		 * about them to know whether they are really gone.
 		 */
 		for (node = directory->details->file_list; node != NULL; node = node->next) {
-			NAUTILUS_FILE (node->data)->details->unconfirmed = FALSE;
+			set_file_unconfirmed (NAUTILUS_FILE (node->data), FALSE);
 		}
 	}
 
@@ -1290,8 +1311,10 @@ directory_load_callback (GnomeVFSAsyncHandle *handle,
 	}
 	directory->details->directory_load_list_last_handled = last_handled;
 
-	if (result != GNOME_VFS_OK) {
-		directory_load_done (directory, result);
+	if (nautilus_directory_file_list_length_reached (directory) ||
+	    result != GNOME_VFS_OK) {
+		directory_load_done (directory, 
+				     result);
 	}
 }
 
@@ -1888,8 +1911,7 @@ mark_all_files_unconfirmed (NautilusDirectory *directory)
 
 	for (node = directory->details->file_list; node != NULL; node = node->next) {
 		file = node->data;
-
-		file->details->unconfirmed = TRUE;
+		set_file_unconfirmed (file, TRUE);
 	}
 }
 
@@ -1948,7 +1970,6 @@ nautilus_directory_stop_monitoring_file_list (NautilusDirectory *directory)
 	directory->details->file_list_monitored = FALSE;
 	file_list_cancel (directory);
 	nautilus_file_list_unref (directory->details->file_list);
-
 	directory->details->directory_loaded = FALSE;
 }
 

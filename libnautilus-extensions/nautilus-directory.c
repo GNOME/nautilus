@@ -63,6 +63,9 @@ static guint signals[LAST_SIGNAL];
          | GNOME_VFS_PERM_GROUP_ALL \
 	 | GNOME_VFS_PERM_OTHER_ALL)
 
+/* Hack for PR2 to prevent use of too many resources */
+#define NAUTILUS_DIRECTORY_FILE_LIST_HARD_LIMIT     4000
+
 static GHashTable *directories;
 
 static void               nautilus_directory_destroy          (GtkObject   *object);
@@ -550,6 +553,8 @@ nautilus_directory_add_file (NautilusDirectory *directory, NautilusFile *file)
 	/* Add to hash table. */
 	add_to_hash_table (directory, file, node);
 
+	directory->details->confirmed_file_count++;
+
 	/* Ref if we are monitoring. */
 	if (nautilus_directory_is_file_list_monitored (directory)) {
 		nautilus_file_ref (file);
@@ -575,11 +580,22 @@ nautilus_directory_remove_file (NautilusDirectory *directory, NautilusFile *file
 		(directory->details->file_list, node);
 	g_list_free_1 (node);
 
+	if (file->details->unconfirmed == FALSE) {
+		directory->details->confirmed_file_count--;
+	}
+
 	/* Unref if we are monitoring. */
 	if (nautilus_directory_is_file_list_monitored (directory)) {
 		nautilus_file_unref (file);
 	}
 }
+
+gboolean
+nautilus_directory_file_list_length_reached (NautilusDirectory *directory)
+{
+	return directory->details->confirmed_file_count >= NAUTILUS_DIRECTORY_FILE_LIST_HARD_LIMIT;
+}
+
 
 GList *
 nautilus_directory_begin_file_name_change (NautilusDirectory *directory,

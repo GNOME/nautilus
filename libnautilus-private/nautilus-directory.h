@@ -185,4 +185,6 @@ gboolean           nautilus_directory_is_local             (NautilusDirectory   
  */
 gboolean	   nautilus_directory_is_not_empty	   (NautilusDirectory	      *directory);
 
+
+gboolean           nautilus_directory_file_list_length_reached (NautilusDirectory       *directory);
 #endif /* NAUTILUS_DIRECTORY_H */

@@ -1,3 +1,35 @@
+2000-10-20  Rebecca Schulman  <rebecka@eazel.com>
+	Fix for bug 1768, to put a hard limit on
+	the number of files for PR2.  We do this 
+	by keeping a count of confirmed files
+	in directories, and stopping a load once the confirmed 
+	file count reaches a certain level.
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(set_file_unconfirmed), (dequeue_pending_idle_callback),
+	(directory_load_one), (directory_load_done),
+	(directory_load_callback), (mark_all_files_unconfirmed),
+	(nautilus_directory_stop_monitoring_file_list):
+	Increment or decrement file count when marking a file confirmed
+	or unconfirmed.
+	* libnautilus-extensions/nautilus-directory-private.h:
+	add file count file
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_add_file), (nautilus_directory_remove_file),
+	(nautilus_directory_file_list_length_reached):
+	increment and decrement file counts here when a file is added.
+	A file is always confirmed when it is initially added, so 
+	increment always, but only decrement the count when we are 
+	removing a confirmed file.
+	* libnautilus-extensions/nautilus-directory.h:
+	Add function nautilus_directory_file_list_length_reached
+	as public 
+	* src/file-manager/fm-directory-view.c:
+	(check_for_directory_hard_limit), (done_loading):
+	when we finish loading the directory, display the hard limit
+	dialog if necesssary, to let the user know we've stopped the directory
+	load to prevent nautilus from overloading.
+
 2000-10-20  Darin Adler  <darin@eazel.com>
 
 	* components/loser/content/Makefile.am:

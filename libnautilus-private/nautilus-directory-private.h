@@ -74,6 +74,7 @@ struct NautilusDirectoryDetails
 	GnomeVFSDirectoryListPosition directory_load_list_last_handled;
 
 	GList *pending_file_info; /* list of GnomeVFSFileInfo's that are pending */
+	int confirmed_file_count;
         guint dequeue_pending_idle_id;
 
 	GList *get_file_infos_in_progress; /* list of GnomeVFSAsyncHandle * */

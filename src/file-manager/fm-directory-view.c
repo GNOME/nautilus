@@ -1348,6 +1348,27 @@ stop_loading_callback (NautilusView *nautilus_view,
 
 
 static void
+check_for_directory_hard_limit (FMDirectoryView *view)
+{
+	NautilusDirectory *directory;
+	GnomeDialog *dialog;
+
+	directory = view->details->model;
+	if (nautilus_directory_file_list_length_reached (directory)) {
+		dialog = nautilus_warning_dialog (_("We're sorry, but the directory you're viewing has more files than "
+						    "we're able to display.  As a result, we are only able to show you the "
+						    "first 4000 files it contains. "
+						    "\n"
+						    "This is a temporary limitation in this Preview Release of Nautilus, "
+						    "and will not be present in the final shipping version.\n"),
+						  _("Too many Files"),
+						  get_containing_window (view));
+	}
+
+}
+
+
+static void
 done_loading (FMDirectoryView *view)
 {
 	if (!view->details->loading) {
@@ -1359,6 +1380,7 @@ done_loading (FMDirectoryView *view)
 	if (view->details->nautilus_view != NULL) {
 		nautilus_view_report_load_complete (view->details->nautilus_view);
 		schedule_update_menus (view);
+		check_for_directory_hard_limit (view);
 	}
 
 	view->details->loading = FALSE;
