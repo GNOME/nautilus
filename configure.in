@@ -212,6 +212,16 @@ dnl ====================================
 dnl = end gnet checks
 dnl ====================================
 
+dnl ====================================
+dnl = begin gdk-pixbuf checks
+dnl ====================================
+AM_PATH_GDK_PIXBUF(0.7.0,,
+AC_MSG_ERROR([*** gdk_pixbuf 0.7.0 or better is required.]))
+dnl ====================================
+dnl = begin gdk-pixbuf checks
+dnl ====================================
+
+
 AC_PATH_PROG(LIBWWW_CONFIG,libwww-config,no)
 if test x$LIBWWW_CONFIG = xno; then
   AC_MSG_ERROR(Couldn't find libwww-config try http://www.w3.org/Library/Distribution.html to get a copy of libwww)

@@ -10,6 +10,7 @@ lib_LTLIBRARIES=librsvg.la
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
 	$(GNOME_CFLAGS) \
 	$(GNOMECANVASPIXBUF_INCLUDEDIR) \
+	$(GDK_PIXBUF_CFLAGS) \
 	$(XML_CFLAGS) \
 	$(WERROR) \
 	-D_REENTRANT
