@@ -128,13 +128,14 @@ eazelChannel::Create(nsISupports* aOuter, const nsIID& aIID, void* *aResult)
 }
 
 // nsIRequest methods:
-
+#if (MOZILLA_MILESTONE >= 18)
 NS_IMETHODIMP
 eazelChannel::GetName(PRUnichar* *result)
 {
     NS_NOTREACHED("eazelChannel::GetName");
     return NS_ERROR_NOT_IMPLEMENTED;
 }
+#endif
 
 NS_IMETHODIMP
 eazelChannel::IsPending(PRBool *result)
