@@ -440,7 +440,7 @@ static void setup_form_title(GtkBox *container, const gchar* title_text)
 
 static void setup_signup_form(NautilusServicesContentView *view)
 {
-	gchar *message;
+	gchar *message, *file_name;
 	GtkTable *table;
 	GtkWidget *temp_widget;
 	GtkWidget *temp_box, *config_button, *config_label;
@@ -453,13 +453,23 @@ static void setup_signup_form(NautilusServicesContentView *view)
 	/* set up the title */	
 	setup_form_title(GTK_BOX(view->details->form), "Eazel Service Registration Form");
 	
-	/* display a descriptive message */
+	/* display an image and a descriptive message */
 	/* FIXME: get the text from a file or from the service */
+	temp_box = gtk_hbox_new(FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(view->details->form), temp_box, 0, 0, 12);			
+ 	gtk_widget_show (temp_box);
+
+ 	file_name = gnome_pixmap_file ("nautilus/register.png");
+  	temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
+	gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 8);		
+  	gtk_widget_show(temp_widget);
+  	g_free (file_name);
+	
 	message = "Use this form to register for the Eazel Service, free of charge.  It will give you a storage space on the web that is easily accessed from Nautilus, and access to a customized software catalog that will allow you to install new applications with a single click.";
 	temp_widget = gtk_label_new (message);
  	gtk_label_set_line_wrap(GTK_LABEL(temp_widget), TRUE);
 	
-	gtk_box_pack_start(GTK_BOX(view->details->form), temp_widget, 0, 0, 12);			
+	gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 12);			
  	gtk_widget_show (temp_widget);
 
 	/* allocate a table to hold the signup form */
@@ -544,7 +554,7 @@ static void setup_signup_form(NautilusServicesContentView *view)
 
 static void setup_config_form(NautilusServicesContentView *view)
 {
-	gchar *message;
+	gchar *message, *file_name;
 	GtkWidget *temp_widget;
 	GtkWidget *temp_box, *config_button, *config_label;
 	
@@ -569,11 +579,22 @@ static void setup_config_form(NautilusServicesContentView *view)
 	
 	/* make label containing text about uploading the configuration data */
 	/* FIXME: It should get this text from a file or from the service */
+	
+	temp_box = gtk_hbox_new(FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(view->details->form), temp_box, 0, 0, 12);			
+ 	gtk_widget_show (temp_box);
+
+ 	file_name = gnome_pixmap_file ("nautilus/config-gather.png");
+  	temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
+	gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 8);		
+  	gtk_widget_show(temp_widget);
+  	g_free (file_name);
+	
 	message = "With your permission, the Eazel service will gather data about the hardware and software configuration of your system so it can provide you with a customized software catalog with one-click installation.  Your configuration data will be kept strictly confidential and will not be used for any other purpose.  Click the button below to begin gathering the data.";
 	temp_widget = gtk_label_new (message);
  	gtk_label_set_line_wrap(GTK_LABEL(temp_widget), TRUE);
 	
-	gtk_box_pack_start(GTK_BOX(view->details->form), temp_widget, 0, 0, 12);			
+	gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 12);			
  	gtk_widget_show (temp_widget);
 
 	/* add buttons for accepting and declining */	

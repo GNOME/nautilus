@@ -1,3 +1,5 @@
+SUBDIRS=icons
+
 CPPFLAGS =					\
 	-DPREFIX=\"$(prefix)\"
 	-DG_LOG_DOMAIN=\"Nautilus-Services\"

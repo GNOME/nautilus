@@ -1,3 +1,22 @@
+2000-04-13  Andy Hertzfeld <andy@eazel.com>
+
+	added Susan's images to service registration and configuration upload
+	
+	* configure.in:
+	added components/services/startup/icons/Makefile
+	* components/services/startup/Makefile.am
+	added icons directory to Makefile
+	* components/services/startup/icons/Makefile.am
+	Makefile for a new directory to hold the images
+	* components/services/startup/icons/.cvsignore
+	.cvsignore file for the new directory
+	* components/services/startup/icons/config-gather.png:
+	new icon for configuration gathering form
+	* components/services/startup/icons/register.png:
+	new icon for registration form
+	* components/services/startup/nautilus-service-startup-view.c:
+	added code to display the new icons
+
 2000-04-13  Darin Adler  <darin@eazel.com>
 
 	Updated for new GNOME VFS.
