@@ -342,6 +342,24 @@ nautilus_str_double_underscores (const char *string)
 	return escaped;
 }
 
+char *
+nautilus_str_capitalize (const char *string)
+{
+	char *capitalized;
+
+	if (string == NULL) {
+		return NULL;
+	}
+
+	capitalized = g_strdup (string);
+
+	if (strlen (string) > 0) {
+		capitalized[0] = toupper (string[0]);
+	}
+
+	return capitalized;
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static int
@@ -464,7 +482,12 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_double_underscores ("foo_bar_2"), "foo__bar__2");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_double_underscores ("_foo"), "__foo");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_double_underscores ("foo_"), "foo__");
-        
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_capitalize (NULL), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_capitalize (""), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_capitalize ("foo"), "Foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_capitalize ("Foo"), "Foo");
+
 	#define TEST_INTEGER_CONVERSION_FUNCTIONS(string, boolean_result, integer_result) \
 		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_to_int (string, &integer), boolean_result); \
 		NAUTILUS_CHECK_INTEGER_RESULT (call_str_to_int (string), integer_result); \
