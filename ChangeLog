@@ -1,5 +1,13 @@
 2000-10-11  Darin Adler  <darin@eazel.com>
 
+	* src/nautilus-window.c: (nautilus_window_destroy): Don't remove
+	the menu items for the bookmarks and go menu, since we are
+	removing the entire UI component, which will remove them
+	automatically. The old code removed them after first destroying
+	the UI component, which definitely did not work.
+
+2000-10-11  Darin Adler  <darin@eazel.com>
+
 	* libnautilus-extensions/nautilus-bonobo-extensions.c:
 	(nautilus_bonobo_get_label): Fixed storage leak.
 	(nautilus_bonobo_get_hidden): Fixed bug where an item without a
@@ -23,8 +31,7 @@
 	* src/file-manager/fm-icon-view.c: (update_layout_menus): Set up
 	the toggle state using the command rather than the menu item.
 	* src/nautilus-shell-ui.xml: First cut at making the location
-	bar expand rather than 
-	* src/nautilus-window.c: (nautilus_window_destroy):
+	bar expand. Needs feature in Bonobo too, which I will now add.
 
 	* components/services/install/command-line/Makefile.am: Added a
 	bunch of unused files to this makefile to quiet down the

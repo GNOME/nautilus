@@ -533,9 +533,6 @@ nautilus_window_destroy (GtkObject *object)
 
 	/* Let go of the UI. */
 	if (window->details->shell_ui != NULL) {
-		nautilus_window_remove_bookmarks_menu_items (window);
-		nautilus_window_remove_go_menu_items (window);
-	
 		bonobo_ui_component_unset_container (window->details->shell_ui);
 		bonobo_object_unref (BONOBO_OBJECT (window->details->shell_ui));
 	}
