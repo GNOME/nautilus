@@ -1,10 +1,26 @@
+2002-05-16  Michael Meeks  <michael@ximian.com>
+
+	* icons/tahoe/tahoe.xml: 
+	* icons/gnome/gnome.xml:
+	* icons/sierra/sierra.xml: 
+	* icons/crux_teal/crux_teal.xml: 
+	* icons/crux_eggplant/crux_eggplant.xml: 
+	* icons/default/default.xml: put back the old
+	nautilus values, keep the new values in
+	number_v_2_offset.
+	
+	* src/nautilus-zoom-control.c (draw_number):
+	ask for number_v_2_offset so we can keep theme
+	compatibility and get offsets right. Mostly
+	we want 0 for the offset anyway, so this
+	automagically gets most things right.
+
 2002-05-16  Jacob Berkman  <jacob@ximian.com>
 
 	* components/history/Makefile.am
 	(libnautilus_history_view_la_SOURCES): include
 	nautilus-history-view.h
 	
-
 2002-05-15  Sean Atkinson  <sean@cantab.net>
 
 	* src/nautilus-window-manage-views.c

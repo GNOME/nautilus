@@ -230,7 +230,7 @@ draw_number (GtkWidget *widget, GdkRectangle *box)
 
 	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
 	
-	num_v_offset = get_zoom_offset ("number_v_offset");
+	num_v_offset = get_zoom_offset ("number_v_2_offset");
 	num_h_offset = get_zoom_offset ("number_h_offset");
 		
 	percent = floor ((100.0 * zoom_control->details->zoom_level) + .5);
