@@ -54,8 +54,8 @@
 	<cmd name="Select All"
          _label="Select All Files"
 	 _tip="Select all items in this window"/>
-	<cmd name="Show Properties"
-         _label="Show Properties"
+	<cmd name="Properties"
+         _label="Properties"
 	 _tip="View or modify the properties of each selected item"/>
 	<cmd name="Show Trash"
          _label="Show Trash"
@@ -117,10 +117,10 @@
 		</placeholder>
 
 		<placeholder name="File Items Placeholder">
-			<menuitem name="Show Properties"
-				  _label="Show _Properties"
+			<menuitem name="Properties"
+				  _label="_Properties"
 				  accel="*Control*i"
-				  verb="Show Properties"/>
+				  verb="Properties"/>
 			<menuitem name="Duplicate"
 				  _label="_Duplicate"
 				  verb="Duplicate"/>
@@ -253,7 +253,7 @@
 
 		</placeholder>
 		<placeholder name="File Actions" delimit="top">
-			<menuitem name="Show Properties" verb="Show Properties"/>
+			<menuitem name="Properties" verb="Properties"/>
 			<menuitem name="Duplicate" verb="Duplicate"/>
 			<menuitem name="Create Link" verb="Create Link"/>
 			<menuitem name="Rename" verb="Rename"/>

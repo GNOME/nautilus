@@ -115,7 +115,7 @@
 #define FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH                   	"/commands/Empty Trash"
 #define FM_DIRECTORY_VIEW_COMMAND_DUPLICATE                		"/commands/Duplicate"
 #define FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK                		"/commands/Create Link"
-#define FM_DIRECTORY_VIEW_COMMAND_SHOW_PROPERTIES         		"/commands/Show Properties"
+#define FM_DIRECTORY_VIEW_COMMAND_PROPERTIES         		"/commands/Properties"
 #define FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS			"/commands/Remove Custom Icons"
 #define FM_DIRECTORY_VIEW_COMMAND_OTHER_APPLICATION    			"/commands/OtherApplication"
 #define FM_DIRECTORY_VIEW_COMMAND_OTHER_VIEWER	   			"/commands/OtherViewer"
@@ -4150,7 +4150,7 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("Reset Background", reset_background_callback),
 		BONOBO_UI_VERB ("Reset to Defaults", reset_to_defaults_callback),
 		BONOBO_UI_VERB ("Select All", bonobo_menu_select_all_callback),
-		BONOBO_UI_VERB ("Show Properties", open_properties_window_callback),
+		BONOBO_UI_VERB ("Properties", open_properties_window_callback),
 		BONOBO_UI_VERB ("Show Trash", show_trash_callback),
 		BONOBO_UI_VERB ("Trash", trash_callback),
 		BONOBO_UI_VERB_END
@@ -4351,7 +4351,7 @@ real_update_menus (FMDirectoryView *view)
 				       can_link_files);
 
 	nautilus_bonobo_set_sensitive (view->details->ui, 
-				       FM_DIRECTORY_VIEW_COMMAND_SHOW_PROPERTIES,
+				       FM_DIRECTORY_VIEW_COMMAND_PROPERTIES,
 				       selection_count != 0
 			      		&& fm_directory_view_supports_properties (view));
 
