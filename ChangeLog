@@ -1,3 +1,22 @@
+2001-01-19  Mike Fleming  <mfleming@eazel.com>
+
+	Half of bug 5975
+
+	Now the fonts are right, but the line wrapping is busted
+
+	* components/services/nautilus-dependent-shared/eazel-services-exte
+	nsions.c: (eazel_services_label_new):
+	* components/services/nautilus-dependent-shared/eazel-services-exte
+	nsions.h:
+	* components/services/nautilus-dependent-shared/eazel-services-foot
+	er.c: (footer_item_new), (eazel_services_footer_update):
+	* components/services/nautilus-dependent-shared/eazel-services-head
+	er.c: (eazel_services_header_title_new):
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_summary_form), (generate_service_entry_row),
+	(generate_eazel_news_entry_row), (generate_update_news_entry_row):
+
+
 2001-01-19  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-label.c:

@@ -101,7 +101,7 @@ eazel_services_header_title_new (const char *left_text)
 							       EAZEL_SERVICES_TITLE_TEXT_COLOR_RGB,
 							       EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
 							       EAZEL_SERVICES_HEADER_TITLE_FILL_ICON,
-							       2,
+							       EAZEL_SERVICES_HEADER_TEXT_SIZE_REL,
 							       TRUE);
 
 	gtk_box_pack_start (GTK_BOX (header), header->details->left_text, FALSE, FALSE, 0);

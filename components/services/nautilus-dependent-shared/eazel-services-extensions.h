@@ -54,6 +54,8 @@
 
 #define EAZEL_SERVICES_HEADER_MIDDLE_FILL_ICON		"eazel-services-header-middle-fill.png"
 
+#define EAZEL_SERVICES_HEADER_TEXT_SIZE_REL 4
+
 /*
  * The xalign, yalign, xpadding, and ypadding attribures work
  * exactly as they do with GtkMisc.
@@ -79,7 +81,7 @@ GtkWidget *eazel_services_label_new               (const char *text,
 						   guint32     text_color,
 						   guint32     background_color,
 						   const char *tile_name,
-						   guint       num_larger_sizes,
+						   gint       num_larger_sizes,
 						   gboolean    bold);
 char *     eazel_services_get_current_date_string (void);
 

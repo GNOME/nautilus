@@ -35,6 +35,8 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkeventbox.h>
 
+#define FOOTER_TEXT_SIZE (-3)
+
 struct _EazelServicesFooterDetails
 {
 	GtkWidget *date;
@@ -367,8 +369,8 @@ footer_item_new (EazelServicesFooter *footer,
 					  EAZEL_SERVICES_TITLE_TEXT_COLOR_RGB,
 					  EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
 					  EAZEL_SERVICES_NORMAL_FILL,
-					  1,
-					  FALSE);
+					  FOOTER_TEXT_SIZE,
+					  TRUE);
 	
 	gtk_widget_show (label);
 
@@ -471,8 +473,8 @@ eazel_services_footer_update (EazelServicesFooter *footer,
 							  EAZEL_SERVICES_TITLE_TEXT_COLOR_RGB,
 							  EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
 							  EAZEL_SERVICES_NORMAL_FILL,
-							  1,
-							  FALSE);
+							  FOOTER_TEXT_SIZE,
+							  TRUE);
 	
 	g_free (date_string);
 	

@@ -130,7 +130,7 @@ eazel_services_label_new (const char *text,
 			  guint32 text_color,
 			  guint32 background_color,
 			  const char *tile_name,
-			  guint num_larger_sizes,
+			  gint num_larger_sizes,
 			  gboolean bold)
 {
  	GtkWidget *label;

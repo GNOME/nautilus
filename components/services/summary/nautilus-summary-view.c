@@ -70,6 +70,9 @@
 #define notDEBUG_TEST	1
 #define notDEBUG_PEPPER	1
 
+#define SUMMARY_TEXT_HEADER_SIZE_REL (+2)
+#define SUMMARY_TEXT_BODY_SIZE_REL (-2)
+
 #ifdef DEBUG_TEST
 	#undef URL_REDIRECT_TABLE_HOME
 	#define URL_REDIRECT_TABLE_HOME		"http://localhost/redirects.xml"
@@ -351,7 +354,7 @@ generate_summary_form (NautilusSummaryView	*view)
 					       DEFAULT_SUMMARY_TEXT_COLOR_RGB,
 					       DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
 					       NULL,
-					       2,
+					       SUMMARY_TEXT_HEADER_SIZE_REL,
 					       TRUE);
 
 	gtk_widget_show (temp_label);
@@ -522,7 +525,7 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 					  DEFAULT_SUMMARY_TEXT_COLOR_RGB,
 					  DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
 					  NULL,
-					  0,
+					  SUMMARY_TEXT_BODY_SIZE_REL,
 					  TRUE);
 	gtk_widget_show (view->details->services_description_header_widget);
 	g_free (view->details->services_description_header);
@@ -543,7 +546,7 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 					  DEFAULT_SUMMARY_TEXT_COLOR_RGB,
 					  DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
 					  NULL,
-					  0,
+					  SUMMARY_TEXT_BODY_SIZE_REL,
 					  FALSE);
 
 	nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->services_description_body_widget), TRUE);
@@ -585,6 +588,25 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 
 }
 
+#if 0
+/* FIXME well, we want to resize the text, but I don't know how */
+static void
+text_resize_callback      (GtkWidget *widget,
+				GtkAllocation *allocation,
+				gpointer user_data)
+{
+	NautilusLabel *label;
+
+	g_return_if_fail (NAUTILUS_IS_LABEL (user_data));
+
+	g_print ("text_resize New size %u\n", (unsigned) allocation->width);
+
+	label = NAUTILUS_LABEL (user_data);
+
+	nautilus_label_set_smooth_line_wrap_width (label, allocation->width);
+}
+#endif
+
 static void
 generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 {
@@ -612,14 +634,14 @@ generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 	view->details->news_date_widget = 
 		eazel_services_label_new (view->details->news_date,
 					  0,
-					  0.5,
+					  0,
 					  0.5,
 					  0,
 					  0,
 					  DEFAULT_SUMMARY_TEXT_COLOR_RGB,
 					  DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
 					  NULL,
-					  0,
+					  SUMMARY_TEXT_BODY_SIZE_REL,
 					  TRUE);
 
 	nautilus_label_set_justify (NAUTILUS_LABEL (view->details->news_date_widget), GTK_JUSTIFY_LEFT);
@@ -635,14 +657,14 @@ generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 	view->details->news_description_body_widget = 
 		eazel_services_label_new (view->details->news_description_body,
 					  0,
-					  0.5,
+					  0,
 					  0.5,
 					  0,
 					  0,
 					  DEFAULT_SUMMARY_TEXT_COLOR_RGB,
 					  DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
 					  NULL,
-					  0,
+					  SUMMARY_TEXT_BODY_SIZE_REL,
 					  FALSE);
 
 	nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->news_description_body_widget), TRUE);
@@ -650,7 +672,14 @@ generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 	/*
 	nautilus_label_set_wrap_width (NAUTILUS_LABEL (view->details->news_description_body_widget), -1);
 	*/
+	
 	gtk_box_pack_start (GTK_BOX (item_box), view->details->news_description_body_widget, TRUE, TRUE, 2);
+
+#if 0
+	/* FIXME see above */
+	gtk_signal_connect (GTK_OBJECT (view->details->service_news_row), "size-allocate", text_resize_callback, view->details->news_description_body_widget);
+#endif
+
 	gtk_widget_show (view->details->news_description_body_widget);
 	
 	g_free (view->details->news_description_body);
@@ -700,7 +729,7 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 					  DEFAULT_SUMMARY_TEXT_COLOR_RGB,
 					  DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
 					  NULL,
-					  2,
+					  SUMMARY_TEXT_BODY_SIZE_REL,
 					  TRUE);
 
 	gtk_widget_show (view->details->update_description_header_widget);
@@ -722,7 +751,7 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 					  DEFAULT_SUMMARY_TEXT_COLOR_RGB,
 					  DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
 					  NULL,
-					  0,
+					  SUMMARY_TEXT_BODY_SIZE_REL,
 					  FALSE);
 	
 	nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->update_description_body_widget), TRUE);
@@ -747,7 +776,7 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 					  DEFAULT_SUMMARY_TEXT_COLOR_RGB,
 					  DEFAULT_SUMMARY_BACKGROUND_COLOR_RGB,
 					  NULL,
-					  0,
+					  SUMMARY_TEXT_BODY_SIZE_REL,
 					  TRUE);
 
 	gtk_widget_show (view->details->update_description_version_widget);
