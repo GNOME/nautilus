@@ -45,7 +45,7 @@ typedef struct {
 
 static int notes_object_count = 0;
 
-static void notes_load_metainfo(NotesView *hview)
+static void notes_load_metainfo (NotesView *hview)
 {
   GnomeVFSURI *vfs_uri;
   char *file_name;
@@ -119,8 +119,8 @@ notes_notify_location_change (NautilusViewFrame *view,
 }
 
 static void
-do_destroy(GtkObject *obj)
-{
+do_destroy(GtkObject *obj, NotesView *hview)
+{  
   notes_object_count--;
   if(notes_object_count <= 0)
     gtk_main_quit();
@@ -129,18 +129,12 @@ do_destroy(GtkObject *obj)
 static BonoboObject *
 make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 {
-  GtkWidget *frame, *vbox;
-  BonoboObject *ctl;
+  GtkWidget *vbox;
   NotesView *hview;
  
-  g_return_val_if_fail(!strcmp(goad_id, "ntl_notes_view"), NULL);
+  g_return_val_if_fail (!strcmp (goad_id, "ntl_notes_view"), NULL);
 
-  hview = g_new0(NotesView, 1);
-  frame = gtk_widget_new(nautilus_meta_view_frame_get_type(), NULL);
-  gtk_signal_connect(GTK_OBJECT(frame), "destroy", do_destroy, NULL);
-  notes_object_count++;
-
-  ctl = nautilus_view_frame_get_bonobo_object(NAUTILUS_VIEW_FRAME(frame));
+  hview = g_new0 (NotesView, 1);
 
   /* initialize the current uri */
   hview->current_uri = strdup("");
@@ -148,7 +142,6 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   /* allocate a vbox to hold all of the UI elements */
   
   vbox = gtk_vbox_new(FALSE, GNOME_PAD);
-  gtk_container_add(GTK_CONTAINER(frame), vbox);
 
   /* create the label */
   
@@ -161,18 +154,22 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   gtk_text_set_editable(GTK_TEXT(hview->note_text_field), TRUE);
   gtk_box_pack_start (GTK_BOX(vbox), hview->note_text_field, 0, 0, 0);
 
-  gtk_widget_show_all(frame);
+  gtk_widget_show_all (vbox);
   
+  /* Create CORBA object. */
+  hview->view = NAUTILUS_VIEW_FRAME (nautilus_meta_view_frame_new (vbox));
+  gtk_signal_connect (GTK_OBJECT (hview->view), "destroy", do_destroy, hview);
+  notes_object_count++;
+
+
   /* handle events */
-  gtk_signal_connect(GTK_OBJECT(frame), "notify_location_change", notes_notify_location_change, hview);
+  gtk_signal_connect (GTK_OBJECT (hview->view), "notify_location_change", notes_notify_location_change, hview);
 
   /* set description */
-  nautilus_meta_view_frame_set_label(NAUTILUS_META_VIEW_FRAME(frame),
+  nautilus_meta_view_frame_set_label(NAUTILUS_META_VIEW_FRAME(hview->view),
                                      _("Notes"));
 
-  hview->view = (NautilusViewFrame *)frame;
-
-  return ctl;
+  return BONOBO_OBJECT (hview->view);
 }
 
 int main(int argc, char *argv[])

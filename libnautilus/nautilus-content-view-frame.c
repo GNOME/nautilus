@@ -29,6 +29,7 @@
 
 #include <config.h>
 #include "ntl-content-view-frame.h"
+#include <bonobo/bonobo-control.h>
 
 typedef struct {
   POA_Nautilus_View servant;
@@ -85,6 +86,28 @@ nautilus_content_view_frame_get_type (void)
 static void
 nautilus_content_view_frame_init       (NautilusContentViewFrame *view)
 {
+}
+
+NautilusContentViewFrame *
+nautilus_content_view_frame_new (GtkWidget *widget)
+{
+  BonoboObject *control;
+  
+  control = BONOBO_OBJECT (bonobo_control_new (widget));
+
+  return nautilus_content_view_frame_new_from_bonobo_control (control);
+}
+
+NautilusContentViewFrame *
+nautilus_content_view_frame_new_from_bonobo_control (BonoboObject *bonobo_control)
+{
+  NautilusContentViewFrame *view;
+  
+  view = NAUTILUS_CONTENT_VIEW_FRAME (gtk_object_new (NAUTILUS_TYPE_CONTENT_VIEW_FRAME,
+						      "bonobo_control", bonobo_control,
+						      NULL));
+
+  return view;
 }
 
 static void

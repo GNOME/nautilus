@@ -50,12 +50,7 @@ nautilus_make_object(BonoboGenericFactory *gfact, const char *goad_id, gpointer 
         
         view_frame = fm_directory_view_get_view_frame (dir_view);
         
-        if (BONOBO_IS_OBJECT (view_frame))
-                return BONOBO_OBJECT (view_frame);
-        
-        gtk_widget_show (GTK_WIDGET (view_frame));
-                
-        return nautilus_view_frame_get_bonobo_object (NAUTILUS_VIEW_FRAME (view_frame));
+        return BONOBO_OBJECT (view_frame);
 }
 
 

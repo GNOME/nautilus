@@ -172,7 +172,7 @@ hyperbola_navigation_history_select_row(GtkCList *clist, gint row, gint column, 
 static int object_count = 0;
 
 static void
-do_destroy(GtkObject *obj)
+do_destroy(GtkObject *obj, HistoryView *hview)
 {
   object_count--;
   if(object_count <= 0)
@@ -198,9 +198,10 @@ menu_setup(BonoboObject *ctl, HistoryView *hview)
                                   bonobo_ui_handler_menu_parse_uiinfo_tree(history_menu));
 }
 
-static BonoboObject * make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
+static BonoboObject *
+make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 {
-  GtkWidget *frame, *wtmp;
+  GtkWidget *wtmp;
   GtkCList *clist;
   BonoboObject *ctl;
   HistoryView *hview;
@@ -208,16 +209,6 @@ static BonoboObject * make_obj(BonoboGenericFactory *Factory, const char *goad_i
   g_return_val_if_fail(!strcmp(goad_id, "ntl_history_view"), NULL);
 
   hview = g_new0(HistoryView, 1);
-  frame = gtk_widget_new(nautilus_meta_view_frame_get_type(), NULL);
-  gtk_signal_connect(GTK_OBJECT(frame), "destroy", do_destroy, NULL);
-  object_count++;
-
-  ctl = nautilus_view_frame_get_bonobo_object(NAUTILUS_VIEW_FRAME(frame));
-  gtk_signal_connect(GTK_OBJECT(ctl), "set_frame", menu_setup, hview);
-
-  /* set description */
-  nautilus_meta_view_frame_set_label(NAUTILUS_META_VIEW_FRAME(frame),
-                                     _("History"));
 
   /* create interface */
   clist = GTK_CLIST (gtk_clist_new (HISTORY_VIEW_COLUMN_COUNT));
@@ -230,19 +221,30 @@ static BonoboObject * make_obj(BonoboGenericFactory *Factory, const char *goad_i
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wtmp),
 				 GTK_POLICY_AUTOMATIC,
 				 GTK_POLICY_AUTOMATIC);
-  gtk_container_add(GTK_CONTAINER(frame), wtmp);
   gtk_container_add(GTK_CONTAINER(wtmp), GTK_WIDGET (clist));
 
-  gtk_widget_show_all(frame);
+  gtk_widget_show_all(wtmp);
+
+  /* create object */
+  hview->view = NAUTILUS_VIEW_FRAME (nautilus_meta_view_frame_new (wtmp));
+  gtk_signal_connect (GTK_OBJECT (hview->view), "destroy", do_destroy, hview);
+  object_count++;
+
+  ctl = nautilus_view_frame_get_bonobo_control (NAUTILUS_VIEW_FRAME (hview->view));
+  gtk_signal_connect(GTK_OBJECT (ctl), "set_frame", menu_setup, hview);
+
+  /* set description */
+  nautilus_meta_view_frame_set_label(NAUTILUS_META_VIEW_FRAME(hview->view),
+                                     _("History"));
+
   
   /* handle events */
-  gtk_signal_connect(GTK_OBJECT(frame), "notify_location_change", hyperbola_navigation_history_notify_location_change, hview);
+  gtk_signal_connect(GTK_OBJECT(hview->view), "notify_location_change", hyperbola_navigation_history_notify_location_change, hview);
   gtk_signal_connect(GTK_OBJECT(clist), "select_row", hyperbola_navigation_history_select_row, hview);
 
-  hview->view = (NautilusViewFrame *)frame;
   hview->clist = (GtkCList *)clist;
 
-  return ctl;
+  return BONOBO_OBJECT (hview->view);
 }
 
 int main(int argc, char *argv[])

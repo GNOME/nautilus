@@ -131,9 +131,6 @@ BonoboObject *hyperbola_navigation_index_new(void)
   hni = g_new0(HyperbolaNavigationIndex, 1);
   hni->items = g_array_new(FALSE, FALSE, sizeof(IndexItem));
 
-  hni->view_frame = NAUTILUS_VIEW_FRAME(gtk_widget_new(nautilus_meta_view_frame_get_type(), NULL));
-  nautilus_meta_view_frame_set_label(NAUTILUS_META_VIEW_FRAME(hni->view_frame), _("Help Index"));
-
   hni->ent = gtk_entry_new();
   gtk_signal_connect(GTK_OBJECT(hni->ent), "changed", hyperbola_navigation_index_ent_changed, hni);
   gtk_signal_connect(GTK_OBJECT(hni->ent), "activate", hyperbola_navigation_index_ent_activate, hni);
@@ -148,7 +145,6 @@ BonoboObject *hyperbola_navigation_index_new(void)
   wtmp = gtk_scrolled_window_new(gtk_clist_get_hadjustment(GTK_CLIST(hni->clist)),
 				 gtk_clist_get_vadjustment(GTK_CLIST(hni->clist)));
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wtmp), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-  gtk_container_add(GTK_CONTAINER(hni->view_frame), wtmp);
 
   gtk_container_add(GTK_CONTAINER(wtmp), hni->clist);
   hyperbola_navigation_index_update_clist(hni);
@@ -157,5 +153,8 @@ BonoboObject *hyperbola_navigation_index_new(void)
   gtk_widget_show(hni->clist);
   gtk_widget_show(wtmp);
 
-  return nautilus_view_frame_get_bonobo_object(hni->view_frame);
+  hni->view_frame = NAUTILUS_VIEW_FRAME (nautilus_meta_view_frame_new (wtmp));
+  nautilus_meta_view_frame_set_label(NAUTILUS_META_VIEW_FRAME(hni->view_frame), _("Help Index"));
+
+  return BONOBO_OBJECT (hni->view_frame);
 }

@@ -1,3 +1,42 @@
+2000-02-19  Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus/ntl-view-frame.c, libnautilus/ntl-view-frame.h:
+	Changed NautilusViewFrame to allow creation of `Nautilus::View'
+	objects that have additional interfaces while sharing the actual
+	control. This will allow, for instance, the creation of components
+	that are both a `Nautilus::View' and a `Bonobo::Embeddable'. The
+	basic changes are to require a `BonoboObject' with a
+	`Bonobo::Control' interface at construction time.
+	- Two creation functions are provided: `nautilus_view_frame_new',
+	which takes a GtkWidget, creates a new control that contains that
+	widget, and the constructs a NautilusViewFrame with that control,
+	and `nautilus_view_frame_new_from_control', which creates a
+	NautilusViewFrame that gets added as an additional interface to an
+	existing control. 
+	- In the course of doing this it became clear that it would be
+	easier if NautilusViewFrame were changed to inherit from
+	BonoboObject rather than GtkBin, so this was done; as a result,
+	the nautilus_view_frame_get_bonobo_object call was removed, since
+	the view_frame _is_ a bonobo object. However, a
+	nautilus_view_frame_get_bonobo_control call was added as a
+	convenience, to allow other code to avoid having to
+	query_local_interface for the control object manually.
+	* libnautilus/ntl-meta-view-frame.c,
+	libnautilus/ntl-meta-view-frame.h,
+	libnautilus/ntl-content-view-frame.c,
+	libnautilus/ntl-content-view-frame.h: Analogous changes; mainly,
+	added `nautilus_meta_view_frame_new',
+	`nautilus_meta_view_frame_new_from_control',
+	`nautilus_content_view_frame_new' and
+	`nautilus_content_view_frame_new_from_control'.
+	* components/help/hyperbola-nav-index.c,
+	components/help/hyperbola-nav-tree.c,
+	components/history/ntl-history-view.c,
+	components/html/ntl-web-browser.c, components/notes/ntl-notes.c,
+	components/websearch/ntl-web-search.c, src/ntl-app.c,
+	src/file-manager/fm-directory-view.c: Fixed initialization and
+	object creation functions to deal with the above API change.
+	
 2000-02-18  Maciej Stachowiak  <mjs@eazel.com>
 
 	* RENAMING: Suggest swapping the names NautilusView and

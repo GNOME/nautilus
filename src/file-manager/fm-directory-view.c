@@ -206,7 +206,7 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW (directory_view), NULL);
 
 	directory_view->details->view_frame = NAUTILUS_CONTENT_VIEW_FRAME
-		(gtk_widget_new (nautilus_content_view_frame_get_type (), NULL));
+		(nautilus_content_view_frame_new (GTK_WIDGET (directory_view)));
 
 	gtk_signal_connect (GTK_OBJECT (directory_view->details->view_frame), 
 			    "stop_location_change",
@@ -218,9 +218,6 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 			    directory_view);
 
 	gtk_widget_show (GTK_WIDGET (directory_view));
-
-	gtk_container_add (GTK_CONTAINER (directory_view->details->view_frame),
-			   GTK_WIDGET (directory_view));
 }
 
 static void

@@ -70,12 +70,6 @@ hyperbola_navigation_tree_new(void)
   
   view = g_new0(HyperbolaNavigationTree, 1);
 
-  view->view_frame = NAUTILUS_VIEW_FRAME(gtk_widget_new(nautilus_meta_view_frame_get_type(), NULL));
-  gtk_signal_connect(GTK_OBJECT(view->view_frame), "notify_location_change", hyperbola_navigation_tree_notify_location_change,
-		     view);
-
-  nautilus_meta_view_frame_set_label(NAUTILUS_META_VIEW_FRAME(view->view_frame), _("Help Contents"));
-
   view->ctree = gtk_ctree_new_with_titles(1, 0, (gchar **)titles);
   gtk_clist_freeze(GTK_CLIST(view->ctree));
   gtk_clist_set_selection_mode(GTK_CLIST(view->ctree), GTK_SELECTION_BROWSE);
@@ -88,16 +82,21 @@ hyperbola_navigation_tree_new(void)
   wtmp = gtk_scrolled_window_new(gtk_clist_get_hadjustment(GTK_CLIST(view->ctree)),
 				 gtk_clist_get_vadjustment(GTK_CLIST(view->ctree)));
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wtmp), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-  gtk_container_add(GTK_CONTAINER(view->view_frame), wtmp);
+
 
   gtk_container_add(GTK_CONTAINER(wtmp), view->ctree);
   gtk_clist_columns_autosize(GTK_CLIST(view->ctree));
   gtk_clist_thaw(GTK_CLIST(view->ctree));
   gtk_widget_show(view->ctree);
   gtk_widget_show(wtmp);
-  gtk_widget_show(GTK_WIDGET(view->view_frame));
 
-  return nautilus_view_frame_get_bonobo_object(view->view_frame);
+  view->view_frame = NAUTILUS_VIEW_FRAME (nautilus_meta_view_frame_new (wtmp));
+  gtk_signal_connect(GTK_OBJECT(view->view_frame), "notify_location_change", 
+		     hyperbola_navigation_tree_notify_location_change,
+		     view);
+  nautilus_meta_view_frame_set_label(NAUTILUS_META_VIEW_FRAME(view->view_frame), _("Help Contents"));
+
+  return BONOBO_OBJECT (view->view_frame);
 }
 
 static void

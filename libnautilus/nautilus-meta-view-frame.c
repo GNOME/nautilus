@@ -91,6 +91,28 @@ nautilus_meta_view_frame_init       (NautilusMetaViewFrame *view)
 {
 }
 
+NautilusMetaViewFrame *
+nautilus_meta_view_frame_new (GtkWidget *widget)
+{
+  BonoboObject *control;
+
+  control = BONOBO_OBJECT (bonobo_control_new (widget));
+
+  return nautilus_meta_view_frame_new_from_bonobo_control (control);
+}
+
+NautilusMetaViewFrame *
+nautilus_meta_view_frame_new_from_bonobo_control (BonoboObject *bonobo_control)
+{
+  NautilusMetaViewFrame *view;
+  
+  view = NAUTILUS_META_VIEW_FRAME (gtk_object_new (NAUTILUS_TYPE_META_VIEW_FRAME,
+						   "bonobo_control", bonobo_control,
+						   NULL));
+
+  return view;
+}
+
 static void
 nautilus_meta_view_frame_destroy    (NautilusMetaViewFrame *view)
 {  
@@ -118,15 +140,17 @@ nautilus_meta_view_frame_set_label(NautilusMetaViewFrame *mvc, const char *label
   BonoboObject *ctl;
   BonoboPropertyBag *bag;
 
-  ctl = nautilus_view_frame_get_bonobo_object(NAUTILUS_VIEW_FRAME(mvc));
-  bag = bonobo_control_get_property_bag(BONOBO_CONTROL(ctl));
-  if(!bag)
+  ctl = nautilus_view_frame_get_bonobo_control (NAUTILUS_VIEW_FRAME (mvc));
+
+  bag = bonobo_control_get_property_bag (BONOBO_CONTROL (ctl));
+
+  if (!bag)
     {
-      bag = bonobo_property_bag_new();
-      bonobo_control_set_property_bag(BONOBO_CONTROL(ctl), bag);
+      bag = bonobo_property_bag_new ();
+      bonobo_control_set_property_bag (BONOBO_CONTROL (ctl), bag);
     }
 
-  bonobo_property_bag_add(bag, "label", "string",
-			 g_strdup(label), g_strdup(label),
-			 _("Label"), BONOBO_PROPERTY_READ_ONLY);
+  bonobo_property_bag_add (bag, "label", "string",
+			   g_strdup (label), g_strdup (label),
+			   _("Label"), BONOBO_PROPERTY_READ_ONLY);
 }

@@ -49,6 +49,8 @@ struct _NautilusContentViewFrame {
   NautilusViewFrame parent;
 };
 
-GtkType nautilus_content_view_frame_get_type (void);
+GtkType                   nautilus_content_view_frame_get_type                 (void);
+NautilusContentViewFrame *nautilus_content_view_frame_new                      (GtkWidget *widget);
+NautilusContentViewFrame *nautilus_content_view_frame_new_from_bonobo_control  (BonoboObject *bonobo_control);
 
 #endif

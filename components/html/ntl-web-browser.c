@@ -567,7 +567,6 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, void *closure)
     return NULL;
 
   bi = g_new0(BrowserInfo, 1);
-  bi->view_frame = NAUTILUS_VIEW_FRAME(gtk_widget_new(nautilus_content_view_frame_get_type(), NULL));
   gtk_signal_connect(GTK_OBJECT(bi->view_frame), "notify_location_change", browser_notify_location_change,
 		     bi);
   gtk_signal_connect(GTK_OBJECT(bi->view_frame), "destroy", browser_do_destroy, NULL);
@@ -585,14 +584,13 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, void *closure)
 
   wtmp = gtk_scrolled_window_new(NULL, NULL);
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wtmp), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-  gtk_container_add(GTK_CONTAINER(bi->view_frame), wtmp);
-
   gtk_container_add(GTK_CONTAINER(wtmp), bi->htmlw);
   gtk_widget_show(bi->htmlw);
   gtk_widget_show(wtmp);
-  gtk_widget_show(GTK_WIDGET(bi->view_frame));
 
-  return nautilus_view_frame_get_bonobo_object(bi->view_frame);
+  bi->view_frame = NAUTILUS_VIEW_FRAME (nautilus_content_view_frame_new (wtmp));
+
+  return BONOBO_OBJECT (bi->view_frame);
 }
 
 int main(int argc, char *argv[])

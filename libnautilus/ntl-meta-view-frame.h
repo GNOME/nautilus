@@ -48,8 +48,10 @@ struct _NautilusMetaViewFrame {
   NautilusViewFrame parent;
 };
 
-GtkType nautilus_meta_view_frame_get_type (void);
-void nautilus_meta_view_frame_set_label(NautilusMetaViewFrame *mvc,
-					 const char *label);
+GtkType                 nautilus_meta_view_frame_get_type                 (void);
+NautilusMetaViewFrame  *nautilus_meta_view_frame_new                      (GtkWidget *widget);
+NautilusMetaViewFrame  *nautilus_meta_view_frame_new_from_bonobo_control  (BonoboObject *bonobo_control);
+void                    nautilus_meta_view_frame_set_label                (NautilusMetaViewFrame *mvc,
+									   const char *label);
 
 #endif

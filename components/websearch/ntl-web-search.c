@@ -165,23 +165,17 @@ web_search_populate_engines(WebSearchView *hview)
 static BonoboObject *
 make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 {
-  GtkWidget *frame, *vbox;
-  BonoboObject *ctl;
+  GtkWidget *vbox;
   WebSearchView *hview;
 
   g_return_val_if_fail(!strcmp(goad_id, "ntl_websearch_view"), NULL);
 
   hview = g_new0(WebSearchView, 1);
-  frame = gtk_widget_new(nautilus_meta_view_frame_get_type(), NULL);
-  gtk_signal_connect(GTK_OBJECT(frame), "destroy", do_destroy, NULL);
-  object_count++;
 
-  ctl = nautilus_view_frame_get_bonobo_object(NAUTILUS_VIEW_FRAME(frame));
 
   vbox = gtk_vbox_new(FALSE, GNOME_PAD);
-  gtk_container_add(GTK_CONTAINER(frame), vbox);
 
-  hview->btn_search = gnome_pixmap_button(gnome_stock_pixmap_widget(frame, GNOME_STOCK_PIXMAP_SEARCH), _("Search"));
+  hview->btn_search = gnome_pixmap_button(gnome_stock_pixmap_widget (vbox, GNOME_STOCK_PIXMAP_SEARCH), _("Search"));
   gtk_signal_connect(GTK_OBJECT(hview->btn_search), "clicked", do_search, hview);
   gtk_box_pack_start(GTK_BOX(vbox), hview->btn_search, FALSE, FALSE, GNOME_PAD);
 
@@ -213,19 +207,26 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   gtk_signal_connect(GTK_OBJECT(clist), "select_row", web_search_select_row, hview);
 #endif
 
-  gtk_widget_show_all(frame);
-  
-  /* handle events */
-  gtk_signal_connect(GTK_OBJECT(frame), "notify_location_change", web_search_notify_location_change, hview);
+  gtk_widget_show_all(vbox);
 
-  /* set description */
-  nautilus_meta_view_frame_set_label(NAUTILUS_META_VIEW_FRAME(frame),
-                                     _("WebSearch"));
-
-  hview->view = (NautilusViewFrame *)frame;
   hview->clist = NULL;
 
-  return ctl;
+  
+  /* create CORBA object */
+
+  hview->view = NAUTILUS_VIEW_FRAME (nautilus_meta_view_frame_new (vbox));
+  gtk_signal_connect(GTK_OBJECT (hview->view), "destroy", do_destroy, NULL);
+  object_count++;
+
+  /* handle events */
+  gtk_signal_connect(GTK_OBJECT(hview->view), "notify_location_change", web_search_notify_location_change, hview);
+
+  /* set description */
+  nautilus_meta_view_frame_set_label (NAUTILUS_META_VIEW_FRAME (hview->view),
+                                      _("WebSearch"));
+
+
+  return BONOBO_OBJECT (hview->view);
 }
 
 int main(int argc, char *argv[])
