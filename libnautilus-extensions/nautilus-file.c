@@ -77,6 +77,10 @@ extern void eazel_dump_stack_trace	(const char    *print_prefix,
 /* Name of Nautilus trash directories */
 #define TRASH_DIRECTORY_NAME ".Trash"
 
+typedef enum {
+	SHOW_HIDDEN = 1 << 0,
+	SHOW_BACKUP = 1 << 1
+} FilterOptions;
 
 typedef struct {
 	NautilusFile *file;
@@ -1884,20 +1888,6 @@ nautilus_file_is_metafile (NautilusFile *file)
 		(file->details->relative_uri);
 }
 
-gboolean 
-nautilus_file_should_show (NautilusFile *file, 
-			   gboolean show_hidden,
-			   gboolean show_backup)
-{
-	return (show_hidden || ! nautilus_file_is_hidden_file (file)) &&
-		(show_backup || ! nautilus_file_is_backup_file (file));
-}
-
-typedef enum {
-	SHOW_HIDDEN = 1 << 0,
-	SHOW_BACKUP = 1 << 1
-} NautilusFileFilterOptions;
-
 static gboolean
 is_special_desktop_gmc_file (NautilusFile *file)
 {
@@ -1959,6 +1949,18 @@ is_special_desktop_gmc_file (NautilusFile *file)
 	return FALSE;
 }
 
+gboolean 
+nautilus_file_should_show (NautilusFile *file, 
+			   gboolean show_hidden,
+			   gboolean show_backup)
+{
+	if (nautilus_file_is_in_desktop (file) && is_special_desktop_gmc_file (file)) {
+		return FALSE;
+	}
+	return (show_hidden || ! nautilus_file_is_hidden_file (file)) &&
+		(show_backup || ! nautilus_file_is_backup_file (file));
+}
+
 gboolean
 nautilus_file_is_in_desktop (NautilusFile *file)
 {
@@ -1973,15 +1975,11 @@ filter_hidden_and_backup_partition_callback (gpointer data,
 					     gpointer callback_data)
 {
 	NautilusFile *file;
-	NautilusFileFilterOptions options;
+	FilterOptions options;
 
 	file = NAUTILUS_FILE (data);
-	options = (NautilusFileFilterOptions) callback_data;
+	options = GPOINTER_TO_INT (callback_data);
 
-	if (nautilus_file_is_in_desktop (file) && is_special_desktop_gmc_file (file)) {
-		return FALSE;
-	}
-	
 	return nautilus_file_should_show (file, 
 					  options & SHOW_HIDDEN,
 					  options & SHOW_BACKUP);
@@ -2001,10 +1999,10 @@ nautilus_file_list_filter_hidden_and_backup (GList    *files,
 
 	filtered_files = nautilus_file_list_copy (files);
 	filtered_files = eel_g_list_partition (filtered_files, 
-						    filter_hidden_and_backup_partition_callback,
-						    GINT_TO_POINTER ((show_hidden ? SHOW_HIDDEN : 0) |
-								     (show_backup ? SHOW_BACKUP : 0)),
-						    &removed_files);
+					       filter_hidden_and_backup_partition_callback,
+					       GINT_TO_POINTER ((show_hidden ? SHOW_HIDDEN : 0) |
+								(show_backup ? SHOW_BACKUP : 0)),
+					       &removed_files);
 	nautilus_file_list_free (removed_files);
 
 	return filtered_files;

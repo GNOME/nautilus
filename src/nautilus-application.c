@@ -337,7 +337,7 @@ nautilus_make_uri_list_from_shell_strv (const char * const *strv)
 	return uri_list;
 }
 
-/* Find ~/.gnome-desktop/Trash and rename it to ~/.gnome-desktop/Trash-gmc
+/* Find ~/.gnome-desktop/Trash and rename it to ~/.gnome-desktop/Trash.gmc
  * Only if it is a directory
  */
 static void

@@ -2,6 +2,23 @@
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
 
+	Fixed bug 8232 (Trash.gmc and home directory link files made by
+	gmc show on Desktop):
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_should_show): Moved special case for gmc files in
+	here.
+	(filter_hidden_and_backup_partition_callback): Removed special
+	case for gmc files, since it's now in the lower level. Also fixed
+	code that was casting a pointer to an int without using
+	GPOINTER_TO_INT.
+	
+	* src/nautilus-application.c: Fix typo.
+
+2001-05-03  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
 	Fixed bug 8230 (launchers dragged from panel don't get icons as
 	they did in Ximian's Nautilus 1.0.2):
 
