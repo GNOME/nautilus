@@ -1,3 +1,13 @@
+2000-07-28  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar-tabs.c: (draw_one_tab_plain),
+	(draw_one_tab_themed), (draw_or_hit_test_all_tabs),
+	(nautilus_sidebar_tabs_expose):
+	mostly finished the themed sidebar tabs; there are some minor
+	issues remaining that require Arlo's help to fix.  Made the
+	titles draw in the right place and implemented the right edge
+	bumper like Arlo specified.
+	
 2000-07-28  Mathieu Lacage  <mathieu@eazel.com>
 
 	Implement complex search bar. Need to be hooked onto medusa
