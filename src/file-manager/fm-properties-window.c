@@ -463,7 +463,7 @@ attach_value_field (GtkTable *table,
 	gtk_object_set_data_full (GTK_OBJECT (value_field),
 				  "file_attribute",
 				  g_strdup (file_attribute_name),
-				  (GtkDestroyNotify) g_free);
+				  g_free);
 
 	/* Fill in the value. */
 	value_field_update (value_field, file);
@@ -924,9 +924,9 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 
 		/* Attach parameters and signal handler. */
 		gtk_object_set_data_full (GTK_OBJECT (button),
-				     "nautilus_property_name",
-				     g_strdup ((char *)property_names->data),
-				     (GtkDestroyNotify) g_free);
+					  "nautilus_property_name",
+					  g_strdup ((char *)property_names->data),
+					  g_free);
 				     
 		nautilus_file_ref (file);
 		gtk_object_set_data_full (GTK_OBJECT (button),
@@ -1009,12 +1009,12 @@ add_permissions_row_label (GtkTable *table,
 		gtk_object_set_data_full (GTK_OBJECT (label),
 					  "file_attribute",
 					  g_strdup (attribute_name),
-					  (GtkDestroyNotify) g_free);
+					  g_free);
 	}
 	gtk_object_set_data_full (GTK_OBJECT (label),
 				  "pattern",
 				  g_strdup (pattern),
-				  (GtkDestroyNotify) g_free);
+				  g_free);
 
 	/* Fill in the value. */
 	permissions_label_update (label, file);

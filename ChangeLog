@@ -1,5 +1,24 @@
 2000-06-26  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(set_metadata_eat_value): Fixed use of hash table in here. The
+	old code would destroy the wrong key. (Thanks to Ian for pointing
+	that when you insert a value into GHashTable it keeps the old key
+	instead of overwriting with the new one.)
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_signal_connect_free_data):
+	* src/file-manager/fm-properties-window.c: (attach_value_field),
+	(create_emblems_page), (add_permissions_row_label):
+	* src/nautilus-link-set-window.c: (make_link_set_check_box):
+	* src/nautilus-property-browser.c:
+	(make_properties_from_directory_path),
+	(make_properties_from_xml_node), (make_category_link):
+	* src/nautilus-sidebar.c: (nautilus_sidebar_add_panel_items):
+	Got rid of unnecessary casts to (GtkDestroyNotify).
+
+2000-06-26  Darin Adler  <darin@eazel.com>
+
 	* components/services/install/command-line/.cvsignore:
 	* components/services/install/lib/.cvsignore:
 	Ignore some additional generated files.

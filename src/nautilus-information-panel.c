@@ -369,8 +369,10 @@ nautilus_sidebar_add_panel_items(NautilusSidebar *sidebar, GtkWidget *menu)
 				gtk_check_menu_item_set_show_toggle(GTK_CHECK_MENU_ITEM(menu_item), enabled);
 				gtk_widget_show(menu_item);
 				gtk_menu_append (GTK_MENU(menu), menu_item);
-				gtk_signal_connect_full (GTK_OBJECT (menu_item), "activate", GTK_SIGNAL_FUNC(toggle_sidebar_panel),
-						 	NULL, g_strdup(id ->iid), (GtkDestroyNotify) g_free, FALSE, FALSE);
+				gtk_signal_connect_full (GTK_OBJECT (menu_item), "activate",
+							 GTK_SIGNAL_FUNC (toggle_sidebar_panel),
+							 NULL, g_strdup(id ->iid), g_free,
+							 FALSE, FALSE);
 			}
 			nautilus_view_identifier_free (id);
 		}

@@ -1237,7 +1237,7 @@ make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, c
 				 GTK_SIGNAL_FUNC (element_clicked_callback),
 				 NULL,
 				 g_strdup (current_file_info->name),
-				 (GtkDestroyNotify) g_free,
+				 g_free,
 				 FALSE,
 				 FALSE);
 
@@ -1330,7 +1330,7 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser, xmlNod
 				 GTK_SIGNAL_FUNC (element_clicked_callback),
 				 NULL,
 				 g_strdup (color_str),
-				 (GtkDestroyNotify) g_free,
+				 g_free,
 				 FALSE,
 				 FALSE);
 
@@ -1357,16 +1357,17 @@ static void
 make_category_link(NautilusPropertyBrowser *property_browser, char* name, char* image, int index)
 {
 	GtkWidget *label, *pix_widget, *button, *temp_vbox;
-	/* FIXME: Need to look at data files and see if there's a "nautilus/" in there.
-	 * If so, we need to strip the "nautilus/" and change this to call nautilus_pixmap_file.
+	/* FIXME: Need to look at data files and see if there's a
+	 * "nautilus/" in there.  If so, we need to strip the
+	 * "nautilus/" and change this to call nautilus_pixmap_file.
 	 */
 	char *file_name = gnome_pixmap_file (image); 
-	GtkWidget* temp_box = gtk_vbox_new(FALSE, 0);
+	GtkWidget* temp_box = gtk_vbox_new (FALSE, 0);
 
 	/* generate a pixmap widget from the image file name */
 	pix_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
 	gtk_widget_show (pix_widget);
-	gtk_box_pack_start (GTK_BOX(temp_box), pix_widget, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (temp_box), pix_widget, FALSE, FALSE, 0);
 	
 	button = gtk_button_new();
 	gtk_widget_show(button);
@@ -1374,17 +1375,17 @@ make_category_link(NautilusPropertyBrowser *property_browser, char* name, char* 
 	
 	/* use the name as a label */
 	label = gtk_label_new(name);
-	gtk_box_pack_start (GTK_BOX(temp_box), label, FALSE, FALSE, 0);
-	gtk_widget_show(label);
+	gtk_box_pack_start (GTK_BOX (temp_box), label, FALSE, FALSE, 0);
+	gtk_widget_show (label);
 
 	/* put the button in a vbox so it won't grow vertically */
-	temp_vbox = gtk_vbox_new(FALSE, 0);
-	gtk_widget_show(temp_vbox);
+	temp_vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (temp_vbox);
 	
-	gtk_box_pack_start (GTK_BOX(temp_vbox), button, FALSE, FALSE, 8);
-	add_to_content_table(property_browser, temp_vbox, index, 8);
-	gtk_container_add (GTK_CONTAINER(button), temp_box);
-	gtk_widget_show(temp_box);
+	gtk_box_pack_start (GTK_BOX (temp_vbox), button, FALSE, FALSE, 8);
+	add_to_content_table (property_browser, temp_vbox, index, 8);
+	gtk_container_add (GTK_CONTAINER (button), temp_box);
+	gtk_widget_show (temp_box);
 	
 	/* add a signal to handle clicks */
 	gtk_object_set_user_data (GTK_OBJECT(button), property_browser);
@@ -1394,7 +1395,7 @@ make_category_link(NautilusPropertyBrowser *property_browser, char* name, char* 
 		 GTK_SIGNAL_FUNC (category_clicked_callback),
 		 NULL,
 		 g_strdup (name),
-		 (GtkDestroyNotify) g_free,
+		 g_free,
 		 FALSE,
 		 FALSE);
 	

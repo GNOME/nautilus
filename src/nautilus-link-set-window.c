@@ -94,19 +94,19 @@ make_link_set_check_box(const char *directory_path, GtkWidget *checkbox_table,
 			
 	/* Attach the parameters and a signal handler. */
 	gtk_object_set_data_full (GTK_OBJECT (checkbox),
-				     "nautilus_directory_path",
-				     g_strdup (directory_path),
-				     (GtkDestroyNotify) g_free);
+				  "nautilus_directory_path",
+				  g_strdup (directory_path),
+				  g_free);
 				     
 	gtk_object_set_data_full (GTK_OBJECT (checkbox),
-					  "nautilus_link_set_name",
-					  g_strdup(name),
-					  (GtkDestroyNotify) g_free);
+				  "nautilus_link_set_name",
+				  g_strdup(name),
+				  g_free);
 		
 	gtk_signal_connect (GTK_OBJECT (checkbox),
-				    "toggled",
-				    link_set_check_box_toggled,
-				    window);
+			    "toggled",
+			    link_set_check_box_toggled,
+			    window);
 
 
 	/* attach the checkbox to the table */

@@ -447,7 +447,7 @@ set_metadata_eat_value (NautilusDirectory *directory,
 			MetadataValue *value)
 {
 	GHashTable *directory_table, *file_table;
-	gboolean found, changed;
+	gboolean changed;
 	char *combined_key;
 	MetadataValue *old_value;
 

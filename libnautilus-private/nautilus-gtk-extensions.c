@@ -244,7 +244,7 @@ guint nautilus_gtk_signal_connect_free_data (GtkObject *object,
 				  	     gpointer data)
 {
 	return nautilus_gtk_signal_connect_free_data_custom
-		(object, name, func, data, (GtkDestroyNotify) g_free);
+		(object, name, func, data, g_free);
 }
 
 /**
