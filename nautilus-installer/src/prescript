@@ -8,7 +8,7 @@ if test $UID -ne 0; then
     echo ""
     echo "Please enter root password at the prompt"
     xhost + localhost
-    su - -c "export DISPLAY=$DISPLAY && cd $PWD && sh $0"
+    su - -c "export DISPLAY=$DISPLAY && cd $PWD && echo Uncompressing... && sh $0"
     xhost - localhost
     exit
 fi

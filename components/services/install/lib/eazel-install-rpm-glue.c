@@ -556,7 +556,32 @@ do_rpm_install (EazelInstall *service,
 			PackageData *pd;
 			g_warning ("Source Package installs not supported!\n"
                                      "Package %s skipped.", pkg_file);	
-			pd = packagedata_new_from_rpm_header (binary_headers[num_binary_packages]);
+			
+			/*
+			  FIXME: bugzilla.eazel.com 1093:
+			  this call fails.
+			  pd = packagedata_new_from_rpm_header (binary_headers[num_binary_packages]);
+			*/
+			pd = g_new0 (PackageData, 1);
+			headerGetEntry (binary_headers[num_binary_packages],
+					RPMTAG_NAME, NULL,
+					(void **) &pd->name, NULL);
+			headerGetEntry (binary_headers[num_binary_packages],
+					RPMTAG_VERSION, NULL,
+					(void **) &pd->version, NULL);
+			headerGetEntry (binary_headers[num_binary_packages],
+					RPMTAG_RELEASE, NULL,
+					(void **) &pd->minor, NULL);
+			headerGetEntry (binary_headers[num_binary_packages],
+					RPMTAG_ARCH, NULL,
+					(void **) &pd->archtype, NULL);
+			headerGetEntry (binary_headers[num_binary_packages],
+					RPMTAG_SIZE, NULL,
+					(void **) &pd->bytesize, NULL);
+			headerGetEntry (binary_headers[num_binary_packages],
+					RPMTAG_SUMMARY, NULL,
+					(void **) &pd->summary, NULL);
+			
 			eazel_install_emit_install_failed (service, pd, RPM_SRC_NOT_SUPPORTED, NULL);
 			packagedata_destroy (pd);
 		}
@@ -627,7 +652,9 @@ do_rpm_install (EazelInstall *service,
 				GList *deps;
 
 				deps = build_packagedata_list_from_deps (conflicts, num_conflicts);
-				pd = packagedata_new_from_rpm_header (binary_headers[i]);
+				pd = g_new0 (PackageData, 1);
+				pd->name = g_strdup (conflicts[0].byName);
+
 				g_message ("Dep failed for %s",pd->name);
 				eazel_install_emit_install_failed (service, pd, RPM_DEP_FAIL, deps); 
 

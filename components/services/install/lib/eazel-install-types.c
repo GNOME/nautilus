@@ -64,7 +64,7 @@ packagedata_new_from_rpm_header (Header hd)
 			(void **) &pd->archtype, NULL);
 	headerGetEntry (hd,
 			RPMTAG_SIZE, NULL,
-			(void **) &pd->bytesize, NULL);
+					(void **) &pd->bytesize, NULL);
 	headerGetEntry (hd,
 			RPMTAG_SUMMARY, NULL,
 			(void **) &pd->summary, NULL);
