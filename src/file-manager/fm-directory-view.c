@@ -3637,7 +3637,7 @@ fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView *view)
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	/* work in progress */
-	if (FALSE) {
+	if (TRUE) {
 		menu = create_selection_context_menu (view);
 		if (menu != NULL) {
 			nautilus_pop_up_context_menu (menu,
@@ -3670,7 +3670,7 @@ fm_directory_view_pop_up_background_context_menu  (FMDirectoryView *view)
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	/* work in progress */
-	if (FALSE) {
+	if (TRUE) {
 		nautilus_pop_up_context_menu (create_background_context_menu (view),
 					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
 					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
