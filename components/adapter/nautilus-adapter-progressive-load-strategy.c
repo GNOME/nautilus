@@ -86,12 +86,13 @@ nautilus_adapter_progressive_load_strategy_destroy (GtkObject *object)
 	NautilusAdapterProgressiveLoadStrategy *strategy;
 	CORBA_Environment ev;
 
+	strategy = NAUTILUS_ADAPTER_PROGRESSIVE_LOAD_STRATEGY (object);
+
 	if (strategy->details->progressive_data_sink != CORBA_OBJECT_NIL) {
 		CORBA_exception_init (&ev);
 		bonobo_object_release_unref (strategy->details->progressive_data_sink, &ev);
 		CORBA_exception_free (&ev);
 	}
-
 
 	g_free (strategy->details);
 

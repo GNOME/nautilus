@@ -1,5 +1,11 @@
 2000-09-20  Maciej Stachowiak  <mjs@eazel.com>
 
+	* components/adapter/nautilus-adapter-progressive-load-strategy.c
+	(nautilus_adapter_progressive_load_strategy_destroy): Fix
+	unuinitialized variable use (thanks to Will LaShell).
+
+2000-09-20  Maciej Stachowiak  <mjs@eazel.com>
+
 	More work towards fixing bug 1994; in the process I think I might
 	also end up fixing 2576, 2577, 2578 and 2579 (might also end up
 	fixing 2580 later).
