@@ -536,7 +536,7 @@ nautilus_link_local_create_from_gnome_entry (GnomeDesktopEntry *entry, const cha
 			launch_string = g_strdup_printf ("command:%s", arguments);
 		}		
 	} else if (strcmp (entry->type, "URL") == 0) {
-		launch_string = g_strdup_printf ("command:%s", arguments);
+		launch_string = g_strdup (arguments);
 	} else {
 		/* Unknown .desktop file type */
 		launch_string = NULL;

@@ -36,6 +36,7 @@
 
 typedef struct ActivationURIReadState ActivationURIReadState;
 typedef struct TopLeftTextReadState TopLeftTextReadState;
+typedef struct FileMonitors FileMonitors;
 
 struct NautilusDirectoryDetails
 {
@@ -181,9 +182,17 @@ NautilusFile *     nautilus_directory_find_file_by_relative_uri       (NautilusD
 								       const char                *relative_uri);
 NautilusFile *     nautilus_directory_find_file_by_internal_uri       (NautilusDirectory         *directory,
 								       const char                *relative_uri);
+
 void               nautilus_directory_add_file                        (NautilusDirectory         *directory,
 								       NautilusFile              *file);
 void               nautilus_directory_remove_file                     (NautilusDirectory         *directory,
+								       NautilusFile              *file);
+FileMonitors *     nautilus_directory_remove_file_monitors            (NautilusDirectory         *directory,
+								       NautilusFile              *file);
+void               nautilus_directory_add_file_monitors               (NautilusDirectory         *directory,
+								       NautilusFile              *file,
+								       FileMonitors              *monitors);
+void               nautilus_directory_add_file                        (NautilusDirectory         *directory,
 								       NautilusFile              *file);
 GList *            nautilus_directory_begin_file_name_change          (NautilusDirectory         *directory,
 								       NautilusFile              *file);

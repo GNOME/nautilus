@@ -1219,6 +1219,7 @@ nautilus_file_set_directory (NautilusFile *file,
 			     NautilusDirectory *new_directory)
 {
 	NautilusDirectory *old_directory;
+	FileMonitors *monitors;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (file->details->directory));
@@ -1239,6 +1240,7 @@ nautilus_file_set_directory (NautilusFile *file,
 
 	remove_from_link_hash_table (file);
 
+	monitors = nautilus_directory_remove_file_monitors (old_directory, file);
 	nautilus_directory_remove_file (old_directory, file);
 
 	nautilus_directory_ref (new_directory);
@@ -1246,6 +1248,7 @@ nautilus_file_set_directory (NautilusFile *file,
 	nautilus_directory_unref (old_directory);
 
 	nautilus_directory_add_file (new_directory, file);
+	nautilus_directory_add_file_monitors (new_directory, file, monitors);
 
 	add_to_link_hash_table (file);
 

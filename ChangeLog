@@ -1,3 +1,24 @@
+2001-04-20  Darin Adler  <darin@eazel.com>
+
+	Fixed bug where the monitor would be "left behind" when a file was
+	moved from one directory to another.
+
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(nautilus_directory_remove_file_monitors),
+	(nautilus_directory_add_file_monitors): New calls to remove a
+	file's monitors from one directory and add it to another.
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_set_directory): Call the new calls.
+	
+	* configure.in: Paths from change yesterday were wrong. Had to fix
+	them to make RPM builds work again.
+	
+	* libnautilus-extensions/nautilus-link.c:
+	(nautilus_link_local_create_from_gnome_entry): Fix, based on patch
+	from fcrozat@mandrakesoft.com, to handle the URL versions
+	of gnome-entry properly.
+
 2001-04-20  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/nautilus-application.c: (nautilus_application_startup):
@@ -8144,7 +8165,7 @@ Tue Mar 06 12:24:24 2001  George Lebl <jirka@5z.com>
 	supported type for the trash folder creation and
 	detection code.
 	
-2001-03-02  Frederic Crozat <fcrozat@mandrakesoft.com>
+2001-03-02  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
 	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
 	
