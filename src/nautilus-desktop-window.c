@@ -173,6 +173,12 @@ static void
 realize (GtkWidget *widget)
 {
 	NautilusDesktopWindow *window;
+	GdkAtom type;
+	gulong nitems, bytes_after;
+	gint format;
+	guchar *data;
+	gboolean have_set_background;
+	Window w;
 
 	window = NAUTILUS_DESKTOP_WINDOW (widget);
 
@@ -225,6 +231,56 @@ realize (GtkWidget *widget)
 				0, 0,
 				gdk_screen_width (),
 				gdk_screen_height ());
+
+	/* Set the background to show the root window to avoid a flash that
+	 * would otherwise occur.
+	 */
+	have_set_background = FALSE;
+
+	gtk_widget_set_app_paintable (widget, TRUE);
+	w = GDK_WINDOW_XWINDOW (widget->window);
+	XGetWindowProperty (GDK_DISPLAY (), GDK_ROOT_WINDOW (),
+			    gdk_atom_intern ("_XROOTPMAP_ID", FALSE),
+			    0L, 1L, False, XA_PIXMAP,
+			    &type, &format, &nitems, &bytes_after,
+			    &data);
+  
+	if (type == XA_PIXMAP) {
+		if (format == 32 && nitems == 1 && bytes_after == 0) {
+			gdk_error_trap_push ();
+			XSetWindowBackgroundPixmap (GDK_DISPLAY (), w,
+						    *(Pixmap *)data);
+			gdk_flush ();
+			if (!gdk_error_trap_pop ())
+				have_set_background = TRUE;
+		}
+  
+		XFree (data);
+	}
+
+	if (!have_set_background) {
+		XGetWindowProperty (GDK_DISPLAY (), GDK_ROOT_WINDOW (),
+				    gdk_atom_intern ("_XROOTCOLOR_PIXEL", FALSE),
+				    0L, 1L, False, AnyPropertyType,
+				    &type, &format, &nitems, &bytes_after,
+				    &data);
+  
+		if (type != None) {
+			if (format == 32 && nitems == 1 && bytes_after == 0) {
+				XSetWindowBackground (GDK_DISPLAY (), w,
+						      *(gulong *)data);
+				have_set_background = TRUE;
+			}
+  
+			XFree (data);
+		}
+	}
+
+	if (!have_set_background) {
+		XSetWindowBackgroundPixmap (GDK_DISPLAY (), w,
+					    None);
+	}
+	
 
 	/* Get rid of the things that window managers add to resize
 	 * and otherwise manipulate the window.
