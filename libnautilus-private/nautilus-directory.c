@@ -305,6 +305,13 @@ nautilus_directory_try_to_read_metafile (NautilusDirectory *directory, GnomeVFSU
 		size = metafile_info.size;
 		if (size != metafile_info.size)
 			result = GNOME_VFS_ERROR_TOOBIG;
+		
+		/* Avoid allocating a NULL buffer later and passing it
+		   around; we still want to try to parse an empty file
+		   so we get a metafile tree and a valid result. */
+		if (size == 0) {
+			size = 1;
+		}
 	}
 
 	metafile_handle = NULL;
@@ -335,8 +342,7 @@ nautilus_directory_read_metafile (NautilusDirectory *directory)
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
 	/* Check for the alternate metafile first.
-	   If we read from it, then write to it later.
-	*/
+	   If we read from it, then write to it later.  */
 	directory->details->use_alternate_metafile = FALSE;
 	result = nautilus_directory_try_to_read_metafile (directory, directory->details->alternate_metafile_uri);
 	if (result == GNOME_VFS_OK)
