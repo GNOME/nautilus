@@ -22,6 +22,7 @@
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkbin.h>
 #include "ntl-types.h"
+#include <bonobo/gnome-bonobo.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,28 +39,41 @@ typedef struct _NautilusViewClass  NautilusViewClass;
 
 struct _NautilusView
 {
-	GtkBin parent;
+  GtkBin parent;
 
-	GtkWidget *main_window;
+  GtkWidget *main_window;
+
+  char *iid;
+  GtkWidget *client;
+
+  guint construct_arg_count;
 };
 
 struct _NautilusViewClass
 {
-	GtkBinClass parent_spot;
+  GtkBinClass parent_spot;
 
-	void (*notify_location_change)	(NautilusView *view,
+  void (*notify_location_change)	(NautilusView *view,
 					 NautilusNavigationInfo *nav_context);
-        void (*load_state) (NautilusView *view, const char *config_path);
-        void (*save_state) (NautilusView *view, const char *config_path);
-        void (*show_properties) (NautilusView *view);
+  void (*load_state) (NautilusView *view, const char *config_path);
+  void (*save_state) (NautilusView *view, const char *config_path);
+  void (*show_properties) (NautilusView *view);
 
-        GtkBinClass *parent_class;
-        guint view_signals[3];
+  void (*view_constructed) (NautilusView *view); /* Not a signal. Work-around for Gtk+'s lack of a 'constructed' operation */
+
+  GtkBinClass *parent_class;
+  guint view_signals[3];
+  guint num_construct_args;
 };
 
 GtkType nautilus_view_get_type                (void);
 void    nautilus_view_request_location_change (NautilusView              *view,
 					       NautilusLocationReference  loc);
+void    nautilus_view_load_client             (NautilusView              *view,
+					       const char *               iid);
+
+/* This is a "protected" operation */
+void    nautilus_view_construct_arg_set(NautilusView *view);
 
 #ifdef __cplusplus
 }

@@ -3,6 +3,7 @@
 
 #include <libgnomeui/gnome-app.h>
 #include "ntl-types.h"
+#include "ntl-view.h"
 
 #define NAUTILUS_TYPE_WINDOW (nautilus_window_get_type())
 #define NAUTILUS_WINDOW(obj)	        (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_WINDOW, NautilusWindow))
@@ -28,9 +29,11 @@ struct _NautilusWindow {
 
   GtkWidget *content_view;
 
-  GSList *nav_views;
-  GtkWidget *nav_notebook, *content_hbox, *btn_back, *btn_fwd;
+  GSList *meta_views;
+  GtkWidget *meta_notebook, *content_hbox, *btn_back, *btn_fwd;
   NautilusLocationReference current_uri, actual_current_uri;
+
+  GSList *uris_prev, *uris_next;
 };
 
 GtkType nautilus_window_get_type(void);
@@ -41,5 +44,8 @@ void nautilus_window_request_location_change(NautilusWindow *window,
 void nautilus_window_save_state(NautilusWindow *window, const char *config_path);
 void nautilus_window_load_state(NautilusWindow *window, const char *config_path);
 void nautilus_window_set_initial_state(NautilusWindow *window);
+void nautilus_window_set_content_view(NautilusWindow *window, NautilusView *content_view);
+void nautilus_window_add_meta_view(NautilusWindow *window, NautilusView *meta_view);
+void nautilus_window_remove_meta_view(NautilusWindow *window, NautilusView *meta_view);
 
 #endif

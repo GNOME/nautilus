@@ -7,9 +7,9 @@ test -z "$srcdir" && srcdir=.
 ORIGDIR=`pwd`
 cd $srcdir
 
-PROJECT=hyperbola
+PROJECT=nautilus
 TEST_TYPE=-f
-FILE=src/gui/hyperbola-main.c
+FILE=src/Makefile.am
 
 DIE=0
 

@@ -33,6 +33,7 @@ enum {
 };
 
 static void nautilus_view_init       (NautilusView      *view);
+static void nautilus_view_constructed(NautilusView      *view);
 static void nautilus_view_class_init (NautilusViewClass *klass);
 static void nautilus_view_set_arg (GtkObject      *object,
 				    GtkArg         *arg,
@@ -89,7 +90,6 @@ gtk_marshal_NONE__BOXED_OBJECT_BOXED (GtkObject * object,
 		  func_data);
 }
 
-
 static void
 nautilus_view_class_init (NautilusViewClass *klass)
 {
@@ -108,6 +108,7 @@ nautilus_view_class_init (NautilusViewClass *klass)
   klass->notify_location_change = NULL;
 
   klass->parent_class = gtk_type_class (gtk_type_parent (object_class->type));
+  klass->view_constructed = nautilus_view_constructed;
 
   i = 0;
   klass->view_signals[i++] = gtk_signal_new("notify_location_change",
@@ -140,16 +141,21 @@ nautilus_view_class_init (NautilusViewClass *klass)
 			   GTK_TYPE_OBJECT,
 			   GTK_ARG_READWRITE|GTK_ARG_CONSTRUCT,
 			   ARG_MAIN_WINDOW);
+  klass->num_construct_args++;
 }
 
 static void
 nautilus_view_set_arg (GtkObject      *object,
 		       GtkArg         *arg,
-		       guint	        arg_id)
+		       guint	       arg_id)
 {
+  NautilusView *view;
+
+  view = NAUTILUS_VIEW(object);
   switch(arg_id) {
   case ARG_MAIN_WINDOW:
-    NAUTILUS_VIEW(object)->main_window = GTK_WIDGET(GTK_VALUE_OBJECT(*arg));
+    view->main_window = GTK_WIDGET(GTK_VALUE_OBJECT(*arg));
+    nautilus_view_construct_arg_set(view);
     break;
   }
 }
@@ -170,7 +176,28 @@ static void
 nautilus_view_init (NautilusView *view)
 {
   GTK_WIDGET_SET_FLAGS (view, GTK_NO_WINDOW);
-  
+}
+
+static void
+nautilus_view_constructed(NautilusView *view)
+{
+}
+
+void
+nautilus_view_construct_arg_set(NautilusView *view)
+{
+  guint nca;
+  NautilusViewClass *klass;
+
+  klass = NAUTILUS_VIEW_CLASS(((GtkObject *)view)->klass);
+  nca = klass->num_construct_args;
+  if(view->construct_arg_count >= nca)
+    return;
+
+  view->construct_arg_count++;
+  if((view->construct_arg_count >= nca)
+     && klass->view_constructed)
+    klass->view_constructed(view);
 }
 
 void
@@ -218,4 +245,21 @@ nautilus_view_size_allocate (GtkWidget     *widget,
 
   if (bin->child && GTK_WIDGET_VISIBLE (bin->child))
     gtk_widget_size_allocate (bin->child, &child_allocation);
+}
+
+void
+nautilus_view_load_client(NautilusView              *view,
+			  const char *               iid)
+{
+  if(view->client)
+    {
+      g_free(view->iid); view->iid = NULL;
+      gtk_container_remove(GTK_CONTAINER(view), view->client); view->client = NULL;
+    }
+
+  view->client = gnome_bonobo_widget_new_control((char *)iid);
+  g_return_if_fail(view->client);
+  view->iid = g_strdup(iid);
+  gtk_widget_show(view->client);
+  gtk_container_add(GTK_CONTAINER(view), view->client);
 }
