@@ -1,3 +1,10 @@
+2000-10-03  Michael Engber  <engber@eazel.com>
+
+	Sped up background drawing for the tiled non-aa case.
+	* libnautilus-extensions/nautilus-background.c:
+	(update_drawable_with_pixbuf), (draw_pixbuf_tiled),
+	(nautilus_background_draw), (draw_pixbuf_tiled_aa):
+
 2000-10-03  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3422 (Forward menu crashes after choosing from

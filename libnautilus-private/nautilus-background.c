@@ -503,26 +503,80 @@ fill_drawable_from_gradient_buffer (GdkDrawable *drawable, GdkGC *gc,
 		(drawable, gc, &rect, background->details->gradient_buffer);
 }
 
+/* Fills in an update rect/drawable from a pixbuf by calling gdk_pixbuf_render_to_drawable
+ * with the minimum width/height in order to minimize overhead. I.e. this wrapper handles
+ * the clipping rather than sending all the data to the x-server and letting it do it.
+ * 
+ * x0,y0,x1,y1 are all in canvas coords.
+ */
+static void
+update_drawable_with_pixbuf (GdkDrawable *dst, GdkGC *gc,
+							 int dst_x0, int dst_y0, int dst_x1, int dst_y1,
+							 GdkPixbuf *src,
+							 int src_x0, int src_y0, int src_x1, int src_y1)
+{
+	if (src_x1 > dst_x0 && src_y1 > dst_y0 && src_x0 < dst_x1  && src_y0 < dst_y1) {
+		int src_offset_x;
+		int src_offset_y;
+		int dst_offset_x;
+		int dst_offset_y;
+		int copy_x0;
+		int copy_y0;
+		int copy_x1;
+		int copy_y1;
+		
+		if (src_x0 > dst_x0) {
+			src_offset_x = 0;
+			dst_offset_x = src_x0 - dst_x0;
+			copy_x0 = src_x0;
+		} else {
+			src_offset_x = dst_x0 - src_x0;
+			dst_offset_x = 0;
+			copy_x0 = dst_x0;
+		}
+
+		copy_x1 = MIN (src_x1, dst_x1);
+		
+		if (src_y0 > dst_y0) {
+			src_offset_y = 0;
+			dst_offset_y = src_y0 - dst_y0;
+			copy_y0 = src_y0;
+		} else {
+			src_offset_y = dst_y0 - src_y0;
+			dst_offset_y = 0;
+			copy_y0 = dst_y0;
+		}
+
+		copy_y1 = MIN (src_y1, dst_y1);
+		
+		gdk_pixbuf_render_to_drawable (src, dst, gc,
+									   src_offset_x, src_offset_y,
+									   dst_offset_x, dst_offset_y,
+									   copy_x1 - copy_x0, copy_y1 - copy_y0,
+									   GDK_RGB_DITHER_NONE, 0, 0);
+	}
+}
+
 /* fill the canvas buffer with a tiled pixbuf */
 static void
-draw_pixbuf_tiled (GdkPixbuf *pixbuf, GdkDrawable *drawable, GdkGC *gc, int drawable_x, int drawable_y, int drawable_width, int drawable_height)
+draw_pixbuf_tiled (GdkPixbuf *pixbuf, GdkDrawable *drawable, GdkGC *gc, int drawable_x, int drawable_y, int drawable_right, int drawable_bottom)
 {
 	int x, y;
 	int start_x, start_y;
-	int end_x, end_y;
 	int tile_width, tile_height;
 	
 	tile_width = gdk_pixbuf_get_width (pixbuf);
 	tile_height = gdk_pixbuf_get_height (pixbuf);
 	
-	start_x = -(drawable_x  % tile_width);
-	start_y = -(drawable_y  % tile_height);
-	end_x = drawable_x + drawable_width;
-	end_y = drawable_y + drawable_height;
+	start_x = drawable_x - (drawable_x % tile_width);
+	start_y = drawable_y - (drawable_y % tile_height);
 
-	for (y = start_y; y < end_y; y += tile_height) {
-		for (x = start_x; x < end_x; x += tile_width) {
-			gdk_pixbuf_render_to_drawable (pixbuf, drawable, gc, 0, 0, x, y, tile_width, tile_height, GDK_RGB_DITHER_NONE, 0, 0);
+	for (y = start_y; y < drawable_bottom; y += tile_height) {
+		for (x = start_x; x < drawable_right; x += tile_width) {
+			update_drawable_with_pixbuf (drawable, gc,
+										 drawable_x, drawable_y, drawable_right, drawable_bottom,
+										 pixbuf,
+										 x, y, x + tile_width, y + tile_height);
 		}
 	}
 }
@@ -692,50 +746,19 @@ nautilus_background_draw (NautilusBackground *background,
 	if (background->details->image != NULL) {
 		switch (background->details->image_placement) {
 		case NAUTILUS_BACKGROUND_TILED:
-			draw_pixbuf_tiled (background->details->image, drawable, gc, drawable_x, drawable_y, drawable_width, drawable_height);
+			draw_pixbuf_tiled (background->details->image, drawable, gc, drawable_x, drawable_y, drawable_right, drawable_bottom);
 			break;
 		case NAUTILUS_BACKGROUND_CENTERED:
 		case NAUTILUS_BACKGROUND_SCALED:
 		case NAUTILUS_BACKGROUND_SCALED_ASPECT:
 			/* Since the image has already been scaled, all these cases can be treated identically.
 			 */
-			if (drawable_x < image_rect_right &&
-				drawable_y < image_rect_bottom &&
-				drawable_right > background->details->image_rect_x &&
-				drawable_bottom > background->details->image_rect_y) {
-				int src_offset_x;
-				int src_offset_y;
-				int dst_offset_x;
-				int dst_offset_y;
-				int copy_width;
-				int copy_height;
-				
-				if (drawable_x < background->details->image_rect_x) {
-					src_offset_x = 0;
-					dst_offset_x = background->details->image_rect_x - drawable_x;
-				} else {
-					src_offset_x = drawable_x - background->details->image_rect_x;
-					dst_offset_x = 0;
-				}
-				
-				copy_width = drawable_right < image_rect_right ? drawable_width - dst_offset_x : image_rect_right - drawable_x;
-				
-				if (drawable_y < background->details->image_rect_y) {
-					src_offset_y = 0;
-					dst_offset_y = background->details->image_rect_y - drawable_y;
-				} else {
-					src_offset_y = drawable_y - background->details->image_rect_y;
-					dst_offset_y = 0;
-				}
-						
-				copy_height = drawable_bottom < image_rect_bottom ? drawable_height - dst_offset_y : image_rect_bottom - drawable_y;
-				
-				gdk_pixbuf_render_to_drawable (background->details->image, drawable, gc,
-											   src_offset_x, src_offset_y,
-											   dst_offset_x, dst_offset_y,
-											   copy_width, copy_height,
-											   GDK_RGB_DITHER_NONE, 0, 0);
-			}
+			update_drawable_with_pixbuf (drawable, gc,
+										 drawable_x, drawable_y,
+										 drawable_right, drawable_bottom,
+							 			 background->details->image,
+							 			 background->details->image_rect_x, background->details->image_rect_y,
+							 			 image_rect_right, image_rect_bottom);
 			break;
 		}
 	}
@@ -764,8 +787,8 @@ draw_pixbuf_tiled_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer)
 	tile_width = gdk_pixbuf_get_width (pixbuf);
 	tile_height = gdk_pixbuf_get_height (pixbuf);
 	
-	start_x = buffer->rect.x0 - (buffer->rect.x0  % tile_width);
-	start_y = buffer->rect.y0 - (buffer->rect.y0  % tile_height);
+	start_x = buffer->rect.x0 - (buffer->rect.x0 % tile_width);
+	start_y = buffer->rect.y0 - (buffer->rect.y0 % tile_height);
 
 	for (y = start_y; y < buffer->rect.y1; y += tile_height) {
 		for (x = start_x; x < buffer->rect.x1; x += tile_width) {
