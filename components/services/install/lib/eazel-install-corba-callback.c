@@ -212,29 +212,6 @@ eazel_install_callback_create_corba_object (BonoboObject *service) {
   GTK+ object stuff
 *****************************************/
 
-typedef void (*GtkSignal_NONE__POINTER_INT_INT_INT_INT_INT_INT) (GtkObject * object,
-                         gpointer arg1,
-                         gint arg2,
-                         gint arg3,			
-                         gint arg4,
-                         gint arg5,			
-                         gint arg6,
-                         gint arg7,			
-                         gpointer user_data);
-void
-gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT (GtkObject * object,
-                   GtkSignalFunc func,
-                   gpointer func_data, GtkArg * args)
-{
-  GtkSignal_NONE__POINTER_INT_INT_INT_INT_INT_INT rfunc;
-  rfunc = (GtkSignal_NONE__POINTER_INT_INT_INT_INT_INT_INT) func;
-  (*rfunc) (object,
-	    GTK_VALUE_POINTER (args[0]),
-	    GTK_VALUE_INT (args[1]), GTK_VALUE_INT (args[2]),
-	    GTK_VALUE_INT (args[3]), GTK_VALUE_INT (args[4]),
-	    GTK_VALUE_INT (args[5]), GTK_VALUE_INT (args[6]),func_data);
-}
-
 void
 eazel_install_callback_destroy (GtkObject *object)
 {
@@ -283,7 +260,7 @@ eazel_install_callback_class_initialize (EazelInstallCallbackClass *klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, install_progress),
-				gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT,
+				eazel_install_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT,
 				GTK_TYPE_NONE, 7, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
 	signals[UNINSTALL_PROGRESS] = 
 		gtk_signal_new ("uninstall_progress",

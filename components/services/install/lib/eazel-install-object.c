@@ -131,6 +131,12 @@ eazel_install_destroy (GtkObject *object)
 
 	service = EAZEL_INSTALL (object);
 
+	g_hash_table_destroy (service->private->filename_to_package_hash);
+	g_free (service->private->logfilename);
+
+	transferoptions_destroy (service->private->topts);
+	installoptions_destroy (service->private->iopts);
+
 	if (GTK_OBJECT_CLASS (eazel_install_parent_class)->destroy) {
 		GTK_OBJECT_CLASS (eazel_install_parent_class)->destroy (object);
 	}
@@ -237,7 +243,7 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallClass, install_progress),
-				gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT,
+				eazel_install_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT,
 				GTK_TYPE_NONE, 7, GTK_TYPE_POINTER, 
 				GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
 	signals[DOWNLOAD_FAILED] = 
@@ -391,6 +397,8 @@ eazel_install_initialize (EazelInstall *service) {
 	service->private->packsys.rpm.set = NULL;
 	service->private->logfile = NULL;
 	service->private->logfilename = NULL;
+	service->private->filename_to_package_hash = g_hash_table_new ((GHashFunc)g_str_hash,
+								       (GCompareFunc)g_str_equal);
 }
 
 GtkType

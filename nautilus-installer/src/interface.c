@@ -254,7 +254,7 @@ create_window (void)
                     (GtkAttachOptions) (0), 0, 0);
 
   action_label = gtk_label_new (_(""));
-  gtk_widget_set_name (action_label, "action_label");
+  gtk_widget_set_name (action_label, "");
   gtk_widget_ref (action_label);
   gtk_object_set_data_full (GTK_OBJECT (window), "action_label", action_label,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -270,8 +270,9 @@ create_window (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (progressbar);
   gtk_table_attach (GTK_TABLE (table2), progressbar, 1, 2, 1, 2,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
+                    GTK_FILL,
+                    GTK_FILL,
+		    0, 0);
 
   package_label = gtk_label_new (_(""));
   gtk_widget_set_name (package_label, "package_label");

@@ -27,6 +27,7 @@
  */
 
 #include "eazel-install-protocols.h"
+#include "eazel-install-private.h"
 #include <config.h>
 
 
@@ -51,6 +52,7 @@ http_fetch_remote_file (EazelInstall *service,
         char* body;
         FILE* file;
 	int total_bytes;
+	gboolean first_emit;
 
 	g_message (_("Downloading %s..."), url);
 
@@ -59,6 +61,7 @@ http_fetch_remote_file (EazelInstall *service,
         length = -1;
         request = NULL;
         body = NULL;
+	first_emit = TRUE;
 
 	if (file == NULL) {
 		get_failed = 1;
@@ -92,9 +95,19 @@ http_fetch_remote_file (EazelInstall *service,
         while ((status = ghttp_process (request)) == ghttp_not_done) {
                 ghttp_current_status curStat = ghttp_get_status (request);
 		total_bytes = curStat.bytes_total;
-		eazel_install_emit_download_progress (service, target_file, curStat.bytes_read, curStat.bytes_total);
+		/* Ensure first emit is with amount==0 */
+		if (first_emit) {
+			eazel_install_emit_download_progress (service, g_basename (target_file), 0, total_bytes);		
+			first_emit = FALSE;
+		}
+		/* And that amount==0 & amount==total only occurs once */
+		if (curStat.bytes_read!=0 && (curStat.bytes_read != curStat.bytes_total)) {
+			eazel_install_emit_download_progress (service, g_basename (target_file), curStat.bytes_read, curStat.bytes_total);
+		}
         }
-	eazel_install_emit_download_progress (service, target_file, total_bytes, total_bytes);		
+	/* Last emit amount==total */
+	eazel_install_emit_download_progress (service, g_basename (target_file), total_bytes, total_bytes);		
+
         if (ghttp_status_code (request) != 200) {
                 g_warning (_("HTTP error: %d %s"), ghttp_status_code (request),
                          ghttp_reason_phrase (request));
@@ -234,6 +247,10 @@ eazel_install_fetch_package (EazelInstall *service,
 						      filename_from_url (url));
 			g_free (package->filename);
 			package->filename = g_strdup (targetname);
+			g_hash_table_insert (service->private->filename_to_package_hash,
+					     g_strdup (package->filename),
+					     package);
+			g_message ("ADDING \"%s\"", package->filename);
 			result = eazel_install_fetch_file (service, url, targetname);
 			g_free (targetname);
 		}

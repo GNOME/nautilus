@@ -1,3 +1,65 @@
+2000-07-10  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/docs/installer-rpmsearch:
+	text file on how the rpmsearch.cgi should work.
+		
+	*
+	components/services/install/command-line/eazel-alt-install-corba.c:
+	(set_parameters_from_command_line),
+	(eazel_download_progress_signal), (eazel_install_progress_signal),
+	(install_failed), (create_package), (done):
+	Added --force to do force installs. Also fixed the screen output
+	to show the begin/progress/end handling on download and install
+	callbacks.
+	Changed the output tree in case of install_failed.
+		
+	* components/services/install/command-line/eazel-alt-install.c:
+	(set_parameters_from_command_line),
+	(eazel_install_progress_signal), (eazel_download_progress_signal),
+	(main):
+	Tried to revive it...
+	
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(eazel_install_callback_class_initialize):
+	Removed the evil marshal func, and renamed it to prevent name clashes.
+	
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_destroy), (eazel_install_class_initialize),
+	(eazel_install_initialize):
+	Some more free's in the _destroy.
+	
+	* components/services/install/lib/eazel-install-private.h:
+	Added a hash table to fix bug #1585.
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(http_fetch_remote_file), (eazel_install_fetch_package):
+	Fixed bug 1620. Would probably be more elegant to use some
+	enums. Also now inserts packages into the hashtable in
+	EazelInstall.
+	
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(rpm_show_progress), (do_rpm_install), (do_rpm_uninstall),
+	Fixed bug 1585 by having the rpm_show_progress lookup the package
+	in the hashtable, and bug 1620 by inserting a load of if's to make
+	sure the signal emits with amount==0, amount > 0 && < total and
+	amount == total.
+	(eazel_install_fetch_rpm_dependencies):
+	Fixed bug 1363.
+	
+	* components/services/install/lib/eazel-install-types.c:
+	(rpmfilename_from_packagedata), (packagedata_hash_equal),
+	(packagedata_status_str_to_enum),
+	(eazel_install_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT):
+	* components/services/install/lib/eazel-install-types.h:
+	Added the evil marshaller to types.c
+	
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/installer.c: (eazel_install_progress),
+	(eazel_download_progress):
+	* nautilus-installer/src/interface.c: (create_window):
+	Tried to make the installer look slightly more pleasing.
+
 2000-07-10  Darin Adler  <darin@eazel.com>
 
 	* components/history/nautilus-history-view.c:

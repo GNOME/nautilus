@@ -143,6 +143,7 @@ GList* eazel_install_query_package_system (EazelInstall *service,
 					   const char *query, 
 					   int flags) ;
 
+
 /******************************************************************************/
 /* Beware, from hereonafter, it's #def madness, to make the get/set functions */
 

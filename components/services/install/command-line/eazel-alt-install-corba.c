@@ -59,7 +59,9 @@ int     arg_dry_run,
 	arg_local,
 	arg_debug,
 	arg_port,
-	arg_delay;
+	arg_delay,
+	arg_file,
+	arg_force;
 char    *arg_server,
 	*arg_config_file,
 	*arg_tmp_dir;
@@ -72,11 +74,13 @@ static const struct poptOption options[] = {
 	{"delay", '\0', POPT_ARG_NONE, &arg_delay, 0 , N_("10 sec delay after starting service"), NULL},
 	{"port", '\0', POPT_ARG_NONE, &arg_port, 0 , N_("Set port numer (80)"), NULL},
 	{"test", 't', POPT_ARG_NONE, &arg_dry_run, 0, N_("Test run"), NULL},
+	{"force", 'F', POPT_ARG_NONE, &arg_force, 0, N_("Force install"), NULL},
 	{"tmp", '\0', POPT_ARG_STRING, &arg_tmp_dir, 0, N_("Set tmp dir (/tmp/eazel-install)"), NULL},
 	{"server", '\0', POPT_ARG_STRING, &arg_server, 0, N_("Specify server"), NULL},
 	{"http", 'h', POPT_ARG_NONE, &arg_http, 0, N_("Use http"), NULL},
 	{"ftp", 'f', POPT_ARG_NONE, &arg_ftp, 0, N_("Use ftp"), NULL},
 	{"local", 'l', POPT_ARG_NONE, &arg_local, 0, N_("Use local"), NULL},
+	{"file",'\0', POPT_ARG_NONE, &arg_file, 0, N_("RPM args are filename"), NULL},
 	{"config", '\0', POPT_ARG_STRING, &arg_config_file, 0, N_("Specify config file (/var/eazel/services/eazel-services-config.xml)"), NULL},
 	{NULL, '\0', 0, NULL, 0}
 };
@@ -121,7 +125,9 @@ set_parameters_from_command_line (Trilobite_Eazel_Install service)
 	if (arg_dry_run) {
 		Trilobite_Eazel_Install__set_test_mode (service, TRUE, &ev);
 	}
-
+	if (arg_force) {
+		Trilobite_Eazel_Install__set_force (service, TRUE, &ev);
+	}
 /*
 
 	Trilobite_Eazel_Install__set_rpmrc_file (service, DEFAULT_RPMRC, &ev);
@@ -143,13 +149,17 @@ eazel_download_progress_signal (EazelInstallCallback *service,
 				int total,
 				char *title) 
 {
-	fprintf (stdout, "%s - %s %% %f\r", title, name,
-		 (total ? ((float)
-			   ((((float) amount) / total) * 100))
-		  : 100.0));
-	fflush (stdout);
-	if (amount == total && total!=0) {
-		fprintf (stdout, "\n");
+	if (amount==0) {
+		fprintf (stdout, "Downloading %s...\n", name);
+	} else if (amount != total ) {
+		fprintf (stdout, "(%d/%d) %% %f\r", 
+			 amount, total,
+			 (amount==total ? ((float)
+				   ((((float) amount) / total) * 100))
+			  : 100.0));
+		fflush (stdout);
+	} else if (amount == total && total!=0) {
+		fprintf (stdout, "\nDone\n");
 	}
 }
 
@@ -161,18 +171,20 @@ eazel_install_progress_signal (EazelInstallCallback *service,
 			       int total_size_completed, int total_size, 
 			       char *title)
 {
-	fprintf (stdout, "%s - %s (%d/%d), (%d/%d)b - (%d/%d) %% %f\r", 
-		 title, 
-		 pack->name, 
-		 package_num, num_packages,
-		 total_size_completed, total_size,
-		 amount, total,
-		 (total ? ((float)
-			   ((((float) amount) / total) * 100))
-		  : 100.0));
-	fflush (stdout);
+	if (amount==0) {
+		fprintf (stdout, "Installing %s...\n", pack->name);
+	} else if (amount != total ) {
+		fprintf (stdout, "(%d/%d), (%d/%d)b - (%d/%d) %% %f\r", 
+			 package_num, num_packages,
+			 total_size_completed, total_size,
+			 amount, total,
+			 (amount==total ? ((float)
+				   ((((float) amount) / total) * 100))
+			  : 100.0));
+		fflush (stdout);
+	}
 	if (amount == total && total!=0) {
-		fprintf (stdout, "\n");
+		fprintf (stdout, "\nDone\n");
 	}
 }
 
@@ -199,25 +211,25 @@ install_failed (EazelInstallCallback *service,
 	}
 	switch (pd->status) {
 	case PACKAGE_DEPENDENCY_FAIL:
-		fprintf (stdout, "%s-%s FAILED\n", indent, rpmfilename_from_packagedata (pd));
+		fprintf (stdout, "%s%s, which FAILED\n", indent, rpmfilename_from_packagedata (pd));
 		break;
 	case PACKAGE_CANNOT_OPEN:
-		fprintf (stdout, "%s-%s NOT FOUND\n", indent, rpmfilename_from_packagedata (pd));
+		fprintf (stdout, "%s%s,which was NOT FOUND\n", indent, rpmfilename_from_packagedata (pd));
 		break;		
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
-		fprintf (stdout, "%s-%s is a source package\n", indent, rpmfilename_from_packagedata (pd));
+		fprintf (stdout, "%s%s, which is a source package\n", indent, rpmfilename_from_packagedata (pd));
 		break;
 	case PACKAGE_BREAKS_DEPENDENCY:
-		fprintf (stdout, "%s-%s breaks\n", indent, rpmfilename_from_packagedata (pd));
+		fprintf (stdout, "%s%s, which breaks deps\n", indent, rpmfilename_from_packagedata (pd));
 		break;
 	default:
-		fprintf (stdout, "%s-%s\n", indent, rpmfilename_from_packagedata (pd));
+		fprintf (stdout, "%s%s\n", indent, rpmfilename_from_packagedata (pd));
 		break;
 	}
 	for (iterator = pd->soft_depends; iterator; iterator = iterator->next) {			
 		PackageData *pack;
 		char *indent2;
-		indent2 = g_strconcat (indent, iterator->next ? " |" : "  " , NULL);
+		indent2 = g_strconcat (indent, (iterator->next || pd->breaks) ? " |- requires " : " \\- requires " , NULL);
 		pack = (PackageData*)iterator->data;
 		install_failed (service, pack, indent2);
 		g_free (indent2);
@@ -225,7 +237,7 @@ install_failed (EazelInstallCallback *service,
 	for (iterator = pd->breaks; iterator; iterator = iterator->next) {			
 		PackageData *pack;
 		char *indent2;
-		indent2 = g_strconcat (indent, iterator->next ? " |" : "  " , NULL);
+		indent2 = g_strconcat (indent, iterator->next ? " |- breaks " : " \\- breaks " , NULL);
 		pack = (PackageData*)iterator->data;
 		install_failed (service, pack, indent2);
 		g_free (indent2);
@@ -249,7 +261,11 @@ create_package (char *name)
 
 	uname (&buf);
 	pack = packagedata_new ();
-	pack->name = g_strdup (name);
+	if (arg_file) {
+		pack->filename = g_strdup (name);
+	} else {
+		pack->name = g_strdup (name);
+	}
 	pack->archtype = g_strdup (buf.machine);
 #ifdef ASSUME_ix86_IS_i386
 	if (strlen (pack->archtype)==4 && pack->archtype[0]=='i' &&
@@ -269,7 +285,7 @@ static void
 done (EazelInstallCallback *service,
       gpointer unused)
 {
-	fprintf (stderr, "\nDone\n");
+	fprintf (stderr, "Installtion Done\n");
 	eazel_install_callback_destroy (GTK_OBJECT (service));
 	gtk_main_quit ();
 }

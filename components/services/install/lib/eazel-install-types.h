@@ -159,11 +159,16 @@ const char *rpmname_from_packagedata (const PackageData *pack);
 void packagedata_destroy_foreach (PackageData *pd, gpointer unused);
 void packagedata_destroy (PackageData *pd);
 
-int packagedata_hash (PackageData *pd);
-int packagedata_equal (PackageData *a, PackageData *b);
+int packagedata_hash_equal (PackageData *a, PackageData *b);
 
 void packagedata_add_pack_to_breaks (PackageData *pack, PackageData *b);
 void packagedata_add_pack_to_soft_deps (PackageData *pack, PackageData *b);
 void packagedata_add_pack_to_hard_deps (PackageData *pack, PackageData *b);
+
+/* Evil marshal func */
+
+void eazel_install_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT (GtkObject * object,
+								      GtkSignalFunc func,
+								      gpointer func_data, GtkArg * args);
 
 #endif /* EAZEL_INSTALL_SERVICES_TYPES_H */

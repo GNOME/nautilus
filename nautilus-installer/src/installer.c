@@ -38,8 +38,9 @@ char *failure_info;
 static void 
 eazel_install_progress (EazelInstall *service, 
 			const PackageData *pack,
-			int amount, 
-			int total,
+			int package_num, int num_packages, 
+			int amount, int total,
+			int total_size_completed, int total_size, 
 			GtkWidget *widget) 
 {
 	GtkProgressBar *progressbar;
@@ -55,7 +56,7 @@ eazel_install_progress (EazelInstall *service,
 	progressbar = gtk_object_get_data (GTK_OBJECT (widget), "progressbar");
 
 	gtk_label_set_text (action_label, "Install :");
-	gtk_label_set_text (package_label, pack->name + strlen (TMP_DIR) + 1);
+	gtk_label_set_text (package_label, pack->name);
 	gtk_progress_bar_update (progressbar, pct/100);
 
 	fflush (stdout);
@@ -87,7 +88,7 @@ eazel_download_progress (EazelInstall *service,
 	progressbar = gtk_object_get_data (GTK_OBJECT (widget), "progressbar");
 
 	gtk_label_set_text (action_label, "Download :");
-	gtk_label_set_text (package_label, name + strlen (TMP_DIR) + 1);
+	gtk_label_set_text (package_label, name);
 	gtk_progress_bar_update (progressbar, pct/100);
 
 	fflush (stdout);

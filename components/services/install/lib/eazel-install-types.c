@@ -202,11 +202,16 @@ rpmfilename_from_packagedata (const PackageData *pack)
 	if (pack->filename) {
 		filename = g_strdup (pack->filename);
 	} else {
-		if (pack->version && pack->minor) {
+		if (pack->version && pack->minor && pack->archtype) {
 			filename = g_strdup_printf ("%s-%s-%s.%s.rpm",
 						    pack->name,
 						    pack->version,
 						    pack->minor,
+						    pack->archtype);
+		} else if (pack->version && pack->archtype) {
+			filename = g_strdup_printf ("%s-%s.%s.rpm",
+						    pack->name,
+						    pack->version,
 						    pack->archtype);
 		} else if (pack->archtype) {
 			filename = g_strdup_printf ("%s.%s.rpm",
@@ -244,22 +249,14 @@ rpmname_from_packagedata (const PackageData *pack)
 }
 
 int 
-packagedata_hash (PackageData *pack)
-{
-	g_assert (pack!=NULL);
-	g_assert (pack->name!=NULL);
-	return strlen (pack->name);
-}
-
-int 
-packagedata_equal (PackageData *a, 
-		   PackageData *b)
+packagedata_hash_equal (PackageData *a, 
+			PackageData *b)
 {
 	g_assert (a!=NULL);
 	g_assert (a->name!=NULL);
 	g_assert (b!=NULL);
 	g_assert (b->name!=NULL);
-	
+
 	return strcmp (a->name, b->name);
 }
 
@@ -314,4 +311,29 @@ packagedata_status_str_to_enum (const char *st)
 	else if (strcmp (st, "RESOLVED")==0) { result = PACKAGE_RESOLVED; } 
 
 	return result;
+}
+
+/* The evil marshal func */
+
+typedef void (*GtkSignal_NONE__POINTER_INT_INT_INT_INT_INT_INT) (GtkObject * object,
+                         gpointer arg1,
+                         gint arg2,
+                         gint arg3,			
+                         gint arg4,
+                         gint arg5,			
+                         gint arg6,
+                         gint arg7,			
+                         gpointer user_data);
+void
+eazel_install_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT (GtkObject * object,
+								 GtkSignalFunc func,
+								 gpointer func_data, GtkArg * args)
+{
+  GtkSignal_NONE__POINTER_INT_INT_INT_INT_INT_INT rfunc;
+  rfunc = (GtkSignal_NONE__POINTER_INT_INT_INT_INT_INT_INT) func;
+  (*rfunc) (object,
+	    GTK_VALUE_POINTER (args[0]),
+	    GTK_VALUE_INT (args[1]), GTK_VALUE_INT (args[2]),
+	    GTK_VALUE_INT (args[3]), GTK_VALUE_INT (args[4]),
+	    GTK_VALUE_INT (args[5]), GTK_VALUE_INT (args[6]),func_data);
 }

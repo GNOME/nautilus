@@ -52,13 +52,14 @@ struct _EazelInstallPrivate {
 		} rpm;
 	} packsys;
 
+	/* This hash maps from package filename to the 
+	   package. Packages are added in eazel-install-protocols.c 
+	   It's used in the rpm_show_progress to lookup the correct
+	   package */
+	GHashTable *filename_to_package_hash;
+
 	FILE *logfile;
 	char *logfilename;
 };
-
-void gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT (GtkObject * object,
-							GtkSignalFunc func,
-							gpointer func_data, GtkArg * args);
-
 
 #endif /* EAZEL_INSTALL_PRIVATE_H */

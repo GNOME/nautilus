@@ -129,24 +129,42 @@ set_parameters_from_command_line (EazelInstall *service)
 		generate_xml_package_list (arg_input_list, arg_local_list);
 	}
 
-	eazel_install_set_hostname (service, arg_server);
+	eazel_install_set_server (service, arg_server);
 	eazel_install_set_rpmrc_file (service, DEFAULT_RPMRC);
 	eazel_install_set_package_list_storage_path (service, DEFAULT_REMOTE_PACKAGE_LIST);
 	eazel_install_set_rpm_storage_path (service, DEFAULT_REMOTE_RPM_DIR);
 	eazel_install_set_tmp_dir (service, arg_tmp_dir);
-	eazel_install_set_port_number (service, arg_port);
+	eazel_install_set_server_port (service, arg_port);
 }
 
 static void 
-eazel_progress_signal (EazelInstall *service, 
-		       const char *name,
-		       int amount, 
-		       int total,
-		       char *title) 
+eazel_install_progress_signal (EazelInstall *service, 
+			       const PackageData *pack,
+			       int a, int b,
+			       int amount, 
+			       int total,
+			       int c, int d,
+			       char *title) 
 {
-	fprintf (stdout, "%s - %s %% %f\r", title, name, (total ? ((float)
-								   ((((float) amount) / total) * 100))
-							  : 100.0));
+	fprintf (stdout, "%s - %s %% %f\r", title, pack->name, (total ? ((float)
+									 ((((float) amount) / total) * 100))
+								: 100.0));
+	fflush (stdout);
+	if (amount == total && total!=0) {
+		fprintf (stdout, "\n");
+	}
+}
+
+static void 
+eazel_download_progress_signal (EazelInstall *service, 
+				const PackageData *pack,
+				int amount, 
+				int total,
+				char *title) 
+{
+	fprintf (stdout, "%s - %s %% %f\r", title, pack->name, (total ? ((float)
+									 ((((float) amount) / total) * 100))
+								: 100.0));
 	fflush (stdout);
 	if (amount == total && total!=0) {
 		fprintf (stdout, "\n");
@@ -287,8 +305,8 @@ int main(int argc, char *argv[]) {
 	set_parameters_from_command_line (service);
 
 	/* Bind the callbacks */
-	gtk_signal_connect (GTK_OBJECT (service), "download_progress", eazel_progress_signal, "Download progress");
-	gtk_signal_connect (GTK_OBJECT (service), "install_progress", eazel_progress_signal, "Install progress");
+	gtk_signal_connect (GTK_OBJECT (service), "download_progress", eazel_download_progress_signal, "Download progress");
+	gtk_signal_connect (GTK_OBJECT (service), "install_progress", eazel_install_progress_signal, "Install progress");
 	gtk_signal_connect (GTK_OBJECT (service), "install_failed", install_failed, "");
 	gtk_signal_connect (GTK_OBJECT (service), "download_failed", download_failed, NULL);
 	gtk_signal_connect (GTK_OBJECT (service), "dependency_check", dep_check, NULL);

@@ -58,12 +58,15 @@ static gboolean uninstall_a_package (EazelInstall *service,
 				     int problem_filters,
 				     int interface_flags);
 
+typedef void* (*RpmCallbackFunc) (const Header, const rpmCallbackType, 
+				  const unsigned long, const unsigned long, 
+				  const void*, void*);
 static void* rpm_show_progress (const Header h,
                                 const rpmCallbackType callback_type,
                                 const unsigned long amount,
                                 const unsigned long total,
-                                const void* pkgKey,
-                                void* service);
+                                const char* pkgKey,
+                                EazelInstall* service);
 
 static int rpm_uninstall (EazelInstall *service, 
 			  char* root_dir,
@@ -375,67 +378,66 @@ rpm_show_progress (const Header h,
                    const rpmCallbackType callback_type,
                    const unsigned long amount,
                    const unsigned long total,
-                   const void* pkgKey,
-                   void* data) {
+                   const char *filename,
+                   EazelInstall *service) {
 
 	static FD_t fd;
-	int size;
-	unsigned long* sizep;
-	char* name;
-	const char* filename;
-	EazelInstall *service;
+	PackageData *pack;		
+	static int kept_total;
 
-	g_assert (data != NULL);
-	g_assert (IS_EAZEL_INSTALL (data));
-	
-	service = EAZEL_INSTALL (data);
-
-	filename = pkgKey;
-
+	g_assert (service != NULL);
+	g_assert (IS_EAZEL_INSTALL (service));
+	       
 	switch (callback_type) {
 	case RPMCALLBACK_INST_OPEN_FILE:
-		name = "";
-		size = 0;
 		fd = fdOpen (filename, O_RDONLY, 0);
-		/*
-		headerGetEntry (h,
-				RPMTAG_SIZE,
-				NULL,
-				(void **)&sizep,
-				NULL);
-		headerGetEntry (h,
-				RPMTAG_NAME,
-				NULL,
-				(void **)&name,
-				NULL);
-		*/
 		service->private->packsys.rpm.packages_installed ++;
-
-		size = *sizep;
-
+		/* reset kept_total so the first emit is with amount==0 */
+		kept_total = 0;
 		return fd;
 
 	case RPMCALLBACK_INST_CLOSE_FILE:
-		service->private->packsys.rpm.current_installed_size += total;
+		service->private->packsys.rpm.current_installed_size += kept_total;
 		fdClose (fd);
-		break;
-			
-	case RPMCALLBACK_INST_PROGRESS: {
-		/* FIXME: bugzilla.eazel.com 1585
-		   Need a hash between filenames and packages, so I can lookup the
-		   real package here */
-		PackageData *pack;
-		pack = packagedata_new ();
-		pack->name = g_strdup (filename);		
+		pack = g_hash_table_lookup (service->private->filename_to_package_hash, filename);
+		/* ensure install_progress emit with amount==total */
 		eazel_install_emit_install_progress (service, 
 						     pack, 
 						     service->private->packsys.rpm.packages_installed, 
 						     service->private->packsys.rpm.num_packages,
-						     amount, 
-						     total,
-						     service->private->packsys.rpm.current_installed_size + amount,
+						     kept_total, 
+						     kept_total,
+						     service->private->packsys.rpm.current_installed_size,
 						     service->private->packsys.rpm.total_size);
-		packagedata_destroy (pack);
+		break;
+			
+	case RPMCALLBACK_INST_PROGRESS: {
+		int tmp;
+		/* Ensure first emit is with amount==0 */
+		if (kept_total == 0) {
+			kept_total = total;
+			tmp = 0;
+		} else {
+			/* and ensure emit with amount==0 only occurs once */
+			if (amount==0) {
+				tmp = 1;
+			} else {
+				tmp = amount;
+			}
+		}
+		pack = g_hash_table_lookup (service->private->filename_to_package_hash, filename);
+		/* this if ensures that callback_type == CLOSE_FILE ensures that
+		   amount==total only occurs once */
+		if (tmp!=kept_total) {
+			eazel_install_emit_install_progress (service, 
+							     pack, 
+							     service->private->packsys.rpm.packages_installed, 
+							     service->private->packsys.rpm.num_packages,
+							     tmp, 
+							     kept_total,
+							     service->private->packsys.rpm.current_installed_size + amount,
+							     service->private->packsys.rpm.total_size);
+		}
 	}
 	break;
 
@@ -632,7 +634,7 @@ do_rpm_install (EazelInstall *service,
 		g_message ("Warming up RPM");
 
 		rc = rpmRunTransactions (rpmdep,
-                                         rpm_show_progress,
+                                         (RpmCallbackFunc)rpm_show_progress,
                                          service,
                                          NULL,
                                          &probs,
@@ -770,7 +772,7 @@ do_rpm_uninstall (EazelInstall *service,
 	}
 	if (!stop_uninstall && rpmdep != NULL) {
 		num_failed += rpmRunTransactions (rpmdep,
-						  rpm_show_progress,
+						  (RpmCallbackFunc)rpm_show_progress,
 						  service,
                                                   NULL,
                                                   &probs,
@@ -1217,6 +1219,10 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 
 		conflict = service->private->packsys.rpm.conflicts[iterator];
 
+		pack_entry = g_list_find_custom (*packages, 
+						 (gpointer)&conflict,
+						 (GCompareFunc)eazel_install_package_conflict_compare);
+
 		/* FIXME bugzilla.eazel.com 1316
 		   Need to find a solid way to capture file dependencies, and once they do not
 		   appear at this point anymore, remove them. And in the end, check the list is
@@ -1231,51 +1237,48 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 			continue;
 		}
 
-		pack_entry = g_list_find_custom (*packages, 
-						 (gpointer)&conflict,
-						 (GCompareFunc)eazel_install_package_conflict_compare);
 		if (pack_entry == NULL) {
 			switch (conflict.sense) {
-			case RPMDEP_SENSE_REQUIRES:
-				/* FIXME: bugzilla.eazel.com 1584
-				   This sigsegvs...
-				*/
+			case RPMDEP_SENSE_REQUIRES: {
+				char *tmp;
+				
 				g_warning (_("%s %s breaks %s"), conflict.needsName, conflict.needsVersion, conflict.byName);
 				pack_entry = g_list_find_custom (*packages, 
 								 (gpointer)conflict.needsName,
 								 (GCompareFunc)eazel_install_package_name_compare);
-				g_message ("step 1");
 				dep = packagedata_new_from_rpm_conflict_reversed (conflict);
-				g_message ("step 2");
-				dep->archtype = g_strdup (pack->archtype);
 				pack = (PackageData*)(pack_entry->data);
-				g_message ("step 3");
+				dep->archtype = g_strdup (pack->archtype);
 				pack->status = PACKAGE_BREAKS_DEPENDENCY;
-				g_message ("step assertion");
+				dep->status = PACKAGE_DEPENDENCY_FAIL;
 				g_assert (dep!=NULL);
-				/* FIXME: bugzilla.eazel.com 1363
-				   Here, it'd be cool to compare dep->name to pack->name to see if
-				   dep is pack's devel package. And if so, replace dep->version with
-				   pack->version and not fail pack, but continue */
+				
+				/* Here I check to see if I'm breaking the -devel package, if so,
+				   request it */
 
-				{
-					char *tmp;
-					tmp = g_strdup_printf ("%s-devel", pack->name);
-					if (strcmp (tmp, dep->name)==0) {
-						g_message ("breakage is the devel package");
-					}
+				tmp = g_strdup_printf ("%s-devel", pack->name);
+				if (strcmp (tmp, dep->name)==0) {
+					g_message ("breakage is the devel package");
+					g_free (dep->name);
+					dep->name = g_strdup (tmp);
+					g_free (dep->version);
+					dep->version = g_strdup (pack->version);
 					g_free (tmp);
-				}
-
-				if (!eazel_install_get_force (service)) {
-					pack->breaks = g_list_prepend (pack->breaks, dep);
-					if (g_list_find (*failedpackages, pack) == NULL) {
-						(*failedpackages) = g_list_prepend (*failedpackages, pack);
+				} else {
+					g_free (tmp);
+					/* not the devel package, are we in force mode ? */
+					if (!eazel_install_get_force (service)) {
+						/* if not, remove the package */
+						pack->breaks = g_list_prepend (pack->breaks, dep);
+						if (g_list_find (*failedpackages, pack) == NULL) {
+							(*failedpackages) = g_list_prepend (*failedpackages, pack);
+						}
+						to_remove = g_list_remove (to_remove, pack);
 					}
-					to_remove = g_list_remove (to_remove, pack);
+					continue;
 				}
-				continue;
-				break;
+			}
+			break;
 			case RPMDEP_SENSE_CONFLICTS:
 				/* If we end here, it's a conflict is going to break something */
 				/* FIXME: bugzilla.eazel.com 1514
