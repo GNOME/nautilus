@@ -526,13 +526,13 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 			free (data_ptr);
 		}
 		
-                /* Getting these using the traversal gives leading garbage, due to differing rpm versions
-                   and suckiness in rpmlib (bugzilla.eazel.com #1657) */
+                /* FIXME bugzilla.eazel.com 1657: Getting these using the traversal gives leading garbage, due to differing rpm versions
+                   and suckiness in rpmlib */
                 headerGetEntry (header_info, RPMTAG_DESCRIPTION, NULL, (void**)&description, NULL);
                 headerGetEntry (header_info, RPMTAG_SUMMARY, NULL, (void**)&summary, NULL);
                 gtk_label_set (GTK_LABEL (rpm_view->details->package_description), description );
                 gtk_label_set (GTK_LABEL (rpm_view->details->package_summary), summary );
-                /* FIXME:
+                /* FIXME bugzilla.eazel.com 2409:
                    Should they be freed ? */
 
 		if (temp_version) {

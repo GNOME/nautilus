@@ -74,9 +74,10 @@ help_uri_new (void)
 static char *
 escape_for_shell (const char *item)
 {
-        /* FIXME: This should add single quotes around items that need
+        /* FIXME bugzilla.eazel.com 2404: 
+         * This should add single quotes around items that need
          * it and handle single quotes themselves right. For now, just
-         * put a placeholder that does ntohing.
+         * put a placeholder that does nothing.
          */
         return g_strdup (item);
 }
@@ -117,7 +118,8 @@ help_uri_to_string (HelpURI *help_uri)
 	case UNKNOWN_FILE:
 		return NULL;
 	default:
-		/* FIXME: An assert at runtime may be a bit harsh.
+		/* FIXME bugzilla.eazel.com 2401: 
+		 * An assert at runtime may be a bit harsh.
                  * We'd prefer behavior more like g_return_if_fail.
                  * In glib 2.0 we can use g_return_val_if_reached.
                  */
@@ -181,7 +183,8 @@ convert_file_to_uri (HelpURI *help_uri, char *file)
 	} else if (g_strcasecmp (mime_type, "text/html") == 0) {
 		help_uri->type = HTML_FILE;
 	} else if (g_strcasecmp (mime_type, "application/x-troff-man") == 0) {
-                /* FIXME: The check above used to check for a prefix
+                /* FIXME bugzilla.eazel.com 2402: 
+                 * The check above used to check for a prefix
                  * of "application/x-troff-man", but now we check for
                  * an exact string match. Is that what we really want?
                  */
@@ -352,7 +355,8 @@ find_help_file (const char *old_uri)
                 return NULL;
         }
 
-        /* FIXME: gnome_help_file_path should take const char * parameters. */
+        /* FIXME bugzilla.eazel.com 2403: 
+         * gnome_help_file_path should take const char * parameters. */
         new_uri = gnome_help_file_path (base_name, (char *) old_uri);
         g_free (base_name);
 

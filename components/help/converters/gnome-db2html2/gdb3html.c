@@ -564,7 +564,8 @@ parse_file (gchar *filename, gchar *section)
 	xmlInitParserCtxt (context->ParserCtxt);
 	context->ParserCtxt->sax = &parser;
 	context->ParserCtxt->validate = 1;
-	/* FIXME: Is the below correct? version needs to be set so as not to
+	/* FIXME bugzilla.eazel.com 2399: 
+	 * Is the below correct? version needs to be set so as not to
 	 * segfault in starDocument (in SAX.h) */
 	context->ParserCtxt->version = xmlStrdup ("1.0"); 
 	context->ParserCtxt->myDoc = xml_parse_document (filename);

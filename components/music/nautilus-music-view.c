@@ -776,16 +776,19 @@ play_status_display (NautilusMusicView *music_view)
 		if (!music_view->details->slider_dragging) {
 			frameNo = get_current_frame();	
 			samps_per_frame = (music_view->details->current_samprate >= 32000) ? 1152 : 576;
-                        /* FIXME: Divide by zero possible here? */
+                        /* FIXME bugzilla.eazel.com 2407: 
+                         * Divide by zero possible here? */
 			seconds = frameNo * samps_per_frame / music_view->details->current_samprate;
 		
 			minutes = seconds / 60;
 			seconds = seconds % 60;
 			sprintf(play_time_str, "%02d:%02d", minutes, seconds);
 			
-                        /* FIXME: Divide by zero possible here? */
+                        /* FIXME bugzilla.eazel.com 2407: 
+                         * Divide by zero possible here? */
 			avgframesize = (gfloat)samps_per_frame * music_view->details->current_bitrate * 125 / music_view->details->current_samprate;
-                        /* FIXME: Divide by zero possible here? */
+                        /* FIXME bugzilla.eazel.com 2407: 
+                         * Divide by zero possible here? */
 			percentage = (gfloat) frameNo * avgframesize / music_view->details->current_file_size * 100;
 			gtk_adjustment_set_value(GTK_ADJUSTMENT(music_view->details->playtime_adjustment), percentage);
  			gtk_range_set_adjustment(GTK_RANGE(music_view->details->playtime_bar), GTK_ADJUSTMENT(music_view->details->playtime_adjustment));	
@@ -950,11 +953,14 @@ slider_moved_callback(GtkWidget *bar, GdkEvent *event, NautilusMusicView *music_
 	if (music_view->details->slider_dragging) {
 		adjustment = gtk_range_get_adjustment(GTK_RANGE(bar));
 		samps_per_frame = (music_view->details->current_samprate >= 32000) ? 1152 : 576;
-                /* FIXME: Divide by zero possible here? */
+                /* FIXME bugzilla.eazel.com 2407: 
+                 * Divide by zero possible here? */
 		avgframesize = (gfloat)samps_per_frame * music_view->details->current_bitrate * 125 / music_view->details->current_samprate;
-                /* FIXME: Divide by zero possible here? */
+                /* FIXME bugzilla.eazel.com 2407: 
+                 * Divide by zero possible here? */
 		nframe = adjustment->value / (avgframesize / music_view->details->current_file_size * 100.0);	
-                /* FIXME: Divide by zero possible here? */
+                /* FIXME bugzilla.eazel.com 2407: 
+                 * Divide by zero possible here? */
 		seconds = nframe * samps_per_frame / music_view->details->current_samprate; 
 		minutes = seconds / 60;
 		seconds = seconds % 60;
@@ -976,9 +982,11 @@ slider_release_callback (GtkWidget *bar, GdkEvent *event, NautilusMusicView *mus
 	if (music_view->details->slider_dragging) {
 		adjustment = gtk_range_get_adjustment(GTK_RANGE(bar));
 		samps_per_frame = (music_view->details->current_samprate >= 32000) ? 1152 : 576;
-                /* FIXME: Divide by zero possible here? */
+                /* FIXME bugzilla.eazel.com 2407: 
+                 * Divide by zero possible here? */
 		avgframesize = (gfloat)samps_per_frame * music_view->details->current_bitrate * 125 / music_view->details->current_samprate;
-                /* FIXME: Divide by zero possible here? */
+                /* FIXME bugzilla.eazel.com 2407: 
+                 * Divide by zero possible here? */
 		nframe = adjustment->value / (avgframesize / music_view->details->current_file_size * 100.0);	
 		if ((play_status == STATUS_PLAY) || (play_status == STATUS_PAUSE)) {
 			pause_playing_file ();
@@ -1407,7 +1415,8 @@ nautilus_music_view_drag_data_received (GtkWidget *widget, GdkDragContext *conte
 	switch (info) {
         case TARGET_GNOME_URI_LIST:
         case TARGET_URI_LIST: 	
-                /* FIXME: the music view should accept mp3 files */
+                /* FIXME bugzilla.eazel.com 2406: 
+                 * the music view should accept mp3 files */
                 g_message ("dropped data on music_view: %s", selection_data->data); 			
                 break;
   		

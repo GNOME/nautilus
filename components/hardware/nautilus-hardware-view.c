@@ -256,7 +256,7 @@ get_RAM_description (void)
 	/* strip kbyte suffix */
 	temp_str[strlen(temp_str) - 3] = '\0';
 
-        /* FIXME: Would 1024 give a better result? */
+        /* FIXME bugzilla.eazel.com 2398: Would 1024 give a better result? */
         num_str = gnome_vfs_format_file_size_for_display (1000 * atoi (temp_str));
 	
 	g_string_append(string_data, num_str);

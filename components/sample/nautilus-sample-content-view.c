@@ -56,7 +56,8 @@ static void sample_merge_bonobo_items_callback            (BonoboControl        
 							   gboolean                        state,
 							   gpointer                        user_data);
 
-/* FIXME: Should we use this Nautilus-only macro in a class that's
+/* FIXME bugzilla.eazel.com 2410: 
+ * Should we use this Nautilus-only macro in a class that's
  * supposed to be a sample?
  */
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSampleContentView,
