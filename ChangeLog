@@ -1,3 +1,16 @@
+2001-01-17  Andy Hertzfeld  <andy@eazel.com>
+
+	reviewed by: <darin@eazel.com>
+
+	* src/nautilus-window-manage-views.c: (unref_callback),
+	(ref_now_unref_at_idle_time), (location_has_really_changed),
+	(load_underway_callback):
+	this is actually Darin's change, checked in by Andy, that's a
+	better fix for bug 5657, the "destroying components messes up
+	idle routines" crash.  Instead of deferring the window state change
+	to idle time, it does an extra ref of the view and unrefs it when
+	idle rolls around.
+	
 2001-01-16  Eskil Olsen  <eskil@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>

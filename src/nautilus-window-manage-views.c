@@ -564,6 +564,21 @@ update_view (NautilusViewFrame *view,
         nautilus_view_frame_selection_changed (view, new_selection);
 }
 
+static gboolean
+unref_callback (gpointer callback_data)
+{
+        gtk_object_unref (GTK_OBJECT (callback_data));
+        return FALSE;
+}
+
+static void
+ref_now_unref_at_idle_time (GtkObject *object)
+{
+        gtk_object_ref (object);
+        g_idle_add (unref_callback, object);
+}
+
+
 /* This is called when we have decided we can actually change to the new view/location situation. */
 static void
 location_has_really_changed (NautilusWindow *window)
@@ -571,6 +586,17 @@ location_has_really_changed (NautilusWindow *window)
         /* Switch to the new content view. */
         if (window->new_content_view != NULL) {
                 if (GTK_WIDGET (window->new_content_view)->parent == NULL) {
+                        /* If we don't unref the old view until idle
+                         * time, we avoid certain kinds of problems in
+                         * in-process components, since they won't
+                         * lose their ViewFrame in the middle of some
+                         * operation. This still doesn't necessarily
+                         * help for out of process components.
+                         */
+                        if (window->content_view != NULL) {
+                                ref_now_unref_at_idle_time (GTK_OBJECT (window->content_view));
+                        }
+
                 	disconnect_view (window, window->content_view);
                         nautilus_window_set_content_view_widget (window, window->new_content_view);
                 }
@@ -1770,14 +1796,6 @@ failed_callback (NautilusViewFrame *view,
         change_state (window, VIEW_FAILED, NULL, view);
 }
 
-/* idle routine to accomplish the state change at idle time */
-static gboolean
-change_state_at_idle (NautilusWindow *window)
-{
-	change_state (window, LOAD_UNDERWAY, NULL, NULL);
-	return FALSE;
-}
-
 static void
 load_underway_callback (NautilusViewFrame *view,
                         NautilusWindow *window)
@@ -1793,10 +1811,9 @@ load_underway_callback (NautilusViewFrame *view,
          * or new really equally interesting?
          */
 
-	/* only perform the state change at idle time to avoid conflicting with idle routines */
         if (view == window->new_content_view
             || view == window->content_view) {
- 		gtk_idle_add ((GtkFunction) change_state_at_idle, window);              
+                change_state (window, LOAD_UNDERWAY, NULL, NULL);
         }
 }
 
