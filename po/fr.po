@@ -90,7 +90,7 @@ msgstr "%lu Go"
 #: components/hardware/nautilus-hardware-view.c:326
 #, c-format
 msgid "%lu MB"
-msgstr ""
+msgstr "%lu Mo"
 
 #. set up the title
 #: components/hardware/nautilus-hardware-view.c:407
@@ -99,15 +99,15 @@ msgstr "Aperçu du matériel"
 
 #: components/hardware/nautilus-hardware-view.c:520
 msgid "This is a placeholder for the CPU page."
-msgstr ""
+msgstr "Ceci représente la page CPU"
 
 #: components/hardware/nautilus-hardware-view.c:545
 msgid "This is a placeholder for the RAM page."
-msgstr ""
+msgstr "Ceci représente la page RAM"
 
 #: components/hardware/nautilus-hardware-view.c:570
 msgid "This is a placeholder for the IDE page."
-msgstr ""
+msgstr "Ceci représente la page IDE"
 
 #: components/hardware/Nautilus_View_hardware.oaf.in.h:2
 #: components/hardware/nautilus-hardware-view.c:631
@@ -365,9 +365,8 @@ msgid "Help Index"
 msgstr "Index de l'aide"
 
 #: components/help/Nautilus_View_help.oaf.in.h:3
-#, fuzzy
 msgid "Help Index sidebar panel"
-msgstr "Détruire le Panneau"
+msgstr "Panneau d'index d'aide"
 
 #: components/help/Nautilus_View_help.oaf.in.h:4
 msgid "Help Navigation Tree"
@@ -378,14 +377,12 @@ msgid "Help Search"
 msgstr "Recherche d'aide"
 
 #: components/help/Nautilus_View_help.oaf.in.h:6
-#, fuzzy
 msgid "Help Search sidebar panel"
-msgstr "Détruire le Panneau"
+msgstr "Détruire le panneau d'aide"
 
 #: components/help/Nautilus_View_help.oaf.in.h:7
-#, fuzzy
 msgid "Help sidebar panel"
-msgstr "Panneaux latéraux"
+msgstr "Panneau d'aide"
 
 #: components/help/Nautilus_View_help.oaf.in.h:8
 msgid "Internal use only"
@@ -400,14 +397,12 @@ msgid "History"
 msgstr "Historique"
 
 #: components/history/Nautilus_View_history.oaf.in.h:3
-#, fuzzy
 msgid "History sidebar panel"
-msgstr "Détruire le Panneau"
+msgstr "Panneau d'historique"
 
 #: components/history/Nautilus_View_history.oaf.in.h:4
-#, fuzzy
 msgid "History sidebar panel for Nautilus"
-msgstr "Afficher l'aide en ligne de Nautilus"
+msgstr "Panneau d'historique de Nautilus"
 
 #: components/image-viewer/nautilus-image-view.c:831
 msgid "I could not initialize Bonobo"
@@ -434,9 +429,8 @@ msgid "Nautilus Image Viewer"
 msgstr "Visualiseur d'images Nautilus"
 
 #: components/image-viewer/Nautilus_View_image.oaf.in.h:6
-#, fuzzy
 msgid "Nautilus Image viewer factory"
-msgstr "Selection de theme Nautilus"
+msgstr ""
 
 #: components/image-viewer/Nautilus_View_image.oaf.in.h:7
 msgid "View as Image"
@@ -455,15 +449,15 @@ msgstr ""
 
 #: components/loser/content/nautilus-content-loser.c:189
 msgid "You have tried to kill the Content Loser"
-msgstr "Vous avez essayé de détruire la vue"
+msgstr "Vous avez essayé de détruire la vue \"Content Loser\""
 
 #: components/loser/content/nautilus-content-loser-ui.xml.h:1
 msgid "Kill Content Loser"
-msgstr "Détruire vue"
+msgstr "Détruire \"Content Loser\""
 
 #: components/loser/content/nautilus-content-loser-ui.xml.h:2
 msgid "Kill the Loser content view"
-msgstr "Détruit la vue"
+msgstr "Détruit la vue \"Loser\""
 
 #: components/loser/content/nautilus-content-loser-ui.xml.h:3
 #: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
@@ -474,44 +468,35 @@ msgstr "_Fichier"
 
 #: components/loser/content/nautilus-content-loser-ui.xml.h:4
 msgid "_Kill Content Loser"
-msgstr "_Détruire vue"
+msgstr "_Détruire vue \"Content Loser\""
 
 #: components/loser/content/Nautilus_View_content-loser.oaf.in.h:1
-#, fuzzy
 msgid "Content Loser"
-msgstr "Détruire vue"
+msgstr ""
 
 #: components/loser/content/Nautilus_View_content-loser.oaf.in.h:2
-#, fuzzy
 msgid "Content Loser Viewer"
-msgstr "Détruire vue"
+msgstr "Vue \"Content Loser\""
 
 #: components/loser/content/Nautilus_View_content-loser.oaf.in.h:3
-#, fuzzy
 msgid "Nautilus Content Loser"
-msgstr "Détruire vue"
+msgstr "\"Content Loser\" de Nautilus"
 
 #: components/loser/content/Nautilus_View_content-loser.oaf.in.h:4
 msgid "Nautilus content loser component's factory"
 msgstr ""
 
 #: components/loser/content/Nautilus_View_content-loser.oaf.in.h:5
-#, fuzzy
 msgid "Nautilus content loser factory"
-msgstr "Selection de theme Nautilus"
+msgstr ""
 
 #: components/loser/content/Nautilus_View_content-loser.oaf.in.h:6
-#, fuzzy
 msgid "Nautilus content view that fails on command"
-msgstr ""
-"%s\n"
-"\n"
-"Ceci est une vue Nautilus dont la demande a échouée."
+msgstr "Vue de Nautilus qui échoue à la demande. Utilisée pour débugger."
 
 #: components/loser/content/Nautilus_View_content-loser.oaf.in.h:7
-#, fuzzy
 msgid "View as Content Loser"
-msgstr "Détruire vue"
+msgstr "Vue comme \"Content Loser\""
 
 #: components/loser/sidebar/nautilus-sidebar-loser.c:143
 #, c-format
@@ -522,50 +507,43 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"Panneau de test."
+"Panneau \"Loser\"."
 
 #: components/loser/sidebar/nautilus-sidebar-loser.c:192
 msgid "You have tried to kill the Sidebar Loser"
-msgstr ""
+msgstr "Vous avez essayé de détruire le panneau \"Loser\""
 
 #: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:1
 msgid "Kill Sidebar Loser"
-msgstr "Détruire Panneau"
+msgstr "Détruire Panneau \"Loser\""
 
 #: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:2
 msgid "Kill the Loser sidebar panel"
-msgstr "Détruire le Panneau"
+msgstr "Détruire le Panneau \"Loser\""
 
 #: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:4
 msgid "_Kill Sidebar Loser"
-msgstr "_Détruire Panneau"
+msgstr "_Détruire Panneau \"Loser\""
 
 #: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:1
-#, fuzzy
 msgid "Nautilus Sidebar Loser"
-msgstr "Détruire Panneau"
+msgstr "Panneau Nautilus \"Loser\""
 
 #: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:2
 msgid "Nautilus sidebar loser component's factory"
 msgstr ""
 
 #: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:3
-#, fuzzy
 msgid "Nautilus sidebar loser factory"
-msgstr "Selection de theme Nautilus"
+msgstr ""
 
 #: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:4
-#, fuzzy
 msgid "Nautilus sidebar view that fails on command"
-msgstr ""
-"%s\n"
-"\n"
-"Ceci est une vue Nautilus dont la demande a échouée."
+msgstr "Panneau Nautilus qui échoue à la demande. Utilisé pour débugger."
 
 #: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:5
-#, fuzzy
 msgid "Sidebar Loser"
-msgstr "Détruire Panneau"
+msgstr "Panneau \"Loser\""
 
 #: components/mozilla/mozilla-preferences.cpp:126
 #: libnautilus-extensions/nautilus-gconf-extensions.c:80
@@ -587,7 +565,7 @@ msgid ""
 msgstr ""
 "Erreur GConf :\n"
 "  %s\n"
-"Les autres erreurs sont indiquées dans le terminal"
+"Les autres erreurs sont indiquées seulement dans le terminal"
 
 #: components/mozilla/nautilus-mozilla-encoding-tables.c:38
 msgid "Arabic"
@@ -932,12 +910,12 @@ msgid ""
 "JavaScript.\n"
 "\n"
 "Try viewing the page in a different web browser, such as Mozilla or Netscape."
-msgstr ""
+msgstr "Une fonction JavaScript (un petit programme) présente dans cette page "
+" essayé d'ouvrir une nouvelle fenètre. Nautilus ne supporte pas cette fonctionalité.\n\n"
 
 #: components/mozilla/nautilus-mozilla-content-view.c:810
-#, fuzzy
 msgid "Nautilus Mozilla View Warning"
-msgstr "Visualiseur d'images Nautilus"
+msgstr "Avertissement Vue Nautilus Mozilla"
 
 #: components/mozilla/nautilus-mozilla-ui.xml.h:1
 msgid "Charset Encoding"
@@ -952,12 +930,8 @@ msgid "Mozilla Nautilus view factory"
 msgstr ""
 
 #: components/mozilla/Nautilus_View_mozilla.oaf.in.h:3
-#, fuzzy
 msgid "Mozilla content view component"
 msgstr ""
-"%s\n"
-"\n"
-"Ceci est un composant de visualisation Nautilus."
 
 #: components/mozilla/Nautilus_View_mozilla.oaf.in.h:4
 msgid "Mozilla content view component's factory"
@@ -1623,7 +1597,7 @@ msgstr "Pas une image"
 
 #: components/music/nautilus-music-view.c:744
 msgid "Select an image file for the album cover:"
-msgstr "Sélectionner une image pour créer la couverturede l'album:"
+msgstr "Sélectionner une image pour créer la couverture de l'album :"
 
 #: components/music/nautilus-music-view.c:1174
 msgid ""
@@ -1631,11 +1605,14 @@ msgid ""
 "another program is using or blocking the sound card, or your sound card is "
 "not configured properly. Try quitting any applications that may be blocking "
 "use of the sound card."
-msgstr ""
+msgstr "Désolé : la vue musique ne peut pas accéder à la carte son. Il est"
+"possible qu'un autre programme utilise ou bloque la carte son ou que celle-ci"
+"ne soit pas configurée correctement. Essayez de fermer les applications qui"
+"pourraient utiliser aussi la carte."
 
 #: components/music/nautilus-music-view.c:1178
 msgid "Unable to Play File"
-msgstr ""
+msgstr "Ne peut pas Jouer Fichier"
 
 #: components/music/nautilus-music-view.c:1199
 msgid "Sorry, but the music view can't play non-local files yet."
@@ -1648,7 +1625,7 @@ msgstr "Impossible de jouer des fichiers distant"
 
 #: components/music/nautilus-music-view.c:1486
 msgid "Drag to seek within track"
-msgstr ""
+msgstr "Déplacer pour de déplacer dans une piste"
 
 #: components/music/nautilus-music-view.c:1526
 msgid "Play"
@@ -1697,43 +1674,38 @@ msgid "Music"
 msgstr "Musique"
 
 #: components/music/Nautilus_View_music.oaf.in.h:3
-#, fuzzy
 msgid "Music Viewer"
-msgstr "Visualiseur %s"
+msgstr "Visualiseur de Musique"
 
 #: components/music/Nautilus_View_music.oaf.in.h:4
 msgid "Music view"
-msgstr ""
+msgstr "Vue musique"
 
 #: components/music/Nautilus_View_music.oaf.in.h:5
 msgid "Music view factory"
 msgstr ""
 
 #: components/music/Nautilus_View_music.oaf.in.h:6
-#, fuzzy
 msgid "View as Music"
-msgstr "Vue par %s"
+msgstr "Vue comme Musique"
 
 #: components/notes/Nautilus_View_notes.oaf.in.h:1
 msgid "Factory for annotation view"
 msgstr ""
 
 #: components/notes/Nautilus_View_notes.oaf.in.h:3
-#, fuzzy
 msgid "Notes sidebar panel"
-msgstr "Détruire le Panneau"
+msgstr "Panneau Notes"
 
 #: components/notes/Nautilus_View_notes.oaf.in.h:4
-#, fuzzy
 msgid "Notes sidebar panel for Nautilus"
-msgstr "Affiche la licence de Nautilus"
+msgstr "Panneau Notes de Nautilus"
 
 #. buttons
 #: components/rpmview/nautilus-rpm-verify-window.c:155
 #: components/services/install-view/forms.c:478
-#, fuzzy
 msgid "Continue"
-msgstr "Contenu"
+msgstr "Continue"
 
 #: components/rpmview/nautilus-rpm-verify-window.c:160
 #: components/services/install-view/forms.c:482
@@ -1749,16 +1721,15 @@ msgid "Verifying %s..."
 msgstr "Vérification de %s..."
 
 #: components/rpmview/nautilus-rpm-verify-window.c:209
-#, fuzzy, c-format
 msgid "Failed on \"%s\""
-msgstr "sont détenus par \"%s\""
+msgstr "A échoué sur \"%s\""
 
 #. TRANSLATORS: this is printed while verifying files from packages,
 #. %s is the filename, %d/%d is filenumber of total-number-of-files
 #: components/rpmview/nautilus-rpm-verify-window.c:213
 #, c-format
 msgid "Checking \"%s\" (%ld/%ld)"
-msgstr ""
+msgstr "Vérifie \"%s\" (%ld/%ld)"
 
 #: components/rpmview/nautilus-rpm-view.c:118
 msgid "Package Contents"
@@ -1770,9 +1741,8 @@ msgid "Package Title"
 msgstr "Nom du paquetage"
 
 #: components/rpmview/nautilus-rpm-view.c:186
-#, fuzzy
 msgid "Installed Size: "
-msgstr "Date d'installation :"
+msgstr "Taille installée :"
 
 #: components/rpmview/nautilus-rpm-view.c:192
 msgid "<size>"
@@ -1832,34 +1802,34 @@ msgstr "Description"
 #: components/rpmview/nautilus-rpm-view.c:567
 #, c-format
 msgid "Package Contents: %d files"
-msgstr "Le paquet contient : %d fichiers"
+msgstr "Le paquetage contient : %d fichiers"
 
 #: components/rpmview/nautilus-rpm-view.c:573
 #, c-format
 msgid "Package \"%s\" "
-msgstr "Paquet « %s » "
+msgstr "Paquetage « %s » "
 
 #: components/rpmview/nautilus-rpm-view.c:616
 msgid "This package is currently installed"
-msgstr "Ce paquet est actuellement installé"
+msgstr "Ce paquetage est installé"
 
 #: components/rpmview/nautilus-rpm-view.c:619
 msgid "This package is currently not installed"
-msgstr "Ce paquet n'est actuellement pas installé"
+msgstr "Ce paquetage n'est pas installé"
 
 #: components/rpmview/nautilus-rpm-view.c:762
 msgid "Verification completed, package ok."
-msgstr "La vérification est terminée, paquet valide."
+msgstr "La vérification est terminée, paquetage valide."
 
 #: components/rpmview/nautilus-rpm-view-install.c:119
 #, c-format
 msgid "%s would not work anymore\n"
-msgstr "%s ne fonctionnera plus\n"
+msgstr "%s ne fonctionnerait plus\n"
 
 #: components/rpmview/nautilus-rpm-view-install.c:122
 #, c-format
 msgid "%s would break other installed packages\n"
-msgstr "%s endommagera d'autres packages installés\n"
+msgstr "%s endommagerait d'autres packages installés\n"
 
 #: components/rpmview/nautilus-rpm-view-install.c:127
 #, c-format
@@ -1869,7 +1839,7 @@ msgstr "%s est nécessaire, mais n'a pas été trouvé\n"
 #: components/rpmview/nautilus-rpm-view-install.c:132
 #, c-format
 msgid "%s was already installed\n"
-msgstr "%s a déjà été installé\n"
+msgstr "%s était déjà installé\n"
 
 #: components/rpmview/nautilus-rpm-view-install.c:135
 #, c-format
@@ -1878,17 +1848,17 @@ msgstr "%s engendre un problème de dépendance circulaire\n"
 
 #: components/rpmview/nautilus-rpm-view-install.c:140
 msgid "Cannot access the local package system\n"
-msgstr ""
+msgstr "Ne peut pas accéder au système de paquetage local\n"
 
 #: components/rpmview/nautilus-rpm-view-install.c:156
 #, c-format
 msgid "Installing %s failed because of the following issue(s):\n"
-msgstr "L'installation de %s a échoué à cause de:\n"
+msgstr "L'installation de %s a échoué à cause de :\n"
 
 #: components/rpmview/nautilus-rpm-view-install.c:158
 #, c-format
 msgid "Uninstalling %s failed because of the following issue(s):\n"
-msgstr "La dé-installation de %s a échoué à cause de:\n"
+msgstr "La dé-installation de %s a échoué à cause de :\n"
 
 #: components/rpmview/nautilus-rpm-view-install.c:278
 msgid "Uninstall failed..."
@@ -1917,11 +1887,11 @@ msgstr ""
 
 #: components/rpmview/Nautilus_View_rpm.oaf.in.h:2
 msgid "Package"
-msgstr "Paquet"
+msgstr "Paquetage"
 
 #: components/rpmview/Nautilus_View_rpm.oaf.in.h:3
 msgid "Package Viewer"
-msgstr "Visualiseur de paquet"
+msgstr "Visualiseur de paquetage"
 
 #: components/rpmview/Nautilus_View_rpm.oaf.in.h:4
 msgid "RPM component"
@@ -1933,7 +1903,7 @@ msgstr ""
 
 #: components/rpmview/Nautilus_View_rpm.oaf.in.h:6
 msgid "View as Package"
-msgstr "Voir comme Paquet"
+msgstr "Voir comme Paquetage"
 
 #: components/rpmview/Nautilus_View_rpm.oaf.in.h:7
 msgid "rpm view"
@@ -1952,7 +1922,7 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"Ceci est un composant de visualisation Nautilus."
+"Ceci est un exemple de composant de visualisation Nautilus."
 
 #: components/sample/nautilus-sample-content-view.c:252
 #, c-format
@@ -1963,7 +1933,7 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"Vous avez cliqué sur le bouton de la barre d'outils."
+"Vous avez cliqué sur le bouton d'exemple de la barre d'outils."
 
 #: components/sample/Nautilus_View_sample.oaf.in.h:3
 #: components/sample/nautilus-sample-content-view-ui.xml.h:1
@@ -1976,7 +1946,6 @@ msgid "This is a sample merged menu item"
 msgstr "Ceci est un exemple de menu fusionné"
 
 #: components/sample/nautilus-sample-content-view-ui.xml.h:3
-#, fuzzy
 msgid "This is a sample merged toolbar button"
 msgstr "Ceci est un exemple de barre d'outils fusionnée"
 
@@ -1985,49 +1954,36 @@ msgid "_Sample"
 msgstr "_Exemple"
 
 #: components/sample/Nautilus_View_sample.oaf.in.h:1
-#, fuzzy
 msgid "Nautilus Sample view"
-msgstr "Mise à jour Nautilus"
+msgstr "Vue d'Exemple Nautilus"
 
 #: components/sample/Nautilus_View_sample.oaf.in.h:2
-#, fuzzy
 msgid "Nautilus Sample view factory"
-msgstr "Selection de theme Nautilus"
+msgstr ""
 
 #: components/sample/Nautilus_View_sample.oaf.in.h:4
-#, fuzzy
 msgid "Sample Viewer"
-msgstr "Taux d'échantillonage"
+msgstr "Visualiseur d'Exemple"
 
 #: components/sample/Nautilus_View_sample.oaf.in.h:5
-#, fuzzy
 msgid "Sample content view component"
-msgstr ""
-"%s\n"
-"\n"
-"Ceci est un composant de visualisation Nautilus."
+msgstr "Composant vue d'exemple"
 
 #: components/sample/Nautilus_View_sample.oaf.in.h:6
-#, fuzzy
 msgid "Sample content view component's factory"
 msgstr ""
-"%s\n"
-"\n"
-"Ceci est un composant de visualisation Nautilus."
 
 #: components/sample/Nautilus_View_sample.oaf.in.h:7
-#, fuzzy
 msgid "View as Sample"
-msgstr "Vue par %s"
+msgstr "Vue comme Example"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:107
 msgid "Set the default answer to continue, also default delete to Yes"
-msgstr ""
+msgstr "Met le réponse par défaut à \"continue\" et efface par défault"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:108
-#, fuzzy
 msgid "Specify search cgi"
-msgstr "Spécifier le serveur"
+msgstr "Spécifier cgi de recherche"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:109
 #: components/services/install/command-line/eazel-gen-xml.c:43
@@ -2049,9 +2005,8 @@ msgid "Erase packages"
 msgstr "Suppression des paquetages"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:113
-#, fuzzy
 msgid "enable ei2"
-msgstr "Autorise le debugging"
+msgstr "autorise ei2"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:114
 msgid "RPM args are filename"
@@ -2075,19 +2030,19 @@ msgstr "Les arguments de RPM sont des identifiants Eazel"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:119
 msgid "machine readable output"
-msgstr ""
+msgstr "sortie lisible en mode texte"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:120
 msgid "Don't print fancy percent output"
-msgstr ""
+msgstr "N'imprime pas les pourcentage"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:121
 msgid "don't use eazel auth stuff"
-msgstr ""
+msgstr "n'utilise pas l'authentification eazel"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:122
 msgid "Specify package file"
-msgstr "Sécifier le fichier du package"
+msgstr "Spécifier le fichier du paquetage"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:123
 msgid "RPM args are needed files"
@@ -2099,7 +2054,7 @@ msgstr "Lancer la requête"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:125
 msgid "Revert"
-msgstr "Retourner"
+msgstr "Annuler"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:126
 msgid "Set root"
@@ -2111,7 +2066,7 @@ msgstr "Spécifier le serveur"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:128
 msgid "Dont print too much, just problems and download"
-msgstr ""
+msgstr "Ne pas trop afficher, juste les problèmes et le téléchargement"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:129
 msgid "Perform ssl renaming"
@@ -2119,7 +2074,7 @@ msgstr "Changer le nom via ssl"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:130
 msgid "argument is a suite id"
-msgstr ""
+msgstr "l'argument est un identificateur de suite"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:131
 msgid "Test run"
@@ -2127,44 +2082,43 @@ msgstr "Tester le lancement"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:132
 msgid "Allow username"
-msgstr ""
+msgstr "Autorise l'utilisateur"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:133
 #: components/services/install/lib/eazel-install-problem.c:1009
 msgid "Allow upgrades"
-msgstr "Autorise la mise à niveau"
+msgstr "Autorise la mise à jour"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:134
 msgid "Verbose output"
 msgstr "Afficher trace"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:135
-#, fuzzy
 msgid "Install a specific package version"
-msgstr "Installation du paquetage %d sur %d"
+msgstr "Installe une version spécifique de paquetage"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:158
 msgid "*** You cannot specify more then one protocol type.\n"
-msgstr ""
+msgstr "*** Vous ne pouvez spécifier plus d'un type de protocole.\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:175
 msgid "*** Erase and revert ?  Somebody set up us the bomb!\n"
-msgstr ""
+msgstr "*** Efface et annule ?\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:284
-#, fuzzy, c-format
+#, c-format
 msgid "File conflict checking %s...\n"
-msgstr "vérification de %s..."
+msgstr "Vérification de conflit de fichier %s...\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:298
-#, fuzzy, c-format
+#, c-format
 msgid "File uniqueness checking %s...\n"
-msgstr "vérification de %s..."
+msgstr "Vérification de l'unicité des fichiers %s...\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:312
 #, c-format
 msgid "Feature consistency checking %s...\n"
-msgstr ""
+msgstr "Verification de l'homogéneité des fonctionalités %s...\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:343
 #: components/services/install/lib/eazel-install-protocols.c:110
@@ -2175,38 +2129,37 @@ msgstr "Chargement de %s..."
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:359
 msgid "Downloading %s... (%d/%d) = %d%% %.1f KB/s"
-msgstr ""
+msgstr "Chargemet %s... (%d/%d) = %d%% %.1f Ko/s"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:367
-#, fuzzy
 msgid "Downloading %s... (%d/%d) = %d%%"
-msgstr "Chargement de %s..."
+msgstr "Chargement de %s... (%d/%d) = %d%%"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:375
 #, c-format
 msgid "Downloading %s... (%d/%d) %.1f KB/s Done      \n"
-msgstr ""
+msgstr "Chargement %s... (%d/%d) %.1f Ko/s Effectué\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:380
-#, fuzzy, c-format
+#, c-format
 msgid "Downloading %s... %3.1f KB/s Done\n"
-msgstr "Chargement de %s..."
+msgstr "Chargement de %s... %3.1f Ko/s effectué\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:408
 msgid "Installing %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
-msgstr ""
+msgstr "Installe %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:416
 msgid "Uninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
-msgstr ""
+msgstr "Désinstalle %d (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:438
 msgid "Installing %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
-msgstr ""
+msgstr "Installe %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Effectué\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:445
 msgid "Uninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
-msgstr ""
+msgstr "Désinstalle %d (%d/%d), (%d/%d)b - (%d/%d) = %d%% Effectué\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:453
 msgid "Done\n"
@@ -2215,17 +2168,17 @@ msgstr "Effectué\n"
 #: components/services/install/command-line/eazel-alt-install-corba.c:473
 #, c-format
 msgid "Download of %s FAILED\n"
-msgstr ""
+msgstr "Chargement de %s Echoué\n
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:495
-#, fuzzy, c-format
+#, c-format
 msgid "Package %s failed to uninstall.\n"
-msgstr "Ce paquet a déjà été installé."
+msgstr "Le paquetage %s n'a put être désinstallé.\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:497
-#, fuzzy, c-format
+#, c-format
 msgid "Package %s failed to install.\n"
-msgstr "Ce paquet a déjà été installé."
+msgstr "Le paquetage %s n'a put être installé.\n"
 
 #. I18N note: \xB7 is a dot
 #: components/services/install/command-line/eazel-alt-install-corba.c:518
@@ -2244,31 +2197,26 @@ msgid "Cancelling operation\n"
 msgstr "Annulation de l'opération\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:581
-#, fuzzy, c-format
+#, c-format
 msgid "About to install a total of %d packages, %dKB\n"
-msgstr ""
-"Les paquetages suivants seront installés:\n"
-"\n"
+msgstr "Sur le point d'installer %d paquetages, %d Ko\n"
+
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:585
-#, fuzzy, c-format
+#, c-format
 msgid "About to uninstall a total of %d packages, %dKB\n"
-msgstr ""
-"Les paquetages suivants seront installés:\n"
-"\n"
+msgstr "Sur le point de désinstaller %d paquetages, %d Ko\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:589
-#, fuzzy, c-format
+#, c-format
 msgid "About to revert a total of %d packages, %d KB\n"
-msgstr ""
-"Les paquetages suivants seront installés:\n"
-"\n"
+msgstr "Sur le point d'annuler %d paquetages, %d Ko\n"
 
 #. I18N note: %s is a package name, \xB7 is a dot
 #: components/services/install/command-line/eazel-alt-install-corba.c:606
 #, c-format
 msgid "\t· %s and it's dependencies\n"
-msgstr ""
+msgstr "\t %s et ses dépendances\n"
 
 #. I18N note: %s is a package name, \xB7 is a dot
 #: components/services/install/command-line/eazel-alt-install-corba.c:609
@@ -2277,27 +2225,27 @@ msgid "\t· %s\n"
 msgstr "\t· %s\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:631
-#, fuzzy, c-format
+#, c-format
 msgid "Dependency : %s needs %s\n"
-msgstr "Vérification des dépendances: Le paquetage %s a besoin de %s"
+msgstr "Vérification des dépendances: le paquetage %s a besoin de %s"
 
 #. I18N note: %s is a package name
 #: components/services/install/command-line/eazel-alt-install-corba.c:649
 #, c-format
 msgid "Package %s failed md5 check!\n"
-msgstr ""
+msgstr "La vérification md5 du paquetage %d a échoué !\n"
 
 #. I18N note: %s is a 32 bytes hex numbers, \xB7 is a dot
 #: components/services/install/command-line/eazel-alt-install-corba.c:651
 #, c-format
 msgid "\t· server MD5 checksum is %s\n"
-msgstr ""
+msgstr "\t la somme de vérification MD5 du serveur est %s\n"
 
 #. I18N note: %s is a 32 bytes hex numbers, \xB7 is a dot
 #: components/services/install/command-line/eazel-alt-install-corba.c:653
 #, c-format
 msgid "\t· actual MD5 checksum is %s\n"
-msgstr ""
+msgstr "\t la somme de vérification MD5 du paquetage est %s\n"
 
 #. I18N note: the (y/n) is translateable. There is later a 1 character
 #. string with the context "y" which is the "yes" indicator.
@@ -2343,7 +2291,7 @@ msgstr "Désinstallation"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:935
 msgid "Only one operation at a time please."
-msgstr ""
+msgstr "Une seule opération à la fois, s'il vous plait."
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:940
 #: components/services/install/command-line/eazel-alt-install-corba.c:948
@@ -2416,47 +2364,47 @@ msgstr ""
 
 #: components/services/install/command-line/eazel-test-softcat.c:43
 msgid "Softcat server to connect to"
-msgstr ""
+msgstr "Serveur Softcat auquel se connecter"
 
 #: components/services/install/command-line/eazel-test-softcat.c:44
 msgid "Use alternate CGI path"
-msgstr ""
+msgstr "Utilise un autre chemin pour le script CGI"
 
 #: components/services/install/command-line/eazel-test-softcat.c:46
 msgid "Connect as a softcat user through ammonite"
-msgstr ""
+msgstr "Se connecte en tant qu'utilisateur softcat à travers ammonite"
 
 #: components/services/install/command-line/eazel-test-softcat.c:47
 msgid "Number of times to try the request"
-msgstr ""
+msgstr "Nombre d'essais de la requète"
 
 #: components/services/install/command-line/eazel-test-softcat.c:48
 msgid "Delay between request retries, in usec"
-msgstr ""
+msgstr "Délais entre les essais de requètes"
 
 #: components/services/install/command-line/eazel-test-softcat.c:49
 msgid "Lookup by Eazel package id"
-msgstr ""
+msgstr "Reherche par identificateur de paquetage Eazel"
 
 #: components/services/install/command-line/eazel-test-softcat.c:50
 msgid "Lookup package that provides a feature/file"
-msgstr ""
+msgstr "Recherche paquetage qui fournit une fonctionalité/un fichier"
 
 #: components/services/install/command-line/eazel-test-softcat.c:51
 msgid "Lookup package with a specific version"
-msgstr ""
+msgstr "Recherche un paquetage avec un numéro de version spécifique"
 
 #: components/services/install/command-line/eazel-test-softcat.c:52
 msgid "(with --version) Use >= comparison"
-msgstr ""
+msgstr "(avec --version) Utilise comparaison >="
 
 #: components/services/install/command-line/eazel-test-softcat.c:53
 msgid "use check function (for debugging)"
-msgstr ""
+msgstr "utilise fonction de vérification (debugging)"
 
 #: components/services/install/command-line/eazel-test-softcat.c:54
 msgid "Show detailed sub-package info"
-msgstr ""
+msgstr "Montre information détaillée au sein d'un paquetage"
 
 #: components/services/install/lib/eazel-install-logic2.c:99
 msgid "Failed to lock the downloaded file"
@@ -2468,16 +2416,16 @@ msgid "MD5 mismatch, package %s may be compromised"
 msgstr "Erreur MD5, le paquetage %s est peut être corrompu"
 
 #: components/services/install/lib/eazel-install-logic2.c:132
-#, fuzzy, c-format
+#, c-format
 msgid "No MD5 available for %s"
-msgstr "Aucune information de disponible pour le theme « %s »"
+msgstr "Pas de somme de vérification MD5 disponible pour le paquetage %s"
 
 #. I18N note: "%is is ok" in the sense that %s=package name and the
 #. package is intact
 #: components/services/install/lib/eazel-install-logic2.c:317
-#, fuzzy, c-format
+#, c-format
 msgid "%s is ok"
-msgstr "Les informations sont-elles correctes ?"
+msgstr "%s est bon"
 
 #: components/services/install/lib/eazel-install-logic2.c:423
 #, c-format
@@ -2498,7 +2446,7 @@ msgstr "%s mets à niveau de la version %s-%s vers %s-%s"
 #: components/services/install/lib/eazel-install-logic2.c:450
 #, c-format
 msgid "%s downgrades from version %s-%s to %s-%s"
-msgstr "%s permet de revenir de la version %s-%s vers %s-%s"
+msgstr "%s permet de revenir de la version %s-%s à %s-%s"
 
 #: components/services/install/lib/eazel-install-logic2.c:455
 #, c-format
@@ -2516,9 +2464,8 @@ msgid "%s installs version %s"
 msgstr "%s installe la version %s"
 
 #: components/services/install/lib/eazel-install-logic2.c:663
-#, fuzzy, c-format
 msgid "Loading package info from file %s"
-msgstr "Obtention des informations du paquet..."
+msgstr "Charge les information de paquetage du fichier %s"
 
 #. I18N note: ok is for "package dependencies are ok", "not ok".. well guess...
 #: components/services/install/lib/eazel-install-logic2.c:973
@@ -2532,98 +2479,99 @@ msgstr "pas ok"
 #: components/services/install/lib/eazel-install-logic2.c:1137
 #, c-format
 msgid "Checking dependencies for %s"
-msgstr ""
+msgstr "Verifie les dépendances pour le paquetage %s"
 
 #. I18N note: both %s' are package names.
 #. related is in the sense that the two packages apparently
 #. are connected somehow, eg. foo and foo-devel
 #: components/services/install/lib/eazel-install-logic2.c:1698
-#, fuzzy, c-format
+#, c-format
 msgid "%s is related to %s"
-msgstr "« %s » sélectionné (%s)"
+msgstr "« %s » est relié à (%s)"
 
 #: components/services/install/lib/eazel-install-logic2.c:1758
 #, c-format
 msgid "updating %s to version %s-%s solves conflict"
-msgstr ""
+msgstr "Mettre à jour le paquetage %s à la version %s-%s résoud le conflit"
 
 #: components/services/install/lib/eazel-install-logic2.c:1774
 #, c-format
 msgid "available update to %s (%s-%s) does not solves conflict"
-msgstr ""
+msgstr "la mise à jour du paquetage %s vers la version (%s-%s) ne résoud pas le conflit"
 
 #: components/services/install/lib/eazel-install-logic2.c:1781
-#, fuzzy, c-format
+#, c-format
 msgid "could not revive %s"
-msgstr "Impossible d'obtenir une URL pour %s"
+msgstr "Impossible de réveiller(???) %s"
 
 #: components/services/install/lib/eazel-install-logic2.c:1917
 #, c-format
 msgid "file uniqueness checking %s"
-msgstr ""
+msgstr "vérifie l'unicité de fichier %s"
 
 #: components/services/install/lib/eazel-install-logic2.c:1938
 #, c-format
 msgid "Duplicate file : %s occurs in %s and %s"
-msgstr ""
+msgstr "Fichier double : %s est contenu dans %s et %s"
 
 #: components/services/install/lib/eazel-install-logic2.c:1956
-#, fuzzy, c-format
+#, c-format
 msgid "(there were %d other conflicts)"
-msgstr "Mais il y des conflits de fichiers"
+msgstr "(il y a eu %d autres conflits)"
 
 #: components/services/install/lib/eazel-install-logic2.c:2051
-#, fuzzy, c-format
+#, c-format
 msgid "file conflict checking %s"
-msgstr "La paquet %s a un fichier en conflit avec %s"
+msgstr "Vérification de conflit de fichier %s"
 
 #: components/services/install/lib/eazel-install-logic2.c:2088
 #, c-format
 msgid "file conflict : package %s already provides file %s also provided by %s"
-msgstr ""
+msgstr "conflit de fichier : le paquetage %s contient le fichier %s qui est aussi contenu dans %s"
 
 #. the owner of this file is a package that we're upgrading, and the
 #. * new version no longer has this file, so everything's okay.
 #: components/services/install/lib/eazel-install-logic2.c:2098
 #, c-format
 msgid "...but it is okay, we're upgrading %s and it ditched that file"
-msgstr ""
+msgstr "...c'est ok, nous mettons à jour %s et ceci nous a débarrasé de ce fichier"
 
 #: components/services/install/lib/eazel-install-logic2.c:2188
 #, c-format
 msgid "checking feature consistency of %s"
-msgstr ""
+msgstr "verifie la consistance des fonctionalités de %s"
 
 #: components/services/install/lib/eazel-install-logic2.c:2256
 #, c-format
 msgid ""
 "feature missing : %s breaks if %s is installed (feature %s would be lost"
 msgstr ""
+"fonctionalité manquante : %s casse si %s est installé (la fonctionalité %s serat perdue"
 
 #: components/services/install/lib/eazel-install-logic2.c:2334
-#, fuzzy, c-format
+#, c-format
 msgid "downloading %d packages"
-msgstr "Téléchargement de %d paquets (%s)"
+msgstr "Télécharge %d paquetages"
 
 #: components/services/install/lib/eazel-install-logic2.c:2599
-#, fuzzy, c-format
+#, c-format
 msgid "will upgrade %s"
-msgstr "Autorise la mise à niveau"
+msgstr "mettra à jour %s"
 
 #: components/services/install/lib/eazel-install-logic2.c:2602
-#, fuzzy, c-format
+#, c-format
 msgid "will downgrade %s"
-msgstr "Autorise la régression"
+msgstr "passera à une vieille version de %s"
 
 #: components/services/install/lib/eazel-install-logic2.c:2605
 #, c-format
 msgid "will install %s"
-msgstr ""
+msgstr "installera %s"
 
 #: components/services/install/lib/eazel-install-logic2.c:2608
-#, fuzzy, c-format
+#, c-format
 msgid "will uninstall %s"
-msgstr "Désinstallation"
+msgstr "désinstallera %s"
 
 #: components/services/install/lib/eazel-install-logic2.c:2691
 #: components/services/install/lib/eazel-install-problem.c:335
@@ -2633,9 +2581,9 @@ msgid "%s requires %s"
 msgstr "%s nécessite %s"
 
 #: components/services/install/lib/eazel-install-logic2.c:2855
-#, fuzzy, c-format
+#, c-format
 msgid "failed %s"
-msgstr "sont détenus par \"%s\""
+msgstr "%s a échoué"
 
 #: components/services/install/lib/eazel-install-metadata.c:171
 msgid "Could not set URLType from config file!"
@@ -2699,17 +2647,17 @@ msgstr ""
 #: components/services/install/lib/eazel-install-problem.c:189
 #, c-format
 msgid "%s would break other packages"
-msgstr "%s peut endommager d'autres paquets"
+msgstr "%s peut endommager d'autres paquetages"
 
 #: components/services/install/lib/eazel-install-problem.c:181
 #, c-format
 msgid "%s would break"
-msgstr ""
+msgstr "%s serait endommagé"
 
 #: components/services/install/lib/eazel-install-problem.c:187
 #, c-format
 msgid "%s would break %s"
-msgstr ""
+msgstr "%s endommagerait %s"
 
 #: components/services/install/lib/eazel-install-problem.c:193
 #, c-format
@@ -2719,12 +2667,12 @@ msgstr "%s est endommagé"
 #: components/services/install/lib/eazel-install-problem.c:197
 #, c-format
 msgid "%s requires %s, which could not be found on the server"
-msgstr ""
+msgstr "%s requiert %s qui n'a put être trouvé sur le serveur"
 
 #: components/services/install/lib/eazel-install-problem.c:200
 #, c-format
 msgid "%s could not be found on the server"
-msgstr "%s ne peut etre trouver sur le serveur"
+msgstr "%s ne peut etre trouvé sur le serveur"
 
 #: components/services/install/lib/eazel-install-problem.c:208
 #: components/services/install/lib/eazel-install-problem.c:352
@@ -2733,16 +2681,14 @@ msgid "%s is already installed"
 msgstr "%s est déjà installé"
 
 #: components/services/install/lib/eazel-install-problem.c:252
-#, fuzzy, c-format
+#, c-format
 msgid "%s, which is newer, needs downgrade and downgrade is not enabled"
-msgstr "%s a déjà été installé\n"
+msgstr "Je dois installer une ancienne version de %s mais ceci n'est pas autorisé"
 
 #: components/services/install/lib/eazel-install-problem.c:256
-#, fuzzy, c-format
+#, c-format
 msgid "%s, which is older, needs upgrade and upgrade is not enabled"
-msgstr ""
-"%s, qui est plus vieux, est déjà installé et la mise à niveau n'est pas "
-"activée"
+msgstr "le paquetage %s doit être mis a jour mais ceci n'est pas autorisé"
 
 #: components/services/install/lib/eazel-install-problem.c:346
 #, c-format
@@ -2754,14 +2700,14 @@ msgstr "%s n'est pas installé"
 #: components/services/install/lib/eazel-install-problem.c:911
 #, c-format
 msgid "Check for a new version of %s"
-msgstr ""
+msgstr "Cherche une nouvelle version de %s"
 
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. both %s's are package names or filenames
 #: components/services/install/lib/eazel-install-problem.c:922
 #, c-format
 msgid "Install both %s and %s"
-msgstr ""
+msgstr "Installe %s ET %s"
 
 #. TRANSLATORS : This string is a solution to a dependency problem,
 #. %s is a package name or filename
@@ -2776,21 +2722,21 @@ msgstr "Supprimer %s de votre système"
 #: components/services/install/lib/eazel-install-problem.c:950
 #, c-format
 msgid "Force the removal of %s from your system"
-msgstr ""
+msgstr "Force la suppression de %s de votre système"
 
 #. TRANSLATORS : This string is a solution to a dependency problem
 #: components/services/install/lib/eazel-install-problem.c:958
 msgid "Package database has an inconsistency"
-msgstr ""
+msgstr "la base de données des paquetages n'est pas valide"
 
 #: components/services/install/lib/eazel-install-problem.c:1006
 msgid "Continue with force"
-msgstr ""
+msgstr "continue en forçant"
 
 #: components/services/install/lib/eazel-install-problem.c:1012
-#, fuzzy
+#, 
 msgid "Allow downgrade"
-msgstr "Autorise la régression"
+msgstr "Autorise la la mise à jour avec d'anciennes versions"
 
 #: components/services/install/lib/eazel-install-protocols.c:123
 #: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:166
@@ -2829,7 +2775,7 @@ msgstr "Impossible d'obtenir un mode asynchrone"
 #: components/services/install/lib/eazel-install-protocols.c:228
 #, c-format
 msgid "DISK FULL: could not write %s"
-msgstr ""
+msgstr "Fichier plein : impossible d'écrire %s"
 
 #: components/services/install/lib/eazel-install-protocols.c:189
 #: components/services/install/lib/eazel-install-protocols.c:217
@@ -2875,15 +2821,15 @@ msgstr "Le chargement de fichier a échoué"
 
 #: components/services/install/lib/eazel-install-tests.c:33
 msgid "*** Begin pkg dump ***\n"
-msgstr "*** Début chargement paquet ***\n"
+msgstr "*** Début chargement paquetage ***\n"
 
 #: components/services/install/lib/eazel-install-tests.c:40
 msgid "*** End pkg dump ***\n"
-msgstr "*** Fin chargement paquet ***\n"
+msgstr "*** Fin chargement paquetage ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:158
 msgid "*** No package nodes! (cat has no children) ***"
-msgstr "*** Aucun paquetage! ***"
+msgstr "*** Aucun noeud de paquetage! (pas d'enfant) ***"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:160
 #: components/services/install/lib/eazel-install-xml-package-list.c:168
@@ -2893,19 +2839,19 @@ msgstr "*** Recherche des paquetages! ***"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:166
 msgid "*** No package nodes! ***"
-msgstr "*** Aucun paquetage! ***"
+msgstr "*** Aucun noeud de paquetage! ***"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:172
 msgid "*** Malformed package node!"
-msgstr "*** Balise des paquetages corrompue!"
+msgstr "*** Noeud de paquetage malformé !"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:181
 msgid "*** No depends nodes! ***"
-msgstr "*** Aucune balise de dépendance! ***"
+msgstr "*** Aucun noeud de dependance ! ***"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:187
 msgid "*** Malformed depends node!"
-msgstr "*** Balise des dépendances corrompue!"
+msgstr "*** noeud de dépendance malformé!"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:211
 #, c-format
@@ -2914,15 +2860,16 @@ msgstr "*** Type de noeud inconnu « %s »"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:228
 msgid "*** The pkg list file contains no data! ***\n"
-msgstr "*** La liste des paquets est vide! ***\n"
+msgstr "*** La liste des paquetages ne contient pas de données ! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:233
 msgid "*** Cannot find the CATEGORIES xmlnode! ***\n"
-msgstr "*** Impossible de trouver la rubrique xml CATEGORIES ! ***\n"
+msgstr "*** Impossible de trouver le neoud xml CATEGORIES ! ***\n"
+
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:234
 msgid "*** Bailing from categories parse! ***\n"
-msgstr "*** Recherche des catégories ! ***\n"
+msgstr "*** Echec de la recherche des catégories ! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:240
 msgid "*** No Categories! ***\n"
@@ -2930,20 +2877,20 @@ msgstr "*** Aucunes catégories ! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:241
 msgid "*** Bailing from category parse! ***\n"
-msgstr "*** Recherche de la catégorie ! ***\n"
+msgstr "*** Echec de la recherche des catégories ! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:295
 msgid "*** Cannot find the TRANSACTION xmlnode! ***\n"
-msgstr "*** Impossible de trouver la rubrique xml TRANSACTION ! ***\n"
+msgstr "*** Impossible de trouver le noeud xml TRANSACTION ! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:297
 #: components/services/install/lib/eazel-install-xml-package-list.c:305
 msgid "*** Bailing from transaction parse! ***\n"
-msgstr "*** Recherche de la transaction ! ***\n"
+msgstr "*** Echec de la transaction ! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:303
 msgid "*** No packages! ***\n"
-msgstr "*** Aucun paquets ! ***\n"
+msgstr "*** Aucun paquetages ! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:339
 msgid "*** No category nodes! ***"
@@ -2951,7 +2898,7 @@ msgstr "*** Aucun noeud de catégorie ! ***"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:343
 msgid "*** Cannot find the CATEGORIES xmlnode! ***"
-msgstr "*** Impossible de trouver la rubrique xml CATEGORIES ! ***"
+msgstr "*** Impossible de trouver le neoud xml CATEGORIES ! ***"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:377
 #, c-format
@@ -2972,7 +2919,7 @@ msgstr "*** Le fichier osd xml est vide! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:914
 msgid "*** Bailing from osd parse! ***\n"
-msgstr "*** Recherche de osd! ***\n"
+msgstr "*** Echec de la recherche de osd! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:990
 #, c-format
@@ -3007,7 +2954,7 @@ msgstr "Impossible d'ouvrir %s"
 #. this stuff flies by so fast, it's probably enough to just say "info"
 #: components/services/install-view/callbacks.c:63
 msgid "Getting package information ..."
-msgstr "Obtention des informations du paquet..."
+msgstr "Obtention des informations du paquetage..."
 
 #: components/services/install-view/callbacks.c:81
 #, c-format
@@ -3017,12 +2964,12 @@ msgstr "Vérification de « %s » pour des conflits..."
 #: components/services/install-view/callbacks.c:174
 #, c-format
 msgid "Downloading 1 package (%s)"
-msgstr "Téléchargement d'un paquet (%s)"
+msgstr "Téléchargement d'un paquetage (%s)"
 
 #: components/services/install-view/callbacks.c:176
 #, c-format
 msgid "Downloading %d packages (%s)"
-msgstr "Téléchargement de %d paquets (%s)"
+msgstr "Téléchargement de %d paquetages (%s)"
 
 #: components/services/install-view/callbacks.c:225
 #, c-format
@@ -3040,17 +2987,16 @@ msgid ""
 "The package \"%s\" requires \"%s\" to run.\n"
 "Downloading \"%s\" now."
 msgstr ""
-"Le paquet « %s » nécessite « %s » pour fonctionner.\n"
+"Le paquetage « %s » nécessite « %s » pour fonctionner.\n"
 "Téléchargement de « %s » maintenant."
 
 #: components/services/install-view/callbacks.c:241
 #, c-format
 msgid "Attempting to download package \"%s\"."
-msgstr "Tentative de téléchargement du paquet « %s »."
+msgstr "Tentative de téléchargement du paquetage « %s »."
 
 #: components/services/install-view/callbacks.c:251
 #: components/services/install-view/callbacks.c:322
-#, fuzzy
 msgid "Complete"
 msgstr "Terminé"
 
@@ -3060,13 +3006,13 @@ msgid ""
 "The package \"%s\" requires \"%s\" to run.\n"
 "\"%s\" has been successfully downloaded."
 msgstr ""
-"Le paquet « %s » nécessite « %s » pour fonctionner.\n"
+"Le paquetage « %s » nécessite « %s » pour fonctionner.\n"
 "« %s » a été téléchargé avec succès."
 
 #: components/services/install-view/callbacks.c:258
 #, c-format
 msgid "The package \"%s\" has been successfully downloaded."
-msgstr "Le paquet « %s » a été téléchargé avec succès."
+msgstr "Le paquetage « %s » a été téléchargé avec succès."
 
 #: components/services/install-view/callbacks.c:276
 #, c-format
@@ -3076,30 +3022,29 @@ msgstr "%dK de %dK"
 #: components/services/install-view/callbacks.c:305
 #, c-format
 msgid "Download of package \"%s\" failed!"
-msgstr "Le téléchargement du paquet « %s » a échoué !"
+msgstr "Le téléchargement du paquetage « %s » a échoué !"
 
 #: components/services/install-view/callbacks.c:327
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The package \"%s\" requires \"%s\" to run.\n"
 "\"%s\" has been successfully downloaded and installed."
 msgstr ""
-"Le paquet « %s » nécessite « %s » pour fonctionner.\n"
-"« %s » a été téléchargé avec succès."
+"Le paquetage « %s » nécessite « %s » pour fonctionner.\n"
+"« %s » a été téléchargé et installé avec succès."
 
 #: components/services/install-view/callbacks.c:330
 #, c-format
 msgid "\"%s\" has been successfully downloaded and installed."
-msgstr "« %s » a été téléchargé avec succé et installé."
+msgstr "« %s » a été téléchargé avec succés et installé."
 
 #. starting a new package -- create new progress indicator
 #: components/services/install-view/callbacks.c:358
-#, fuzzy, c-format
 msgid "Installing package %d of %d"
 msgstr "Installation du paquetage %d sur %d"
 
 #: components/services/install-view/callbacks.c:385
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The package \"%s\" requires \"%s\" to run.\n"
 "\"%s\" is now being installed."
@@ -3108,7 +3053,7 @@ msgstr ""
 "« %s » a été téléchargé avec succès."
 
 #: components/services/install-view/callbacks.c:388
-#, fuzzy, c-format
+#, c-format
 msgid "Now installing package \"%s\"."
 msgstr "Installation du paquetage %s ..."
 
@@ -3141,9 +3086,8 @@ msgid "Is this ok ?"
 msgstr "Les informations sont-elles correctes ?"
 
 #: components/services/install-view/callbacks.c:544
-#, fuzzy
 msgid "Installation cancelled."
-msgstr "Échec de l'installation."
+msgstr "Installation annulée."
 
 #: components/services/install-view/callbacks.c:546
 msgid "This package has already been installed."
@@ -3160,28 +3104,24 @@ msgstr "Échec de l'installation."
 #. some succeeded; some failed
 #: components/services/install-view/callbacks.c:556
 msgid "Some packages installed successfully:"
-msgstr ""
+msgstr "Certains paquetages ont étés installés avec succés"
 
 #: components/services/install-view/callbacks.c:565
-#, fuzzy
+#, 
 msgid ""
 "\n"
 "Some packages failed:"
-msgstr "Sécifier le fichier du package"
+msgstr "\nCertains paquetages ont echoué:"
 
 #: components/services/install-view/callbacks.c:608
 msgid "Erase the RPM files?"
 msgstr "Effacer les fichiers RPM ?"
 
 #: components/services/install-view/callbacks.c:610
-#, fuzzy
 msgid "Erase the leftover RPM files?"
-msgstr ""
-"%s\n"
-"Ecraser les fichiers RPM?"
+msgstr "Efface les fichiers RPMs téléchargés ?"
 
 #: components/services/install-view/callbacks.c:644
-#, fuzzy
 msgid ""
 "A core package of Nautilus has been\n"
 "updated.  You should restart Nautilus.\n"
@@ -3192,7 +3132,7 @@ msgstr ""
 "Un paquetage principal de Nautilus a été \n"
 "mis à jour.Vous devriez re-démarrer Nautilus.\n"
 "\n"
-"Voulez vous le faire maintenant .\n"
+"Voulez vous le faire maintenant ?\n"
 
 #. Setup the title
 #: components/services/install-view/forms.c:201
@@ -3215,30 +3155,27 @@ msgid "Version: %s"
 msgstr "Version : %s"
 
 #: components/services/install-view/forms.c:407
-#, fuzzy
 msgid "These packages are ready to be downloaded and installed:"
-msgstr "Ce paquetage a déjà été installé"
+msgstr "Ces paquetages sont prêts à être téléchargés et installés :"
 
 #: components/services/install-view/forms.c:408
 msgid "If you wish to download and install these packages, click Continue."
-msgstr ""
+msgstr "Si vous voulez télécharger et installer ces paquetages, cliquez sur Continuer."
 
 #: components/services/install-view/forms.c:411
-#, fuzzy
 msgid "These packages are ready to be uninstalled:"
-msgstr "Ce paquetage a déjà été installé"
+msgstr "Ces paquetages sont prêts à être désinstallés :"
 
 #: components/services/install-view/forms.c:412
 msgid "If you wish to uninstall these packages, click Continue."
-msgstr ""
+msgstr "Si vous voulez désinstaller ces paquetages, cliquez sur Continuer."
 
 #: components/services/install-view/forms.c:415
-#, fuzzy
 msgid "These packages are ready to be reverted:"
-msgstr "Ce paquetage a déjà été installé"
+msgstr "Ces paquetages sont prêts à être mis à jour à d'anciennes versions :"
 
 #: components/services/install-view/forms.c:416
-msgid "If you wish to revert these packages, click Continue."
+msgid "Si vous voulez le faire, cliquez sur Continuer."
 msgstr ""
 
 #: components/services/install-view/forms.c:464
@@ -3252,7 +3189,7 @@ msgid "for a total of %ld KB."
 msgstr "pour un total de %ld ko."
 
 #: components/services/install-view/nautilus-service-install-view.c:418
-#, fuzzy, c-format
+#, c-format
 msgid " · %s is in the GNOME footprint menu under %s"
 msgstr " · %s est dans le menu Gnome sous %s.\n"
 
@@ -3268,42 +3205,38 @@ msgstr " · %s est dans le menu KDE.\n"
 
 #: components/services/install-view/nautilus-service-install-view.c:519
 msgid "Authenticate as root"
-msgstr ""
+msgstr "Authentifie en tant que \"root\""
 
 #: components/services/install-view/nautilus-service-install-view.c:636
-#, fuzzy
 msgid "Installing packages"
-msgstr "Installation du paquetage %d sur %d"
+msgstr "Installation des paquetages"
 
 #: components/services/install-view/nautilus-service-install-view.c:638
-#, fuzzy
 msgid "Installing remote package"
-msgstr "Chargement du paquetage distant"
+msgstr "Installation du paquetage distant"
 
 #: components/services/install-view/nautilus-service-install-view.c:642
-#, fuzzy
 msgid "Installing some package"
-msgstr "Chargement de certains paquetages"
+msgstr "Installation d'un paquetage"
 
 #: components/services/install-view/nautilus-service-install-view.c:659
 msgid ""
 "The Eazel install service is missing:\n"
 "Installs will not work."
-msgstr ""
+msgstr "Le service d'installation de Eazel manque :\n"
+"les installations ne fonctionneront pas."
 
 #: components/services/install-view/nautilus-service-install-view.c:706
-#, fuzzy
 msgid "Contacting the Eazel Software Catalog ..."
-msgstr "Aller au catalogue de logiciels"
+msgstr "Contacter les catalog de logiciels Eazel ..."
 
 #: components/services/install-view/nautilus-service-install-view.c:764
-#, fuzzy
 msgid "Checking for authorization..."
-msgstr "_Personalisation..."
+msgstr "Vérifie authorisation..."
 
 #: components/services/install-view/nautilus-service-install-view.c:836
 msgid "Aborting package downloads (please wait) ..."
-msgstr ""
+msgstr "Abandonne le téléchrgement des paquetages (patienttez s'il vous plait) ..."
 
 #: components/services/install-view/nautilus-service-install-view.c:856
 msgid "Package download aborted."
@@ -3314,14 +3247,12 @@ msgid "Aborted"
 msgstr "Interrompu"
 
 #: components/services/install-view/Nautilus_View_install.oaf.in.h:2
-#, fuzzy
 msgid "Install Viewer"
-msgstr "Echec de l'installation"
+msgstr "Vue d'installation"
 
 #: components/services/install-view/Nautilus_View_install.oaf.in.h:3
-#, fuzzy
 msgid "Nautilus Service Install View"
-msgstr "Licence _Nautilus"
+msgstr "Vue de Service d'Installation de Nautilus"
 
 #: components/services/install-view/Nautilus_View_install.oaf.in.h:4
 msgid "Nautilus Service Install View Factory"
@@ -3336,9 +3267,8 @@ msgid "Service Install View Component's Factory"
 msgstr ""
 
 #: components/services/install-view/Nautilus_View_install.oaf.in.h:7
-#, fuzzy
 msgid "View as Install"
-msgstr "Installation facile"
+msgstr "Voir comme Installer"
 
 #: components/services/install/server/Trilobite_Service_install.oaf.in.h:1
 msgid "Factory for the install service"
@@ -3346,19 +3276,19 @@ msgstr ""
 
 #: components/services/inventory/eazel-inventory-client.c:70
 msgid "Enable inventory upload."
-msgstr ""
+msgstr "Permet l'envoi de l'inventaire au serveur"
 
 #: components/services/inventory/eazel-inventory-client.c:72
 msgid "Disable inventory upload."
-msgstr ""
+msgstr "Ne permet pas l'envoi de l'inventaire au serveur"
 
 #: components/services/inventory/eazel-inventory-client.c:73
 msgid "Display information about current inventory settings."
-msgstr ""
+msgstr "Affiche des informations sur les paramètres de l'inventaire"
 
 #: components/services/inventory/eazel-inventory-client.c:74
 msgid "Upload inventory now, if not up to date."
-msgstr ""
+msgstr "Envoi l'inventaire sur le serveur maintenant si il n'est pas à jour."
 
 #: components/services/inventory/Trilobite_Service_inventory.oaf.in.h:1
 msgid "Factory for the inventory service"
@@ -3366,11 +3296,11 @@ msgstr ""
 
 #: components/services/inventory/Trilobite_Service_inventory.oaf.in.h:2
 msgid "Inventory"
-msgstr ""
+msgstr "Inventaire"
 
 #: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:1
 msgid "Nautilus Inventory view"
-msgstr ""
+msgstr "Vue d'Inventaire de Nautilus"
 
 #: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:2
 msgid "Nautilus Inventory view factory"
@@ -3382,11 +3312,11 @@ msgstr ""
 
 #: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:4
 msgid "System Inventory"
-msgstr ""
+msgstr "Inventaire système"
 
 #: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:5
 msgid "System Inventory Viewer"
-msgstr ""
+msgstr "Visualiseur d'Inventaire Système"
 
 #: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:6
 msgid "System inventory view component"
@@ -3394,48 +3324,41 @@ msgstr ""
 
 #: components/services/inventory-view/Nautilus_View_inventory.oaf.in.h:7
 msgid "View as System Inventory"
-msgstr ""
+msgstr "Voir comme Inventaire Système"
 
 #. Setup the title
 #: components/services/login/nautilus-view/nautilus-change-password-view.c:153
-#, fuzzy
 msgid "Please Change Your Eazel Password"
-msgstr "Changez votre mot de passe Eazel..."
+msgstr "S'il vous plait, changez votre mot de passe Eazel"
 
 #. add password boxes
 #: components/services/login/nautilus-view/nautilus-change-password-view.c:174
-#, fuzzy
 msgid "User Name:"
-msgstr "Nom:"
+msgstr "Nom d'utilisateur :"
 
 #: components/services/login/nautilus-view/nautilus-change-password-view.c:181
-#, fuzzy
 msgid "Current Password:"
-msgstr "Mot de passe actuel: "
+msgstr "Mot de passe actuel :"
 
 #: components/services/login/nautilus-view/nautilus-change-password-view.c:188
-#, fuzzy
 msgid "New Password:"
-msgstr "Nouveau mot de passe: "
+msgstr "Nouveau mot de passe :"
 
 #: components/services/login/nautilus-view/nautilus-change-password-view.c:195
-#, fuzzy
 msgid "Confirm New Password:"
-msgstr "Nouveau mot de passe: "
+msgstr "Nouveau mot de passe :"
 
 #. allocate the command buttons - first the change_password button
 #: components/services/login/nautilus-view/nautilus-change-password-view.c:227
-#, fuzzy
 msgid "Change my password"
-msgstr " Changer mon mot de passe! "
+msgstr "Changer mon mot de passe"
 
 #. now allocate the account maintenance button
 #: components/services/login/nautilus-view/nautilus-change-password-view.c:234
 msgid "I need assistance"
-msgstr ""
+msgstr "J'ai besoin d'aide"
 
 #: components/services/login/nautilus-view/nautilus-change-password-view.c:297
-#, fuzzy
 msgid "Your password has been changed!"
 msgstr "Mot de passe changé avec succès!"
 
@@ -3443,63 +3366,72 @@ msgstr "Mot de passe changé avec succès!"
 msgid ""
 "I'm sorry, but that password\n"
 "is incorrect.  Please try again."
-msgstr ""
+msgstr "Je suis désolé mais ce mot\n"
+ "de passe n'est pas valide. Essayez\n"
+"encore s'il vous plait."
 
 #: components/services/login/nautilus-view/nautilus-change-password-view.c:332
 msgid ""
 "I'm sorry, but your new password\n"
 "must be at least six (6) characters long.\n"
 "Please try another one."
-msgstr ""
+msgstr "Je suis désolé mais votre nouveau mot\n"
+"de passe doit faire au moins 6 caractères\n"
+"de longueur. Essayez en un autre."
 
 #: components/services/login/nautilus-view/nautilus-change-password-view.c:337
 msgid ""
 "I'm sorry, but your new password\n"
 "can't be ridiculously long.\n"
 "Please try another one."
-msgstr ""
+msgstr "Je suis désolé mais votre mot de\n"
+"passe ne peut pas être aussi long.\n"
+"Essayez en un autre."
 
 #: components/services/login/nautilus-view/nautilus-change-password-view.c:346
 msgid ""
 "I'm sorry, but your new password must\n"
 "contain letters along with at least one\n"
 "number or symbol. Please try another one."
-msgstr ""
+msgstr "Je suis désolé mais votre mot de passe\n"
+"doit contenir des lettres avec au moins un nombre\n"
+"ou un symbole. Essayez en un autre."
 
 #: components/services/login/nautilus-view/nautilus-change-password-view.c:350
 msgid ""
 "I'm sorry, but I hit an unexpected\n"
 "error. Please try again, with\n"
 "different passwords."
-msgstr ""
+msgstr "Désolé mais une erreur est survenue\n"
+"Essayez à nouveau avec un autre mot de passe."
 
 #: components/services/login/nautilus-view/nautilus-change-password-view.c:434
 msgid ""
 "I'm sorry, but I got an unexpected\n"
 "error.  Please try again."
-msgstr ""
+msgstr "Désolé mais une erreur est survenue\n"
+"Essayez à nouveau."
 
 #: components/services/login/nautilus-view/nautilus-change-password-view.c:467
 msgid ""
 "I'm sorry, but your new password\n"
 "wasn't typed the same way twice.\n"
 "Please try again."
-msgstr ""
+msgstr "Désolé mais votre nouveau mot\n"
+"de passe n'était pas le même les deux fois.\n"
+"Essayez encore."
 
 #: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:1
-#, fuzzy
 msgid "Change Password"
-msgstr " Changer mon mot de passe! "
+msgstr "Changer mon mot de passe"
 
 #: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:2
-#, fuzzy
 msgid "Change Password Viewer"
-msgstr " Changer mon mot de passe! "
+msgstr "Vue de Changement de mot de passe"
 
 #: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:3
-#, fuzzy
 msgid "Eazel Change Password View"
-msgstr " Changer mon mot de passe! "
+msgstr "Vue Eazel de Changement de mot de passe"
 
 #: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:4
 msgid "Eazel Change Password view component"
@@ -3514,23 +3446,22 @@ msgid "Service Login View Component's Factory"
 msgstr ""
 
 #: components/services/login/nautilus-view/Nautilus_View_change-password.oaf.in.h:7
-#, fuzzy
 msgid "View as Change Password"
-msgstr " Changer mon mot de passe! "
+msgstr "Voir comme Changer mot de passe"
 
 #: components/services/nautilus-dependent-shared/eazel-services-extensions.c:295
-#, fuzzy
 msgid "Unknown Date"
-msgstr "type inconnu"
+msgstr "Date Inconnue"
 
 #: components/services/nautilus-dependent-shared/eazel-services-extensions.c:300
 msgid "%A, %B %d"
-msgstr ""
+msgstr "%A, %B, %d"
 
 #: components/services/summary/nautilus-summary-callbacks.c:97
 msgid ""
 "Sorry, network problems are preventing you from connecting to Eazel Services."
-msgstr ""
+msgstr "Désolé, des problèmes de réseau vous empèchent de"
+"vous connecter aux services Eazel."
 
 #. FIXME we really should use the services alert icon here, eh?
 #: components/services/summary/nautilus-summary-callbacks.c:102
@@ -3555,9 +3486,8 @@ msgid "We're sorry, but your name and password are still not recognized."
 msgstr "Votre nom ou mot de passe sont toujours incorrects."
 
 #: components/services/summary/nautilus-summary-dialogs.c:69
-#, fuzzy
 msgid "Eazel Service Login Error"
-msgstr "Erreur de service"
+msgstr "Erreur de Login au Service Eazel"
 
 #: components/services/summary/nautilus-summary-dialogs.c:80
 msgid "Service Error"
@@ -3583,13 +3513,13 @@ msgstr "Mot de passe:"
 
 #: components/services/summary/nautilus-summary-dialogs.c:146
 #: components/services/summary/nautilus-summary-dialogs.c:155
-#, fuzzy
 msgid "Please log in to Eazel Services"
-msgstr "Connection aux services Eazel"
+msgstr "S'il vous plait, loggez-vous aux services Eazel"
 
 #: components/services/summary/nautilus-summary-dialogs.c:150
 msgid "Your user name or password were not correct.  Please try again."
-msgstr ""
+msgstr "Votre nom d'utilisateur ou votre mot de passe"
+"n'étaient pas valides. Essayez encore."
 
 #: components/services/summary/nautilus-summary-view.c:116
 #: libnautilus-extensions/nautilus-program-chooser.c:1361
@@ -3597,9 +3527,8 @@ msgid "Go There"
 msgstr "Aller à"
 
 #: components/services/summary/nautilus-summary-view.c:119
-#, fuzzy
 msgid "More Info"
-msgstr "Info"
+msgstr "Plus d'Info"
 
 #: components/services/summary/nautilus-summary-view.c:130
 msgid "Account Preferences"
@@ -3633,12 +3562,10 @@ msgid "Welcome, %s!"
 msgstr "Bienvenue, %s !"
 
 #: components/services/summary/nautilus-summary-view.c:174
-#, fuzzy
 msgid "You are not logged in"
 msgstr "Vous n'êtes pas connecté!"
 
 #: components/services/summary/nautilus-summary-view.c:181
-#, fuzzy
 msgid "Connecting to Eazel Services..."
 msgstr "_Connection aux services Eazel"
 
@@ -3652,18 +3579,15 @@ msgid "Featured Downloads"
 msgstr ""
 
 #: components/services/summary/nautilus-summary-view.c:875
-#, fuzzy
 msgid ""
 "Unable to get services data from Eazel's server. The server might be "
 "unavailable right now, or your computer might be configured incorrectly. "
 "Please contact support@eazel.com."
 msgstr ""
 "Impossible de se connecter au serveur Eazel. Le serveur est peut être "
-"inactif en ce moment, ou votre ordinateur est mal configuré. Essayez un peu "
-"plus tard."
+"inactif en ce moment, ou votre ordinateur est mal configuré. Contactez support@eazel.com"
 
 #: components/services/summary/nautilus-summary-view.c:885
-#, fuzzy
 msgid ""
 "Found a problem with services data on Eazel servers. Please contact "
 "support@eazel.com."
@@ -3671,7 +3595,6 @@ msgstr ""
 "Erreur de donnée au niveau du serveur Eazel. Contactez support@eazel.com."
 
 #: components/services/summary/nautilus-summary-view.c:908
-#, fuzzy
 msgid ""
 "Information is missing from the redirect data on Eazel servers. Please "
 "contact support@eazel.com."
