@@ -157,11 +157,30 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 		}
 		return TRUE;
 				 
-	case GNOME_VFS_XFER_PHASE_MOVING:
 	case GNOME_VFS_XFER_PHASE_DELETESOURCE:
+		nautilus_file_changes_consume_changes (FALSE);
+		if (xfer_info->progress_dialog != NULL) {
+			dfos_xfer_progress_dialog_new_file
+				(DFOS_XFER_PROGRESS_DIALOG
+				 (xfer_info->progress_dialog),
+				 progress_info->source_name,
+				 progress_info->target_name,
+				 "", NULL,
+				 progress_info->file_index,
+				 progress_info->file_size);
+			dfos_xfer_progress_dialog_update
+				(DFOS_XFER_PROGRESS_DIALOG
+				 (xfer_info->progress_dialog),
+				 MIN (progress_info->bytes_copied, 
+				 	progress_info->bytes_total),
+				 MIN (progress_info->total_bytes_copied,
+				 	progress_info->bytes_total));
+		}
+		return TRUE;
+
+	case GNOME_VFS_XFER_PHASE_MOVING:
 	case GNOME_VFS_XFER_PHASE_OPENSOURCE:
 	case GNOME_VFS_XFER_PHASE_OPENTARGET:
-		nautilus_file_changes_consume_changes (FALSE);
 		/* fall through */
 
 	case GNOME_VFS_XFER_PHASE_COPYING:
