@@ -690,15 +690,15 @@ nautilus_window_switch_views (NautilusWindow *window, const char *iid)
 }
 
 /**
- * synch_view_as_menu:
+ * nautilus_window_synch_content_view_menu:
  * 
  * Set the visible item of the "View as" option menu to
  * match the current content view.
  * 
  * @window: The NautilusWindow whose "View as" option menu should be synched.
  */
-static void
-synch_view_as_menu (NautilusWindow *window)
+void
+nautilus_window_synch_content_view_menu (NautilusWindow *window)
 {
 	GList *children, *child;
 	GtkWidget *menu;
@@ -726,7 +726,7 @@ synch_view_as_menu (NautilusWindow *window)
 		gtk_option_menu_set_history (GTK_OPTION_MENU (window->view_as_option_menu), 
 					     matching_index);
 	} else {
-		g_warning ("In synch_view_as_menu, couldn't find matching menu item.");
+		g_warning ("In nautilus_window_synch_content_view_menu, couldn't find matching menu item.");
 	}
 
 	g_list_free (children);
@@ -761,7 +761,7 @@ view_menu_choose_view_callback (GtkWidget *widget, gpointer data)
 	 * in nautilus_window_load_content_view_menu. Do this right away so 
 	 * the user never sees the option menu set to "View as Other...".
 	 */
-	synch_view_as_menu (window);
+	nautilus_window_synch_content_view_menu (window);
 
         file = nautilus_file_get (window->ni->requested_uri);
         g_return_if_fail (NAUTILUS_IS_FILE (file));
@@ -856,7 +856,7 @@ nautilus_window_load_content_view_menu (NautilusWindow *window,
         gtk_option_menu_set_menu (GTK_OPTION_MENU (window->view_as_option_menu),
                                   new_menu);
 
-	synch_view_as_menu (window);
+	nautilus_window_synch_content_view_menu (window);
 }
 
 void

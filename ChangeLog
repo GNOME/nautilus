@@ -1,3 +1,19 @@
+2000-06-01  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug where choosing viewer from "View as Other..."
+	dialog from "View as" menu wouldn't update the menu
+	title.
+
+	* src/nautilus-window.c: (nautilus_window_synch_content_view_menu),
+	(view_menu_choose_view_callback),
+	(nautilus_window_load_content_view_menu): Renamed
+	"synch_view_as_menu" to "nautilus_window_synch_content_view_menu".
+	* src/nautilus-window-private.h: Put this function here so it
+	can be used in -manage-views.c.
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_has_really_changed): Call this function to
+	fix "View as" menu title when the view but not the location changes.
+
 2000-06-01  Andy Hertzfeld  <andy@eazel.com>
 
 	* icons/eazel/Makefile.am:

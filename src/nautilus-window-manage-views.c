@@ -511,6 +511,15 @@ nautilus_window_has_really_changed(NautilusWindow *window)
                 }
                 gtk_object_unref(GTK_OBJECT(window->new_content_view));
                 window->new_content_view = NULL;
+
+		/* Update displayed view in menu. Only do this if we're not switching
+		 * locations though, because if we are switching locations we'll
+		 * install a whole new set of views in the menu later (the current
+		 * views in the menu are for some other location).
+		 */
+                if (window->pending_ni == NULL) {
+                	nautilus_window_synch_content_view_menu (window);
+                }
         }
         
         if (new_sidebar_panels) {
