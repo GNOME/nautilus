@@ -3,9 +3,9 @@
 # Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>, 2000-1.
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 1.0\n"
-"POT-Creation-Date: 2001-04-24 14:41+0200\n"
-"PO-Revision-Date: 2001-04-24 18:30CET\n"
+"Project-Id-Version: nautilus 1.0.3\n"
+"POT-Creation-Date: 2001-04-30 11:45+0200\n"
+"PO-Revision-Date: 2001-04-30 12:18CET\n"
 "Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
 "Language-Team: Slovak <sk-i18n@rak.isternet.sk>\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgid "Smooth Graphics"
 msgstr "Jemná grafika"
 
 #: applets/preferences-applet/nautilus-preferences-applet.c:243
-#: src/nautilus-application.c:647
+#: src/nautilus-application.c:734
 msgid "Quit"
 msgstr "Koniec"
 
@@ -146,7 +146,7 @@ msgid "Previous"
 msgstr "Predchádzajúca"
 
 #: components/help/converters/gnome-db2html2/gdb3html.c:721
-#: src/nautilus-preferences-dialog.c:283 src/nautilus-shell-ui.xml.h:37
+#: src/nautilus-preferences-dialog.c:292 src/nautilus-shell-ui.xml.h:36
 msgid "Home"
 msgstr "Domov"
 
@@ -338,13 +338,13 @@ msgstr "Slu¾by jadra"
 msgid "Info"
 msgstr "Info"
 
-#: components/help/hyperbola-nav-tree.c:310
-msgid "Introductory Documents:"
-msgstr "Dokumenty pre zaèiatoèníkov:"
+#: components/help/hyperbola-nav-tree.c:311
+msgid "Introductory Documents"
+msgstr "Dokumenty pre zaèiatoèníkov"
 
-#: components/help/hyperbola-nav-tree.c:324
-msgid "Documents by Subject:"
-msgstr "Dokumenty podµa predmetu:"
+#: components/help/hyperbola-nav-tree.c:327
+msgid "Documents by Subject"
+msgstr "Dokumenty podµa predmetu"
 
 #: components/help/hyperbola-nav-index.c:121
 msgid "see "
@@ -472,7 +472,7 @@ msgstr "Zabi» pohµad zábudlivca obsahu"
 #: components/loser/content/nautilus-content-loser-ui.xml.h:3
 #: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
 #: components/sample/nautilus-sample-content-view-ui.xml.h:4
-#: src/nautilus-shell-ui.xml.h:83
+#: src/nautilus-shell-ui.xml.h:82
 msgid "_File"
 msgstr "_Súbor"
 
@@ -1664,7 +1664,7 @@ msgstr "Pauza"
 #: libnautilus-extensions/nautilus-file-operations.c:966
 #: libnautilus-extensions/nautilus-file-operations.c:981
 #: libnautilus-extensions/nautilus-file-operations.c:1000
-#: src/nautilus-shell-ui.xml.h:56
+#: src/nautilus-shell-ui.xml.h:55
 msgid "Stop"
 msgstr "Stop"
 
@@ -1793,12 +1793,12 @@ msgstr "Vytváracie rozhranie pre komponent Uká¾kového pohµadu"
 msgid "View as Sample"
 msgstr "Zobrazi» ako uká¾ku"
 
-#: components/text/nautilus-text-view.c:331
+#: components/text/nautilus-text-view.c:332
 #, c-format
 msgid "Sorry, but %s is too large for Nautilus to load all of it."
 msgstr "¥utujem, ale %s je príli¹ veµký, tak¾e ho Nautilus nedoká¾e naèíta» celý."
 
-#: components/text/nautilus-text-view.c:334
+#: components/text/nautilus-text-view.c:335
 msgid "File too large"
 msgstr "Súbor príli¹ veµký"
 
@@ -1919,7 +1919,7 @@ msgid "Nautilus Tree view"
 msgstr "Stromový pohµad pre Nautilus"
 
 #: components/tree/Nautilus_View_tree.oaf.in.h:3
-#: src/nautilus-preferences-dialog.c:378
+#: src/nautilus-preferences-dialog.c:387
 msgid "Tree"
 msgstr "Strom"
 
@@ -2043,8 +2043,9 @@ msgstr "«ahajte emblém na objekt, ktorý chcete zmeni»"
 msgid "Eclipse"
 msgstr "Zatmenie"
 
-#: data/browser.xml.h:31 src/file-manager/fm-list-view.c:2351
+#: data/browser.xml.h:31 src/file-manager/fm-list-view.c:2369
 #: src/file-manager/fm-properties-window.c:1620
+#: src/file-manager/fm-search-list-view.c:499
 msgid "Emblems"
 msgstr "Emblémy"
 
@@ -2261,14 +2262,14 @@ msgstr "Netscape"
 msgid "The Gimp"
 msgstr "Gimp"
 
-#: data/linksets/desktop.xml.h:1 src/nautilus-preferences-dialog.c:74
-#: src/nautilus-preferences-dialog.c:79
+#: data/linksets/desktop.xml.h:1 src/nautilus-preferences-dialog.c:81
+#: src/nautilus-preferences-dialog.c:86
 msgid "Desktop"
 msgstr "Plocha"
 
-#: data/linksets/desktop.xml.h:2 libnautilus-extensions/nautilus-file.c:4985
+#: data/linksets/desktop.xml.h:2 libnautilus-extensions/nautilus-file.c:5171
 #: libnautilus-extensions/nautilus-trash-directory.c:301
-#: src/file-manager/fm-desktop-icon-view.c:68
+#: src/file-manager/fm-desktop-icon-view.c:71
 msgid "Trash"
 msgstr "Odpadky"
 
@@ -2304,7 +2305,7 @@ msgstr "Alta Vista"
 msgid "Google"
 msgstr "Google"
 
-#: data/linksets/search_engines.xml.h:3 src/nautilus-preferences-dialog.c:274
+#: data/linksets/search_engines.xml.h:3 src/nautilus-preferences-dialog.c:283
 msgid "Search Engines"
 msgstr "Vyhµadávacie slu¾by"
 
@@ -2549,64 +2550,64 @@ msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-extensions/nautilus-file.c:2244
+#: libnautilus-extensions/nautilus-file.c:2414
 msgid "today at 00:00:00 PM"
 msgstr "dnes o 0:0:0"
 
-#: libnautilus-extensions/nautilus-file.c:2245
+#: libnautilus-extensions/nautilus-file.c:2415
 msgid "today at %-I:%M:%S %p"
 msgstr "dnes o %-I:%M:%S %p"
 
-#: libnautilus-extensions/nautilus-file.c:2247
+#: libnautilus-extensions/nautilus-file.c:2417
 msgid "today at 00:00 PM"
 msgstr "dnes o 0:0"
 
-#: libnautilus-extensions/nautilus-file.c:2248
+#: libnautilus-extensions/nautilus-file.c:2418
 msgid "today at %-I:%M %p"
 msgstr "dnes o %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:2250
+#: libnautilus-extensions/nautilus-file.c:2420
 msgid "today, 00:00 PM"
 msgstr "dnes o 12:00"
 
-#: libnautilus-extensions/nautilus-file.c:2251
+#: libnautilus-extensions/nautilus-file.c:2421
 msgid "today, %-I:%M %p"
 msgstr "dnes o %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:2253
-#: libnautilus-extensions/nautilus-file.c:2254
+#: libnautilus-extensions/nautilus-file.c:2423
+#: libnautilus-extensions/nautilus-file.c:2424
 msgid "today"
 msgstr "dnes"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2263
+#: libnautilus-extensions/nautilus-file.c:2433
 msgid "yesterday at 00:00:00 PM"
 msgstr "vèera o 12:00"
 
-#: libnautilus-extensions/nautilus-file.c:2264
+#: libnautilus-extensions/nautilus-file.c:2434
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "vèera o %-I:%M:%S %p"
 
-#: libnautilus-extensions/nautilus-file.c:2266
+#: libnautilus-extensions/nautilus-file.c:2436
 msgid "yesterday at 00:00 PM"
 msgstr "vèera o 12:00"
 
-#: libnautilus-extensions/nautilus-file.c:2267
+#: libnautilus-extensions/nautilus-file.c:2437
 msgid "yesterday at %-I:%M %p"
 msgstr "vèera o %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:2269
+#: libnautilus-extensions/nautilus-file.c:2439
 msgid "yesterday, 00:00 PM"
 msgstr "vèera o 12:00"
 
-#: libnautilus-extensions/nautilus-file.c:2270
+#: libnautilus-extensions/nautilus-file.c:2440
 msgid "yesterday, %-I:%M %p"
 msgstr "vèera o %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:2272
-#: libnautilus-extensions/nautilus-file.c:2273
+#: libnautilus-extensions/nautilus-file.c:2442
+#: libnautilus-extensions/nautilus-file.c:2443
 msgid "yesterday"
 msgstr "vèera"
 
@@ -2615,132 +2616,132 @@ msgstr "vèera"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-extensions/nautilus-file.c:2284
+#: libnautilus-extensions/nautilus-file.c:2454
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Streda, 00. septembra 0000 o 12:00"
 
-#: libnautilus-extensions/nautilus-file.c:2285
+#: libnautilus-extensions/nautilus-file.c:2455
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %B %-d.%-m.%y o %-I:%M:%S %p"
 
-#: libnautilus-extensions/nautilus-file.c:2287
+#: libnautilus-extensions/nautilus-file.c:2457
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Pod, 00. Okt 0000 o 12:00"
 
-#: libnautilus-extensions/nautilus-file.c:2288
+#: libnautilus-extensions/nautilus-file.c:2458
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%A %-d.%-m.%y o %-I:%M:%S %p"
 
-#: libnautilus-extensions/nautilus-file.c:2290
+#: libnautilus-extensions/nautilus-file.c:2460
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Pon, 00. Okt 0000 o 12:00"
 
-#: libnautilus-extensions/nautilus-file.c:2291
+#: libnautilus-extensions/nautilus-file.c:2461
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %b %-d %Y o %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:2293
+#: libnautilus-extensions/nautilus-file.c:2463
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00. Okt 0000 o 00:00"
 
-#: libnautilus-extensions/nautilus-file.c:2294
+#: libnautilus-extensions/nautilus-file.c:2464
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%b %-d %Y o %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:2296
+#: libnautilus-extensions/nautilus-file.c:2466
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00. Okt 0000, 12:00"
 
-#: libnautilus-extensions/nautilus-file.c:2297
+#: libnautilus-extensions/nautilus-file.c:2467
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%b %-d %Y, %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:2299
+#: libnautilus-extensions/nautilus-file.c:2469
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 12:00"
 
-#: libnautilus-extensions/nautilus-file.c:2300
+#: libnautilus-extensions/nautilus-file.c:2470
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d/%m/%y, %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:2302
+#: libnautilus-extensions/nautilus-file.c:2472
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-extensions/nautilus-file.c:2303
+#: libnautilus-extensions/nautilus-file.c:2473
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
-#: libnautilus-extensions/nautilus-file.c:3574
+#: libnautilus-extensions/nautilus-file.c:3744
 msgid "0 items"
 msgstr "0 polo¾iek"
 
-#: libnautilus-extensions/nautilus-file.c:3574
+#: libnautilus-extensions/nautilus-file.c:3744
 msgid "0 folders"
 msgstr "0 prieèinkov"
 
-#: libnautilus-extensions/nautilus-file.c:3575
+#: libnautilus-extensions/nautilus-file.c:3745
 msgid "0 files"
 msgstr "0 súborov"
 
-#: libnautilus-extensions/nautilus-file.c:3579
+#: libnautilus-extensions/nautilus-file.c:3749
 msgid "1 item"
 msgstr "1 polo¾ka"
 
-#: libnautilus-extensions/nautilus-file.c:3579
+#: libnautilus-extensions/nautilus-file.c:3749
 msgid "1 folder"
 msgstr "1 prieèinok"
 
-#: libnautilus-extensions/nautilus-file.c:3580
+#: libnautilus-extensions/nautilus-file.c:3750
 msgid "1 file"
 msgstr "1 súbor"
 
-#: libnautilus-extensions/nautilus-file.c:3583
+#: libnautilus-extensions/nautilus-file.c:3753
 #, c-format
 msgid "%u items"
 msgstr "%u polo¾iek"
 
-#: libnautilus-extensions/nautilus-file.c:3583
+#: libnautilus-extensions/nautilus-file.c:3753
 #, c-format
 msgid "%u folders"
 msgstr "%u prieèinkov"
 
-#: libnautilus-extensions/nautilus-file.c:3584
+#: libnautilus-extensions/nautilus-file.c:3754
 #, c-format
 msgid "%u files"
 msgstr "%u súborov"
 
 #. This means no contents at all were readable
-#: libnautilus-extensions/nautilus-file.c:3891
-#: libnautilus-extensions/nautilus-file.c:3906
+#: libnautilus-extensions/nautilus-file.c:4061
+#: libnautilus-extensions/nautilus-file.c:4076
 msgid "? items"
 msgstr "? polo¾iek"
 
 #. This means no contents at all were readable
-#: libnautilus-extensions/nautilus-file.c:3897
+#: libnautilus-extensions/nautilus-file.c:4067
 msgid "? bytes"
 msgstr "? bajtov"
 
-#: libnautilus-extensions/nautilus-file.c:3910
+#: libnautilus-extensions/nautilus-file.c:4080
 msgid "unknown type"
 msgstr "neznámy typ"
 
-#: libnautilus-extensions/nautilus-file.c:3912
+#: libnautilus-extensions/nautilus-file.c:4082
 msgid "unknown MIME type"
 msgstr "neznámy typ MIME"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-extensions/nautilus-file.c:3917
+#: libnautilus-extensions/nautilus-file.c:4087
 msgid "unknown"
 msgstr "neznámy"
 
-#: libnautilus-extensions/nautilus-file.c:3953
+#: libnautilus-extensions/nautilus-file.c:4123
 msgid "program"
 msgstr "program"
 
-#: libnautilus-extensions/nautilus-file.c:3965
+#: libnautilus-extensions/nautilus-file.c:4135
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2750,7 +2751,7 @@ msgstr ""
 "súbor gnome-vfs.keys nie je na správnom mieste alebo z nejakého iného dôvodu "
 "sa nedá nájs»."
 
-#: libnautilus-extensions/nautilus-file.c:3969
+#: libnautilus-extensions/nautilus-file.c:4139
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), tell "
@@ -2759,7 +2760,7 @@ msgstr ""
 "Pre typ MIME \"%s\" (súbor je \"%s\") nebol nájdený ¾iadny popis. Oznámte to "
 "na adresu aaron@eazel.com"
 
-#: libnautilus-extensions/nautilus-file.c:3983
+#: libnautilus-extensions/nautilus-file.c:4153
 msgid "link"
 msgstr "odkaz"
 
@@ -2768,12 +2769,12 @@ msgstr "odkaz"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: libnautilus-extensions/nautilus-file-operations.c:1174
-#: libnautilus-extensions/nautilus-file.c:3989
+#: libnautilus-extensions/nautilus-file.c:4159
 #, c-format
 msgid "link to %s"
 msgstr "odkaz na %s"
 
-#: libnautilus-extensions/nautilus-file.c:4003
+#: libnautilus-extensions/nautilus-file.c:4173
 msgid "link (broken)"
 msgstr "odkaz (neplatný)"
 
@@ -3167,13 +3168,13 @@ msgstr "%d. odkaz na %s"
 #.
 #. localizers: tag used to detect the first copy of a file
 #: libnautilus-extensions/nautilus-file-operations.c:1226
-#: libnautilus-extensions/nautilus-file-operations.c:2249
+#: libnautilus-extensions/nautilus-file-operations.c:2259
 msgid " (copy)"
 msgstr " (kópia)"
 
 #. localizers: tag used to detect the second copy of a file
 #: libnautilus-extensions/nautilus-file-operations.c:1228
-#: libnautilus-extensions/nautilus-file-operations.c:2249
+#: libnautilus-extensions/nautilus-file-operations.c:2259
 msgid " (another copy)"
 msgstr " (ïal¹ia kópia)"
 
@@ -3245,148 +3246,148 @@ msgid " (%d"
 msgstr " (%d"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1505
-#: libnautilus-extensions/nautilus-file-operations.c:2079
+#: libnautilus-extensions/nautilus-file-operations.c:2089
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Neznámy GnomeVFSXferProgressStatus %d"
 
 #. localizers: progress dialog title
-#: libnautilus-extensions/nautilus-file-operations.c:1813
+#: libnautilus-extensions/nautilus-file-operations.c:1821
 msgid "Moving files to the Trash"
 msgstr "Presúvam súbory do Odpadkov"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-extensions/nautilus-file-operations.c:1815
+#: libnautilus-extensions/nautilus-file-operations.c:1823
 msgid "Files thrown out:"
 msgstr "Vyhodených súborov:"
 
 #. localizers: label prepended to the name of the current file moved
-#: libnautilus-extensions/nautilus-file-operations.c:1817
-#: libnautilus-extensions/nautilus-file-operations.c:1832
+#: libnautilus-extensions/nautilus-file-operations.c:1825
+#: libnautilus-extensions/nautilus-file-operations.c:1841
 msgid "Moving"
 msgstr "Presúvam"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1818
+#: libnautilus-extensions/nautilus-file-operations.c:1826
 msgid "Preparing to Move to Trash..."
 msgstr "Pripravujem presun do Odpadkov..."
 
 #. localizers: progress dialog title
-#: libnautilus-extensions/nautilus-file-operations.c:1828
+#: libnautilus-extensions/nautilus-file-operations.c:1837
 msgid "Moving files"
 msgstr "Presúvam súbory"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-extensions/nautilus-file-operations.c:1830
+#: libnautilus-extensions/nautilus-file-operations.c:1839
 msgid "Files moved:"
 msgstr "Presunuté súbory:"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1833
+#: libnautilus-extensions/nautilus-file-operations.c:1842
 msgid "Preparing To Move..."
 msgstr "Pripravujem presun..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1834
+#: libnautilus-extensions/nautilus-file-operations.c:1843
 msgid "Finishing Move..."
 msgstr "Dokonèujem presun..."
 
 #. localizers: progress dialog title
-#: libnautilus-extensions/nautilus-file-operations.c:1846
+#: libnautilus-extensions/nautilus-file-operations.c:1856
 msgid "Creating links to files"
 msgstr "Vytváram odkazy na súbory"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-extensions/nautilus-file-operations.c:1848
+#: libnautilus-extensions/nautilus-file-operations.c:1858
 msgid "Files linked:"
 msgstr "Vytvorených odkazov:"
 
 #. localizers: label prepended to the name of the current file linked
-#: libnautilus-extensions/nautilus-file-operations.c:1850
+#: libnautilus-extensions/nautilus-file-operations.c:1860
 msgid "Linking"
 msgstr "Vytváram odkaz"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1851
+#: libnautilus-extensions/nautilus-file-operations.c:1861
 msgid "Preparing to Create Links..."
 msgstr "Pripravujem vytvorenie odkazov..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1852
+#: libnautilus-extensions/nautilus-file-operations.c:1862
 msgid "Finishing Creating Links..."
 msgstr "Dokonèujem vytvorenie odkazov..."
 
 #. localizers: progress dialog title
-#: libnautilus-extensions/nautilus-file-operations.c:1859
+#: libnautilus-extensions/nautilus-file-operations.c:1869
 msgid "Copying files"
 msgstr "Kopírujem súbory"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-extensions/nautilus-file-operations.c:1861
+#: libnautilus-extensions/nautilus-file-operations.c:1871
 msgid "Files copied:"
 msgstr "Skopírovaných súborov:"
 
 #. localizers: label prepended to the name of the current file copied
-#: libnautilus-extensions/nautilus-file-operations.c:1863
+#: libnautilus-extensions/nautilus-file-operations.c:1873
 msgid "Copying"
 msgstr "Kopírujem"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1864
+#: libnautilus-extensions/nautilus-file-operations.c:1874
 msgid "Preparing To Copy..."
 msgstr "Pripravujem kopírovanie..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1882
+#: libnautilus-extensions/nautilus-file-operations.c:1892
 msgid "You cannot copy items into the Trash."
 msgstr "Nie je mo¾né kopírova» polo¾ky do Odpadkov."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1883
+#: libnautilus-extensions/nautilus-file-operations.c:1893
 msgid "Can't Copy to Trash"
 msgstr "Nie je mo¾né kopírova» do Odpadkov"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1910
+#: libnautilus-extensions/nautilus-file-operations.c:1920
 msgid "The Trash must remain on the desktop."
 msgstr "Prieèinok Odpadky musí zosta» na ploche."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1911
+#: libnautilus-extensions/nautilus-file-operations.c:1921
 msgid "You cannot move this trash folder."
 msgstr "Toto nie je mo¾né presunú» do prieèinku s odpadkami."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1913
+#: libnautilus-extensions/nautilus-file-operations.c:1923
 msgid "You cannot copy the Trash."
 msgstr "Nie je mo¾né kopírova» Odpadky."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1914
+#: libnautilus-extensions/nautilus-file-operations.c:1924
 msgid "You cannot copy this trash folder."
 msgstr "Nemô¾ete kopírova» tento prieèinok s odpadkami."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1916
+#: libnautilus-extensions/nautilus-file-operations.c:1926
 msgid "Can't Change Trash Location"
 msgstr "Nie je mo¾né zmeni» umiestnenie Odpadkov"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1917
+#: libnautilus-extensions/nautilus-file-operations.c:1927
 msgid "Can't Copy Trash"
 msgstr "Nie je mo¾né kopírova» Odpadky"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1940
+#: libnautilus-extensions/nautilus-file-operations.c:1950
 msgid "You cannot move a folder into itself."
 msgstr "Nie je mo¾né presunú» prieèinok do seba samého."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1941
+#: libnautilus-extensions/nautilus-file-operations.c:1951
 msgid "You cannot copy a folder into itself."
 msgstr "Nie je mo¾né kopírova» prieèinok do seba samého."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1943
+#: libnautilus-extensions/nautilus-file-operations.c:1953
 msgid "Can't Move Into Self"
 msgstr "Nie je mo¾ný presun"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1944
+#: libnautilus-extensions/nautilus-file-operations.c:1954
 msgid "Can't Copy Into Self"
 msgstr "Nie je mo¾né kopírova» do seba samého"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1956
+#: libnautilus-extensions/nautilus-file-operations.c:1966
 msgid "You cannot copy a file over itself."
 msgstr "Nie je mo¾né kopírova» súbor do seba samého."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1957
+#: libnautilus-extensions/nautilus-file-operations.c:1967
 msgid "Can't Copy Over Self"
 msgstr "Nie je mo¾né kopírova» do seba samého"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2008
+#: libnautilus-extensions/nautilus-file-operations.c:2018
 msgid ""
 "Error creating new folder.\n"
 "\n"
@@ -3396,7 +3397,7 @@ msgstr ""
 "\n"
 "Nemáte práva na zápis."
 
-#: libnautilus-extensions/nautilus-file-operations.c:2011
+#: libnautilus-extensions/nautilus-file-operations.c:2021
 msgid ""
 "Error creating new folder.\n"
 "\n"
@@ -3406,299 +3407,299 @@ msgstr ""
 "\n"
 "Nedostatok miesta."
 
-#: libnautilus-extensions/nautilus-file-operations.c:2014
+#: libnautilus-extensions/nautilus-file-operations.c:2024
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Chyba \"%s\" pri vytváraní nového prieèinku."
 
-#: libnautilus-extensions/nautilus-file-operations.c:2018
+#: libnautilus-extensions/nautilus-file-operations.c:2028
 msgid "Error creating new folder"
 msgstr "Chyba pri vytváraní nového prieèinku"
 
 #. localizers: the initial name of a new folder
-#: libnautilus-extensions/nautilus-file-operations.c:2105
+#: libnautilus-extensions/nautilus-file-operations.c:2115
 msgid "untitled folder"
 msgstr "prieèinok bez mena"
 
 #. localizers: progress dialog title
-#: libnautilus-extensions/nautilus-file-operations.c:2138
+#: libnautilus-extensions/nautilus-file-operations.c:2148
 msgid "Deleting files"
 msgstr "Odstraòujem súbory"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-extensions/nautilus-file-operations.c:2140
-#: libnautilus-extensions/nautilus-file-operations.c:2175
+#: libnautilus-extensions/nautilus-file-operations.c:2150
+#: libnautilus-extensions/nautilus-file-operations.c:2185
 msgid "Files deleted:"
 msgstr "Odstránených súborov:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-extensions/nautilus-file-operations.c:2142
-#: libnautilus-extensions/nautilus-file-operations.c:2177
+#: libnautilus-extensions/nautilus-file-operations.c:2152
+#: libnautilus-extensions/nautilus-file-operations.c:2187
 msgid "Deleting"
 msgstr "Odstraòujem"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2143
+#: libnautilus-extensions/nautilus-file-operations.c:2153
 msgid "Preparing to Delete files..."
 msgstr "Pripravujem odstránenie súborov..."
 
 #. localizers: progress dialog title
-#: libnautilus-extensions/nautilus-file-operations.c:2173
+#: libnautilus-extensions/nautilus-file-operations.c:2183
 msgid "Emptying the Trash"
 msgstr "Vyprázdòujem Odpadky"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2178
+#: libnautilus-extensions/nautilus-file-operations.c:2188
 msgid "Preparing to Empty the Trash..."
 msgstr "Pripravujem vyprázdnenie Odpadkov..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:2209
+#: libnautilus-extensions/nautilus-file-operations.c:2219
 msgid "Are you sure you want to permanently delete all of the items in the Trash?"
 msgstr "Naozaj chcete nav¾dy odstráni» v¹etky polo¾ky v Odpadkoch?"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2211
+#: libnautilus-extensions/nautilus-file-operations.c:2221
 msgid "Delete Trash Contents?"
 msgstr "Odstráni» Odpadky?"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2212
+#: libnautilus-extensions/nautilus-file-operations.c:2222
 msgid "Empty"
 msgstr "Vyprázdni»"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2250
+#: libnautilus-extensions/nautilus-file-operations.c:2260
 msgid "foo"
 msgstr "bla"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2250
 #: libnautilus-extensions/nautilus-file-operations.c:2260
+#: libnautilus-extensions/nautilus-file-operations.c:2270
 msgid "foo (copy)"
 msgstr "bla (kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2251
+#: libnautilus-extensions/nautilus-file-operations.c:2261
 msgid ".bashrc"
 msgstr ".bashrc"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2251
+#: libnautilus-extensions/nautilus-file-operations.c:2261
 msgid ".bashrc (copy)"
 msgstr ".bashrc (kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2252
+#: libnautilus-extensions/nautilus-file-operations.c:2262
 msgid ".foo.txt"
 msgstr ".bla.txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2252
+#: libnautilus-extensions/nautilus-file-operations.c:2262
 msgid ".foo (copy).txt"
 msgstr ".bla (kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2253
+#: libnautilus-extensions/nautilus-file-operations.c:2263
 msgid "foo foo"
 msgstr "bla bla"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2253
+#: libnautilus-extensions/nautilus-file-operations.c:2263
 msgid "foo foo (copy)"
 msgstr "bla bla (kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2254
+#: libnautilus-extensions/nautilus-file-operations.c:2264
 msgid "foo.txt"
 msgstr "bla.txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2254
-#: libnautilus-extensions/nautilus-file-operations.c:2261
+#: libnautilus-extensions/nautilus-file-operations.c:2264
+#: libnautilus-extensions/nautilus-file-operations.c:2271
 msgid "foo (copy).txt"
 msgstr "bla (kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2255
+#: libnautilus-extensions/nautilus-file-operations.c:2265
 msgid "foo foo.txt"
 msgstr "bla bla.txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2255
-#: libnautilus-extensions/nautilus-file-operations.c:2277
+#: libnautilus-extensions/nautilus-file-operations.c:2265
+#: libnautilus-extensions/nautilus-file-operations.c:2287
 msgid "foo foo (copy).txt"
 msgstr "bla bla (kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2256
+#: libnautilus-extensions/nautilus-file-operations.c:2266
 msgid "foo foo.txt txt"
 msgstr "bla bla.txt txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2256
+#: libnautilus-extensions/nautilus-file-operations.c:2266
 msgid "foo foo (copy).txt txt"
 msgstr "bla bla (kópia).txt txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2257
+#: libnautilus-extensions/nautilus-file-operations.c:2267
 msgid "foo...txt"
 msgstr "bla...txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2257
+#: libnautilus-extensions/nautilus-file-operations.c:2267
 msgid "foo.. (copy).txt"
 msgstr "bla.. (kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2258
+#: libnautilus-extensions/nautilus-file-operations.c:2268
 msgid "foo..."
 msgstr "bla..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:2258
+#: libnautilus-extensions/nautilus-file-operations.c:2268
 msgid "foo... (copy)"
 msgstr "bla...(kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2259
+#: libnautilus-extensions/nautilus-file-operations.c:2269
 msgid "foo. (copy)"
 msgstr "bla. (kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2259
+#: libnautilus-extensions/nautilus-file-operations.c:2269
 msgid "foo. (another copy)"
 msgstr "bla. (ïal¹ia kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2260
-#: libnautilus-extensions/nautilus-file-operations.c:2262
+#: libnautilus-extensions/nautilus-file-operations.c:2270
+#: libnautilus-extensions/nautilus-file-operations.c:2272
 msgid "foo (another copy)"
 msgstr "bla (ïal¹ia kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2261
-#: libnautilus-extensions/nautilus-file-operations.c:2263
+#: libnautilus-extensions/nautilus-file-operations.c:2271
+#: libnautilus-extensions/nautilus-file-operations.c:2273
 msgid "foo (another copy).txt"
 msgstr "bla (ïal¹ia kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2262
+#: libnautilus-extensions/nautilus-file-operations.c:2272
 msgid "foo (3rd copy)"
 msgstr "bla (3. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2263
+#: libnautilus-extensions/nautilus-file-operations.c:2273
 msgid "foo (3rd copy).txt"
 msgstr "bla (3. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2264
+#: libnautilus-extensions/nautilus-file-operations.c:2274
 msgid "foo foo (another copy).txt"
 msgstr "bla bla (ïal¹ia kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2264
+#: libnautilus-extensions/nautilus-file-operations.c:2274
 msgid "foo foo (3rd copy).txt"
 msgstr "bla bla (3. kópia).txt3."
 
-#: libnautilus-extensions/nautilus-file-operations.c:2265
+#: libnautilus-extensions/nautilus-file-operations.c:2275
 msgid "foo (13th copy)"
 msgstr "bla (13. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2265
+#: libnautilus-extensions/nautilus-file-operations.c:2275
 msgid "foo (14th copy)"
 msgstr "bla (14. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2266
+#: libnautilus-extensions/nautilus-file-operations.c:2276
 msgid "foo (13th copy).txt"
 msgstr "bla (13. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2266
+#: libnautilus-extensions/nautilus-file-operations.c:2276
 msgid "foo (14th copy).txt"
 msgstr "bla (14. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2267
+#: libnautilus-extensions/nautilus-file-operations.c:2277
 msgid "foo (21st copy)"
 msgstr "bla (21. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2267
-#: libnautilus-extensions/nautilus-file-operations.c:2269
+#: libnautilus-extensions/nautilus-file-operations.c:2277
+#: libnautilus-extensions/nautilus-file-operations.c:2279
 msgid "foo (22nd copy)"
 msgstr "bla (22. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2268
+#: libnautilus-extensions/nautilus-file-operations.c:2278
 msgid "foo (21st copy).txt"
 msgstr "bla (21. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2268
-#: libnautilus-extensions/nautilus-file-operations.c:2270
+#: libnautilus-extensions/nautilus-file-operations.c:2278
+#: libnautilus-extensions/nautilus-file-operations.c:2280
 msgid "foo (22nd copy).txt"
 msgstr "bla (22. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2269
-#: libnautilus-extensions/nautilus-file-operations.c:2271
+#: libnautilus-extensions/nautilus-file-operations.c:2279
+#: libnautilus-extensions/nautilus-file-operations.c:2281
 msgid "foo (23rd copy)"
 msgstr "bla (23. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2270
-#: libnautilus-extensions/nautilus-file-operations.c:2272
+#: libnautilus-extensions/nautilus-file-operations.c:2280
+#: libnautilus-extensions/nautilus-file-operations.c:2282
 msgid "foo (23rd copy).txt"
 msgstr "bla (23. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2271
-#: libnautilus-extensions/nautilus-file-operations.c:2273
+#: libnautilus-extensions/nautilus-file-operations.c:2281
+#: libnautilus-extensions/nautilus-file-operations.c:2283
 msgid "foo (24th copy)"
 msgstr "bla (24. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2272
-#: libnautilus-extensions/nautilus-file-operations.c:2274
+#: libnautilus-extensions/nautilus-file-operations.c:2282
+#: libnautilus-extensions/nautilus-file-operations.c:2284
 msgid "foo (24th copy).txt"
 msgstr "bla (24. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2273
+#: libnautilus-extensions/nautilus-file-operations.c:2283
 msgid "foo (25th copy)"
 msgstr "bla (25. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2274
+#: libnautilus-extensions/nautilus-file-operations.c:2284
 msgid "foo (25th copy).txt"
 msgstr "bla (25. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2275
+#: libnautilus-extensions/nautilus-file-operations.c:2285
 msgid "foo foo (24th copy)"
 msgstr "bla bla (24. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2275
+#: libnautilus-extensions/nautilus-file-operations.c:2285
 msgid "foo foo (25th copy)"
 msgstr "bla bla (25. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2276
+#: libnautilus-extensions/nautilus-file-operations.c:2286
 msgid "foo foo (24th copy).txt"
 msgstr "bla bla (24. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2276
+#: libnautilus-extensions/nautilus-file-operations.c:2286
 msgid "foo foo (25th copy).txt"
 msgstr "bla bla (25. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2277
+#: libnautilus-extensions/nautilus-file-operations.c:2287
 msgid "foo foo (100000000000000th copy).txt"
 msgstr "bla bla (100000000000000. kópia).txt"
 
 #. FIXME bugzilla.eazel.com 7701: These are wrong.
-#: libnautilus-extensions/nautilus-file-operations.c:2280
+#: libnautilus-extensions/nautilus-file-operations.c:2290
 msgid "foo (10th copy)"
 msgstr "bla (10. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2280
+#: libnautilus-extensions/nautilus-file-operations.c:2290
 msgid "foo (11st copy)"
 msgstr "bla (11. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2281
+#: libnautilus-extensions/nautilus-file-operations.c:2291
 msgid "foo (10th copy).txt"
 msgstr "bla (10. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2281
+#: libnautilus-extensions/nautilus-file-operations.c:2291
 msgid "foo (11st copy).txt"
 msgstr "bla (11. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2282
+#: libnautilus-extensions/nautilus-file-operations.c:2292
 msgid "foo (11th copy)"
 msgstr "bla (11. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2282
+#: libnautilus-extensions/nautilus-file-operations.c:2292
 msgid "foo (12nd copy)"
 msgstr "bla (12. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2283
+#: libnautilus-extensions/nautilus-file-operations.c:2293
 msgid "foo (11th copy).txt"
 msgstr "bla (11. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2283
+#: libnautilus-extensions/nautilus-file-operations.c:2293
 msgid "foo (12nd copy).txt"
 msgstr "bla (12. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2284
+#: libnautilus-extensions/nautilus-file-operations.c:2294
 msgid "foo (12th copy)"
 msgstr "bla (12. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2284
+#: libnautilus-extensions/nautilus-file-operations.c:2294
 msgid "foo (13rd copy)"
 msgstr "bla (13. kópia)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2285
+#: libnautilus-extensions/nautilus-file-operations.c:2295
 msgid "foo (12th copy).txt"
 msgstr "bla (12. kópia).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2285
+#: libnautilus-extensions/nautilus-file-operations.c:2295
 msgid "foo (13rd copy).txt"
 msgstr "bla (13. kópia).txt"
 
@@ -3711,227 +3712,237 @@ msgstr "%ld z %ld"
 msgid "GConf Error"
 msgstr "Chyba GConf"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:73
+#: libnautilus-extensions/nautilus-global-preferences.c:74
 msgid "Always"
 msgstr "V¾dy"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:74
+#: libnautilus-extensions/nautilus-global-preferences.c:75
 msgid "Local Files Only"
 msgstr "Len lokálne súbory"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:75
+#: libnautilus-extensions/nautilus-global-preferences.c:76
 msgid "Never"
 msgstr "Nikdy"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:80
+#: libnautilus-extensions/nautilus-global-preferences.c:81
 #, c-format
 msgid "25%"
 msgstr "25%"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:81
+#: libnautilus-extensions/nautilus-global-preferences.c:82
 #, c-format
 msgid "50%"
 msgstr "50%"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:82
+#: libnautilus-extensions/nautilus-global-preferences.c:83
 #, c-format
 msgid "75%"
 msgstr "75%"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:83
+#: libnautilus-extensions/nautilus-global-preferences.c:84
 #, c-format
 msgid "100%"
 msgstr "100%"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:84
+#: libnautilus-extensions/nautilus-global-preferences.c:85
 #, c-format
 msgid "150%"
 msgstr "150%"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:85
+#: libnautilus-extensions/nautilus-global-preferences.c:86
 #, c-format
 msgid "200%"
 msgstr "200%"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:86
+#: libnautilus-extensions/nautilus-global-preferences.c:87
 #, c-format
 msgid "400%"
 msgstr "400%"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:91
+#: libnautilus-extensions/nautilus-global-preferences.c:92
 msgid "100 K"
 msgstr "100 K"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:92
+#: libnautilus-extensions/nautilus-global-preferences.c:93
 msgid "500 K"
 msgstr "500 K"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:93
+#: libnautilus-extensions/nautilus-global-preferences.c:94
 msgid "1 MB"
 msgstr "1 MB"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:94
+#: libnautilus-extensions/nautilus-global-preferences.c:95
 msgid "3 MB"
 msgstr "3 MB"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:95
+#: libnautilus-extensions/nautilus-global-preferences.c:96
 msgid "5 MB"
 msgstr "5 MB"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:96
+#: libnautilus-extensions/nautilus-global-preferences.c:97
 msgid "10 MB"
 msgstr "10 MB"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:97
+#: libnautilus-extensions/nautilus-global-preferences.c:98
 msgid "100 MB"
 msgstr "100 MB"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:103
+#: libnautilus-extensions/nautilus-global-preferences.c:104
 msgid "Activate items with a single click"
 msgstr "Aktivova» polo¾ky jednoduchým kliknutím"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:107
+#: libnautilus-extensions/nautilus-global-preferences.c:108
 msgid "Activate items with a double click"
 msgstr "Aktivova» polo¾ky dvojitým kliknutím"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:115
+#: libnautilus-extensions/nautilus-global-preferences.c:116
 msgid "Execute files when they are clicked"
 msgstr "Spusti» súbory pri kliknutí"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:119
+#: libnautilus-extensions/nautilus-global-preferences.c:120
 msgid "Display files when they are clicked"
 msgstr "Zobrazi» súbory pri kliknutí"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:123
+#: libnautilus-extensions/nautilus-global-preferences.c:124
 msgid "Ask each time"
 msgstr "V¾dy sa pýta»"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:130
+#: libnautilus-extensions/nautilus-global-preferences.c:131
 msgid "search by text"
 msgstr "Hµada» podµa obsahu"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:131
+#: libnautilus-extensions/nautilus-global-preferences.c:132
 msgid "Search for files by file name only"
 msgstr "Hµada» súbory len podµa obsahu"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:134
+#: libnautilus-extensions/nautilus-global-preferences.c:135
 msgid "search by text and properties"
 msgstr "Hµada» podµa obsahu a vlastností"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:135
+#: libnautilus-extensions/nautilus-global-preferences.c:136
 msgid "Search for files by file name and file properties"
 msgstr "Hµada» súbory podµa obsahu a vlastností"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:142
+#: libnautilus-extensions/nautilus-global-preferences.c:143
 msgid "Icon View"
 msgstr "Pohµad ikony"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:143
+#: libnautilus-extensions/nautilus-global-preferences.c:144
 msgid "List View"
 msgstr "Pohµad zoznam"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:148
+#: libnautilus-extensions/nautilus-global-preferences.c:149
+#: src/file-manager/nautilus-icon-view-ui.xml.h:21
+msgid "Manually"
+msgstr "Ruène"
+
+#: libnautilus-extensions/nautilus-global-preferences.c:151
+#: libnautilus-extensions/nautilus-global-preferences.c:160
 #: src/file-manager/nautilus-icon-view-ui.xml.h:4
 msgid "By Name"
 msgstr "podµa Mena"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:149
+#: libnautilus-extensions/nautilus-global-preferences.c:152
+#: libnautilus-extensions/nautilus-global-preferences.c:161
 #: src/file-manager/nautilus-icon-view-ui.xml.h:5
 msgid "By Size"
 msgstr "podµa Veµkosti"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:150
+#: libnautilus-extensions/nautilus-global-preferences.c:153
+#: libnautilus-extensions/nautilus-global-preferences.c:162
 #: src/file-manager/nautilus-icon-view-ui.xml.h:6
 msgid "By Type"
 msgstr "podµa Typu"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:151
+#: libnautilus-extensions/nautilus-global-preferences.c:154
+#: libnautilus-extensions/nautilus-global-preferences.c:163
 #: src/file-manager/nautilus-icon-view-ui.xml.h:2
 msgid "By Modification Date"
 msgstr "podµa Dátumu zmeny"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:152
+#: libnautilus-extensions/nautilus-global-preferences.c:155
+#: libnautilus-extensions/nautilus-global-preferences.c:164
 #: src/file-manager/nautilus-icon-view-ui.xml.h:1
 msgid "By Emblems"
 msgstr "podµa Emblémov"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:157
+#: libnautilus-extensions/nautilus-global-preferences.c:169
 msgid "8"
 msgstr "8"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:158
+#: libnautilus-extensions/nautilus-global-preferences.c:170
 msgid "10"
 msgstr "10"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:159
+#: libnautilus-extensions/nautilus-global-preferences.c:171
 msgid "12"
 msgstr "12"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:160
+#: libnautilus-extensions/nautilus-global-preferences.c:172
 msgid "14"
 msgstr "14"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:161
+#: libnautilus-extensions/nautilus-global-preferences.c:173
 msgid "16"
 msgstr "16"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:162
+#: libnautilus-extensions/nautilus-global-preferences.c:174
 msgid "18"
 msgstr "18"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:163
+#: libnautilus-extensions/nautilus-global-preferences.c:175
 msgid "20"
 msgstr "20"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:164
+#: libnautilus-extensions/nautilus-global-preferences.c:176
 msgid "22"
 msgstr "22"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:165
+#: libnautilus-extensions/nautilus-global-preferences.c:177
 msgid "24"
 msgstr "24"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:170
+#: libnautilus-extensions/nautilus-global-preferences.c:182
 msgid "size"
 msgstr "veµkos»"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:171
+#: libnautilus-extensions/nautilus-global-preferences.c:183
 msgid "type"
 msgstr "typ"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:172
+#: libnautilus-extensions/nautilus-global-preferences.c:184
 msgid "date modified"
 msgstr "dátum zmeny obsahu"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:173
+#: libnautilus-extensions/nautilus-global-preferences.c:185
 msgid "date changed"
 msgstr "dátum zmeny"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:174
+#: libnautilus-extensions/nautilus-global-preferences.c:186
 msgid "date accessed"
 msgstr "dátum prístupu"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:175
+#: libnautilus-extensions/nautilus-global-preferences.c:187
 msgid "owner"
 msgstr "vlastník"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:176
+#: libnautilus-extensions/nautilus-global-preferences.c:188
 msgid "group"
 msgstr "skupina"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:177
+#: libnautilus-extensions/nautilus-global-preferences.c:189
 msgid "permissions"
 msgstr "práva"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:178
+#: libnautilus-extensions/nautilus-global-preferences.c:190
 msgid "octal permissions"
 msgstr "osmièkové práva"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:179
+#: libnautilus-extensions/nautilus-global-preferences.c:191
 msgid "MIME type"
 msgstr "typ MIME"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:180
+#: libnautilus-extensions/nautilus-global-preferences.c:192
 msgid "none"
 msgstr "¾iadny"
 
@@ -4112,9 +4123,9 @@ msgid "Don't include in the menu for \"%s\" items"
 msgstr "Nevlo¾i» do menu pre polo¾ky \"%s\"."
 
 #: libnautilus-extensions/nautilus-program-chooser.c:1214
-#: src/file-manager/fm-list-view.c:2345
-#: src/file-manager/fm-search-list-view.c:533
-#: src/nautilus-bookmarks-window.c:164
+#: src/file-manager/fm-list-view.c:2363
+#: src/file-manager/fm-search-list-view.c:493
+#: src/nautilus-bookmarks-window.c:165
 msgid "Name"
 msgstr "Meno"
 
@@ -4146,7 +4157,7 @@ msgstr "Vybra»"
 
 #. create the "done" button
 #: libnautilus-extensions/nautilus-program-chooser.c:1280
-#: src/nautilus-property-browser.c:358 src/nautilus-theme-selector.c:230
+#: src/nautilus-bookmarks-window.c:123 src/nautilus-property-browser.c:358
 msgid "Done"
 msgstr "Hotovo"
 
@@ -4686,7 +4697,7 @@ msgstr "Odstráni» vybraný text bez vlo¾enia do schránky"
 msgid "Select All"
 msgstr "Vybra» v¹etko"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:50
+#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:49
 msgid "Select _All"
 msgstr "Vybra» v¹etk_o"
 
@@ -4698,12 +4709,12 @@ msgstr "Vybra» celý text v textovom poli"
 msgid "_Copy Text"
 msgstr "_Kopírova» text"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:15 src/nautilus-shell-ui.xml.h:92
+#: libnautilus/nautilus-clipboard-ui.xml.h:15 src/nautilus-shell-ui.xml.h:90
 msgid "_Paste Text"
 msgstr "V_lo¾i» text"
 
 #: nautilus.desktop.in.h:1 src/nautilus-window-manage-views.c:255
-#: src/nautilus-window-menus.c:624
+#: src/nautilus-window-menus.c:647
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -4801,7 +4812,7 @@ msgstr "Zobrazi» ako ikony"
 msgid "View as List"
 msgstr "Zobrazi» ako zoznam"
 
-#: src/file-manager/fm-desktop-icon-view.c:576
+#: src/file-manager/fm-desktop-icon-view.c:670
 msgid "Background"
 msgstr "Pozadie"
 
@@ -4813,55 +4824,55 @@ msgstr "Pozadie"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: src/file-manager/fm-desktop-icon-view.c:912
+#: src/file-manager/fm-desktop-icon-view.c:992
 #, c-format
 msgid "%s's Home"
 msgstr ""
 "Domovský\n"
 "prieèinok %.0s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1201 src/nautilus-sidebar.c:1465
+#: src/file-manager/fm-desktop-icon-view.c:1276 src/nautilus-sidebar.c:1466
 msgid "Empty Trash..."
 msgstr "Vyprázdni» odpadky..."
 
-#: src/file-manager/fm-desktop-icon-view.c:1203
+#: src/file-manager/fm-desktop-icon-view.c:1278
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
-#: src/nautilus-sidebar.c:1466
+#: src/nautilus-sidebar.c:1467
 msgid "Empty Trash"
 msgstr "Vyprázdni» odpadky"
 
-#: src/file-manager/fm-desktop-icon-view.c:1223
+#: src/file-manager/fm-desktop-icon-view.c:1298
 msgid "Unmount Volume"
 msgstr "Odpoji» disk"
 
-#: src/file-manager/fm-directory-view.c:442
+#: src/file-manager/fm-directory-view.c:443
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
 msgstr "Toto otvorí %d samostatných okien. Naozaj to chcete urobi»?"
 
-#: src/file-manager/fm-directory-view.c:444
+#: src/file-manager/fm-directory-view.c:445
 #, c-format
 msgid "Open %d Windows?"
 msgstr "Otvori» %d okien?"
 
-#: src/file-manager/fm-directory-view.c:750
+#: src/file-manager/fm-directory-view.c:751
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Naozaj chcete úplne odstráni» \"%s\"?"
 
-#: src/file-manager/fm-directory-view.c:754
+#: src/file-manager/fm-directory-view.c:755
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected items?"
 msgstr "Naozaj chcete úplne odstráni» %d vybraných polo¾iek?"
 
-#: src/file-manager/fm-directory-view.c:760
+#: src/file-manager/fm-directory-view.c:761
 msgid "Delete?"
 msgstr "Odstráni»?"
 
-#: src/file-manager/fm-directory-view.c:761
-#: src/file-manager/fm-directory-view.c:2808
-#: src/file-manager/fm-directory-view.c:2848
+#: src/file-manager/fm-directory-view.c:762
+#: src/file-manager/fm-directory-view.c:2809
+#: src/file-manager/fm-directory-view.c:2849
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Delete"
 msgstr "Odstráni»"
@@ -4869,53 +4880,53 @@ msgstr "Odstráni»"
 #. Localizers: This is the name of a directory that's created in ~/Nautilus, and
 #. * stores the scripts that appear in the Scripts submenu.
 #.
-#: src/file-manager/fm-directory-view.c:1038
+#: src/file-manager/fm-directory-view.c:1039
 msgid "scripts"
 msgstr "skripty"
 
-#: src/file-manager/fm-directory-view.c:1347
+#: src/file-manager/fm-directory-view.c:1348
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" vybraných"
 
-#: src/file-manager/fm-directory-view.c:1349
+#: src/file-manager/fm-directory-view.c:1350
 msgid "1 folder selected"
 msgstr "vybraný 1 prieèinok"
 
-#: src/file-manager/fm-directory-view.c:1352
+#: src/file-manager/fm-directory-view.c:1353
 #, c-format
 msgid "%d folders selected"
 msgstr "vybraných %d prieèinkov"
 
-#: src/file-manager/fm-directory-view.c:1358
+#: src/file-manager/fm-directory-view.c:1359
 msgid " (containing 0 items)"
 msgstr " (obsahujú 0 polo¾iek)"
 
-#: src/file-manager/fm-directory-view.c:1360
+#: src/file-manager/fm-directory-view.c:1361
 msgid " (containing 1 item)"
 msgstr " (obsahujú 1 polo¾ku)"
 
-#: src/file-manager/fm-directory-view.c:1362
+#: src/file-manager/fm-directory-view.c:1363
 #, c-format
 msgid " (containing %d items)"
 msgstr " (obsahujú %d polo¾iek)"
 
-#: src/file-manager/fm-directory-view.c:1373
+#: src/file-manager/fm-directory-view.c:1374
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" vybraných (%s)"
 
-#: src/file-manager/fm-directory-view.c:1377
+#: src/file-manager/fm-directory-view.c:1378
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d vybraných polo¾iek (%s)"
 
-#: src/file-manager/fm-directory-view.c:1384
+#: src/file-manager/fm-directory-view.c:1385
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 iná vybraná polo¾ka (%s)"
 
-#: src/file-manager/fm-directory-view.c:1387
+#: src/file-manager/fm-directory-view.c:1388
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d iných vybraných polo¾iek (%s)"
@@ -4927,7 +4938,7 @@ msgstr "%d iných vybraných polo¾iek (%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1416
+#: src/file-manager/fm-directory-view.c:1417
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4936,7 +4947,7 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1542
+#: src/file-manager/fm-directory-view.c:1543
 #, c-format
 msgid ""
 "The folder \"%s\" contains more files than Nautilus can handle. Some files "
@@ -4945,16 +4956,16 @@ msgstr ""
 "Prieèinok \"%s\" obsahuje viac súborov, ne¾ doká¾e Nautilus spracova». "
 "Niektoré súbory nebudú zobrazené."
 
-#: src/file-manager/fm-directory-view.c:1549
+#: src/file-manager/fm-directory-view.c:1550
 msgid "Too Many Files"
 msgstr "Príli¹ veµa súborov"
 
-#: src/file-manager/fm-directory-view.c:2790
+#: src/file-manager/fm-directory-view.c:2791
 #, c-format
 msgid "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
 msgstr "Nie je mo¾né presunú» \"%s\" do Odpadkov. Chcete ho odstráni» úplne?"
 
-#: src/file-manager/fm-directory-view.c:2795
+#: src/file-manager/fm-directory-view.c:2796
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the Trash. Do you want to delete "
@@ -4963,7 +4974,7 @@ msgstr ""
 "%d vybraných polo¾iek nie je mo¾né presunú» do Odpadkov. Chcete ich "
 "odstráni» úplne?"
 
-#: src/file-manager/fm-directory-view.c:2799
+#: src/file-manager/fm-directory-view.c:2800
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
@@ -4972,56 +4983,56 @@ msgstr ""
 "%d z vybraných polo¾iek nie je mo¾né presunú» do Odpadkov. Chcete týchto %d "
 "polo¾iek odstráni» úplne?"
 
-#: src/file-manager/fm-directory-view.c:2807
+#: src/file-manager/fm-directory-view.c:2808
 msgid "Delete Immediately?"
 msgstr "Odstráni» okam¾ite?"
 
-#: src/file-manager/fm-directory-view.c:2837
+#: src/file-manager/fm-directory-view.c:2838
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
 msgstr "Naozaj chcete úplne odstráni» \"%s\" z Odpadkov?"
 
-#: src/file-manager/fm-directory-view.c:2841
+#: src/file-manager/fm-directory-view.c:2842
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "Trash?"
 msgstr "Naozaj chcete úplne odstráni» %d vybraných polo¾iek z Odpadkov?"
 
-#: src/file-manager/fm-directory-view.c:2847
+#: src/file-manager/fm-directory-view.c:2848
 msgid "Delete From Trash?"
 msgstr "Odstráni» z Odpadkov?"
 
-#: src/file-manager/fm-directory-view.c:3144
-#: src/file-manager/fm-directory-view.c:3186
+#: src/file-manager/fm-directory-view.c:3145
+#: src/file-manager/fm-directory-view.c:3187
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Pou¾i» \"%s\" pre otvorenie vybranej polo¾ky"
 
-#: src/file-manager/fm-directory-view.c:3268
-#: src/file-manager/nautilus-directory-view-ui.xml.h:33
+#: src/file-manager/fm-directory-view.c:3269
+#: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Other _Application..."
 msgstr "Iná _aplikácia..."
 
-#: src/file-manager/fm-directory-view.c:3268
+#: src/file-manager/fm-directory-view.c:3269
 msgid "An _Application..."
 msgstr "_Aplikácia..."
 
-#: src/file-manager/fm-directory-view.c:3274
-#: src/file-manager/nautilus-directory-view-ui.xml.h:34
+#: src/file-manager/fm-directory-view.c:3275
+#: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Other _Viewer..."
 msgstr "Iný program pre _zobrazenie..."
 
-#: src/file-manager/fm-directory-view.c:3274
+#: src/file-manager/fm-directory-view.c:3275
 msgid "A _Viewer..."
 msgstr "_Prehliadaè..."
 
-#: src/file-manager/fm-directory-view.c:3489
+#: src/file-manager/fm-directory-view.c:3490
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Spusti» \"%s\" na v¹etky vybrané polo¾ky"
 
-#: src/file-manager/fm-directory-view.c:3604
+#: src/file-manager/fm-directory-view.c:3605
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
@@ -5030,11 +5041,11 @@ msgstr ""
 "V¹etky spustiteµné súbory v tomto prieèinku sa objavia v menu Skripty. "
 "Vybraním skriptu z menu ho spustíte s vybranými polo¾kami ako vstupom."
 
-#: src/file-manager/fm-directory-view.c:3607
+#: src/file-manager/fm-directory-view.c:3608
 msgid "About Scripts"
 msgstr "O skriptoch"
 
-#: src/file-manager/fm-directory-view.c:3608
+#: src/file-manager/fm-directory-view.c:3609
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -5077,129 +5088,128 @@ msgstr ""
 #. This shouldn't happen. If it does, get_scripts_directory was unable to
 #. * mkdir the scripts directory, and this case should be debugged.
 #.
-#: src/file-manager/fm-directory-view.c:3675
+#: src/file-manager/fm-directory-view.c:3676
 #, c-format
 msgid "Nautilus was unable to create the directory %s."
 msgstr "Nautilus nemohol vytvori» prieèinok %s."
 
-#: src/file-manager/fm-directory-view.c:3676
+#: src/file-manager/fm-directory-view.c:3677
 msgid "No Scripts Folder"
 msgstr "®iadny prieèinok skriptov"
 
-#: src/file-manager/fm-directory-view.c:3731
+#: src/file-manager/fm-directory-view.c:3732
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "\"%s\" bude presunutý, ak pou¾ijete príkaz Vlo¾i» súbory"
 
-#: src/file-manager/fm-directory-view.c:3735
+#: src/file-manager/fm-directory-view.c:3736
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" bude skopírovaný, ak pou¾ijete príkaz Vlo¾i» súbory"
 
-#: src/file-manager/fm-directory-view.c:3742
+#: src/file-manager/fm-directory-view.c:3743
 #, c-format
 msgid "The %d selected items will be moved if you select the Paste Files command"
 msgstr "%d vybraných polo¾iek bude presunutých, ak pou¾ijete príkaz Vlo¾i» súbory"
 
-#: src/file-manager/fm-directory-view.c:3746
+#: src/file-manager/fm-directory-view.c:3747
 #, c-format
 msgid "The %d selected items will be copied if you select the Paste Files command"
 msgstr "%d vybraných polo¾iek bude skopírovaných, ak pou¾ijete príkaz Vlo¾i» súbory"
 
-#: src/file-manager/fm-directory-view.c:3892
+#: src/file-manager/fm-directory-view.c:3893
 msgid "There is nothing on the clipboard to paste."
 msgstr "V schránke nie je niè na vlo¾enie."
 
-#: src/file-manager/fm-directory-view.c:4007
+#: src/file-manager/fm-directory-view.c:4008
 msgid "Open _in This Window"
 msgstr "Otvori» v _tomto okne"
 
-#: src/file-manager/fm-directory-view.c:4010
-#: src/file-manager/nautilus-directory-view-ui.xml.h:27
+#: src/file-manager/fm-directory-view.c:4011
+#: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Open _in New Window"
 msgstr "Otvori» v _novom okne"
 
-#: src/file-manager/fm-directory-view.c:4012
+#: src/file-manager/fm-directory-view.c:4013
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "Otvori» _v %d nových oknách"
 
-#: src/file-manager/fm-directory-view.c:4030
+#: src/file-manager/fm-directory-view.c:4031
 msgid "Delete from _Trash..."
 msgstr "Odstráni» z _Odpadkov..."
 
-#: src/file-manager/fm-directory-view.c:4030
+#: src/file-manager/fm-directory-view.c:4031
 msgid "Delete from _Trash"
 msgstr "Odstráni» z _Odpadkov"
 
-#: src/file-manager/fm-directory-view.c:4032
+#: src/file-manager/fm-directory-view.c:4033
 msgid "Delete all selected items permanently"
 msgstr "Odstráni» úplne v¹etky vybrané polo¾ky"
 
-#: src/file-manager/fm-directory-view.c:4035
-#: src/file-manager/nautilus-directory-view-ui.xml.h:21
+#: src/file-manager/fm-directory-view.c:4036
+#: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Move to _Trash"
 msgstr "Presunú» do _Odpadkov"
 
-#: src/file-manager/fm-directory-view.c:4037
+#: src/file-manager/fm-directory-view.c:4038
 msgid "Move all selected items to the Trash"
 msgstr "Presunú» v¹etky vybrané polo¾ky do Odpadkov"
 
-#: src/file-manager/fm-directory-view.c:4064
+#: src/file-manager/fm-directory-view.c:4065
 msgid "De_lete..."
 msgstr "O_dstráni»..."
 
-#: src/file-manager/fm-directory-view.c:4064
+#: src/file-manager/fm-directory-view.c:4065
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "De_lete"
 msgstr "O_dstráni»"
 
-#: src/file-manager/fm-directory-view.c:4085
+#: src/file-manager/fm-directory-view.c:4086
 msgid "Make _Links"
 msgstr "Vytvori» _odkazy"
 
-#: src/file-manager/fm-directory-view.c:4086
-#: src/file-manager/nautilus-directory-view-ui.xml.h:17
+#: src/file-manager/fm-directory-view.c:4087
 msgid "Make _Link"
 msgstr "Vytvori» _odkaz"
 
-#: src/file-manager/fm-directory-view.c:4101
+#: src/file-manager/fm-directory-view.c:4102
 msgid "_Empty Trash..."
 msgstr "_Vyprázdni» Odpadky..."
 
-#: src/file-manager/fm-directory-view.c:4102
-#: src/file-manager/nautilus-directory-view-ui.xml.h:59
+#: src/file-manager/fm-directory-view.c:4103
+#: src/file-manager/nautilus-directory-view-ui.xml.h:58
 msgid "_Empty Trash"
 msgstr "_Vyprázdni» Odpadky"
 
-#: src/file-manager/fm-directory-view.c:4113
-#: src/file-manager/nautilus-directory-view-ui.xml.h:38
+#: src/file-manager/fm-directory-view.c:4114
+#: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "R_emove Custom Images"
 msgstr "Odstráni» _vlastné obrázky"
 
-#: src/file-manager/fm-directory-view.c:4114
+#: src/file-manager/fm-directory-view.c:4115
 msgid "R_emove Custom Image"
 msgstr "Odstráni» _vlastný obrázok"
 
-#: src/file-manager/fm-directory-view.c:4128
+#: src/file-manager/fm-directory-view.c:4129
 msgid "Cu_t File"
 msgstr "Vystri_hnú» súbor"
 
-#: src/file-manager/fm-directory-view.c:4129
+#: src/file-manager/fm-directory-view.c:4130
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "Vystri_hnú» súbory"
 
-#: src/file-manager/fm-directory-view.c:4139
+#: src/file-manager/fm-directory-view.c:4140
 msgid "_Copy File"
 msgstr "_Kopírova» súbor"
 
-#: src/file-manager/fm-directory-view.c:4140
-#: src/file-manager/nautilus-directory-view-ui.xml.h:57
+#: src/file-manager/fm-directory-view.c:4141
+#: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "_Copy Files"
 msgstr "_Kopírova» súbory"
 
-#: src/file-manager/fm-directory-view.c:4300
+#: src/file-manager/fm-directory-view.c:4301
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the Trash?"
@@ -5207,7 +5217,7 @@ msgstr ""
 "Tento odkaz nie je mo¾né pou¾i», preto¾e nemá cieµ. Chcete tento odkaz hodi» "
 "do Odpadkov?"
 
-#: src/file-manager/fm-directory-view.c:4303
+#: src/file-manager/fm-directory-view.c:4304
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -5216,15 +5226,15 @@ msgstr ""
 "Tento odkaz nie je mo¾né pou¾i», preto¾e jeho cieµ \"%s\" neexistuje. Chcete "
 "tento odkaz hodi» do Odpadkov?"
 
-#: src/file-manager/fm-directory-view.c:4309
+#: src/file-manager/fm-directory-view.c:4310
 msgid "Broken Link"
 msgstr "Neplatný odkaz"
 
-#: src/file-manager/fm-directory-view.c:4310
+#: src/file-manager/fm-directory-view.c:4311
 msgid "Throw Away"
 msgstr "Zahodi»"
 
-#: src/file-manager/fm-directory-view.c:4363
+#: src/file-manager/fm-directory-view.c:4364
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -5233,23 +5243,23 @@ msgstr ""
 "\"%s\" je spustiteµný textový súbor. Chcete ho spusti» alebo zobrazi» jeho "
 "obsah?"
 
-#: src/file-manager/fm-directory-view.c:4369
+#: src/file-manager/fm-directory-view.c:4370
 msgid "Run or Display?"
 msgstr "Spusti» alebo zobrazi»?"
 
-#: src/file-manager/fm-directory-view.c:4370
+#: src/file-manager/fm-directory-view.c:4371
 msgid "Run"
 msgstr "Spusti»"
 
-#: src/file-manager/fm-directory-view.c:4371
+#: src/file-manager/fm-directory-view.c:4372
 msgid "Display"
 msgstr "Displej"
 
-#: src/file-manager/fm-directory-view.c:4374
+#: src/file-manager/fm-directory-view.c:4375
 msgid "Cancel"
 msgstr "Zru¹i»"
 
-#: src/file-manager/fm-directory-view.c:4425
+#: src/file-manager/fm-directory-view.c:4427
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
@@ -5257,16 +5267,16 @@ msgstr ""
 "¥utujem, ale nie je mo¾né vykonáva» príkazy zo vzdialených poèítaèov kvôli "
 "bezpeènosti."
 
-#: src/file-manager/fm-directory-view.c:4427
+#: src/file-manager/fm-directory-view.c:4429
 msgid "Can't execute remote links"
 msgstr "Nie je mo¾né vykona» vzdialené odkazy"
 
-#: src/file-manager/fm-directory-view.c:4565
+#: src/file-manager/fm-directory-view.c:4584
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Otváram \"%s\""
 
-#: src/file-manager/fm-directory-view.c:4571
+#: src/file-manager/fm-directory-view.c:4590
 msgid "Cancel Open?"
 msgstr "Zru¹i» otvorenie?"
 
@@ -5396,77 +5406,77 @@ msgstr "Premenovávam \"%s\" na \"%s\"."
 msgid "Cancel Rename?"
 msgstr "Zru¹i» premenovanie?"
 
-#: src/file-manager/fm-icon-view.c:174
+#: src/file-manager/fm-icon-view.c:176
 msgid "by _Name"
 msgstr "podµa _mena"
 
-#: src/file-manager/fm-icon-view.c:175
+#: src/file-manager/fm-icon-view.c:177
 #: src/file-manager/nautilus-icon-view-ui.xml.h:15
 msgid "Keep icons sorted by name in rows"
 msgstr "Udr¾iava» ikony zoradené podµa mena v riadkoch"
 
-#: src/file-manager/fm-icon-view.c:181
+#: src/file-manager/fm-icon-view.c:183
 msgid "by _Size"
 msgstr "podµa _veµkosti"
 
-#: src/file-manager/fm-icon-view.c:182
+#: src/file-manager/fm-icon-view.c:184
 #: src/file-manager/nautilus-icon-view-ui.xml.h:16
 msgid "Keep icons sorted by size in rows"
 msgstr "Udr¾iava» ikony zoradené podµa veµkosti v riadkoch"
 
-#: src/file-manager/fm-icon-view.c:188
+#: src/file-manager/fm-icon-view.c:190
 msgid "by _Type"
 msgstr "podµa _typu"
 
-#: src/file-manager/fm-icon-view.c:189
+#: src/file-manager/fm-icon-view.c:191
 #: src/file-manager/nautilus-icon-view-ui.xml.h:17
 msgid "Keep icons sorted by type in rows"
 msgstr "Udr¾iava» ikony zoradené podµa typu v riadkoch"
 
-#: src/file-manager/fm-icon-view.c:195
+#: src/file-manager/fm-icon-view.c:197
 msgid "by Modification _Date"
 msgstr "podµa dátumu _zmeny"
 
-#: src/file-manager/fm-icon-view.c:196
+#: src/file-manager/fm-icon-view.c:198
 #: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Udr¾iava» ikony zoradené podµa dátum zmeny v riadkoch"
 
-#: src/file-manager/fm-icon-view.c:202
+#: src/file-manager/fm-icon-view.c:204
 msgid "by _Emblems"
 msgstr "podµa _emblémov"
 
-#: src/file-manager/fm-icon-view.c:203
+#: src/file-manager/fm-icon-view.c:205
 #: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Udr¾iava» ikony zoradené podµa emblémov v riadkoch"
 
-#: src/file-manager/fm-icon-view.c:1372
-#: src/file-manager/nautilus-icon-view-ui.xml.h:36
+#: src/file-manager/fm-icon-view.c:1415
+#: src/file-manager/nautilus-icon-view-ui.xml.h:37
 msgid "_Restore Icons' Original Sizes"
 msgstr "_Obnovi» pôvodnú veµkos» ikon"
 
-#: src/file-manager/fm-icon-view.c:1373
+#: src/file-manager/fm-icon-view.c:1416
 msgid "_Restore Icon's Original Size"
 msgstr "_Obnovi» pôvodnú veµkos» ikony"
 
-#: src/file-manager/fm-icon-view.c:1653
+#: src/file-manager/fm-icon-view.c:1700
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "ukazujúci na \"%s\""
 
-#: src/file-manager/fm-list-view.c:2357
-#: src/file-manager/fm-search-list-view.c:545
+#: src/file-manager/fm-list-view.c:2375
+#: src/file-manager/fm-search-list-view.c:511
 msgid "Size"
 msgstr "Veµkos»"
 
-#: src/file-manager/fm-list-view.c:2363
-#: src/file-manager/fm-search-list-view.c:551
+#: src/file-manager/fm-list-view.c:2381
+#: src/file-manager/fm-search-list-view.c:517
 msgid "Type"
 msgstr "Typ"
 
-#: src/file-manager/fm-list-view.c:2369
-#: src/file-manager/fm-search-list-view.c:557
+#: src/file-manager/fm-list-view.c:2387
+#: src/file-manager/fm-search-list-view.c:523
 msgid "Date Modified"
 msgstr "Dátum zmeny"
 
@@ -5535,7 +5545,7 @@ msgid "Size:"
 msgstr "Veµkos»:"
 
 #: src/file-manager/fm-properties-window.c:1529 src/nautilus-location-bar.c:62
-#: src/nautilus-preferences-dialog.c:285 src/nautilus-preferences-dialog.c:295
+#: src/nautilus-preferences-dialog.c:294 src/nautilus-preferences-dialog.c:304
 msgid "Location:"
 msgstr "Umiestnenie:"
 
@@ -5648,7 +5658,7 @@ msgstr "Vytváram okno Vlastnosti"
 msgid "Select an icon:"
 msgstr "Vyberte ikonu:"
 
-#: src/file-manager/fm-search-list-view.c:122
+#: src/file-manager/fm-search-list-view.c:123
 #, c-format
 msgid ""
 "Search results may not include items modified after %s, when your drive was "
@@ -5657,11 +5667,11 @@ msgstr ""
 "Výsledky hµadanie nemusia obsahova» polo¾ky zmenené po %s, keï bol vytváraný "
 "posledný index."
 
-#: src/file-manager/fm-search-list-view.c:142
+#: src/file-manager/fm-search-list-view.c:143
 msgid "Search Results"
 msgstr "Výsledky hµadania"
 
-#: src/file-manager/fm-search-list-view.c:164
+#: src/file-manager/fm-search-list-view.c:165
 msgid ""
 "Sorry, but the Medusa search service is not available because it is not "
 "installed."
@@ -5669,33 +5679,26 @@ msgstr ""
 "¥utujem, ale vyhµadávacia slu¾ba Medusa nie je k dispozícii, preto¾e nie je "
 "nain¹talovaná."
 
-#: src/file-manager/fm-search-list-view.c:165
-#: src/file-manager/nautilus-indexing-info.c:387
+#: src/file-manager/fm-search-list-view.c:166
+#: src/file-manager/nautilus-indexing-info.c:303
 msgid "Search Service Not Available"
 msgstr "Vyhµadávacia slu¾ba nie je k dispozícii"
 
-#: src/file-manager/fm-search-list-view.c:188
+#: src/file-manager/fm-search-list-view.c:189
 msgid ""
 "The search you have selected is newer than the index on your system.  The "
-"search will return no results right now.  Would you like to create a new "
-"index now?"
+"search will return no results right now.  You can create a new  index by "
+"running \"medusa-indexd\" as root on the command line."
 msgstr ""
 "Vybrali ste hµadanie, ktoré hµadá nov¹ie polo¾ky, ako je vá¹ index. Hµadanie "
-"momentálne niè nevráti. Chcete vytvori» nový index?"
+"momentálne niè nevráti. Nový index mô¾ete vytvori» spustením príkazu \"medusa-indexd\" "
+"ako root."
 
-#: src/file-manager/fm-search-list-view.c:193
+#: src/file-manager/fm-search-list-view.c:195
 msgid "Search for items that are too new"
 msgstr "Hµadanie polo¾iek, ktoré sú príli¹ nové"
 
-#: src/file-manager/fm-search-list-view.c:194
-msgid "Create a new index"
-msgstr "Vytvori» nový index"
-
-#: src/file-manager/fm-search-list-view.c:195
-msgid "Don't create index"
-msgstr "Nevytvára» index"
-
-#: src/file-manager/fm-search-list-view.c:204
+#: src/file-manager/fm-search-list-view.c:199
 msgid ""
 "Every indexed file on your computer matches the criteria you selected. You "
 "can check the spelling on your selections or add more criteria to narrow "
@@ -5704,17 +5707,33 @@ msgstr ""
 "Ka¾dý indexovaný súbor na va¹om systéme odpovedá va¹emu kritériu. Overte "
 "zadanie alebo pridajte ïal¹ie kritéria pre zú¾enie výsledkov."
 
-#: src/file-manager/fm-search-list-view.c:208
-#: src/file-manager/fm-search-list-view.c:222
+#: src/file-manager/fm-search-list-view.c:203
+#: src/file-manager/fm-search-list-view.c:224
 msgid "Error during search"
 msgstr "Chyba pri hµadaní"
 
-#: src/file-manager/fm-search-list-view.c:217
+#. FIXME: This dialog does not get shown because a slow search
+#. will be performed and will not return an error.
+#: src/file-manager/fm-search-list-view.c:209
+msgid ""
+"Find cannot open your file system index.  Your index may be missing or "
+"corrupt.  You can create a new index by running \"medusa-indexd\" as root on "
+"the command line."
+msgstr ""
+"Hµadanie nemohlo otvori» index vá¹ho systému súborov. Buï chýba, alebo "
+"je po¹kodený. Nový index mô¾ete vytvori» spustením príkazu \"medusa-indexd\" "
+"ako root."
+
+#: src/file-manager/fm-search-list-view.c:213
+msgid "Error reading file index"
+msgstr "Chyba pri èítaní indexu súborov"
+
+#: src/file-manager/fm-search-list-view.c:219
 #, c-format
 msgid "An error occurred while loading this search's contents: %s"
 msgstr "Nastala chyba pri naèítavaní výsledku hµadania: %s"
 
-#: src/file-manager/fm-search-list-view.c:245
+#: src/file-manager/fm-search-list-view.c:243
 msgid ""
 "To do a fast search, Find requires an index of the files on your system.  "
 "Find can't access your index right now so a slower search will be performed "
@@ -5724,7 +5743,7 @@ msgstr ""
 "tento index nie je dostupný a preto sa bude hµada» pomal¹ie bez pou¾itia "
 "indexu."
 
-#: src/file-manager/fm-search-list-view.c:250
+#: src/file-manager/fm-search-list-view.c:248
 msgid ""
 "To do a content search, Find requires an index of the files on your system.  "
 "Find can't access your index right now. "
@@ -5732,68 +5751,31 @@ msgstr ""
 "Pre hµadanie obsahu je treba index súborov na va¹om systéme.  Momentálne "
 "tento index nie je dostupný."
 
-#: src/file-manager/fm-search-list-view.c:254
+#: src/file-manager/fm-search-list-view.c:252
 msgid "Fast searches are not available"
 msgstr "Rýchle hµadanie nie je k dispozícii"
 
-#: src/file-manager/fm-search-list-view.c:255
-#: src/file-manager/fm-search-list-view.c:295
-#: src/file-manager/fm-search-list-view.c:323
-#: src/file-manager/fm-search-list-view.c:346
+#: src/file-manager/fm-search-list-view.c:253
+#: src/file-manager/fm-search-list-view.c:283
+#: src/file-manager/fm-search-list-view.c:306
 msgid "Content searches are not available"
 msgstr "Hµadanie obsahu nie je k dispozícii"
 
-#: src/file-manager/fm-search-list-view.c:258
+#: src/file-manager/fm-search-list-view.c:256
 msgid ""
 "Your index files are available but the Medusa search daemon, which handles "
 "index requests, isn't running.  To start this program, log in as root and "
 "enter this command at the command line:\n"
+"\n"
 "medusa-searchd"
 msgstr ""
 "Vá¹ index súborov je k dispozícii, ale vyhµadávací démon Medusa, ktorý sa "
 "pou¾íva na prácu s indexom, nebe¾í. Pre jeho spustenie sa prihláste ako root "
 "a zadajte na príkazovom riadku príkaz:\n"
+"\n"
 "medusa-searchd"
 
-#: src/file-manager/fm-search-list-view.c:278
-msgid ""
-"To do a fast search, Find requires an index of the files on your system.  "
-"Your computer does not have an index right now.  Because Find cannot use an "
-"index, this search may take several minutes.  Would you like to create an "
-"index? Creating an index will be done while you are not actively using your "
-"computer."
-msgstr ""
-"Pre rýchle hµadanie je treba index súborov na va¹om systéme.  Momentálne "
-"takýto index nie je na va¹om poèítaèi. Preto¾e nie je index mo¾né pou¾íva», "
-"hµadanie mô¾e trva» niekoµko minút. Chcete vytvori» index? Vytvorenie indexu "
-"bude prebieha» v dobe, keï nebudete pou¾íva» poèítaè."
-
-#: src/file-manager/fm-search-list-view.c:287
-msgid ""
-"To do a content search, Find requires an index of the content on your "
-"system.  Your computer does not have an index right now.  Would you like to "
-"create an index?  Creating an index will be done while you are not actively "
-"using your computer."
-msgstr ""
-"Pre hµadanie obsahu je treba index súborov na va¹om systéme.  Momentálne "
-"takýto index nie je na va¹om poèítaèi. Chcete vytvori» tento index? "
-"Vytvorenie indexu bude prebieha» v dobe, keï nebudete pou¾íva» poèítaè."
-
-#: src/file-manager/fm-search-list-view.c:294
-#: src/file-manager/fm-search-list-view.c:322
-#: src/file-manager/fm-search-list-view.c:345
-msgid "Indexed searches are not available"
-msgstr "Hµadanie pomocou indexov nie je k dispozícii"
-
-#: src/file-manager/fm-search-list-view.c:298
-msgid "Create an Index"
-msgstr "Vytvori» index"
-
-#: src/file-manager/fm-search-list-view.c:299
-msgid "Don't Create an Index Now"
-msgstr "Nevytvára» index"
-
-#: src/file-manager/fm-search-list-view.c:310
+#: src/file-manager/fm-search-list-view.c:270
 msgid ""
 "To do a fast search, Find requires an index of the files on your system.  "
 "Your computer is currently creating that index.   Because Find cannot use an "
@@ -5803,7 +5785,7 @@ msgstr ""
 "tento index práve vytvára. Preto¾e nie je index mo¾né pou¾íva», hµadanie "
 "mô¾e trva» niekoµko minút."
 
-#: src/file-manager/fm-search-list-view.c:316
+#: src/file-manager/fm-search-list-view.c:276
 msgid ""
 "To do a content search, Find requires an index of the content on your "
 "system.  Your computer is currently creating that index.  Content searches "
@@ -5813,18 +5795,23 @@ msgstr ""
 "tento index práve vytvára. Hµadanie obsahuje bude k dispozícii po dokonèení "
 "indexu."
 
-#: src/file-manager/fm-search-list-view.c:330
+#: src/file-manager/fm-search-list-view.c:282
+#: src/file-manager/fm-search-list-view.c:305
+msgid "Indexed searches are not available"
+msgstr "Hµadanie pomocou indexov nie je k dispozícii"
+
+#: src/file-manager/fm-search-list-view.c:290
 msgid ""
 "To do a fast search, Find requires an index of the files on your system.  No "
 "index is available right now. You can create an index by running "
 "\"medusa-indexd\" as root on the command line.  Until a complete index is "
 "available, searches will take several minutes."
 msgstr ""
-"Pre rýchle hµadanie je treba index súborov na va¹om systéme, ale ten nie je k dispozícii. "
-"Vytvoríte ho spustením príkazu \"medusa-indexd\" ako root. Kým bude index vytvorený, "
-"hµadanie mô¾e trva» niekoµko minút."
+"Pre rýchle hµadanie je treba index súborov na va¹om systéme, ale ten nie je "
+"k dispozícii. Vytvoríte ho spustením príkazu \"medusa-indexd\" ako root. Kým "
+"bude index vytvorený, hµadanie mô¾e trva» niekoµko minút."
 
-#: src/file-manager/fm-search-list-view.c:337
+#: src/file-manager/fm-search-list-view.c:297
 msgid ""
 "To do a content search, Find requires an index of the content on your "
 "system.  No index is available right now.  You can create an index by "
@@ -5832,11 +5819,11 @@ msgid ""
 "index is available, content searches cannot be performed."
 msgstr ""
 "Pre hµadanie obsahu je treba index súborov na va¹om systéme.  Momentálne "
-"takýto index nie je na va¹om poèítaèi k dispozícii. Vytvori» ho mô¾ete spustením "
-"príkazu \"medusa-indexd\" ako root. Kým nebude index k dispozícii, nebude mo¾né "
-"hµada» podµa obsahu."
+"takýto index nie je na va¹om poèítaèi k dispozícii. Vytvori» ho mô¾ete "
+"spustením príkazu \"medusa-indexd\" ako root. Kým nebude index k dispozícii, "
+"nebude mo¾né hµada» podµa obsahu."
 
-#: src/file-manager/fm-search-list-view.c:363
+#: src/file-manager/fm-search-list-view.c:322
 msgid ""
 "To do a fast search, Find requires an index of the files on your system. "
 "Your system administrator has disabled fast search on your computer, so no "
@@ -5845,11 +5832,11 @@ msgstr ""
 "Pre rýchle hµadanie je treba index súborov na va¹om systéme. Administrátor "
 "vá¹ho systému vypol indexáciu, tak¾e momentálne nemáte index k dispozícii."
 
-#: src/file-manager/fm-search-list-view.c:367
+#: src/file-manager/fm-search-list-view.c:326
 msgid "Fast searches are not enabled on your computer"
 msgstr "Rýchle hµadanie nie je povolené na va¹om poèítaèi"
 
-#: src/file-manager/fm-search-list-view.c:539
+#: src/file-manager/fm-search-list-view.c:505
 msgid "Where"
 msgstr "Umiestnenie"
 
@@ -5858,7 +5845,7 @@ msgstr "Umiestnenie"
 #. * and scroll as necessary to make that item visible (this comment
 #. * is to inform translators of this tricky concept).
 #.
-#: src/file-manager/fm-search-list-view.c:591
+#: src/file-manager/fm-search-list-view.c:557
 #: src/file-manager/nautilus-search-list-view-ui.xml.h:6
 msgid "_Reveal in New Window"
 msgstr "_Zobrazi» v novom okne"
@@ -5869,7 +5856,7 @@ msgstr "_Zobrazi» v novom okne"
 #. * items visible (this comment is to inform translators of this
 #. * tricky concept).
 #.
-#: src/file-manager/fm-search-list-view.c:599
+#: src/file-manager/fm-search-list-view.c:565
 #, c-format
 msgid "Reveal in %d _New Windows"
 msgstr "Zobrazi» v %d _nových oknách"
@@ -5878,7 +5865,7 @@ msgstr "Zobrazi» v %d _nových oknách"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-search-list-view.c:711
+#: src/file-manager/fm-search-list-view.c:677
 msgid ""
 "Nautilus found more search results than it can display. Some matching items "
 "will not be displayed. "
@@ -5886,7 +5873,7 @@ msgstr ""
 "Nautilus na¹iel viac polo¾iek, ako je schopný zobrazi». Niektoré polo¾ky "
 "nebudú zobrazené."
 
-#: src/file-manager/fm-search-list-view.c:713
+#: src/file-manager/fm-search-list-view.c:679
 msgid "Too Many Matches"
 msgstr "Príli¹ veµa odpovedajúcich"
 
@@ -5971,149 +5958,153 @@ msgstr "Vytvorí kópiu ka¾dej vybranej polo¾ky"
 msgid "Make Link"
 msgstr "Vytvori» odkaz"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:18
+#: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Move each selected item to the Trash"
 msgstr "Presunie ka¾dú vybranú polo¾ku do Odpadkov"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:19
+#: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Move or copy files previously selected by a Cut Files or Copy Files command"
 msgstr ""
 "Presunie alebo skopíruje súbory vybrané predcházajúcim príkazom Vystrihnú» "
 "súbory alebo Kopírova» súbory"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:20
+#: src/file-manager/nautilus-directory-view-ui.xml.h:19
 msgid "Move to Trash"
 msgstr "Presunú» do Odpadkov"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:22
+#: src/file-manager/nautilus-directory-view-ui.xml.h:21
 msgid "New Folder"
 msgstr "Nový prieèinok"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:23
+#: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Open"
 msgstr "Otvori»"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:24
+#: src/file-manager/nautilus-directory-view-ui.xml.h:23
 msgid "Open Scripts Folder"
 msgstr "Otvori» prieèinok skriptov"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:25
+#: src/file-manager/nautilus-directory-view-ui.xml.h:24
 msgid "Open Wit_h"
 msgstr "Otvori» _pomocou"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:26
+#: src/file-manager/nautilus-directory-view-ui.xml.h:25
 msgid "Open With"
 msgstr "Otvori» s "
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:28
+#: src/file-manager/nautilus-directory-view-ui.xml.h:27
 msgid "Open each selected item in a new window"
 msgstr "Otvorí ka¾dú vybranú polo¾ku v novom okne"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:29
+#: src/file-manager/nautilus-directory-view-ui.xml.h:28
 msgid "Open in New Window"
 msgstr "Otvori» v novom okne"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:30
+#: src/file-manager/nautilus-directory-view-ui.xml.h:29
 msgid "Open the selected item in this window"
 msgstr "Otvorí vybranú polo¾ku v tomto okne"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:31
+#: src/file-manager/nautilus-directory-view-ui.xml.h:30
 msgid "Other Application..."
 msgstr "Iná aplikácia..."
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:32
+#: src/file-manager/nautilus-directory-view-ui.xml.h:31
 msgid "Other Viewer..."
 msgstr "Iný program pre zobrazenie..."
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:35
+#: src/file-manager/nautilus-directory-view-ui.xml.h:34
 msgid "Paste Files"
 msgstr "Vlo¾i» text"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:36
+#: src/file-manager/nautilus-directory-view-ui.xml.h:35
 msgid "Prepare the selected files to be copied with a Paste Files command"
 msgstr "Pripravi» vybrané súbory pre kopírovanie príkazom Vlo¾i» súbory"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:37
+#: src/file-manager/nautilus-directory-view-ui.xml.h:36
 msgid "Prepare the selected files to be moved with a Paste Files command"
 msgstr "Pripravi» vybrané súbory pre presun príkazom Vlo¾i» súbory"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:39
+#: src/file-manager/nautilus-directory-view-ui.xml.h:38
 msgid "Remove Custom Images"
 msgstr "Odstráni» vlastné obrázky"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:40
+#: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "Remove any custom images from selected icons"
 msgstr "Odstráni v¹etky vlastné obrázky z vybraných ikon"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:41
+#: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "Remove any custom pattern or color from the background of this location"
 msgstr "Odstráni v¹etky vlastné vzorky alebo farby z pozadia tohoto miesta"
 
 #. add the reset background item, possibly disabled
-#: src/file-manager/nautilus-directory-view-ui.xml.h:42
+#: src/file-manager/nautilus-directory-view-ui.xml.h:41
 #: src/nautilus-sidebar.c:535
 msgid "Reset Background"
 msgstr "©tandardné pozadie"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:43
+#: src/file-manager/nautilus-directory-view-ui.xml.h:42
 msgid "Reset View to Match Preferences"
 msgstr "Návrat k nastaveniu pohµadu"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:44
+#: src/file-manager/nautilus-directory-view-ui.xml.h:43
 msgid "Reset View to Match _Preferences"
 msgstr "Ná_vrat k nastaveniu pohµadu"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:45
+#: src/file-manager/nautilus-directory-view-ui.xml.h:44
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr "Návrat k triedeniu a úrovni lupy odpovedajúcim nastaveniu tohto pohµadu"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:46
+#: src/file-manager/nautilus-directory-view-ui.xml.h:45
 msgid "Run or manage scripts from ~/Nautilus/scripts"
 msgstr "Spustí alebo upravuje skripty z ~/Nautilus/scripts"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:47
+#: src/file-manager/nautilus-directory-view-ui.xml.h:46
 msgid "Scripts"
 msgstr "Skripty"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:48
+#: src/file-manager/nautilus-directory-view-ui.xml.h:47
 msgid "Select All Files"
 msgstr "Vybra» v¹etky súbory"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:49
+#: src/file-manager/nautilus-directory-view-ui.xml.h:48
 msgid "Select _All Files"
 msgstr "Vybra» v¹e_tky súbory"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:50
+#: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "Select all items in this window"
 msgstr "Vyberie v¹etky polo¾ky v tomto okne"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:51
+#: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "Show Properties"
 msgstr "Zobrazi» Vlastnosti"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:52
+#: src/file-manager/nautilus-directory-view-ui.xml.h:51
 msgid "Show Trash"
 msgstr "Zobrazi» Odpadky"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:53
+#: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "Show _Properties"
 msgstr "Zobrazi» _Vlastnosti"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:54
+#: src/file-manager/nautilus-directory-view-ui.xml.h:53
 msgid "Show the contents of the Trash"
 msgstr "Zobrazí obsah Odpadkov"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:55
+#: src/file-manager/nautilus-directory-view-ui.xml.h:54
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Uká¾e prieèinok obsahujúci skripty, ktoré sú v tomto menu"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:56
+#: src/file-manager/nautilus-directory-view-ui.xml.h:55
 msgid "View or modify the properties of each selected item"
 msgstr "Zobrazí alebo upraví vlastnosti ka¾dej vybranej polo¾ky"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:58
+#: src/file-manager/nautilus-directory-view-ui.xml.h:57
 msgid "_Duplicate"
 msgstr "_Duplikova»"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:59
+msgid "_Make Link"
+msgstr "_Vytvori» odkaz"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:60
 msgid "_New Folder"
@@ -6175,10 +6166,6 @@ msgstr "Necha» ikony tam, kde budú pustené"
 msgid "Make the selected icon stretchable"
 msgstr "Urobi» vybranú ikonu roz»ahovateµnou"
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:21
-msgid "Manually"
-msgstr "Ruène"
-
 #: src/file-manager/nautilus-icon-view-ui.xml.h:22
 msgid "Re_versed Order"
 msgstr "_Opaèné poradie"
@@ -6212,90 +6199,54 @@ msgid "Tighter Layout"
 msgstr "Bli¾¹ie k sebe"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:31
+msgid "Tighter _Layout"
+msgstr "_Bli¾¹ie k sebe"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:32
 msgid "Toggle using a tighter layout scheme"
 msgstr "Prepnú» pomocou schémy pre zobrazenie bli¾¹ie k sebe"
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:32
+#: src/file-manager/nautilus-icon-view-ui.xml.h:33
 msgid "_Clean Up by Name"
 msgstr "_Vyèisti» podµa mena"
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:33
+#: src/file-manager/nautilus-icon-view-ui.xml.h:34
 msgid "_Lay Out Items"
 msgstr "_Rozlo¾enie polo¾iek"
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:34
+#: src/file-manager/nautilus-icon-view-ui.xml.h:35
 msgid "_Manually"
 msgstr "_Ruène"
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:35
+#: src/file-manager/nautilus-icon-view-ui.xml.h:36
 msgid "_Rename"
 msgstr "_Premenova»"
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:37
+#: src/file-manager/nautilus-icon-view-ui.xml.h:38
 msgid "_Stretch Icon"
 msgstr "_Roztiahnu» ikonu"
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:38
-msgid "_Tighter Layout"
-msgstr "_Bli¾¹ie k sebe"
-
-#: src/file-manager/nautilus-indexing-info.c:90
+#: src/file-manager/nautilus-indexing-info.c:89
 msgid "Indexing is %d%% complete."
 msgstr "Indexácia je hotová z %d%%"
 
-#: src/file-manager/nautilus-indexing-info.c:178
-msgid "The indexer is currently busy."
-msgstr "Indexaèný stroj momentálne pracuje."
-
-#: src/file-manager/nautilus-indexing-info.c:183
-msgid ""
-"An indexer is not running, or is not responding to requests to reindex your "
-"computer."
-msgstr "Nebe¾í indexaèný stroj alebo neodpovedá na po¾iadavky o novú indexáciu."
-
-#: src/file-manager/nautilus-indexing-info.c:188
-msgid ""
-"An attempt to reindex, caused an Internal Indexer Error.  Tell "
-"rebecka@eazel.com"
-msgstr "Pokus o novú indexáciu spôsobil internú chybu. Oznámte ju rebecka@eazel.com"
-
-#: src/file-manager/nautilus-indexing-info.c:197
-msgid "Reindexing Failed"
-msgstr "Nová indexácia zlyhala"
-
-#: src/file-manager/nautilus-indexing-info.c:219
-msgid ""
-"Once a day your files and text content are indexed so your searches are "
-"fast. If you need to update your index now, click on the \"Update Now\" "
-"button."
-msgstr ""
-"Raz za deò sú va¹e súbory a ich obsah indexované, tak¾e hµadanie je rýchle. "
-"Ak potrebujete obnovi» index, kliknite na \"Obnovi» teraz\" pre príslu¹ný "
-"index."
-
-#: src/file-manager/nautilus-indexing-info.c:222
-#: src/file-manager/nautilus-indexing-info.c:229
-#: src/file-manager/nautilus-indexing-info.c:284
-msgid "Indexing Status"
-msgstr "Stav indexácie"
-
-#. FIXME: Do we want to talk about the index not being available?
-#: src/file-manager/nautilus-indexing-info.c:227
+#: src/file-manager/nautilus-indexing-info.c:159
 msgid ""
 "Once a day your files and text content are indexed so your searches are "
 "fast. "
 msgstr "Raz za deò sú va¹e súbory a ich obsah indexované, tak¾e hµadanie je rýchle. "
 
-#: src/file-manager/nautilus-indexing-info.c:239
+#: src/file-manager/nautilus-indexing-info.c:161
+#: src/file-manager/nautilus-indexing-info.c:200
+msgid "Indexing Status"
+msgstr "Stav indexácie"
+
+#: src/file-manager/nautilus-indexing-info.c:166
 #, c-format
 msgid "Your files were last indexed at %s"
 msgstr "Va¹e súbory naposledy indexované %s"
 
-#: src/file-manager/nautilus-indexing-info.c:252
-msgid "Update Now"
-msgstr "Obnovi» teraz"
-
-#: src/file-manager/nautilus-indexing-info.c:282
+#: src/file-manager/nautilus-indexing-info.c:198
 msgid ""
 "Once a day your files and text content are indexed so your searches are "
 "fast.  Your files are currently being indexed."
@@ -6303,7 +6254,7 @@ msgstr ""
 "Raz za deò sú va¹e súbory a ich obsah indexované, tak¾e hµadanie je rýchle. "
 "Momentálne prebieha indexácia va¹ich súborov."
 
-#: src/file-manager/nautilus-indexing-info.c:344
+#: src/file-manager/nautilus-indexing-info.c:260
 msgid ""
 "When Fast Search is enabled, Find creates an index to speed up searches.  "
 "Fast searching is not enabled on your computer, so you do not have an index "
@@ -6313,15 +6264,15 @@ msgstr ""
 "hµadanie. Rýchle hµadanie na va¹om poèítaèi nie je zapnuté, tak¾e momentálne "
 "nemáte k dispozícii index."
 
-#: src/file-manager/nautilus-indexing-info.c:348
+#: src/file-manager/nautilus-indexing-info.c:264
 msgid "There is no index of your files right now."
 msgstr "Pre va¹e súbory momentálne neexistuje index."
 
-#: src/file-manager/nautilus-indexing-info.c:386
+#: src/file-manager/nautilus-indexing-info.c:302
 msgid "Sorry, but the medusa search service is not available."
 msgstr "¥utujem, ale vyhµadávacia slu¾by medusa nie je k dispozícii."
 
-#: src/file-manager/nautilus-indexing-info.c:409
+#: src/file-manager/nautilus-indexing-info.c:317
 msgid "%I:%M %p, %x"
 msgstr "%I:%M %p, %x"
 
@@ -6355,11 +6306,11 @@ msgstr "O programe Nautilus"
 msgid "Authors"
 msgstr "Autori"
 
-#: src/nautilus-application.c:276
+#: src/nautilus-application.c:279
 msgid "Couldn't Create Required Folder"
 msgstr "Nie je mo¾né vytvori» po¾adovaný prieèinok"
 
-#: src/nautilus-application.c:277
+#: src/nautilus-application.c:280
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -6370,11 +6321,11 @@ msgstr ""
 "Nautilusu vytvorte tento prieèinok, alebo nastavte práva tak, aby ho "
 "Nautilus mohol vytvori»."
 
-#: src/nautilus-application.c:282
+#: src/nautilus-application.c:285
 msgid "Couldn't Create Required Folders"
 msgstr "Nie je mo¾né vytvori» po¾adované prieèinky"
 
-#: src/nautilus-application.c:283
+#: src/nautilus-application.c:286
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -6401,7 +6352,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:408
+#: src/nautilus-application.c:495
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
 "from the console may fix the problem. If not, you can try rebooting the "
@@ -6412,7 +6363,7 @@ msgstr ""
 "in¹taláciu Nautilusu."
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:414
+#: src/nautilus-application.c:501
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
 "from the console may fix the problem. If not, you can try rebooting the "
@@ -6454,12 +6405,12 @@ msgstr ""
 #. * wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:445 src/nautilus-application.c:463
-#: src/nautilus-application.c:470
+#: src/nautilus-application.c:532 src/nautilus-application.c:550
+#: src/nautilus-application.c:557
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus nie je momentálne mo¾né pou¾íva» kvôli neoèakávanej chybe."
 
-#: src/nautilus-application.c:446
+#: src/nautilus-application.c:533
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to register the file manager view server."
@@ -6467,7 +6418,7 @@ msgstr ""
 "Nautilus nie je momentálne mo¾né pou¾íva» kvôli neoèakávanej chybe od OAF "
 "pri pokuse zaregistrova» server pre pohµady správcu súborov."
 
-#: src/nautilus-application.c:464
+#: src/nautilus-application.c:551
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the factory.Killing oafd and restarting Nautilus may "
@@ -6477,7 +6428,7 @@ msgstr ""
 "pri pokuse nájs» vytváracie rozhranie. Zabitím oafd a re¹tartom Nautilus by "
 "mohlo pomôc» problém vyrie¹i»."
 
-#: src/nautilus-application.c:471
+#: src/nautilus-application.c:558
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the shell object. Killing oafd and restarting Nautilus "
@@ -6487,7 +6438,7 @@ msgstr ""
 "pri pokuse nájs» objekt shellu. Zabitím oafd a re¹tartom Nautilus by mohlo "
 "pomôc» problém vyrie¹i»."
 
-#: src/nautilus-application.c:643
+#: src/nautilus-application.c:730
 msgid ""
 "You are about to run Nautilus as root.\n"
 "\n"
@@ -6499,15 +6450,15 @@ msgstr ""
 "Ako root, mô¾ete po¹kodi» vá¹ systém, ak si nedáte pozor, a\n"
 "Nautilus vám v tom nebude bráni»."
 
-#: src/nautilus-bookmarks-window.c:127
+#: src/nautilus-bookmarks-window.c:123
 msgid "Bookmarks"
 msgstr "Zálo¾ky"
 
-#: src/nautilus-bookmarks-window.c:177
+#: src/nautilus-bookmarks-window.c:178
 msgid "Location"
 msgstr "Umiestnenie"
 
-#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:797
+#: src/nautilus-bookmarks-window.c:191 src/nautilus-window-menus.c:818
 msgid "Remove"
 msgstr "Odstráni»"
 
@@ -6524,7 +6475,7 @@ msgstr "Menej mo¾ností"
 msgid "Find Them!"
 msgstr "Nájs» ich!"
 
-#: src/nautilus-first-time-druid.c:181
+#: src/nautilus-first-time-druid.c:187
 msgid ""
 "Existence of this file indicates that the Nautilus configuration druid\n"
 "has been presented.\n"
@@ -6539,11 +6490,11 @@ msgstr ""
 "sprievodcu.\n"
 "\n"
 
-#: src/nautilus-first-time-druid.c:199
+#: src/nautilus-first-time-druid.c:205
 msgid "Eazel Services"
 msgstr "Slu¾by Eazel Services"
 
-#: src/nautilus-first-time-druid.c:494
+#: src/nautilus-first-time-druid.c:503
 #, c-format
 msgid ""
 "Your user level adjusts Nautilus to your degree of experience\n"
@@ -6551,12 +6502,13 @@ msgid ""
 "you - you can always change it later."
 msgstr ""
 "Pou¾ívateµské úrovne poskytujú mo¾nos», ako si prispôsobi» Nautilus\n"
-"technickej úrovni pou¾ívateµa GNOME a systému %s. Vyberte poèiatoènú úroveò, \n"
+"technickej úrovni pou¾ívateµa GNOME a systému %s. Vyberte poèiatoènú úroveò, "
+"\n"
 "ktorá je vám najbli¾¹ia, v¾dy je mo¾né ju neskôr zmeni»."
 
 #. Make the user level radio buttons and fill the radio_buttons
 #. * array
-#: src/nautilus-first-time-druid.c:508
+#: src/nautilus-first-time-druid.c:517
 #, c-format
 msgid ""
 "For users who have no previous experience with GNOME\n"
@@ -6565,7 +6517,7 @@ msgstr ""
 "Pre pou¾ívateµov, ktorý sa e¹te nikdy nestretli s GNOME\n"
 "a systémom %s."
 
-#: src/nautilus-first-time-druid.c:516
+#: src/nautilus-first-time-druid.c:525
 #, c-format
 msgid ""
 "For users who are comfortable with GNOME and %s,\n"
@@ -6575,7 +6527,7 @@ msgstr ""
 "prostredie GNOME a %s, ale nepova¾ujú sa\n"
 "za odborníkov."
 
-#: src/nautilus-first-time-druid.c:526
+#: src/nautilus-first-time-druid.c:535
 #, c-format
 msgid ""
 "For users who have GNOME and %s experience, and\n"
@@ -6584,7 +6536,7 @@ msgstr ""
 "Pre pou¾ívateµov, ktorí poznajú GNOME a %s\n"
 "a chcú vedie» ka¾dý detail operaèného systému."
 
-#: src/nautilus-first-time-druid.c:571
+#: src/nautilus-first-time-druid.c:580
 msgid ""
 "To verify your Internet connection and make sure you have\n"
 "the latest Nautilus updates, Nautilus will now connect to\n"
@@ -6605,15 +6557,15 @@ msgstr ""
 "Ak viete, ¾e vá¹ poèítaè pou¾ívate spojenie pomocou proxy,\n"
 "kliknite na Overi» a Nautilus pou¾ite proxy.\n"
 
-#: src/nautilus-first-time-druid.c:585
+#: src/nautilus-first-time-druid.c:594
 msgid "Verify my connection and check for updates"
 msgstr "Áno, overi» moje spojenie a skontrolova» aktualizácie"
 
-#: src/nautilus-first-time-druid.c:586
+#: src/nautilus-first-time-druid.c:595
 msgid "Don't verify my connection or check for updates"
 msgstr "Neoveri» moje spojenie ani nekontrolova» aktualizácie"
 
-#: src/nautilus-first-time-druid.c:651
+#: src/nautilus-first-time-druid.c:660
 msgid ""
 "We are having trouble making an external web connection.\n"
 "Sometimes, firewalls require you to specify a web proxy server.\n"
@@ -6623,33 +6575,33 @@ msgstr ""
 "Niekedy je nutné kvôli firewallom uvies» server pre WWW proxy.\n"
 "Ak chcete, vyplòte meno a port vá¹ho proxy serveru."
 
-#: src/nautilus-first-time-druid.c:663
+#: src/nautilus-first-time-druid.c:672
 msgid "No proxy server required."
 msgstr "Proxy server nie je potrebný."
 
-#: src/nautilus-first-time-druid.c:664
+#: src/nautilus-first-time-druid.c:673
 msgid "Use this proxy server:"
 msgstr "Pou¾i» tento proxy server:"
 
 #. allocate the proxy label, followed by the entry
-#: src/nautilus-first-time-druid.c:689
+#: src/nautilus-first-time-druid.c:698
 msgid "Proxy address:"
 msgstr "Adresa proxy:"
 
 #. allocate the proxy label, followed by the entry
-#: src/nautilus-first-time-druid.c:706 src/nautilus-preferences-dialog.c:300
+#: src/nautilus-first-time-druid.c:715 src/nautilus-preferences-dialog.c:309
 msgid "Port:"
 msgstr "Port:"
 
-#: src/nautilus-first-time-druid.c:751
+#: src/nautilus-first-time-druid.c:760
 msgid "Verifying your Internet connection and checking for updates..."
 msgstr "Overujem va¹e pripojenie na Internet a kontrolujem aktualizácie..."
 
-#: src/nautilus-first-time-druid.c:759
+#: src/nautilus-first-time-druid.c:768
 msgid "Downloading Nautilus updates..."
 msgstr "S»ahujem aktualizácie programu Nautilus..."
 
-#: src/nautilus-first-time-druid.c:914
+#: src/nautilus-first-time-druid.c:912
 msgid ""
 "If you have been using the GNOME Midnight Commander\n"
 "these settings move your desktop icons to Nautilus and\n"
@@ -6659,20 +6611,20 @@ msgstr ""
 "toto nastavenie presunie va¹e ikony z plochy do Nautilusu\n"
 "a nastavia Nautilus ako ¹tandardnú plochu.\n"
 
-#: src/nautilus-first-time-druid.c:921
+#: src/nautilus-first-time-druid.c:919
 msgid "Use Nautilus to draw the desktop."
 msgstr "Pou¾i» Nautilus pre kreslenie plochy."
 
-#: src/nautilus-first-time-druid.c:927
+#: src/nautilus-first-time-druid.c:925
 msgid "Move existing desktop icons to the Nautilus desktop."
 msgstr "Prenies» existujúce ikony plochy na plochu Nautilusu."
 
 #. This option is currently disabled, per bugzilla.eazel.com 7557
-#: src/nautilus-first-time-druid.c:935
+#: src/nautilus-first-time-druid.c:933
 msgid "Launch Nautilus when GNOME starts up."
 msgstr "Spú¹»a» Nautilus pri ¹tarte sedenia GNOME."
 
-#: src/nautilus-first-time-druid.c:1020
+#: src/nautilus-first-time-druid.c:1019
 #, c-format
 msgid ""
 "Click Finish to launch Nautilus. You'll start with two\n"
@@ -6689,7 +6641,7 @@ msgstr ""
 "\n"
 "Dúfame, ¾e sa vám bude Nautilus páèi»!"
 
-#: src/nautilus-first-time-druid.c:1027
+#: src/nautilus-first-time-druid.c:1026
 msgid ""
 "Click Finish to launch Nautilus. You'll start with a\n"
 "window showing your home folder.\n"
@@ -6701,15 +6653,15 @@ msgstr ""
 "\n"
 "Dúfame, ¾e sa vám bude Nautilus páèi»!"
 
-#: src/nautilus-first-time-druid.c:1053
+#: src/nautilus-first-time-druid.c:1052
 msgid "Nautilus First Time Setup"
 msgstr "Poèiatoèné nastavenie programu Nautilus"
 
-#: src/nautilus-first-time-druid.c:1083
+#: src/nautilus-first-time-druid.c:1082
 msgid "Welcome to Nautilus"
 msgstr "Víta vás Nautilus"
 
-#: src/nautilus-first-time-druid.c:1085
+#: src/nautilus-first-time-druid.c:1084
 msgid ""
 "Nautilus...\n"
 "    Is a great file manager for the GNOME desktop.\n"
@@ -6728,12 +6680,12 @@ msgstr ""
 "Stlaèením Nasledujúci zaènite prispôsobenie vá¹ho prostredia Nautilus."
 
 #. set up the final page
-#: src/nautilus-first-time-druid.c:1096
+#: src/nautilus-first-time-druid.c:1095
 msgid "Finished"
 msgstr "Dokonèené"
 
 #. set up the user level page
-#: src/nautilus-first-time-druid.c:1109
+#: src/nautilus-first-time-druid.c:1108
 msgid "Choose Your User Level"
 msgstr "Vyberte pou¾ívateµskú úroveò"
 
@@ -6743,26 +6695,26 @@ msgid "GMC to Nautilus Transition"
 msgstr "Prechod od GMC k Nautilusu"
 
 #. set up the update page
-#: src/nautilus-first-time-druid.c:1117
+#: src/nautilus-first-time-druid.c:1118
 msgid "Checking Your Internet Connection"
 msgstr "Overujem pripojenie na Internet"
 
 #. set up the update feedback page
-#: src/nautilus-first-time-druid.c:1125
+#: src/nautilus-first-time-druid.c:1126
 msgid "Updating Nautilus..."
 msgstr "Aktualizujem Nautilus..."
 
 #. set up the (optional) proxy configuration page
-#: src/nautilus-first-time-druid.c:1133
+#: src/nautilus-first-time-druid.c:1134
 msgid "Web Proxy Configuration"
 msgstr "Nastavenie proxy pre WWW"
 
 #. change the message to expanding file
-#: src/nautilus-first-time-druid.c:1206
+#: src/nautilus-first-time-druid.c:1207
 msgid "Decoding Update..."
 msgstr "Dekódujem aktualizáciu..."
 
-#: src/nautilus-first-time-druid.c:1223
+#: src/nautilus-first-time-druid.c:1224
 msgid "Update Complete. Click Next to Continue."
 msgstr "Aktualizácia dokonèená. Pre pokraèovanie stlaète Nasledujúci."
 
@@ -6770,7 +6722,7 @@ msgstr "Aktualizácia dokonèená. Pre pokraèovanie stlaète Nasledujúci."
 #. * doesn't exist. Arlo and I (jsh) and decided that the
 #. * best thing to do is silently fail
 #.
-#: src/nautilus-first-time-druid.c:1238
+#: src/nautilus-first-time-druid.c:1239
 msgid "No Update Available... Press Next to Continue."
 msgstr "Aktualizácia nie je k dispozícii. Pre pokraèovanie stlaète Nasledujúci."
 
@@ -6847,65 +6799,73 @@ msgstr "nautilus: --restart nie je mo¾né pou¾i» s URI.\n"
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry nie je mo¾né pou¾i» s viac ako jedným URI.\n"
 
-#: src/nautilus-preferences-dialog.c:51
+#: src/nautilus-preferences-dialog.c:53
 msgid "Smoother Graphics"
 msgstr "Jemnej¹ia grafika"
 
-#: src/nautilus-preferences-dialog.c:53
+#: src/nautilus-preferences-dialog.c:55
 msgid "Use smoother (but slower) graphics"
 msgstr "Pou¾i» jemnej¹iu (ale pomal¹iu) grafiku"
 
-#: src/nautilus-preferences-dialog.c:56 src/nautilus-preferences-dialog.c:63
+#: src/nautilus-preferences-dialog.c:58 src/nautilus-preferences-dialog.c:63
 msgid "Fonts"
 msgstr "Písma"
 
-#: src/nautilus-preferences-dialog.c:58 src/nautilus-preferences-dialog.c:65
-msgid "Font for elsewhere in Nautilus:"
-msgstr "Písmo pre ostatné èasti Nautilusu:"
+#: src/nautilus-preferences-dialog.c:60
+msgid "Default smooth font:"
+msgstr "©tandardné hladké písmo:"
 
-#: src/nautilus-preferences-dialog.c:76
+#: src/nautilus-preferences-dialog.c:65
+msgid "Default non-smooth font:"
+msgstr "©tandardné hrubé písmo:"
+
+#: src/nautilus-preferences-dialog.c:68
+msgid "Nautilus Themes"
+msgstr "Témy Nautilus"
+
+#: src/nautilus-preferences-dialog.c:83
 msgid "Use Nautilus to draw the desktop"
 msgstr "Pou¾i» Nautilus pre kreslenie plochy"
 
-#: src/nautilus-preferences-dialog.c:81
+#: src/nautilus-preferences-dialog.c:88
 msgid "Use your home folder as the desktop"
 msgstr "Pou¾i» domovský prieèinok ako desktop"
 
-#: src/nautilus-preferences-dialog.c:84 src/nautilus-preferences-dialog.c:89
-#: src/nautilus-preferences-dialog.c:94 src/nautilus-preferences-dialog.c:99
-#: src/nautilus-preferences-dialog.c:104
+#: src/nautilus-preferences-dialog.c:91 src/nautilus-preferences-dialog.c:96
+#: src/nautilus-preferences-dialog.c:101 src/nautilus-preferences-dialog.c:106
+#: src/nautilus-preferences-dialog.c:111
 msgid "Opening New Windows"
 msgstr "Otvára» nové okná"
 
-#: src/nautilus-preferences-dialog.c:86
+#: src/nautilus-preferences-dialog.c:93
 msgid "Open each file or folder in a separate window"
 msgstr "Otvori» ka¾dý súbor alebo prieèinok v samostatnom okne"
 
-#: src/nautilus-preferences-dialog.c:91
+#: src/nautilus-preferences-dialog.c:98
 msgid "Display toolbar in new windows"
 msgstr "Zobrazi» nástrojový panel v nových oknách"
 
-#: src/nautilus-preferences-dialog.c:96
+#: src/nautilus-preferences-dialog.c:103
 msgid "Display location bar in new windows"
 msgstr "Zobrazi» panel umiestnenia v nových oknách"
 
-#: src/nautilus-preferences-dialog.c:101
+#: src/nautilus-preferences-dialog.c:108
 msgid "Display status bar in new windows"
 msgstr "Zobrazi» stavový riadok v nových oknách"
 
-#: src/nautilus-preferences-dialog.c:106
+#: src/nautilus-preferences-dialog.c:113
 msgid "Display sidebar in new windows"
 msgstr "Zobrazi» boèný panel v nových oknách"
 
-#: src/nautilus-preferences-dialog.c:109 src/nautilus-preferences-dialog.c:114
+#: src/nautilus-preferences-dialog.c:116 src/nautilus-preferences-dialog.c:121
 msgid "Trash Behavior"
 msgstr "Chovanie Odpadkov"
 
-#: src/nautilus-preferences-dialog.c:111
+#: src/nautilus-preferences-dialog.c:118
 msgid "Ask before emptying the Trash or deleting files"
 msgstr "Pýta» sa pred odstránením polo¾iek z Odpadkov alebo odstránením súborov"
 
-#: src/nautilus-preferences-dialog.c:116
+#: src/nautilus-preferences-dialog.c:123
 msgid "Include a Delete command that bypasses Trash"
 msgstr "Ponúka» príkaz Odstráni», ktorý nepou¾íva Odpadky"
 
@@ -6913,52 +6873,52 @@ msgstr "Ponúka» príkaz Odstráni», ktorý nepou¾íva Odpadky"
 #. * Desktop, but there's no obviously-better place for it and
 #. * it probably doesn't deserve a pane of its own.
 #.
-#: src/nautilus-preferences-dialog.c:123
+#: src/nautilus-preferences-dialog.c:130
 msgid "Keyboard Shortcuts"
 msgstr "Klávesové skratky"
 
-#: src/nautilus-preferences-dialog.c:125
+#: src/nautilus-preferences-dialog.c:132
 msgid "Use Emacs-style keyboard shortcuts in text fields"
 msgstr "Pou¾i» v textových poliach klávesové skratky v ¹týle Emacs"
 
-#: src/nautilus-preferences-dialog.c:132 src/nautilus-preferences-dialog.c:134
+#: src/nautilus-preferences-dialog.c:139 src/nautilus-preferences-dialog.c:141
 msgid "Click Behavior"
 msgstr "Chovanie pri kliknutí"
 
-#: src/nautilus-preferences-dialog.c:137 src/nautilus-preferences-dialog.c:139
+#: src/nautilus-preferences-dialog.c:144 src/nautilus-preferences-dialog.c:146
 msgid "Executable Text Files"
 msgstr "Spustiteµné textové súbory"
 
-#: src/nautilus-preferences-dialog.c:142 src/nautilus-preferences-dialog.c:147
-#: src/nautilus-preferences-dialog.c:152
+#: src/nautilus-preferences-dialog.c:149 src/nautilus-preferences-dialog.c:154
+#: src/nautilus-preferences-dialog.c:159
 msgid "Show/Hide Options"
 msgstr "Ukáza»/Skry» mo¾nosti"
 
-#: src/nautilus-preferences-dialog.c:144
+#: src/nautilus-preferences-dialog.c:151
 msgid "Show hidden files (file names start with \".\")"
 msgstr "Ukáza» skryté súbory (mená súborov zaèínajúce \".\")"
 
-#: src/nautilus-preferences-dialog.c:149
+#: src/nautilus-preferences-dialog.c:156
 msgid "Show backup files (file names end with \"~\")"
 msgstr "Ukáza» súbory zálohy (mená súborov konèiace \"~\")"
 
-#: src/nautilus-preferences-dialog.c:154
+#: src/nautilus-preferences-dialog.c:161
 msgid "Show special flags in Properties window"
 msgstr "Ukáza» ¹peciálne príznaky v okne Vlastnosti"
 
-#: src/nautilus-preferences-dialog.c:157
+#: src/nautilus-preferences-dialog.c:164
 msgid "Sorting Order"
 msgstr "Poradie triedenia"
 
-#: src/nautilus-preferences-dialog.c:159
+#: src/nautilus-preferences-dialog.c:166
 msgid "Always list folders before files"
 msgstr "V¾dy uvádza» v zozname prieèinky pre súbormi"
 
-#: src/nautilus-preferences-dialog.c:166 src/nautilus-preferences-dialog.c:391
+#: src/nautilus-preferences-dialog.c:173 src/nautilus-preferences-dialog.c:416
 msgid "Icon Captions"
 msgstr "Titulky ikon"
 
-#: src/nautilus-preferences-dialog.c:168
+#: src/nautilus-preferences-dialog.c:175
 msgid ""
 "Choose the order for information to appear beneath icon names.\n"
 "More information appears as you zoom in closer"
@@ -6966,166 +6926,186 @@ msgstr ""
 "Vyberte poradie, v akom sa budú zobrazova» informácie pod menami ikon.\n"
 "Ïal¹ie informácie sa zobrazia pri priblí¾ení."
 
-#: src/nautilus-preferences-dialog.c:181
+#: src/nautilus-preferences-dialog.c:188
 msgid "Default View"
 msgstr "©tandardný pohµad"
 
-#: src/nautilus-preferences-dialog.c:183
+#: src/nautilus-preferences-dialog.c:190
 msgid "View new folders using:"
 msgstr "Zobrazi» nové prieèinky v:"
 
 #. Icon View Defaults
-#: src/nautilus-preferences-dialog.c:188 src/nautilus-preferences-dialog.c:193
-#: src/nautilus-preferences-dialog.c:198 src/nautilus-preferences-dialog.c:205
-#: src/nautilus-preferences-dialog.c:212 src/nautilus-preferences-dialog.c:218
-#: src/nautilus-preferences-dialog.c:224
+#: src/nautilus-preferences-dialog.c:195 src/nautilus-preferences-dialog.c:200
+#: src/nautilus-preferences-dialog.c:205 src/nautilus-preferences-dialog.c:212
+#: src/nautilus-preferences-dialog.c:219 src/nautilus-preferences-dialog.c:225
+#: src/nautilus-preferences-dialog.c:231
 msgid "Icon View Defaults"
 msgstr "©tandardný pohµad Ikony"
 
-#: src/nautilus-preferences-dialog.c:190 src/nautilus-preferences-dialog.c:234
+#: src/nautilus-preferences-dialog.c:197 src/nautilus-preferences-dialog.c:241
 msgid "Lay Out Items:"
 msgstr "Rozlo¾enie polo¾iek:"
 
-#: src/nautilus-preferences-dialog.c:195 src/nautilus-preferences-dialog.c:239
+#: src/nautilus-preferences-dialog.c:202 src/nautilus-preferences-dialog.c:246
 msgid "Sort in reversed order"
 msgstr "Opaèné poradie"
 
-#: src/nautilus-preferences-dialog.c:200 src/nautilus-preferences-dialog.c:207
-#: src/nautilus-preferences-dialog.c:244
+#: src/nautilus-preferences-dialog.c:207 src/nautilus-preferences-dialog.c:214
+#: src/nautilus-preferences-dialog.c:251
 msgid "Font:"
 msgstr "Písmo:"
 
-#: src/nautilus-preferences-dialog.c:214 src/nautilus-preferences-dialog.c:249
+#: src/nautilus-preferences-dialog.c:221 src/nautilus-preferences-dialog.c:256
 msgid "Default zoom level:"
 msgstr "©tandardná lupa:"
 
-#: src/nautilus-preferences-dialog.c:220
+#: src/nautilus-preferences-dialog.c:227
 msgid "Use tighter layout"
 msgstr "Rozlo¾i» bli¾¹ie k sebe"
 
-#: src/nautilus-preferences-dialog.c:226 src/nautilus-preferences-dialog.c:261
+#: src/nautilus-preferences-dialog.c:233 src/nautilus-preferences-dialog.c:268
 msgid "Font size at default zoom level:"
 msgstr "Veµkos» písma pri ¹tandardnej lupe:"
 
 #. List View Defaults
-#: src/nautilus-preferences-dialog.c:232 src/nautilus-preferences-dialog.c:237
-#: src/nautilus-preferences-dialog.c:242 src/nautilus-preferences-dialog.c:247
-#: src/nautilus-preferences-dialog.c:253 src/nautilus-preferences-dialog.c:259
+#: src/nautilus-preferences-dialog.c:239 src/nautilus-preferences-dialog.c:244
+#: src/nautilus-preferences-dialog.c:249 src/nautilus-preferences-dialog.c:254
+#: src/nautilus-preferences-dialog.c:260 src/nautilus-preferences-dialog.c:266
 msgid "List View Defaults"
 msgstr "©tandard pohµadu Zoznam"
 
-#: src/nautilus-preferences-dialog.c:269
+#: src/nautilus-preferences-dialog.c:277
 msgid "Search Complexity Options"
 msgstr "Nastavenie zlo¾itosti hµadania"
 
-#: src/nautilus-preferences-dialog.c:271
+#: src/nautilus-preferences-dialog.c:279
 msgid "search type to do by default"
 msgstr "©tandardný typ hµadania"
 
-#: src/nautilus-preferences-dialog.c:276
+#: src/nautilus-preferences-dialog.c:285
 msgid "Search Engine Location"
 msgstr "Miesto pre prehµadávanie WWW"
 
-#: src/nautilus-preferences-dialog.c:288 src/nautilus-preferences-dialog.c:293
-#: src/nautilus-preferences-dialog.c:298 src/nautilus-preferences-dialog.c:303
-#: src/nautilus-preferences-dialog.c:310 src/nautilus-preferences-dialog.c:317
+#: src/nautilus-preferences-dialog.c:297 src/nautilus-preferences-dialog.c:302
+#: src/nautilus-preferences-dialog.c:307 src/nautilus-preferences-dialog.c:312
+#: src/nautilus-preferences-dialog.c:319 src/nautilus-preferences-dialog.c:326
 msgid "HTTP Proxy Settings"
 msgstr "Nastavenie proxy HTTP"
 
-#: src/nautilus-preferences-dialog.c:290
+#: src/nautilus-preferences-dialog.c:299
 msgid "Use HTTP Proxy"
 msgstr "Pou¾i» HTTP proxy"
 
-#: src/nautilus-preferences-dialog.c:305
+#: src/nautilus-preferences-dialog.c:314
 msgid "Proxy requires a username and password:"
 msgstr "Proxy vy¾aduje pou¾ívateµské meno a heslo:"
 
-#: src/nautilus-preferences-dialog.c:312
+#: src/nautilus-preferences-dialog.c:321
 msgid "Username:"
 msgstr "Pou¾ívateµské meno:"
 
-#: src/nautilus-preferences-dialog.c:319
+#: src/nautilus-preferences-dialog.c:328
 msgid "Password:"
 msgstr "Heslo:"
 
-#: src/nautilus-preferences-dialog.c:324
+#: src/nautilus-preferences-dialog.c:333
 msgid "Built-in Bookmarks"
 msgstr "Zabudované zálo¾ky"
 
-#: src/nautilus-preferences-dialog.c:326
+#: src/nautilus-preferences-dialog.c:335
 msgid "Don't include the built-in bookmarks in the Bookmarks menu"
 msgstr "Neuvádza» zabudované zálo¾ky v menu Zálo¾ky"
 
-#: src/nautilus-preferences-dialog.c:333
+#: src/nautilus-preferences-dialog.c:342
 msgid "Show Text in Icons"
 msgstr "Ukáza» text v ikonách"
 
-#: src/nautilus-preferences-dialog.c:338
+#: src/nautilus-preferences-dialog.c:347
 msgid "Show Count of Items in Folders"
 msgstr "Ukáza» poèet polo¾iek v prieèinkoch"
 
-#: src/nautilus-preferences-dialog.c:343 src/nautilus-preferences-dialog.c:348
+#: src/nautilus-preferences-dialog.c:352 src/nautilus-preferences-dialog.c:357
 msgid "Show Thumbnails for Image Files"
 msgstr "Ukáza» miniatúry pre obrázky"
 
-#: src/nautilus-preferences-dialog.c:350
+#: src/nautilus-preferences-dialog.c:359
 msgid "Don't make thumbnails for files larger than:"
 msgstr "Nevytvára» miniatúry pre súbory väè¹ie ako:"
 
-#: src/nautilus-preferences-dialog.c:353
+#: src/nautilus-preferences-dialog.c:362
 msgid "Preview Sound Files"
 msgstr "Uká¾ka zvukových súborov"
 
 #. FIXME bugzilla.eazel.com 2560: This title phrase needs improvement.
-#: src/nautilus-preferences-dialog.c:360
+#: src/nautilus-preferences-dialog.c:369
 msgid "Make Folder Appearance Details Public"
 msgstr "Detaily vzhµadu prieèinku sú verejné"
 
-#: src/nautilus-preferences-dialog.c:369
+#: src/nautilus-preferences-dialog.c:378
 msgid "Tabs"
 msgstr "Zálo¾ky"
 
-#: src/nautilus-preferences-dialog.c:380
+#: src/nautilus-preferences-dialog.c:389
 msgid "Show only folders (no files) in the tree"
 msgstr "Ukáza» iba prieèinky (nie súbory) v strome"
 
-#: src/nautilus-preferences-dialog.c:387
+#: src/nautilus-preferences-dialog.c:396
+msgid "Maximum items per site"
+msgstr "Maximálny poèet polo¾iek pre server"
+
+#: src/nautilus-preferences-dialog.c:398
+msgid "Maximum number of items displayed per site"
+msgstr "Maximálny poèet zobrazených polo¾iek pre ka¾dý server"
+
+#: src/nautilus-preferences-dialog.c:401
+msgid "Update Minutes"
+msgstr "Aktualizácia v minútach"
+
+#: src/nautilus-preferences-dialog.c:403
+msgid "Update frequency in minutes"
+msgstr "Frekvencia aktualizácie v minútach"
+
+#: src/nautilus-preferences-dialog.c:412
 msgid "View Preferences"
 msgstr "Pohµad Nastavenie"
 
-#: src/nautilus-preferences-dialog.c:388
+#: src/nautilus-preferences-dialog.c:413
 msgid "Appearance"
 msgstr "Vzhµad"
 
-#: src/nautilus-preferences-dialog.c:389
+#: src/nautilus-preferences-dialog.c:414
 msgid "Windows & Desktop"
 msgstr "Okná a plocha"
 
-#: src/nautilus-preferences-dialog.c:390
+#: src/nautilus-preferences-dialog.c:415
 msgid "Icon & List Views"
 msgstr "Ikony a zoznamy"
 
-#: src/nautilus-preferences-dialog.c:392
+#: src/nautilus-preferences-dialog.c:417
 msgid "Sidebar Panels"
 msgstr "Boèný panel"
 
-#: src/nautilus-preferences-dialog.c:393
+#: src/nautilus-preferences-dialog.c:418
 msgid "Search"
 msgstr "Hµadanie"
 
-#: src/nautilus-preferences-dialog.c:394
+#: src/nautilus-preferences-dialog.c:419
 msgid "Navigation"
 msgstr "Navigácia"
 
-#: src/nautilus-preferences-dialog.c:395
+#: src/nautilus-preferences-dialog.c:420
 msgid "Speed Tradeoffs"
 msgstr "Rýchlostné kompromisy"
 
-#: src/nautilus-preferences-dialog.c:422
+#: src/nautilus-preferences-dialog.c:421
+msgid "News Panel"
+msgstr "Panel noviniek"
+
+#: src/nautilus-preferences-dialog.c:448
 msgid "Preferences"
 msgstr "Nastavenie"
 
-#: src/nautilus-preferences-dialog.c:451
+#: src/nautilus-preferences-dialog.c:477
 #, c-format
 msgid "Display %s tab in sidebar"
 msgstr "Zobrazi» zálo¾ku %s v boènom paneli"
@@ -7263,7 +7243,7 @@ msgstr "¥utujem, ale obrázok %s nie je mo¾né nain¹talova» ako emblém."
 msgid "Select A Category:"
 msgstr "Vyberte kategóriu:"
 
-#: src/nautilus-property-browser.c:2029 src/nautilus-theme-selector.c:457
+#: src/nautilus-property-browser.c:2029 src/nautilus-theme-selector.c:193
 msgid "Cancel Remove"
 msgstr "Zru¹i» odstránenie"
 
@@ -7587,106 +7567,102 @@ msgid "Display the latest contents of the current location"
 msgstr "Zobrazí najnov¹í obsah aktuálneho miesta"
 
 #: src/nautilus-shell-ui.xml.h:24
-msgid "Display the set of available appearance themes"
-msgstr "Zobrazí tém vzhµadu, ktoré sú k dispozícii"
-
-#: src/nautilus-shell-ui.xml.h:25
 msgid "Edit various Nautilus preferences"
 msgstr "Upraví rôzne nastavenia Nautilu"
 
-#: src/nautilus-shell-ui.xml.h:26
+#: src/nautilus-shell-ui.xml.h:25
 msgid "Find"
 msgstr "Nájs»"
 
-#: src/nautilus-shell-ui.xml.h:27
+#: src/nautilus-shell-ui.xml.h:26
 msgid "For_get History"
 msgstr "Za_budnú» históriu"
 
-#: src/nautilus-shell-ui.xml.h:28
+#: src/nautilus-shell-ui.xml.h:27
 msgid "Go to Eazel Services"
 msgstr "Prejs» na Eazel Services"
 
-#: src/nautilus-shell-ui.xml.h:29
+#: src/nautilus-shell-ui.xml.h:28
 msgid "Go to the home location"
 msgstr "Prejs» domov"
 
-#: src/nautilus-shell-ui.xml.h:30
+#: src/nautilus-shell-ui.xml.h:29
 msgid "Go to the next visited location"
 msgstr "Prejs» na nasledujúce nav¹tívené miesto"
 
-#: src/nautilus-shell-ui.xml.h:31
+#: src/nautilus-shell-ui.xml.h:30
 msgid "Go to the previous visited location"
 msgstr "Prejs» na predchádzajúce nav¹tívené miesto"
 
-#: src/nautilus-shell-ui.xml.h:32
+#: src/nautilus-shell-ui.xml.h:31
 msgid "Go up to the location that contains the displayed location"
 msgstr "Prejs» o úroveò vy¹¹ie na miesto, ktoré obsahuje toto miesto"
 
-#: src/nautilus-shell-ui.xml.h:33 src/nautilus-window-menus.c:487
+#: src/nautilus-shell-ui.xml.h:32 src/nautilus-window-menus.c:492
 msgid "Hide Location _Bar"
 msgstr "Skry» pruh _umiestnenia"
 
-#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:469
+#: src/nautilus-shell-ui.xml.h:33 src/nautilus-window-menus.c:474
 msgid "Hide St_atus Bar"
 msgstr "Skry» _stavový riadok"
 
-#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:475
+#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:480
 msgid "Hide _Sidebar"
 msgstr "Skry» _boèný panel"
 
-#: src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:481
+#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:486
 msgid "Hide _Toolbar"
 msgstr "Skry» panel _nástrojov"
 
-#: src/nautilus-shell-ui.xml.h:38
+#: src/nautilus-shell-ui.xml.h:37
 msgid "Nautilus Quick _Reference"
 msgstr "Rýchla _referenèná príruèka Nautilusu"
 
-#: src/nautilus-shell-ui.xml.h:39
+#: src/nautilus-shell-ui.xml.h:38
 msgid "Nautilus Release _Notes"
 msgstr "Po_známky Nautilusu"
 
-#: src/nautilus-shell-ui.xml.h:40
+#: src/nautilus-shell-ui.xml.h:39
 msgid "Nautilus User _Manual"
 msgstr "_Pou¾ívateµský manuál Nautilusu"
 
-#: src/nautilus-shell-ui.xml.h:41
+#: src/nautilus-shell-ui.xml.h:40
 msgid "New Window"
 msgstr "Nové okno"
 
-#: src/nautilus-shell-ui.xml.h:42
+#: src/nautilus-shell-ui.xml.h:41
 msgid "New _Window"
 msgstr "Nové _okno"
 
-#: src/nautilus-shell-ui.xml.h:43
+#: src/nautilus-shell-ui.xml.h:42
 msgid "Normal Size"
 msgstr "Normálna veµkos»"
 
-#: src/nautilus-shell-ui.xml.h:44
+#: src/nautilus-shell-ui.xml.h:43
 msgid "Open another Nautilus window for the displayed location"
 msgstr "Otvorí ïal¹ie okno pre zobrazené miesto"
 
-#: src/nautilus-shell-ui.xml.h:45
+#: src/nautilus-shell-ui.xml.h:44
 msgid "Refresh"
 msgstr "Obnovi»"
 
-#: src/nautilus-shell-ui.xml.h:46
+#: src/nautilus-shell-ui.xml.h:45
 msgid "Report Profiling"
 msgstr "Oznámi» výsledky profilovania"
 
-#: src/nautilus-shell-ui.xml.h:47
+#: src/nautilus-shell-ui.xml.h:46
 msgid "Reset Profiling"
 msgstr "Vyèisti» výsledky profilovania"
 
-#: src/nautilus-shell-ui.xml.h:48
+#: src/nautilus-shell-ui.xml.h:47
 msgid "Search the World Wide Web"
 msgstr "Nájs» na WWW"
 
-#: src/nautilus-shell-ui.xml.h:49
+#: src/nautilus-shell-ui.xml.h:48
 msgid "Search this computer for files"
 msgstr "Nájs» súbory na tomto poèítaèi"
 
-#: src/nautilus-shell-ui.xml.h:51
+#: src/nautilus-shell-ui.xml.h:50
 msgid ""
 "Show a page from which you can send feedback about Nautilus and Eazel "
 "Services"
@@ -7694,197 +7670,193 @@ msgstr ""
 "Zobrazí stránku, z ktorej je mo¾né posla» komentáre o programe Nautilus a o "
 "Eazel Services"
 
-#: src/nautilus-shell-ui.xml.h:52
+#: src/nautilus-shell-ui.xml.h:51
 msgid "Show the contents at the normal size"
 msgstr "Zobrazí obsah v normálnej veµkosti"
 
-#: src/nautilus-shell-ui.xml.h:53
+#: src/nautilus-shell-ui.xml.h:52
 msgid "Show the contents in less detail"
 msgstr "Zobrazí obsah s menej detailami"
 
-#: src/nautilus-shell-ui.xml.h:54
+#: src/nautilus-shell-ui.xml.h:53
 msgid "Show the contents in more detail"
 msgstr "Zobrazí obsah detailnej¹ie"
 
-#: src/nautilus-shell-ui.xml.h:55
+#: src/nautilus-shell-ui.xml.h:54
 msgid "Start Profiling"
 msgstr "Spusti» profilovanie"
 
-#: src/nautilus-shell-ui.xml.h:57
+#: src/nautilus-shell-ui.xml.h:56
 msgid "Stop Profiling"
 msgstr "Zastavi» profilovanie"
 
-#: src/nautilus-shell-ui.xml.h:58
+#: src/nautilus-shell-ui.xml.h:57
 msgid "Stop loading this location"
 msgstr "Zastaví naèítavanie tohoto miesta"
 
-#: src/nautilus-shell-ui.xml.h:59
+#: src/nautilus-shell-ui.xml.h:58
 msgid "Undo the last text change"
 msgstr "Vráti spä» poslednú zmenu textu"
 
-#: src/nautilus-shell-ui.xml.h:60
+#: src/nautilus-shell-ui.xml.h:59
 msgid "Up"
 msgstr "Hore"
 
-#: src/nautilus-shell-ui.xml.h:61
+#: src/nautilus-shell-ui.xml.h:60
 msgid "Use preferences appropriate for beginners"
 msgstr "Pou¾i» nastavenie vhodné pre zaèiatoèníkov"
 
-#: src/nautilus-shell-ui.xml.h:62
+#: src/nautilus-shell-ui.xml.h:61
 msgid "Use preferences appropriate for experts"
 msgstr "Pou¾i» nastavenie vhodné pre expertov"
 
-#: src/nautilus-shell-ui.xml.h:63
+#: src/nautilus-shell-ui.xml.h:62
 msgid "Use preferences appropriate for most people"
 msgstr "Pou¾i» nastavenie vhodné pre väè¹inu µudí"
 
 #. Add "View as..." extra bonus choice.
-#: src/nautilus-shell-ui.xml.h:64 src/nautilus-window.c:645
+#: src/nautilus-shell-ui.xml.h:63 src/nautilus-window.c:645
 #: src/nautilus-window.c:1524
 msgid "View as..."
 msgstr "Zobrazi» ako..."
 
-#: src/nautilus-shell-ui.xml.h:65
+#: src/nautilus-shell-ui.xml.h:64
 msgid "We_b Search"
 msgstr "Nájs» na _WWW"
 
-#: src/nautilus-shell-ui.xml.h:66
+#: src/nautilus-shell-ui.xml.h:65
 msgid "Web Search"
 msgstr "Nájs» na WWW"
 
-#: src/nautilus-shell-ui.xml.h:67
+#: src/nautilus-shell-ui.xml.h:66
 msgid "Zoom In"
 msgstr "Zväè¹i»"
 
-#: src/nautilus-shell-ui.xml.h:68
+#: src/nautilus-shell-ui.xml.h:67
 msgid "Zoom Out"
 msgstr "Zmen¹i»"
 
-#: src/nautilus-shell-ui.xml.h:69
+#: src/nautilus-shell-ui.xml.h:68
 msgid "Zoom _In"
 msgstr "Z_väè¹i»"
 
-#: src/nautilus-shell-ui.xml.h:70
+#: src/nautilus-shell-ui.xml.h:69
 msgid "Zoom _Out"
 msgstr "Z_men¹i»"
 
-#: src/nautilus-shell-ui.xml.h:71
+#: src/nautilus-shell-ui.xml.h:70
 msgid "_About Nautilus..."
 msgstr "_O programe Nautilus..."
 
-#: src/nautilus-shell-ui.xml.h:72
+#: src/nautilus-shell-ui.xml.h:71
 msgid "_Add Bookmark"
 msgstr "_Prida» zálo¾ku"
 
-#: src/nautilus-shell-ui.xml.h:73
+#: src/nautilus-shell-ui.xml.h:72
 msgid "_Back"
 msgstr "_Dozadu"
 
-#: src/nautilus-shell-ui.xml.h:74
+#: src/nautilus-shell-ui.xml.h:73
 msgid "_Backgrounds and Emblems..."
 msgstr "_Pozadia a emblémy..."
 
-#: src/nautilus-shell-ui.xml.h:75
+#: src/nautilus-shell-ui.xml.h:74
 msgid "_Bookmarks"
 msgstr "_Zálo¾ky"
 
-#: src/nautilus-shell-ui.xml.h:76
+#: src/nautilus-shell-ui.xml.h:75
 msgid "_Close Window"
 msgstr "_Zavrie» okno"
 
-#: src/nautilus-shell-ui.xml.h:78
-msgid "_Customer Support"
-msgstr "_Podpora zákazníkov"
+#: src/nautilus-shell-ui.xml.h:76
+msgid "_Community Support"
+msgstr "_Podpora komunity"
 
-#: src/nautilus-shell-ui.xml.h:79
+#: src/nautilus-shell-ui.xml.h:78
 msgid "_Edit"
 msgstr "_Upravi»"
 
-#: src/nautilus-shell-ui.xml.h:80
+#: src/nautilus-shell-ui.xml.h:79
 msgid "_Edit Bookmarks..."
 msgstr "_Upravi» zálo¾ky..."
 
-#: src/nautilus-shell-ui.xml.h:81
+#: src/nautilus-shell-ui.xml.h:80
 msgid "_Edit Preferences..."
 msgstr "_Upravi» nastavenie..."
 
-#: src/nautilus-shell-ui.xml.h:82
+#: src/nautilus-shell-ui.xml.h:81
 msgid "_Feedback"
 msgstr "_Komentáre"
 
-#: src/nautilus-shell-ui.xml.h:84
+#: src/nautilus-shell-ui.xml.h:83
 msgid "_Find"
 msgstr "_Nájs»"
 
-#: src/nautilus-shell-ui.xml.h:85
+#: src/nautilus-shell-ui.xml.h:84
 msgid "_Forward"
 msgstr "_Dopredu"
 
-#: src/nautilus-shell-ui.xml.h:86
+#: src/nautilus-shell-ui.xml.h:85
 msgid "_Go"
 msgstr "_Prejs» na"
 
-#: src/nautilus-shell-ui.xml.h:87
+#: src/nautilus-shell-ui.xml.h:86
 msgid "_Help"
 msgstr "_Pomocník"
 
-#: src/nautilus-shell-ui.xml.h:88
+#: src/nautilus-shell-ui.xml.h:87
 msgid "_Home"
 msgstr "_Domov"
 
-#: src/nautilus-shell-ui.xml.h:89
+#: src/nautilus-shell-ui.xml.h:88
 msgid "_Location..."
 msgstr "U_miestnenie..."
 
-#: src/nautilus-shell-ui.xml.h:90
-msgid "_Nautilus Themes..."
-msgstr "_Nautilus témy..."
-
-#: src/nautilus-shell-ui.xml.h:91
+#: src/nautilus-shell-ui.xml.h:89
 msgid "_Normal Size"
 msgstr "_Normálna veµkos»"
 
-#: src/nautilus-shell-ui.xml.h:93
+#: src/nautilus-shell-ui.xml.h:91
 msgid "_Preferences"
 msgstr "_Nastavenie"
 
-#: src/nautilus-shell-ui.xml.h:94
+#: src/nautilus-shell-ui.xml.h:92
 msgid "_Profiler"
 msgstr "_Profiler"
 
-#: src/nautilus-shell-ui.xml.h:95
+#: src/nautilus-shell-ui.xml.h:93
 msgid "_Refresh"
 msgstr "_Obnovi»"
 
-#: src/nautilus-shell-ui.xml.h:96
+#: src/nautilus-shell-ui.xml.h:94
 msgid "_Report Profiling"
 msgstr "_Oznámi» výsledky profilovania"
 
-#: src/nautilus-shell-ui.xml.h:97
+#: src/nautilus-shell-ui.xml.h:95
 msgid "_Reset Profiling"
 msgstr "_Vyèisti» výsledky profilovania"
 
-#: src/nautilus-shell-ui.xml.h:98
+#: src/nautilus-shell-ui.xml.h:96
 msgid "_Start Profiling"
 msgstr "_Spusti» profilovanie"
 
-#: src/nautilus-shell-ui.xml.h:99
+#: src/nautilus-shell-ui.xml.h:97
 msgid "_Stop Profiling"
 msgstr "_Zastavi» profilovanie"
 
-#: src/nautilus-shell-ui.xml.h:100
+#: src/nautilus-shell-ui.xml.h:98
 msgid "_Undo"
 msgstr "_Spä»"
 
-#: src/nautilus-shell-ui.xml.h:101
+#: src/nautilus-shell-ui.xml.h:99
 msgid "_Up a Level"
 msgstr "O jednu úroveò v_y¹¹ie"
 
-#: src/nautilus-shell-ui.xml.h:102
+#: src/nautilus-shell-ui.xml.h:100
 msgid "_View"
 msgstr "_Zobrazi»"
 
-#: src/nautilus-shell-ui.xml.h:103
+#: src/nautilus-shell-ui.xml.h:101
 msgid "_View as..."
 msgstr "_Zobrazi» ako..."
 
@@ -7950,13 +7922,13 @@ msgstr ""
 msgid "Images Only"
 msgstr "Len obrázky"
 
-#: src/nautilus-sidebar.c:1321
+#: src/nautilus-sidebar.c:1322
 #, c-format
 msgid "Open with %s"
 msgstr "Otvori» s %s"
 
 #. Catch-all button after all the others.
-#: src/nautilus-sidebar.c:1357
+#: src/nautilus-sidebar.c:1358
 msgid "Open with..."
 msgstr "Otvori» s..."
 
@@ -7964,61 +7936,45 @@ msgstr "Otvori» s..."
 msgid "Find:"
 msgstr "Nájs»:"
 
-#. set the title and standard close accelerator
-#: src/nautilus-theme-selector.c:156
-msgid "Nautilus Theme Selector"
-msgstr "Výber Nautilus témy"
-
-#. add the title label
-#: src/nautilus-theme-selector.c:176
-msgid "Nautilus Theme:"
-msgstr "Nautilus téma:"
-
-#. change the add button label back to it's normal state
-#: src/nautilus-theme-selector.c:240 src/nautilus-theme-selector.c:518
+#: src/nautilus-theme-selector.c:181
 msgid "Add New Theme..."
 msgstr "Prida» novú tému..."
 
-#. now create the "remove" button
-#: src/nautilus-theme-selector.c:249
+#: src/nautilus-theme-selector.c:187
 msgid "Remove Theme..."
 msgstr "Odstráni» tému..."
 
-#: src/nautilus-theme-selector.c:360
+#: src/nautilus-theme-selector.c:245
+msgid "Click on a theme to remove it."
+msgstr "Kliknutím na tému ju odstránite."
+
+#: src/nautilus-theme-selector.c:248
+msgid "Click on a theme to change the appearance of Nautilus."
+msgstr "Kliknutím na tému zmeníte vzhµad programu Nautilus."
+
+#: src/nautilus-theme-selector.c:276
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid theme folder."
 msgstr "¥utujem, ale \"%s\" nie je platné meno témy."
 
-#: src/nautilus-theme-selector.c:361
+#: src/nautilus-theme-selector.c:278
 msgid "Couldn't add theme"
 msgstr "Nie je mo¾né prida» tému"
 
-#: src/nautilus-theme-selector.c:389
+#: src/nautilus-theme-selector.c:285
 #, c-format
 msgid "Sorry, but the \"%s\" theme couldn't be installed."
 msgstr "¥utujem, ale \"%s\" nie je mo¾né nain¹talova»."
 
-#: src/nautilus-theme-selector.c:390
+#: src/nautilus-theme-selector.c:287
 msgid "Couldn't install theme"
 msgstr "Nie je mo¾né nain¹talova» tému"
 
-#: src/nautilus-theme-selector.c:423
+#: src/nautilus-theme-selector.c:332
 msgid "Select a theme folder to add as a new theme:"
 msgstr "Vyberte prieèinok témy, ktorú chcete prida» ako novú tému:"
 
-#: src/nautilus-theme-selector.c:455 src/nautilus-theme-selector.c:502
-msgid "Click on a theme to remove it."
-msgstr "Kliknutím na tému ju odstránite."
-
-#: src/nautilus-theme-selector.c:505
-msgid ""
-"Click on a theme to change the\n"
-"appearance of Nautilus."
-msgstr ""
-"Kliknutím na tému zmeníte\n"
-"vzhµad programu Nautilus."
-
-#: src/nautilus-theme-selector.c:545
+#: src/nautilus-theme-selector.c:472
 msgid ""
 "Sorry, but you can't remove the current theme. Please change to another "
 "theme before removing this one."
@@ -8026,22 +7982,17 @@ msgstr ""
 "¥utujem, ale nemô¾ete odstráni» aktuálnu tému. Prosím, zmeòte aktuálnu tému "
 "pred odstránením tej momentálnej."
 
-#: src/nautilus-theme-selector.c:547
+#: src/nautilus-theme-selector.c:474
 msgid "Can't delete current theme"
 msgstr "Nie je mo¾né zmaza» aktuálnu tému"
 
-#: src/nautilus-theme-selector.c:568
+#: src/nautilus-theme-selector.c:482
 msgid "Sorry, but that theme could not be removed!"
 msgstr "¥utujem, ale tému nie je mo¾né odstráni»!"
 
-#: src/nautilus-theme-selector.c:569
+#: src/nautilus-theme-selector.c:483
 msgid "Couldn't remove theme"
 msgstr "Nie je mo¾né odstráni» tému"
-
-#: src/nautilus-theme-selector.c:676
-#, c-format
-msgid "No description available for the \"%s\" theme"
-msgstr "Pre tému \"%s\" nie je k dispozícii ¾iadny popis"
 
 #. FIXME bugzilla.eazel.com 5037: The text Preview
 #. * Release is hardcoded here. Are all builds with
@@ -8179,7 +8130,7 @@ msgstr "Nie je mo¾né zobrazi» miesto"
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-window-menus.c:358
+#: src/nautilus-window-menus.c:363
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
@@ -8187,43 +8138,51 @@ msgstr ""
 "Naozaj chcete zabudnú» históriu? Ak áno, budete ju musie» nabudúce ruène "
 "obnovi»."
 
-#: src/nautilus-window-menus.c:361
+#: src/nautilus-window-menus.c:366
 msgid "Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr "Naozaj chcete aby Nautilus zabudol, ktoré miesta ste nav¹tívili?"
 
-#: src/nautilus-window-menus.c:366
+#: src/nautilus-window-menus.c:371
 msgid "Forget History?"
 msgstr "Zabudnú» históriu?"
 
-#: src/nautilus-window-menus.c:367
+#: src/nautilus-window-menus.c:372
 msgid "Forget"
 msgstr "Zabudnú»"
 
-#: src/nautilus-window-menus.c:470
+#: src/nautilus-window-menus.c:475
 msgid "Show St_atus Bar"
 msgstr "Zobrazi» _stavový riadok"
 
-#: src/nautilus-window-menus.c:476
+#: src/nautilus-window-menus.c:481
 msgid "Show _Sidebar"
 msgstr "Zobrazi» _boèný panel"
 
-#: src/nautilus-window-menus.c:482
+#: src/nautilus-window-menus.c:487
 msgid "Show _Toolbar"
 msgstr "Zobrazi» panel _nástrojov"
 
-#: src/nautilus-window-menus.c:488
+#: src/nautilus-window-menus.c:493
 msgid "Show Location _Bar"
 msgstr "Zobrazi» pruh u_miestnenia"
+
+#. Localize to deal with issues in the copyright
+#. * symbol characters -- do not translate the company
+#. * name, please.
+#.
+#: src/nautilus-window-menus.c:638
+msgid "Copyright (C) 1999-2001 Eazel, Inc."
+msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window-menus.c:622
+#: src/nautilus-window-menus.c:645
 msgid "Translator Credits"
 msgstr "Nautilus prelo¾il Stanislav Vi¹òovský"
 
-#: src/nautilus-window-menus.c:628
+#: src/nautilus-window-menus.c:651
 msgid ""
 "Nautilus is a graphical shell\n"
 "for GNOME that makes it\n"
@@ -8236,7 +8195,7 @@ msgstr ""
 "správu va¹ich súborov\n"
 " a celého systému."
 
-#: src/nautilus-window-menus.c:792
+#: src/nautilus-window-menus.c:813
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -8245,28 +8204,28 @@ msgstr ""
 "Umiestnenie \"%s\" neexistuje. Naozaj chcete odstráni» zálo¾ky s týmto "
 "miestom z vá¹ho zoznamu?"
 
-#: src/nautilus-window-menus.c:796
+#: src/nautilus-window-menus.c:817
 msgid "Bookmark for Nonexistent Location"
 msgstr "Zálo¾ka pre neexistujúce miesto"
 
-#: src/nautilus-window-menus.c:810
+#: src/nautilus-window-menus.c:831
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Miesto \"%s\" u¾ neexistuje."
 
-#: src/nautilus-window-menus.c:811
+#: src/nautilus-window-menus.c:832
 msgid "Go to Nonexistent Location"
 msgstr "Prejs» na neexistujúce miesto"
 
-#: src/nautilus-window-menus.c:880
+#: src/nautilus-window-menus.c:901
 msgid "Go to the location specified by this bookmark"
 msgstr "Prejs» na miesto definované touto zálo¾kou"
 
-#: src/nautilus-window-toolbars.c:407
+#: src/nautilus-window-toolbars.c:428
 msgid "Back"
 msgstr "Dozadu"
 
-#: src/nautilus-window-toolbars.c:409
+#: src/nautilus-window-toolbars.c:430
 msgid "Forward"
 msgstr "Dopredu"
 
