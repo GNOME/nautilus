@@ -20,14 +20,8 @@
 	(nautilus_directory_remove_write_metafile_idle,
 	nautilus_directory_finalize,
 	nautilus_directory_try_to_write_metafile,
-	nautilus_directory_request_write_metafile, ): Changed metafile
+	nautilus_directory_request_write_metafile): Changed metafile
 	writing so it always happens at idle time.
-
-	* libnautilus/nautilus-directory.c
-	(nautilus_directory_try_to_read_metafile): Fixed bug where
-	metafile reading would fail. The gnome-xml parser requires a null
-	character at the end of the file, even though the size is passed
-	in!
 
 	* libnautilus/nautilus-lib-self-check-functions.h: Changed order
 	so lower-level tests come before higher-level ones.
