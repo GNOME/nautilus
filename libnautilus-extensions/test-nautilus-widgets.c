@@ -128,7 +128,7 @@ create_enum_item (void)
 
 	item = nautilus_preferences_item_new (dummy_prefs,
 					      "user_level",
-					      NAUTILUS_PREFERENCES_ITEM_ENUM);
+					      NAUTILUS_PREFERENCE_ENUM);
 	
 	return item;
 }
@@ -140,7 +140,7 @@ create_bool_item (void)
 
 	item = nautilus_preferences_item_new (dummy_prefs,
 					      "foo",
-					      NAUTILUS_PREFERENCES_ITEM_BOOL);
+					      NAUTILUS_PREFERENCE_BOOLEAN);
 	
 	return item;
 }

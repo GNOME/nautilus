@@ -27,6 +27,7 @@
 
 #include <gtk/gtkvbox.h>
 #include <gnome.h>
+#include <nautilus-widgets/nautilus-preferences.h>
 
 BEGIN_GNOME_DECLS
 
@@ -39,13 +40,6 @@ BEGIN_GNOME_DECLS
 typedef struct _NautilusPreferencesItem	     NautilusPreferencesItem;
 typedef struct _NautilusPreferencesItemClass      NautilusPreferencesItemClass;
 typedef struct _NautilusPreferencesItemDetails    NautilusPreferencesItemDetails;
-
-typedef enum
-{
-	NAUTILUS_PREFERENCES_ITEM_UNKNOWN,
-	NAUTILUS_PREFERENCES_ITEM_BOOL,
-	NAUTILUS_PREFERENCES_ITEM_ENUM
-} NautilusPreferencesItemType;
 
 struct _NautilusPreferencesItem
 {
@@ -62,9 +56,9 @@ struct _NautilusPreferencesItemClass
 };
 
 GtkType    nautilus_preferences_item_get_type (void);
-GtkWidget* nautilus_preferences_item_new      (GtkObject                   *prefs,
-					       const gchar                 *pref_name,
-					       NautilusPreferencesItemType  item_type);
+GtkWidget* nautilus_preferences_item_new      (GtkObject                *prefs,
+					       const gchar              *pref_name,
+					       NautilusPreferencesType  item_type);
 
 BEGIN_GNOME_DECLS
 

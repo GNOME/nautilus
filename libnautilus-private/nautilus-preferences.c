@@ -87,13 +87,13 @@ static void               pref_hash_info_remove_callback        (PrefHashInfo   
 								 gpointer                       user_data);
 
 /* Private stuff */
-static GtkFundamentalType prefs_check_supported_type            (GtkFundamentalType             pref_type);
+static NautilusPreferencesType prefs_check_supported_type            (NautilusPreferencesType             pref_type);
 static gboolean           prefs_set_pref                        (NautilusPreferences           *prefs,
 								 const gchar                   *pref_name,
 								 gpointer                       pref_value);
 static gboolean           prefs_get_pref                        (NautilusPreferences           *prefs,
 								 const gchar                   *pref_name,
-								 GtkFundamentalType            *pref_type_out,
+								 NautilusPreferencesType            *pref_type_out,
 								 gconstpointer                 *pref_value_out);
 PrefHashInfo *            prefs_hash_lookup                     (NautilusPreferences           *prefs,
 								 const gchar                   *pref_name);
@@ -359,12 +359,11 @@ pref_callback_info_invoke_func (gpointer	data,
 /*
  * Private stuff
  */
-static GtkFundamentalType
-prefs_check_supported_type (GtkFundamentalType pref_type)
+static NautilusPreferencesType
+prefs_check_supported_type (NautilusPreferencesType pref_type)
 {
-	return ((pref_type == GTK_TYPE_BOOL) ||
-		(pref_type == GTK_TYPE_INT) ||
-		(pref_type == GTK_TYPE_ENUM));
+	return ((pref_type == NAUTILUS_PREFERENCE_BOOLEAN) ||
+		(pref_type == NAUTILUS_PREFERENCE_ENUM));
 }
 
 static gboolean
@@ -391,6 +390,21 @@ prefs_set_pref (NautilusPreferences     *prefs,
 	 */
 	pref_hash_info->pref_value = pref_value;
 
+	/* gnome-config for now ; in the future gconf */
+	switch (pref_hash_info->pref_info.pref_type)
+	{
+	case NAUTILUS_PREFERENCE_BOOLEAN:
+		gnome_config_set_bool (pref_name, (gboolean) pref_hash_info->pref_value);
+		break;
+
+	case NAUTILUS_PREFERENCE_ENUM:
+		gnome_config_set_int (pref_name, (gint) pref_hash_info->pref_value);
+		break;
+	}
+
+	/* Sync all the damn time.  Yes it sucks.  it will be better with gconf */
+	gnome_config_sync ();
+
 	if (pref_hash_info->callback_list)
 	{
 		g_list_foreach (pref_hash_info->callback_list,
@@ -404,7 +418,7 @@ prefs_set_pref (NautilusPreferences     *prefs,
 static gboolean
 prefs_get_pref (NautilusPreferences         *prefs,
 		const gchar           *pref_name,
-		GtkFundamentalType    *pref_type_out,
+		NautilusPreferencesType    *pref_type_out,
 		gconstpointer         *pref_value_out)
 {
 	PrefHashInfo * pref_hash_info;
@@ -472,13 +486,28 @@ nautilus_preferences_register_from_info (NautilusPreferences		*prefs,
 	g_hash_table_insert (prefs->details->prefs_hash_table,
 			     (gpointer) pref_info->pref_name,
 			     (gpointer) pref_hash_info);
+
+	/* gnome-config for now ; in the future gconf */
+	switch (pref_hash_info->pref_info.pref_type)
+	{
+	case NAUTILUS_PREFERENCE_BOOLEAN:
+		pref_hash_info->pref_value = (gpointer) gnome_config_get_bool (pref_info->pref_name);
+		break;
+
+	case NAUTILUS_PREFERENCE_ENUM:
+		pref_hash_info->pref_value = (gpointer) gnome_config_get_int (pref_info->pref_name);
+		break;
+	}
+
+	/* Sync all the damn time.  Yes it sucks.  it will be better with gconf */
+	gnome_config_sync ();
 }
 
 void
 nautilus_preferences_register_from_values (NautilusPreferences      *prefs,
 					   gchar		*pref_name,
 					   gchar		*pref_description,
-					   GtkFundamentalType	pref_type,
+					   NautilusPreferencesType	pref_type,
 					   gconstpointer	pref_default_value,
 					   gpointer		type_data)
 {
@@ -611,7 +640,7 @@ nautilus_preferences_get_boolean (NautilusPreferences  *prefs,
 				  const gchar    *pref_name)
 {
 	gboolean		rv;
-	GtkFundamentalType	pref_type;
+	NautilusPreferencesType	pref_type;
 	gconstpointer           value;
 
 	g_return_val_if_fail (prefs != NULL, FALSE);
@@ -627,7 +656,7 @@ nautilus_preferences_get_boolean (NautilusPreferences  *prefs,
 		return FALSE;
 	}
 
-	g_assert (pref_type == GTK_TYPE_BOOL);
+	g_assert (pref_type == NAUTILUS_PREFERENCE_BOOLEAN);
 
 	return (gboolean) value;
 }
@@ -653,7 +682,7 @@ nautilus_preferences_get_enum (NautilusPreferences  *prefs,
 			       const gchar    *pref_name)
 {
 	gboolean		rv;
-	GtkFundamentalType	pref_type;
+	NautilusPreferencesType	pref_type;
 	gconstpointer           value;
 	
 	g_return_val_if_fail (prefs != NULL, FALSE);
@@ -669,7 +698,7 @@ nautilus_preferences_get_enum (NautilusPreferences  *prefs,
 		return FALSE;
 	}
 
-	g_assert (pref_type == GTK_TYPE_ENUM);
+	g_assert (pref_type == NAUTILUS_PREFERENCE_ENUM);
 
 	return (gint) value;
 }

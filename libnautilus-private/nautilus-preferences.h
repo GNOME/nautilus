@@ -50,14 +50,23 @@ struct _NautilusPreferences
 };
 
 /*
+ * The types of supported preferences.
+ */
+typedef enum
+{
+	NAUTILUS_PREFERENCE_BOOLEAN,
+	NAUTILUS_PREFERENCE_ENUM
+} NautilusPreferencesType;
+
+/*
  * A callback which you can register to to be notified when a particular
  * preference changes.
  */
-typedef void (*NautilusPreferencesCallback) (const GtkObject	*prefs,
-					     const gchar	*pref_name, 
-					     GtkFundamentalType	pref_type,
-					     gconstpointer	pref_value,
-					     gpointer		user_data);
+typedef void (*NautilusPreferencesCallback) (const GtkObject		*prefs,
+					     const gchar		*pref_name, 
+					     NautilusPreferencesType	pref_type,
+					     gconstpointer		pref_value,
+					     gpointer			user_data);
 
 struct _NautilusPreferencesClass
 {
@@ -68,7 +77,7 @@ typedef struct
 {
 	gchar			*pref_name;
 	gchar			*pref_description;
-	GtkFundamentalType	pref_type;
+	NautilusPreferencesType	pref_type;
 	gconstpointer		pref_default_value;
 	gpointer		type_data;
 } NautilusPreferencesInfo;
@@ -88,7 +97,7 @@ void                           nautilus_preferences_register_from_info     (Naut
 void                           nautilus_preferences_register_from_values   (NautilusPreferences           *prefs,
 									    gchar                         *pref_name,
 									    gchar                         *pref_description,
-									    GtkFundamentalType             pref_type,
+									    NautilusPreferencesType        pref_type,
 									    gconstpointer                  pref_default_value,
 									    gpointer                       type_data);
 const NautilusPreferencesInfo *nautilus_preferences_get_pref_info          (NautilusPreferences           *prefs,

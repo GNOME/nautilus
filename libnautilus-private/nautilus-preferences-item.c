@@ -50,7 +50,7 @@ static const guint PREFERENCES_ITEM_FRAME_BORDER_WIDTH = 6;
 struct _NautilusPreferencesItemDetails
 {
 	gchar				*pref_name;
-	NautilusPreferencesItemType	item_type;
+	NautilusPreferencesType	item_type;
 	GtkWidget			*child;
 	GtkObject			*prefs;
 };
@@ -74,7 +74,7 @@ static void preferences_item_get_arg                   (GtkObject               
 static void        preferences_item_construct          (NautilusPreferencesItem      *item,
 							GtkObject                    *prefs,
 							const gchar                  *pref_name,
-							NautilusPreferencesItemType   item_type);
+							NautilusPreferencesType   item_type);
 static void preferences_item_create_enum (NautilusPreferencesItem		*item,
 					  const NautilusPreferencesInfo	*pref_info);
 static void preferences_item_create_boolean (NautilusPreferencesItem		*item,
@@ -127,7 +127,7 @@ nautilus_preferences_item_initialize (NautilusPreferencesItem *item)
 	item->details = g_new (NautilusPreferencesItemDetails, 1);
 
 	item->details->pref_name = NULL;
-	item->details->item_type = NAUTILUS_PREFERENCES_ITEM_UNKNOWN;
+	item->details->item_type = -1;
 	item->details->child = NULL;
 	item->details->prefs = NULL;
 }
@@ -232,14 +232,14 @@ static void
 preferences_item_construct (NautilusPreferencesItem	*item,
 			    GtkObject			*prefs,
 			    const gchar			*pref_name,
-			    NautilusPreferencesItemType	item_type)
+			    NautilusPreferencesType	item_type)
 {
 	const NautilusPreferencesInfo	*pref_info;
 
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (prefs != NULL);
 	g_return_if_fail (pref_name != NULL);
-	g_return_if_fail (item_type != NAUTILUS_PREFERENCES_ITEM_UNKNOWN);
+	g_return_if_fail (item_type != -1);
 
 	g_return_if_fail (item->details->child == NULL);
 
@@ -253,16 +253,12 @@ preferences_item_construct (NautilusPreferencesItem	*item,
 
 	switch (item_type)
 	{
-	case NAUTILUS_PREFERENCES_ITEM_BOOL:
+	case NAUTILUS_PREFERENCE_BOOLEAN:
 		preferences_item_create_boolean (item, pref_info);
 		break;
 
-	case NAUTILUS_PREFERENCES_ITEM_ENUM:
+	case NAUTILUS_PREFERENCE_ENUM:
 		preferences_item_create_enum (item, pref_info);
-		break;
-	
-	case NAUTILUS_PREFERENCES_ITEM_UNKNOWN:
-		g_assert_not_reached ();
 		break;
 	}
 
@@ -350,9 +346,9 @@ preferences_item_create_boolean (NautilusPreferencesItem	*item,
  * NautilusPreferencesItem public methods
  */
 GtkWidget *
-nautilus_preferences_item_new (GtkObject			*prefs,
-			       const gchar			*pref_name,
-			       NautilusPreferencesItemType	item_type)
+nautilus_preferences_item_new (GtkObject		*prefs,
+			       const gchar		*pref_name,
+			       NautilusPreferencesType	item_type)
 {
 	NautilusPreferencesItem * item;
 
