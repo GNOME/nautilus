@@ -66,7 +66,9 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTreeModel, nautilus_tree_model, GTK_T
 
 
 
-static void nautilus_tree_model_set_root_uri                   (NautilusTreeModel *model,
+     static void  remove_all_nodes                                  (NautilusTreeModel *model);
+
+static void  nautilus_tree_model_set_root_uri                  (NautilusTreeModel *model,
 								const char        *root_uri);
 static char *uri_get_parent_text                               (const char        *uri_text);
 static void  report_root_node_if_possible                      (NautilusTreeModel *model);
@@ -74,6 +76,9 @@ static void  report_node_added                                 (NautilusTreeMode
 								NautilusTreeNode  *node);
 static void  report_node_changed                               (NautilusTreeModel *model,
 								NautilusTreeNode  *node);
+static void  report_node_removed_internal                      (NautilusTreeModel *model,
+								NautilusTreeNode  *node,
+								gboolean           signal);
 static void  report_node_removed                               (NautilusTreeModel *model,
 								NautilusTreeNode  *node);
 static void  report_done_loading                               (NautilusTreeModel *model,
@@ -172,9 +177,7 @@ nautilus_tree_model_destroy (GtkObject *object)
 
 	nautilus_tree_stop_monitoring_internal (model);
 
-	if (model->details->root_node != NULL) {
-		gtk_object_unref (GTK_OBJECT (model->details->root_node));
-	}
+	remove_all_nodes (model);
 
 	g_free (model->details->monitor_clients);
 
@@ -213,6 +216,53 @@ nautilus_tree_model_set_root_uri (NautilusTreeModel *model,
 	nautilus_file_unref (file);
 }
 
+
+static void
+nautilus_tree_model_unref_callback (NautilusTreeModel *model,
+				    NautilusTreeNode  *node,
+				    gpointer           callback_data)
+{
+	report_node_removed_internal (model, node, FALSE);
+}
+
+static void
+nautilus_tree_model_for_each_postorder (NautilusTreeModel  *model,
+					NautilusTreeModelCallback  callback,
+					gpointer                   callback_data)
+{
+	NautilusTreeNode *current_node;
+	GList *reporting_queue;
+
+	if (model->details->root_node_reported) {
+		reporting_queue = g_list_prepend (reporting_queue, model->details->root_node);
+		
+		while (reporting_queue != NULL) {
+			current_node = (NautilusTreeNode *) reporting_queue->data;
+			reporting_queue = g_list_remove_link (reporting_queue, reporting_queue);
+			
+			/* We are doing a depth-first scan here, we
+                           could do breadth-first instead by reversing
+                           the args to the g_list_concat call
+                           below. */
+			reporting_queue = g_list_concat (g_list_copy (nautilus_tree_node_get_children (current_node)),
+							 reporting_queue);
+
+			(*callback) (model, current_node, callback_data);
+		}
+	}
+}
+
+static void
+remove_all_nodes (NautilusTreeModel *model)
+{
+	nautilus_tree_model_for_each_postorder (model,
+						nautilus_tree_model_unref_callback,
+						NULL);
+
+	model->details->root_node = NULL;
+	model->details->root_node_reported = FALSE;
+}				
+       
 
 void
 nautilus_tree_model_monitor_add (NautilusTreeModel         *model,
@@ -527,8 +577,9 @@ report_node_changed (NautilusTreeModel *model,
 }
 
 static void
-report_node_removed (NautilusTreeModel *model,
-		     NautilusTreeNode  *node)
+report_node_removed_internal (NautilusTreeModel *model,
+			      NautilusTreeNode  *node,
+			      gboolean signal)
 {
 	char *uri;
 	gpointer orig_key;
@@ -549,7 +600,7 @@ report_node_removed (NautilusTreeModel *model,
 			parent_node = g_hash_table_lookup (model->details->uri_to_node_map, parent_uri);
 			
 			if (parent_node != NULL) {
-				nautilus_tree_remove_from_parent (node);
+				nautilus_tree_node_remove_from_parent (node);
 			}
 
 			g_free (parent_uri);
@@ -566,9 +617,11 @@ report_node_removed (NautilusTreeModel *model,
 		
 		g_free (orig_key);
 				     
-		gtk_signal_emit (GTK_OBJECT (model),
-				 signals[NODE_REMOVED],
-				 node);
+		if (signal) {
+			gtk_signal_emit (GTK_OBJECT (model),
+					 signals[NODE_REMOVED],
+					 node);
+		}
 
 
 		gtk_object_unref (GTK_OBJECT (node));
@@ -576,6 +629,14 @@ report_node_removed (NautilusTreeModel *model,
 
 	g_free (uri);
 
+	
+}
+
+static void
+report_node_removed (NautilusTreeModel *model,
+		     NautilusTreeNode  *node)
+{
+	report_node_removed_internal (model, node, TRUE);
 }
 
 

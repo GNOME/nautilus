@@ -50,7 +50,7 @@ NautilusTreeNode *nautilus_tree_node_new (NautilusFile *file);
 void              nautilus_tree_node_set_parent (NautilusTreeNode   *node,
 						 NautilusTreeNode   *parent);
 
-void  		  nautilus_tree_remove_from_parent (NautilusTreeNode *node);
+void  		  nautilus_tree_node_remove_from_parent (NautilusTreeNode *node);
 
 
 #endif /* NAUTILUS_TREE_NODE_PRIVATE_H */

@@ -137,7 +137,7 @@ nautilus_tree_node_set_parent (NautilusTreeNode   *node,
 
 
 void
-nautilus_tree_remove_from_parent (NautilusTreeNode *node)
+nautilus_tree_node_remove_from_parent (NautilusTreeNode *node)
 {
 	if (node->details->parent != NULL) {
 		node->details->parent->details->children = g_list_remove

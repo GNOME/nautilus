@@ -902,11 +902,11 @@ nautilus_tree_view_destroy (GtkObject *object)
 
 	disconnect_model_handlers (view);
 
-
 	nautilus_tree_expansion_state_save (view->details->expansion_state);
 
 	gtk_object_unref (GTK_OBJECT (view->details->expansion_state));
 
+	gtk_object_unref (GTK_OBJECT (view->details->model));
 
 	g_free (view->details);
 	
