@@ -7,12 +7,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus CVS-20000722\n"
-"POT-Creation-Date: 2000-08-02 18:16+0200\n"
-"PO-Revision-Date: 2000-07-22 03:25+0900\n"
+"POT-Creation-Date: 2000-08-03 02:23+0800\n"
+"PO-Revision-Date: 2000-08-04 01:05+0800\n"
 "Last-Translator: Gong Yi LIAO <granziliao@sinamail.com>\n"
-"Language-Team: Chinese <translation@gnome.gr.zh>\n"
+"Language-Team: Taiwanese <granziliao@sinamail.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=big5\n"
+"Content-Type: text/plain; charset=Big5\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:75
@@ -446,7 +446,7 @@ msgstr "細節"
 #: nautilus-installer/src/installer.c:200
 #, c-format
 msgid "*** Could not create services directory (%s)! ***\n"
-msgstr "*** 無法設置服務目錄 (%s)! ***\n"
+msgstr "*** 無法設置服務目錄! ***\n"
 
 #: nautilus-installer/src/installer.c:221
 msgid ""
@@ -454,6 +454,10 @@ msgid ""
 "the installer for real, without \n"
 "the --test flag... Beware!"
 msgstr ""
+"警告:\n"
+"請注意!\n"
+"您正在執行安裝程式,\n"
+"而非測試 ( 使用引數 --test )而已."
 
 #: nautilus-installer/src/interface.c:67
 msgid "Nautilus install tool"
@@ -491,7 +495,7 @@ msgstr ""
 
 #: nautilus-installer/src/interface.c:105
 msgid "What to do ?"
-msgstr "如何作?"
+msgstr "要作什麼?"
 
 #: nautilus-installer/src/interface.c:123
 msgid ""
@@ -574,7 +578,7 @@ msgstr "新的終端機"
 
 #: src/file-manager/fm-desktop-icon-view.c:226
 msgid "Disks"
-msgstr ""
+msgstr "磁碟"
 
 #: src/file-manager/fm-search-list-view.c:100
 msgid "Directory"
@@ -1324,7 +1328,7 @@ msgstr "下載 %s 中..."
 #: components/services/install/lib/eazel-install-protocols.c:77
 #, fuzzy, c-format
 msgid "*** Could not create tmp directory (%s)! ***\n"
-msgstr "*** 無法設置服務目錄 (%s)! ***\n"
+msgstr "*** 無法設置服務目錄! ***\n"
 
 #: components/services/install/lib/eazel-install-protocols.c:93
 #, c-format
@@ -1363,7 +1367,7 @@ msgid "FTP not supported yet"
 msgstr "無法支援FTP"
 
 #: components/services/install/lib/eazel-install-protocols.c:185
-#, fuzzy, c-format
+#, c-format
 msgid "Checking local file %s..."
 msgstr "檢視本機檔案中..."
 
@@ -1530,7 +1534,7 @@ msgstr "列出服務名稱"
 
 #: components/services/time/command-line/main.c:43
 msgid "maximum allowed difference in seconds"
-msgstr "maximum alowed difference in seconds"
+msgstr "maximum allowed difference in seconds"
 
 #: components/services/time/command-line/main.c:44
 msgid "update the system clock"
@@ -1938,7 +1942,7 @@ msgid ""
 "%s. Would you like to continue?"
 msgstr ""
 "當 %s 時發生錯誤 %s \n"
-"%s. 確定要繼續嗎?"
+"確定要繼續嗎?"
 
 #: src/file-manager/dfos-xfer.c:350 src/file-manager/dfos-xfer.c:370
 msgid "File copy error"
@@ -2744,6 +2748,16 @@ msgid ""
 "\n"
 "We need a much less confusing message here for Nautilus 1.0."
 msgstr ""
+"Nautilus 現在無法使用,重新開機或者重新安裝 Nautilis 或許\可以解決這個問題.\n"
+"\n"
+"OAF 無法找到 nautilus.oafinfo 這個檔案\n"
+"這可能因為 oaf 函式庫的路徑並未包含在 LD_LIBRARY_PATH 中\n"
+"也有可能因為 nautilus.oafinfo 這個檔案安裝錯誤\n"
+"強制 kill oafd 和 gconf 可以暫時解決這個問題,\n"
+"但原因未知.\n"
+"\n"
+"開發小組正努力在 Nautilus 1.0 推出前解決這個問題,\n"
+"請提供意見及援助."
 
 #. Some misc. error (can never happen with current
 #. * version of OAF). Show dialog and terminate the
@@ -3065,7 +3079,7 @@ msgstr "複製文本"
 
 #: src/nautilus-window-menus.c:1079
 msgid "Copies the selected text to the clipboard"
-msgstr ""
+msgstr "複製已選文本到剪貼簿"
 
 #: src/nautilus-window-menus.c:1090
 msgid "_Paste Text"
