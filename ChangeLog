@@ -1,3 +1,25 @@
+2000-12-22  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Gene Z. Ragan <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-debug-drawing.c:
+	(event_box_draw), (event_box_expose_event),
+	(nautilus_debug_show_pixbuf):
+	Dont use NautilusImage here because that create a chicken
+	and egg problem when debuggin NautilusImage itself.  Use
+	an event box instead.
+
+	* libnautilus-extensions/nautilus-gdk-extensions.h:
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	(nautilus_gdk_rgb_to_color_spec):
+	New function to make a string color spec from an rgb value.
+	
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
+	(nautilus_gdk_pixbuf_is_valid),
+	(nautilus_gdk_pixbuf_get_frame):
+	Make these public and add documentation for them.
+	
 2000-12-22  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: Pavel Cisler<pavel@eazel.com>

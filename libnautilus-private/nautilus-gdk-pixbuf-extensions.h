@@ -44,8 +44,10 @@ void                      nautilus_gdk_pixbuf_list_ref                  (GList  
 void                      nautilus_gdk_pixbuf_list_unref                (GList                      *pixbuf_list);
 void                      nautilus_gdk_pixbuf_list_free                 (GList                      *pixbuf_list);
 
+
 /* Loading a GdkPixbuf with a URI. */
 GdkPixbuf *               nautilus_gdk_pixbuf_load                      (const char                 *uri);
+
 
 /* Same thing async. */
 NautilusPixbufLoadHandle *nautilus_gdk_pixbuf_load_async                (const char                 *uri,
@@ -65,6 +67,7 @@ double                    nautilus_gdk_scale_to_fit_factor              (int    
 									 int                        *scaled_width,
 									 int                        *scaled_height);
 
+
 /* return average color values for each component */
 void                      nautilus_gdk_pixbuf_average_value             (GdkPixbuf                  *pixbuf,
 									 GdkColor                   *result_color);
@@ -72,11 +75,13 @@ void                      nautilus_gdk_pixbuf_fill_rectangle_with_color (GdkPixb
 									 const ArtIRect             *area,
 									 guint32                     color);
 
+
 /* Save a pixbuf to a png file.  Return value indicates succss/TRUE or failure/FALSE */
 gboolean                  nautilus_gdk_pixbuf_save_to_file              (const GdkPixbuf            *pixbuf,
 									 const char                 *file_name);
 void                      nautilus_gdk_pixbuf_ref_if_not_null           (GdkPixbuf                  *pixbuf_or_null);
 void                      nautilus_gdk_pixbuf_unref_if_not_null         (GdkPixbuf                  *pixbuf_or_null);
+
 
 /* Copy a pixbuf to an area of a GdkDrawable */
 void                      nautilus_gdk_pixbuf_draw_to_drawable          (const GdkPixbuf            *pixbuf,
@@ -88,12 +93,14 @@ void                      nautilus_gdk_pixbuf_draw_to_drawable          (const G
 									 GdkRgbDither                dither,
 									 GdkPixbufAlphaMode          alpha_compositing_mode,
 									 int                         alpha_threshold);
+
 /* Copy a pixbuf to an area of another pixbuf */
 void                      nautilus_gdk_pixbuf_draw_to_pixbuf            (const GdkPixbuf            *pixbuf,
 									 GdkPixbuf                  *destination_pixbuf,
 									 int                         source_x,
 									 int                         source_y,
 									 const ArtIRect             *destination_area);
+
 
 /* Composite one pixbuf over another with the given opacity */
 void                      nautilus_gdk_pixbuf_draw_to_pixbuf_alpha      (const GdkPixbuf            *pixbuf,
@@ -103,6 +110,7 @@ void                      nautilus_gdk_pixbuf_draw_to_pixbuf_alpha      (const G
 									 const ArtIRect             *destination_area,
 									 int                         opacity,
 									 GdkInterpType               interpolation_mode);
+
 
 /* Fill an area of a pixbuf with a tile. */
 void                      nautilus_gdk_pixbuf_draw_to_pixbuf_tiled      (const GdkPixbuf            *pixbuf,
@@ -114,6 +122,7 @@ void                      nautilus_gdk_pixbuf_draw_to_pixbuf_tiled      (const G
 									 int                         tile_origin_y,
 									 int                         opacity,
 									 GdkInterpType               interpolation_mode);
+
 /* Fill an area of a drawable with a tile. */
 void                      nautilus_gdk_pixbuf_draw_to_drawable_tiled    (const GdkPixbuf            *pixbuf,
 									 GdkDrawable                *drawable,
@@ -126,9 +135,11 @@ void                      nautilus_gdk_pixbuf_draw_to_drawable_tiled    (const G
 									 GdkRgbDither                dither,
 									 GdkPixbufAlphaMode          alpha_compositing_mode,
 									 int                         alpha_threshold);
+
 /* Create a pixbuf from a sub area of another pixbuf */
 GdkPixbuf *               nautilus_gdk_pixbuf_new_from_pixbuf_sub_area  (GdkPixbuf                  *pixbuf,
 									 const ArtIRect             *area);
+
 
 /* Access a global buffer for temporary GdkPixbuf operations.  
  * The returned buffer will be at least as big as the passed in 
@@ -137,6 +148,7 @@ GdkPixbuf *               nautilus_gdk_pixbuf_new_from_pixbuf_sub_area  (GdkPixb
  */
 GdkPixbuf *               nautilus_gdk_pixbuf_get_global_buffer         (int                         minimum_width,
 									 int                         minimum_height);
+
 /* Same as gdk_pixbuf_get_from_drawable() except it deals with 
  * race conditions and other evil things that can happen */
 GdkPixbuf *               nautilus_gdk_pixbuf_get_from_window_safe      (GdkWindow                  *window,
@@ -144,4 +156,10 @@ GdkPixbuf *               nautilus_gdk_pixbuf_get_from_window_safe      (GdkWind
 									 int                         y,
 									 int                         width,
 									 int                         height);
+/* Determine whether a pixbuf is valid or not */
+gboolean                  nautilus_gdk_pixbuf_is_valid                  (const GdkPixbuf            *pixbuf);
+
+/* Access the dimensions of a pixbuf as a ArtIRect frame. */
+ArtIRect                  nautilus_gdk_pixbuf_get_frame                 (const GdkPixbuf            *pixbuf);
+
 #endif /* NAUTILUS_GDK_PIXBUF_EXTENSIONS_H */

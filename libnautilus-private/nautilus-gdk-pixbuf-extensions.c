@@ -366,7 +366,19 @@ nautilus_gdk_pixbuf_scale_down_to_fit (GdkPixbuf *pixbuf, int max_width, int max
 	}
 }
 
-static gboolean
+/**
+ * nautilus_gdk_pixbuf_is_valid:
+ * @pixbuf: A GdkPixbuf
+ *
+ * Return value: A boolean indicating whether the given pixbuf is valid.
+ *
+ * A pixbuf is valid if:
+ * 
+ *   1. It is non NULL
+ *   2. It is has non NULL pixel data.
+ *   3. It has width and height greater than 0.
+ */
+gboolean
 nautilus_gdk_pixbuf_is_valid (const GdkPixbuf *pixbuf)
 {
 	return ((pixbuf != NULL)
@@ -375,7 +387,17 @@ nautilus_gdk_pixbuf_is_valid (const GdkPixbuf *pixbuf)
 		&& (gdk_pixbuf_get_height (pixbuf) > 0));
 }
 
-static ArtIRect
+/**
+ * nautilus_gdk_pixbuf_get_frame:
+ * @pixbuf: A GdkPixbuf
+ *
+ * Return value: A ArtIRect representing the dimensions of the 
+ *               pixbuf.
+ *
+ * This function is useful in code that uses libart rect 
+ * intersection routines.
+ */
+ArtIRect
 nautilus_gdk_pixbuf_get_frame (const GdkPixbuf *pixbuf)
 {
 	ArtIRect frame;

@@ -498,6 +498,23 @@ nautilus_gdk_rgb_to_color (const guint32 color)
 	return result;
 }
 
+/**
+ * nautilus_gdk_rgb_to_color_spec
+ * @color: a gdk_rgb style value.
+ *
+ * Converts from a gdk_rgb value style to a string color spec.
+ * The gdk_rgb color alpha channel is ignored.
+ * 
+ * Return value: a newly allocated color spec.
+ */
+char *
+nautilus_gdk_rgb_to_color_spec (const guint32 color)
+{
+	return g_strdup_printf("rgb:%04hX/%04hX/%04hX",
+			       NAUTILUS_RGBA_COLOR_GET_R (color) * 65535,
+			       NAUTILUS_RGBA_COLOR_GET_G (color) * 65535,
+			       NAUTILUS_RGBA_COLOR_GET_B (color) * 65535);
+}
 
 static guint32
 nautilus_shift_color_component (guchar component, float shift_by)

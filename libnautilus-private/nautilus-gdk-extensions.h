@@ -108,6 +108,8 @@ guint32    nautilus_rgb8_to_rgb						   (guchar r, guchar g, guchar b);
 guint32    nautilus_gdk_color_to_rgb                   (const GdkColor     *color);
 GdkColor * nautilus_gdk_rgb_to_color                   (const guint32       color);
 
+char *     nautilus_gdk_rgb_to_color_spec              (guint32             color);
+
 /* Fill routines that take GdkRectangle parameters instead of four integers. */
 void       nautilus_fill_rectangle                     (GdkDrawable        *drawable,
 							GdkGC              *gc,

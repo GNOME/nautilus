@@ -26,10 +26,10 @@
 #include "nautilus-debug-drawing.h"
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gtk-extensions.h"
-#include "nautilus-image.h"
+#include "nautilus-gdk-pixbuf-extensions.h"
 
 #include <gtk/gtkwindow.h>
-#include <gtk/gtkvbox.h>
+#include <gtk/gtkeventbox.h>
 #include <gtk/gtksignal.h>
 
 #include <stdlib.h>
@@ -123,7 +123,9 @@ nautilus_debug_show_pixbuf_in_eog (const GdkPixbuf *pixbuf)
 }
 
 static GtkWidget *debug_window = NULL;
-static GtkWidget *debug_image = NULL;
+static GtkWidget *debug_event_box = NULL;
+static GdkPixbuf *debug_pixbuf = NULL;
+static const guint debug_border_width = 10;
 
 static void
 debug_delete_event (GtkWidget *widget, GdkEvent *event, gpointer callback_data)
@@ -132,40 +134,142 @@ debug_delete_event (GtkWidget *widget, GdkEvent *event, gpointer callback_data)
 }
 
 static void
+event_box_draw (GtkWidget *widget,
+		GdkRectangle *area,
+		gpointer callback_data)
+{
+	ArtIRect pixbuf_frame;
+	ArtIRect pixbuf_bounds;
+
+	g_return_if_fail (GTK_IS_EVENT_BOX (widget));
+
+	if (debug_pixbuf == NULL) {
+		return;
+	}
+	
+	pixbuf_frame = nautilus_gdk_pixbuf_get_frame (debug_pixbuf);
+	
+	if (art_irect_empty (&pixbuf_frame)) {
+		return;
+	}
+
+	pixbuf_bounds.x0 = debug_border_width;
+	pixbuf_bounds.y0 = debug_border_width;
+	pixbuf_bounds.x1 = pixbuf_bounds.x0 + pixbuf_frame.x1;
+	pixbuf_bounds.y1 = pixbuf_bounds.y0 + pixbuf_frame.y1;
+	
+	nautilus_gdk_pixbuf_draw_to_drawable (debug_pixbuf,
+					      debug_event_box->window,
+					      debug_event_box->style->white_gc,
+					      0,
+					      0,
+					      &pixbuf_bounds,
+					      GDK_RGB_DITHER_NONE,
+					      GDK_PIXBUF_ALPHA_BILEVEL,
+					      NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+}
+
+static int
+event_box_expose_event (GtkWidget *widget,
+			GdkEventExpose *event,
+			gpointer callback_data)
+{
+	GdkRectangle area;
+
+	g_return_val_if_fail (GTK_IS_EVENT_BOX (widget), TRUE);
+	g_return_val_if_fail (event != NULL, TRUE);
+
+	area.x = widget->allocation.x;
+	area.y = widget->allocation.y;
+	area.width = widget->allocation.width;
+	area.height = widget->allocation.height;
+
+	event_box_draw (widget, &area, callback_data);
+
+	return TRUE;
+}
+
+static void
 destroy_debug_window (void)
 {
 	if (debug_window != NULL) {
 		gtk_widget_destroy (debug_window);
 		debug_window = NULL;
+		nautilus_gdk_pixbuf_unref_if_not_null (debug_pixbuf);
 	}
 }
 
 void
 nautilus_debug_show_pixbuf (const GdkPixbuf *pixbuf)
 {
+
 	if (debug_window == NULL) {
-		GtkWidget *vbox;
-		
 		debug_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-		vbox = gtk_vbox_new (FALSE, 0);
-		gtk_container_add (GTK_CONTAINER (debug_window), vbox);
-		gtk_window_set_title (GTK_WINDOW (debug_window), "Image debugging");
+		gtk_window_set_title (GTK_WINDOW (debug_window), "Pixbuf debugging");
 		gtk_window_set_policy (GTK_WINDOW (debug_window), TRUE, TRUE, FALSE);
-		gtk_container_set_border_width (GTK_CONTAINER (debug_window), 10);
-		gtk_signal_connect (GTK_OBJECT (debug_window), "delete_event", GTK_SIGNAL_FUNC (debug_delete_event), NULL);
+		gtk_container_set_border_width (GTK_CONTAINER (debug_window), debug_border_width);
 		
-		debug_image = nautilus_image_new ();
+		debug_event_box = gtk_event_box_new ();
+		gtk_container_add (GTK_CONTAINER (debug_window), debug_event_box);
+
+		gtk_signal_connect (GTK_OBJECT (debug_window),
+				    "delete_event",
+				    GTK_SIGNAL_FUNC (debug_delete_event),
+				    NULL);
+
+		gtk_signal_connect (GTK_OBJECT (debug_event_box),
+				    "draw",
+				    GTK_SIGNAL_FUNC (event_box_draw),
+				    NULL);
+
+		gtk_signal_connect (GTK_OBJECT (debug_event_box),
+				    "expose_event",
+				    GTK_SIGNAL_FUNC (event_box_expose_event),
+				    NULL);
+
+		nautilus_gtk_widget_set_background_color (debug_event_box, "white");
 		
-		gtk_box_pack_start (GTK_BOX (vbox), debug_image, TRUE, TRUE, 0);
-
-		nautilus_gtk_widget_set_background_color (debug_window, "white");
-
 		g_atexit (destroy_debug_window);
 		
-		gtk_widget_show (debug_image);
-		gtk_widget_show (vbox);
+ 		gtk_widget_show (debug_event_box);
+	}
+	
+	nautilus_gdk_pixbuf_unref_if_not_null (debug_pixbuf);
+	debug_pixbuf = (GdkPixbuf *) pixbuf;
+	nautilus_gdk_pixbuf_ref_if_not_null (debug_pixbuf);
+
+	if (debug_pixbuf != NULL) {
+		ArtIRect pixbuf_frame;
+		
+		pixbuf_frame = nautilus_gdk_pixbuf_get_frame (pixbuf);
+		
+		if (!art_irect_empty (&pixbuf_frame)) {
+			gtk_widget_set_usize (debug_window,
+					      pixbuf_frame.x1 + 2 * debug_border_width,
+					      pixbuf_frame.y1 + 2 * debug_border_width);
+		}
 	}
 
+	gtk_widget_show (debug_event_box);
 	gtk_widget_show (debug_window);
-	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (debug_image), (GdkPixbuf *) pixbuf);
+
+	{
+		GdkEventExpose event;
+  
+		if (GTK_WIDGET_DRAWABLE (debug_event_box))
+		{
+			event.type = GDK_EXPOSE;
+			event.send_event = TRUE;
+			event.window = debug_event_box->window;
+			event.area.x = debug_event_box->allocation.x;
+			event.area.y = debug_event_box->allocation.y;
+			event.area.width = debug_event_box->allocation.width;
+			event.area.height = debug_event_box->allocation.height;
+			event.count = 0;
+			
+			gdk_window_ref (event.window);
+			gtk_widget_event (debug_event_box, (GdkEvent*) &event);
+			gdk_window_unref (event.window);
+		}
+	}
 }
