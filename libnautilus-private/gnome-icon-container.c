@@ -1827,7 +1827,7 @@ size_allocate (GtkWidget *widget,
 		visible_width = 1;
 
 #if 1
-	grid->visible_width = MAX(visible_width, grid->width);
+	grid->visible_width = visible_width;
 	grid->height = MAX(visible_height, grid->height);
 	gnome_icon_container_relayout(container);
 #else
