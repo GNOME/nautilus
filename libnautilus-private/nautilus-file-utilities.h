@@ -30,5 +30,6 @@ char *      nautilus_make_path               (const char *path,
 const char *nautilus_get_user_directory      (void);
 const char *nautilus_get_user_main_directory (void);
 const char *nautilus_get_desktop_directory   (void);
+char *      nautilus_get_local_path_from_uri (const char *uri);
 
 #endif /* NAUTILUS_FILE_UTILITIES_H */

@@ -34,6 +34,10 @@
 #include "nautilus-link-set.h"
 #include "nautilus-metadata.h"
 
+
+#include <libnautilus-extensions/nautilus-string.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
+
 #define NAUTILUS_USER_DIRECTORY_NAME ".nautilus"
 #define DEFAULT_NAUTILUS_DIRECTORY_MODE (0755)
 
@@ -203,4 +207,39 @@ nautilus_get_user_main_directory (void)
 	}
 
 	return user_main_directory;
+}
+
+/**
+ * nautilus_get_local_path_from_uri:
+ * 
+ * Return a local path for a file:// URI.
+ *
+ * Return value: the local path or NULL on error.
+ **/
+char *
+nautilus_get_local_path_from_uri (const char *uri)
+{
+	char *result, *unescaped_uri;
+
+	if (uri == NULL) {
+		return NULL;
+	}
+
+	unescaped_uri = gnome_vfs_unescape_string (uri, "/");
+
+	if (unescaped_uri == NULL) {
+		return NULL;
+	}
+
+	if (nautilus_str_has_prefix (unescaped_uri, "file://")) {
+		result = g_strdup (unescaped_uri+7);
+	} else if (unescaped_uri[0] == '/') {
+		result = g_strdup (unescaped_uri);
+	} else {
+		result = NULL;
+	}
+
+	g_free (unescaped_uri);
+
+	return result;
 }
