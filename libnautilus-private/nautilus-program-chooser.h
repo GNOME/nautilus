@@ -65,4 +65,8 @@ void			 nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType
 									   NautilusFile	  	  *file,
 									   GtkWindow		  *parent_window);
 
+void			 nautilus_program_chooser_show_invalid_message    (GnomeVFSMimeActionType  action_type,
+									   NautilusFile           *file, 
+									   GtkWindow              *parent_window);
+
 #endif /* NAUTILUS_PROGRAM_CHOOSER_H */

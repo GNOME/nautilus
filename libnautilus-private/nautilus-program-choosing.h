@@ -53,6 +53,9 @@ void nautilus_choose_component_for_file          (NautilusFile                  
 void nautilus_cancel_choose_component_for_file   (NautilusFile                      *file,
 						  NautilusComponentChoiceCallback    callback,
 						  gpointer                           callback_data);
+void nautilus_launch_action                      (GnomeVFSMimeAction                *action,
+                                                  NautilusFile                      *file,
+						   GtkWindow                         *parent_window);
 void nautilus_launch_application                 (GnomeVFSMimeApplication           *application,
 						  NautilusFile                      *file,
 						  GtkWindow                         *parent_window);
@@ -65,5 +68,7 @@ void nautilus_launch_desktop_file		 (GdkScreen                         *screen,
 						  const char                        *desktop_file_uri,
 						  const GList                       *parameter_uris,
 						  GtkWindow                         *parent_window);
-
+void nautilus_launch_show_file                   (NautilusFile                      *file,
+                                                  GtkWindow                         *parent_window);
+						  
 #endif /* NAUTILUS_PROGRAM_CHOOSING_H */

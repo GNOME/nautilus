@@ -41,6 +41,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-desktop-item.h>
+#include <libgnome/gnome-url.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -490,10 +491,17 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 	file_name = nautilus_file_get_display_name (file);
 
 	if (nautilus_mime_has_any_applications_for_file (file)) {
-		message = g_strdup_printf (_("\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
-					     "locations.  Would you like to choose another application?"),
-					   application->name, file_name, 
-					   application->name, uri_scheme);
+		if (application != NULL) {
+			message = g_strdup_printf (_("\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
+						     "locations.  Would you like to choose another application?"),
+						   application->name, file_name, 
+						   application->name, uri_scheme);
+		} else {
+			message = g_strdup_printf (_("The default action can't open \"%s\" because it can't access files at \"%s\" "
+						     "locations.  Would you like to choose another action?"),
+						   file_name, uri_scheme);
+		}
+		
 		message_dialog = eel_show_yes_no_dialog (message, 
 							 _("Can't Open Location"), 
 							 GTK_STOCK_OK,
@@ -501,6 +509,7 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 							 parent_window);
 		response = gtk_dialog_run (message_dialog);
 		gtk_object_destroy (GTK_OBJECT (message_dialog));
+		
 		if (response == GTK_RESPONSE_YES) {
 			launch_parameters = launch_parameters_new (file, parent_window);
 			nautilus_choose_application_for_file 
@@ -510,18 +519,153 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 				 launch_parameters);
 				 
 		}
-	}
-	else {
-		message = g_strdup_printf (_("\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
-					     "locations.  No other applications are available to view this file.  "
-					     "If you copy this file onto your computer, you may be able to open "
-					     "it."), application->name, file_name, 
-					   application->name, uri_scheme);
+		
+	} else {
+		if (application != NULL) {
+			message = g_strdup_printf (_("\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
+						     "locations.  No other applications are available to view this file.  "
+						     "If you copy this file onto your computer, you may be able to open "
+						     "it."), application->name, file_name, 
+						   application->name, uri_scheme);
+		} else {
+			message = g_strdup_printf (_("The default action can't open \"%s\" because it can't access files at \"%s\" "
+						     "locations.  No other actions are available to view this file.  "
+						     "If you copy this file onto your computer, you may be able to open "
+						     "it."), file_name, uri_scheme);
+		}
+				
 		eel_show_info_dialog (message, _("Can't Open Location"), parent_window);
-	}
+	}	
 
 	g_free (file_name);
 	g_free (message);
+}
+
+/**
+ * nautilus_launch_show_file:
+ *
+ * Shows a file using gnome_url_show.
+ *
+ * @file: the file whose uri will be shown.
+ * @parent_window: window to use as parent for error dialog.
+ */
+void nautilus_launch_show_file (NautilusFile *file,
+                                GtkWindow    *parent_window)
+{
+	GnomeVFSResult result;
+	GnomeVFSMimeActionType action;
+	GdkScreen *screen;
+	char **envp;
+	char *uri, *uri_scheme;
+
+	uri = NULL;
+	if (nautilus_file_is_nautilus_link (file)) {
+		uri = nautilus_file_get_activation_uri (file);
+	}
+	
+	if (uri == NULL) {
+		uri = nautilus_file_get_uri (file);
+	}
+		
+	action = nautilus_mime_get_default_action_type_for_file (file);
+	screen = gtk_window_get_screen (parent_window);
+	envp = egg_screen_exec_environment (screen);	
+	
+	result = gnome_vfs_url_show_with_env (uri, envp);
+
+	switch (result) {
+	case GNOME_VFS_OK:
+		break;
+		
+	case GNOME_VFS_ERROR_NOT_SUPPORTED:
+		uri_scheme = nautilus_file_get_uri_scheme (file);
+		application_cannot_open_location (NULL,
+						  file,
+						  uri_scheme,
+						  parent_window);
+		g_free (uri_scheme);
+		break;
+		
+	case GNOME_VFS_ERROR_NO_DEFAULT:
+	case GNOME_VFS_ERROR_NO_HANDLER:
+		nautilus_program_chooser_show_no_choices_message
+					(action, file, parent_window);
+		break;
+		
+	default:
+		nautilus_program_chooser_show_invalid_message
+					(action, file, parent_window);
+	}
+	
+	g_strfreev (envp);
+	g_free (uri);
+}
+
+/**
+ * nautilus_launch_action:
+ *
+ * Forks off a process to launch the action with a given file
+ * as a parameter. Provide parent window for error dialogs.
+ *
+ * @action: the action to launch
+ * @file: the file whose location should be passed as a parameter.
+ * @parent_window: window to use as parent for error dialogs.
+ */
+void nautilus_launch_action (GnomeVFSMimeAction *action,
+                             NautilusFile       *file,
+			      GtkWindow          *parent_window)
+{
+	GdkScreen      *screen;
+	GnomeVFSResult  result;
+	GList           uris;
+	char           *uri;
+	char          **envp;
+	
+	switch (action->action_type) {
+	case GNOME_VFS_MIME_ACTION_TYPE_APPLICATION:
+		
+		nautilus_launch_application (action->action.application, file, parent_window);
+		
+		break;
+		
+	case GNOME_VFS_MIME_ACTION_TYPE_COMPONENT:
+
+		uri = NULL;
+		if (nautilus_file_is_nautilus_link (file)) {
+			uri = nautilus_file_get_activation_uri (file);
+		}
+		
+		if (uri == NULL) {
+			uri = nautilus_file_get_uri (file);
+		}
+
+		uris.next = NULL;
+		uris.prev = NULL;
+		uris.data = uri;
+		
+		screen = gtk_window_get_screen (parent_window);
+		envp = egg_screen_exec_environment (screen);	
+		
+		result = gnome_vfs_mime_action_launch_with_env (action, &uris, envp);
+		
+		switch (result) {
+		case GNOME_VFS_OK:
+			break;
+			
+		default:
+			nautilus_program_chooser_show_invalid_message
+					(action->action_type, file, parent_window);
+		}
+		
+		g_strfreev (envp);
+		g_free (uri);
+
+		break;
+		
+	default:
+		nautilus_program_chooser_show_invalid_message
+					(action->action_type, file, parent_window);
+	}	 
 }
 
 /**
@@ -539,66 +683,55 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 			     NautilusFile *file,
 			     GtkWindow *parent_window)
 {
-	GdkScreen *screen;
-	char      *parameter;
-	char      *uri_scheme, *uri;
+	GdkScreen       *screen;
+	char		*uri;
+	char            *uri_scheme;
+	GList            uris;
+	char           **envp;
+	GnomeVFSResult   result;
 
-	uri_scheme = nautilus_file_get_uri_scheme (file);
-
-	/* If the program can open URIs, always use a URI. This
-	 * prevents any possible ambiguity for cases where a path
-	 * would looks like a URI.
-	 */
-	if (application->expects_uris == GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS ||
-	    ((application->expects_uris == GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS_FOR_NON_FILES) &&
-	     eel_strcasecmp (uri_scheme, "file") != 0)) {
-		/* Check to be sure that the application also supports this particular URI scheme */
-		if (g_list_find_custom (application->supported_uri_schemes,
-					uri_scheme,
-					eel_strcmp_compare_func) == NULL) {
-			application_cannot_open_location (application,
-							  file,
-							  uri_scheme,
-							  parent_window);
-			g_free (uri_scheme);
-			return;
-		}
-		parameter = nautilus_file_get_uri (file);
-	} else {
-		uri = nautilus_file_get_uri (file);
-		parameter = gnome_vfs_get_local_path_from_uri (uri);
-		g_free (uri);
-
-		if (parameter == NULL) {
-			/* This application can't deal with this URI,
-			 * because it can only handle local
-			 * files. Tell user. Some day we could offer
-			 * to copy it locally for the user, if we knew
-			 * where to put it, and who would delete it
-			 * when done.
-			 */
-			application_cannot_open_location (application,
-							  file,
-							  uri_scheme,
-							  parent_window);
-			g_free (uri_scheme);
-			return;
-		}
+	uri = NULL;
+	if (nautilus_file_is_nautilus_link (file)) {
+		uri = nautilus_file_get_activation_uri (file);
 	}
-	g_free (uri_scheme);
+	
+	if (uri == NULL) {
+		uri = nautilus_file_get_uri (file);
+	}
 
+	uris.next = NULL;
+	uris.prev = NULL;
+	uris.data = uri;
+	
 	screen = gtk_window_get_screen (parent_window);
+	envp = egg_screen_exec_environment (screen);
+	
+	result = gnome_vfs_mime_application_launch_with_env (application, &uris, envp);
 
-	nautilus_launch_application_from_command (screen,
-						  application->name,
-						  application->command,
-						  parameter, 
-						  application->requires_terminal);
+	switch (result) {
+	case GNOME_VFS_OK:
+		break;
 
-	g_free (parameter);
+	case GNOME_VFS_ERROR_NOT_SUPPORTED:
+		uri_scheme = nautilus_file_get_uri_scheme (file);
+		application_cannot_open_location (application,
+						  file,
+						  uri_scheme,
+						  parent_window);
+		g_free (uri_scheme);
+		
+		break;
+
+	default:
+		nautilus_program_chooser_show_invalid_message
+			(GNOME_VFS_MIME_ACTION_TYPE_APPLICATION, file, parent_window);
+			 
+		break;
+	}
+	
+	g_free (uri);
+	g_strfreev (envp);
 }
-
-
 
 /**
  * nautilus_launch_application_from_command:

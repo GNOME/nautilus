@@ -1,3 +1,27 @@
+2003-04-28  Alexander Larsson  <alexl@redhat.com>
+
+	Based on a patch by Frank Worsley <fworsley@shaw.ca>
+
+	* libnautilus-private/nautilus-program-chooser.[ch]:
+	(nautilus_program_chooser_show_no_choices_message),
+	(nautilus_program_chooser_show_invalid_message):
+	Added the term 'action' to the dialogs when there is
+	no default application or component.
+	
+	* libnautilus-private/nautilus-program-choosing.[ch]:
+	(application_cannot_open_location), (nautilus_launch_show_file),
+	(nautilus_launch_action), (nautilus_launch_application):
+	Updated to use the new gnome-vfs functions and error codes.
+	
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_launch_application), (activate_callback),
+	(activate_activation_uri_ready_callback),
+	(cancel_activate_callback), (fm_directory_view_activate_file):
+	Cleaned up to properly support the new gnome-vfs functionality
+	and an external component viewer. Also fixed to get activation uri
+	for a file and then retrieve properties for the activation uri
+	not the file that was clicked (fixes #42391).
+
 2003-04-25  Michael Meeks  <michael@ximian.com>
 
 	* src/nautilus-view-frame.c (nautilus_view_frame_get_first_visible_file),
