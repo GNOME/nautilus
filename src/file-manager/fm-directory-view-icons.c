@@ -35,6 +35,7 @@
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtksignal.h>
+#include <libnautilus/nautilus-metadata.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-string.h>
 #include <libnautilus/nautilus-background.h>
@@ -232,7 +233,9 @@ add_icon_if_already_positioned (FMDirectoryViewIcons *icon_view,
 
 	/* Get the current position of this icon from the metadata. */
 	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
-	position_string = nautilus_file_get_metadata (file, "ICON_POSITION", "");
+	position_string = nautilus_file_get_metadata (file, 
+						      ICON_VIEW_ICON_POSITION_METADATA_KEY, 
+						      "");
 	position_good = sscanf (position_string, " %d , %d %*s", &x, &y) == 2;
 	g_free (position_string);
 
@@ -282,7 +285,7 @@ fm_directory_view_icons_clear (FMDirectoryView *view)
 
 	/* Set up the background color from the metadata. */
 	background_color = nautilus_directory_get_metadata (fm_directory_view_get_model (view),
-							    "ICON_VIEW_BACKGROUND_COLOR",
+							    ICON_VIEW_BACKGROUND_COLOR_METADATA_KEY,
 							    DEFAULT_BACKGROUND_COLOR);
 	nautilus_background_set_color (nautilus_get_widget_background (GTK_WIDGET (icon_container)),
 				       background_color);
@@ -452,7 +455,7 @@ fm_directory_view_icons_background_changed_cb (NautilusBackground *background,
 	
 	color_spec = nautilus_background_get_color (background);
 	nautilus_directory_set_metadata (directory,
-					 "ICON_VIEW_BACKGROUND_COLOR",
+					 ICON_VIEW_BACKGROUND_COLOR_METADATA_KEY,
 					 DEFAULT_BACKGROUND_COLOR,
 					 color_spec);
 	g_free (color_spec);
@@ -474,6 +477,9 @@ fm_directory_view_icons_icon_moved_cb (GnomeIconContainer *container,
 	/* Store the new position of the icon in the metadata. */
 	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
 	position_string = g_strdup_printf ("%d,%d", x, y);
-	nautilus_file_set_metadata (file, "ICON_POSITION", NULL, position_string);
+	nautilus_file_set_metadata (file, 
+				    ICON_VIEW_ICON_POSITION_METADATA_KEY, 
+				    NULL, 
+				    position_string);
 	g_free (position_string);
 }

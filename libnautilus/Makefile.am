@@ -41,6 +41,7 @@ libnautilusinclude_HEADERS=			\
 	nautilus-icons-controller.h		\
 	nautilus-icons-view-icon-item.h         \
         nautilus-lib-self-check-functions.h	\
+	nautilus-metadata.h			\
 	nautilus-self-checks.h			\
 	nautilus-string.h			\
 	ntl-content-view-frame.h		\

@@ -1,5 +1,19 @@
 2000-01-31  John Sullivan <sullivan@eazel.com>
 
+	Put all metadata keys in a central place so we can keep
+	track of them.
+
+	* libnautilus/nautilus-metadata.h: New file, contains
+	#defines for all the metadata keys currently in use.
+	* libnautilus/Makefile.am: add nautilus-metadata.h to list of headers.
+	* src/ntl-index-panel.c:
+	* src/file-manager/fm-directory-view-icons.c:
+	* src/file-manager/fm-directory-view-list.c:
+	Update all non-test callers of nautilus_directory_get_metadata and
+	nautilus_directory_set_metadata to use new #defines
+
+2000-01-31  John Sullivan <sullivan@eazel.com>
+
 	Improved zooming API and made zoom items on item context
 	menu disable properly. (There's still a bug with disabling
 	the background menu if an item menu ever appears; Darin will

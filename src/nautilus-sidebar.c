@@ -35,6 +35,7 @@
 #include <libnautilus/nautilus-background.h>
 #include <libnautilus/nautilus-directory.h>
 #include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus/nautilus-metadata.h>
 #include <libnautilus/nautilus-string.h>
 #include <gnome.h>
 
@@ -341,7 +342,7 @@ nautilus_index_panel_background_changed (NautilusIndexPanel *index_panel)
 	background = nautilus_get_widget_background (GTK_WIDGET (index_panel));
 	color_spec = nautilus_background_get_color (background);
 	nautilus_directory_set_metadata (index_panel->details->directory,
-					 "INDEX_PANEL_BACKGROUND_COLOR",
+					 INDEX_PANEL_BACKGROUND_COLOR_METADATA_KEY,
 					 DEFAULT_BACKGROUND_COLOR,
 					 color_spec);
 	g_free (color_spec);
@@ -374,7 +375,7 @@ nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const gchar* 
 
 	/* Set up the background color from the metadata. */
 	background_color = nautilus_directory_get_metadata (directory,
-							    "INDEX_PANEL_BACKGROUND_COLOR",
+							    INDEX_PANEL_BACKGROUND_COLOR_METADATA_KEY,
 							    DEFAULT_BACKGROUND_COLOR);
 	nautilus_background_set_color (background, background_color);
 	g_free (background_color);

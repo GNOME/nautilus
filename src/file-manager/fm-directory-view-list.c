@@ -38,6 +38,7 @@
 #include <libnautilus/gtkflist.h>
 #include <libnautilus/nautilus-background.h>
 #include <libnautilus/nautilus-icon-factory.h>
+#include <libnautilus/nautilus-metadata.h>
 
 struct _FMDirectoryViewListDetails
 {
@@ -555,7 +556,7 @@ fm_directory_view_list_clear (FMDirectoryView *view)
 
 	/* Set up the background color from the metadata. */
 	background_color = nautilus_directory_get_metadata (fm_directory_view_get_model (view),
-							    "LIST_VIEW_BACKGROUND_COLOR",
+							    INDEX_PANEL_BACKGROUND_COLOR_METADATA_KEY,
 							    DEFAULT_BACKGROUND_COLOR);
 	nautilus_background_set_color (nautilus_get_widget_background (GTK_WIDGET (flist)),
 				       background_color);
@@ -694,7 +695,7 @@ fm_directory_view_list_background_changed_cb (NautilusBackground *background,
 	
 	color_spec = nautilus_background_get_color (background);
 	nautilus_directory_set_metadata (directory,
-					 "LIST_VIEW_BACKGROUND_COLOR",
+					 INDEX_PANEL_BACKGROUND_COLOR_METADATA_KEY,
 					 DEFAULT_BACKGROUND_COLOR,
 					 color_spec);
 	g_free (color_spec);
