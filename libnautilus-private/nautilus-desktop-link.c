@@ -302,7 +302,8 @@ gboolean
 nautilus_desktop_link_can_rename (NautilusDesktopLink     *link)
 {
 	return (link->details->type == NAUTILUS_DESKTOP_LINK_HOME ||
-		link->details->type == NAUTILUS_DESKTOP_LINK_TRASH);
+		link->details->type == NAUTILUS_DESKTOP_LINK_TRASH ||
+		link->details->type == NAUTILUS_DESKTOP_LINK_COMPUTER);
 }
 
 gboolean

@@ -1,5 +1,12 @@
 2005-02-27  Martin Wehner  <martin.wehner@gmail.com>
 
+	* libnautilus-private/nautilus-desktop-link.c:
+	(nautilus_desktop_link_can_rename):
+	Make Computer icon renameable. (#154122)
+	Patch from Tim Savannah <opticcow@linux-militia.net>
+
+2005-02-27  Martin Wehner  <martin.wehner@gmail.com>
+
 	* libnautilus-private/nautilus-file-operations-progress.c:
 	(time_remaining_callback):
 	Don't show ETA if bytes_copied > bytes_total.
