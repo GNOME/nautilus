@@ -5668,30 +5668,7 @@ monitor_file_for_open_with (FMDirectoryView *view, NautilusFile *file)
 	}
 }
 
-#if 0
-static void
-real_size_allocate (GtkWidget *widget,
-		    GtkAllocation *allocation)
-{
-	GtkAllocation allocation_to_fool_scrolled_window;
 
-	/* Trick GtkScrolledWindow into working. */
-	allocation_to_fool_scrolled_window.x = 0;
-	allocation_to_fool_scrolled_window.y = 0;
-	allocation_to_fool_scrolled_window.width = allocation->width;
-	allocation_to_fool_scrolled_window.height = allocation->height;
-	EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate,
-			      (widget, &allocation_to_fool_scrolled_window));
-
-	/* The rest of this is just identical to what GtkWidget does. */
-	widget->allocation = *allocation;
-	if (GTK_WIDGET_REALIZED (widget)) {
-		gdk_window_move_resize (widget->window,
-					allocation->x, allocation->y,
-					allocation->width, allocation->height);
-	}
-}
-#endif
 static void
 real_sort_files (FMDirectoryView *view, GList **files)
 {
@@ -5715,8 +5692,6 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 
 	G_OBJECT_CLASS (klass)->finalize = fm_directory_view_finalize;
 	GTK_OBJECT_CLASS (klass)->destroy = fm_directory_view_destroy;
-
-//	widget_class->size_allocate = real_size_allocate;
 
 	/* Get rid of the strange 3-pixel gap that GtkScrolledWindow
 	 * uses by default. It does us no good.
