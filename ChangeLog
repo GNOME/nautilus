@@ -1,3 +1,29 @@
+2000-06-06  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_short_list_applications_for_uri),
+	(nautilus_mime_get_short_list_components_for_uri),
+	(nautilus_mime_get_all_applications_for_uri),
+	(nautilus_mime_get_all_components_for_uri):
+	Fixed leaked uris in each of the above.
+
+	* nautilus-widgets/nautilus-preferences-item.c:
+	(preferences_item_create_editable_string):
+	Fix a leaked string.
+
+	* nautilus-widgets/nautilus-preferences-item.c:
+	(has_image_file):
+	Add a missing gnome_vfs_file_info_init that will make
+	gnome_vfs_get_file_info not leak.
+
+	* src/nautilus-window-menus.c:
+	(update_user_level_menu_items):
+	Fix a leaked string.
+
+	* src/nautilus-window-menus.c:
+	(update_preferences_dialog_title):
+	Fix a leaked title string.
+
 2000-06-06  Darin Adler  <darin@eazel.com>
 
 	The main change here is revamping the undo manager.

@@ -398,6 +398,7 @@ preferences_item_create_editable_string (NautilusPreferencesItem	*item,
 
 	g_assert (current_value != NULL);
 	nautilus_text_caption_set_text (NAUTILUS_TEXT_CAPTION (item->details->child), current_value);
+	g_free (current_value);
 	
  	gtk_signal_connect (GTK_OBJECT (item->details->child),
  			    "changed",
@@ -481,6 +482,7 @@ has_image_file(const char *directory_uri, const char *dir_name, const char *requ
 	
 	for (index = 0; index < NAUTILUS_N_ELEMENTS (icon_file_name_suffixes); index++) {
 		temp_str = g_strconcat (base_uri, icon_file_name_suffixes[index], NULL);
+		gnome_vfs_file_info_init (file_info);
 		result = gnome_vfs_get_file_info (temp_str, file_info, 0, NULL);
 		g_free(temp_str);
 		if (result == GNOME_VFS_OK) {

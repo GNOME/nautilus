@@ -1030,6 +1030,7 @@ update_user_level_menu_items (NautilusWindow *window)
 					  NAUTILUS_MENU_PATH_SETTINGS_USER_LEVEL_CUSTOMIZE,
 					  customize_string);
 
+	g_free (customize_string);
 	window->updating_bonobo_radio_menu_item = FALSE;
 }
 
@@ -1122,5 +1123,7 @@ update_preferences_dialog_title (void)
 	g_assert (dialog_title != NULL);
 	
 	nautilus_global_preferences_set_dialog_title (dialog_title);
+
+	g_free (dialog_title);
 }
 

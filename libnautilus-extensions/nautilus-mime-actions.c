@@ -357,7 +357,8 @@ nautilus_mime_get_short_list_applications_for_uri (const char *uri)
 			}
 		}
 	}
-		
+
+	g_free (mime_type);
 	CORBA_exception_free (&ev);
 
 	/* FIXME bugzilla.eazel.com 1266: should sort alphabetically by name or something */
@@ -385,7 +386,6 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 
 	CORBA_exception_init (&ev);
 
-	mime_type = get_mime_type_from_uri (uri);
 	uri_scheme = uri_string_get_scheme (uri);
 
 	directory = nautilus_directory_get (uri);
@@ -449,6 +449,7 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 	g_list_free (iids);
 
 	gnome_vfs_mime_component_list_free (removed);
+	g_free (mime_type);
 
 	return result;
 }
@@ -498,6 +499,7 @@ nautilus_mime_get_all_applications_for_uri (const char *uri)
 
 	/* FIXME bugzilla.eazel.com 1266: should sort alphabetically by name or something */
 
+	g_free (mime_type);
 	return result;
 }
 
@@ -506,7 +508,6 @@ nautilus_mime_get_all_components_for_uri (const char *uri)
 {
 	char *mime_type;
 	char *uri_scheme;
-	GList *result;
 	GList *files;
 	GList *attributes;
 	GList *info_list;
@@ -531,11 +532,10 @@ nautilus_mime_get_all_components_for_uri (const char *uri)
 
 	info_list = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, NULL, &ev);
 	
-	return (info_list);
-
+	g_free (mime_type);
 	CORBA_exception_free (&ev);
-	
-	return result;
+
+	return info_list;
 }
 
 
