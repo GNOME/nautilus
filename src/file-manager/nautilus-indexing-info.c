@@ -43,6 +43,50 @@
 
 #include "nautilus-indexing-info.h"
 
+typedef struct {
+        NautilusLabel *progress_label;
+        GtkProgress *progress_bar;
+} ProgressChangeData;
+
+static GtkWidget *dialog = NULL;
+
+static char *
+get_text_for_progress_label (void)
+{
+        return g_strdup_printf ("Indexing is %d%% complete.", medusa_index_progress_get_percentage_complete ());
+}
+
+static gint
+update_progress_display (gpointer data)
+{
+        NautilusLabel *progress_label;
+        ProgressChangeData *progress_change_data;
+        char *progress_string;
+
+        g_return_val_if_fail (data != NULL, 0);
+        progress_change_data = (ProgressChangeData *) data;
+        if (dialog == NULL) {
+                return 0;
+        }
+        /* This shouldn't ever happen, but it is possible, so we'll
+           not whine if it does */
+        if (NAUTILUS_IS_LABEL (progress_change_data->progress_label) == FALSE) {
+                return 0;
+        }
+                                                                              
+        g_return_val_if_fail (GTK_IS_PROGRESS (progress_change_data->progress_bar), 0);
+        progress_label = NAUTILUS_LABEL (progress_change_data->progress_label);
+        progress_string = get_text_for_progress_label ();
+        nautilus_label_set_text (progress_label,
+                                 progress_string);
+        g_free (progress_string);
+        gtk_progress_set_value (progress_change_data->progress_bar,
+                                medusa_index_progress_get_percentage_complete ());
+
+        return 1;
+}
+
+
 static void
 update_file_index_callback (GtkWidget *widget, gpointer data)
 {
@@ -69,13 +113,13 @@ update_file_index_callback (GtkWidget *widget, gpointer data)
 
 	if (error != NULL) {
 		char *string;
-		GtkWidget *dialog;
+		GtkWidget *error_dialog;
 
 		string = g_strdup_printf (_("Error while trying "
 					    "to reindex: %s"),
 					  error);
-		dialog = gnome_error_dialog (string);
-		gnome_dialog_run (GNOME_DIALOG (dialog));
+		error_dialog = gnome_error_dialog (string);
+		gnome_dialog_run (GNOME_DIALOG (error_dialog));
 		g_free(string);
 	}
 }
@@ -114,7 +158,7 @@ get_file_index_time (void)
         time_struct = localtime (&the_time);
 
         
-        time_string = nautilus_strdup_strftime (_("%I:%M %p, %D"), time_struct);
+        time_string = nautilus_strdup_strftime (_("%I:%M %p, %x"), time_struct);
 
         return time_string;
 }
@@ -159,6 +203,7 @@ show_index_progress_bar (GnomeDialog *gnome_dialog)
         GtkWidget *progress_bar_hbox, *embedded_vbox;
         char *progress_string;
         int percentage_complete;
+        ProgressChangeData *progress_data;
                 
         indexing_notification_label = nautilus_label_new (_("Your files are currently being indexed:"));
         make_label_helvetica_bold (NAUTILUS_LABEL (indexing_notification_label));
@@ -175,8 +220,9 @@ show_index_progress_bar (GnomeDialog *gnome_dialog)
         gtk_progress_configure (GTK_PROGRESS (indexing_progress_bar), percentage_complete, 0, 100);
         /* Put the progress bar in an hbox to make it a more sane size */
         gtk_box_pack_start (GTK_BOX (embedded_vbox), indexing_progress_bar, FALSE, FALSE, 0);
-        
-        progress_string = g_strdup_printf ("Indexing is %d%% complete.", medusa_index_progress_get_percentage_complete ());
+
+
+        progress_string = get_text_for_progress_label ();
         progress_label = nautilus_label_new (progress_string);
         g_free (progress_string);
         make_label_helvetica_medium (NAUTILUS_LABEL (progress_label));
@@ -190,8 +236,15 @@ show_index_progress_bar (GnomeDialog *gnome_dialog)
         gtk_box_pack_start (GTK_BOX (gnome_dialog->vbox), progress_bar_hbox,
                                     FALSE, FALSE, 0);
 
-
-
+        /* Keep the dialog current with actual indexing progress */
+        progress_data = g_new0 (ProgressChangeData, 1);
+        progress_data->progress_label = NAUTILUS_LABEL (progress_label);
+        progress_data->progress_bar = GTK_PROGRESS (indexing_progress_bar);
+        gtk_timeout_add_full (5000,
+                              update_progress_display,
+                              NULL,
+                              progress_data,
+                              g_free);
 }
 
 /**
@@ -203,7 +256,7 @@ show_index_progress_bar (GnomeDialog *gnome_dialog)
 void
 nautilus_indexing_info_show_dialog (void)
 {
-	static GtkWidget *dialog = NULL;
+
 	GnomeDialog *gnome_dialog;
         GtkWidget *label;
 
