@@ -30,6 +30,7 @@
 #include "nautilus-window.h"
 #include <bonobo/bonobo-ui-component.h>
 #include <bonobo/bonobo-ui-container.h>
+#include <bonobo/bonobo-ui-toolbar-button-item.h>
 
 /* FIXME bugzilla.eazel.com 2575: Migrate more fields into here. */
 struct NautilusWindowDetails
@@ -42,6 +43,10 @@ struct NautilusWindowDetails
         /* Menus. */
 	guint refresh_bookmarks_menu_idle_id;
 	guint refresh_go_menu_idle_id;
+
+	/* Tool bar. */
+	BonoboUIToolbarButtonItem *back_button_item;
+	BonoboUIToolbarButtonItem *forward_button_item;
 
         /* Current location. */
         char *title;

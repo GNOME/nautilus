@@ -34,6 +34,7 @@
 #include "nautilus-window-private.h"
 #include "nautilus-window.h"
 #include <bonobo/bonobo-control.h>
+#include <bonobo/bonobo-ui-util.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtktogglebutton.h>
 #include <libgnome/gnome-i18n.h>
@@ -48,8 +49,6 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
-
-#ifdef UIH
 
 static void
 activate_back_or_forward_menu_item (GtkMenuItem *menu_item, 
@@ -110,19 +109,36 @@ create_back_or_forward_menu (NautilusWindow *window, gboolean back)
 	return menu;
 }
 
+static GtkWidget *
+get_back_button (NautilusWindow *window)
+{
+	return GTK_WIDGET (bonobo_ui_toolbar_button_item_get_button_widget 
+		(window->details->back_button_item));
+}
+
+static GtkWidget *
+get_forward_button (NautilusWindow *window)
+{
+	return GTK_WIDGET (bonobo_ui_toolbar_button_item_get_button_widget 
+		(window->details->forward_button_item));
+}
+
 static int
-back_or_forward_button_clicked_callback (GtkWidget *widget, 
+back_or_forward_button_pressed_callback (GtkWidget *widget, 
 				   GdkEventButton *event, 
 				   gpointer *user_data)
 {
+	NautilusWindow *window;
 	gboolean back;
 
 	g_return_val_if_fail (GTK_IS_BUTTON (widget), FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_WINDOW (user_data), FALSE);
 	g_return_val_if_fail (event != NULL, FALSE);
 
-	back = NAUTILUS_WINDOW (user_data)->back_button == widget;
-	g_assert (back || NAUTILUS_WINDOW (user_data)->forward_button == widget);
+	window = NAUTILUS_WINDOW (user_data);
+
+	back = widget == get_back_button (window);
+	g_assert (back || widget == get_forward_button (window));
 
 	if (event->button == 3) {
 		nautilus_pop_up_context_menu (
@@ -139,58 +155,128 @@ back_or_forward_button_clicked_callback (GtkWidget *widget,
 	
 }
 
-#endif /* UIH */
-
-/* set up the toolbar info based on the current theme selection from preferences */
-
 static void
-set_up_button (NautilusWindow *window, const char *item_path, const char *icon_name)
+back_or_forward_button_clicked_callback (GtkWidget *widget, 
+				   	 gpointer *user_data)
 {
-	char *full_name, *icon_theme, *path_name;
+	NautilusWindow *window;
+	gboolean back;
+
+	g_return_if_fail (GTK_IS_BUTTON (widget));
+	g_return_if_fail (NAUTILUS_IS_WINDOW (user_data));
+
+	window = NAUTILUS_WINDOW (user_data);
+
+	back = widget == get_back_button (window);
+	g_assert (back || widget == get_forward_button (window));
+
+	if (back) {
+		nautilus_window_go_back (window);
+	} else {
+		nautilus_window_go_forward (window);
+	}
+}
+
+static char *
+get_file_name_from_icon_name (const char *icon_name)
+{
+	char *full_path_name, *icon_theme, *theme_path_name;
 
 	/* look in the theme to see if there's a redirection found */
 	icon_theme = nautilus_theme_get_theme_data ("toolbar", "ICON_THEME");
 	if (icon_theme != NULL) {
-		path_name = g_strdup_printf ("%s/%s.png", icon_theme, icon_name);
-		full_name = nautilus_pixmap_file (path_name);
-		g_free (path_name);
+		theme_path_name = g_strdup_printf ("%s/%s.png", icon_theme, icon_name);
+		full_path_name = nautilus_pixmap_file (theme_path_name);
+		g_free (theme_path_name);
 		g_free (icon_theme);
 	} else {
-		full_name = nautilus_theme_get_image_path (icon_name);
+		full_path_name = nautilus_theme_get_image_path (icon_name);
 	}
+
+	return full_path_name;
+}
+
+static void
+set_up_standard_bonobo_button (NautilusWindow *window, 
+			       const char *item_path, 
+			       const char *icon_name)
+{
+	char *file_name;
+
+	file_name = get_file_name_from_icon_name (icon_name);
 		
 	/* set up the toolbar component with the new image */
-	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 	bonobo_ui_component_set_prop (window->details->shell_ui, 
 				      item_path,
 				      "pixtype",
-				      full_name == NULL ? "stock" : "filename",
+				      file_name == NULL ? "stock" : "filename",
 			      	      NULL);
 	bonobo_ui_component_set_prop (window->details->shell_ui, 
 				      item_path,
 				      "pixname",
-				      full_name == NULL ? icon_name : full_name,
+				      file_name == NULL ? icon_name : file_name,
 			      	      NULL);
-	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 
-	g_free (full_name);
+	g_free (file_name);
 }
+
+static GdkPixbuf *
+get_pixbuf_for_xml_node (NautilusWindow *window, const char *node_path)
+{
+	BonoboUINode *node;
+	GdkPixbuf *pixbuf;
+
+	node = bonobo_ui_component_get_tree (window->details->shell_ui, node_path, FALSE, NULL);
+	pixbuf = bonobo_ui_util_xml_get_icon_pixbuf (node, FALSE);
+	bonobo_ui_node_free (node);
+
+	return pixbuf;
+}
+
+/* Use only for tool bar buttons that had to be explicitly created so they
+ * could have behaviors not present in standard Bonobo tool bar buttons.
+ */
+static void
+set_up_special_bonobo_button (NautilusWindow *window,
+			      BonoboUIToolbarButtonItem *item,
+			      const char *control_path,
+			      const char *icon_name)
+{
+	char *icon_file_name;
+	GdkPixbuf *pixbuf;	
+
+	icon_file_name = get_file_name_from_icon_name (icon_name);
+
+	if (icon_file_name == NULL) {
+		pixbuf = get_pixbuf_for_xml_node (window, control_path);
+	} else {
+		pixbuf = gdk_pixbuf_new_from_file (icon_file_name);
+		g_free (icon_file_name);
+	}
+	
+	bonobo_ui_toolbar_button_item_set_icon (item, pixbuf);
+	gdk_pixbuf_unref (pixbuf);
+}			      
 
 
 static void
 set_up_toolbar_images (NautilusWindow *window)
 {
-	set_up_button (window, "/Tool Bar/Back", "Back");
-	set_up_button (window, "/Tool Bar/Forward", "Forward");
-	set_up_button (window, "/Tool Bar/Up", "Up");
-	set_up_button (window, "/Tool Bar/Home", "Home");
-	set_up_button (window, "/Tool Bar/Reload", "Refresh");
-	set_up_button (window, "/Tool Bar/Toggle Find Mode", "Search");
-	set_up_button (window, "/Tool Bar/Go to Web Search", "SearchWeb");
-	set_up_button (window, "/Tool Bar/Stop", "Stop");
+	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
+
+	set_up_special_bonobo_button (window, window->details->back_button_item, "/Tool Bar/BackWrapper", "Back");
+	set_up_special_bonobo_button (window, window->details->forward_button_item, "/Tool Bar/ForwardWrapper", "Forward");
+	
+	set_up_standard_bonobo_button (window, "/Tool Bar/Up", "Up");
+	set_up_standard_bonobo_button (window, "/Tool Bar/Home", "Home");
+	set_up_standard_bonobo_button (window, "/Tool Bar/Reload", "Refresh");
+	set_up_standard_bonobo_button (window, "/Tool Bar/Toggle Find Mode", "Search");
+	set_up_standard_bonobo_button (window, "/Tool Bar/Go to Web Search", "SearchWeb");
+	set_up_standard_bonobo_button (window, "/Tool Bar/Stop", "Stop");
 #ifdef EAZEL_SERVICES	
-	set_up_button (window, "/Tool Bar/Extra Buttons Placeholder/Services", "Services");
+	set_up_standard_bonobo_button (window, "/Tool Bar/Extra Buttons Placeholder/Services", "Services");
 #endif
+	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 }
 
 static GtkWidget *
@@ -257,15 +343,53 @@ theme_changed_callback (gpointer callback_data)
 	 */
 }
 
-/* initialize the toolbar */
+static void
+set_widget_for_bonobo_control (NautilusWindow *window,
+			       GtkWidget *widget,
+			       const char *control_path)
+{
+	BonoboControl *wrapper;
+
+	wrapper = bonobo_control_new (widget);
+	bonobo_ui_component_object_set (window->details->shell_ui,
+					control_path,
+					bonobo_object_corba_objref (BONOBO_OBJECT (wrapper)),
+					NULL);
+	bonobo_object_unref (BONOBO_OBJECT (wrapper));
+}
+
+static BonoboUIToolbarButtonItem *
+set_up_back_or_forward_tool_bar_item (NautilusWindow *window, 
+				      const char *label, 
+				      const char *control_path)
+{
+	BonoboUIToolbarButtonItem *item;
+	GtkButton *button;
+
+	item = BONOBO_UI_TOOLBAR_BUTTON_ITEM 
+		(bonobo_ui_toolbar_button_item_new (NULL, label)); /* Fill in image later */
+	gtk_widget_show (GTK_WIDGET (item));
+
+	button = bonobo_ui_toolbar_button_item_get_button_widget (item);
+	gtk_signal_connect (GTK_OBJECT (button),
+			    "button_press_event",
+			    GTK_SIGNAL_FUNC (back_or_forward_button_pressed_callback),
+			    window);
+	gtk_signal_connect (GTK_OBJECT (button),
+			    "clicked",
+			    GTK_SIGNAL_FUNC (back_or_forward_button_clicked_callback),
+			    window);
+	set_widget_for_bonobo_control (window, GTK_WIDGET (item), control_path);
+
+	return item;
+}
+			       
+
 void
 nautilus_window_initialize_toolbars (NautilusWindow *window)
 {
 	GtkWidget *frame, *box;
-	BonoboControl *throbber_wrapper;
 	
-	set_up_toolbar_images (window);
-
 	window->throbber = allocate_throbber ();	
 	frame = set_up_throbber_frame_type (window);
 	
@@ -274,29 +398,16 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 	gtk_container_set_border_width (GTK_CONTAINER (box), 4);
 	gtk_widget_show (box);
 	gtk_container_add (GTK_CONTAINER (box), frame);
-	
-	throbber_wrapper = bonobo_control_new (box);
-	
-	bonobo_ui_component_object_set (window->details->shell_ui,
-					"/Tool Bar/ThrobberWrapper",
-					bonobo_object_corba_objref (BONOBO_OBJECT (throbber_wrapper)),
-					NULL);
-	
-	bonobo_object_unref (BONOBO_OBJECT (throbber_wrapper));
 
-#ifdef UIH
-	gtk_signal_connect (GTK_OBJECT (window->back_button),
-			    "button_press_event",
-			    GTK_SIGNAL_FUNC (back_or_forward_button_clicked_callback), 
-			    window);
+	set_widget_for_bonobo_control (window, box, "/Tool Bar/ThrobberWrapper");
 
-	gtk_signal_connect (GTK_OBJECT (window->forward_button),
-			    "button_press_event",
-			    GTK_SIGNAL_FUNC (back_or_forward_button_clicked_callback), 
-			    window);
-#endif
-	
-	/* add callback for preference changes */
+	window->details->back_button_item = set_up_back_or_forward_tool_bar_item 
+		(window, _("Back"), "/Tool Bar/BackWrapper");
+	window->details->forward_button_item = set_up_back_or_forward_tool_bar_item 
+		(window, _("Forward"), "/Tool Bar/ForwardWrapper");
+
+	set_up_toolbar_images (window);
+
 	nautilus_preferences_add_callback
 		(NAUTILUS_PREFERENCES_THEME, 
 		 theme_changed_callback,

@@ -1,3 +1,58 @@
+2000-12-05  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 4986 (Open in <n> new windows disabled) 
+
+	* src/file-manager/fm-directory-view.c: (real_update_menus):
+	An == should have been a !=
+
+	Fixed bug 3510 (The Back and Forward right-click menus are
+	missing)
+
+	* src/nautilus-shell-ui.xml: Replaced toolitem nodes for
+	"Back" and "Forward" with control nodes for their wrappers.
+	Have to do a lot of stuff manually for non-standard Bonobo
+	buttons.
+	
+	* src/nautilus-window-private.h: Store back_button_item and
+	forward_button_item in details.
+	
+	* src/nautilus-window-toolbars.c: 
+	Removed #ifdef UIH brackets around right-click menu code.
+	(get_back_button), (get_forward_button): Helper functions to
+	get the GtkButton widgets from the stored BonoboUIToolbarButtonItems.
+	(back_or_forward_button_pressed_callback): Renamed from ..._clicked_...,
+	since it's a handler for button_press_event. Compare for Back or
+	Forward button a newfangled way.
+	(back_or_forward_button_clicked_callback): New function, callback
+	from button's "clicked" handler now that Bonobo doesn't handle this
+	for us.
+	(get_file_name_from_icon_name): New function extracted from
+	set_up_button; gets the full file path from the leaf icon "name".
+	(set_up_standard_bonobo_button): Renamed from "set_up_button",
+	now calls get_file_name_from_icon_name.
+	(get_pixbuf_for_xml_node): New function, calls Bonobo utility code
+	to get the pixbuf from an xml button node.
+	(set_up_special_bonobo_button): New function, parallel to
+	set_up_standard_bonobo_button but handles the case where you have
+	a BonoboUIToolbarButtonItem in hand.
+	(set_up_toolbar_images): Call set_up_special_bonobo_button for the
+	Back and Forward items; put the bonobo freeze/thaw here instead of
+	where it was before in set_up_button.
+	(set_widget_for_bonobo_control): New function, extracted from 
+	nautilus_window_initialize_toolbars, handles attaching a widget to
+	a Bonobo control defined in the XML file.
+	(set_up_back_or_forward_tool_bar_item): New function, creates
+	widget, wraps it in control, and wires up signal handlers.
+	(nautilus_window_initialize_toolbars): Call set_up_toolbar_images
+	only after Back/Forward buttons are created; create Back/Forward
+	buttons and use new helper functions.
+	
+	* src/nautilus-window.c: 
+	(nautilus_window_allow_back), (nautilus_window_allow_forward):
+	Set sensitivity of Back/Forward buttons explicitly.
+
 2000-12-05  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-object.c:

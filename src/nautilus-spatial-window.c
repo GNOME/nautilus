@@ -1300,21 +1300,25 @@ nautilus_window_go_home (NautilusWindow *window)
 void
 nautilus_window_allow_back (NautilusWindow *window, gboolean allow)
 {
-	/* Because of verbs, we set the sensitivity of the menu to
-	 * control both the menu and toolbar.
-	 */
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 				       NAUTILUS_COMMAND_BACK, allow);
+	/* Have to handle non-standard Back button explicitly (it's
+	 * non-standard to support right-click menu).
+	 */
+	gtk_widget_set_sensitive 
+		(GTK_WIDGET (window->details->back_button_item), allow);
 }
 
 void
 nautilus_window_allow_forward (NautilusWindow *window, gboolean allow)
 {
-	/* Because of verbs, we set the sensitivity of the menu to
-	 * control both the menu and toolbar.
-	 */
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 				       NAUTILUS_COMMAND_FORWARD, allow);
+	/* Have to handle non-standard Forward button explicitly (it's
+	 * non-standard to support right-click menu).
+	 */
+	gtk_widget_set_sensitive 
+		(GTK_WIDGET (window->details->forward_button_item), allow);
 }
 
 void

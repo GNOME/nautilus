@@ -3031,7 +3031,7 @@ real_update_menus (FMDirectoryView *view)
 				       FM_DIRECTORY_VIEW_COMMAND_OPEN_IN_NEW_WINDOW,
 				       selection_count == 1
 				        ? !file_is_launchable (NAUTILUS_FILE (selection->data))
-				        : selection_count == 0);
+				        : selection_count != 0);
 
 	/* Broken into its own function just for convenience */
 	reset_bonobo_open_with_menu (view, selection);
