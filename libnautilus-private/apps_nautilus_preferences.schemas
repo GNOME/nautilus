@@ -3,8 +3,8 @@
 
     <!-- Keep the defaults in sync with the emergency fallbacks 
          in nautilus-global-preferences.c -->
- 
-    <!-- General preferences -->        
+
+    <!-- General preferences -->
 
     <schema>
       <key>/schemas/apps/nautilus/preferences/show_hidden_files</key>
@@ -51,7 +51,7 @@
       </locale>
     </schema>
 
-   <schema>
+    <schema>
       <key>/schemas/apps/nautilus/preferences/show_backup_files</key>
       <applyto>/apps/nautilus/preferences/show_backup_files</applyto>
       <owner>nautilus</owner>
@@ -67,7 +67,7 @@
       </locale>
     </schema>
 
-   <schema>
+    <schema>
       <key>/schemas/apps/nautilus/preferences/confirm_trash</key>
       <applyto>/apps/nautilus/preferences/confirm_trash</applyto>
       <owner>nautilus</owner>
@@ -82,7 +82,7 @@
       </locale>
     </schema>
 
-   <schema>
+    <schema>
       <key>/schemas/apps/nautilus/preferences/enable_delete</key>
       <applyto>/apps/nautilus/preferences/enable_delete</applyto>
       <owner>nautilus</owner>
@@ -98,7 +98,7 @@
       </locale>
     </schema>
 
-   <schema>
+    <schema>
       <key>/schemas/apps/nautilus/preferences/show_icon_text</key>
       <applyto>/apps/nautilus/preferences/show_icon_text</applyto>
       <owner>nautilus</owner>
@@ -182,7 +182,7 @@
       </locale>
     </schema>
 
-   <schema>
+    <schema>
       <key>/schemas/apps/nautilus/preferences/show_image_thumbnails</key>
       <applyto>/apps/nautilus/preferences/show_image_thumbnails</applyto>
       <owner>nautilus</owner>
@@ -201,7 +201,7 @@
       </locale>
     </schema>
 
-   <schema>
+    <schema>
       <key>/schemas/apps/nautilus/preferences/thumbnail_limit</key>
       <applyto>/apps/nautilus/preferences/thumbnail_limit</applyto>
       <owner>nautilus</owner>
@@ -218,7 +218,6 @@
       </locale>
     </schema>
 
-    
     <schema>
       <key>/schemas/apps/nautilus/preferences/preview_sound</key>
       <applyto>/apps/nautilus/preferences/preview_sound</applyto>
@@ -376,6 +375,8 @@
       </locale>
     </schema>
 
+    <!-- Icon View -->
+
     <schema>
       <key>/schemas/apps/nautilus/icon_view/captions</key>
       <applyto>/apps/nautilus/icon_view/captions</applyto>
@@ -395,7 +396,7 @@
       </locale>
     </schema>
 
-   <schema>
+    <schema>
       <key>/schemas/apps/nautilus/icon_view/captions</key>
       <applyto>/apps/nautilus/icon_view/captions</applyto>
       <owner>nautilus</owner>
@@ -424,9 +425,9 @@
 	   values are name, size, type, modification_date, emblems.
          </long>
       </locale>
-    </schema>    
-         
-   <schema>
+    </schema>
+
+    <schema>
       <key>/schemas/apps/nautilus/icon_view/default_sort_in_reverse_order</key>
       <applyto>/apps/nautilus/icon_view/default_sort_in_reverse_order</applyto>
       <owner>nautilus</owner>
@@ -443,8 +444,8 @@
          </long>
       </locale>
     </schema>
-    
-   <schema>
+
+    <schema>
       <key>/schemas/apps/nautilus/icon_view/default_use_tighter_layout</key>
       <applyto>/apps/nautilus/icon_view/default_use_tighter_layout</applyto>
       <owner>nautilus</owner>
@@ -456,8 +457,69 @@
            If true, icons will be layed out tighter by default in new windows.
          </long>
       </locale>
-    </schema>     
-               
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/icon_view/default_zoom_level</key>
+      <applyto>/apps/nautilus/icon_view/default_zoom_level</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>standard</default>
+      <locale name="C">
+         <short>Default zoom level used by the icon view</short>
+         <long>
+             Default zoom level used by the icon view.
+         </long>
+      </locale>
+    </schema>
+
+    <!-- List View -->
+
+    <schema>
+      <key>/schemas/apps/nautilus/list_view/default_sort_order</key>
+      <applyto>/apps/nautilus/list_view/default_sort_order</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>name</default>
+      <locale name="C">
+         <short>Default sort order</short>
+         <long>
+           The default sort-order for the item in the list view. Possible
+	   values are name, size, type, and modification_date.
+         </long>
+      </locale>
+    </schema>    
+         
+    <schema>
+      <key>/schemas/apps/nautilus/list_view/default_sort_in_reverse_order</key>
+      <applyto>/apps/nautilus/list_view/default_sort_in_reverse_order</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+         <short>Reverse sort order in new windows</short>
+         <long>
+           If true, files in new windows will be sorted in reverse order.
+	   ie, if sorted by name, then instead of sorting the files from
+	   "a" to "z", they will be sorted from "z" to "a".
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
+      <key>/schemas/apps/nautilus/list_view/default_zoom_level</key>
+      <applyto>/apps/nautilus/list_view/default_zoom_level</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>small</default>
+      <locale name="C">
+         <short>Default zoom level used by the list view</short>
+         <long>
+             Default zoom level used by the list view.
+         </long>
+      </locale>
+    </schema>
+
     <schema>
       <key>/schemas/apps/nautilus/preferences/hide_built_in_bookmarks</key>
       <applyto>/apps/nautilus/preferences/hide_built_in_bookmarks</applyto>
@@ -473,7 +535,7 @@
       </locale>
     </schema>
 
-   <schema>
+    <schema>
       <key>/schemas/apps/nautilus/preferences/sidebar_width</key>
       <applyto>/apps/nautilus/preferences/sidbar_width</applyto>
       <owner>nautilus</owner>
@@ -487,7 +549,7 @@
       </locale>
     </schema>
 
-   <schema>
+    <schema>
       <key>/schemas/apps/nautilus/preferences/start_with_toolbar</key>
       <applyto>/apps/nautilus/preferences/start_with_toolbar</applyto>
       <owner>nautilus</owner>
@@ -501,7 +563,7 @@
       </locale>
     </schema>
     
-   <schema>
+    <schema>
       <key>/schemas/apps/nautilus/preferences/start_with_location_bar</key>
       <applyto>/apps/nautilus/preferences/start_with_location_bar</applyto>
       <owner>nautilus</owner>
@@ -516,7 +578,7 @@
       </locale>
     </schema>
     
-   <schema>
+    <schema>
       <key>/schemas/apps/nautilus/preferences/start_with_status_bar</key>
       <applyto>/apps/nautilus/preferences/start_with_status_bar</applyto>
       <owner>nautilus</owner>
@@ -531,7 +593,7 @@
       </locale>
     </schema>
          
-   <schema>
+    <schema>
       <key>/schemas/apps/nautilus/preferences/start_with_side_bar</key>
       <applyto>/apps/nautilus/preferences/start_with_side_bar</applyto>
       <owner>nautilus</owner>
@@ -546,7 +608,7 @@
       </locale>
     </schema>
     
-   <schema>
+    <schema>
       <key>/schemas/apps/nautilus/sidebar_panels/tree/show_only_directories</key>
       <applyto>/apps/nautilus/sidebar_panels/tree/show_only_directories</applyto>
       <owner>nautilus</owner>
@@ -562,7 +624,7 @@
       </locale>
     </schema>
     
-   <schema>
+    <schema>
       <key>/schemas/apps/nautilus/news/max_items</key>
       <applyto>/apps/nautilus/news/max_items</applyto>
       <owner>nautilus</owner>
@@ -576,7 +638,7 @@
       </locale>
     </schema>
     
-   <schema>
+    <schema>
       <key>/schemas/apps/nautilus/news/update_interval</key>
       <applyto>/apps/nautilus/news/update_interval</applyto>
       <owner>nautilus</owner>
@@ -591,7 +653,7 @@
       </locale>
     </schema>     
     
-   <schema>
+    <schema>
       <key>/schemas/apps/nautilus/preferences/add_to_session</key>
       <applyto>/apps/nautilus/preferences/add_to_session</applyto>
       <owner>nautilus</owner>
