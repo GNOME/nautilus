@@ -71,9 +71,10 @@
 #define MENU_PATH_LAY_OUT			"/View/Lay Out"
 #define MENU_PATH_MANUAL_LAYOUT 		"/View/Lay Out/Manual Layout"
 #define MENU_PATH_AUTO_LAYOUT_SEPARATOR 	"/View/Lay Out/AutoLayoutSeparator"
-#define MENU_PATH_TIGHTER_LAYOUT 		"/View/Tighter Layout"
+#define MENU_PATH_LAYOUT_OPTIONS_SEPARATOR	"/View/Lay Out/LayoutOptionsSeparator"
+#define MENU_PATH_TIGHTER_LAYOUT 		"/View/Lay Out/Tighter Layout"
+#define MENU_PATH_SORT_REVERSED			"/View/Lay Out/Reversed Order"
 #define MENU_PATH_CLEAN_UP			"/View/Clean Up"
-#define MENU_PATH_SORT_REVERSED			"/View/Reversed Order"
 
 /* forward declarations */
 static void 	create_icon_container                    (FMIconView        *icon_view);
@@ -1269,27 +1270,31 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 			 sort_callback, view);
 	}
  
+	bonobo_ui_handler_menu_new_separator
+		(ui_handler, MENU_PATH_LAYOUT_OPTIONS_SEPARATOR, -1);
+		 
  	insert_bonobo_menu_item
 		(icon_view, ui_handler, selection,
 		 MENU_PATH_TIGHTER_LAYOUT,
 		 _("Toggle using a tighter layout scheme"),
-		 get_next_position (ui_handler, MENU_PATH_LAY_OUT),
+		 get_next_position (ui_handler, MENU_PATH_LAYOUT_OPTIONS_SEPARATOR),
 		 (BonoboUIHandlerCallback) tighter_layout_callback, view);
        
+	bonobo_ui_handler_menu_new_toggleitem
+		(ui_handler,
+		 MENU_PATH_SORT_REVERSED,
+		 _("Re_versed Order"),
+		 _("Display icons in the opposite order"),
+		 get_next_position (ui_handler, MENU_PATH_TIGHTER_LAYOUT),
+		 0, 0,
+		 sort_direction_callback, view);
+
         insert_bonobo_menu_item
 		(icon_view, ui_handler, selection,
 		 MENU_PATH_CLEAN_UP,
 		 _("Reposition icons to better fit in the window and avoid overlapping"),
 		 get_next_position (ui_handler, MENU_PATH_LAY_OUT),
 		 (BonoboUIHandlerCallback) clean_up_callback, view);
-	bonobo_ui_handler_menu_new_toggleitem
-		(ui_handler,
-		 MENU_PATH_SORT_REVERSED,
-		 _("Re_versed Order"),
-		 _("Display icons in the opposite order"),
-		 get_next_position (ui_handler, MENU_PATH_CLEAN_UP),
-		 0, 0,
-		 sort_direction_callback, view);
 	icon_view->details->updating_bonobo_marked_menu_item = FALSE;
 
 	/* File menu. */
