@@ -1289,12 +1289,18 @@ create_basic_page (FMPropertiesWindow *window)
 	 	temp_button = gtk_button_new_with_label (_("Select Custom Icon..."));
 		gtk_widget_show (temp_button);
 		gtk_box_pack_start (GTK_BOX (button_box), temp_button, FALSE, FALSE, 4);  
+		/* FIXME bugzilla.eazel.com 5661:
+		 * Hardwired size here won't work with font changes & localization.
+		 */
 	 	gtk_widget_set_usize (temp_button, -1, 24);
 		gtk_signal_connect(GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (select_image_button_callback), file);
 	 	
 	 	temp_button = gtk_button_new_with_label (_("Remove Custom Icon"));
 		gtk_widget_show (temp_button);
 		gtk_box_pack_start (GTK_BOX(button_box), temp_button, FALSE, FALSE, 4);  
+		/* FIXME bugzilla.eazel.com 5661:
+		 * Hardwired size here won't work with font changes & localization.
+		 */
 		gtk_widget_set_usize (temp_button, -1, 24);
 	 	gtk_signal_connect (GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (remove_image_button_callback), file);		
 
