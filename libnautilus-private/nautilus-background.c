@@ -219,7 +219,7 @@ nautilus_background_draw_flat_box (GtkStyle *style,
 				   int height)
 {
 	gboolean call_parent;
-	NautilusBackground *background;
+	NautilusBackground *background = NULL;
 	GdkGC *gc;
 	GdkRectangle rectangle;
 
