@@ -1,5 +1,16 @@
 2000-09-15  Robey Pointer  <robey@eazel.com>
 
+	* components/services/trilobite/libtrilobite/trilobite-redirect.c:
+	(trilobite_redirect_parse_xml), (trilobite_redirect_fetch_table):
+	* components/services/trilobite/libtrilobite/trilobite-redirect.h:
+
+	Make redirection XML parser in line with what services will
+	provide.  Add extra API hook for Shane to cover the case where
+	you've already downloaded the XML file and just want it to be
+	parsed.
+	
+2000-09-15  Robey Pointer  <robey@eazel.com>
+
 	* components/services/install/lib/eazel-install-rpm-glue.c:
 	(eazel_install_download_packages),
 	(eazel_install_do_install_packages):

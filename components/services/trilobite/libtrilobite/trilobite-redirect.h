@@ -27,6 +27,7 @@
 #ifndef _TRILOBITE_REDIRECT_H_
 #define _TRILOBITE_REDIRECT_H_
 
+void trilobite_redirect_parse_xml (char *blob, int length);
 gboolean trilobite_redirect_fetch_table (const char *url);
 char *trilobite_redirect_lookup (const char *key);
 const char *trilobite_get_services_address (void);

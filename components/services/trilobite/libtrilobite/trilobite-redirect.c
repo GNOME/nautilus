@@ -130,11 +130,11 @@ add_redirect (const char *key, const char *value)
 }
 
 /* parse an xml file into the redirect table */
-static void
+void
 trilobite_redirect_parse_xml (char *blob, int length)
 {
 	xmlDocPtr doc;
-	xmlNodePtr base, child;
+	xmlNodePtr base, child, child2;
 	char *name, *uri;
 
 	g_return_if_fail (blob != NULL);
@@ -151,18 +151,35 @@ trilobite_redirect_parse_xml (char *blob, int length)
 		g_warning ("trilobite redirect: empty XML!");
 		goto out;
 	}
-	if (g_strcasecmp (base->name, "redirect-table") != 0) {
+	if (g_strcasecmp (base->name, "location_data") != 0) {
 		g_warning ("trilobite redirect: no redirect table!");
 		goto bad;
 	}
 
-	for (child = base->childs; child; child = child->next) {
-		if (g_strcasecmp (child->name, "redirect") == 0) {
-			name = xmlGetProp (child, "name");
-			uri = xmlGetProp (child, "uri");
+	wipe_redirect_table ();
 
-			trilobite_debug ("trilobite redirect: %s -> %s", name, uri);
-			add_redirect (name, uri);
+	for (child = base->childs; child; child = child->next) {
+		if (g_strcasecmp (child->name, "location") == 0) {
+			/* libxml sucks */
+			name = uri = NULL;
+
+			for (child2 = child->childs; child2; child2 = child2->next) {
+				if (g_strcasecmp (child2->name, "name") == 0) {
+					name = xmlNodeGetContent (child2);
+				}
+				if (g_strcasecmp (child2->name, "uri") == 0) {
+					uri = xmlNodeGetContent (child2);
+				}
+			}
+
+			if ((name != NULL) && (uri != NULL)) {
+				trilobite_debug ("trilobite redirect: %s -> %s", name, uri);
+				add_redirect (name, uri);
+			} else {
+				g_warning ("trilobite redirect: incomplete node");
+			}
+			g_free (name);
+			g_free (uri);
 		} else {
 			g_warning ("trilobite redirect: ignoring directive '%s'", child->name);
 		}
@@ -178,10 +195,10 @@ out:
 }
 
 
-
 /* fetch xml file all at once, blocking until we have some closure.
  * you will definitely want to ref any objects you own before calling this function,
  * since it involves iterations of gtk_main.
+ * ( is this really needed? )
  */
 gboolean
 trilobite_redirect_fetch_table (const char *url)
@@ -193,7 +210,6 @@ trilobite_redirect_fetch_table (const char *url)
 		return FALSE;
 	}
 
-	wipe_redirect_table ();
 	trilobite_redirect_parse_xml (body, length);
 	return TRUE;
 }
