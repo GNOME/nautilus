@@ -1,3 +1,10 @@
+2004-10-01  Martin Wehner  <martin.wehner@epost.de>
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_notify_selection_changed):
+	Only sniff ahead attributes needed for activation
+	when selecting a single file.
+
 2004-10-01  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-list-model.c (fm_list_model_sort):

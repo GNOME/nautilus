@@ -6256,7 +6256,7 @@ void
 fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 {
 	NautilusFile *file;
-	GList *selection, *p;
+	GList *selection;
 	
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
@@ -6283,9 +6283,13 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 		/* Schedule an update of menu item states to match selection */
 		schedule_update_menus (view);
 
+		/* If there's exactly one item selected we sniff the slower attributes needed
+		 * to activate a file ahead of time to improve interactive response.
+		 */
 		selection = fm_directory_view_get_selection (view);
-		for (p = selection; p != NULL; p = p->next) {
-			file = p->data;
+
+		if (eel_g_list_exactly_one_item (selection)) {
+			file = NAUTILUS_FILE (selection->data);
 			
 			if (nautilus_file_needs_slow_mime_type (file)) {
 				nautilus_file_call_when_ready
@@ -6301,6 +6305,7 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 				 NULL, 
 				 NULL);
 		}
+
 		nautilus_file_list_free (selection);
 	}
 }
