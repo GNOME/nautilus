@@ -165,10 +165,22 @@ local_get_root_property (const char *path,
 {
 	xmlDoc *document;
 	char *property;
+	const char *mime_type;
+	
+	property = NULL;
+
+	/* Check mime type. Exit if it is not a nautilus link */
+	mime_type = gnome_vfs_get_file_mime_type (path, NULL, FALSE);
+	if (strcmp (mime_type, "application/x-nautilus-link") != 0) {
+		return NULL;
+	}
 	
 	document = xmlParseFile (path);
-	property = xml_get_root_property (document, key);
-	xmlFreeDoc (document);
+	if (document != NULL) {
+		property = xml_get_root_property (document, key);
+		xmlFreeDoc (document);
+	}
+	
 	return property;
 }
 

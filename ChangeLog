@@ -1,3 +1,12 @@
+2000-10-20  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 3805, Nautilus tries to parse text files on the desktop as XML.
+	
+	* libnautilus-extensions/nautilus-link.c:
+	(local_get_root_property):
+	Do a check on the mime type of the file before processing it as XML.
+	Also fix a bug where a NULL XMLDoc was being used.
+
 2000-10-20  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bug 3803, pin image size for downloaded images in summary
