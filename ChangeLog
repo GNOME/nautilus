@@ -1,3 +1,23 @@
+2000-12-19  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
+	Remove nautilus_gdk_pixbuf_draw_text().  This function was meant
+	to be used by embedded text.  Ever since we started using anti-
+	aliased text via freetype, we dont need it anymore.
+
+	This yanking manuever fixes Bug 2559, since the code relevant to
+	that bug is now gone.
+
+	* libnautilus-extensions/nautilus-icon-factory.c: (embed_text):
+	Always use smooth fonts for embedded text.  Remove currently
+	unused call to nautilus_gdk_pixbuf_draw_text().
+
+	The issue of embedded always being anti aliased will continue to
+	be tracked by bug 2783.
+	
 2000-12-18  Andy Hertzfeld  <andy@eazel.com>
 
 	* icons/i-harddisk.png:

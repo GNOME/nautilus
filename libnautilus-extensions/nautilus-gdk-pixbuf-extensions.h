@@ -27,7 +27,6 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnomevfs/gnome-vfs-types.h>
-#include <libart_lgpl/art_rect.h>
 
 #define NAUTILUS_STANDARD_ALPHA_THRESHHOLD 128
 
@@ -77,16 +76,6 @@ double			  nautilus_gdk_scale_to_fit_factor		   (int				width,
 void                      nautilus_gdk_pixbuf_average_value                (GdkPixbuf                  *pixbuf,
 									    GdkColor                   *result_color);
 
-
-
-/* Draw text onto a GdkPixbuf using the given font and rect */
-void                      nautilus_gdk_pixbuf_draw_text                    (GdkPixbuf                  *pixbuf,
-									    const GdkFont              *font,
-									    const double                font_scale,
-									    const ArtIRect             *destination_rect,
-									    const char                 *text,
-									    guint                       text_color,
-									    guint                       overall_alpha);
 void                      nautilus_gdk_pixbuf_fill_rectangle_with_color    (GdkPixbuf                  *pixbuf,
 									    const GdkRectangle         *rectangle,
 									    guint32                     color);

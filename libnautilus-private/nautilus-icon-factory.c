@@ -2290,18 +2290,12 @@ embedded_text_rect_usable (const ArtIRect *embedded_text_rect)
 	return TRUE;
 }
 
-/* FIXME bugzilla.eazel.com 2783: Icon factory needs support for speciiy whether
- * embedded text Embedded text should be smoother or not.
- */
-static gboolean smooth_graphics = TRUE;
-
 static GdkPixbuf *
 embed_text (GdkPixbuf *pixbuf_without_text,
 	    const ArtIRect *embedded_text_rect,
 	    const char *text)
 {
 	NautilusScalableFont *smooth_font;
-	static GdkFont *font;
 	GdkPixbuf *pixbuf_with_text;
 	
 	g_return_val_if_fail (pixbuf_without_text != NULL, NULL);
@@ -2315,46 +2309,40 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 	}
 		
 	pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
-		
-	if (smooth_graphics) {
-		smooth_font = NAUTILUS_SCALABLE_FONT
-			(nautilus_scalable_font_new
-			 (EMBEDDED_TEXT_FONT_FAMILY,
-			  EMBEDDED_TEXT_FONT_WEIGHT,
-			  EMBEDDED_TEXT_FONT_SLANT,
-			  EMBEDDED_TEXT_FONT_SET_WIDTH));
+	
+	/* FIXME bugzilla.eazel.com 1102: Embedded text should use preferences to determine
+	 * the font it uses
+	 */
 
-		nautilus_scalable_font_draw_text_lines
-			(smooth_font,
-			 pixbuf_with_text,
-			 embedded_text_rect->x0,
-			 embedded_text_rect->y0,
-			 embedded_text_rect,
-			 EMBEDDED_TEXT_FONT_SIZE,
-			 EMBEDDED_TEXT_FONT_SIZE,
-			 text,
-			 GTK_JUSTIFY_LEFT,
-			 EMBEDDED_TEXT_LINE_OFFSET,
-			 EMBEDDED_TEXT_EMPTY_LINE_HEIGHT,
-			 NAUTILUS_RGB_COLOR_BLACK,
-			 255,
-			 FALSE);
-		
-		gtk_object_unref (GTK_OBJECT (smooth_font));
-	} else {
-		/* Get the font the first time through. */
-		if (font == NULL) {
-			/* FIXME bugzilla.eazel.com 1102: Embedded text should use preferences to determine
-			 * the font it uses
-			 */
-			font = gdk_fontset_load (_("-*-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*"));
-			g_return_val_if_fail (font != NULL, NULL);
-		}
-		
-		nautilus_gdk_pixbuf_draw_text
-			(pixbuf_with_text, font, 1.0, embedded_text_rect, 
-			 text, NAUTILUS_RGB_COLOR_BLACK, 0xFF);
-	}
+	/* FIXME bugzilla.eazel.com 2783: It would be nice if embedded didnt always draw
+	 * anti aliased based on the user's smooth graphics preference.  It is however
+	 * a questionable improvement since at that tiny font size, anti aliased fonts
+	 * probably give a better preview of the content than non anti-aliased fonts.
+	 */
+	smooth_font = NAUTILUS_SCALABLE_FONT
+		(nautilus_scalable_font_new
+		 (EMBEDDED_TEXT_FONT_FAMILY,
+		  EMBEDDED_TEXT_FONT_WEIGHT,
+		  EMBEDDED_TEXT_FONT_SLANT,
+		  EMBEDDED_TEXT_FONT_SET_WIDTH));
+	
+	nautilus_scalable_font_draw_text_lines
+		(smooth_font,
+		 pixbuf_with_text,
+		 embedded_text_rect->x0,
+		 embedded_text_rect->y0,
+		 embedded_text_rect,
+		 EMBEDDED_TEXT_FONT_SIZE,
+		 EMBEDDED_TEXT_FONT_SIZE,
+		 text,
+		 GTK_JUSTIFY_LEFT,
+		 EMBEDDED_TEXT_LINE_OFFSET,
+		 EMBEDDED_TEXT_EMPTY_LINE_HEIGHT,
+		 NAUTILUS_RGB_COLOR_BLACK,
+		 255,
+		 FALSE);
+	
+	gtk_object_unref (GTK_OBJECT (smooth_font));
 
 	return pixbuf_with_text;
 }
