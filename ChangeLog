@@ -1,3 +1,16 @@
+2001-04-23  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* components/news/Makefile.am:
+	Add include flags for for pixmaps in header file included from the
+	source directory - which is different from the build directory for
+	the tinderbox build.
+
+	* components/news/nautilus-news.c:
+	* components/news/nautilus-news-pixmaps.h:
+	* components/news/pixmaps.h:
+	Rename pixmaps.h to nautilus-news-pixmaps.h to prevent confusion
+	in the future.
+
 2001-04-22  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/Makefile.am:

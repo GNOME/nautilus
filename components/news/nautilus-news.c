@@ -59,7 +59,7 @@
 #include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus/nautilus-view-standard-main.h>
 
-#include "pixmaps.h"
+#include "nautilus-news-pixmaps.h"
 
 /* property bag getting and setting routines */
 enum {

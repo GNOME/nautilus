@@ -3,6 +3,7 @@ NULL =
 bin_PROGRAMS=nautilus-news
 
 INCLUDES=\
+	-I$(top_srcdir)/components/news \
 	-I$(top_srcdir)		\
 	-I$(top_builddir)	\
 	-I$(top_builddir)/libnautilus	\
@@ -16,7 +17,7 @@ INCLUDES=\
 	$(GCONF_CFLAGS)		\
 	$(BONOBO_CFLAGS)	\
 	$(VFS_CFLAGS)
-	
+
 LDADD=\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
