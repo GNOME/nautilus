@@ -829,15 +829,24 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, gboolean embedd_tex
  	g_free (custom_uri);
 
 	file_uri = nautilus_file_get_uri (file);
+
+	if (strcmp (file_uri, "burn:///") == 0) {
+		g_free (file_uri);
+		return  g_strdup ("gnome-dev-cdrom");
+	}
+	if (strcmp (file_uri, "computer:///") == 0) {
+		g_free (file_uri);
+		return  g_strdup ("gnome-fs-client");
+	}
 	
 	if (strcmp (file_uri, EEL_TRASH_URI) == 0) {
 		g_free (file_uri);
-
 		return  g_strdup (nautilus_trash_monitor_is_empty ()
 				  ? ICON_NAME_TRASH_EMPTY : ICON_NAME_TRASH_FULL);
 	}
 
 	if (nautilus_file_is_home (file)) {
+		g_free (file_uri);
 		return g_strdup (ICON_NAME_HOME);
 	}
 		

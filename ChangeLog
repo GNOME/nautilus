@@ -1,5 +1,19 @@
 2005-01-11  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file):
+	Special case icons for burn: and computer:
+	
+	* src/nautilus-main.c: (register_icons):
+	* src/nautilus-navigation-window-menus.c:
+	* src/nautilus-window-menus.c:
+	Fix up icons and names in go/places menu.
+	Fixes #162750 and #149941
+
+	Based on patch from dennis_cranston@yahoo.com and Jaap A. Haitsma
+
+2005-01-11  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-navigation-window.c (real_set_title):
 	Make window title "location - File Browser", not "File Browser: location".
 	Fixes #149008. Patch by Gustavo Carneiro.

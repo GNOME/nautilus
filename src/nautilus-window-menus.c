@@ -634,16 +634,16 @@ static GtkActionEntry main_entries[] = {
     N_("_Computer"), NULL,           /* label, accelerator */
     N_("Go to the computer location"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_computer_callback) },
-  { "Go to Templates", NULL,                        /* name, stock id */
+  { "Go to Templates", "stock_new-template",                        /* name, stock id */
     N_("T_emplates"), NULL,           /* label, accelerator */
     N_("Go to the templates folder"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_templates_callback) },
-  { "Go to Trash", NULL,                        /* name, stock id */
+  { "Go to Trash", "gnome-fs-trash-empty",                        /* name, stock id */
     N_("_Trash"), NULL,           /* label, accelerator */
     N_("Go to the trash folder"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_trash_callback) },
-  { "Go to Burn CD", NULL,                        /* name, stock id */
-    N_("CD _Creator"), NULL,           /* label, accelerator */
+  { "Go to Burn CD", "gnome-dev-cdrom",                        /* name, stock id */
+    N_("CD/_DVD Creator"), NULL,           /* label, accelerator */
     N_("Go to the CD/DVD Creator"),                                  /* tooltip */ 
     G_CALLBACK (action_go_to_burn_cd_callback) },
 };

@@ -547,7 +547,7 @@ static GtkActionEntry navigation_entries[] = {
   { "Go to Location", NULL, N_("_Location..."), /* name, stock id, label */
     "<control>L", N_("Specify a location to open"),
     G_CALLBACK (action_go_to_location_callback) },
-  { "Clear History", NULL, N_("_Clear History"), /* name, stock id, label */
+  { "Clear History", NULL, N_("Clea_r History"), /* name, stock id, label */
     NULL, N_("Clear contents of Go menu and Back/Forward lists"),
     G_CALLBACK (action_clear_history_callback) },
   { "Add Bookmark", GTK_STOCK_ADD, N_("_Add Bookmark"), /* name, stock id, label */
