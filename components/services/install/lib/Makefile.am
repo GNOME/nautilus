@@ -28,6 +28,7 @@ noinst_HEADERS = \
 	libeazelinstall.h			\
 	eazel-install-types.h	 		\
 	eazel-install-corba-types.h	 	\
+	eazel-install-logic.h			\
 	eazel-install-md5.h			\
 	eazel-install-metadata.h		\
 	eazel-install-protocols.h		\

@@ -1,5 +1,11 @@
 2000-10-10  John Sullivan  <sullivan@eazel.com>
 
+	* components/services/install/lib/Makefile.am:
+	Added missing include of eazel-install-logic.h that
+	was breaking the RPM build and thus Tinderbox.
+
+2000-10-10  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 3516 (Sidebar & Content Loser merged items don't appear)
 	Fixed bug 3517 (Mozilla merged items don't appear)
 
