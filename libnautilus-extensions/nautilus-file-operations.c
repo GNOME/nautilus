@@ -574,20 +574,24 @@ get_link_name (char *name, int count)
 
 
 static char *
-extract_string_until (const char *original, const char *until_string)
+extract_string_until (const char *original, const char *until_substring)
 {
 	char *result;
 	
-	g_assert (strlen (original) >= until_string - original);
-	g_assert (until_string - original >= 0);
+	g_assert (strlen (original) >= until_substring - original);
+	g_assert (until_substring - original >= 0);
 
-	result = g_malloc (until_string - original + 1);
-	strncpy (result, original, until_string - original);
-	result[until_string - original] = '\0';
+	result = g_malloc (until_substring - original + 1);
+	strncpy (result, original, until_substring - original);
+	result[until_substring - original] = '\0';
 	
 	return result;
 }
 
+/* Dismantle a file name, separating the base name, the file suffix and removing any
+ * (xxxcopy), etc. string. Figure out the count that corresponds to the given
+ * (xxxcopy) substring.
+ */
 static void
 parse_previous_duplicate_name (const char *name, char **name_base, const char **suffix,
 	int *count)
@@ -624,6 +628,8 @@ parse_previous_duplicate_name (const char *name, char **name_base, const char **
 	}
 
 
+	/* Check to see if we got one of st, nd, rd, th. */
+
 	tag = strstr (name, ST_COPY_DUPLICATE_TAG);
 	if (tag == NULL) {
 		tag = strstr (name, ND_COPY_DUPLICATE_TAG);
@@ -635,15 +641,16 @@ parse_previous_duplicate_name (const char *name, char **name_base, const char **
 		tag = strstr (name, TH_COPY_DUPLICATE_TAG);
 	}
 
+	/* If we got one of st, nd, rd, th, fish out the duplicate number. */
 	if (tag != NULL) {
-		tag = strstr (name, " (");
+		tag = strstr (name, _(" ("));
 		if (tag != NULL) {
 			if (tag > *suffix) {
 				/* handle case "foo. (22nd copy)" */
 				*suffix = "";
 			}
 			*name_base = extract_string_until (name, tag);
-			if (sscanf (tag, " (%d", count) == 1) {
+			if (sscanf (tag, _(" (%d"), count) == 1) {
 				return;
 			}
 			*count = 0;
@@ -653,9 +660,10 @@ parse_previous_duplicate_name (const char *name, char **name_base, const char **
 
 	
 	*count = 0;
-	*name_base = strdup (name);
 	if (**suffix != '\0') {
-		(*name_base) [*suffix - name] = '\0';
+		*name_base = extract_string_until (name, *suffix);
+	} else {
+		*name_base = strdup (name);
 	}
 }
 
@@ -1461,6 +1469,9 @@ test_next_duplicate_name (const char *name, const char *expected_next_name)
 
 	next_name = get_duplicate_name (name, 1);
 	result = strcmp (expected_next_name, next_name) == 0;
+	if (!result) {
+		printf("expected %s, got %s\n", expected_next_name, next_name);
+	}
 	g_free (next_name);
 
 	return result;
@@ -1471,30 +1482,31 @@ nautilus_self_check_file_operations (void)
 {
 
 	/* test the next duplicate name generator */
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (" (copy)", " (another copy)"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo", "foo (copy)"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo foo", "foo foo (copy)"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo.txt", "foo (copy).txt"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo foo.txt", "foo foo (copy).txt"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo foo.txt txt", "foo foo (copy).txt txt"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo...txt", "foo.. (copy).txt"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo...", "foo... (copy)"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo. (copy)", "foo. (another copy)"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo (copy)", "foo (another copy)"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo (copy).txt", "foo (another copy).txt"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo (another copy)", "foo (3rd copy)"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo (another copy).txt", "foo (3rd copy).txt"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo foo (another copy).txt", "foo foo (3rd copy).txt"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo (21st copy)", "foo (22nd copy)"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo (21st copy).txt", "foo (22nd copy).txt"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo (22nd copy)", "foo (23rd copy)"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo (22nd copy).txt", "foo (23rd copy).txt"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo (23rd copy)", "foo (24th copy)"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo (23rd copy).txt", "foo (24th copy).txt"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo (24th copy)", "foo (25th copy)"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo (24th copy).txt", "foo (25th copy).txt"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo foo (24th copy)", "foo foo (25th copy)"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name ("foo foo (24th copy).txt", "foo foo (25th copy).txt"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_(" (copy)"), _(" (another copy)")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo"), _("foo (copy)")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo foo"), _("foo foo (copy)")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo.txt"), _("foo (copy).txt")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo foo.txt"), _("foo foo (copy).txt")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo foo.txt txt"), _("foo foo (copy).txt txt")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo...txt"), _("foo.. (copy).txt")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo..."), _("foo... (copy)")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo. (copy)"), _("foo. (another copy)")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (copy)"), _("foo (another copy)")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (copy).txt"), _("foo (another copy).txt")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (another copy)"), _("foo (3rd copy)")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (another copy).txt"), _("foo (3rd copy).txt")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo foo (another copy).txt"), _("foo foo (3rd copy).txt")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (21st copy)"), _("foo (22nd copy)")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (21st copy).txt"), _("foo (22nd copy).txt")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (22nd copy)"), _("foo (23rd copy)")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (22nd copy).txt"), _("foo (23rd copy).txt")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (23rd copy)"), _("foo (24th copy)")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (23rd copy).txt"), _("foo (24th copy).txt")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (24th copy)"), _("foo (25th copy)")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (24th copy).txt"), _("foo (25th copy).txt")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo foo (24th copy)"), _("foo foo (25th copy)")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo foo (24th copy).txt"), _("foo foo (25th copy).txt")), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo foo (100000000000000th copy).txt"), _("foo foo (copy).txt")), TRUE);
 }
 
 #endif
