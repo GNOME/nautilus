@@ -354,12 +354,6 @@ nautilus_application_startup (NautilusApplication *application,
 		}
 	}
 
-	/* Run the first time startup druid if needed. */
-	if (do_first_time_druid_check && need_to_show_first_time_druid ()) {
-		nautilus_first_time_druid_show (application, start_desktop, urls);
-		return;
-	}
-	
 	/* Check the user's ~/.nautilus directories and post warnings
 	 * if there are problems.
 	 */
@@ -367,6 +361,12 @@ nautilus_application_startup (NautilusApplication *application,
 		return;
 	}
 
+	/* Run the first time startup druid if needed. */
+	if (do_first_time_druid_check && need_to_show_first_time_druid ()) {
+		nautilus_first_time_druid_show (application, start_desktop, urls);
+		return;
+	}
+	
 	/* initialize the sound machinery */
 	nautilus_sound_initialize ();
 	

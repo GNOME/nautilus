@@ -551,7 +551,7 @@ set_up_update_page (NautilusDruidPageEazel *page)
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	/* allocate a descriptive label */
-	label = label_new_left_justified (_("Nautilus will now contact Eazel services to quickly verify \nyour web connection and download the latest updates. \nClick the Next button to continue."));
+	label = label_new_left_justified (_("Nautilus will now contact Eazel services to quickly verify \nyour web connection and download the latest updates. \n\nIf you know your computer uses a proxy connection, \nclick Yes and Nautilus will use it. \n\nClick the Next button to continue."));
 	SIZE_BODY_LABEL (label);
 
 	gtk_widget_show (label);
