@@ -30,6 +30,7 @@
 #include <config.h>
 #include <math.h>
 #include "fm-directory-view.h"
+#include "fm-list-view.h"
 
 #include "fm-error-reporting.h"
 #include "fm-properties-window.h"
@@ -3420,9 +3421,57 @@ start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 	}
 }
 
+typedef struct {
+	FMDirectoryView *view;
+	NautilusFile *new_file;
+} RenameData;
+
+static gboolean
+delayed_rename_file_hack_callback (RenameData *data)
+{
+	FMDirectoryView *view;
+	NautilusFile *new_file;
+
+	view = data->view;
+	new_file = data->new_file;
+
+	EEL_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_file, (view, new_file));
+	fm_directory_view_reveal_selection (view);
+	
+	g_object_unref (data->view);
+	nautilus_file_unref (data->new_file);
+	g_free (data);
+
+	return FALSE;
+}
+
 static void
 rename_file (FMDirectoryView *view, NautilusFile *new_file)
 {
+	RenameData *data;
+
+	/* HACK!!!!
+	   This is a work around bug in listview. After the rename is
+	   enabled we will get file changes due to info about the new
+	   file being read, which will cause the model to change. When
+	   the model changes GtkTreeView clears the editing. This hack just
+	   delays editing for some time to try to avoid this problem.
+	   A major problem is that the selection of the row causes us
+	   to load the slow mimetype for the file, which leads to a
+	   file_changed. So, before we delay we select the row.
+	*/
+	if (FM_IS_LIST_VIEW (view)) {
+		fm_directory_view_select_file (view, new_file);
+		
+		data = g_new (RenameData, 1);
+		data->view = g_object_ref (view);
+		data->new_file = nautilus_file_ref (new_file);
+		g_timeout_add (100, (GSourceFunc)delayed_rename_file_hack_callback,
+			       data);
+		
+		return;
+	}
+	
 	/* no need to select because start_renaming_file selects
 	 * fm_directory_view_select_file (view, new_file);
 	 */

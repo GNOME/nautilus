@@ -1,5 +1,11 @@
 2004-10-22  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-directory-view.c (rename_file):
+	Add ugly hack to make renames work on newly created files
+	in the list view. Don't look, you might go blind.
+
+2004-10-22  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-container.c (icon_set_position):
 	Fix moving of unpositioned icons, the canvas items start at
 	<0, 0>, not <-1,-1>
