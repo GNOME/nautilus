@@ -1,5 +1,18 @@
 2000-03-13  Maciej Stachowiak  <mjs@eazel.com>
 
+	* src/ntl-window.c (nautilus_window_constructed): Connect to
+	zoom_in and zoom_out singals of zoom control and view the zoom in
+	such cases, when applicable.
+
+	* src/nautilus-zoom-control.c
+	(nautilus_zoom_control_class_initialize): Add zoom_in and zoom_out
+	signals.
+	(nautilus_zoom_control_reset_zoom_level): Quick hack to get some
+	semblance of sanity in view switching.
+
+	* file-manager/fm-directory-view.c: Add Zoomable interface; for
+	now only implement zoom_in and zoom_out methods.
+
 	* components/sample/nautilus-sample-content-view.c: Added some
 	comments.
 

@@ -185,6 +185,10 @@ static void nautilus_window_get_arg (GtkObject      *object,
 static void nautilus_window_goto_uri_cb (GtkWidget *widget,
                                          const char *uri,
                                          GtkWidget *window);
+static void zoom_in_cb  (NautilusZoomControl *zoom_control,
+                         NautilusWindow      *window);
+static void zoom_out_cb (NautilusZoomControl *zoom_control,
+                         NautilusWindow      *window);
 
 /* #define CONTENTS_AS_HBOX 1 */
 
@@ -367,6 +371,24 @@ nautilus_window_goto_uri_cb (GtkWidget *widget,
 }
 
 static void
+zoom_in_cb (NautilusZoomControl *zoom_control,
+            NautilusWindow      *window)
+{
+  if (window->content_view != NULL) {
+    nautilus_view_zoom_in (window->content_view);
+  }
+}
+
+static void
+zoom_out_cb (NautilusZoomControl *zoom_control,
+                             NautilusWindow      *window)
+{
+  if (window->content_view != NULL) {
+    nautilus_view_zoom_out (window->content_view);
+  }
+}
+
+static void
 activate_back_or_forward_menu_item (GtkMenuItem *menu_item, 
 				    NautilusWindow *window,
 				    gboolean back)
@@ -499,6 +521,8 @@ nautilus_window_constructed(NautilusWindow *window)
   
   window->zoom_control = nautilus_zoom_control_new ();
   gtk_widget_show (window->zoom_control);
+  gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_in", zoom_in_cb, window);
+  gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_out", zoom_out_cb, window);
   gtk_box_pack_end (GTK_BOX (location_bar_box), window->zoom_control, FALSE, FALSE, 0);
   
   gtk_widget_show_all(location_bar_box);
@@ -1073,11 +1097,13 @@ nautilus_window_real_set_content_view (NautilusWindow *window, NautilusView *new
 
   if (window->content_view != NULL)
     {
-      gtk_container_remove (GTK_CONTAINER(window->content_hbox), GTK_WIDGET(window->content_view));      
+      gtk_container_remove (GTK_CONTAINER (window->content_hbox), GTK_WIDGET (window->content_view));      
     }
 
   if (new_view != NULL)
     {
+      nautilus_zoom_control_reset_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control));
+
       gtk_widget_show (GTK_WIDGET (new_view));
 
       nautilus_content_view_set_active (NAUTILUS_CONTENT_VIEW (new_view)); 

@@ -46,6 +46,7 @@
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-icon-factory.h>
 #include <libnautilus/nautilus-string.h>
+#include <libnautilus/nautilus-zoomable.h>
 
 #include "fm-properties-window.h"
 
@@ -77,6 +78,8 @@ static guint signals[LAST_SIGNAL];
 struct _FMDirectoryViewDetails
 {
 	NautilusContentViewFrame *view_frame;
+	NautilusZoomable         *zoomable;
+
 	NautilusDirectory *model;
 	
 	guint display_selection_idle_id;
@@ -136,6 +139,10 @@ static void           select_all_cb                                             
 static void           zoom_in_cb                                                  (GtkMenuItem             *item,
 										   FMDirectoryView         *directory_view);
 static void           zoom_out_cb                                                 (GtkMenuItem             *item,
+										   FMDirectoryView         *directory_view);
+static void           zoomable_zoom_in_cb                                         (NautilusZoomable        *zoomable,
+										   FMDirectoryView         *directory_view);
+static void           zoomable_zoom_out_cb                                        (NautilusZoomable        *zoomable,
 										   FMDirectoryView         *directory_view);
 static void           schedule_idle_display_of_pending_files                      (FMDirectoryView         *view);
 static void           unschedule_idle_display_of_pending_files                    (FMDirectoryView         *view);
@@ -362,6 +369,11 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 	directory_view->details->view_frame = NAUTILUS_CONTENT_VIEW_FRAME
 		(nautilus_content_view_frame_new (GTK_WIDGET (directory_view)));
 
+	directory_view->details->zoomable = 
+		nautilus_zoomable_new_from_bonobo_control (BONOBO_OBJECT 
+							   (directory_view->details->view_frame),
+							   .25, 4.0, FALSE);		
+
 	gtk_signal_connect (GTK_OBJECT (directory_view->details->view_frame), 
 			    "stop_location_change",
 			    GTK_SIGNAL_FUNC (stop_location_change_cb),
@@ -375,6 +387,16 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
                             "activate",
                             bonobo_control_activate_cb,
                             directory_view);
+
+	gtk_signal_connect (GTK_OBJECT (directory_view->details->zoomable), 
+			    "zoom_in",
+			    zoomable_zoom_in_cb,
+			    directory_view);
+
+	gtk_signal_connect (GTK_OBJECT (directory_view->details->zoomable), 
+			    "zoom_out", 
+			    zoomable_zoom_out_cb,
+			    directory_view);
 
 	gtk_widget_show (GTK_WIDGET (directory_view));
 
@@ -646,6 +668,19 @@ zoom_in_cb (GtkMenuItem *item, FMDirectoryView *directory_view)
 
 static void
 zoom_out_cb (GtkMenuItem *item, FMDirectoryView *directory_view)
+{
+	fm_directory_view_bump_zoom_level (directory_view, -1);
+}
+
+
+static void
+zoomable_zoom_in_cb (NautilusZoomable *zoomable, FMDirectoryView *directory_view)
+{
+	fm_directory_view_bump_zoom_level (directory_view, 1);
+}
+
+static void
+zoomable_zoom_out_cb (NautilusZoomable *zoomable, FMDirectoryView *directory_view)
 {
 	fm_directory_view_bump_zoom_level (directory_view, -1);
 }

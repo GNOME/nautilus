@@ -47,23 +47,38 @@ typedef struct _NautilusZoomControlClass NautilusZoomControlClass;
 
 struct _NautilusZoomControl
 {
-  GtkPixmap pixmap;
-  
-  gint current_zoom;
-  gint min_zoom;	 
-  gint max_zoom;
-  double zoom_factor;
+	GtkPixmap pixmap;
+	
+	gint current_zoom;
+	gint min_zoom;	 
+	gint max_zoom;
+	double zoom_factor;
 };
-
+	
 struct _NautilusZoomControlClass
 {
-  GtkEventBoxClass parent_class;
+	GtkEventBoxClass parent_class;
+	
+	void (*zoom_in)	  (NautilusZoomControl *control);
+	void (*zoom_out)  (NautilusZoomControl *control);
 };
 
 
-GtkType	   	nautilus_zoom_control_get_type	 (void);
-GtkWidget* 	nautilus_zoom_control_new	 (void);
+GtkType	   	nautilus_zoom_control_get_type	         (void);
+GtkWidget* 	nautilus_zoom_control_new	         (void);
 
+void            nautilus_zoom_control_set_zoom_level     (NautilusZoomControl *zoom_control,
+							  gdouble zoom_level);
+void            nautilus_zoom_control_set_min_zoom_level (NautilusZoomControl *zoom_control, 
+							  gdouble zoom_level);
+void            nautilus_zoom_control_set_max_zoom_level (NautilusZoomControl *zoom_control, 
+							  gdouble zoom_level);
+
+gdouble         nautilus_zoom_control_get_zoom_level     (NautilusZoomControl *zoom_control);
+gdouble         nautilus_zoom_control_get_min_zoom_level (NautilusZoomControl *zoom_control);
+gdouble         nautilus_zoom_control_get_max_zoom_level (NautilusZoomControl *zoom_control);
+
+void            nautilus_zoom_control_reset_zoom_level   (NautilusZoomControl *zoom_control);
 
 #ifdef __cplusplus
 }
