@@ -271,6 +271,14 @@ int main(int argc, char *argv[]) {
 	gnomelib_init ("Eazel Install", "1.0");
 	gnomelib_register_popt_table (options, "Eazel Install");
 	ctxt = gnomelib_parse_args (argc, argv, 0);
+	
+	oaf_init (argc, argv);
+	
+	if (bonobo_init (NULL, NULL, NULL) == FALSE) {
+		g_error ("Could not init bonobo");
+	}
+	bonobo_activate ();
+
 
 	packages = NULL;
 	categories = NULL;

@@ -30,8 +30,14 @@
 #include "eazel-install-private.h"
 #include <config.h>
 #include <sys/utsname.h>
+#include <errno.h>
 
-#define CGI_BASE "http://%s:%d/cgi-bin/rpmsearch.cgi"
+/* This string defines the url for the rpmsearch cgi script.
+   It should contain a %s for the server name, and later 
+   a %d for the portnumber. In this order, no other
+   order */
+#define CGI_BASE "http://%s:%d/cgi-bin/rpmsearch.cgi" 
+/* #define CGI_BASE "http://%s:%d/catalog/find" */
 
 gboolean http_fetch_remote_file (EazelInstall *service,
 				 char* url, 
@@ -62,6 +68,18 @@ http_fetch_remote_file (EazelInstall *service,
 	gboolean first_emit;
 
 	g_message (_("Downloading %s..."), url);
+
+	if (! g_file_test (eazel_install_get_tmp_dir (service), G_FILE_TEST_ISDIR)) {
+		int retval;
+		retval = mkdir (eazel_install_get_tmp_dir (service), 0755);		       
+		if (retval < 0) {
+			if (errno != EEXIST) {
+				g_error (_("*** Could not create tmp directory (%s)! ***\n"), 
+					 eazel_install_get_tmp_dir (service));
+			}
+		}
+	}
+	
 
         file = fopen (target_file, "wb");
         get_failed = 0;
@@ -405,9 +423,17 @@ char* get_search_url_for_package (EazelInstall *service,
 				  const gpointer data)
 {
 	char *url;
+	DistributionInfo dist;
 	url = g_strdup_printf (CGI_BASE,
 			       eazel_install_get_server (service),
 			       eazel_install_get_server_port (service));
+
+/*
+  FIXME: bugzilla.eazel.com 1333
+  We need to send distro name at some point. Depends on the rpmsearch cgi script
+*/
+
+	dist = trilobite_get_distribution ();
 
 	switch (entry) {
 	case RPMSEARCH_ENTRY_NAME: {
@@ -417,6 +443,9 @@ char* get_search_url_for_package (EazelInstall *service,
 		add_to_url (&url, "?name=", pack->name);
 		add_to_url (&url, "&arch=", pack->archtype);
 		add_to_url (&url, "&version>=", pack->version);
+		if (pack->distribution.name != DISTRO_UNKNOWN) {
+			dist = pack->distribution;
+		}
 	}
 	break;
 	case RPMSEARCH_ENTRY_PROVIDES: {
@@ -428,6 +457,16 @@ char* get_search_url_for_package (EazelInstall *service,
 	break;
 	}
 
+/*
+	if (dist.name != DISTRO_UNKNOWN) {
+		char *distro;
+		distro = g_strdup_printf ("\"%s\"", 
+					  trilobite_get_distribution_name (dist, TRUE, TRUE));
+		add_to_url (&url, "&distro=", distro);
+		g_free (distro);
+	}
+*/
+
 	switch (eazel_install_get_protocol (service)) {
 	case PROTOCOL_HTTP:
 		add_to_url (&url, "&protocol=", "http");
@@ -438,18 +477,5 @@ char* get_search_url_for_package (EazelInstall *service,
 	default:
 		break;
 	}
-/*
-  FIXME: bugzilla.eazel.com 1333
-  We need to send distro name at some point. Depends on the rpmsearch cgi script
-*/
-	/*
-	if (pack->name != DISTRO_UNKNOWN) {
-		char *distro;
-		distro = g_strdup_printf ("\"%s\"", 
-					  trilobite_get_distribution_name (pack->distribution, TRUE));
-		add_to_url (&url, "&distro=", distro);
-		g_free (distro);
-	}
-	*/
 	return url;
 }

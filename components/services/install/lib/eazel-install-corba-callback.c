@@ -244,14 +244,19 @@ eazel_install_callback_destroy (GtkObject *object)
 
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (EAZEL_INSTALL_CALLBACK (object));
+	
+	g_message ("in eazel_install_callback_destroy");
 
 	service = EAZEL_INSTALL_CALLBACK (object);
 
 	if (service->installservice_corba != CORBA_OBJECT_NIL) {
 		CORBA_Environment ev;
 		CORBA_exception_init (&ev);
+
+		bonobo_object_unref (BONOBO_OBJECT (service->installservice_bonobo));
 		Bonobo_Unknown_unref (service->installservice_corba, &ev); 
-		CORBA_Object_release (service->installservice_corba, &ev);
+		CORBA_Object_release (service->installservice_corba, &ev); 
+
 		CORBA_Object_release (service->cb, &ev);
 		CORBA_exception_free (&ev);		
 	}
@@ -259,6 +264,7 @@ eazel_install_callback_destroy (GtkObject *object)
 	if (GTK_OBJECT_CLASS (eazel_install_callback_parent_class)->destroy) {
 		GTK_OBJECT_CLASS (eazel_install_callback_parent_class)->destroy (object);
 	}
+	g_message ("out eazel_install_callback_destroy");
 }
 
 static void
@@ -469,4 +475,26 @@ eazel_install_callback_query (EazelInstallCallback *service,
 						  query,
 						  ev);
 	return result;
+}
+
+void 
+eazel_install_callback_revert_transaction (EazelInstallCallback *service, 
+					   char *xmlfile,
+					   CORBA_Environment *ev)
+{
+	xmlDocPtr doc;
+	xmlChar *mem;
+	int size;
+	CORBA_char *arg;
+	
+	doc = xmlParseFile (xmlfile);
+	xmlDocDumpMemory (doc, &mem, &size);
+	arg = CORBA_string_dup (mem);
+	Trilobite_Eazel_Install_revert_transaction (service->installservice_corba, 
+						    arg,
+						    service->cb,
+						    ev);
+	CORBA_free (arg);
+	g_free (mem);
+	xmlFreeDoc (doc);
 }

@@ -61,8 +61,8 @@ host_alias = i686-pc-linux-gnu
 host_triplet = i686-pc-linux-gnu
 AS = @AS@
 BONOBO_CFLAGS = -I/gnome/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/gnome/lib/glib/include -I/usr/X11R6/include -I/gnome/include/gnome-xml
-BONOBO_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -L/usr/lib -lbonobo -lgnomeprint -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgnome -lgnomesupport -lesd -laudiofile -ldb1 -lgdk_pixbuf -ltiff -ljpeg -lpng -lgtk -lgdk -lgmodule -ldl -lXext -lX11 -lxml -lz -loaf -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
-CATALOGS = 
+BONOBO_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -L/usr/lib -lbonobo -lgdk_pixbuf -ltiff -ljpeg -lpng -lgnomeprint -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -ldb1 -ldl -lxml -lz -loaf -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
+CATALOGS =  da.gmo de.gmo fr.gmo gl.gmo ja.gmo ko.gmo no.gmo ru.gmo sv.gmo tr.gmo
 CATOBJEXT = .gmo
 CC = gcc
 CPP = gcc -E
@@ -70,9 +70,9 @@ CXX = c++
 DATADIRNAME = share
 DLLTOOL = @DLLTOOL@
 EAZEL_SERVICES = 1
-GCONF_CFLAGS = -I/gnome/include -I/gnome/lib/glib/include -I/usr/X11R6/include
+GCONF_CFLAGS = -I/gnome/include/gconf/1 -I/gnome/include -I/gnome/lib/glib/include -I/usr/X11R6/include
 GCONF_CONFIG = /gnome/bin/gconf-config
-GCONF_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -lgconf-gtk -lgconf -loaf -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lnsl -lgtk -lgdk -lgmodule -lglib -ldl -lXext -lX11 -lm
+GCONF_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -lgconf-gtk-1 -lgconf-1 -loaf -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lnsl -lgtk -lgdk -lgmodule -lglib -ldl -lXext -lX11 -lm
 GDK_PIXBUF_CFLAGS = -I/gnome/include -I/gnome/lib/glib/include -I/gnome/include -I/usr/X11R6/include
 GDK_PIXBUF_CONFIG = /gnome/bin/gdk-pixbuf-config
 GDK_PIXBUF_LIBS = -L/gnome/lib -lgdk_pixbuf -L/gnome/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXext -lX11 -lm
@@ -94,8 +94,8 @@ GNOME_CONFIG = /gnome/bin/gnome-config
 GNOME_LIBS = -L/gnome/lib -L/usr/lib -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb1 -lglib -ldl
 GNORBA_CFLAGS = 
 GNORBA_LIBS = 
-GTKHTML_CFLAGS = -I/gnome/include -I/gnome/lib/glib/include -I/usr/X11R6/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/gnome/include/gnome-xml -DGTKHTML_HAVE_GCONF
-GTKHTML_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -L/usr/lib -lgtkhtml -lgnomeprint -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgnome -lgnomesupport -lesd -laudiofile -ldb1 -lgdk_pixbuf -ltiff -ljpeg -lpng -lxml -lz -lgconf-gtk -lgconf -loaf -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lnsl -lgtk -lgdk -lgmodule -lglib -ldl -lXext -lX11 -lm
+GTKHTML_CFLAGS = -I/gnome/include -I/gnome/lib/glib/include -I/usr/X11R6/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/gnome/include/gnome-xml
+GTKHTML_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -L/usr/lib -lgtkhtml -lgdk_pixbuf -ltiff -ljpeg -lpng -lgnomeprint -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb1 -lglib -ldl -lxml -lz
 GTK_CFLAGS = 
 GTK_LIBS = 
 GT_NO = 
@@ -115,6 +115,8 @@ LIBWWW_LIBS = -L/usr/lib -lmd5 -lwwwxml -lxmltok -lxmlparse -lwwwzip -lwwwinit -
 LN_S = ln -s
 MAINT = 
 MAKEINFO = makeinfo
+MEDUSA_CFLAGS = -I/gnome/include -I/gnome/lib/vfs/include -I/gnome/lib/glib/include -D_REENTRANT
+MEDUSA_LIBS = -rdynamic -L/gnome/lib -lmedusa -lgnomevfs -lgmodule -lgthread -lglib -lpthread -ldl
 MKINSTALLDIRS = ./mkinstalldirs
 MOZILLA_COMPONENT_CFLAGS = -I/usr/include/mozilla
 MOZILLA_COMPONENT_LDFLAGS = -L/usr/lib/mozilla
@@ -139,7 +141,6 @@ USE_NLS = yes
 VERSION = 0.1.0
 VFS_CFLAGS = -I/gnome/include -I/gnome/lib/vfs/include -I/gnome/lib/glib/include -D_REENTRANT
 VFS_LIBS = -rdynamic -L/gnome/lib -lgnomevfs -lgmodule -lgthread -lglib -lpthread -ldl
-WERROR = -Werror
 XML_CFLAGS = -I/gnome/include/gnome-xml
 XML_CONFIG = /gnome/bin/xml-config
 XML_LIBS = -L/gnome/lib -lxml -lz
@@ -155,7 +156,7 @@ INCLUDES =  	-I$(top_srcdir)/components/services/install/lib 		-I$(top_srcdir)/c
 
 CPPFLAGS = -DEAZEL_INSTALL_NO_CORBA
 
-CFLAGS = -g $(WERROR)
+CFLAGS = -g
 
 bin_PROGRAMS = nautilus-installer
 
@@ -164,7 +165,7 @@ nautilus_installer_SOURCES =  	main.c 	support.c support.h 	interface.c interfac
 
 nautilus_installer_LDFLAGS = -static
 
-nautilus_installer_LDADD =          $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o 			        $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 		$(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a				-L/gnome/lib 	-lgnomeui 	-lgnome 	-lart_lgpl 	-lgdk_imlib 	-lgtk 	-lgdk 	-lgmodule 	-lglib 	-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE 	/usr/lib/libesd.a 	/usr/lib/libaudiofile.a 	-lghttp 	-L/usr/lib -lrpm -lz -ldb1 	-lpopt 	-lxml 
+nautilus_installer_LDADD =          $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o 			        $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 		$(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a				$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-root-helper.o			$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-utils.o			-L/gnome/lib 	-lgnomeui 	-lgnome 	-lart_lgpl 	-lgdk_imlib 	-lgtk 	-lgdk 	-lgmodule 	-lglib 	-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE 	/usr/lib/libesd.a 	/usr/lib/libaudiofile.a 	-lghttp 	-L/usr/lib -lrpm -lz -ldb1 	-lpopt 	-lxml 
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -181,6 +182,8 @@ nautilus_installer_DEPENDENCIES =  \
 $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o \
 $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o \
 $(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a \
+$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-root-helper.o \
+$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-utils.o \
 /usr/lib/libesd.a /usr/lib/libaudiofile.a
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)

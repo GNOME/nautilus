@@ -57,7 +57,8 @@ DistributionInfo trilobite_get_distribution (void);
    Return value must be freed 
 */
 char* trilobite_get_distribution_name (DistributionInfo distinfo,
-				       gboolean show_version);
+				       gboolean show_version,
+				       gboolean compact);
 
 /*
   Returns the enum corresponding to the given string,

@@ -9,9 +9,11 @@ popd
 make clean
 make CFLAGS="-O -Werror" LDFLAGS="-static"
 gcc -static -O -Werror -o nautilus-installer main.o support.o interface.o callbacks.o installer.o \
+../../components/services/install/lib/libeazelinstall_minimal.a \
 ../../components/services/trilobite/libtrilobite/helixcode-utils.o \
 ../../components/services/trilobite/libtrilobite/trilobite-core-distribution.o \
-../../components/services/install/lib/libeazelinstall_minimal.a \
+../../components/services/trilobite/libtrilobite/trilobite-root-helper.o \
+../../components/services/trilobite/libtrilobite/trilobite-core-utils.o \
 -L/gnome/lib -lgnomeui -lgnome -lart_lgpl -lgdk_imlib -lgtk -lgdk -lgmodule -lglib \
 -L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE /usr/lib/libesd.a /usr/lib/libaudiofile.a -lghttp \
 -L/usr/lib -lrpm -lbz2 -lz -ldb1 -lpopt -lxml 

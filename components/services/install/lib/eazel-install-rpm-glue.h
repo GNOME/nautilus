@@ -34,5 +34,6 @@
 
 gboolean install_new_packages (EazelInstall *service, GList *categories);
 gboolean uninstall_packages (EazelInstall *service, GList *categories);
+gboolean revert_transaction (EazelInstall *service, GList *packages);
 
 #endif /* EAZEL_INSTALL_RPM_GLUE_H */

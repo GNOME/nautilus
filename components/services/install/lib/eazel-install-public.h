@@ -151,6 +151,8 @@ GList* eazel_install_query_package_system (EazelInstall *service,
 					   const char *query, 
 					   int flags) ;
 
+void eazel_install_revert_transaction_from_xmlstring (EazelInstall *service, char *xml, int size);
+
 
 /******************************************************************************/
 /* Beware, from hereonafter, it's #def madness, to make the get/set functions */

@@ -104,12 +104,25 @@ impl_Eazel_Install_uninstall_packages(impl_POA_Trilobite_Eazel_Install *servant,
 	SET_CB (cb);
 
 	categories = NULL;
-	servant->object->callback = cb;
 	categories = categorydata_list_from_corba_categorystructlist (*corbacategories);
 	eazel_install_uninstall_packages (servant->object, categories);
 	
 	g_list_foreach (categories, (GFunc)categorydata_destroy_foreach, NULL);
 	g_list_free (categories);
+
+	return;
+}
+
+static void
+impl_Eazel_Install_revert_transaction (impl_POA_Trilobite_Eazel_Install *servant,
+				       const CORBA_char *xml, 
+				       const Trilobite_Eazel_InstallCallback cb,
+				       CORBA_Environment * ev) 
+{
+	RELEASE_CB;
+	SET_CB (cb);
+
+	eazel_install_revert_transaction_from_xmlstring (servant->object, xml, strlen (xml));
 
 	return;
 }
@@ -320,6 +333,7 @@ eazel_install_get_epv ()
 	epv->uninstall          = (gpointer)&impl_Eazel_Install_uninstall;
 	epv->install_packages   = (gpointer)&impl_Eazel_Install_install_packages;
 	epv->uninstall_packages = (gpointer)&impl_Eazel_Install_uninstall_packages;
+	epv->revert_transaction = (gpointer)&impl_Eazel_Install_revert_transaction;
 
 	epv->_set_verbose = (gpointer)&impl_Eazel_Install__set_verbose;
 	epv->_get_verbose = (gpointer)&impl_Eazel_Install__get_verbose;

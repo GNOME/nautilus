@@ -34,6 +34,8 @@ nautilus_installer_LDADD = 	\
         $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o 			\
         $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 	\
 	$(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a			\
+	$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-root-helper.o		\
+	$(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-utils.o		\
 	-L/gnome/lib \
 	-lgnomeui \
 	-lgnome \

@@ -161,6 +161,8 @@ eazel_install_destroy (GtkObject *object)
 {
 	EazelInstall *service;
 
+	g_message ("in eazel_install_destroy");
+
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (EAZEL_INSTALL (object));
 
@@ -186,6 +188,8 @@ eazel_install_destroy (GtkObject *object)
 	if (GTK_OBJECT_CLASS (eazel_install_parent_class)->destroy) {
 		GTK_OBJECT_CLASS (eazel_install_parent_class)->destroy (object);
 	}
+
+	g_message ("out eazel_install_destroy");
 }
 
 static void
@@ -644,7 +648,11 @@ eazel_install_install_packages (EazelInstall *service, GList *categories)
 	}
 	
 	if (categories == NULL && eazel_install_get_package_list (service) == NULL) {
-		eazel_install_set_package_list (service, "/var/eazel/services/package-list.xml");
+		char *tmp;
+		tmp = g_strdup_printf ("%s/package-list.xml", eazel_install_get_tmp_dir (service));
+		eazel_install_set_package_list (service, tmp);
+		g_free (tmp);
+
 		switch (service->private->iopts->protocol) {
 		case PROTOCOL_HTTP:
 			eazel_install_fetch_remote_package_list (service);
@@ -716,6 +724,17 @@ eazel_install_uninstall_packages (EazelInstall *service, GList *categories)
 	if (uninstall_packages (service, categories)==FALSE) {
 		g_warning (_("Uninstall failed"));
 	} 
+	eazel_install_emit_done (service);
+}
+
+void eazel_install_revert_transaction_from_xmlstring (EazelInstall *service, 
+						      char *xml, int size)
+{
+	GList *packages;
+
+	packages = parse_memory_transaction_file (xml, size);
+	revert_transaction (service, packages);
+
 	eazel_install_emit_done (service);
 }
 

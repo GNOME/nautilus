@@ -1,20 +1,21 @@
 if test x$DISPLAY = x; then
     echo "The Nautilus-Installer requires X"
 fi
-if test $UID -ne 0; then
+if ! test -d /var/eazel/services; then
     echo ""
     echo "Nautilus-Installer v 0.1d"
     echo ""
     echo "argle bargle glob glyf muhainapuniua bork bork bork"
     echo "fisk er dumme og heste er grimme"
     echo ""
-    echo "The Nautilus-Installer requires superuser access to install packages."
+    echo "The Nautilus-Installer requires superuser access to prepare the system"
+    echo "It needs to create a few administrative directories on in /var and"
     echo "yadayada insecure yadayada trust us blablabla"
     echo "we would never hurt a fly arglebargle."
     echo ""
     echo "Please enter root password at the prompt"
-    xhost + localhost
-    su - -c "export DISPLAY=$DISPLAY && cd $PWD && echo Uncompressing... && sh $0 $USER"
-    xhost - localhost
+    su - -c "mkdir /var/eazel && mkdir /var/eazel/services"
+    echo Uncompressing...
+    sh $0 $* $USER
     exit
 fi

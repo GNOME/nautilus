@@ -36,7 +36,7 @@
 
 #include <string.h>
 
-#define RHAT "Red Hat Linux"
+#define RHAT "RedHat Linux"
 #define DEBI "Debian GNU/Linux"
 #define CALD "Caldera"
 #define SUSE "S.u.S.E"
@@ -44,7 +44,17 @@
 #define TURB "TurboLinux"
 #define CORL "CorelLinux"
 #define MAND "Mandrake"
-#define UNKW "unkown"
+#define UNKW "unknown"
+
+#define RHATc "RedHat"
+#define DEBIc "Debian"
+#define CALDc "Caldera"
+#define SUSEc "S.u.S.E"
+#define LPPCc "LinuxPPC"
+#define TURBc "TurboLinux"
+#define CORLc "CorelLinux"
+#define MANDc "Mandrake"
+#define UNKWc "unknown"
 
 /* FIXME bugzilla.eazel.com 908
    need to implement the rest of the determine_FOO_version
@@ -165,7 +175,8 @@ trilobite_get_distribution ()
 
 char* 
 trilobite_get_distribution_name (DistributionInfo distinfo,
-				 gboolean show_version)
+				 gboolean show_version,
+				 gboolean compact)
 {
 	char *result;
 	char *name;
@@ -176,42 +187,54 @@ trilobite_get_distribution_name (DistributionInfo distinfo,
 	arch    = g_strdup ("");     /* We don't set the arch type yet */
 
 	switch (distinfo.name) {
-	case DISTRO_REDHAT:
-		name = g_strdup (RHAT);
+	case DISTRO_REDHAT:		
+		name = g_strdup (compact ? RHATc : RHAT);
 		break;
 	case DISTRO_DEBIAN:
-		name = g_strdup (DEBI);
+		name = g_strdup (compact ? DEBIc : DEBI);
 		break;
 	case DISTRO_CALDERA:
-		name = g_strdup (CALD);
+		name = g_strdup (compact ? CALDc : CALD);
 		break;
 	case DISTRO_SUSE:
-		name = g_strdup (SUSE);
+		name = g_strdup (compact ? SUSEc : SUSE);
 		break;
 	case DISTRO_LINUXPPC:
-		name = g_strdup (LPPC);
+		name = g_strdup (compact ? LPPCc : LPPC);
 		break;
 	case DISTRO_TURBOLINUX:
-		name = g_strdup (TURB);
+		name = g_strdup (compact ? TURBc : TURB);
 		break;
 	case DISTRO_COREL:
-		name = g_strdup (CORL);
+		name = g_strdup (compact ? CORLc : CORL);
 		break;
 	case DISTRO_MANDRAKE:
-		name = g_strdup (MAND);
+		name = g_strdup (compact ? MANDc : MAND);
 		break;
 	default:
-		name = g_strdup (UNKW);
+		name = g_strdup (compact ? UNKWc : UNKW);
 		break;
 	}
 	
 	if (show_version) {		
 		if (distinfo.version_major >= 0 && distinfo.version_minor >= 0) {
 			g_free (version);
-			version = g_strdup_printf (" %d.%d", distinfo.version_major, distinfo.version_minor);
+			if (compact) {
+				version = g_strdup_printf ("%d%d", 
+							   distinfo.version_major, 
+							   distinfo.version_minor);			
+			} else {
+				version = g_strdup_printf (" %d.%d", 
+							   distinfo.version_major, 
+							   distinfo.version_minor);
+			}
 		} else if (distinfo.version_major >= 0) {
 			g_free (version);
-			version = g_strdup_printf (" %d", distinfo.version_major);
+			if (compact) {
+				version = g_strdup_printf ("%d", distinfo.version_major);
+			} else {
+				version = g_strdup_printf (" %d", distinfo.version_major);
+			}
 		} 
 	}
 

@@ -74,11 +74,8 @@ CORBA_Environment ev;
 static const struct poptOption options[] = {
 	{"debug", 'd', POPT_ARG_NONE, &arg_debug, 0 , N_("Show debug output"), NULL},
 	{"delay", '\0', POPT_ARG_NONE, &arg_delay, 0 , N_("10 sec delay after starting service"), NULL},
-	{"port", '\0', POPT_ARG_INT, &arg_port, 0 , N_("Set port numer (80)"), NULL},
+	{"port", '\0', POPT_ARG_NONE, &arg_port, 0 , N_("Set port numer (80)"), NULL},
 	{"test", 't', POPT_ARG_NONE, &arg_dry_run, 0, N_("Test run"), NULL},
-	{"erase", 'e', POPT_ARG_NONE, &arg_erase, 0, N_("Erase packages"), NULL},
-	{"force", 'F', POPT_ARG_NONE, &arg_force, 0, N_("Force install"), NULL},
-	{"upgrade", 'u', POPT_ARG_NONE, &arg_upgrade, 0, N_("Allow upgrades"), NULL},
 	{"tmp", '\0', POPT_ARG_STRING, &arg_tmp_dir, 0, N_("Set tmp dir (/tmp/eazel-install)"), NULL},
 	{"server", '\0', POPT_ARG_STRING, &arg_server, 0, N_("Specify server"), NULL},
 	{"http", 'h', POPT_ARG_NONE, &arg_http, 0, N_("Use http"), NULL},
@@ -117,14 +114,6 @@ set_parameters_from_command_line (Trilobite_Eazel_Install service)
 		Trilobite_Eazel_Install__set_protocol (service, Trilobite_Eazel_PROTOCOL_HTTP, &ev);
 		check_ev ("set_protocol");
 	}
-	if (arg_upgrade + arg_erase > 1) {
-			fprintf (stderr, "*** Upgrade and erase ? Yeah rite....\n");
-			exit (1);
-	}
-	if (arg_upgrade) {
-		Trilobite_Eazel_Install__set_update (service, TRUE, &ev);
-		check_ev ("update");
-	}
 	if (arg_server == NULL) {
 		arg_server = g_strdup (DEFAULT_HOSTNAME);
 	}
@@ -140,12 +129,6 @@ set_parameters_from_command_line (Trilobite_Eazel_Install service)
 	if (arg_force) {
 		Trilobite_Eazel_Install__set_force (service, TRUE, &ev);
 	}
-/*
-
-	Trilobite_Eazel_Install__set_rpmrc_file (service, DEFAULT_RPMRC, &ev);
-	Trilobite_Eazel_Install__set_package_list_storage_path (service, DEFAULT_REMOTE_PACKAGE_LIST, &ev);
-	Trilobite_Eazel_Install__set_rpm_storage_path (service, DEFAULT_REMOTE_RPM_DIR, &ev);
-*/
 	Trilobite_Eazel_Install__set_tmp_dir (service, arg_tmp_dir, &ev);
 	check_ev ("set_tmp_dir");
 	Trilobite_Eazel_Install__set_server (service, arg_server, &ev);
@@ -288,34 +271,6 @@ dep_check (EazelInstallCallback *service,
 	fprintf (stdout, "Doing dependency check for %s - need %s\n", package->name, needs->name);
 }
 
-static PackageData*
-create_package (char *name) 
-{
-	struct utsname buf;
-	PackageData *pack;
-
-	uname (&buf);
-	pack = packagedata_new ();
-	if (arg_file) {
-		pack->filename = g_strdup (name);
-	} else {
-		pack->name = g_strdup (name);
-	}
-	pack->archtype = g_strdup (buf.machine);
-#ifdef ASSUME_ix86_IS_i386
-	if (strlen (pack->archtype)==4 && pack->archtype[0]=='i' &&
-	    pack->archtype[1]>='3' && pack->archtype[1]<='9' &&
-	    pack->archtype[2]=='8' && pack->archtype[3]=='6') {
-		g_free (pack->archtype);
-		pack->archtype = g_strdup ("i386");
-	}
-#endif
-	pack->distribution = trilobite_get_distribution ();
-	pack->toplevel = TRUE;
-	
-	return pack;
-}
-
 static gboolean
 delete_files (EazelInstallCallback *service, gpointer unused)
 {
@@ -337,10 +292,15 @@ delete_files (EazelInstallCallback *service, gpointer unused)
 
 static void
 done (EazelInstallCallback *service,
-      gpointer unused)
+      int *calls)
 {
-	fprintf (stderr, "Installation Done\n");
-	gtk_main_quit ();
+	(*calls) --;
+
+	fprintf (stderr, "Transaction done, %d left\n", *calls);
+
+	if (!(*calls)) {
+		gtk_main_quit ();
+	}
 }
 
 static char *
@@ -382,13 +342,14 @@ set_root_client (BonoboObjectClient *service)
 
 int main(int argc, char *argv[]) {
 	poptContext ctxt;
-	GList *packages;
-	GList *categories;
 	char *str;
+	GList *xmlfiles;
+	GList *iterator;
+	int calls;
 	EazelInstallCallback *cb;		
 
 	CORBA_exception_init (&ev);
-
+	xmlfiles = NULL;
 	/* Seems that bonobo_main doens't like
 	   not having gnome_init called, dies in a
 	   X call, yech */
@@ -401,19 +362,13 @@ int main(int argc, char *argv[]) {
 	ctxt = gnomelib_parse_args (argc, argv, 0);
 #endif
 	
-	packages = NULL;
-	categories = NULL;
-	/* If there are more args, get them and parse them as packages */
+	/* If there are more args, get them and parse them as xmlfiles */
 	while ((str = poptGetArg (ctxt)) != NULL) {
-		packages = g_list_prepend (packages, create_package (str));
+		xmlfiles = g_list_prepend (xmlfiles, g_strdup (str));
 	}
-	if (packages) {
-		CategoryData *category;
-		category = g_new0 (CategoryData, 1);
-		category->packages = packages;
-		categories = g_list_prepend (NULL, category);		
-	} else {
-		g_message ("Using remote list ");
+	if (xmlfiles == NULL) {
+		fprintf (stderr, "No transaction files provided ?\n");
+		exit (1);
 	}
 
 	/* Chech that we're root and on a redhat system */
@@ -436,9 +391,10 @@ int main(int argc, char *argv[]) {
 	if (arg_delay) {
 		sleep (10);
 	}
+	calls = g_list_length (xmlfiles);
 
 	set_parameters_from_command_line (eazel_install_callback_corba_objref (cb));
-	set_root_client (eazel_install_callback_bonobo (cb));
+	set_root_client (eazel_install_callback_bonobo (cb)); 
 	
 	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", eazel_download_progress_signal, "Download progress");
 	gtk_signal_connect (GTK_OBJECT (cb), "preflight_check", eazel_preflight_check_signal, NULL);
@@ -449,18 +405,16 @@ int main(int argc, char *argv[]) {
 	gtk_signal_connect (GTK_OBJECT (cb), "download_failed", download_failed, NULL);
 	gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", dep_check, NULL);
 	gtk_signal_connect (GTK_OBJECT (cb), "delete_files", (void *)delete_files, NULL);
-	gtk_signal_connect (GTK_OBJECT (cb), "done", done, NULL);
+	gtk_signal_connect (GTK_OBJECT (cb), "done", done, &calls);
 
-	if (arg_erase) {
-		eazel_install_callback_uninstall_packages (cb, categories, &ev);
-	} else {
-		eazel_install_callback_install_packages (cb, categories, &ev);
+	for (iterator = xmlfiles; iterator; iterator = iterator->next) {		
+		eazel_install_callback_revert_transaction (cb, iterator->data, &ev);
 	}
 	
 	fprintf (stdout, "\nEntering main loop...\n");
 	bonobo_main ();
 
-	eazel_install_callback_destroy (GTK_OBJECT (cb));
+	eazel_install_callback_destroy (GTK_OBJECT (cb)); 
 
 	/* Corba cleanup */
 	CORBA_exception_free (&ev);

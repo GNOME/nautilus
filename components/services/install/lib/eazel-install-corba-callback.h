@@ -114,6 +114,9 @@ GList* eazel_install_callback_query (EazelInstallCallback *service,
 				     char *query,
 				     CORBA_Environment *ev);
 
+void eazel_install_callback_revert_transaction (EazelInstallCallback *service, 
+						char *xmlfile,
+						CORBA_Environment *ev);
 
 /* Stuff */
 GtkType                                   eazel_install_callback_get_type   (void);

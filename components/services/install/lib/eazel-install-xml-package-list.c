@@ -49,7 +49,9 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 	rv->version = g_strdup (xml_get_value (package, "VERSION"));
 	rv->minor = g_strdup (xml_get_value (package, "MINOR"));
 	rv->archtype = g_strdup (xml_get_value (package, "ARCH"));
-	rv->status = packagedata_status_str_to_enum (xml_get_value (package, "STATUS"));
+	if (xml_get_value (package, "STATUS")) {
+		rv->status = packagedata_status_str_to_enum (xml_get_value (package, "STATUS"));
+	}
 	if (xml_get_value (package, "MODSTATUS")) {
 		rv->modify_status = packagedata_modstatus_str_to_enum (xml_get_value (package, "MODSTATUS"));
 	}
@@ -189,6 +191,49 @@ GList* parse_memory_xml_package_list (char *mem, int size) {
 	}
 	
 	return parse_shared (doc);
+}
+
+GList* 
+parse_memory_transaction_file (char *mem, 
+			       int size)
+{
+	xmlDocPtr doc;
+	xmlNodePtr base;
+	xmlNodePtr packages;
+	GList* rv;
+
+	g_return_val_if_fail (mem!=NULL, NULL);
+
+	doc = xmlParseMemory (mem, size);
+	rv = NULL;
+	if (doc == NULL) {
+		xmlFreeDoc (doc);
+		return NULL;
+	}
+
+	base = doc->root;
+	if (g_strcasecmp (base->name, "TRANSACTION")) {
+		g_print (_("*** Cannot find the TRANSACTION xmlnode! ***\n"));
+		xmlFreeDoc (doc);
+		g_warning (_("*** Bailing from transaction parse! ***\n"));
+		return NULL;
+	}
+	
+	packages = doc->root->childs->childs;
+	if(packages == NULL) {
+		g_print (_("*** No packages! ***\n"));
+		xmlFreeDoc (doc);
+		g_warning (_("*** Bailing from transaction parse! ***\n"));
+		return NULL;
+	}
+
+	while (packages) {
+		PackageData *pack;
+		pack = parse_package (packages, TRUE);
+		g_message ("TRANS PARSE %s", pack->name);
+		rv = g_list_append (rv, pack);
+		packages = packages->next;
+	}	
 }
 
 GList*
@@ -361,7 +406,7 @@ eazel_install_packagedata_to_xml (const PackageData *pack, char *title, xmlNodeP
 	node = xmlNewChild (root, NULL, "STATUS", packagedata_status_enum_to_str (pack->status));
 	node = xmlNewChild (root, NULL, "MODSTATUS", packagedata_modstatus_enum_to_str (pack->modify_status));
 
-	tmp = trilobite_get_distribution_name(pack->distribution, FALSE);
+	tmp = trilobite_get_distribution_name(pack->distribution, FALSE, FALSE);
 	node = xmlNewChild (root, NULL, "DISTRIBUTION", tmp);
 	g_free (tmp);
 	if (pack->distribution.version_major!=-1) {

@@ -14,6 +14,15 @@
 #include "callbacks.h"
 #include <libtrilobite/helixcode-utils.h>
 
+extern int installer_debug;
+extern int installer_test;
+
+static const struct poptOption options[] = {
+	{"debug", 'd', POPT_ARG_NONE, &installer_debug, 0 , N_("Show debug output"), NULL},
+	{"test", 't', POPT_ARG_NONE, &installer_test, 0, N_("Test run"), NULL},
+	{NULL, '\0', 0, NULL, 0}
+};
+
 int
 main (int argc, char *argv[])
 {
@@ -23,8 +32,7 @@ main (int argc, char *argv[])
   bindtextdomain ("nautilus-installer", GNOMELOCALEDIR);
   textdomain ("nautilus-installer");
 #endif
-
-  gnome_init ("nautilus-installer", VERSION, argc, argv);
+  gnome_init_with_popt_table ("nautilus-installer", VERSION, argc, argv, options, 0, NULL);
 
   /*
    * The following code was added by Glade to create one of each component
@@ -33,16 +41,6 @@ main (int argc, char *argv[])
    */
   window = create_window ();
   set_images (window);
-
-  if (check_for_root_user ()==FALSE) {
-	  GnomeDialog *d;
-	  d = GNOME_DIALOG (gnome_error_dialog_parented ("I'll bring my axe and ore and beat you...\n"
-							 "This means you should run this as root.\n\n"
-							 "But we're reasonable, so you get to continue,\n"
-							 "but the test flag will be enabled",
-							 GTK_WINDOW (window)));
-	  gnome_dialog_run_and_close (d);
-  }  
 
   gtk_widget_show (window);
 

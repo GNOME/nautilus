@@ -36,7 +36,12 @@
 
 #include "eazel-install-query.h"
 
+#ifndef EAZEL_INSTALL_NO_CORBA
 #include <libtrilobite/libtrilobite.h>
+#else
+#include <libtrilobite/trilobite-root-helper.h>
+#endif
+
 #include <libtrilobite/libtrilobite-service.h>
 #include <rpm/rpmlib.h>
 #include <rpm/rpmmacro.h>
@@ -330,6 +335,96 @@ uninstall_packages (EazelInstall *service,
 
 } /* end install_new_packages */
 
+
+GList *
+ei_get_packages_with_mod_flag (GList *packages,
+			       PackageModification mod) 
+{
+	GList *it;
+	GList *res;
+	
+	res = NULL;
+	for (it = packages; it; it = it->next) {
+		PackageData *pack;
+		pack = (PackageData*)it->data;
+		if (pack->modify_status == mod) {
+			res = g_list_prepend (res, pack);
+		}
+		if (pack->soft_depends) {
+			res = g_list_concat (res, 
+					     ei_get_packages_with_mod_flag (pack->soft_depends, mod));
+		}
+		if (pack->modifies) {
+			res = g_list_concat (res, 
+					     ei_get_packages_with_mod_flag (pack->modifies, mod));
+		}
+	}
+	return res;
+}
+
+/* Function to prune the uninstall list for elements marked as downgrade */
+void
+ei_check_uninst_vs_downgrade (GList **inst, 
+			      GList **down) 
+{
+	GList *it;
+	GList *remove;
+	
+	remove = NULL;
+	for (it = *inst; it; it = it->next) {
+		GList *entry;
+		PackageData *pack;
+
+		pack = (PackageData*)it->data;
+		entry = g_list_find_custom (*down, pack->name, (GCompareFunc)eazel_install_package_name_compare);
+		if (entry != NULL) {
+			remove = g_list_prepend (remove, it->data);
+		}
+	}
+
+	for (it = remove; it; it = it->next) {
+		(*inst) = g_list_remove (*inst, it->data);
+	}
+}
+
+void hest (PackageData *pack, char *str) {
+	g_message ("Must %s %s", str, pack->name);
+}
+
+gboolean 
+revert_transaction (EazelInstall *service, 
+		    GList *packages)
+{
+	GList *uninst, *inst, *upgrade, *downgrade;
+	CategoryData *cat;
+	GList *categories;
+
+	uninst = ei_get_packages_with_mod_flag (packages, PACKAGE_MOD_INSTALLED);
+	inst = ei_get_packages_with_mod_flag (packages, PACKAGE_MOD_UNINSTALLED);
+	upgrade = ei_get_packages_with_mod_flag (packages, PACKAGE_MOD_DOWNGRADED);
+	downgrade = ei_get_packages_with_mod_flag (packages, PACKAGE_MOD_UPGRADED);
+
+	ei_check_uninst_vs_downgrade (&uninst, &downgrade);
+
+	g_list_foreach (uninst, (GFunc)hest, "uninstall");
+	g_list_foreach (inst, (GFunc)hest, "install");
+	g_list_foreach (downgrade, (GFunc)hest, "downgrade");
+	g_list_foreach (upgrade, (GFunc)hest, "upgrade");
+
+	cat = g_new0 (CategoryData, 1);
+	categories = g_list_prepend (NULL, cat);
+	if (uninst) {
+		eazel_install_set_uninstall (service, TRUE);
+		cat->packages = uninst;
+		uninstall_packages (service, categories);
+	}
+	if (inst) {
+		eazel_install_set_uninstall (service, FALSE);
+		cat->packages = inst;
+		install_new_packages (service, categories);
+	}
+}
+
 static void
 eazel_install_do_rpm_transaction_fill_hash (EazelInstall *service,
 					GList *packages)
@@ -495,10 +590,37 @@ eazel_install_do_rpm_transaction_process_pipe (EazelInstall *service,
 }
 
 static void
+eazel_install_do_rpm_transaction_save_report_helper (xmlNodePtr node,
+						     GList *packages)
+{
+	GList *iterator;
+
+	for (iterator = packages; iterator; iterator = iterator->next) {
+		PackageData *pack;
+		char *tmp;
+		pack = (PackageData*)iterator->data;
+		switch (pack->modify_status) {
+		case PACKAGE_MOD_INSTALLED:			
+			tmp = g_strdup_printf ("Installed %s", pack->name);
+			xmlNewChild (node, NULL, "DESCRIPTION", tmp);
+			g_free (tmp);
+			break;
+		case PACKAGE_MOD_UNINSTALLED:			
+			tmp = g_strdup_printf ("Uninstalled %s", pack->name);
+			xmlNewChild (node, NULL, "DESCRIPTION", tmp);
+			g_free (tmp);
+			break;
+		}
+		if (pack->modifies) {
+			eazel_install_do_rpm_transaction_save_report_helper (node, pack->modifies);
+		}
+	}
+}
+
+static void
 eazel_install_do_rpm_transaction_save_report (EazelInstall *service) 
 {
 	FILE *outfile;
-	GList *iterator;
 	xmlDocPtr doc;
 	xmlNodePtr node, root;
 	char *name;
@@ -536,23 +658,7 @@ eazel_install_do_rpm_transaction_save_report (EazelInstall *service)
 		g_free (tmp);
 	}
 
-	for (iterator = service->private->transaction; iterator; iterator = iterator->next) {
-		PackageData *pack;
-		char *tmp;
-		pack = (PackageData*)iterator->data;
-		switch (pack->modify_status) {
-		case PACKAGE_MOD_INSTALLED:			
-			tmp = g_strdup_printf ("Installed %s", pack->name);
-			xmlNewChild (node, NULL, "DESCRIPTION", tmp);
-			g_free (tmp);
-			break;
-		case PACKAGE_MOD_UNINSTALLED:			
-			tmp = g_strdup_printf ("Uninstalled %s", pack->name);
-			xmlNewChild (node, NULL, "DESCRIPTION", tmp);
-			g_free (tmp);
-			break;
-		}
-	}
+	eazel_install_do_rpm_transaction_save_report_helper (node, service->private->transaction);
 
 	xmlDocDump (outfile, doc);
 	
@@ -1499,7 +1605,7 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 
 	service->private->packsys.rpm.set = rpmtransCreateSet (service->private->packsys.rpm.db, "/");
 	/* Add all packages to the set */
-	eazel_install_add_to_set (service, packages, failed);
+	/* eazel_install_add_to_set (service, packages, failed); */
 
 	for (iterator = *packages; iterator; iterator = iterator->next) {
 		PackageData *pack;

@@ -106,16 +106,16 @@ module Trilobite {
 
 			/* Called whenever a package (un)install fails
 			*/
-			oneway void download_failed (in string file);
+			void download_failed (in string file);
 			/* FIXME: bugzilla.eazel.com 1542 
 			   This is what they should be, but orbit-idl's lack of
 			   recursive structures, forces us to encode the structures
 			   as xml and transfer these instead. 
-			oneway void install_failed (in PackageDataStruct package);
-			oneway void uninstall_failed (in PackageDataStruct package);
+			void install_failed (in PackageDataStruct package);
+			void uninstall_failed (in PackageDataStruct package);
 			*/
-			oneway void install_failed (in string xml_package);
-			oneway void uninstall_failed (in string xml_package);
+			void install_failed (in string xml_package);
+			void uninstall_failed (in string xml_package);
 
 			/* Called to find out whether to delete the rpms or not, after finishing */
 			boolean delete_files ();
@@ -149,6 +149,9 @@ module Trilobite {
 
 			/* Run a query to the package sys */
 			PackageDataStructList query (in string query);
+
+			/* Revert a operation */
+			oneway void revert_transaction (in string xml, in InstallCallback cb);
 		};
 	};
 };

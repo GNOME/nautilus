@@ -30,10 +30,14 @@ LDADD =                                           \
 	$(RPM_LIBS)                                                       \
 	$(NULL)
 
-bin_PROGRAMS = eazel-install eazel-uninstall eazel-gen-xml eazel-package-query
+bin_PROGRAMS = eazel-install eazel-uninstall eazel-gen-xml eazel-package-query eazel-revert
 
 eazel_install_SOURCES = 		\
 	eazel-alt-install-corba.c	\
+	$(NULL)
+
+eazel_revert_SOURCES = 		\
+	eazel-revert.c	\
 	$(NULL)
 
 eazel_uninstall_SOURCES = 	\

@@ -34,6 +34,9 @@ static char *package_list[LAST] = {
 };
 
 char *failure_info;
+int installer_debug;
+int installer_test;
+
 
 static void 
 eazel_install_progress (EazelInstall *service, 
@@ -213,12 +216,20 @@ void installer (GtkWidget *window,
 		gnome_warning_dialog ("We don't do UPGRADE yet");
 		return;
 	}
+	if (!installer_test) {
+		GnomeDialog *d;
+		d = GNOME_DIALOG (gnome_warning_dialog_parented (_("This is a warning, you're running\n"
+								   "the installer for real, without \n"
+								   "the --test flag... Beware!"),
+								 GTK_WINDOW (window)));
+		gnome_dialog_run_and_close (d);
+	} 
 
 	service = EAZEL_INSTALL (gtk_object_new (TYPE_EAZEL_INSTALL,
 						 "verbose", TRUE,
 						 "silent", FALSE,
 						 "debug", TRUE,
-						 "test", check_for_root_user () ? FALSE : TRUE,
+						 "test", TRUE, //installer_test () ? FALSE : TRUE,
 						 "force", TRUE,
 						 "depend", FALSE,
 						 "update", TRUE,
@@ -241,6 +252,9 @@ void installer (GtkWidget *window,
 	eazel_install_set_tmp_dir (service, TMP_DIR);
 	eazel_install_set_server_port (service, PORT_NUMBER);
 	eazel_install_set_protocol (service, PROTOCOL);	
+	if (!installer_debug) {
+		eazel_install_open_log (service, "/tmp/nautilus-install.log");
+	}
 
 	g_assert (service != NULL);
 
@@ -274,3 +288,10 @@ void installer (GtkWidget *window,
 		gnome_error_dialog_parented (failure_info, GTK_WINDOW (window));
 	}
 }
+
+
+/* Dummy functions to make linking work */
+
+const gpointer oaf_popt_options = NULL;
+gpointer oaf_init (int argc, char *argv[]) {}
+int bonobo_init (gpointer a, gpointer b, gpointer c) {};

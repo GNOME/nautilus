@@ -54,11 +54,11 @@ corba_packagedatastruct_from_packagedata (const PackageData *pack)
 	if (pack->distribution.name == DISTRO_UNKNOWN) {
 		DistributionInfo dist;
 		dist = trilobite_get_distribution ();
-		corbapack.distribution.name = trilobite_get_distribution_name (dist, FALSE);
+		corbapack.distribution.name = trilobite_get_distribution_name (dist, FALSE, FALSE);
 		corbapack.distribution.major = dist.version_major;
 		corbapack.distribution.minor = dist.version_minor;
 	} else {
-		corbapack.distribution.name = trilobite_get_distribution_name (pack->distribution, FALSE);
+		corbapack.distribution.name = trilobite_get_distribution_name (pack->distribution, FALSE, FALSE);
 		corbapack.distribution.major = pack->distribution.version_major;
 		corbapack.distribution.minor = pack->distribution.version_minor;
 	}
