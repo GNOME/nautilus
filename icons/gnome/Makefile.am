@@ -1,6 +1,6 @@
 NULL=
 
-SUBDIRS =
+SUBDIRS = throbber
 
 gnomedir = $(datadir)/pixmaps/nautilus/gnome
 

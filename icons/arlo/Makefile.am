@@ -1,6 +1,6 @@
 arlodir = $(datadir)/pixmaps/nautilus/arlo
 
-SUBDIRS = sidebar_tab_pieces backgrounds
+SUBDIRS = sidebar_tab_pieces backgrounds throbber
 
 arlo_DATA =	\
 	arlo.xml		\

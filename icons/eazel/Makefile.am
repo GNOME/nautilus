@@ -2,7 +2,7 @@ NULL=
 
 eazeldir = $(datadir)/pixmaps/nautilus/eazel
 
-SUBDIRS = throbber
+SUBDIRS =
 
 eazel_DATA =					\
 	Back.png				\
