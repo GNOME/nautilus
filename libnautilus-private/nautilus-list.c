@@ -284,6 +284,8 @@ static int      insert_row                              (GtkCList             *l
 static void     nautilus_list_ensure_drag_data          (NautilusList *list,
 							 GdkDragContext *context,
 							 guint32 time);
+static void     nautilus_list_start_auto_scroll         (NautilusList *list);
+static void     nautilus_list_stop_auto_scroll          (NautilusList *list);
 
 
 
@@ -2787,6 +2789,8 @@ nautilus_list_drag_leave (GtkWidget *widget, GdkDragContext *context, guint time
 
 	drag_info->got_drop_data_type = FALSE;
 
+	nautilus_list_stop_auto_scroll (NAUTILUS_LIST (list));
+
 	g_print ("drag leave \n");
 }
 
@@ -2861,6 +2865,82 @@ nautilus_list_get_drop_action (NautilusList *list,
 
 }			       
 
+
+static void
+nautilus_list_real_scroll (NautilusList *list, float delta_x, float delta_y)
+{
+	GtkAdjustment *hadj, *vadj;
+
+	hadj = gtk_clist_get_hadjustment (GTK_CLIST (list));
+	vadj = gtk_clist_get_vadjustment (GTK_CLIST (list));
+
+	nautilus_gtk_adjustment_set_value (hadj, hadj->value + (int)delta_x);
+	nautilus_gtk_adjustment_set_value (vadj, vadj->value + (int)delta_y);
+
+}
+
+static int
+auto_scroll_timeout_callback (gpointer data)
+{
+	NautilusList *list;
+	NautilusDragInfo *drag_info;
+	GtkWidget *widget;
+	float x_scroll_delta, y_scroll_delta;
+
+	g_assert (NAUTILUS_IS_LIST (data));
+	widget = GTK_WIDGET (data);
+	list = NAUTILUS_LIST (widget);
+	drag_info = list->details->drag_info;
+
+	if (drag_info->waiting_to_autoscroll
+		&& drag_info->start_auto_scroll_in < nautilus_get_system_time()) {
+		/* not yet */
+		return TRUE;
+	}
+
+	drag_info->waiting_to_autoscroll = FALSE;
+
+	nautilus_drag_autoscroll_calculate_delta (widget, &x_scroll_delta, &y_scroll_delta);
+
+	nautilus_list_real_scroll (list, x_scroll_delta, y_scroll_delta);
+
+	return TRUE;
+}
+
+static void
+nautilus_list_start_auto_scroll (NautilusList *list)
+{
+	NautilusDragInfo *drag_info;
+
+	g_assert (NAUTILUS_IS_LIST (list));
+	drag_info = list->details->drag_info;
+
+	if (drag_info->auto_scroll_timeout_id == 0) {
+		drag_info->waiting_to_autoscroll = TRUE;
+		drag_info->start_auto_scroll_in = nautilus_get_system_time() 
+			+ AUTOSCROLL_INITIAL_DELAY;
+		drag_info->auto_scroll_timeout_id = gtk_timeout_add
+			(AUTOSCROLL_TIMEOUT_INTERVAL,
+			 auto_scroll_timeout_callback,
+			 list);
+	}
+}
+
+static void
+nautilus_list_stop_auto_scroll (NautilusList *list)
+{
+	NautilusDragInfo *drag_info;
+
+	g_assert (NAUTILUS_IS_LIST (list));
+	drag_info = list->details->drag_info;
+
+	if (drag_info->auto_scroll_timeout_id) {
+		gtk_timeout_remove (drag_info->auto_scroll_timeout_id);
+		drag_info->auto_scroll_timeout_id = 0;
+	}
+}
+
+
 static gboolean
 nautilus_list_drag_motion (GtkWidget *widget, GdkDragContext *context,
 		       int x, int y, guint time)
@@ -2873,6 +2953,8 @@ nautilus_list_drag_motion (GtkWidget *widget, GdkDragContext *context,
 	list = NAUTILUS_LIST (widget);
 
 	nautilus_list_ensure_drag_data (list, context,  time);
+
+	nautilus_list_start_auto_scroll (NAUTILUS_LIST (widget));
 
 	nautilus_list_get_drop_action (list, context, x, y, &default_action, &non_default_action);
 	resulting_action = nautilus_drag_modifier_based_action (default_action, non_default_action);

@@ -467,3 +467,89 @@ nautilus_drag_drop_action_ask (GdkDragAction actions)
 
 	return action;
 }
+
+
+
+#define AUTO_SCROLL_MARGIN 20
+	/* drag this close to the view edge to start auto scroll*/
+
+#define MIN_AUTOSCROLL_DELTA 5
+	/* the smallest amount of auto scroll used when we just enter the autoscroll
+	 * margin
+	 */
+	 
+#define MAX_AUTOSCROLL_DELTA 50
+	/* the largest amount of auto scroll used when we are right over the view
+	 * edge
+	 */
+
+
+
+void
+nautilus_drag_autoscroll_calculate_delta (GtkWidget *widget, float *x_scroll_delta, float *y_scroll_delta)
+{
+	int x, y;
+
+	g_assert (GTK_IS_WIDGET (widget));
+
+	gdk_window_get_pointer (widget->window, &x, &y, NULL);
+
+	/* Find out if we are anywhere close to the tree view edges
+	 * to see if we need to autoscroll.
+	 */
+	*x_scroll_delta = 0;
+	*y_scroll_delta = 0;
+	
+	if (x < AUTO_SCROLL_MARGIN) {
+		*x_scroll_delta = (float)(x - AUTO_SCROLL_MARGIN);
+	}
+
+	if (x > widget->allocation.width - AUTO_SCROLL_MARGIN) {
+		if (*x_scroll_delta != 0) {
+			/* Already trying to scroll because of being too close to 
+			 * the top edge -- must be the window is really short,
+			 * don't autoscroll.
+			 */
+			return;
+		}
+		*x_scroll_delta = (float)(x - (widget->allocation.width - AUTO_SCROLL_MARGIN));
+	}
+
+	if (y < AUTO_SCROLL_MARGIN) {
+		*y_scroll_delta = (float)(y - AUTO_SCROLL_MARGIN);
+	}
+
+	if (y > widget->allocation.height - AUTO_SCROLL_MARGIN) {
+		if (*y_scroll_delta != 0) {
+			/* Already trying to scroll because of being too close to 
+			 * the top edge -- must be the window is really narrow,
+			 * don't autoscroll.
+			 */
+			return;
+		}
+		*y_scroll_delta = (float)(y - (widget->allocation.height - AUTO_SCROLL_MARGIN));
+	}
+
+	if (*x_scroll_delta == 0 && *y_scroll_delta == 0) {
+		/* no work */
+		return;
+	}
+
+	/* Adjust the scroll delta to the proper acceleration values depending on how far
+	 * into the sroll margins we are.
+	 * FIXME bugzilla.eazel.com 2486:
+	 * we could use an exponential acceleration factor here for better feel
+	 */
+	if (*x_scroll_delta != 0) {
+		*x_scroll_delta /= AUTO_SCROLL_MARGIN;
+		*x_scroll_delta *= (MAX_AUTOSCROLL_DELTA - MIN_AUTOSCROLL_DELTA);
+		*x_scroll_delta += MIN_AUTOSCROLL_DELTA;
+	}
+	
+	if (*y_scroll_delta != 0) {
+		*y_scroll_delta /= AUTO_SCROLL_MARGIN;
+		*y_scroll_delta *= (MAX_AUTOSCROLL_DELTA - MIN_AUTOSCROLL_DELTA);
+		*y_scroll_delta += MIN_AUTOSCROLL_DELTA;
+	}
+
+}

@@ -69,35 +69,11 @@
 #define DND_DEBUG 1
 
 
-/* a set of defines stolen from the nautilus-icon-dnd.c file */
-#define AUTOSCROLL_TIMEOUT_INTERVAL 100
-	/* in milliseconds */
-
-#define AUTOSCROLL_INITIAL_DELAY 600000
-	/* in microseconds */
-
-#define AUTO_SCROLL_MARGIN 20
-	/* drag this close to the view edge to start auto scroll*/
-
-#define MIN_AUTOSCROLL_DELTA 5
-	/* the smallest amount of auto scroll used when we just enter the autoscroll
-	 * margin
-	 */
-	 
-#define MAX_AUTOSCROLL_DELTA 50
-	/* the largest amount of auto scroll used when we are right over the view
-	 * edge
-	 */
-
 
 typedef struct _NautilusTreeViewDndDetails NautilusTreeViewDndDetails;
 struct _NautilusTreeViewDndDetails {
 
-	/* autoscrolling during dragging */
-	int auto_scroll_timeout_id;
-	gboolean waiting_to_autoscroll;
-	gint64 start_auto_scroll_in;
-
+	NautilusDragInfo *drag_info;
 
 	/* data setup by button_press signal for dragging */
 	int press_x, press_y;
@@ -816,6 +792,18 @@ tree_view_realize_callback (GtkWidget *widget, gpointer user_data)
 static void
 nautilus_tree_view_init_dnd (NautilusTreeView *view)
 {
+	view->details->dnd = g_new0 (NautilusTreeViewDndDetails, 1);
+	view->details->dnd->motion_queue = nautilus_queue_new ();
+	view->details->dnd->target_list = gtk_target_list_new (nautilus_tree_view_dnd_target_table, 
+							       1);
+
+	view->details->dnd->drag_info = g_new0 (NautilusDragInfo, 1);
+	nautilus_drag_init (view->details->dnd->drag_info,
+			    nautilus_tree_view_dnd_target_table,
+			    NAUTILUS_N_ELEMENTS (nautilus_tree_view_dnd_target_table),
+			    NULL);
+
+
 	gtk_drag_dest_set (GTK_WIDGET (view->details->tree), 
 			   0,
 			   nautilus_tree_view_dnd_target_table,
@@ -860,10 +848,6 @@ nautilus_tree_view_init_dnd (NautilusTreeView *view)
 			    GTK_SIGNAL_FUNC(nautilus_tree_view_drag_data_get), 
 			    view);
 
-	view->details->dnd = g_new0 (NautilusTreeViewDndDetails, 1);
-	view->details->dnd->motion_queue = nautilus_queue_new ();
-	view->details->dnd->target_list = gtk_target_list_new (nautilus_tree_view_dnd_target_table, 
-							       1);
 
 }
 
@@ -991,6 +975,7 @@ nautilus_tree_view_destroy (GtkObject *object)
 	if (view->details->dnd->highlight_style != NULL) {
 		gtk_style_unref(view->details->dnd->highlight_style);
 	}
+	nautilus_drag_finalize (view->details->dnd->drag_info);
 	g_free (view->details->dnd);
 	/* FIXME bugzilla.eazel.com 2422: destroy drag_info */
 
@@ -2072,82 +2057,25 @@ nautilus_tree_view_get_drag_uri  (NautilusTreeView *tree_view)
 static int
 auto_scroll_timeout_callback (gpointer data)
 {
+	NautilusDragInfo *drag_info;
 	NautilusTreeView *tree_view;
 	GtkWidget *widget;
-	int x, y;
 	float x_scroll_delta, y_scroll_delta;
 
 	g_assert (NAUTILUS_IS_TREE_VIEW (data));
 	widget = GTK_WIDGET (data);
 	tree_view = NAUTILUS_TREE_VIEW (widget);
+	drag_info = tree_view->details->dnd->drag_info;
 
-	if (tree_view->details->dnd->waiting_to_autoscroll
-		&& tree_view->details->dnd->start_auto_scroll_in < nautilus_get_system_time()) {
+	if (drag_info->waiting_to_autoscroll
+		&& drag_info->start_auto_scroll_in < nautilus_get_system_time()) {
 		/* not yet */
 		return TRUE;
 	}
 
-	tree_view->details->dnd->waiting_to_autoscroll = FALSE;
+	drag_info->waiting_to_autoscroll = FALSE;
 
-	gdk_window_get_pointer (widget->window, &x, &y, NULL);
-
-	/* Find out if we are anywhere close to the tree view edges
-	 * to see if we need to autoscroll.
-	 */
-	x_scroll_delta = 0;
-	y_scroll_delta = 0;
-	
-	if (x < AUTO_SCROLL_MARGIN) {
-		x_scroll_delta = (float)(x - AUTO_SCROLL_MARGIN);
-	}
-
-	if (x > widget->allocation.width - AUTO_SCROLL_MARGIN) {
-		if (x_scroll_delta != 0) {
-			/* Already trying to scroll because of being too close to 
-			 * the top edge -- must be the window is really short,
-			 * don't autoscroll.
-			 */
-			return TRUE;
-		}
-		x_scroll_delta = (float)(x - (widget->allocation.width - AUTO_SCROLL_MARGIN));
-	}
-
-	if (y < AUTO_SCROLL_MARGIN) {
-		y_scroll_delta = (float)(y - AUTO_SCROLL_MARGIN);
-	}
-
-	if (y > widget->allocation.height - AUTO_SCROLL_MARGIN) {
-		if (y_scroll_delta != 0) {
-			/* Already trying to scroll because of being too close to 
-			 * the top edge -- must be the window is really narrow,
-			 * don't autoscroll.
-			 */
-			return TRUE;
-		}
-		y_scroll_delta = (float)(y - (widget->allocation.height - AUTO_SCROLL_MARGIN));
-	}
-
-	if (x_scroll_delta == 0 && y_scroll_delta == 0) {
-		/* no work */
-		return TRUE;
-	}
-
-	/* Adjust the scroll delta to the proper acceleration values depending on how far
-	 * into the sroll margins we are.
-	 * FIXME bugzilla.eazel.com 2486:
-	 * we could use an exponential acceleration factor here for better feel
-	 */
-	if (x_scroll_delta != 0) {
-		x_scroll_delta /= AUTO_SCROLL_MARGIN;
-		x_scroll_delta *= (MAX_AUTOSCROLL_DELTA - MIN_AUTOSCROLL_DELTA);
-		x_scroll_delta += MIN_AUTOSCROLL_DELTA;
-	}
-	
-	if (y_scroll_delta != 0) {
-		y_scroll_delta /= AUTO_SCROLL_MARGIN;
-		y_scroll_delta *= (MAX_AUTOSCROLL_DELTA - MIN_AUTOSCROLL_DELTA);
-		y_scroll_delta += MIN_AUTOSCROLL_DELTA;
-	}
+	nautilus_drag_autoscroll_calculate_delta (widget, &x_scroll_delta, &y_scroll_delta);
 
 	/* make the GtkScrolledWindow actually scroll */
 	nautilus_tree_view_real_scroll (tree_view, x_scroll_delta, y_scroll_delta);
@@ -2158,11 +2086,17 @@ auto_scroll_timeout_callback (gpointer data)
 static void
 nautilus_tree_view_start_auto_scroll (NautilusTreeView *tree_view)
 {
-	if (tree_view->details->dnd->auto_scroll_timeout_id == 0) {
-		tree_view->details->dnd->waiting_to_autoscroll = TRUE;
-		tree_view->details->dnd->start_auto_scroll_in = nautilus_get_system_time() 
+	NautilusDragInfo *drag_info;
+
+	g_assert (NAUTILUS_IS_TREE_VIEW (tree_view));
+	drag_info = tree_view->details->dnd->drag_info;
+
+
+	if (drag_info->auto_scroll_timeout_id == 0) {
+		drag_info->waiting_to_autoscroll = TRUE;
+		drag_info->start_auto_scroll_in = nautilus_get_system_time() 
 			+ AUTOSCROLL_INITIAL_DELAY;
-		tree_view->details->dnd->auto_scroll_timeout_id = gtk_timeout_add
+		drag_info->auto_scroll_timeout_id = gtk_timeout_add
 				(AUTOSCROLL_TIMEOUT_INTERVAL,
 				 auto_scroll_timeout_callback,
 			 	 tree_view);
@@ -2172,9 +2106,14 @@ nautilus_tree_view_start_auto_scroll (NautilusTreeView *tree_view)
 static void
 nautilus_tree_view_stop_auto_scroll (NautilusTreeView *tree_view)
 {
-	if (tree_view->details->dnd->auto_scroll_timeout_id) {
-		gtk_timeout_remove (tree_view->details->dnd->auto_scroll_timeout_id);
-		tree_view->details->dnd->auto_scroll_timeout_id = 0;
+	NautilusDragInfo *drag_info;
+
+	g_assert (NAUTILUS_IS_TREE_VIEW (tree_view));
+	drag_info = tree_view->details->dnd->drag_info;
+
+	if (drag_info->auto_scroll_timeout_id) {
+		gtk_timeout_remove (drag_info->auto_scroll_timeout_id);
+		drag_info->auto_scroll_timeout_id = 0;
 	}
 }
 

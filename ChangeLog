@@ -1,3 +1,17 @@
+2000-09-07  Mathieu Lacage  <mathieu@eazel.com>
+
+	* components/tree/nautilus-tree-view.c: add support for NautilusDragInfo.
+	* libnautilus-extensions/nautilus-drag.c: add new scroll calculation fucntion.
+	(nautilus_drag_autoscroll_calculate_delta):
+	* libnautilus-extensions/nautilus-drag.h: add decalrtion of scroll function
+	plus bits and pieces of constants used everywhere.
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(auto_scroll_timeout_callback): move this to the shared version of the scroll
+	* libnautilus-extensions/nautilus-list.c: implement auto scrolling.
+	(nautilus_list_drag_leave), (nautilus_list_real_scroll),
+	(auto_scroll_timeout_callback), (nautilus_list_start_auto_scroll),
+	(nautilus_list_stop_auto_scroll), (nautilus_list_drag_motion):
+
 2000-09-07  Eli Goldberg  <eli@eazel.com>
 
 	* docs/smoketests.html:

@@ -99,24 +99,7 @@ static GtkTargetEntry drop_types [] = {
 	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD }
 };
 
-#define AUTOSCROLL_TIMEOUT_INTERVAL 100
-	/* in milliseconds */
 
-#define AUTOSCROLL_INITIAL_DELAY 600000
-	/* in microseconds */
-
-#define AUTO_SCROLL_MARGIN 20
-	/* drag this close to the view edge to start auto scroll*/
-
-#define MIN_AUTOSCROLL_DELTA 5
-	/* the smallest amount of auto scroll used when we just enter the autoscroll
-	 * margin
-	 */
-	 
-#define MAX_AUTOSCROLL_DELTA 50
-	/* the largest amount of auto scroll used when we are right over the view
-	 * edge
-	 */
 /* special reserved name for the erase emblem */
 #define ERASE_KEYWORD "erase"
 
@@ -617,7 +600,6 @@ auto_scroll_timeout_callback (gpointer data)
 {
 	NautilusIconContainer *container;
 	GtkWidget *widget;
-	int x, y;
 	float x_scroll_delta, y_scroll_delta;
 	GdkRectangle exposed_area;
 
@@ -633,65 +615,7 @@ auto_scroll_timeout_callback (gpointer data)
 
 	container->details->waiting_to_autoscroll = FALSE;
 
-	gdk_window_get_pointer (widget->window, &x, &y, NULL);
-
-	/* Find out if we are anywhere close to the container view edges
-	 * to see if we need to autoscroll.
-	 */
-	x_scroll_delta = 0;
-	y_scroll_delta = 0;
-	
-	if (x < AUTO_SCROLL_MARGIN) {
-		x_scroll_delta = (float)(x - AUTO_SCROLL_MARGIN);
-	}
-
-	if (x > widget->allocation.width - AUTO_SCROLL_MARGIN) {
-		if (x_scroll_delta != 0) {
-			/* Already trying to scroll because of being too close to 
-			 * the top edge -- must be the window is really short,
-			 * don't autoscroll.
-			 */
-			return TRUE;
-		}
-		x_scroll_delta = (float)(x - (widget->allocation.width - AUTO_SCROLL_MARGIN));
-	}
-
-	if (y < AUTO_SCROLL_MARGIN) {
-		y_scroll_delta = (float)(y - AUTO_SCROLL_MARGIN);
-	}
-
-	if (y > widget->allocation.height - AUTO_SCROLL_MARGIN) {
-		if (y_scroll_delta != 0) {
-			/* Already trying to scroll because of being too close to 
-			 * the top edge -- must be the window is really narrow,
-			 * don't autoscroll.
-			 */
-			return TRUE;
-		}
-		y_scroll_delta = (float)(y - (widget->allocation.height - AUTO_SCROLL_MARGIN));
-	}
-
-	if (x_scroll_delta == 0 && y_scroll_delta == 0) {
-		/* no work */
-		return TRUE;
-	}
-
-	/* Adjust the scroll delta to the proper acceleration values depending on how far
-	 * into the sroll margins we are.
-	 * FIXME bugzilla.eazel.com 2486:
-	 * we could use an exponential acceleration factor here for better feel
-	 */
-	if (x_scroll_delta != 0) {
-		x_scroll_delta /= AUTO_SCROLL_MARGIN;
-		x_scroll_delta *= (MAX_AUTOSCROLL_DELTA - MIN_AUTOSCROLL_DELTA);
-		x_scroll_delta += MIN_AUTOSCROLL_DELTA;
-	}
-	
-	if (y_scroll_delta != 0) {
-		y_scroll_delta /= AUTO_SCROLL_MARGIN;
-		y_scroll_delta *= (MAX_AUTOSCROLL_DELTA - MIN_AUTOSCROLL_DELTA);
-		y_scroll_delta += MIN_AUTOSCROLL_DELTA;
-	}
+	nautilus_drag_autoscroll_calculate_delta (widget, &x_scroll_delta, &y_scroll_delta);
 
 	nautilus_icon_container_scroll (container, (int)x_scroll_delta, (int)y_scroll_delta);
 

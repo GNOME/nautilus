@@ -28,6 +28,14 @@
 #include <gtk/gtkdnd.h>
 #include "nautilus-file.h"
 
+/* a set of defines stolen from the nautilus-icon-dnd.c file */
+#define AUTOSCROLL_TIMEOUT_INTERVAL 100
+	/* in milliseconds */
+
+#define AUTOSCROLL_INITIAL_DELAY 600000
+	/* in microseconds */
+
+
 /* Item of the drag selection list */
 typedef struct {
 	char *uri;
@@ -68,6 +76,11 @@ typedef struct {
 
         /* has the drop occured ? */
         gboolean drop_occured;
+
+	/* autoscrolling during dragging */
+	int auto_scroll_timeout_id;
+	gboolean waiting_to_autoscroll;
+	gint64 start_auto_scroll_in;
 
 } NautilusDragInfo;
 
@@ -123,4 +136,10 @@ int 			nautilus_drag_modifier_based_action 		(int default_action,
 
 GdkDragAction		nautilus_drag_drop_action_ask			(GdkDragAction possible_actions);
 
+void                    nautilus_drag_autoscroll_calculate_delta        (GtkWidget *widget, 
+									 float *x_scroll_delta, 
+									 float *y_scroll_delta);
+
+
 #endif
+
