@@ -46,7 +46,7 @@ BEGIN_GNOME_DECLS
 /* adding/removing from property browser */
 #define NAUTILUS_PREFERENCES_CAN_ADD_CONTENT			"preferences/can_add_content"
 
-/* FIXME: Preferences not (currently?) displayed in dialog */
+/* FIXME bugzilla.eazel.com 1229: Preferences not (currently?) displayed in dialog */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES	"icon_view/text_attribute_names"
 #define NAUTILUS_PREFERENCES_SHOW_BUILT_IN_BOOKMARKS		"preferences/show_built_in_bookmarks"
 
@@ -93,6 +93,7 @@ typedef enum
 
 #define NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS		"preferences/show_icon_text"
 #define NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS	"preferences/show_image_thumbnails"
+#define NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA	"preferences/use_public_metadata"
 
 typedef enum
 {

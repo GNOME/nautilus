@@ -1,3 +1,17 @@
+2000-08-02  John Sullivan  <sullivan@eazel.com>
+
+	Finished task 1554 (Need new preference for accessing
+	metadata remotely)
+
+	* libnautilus-extensions/nautilus-global-preferences.h,
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog),
+	(global_preferences_register_for_ui): Defined new speed
+	tradeoff preference NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
+	and put it into the preferences dialog. The title is a little
+	funky ("Make Directory Appearance Details Public"); hopefully 
+	we can improve on that eventually.
+
 2000-08-02  Andy Hertzfeld  <andy@eazel.com>
 
 	* icons/eazel/Makefile.am:

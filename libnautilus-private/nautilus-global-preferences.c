@@ -246,18 +246,26 @@ global_preferences_create_dialog (void)
 							    "Speed Tradeoffs",
 							    "Speed Tradeoffs Settings");
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), "Show Text in Icons");
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Show Text in Icons"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
 							 0,
 							 NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
 							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), "Show Thumbnails for Image Files");
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Show Thumbnails for Image Files"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
 							 1,
 							 NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
+							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
+
+	/* FIXME: This title phrase needs improvement. */
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Make Directory Appearance Details Public"));
+	
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
+							 2,
+							 NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
 							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
 
 	/*
@@ -612,6 +620,12 @@ global_preferences_register_for_ui (void)
 							   	  NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY,
 							   	  NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY,
 							   	  NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
+	
+	global_preferences_register_speed_tradeoff_with_defaults (NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
+							   	  "Read and write metadata in each directory",
+							   	  NAUTILUS_SPEED_TRADEOFF_ALWAYS,
+							   	  NAUTILUS_SPEED_TRADEOFF_ALWAYS,
+							   	  NAUTILUS_SPEED_TRADEOFF_ALWAYS);
 	
 	/* Sidebar panels */
 	global_preferences_register_sidebar_panels_preferences_for_ui ();
