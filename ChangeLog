@@ -1,3 +1,9 @@
+2004-01-16  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-directory-view.c (queue_pending_files):
+	Prepend instead of append. This is faster.
+	Patch from Soeren Sandmann <sandmann@daimi.au.dk>
+
 2004-01-15  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-window-menus.c (help_menu_nautilus_manual_callback):

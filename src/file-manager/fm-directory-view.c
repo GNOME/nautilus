@@ -2608,8 +2608,8 @@ queue_pending_files (FMDirectoryView *view,
 		return;
 	}
 
-	*pending_list = g_list_concat (*pending_list,
-				       nautilus_file_list_copy (files));
+	*pending_list = g_list_concat (nautilus_file_list_copy (files),
+				       *pending_list);
 
 	if (! view->details->loading || nautilus_directory_are_all_files_seen (view->details->model)) {
 		schedule_idle_display_of_pending_files (view);
