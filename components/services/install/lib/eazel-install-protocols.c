@@ -28,10 +28,9 @@
 
 #include "eazel-install-protocols.h"
 #include "eazel-install-private.h"
-#include "eazel-install-xml-package-list.h"
+#include "eazel-softcat.h"
 #include <ghttp.h>
 #include <config.h>
-#include <sys/utsname.h>
 #include <errno.h>
 
 /* We use rpmvercmp to compare versions... */
@@ -80,31 +79,6 @@ gboolean local_fetch_remote_file (EazelInstall *service,
 				  const char *file_to_report,
 				  const char* target_file);
 
-typedef enum { RPMSEARCH_ENTRY_NAME, RPMSEARCH_ENTRY_PROVIDES, RPMSEARCH_ENTRY_ID } RpmSearchEntry;
-
-/* This method takes a RpmSearch, which describes the thing to search for
-   (ie. a package name or a package that provides file foo).
-   If RPMSEARCH_ENTRY_NAME, data must be a PackageData pointer,
-   if PROVIDES, it must be a string containing the file which is needed.
-   if ID, it must be a string containing the id of the package (provided by the rpm service).
-   It creates a search url when can be used to get info about the package */
-char* get_search_url_for_package (EazelInstall *service, 
-				  RpmSearchEntry, 
-				  const gpointer data);
-
-/* This method takes a RpmSearch, which describes the thing to search for
-   (ie. a package name or a package that provides file foo).
-   If RPMSEARCH_ENTRY_NAME, data must be a PackageData pointer,
-   if PROVIDES, it must be a string containing the file which is needed.
-   if ID, it must be a string containing the id of the package
-   The last argument is a PackageData structure to insert info into, 
-   eg. the url (->filename), the server md5 (->md5).
-   It uses get_search_url_for_package, downloads the contents of the url and
-   parses it and returns a url for the package itself */
-static char* get_url_for_package (EazelInstall *service, 
-				  RpmSearchEntry, 
-				  const gpointer data, 
-				  PackageData *pack);
 
 #ifdef EAZEL_INSTALL_SLIM
 gboolean
@@ -549,18 +523,15 @@ eazel_install_fetch_package (EazelInstall *service,
 	case PROTOCOL_FTP:
 	case PROTOCOL_HTTP: 
 	{
-		if (package->remote_url) {
+		/* HACK HACK HACK HACK */
+		EazelSoftCat *softcat = eazel_softcat_new ();
+
+		if (eazel_softcat_get_info (softcat, package, EAZEL_SOFTCAT_SENSE_GE,
+					    PACKAGE_FILL_NO_PROVIDES | PACKAGE_FILL_NO_DEPENDENCIES)
+		    == EAZEL_SOFTCAT_SUCCESS) {
 			url = g_strdup (package->remote_url);
-		} else if (package->eazel_id) {
-			url = get_url_for_package (service, RPMSEARCH_ENTRY_ID, 
-						   package->eazel_id, 
-						   package);
-		} else if (g_list_length (package->provides)==1) {
-			url = get_url_for_package (service, RPMSEARCH_ENTRY_PROVIDES, 
-						   package->provides->data,
-						   package);
 		} else {
-			url = get_url_for_package (service, RPMSEARCH_ENTRY_NAME, package, package);
+			url = NULL;
 		}
 	}
 	break;
@@ -629,286 +600,6 @@ eazel_install_fetch_package (EazelInstall *service,
 	return result;
 }
 
-#define EVILCHAR(c)  (((c) == '+') || ((c) < '-') || ((c) == '?') || ((c) == '\\') || ((c) > 'z'))
-static void
-add_to_url (char **url,
-	    const char *cgi_string,
-	    const char *val)
-{
-#ifndef EAZEL_INSTALL_SLIM
-	char *tmp;
-
-	if (val) {
-		tmp = g_strconcat (*url, 
-				   cgi_string, 
-				   gnome_vfs_escape_string (val), 
-				   NULL);
-		g_free (*url);
-		(*url) = tmp;
-	} 
-#else /*  EAZEL_INSTALL_SLIM */
-	char *tmp, *quoted, *q;
-	const char *p;
-	int needs_quoting;
-
-	g_assert (url != NULL);
-	g_assert ((*url) != NULL);
-	g_assert (cgi_string != NULL);
-
-	needs_quoting = 0;
-	for (p = val; p && *p; p++) {
-		if (EVILCHAR (*p)) {
-			needs_quoting++;
-		}
-	}
-
-	if (needs_quoting) {
-		/* url quote the sucker. */
-		q = quoted = g_malloc (strlen (val) + (needs_quoting*2) + 1);
-		for (p = val; p && *p; p++) {
-			if (EVILCHAR (*p)) {
-				*q++ = '%';
-				*q++ = "0123456789ABCDEF"[*p / 16];
-				*q++ = "0123456789ABCDEF"[*p % 16];
-			} else {
-				*q++ = *p;
-			}
-		}
-		*q = 0;
-	} else {
-		quoted = (char *)val;
-	}
-
-	if (quoted) {
-		tmp = g_strconcat (*url, cgi_string, quoted, NULL);
-		g_free (*url);
-		(*url) = tmp;
-	}
-
-	if (needs_quoting) {
-		g_free (quoted);
-	}
-#endif /*  EAZEL_INSTALL_SLIM */
-}
-
-static char*
-get_url_for_package  (EazelInstall *service, 
-		      RpmSearchEntry entry,
-		      gpointer data,
-		      PackageData *out_package)		      
-{
-	char *search_url = NULL;
-	char *url = NULL;
-	char *body = NULL;
-	int length;
-
-	search_url = get_search_url_for_package (service, entry, data);
-	if (search_url == NULL) {
-		trilobite_debug ("No search URL");
-		return NULL;
-	}
-
-	trilobite_debug ("Search URL: %s", search_url);
-
-	trilobite_setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (FALSE, NULL), TRUE);
-
-	if (trilobite_fetch_uri (search_url, &body, &length)) {
-#ifndef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
-		/* Parse the returned xml */
-		GList *packages;
-		
-		packages = parse_osd_xml_from_memory (body, length);
-		if (g_list_length (packages) == 0) {
-			trilobite_debug ("No url for file");
-		} else if (g_list_length (packages) > 1) {
-			trilobite_debug ("Ugh, more then one match, using first");
-		}
-		
-		if (g_list_length (packages) > 0) {
-			/* Get the first package returned */
-			PackageData *pack;
-			
-			g_assert (packages->data != NULL);
-			pack = (PackageData*)packages->data;
-			out_package->remote_url = g_strdup (pack->remote_url);
-			url = g_strdup (pack->remote_url);
-			out_package->md5 = g_strdup (pack->md5);
-			if (! out_package->name) {
-				out_package->name = g_strdup (pack->name);
-			}
-			if (! out_package->version) {
-				out_package->version = g_strdup (pack->version);
-			}
-			if (! out_package->summary) {
-				out_package->summary = g_strdup (pack->summary);
-			}
-			if (! out_package->description) {
-				out_package->description = g_strdup (pack->description);
-			}
-			if (out_package->bytesize == 0) {
-				out_package->bytesize = pack->bytesize;
-			}
-			
-			g_list_foreach (packages, 
-					(GFunc)packagedata_destroy, 
-					GINT_TO_POINTER (TRUE));
-			g_list_free (packages);
-		}						
-#else /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
-		trilobite_debug ("using old cgi");
-		if (body) {
-			/* body is already null-terminated, luckily */
-			url = g_strdup (body);
-		}
-#endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
-		g_free (body);				
-	} else {
-		switch (entry) {
-		case RPMSEARCH_ENTRY_NAME:
-			g_warning (_("Could not retrieve a URL for %s"), 
-				   rpmfilename_from_packagedata ((PackageData*)data));
-			trilobite_debug ("entry type was NAME");
-			break;
-		case RPMSEARCH_ENTRY_PROVIDES:
-			g_warning (_("Could not retrieve a URL for %s"),
-				   (char*)data);
-			trilobite_debug ("entry type was PROVIDES");
-			break;
-		case RPMSEARCH_ENTRY_ID:
-			g_warning (_("Could not retrieve a URL for id %s"),
-				   (char *)data);
-			trilobite_debug ("entry type was ID");
-			break;
-		}
-	}
-	
-	g_free (search_url);
-	return url;
-}
-
-
-static char *
-real_arch_name (const char *arch)
-{
-	char *arch_copy;
-
-	arch_copy = g_strdup (arch);
-#ifdef ASSUME_ix86_IS_i386
-	if ((strlen (arch_copy) == 4) && (arch_copy[0] == 'i') &&
-	    ((arch_copy[1] >= '3') && (arch_copy[1] <= '9')) &&
-	    (arch_copy[2] == '8') && (arch_copy[3] == '6')) {
-		arch_copy[1] = '3';
-	}
-#endif
-	return arch_copy;
-}
-
-static char*
-get_eazel_auth_path (EazelInstall *service)
-{
-	char *result = NULL;
-	if (eazel_install_get_username (service)) {
-		result = g_strdup_printf ("//%s%s",
-					  eazel_install_get_username (service),
-					  eazel_install_get_cgi_path (service));
-	} else {
-		result = g_strdup (eazel_install_get_cgi_path (service));
-	}
-	return result;
-}
-
-char* get_search_url_for_package (EazelInstall *service, 
-				  RpmSearchEntry entry,
-				  const gpointer data)
-{
-	char *url;
-	DistributionInfo dist;
-	char *arch;
-
-	if (! strlen (eazel_install_get_server (service))) {
-		return NULL;
-	}
-
-	if (eazel_install_get_eazel_auth (service)) {
-		char *cgipath;
-		cgipath = get_eazel_auth_path (service);
-		g_assert (cgipath);
-		/* use eazel-auth: uri */
-		url = g_strdup_printf ("eazel-services:%s", cgipath);
-		g_free (cgipath);
-	} else {
-		url = g_strdup_printf ("http://%s:%d%s",
-				       eazel_install_get_server (service),
-				       eazel_install_get_server_port (service),
-				       eazel_install_get_cgi_path (service));
-	}
-
-	dist = trilobite_get_distribution ();
-
-	switch (entry) {
-	case RPMSEARCH_ENTRY_NAME: {
-		PackageData *pack;
-
-		pack = (PackageData*)data;
-		arch = real_arch_name (pack->archtype);
-		add_to_url (&url, "?name=", pack->name);
-		add_to_url (&url, "&arch=", arch);
-		add_to_url (&url, "&version=", pack->version); 
-		/* FIXME bugzilla.eazel.com 3482
-		   support other flags then 8 
-		*/
-		if (pack->version) {
-			if (service->private->revert) {
-				add_to_url (&url, "&flags=", "8");
-			} else {
-				add_to_url (&url, "&flags=", "12");
-			}
-		}
-		if (pack->distribution.name != DISTRO_UNKNOWN) {
-			dist = pack->distribution;
-		}
-		g_free (arch);
-	}
-	break;
-	case RPMSEARCH_ENTRY_PROVIDES: {
-		struct utsname buf;
-
-		uname (&buf);
-		arch = real_arch_name (buf.machine);
-		add_to_url (&url, "?provides=", (char*)data);
-		add_to_url (&url, "&arch=", arch);
-		/* hack, FIXME bugzilla.eazel.com 3481 
-		add_to_url (&url, "&flag=", "0");
-		add_to_url (&url, "&version=", "-");
-		*/
-		g_free (arch);
-	}
-	break;
-	case RPMSEARCH_ENTRY_ID: {
-		struct utsname buf;
-
-		uname (&buf);
-		arch = real_arch_name (buf.machine);
-		add_to_url (&url, "?rpm_id=", (char *)data);
-		add_to_url (&url, "&arch=", arch);
-		g_free (arch);
-	}
-	break;
-	}
-
-#ifndef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
-	if (dist.name != DISTRO_UNKNOWN) {
-		char *distro;		
-		distro = trilobite_get_distribution_name (dist, TRUE, TRUE);
-		add_to_url (&url, "&distro=", distro);
-		g_free (distro);
-	}
-#endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
-
-	add_to_url (&url, "&protocol=", protocol_as_string (eazel_install_get_protocol (service)));
-
-	return url;
-}
 
 static void
 flatten_tree_func (PackageData *pack, GList **out)
@@ -922,6 +613,8 @@ flatten_tree_func (PackageData *pack, GList **out)
 	pack->hard_depends = pack->soft_depends = NULL;
 }
 
+/* this was never used yet */
+#if 0
 /* given a list of packages with incomplete info (for example, the initial bootstrap install list),
  * go ask for real info and compile a new list of packages.
  */
@@ -984,3 +677,4 @@ eazel_install_fetch_definitive_category_info (EazelInstall *service, CategoryDat
 	g_list_free (category->packages);
 	category->packages = real_packages;
 }
+#endif
