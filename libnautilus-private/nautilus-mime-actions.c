@@ -87,7 +87,8 @@ nautilus_mime_get_default_action_type_for_uri (const char *uri)
 
 	directory = nautilus_directory_get (uri);
 	nautilus_directory_wait_until_ready (directory, NULL, TRUE);
-	action_type_string = nautilus_directory_get_metadata (directory, "DEFAULT_ACTION_TYPE", NULL);
+	action_type_string = nautilus_directory_get_metadata
+		(directory, "DEFAULT_ACTION_TYPE", NULL);
 	nautilus_directory_unref (directory);
 
 	if (action_type_string == NULL) {
@@ -239,18 +240,17 @@ nautilus_mime_get_default_component_for_uri (const char *uri)
 		char *iid_condition;
 		char *sort_conditions[2];
 
-		iid_condition = g_strconcat ("iid == \'", default_component_string, "\'", NULL);
+		iid_condition = g_strconcat ("iid == '", default_component_string, "'", NULL);
 		
 		sort_conditions[0] = iid_condition;
 		sort_conditions[1] = NULL;
 
-#if 0
-		
+#if 0 /* FIXME */
 		/* Prefer something that matches the exact type to something
 		   that matches the supertype */
-		sort[1] = g_strconcat ("bonobo:supported_mime_types.has (\'",mime_type,"\')", NULL);
+		sort[1] = g_strconcat ("bonobo:supported_mime_types.has ('",mime_type,"')", NULL);
 		/* Prefer something that matches the supertype to something that matches `*' */
-		sort[2] = g_strconcat ("bonobo:supported_mime_types.has (\'",supertype,"\')", NULL);
+		sort[2] = g_strconcat ("bonobo:supported_mime_types.has ('",supertype,"')", NULL);
 #endif
 		
 		info_list = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, sort_conditions, &ev);
@@ -687,8 +687,9 @@ void nautilus_mime_add_application_to_short_list_for_uri (const char *uri,
 	gnome_vfs_mime_application_list_free (old_list);
 }						   
 
-void nautilus_mime_remove_application_from_short_list_for_uri (const char *uri,
-						   	       const char *application_id)
+void
+nautilus_mime_remove_application_from_short_list_for_uri (const char *uri,
+							  const char *application_id)
 {
 	GList *old_list, *matching_node, *new_list;
 
@@ -707,8 +708,9 @@ void nautilus_mime_remove_application_from_short_list_for_uri (const char *uri,
 	gnome_vfs_mime_application_list_free (old_list);
 }						   
 
-void nautilus_mime_add_component_to_short_list_for_uri (const char *uri,
-						 	const char *iid)
+void
+nautilus_mime_add_component_to_short_list_for_uri (const char *uri,
+						   const char *iid)
 {
 	GList *old_list, *new_list;
 
@@ -724,8 +726,9 @@ void nautilus_mime_add_component_to_short_list_for_uri (const char *uri,
 	gnome_vfs_mime_component_list_free (old_list);
 }						   
 
-void nautilus_mime_remove_component_from_short_list_for_uri (const char *uri,
-						      	     const char *iid)
+void
+nautilus_mime_remove_component_from_short_list_for_uri (const char *uri,
+							const char *iid)
 {
 	GList *old_list, *matching_node, *new_list;
 
@@ -741,7 +744,7 @@ void nautilus_mime_remove_component_from_short_list_for_uri (const char *uri,
 		nautilus_g_list_free_deep (new_list);
 	}
 
-	gnome_vfs_mime_application_list_free (old_list);
+	gnome_vfs_mime_component_list_free (old_list);
 }						   
 
 void
