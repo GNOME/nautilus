@@ -159,7 +159,7 @@ static void          setup_label_gcs                       (NautilusIconContaine
 
 static int click_policy_auto_value;
 
-gpointer accessible_parent_class;
+static gpointer accessible_parent_class;
 
 static GQuark accessible_private_data_quark = 0;
 
