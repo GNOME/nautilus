@@ -1,10 +1,25 @@
 <?xml version="1.0"?>
-<theme _name="GNOME" _description="This theme uses the classic GNOME icons."> 
-  <sidebar sidebar_background_color="rgb:DDDD/DDDD/FFFF" title_color="rgb:0000/0000/0000" title_shadow_color="rgb:FFFF/FFFF/FFFF" title_info_color="rgb:0000/0000/0000"  tab_piece_images="none"/>
-  <desktop background_tile_image="patterns/gnome.jpg"/>
-  <directory background_color="rgb:FFFF/FFFF/FFFF"/>
-  <icon highlight_background_color="rgb:0000/0000/0000" highlight_text_color="rgb:FFFF/FFFF/FFFF" text_fill_color="rgb:FFFF/FFFF/FFFF"/>
+<theme _name="GNOME" _description="A theme designed to fit well with the classic GNOME environment"> 
+
+  <directory background_tile_image="patterns/gnome.jpg" 
+             selection_box_color_rgba="0x00441140"
+             selection_box_color="rgb:8d00/8100/7300"/>
+
+  <sidebar sidebar_background_color="rgb:8d00/8100/7300-rgb:3f00/3700/2e00%80-rgb:0000/0000/0000:h"
+           sidebar_background_tile_image="patterns/.striated.png"
+           tab_piece_images="sidebar_tab_pieces" combine="true"
+           left_offset="0" shadow_offset="1" text_h_offset="-4"
+           label_color="rgb:FFFF/FFFF/FFFF"
+           tab_font="-*-helvetica-bold-r-normal-*-24-*-*-*-*-*-*-*" />
+
+  <desktop background_tile_image="patterns/dark-gnome.jpg"
+	   background_color="rgb:F400/F200/e800"/>
+
+  <icon highlight_background_color="rgb:0000/0000/0000" 
+	highlight_text_color="rgb:FFFF/FFFF/FFFF" 
+	text_fill_color="rgb:FFFF/FFFF/FFFF"/>
+
   <thumbnails frame_offsets="3,3,6,6"/>
   <toolbar icon_theme="standard"/>
-  <throbber frame_count="10" url="http://www.gnome.org"/>
+  <throbber frame_count="15" url="http://www.gnome.org"/>
  </theme>
