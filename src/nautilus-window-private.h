@@ -71,6 +71,14 @@ struct NautilusWindowDetails
 #define NAUTILUS_HINT_STOP				N_("Stop loading this location")
 #define NAUTILUS_HINT_SERVICES				N_("Go to the Eazel services location")
 
+/* window geometry */
+#define NAUTILUS_WINDOW_MIN_WIDTH			450
+#define NAUTILUS_WINDOW_MIN_HEIGHT			350
+
+#define NAUTILUS_WINDOW_DEFAULT_WIDTH			700
+#define NAUTILUS_WINDOW_DEFAULT_HEIGHT			550
+
+
 void                 nautilus_window_set_state_info                    (NautilusWindow             *window,
 									... /* things to set, plus optional parameters */);
 void                 nautilus_window_set_status                        (NautilusWindow             *window,

@@ -1,3 +1,68 @@
+2000-09-22  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 168 (Save and restore window position/size per
+	directory)
+
+	Note that this is only done when in "use separate windows
+	for everything" mode. My brain broke trying to figure out
+	how it could be used coherently in single-window mode.
+
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(sanity_check_window_geometry): New helper function, takes
+	four coordinates and munges them if necessary to keep the
+	window at least partially on screen and not ridiculously
+	huge.
+	(nautilus_gtk_window_set_initial_geometry): New function,
+	sets the position/location of a window before it is shown
+	after calling sanity_check_window_geometry on 
+	top/left/width/height parameters.
+	(nautilus_gtk_window_set_initial_geometry_from_string):
+	New function, calls _set_initial_geometry after parsing
+	geometry-as-string parameter and adjusting it for
+	minimum-width and minimum-height parameters.
+	
+	* libnautilus-extensions/nautilus-metadata.h:
+	#define new per-directory key for window geometry
+	
+	* src/nautilus-application.c:
+	(nautilus_window_delete_event_callback): New function,
+	calls nautilus_window_close.
+	(nautilus_application_create_window): Hook up this new
+	callback as signal handler for window's delete_event;
+	this causes closing the window from the close box go
+	through the same nautilus_window_close path that closing
+	the window from the menu did.
+	
+	* src/nautilus-bookmarks-window.c:
+	(nautilus_bookmarks_window_restore_geometry):
+	Now calls nautilus_gtk_window_set_geometry_from_string,
+	which was extracted from here.
+	
+	* src/nautilus-window-manage-views.c:
+	(position_and_show_window_callback): New function, reads
+	geometry string for this location from metadata & applies
+	it (if in use-new-window mode), then shows window.
+	(nautilus_window_end_location_change_callback):
+	Use nautilus_directory_call_when_ready to show the window
+	only after the metadata has been read, so it doesn't appear
+	in one position and then bounce elsewhere.
+	
+	* src/nautilus-window-menus.c: (file_menu_new_window_callback):
+	Removed gtk_widget_show from here. It wasn't necessary since
+	the window is shown later after the URI is determined to be good,
+	and doing it here prevented the window positioning code from
+	working correctly.
+	
+	* src/nautilus-window-private.h: Moved some window geometry
+	#defines in here.
+	
+	* src/nautilus-window.c: 
+	(nautilus_window_save_geometry): New private function, reads
+	the window geometry and stores it in the directory's metadata.
+	(nautilus_window_close): Calls nautilus_window_save_geometry
+	if we're in use-new-windows mode.
+
 2000-09-22  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: added --enable-more-warnings

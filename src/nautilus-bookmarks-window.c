@@ -103,12 +103,6 @@ static void	update_built_in_bookmarks_preference_to_match_checkbox (gpointer use
 #define BOOKMARKS_WINDOW_INITIAL_WIDTH	500
 #define BOOKMARKS_WINDOW_INITIAL_HEIGHT	200
 
-/* Used for window position & size sanity-checking. The sizes are big enough to prevent
- * at least normal-sized gnome panels from obscuring the window at the screen edges. 
- */
-#define MINIMUM_ON_SCREEN_WIDTH		100
-#define MINIMUM_ON_SCREEN_HEIGHT	100
-
 
 /**
  * create_bookmarks_window:
@@ -341,46 +335,22 @@ nautilus_bookmarks_window_restore_geometry (GtkWidget *window)
 	g_return_if_fail (GTK_IS_WINDOW (window));
 	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 
-	window_geometry = nautilus_bookmark_list_get_window_geometry(bookmarks);
+	window_geometry = nautilus_bookmark_list_get_window_geometry (bookmarks);
 
 	if (window_geometry != NULL) 
 	{	
-		int left, top, width, height;
+		nautilus_gtk_window_set_initial_geometry_from_string 
+			(GTK_WINDOW (window), window_geometry, 
+			 BOOKMARKS_WINDOW_MIN_WIDTH, BOOKMARKS_WINDOW_MIN_HEIGHT);
 
-		if (gnome_parse_geometry (window_geometry, &left, &top, &width, &height))
-		{
-			/* Adjust for sanity, in case screen size has changed or
-			 * stored numbers are bogus. Make the entire window fit
-			 * on the screen, so all controls can be reached. Also
-			 * make sure the window isn't ridiculously small. Also
-			 * make sure the top of the window is on screen, for
-			 * draggability (perhaps not absolutely required, depending
-			 * on window manager, but seems like a sensible rule anyway).
-			 */
-			width = CLAMP (width, BOOKMARKS_WINDOW_MIN_WIDTH, gdk_screen_width());
-			height = CLAMP (height, BOOKMARKS_WINDOW_MIN_HEIGHT, gdk_screen_height());
+	} else {
+		/* use default since there was no stored geometry */
+		gtk_window_set_default_size (GTK_WINDOW (window), 
+					     BOOKMARKS_WINDOW_INITIAL_WIDTH, 
+					     BOOKMARKS_WINDOW_INITIAL_HEIGHT);
 
-			top = CLAMP (top, 0, gdk_screen_height() - MINIMUM_ON_SCREEN_HEIGHT);
-			/* FIXME bugzilla.eazel.com 669: 
-			 * If window has negative left coordinate, set_uposition sends it
-			 * somewhere else entirely. Not sure what level contains this bug (XWindows?).
-			 * Hacked around by pinning the left edge to zero.
-			 */
-			left = CLAMP (left, 0, gdk_screen_width() - MINIMUM_ON_SCREEN_WIDTH);
-					    		
-			gtk_widget_set_uposition (window, left, top);
-			gtk_window_set_default_size (GTK_WINDOW (window), width, height);
-
-			return;
-		}
+		/* Let window manager handle default position if no position stored */
 	}
-
-	/* fall through to default if necessary */
-	gtk_window_set_default_size (GTK_WINDOW (window), 
-				     BOOKMARKS_WINDOW_INITIAL_WIDTH, 
-				     BOOKMARKS_WINDOW_INITIAL_HEIGHT);
-
-	/* Let window manager handle default position if no position stored */
 }
 
 /**

@@ -77,13 +77,6 @@
 /* default web search uri - FIXME bugzilla.eazel.com 2465: this will be changed to point to the Eazel service */
 #define DEFAULT_SEARCH_WEB_URI "http://www.google.com"
 
-/* window geometry */
-#define NAUTILUS_WINDOW_MIN_WIDTH	450
-#define NAUTILUS_WINDOW_MIN_HEIGHT	350
-
-#define NAUTILUS_WINDOW_DEFAULT_WIDTH	700
-#define NAUTILUS_WINDOW_DEFAULT_HEIGHT	550
-
 
 enum {
 	ARG_0,
@@ -575,10 +568,39 @@ nautilus_window_destroy (GtkObject *object)
 	}
 }
 
+static void
+nautilus_window_save_geometry (NautilusWindow *window)
+{
+	NautilusDirectory *directory;
+	char *geometry_string;
+
+        g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+	g_return_if_fail (GTK_WIDGET_VISIBLE (window));
+
+        directory = nautilus_directory_get (window->location);
+        geometry_string = gnome_geometry_string (GTK_WIDGET (window)->window);
+	nautilus_directory_set_metadata (directory,
+					 NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY,
+					 NULL,
+					 geometry_string);
+	g_free (geometry_string);
+	nautilus_directory_unref (directory);
+}
+
 void
 nautilus_window_close (NautilusWindow *window)
 {
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
+	/* Save the window position in the directory's metadata only if
+	 * we're in every-location-in-its-own-window mode. Otherwise it
+	 * would be too apparently random when the stored positions change.
+	 */
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
+					      FALSE)) {
+	        nautilus_window_save_geometry (window);
+	}
+
 	gtk_widget_destroy (GTK_WIDGET (window));
 }
 

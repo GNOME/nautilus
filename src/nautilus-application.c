@@ -468,6 +468,19 @@ nautilus_application_destroyed_window (GtkObject *object, NautilusApplication *a
 	nautilus_application_window_list = g_slist_remove (nautilus_application_window_list, object);
 }
 
+static gboolean
+nautilus_window_delete_event_callback (GtkWidget *widget,
+				       GdkEvent *event,
+				       gpointer user_data)
+{
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (widget);
+	nautilus_window_close (window);
+
+	return TRUE;
+}				       
+
 NautilusWindow *
 nautilus_application_create_window (NautilusApplication *application)
 {
@@ -478,6 +491,11 @@ nautilus_application_create_window (NautilusApplication *application)
 	window = NAUTILUS_WINDOW (gtk_object_new (nautilus_window_get_type (),
 						  "app", GTK_OBJECT (application),
 						  "app_id", "nautilus", NULL));
+
+	gtk_signal_connect (GTK_OBJECT (window), 
+			    "delete_event", GTK_SIGNAL_FUNC (nautilus_window_delete_event_callback),
+                    	    NULL);
+
 	gtk_signal_connect (GTK_OBJECT (window),
 			    "destroy", nautilus_application_destroyed_window,
 			    application);

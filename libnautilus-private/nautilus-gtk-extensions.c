@@ -44,6 +44,12 @@
  */
 #define MAXIMUM_MENU_TITLE_LENGTH	48
 
+/* Used for window position & size sanity-checking. The sizes are big enough to prevent
+ * at least normal-sized gnome panels from obscuring the window at the screen edges. 
+ */
+#define MINIMUM_ON_SCREEN_WIDTH		100
+#define MINIMUM_ON_SCREEN_HEIGHT	100
+
 static gboolean
 finish_button_activation (gpointer data)
 {
@@ -304,6 +310,129 @@ nautilus_gtk_window_present (GtkWindow *window) {
 	}
     
 	gtk_widget_show (GTK_WIDGET (window));
+}
+
+static void
+sanity_check_window_geometry (int *left, int *top, int *width, int *height)
+{
+	g_assert (left != NULL);
+	g_assert (top != NULL);
+	g_assert (width != NULL);
+	g_assert (height != NULL);
+
+	/* Pin the size of the window to the screen, so we don't end up in
+	 * a state where the window is so big essential parts of it can't
+	 * be reached (might not be necessary with all window managers,
+	 * but seems reasonable anyway).
+	 */
+	*width = MIN (*width, gdk_screen_width());
+	*height = MIN (*height, gdk_screen_height());
+	
+	/* Make sure the top of the window is on screen, for
+	 * draggability (might not be necessary with all window managers,
+	 * but seems reasonable anyway). Make sure the top of the window
+	 * isn't off the bottom of the screen, or so close to the bottom
+	 * that it might be obscured by the panel.
+	 */
+	*top = CLAMP (*top, 0, gdk_screen_height() - MINIMUM_ON_SCREEN_HEIGHT);
+	
+	/* FIXME bugzilla.eazel.com 669: 
+	 * If window has negative left coordinate, set_uposition sends it
+	 * somewhere else entirely. Not sure what level contains this bug (XWindows?).
+	 * Hacked around by pinning the left edge to zero, which just means you
+	 * can't set a window to be partly off the left of the screen using
+	 * this routine.
+	 */
+	/* Make sure the left edge of the window isn't off the right edge of
+	 * the screen, or so close to the right edge that it might be
+	 * obscured by the panel.
+	 */
+	*left = CLAMP (*left, 0, gdk_screen_width() - MINIMUM_ON_SCREEN_WIDTH);
+}
+
+
+/**
+ * nautilus_gtk_window_set_initial_geometry:
+ * 
+ * Sets the position and size of a GtkWindow before the
+ * GtkWindow is shown. It is an error to call this on a window that
+ * is already on-screen. Takes into account screen size, and does
+ * some sanity-checking on the passed-in values.
+ * 
+ * @window: A non-visible GtkWindow
+ * @left: pixel coordinate for left of window
+ * @top: pixel coordinate for top of window
+ * @width: width of window in pixels
+ * @height: height of window in pixels
+ */
+void
+nautilus_gtk_window_set_initial_geometry (GtkWindow *window, 
+					  int left,
+					  int top,
+					  int width,
+					  int height)
+{
+	g_return_if_fail (GTK_IS_WINDOW (window));
+	g_return_if_fail (width > 0 && height > 0);
+
+	/* Setting the default size doesn't work when the window is already showing.
+	 * Someday we could make this move an already-showing window, but we don't
+	 * need that functionality yet. 
+	 */
+	g_return_if_fail (!GTK_WIDGET_VISIBLE (window));
+
+	sanity_check_window_geometry (&left, &top, &width, &height);
+			    		
+	gtk_widget_set_uposition (GTK_WIDGET (window), left, top);
+	gtk_window_set_default_size (GTK_WINDOW (window), width, height);
+}
+
+/**
+ * nautilus_gtk_window_set_initial_geometry_from_string:
+ * 
+ * Sets the position and size of a GtkWindow before the
+ * GtkWindow is shown. The geometry is passed in as a string. 
+ * It is an error to call this on a window that
+ * is already on-screen. Takes into account screen size, and does
+ * some sanity-checking on the passed-in values.
+ * 
+ * @window: A non-visible GtkWindow
+ * @geometry_string: A string suitable for use with gnome_parse_geometry
+ * @minimum_width: If the width from the string is smaller than this,
+ * use this for the width.
+ * @minimum_height: If the height from the string is smaller than this,
+ * use this for the height.
+ */
+void
+nautilus_gtk_window_set_initial_geometry_from_string (GtkWindow *window, 
+					  	      const char *geometry_string,
+					  	      guint minimum_width,
+					  	      guint minimum_height)
+{
+	int left, top, width, height;
+	gboolean parsed;
+
+	g_return_if_fail (GTK_IS_WINDOW (window));
+	g_return_if_fail (geometry_string != NULL);
+
+	/* Setting the default size doesn't work when the window is already showing.
+	 * Someday we could make this move an already-showing window, but we don't
+	 * need that functionality yet. 
+	 */
+	g_return_if_fail (!GTK_WIDGET_VISIBLE (window));
+
+	parsed = gnome_parse_geometry (geometry_string, &left, &top, &width, &height);
+
+	/* Bogus string, dude. */
+	g_return_if_fail (parsed);
+
+	/* Make sure the window isn't smaller than makes sense for this window.
+	 * Other sanity checks are performed in set_initial_geometry.
+	 */
+	width = MAX (width, minimum_width);
+	height = MAX (height, minimum_height);
+
+	nautilus_gtk_window_set_initial_geometry (window, left, top, width, height);
 }
 
 /**

@@ -93,6 +93,16 @@ GtkWidget *       nautilus_gtk_widget_find_windowed_ancestor   (GtkWidget       
 GtkWidget        *nautilus_gtk_container_get_first_child       (GtkContainer           *container);
 
 /* GtkWindow */
+void		  nautilus_gtk_window_set_initial_geometry     (GtkWindow	       *window,
+								int			left,
+								int			top,
+								int			width,
+								int			height);
+void		  nautilus_gtk_window_set_initial_geometry_from_string     
+							       (GtkWindow	       *window,
+								const char	       *geometry_string,
+								guint			minimum_width,
+								guint			minimum_height);
 void              nautilus_gtk_window_present                  (GtkWindow              *window);
 
 /* selection data */

@@ -44,6 +44,7 @@
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-search-uri.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
@@ -1217,12 +1218,41 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
 }
 
 static void
+position_and_show_window_callback (NautilusDirectory *directory,
+                       		   GList *files,
+                       		   gpointer callback_data)
+{
+	NautilusWindow *window;
+	char *geometry_string;
+
+	window = NAUTILUS_WINDOW (callback_data);
+
+	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
+					      FALSE)) {
+		geometry_string = nautilus_directory_get_metadata 
+			(directory, NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY, NULL);
+		nautilus_gtk_window_set_initial_geometry_from_string 
+			(GTK_WINDOW (window), 
+			 geometry_string,
+			 NAUTILUS_WINDOW_MIN_WIDTH, 
+			 NAUTILUS_WINDOW_MIN_HEIGHT);
+		g_free (geometry_string);
+	}
+
+	gtk_widget_show (GTK_WIDGET (window));
+	
+	/* This directory object was reffed for this callback */
+	nautilus_directory_unref (directory);
+}                       			     
+
+static void
 nautilus_window_end_location_change_callback (NautilusNavigationResult result_code,
                                               NautilusNavigationInfo *navi,
                                               gpointer data)
 {
         NautilusWindow *window;
         NautilusFile *file;
+        NautilusDirectory *directory;
         const char *requested_uri;
         char *full_uri_for_display;
         char *uri_for_display;
@@ -1244,7 +1274,14 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                  * on screen so long.
                  */
                 window->cancel_tag = navi;
-                gtk_widget_show (GTK_WIDGET (window));
+
+                directory = nautilus_directory_get (navi->location);
+		nautilus_directory_call_when_ready (directory,
+						    NULL,
+						    TRUE,
+						    position_and_show_window_callback,
+						    window);
+						
                 nautilus_window_set_state_info
                         (window, 
                          (NautilusWindowStateItem) NAVINFO_RECEIVED, navi, 
