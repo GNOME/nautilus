@@ -1,3 +1,12 @@
+2000-02-06  Andy Hertzfeld <andy@eazel.com>
+
+	fixed bug where title tab was initially pre-lit
+	
+	* src/ntl-index-panel.c:
+	turns pre-lite off when activating
+	* src/nautilus-index-tabs.c:
+	initialize prelit flag
+	
 2000-02-26  Andy Hertzfeld <andy@eazel.com>
 
 	made index tabs receive dropped colors and display them; it doesn't store it persistently yet

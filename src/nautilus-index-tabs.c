@@ -138,6 +138,7 @@ nautilus_index_tabs_initialize (NautilusIndexTabs *index_tabs)
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
 				  &index_tabs->details->text_color, FALSE, TRUE);
 
+	index_tabs->details->title_prelit = FALSE;
 }
 
 GtkWidget*

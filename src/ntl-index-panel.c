@@ -330,6 +330,8 @@ nautilus_index_panel_activate_meta_view(NautilusIndexPanel *index_panel, gint wh
 	index_panel->details->selected_index = which_view;
 	title = nautilus_index_tabs_get_title_from_index(NAUTILUS_INDEX_TABS(index_panel->details->index_tabs), which_view);
 	nautilus_index_tabs_set_title(NAUTILUS_INDEX_TABS(index_panel->details->title_tab), title);
+    nautilus_index_tabs_prelite_tab(NAUTILUS_INDEX_TABS(index_panel->details->title_tab), -1);
+    
 	g_free(title);
 	
 	/* hide the buttons, since they look confusing when partially overlapped */
