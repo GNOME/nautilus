@@ -492,13 +492,18 @@ nautilus_icon_container_item_at (NautilusIconContainer *container,
 				 int x, int y)
 {
 	GList *p;
+	int size;
 	ArtDRect point;
 
-	/* hit test a single pixel rectangle */
+	/* build the hit-test rectangle. Base the size on the scale factor to ensure that it is
+	 * non-empty even at the smallest scale factor
+	 */
+	
+	size = MAX (1, 1 + (1 / GNOME_CANVAS (container)->pixels_per_unit));
 	point.x0 = x;
 	point.y0 = y;
-	point.x1 = x + 1;
-	point.y1 = y + 1;
+	point.x1 = x + size;
+	point.y1 = y + size;
 
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		NautilusIcon *icon;

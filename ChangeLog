@@ -1,4 +1,16 @@
-2001-01-27  Rebecca Schulman  <rebecka@eazel.com>
+2001-01-26  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_container_item_at):
+	fixed bug 5750, accepting drops by folders quirky at zoom levels
+	below 100%. The problem was that nautilus_icon_container_item_at
+	was constructing a single pixel rectangle for hit-testing, that
+	sometimes turned into a zero pixel rectangle when scaled down,
+	depending on how things rounded off.  Fixed by using the
+	canvas scale factor when building the rectangle, ensuring that
+	it never becomes empty.
+	
+2001-01-26  Rebecca Schulman  <rebecka@eazel.com>
 	Fix bugs 4094, 4425, 5201 and 4106 about inappopriate
 	applications being offered to view remote files.
 	This change filters applications that don't support
