@@ -375,7 +375,7 @@ int nautilus_sidebar_tabs_hit_test (NautilusSidebarTabs *sidebar_tabs, int x, in
 	while (current_item != NULL) {
 		tab_item = (TabItem*) current_item->data;
 		rect_ptr = &tab_item->tab_rect;
-	
+			
 		if (tab_item->visible) {
 			
 			if (rect_ptr->y < min_y) {
@@ -404,6 +404,17 @@ int nautilus_sidebar_tabs_hit_test (NautilusSidebarTabs *sidebar_tabs, int x, in
 	return result;
 }
 
+/* utility routine to update the total height of all of the tabs */
+static int
+measure_total_height (NautilusSidebarTabs *sidebar_tabs)
+{
+	/* relayout the tabs */
+	draw_or_layout_all_tabs (sidebar_tabs, TRUE);
+	/* measure the height */
+	nautilus_sidebar_tabs_hit_test (sidebar_tabs, -10000, -10000);
+	return sidebar_tabs->details->total_height;
+}
+
 /* resize the widget based on the number of tabs */
 
 static void
@@ -412,7 +423,7 @@ recalculate_size(NautilusSidebarTabs *sidebar_tabs)
 	GtkWidget *widget = GTK_WIDGET (sidebar_tabs);
 	
 	/* layout tabs to make sure height measurement is valid */
-	draw_or_layout_all_tabs (sidebar_tabs, TRUE);
+	measure_total_height (sidebar_tabs);
   	
 	widget->requisition.width = widget->parent ? widget->parent->allocation.width: 136;
 	if (sidebar_tabs->details->title_mode)
@@ -430,8 +441,8 @@ nautilus_sidebar_tabs_size_allocate(GtkWidget *widget, GtkAllocation *allocation
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 	
 	/* layout tabs to make sure height measurement is valid */
-	draw_or_layout_all_tabs (sidebar_tabs, TRUE);
-	
+	measure_total_height (sidebar_tabs);
+ 	
 	if (!sidebar_tabs->details->title_mode) {
 		 gint delta_height = widget->allocation.height - (sidebar_tabs->details->total_height + TAB_TOP_GAP);
          widget->allocation.height -= delta_height;
@@ -445,8 +456,8 @@ nautilus_sidebar_tabs_size_request (GtkWidget *widget, GtkRequisition *requisiti
 	NautilusSidebarTabs *sidebar_tabs = NAUTILUS_SIDEBAR_TABS(widget);
 	
 	/* layout tabs to make sure height measurement is valid */
-	draw_or_layout_all_tabs (sidebar_tabs, TRUE);
-	
+	measure_total_height (sidebar_tabs);
+ 	
 	requisition->width = widget->parent ? widget->parent->allocation.width: 136;  
 	if (sidebar_tabs->details->title_mode)
 		requisition->height = TAB_HEIGHT;
