@@ -65,10 +65,27 @@ trilobite_pexec (const char *path, char * const argv[], int *stdin_fd, int *stdo
 	}
 
 	if (child == 0) {
+#if 0
+		child = fork ();
+		if (child != 0) {
+			exit (0);
+		}
+
+		/* keep child processes from trying to write to the tty */
+		setsid ();
+		setpgid (0, 0);
+#endif
+
 		/* make stdin/stdout/stderr use the pipes */
-		dup2 (pipe_in[0], 0);
-		dup2 (pipe_out[1], 1);
-		dup2 (pipe_err[1], 2);
+		if (stdin_fd) {
+			dup2 (pipe_in[0], 0);
+		}
+		if (stdout_fd) {
+			dup2 (pipe_out[1], 1);
+		}
+		if (stderr_fd) {
+			dup2 (pipe_err[1], 2);
+		}
 		/* close all open fd's */
 		for (i = 3; i < LAST_FD; i++) {
 			close(i);
@@ -85,9 +102,21 @@ trilobite_pexec (const char *path, char * const argv[], int *stdin_fd, int *stdo
 	close (pipe_in[0]);
 	close (pipe_out[1]);
 	close (pipe_err[1]);
-	*stdin_fd = pipe_in[1];
-	*stdout_fd = pipe_out[0];
-	*stderr_fd = pipe_err[0];
+	if (stdin_fd) {
+		*stdin_fd = pipe_in[1];
+	} else {
+		close (pipe_in[1]);
+	}
+	if (stdout_fd) {
+		*stdout_fd = pipe_out[0];
+	} else {
+		close (pipe_out[0]);
+	}
+	if (stderr_fd) {
+		*stderr_fd = pipe_err[0];
+	} else {
+		close (pipe_err[0]);
+	}
 
 	return 0;
 

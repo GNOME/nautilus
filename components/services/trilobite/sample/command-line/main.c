@@ -26,6 +26,7 @@
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
 
+#include <libtrilobite/libtrilobite.h>
 #include <libtrilobite/libtrilobite-service.h>
 #include <libtrilobite/trilobite-root-client-public.h>
 
@@ -65,13 +66,13 @@ int main(int argc, char *argv[]) {
 	Trilobite_PasswordQueryClient trilobite_client;
 	TrilobiteRootClient *root_client = NULL;
 
-	CORBA_exception_init (&ev);
-	gnome_init_with_popt_table ("trilobite-eazel-sample-client", "1.0",argc, argv, oaf_popt_options, 0, NULL);
-	orb = oaf_init (argc, argv);
-
-	if (bonobo_init (NULL, NULL, NULL) == FALSE) {
-		g_error ("Could not init bonobo");
+	if (trilobite_init ("trilobite-sample-client", "0.1", NULL, argc, argv, NULL) == FALSE) {
+		g_error ("Could not initialize trilobite. :(");
+		exit (1);
 	}
+
+	CORBA_exception_init (&ev);
+
 	bonobo_activate ();
 
 	service = bonobo_object_activate (OAF_ID, 0);
