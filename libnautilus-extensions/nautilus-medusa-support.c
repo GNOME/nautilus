@@ -32,7 +32,7 @@
 
 #ifdef HAVE_MEDUSA
 #include <libmedusa/medusa-system-state.h>
-#endif HAVE_MEDUSA
+#endif
 
 gboolean
 nautilus_medusa_services_have_been_enabled_by_user (void)

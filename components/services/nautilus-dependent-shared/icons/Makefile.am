@@ -4,23 +4,19 @@ icondir = $(datadir)/pixmaps/nautilus
 
 icon_DATA =\
 	config-gather.png \
-	eazel-cloud-logo.png \
 	eazel-logo-left-side-repeat.png \
 	eazel-logo-right-side-logo.png \
 	eazel-services-header-middle-fill.png \
 	eazel-services-logo-tile.png \
-	eazel-services-logo.png \
 	inventory-service-icon.png \
 	register.png \
 	service-summary-large-grey-section.png \
 	service-summary-large-teal-section.png \
 	service-summary-logo-bottom.png \
-	service-summary-logo-top.png \
 	service-summary-short-grey-section.png \
 	service-watch.png \
 	services-warning.png \
 	softcat-service-icon.png \
-	startup-logo.png \
 	summary-service-normal-fill.png \
 	summary-service-normal-left-bumper.png \
 	summary-service-normal-right-bumper.png \

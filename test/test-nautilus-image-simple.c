@@ -132,11 +132,10 @@ main (int argc, char* argv[])
 				    100,
 				    "/usr/share/pixmaps/gnome-globe.png",
 				    "/gnome/share/nautilus/patterns/pale_coins.png");
-	//window = image_window_new ("Nautilus Image", 100, "eazel-logo-right-side-logo.png");
-	//window = image_window_new ("Nautilus Image", 100, "foo.png");
+	/* window = image_window_new ("Nautilus Image", 100, "foo.png"); */
 
-//	debug_widget_set_background_image (window->window, "pale_coins.png");
-//	debug_widget_set_background_image (window->image, "pale_coins.png");
+	/* debug_widget_set_background_image (window->window, "pale_coins.png"); */
+	/* debug_widget_set_background_image (window->image, "pale_coins.png"); */
 	
 	gtk_widget_show (window->window);
 

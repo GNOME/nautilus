@@ -1034,11 +1034,7 @@ nautilus_get_user_main_directory (void)
 char *
 nautilus_get_pixmap_directory (void)
 {
-	char *pixmap_directory;
-
-	pixmap_directory = g_strdup_printf ("%s/%s", DATADIR, "pixmaps/nautilus");
-
-	return pixmap_directory;
+	return g_strdup (DATADIR "/pixmaps/nautilus");
 }
 
 /* convenience routine to use gnome-vfs to test if a string is a remote uri */
@@ -1064,13 +1060,21 @@ nautilus_pixmap_file (const char *partial_path)
 {
 	char *path;
 
+	/* Look for a non-GPL Eazel logo version. */
+	path = nautilus_make_path (DATADIR "/pixmaps/nautilus/eazel-logos", partial_path);
+	if (g_file_exists (path)) {
+		return path;
+	}
+	g_free (path);
+
+	/* Look for a GPL version. */
 	path = nautilus_make_path (DATADIR "/pixmaps/nautilus", partial_path);
 	if (g_file_exists (path)) {
 		return path;
-	} else {
-		g_free (path);
-		return NULL;
 	}
+	g_free (path);
+
+	return NULL;
 }
 
 GnomeVFSResult

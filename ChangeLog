@@ -1,3 +1,91 @@
+2001-02-27  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fixed bug 6725 (Crash on Refresh if viewed file/folder is deleted
+	outside of Nautilus):
+
+	* src/nautilus-window-manage-views.c: (free_location_change):
+	Reorder so we cancel the callbacks before more I/O has the chance
+	to happen.
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(nautilus_directory_async_state_changed): Don't do any I/O for a
+	NautilusDirectory object once it's destroyed. Unfortunately, it's
+	still possible for destroying one NautilusDirectory object to
+	cause I/O to happen on another, so this doesn't fix the bug (which
+	is why we also need the change above).
+
+	Fixed bug 7080 (Nautilus build failure on Red Hat 7.)
+
+	* libnautilus-extensions/nautilus-medusa-support.c: Fixed the bad
+	#endif with non-comment text after it.
+
+	Worked on bug 6928 (create fallback mechanism so eazel-logos
+	version of each graphic is found if present). We still need a
+	separate fallback mechanism for the theme XML file, since the
+	throbber has a different number of frames.
+
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_pixmap_directory): Simplify.
+	(nautilus_pixmap_file): Look in eazel-logos directory first, so we
+	will pick up logo graphics if there, and non-logo graphics otherwise.
+	* test/test-nautilus-image-simple.c: (main): Remove a reference to
+	a logo graphic.
+
+	* eazel-logos/.cvsignore:
+	* eazel-logos/About_Image.png:
+	* eazel-logos/about_background.png:
+	* eazel-logos/druid_header.png:
+	* eazel-logos/eazel-logo-right-side-logo.png:
+	* eazel-logos/throbber/.cvsignore:
+	* eazel-logos/throbber/001.png:
+	* eazel-logos/throbber/002.png:
+	* eazel-logos/throbber/003.png:
+	* eazel-logos/throbber/004.png:
+	* eazel-logos/throbber/005.png:
+	* eazel-logos/throbber/006.png:
+	* eazel-logos/throbber/007.png:
+	* eazel-logos/throbber/008.png:
+	* eazel-logos/throbber/009.png:
+	* eazel-logos/throbber/010.png:
+	* eazel-logos/throbber/011.png:
+	* eazel-logos/throbber/012.png:
+	* eazel-logos/throbber/013.png:
+	* eazel-logos/throbber/014.png:
+	* eazel-logos/throbber/015.png:
+	* eazel-logos/throbber/rest.png:
+	* eazel-logos/default.xml:
+	Added a new directory with copies of all graphics with the Eazel
+	logo in them. Next we have to make this directory actually build
+	and install these logos. Then Non-Eazel-logo'd graphics suitable
+	for GPL will replace the original copies and these will keep the
+	Eazel logo versions. The directory also contains the XML file for
+	the default theme, since we need to change the throbber frames for
+	the logo vs. non-logo version of the throbber.
+	
+	* components/services/nautilus-dependent-shared/icons/Makefile.am:
+	* components/services/nautilus-dependent-shared/icons/eazel-cloud-logo.png:
+	* components/services/nautilus-dependent-shared/icons/eazel-services-logo.png:
+	* components/services/nautilus-dependent-shared/icons/service-summary-logo-top.png:
+	* components/services/nautilus-dependent-shared/icons/startup-logo.png:
+	* icons/Makefile.am:
+	* icons/eazel-logo.gif:
+	* icons/nautilus-logo.png:
+	Removed unused graphics with the Eazel logo in them. There are a
+	lot more unused graphics and someone should go through and remove
+	them. I'm thinking of writing a script to do it.
+	
+	Other changes.
+
+	* components/services/install/nautilus-view/.cvsignore:
+	* components/services/vault/.cvsignore:
+	* components/services/vault/command-line/.cvsignore:
+	* data/top/.cvsignore:
+	Re-removed .cvsignore files for empty directories.
+
+	* THANKS: Corrected one email address.
+	* check-THANKS.pl: Updated for the latest ChangeLog typos.
+	
 2001-02-27  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>
@@ -308,7 +396,6 @@
 	* icons/crux_eggplant/i-directory-96.png:
 	* icons/crux_eggplant/i-directory.xml:
 	Lots of folder stuff...
-
 
 2001-02-26  J Shane Culpepper  <pepper@eazel.com>
 
@@ -8034,7 +8121,7 @@ Thu Feb 22 04:13:13 2001  George Lebl <jirka@5z.com>
 	* libnautilus-extensions/nautilus-program-chooser.c:
 	(repopulate_program_list): Select first item in list after sorting.
 
-2001-02-04  Ian McKellar,,,  <ian@eazel.com>
+2001-02-04  Ian McKellar  <ian@eazel.com>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>	
 

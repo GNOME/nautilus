@@ -31,7 +31,6 @@ icon_DATA =\
 	druid_header.png \
 	druid_header_stretch.png \
 	druid_sidebar.png \
-	eazel-logo.gif \
 	emblem-OK.svg \
 	emblem-broken-link.png \
 	emblem-certified.svg \
@@ -221,7 +220,6 @@ icon_DATA =\
 	loading-aa.png \
 	manual.png \
 	multi-ok.png \
-	nautilus-logo.png \
 	nautilus-mini-logo.png \
 	netscape.png \
 	not.png \

@@ -3267,6 +3267,9 @@ nautilus_directory_async_state_changed (NautilusDirectory *directory)
 	 * is not longer needed once the callbacks are satisfied.
 	 */
 
+	if (GTK_OBJECT_DESTROYED (directory)) {
+		return;
+	}
 	if (directory->details->in_async_service_loop) {
 		directory->details->state_changed = TRUE;
 		return;
