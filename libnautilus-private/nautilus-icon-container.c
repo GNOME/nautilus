@@ -2537,6 +2537,7 @@ start_stretching (NautilusIconContainer *container)
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
 	ArtPoint world_point;
+	GtkWidget *toplevel;
 
 	details = container->details;
 	icon = details->stretch_icon;
@@ -2568,6 +2569,12 @@ start_stretching (NautilusIconContainer *container)
 				 | GDK_BUTTON_RELEASE_MASK),
 				NULL,
 				GDK_CURRENT_TIME);
+
+	/* Ensure the window itself is focused.. */
+	toplevel = gtk_widget_get_toplevel (GTK_WIDGET (container));
+	if (toplevel != NULL && GTK_WIDGET_REALIZED (toplevel)) {
+		nautilus_gdk_window_focus (toplevel->window, GDK_CURRENT_TIME);
+	}
 
 	return TRUE;
 }

@@ -1,3 +1,14 @@
+2001-02-12  John Harper  <jsh@eazel.com>
+
+	reviewed by Michael Engber  <engber@eazel.com>
+
+	Fix bug 6383 (Esc-cancel from icon stretching doesn't work on
+	desktop):
+
+	* libnautilus-extensions/nautilus-icon-container.c
+	(start_stretching): call nautilus_gdk_window_focus on the
+	toplevel widget of the icon container
+
 2001-02-12  Robey Pointer  <robey@eazel.com>
 
 	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>
@@ -1028,7 +1039,6 @@
 	* components/mozilla/nautilus-mozilla-content-view.c:
 	* components/mozilla/nautilus-mozilla-content-view.h:
 
->>>>>>> 1.3690
 2001-02-08  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-gnome-extensions.c:
