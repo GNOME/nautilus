@@ -1,5 +1,17 @@
 2005-01-12  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-actions.h:
+	* src/file-manager/fm-directory-view.c:
+	(volume_or_drive_unmounted_callback),
+	(volume_or_drive_ejected_callback),
+	(action_unmount_volume_callback), (action_eject_volume_callback),
+	(real_update_menus_volumes):
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Allow eject on unmounted devices.
+	Patch from Magnus Damm <magnus.damm@gmail.com>
+
+2005-01-12  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-icon-view.c: (icon_view_handle_uri_list):
 	Don't user GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS, it doesn't mean
 	what you think, it means don't load if the app the desktop file

@@ -50,6 +50,7 @@
 #define FM_ACTION_CONNECT_TO_SERVER_LINK "Connect To Server Link"
 #define FM_ACTION_MOUNT_VOLUME "Mount Volume"
 #define FM_ACTION_UNMOUNT_VOLUME "Unmount Volume"
+#define FM_ACTION_EJECT_VOLUME "Eject Volume"
 #define FM_ACTION_SCRIPTS "Scripts"
 #define FM_ACTION_NEW_DOCUMENTS "New Documents"
 #define FM_ACTION_EMPTY_TRASH_CONDITIONAL "Empty Trash Conditional"

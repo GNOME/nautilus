@@ -5460,17 +5460,22 @@ volume_or_drive_unmounted_callback (gboolean succeeded,
 				    char *detailed_error,
 				    gpointer data)
 {
-	gboolean eject;
-
-	eject = GPOINTER_TO_INT (data);
 	if (!succeeded) {
-		if (eject) {
-			eel_show_error_dialog_with_details (error, NULL, 
-			                                    _("Eject Error"), detailed_error, NULL);
-		} else {
-			eel_show_error_dialog_with_details (error, NULL, 
-			                                    _("Unmount Error"), detailed_error, NULL);
-		}
+		eel_show_error_dialog_with_details (error, NULL, 
+		                                    _("Unmount Error"), detailed_error, NULL);
+	}
+}
+
+
+static void
+volume_or_drive_ejected_callback (gboolean succeeded,
+				    char *error,
+				    char *detailed_error,
+				    gpointer data)
+{
+	if (!succeeded) {
+		eel_show_error_dialog_with_details (error, NULL, 
+		                                    _("Eject Error"), detailed_error, NULL);
 	}
 }
 
@@ -5499,20 +5504,48 @@ action_unmount_volume_callback (GtkAction *action,
 	if (nautilus_file_has_volume (file)) {
 		volume = nautilus_file_get_volume (file);
 		if (volume != NULL) {
-			if (eject_for_type (gnome_vfs_volume_get_device_type (volume))) {
-				gnome_vfs_volume_eject (volume, volume_or_drive_unmounted_callback, GINT_TO_POINTER (TRUE));
-			} else {
-				gnome_vfs_volume_unmount (volume, volume_or_drive_unmounted_callback, GINT_TO_POINTER (FALSE));
-			}
+			gnome_vfs_volume_unmount (volume, volume_or_drive_unmounted_callback, NULL);
 		}
 	} else if (nautilus_file_has_drive (file)) {
 		drive = nautilus_file_get_drive (file);
 		if (drive != NULL) {
-			if (eject_for_type (gnome_vfs_drive_get_device_type (drive))) {
-				gnome_vfs_drive_eject (drive, volume_or_drive_unmounted_callback, GINT_TO_POINTER (TRUE));
-			} else {
-				gnome_vfs_drive_unmount (drive, volume_or_drive_unmounted_callback, GINT_TO_POINTER (FALSE));
-			}
+			gnome_vfs_drive_unmount (drive, volume_or_drive_unmounted_callback, NULL);
+		}
+	}
+	
+	nautilus_file_list_free (selection);
+}
+
+static void
+action_eject_volume_callback (GtkAction *action,
+				gpointer data)
+{
+	NautilusFile *file;
+	GList *selection;
+	GnomeVFSDrive *drive;
+	GnomeVFSVolume *volume;
+	FMDirectoryView *view;
+
+        view = FM_DIRECTORY_VIEW (data);
+	
+	selection = fm_directory_view_get_selection (view);
+
+	if (!eel_g_list_exactly_one_item (selection)) {
+		nautilus_file_list_free (selection);
+		return;
+	}
+
+	file = NAUTILUS_FILE (selection->data);
+	
+	if (nautilus_file_has_volume (file)) {
+		volume = nautilus_file_get_volume (file);
+		if (volume != NULL) {
+			gnome_vfs_volume_eject (volume, volume_or_drive_ejected_callback, NULL);
+		}
+	} else if (nautilus_file_has_drive (file)) {
+		drive = nautilus_file_get_drive (file);
+		if (drive != NULL) {
+			gnome_vfs_drive_eject (drive, volume_or_drive_ejected_callback, NULL);
 		}
 	}
 	
@@ -5808,6 +5841,10 @@ static GtkActionEntry directory_view_entries[] = {
     N_("_Unmount Volume"), NULL,                /* label, accelerator */
     N_("Unmount the selected volume"),                   /* tooltip */ 
     G_CALLBACK (action_unmount_volume_callback) },
+  { "Eject Volume", NULL,                  /* name, stock id */
+    N_("_Eject"), NULL,                /* label, accelerator */
+    N_("Eject the selected volume"),                   /* tooltip */ 
+    G_CALLBACK (action_eject_volume_callback) },
   { "OpenCloseParent", NULL,                  /* name, stock id */
     N_("Open File and Close window"), "<alt><shift>Down",                /* label, accelerator */
     NULL,                   /* tooltip */ 
@@ -5984,7 +6021,7 @@ real_update_menus_volumes (FMDirectoryView *view,
 	NautilusFile *file;
 	gboolean show_mount;
 	gboolean show_unmount;
-	gboolean unmount_is_eject;
+	gboolean show_eject;
 	gboolean show_connect;
 	GnomeVFSVolume *volume;
 	GnomeVFSDrive *drive;
@@ -5993,7 +6030,7 @@ real_update_menus_volumes (FMDirectoryView *view,
 
 	show_mount = FALSE;
 	show_unmount = FALSE;
-	unmount_is_eject = FALSE;
+	show_eject = FALSE;
 	show_connect = FALSE;
 
 	if (selection_count == 1) {
@@ -6003,12 +6040,12 @@ real_update_menus_volumes (FMDirectoryView *view,
 			show_unmount = TRUE;
 
 			volume = nautilus_file_get_volume (file);
-			unmount_is_eject = eject_for_type (gnome_vfs_volume_get_device_type (volume));
+			show_eject = eject_for_type (gnome_vfs_volume_get_device_type (volume));
 		} else if (nautilus_file_has_drive (file)) {
 			drive = nautilus_file_get_drive (file);
+			show_eject = eject_for_type (gnome_vfs_drive_get_device_type (drive));
 			if (gnome_vfs_drive_is_mounted (drive)) {
 				show_unmount = TRUE;
-				unmount_is_eject = eject_for_type (gnome_vfs_drive_get_device_type (drive));
 			} else {
 				show_mount = TRUE;
 			}
@@ -6028,6 +6065,12 @@ real_update_menus_volumes (FMDirectoryView *view,
 										      
 	}
 
+	/* We don't want both eject and unmount, since eject
+	   unmounts too */
+	if (show_eject) {
+		show_unmount = FALSE;
+	}
+
 	action = gtk_action_group_get_action (view->details->dir_action_group,
 					      FM_ACTION_CONNECT_TO_SERVER_LINK);
 	gtk_action_set_visible (action, show_connect);
@@ -6040,12 +6083,9 @@ real_update_menus_volumes (FMDirectoryView *view,
 					      FM_ACTION_UNMOUNT_VOLUME);
 	gtk_action_set_visible (action, show_unmount);
 	
-	if (show_unmount) {
-		g_object_set (action, "label", 
-			      unmount_is_eject? _("E_ject"):_("_Unmount Volume"),
-			      NULL);
-	}
-
+	action = gtk_action_group_get_action (view->details->dir_action_group,
+					      FM_ACTION_EJECT_VOLUME);
+	gtk_action_set_visible (action, show_eject);
 }
 
 static void
