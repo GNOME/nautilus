@@ -234,10 +234,8 @@ ellipsize_string_for_dialog (const char *str)
 	/* get a nice length to ellipsize to, based on the font */
 	font = get_label_font ();
 	maximum_width = gdk_string_width (font, "MMMMMMMMMMMMMMMMMMMMMM");
-	/* FIXME: John Sullivan says we should ellipsize both URIs and
-	 * file names in the middle, not the start.
-	 */
-	result = eel_string_ellipsize_start (str, font, maximum_width);
+
+	result = eel_string_ellipsize (str, font, maximum_width, EEL_ELLIPSIZE_MIDDLE);
 	gdk_font_unref (font);
 
 	return result;

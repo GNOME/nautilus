@@ -1076,7 +1076,7 @@ measure_width_callback (const char *string, void *context)
 static char *
 truncate_middle_callback (const char *string, int width, void *context)
 {
-	return eel_string_ellipsize_middle (string, (GdkFont *)context, width);
+	return eel_string_ellipsize (string, (GdkFont *)context, width, EEL_ELLIPSIZE_MIDDLE);
 }
 
 static char *
@@ -1114,7 +1114,7 @@ get_cell_text (GtkWidget *widget, int column_index, int cell_width,
 		break;
 	}
 		
-	return eel_string_ellipsize_end (cell_text, font, cell_width);
+	return eel_string_ellipsize (cell_text, font, cell_width, EEL_ELLIPSIZE_MIDDLE);
 }
 
 

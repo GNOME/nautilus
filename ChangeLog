@@ -1,3 +1,18 @@
+2001-04-09  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Michael Engber  <engber@eazel.com>
+
+	Fix 6024 properties window and file copy dialog should ellipsize
+		 paths in middle, not at start
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(ellipsize_string_for_dialog):
+	Use ellipsize_middle now that we support it.
+	
+	* src/file-manager/fm-list-view.c: (truncate_middle_callback),
+	(get_cell_text):
+	Use the new ellipsizing API.
+	
 2001-04-09  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-sidebar-functions.h:
