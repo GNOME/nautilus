@@ -29,6 +29,9 @@ struct NautilusFileDetails
 {
 	NautilusDirectory *directory;
 	GnomeVFSFileInfo *info;
+	gboolean got_directory_count;
+	gboolean directory_count_failed;
+	guint directory_count;
 	gboolean is_gone;
 };
 

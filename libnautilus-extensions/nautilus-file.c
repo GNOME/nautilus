@@ -61,9 +61,6 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-/* FIXME: This hack needs to die eventually. See comments with function */
-static int   get_directory_item_count_hack           (NautilusFile         *file,
-						      gboolean              ignore_invisible_items);
 static void  nautilus_file_initialize_class          (NautilusFileClass    *klass);
 static void  nautilus_file_initialize                (NautilusFile         *file);
 static void  destroy                                 (GtkObject            *object);
@@ -391,12 +388,18 @@ nautilus_file_matches_uri (NautilusFile *file, const char *uri_string)
 }
 
 static int
-nautilus_file_compare_by_size_with_directories (NautilusFile *file_1, NautilusFile *file_2)
+nautilus_file_compare_directories_by_size (NautilusFile *file_1, NautilusFile *file_2)
 {
-	gboolean is_directory_1;
-	gboolean is_directory_2;
-	int item_count_1;
-	int item_count_2;
+	/* Sort order:
+	 *   Directories with unkown # of items
+	 *   Directories with 0 items
+	 *   Directories with n items
+	 *   All files.
+	 * The files are sorted by size in a separate pass.
+	 */
+	gboolean is_directory_1, is_directory_2;
+	gboolean count_known_1, count_known_2;
+	guint item_count_1, item_count_2;
 
 	is_directory_1 = nautilus_file_is_directory (file_1);
 	is_directory_2 = nautilus_file_is_directory (file_2);
@@ -404,7 +407,6 @@ nautilus_file_compare_by_size_with_directories (NautilusFile *file_1, NautilusFi
 	if (is_directory_1 && !is_directory_2) {
 		return -1;
 	}
-
 	if (is_directory_2 && !is_directory_1) {
 		return +1;
 	}
@@ -414,19 +416,22 @@ nautilus_file_compare_by_size_with_directories (NautilusFile *file_1, NautilusFi
 	}
 
 	/* Both are directories, compare by item count. */
-	/* FIXME: get_directory_item_count_hack is slow, and calling
-	 * it for every pairwise comparison here is nasty. Need to
-	 * change this to (not-yet-existent) architecture where the
-	 * item count can be calculated once in a deferred way, and
-	 * then stored or cached.
-	 */
-	item_count_1 = get_directory_item_count_hack (file_1, FALSE);
-	item_count_2 = get_directory_item_count_hack (file_2, FALSE);
+
+	count_known_1 = nautilus_file_get_directory_item_count (file_1,
+								&item_count_1);
+	count_known_2 = nautilus_file_get_directory_item_count (file_2,
+								&item_count_2);
+
+	if (!count_known_1 && count_known_2) {
+		return -1;
+	}
+	if (count_known_1 && !count_known_2) {
+		return +1;
+	}
 
 	if (item_count_1 < item_count_2) {
 		return -1;
 	}
-
 	if (item_count_2 < item_count_1) {
 		return +1;
 	}
@@ -578,7 +583,7 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 		/* Compare directory sizes ourselves, then if necessary
 		 * use GnomeVFS to compare file sizes.
 		 */
-		compare = nautilus_file_compare_by_size_with_directories (file_1, file_2);
+		compare = nautilus_file_compare_directories_by_size (file_1, file_2);
 		if (compare != 0) {
 			return compare;
 		}
@@ -800,18 +805,25 @@ nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type
  * call this function on a file that is not a directory.
  * @ignore_invisible_items: TRUE if invisible items should not be
  * included in count.
+ * @count: Place to put count.
  * 
- * Returns: item count for this directory.
+ * Returns: TRUE if count is available.
  * 
  **/
-guint
+gboolean
 nautilus_file_get_directory_item_count (NautilusFile *file, 
-					gboolean ignore_invisible_items)
+					guint *count)
 {
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), 0);
-	g_return_val_if_fail (nautilus_file_is_directory (file), 0);
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+	g_return_val_if_fail (nautilus_file_is_directory (file), FALSE);
+	g_return_val_if_fail (count != NULL, FALSE);
 
-	return get_directory_item_count_hack (file, ignore_invisible_items);
+	if (!file->details->got_directory_count) {
+		return FALSE;
+	}
+
+	*count = file->details->directory_count;
+	return TRUE;
 }
 
 /**
@@ -952,56 +964,6 @@ nautilus_file_get_mime_type_as_string_attribute (NautilusFile *file)
 	return g_strdup ("unknown MIME type");
 }
 
-/* This #include is part of the following hack, and should be removed with it */
-#include <dirent.h>
-
-static int
-get_directory_item_count_hack (NautilusFile *file, gboolean ignore_invisible_items)
-{
- 	/* Code borrowed from Gnomad and hacked into here for now */
-
-	char * uri;
-	char * path;
-	DIR* directory;
-	int count;
-	struct dirent * entry;
-	
-	g_assert (nautilus_file_is_directory (file));
-	
-	uri = nautilus_file_get_uri (file);
-	if (nautilus_str_has_prefix (uri, "file://")) {
-		path = uri + 7;
-	} else {
-		path = uri;
-	}
-	
-	directory = opendir (path);
-	
-	g_free (uri);
-	
-	if (!directory) {
-		return 0;
-	}
-        
-	count = 0;
-	
-	while ((entry = readdir(directory)) != NULL) {
-		// Only count invisible items if requested.
-		if (!ignore_invisible_items || entry->d_name[0] != '.') {
-			count += 1;
-		}
-	}
-	
-	closedir(directory);
-	
-	/* This way of getting the count includes . and .., so we subtract those out */
-	if (!ignore_invisible_items) {
-		count -= 2;
-	}
-
-	return count;
-}
-
 /**
  * nautilus_file_get_size_as_string:
  * 
@@ -1016,26 +978,23 @@ get_directory_item_count_hack (NautilusFile *file, gboolean ignore_invisible_ite
 static char *
 nautilus_file_get_size_as_string (NautilusFile *file)
 {
+	guint item_count;
+	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
+	
 	if (nautilus_file_is_directory (file)) {
-		/* FIXME: Since computing the item count is slow, we
-		 * want to do it in a deferred way. However, that
-		 * architecture doesn't exist yet, so we're hacking
-		 * it in for now.
-		 */
-		int item_count;
-
-		item_count = get_directory_item_count_hack (file, FALSE);
+		if (!nautilus_file_get_directory_item_count (file, &item_count)) {
+			return g_strdup (_("--"));
+		}
 		if (item_count == 0) {
 			return g_strdup (_("0 items"));
-		} else if (item_count == 1) {
-			return g_strdup (_("1 item"));
-		} else {
-			return g_strdup_printf (_("%d items"), item_count);
 		}
+		if (item_count == 1) {
+			return g_strdup (_("1 item"));
+		}
+		return g_strdup_printf (_("%u items"), item_count);
 	}
-
+	
 	return gnome_vfs_file_size_to_string (file->details->info->size);
 }
 

@@ -34,8 +34,9 @@ libnautilus_extensionsinclude_HEADERS=			\
 	nautilus-bonobo-extensions.h		\
 	nautilus-bookmark.h			\
 	nautilus-debug.h			\
-	nautilus-directory.h			\
 	nautilus-directory-background.h		\
+	nautilus-directory.h			\
+	nautilus-file-attributes.h		\
 	nautilus-file-utilities.h		\
 	nautilus-file.h				\
 	nautilus-gdk-extensions.h		\
@@ -67,8 +68,8 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-debug.c			\
 	nautilus-default-file-icon.c		\
 	nautilus-default-file-icon.h		\
-	nautilus-directory.c			\
 	nautilus-directory-background.c		\
+	nautilus-directory.c			\
 	nautilus-file-utilities.c		\
 	nautilus-file.c				\
 	nautilus-gdk-extensions.c		\

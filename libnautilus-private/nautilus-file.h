@@ -72,11 +72,11 @@ void             nautilus_file_delete                    (NautilusFile         *
 
 /* Monitor the file. */
 void             nautilus_file_monitor_add               (NautilusFile         *file,
-							  gpointer              client,
+							  gconstpointer         client,
 							  GList                *attributes,
 							  GList                *metadata_keys);
 void             nautilus_file_monitor_remove            (NautilusFile         *file,
-							  gpointer              client);
+							  gconstpointer         client);
 
 /* Waiting for data that's read asynchronously.
  * This interface currently works only for metadata, but could be expanded
@@ -99,8 +99,8 @@ const char *     nautilus_file_get_mime_type             (NautilusFile         *
 gboolean         nautilus_file_is_symbolic_link          (NautilusFile         *file);
 gboolean         nautilus_file_is_executable             (NautilusFile         *file);
 gboolean         nautilus_file_is_directory              (NautilusFile         *file);
-guint            nautilus_file_get_directory_item_count  (NautilusFile         *file,
-							  gboolean              ignore_invisible_items);
+gboolean         nautilus_file_get_directory_item_count  (NautilusFile         *file,
+							  guint                *count);
 GList *          nautilus_file_get_keywords              (NautilusFile         *file);
 void             nautilus_file_set_keywords              (NautilusFile         *file,
 							  GList                *keywords);

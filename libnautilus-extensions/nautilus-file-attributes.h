@@ -1,8 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
 
-   nautilus-directory.c: Nautilus directory model.
+   nautilus-file-attributes.h: #defines and other file-attribute-related info
  
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 2000 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -22,19 +22,13 @@
    Author: Darin Adler <darin@eazel.com>
 */
 
-#include "nautilus-file.h"
-#include "nautilus-directory.h"
+#ifndef NAUTILUS_FILE_ATTRIBUTES_H
+#define NAUTILUS_FILE_ATTRIBUTES_H
 
-struct NautilusFileDetails
-{
-	NautilusDirectory *directory;
-	GnomeVFSFileInfo *info;
-	gboolean got_directory_count;
-	gboolean directory_count_failed;
-	guint directory_count;
-	gboolean is_gone;
-};
+/* Names for NautilusFile attributes. These are used when registering interest
+ * in changes to the attributes.
+ */
 
-NautilusFile *nautilus_file_new          (NautilusDirectory *directory,
-					  GnomeVFSFileInfo  *info);
-void          nautilus_file_emit_changed (NautilusFile      *file);
+#define NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT "directory item count"
+
+#endif /* NAUTILUS_FILE_ATTRIBUTES_H */

@@ -55,7 +55,7 @@ struct NautilusDirectoryDetails
 	guint write_metafile_idle_id;
 	MetafileWriteState *write_state;
 
-	/* These list are going to be pretty short.  If we think they
+	/* These lists are going to be pretty short.  If we think they
 	 * are going to get big, we can use hash tables instead.
 	 */
 	GList *metafile_callbacks;
@@ -67,6 +67,9 @@ struct NautilusDirectoryDetails
 	GnomeVFSDirectoryListPosition directory_load_list_last_handled;
 	GList *pending_file_info;
         guint dequeue_pending_idle_id;
+
+	GnomeVFSAsyncHandle *count_in_progress;
+	NautilusFile *count_file;
 };
 
 typedef struct {

@@ -45,6 +45,7 @@
 #include <libnautilus/nautilus-zoomable.h>
 
 #include <libnautilus-extensions/nautilus-alloc.h>
+#include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -474,7 +475,6 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 			    "zoom_in",
 			    zoomable_zoom_in_cb,
 			    directory_view);
-
 	gtk_signal_connect (GTK_OBJECT (directory_view->details->zoomable), 
 			    "zoom_out", 
 			    zoomable_zoom_out_cb,
@@ -554,9 +554,9 @@ display_selection_info (FMDirectoryView *view)
 {
 	GList *selection;
 	GnomeVFSFileSize non_folder_size;
-	guint non_folder_count;
-	guint folder_count;
-	guint folder_item_count;
+	guint non_folder_count, folder_count, folder_item_count;
+	gboolean folder_item_count_known;
+	guint item_count;
 	GList *p;
 	char *first_item_name;
 	char *non_folder_str;
@@ -568,6 +568,7 @@ display_selection_info (FMDirectoryView *view)
 
 	selection = fm_directory_view_get_selection (view);
 	
+	folder_item_count_known = TRUE;
 	folder_count = 0;
 	folder_item_count = 0;
 	non_folder_count = 0;
@@ -583,7 +584,11 @@ display_selection_info (FMDirectoryView *view)
 		file = p->data;
 		if (nautilus_file_is_directory (file)) {
 			folder_count++;
-			folder_item_count += nautilus_file_get_directory_item_count (file, FALSE);
+			if (nautilus_file_get_directory_item_count (file, &item_count)) {
+				folder_item_count += item_count;
+			} else {
+				folder_item_count_known = FALSE;
+			}
 		} else {
 			non_folder_count++;
 			non_folder_size += nautilus_file_get_size (file);
@@ -613,13 +618,14 @@ display_selection_info (FMDirectoryView *view)
 			folder_count_str = g_strdup_printf (_("%d directories selected"), folder_count);
 		}
 
-		if (folder_item_count == 0) {
-			folder_item_count_str = g_strdup (_("(containing 0 items)"));
-		}
-		else if (folder_item_count == 1) {
-			folder_item_count_str = g_strdup (_("(containing 1 item)"));
+		if (!folder_item_count_known) {
+			folder_item_count_str = g_strdup ("");
+		} else if (folder_item_count == 0) {
+			folder_item_count_str = g_strdup (_(" (containing 0 items)"));
+		} else if (folder_item_count == 1) {
+			folder_item_count_str = g_strdup (_(" (containing 1 item)"));
 		} else {
-			folder_item_count_str = g_strdup_printf (_("(containing %d items)"), folder_item_count);
+			folder_item_count_str = g_strdup_printf (_(" (containing %d items)"), folder_item_count);
 		}
 	}
 
@@ -658,11 +664,11 @@ display_selection_info (FMDirectoryView *view)
 	} else if (folder_count == 0) {
 		request.status_string = g_strdup (non_folder_str);
 	} else if (non_folder_count == 0) {
-		request.status_string = g_strdup_printf (_("%s %s"), 
+		request.status_string = g_strdup_printf (_("%s%s"), 
 							 folder_count_str, 
 							 folder_item_count_str);
 	} else {
-		request.status_string = g_strdup_printf (_("%s %s, %s"), 
+		request.status_string = g_strdup_printf (_("%s%s, %s"), 
 							 folder_count_str, 
 							 folder_item_count_str,
 							 non_folder_str);
@@ -775,20 +781,17 @@ stop_location_change_cb (NautilusViewFrame *view_frame,
 
 
 static void
-stop_load (FMDirectoryView *view, gboolean error)
+done_loading (FMDirectoryView *view)
 {
 	Nautilus_ProgressRequestInfo progress;
 	
 	if (!view->details->loading) {
-		g_assert (!error);
 		return;
 	}
 
-	nautilus_directory_file_monitor_remove (view->details->model, view);
-	
 	memset (&progress, 0, sizeof (progress));
 	progress.amount = 100.0;
-	progress.type = error ? Nautilus_PROGRESS_DONE_ERROR : Nautilus_PROGRESS_DONE_OK;
+	progress.type = Nautilus_PROGRESS_DONE_OK;
 	nautilus_view_frame_request_progress_change
 		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &progress);
 
@@ -840,7 +843,7 @@ display_pending_files (FMDirectoryView *view)
 
 	if (view->details->model != NULL
 	    && nautilus_directory_are_all_files_seen (view->details->model)) {
-		stop_load (view, FALSE);
+		done_loading (view);
 	}
 
 	/* FIXME: fix memory management here */
@@ -1958,6 +1961,7 @@ static void
 finish_loading_uri (FMDirectoryView *view)
 {
 	Nautilus_ProgressRequestInfo progress;
+	GList *attributes;
 
 	memset (&progress, 0, sizeof (progress));
 	progress.type = Nautilus_PROGRESS_UNDERWAY;
@@ -1971,9 +1975,14 @@ finish_loading_uri (FMDirectoryView *view)
 
 	schedule_timeout_display_of_pending_files (view);
 	view->details->loading = TRUE;
+
+	/* Start loading. */
+	attributes = g_list_prepend (NULL,
+				     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
 	nautilus_directory_file_monitor_add (view->details->model, view,
-					     NULL, NULL,
+					     attributes, NULL,
 					     files_added_cb, view);
+	g_list_free (attributes);
 
 	/* Attach a handler to get any further files that show up as we
 	 * load and sychronize. We won't miss any files because this
@@ -1981,7 +1990,7 @@ finish_loading_uri (FMDirectoryView *view)
 	 * connected before the next time it is emitted.
 	 */
     	view->details->files_added_handler_id = gtk_signal_connect
-		(GTK_OBJECT (view->details->model), 
+		(GTK_OBJECT (view->details->model),
 		 "files_added",
 		 GTK_SIGNAL_FUNC (files_added_cb),
 		 view);
@@ -2060,13 +2069,9 @@ disconnect_model_handlers (FMDirectoryView *view)
 {
 	disconnect_handler (view, &view->details->files_added_handler_id);
 	disconnect_handler (view, &view->details->files_changed_handler_id);
-
-	if (view->details->loading) {
-		g_assert (view->details->model != NULL);
+	if (view->details->model != NULL) {
 		nautilus_directory_file_monitor_remove (view->details->model, view);
-		view->details->loading = FALSE;
 	}
-
 	nautilus_directory_cancel_callback (view->details->model,
 					    metadata_ready_callback,
 					    view);
@@ -2115,7 +2120,10 @@ fm_directory_view_stop (FMDirectoryView *view)
 
 	unschedule_display_of_pending_files (view);
 	display_pending_files (view);
-	stop_load (view, FALSE);
+	if (view->details->model != NULL) {
+		nautilus_directory_file_monitor_remove (view->details->model, view);
+	}
+	done_loading (view);
 }
 
 /**

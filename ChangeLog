@@ -1,3 +1,35 @@
+2000-04-14  Darin Adler  <darin@eazel.com>
+
+	Finished task 174 (Use deferred calculation to compute directory
+	counts).
+
+	* libnautilus-extensions/Makefile.am: 
+	* libnautilus-extensions/nautilus-file-attributes.h: 
+	Added a header file for names of file attributes.
+
+	* libnautilus-extensions/nautilus-directory-private.h: 
+	* libnautilus-extensions/nautilus-directory.c: 
+	* libnautilus-extensions/nautilus-directory.h: 
+	* libnautilus-extensions/nautilus-file-private.h: 
+	* libnautilus-extensions/nautilus-file.c: 
+	* libnautilus-extensions/nautilus-file.h: 
+	Added background computation of the "directory item count"
+	attribute. This is serving as a test case for the API for
+	requesting additional information.
+
+	* src/file-manager/fm-directory-view.c:
+	(display_selection_info): Changed to use the new interface that
+	can sometimes return "I don't know" for the number of items in
+	a particular directory.
+	(stop_load), (done_loading), (display_pending_files),
+	(fm_directory_view_stop): Fixed a mistake in the old code where
+	we stopped monitoring once the files were discovered. We need to
+	keep monitoring.
+	(finish_loading_uri): Pass in an attribute that we want to monitor:
+	NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT.
+
+<Rebecka's ChangeLog entry goes here>
+
 Fri Apr 14 16:35:32 2000  Raph Levien  <raph@acm.org>
 
 	* librsvg/test-rsvg.c: Added a command line tester for rsvg, which
