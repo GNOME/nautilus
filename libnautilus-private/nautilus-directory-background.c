@@ -878,6 +878,10 @@ saved_settings_changed_callback (NautilusFile *file,
 	
 	g_free (color);
 	g_free (image);
+
+	if (nautilus_background_is_desktop (background)) {
+		nautilus_file_update_desktop_pixmaps (background);
+	}
 }
 
 /* handle the theme changing */
@@ -926,10 +930,6 @@ background_reset_callback (NautilusBackground *background,
 	}
 
 	saved_settings_changed_callback (file, background);
-
-	if (nautilus_background_is_desktop (background)) {
-		nautilus_file_update_desktop_pixmaps (background);
-	}
 }
 
 /* handle the background destroyed signal */

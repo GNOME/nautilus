@@ -2,6 +2,15 @@
 
 	reviewed by: John Harper
 
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(saved_settings_changed_callback), (background_reset_callback):
+	The root & desktop pixmaps are now updated in response to changes
+	in the gnome_config settings - bug 6033.
+
+2001-01-25  Michael Engber  <engber@eazel.com>
+
+	reviewed by: John Harper
+
 	* libnautilus-extensions/nautilus-background.c:
 	(nautilus_background_draw_pixbuf_free), (nautilus_background_draw):
 	Background are now always drawn with the aa code, ensuring
