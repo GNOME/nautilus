@@ -608,6 +608,16 @@ cell_renderer_edited (GtkCellRendererText *cell,
 	NautilusFile *file;
 	GtkTreeIter iter;
 	
+	/* Don't allow a rename with an empty string. Revert to original 
+	 * without notifying the user.
+	 */
+	if (new_text[0] == '\0') {
+		g_object_set (G_OBJECT (view->details->file_name_cell),
+			      "editable", FALSE,
+			      NULL);
+		return;
+	}
+	
 	path = gtk_tree_path_new_from_string (path_str);
 
 	gtk_tree_model_get_iter (GTK_TREE_MODEL (view->details->model),

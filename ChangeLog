@@ -1,3 +1,9 @@
+2003-10-13  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-list-view.c (cell_renderer_edited):
+	Don't rename files to "". Fixes #124420
+	Based on patch from mwehner@tfh-berlin.de.
+
 2003-10-11  Dave Camp  <dave@ximian.com>
 
 	* src/Makefile.am: Add nautilus-location-dialog.[ch] and
