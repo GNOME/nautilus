@@ -62,6 +62,7 @@ struct _NautilusRSSControlDetails {
 	NautilusPixbufLoadHandle *load_image_handle;
 	
 	int items_v_offset;
+	int prelight_index;
 	
 	char* title;
 	char* main_uri;
@@ -79,16 +80,19 @@ typedef struct {
 } RSSItemData;
 
 #define RSS_ITEM_HEIGHT 15
+#define MINIMUM_DRAW_SIZE 8
 
 static void nautilus_rss_control_initialize_class (NautilusRSSControlClass *klass);
 static void nautilus_rss_control_initialize (NautilusRSSControl *view);
 static void nautilus_rss_control_destroy (GtkObject *object);
 
 static void nautilus_rss_control_draw (GtkWidget *widget, GdkRectangle *box);
-static int	nautilus_rss_control_expose (GtkWidget *widget, GdkEventExpose *event);
+static int  nautilus_rss_control_expose (GtkWidget *widget, GdkEventExpose *event);
 static gboolean nautilus_rss_control_button_press_event (GtkWidget *widget, GdkEventButton *event);
-static void nautilus_rss_control_set_uri (NautilusRSSControl *rss_control, const char *uri);
+static gboolean nautilus_rss_control_motion_event (GtkWidget *widget, GdkEventMotion *event);
+static gboolean nautilus_rss_control_leave_event (GtkWidget *widget, GdkEventCrossing *event);
 
+static void nautilus_rss_control_set_uri (NautilusRSSControl *rss_control, const char *uri);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusRSSControl,
@@ -110,12 +114,14 @@ nautilus_rss_control_initialize_class (NautilusRSSControlClass *klass)
 	widget_class->draw = nautilus_rss_control_draw;
 	widget_class->expose_event = nautilus_rss_control_expose;
 	widget_class->button_press_event = nautilus_rss_control_button_press_event;
+	widget_class->motion_notify_event = nautilus_rss_control_motion_event;
+	widget_class->leave_notify_event = nautilus_rss_control_leave_event;
+
 }
 
 /* routines to handle setting and getting the configuration properties of the Bonobo control */
 
 enum {
-	PLACEHOLDER,
 	CONFIGURATION
 } MyArgs;
 
@@ -180,11 +186,15 @@ nautilus_rss_control_initialize (NautilusRSSControl *rss_control)
 
 	/* set up the font */
 	rss_control->details->font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL));
-
+	rss_control->details->prelight_index = -1;
+	
 	/* load the bullet used to display the items */
 	bullet_path = nautilus_pixmap_file ("bullet.png");
 	rss_control->details->bullet = gdk_pixbuf_new_from_file (bullet_path);
 	g_free (bullet_path);
+
+	/* receive mouse motion events */
+	gtk_widget_add_events (GTK_WIDGET (rss_control), GDK_POINTER_MOTION_MASK);
 
 	/* embed it into a frame */		
 	frame = gtk_frame_new (NULL);
@@ -197,19 +207,14 @@ nautilus_rss_control_initialize (NautilusRSSControl *rss_control)
 	
 	/* attach a property bag with the configure property */
 	property_bag = bonobo_property_bag_new (get_bonobo_properties, set_bonobo_properties, rss_control);
-	bonobo_control_set_properties (BONOBO_CONTROL(rss_control->details->control), property_bag);
-
-	bonobo_property_bag_add (property_bag, "configuration", 1, BONOBO_ARG_STRING, NULL,
-				 "RSS Configuration", 0);
+	bonobo_control_set_properties (BONOBO_CONTROL(rss_control->details->control),property_bag);
 	bonobo_object_unref (BONOBO_OBJECT (property_bag));
+
+	bonobo_property_bag_add (property_bag, "configuration", CONFIGURATION, BONOBO_ARG_STRING, NULL,
+				 "RSS Configuration", BONOBO_PROPERTY_WRITEABLE);
 			 	
 	/* show the view itself */	
 	gtk_widget_show (GTK_WIDGET (rss_control));
-
-	/* set up the rss file  (initially hardwired) */
-	/*
-	nautilus_rss_control_set_uri (rss_control, "http://www.slashdot.org/slashdot.rdf");
-	*/
 }
 
 static void
@@ -246,7 +251,7 @@ nautilus_rss_control_destroy (GtkObject *object)
 	if (rss_control->details->load_image_handle != NULL) {
 		nautilus_cancel_gdk_pixbuf_load (rss_control->details->load_image_handle);
 	}
-		
+			
 	if (rss_control->details->logo != NULL) {
 		gdk_pixbuf_unref (rss_control->details->logo);
 	}
@@ -269,7 +274,7 @@ nautilus_rss_control_destroy (GtkObject *object)
 }
 
 
-/* Component embedding support */
+/* get associated Bonobo control */
 BonoboObject *
 nautilus_rss_control_get_control (NautilusRSSControl *rss_control)
 {
@@ -453,6 +458,33 @@ nautilus_rss_control_set_uri (NautilusRSSControl *rss_control, const char *uri)
 	}
 }
 
+/* convenience routine to composite an image with the proper clipping */
+static void
+rss_control_pixbuf_composite (GdkPixbuf *source, GdkPixbuf *destination, int x_offset, int y_offset, int alpha)
+{
+	int source_width, source_height, dest_width, dest_height;
+	double float_x_offset, float_y_offset;
+	
+	source_width  = gdk_pixbuf_get_width (source);
+	source_height = gdk_pixbuf_get_height (source);
+	dest_width  = gdk_pixbuf_get_width (destination);
+	dest_height = gdk_pixbuf_get_height (destination);
+	
+	float_x_offset = x_offset;
+	float_y_offset = y_offset;
+	
+	/* clip to the destination size */
+	if ((x_offset + source_width) > dest_width) {
+		source_width = dest_width - x_offset;
+	}
+	if ((y_offset + source_height) > dest_height) {
+		source_height = dest_height - y_offset;
+	}
+	
+	gdk_pixbuf_composite (source, destination, x_offset, y_offset, source_width, source_height,
+					float_x_offset, float_y_offset, 1.0, 1.0, GDK_PIXBUF_ALPHA_BILEVEL, alpha);
+}
+
 
 
 /* draw the logo image */
@@ -470,8 +502,7 @@ draw_rss_logo_image (NautilusRSSControl *rss_control, GdkPixbuf *pixbuf, int off
 		logo_width = gdk_pixbuf_get_width (rss_control->details->logo);
 		logo_height = gdk_pixbuf_get_height (rss_control->details->logo);
 
-		gdk_pixbuf_composite (rss_control->details->logo, pixbuf, 2, v_offset, logo_width, logo_height,
-					2, v_offset, 1.0, 1.0, GDK_PIXBUF_ALPHA_BILEVEL, 255);
+		rss_control_pixbuf_composite (rss_control->details->logo, pixbuf, 2, v_offset, 255);
 		v_offset += logo_height + 2;
 	}
 
@@ -541,9 +572,11 @@ draw_rss_items (NautilusRSSControl *rss_control, GdkPixbuf *pixbuf, int v_offset
 {
 	GList *current_item;
 	RSSItemData *item_data;
-	int bullet_width, bullet_height;
+	int bullet_width, bullet_height, font_size;
+	int item_index, bullet_alpha;
 	int text_width, text_height, maximum_height;
-
+	guint32 text_color;
+	
 	maximum_height = GTK_WIDGET (rss_control)->allocation.height - 16;
 		
 	if (rss_control->details->bullet) {
@@ -555,13 +588,23 @@ draw_rss_items (NautilusRSSControl *rss_control, GdkPixbuf *pixbuf, int v_offset
 	}
 	
 	current_item = rss_control->details->items;
-
+	item_index = 0;
+	
 	while (current_item != NULL) {		
 		/* draw the text */
 
 		item_data = (RSSItemData*) current_item->data;		
+		if (item_index == rss_control->details->prelight_index) {
+			text_color = NAUTILUS_RGB_COLOR_BLUE;
+			bullet_alpha = 255;
+		} else {
+			text_color = NAUTILUS_RGB_COLOR_BLACK;
+			bullet_alpha = 160;
+		}
+		font_size = 12;
+		
 		nautilus_scalable_font_measure_text (rss_control->details->font, 
-					     12, 12,
+					     font_size, font_size,
 					     item_data->item_title, strlen (item_data->item_title),
 					     &text_width, 
 					     &text_height);
@@ -569,21 +612,21 @@ draw_rss_items (NautilusRSSControl *rss_control, GdkPixbuf *pixbuf, int v_offset
 		nautilus_scalable_font_draw_text (rss_control->details->font, pixbuf, 
 					  20, v_offset,
 					  NULL,
-					  12, 12,
+					  font_size, font_size,
 					  item_data->item_title, strlen (item_data->item_title),
-					  NAUTILUS_RGB_COLOR_BLACK,
+					  text_color,
 					  NAUTILUS_OPACITY_NONE);
-
+		
 		/* draw a blue underline to make it look like a link */
 		draw_blue_line (pixbuf, 20, v_offset + 11, text_width);
 		
 		/* draw the bullet */	
 		if (rss_control->details->bullet) {
-			gdk_pixbuf_composite (rss_control->details->bullet, pixbuf, 2, v_offset - 2, bullet_width, bullet_height,
-					2, v_offset - 2, 1.0, 1.0, GDK_PIXBUF_ALPHA_BILEVEL, 192);
+			rss_control_pixbuf_composite (rss_control->details->bullet, pixbuf, 2, v_offset - 2, bullet_alpha);
 		}
 		
 		v_offset += RSS_ITEM_HEIGHT;
+		item_index += 1;
 		current_item = current_item->next;
 		if (v_offset > maximum_height) {
 			break;
@@ -605,6 +648,11 @@ nautilus_rss_control_draw (GtkWidget *widget, GdkRectangle *box)
 	/* allocate a pixbuf to draw into */
 	width = widget->allocation.width;
 	height = widget->allocation.height;
+	
+	/* don't draw when too small, like during size negotiation */
+	if (width < MINIMUM_DRAW_SIZE || height < MINIMUM_DRAW_SIZE) {
+		return;
+	}
 	
 	temp_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, width, height);
 	nautilus_gdk_pixbuf_fill_rectangle_with_color (temp_pixbuf, NULL, 0xFFEFEFEF);
@@ -648,6 +696,50 @@ nautilus_rss_control_expose (GtkWidget *widget, GdkEventExpose *event)
 
 	nautilus_rss_control_draw (widget, &box);
 	return FALSE;
+}
+
+/* maintain the prelight state, redrawing if necessary */
+
+static void
+nautilus_rss_control_set_prelight_index (NautilusRSSControl *rss_control, int prelight_state)
+{
+	if (rss_control->details->prelight_index != prelight_state) {
+		rss_control->details->prelight_index = prelight_state;
+		gtk_widget_queue_draw (GTK_WIDGET (rss_control));	
+	}
+}
+
+/* handle mouse motion events by maintaining the prelight state */
+static gboolean
+nautilus_rss_control_motion_event (GtkWidget *widget, GdkEventMotion *event)
+{
+	int x, y;
+	int which_item, item_count;
+	NautilusRSSControl *rss_control;
+	
+	rss_control = NAUTILUS_RSS_CONTROL (widget);
+
+	gtk_widget_get_pointer (widget, &x, &y);
+	which_item = (y - (widget->allocation.y + rss_control->details->items_v_offset)) / RSS_ITEM_HEIGHT;
+	item_count = g_list_length (rss_control->details->items);
+	
+	if (which_item < 0 || which_item >= item_count) {
+		which_item = -1;
+	}
+	nautilus_rss_control_set_prelight_index (rss_control, which_item);	
+	return TRUE;
+}
+
+/* handle leave events by cancelling any prelighting */
+static gboolean
+nautilus_rss_control_leave_event (GtkWidget *widget, GdkEventCrossing *event)
+{
+	NautilusRSSControl *rss_control;
+	
+	rss_control = NAUTILUS_RSS_CONTROL (widget);
+	nautilus_rss_control_set_prelight_index (rss_control, -1);	
+
+	return TRUE;
 }
 
 /* handle button press events */

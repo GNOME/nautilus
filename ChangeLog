@@ -1,3 +1,22 @@
+2001-01-04  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/rss-control/nautilus-rss-control.c:
+	(nautilus_rss_control_initialize_class),
+	(nautilus_rss_control_initialize), (nautilus_rss_control_destroy),
+	(rss_control_pixbuf_composite), (draw_rss_logo_image),
+	(draw_rss_items), (nautilus_rss_control_draw),
+	(nautilus_rss_control_expose),
+	(nautilus_rss_control_set_prelight_index),
+	(nautilus_rss_control_motion_event),
+	(nautilus_rss_control_leave_event):
+	
+	fixed problem with critical errors in gdk_pixbuf by clipping to
+	the destination pixbuf.
+	
+	added prelighting to the rss items by tracking mouse motion events
+	to maintain a prelight index, which is used to draw an item
+	in a different color.
+	
 2001-01-03  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/rss-control/main.c: (main):
