@@ -1173,6 +1173,22 @@ add_new_color (NautilusPropertyBrowser *property_browser)
 	}
 }
 
+/* utility to make sure the passed-in keyword only contains alphanumeric characters */
+static gboolean
+emblem_keyword_valid (const char *keyword)
+{
+	int index, keyword_length;
+	
+	keyword_length = strlen (keyword);
+	for (index = 0; index < keyword_length; index++) {
+		if (!isalnum (keyword[index]) && !isspace (keyword[index])) {
+			return FALSE;
+		}
+	}
+	
+	return TRUE;
+}
+
 
 /* here's where we handle clicks in the emblem dialog buttons */
 static void
@@ -1190,6 +1206,10 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 		if (new_keyword == NULL || strlen (new_keyword) == 0) {
 			nautilus_error_dialog (_("Sorry, but you must specify a keyword for the new emblem."), 
 						_("Couldn't install emblem"), GTK_WINDOW (property_browser));
+		} else if (!emblem_keyword_valid (new_keyword)) {
+			nautilus_error_dialog (_("Sorry, but emblem keywords can only contain letters and numbers."), 
+						_("Couldn't install emblem"), GTK_WINDOW (property_browser));
+		
 		} else {		
 			user_directory = nautilus_get_user_directory ();
 

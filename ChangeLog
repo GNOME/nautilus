@@ -1,5 +1,14 @@
 2000-11-07  Andy Hertzfeld  <andy@eazel.com>
 
+	* src/nautilus-property-browser.c: (emblem_keyword_valid),
+	(emblem_dialog_clicked):
+	fixed bugs 4168 and 4171, problems occur when slash and backslash
+	are included in emblem names, by only allowing alphanumeric
+	characters in emblem names and displaying an error dialog if
+	that's not so.
+	
+2000-11-07  Andy Hertzfeld  <andy@eazel.com>
+
 	* icons/villanova/villanova.xml:
 	fixed the villanova theme to use the default document icons
 	instead of the ones from the eazel theme, now that the eazel
