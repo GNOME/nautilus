@@ -51,7 +51,7 @@ struct NautilusDragWindowDetails {
  * event. This seems to be large enough to work, but small enough to be
  * unnoticeable to the user.
  */
-#define WINDOW_FOCUS_TIMEOUT 500
+#define WINDOW_FOCUS_TIMEOUT 50
 
 /* Key used to store a NautilusDragWindowDetails structure in each
  * registered window's object data hash
