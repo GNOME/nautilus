@@ -1,3 +1,13 @@
+2000-05-22  John Sullivan  <sullivan@eazel.com>
+
+	Put up a "Nautilus is still flaky" dialog at launch so
+	people who obtain Nautilus some random way won't expect
+	too much.
+
+	* src/ntl-app.c: (display_prototype_caveat),
+	(nautilus_app_startup): Put up simple text-only modal
+	dialog at launch.
+
 2000-05-22  Andy Hertzfeld  <andy@eazel.com>
 
 	first, incomplete attempt to use the anti-aliased canvas.

@@ -31,6 +31,7 @@
 #include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-list-view.h"
 #include <libgnomevfs/gnome-vfs-init.h>
+#include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus/nautilus-undo-manager.h>
 
@@ -274,15 +275,36 @@ nautilus_app_destroy (GtkObject *object)
 	GTK_OBJECT_CLASS(app_parent_class)->destroy(object);
 }
 
+static void
+display_prototype_caveat ()
+{
+	/* Inform the user that Nautilus has a long way to go
+	 * before they should be expecting it to work well.
+	 */
+	nautilus_simple_dialog (
+		NULL,
+		_("Thank you for trying Nautilus!"
+		  "\n\nIt is still under development, and many features "
+		  "are not yet implemented or have some degree of instability. "
+		  "Use it at your own risk."
+		  "\n\nFor more information, visit http://nautilus.eazel.com."),
+		 _("Nautilus: caveat"),
+		 GNOME_STOCK_BUTTON_OK,
+		 NULL);
+}
+
 void
 nautilus_app_startup(NautilusApp *app, const char *initial_url)
 {
 	NautilusWindow *mainwin;
 
+	/* Put up (modal) caveat. */
+	display_prototype_caveat ();	
+
   	/* Set default configuration */
   	mainwin = nautilus_app_create_window (app);
   	bonobo_activate ();
-  	nautilus_window_set_initial_state (mainwin, initial_url);  	
+  	nautilus_window_set_initial_state (mainwin, initial_url);
 }
 
 static void
