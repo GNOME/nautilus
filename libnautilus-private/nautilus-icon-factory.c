@@ -33,6 +33,7 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <gnome.h>
+#include <png.h>
 
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
@@ -179,8 +180,8 @@ static GdkPixbuf *           get_image_from_cache                   (NautilusSca
 								     guint                     size_in_pixels,
 								     gboolean                  picky,
 								     gboolean                  custom);
-
-gint nautilus_icon_factory_make_thumbnails(gpointer data);
+static gboolean check_for_thumbnails(NautilusIconFactory *factory);
+static gint nautilus_icon_factory_make_thumbnails(gpointer data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconFactory, nautilus_icon_factory, GTK_TYPE_OBJECT)
 
@@ -673,7 +674,8 @@ make_thumbnail_path(const gchar *image_uri, gboolean directory_only)
 }
 
 /* routine that takes a uri of a large image file and returns the uri of its corresponding thumbnail.
-   If no thumbnail is available, put the image on the thumbnail queue so one is eventually made */
+   If no thumbnail is available, put the image on the thumbnail queue so one is eventually made.
+   FIXME: thumbnails are always png images, so append the png prefix if it's not already there */
    
 static gchar *
 nautilus_icon_factory_get_thumbnail_uri(NautilusFile *file, NautilusIconsController *controller)
@@ -1164,9 +1166,153 @@ nautilus_scalable_icon_list_free (GList *icon_list)
 	g_list_free (icon_list);
 }
 
+/* utility routine for saving a pixbuf to a png file.  This was adapted from Iain Holmes' code in gnome-iconedit, and probably
+   should be in a utility library, possibly in gdk-pixbuf itself */
+    
+static gboolean
+save_pixbuf_to_file(GdkPixbuf *pixbuf, gchar *filename)
+{
+	FILE *handle;
+  	gchar *buffer;
+	gboolean has_alpha;
+	gint width, height, depth, rowstride;
+  	guchar *pixels;
+  	png_structp png_ptr;
+  	png_infop info_ptr;
+  	png_text text[2];
+  	int i;
+
+	g_return_val_if_fail (pixbuf != NULL, FALSE);
+	g_return_val_if_fail (filename != NULL, FALSE);
+	g_return_val_if_fail (filename[0] != '\0', FALSE);
+
+        handle = fopen (filename, "wb");
+        if (handle == NULL)
+        	return FALSE;
+
+	png_ptr = png_create_write_struct (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+	if (png_ptr == NULL)
+	    return FALSE;
+
+	info_ptr = png_create_info_struct (png_ptr);
+	if (info_ptr == NULL) {
+		png_destroy_write_struct (&png_ptr, (png_infopp)NULL);
+	    	return FALSE;
+	}
+
+	if (setjmp (png_ptr->jmpbuf)) {
+	    png_destroy_write_struct (&png_ptr, &info_ptr);
+	    return FALSE;
+	}
+
+	png_init_io (png_ptr, handle);
+
+        has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
+	width = gdk_pixbuf_get_width (pixbuf);
+	height = gdk_pixbuf_get_height (pixbuf);
+	depth = gdk_pixbuf_get_bits_per_sample (pixbuf);
+	pixels = gdk_pixbuf_get_pixels (pixbuf);
+	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+
+	png_set_IHDR (png_ptr, info_ptr, width, height,
+			depth, PNG_COLOR_TYPE_RGB_ALPHA,
+			PNG_INTERLACE_NONE,
+			PNG_COMPRESSION_TYPE_DEFAULT,
+			PNG_FILTER_TYPE_DEFAULT);
+
+	/* Some text to go with the png image */
+	text[0].key = "Title";
+	text[0].text = filename;
+	text[0].compression = PNG_TEXT_COMPRESSION_NONE;
+	text[1].key = "Software";
+	text[1].text = "Nautilus Thumbnail";
+	text[1].compression = PNG_TEXT_COMPRESSION_NONE;
+	png_set_text (png_ptr, info_ptr, text, 2);
+
+	/* Write header data */
+	png_write_info (png_ptr, info_ptr);
+
+	/* if there is no alpha in the data, allocate buffer to expand into */
+	if (!has_alpha)
+		buffer = g_malloc(4 * width);
+	
+	/* pump the raster data into libpng, one scan line at a time */	
+	for (i = 0; i < height; i++)
+	  {
+	    if (has_alpha) {
+	    	png_bytep row_pointer = pixels;
+	    	png_write_row (png_ptr, row_pointer);
+	    } else {
+	    	/* expand RGB to RGBA using an opaque alpha value */
+		gint x;
+		gchar *buffer_ptr = buffer;
+		gchar *source_ptr = pixels;
+		for (x = 0; x < width; x++)
+		  {
+		    *buffer_ptr++ = *source_ptr++;
+		    *buffer_ptr++ = *source_ptr++;
+		    *buffer_ptr++ = *source_ptr++;
+		    *buffer_ptr++ = 255;
+		  }
+	    	png_write_row (png_ptr, (png_bytep) buffer);		
+	    }
+	    pixels += rowstride;
+	  }
+
+	png_write_end (png_ptr, info_ptr);
+	png_destroy_write_struct (&png_ptr, &info_ptr);
+
+	if (!has_alpha)
+		g_free(buffer);
+		
+	fclose(handle);
+	return TRUE;
+}
+
+/* check_for_thumbnails is a utility that checks to see if any of the thumbnails in the pending
+   list have been created yet.  If it finds one, it removes the elements from the queue and
+   returns true, otherwise it returns false */
+   
+static gboolean 
+check_for_thumbnails(NautilusIconFactory *factory)
+{
+	gchar *current_thumbnail;
+	NautilusThumbnailInfo *info;
+	GList *stop_element;
+	GList *next_thumbnail = factory->thumbnails;		
+	
+	while (next_thumbnail != NULL)
+	  {
+	    info = (NautilusThumbnailInfo*) next_thumbnail->data;
+	    current_thumbnail = make_thumbnail_path(info->thumbnail_uri, FALSE);
+	    if (vfs_file_exists(current_thumbnail)) {
+	    	/* we found one, so update the icon and remove all of the elements up to and including
+		   this one from the pending list. */
+		g_free(current_thumbnail);
+		if (info->controller)
+			nautilus_icons_controller_update_icon(NAUTILUS_ICONS_CONTROLLER(info->controller), info->thumbnail_uri);
+	        		
+		stop_element = next_thumbnail->next;
+		while (factory->thumbnails != stop_element)
+		  {
+		    info = (NautilusThumbnailInfo*) factory->thumbnails->data;
+		    g_free(info->thumbnail_uri);
+		    g_free(info);
+		    factory->thumbnails = g_list_remove_link(factory->thumbnails, factory->thumbnails);
+		  } 
+		return TRUE;
+	    }
+	    
+	    g_free(current_thumbnail);
+	    next_thumbnail = next_thumbnail->next;
+	  }
+
+	return FALSE;
+}
+
 /* make_thumbnails is invoked periodically as a timer task to launch a task to make thumbnails */
 
-gint
+static gint
 nautilus_icon_factory_make_thumbnails(gpointer data)
 {
 	pid_t thumbnail_pid;
@@ -1187,34 +1333,44 @@ nautilus_icon_factory_make_thumbnails(gpointer data)
 	/* see which state we're in.  If a thumbnail isn't in progress, start one up.  Otherwise,
 	   check if the pending one is completed.  */	
 	if (factory->thumbnail_in_progress) {
-		if (vfs_file_exists(factory->new_thumbnail_path)) {
-			/* update the icon if a controller is available */
-			if (info->controller)
-				nautilus_icons_controller_update_icon(NAUTILUS_ICONS_CONTROLLER(info->controller), info->thumbnail_uri);
-			
-			/* done making the thumbnail, so dispose of the list element */
-			g_free(info->thumbnail_uri);
-			g_free(info);
-			factory->thumbnails = g_list_remove_link(factory->thumbnails, factory->thumbnails);
+		if (check_for_thumbnails(factory))
 			factory->thumbnail_in_progress = FALSE;
-		}
 	} 
 	else {
-			/* start up a task to make the thumbnail corresponding to the queue element. */
+		/* start up a task to make the thumbnail corresponding to the queue element. */
 			
-			/* First, compute the path name of the target thumbnail */
-			if (factory->new_thumbnail_path != NULL)
-				g_free(factory->new_thumbnail_path);
-			factory->new_thumbnail_path = make_thumbnail_path(info->thumbnail_uri, FALSE);
-			
-			/* fork a task to make the thumbnail. */
-			if (!(thumbnail_pid = fork())) {
-				gchar *temp_str = g_strdup_printf("convert -geometry 96x96 \"%s\" png:\"%s\"",
-				(gchar*) 				info->thumbnail_uri + 7, factory->new_thumbnail_path + 7);
-				system(temp_str);
-				g_free(temp_str);
-				_exit(0);
+		/* First, compute the path name of the target thumbnail */
+		if (factory->new_thumbnail_path != NULL)
+			g_free(factory->new_thumbnail_path);
+		factory->new_thumbnail_path = make_thumbnail_path(info->thumbnail_uri, FALSE);
+
+		/* fork a task to make the thumbnail, using gdk-pixbuf to do the scaling */
+		if (!(thumbnail_pid = fork())) {
+			GdkPixbuf* full_size_image = gdk_pixbuf_new_from_file (info->thumbnail_uri + 7);
+			if (full_size_image) {
+				GdkPixbuf *scaled_image;
+				gint scaled_width, scaled_height;
+				gint full_width = gdk_pixbuf_get_width (full_size_image);
+				gint full_height = gdk_pixbuf_get_height (full_size_image);
+					
+				if (full_width > full_height) {
+					scaled_width = 96;
+						scaled_height = full_height * 96 / full_width;
+				} else {
+					scaled_height = 96;
+					scaled_width = full_width * 96 / full_height;
+					
+				}
+
+				scaled_image = gdk_pixbuf_scale_simple(full_size_image, scaled_width, scaled_height, ART_FILTER_BILINEAR);
+					
+				gdk_pixbuf_unref(full_size_image);
+				if (!save_pixbuf_to_file(scaled_image, factory->new_thumbnail_path + 7))
+					g_warning("error saving thumbnail %s", factory->new_thumbnail_path + 7);	
+				gdk_pixbuf_unref(scaled_image);
 			}
+			_exit(0);
+		}
 			factory->thumbnail_in_progress = TRUE;
 	}
 	

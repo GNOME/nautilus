@@ -1,3 +1,11 @@
+2000-03-02  Andy Hertzfeld <andy@eazel.com>
+
+	* libnautilus/nautilus-icon-factory.c:
+	changed thumbnailing to use gdk-pixbuf to make the thumbnails instead
+	of ImageMagick.  Added code to save a gdk-pixbuf as a png that
+	was written by Iain Holmes for gnome-iconedit, but had to fix it
+	to work in the case where there's no alpha channel.
+	
 2000-03-02  Elliot Lee  <sopwith@redhat.com>
 
 	* components/help/hyperbola-filefmt.c: Use 'help' URI scheme instead of 'ghelp'.
