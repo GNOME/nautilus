@@ -1,3 +1,17 @@
+2000-12-23  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Pavel Cisler<pavel@eazel.com>
+
+	Fixed bug 4158, dropping a file onto gnome-terminal
+	doesn't insert a path name.
+	
+	* libnautilus-extensions/nautilus-drag.c: (add_one_path_list),
+	(nautilus_drag_drag_data_get):
+	Return a list a text paths.
+	
+	* libnautilus-extensions/nautilus-drag.h:
+	Add new type and data type for "text/uri"
+	
 2000-12-22  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Gene Z. Ragan <gzr@eazel.com>

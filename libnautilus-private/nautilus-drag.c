@@ -355,6 +355,36 @@ add_one_uri_list (const char *uri, int x, int y, int w, int h,
 	g_string_append (result, "\r\n");
 }
 
+/* Encode a "text/path" selection.  */
+static void
+add_one_path_list (const char *uri, int x, int y, int w, int h, 
+	gpointer data)
+{
+	GString *result = (GString *)data;
+	const char *path, *scheme;
+	GnomeVFSURI *vfs_uri;
+	
+	vfs_uri = gnome_vfs_uri_new (uri);
+	if (vfs_uri == NULL) {
+		return;
+	}
+	
+	/* Only accept the file scheme */
+	scheme = gnome_vfs_uri_get_scheme (vfs_uri);
+	if (strncmp (scheme, "file", strlen ("file") != 0)) {
+		gnome_vfs_uri_unref (vfs_uri);
+		return;
+	}
+	
+	path = gnome_vfs_uri_get_path (vfs_uri);
+	
+	g_string_append (result, path);
+	g_string_append (result, " ");
+	
+	gnome_vfs_uri_unref (vfs_uri);
+}
+
+
 /* Common function for drag_data_get_callback calls.
  * Returns FALSE if it doesn't handle drag data
  */
@@ -369,22 +399,24 @@ nautilus_drag_drag_data_get (GtkWidget *widget,
 {
 	GString *result;
 
-	if (info != NAUTILUS_ICON_DND_GNOME_ICON_LIST && info != NAUTILUS_ICON_DND_URI_LIST) {
-		/* don't know how to handle */
-		return FALSE;
-	}
-	
-	result = g_string_new (NULL);
-	
 	switch (info) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+		result = g_string_new (NULL);
 		each_selected_item_iterator (add_one_gnome_icon_list, container_context, result);
 		break;
+		
 	case NAUTILUS_ICON_DND_URI_LIST:
+		result = g_string_new (NULL);
 		each_selected_item_iterator (add_one_uri_list, container_context, result);
 		break;
+		
+	case NAUTILUS_ICON_DND_TEXT:
+		result = g_string_new (NULL);
+		each_selected_item_iterator (add_one_path_list, container_context, result);
+		break;
+		
 	default:
-		g_assert_not_reached ();
+		return FALSE;
 	}
 	
 	gtk_selection_data_set (selection_data,
