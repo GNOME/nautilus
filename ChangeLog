@@ -1,3 +1,26 @@
+2000-08-15  Mathieu Lacage  <mathieu@eazel.com>
+
+	Implements core of task 1761 
+	
+	* libnautilus-extensions/Makefile.am: add my new files 
+	to the build.
+	* libnautilus-extensions/nautilus-search-uri.c:
+	(strip_uri_begenning), (free_tokenized_uri), (tokenize_uri),
+	(get_item_number), (get_translated_criterion),
+	(get_first_criterion_prefix), (get_nth_criterion_prefix),
+	(get_nth_criterion_suffix), (get_first_criterion_suffix),
+	(parse_uri), (nautilus_search_uri_to_human): add file.
+	* libnautilus-extensions/nautilus-search-uri.h: add file.
+	* po/POTFILES.in: add my files there.
+	* src/file-manager/fm-search-list-view.c: (load_location_callback):
+	a space.
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_initialize),
+	(attach_criterion_to_search_bar),
+	(unattach_criterion_from_search_bar):
+	fix multiple bugs: the size text entry would not be removed by 
+	the "fewer options" button. Changed a few "pressed" to "clicked".
+
 2000-08-14  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:
@@ -97,6 +120,7 @@
 	(create_install_page), (create_finish_page), (create_window):
 	Revamped large parts of the ui, much prettier now.
 
+>>>>>>> 1.1394
 2000-08-14  Pavel Cisler  <pavel@eazel.com>
 
 	* src/file-manager/fm-desktop-icon-view.c:
@@ -449,6 +473,7 @@
 	(nautilus_sidebar_tabs_size_allocate):
 	removed unnecessary override of size_request
 	
+>>>>>>> 1.1392
 2000-08-12  Raph Levien  <raph@acm.org>
 
 	* librsvg/rsvg-ft.c: Got glyph cache working. Eviction when

@@ -183,7 +183,7 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 			    1);
 
 	gtk_container_add (GTK_CONTAINER (bar->details->find_them), find_them_box);
-	gtk_signal_connect_object (GTK_OBJECT (bar->details->find_them), "pressed",
+	gtk_signal_connect_object (GTK_OBJECT (bar->details->find_them), "clicked",
 				   nautilus_navigation_bar_location_changed,
 				   GTK_OBJECT (bar));
 
@@ -312,9 +312,9 @@ attach_criterion_to_search_bar (NautilusComplexSearchBar *bar,
 						   2, 3, row - 1, row);
 		}
 		else {
-		gtk_table_attach_defaults (bar->details->table,
-					   GTK_WIDGET (criterion->details->value_entry),
-					   2, 3, row - 1, row);
+			gtk_table_attach_defaults (bar->details->table,
+						   GTK_WIDGET (criterion->details->value_entry),
+						   2, 3, row - 1, row);
 		}
 		/* We want to track whether the entry text is empty or not. */
 		gtk_signal_connect_object (GTK_OBJECT (criterion->details->value_entry),
@@ -342,7 +342,8 @@ unattach_criterion_from_search_bar (NautilusComplexSearchBar *bar,
 			      GTK_WIDGET (criterion->details->relation_menu));
 	g_assert (criterion->details->use_value_entry + 
 		  criterion->details->use_value_menu == 1);
-	if (criterion->details->use_value_entry) {
+	if (criterion->details->use_value_entry 
+	    && !criterion->details->use_value_suffix) {
 		gtk_container_remove (GTK_CONTAINER (bar->details->table),
 				      GTK_WIDGET (criterion->details->value_entry));
 	}
@@ -350,6 +351,10 @@ unattach_criterion_from_search_bar (NautilusComplexSearchBar *bar,
 		gtk_container_remove (GTK_CONTAINER (bar->details->table),
 				      GTK_WIDGET (criterion->details->value_menu));
 	}
+	if (criterion->details->use_value_suffix) {
+		gtk_container_remove (GTK_CONTAINER (bar->details->table),
+				      GTK_WIDGET (criterion->details->value_suffix)->parent);
+	}	
 	gtk_table_resize (bar->details->table, 
 			  g_slist_length (bar->details->search_criteria) - 1, 
 			  3);

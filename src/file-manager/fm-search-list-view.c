@@ -34,6 +34,7 @@
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-search-bar-criterion.h>
+#include <libnautilus-extensions/nautilus-search-uri.h>
 #include <libnautilus-extensions/nautilus-string.h>
 
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -81,7 +82,7 @@ load_location_callback (NautilusView *nautilus_view, char *location)
 {
 	char *human_string;
 	
-	human_string = nautilus_search_bar_criterion_human_from_uri (location);
+	human_string = nautilus_search_uri_to_human (location);
 
 	nautilus_view_set_title (nautilus_view, human_string);
 
