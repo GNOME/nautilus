@@ -209,23 +209,6 @@ AC_SUBST(XML_LIBS)
 AC_SUBST(XML_CFLAGS)
 
 dnl ====================================
-dnl = begin gnet checks
-dnl ====================================
-
-AC_PATH_PROG(GNET_CONFIG,gnet-config,no)
-if test x$GNET_CONFIG = xno; then
-  AC_MSG_ERROR(Could not find gnet libraries.)
-fi
-GNET_LIBS=`$GNET_CONFIG --libs`
-GNET_CFLAGS=`$GNET_CONFIG --cflags`
-AC_SUBST(GNET_LIBS)
-AC_SUBST(GNET_CFLAGS)
-
-dnl ====================================
-dnl = end gnet checks
-dnl ====================================
-
-dnl ====================================
 dnl = begin gnome-http checks
 dnl ====================================
 

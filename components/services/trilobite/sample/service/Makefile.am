@@ -11,7 +11,6 @@ INCLUDES = \
 	-I$(top_builddir) 	\
 	-I$(top_srcdir)/components/services/trilobite \
 	-I../server/		\
-	$(GNET_CFLAGS) 		\
 	$(GCONF_CFLAGS) 	\
 	$(GNOME_CFLAGS) 	\
 	$(GNOME_INCLUDEDIR) 	\

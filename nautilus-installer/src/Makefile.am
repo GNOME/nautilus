@@ -8,7 +8,6 @@ INCLUDES = \
 	-I/usr/include/rpm					\
 	$(GNOMEUI_CFLAGS)					\
 	$(XML_CFLAGS)						\
-	$(GNET_CFLAGS)						\
 	$(GHTTP_CFLAGS)						\
 	$(GNOME_INCLUDEDIR)					\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 		\

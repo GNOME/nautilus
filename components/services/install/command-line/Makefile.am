@@ -16,7 +16,6 @@ INCLUDES = \
 	$(GNOME_CFLAGS)						\
 	$(GCONF_CFLAGS)						\
 	$(XML_CFLAGS)						\
-	$(GNET_CFLAGS)						\
 	$(GHTTP_CFLAGS)						\
 	$(WERROR)						\
 	$(NULL)
@@ -31,7 +30,6 @@ eazel_alt_install_LDADD =                                                     \
         $(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(GNOME_LIBS)                                                     \
 	$(GCONF_LIBS)                                                     \
-	$(GNET_LIBS)                                                      \
 	$(GHTTP_LIBS)                                                     \
 	$(RPM_LIBS)                                                       \
         $(top_builddir)/components/services/install/lib/libinstall.a      \
