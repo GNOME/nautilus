@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-09-12 00:31+0200\n"
-"PO-Revision-Date: 2001-09-12 00:34+0200\n"
+"POT-Creation-Date: 2001-09-14 00:49+0200\n"
+"PO-Revision-Date: 2001-09-14 01:06+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -154,7 +154,7 @@ msgstr "Detta är en platshållare för RAM-sidan."
 msgid "This is a placeholder for the IDE page."
 msgstr "Detta är en platshållare för IDE-sidan."
 
-#: components/help/Nautilus_View_help.oaf.in.h:1
+#: components/help/Nautilus_View_help.oaf.in.h:1 nautilus-help.desktop.in.h:2
 msgid "Help"
 msgstr "Hjälp"
 
@@ -2365,6 +2365,14 @@ msgstr "Vit"
 msgid "White Ribs"
 msgstr "Vita räfflor"
 
+#: data/favorites.desktop.in.h:1
+msgid "Favorite applications"
+msgstr "Favoritprogram"
+
+#: data/favorites.desktop.in.h:2
+msgid "Favorites"
+msgstr "Favoriter"
+
 #: data/linksets/apps.xml.h:2
 msgid "Gnumeric"
 msgstr "Gnumeric"
@@ -2419,6 +2427,34 @@ msgstr "Google"
 #: data/linksets/search_engines.xml.h:3 src/nautilus-preferences-dialog.c:282
 msgid "Search Engines"
 msgstr "Sökmotorer"
+
+#: data/preferences.desktop.in.h:1
+msgid "Adjust your user environment"
+msgstr "Anpassa din användarmiljö"
+
+#: data/preferences.desktop.in.h:2 src/nautilus-preferences-dialog.c:447
+msgid "Preferences"
+msgstr "Inställningar"
+
+#: data/programs.desktop.in.h:1
+msgid "Browse available software"
+msgstr "Bläddra bland tillgängliga program"
+
+#: data/programs.desktop.in.h:2
+msgid "Programs"
+msgstr "Program"
+
+#: data/serverconfig.desktop.in.h:1
+msgid "Configure network services (web server, DNS server, etc.)"
+msgstr "Konfigurera nätverkstjänster (webbserver, DNS-server, osv)"
+
+#: data/serverconfig.desktop.in.h:2
+msgid "Server Configuration"
+msgstr "Serverkonfiguration"
+
+#: data/starthere-link.desktop.in.h:1 data/starthere.desktop.in.h:1
+msgid "Start Here"
+msgstr "Börja här"
 
 #: data/static_bookmarks.xml.h:1
 msgid "Allaire"
@@ -2595,6 +2631,14 @@ msgstr "ZDNet Linux Resource Center"
 #: data/static_bookmarks.xml.h:45
 msgid "Zero-Knowledge"
 msgstr "Zero-Knowledge"
+
+#: data/sysconfig.desktop.in.h:1
+msgid "Change systemwide settings (affects all users)"
+msgstr "Ändra globala systeminställningar (påverkar alla användare)"
+
+#: data/sysconfig.desktop.in.h:2
+msgid "System Settings"
+msgstr "Systeminställningar"
 
 #: icons/crux_eggplant/crux_eggplant.xml.h:1
 msgid "An Eggplant variation of the Crux theme."
@@ -4930,6 +4974,10 @@ msgstr "Nautilus"
 #: nautilus.desktop.in.h:2
 msgid "Nautilus File Manager and Graphic Shell"
 msgstr "Filhanteraren och det grafiska skalet Nautilus"
+
+#: nautilus-help.desktop.in.h:1
+msgid "Documentation"
+msgstr "Dokumentation"
 
 #: src/Nautilus_shell.oaf.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -7336,10 +7384,6 @@ msgstr "Hastighetskompromisser"
 #: src/nautilus-preferences-dialog.c:420
 msgid "News Panel"
 msgstr "Nyhetspanel"
-
-#: src/nautilus-preferences-dialog.c:447
-msgid "Preferences"
-msgstr "Inställningar"
 
 #: src/nautilus-preferences-dialog.c:476
 #, c-format
