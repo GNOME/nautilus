@@ -1,4 +1,3 @@
-
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /*
@@ -98,18 +97,17 @@ static GtkTargetEntry drop_types [] = {
 static char *nautilus_location_bar_get_location     (NautilusNavigationBar    *navigation_bar); 
 static void  nautilus_location_bar_set_location     (NautilusNavigationBar    *navigation_bar,
 						     const char               *location);
-static void  nautilus_location_bar_class_init (NautilusLocationBarClass *class);
-static void  nautilus_location_bar_init       (NautilusLocationBar      *bar);
+static void  nautilus_location_bar_class_init       (NautilusLocationBarClass *class);
+static void  nautilus_location_bar_init             (NautilusLocationBar      *bar);
 static void  nautilus_location_bar_update_label     (NautilusLocationBar      *bar);
 
 EEL_CLASS_BOILERPLATE (NautilusLocationBar,
-				   nautilus_location_bar,
-				   NAUTILUS_TYPE_NAVIGATION_BAR)
+		       nautilus_location_bar,
+		       NAUTILUS_TYPE_NAVIGATION_BAR)
 
 static NautilusWindow *
 nautilus_location_bar_get_window (GtkWidget *bar)
 {
-
 	return NAUTILUS_WINDOW (gtk_widget_get_ancestor (bar, NAUTILUS_TYPE_WINDOW));
 }
 
@@ -239,13 +237,11 @@ style_set_handler (GtkWidget *widget, GtkStyle *previous_style)
 #endif
 }
 
-#if GNOME2_CONVERSION_COMPLETE
-
 /* utility routine to determine the string to expand to.  If we don't have anything yet, accept
    the whole string, otherwise accept the largest part common to both */
 
 static char *
-accumulate_name(char *full_name, char *candidate_name)
+accumulate_name (char *full_name, char *candidate_name)
 {
 	char *result_name, *str1, *str2;
 
@@ -256,11 +252,15 @@ accumulate_name(char *full_name, char *candidate_name)
 		if (!eel_str_has_prefix (full_name, candidate_name)) {
 			str1 = full_name;
 			str2 = candidate_name;
-			while ((*str1++ == *str2++)) { }
-			*--str1 = '\0';
+
+			while ((g_utf8_get_char (str1) == g_utf8_get_char (str2))) {
+				str1 = g_utf8_next_char (str1);
+				str2 = g_utf8_next_char (str2);
+			}
+			*str1 = '\0';
 		}
 	}
-	
+
 	return result_name;
 }
 
@@ -275,7 +275,7 @@ get_file_info_list (NautilusLocationBar *bar, const char* dir_name)
 			gnome_vfs_file_info_list_free (bar->details->file_info_list);	
 			bar->details->file_info_list = NULL;		
 		}
-		
+
 		bar->details->current_directory = g_strdup (dir_name);
 		result = gnome_vfs_directory_list_load (&bar->details->file_info_list, dir_name,
 							GNOME_VFS_FILE_INFO_DEFAULT);
@@ -289,8 +289,8 @@ get_file_info_list (NautilusLocationBar *bar, const char* dir_name)
 }
 
 /* routine that performs the tab expansion using gnome-vfs.  Extract the directory name and
-  incomplete basename, then iterate through the directory trying to complete it.  If we
-  find something, add it to the entry */
+   incomplete basename, then iterate through the directory trying to complete it.  If we
+   find something, add it to the entry */
   
 static gboolean
 try_to_expand_path (gpointer callback_data)
@@ -301,10 +301,7 @@ try_to_expand_path (gpointer callback_data)
 	GList *element;
 	GnomeVFSURI *uri;
 	GtkEditable *editable;
-	
-	uint base_length;
-	int current_path_length;
-	int offset;
+
 	char *base_name_uri_escaped;
 	char *base_name;
 	char *user_location;
@@ -313,33 +310,39 @@ try_to_expand_path (gpointer callback_data)
 	char *expand_text;
 	char *expand_name;
 
-	bar = NAUTILUS_LOCATION_BAR (callback_data);
+	int base_name_length;
+	int user_location_length;
+	int current_path_length;
+	int expand_text_length;
+	int offset;
 
+	bar = NAUTILUS_LOCATION_BAR (callback_data);
 	editable = GTK_EDITABLE (bar->details->entry);
 	user_location = gtk_editable_get_chars (editable, 0, -1);
 	bar->details->idle_id = 0;
-	
+
 	/* if it's just '~' or '~/', don't expand because slash shouldn't be appended */
 	if (eel_strcmp (user_location, "~") == 0
 	    || eel_strcmp (user_location, "~/") == 0) {
 		g_free (user_location);
 		return FALSE;
 	}
-	current_path = eel_make_uri_from_input (user_location);
 
+	current_path = eel_make_uri_from_input (user_location);
 	if (!eel_istr_has_prefix (current_path, "file://")) {
 		g_free (user_location);
 		g_free (current_path);
 		return FALSE;
 	}
 
-	current_path_length = strlen (current_path);	
-	offset = current_path_length - strlen (user_location);
+	current_path_length = g_utf8_strlen (current_path, -1);
+	user_location_length = g_utf8_strlen (user_location, -1);
+	offset = current_path_length - user_location_length;
 
 	g_free (user_location);
 
 	uri = gnome_vfs_uri_new (current_path);
-	
+
 	base_name_uri_escaped = gnome_vfs_uri_extract_short_name (uri);
 	if (base_name_uri_escaped == NULL) {
 		base_name = NULL;
@@ -351,14 +354,15 @@ try_to_expand_path (gpointer callback_data)
 	if (base_name == NULL) {
 		gnome_vfs_uri_unref (uri);
 		g_free (current_path);
-		return FALSE;	
+		return FALSE;
 	}
 
-	base_length = strlen (base_name);
+	base_name_length = g_utf8_strlen (base_name, -1);
+
 	dir_name = gnome_vfs_uri_extract_dirname (uri);
 
 	/* get file info for the directory, if it hasn't changed since last time */
-	get_file_info_list (bar, dir_name);	
+	get_file_info_list (bar, dir_name);
 	if (bar->details->file_info_list == NULL) {
 		g_free (dir_name);
 		g_free (base_name);
@@ -369,7 +373,6 @@ try_to_expand_path (gpointer callback_data)
 
 	/* iterate through the directory, keeping the intersection of all the names that
 	   have the current basename as a prefix. */
-
 	expand_text = NULL;
 	for (element = bar->details->file_info_list; element != NULL; element = element->next) {
 		current_file_info = element->data;
@@ -383,15 +386,21 @@ try_to_expand_path (gpointer callback_data)
 			g_free (expand_name);
 		}
 	}
-	
-	/* if we've got something, add it to the entry */	
-	if (expand_text != NULL
-	    && !eel_str_has_suffix (current_path, expand_text)
-	    && base_length < strlen (expand_text)) {
-		gtk_entry_append_text (GTK_ENTRY (editable), expand_text + base_length);
-		gtk_entry_select_region (GTK_ENTRY (editable),
-					 current_path_length - offset,
-					 current_path_length - offset + strlen (expand_text) - base_length);
+
+	/* if we've got something, add it to the entry */
+	if (expand_text != NULL) {
+		expand_text_length = g_utf8_strlen (expand_text, -1);
+		if (!eel_str_has_suffix (current_path, expand_text)
+		    && base_name_length < expand_text_length) {
+			gtk_editable_insert_text (editable,
+						  g_utf8_offset_to_pointer (expand_text, base_name_length),
+						  expand_text_length - base_name_length,
+						  &user_location_length);
+
+			gtk_editable_select_region (editable,
+						    current_path_length - offset,
+						    current_path_length - offset + expand_text_length - base_name_length);
+		}
 	}
 	g_free (expand_text);
 
@@ -435,13 +444,13 @@ entry_would_have_inserted_characters (const GdkEventKey *event)
 }
 
 static int
-get_editable_length (GtkEditable *editable)
+get_editable_number_of_chars (GtkEditable *editable)
 {
 	char *text;
 	int length;
 
 	text = gtk_editable_get_chars (editable, 0, -1);
-	length = strlen (text);
+	length = g_utf8_strlen (text, -1);
 	g_free (text);
 	return length;
 }
@@ -453,8 +462,8 @@ has_exactly_one_slash (GtkEditable *editable)
 	gboolean exactly_one;
 
 	text = gtk_editable_get_chars (editable, 0, -1);
-	slash = strchr (text, '/');
-	exactly_one = slash != NULL && strchr (slash + 1, '/') == NULL;
+	slash = g_utf8_strchr (text, -1, '/');
+	exactly_one = slash != NULL && g_utf8_strchr (g_utf8_next_char (slash), -1, '/') == NULL;
 	g_free (text);
 
 	return exactly_one;
@@ -465,7 +474,7 @@ set_position_and_selection_to_end (GtkEditable *editable)
 {
 	int end;
 
-	end = get_editable_length (editable);
+	end = get_editable_number_of_chars (editable);
 	gtk_editable_select_region (editable, end, end);
 	gtk_editable_set_position (editable, end);
 }
@@ -476,7 +485,7 @@ position_and_selection_are_at_end (GtkEditable *editable)
 	int end;
 	int start_sel, end_sel;
 	
-	end = get_editable_length (editable);
+	end = get_editable_number_of_chars (editable);
 	if (gtk_editable_get_selection_bounds (editable, &start_sel, &end_sel)) {
 		if (start_sel != end || end_sel != end) {
 			return FALSE;
@@ -485,30 +494,24 @@ position_and_selection_are_at_end (GtkEditable *editable)
 	return gtk_editable_get_position (editable) == end;
 }
 
-/* Handle changes in the location entry. This is a marshal-style
- * callback so that we don't mess up the return value.
- */
 static void
-editable_key_press_callback (GtkObject *object,
-			     gpointer data,
-			     guint n_args,
-			     GtkArg *args)
+editable_event_after_callback (GtkEntry *entry,
+			       GdkEvent *event,
+			       gpointer user_data)
 {
 	GtkEditable *editable;
-	GdkEventKey *event;
-	gboolean *return_value_location;
+	GdkEventKey *keyevent;
 	NautilusLocationBar *bar;
 	const char *unexpanded_text;
 	char *expanded_text;
-	
-	g_assert (n_args == 1);
-	g_assert (args != NULL);
 
-	bar = NAUTILUS_LOCATION_BAR (data);
+	if (event->type != GDK_KEY_PRESS) {
+		return;
+	}
 
-	editable = GTK_EDITABLE (object);
-	event = GTK_VALUE_POINTER (args[0]);
-	return_value_location = GTK_RETLOC_BOOL (args[1]);
+	editable = GTK_EDITABLE (entry);
+	keyevent = (GdkEventKey *)event;
+	bar = NAUTILUS_LOCATION_BAR (user_data);
 
 	/* After typing the right arrow key we move the selection to
 	 * the end.
@@ -519,7 +522,7 @@ editable_key_press_callback (GtkObject *object,
 	 * you can't move through the text a character at a
 	 * time. Seems like a bad idea.
 	 */
-	if ((event->keyval == GDK_Right || event->keyval == GDK_End)
+	if ((keyevent->keyval == GDK_Right || keyevent->keyval == GDK_End)
 	    && gtk_editable_get_selection_bounds (editable, NULL, NULL)) {
 		set_position_and_selection_to_end (editable);
 	}
@@ -530,9 +533,8 @@ editable_key_press_callback (GtkObject *object,
 	 * when we type a key that would have inserted characters.
 	 */
 	if (position_and_selection_are_at_end (editable)) {
-		if (*return_value_location
-		    && entry_would_have_inserted_characters (event)) {
-			if (event->keyval == GDK_slash
+		if (entry_would_have_inserted_characters (keyevent)) {
+			if (keyevent->keyval == GDK_slash
 			    && has_exactly_one_slash (editable)) {
 				/* It's OK for us to call
 				 * gtk_entry_set_text here, even
@@ -564,7 +566,6 @@ editable_key_press_callback (GtkObject *object,
 
 	nautilus_location_bar_update_label (bar);
 }
-#endif
 
 static void
 real_activate (NautilusNavigationBar *navigation_bar)
@@ -659,10 +660,10 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
 	g_signal_connect (label, "style_set", 
-			    G_CALLBACK (style_set_handler), NULL);
+			  G_CALLBACK (style_set_handler), NULL);
 
-	gtk_box_pack_start  (GTK_BOX (hbox), event_box, FALSE, TRUE,
-			     GNOME_PAD_SMALL);
+	gtk_box_pack_start (GTK_BOX (hbox), event_box, FALSE, TRUE,
+			    GNOME_PAD_SMALL);
 
 	entry = nautilus_entry_new ();
 
@@ -671,39 +672,31 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 	g_signal_connect_swapped (entry, "activate",
 				  G_CALLBACK (nautilus_navigation_bar_location_changed),
 				  bar);
+	g_signal_connect (GTK_OBJECT (entry), "event_after",
+			  G_CALLBACK (editable_event_after_callback),
+			  bar);
 
-#if GNOME2_CONVERSION_COMPLETE
-	/* The callback uses the marshal interface directly
-	 * so it can both read and write the return value.
-	 */
-	gtk_signal_connect_full (GTK_OBJECT (entry), "key_press_event",
-				 NULL, editable_key_press_callback,
-				 bar, NULL,
-				 FALSE, TRUE);
-#endif
-	
 	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
 
 	gtk_container_add (GTK_CONTAINER (bar), hbox);
-
 
 	/* Drag source */
 	gtk_drag_source_set (GTK_WIDGET (event_box), 
 			     GDK_BUTTON1_MASK | GDK_BUTTON3_MASK,
 			     drag_types, G_N_ELEMENTS (drag_types),
 			     GDK_ACTION_LINK);
-	g_signal_connect  (event_box, "drag_data_get",
-			   G_CALLBACK (drag_data_get_callback),
-			   bar);
+	g_signal_connect (event_box, "drag_data_get",
+			  G_CALLBACK (drag_data_get_callback),
+			  bar);
 
 	/* Drag dest. */
-	gtk_drag_dest_set  (GTK_WIDGET (bar),
-			    GTK_DEST_DEFAULT_ALL,
-			    drop_types, G_N_ELEMENTS (drop_types),
-			    GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK);
+	gtk_drag_dest_set (GTK_WIDGET (bar),
+			   GTK_DEST_DEFAULT_ALL,
+			   drop_types, G_N_ELEMENTS (drop_types),
+			   GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK);
 	g_signal_connect (bar, "drag_data_received",
-			    G_CALLBACK (drag_data_received_callback),
-			    NULL);
+			  G_CALLBACK (drag_data_received_callback),
+			  NULL);
 
 	gtk_widget_show_all (hbox);
 
@@ -711,7 +704,6 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 	bar->details->entry = NAUTILUS_ENTRY (entry);	
 }
 
-
 GtkWidget *
 nautilus_location_bar_new (NautilusWindow *window)
 {

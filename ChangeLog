@@ -1,3 +1,17 @@
+2002-02-26  David Emory Watson  <dwatson@cs.ucr.edu>
+
+	* src/nautilus-location-bar.c:
+	(accumulate_name),
+	(has_exactly_one_slash): UTF8 fixes.
+	(try_to_expand_path): UTF8 and gtk_editable fixes.
+	(get_editable_length): Rename to
+	(get_editable_number_of_chars): this and include UTF8 fixes.
+	(editable_key_press_callback): Rename to
+	(editable_event_after_callback): this.  Modify to skip non key_press
+	events.
+	(nautilus_location_bar_init): Replace marshaled key_press_event signal
+	with normal event_after signal.
+
 2002-02-26  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-file.c:
