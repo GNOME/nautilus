@@ -1,5 +1,22 @@
 2000-02-14  Darin Adler  <darin@eazel.com>
 
+	* libnautilus/nautilus-directory.c: (nautilus_directory_read_metafile):
+	Handle the case where you try to make a NautilusDirectory object for
+	something that's a file.
+
+	* libnautilus/nautilus-directory.c: (nautilus_directory_get_metadata):
+	Handle NULL directory objects better.
+
+	* src/ntl-index-panel.c:
+	Changed handling of NULL directory case so it will display something
+	instead of doing early exits that leave the display as-is.
+
+	* src/nautilus-index-title.h:
+	* src/nautilus-index-title.c:
+	Reformatted, some minor cleanups.
+
+2000-02-14  Darin Adler  <darin@eazel.com>
+
 	* libnautilus/nautilus-icon-factory.c:
 	Redid the icon factory to fix a few things:
 	

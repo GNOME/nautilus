@@ -64,7 +64,7 @@ static void nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragC
 						     GtkSelectionData *selection_data,
 						     guint info, guint time);
 
-static void nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const gchar* new_uri);
+static void nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const char* new_uri);
 
 #define DEFAULT_BACKGROUND_COLOR "rgb:DDDD/DDDD/FFFF"
 #define INDEX_PANEL_WIDTH 136
@@ -224,82 +224,79 @@ nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 void
 nautilus_index_panel_add_meta_view (NautilusIndexPanel *index_panel, NautilusView *meta_view)
 {
-  GtkWidget *label;
-  const char *description;
-  char cbuf[32];
-  gint page_num;
-  
-  g_return_if_fail (NAUTILUS_IS_INDEX_PANEL (index_panel));
-  g_return_if_fail (NAUTILUS_IS_META_VIEW (meta_view));
-
-  description = nautilus_meta_view_get_label (NAUTILUS_META_VIEW (meta_view));
-  if (description == NULL)
-    {
-      description = cbuf;
-      g_snprintf (cbuf, sizeof (cbuf), "%p", meta_view);
-    } 
+	GtkWidget *label;
+	const char *description;
+	char cbuf[32];
+	gint page_num;
 	
-  label = gtk_label_new (description);
-  gtk_widget_show (label);
-
-  gtk_notebook_append_page (GTK_NOTEBOOK (index_panel->details->notebook), GTK_WIDGET (meta_view), label);
-  page_num = gtk_notebook_page_num (GTK_NOTEBOOK (index_panel->details->notebook), GTK_WIDGET (meta_view));
-  
-  /* tell the index tabs about it */
-  nautilus_index_tabs_add_view(NAUTILUS_INDEX_TABS(index_panel->details->index_tabs),
-                               description, GTK_WIDGET(meta_view), page_num);
-    
-  gtk_widget_show (GTK_WIDGET (meta_view));
+	g_return_if_fail (NAUTILUS_IS_INDEX_PANEL (index_panel));
+	g_return_if_fail (NAUTILUS_IS_META_VIEW (meta_view));
+	
+	description = nautilus_meta_view_get_label (NAUTILUS_META_VIEW (meta_view));
+	if (description == NULL) {
+		description = cbuf;
+		g_snprintf (cbuf, sizeof (cbuf), "%p", meta_view);
+	} 
+	
+	label = gtk_label_new (description);
+	gtk_widget_show (label);
+	
+	gtk_notebook_append_page (GTK_NOTEBOOK (index_panel->details->notebook), GTK_WIDGET (meta_view), label);
+	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (index_panel->details->notebook), GTK_WIDGET (meta_view));
+	
+	/* tell the index tabs about it */
+	nautilus_index_tabs_add_view(NAUTILUS_INDEX_TABS(index_panel->details->index_tabs),
+				     description, GTK_WIDGET(meta_view), page_num);
+	
+	gtk_widget_show (GTK_WIDGET (meta_view));
 }
 
 /* remove the passed-in meta-view from the index panel */
 void
 nautilus_index_panel_remove_meta_view (NautilusIndexPanel *index_panel, NautilusView *meta_view)
 {
-  gint page_num;
-
-  page_num = gtk_notebook_page_num (GTK_NOTEBOOK (index_panel->details->notebook), GTK_WIDGET (meta_view));
-  g_return_if_fail (page_num >= 0);
-  gtk_notebook_remove_page (GTK_NOTEBOOK (index_panel->details->notebook), page_num);
+	gint page_num;
+	
+	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (index_panel->details->notebook), GTK_WIDGET (meta_view));
+	g_return_if_fail (page_num >= 0);
+	gtk_notebook_remove_page (GTK_NOTEBOOK (index_panel->details->notebook), page_num);
 }
 
 /* utility to activate the metaview corresponding to the passed in index  */
 static void
 nautilus_index_panel_activate_meta_view(NautilusIndexPanel *index_panel, gint which_view)
 {
-  gchar *title;
-  GtkNotebook *notebook = GTK_NOTEBOOK(index_panel->details->notebook);
-  if (index_panel->details->selected_index < 0)
-    {
-      gtk_widget_show (index_panel->details->notebook);
-      if (index_panel->details->notebook->parent == NULL)
-      	gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->notebook, FALSE, FALSE, 0);
-      
-      gtk_widget_show (index_panel->details->title_tab);
-       if (index_panel->details->title_tab->parent == NULL)
-         gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->title_tab, FALSE, FALSE, 0);    
-    }
-  
-  index_panel->details->selected_index = which_view;
-  title = nautilus_index_tabs_get_title_from_index(NAUTILUS_INDEX_TABS(index_panel->details->index_tabs), which_view);
-  nautilus_index_tabs_set_title(NAUTILUS_INDEX_TABS(index_panel->details->title_tab), title);
-  g_free(title);
-  
-  gtk_notebook_set_page(notebook, which_view);
+	char *title;
+	GtkNotebook *notebook = GTK_NOTEBOOK(index_panel->details->notebook);
+	if (index_panel->details->selected_index < 0) {
+		gtk_widget_show (index_panel->details->notebook);
+		if (index_panel->details->notebook->parent == NULL)
+			gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->notebook, FALSE, FALSE, 0);
+		
+		gtk_widget_show (index_panel->details->title_tab);
+		if (index_panel->details->title_tab->parent == NULL)
+			gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->title_tab, FALSE, FALSE, 0);    
+	}
+	
+	index_panel->details->selected_index = which_view;
+	title = nautilus_index_tabs_get_title_from_index(NAUTILUS_INDEX_TABS(index_panel->details->index_tabs), which_view);
+	nautilus_index_tabs_set_title(NAUTILUS_INDEX_TABS(index_panel->details->title_tab), title);
+	g_free(title);
+	
+	gtk_notebook_set_page(notebook, which_view);
 }
 
 /* utility to deactivate the active metaview */
 static void
 nautilus_index_panel_deactivate_meta_view(NautilusIndexPanel *index_panel)
 {
-  if (index_panel->details->selected_index >= 0)
-    {
-      gtk_widget_hide (index_panel->details->notebook);
-      gtk_widget_hide (index_panel->details->title_tab);
-    }
-  
-  index_panel->details->selected_index = -1;
-  nautilus_index_tabs_select_tab(NAUTILUS_INDEX_TABS(index_panel->details->index_tabs), -1);
+	if (index_panel->details->selected_index >= 0) {
+		gtk_widget_hide (index_panel->details->notebook);
+		gtk_widget_hide (index_panel->details->title_tab);
+	}
+	
+	index_panel->details->selected_index = -1;
+	nautilus_index_tabs_select_tab(NAUTILUS_INDEX_TABS(index_panel->details->index_tabs), -1);
 }
 
 /* hit-test the index tabs and activate if necessary */
@@ -307,52 +304,46 @@ nautilus_index_panel_deactivate_meta_view(NautilusIndexPanel *index_panel)
 static gboolean
 nautilus_index_panel_press_event (GtkWidget *widget, GdkEventButton *event)
 {
-  gint title_top, title_bottom;
-  NautilusIndexPanel *index_panel = NAUTILUS_INDEX_PANEL (widget);
-  NautilusIndexTabs *index_tabs = NAUTILUS_INDEX_TABS(index_panel->details->index_tabs);
-  NautilusIndexTabs *title_tab = NAUTILUS_INDEX_TABS(index_panel->details->title_tab);
-  gint rounded_y = floor(event->y + .5);
-  
-  /* FIXME: test code, will remove soon: create some more tabs if the right button is down */
-  
-  if (event->button == 3)
-    {
-      nautilus_index_tabs_add_view(index_tabs, "notes", NULL, 2);
-      nautilus_index_tabs_add_view(index_tabs, "file tree", NULL, 3);
-      nautilus_index_tabs_add_view(index_tabs, "credits", NULL, 4);
-      nautilus_index_tabs_add_view(index_tabs, "site map", NULL, 5);
-      nautilus_index_tabs_add_view(index_tabs, "table of contents", NULL, 6);
-    }
-             
-  /* if the click is in the main tabs, tell them about it */
-  if (rounded_y >= index_panel->details->index_tabs->allocation.y)
-    {
-      gint which_tab = nautilus_index_tabs_hit_test(index_tabs, event->x, event->y);
-      if (which_tab >= 0)
-      	{
-	  nautilus_index_tabs_select_tab(index_tabs, which_tab);
-	  nautilus_index_panel_activate_meta_view(index_panel, which_tab);
-          gtk_widget_queue_draw(widget);	
+	gint title_top, title_bottom;
+	NautilusIndexPanel *index_panel = NAUTILUS_INDEX_PANEL (widget);
+	NautilusIndexTabs *index_tabs = NAUTILUS_INDEX_TABS(index_panel->details->index_tabs);
+	NautilusIndexTabs *title_tab = NAUTILUS_INDEX_TABS(index_panel->details->title_tab);
+	gint rounded_y = floor(event->y + .5);
+	
+	/* FIXME: test code, will remove soon: create some more tabs if the right button is down */
+	
+	if (event->button == 3)	{
+		nautilus_index_tabs_add_view(index_tabs, "notes", NULL, 2);
+		nautilus_index_tabs_add_view(index_tabs, "file tree", NULL, 3);
+		nautilus_index_tabs_add_view(index_tabs, "credits", NULL, 4);
+		nautilus_index_tabs_add_view(index_tabs, "site map", NULL, 5);
+		nautilus_index_tabs_add_view(index_tabs, "table of contents", NULL, 6);
 	}
-    } 
-  
-  /* also handle clicks in the title tab if necessary */
-  if (index_panel->details->selected_index >= 0)
-    {
-      title_top = index_panel->details->title_tab->allocation.y;
-      title_bottom = title_top + index_panel->details->title_tab->allocation.height;
-      if ((rounded_y >= title_top) && (rounded_y <= title_bottom))
-        {
-          gint which_tab = nautilus_index_tabs_hit_test(title_tab, event->x, event->y);
-          if (which_tab >= 0)
-      	    {
-	    /* the user clicked in the title tab, so deactivate the metaview */
-	    nautilus_index_panel_deactivate_meta_view(index_panel);
-	    }
-    
-        }
-    }
-  return TRUE;
+	
+	/* if the click is in the main tabs, tell them about it */
+	if (rounded_y >= index_panel->details->index_tabs->allocation.y) {
+		gint which_tab = nautilus_index_tabs_hit_test(index_tabs, event->x, event->y);
+		if (which_tab >= 0) {
+			nautilus_index_tabs_select_tab(index_tabs, which_tab);
+			nautilus_index_panel_activate_meta_view(index_panel, which_tab);
+			gtk_widget_queue_draw(widget);	
+		}
+	} 
+	
+	/* also handle clicks in the title tab if necessary */
+	if (index_panel->details->selected_index >= 0) {
+		title_top = index_panel->details->title_tab->allocation.y;
+		title_bottom = title_top + index_panel->details->title_tab->allocation.height;
+		if ((rounded_y >= title_top) && (rounded_y <= title_bottom)) {
+			gint which_tab = nautilus_index_tabs_hit_test(title_tab, event->x, event->y);
+			if (which_tab >= 0) {
+				/* the user clicked in the title tab, so deactivate the metaview */
+				nautilus_index_panel_deactivate_meta_view(index_panel);
+			}
+			
+		}
+	}
+	return TRUE;
 }
 
 
@@ -361,6 +352,9 @@ nautilus_index_panel_background_changed (NautilusIndexPanel *index_panel)
 {
 	NautilusBackground *background;
 	char *color_spec;
+	
+	if (index_panel->details->directory == NULL)
+		return;
 	
 	background = nautilus_get_widget_background (GTK_WIDGET (index_panel));
 	color_spec = nautilus_background_get_color (background);
@@ -374,7 +368,7 @@ nautilus_index_panel_background_changed (NautilusIndexPanel *index_panel)
 /* this routine populates the index panel with the per-uri information */
 
 void
-nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const gchar* new_uri)
+nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const char* new_uri)
 {
 	NautilusDirectory *directory;
 	NautilusBackground *background;
@@ -384,8 +378,6 @@ nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const gchar* 
 	if (index_panel->details->directory != NULL)
 		gtk_object_unref (GTK_OBJECT (index_panel->details->directory));
 	index_panel->details->directory = directory;
-	if(!directory)
-		return;
 	
 	/* Connect the background changed signal to code that writes the color. */
 	background = nautilus_get_widget_background (GTK_WIDGET (index_panel));
@@ -416,7 +408,7 @@ nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const gchar* 
 /* here is the key routine that populates the index panel with the appropriate information when the uri changes */
 
 void
-nautilus_index_panel_set_uri (NautilusIndexPanel *index_panel, const gchar* new_uri)
+nautilus_index_panel_set_uri (NautilusIndexPanel *index_panel, const char* new_uri)
 {       
 	/* there's nothing to do if the uri is the same as the current one */ 
 	

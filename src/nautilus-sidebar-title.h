@@ -23,49 +23,39 @@
  *
  */
 
-#ifndef __NAUTILUS_INDEX_TITLE_H__
-#define __NAUTILUS_INDEX_TITLE_H__
+#ifndef NAUTILUS_INDEX_TITLE_H
+#define NAUTILUS_INDEX_TITLE_H
 
 
-#include <gdk/gdk.h>
 #include <gtk/gtkvbox.h>
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+#define NAUTILUS_TYPE_INDEX_TITLE	     (nautilus_index_title_get_type ())
+#define NAUTILUS_INDEX_TITLE(obj)	     (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_INDEX_TITLE, NautilusIndexTitle))
+#define NAUTILUS_INDEX_TITLE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_INDEX_TITLE, NautilusIndexTitleClass))
+#define NAUTILUS_IS_INDEX_TITLE(obj)	     (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_INDEX_TITLE))
+#define NAUTILUS_IS_INDEX_TITLE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_INDEX_TITLE))
 
-
-#define NAUTILUS_TYPE_INDEX_TITLE	 (nautilus_index_title_get_type ())
-#define NAUTILUS_INDEX_TITLE(obj)	 (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_INDEX_TITLE, NautilusIndexTitle))
-#define NAUTILUS_INDEX_TITLE_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_INDEX_TITLE, NautilusIndexTitleClass))
-#define NAUTILUS_IS_INDEX_TITLE(obj)	 (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_INDEX_TITLE))
-#define NAUTILUS_IS_INDEX_TITLE_CLASS(klass)	 (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_INDEX_TITLE))
-
-typedef struct _NautilusIndexTitle	 NautilusIndexTitle;
+typedef struct _NautilusIndexTitle NautilusIndexTitle;
 typedef struct _NautilusIndexTitleClass NautilusIndexTitleClass;
 typedef struct _NautilusIndexTitleDetails NautilusIndexTitleDetails;
 
 struct _NautilusIndexTitle
 {
-  GtkVBox box;
-  NautilusIndexTitleDetails *details; 
+	GtkVBox box;
+	NautilusIndexTitleDetails *details; 
 };
 
 struct _NautilusIndexTitleClass
 {
-  GtkVBoxClass parent_class;
+	GtkVBoxClass parent_class;
 };
 
 
-GtkType	   	nautilus_index_title_get_type	 (void);
-GtkWidget* 	nautilus_index_title_new	 (void);
-void 		nautilus_index_title_set_uri(NautilusIndexTitle *index_title, const gchar* new_uri);
+GtkType    nautilus_index_title_get_type (void);
+GtkWidget* nautilus_index_title_new      (void);
+void       nautilus_index_title_set_uri  (NautilusIndexTitle *index_title,
+					  const char         *new_uri);
 
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
-
-#endif /* __NAUTILUS_INDEX_TITLE_H__ */
+#endif /* NAUTILUS_INDEX_TITLE_H */

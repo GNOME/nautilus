@@ -341,7 +341,9 @@ nautilus_directory_read_metafile (NautilusDirectory *directory)
 		result = nautilus_directory_try_to_read_metafile (directory, directory->details->metafile_uri);
 
 	/* Check for errors. Later this must be reported to the user, not spit out as a warning. */
-	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_NOTFOUND)
+	if (result != GNOME_VFS_OK
+	    && result != GNOME_VFS_ERROR_NOTFOUND
+	    && result != GNOME_VFS_ERROR_NOTADIRECTORY)
 		g_warning ("nautilus_directory_read_metafile failed to read metafile - we should report this to the user");
 }
 
@@ -823,7 +825,8 @@ nautilus_directory_get_metadata (NautilusDirectory *directory,
 {
 	/* It's legal to call this on a NULL directory. */
 	if (directory == NULL)
-		return NULL;
+		return g_strdup (default_metadata);
+
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 
 	/* The root itself represents the directory. */
