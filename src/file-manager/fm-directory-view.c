@@ -70,7 +70,6 @@
 #include <libnautilus-extensions/nautilus-view-identifier.h>
 #include <libnautilus-extensions/nautilus-mime-actions.h>
 
-#include "dfos-xfer.h"
 #include "fm-properties-window.h"
 #include "nautilus-trash-monitor.h"
 
