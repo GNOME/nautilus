@@ -64,7 +64,7 @@ Conflicts:	mozilla = M17
 Summary:        Nautilus component framework for services
 Group:          User Interface/Desktop
 Requires:       %name = %{PACKAGE_VERSION}
-Requires:	ammonite >= 0.8.7
+Requires:	ammonite >= 1.0.0
 Requires:	rpm >= @RPM_VERSION@
 Requires:	usermode >= 1.37
 Requires:	pam >= 0.72
@@ -73,6 +73,8 @@ Requires:	pam >= 0.72
 Summary:	Extra goodies to use with Nautilus
 Group:          User Interface/Desktop
 Requires:	xpdf >= 0.90
+Requires:	mpg123
+Requires:	sox
 
 %package suggested
 Summary:	Nautilus and a suggested set of components
