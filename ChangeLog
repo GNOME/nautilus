@@ -1,3 +1,80 @@
+2001-01-11  Maciej Stachowiak  <mjs@eazel.com>
+
+	pair programmed with Ian McKellar <ian@eazel.com>
+
+	Fix bugs 5100 ("First time dialog" for inventory preferences) and
+	5099 (Need configuration preferences for inventory control). Ian
+	and I did a first cut at a component for inventory gathering and
+	upload, as well as a start on the client-side UI for this.
+
+	* components/services/Makefile.am, configure.in: Add
+	components/services/inventory and
+	components/services/inventory-view directories to build.
+
+	* components/services/install/lib/eazel-inventory-utils.c,
+	components/services/install/lib/eazel-inventory-utils.h: Move
+	these files to components/services/inventory.
+	* components/services/install/lib/Makefile.am: Remove from build
+	here.
+
+	* components/services/inventory-view/.cvsignore:
+	* components/services/inventory-view/Makefile.am:
+	* components/services/inventory-view/Nautilus_View_inventory.oaf.in
+	:
+	* components/services/inventory-view/main.c: (main):
+	* components/services/inventory-view/nautilus-inventory-config-page
+	.c: (nautilus_inventory_config_page_initialize_class),
+	(next_button_callback),
+	(nautilus_inventory_config_page_initialize),
+	(nautilus_inventory_config_page_new),
+	(nautilus_inventory_config_page_destroy):
+	* components/services/inventory-view/nautilus-inventory-config-page
+	.h:
+	* components/services/inventory-view/nautilus-inventory-view.c:
+	(nautilus_inventory_view_initialize_class),
+	(nautilus_inventory_view_initialize),
+	(nautilus_inventory_view_destroy),
+	(inventory_load_location_callback):
+	* components/services/inventory-view/nautilus-inventory-view.h:
+
+	First cut at the inventory view component. Right now it only
+	provides a config page, over time it may also do inventory
+	display.
+
+	* components/services/inventory/.cvsignore:
+	* components/services/inventory/Makefile.am:
+	* components/services/inventory/Trilobite_Service_inventory.oaf.in:
+	* components/services/inventory/eazel-inventory-client.c:
+	(gboolean_to_yes_or_no), (main):
+	* components/services/inventory/eazel-inventory-service.c:
+	(get_enabled), (impl_Trilobite_Eazel_Inventory__get_enabled),
+	(impl_Trilobite_Eazel_Inventory__set_enabled),
+	(impl_Trilobite_Eazel_Inventory__get_machine_name),
+	(impl_Trilobite_Eazel_Inventory__set_machine_name),
+	(get_warn_before_upload),
+	(impl_Trilobite_Eazel_Inventory__get_warn_before_upload),
+	(impl_Trilobite_Eazel_Inventory__set_warn_before_upload),
+	(impl_Trilobite_Eazel_Inventory_upload),
+	(eazel_inventory_service_get_epv),
+	(eazel_inventory_service_finalize),
+	(eazel_inventory_service_unref),
+	(eazel_inventory_service_class_initialize),
+	(eazel_inventory_service_create_corba_object),
+	(eazel_inventory_service_initialize),
+	(eazel_inventory_service_get_type), (eazel_inventory_service_new):
+	* components/services/inventory/eazel-inventory-service.h:
+	* components/services/inventory/eazel-inventory-utils.c:
+	(eazel_inventory_gconf_done), (check_gconf_init),
+	(eazel_create_configuration_metafile), (eazel_gather_inventory):
+	* components/services/inventory/main.c:
+	(eazel_inventory_service_factory_destroy),
+	(eazel_inventory_service_factory), (main):
+
+	First cut at back end inventory gathering and upload
+	component. Right now it uses libeazelinstall directly, it should
+	probably be changed to use the install/package system CORBA
+	component for package info.
+	
 2001-01-10  Mike Fleming  <mfleming@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-callba

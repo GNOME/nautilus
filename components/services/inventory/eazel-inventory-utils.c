@@ -50,6 +50,37 @@
 
 static GConfEngine *conf_engine = NULL;
 
+/* called by atexit to close the gconf connection */
+static void
+eazel_inventory_gconf_done (void)
+{
+	gconf_engine_unref (conf_engine);
+}
+
+
+/* make sure gconf is initialized */
+static void
+check_gconf_init (void)
+{
+	GError *error = NULL;
+
+	if (! gconf_is_initialized ()) {
+		char *argv[] = { "trilobite", NULL };
+
+		if (! gconf_init (1, argv, &error)) {
+			g_assert (error != NULL);
+			g_warning ("gconf init error: %s", error->message);
+                        g_error_free (error);
+		}
+	}
+	if (conf_engine == NULL) {
+		conf_engine = gconf_engine_get_default ();
+		g_atexit (eazel_inventory_gconf_done);
+	}
+}
+
+
+
 /* ripped straight out of libnautilus-extensions because we didn't want the
  * dependency for one small function
  */
@@ -321,6 +352,9 @@ add_software_info (xmlDocPtr	configuration_metafile)
 	g_free (distro_string);
 }
 
+#define KEY_GCONF_EAZEL_INVENTORY_MACHINE_NAME "/apps/eazel-trilobite/inventory/machine_name"
+
+
 /* create the configuration metafile and add package and hardware configuration info to it */
 static xmlDocPtr
 eazel_create_configuration_metafile (void)
@@ -330,12 +364,17 @@ eazel_create_configuration_metafile (void)
 	time_t		current_time;
 	xmlNodePtr	container_node;
     	char		*time_string;
-	char		host_name[512];
+	char		*host_name;
 	xmlDocPtr	configuration_metafile;
 
 	configuration_metafile = xmlNewDoc ("1.0");
 	
-	gethostname (&host_name[0], 511);
+	check_gconf_init ();
+	host_name = gconf_engine_get_string (conf_engine, KEY_GCONF_EAZEL_INVENTORY_MACHINE_NAME, NULL);
+	if (host_name == NULL) {
+		host_name = g_strdup ("");
+	}
+
 	container_node = xmlNewDocNode (configuration_metafile, NULL, "CONFIGURATION", NULL);
     
 	configuration_metafile->root = container_node;
@@ -343,6 +382,8 @@ eazel_create_configuration_metafile (void)
 	time_string = g_strdup (ctime (&current_time));
 	time_string[strlen(time_string) - 1] = '\0';
 	xmlSetProp (container_node, "computer", host_name);	
+	g_free (host_name);
+
 /*	xmlSetProp (container_node, "date", time_string); */
 	g_free (time_string);
 	
@@ -355,33 +396,6 @@ eazel_create_configuration_metafile (void)
 	return configuration_metafile;
 }
 
-/* called by atexit to close the gconf connection */
-static void
-eazel_inventory_gconf_done (void)
-{
-	gconf_engine_unref (conf_engine);
-}
-
-/* make sure gconf is initialized */
-static void
-check_gconf_init (void)
-{
-	GError *error = NULL;
-
-	if (! gconf_is_initialized ()) {
-		char *argv[] = { "trilobite", NULL };
-
-		if (! gconf_init (1, argv, &error)) {
-			g_assert (error != NULL);
-			g_warning ("gconf init error: %s", error->message);
-                        g_error_free (error);
-		}
-	}
-	if (conf_engine == NULL) {
-		conf_engine = gconf_engine_get_default ();
-		g_atexit (eazel_inventory_gconf_done);
-	}
-}
 
 /* get last digest value stored in gconf */
 static char *
@@ -501,12 +515,16 @@ eazel_gather_inventory (void)
 #endif
 
 	digest_string = get_digest_from_gconf (DIGEST_GCONF_KEY);
-	trilobite_md5_get_digest_from_md5_string (digest_string, old_digest);
+	if (digest_string != NULL) {
+		trilobite_md5_get_digest_from_md5_string (digest_string, old_digest);
 #ifdef DEBUG_pepper
-	g_print ("Old GConf Digest value: %s\n", digest_string);
+		g_print ("Old GConf Digest value: %s\n", digest_string);
 #endif
 
-	if (memcmp (old_digest, md5_digest, 16) != 0) {
+		if (memcmp (old_digest, md5_digest, 16) != 0) {
+			return_val = TRUE;
+		}
+	} else {
 		return_val = TRUE;
 	}
 
