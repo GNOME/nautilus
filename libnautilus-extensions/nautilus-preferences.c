@@ -408,18 +408,16 @@ prefs_get_pref (NautilusPreferences         *prefs,
 {
 	PrefHashInfo * pref_hash_info;
 
-	g_return_val_if_fail (prefs != NULL, FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_PREFS (prefs), FALSE);
 	g_return_val_if_fail (pref_type_out != NULL, FALSE);
 	g_return_val_if_fail (pref_value_out != NULL, FALSE);
-
-	if (!pref_hash_info) {
-		return FALSE;
-	}
+	g_return_val_if_fail (pref_name != NULL, FALSE);
 
 	pref_hash_info = prefs_hash_lookup (prefs, pref_name);
 
-	g_assert (pref_hash_info != NULL);
+	if (pref_hash_info == NULL) {
+		return FALSE;
+	}
 
 	*pref_type_out = pref_hash_info->pref_info.pref_type;
 	*pref_value_out = pref_hash_info->pref_value;
@@ -721,7 +719,7 @@ nautilus_preferences_get_enum (NautilusPreferences  *prefs,
 
 	if (!rv) {
 		g_warning ("could not get enum preference '%s'\n", pref_name);
-		return FALSE;
+		return 0;
 	}
 
 	g_assert (pref_type == NAUTILUS_PREFERENCE_ENUM);
@@ -762,7 +760,7 @@ nautilus_preferences_get_string (NautilusPreferences  *prefs,
 
 	if (!rv) {
 		g_warning ("could not get string preference '%s'\n", pref_name);
-		return FALSE;
+		return NULL;
 	}
 
 	g_assert (pref_type == NAUTILUS_PREFERENCE_STRING);

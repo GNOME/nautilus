@@ -1,5 +1,27 @@
 2000-03-16  John Sullivan  <sullivan@eazel.com>
 
+	Fixes for a couple of preferences bugs Darin and I ran into
+	while trying to debug a preferences-related problem. We
+	can't reproduce the original problem so we don't know if
+	these fix it.
+
+	* libnautilus/nautilus-icon-factory.c:
+	(nautilus_get_current_icon_factory): Call 
+	nautilus_global_preferences_initialize before accessing preferences,
+	since this code is called by processes other than the main
+	nautilus one.
+
+	* nautilus-widgets/nautilus-preferences.c: (prefs_get_pref):
+	Remove redundant NULL check for prefs; add NULL check for pref_name;
+	remove test of uninitialized variable; change assert to
+	return FALSE since callers already handle the FALSE case.
+	(nautilus_preferences_get_enum): Changed return FALSE to return 0
+	to match return value type.
+	(nautilus_preferences_get_string): Changed return FALSE to return NULL
+	to match return value type.
+
+2000-03-16  John Sullivan  <sullivan@eazel.com>
+
 	Moved a couple of utility functions I wrote recently
 	into the right places in libnautilus.
 

@@ -221,6 +221,11 @@ nautilus_get_current_icon_factory (void)
         if (global_icon_factory == NULL) {
 		char *theme_preference;
 
+		/* No guarantee that nautilus preferences have been set
+		 * up properly, so we have to initialize them all here just
+		 * to be sure that the icon_theme preference will work.
+		 */
+		nautilus_global_preferences_initialize ();
 		theme_preference
 			= nautilus_preferences_get_string (nautilus_preferences_get_global_preferences (),
 					       	 	   NAUTILUS_PREFERENCES_ICON_THEME);
