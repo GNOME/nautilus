@@ -153,6 +153,7 @@ static NautilusIcon *get_first_selected_icon                        (NautilusIco
 static NautilusIcon *get_nth_selected_icon                          (NautilusIconContainer *container,
 								     int                    index);
 static gboolean      has_multiple_selection                         (NautilusIconContainer *container);
+static gboolean      all_selected                                   (NautilusIconContainer *container);
 static gboolean      has_selection                                  (NautilusIconContainer *container);
 static void          icon_destroy                                   (NautilusIconContainer *container,
 								     NautilusIcon          *icon);
@@ -435,7 +436,6 @@ icon_toggle_selected (NautilusIconContainer *container,
 	if (icon->is_selected) {
 		icon_raise (icon);
 	}
-
 }
 
 /* Select an icon. Return TRUE if selection has changed. */
@@ -2675,9 +2675,15 @@ keyboard_arrow_key (NautilusIconContainer *container,
 
 	if (from == NULL) {
 		if (has_multiple_selection (container)) {
-			from = find_best_selected_icon
-				(container, NULL,
-				 better_start, NULL);
+			if (all_selected (container)) {
+				from = find_best_selected_icon
+					(container, NULL,
+					 empty_start, NULL);
+			} else {
+				from = find_best_selected_icon
+					(container, NULL,
+					 better_start, NULL);
+			}
 		} else {
 			from = get_first_selected_icon (container);
 		}
@@ -5570,6 +5576,21 @@ static gboolean
 has_multiple_selection (NautilusIconContainer *container)
 {
         return get_nth_selected_icon (container, 2) != NULL;
+}
+
+static gboolean
+all_selected (NautilusIconContainer *container)
+{
+	GList *p;
+	NautilusIcon *icon;
+
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		icon = p->data;
+		if (!icon->is_selected) {
+			return FALSE;
+		}
+	}
+	return TRUE;
 }
 
 static gboolean
