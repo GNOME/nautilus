@@ -2806,6 +2806,7 @@ file_info_start (NautilusDirectory *directory,
 		return;
 	}
 	directory->details->get_info_file = file;
+	file->details->get_info_failed = FALSE;
 	fake_list.data = vfs_uri;
 	fake_list.prev = NULL;
 	fake_list.next = NULL;

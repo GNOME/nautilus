@@ -1,3 +1,10 @@
+2003-01-29  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-async.c (file_info_start):
+	Clear get_info_failed before starting the get_file_info. This means
+	that old failed get_info calls don't get "stuck", such as if you entered
+	the wrong password in an smb share.
+
 2003-01-28  Pablo Saratxaga  <pablo@mandrakesoft.com>
 
 	* configure.in: Added THai (th) to ALL_LINGUAS
