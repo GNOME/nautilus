@@ -1,3 +1,30 @@
+2000-05-17  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_initialize),
+	(nautilus_mozilla_content_view_load_uri),
+	(mozilla_content_view_request_progress_change),
+	(mozilla_content_view_request_location_change),
+	(substitute_prefix), (mozilla_content_view_hack_uri),
+	(mozilla_content_view_unhack_uri),
+	(mozilla_notify_location_change_callback),
+	(mozilla_title_changed_callback),
+	(mozilla_location_changed_callback), (mozilla_net_status_callback),
+	(mozilla_link_message_callback), (mozilla_progress_callback),
+	(mozilla_open_uri_callback):
+	Add initial support for stopping the loading of a uri in mozilla
+	in order for nautilus to deal with it.  It works for some
+	protocols, like ftp.  Its broken on some more fundamental ones,
+	like file://.  
+
+	Move the uri protocol moz: hack into its own place in order to
+	make it easy to fix later once the real problem is fixed.
+
+	Add a bunch of paranoid assertions.
+
+	Bottleneck location change requests to nautilus through a single
+	function.
+	
 2000-05-17  Eskil Heyn Olsen  <eskil@eazel.om>
 
 	* components/services/trilobite/idl/sample-service.idl: 

@@ -28,7 +28,7 @@
  * widget to display and munge html.
  */
 
-//#define DEBUG_ramiro 1
+/* #define DEBUG_ramiro 1 */
 
 #include <config.h>
 #include "nautilus-mozilla-content-view.h"
@@ -48,39 +48,58 @@ struct _NautilusMozillaContentViewDetail {
 	GdkCursor			 *busy_cursor;
 };
 
-static void nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass *klass);
-static void nautilus_mozilla_content_view_initialize       (NautilusMozillaContentView      *view);
-static void nautilus_mozilla_content_view_destroy          (GtkObject                       *object);
-static void mozilla_notify_location_change_callback        (NautilusContentViewFrame        *view_frame,
-							    Nautilus_NavigationInfo         *navinfo,
-							    NautilusMozillaContentView      *view);
-static void mozilla_merge_bonobo_items_callback            (BonoboObject                    *control,
-							    gboolean                         state,
-							    gpointer                         user_data);
+static void  nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass *klass);
+static void  nautilus_mozilla_content_view_initialize       (NautilusMozillaContentView      *view);
+static void  nautilus_mozilla_content_view_destroy          (GtkObject                       *object);
+static void  mozilla_notify_location_change_callback        (NautilusContentViewFrame        *view_frame,
+							     Nautilus_NavigationInfo         *navinfo,
+							     NautilusMozillaContentView      *view);
+static void  mozilla_merge_bonobo_items_callback            (BonoboObject                    *control,
+							     gboolean                         state,
+							     gpointer                         user_data);
+
+
+
+
+
 
 
 /* Mozilla embed widget callbacks */
-static void mozilla_title_changed_callback                 (GtkWidget                       *widget,
-							    gpointer                         user_data);
-static void mozilla_location_changed_callback              (GtkWidget                       *widget,
-							    gpointer                         user_data);
-static void mozilla_net_status_callback                    (GtkWidget                       *widget,
-							    gint                             flags,
-							    gpointer                         user_data);
-static void mozilla_link_message_callback                  (GtkWidget                       *widget,
-							    gpointer                         user_data);
-static void mozilla_progress_callback                      (GtkWidget                       *widget,
-							    gint                             max_progress,
-							    gint                             current_progress,
-							    gpointer                         user_data);
+static void  mozilla_title_changed_callback                 (GtkMozEmbed                     *mozilla,
+							     gpointer                         user_data);
+static void  mozilla_location_changed_callback              (GtkMozEmbed                     *mozilla,
+							     gpointer                         user_data);
+static void  mozilla_net_status_callback                    (GtkMozEmbed                     *mozilla,
+							     gint                             flags,
+							     gpointer                         user_data);
+static void  mozilla_link_message_callback                  (GtkMozEmbed                     *mozilla,
+							     gpointer                         user_data);
+static void  mozilla_progress_callback                      (GtkMozEmbed                     *mozilla,
+							     gint                             max_progress,
+							     gint                             current_progress,
+							     gpointer                         user_data);
+static  gint mozilla_open_uri_callback                      (GtkMozEmbed                     *mozilla,
+							     const char                      *uri,
+							     gpointer                         user_data);
+
+
+
+
 
 
 /* Other mozilla content view functions */
-static void mozilla_content_view_set_busy_cursor           (NautilusMozillaContentView      *view);
-static void mozilla_content_view_clear_busy_cursor         (NautilusMozillaContentView      *view);
-static void mozilla_content_view_send_progress_request     (NautilusMozillaContentView      *view,
-							    Nautilus_ProgressType            progress_type,
-							    gdouble                          progress_amount);
+static void  mozilla_content_view_set_busy_cursor           (NautilusMozillaContentView      *view);
+static void  mozilla_content_view_clear_busy_cursor         (NautilusMozillaContentView      *view);
+static void  mozilla_content_view_request_progress_change   (NautilusMozillaContentView      *view,
+							     Nautilus_ProgressType            progress_type,
+							     gdouble                          progress_amount);
+static void  mozilla_content_view_request_location_change   (NautilusMozillaContentView      *view,
+							     const char                      *new_location_uri);
+static char *substitute_prefix                              (const char                      *uri,
+							     const char                      *prefix,
+							     const char                      *subsitite_prefix);
+static char *mozilla_content_view_hack_uri                  (const char                      *uri);
+static char *mozilla_content_view_unhack_uri                (const char                      *uri);
 
 
 static GtkVBoxClass *parent_class = NULL;
@@ -131,6 +150,11 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 	gtk_signal_connect (GTK_OBJECT (view->detail->mozilla), 
 			    "progress",
 			    GTK_SIGNAL_FUNC (mozilla_progress_callback),
+			    view);
+
+	gtk_signal_connect (GTK_OBJECT (view->detail->mozilla), 
+			    "open_uri",
+			    GTK_SIGNAL_FUNC (mozilla_open_uri_callback),
 			    view);
 
 	gtk_box_pack_start (GTK_BOX (view), view->detail->mozilla, TRUE, TRUE, 1);
@@ -207,16 +231,11 @@ nautilus_mozilla_content_view_load_uri (NautilusMozillaContentView	*view,
 {
 	g_assert (uri != NULL);
 
-	if (view->detail->uri)
+	if (view->detail->uri) {
 		g_free (view->detail->uri);
-
-	/* FIXME bugzilla.eazel.com 522: This is a temporary dumbass hack */
-	if (strncmp (uri, "moz:", strlen ("moz:")) == 0) {
-		view->detail->uri = g_strdup_printf ("http:%s", uri + strlen ("moz:"));
 	}
-	else {
-		view->detail->uri = g_strdup (uri);
-	}
+	
+	view->detail->uri = mozilla_content_view_unhack_uri (uri);
 
 #ifdef DEBUG_ramiro
 	g_print ("nautilus_mozilla_content_view_load_uri (%s)\n", view->detail->uri);
@@ -245,7 +264,7 @@ mozilla_content_view_set_busy_cursor (NautilusMozillaContentView *view)
 }
 
 static void
-mozilla_content_view_send_progress_request (NautilusMozillaContentView	*view,
+mozilla_content_view_request_progress_change (NautilusMozillaContentView	*view,
 					    Nautilus_ProgressType	progress_type,
 					    gdouble			progress_amount)
 {
@@ -261,6 +280,63 @@ mozilla_content_view_send_progress_request (NautilusMozillaContentView	*view,
 
 	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (view->detail->view_frame),
 						     &progress_request);
+}
+
+static void
+mozilla_content_view_request_location_change (NautilusMozillaContentView	*view,
+					      const char			*new_uri)
+{
+	Nautilus_NavigationRequestInfo	navigation_request;
+	char				*hacked_uri;
+	
+        g_assert (view != NULL);
+        g_assert (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (view));
+        g_assert (new_uri != NULL);
+
+	memset (&navigation_request, 0, sizeof (navigation_request));
+
+	hacked_uri = mozilla_content_view_hack_uri (new_uri);
+
+	g_assert (hacked_uri);
+	
+	navigation_request.requested_uri = hacked_uri;
+	
+	nautilus_view_frame_request_location_change (NAUTILUS_VIEW_FRAME (view->detail->view_frame), 
+						     &navigation_request);
+
+	g_free (hacked_uri);
+}
+
+/* FIXME bugzilla.eazel.com 522: The http: -> moz: hack is temporary */
+static char *
+substitute_prefix (const char *uri, const char *prefix, const char *subsitite_prefix)
+{
+	char *hacked_uri = NULL;
+
+	g_assert (uri != NULL);
+
+	if (uri 
+	    && (strlen (uri) >= strlen (prefix))
+	    && (strncmp (uri, prefix, strlen (prefix)) == 0)) {
+		hacked_uri = g_strdup_printf ("%s%s", subsitite_prefix, uri + strlen (prefix));
+	}
+	else {
+		hacked_uri = g_strdup (uri);
+	}
+	
+	return hacked_uri;
+}
+
+static char *
+mozilla_content_view_hack_uri (const char *uri)
+{
+	return substitute_prefix (uri, "http:", "moz:");
+}
+
+static char *
+mozilla_content_view_unhack_uri (const char *uri)
+{
+	return substitute_prefix (uri, "moz:", "http:");
 }
 
 static void
@@ -297,7 +373,7 @@ mozilla_notify_location_change_callback (NautilusContentViewFrame	*view_frame,
 	 * using to load the data; this component loads no data, so it
 	 * gives the progrss update here.  
 	 */
-	mozilla_content_view_send_progress_request (view, Nautilus_PROGRESS_UNDERWAY, 0.0);
+	mozilla_content_view_request_progress_change (view, Nautilus_PROGRESS_UNDERWAY, 0.0);
 
 	/* Do the actual load. */
 	nautilus_mozilla_content_view_load_uri (view, navinfo->actual_uri);
@@ -311,7 +387,7 @@ mozilla_notify_location_change_callback (NautilusContentViewFrame	*view_frame,
 	 * load the data; this component loads no data, so it gives
 	 * the progrss upodate here. 
 	 */
-	mozilla_content_view_send_progress_request (view, Nautilus_PROGRESS_DONE_OK, 100.0);
+	mozilla_content_view_request_progress_change (view, Nautilus_PROGRESS_DONE_OK, 100.0);
 }
 
 static void
@@ -403,15 +479,19 @@ mozilla_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoi
 
 /* Mozilla embed widget callbacks */
 static void
-mozilla_title_changed_callback (GtkWidget *widget, gpointer user_data)
+mozilla_title_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 {
  	NautilusMozillaContentView	*view;
 	char				*new_title;
 
+	g_assert (mozilla != NULL);
+	g_assert (GTK_IS_MOZ_EMBED (mozilla));
         g_assert (user_data != NULL);
         g_assert (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (user_data));
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
+
+	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->detail->mozilla));
 
 	new_title = gtk_moz_embed_get_title (GTK_MOZ_EMBED (view->detail->mozilla));
 
@@ -422,53 +502,44 @@ mozilla_title_changed_callback (GtkWidget *widget, gpointer user_data)
 }
 
 static void
-mozilla_location_changed_callback (GtkWidget *widget, gpointer user_data)
+mozilla_location_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 {
  	NautilusMozillaContentView	*view;
 	char				*new_location;
-	char				*hacked_location;
-	Nautilus_NavigationRequestInfo	navigation_request;
 
+	g_assert (mozilla != NULL);
+	g_assert (GTK_IS_MOZ_EMBED (mozilla));
         g_assert (user_data != NULL);
         g_assert (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (user_data));
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
+
+	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->detail->mozilla));
 
 	new_location = gtk_moz_embed_get_location (GTK_MOZ_EMBED (view->detail->mozilla));
 
-	memset (&navigation_request, 0, sizeof (navigation_request));
-
-
-	/* FIXME bugzilla.eazel.com 522: This is a temporary dumbass hack */
-	if (strncmp (new_location, "http:", strlen ("http:")) == 0) {
-		hacked_location = g_strdup_printf ("moz:%s", new_location + strlen ("http:"));
-	}
-	else {
-		hacked_location = g_strdup (new_location);
-	}
-
-	navigation_request.requested_uri = hacked_location;
-
-	nautilus_view_frame_request_location_change (NAUTILUS_VIEW_FRAME (view->detail->view_frame), 
-						     &navigation_request);
-	
 #ifdef DEBUG_ramiro
-	g_print ("mozilla_location_changed_callback (%s)\n", hacked_location);
+	g_print ("mozilla_location_changed_callback (%s)\n", new_location);
 #endif
 
+	mozilla_content_view_request_location_change (view, new_location);
+
 	g_free (new_location);
-	g_free (hacked_location);
 }
 
 static void
-mozilla_net_status_callback (GtkWidget *widget, gint flags, gpointer user_data)
+mozilla_net_status_callback (GtkMozEmbed *mozilla, gint flags, gpointer user_data)
 {
  	NautilusMozillaContentView	*view;
 
+	g_assert (mozilla != NULL);
+	g_assert (GTK_IS_MOZ_EMBED (mozilla));
         g_assert (user_data != NULL);
         g_assert (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (user_data));
 	
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
+
+	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->detail->mozilla));
 
 	/* win_start */
 	if (flags & gtk_moz_embed_flag_win_start) {
@@ -558,16 +629,20 @@ mozilla_net_status_callback (GtkWidget *widget, gint flags, gpointer user_data)
 }
 
 static void
-mozilla_link_message_callback (GtkWidget *widget, gpointer user_data)
+mozilla_link_message_callback (GtkMozEmbed *mozilla, gpointer user_data)
 {
  	NautilusMozillaContentView	*view;
 	Nautilus_StatusRequestInfo	status_request;
 	char				*link_message;
 
+	g_assert (mozilla != NULL);
+	g_assert (GTK_IS_MOZ_EMBED (mozilla));
         g_assert (user_data != NULL);
         g_assert (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (user_data));
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
+
+	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->detail->mozilla));
 
 	link_message = gtk_moz_embed_get_link_message (GTK_MOZ_EMBED (view->detail->mozilla));
 
@@ -581,7 +656,7 @@ mozilla_link_message_callback (GtkWidget *widget, gpointer user_data)
 }
 
 static void
-mozilla_progress_callback (GtkWidget	*widget,
+mozilla_progress_callback (GtkMozEmbed *mozilla,
 			   gint         max_progress,
 			   gint         current_progress,
 			   gpointer     user_data)
@@ -589,10 +664,14 @@ mozilla_progress_callback (GtkWidget	*widget,
  	NautilusMozillaContentView	*view;
 	gdouble				percent;
 
+	g_assert (mozilla != NULL);
+	g_assert (GTK_IS_MOZ_EMBED (mozilla));
 	g_assert (user_data != NULL);
 	g_assert (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (user_data));
 	
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
+
+	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->detail->mozilla));
 
 #ifdef DEBUG_ramiro
 	g_print ("mozilla_progress_callback (max = %d, current = %d)\n", max_progress, current_progress);
@@ -606,7 +685,46 @@ mozilla_progress_callback (GtkWidget	*widget,
 		percent = current_progress / max_progress;
 	}
 	
-	mozilla_content_view_send_progress_request (view, Nautilus_PROGRESS_UNDERWAY, percent);
+	mozilla_content_view_request_progress_change (view, Nautilus_PROGRESS_UNDERWAY, percent);
+}
+
+static gint
+mozilla_open_uri_callback (GtkMozEmbed *mozilla,
+			   const char	*uri,
+			   gpointer	user_data)
+{
+	gint abort_uri_open = FALSE;
+
+ 	NautilusMozillaContentView	*view;
+
+	g_assert (mozilla != NULL);
+	g_assert (GTK_IS_MOZ_EMBED (mozilla));
+	g_assert (user_data != NULL);
+	g_assert (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (user_data));
+	
+	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
+
+	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->detail->mozilla));
+
+	/* Determine whether we want to abort this uri load */
+	if (uri) {
+		if (strncmp (uri, "ftp://", strlen ("ftp://")) == 0) {
+			abort_uri_open = TRUE;
+		}
+	}
+
+#ifdef DEBUG_ramiro
+	g_print ("mozilla_open_uri_callback (uri = %s) abort = %s\n",
+		 uri,
+		 abort_uri_open ? "TRUE" : "FALSE");
+#endif
+
+	/* Let nautilus grok the uri instead */
+	if (abort_uri_open == TRUE) {
+		mozilla_content_view_request_location_change (view, uri);
+	}
+
+	return abort_uri_open;
 }
 
 GtkType
