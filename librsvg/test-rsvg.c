@@ -40,11 +40,14 @@
 /* utility routine for saving a pixbuf to a png file.
  * This was adapted from Iain Holmes' code in gnome-iconedit, and probably
  * should be in a utility library, possibly in gdk-pixbuf itself.
+ * 
+ * It is split up into save_pixbuf_to_file and save_pixbuf_to_file_internal
+ * to work around a gcc warning about handle possibly getting clobbered by
+ * longjmp. Declaring handle 'volatile FILE *' didn't work as it should have.
  */
 static gboolean
-save_pixbuf_to_file (GdkPixbuf *pixbuf, char *filename)
+save_pixbuf_to_file_internal (GdkPixbuf *pixbuf, char *filename, FILE *handle)
 {
-	FILE *handle;
   	char *buffer;
 	gboolean has_alpha;
 	int width, height, depth, rowstride;
@@ -53,39 +56,24 @@ save_pixbuf_to_file (GdkPixbuf *pixbuf, char *filename)
   	png_infop info_ptr;
   	png_text text[2];
   	int i;
-
-	g_return_val_if_fail (pixbuf != NULL, FALSE);
-	g_return_val_if_fail (filename != NULL, FALSE);
-	g_return_val_if_fail (filename[0] != '\0', FALSE);
-
-	if (!strcmp (filename, "-"))
-		handle = stdout;
-	else
-		handle = fopen (filename, "wb");
-        if (handle == NULL) {
-        	return FALSE;
-	}
-
+	
 	png_ptr = png_create_write_struct (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 	if (png_ptr == NULL) {
-		fclose (handle);
 		return FALSE;
 	}
 
 	info_ptr = png_create_info_struct (png_ptr);
 	if (info_ptr == NULL) {
 		png_destroy_write_struct (&png_ptr, (png_infopp)NULL);
-		fclose (handle);
 	    	return FALSE;
 	}
 
 	if (setjmp (png_ptr->jmpbuf)) {
 		png_destroy_write_struct (&png_ptr, &info_ptr);
-		fclose (handle);
 		return FALSE;
 	}
 
-	png_init_io (png_ptr, handle);
+	png_init_io (png_ptr, (FILE *)handle);
 
         has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
 	width = gdk_pixbuf_get_width (pixbuf);
@@ -145,9 +133,34 @@ save_pixbuf_to_file (GdkPixbuf *pixbuf, char *filename)
 	
 	g_free (buffer);
 
-	if (handle != stdout)
-		fclose (handle);
 	return TRUE;
+}
+
+static gboolean
+save_pixbuf_to_file (GdkPixbuf *pixbuf, char *filename)
+{
+	FILE *handle;
+	gboolean result;
+
+	g_return_val_if_fail (pixbuf != NULL, FALSE);
+	g_return_val_if_fail (filename != NULL, FALSE);
+	g_return_val_if_fail (filename[0] != '\0', FALSE);
+
+	if (!strcmp (filename, "-")) {
+		handle = stdout;
+	} else {
+		handle = fopen (filename, "wb");
+	}
+
+        if (handle == NULL) {
+        	return FALSE;
+	}
+
+	result = save_pixbuf_to_file_internal (pixbuf, filename, handle);
+	if (!result || handle != stdout)
+		fclose (handle);
+
+	return result;
 }
 
 int

@@ -427,7 +427,7 @@ compute_menu_item_info (FMIconView *view,
 		*sensitive_return = TRUE;
 		*toggle_item = TRUE;
 	} else {
-
+		name = "";
 		g_assert_not_reached ();
 	}
 

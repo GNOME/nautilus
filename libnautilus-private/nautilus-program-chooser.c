@@ -209,8 +209,10 @@ program_file_pair_get_short_status_text (ProgramFilePair *pair)
 	supertype = get_supertype_from_file (pair->file);
 
 	switch (pair->status) {
+	default:
 	case PROGRAM_STATUS_UNKNOWN:
 		g_assert_not_reached ();
+		result = "error";
 		break;
 	case PROGRAM_NOT_IN_PREFERRED_LIST:
 		result = g_strdup (_("not in menu"));
@@ -254,8 +256,10 @@ program_file_pair_get_long_status_text (ProgramFilePair *pair)
 	file_name = nautilus_file_get_name (pair->file);
 
 	switch (pair->status) {
+	default:
 	case PROGRAM_STATUS_UNKNOWN:
 		g_assert_not_reached ();
+		result = "error";
 		break;
 	case PROGRAM_NOT_IN_PREFERRED_LIST:
 		result = g_strdup_printf (_("Is not in the menu for \"%s\" items."), file_type);

@@ -577,12 +577,13 @@ justification_changed_callback (NautilusStringPicker *string_picker, gpointer cl
 
 	if (nautilus_str_is_equal (string, "Left")) {
 		justification = GTK_JUSTIFY_LEFT;
-	}
-	else if (nautilus_str_has_prefix (string, "Center")) {
+	} else if (nautilus_str_has_prefix (string, "Center")) {
 		justification = GTK_JUSTIFY_CENTER;
-	}
-	else if (nautilus_str_has_prefix (string, "Right")) {
+	} else if (nautilus_str_has_prefix (string, "Right")) {
 		justification = GTK_JUSTIFY_RIGHT;
+	} else {
+		g_assert_not_reached ();
+		justification = GTK_JUSTIFY_LEFT;
 	}
 
 	nautilus_label_set_text_justification (NAUTILUS_LABEL (client_data), justification);

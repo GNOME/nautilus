@@ -399,6 +399,8 @@ iti_paint_text (Iti *iti, GdkDrawable *drawable, int x, int y)
 	int cursor, offset, i;
 	GnomeCanvasItem *canvas_item;
 
+	xpos = 0;
+	offset = 0;
 	priv = iti->priv;
 	style = GTK_WIDGET (GNOME_CANVAS_ITEM (iti)->canvas)->style;
 
@@ -525,7 +527,7 @@ iti_paint_text (Iti *iti, GdkDrawable *drawable, int x, int y)
 	/* The i-beam should only be drawn at the end of a line of text if that line is the
 	 * only or last line of text in a label.  We subtract one from the x position
 	 * so the i-beam is not visually jammed against the edge of the bounding rect. */
-	if (cursor == i){
+	if (cursor == i) {
 		int px = x + xpos + offset;
 		y -= ti->baseline_skip;
 		

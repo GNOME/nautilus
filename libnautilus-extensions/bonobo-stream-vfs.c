@@ -360,19 +360,24 @@ BonoboStream *
 bonobo_stream_vfs_open (const char *uri, Bonobo_Storage_OpenMode mode)
 {
 	GnomeVFSHandle *fd = NULL;
-	GnomeVFSResult res;
+	GnomeVFSResult result;
 
 	g_return_val_if_fail (uri != NULL, NULL);
 
-	if (mode == Bonobo_Storage_READ)
-		res = gnome_vfs_open(&fd, uri, GNOME_VFS_OPEN_READ);
-	else if (mode == Bonobo_Storage_WRITE)
-		res = gnome_vfs_open(&fd, uri, GNOME_VFS_OPEN_WRITE);
+	/* unhandled open modes */
+	result = GNOME_VFS_ERROR_NOT_SUPPORTED;
 
-	if(fd && res == GNOME_VFS_OK)
+	if (mode == Bonobo_Storage_READ) {
+		result = gnome_vfs_open(&fd, uri, GNOME_VFS_OPEN_READ);
+	} else if (mode == Bonobo_Storage_WRITE) {
+		result = gnome_vfs_open(&fd, uri, GNOME_VFS_OPEN_WRITE);
+	}
+	
+	if (fd != NULL && result == GNOME_VFS_OK) {
 		return bonobo_stream_create (fd);
-	else
-		return NULL;
+	}
+
+	return NULL;
 }
 
 /**

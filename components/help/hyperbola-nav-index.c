@@ -395,6 +395,7 @@ end_element (SAXParseInfo *spi,
 
       g_return_if_fail(spi->stinfo[PRIMARY]);
 
+      it = PRIMARY;
       if(spi->stinfo[SECONDARY] || spi->stinfo[SEE] || spi->stinfo[SEEALSO])
 	{
 	  parent_ii = g_tree_lookup(spi->idx->all_items, spi->stinfo[PRIMARY]);
@@ -442,7 +443,6 @@ end_element (SAXParseInfo *spi,
 	}
       else
 	{
-	  it = PRIMARY;
 	  parent_tree = spi->idx->all_items;
 	}
 

@@ -627,6 +627,9 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	char *combined_text;
 	gboolean have_editable, have_additional, needs_highlight;
 
+	gc = NULL;
+	icon_width = 0;
+	
 	details = item->details;
 	needs_highlight = details->is_highlighted_for_selection || details->is_highlighted_for_drop;
 
@@ -955,6 +958,11 @@ emblem_layout_next (EmblemLayout *layout,
 		case TOP_SIDE:
 			x = layout->icon_rect.x0;
 			y = layout->icon_rect.y0;
+			break;
+		default:
+			g_assert_not_reached ();
+			x = 0;
+			y = 0;
 			break;
 		}
 		if (layout->position != 0) {

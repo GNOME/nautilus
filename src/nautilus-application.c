@@ -336,6 +336,7 @@ nautilus_application_startup (NautilusApplication *application,
 		case OAF_REG_ALREADY_ACTIVE:
 			/* Another copy of . */
 			message = NULL;
+			detailed_message = NULL;
 			break;
 		case OAF_REG_NOT_LISTED:
 			/* Can't register myself due to trouble locating the

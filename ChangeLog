@@ -1,3 +1,71 @@
+2000-09-05  Pavel Cisler  <pavel@eazel.com>
+
+	* components/help/converters/gnome-db2html2/gdb3html.c:
+	(xml_parse_document):
+	* components/help/hyperbola-nav-index.c: (end_element):
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (logout_button_cb):
+	* components/services/time/service/trilobite-eazel-time-service.c:
+	(trilobite_eazel_time_service_do_http_request):
+	* components/tree/nautilus-tree-view.c:
+	* configure.in:
+	* libnautilus-extensions/bonobo-stream-vfs.c:
+	(bonobo_stream_vfs_open):
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_draw), (nautilus_background_draw_aa):
+	* libnautilus-extensions/nautilus-customization-data.c:
+	(nautilus_customization_data_new):
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(nautilus_directory_background_write_desktop_settings):
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(nautilus_file_operations_move_to_trash), (do_empty_trash):
+	* libnautilus-extensions/nautilus-file.c: (nautilus_file_dump):
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_or_measure_label_text), (emblem_layout_next):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(get_image_from_cache):
+	* libnautilus-extensions/nautilus-icon-text-item.c:
+	(iti_paint_text):
+	* libnautilus-extensions/nautilus-list.c: (draw_cell), (draw_row):
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_add_application_to_short_list_for_uri):
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(program_file_pair_get_short_status_text),
+	(program_file_pair_get_long_status_text):
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(nautilus_choose_component_for_file),
+	(nautilus_choose_application_for_file):
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_scalable_font_draw_text_lines_with_dimensions):
+	* libnautilus-extensions/nautilus-theme.c:
+	(nautilus_theme_make_selector):
+	* librsvg/rsvg-ft.c: (rsvg_ft_get_glyph):
+	* librsvg/test-ft-gtk.c: (set_text):
+	* librsvg/test-ft.c: (save_pixbuf_to_file_internal),
+	(save_pixbuf_to_file):
+	* librsvg/test-rsvg.c: (save_pixbuf_to_file_internal),
+	(save_pixbuf_to_file):
+	* src/file-manager/fm-directory-view.c: (display_pending_files),
+	(compute_menu_item_info):
+	* src/file-manager/fm-icon-view.c: (compute_menu_item_info):
+	* src/file-manager/fm-list-view.c: (get_column_from_attribute):
+	* src/nautilus-application.c: (nautilus_application_startup):
+	* src/nautilus-search-bar-criterion.c:
+	(nautilus_search_bar_criterion_next_new),
+	(nautilus_search_bar_criterion_get_location),
+	(get_date_modified_location_for):
+	* src/nautilus-sidebar-tabs.c: (draw_one_tab_themed),
+	(draw_or_layout_all_tabs):
+	* src/nautilus-toolbar.c: (nautilus_toolbar_size_allocate):
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_get_current_location_title):
+	* test/test-nautilus-label.c: (justification_changed_callback):
+
+	Fix all the warnings -Wuninitialized found.
+	Quite a number of them were actual bugs.
+	Turn on -Wuninitialized in configure.in now that ORBit generates 
+	warning-free code.
+	
 2000-09-05  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 1247 ("Edit Novice Settings" menu item

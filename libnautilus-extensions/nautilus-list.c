@@ -1943,7 +1943,7 @@ get_cell_greater_rectangle (GdkRectangle *cell_rect, GdkRectangle *result,
 
 static void
 draw_cell (GtkCList *clist, GdkRectangle *area, int row_index, int column_index, 
-	GtkCListRow *row, GdkRectangle *erase_rect)
+	GtkCListRow *row)
 {
 	GtkStyle *style;
 	GdkGC *fg_gc;
@@ -2128,7 +2128,6 @@ static void
 draw_row (GtkCList *clist, GdkRectangle *area, int row_index, GtkCListRow *row)
 {
 	GtkWidget *widget;
-	GdkRectangle *rect;
 	GdkRectangle row_rectangle;
 	GdkRectangle extended_row_rectangle;
 	GdkRectangle intersect_rectangle;
@@ -2180,7 +2179,7 @@ draw_row (GtkCList *clist, GdkRectangle *area, int row_index, GtkCListRow *row)
 
 	/* iterate and draw all the columns (row cells) and draw their contents */
 	for (colum_index = 0; colum_index < clist->columns; colum_index++) {
-		draw_cell (clist, area, row_index, colum_index, row, rect);
+		draw_cell (clist, area, row_index, colum_index, row);
 	}
 
 	/* draw the row spacer */

@@ -558,7 +558,7 @@ logout_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 	if (CORBA_OBJECT_NIL != view->details->user_control) {
 		/* Get list of currently active users */
 
-		EazelProxy_UserControl_get_active_users (
+		users = EazelProxy_UserControl_get_active_users (
 			view->details->user_control, &ev
 		);
 

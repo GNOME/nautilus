@@ -1333,6 +1333,8 @@ display_pending_files (FMDirectoryView *view)
 	GList *selection;
 	char *uri;
 
+	selection = NULL;
+
 	if (view->details->model != NULL
 	    && nautilus_directory_are_all_files_seen (view->details->model)) {
 		done_loading (view);
@@ -2361,6 +2363,7 @@ compute_menu_item_info (FMDirectoryView *directory_view,
         	*return_sensitivity = nautilus_directory_background_is_set 
         		(fm_directory_view_get_background (directory_view));
         } else {
+        	name = "";
                 g_assert_not_reached ();
         }
 

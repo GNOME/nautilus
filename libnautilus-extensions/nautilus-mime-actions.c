@@ -857,6 +857,8 @@ nautilus_mime_add_application_to_short_list_for_uri (const char *uri,
 	GList *old_list, *new_list;
 	GnomeVFSResult result;
 
+	result = GNOME_VFS_OK;
+
 	old_list = nautilus_mime_get_short_list_applications_for_uri (uri);
 
 	if (!gnome_vfs_mime_id_in_application_list (application_id, old_list)) {

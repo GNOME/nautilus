@@ -1934,6 +1934,9 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 	
 	g_return_val_if_fail (scalable_icon != NULL, NULL);
 
+	key = NULL;
+	image = NULL;
+	
 	factory = nautilus_get_current_icon_factory ();
 	hash_table = factory->icon_cache;
 
@@ -1959,8 +1962,7 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 		g_assert (image != NULL);
 	}
 	
-	if (!found_image)
-		{
+	if (!found_image) {
 		gboolean got_scaled_image;
 		gboolean got_custom_image;
 		IconInfo key_icon_info;
@@ -2046,6 +2048,7 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 	nautilus_icon_factory_schedule_sweep ();
 
 	/* Grab a ref for the caller. */
+	g_assert (image != NULL);
 	gdk_pixbuf_ref (image);
         return image;
 }

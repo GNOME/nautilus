@@ -941,6 +941,7 @@ nautilus_scalable_font_draw_text_lines_with_dimensions (const NautilusScalableFo
 				
 			default:
 				g_assert_not_reached ();
+				text_x = 0;
 			}
 			
 			text_y = y;

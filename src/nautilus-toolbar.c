@@ -102,6 +102,7 @@ nautilus_toolbar_size_allocate (GtkWidget     *widget,
   g_return_if_fail (GTK_IS_TOOLBAR (widget));
   g_return_if_fail (allocation != NULL);
 
+  save_x = 0;
   toolbar = GTK_TOOLBAR (widget);
   nautilus_toolbar = NAUTILUS_TOOLBAR (widget);
   spacing = nautilus_toolbar->button_spacing;

@@ -368,6 +368,8 @@ static void set_text (TestCtx *ctx, const char *fn) {
 	int n_lines;
 	char **lines;
 
+	lines = NULL;
+
 	f = fopen (fn, "r");
 	if (f == NULL) {
 		g_warning ("Error opening file %s\n", fn);
@@ -384,6 +386,9 @@ static void set_text (TestCtx *ctx, const char *fn) {
 		else if (!(n_lines & (n_lines - 1))) {
 			lines = g_renew (char *, lines, n_lines << 1);
 		}
+
+		g_assert (lines != NULL);
+
 		len = strlen (line);
 	        if (len > 0 && line[len - 1] == '\n')
 			line[--len] = 0;

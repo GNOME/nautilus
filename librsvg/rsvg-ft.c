@@ -480,6 +480,8 @@ rsvg_ft_get_glyph (RsvgFTFont *font, FT_UInt glyph_ix, double sx, double sy,
 	FT_Vector delta;
 	double expansion, scale;
 
+	result = NULL;
+
 	if (glyph_ix == 0)
 		return NULL;
 

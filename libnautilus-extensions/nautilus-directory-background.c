@@ -271,6 +271,10 @@ nautilus_directory_background_write_desktop_settings (char *color, char *image, 
 				break;	
 			case NAUTILUS_BACKGROUND_SCALED_ASPECT:
 				wallpaper_align = WALLPAPER_SCALED_KEEP;
+				break;
+			default:
+				g_assert_not_reached ();
+				wallpaper_align = WALLPAPER_TILED;
 				break;	
 		}
 		gnome_config_set_int ("/Background/Default/wallpaperAlign", wallpaper_align);

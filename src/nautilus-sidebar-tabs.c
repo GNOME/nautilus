@@ -637,6 +637,8 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
 	int highlight_offset;
 	int text_x;
 	int text_y;
+
+	left_width = 0;
 	
 	widget = GTK_WIDGET (sidebar_tabs);
 	/* FIXME bugzilla.eazel.com 2504: can't prelight active state yet */
@@ -845,7 +847,11 @@ draw_or_layout_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean layout_only
 	gboolean	first_flag, prev_invisible;
 	
 	g_assert (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
-		
+
+	temp_gc = NULL;
+	tab_pixbuf = NULL;
+	text_h_offset = 0;
+
 	next_tab = sidebar_tabs->details->tab_items;
 			
 	widget = GTK_WIDGET (sidebar_tabs);  
@@ -882,6 +888,7 @@ draw_or_layout_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean layout_only
 		temp_gc = gdk_gc_new (widget->window); 
 	
 		if (is_themed) {
+			g_assert (tab_pixbuf != NULL);
 			draw_pixbuf_tiled_aa (sidebar_tabs->details->tab_piece_images[TAB_BACKGROUND], tab_pixbuf, sidebar_tabs->details->tab_height + TAB_TOP_GAP);
 		} else {
 			gdk_gc_set_foreground (temp_gc, &sidebar_tabs->details->background_color);
@@ -900,13 +907,16 @@ draw_or_layout_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean layout_only
 		
 		if (this_item->visible && !layout_only) {
 			prev_invisible = prev_item && !prev_item->visible;
-			if (is_themed)
+			if (is_themed) {
+				g_assert (tab_pixbuf != NULL);
 				draw_one_tab_themed (sidebar_tabs, tab_pixbuf, this_item->tab_text, x_pos, y_pos,
 								 this_item->prelit, first_flag, prev_invisible,
 								 text_h_offset, &this_item->tab_rect);
-			else
+			} else {
+				g_assert (temp_gc != NULL);
 				draw_one_tab_plain (sidebar_tabs, temp_gc,  this_item->tab_text,
 								x_pos, y_pos, this_item->prelit, &this_item->tab_rect);		
+			}
 		} 
 		tab_width = get_tab_width (sidebar_tabs, this_item, is_themed, first_flag);
 		

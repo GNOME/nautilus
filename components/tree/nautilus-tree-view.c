@@ -1106,6 +1106,7 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 	gboolean at_least_one_found;
 
 	at_least_one_found = FALSE;
+	uri = NULL;
 
 	if (!view->details->root_seen) {
 		call_when_root_seen (view, expand_uri_sequence_and_select_end);
@@ -1578,6 +1579,8 @@ static void nautilus_tree_view_drag_data_received (GtkWidget *widget,
 						action_string = "link";
 						break;
 					default:
+						g_assert_not_reached ();
+						action_string = "error";
 						break;
 					}
 			

@@ -83,6 +83,7 @@ nautilus_customization_data_new (const char *customization_name,
 
 	data = g_new0 (NautilusCustomizationData, 1);
 
+	public_result = GNOME_VFS_OK;
 
 	if (show_public_customizations) {
 		public_directory_uri = get_global_customization_uri (customization_name);

@@ -916,6 +916,8 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 	source_uri_list = NULL;
 	target_uri_list = NULL;
 
+	result = GNOME_VFS_OK;
+
 	/* build the source and uri list, checking if any of the delete itmes are Trash */
 	for (p = item_uris; p != NULL; p = p->next) {
 		bail = FALSE;
@@ -1057,6 +1059,8 @@ do_empty_trash (GtkWidget *parent_view)
 	 */
 
 	trash_dir_uri = NULL;
+	trash_dir_list = NULL;
+
 	result = gnome_vfs_find_directory (NULL, GNOME_VFS_DIRECTORY_KIND_TRASH,
 		&trash_dir_uri, FALSE, FALSE, 0777);
 

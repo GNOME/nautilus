@@ -221,6 +221,7 @@ nautilus_window_get_current_location_title (NautilusWindow *window)
 {
         char *title;
 
+	title = NULL;
         if (window->new_content_view != NULL) {
                 title = nautilus_view_frame_get_title (window->new_content_view);
         } else if (window->content_view != NULL) {

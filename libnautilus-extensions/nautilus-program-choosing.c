@@ -125,13 +125,14 @@ nautilus_choose_component_for_file (NautilusFile *file,
 	any_choices = any_programs_available_for_file (action_type, file);
 
 	identifier = NULL;
+	dialog = NULL;
 
 	if (any_choices) {
 		dialog = set_up_program_chooser 
 			(file, action_type, parent_window);
 
 		if (gnome_dialog_run (dialog) == GNOME_OK) {
-			identifier = nautilus_program_chooser_get_component (dialog);;
+			identifier = nautilus_program_chooser_get_component (dialog);
 		}
 	} else {
 		nautilus_program_chooser_show_no_choices_message (action_type, file, parent_window);
@@ -148,6 +149,7 @@ nautilus_choose_component_for_file (NautilusFile *file,
 		/* Destroy only after callback, since view identifier will
 		 * be destroyed too.
 		 */
+		g_assert (dialog != NULL);
 		gtk_widget_destroy (GTK_WIDGET (dialog));
 	}
 }				    
@@ -185,6 +187,7 @@ nautilus_choose_application_for_file (NautilusFile *file,
 	any_choices = any_programs_available_for_file (action_type, file);
 
 	application = NULL;
+	dialog = NULL;
 
 	if (any_choices) {
 		dialog = set_up_program_chooser 
@@ -207,6 +210,7 @@ nautilus_choose_application_for_file (NautilusFile *file,
 		/* Destroy only after callback, since application struct will
 		 * be destroyed too.
 		 */
+		g_assert (dialog != NULL);
 		gtk_widget_destroy (GTK_WIDGET (dialog));
 	}
 }				    

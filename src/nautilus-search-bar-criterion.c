@@ -384,6 +384,7 @@ nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionType criterion
 									       NULL);
 		break;
 	default:
+		new_criterion = NULL;
 		g_assert_not_reached ();
 	}
 	
@@ -411,7 +412,9 @@ nautilus_search_bar_criterion_get_location (NautilusSearchBarCriterion *criterio
 	GtkWidget *menu_item;
 	int name_number, relation_number, value_number;
 	char *value_text;
-	
+
+	value_number = 0;
+	value_text = NULL;
 	/* There is ONE thing you should be aware of while implementing this function.
 	   You have to make sure you use non-translated strings for building the uri.
 	   So, to implement this, you are supposed to:
@@ -433,22 +436,23 @@ nautilus_search_bar_criterion_get_location (NautilusSearchBarCriterion *criterio
 		menu = gtk_option_menu_get_menu (criterion->details->value_menu);
 		menu_item = gtk_menu_get_active (GTK_MENU (menu));
 		value_number = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (menu_item), "type"));
-	}
-	else if (criterion->details->use_value_entry) {
+	} else if (criterion->details->use_value_entry) {
 		value_text = gtk_entry_get_text (GTK_ENTRY (criterion->details->value_entry));
-	}
-	else if (criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
+	} else if (criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
 		value_text = nautilus_gnome_date_edit_get_date_as_string (criterion->details->date);
 	}
 
 	switch (name_number) {
 	case NAUTILUS_FILE_NAME_SEARCH_CRITERION:
+		g_assert (criterion->details->use_value_entry
+			|| criterion->details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION);
 		return get_name_location_for (relation_number,
 					      value_text);
 	case NAUTILUS_CONTENT_SEARCH_CRITERION:
 		return get_content_location_for (relation_number,
 						 value_text);
 	case NAUTILUS_FILE_TYPE_SEARCH_CRITERION:
+		g_assert (criterion->details->use_value_menu);
 		return get_file_type_location_for (relation_number,
 						   value_number);
 	case NAUTILUS_SIZE_SEARCH_CRITERION:
@@ -464,8 +468,7 @@ nautilus_search_bar_criterion_get_location (NautilusSearchBarCriterion *criterio
 		return get_owner_location_for (relation_number,
 					       value_text);
 	default:
-		g_assert_not_reached ();
-		return NULL;
+		break;
 	}
 
 	g_assert_not_reached ();
@@ -671,19 +674,14 @@ get_date_modified_location_for (int relation_number,
 	/* Handle "is today" and "is yesterday" separately */
 	if (relation_number == 5) {
 		result = g_strdup_printf ("%s is today", NAUTILUS_SEARCH_URI_TEXT_DATE_MODIFIED);
-	}
-	if (relation_number == 6) {
+	} else if (relation_number == 6) {
 		result = g_strdup_printf ("%s is yesterday", NAUTILUS_SEARCH_URI_TEXT_DATE_MODIFIED);
-	}
-	if (relation_number != 5 && relation_number != 6) {
-		if (date_string == NULL) {
-			return g_strdup ("");
-		}
-		else {
-			result = g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_DATE_MODIFIED,
-						  possible_relations[relation_number],
-						  date_string);
-		}
+	} else  if (date_string != NULL) {
+		result = g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_DATE_MODIFIED,
+					  possible_relations[relation_number],
+					  date_string);
+	} else {
+		result = g_strdup ("");
 	}
 	return result;
 	

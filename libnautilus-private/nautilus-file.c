@@ -3717,9 +3717,6 @@ nautilus_file_dump (NautilusFile *file)
 	} else {
 		g_print("size: %ld \n", size);
 		switch (file->details->info->type) {
-			case GNOME_VFS_FILE_TYPE_UNKNOWN:
-				file_kind = "unknown";
-				break;
 			case GNOME_VFS_FILE_TYPE_REGULAR:
 				file_kind = "regular file";
 				break;
@@ -3740,6 +3737,10 @@ nautilus_file_dump (NautilusFile *file)
 				break;
 			case GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK:
 				file_kind = "symbolic link";
+				break;
+			case GNOME_VFS_FILE_TYPE_UNKNOWN:
+			default:
+				file_kind = "unknown";
 				break;
 		}
 		g_print("kind: %s \n", file_kind);

@@ -348,6 +348,8 @@ nautilus_background_draw (NautilusBackground *background,
 			g_assert_not_reached ();
 			/* fall through */
 		case NAUTILUS_BACKGROUND_CENTERED:
+			image_width = gdk_pixbuf_get_width (background->details->image);
+			image_height = gdk_pixbuf_get_height (background->details->image);
 			gdk_pixbuf_render_to_drawable (background->details->image, drawable, gc,
 						       0, 0,
 						       rectangle->x + (rectangle->width - image_width)/2,
@@ -531,6 +533,9 @@ nautilus_background_draw_aa (NautilusBackground *background,
 	int accumulator, temp_value;
 
 	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
+
+	remaining_width = 0;
+	remaining_height = 0;
 	
 	if (!buffer->is_buf) {
 		if (!nautilus_background_image_fully_obscures (background, entire_width, entire_height, TRUE)) {

@@ -435,24 +435,28 @@ trilobite_eazel_time_service_do_http_request (TrilobiteEazelTimeService *service
 
 	switch (request_status) {
 	case ghttp_error: {
-		Trilobite_Eazel_Time_CannotGetTime *exn; 
-		const char *reason;
-		exn = Trilobite_Eazel_Time_CannotGetTime__alloc ();			
-		
-		reason = ghttp_get_error (request);
-		exn->url = CORBA_string_dup (service->private->time_url);
-		exn->reason = reason==NULL ? CORBA_string_dup ("Bad url"): CORBA_string_dup ( reason );
-		CORBA_exception_set (ev, CORBA_USER_EXCEPTION, ex_Trilobite_Eazel_Time_CannotGetTime, exn);
-		
-		result = 0;
-	}
-	break;
+			Trilobite_Eazel_Time_CannotGetTime *exn; 
+			const char *reason;
+			exn = Trilobite_Eazel_Time_CannotGetTime__alloc ();			
+			
+			reason = ghttp_get_error (request);
+			exn->url = CORBA_string_dup (service->private->time_url);
+			exn->reason = reason==NULL ? CORBA_string_dup ("Bad url"): CORBA_string_dup ( reason );
+			CORBA_exception_set (ev, CORBA_USER_EXCEPTION, ex_Trilobite_Eazel_Time_CannotGetTime, exn);
+			
+			result = 0;
+		}
+		break;
 	case ghttp_not_done:
 		g_message ("hest");
 		result = 0;
 		break;
 	case ghttp_done:
 		result = trilobite_eazel_time_service_parse_body (ghttp_get_body (request));
+		break;
+	default:
+		result = 0;
+		g_assert_not_reached ();
 		break;
 	}
 

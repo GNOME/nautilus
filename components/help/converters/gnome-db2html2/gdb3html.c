@@ -551,6 +551,8 @@ xml_parse_document (gchar *filename)
 	xmlParserCtxtPtr ctxt;
 	char *directory;
 
+	directory = NULL;
+
 	ctxt = xmlCreateFileParserCtxt(filename);
 	if (ctxt == NULL) {
 		return (NULL);

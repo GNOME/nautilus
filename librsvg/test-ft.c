@@ -115,78 +115,65 @@ art_render_freetype(ArtRender * render, const RsvgFTFont *font,
 /* utility routine for saving a pixbuf to a png file.
  * This was adapted from Iain Holmes' code in gnome-iconedit, and probably
  * should be in a utility library, possibly in gdk-pixbuf itself.
+ * 
+ * It is split up into save_pixbuf_to_file and save_pixbuf_to_file_internal
+ * to work around a gcc warning about handle possibly getting clobbered by
+ * longjmp. Declaring handle 'volatile FILE *' didn't work as it should have.
  */
-static gboolean save_pixbuf_to_file(GdkPixbuf * pixbuf, char *filename)
+static gboolean
+save_pixbuf_to_file_internal (GdkPixbuf *pixbuf, char *filename, FILE *handle)
 {
-	FILE *handle;
-	char *buffer;
+  	char *buffer;
 	gboolean has_alpha;
 	int width, height, depth, rowstride;
-	guchar *pixels;
-	png_structp png_ptr;
-	png_infop info_ptr;
-	png_text text[2];
-	int i;
-
-	g_return_val_if_fail(pixbuf != NULL, FALSE);
-	g_return_val_if_fail(filename != NULL, FALSE);
-	g_return_val_if_fail(filename[0] != '\0', FALSE);
-
-	if (!strcmp(filename, "-"))
-		handle = stdout;
-	else
-		handle = fopen(filename, "wb");
-	if (handle == NULL) {
-		return FALSE;
-	}
-
-	png_ptr =
-	    png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL,
-				    NULL);
+  	guchar *pixels;
+  	png_structp png_ptr;
+  	png_infop info_ptr;
+  	png_text text[2];
+  	int i;
+	
+	png_ptr = png_create_write_struct (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 	if (png_ptr == NULL) {
-		fclose(handle);
 		return FALSE;
 	}
 
-	info_ptr = png_create_info_struct(png_ptr);
+	info_ptr = png_create_info_struct (png_ptr);
 	if (info_ptr == NULL) {
-		png_destroy_write_struct(&png_ptr, (png_infopp) NULL);
-		fclose(handle);
+		png_destroy_write_struct (&png_ptr, (png_infopp)NULL);
+	    	return FALSE;
+	}
+
+	if (setjmp (png_ptr->jmpbuf)) {
+		png_destroy_write_struct (&png_ptr, &info_ptr);
 		return FALSE;
 	}
 
-	if (setjmp(png_ptr->jmpbuf)) {
-		png_destroy_write_struct(&png_ptr, &info_ptr);
-		fclose(handle);
-		return FALSE;
-	}
+	png_init_io (png_ptr, (FILE *)handle);
 
-	png_init_io(png_ptr, handle);
+        has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
+	width = gdk_pixbuf_get_width (pixbuf);
+	height = gdk_pixbuf_get_height (pixbuf);
+	depth = gdk_pixbuf_get_bits_per_sample (pixbuf);
+	pixels = gdk_pixbuf_get_pixels (pixbuf);
+	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
 
-	has_alpha = gdk_pixbuf_get_has_alpha(pixbuf);
-	width = gdk_pixbuf_get_width(pixbuf);
-	height = gdk_pixbuf_get_height(pixbuf);
-	depth = gdk_pixbuf_get_bits_per_sample(pixbuf);
-	pixels = gdk_pixbuf_get_pixels(pixbuf);
-	rowstride = gdk_pixbuf_get_rowstride(pixbuf);
-
-	png_set_IHDR(png_ptr, info_ptr, width, height,
-		     depth, PNG_COLOR_TYPE_RGB_ALPHA,
-		     PNG_INTERLACE_NONE,
-		     PNG_COMPRESSION_TYPE_DEFAULT,
-		     PNG_FILTER_TYPE_DEFAULT);
+	png_set_IHDR (png_ptr, info_ptr, width, height,
+			depth, PNG_COLOR_TYPE_RGB_ALPHA,
+			PNG_INTERLACE_NONE,
+			PNG_COMPRESSION_TYPE_DEFAULT,
+			PNG_FILTER_TYPE_DEFAULT);
 
 	/* Some text to go with the png image */
 	text[0].key = "Title";
 	text[0].text = filename;
 	text[0].compression = PNG_TEXT_COMPRESSION_NONE;
 	text[1].key = "Software";
-	text[1].text = "Test-ft";
+	text[1].text = "Test-Rsvg";
 	text[1].compression = PNG_TEXT_COMPRESSION_NONE;
-	png_set_text(png_ptr, info_ptr, text, 2);
+	png_set_text (png_ptr, info_ptr, text, 2);
 
 	/* Write header data */
-	png_write_info(png_ptr, info_ptr);
+	png_write_info (png_ptr, info_ptr);
 
 	/* if there is no alpha in the data, allocate buffer to expand into */
 	if (has_alpha) {
@@ -194,12 +181,12 @@ static gboolean save_pixbuf_to_file(GdkPixbuf * pixbuf, char *filename)
 	} else {
 		buffer = g_malloc(4 * width);
 	}
-
-	/* pump the raster data into libpng, one scan line at a time */
+	
+	/* pump the raster data into libpng, one scan line at a time */	
 	for (i = 0; i < height; i++) {
 		if (has_alpha) {
 			png_bytep row_pointer = pixels;
-			png_write_row(png_ptr, row_pointer);
+			png_write_row (png_ptr, row_pointer);
 		} else {
 			/* expand RGB to RGBA using an opaque alpha value */
 			int x;
@@ -211,19 +198,44 @@ static gboolean save_pixbuf_to_file(GdkPixbuf * pixbuf, char *filename)
 				*buffer_ptr++ = *source_ptr++;
 				*buffer_ptr++ = 255;
 			}
-			png_write_row(png_ptr, (png_bytep) buffer);
+			png_write_row (png_ptr, (png_bytep) buffer);		
 		}
 		pixels += rowstride;
 	}
+	
+	png_write_end (png_ptr, info_ptr);
+	png_destroy_write_struct (&png_ptr, &info_ptr);
+	
+	g_free (buffer);
 
-	png_write_end(png_ptr, info_ptr);
-	png_destroy_write_struct(&png_ptr, &info_ptr);
-
-	g_free(buffer);
-
-	if (handle != stdout)
-		fclose(handle);
 	return TRUE;
+}
+
+static gboolean
+save_pixbuf_to_file (GdkPixbuf *pixbuf, char *filename)
+{
+	FILE *handle;
+	gboolean result;
+
+	g_return_val_if_fail (pixbuf != NULL, FALSE);
+	g_return_val_if_fail (filename != NULL, FALSE);
+	g_return_val_if_fail (filename[0] != '\0', FALSE);
+
+	if (!strcmp (filename, "-")) {
+		handle = stdout;
+	} else {
+		handle = fopen (filename, "wb");
+	}
+
+        if (handle == NULL) {
+        	return FALSE;
+	}
+
+	result = save_pixbuf_to_file_internal (pixbuf, filename, handle);
+	if (!result || handle != stdout)
+		fclose (handle);
+
+	return result;
 }
 
 static void test_pixmap_destroy(guchar * pixels, gpointer data)

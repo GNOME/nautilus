@@ -1371,6 +1371,7 @@ get_column_from_attribute (FMListView *list_view, const char *value)
 		return LIST_VIEW_COLUMN_NONE;
 	}
 
+	number_of_columns = get_number_of_columns (list_view);
 	for (i = 0; i < number_of_columns; i++) {
 		if (strcmp (get_column_attribute (list_view, i), value) == 0) {
 			return i;

@@ -211,6 +211,7 @@ nautilus_theme_make_selector (const char *theme_name)
 		return NULL;
 	}
 	
+	pixbuf = NULL;
 	/* load the icon that we found and return it */
 	if (nautilus_istr_has_suffix(pixbuf_file, ".svg")) {
 		FILE *f = fopen (pixbuf_file, "rb");
