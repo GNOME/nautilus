@@ -30,6 +30,7 @@
 #include "nautilus-preferences.h"
 #include "nautilus-preferences-private.h"
 
+#include <libgnome/gnome-i18n.h>
 #include <gtk/gtksignal.h>
 
 #include <gconf/gconf.h>
@@ -46,14 +47,21 @@
  * We need to maintain both separately, so the user-display ones can
  * be capitalized and localized.
  */
-static const char *DEFAULT_USER_LEVEL_NAMES[] =
+static const char *DEFAULT_USER_LEVEL_NAMES_FOR_STORAGE[] =
 {
 	"novice",
 	"intermediate",
 	"hacker"
 };
 
-static const guint   DEFAULT_NUM_USER_LEVELS = NAUTILUS_N_ELEMENTS (DEFAULT_USER_LEVEL_NAMES);
+static const char *DEFAULT_USER_LEVEL_NAMES_FOR_DISPLAY[] =
+{
+	N_("Beginner"),
+	N_("Intermediate"),
+	N_("Advanced")
+};
+
+static const guint   DEFAULT_NUM_USER_LEVELS = NAUTILUS_N_ELEMENTS (DEFAULT_USER_LEVEL_NAMES_FOR_STORAGE);
 static const guint   DEFAULT_USER_LEVEL = NAUTILUS_USER_LEVEL_HACKER;
 
 static const char    USER_LEVEL_KEY[] = "/apps/nautilus/user_level";
@@ -66,7 +74,8 @@ struct _NautilusUserLevelManager
 	GtkObject		object;
 
         guint			num_user_levels;
-	NautilusStringList	*user_level_names;
+	NautilusStringList	*user_level_names_for_storage;
+	NautilusStringList	*user_level_names_for_display;
 
 	GConfClient		*gconf_client;
 	int			user_level_changed_connection;
@@ -89,6 +98,7 @@ static GtkType                   nautilus_user_level_manager_get_type         (v
 static void                      nautilus_user_level_manager_initialize_class (NautilusUserLevelManagerClass *user_level_manager_class);
 static void                      nautilus_user_level_manager_initialize       (NautilusUserLevelManager      *user_level_manager);
 static void                      user_level_manager_destroy                   (GtkObject                     *object);
+static char			*user_level_manager_get_user_level_as_string  (void);
 static NautilusUserLevelManager *user_level_manager_new                       (void);
 static void                      user_level_manager_ensure_global_manager     (void);
 static void                      user_level_set_default_if_needed             (NautilusUserLevelManager      *manager);
@@ -137,10 +147,12 @@ user_level_manager_new (void)
 	nautilus_preferences_handle_error (&error);
 	
 	manager->num_user_levels = DEFAULT_NUM_USER_LEVELS;
-	manager->user_level_names = nautilus_string_list_new (TRUE);
+	manager->user_level_names_for_storage = nautilus_string_list_new (TRUE);
+	manager->user_level_names_for_display = nautilus_string_list_new (TRUE);
 
 	for (i = 0; i < DEFAULT_NUM_USER_LEVELS; i++) {
-		nautilus_string_list_insert (manager->user_level_names, DEFAULT_USER_LEVEL_NAMES[i]);
+		nautilus_string_list_insert (manager->user_level_names_for_storage, DEFAULT_USER_LEVEL_NAMES_FOR_STORAGE[i]);
+		nautilus_string_list_insert (manager->user_level_names_for_display, _(DEFAULT_USER_LEVEL_NAMES_FOR_DISPLAY[i]));
 	}
 	
 	g_assert (manager->gconf_client != NULL);
@@ -209,7 +221,8 @@ user_level_manager_destroy (GtkObject *object)
 		gtk_object_unref (GTK_OBJECT (manager->gconf_client));
 	}
 
-	nautilus_string_list_free (manager->user_level_names);
+	nautilus_string_list_free (manager->user_level_names_for_storage);
+	nautilus_string_list_free (manager->user_level_names_for_display);
 }
 
 static void
@@ -242,7 +255,7 @@ user_level_set_default_if_needed (NautilusUserLevelManager *manager)
 	if (!value) {
 		value = gconf_value_new (GCONF_VALUE_STRING);
 		
-		gconf_value_set_string (value, DEFAULT_USER_LEVEL_NAMES[DEFAULT_USER_LEVEL]);
+		gconf_value_set_string (value, DEFAULT_USER_LEVEL_NAMES_FOR_STORAGE[DEFAULT_USER_LEVEL]);
 		
 		gconf_client_set (manager->gconf_client, USER_LEVEL_KEY, value, &error);
 		nautilus_preferences_handle_error (&error);
@@ -290,7 +303,7 @@ nautilus_user_level_manager_set_user_level (guint user_level)
 	guint			 old_user_level;
 
 	g_return_if_fail (user_level < manager->num_user_levels);
-	g_return_if_fail (user_level < nautilus_string_list_get_length (manager->user_level_names));
+	g_return_if_fail (user_level < nautilus_string_list_get_length (manager->user_level_names_for_storage));
 
 	old_user_level = nautilus_user_level_manager_get_user_level ();
 
@@ -298,7 +311,7 @@ nautilus_user_level_manager_set_user_level (guint user_level)
 		return;
 	}
 
-	user_level_string = nautilus_string_list_nth (manager->user_level_names, user_level);
+	user_level_string = nautilus_string_list_nth (manager->user_level_names_for_storage, user_level);
 	
 	g_assert (user_level_string != NULL);
 
@@ -319,14 +332,14 @@ nautilus_user_level_manager_get_user_level (void)
 	char			 *user_level_string;
 	gint			 index;
 
-	user_level_string = nautilus_user_level_manager_get_user_level_as_string ();
+	user_level_string = user_level_manager_get_user_level_as_string ();
 
 	/* The user_level_string is guranteed to be ok now.  The above function, will
 	 * make sure of that and deal with gconf problems too.
 	 */
 	g_assert (user_level_string != NULL);
 
-	index = nautilus_string_list_get_index_for_string (manager->user_level_names,
+	index = nautilus_string_list_get_index_for_string (manager->user_level_names_for_storage,
 							   user_level_string);
 
 	g_free (user_level_string);
@@ -344,12 +357,12 @@ nautilus_user_level_manager_get_num_user_levels (void)
 	return manager->num_user_levels;
 }
 
-NautilusStringList *
-nautilus_user_level_manager_get_user_level_names (void)
+char *
+nautilus_user_level_manager_get_user_level_name_for_display (guint user_level)
 {
 	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
 
-	return nautilus_string_list_new_from_string_list (manager->user_level_names, TRUE);
+	return nautilus_string_list_nth (manager->user_level_names_for_display, user_level);
 }
 
 char *
@@ -363,9 +376,9 @@ nautilus_user_level_manager_make_gconf_key (const char *preference_name,
 
 	g_return_val_if_fail (preference_name != NULL, NULL);
 	g_return_val_if_fail (user_level < manager->num_user_levels, NULL);
-	g_return_val_if_fail (user_level < nautilus_string_list_get_length (manager->user_level_names), NULL);
+	g_return_val_if_fail (user_level < nautilus_string_list_get_length (manager->user_level_names_for_storage), NULL);
 	
-	user_level_string = nautilus_string_list_nth (manager->user_level_names, user_level);
+	user_level_string = nautilus_string_list_nth (manager->user_level_names_for_storage, user_level);
 	g_assert (user_level_string != NULL);
 
 	key = g_strdup_printf ("%s/%s/%s",
@@ -385,8 +398,8 @@ nautilus_user_level_manager_make_current_gconf_key (const char *preference_name)
 							   nautilus_user_level_manager_get_user_level ());
 }
 
-char *
-nautilus_user_level_manager_get_user_level_as_string (void)
+static char *
+user_level_manager_get_user_level_as_string (void)
 {
 	GConfError		 *error = NULL;
 	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
@@ -401,7 +414,7 @@ nautilus_user_level_manager_get_user_level_as_string (void)
 	}
 
 	if (!user_level_string)
-		user_level_string = g_strdup ("novice");
+		user_level_string = g_strdup (DEFAULT_USER_LEVEL_NAMES_FOR_STORAGE[0]);
 
 	return user_level_string;
 }

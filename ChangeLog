@@ -1,5 +1,42 @@
 2000-09-15  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 1779 ("Customize Hacker Settings" doesn't match
+	user level name)
+	Fixed bug 2806 (User level names need to be localizable)
+	Fixed bug 2838 (Settings message badly suited for translation)
+
+	* libnautilus-extensions/nautilus-user-level-manager.h:
+	* libnautilus-extensions/nautilus-user-level-manager.c:
+	(user_level_manager_new), (user_level_manager_destroy),
+	(user_level_set_default_if_needed),
+	(nautilus_user_level_manager_set_user_level),
+	(nautilus_user_level_manager_get_user_level),
+	(nautilus_user_level_manager_get_user_level_name_for_display),
+	(nautilus_user_level_manager_make_gconf_key),
+	(user_level_manager_get_user_level_as_string): Split array of
+	user level names & list that's made from it into two; one for
+	gconf setting strings and one for user display. The user display
+	one is marked for translation. Made "get_user_level_string"
+	private since it had no callers and it's used only for the gconf
+	manipulation (and it would have a confusing name if public).
+	Changed _get_user_level_names to _get_user_level_name_for_display
+	and made it return a single name rather than the whole set;
+	that's how callers were using it anyway.
+	
+	* src/nautilus-first-time-druid.c:
+	(make_hbox_user_level_radio_button), (set_up_user_level_page):
+	Reworked to get user level names from user level manager rather
+	than hardwiring them here.
+	
+	* src/nautilus-window-menus.c: (user_level_customize_callback),
+	(add_user_level_menu_item), (nautilus_window_initialize_menus),
+	(get_customize_user_level_string): Reworked to get user level
+	names from user level manager rather than hardwiring them here.
+	Also added some comments and tweaked the wording of the
+	"Edit Beginner Settings" dialog at the suggestion of a localizer.
+
+2000-09-15  John Sullivan  <sullivan@eazel.com>
+
 	* libnautilus-extensions/nautilus-file-operations.c:
 	(handle_xfer_vfs_error), (handle_xfer_overwrite),
 	(nautilus_file_operations_copy_move),

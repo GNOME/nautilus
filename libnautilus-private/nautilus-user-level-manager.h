@@ -44,11 +44,10 @@ NautilusUserLevelManager*    nautilus_user_level_manager_get                    
 void                         nautilus_user_level_manager_set_user_level         (guint       user_level);
 guint                        nautilus_user_level_manager_get_user_level         (void);
 guint                        nautilus_user_level_manager_get_num_user_levels    (void);
-NautilusStringList          *nautilus_user_level_manager_get_user_level_names   (void);
+char          		    *nautilus_user_level_manager_get_user_level_name_for_display   (guint user_level);
 char			    *nautilus_user_level_manager_make_current_gconf_key (const char *preference_name);
 char			    *nautilus_user_level_manager_make_gconf_key         (const char *preference_name,
 										 guint         user_level);
-char			    *nautilus_user_level_manager_get_user_level_as_string  (void);
 void			     nautilus_user_level_manager_set_default_value_if_needed (const char		*preference_name,
 										      NautilusPreferenceType       type,
 										      guint			user_level,
