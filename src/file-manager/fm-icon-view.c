@@ -2601,6 +2601,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	char *container_uri;
 	char *mime_type;
 	const char *last_slash, *link_name;
+	char *link_file_name;
 	int n_uris, n_links;
 	gboolean all_local;
 	GArray *points;
@@ -2742,12 +2743,16 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			link_name = last_slash == NULL ? NULL : last_slash + 1;
 			
 			if (!eel_str_is_empty (link_name)) {
+				link_file_name = g_strconcat (link_name, ".desktop", NULL);
 				/* FIXME: Handle name conflicts? */
-				nautilus_link_local_create (container_uri, link_name,
+				nautilus_link_local_create (container_uri,
+							    link_file_name,
+							    link_name,
 							    NULL, uri,
 							    (n_links > 0) ? NULL: &point, 
 							    screen_num,
 							    NAUTILUS_LINK_GENERIC);
+				g_free (link_file_name);
 			}
 			
 			n_links++;

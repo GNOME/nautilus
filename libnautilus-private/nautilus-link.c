@@ -109,7 +109,8 @@ get_link_style_for_data (const char *file_contents, int file_size)
 
 gboolean
 nautilus_link_local_create (const char *directory_uri,
-			    const char *name,
+			    const char        *file_name,
+			    const char        *display_name,
 			    const char *image,
 			    const char *target_uri,
 			    const GdkPoint *point,
@@ -117,7 +118,8 @@ nautilus_link_local_create (const char *directory_uri,
 			    NautilusLinkType type)
 {
 	return nautilus_link_desktop_file_local_create (directory_uri,
-							name, image,
+							file_name,
+							display_name, image,
 							target_uri, 
 							point, screen,
 							type);

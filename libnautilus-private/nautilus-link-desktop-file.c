@@ -97,7 +97,8 @@ slurp_key_string (const char *uri,
 
 gboolean
 nautilus_link_desktop_file_local_create (const char        *directory_uri,
-					 const char        *name,
+					 const char        *file_name,
+					 const char        *display_name,
 					 const char        *image,
 					 const char        *target_uri,
 					 const GdkPoint    *point,
@@ -110,10 +111,11 @@ nautilus_link_desktop_file_local_create (const char        *directory_uri,
 	NautilusFileChangesQueuePosition item;
 
 	g_return_val_if_fail (directory_uri != NULL, FALSE);
-	g_return_val_if_fail (name != NULL, FALSE);
+	g_return_val_if_fail (file_name != NULL, FALSE);
+	g_return_val_if_fail (display_name != NULL, FALSE);
 	g_return_val_if_fail (target_uri != NULL, FALSE);
 
-	escaped_name = gnome_vfs_escape_string (name);
+	escaped_name = gnome_vfs_escape_string (file_name);
 	uri = g_strdup_printf ("%s/%s", directory_uri, escaped_name);
 	g_free (escaped_name);
 
@@ -123,7 +125,7 @@ nautilus_link_desktop_file_local_create (const char        *directory_uri,
 				    "Type=%s\n"
 				    "URL=%s\n"
 				    "%s%s\n",
-				    name,
+				    display_name,
 				    get_tag (type),
 				    target_uri,
 				    image != NULL ? "X-Nautilus-Icon=" : "",

@@ -1,5 +1,16 @@
 2004-10-12  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-link-desktop-file.[ch]:
+	Make nautilus_link_desktop_file_local_create take both
+	display name and file name.
+	* libnautilus-private/nautilus-link.[ch]:
+	Make nautilus_link_local_create take both
+	display name and file name.
+	* src/file-manager/fm-icon-view.c: (icon_view_handle_uri_list):
+	Create desktop file ending in ".desktop".
+
+2004-10-12  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-directory-view.c (activate_check_mime_types):
 	On mime mismatch, don't use the default app for "open".
 

@@ -28,7 +28,8 @@
 #include <libnautilus-private/nautilus-link.h>
 
 gboolean         nautilus_link_desktop_file_local_create                      (const char        *directory_uri,
-									       const char        *name,
+									       const char        *file_name,
+									       const char        *display_name,
 									       const char        *image,
 									       const char        *target_uri,
 									       const GdkPoint    *point,
