@@ -57,26 +57,22 @@ struct NautilusUndoManagerClass {
 
 
 /* GtkObject */
-GtkType			nautilus_undo_manager_get_type 				 (void);
-NautilusUndoManager 	*nautilus_undo_manager_new 				 (void);
+GtkType               nautilus_undo_manager_get_type          (void);
+NautilusUndoManager 	*nautilus_undo_manager_new               (void);
 
 /* Prototypes */
-gboolean 		nautilus_undo_manager_can_undo 				(NautilusUndoManager *manager);
-gboolean 		nautilus_undo_manager_can_redo 				(NautilusUndoManager *manager);
-
-void			nautilus_undo_manager_enable_redo 			 (NautilusUndoManager *manager, gboolean value);
-void			nautilus_undo_manager_set_queue_depth 			 (NautilusUndoManager *manager, gint depth);
-
-gboolean 		nautilus_undo_manager_unregister_object 		 (GtkObject *object);
-
-void                    nautilus_attach_undo_manager                             (GtkObject *object,
-										  Nautilus_Undo_Manager manager);
-void                    nautilus_share_undo_manager                              (GtkObject *destination_object,
-										  GtkObject *source_object);
-
-/* FIXME: This should not be a public function. 
- */
-Nautilus_Undo_Manager 	nautilus_get_undo_manager                                 (GtkObject *start_object);
-void			nautilus_undo_setup_bonobo_control 		  	  (BonoboControl *control);
+gboolean              nautilus_undo_manager_can_undo          (NautilusUndoManager   *manager);
+gboolean              nautilus_undo_manager_can_redo          (NautilusUndoManager   *manager);
+void                  nautilus_undo_manager_enable_redo       (NautilusUndoManager   *manager,
+							       gboolean               value);
+void                  nautilus_undo_manager_set_queue_depth   (NautilusUndoManager   *manager,
+							       gint                   depth);
+gboolean              nautilus_undo_manager_unregister_object (GtkObject             *object);
+void                  nautilus_attach_undo_manager            (GtkObject             *object,
+							       Nautilus_Undo_Manager  manager);
+void                  nautilus_share_undo_manager             (GtkObject             *destination_object,
+							       GtkObject             *source_object);
+void                  nautilus_undo_set_up_bonobo_control     (BonoboControl         *control);
+Nautilus_Undo_Manager nautilus_get_undo_manager               (GtkObject             *start_object);
 
 #endif

@@ -267,12 +267,10 @@ nautilus_undo_register_full (GList *atoms,
 {
 	Nautilus_Undo_Manager manager;
 	NautilusUndoTransaction *transaction;
-	Nautilus_Undo_Transaction undo_transaction;
+	Nautilus_Undo_Transaction corba_transaction;
 	NautilusUndoAtom *atom;
 	GList *p;
 	CORBA_Environment ev;
-
-	CORBA_exception_init(&ev);
 
 	g_return_if_fail (atoms != NULL);
 	g_return_if_fail (GTK_IS_OBJECT (undo_manager_search_start_object));
@@ -281,13 +279,11 @@ nautilus_undo_register_full (GList *atoms,
 	 * A lot of things could be simplified and we can probably get rid of
 	 * NautilusUndoable entirely (maybe replace it with NautilusUndoAtom).
 	 */
-
 	manager = nautilus_get_undo_manager (undo_manager_search_start_object);
-	if (manager == NULL) {
+	if (manager == CORBA_OBJECT_NIL) {
 		g_list_foreach (atoms, undo_atom_destroy_callback_data_g_func_cover, NULL);
 		return;
 	}
-
 
 	/* Create an undo transaction */
 	transaction = nautilus_undo_transaction_new (operation_name);
@@ -308,11 +304,14 @@ nautilus_undo_register_full (GList *atoms,
 			 GTK_SIGNAL_FUNC (nautilus_undo_unregister), NULL);
 	}
 
-	/* Get CORBA object and add to undo manager */
-	undo_transaction = bonobo_object_corba_objref (BONOBO_OBJECT (transaction));
-	Nautilus_Undo_Manager_append (manager, undo_transaction, &ev);
+	/* Get CORBA object and add to undo manager. */
+	corba_transaction = bonobo_object_corba_objref (BONOBO_OBJECT (transaction));
+	CORBA_exception_init(&ev);
+	Nautilus_Undo_Manager_append (manager, corba_transaction, &ev);
+	CORBA_exception_free (&ev);
 
-	CORBA_exception_free(&ev);
+	/* Now we are done with the transaction. */
+	bonobo_object_unref (BONOBO_OBJECT (transaction));
 }
 
 /* Cover for forgetting about all undo relating to a particular target. */
@@ -338,14 +337,12 @@ nautilus_undo (GtkObject *undo_manager_search_start_object)
 	Nautilus_Undo_Manager manager;
 	CORBA_Environment ev;
 
-  	CORBA_exception_init(&ev);
-
 	g_return_if_fail (GTK_IS_OBJECT (undo_manager_search_start_object));
 
 	manager = nautilus_get_undo_manager (undo_manager_search_start_object);
-	if (manager != NULL) {
+	if (manager != CORBA_OBJECT_NIL) {
+		CORBA_exception_init (&ev);
 		Nautilus_Undo_Manager_undo (manager, &ev);
+		CORBA_exception_free (&ev);
 	}
-
-	CORBA_exception_free(&ev);
 }

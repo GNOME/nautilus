@@ -1,5 +1,34 @@
 2000-05-23  Darin Adler  <darin@eazel.com>
 
+	* libnautilus/nautilus-undo-manager.c:
+	(impl_Nautilus_Undo_Manager__append), (nautilus_undo_manager_undo),
+	(nautilus_undo_manager_redo),
+	(nautilus_undo_manager_add_transaction),
+	(nautilus_undo_manager_unregister_object), (destroy),
+	(nautilus_undo_manager_set_queue_depth), (free_undo_manager_list),
+	(prune_undo_manager_list), (nautilus_get_undo_manager),
+	(undo_manager_unref), (undo_manager_ref),
+	(nautilus_attach_undo_manager), (set_up_bonobo_control),
+	(nautilus_undo_set_up_bonobo_control):
+	Some cleanup of the undo code, including a first cut of the
+	set_up_bonobo_control function. Also got rid of all the excess
+	unrefs that we didn't need. I hope this is right now. Also fixed
+	bug where code was trying to bonobo_object_unref a CORBA object
+	directly.
+	
+	* libnautilus/nautilus-undo-manager.c:
+	(nautilus_undo_set_up_bonobo_control):
+	* libnautilus/nautilus-undo-manager.h:
+	* libnautilus/nautilus-view-frame.c:
+	(nautilus_view_real_set_bonobo_control):
+	Change from setup to set_up. Setup is a noun, set up a verb phrase.
+	
+	* libnautilus/nautilus-undoable.c: (nautilus_undo_register_full),
+	(nautilus_undo): Some minor cleanup and unrefing the transaction
+	after adding it to the undo manager.
+	
+2000-05-23  Darin Adler  <darin@eazel.com>
+
 	The ViewFrame <-> View renaming.
 	We still have to rename the files.
 

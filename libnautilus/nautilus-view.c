@@ -505,5 +505,5 @@ nautilus_view_real_set_bonobo_control (NautilusView *view,
 {
 	view->details->control = bonobo_control;
 	bonobo_object_add_interface (BONOBO_OBJECT (view), BONOBO_OBJECT (view->details->control));
-	nautilus_undo_setup_bonobo_control (bonobo_control);
+	nautilus_undo_set_up_bonobo_control (bonobo_control);
 }
