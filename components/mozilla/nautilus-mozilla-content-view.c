@@ -35,6 +35,7 @@
 
 #include "gtkmozembed.h"
 #include "mozilla-preferences.h"
+#include "mozilla-components.h"
 
 #include <bonobo/bonobo-control.h>
 #include <gtk/gtksignal.h>
@@ -103,7 +104,7 @@ nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass 
 	object_class->destroy = nautilus_mozilla_content_view_destroy;
 }
 
-static gboolean mozilla_preferences_poked = FALSE;
+static gboolean mozilla_one_time_happenings = FALSE;
 
 static void
 nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
@@ -115,10 +116,24 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 	/* Conjure up the beast.  May God have mercy on our souls. */
 	view->details->mozilla = gtk_moz_embed_new ();
 
-	if (!mozilla_preferences_poked)
+	if (!mozilla_one_time_happenings)
 	{
-		mozilla_preferences_poked = TRUE;
+#if 0
+		gboolean	result;
+ 		const char	*class_uuid = "{fb21b992-1dd1-11b2-aab4-906384831dd4}";
+		
+#ifdef MOZILLA_EAZEL_PROTOCOL_HANDLER_COMPONENT_PATH
+ 		const char	*library_file_name = MOZILLA_EAZEL_PROTOCOL_HANDLER_COMPONENT_PATH;
+#else
+ 		const char	*library_file_name = "you lose";
+#endif
 
+ 		const char	*class_name = "The Caca Protocol Handler";
+ 		const char	*prog_id = "component://netscape/network/protocol?name=caca";
+#endif
+		
+		mozilla_one_time_happenings = TRUE;
+		
 		mozilla_preference_set_boolean ("nglayout.widget.gfxscrollbars", FALSE);
 		mozilla_preference_set_boolean ("security.checkloaduri", FALSE);
 		mozilla_preference_set ("general.useragent.misc", "Nautilus");
@@ -126,6 +141,17 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 #if 0
 		mozilla_preference_set ("network.proxy.http", "proxy");
 		mozilla_preference_set_int ("network.proxy.http_port", 80);
+#endif
+
+#if 0
+		result = mozilla_components_register_library (class_uuid,
+							      library_file_name,
+							      class_name,
+							      prog_id);
+
+		if (!result) {
+			g_warning ("Unable to register the eazel protocol handler.\n");
+		}
 #endif
 	}
 
@@ -307,8 +333,23 @@ bonobo_mozilla_callback (BonoboUIHandler *ui_handler, gpointer user_data, const 
 	
 	g_free (label_text);
 
+#if 1
+	{
+		char *text1 = "<html>";
+		char *text2 = "<a href=\"http://www.gnome.org\">http://www.gnome.org</a>";
+		char *text3 = "</html>";
+		
+		gtk_moz_embed_open_stream (GTK_MOZ_EMBED(view->details->mozilla), "file://", "text/html");
 
+		gtk_moz_embed_append_data (GTK_MOZ_EMBED(view->details->mozilla), text1, strlen (text1));
+		gtk_moz_embed_append_data (GTK_MOZ_EMBED(view->details->mozilla), text2, strlen (text2));
+		gtk_moz_embed_append_data (GTK_MOZ_EMBED(view->details->mozilla), text3, strlen (text3));
+
+		gtk_moz_embed_close_stream (GTK_MOZ_EMBED(view->details->mozilla));
+	}
+#else	
 	gtk_moz_embed_load_url (GTK_MOZ_EMBED (view->details->mozilla), "http://www.gnome.org/");
+#endif
 }
 
 static void
@@ -644,6 +685,9 @@ mozilla_open_uri_callback (GtkMozEmbed *mozilla,
 static char *handled_by_nautilus[] =
 {
 	"ftp",
+	"finger",
+	"eazel",
+	"caca"
 };
 
 #define num_handled_by_nautilus (sizeof (handled_by_nautilus) / sizeof ((handled_by_nautilus)[0]))

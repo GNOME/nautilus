@@ -1,8 +1,12 @@
 NULL = 
 
+#SUBDIRS = eazel-protocol-handler
+
 CPPFLAGS = \
 	-DPREFIX=\"$(prefix)\" \
 	-DG_LOG_DOMAIN=\"Nautilus-Mozilla\"
+
+component_path=$(prefix)/share/nautilus/mozilla-components/libeazel-protocol-handler.so
 
 INCLUDES = \
 	-I$(top_srcdir) \
@@ -11,6 +15,7 @@ INCLUDES = \
 	$(GNOMEUI_CFLAGS) \
 	$(MOZILLA_COMPONENT_CFLAGS) \
 	-DMOZILLA_MILESTONE=$(MOZILLA_MILESTONE) \
+	-DMOZILLA_EAZEL_PROTOCOL_HANDLER_COMPONENT_PATH="\"$(component_path)\""
 	$(NULL)
 
 bin_PROGRAMS =\
@@ -18,14 +23,16 @@ bin_PROGRAMS =\
 	$(NULL)
 
 nautilus_mozilla_content_view_SOURCES = \
-	nautilus-mozilla-content-view.h \
-	nautilus-mozilla-content-view.c \
 	main.c \
+	mozilla-components.cpp \
 	mozilla-preferences.cpp \
+	nautilus-mozilla-content-view.c \
 	$(NULL)
 
-noinst_HEADERS =				\
+noinst_HEADERS =\
 	mozilla-preferences.h \
+	mozilla-components.h \
+	nautilus-mozilla-content-view.h \
 	$(NULL)
 
 nautilus_mozilla_content_view_LDADD = \
@@ -45,6 +52,3 @@ oaf_DATA = \
 	$(NULL)
 
 EXTRA_DIST = $(oaf_DATA) $(NULL)
-
-caca:
-	@echo $(MOZILLA_MILESTONE)
