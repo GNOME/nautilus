@@ -35,6 +35,7 @@
 #include "nautilus-window.h"
 #include <gnome.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
@@ -281,10 +282,20 @@ set_up_button (GtkWidget* button,
 	       const char *icon_name)
 {
 	GnomeStock *stock_widget;
-	char *full_name;
+	char *full_name, *icon_theme, *path_name;
 	GtkToolbarChild *toolbar_child;
 
-	full_name = nautilus_theme_get_image_path (icon_name);
+	/* look in the theme to see if there's a redirection found */
+	icon_theme = nautilus_theme_get_theme_data ("toolbar", "ICON_THEME");
+	if (icon_theme) {
+		path_name = g_strdup_printf ("%s/%s.png", icon_theme, icon_name);
+		full_name = nautilus_pixmap_file (path_name);
+		g_free (path_name);
+		g_free (icon_theme);
+	} else {
+		full_name = nautilus_theme_get_image_path (icon_name);
+	}
+	
 	if (full_name == NULL) {
 		full_name = g_strdup (icon_name);	
 	}
