@@ -1,5 +1,15 @@
 2002-07-11  Dave Camp  <dave@ximian.com>
 
+	* src/nautilus-location-bar.c: (nautilus_location_bar_init): Added
+	a relation between the label and entry.
+	* src/nautilus-preferences-dialog.c: Changed "file names" to
+	"filenames" on request of the ui-review.
+	* src/nautilus-window-manage-views.c: (load_content_view),
+	(nautilus_window_set_sidebar_panels): Added some a11y names and
+	descriptions.
+
+2002-07-11  Dave Camp  <dave@ximian.com>
+
 	* components/history/nautilus-history-view.c: (update_history):
 	Don't block the selection_changed signal.
 	(row_activated_callback): Moved here from

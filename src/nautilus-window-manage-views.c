@@ -35,6 +35,7 @@
 #include "nautilus-window-private.h"
 #include "nautilus-zoom-control.h"
 #include <bonobo/bonobo-ui-util.h>
+#include <eel/eel-accessibility.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-glib-extensions.h>
@@ -973,6 +974,10 @@ load_content_view (NautilusWindow *window,
                 /* create a new content view */
                 view = nautilus_view_frame_new (window->details->ui_container,
                                                 window->application->undo_manager);
+
+                eel_accessibility_set_name (view, _("Content View"));
+                eel_accessibility_set_description (view, _("View of the current file or directory"));
+                
                 window->new_content_view = view;
                 g_object_ref (view);
                 gtk_object_sink (GTK_OBJECT (view));
@@ -1560,6 +1565,12 @@ nautilus_window_set_sidebar_panels (NautilusWindow *window,
                 /* Create and load the panel. */
 		sidebar_panel = nautilus_view_frame_new (window->details->ui_container,
                                                          window->application->undo_manager);
+                
+                eel_accessibility_set_name (sidebar_panel, _("Side Pane"));
+                eel_accessibility_set_description
+                        (sidebar_panel, _("Contains a side pane view"));
+                
+
 		nautilus_view_frame_set_label (sidebar_panel, identifier->name);
 		set_view_frame_info (sidebar_panel, TRUE, identifier);
 		connect_view (window, sidebar_panel);

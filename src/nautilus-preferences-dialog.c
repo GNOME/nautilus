@@ -133,12 +133,12 @@ static EelPreferencesItemDescription directory_views_items[] = {
 	},
 	{ N_("Show Options"),
 	  NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-	  N_("_Hidden files (file names starting with \".\")"),
+	  N_("_Hidden files (filenames starting with \".\")"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Show Options"),
 	  NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-	  N_("_Backup files (file names ending with \"~\")"),
+	  N_("_Backup files (filenames ending with \"~\")"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Show Options"),

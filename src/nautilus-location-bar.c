@@ -35,6 +35,7 @@
 
 #include "nautilus-window-private.h"
 #include "nautilus-window.h"
+#include <eel/eel-accessibility.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
@@ -715,6 +716,8 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 				 G_CALLBACK (editable_event_after_callback), bar, 0);
 
 	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
+
+	eel_accessibility_set_up_label_widget_relation (label, entry);
 
 	gtk_container_add (GTK_CONTAINER (bar), hbox);
 
