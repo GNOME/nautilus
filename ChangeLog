@@ -1,3 +1,10 @@
+2001-05-03  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file): Fix Nautilus Link
+	support so it works for links that have paths instead of URIs in
+	their custom icon field.
+
 2001-05-03  Dan Mueth  <dan@eazel.com>
 
 	Added information about configuration files.

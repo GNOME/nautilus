@@ -1437,7 +1437,7 @@ NautilusScalableIcon *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifier)
 {
 	char *uri, *file_uri, *file_path, *image_uri, *icon_name, *mime_type, *top_left_text;
-	char *directory, *desktop_directory, *buf;
+	char *directory, *desktop_directory, *buf, *icon_path;
  	gboolean is_local;
  	int file_size, size, res;
  	NautilusScalableIcon *scalable_icon;
@@ -1520,12 +1520,17 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 		if (file_path != NULL) {
 			image_uri = nautilus_link_local_get_image_uri (file_path);
 			if (image_uri != NULL) {
-				/* FIXME bugzilla.eazel.com 2564: Lame hack. We only support file: URIs? */
-				if (eel_istr_has_prefix (image_uri, "file://")) {
+				/* FIXME bugzilla.eazel.com 2564: All custom icons must be in file:. */
+				icon_path = gnome_vfs_get_local_path_from_uri (image_uri);
+				if (icon_path == NULL && image_uri[0] == '/') {
+					icon_path = g_strdup (image_uri);
+				}
+				if (icon_path != NULL) {
 					if (uri == NULL) {
-						uri = g_strdup (image_uri);
+						uri = gnome_vfs_get_uri_from_local_path (icon_path);
 					}
-				} else {
+					g_free (icon_path);
+				} else if (strpbrk (image_uri, ":/") == NULL) {
 					icon_name = remove_icon_name_suffix (image_uri);
 				}
 				g_free (image_uri);
