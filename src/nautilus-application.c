@@ -821,6 +821,14 @@ set_session_restart (GnomeClient *client, gboolean restart)
 }
 
 static void
+update_session (gpointer callback_data)
+{
+	set_session_restart (callback_data,
+			     nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_ADD_TO_SESSION)
+			     && nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP));
+}
+
+static void
 init_session (void)
 {
 	GnomeClient *client;
@@ -828,13 +836,20 @@ init_session (void)
 	client = gnome_master_client ();
 
 	gtk_signal_connect (GTK_OBJECT (client), "save_yourself",
-			   (GtkSignalFunc) save_session,
+			    (GtkSignalFunc) save_session,
 			    NULL);
-
+	
 	gtk_signal_connect (GTK_OBJECT (client), "die",
 			    (GtkSignalFunc) removed_from_session,
 			    NULL);
-			    			    			    	
-	set_session_restart (client, nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_ADD_TO_SESSION));
-}
+	
+	nautilus_preferences_add_callback
+		(NAUTILUS_PREFERENCES_ADD_TO_SESSION,
+		 update_session, client);
 
+	nautilus_preferences_add_callback
+		(NAUTILUS_PREFERENCES_SHOW_DESKTOP,
+		 update_session, client);
+
+	update_session (client);
+}

@@ -1,3 +1,13 @@
+2001-04-03  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Harper <jsh@eazel.com>
+
+	* src/nautilus-application.c: (update_session): New function,
+	reads preferences and updates the session based on whether the
+	Nautilus needs to be kept running to manage the desktop.
+	(init_session): Use the new functions and register to update the
+	session when the preferences change.
+
 2001-04-03  John Harper  <jsh@eazel.com>
 
 	Fixed part of bug 7823 (Nautilus window hints make it unusable
