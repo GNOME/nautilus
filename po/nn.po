@@ -1,56 +1,62 @@
+# translation of nn.po to Norwegian Nynorsk
+# translation of nn.po to Norwegian (nynorsk)
 # Norwegian translation of Nautilus (Nynorsk dialect).
-# Copyright (C) 2001 Free Software Foundation, Inc.
+# Copyright (C) 2001, 2003 Free Software Foundation, Inc.
 # Roy-Magne Mo <rmo@sunnmore.net>, 2001-2002.
+# Åsmund Skjæveland <aasmunds@fys.uio.no>, 2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Nautilus 1.0.6\n"
-"POT-Creation-Date: 2003-10-13 11:59+0200\n"
-"PO-Revision-Date: 2001-12-14 13:29+0100\n"
-"Last-Translator: Roy-Magne Mo <rmo@sunnmore.net>\n"
-"Language-Team: Norwegian Nynorsk <nn@li.org>\n"
+"Project-Id-Version: Nautilus\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-10-09 16:29+0200\n"
+"PO-Revision-Date: 2003-10-14 14:02+0200\n"
+"Last-Translator: Åsmund Skjæveland <aasmunds@fys.uio.no>\n"
+"Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8-bit\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0.2\n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
-msgstr ""
+msgstr "Factory for Nautilus komponent-adapter-factories"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:2
 msgid "Factory for Nautilus component adapter factories "
-msgstr ""
+msgstr "Factory for Nautilus komponent-adapter-factories "
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:3
+#, fuzzy
+# TRN: «embeddables»?
 msgid ""
 "Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
 "look like Nautilus Views"
 msgstr ""
+"Factory for objekt som pakkar inn vanlege Bonobo-kontrollar eller "
+"«embeddables» slik at dei ser ut som Nautilus-visingar"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:4
-#, fuzzy
 msgid "Nautilus component adapter factory"
-msgstr "Tekstkomponent fabrikk"
+msgstr "Nautilus komponent-adapter-factory"
 
 #: components/adapter/main.c:101
 msgid "bonobo_ui_init() failed."
-msgstr ""
+msgstr "bonobo_ui_init() feila."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
 #: src/file-manager/fm-properties-window.c:2383
 #: src/file-manager/fm-search-list-view.c:500
 msgid "Emblems"
-msgstr "Emblem"
+msgstr "Merke"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:2
-#, fuzzy
 msgid "Nautilus Emblem side pane"
-msgstr "Nautilus-tema"
+msgstr "Nautilus sidepanel for merke"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:3
-#, fuzzy
 msgid "Nautilus Emblem view"
-msgstr "Nautilus lenke"
+msgstr "Nautilus merkevising"
 
 #: components/emblem/nautilus-emblem-view.c:203
 #, c-format
@@ -58,11 +64,12 @@ msgid ""
 "Couldn't remove emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one you added yourself."
 msgstr ""
+"Kunne ikkje fjerna merket med namnet «%s». Det er truleg eit "
+"permanent merke, og ikkje eit du har lagt på sjølv."
 
 #: components/emblem/nautilus-emblem-view.c:204
-#, fuzzy
 msgid "Couldn't remove emblem"
-msgstr "Kunne ikkje fjerne merke!"
+msgstr "Kunne ikkje fjerna merke"
 
 #: components/emblem/nautilus-emblem-view.c:238
 #, c-format
@@ -70,85 +77,91 @@ msgid ""
 "Couldn't rename emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one that you added yourself."
 msgstr ""
+"Kunne ikkje endra namnet på merket med namnet «%s». Det er truleg eit "
+"permanent merke, og ikkje eit du har lagt på sjølv."
 
 # panel/extern.c:780
 #: components/emblem/nautilus-emblem-view.c:239
-#, fuzzy
 msgid "Couldn't rename emblem"
-msgstr "Kan ikkje leggja til applet"
+msgstr "Kunne ikkje endra namn på merket"
 
 # panel/menu.c:5020
 #: components/emblem/nautilus-emblem-view.c:258
-#, fuzzy
 msgid "Rename Emblem"
-msgstr "Fjern dette panelet ..."
+msgstr "Gje nytt namn til merke"
 
 #: components/emblem/nautilus-emblem-view.c:277
 msgid "Enter a new name for the displayed emblem:"
-msgstr ""
+msgstr "Nytt namn på merket:"
 
 # gtk/gtkfilesel.c:1074
 #: components/emblem/nautilus-emblem-view.c:331
 msgid "Rename"
 msgstr "Gje nytt namn"
 
+
 #: components/emblem/nautilus-emblem-view.c:503
-#, fuzzy
 msgid "Add Emblems..."
-msgstr "Legg til ny MIME-type ..."
+msgstr "Legg til merker ..."
 
 #: components/emblem/nautilus-emblem-view.c:519
 msgid ""
 "Enter a descriptive name next to each emblem.  This name will be used in "
 "other places to identify the emblem."
 msgstr ""
+"Skriv eit skildrande namn på kvart merke. Dette namnet vil brukast "
+"andre stader for å identifisera merka."
 
 #: components/emblem/nautilus-emblem-view.c:521
 msgid ""
 "Enter a descriptive name next to the emblem.  This name will be used in "
 "other places to identify the emblem."
 msgstr ""
+"Skriv eit skildrande namn på merket. Dette namnet vil brukast "
+"andre stader for å identifisera merket."
 
 #: components/emblem/nautilus-emblem-view.c:739
 msgid ""
 "Some of the files could not be added as emblems because they did not appear "
 "to be valid images."
 msgstr ""
+"Nokon av filene kunne ikkje leggjast til som merke, avdi dei ikkje "
+"ser ut til å vera gyldige biletefiler."
 
 # panel/extern.c:780
 #: components/emblem/nautilus-emblem-view.c:739
 #: components/emblem/nautilus-emblem-view.c:741
-#, fuzzy
 msgid "Couldn't add emblems"
-msgstr "Kan ikkje leggja til applet"
+msgstr "Kunne ikkje leggja til merke"
 
 #: components/emblem/nautilus-emblem-view.c:741
 msgid ""
 "None of the files could be added as emblems because they did not appear to "
 "be valid images."
 msgstr ""
+"Ingen av filene kunne leggjast til som merke, avdi dei ikkje "
+"ser ut til å vera gyldige biletefiler."
 
 #: components/emblem/nautilus-emblem-view.c:762
 msgid "The dragged text was not a valid file location."
-msgstr ""
+msgstr "Den dregne teksten er ikkje ei gyldig filplassering."
 
 # panel/extern.c:780
 #: components/emblem/nautilus-emblem-view.c:762
 #: components/emblem/nautilus-emblem-view.c:786
 #: components/emblem/nautilus-emblem-view.c:835
-#, fuzzy
 msgid "Couldn't add emblem"
-msgstr "Kan ikkje leggja til applet"
+msgstr "Kunne ikkje leggja til merke"
 
 #: components/emblem/nautilus-emblem-view.c:781
 #: components/emblem/nautilus-emblem-view.c:834
 #, c-format
 msgid "The file '%s' does not appear to be a valid image."
-msgstr ""
+msgstr "Fila «%s»  ser ikkje ut til å vera eit gydlig bilete."
 
 #: components/emblem/nautilus-emblem-view.c:784
 msgid "The dragged file does not appear to be a valid image."
-msgstr ""
+msgstr "Fila som vart dregen ser ikkje ut til å vera eit gyldig bilete."
 
 #: components/emblem/nautilus-emblem-view.c:899 data/browser.xml.h:35
 #: src/nautilus-property-browser.c:1731
@@ -157,7 +170,7 @@ msgstr "Slett"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:1
 msgid "Factory for hardware view"
-msgstr ""
+msgstr "Factory for maskinvarevising"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:2
 #: components/hardware/nautilus-hardware-view.c:754
@@ -166,30 +179,28 @@ msgid "Hardware"
 msgstr "Maskinvare"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:3
-#, fuzzy
 msgid "Hardware Viewer"
-msgstr "Biletevisar"
+msgstr "Maskinvarevisar"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:4
 msgid "Hardware view"
-msgstr ""
+msgstr "Maskinvarevising"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:5
 msgid "View as Hardware"
 msgstr "Vis som maskinvare"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:6
-#, fuzzy
 msgid "hardware view"
-msgstr "teikneining"
+msgstr "maskinvarevising"
 
 #: components/hardware/nautilus-hardware-view.c:172
 msgid "name of icon for the hardware view"
-msgstr ""
+msgstr "namn på ikonet til maskinvarevising"
 
 #: components/hardware/nautilus-hardware-view.c:174
 msgid "summary of hardware info"
-msgstr ""
+msgstr "oppsummering av informasjon om maskinvarevising"
 
 #: components/hardware/nautilus-hardware-view.c:306
 #, c-format
@@ -198,6 +209,9 @@ msgid ""
 "%s MHz\n"
 "%s K cache size"
 msgstr ""
+"%s CPU\n"
+"%s MHz\n"
+"%s K storleik på mellomlageret"
 
 #: components/hardware/nautilus-hardware-view.c:341
 #, c-format
@@ -222,12 +236,12 @@ msgstr "%lu MB"
 #: components/hardware/nautilus-hardware-view.c:483
 #, c-format
 msgid "Uptime is %d days, %d hours, %d minutes"
-msgstr ""
+msgstr "Oppetida er %d dagar, %d timar og %d minutt"
 
 #. set up the title
 #: components/hardware/nautilus-hardware-view.c:509
 msgid "Hardware Overview"
-msgstr ""
+msgstr "Oversyn over maskinvare"
 
 #: components/hardware/nautilus-hardware-view.c:632
 msgid "This is a placeholder for the CPU page."
@@ -246,23 +260,20 @@ msgid "History"
 msgstr "Historikk"
 
 #: components/history/Nautilus_View_history.server.in.in.h:2
-#, fuzzy
 msgid "History side pane"
-msgstr "Historikkstorleik"
+msgstr "Sidepanel for historikk"
 
 #: components/history/Nautilus_View_history.server.in.in.h:3
-#, fuzzy
 msgid "History side pane for Nautilus"
-msgstr "Historikkstorleik"
+msgstr "Nautilus sitt sidepanel for historikk"
 
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:1
 msgid "Image"
 msgstr "Bilete"
 
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:2
-#, fuzzy
 msgid "Image Properties content view component"
-msgstr "Fjernar teksta i komponenten"
+msgstr ""
 
 #: components/image_properties/Nautilus_View_image_properties.server.in.in.h:3
 #, fuzzy
@@ -411,16 +422,16 @@ msgid "Loading..."
 msgstr "Plassering"
 
 # gmenu/treenew.c:43 gmenu/treenew.c:52 gmenu/treenew.c:73 gmenu/treenew.c:82
-#: components/tree/nautilus-tree-view.c:532 nautilus.desktop.in.h:1
+#: components/tree/nautilus-tree-view.c:519 nautilus.desktop.in.h:1
 #, fuzzy
 msgid "Home Folder"
 msgstr "Ny mappe"
 
-#: components/tree/nautilus-tree-view.c:534
+#: components/tree/nautilus-tree-view.c:521
 msgid "Filesystem"
 msgstr ""
 
-#: components/tree/nautilus-tree-view.c:536
+#: components/tree/nautilus-tree-view.c:523
 msgid "Network Neighbourhood"
 msgstr ""
 
@@ -1288,8 +1299,7 @@ msgid ""
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
-msgid ""
-"If set to true, newly opened windows will have the location bar visible."
+msgid "If set to true, newly opened windows will have the location bar visible."
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
@@ -1403,8 +1413,7 @@ msgid "If true, icons will be layed out tighter by default in new windows."
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
-msgid ""
-"If true, labels will be placed beside icons rather than underneath them."
+msgid "If true, labels will be placed beside icons rather than underneath them."
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
@@ -1879,8 +1888,7 @@ msgid "Couldn't install emblem"
 msgstr "Kan ikkje leggja til applet"
 
 #: libnautilus-private/nautilus-emblem-utils.c:201
-msgid ""
-"Sorry, but emblem keywords can only contain letters, spaces and numbers."
+msgid "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 
 #. this really should never happen, as a user has no idea
@@ -2564,8 +2572,7 @@ msgstr "Tøm papirkorga"
 
 #: libnautilus-private/nautilus-file-operations.c:2279
 #, fuzzy
-msgid ""
-"Are you sure you want to permanently delete all of the items in the Trash?"
+msgid "Are you sure you want to permanently delete all of the items in the Trash?"
 msgstr "Er du sikker på at du vil sletta denne klassen?"
 
 #: libnautilus-private/nautilus-file-operations.c:2289
@@ -4558,8 +4565,7 @@ msgstr "For mange opne filer"
 
 #: src/file-manager/fm-directory-view.c:2984
 #, c-format
-msgid ""
-"\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
+msgid "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
 msgstr ""
 
 #: src/file-manager/fm-directory-view.c:2989
@@ -4688,14 +4694,12 @@ msgstr ""
 
 #: src/file-manager/fm-directory-view.c:4417
 #, c-format
-msgid ""
-"The %d selected items will be moved if you select the Paste Files command"
+msgid "The %d selected items will be moved if you select the Paste Files command"
 msgstr ""
 
 #: src/file-manager/fm-directory-view.c:4421
 #, c-format
-msgid ""
-"The %d selected items will be copied if you select the Paste Files command"
+msgid "The %d selected items will be copied if you select the Paste Files command"
 msgstr ""
 
 #: src/file-manager/fm-directory-view.c:4500
@@ -4843,8 +4847,7 @@ msgstr "Avbroten"
 
 #: src/file-manager/fm-error-reporting.c:57
 #, fuzzy, c-format
-msgid ""
-"You do not have the permissions necessary to view the contents of \"%s\"."
+msgid "You do not have the permissions necessary to view the contents of \"%s\"."
 msgstr ""
 "Du har ikkje skriveløyve til fila:\n"
 "%s"
@@ -4866,14 +4869,12 @@ msgstr "Feil ved lesing av linje"
 
 #: src/file-manager/fm-error-reporting.c:102
 #, c-format
-msgid ""
-"The name \"%s\" is already used in this folder. Please use a different name."
+msgid "The name \"%s\" is already used in this folder. Please use a different name."
 msgstr ""
 
 #: src/file-manager/fm-error-reporting.c:107
 #, c-format
-msgid ""
-"There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
+msgid "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
 msgstr ""
 
 #: src/file-manager/fm-error-reporting.c:112
@@ -4915,8 +4916,7 @@ msgstr "Gjenverande feilmeldingar:"
 
 #: src/file-manager/fm-error-reporting.c:163
 #, fuzzy, c-format
-msgid ""
-"You do not have the permissions necessary to change the group of \"%s\"."
+msgid "You do not have the permissions necessary to change the group of \"%s\"."
 msgstr ""
 "Du har ikkje skriveløyve til fila:\n"
 "%s"
@@ -4957,8 +4957,7 @@ msgstr ""
 
 #: src/file-manager/fm-error-reporting.c:233
 #, c-format
-msgid ""
-"Couldn't change the permissions of \"%s\" because it is on a read-only disk"
+msgid "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
 msgstr ""
 
 #: src/file-manager/fm-error-reporting.c:240
@@ -5671,8 +5670,7 @@ msgid "Protect the selected volume"
 msgstr "Sorter valde celler"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:14
-msgid ""
-"Show a window that lets you set your desktop background's pattern or color"
+msgid "Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:15
@@ -5755,8 +5753,7 @@ msgid "Edit the launcher information"
 msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:19
-msgid ""
-"Move or copy files previously selected by a Cut Files or Copy Files command"
+msgid "Move or copy files previously selected by a Cut Files or Copy Files command"
 msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
@@ -7438,8 +7435,7 @@ msgstr ""
 
 #: src/nautilus-window-manage-views.c:1334
 #, fuzzy, c-format
-msgid ""
-"\"%s\" is not a valid location. Please check the spelling and try again."
+msgid "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
 "Feil i fil \"%s\"\n"
 "på linje %d.\n"
@@ -9604,3 +9600,4 @@ msgstr ""
 
 #~ msgid "Close"
 #~ msgstr "Lukk"
+
