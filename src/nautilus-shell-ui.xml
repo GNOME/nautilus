@@ -58,15 +58,12 @@
 		</placeholder>
 		<placeholder name="Open Placeholder" delimit="top"/>
 
-		
-
 		<menuitem name="Find"
 			  _label="_Find"
 			  verb="Find"/>
 
 		<placeholder name="General Status Placeholder" delimit="top"/>
 		<placeholder name="File Items Placeholder" delimit="top"/>
-		<placeholder name="Dangerous File Items Placeholder" delimit="top"/>
 
 		<placeholder name="Global File Items Placeholder" delimit="top"/>
 		
@@ -125,6 +122,8 @@
 			  _label="Select _All" 
 			  verb="Select All"/>
 				
+		<placeholder name="File Items Placeholder" delimit="top"/>
+		<placeholder name="Dangerous File Items Placeholder" delimit="top"/>
 		<placeholder name="Edit Items Placeholder" delimit="top"/>
 		<placeholder name="Global Edit Items Placeholder" delimit="none"/>
 		
@@ -136,13 +135,17 @@
 			  verb="Backgrounds and Emblems"/>
 		
 		<menuitem name="Preferences" 
-			  _label="P_references" 
+			  _label="Prefere_nces" 
 			  _tip="Edit Nautilus preferences"
 			  pixtype="stock" pixname="gtk-preferences" 
 			  verb="Preferences"/>
 	</submenu>
 
 	<submenu name="View" _label="_View">
+		<menuitem name="Stop" 
+			  _label="_Stop"
+			  pixtype="stock" pixname="gtk-stop"
+			  verb="Stop"/>
 		<menuitem name="Reload"
 			  _label="_Reload"
 			  accel="*Control*r"
@@ -151,21 +154,25 @@
 
 		<placeholder name="Show Hide Placeholder" delimit="top">
 			<menuitem name="Show Hide Sidebar" 
-				  _label="Hide _Sidebar"
+				  type="toggle"
+				  _label="_Side Pane"
 				  _tip="Change the visibility of this window's sidebar"
-				  verb="Show Hide Sidebar"/>
+				  id="Show Hide Sidebar"/>
 			<menuitem name="Show Hide Toolbar" 
-				  _label="Hide _Toolbar"
+				  type="toggle"
+				  _label="_Toolbar"
 				  _tip="Change the visibility of this window's toolbar"
-				  verb="Show Hide Toolbar"/>
+				  id="Show Hide Toolbar"/>
 			<menuitem name="Show Hide Location Bar" 
-				  _label="Hide Location _Bar"
+				  type="toggle"
+				  _label="Location _Bar"
 				  _tip="Change the visibility of this window's location bar"
-				  verb="Show Hide Location Bar"/>
+				  id="Show Hide Location Bar"/>
 			<menuitem name="Show Hide Statusbar" 
-				  _label="Hide St_atusbar"
+				  type="toggle"
+				  _label="St_atusbar"
 				  _tip="Change the visibility of this window's statusbar"
-				  verb="Show Hide Statusbar"/>
+				  id="Show Hide Statusbar"/>
 		</placeholder>
 		<placeholder name="View Preferences Placeholder" delimit = "top"/>
 		<placeholder name="View Items Placeholder" delimit="top"/>
@@ -218,6 +225,10 @@
 			  _label="_Start Here" 
 			  _tip="Go to the Start Here folder"
 			  verb="Start Here"/>
+		<menuitem name="Go to Trash"
+			  _label="_Trash"
+			  _tip="Go to the trash folder"
+			  verb="Go to Trash"/>
 		<menuitem name="Go to Location"
 			  _label="_Location..."
 			  accel="*Control*l"
@@ -279,7 +290,7 @@
 			  pixtype="stock" pixname="gtk-help"
 			  verb="Nautilus Manual"/>
 		<menuitem name="About Nautilus"
-			  _label="_About Nautilus"
+			  _label="_About"
 			  _tip="Display credits for the creators of Nautilus"
 			  pixtype="stock" pixname="about"
 			  verb="About Nautilus"/>

@@ -91,6 +91,15 @@
 #define MENU_PATH_BOOKMARKS_PLACEHOLDER			"/menu/Bookmarks/Bookmarks Placeholder"
 
 #define COMMAND_PATH_CLOSE_WINDOW			"/commands/Close"
+#define COMMAND_SHOW_HIDE_SIDEBAR                       "/commands/Show Hide Sidebar"
+#define COMMAND_SHOW_HIDE_TOOLBAR                       "/commands/Show Hide Toolbar"
+#define COMMAND_SHOW_HIDE_LOCATION_BAR                  "/commands/Show Hide Location Bar"
+#define COMMAND_SHOW_HIDE_STATUS_BAR                    "/commands/Show Hide Statusbar"
+
+#define ID_SHOW_HIDE_SIDEBAR                            "Show Hide Sidebar"
+#define ID_SHOW_HIDE_TOOLBAR                            "Show Hide Toolbar"
+#define ID_SHOW_HIDE_LOCATION_BAR                       "Show Hide Location Bar"
+#define ID_SHOW_HIDE_STATUS_BAR                         "Show Hide Statusbar"
 
 #define START_HERE_URI          "start-here:"
 
@@ -317,6 +326,15 @@ go_menu_start_here_callback (BonoboUIComponent *component,
 }
 
 static void
+go_menu_go_to_trash_callback (BonoboUIComponent *component, 
+			      gpointer user_data, 
+			      const char *verb) 
+{
+	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
+			       EEL_TRASH_URI);
+}
+
+static void
 forget_history_if_yes (GtkDialog *dialog, int response, gpointer callback_data)
 {
 	if (response == RESPONSE_FORGET) {
@@ -379,62 +397,94 @@ view_menu_reload_callback (BonoboUIComponent *component,
 }
 
 static void
-view_menu_show_hide_sidebar_callback (BonoboUIComponent *component, 
-			              gpointer user_data, 
-			              const char *verb) 
+view_menu_show_hide_sidebar_state_changed_callback (BonoboUIComponent *component, 
+						    const char *path,
+						    Bonobo_UIComponent_EventType type,
+						    const char *state,
+						    gpointer user_data)
 {
 	NautilusWindow *window;
 
 	window = NAUTILUS_WINDOW (user_data);
-	if (nautilus_window_sidebar_showing (window)) {
-		nautilus_window_hide_sidebar (window);
-	} else {
+
+        if (strcmp (state, "") == 0) {
+                /* State goes blank when component is removed; ignore this. */
+                return;
+        }
+
+	if (!strcmp (state, "1")) {
 		nautilus_window_show_sidebar (window);
+	} else {
+		nautilus_window_hide_sidebar (window);
 	}
 }
 
 static void
-view_menu_show_hide_toolbar_callback (BonoboUIComponent *component, 
-			               gpointer user_data, 
-			               const char *verb) 
+view_menu_show_hide_toolbar_state_changed_callback (BonoboUIComponent *component, 
+						    const char *path,
+						    Bonobo_UIComponent_EventType type,
+						    const char *state,
+						    gpointer user_data)
 {
 	NautilusWindow *window;
 
 	window = NAUTILUS_WINDOW (user_data);
-	if (nautilus_window_toolbar_showing (window)) {
-		nautilus_window_hide_toolbar (window);
-	} else {
+
+        if (strcmp (state, "") == 0) {
+                /* State goes blank when component is removed; ignore this. */
+                return;
+        }
+
+	if (!strcmp (state, "1")) {
 		nautilus_window_show_toolbar (window);
+	} else {
+		nautilus_window_hide_toolbar (window);
 	}
 }
 
 static void
-view_menu_show_hide_location_bar_callback (BonoboUIComponent *component, 
-			                   gpointer user_data, 
-			                   const char *verb) 
+view_menu_show_hide_location_bar_state_changed_callback (BonoboUIComponent *component, 
+							 const char *path,
+							 Bonobo_UIComponent_EventType type,
+							 const char *state,
+							 gpointer user_data)
 {
 	NautilusWindow *window;
 
 	window = NAUTILUS_WINDOW (user_data);
-	if (nautilus_window_location_bar_showing (window)) {
-		nautilus_window_hide_location_bar (window);
-	} else {
+
+        if (strcmp (state, "") == 0) {
+                /* State goes blank when component is removed; ignore this. */
+                return;
+        }
+
+	if (!strcmp (state, "1")) {
 		nautilus_window_show_location_bar (window);
+	} else {
+		nautilus_window_hide_location_bar (window);
 	}
 }
 
 static void
-view_menu_show_hide_status_bar_callback (BonoboUIComponent *component, 
-			                 gpointer user_data, 
-			                 const char *verb) 
+view_menu_show_hide_statusbar_state_changed_callback (BonoboUIComponent *component, 
+						      const char *path,
+						      Bonobo_UIComponent_EventType type,
+						      const char *state,
+						      gpointer user_data)
 {
 	NautilusWindow *window;
 
 	window = NAUTILUS_WINDOW (user_data);
-	if (nautilus_window_status_bar_showing (window)) {
-		nautilus_window_hide_status_bar (window);
-	} else {
+
+        if (strcmp (state, "") == 0) {
+                /* State goes blank when component is removed; ignore this. */
+                return;
+        }
+
+	if (!strcmp (state, "1")) {
 		nautilus_window_show_status_bar (window);
+	} else {
+		nautilus_window_hide_status_bar (window);
 	}
 }
 
@@ -446,29 +496,20 @@ nautilus_window_update_show_hide_menu_items (NautilusWindow *window)
 	nautilus_window_ui_freeze (window);
 
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
-	nautilus_bonobo_set_label (window->details->shell_ui,
-				   MENU_PATH_SHOW_HIDE_STATUS_BAR,
-				   nautilus_window_status_bar_showing (window)
-				   ? _("Hide St_atus Bar")
-				   : _("Show St_atus Bar"));
 		
-	nautilus_bonobo_set_label (window->details->shell_ui,
-				   MENU_PATH_SHOW_HIDE_SIDEBAR,
-				   nautilus_window_sidebar_showing (window)
-				   ? _("Hide _Side Pane")
-				   : _("Show _Side Pane"));
+	nautilus_bonobo_set_toggle_state (window->details->shell_ui,
+					  COMMAND_SHOW_HIDE_SIDEBAR,
+					  nautilus_window_sidebar_showing (window));
+	nautilus_bonobo_set_toggle_state (window->details->shell_ui,
+					  COMMAND_SHOW_HIDE_TOOLBAR,
+					  nautilus_window_toolbar_showing (window));
+	nautilus_bonobo_set_toggle_state (window->details->shell_ui,
+					  COMMAND_SHOW_HIDE_LOCATION_BAR,
+					  nautilus_window_location_bar_showing (window));
+	nautilus_bonobo_set_toggle_state (window->details->shell_ui,
+					  COMMAND_SHOW_HIDE_STATUS_BAR,
+					  nautilus_window_status_bar_showing (window));
 
-	nautilus_bonobo_set_label (window->details->shell_ui,
-				   MENU_PATH_SHOW_HIDE_TOOLBAR,
-				   nautilus_window_toolbar_showing (window)
-				   ? _("Hide _Toolbar")
-				   : _("Show _Toolbar"));
-		
-	nautilus_bonobo_set_label (window->details->shell_ui,
-				   MENU_PATH_SHOW_HIDE_LOCATION_BAR,
-				   nautilus_window_location_bar_showing (window)
-				   ? _("Hide Location _Bar")
-				   : _("Show Location _Bar"));
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 
 	nautilus_window_ui_thaw (window);
@@ -1103,13 +1144,10 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB ("Up", go_menu_up_callback),
 		BONOBO_UI_VERB ("Home", go_menu_home_callback),
 		BONOBO_UI_VERB ("Start Here", go_menu_start_here_callback),
+		BONOBO_UI_VERB ("Go to Trash", go_menu_go_to_trash_callback),
 		BONOBO_UI_VERB ("Go to Location", go_menu_location_callback),
 		BONOBO_UI_VERB ("Clear History", go_menu_forget_history_callback),
 		BONOBO_UI_VERB ("Reload", view_menu_reload_callback),
-		BONOBO_UI_VERB ("Show Hide Sidebar", view_menu_show_hide_sidebar_callback),
-		BONOBO_UI_VERB ("Show Hide Toolbar", view_menu_show_hide_toolbar_callback),
-		BONOBO_UI_VERB ("Show Hide Location Bar", view_menu_show_hide_location_bar_callback),
-		BONOBO_UI_VERB ("Show Hide Statusbar", view_menu_show_hide_status_bar_callback),
 		BONOBO_UI_VERB ("Zoom In", view_menu_zoom_in_callback),
 		BONOBO_UI_VERB ("Zoom Out", view_menu_zoom_out_callback),
 		BONOBO_UI_VERB ("Zoom Normal", view_menu_zoom_normal_callback),
@@ -1136,9 +1174,30 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 
+	nautilus_window_update_show_hide_menu_items (window);
+
 	bonobo_ui_component_add_verb_list_with_data (window->details->shell_ui, verbs, window);
 
-        nautilus_window_update_show_hide_menu_items (window);
+	bonobo_ui_component_add_listener
+		(window->details->shell_ui,
+		 ID_SHOW_HIDE_SIDEBAR,
+		 view_menu_show_hide_sidebar_state_changed_callback, 
+		 window);
+	bonobo_ui_component_add_listener
+		(window->details->shell_ui,
+		 ID_SHOW_HIDE_TOOLBAR,
+		 view_menu_show_hide_toolbar_state_changed_callback, 
+		 window); 
+	bonobo_ui_component_add_listener
+		(window->details->shell_ui,
+		 ID_SHOW_HIDE_LOCATION_BAR,
+		 view_menu_show_hide_location_bar_state_changed_callback, 
+		 window);
+	bonobo_ui_component_add_listener
+		(window->details->shell_ui,
+		 ID_SHOW_HIDE_STATUS_BAR,
+		 view_menu_show_hide_statusbar_state_changed_callback, 
+		 window);
 
 	/* Register to catch Bonobo UI events so we can notice View As changes */
 	g_signal_connect_object (window->details->shell_ui, "ui_event", 

@@ -1,3 +1,28 @@
+2002-07-05  Dave Camp  <dave@ximian.com>
+
+	* src/file-manager/fm-directory-view.c: (real_merge_menus),
+	(real_update_menus): Update menu paths and mnemonics.
+	* src/file-manager/nautilus-directory-view-ui.xml: Moved Duplicate,
+	Make Link, Rename, Move to Trash, and Delete from the File menu to
+	the Edit menu.  Removed the gtk-new pixmap from New Folder (it is
+	confusing).  Removed Go to Trash, this was put in the shell.
+	* src/file-manager/nautilus-icon-view-ui.xml: Changed mnemonics.
+	* src/nautilus-shell-ui.xml: Moved "Dangerous File Items"
+	placeholder from File to Edit, added a "File Items Placeholder" in
+	Edit, added a Stop button to the view menu, changed the 
+	Show/Hide menuitems to toggle buttons, and added a Go To Trash 
+	menu item.
+	* src/nautilus-window-menus.c: (go_menu_go_to_trash_callback),
+	(view_menu_show_hide_sidebar_state_changed_callback),
+	(view_menu_show_hide_toolbar_state_changed_callback),
+	(view_menu_show_hide_location_bar_state_changed_callback),
+	(view_menu_show_hide_statusbar_state_changed_callback): New
+	functions.
+	(nautilus_window_update_show_hide_menu_items): Change toggle state
+	instead of menu item text.
+	(nautilus_window_initialize_menus_part_1): Connect bonobo
+	listeners to the toggle menu items.
+
 2002-07-05  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-window-manage-views.c:
