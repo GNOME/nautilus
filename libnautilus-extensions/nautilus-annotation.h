@@ -35,7 +35,11 @@ char *	nautilus_annotation_get_display_text (const char* annotation_text);
 char *  nautilus_annotation_get_annotation_for_display (NautilusFile *file);
 
 int	nautilus_annotation_has_annotation (NautilusFile *file);
-void	nautilus_annotation_add_annotation  (NautilusFile *file, const char *new_annotation);
+
+void	nautilus_annotation_add_annotation (NautilusFile *file,
+					    const char *annotation_type,
+					    const char *annotation_text,
+					    const char *access);
 void	nautilus_annotation_remove_annotation (NautilusFile *file, int which_annotation);
 
 #endif /* NAUTILUS_ANNOTATION_H */

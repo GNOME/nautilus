@@ -1023,8 +1023,60 @@ int	nautilus_annotation_has_annotation (NautilusFile *file)
 }
 
 /* add an annotation to a file */
-void	nautilus_annotation_add_annotation  (NautilusFile *file, const char *new_annotation)
+void	nautilus_annotation_add_annotation (NautilusFile *file,
+					    const char *annotation_type,
+					    const char *annotation_text,
+					    const char *access)
 {
+	char *digest;
+	char *annotations;
+	xmlDocPtr xml_document;
+	
+	/* we can't handle directories yet, so just return.  */
+	if (nautilus_file_is_directory (file)) {
+		return;
+	}
+
+	/* fetch the local annotation, if one exists */
+	digest = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_FILE_DIGEST, NULL);
+	
+	/* there isn't a digest, so start a request for one going, and return */
+	/* this shouldn't happen in practice, since the annotation window will have
+	 * already created a digest
+	 */
+	if (digest == NULL) {
+		queue_file_digest_request (file);
+		return;
+	}
+		
+	/* there's a digest, so we if we have the annotations for the file cached locally */
+	annotations = look_up_local_annotation (file, digest);
+	
+	/* no annotation exists, so create the initial xml document from scratch */
+	if (annotations == NULL || strlen (annotations) == 0) {
+		xml_document = xmlNewDoc ("1.0");
+		/* create the header node, with the digest attribute */
+	} else {
+		/* open the existing annotation and load it */
+		xml_document = xmlParseMemory (annotations, strlen (annotations));
+	}
+	
+	/* add the new entry.  For now, we only support one entry per file, so we replace the old
+	 * one, if it exists, but this will change soon as we support multiple notes per file
+	 */
+	 
+	/* save the modified xml document back to the local repository */
+	
+	/* update the metadata date and count */
+	
+	/* issue file changed symbol to update the emblem */
+	
+	/* if the access is global, send it to the server */
+
+	/* clean up and we're done */
+	xmlFreeDoc (xml_document);
+	g_free (digest);
+	g_free (annotations);	 
 }
 
 /* remove an annotation from a file */
