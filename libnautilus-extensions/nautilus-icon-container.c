@@ -1468,6 +1468,14 @@ rubberband_timeout_callback (gpointer data)
 		y2 = world_y;
 	}
 
+	/* Don't let the area of the selection rectangle be empty.
+	 * Aside from the fact that it would be funny when the rectangle disappears,
+	 * this also works around a crash in libart that happens sometimes when a
+	 * zero height rectangle is passed.
+	 */
+	x2 = MAX (x1 + 1, x2);
+	y2 = MAX (y1 + 1, y2);
+
 	gnome_canvas_item_set
 		(band_info->selection_rectangle,
 		 "x1", x1, "y1", y1,
