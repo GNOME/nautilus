@@ -6,7 +6,9 @@ arlo_DATA =					\
 	arlo.xml				\
 	decrement.png				\
 	i-directory.png				\
+        i-directory.xml                         \
 	i-regular.png				\
+        i-regular.xml                           \
 	increment.png				\
 	number_strip.png			\
 	theme_preview.png			\
