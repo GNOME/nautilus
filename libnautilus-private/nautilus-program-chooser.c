@@ -32,7 +32,7 @@
 #include "nautilus-mime-actions.h"
 #include "nautilus-program-choosing.h"
 #include "nautilus-view-identifier.h"
-#include "egg-screen-help.h"
+#include <libegg/egg-screen-help.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>

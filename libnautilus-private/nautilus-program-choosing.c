@@ -29,7 +29,7 @@
 #include "nautilus-mime-actions.h"
 #include "nautilus-program-chooser.h"
 #include "nautilus-global-preferences.h"
-#include "egg-screen-exec.h"
+#include <libegg/egg-screen-exec.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-vfs-extensions.h>
