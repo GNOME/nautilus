@@ -1,5 +1,14 @@
 1999-12-20  Havoc Pennington  <hp@redhat.com>
 
+	* src/file-manager/fm-icon-cache.c: Add inline RGB data for
+	default icon. 
+	(fm_icon_cache_load_icon): only
+	ref the pixbuf if it exists
+	(fm_icon_cache_new): add a new fallback special icon set
+	(fm_icon_cache_load_icon): load fallback if the icon name is ""
+
+1999-12-20  Havoc Pennington  <hp@redhat.com>
+
 	* libnautilus/gnome-icon-container.c (set_kbd_current): return if 
 	the icon being set is NULL. This may be fixing a symptom rather
 	than a problem.
