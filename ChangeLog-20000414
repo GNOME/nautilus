@@ -1,5 +1,13 @@
 2000-03-07  John Sullivan  <sullivan@eazel.com>
 
+        * src/ntl-view-nautilus.c:
+        (nautilus_view_try_load_client): Removed recently-added
+        activate call since Maciej implemented a more general solution.
+        (destroy_nautilus_view): Removed recently-added
+        deactivate call since Maciej implemented a more general solution.
+
+2000-03-07  John Sullivan  <sullivan@eazel.com>
+
         Added Stretch/Restore menu items to Settings menu, and made some
         other menu mechanism tweaks.
 
