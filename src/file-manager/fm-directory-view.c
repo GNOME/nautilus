@@ -29,37 +29,33 @@
 #include <gnome.h>
 
 #include <libnautilus/libnautilus.h>
-#include <libnautilus/gnome-icon-container.h>
-#include <libnautilus/gtkflist.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 
 #include "fm-directory-view.h"
-#include "fm-icon-cache.h"
 #include "fm-public-api.h"
 
 #define FM_DEBUG(x) g_message x
 
-#define WITH_LAYOUT TRUE
 #define DISPLAY_TIMEOUT_INTERVAL 500
 #define ENTRIES_PER_CB 1
 
 enum 
 {
+	ADD_ENTRY,
+	BEGIN_ADDING_ENTRIES,
 	CLEAR,
+	DONE_ADDING_ENTRIES,
+	DONE_SORTING_ENTRIES,
+	BEGIN_LOADING,
 	LAST_SIGNAL
 };
 
 static guint fm_directory_view_signals[LAST_SIGNAL] = { 0 };
 static GtkScrolledWindowClass *parent_class = NULL;
 
-/* FIXME this no longer has any reason to be global,
-   given fm_get_current_icon_cache()
-*/
-static FMIconCache *icm = NULL;
-
 void
-display_selection_info (FMDirectoryView *view,
-			GList *selection)
+fm_directory_view_display_selection_info (FMDirectoryView *view,
+					  GList *selection)
 {
 	GnomeVFSFileSize size;
 	guint count;
@@ -127,132 +123,6 @@ display_selection_info (FMDirectoryView *view,
 }
 
 
-/* GnomeIconContainer handling.  */
-
-static gboolean
-view_has_icon_container (FMDirectoryView *view)
-{
-	return (view->mode == FM_DIRECTORY_VIEW_MODE_ICONS
-		|| view->mode == FM_DIRECTORY_VIEW_MODE_SMALLICONS);
-}
-
-GnomeIconContainer *
-get_icon_container (FMDirectoryView *view)
-{
-	GtkBin *bin;
-
-	g_return_val_if_fail (view_has_icon_container (view), NULL);
-
-	bin = GTK_BIN (view);
-
-	if (bin->child == NULL)
-		return NULL;	/* Avoid GTK+ complaints.  */
-	else
-		return GNOME_ICON_CONTAINER (bin->child);
-}
-
-static void
-add_to_icon_container (FMDirectoryView *view,
-		       FMIconCache *icon_manager,
-		       GnomeIconContainer *icon_container,
-		       GnomeVFSFileInfo *info,
-		       gboolean with_layout)
-{
-	GdkPixbuf *image;
-
-	g_return_if_fail(info);
-
-	image = fm_icon_cache_get_icon (icon_manager, info);
-
-	if (! with_layout || view->icon_layout == NULL) {
-		gnome_icon_container_add_pixbuf_auto (icon_container,
-						     image,
-						     info->name,
-						     info);
-	} else {
-		gboolean result;
-
-		result = gnome_icon_container_add_pixbuf_with_layout
-			(icon_container, image, info->name, info,
-			 view->icon_layout);
-		if (! result)
-			view->icons_not_in_layout = g_list_prepend
-				(view->icons_not_in_layout, info);
-	}
-}
-
-void
-load_icon_container (FMDirectoryView *view,
-		     GnomeIconContainer *icon_container)
-{
-	gnome_icon_container_clear (icon_container);
-
-	if (view->directory_list != NULL) {
-		GnomeVFSDirectoryListPosition *position;
-
-		if (!icm)
-			icm = fm_get_current_icon_cache();
-
-		position = gnome_vfs_directory_list_get_first_position
-			(view->directory_list);
-
-		while (position != view->current_position) {
-			GnomeVFSFileInfo *info;
-
-			info = gnome_vfs_directory_list_get
-				(view->directory_list, position);
-
-			g_return_if_fail(info);
-			add_to_icon_container (view, icm,
-					       icon_container, info, WITH_LAYOUT);
-
-			position = gnome_vfs_directory_list_position_next
-				(position);
-		}
-	}
-
-}
-
-
-/* GtkFList handling.  */
-
-static gboolean
-view_has_flist (FMDirectoryView *view)
-{
-	return (view->mode == FM_DIRECTORY_VIEW_MODE_DETAILED
-		|| view->mode == FM_DIRECTORY_VIEW_MODE_CUSTOM);
-}
-
-GtkFList *
-get_flist (FMDirectoryView *view)
-{
-	GtkBin *bin;
-
-	g_return_val_if_fail (view_has_flist (view), NULL);
-
-	bin = GTK_BIN (view);
-
-	if (bin->child == NULL)
-		return NULL;	/* Avoid GTK+ complaints.  */
-	else
-		return GTK_FLIST (bin->child);
-}
-
-void
-add_to_flist (FMIconCache *icon_manager,
-	      GtkFList *flist,
-	      GnomeVFSFileInfo *info)
-{
-	GtkCList *clist;
-	gchar *text[2];
-
-	text[0] = info->name;
-	text[1] = NULL;
-
-	clist = GTK_CLIST (flist);
-	gtk_clist_append (clist, text);
-	gtk_clist_set_row_data (clist, clist->rows - 1, info);
-}
 
 static void
 notify_location_change_cb (NautilusViewFrame *view_frame, Nautilus_NavigationInfo *nav_context, FMDirectoryView *directory_view)
@@ -304,6 +174,7 @@ destroy (GtkObject *object)
 }
 
 
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_entry);
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear);
 
 static void
@@ -323,7 +194,46 @@ class_init (FMDirectoryViewClass *class)
                     		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, clear),
 		    		gtk_marshal_NONE__NONE,
 		    		GTK_TYPE_NONE, 0);
+	fm_directory_view_signals[BEGIN_ADDING_ENTRIES] =
+		gtk_signal_new ("begin_adding_entries",
+       				GTK_RUN_LAST,
+                    		object_class->type,
+                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, begin_adding_entries),
+		    		gtk_marshal_NONE__NONE,
+		    		GTK_TYPE_NONE, 0);
+	fm_directory_view_signals[ADD_ENTRY] =
+		gtk_signal_new ("add_entry",
+       				GTK_RUN_LAST,
+                    		object_class->type,
+                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, add_entry),
+		    		gtk_marshal_NONE__POINTER,
+		    		GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+	fm_directory_view_signals[DONE_ADDING_ENTRIES] =
+		gtk_signal_new ("done_adding_entries",
+       				GTK_RUN_LAST,
+                    		object_class->type,
+                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, done_adding_entries),
+		    		gtk_marshal_NONE__NONE,
+		    		GTK_TYPE_NONE, 0);
+	fm_directory_view_signals[DONE_SORTING_ENTRIES] =
+		gtk_signal_new ("done_sorting_entries",
+       				GTK_RUN_LAST,
+                    		object_class->type,
+                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, done_sorting_entries),
+		    		gtk_marshal_NONE__NONE,
+		    		GTK_TYPE_NONE, 0);
+	fm_directory_view_signals[BEGIN_LOADING] =
+		gtk_signal_new ("begin_loading",
+       				GTK_RUN_LAST,
+                    		object_class->type,
+                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, begin_loading),
+		    		gtk_marshal_NONE__NONE,
+		    		GTK_TYPE_NONE, 0);
 
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (FM_DIRECTORY_VIEW_CLASS,
+					      class,
+					      fm_directory_view,
+					      add_entry);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (FM_DIRECTORY_VIEW_CLASS,
 					      class,
 					      fm_directory_view,
@@ -333,14 +243,11 @@ class_init (FMDirectoryViewClass *class)
 static void
 init (FMDirectoryView *directory_view)
 {
-	directory_view->mode = FM_DIRECTORY_VIEW_MODE_NONE;
-
 	directory_view->uri = NULL;
 	directory_view->vfs_async_handle = NULL;
 	directory_view->directory_list = NULL;
 
 	directory_view->current_position = GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
-	directory_view->entries_to_display = 0;
 
 	directory_view->display_timeout_id = 0;
 
@@ -405,7 +312,6 @@ stop_load (FMDirectoryView *view, gboolean error)
 	}
 
 	view->current_position = GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
-	view->entries_to_display = 0;
 	view->directory_list = NULL;
 
 	memset(&pri, 0, sizeof(pri));
@@ -420,89 +326,22 @@ stop_load (FMDirectoryView *view, gboolean error)
 static void
 display_pending_entries (FMDirectoryView *view)
 {
-	FMIconCache *icon_manager;
-	GnomeIconContainer *icon_container;
-	GtkFList *flist;
-	guint i;
+	fm_directory_view_begin_adding_entries (view);
 
-	FM_DEBUG (("Adding %d entries.", view->entries_to_display));
-
-	if(!icm)
-	       icm = fm_get_current_icon_cache();
-	icon_manager = icm;
-
-	if (view_has_icon_container (view)) {
-		icon_container = get_icon_container (view);
-		flist = NULL;
-	} else {
-		icon_container = NULL;
-		flist = get_flist (view);
-		gtk_clist_freeze (GTK_CLIST (flist));
-	}
-
-	for (i = 0; i < view->entries_to_display
-		     && view->current_position != GNOME_VFS_DIRECTORY_LIST_POSITION_NONE; i++) {
+	while (view->current_position != GNOME_VFS_DIRECTORY_LIST_POSITION_NONE)
+	{
 		GnomeVFSFileInfo *info;
 
 		info = gnome_vfs_directory_list_get (view->directory_list,
 						     view->current_position);
 
-		if (icon_container != NULL)
-			add_to_icon_container (view, icon_manager,
-					       icon_container, info, WITH_LAYOUT);
-		else
-			add_to_flist (icon_manager, flist, info);
+		fm_directory_view_add_entry (view, info);
 
 		view->current_position = gnome_vfs_directory_list_position_next
 						       (view->current_position);
 	}
 
-	if (i != view->entries_to_display)
-		g_warning("BROKEN! we thought we had %d items, actually had %d",
-			  view->entries_to_display, i);
-
-	if (flist != NULL)
-		gtk_clist_thaw (GTK_CLIST (flist));
-
-	view->entries_to_display = 0;
-
-	FM_DEBUG (("Done."));
-}
-
-static void
-display_icons_not_in_layout (FMDirectoryView *view)
-{
-	FMIconCache *icon_manager;
-	GnomeIconContainer *icon_container;
-	GList *p;
-
-	if (view->icons_not_in_layout == NULL)
-		return;
-
-	FM_DEBUG (("Adding entries not in layout."));
-
-	if (!icm)
-		icm = fm_get_current_icon_cache();
-	icon_manager = icm;
-
-	icon_container = get_icon_container (view);
-	g_return_if_fail (icon_container != NULL);
-
-	/* FIXME: This will block if there are many files.  */
-
-	for (p = view->icons_not_in_layout; p != NULL; p = p->next) {
-		GnomeVFSFileInfo *info;
-
-		info = p->data;
-		add_to_icon_container (view, icon_manager,
-				       icon_container, info, FALSE);
-		FM_DEBUG (("Adding `%s'", info->name));
-	}
-
-	FM_DEBUG (("Done with entries not in layout."));
-
-	g_list_free (view->icons_not_in_layout);
-	view->icons_not_in_layout = NULL;
+	fm_directory_view_done_adding_entries (view);
 }
 
 static gboolean
@@ -522,27 +361,6 @@ display_timeout_cb (gpointer data)
 }
 
 
-/* Set up the base URI for Drag & Drop operations.  */
-static void
-setup_base_uri (FMDirectoryView *view)
-{
-	GnomeIconContainer *icon_container;
-	gchar *txt_uri;
-
-	txt_uri = gnome_vfs_uri_to_string (view->uri, 0);
-	if (txt_uri == NULL)
-		return;
-
-	if (view_has_icon_container (view))
-	{
-		icon_container = get_icon_container (view);
-		if (icon_container != NULL)
-			gnome_icon_container_set_base_uri (icon_container, txt_uri);
-	}
-
-	g_free (txt_uri);
-}
-
 static void
 directory_load_cb (GnomeVFSAsyncHandle *handle,
 		   GnomeVFSResult result,
@@ -559,14 +377,14 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 	if (view->directory_list == NULL) {
 		if (result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_EOF) {
 
-			setup_base_uri (view);
+			fm_directory_view_begin_loading (view);
+
 			view->directory_list = list;
 
-			/* FIXME just to make sure.  But these should be
+			/* FIXME just to make sure.  But this should be
 			   already set somewhere else.  */
 			view->current_position
 				= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
-			view->entries_to_display = 0;
 
 			if (result != GNOME_VFS_ERROR_EOF)
 				view->display_timeout_id
@@ -582,15 +400,12 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 		}
 	}
 
-	if(!view->current_position && list)
+	if(view->current_position == GNOME_VFS_DIRECTORY_LIST_POSITION_NONE && list)
 		view->current_position
 			= gnome_vfs_directory_list_get_position (list);
 
-	view->entries_to_display += entries_read;
-
 	if (result == GNOME_VFS_ERROR_EOF) {
 		display_pending_entries (view);
-		display_icons_not_in_layout (view);
 		stop_load (view, FALSE);
 		/* gtk_signal_emit (GTK_OBJECT (view), signals[LOAD_DONE]); */
 	} else if (result != GNOME_VFS_OK) {
@@ -602,21 +417,6 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 }
 
 
-gboolean
-fm_directory_view_is_valid_mode (FMDirectoryViewMode mode)
-{
-	switch (mode) {
-	case FM_DIRECTORY_VIEW_MODE_ICONS:
-	case FM_DIRECTORY_VIEW_MODE_SMALLICONS:
-	case FM_DIRECTORY_VIEW_MODE_DETAILED:
-	case FM_DIRECTORY_VIEW_MODE_CUSTOM:
-		return TRUE;
-	case FM_DIRECTORY_VIEW_MODE_NONE:
-	default:
-		return FALSE;
-	}
-}
-
 GtkType
 fm_directory_view_get_type (void)
 {
@@ -648,37 +448,53 @@ fm_directory_view_new (void)
 	return gtk_widget_new(fm_directory_view_get_type (), NULL);
 }
 
-FMDirectoryViewMode
-fm_directory_view_get_mode (FMDirectoryView *view)
-{
-	g_return_val_if_fail (view != NULL, FM_DIRECTORY_VIEW_MODE_ICONS);
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view),
-			      FM_DIRECTORY_VIEW_MODE_ICONS);
-
-	return view->mode;
-}
-
-void
-fm_directory_view_set_mode (FMDirectoryView *view,
-			    FMDirectoryViewMode new_mode)
-{
-	g_return_if_fail (view != NULL);
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-
-	if (view->mode == new_mode)
-		return;
-
-	view->mode = new_mode;
-}
-
 
 void
 fm_directory_view_clear (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-	g_print ("called fm_directory_view_clear");
 
 	gtk_signal_emit (GTK_OBJECT (view), fm_directory_view_signals[CLEAR]);
+}
+
+void
+fm_directory_view_begin_adding_entries (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	gtk_signal_emit (GTK_OBJECT (view), fm_directory_view_signals[BEGIN_ADDING_ENTRIES]);
+}
+
+void
+fm_directory_view_add_entry (FMDirectoryView *view, GnomeVFSFileInfo *info)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	gtk_signal_emit (GTK_OBJECT (view), fm_directory_view_signals[ADD_ENTRY], info);
+}
+
+void
+fm_directory_view_done_adding_entries (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	gtk_signal_emit (GTK_OBJECT (view), fm_directory_view_signals[DONE_ADDING_ENTRIES]);
+}
+
+void
+fm_directory_view_done_sorting_entries (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	gtk_signal_emit (GTK_OBJECT (view), fm_directory_view_signals[DONE_SORTING_ENTRIES]);
+}
+
+void
+fm_directory_view_begin_loading (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	gtk_signal_emit (GTK_OBJECT (view), fm_directory_view_signals[BEGIN_LOADING]);
 }
 
 void
@@ -740,7 +556,6 @@ fm_directory_view_stop (FMDirectoryView *view)
 		return;
 
 	display_pending_entries (view);
-	display_icons_not_in_layout (view);
 	stop_load (view, FALSE);
 }
 
@@ -750,7 +565,6 @@ fm_directory_view_sort (FMDirectoryView *view,
 			FMDirectoryViewSortType sort_type)
 {
 	GnomeVFSDirectorySortRule *rules;
-	GnomeIconContainer *icon_container;
 
 #define ALLOC_RULES(n) alloca ((n) * sizeof (GnomeVFSDirectorySortRule))
 
@@ -790,15 +604,7 @@ fm_directory_view_sort (FMDirectoryView *view,
 	FM_DEBUG (("Sorting."));
 	gnome_vfs_directory_list_sort (view->directory_list, FALSE, rules);
 
-	/* This will make sure icons are re-laid out according to the new
-           order.  */
-	if (view->icon_layout != NULL)
-		view->icon_layout = NULL;
-
-	/* FIXME FIXME FIXME */
-	icon_container = get_icon_container (view);
-	if (icon_container != NULL)
-		load_icon_container (view, icon_container);
+	fm_directory_view_done_sorting_entries(view);
 
 #undef ALLOC_RULES
 }

@@ -31,15 +31,6 @@
 #include <libnautilus/gtkscrollframe.h>
 
 
-enum _FMDirectoryViewMode {
-	FM_DIRECTORY_VIEW_MODE_NONE, /* Internal */
-	FM_DIRECTORY_VIEW_MODE_ICONS,
-	FM_DIRECTORY_VIEW_MODE_SMALLICONS,
-	FM_DIRECTORY_VIEW_MODE_DETAILED,
-	FM_DIRECTORY_VIEW_MODE_CUSTOM
-};
-typedef enum   _FMDirectoryViewMode  FMDirectoryViewMode;
-
 enum _FMDirectoryViewSortType {
 	FM_DIRECTORY_VIEW_SORT_BYNAME,
 	FM_DIRECTORY_VIEW_SORT_BYSIZE,
@@ -60,13 +51,10 @@ typedef struct _FMDirectoryViewClass FMDirectoryViewClass;
 struct _FMDirectoryView {
 	GtkScrolledWindow scroll_frame;
 
-	FMDirectoryViewMode mode;
-
 	NautilusContentViewFrame *view_frame;
 
 	GnomeVFSDirectoryList *directory_list;
 	GnomeVFSDirectoryListPosition current_position;
-	guint entries_to_display;
 
 	guint display_timeout_id;
 
@@ -85,22 +73,34 @@ struct _FMDirectoryViewClass {
 	GtkScrolledWindowClass parent_class;
 
 	void (* clear)	(FMDirectoryView *view);
+	void (* begin_adding_entries) (FMDirectoryView *view);
+	void (* add_entry) (FMDirectoryView *view, GnomeVFSFileInfo *info);
+	void (* done_adding_entries) (FMDirectoryView *view);
+	void (* done_sorting_entries) (FMDirectoryView *view);
+	void (* begin_loading) (FMDirectoryView *view);
 };
 
 
-gboolean   fm_directory_view_is_valid_mode
-					    (FMDirectoryViewMode mode);
 
 GtkType    fm_directory_view_get_type (void);
 GtkWidget *fm_directory_view_new      (void);
-void	   fm_directory_view_set_mode (FMDirectoryView *view,
-				       FMDirectoryViewMode mode);
-FMDirectoryViewMode
-	   fm_directory_view_get_mode (FMDirectoryView *view);
 void       fm_directory_view_load_uri (FMDirectoryView *view,
 				       const char *uri);
 void	   fm_directory_view_clear    (FMDirectoryView *view);
-void	   fm_directory_view_stop      (FMDirectoryView *view);
+void	   fm_directory_view_begin_adding_entries    
+				      (FMDirectoryView *view);
+void	   fm_directory_view_add_entry
+				      (FMDirectoryView *view, GnomeVFSFileInfo *info);
+void	   fm_directory_view_done_adding_entries
+				      (FMDirectoryView *view);
+
+void	   fm_directory_view_done_sorting_entries
+				      (FMDirectoryView *view);
+
+void	   fm_directory_view_begin_loading
+				      (FMDirectoryView *view);
+
+void	   fm_directory_view_stop     (FMDirectoryView *view);
 
 void	   fm_directory_view_sort     (FMDirectoryView *view,
 				       FMDirectoryViewSortType sort_type);
@@ -110,22 +110,10 @@ NautilusContentViewFrame *
 
 
 
-/* Private transition section: These are here only while I'm in the process
- * of moving code into the subclasses.  sullivan@eazel.com 1/11/2000
- */
+/* display_selection_info is used by subclasses. No one else should call it. */
+void 	   fm_directory_view_display_selection_info 
+				       (FMDirectoryView *view, GList *selection);
 
-#include <libnautilus/gtkflist.h>
-#include "fm-icon-cache.h"
-
-void add_to_flist (FMIconCache *icon_manager,
-	      GtkFList *flist,
-	      GnomeVFSFileInfo *info);
-void display_selection_info (FMDirectoryView *view, GList *selection);
-GtkFList *get_flist (FMDirectoryView *view);
-GnomeIconContainer *get_icon_container (FMDirectoryView *view);
-void load_icon_container (FMDirectoryView *view, GnomeIconContainer *icon_container);
-
-/* End of private transition section */
 
 
 #endif /* __FM_DIRECTORY_VIEW_H__ */

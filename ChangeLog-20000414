@@ -1,5 +1,95 @@
 2000-01-13  John Sullivan  <sullivan@eazel.com>
 
+	More work pushing code from FMDirectoryView into subclasses.
+	Almost done now.
+
+	* src/file-manager/fm-directory-view.h:
+	Removed enum _FMDirectoryViewMode and its typedef.
+	Removed field entries_to_display.
+	Removed transition section holding function prototypes that
+	were on their way into subclasses.
+	(fm_directory_view_is_valid_mode): Removed.
+	(fm_directory_view_get_mode): Removed.
+	(fm_directory_view_set_mode): Removed.
+
+	(fm_directory_view_begin_adding_entries):  New function & signal.
+	(fm_directory_view_add_entry):  New function & signal.
+	(fm_directory_view_done_adding_entries):  New function & signal.
+	(fm_directory_view_done_sorting_entries):  New function & signal.
+	(fm_directory_view_begin_loading): New function & signal.
+
+	(fm_directory_view_display_selection_info): Newly exposed function.
+
+	*src/file-manager/fm-directory-view.c:
+	Removed some now-unnecessary #includes.
+	Added constants for new signals to enum.
+	Removed global variable for icon cache in favor of already-extant
+	fm_get_current_icon_cache().
+	Removed all references to entries_to_display.
+	(display_selection_info): Renamed to 
+	fm_directory_view_display_selection_info now that it's public.
+	(view_has_icon_container): Removed.
+	(get_icon_container): Moved into subclass FMDirectoryViewIcons.
+	(add_to_icon_container): Moved into subclass FMDirectoryViewIcons.
+	(load_icon_container): Moved into subclass FMDirectoryViewIcons.
+	(display_icons_not_in_layout): Moved into subclass FMDirectoryViewIcons.
+	(setup_base_uri): Moved into subclass FMDirectoryViewIcons (and renamed
+	to set_up_base_uri).
+	(view_has_flist): Removed.
+	(get_flist): Moved into subclass FMDirectoryViewList.
+	(add_to_flist): Moved into subclass FMDirectoryViewList.
+	(class_init): Signal initialization code for begin_adding_entries,
+	add_entry, done_adding_entries, done_sorting_entries, and begin_loading.
+	(init): Removed mode-setting line.
+	(display_pending_entries): Replaced the bulk of this function with three
+	new signals: begin_adding_entries, add_entry, done_adding_entries. The
+	loop structure and GnomeVFSFileInfo retrieving part remains.
+	(directory_load_cb): Deployed new signal begin_loading where setup_base_uri
+	used to be.
+	(fm_directory_view_is_valid_mode): Removed.
+	(fm_directory_view_get_mode): Removed.
+	(fm_directory_view_set_mode): Removed.
+	(fm_directory_view_begin_adding_entries): New function, emits signal.
+	(fm_directory_view_add_entry): New function, emits signal.
+	(fm_directory_view_done_adding_entries): New function, emits signal.
+	(fm_directory_view_done_sorting_entries): New function, emits signal.
+	(fm_directory_view_begin_loading): New function, emits signal.
+	(fm_directory_view_sort): Replaced some icon-container-specific
+	code with fm_directory_view_done_sorting_entries().
+
+	*src/file-manager/fm-directory-view-icons.c:
+	(fm_directory_view_icons_initialize_class): Wired up signal handlers
+	for add_entry, done_adding_entries, done_sorting_entries, and begin_loading.
+	(fm_directory_view_icons_initialize): Removed set_mode call.
+	(display_icons_not_in_layout): Moved here from superclass FMDirectoryView.
+	(get_icon_container): Moved here from superclass FMDirectoryView.
+	(add_to_icon_container): Moved here from superclass FMDirectoryView.
+	(load_icon_container): Moved here from superclass FMDirectoryView.
+	(set_up_base_uri): Moved here from superclass FMDirectoryView.
+	(fm_directory_view_icons_add_entry): New signal handler function, code 
+	taken and simplified from superclass FMDirectoryView.
+	(fm_directory_view_icons_done_adding_entries): New signal handler 
+	function, code taken and simplified from superclass FMDirectoryView.
+	(fm_directory_view_icons_done_sorting_entries): New signal handler 
+	function, code taken and simplified from superclass FMDirectoryView.
+	(fm_directory_view_icons_begin_loading): New signal handler function, 
+	code taken and simplified from superclass FMDirectoryView.
+	
+	*src/file-manager/fm-directory-view-list.c:
+	(fm_directory_view_list_initialize_class): Wired up signal handlers
+	for begin_adding_entries, add_entry, and done_adding_entries
+	(fm_directory_view_list_initialize): Removed set_mode call.
+	(get_flist): Moved here from superclass FMDirectoryView.
+	(add_to_flist): Moved here from superclass FMDirectoryView.
+	(fm_directory_view_list_begin_adding_entries): New signal handler 
+	function, code taken and simplified from superclass FMDirectoryView.
+	(fm_directory_view_list_add_entry): New signal handler function, code 
+	taken and simplified from superclass FMDirectoryView.
+	(fm_directory_view_list_done_adding_entries): New signal handler 
+	function, code taken and simplified from superclass FMDirectoryView.	
+
+2000-01-13  John Sullivan  <sullivan@eazel.com>
+
 	* libnautilus/nautilus-gtk-macros.h: Defined macros
 	for use when a signal must be overridden by subclasses.
 	* src/file-manager/fm-directory-view.c: Deployed these
