@@ -1550,6 +1550,7 @@ play_file (gpointer callback_data)
 	char *file_uri;
 	char *file_path, *mime_type;
 	gboolean is_mp3;
+	gboolean is_ogg;
 	pid_t mp3_pid;
 	
 	file = NAUTILUS_FILE (callback_data);
@@ -1557,7 +1558,8 @@ play_file (gpointer callback_data)
 	file_path = gnome_vfs_get_local_path_from_uri (file_uri);
 	mime_type = nautilus_file_get_mime_type (file);
 	is_mp3 = eel_strcasecmp (mime_type, "audio/x-mp3") == 0;
-			
+	is_ogg = eel_strcasecmp (mime_type, "application/x-ogg") == 0;
+
 	if (file_path != NULL) {
 		mp3_pid = fork ();
 		if (mp3_pid == (pid_t) 0) {
@@ -1565,6 +1567,8 @@ play_file (gpointer callback_data)
 			setsid();
 			if (is_mp3) {
 				execlp ("mpg123", "mpg123", "-y", "-q", file_path, NULL);
+			} else if (is_ogg) {
+				execlp ("ogg123", "ogg123", "-q", file_path, NULL);
 			} else {
 				execlp ("play", "play", file_path, NULL);
 			}
@@ -1683,8 +1687,9 @@ icon_container_preview_callback (NautilusIconContainer *container,
 	/* at first, we just handle sounds */
 	if (should_preview_sound (file)) {
 		mime_type = nautilus_file_get_mime_type (file);
-		if (eel_istr_has_prefix (mime_type, "audio/") &&
-				eel_strcasecmp (mime_type, "audio/x-pn-realaudio") != 0) {
+		if ((eel_istr_has_prefix (mime_type, "audio/") ||
+		     eel_istr_has_prefix (mime_type, "application/x-ogg")) &&
+		    eel_strcasecmp (mime_type, "audio/x-pn-realaudio") != 0) {
 			if (nautilus_sound_can_play_sound ()) {
 				result = 1;
 				preview_audio (icon_view, file, start_flag);
