@@ -380,6 +380,7 @@ remove_hack_node (NautilusTreeView *view, NautilusFile *file)
 		nautilus_ctree_remove_node (NAUTILUS_CTREE (view->details->tree),
 					    hack_node);
 		g_hash_table_remove (view->details->file_to_hack_node_map, file);
+		
 		nautilus_file_unref (file);
 
 		gtk_clist_thaw (GTK_CLIST (view->details->tree));
@@ -502,37 +503,61 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 	}
 }
 
+static void
+forget_view_node (NautilusTreeView *view,
+		  NautilusCTreeNode *view_node)
+{
+	NautilusFile *file;
+	char *uri;
 
+	file = view_node_to_file (view, view_node);
+
+	/* We get NULL when we visit hack nodes, and we visit the hack
+	 * nodes before we remove them.
+	 */
+	if (file == NULL) {
+		return;
+	}
+
+	remove_hack_node (view, file);
+
+	uri = nautilus_file_get_uri (file);
+	nautilus_tree_expansion_state_remove_node
+		(view->details->expansion_state, uri);
+	g_free (uri);
+
+	g_hash_table_remove (view->details->file_to_node_map, file);
+	nautilus_file_unref (file);
+}
+
+static void
+forget_view_node_and_children (NautilusTreeView *view,
+			       NautilusCTreeNode *view_node)
+{
+	NautilusCTreeNode *child;
+
+	for (child = NAUTILUS_CTREE_ROW (view_node)->children;
+	     child != NULL;
+	     child = NAUTILUS_CTREE_ROW (child)->sibling) {
+		forget_view_node_and_children (view, child);
+	}
+
+	forget_view_node (view, view_node);
+}
 
 static void
 nautilus_tree_view_remove_model_node (NautilusTreeView *view, NautilusTreeNode *node)
 {
-	gpointer key, value;
 	NautilusCTreeNode *view_node;
-	NautilusFile *file;
-	char *uri;
 	
 	nautilus_tree_model_stop_monitoring_node (view->details->model, node, view);
 
-	file = nautilus_tree_node_get_file (node);
-	
-	uri = nautilus_file_get_uri (file);
-	
-	if (g_hash_table_lookup_extended (view->details->file_to_node_map,
-					  file, &key, &value)) {
-		view_node = value;
-
+	view_node = model_node_to_view_node (view, node);
+	if (view_node != NULL) {
+		forget_view_node_and_children (view, view_node);
 		nautilus_ctree_remove_node (NAUTILUS_CTREE (view->details->tree),
 					    view_node);
-		g_hash_table_remove (view->details->file_to_node_map, file);
-		
-		nautilus_file_unref (file);
 	}
-
-	nautilus_tree_expansion_state_remove_node (view->details->expansion_state,
-						   uri);
-
-	g_free (uri);
 }
 
 

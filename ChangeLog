@@ -1,3 +1,14 @@
+2000-11-02  Darin Adler  <darin@eazel.com>
+
+	Fix crashing part of bug 4157 (Tree View crash involving directory
+	rename/move).
+	
+	* components/tree/nautilus-tree-view.c: (forget_view_node),
+	(forget_view_node_and_children),
+	(nautilus_tree_view_remove_model_node): Add code to get rid of all
+	the child nodes when a node is removed, not just the main node
+	itself.
+
 2000-11-02  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* nautilus-installer/src/prescript:
