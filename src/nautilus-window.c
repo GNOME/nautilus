@@ -591,7 +591,7 @@ set_initial_window_geometry (NautilusWindow *window)
 					  max_height_for_screen));
 					  
 	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
-			 get_default_size, (window , &default_width, &default_height));
+			 get_default_size, (window, &default_width, &default_height));
 			 
 	gtk_window_set_default_size (GTK_WINDOW (window), 
 				     MIN (default_width, 
@@ -784,6 +784,9 @@ nautilus_window_close (NautilusWindow *window)
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			 close, (window));
+	
 	gtk_widget_destroy (GTK_WIDGET (window));
 }
 

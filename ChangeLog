@@ -1,3 +1,14 @@
+2003-12-17  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-window.h: 
+	* src/nautilus-window.c (nautilus_window_close):
+	Virtualize close_window
+
+	* src/nautilus-spatial-window.c (real_window_close):
+	Save geometry and scroll position on window close, not
+	on delete event. Also, since the timeout geometry save
+	isn't really needed anymore, up that to one second.
+
 2003-12-16  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-icon-view.c (play_file):

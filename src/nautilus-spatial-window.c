@@ -121,7 +121,7 @@ nautilus_spatial_window_configure_event (GtkWidget *widget,
 	GTK_WIDGET_CLASS (parent_class)->configure_event (widget, event);
 	
 	/* Only save the geometry if the user hasn't resized the window
-	 * for half a second. Otherwise delay the callback another half second.
+	 * for a second. Otherwise delay the callback another second.
 	 */
 	if (window->details->save_geometry_timeout_id != 0) {
 		g_source_remove (window->details->save_geometry_timeout_id);
@@ -149,7 +149,7 @@ nautilus_spatial_window_configure_event (GtkWidget *widget,
 		window->details->last_geometry = geometry_string;
 
 		window->details->save_geometry_timeout_id = 
-			g_timeout_add (500, save_window_geometry_timeout, window);
+			g_timeout_add (1000, save_window_geometry_timeout, window);
 	}
 	
 	return FALSE;
@@ -314,12 +314,11 @@ real_set_content_view_widget (NautilusWindow *window,
 			   GTK_WIDGET (new_view));
 }
 
-static gboolean
-real_delete_event (GtkWidget *window, GdkEventAny *event)
+static void
+real_window_close (NautilusWindow *window)
 {
+	nautilus_spatial_window_save_geometry (NAUTILUS_SPATIAL_WINDOW (window));
 	nautilus_spatial_window_save_scroll_position (NAUTILUS_SPATIAL_WINDOW (window));
-
-	return FALSE;
 }
 
 static void 
@@ -365,7 +364,7 @@ nautilus_spatial_window_class_init (NautilusSpatialWindowClass *class)
 		real_merge_menus;
 	NAUTILUS_WINDOW_CLASS (class)->set_content_view_widget = 
 		real_set_content_view_widget;
-	GTK_WIDGET_CLASS (class)->delete_event =
-		real_delete_event;
+	NAUTILUS_WINDOW_CLASS (class)->close = 
+		real_window_close;
 	NAUTILUS_WINDOW_CLASS(class)->get_default_size = real_get_default_size;
 }
