@@ -257,7 +257,7 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 
 /* Hide the services button if necessary */
 #ifndef EAZEL_SERVICES
-	nautilus_bonobo_set_hidden (window->details->shell_ui, "/Tool Bar/Extra Buttons Placeholder/Services", TRUE);
+	nautilus_bonobo_set_hidden (window->details->shell_ui, "/commands/Services", TRUE);
 #endif
 	
 	set_up_toolbar_images (window);

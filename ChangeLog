@@ -1,5 +1,17 @@
 2000-10-16  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 3582 (warning on boot due to verb/button problem
+        in non-Eazel-service build)
+
+	* src/nautilus-window-toolbars.c:
+	(nautilus_window_initialize_toolbars): Call set_hidden on
+	the command, not the widget. We were waiting for a Bonobo
+	fix to make this change, because it didn't work last time
+	we tried. But now it does, so the Bonobo fix must have
+	occurred.
+
+2000-10-16  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 3753 (status bar shows selected items info even
 	after they are deselected)
 
