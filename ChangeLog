@@ -2,6 +2,18 @@
 
 	reviewed by: Darin Adler <darin@eazel.com>
 
+	Fixed a couple of places that were causing zillions of failed 
+	assertions about hash tables on boot.
+	
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(create_metafile_root): Use nautilus_directory_set_metafile_contents
+	instead of setting field directly.
+	(get_file_node): Don't futz with hashtable if its NULL.
+
+2000-12-12  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
 	While investigating bug 5147, which I couldn't reproduce, I found
 	and fixed a crashing bug with similar steps.
 

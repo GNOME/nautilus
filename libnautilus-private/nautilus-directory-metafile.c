@@ -82,7 +82,7 @@ create_metafile_root (NautilusDirectory *directory)
 	xmlNode *root;
 
 	if (directory->details->metafile == NULL) {
-		directory->details->metafile = xmlNewDoc (METAFILE_XML_VERSION);
+		nautilus_directory_set_metafile_contents (directory, xmlNewDoc (METAFILE_XML_VERSION));
 	}
 	root = xmlDocGetRootElement (directory->details->metafile);
 	if (root == NULL) {
@@ -101,12 +101,14 @@ get_file_node (NautilusDirectory *directory,
 	xmlNode *root, *child;
 	
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
-	
-	child = g_hash_table_lookup (directory->details->metafile_node_hash,
-				     file_name);
-	if (child != NULL) {
-		return child;
- 	}
+
+	if (directory->details->metafile_node_hash != NULL) {
+		child = g_hash_table_lookup (directory->details->metafile_node_hash,
+					     file_name);
+		if (child != NULL) {
+			return child;
+	 	}
+	}
 	
 	if (create) {
 		root = create_metafile_root (directory);
