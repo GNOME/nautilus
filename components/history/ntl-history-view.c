@@ -188,6 +188,7 @@ menu_setup(BonoboObject *ctl, HistoryView *hview)
     GNOMEUIINFO_END
   };
 
+  hview->uih = bonobo_control_get_ui_handler(BONOBO_CONTROL(ctl));
   remote_uih = bonobo_control_get_remote_ui_handler(BONOBO_CONTROL(ctl));
   bonobo_ui_handler_set_container(hview->uih, remote_uih);
 
@@ -212,8 +213,6 @@ static BonoboObject * make_obj(BonoboGenericFactory *Factory, const char *goad_i
   object_count++;
 
   ctl = nautilus_view_frame_get_bonobo_object(NAUTILUS_VIEW_FRAME(frame));
-  hview->uih = bonobo_ui_handler_new();
-  bonobo_control_set_ui_handler(BONOBO_CONTROL(ctl), hview->uih);
   gtk_signal_connect(GTK_OBJECT(ctl), "set_frame", menu_setup, hview);
 
   /* set description */

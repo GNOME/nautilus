@@ -47,7 +47,7 @@ bonobo_subdoc_notify_location_change(NautilusView *view, Nautilus_NavigationInfo
 {
   Bonobo_PersistStream persist;
 
-  if((persist = bonobo_object_client_query_interface(view->client_object, "IDL:GNOME/PersistStream:1.0",
+  if((persist = bonobo_object_client_query_interface(view->client_object, "IDL:Bonobo/PersistStream:1.0",
                                                      NULL))
      && !CORBA_Object_is_nil(persist, ev))
     {
@@ -78,6 +78,8 @@ static gboolean
 bonobo_subdoc_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Environment *ev)
 {
   BonoboSubdocInfo *bsi;
+  Bonobo_UIHandler uih = bonobo_object_corba_objref(BONOBO_OBJECT(nautilus_window_get_uih(NAUTILUS_WINDOW(view->main_window))));
+
 
   view->component_data = bsi = g_new0(BonoboSubdocInfo, 1);
 
@@ -89,9 +91,7 @@ bonobo_subdoc_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Enviro
   bonobo_client_site_bind_embeddable(BONOBO_CLIENT_SITE(bsi->client_site), view->client_object);
   bonobo_container_add(BONOBO_CONTAINER(bsi->container), bsi->client_site);
 
-  bsi->view_frame = BONOBO_OBJECT(bonobo_client_site_new_view(BONOBO_CLIENT_SITE(bsi->client_site)));
-  bonobo_control_frame_set_ui_handler(BONOBO_CONTROL_FRAME(bsi->view_frame),
-				     nautilus_window_get_uih(NAUTILUS_WINDOW(view->main_window)));
+  bsi->view_frame = BONOBO_OBJECT(bonobo_client_site_new_view(BONOBO_CLIENT_SITE(bsi->client_site), uih));
 
   g_assert(bsi->view_frame);
       
@@ -101,7 +101,7 @@ bonobo_subdoc_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Enviro
 }
 
 NautilusViewComponentType bonobo_subdoc_component_type = {
-  "IDL:GNOME/Embeddable:1.0",
+  "IDL:Bonobo/Embeddable:1.0",
   &bonobo_subdoc_try_load_client, /* try_load */
   &destroy_bonobo_subdoc_view, /* destroy */
   NULL, /* show_properties */

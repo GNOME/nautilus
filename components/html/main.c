@@ -274,7 +274,7 @@ url_requested_cb (GtkHTML *html,
 
 	g_warning ("query_interface on the ClientSite.");
 	loader = Bonobo_Unknown_query_interface
-		(client_site, "IDL:GNOME/ProgressiveLoader:1.0", &ev);
+		(client_site, "IDL:Bonobo/ProgressiveLoader:1.0", &ev);
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		g_warning ("Cannot query Bonobo::ProgressiveLoader on the Bonobo::ClientSite.");
 		CORBA_exception_free (&ev);

@@ -596,7 +596,7 @@ nautilus_view_set_active_errors(NautilusView *view, gboolean enabled)
   if(enabled)
     {
       if(!view->timer_id)
-        view->timer_id = g_timeout_add(1000, (GSourceFunc)check_object, view);
+        view->timer_id = g_timeout_add(2000, (GSourceFunc)check_object, view);
     }
   else
     {

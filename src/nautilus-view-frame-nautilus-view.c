@@ -39,10 +39,10 @@ nautilus_view_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Enviro
 {
   Bonobo_Control control;
   NautilusViewInfo *nvi;
-
+  Bonobo_UIHandler uih = bonobo_object_corba_objref(BONOBO_OBJECT(nautilus_window_get_uih(NAUTILUS_WINDOW(view->main_window))));
   nvi = view->component_data = g_new0(NautilusViewInfo, 1);
 
-  control = Bonobo_Unknown_query_interface(obj, "IDL:GNOME/Control:1.0", ev);
+  control = Bonobo_Unknown_query_interface(obj, "IDL:Bonobo/Control:1.0", ev);
   if(ev->_major != CORBA_NO_EXCEPTION)
     control = CORBA_OBJECT_NIL;
 
@@ -51,11 +51,9 @@ nautilus_view_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Enviro
 
   nvi->view_client = CORBA_Object_duplicate(obj, ev);
 
-  nvi->control_frame = BONOBO_OBJECT(bonobo_control_frame_new());
+  nvi->control_frame = BONOBO_OBJECT(bonobo_control_frame_new(uih));
   bonobo_object_add_interface(BONOBO_OBJECT(nvi->control_frame), view->view_frame);
 
-  bonobo_control_frame_set_ui_handler(BONOBO_CONTROL_FRAME(nvi->control_frame),
-				     nautilus_window_get_uih(NAUTILUS_WINDOW(view->main_window)));
   bonobo_control_frame_bind_to_control(BONOBO_CONTROL_FRAME(nvi->control_frame), control);
   view->client_widget = bonobo_control_frame_get_widget(BONOBO_CONTROL_FRAME(nvi->control_frame));
 

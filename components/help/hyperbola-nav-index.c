@@ -79,7 +79,7 @@ hyperbola_navigation_index_update_clist(HyperbolaNavigationIndex *hni)
 	}
 
       g_snprintf(rowtext, sizeof(rowtext), "%*s%s", ii->indent * 2, "", ii->text); /* Lame way of indenting entries */
-      rownum = gtk_clist_append(GTK_CLIST(hni->clist), &rowtext);
+      rownum = gtk_clist_append(GTK_CLIST(hni->clist), (char **)&rowtext);
       gtk_clist_set_row_data(GTK_CLIST(hni->clist), rownum, ii);
 
       if(nwords) /* highlight this row as a match */

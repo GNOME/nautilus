@@ -317,6 +317,7 @@ browser_vfs_read_callback(GnomeVFSAsyncHandle *h, GnomeVFSResult res, gpointer b
 {
   VFSHandle *vfsh = data;
 
+  g_message("browser_vfs_read_callback: %ld/%ld bytes", bytes_read, bytes_requested);
   gtk_html_write(GTK_HTML(vfsh->bi->htmlw), vfsh->sh, buffer, bytes_read);
 
   if(res != GNOME_VFS_OK)
@@ -333,6 +334,8 @@ static void
 browser_vfs_callback(GnomeVFSAsyncHandle *h, GnomeVFSResult res, gpointer data)
 {
   VFSHandle *vfsh = data;
+
+  g_message("browser_vfs_callback");
 
   if(res != GNOME_VFS_OK)
     {

@@ -55,14 +55,13 @@ static gboolean
 bonobo_control_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Environment *ev)
 {
   BonoboControlInfo *bci;
+  Bonobo_UIHandler uih = bonobo_object_corba_objref(BONOBO_OBJECT(nautilus_window_get_uih(NAUTILUS_WINDOW(view->main_window))));
 
   view->component_data = bci = g_new0(BonoboControlInfo, 1);
 
-  bci->control_frame = BONOBO_OBJECT(bonobo_control_frame_new());
+  bci->control_frame = BONOBO_OBJECT(bonobo_control_frame_new(uih));
   bonobo_object_add_interface(BONOBO_OBJECT(bci->control_frame), view->view_frame);
-  
-  bonobo_control_frame_set_ui_handler(BONOBO_CONTROL_FRAME(bci->control_frame),
-				     nautilus_window_get_uih(NAUTILUS_WINDOW(view->main_window)));
+
   bonobo_control_frame_bind_to_control(BONOBO_CONTROL_FRAME(bci->control_frame), obj);
 
   view->client_widget = bonobo_control_frame_get_widget(BONOBO_CONTROL_FRAME(bci->control_frame));
@@ -91,7 +90,7 @@ bonobo_control_notify_location_change(NautilusView *view, Nautilus_NavigationInf
 }
 
 NautilusViewComponentType bonobo_control_component_type = {
-  "IDL:GNOME/Control:1.0",
+  "IDL:Bonobo/Control:1.0",
   &bonobo_control_try_load_client, /* try_load */
   &destroy_bonobo_control_view, /* destroy */
   NULL, /* show_properties */
