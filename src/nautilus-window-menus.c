@@ -102,7 +102,7 @@
 #define QUICK_REFERENCE_URI	"help:nautilus-quick-reference"
 #define RELEASE_NOTES_URI	"help:nautilus-release-notes"
 #define CUSTOMER_SUPPORT_URI	"http://www.redhat.com/support/"
-#define START_HERE_URI          "starthere:"
+#define START_HERE_URI          "start-here:"
 
 static GtkWindow *bookmarks_window = NULL;
 
