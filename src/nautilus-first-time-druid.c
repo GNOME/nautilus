@@ -321,7 +321,8 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 				   const char *icon_name,
 				   const char *comment, const char *background)
 {
-	GtkWidget *hbox, *label_box, *icon, *label, *alignment;
+	GtkWidget *hbox, *vbox;
+	GtkWidget *label_box, *icon, *label, *alignment;
 	GtkWidget *comment_vbox, *comment_hbox;
 	GdkPixbuf *icon_pixbuf;
 	char *user_level_name;
@@ -332,7 +333,6 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 
 	/* Add an "indent" */
 	alignment = gtk_alignment_new (1.0, 1.0, 1.0, 1.0);
-	gtk_widget_show (alignment);
 	gtk_widget_set_usize (alignment, 50, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), alignment, FALSE, FALSE, 0);
 
@@ -364,7 +364,13 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 	/* FIXME bugzilla.eazel.com 5052: Hardcoded font. */
 	nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", "bold", NULL, NULL);
 
-	gtk_box_pack_start (GTK_BOX (label_box), label, FALSE, FALSE, 0);
+	/* extra vbox to help with alignment */
+	vbox = gtk_vbox_new (FALSE, 0);
+	alignment = gtk_alignment_new (1.0, 1.0, 1.0, 1.0);
+	gtk_widget_set_usize (alignment, -1, 6);
+	gtk_box_pack_start (GTK_BOX (vbox), alignment, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (label_box), vbox, FALSE, FALSE, 0);
 
 	/* add label to radio button */
 	gtk_container_add (GTK_CONTAINER (radio_buttons[index]), label_box);
@@ -375,7 +381,6 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 
 	/* Add an "indent" */
 	alignment = gtk_alignment_new (1.0, 1.0, 1.0, 1.0);
-	gtk_widget_show (alignment);
 	gtk_widget_set_usize (alignment, 50, -1);
 	gtk_box_pack_start (GTK_BOX (comment_hbox), alignment, FALSE, FALSE, 0);
 
@@ -423,19 +428,19 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 		   "familiar with the working of "
 		   "GNOME and Linux."),
 		 NULL);
-	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 4);
+	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 2);
 	hbox = make_hbox_user_level_radio_button
 		(NAUTILUS_USER_LEVEL_INTERMEDIATE, radio_buttons, "intermediate.png",
 		 _("For non-technical users that are comfortable with\n"
 		   "their GNOME and Linux environment."),
 				       NULL);
-	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 4);
+	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 2);
 	hbox = make_hbox_user_level_radio_button
 		(NAUTILUS_USER_LEVEL_HACKER, radio_buttons, "expert.png",
 		 _("For users that have the need to be exposed\n"
 		   "to every detail of their operating system."),
 		 NULL);
-	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 4);
+	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 2);
 
 	user_level = nautilus_user_level_manager_get_user_level ();
 	g_assert (user_level >= NAUTILUS_USER_LEVEL_NOVICE && user_level <= NAUTILUS_USER_LEVEL_HACKER);
@@ -517,7 +522,7 @@ set_up_update_page (NautilusDruidPageEazel *page)
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	/* allocate a descriptive label */
-	label = make_anti_aliased_label (_("Nautilus will now contact Eazel services to verify your \nweb connection and download the latest updates.  \nClick the Next button to continue."));
+	label = make_anti_aliased_label (_("Nautilus will now contact Eazel services to quickly verify \nyour web connection and download the latest updates. \nClick the Next button to continue."));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
 	
@@ -529,8 +534,8 @@ set_up_update_page (NautilusDruidPageEazel *page)
 	gtk_container_add (GTK_CONTAINER (frame),
 					radio_buttons);
 
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Yes, verify my web connection and update Nautilus now."));
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("No, I don't wish to connect and update Nautilus now."));	
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Yes, verify my connection and update Nautilus now."));
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("No, don't contact Eazel services at this time."));	
 
 	gtk_signal_connect (GTK_OBJECT (radio_buttons),
 			    "changed",
