@@ -1,3 +1,19 @@
+2000-11-09  Darin Adler  <darin@eazel.com>
+
+	buddy: John Sullivan <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(repopuluate_program_list), (is_component_default_for_file),
+	(program_file_pair_is_default_for_file),
+	(program_file_pair_is_in_short_list_for_file),
+	(add_to_short_list_for_file), (remove_from_short_list_for_file),
+	(remove_default_for_item), (set_default_for_item):
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(nautilus_choose_component_for_file):
+
+	Remove unnecessary calls to wait functions. There are still
+	one or two cases of calls. Next step is to replace them.
+
 2000-11-09  John Sullivan  <sullivan@eazel.com>
 
 	The beginnings of converting directory view context menus

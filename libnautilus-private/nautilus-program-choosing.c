@@ -122,7 +122,6 @@ nautilus_choose_component_for_file (NautilusFile *file,
 	/* The API uses a callback so we can do this non-modally in the future,
 	 * but for now we just use a modal dialog.
 	 */
-
 	any_choices = any_programs_available_for_file (action_type, file);
 
 	identifier = NULL;

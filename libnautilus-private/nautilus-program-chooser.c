@@ -45,9 +45,6 @@
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
 
-/* FIXME bugzilla.eazel.com 4539: Eliminate this soon. */
-#include "nautilus-wait-until-ready.h"
-
 enum {
 	PROGRAM_LIST_NAME_COLUMN,
 	PROGRAM_LIST_STATUS_COLUMN,
@@ -316,8 +313,6 @@ repopulate_program_list (GnomeDialog *program_chooser,
 	int new_row;
 	GnomeVFSMimeActionType type;
 
-	nautilus_mime_actions_wait_for_full_file_attributes (file);
-
 	type = nautilus_program_chooser_get_type (program_chooser);
 
 	g_assert (type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT
@@ -505,8 +500,6 @@ is_component_default_for_file (NautilusViewIdentifier *identifier, NautilusFile 
 
 	g_assert (identifier != NULL);
 
-	nautilus_mime_actions_wait_for_full_file_attributes (file);
-
 	default_component = nautilus_mime_get_default_component_for_file (file);
 	result = (default_component != NULL && strcmp (default_component->iid, identifier->iid) == 0);
 
@@ -614,8 +607,6 @@ program_file_pair_is_default_for_file (ProgramFilePair *pair)
 	g_assert (pair != NULL);
 	g_assert (NAUTILUS_IS_FILE (pair->file));
 
-	nautilus_mime_actions_wait_for_full_file_attributes (pair->file);
-
 	if (pair->action_type != nautilus_mime_get_default_action_type_for_file (pair->file)) {
 		return FALSE;
 	}
@@ -658,8 +649,6 @@ program_file_pair_is_in_short_list_for_file (ProgramFilePair *pair)
 
 	g_assert (pair != NULL);
 	g_assert (NAUTILUS_IS_FILE (pair->file));
-
-	nautilus_mime_actions_wait_for_full_file_attributes (pair->file);
 
 	if (pair->action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
 		result = is_component_in_short_list_for_file (pair->view_identifier, pair->file);
@@ -776,8 +765,6 @@ pack_radio_button (GtkBox *box, const char *label_text, GtkRadioButton *group)
 static void
 add_to_short_list_for_file (ProgramFilePair *pair)
 {
-	nautilus_mime_actions_wait_for_full_file_attributes (pair->file);
-
 	if (pair->action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
 		nautilus_mime_add_application_to_short_list_for_file (pair->file, pair->application->id);
 	} else {
@@ -788,8 +775,6 @@ add_to_short_list_for_file (ProgramFilePair *pair)
 static void
 remove_from_short_list_for_file (ProgramFilePair *pair)
 {
-	nautilus_mime_actions_wait_for_full_file_attributes (pair->file);
-
 	if (pair->action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
 		nautilus_mime_remove_application_from_short_list_for_file (pair->file, pair->application->id);
 	} else {
@@ -852,8 +837,6 @@ remove_default_for_type (ProgramFilePair *pair)
 static void
 remove_default_for_item (ProgramFilePair *pair)
 {
-	nautilus_mime_actions_wait_for_full_file_attributes (pair->file);
-
 	if (pair->action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
 	    	/* If the default is just falling through to the default for this type,
 	    	 * don't do anything here.
@@ -896,8 +879,6 @@ set_default_for_type (ProgramFilePair *pair)
 static void
 set_default_for_item (ProgramFilePair *pair)
 {
-	nautilus_mime_actions_wait_for_full_file_attributes (pair->file);
-
 	if (pair->action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
 		nautilus_mime_set_default_application_for_file (pair->file, pair->application->id);
 	} else {
