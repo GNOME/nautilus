@@ -1,3 +1,26 @@
+2001-01-04  Darin Adler  <darin@eazel.com>
+
+	Fix a screwup in my recent check-in that made hidden files
+	show up on the desktop.
+
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize): Don't try to special-case the
+	desktop since it's too early to detect that case anyway.
+	(fm_directory_view_destroy): Use the
+	fm_directory_view_ignore_hidden_file_preferences call to
+	disconnect the preferences callbacks. This prevents disconnecting
+	them twice in case another caller makes that call.
+	(fm_directory_view_ignore_hidden_file_preferences): Turn on the
+	flag that says we're ignoring the preferences, disconnect the
+	preference callbacks, and set the flags both to FALSE so we won't
+	show hidden or backup files.
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize): Call the new
+	fm_directory_view_ignore_hidden_file_preference to make it never
+	show hidden or backup files on the desktop.
+
 2001-01-04  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-property-browser.c: (set_emblem_image_from_file),

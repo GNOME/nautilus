@@ -307,7 +307,7 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	NautilusIconContainer *icon_container;
 	GtkAllocation *allocation;
 	GtkAdjustment *hadj, *vadj;
-	
+
 	icon_container = get_icon_container (desktop_icon_view);
 
 	/* Set up details */
@@ -332,6 +332,9 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	nautilus_gtk_adjustment_set_value (hadj, 0);
 	nautilus_gtk_adjustment_set_value (vadj, 0);
 
+	fm_directory_view_ignore_hidden_file_preferences
+		(FM_DIRECTORY_VIEW (desktop_icon_view));
+	
 	/* Set our default layout mode */
 	nautilus_icon_container_set_layout_mode (icon_container,
 						 NAUTILUS_ICON_LAYOUT_T_B_L_R);
@@ -406,7 +409,7 @@ empty_trash_callback (BonoboUIComponent *component,
 {
         g_assert (FM_IS_DIRECTORY_VIEW (data));
 
-	nautilus_file_operations_empty_trash (GTK_WIDGET (FM_DIRECTORY_VIEW (data)));
+	nautilus_file_operations_empty_trash (GTK_WIDGET (data));
 }
 
 static void
@@ -414,8 +417,6 @@ reset_background_callback (BonoboUIComponent *component,
 			   gpointer data, 
 			   const char *verb)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (data));
-
 	nautilus_background_reset 
 		(fm_directory_view_get_background (FM_DIRECTORY_VIEW (data)));
 }
@@ -452,7 +453,8 @@ trash_link_is_selection (FMDirectoryView *view)
 
 static void
 fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor *trash_monitor,
-						   gboolean state, gpointer callback_data)
+						   gboolean state,
+						   gpointer callback_data)
 {
 	char *desktop_path, *path;
 

@@ -150,6 +150,7 @@ struct FMDirectoryViewDetails
 
 	gboolean show_hidden_files;
 	gboolean show_backup_files;
+	gboolean ignore_hidden_file_preferences;
 
 	gboolean batching_selection_level;
 	gboolean selection_changed_while_batched;
@@ -1012,23 +1013,17 @@ fm_directory_view_initialize (FMDirectoryView *view)
 
 	gtk_widget_show (GTK_WIDGET (view));
 
-	/* Desktop always filters out hidden files */
-	/* FIXME bugzilla.eazel.com 5060: Should use methods instead
-	 * of hardcoding desktop knowledge in here.
-	 */
-	if (!FM_IS_DESKTOP_ICON_VIEW (view)) {
-		filtering_changed_callback (view);
-
-		/* Keep track of changes in this pref to filter files accordingly. */
-		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-						   filtering_changed_callback,
-						   view);
-		
-		/* Keep track of changes in this pref to filter files accordingly. */
-		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-						   filtering_changed_callback,
-						   view);
-	}
+	filtering_changed_callback (view);
+	
+	/* Keep track of changes in this pref to filter files accordingly. */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+					   filtering_changed_callback,
+					   view);
+	
+	/* Keep track of changes in this pref to filter files accordingly. */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+					   filtering_changed_callback,
+					   view);
 	
 	/* Keep track of changes in this pref to display menu names correctly. */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
@@ -1094,6 +1089,7 @@ fm_directory_view_destroy (GtkObject *object)
 
 	disconnect_model_handlers (view);
 	nautilus_directory_unref (view->details->model);
+	view->details->model = NULL;
 	nautilus_file_unref (view->details->directory_as_file);
 
 	if (view->details->display_selection_idle_id != 0) {
@@ -1104,17 +1100,7 @@ fm_directory_view_destroy (GtkObject *object)
 		gtk_idle_remove (view->details->update_menus_idle_id);
 	}
 
-	/* FIXME bugzilla.eazel.com 5060: Should use methods instead
-	 * of hardcoding desktop knowledge in here.
-	 */
-	if (!FM_IS_DESKTOP_ICON_VIEW (view)) {
-		nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-						      filtering_changed_callback,
-						      view);
-		nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-						      filtering_changed_callback,
-						      view);
-	}
+	fm_directory_view_ignore_hidden_file_preferences (view);
 
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
 					      schedule_update_menus_callback,
@@ -4094,6 +4080,27 @@ filtering_changed_callback (gpointer callback_data)
 				directory_view->details->model,
 				FALSE);
 	}
+}
+
+void
+fm_directory_view_ignore_hidden_file_preferences (FMDirectoryView *view)
+{
+	g_return_if_fail (view->details->model == NULL);
+
+	if (view->details->ignore_hidden_file_preferences) {
+		return;
+	}
+
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+					      filtering_changed_callback,
+					      view);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+					      filtering_changed_callback,
+					      view);
+
+	view->details->show_hidden_files = FALSE;
+	view->details->show_backup_files = FALSE;
+	view->details->ignore_hidden_file_preferences = TRUE;
 }
 
 char *
