@@ -1652,7 +1652,7 @@ application_supports_uri_scheme (gpointer data,
 
 	/* The default supported uri scheme is "file" */
 	if (application->supported_uri_schemes == NULL &&
-	    strcmp (uri_scheme, "file") == 0) {
+	    strcmp ((const char *)uri_scheme, "file") == 0) {
 		return TRUE;
 	}
 	return (g_list_find_custom (application->supported_uri_schemes,

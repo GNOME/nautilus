@@ -1,3 +1,14 @@
+2001-01-26  Seth Nickell  <seth@eazel.com>
+
+	* icons/eazel/.cvsignore:
+	* icons/vector/.cvsignore:
+	Added Makefile and Makefile.in to the ignore file
+	
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(application_supports_uri_scheme):
+	Add a cast to gpointers being passed to strcmp to
+	satisfy C++-ish compilers
+
 2001-01-26  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: <delete if not using a buddy>
