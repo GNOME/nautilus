@@ -18,12 +18,14 @@ GTK_REQUIRED=2
 MEDUSA_REQUIRED=0.5.1
 RSVG_REQUIRED=1.1.6
 XML_REQUIRED=2.4.7
+LIBGLADE_REQUIRED=2.0.0
 
 AC_SUBST(EEL_REQUIRED)
 AC_SUBST(GNOME_VFS_REQUIRED)
 AC_SUBST(MEDUSA_REQUIRED)
 AC_SUBST(RSVG_REQUIRED)
 AC_SUBST(XML_REQUIRED)
+AC_SUBST(LIBGLADE_REQUIRED)
 
 dnl ===========================================================================
 
@@ -61,7 +63,8 @@ PKG_CHECK_MODULES(ALL, \
 	libgnomecanvas-2.0 >= $GNOME_CANVAS_REQUIRED \
 	libgnomeui-2.0 >= $GNOME_UI_REQUIRED \
 	librsvg-2.0 >= $RSVG_REQUIRED \
-	libxml-2.0 >= $XML_REQUIRED)
+	libxml-2.0 >= $XML_REQUIRED \
+	libglade-2.0 >= $LIBGLADE_REQUIRED)
 dnl ==========================================================================
 
 ALL_LINGUAS="az bg ca cs da de el en_GB es eu fi fr ga gl hu it ja ko lt lv ms nl nn no pl pt pt_BR ro ru sk sl sv ta tr uk vi zh_CN zh_TW"
@@ -267,7 +270,7 @@ LIBNAUTILUS_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $LIBNAUTILUS_MODULES | 
 AC_SUBST(LIBNAUTILUS_IDL_INCLUDES)
 
 dnl core nautilus (must list bonobo-activation and libbonobo because idldir does not respect "requires")
-CORE_MODULES="eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 libbonoboui-2.0 esound gnome-desktop-2.0 $EXTRA_CORE_MODULES"
+CORE_MODULES="eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 libbonoboui-2.0 esound gnome-desktop-2.0 libglade-2.0 $EXTRA_CORE_MODULES"
 CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES` $x_cflags"
 AC_SUBST(CORE_CFLAGS)
 CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES` $CDDA_LIBS $LIBJPEG $x_libs"

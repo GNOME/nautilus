@@ -13,6 +13,7 @@ INCLUDES =\
 	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
 	-DLIBDIR=\""$(libdir)"\" \
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
+	-DGLADEDIR=\""$(datadir)/nautilus/glade"\" \
 	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" \
 	-DPREFIX=\""$(prefix)"\" \
 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
@@ -131,6 +132,9 @@ ui_DATA = 					\
 	nautilus-shell-ui.xml			\
 	$(NULL)
 
+gladedir = $(datadir)/nautilus/glade
+glade_DATA = nautilus-bookmarks-window.glade
+
 CLEANFILES = \
 	$(nautilus_shell_interface_idl_sources)	\
 	nautilus_shell_interface_idl_stamp	\
@@ -139,6 +143,7 @@ CLEANFILES = \
 EXTRA_DIST =					\
 	$(server_in_files)			\
 	$(server_DATA)				\
+	$(glade_DATA)				\
 	$(ui_DATA)				\
 	check-nautilus				\
 	nautilus-shell-interface.idl		\

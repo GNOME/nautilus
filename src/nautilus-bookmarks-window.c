@@ -32,7 +32,9 @@
 #include <eel/eel-gtk-extensions.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
+#include <gtk/gtkhbbox.h>
 #include <gnome.h>
+#include <glade/glade.h>
 
 
 /* Static variables to keep track of window state. If there were
@@ -43,6 +45,7 @@ static int		     bookmark_list_changed_signal_id;
 static NautilusBookmarkList *bookmarks = NULL;
 static GtkTreeView	    *bookmark_list_widget = NULL; /* awkward name to distinguish from NautilusBookmarkList */
 static GtkListStore	    *bookmark_list_store = NULL;
+static GtkListStore	    *bookmark_empty_list_store = NULL;
 static GtkTreeSelection     *bookmark_selection = NULL;
 static int                   selection_changed_id = 0;
 static GtkWidget	    *name_field = NULL;
@@ -99,7 +102,8 @@ static void     set_up_close_accelerator                    (GtkWidget          
 #define BOOKMARK_LIST_COLUMN_ICON		0
 #define BOOKMARK_LIST_COLUMN_NAME		1
 #define BOOKMARK_LIST_COLUMN_BOOKMARK		2
-#define BOOKMARK_LIST_COLUMN_COUNT		3
+#define BOOKMARK_LIST_COLUMN_STYLE		3
+#define BOOKMARK_LIST_COLUMN_COUNT		4
 
 /* layout constants */
 
@@ -143,6 +147,55 @@ nautilus_bookmarks_window_response_callback (GtkDialog *dialog,
 		gtk_widget_hide (GTK_WIDGET (dialog));
 }
 
+static GtkListStore *
+create_bookmark_store (void)
+{
+	return gtk_list_store_new (BOOKMARK_LIST_COLUMN_COUNT,
+				   GDK_TYPE_PIXBUF,
+				   G_TYPE_STRING,
+				   G_TYPE_OBJECT,
+				   PANGO_TYPE_STYLE);
+}
+
+static void
+setup_empty_list (void)
+{
+	GtkTreeIter iter;
+
+	bookmark_empty_list_store = create_bookmark_store ();
+	gtk_list_store_append (bookmark_empty_list_store, &iter);
+
+	gtk_list_store_set (bookmark_empty_list_store, &iter,
+			    BOOKMARK_LIST_COLUMN_NAME, _("No bookmarks defined"),
+			    BOOKMARK_LIST_COLUMN_STYLE, PANGO_STYLE_ITALIC,
+			    -1);
+}
+
+static void
+bookmarks_set_empty (gboolean empty)
+{
+	GtkTreeIter iter;
+
+	if (empty) {
+		gtk_tree_view_set_model (bookmark_list_widget,
+					 GTK_TREE_MODEL (bookmark_empty_list_store));
+		gtk_widget_set_sensitive (GTK_WIDGET (bookmark_list_widget), FALSE);
+	} else {
+		gtk_tree_view_set_model (bookmark_list_widget,
+					 GTK_TREE_MODEL (bookmark_list_store));
+		gtk_widget_set_sensitive (GTK_WIDGET (bookmark_list_widget), TRUE);
+
+		if (nautilus_bookmark_list_length (bookmarks) > 0 &&
+		    !get_selection_exists ()) {
+			gtk_tree_model_iter_nth_child (GTK_TREE_MODEL (bookmark_list_store),
+						       &iter, NULL, 0);
+			gtk_tree_selection_select_iter (bookmark_selection, &iter);
+		}
+	}
+
+	on_selection_changed (bookmark_selection, NULL);
+}
+
 /**
  * create_bookmarks_window:
  * 
@@ -155,45 +208,26 @@ GtkWindow *
 create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_source)
 {
 	GtkWidget         *window;
-	GtkWidget         *content_area;
-	GtkWidget         *list_scroller;
-	GtkWidget         *right_side;
-	GtkWidget         *vbox3;
-	GtkWidget         *name_label;
-	GtkWidget         *vbox4;
-	GtkWidget         *url_label;
-	GtkWidget         *hbox2;
 	GtkTreeViewColumn *col;
 	GtkCellRenderer   *rend;
+	GladeXML          *gui;
 
 	bookmarks = list;
 
-	window = gtk_dialog_new_with_buttons (_("Bookmarks"), NULL, 0,
-					      GTK_STOCK_HELP, GTK_RESPONSE_HELP,
-					      GTK_STOCK_CLOSE, GTK_RESPONSE_OK,
-					      NULL);
-	gtk_dialog_set_has_separator (GTK_DIALOG (window), FALSE);
+	gui = glade_xml_new (GLADEDIR "/nautilus-bookmarks-window.glade", NULL, NULL);
+	if (!gui) {
+		g_warning ("Failed to locate " GLADEDIR "/nautilus-bookmarks-window.glade");
+		return NULL;
+	}
+
+	window = glade_xml_get_widget (gui, "bookmarks_dialog");
 	set_up_close_accelerator (window);
 	nautilus_undo_share_undo_manager (G_OBJECT (window), undo_manager_source);
+
 	gtk_window_set_wmclass (GTK_WINDOW (window), "bookmarks", "Nautilus");
 	nautilus_bookmarks_window_restore_geometry (window);
 	
-	content_area = gtk_hbox_new (TRUE, GNOME_PAD);
-	gtk_widget_show (content_area);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox), content_area, TRUE, TRUE, 0);
-
-	list_scroller = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_show (list_scroller);
-	gtk_box_pack_start (GTK_BOX (content_area), list_scroller, TRUE, TRUE, 0);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (list_scroller), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (list_scroller), GTK_SHADOW_IN);
-
-	bookmark_list_widget = GTK_TREE_VIEW (gtk_tree_view_new ());
-	gtk_widget_show (GTK_WIDGET (bookmark_list_widget));
-	gtk_container_add (GTK_CONTAINER (list_scroller), 
-			   GTK_WIDGET (bookmark_list_widget));
-	gtk_tree_view_set_headers_visible (bookmark_list_widget, FALSE);
-	gtk_tree_view_set_reorderable (bookmark_list_widget, TRUE);
+	bookmark_list_widget = GTK_TREE_VIEW (glade_xml_get_widget (gui, "bookmark_tree_view"));
 		
 	rend = gtk_cell_renderer_pixbuf_new ();
 	col = gtk_tree_view_column_new_with_attributes ("Icon", 
@@ -211,63 +245,39 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 							rend,
 							"text", 
 							BOOKMARK_LIST_COLUMN_NAME,
+							"style",
+							BOOKMARK_LIST_COLUMN_STYLE,
 							NULL);
 	gtk_tree_view_append_column (bookmark_list_widget,
 				     GTK_TREE_VIEW_COLUMN (col));
 	
-	bookmark_list_store = gtk_list_store_new (BOOKMARK_LIST_COLUMN_COUNT,
-						  GDK_TYPE_PIXBUF,
-						  G_TYPE_STRING,
-						  G_TYPE_INT,
-						  G_TYPE_OBJECT);
+	bookmark_list_store = create_bookmark_store ();
+	setup_empty_list ();
 	gtk_tree_view_set_model (bookmark_list_widget,
-				 GTK_TREE_MODEL (bookmark_list_store));
+				 GTK_TREE_MODEL (bookmark_empty_list_store));
 	
 	bookmark_selection =
 		GTK_TREE_SELECTION (gtk_tree_view_get_selection (bookmark_list_widget));
-	
-	right_side = gtk_vbox_new (FALSE, GNOME_PAD);
-	gtk_widget_show (right_side);
-	gtk_box_pack_start (GTK_BOX (content_area), right_side, TRUE, TRUE, 0);
-
-	vbox3 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox3);
-	gtk_box_pack_start (GTK_BOX (right_side), vbox3, FALSE, FALSE, 0);
-
-	name_label = gtk_label_new_with_mnemonic (_("_Name"));
-	gtk_widget_show (name_label);
-	gtk_box_pack_start (GTK_BOX (vbox3), name_label, FALSE, FALSE, 0);
 
 	name_field = nautilus_entry_new ();
 	gtk_widget_show (name_field);
-	gtk_box_pack_start (GTK_BOX (vbox3), name_field, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (glade_xml_get_widget (gui, "bookmark_name_placeholder")),
+			    name_field, TRUE, TRUE, 0);
 	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (name_field), TRUE);
 	
-	gtk_label_set_mnemonic_widget (GTK_LABEL (name_label), name_field);
-
-	vbox4 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox4);
-	gtk_box_pack_start (GTK_BOX (right_side), vbox4, FALSE, FALSE, 0);
-
-	url_label = gtk_label_new_with_mnemonic (_("_Location"));
-	gtk_widget_show (url_label);
-	gtk_box_pack_start (GTK_BOX (vbox4), url_label, FALSE, FALSE, 0);
+	gtk_label_set_mnemonic_widget (
+		GTK_LABEL (glade_xml_get_widget (gui, "bookmark_name_label")),
+		name_field);
 
 	uri_field = nautilus_entry_new ();
 	gtk_widget_show (uri_field);
-	gtk_box_pack_start (GTK_BOX (vbox4), uri_field, FALSE, FALSE, 0);	
+	gtk_box_pack_start (GTK_BOX (glade_xml_get_widget (gui, "bookmark_location_placeholder")),
+			    uri_field, TRUE, TRUE, 0);
 	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (uri_field), TRUE);
 
-	gtk_label_set_mnemonic_widget (GTK_LABEL (url_label), uri_field);
-
-	hbox2 = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox2);
-	gtk_box_pack_start (GTK_BOX (right_side), hbox2, FALSE, FALSE, 0);
-
-	remove_button = gtk_button_new_with_mnemonic (_("_Remove"));
-
-	gtk_widget_show (remove_button);
-	gtk_box_pack_start (GTK_BOX (hbox2), remove_button, TRUE, FALSE, 0);
+	gtk_label_set_mnemonic_widget (
+		GTK_LABEL (glade_xml_get_widget (gui, "bookmark_location_label")),
+		uri_field);
 
 	bookmark_list_changed_signal_id =
 		g_signal_connect (bookmarks, "contents_changed",
@@ -278,6 +288,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	row_deleted_signal_id =
 		g_signal_connect (bookmark_list_store, "row_deleted",
 				  G_CALLBACK (on_row_deleted), NULL);
+
 	selection_changed_id =
 		g_signal_connect (bookmark_selection, "changed",
 				  G_CALLBACK (on_selection_changed), NULL);	
@@ -308,6 +319,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 			  G_CALLBACK (on_text_field_focus_out_event), NULL);
 	g_signal_connect (uri_field, "activate",
 			  G_CALLBACK (name_or_uri_field_activate), NULL);
+	remove_button = glade_xml_get_widget (gui, "bookmark_delete_button");
 	g_signal_connect (remove_button, "clicked",
 			  G_CALLBACK (on_remove_button_clicked), NULL);
 
@@ -321,6 +333,8 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	/* Fill in list widget with bookmarks, must be after signals are wired up. */
 	repopulate();
 
+	g_object_unref (G_OBJECT (gui));
+	
 	return GTK_WINDOW (window);
 }
 
@@ -330,6 +344,9 @@ get_selected_bookmark (void)
 	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK_LIST(bookmarks), NULL);
 
 	if (!get_selection_exists())
+		return NULL;
+
+	if (nautilus_bookmark_list_length (bookmarks) < 1)
 		return NULL;
 
 	return nautilus_bookmark_list_item_at(bookmarks, get_selected_row ());
@@ -474,9 +491,13 @@ on_remove_button_clicked (GtkButton *button,
 	if (row >= rows)
 		row = rows - 1;
 
-	gtk_tree_model_iter_nth_child (GTK_TREE_MODEL (bookmark_list_store),
-				       &iter, NULL, row);
-	gtk_tree_selection_select_iter (bookmark_selection, &iter);
+	if (row < 0) {
+		bookmarks_set_empty (TRUE);
+	} else {
+		gtk_tree_model_iter_nth_child (GTK_TREE_MODEL (bookmark_list_store),
+					       &iter, NULL, row);
+		gtk_tree_selection_select_iter (bookmark_selection, &iter);
+	}
 }
 
 /* This is a bit of a kludge to get DnD to work. We check if the row in the
@@ -492,6 +513,8 @@ on_row_changed (GtkListStore *store,
 	NautilusBookmark *bookmark = NULL, *bookmark_in_list;
 	gint *indices, row;
 	gboolean insert_bookmark = TRUE;
+
+	store = bookmark_list_store;
 
 	indices = gtk_tree_path_get_indices (path);
 	row = indices[0];
@@ -699,10 +722,8 @@ on_window_destroy_event (GtkWidget *widget,
 static void
 repopulate (void)
 {
+	guint index;
 	GtkListStore *store;
-	guint         index;
-	GtkTreeIter   iter;
-	gboolean      selection_exists;
 	
 	g_assert (GTK_IS_TREE_VIEW (bookmark_list_widget));
 	g_assert (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
@@ -724,7 +745,7 @@ repopulate (void)
 	/* Fill the list in with the bookmark names. */
 	g_signal_handler_block (store, row_changed_signal_id);
 
-	for (index = 0; index < nautilus_bookmark_list_length(bookmarks); ++index) {
+	for (index = 0; index < nautilus_bookmark_list_length (bookmarks); ++index) {
 		NautilusBookmark *bookmark;
 		char             *bookmark_name;
 		GdkPixbuf        *bookmark_pixbuf;
@@ -741,6 +762,7 @@ repopulate (void)
 				    BOOKMARK_LIST_COLUMN_ICON, bookmark_pixbuf,
 				    BOOKMARK_LIST_COLUMN_NAME, bookmark_name,
 				    BOOKMARK_LIST_COLUMN_BOOKMARK, bookmark,
+				    BOOKMARK_LIST_COLUMN_STYLE, PANGO_STYLE_NORMAL,
 				    -1);
 		
 		g_free (bookmark_name);
@@ -749,33 +771,7 @@ repopulate (void)
 	}
 	g_signal_handler_unblock (store, row_changed_signal_id);
 
-	/* Select the first row on start-up */
-	if (index) {
-		gtk_tree_model_get_iter_root (GTK_TREE_MODEL (bookmark_list_store), &iter);
-		gtk_tree_selection_select_iter (bookmark_selection, &iter);
-	}
-	
-	/* Set the sensitivity of widgets that require a selection */
-	selection_exists = get_selection_exists ();
-	gtk_widget_set_sensitive (remove_button, selection_exists);
-	gtk_widget_set_sensitive (name_field, selection_exists);
-	gtk_widget_set_sensitive (uri_field, selection_exists);
-	    
-	if (!selection_exists) {
-		/* Block signals to avoid modifying nonexistent selected item. */
-		g_signal_handler_block (name_field, 
-					name_field_changed_signal_id);
-		nautilus_entry_set_text (NAUTILUS_ENTRY (name_field), "");
-		g_signal_handler_unblock (name_field, 
-					  name_field_changed_signal_id);
-
-		g_signal_handler_block (uri_field, 
-					uri_field_changed_signal_id);
-		nautilus_entry_set_text (NAUTILUS_ENTRY (uri_field), "");
-		g_signal_handler_unblock (uri_field,
-					  uri_field_changed_signal_id);
-	}
-	  
+	bookmarks_set_empty (index == 0);	  
 }
 
 static int

@@ -1,3 +1,20 @@
+2002-07-02  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-bookmarks-window.c
+	(repopulate): remove cut and paste complexity.
+
+2002-07-01  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-bookmarks-window.c
+	(create_bookmark_store): split out
+	(create_bookmarks_window): UI review changes.
+	(repopulate): set style.
+	(bookmarks_set_empty): impl.
+	(get_selected_bookmark): upd.
+	(on_remove_button_clicked): upd.
+
+	* configure.in: add libglade checks.
+
 2002-07-02  Dave Camp  <dave@ximian.com>
 
 	* src/nautilus-shell-ui.xml: Applied patches from Juan Salaverria
