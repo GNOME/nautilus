@@ -1083,10 +1083,10 @@ is_special_link (const char *uri)
 static int
 handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		           TransferInfo *transfer_info)
-{	
+{
 	int result;
 	char *text, *formatted_name;
-	
+
 	/* Handle special case files such as Trash, mount links and home directory */	
 	if (is_special_link (progress_info->target_name)) {
 		formatted_name = extract_and_ellipsize_file_name_for_dialog
@@ -1556,6 +1556,7 @@ sync_transfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 {
 	GHashTable	     *debuting_uris;
 	IconPositionIterator *position_iterator;
+	gboolean              really_moved;
 
 	if (data != NULL) {
 		debuting_uris	  = ((SyncTransferInfo *) data)->debuting_uris;
@@ -1592,27 +1593,42 @@ sync_transfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 			break;
 
 		case GNOME_VFS_XFER_PHASE_MOVING:
-			if (progress_info->top_level_item) {
-				g_assert (progress_info->source_name != NULL);
+			g_assert (progress_info->source_name != NULL);
 
-				nautilus_file_changes_queue_schedule_metadata_move 
-					(progress_info->source_name, progress_info->target_name);
-				
-				apply_one_position (position_iterator,
-						    progress_info->source_name,
-						    progress_info->target_name);
+			/* If the source and target are the same, that
+			 * means we "moved" something in place. No
+			 * actual change happened, so we really don't
+			 * want to send out any change notification,
+			 * but we do want to select the files as
+			 * "newly moved here" so we put them into the
+			 * debuting_uris set.
+			 */
+			really_moved = strcmp (progress_info->source_name,
+					       progress_info->target_name) != 0;
+
+			if (progress_info->top_level_item) {
+				if (really_moved) {
+					nautilus_file_changes_queue_schedule_metadata_move 
+						(progress_info->source_name, progress_info->target_name);
+					
+					apply_one_position (position_iterator,
+							    progress_info->source_name,
+							    progress_info->target_name);
+				}
 				
 				if (debuting_uris != NULL) {
 					g_hash_table_insert (debuting_uris, g_strdup (progress_info->target_name), NULL);
 				}
 			}
-			nautilus_file_changes_queue_file_moved (progress_info->source_name,
-								progress_info->target_name);
+			if (really_moved) {
+				nautilus_file_changes_queue_file_moved (progress_info->source_name,
+									progress_info->target_name);
+			}
 			break;
 			
 		case GNOME_VFS_XFER_PHASE_DELETESOURCE:
+			g_assert (progress_info->source_name != NULL);
 			if (progress_info->top_level_item) {
-				g_assert (progress_info->source_name != NULL);
 				nautilus_file_changes_queue_schedule_metadata_remove 
 					(progress_info->source_name);
 			}
@@ -1948,18 +1964,14 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;
 				break;
 			}
-			if (((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0
-					|| (move_options & GNOME_VFS_XFER_USE_UNIQUE_NAMES) == 0)
+			if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) == 0
+			        && (move_options & GNOME_VFS_XFER_USE_UNIQUE_NAMES) == 0
 				&& gnome_vfs_uri_is_parent (target_dir_uri, uri, FALSE)) {
 				nautilus_run_simple_dialog
 					(parent_view, 
 					 FALSE,
-					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
-					 ? _("You cannot move a file onto itself.")
-					 : _("You cannot copy a file over itself."), 
-					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
-					 ? _("Can't Move Onto Self")
-					 : _("Can't Copy Over Self"), 
+					 _("You cannot copy a file over itself."), 
+					 _("Can't Copy Over Self"), 
 					 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
 
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;

@@ -1,3 +1,17 @@
+2001-03-29  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(sync_transfer_callback): Don't send out notifications in the case
+	where we did a no-op move on top of self.
+	(nautilus_file_operations_copy_move): Get rid of code that
+	complains about move on top of self, since that's no longer
+	considered an error.
+
+	* configure.in: We require the new gnome-vfs now because we need
+	the code that handles move to self better.
+
 2001-03-29  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
