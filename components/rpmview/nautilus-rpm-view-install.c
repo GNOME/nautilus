@@ -50,8 +50,8 @@ nautilus_rpm_view_download_progress_signal (EazelInstallCallback *service,
 	if (amount == total && total!=0) {
 		fprintf (stdout, "\n");
 	}
-#endif
 	nautilus_view_report_load_underway (nautilus_rpm_view_get_view (rpm_view));
+#endif
 }
 
 static void 
@@ -79,9 +79,8 @@ nautilus_rpm_view_install_progress_signal (EazelInstallCallback *service,
 		fprintf (stdout, "\n");
 	}
 
-#endif	
 	nautilus_view_report_load_underway (nautilus_rpm_view_get_view (rpm_view));
-#if 0
+
 	progress = total==amount ? 1.0 : (double)(((double)amount)/total);
 	/* nautilus_view_report_load_progress (nautilus_rpm_view_get_view (rpm_view), progress); */
 #endif
@@ -201,7 +200,9 @@ nautilus_rpm_view_dependency_check (EazelInstallCallback *service,
 		g_message ("Doing dependency check for %s-%s - needs something, but I don't know what it was...\n", 
 			   package->name, package->version);
 	}
+#if 0
 	nautilus_view_report_load_underway (nautilus_rpm_view_get_view (rpm_view));
+#endif
 }
 
 /* get rid of the installer and root client, and reactivate buttons */
@@ -260,6 +261,14 @@ nautilus_rpm_view_install_done (EazelInstallCallback *service,
 	} else {
 		nautilus_view_report_load_complete (nautilus_rpm_view_get_view (rpm_view));
 	}
+
+	{
+		CORBA_Environment ev;
+		CORBA_exception_init (&ev);
+		eazel_install_callback_delete_files (service, &ev);
+		CORBA_exception_free (&ev);
+	}
+	
 
 	nautilus_rpm_view_finished_working (rpm_view);
 
@@ -422,11 +431,11 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 	
 	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", nautilus_rpm_view_download_progress_signal, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "install_progress", nautilus_rpm_view_install_progress_signal, rpm_view);
-	gtk_signal_connect (GTK_OBJECT (cb), "install_failed", nautilus_rpm_view_install_failed, rpm_view);
-	gtk_signal_connect (GTK_OBJECT (cb), "download_failed", nautilus_rpm_view_download_failed, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", nautilus_rpm_view_dependency_check, rpm_view);
+	gtk_signal_connect (GTK_OBJECT (cb), "install_failed", nautilus_rpm_view_install_failed, rpm_view);
+	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_failed", nautilus_rpm_view_install_failed, rpm_view);
+	gtk_signal_connect (GTK_OBJECT (cb), "download_failed", nautilus_rpm_view_download_failed, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "done", nautilus_rpm_view_install_done, rpm_view);
-	gtk_signal_connect (GTK_OBJECT (cb), "delete_files", GTK_SIGNAL_FUNC (delete_files), NULL);
 	gtk_signal_connect (GTK_OBJECT (cb), "preflight_check", GTK_SIGNAL_FUNC (preflight_check), NULL);
 
 	eazel_install_callback_install_packages (cb, categories, NULL, &ev);

@@ -1,3 +1,44 @@
+2000-11-03  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(nautilus_rpm_view_download_progress_signal),
+	(nautilus_rpm_view_install_progress_signal),
+	(nautilus_rpm_view_dependency_check),
+	(nautilus_rpm_view_install_done),
+	(nautilus_rpm_view_install_package_callback):
+	Made a last minute fix to the delete file signal change in the
+	rpmview. The rpmview still cannot get the spinner to spin when
+	installing/uninstalling, but I'm not going to use time on that
+	now.
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (install_failed):
+	Fixed a typo and an error in the problem handler user
+	
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_check_existing_packages):
+	Added release numbers to debug output.
+	* components/services/install/lib/eazel-install-problem.c:
+	(eazel_install_problem_case_to_string):
+	Changed case_to_string message to a more imperative format
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(add_to_url):
+	Use gnome_vfs_escape_string instead of our own.
+	
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_get_readable_name):
+	Hack so it should also recognize EazelCandidate names
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.h:
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_install_parse_uri), (show_dialog_and_run_away),
+	(nautilus_service_install_solve_cases),
+	(nautilus_service_install_done), (dig_up_errors),
+	(nautilus_service_install_failed):
+	Fix for 4443
+
 2000-11-03  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-canvas-item.c:

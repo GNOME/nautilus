@@ -616,6 +616,17 @@ add_to_url (char **url,
 	    const char *cgi_string,
 	    const char *val)
 {
+	char *tmp;
+
+	if (val) {
+		tmp = g_strconcat (*url, 
+				   cgi_string, 
+				   gnome_vfs_escape_string (val), 
+				   NULL);
+		g_free (*url);
+		(*url) = tmp;
+	} 
+#if 0
 	char *tmp, *quoted, *q;
 	const char *p;
 	int needs_quoting;
@@ -657,6 +668,7 @@ add_to_url (char **url,
 	if (needs_quoting) {
 		g_free (quoted);
 	}
+#endif
 }
 
 static char*

@@ -410,7 +410,7 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view, G
 			}
 		}
 
-		package_name = g_strdup (p);
+		package_name = gnome_vfs_unescape_string_for_display (p);
 		pack = create_package (package_name, view->details->using_local_file);
 		if (q) {
 			pack->version = g_strdup (q);
@@ -819,11 +819,7 @@ show_dialog_and_run_away (NautilusServiceInstallView *view, const char *message)
 	GtkWidget *dialog;
 	GtkWidget *toplevel;
 
-#if 0
-	toplevel = gtk_widget_get_ancestor (view->details->message_box, GTK_TYPE_WINDOW);
-#else
 	toplevel = gtk_widget_get_toplevel (view->details->message_box);
-#endif
 	if (GTK_IS_WINDOW (toplevel)) {
 		dialog = gnome_ok_dialog_parented (message, GTK_WINDOW (toplevel));
 	} else {
@@ -890,6 +886,48 @@ nautilus_install_service_locate_menu_entries (NautilusServiceInstallView *view)
 	return result;
 }
 
+static gboolean
+nautilus_service_install_solve_cases (NautilusServiceInstallView *view)
+{
+	gboolean answer = FALSE;
+	GtkWidget *toplevel;
+	GString *messages;
+	GList *strings;
+	GtkWidget *dialog;
+
+	messages = g_string_new ("");
+
+	if (view->details->problem_cases) {
+		GList *iterator;
+		/* Create string versions to show the user */
+		g_string_sprintfa (messages, "%s\n%s\n\n", 
+				   _("I ran into problems while installing."), 
+				   _("I'd like to try the following :"));
+		strings = eazel_install_problem_cases_to_string (view->details->problem,
+								 view->details->problem_cases);
+		for (iterator = strings; iterator; iterator = g_list_next (iterator)) {
+			g_string_sprintfa (messages, " \xB7 %s\n", (char*)(iterator->data));
+		}
+		g_list_foreach (strings, (GFunc)g_free, NULL);
+		g_list_free (strings);
+		g_string_sprintfa (messages, "\n%s",  
+				   _("Is this ok ?"));
+		
+		toplevel = gtk_widget_get_toplevel (view->details->message_box);
+		if (GTK_IS_WINDOW (toplevel)) {
+			dialog = gnome_question_dialog_parented (messages->str, (GnomeReplyCallback)reply_callback,
+								 &answer, GTK_WINDOW (toplevel));
+		} else {
+			dialog = gnome_question_dialog (messages->str, (GnomeReplyCallback)reply_callback, &answer);
+	}
+		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+		g_string_free (messages, TRUE);
+	}
+
+	return answer;
+}
+
 static void
 nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, NautilusServiceInstallView *view)
 {
@@ -898,7 +936,7 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 	GtkWidget *dialog;
 	char *message;
 	char *real_message;
-	gboolean answer;
+	gboolean answer = FALSE;
 
 	g_assert (NAUTILUS_IS_SERVICE_INSTALL_VIEW (view));
 
@@ -909,7 +947,6 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 		success = FALSE;
 		view->details->failure = FALSE;
 		/* we have already indicated failure elsewhere.  good day to you, sir. */
-		return;
 	}
 
 	turn_cylon_off (view, success ? 1.0 : 0.0);
@@ -920,58 +957,66 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 		message = _("Installation aborted.");
 	} else {
 		message = _("Installation failed!");
+		answer = nautilus_service_install_solve_cases (view);
 	}
 
 	show_overall_feedback (view, message);
 
-	if (success && view->details->desktop_files) {
-		real_message = g_strdup_printf (_("%s\n%s\nErase the leftover RPM files?"), 
-						message,
-						nautilus_install_service_locate_menu_entries (view));
-	} else {
-		real_message = g_strdup_printf (_("%s\nErase the leftover RPM files?"), message);
-	}
-	toplevel = gtk_widget_get_toplevel (view->details->message_box);
-	if (GTK_IS_WINDOW (toplevel)) {
-		dialog = gnome_question_dialog_parented (real_message, (GnomeReplyCallback)reply_callback,
-							 &answer, GTK_WINDOW (toplevel));
-	} else {
-		dialog = gnome_question_dialog (real_message, (GnomeReplyCallback)reply_callback, &answer);
-	}
-	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
-	g_free (real_message);
-
 	if (answer) {
-		CORBA_exception_init (&ev);
-		eazel_install_callback_delete_files (cb, &ev);
-		CORBA_exception_free (&ev);
-	}
-	
-	if (view->details->core_package) {
-		message = _("\nA core package of Nautilus has been\n"
-			    "updated, you should restart Nautilus.\n\n"
-			    "Do you wish to do that now ?\n");
+		eazel_install_problem_handle_cases (view->details->problem, 
+						    view->details->installer, 
+						    &(view->details->problem_cases), 
+						    NULL);
+	} else {
+		if (success && view->details->desktop_files) {
+			real_message = g_strdup_printf (_("%s\n%s\nErase the leftover RPM files?"), 
+							message,
+							nautilus_install_service_locate_menu_entries (view));
+		} else {
+			real_message = g_strdup_printf (_("%s\nErase the leftover RPM files?"), message);
+		}
+		toplevel = gtk_widget_get_toplevel (view->details->message_box);
 		if (GTK_IS_WINDOW (toplevel)) {
-			dialog = gnome_question_dialog_parented (message, (GnomeReplyCallback)reply_callback,
+			dialog = gnome_question_dialog_parented (real_message, (GnomeReplyCallback)reply_callback,
 								 &answer, GTK_WINDOW (toplevel));
 		} else {
-			dialog = gnome_question_dialog (message, (GnomeReplyCallback)reply_callback, &answer);
+			dialog = gnome_question_dialog (real_message, (GnomeReplyCallback)reply_callback, &answer);
 		}
 		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+		g_free (real_message);
 		
 		if (answer) {
-			if (execlp ("nautilus", "nautilus", "--restart", NULL)==-1) {
-				g_message ("Exec error %s", strerror (errno));
-			}
+			CORBA_exception_init (&ev);
+			eazel_install_callback_delete_files (cb, &ev);
+			CORBA_exception_free (&ev);
 		}
-	} else {	       	    
-		nautilus_view_open_location (view->details->nautilus_view, NEXT_SERVICE_VIEW);
+		
+		if (view->details->core_package) {
+			message = _("\nA core package of Nautilus has been\n"
+				    "updated, you should restart Nautilus.\n\n"
+				    "Do you wish to do that now ?\n");
+			if (GTK_IS_WINDOW (toplevel)) {
+				dialog = gnome_question_dialog_parented (message, (GnomeReplyCallback)reply_callback,
+									 &answer, GTK_WINDOW (toplevel));
+			} else {
+				dialog = gnome_question_dialog (message, (GnomeReplyCallback)reply_callback, &answer);
+			}
+			gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+			gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+			
+			if (answer) {
+				if (execlp ("nautilus", "nautilus", "--restart", NULL)==-1) {
+					g_message ("Exec error %s", strerror (errno));
+				}
+			}
+		} else {	       	    
+			nautilus_view_open_location (view->details->nautilus_view, NEXT_SERVICE_VIEW);
+		}
 	}
 }
 
-
+#if 0
 /* recursive descent of a package and its dependencies, building up a GString of errors */
 static void
 dig_up_errors (NautilusServiceInstallView *view,
@@ -980,22 +1025,40 @@ dig_up_errors (NautilusServiceInstallView *view,
 {
 	GList *iter;
 	GList *strings;
+	GList *new_cases = NULL;
 
+	/* Debug code :This outputs the "raw" tree problems via g_message */ 
 	strings = eazel_install_problem_tree_to_string (view->details->problem,
 							package);
-	
+	for (iter = strings; iter; iter = g_list_next (iter)) {
+		g_message ("install-error: %s", (char*)(iter->data));
+	}
+	g_list_foreach (strings, (GFunc)g_free, NULL);
+	g_list_free (strings);
+	/* Debug code end */
+
+
+	/* Create string versions to show the user */
+	strings = eazel_install_problem_cases_to_string (view->details->problem,
+							 new_cases);
 	for (iter = strings; iter; iter = g_list_next (iter)) {
 		g_string_sprintfa (messages, " \xB7 %s\n", (char*)(iter->data));
 	}
 	g_list_foreach (strings, (GFunc)g_free, NULL);
 	g_list_free (strings);
+
+	/* Concat to the entire set */
+	view->details->problem_cases = g_list_concat (view->details->problem_cases,
+						      new_cases);
 }
+#endif
 
 static void
-nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *pack, NautilusServiceInstallView *view)
+nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *package, NautilusServiceInstallView *view)
 {
 	CORBA_Environment ev;
 	GString *message;
+	char *tmp;
 
 	g_assert (NAUTILUS_IS_SERVICE_INSTALL_VIEW (view));
 
@@ -1005,7 +1068,7 @@ nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *pa
 	/* override the "success" result for install_done signal */
 	view->details->failure = TRUE;
 
-	if (pack->status == PACKAGE_ALREADY_INSTALLED) {
+	if (package->status == PACKAGE_ALREADY_INSTALLED) {
 		message = g_string_append (message, _("This package has already been installed."));
 		show_overall_feedback (view, message->str);
 		show_dialog_and_run_away (view, message->str);
@@ -1019,53 +1082,18 @@ nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *pa
 		return;
 	}
 
-	g_string_sprintfa (message, _("Installation Failed!\n\n"));
+	tmp = packagedata_get_readable_name (package);
+	g_string_sprintfa (message, _("Installation failed on %s\n\n"), tmp);
+	g_free (tmp);
+
 	show_overall_feedback (view, message->str);
 
-	dig_up_errors (view, pack, message);
-	show_dialog_and_run_away (view, message->str);
-	g_string_free (message, TRUE);
+	/* Get the new set of problem cases */
+	eazel_install_problem_tree_to_case (view->details->problem,
+					    package,
+					    &(view->details->problem_cases));
 
-	/* always delete the RPM files in this case */
-	CORBA_exception_init (&ev);
-	eazel_install_callback_delete_files (cb, &ev);
-	CORBA_exception_free (&ev);
 }
-
-
-#if 0
-static gboolean
-nautilus_service_install_delete_files (EazelInstallCallback *cb, NautilusServiceInstallView *view)
-{
-	GtkWidget *toplevel;
-	GtkWidget *dialog;
-	gboolean answer;
-	const char *message;
-
-	g_assert (NAUTILUS_IS_SERVICE_INSTALL_VIEW (view));
-
-	message = _("Should I delete the leftover RPM files?");
-
-	if (view->details->cancelled ||
-	    view->details->failure) {
-		/* don't bother to ask on failure -- just clean up */
-		return TRUE;
-	}
-
-	toplevel = gtk_widget_get_toplevel (view->details->message_box);
-	if (GTK_IS_WINDOW (toplevel)) {
-		dialog = gnome_question_dialog_parented (message, (GnomeReplyCallback)reply_callback,
-							 &answer, GTK_WINDOW (toplevel));
-	} else {
-		dialog = gnome_question_dialog (message, (GnomeReplyCallback)reply_callback, &answer);
-	}
-	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-
-	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
-	return answer;
-}
-#endif
-
 
 /* signal callback -- ask the user for the root password (for installs) */
 static char *
