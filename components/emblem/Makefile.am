@@ -5,7 +5,8 @@ INCLUDES =						\
 	-DG_LOG_DOMAIN=\"Nautilus-Emblem-Sidebar\"	\
 	-DDATADIR=\""$(datadir)"\" \
 	-I$(top_srcdir)					\
-	$(DISABLE_DEPRECATED_CFLAGS)			\
+	-DGDK_DISABLE_DEPRECATED			\
+	-DGDK_PIXBUF_DISABLE_DEPRECATED			\
 	$(EMBLEM_COMPONENT_CFLAGS)			\
 	$(NULL)
 
