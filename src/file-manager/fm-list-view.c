@@ -138,6 +138,7 @@ static void                 fm_list_view_set_zoom_level               (FMListVie
 static void                 fm_list_view_sort_items                   (FMListView         *list_view,
 								       int                 column,
 								       gboolean            reversed);
+static void                 fm_list_view_emblems_changed              (FMDirectoryView    *directory_view);
 static void                 fm_list_view_update_smooth_graphics_mode  (FMDirectoryView    *directory_view);
 static void                 fm_list_view_update_click_mode            (FMDirectoryView    *view);
 static void                 fm_list_view_embedded_text_policy_changed (FMDirectoryView    *view);
@@ -226,6 +227,7 @@ fm_list_view_initialize_class (gpointer klass)
         fm_directory_view_class->embedded_text_policy_changed = fm_list_view_embedded_text_policy_changed;
         fm_directory_view_class->image_display_policy_changed = fm_list_view_image_display_policy_changed;
         fm_directory_view_class->smooth_graphics_mode_changed = fm_list_view_update_smooth_graphics_mode;
+        fm_directory_view_class->emblems_changed = fm_list_view_emblems_changed;
         fm_directory_view_class->sort_directories_first_changed = real_sort_directories_first_changed;
 	fm_directory_view_class->remove_file = fm_list_view_remove_file;
 
@@ -973,6 +975,15 @@ fm_list_view_update_smooth_graphics_mode (FMDirectoryView *directory_view)
 		update_icons (FM_LIST_VIEW (directory_view));
 	}
 }
+
+static void
+fm_list_view_emblems_changed (FMDirectoryView *directory_view)
+{
+	g_assert (FM_IS_LIST_VIEW (directory_view));
+	
+	update_icons (FM_LIST_VIEW (directory_view));
+}
+
 
 static void
 real_sort_directories_first_changed (FMDirectoryView *directory_view)
