@@ -79,7 +79,8 @@ struct _ServicesButtonCallbackData {
 struct _NautilusSummaryViewDetails {
 	char 		*uri;
 	NautilusView	*nautilus_view;
-
+	BonoboUIComponent *ui_component;
+	
 	SummaryData	*xml_data;
 	char		*feedback_text;
 
@@ -1221,6 +1222,11 @@ nautilus_summary_view_destroy (GtkObject *object)
 		g_free (view->details->uri);
 	}
 
+	if (view->details->ui_component) {
+		bonobo_ui_component_unset_container (view->details->ui_component);
+		bonobo_object_unref (BONOBO_OBJECT (view->details->ui_component));
+	}
+	
 	g_assert (Pending_None == view->details->pending_operation);
 	CORBA_Object_release (view->details->user_control, &ev);
 
@@ -1289,20 +1295,9 @@ bonobo_login_callback (BonoboUIComponent *ui, gpointer user_data, const char *ve
 }
 
 static void
-detach_ui (gpointer data)
-{
-	BonoboUIComponent *ui;
-
-	ui = BONOBO_UI_COMPONENT (data);
-	bonobo_ui_component_unset_container (ui);
-	bonobo_object_unref (BONOBO_OBJECT (ui));
-}
-
-static void
 merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_data)
 {
  	NautilusSummaryView *view;
-	BonoboUIComponent *ui_component;
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("Register", bonobo_register_callback),
 		BONOBO_UI_VERB ("Login", bonobo_login_callback),
@@ -1314,18 +1309,13 @@ merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_d
 	view = NAUTILUS_SUMMARY_VIEW (user_data);
 
 	if (state) {
-		ui_component = nautilus_view_set_up_ui (view->details->nautilus_view,
+		view->details->ui_component = nautilus_view_set_up_ui (view->details->nautilus_view,
 							DATADIR,
 							"nautilus-summary-view-ui.xml",
 							"nautilus-summary-view");
 									
-		bonobo_ui_component_add_verb_list_with_data (ui_component, verbs, view);
+		bonobo_ui_component_add_verb_list_with_data (view->details->ui_component, verbs, view);
 	
-		/* Attach the UI to the view, so we can detach it when destroyed. */
-		gtk_object_set_data_full (GTK_OBJECT (view),
-				  "summary UI",
-				  ui_component,
-				  detach_ui);
 	
 	}
 

@@ -1,5 +1,13 @@
 2000-10-19  Andy Hertzfeld  <andy@eazel.com>
 
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (nautilus_summary_view_destroy), (merge_bonobo_menu_items):
+	unmerge the summary component's menu items properly by keeping a
+	reference to the ui component and unhooking it in the summary view's
+	destroy method.
+	
+2000-10-19  Andy Hertzfeld  <andy@eazel.com>
+
 	first pass at making the summary view merge its menu commands onto
 	the services menu. This isn't finished yet.
 	
