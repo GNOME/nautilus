@@ -496,33 +496,36 @@ draw_tab_label (NautilusTabs *tabs, GdkPixbuf *tab_pixbuf, int x_pos, const char
 	
 	text_x = x_pos + 1;
 	text_y = 7; /* calculate this to center font in label? */
-		
-	nautilus_scalable_font_draw_text (tabs->details->tab_font, tab_pixbuf, 
+	
+	/* make sure we can draw at least some of it */
+	if (text_x < gdk_pixbuf_get_width (tab_pixbuf)) {	
+		nautilus_scalable_font_draw_text (tabs->details->tab_font, tab_pixbuf, 
 					  text_x, text_y,
 					  NULL,
 					  tabs->details->font_size,
 					  label, strlen (label),
 					  NAUTILUS_RGB_COLOR_BLACK, NAUTILUS_OPACITY_FULLY_OPAQUE);
-	text_x -= 1;
-	text_y -= 1;
+		text_x -= 1;
+		text_y -= 1;
 
-	if (is_active) {
-		text_color = NAUTILUS_RGB_COLOR_WHITE;
-	} else {
-		if (is_prelit) {
-			text_color = NAUTILUS_RGBA_COLOR_PACK (241, 241, 241, 255);		
+		if (is_active) {
+			text_color = NAUTILUS_RGB_COLOR_WHITE;
 		} else {
-			text_color = NAUTILUS_RGBA_COLOR_PACK (223, 223, 223, 255);		
+			if (is_prelit) {
+				text_color = NAUTILUS_RGBA_COLOR_PACK (241, 241, 241, 255);		
+			} else {
+				text_color = NAUTILUS_RGBA_COLOR_PACK (223, 223, 223, 255);		
+			}
 		}
-	}
 	
-	nautilus_scalable_font_draw_text (tabs->details->tab_font, tab_pixbuf,
+		nautilus_scalable_font_draw_text (tabs->details->tab_font, tab_pixbuf,
 					  text_x, text_y,
 					  NULL,
 					  tabs->details->font_size,
 					  label, strlen (label),
 					  text_color,
 					  NAUTILUS_OPACITY_FULLY_OPAQUE);
+	}
 }
 
 /* draw or layout all of the tabs.

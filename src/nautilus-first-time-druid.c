@@ -49,6 +49,7 @@
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <nautilus-main.h>
 #include <netdb.h>
+#include <signal.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>

@@ -1,3 +1,13 @@
+2001-02-20  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-tabs.c: (draw_tab_label):
+	fixed bug 6804, resizing sidebar crashes summary view.  Fixed by
+	adding a check to not draw the label when it's position is past
+	the right edge of the pixbuf.
+	
+	* src/nautilus-first-time-druid.c:
+	had to add an include of signal.h to get this to build for me.
+	
 2001-02-20  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	reviewed in part by: Robey Pointer  <robey@eazel.com>
