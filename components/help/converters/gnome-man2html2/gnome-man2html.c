@@ -157,20 +157,6 @@
    */
 #define free(x)
 
-static char *sections = "123456789nl";
-
-
-static char
-*strgrow(char *old, int len) 
-{
-	char *new = realloc(old, (strlen(old) + len + 1) * sizeof(char));
-	if (!new) {
-		fprintf(stderr, "man2html: out of memory");
-		exit(EXIT_FAILURE);
-	}
-	return new;  
-}
-
 static char
 *stralloc(int len)
 {					
@@ -184,35 +170,11 @@ static char
 }
 
 static char
-*strduplicate(char *from)
-{				
-/* Some systems don't have strdup so lets use our own - which can also
- * check for out of memory. 
- */
-	char *new = stralloc(strlen(from));
-	strcpy(new, from);
-	return new;
-}
-
-static char
 *strmaxcpy(char *to, char *from, int n)
 {				/* Assumes space for n plus a null */
 	int len = strlen(from);
 	strncpy(to, from, n);
 	to[(len <= n) ? len : n] = '\0';
-	return to;
-}
-
-static char 
-*strmaxcat(char *to, char *from, int n)
-{				/* Assumes space for n plus a null */
-	int to_len = strlen(to);
-	if (to_len < n) {
-		int from_len = strlen(from);
-		int cp = (to_len + from_len <= n) ? from_len : n - to_len;
-		strncpy(to + to_len, from, cp);
-		to[to_len + cp] = '\0';
-	}
 	return to;
 }
 
@@ -224,36 +186,6 @@ static char
 	to[len] = '\0';
 	return to;
 }
-
-static char 
-*escape_input(char *str)
-/* takes string and escapes all metacharacters.  should be used before
-   including string in system() or similar call. */
-{
-	int i,j = 0;
-	static char new[NULL_TERMINATED(MED_STR_MAX)];
-	
-	if (strlen(str) * 2 + 1 > MED_STR_MAX) {
-		fprintf(stderr, 
-			"man2html: escape_input - str too long:\n%-80s...\n",
-			str);
-		exit(EXIT_FAILURE);
-	}
-	
-	for (i = 0; i < strlen(str); i++) {
-		if (!( ((str[i] >= 'A') && (str[i] <= 'Z')) ||
-		       ((str[i] >= 'a') && (str[i] <= 'z')) ||
-		       ((str[i] >= '0') && (str[i] <= '9')) )) {
-			new[j] = '\\';
-			j++;
-		}
-		new[j] = str[i];
-		j++;
-	}
-	new[j] = '\0';
-	return new;
-}                      
-
 
 /* below this you should not change anything unless you know a lot
 ** about this program or about troff.
@@ -3677,98 +3609,12 @@ static char
     return ret;
 }
 
-
-static char *sectionname=NULL;
-static STRDEF *foundpages=NULL;
-
-static void get_man_config()
-{
-#ifdef MAN_CONFIG
-	FILE *config = NULL;
-	int num_paths = 1;		/* Zero is reserved for searches */
-	int num_zcats = 0;
-	char buffer[NULL_TERMINATED(MED_STR_MAX + 1)];
-	/* Allow for adding a "/" */
-	
-	config = fopen(MAN_CONFIG, "r");
-	if (!config)
-		return;				/* Assume no config. */
-	
-	while (fgets(buffer, MED_STR_MAX, config)) {
-		char *dir, *line = buffer;
-		line = line + strspn(line, " \t"); /* Skip spaces and tabs */
-		if (num_paths < MAX_MAN_PATHS 
-		    && strncmp("MANPATH", line, 7) == 0 
-		    && (dir = strchr(line, '/'))) { /* dir points to start
-						       of dir-name */
-			char *end_dir = strpbrk(dir, " \t\n") ;
-			if (end_dir) {			/* End of dir name. */
-				(*end_dir) = '/'; /* Replace newline/space
-						     with "/" */
-				(*(end_dir + 1)) = '\0';
-			}
-			manpath[num_paths] = strduplicate(dir);
-			num_paths++;
-		}
-#ifndef DISABLE_ZCATS
-		else if (num_zcats < MAX_ZCATS
-			 && *line == '.') {
-			char *sp, *new;
-			line[strlen(line) - 1] = '\0';	/* Remove newline */
-			zcats[num_zcats] = strduplicate(line);
-			sp = strpbrk(zcats[num_zcats], " \t");
-			if (sp) {	/* Chop off trailing spaces */
-				(*sp) = '\0';
-				num_zcats++;
-			} else {
-				free(zcats[num_zcats]);
-			}
-		}
-#endif
-	}
-	if (num_paths != 0) {		/* Mark new end of paths list */
-		manpath[num_paths] = NULL;
-	}
-#ifndef DISABLE_ZCATS
-	if (num_zcats != 0) {		/* Mark new end of zcats list */
-		zcats[num_zcats] = NULL;
-	}
-#endif
-	
-#ifndef UNSECURE_MANPATH
-					/* Make sure settable first path is
-					 * a valid path.
-					 */
-
-	if (strcmp(manpath[0], "/") != 0) {
-		/* Something other than default */
-		int i;
-		for (i = 1; manpath[i]; i++) {
-			/* Set - see if it is a valid prefix */
-			if (strncmp(manpath[i], manpath[0], 
-				    strlen(manpath[i])) == 0) {
-				break;				/* valid */
-			}
-		}
-		/* Also check for .. */
-		if (!manpath[i] || 
-		    strstr(manpath[0], "..") != NULL) { /* invalid */
-			fprintf(stderr, "man2html: invalid -M path: "
-				"%s\n", manpath[0]);
-			manpath[0] = manpath[1];
-		}
-	}
-#endif
-	fclose(config);
-#endif
-}
-
 void 
 main(int argc, char **argv)
 {
 	char *t=NULL;
 	int i;char *buf;
-	char *h, *fullname;
+	char *h = '\0';
 	STRDEF *stdf;
 
 

@@ -10,6 +10,12 @@
 #include "utils.h"
 #include "version.h"
 
+/* be quiet or not? */
+static int be_quiet=1;
+
+/* line_number we're on */
+static int work_line_number;
+
 int
 main(int argc, char **argv)
 {

@@ -4,12 +4,6 @@
 /* data.h - first cut at data structures for info2html filter */
 /* many of these are motivated by the source code to the 'info' program */
 
-/* be quiet or not? */
-static int be_quiet=1;
-
-/* line_number we're on */
-static int work_line_number;
-
 /* file we're working on */
 char work_filename[1024];
 

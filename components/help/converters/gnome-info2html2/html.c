@@ -202,10 +202,10 @@ void html_error( char *s, char *p, char *q )
 
 void dump_html_for_node( NODE *node )
 {
-  char *destdir;
-  char *destfile;
+/*  char *destdir; */
+/*  char *destfile; */
   char *escaped_nodename;
-  char *converted_nodename;
+/*  char *converted_nodename; */
   char *contents_start, *contents_end;
   char *header_name;
   char *p, *q, *r, *skippnt;
