@@ -1,3 +1,19 @@
+2001-01-21  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/Makefile.am:
+	Generate eazel-test-install-types instead of eazel-test-types.
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(prune_failed_packages), (check_feature_consistency)
+	(do_file_conflict_check), (install_packages):
+	Fixed 4589.
+	Ensure nulling and freeing of packages list in pruner if 0 
+	elements left after prune.
+
+	* components/services/install/server/main.c: (main):
+	Some commented out debug code to enable dropping to gdb 
+	on glib warnings.
+
 2001-01-21  Andy Hertzfeld  <andy@eazel.com>
 
 	removed the "vector" theme at Arlo's request, and many of the

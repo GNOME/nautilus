@@ -21,6 +21,8 @@
  *
  */
 
+#undef STOP_IN_DEBUG
+
 #include <config.h>
 #include <gnome.h>
 #include <liboaf/liboaf.h>
@@ -29,6 +31,14 @@
 
 #include <libtrilobite/libtrilobite-service.h>
 #include <libtrilobite/libtrilobite.h>
+
+#ifdef STOP_IN_DEBUG
+/* Also add 
+	$(top_builddir)/libnautilus-extensions/nautilus-debug.o				 	\
+to the ldadd line in Makefile.am
+*/
+#include <libnautilus-extensions/nautilus-debug.h>
+#endif
 
 #include <trilobite-eazel-install.h>
 #include <eazel-install-public.h>
@@ -130,7 +140,7 @@ int main(int argc, char *argv[]) {
 		g_error ("Could not initialize trilobite. :(");
 		exit (1);
 	}
-	trilobite_set_debug_mode (FALSE);
+	trilobite_set_debug_mode (TRUE);
 
 	gnome_vfs_init ();
 
@@ -141,6 +151,10 @@ int main(int argc, char *argv[]) {
 	if (factory == NULL) {
 		g_error ("Could not register factory");
 	}
+
+#ifdef STOP_IN_DEBUG
+	nautilus_make_warnings_and_criticals_stop_in_debugger ("GLib", NULL);
+#endif
 
 	do {
 		bonobo_activate ();

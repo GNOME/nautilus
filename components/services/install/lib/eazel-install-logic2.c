@@ -216,8 +216,10 @@ prune_failed_packages (EazelInstall *service,
 	}
 	if (g_list_length (*packages) == 0) {
 #if EI2_DEBUG & 0x4
-		trilobite_debug ("packages is empty after prune");
+		trilobite_debug ("packages is empty after prune");		
 #endif		
+		g_list_free (*packages);
+		(*packages) = NULL;
 	}
 	g_list_free (result);
 
@@ -1178,6 +1180,9 @@ check_feature_consistency (EazelInstall *service,
 		PackageData *pack = PACKAGEDATA (iterator->data);
 		GList *feature_it;
 
+#if EI2_DEBUG & 0x4
+		trilobite_debug ("%s provides %d features", pack->name, g_list_length (pack->features));
+#endif
 		for (feature_it = pack->features; feature_it; feature_it = g_list_next (feature_it)) {
 			char *feature = (char*)feature_it->data;
 			g_hash_table_insert (feature_hash, feature, pack);
@@ -1265,7 +1270,7 @@ do_file_conflict_check (EazelInstall *service,
 	check_conflicts_against_already_installed_packages (service, *packages);
 	check_tree_for_conflicts (service, packages, extra_packages);
 
-	if (extra_packages == NULL) {
+	if (extra_packages && (*extra_packages==NULL)) {
 		check_feature_consistency (service, *packages);
 		prune_failed_packages (service, packages);
 	} else {
@@ -1484,24 +1489,29 @@ install_packages (EazelInstall *service, GList *categories)
 		}
 	} while (extra_packages != NULL);
 
-	if (eazel_install_emit_preflight_check (service, packages)) {
-		int flags = EAZEL_PACKAGE_SYSTEM_OPERATION_UPGRADE | EAZEL_PACKAGE_SYSTEM_OPERATION_FORCE;
-		gboolean go_ahead = TRUE;
-
-		/* FIXME: bugzilla.eazel.com 5722
-		   download could fail, do the download func needs to
-		   be able to fail the operation... */
-		download_packages (service, packages);
-		if (eazel_install_get_force (service) == FALSE) {
-			if (!check_md5_on_files (service, packages)) {
-				go_ahead = FALSE;
+#if EI2_DEBUG & 0x4
+	trilobite_debug ("%d packages survived", g_list_length (packages));
+#endif	
+	if (packages) {
+		if (eazel_install_emit_preflight_check (service, packages)) {
+			int flags = EAZEL_PACKAGE_SYSTEM_OPERATION_UPGRADE | EAZEL_PACKAGE_SYSTEM_OPERATION_FORCE;
+			gboolean go_ahead = TRUE;
+			
+			/* FIXME: bugzilla.eazel.com 5722
+			   download could fail, do the download func needs to
+			   be able to fail the operation... */
+			download_packages (service, packages);
+			if (eazel_install_get_force (service) == FALSE) {
+				if (!check_md5_on_files (service, packages)) {
+					go_ahead = FALSE;
+				}
 			}
-		}
-		if (go_ahead) {
-			execute (service, packages, EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL, flags);
-			/* FIXME: bugzilla.eazel.com 5723
-			   we need to detect if install_failed_signal was called */
-			result = EAZEL_INSTALL_INSTALL_OK;
+			if (go_ahead) {
+				execute (service, packages, EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL, flags);
+				/* FIXME: bugzilla.eazel.com 5723
+				   we need to detect if install_failed_signal was called */
+				result = EAZEL_INSTALL_INSTALL_OK;
+			}
 		}
 	}
 
