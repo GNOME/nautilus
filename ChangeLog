@@ -1,3 +1,17 @@
+2001-03-12  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Eskil Heyn Olsen <eskil@eazel.com>
+
+	* nautilus-installer/src/Makefile.am:
+	* nautilus-installer/src/installer.c: (add_bullet_point_to_vbox),
+	(is_toplevel_package), (report_unusual_errors), (install_failed):
+	* nautilus-installer/src/main.c:
+
+	Turn off the SEGV handlers, make --debug no longer the default,
+	and point the installer at the production servers again.  Add a
+	special-case error message to be displayed when Nautilus is
+	already installed.
+
 2001-03-12  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* components/help/topleveldocs.xml: updated with 

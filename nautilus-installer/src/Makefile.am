@@ -2,7 +2,7 @@
 
 NULL = 
 
-OG_FLAG = -g -O2 -DDEBUG
+OG_FLAG = -g -O2
 
 WARN_FLAG = -Wall -Werror
 #BUILD_DATE = `date +%d%b%y-%H%M`

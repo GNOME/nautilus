@@ -121,6 +121,7 @@ check_disk_space (void)
 	}
 }
 
+#ifdef DEBUG
 static void
 segv_handler (int signo)
 {
@@ -129,6 +130,7 @@ segv_handler (int signo)
 		sleep (1);
 	}
 }
+#endif
 
 int
 main (int argc, char *argv[])

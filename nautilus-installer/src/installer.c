@@ -174,10 +174,9 @@ enum {
 
 char *text_labels[LAST_LABEL];
 
-/* FIXME -- CHANGE THIS BEFORE RELEASING! */
-int installer_debug = 1;
-char *installer_server = "hourly.eazel.com";
-int installer_server_port = 8888;
+int installer_debug = 0;
+char *installer_server = "services.eazel.com";
+int installer_server_port = 80;
 
 int installer_spam = 0;		/* dump logging stuff to stderr (automatically adds --debug) */
 int installer_test = 0;
@@ -456,7 +455,7 @@ add_bullet_point_to_vbox (GtkWidget *vbox, const char *text)
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	gtk_widget_show (label);
-	bullet_label = gtk_label_new_with_font ("\xB7 ", FONT_NORM_BOLD);
+	bullet_label = gtk_label_new_with_font ("* ", FONT_NORM_BOLD);
 	gtk_label_set_justify (GTK_LABEL (bullet_label), GTK_JUSTIFY_LEFT);
 	gtk_widget_show (bullet_label);
 
@@ -918,13 +917,33 @@ add_force_remove (EazelInstaller *installer,
 #endif
 
 
-static void
+static gboolean
+is_toplevel_package (const PackageData *pack, EazelInstaller *installer, CategoryData **category_out)
+{
+        CategoryData *category;
+        PackageData *top_pack;
+        GList *iter, *iter2;
+
+        for (iter = g_list_first (installer->categories); iter != NULL; iter = g_list_next (iter)) {
+                category = (CategoryData *)(iter->data);
+                for (iter2 = g_list_first (category->packages); iter2 != NULL; iter2 = g_list_next (iter2)) {
+                        top_pack = PACKAGEDATA (iter2->data);
+                        if ((pack->name != NULL) && (strcmp (pack->name, top_pack->name) == 0)) {
+                                *category_out = category;
+                                return TRUE;
+                        }
+                }
+        }
+
+        return FALSE;
+}
+
+static gboolean
 report_unusual_errors (const PackageData *pack, EazelInstaller *installer)
 {
-	CategoryData *category;
-	PackageData *top_pack;
-	GList *iter, *iter2;
 	char *name, *message, *distro;
+        CategoryData *category;
+        gboolean resolved = FALSE;
 
 	name = packagedata_get_readable_name (pack);
 	log_debug ("error handling begins: errant package %s", name);
@@ -933,28 +952,36 @@ report_unusual_errors (const PackageData *pack, EazelInstaller *installer)
 	if (eazel_install_failed_because_of_disk_full (installer->service)) {
 		installer->failure_info = g_list_prepend (installer->failure_info,
 							  g_strdup (_("You've run out of disk space!")));
+                resolved = TRUE;
 	}
 
-	if (pack->status == PACKAGE_CANNOT_OPEN) {
-		/* check if it was a toplevel package */
-		for (iter = g_list_first (installer->categories); iter != NULL; iter = g_list_next (iter)) {
-			category = (CategoryData *)(iter->data);
-			for (iter2 = g_list_first (category->packages); iter2 != NULL; iter2 = g_list_next (iter2)) {
-				top_pack = PACKAGEDATA (iter2->data);
-				if (strcmp (pack->name, top_pack->name) == 0) {
-					g_message ("bad mojo: cannot open package %s", pack->name);
-					distro = trilobite_get_distribution_name (trilobite_get_distribution (),
-										  TRUE, FALSE);
-					message = g_strdup_printf (_("Initial package download failed: Possibly your "
-								     "distribution (%s) isn't supported by Eazel yet, "
-								     "or the Eazel servers are offline."),
-								   distro);
-					installer->failure_info = g_list_prepend (installer->failure_info, message);
-					g_free (distro);
-				}
-			}
-		}
+        if (is_toplevel_package (pack, installer, &category)) {
+                if (pack->status == PACKAGE_CANNOT_OPEN) {
+                        g_message ("bad mojo: cannot open package %s", pack->name);
+                        distro = trilobite_get_distribution_name (trilobite_get_distribution (),
+                                                                  TRUE, FALSE);
+                        message = g_strdup_printf (_("Initial package download failed: Possibly your "
+                                                     "distribution (%s) isn't supported by Eazel yet, "
+                                                     "or the Eazel servers are offline."),
+                                                   distro);
+                        installer->failure_info = g_list_prepend (installer->failure_info, message);
+                        g_free (distro);
+                        resolved = TRUE;
+                } else if (pack->status == PACKAGE_ALREADY_INSTALLED) {
+                        g_message ("already installed: %s", pack->name);
+                        /* FIXME: after 1.0, change "Nautilus" back to "%s" -> category->name */
+                        /* FIXME: this string isn't marked translatable, because it was added extremely late,
+                         * and the installer doesn't actually use translations in the current builds.  (we have
+                         * an XML-file-based scheme that isn't ready just yet.)
+                         */
+                        message = g_strdup_printf ("You've already got the most recent version of Nautilus, "
+                                                   "so there's nothing new to install.");
+                        installer->failure_info = g_list_prepend (installer->failure_info, message);
+                        resolved = TRUE;
+                }
 	}
+
+        return resolved;
 }
 
 
@@ -1000,8 +1027,9 @@ install_failed (EazelInstall *service,
 {
 	g_message ("INSTALL FAILED.");
 	
-	report_unusual_errors (pd, installer);
-	collect_failure_info (service, pd, installer, FALSE);
+	if (! report_unusual_errors (pd, installer)) {
+                collect_failure_info (service, pd, installer, FALSE);
+        }
         installer->had_failures = TRUE;
 }
 
