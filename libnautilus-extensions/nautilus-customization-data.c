@@ -37,6 +37,7 @@
 #include <libgnomevfs/gnome-vfs.h>
 #include <string.h>
 #include <libgnome/gnome-defs.h>
+#include <stdlib.h>
 
 #include "nautilus-customization-data.h"
 #include <eel/eel-gdk-extensions.h>

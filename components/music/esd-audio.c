@@ -370,6 +370,7 @@ esdout_loop (void *arg)
 	close (fd);
 	g_free (buffer);
 	pthread_exit (NULL);
+	return NULL;  /* make gcc happy */
 }
 
 void 

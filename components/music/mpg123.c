@@ -772,6 +772,7 @@ static void
 	g_free (mpg123_pcm_sample);
 
 	pthread_exit (NULL);
+	return NULL;  /* make GCC happy */
 }
 
 void 

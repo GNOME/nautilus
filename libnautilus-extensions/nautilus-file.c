@@ -3288,7 +3288,7 @@ group_includes_user (struct group *group, const char *username)
 	 * listed in member list of own group.
 	 */
 	if (get_group_id_from_user_name (username, &user_gid)) {
-		if (user_gid == group->gr_gid) {
+		if (user_gid == (uid_t) group->gr_gid) {
 			return TRUE;
 		}
 	}

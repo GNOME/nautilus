@@ -26,6 +26,7 @@
  */
 
 #include <config.h>
+#include <stdlib.h>
 #include "nautilus-bookmark-parsing.h"
 
 #include <gnome-xml/xmlmemory.h>

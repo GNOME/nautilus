@@ -26,7 +26,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
-#include <wait.h>
+#ifdef HAVE_WAIT_H
+#  include <wait.h>
+#else
+#  ifdef HAVE_SYS_WAIT_H
+#    include <sys/wait.h>
+#  endif
+#endif
 #include <esd.h>
 
 #include "nautilus-gconf-extensions.h"
