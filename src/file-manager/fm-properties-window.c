@@ -68,6 +68,7 @@
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
+#include <libnautilus-private/egg-screen-help.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-view-identifier.h>
 #include <libnautilus/nautilus-undo.h>
@@ -170,7 +171,7 @@ static void remove_pending_file                   (StartupData             *data
 						   gboolean                 cancel_destroy_handler);
 
 GNOME_CLASS_BOILERPLATE (FMPropertiesWindow, fm_properties_window,
-			 GtkWindow, GTK_TYPE_WINDOW)
+			 GtkDialog, GTK_TYPE_DIALOG)
 
 typedef struct {
 	NautilusFile *file;
@@ -2251,13 +2252,32 @@ startup_data_free (StartupData *data)
 	g_free (data);
 }
 
+static void
+help_button_callback (GtkWidget *widget, GtkWidget *property_window)
+{
+	GError *error = NULL;
+	char *message;
+
+	egg_screen_help_display_desktop (
+		gtk_window_get_screen (GTK_WINDOW (property_window)),
+		NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-51", &error);
+
+	if (error) {
+		message = g_strdup_printf (_("There was an error displaying help: \n%s"),
+					   error->message);
+		eel_show_error_dialog (message, _("Couldn't show help"),
+				       GTK_WINDOW (property_window));
+		g_error_free (error);
+		g_free (message);
+	}
+}
+
 static FMPropertiesWindow *
 create_properties_window (StartupData *startup_data)
 {
 	FMPropertiesWindow *window;
 	GList *attributes;
 	GtkWidget *vbox;
-	GtkWidget *hbox;
 	GtkWidget *button;
 
 	window = FM_PROPERTIES_WINDOW (gtk_widget_new (fm_properties_window_get_type (), NULL));
@@ -2265,8 +2285,8 @@ create_properties_window (StartupData *startup_data)
 	window->details->original_file = nautilus_file_ref (startup_data->original_file);
 	window->details->target_file = nautilus_file_ref (startup_data->target_file);
 	
-  	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
 	gtk_window_set_wmclass (GTK_WINDOW (window), "file_properties", "Nautilus");
+	gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
 	gtk_window_set_screen (GTK_WINDOW (window),
 			       gtk_widget_get_screen (GTK_WIDGET (startup_data->directory_view)));
 
@@ -2301,8 +2321,9 @@ create_properties_window (StartupData *startup_data)
 
 	/* Create box for notebook and button box. */
 	vbox = gtk_vbox_new (FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 5);
 	gtk_widget_show (vbox);
-	gtk_container_add (GTK_CONTAINER (window), 
+	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(window)->vbox), 
 			   GTK_WIDGET (vbox));
 
 	/* Create the notebook tabs. */
@@ -2325,18 +2346,22 @@ create_properties_window (StartupData *startup_data)
 	/* append pages from available views */
 	append_bonobo_pages (window);
 	
-	/* Create box for close button. */
-	hbox = gtk_hbutton_box_new ();
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (hbox),
-			    FALSE, TRUE, 5);
-	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbox),
-				   GTK_BUTTONBOX_END);  
+	/* Create buttons for action area. */
+	gtk_dialog_set_has_separator (GTK_DIALOG (window), FALSE);
+	gtk_button_box_set_layout (GTK_BUTTON_BOX (GTK_DIALOG (window)->action_area),
+				   GTK_BUTTONBOX_EDGE);
 
-	/* Create close button. */
-	button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
+	button = gtk_button_new_from_stock (GTK_STOCK_HELP);
  	gtk_widget_show (button);
-	gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (button),
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->action_area), GTK_WIDGET (button),
+			    FALSE, TRUE, 0);
+	g_signal_connect_object (button, "clicked",
+				 G_CALLBACK (help_button_callback),
+				 window, 0);
+	
+	button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
+	gtk_widget_show (button);
+	gtk_box_pack_end (GTK_BOX (GTK_DIALOG (window)->action_area), GTK_WIDGET (button),
 			    FALSE, TRUE, 0);
 	g_signal_connect_swapped (button, "clicked",
 				  G_CALLBACK (gtk_widget_destroy),
@@ -2630,6 +2655,4 @@ static void
 fm_properties_window_instance_init (FMPropertiesWindow *window)
 {
 	window->details = g_new0 (FMPropertiesWindowDetails, 1);
-
-	eel_gtk_window_set_up_close_accelerator (GTK_WINDOW (window));
 }
