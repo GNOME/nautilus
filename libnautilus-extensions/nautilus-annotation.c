@@ -675,6 +675,12 @@ has_local_annotation (const char *digest)
 	return has_annotation;
 }
 
+/* utility routine to save the passed-in xml document as a local annotations file */
+static void
+save_local_annotations (xmlDocPtr document, const char *digest)
+{
+}
+
 /* utility routine to add the passed-in xml node to the file associated with the passed-in
  * digest.  If there isn't a file, create one
  */
@@ -1031,6 +1037,7 @@ void	nautilus_annotation_add_annotation (NautilusFile *file,
 	char *digest;
 	char *annotations;
 	xmlDocPtr xml_document;
+	xmlNodePtr root_node, node;
 	
 	/* we can't handle directories yet, so just return.  */
 	if (nautilus_file_is_directory (file)) {
@@ -1056,20 +1063,34 @@ void	nautilus_annotation_add_annotation (NautilusFile *file,
 	if (annotations == NULL || strlen (annotations) == 0) {
 		xml_document = xmlNewDoc ("1.0");
 		/* create the header node, with the digest attribute */
+		root_node = xmlNewDocNode (xml_document, NULL, "annotations", NULL);
+		xmlDocSetRootElement (xml_document, root_node);
+		xmlSetProp (root_node, "digest", digest);
 	} else {
 		/* open the existing annotation and load it */
 		xml_document = xmlParseMemory (annotations, strlen (annotations));
+		root_node = xmlDocGetRootElement (xml_document);
 	}
 	
 	/* add the new entry.  For now, we only support one entry per file, so we replace the old
 	 * one, if it exists, but this will change soon as we support multiple notes per file
 	 */
+	if (root_node->childs == NULL) {
+		node = xmlNewChild (root_node, NULL, "annotation", NULL);
+		xmlSetProp (node, "type", annotation_type);
+	} else {
+		node = root_node->childs;
+	}
+	
+	xmlNodeSetContent (node, annotation_text);
 	 
 	/* save the modified xml document back to the local repository */
+	save_local_annotations (xml_document, digest);
 	
 	/* update the metadata date and count */
 	
 	/* issue file changed symbol to update the emblem */
+	nautilus_file_emit_changed (file);
 	
 	/* if the access is global, send it to the server */
 
