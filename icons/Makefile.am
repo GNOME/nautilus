@@ -1,6 +1,6 @@
 NULL=
 
-SUBDIRS = eazel
+SUBDIRS = eazel vector
 
 icondir = $(datadir)/pixmaps/nautilus
 

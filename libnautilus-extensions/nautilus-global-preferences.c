@@ -197,7 +197,12 @@ global_preferences_create_dialog (void)
 							 2,
 							 NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
 							 NAUTILUS_PREFERENCE_ITEM_FONT_FAMILY);
-
+	
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), "Icons");
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
+							 3,
+							 NAUTILUS_PREFERENCES_ICON_THEME,
+							 NAUTILUS_PREFERENCE_ITEM_ICON_THEME);
 	/* all done */
 	
 	return prefs_dialog;
@@ -480,10 +485,15 @@ global_preferences_register_for_ui (void)
 							   FALSE,
 							   FALSE,
 							   FALSE);
+
+	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_ICON_THEME,
+							  "Select theme for icons",
+							  "default",
+							  "default",
+							  "default");
 	
-	/* Directory View */
 	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
-							  "Font familiy used to display file names",
+							  "Font family used to display file names",
 							  "helvetica",
 							  "helvetica",
 							  "helvetica");
@@ -499,12 +509,6 @@ global_preferences_register_for_ui (void)
 	 * These dont have a UI (yet ? maybe in the advanced settings ?).
 	 * They do need to have appropiate defaults nontheless.
 	 */
-
-	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_ICON_THEME,
-							  "Show entire filename",
-							  "default",
-							  "default",
-							  "default");
 
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME,
 							   "Show entire filename",

@@ -1195,8 +1195,9 @@ load_specific_image_svg (const char *path, guint size_in_pixels)
 	if (f == NULL) {
 		return NULL;
 	}
+	/* nominal vector icon is twice the size of nominal bitmap, so scale it down here */
 	result = rsvg_render_file (f, size_in_pixels *
-				   (1.0 / NAUTILUS_ICON_SIZE_STANDARD));
+				   (1.0 / (NAUTILUS_ICON_SIZE_STANDARD << 1)));
 	fclose (f);
 
 	return result;

@@ -26,6 +26,7 @@
 #include "nautilus-preferences-item.h"
 #include "nautilus-preferences.h"
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libgnomevfs/gnome-vfs.h>
 
 #include <gtk/gtkcheckbutton.h>
 
@@ -82,12 +83,14 @@ static void preferences_item_create_boolean            (NautilusPreferencesItem 
 							const NautilusPreference     *prefrence);
 static void preferences_item_create_font_family               (NautilusPreferencesItem      *item,
 							const NautilusPreference     *prefrence);
+static void preferences_item_create_icon_theme         (NautilusPreferencesItem      *item,
+							const NautilusPreference     *preference);
 static void enum_radio_group_changed_callback          (GtkWidget                    *button_group,
 							GtkWidget                    *button,
 							gpointer                      user_data);
 static void boolean_button_toggled_callback            (GtkWidget                    *button_group,
 							gpointer                      user_data);
-static void font_family_changed_callback               (GtkWidget                    *string_picker,
+static void text_item_changed_callback                 (GtkWidget                    *string_picker,
 							gpointer                      user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesItem, nautilus_preferences_item, GTK_TYPE_VBOX)
@@ -266,6 +269,11 @@ preferences_item_construct (NautilusPreferencesItem	*item,
 	case NAUTILUS_PREFERENCE_ITEM_FONT_FAMILY:
 		preferences_item_create_font_family (item, preference);
 		break;
+	
+	case NAUTILUS_PREFERENCE_ITEM_ICON_THEME:
+		preferences_item_create_icon_theme (item, preference);
+		break;
+	
 	}
 
 	gtk_object_unref (GTK_OBJECT (preference));
@@ -396,9 +404,88 @@ preferences_item_create_font_family (NautilusPreferencesItem	*item,
 	
  	gtk_signal_connect (GTK_OBJECT (item->details->child),
  			    "changed",
- 			    GTK_SIGNAL_FUNC (font_family_changed_callback),
+ 			    GTK_SIGNAL_FUNC (text_item_changed_callback),
  			    (gpointer) item);
 }
+
+/* add available icon themes to the theme list by iterating through the
+   nautilus icons directory, looking for sub-directories */
+static void
+add_icon_themes(NautilusStringList *theme_list)
+{
+	char *directory_uri;
+	GnomeVFSResult result;
+	GnomeVFSFileInfo *current_file_info;
+	GnomeVFSDirectoryList *list;
+		
+	/* get the uri for the images directory */
+	directory_uri = gnome_pixmap_file("nautilus");
+			
+	result = gnome_vfs_directory_list_load (&list, directory_uri,
+					       GNOME_VFS_FILE_INFO_DEFAULT, NULL, NULL);
+	if (result != GNOME_VFS_OK) {
+		g_free(directory_uri);
+		return;
+	}
+
+	/* interate through the directory for each file */
+	current_file_info = gnome_vfs_directory_list_first(list);
+	while (current_file_info != NULL) {
+		if ((current_file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) &&
+			(current_file_info->name[0] != '.'))
+			nautilus_string_list_insert (theme_list, current_file_info->name);	
+		current_file_info = gnome_vfs_directory_list_next(list);
+	}
+	
+	g_free(directory_uri);
+	gnome_vfs_directory_list_destroy(list);
+}
+
+static void
+preferences_item_create_icon_theme (NautilusPreferencesItem	*item,
+				     const NautilusPreference	*preference)
+{
+	char			*description;
+	char			*current_value;
+	NautilusStringList	*theme_list;
+
+	g_assert (item != NULL);
+	g_assert (preference != NULL);
+
+	g_assert (item->details->preference_name != NULL);
+	description = nautilus_preference_get_description (preference);
+
+	g_assert (description != NULL);
+
+	item->details->child = nautilus_string_picker_new ();
+
+	nautilus_string_picker_set_title_label (NAUTILUS_STRING_PICKER (item->details->child), description);
+	
+	g_free (description);
+
+	theme_list = nautilus_string_list_new ();
+	nautilus_string_list_insert (theme_list, "default");
+	add_icon_themes(theme_list);
+	
+	nautilus_string_picker_set_string_list (NAUTILUS_STRING_PICKER (item->details->child), theme_list);
+
+	current_value = nautilus_preferences_get (item->details->preference_name, "default");
+
+	g_assert (current_value != NULL);
+	g_assert (nautilus_string_list_contains (theme_list, current_value));
+	
+	nautilus_string_picker_set_text (NAUTILUS_STRING_PICKER (item->details->child), current_value);
+
+	g_free (current_value);
+
+	nautilus_string_list_free (theme_list);
+	
+ 	gtk_signal_connect (GTK_OBJECT (item->details->child),
+ 			    "changed",
+ 			    GTK_SIGNAL_FUNC (text_item_changed_callback),
+ 			    (gpointer) item);
+}
+
 
 /* NautilusPreferencesItem public methods */
 GtkWidget *
@@ -457,7 +544,7 @@ boolean_button_toggled_callback (GtkWidget *button, gpointer user_data)
 }
 
 static void
-font_family_changed_callback (GtkWidget *button, gpointer user_data)
+text_item_changed_callback (GtkWidget *button, gpointer user_data)
 {
 	NautilusPreferencesItem	*item;
 	char			*text;

@@ -1,3 +1,43 @@
+2000-06-02  Andy Hertzfeld  <andy@eazel.com>
+
+	added a new theme composed of vector icons, and a generalized theme
+	selector in the preferences dialog
+	
+	* configure.in:
+	* icons/Makefile.am:
+	* icons/vector/.cvsignore:
+	* icons/vector/Makefile.am:
+	* icons/vector/i-directory-accept.svg:
+	* icons/vector/i-directory.svg:
+	* icons/vector/i-regular.svg:
+	* icons/vector/i-regular.xml:
+	added a new directory for a vector
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog),
+	(global_preferences_register_for_ui):
+	changed the type of the icon theme selector to a custom one
+	
+	* nautilus-widgets/nautilus-preferences-item.c:
+	(preferences_item_construct),
+	(preferences_item_create_font_family), (add_icon_themes),
+	(preferences_item_create_icon_theme), (text_item_changed_callback):
+	implemented a custom type for icon theme selecting; added a routine
+	to iterate through the icons directory to find available themes
+	
+	* nautilus-widgets/nautilus-preferences-item.h:
+	defined a custom type for icon theme selection
+	
+	* src/nautilus-window-menus.c: (nautilus_window_initialize_menus),
+	(refresh_bookmarks_in_go_menu):
+	removed the old code that maintained a menu item for icon
+	theme selection now that we have it in preferences
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(load_specific_image_svg):
+	changed the default scaling for vector icons to match the
+	size that Susan's been drawing them at
+	
 2000-06-02  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory.c: (uri_get_basename):

@@ -56,7 +56,6 @@ static void                  clear_appended_bookmark_items                  (Nau
 static NautilusBookmarkList *get_bookmark_list                              (void);
 static void                  refresh_bookmarks_in_go_menu                   (NautilusWindow         *window);
 static void                  refresh_bookmarks_in_bookmarks_menu            (NautilusWindow         *window);
-static void                  update_eazel_theme_menu_item                   (NautilusWindow         *window);
 static void                  update_undo_menu_item                          (NautilusWindow         *window);
 static void                  edit_bookmarks                                 (NautilusWindow         *window);
 
@@ -92,7 +91,6 @@ typedef struct {
 #define NAUTILUS_MENU_PATH_AFTER_USER_LEVEL_SEPARATOR		"/Settings/After User Level Separator"
 
 #define NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM			"/Settings/Customize"
-#define NAUTILUS_MENU_PATH_USE_EAZEL_THEME_ICONS_ITEM		"/Settings/Use Eazel Theme Icons"
 
 static void
 file_menu_new_window_callback (BonoboUIHandler *ui_handler, 
@@ -317,26 +315,6 @@ settings_menu_customize_callback (BonoboUIHandler *ui_handler,
 				  const char *path)
 {
 	nautilus_property_browser_new ();
-}
-
-static void
-settings_menu_use_eazel_theme_icons_callback (BonoboUIHandler *ui_handler, 
-		       		      	      gpointer user_data,
-		      		      	      const char *path)
-{
-	char *current_theme;
-	char *new_theme;
-
-	current_theme = nautilus_preferences_get (NAUTILUS_PREFERENCES_ICON_THEME, "default");	
-	if (nautilus_strcmp (current_theme, "eazel") == 0) {
-		new_theme = "default";
-	} else {
-		new_theme = "eazel";
-	}
-
-	nautilus_preferences_set (NAUTILUS_PREFERENCES_ICON_THEME, new_theme);
-	
-	g_free (current_theme);
 }
 
 static void
@@ -912,22 +890,6 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 settings_menu_customize_callback,
         				 NULL);
 
-	/* It's called SEPARATOR_AFTER_USER_LEVELS because "General Settings" is
-	 * going to expand into the user level choices plus the choice that brings
-	 * up the user-level-details customizing dialog.
-	 */
-        append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_AFTER_USER_LEVELS);
-
-        bonobo_ui_handler_menu_new_toggleitem (ui_handler,
-        				       NAUTILUS_MENU_PATH_USE_EAZEL_THEME_ICONS_ITEM,
-        				       _("Use _Eazel Theme Icons"),
-        				       _("Select whether to use standard or Eazel icons"),
-        				       -1,
-        				       0,
-        				       0,
-        				       settings_menu_use_eazel_theme_icons_callback,
-        				       NULL);
-
 	/* Help */
         new_top_level_menu (window, NAUTILUS_MENU_PATH_HELP_MENU, _("_Help"));
 
@@ -951,18 +913,9 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				        NAUTILUS_MENU_PATH_SELECT_ALL_ITEM, 
 						FALSE);
 
-        /* Set initial toggle state of Eazel theme menu item */
-        update_eazel_theme_menu_item (window);
-
         /* Set inital state of undo menu */
 	update_undo_menu_item (window);
         
-        /* Sign up to be notified of icon theme changes so Use Eazel Theme Icons
-         * menu item will show correct toggle state. */        
-	gtk_signal_connect_object_while_alive
-		(nautilus_icon_factory_get (), "icons_changed",
-		 update_eazel_theme_menu_item, GTK_OBJECT (window));	
-
 	/* Connect to UndoManager so that we are notified when an undo transcation has occurred */
 	undo_manager = NAUTILUS_UNDO_MANAGER (NAUTILUS_APP (window->app)->undo_manager);
 	gtk_signal_connect_object_while_alive
@@ -1047,20 +1000,6 @@ refresh_bookmarks_in_go_menu (NautilusWindow *window)
 
                 ++index;
 	}	
-}
-
-static void 
-update_eazel_theme_menu_item (NautilusWindow *window)
-{
-        g_assert (NAUTILUS_IS_WINDOW (window));
-
-	/* Change the state of the menu item without invoking our callback function. */
-	nautilus_bonobo_ui_handler_menu_set_toggle_appearance (
-		window->uih,
-		NAUTILUS_MENU_PATH_USE_EAZEL_THEME_ICONS_ITEM,
-		nautilus_eat_strcmp (nautilus_preferences_get (NAUTILUS_PREFERENCES_ICON_THEME,
-							       "default"), 
-				     "eazel") == 0);
 }
 
 /* Toggle sensitivity based on undo manager state */
