@@ -475,11 +475,19 @@ static GdkPixmap *
 make_root_pixmap (gint width, gint height)
 {
 	Display *display;
+        char *display_name;
 	Pixmap result;
 
 	gdk_flush ();
 
-	display = XOpenDisplay (DisplayString (GDK_DISPLAY ()));
+        display_name = DisplayString (GDK_DISPLAY ());
+	display = XOpenDisplay (display_name);
+
+        if (display == NULL) {
+                g_warning ("Unable to open display '%s' when setting background pixmap\n",
+                           (display_name) ? display_name : "NULL");
+                return NULL;
+        }
 
 	XSetCloseDownMode (display, RetainPermanent);
 
@@ -570,6 +578,10 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
 	height = gdk_screen_height ();
 
 	pixmap = make_root_pixmap (width, height);
+        if (pixmap == NULL) {
+                return;
+        }
+        
 	gc = gdk_gc_new (pixmap);
 	eel_background_draw_to_drawable (background, pixmap, gc, 0, 0, width, height, width, height);
 	g_object_unref (gc);

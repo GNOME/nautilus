@@ -1,5 +1,12 @@
 2002-04-21  Alexander Larsson  <alla@lysator.liu.se>
 
+	* libnautilus-private/nautilus-directory-background.c
+	(image_loading_done_callback), (make_root_pixmap):
+	Check the return value of XOpenDisplay and handle
+	failures.
+	
+2002-04-21  Alexander Larsson  <alla@lysator.liu.se>
+
 	* src/nautilus-desktop-window.c (nautilus_desktop_window_class_init):
 	Disable the whole flash-workaround hack since it doesn't work
 	and is causing crashes on solaris.
