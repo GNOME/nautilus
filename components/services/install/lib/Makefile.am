@@ -21,9 +21,10 @@ INCLUDES = \
 
 lib_LTLIBRARIES = \
 	libeazelinstall.la \
-	libeazelpackagesystem.la \
 	libeazelsoftcat.la	\
 	$(NULL)
+
+#	libeazelpackagesystem.la \
 
 # libeazelinstall
 
@@ -81,10 +82,10 @@ libeazelpackagesysteminclude_HEADERS = 		\
 	eazel-package-system-private.h		\
 	$(NULL)
 
-libeazelpackagesystem_la_SOURCES = 		\
-	eazel-install-types.o	 		\
-	eazel-package-system.o			\
-	$(NULL)
+#libeazelpackagesystem_la_SOURCES = 		\
+#	eazel-install-types.c	 		\
+#	eazel-package-system.c			\
+#	$(NULL)
 
 libeazelinstall_la_LDFLAGS = \
 	$(GHTTP_LIBS)

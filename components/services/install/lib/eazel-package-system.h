@@ -25,7 +25,6 @@
 #define EAZEL_PACKAGE_SYSTEM_PUBLIC_H
 
 #include "eazel-install-types.h"
-#include "eazel-package-system-private.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,8 +36,8 @@ extern "C" {
 #define IS_EAZEL_PACKAGE_SYSTEM(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_PACKAGE_SYSTEM))
 #define IS_EAZEL_PACKAGE_SYSTEM_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_PACKAGE_SYSTEM))
 
-typedef struct _EazelPackageSystem EazelPackageSystem
-typedef struct _EazelPackageSystemClass EazelPackageSystemClass
+typedef struct _EazelPackageSystem EazelPackageSystem;
+typedef struct _EazelPackageSystemClass EazelPackageSystemClass;
 
 /* This enum identifies the package system
    used for the object instance */
@@ -96,7 +95,7 @@ enum {
 enum {
 	EAZEL_INSTALL_PACKAGE_SYSTEM_QUERY_DETAIL_SHORT_SUMMARY = 0x1,
 	EAZEL_INSTALL_PACKAGE_SYSTEM_QUERY_DETAIL_LONG_SUMMARY = 0x2,
-	EAZEL_INSTALL_PACKAGE_SYSTEM_QUERY_DETAIL_FILES_PROVIDED = 0x4
+	EAZEL_INSTALL_PACKAGE_SYSTEM_QUERY_DETAIL_FILES_PROVIDED = 0x4,
 	EAZEL_INSTALL_PACKAGE_SYSTEM_QUERY_DETAIL_PROVIDES = 0x8
 };
 
@@ -139,6 +138,7 @@ EazelPackageSystemId eazel_package_system_suggest_id (void);
 EazelPackageSystem  *eazel_package_system_new (void);
 EazelPackageSystem  *eazel_package_system_new_with_id (EazelPackageSystemId);
 GtkType              eazel_package_system_get_type (void);
+void                 eazel_package_system_unref        (GtkObject *object);
 PackageData         *eazel_package_system_load_package (EazelPackageSystem *package_system,
 							const char *filename,
 							int detail_level);

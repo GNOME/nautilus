@@ -27,26 +27,25 @@
 #include "eazel-package-system.h"
 
 struct _EazelPackageSystemPrivate {	
-	(*load)(EazelPackageSystem*,
-		const char*,
-		int);
-	(*query)(EazelPackageSystem*,
-		 gpointer key,
-		 EazelPackageSystemQueryEnum,
-		 int);
-	(*install) (EazelPackageSystem*,
-		    GList*,
-		    long,
-		    gpointer);
-	(*uninstall) (EazelPackageSystem*,
-		      GList*,
-		      long,
-		      gpointer);
-	(*verify) (EazelPackageSystem*,
-		   GList*,
-		   long,
-		   gpointer);
-		    
+	void (*load) (EazelPackageSystem*,
+		      const char*,
+		      int);
+	void (*query) (EazelPackageSystem*,
+		       gpointer key,
+		       EazelPackageSystemQueryEnum,
+		       int);
+	void (*install) (EazelPackageSystem*,
+			 GList*,
+			 long,
+			 gpointer);
+	void (*uninstall) (EazelPackageSystem*,
+			   GList*,
+			   long,
+			   gpointer);
+	void (*verify) (EazelPackageSystem*,
+			GList*,
+			long,
+			gpointer);
 };
 
 #endif /* EAZEL_PACKAGE_SYSTEM_PRIVATE_H */
