@@ -27,6 +27,8 @@
 
 #include <config.h>
 #include <math.h>
+#include <ctype.h>
+
 #include "nautilus-property-browser.h"
 
 #include <parser.h>
@@ -120,8 +122,8 @@ static GdkPixbuf* make_background_chit			(GdkPixbuf *background_tile,
 static char *strip_extension                            (const char              *string_to_strip);
 static char *get_xml_path                               (NautilusPropertyBrowser *property_browser);
 
-#define BROWSER_BACKGROUND_COLOR "rgb:DDDD/EEEE/FFFF"
-#define BROWSER_TITLE_COLOR "rgb:FFFF/FFFF/FFFF"
+#define BROWSER_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
+#define BROWSER_TITLE_COLOR "rgb:DDDD/DDDD/DDDD"
 #define THEME_SELECT_COLOR "rgb:FFFF/9999/9999"
 
 #define BROWSER_CATEGORIES_FILE_NAME "browser.xml"
@@ -1195,7 +1197,7 @@ element_clicked_callback(GtkWidget *widget, GdkEventButton *event, char *element
 
 /* utility routine to strip the extension from the passed in string */
 static char*
-strip_extension(const char* string_to_strip)
+strip_extension (const char* string_to_strip)
 {
 	char *result_str, *temp_str;
 	if (string_to_strip == NULL)
@@ -1206,6 +1208,32 @@ strip_extension(const char* string_to_strip)
 	if (temp_str)
 		*temp_str = '\0';
 	return result_str;
+}
+
+/* utility to format the passed-in name for display by stripping the extension, mapping underscore
+   and capitalizing as necessary */
+
+static char*
+format_name_for_display (const char* name)
+{
+	gboolean need_to_cap;
+	int index, length;
+	char *formatted_str;
+	
+	formatted_str = strip_extension (name);
+	
+	need_to_cap = TRUE;
+	length = strlen (formatted_str);
+	for (index = 0; index < length; index++) {
+		if (need_to_cap && islower (formatted_str[index]))
+			formatted_str[index] = toupper (formatted_str[index]);
+		
+		if (formatted_str[index] == '_')
+			formatted_str[index] = ' ';
+		need_to_cap = formatted_str[index] == ' ';
+	}
+	
+	return formatted_str;	
 }
 
 /* handle preferences changing by updating the browser contents */
@@ -1234,18 +1262,19 @@ static GdkPixbuf*
 make_background_chit (GdkPixbuf *background_tile, GdkPixbuf *frame)
 {
 	GdkPixbuf *pixbuf;
-	double scale_x, scale_y;
+	int frame_width, frame_height;
 	
-	/* start with the frame */
-	pixbuf = gdk_pixbuf_copy (frame);
-		
-	scale_x = ((double) MAX_ICON_WIDTH)  / gdk_pixbuf_get_width (background_tile);
-	scale_y = ((double) MAX_ICON_HEIGHT) / gdk_pixbuf_get_height (background_tile);
 	
-	/* draw the scaled tile on top of it */
-
-	gdk_pixbuf_scale (background_tile, pixbuf, 3, 3, MAX_ICON_WIDTH - 2, MAX_ICON_HEIGHT - 2, 
-			  0.0, 0.0, scale_x, scale_y, GDK_INTERP_BILINEAR);
+	frame_width = gdk_pixbuf_get_width (frame);
+	frame_height = gdk_pixbuf_get_height (frame);
+	
+	/* scale the background tile to the proper size */
+	pixbuf = gdk_pixbuf_scale_simple (background_tile, frame_width, frame_height, GDK_INTERP_BILINEAR);
+			
+	/* composite the mask on top of it */
+	gdk_pixbuf_composite (frame, pixbuf, 0, 0, frame_width, frame_height,
+			      0.0, 0.0, 1.0, 1.0, GDK_INTERP_BILINEAR, 255);
+			      
 	gdk_pixbuf_unref (background_tile);
 	return pixbuf;
 }
@@ -1321,7 +1350,7 @@ make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, c
 				gtk_container_add(GTK_CONTAINER(event_box), pixmap_widget);
 				gtk_box_pack_start(GTK_BOX(temp_vbox), event_box, FALSE, FALSE, 0);
 				
-				filtered_name = strip_extension(current_file_info->name);
+				filtered_name = format_name_for_display (current_file_info->name);
 				label = gtk_label_new(filtered_name);
 				g_free(filtered_name);
 				gtk_box_pack_start (GTK_BOX(temp_vbox), label, FALSE, FALSE, 0);
@@ -1675,7 +1704,7 @@ make_category(NautilusPropertyBrowser *property_browser, const char* path, const
 /* this is a utility routine to generate a category link widget and install it in the browser */
 
 static void
-make_category_link(NautilusPropertyBrowser *property_browser, char* name, char* image, int index)
+make_category_link(NautilusPropertyBrowser *property_browser, char* name, char *display_name, char* image, int index)
 {
 	GtkWidget *label, *pix_widget, *button, *temp_vbox;
 	
@@ -1692,7 +1721,7 @@ make_category_link(NautilusPropertyBrowser *property_browser, char* name, char* 
 	gtk_widget_set_usize(button, 96, 80);
 	
 	/* use the name as a label */
-	label = gtk_label_new(name);
+	label = gtk_label_new (display_name);
 	gtk_box_pack_start (GTK_BOX (temp_box), label, FALSE, FALSE, 0);
 	gtk_widget_show (label);
 
@@ -1775,16 +1804,17 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 			char* category_image = xmlGetProp (cur_node, "image");
 			char* category_type  = xmlGetProp (cur_node, "type");
 			char* category_description = xmlGetProp (cur_node, "description");
+			char* display_name = xmlGetProp (cur_node, "display_name");
 				
 			if (property_browser->details->category && !strcmp(property_browser->details->category, category_name)) {
 				char *category_path = xmlGetProp (cur_node, "path");
 				char *category_mode = xmlGetProp (cur_node, "mode");
 				
-				make_category(property_browser, category_path, category_mode, cur_node, category_description);
-				nautilus_property_browser_set_drag_type(property_browser, category_type);
+				make_category (property_browser, category_path, category_mode, cur_node, category_description);
+				nautilus_property_browser_set_drag_type (property_browser, category_type);
 				break;
 			} else if (property_browser->details->category == NULL) {
-				make_category_link (property_browser, category_name, category_image, index++);
+				make_category_link (property_browser, category_name, display_name, category_image, index++);
 			}
 		}
 	}

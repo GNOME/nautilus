@@ -155,6 +155,7 @@ icon_DATA =\
 	search.png \
 	tableft.png \
 	tabright.png \
+	themes.png \
 	trash-empty.png \
 	trash-full.png \
 	uparrow.png \

@@ -181,7 +181,7 @@ set_up_service_signup_page (NautilusDruidPageStandard *page)
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	/* allocate a descriptive label */
-	label = gtk_label_new (_("Eazel offers a number of services to help you manage your system and files, some of them free of charge.  Click the sign-up button below to find out more about signing up. "));
+	label = gtk_label_new (_("Eazel offers a growing number services to help you install and manage your files across the network.  Click the sign-up button below to find out more about signing up for them. "));
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 
 	gtk_widget_show (label);
