@@ -259,8 +259,8 @@ typedef struct {
 static void     cancel_activate_callback                       (gpointer              callback_data);
 static gboolean display_selection_info_idle_callback           (gpointer              data);
 static gboolean file_is_launchable                             (NautilusFile         *file);
-static void     fm_directory_view_class_init             (FMDirectoryViewClass *klass);
-static void     fm_directory_view_init                   (FMDirectoryView      *view);
+static void     fm_directory_view_class_init                   (FMDirectoryViewClass *klass);
+static void     fm_directory_view_init                         (FMDirectoryView      *view);
 static void     fm_directory_view_duplicate_selection          (FMDirectoryView      *view,
 								GList                *files,
 								GArray               *item_locations);
@@ -1296,7 +1296,6 @@ static void
 fm_directory_view_destroy (GtkObject *object)
 {
 	FMDirectoryView *view;
-	GList *node, *next;
 
 	view = FM_DIRECTORY_VIEW (object);
 
@@ -1311,6 +1310,17 @@ fm_directory_view_destroy (GtkObject *object)
 
 	fm_directory_view_stop (view);
 	fm_directory_view_clear (view);
+
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+}
+
+static void
+fm_directory_view_finalize (GObject *object)
+{
+	FMDirectoryView *view;
+	GList *node, *next;
+
+	view = FM_DIRECTORY_VIEW (object);
 
 	for (node = view->details->scripts_directory_list; node != NULL; node = next) {
 		next = node->next;
@@ -1361,7 +1371,7 @@ fm_directory_view_destroy (GtkObject *object)
 
 	g_free (view->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 /**
@@ -5653,15 +5663,14 @@ real_sort_files (FMDirectoryView *view, GList **files)
 static void
 fm_directory_view_class_init (FMDirectoryViewClass *klass)
 {
-	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 	GtkScrolledWindowClass *scrolled_window_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
 	widget_class = GTK_WIDGET_CLASS (klass);
 	scrolled_window_class = GTK_SCROLLED_WINDOW_CLASS (klass);
 
-	object_class->destroy = fm_directory_view_destroy;
+	G_OBJECT_CLASS (klass)->finalize = fm_directory_view_finalize;
+	GTK_OBJECT_CLASS (klass)->destroy = fm_directory_view_destroy;
 
 	widget_class->realize = real_realize;
 	widget_class->selection_clear_event = real_selection_clear_event;
@@ -5676,7 +5685,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 
 	signals[ADD_FILE] =
 		g_signal_new ("add_file",
-		              G_TYPE_FROM_CLASS (object_class),
+		              G_TYPE_FROM_CLASS (klass),
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, add_file),
 		              NULL, NULL,
@@ -5684,7 +5693,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_TYPE_NONE, 1, NAUTILUS_TYPE_FILE);
 	signals[BEGIN_FILE_CHANGES] =
 		g_signal_new ("begin_file_changes",
-		              G_TYPE_FROM_CLASS (object_class),
+		              G_TYPE_FROM_CLASS (klass),
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, begin_file_changes),
 		              NULL, NULL,
@@ -5692,7 +5701,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_TYPE_NONE, 0);
 	signals[BEGIN_LOADING] =
 		g_signal_new ("begin_loading",
-		              G_TYPE_FROM_CLASS (object_class),
+		              G_TYPE_FROM_CLASS (klass),
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, begin_loading),
 		              NULL, NULL,
@@ -5700,7 +5709,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_TYPE_NONE, 0);
 	signals[CLEAR] =
 		g_signal_new ("clear",
-		              G_TYPE_FROM_CLASS (object_class),
+		              G_TYPE_FROM_CLASS (klass),
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, clear),
 		              NULL, NULL,
@@ -5708,7 +5717,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_TYPE_NONE, 0);
 	signals[END_FILE_CHANGES] =
 		g_signal_new ("end_file_changes",
-		              G_TYPE_FROM_CLASS (object_class),
+		              G_TYPE_FROM_CLASS (klass),
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, end_file_changes),
 		              NULL, NULL,
@@ -5716,7 +5725,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_TYPE_NONE, 0);
 	signals[END_LOADING] =
 		g_signal_new ("end_loading",
-		              G_TYPE_FROM_CLASS (object_class),
+		              G_TYPE_FROM_CLASS (klass),
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, end_loading),
 		              NULL, NULL,
@@ -5724,7 +5733,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_TYPE_NONE, 0);
 	signals[FILE_CHANGED] =
 		g_signal_new ("file_changed",
-		              G_TYPE_FROM_CLASS (object_class),
+		              G_TYPE_FROM_CLASS (klass),
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, file_changed),
 		              NULL, NULL,
@@ -5732,7 +5741,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_TYPE_NONE, 1, NAUTILUS_TYPE_FILE);
 	signals[LOAD_ERROR] =
 		g_signal_new ("load_error",
-		              G_TYPE_FROM_CLASS (object_class),
+		              G_TYPE_FROM_CLASS (klass),
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, load_error),
 		              NULL, NULL,
@@ -5740,7 +5749,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_TYPE_NONE, 1, G_TYPE_INT);
 	signals[REMOVE_FILE] =
 		g_signal_new ("remove_file",
-		              G_TYPE_FROM_CLASS (object_class),
+		              G_TYPE_FROM_CLASS (klass),
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, remove_file),
 		              NULL, NULL,

@@ -1,3 +1,14 @@
+2002-01-09  Darin Adler  <darin@bentspoon.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_destroy), (fm_directory_view_finalize),
+	(fm_directory_view_class_init):
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_finalize),
+	(fm_icon_view_class_init):
+	* src/file-manager/fm-list-view.c: (fm_list_view_class_init),
+	(fm_list_view_finalize):
+	Some destroy/finalize fixes.
+
 2002-01-08  Darin Adler  <darin@bentspoon.com>
 
 	* Makefile.am: Remove a stray reference to nautilus-help.desktop.

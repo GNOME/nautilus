@@ -122,7 +122,7 @@ static NautilusZoomLevel    fm_list_view_get_zoom_level               (FMListVie
 static void                 fm_list_view_init                   (gpointer            object,
 								       gpointer            klass);
 static void                 fm_list_view_class_init             (gpointer            klass);
-static void                 fm_list_view_destroy                      (GtkObject          *object);
+static void                 fm_list_view_finalize                      (GObject          *object);
 static void                 fm_list_view_end_file_changes             (FMDirectoryView    *view);
 static void                 fm_list_view_reset_to_defaults            (FMDirectoryView    *view);
 static void                 fm_list_view_select_all                   (FMDirectoryView    *view);
@@ -189,15 +189,13 @@ EEL_CLASS_BOILERPLATE (FMListView,
 static void
 fm_list_view_class_init (gpointer klass)
 {
-	GtkObjectClass *object_class;
 	FMDirectoryViewClass *fm_directory_view_class;
 	FMListViewClass *fm_list_view_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
 	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (klass);
 	fm_list_view_class = FM_LIST_VIEW_CLASS (klass);
 
-	object_class->destroy = fm_list_view_destroy;
+	G_OBJECT_CLASS (klass)->finalize = fm_list_view_finalize;
 
 	fm_directory_view_class->add_file = fm_list_view_add_file;
 	fm_directory_view_class->begin_file_changes = fm_list_view_begin_file_changes;
@@ -300,10 +298,10 @@ fm_list_view_init (gpointer object, gpointer klass)
 }
 
 static void
-fm_list_view_destroy (GtkObject *object)
+fm_list_view_finalize (GObject *object)
 {
 	g_free (FM_LIST_VIEW (object)->details);
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static void 

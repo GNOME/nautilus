@@ -232,7 +232,7 @@ struct FMIconViewDetails
 };
 
 static void
-fm_icon_view_destroy (GtkObject *object)
+fm_icon_view_finalize (GObject *object)
 {
 	FMIconView *icon_view;
 
@@ -256,7 +256,7 @@ fm_icon_view_destroy (GtkObject *object)
 	nautilus_file_list_free (icon_view->details->icons_not_positioned);
 	g_free (icon_view->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static NautilusIconContainer *
@@ -2722,13 +2722,11 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 static void
 fm_icon_view_class_init (FMIconViewClass *klass)
 {
-	GtkObjectClass *object_class;
 	FMDirectoryViewClass *fm_directory_view_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
 	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (klass);
 
-	object_class->destroy = fm_icon_view_destroy;
+	G_OBJECT_CLASS (klass)->finalize = fm_icon_view_finalize;
 	
 	fm_directory_view_class->add_file = fm_icon_view_add_file;
 	fm_directory_view_class->begin_loading = fm_icon_view_begin_loading;
