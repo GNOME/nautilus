@@ -555,10 +555,8 @@ fm_list_receive_dropped_icons (NautilusList *list,
 			target_item = NULL;
 		}
 		
-		list_view_uri = fm_directory_view_get_uri (directory_view);
 		if (target_item != NULL 
-		    || action != GDK_ACTION_MOVE
-		    || !nautilus_drag_items_local (list_view_uri, drop_data)) {
+		    && !nautilus_drag_items_local (list_view_uri, drop_data)) {
 			
 				/* build a list of URIs to copy */
 			for (p = drop_data; p != NULL; p = p->next) {
@@ -569,18 +567,13 @@ fm_list_receive_dropped_icons (NautilusList *list,
 			source_uris = g_list_reverse (source_uris);
 			
 				/* figure out the uri of the destination */
-			if (target_item != NULL) {
-				target_item_uri = nautilus_file_get_uri (target_item);
-			} else {
-				target_item_uri = g_strdup (list_view_uri);
-			}
+			target_item_uri = nautilus_file_get_uri (target_item);
 			
 				/* start the copy */
 			fm_directory_view_move_copy_items (source_uris, NULL,
 							   target_item_uri, action, x, y, directory_view);
 			
 		}
-		g_free (list_view_uri);
 	}
 	
 	g_free (target_item_uri);

@@ -1,3 +1,13 @@
+2000-09-17  Mathieu Lacage  <mathieu@eazel.com>
+
+	* src/file-manager/fm-list-view.c: (fm_list_receive_dropped_icons):
+	make it check if a target is begin copied into itself before doing 
+	the actual file operation. ie: bug 3085
+	* test/Makefile.am: add brand new test I used in my quest for bug
+	1963
+	* test/test-nautilus-background.c: (main): the actual test :)
+	run and you will see beautiful background.
+
 2000-09-17  Maciej Stachowiak  <mjs@eazel.com>
 
 	More work towards bug 1994. I'm not yet checking in the code to
