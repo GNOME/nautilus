@@ -423,7 +423,7 @@ nautilus_file_is_self_owned (NautilusFile *file)
 }
 
 /**
- * nautilus_file_get_parent_uri:
+ * nautilus_file_get_parent_uri_for_display:
  * 
  * Get the uri for the parent directory.
  * 
@@ -434,10 +434,35 @@ nautilus_file_is_self_owned (NautilusFile *file)
  * If the parent is NULL, returns the empty string.
  */ 
 char *
-nautilus_file_get_parent_uri (NautilusFile *file) 
+nautilus_file_get_parent_uri_for_display (NautilusFile *file) 
 {
 	char *raw_uri;
+	char *result;
 
+	g_assert (NAUTILUS_IS_FILE (file));
+	
+	raw_uri = nautilus_file_get_parent_uri (file);
+	result = nautilus_format_uri_for_display (raw_uri);
+	g_free (raw_uri);
+
+	return result;
+}
+
+/**
+ * nautilus_file_get_parent_uri:
+ * 
+ * Get the uri for the parent directory.
+ * 
+ * @file: The file in question.
+ * 
+ * Return value: A string for the parent's location, in "raw URI" form.
+ * Use nautilus_file_get_parent_uri_for_display instead if the
+ * result is to be displayed on-screen.
+ * If the parent is NULL, returns the empty string.
+ */ 
+char *
+nautilus_file_get_parent_uri (NautilusFile *file) 
+{
 	g_assert (NAUTILUS_IS_FILE (file));
 	
 	if (nautilus_file_is_self_owned (file)) {
@@ -445,8 +470,7 @@ nautilus_file_get_parent_uri (NautilusFile *file)
 		return g_strdup ("");
 	}
 
-	raw_uri = nautilus_directory_get_uri (file->details->directory);\
-	return nautilus_format_uri_for_display (raw_uri);
+	return nautilus_directory_get_uri (file->details->directory);
 }
 
 static NautilusFile *
@@ -1209,8 +1233,8 @@ nautilus_file_compare_by_directory_name (NautilusFile *file_1, NautilusFile *fil
 	char *directory_2;
 	int compare;
 
-	directory_1 = nautilus_file_get_parent_uri (file_1);
-	directory_2 = nautilus_file_get_parent_uri (file_2);
+	directory_1 = nautilus_file_get_parent_uri_for_display (file_1);
+	directory_2 = nautilus_file_get_parent_uri_for_display (file_2);
 
 	compare = nautilus_strcasecmp (directory_1, directory_2);
 
@@ -2987,7 +3011,7 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 	}
 
 	if (strcmp (attribute_name, "parent_uri") == 0) {
-		return nautilus_file_get_parent_uri (file);
+		return nautilus_file_get_parent_uri_for_display (file);
 	}
 
 	return NULL;

@@ -114,7 +114,8 @@ gboolean		nautilus_file_check_if_ready		(NautilusFile		       *file,
 /* Basic attributes for file objects. */
 char *                  nautilus_file_get_name                  (NautilusFile                  *file);
 char *                  nautilus_file_get_uri                   (NautilusFile                  *file);
-char *                  nautilus_file_get_parent_uri            (NautilusFile                  *file);
+char *                  nautilus_file_get_parent_uri 		(NautilusFile                  *file);
+char *                  nautilus_file_get_parent_uri_for_display (NautilusFile                  *file);
 GnomeVFSFileSize        nautilus_file_get_size                  (NautilusFile                  *file);
 GnomeVFSFileType        nautilus_file_get_file_type             (NautilusFile                  *file);
 char *                  nautilus_file_get_mime_type             (NautilusFile                  *file);
@@ -181,9 +182,6 @@ void                    nautilus_file_rename                    (NautilusFile   
 								 const char                    *new_name,
 								 NautilusFileOperationCallback  callback,
 								 gpointer                       callback_data);
-gboolean                nautilus_file_is_rename_in_progress     (NautilusFile                  *file,
-								 char                         **old_name,
-								 char                         **new_name);
 void                    nautilus_file_cancel                    (NautilusFile                  *file,
 								 NautilusFileOperationCallback  callback,
 								 gpointer                       callback_data);

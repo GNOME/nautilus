@@ -1,5 +1,24 @@
 2000-08-21  John Sullivan  <sullivan@eazel.com>
 
+	After talking to Darin, split up 
+	nautilus_file_get_parent_uri into a _for_display
+	version and the standard "pure" one. We had callers
+	that wanted each type.
+
+	* libnautilus-extensions/nautilus-file.h,
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_parent_uri_for_display):
+	New function, formats the result of get_parent_uri
+	for user-ready display.
+	(nautilus_file_get_parent_uri): Took out the format
+	code from this more basic function.
+	(nautilus_file_compare_by_directory_name): Use the
+	for_display version here.
+	(nautilus_file_get_string_attribute): Use the
+	for_display version here.
+
+2000-08-21  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 1456 ("file://" shouldn't appear in locations
 	in Property window)
 
