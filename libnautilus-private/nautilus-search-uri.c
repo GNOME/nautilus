@@ -573,8 +573,14 @@ parse_uri (const char *search_uri)
         }
         translated_prefix = get_first_criterion_prefix (criteria);
         translated_suffix = get_first_criterion_suffix (criteria);
-        ret_val = g_strdup_printf (_("Search results for items %s %s%s"), 
-                                   translated_prefix, translated_criterion, translated_suffix);
+        if (strcmp (translated_prefix, "") == 0) {
+                ret_val = g_strdup_printf (_("Search results for items %s%s"), 
+                                           translated_criterion, translated_suffix);
+        } else {
+                ret_val = g_strdup_printf (_("Search results for items %s %s%s"), 
+                                           translated_prefix, translated_criterion, translated_suffix);
+        }
+
         g_free (translated_suffix);
         g_free (translated_criterion);
         g_free (translated_prefix);
@@ -681,13 +687,13 @@ nautilus_self_check_search_uri (void)
 
         /* make sure all the code paths work */
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff"), 
-                                      _("Search results for items whose name contains \"stuff\"."));
+                                      _("Search results for items that contain \"stuff\"."));
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"), 
-                                      _("Search results for items whose name contains \"stuff\" and are regular files."));
+                                      _("Search results for items that contain \"stuff\" and are regular files."));
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"
                                                                     " & size smaller_than 2000"), 
-                                      _("Search results for items whose name contains \"stuff\", are regular files and size is "
-                                        "smaller than 2000 bytes."));
+                                      _("Search results for items that contain \"stuff\", are regular files and that are "
+                                        "smaller than 2000 kilobytes."));
         
         /* is_search_uri */
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri (""), FALSE);
