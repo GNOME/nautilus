@@ -569,25 +569,6 @@ nautilus_background_ensure_image_scaled (NautilusBackground *background, int des
 	}
 }
 
-/* The width and height were chosen to match those used by
- * gnome-canvas (IMAGE_WIDTH_AA & IMAGE_HEIGHT_AA defined 
- * in gnome-libs/libgnomeui/gnome-canvas.c). They're not
- * required to match - so this could be changed if necessary.
- */
-static const int PIXBUF_WIDTH = 256;
-static const int PIXBUF_HEIGHT = 64;
-
-static GdkPixbuf *nautilus_background_draw_pixbuf;
-
-static void
-nautilus_background_draw_pixbuf_free (void)
-{
-	if (nautilus_background_draw_pixbuf != NULL) {
-		gdk_pixbuf_unref (nautilus_background_draw_pixbuf);
-		nautilus_background_draw_pixbuf = NULL;
-	}
-}
-
 void
 nautilus_background_pre_draw (NautilusBackground *background, int entire_width, int entire_height)
 {
@@ -606,20 +587,24 @@ nautilus_background_draw (NautilusBackground *background,
 	int width, height;
 	
 	GnomeCanvasBuf buffer;
+	GdkPixbuf *pixbuf;
 
 	/* Non-aa background drawing is done by faking up a GnomeCanvasBuf
 	 * and passing it to the aa code.
+	 *
+	 * The width and height were chosen to match those used by gnome-canvas
+	 * (IMAGE_WIDTH_AA & IMAGE_HEIGHT_AA  in gnome-libs/libgnomeui/gnome-canvas.c)
+	 * They're not required to match - so this could be changed if necessary.
 	 */
+	static const int PIXBUF_WIDTH = 256;
+	static const int PIXBUF_HEIGHT = 64;
 
-	if (nautilus_background_draw_pixbuf == NULL) {
-		nautilus_background_draw_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, PIXBUF_WIDTH, PIXBUF_HEIGHT);
-		g_atexit (nautilus_background_draw_pixbuf_free);
-	}
+	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, PIXBUF_WIDTH, PIXBUF_HEIGHT);
 
 	/* x & y are relative to the drawable
 	 */
-	for (x = 0; x < drawable_width; x += PIXBUF_WIDTH) {
-		for (y = 0; y < drawable_height; y += PIXBUF_HEIGHT) {
+	for (y = 0; y < drawable_height; y += PIXBUF_HEIGHT) {
+		for (x = 0; x < drawable_width; x += PIXBUF_WIDTH) {
 
 			width = MIN (drawable_width - x, PIXBUF_WIDTH);
 			height = MIN (drawable_height - y, PIXBUF_HEIGHT);
@@ -627,15 +612,17 @@ nautilus_background_draw (NautilusBackground *background,
 			x_canvas = drawable_x + x;
 			y_canvas = drawable_y + y;
 
-			canvas_buf_from_pixbuf (&buffer, nautilus_background_draw_pixbuf, x_canvas, y_canvas, width, height);
+			canvas_buf_from_pixbuf (&buffer, pixbuf, x_canvas, y_canvas, width, height);
 			nautilus_background_draw_aa (background, &buffer);
-			gdk_pixbuf_render_to_drawable (nautilus_background_draw_pixbuf, drawable, gc,
+			gdk_pixbuf_render_to_drawable (pixbuf, drawable, gc,
 						       0, 0,
 						       x, y,
 						       width, height,
 						       GDK_RGB_DITHER_MAX, x_canvas, y_canvas);
 		}
 	}
+	
+	gdk_pixbuf_unref (pixbuf);
 }
 
 void
