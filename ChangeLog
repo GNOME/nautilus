@@ -1,3 +1,11 @@
+2000-06-26  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar.c: (nautilus_sidebar_update_info):
+	fixed sidebar background theming by adding a gtk_signal_block_by_func
+	call (and the corresponding unblock) when we set up the background
+	in update_info, so the new background data isn't written out to the
+	metafile, since no explicit change was made.
+	
 2000-06-26  Michael Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/nautilus-gtk-extensions.c:

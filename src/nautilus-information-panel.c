@@ -1217,6 +1217,12 @@ nautilus_sidebar_update_info (NautilusSidebar *sidebar,
 		g_free (temp_str);
 	}
 	
+	/* disable the settings_changed signal, so the background doesn't get
+	   written out, since it might be the theme-dependent default */
+	gtk_signal_handler_block_by_func (GTK_OBJECT(background),
+					   nautilus_sidebar_background_changed,
+					   sidebar);
+					   
 	nautilus_background_set_color (background, background_color);	
 	g_free (background_color);
 	
@@ -1236,6 +1242,10 @@ nautilus_sidebar_update_info (NautilusSidebar *sidebar,
 	nautilus_sidebar_tabs_set_color(sidebar->details->title_tab, color_spec);
 	g_free (color_spec);
 
+	/* re-enable the background_changed signal */
+	gtk_signal_handler_unblock_by_func (GTK_OBJECT(background),
+					   nautilus_sidebar_background_changed,
+					   sidebar);
 	
 	/* tell the title widget about it */
 	nautilus_sidebar_title_set_uri (sidebar->details->title,
