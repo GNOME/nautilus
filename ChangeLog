@@ -1,3 +1,11 @@
+2003-11-16  Dave Camp  <dave@ximian.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(activate_activation_uri_ready_callback),
+	(fm_directory_view_activate_file): Reread the activation URI of
+	symlinks in case the link target is stale.  Patch from
+	Maneesh Pusalkar <mpusalkar@novell.com>.
+
 2003-11-13  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-directory-view.c (open_location):

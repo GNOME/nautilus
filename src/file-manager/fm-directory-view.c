@@ -5612,6 +5612,12 @@ activate_activation_uri_ready_callback (NautilusFile *file, gpointer callback_da
 	
 	parameters = callback_data;
 
+	if (nautilus_file_is_broken_symbolic_link (file)) {
+		eel_timed_wait_stop (cancel_activate_callback, parameters);
+		report_broken_symbolic_link (parameters->view, file);
+		return;
+	}
+
 	if (!parameters->mounted && nautilus_file_has_drive (file)) {
 		drive = nautilus_file_get_drive (file);
 		if (drive != NULL &&
@@ -5693,9 +5699,10 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	if (nautilus_file_is_broken_symbolic_link (file)) {
-		report_broken_symbolic_link (view, file);
-		return;
+	/* link target info might be stale, re-read it */
+	if (nautilus_file_is_symbolic_link (file)) {
+		nautilus_file_invalidate_attributes 
+			(file, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
 	}
 
 	nautilus_file_ref (file);
