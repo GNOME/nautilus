@@ -486,7 +486,7 @@ nautilus_window_update_view (NautilusWindow *window,
 }
 
 void
-nautilus_window_view_destroyed (NautilusViewFrame *view, NautilusWindow *window)
+nautilus_window_view_destroyed (NautilusWindow *window, NautilusViewFrame *view)
 {
         NautilusWindowStateItem item = VIEW_ERROR;
         nautilus_window_set_state_info (window, item, view, (NautilusWindowStateItem) 0);
@@ -515,7 +515,7 @@ nautilus_window_has_really_changed(NautilusWindow *window)
 		/* Update displayed view in menu. Only do this if we're not switching
 		 * locations though, because if we are switching locations we'll
 		 * install a whole new set of views in the menu later (the current
-		 * views in the menu are for some other location).
+		 * views in the menu are for the old location).
 		 */
                 if (window->pending_ni == NULL) {
                 	nautilus_window_synch_content_view_menu (window);
@@ -569,7 +569,10 @@ nautilus_window_free_load_info (NautilusWindow *window)
         window->new_sidebar_panels = NULL;
         window->new_content_view = NULL;
         window->cancel_tag = NULL;
-        window->action_tag = 0;
+        if (window->action_tag != 0) {
+		g_source_remove (window->action_tag);
+	        window->action_tag = 0;
+        }
         window->made_changes = 0;
         window->state = NW_IDLE;
         window->changes_pending = FALSE;

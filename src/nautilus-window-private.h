@@ -52,7 +52,7 @@ void nautilus_window_connect_content_view (NautilusWindow *window,
 				           NautilusViewFrame *view);
 void nautilus_window_connect_view (NautilusWindow *window, 
 				   NautilusViewFrame *view);
-void nautilus_window_view_destroyed(NautilusViewFrame *view, NautilusWindow *window);
+void nautilus_window_view_destroyed (NautilusWindow *window, NautilusViewFrame *view);
 
 void nautilus_send_history_list_changed (void);
 void nautilus_add_to_history_list (NautilusBookmark *bookmark);

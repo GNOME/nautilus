@@ -1170,10 +1170,10 @@ nautilus_window_connect_view(NautilusWindow *window, NautilusViewFrame *view)
 			    "request_progress_change", 
 			    nautilus_window_request_progress_change_callback, 
 			    window);
-	gtk_signal_connect (view_object,
-			    "destroy",
-			    nautilus_window_view_destroyed,
-			    window);
+	gtk_signal_connect_object_while_alive (view_object,
+			    		       "destroy",
+			    		       nautilus_window_view_destroyed,
+			    		       GTK_OBJECT (window));
 }
 
 void

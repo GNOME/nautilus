@@ -1,5 +1,23 @@
 2000-06-09  John Sullivan  <sullivan@eazel.com>
 
+	OK, this time I REALLY fixed the bug where you get
+	occasional "set_sensitive called on bad GTK_WIDGET"
+	errors. I think.
+
+	* src/nautilus-window-private.h: Swapped parameters
+	of nautilus_window_view_destroyed so the window is first.
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_free_load_info): Remove pending
+	action_id function before setting field to 0.
+	(nautilus_window_view_destroyed): Swapped the parameters
+	to match prototype.
+	* src/nautilus-window.c: (nautilus_window_connect_view): Use 
+	gtk_signal_connect_object_while_alive instead of just
+	gtk_signal_connect so the window won't be notified of its
+	view's demise after the window's own demise.
+
+2000-06-09  John Sullivan  <sullivan@eazel.com>
+
 	* src/nautilus-window.c: (nautilus_window_destroy):
 	Changed the way the window->action_tag is destroyed.
 	I think this actually fixes the occasional "set_sensitive
