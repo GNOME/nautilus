@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus CVS-20010120\n"
-"POT-Creation-Date: 2001-02-21 15:46+0900\n"
+"POT-Creation-Date: 2001-02-21 16:48+0900\n"
 "PO-Revision-Date: 2001-02-21 18:29-0500\n"
 "Last-Translator: Yukihiro Nakai <nakai@gnome.gr.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
@@ -1572,6 +1572,7 @@ msgid "Mono"
 msgstr "¥â¥Î¥é¥ë"
 
 #: components/music/nautilus-music-view.c:1794
+#, c-format
 msgid "%s - %s"
 msgstr "%s - %s"
 
@@ -2042,10 +2043,12 @@ msgid "MD5 mismatch, package %s may be compromised"
 msgstr ""
 
 #: components/services/install/lib/eazel-install-logic2.c:441
+#, c-format
 msgid "%s-%s version %s-%s already installed"
 msgstr "%s-%s ¥Ð¡¼¥¸¥ç¥ó %s-%s ¤Ï¤¹¤Ç¤Ë¥¤¥ó¥¹¥È¡¼¥ë¤µ¤ì¤Æ¤¤¤Þ¤¹"
 
 #: components/services/install/lib/eazel-install-logic2.c:445
+#, c-format
 msgid "%s version %s already installed"
 msgstr "%s ¥Ð¡¼¥¸¥ç¥ó %s ¤Ï¤¹¤Ç¤Ë¥¤¥ó¥¹¥È¡¼¥ë¤µ¤ì¤Æ¤¤¤Þ¤¹"
 
@@ -2076,6 +2079,7 @@ msgid "%s installs version %s"
 msgstr "%s¤Î¥Ð¡¼¥¸¥ç¥ó%s¤ò¥¤¥ó¥¹¥È¡¼¥ë¤·¤Æ¤¤¤Þ¤¹"
 
 #: components/services/install/lib/eazel-install-logic2.c:1392
+#, c-format
 msgid "could not revive %s"
 msgstr "%s¤ò¸µ¤ËÌá¤¹¤³¤È¤¬¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
 
@@ -2125,6 +2129,7 @@ msgid "Writing transaction to %s"
 msgstr "%s ¤Ø¥È¥é¥ó¥¶¥¯¥·¥ç¥ó¤ò½ñ¤­¹þ¤ßÃæ"
 
 #: components/services/install/lib/eazel-install-problem.c:146
+#, c-format
 msgid "%s was cancelled"
 msgstr "%s ¤Ï¥­¥ã¥ó¥»¥ë¤µ¤ì¤Þ¤·¤¿"
 
@@ -2466,14 +2471,17 @@ msgid "Cannot open %s"
 msgstr "%s ¤ò³«¤±¤Þ¤»¤ó"
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:418
+#, c-format
 msgid " · %s is in the Gnome menu under %s"
 msgstr "%s¤ÏGNOME ¥á¥Ë¥å¡¼¤Î%s°Ê²¼¤Ë¤¢¤ê¤Þ¤¹"
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:436
+#, c-format
 msgid " · %s is in the Gnome menu.\n"
 msgstr "%s¤ÏGNOME ¥á¥Ë¥å¡¼¤Ë¤¢¤ê¤Þ¤¹¡£\n"
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:463
+#, c-format
 msgid " · %s is in the KDE menu.\n"
 msgstr "   %s¤ÏKDE¥á¥Ë¥å¡¼¤Ë¤¢¤ê¤Þ¤¹¡£\n"
 
@@ -2830,6 +2838,7 @@ msgid "Login"
 msgstr "¥í¥°¥¤¥ó"
 
 #: components/services/summary/nautilus-summary-view.c:131
+#, c-format
 msgid "Welcome, %s!"
 msgstr "¤è¤¦¤³¤½ %s ¤Ø!"
 
@@ -2920,6 +2929,7 @@ msgid "_Register for Eazel Services"
 msgstr "Eazel ¥µ¡¼¥Ó¥¹¤ØÅÐÏ¿"
 
 #: components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:130
+#, c-format
 msgid "HTTP error %d \"%s\" on uri %s"
 msgstr "HTTP¥¨¥é¡¼ %d \"%s\"¤¬URI %s¤ÇÈ¯À¸¤·¤Þ¤·¤¿"
 
@@ -4645,6 +4655,7 @@ msgid "foo foo (100000000000000th copy).txt"
 msgstr "foo foo (100ÃûÈÖÌÜ¤Î¥³¥Ô¡¼).txt"
 
 #: libnautilus-extensions/nautilus-file-operations-progress.c:345
+#, c-format
 msgid "%ld of %ld"
 msgstr "%ld (%ldÃæ)"
 
@@ -4848,37 +4859,32 @@ msgid "Show special flags in Properties window"
 msgstr "¥×¥í¥Ñ¥Æ¥£¥¦¥£¥ó¥É¥¦¤ËÆÃ¼ì¤Ê¥Õ¥é¥°¤òÉ½¼¨¤¹¤ë"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:208
-#, fuzzy
 msgid "Show only folders (no files) in the Tree"
-msgstr "¥Ä¥ê¡¼¥µ¥¤¥É¥Ð¡¼¥Ñ¥Í¥ë¤Ë¥Õ¥©¥ë¥À¤À¤±¤òÉ½¼¨¤¹¤ë"
+msgstr "¥Ä¥ê¡¼¤Ë¥Õ¥©¥ë¥À¤À¤±(¥Õ¥¡¥¤¥ë¤Ê¤·)¤òÉ½¼¨¤¹¤ë"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:211
 msgid "Can add Content"
 msgstr "ÆâÍÆ¤òÄÉ²Ã¤Ç¤­¤ë"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:214
-#, fuzzy
 msgid "Don't include the built-in bookmarks in the Bookmarks menu"
-msgstr "ÆâÂ¢¥Ö¥Ã¥¯¥Þ¡¼¥¯¤ò´Þ¤á¤Ê¤¤"
+msgstr "¥Ó¥ë¥È¥¤¥ó¥Ö¥Ã¥¯¥Þ¡¼¥¯¤ò¥Ö¥Ã¥¯¥Þ¡¼¥¯¥á¥Ë¥å¡¼¤Ë´Þ¤á¤Ê¤¤"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:218
-#, fuzzy
 msgid "Home location:"
-msgstr "¥Û¡¼¥à¤Î¾ì½ê"
+msgstr "¥Û¡¼¥à¤Î¾ì½ê:"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:222
 msgid "Use HTTP Proxy"
-msgstr "HTTP ¥×¥í¥¯¥·¤ò»È¤¦"
+msgstr "HTTP¥×¥í¥¯¥·¤ò»È¤¦"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:223
-#, fuzzy
 msgid "HTTP Proxy:"
-msgstr "HTTP ¥×¥í¥¯¥·"
+msgstr "HTTP¥×¥í¥¯¥·:"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:224
-#, fuzzy
 msgid "HTTP Proxy Port:"
-msgstr "HTTP ¥×¥í¥¯¥·¥Ý¡¼¥È"
+msgstr "HTTP¥×¥í¥¯¥·¥Ý¡¼¥È:"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:535
 msgid "Appearance"
@@ -4898,16 +4904,15 @@ msgstr "¥Õ¥©¥ó¥È"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:556
 msgid "Windows & Desktop"
-msgstr ""
+msgstr "¥¦¥£¥ó¥É¥¦&¥Ç¥¹¥¯¥È¥Ã¥×"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:557
 msgid "Windows & Desktop Settings"
-msgstr ""
+msgstr "¥¦¥£¥ó¥É¥¦&¥Ç¥¹¥¯¥È¥Ã¥×¤ÎÀßÄê"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:565
-#, fuzzy
 msgid "Opening New Windows"
-msgstr "¿·µ¬¥¦¥£¥ó¥É¥¦¤Ë³«¤¯"
+msgstr "¿·µ¬¥¦¥£¥ó¥É¥¦¤ò³«¤¤¤Æ¤¤¤Þ¤¹"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:588
 msgid "Trash Behavior"
@@ -4915,31 +4920,27 @@ msgstr "¥´¥ßÈ¢¤ÎµóÆ°"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:600
 msgid "Icon & List Views"
-msgstr ""
+msgstr "¥¢¥¤¥³¥ó&¥ê¥¹¥È¥Ó¥å¡¼"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:601
-#, fuzzy
 msgid "Icon & List Views Settings"
-msgstr "¥Õ¥©¥ë¥ÀÉ½¼¨¤ÎÀßÄê"
+msgstr "¥¢¥¤¥³¥ó&¥ê¥¹¥È¥Ó¥å¡¼¤ÎÀßÄê"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:617
-#, fuzzy
 msgid "Show/Hide Options"
-msgstr "Â¿¤¯¤Î¥ª¥×¥·¥ç¥ó"
+msgstr "¥ª¥×¥·¥ç¥ó¤òÉ½¼¨¤¹¤ë/¤·¤Ê¤¤"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:638
 msgid "Sidebar Panels"
 msgstr "¥µ¥¤¥É¥Ð¡¼¥Ñ¥Í¥ë"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:639
-#, fuzzy
 msgid "Sidebar Panels Settings"
-msgstr "¥µ¥¤¥É¥Ð¡¼¥Ñ¥Í¥ë¤ÎÀâÌÀ"
+msgstr "¥µ¥¤¥É¥Ð¡¼¥Ñ¥Í¥ë¤ÎÀßÄê"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:642
-#, fuzzy
 msgid "Tabs"
-msgstr "¥´¥ßÈ¢"
+msgstr "¥¿¥Ö"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:686
 msgid "Search"
@@ -4954,9 +4955,8 @@ msgid "Search Complexity Options"
 msgstr "¸¡º÷¤ÎÊ£»¨¤Ê¥ª¥×¥·¥ç¥ó"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:695
-#, fuzzy
 msgid "Fast Search"
-msgstr "¸¡º÷"
+msgstr "¹âÂ®¸¡º÷"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:701
 msgid "Search Tradeoffs"
@@ -4991,9 +4991,8 @@ msgid "Speed Tradeoffs Settings"
 msgstr "Â®ÅÙ¥È¥ì¡¼¥É¥ª¥Õ¤ÎÀßÄê"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:955
-#, fuzzy, c-format
 msgid "Display %s tab in sidebar"
-msgstr "¿·µ¬¥¦¥£¥ó¥É¥¦¤Ë¥¹¥Æ¡¼¥¿¥¹¥Ð¡¼¤òÉ½¼¨"
+msgstr "%s¥¿¥Ö¤ò¥µ¥¤¥É¥Ð¡¼¤ËÉ½¼¨"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:1002
 msgid "always"
@@ -5305,197 +5304,175 @@ msgstr "¥ê¥â¡¼¥È¥Õ¥¡¥¤¥ë¤ò³«¤¯¤³¤È¤¬½ÐÍè¤Þ¤»¤ó"
 #. "%s" here is a pattern the file name
 #. matched, such as "nautilus"
 #: libnautilus-extensions/nautilus-search-uri.c:212
-#, fuzzy, c-format
 msgid "[Items ]containing \"%s\" in their names"
-msgstr "Ì¾Á°¤ÎÃæ¤Ë \"stuff\" ¤ò´Þ¤à¥¢¥¤¥Æ¥à"
+msgstr "[¥¢¥¤¥Æ¥à] Ì¾Á°¤Ë\"%s\"¤ò´Þ¤à"
 
 #. "%s" here is a pattern the file name started with, such as
 #. "nautilus"
 #: libnautilus-extensions/nautilus-search-uri.c:217
-#, fuzzy, c-format
 msgid "[Items ]starting with \"%s\""
-msgstr "\"%s\" ¤ò³«»Ï¤·¤Þ¤¹"
+msgstr "[¥¢¥¤¥Æ¥à] \"%s\"¤Ç»Ï¤Þ¤ë"
 
 #. "%s" here is a pattern the file name ended with, such as
 #. "mime"
 #: libnautilus-extensions/nautilus-search-uri.c:222
-#, fuzzy, c-format
 msgid "[Items ]ending with %s"
-msgstr "%s ¤Ç½ªÎ»¤·¤Þ¤¹"
+msgstr "[¥¢¥¤¥Æ¥à] %s¤Ç½ª¤ï¤ë"
 
 #. "%s" here is a pattern the file name did not match, such
 #. as "nautilus"
 #: libnautilus-extensions/nautilus-search-uri.c:227
-#, fuzzy, c-format
 msgid "[Items ]not containing \"%s\" in their names"
-msgstr "Ì¾Á°¤ÎÃæ¤Ë \"stuff\" ¤ò´Þ¤à¥¢¥¤¥Æ¥à"
+msgstr "[¥¢¥¤¥Æ¥à] Ì¾Á°¤Ë\"%s\"¤ò´Þ¤Þ¤Ê¤¤"
 
 #. "%s" is a regular expression string, for example "[abc]"
 #: libnautilus-extensions/nautilus-search-uri.c:231
 #, c-format
 msgid "[Items ]matching the regular expression \"%s\""
-msgstr ""
+msgstr "[¥¢¥¤¥Æ¥à] Àµµ¬É½¸½\"%s\"¤Ë¥Þ¥Ã¥Á¤¹¤ë"
 
 #. "%s" is a file glob, for example "*.txt"
 #: libnautilus-extensions/nautilus-search-uri.c:235
 #, c-format
 msgid "[Items ]matching the file pattern \"%s\""
-msgstr ""
+msgstr "[¥¢¥¤¥Æ¥à] ¥Õ¥¡¥¤¥ë¥Ñ¥¿¡¼¥ó\"%s\"¤Ë¥Þ¥Ã¥Á¤¹¤ë"
 
 #: libnautilus-extensions/nautilus-search-uri.c:248
-#, fuzzy
 msgid "[Items that are ]regular files"
-msgstr "ÄÌ¾ï¥Õ¥¡¥¤¥ë"
+msgstr "[¥¢¥¤¥Æ¥à] ÄÌ¾ï¥Õ¥¡¥¤¥ë"
 
 #: libnautilus-extensions/nautilus-search-uri.c:251
 msgid "[Items that are ]text files"
-msgstr ""
+msgstr "[¥¢¥¤¥Æ¥à] ¥Æ¥­¥¹¥È¥Õ¥¡¥¤¥ë"
 
 #: libnautilus-extensions/nautilus-search-uri.c:254
 msgid "[Items that are ]applications"
-msgstr ""
+msgstr "[¥¢¥¤¥Æ¥à] ¥¢¥×¥ê¥±¡¼¥·¥ç¥ó"
 
 #: libnautilus-extensions/nautilus-search-uri.c:257
-#, fuzzy
 msgid "[Items that are ]folders"
-msgstr "¤Ï¥Õ¥©¥ë¥À¤Ç¤¹"
+msgstr "[¥¢¥¤¥Æ¥à] ¥Õ¥©¥ë¥À"
 
 #: libnautilus-extensions/nautilus-search-uri.c:260
 msgid "[Items that are ]music"
-msgstr ""
+msgstr "[¥¢¥¤¥Æ¥à] ²»³Ú"
 
 #. "%s" here is a word describing a file type, for example
 #. "folder"
 #: libnautilus-extensions/nautilus-search-uri.c:268
 #, c-format
 msgid "[Items ]that are not %s"
-msgstr ""
+msgstr "[¥¢¥¤¥Æ¥à] %s¤Ç¤Ï¤Ê¤¤¤â¤Î"
 
 #. "%s" here is a word describing a file type, for example
 #. "folder"
 #: libnautilus-extensions/nautilus-search-uri.c:273
-#, fuzzy, c-format
 msgid "[Items ]that are %s"
-msgstr "¥¢¥¤¥Æ¥à %s %s"
+msgstr "[¥¢¥¤¥Æ¥à] %s¤Ç¤¢¤ë¤â¤Î"
 
 #. "%s" here is the name of user on a Linux machine, such as
 #. "root"
 #: libnautilus-extensions/nautilus-search-uri.c:287
-#, fuzzy, c-format
 msgid "[Items ]not owned by \"%s\""
-msgstr "\"%s\" ¤Ï½êÍ­¼Ô¤Ç¤Ï¤¢¤ê¤Þ¤»¤ó"
+msgstr "[¥¢¥¤¥Æ¥à] \"%s\"¤¬½êÍ­¼Ô¤Ç¤Ï¤Ê¤¤¤â¤Î"
 
 #. "%s" here is the name of user on a Linux machine, such as
 #. "root"
 #: libnautilus-extensions/nautilus-search-uri.c:292
-#, fuzzy, c-format
 msgid "[Items ]owned by \"%s\""
-msgstr "\"%s\" ¤Ï½êÍ­¼Ô¤Ç¤Ï¤¢¤ê¤Þ¤»¤ó"
+msgstr "[¥¢¥¤¥Æ¥à] \"%s\"¤¬½êÍ­¼Ô¤Ç¤¢¤ë¤â¤Î"
 
 #: libnautilus-extensions/nautilus-search-uri.c:295
 #, c-format
 msgid "[Items ]with owner UID \"%s\""
-msgstr ""
+msgstr "[¥¢¥¤¥Æ¥à] ½êÍ­¼Ô UID¤¬\"%s\"¤Ç¤¢¤ë¤â¤Î"
 
 #: libnautilus-extensions/nautilus-search-uri.c:298
 #, c-format
 msgid "[Items ]with owner UID other than \"%s\""
-msgstr ""
+msgstr "[¥¢¥¤¥Æ¥à] ½êÍ­¼Ô UID¤¬\"%s\"°Ê³°¤Î¤â¤Î"
 
 #: libnautilus-extensions/nautilus-search-uri.c:309
-#, fuzzy, c-format
 msgid "[Items ]larger than %s bytes"
-msgstr "%s ¥Ð¥¤¥È¤è¤êÂç¤­¤¤"
+msgstr "[¥¢¥¤¥Æ¥à] %s¥Ð¥¤¥È¤è¤êÂç¤­¤¤"
 
 #: libnautilus-extensions/nautilus-search-uri.c:312
-#, fuzzy, c-format
 msgid "[Items ]smaller than %s bytes"
-msgstr "%s ¥Ð¥¤¥È¤è¤ê¾®¤µ¤¤"
+msgstr "[¥¢¥¤¥Æ¥à] %s¥Ð¥¤¥È¤è¤ê¾®¤µ¤¤"
 
 #: libnautilus-extensions/nautilus-search-uri.c:315
-#, fuzzy, c-format
 msgid "[Items ]of %s bytes"
-msgstr "%s ¥Ð¥¤¥È"
+msgstr "[¥¢¥¤¥Æ¥à] %s¥Ð¥¤¥È¤Î¤â¤Î"
 
 #: libnautilus-extensions/nautilus-search-uri.c:326
-#, fuzzy
 msgid "[Items ]modified today"
-msgstr "º£Æü½¤Àµ"
+msgstr "[¥¢¥¤¥Æ¥à] º£Æü½¤Àµ¤µ¤ì¤¿¤â¤Î"
 
 #: libnautilus-extensions/nautilus-search-uri.c:329
-#, fuzzy
 msgid "[Items ]modified yesterday"
-msgstr "ºòÆü½¤Àµ"
+msgstr "[¥¢¥¤¥Æ¥à] ºòÆü½¤Àµ¤µ¤ì¤¿¤â¤Î"
 
 #: libnautilus-extensions/nautilus-search-uri.c:332
-#, fuzzy, c-format
 msgid "[Items ]modified on %s"
-msgstr "%s ¤Ë½¤Àµ¤µ¤ì¤Æ¤¤¤Ê¤¤"
+msgstr "[¥¢¥¤¥Æ¥à] %s¤Ë½¤Àµ¤µ¤ì¤¿¤â¤Î"
 
 #: libnautilus-extensions/nautilus-search-uri.c:334
-#, fuzzy, c-format
 msgid "[Items ]not modified on %s"
-msgstr "%s ¤Ë½¤Àµ¤µ¤ì¤Æ¤¤¤Ê¤¤"
+msgstr "[¥¢¥¤¥Æ¥à] %s¤Ë½¤Àµ¤µ¤ì¤Æ¤¤¤Ê¤¤¤â¤Î"
 
 #: libnautilus-extensions/nautilus-search-uri.c:337
-#, fuzzy, c-format
 msgid "[Items ]modified before %s"
-msgstr "%s Á°¤Ë½¤Àµ"
+msgstr "[¥¢¥¤¥Æ¥à] %s¤è¤êÁ°¤Ë½¤Àµ¤µ¤ì¤¿¤â¤Î"
 
 #: libnautilus-extensions/nautilus-search-uri.c:340
-#, fuzzy, c-format
 msgid "[Items ]modified after %s"
-msgstr "%s ¸å¤Ë½¤Àµ"
+msgstr "[¥¢¥¤¥Æ¥à] %s¤è¤ê¸å¤Ë½¤Àµ¤µ¤ì¤¿¤â¤Î"
 
 #: libnautilus-extensions/nautilus-search-uri.c:343
 #, c-format
 msgid "[Items ]modified within a week of %s"
-msgstr ""
+msgstr "[¥¢¥¤¥Æ¥à] %s¤Î½µ¤Ë½¤Àµ¤µ¤ì¤¿¤â¤Î"
 
 #: libnautilus-extensions/nautilus-search-uri.c:346
 #, c-format
 msgid "[Items ]modified within a month of %s"
-msgstr ""
+msgstr "[¥¢¥¤¥Æ¥à] %s¤Î·î¤Ë½¤Àµ¤µ¤ì¤¿¤â¤Î"
 
 #. "%s" here is the name of an Emblem
 #: libnautilus-extensions/nautilus-search-uri.c:359
-#, fuzzy, c-format
 msgid "[Items ]marked with \"%s\""
-msgstr "\"%s\" ¤Ç¥Þ¡¼¥¯¤µ¤ì¤Ê¤¤"
+msgstr "[¥¢¥¤¥Æ¥à] \"%s\"¤Ç¥Þ¡¼¥¯¤µ¤ì¤¿¤â¤Î"
 
 #. "%s" here is the name of an Emblem
 #: libnautilus-extensions/nautilus-search-uri.c:363
-#, fuzzy, c-format
 msgid "[Items ]not marked with \"%s\""
-msgstr "\"%s\" ¤Ç¥Þ¡¼¥¯¤µ¤ì¤Ê¤¤"
+msgstr "[¥¢¥¤¥Æ¥à] \"%s\"¤Ç¥Þ¡¼¥¯¤µ¤ì¤Æ¤¤¤Ê¤¤¤â¤Î"
 
 #. "%s" here is a word or words present in the file, for
 #. example "nautilus" or "apple orange"
 #: libnautilus-extensions/nautilus-search-uri.c:379
-#, fuzzy, c-format
 msgid "[Items ]with all the words \"%s\""
-msgstr "\"%s\" ¤Î¥Ç¥Õ¥©¥ë¥È¤Ç¤¹"
+msgstr "[¥¢¥¤¥Æ¥à] \"%s\"¤¬¤¹¤Ù¤Æ´Þ¤Þ¤ì¤ë¤â¤Î"
 
 #. "%s" here is a word or words present in the file, for
 #. example "nautilus" or "apple orange"
 #: libnautilus-extensions/nautilus-search-uri.c:384
-#, fuzzy, c-format
 msgid "[Items ]containing one of the words \"%s\""
-msgstr "Ì¾Á°¤ÎÃæ¤Ë \"stuff\" ¤ò´Þ¤à¥¢¥¤¥Æ¥à"
+msgstr "[¥¢¥¤¥Æ¥à] Ì¾Á°¤Ë \"%s\" ¤ò°ì¤Ä´Þ¤à¤â¤Î"
 
 #. "%s" here is a word or words present in the file, for
 #. example "nautilus" or "apple orange"
 #: libnautilus-extensions/nautilus-search-uri.c:389
 #, c-format
 msgid "[Items ]without all the words \"%s\""
-msgstr ""
+msgstr "[¥¢¥¤¥Æ¥à] \"%s\"¤¬°ì¤Ä¤â´Þ¤Þ¤ì¤Ê¤¤¤â¤Î"
 
 #. "%s" here is a word or words present in the file, for
 #. example "nautilus" or "apple orange"
 #: libnautilus-extensions/nautilus-search-uri.c:394
 #, c-format
 msgid "[Items ]without any of the words \"%s\""
-msgstr ""
+msgstr "[¥¢¥¤¥Æ¥à] \"%s\"¤Î¤É¤ÎÃ±¸ì¤â´Þ¤Þ¤Ê¤¤¤â¤Î"
 
 #: libnautilus-extensions/nautilus-search-uri.c:556
 msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
