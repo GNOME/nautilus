@@ -763,6 +763,7 @@ next_update_page_callback (GtkWidget *button, GnomeDruid *druid)
 static gboolean
 back_update_page_callback (GtkWidget *button, GnomeDruid *druid)
 {
+#ifdef HAVE_MEDUSA
 	/* If we didn't want medusa, or cron is active, don't go "back" to the cron page */
 	if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (enable_medusa_checkbox_widget)) ||
 	    cron_status == NAUTILUS_CRON_STATUS_ON) {
@@ -771,6 +772,9 @@ back_update_page_callback (GtkWidget *button, GnomeDruid *druid)
 	else {
 		gnome_druid_set_page (druid, GNOME_DRUID_PAGE (pages[START_CRON_INFORMATION_PAGE]));
 	}
+#else
+	gnome_druid_set_page (druid, GNOME_DRUID_PAGE (pages[GMC_TRANSITION_PAGE]));
+#endif
 
 	return TRUE;
 }
@@ -988,6 +992,19 @@ set_up_medusa_page (NautilusDruidPageEazel *page)
 
 	gtk_widget_show_all (main_box);
 }
+
+/* handle the "next" signal for the medusa page, if cron is enabled. */
+static gboolean
+next_gmc_transition_page_callback (GtkWidget *button, GnomeDruid *druid)
+{
+#ifdef HAVE_MEDUSA
+	gnome_druid_set_page (druid, GNOME_DRUID_PAGE (pages[LAUNCH_MEDUSA_PAGE]));
+#else
+	gnome_druid_set_page (druid, GNOME_DRUID_PAGE (pages[OFFER_UPDATE_PAGE]));
+#endif
+	return TRUE;
+}
+
 
 /* handle the "next" signal for the medusa page, if cron is enabled. */
 static gboolean
@@ -1213,6 +1230,9 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 	/* set up the GMC transition page */
 	set_page_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[GMC_TRANSITION_PAGE]), _("GMC to Nautilus Transition"));
 	set_up_gmc_transition_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[GMC_TRANSITION_PAGE]));
+	gtk_signal_connect (GTK_OBJECT (pages[GMC_TRANSITION_PAGE]), "next",
+			    GTK_SIGNAL_FUNC (next_gmc_transition_page_callback),
+			    druid);
 
 	/* set up the `Launch Medusa' page */
 	set_page_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[LAUNCH_MEDUSA_PAGE]), _("Fast Searches"));

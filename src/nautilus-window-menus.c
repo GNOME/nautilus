@@ -73,6 +73,10 @@
  */
 
 #define MENU_PATH_TOGGLE_FIND_MODE			"/menu/File/Toggle Find Mode"
+#define COMMAND_PATH_TOGGLE_FIND_MODE                   "/commands/Toggle Find Mode"
+#define COMMAND_PATH_TOGGLE_FIND_MODE_WITH_STATE        "/commands/Toggle Find Mode With State"
+
+#define TOOLBAR_PATH_TOGGLE_FIND_MODE			"/Toolbar/Toggle Find Mode"
 
 #define MENU_PATH_SHOW_HIDE_SIDEBAR			"/menu/View/Show Hide Placeholder/Show Hide Sidebar"
 #define MENU_PATH_SHOW_HIDE_TOOLBAR			"/menu/View/Show Hide Placeholder/Show Hide Toolbar"
@@ -1201,6 +1205,7 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB ("New Window", file_menu_new_window_callback),
 		BONOBO_UI_VERB ("Close", file_menu_close_window_callback),
 		BONOBO_UI_VERB ("Close All Windows", file_menu_close_all_windows_callback),
+#ifdef HAVE_MEDUSA
 		BONOBO_UI_VERB ("Toggle Find Mode", file_menu_toggle_find_mode_callback),
 		/* FIXME: bugzilla.eazel.com 3590:
 		 * Note that we use a different verb for the toolbar button since
@@ -1208,6 +1213,7 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		 * otherwise confuse Bonobo.
 		 */
 		BONOBO_UI_VERB ("Toggle Find Mode With State", file_menu_toggle_find_mode_callback),
+#endif
 		BONOBO_UI_VERB ("Go to Web Search", file_menu_web_search_callback),
 		BONOBO_UI_VERB ("Undo", edit_menu_undo_callback),
 		BONOBO_UI_VERB ("Customize", customize_callback),
@@ -1283,6 +1289,25 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 #ifndef ENABLE_PROFILER
 	nautilus_bonobo_set_hidden (window->details->shell_ui, NAUTILUS_MENU_PATH_PROFILER, TRUE);
 #endif
+
+#ifndef HAVE_MEDUSA
+	nautilus_bonobo_set_hidden (window->details->shell_ui,
+				    COMMAND_PATH_TOGGLE_FIND_MODE,
+				    TRUE);
+	nautilus_bonobo_set_hidden (window->details->shell_ui,
+				    COMMAND_PATH_TOGGLE_FIND_MODE_WITH_STATE,
+				    TRUE);
+	/* Also set these items insensitive so that keyboard shortcuts do not trigger
+	   warnings */
+	nautilus_bonobo_set_sensitive (window->details->shell_ui,
+				       COMMAND_PATH_TOGGLE_FIND_MODE,
+				       FALSE);
+	nautilus_bonobo_set_sensitive (window->details->shell_ui,
+				       COMMAND_PATH_TOGGLE_FIND_MODE_WITH_STATE,
+				       FALSE);
+
+#endif
+
 
 	nautilus_window_ui_thaw (window);
 }

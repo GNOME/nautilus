@@ -128,6 +128,15 @@
 
    <listitem>
     <para>
+     Nautilus includes a fast <guimenuitem>find</guimenuitem> feature
+     that indexes your hard disk so you can quickly search for a file
+     by content as well as file name, creation date, and other file
+     attributes.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
      Nautilus has several <guimenuitem>customization</guimenuitem>
      features: You can change backgrounds, personalize icons, and
      switch themes.
@@ -256,6 +265,35 @@
 
    <para>
     3. Restart Nautilus.
+   </para>
+
+   <para><guimenuitem>Medusa Off by Default</guimenuitem></para>
+
+   <para>The Medusa daemon, which indexes your hard disk so fast
+   searches can be performed, is turned off by default. To turn it on,
+   follow these steps:
+   </para>
+
+   <para>
+    1. Open the preferences menu and choose Preferences.
+   </para>
+
+   <para>
+    2. Click Search in the left-hand column of the Preferences dialog box.
+   </para>
+
+   <para>
+    3. In the Fast Search section, make sure that the button next to
+    Enable fast search is turned on.
+   </para>
+
+   <para>
+    4. Click OK to close the Preferences dialog box.
+   </para>
+
+   <para>Note: For Medusa to perform its indexing task, the crond
+   program must also be running. If you have turned off crond, Medusa
+   won't work.
    </para>
 
   </sect1>
