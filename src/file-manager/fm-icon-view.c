@@ -320,7 +320,7 @@ compute_menu_item_info (FMIconView *view,
                 }
         	*sensitive_return = nautilus_icon_container_is_stretched (icon_container);
 	} else if (strcmp (MENU_PATH_CUSTOMIZE_ICON_TEXT, menu_path) == 0) {
-                name = g_strdup (_("Customize _Icon Text..."));
+                name = g_strdup (_("_Icon Captions..."));
         	*sensitive_return = TRUE;	
 	} else if (strcmp (MENU_PATH_RENAME, menu_path) == 0) {
 		/* Modify file name. We only allow this on a single file selection. */
