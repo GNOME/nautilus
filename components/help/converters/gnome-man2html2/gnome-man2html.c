@@ -2550,8 +2550,16 @@ static char
 						scan_troff(wordlist[2], 
 							   1, NULL);
 					} else out_html(")");
-					out_html("<BR><A HREF=\"#index\">"
-						 "Index</A>\n");
+
+					out_html("\n");
+					printf("<BR><A HREF=\"");
+					if (URLbasename)
+					    printf(URLbasename);
+                                        printf("#index\">Index</A>\n");
+#if 0					
+					out_html("<BR><A HREF=\"");
+                                        out_html("#index\">Index</A>\n");
+#endif					
 					*sl='\n';
 #if 0
 					fputs("<BR><A HREF=\""
