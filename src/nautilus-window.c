@@ -70,7 +70,7 @@
 #define URI_ENTRY_DOCK_ITEM	"uri_entry"
 
 /* default web search uri - FIXME: this will be changed to point to the Eazel service */
-#define DEFAULT_SEARCH_WEB_URI "http://www.google.com"
+#define DEFAULT_SEARCH_WEB_URI "http://eazel1.eazel.com/services/websearch.html"
 
 enum {
 	ARG_0,
