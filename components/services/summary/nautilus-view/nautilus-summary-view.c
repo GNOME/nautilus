@@ -790,7 +790,7 @@ nautilus_summary_view_initialize (NautilusSummaryView *view)
 			    GTK_SIGNAL_FUNC (summary_load_location_callback), 
 			    view);
 
-	view->details->user_control = (EazelProxy_UserControl) oaf_activate_from_id (IID_EAZELPROXY, 0, NULL, &ev);
+	view->details->user_control = ammonite_get_user_control();
 
 	if ( CORBA_NO_EXCEPTION != ev._major ) {
 		/* FIXME bugzilla.eazel.com 2740: user should be warned that Ammonite may not be installed */

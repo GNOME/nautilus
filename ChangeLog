@@ -1,3 +1,12 @@
+2000-12-28  Mike Fleming  <mfleming@eazel.com>
+
+	* components/services/summary/nautilus-view/main.c: (main):
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (nautilus_summary_view_initialize):
+
+	Fix for bug 5343, work around for bug 5365.  By avoiding the redundant
+	activation of eazel-proxy, race condition described in 5365 is avoided.
+
 2000-12-28  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>
