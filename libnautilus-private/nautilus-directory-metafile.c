@@ -659,6 +659,34 @@ nautilus_directory_set_metadata (NautilusDirectory *directory,
 	}
 }
 
+void
+nautilus_directory_set_metadata_list (NautilusDirectory *directory,
+				      const char *list_key,
+				      const char *list_subkey,
+				      GList *list)
+{
+	MetadataValue *value;
+
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	g_return_if_fail (list_key != NULL);
+	g_return_if_fail (list_key[0] != '\0');
+	g_return_if_fail (list_subkey != NULL);
+	g_return_if_fail (list_subkey[0] != '\0');
+
+	if (directory->details->metafile_read) {
+		if (set_metadata_list_in_metafile (directory, NULL,
+						   list_key, list_subkey, list)) {
+			nautilus_directory_emit_metadata_changed (directory);
+		}
+	} else {
+		value = metadata_value_new_list (list);
+		if (set_metadata_eat_value (directory, NULL,
+					    list_key, list_subkey, value)) {
+			nautilus_directory_emit_metadata_changed (directory);
+		}
+	}
+}
+
 gboolean
 nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 				      const char *file_name,
