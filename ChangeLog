@@ -1,3 +1,31 @@
+2000-10-04  Michael Engber  <engber@eazel.com>
+
+	Changed the background code so that updates occuring
+	during image loading are handled by drawing with the
+	old settings. This prevents visual glitches/flash (bug 739)
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_remove_current_image),
+	(nautilus_background_destroy),
+	(nautilus_background_set_image_placement),
+	(reset_cached_color_info),
+	(nautilus_background_ensure_gradient_buffered),
+	(nautilus_background_image_totally_obscures),
+	(nautilus_background_ensure_image_scaled),
+	(nautilus_background_pre_draw), (nautilus_background_set_color),
+	(nautilus_background_load_image_callback),
+	(nautilus_background_is_image_load_in_progress),
+	(nautilus_background_cancel_loading_image),
+	(nautilus_background_start_loading_image),
+	(nautilus_background_set_image_uri_no_emit),
+	(nautilus_background_set_image_uri_helper),
+	(nautilus_background_set_image_uri),
+	(set_image_and_color_image_loading_done_callback),
+	(nautilus_background_set_image_uri_and_color),
+	(nautilus_background_receive_dropped_background_image),
+	(nautilus_background_is_loaded), (nautilus_background_real_reset),
+	(nautilus_background_is_too_complex_for_gtk_style),
+	(nautilus_background_receive_dropped_color):
+
 2000-10-04  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/command-line/eazel-alt-install-corba.
