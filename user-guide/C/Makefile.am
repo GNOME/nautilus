@@ -20,13 +20,14 @@ install-data-local:
 		$(INSTALL_DATA) $$i $(DESTDIR)$(TARGET_DIR)$$basefile; 	\
 	done; 							\
 	fi
-
-#	echo "installing $$i"			\
+	$(mkinstalldirs) $(DESTDIR)$(SGML_DIR)/fdl/$(LANG)/
+	$(INSTALL_DATA) fdl.sgml $(DESTDIR)$(SGML_DIR)/fdl/$(LANG)/fdl.sgml
 
 dist-hook:
 	mkdir $(distdir)/sgml 
 	mkdir $(distdir)/img
 	-cp $(srcdir)/sgml/*.sgml $(distdir)/sgml
+	-cp $(srcdir)/fdl.sgml $(distdir)
 	-cp $(srcdir)/img/*.png $(distdir)/img
 
 .PHONY : html
