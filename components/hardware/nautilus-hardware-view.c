@@ -43,12 +43,16 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-label.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtksignal.h>
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnorba/gnorba.h>
 #include <limits.h>
+
+#define HARDWARE_FONT_SIZE 14
+#define HARDWARE_TITLE_FONT_SIZE 18
 
 struct _NautilusHardwareViewDetails {
         char *uri;
@@ -353,9 +357,10 @@ setup_form_title (NautilusHardwareView *view, const char* image_name, const char
 		}
 	}
 	
- 	temp_widget = gtk_label_new (title_text);
+ 	temp_widget = nautilus_label_new (title_text);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_TITLE_FONT_SIZE);
 
-        font = nautilus_font_factory_get_font_from_preferences (18);
+        font = nautilus_font_factory_get_font_from_preferences (HARDWARE_TITLE_FONT_SIZE);
 
 	nautilus_gtk_widget_set_font (temp_widget, font);
         gdk_font_unref (font);
@@ -423,7 +428,8 @@ static void setup_overview_form(NautilusHardwareView *view)
                                 g_free(ide_media);
                                 
                                 temp_text = get_IDE_description(device);
-                                temp_widget = gtk_label_new(temp_text);
+                                temp_widget = nautilus_label_new(temp_text);
+				nautilus_label_set_font_size(NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
                                 g_free(temp_text);
                                 gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0);
                                 gtk_widget_show(temp_widget);
@@ -446,7 +452,8 @@ static void setup_overview_form(NautilusHardwareView *view)
 			g_free (file_name);
 		
 		//temp_text = get_CPU_description(cpunum);
-		temp_widget = gtk_label_new (temp_text);
+		temp_widget = nautilus_label_new (temp_text);
+		nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
 		g_free(temp_text);
 		gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0 );			
 		gtk_widget_show (temp_widget);
@@ -467,7 +474,8 @@ static void setup_overview_form(NautilusHardwareView *view)
   	g_free (file_name);
 	
 	temp_text = get_RAM_description();
-	temp_widget = gtk_label_new (temp_text);
+	temp_widget = nautilus_label_new (temp_text);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
 	g_free(temp_text);
 	gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0 );			
  	gtk_widget_show (temp_widget);
@@ -490,7 +498,8 @@ static void setup_CPU_form(NautilusHardwareView *view)
 	setup_form_title(view, NULL, "CPU");
 	
 	message = "This is a placeholder for the CPU page.";
-	temp_widget = gtk_label_new (message);
+	temp_widget = nautilus_label_new (message);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
  	gtk_label_set_line_wrap(GTK_LABEL(temp_widget), TRUE);
 	
 	gtk_box_pack_start(GTK_BOX(view->details->form), temp_widget, 0, 0, 12);			
@@ -513,7 +522,8 @@ static void setup_RAM_form(NautilusHardwareView *view)
 	setup_form_title(view, NULL, "RAM");
 	
 	message = "This is a placeholder for the RAM page.";
-	temp_widget = gtk_label_new (message);
+	temp_widget = nautilus_label_new (message);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
  	gtk_label_set_line_wrap(GTK_LABEL(temp_widget), TRUE);
 	
 	gtk_box_pack_start(GTK_BOX(view->details->form), temp_widget, 0, 0, 12);			
@@ -536,7 +546,8 @@ static void setup_IDE_form(NautilusHardwareView *view)
         setup_form_title(view, NULL, "IDE");
         
         message = "This is a placeholder for the IDE page.";
-        temp_widget = gtk_label_new (message);
+        temp_widget = nautilus_label_new (message);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
         gtk_label_set_line_wrap(GTK_LABEL(temp_widget), TRUE);
         
         gtk_box_pack_start(GTK_BOX(view->details->form), temp_widget, 0, 0, 12);            
