@@ -39,34 +39,9 @@ icon_DATA =\
 	druid_header.png \
 	druid_header_stretch.png \
 	druid_sidebar.png \
-	emblem-OK.svg \
-	emblem-broken-link.png \
-	emblem-certified.svg \
-	emblem-cool.svg \
-	emblem-danger.svg \
-	emblem-distinguished.svg \
-	emblem-draft.svg \
-	emblem-favorite.svg \
-	emblem-generic.png \
-	emblem-important.svg \
-	emblem-new.svg \
-	emblem-noread.svg \
-	emblem-nowrite.svg \
-	emblem-ohno.svg \
-	emblem-personal.svg \
-	emblem-special.svg \
-	emblem-symbolic-link.png \
-        emblem-symbolic-link-12.png \
-        emblem-symbolic-link-24.png \
-        emblem-symbolic-link-36.png \
-	emblem-trash.png \
-	emblem-urgent.svg \
 	emblems.png \
 	expert-selected.png \
 	expert.png \
-	hand.png \
-	hand-72.png \
-	hand-96.png \
 	home.png \
 	increment.png \
 	intermediate-selected.png \
