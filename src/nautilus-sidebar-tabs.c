@@ -318,7 +318,10 @@ draw_or_hit_test_all_tabs(NautilusIndexTabs *index_tabs, gboolean draw_flag, gin
   if (index_tabs->details->title_mode && !draw_flag)
     {
       gint edge_width =  tab_left_edge->art_pixbuf->width + tab_right_edge->art_pixbuf->width;     
+      if (index_tabs->details->title == NULL)
+      	return -1;
       name_width = gdk_string_width(tab_font, index_tabs->details->title) - (2 * TAB_INDENT);
+      index_tabs->details->total_height = total_height;
       if ((test_x >= TITLE_TAB_OFFSET) && (test_x < (TITLE_TAB_OFFSET + name_width + edge_width)))
         return 0;
       return -1;
