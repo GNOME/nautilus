@@ -28,6 +28,7 @@
 #include <config.h>
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-window.h"
+#include "nautilus-navigation-window.h"
 #include <libnautilus-private/nautilus-undo.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel-gtk-extensions.h>
@@ -62,6 +63,7 @@ static int		     row_changed_signal_id;
 static int		     row_deleted_signal_id;
 static int                   row_activated_signal_id;
 static int                   key_pressed_signal_id;
+static int                   jump_button_signal_id;
 
 /* forward declarations */
 static guint    get_selected_row                            (void);
@@ -107,6 +109,8 @@ static void     on_window_destroy_event                     (GtkWidget          
 							     gpointer              user_data);
 static void     repopulate                                  (void);
 static void     set_up_close_accelerator                    (GtkWidget            *window);
+static void	open_selected_bookmark 			    (gpointer   user_data, GdkScreen *screen);
+static NautilusWindow * get_bookmark_nautilus_navigation_window_new (GdkScreen *screen);
 
 /* We store a pointer to the bookmark in a column so when an item is moved
    with DnD we know which item it is. However we have to be careful to keep
@@ -211,6 +215,22 @@ bookmarks_set_empty (gboolean empty)
 	on_selection_changed (bookmark_selection, NULL);
 }
 
+static void
+edit_bookmarks_dialog_reset_signals (gpointer data,
+				     GObject *obj)
+{
+	g_signal_handler_disconnect (GTK_OBJECT (jump_button),
+				     jump_button_signal_id);
+	g_signal_handler_disconnect (GTK_OBJECT (bookmark_list_widget),
+				     row_activated_signal_id);
+	jump_button_signal_id =
+		g_signal_connect (jump_button, "clicked",
+				  G_CALLBACK (on_jump_button_clicked), NULL);
+	row_activated_signal_id =
+		g_signal_connect (bookmark_list_widget, "row_activated",
+				  G_CALLBACK (on_row_activated), NULL);
+}
+
 /**
  * create_bookmarks_window:
  * 
@@ -245,9 +265,12 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 
 	gtk_window_set_wmclass (GTK_WINDOW (window), "bookmarks", "Nautilus");
 	nautilus_bookmarks_window_restore_geometry (window);
+
+	g_object_weak_ref (G_OBJECT (undo_manager_source), edit_bookmarks_dialog_reset_signals, 
+			   undo_manager_source);
 	
 	bookmark_list_widget = GTK_TREE_VIEW (glade_xml_get_widget (gui, "bookmark_tree_view"));
-		
+
 	rend = gtk_cell_renderer_pixbuf_new ();
 	col = gtk_tree_view_column_new_with_attributes ("Icon", 
 							rend,
@@ -345,8 +368,9 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 			  G_CALLBACK (name_or_uri_field_activate), NULL);
 	g_signal_connect (remove_button, "clicked",
 			  G_CALLBACK (on_remove_button_clicked), NULL);
-	g_signal_connect (jump_button, "clicked",
-			  G_CALLBACK (on_jump_button_clicked), undo_manager_source);
+	jump_button_signal_id = 
+		g_signal_connect (jump_button, "clicked",
+				  G_CALLBACK (on_jump_button_clicked), undo_manager_source);
 
 	/* Register to find out about icon theme changes */
 	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
@@ -361,6 +385,26 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	g_object_unref (G_OBJECT (gui));
 	
 	return GTK_WINDOW (window);
+}
+
+void
+edit_bookmarks_dialog_set_signals (GObject *undo_manager_source)
+{
+
+	g_signal_handler_disconnect (GTK_OBJECT (jump_button), 
+				     jump_button_signal_id);
+	g_signal_handler_disconnect (GTK_OBJECT (bookmark_list_widget),
+				     row_activated_signal_id);
+
+	jump_button_signal_id =
+		g_signal_connect (jump_button, "clicked",
+				  G_CALLBACK (on_jump_button_clicked), undo_manager_source);
+	row_activated_signal_id =
+		g_signal_connect (bookmark_list_widget, "row_activated",
+				  G_CALLBACK (on_row_activated), undo_manager_source);
+
+	g_object_weak_ref (G_OBJECT (undo_manager_source), edit_bookmarks_dialog_reset_signals,
+			   undo_manager_source);
 }
 
 static NautilusBookmark *
@@ -502,11 +546,55 @@ go_to_selected_bookmark (NautilusWindow *window)
         }
 }
 
+static NautilusWindow *
+get_bookmark_nautilus_navigation_window_new (GdkScreen *screen)
+{
+	NautilusApplication *application;
+	NautilusWindow *window;
+
+	application = nautilus_application_new ();
+
+	window = nautilus_application_create_navigation_window (application, 
+								screen);
+
+	return window;
+}
+
+static void
+open_selected_bookmark (gpointer user_data, GdkScreen *screen)
+{
+
+	if (GTK_IS_WIDGET (user_data) && NAUTILUS_IS_NAVIGATION_WINDOW (user_data)) {
+		go_to_selected_bookmark (NAUTILUS_WINDOW (user_data));
+	} else {
+		/* Independent bookmarks window. If parent NautilusWindow is destroyed, then
+		 * open the bookmark location in a new nautilus window
+		 */
+		NautilusBookmark *selected;
+		NautilusWindow *window;
+		char *uri = NULL;
+
+		selected = get_selected_bookmark ();
+
+		if (selected) {
+			window = get_bookmark_nautilus_navigation_window_new (screen);
+			uri = nautilus_bookmark_get_uri (selected);
+			if (uri) {
+				nautilus_window_go_to (NAUTILUS_WINDOW (window), uri);
+				g_free (uri);
+			}
+		}
+	}
+}
+
 static void
 on_jump_button_clicked (GtkButton *button,
                         gpointer   user_data)
 {
-        go_to_selected_bookmark (NAUTILUS_WINDOW (user_data));
+	GdkScreen *screen;
+
+	screen = gtk_widget_get_screen (GTK_WIDGET (button));
+	open_selected_bookmark (user_data, screen);
 }
 
 static void
@@ -621,7 +709,10 @@ on_row_activated (GtkTreeView       *view,
                   GtkTreeViewColumn *column,
                   gpointer           user_data)
 {
-        go_to_selected_bookmark (NAUTILUS_WINDOW (user_data));
+	GdkScreen *screen;
+
+	screen = gtk_widget_get_screen (GTK_WIDGET (view));
+	open_selected_bookmark (user_data, screen);
 }
 
 static void

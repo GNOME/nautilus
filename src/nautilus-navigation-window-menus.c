@@ -311,7 +311,10 @@ get_or_create_bookmarks_window (GObject *undo_manager_source)
 {
 	if (bookmarks_window == NULL) {
 		bookmarks_window = create_bookmarks_window (get_bookmark_list(), undo_manager_source);
+	} else {
+		edit_bookmarks_dialog_set_signals (undo_manager_source);
 	}
+
 	return bookmarks_window;
 }
 
