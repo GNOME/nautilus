@@ -296,7 +296,13 @@ nautilus_string_picker_set_selected_string (NautilusStringPicker	*string_picker,
 	gtk_option_menu_set_history (GTK_OPTION_MENU (string_picker->detail->option_menu), item_index);
 }
 
-/* Add a new string to the picker. */
+/**
+ * nautilus_string_picker_insert_string
+ * @string_picker: A NautilusStringPicker
+ * @string: The string to insert.
+ *
+ * Insert a new string into the string picker.
+ */
 void
 nautilus_string_picker_insert_string (NautilusStringPicker       *string_picker,
 				      const char                 *string)
@@ -309,5 +315,21 @@ nautilus_string_picker_insert_string (NautilusStringPicker       *string_picker,
 	nautilus_string_list_insert (new_string_list, string);
 	nautilus_string_picker_set_string_list (string_picker, new_string_list);
 	nautilus_string_list_free (new_string_list);
+}
+
+/**
+ * nautilus_string_picker_insert_string
+ * @string_picker: A NautilusStringPicker
+ * @string: The string to insert.
+ *
+ * Insert a new string into the string picker.
+ */
+gboolean
+nautilus_string_picker_contains (const NautilusStringPicker       *string_picker,
+				 const char			  *string)
+{
+	g_return_val_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker), FALSE);
+
+	return nautilus_string_list_contains (string_picker->detail->string_list, string);
 }
 

@@ -63,22 +63,32 @@ struct _NautilusStringPickerClass
 GtkType             nautilus_string_picker_get_type            (void);
 GtkWidget*          nautilus_string_picker_new                 (void);
 
+
 /* Set the list of strings. */
 void                nautilus_string_picker_set_string_list     (NautilusStringPicker       *string_picker,
 								const NautilusStringList   *string_list);
 
+
 /* Access a copy of the list of strings. */
 NautilusStringList *nautilus_string_picker_get_string_list     (const NautilusStringPicker *string_picker);
+
 
 /* Get the selected string.  Resulting string needs to be freed with g_free(). */
 char *              nautilus_string_picker_get_selected_string (NautilusStringPicker       *string_picker);
 
+
 /* Set the selected string.  The internal string list needs to contain the 'string'. */
 void                nautilus_string_picker_set_selected_string (NautilusStringPicker       *string_picker,
 								const char                 *string);
+
 /* Add a new string to the picker. */
 void                nautilus_string_picker_insert_string       (NautilusStringPicker       *string_picker,
 								const char                 *string);
+
+/* Does the string picker contain the given string ? */
+gboolean            nautilus_string_picker_contains            (const NautilusStringPicker *string_picker,
+								const char                 *string);
+
 
 BEGIN_GNOME_DECLS
 
