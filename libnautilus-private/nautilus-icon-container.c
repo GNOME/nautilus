@@ -147,6 +147,8 @@ static gboolean	     is_renaming	      		      (NautilusIconContainer	  *contain
 static gboolean	     is_renaming_pending		      (NautilusIconContainer	  *container);
 static void	     process_pending_icon_to_rename	      (NautilusIconContainer	  *container);
 
+static int click_policy_auto_value;
+
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer,
 				   nautilus_icon_container,
 				   GNOME_TYPE_CANVAS)
@@ -2434,7 +2436,6 @@ button_press_event (GtkWidget *widget,
 	gboolean selection_changed;
 	gboolean return_value;
 	gboolean clicked_on_icon;
-	int click_mode;
 	gint64 current_time;
 	static gint64 last_click_time = 0;
 	static gint click_count = 0;
@@ -2451,9 +2452,7 @@ button_press_event (GtkWidget *widget,
 	last_click_time = current_time;
 
 	/* Ignore double click if we are in single click mode */
-	click_mode = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_CLICK_POLICY);
-
-	if (click_mode == NAUTILUS_CLICK_POLICY_SINGLE && click_count >= 2) {		
+	if (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE && click_count >= 2) {		
 		return TRUE;
 	}
 
@@ -3314,6 +3313,9 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 	/* Initialize the stipple bitmap.  */
 
 	stipple = gdk_bitmap_create_from_data (NULL, stipple_bits, 2, 2);
+
+	nautilus_preferences_add_auto_integer (NAUTILUS_PREFERENCES_CLICK_POLICY,
+					       &click_policy_auto_value);
 }
 
 static void

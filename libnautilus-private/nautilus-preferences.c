@@ -434,7 +434,7 @@ static char *
 preferences_key_make_for_getter (const char *name)
 {
 	char *key;
-	
+
 	g_return_val_if_fail (name != NULL, NULL);
 
 	if (preferences_preference_is_default (name)) {
@@ -778,7 +778,6 @@ static void
 update_auto_integer_or_boolean (gpointer data, gpointer callback_data)
 {
 	g_return_if_fail (data != NULL);
-	g_return_if_fail (callback_data != NULL);
 
 	*(int *)data = GPOINTER_TO_INT (callback_data);
 }

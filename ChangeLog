@@ -1,3 +1,26 @@
+2001-03-30  John Sullivan  <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-preferences.c:
+	(update_auto_integer_or_boolean): Removed bogus return_if_fail.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_initialize_class): Set up auto-storage
+	variable for click policy preference.
+	(button_press_event): Use auto-storage variable instead of
+	calling nautilus_preferences_get.
+	
+	* src/file-manager/fm-directory-view.c: 
+	(fm_directory_view_initialize_class): Set up auto-storage variables
+	for three preferences checked elsewhere in this class.
+	(open_alternate_callback), (open_location), (confirm_delete_directly),
+	(confirm_delete_from_trash), (fm_directory_view_activate_files): 
+	Use auto-storage variables instead of calling nautilus_preferences_get.
+	(confirm_trash_changed_callback), (enable_delete_changed_callback):
+	Removed these functions.
+	(real_update_menus): Removed code setting up callbacks to update
+	static variables when the preference changed. The auto-storage
+	variables have the same effect with much less code.
+	
 2001-03-30  Michael Engber  <engber@eazel.com>
 
 	* components/notes/nautilus-notes.c:

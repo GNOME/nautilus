@@ -148,7 +148,9 @@ static guint signals[LAST_SIGNAL];
 static GdkAtom clipboard_atom;
 static GdkAtom copied_files_atom;
 
-static gboolean show_delete_command;
+static gboolean show_delete_command_auto_value;
+static gboolean confirm_trash_auto_value;
+static gboolean use_new_window_auto_value;
 
 struct FMDirectoryViewDetails
 {
@@ -508,7 +510,7 @@ open_alternate_callback (BonoboUIComponent *component, gpointer callback_data, c
 	view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
 
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW)) {
+	if (use_new_window_auto_value) {
 	        /* UI should have prevented this from being called unless exactly
 	         * one item is selected.
 	         */
@@ -572,7 +574,7 @@ open_location (FMDirectoryView *directory_view,
 
 	switch (choice) {
 	case RESPECT_PREFERENCE:
-		if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW)) {
+		if (use_new_window_auto_value) {
 			nautilus_view_open_location_prefer_existing_window
 				(directory_view->details->nautilus_view, new_uri);
 		} else {
@@ -734,7 +736,7 @@ confirm_delete_directly (FMDirectoryView *view,
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	/* Just Say Yes if the preference says not to confirm. */
-	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH)) {
+	if (!confirm_trash_auto_value) {
 		return TRUE;
 	}
 
@@ -2785,7 +2787,7 @@ confirm_delete_from_trash (FMDirectoryView *view, GList *uris)
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	/* Just Say Yes if the preference says not to confirm. */
-	if (!nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH)) {
+	if (!confirm_trash_auto_value) {
 		return TRUE;
 	}
 
@@ -3911,25 +3913,9 @@ real_merge_menus (FMDirectoryView *view)
 	view->details->scripts_invalid = TRUE;
 }
 
-static gboolean confirm_trash = TRUE;
-
-static void
-confirm_trash_changed_callback (gpointer callback_data)
-{
-	confirm_trash = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH);
-}
-
-static void
-enable_delete_changed_callback (gpointer callback_data)
-{
-	show_delete_command = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_ENABLE_DELETE);
-}
-
 static void
 real_update_menus (FMDirectoryView *view)
 {
-	static gboolean confirm_trash_changed_callback_installed = FALSE;
-	static gboolean enable_delete_changed_callback_installed = FALSE;
 	GList *selection;
 	gint selection_count;
 	const char *tip, *accelerator, *label;
@@ -3943,28 +3929,6 @@ real_update_menus (FMDirectoryView *view)
 	selection = fm_directory_view_get_selection (view);
 	selection_count = g_list_length (selection);
 
-	/* Add the callback once for the life of our process */
-	if (!confirm_trash_changed_callback_installed) {
-		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-						   confirm_trash_changed_callback,
-						   NULL);
-		confirm_trash_changed_callback_installed = TRUE;
-		
-		/* Peek for the first time */
-		confirm_trash_changed_callback (NULL);
-	}
-
-	/* Add the callback once for the life of our process */
-	if (!enable_delete_changed_callback_installed) {
-		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,
-						   enable_delete_changed_callback,
-						   NULL);
-		enable_delete_changed_callback_installed = TRUE;
-		
-		/* Peek for the first time */
-		enable_delete_changed_callback (NULL);
-	}
-	
 	selection_contains_special_link = special_link_in_selection (view);
 	can_create_files = fm_directory_view_supports_creating_files (view);
 
@@ -3979,7 +3943,7 @@ real_update_menus (FMDirectoryView *view)
 				       FM_DIRECTORY_VIEW_COMMAND_OPEN,
 				       selection_count != 0);
 
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW)) {
+	if (use_new_window_auto_value) {
 		nautilus_bonobo_set_sensitive (view->details->ui, 
 					       FM_DIRECTORY_VIEW_COMMAND_OPEN_ALTERNATE,
 					       selection_count == 1);
@@ -4010,7 +3974,7 @@ real_update_menus (FMDirectoryView *view)
 	reset_bonobo_open_with_menu (view, selection);
 
 	if (fm_directory_all_selected_items_in_trash (view)) {
-		label = confirm_trash ? _("Delete from _Trash...") : _("Delete from _Trash");
+		label = confirm_trash_auto_value ? _("Delete from _Trash...") : _("Delete from _Trash");
 		accelerator = "";
 		tip = _("Delete all selected items permanently");
 		show_separate_delete_command = FALSE;
@@ -4018,7 +3982,7 @@ real_update_menus (FMDirectoryView *view)
 		label = _("Move to _Trash");
 		accelerator = "*Control*t";
 		tip = _("Move all selected items to the Trash");
-		show_separate_delete_command = show_delete_command;
+		show_separate_delete_command = show_delete_command_auto_value;
 	}
 	
 	can_delete_files = !fm_directory_view_is_read_only (view)
@@ -4048,7 +4012,7 @@ real_update_menus (FMDirectoryView *view)
 			(view->details->ui,
 			 FM_DIRECTORY_VIEW_MENU_PATH_DELETE,
 			 FM_DIRECTORY_VIEW_COMMAND_DELETE,
-			 confirm_trash ? _("De_lete...") : _("De_lete"));
+			 confirm_trash_auto_value ? _("De_lete...") : _("De_lete"));
 		nautilus_bonobo_set_sensitive (view->details->ui, 
 					       FM_DIRECTORY_VIEW_COMMAND_DELETE,
 					       can_delete_files);
@@ -4088,7 +4052,7 @@ real_update_menus (FMDirectoryView *view)
 		(view->details->ui,
 		 FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH,
 		 FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH,
-		 confirm_trash
+		 confirm_trash_auto_value
 			? _("_Empty Trash...")
 			: _("_Empty Trash"));
 	nautilus_bonobo_set_sensitive (view->details->ui, 
@@ -4589,8 +4553,7 @@ fm_directory_view_activate_files (FMDirectoryView *view,
 	 * but it proved mysterious in practice.
 	 */
 	file_count = g_list_length (files);
-	use_new_window = file_count > 1
-		||  nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW);
+	use_new_window = file_count > 1	|| use_new_window_auto_value;
 	
 	if (!use_new_window || fm_directory_view_confirm_multiple_windows (view, file_count)) {
 		for (node = files; node != NULL; node = node->next) {  	
@@ -5559,4 +5522,11 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 
 	clipboard_atom = gdk_atom_intern ("CLIPBOARD", FALSE);
 	copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
+
+	nautilus_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+					       &confirm_trash_auto_value);
+	nautilus_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_ENABLE_DELETE,
+					       &show_delete_command_auto_value);
+	nautilus_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
+					       &use_new_window_auto_value);
 }
