@@ -1,3 +1,35 @@
+2001-02-19  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
+
+	Added auto-prelighting feature to NautilusClickableImage, and
+	fixed a major bug that occurs for clickable images in scrolled
+	areas.
+	
+	* libnautilus-extensions/nautilus-clickable-image.h,
+	libnautilus-extensions/nautilus-clickable-image.c: 
+	(nautilus_clickable_image_set_prelight): New public API call that
+	allows for automatic prelight handling direct in
+	NautilusClickableImage; made it settable because some users of
+	this code want to manually prelight with an alternate image.
+	(nautilus_clickable_image_set_up_pixbufs): helper function for the
+	above that keeps track of the normal and prelit buffers.
+	(label_enter, label_leave): When in prelight mode, switch images
+	on enter and leave. Also, remove unnecessary queue_draw calls.
+
+	(adjust_coordinates_for_window, ancestor_enter_notify_event,
+	ancestor_leave_notify_event, ancestor_motion_notify_event): Do
+	some coordinate adjustments so that if the NautilusClickableImage
+	is in a scrolled area with NO_WINDOW widgets all the way in
+	between, we do an appropriate coordinate adjustment. This should
+	also handle other containers that put their children in a
+	different window than their own. This was breaking for the summary
+	view when I set it to use clickable images for the service icons.
+	
+	* libnautilus/nautilus-view-standard-main.c
+	(nautilus_view_standard_main_multi): Do a g_thread_init to make
+	views that use gnome-vfs happy.
+
 2001-02-18  Ian McKellar  <ian@eazel.com>
 
 	reviewed by: Robey Pointer  <robey@eazel.com>

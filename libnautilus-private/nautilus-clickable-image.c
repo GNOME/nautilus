@@ -29,6 +29,7 @@
 #include "nautilus-gtk-macros.h"
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-art-gtk-extensions.h"
+#include "nautilus-graphic-effects.h"
 
 #include <gtk/gtkmain.h>
 
@@ -55,6 +56,10 @@ static guint clickable_image_signals[LAST_SIGNAL] = { 0 };
 struct _NautilusClickableImageDetails
 {
  	gboolean pointer_inside;
+	gboolean prelight;
+
+	GdkPixbuf *pixbuf;
+	GdkPixbuf *prelight_pixbuf;
 };
 
 /* GtkObjectClass methods */
@@ -241,10 +246,14 @@ label_enter (NautilusClickableImage *clickable_image)
 {
 	g_return_if_fail (NAUTILUS_IS_CLICKABLE_IMAGE (clickable_image));
 	
-	clickable_image->details->pointer_inside	= TRUE;
+	clickable_image->details->pointer_inside = TRUE;
+
+	if (clickable_image->details->prelight) {
+		nautilus_labeled_image_set_pixbuf (NAUTILUS_LABELED_IMAGE (clickable_image),
+						   clickable_image->details->prelight_pixbuf); 
+	}
 
 	gtk_widget_set_state (GTK_WIDGET (clickable_image), GTK_STATE_PRELIGHT);
-	gtk_widget_queue_draw (GTK_WIDGET (clickable_image));
 
 	gtk_signal_emit (GTK_OBJECT (clickable_image), 
 			 clickable_image_signals[ENTER],
@@ -257,10 +266,14 @@ label_leave (NautilusClickableImage *clickable_image)
 {
 	g_return_if_fail (NAUTILUS_IS_CLICKABLE_IMAGE (clickable_image));
 	
-	clickable_image->details->pointer_inside	= FALSE;
+	clickable_image->details->pointer_inside = FALSE;
+
+	if (clickable_image->details->prelight) {
+		nautilus_labeled_image_set_pixbuf (NAUTILUS_LABELED_IMAGE (clickable_image),
+						   clickable_image->details->pixbuf); 
+	}
 
 	gtk_widget_set_state (GTK_WIDGET (clickable_image), GTK_STATE_NORMAL);
-	gtk_widget_queue_draw (GTK_WIDGET (clickable_image));
 
 	gtk_signal_emit (GTK_OBJECT (clickable_image), 
 			 clickable_image_signals[LEAVE],
@@ -275,7 +288,7 @@ label_handle_motion (NautilusClickableImage *clickable_image,
 	ArtIRect bounds;
 
 	g_return_if_fail (NAUTILUS_IS_CLICKABLE_IMAGE (clickable_image));
-	
+
 	bounds = nautilus_gtk_widget_get_bounds (GTK_WIDGET (clickable_image));
 	
 	if (nautilus_art_irect_contains_point (&bounds, x, y)) {
@@ -313,16 +326,54 @@ label_handle_button_release (NautilusClickableImage *clickable_image)
 			 clickable_image);
 }
 
+static void
+adjust_coordinates_for_window (GdkWindow *widget_window, 
+			       GdkWindow *event_window,
+			       int *x,
+			       int *y)
+{
+	GdkWindow *window;
+	int wx, wy;
+	
+	/* Viewports place their children in a different GdkWindow
+	 * than their own widget window (perhaps other containers do
+	 * this to). Therefore if the event we got is on a different
+	 * GdkWindow than our own, adjust the coordinates.
+	 */
+
+	window = widget_window;
+
+	while (window != event_window && window != NULL) {
+		gdk_window_get_position	 (window,
+					  &wx,
+					  &wy);
+
+		*x -= wx;
+		*y -= wy;
+
+		window = gdk_window_get_parent (window);
+	}
+}
+
 static int
 ancestor_enter_notify_event (GtkWidget *widget,
 			     GdkEventCrossing *event,
 			     gpointer event_data)
 {
+	int x, y;
+
 	g_return_val_if_fail (GTK_IS_WIDGET (widget), FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_CLICKABLE_IMAGE (event_data), FALSE);
 	g_return_val_if_fail (event != NULL, FALSE);
 
-	label_handle_motion (NAUTILUS_CLICKABLE_IMAGE (event_data), event->x, event->y);
+	x = event->x;
+	y = event->y;
+
+	adjust_coordinates_for_window (GTK_WIDGET (event_data)->window,
+				       widget->window,
+				       &x, &y);
+
+	label_handle_motion (NAUTILUS_CLICKABLE_IMAGE (event_data), x, y);
 
 	return FALSE;
 }
@@ -332,11 +383,20 @@ ancestor_leave_notify_event (GtkWidget *widget,
 			     GdkEventCrossing *event,
 			     gpointer event_data)
 {
+	int x, y;
+
 	g_return_val_if_fail (GTK_IS_WIDGET (widget), FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_CLICKABLE_IMAGE (event_data), FALSE);
 	g_return_val_if_fail (event != NULL, FALSE);
 
-	label_handle_motion (NAUTILUS_CLICKABLE_IMAGE (event_data), event->x, event->y);
+	x = event->x;
+	y = event->y;
+
+	adjust_coordinates_for_window (GTK_WIDGET (event_data)->window,
+				       widget->window,
+				       &x, &y);
+
+	label_handle_motion (NAUTILUS_CLICKABLE_IMAGE (event_data), x, y);
 
 	return FALSE;
 }
@@ -346,11 +406,20 @@ ancestor_motion_notify_event (GtkWidget *widget,
 			      GdkEventMotion *event,
 			      gpointer event_data)
 {
+	int x, y;
+
 	g_return_val_if_fail (GTK_IS_WIDGET (widget), FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_CLICKABLE_IMAGE (event_data), FALSE);
 	g_return_val_if_fail (event != NULL, FALSE);
 
-	label_handle_motion (NAUTILUS_CLICKABLE_IMAGE (event_data), event->x, event->y);
+	x = event->x;
+	y = event->y;
+
+	adjust_coordinates_for_window (GTK_WIDGET (event_data)->window,
+				       widget->window,
+				       &x, &y);
+
+	label_handle_motion (NAUTILUS_CLICKABLE_IMAGE (event_data), x, y);
 
 	return FALSE;
 }
@@ -415,6 +484,16 @@ nautilus_clickable_image_expose_event (GtkWidget *widget,
 	/* Chain expose */
 	return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, expose_event, (widget, event));
 }
+
+static void 
+nautilus_clickable_image_set_up_pixbufs (NautilusClickableImage *clickable_image)
+{
+	clickable_image->details->pixbuf =
+		nautilus_labeled_image_get_pixbuf (NAUTILUS_LABELED_IMAGE (clickable_image));
+
+	clickable_image->details->prelight_pixbuf = nautilus_create_spotlight_pixbuf 
+		(clickable_image->details->pixbuf);
+} 
 
 /* Public NautilusClickableImage methods */
 
@@ -529,4 +608,45 @@ nautilus_clickable_image_new_solid (const char *text,
 	return GTK_WIDGET (clickable_image);
 }
 
+/**
+ * nautilus_clickable_image_new:
+ *
+ * @clickable_image: A NautilusClickableImage
+ * @prelight: a gboolean specifying wether to prelight
+ *
+ * Enable or disable auto-prelight mode. You can't change the pixbuf
+ * while prelight mode is on; as a workaround, you can turn prelight
+ * off, change the pixbuf, and then turn it back on.
+ * 
+ */
 
+void
+nautilus_clickable_image_set_prelight (NautilusClickableImage *clickable_image,
+				       gboolean prelight)
+{
+	/* FIXME: you can't change the pixbuf with prelight mode on */
+
+	if (!clickable_image->details->prelight && prelight) {
+		nautilus_clickable_image_set_up_pixbufs (clickable_image);
+		clickable_image->details->prelight = TRUE;
+		if (clickable_image->details->pointer_inside) {
+			nautilus_labeled_image_set_pixbuf 
+				(NAUTILUS_LABELED_IMAGE (clickable_image),
+				 clickable_image->details->prelight_pixbuf);
+		}
+	}
+
+	if (clickable_image->details->prelight && !prelight) {
+		if (clickable_image->details->pointer_inside) {
+			nautilus_labeled_image_set_pixbuf 
+				(NAUTILUS_LABELED_IMAGE (clickable_image),
+				 clickable_image->details->pixbuf);
+		}
+
+		gdk_pixbuf_unref (clickable_image->details->pixbuf);
+		clickable_image->details->pixbuf = NULL;
+		gdk_pixbuf_unref (clickable_image->details->prelight_pixbuf);
+		clickable_image->details->prelight_pixbuf = NULL;
+		clickable_image->details->prelight = FALSE;
+	}
+}

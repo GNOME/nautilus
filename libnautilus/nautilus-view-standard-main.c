@@ -120,6 +120,7 @@ nautilus_view_standard_main_multi (const char                 *executable_name,
         gnome_init (executable_name, version, 
 		    argc, argv); 
 	gdk_rgb_init ();
+	g_thread_init (NULL);
 	gnome_vfs_init ();
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 

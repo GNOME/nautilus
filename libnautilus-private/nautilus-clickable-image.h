@@ -89,6 +89,9 @@ GtkWidget *nautilus_clickable_image_new_solid          (const char *text,
 							guint32     background_color,
 							GdkPixbuf  *tile_pixbuf);
 
+void       nautilus_clickable_image_set_prelight       (NautilusClickableImage *clickable_image,
+							gboolean prelight);
+
 END_GNOME_DECLS
 
 #endif /* NAUTILUS_CLICKABLE_IMAGE_H */
