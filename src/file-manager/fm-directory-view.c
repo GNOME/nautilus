@@ -4134,8 +4134,9 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 			relative_item_points[index].y += y;
 		}
 	}
-	nautilus_file_operations_copy_move (item_uris, relative_item_points, 
-		target_dir, copy_action, GTK_WIDGET (view));
+	nautilus_file_operations_copy_move
+		(item_uris, relative_item_points, 
+		 target_dir, copy_action, GTK_WIDGET (view));
 }
 
 gboolean
@@ -4153,7 +4154,8 @@ fm_directory_view_can_accept_item (NautilusFile *target_item,
 static gboolean
 menu_item_matches_path (GtkMenuItem *item, const char *path)
 {
-	return nautilus_strcmp ((const char *)gtk_object_get_data (GTK_OBJECT (item), "path"), path) == 0;
+	return nautilus_strcmp ((const char *) gtk_object_get_data (GTK_OBJECT (item), "path"),
+				path) == 0;
 }
 
 /**

@@ -33,7 +33,7 @@ use strict;
 my %skip_files;
 if (!@ARGV)
   {
-    @ARGV = `find . \\( \\( -name po -prune -false \\) -or \\( -name CVS -prune -false \\) -or \\( -name '*' -and -type f \\) \\) -and ! \\( -name '*~' -or -name '#*' -or -name 'ChangeLog*' -or -name Entries \\) -print`;
+    @ARGV = `find . \\( \\( -name po -prune -false \\) -or \\( -name CVS -prune -false \\) -or \\( -name macros -prune -false \\) -or \\( -name '*' -and -type f \\) \\) -and ! \\( -name '*~' -or -name '#*' -or -name 'ChangeLog*' -or -name Entries \\) -print`;
     %skip_files =
       (
        "./HACKING" => 1,

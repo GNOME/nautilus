@@ -37,13 +37,12 @@ struct NautilusFileDetails
 	gboolean get_info_failed;
 	GnomeVFSResult get_info_error;
 
-	/* Since the file info doesn't remember what mime type
-	   it got, we'll just keep them here, where it 
-	   is clear what kind of mime type they are */
+	/* Since the file info doesn't remember what kind of mime type
+	 * it got, we'll just keep them here, where it is clear what
+	 * kind of mime type they are.
+	 */
 	char *default_mime_type;
-	gboolean got_default_mime_type;
 	char *slow_mime_type;
-	gboolean got_slow_mime_type;
 
 	gboolean got_directory_count;
 	gboolean directory_count_failed;

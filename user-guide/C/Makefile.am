@@ -18,7 +18,6 @@ install-data-local:
 	else 							\
 	for i in $$installfiles; do				\
 		basefile=`basename $$i`;  			\
-		echo "-- Installing $$i" ; 			\
 		$(INSTALL_DATA) $$i $(DESTDIR)$(TARGET_DIR)$$basefile; 	\
 	done; 							\
 	fi

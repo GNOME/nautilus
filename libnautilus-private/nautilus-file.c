@@ -398,12 +398,8 @@ destroy (GtkObject *object)
 	} else {
 		gnome_vfs_file_info_unref (file->details->info);
 	}
-	if (file->details->got_default_mime_type) {
-		g_free (file->details->default_mime_type);
-	}
-	if (file->details->got_slow_mime_type) {
-		g_free (file->details->slow_mime_type);
-	}
+	g_free (file->details->default_mime_type);
+	g_free (file->details->slow_mime_type);
 	g_free (file->details->top_left_text);
 	g_free (file->details->activation_uri);
 
@@ -1110,7 +1106,7 @@ nautilus_file_update_info (NautilusFile *file, GnomeVFSFileInfo *info,
 
 	if (file->details->info != NULL
 	    && gnome_vfs_file_info_matches (file->details->info, info) 
-	    && got_slow_mime_type == FALSE) {
+	    && !got_slow_mime_type) {
 		return FALSE;
 	}
 
@@ -1125,24 +1121,12 @@ nautilus_file_update_info (NautilusFile *file, GnomeVFSFileInfo *info,
 		gnome_vfs_file_info_unref (file->details->info);
 	}
 	file->details->info = info;
-	if (info->mime_type == NULL) {
-		g_warning ("help: this file has no mime type ! %s\n", info->name);
+	if (got_slow_mime_type) {
+		g_free (file->details->slow_mime_type);
+		file->details->slow_mime_type = g_strdup (info->mime_type);
 	} else {
-		
-		if (got_slow_mime_type) {
-			if (file->details->got_slow_mime_type) {
-				g_free (file->details->slow_mime_type);
-			}
-			file->details->got_slow_mime_type = TRUE;
-			file->details->slow_mime_type = g_strdup (info->mime_type);
-		}
-		else {
-			if (file->details->got_default_mime_type) {
-				g_free (file->details->default_mime_type);
-			}
-			file->details->got_default_mime_type = TRUE;
-			file->details->default_mime_type = g_strdup (info->mime_type);
-		}
+		g_free (file->details->default_mime_type);
+		file->details->default_mime_type = g_strdup (info->mime_type);
 	}
 	file->details->name = info->name;
 	nautilus_directory_end_file_name_change (file->details->directory,
@@ -1386,6 +1370,18 @@ nautilus_file_compare_by_emblems (NautilusFile *file_1, NautilusFile *file_2)
 	return compare_result;	
 }
 
+static const char *
+get_either_mime_type (NautilusFile *file)
+{
+	/* Always prefer the non-slow type since that's updated more
+         * often. This doesn't sound quite right, but I guess it's OK.
+	 */
+	if (file->details->default_mime_type != NULL) {
+		return file->details->default_mime_type;
+	}
+	return file->details->slow_mime_type;
+}
+
 static int
 nautilus_file_compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
 {
@@ -1415,11 +1411,10 @@ nautilus_file_compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
 		return +1;
 	}
 
-
 	if (file_1->details->info != NULL
 	    && file_2->details->info != NULL
-	    && nautilus_strcmp (file_1->details->default_mime_type,
-				file_2->details->default_mime_type) == 0) {
+	    && nautilus_strcmp (get_either_mime_type (file_1),
+				get_either_mime_type (file_2)) == 0) {
 		return 0;
 	}
 
@@ -3346,10 +3341,7 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 		return g_strdup (_("link (broken)"));
 	}
 
-	mime_type = file->details->slow_mime_type;
-	if (mime_type == NULL) {
-		mime_type = file->details->default_mime_type;
-	}
+	mime_type = get_either_mime_type (file);
 
 	if (nautilus_strlen (mime_type) == 0) {
 		/* No mime type, anything else interesting we can say about this? */
@@ -3413,16 +3405,13 @@ nautilus_file_get_file_type (NautilusFile *file)
 char *
 nautilus_file_get_slow_mime_type (NautilusFile *file)
 {
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-	if (file == NULL) {
-		return g_strdup ("application/nonono");;
+	if (file != NULL) {
+		g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+		if (file->details->slow_mime_type != NULL) {
+			return g_strdup (file->details->slow_mime_type);
+		}
 	}
-	if (file->details->got_slow_mime_type) {
-		return g_strdup (file->details->slow_mime_type);
-	}
-	else {
-		return g_strdup ("application/octet-stream");
-	}
+	return g_strdup ("application/octet-stream");
 }
 
 
@@ -3439,22 +3428,16 @@ nautilus_file_get_slow_mime_type (NautilusFile *file)
 char *
 nautilus_file_get_mime_type (NautilusFile *file)
 {
-	if (file == NULL) {
-		return g_strdup ("application/octet-stream");
-	}
-	if (file->details->got_default_mime_type == FALSE &&
-	    file->details->got_slow_mime_type == FALSE) {
-		return g_strdup ("application/octet-stream");
-	}
-	if (file->details->got_default_mime_type) {
+	const char *mime_type;
 
-		return g_strdup (file->details->default_mime_type);
+	if (file != NULL) {
+		g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+		mime_type = get_either_mime_type (file);
+		if (mime_type != NULL) {
+			return g_strdup (mime_type);
+		}
 	}
-	else {
-		return g_strdup (file->details->slow_mime_type);
-	}
-
-
+	return g_strdup ("application/octet-stream");
 }
 
 
@@ -3472,20 +3455,16 @@ nautilus_file_get_mime_type (NautilusFile *file)
 gboolean
 nautilus_file_is_mime_type (NautilusFile *file, const char *mime_type)
 {
+	const char *file_mime_type;
+
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 	g_return_val_if_fail (mime_type != NULL, FALSE);
-
-	/* If we have no mime type information, never mind */
-	if (file->details->got_default_mime_type == FALSE &&
-	    file->details->got_slow_mime_type == FALSE) {
-		return FALSE;
+	
+	file_mime_type = get_either_mime_type (file);
+	if (file_mime_type != NULL) {
+		return nautilus_strcasecmp (file_mime_type, mime_type) == 0;
 	}
-	if (file->details->got_slow_mime_type) {
-		return nautilus_strcasecmp (file->details->slow_mime_type, mime_type) == 0;
-	}
-	else {
-		return nautilus_strcasecmp (file->details->default_mime_type, mime_type) == 0;
-	}
-
+	return FALSE;
 }
 
 /**

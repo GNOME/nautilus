@@ -133,7 +133,6 @@ gboolean           nautilus_directory_is_file_list_monitored         (NautilusDi
 gboolean           nautilus_directory_is_anyone_monitoring_file_list (NautilusDirectory         *directory);
 void               nautilus_directory_remove_file_monitor_link       (NautilusDirectory         *directory,
 								      GList                     *link);
-void               nautilus_directory_request_read_metafile          (NautilusDirectory         *directory);
 void               nautilus_directory_request_write_metafile         (NautilusDirectory         *directory);
 void               nautilus_directory_schedule_dequeue_pending       (NautilusDirectory         *directory);
 void               nautilus_directory_stop_monitoring_file_list      (NautilusDirectory         *directory);

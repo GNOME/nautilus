@@ -159,8 +159,6 @@ nautilus_directory_destroy (GtkObject *object)
 	g_assert (directory->details->count_in_progress == NULL);
 	g_assert (directory->details->top_left_read_state == NULL);
 
-	nautilus_directory_stop_monitoring_file_list (directory);
-
 	if (directory->details->monitor_list != NULL) {
 		g_warning ("destroying a NautilusDirectory while it's being monitored");
 		nautilus_g_list_free_deep (directory->details->monitor_list);

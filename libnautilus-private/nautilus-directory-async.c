@@ -106,26 +106,116 @@ typedef struct {
 typedef gboolean (* RequestCheck) (const Request *);
 typedef gboolean (* FileCheck) (NautilusFile *);
 
+/* Keep async. jobs down to this number for all directories. */
+#define MAX_ASYNC_JOBS 10
+
+/* Current number of async. jobs. */
+static int async_job_count;
+static GHashTable *waiting_directories;
+
 /* Forward declarations for functions that need them. */
-static void     deep_count_load      (NautilusDirectory *directory,
-				      const char        *uri);
-static void 	metafile_read_start  (NautilusDirectory *directory);
-static gboolean request_is_satisfied (NautilusDirectory *directory,
-		      		      NautilusFile  	*file,
-		      		      Request 		*request);
+static void     deep_count_load       (NautilusDirectory *directory,
+				       const char        *uri);
+static void     metafile_read_restart (NautilusDirectory *directory);
+static gboolean request_is_satisfied  (NautilusDirectory *directory,
+				       NautilusFile      *file,
+				       Request           *request);
+
+/* Start a job. This is really just a way of limiting the number of
+ * async. requests that we issue at any given time. Without this, the
+ * number of requests is unbounded.
+ */
+static gboolean
+async_job_start (NautilusDirectory *directory)
+{
+	g_assert (async_job_count >= 0);
+	g_assert (async_job_count <= MAX_ASYNC_JOBS);
+
+	if (async_job_count >= MAX_ASYNC_JOBS) {
+		if (waiting_directories == NULL) {
+			waiting_directories = nautilus_g_hash_table_new_free_at_exit
+				(g_direct_hash, g_direct_equal,
+				 "nautilus-directory-async.c: waiting_directories");
+		}
+
+		g_hash_table_insert (waiting_directories,
+				     directory,
+				     directory);
+		
+		return FALSE;
+	}
+
+	async_job_count += 1;
+	return TRUE;
+}
+
+/* End a job. */
+static void
+async_job_end (void)
+{
+	g_assert (async_job_count > 0);
+
+	async_job_count -= 1;
+}
+
+/* Helper to extract one value from a hash table. */
+static void
+get_one_value_callback (gpointer key, gpointer value, gpointer callback_data)
+{
+	gpointer *returned_value;
+
+	returned_value = callback_data;
+	*returned_value = value;
+}
+
+/* Extract a single value from a hash table. */
+static gpointer
+get_one_value (GHashTable *table)
+{
+	gpointer value;
+
+	value = NULL;
+	if (table != NULL) {
+		g_hash_table_foreach (table, get_one_value_callback, &value);
+	}
+	return value;
+}
+
+/* Wake up directories that are "blocked" as long as there are job
+ * slots available.
+ */
+static void
+async_job_wake_up (void)
+{
+	gpointer value;
+
+	g_assert (async_job_count >= 0);
+	g_assert (async_job_count <= MAX_ASYNC_JOBS);
+
+	while (async_job_count < MAX_ASYNC_JOBS) {
+		value = get_one_value (waiting_directories);
+		if (value == NULL) {
+			break;
+		}
+		nautilus_directory_async_state_changed
+			(NAUTILUS_DIRECTORY (value));
+	}
+}
 
 static void
-cancel_directory_counts (NautilusDirectory *directory)
+directory_count_cancel (NautilusDirectory *directory)
 {
 	if (directory->details->count_in_progress != NULL) {
 		gnome_vfs_async_cancel (directory->details->count_in_progress);
 		directory->details->count_file = NULL;
 		directory->details->count_in_progress = NULL;
+
+		async_job_end ();
 	}
 }
 
 static void
-cancel_deep_count (NautilusDirectory *directory)
+deep_count_cancel (NautilusDirectory *directory)
 {
 	if (directory->details->deep_count_in_progress != NULL) {
 		g_assert (NAUTILUS_IS_FILE (directory->details->deep_count_file));
@@ -140,11 +230,13 @@ cancel_deep_count (NautilusDirectory *directory)
 		directory->details->deep_count_uri = NULL;
 		nautilus_g_list_free_deep (directory->details->deep_count_subdirectories);
 		directory->details->deep_count_subdirectories = NULL;
+
+		async_job_end ();
 	}
 }
 
 static void
-cancel_mime_list (NautilusDirectory *directory)
+mime_list_cancel (NautilusDirectory *directory)
 {
 	if (directory->details->mime_list_in_progress != NULL) {
 		g_assert (NAUTILUS_IS_FILE (directory->details->mime_list_file));
@@ -157,41 +249,49 @@ cancel_mime_list (NautilusDirectory *directory)
 		directory->details->mime_list_in_progress = NULL;
 		g_free (directory->details->mime_list_uri);
 		directory->details->mime_list_uri = NULL;
+
+		async_job_end ();
 	}
 }
 
 static void
-cancel_top_left_read (NautilusDirectory *directory)
+top_left_cancel (NautilusDirectory *directory)
 {
 	if (directory->details->top_left_read_state != NULL) {
 		nautilus_read_file_cancel (directory->details->top_left_read_state->handle);
 		g_free (directory->details->top_left_read_state);
 		directory->details->top_left_read_state = NULL;
+
+		async_job_end ();
 	}
 }
 
 static void
-cancel_get_activation_uri (NautilusDirectory *directory)
+activation_uri_cancel (NautilusDirectory *directory)
 {
 	if (directory->details->activation_uri_read_state != NULL) {
 		nautilus_read_file_cancel (directory->details->activation_uri_read_state->handle);
 		g_free (directory->details->activation_uri_read_state);
 		directory->details->activation_uri_read_state = NULL;
+
+		async_job_end ();
 	}
 }
 
 static void
-cancel_get_info (NautilusDirectory *directory)
+file_info_cancel (NautilusDirectory *directory)
 {
 	if (directory->details->get_info_in_progress != NULL) {
 		gnome_vfs_async_cancel (directory->details->get_info_in_progress);
 		directory->details->get_info_file = NULL;
 		directory->details->get_info_in_progress = NULL;
+
+		async_job_end ();
 	}
 }
 
 static void
-cancel_metafile_read (NautilusDirectory *directory)
+metafile_read_cancel (NautilusDirectory *directory)
 {
 	if (directory->details->metafile_read_state != NULL) {
 		if (directory->details->metafile_read_state->handle != NULL) {
@@ -202,19 +302,9 @@ cancel_metafile_read (NautilusDirectory *directory)
 		}
 		g_free (directory->details->metafile_read_state);
 		directory->details->metafile_read_state = NULL;
-	}
-}
 
-void
-nautilus_directory_cancel (NautilusDirectory *directory)
-{
-	cancel_deep_count (directory);
-	cancel_directory_counts (directory);
-	cancel_mime_list (directory);
-	cancel_get_info (directory);
-	cancel_metafile_read (directory);
-	cancel_top_left_read (directory);
-	cancel_get_activation_uri (directory);
+		async_job_end ();
+	}
 }
 
 static gboolean
@@ -259,6 +349,7 @@ metafile_read_done (NautilusDirectory *directory)
 	nautilus_directory_emit_metadata_changed (directory);
 
 	/* Let the callers that were waiting for the metafile know. */
+	async_job_end ();
 	nautilus_directory_async_state_changed (directory);
 }
 
@@ -266,7 +357,7 @@ static void
 metafile_read_try_public_metafile (NautilusDirectory *directory)
 {
 	directory->details->metafile_read_state->use_public_metafile = TRUE;
-	metafile_read_start (directory);
+	metafile_read_restart (directory);
 }
 
 static void
@@ -403,7 +494,7 @@ metafile_read_done_callback (GnomeVFSResult result,
 }
 
 static void
-metafile_read_start (NautilusDirectory *directory)
+metafile_read_restart (NautilusDirectory *directory)
 {
 	char *text_uri;
 
@@ -455,8 +546,33 @@ allow_metafile (NautilusDirectory *directory)
 	return TRUE;
 }
 
-void
-nautilus_directory_request_read_metafile (NautilusDirectory *directory)
+/* This checks if there's a request for the metafile contents. */
+static gboolean
+is_anyone_waiting_for_metafile (NautilusDirectory *directory)
+{
+	GList *node;
+	ReadyCallback *callback;
+	Monitor *monitor;	
+
+	for (node = directory->details->call_when_ready_list; node != NULL; node = node->next) {
+		callback = node->data;
+		if (callback->request.metafile) {
+			return TRUE;
+		}
+	}
+
+	for (node = directory->details->monitor_list; node != NULL; node = node->next) {
+		monitor = node->data;
+		if (monitor->request.metafile) {
+			return TRUE;
+		}
+	}	
+
+	return FALSE;
+}
+
+static void
+metafile_read_start (NautilusDirectory *directory)
 {
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
@@ -467,11 +583,18 @@ nautilus_directory_request_read_metafile (NautilusDirectory *directory)
 
 	g_assert (directory->details->metafile == NULL);
 
+	if (!is_anyone_waiting_for_metafile (directory)) {
+		return;
+	}
+
 	if (!allow_metafile (directory)) {
 		metafile_read_done (directory);
 	} else {
+		if (!async_job_start (directory)) {
+			return;
+		}
 		directory->details->metafile_read_state = g_new0 (MetafileReadState, 1);
-		metafile_read_start (directory);
+		metafile_read_restart (directory);
 	}
 }
 
@@ -925,6 +1048,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 	/* If we are no longer monitoring, then throw away these. */
 	if (!nautilus_directory_is_file_list_monitored (directory)) {
 		gnome_vfs_file_info_list_free (pending_file_info);
+
 		nautilus_directory_async_state_changed (directory);
 		return FALSE;
 	}
@@ -1026,11 +1150,12 @@ directory_load_one (NautilusDirectory *directory,
 }
 
 static void
-cancel_directory_load (NautilusDirectory *directory)
+file_list_cancel (NautilusDirectory *directory)
 {
 	if (directory->details->directory_load_in_progress != NULL) {
 		gnome_vfs_async_cancel (directory->details->directory_load_in_progress);
 		directory->details->directory_load_in_progress = NULL;
+		async_job_end ();
 	}
 }
 
@@ -1040,7 +1165,7 @@ directory_load_done (NautilusDirectory *directory,
 {
 	GList *node;
 
-	cancel_directory_load (directory);
+	file_list_cancel (directory);
 	directory->details->directory_loaded = TRUE;
 	directory->details->directory_loaded_sent_notification = FALSE;
 
@@ -1241,12 +1366,11 @@ nautilus_directory_check_if_ready_internal (NautilusDirectory *directory,
 					    NautilusFile *file,
 					    GList *file_attributes)
 {
-	Request request = {};
+	Request request;
 
-	g_assert (directory != NULL);
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
 	set_up_request_by_file_attributes (&request, file_attributes);
-
 	return request_is_satisfied (directory, file, &request);
 }					    
 
@@ -1341,6 +1465,7 @@ directory_count_callback (GnomeVFSAsyncHandle *handle,
 	nautilus_file_changed (count_file);
 
 	/* Start up the next one. */
+	async_job_end ();
 	nautilus_directory_async_state_changed (directory);
 }
 
@@ -1689,31 +1814,6 @@ nautilus_directory_is_anyone_monitoring_file_list (NautilusDirectory *directory)
 	return FALSE;
 }
 
-/* This checks if there's a request for the metafile contents. */
-static gboolean
-is_anyone_waiting_for_metafile (NautilusDirectory *directory)
-{
-	GList *node;
-	ReadyCallback *callback;
-	Monitor *monitor;	
-
-	for (node = directory->details->call_when_ready_list; node != NULL; node = node->next) {
-		callback = node->data;
-		if (callback->request.metafile) {
-			return TRUE;
-		}
-	}
-
-	for (node = directory->details->monitor_list; node != NULL; node = node->next) {
-		monitor = node->data;
-		if (monitor->request.metafile) {
-			return TRUE;
-		}
-	}	
-
-	return FALSE;
-}
-
 /* This checks if the file list being monitored. */
 gboolean
 nautilus_directory_is_file_list_monitored (NautilusDirectory *directory) 
@@ -1746,6 +1846,10 @@ start_monitoring_file_list (NautilusDirectory *directory)
 
 	if (directory->details->directory_loaded
 	    || directory->details->directory_load_in_progress != NULL) {
+		return;
+	}
+
+	if (!async_job_start (directory)) {
 		return;
 	}
 
@@ -1783,10 +1887,20 @@ nautilus_directory_stop_monitoring_file_list (NautilusDirectory *directory)
 	}
 
 	directory->details->file_list_monitored = FALSE;
-	cancel_directory_load (directory);
+	file_list_cancel (directory);
 	nautilus_file_list_unref (directory->details->file_list);
 
 	directory->details->directory_loaded = FALSE;
+}
+
+static void
+file_list_start (NautilusDirectory *directory)
+{
+	if (nautilus_directory_is_anyone_monitoring_file_list (directory)) {
+		start_monitoring_file_list (directory);
+	} else {
+		nautilus_directory_stop_monitoring_file_list (directory);
+	}
 }
 
 void
@@ -1800,13 +1914,13 @@ nautilus_directory_invalidate_counts (NautilusDirectory *directory)
 		parent_directory = file->details->directory;
 
 		if (parent_directory->details->count_file == file) {
-			cancel_directory_counts (parent_directory);
+			directory_count_cancel (parent_directory);
 		}
 		if (parent_directory->details->deep_count_file == file) {
-			cancel_deep_count (parent_directory);
+			deep_count_cancel (parent_directory);
 		}
 		if (parent_directory->details->mime_list_file == file) {
-			cancel_mime_list (parent_directory);
+			mime_list_cancel (parent_directory);
 		}
 
 		file->details->got_directory_count = FALSE;
@@ -1829,7 +1943,7 @@ void
 nautilus_directory_force_reload (NautilusDirectory *directory)
 {
 	/* Start a new directory load. */
-	cancel_directory_load (directory);
+	file_list_cancel (directory);
 	directory->details->directory_loaded = FALSE;
 
 	/* Start a new directory count. */
@@ -1994,7 +2108,7 @@ get_filter_options_for_directory_count (NautilusFile *file)
 
 
 static void
-start_getting_directory_counts (NautilusDirectory *directory)
+directory_count_start (NautilusDirectory *directory)
 {
 	NautilusFile *file;
 	char *uri;
@@ -2015,7 +2129,7 @@ start_getting_directory_counts (NautilusDirectory *directory)
 		}
 
 		/* The count is not wanted, so stop it. */
-		cancel_directory_counts (directory);
+		directory_count_cancel (directory);
 	}
 
 	/* Figure out which file to get a count for. */
@@ -2023,6 +2137,10 @@ start_getting_directory_counts (NautilusDirectory *directory)
 				  lacks_directory_count,
 				  wants_directory_count);
 	if (file == NULL) {
+		return;
+	}
+
+	if (!async_job_start (directory)) {
 		return;
 	}
 
@@ -2137,6 +2255,7 @@ deep_count_callback (GnomeVFSAsyncHandle *handle,
 	nautilus_file_changed (file);
 
 	if (done) {
+		async_job_end ();
 		nautilus_directory_async_state_changed (directory);
 	}
 }
@@ -2188,7 +2307,7 @@ deep_count_start (NautilusDirectory *directory)
 		}
 
 		/* The count is not wanted, so stop it. */
-		cancel_deep_count (directory);
+		deep_count_cancel (directory);
 	}
 
 	/* Figure out which file to get a count for. */
@@ -2196,6 +2315,10 @@ deep_count_start (NautilusDirectory *directory)
 				  lacks_deep_count,
 				  wants_deep_count);
 	if (file == NULL) {
+		return;
+	}
+
+	if (!async_job_start (directory)) {
 		return;
 	}
 
@@ -2219,7 +2342,7 @@ mime_list_one (NautilusDirectory *directory,
 
 	file = directory->details->mime_list_file;
 
-	if (g_list_find_custom (file->details->mime_list, info->mime_type, (GCompareFunc)g_strcasecmp) == NULL) {
+	if (g_list_find_custom (file->details->mime_list, info->mime_type, (GCompareFunc) g_strcasecmp) == NULL) {
 		file->details->mime_list = g_list_prepend (file->details->mime_list, g_strdup (info->mime_type));
 	}
 }
@@ -2269,6 +2392,7 @@ mime_list_callback (GnomeVFSAsyncHandle *handle,
 	nautilus_file_changed (file);
 
 	if (done) {
+		async_job_end ();
 		nautilus_directory_async_state_changed (directory);
 	}
 }
@@ -2320,7 +2444,7 @@ mime_list_start (NautilusDirectory *directory)
 		}
 
 		/* The count is not wanted, so stop it. */
-		cancel_mime_list (directory);
+		mime_list_cancel (directory);
 	}
 
 	/* Figure out which file to get a mime list for. */
@@ -2328,6 +2452,10 @@ mime_list_start (NautilusDirectory *directory)
 				  lacks_mime_list,
 				  wants_mime_list);
 	if (file == NULL) {
+		return;
+	}
+
+	if (!async_job_start (directory)) {
 		return;
 	}
 
@@ -2363,6 +2491,7 @@ top_left_read_done (NautilusDirectory *directory)
 	g_free (directory->details->top_left_read_state);
 	directory->details->top_left_read_state = NULL;
 
+	async_job_end ();
 	nautilus_directory_async_state_changed (directory);
 }
 
@@ -2404,7 +2533,7 @@ top_left_read_more_callback (GnomeVFSFileSize bytes_read,
 }
 
 static void
-start_getting_top_lefts (NautilusDirectory *directory)
+top_left_start (NautilusDirectory *directory)
 {
 	NautilusFile *file;
 	char *uri;
@@ -2425,7 +2554,7 @@ start_getting_top_lefts (NautilusDirectory *directory)
 		}
 
 		/* The top left is not wanted, so stop it. */
-		cancel_top_left_read (directory);
+		top_left_cancel (directory);
 	}
 
 	/* Figure out which file to read the top left for. */
@@ -2433,6 +2562,10 @@ start_getting_top_lefts (NautilusDirectory *directory)
 				  lacks_top_left,
 				  wants_top_left);
 	if (file == NULL) {
+		return;
+	}
+
+	if (!async_job_start (directory)) {
 		return;
 	}
 
@@ -2458,7 +2591,6 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 	GnomeVFSGetFileInfoResult *result;
 	gboolean got_slow_mime_type;
 
-	g_assert (NAUTILUS_IS_DIRECTORY (callback_data));
 	directory = NAUTILUS_DIRECTORY (callback_data);
 	got_slow_mime_type = directory->details->get_slow_mime_type_for_file;
 	g_assert (handle == NULL || handle == directory->details->get_info_in_progress);
@@ -2478,11 +2610,13 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 					   got_slow_mime_type);
 	}
 	nautilus_file_changed (get_info_file);
+
+	async_job_end ();
 	nautilus_directory_async_state_changed (directory);
 }
 
 static void
-start_getting_file_info (NautilusDirectory *directory)
+file_info_start (NautilusDirectory *directory)
 {
 	NautilusFile *file;
 	char *uri;
@@ -2504,7 +2638,7 @@ start_getting_file_info (NautilusDirectory *directory)
 		}
 
 		/* The info is not wanted, so stop it. */
-		cancel_get_info (directory);
+		file_info_cancel (directory);
 	}
 
 	/* Figure out which file to get file info for. */
@@ -2533,30 +2667,25 @@ start_getting_file_info (NautilusDirectory *directory)
 	} while (vfs_uri == NULL);
 
 	/* Found one we need to get the info for. */
+	if (!async_job_start (directory)) {
+		return;
+	}
 	directory->details->get_info_file = file;
 	directory->details->get_slow_mime_type_for_file = get_slow_mime_type;
 	fake_list.data = vfs_uri;
 	fake_list.prev = NULL;
 	fake_list.next = NULL;
-	if (get_slow_mime_type) {
-		gnome_vfs_async_get_file_info
-			(&directory->details->get_info_in_progress,
-			 &fake_list,
-			 (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-			  | GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE
-			  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
-			 get_info_callback,
-			 directory);
-	}
-	else {
-		gnome_vfs_async_get_file_info
-			(&directory->details->get_info_in_progress,
-			 &fake_list,
-			 (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-			  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
-			 get_info_callback,
-			 directory);
-	}
+	gnome_vfs_async_get_file_info
+		(&directory->details->get_info_in_progress,
+		 &fake_list,
+		 get_slow_mime_type
+		 ? (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+		    | GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE
+		    | GNOME_VFS_FILE_INFO_FOLLOW_LINKS)
+		 : (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+		    | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
+		 get_info_callback,
+		 directory);
 	gnome_vfs_uri_unref (vfs_uri);
 }
 
@@ -2569,6 +2698,7 @@ activation_uri_done (NautilusDirectory *directory,
 	g_free (file->details->activation_uri);
 	file->details->activation_uri = g_strdup (uri);
 
+	async_job_end ();
 	nautilus_directory_async_state_changed (directory);
 }
 
@@ -2656,7 +2786,7 @@ activation_uri_gmc_link_read_more_callback (GnomeVFSFileSize bytes_read,
 }
 
 static void
-start_getting_activation_uris (NautilusDirectory *directory)
+activation_uri_start (NautilusDirectory *directory)
 {
 	NautilusFile *file;
 	char *mime_type, *uri;
@@ -2676,7 +2806,7 @@ start_getting_activation_uris (NautilusDirectory *directory)
 		}
 
 		/* The count is not wanted, so stop it. */
-		cancel_get_activation_uri (directory);
+		activation_uri_cancel (directory);
 	}
 
 	/* Figure out which file to get activation_uri for. */
@@ -2687,12 +2817,16 @@ start_getting_activation_uris (NautilusDirectory *directory)
 		return;
 	}
 
+	if (!async_job_start (directory)) {
+		return;
+	}
+
 	/* Figure out if it is a link. */
 	mime_type = nautilus_file_get_mime_type (file);
 	gmc_style_link = nautilus_strcasecmp (mime_type, "application/x-gmc-link") == 0;
 	g_free (mime_type);
 	nautilus_style_link = nautilus_file_is_nautilus_link (file);
-
+	
 	/* If it's not a link we are done. If it is, we need to read it. */
 	if (!(gmc_style_link || nautilus_style_link)) {
 		activation_uri_done (directory, file, NULL);
@@ -2713,7 +2847,6 @@ start_getting_activation_uris (NautilusDirectory *directory)
 				 directory);
 		}
 		g_free (uri);
-
 	}
 }
 
@@ -2721,34 +2854,28 @@ static void
 start_or_stop_io (NautilusDirectory *directory)
 {
 	/* Start or stop getting file info. */
-	start_getting_file_info (directory);
+	file_info_start (directory);
 
 	/* Start or stop reading the metafile. */
-	if (is_anyone_waiting_for_metafile (directory)) {
-		nautilus_directory_request_read_metafile (directory);
-	}
+	metafile_read_start (directory);
 
 	/* Start or stop reading files. */
-	if (nautilus_directory_is_anyone_monitoring_file_list (directory)) {
-		start_monitoring_file_list (directory);
-	} else {
-		nautilus_directory_stop_monitoring_file_list (directory);
-	}
+	file_list_start (directory);
 
 	/* Start or stop getting directory counts. */
-	start_getting_directory_counts (directory);
+	directory_count_start (directory);
 	deep_count_start (directory);
 
 	/* Start or stop getting mime lists. */
 	mime_list_start (directory);
 
 	/* Start or stop getting top left pieces of files. */
-	start_getting_top_lefts (directory);
+	top_left_start (directory);
 
 	/* Start or stop getting activation URIs, which includes
 	 * reading the contents of Nautilus and GMC link files.
 	 */
-	start_getting_activation_uris (directory);
+	activation_uri_start (directory);
 }
 
 /* Call this when the monitor or call when ready list changes,
@@ -2769,4 +2896,29 @@ nautilus_directory_async_state_changed (NautilusDirectory *directory)
 		start_or_stop_io (directory);
 	} while (call_ready_callbacks (directory));
 	nautilus_directory_unref (directory);
+
+	/* Check if any directories should wake up. */
+	async_job_wake_up ();
+}
+
+void
+nautilus_directory_cancel (NautilusDirectory *directory)
+{
+	/* Arbitrary order (kept alphabetical). */
+	activation_uri_cancel (directory);
+	deep_count_cancel (directory);
+	directory_count_cancel (directory);
+	file_info_cancel (directory);
+	file_list_cancel (directory);
+	metafile_read_cancel (directory);
+	mime_list_cancel (directory);
+	top_left_cancel (directory);
+
+	/* We aren't waiting for anything any more. */
+	if (waiting_directories != NULL) {
+		g_hash_table_remove (waiting_directories, directory);
+	}
+
+	/* Check if any directories should wake up. */
+	async_job_wake_up ();
 }

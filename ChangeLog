@@ -1,3 +1,80 @@
+2000-10-17  Darin Adler  <darin@eazel.com>
+
+	* check-FIXME.pl: Skip the macros directory.
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(async_job_start), (async_job_end), (get_one_value_callback),
+	(get_one_value), (async_job_wake_up): Add new calls that limit the
+	number of async. jobs done at once.
+	(directory_count_cancel), (deep_count_cancel), (mime_list_cancel),
+	(top_left_cancel), (activation_uri_cancel), (file_info_cancel),
+	(metafile_read_cancel), (metafile_read_done): End the async. job
+	if it's cancelled.
+	(metafile_read_try_public_metafile), (metafile_read_restart):
+	Changed the old metafile_read_start function's name to
+	metafile_read_restart since it's used on the second try.
+	(is_anyone_waiting_for_metafile), (metafile_read_start): Move the
+	logic about whether to start reading into this function to make it
+	more like the other jobs. Also start the async. job.
+	(file_list_cancel): Changed name for consistency and end the
+	async. job.
+	(directory_count_callback): End the async. job.
+	(start_monitoring_file_list): Start the async job.
+	(file_list_start): Moved logic about when to start loading the file
+	list into this function to make it more like other jobs.
+	(directory_count_start): Renamed to make it more like other jobs
+	and start the async. job.
+	(deep_count_callback): End the async. job.
+	(deep_count_start): Start the async. job.
+	(mime_list_callback): End the async. job.
+	(mime_list_start): Start the async. job.
+	(top_left_read_done): End the async. job.
+	(top_left_start): Start the async. job.
+	(get_info_callback): End the async. job.
+	(file_info_start): Start the async. job.
+	(activation_uri_done): End the async. job.
+	(activation_uri_start): Start the async. job.
+	(nautilus_directory_async_state_changed): Wake up directories that
+	may have breathing from from all the cancellation.
+	(nautilus_directory_cancel): Moved the cancelling code down here,
+	remove a directory from the waiting list when it goes, and also
+	wake up directories that may have breathing room from all the
+	cancellation.
+	
+	* libnautilus-extensions/nautilus-directory-private.h: Remove
+	request_read_metafile from the header.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_destroy): Eliminate the call to
+	nautilus_directory_stop_monitoring_file_list since that's now
+	handled by nautilus_directory_cancel.
+	
+	* libnautilus-extensions/nautilus-file-private.h: Removed the
+	got_*_mime_type variables since they are the same as *_mime_type
+	!= NULL.
+	
+	* libnautilus-extensions/nautilus-file.c: (destroy): Get rid of
+	checks for NULL before calling g_free.
+	(nautilus_file_update_info): Replace == FALSE with !. Simplified
+	some tortuous logic by getting rid of checks for NULL that weren't
+	needed and booleans that weren't needed.
+	(get_either_mime_type): Add helper to make it easier to avoid
+	confusion between default and slow MIME type.
+	(nautilus_file_compare_by_type): Use get_either_mime_type so it
+	works when default MIME type is NULL.
+	(nautilus_file_get_type_as_string): Use get_either_mime_type so it
+	works when default MIME type is NULL.
+	(nautilus_file_get_slow_mime_type): Simplified logic. Also got rid
+	of "application/nonono" which was left here by accident.
+	(nautilus_file_get_mime_type): Simplified logic and use
+	get_either_mime_type to share code.
+	(nautilus_file_is_mime_type): Simplified logic and use
+	get_either_mime_type to share code.
+	
+	* src/file-manager/fm-directory-view.c: Format tweaks.
+
+	* user-guide/C/Makefile.am: Not so much echoing as we install.
+
 2000-10-17  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 3716, Bonobo paths for applications and
@@ -2950,6 +3027,7 @@
 	parameter-failure crash a few levels deep.
 
 2000-10-06  Rebecca Schulman  <rebecka@eazel.com>
+	
 	* libnautilus-extensions/nautilus-directory-async.c:
 	* libnautilus-extensions/nautilus-directory-private.h:
 	(set_up_request_by_file_attributes),
