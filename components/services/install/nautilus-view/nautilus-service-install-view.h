@@ -75,6 +75,7 @@ struct _NautilusServiceInstallViewDetails {
 	int		password_attempts;
 	guint		cylon_timer;
 	int		using_local_file;
+	gboolean	failure;
 };
 
 

@@ -1,3 +1,23 @@
+2000-08-28  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_install_parse_uri), (make_new_status),
+	(turn_cylon_off), (current_progress_bar_complete),
+	(nautilus_service_install_preflight_check),
+	(nautilus_service_install_download_failed),
+	(nautilus_service_install_done), (nautilus_service_install_failed):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.h:
+
+	Add "?version=" checking into the install view url, for
+	bootstrapping the installer.
+	
+	* components/services/nautilus-dependent-shared/shared-service-widg
+	ets.c: (create_label_widget), (create_services_title_widget),
+	(create_services_header_widget):
+
+	Change titlebar font sizes to fit Arlo specifications.
+
 2000-08-28  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-buffered-widget.c:

@@ -315,6 +315,7 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view, G
 {
 	char *p, *q, *package_name;
 	GList *packages = NULL;
+	PackageData *pack;
 
 	*categories = NULL;
 
@@ -353,8 +354,21 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view, G
 	}
 
 	if (*p) {
+		/* version name specified? */
+		q = strchr (p, '?');
+		if (q) {
+			*q++ = 0;
+			if (strncmp (q, "version=", 8) == 0) {
+				q += 8;
+			}
+		}
+
 		package_name = g_strdup (p);
-		packages = g_list_prepend (packages, create_package (package_name, view->details->using_local_file));
+		pack = create_package (package_name, view->details->using_local_file);
+		if (q) {
+			pack->version = g_strdup (q);
+		}
+		packages = g_list_prepend (packages, pack);
 		g_free (package_name);
 	}
 
@@ -404,7 +418,7 @@ make_new_status (NautilusServiceInstallView *view)
 		gtk_table_attach (GTK_TABLE (view->details->message_box), left, 0, 1, i-1, i,
 				  GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0, 12, 4);
 		gtk_table_attach (GTK_TABLE (view->details->message_box), right, 1, 2, i-1, i,
-				  0, 0, 12, 4);
+				  GTK_EXPAND, 0, 12, 4);
 	}
 
 	/* new entries */
@@ -422,7 +436,7 @@ make_new_status (NautilusServiceInstallView *view)
 
 	right = gtk_progress_bar_new ();
 	gtk_table_attach (GTK_TABLE (view->details->message_box), right, 1, 2, STATUS_ROWS-1, STATUS_ROWS,
-			  0, 0, 12, 4);
+			  GTK_EXPAND, 0, 12, 4);
 	gtk_widget_show (right);
 	view->details->message_right = g_list_append (view->details->message_right, right);
 
@@ -450,6 +464,17 @@ spin_cylon (NautilusServiceInstallView *view)
 	return TRUE;
 }
 
+static void
+turn_cylon_off (NautilusServiceInstallView *view, float progress)
+{
+	gtk_progress_set_activity_mode (GTK_PROGRESS (view->details->total_progress_bar), FALSE);
+	gtk_progress_set_percentage (GTK_PROGRESS (view->details->total_progress_bar), progress);
+	if (view->details->cylon_timer) {
+		gtk_timeout_remove (view->details->cylon_timer);
+		view->details->cylon_timer = 0;
+	}
+}
+
 /* replace the current progress bar (in the message box) with a centered label saying "Complete!" */
 static void
 current_progress_bar_complete (NautilusServiceInstallView *view)
@@ -471,7 +496,7 @@ current_progress_bar_complete (NautilusServiceInstallView *view)
 	nautilus_gtk_widget_set_font (right, font);
 	gtk_label_set_justify (GTK_LABEL (right), GTK_JUSTIFY_CENTER);
 	gtk_table_attach (GTK_TABLE (view->details->message_box), right, 1, 2, STATUS_ROWS-1, STATUS_ROWS,
-			  GTK_EXPAND | GTK_FILL, 0, 12, 4);
+			  GTK_EXPAND, 0, 12, 4);
 	gtk_widget_set_usize (right, width, height);
 	gtk_widget_show (right);
 	gdk_font_unref (font);
@@ -568,8 +593,7 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, int total_by
 	view->details->current_package = 0;
 
 	/* turn off the cylon and show "real" progress */
-	gtk_progress_set_activity_mode (GTK_PROGRESS (view->details->total_progress_bar), FALSE);
-	gtk_progress_set_percentage (GTK_PROGRESS (view->details->total_progress_bar), 0.0);
+	turn_cylon_off (view, 0.0);
 }
 
 
@@ -579,10 +603,7 @@ nautilus_service_install_download_failed (EazelInstallCallback *cb, const char *
 {
 	char *out;
 
-	if (view->details->cylon_timer) {
-		gtk_timeout_remove (view->details->cylon_timer);
-		view->details->cylon_timer = 0;
-	}
+	turn_cylon_off (view, 0.0);
 
 	out = g_strdup_printf (_("Download of package %s failed!"), name);
 	show_overall_feedback (view, out);
@@ -639,27 +660,41 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 }
 
 static void
-nautilus_service_install_done (EazelInstallCallback *cb, NautilusServiceInstallView *view)
+nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, NautilusServiceInstallView *view)
 {
-	if (view->details->cylon_timer) {
-		gtk_timeout_remove (view->details->cylon_timer);
-		view->details->cylon_timer = 0;
+	if (view->details->failure) {
+		success = FALSE;
+		view->details->failure = FALSE;
+		/* we have already indicated failure elsewhere.  good day to you, sir. */
+		return;
 	}
 
-	show_overall_feedback (view, _("Installation complete!"));
+	turn_cylon_off (view, success ? 1.0 : 0.0);
+
+	if (success) {
+		show_overall_feedback (view, _("Installation complete!"));
+	} else {
+		show_overall_feedback (view, _("Installation failed!  :("));
+	}
 }
 
 /* FIXME -- need to show whole dep tree here */
 static void
 nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *pack, NautilusServiceInstallView *view)
 {
-	if (view->details->cylon_timer) {
-		gtk_timeout_remove (view->details->cylon_timer);
-		view->details->cylon_timer = 0;
+	turn_cylon_off (view, 0.0);
+
+	/* override the "success" result for install_done signal */
+	view->details->failure = TRUE;
+
+	if (pack->status == PACKAGE_ALREADY_INSTALLED) {
+		show_overall_feedback (view, _("This package has already been installed."));
+		return;
 	}
 
 	show_overall_feedback (view, _("Installation failed!! :( :( :("));
 	g_message ("I am sad.");
+
 }
 
 
