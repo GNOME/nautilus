@@ -533,11 +533,6 @@ fewer_options_callback (GtkObject *object,
 	new_length = g_slist_length (bar->details->search_criteria);
 	g_assert (new_length + 1 == old_length);
 
-	/* FIXME bugzilla.eazel.com 2519: the following is pretty much
-	   evil since it relies on the run-time widget hierarchy of
-	   the nautilus toolbar.  Any better fix is welcome.  */
-	gtk_widget_queue_resize (GTK_WIDGET (bar->details->bar_container)->parent->parent->parent->parent->parent->parent->parent->parent);
-
 	update_dynamic_buttons_state (bar);
 	g_slist_foreach (bar->details->search_criteria,
 			 update_criteria_choices,
