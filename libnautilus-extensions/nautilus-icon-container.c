@@ -897,7 +897,7 @@ start_rubberbanding (NautilusIconContainer *container,
 		 	"y1", band_info->start_y,
 		 	"x2", band_info->start_x,
 		 	"y2", band_info->start_y,
-		 	"fill_color_rgba", 0x77bbdd80,
+		 	"fill_color_rgba", 0x77bbdd40,
 		 	"outline_color_rgba", 0x77bbddFF,
 		 	"width_pixels", 1,
 		 	NULL);

@@ -1106,21 +1106,20 @@ icon_container_activate_callback (NautilusIconContainer *container,
 
 static gint play_file(NautilusFile *file)
 {
-	char *file_uri, *mime_type, *player;
+	char *file_uri, *mime_type;
 	
 	file_uri = nautilus_file_get_uri(file);
 	mime_type = nautilus_file_get_mime_type(file);
-	
-	if (!nautilus_strcmp(mime_type, "audio/x-mp3"))
-		player = "mpg123";
-	else
-		player = "play";
-		
+			
 	mp3_pid = fork ();
 	if (mp3_pid == (pid_t) 0) {
 		/* set the group (session) id to this process for future killing */
 		setsid();
-		execlp (player, player, file_uri + 7, NULL);
+		if (!nautilus_strcmp(mime_type, "audio/x-mp3"))
+			execlp ("mpg123", "mpg123", "-q", file_uri + 7, NULL);
+		else
+			execlp ("play", "play", file_uri + 7, NULL);
+		
 		_exit (0);
 	}
 

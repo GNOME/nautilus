@@ -1,3 +1,14 @@
+2000-05-31  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(start_rubberbanding):
+	at Susan's suggestion, made the selection box 25% opaque instead
+	of 50% opaque in anti-aliased mode.
+	
+	* src/file-manager/fm-icon-view.c: (play_file):
+	added the "-q" option to mpg123 invocation so it doesn't spew
+	stuff to standard output
+
 2000-05-31  John Sullivan  <sullivan@eazel.com>
 
 	* src/file-manager/fm-directory-view.c: 
