@@ -149,18 +149,19 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 static char *                     
 nautilus_complex_search_bar_get_location  (NautilusComplexSearchBar *bar)
 {
-	char *location;
+	return "file:///tmp";
+	/* char *location;
 	NautilusSearchBarCriterionList *criterion;
 
 	g_return_val_if_fail (bar->details->search_criteria != NULL, "search:[file:///]");
-	location = g_strdup ("search:[file:///]");
-	for (criterion = bar->details->search_criteria; criterion != NULL; criterion = criterion->next) {
-		location = g_strconcat (location, "");
-	}
-	return "fixme";
+	   location = g_strdup ("search:[file:///]");
+	   for (criterion = bar->details->search_criteria; criterion != NULL; criterion = criterion->next) {
+	   location = g_strconcat (location, "");
+	   }
+	   return "fixme"; */
+	
+}		
 
-
-}
 static void                       
 nautilus_complex_search_bar_set_search_controls (NautilusSearchBar *bar,
 						const char *location)
