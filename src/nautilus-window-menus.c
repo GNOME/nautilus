@@ -862,7 +862,7 @@ append_bookmark_to_menu (NautilusWindow *window,
 	/* Add the status tip */
 	escaped_id = gnome_vfs_escape_string (unique_id);	
 	ui_path = g_strdup_printf ("%s/%s", menu_item_path, escaped_id);
-	nautilus_bonobo_set_tip (window->details->shell_ui, ui_path, _("Go to the specified location"));
+	nautilus_bonobo_set_tip (window->details->shell_ui, ui_path, _("Go to the location specified by this bookmark"));
 	g_free (ui_path);
 			
 	/* Add verb to new bookmark menu item */

@@ -1,3 +1,19 @@
+2000-11-07  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 4489 (some menu items are missing status bar hints)
+
+	* src/file-manager/fm-directory-view.c:
+	(add_open_with_program_menu_item): New helper function to
+	avoid code duplication; also handles setting tip.
+	(add_open_with_app_bonobo_menu_item),
+	(add_open_with_viewer_bonobo_menu_item): Use helper function
+	and construct tips to pass in for apps & viewers in "Open
+	With" submenu.
+	* src/file-manager/nautilus-directory-view-ui.xml: Add a tip
+	to "Open With" menu item itself.
+	* src/nautilus-window-menus.c: (append_bookmark_to_menu):
+	Tweaked wording of tip used for bookmarks.
+
 2000-11-07  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-operations.h:

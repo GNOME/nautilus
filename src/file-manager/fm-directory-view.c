@@ -3232,7 +3232,40 @@ bonobo_open_location_with_viewer_callback (BonoboUIComponent *component, gpointe
 	switch_location_and_view (launch_parameters->identifier,
 				  launch_parameters->uri,
 				  launch_parameters->directory_view);
-}		
+}
+
+static void
+add_open_with_program_menu_item (BonoboUIComponent *ui,
+				 const char *parent_path,
+				 const char *label,
+				 const char *tip,
+				 int index,
+				 gpointer callback,
+				 gpointer callback_data,
+				 GDestroyNotify destroy_notify)
+{
+	char *escaped_label, *verb_name, *item_path;
+	char *item_id;
+	
+	escaped_label = nautilus_str_double_underscores (label);
+
+	item_id = g_strdup_printf ("program%d", index);
+	nautilus_bonobo_add_menu_item (ui, item_id,
+				       parent_path,
+				       escaped_label, 
+				       NULL);
+	g_free (escaped_label);
+
+	item_path = g_strconcat (parent_path, "/", item_id, NULL);
+	g_free (item_id);
+
+	nautilus_bonobo_set_tip (ui, item_path, tip);
+	g_free (item_path);
+	
+	verb_name = nautilus_bonobo_get_menu_item_verb_name (label);
+	bonobo_ui_component_add_verb_full (ui, verb_name, callback, callback_data, destroy_notify);	   
+	g_free (verb_name);
+}				 
 
 static void
 add_open_with_app_bonobo_menu_item (BonoboUIComponent *ui,
@@ -3242,22 +3275,18 @@ add_open_with_app_bonobo_menu_item (BonoboUIComponent *ui,
 				    gpointer callback_data,
 				    GDestroyNotify destroy_notify)
 {
-	char *escaped_label, *verb_name;
-	char *item_id;
+	char *tip;
 	
-	escaped_label = nautilus_str_double_underscores (label);
-
-	item_id = g_strdup_printf ("app%d", index);
-	nautilus_bonobo_add_menu_item (ui, item_id,
-				       FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER,
-				       escaped_label, NULL);
-	g_free (item_id);
-	
-	verb_name = nautilus_bonobo_get_menu_item_verb_name (label);
-	bonobo_ui_component_add_verb_full (ui, verb_name, callback, callback_data, destroy_notify);
-				   	   
-	g_free (escaped_label);
-	g_free (verb_name);
+	tip = g_strdup_printf (_("Use \"%s\" to open the selected item"), label);
+	add_open_with_program_menu_item (ui, 
+					 FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER,
+					 label,
+					 tip,
+					 index,
+					 callback,
+					 callback_data,
+					 destroy_notify);
+	g_free (tip);					 
 }
 
 static void
@@ -3268,21 +3297,18 @@ add_open_with_viewer_bonobo_menu_item (BonoboUIComponent *ui,
 				       gpointer callback_data,
 				       GDestroyNotify destroy_notify)
 {
-	char *escaped_label, *verb_name, *item_id;
+	char *tip;
 	
-	escaped_label = nautilus_str_double_underscores (label);
-
-	item_id = g_strdup_printf ("viewer%d", index);
-	nautilus_bonobo_add_menu_item (ui,item_id,
-				       FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER,
-				       escaped_label, NULL);
-	g_free (item_id);
-	
-	verb_name = g_strdup_printf ("verb:%s", label);
-	bonobo_ui_component_add_verb_full (ui, verb_name, callback, callback_data, destroy_notify);
-
-	g_free (escaped_label);
-	
+	tip = g_strdup_printf (_("Use \"%s\" to view the selected item"), label);
+	add_open_with_program_menu_item (ui, 
+					 FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER,
+					 label,
+					 tip,
+					 index,
+					 callback,
+					 callback_data,
+					 destroy_notify);
+	g_free (tip);
 }
 
 static void
