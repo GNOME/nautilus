@@ -1,5 +1,17 @@
 2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_widget_has_attached_background):
+	* libnautilus-extensions/nautilus-background.h:
+
+	New function to test whether a GtkWidget has an attatched
+	NautilusBackground.  This is needed because of the
+	nautilus_get_widget_background will implicitly attatch a
+	background.  This creates serious problems for widget hierarchies
+	where the only interesting background is that of an ancestor.
+	
+2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* librsvg/test-ft.c: (main):
 
 	Update for changes in librsvg glyph_xy return values.

@@ -938,6 +938,14 @@ nautilus_get_widget_background (GtkWidget *widget)
 }
 
 gboolean
+nautilus_widget_has_attached_background (GtkWidget *widget)
+{
+	g_return_val_if_fail (GTK_IS_WIDGET (widget), FALSE);
+
+	return (gtk_object_get_data (GTK_OBJECT (widget), "nautilus_background") != NULL);
+}
+
+gboolean
 nautilus_background_is_too_complex_for_gtk_style (NautilusBackground *background)
 {
 	if (background == NULL) {
