@@ -1,3 +1,28 @@
+2000-10-20  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_packagedatastruct_from_packagedata),
+	(packagedata_from_corba_packagedatastruct):
+	* components/services/install/lib/eazel-install-protocols.c:
+	(get_url_for_package):
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_new), (packagedata_copy),
+	(packagedata_fill_from_rpm_header), (packagedata_destroy):
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_package), (eazel_install_packagedata_to_xml):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (add_padding_to_box), (generate_install_form),
+	(show_overall_feedback), (make_new_status),
+	(current_progress_bar_complete),
+	(nautilus_service_install_downloading),
+	(nautilus_service_install_installing),
+	(nautilus_service_install_view_update_from_uri):
+
+	Add package "summary" field to store the RPM one-line summary
+	field (we want to show it in the installer).
+
 2000-10-20  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:

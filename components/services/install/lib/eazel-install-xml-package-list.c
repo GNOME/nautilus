@@ -67,7 +67,8 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 		rv->bytesize = 0;
 	}
 
-	rv->description = g_strdup (xml_get_value (package, "SUMMARY"));
+	rv->summary = g_strdup (xml_get_value (package, "SUMMARY"));
+	rv->description = g_strdup (xml_get_value (package, "DESCRIPTION"));
 	rv->distribution = trilobite_get_distribution ();
 	if (set_toplevel) {
 		rv->toplevel = TRUE;
@@ -495,7 +496,8 @@ eazel_install_packagedata_to_xml (const PackageData *pack, char *title, xmlNodeP
 	node = xmlNewChild (root, NULL, "VERSION", pack->version);
 	node = xmlNewChild (root, NULL, "MINOR", pack->minor);
 	node = xmlNewChild (root, NULL, "ARCH", pack->archtype);
-	node = xmlNewChild (root, NULL, "SUMMARY", pack->description);
+	node = xmlNewChild (root, NULL, "SUMMARY", pack->summary);
+	node = xmlNewChild (root, NULL, "DESCRIPTION", pack->description);
 	node = xmlNewChild (root, NULL, "STATUS", packagedata_status_enum_to_str (pack->status));
 	node = xmlNewChild (root, NULL, "MODSTATUS", packagedata_modstatus_enum_to_str (pack->modify_status));
 

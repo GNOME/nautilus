@@ -39,7 +39,7 @@
 
 #include <libtrilobite/trilobite-core-utils.h>
 
-#undef DEBUG_PACKAGE_ALLOCS 
+#define DEBUG_PACKAGE_ALLOCS 
 
 #ifdef DEBUG_PACKAGE_ALLOCS
 static int package_allocs = 0;
@@ -169,6 +169,7 @@ packagedata_new ()
 	pack->minor = NULL;
 	pack->archtype = NULL;
 	pack->source_package = FALSE;
+	pack->summary = NULL;
 	pack->description = NULL;
 	pack->bytesize = 0;
 	pack->distribution = trilobite_get_distribution ();
@@ -253,6 +254,7 @@ packagedata_copy (const PackageData *pack)
 	result->version = g_strdup (pack->version);
 	result->minor = g_strdup (pack->minor);
 	result->archtype = g_strdup (pack->archtype);
+	result->summary = g_strdup (pack->summary);
 	result->description = g_strdup (pack->description);
 	result->filename = g_strdup (pack->filename);
 	result->remote_url = g_strdup (pack->remote_url);
@@ -325,6 +327,12 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 			(void **) &tmp, NULL);
 	g_free (pack->description);
 	pack->description = g_strdup (tmp);
+
+	headerGetEntry (*hd,
+			RPMTAG_SUMMARY, NULL,
+			(void **) &tmp, NULL);
+	g_free (pack->summary);
+	pack->summary = g_strdup (tmp);
 
 	pack->packsys_struc = (gpointer)hd;
 
@@ -457,6 +465,8 @@ packagedata_destroy (PackageData *pack, gboolean deep)
 	pack->minor = NULL;
 	g_free (pack->archtype);
 	pack->archtype = NULL;
+	g_free (pack->summary);
+	pack->summary = NULL;
 	g_free (pack->description);
 	pack->description = NULL;
 	pack->bytesize = 0;

@@ -86,6 +86,18 @@ static void       show_overall_feedback                          (NautilusServic
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusServiceInstallView, nautilus_service_install_view, GTK_TYPE_EVENT_BOX)
 
 
+/* gtk rulez */
+static void
+add_padding_to_box (GtkWidget *box, int pad_x, int pad_y)
+{
+	GtkWidget *filler;
+
+	filler = gtk_label_new ("");
+	gtk_widget_set_usize (filler, pad_x ? pad_x : 1, pad_y ? pad_y : 1);
+	gtk_widget_show (filler);
+	gtk_box_pack_start (GTK_BOX (box), filler, FALSE, FALSE, 0);
+}
+
 static void
 generate_install_form (NautilusServiceInstallView	*view) 
 {
@@ -106,45 +118,41 @@ generate_install_form (NautilusServiceInstallView	*view)
 
 	/* Add package information */
 
+	add_padding_to_box (view->details->form, 0, 16);
+
 	/* Package Name */
 	temp_box = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 0);
 	gtk_widget_show (temp_box);
-	view->details->package_name = gtk_label_new (" ");
-	gtk_label_set_justify (GTK_LABEL (view->details->package_name), GTK_JUSTIFY_LEFT);
+	view->details->package_name = nautilus_label_new (" ");
+	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->package_name), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment (GTK_MISC (view->details->package_name), 0.0, 0.0);
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->package_name, FALSE, FALSE, 15);
-	font = nautilus_font_factory_get_font_from_preferences (20);
-	nautilus_gtk_widget_set_font (view->details->package_name, font);
+	nautilus_label_set_font_from_components (NAUTILUS_LABEL (view->details->package_name), "helvetica", "bold",
+						 NULL, NULL);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->package_name), 18);
 	gtk_widget_show (view->details->package_name);
-	gdk_font_unref (font);
 
 	/* Package Description */
 	temp_box = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 2);
 	gtk_widget_show (temp_box);
-	view->details->package_details = gtk_label_new (" ");
-	gtk_misc_set_alignment (GTK_MISC (view->details->package_details), 0.0, 0.0);
-	gtk_label_set_justify (GTK_LABEL (view->details->package_details), GTK_JUSTIFY_LEFT);
-	gtk_label_set_line_wrap (GTK_LABEL (view->details->package_details), TRUE);
+	view->details->package_details = nautilus_label_new (" ");
+	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->package_details), GTK_JUSTIFY_LEFT);
+	nautilus_label_set_line_wrap (NAUTILUS_LABEL (view->details->package_details), TRUE);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->package_details), 12);
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->package_details, FALSE, FALSE, 15);
-	font = nautilus_font_factory_get_font_from_preferences (12);
-	nautilus_gtk_widget_set_font (view->details->package_details, font);
 	gtk_widget_show (view->details->package_details);
-	gdk_font_unref (font);
 
 	/* Package Version */
 	temp_box = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 2);
 	gtk_widget_show (temp_box);
-	view->details->package_version = gtk_label_new (" ");
-	gtk_misc_set_alignment (GTK_MISC (view->details->package_version), 0.0, 0.0);
-	gtk_label_set_justify (GTK_LABEL (view->details->package_version), GTK_JUSTIFY_LEFT);
+	view->details->package_version = nautilus_label_new (" ");
+	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->package_version), GTK_JUSTIFY_LEFT);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->package_version), 12);
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->package_version, FALSE, FALSE, 15);
-	font = nautilus_font_factory_get_font_from_preferences (12);
-	nautilus_gtk_widget_set_font (view->details->package_version, font);
 	gtk_widget_show (view->details->package_version);
-	gdk_font_unref (font);
 
 	/* generate the overall progress bar */
 	temp_box = gtk_hbox_new (FALSE, 0);
@@ -158,11 +166,10 @@ generate_install_form (NautilusServiceInstallView	*view)
 	temp_box = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 2);
 	gtk_widget_show (temp_box);
-	view->details->overall_feedback_text = gtk_label_new (" ");
-	font = nautilus_font_factory_get_font_from_preferences (10);
-	nautilus_gtk_widget_set_font (view->details->overall_feedback_text, font);
+	view->details->overall_feedback_text = nautilus_label_new (" ");
+	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->overall_feedback_text), GTK_JUSTIFY_LEFT);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->overall_feedback_text), 10);
 	gtk_box_pack_start (GTK_BOX (temp_box), view->details->overall_feedback_text, FALSE, FALSE, 30);
-	gdk_font_unref (font);
 
 	/* filler blob to separate the top from the bottom */
 	gtk_box_pack_start (GTK_BOX (view->details->form), gtk_label_new (""), TRUE, FALSE, 0);
@@ -208,10 +215,8 @@ generate_install_form (NautilusServiceInstallView	*view)
 static void
 show_overall_feedback (NautilusServiceInstallView	*view, char	*progress_message)
 {
-
-	gtk_label_set_text (GTK_LABEL (view->details->overall_feedback_text), progress_message);
+	nautilus_label_set_text (NAUTILUS_LABEL (view->details->overall_feedback_text), progress_message);
 	gtk_widget_show (view->details->overall_feedback_text);
-
 }
 
 static void
@@ -413,7 +418,6 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view, G
 static void
 make_new_status (NautilusServiceInstallView *view)
 {
-	GdkFont *font;
 	GtkWidget *left, *right;
 	int i;
 
@@ -444,15 +448,11 @@ make_new_status (NautilusServiceInstallView *view)
 	}
 
 	/* new entries */
-	left = gtk_label_new ("");
-	font = nautilus_font_factory_get_font_from_preferences (12);
-	nautilus_gtk_widget_set_font (left, font);
-	gtk_misc_set_alignment (GTK_MISC (left), 0.0, 0.0);
+	left = nautilus_label_new ("");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (left), 12);
+	nautilus_label_set_text_justification (NAUTILUS_LABEL (left), GTK_JUSTIFY_LEFT);
 	gtk_table_attach (GTK_TABLE (view->details->message_box), left, 0, 1, STATUS_ROWS-1, STATUS_ROWS,
 			  GTK_EXPAND | GTK_FILL | GTK_SHRINK, 0, 12, 4);
-	gtk_label_set_line_wrap (GTK_LABEL (left), FALSE);
-	gtk_label_set_justify (GTK_LABEL (left), GTK_JUSTIFY_LEFT);
-	gdk_font_unref (font);
 	gtk_widget_show (left);
 	view->details->message_left = g_list_append (view->details->message_left, left);
 
@@ -502,7 +502,6 @@ static void
 current_progress_bar_complete (NautilusServiceInstallView *view, const char *text)
 {
 	GtkWidget *right;
-	GdkFont *font;
 	int width, height;
 
 	right = (GtkWidget *) g_list_nth_data (view->details->message_right, STATUS_ROWS-1);
@@ -513,16 +512,14 @@ current_progress_bar_complete (NautilusServiceInstallView *view, const char *tex
 	gtk_container_remove (GTK_CONTAINER (view->details->message_box), right);
 	view->details->current_progress_bar = NULL;
 
-	right = gtk_label_new (text);
+	right = nautilus_label_new (text);
 	view->details->message_right = g_list_append (view->details->message_right, right);
-	font = nautilus_font_factory_get_font_from_preferences (12);
-	nautilus_gtk_widget_set_font (right, font);
-	gtk_label_set_justify (GTK_LABEL (right), GTK_JUSTIFY_CENTER);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (right), 12);
+	nautilus_label_set_text_justification (NAUTILUS_LABEL (right), GTK_JUSTIFY_CENTER);
 	gtk_table_attach (GTK_TABLE (view->details->message_box), right, 1, 2, STATUS_ROWS-1, STATUS_ROWS,
 			  GTK_EXPAND, 0, 12, 4);
 	gtk_widget_set_usize (right, width, height);
 	gtk_widget_show (right);
-	gdk_font_unref (font);
 }
 
 
@@ -572,7 +569,7 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 		make_new_status (view);
 		gtk_progress_set_percentage (GTK_PROGRESS (view->details->current_progress_bar), 0.0);
 		out = g_strdup_printf (_("Downloading package %s ..."), root_name);
-		gtk_label_set_text (GTK_LABEL (view->details->current_feedback_text), out);
+		nautilus_label_set_text (NAUTILUS_LABEL (view->details->current_feedback_text), out);
 		g_free (out);
 	} else if (amount == total) {
 		/* done!  turn progress bar into a label */
@@ -588,7 +585,6 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 			spin_cylon (view);
 		}
 	}
-
 usleep (10000);
 }
 
@@ -750,22 +746,25 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 		make_new_status (view);
 		gtk_progress_set_percentage (GTK_PROGRESS (view->details->current_progress_bar), 0.0);
 		out = g_strdup_printf (_("Installing package %s ..."), pack->name);
-		gtk_label_set_text (GTK_LABEL (view->details->current_feedback_text), out);
+		nautilus_label_set_text (NAUTILUS_LABEL (view->details->current_feedback_text), out);
 		g_free (out);
 
 		view->details->current_package = current_package;
 
 		if (current_package == 1) {
+g_warning ("hey, summary: '%s'", pack->summary);
 			/* first package is the main one.  update top info, now that we know it */
 			out = g_strdup_printf (_("Installing \"%s\""), pack->name);
-			gtk_label_set_text (GTK_LABEL (view->details->package_name), out);
+			nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_name), out);
 			g_free (out);
 			if (strchr (pack->description, '\n') != NULL) {
-				gtk_label_set_line_wrap (GTK_LABEL (view->details->package_details), FALSE);
+				nautilus_label_set_line_wrap (NAUTILUS_LABEL (view->details->package_details), FALSE);
+			} else {
+				nautilus_label_set_line_wrap (NAUTILUS_LABEL (view->details->package_details), TRUE);
 			}
-			gtk_label_set_text (GTK_LABEL (view->details->package_details), pack->description);
+			nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_details), pack->description);
 			out = g_strdup_printf (_("Version: %s"), pack->version);
-			gtk_label_set_text (GTK_LABEL (view->details->package_version), out);
+			nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_version), out);
 			g_free (out);
 		}
 	}
@@ -778,6 +777,7 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 	if ((package_progress == package_total) && (package_total > 0)) {
 		current_progress_bar_complete (view, _("Complete!"));
 	}
+usleep (30000);
 }
 
 static void
@@ -1066,7 +1066,11 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	} else {
 		out = g_strdup_printf (_("Downloading some package"));
 	}
+#if 0
 	gtk_label_set_text (GTK_LABEL (view->details->package_name), out);
+#else
+	nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_name), out);
+#endif
 	g_free (out);
 
 	CORBA_exception_init (&ev);

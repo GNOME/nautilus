@@ -706,6 +706,9 @@ get_url_for_package  (EazelInstall *service,
 			if (! out_package->version) {
 				out_package->version = g_strdup (pack->version);
 			}
+			if (! out_package->summary) {
+				out_package->summary = g_strdup (pack->summary);
+			}
 			if (! out_package->description) {
 				out_package->description = g_strdup (pack->description);
 			}
