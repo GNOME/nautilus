@@ -42,27 +42,6 @@ enum {
 
 static void    e_paned_class_init (EPanedClass  *klass);
 static void    e_paned_init       (EPaned       *paned);
-static void    e_paned_set_arg    (GtkObject      *object,
-				     GtkArg         *arg,
-				     guint           arg_id);
-static void    e_paned_get_arg    (GtkObject      *object,
-				     GtkArg         *arg,
-				     guint           arg_id);
-static void    e_paned_realize    (GtkWidget      *widget);
-static void    e_paned_map        (GtkWidget      *widget);
-static void    e_paned_unmap      (GtkWidget      *widget);
-static void    e_paned_unrealize  (GtkWidget      *widget);
-static gint    e_paned_expose     (GtkWidget      *widget,
-				     GdkEventExpose *event);
-static void    e_paned_add        (GtkContainer   *container,
-				     GtkWidget      *widget);
-static void    e_paned_remove     (GtkContainer   *container,
-				     GtkWidget      *widget);
-static void    e_paned_forall     (GtkContainer   *container,
-				     gboolean        include_internals,
-				     GtkCallback     callback,
-				     gpointer        callback_data);
-static GtkType e_paned_child_type (GtkContainer   *container);
 
 static GtkContainerClass *parent_class = NULL;
 
@@ -90,41 +69,6 @@ e_paned_get_type (void)
     }
   
   return paned_type;
-}
-
-static void
-e_paned_class_init (EPanedClass *klass)
-{
-  GtkObjectClass *object_class;
-  GtkWidgetClass *widget_class;
-  GtkContainerClass *container_class;
-
-  object_class = (GtkObjectClass *) klass;
-  widget_class = (GtkWidgetClass *) klass;
-  container_class = (GtkContainerClass *) klass;
-
-  parent_class = gtk_type_class (GTK_TYPE_CONTAINER);
-
-  object_class->set_arg = e_paned_set_arg;
-  object_class->get_arg = e_paned_get_arg;
-
-  widget_class->realize = e_paned_realize;
-  widget_class->map = e_paned_map;
-  widget_class->unmap = e_paned_unmap;
-  widget_class->unrealize = e_paned_unrealize;
-  widget_class->expose_event = e_paned_expose;
-  
-  container_class->add = e_paned_add;
-  container_class->remove = e_paned_remove;
-  container_class->forall = e_paned_forall;
-  container_class->child_type = e_paned_child_type;
-
-  klass->handle_shown = NULL;
-
-  gtk_object_add_arg_type("EPaned::handle_size", GTK_TYPE_UINT,
-			  GTK_ARG_READWRITE, ARG_HANDLE_SIZE);
-  gtk_object_add_arg_type("EPaned::quantum", GTK_TYPE_UINT,
-			  GTK_ARG_READWRITE, ARG_QUANTUM);
 }
 
 static GtkType
@@ -320,6 +264,8 @@ e_paned_unrealize (GtkWidget *widget)
     (* GTK_WIDGET_CLASS (parent_class)->unrealize) (widget);
 }
 
+#if GNOME2_CONVERSION_COMPLETE
+
 static gint
 e_paned_expose (GtkWidget      *widget,
 		  GdkEventExpose *event)
@@ -361,6 +307,8 @@ e_paned_expose (GtkWidget      *widget,
 
   return FALSE;
 }
+
+#endif
 
 void
 e_paned_add1 (EPaned  *paned,
@@ -635,4 +583,41 @@ e_paned_quantized_size(EPaned *paned,
   quantization /= paned->quantum;
   quantization *= paned->quantum;
   return paned->old_child1_size + quantization;
+}
+
+static void
+e_paned_class_init (EPanedClass *klass)
+{
+  GtkObjectClass *object_class;
+  GtkWidgetClass *widget_class;
+  GtkContainerClass *container_class;
+
+  object_class = (GtkObjectClass *) klass;
+  widget_class = (GtkWidgetClass *) klass;
+  container_class = (GtkContainerClass *) klass;
+
+  parent_class = gtk_type_class (GTK_TYPE_CONTAINER);
+
+  object_class->set_arg = e_paned_set_arg;
+  object_class->get_arg = e_paned_get_arg;
+
+  widget_class->realize = e_paned_realize;
+  widget_class->map = e_paned_map;
+  widget_class->unmap = e_paned_unmap;
+  widget_class->unrealize = e_paned_unrealize;
+#if GNOME2_CONVERSION_COMPLETE
+  widget_class->expose_event = e_paned_expose;
+#endif
+  
+  container_class->add = e_paned_add;
+  container_class->remove = e_paned_remove;
+  container_class->forall = e_paned_forall;
+  container_class->child_type = e_paned_child_type;
+
+  klass->handle_shown = NULL;
+
+  gtk_object_add_arg_type("EPaned::handle_size", GTK_TYPE_UINT,
+			  GTK_ARG_READWRITE, ARG_HANDLE_SIZE);
+  gtk_object_add_arg_type("EPaned::quantum", GTK_TYPE_UINT,
+			  GTK_ARG_READWRITE, ARG_QUANTUM);
 }

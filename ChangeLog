@@ -1,5 +1,24 @@
 2001-11-06  Darin Adler  <darin@bentspoon.com>
 
+	Did some fixes based on a patch Michael sent me.
+
+	* cut-n-paste-code/widgets/e-paned/e-paned.c:
+	(e_paned_class_init): Turn off e_paned_expose for now.
+	
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_class_init): Marshaller said the
+	parameters were strings, but they were actually pointers to
+	strings.
+	
+	* libnautilus/nautilus-view.c: (queue_incoming_call): Pass
+	servant, not bonobo object.
+	
+	* src/nautilus-view-frame.c: (nautilus_view_frame_init),
+	(attach_view): Switch to eel versions of connect_while_alive
+	functions, since the gtk versions work only on gtk objects.
+
+2001-11-06  Darin Adler  <darin@bentspoon.com>
+
 	* Lots of files.
 	Another GtkObject -> GObject pass.
 

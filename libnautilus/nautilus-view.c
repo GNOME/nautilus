@@ -85,7 +85,7 @@ queue_incoming_call (PortableServer_Servant servant,
 {
 	NautilusView *view;
 
-	view = NAUTILUS_VIEW (bonobo_object_from_servant (bonobo_object));
+	view = NAUTILUS_VIEW (bonobo_object_from_servant (servant));
 
 	nautilus_idle_queue_add (view->details->incoming_queue,
 				 (GFunc) call,

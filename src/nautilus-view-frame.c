@@ -38,6 +38,7 @@
 #include <bonobo/bonobo-control-frame.h>
 #include <bonobo/bonobo-zoomable-frame.h>
 #include <bonobo/bonobo-zoomable.h>
+#include <eel/eel-gobject-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-marshal.h>
@@ -320,14 +321,14 @@ nautilus_view_frame_init (NautilusViewFrame *view)
 
 	view->details->idle_queue = nautilus_idle_queue_new ();
 
-	gtk_signal_connect_object_while_alive (nautilus_signaller_get_current (),
+	eel_signal_connect_object_while_alive (G_OBJECT (nautilus_signaller_get_current ()),
 					       "history_list_changed",
 					       G_CALLBACK (send_history),
-					       GTK_OBJECT (view));
-	gtk_signal_connect_object_while_alive (GTK_OBJECT (nautilus_icon_factory_get ()),
+					       G_OBJECT (view));
+	eel_signal_connect_object_while_alive (G_OBJECT (nautilus_icon_factory_get ()),
 					       "icons_changed",
 					       G_CALLBACK (send_history),
-					       GTK_OBJECT (view));
+					       G_OBJECT (view));
 }
 
 static void
@@ -798,42 +799,42 @@ attach_view (NautilusViewFrame *view,
 
 	widget = bonobo_control_frame_get_widget (view->details->control_frame);
 
-	gtk_signal_connect_object_while_alive
-		(GTK_OBJECT (view->details->view_frame),
+	eel_signal_connect_object_while_alive
+		(G_OBJECT (view->details->view_frame),
 		 "destroy",
-		 G_CALLBACK (view_frame_failed), GTK_OBJECT (view));
-	gtk_signal_connect_object_while_alive
-		(GTK_OBJECT (view->details->view_frame),
+		 G_CALLBACK (view_frame_failed), G_OBJECT (view));
+	eel_signal_connect_object_while_alive
+		(G_OBJECT (view->details->view_frame),
 		 "system_exception",
-		 G_CALLBACK (queue_view_frame_failed), GTK_OBJECT (view));
+		 G_CALLBACK (queue_view_frame_failed), G_OBJECT (view));
 
-	gtk_signal_connect_object_while_alive
-		(GTK_OBJECT (view->details->control_frame),
+	eel_signal_connect_object_while_alive
+		(G_OBJECT (view->details->control_frame),
 		 "system_exception",
-		 G_CALLBACK (queue_view_frame_failed), GTK_OBJECT (view));
+		 G_CALLBACK (queue_view_frame_failed), G_OBJECT (view));
 
-	gtk_signal_connect_while_alive
-		(GTK_OBJECT (widget),
+	eel_signal_connect_while_alive
+		(G_OBJECT (widget),
 		 "remove",
 		 G_CALLBACK (check_socket_gone_callback), view,
-		 GTK_OBJECT (view));
+		 G_OBJECT (view));
 
 	if (view->details->zoomable_frame != NULL) {
-		gtk_signal_connect_object_while_alive
-			(GTK_OBJECT (view->details->zoomable_frame),
+		eel_signal_connect_object_while_alive
+			(G_OBJECT (view->details->zoomable_frame),
 			 "system_exception",
-			 G_CALLBACK (queue_view_frame_failed), GTK_OBJECT (view));
+			 G_CALLBACK (queue_view_frame_failed), G_OBJECT (view));
 
-		gtk_signal_connect_while_alive
-			(GTK_OBJECT (view->details->zoomable_frame),
+		eel_signal_connect_while_alive
+			(G_OBJECT (view->details->zoomable_frame),
 			 "zoom_parameters_changed",
 			 G_CALLBACK (zoom_parameters_changed_callback), view,
-			 GTK_OBJECT (view));
-		gtk_signal_connect_while_alive
-			(GTK_OBJECT (view->details->zoomable_frame),
+			 G_OBJECT (view));
+		eel_signal_connect_while_alive
+			(G_OBJECT (view->details->zoomable_frame),
 			 "zoom_level_changed",
 			 G_CALLBACK (zoom_level_changed_callback), view,
-			 GTK_OBJECT (view));
+			 G_OBJECT (view));
 	}
 
 	gtk_widget_show (widget);

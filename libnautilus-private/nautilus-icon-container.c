@@ -3179,11 +3179,11 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 get_icon_text),
 		                NULL, NULL,
-		                eel_marshal_VOID__POINTER_STRING_STRING,
+		                gtk_marshal_VOID__POINTER_POINTER_POINTER,
 		                G_TYPE_NONE, 3,
-				GTK_TYPE_POINTER,
-				G_TYPE_STRING,
-				G_TYPE_STRING);
+				G_TYPE_POINTER,
+				G_TYPE_POINTER,
+				G_TYPE_POINTER);
 	signals[GET_ICON_URI]
 		= g_signal_new ("get_icon_uri",
 		                G_TYPE_FROM_CLASS (object_class),
