@@ -53,14 +53,18 @@ struct NautilusAdapterDetails {
 static void nautilus_adapter_load_location_callback (NautilusView    *view,
 						     const char      *uri,
 						     NautilusAdapter *adapter);
-
-
 static void nautilus_adapter_stop_loading_callback  (NautilusView    *view,
 						     NautilusAdapter *adapter);
 
 static void nautilus_adapter_open_location_callback (NautilusAdapterEmbedStrategy *strategy,
 						     const char                   *uri,
 						     NautilusAdapter              *adapter);
+
+static void nautilus_adapter_load_underway_callback (NautilusAdapter             *adapter);
+static void nautilus_adapter_load_progress_callback (NautilusAdapter             *adapter,
+						     double                       fraction_complete);
+static void nautilus_adapter_load_complete_callback (NautilusAdapter             *adapter);
+static void nautilus_adapter_load_failed_callback   (NautilusAdapter             *adapter);
 
 
 
@@ -105,10 +109,10 @@ nautilus_adapter_destroy (GtkObject *object)
 {
 	NautilusAdapter *server;
 	
-
 	server = NAUTILUS_ADAPTER (object);
 	
 	if (server->details->load_strategy != NULL) {
+		nautilus_adapter_load_strategy_stop_loading (server->details->load_strategy);
 		gtk_object_unref (GTK_OBJECT (server->details->load_strategy));
 	}
 
@@ -149,8 +153,6 @@ nautilus_adapter_new (Bonobo_Unknown component)
 				   gtk_object_unref,
 				   GTK_OBJECT (adapter));
 
-
-
 	/* Get the class to handle embedding this kind of component. */
 	adapter->details->embed_strategy = nautilus_adapter_embed_strategy_get
 		(component, bonobo_object_corba_objref (BONOBO_OBJECT (bonobo_control_get_ui_handler 
@@ -169,13 +171,39 @@ nautilus_adapter_new (Bonobo_Unknown component)
 	/* Get the class to handle loading this kind of component. */
 
 	adapter->details->load_strategy = nautilus_adapter_load_strategy_get
-		(component, adapter->details->nautilus_view);
+		(component);
 
 	if (adapter->details->load_strategy == NULL) {
 		gtk_object_unref (GTK_OBJECT (adapter));
 		
 		return NULL;
 	}
+
+	/* hook up load strategy signals */
+	gtk_signal_connect_object_while_alive (GTK_OBJECT (adapter->details->load_strategy),
+					       "report_load_underway",
+					       nautilus_adapter_load_underway_callback,
+					       GTK_OBJECT (adapter));
+
+	/* hook up load strategy signals */
+	gtk_signal_connect_object_while_alive (GTK_OBJECT (adapter->details->load_strategy),
+					       "report_load_progress",
+					       nautilus_adapter_load_progress_callback,
+					       GTK_OBJECT (adapter));
+
+	/* hook up load strategy signals */
+	gtk_signal_connect_object_while_alive (GTK_OBJECT (adapter->details->load_strategy),
+					       "report_load_complete",
+					       nautilus_adapter_load_complete_callback,
+					       GTK_OBJECT (adapter));
+
+	/* hook up load strategy signals */
+	gtk_signal_connect_object_while_alive (GTK_OBJECT (adapter->details->load_strategy),
+					       "report_load_failed",
+					       nautilus_adapter_load_failed_callback,
+					       GTK_OBJECT (adapter));
+
+	/* complete the embedding */
 
 	gtk_container_add (GTK_CONTAINER (bin), 
 			   nautilus_adapter_embed_strategy_get_widget (adapter->details->embed_strategy));
@@ -232,4 +260,31 @@ nautilus_adapter_open_location_callback  (NautilusAdapterEmbedStrategy *strategy
 				     uri);
 }
 
+
+
+static void
+nautilus_adapter_load_underway_callback (NautilusAdapter             *adapter)
+{
+	nautilus_view_report_load_underway (adapter->details->nautilus_view);
+}
+
+static void
+nautilus_adapter_load_progress_callback (NautilusAdapter             *adapter,
+					 double                       fraction_complete)
+{
+	nautilus_view_report_load_progress (adapter->details->nautilus_view,
+					    fraction_complete);
+}
+
+static void
+nautilus_adapter_load_complete_callback (NautilusAdapter             *adapter)
+{
+	nautilus_view_report_load_complete (adapter->details->nautilus_view);
+}
+
+static void
+nautilus_adapter_load_failed_callback   (NautilusAdapter             *adapter)
+{
+	nautilus_view_report_load_failed (adapter->details->nautilus_view);
+}
 

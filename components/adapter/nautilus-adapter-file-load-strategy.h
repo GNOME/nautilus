@@ -49,8 +49,7 @@ typedef struct {
 /* GtkObject support */
 GtkType                            nautilus_adapter_file_load_strategy_get_type (void);
 
-NautilusAdapterLoadStrategy       *nautilus_adapter_file_load_strategy_new      (Bonobo_PersistFile  persist_file,
-										 NautilusView       *view);
+NautilusAdapterLoadStrategy       *nautilus_adapter_file_load_strategy_new      (Bonobo_PersistFile  persist_file);
 
 
 #endif /* NAUTILUS_ADAPTER_FILE_LOAD_STRATEGY_H */

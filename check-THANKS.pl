@@ -58,7 +58,8 @@ my %email_map = ('at@ue-spacy.com' => 'tagoh@gnome.gr.jp',
                  'kmaraas@online.no' => 'kmaraas@gnome.org',
                  'kmaraas@gnu.org' => 'kmaraas@gnome.org',
                  'raph@gimp.org' => 'raph@acm.org',
-                 'baulig@suse.de' => 'martin@home-of-linux.org');
+                 'baulig@suse.de' => 'martin@home-of-linux.org'
+                 'linuxfan@ionet.net' => 'josh@eazel.com');
 
 
 # Some ChangeLog lines that carry no credit (incorrect changes that
@@ -178,7 +179,7 @@ if (@uncredited) {
     print "The following people are in the ChangeLog but not credited in THANKS or AUTHORS:\n\n";
 
     foreach my $person (@uncredited) {
-        print "xx ${person}\n";
+        print "${person}\n";
     }
     print "\n";
 }

@@ -1,3 +1,46 @@
+2000-10-02  Maciej Stachowiak  <mjs@eazel.com>
+
+	Fixed bug 3223.
+
+	* components/adapter/nautilus-adapter-file-load-strategy.c:
+	(nautilus_adapter_file_load_strategy_new),
+	(nautilus_adapter_file_load_strategy_load_location):
+	* components/adapter/nautilus-adapter-file-load-strategy.h:
+	* components/adapter/nautilus-adapter-load-strategy.c:
+	(nautilus_adapter_load_strategy_initialize_class),
+	(nautilus_adapter_load_strategy_get),
+	(nautilus_adapter_load_strategy_stop_loading),
+	(nautilus_adapter_load_strategy_report_load_underway),
+	(nautilus_adapter_load_strategy_report_load_progress),
+	(nautilus_adapter_load_strategy_report_load_complete),
+	(nautilus_adapter_load_strategy_report_load_failed):
+	* components/adapter/nautilus-adapter-load-strategy.h:
+	* components/adapter/nautilus-adapter-progressive-load-strategy.c:
+	(nautilus_adapter_progressive_load_strategy_destroy),
+	(nautilus_adapter_progressive_load_strategy_new), (stop_loading),
+	(nautilus_adapter_progressive_load_strategy_load_location),
+	(nautilus_adapter_progressive_load_strategy_stop_loading):
+	* components/adapter/nautilus-adapter-progressive-load-strategy.h:
+	* components/adapter/nautilus-adapter-stream-load-strategy.c:
+	(nautilus_adapter_stream_load_strategy_new),
+	(nautilus_adapter_stream_load_strategy_load_location):
+	* components/adapter/nautilus-adapter-stream-load-strategy.h:
+	* components/adapter/nautilus-adapter.c:
+	(nautilus_adapter_destroy), (nautilus_adapter_new),
+	(nautilus_adapter_load_underway_callback),
+	(nautilus_adapter_load_progress_callback),
+	(nautilus_adapter_load_complete_callback),
+	(nautilus_adapter_load_failed_callback): Changed the load
+	strategies to no longer depend on the view; instead, they emit
+	appropriate signals at different stages of progress, which the
+	NautilusAdapter object hooks into (connecting with
+	_connect_object_while_alive). Also, the progressive load strategy
+	now checks for cancellation around various CORBA calls, so it
+	should actually respect the stop button.
+	
+	* AUTHORS, THANKS, check-THANKS.pl: Updated Josh Barrow's email
+	address.
+
 2000-10-02  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* test/test-nautilus-label.c: (delete_event), (main):

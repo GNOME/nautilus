@@ -37,6 +37,20 @@
 
 #include <gtk/gtkobject.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+
+
+
+enum {
+	REPORT_LOAD_UNDERWAY,
+	REPORT_LOAD_PROGRESS,
+	REPORT_LOAD_COMPLETE,
+	REPORT_LOAD_FAILED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 
 
 static void nautilus_adapter_load_strategy_initialize_class (NautilusAdapterLoadStrategyClass *klass);
@@ -59,6 +73,38 @@ nautilus_adapter_load_strategy_initialize_class (NautilusAdapterLoadStrategyClas
 
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_adapter_load_strategy, load_location);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, nautilus_adapter_load_strategy, stop_loading);
+
+
+	signals[REPORT_LOAD_UNDERWAY] =
+		gtk_signal_new ("report_load_underway",
+			       GTK_RUN_LAST,
+			       object_class->type,
+			       GTK_SIGNAL_OFFSET (NautilusAdapterLoadStrategyClass, report_load_underway),
+			       gtk_marshal_NONE__NONE,
+			       GTK_TYPE_NONE, 0);
+	signals[REPORT_LOAD_PROGRESS] =
+		gtk_signal_new ("report_load_progress",
+			       GTK_RUN_LAST,
+			       object_class->type,
+			       GTK_SIGNAL_OFFSET (NautilusAdapterLoadStrategyClass, report_load_progress),
+			       nautilus_gtk_marshal_NONE__DOUBLE,
+			       GTK_TYPE_NONE, 1, GTK_TYPE_DOUBLE);
+	signals[REPORT_LOAD_COMPLETE] =
+		gtk_signal_new ("report_load_complete",
+			       GTK_RUN_LAST,
+			       object_class->type,
+			       GTK_SIGNAL_OFFSET (NautilusAdapterLoadStrategyClass, report_load_complete),
+			       gtk_marshal_NONE__NONE,
+			       GTK_TYPE_NONE, 0);
+	signals[REPORT_LOAD_FAILED] =
+		gtk_signal_new ("report_load_failed",
+			       GTK_RUN_LAST,
+			       object_class->type,
+			       GTK_SIGNAL_OFFSET (NautilusAdapterLoadStrategyClass, report_load_failed),
+			       gtk_marshal_NONE__NONE,
+			       GTK_TYPE_NONE, 0);
+
+	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }
 
 static void
@@ -81,8 +127,7 @@ nautilus_adapter_load_strategy_destroy (GtkObject *object)
 
 
 NautilusAdapterLoadStrategy *
-nautilus_adapter_load_strategy_get (Bonobo_Unknown  component,
-				    NautilusView   *view)
+nautilus_adapter_load_strategy_get (Bonobo_Unknown  component)
 {
 	Bonobo_PersistStream persist_stream;
 	Bonobo_PersistFile persist_file;
@@ -98,7 +143,7 @@ nautilus_adapter_load_strategy_get (Bonobo_Unknown  component,
 	if (ev._major == CORBA_NO_EXCEPTION && !CORBA_Object_is_nil (progressive_data_sink, &ev)) {
 		CORBA_exception_free (&ev);
 		
-		return nautilus_adapter_progressive_load_strategy_new (progressive_data_sink, view);
+		return nautilus_adapter_progressive_load_strategy_new (progressive_data_sink);
 	}
 
 
@@ -108,7 +153,7 @@ nautilus_adapter_load_strategy_get (Bonobo_Unknown  component,
 	if (ev._major == CORBA_NO_EXCEPTION && !CORBA_Object_is_nil (persist_stream, &ev)) {
 		CORBA_exception_free (&ev);
 		
-		return nautilus_adapter_stream_load_strategy_new (persist_stream, view);		
+		return nautilus_adapter_stream_load_strategy_new (persist_stream);		
 	}
 
 
@@ -119,9 +164,8 @@ nautilus_adapter_load_strategy_get (Bonobo_Unknown  component,
 	if (ev._major == CORBA_NO_EXCEPTION && !CORBA_Object_is_nil (persist_file, &ev)) {
 		CORBA_exception_free (&ev);
 		
-		return nautilus_adapter_file_load_strategy_new (persist_file, view);		
+		return nautilus_adapter_file_load_strategy_new (persist_file);		
 	}
-
 
 	CORBA_exception_free (&ev);
 
@@ -147,4 +191,37 @@ nautilus_adapter_load_strategy_stop_loading  (NautilusAdapterLoadStrategy *strat
 
 	NAUTILUS_CALL_VIRTUAL (NAUTILUS_ADAPTER_LOAD_STRATEGY_CLASS, strategy,
 			       stop_loading, (strategy));
+}
+
+
+/* "protected" calls, should only be called by subclasses */
+
+void
+nautilus_adapter_load_strategy_report_load_underway  (NautilusAdapterLoadStrategy *strategy)
+{
+	gtk_signal_emit (GTK_OBJECT (strategy),
+			 signals[REPORT_LOAD_UNDERWAY]);
+}
+
+void
+nautilus_adapter_load_strategy_report_load_progress  (NautilusAdapterLoadStrategy *strategy,
+						      double                       fraction_done)
+{
+	gtk_signal_emit (GTK_OBJECT (strategy),
+			 signals[REPORT_LOAD_PROGRESS],
+			 fraction_done);
+}
+
+void
+nautilus_adapter_load_strategy_report_load_complete  (NautilusAdapterLoadStrategy *strategy)
+{
+	gtk_signal_emit (GTK_OBJECT (strategy),
+			 signals[REPORT_LOAD_COMPLETE]);
+}
+
+void
+nautilus_adapter_load_strategy_report_load_failed    (NautilusAdapterLoadStrategy *strategy)
+{
+	gtk_signal_emit (GTK_OBJECT (strategy),
+			 signals[REPORT_LOAD_FAILED]);
 }

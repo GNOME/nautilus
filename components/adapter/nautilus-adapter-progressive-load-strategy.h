@@ -49,8 +49,7 @@ typedef struct {
 /* GtkObject support */
 GtkType                      nautilus_adapter_progressive_load_strategy_get_type (void);
 
-NautilusAdapterLoadStrategy *nautilus_adapter_progressive_load_strategy_new      (Bonobo_ProgressiveDataSink progressive_data_sink,
-										  NautilusView       *view);
+NautilusAdapterLoadStrategy *nautilus_adapter_progressive_load_strategy_new      (Bonobo_ProgressiveDataSink progressive_data_sink);
 
 
 #endif /* NAUTILUS_ADAPTER_PROGRESSIVE_LOAD_STRATEGY_H */

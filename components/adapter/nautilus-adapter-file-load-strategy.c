@@ -40,7 +40,6 @@
 
 struct NautilusAdapterFileLoadStrategyDetails {
 	Bonobo_PersistFile  persist_file;
-	NautilusView       *nautilus_view;
 };
 
 
@@ -102,8 +101,7 @@ nautilus_adapter_file_load_strategy_destroy (GtkObject *object)
 
 
 NautilusAdapterLoadStrategy *
-nautilus_adapter_file_load_strategy_new (Bonobo_PersistFile  persist_file,
-					 NautilusView       *view)
+nautilus_adapter_file_load_strategy_new (Bonobo_PersistFile  persist_file)
 {
 	NautilusAdapterFileLoadStrategy *strategy;
 
@@ -112,7 +110,6 @@ nautilus_adapter_file_load_strategy_new (Bonobo_PersistFile  persist_file,
 	gtk_object_sink (GTK_OBJECT (strategy));
 
 	strategy->details->persist_file = persist_file;
-	strategy->details->nautilus_view = view;
 	
 	return NAUTILUS_ADAPTER_LOAD_STRATEGY (strategy);
 }
@@ -129,26 +126,29 @@ nautilus_adapter_file_load_strategy_load_location (NautilusAdapterLoadStrategy *
 
 	strategy = NAUTILUS_ADAPTER_FILE_LOAD_STRATEGY (abstract_strategy);
 
+	gtk_object_ref (GTK_OBJECT (strategy));
+
 	CORBA_exception_init (&ev);
 
 	local_path = gnome_vfs_get_local_path_from_uri (uri);
 
 	if (local_path == NULL) {
-		nautilus_view_report_load_failed (strategy->details->nautilus_view);
+		nautilus_adapter_load_strategy_report_load_failed (abstract_strategy);
 		CORBA_exception_free (&ev);
 		return;
 	}
 
-	nautilus_view_report_load_underway (strategy->details->nautilus_view);
+	nautilus_adapter_load_strategy_report_load_underway (abstract_strategy);
 
 	Bonobo_PersistFile_load (strategy->details->persist_file, local_path, &ev);
 
 	if (ev._major == CORBA_NO_EXCEPTION) {
-		nautilus_view_report_load_complete (strategy->details->nautilus_view);
-
+		nautilus_adapter_load_strategy_report_load_complete (abstract_strategy);
 	} else {
-		nautilus_view_report_load_failed (strategy->details->nautilus_view);
+		nautilus_adapter_load_strategy_report_load_failed (abstract_strategy);
 	}
+
+	gtk_object_unref (GTK_OBJECT (strategy));
 
 	CORBA_exception_free (&ev);
 

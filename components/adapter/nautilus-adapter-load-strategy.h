@@ -46,24 +46,38 @@ typedef struct {
 typedef struct {
 	GtkObjectClass parent;
 
+	/* signals */
+        void (* report_load_underway)          (NautilusAdapterLoadStrategy *strategy);
+        void (* report_load_progress)          (NautilusAdapterLoadStrategy *strategy,
+                                                double fraction_done);
+        void (* report_load_complete)          (NautilusAdapterLoadStrategy *strategy);
+        void (* report_load_failed)            (NautilusAdapterLoadStrategy *strategy);
+
+	/* virtual methods */
 	void  (*load_location) (NautilusAdapterLoadStrategy *strategy,
 				const char                  *uri);
 
 	void  (*stop_loading)  (NautilusAdapterLoadStrategy *strategy);
-
-  
 } NautilusAdapterLoadStrategyClass;
 
 /* GtkObject support */
-GtkType                      nautilus_adapter_load_strategy_get_type      (void);
+GtkType                      nautilus_adapter_load_strategy_get_type              (void);
 
 /* Instantiates the proper concrete subclass */
-NautilusAdapterLoadStrategy *nautilus_adapter_load_strategy_get           (Bonobo_Unknown  component,
-									   NautilusView   *view);
+NautilusAdapterLoadStrategy *nautilus_adapter_load_strategy_get                   (Bonobo_Unknown  component);
 
-void                         nautilus_adapter_load_strategy_load_location (NautilusAdapterLoadStrategy *strategy,
-									   const char                  *uri);
-void                         nautilus_adapter_load_strategy_stop_loading  (NautilusAdapterLoadStrategy *strategy);
+void                         nautilus_adapter_load_strategy_load_location         (NautilusAdapterLoadStrategy *strategy,
+										   const char                  *uri);
+void                         nautilus_adapter_load_strategy_stop_loading          (NautilusAdapterLoadStrategy *strategy);
+
+
+/* "protected" calls, should only be called by subclasses */
+
+void                         nautilus_adapter_load_strategy_report_load_underway  (NautilusAdapterLoadStrategy *strategy);
+void                         nautilus_adapter_load_strategy_report_load_progress  (NautilusAdapterLoadStrategy *strategy,
+										   double                       fraction_done);
+void                         nautilus_adapter_load_strategy_report_load_complete  (NautilusAdapterLoadStrategy *strategy);
+void                         nautilus_adapter_load_strategy_report_load_failed    (NautilusAdapterLoadStrategy *strategy);
 
 
 #endif /* NAUTILUS_ADAPTER_LOAD_STRATEGY_H */

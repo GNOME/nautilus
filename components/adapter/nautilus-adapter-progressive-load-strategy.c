@@ -41,7 +41,7 @@
 
 struct NautilusAdapterProgressiveLoadStrategyDetails {
 	Bonobo_ProgressiveDataSink  progressive_data_sink;
-	NautilusView               *nautilus_view;
+	gboolean                    stop;
 };
 
 
@@ -86,39 +86,72 @@ nautilus_adapter_progressive_load_strategy_destroy (GtkObject *object)
 	NautilusAdapterProgressiveLoadStrategy *strategy;
 	CORBA_Environment ev;
 
+	CORBA_exception_init (&ev);
+
 	strategy = NAUTILUS_ADAPTER_PROGRESSIVE_LOAD_STRATEGY (object);
 
 	if (strategy->details->progressive_data_sink != CORBA_OBJECT_NIL) {
-		CORBA_exception_init (&ev);
 		bonobo_object_release_unref (strategy->details->progressive_data_sink, &ev);
-		CORBA_exception_free (&ev);
 	}
+
+	CORBA_exception_free (&ev);
 
 	g_free (strategy->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
-
-
-
 NautilusAdapterLoadStrategy *
-nautilus_adapter_progressive_load_strategy_new (Bonobo_ProgressiveDataSink  progressive_data_sink,
-						NautilusView               *view)
+nautilus_adapter_progressive_load_strategy_new (Bonobo_ProgressiveDataSink  progressive_data_sink)
 {
 	NautilusAdapterProgressiveLoadStrategy *strategy;
+	CORBA_Environment ev;
+
+	CORBA_exception_init (&ev);
 
 	strategy = NAUTILUS_ADAPTER_PROGRESSIVE_LOAD_STRATEGY (gtk_object_new (NAUTILUS_TYPE_ADAPTER_PROGRESSIVE_LOAD_STRATEGY, NULL));
 	gtk_object_ref (GTK_OBJECT (strategy));
 	gtk_object_sink (GTK_OBJECT (strategy));
 
 	strategy->details->progressive_data_sink = progressive_data_sink;
-	strategy->details->nautilus_view = view;
+
+	CORBA_exception_free (&ev);
 
 	return NAUTILUS_ADAPTER_LOAD_STRATEGY (strategy);
 }
 
-#define LOAD_CHUNK 512
+
+static void
+stop_loading (NautilusAdapterProgressiveLoadStrategy *strategy,
+	      GnomeVFSHandle *handle,
+	      Bonobo_ProgressiveDataSink_iobuf *iobuf,
+	      CORBA_Environment *ev) 
+{
+	Bonobo_ProgressiveDataSink_end (strategy->details->progressive_data_sink, ev); 
+	nautilus_adapter_load_strategy_report_load_failed (NAUTILUS_ADAPTER_LOAD_STRATEGY (strategy));
+	gtk_object_unref (GTK_OBJECT (strategy));
+	gnome_vfs_close (handle);
+	CORBA_free (iobuf);
+	CORBA_exception_free (ev);
+}
+
+
+
+#define STOP_LOADING                                           \
+        do {                                                   \
+	         stop_loading (strategy, handle, iobuf, &ev);  \
+		 return;                                       \
+        } while (0)
+
+#define CHECK_IF_STOPPED                                       \
+        do {                                                   \
+	        if (strategy->details->stop) {                 \
+                        STOP_LOADING;                          \
+		}                                              \
+	} while (0)
+
+
+#define LOAD_CHUNK 2048
 
 static void
 nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStrategy *abstract_strategy,
@@ -135,15 +168,18 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 
 	strategy = NAUTILUS_ADAPTER_PROGRESSIVE_LOAD_STRATEGY (abstract_strategy);
 
+	strategy->details->stop = FALSE;
+	gtk_object_ref (GTK_OBJECT (strategy));
+
 	CORBA_exception_init (&ev);
 
 	/* FIXME: this code is stupid and loads the component in a way
            that blocks the nautilus adapter component, which is
            pointless/stupid; it should be async. */
 
-
 	if (gnome_vfs_open (&handle, uri, GNOME_VFS_OPEN_READ) != GNOME_VFS_OK) {
-		nautilus_view_report_load_failed (strategy->details->nautilus_view);
+		nautilus_adapter_load_strategy_report_load_failed (abstract_strategy);
+		gtk_object_unref (GTK_OBJECT (strategy));
 		CORBA_exception_free (&ev);
 		return;
 	}
@@ -153,9 +189,18 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 	data = CORBA_sequence_CORBA_octet_allocbuf (LOAD_CHUNK);
 	iobuf->_buffer = data;
 
-	nautilus_view_report_load_underway (strategy->details->nautilus_view);
+	nautilus_adapter_load_strategy_report_load_underway (abstract_strategy);
+
+	if (strategy->details->stop) {
+		nautilus_adapter_load_strategy_report_load_failed (abstract_strategy);
+		gtk_object_unref (GTK_OBJECT (strategy));
+		CORBA_exception_free (&ev);
+		return;
+	}
 
 	Bonobo_ProgressiveDataSink_start (strategy->details->progressive_data_sink, &ev);
+
+	CHECK_IF_STOPPED;
 
 	gnome_vfs_file_info_init (&file_info);
 	result = gnome_vfs_get_file_info_from_handle (handle, &file_info, GNOME_VFS_FILE_INFO_DEFAULT);
@@ -164,6 +209,7 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 	if (result == GNOME_VFS_OK && file_info.valid_fields | GNOME_VFS_FILE_INFO_FIELDS_SIZE) {
 		Bonobo_ProgressiveDataSink_set_size (strategy->details->progressive_data_sink, 
 						     (long) file_info.size, &ev);
+		CHECK_IF_STOPPED;
 	}
 		
 	do {
@@ -174,37 +220,36 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 
 			Bonobo_ProgressiveDataSink_add_data (strategy->details->progressive_data_sink, iobuf, &ev);
 			
+			CHECK_IF_STOPPED;
+			
 			if (ev._major != CORBA_NO_EXCEPTION) {
-				Bonobo_ProgressiveDataSink_end (strategy->details->progressive_data_sink, &ev);
-				nautilus_view_report_load_failed (strategy->details->nautilus_view);
-				break;
+				STOP_LOADING;
 			}
 		} else if (result == GNOME_VFS_ERROR_EOF) {
-			Bonobo_ProgressiveDataSink_end (strategy->details->progressive_data_sink, &ev);
 			if (ev._major == CORBA_NO_EXCEPTION) {
-				nautilus_view_report_load_complete (strategy->details->nautilus_view);
+				Bonobo_ProgressiveDataSink_end (strategy->details->progressive_data_sink, &ev);
+				nautilus_adapter_load_strategy_report_load_complete (abstract_strategy);
+				gtk_object_unref (GTK_OBJECT (strategy));
+				gnome_vfs_close (handle);
+				CORBA_free (iobuf);
+				CORBA_exception_free (&ev);
+				return;
 			} else {
-				nautilus_view_report_load_failed (strategy->details->nautilus_view);
+				STOP_LOADING;
 			}
 		} else {
-			Bonobo_ProgressiveDataSink_end (strategy->details->progressive_data_sink, &ev);
-			nautilus_view_report_load_failed (strategy->details->nautilus_view);
+			STOP_LOADING;
 		}
-	} while (result == GNOME_VFS_OK);
-
-
-	gnome_vfs_close (handle);
-
-	CORBA_free (iobuf);
-
-	CORBA_exception_free (&ev);
+	} while (TRUE);
 }
 
 static void
-nautilus_adapter_progressive_load_strategy_stop_loading  (NautilusAdapterLoadStrategy *strategy)
+nautilus_adapter_progressive_load_strategy_stop_loading  (NautilusAdapterLoadStrategy *abstract_strategy)
 {
+	NautilusAdapterProgressiveLoadStrategy *strategy;
 
-	g_return_if_fail (NAUTILUS_IS_ADAPTER_PROGRESSIVE_LOAD_STRATEGY (strategy));
+	strategy = NAUTILUS_ADAPTER_PROGRESSIVE_LOAD_STRATEGY (abstract_strategy);
 
+	strategy->details->stop = TRUE;
 }
 

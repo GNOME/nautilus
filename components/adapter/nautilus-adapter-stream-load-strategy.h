@@ -49,8 +49,7 @@ typedef struct {
 /* GtkObject support */
 GtkType                            nautilus_adapter_stream_load_strategy_get_type (void);
 
-NautilusAdapterLoadStrategy       *nautilus_adapter_stream_load_strategy_new      (Bonobo_PersistStream  persist_stream,
-										   NautilusView         *view);
+NautilusAdapterLoadStrategy       *nautilus_adapter_stream_load_strategy_new      (Bonobo_PersistStream  persist_stream);
 
 
 #endif /* NAUTILUS_ADAPTER_STREAM_LOAD_STRATEGY_H */

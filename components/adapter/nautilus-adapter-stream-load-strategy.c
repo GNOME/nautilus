@@ -39,7 +39,6 @@
 
 struct NautilusAdapterStreamLoadStrategyDetails {
 	Bonobo_PersistStream  persist_stream;
-	NautilusView         *nautilus_view;
 };
 
 
@@ -99,8 +98,7 @@ nautilus_adapter_stream_load_strategy_destroy (GtkObject *object)
 
 
 NautilusAdapterLoadStrategy *
-nautilus_adapter_stream_load_strategy_new (Bonobo_PersistStream  persist_stream,
-					   NautilusView         *view)
+nautilus_adapter_stream_load_strategy_new (Bonobo_PersistStream  persist_stream)
 {
 	NautilusAdapterStreamLoadStrategy *strategy;
 
@@ -109,7 +107,6 @@ nautilus_adapter_stream_load_strategy_new (Bonobo_PersistStream  persist_stream,
 	gtk_object_sink (GTK_OBJECT (strategy));
 
 	strategy->details->persist_stream = persist_stream;
-	strategy->details->nautilus_view  = view;
 
 	return NAUTILUS_ADAPTER_LOAD_STRATEGY (strategy);
 }
@@ -124,15 +121,16 @@ nautilus_adapter_stream_load_strategy_load_location (NautilusAdapterLoadStrategy
 	CORBA_Environment ev;
 
 	strategy = NAUTILUS_ADAPTER_STREAM_LOAD_STRATEGY (abstract_strategy);
+	gtk_object_ref (GTK_OBJECT (strategy));
 
 	CORBA_exception_init (&ev);
 
-	nautilus_view_report_load_underway (strategy->details->nautilus_view);
+	nautilus_adapter_load_strategy_report_load_underway (abstract_strategy);
 	
 	stream = bonobo_stream_vfs_open (uri, Bonobo_Storage_READ);
 
 	if (stream == NULL) {
-		nautilus_view_report_load_failed (strategy->details->nautilus_view);
+		nautilus_adapter_load_strategy_report_load_failed (abstract_strategy);
 	} else {
 		/* FIXME bugzilla.eazel.com 1248: 
 		 * Dan Winship points out that we should pass the
@@ -152,15 +150,16 @@ nautilus_adapter_stream_load_strategy_load_location (NautilusAdapterLoadStrategy
 		bonobo_object_unref (BONOBO_OBJECT (stream));
 
 		if (ev._major == CORBA_NO_EXCEPTION) {
-			nautilus_view_report_load_complete (strategy->details->nautilus_view);
+			nautilus_adapter_load_strategy_report_load_complete (abstract_strategy);
 		} else {
-			nautilus_view_report_load_failed (strategy->details->nautilus_view);
+			nautilus_adapter_load_strategy_report_load_failed (abstract_strategy);
 		}
         }
 
 
-	CORBA_exception_free (&ev);
+	gtk_object_unref (GTK_OBJECT (strategy));
 
+	CORBA_exception_free (&ev);
 }
 
 static void
