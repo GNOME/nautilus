@@ -94,6 +94,7 @@ nautilus_desktop_window_new (NautilusApplication *application)
 	GnomeVFSURI *trash_dir_uri;
 	char *trash_dir_uri_text;
 	GnomeVFSResult result;
+	char *trash_path;
 
 	window = NAUTILUS_DESKTOP_WINDOW
 		(gtk_object_new (nautilus_desktop_window_get_type(),
@@ -113,9 +114,13 @@ nautilus_desktop_window_new (NautilusApplication *application)
 		trash_dir_uri_text = gnome_vfs_uri_to_string (trash_dir_uri,
 							      GNOME_VFS_URI_HIDE_NONE);
 		gnome_vfs_uri_unref (trash_dir_uri);
-		nautilus_link_create (desktop_directory_path,
-				      "Trash", "trash-empty.png", 
-				      trash_dir_uri_text);
+		if (nautilus_link_create (desktop_directory_path,
+				      _("Trash"), "trash-empty.png", 
+				      trash_dir_uri_text)) {
+			trash_path = nautilus_make_path (desktop_directory_path, _("Trash"));
+			nautilus_link_set_type (trash_path, NAUTILUS_LINK_TRASH);
+			g_free (trash_path);
+		}		
 		g_free (trash_dir_uri_text);
 	}
 

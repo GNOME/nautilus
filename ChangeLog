@@ -1,3 +1,20 @@
+2000-08-09  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-link.c: (nautilus_link_create),
+	(nautilus_link_set_icon), (nautilus_link_set_type):
+	Added ability to set the type of a NautilusLink, such as
+	mount link, trash link, home link, etc.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(mount_device_mount), (nautilus_volume_monitor_is_volume_link):
+	Specify that link is a mount link.
+		
+	* src/file-manager/fm-desktop-icon-view.c: (place_home_directory):
+	Specify that link is a home link.
+	
+	* src/nautilus-desktop-window.c: (nautilus_desktop_window_new):
+	Specify that trash is a trash link.
+
 2000-08-09  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Add support for Mozilla m17.

@@ -28,6 +28,13 @@
 
 #include "nautilus-file.h"
 
+/* Link types */
+#define NAUTILUS_LINK 		"NAUTILUS_LINK"
+#define NAUTILUS_LINK_GENERIC 	"Generic Link"
+#define NAUTILUS_LINK_TRASH 	"Trash Link"
+#define NAUTILUS_LINK_MOUNT 	"Mount Link"
+#define NAUTILUS_LINK_HOME 	"Home Link"
+
 /* Given a uri, returns TRUE if it's a link file. Works only if the
  * MIME type is loaded in the NautilusFile (due to a monitor or
  * call_when_ready).
@@ -44,10 +51,18 @@ gboolean nautilus_link_create 				(const char *directory_path,
 
 /* Change the icon of an existing link file. Takes a path, works
  * locally, and uses sync. I/O. Returns TRUE if it succeeds, FALSE if
- * it fails. Does not check if the file is a link file.
+ * it fails. Does not check and see if it is a link file.
  */
 gboolean nautilus_link_set_icon 			(const char  *path, 
 							 const char  *icon_name);
+
+/* Specify the type of link that is represented
+ * Takes a path, works locally, and uses sync. I/O. 
+ * Returns TRUE if it succeeds, FALSE if
+ * it fails. Does not check and see if it is a link file.
+ */
+gboolean nautilus_link_set_type 			(const char  *path, 
+							 const char  *type);
 
 /* Returns additional text to display under the name, NULL if
  * none. Despite the fact that it takes a URI parameter, works only if

@@ -370,6 +370,7 @@ place_home_directory (FMDesktopIconView *icon_view)
 	char *desktop_path, *home_link_name, *home_link_path, *home_link_uri, *home_dir_uri;
 	GnomeVFSResult result;
 	GnomeVFSFileInfo info;
+	gboolean made_link;
 	
 	desktop_path = nautilus_get_desktop_directory ();
 	home_link_name = g_strdup_printf ("%s's Home", g_get_user_name ());
@@ -381,11 +382,14 @@ place_home_directory (FMDesktopIconView *icon_view)
 		/* FIXME: Maybe we should only create if the error was "not found". */
 		/* There was no link file.  Create it and add it to the desktop view */		
 		home_dir_uri = nautilus_get_uri_from_local_path (g_get_home_dir ());
-		result = nautilus_link_create (desktop_path, home_link_name, "temp-home.png", home_dir_uri);
+		made_link = nautilus_link_create (desktop_path, home_link_name, "temp-home.png", home_dir_uri);
 		g_free (home_dir_uri);
-		if (result != GNOME_VFS_OK) {
+		if (!made_link) {
 			/* FIXME: Is a message to the console acceptable here? */
 			g_message ("Unable to create home link: %s", gnome_vfs_result_to_string (result));
+		} else {
+			/* Identify as home directory link type */
+			nautilus_link_set_type (home_link_path, NAUTILUS_LINK_HOME);
 		}
 	}
 	

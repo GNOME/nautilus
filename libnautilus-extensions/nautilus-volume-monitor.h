@@ -29,8 +29,6 @@
 #include <gtk/gtk.h>
 #include "nautilus-icon-container.h"
 
-#define NAUTILUS_MOUNT_LINK_KEY	"NAUTILUS_MOUNT_LINK"
-
 typedef struct NautilusVolumeMonitor NautilusVolumeMonitor;
 typedef struct NautilusVolumeMonitorClass NautilusVolumeMonitorClass;
 typedef struct NautilusVolumeMonitorDetails NautilusVolumeMonitorDetails;

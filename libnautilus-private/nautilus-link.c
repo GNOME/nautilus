@@ -70,8 +70,8 @@ nautilus_link_create (const char *directory_path,
 	xmlDocSetRootElement (output_document, root_node);
 
 	/* Add mime magic string so that the mime sniffer can recognize us.
-	 * Note: The value of the tag has no meaning.  */
-	xmlSetProp (root_node, "NAUTILUS_LINK", "Nautilus Link");
+	 * Note: The value of the tag identfies what type of link this.  */
+	xmlSetProp (root_node, NAUTILUS_LINK, NAUTILUS_LINK_GENERIC);
 
 	/* Add link and custom icon tags */
 	xmlSetProp (root_node, "CUSTOM_ICON", image);
@@ -126,6 +126,36 @@ nautilus_link_set_icon (const char *path, const char *icon_name)
 	xmlSetProp (xmlDocGetRootElement (document),
 		    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
 		    icon_name);
+	xmlSaveFile (path, document);
+	xmlFreeDoc (document);
+
+	uri = nautilus_get_uri_from_local_path (path);
+	file = nautilus_file_get (uri);
+	if (file != NULL) {
+		nautilus_file_changed (file);
+		nautilus_file_unref (file);		
+	}
+	g_free (uri);
+		
+	return TRUE;
+}
+
+
+gboolean
+nautilus_link_set_type (const char *path, const char *type)
+{
+	xmlDocPtr document;
+	char *uri;
+	NautilusFile *file;
+
+	document = xmlParseFile (path);
+	if (document == NULL) {
+		return FALSE;
+	}
+
+	xmlSetProp (xmlDocGetRootElement (document),
+		    NAUTILUS_LINK,
+		    type);
 	xmlSaveFile (path, document);
 	xmlFreeDoc (document);
 

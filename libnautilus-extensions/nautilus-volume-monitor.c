@@ -94,9 +94,7 @@ static void     mount_device_activate_floppy                          	(Nautilus
 static gboolean	mntent_is_removable_fs					(struct mntent 	  		*ent);
 static void	free_device_info             				(DeviceInfo             	*device,
 						 	 	 	 NautilusVolumeMonitor      	*monitor);
-static gboolean	add_mount_link_property 				(const char 			*path);
-
-
+						 	 	 	 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusVolumeMonitor, nautilus_volume_monitor, GTK_TYPE_OBJECT)
 
 static void
@@ -391,8 +389,8 @@ mount_device_mount (NautilusVolumeMonitor *view, DeviceInfo *device)
 	if (result) {
 		device->link_uri = nautilus_make_path (desktop_path, device->volume_name);
 
-		/* Add some special magic so we are able to identify this as a mount link */
-		add_mount_link_property (device->link_uri);
+		/* Identify this as a mount link */
+		nautilus_link_set_type (device->link_uri, NAUTILUS_LINK_MOUNT);
 		
 	} else {
 		MESSAGE ("Unable to create mount link");
@@ -999,28 +997,6 @@ get_floppy_volume_name (DeviceInfo *device)
 	device->volume_name = g_strdup ("Floppy");
 }
 
-
-/* Add a special XML tag that identifies this link as a mount link.
- */
-static gboolean
-add_mount_link_property (const char *path)
-{
-	xmlDocPtr document;
-
-	document = xmlParseFile (path);
-	if (document == NULL) {
-		return FALSE;
-	}
-
-	xmlSetProp (xmlDocGetRootElement (document),
-		    NAUTILUS_MOUNT_LINK_KEY,
-		    "Nautilus Mount Link");
-	xmlSaveFile (path, document);
-	xmlFreeDoc (document);
-				
-	return TRUE;
-}
-
 gboolean
 nautilus_volume_monitor_is_volume_link (const char *path)
 {
@@ -1035,9 +1011,12 @@ nautilus_volume_monitor_is_volume_link (const char *path)
 		return FALSE;
 	}
 
-	property = xmlGetProp (xmlDocGetRootElement (document), NAUTILUS_MOUNT_LINK_KEY);
+	property = xmlGetProp (xmlDocGetRootElement (document), NAUTILUS_LINK);
 	if (property != NULL) {
-		retval = TRUE;
+		/* Check and see if it is a volume link */
+		if (strcmp (NAUTILUS_LINK, property) == 0) {
+			retval = TRUE;
+		}
 		xmlFree (property);
 	}
 	
