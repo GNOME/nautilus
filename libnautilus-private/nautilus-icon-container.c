@@ -119,7 +119,8 @@ enum {
 	 */
 };
 
-static void          activate_selected_items                  (NautilusIconContainer      *container);
+static void          activate_selected_items                  (NautilusIconContainer      *container,
+							       int 			  select_location);
 static void          nautilus_icon_container_initialize_class (NautilusIconContainerClass *class);
 static void          nautilus_icon_container_initialize       (NautilusIconContainer      *container);
 static void	     nautilus_icon_container_theme_changed    (gpointer		 	  user_data);
@@ -2536,13 +2537,41 @@ button_press_event (GtkWidget *widget,
 	return return_value;
 }
 
+/* utility routine to determine which portion of an icon was clicked, and return the
+ * emblem index if an emblem was clicked on
+ */
+static int
+hit_test_item (NautilusIconCanvasItem *icon_item, GdkEventButton *event)
+{
+	ArtDRect world_rect;
+	ArtIRect canvas_rect;
+	HitType hit_type;
+	int emblem_index;
+	
+	world_rect.x0 = event->x;
+	world_rect.y0 = event->y;
+	world_rect.x1 = world_rect.x0 + 1.0;
+	world_rect.y1 = world_rect.y0 + 1.0;
+	eel_gnome_canvas_world_to_canvas_rectangle
+		(GNOME_CANVAS_ITEM (icon_item)->canvas, &world_rect, &canvas_rect);
+	
+	if (nautilus_icon_canvas_item_hit_test_full (icon_item, &canvas_rect, &hit_type, &emblem_index)) {
+		if (hit_type == EMBLEM_HIT) {
+			return emblem_index;
+		} 
+	}
+	return 0;
+}
+
 static void
 nautilus_icon_container_did_not_drag (NautilusIconContainer *container,
 				      GdkEventButton *event)
 {
+	int click_location;
 	NautilusIconContainerDetails *details;
+	
 	details = container->details;
-
+	
 	if (!button_event_modifies_selection (event) && !details->drag_icon->is_selected) {
 		gboolean selection_changed;
 		
@@ -2571,7 +2600,8 @@ nautilus_icon_container_did_not_drag (NautilusIconContainer *container,
 			 * NautilusList goes the other way because its "links" seem
 			 * much more link-like.
 			 */
-			activate_selected_items (container);
+			click_location = hit_test_item (details->drag_icon->item, event);
+			activate_selected_items (container, click_location);
 		}
 	}
 }
@@ -3003,7 +3033,7 @@ key_press_event (GtkWidget *widget,
 			break;
 		case GDK_Return:
 		case GDK_KP_Enter:
-			activate_selected_items (container);
+			activate_selected_items (container, 0);
 			handled = TRUE;
 			break;
 		case GDK_Escape:
@@ -3076,9 +3106,10 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
 						     activate),
-				  gtk_marshal_NONE__POINTER,
-				  GTK_TYPE_NONE, 1,
-				  GTK_TYPE_POINTER);
+				  gtk_marshal_NONE__POINTER_INT,
+				  GTK_TYPE_NONE, 2,
+				  GTK_TYPE_POINTER,
+				  GTK_TYPE_INT);
 	signals[CONTEXT_CLICK_SELECTION]
 		= gtk_signal_new ("context_click_selection",
 				  GTK_RUN_LAST,
@@ -3549,7 +3580,7 @@ handle_icon_button_press (NautilusIconContainer *container,
 		details->drag_button = 0;
 		details->drag_icon = NULL;
 
-		activate_selected_items (container);
+		activate_selected_items (container, 0);
 	}
 
 	return TRUE;
@@ -3704,7 +3735,7 @@ icon_destroy (NautilusIconContainer *container,
 
 /* activate any selected items in the container */
 static void
-activate_selected_items (NautilusIconContainer *container)
+activate_selected_items (NautilusIconContainer *container, int select_location)
 {
 	GList *selection;
 
@@ -3714,7 +3745,8 @@ activate_selected_items (NautilusIconContainer *container)
 	if (selection != NULL) {
 	  	gtk_signal_emit (GTK_OBJECT (container),
 				 signals[ACTIVATE],
-				 selection);
+				 selection,
+				 select_location);
 	}
 	g_list_free (selection);
 }

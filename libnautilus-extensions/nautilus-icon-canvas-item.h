@@ -44,6 +44,14 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_IS_ICON_CANVAS_ITEM_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((klass),	NAUTILUS_TYPE_ICON_CANVAS_ITEM))
 
+typedef enum {
+	NO_HIT,
+	ICON_HIT,
+	LABEL_HIT,
+	STRETCH_HANDLE_HIT,
+	EMBLEM_HIT
+} HitType;
+
 typedef struct NautilusIconCanvasItem NautilusIconCanvasItem;
 typedef struct NautilusIconCanvasItemClass NautilusIconCanvasItemClass;
 typedef struct NautilusIconCanvasItemDetails NautilusIconCanvasItemDetails;
@@ -88,6 +96,11 @@ void	    nautilus_icon_canvas_item_set_control	       (NautilusIconCanvasItem	  
 /* geometry and hit testing */
 gboolean    nautilus_icon_canvas_item_hit_test_rectangle       (NautilusIconCanvasItem     *item,
 								const ArtIRect 		   *canvas_rect);
+gboolean    nautilus_icon_canvas_item_hit_test_full	       (NautilusIconCanvasItem 	  *icon_item,
+								const ArtIRect 		  *canvas_rect,
+								HitType 		  *hit_type,
+								int 			  *hit_index);
+
 gboolean    nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanvasItem     *item,
 								const ArtPoint             *world_point);
 void	    nautilus_icon_canvas_item_invalidate_label_size    (NautilusIconCanvasItem	   *item);

@@ -1,5 +1,32 @@
 2001-04-10  Andy Hertzfeld  <andy@eazel.com>
 
+	added a way for custom actions to take place when the user clicks
+	on an emblem, and used that to bring up the annotation window
+	when the "note" emblem is clicked on.
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c,h:
+	(nautilus_icon_canvas_item_event),
+	(nautilus_icon_canvas_item_hit_test_full),
+	(nautilus_icon_canvas_item_point),
+	(nautilus_icon_canvas_item_hit_test_rectangle):
+	renamed the "hit_test" routine to nautilus_icon_canvas_hit_test_full,
+	and made it public.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(hit_test_item), (nautilus_icon_container_did_not_drag),
+	(key_press_event), (nautilus_icon_container_initialize_class),
+	(handle_icon_button_press), (activate_selected_items):
+	added an emblem index parameter to the icon canvas's activate
+	signal, and set it up properly by calling the item hit test
+	routine to determine the emblem index.
+	
+	* src/file-manager/fm-icon-view.c: (get_keyword_by_index),
+	(icon_container_activate_callback), (get_icon_annotation_callback):
+	changed the activate callback to bring up the annotation window
+	if the annotation emblem is clicked.
+	
+2001-04-10  Andy Hertzfeld  <andy@eazel.com>
+
 	* libnautilus-extensions/nautilus-canvas-note-item.c:
 	(nautilus_canvas_note_item_set_note_text),
 	(nautilus_canvas_note_item_update):

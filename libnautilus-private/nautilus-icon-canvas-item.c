@@ -137,14 +137,6 @@ typedef enum {
 	TOP_SIDE
 } RectangleSide;
 
-typedef enum {
-	NO_HIT,
-	ICON_HIT,
-	LABEL_HIT,
-	STRETCH_HANDLE_HIT,
-	EMBLEM_HIT
-} HitType;
-
 typedef struct {
 	NautilusIconCanvasItem *icon_item;
 	ArtIRect icon_rect;
@@ -242,11 +234,6 @@ static void     draw_pixbuf                                (GdkPixbuf           
 static gboolean hit_test_stretch_handle                    (NautilusIconCanvasItem        *item,
 							    const ArtIRect                *canvas_rect);
 static gboolean icon_canvas_item_is_smooth                 (const NautilusIconCanvasItem  *icon_item);
-
-static gboolean hit_test				   (NautilusIconCanvasItem 	  *icon_item,
-							    const ArtIRect 		  *canvas_rect,
-							    HitType 			  *hit_type,
-							    int 			  *hit_index);
 
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusIconCanvasItem, nautilus_icon_canvas_item, GNOME_TYPE_CANVAS_ITEM)
@@ -2065,7 +2052,7 @@ nautilus_icon_canvas_item_event (GnomeCanvasItem *item, GdkEvent *event)
 			(GNOME_CANVAS_ITEM (item)->canvas, &world_rect, &hit_rect);
 		
 		/* hit-test so we can handle tooltips for emblems */
-		hit_test (icon_item, &hit_rect, &hit_type, &hit_index);
+		nautilus_icon_canvas_item_hit_test_full (icon_item, &hit_rect, &hit_type, &hit_index);
 		emblem_state = hit_type == EMBLEM_HIT ? hit_index : 0;
 		nautilus_icon_canvas_item_set_note_state (icon_item, emblem_state);		
 		return TRUE;
@@ -2122,8 +2109,11 @@ hit_test_pixbuf (GdkPixbuf *pixbuf, const ArtIRect *pixbuf_location, const ArtIR
 	return FALSE;
 }
 
-static gboolean
-hit_test (NautilusIconCanvasItem *icon_item, const ArtIRect *canvas_rect, HitType *hit_type, int *hit_index)
+gboolean
+nautilus_icon_canvas_item_hit_test_full (NautilusIconCanvasItem *icon_item,
+					 const ArtIRect *canvas_rect,
+					 HitType *hit_type,
+					 int *hit_index)
 {
 	NautilusIconCanvasItemDetails *details;
 	ArtIRect icon_rect;
@@ -2213,7 +2203,7 @@ nautilus_icon_canvas_item_point (GnomeCanvasItem *item, double x, double y, int 
 	canvas_rect.y0 = cy;
 	canvas_rect.x1 = cx + 1;
 	canvas_rect.y1 = cy + 1;
-	if (hit_test (NAUTILUS_ICON_CANVAS_ITEM (item), &canvas_rect, NULL, NULL)) {
+	if (nautilus_icon_canvas_item_hit_test_rectangle (NAUTILUS_ICON_CANVAS_ITEM (item), &canvas_rect)) {
 		return 0.0;
 	} else {
 		/* This value means not hit.
@@ -2449,11 +2439,7 @@ nautilus_icon_canvas_item_hit_test_rectangle (NautilusIconCanvasItem *item, cons
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item), FALSE);
 	g_return_val_if_fail (canvas_rect != NULL, FALSE);
 
-/*	
-	eel_gnome_canvas_world_to_canvas_rectangle
-		(GNOME_CANVAS_ITEM (item)->canvas, world_rect, &canvas_rect);
-*/
-	return hit_test (item, canvas_rect, NULL, NULL);
+	return nautilus_icon_canvas_item_hit_test_full (item, canvas_rect, NULL, NULL);
 }
 
 const char *

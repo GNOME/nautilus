@@ -1333,14 +1333,57 @@ fm_icon_view_set_selection (FMDirectoryView *view, GList *selection)
 		(get_icon_container (FM_ICON_VIEW (view)), selection);
 }
 
+/* utility routine to return the specified keyword, given a file and emblem index */
+static char *
+get_keyword_by_index (NautilusFile *file, int emblem_index)
+{
+	GList *keyword_list, *selected_keyword;
+	char  *keyword;
+		
+	keyword_list = nautilus_file_get_emblem_names (file);
+	if (keyword_list == NULL) {
+		return NULL;
+	}
+	
+	selected_keyword = g_list_nth (keyword_list, emblem_index - 1);
+	if (selected_keyword == NULL) {
+		eel_g_list_free_deep (keyword_list);	
+		return NULL;
+	}
+	
+	keyword = g_strdup (selected_keyword->data);	
+	eel_g_list_free_deep (keyword_list);
+
+	return keyword;
+}
+
 static void
 icon_container_activate_callback (NautilusIconContainer *container,
 				  GList *file_list,
+				  int emblem_index,
 				  FMIconView *icon_view)
 {
+	char *keyword;
+	NautilusFile *file;
+	
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 	g_assert (container == get_icon_container (icon_view));
 
+	/* if there is a single file to be activated, and the user clicked on an emblem,
+	 * implement the emblem-specific action instead of activation.  For now,
+	 * we just handle annotations. 
+	 */
+	if (emblem_index > 0 && file_list != NULL && file_list->next == NULL) {
+		file = NAUTILUS_FILE (file_list->data); 
+		keyword = get_keyword_by_index (file, emblem_index);
+		if (eel_strcmp (keyword, "note") == 0) {
+			fm_annotation_window_present (file, FM_DIRECTORY_VIEW (icon_view));
+			g_free (keyword);
+			return;
+		}
+		g_free (keyword);
+	}
+	
 	fm_directory_view_activate_files (FM_DIRECTORY_VIEW (icon_view), file_list);
 }
 
@@ -1908,23 +1951,10 @@ get_icon_annotation_callback (NautilusIconContainer *container,
 		       		   int emblem_index,
 		       		   FMIconView *icon_view)
 {
-	GList *keyword_list, *selected_keyword;
 	char  *keyword;
+	
+	keyword = get_keyword_by_index (file, emblem_index);
 		
-	keyword_list = nautilus_file_get_emblem_names (file);
-	if (keyword_list == NULL) {
-		return NULL;
-	}
-	
-	selected_keyword = g_list_nth (keyword_list, emblem_index - 1);
-	if (selected_keyword == NULL) {
-		eel_g_list_free_deep (keyword_list);	
-		return NULL;
-	}
-	
-	keyword = g_strdup (selected_keyword->data);	
-	eel_g_list_free_deep (keyword_list);
-	
 	/* if the keyword is "note", return the file annotation instead */
 	if (eel_strcmp (keyword, "note") == 0) {
 		g_free (keyword);
