@@ -1,5 +1,9 @@
 NULL=
 
+if EAZEL_SERVICES
+SERVICE_SUBDIRS = services
+endif
+
 SUBDIRS =\
 	help \
 	history \
@@ -8,8 +12,6 @@ SUBDIRS =\
 	notes \
 	sample \
 	websearch \
+	$(SERVICE_SUBDIRS) \
 	$(NULL)
 
-#if EAZEL_SERVICES
-#SUBDIRS += services
-#endif

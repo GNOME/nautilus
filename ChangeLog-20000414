@@ -1,3 +1,23 @@
+2000-03-01  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Add a conditionally built skeleton for a startup service.
+	
+	* configure.in: Properly define EAZEL_SERVICES with an
+	AM_CONDITIONAL.  Add new directories components/services
+	components/srevices/startup.
+
+	* components/Makefile.am: Recurse into services dir if needed.
+
+	* components/services, components/services/startup: new dirs.
+
+	* components/services/nautilus-service-startup-view.c,
+	  components/services/nautilus-service-startup-view.h,
+	  components/services/nautilus-service-startup-view.goad,
+	  components/services/Makefile.am,
+	  components/services/.cvsignore:
+
+	Skeleton code for startup service.
+	
 2000-03-31  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus/nautilus-icon-container.c:
