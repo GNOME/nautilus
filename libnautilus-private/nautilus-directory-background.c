@@ -519,9 +519,6 @@ dispose_root_pixmap (GdkPixmap *pixmap)
  * it at the same time. (This assumes that they follow the
  * same conventions we do
  * (copied from gnome-source/control-panels/capplets/background-properties/render-background.c)
- *
- * One diff between this and the capplet code is that the capplet tests nitems == 4 instead
- * of nitems == 1, which means XKillClient is never called and the old pixmap is never freed.
  */
 static void 
 set_root_pixmap (GdkPixmap *pixmap)
