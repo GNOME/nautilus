@@ -31,6 +31,7 @@ EXTRA_DIST=					\
 	nautilus.spec.in			\
 	nautilus-clean.sh			\
 	nautilus.desktop			\
+	nautilus.desktop.in			\
 	nautilus-launch-icon.png		\
 	ChangeLog-20000414			\
 	ChangeLog-20000625			\
