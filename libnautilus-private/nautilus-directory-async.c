@@ -281,15 +281,45 @@ metafile_read_start (NautilusDirectory *directory)
 	g_free (text_uri);
 }
 
-void
-nautilus_directory_request_read_metafile (NautilusDirectory *directory)
+static gboolean
+allow_metafile (NautilusDirectory *directory)
 {
+	/* Note that this inhibits both reading and writing metadata
+	 * completely. In the future we may want to inhibit writing to
+	 * the real directory while allowing parallel-directory
+	 * metadata.
+	 */
+
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
 	/* Don't read metafiles for search directories since they
 	 * don't exist yet.
 	 */
 	if (nautilus_directory_is_search_directory (directory)) {
+		return FALSE;
+	}
+
+	/* For now, hard-code this one scheme. Perhaps we should
+         * hardcode the schemes that are good for metadata instead of
+	 * the schemes that are bad for it.
+	 */
+	/* FIXME: We need to handle this in a better way. Perhaps a
+	 * better way can wait until we have support for metadata
+	 * access inside gnome-vfs.
+	 */
+	if (nautilus_strcasecmp (gnome_vfs_uri_get_scheme (directory->details->uri), "pipe") == 0) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+void
+nautilus_directory_request_read_metafile (NautilusDirectory *directory)
+{
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+
+	if (!allow_metafile (directory)) {
 		return;
 	}
 
@@ -303,7 +333,6 @@ nautilus_directory_request_read_metafile (NautilusDirectory *directory)
 	directory->details->use_alternate_metafile = TRUE;
 	metafile_read_start (directory);
 }
-
 
 static void
 metafile_write_done (NautilusDirectory *directory)
@@ -452,6 +481,10 @@ void
 nautilus_directory_request_write_metafile (NautilusDirectory *directory)
 {
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+
+	if (!allow_metafile (directory)) {
+		return;
+	}
 
 	/* Set up an idle task that will write the metafile. */
 	if (directory->details->write_metafile_idle_id == 0) {
@@ -1408,7 +1441,7 @@ start_monitoring_file_list (NautilusDirectory *directory)
 
 	mark_all_files_unconfirmed (directory);
 
-	g_assert (directory->details->uri->text != NULL);
+	g_assert (directory->details->uri_text != NULL);
 	directory->details->directory_load_list_last_handled
 		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
 	

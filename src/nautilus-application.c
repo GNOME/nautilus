@@ -304,9 +304,9 @@ nautilus_application_startup (NautilusApplication *application,
 	case OAF_REG_NOT_LISTED:
 		/* Can't register myself due to trouble locating the
 		 * nautilus.oafinfo file. This has happened when you
-		 * launch Nautilus with a PATH that doesn't include
-		 * directory containg the oafd executable and oafd is
-		 * not already running. It could also happen if the
+		 * launch Nautilus with an LD_LIBRARY_PATH that
+		 * doesn't include the directory containg the oaf
+		 * library. It could also happen if the
 		 * nautilus.oafinfo file was not present for some
 		 * reason. Sometimes killing oafd and gconfd fixes
 		 * this problem but we don't exactly understand why,
@@ -315,23 +315,26 @@ nautilus_application_startup (NautilusApplication *application,
 		message = _("Nautilus can't be used now. "
 			    "Rebooting the computer or installing "
 			    "Nautilus again may fix the problem.");
-		/* FIXME: Add technical details here. They should come
-		 * in the form of more detailed message that replaces
-		 * the novice message if you press a button. The more
-		 * detailed message should be complete and stand alone
-		 * since it replaces the novice message.
-		 */
+		/* FIXME: The guesses and stuff here are lame. */
 		detailed_message = _("Nautilus can't be used now. "
 				     "Rebooting the computer or installing "
 				     "Nautilus again may fix the problem. "
-				     "Check out all of this excellent detail!");
+				     "OAF couldn't locate the nautilus.oafinfo file. "
+				     "One cause of this seems to be an LD_LIBRARY_PATH "
+				     "that does not include the oaf library's directory. "
+				     "Another possible cause would be bad install "
+				     "with a missing nautilus.oafinfo file. "
+				     "Sometimes killing oafd and gconfd fixes "
+				     "the problem, but we don't know why. "
+				     "We need a much less confusing message here for Nautilus 1.0.");
 		break;
 	case OAF_REG_ALREADY_ACTIVE:
-		/* Another copy of Nautilus is already
-		 * running. Eventually we want to "glom on" to this
-		 * old copy.
-		 */
-		message = _("Nautilus is already running. Soon, instead of presenting this dialog, the already-running copy of Nautilus will respond by opening windows.");
+		/* Another copy of Nautilus is already running. */
+		/* FIXME: We want to "glom on" to this old copy. */
+		message = _("Nautilus is already running. "
+			    "Soon, instead of presenting this dialog, "
+			    "the already-running copy of Nautilus will "
+			    "respond by opening windows.");
 		detailed_message = NULL;
 		break;
 	default:
@@ -343,7 +346,8 @@ nautilus_application_startup (NautilusApplication *application,
 		 * program.
 		 */
 		message = _("Nautilus can't be used now, due to an unexpected error.");
-		detailed_message = NULL;
+		detailed_message = _("Nautilus can't be used now, due to an unexpected error "
+				     "from OAF when attempting to register the file manager view server.");
 		break;
 	}
 	if (message != NULL) {

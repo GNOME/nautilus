@@ -203,10 +203,10 @@ nautilus_gnome_canvas_item_get_world_bounds (GnomeCanvasItem *item,
 
 void
 nautilus_gnome_canvas_fill_with_gradient (GnomeCanvasBuf *buffer,
-						int entire_width, int entire_height,
-						guint32 start_rgb,
-						guint32 end_rgb,
-						gboolean horizontal)
+					  int entire_width, int entire_height,
+					  guint32 start_rgb,
+					  guint32 end_rgb,
+					  gboolean horizontal)
 {
 	GdkRectangle band_box;
 	guchar *bufptr;
@@ -220,6 +220,10 @@ nautilus_gnome_canvas_fill_with_gradient (GnomeCanvasBuf *buffer,
 	guint32 band_rgb;
 
 	g_return_if_fail (horizontal == FALSE || horizontal == TRUE);
+
+	if (entire_width == 0 || entire_height == 0) {
+		return;
+	}
 
 	/* Set up the band box so we can access it the same way for horizontal or vertical. */
 	band_box.x = buffer->rect.x0;
@@ -241,14 +245,16 @@ nautilus_gnome_canvas_fill_with_gradient (GnomeCanvasBuf *buffer,
 	for (band = 0; band < num_bands; band++) {
 		/* Compute a new color value for each band. */
 		
-		if (horizontal)
+		if (horizontal) {
 			fraction = (double) *position / (double) entire_width;
-		else
+		} else {
 			fraction = (double) *position / (double) entire_height;
-		if (fraction > 1.0)
+		}
+		if (fraction > 1.0) {
 			fraction = 1.0;
-		else if (fraction < 0.0)
+		} else if (fraction < 0.0) {
 			fraction = 0.0;
+		}
 							
 		band_rgb = nautilus_interpolate_color (fraction, start_rgb, end_rgb);
 		red_value = band_rgb >> 16;

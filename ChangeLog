@@ -1,3 +1,28 @@
+2000-07-05  Darin Adler  <darin@eazel.com>
+
+	* components/music/nautilus-music-view.c: (fetch_play_time):
+	Fix a divide-by-zero problem.
+	(play_status_display), (slider_moved_callback),
+	(slider_release_callback): Added FIXMEs at other possible
+	divide-by-zero problems where I am less sure what the solution is.
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(allow_metafile), (nautilus_directory_request_read_metafile),
+	(nautilus_directory_request_write_metafile): Disable metafile
+	reading and writing for "pipe:" URIs for now. This turns off the
+	creation of alternate metafiles too. Hope this turns out to be
+	good.
+	(start_monitoring_file_list): Fixed a wrong assert.
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	(nautilus_gnome_canvas_fill_with_gradient): Fixed a divide by zero
+	bug in here.
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_destroy),
+	(directory_view_font_family_changed_callback),
+	(fm_icon_view_initialize): Changed spelling of "familiy" to the more
+	standard "family".
+	* src/nautilus-application.c: (nautilus_application_startup): Put
+	in some more verbose detailed error messages; we'll have to do more
+	iteration on these.
+
 2000-07-05  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.c,h:
@@ -23,7 +48,6 @@
 
 	* libnautilus-extensions/nautilus-global-preferences.c:
 	(global_preferences_get_sidebar_panel_view_identifiers):
-
 	Remove an obsolete FIXME.
 	
 2000-07-05  Ramiro Estrugo  <ramiro@eazel.com>
@@ -83,10 +107,10 @@
 	New function to update the icon container's zoom level specific
 	fonts.
 	
-	(directory_view_font_familiy_changed_callback),
+	(directory_view_font_family_changed_callback),
 	(fm_icon_view_initialize),
 	(fm_icon_view_destroy),
-	Keep track of font familiy preference changes and update the icon
+	Keep track of font family preference changes and update the icon
 	container fonts as needed.
 	
 	(create_icon_container):
@@ -196,9 +220,8 @@
 	
 2000-07-05  J Shane Culpepper  <pepper@eazel.com>
 
-	*
-	components/services/startup/nautilus-view/nautilus-service-startup-
-	view.c: (generate_startup_form):
+	* components/services/startup/nautilus-view/nautilus-service-startup-view.c:
+	(generate_startup_form):
 	More changes to the progress meter.
 
 2000-07-05  Pavel Cisler <pavel@eazel.com>
@@ -242,11 +265,9 @@
 	
 2000-07-04  J Shane Culpepper  <pepper@eazel.com>
 
-	*
-	components/services/startup/nautilus-view/nautilus-service-startup-
-	view.c: (generate_startup_form), (show_feedback),
+	* components/services/startup/nautilus-view/nautilus-service-startup-view.c:
+	(generate_startup_form), (show_feedback),
 	(generate_form_title), (service_load_location_callback):
-
 	More work on the progress meter for bootstraping and various ui
 	enhancements.
 
@@ -310,8 +331,8 @@
 2000-07-04  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/startup/nautilus-view/icons/Makefile.am:
-	components/services/startup/nautilus-view/nautilus-service-startup-
-	view.c: (generate_startup_form), (progress_timeout_cb),
+	components/services/startup/nautilus-view/nautilus-service-startup-view.c:
+	(generate_startup_form), (progress_timeout_cb),
 	(go_to_uri), (generate_form_title):
 
 	Added the watch icon and a fake progress meter.  Still need to get
@@ -392,7 +413,7 @@
 	they are only implemented for anti-aliased mode.
 	* icons/arlo/arlo.xml:
 	made the sidebar use a 3-point gradient
-		
+
 2000-07-03  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/bonobo-stream-vfs.c:

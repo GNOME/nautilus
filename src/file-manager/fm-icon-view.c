@@ -76,23 +76,22 @@
 #define MENU_PATH_RENAME 			"/File/Rename"
 
 /* forward declarations */
-static void create_icon_container                        (FMIconView        *icon_view);
-static void fm_icon_view_initialize                      (FMIconView        *icon_view);
-static void fm_icon_view_initialize_class                (FMIconViewClass   *klass);
-static void fm_icon_view_set_zoom_level                  (FMIconView        *view,
-							  NautilusZoomLevel  new_level,
-							  gboolean           always_set_level);
-static void fm_icon_view_update_icon_container_fonts     (FMIconView        *icon_view);
-static void fm_icon_view_update_click_mode               (FMIconView        *icon_view);
-static void fm_icon_view_update_anti_aliased_mode        (FMIconView        *icon_view);
+static void create_icon_container                       (FMIconView        *icon_view);
+static void fm_icon_view_initialize                     (FMIconView        *icon_view);
+static void fm_icon_view_initialize_class               (FMIconViewClass   *klass);
+static void fm_icon_view_set_zoom_level                 (FMIconView        *view,
+							 NautilusZoomLevel  new_level,
+							 gboolean           always_set_level);
+static void fm_icon_view_update_icon_container_fonts    (FMIconView        *icon_view);
+static void fm_icon_view_update_click_mode              (FMIconView        *icon_view);
+static void fm_icon_view_update_anti_aliased_mode       (FMIconView        *icon_view);
 
 
 /* Preferences changed callbacks */
-static void text_attribute_names_changed_callback        (gpointer           user_data);
-static void directory_view_font_familiy_changed_callback (gpointer           user_data);
-static void anti_aliased_mode_changed_callback             (gpointer           user_data);
-static void click_policy_changed_callback                (gpointer           user_data);
-
+static void text_attribute_names_changed_callback       (gpointer           user_data);
+static void directory_view_font_family_changed_callback (gpointer           user_data);
+static void anti_aliased_mode_changed_callback          (gpointer           user_data);
+static void click_policy_changed_callback               (gpointer           user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMIconView, fm_icon_view, FM_TYPE_DIRECTORY_VIEW);
 
@@ -178,7 +177,7 @@ fm_icon_view_destroy (GtkObject *object)
 					      icon_view);
 
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
-					      directory_view_font_familiy_changed_callback,
+					      directory_view_font_family_changed_callback,
 					      icon_view);
 
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
@@ -1532,7 +1531,7 @@ text_attribute_names_changed_callback (gpointer user_data)
 }
 
 static void
-directory_view_font_familiy_changed_callback (gpointer user_data)
+directory_view_font_family_changed_callback (gpointer user_data)
 {
 	g_assert (user_data != NULL);
 	g_assert (FM_IS_ICON_VIEW (user_data));
@@ -1609,9 +1608,9 @@ fm_icon_view_initialize (FMIconView *icon_view)
 					   text_attribute_names_changed_callback,
 					   icon_view);
 
-	/* Keep track of changes in the font familiy */
+	/* Keep track of changes in the font family */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
-					   directory_view_font_familiy_changed_callback, 
+					   directory_view_font_family_changed_callback, 
 					   icon_view);
 
 	/* Keep track of changes in clicking policy */

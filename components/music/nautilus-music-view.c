@@ -502,7 +502,8 @@ fetch_play_time (GnomeVFSFileInfo *file_info, int bitrate)
                 return 0;
         }
 
-	return file_info->size / (125 * bitrate);
+        /* Avoid divide by zero. */
+	return bitrate == 0 ? 0 : file_info->size / (125 * bitrate);
 }
 
 /* format_play_time takes the pathname to a file and returns the play time formated as mm:ss */
@@ -769,13 +770,16 @@ play_status_display (NautilusMusicView *music_view)
 		if (!music_view->details->slider_dragging) {
 			frameNo = get_current_frame();	
 			samps_per_frame = (music_view->details->current_samprate >= 32000) ? 1152 : 576;
+                        /* FIXME: Divide by zero possible here? */
 			seconds = frameNo * samps_per_frame / music_view->details->current_samprate;
 		
 			minutes = seconds / 60;
 			seconds = seconds % 60;
 			sprintf(play_time_str, "%02d:%02d", minutes, seconds);
 			
+                        /* FIXME: Divide by zero possible here? */
 			avgframesize = (gfloat)samps_per_frame * music_view->details->current_bitrate * 125 / music_view->details->current_samprate;
+                        /* FIXME: Divide by zero possible here? */
 			percentage = (gfloat) frameNo * avgframesize / music_view->details->current_file_size * 100;
 			gtk_adjustment_set_value(GTK_ADJUSTMENT(music_view->details->playtime_adjustment), percentage);
  			gtk_range_set_adjustment(GTK_RANGE(music_view->details->playtime_bar), GTK_ADJUSTMENT(music_view->details->playtime_adjustment));	
@@ -884,28 +888,32 @@ go_to_previous_track (NautilusMusicView *music_view) {
 
 /* callback for buttons */
 
-
-static void play_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
+static void
+play_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
 {
 	play_current_file(music_view, FALSE);
 }
 
-static void stop_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
+static void
+stop_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
 {
 	stop_playing_file();
 }
 
-static void pause_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
+static void
+pause_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
 {
 	pause_playing_file();
 }
 
-static void prev_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
+static void
+prev_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
 {
 	go_to_previous_track(music_view);
 }
 
-static void next_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
+static void
+next_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
 {
 	go_to_next_track(music_view);
 }
@@ -916,14 +924,16 @@ static void next_button_callback (GtkWidget * widget, NautilusMusicView *music_v
 
 /* handle slider button press */
 
-static void slider_press_callback(GtkWidget *bar, GdkEvent *event, NautilusMusicView *music_view)
+static void
+slider_press_callback(GtkWidget *bar, GdkEvent *event, NautilusMusicView *music_view)
 {
 	music_view->details->slider_dragging = TRUE;
 }
 
 /* handle mouse motion by updating the time, but not actually seeking until the user lets go */
 
-static void slider_moved_callback(GtkWidget *bar, GdkEvent *event, NautilusMusicView *music_view)
+static void
+slider_moved_callback(GtkWidget *bar, GdkEvent *event, NautilusMusicView *music_view)
 {
 	char temp_str[256];
 	int nframe, seconds, minutes;
@@ -934,8 +944,11 @@ static void slider_moved_callback(GtkWidget *bar, GdkEvent *event, NautilusMusic
 	if (music_view->details->slider_dragging) {
 		adjustment = gtk_range_get_adjustment(GTK_RANGE(bar));
 		samps_per_frame = (music_view->details->current_samprate >= 32000) ? 1152 : 576;
+                /* FIXME: Divide by zero possible here? */
 		avgframesize = (gfloat)samps_per_frame * music_view->details->current_bitrate * 125 / music_view->details->current_samprate;
+                /* FIXME: Divide by zero possible here? */
 		nframe = adjustment->value / (avgframesize / music_view->details->current_file_size * 100.0);	
+                /* FIXME: Divide by zero possible here? */
 		seconds = nframe * samps_per_frame / music_view->details->current_samprate; 
 		minutes = seconds / 60;
 		seconds = seconds % 60;
@@ -945,7 +958,8 @@ static void slider_moved_callback(GtkWidget *bar, GdkEvent *event, NautilusMusic
 }
 	
 /* callback for slider button release - seek to desired location */
-static void slider_release_callback(GtkWidget *bar, GdkEvent *event, NautilusMusicView *music_view)
+static void
+slider_release_callback (GtkWidget *bar, GdkEvent *event, NautilusMusicView *music_view)
 {
 	int play_status, nframe;
 	GtkAdjustment *adjustment;
@@ -956,12 +970,14 @@ static void slider_release_callback(GtkWidget *bar, GdkEvent *event, NautilusMus
 	if (music_view->details->slider_dragging) {
 		adjustment = gtk_range_get_adjustment(GTK_RANGE(bar));
 		samps_per_frame = (music_view->details->current_samprate >= 32000) ? 1152 : 576;
+                /* FIXME: Divide by zero possible here? */
 		avgframesize = (gfloat)samps_per_frame * music_view->details->current_bitrate * 125 / music_view->details->current_samprate;
+                /* FIXME: Divide by zero possible here? */
 		nframe = adjustment->value / (avgframesize / music_view->details->current_file_size * 100.0);	
 		if ((play_status == STATUS_PLAY) || (play_status == STATUS_PAUSE)) {
-			pause_playing_file();
-			set_current_frame(nframe);
-			play_current_file(music_view, FALSE);
+			pause_playing_file ();
+			set_current_frame (nframe);
+			play_current_file (music_view, FALSE);
 		}
 		
 	}	    
@@ -970,7 +986,8 @@ static void slider_release_callback(GtkWidget *bar, GdkEvent *event, NautilusMus
 
 /* create a button with an xpm label */
 
-static GtkWidget *xpm_label_box (NautilusMusicView *music_view, gchar * xpm_data[])
+static GtkWidget *
+xpm_label_box (NautilusMusicView *music_view, gchar * xpm_data[])
 {
 	GtkWidget *box;
 	GtkStyle *style;
@@ -994,7 +1011,10 @@ static GtkWidget *xpm_label_box (NautilusMusicView *music_view, gchar * xpm_data
 
 /* creates a button with 2 internal pixwidgets, with only one visible at a time */
 
-static GtkWidget *xpm_dual_label_box (NautilusMusicView *music_view, char * xpm_data[], gchar *alt_xpm_data[],  GtkWidget **main_pixwidget, GtkWidget **alt_pixwidget )
+static GtkWidget *
+xpm_dual_label_box (NautilusMusicView *music_view, char * xpm_data[],
+                    gchar *alt_xpm_data[],
+                    GtkWidget **main_pixwidget, GtkWidget **alt_pixwidget )
 {
 	GtkWidget *box;
 	GtkStyle *style;
@@ -1026,8 +1046,9 @@ static GtkWidget *xpm_dual_label_box (NautilusMusicView *music_view, char * xpm_
 
 /* add the play controls */
 
-static void add_play_controls (NautilusMusicView *music_view)
-	{
+static void
+add_play_controls (NautilusMusicView *music_view)
+{
 	GtkWidget *table;
 	GtkWidget *box; 
 	GtkWidget *vbox, *hbox2;
