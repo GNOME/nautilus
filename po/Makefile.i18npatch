@@ -1,17 +1,16 @@
 --- Makefile.in.in.clean	Thu Nov  9 11:09:02 2000
-+++ Makefile.in.in	Thu Nov  9 12:21:17 2000
-@@ -33,7 +33,9 @@
++++ Makefile.in.in	Thu Nov  9 12:48:26 2000
+@@ -33,7 +33,8 @@
  GMSGFMT = PATH=../src:$$PATH @GMSGFMT@
  MSGFMT = @MSGFMT@
  XGETTEXT = PATH=../src:$$PATH @XGETTEXT@
 -MSGMERGE = PATH=../src:$$PATH msgmerge
 +MSGMERGE = PATH=$(top_srcdir)/po:../src:$$PATH perl $(top_srcdir)/po/update.pl --dist
 +GENPOT   = PATH=$(top_srcdir)/po:../src:$$PATH perl $(top_srcdir)/po/update.pl --pot
-+GENHEAD  = PATH=$(top_srcdir)/po:../src:$$PATH perl $(top_srcdir)/po/update.pl --headers
  
  DEFS = @DEFS@
  CFLAGS = @CFLAGS@
-@@ -47,7 +49,7 @@
+@@ -47,7 +48,7 @@
  POFILES = @POFILES@
  GMOFILES = @GMOFILES@
  DISTFILES = ChangeLog Makefile.in.in POTFILES.in $(PACKAGE).pot \
@@ -20,7 +19,7 @@
  
  POTFILES = \
  
-@@ -83,12 +85,7 @@
+@@ -83,12 +84,7 @@
  all-no:
  
  $(srcdir)/$(PACKAGE).pot: $(POTFILES)
@@ -34,7 +33,7 @@
  
  $(srcdir)/cat-id-tbl.c: stamp-cat-id; @:
  $(srcdir)/stamp-cat-id: $(PACKAGE).pot
-@@ -214,18 +211,21 @@
+@@ -214,13 +210,12 @@
  	for cat in $$catalogs; do \
  	  cat=`basename $$cat`; \
  	  lang=`echo $$cat | sed 's/\$(CATOBJEXT)$$//'`; \
@@ -50,13 +49,3 @@
  	    mv $$lang.old.po $$lang.po; \
  	  fi; \
  	done
- 
--POTFILES: POTFILES.in
-+headers: POTFILES.in
-+	$(GENHEAD)
-+	touch headers
-+
-+POTFILES: POTFILES.in headers
- 	( if test 'x$(srcdir)' != 'x.'; then \
- 	    posrcprefix='$(top_srcdir)/'; \
- 	  else \

@@ -1,5 +1,11 @@
 2000-11-09  Darin Adler  <darin@eazel.com>
 
+	* Makefile.i18npatch: Turns out it can be even simpler. There's
+	no need to generate the headers when making the POTFILE.
+	* .cvsignore: No need to ignore "headers" any more.
+
+2000-11-09  Darin Adler  <darin@eazel.com>
+
 	* Makefile.i18npatch: Fixed the patch so it will apply
 	successfully. Also fixed a small problem that leads to an infinite
 	loop when building.
