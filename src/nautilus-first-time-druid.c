@@ -76,17 +76,23 @@ druid_finished (GtkWidget *druid_page)
 	}
 	g_free (user_main_directory);
 
-	if (last_signup_choice < 2) {
-		if (last_signup_choice == 0)
+	switch (last_signup_choice) {
+		case 0:
 			signup_uris[0] = "eazel:registerinfo";
-		else
+			break;
+		case 1:
 			signup_uris[0] = "eazel:register";
-		signup_uris[1] = NULL;
-		nautilus_application_startup(save_application, FALSE, save_manage_desktop, FALSE, &signup_uris[0]);
-		
-	} else {
-		nautilus_application_startup(save_application, FALSE, save_manage_desktop, FALSE, NULL);
+			break;
+		case 2:
+			signup_uris[0] = "eazel:login";
+			break;
+		case 3:
+		default:
+			signup_uris[0]	= NULL;	
+			break;
 	}
+		nautilus_application_startup(save_application, FALSE, save_manage_desktop, 
+					     FALSE, (signup_uris[0] != NULL) ? &signup_uris[0] : NULL);
 }
 
 /* set up an event box to serve as the background */
@@ -237,6 +243,7 @@ set_up_service_signup_page (NautilusDruidPageStandard *page)
 
 	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("I want to learn more about Eazel services."));
 	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("I want to sign up for Eazel services now."));	
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("I've already signed up and want to login now."));
 	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("I don't want to learn about Eazel services at this time."));
 
 	gtk_signal_connect (GTK_OBJECT (radio_buttons),
@@ -254,7 +261,6 @@ set_up_service_signup_page (NautilusDruidPageStandard *page)
 GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gboolean manage_desktop, const char *urls[])
 {
 	
-	char *logo_path;
 	GtkWidget *dialog;
 	GtkWidget *druid;
 
@@ -262,8 +268,7 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 	GtkWidget *finish_page;
 
 	GtkWidget *pages[2];
-
-	GdkPixbuf *logo;
+	/* GdkPixbuf *logo; */
 
 	/* remember parameters for later window invocation */
 	save_application = application;
@@ -281,7 +286,7 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 
 	pages[0] = nautilus_druid_page_standard_new ();
 	pages[1] = nautilus_druid_page_standard_new ();
-
+		
 	/* set up the initial page */
 	nautilus_druid_page_start_set_title (NAUTILUS_DRUID_PAGE_START (start_page), _("Welcome to Nautilus!"));
 	nautilus_druid_page_start_set_text (NAUTILUS_DRUID_PAGE_START(start_page), _("Welcome to Nautilus!\n\nSince this is the first time that you've launched\nNautilus, we'd like to ask you a few questions\nto help personalize it for your use.\n\nPress the next button to continue."));
@@ -306,20 +311,16 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 
 	/* set up the logo images */	
 
-	logo_path = nautilus_pixmap_file ("nautilus-logo.png");
-	logo = gdk_pixbuf_new_from_file (logo_path);
-	g_assert (logo != NULL);
-	g_free (logo_path);
- 	
-	
 	/*
+	logo = create_named_pixbuf ("nautilus-logo.png");
+	g_assert (logo != NULL);
+	
 	nautilus_druid_page_start_set_logo (NAUTILUS_DRUID_PAGE_START (start_page), logo);
+
 	nautilus_druid_page_finish_set_logo (NAUTILUS_DRUID_PAGE_FINISH (finish_page), logo);
 	nautilus_druid_page_standard_set_logo (NAUTILUS_DRUID_PAGE_STANDARD (pages[0]), logo);
 	nautilus_druid_page_standard_set_logo (NAUTILUS_DRUID_PAGE_STANDARD (pages[1]), logo);
-
 	*/
-	gdk_pixbuf_unref (logo);
 	
   	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox), 
   			    druid,
