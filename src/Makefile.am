@@ -126,6 +126,7 @@ nautilus_SOURCES = \
 	nautilus-view-frame.c			\
 	nautilus-window-manage-views.c		\
 	nautilus-window-menus.c         	\
+	nautilus-window-service-menu.c		\
 	nautilus-window-toolbars.c      	\
 	nautilus-window.c			\
 	nautilus-zoom-control.c			\
@@ -145,6 +146,7 @@ oaf_DATA = nautilus.oafinfo
 
 uidir = $(datadir)/gnome/ui
 ui_DATA = 					\
+	nautilus-service-ui.xml			\
 	nautilus-shell-ui.xml			\
 	$(NULL)
 

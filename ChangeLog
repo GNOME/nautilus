@@ -1,3 +1,36 @@
+2000-10-18  Andy Hertzfeld  <andy@eazel.com>
+
+	added a Services menu, per Darin's advice, as a separate bonobo
+	ui component.  Right now, it's leaking the UI handler, and the
+	menu uris aren't correct; will finish this tomorrow.
+	
+	* src/Makefile.am:
+	added new files: nautilus-service-ui.xml and
+	nautilus_window_install_service_menu	
+	
+	* src/nautilus-service-ui.xml:
+	xml file defining service menu and toolbar button
+	
+	* src/nautilus-shell-ui.xml:
+	added placeholder for services menu and toolbar button; removed
+	definition of toolbar button
+	
+	* src/nautilus-window-private.h:
+	added reference to install routine
+		
+	* src/nautilus-window-service-menu.c: (goto_services_summary),
+	(goto_online_storage), (goto_software_catalog),
+	(nautilus_window_install_service_menu):
+	merge in the services menu and button and handle the commands
+	
+	* src/nautilus-window-toolbars.c: (set_up_toolbar_images),
+	(nautilus_window_initialize_toolbars):
+	change the service button image when the theme changes
+	if EAZEL_SERVICES is defined
+	
+	* src/nautilus-window.c: (nautilus_window_constructed):
+	call the install routine if EAZEL_SERVICES is defined
+
 2000-10-17  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/Makefile.am:

@@ -352,6 +352,12 @@ nautilus_window_constructed (NautilusWindow *window)
 			       "nautilus-shell-ui.xml",
 			       "nautilus");
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
+	
+	/* merge in the services menu if necessary */
+
+#ifdef EAZEL_SERVICES
+	nautilus_window_install_service_menu (window);
+#endif
 
 	/* set up location bar */
 	location_bar_box = gtk_hbox_new (FALSE, GNOME_PAD);

@@ -1,0 +1,28 @@
+<Root>
+<menu>
+	<placeholder name="Services Placeholder">
+		<submenu name="Services" _label="_Services">
+			<menuitem name="Eazel Services" 
+			  	_label="_Eazel Services" 
+			  	verb="Eazel Services"/>
+			<menuitem name="Online Storage" 
+			  	_label="_Online Storage" 
+			  	verb="Online Storage"/>
+			<menuitem name="Software Catalog" 
+			  	_label="_Software Catalog" 
+			  	verb="Software Catalog"/>
+			<placeholder name="Service Items" delimit="top"/>
+		</submenu>
+	</placeholder>
+</menu>
+
+<dockitem name="Tool Bar">
+	<placeholder name="Extra Buttons Placeholder">
+		<toolitem name="Services"
+			  _label="Services"
+	          	  min_width="48"
+		          pixtype="stock" pixname="Services"
+		          verb="Services"/>	
+	</placeholder>
+</dockitem>
+</Root>

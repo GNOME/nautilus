@@ -187,7 +187,9 @@ set_up_toolbar_images (NautilusWindow *window)
 	set_up_button (window, "/Tool Bar/Toggle Find Mode", "Search");
 	set_up_button (window, "/Tool Bar/Go to Web Search", "SearchWeb");
 	set_up_button (window, "/Tool Bar/Stop", "Stop");
+#ifdef EAZEL_SERVICES	
 	set_up_button (window, "/Tool Bar/Extra Buttons Placeholder/Services", "Services");
+#endif
 }
 
 static GtkWidget *
@@ -254,11 +256,6 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 {
 	GtkWidget *frame, *box;
 	BonoboControl *throbber_wrapper;
-
-/* Hide the services button if necessary */
-#ifndef EAZEL_SERVICES
-	nautilus_bonobo_set_hidden (window->details->shell_ui, "/commands/Services", TRUE);
-#endif
 	
 	set_up_toolbar_images (window);
 

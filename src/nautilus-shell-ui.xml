@@ -210,6 +210,8 @@
 		<placeholder name="Built-in Bookmarks Placeholder" delimit="top"/>
 		<placeholder name="Bookmarks Placeholder" delimit="top"/>
 	</submenu>
+		
+	<placeholder name="Services Placeholder"/>
 
 	<submenu name="Profiler" _label="_Profiler">
 		<menuitem name="Start Profiling" 
@@ -322,14 +324,8 @@
 	          pixtype="stock" pixname="Stop"
 	          verb="Stop"/>	
 
-	<placeholder name="Extra Buttons Placeholder" delimit="top">
-		<toolitem name="Services"
-			  _label="Services"
-	          	  min_width="48"
-		          pixtype="stock" pixname="Services"
-		          verb="Services"/>	
-	</placeholder>
-	
+	<placeholder name="Extra Buttons Placeholder" delimit="top"/>
+		
 	<control name="ThrobberWrapper" behavior="pack-end"/>
 </dockitem>
 
