@@ -1,0 +1,60 @@
+We're working on the Nautilus 1.0.3 release right now.
+
+A lot of features have gone in since 1.0.2. These include:
+
+	- don't allow desktop icons to be under the Panel
+	- cut, copy, and paste for moving or copying files (a la Windows)
+	- notice changes to files made outside Nautilus using the FAM
+	  library if it's present
+	- icon in title of Notes sidebar panel if the location has notes
+	- Scripts menu to make it easy to run selected scripts on any
+	  file; a new way to extend Nautilus
+
+	- tree view is faster, and also doesn't run at all unless it's
+	  opened, so it doesn't slow things down when you don't use it
+	- improved rubber-banding speed (in smooth mode)
+	- other small speed improvements
+
+	- Preferences menu now named "Preferences" instead of icon
+	- preference to turn emacs keybindings on (for location field in
+	  the location bar, and elsewhere)
+	- improved preferences for font and font size
+	- global view preferences, including global default zoom level
+	- preference to always sort folders first
+	- preference to add a "Delete" command that bypasses the trash
+	- icon caption setting moved into Preferences dialog
+	- support for HTTP proxies that require a user name and password
+	- preference for maximum image size for thumbnailing (and upped
+	  default from 1 MB to 3 MB)
+
+	- add "View as" items to menu bar
+	- put ellipses ("...") in the middle of file names, not the
+	  start (or end)
+	- made copy progress dialog hang around for a second even if
+	  the copy is faster than 1 second
+	- list menu emblem column has a title and is after the file
+	  name column
+	- select folder or file you came from when you do Up command
+	- sort tree view more like how we sort other views
+	- draw tree view icons smoothly when smooth mode is on
+	- less flicker in tree view display
+	- add a way to go to a specific location even when the location
+	  bar is hidden that doubles as a way to set the keyboard focus
+	  to the location in the location bar
+	- improved look of help on sidebar by using icons instead of
+	  using slanted text
+	- new implementation of audio preview that is faster and better
+	- improved Open command, including a keyboard shortcut for the
+	  Open in New Window command
+	- show target path in properties window for symlinks
+	- updated dragging code to use the same kind of slightly
+	  broken URLs that gmc produces, which makes it compatible
+	  with programs that previously worked with gmc and not Nautilus
+	- handle drags of URLs onto the desktop by making Nautilus links
+
+	- nautilus code broken out into librsvg, eel, and trilobite
+
+and others.
+
+Also, a *ton* of bug fixes and internal improvements have been done
+that I won't try to list here (see ChangeLog).
