@@ -902,8 +902,8 @@ get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 		break;
 	case PACKAGE_CIRCULAR_DEPENDENCY: 
 		message = g_strdup_printf (_("%s causes a circular dependency problem"), required);
-		if (previous_pack->status == PACKAGE_BREAKS_DEPENDENCY) {
-			g_warning ("%s and %s are mutexed", 
+		if (previous_pack->status == PACKAGE_CIRCULAR_DEPENDENCY) {
+			g_warning ("%s and %s are mutexed!!", 
 				   required_by,
 				   required);
 		} else {

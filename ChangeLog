@@ -1,3 +1,24 @@
+2000-10-16  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_fetch_dependencies), (dump_one_package),
+	(dump_packages_foreach), (dump_packages),
+	(eazel_install_ensure_deps):
+	Debug output.
+	Revamping the error tree for failures' reg. circular conflicts.
+	
+	* components/services/install/lib/eazel-install-types.c:
+	(categorydata_list_copy), (categorydata_copy),
+	(packagedata_list_copy), (eazel_install_requirement_dep_compare):
+	Fixed a bug in the copy functions and the dep_compare. 
+	
+	* nautilus-installer/src/Makefile:
+	Yeah...
+	
+	* nautilus-installer/src/installer.c:
+	(get_detailed_errors_foreach):
+	Inserting code to make the circular conflict handling nice.
+
 2000-10-16  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* nautilus.spec.in:

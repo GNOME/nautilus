@@ -39,7 +39,7 @@
 
 #include <libtrilobite/trilobite-core-utils.h>
 
-/* #define DEBUG_PACKAGE_ALLOCS */
+#define DEBUG_PACKAGE_ALLOCS 
 
 #ifdef DEBUG_PACKAGE_ALLOCS
 static int package_allocs = 0;
@@ -86,7 +86,7 @@ categorydata_list_copy (const GList *list)
 	for (ptr = list; ptr; ptr = g_list_next (list)) {
 		result = g_list_prepend (result, categorydata_copy ((CategoryData*)(ptr->data)));
 	}
-	g_list_reverse (result);
+	result = g_list_reverse (result);
 
 	return result;
 }
@@ -107,7 +107,7 @@ categorydata_copy (const CategoryData *cat)
 		result->depends = g_list_prepend (result->depends, 
 						g_strdup ((char*)ptr->data));
 	}
-	g_list_reverse (cat->depends);
+	result->depends = g_list_reverse (result->depends);
 
 	return result;
 }
@@ -224,7 +224,7 @@ packagedata_list_copy (const GList *list)
 		result = g_list_prepend (result, 
 					 packagedata_copy ((PackageData*)(ptr->data)));
 	}
-	g_list_reverse (result);
+	result = g_list_reverse (result);
 
 	return result;
 }
@@ -810,7 +810,7 @@ eazel_install_requirement_dep_compare (PackageRequirement *req,
 	if (pack->name && req->required->name) {
 		return strcmp (req->required->name, pack->name);
 	} else if (pack->provides && req->required->provides) {
-		return strcmp ((char*)pack->provides->data, (char*)req->required->provides);
+		return strcmp ((char*)pack->provides->data, (char*)req->required->provides->data);
 	} else {
 		return -1;
 	}

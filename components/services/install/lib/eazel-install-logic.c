@@ -1461,7 +1461,7 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 	extras = g_hash_table_new (g_str_hash, g_str_equal);
 	fetch_result = FALSE;
 
-	trilobite_debug ("%d requirements", g_list_length (requirements));
+	trilobite_debug ("%d requirements to be fetched/resolved", g_list_length (requirements));
 	for (iterator = requirements; iterator; glist_step (iterator)) {
 		PackageRequirement *req = (PackageRequirement*)iterator->data;
 		PackageData *pack = req->package;
@@ -1494,16 +1494,17 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 				pack_entry = g_list_find_custom (*packages,
 								 dep,
 								 (GCompareFunc)eazel_install_package_other_version_compare);
-				trilobite_debug ("Circular dependency  %s-%s-%s", dep->name, dep->version, dep->minor);
+				trilobite_debug ("Circular dependency  %s-%s-%s at 0x%x", dep->name, dep->version, dep->minor, dep);
 
 				if (pack_entry) {
-					PackageData *evil_package = (PackageData*)pack_entry->data;
-					packagedata_add_pack_to_breaks (evil_package, dep); 
-					trilobite_debug ("Circular dependency caused by %s-%s-%s", 
+					PackageData *evil_package = packagedata_copy ((PackageData*)pack_entry->data);
+					packagedata_add_pack_to_breaks (dep, evil_package); 
+					trilobite_debug ("Circular dependency caused by %s-%s-%s at 0x%x", 
 							 evil_package->name,
 							 evil_package->version,
-							 evil_package->minor);
-					evil_package->status = PACKAGE_BREAKS_DEPENDENCY;
+							 evil_package->minor, 
+							 evil_package);
+					evil_package->status = PACKAGE_CIRCULAR_DEPENDENCY;
 				} else {
 					trilobite_debug ("I cannot set the funky break list");
 				}
@@ -1539,6 +1540,9 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 								 dep->name,
 								 (GCompareFunc)eazel_install_package_name_compare);
 				if (pack_entry) {
+					/* FIXME bugzilla.eazel.com
+					   I suspect that adding this to adding evil_package to pack's breaks
+					   might yield a more pleasant tree */
 					PackageData *evil_package = (PackageData*)pack_entry->data;
 					packagedata_add_pack_to_breaks (evil_package, dep);
 					evil_package->status = PACKAGE_BREAKS_DEPENDENCY;
@@ -1645,23 +1649,40 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 static void
 dump_one_package (PackageData *pack, char *prefix)
 {
-	char *softprefix, *hardprefix;
+	char *softprefix, *hardprefix, *modprefix, *breakprefix;
 
-	trilobite_debug ("%s%s (%s) %08X", prefix, pack->name, pack->version ? pack->version : "NO VERSION",
+	trilobite_debug ("%s%s-%s-%s (stat %d), 0x%08X", 
+			 prefix, 
+			 pack->name, pack->version, pack->minor,
+			 pack->status,
 			 (unsigned int)pack);
 	softprefix = g_strdup_printf ("%s (s) ", prefix);
 	hardprefix = g_strdup_printf ("%s (h) ", prefix);
+	breakprefix = g_strdup_printf ("%s (b) ", prefix);
+	modprefix = g_strdup_printf ("%s (m) ", prefix);
 	g_list_foreach (pack->soft_depends, (GFunc)dump_one_package, softprefix);
 	g_list_foreach (pack->hard_depends, (GFunc)dump_one_package, hardprefix);
+	g_list_foreach (pack->modifies, (GFunc)dump_one_package, modprefix);
+	g_list_foreach (pack->breaks, (GFunc)dump_one_package, breakprefix);
 	g_free (softprefix);
 	g_free (hardprefix);
+	g_free (modprefix);
+	g_free (breakprefix);
+}
+
+static void
+dump_packages_foreach (PackageData *pack, gpointer unused)
+{
+	if (pack->toplevel) {
+		dump_one_package (pack, "");
+	}
 }
 
 void
 dump_packages (GList *packages)
 {
 	trilobite_debug ("#####  PACKAGE TREE  #####");
-	g_list_foreach (packages, (GFunc)dump_one_package, "");
+	g_list_foreach (packages, (GFunc)dump_packages_foreach, NULL);
 	trilobite_debug ("-----  end  -----");
 }
 
@@ -1871,7 +1892,7 @@ eazel_install_ensure_deps (EazelInstall *service,
 		g_list_foreach (requirements, (GFunc)g_free, NULL);
 		
 		/* Some debug printing */
-		print_package_list ("Packages to install (a)", *packages, FALSE);
+		dump_packages (*packages);
 		print_package_list ("Packages that were fetched", extrapackages, FALSE);
 		print_package_list ("Packages that failed", *failedpackages, TRUE);
 	} else {
