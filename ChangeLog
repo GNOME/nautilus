@@ -1,3 +1,38 @@
+2000-05-16  John Sullivan  <sullivan@eazel.com>
+
+	Some work getting the menu items for "Open With" in place,
+	and some related cleanup. "Open With" submenus now appear
+	in the File and context menus, but filled with bogus
+	insensitive items.
+
+	* src/file-manager/fm-directory-view.h:
+	Add #defines for bonobo-style menu paths for "Open With"-related
+	items.
+	* src/file-manager/fm-directory-view.c: 
+	(compute_menu_item_info): Added new cases.
+	(append_gtk_menu_item_with_view): Renamed from
+	"append_selection_menu_item" because it's now used more
+	generally; checks for view != NULL before using view.
+	(append_gtk_menu_item): New function, calls _with_view
+	with some default values.
+	(append_selection_menu_subtree): New function.
+	(fm_directory_view_real_create_background_context_menu_items):
+	Uses append_gtk_menu_item now instead of duplicating some code/data.
+	(add_open_with_gtk_menu_item), (create_open_with_gtk_menu):
+	New functions, used to create the "Open With" submenu in
+	the context menu.
+	(fm_directory_view_real_create_selection_context_menu_items):
+	Adds "Open With" submenu to context menu.
+	(insert_bonobo_menu_subtree), (add_open_with_bonobo_menu_item),
+	(reset_bonobo_open_with_menu): New functions, used to create
+	the "Open With" submenu in the File menu in the menu bar.
+	(fm_directory_view_real_merge_menus): Adds "Open With" submenu
+	to File menu.
+	(fm_directory_view_real_update_menus): Updates the "Open With"
+	submenu to match selection.
+	(fm_directory_view_get_context_menu_index): Updated to match
+	current reality.
+
 2000-05-16  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/music/nautilus-music-view.c:
