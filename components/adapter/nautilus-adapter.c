@@ -45,9 +45,9 @@
 #include <libnautilus/nautilus-bonobo-ui.h>
 
 struct NautilusAdapterDetails {
-	NautilusView                 *nautilus_view;
+	NautilusView *nautilus_view;
 	NautilusAdapterEmbedStrategy *embed_strategy;
-	NautilusAdapterLoadStrategy  *load_strategy;
+	NautilusAdapterLoadStrategy *load_strategy;
 	guint report_load_underway_id;
 	guint report_load_progress_id;
 	guint report_load_complete_id;
@@ -55,35 +55,30 @@ struct NautilusAdapterDetails {
 };
 
 
-static void nautilus_adapter_load_location_callback (NautilusView    *view,
-						     const char      *uri,
-						     NautilusAdapter *adapter);
-static void nautilus_adapter_stop_loading_callback  (NautilusView    *view,
-						     NautilusAdapter *adapter);
-
-static void nautilus_adapter_activate_callback      (BonoboControl   *control,
-						     gboolean         state,
-						     NautilusAdapter *adapter);
+static void nautilus_adapter_load_location_callback (NautilusView                 *view,
+						     const char                   *uri,
+						     NautilusAdapter              *adapter);
+static void nautilus_adapter_stop_loading_callback  (NautilusView                 *view,
+						     NautilusAdapter              *adapter);
+static void nautilus_adapter_activate_callback      (BonoboControl                *control,
+						     gboolean                      state,
+						     NautilusAdapter              *adapter);
 static void nautilus_adapter_open_location_callback (NautilusAdapterEmbedStrategy *strategy,
 						     const char                   *uri,
 						     NautilusAdapter              *adapter);
-
-static void nautilus_adapter_load_underway_callback (NautilusAdapter             *adapter);
-static void nautilus_adapter_load_progress_callback (NautilusAdapter             *adapter,
-						     double                       fraction_complete);
-static void nautilus_adapter_load_complete_callback (NautilusAdapter             *adapter);
-static void nautilus_adapter_load_failed_callback   (NautilusAdapter             *adapter);
-
-
-
-static void nautilus_adapter_initialize_class (NautilusAdapterClass *klass);
-static void nautilus_adapter_initialize       (NautilusAdapter      *server);
-static void nautilus_adapter_destroy          (GtkObject                      *object);
+static void nautilus_adapter_load_underway_callback (NautilusAdapter              *adapter);
+static void nautilus_adapter_load_progress_callback (NautilusAdapter              *adapter,
+						     double                        fraction_complete);
+static void nautilus_adapter_load_complete_callback (NautilusAdapter              *adapter);
+static void nautilus_adapter_load_failed_callback   (NautilusAdapter              *adapter);
+static void nautilus_adapter_initialize_class       (NautilusAdapterClass         *klass);
+static void nautilus_adapter_initialize             (NautilusAdapter              *server);
+static void nautilus_adapter_destroy                (GtkObject                    *object);
 
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapter,
-				   nautilus_adapter,
-				   GTK_TYPE_OBJECT)
+			      nautilus_adapter,
+			      GTK_TYPE_OBJECT)
 
      
 static void
@@ -91,8 +86,6 @@ nautilus_adapter_initialize_class (NautilusAdapterClass *klass)
 {
 	GtkObjectClass *object_class;
 	
-	g_assert (NAUTILUS_IS_ADAPTER_CLASS (klass));
-
 	object_class = GTK_OBJECT_CLASS (klass);
 	
 	object_class->destroy = nautilus_adapter_destroy;
@@ -101,15 +94,9 @@ nautilus_adapter_initialize_class (NautilusAdapterClass *klass)
 static void
 nautilus_adapter_initialize (NautilusAdapter *adapter)
 {
-	CORBA_Environment ev;
-
-	CORBA_exception_init (&ev);
-	
-	g_assert (NAUTILUS_IS_ADAPTER (adapter));
-
 	adapter->details = g_new0 (NautilusAdapterDetails, 1);
-	
-	CORBA_exception_free (&ev);
+	gtk_object_ref (GTK_OBJECT (adapter));
+	gtk_object_sink (GTK_OBJECT (adapter));
 }
 
 static void
@@ -153,20 +140,15 @@ nautilus_adapter_new (Bonobo_Unknown component)
 	BonoboControl        *control;
 	GtkWidget            *bin;
 	BonoboObject         *zoomable;
-	CORBA_Environment     ev;
-
 
 	/* FIXME bugzilla.gnome.org 44405: should be done with
 	 * construct args 
 	 */
 
-	CORBA_exception_init (&ev);
-
 	adapter = NAUTILUS_ADAPTER (gtk_object_new (NAUTILUS_TYPE_ADAPTER, NULL));
 
-
 	/* Set up a few wrapper framework details */
-	bin =  gtk_widget_new (EEL_TYPE_GENEROUS_BIN, NULL);
+	bin = gtk_widget_new (EEL_TYPE_GENEROUS_BIN, NULL);
 	gtk_widget_show (bin);
 	control = bonobo_control_new (bin);
 	adapter->details->nautilus_view = nautilus_view_new_from_bonobo_control (control);
@@ -177,12 +159,9 @@ nautilus_adapter_new (Bonobo_Unknown component)
 				   GTK_OBJECT (adapter));
 
 	/* Get the class to handle embedding this kind of component. */
-	adapter->details->embed_strategy = nautilus_adapter_embed_strategy_get
-		(component);
-
+	adapter->details->embed_strategy = nautilus_adapter_embed_strategy_get (component);
 	if (adapter->details->embed_strategy == NULL) {
 		gtk_object_unref (GTK_OBJECT (adapter));
-		
 		return NULL;
 	}
 
@@ -200,13 +179,9 @@ nautilus_adapter_new (Bonobo_Unknown component)
 
 
 	/* Get the class to handle loading this kind of component. */
-
-	adapter->details->load_strategy = nautilus_adapter_load_strategy_get
-		(component);
-
+	adapter->details->load_strategy = nautilus_adapter_load_strategy_get (component);
 	if (adapter->details->load_strategy == NULL) {
 		gtk_object_unref (GTK_OBJECT (adapter));
-		
 		return NULL;
 	}
 
@@ -233,18 +208,14 @@ nautilus_adapter_new (Bonobo_Unknown component)
 					   GTK_OBJECT (adapter));
 
 	/* complete the embedding */
-
 	gtk_container_add (GTK_CONTAINER (bin), 
 			   nautilus_adapter_embed_strategy_get_widget (adapter->details->embed_strategy));
-
 			   
 	/* hook up view signals. */
-
 	gtk_signal_connect (GTK_OBJECT (adapter->details->nautilus_view),
 			    "load_location",
 			    nautilus_adapter_load_location_callback,
 			    adapter);
-
 	gtk_signal_connect (GTK_OBJECT (adapter->details->nautilus_view),
 			    "stop_loading",
 			    nautilus_adapter_stop_loading_callback,
@@ -253,14 +224,11 @@ nautilus_adapter_new (Bonobo_Unknown component)
 	return adapter;
 }
 
-
 NautilusView *
 nautilus_adapter_get_nautilus_view (NautilusAdapter *adapter) 
 {
 	return adapter->details->nautilus_view;
 }
-
-
 
 static void 
 nautilus_adapter_load_location_callback (NautilusView    *view,
@@ -336,4 +304,3 @@ nautilus_adapter_load_failed_callback   (NautilusAdapter             *adapter)
 {
 	nautilus_view_report_load_failed (adapter->details->nautilus_view);
 }
-

@@ -395,6 +395,7 @@ nautilus_directory_get_integer_file_metadata (NautilusDirectory *directory,
 	char *result_as_string;
 	char *default_as_string;
 	int result;
+	char c;
 
 	default_as_string = g_strdup_printf ("%d", default_metadata);
 	result_as_string = nautilus_directory_get_file_metadata
@@ -406,7 +407,7 @@ nautilus_directory_get_integer_file_metadata (NautilusDirectory *directory,
 	if (result_as_string == NULL) {
 		result = default_metadata;
 	} else {
-		if (sscanf (result_as_string, " %d %*s", &result) != 1) {
+		if (sscanf (result_as_string, " %d %c", &result, &c) != 1) {
 			result = default_metadata;
 		}
 		g_free (result_as_string);

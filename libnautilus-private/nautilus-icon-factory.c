@@ -937,6 +937,7 @@ static void
 parse_attach_points (NautilusEmblemAttachPoints *attach_points, const char *attach_point_string)
 {
 	char **point_array;
+	char c;
 	int i, x_offset, y_offset;
 
 	attach_points->num_points = 0;
@@ -950,7 +951,7 @@ parse_attach_points (NautilusEmblemAttachPoints *attach_points, const char *atta
 	point_array = g_strsplit (attach_point_string, "|", MAX_ATTACH_POINTS); 
 	
 	for (i = 0; point_array[i] != NULL; i++) {
-		if (sscanf (point_array[i], " %d , %d , %*s", &x_offset, &y_offset) == 2) {
+		if (sscanf (point_array[i], " %d , %d %c", &x_offset, &y_offset, &c) == 2) {
 			attach_points->points[attach_points->num_points].x = x_offset;
 			attach_points->points[attach_points->num_points].y = y_offset;
 			attach_points->num_points++;

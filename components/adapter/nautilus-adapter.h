@@ -27,7 +27,6 @@
 #ifndef NAUTILUS_ADAPTER_H
 #define NAUTILUS_ADAPTER_H
 
-#include <gtk/gtklabel.h>
 #include <libnautilus/nautilus-view.h>
 
 #define NAUTILUS_TYPE_ADAPTER	          (nautilus_adapter_get_type ())
@@ -51,6 +50,6 @@ typedef struct {
 GtkType          nautilus_adapter_get_type          (void);
 
 NautilusAdapter *nautilus_adapter_new               (Bonobo_Unknown component);
-
 NautilusView    *nautilus_adapter_get_nautilus_view (NautilusAdapter *adapter);
+
 #endif /* NAUTILUS_ADAPTER_H */

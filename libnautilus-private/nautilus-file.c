@@ -3184,13 +3184,14 @@ static gboolean
 get_id_from_digit_string (const char *digit_string, uid_t *id)
 {
 	long scanned_id;
+	char c;
 
 	g_assert (id != NULL);
 
 	/* Only accept string if it has one integer with nothing
 	 * afterwards.
 	 */
-	if (sscanf (digit_string, "%ld%*s", &scanned_id) != 1) {
+	if (sscanf (digit_string, "%ld%c", &scanned_id, &c) != 1) {
 		return FALSE;
 	}
 	*id = scanned_id;
@@ -3602,7 +3603,7 @@ nautilus_file_get_settable_group_names (NautilusFile *file)
 
 	if (user_id == 0) {
 		/* Root is allowed to set group to anything. */
-		result = nautilus_get_group_names_including (NULL);
+		result = nautilus_get_group_names ();
 	} else if (user_id == (uid_t) file->details->info->uid) {
 		/* Owner is allowed to set group to any that owner is member of. */
 		user_name_string = get_user_name_from_id (user_id);

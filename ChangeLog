@@ -1,3 +1,28 @@
+2001-09-25  Darin Adler  <darin@bentspoon.com>
+
+	* components/adapter/nautilus-adapter.c:
+	(nautilus_adapter_initialize): Ref and sink the new adapter.
+	(nautilus_adapter_new): Remove unused CORBA_Environment.
+	* components/adapter/nautilus-adapter.h: Whitespace tweak.
+
+	* libnautilus-private/nautilus-directory-metafile.c:
+	(nautilus_directory_get_integer_file_metadata):
+	* libnautilus-private/nautilus-file.c: (get_id_from_digit_string):
+	* libnautilus-private/nautilus-icon-factory.c:
+	(parse_attach_points):
+	* libnautilus-private/nautilus-thumbnails.c:
+	(nautilus_thumbnail_load_framed_image):
+	* src/file-manager/fm-icon-view.c:
+	(get_stored_icon_position_callback):
+	A bunch of places were trying to use %*s to detect whether there
+	were stray characters at the end of a string when doing an sscanf.
+	I wrote that code. But it doesn't work. A similar technique that
+	does work is to use %c, and ignore the parsed character.
+
+	* src/nautilus-search-bar-criterion.c:
+	(nautilus_search_uri_get_first_criterion):
+	This place wasn't using the %*s at all, so just remove it.
+
 2001-09-24  Fabrice Bellet  <fabrice@gnu.org>
 
 	* Reviewed by Darin Adler <darin@bentspoon.com> (Bug 44402)

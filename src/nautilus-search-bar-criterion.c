@@ -778,7 +778,7 @@ nautilus_search_uri_get_first_criterion (const char *search_uri)
 	 */
 	first_criterion = g_strdup (unescaped_uri);
 
-	matches = sscanf (unescaped_uri, "search:[file:///]%s %*s", first_criterion);
+	matches = sscanf (unescaped_uri, "search:[file:///]%s", first_criterion);
 	g_free (unescaped_uri);
 	
 	if (matches == 0) {

@@ -685,6 +685,7 @@ nautilus_thumbnail_load_framed_image (const char *path, gboolean anti_aliased_fr
 	gboolean got_frame_offsets;
 	char *frame_offset_str;
 	int left_offset, top_offset, right_offset, bottom_offset;
+	char c;
 	
 	pixbuf = gdk_pixbuf_new_from_file (path);
 	if (pixbuf == NULL || pixbuf_is_framed (pixbuf)) {
@@ -703,8 +704,8 @@ nautilus_thumbnail_load_framed_image (const char *path, gboolean anti_aliased_fr
 	got_frame_offsets = FALSE;
 	frame_offset_str = nautilus_theme_get_theme_data ("thumbnails", "FRAME_OFFSETS");
 	if (frame_offset_str != NULL) {
-		if (sscanf (frame_offset_str, " %d , %d , %d , %d %*s",
-			    &left_offset, &top_offset, &right_offset, &bottom_offset) == 4) {
+		if (sscanf (frame_offset_str, " %d , %d , %d , %d %c",
+			    &left_offset, &top_offset, &right_offset, &bottom_offset, &c) == 4) {
 			got_frame_offsets = TRUE;
 		}
 		g_free (frame_offset_str);

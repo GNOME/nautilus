@@ -282,6 +282,7 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 	char *position_string, *scale_string;
 	gboolean position_good, scale_good;
 	char *locale;
+	char c;
 
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (file));
@@ -300,8 +301,8 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 	position_string = nautilus_file_get_metadata
 		(file, NAUTILUS_METADATA_KEY_ICON_POSITION, "");
 	position_good = sscanf
-		(position_string, " %d , %d %*s",
-		 &position->x, &position->y) == 2;
+		(position_string, " %d , %d %c",
+		 &position->x, &position->y, &c) == 2;
 	g_free (position_string);
 
 	/* If it is the desktop directory, maybe the gnome-libs metadata has information about it */
@@ -310,15 +311,15 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 	scale_string = nautilus_file_get_metadata
 		(file, NAUTILUS_METADATA_KEY_ICON_SCALE, "1");
 	scale_good = sscanf
-		(scale_string, " %lf %*s",
-		 &position->scale_x) == 1;
+		(scale_string, " %lf %c",
+		 &position->scale_x, &c) == 1;
 	if (scale_good) {
 		position->scale_y = position->scale_x;
 	} else {
 		scale_good = sscanf
-			(scale_string, " %lf %lf %*s",
+			(scale_string, " %lf %lf %c",
 			 &position->scale_x,
-			 &position->scale_y) == 2;
+			 &position->scale_y, &c) == 2;
 		if (!scale_good) {
 			position->scale_x = 1.0;
 			position->scale_y = 1.0;
