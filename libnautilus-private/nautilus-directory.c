@@ -507,7 +507,7 @@ static char *
 uri_get_basename (const char *uri)
 {
 	GnomeVFSURI *vfs_uri;
-	char *name;
+	char *escaped_name, *name;
 
 	/* Make VFS version of URI. */
 	vfs_uri = gnome_vfs_uri_new (uri);
@@ -516,8 +516,10 @@ uri_get_basename (const char *uri)
 	}
 
 	/* Extract name part. */
-	name = gnome_vfs_uri_extract_short_name (vfs_uri);
+	escaped_name = gnome_vfs_uri_extract_short_path_name (vfs_uri);
 	gnome_vfs_uri_unref (vfs_uri);
+	name = gnome_vfs_unescape_string (escaped_name, NULL);
+	g_free (escaped_name);
 
 	return name;
 }

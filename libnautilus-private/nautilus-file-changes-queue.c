@@ -22,7 +22,7 @@
 */
 
 #include <config.h>
-#include "nautilus-file-changes-queue-private.h"
+#include "nautilus-file-changes-queue.h"
 
 #include "nautilus-glib-extensions.h"
 #include "nautilus-directory-private.h"
@@ -35,21 +35,36 @@
 #define MUTEX_UNLOCK(a)
 #endif
 
-static void
-nautilus_file_change_free (NautilusFileChange *change)
-{
-	g_free (change->from_uri);
-	g_free (change->to_uri);
-}
+typedef enum {
+	CHANGE_FILE_INITIAL,
+	CHANGE_FILE_ADDED,
+	CHANGE_FILE_REMOVED,
+	CHANGE_FILE_MOVED
+} NautilusFileChangeKind;
+
+typedef struct {
+	NautilusFileChangeKind kind;
+	char *from_uri;
+	char *to_uri;
+} NautilusFileChange;
+
+typedef struct {
+	GList *head;
+	GList *tail;
+#ifdef G_THREADS_ENABLED
+	GMutex *mutex;
+#endif
+} NautilusFileChangesQueue;
 
 static NautilusFileChangesQueue *
 nautilus_file_changes_queue_new (void)
 {
-	NautilusFileChangesQueue *result = g_new (NautilusFileChangesQueue, 1);
-	result->details = g_new0 (NautilusFileChangesQueueDetails, 1);
+	NautilusFileChangesQueue *result;
+
+	result = g_new0 (NautilusFileChangesQueue, 1);
 	
 #ifdef G_THREADS_ENABLED
-	result->details->mutex = g_mutex_new ();
+	result->mutex = g_mutex_new ();
 #endif
 	return result;
 }
@@ -59,11 +74,22 @@ nautilus_file_changes_queue_get (void)
 {
 	static NautilusFileChangesQueue *file_changes_queue;
 
-	if (file_changes_queue == NULL)
-		file_changes_queue = nautilus_file_changes_queue_new();
+	if (file_changes_queue == NULL) {
+		file_changes_queue = nautilus_file_changes_queue_new ();
+	}
 
 	return file_changes_queue;
 }
+
+#if 0 /* no public free call yet */
+
+static void
+nautilus_file_change_free (NautilusFileChange *change)
+{
+	g_free (change->from_uri);
+	g_free (change->to_uri);
+}
+
 
 void
 nautilus_file_changes_queue_free (NautilusFileChangesQueue *queue)
@@ -79,30 +105,31 @@ nautilus_file_changes_queue_free (NautilusFileChangesQueue *queue)
 	 */
 #endif
 
-	for (p = queue->details->head; p != NULL; p = p->next) {
+	for (p = queue->head; p != NULL; p = p->next) {
 		nautilus_file_change_free (p->data);
 	}
-	g_list_free (queue->details->head);
+	g_list_free (queue->head);
 
 #ifdef G_THREADS_ENABLED
-	g_mutex_free (queue->details->mutex);
+	g_mutex_free (queue->mutex);
 #endif
-	g_free (queue->details);
 	g_free (queue);
 }
+
+#endif /* no public free call yet */
 
 static void
 nautilus_file_changes_queue_add_common (NautilusFileChangesQueue *queue, 
 	NautilusFileChange *new_item)
 {
 	/* enqueue the new queue item while locking down the list */
-	MUTEX_LOCK (queue->details->mutex);
+	MUTEX_LOCK (queue->mutex);
 
-	queue->details->head = g_list_prepend (queue->details->head, new_item);
-	if (queue->details->tail == NULL)
-		queue->details->tail = queue->details->head;
+	queue->head = g_list_prepend (queue->head, new_item);
+	if (queue->tail == NULL)
+		queue->tail = queue->head;
 
-	MUTEX_UNLOCK (queue->details->mutex);
+	MUTEX_UNLOCK (queue->mutex);
 }
 
 void
@@ -112,7 +139,6 @@ nautilus_file_changes_queue_file_added (const char *uri)
 	NautilusFileChangesQueue *queue;
 
 	queue = nautilus_file_changes_queue_get();
-	g_assert (queue);
 
 	new_item = g_new0 (NautilusFileChange, 1);
 	new_item->kind = CHANGE_FILE_ADDED;
@@ -127,7 +153,6 @@ nautilus_file_changes_queue_file_removed (const char *uri)
 	NautilusFileChangesQueue *queue;
 
 	queue = nautilus_file_changes_queue_get();
-	g_assert (queue);
 
 	new_item = g_new0 (NautilusFileChange, 1);
 	new_item->kind = CHANGE_FILE_REMOVED;
@@ -141,8 +166,7 @@ nautilus_file_changes_queue_file_moved (const char *from, const char *to)
 	NautilusFileChange *new_item;
 	NautilusFileChangesQueue *queue;
 
-	queue = nautilus_file_changes_queue_get();
-	g_assert (queue);
+	queue = nautilus_file_changes_queue_get ();
 
 	new_item = g_new (NautilusFileChange, 1);
 	new_item->kind = CHANGE_FILE_MOVED;
@@ -157,22 +181,22 @@ nautilus_file_changes_queue_get_change (NautilusFileChangesQueue *queue)
 	GList *new_tail;
 	NautilusFileChange *result;
 
-	g_assert(queue);
+	g_assert (queue != NULL);
 	
 	/* dequeue the tail item while locking down the list */
-	MUTEX_LOCK (queue->details->mutex);
+	MUTEX_LOCK (queue->mutex);
 
-	if (queue->details->tail == NULL) {
+	if (queue->tail == NULL) {
 		result = NULL;
 	} else {
-		new_tail = queue->details->tail->prev;
-		result = queue->details->tail->data;
-		queue->details->head = g_list_remove_link (queue->details->head,
-			queue->details->tail);
-		queue->details->tail = new_tail;
+		new_tail = queue->tail->prev;
+		result = queue->tail->data;
+		queue->head = g_list_remove_link (queue->head,
+						  queue->tail);
+		queue->tail = new_tail;
 	}
 
-	MUTEX_UNLOCK (queue->details->mutex);
+	MUTEX_UNLOCK (queue->mutex);
 
 	return result;
 }
@@ -222,7 +246,6 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 	kind = CHANGE_FILE_INITIAL;
 
 	queue = nautilus_file_changes_queue_get();
-	g_assert (queue);
 		
 	/* Consume changes from the queue, stuffing them into one of three lists,
 	 * keep doing it while the changes are of the same kind, then send them off.

@@ -1,3 +1,29 @@
+2000-06-02  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory.c: (uri_get_basename):
+	Need to unencode the name here because it's used to compare with
+	file names that come from get_file_info.
+	
+	* src/file-manager/dfos-xfer.c: (get_parent_make_name_list):
+	Unescape the result of get_basename to convert it to a plain old
+	file name, since that's why gnome_vfs_xfer wants in its file name
+	lists (for now, see bug 1107).
+
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-file-changes-queue-private.h:
+	Removed the private header since it's so private it can be in the
+	.c file :-)
+	
+	* libnautilus-extensions/nautilus-file-changes-queue.h:
+	* libnautilus-extensions/nautilus-file-changes-queue.c:
+	(nautilus_file_changes_queue_new),
+	(nautilus_file_changes_queue_get), (nautilus_file_change_free),
+	(nautilus_file_changes_queue_free),
+	(nautilus_file_changes_queue_add_common),
+	(nautilus_file_changes_queue_get_change):
+	A little simplification and reformatting. Got rid of the details
+	indirection since the entire data structure is private.
+
 2000-06-02  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-mime-actions.h,
@@ -29,6 +55,7 @@
 
 	* libnautilus-extensions/nautilus-icon-container.c (realize): 
 	Reduce flicker by setting the back pixmap to NULL on realize.
+	
 2000-06-02  John Sullivan  <sullivan@eazel.com>
 
 	Finished task 968 (Add one-time viewer choice to "View as"

@@ -411,16 +411,24 @@ get_parent_make_name_list (const GList *item_uris, GnomeVFSURI **source_dir_uri,
 	GList **item_names)
 {
 	const GList *p;
+	GnomeVFSURI *item_uri;
+	const gchar *item_name;
+	char *unescaped_item_name;
+
 	/* convert URI list to a source parent URI and a list of names */
 	for (p = item_uris; p != NULL; p = p->next) {
-		GnomeVFSURI *item_uri;
-		const gchar *item_name;
-		
 		item_uri = gnome_vfs_uri_new (p->data);
 		item_name = gnome_vfs_uri_get_basename (item_uri);
-		*item_names = g_list_prepend (*item_names, g_strdup (item_name));
-		if (*source_dir_uri == NULL)
+		unescaped_item_name = gnome_vfs_unescape_string (item_name, NULL);
+		/* FIXME bugzilla.eazel.com 1107: If a file had %00 in
+		 * its name, then this assert would fail. Also, people
+		 * could pass us bad URIs and it would fail.
+		 */
+		g_assert (unescaped_item_name != NULL);
+		*item_names = g_list_prepend (*item_names, unescaped_item_name);
+		if (*source_dir_uri == NULL) {
 			*source_dir_uri = gnome_vfs_uri_get_parent (item_uri);
+		}
 
 		gnome_vfs_uri_unref (item_uri);
 	}

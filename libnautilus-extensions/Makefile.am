@@ -75,7 +75,6 @@ libnautilus_extensionsinclude_HEADERS=		\
 	$(NULL)
 
 libnautilus_extensions_la_SOURCES = \
-	nautilus-file-changes-queue-private.h	\
 	nautilus-icon-private.h			\
 	nautilus-file-private.h			\
 	nautilus-directory-private.h		\

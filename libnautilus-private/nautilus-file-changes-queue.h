@@ -24,20 +24,13 @@
 #ifndef NAUTILUS_FILE_CHANGES_QUEUE_H
 #define NAUTILUS_FILE_CHANGES_QUEUE_H
 
-typedef struct NautilusFileChangesQueue NautilusFileChangesQueue;
-typedef struct NautilusFileChangesQueueDetails NautilusFileChangesQueueDetails;
+#include <glib.h>
 
-void				nautilus_file_changes_queue_free 		(NautilusFileChangesQueue	*queue);
+void nautilus_file_changes_queue_file_added   (const char *uri);
+void nautilus_file_changes_queue_file_removed (const char *uri);
+void nautilus_file_changes_queue_file_moved   (const char *from_uri,
+					       const char *to_uri);
 
-void				nautilus_file_changes_queue_file_added 		(const char 			*uri);
-void				nautilus_file_changes_queue_file_removed	(const char 			*uri);
-void				nautilus_file_changes_queue_file_moved		(const char 			*from_uri,
-										 const char			*to_uri);
+void nautilus_file_changes_consume_changes    (gboolean    consume_all);
 
-void				nautilus_file_changes_consume_changes		(gboolean			consume_all);
-
-struct NautilusFileChangesQueue {
-	NautilusFileChangesQueueDetails *details;
-};
-
-#endif
+#endif /* NAUTILUS_FILE_CHANGES_QUEUE_H */
