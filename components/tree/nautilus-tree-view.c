@@ -61,11 +61,12 @@ struct NautilusTreeViewDetails {
 	NautilusTreeModel *model;
 
 	GHashTable *uri_to_node_map;
+	GHashTable *uri_to_hack_node_map;
 
 	gboolean show_hidden_files;
 };
 
-#define TREE_SPACING 3
+#define TREE_SPACING 5
 
 static void nautilus_tree_view_initialize_class (NautilusTreeViewClass *klass);
 static void nautilus_tree_view_initialize       (NautilusTreeView      *view);
@@ -90,6 +91,7 @@ static void tree_select_row_callback            (GtkCTree              *tree,
 static void nautilus_tree_view_load_uri         (NautilusTreeView      *view,
 						 const char            *uri);
 
+static void nautilus_tree_view_update_all_icons (NautilusTreeView *view);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTreeView, nautilus_tree_view, GTK_TYPE_SCROLLED_WINDOW)
@@ -105,7 +107,6 @@ nautilus_tree_view_initialize_class (NautilusTreeViewClass *klass)
 	
 	object_class->destroy = nautilus_tree_view_destroy;
 }
-
 
 
 
@@ -215,11 +216,72 @@ nautilus_tree_view_should_skip_file (NautilusTreeView *view,
 	return should_skip;
 }
 
+
+static void
+insert_hack_node (NautilusTreeView *view, const char *canonical_uri)
+{
+ 	GtkCTreeNode *view_node;
+	GtkCTreeNode *hack_node;
+	char *text[2];
+
+	hack_node = g_hash_table_lookup (view->details->uri_to_hack_node_map, canonical_uri);
+
+	if (hack_node == NULL) {
+		text[0] = "...HACK...";
+		text[1] = NULL;
+
+		view_node = g_hash_table_lookup (view->details->uri_to_node_map, canonical_uri);
+
+		hack_node = gtk_ctree_insert_node (GTK_CTREE (view->details->tree),
+						   view_node, 
+						   NULL,
+						   text,
+						   TREE_SPACING,
+						   NULL, NULL, NULL, NULL,
+						   FALSE,
+						   FALSE);
+
+		g_hash_table_insert (view->details->uri_to_hack_node_map, 
+				     (char *) canonical_uri, hack_node);
+	}
+}
+
+
+static void
+remove_hack_node (NautilusTreeView *view, const char *canonical_uri)
+{
+	GtkCTreeNode *hack_node;
+
+	hack_node = g_hash_table_lookup (view->details->uri_to_hack_node_map, canonical_uri);
+       
+	if (hack_node != NULL) {
+		gtk_ctree_remove_node (GTK_CTREE (view->details->tree),
+				       hack_node);
+
+		g_hash_table_remove (view->details->uri_to_hack_node_map, canonical_uri);
+
+		gtk_clist_thaw (GTK_CLIST (view->details->tree));
+	}
+}
+
+
+static void
+freeze_if_have_hack_node (NautilusTreeView *view, const char *canonical_uri)
+{
+	GtkCTreeNode *hack_node;
+
+	hack_node = g_hash_table_lookup (view->details->uri_to_hack_node_map, canonical_uri);
+
+	if (hack_node != NULL) {
+		gtk_clist_freeze (GTK_CLIST (view->details->tree));
+	}
+}
+
 static void
 nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *node)
 {
 	GtkCTreeNode *parent_view_node;
-	GtkCTreeNode *view_node;
+ 	GtkCTreeNode *view_node;
 	NautilusFile *file;
 	char *uri;
 	char *canonical_uri;
@@ -245,6 +307,7 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 #endif
 
 	parent_view_node = nautilus_tree_view_find_parent_node (view, canonical_uri);
+
 
 #ifdef DEBUG_TREE
 	printf ("parent_view_node 0x%x (%s)\n", (unsigned) parent_view_node, 
@@ -284,22 +347,6 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 						      expand "/" and leave everything else
 						      collapsed. */
 						   FALSE);
-		
-		if (nautilus_file_is_directory (file)) {
-			/* Gratuitous hack so node can be expandable w/o
-			   immediately inserting all the real children. */
-			
-			text[0] = "...HACK...";
-			text[1] = NULL;
-			gtk_ctree_insert_node (GTK_CTREE (view->details->tree),
-					       view_node, 
-					       NULL,
-					       text,
-					       TREE_SPACING,
-					       NULL, NULL, NULL, NULL,
-					       FALSE,
-					       FALSE);
-		}
 
 		gtk_ctree_node_set_row_data_full (GTK_CTREE (view->details->tree),
 						  view_node,
@@ -308,6 +355,21 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 
 
 		g_hash_table_insert (view->details->uri_to_node_map, canonical_uri, view_node); 
+		
+		if (nautilus_file_is_directory (file)) {
+			/* Gratuitous hack so node can be expandable w/o
+			   immediately inserting all the real children. */
+
+			insert_hack_node (view, canonical_uri);
+
+			
+		}
+
+	}
+
+	if (parent_view_node != NULL) {
+		remove_hack_node (view, (char *) gtk_ctree_node_get_row_data (GTK_CTREE (view->details->tree),
+									      parent_view_node));
 	}
 }
 
@@ -442,7 +504,25 @@ nautilus_tree_view_model_node_removed_callback (NautilusTreeModel *model,
 }
 
 
+static void
+nautilus_tree_view_model_done_loading_callback (NautilusTreeModel *model,
+						NautilusTreeNode  *node,
+						gpointer           callback_data)
+{
+	NautilusTreeView *view;
+	char *uri;
+	char *canonical_uri;
 
+	view = NAUTILUS_TREE_VIEW (callback_data);
+
+	uri = nautilus_file_get_uri (nautilus_tree_node_get_file (node));
+	canonical_uri = nautilus_tree_view_get_canonical_uri (uri);
+
+	remove_hack_node (view, canonical_uri);
+
+	g_free (uri);
+	g_free (canonical_uri);
+}
 
 static void
 nautilus_tree_view_load_from_filesystem (NautilusTreeView *view)
@@ -466,6 +546,11 @@ nautilus_tree_view_load_from_filesystem (NautilusTreeView *view)
 			    "node_removed",
 			    nautilus_tree_view_model_node_removed_callback,
 			    view);
+	gtk_signal_connect (GTK_OBJECT (view->details->model),
+			    "done_loading_children",
+			    nautilus_tree_view_model_done_loading_callback,
+			    view);
+
 }
 
 
@@ -518,8 +603,15 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 			    view);
 
 	view->details->uri_to_node_map = g_hash_table_new (g_str_hash, g_str_equal);
+	view->details->uri_to_hack_node_map = g_hash_table_new (g_str_hash, g_str_equal);
 	
 	nautilus_tree_view_load_from_filesystem (view);
+
+	gtk_signal_connect_object_while_alive
+		(nautilus_icon_factory_get (),
+		 "icons_changed",
+		 nautilus_tree_view_update_all_icons,
+		 GTK_OBJECT (view));	
 
 	gtk_widget_show (view->details->tree);
 
@@ -622,6 +714,8 @@ tree_expand_callback (GtkCTree         *ctree,
 	uri = (const char *) gtk_ctree_node_get_row_data (GTK_CTREE (view->details->tree),
 							  node);
 
+	freeze_if_have_hack_node (view, uri);
+
 	nautilus_tree_model_monitor_node (view->details->model,
 					  nautilus_tree_model_get_node (view->details->model,
 									uri),
@@ -667,4 +761,11 @@ tree_select_row_callback (GtkCTree              *tree,
 }
 
 
-
+static void 
+nautilus_tree_view_update_all_icons (NautilusTreeView *view)
+{
+	nautilus_tree_model_monitor_add (view->details->model,
+					 view,
+					 nautilus_tree_view_model_node_changed_callback,
+					 view);
+}

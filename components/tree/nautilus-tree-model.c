@@ -30,6 +30,8 @@
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs.h>
 
+#include <stdio.h>
+
 enum {
 	NODE_ADDED,
 	NODE_CHANGED,
@@ -52,16 +54,6 @@ struct NautilusTreeModelDetails {
 };
 
 
-static void nautilus_tree_model_set_root_uri                   (NautilusTreeModel *model,
-								const char *root_uri);
-static void               report_node_added                    (NautilusTreeModel *model,
-								NautilusTreeNode  *node);
-static void               report_node_changed                  (NautilusTreeModel *model,
-								NautilusTreeNode  *node);
-static void               report_node_removed                  (NautilusTreeModel *model,
-								NautilusTreeNode  *node);
-static void               report_done_loading                  (NautilusTreeModel *model,
-								NautilusTreeNode  *node);
 
 
 static void               nautilus_tree_model_destroy          (GtkObject   *object);
@@ -71,6 +63,40 @@ static void               nautilus_tree_model_initialize_class (gpointer     kla
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTreeModel, nautilus_tree_model, GTK_TYPE_OBJECT)
 
+
+
+static void nautilus_tree_model_set_root_uri                   (NautilusTreeModel *model,
+								const char        *root_uri);
+static char *uri_get_parent_text                               (const char        *uri_text);
+static void  report_root_node_if_possible                      (NautilusTreeModel *model);
+static void  report_node_added                                 (NautilusTreeModel *model,
+								NautilusTreeNode  *node);
+static void  report_node_changed                               (NautilusTreeModel *model,
+								NautilusTreeNode  *node);
+static void  report_node_removed                               (NautilusTreeModel *model,
+								NautilusTreeNode  *node);
+static void  report_done_loading                               (NautilusTreeModel *model,
+								NautilusTreeNode  *node);
+
+static void  nautilus_tree_stop_monitoring_internal            (NautilusTreeModel *model);
+
+
+/* signal/monitoring callbacks */
+static void  nautilus_tree_model_root_node_file_monitor          (NautilusFile      *file,
+								  NautilusTreeModel *model);
+static void nautilus_tree_model_directory_files_changed_callback (NautilusDirectory        *directory,
+								  GList                    *added_files,
+								  NautilusTreeModel        *model);
+
+static void nautilus_tree_model_directory_files_added_callback   (NautilusDirectory        *directory,
+								  GList                    *added_files,
+								  NautilusTreeModel        *model);
+
+static void nautilus_tree_model_directory_done_loading_callback  (NautilusDirectory        *directory,
+								  NautilusTreeModel        *model);
+
+
+/* infrastructure stuff */
 
 static void
 nautilus_tree_model_initialize_class (gpointer klass)
@@ -130,14 +156,6 @@ nautilus_tree_model_initialize (gpointer object, gpointer klass)
 							    g_str_equal);
 }
 
-static void
-nautilus_tree_stop_monitoring_internal (NautilusTreeModel *model)
-{
-	/* FIXME: stop monitoring everything; we should probably
-           forget everything in the hash table too. */
-
-}
-
 static void       
 nautilus_tree_model_destroy (GtkObject *object)
 {
@@ -163,6 +181,9 @@ nautilus_tree_model_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
+
+/* public API */
+
 NautilusTreeModel *
 nautilus_tree_model_new (const char *root_uri)
 {
@@ -173,29 +194,6 @@ nautilus_tree_model_new (const char *root_uri)
 	nautilus_tree_model_set_root_uri (model, root_uri);
 
 	return model;
-}
-
-
-static void
-report_root_node_if_possible (NautilusTreeModel *model)
-{
-	if (nautilus_file_get_file_type (nautilus_tree_node_get_file (model->details->root_node))
-	    != GNOME_VFS_FILE_TYPE_UNKNOWN) {
-		model->details->root_node_reported = TRUE;
-		
-		report_node_added (model, model->details->root_node);
-	}
-}
-
-static void
-nautilus_tree_model_root_node_file_monitor (NautilusFile      *file,
-					    NautilusTreeModel *model)
-{
-	if (model->details->root_node_reported == FALSE) {
-		report_root_node_if_possible (model);
-	} else {
-		/* report that the root node changed */
-	}
 }
 
 
@@ -267,8 +265,8 @@ nautilus_tree_model_monitor_add (NautilusTreeModel         *model,
                            could do breadth-first instead by reversing
                            the args to the g_list_concat call
                            below. */
-			g_list_concat (g_list_copy (nautilus_tree_node_get_children (current_node)),
-				       reporting_queue);
+			reporting_queue = g_list_concat (g_list_copy (nautilus_tree_node_get_children (current_node)),
+							 reporting_queue);
 		}
 	}
 
@@ -285,67 +283,6 @@ nautilus_tree_model_monitor_remove (NautilusTreeModel         *model,
 		/* FIXME: stop monitoring root node file, dunno what else */
 	}
 }
-
-
-
-static void
-nautilus_tree_model_directory_files_changed_callback (NautilusDirectory        *directory,
-						      GList                    *added_files,
-						      NautilusTreeModel        *model)
-{
-	GList *p;
-	NautilusFile     *file;
-	NautilusTreeNode *node;
-	char *uri;
-
-	for (p = added_files; p != NULL; p = p->next) {
-		file = (NautilusFile *) p->data;
-		
-		uri = nautilus_file_get_uri (file);
-		node = nautilus_tree_model_get_node (model, uri);
-		g_free (uri);
-
-		if (!nautilus_directory_contains_file (directory, file)) {
-			report_node_removed (model, node);
-		} else {			
-			report_node_changed (model, node);
-		}
-	} 
-}
-
-static void
-nautilus_tree_model_directory_files_added_callback (NautilusDirectory        *directory,
-						    GList                    *added_files,
-						    NautilusTreeModel        *model)
-{
-	GList *p;
-	NautilusFile     *file;
-	NautilusTreeNode *node;
-
-	for (p = added_files; p != NULL; p = p->next) {
-		file = (NautilusFile *) p->data;
-		
-		node = nautilus_tree_node_new (file);
-		
-		report_node_added (model, node);
-	}
-}
-
-
-static void
-nautilus_tree_model_directory_done_loading_callback (NautilusDirectory        *directory,
-						     NautilusTreeModel        *model)
-{
-	char *uri;
-	NautilusTreeNode *node;
-
-	uri = nautilus_directory_get_uri (directory);
-	node = nautilus_tree_model_get_node (model, uri);
-	g_free (uri);
-
-	report_done_loading (model, node);
-}
-
 
 
 void
@@ -446,6 +383,8 @@ NautilusTreeNode  *nautilus_tree_model_get_root_node            (NautilusTreeMod
 #endif
 
 
+/* helper functions */
+
 static char *uri_get_parent_text (const char *uri_text)
 {
 	GnomeVFSURI *uri;
@@ -465,6 +404,18 @@ static char *uri_get_parent_text (const char *uri_text)
 
 	return parent_text;
 }
+
+static void
+report_root_node_if_possible (NautilusTreeModel *model)
+{
+	if (nautilus_file_get_file_type (nautilus_tree_node_get_file (model->details->root_node))
+	    != GNOME_VFS_FILE_TYPE_UNKNOWN) {
+		model->details->root_node_reported = TRUE;
+		
+		report_node_added (model, model->details->root_node);
+	}
+}
+
 
 static void
 report_node_added (NautilusTreeModel *model,
@@ -608,4 +559,86 @@ report_done_loading (NautilusTreeModel *model,
 	gtk_signal_emit (GTK_OBJECT (model),
 			 signals[DONE_LOADING_CHILDREN],
 			 node);
+}
+
+
+static void
+nautilus_tree_stop_monitoring_internal (NautilusTreeModel *model)
+{
+	/* FIXME: stop monitoring everything; we should probably
+           forget everything in the hash table too. */
+
+}
+
+/* signal/monitoring callbacks */
+
+static void
+nautilus_tree_model_root_node_file_monitor (NautilusFile      *file,
+					    NautilusTreeModel *model)
+{
+	if (model->details->root_node_reported == FALSE) {
+		report_root_node_if_possible (model);
+	} else {
+		report_node_changed (model,
+				     model->details->root_node);
+	}
+}
+
+
+static void
+nautilus_tree_model_directory_files_changed_callback (NautilusDirectory        *directory,
+						      GList                    *added_files,
+						      NautilusTreeModel        *model)
+{
+	GList *p;
+	NautilusFile     *file;
+	NautilusTreeNode *node;
+	char *uri;
+
+	for (p = added_files; p != NULL; p = p->next) {
+		file = (NautilusFile *) p->data;
+		
+		uri = nautilus_file_get_uri (file);
+		node = nautilus_tree_model_get_node (model, uri);
+		g_free (uri);
+
+		if (!nautilus_directory_contains_file (directory, file)) {
+			report_node_removed (model, node);
+		} else {			
+			report_node_changed (model, node);
+		}
+	} 
+}
+
+static void
+nautilus_tree_model_directory_files_added_callback (NautilusDirectory        *directory,
+						    GList                    *added_files,
+						    NautilusTreeModel        *model)
+{
+	GList *p;
+	NautilusFile     *file;
+	NautilusTreeNode *node;
+
+	for (p = added_files; p != NULL; p = p->next) {
+		file = (NautilusFile *) p->data;
+		
+		node = nautilus_tree_node_new (file);
+		
+		report_node_added (model, node);
+	}
+}
+
+
+static void
+nautilus_tree_model_directory_done_loading_callback (NautilusDirectory        *directory,
+						     NautilusTreeModel        *model)
+{
+	char *uri;
+	NautilusTreeNode *node;
+
+	uri = nautilus_directory_get_uri (directory);
+	node = nautilus_tree_model_get_node (model, uri);
+	g_free (uri);
+
+	report_done_loading (model, node);
 }
