@@ -368,6 +368,18 @@ static const PreferenceDefault preference_defaults[] = {
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) }, 
 	  { USER_LEVEL_NONE }
 	},
+	{ NAUTILUS_PREFERENCES_LOOKUP_ANNOTATIONS,
+	  PREFERENCE_BOOLEAN,
+	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) }, 
+	  { USER_LEVEL_NONE }
+	},
+	{ NAUTILUS_PREFERENCES_DISPLAY_ANNOTATIONS,
+	  PREFERENCE_BOOLEAN,
+	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) }, 
+	  { USER_LEVEL_NONE }
+	},	
 	{ NAUTILUS_PREFERENCES_PREVIEW_SOUND,
 	  PREFERENCE_INTEGER,
 	  NAUTILUS_USER_LEVEL_INTERMEDIATE,
@@ -653,6 +665,14 @@ global_preferences_install_defaults (void)
 		nautilus_preferences_set_visible_user_level (preference_defaults[i].name,
 							     preference_defaults[i].visible_user_level);
 	}
+
+	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_LOOKUP_ANNOTATIONS,
+						  NAUTILUS_USER_LEVEL_NOVICE,
+						  FALSE);
+	
+	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_DISPLAY_ANNOTATIONS,
+						  NAUTILUS_USER_LEVEL_NOVICE,
+						  FALSE);
 
 	/* Add the gnome-vfs path to the list of monitored directories - for proxy settings */
 	nautilus_preferences_monitor_directory (SYSTEM_GNOME_VFS_PATH);
@@ -1041,6 +1061,24 @@ static PreferenceDialogItem tradeoffs_items[] = {
 	{ NULL }
 };
 
+static PreferenceDialogItem annotation_items[] = {
+	{ N_("Lookup File Annotations"),
+	  NAUTILUS_PREFERENCES_LOOKUP_ANNOTATIONS,
+	  N_("Use the service to lookup file annotations"),
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
+	  NULL,
+	  0
+	},
+	{ N_("Display File Annotations"),
+	  NAUTILUS_PREFERENCES_DISPLAY_ANNOTATIONS,
+	  N_("Display emblems for file annotations"),
+	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
+	  NULL,
+	  0
+	},
+	{ NULL, NULL, NULL, 0, NULL, 0 }
+};
+
 static GtkWidget *
 global_preferences_create_dialog (void)
 {
@@ -1105,6 +1143,11 @@ global_preferences_create_dialog (void)
 					  _("Speed Tradeoffs"),
 					  tradeoffs_items);
 
+	/* Annotations */
+	global_preferences_populate_pane (preference_box,
+					  _("Annotations"),
+					  annotation_items);
+	
 	/* Update the dialog so that the right items show up based on the current user level */
 	nautilus_preferences_dialog_update (NAUTILUS_PREFERENCES_DIALOG (prefs_dialog));
 

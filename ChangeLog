@@ -1,3 +1,168 @@
+2001-04-11  Andy Hertzfeld  <andy@eazel.com>
+
+	created the post-1_0_11 branch by merging with head
+	
+	* Makefile.am:
+	* components/Makefile.am:
+	* components/rss-control/.cvsignore:
+	* components/rss-control/Makefile.am:
+	* components/rss-control/main.c: (rss_control_object_destroyed),
+	(rss_control_make_object), (main):
+	* components/rss-control/nautilus-rss-control.c:
+	(nautilus_rss_control_initialize_class), (get_bonobo_properties),
+	(set_bonobo_properties), (nautilus_rss_control_initialize),
+	(free_rss_data_item), (nautilus_rss_control_clear_items),
+	(nautilus_rss_control_destroy), (nautilus_rss_control_get_control),
+	(nautilus_rss_control_set_title), (rss_logo_callback),
+	(extract_items), (rss_read_done_callback), (load_rss_file),
+	(nautilus_rss_control_set_uri), (check_for_update),
+	(rss_control_pixbuf_composite), (draw_rss_logo_image),
+	(draw_rss_title), (draw_blue_line), (draw_rss_items),
+	(nautilus_rss_control_draw), (nautilus_rss_control_expose),
+	(nautilus_rss_control_set_prelight_index),
+	(nautilus_rss_control_motion_event),
+	(nautilus_rss_control_leave_event),
+	(nautilus_rss_control_size_request),
+	(nautilus_rss_control_button_press_event):
+	* components/rss-control/nautilus-rss-control.h:
+	* components/rss-control/nautilus-rss-control.oafinfo:
+	* components/throbber/nautilus-throbber.c: (get_bonobo_properties),
+	(set_bonobo_properties), (nautilus_throbber_initialize):
+	* components/vcard/.cvsignore:
+	* components/vcard/Makefile.am:
+	* components/vcard/main.c: (vcard_object_destroyed),
+	(vcard_make_object), (main):
+	* components/vcard/nautilus-vcard.c:
+	(nautilus_vcard_initialize_class), (get_bonobo_properties),
+	(set_bonobo_properties), (nautilus_vcard_initialize),
+	(nautilus_vcard_destroy), (nautilus_vcard_get_control),
+	(vcard_logo_callback), (vcard_read_done_callback), (load_vcard),
+	(nautilus_vcard_set_uri), (vcard_pixbuf_composite),
+	(draw_vcard_logo_image), (draw_vcard_name_and_title),
+	(draw_vcard_addresses), (nautilus_vcard_draw),
+	(nautilus_vcard_expose), (nautilus_vcard_motion_event),
+	(nautilus_vcard_size_request), (nautilus_vcard_leave_event),
+	(nautilus_vcard_button_press_event):
+	* components/vcard/nautilus-vcard.h:
+	* components/vcard/nautilus-vcard.oaf:
+	* components/vcard/vcard.c: (vcard_full_name), (vcard_title),
+	(vcard_logo), (vcard_postal), (vcard_streetaddress),
+	(vcard_city_state_zip), (vcard_company), (vcard_email),
+	(vcard_fax), (vcard_web), (vcard_address_list):
+	* components/vcard/vcard.h:
+	* configure.in:
+	* icons/Makefile.am:
+	* icons/emblem-note.png:
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-annotation.c: (_byte_reverse),
+	(md5_init), (md5_update), (md5_final), (md5_transform),
+	(digest_file_close_callback), (digest_file_completed),
+	(digest_file_failed), (calculate_checksum_callback),
+	(read_file_open_callback), (calculate_file_digest),
+	(process_digest_requests), (queue_file_digest_request),
+	(get_file_from_digest), (get_annotation_path),
+	(look_up_local_annotation), (has_local_annotation),
+	(save_local_annotations), (add_annotations_to_file),
+	(remember_file), (forget_file), (got_annotations_callback),
+	(fetch_annotations_from_server), (get_annotation_from_server),
+	(got_file_digest), (annotation_is_stale),
+	(nautilus_annotation_get_annotation),
+	(nautilus_annotation_get_display_text),
+	(nautilus_annotation_get_annotation_for_display),
+	(nautilus_annotation_has_annotation), (http_post_simple),
+	(count_annotations), (nautilus_annotation_send_to_server),
+	(nautilus_annotation_add_annotation),
+	(nautilus_annotation_remove_annotation):
+	* libnautilus-extensions/nautilus-annotation.h:
+	* libnautilus-extensions/nautilus-canvas-note-item.c:
+	(nautilus_canvas_note_item_get_type),
+	(nautilus_canvas_note_item_class_init),
+	(nautilus_canvas_note_item_init),
+	(nautilus_canvas_note_item_destroy), (get_bounds),
+	(set_gc_foreground), (set_stipple), (set_outline_gc_width),
+	(update_item_bounding_box),
+	(nautilus_canvas_note_item_set_note_text),
+	(nautilus_canvas_note_item_set_arg), (get_color_arg),
+	(nautilus_canvas_note_item_get_arg),
+	(nautilus_canvas_note_item_realize),
+	(nautilus_canvas_note_item_unrealize),
+	(nautilus_canvas_note_item_translate),
+	(nautilus_canvas_note_item_bounds), (draw_item_aa_text),
+	(nautilus_canvas_note_item_render),
+	(nautilus_canvas_note_item_draw),
+	(nautilus_canvas_note_item_point),
+	(nautilus_canvas_note_item_update):
+	* libnautilus-extensions/nautilus-canvas-note-item.h:
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_user_main_directory):
+	* libnautilus-extensions/nautilus-file.c:
+	(prepend_automatic_emblem_names):
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_defaults),
+	(global_preferences_create_dialog):
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_initialize),
+	(nautilus_icon_canvas_item_destroy),
+	(nautilus_icon_canvas_item_get_icon_width),
+	(nautilus_icon_canvas_item_get_icon_height),
+	(nautilus_icon_canvas_item_set_arg), (do_control_destroy),
+	(nautilus_icon_canvas_item_get_arg),
+	(nautilus_icon_canvas_item_get_image), (recompute_bounding_box),
+	(nautilus_icon_canvas_item_update_bounds),
+	(draw_or_measure_label_text), (emblem_layout_next),
+	(nautilus_icon_canvas_item_draw), (draw_or_measure_label_text_aa),
+	(nautilus_icon_canvas_item_render), (create_annotation),
+	(remove_annotation), (create_annotation_timeout_callback),
+	(nautilus_icon_canvas_item_set_note_state),
+	(nautilus_icon_canvas_item_event),
+	(nautilus_icon_canvas_item_hit_test_full),
+	(nautilus_icon_canvas_item_point),
+	(nautilus_icon_canvas_item_bounds),
+	(nautilus_icon_canvas_item_get_icon_rectangle),
+	(get_emblem_rectangle), (get_icon_canvas_rectangle),
+	(nautilus_icon_canvas_item_hit_test_rectangle),
+	(nautilus_icon_canvas_item_set_smooth_font),
+	(nautilus_icon_canvas_item_get_control),
+	(nautilus_icon_canvas_item_set_control):
+	* libnautilus-extensions/nautilus-icon-canvas-item.h:
+	* libnautilus-extensions/nautilus-icon-container.c: (destroy),
+	(hit_test_item), (nautilus_icon_container_did_not_drag),
+	(key_press_event), (nautilus_icon_container_initialize_class),
+	(nautilus_icon_container_initialize), (handle_icon_button_press),
+	(activate_selected_items), (nautilus_icon_container_update_icon),
+	(nautilus_icon_container_annotation_changed),
+	(nautilus_icon_container_get_note_text):
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_begin_drag):
+	* libnautilus-extensions/nautilus-icon-private.h:
+	* libnautilus-extensions/nautilus-link.c:
+	(nautilus_link_local_get_component_info):
+	* libnautilus-extensions/nautilus-link.h:
+	* libnautilus-extensions/nautilus-metadata.h:
+	* nautilus-clean.sh:
+	* src/file-manager/Makefile.am:
+	* src/file-manager/fm-annotation-window.c:
+	(fm_annotation_window_initialize_class),
+	(fm_annotation_window_initialize), (real_destroy),
+	(get_pixbuf_for_annotation_window),
+	(update_annotation_window_icon), (create_image_widget_for_file),
+	(update_annotation_window_title), (set_access_mode),
+	(add_access_menu_item), (create_options_table),
+	(annotation_clicked_callback), (create_annotation_window),
+	(fm_annotation_window_present):
+	* src/file-manager/fm-annotation-window.h:
+	* src/file-manager/fm-icon-view.c: (annotate_callback),
+	(fm_icon_view_merge_menus), (fm_icon_view_update_menus),
+	(get_keyword_by_index), (icon_container_activate_callback),
+	(get_icon_control_callback), (get_icon_text_callback),
+	(get_icon_annotation_callback), (create_icon_container):
+	* src/file-manager/nautilus-icon-view-ui.xml:
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_update_contents):
+
 2001-04-11  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* nautilus.spec.in:
@@ -875,6 +1040,289 @@
 	Hook up to the get_cell_text signal. For modified text return
 	a nicely formatted text string, for everything else just
 	ellipsize the result.
+
+2001-04-11  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-canvas-note-item.c:
+	(nautilus_canvas_note_item_set_note_text):
+	improved sizing of the note item in the aa mode.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(hit_test_item):
+	fixed bug by mapping from window to world coordinates
+	
+2001-04-10  Andy Hertzfeld  <andy@eazel.com>
+
+	added a way for custom actions to take place when the user clicks
+	on an emblem, and used that to bring up the annotation window
+	when the "note" emblem is clicked on.
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c,h:
+	(nautilus_icon_canvas_item_event),
+	(nautilus_icon_canvas_item_hit_test_full),
+	(nautilus_icon_canvas_item_point),
+	(nautilus_icon_canvas_item_hit_test_rectangle):
+	renamed the "hit_test" routine to nautilus_icon_canvas_hit_test_full,
+	and made it public.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(hit_test_item), (nautilus_icon_container_did_not_drag),
+	(key_press_event), (nautilus_icon_container_initialize_class),
+	(handle_icon_button_press), (activate_selected_items):
+	added an emblem index parameter to the icon canvas's activate
+	signal, and set it up properly by calling the item hit test
+	routine to determine the emblem index.
+	
+	* src/file-manager/fm-icon-view.c: (get_keyword_by_index),
+	(icon_container_activate_callback), (get_icon_annotation_callback):
+	changed the activate callback to bring up the annotation window
+	if the annotation emblem is clicked.
+	
+2001-04-10  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-canvas-note-item.c:
+	(nautilus_canvas_note_item_set_note_text),
+	(nautilus_canvas_note_item_update):
+	tweaked note sizing
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(create_annotation), (get_emblem_rectangle):
+	made the annotation be positioned properly by using world coordinates
+	instead of canvas coordinates
+	
+2001-04-09  Andy Hertzfeld  <andy@eazel.com>
+
+	removed some unneeded generality from the note item
+	
+	* libnautilus-extensions/nautilus-canvas-note-item.c:
+	(nautilus_canvas_note_item_set_arg),
+	(nautilus_canvas_note_item_draw),
+	(nautilus_canvas_note_item_point):
+	* libnautilus-extensions/nautilus-canvas-note-item.h:
+
+2001-04-09  Andy Hertzfeld  <andy@eazel.com>
+
+	implemented arrow pointer for annotations, to make it more
+	clear what they're annotating.
+	
+	* libnautilus-extensions/nautilus-annotation.c:
+	(nautilus_annotation_send_to_server):
+	removed debugging message
+	
+	* libnautilus-extensions/nautilus-canvas-note-item.c:
+	(nautilus_canvas_note_item_set_note_text), (draw_item_aa_text),
+	(nautilus_canvas_note_item_update):
+	draw the arrow pointer
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(create_annotation), (get_emblem_rectangle):
+	position the annotation so the arrow points at the right place.
+	
+2001-04-09  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/Makefile.am:
+	linked with ammonite so we can get the user name
+	* libnautilus-extensions/nautilus-annotation.c:
+	(count_annotations), (nautilus_annotation_send_to_server),
+	(nautilus_annotation_add_annotation):
+	made it maintain the annotation count properly when a new annotation
+	is added; also, use the real username fetched from ammonite.
+	
+2001-04-08  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-annotation.c:
+	(annotation_is_stale), (nautilus_annotation_get_annotation),
+	(nautilus_annotation_has_annotation),
+	(nautilus_annotation_send_to_server),
+	(nautilus_annotation_add_annotation):
+	made annotation upload work; added "date" property to distinguish
+	multiple annotations/file; refetch annotations periodically
+	
+2001-04-06  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-annotation.c:
+	(nautilus_annotation_has_annotation), (http_post_simple),
+	(nautilus_annotation_send_to_server),
+	(nautilus_annotation_add_annotation):
+	implemented client side of annotation upload; still need to do
+	server side before it can be tested.
+	
+2001-04-06  Andy Hertzfeld  <andy@eazel.com>
+
+	started implementation of optionally sending annotations to the
+	server.  Also, put up error when the user tries to annotate
+	a directory
+	
+	* libnautilus-extensions/nautilus-annotation.c:
+	(nautilus_annotation_send_to_server),
+	(nautilus_annotation_add_annotation):
+	
+	* src/file-manager/fm-annotation-window.c:
+	(fm_annotation_window_initialize), (real_destroy),
+	(set_access_mode), (add_access_menu_item), (create_options_table),
+	(annotation_clicked_callback), (create_annotation_window),
+	(fm_annotation_window_present):
+
+2001-04-05  Andy Hertzfeld  <andy@eazel.com>
+
+	merged with HEAD to create the post-1_0_10 branch
+	
+	* Makefile.am:
+	* components/Makefile.am:
+	* components/rss-control/.cvsignore:
+	* components/rss-control/Makefile.am:
+	* components/rss-control/main.c: (rss_control_object_destroyed),
+	(rss_control_make_object), (main):
+	* components/rss-control/nautilus-rss-control.c:
+	(nautilus_rss_control_initialize_class), (get_bonobo_properties),
+	(set_bonobo_properties), (nautilus_rss_control_initialize),
+	(free_rss_data_item), (nautilus_rss_control_clear_items),
+	(nautilus_rss_control_destroy), (nautilus_rss_control_get_control),
+	(nautilus_rss_control_set_title), (rss_logo_callback),
+	(extract_items), (rss_read_done_callback), (load_rss_file),
+	(nautilus_rss_control_set_uri), (check_for_update),
+	(rss_control_pixbuf_composite), (draw_rss_logo_image),
+	(draw_rss_title), (draw_blue_line), (draw_rss_items),
+	(nautilus_rss_control_draw), (nautilus_rss_control_expose),
+	(nautilus_rss_control_set_prelight_index),
+	(nautilus_rss_control_motion_event),
+	(nautilus_rss_control_leave_event),
+	(nautilus_rss_control_size_request),
+	(nautilus_rss_control_button_press_event):
+	* components/rss-control/nautilus-rss-control.h:
+	* components/rss-control/nautilus-rss-control.oafinfo:
+	* components/throbber/nautilus-throbber.c: (get_bonobo_properties),
+	(set_bonobo_properties), (nautilus_throbber_initialize):
+	* components/vcard/.cvsignore:
+	* components/vcard/Makefile.am:
+	* components/vcard/main.c: (vcard_object_destroyed),
+	(vcard_make_object), (main):
+	* components/vcard/nautilus-vcard.c:
+	(nautilus_vcard_initialize_class), (get_bonobo_properties),
+	(set_bonobo_properties), (nautilus_vcard_initialize),
+	(nautilus_vcard_destroy), (nautilus_vcard_get_control),
+	(vcard_logo_callback), (vcard_read_done_callback), (load_vcard),
+	(nautilus_vcard_set_uri), (vcard_pixbuf_composite),
+	(draw_vcard_logo_image), (draw_vcard_name_and_title),
+	(draw_vcard_addresses), (nautilus_vcard_draw),
+	(nautilus_vcard_expose), (nautilus_vcard_motion_event),
+	(nautilus_vcard_size_request), (nautilus_vcard_leave_event),
+	(nautilus_vcard_button_press_event):
+	* components/vcard/nautilus-vcard.h:
+	* components/vcard/nautilus-vcard.oaf:
+	* components/vcard/vcard.c: (vcard_full_name), (vcard_title),
+	(vcard_logo), (vcard_postal), (vcard_streetaddress),
+	(vcard_city_state_zip), (vcard_company), (vcard_email),
+	(vcard_fax), (vcard_web), (vcard_address_list):
+	* components/vcard/vcard.h:
+	* configure.in:
+	* icons/Makefile.am:
+	* icons/emblem-note.png:
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-annotation.c: (_byte_reverse),
+	(md5_init), (md5_update), (md5_final), (md5_transform),
+	(digest_file_close_callback), (digest_file_completed),
+	(digest_file_failed), (calculate_checksum_callback),
+	(read_file_open_callback), (calculate_file_digest),
+	(process_digest_requests), (queue_file_digest_request),
+	(get_file_from_digest), (get_annotation_path),
+	(look_up_local_annotation), (has_local_annotation),
+	(save_local_annotations), (add_annotations_to_file),
+	(remember_file), (forget_file), (got_annotations_callback),
+	(fetch_annotations_from_server), (get_annotation_from_server),
+	(got_file_digest), (nautilus_annotation_get_annotation),
+	(nautilus_annotation_get_display_text),
+	(nautilus_annotation_get_annotation_for_display),
+	(nautilus_annotation_has_annotation),
+	(nautilus_annotation_add_annotation),
+	(nautilus_annotation_remove_annotation):
+	* libnautilus-extensions/nautilus-annotation.h:
+	* libnautilus-extensions/nautilus-canvas-note-item.c:
+	(nautilus_canvas_note_item_get_type),
+	(nautilus_canvas_note_item_class_init),
+	(nautilus_canvas_note_item_init),
+	(nautilus_canvas_note_item_destroy), (get_bounds),
+	(set_gc_foreground), (set_stipple), (set_outline_gc_width),
+	(nautilus_canvas_note_item_set_fill),
+	(nautilus_canvas_note_item_set_outline),
+	(update_item_bounding_box),
+	(nautilus_canvas_note_item_set_note_text),
+	(nautilus_canvas_note_item_set_arg), (get_color_arg),
+	(nautilus_canvas_note_item_get_arg),
+	(nautilus_canvas_note_item_realize),
+	(nautilus_canvas_note_item_unrealize),
+	(nautilus_canvas_note_item_translate),
+	(nautilus_canvas_note_item_bounds), (draw_item_aa_text),
+	(nautilus_canvas_note_item_render),
+	(nautilus_canvas_note_item_draw),
+	(nautilus_canvas_note_item_point),
+	(nautilus_canvas_note_item_update):
+	* libnautilus-extensions/nautilus-canvas-note-item.h:
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_user_main_directory):
+	* libnautilus-extensions/nautilus-file.c:
+	(prepend_automatic_emblem_names):
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_defaults),
+	(global_preferences_create_dialog):
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_initialize),
+	(nautilus_icon_canvas_item_destroy),
+	(nautilus_icon_canvas_item_get_icon_width),
+	(nautilus_icon_canvas_item_get_icon_height),
+	(nautilus_icon_canvas_item_set_arg), (do_control_destroy),
+	(nautilus_icon_canvas_item_get_arg),
+	(nautilus_icon_canvas_item_get_image), (recompute_bounding_box),
+	(nautilus_icon_canvas_item_update_bounds),
+	(draw_or_measure_label_text), (emblem_layout_next),
+	(nautilus_icon_canvas_item_draw), (draw_or_measure_label_text_aa),
+	(nautilus_icon_canvas_item_render), (create_annotation),
+	(remove_annotation), (create_annotation_timeout_callback),
+	(nautilus_icon_canvas_item_set_note_state),
+	(nautilus_icon_canvas_item_event), (hit_test),
+	(nautilus_icon_canvas_item_point),
+	(nautilus_icon_canvas_item_bounds),
+	(nautilus_icon_canvas_item_get_icon_rectangle),
+	(get_icon_canvas_rectangle),
+	(nautilus_icon_canvas_item_hit_test_rectangle),
+	(nautilus_icon_canvas_item_set_smooth_font),
+	(nautilus_icon_canvas_item_get_control),
+	(nautilus_icon_canvas_item_set_control):
+	* libnautilus-extensions/nautilus-icon-canvas-item.h:
+	* libnautilus-extensions/nautilus-icon-container.c: (destroy),
+	(nautilus_icon_container_initialize_class),
+	(nautilus_icon_container_initialize),
+	(nautilus_icon_container_update_icon),
+	(nautilus_icon_container_annotation_changed),
+	(nautilus_icon_container_get_note_text):
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_begin_drag):
+	* libnautilus-extensions/nautilus-icon-private.h:
+	* libnautilus-extensions/nautilus-link.c:
+	(nautilus_link_local_get_component_info):
+	* libnautilus-extensions/nautilus-link.h:
+	* libnautilus-extensions/nautilus-metadata.h:
+	* nautilus-clean.sh:
+	* src/file-manager/Makefile.am:
+	* src/file-manager/fm-annotation-window.c:
+	(fm_annotation_window_initialize_class),
+	(fm_annotation_window_initialize), (real_destroy),
+	(get_pixbuf_for_annotation_window),
+	(update_annotation_window_icon), (create_image_widget_for_file),
+	(update_annotation_window_title), (create_options_table),
+	(annotation_clicked_callback), (create_annotation_window),
+	(fm_annotation_window_present):
+	* src/file-manager/fm-annotation-window.h:
+	* src/file-manager/fm-icon-view.c: (annotate_callback),
+	(fm_icon_view_merge_menus), (fm_icon_view_update_menus),
+	(get_icon_control_callback), (get_icon_text_callback),
+	(get_icon_annotation_callback), (create_icon_container):
+	* src/file-manager/nautilus-icon-view-ui.xml:
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_update_contents):
 
 2001-04-05  John Sullivan  <sullivan@eazel.com>
 

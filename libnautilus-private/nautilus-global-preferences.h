@@ -110,6 +110,10 @@ enum
 	NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW
 };
 
+/* enabling annotations */
+#define NAUTILUS_PREFERENCES_LOOKUP_ANNOTATIONS			"preferences/lookup_annotations"
+#define NAUTILUS_PREFERENCES_DISPLAY_ANNOTATIONS		"preferences/display_annotations"
+
 /* Icon View */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"icon-view/default_sort_in_reverse_order"
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER		"icon-view/default_sort_order"

@@ -119,10 +119,12 @@ enum {
 	 */
 };
 
-static void          activate_selected_items                  (NautilusIconContainer      *container);
+static void          activate_selected_items                  (NautilusIconContainer      *container,
+							       int 			  select_location);
 static void          nautilus_icon_container_initialize_class (NautilusIconContainerClass *class);
 static void          nautilus_icon_container_initialize       (NautilusIconContainer      *container);
 static void	     nautilus_icon_container_theme_changed    (gpointer		 	  user_data);
+static void	     nautilus_icon_container_annotation_changed (gpointer		  user_data);
 
 static void          compute_stretch                          (StretchState               *start,
 							       StretchState               *current);
@@ -166,10 +168,12 @@ enum {
 	CONTEXT_CLICK_SELECTION,
 	MIDDLE_CLICK,
 	GET_CONTAINER_URI,
+	GET_ICON_CONTROL,
 	GET_ICON_IMAGES,
 	GET_ICON_TEXT,
 	GET_ICON_URI,
 	GET_ICON_DROP_TARGET_URI,
+	GET_ICON_ANNOTATION,
 	GET_STORED_ICON_POSITION,
 	ICON_POSITION_CHANGED,
 	ICON_TEXT_CHANGED,
@@ -2286,7 +2290,6 @@ select_previous_or_next_name (NautilusIconContainer *container,
 }
 
 /* GtkObject methods.  */
-
 static void
 destroy (GtkObject *object)
 {
@@ -2332,6 +2335,10 @@ destroy (GtkObject *object)
 	if (container->details->rename_widget != NULL) {
 		gtk_object_destroy (GTK_OBJECT (container->details->rename_widget));
 	}
+
+	/* remove the annotation preference callbacks */
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_LOOKUP_ANNOTATIONS, nautilus_icon_container_annotation_changed, container);	
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DISPLAY_ANNOTATIONS, nautilus_icon_container_annotation_changed, container);	
 
 	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
 	 * The NautilusIconContainer class should simply provide calls to set the colors.
@@ -2530,13 +2537,42 @@ button_press_event (GtkWidget *widget,
 	return return_value;
 }
 
+/* utility routine to determine which portion of an icon was clicked, and return the
+ * emblem index if an emblem was clicked on
+ */
+static int
+hit_test_item (NautilusIconCanvasItem *icon_item, GdkEventButton *event)
+{
+	ArtDRect world_rect;
+	ArtIRect canvas_rect;
+	HitType hit_type;
+	int emblem_index;
+	
+	gnome_canvas_window_to_world (GNOME_CANVAS_ITEM (icon_item)->canvas, event->x, event->y,
+					&world_rect.x0, &world_rect.y0);
+	world_rect.x1 = world_rect.x0 + 1.0;
+	world_rect.y1 = world_rect.y0 + 1.0;
+	
+	eel_gnome_canvas_world_to_canvas_rectangle
+		(GNOME_CANVAS_ITEM (icon_item)->canvas, &world_rect, &canvas_rect);
+	
+	if (nautilus_icon_canvas_item_hit_test_full (icon_item, &canvas_rect, &hit_type, &emblem_index)) {
+		if (hit_type == EMBLEM_HIT) {
+			return emblem_index;
+		} 
+	}
+	return 0;
+}
+
 static void
 nautilus_icon_container_did_not_drag (NautilusIconContainer *container,
 				      GdkEventButton *event)
 {
+	int click_location;
 	NautilusIconContainerDetails *details;
+	
 	details = container->details;
-
+	
 	if (!button_event_modifies_selection (event) && !details->drag_icon->is_selected) {
 		gboolean selection_changed;
 		
@@ -2565,7 +2601,8 @@ nautilus_icon_container_did_not_drag (NautilusIconContainer *container,
 			 * NautilusList goes the other way because its "links" seem
 			 * much more link-like.
 			 */
-			activate_selected_items (container);
+			click_location = hit_test_item (details->drag_icon->item, event);
+			activate_selected_items (container, click_location);
 		}
 	}
 }
@@ -2997,7 +3034,7 @@ key_press_event (GtkWidget *widget,
 			break;
 		case GDK_Return:
 		case GDK_KP_Enter:
-			activate_selected_items (container);
+			activate_selected_items (container, 0);
 			handled = TRUE;
 			break;
 		case GDK_Escape:
@@ -3070,9 +3107,10 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
 						     activate),
-				  gtk_marshal_NONE__POINTER,
-				  GTK_TYPE_NONE, 1,
-				  GTK_TYPE_POINTER);
+				  gtk_marshal_NONE__POINTER_INT,
+				  GTK_TYPE_NONE, 2,
+				  GTK_TYPE_POINTER,
+				  GTK_TYPE_INT);
 	signals[CONTEXT_CLICK_SELECTION]
 		= gtk_signal_new ("context_click_selection",
 				  GTK_RUN_LAST,
@@ -3147,6 +3185,16 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  gtk_marshal_NONE__POINTER,
 				  GTK_TYPE_NONE, 1,
 				  GTK_TYPE_POINTER);
+	signals[GET_ICON_CONTROL]
+		= gtk_signal_new ("get_icon_control",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+						     get_icon_control),
+				  gtk_marshal_NONE__POINTER_POINTER,
+				  GTK_TYPE_NONE, 2,
+				  GTK_TYPE_POINTER,
+				  GTK_TYPE_POINTER);	
 	signals[GET_ICON_IMAGES]
 		= gtk_signal_new ("get_icon_images",
 				  GTK_RUN_LAST,
@@ -3187,6 +3235,16 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  eel_gtk_marshal_STRING__POINTER,
 				  GTK_TYPE_STRING, 1,
 				  GTK_TYPE_POINTER);
+	signals[GET_ICON_ANNOTATION]
+		= gtk_signal_new ("get_icon_annotation",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+						     get_icon_annotation),
+				  eel_gtk_marshal_STRING__POINTER_INT,
+				  GTK_TYPE_STRING, 2,
+				  GTK_TYPE_POINTER,
+				  GTK_TYPE_INT);
 	signals[COMPARE_ICONS]
 		= gtk_signal_new ("compare_icons",
 				  GTK_RUN_LAST,
@@ -3384,6 +3442,10 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 
 	gtk_signal_connect (GTK_OBJECT (container), "focus-out-event", handle_focus_out_event, NULL);	
 
+	/* add callbacks to notify us when the annotation state changes */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_LOOKUP_ANNOTATIONS, nautilus_icon_container_annotation_changed, container);	
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DISPLAY_ANNOTATIONS, nautilus_icon_container_annotation_changed, container);	
+	
 	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
 	 * The NautilusIconContainer class should simply provide calls to set the colors.
 	 */
@@ -3519,7 +3581,7 @@ handle_icon_button_press (NautilusIconContainer *container,
 		details->drag_button = 0;
 		details->drag_icon = NULL;
 
-		activate_selected_items (container);
+		activate_selected_items (container, 0);
 	}
 
 	return TRUE;
@@ -3674,7 +3736,7 @@ icon_destroy (NautilusIconContainer *container,
 
 /* activate any selected items in the container */
 static void
-activate_selected_items (NautilusIconContainer *container)
+activate_selected_items (NautilusIconContainer *container, int select_location)
 {
 	GList *selection;
 
@@ -3684,7 +3746,8 @@ activate_selected_items (NautilusIconContainer *container)
 	if (selection != NULL) {
 	  	gtk_signal_emit (GTK_OBJECT (container),
 				 signals[ACTIVATE],
-				 selection);
+				 selection,
+				 select_location);
 	}
 	g_list_free (selection);
 }
@@ -3720,6 +3783,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	GdkPixbuf *pixbuf, *emblem_pixbuf, *saved_pixbuf;
 	GList *emblem_scalable_icons, *emblem_pixbufs, *p;
 	char *editable_text, *additional_text;
+	GtkWidget *embedded_control;
 	GdkFont *font;
 	int smooth_font_size;
 
@@ -3754,8 +3818,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	
 	eel_scalable_icon_unref (scalable_icon);
 
-	/*  in the rare case an image is too small, scale it up */
-	
+	/*  in the rare case an image is too small, scale it up */	
 	width = gdk_pixbuf_get_width (pixbuf);
 	height = gdk_pixbuf_get_height (pixbuf);
 	if (width < min_image_size || height < min_image_size) {
@@ -3763,9 +3826,11 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		/* don't let it exceed the maximum width in the other dimension */
 		scale_factor = MIN (scale_factor, max_image_size / width);
 		scale_factor = MIN (scale_factor, max_image_size / height);
-		
+
 		scaled_width  = floor (width * scale_factor + .5);
 		scaled_height = floor (height * scale_factor + .5);
+				
+		/* scale the image to the calculated size */
 		saved_pixbuf = pixbuf;
 		pixbuf = gdk_pixbuf_scale_simple (pixbuf, scaled_width, scaled_height, GDK_INTERP_BILINEAR);
 		gdk_pixbuf_unref (saved_pixbuf);
@@ -3794,13 +3859,22 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	emblem_pixbufs = g_list_reverse (emblem_pixbufs);
 	eel_scalable_icon_list_free (emblem_scalable_icons);
 
+	/* get the embedded control, if any */
+	embedded_control = nautilus_icon_canvas_item_get_control (icon->item);
+	if (embedded_control == NULL) {
+		gtk_signal_emit (GTK_OBJECT (container),
+			 signals[GET_ICON_CONTROL],
+			 icon->data,
+			 &embedded_control);	
+	}
+	 	 
 	/* Get both editable and non-editable icon text */
 	gtk_signal_emit (GTK_OBJECT (container),
 			 signals[GET_ICON_TEXT],
 			 icon->data,
 			 &editable_text,
 			 &additional_text);
-
+	
 	/* If name of icon being renamed was changed from elsewhere, end renaming mode. 
 	 * Alternatively, we could replace the characters in the editable text widget
 	 * with the new name, but that could cause timing problems if the user just
@@ -3824,6 +3898,8 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 			       "smooth_font_size", smooth_font_size,
 			       "smooth_font", details->smooth_label_font,
 			       NULL);
+	
+	nautilus_icon_canvas_item_set_control (icon->item, embedded_control);
 	
 	nautilus_icon_canvas_item_set_image (icon->item, pixbuf);
 	nautilus_icon_canvas_item_set_attach_points (icon->item, &attach_points);
@@ -5073,6 +5149,33 @@ update_label_color (EelBackground *background,
 	}
 }
 
+/* handle the annotation preference changes by updating the icons */
+static void
+nautilus_icon_container_annotation_changed (gpointer user_data)
+{
+	nautilus_icon_container_request_update_all (NAUTILUS_ICON_CONTAINER (user_data));
+}
+
+
+/* handle fetching annotation info from the controller */
+char *
+nautilus_icon_container_get_note_text (NautilusIconContainer *container, 
+				   gpointer		 user_data,
+				   int			 emblem_index)
+{
+	NautilusIcon *icon;
+	char *note_text;
+	note_text = NULL;
+	
+	icon = (NautilusIcon*) user_data;	
+	gtk_signal_emit (GTK_OBJECT (container),
+			 signals[GET_ICON_ANNOTATION],
+			 icon->data,
+			 emblem_index,
+			 &note_text);
+
+	return note_text;
+}
 
 /* Return if the icon container is a fixed size */
 gboolean

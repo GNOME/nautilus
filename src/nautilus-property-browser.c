@@ -198,6 +198,8 @@ static void     element_clicked_callback                        (GtkWidget      
 #define MAX_ICON_WIDTH 63
 #define MAX_ICON_HEIGHT 63
 #define COLOR_SQUARE_SIZE 48
+#define MAX_EMBLEM_HEIGHT 52
+#define STANDARD_BUTTON_IMAGE_HEIGHT 42
 
 #define LABELED_IMAGE_SPACING 2
 #define IMAGE_TABLE_X_SPACING 6
@@ -1951,6 +1953,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 					   IMAGE_TABLE_X_SPACING);
 	eel_wrap_table_set_y_spacing (EEL_WRAP_TABLE (property_browser->details->content_table),
 					   IMAGE_TABLE_Y_SPACING);
+ 	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->content_table), 8);
 	
 	gtk_signal_connect (GTK_OBJECT (property_browser->details->content_table),
 			    "child_pressed", 
