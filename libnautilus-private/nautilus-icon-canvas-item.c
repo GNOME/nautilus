@@ -51,8 +51,6 @@
 /* Comment this out if the new smooth fonts code give you problems
  * This isnt meant to be permanent.  Its just a precaution.
  */
-#define SMOOTH_FONTS 1
-
 #define STRETCH_HANDLE_THICKNESS 5
 #define EMBLEM_SPACING 2
 
@@ -178,12 +176,10 @@ static void     draw_or_measure_label_text                 (NautilusIconCanvasIt
 							    GdkDrawable                   *drawable,
 							    int                            icon_left,
 							    int                            icon_bottom);
-#ifdef SMOOTH_FONTS
 static void     draw_or_measure_label_text_aa              (NautilusIconCanvasItem        *item,
 							    GdkPixbuf                     *destination_pixbuf,
 							    int                            icon_left,
 							    int                            icon_bottom);
-#endif
 static void     draw_label_text                            (NautilusIconCanvasItem        *item,
 							    GdkDrawable                   *drawable,
 							    int                            icon_left,
@@ -829,16 +825,12 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 static void
 measure_label_text (NautilusIconCanvasItem *item)
 {
-#ifdef SMOOTH_FONTS
 	if (icon_canvas_item_is_smooth (item)) {
 		draw_or_measure_label_text_aa (item, NULL, 0, 0);
 	}
 	else {
 		draw_or_measure_label_text (item, NULL, 0, 0);
 	}
-#else
-	draw_or_measure_label_text (item, NULL, 0, 0);
-#endif
 }
 
 static void
@@ -1235,7 +1227,6 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 	draw_label_text (icon_item, drawable, icon_rect.x0, icon_rect.y1);
 }
 
-#ifdef SMOOTH_FONTS
 static void
 draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 			       GdkPixbuf *destination_pixbuf,
@@ -1461,98 +1452,6 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, doub
 	i2c[4] += x_delta;
 	gdk_pixbuf_unref (text_pixbuf);
 }
-#else
-/* draw the text for an icon in anti-aliased mode */
-static void
-draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, double i2c[6], int x_delta)
-{
-	GdkVisual *visual;
-	GdkGC *gc;
-	GdkColormap *colormap;
-	GdkPixmap *pixmap;
-	GdkPixbuf *text_pixbuf, *text_pixbuf_with_alpha;
-	guchar *pixels;
-	gboolean needs_highlight, have_editable, have_additional ;
-
-	/* make sure this is really necessary */
-	
-	have_editable = icon_item->details->editable_text != NULL
-		&& icon_item->details->editable_text[0] != '\0';
-	have_additional = icon_item->details->additional_text != NULL
-		&& icon_item->details->additional_text[0] != '\0';
-
-	/* No font or no text, then do no work. */
-	if (icon_item->details->font == NULL
-	    || (!have_editable && !have_additional)) {
-		icon_item->details->text_height = 0;
-		icon_item->details->text_width = 0;			
-		return;
-	}
-	
-	if (icon_item->details->is_renaming) {
-		/* FIXME bugzilla.eazel.com 2472: 
-		 * Why is it OK to leave text_height and
-		 * text_width alone in this code path?
-		 */
-		return;
-	}
-		
-	visual = gdk_visual_get_system ();
-
-	/* allocate a pixmap to draw the text into, and clear it to white */
-	pixmap = gdk_pixmap_new
-		(NULL,
-		 icon_item->details->text_width,
-		 icon_item->details->text_height,
-		 visual->depth);
-
-	/* Set up the background. */
-	needs_highlight = icon_item->details->is_highlighted_for_selection
-		|| icon_item->details->is_highlighted_for_drop;
-	
-	gc = gdk_gc_new (pixmap);
-	gdk_rgb_gc_set_foreground (gc,
-				   needs_highlight
-				   ? NAUTILUS_RGB_COLOR_BLACK
-				   : NAUTILUS_RGB_COLOR_WHITE);
-	gdk_draw_rectangle (pixmap, gc, TRUE,
-			    0, 0,
-			    icon_item->details->text_width,
-			    icon_item->details->text_height);
-	gdk_gc_unref (gc);
-	
-	/* Use a common routine to draw the label into the pixmap. */
-	draw_label_text (icon_item, pixmap, x_delta, 0);
-	
-	/* Turn it into a pixbuf. */
-	colormap = gdk_colormap_new (visual, FALSE);
-	text_pixbuf = gdk_pixbuf_get_from_drawable
-		(NULL, pixmap, colormap,
-		 0, 0,
-		 0, 0, 
-		 icon_item->details->text_width, 
-		 icon_item->details->text_height);
-	gdk_colormap_unref (colormap);
-	gdk_pixmap_unref (pixmap);
-	
-	/* Add an alpha channel to the pixbuf. */
-	pixels = gdk_pixbuf_get_pixels (text_pixbuf);
-	if (!needs_highlight) {
-		/* When highlighting we use opaque text. */
-		text_pixbuf_with_alpha = gdk_pixbuf_add_alpha
-			(text_pixbuf, TRUE,
-			 pixels[0], pixels[1], pixels[2]);
-		gdk_pixbuf_unref (text_pixbuf);
-		text_pixbuf = text_pixbuf_with_alpha;
-	}
-	
-	/* Draw the pixbuf containing the label. */
-	i2c[4] -= x_delta;
-	draw_pixbuf_aa (text_pixbuf, buf, i2c, 0, 0);
-	i2c[4] += x_delta;
-	gdk_pixbuf_unref (text_pixbuf);
-}
-#endif
 
 /* draw the item for anti-aliased mode */
 
