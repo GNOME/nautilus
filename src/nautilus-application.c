@@ -46,6 +46,7 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-gtk-extensions.h>
+#include <gdk/gdkx.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-config.h>
 #include <libgnome/gnome-i18n.h>
@@ -844,6 +845,21 @@ need_to_show_first_time_druid (void)
 	return result;
 }
 
+/* Apps like redhat-config-packages that are using the CD-ROM
+ * directly, can grab ownership of the _NAUTILUS_DISABLE_MOUNT_WINDOW
+ * selection to temporarily disable the new window behavior.
+ */
+static gboolean
+check_mount_window_disabled (void)
+{
+        Atom selection_atom = gdk_x11_get_xatom_by_name ("_NAUTILUS_DISABLE_MOUNT_WINDOW");
+
+        if (XGetSelectionOwner (GDK_DISPLAY(), selection_atom) != None)
+                return TRUE;
+	else
+		return FALSE;
+}
+
 static void
 volume_mounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 			 NautilusApplication *application)
@@ -857,7 +873,8 @@ volume_mounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 
 	/* Open a window to the CD if the user has set that preference. */
 	if (nautilus_volume_get_device_type (volume) == NAUTILUS_DEVICE_CDROM_DRIVE
-		&& eel_gconf_get_boolean( "/apps/magicdev/do_fileman_window")) {
+		&& eel_gconf_get_boolean( "/apps/magicdev/do_fileman_window")
+	        && !check_mount_window_disabled ()) {
 		window = nautilus_application_create_window (application, gdk_screen_get_default ());
 		uri = gnome_vfs_get_uri_from_local_path (nautilus_volume_get_mount_path (volume));
 		nautilus_window_go_to (window, uri);

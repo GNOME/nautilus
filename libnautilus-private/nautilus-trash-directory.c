@@ -136,6 +136,7 @@ get_trash_volume (NautilusTrashDirectory *trash,
 		  GnomeVFSURI **volume_mount_uri)
 {
 	char *uri_str;
+	NautilusVolume *volume_copy;
 
 	/* Quick out if we already know about this volume. */
 	*trash_volume = g_hash_table_lookup (trash->details->volumes,
@@ -157,8 +158,9 @@ get_trash_volume (NautilusTrashDirectory *trash,
 		/* Make the structure used to track the trash for this volume. */
 		*trash_volume = g_new0 (TrashVolume, 1);
 		(*trash_volume)->trash = trash;
-		(*trash_volume)->volume = volume;
-		g_hash_table_insert (trash->details->volumes, volume, *trash_volume);
+		volume_copy = nautilus_volume_copy (volume);
+		(*trash_volume)->volume = volume_copy;
+		g_hash_table_insert (trash->details->volumes, volume_copy, *trash_volume);
 	}
 	
 	return TRUE;
@@ -250,6 +252,7 @@ remove_trash_volume (TrashVolume *trash_volume, gboolean finalizing)
 		}
 		nautilus_directory_unref (trash_volume->real_directory);
 	}
+	nautilus_volume_free (trash_volume->volume);
 	g_free (trash_volume);
 }
 
@@ -306,7 +309,8 @@ nautilus_trash_directory_instance_init (NautilusTrashDirectory *trash)
 	NautilusVolumeMonitor *volume_monitor;
 
 	trash->details = g_new0 (NautilusTrashDirectoryDetails, 1);
-	trash->details->volumes = g_hash_table_new (NULL, NULL);
+	trash->details->volumes = g_hash_table_new ((GHashFunc)nautilus_volume_hash,
+						    (GEqualFunc)nautilus_volume_is_equal);
 
 	volume_monitor = nautilus_volume_monitor_get ();
 

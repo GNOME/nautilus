@@ -1,3 +1,34 @@
+2002-08-29  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-volume-monitor.c (mount_volume_iso9660_add):
+	Don't mark loopback mounts as CDROM.
+
+2002-08-29  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-application.c (volume_mounted_callback):
+	Allow other apps that do their own CD switching to temporary disable
+	nautilus from popping up CD windows by grabbing the
+	_NAUTILUS_DISABLE_MOUNT_WINDOW selection.
+
+=== nautilus 2.0.6 ===
+	
+2002-08-28  Alexander Larsson  <alexl@redhat.com>
+
+	* NEWS:
+	* configure.in:
+	Bump version to 2.0.6
+
+2002-08-28  Alexander Larsson  <alexl@redhat.com>
+
+ 	* libnautilus-private/nautilus-volume-monitor.h: 
+	* libnautilus-private/nautilus-volume-monitor.c: 
+	New functions: nautilus_volume_copy, nautilus_volume_free,
+	nautilus_volume_hash, nautilus_volume_is_equal.
+	
+	* libnautilus-private/nautilus-trash-directory.c:
+	NautilusVolumes are not persistant. Don't keep pointers to old
+	ones, keep copies instead. 
+
 2002-08-23  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/apps_nautilus_preferences.schemas:

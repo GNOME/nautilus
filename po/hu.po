@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus CVS-HEAD\n"
-"POT-Creation-Date: 2002-08-23 15:36+0200\n"
-"PO-Revision-Date: 2002-08-16 21:36+0200\n"
+"POT-Creation-Date: 2002-08-28 18:10+0200\n"
+"PO-Revision-Date: 2002-08-27 19:35+0200\n"
 "Last-Translator: Emese Kovacs <emese@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
 "MIME-Version: 1.0\n"
@@ -1074,7 +1074,7 @@ msgstr "Szinti-pop"
 
 # libnautilus-private/nautilus-file.c:3731
 #: components/music/nautilus-music-view.c:296
-#: libnautilus-private/nautilus-volume-monitor.c:678
+#: libnautilus-private/nautilus-volume-monitor.c:676
 msgid "Unknown"
 msgstr "Ismeretlen"
 
@@ -3949,7 +3949,7 @@ msgstr "link (törött)"
 # libnautilus-private/nautilus-trash-directory.c:301
 # src/file-manager/fm-desktop-icon-view.c:65
 #: libnautilus-private/nautilus-file.c:5319
-#: libnautilus-private/nautilus-trash-directory.c:373
+#: libnautilus-private/nautilus-trash-directory.c:377
 #: src/file-manager/fm-desktop-icon-view.c:70
 msgid "Trash"
 msgstr "Kuka"
@@ -5026,44 +5026,44 @@ msgstr "%smegjelenítő"
 
 # libnautilus-private/nautilus-volume-monitor.c:1575
 #. Populate table with items we know localized names for.
-#: libnautilus-private/nautilus-volume-monitor.c:785
+#: libnautilus-private/nautilus-volume-monitor.c:803
 msgid "Floppy"
 msgstr "Floppy"
 
-#: libnautilus-private/nautilus-volume-monitor.c:786
-#: libnautilus-private/nautilus-volume-monitor.c:815
+#: libnautilus-private/nautilus-volume-monitor.c:804
+#: libnautilus-private/nautilus-volume-monitor.c:833
 msgid "CD-ROM"
 msgstr "CD-ROM"
 
-#: libnautilus-private/nautilus-volume-monitor.c:787
+#: libnautilus-private/nautilus-volume-monitor.c:805
 msgid "Zip Drive"
 msgstr "Zip meghajtó"
 
 # libnautilus-private/nautilus-volume-monitor.c:475
 # libnautilus-private/nautilus-volume-monitor.c:497
-#: libnautilus-private/nautilus-volume-monitor.c:802
-#: libnautilus-private/nautilus-volume-monitor.c:846
+#: libnautilus-private/nautilus-volume-monitor.c:820
+#: libnautilus-private/nautilus-volume-monitor.c:864
 msgid "Audio CD"
 msgstr "Audio CD"
 
 # libnautilus-private/nautilus-volume-monitor.c:1530
-#: libnautilus-private/nautilus-volume-monitor.c:837
+#: libnautilus-private/nautilus-volume-monitor.c:855
 msgid "Root Volume"
 msgstr "Root kötet"
 
 # libnautilus-private/nautilus-volume-monitor.c:1306
-#: libnautilus-private/nautilus-volume-monitor.c:1432
+#: libnautilus-private/nautilus-volume-monitor.c:1450
 msgid "Mount Error"
 msgstr "Hiba beillesztéskor"
 
 # libnautilus-private/nautilus-volume-monitor.c:1308
-#: libnautilus-private/nautilus-volume-monitor.c:1432
+#: libnautilus-private/nautilus-volume-monitor.c:1450
 msgid "Unmount Error"
 msgstr "Hiba leválasztáskor"
 
 # libnautilus-private/nautilus-volume-monitor.c:1346
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1505
+#: libnautilus-private/nautilus-volume-monitor.c:1523
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -5073,7 +5073,7 @@ msgstr ""
 
 # libnautilus-private/nautilus-volume-monitor.c:1350
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1509
+#: libnautilus-private/nautilus-volume-monitor.c:1527
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
@@ -5082,7 +5082,7 @@ msgstr ""
 "adathordozó az eszközben."
 
 # libnautilus-private/nautilus-volume-monitor.c:1356
-#: libnautilus-private/nautilus-volume-monitor.c:1515
+#: libnautilus-private/nautilus-volume-monitor.c:1533
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -5091,7 +5091,7 @@ msgstr ""
 "valószínűleg olyan fájlrendszer van, amit nem lehet beilleszteni."
 
 # libnautilus-private/nautilus-volume-monitor.c:1359
-#: libnautilus-private/nautilus-volume-monitor.c:1518
+#: libnautilus-private/nautilus-volume-monitor.c:1536
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -5100,23 +5100,23 @@ msgstr ""
 "valószínűleg ismeretlen."
 
 # libnautilus-private/nautilus-volume-monitor.c:1364
-#: libnautilus-private/nautilus-volume-monitor.c:1523
+#: libnautilus-private/nautilus-volume-monitor.c:1541
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "A Nautilus nem tudta beilleszteni a kijelölt hajlékonylemez meghajtót."
 
 # libnautilus-private/nautilus-volume-monitor.c:1366
-#: libnautilus-private/nautilus-volume-monitor.c:1525
+#: libnautilus-private/nautilus-volume-monitor.c:1543
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "A Nautilus nem tudta beilleszteni a kijelölt kötetet."
 
 # libnautilus-private/nautilus-volume-monitor.c:1371
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1530
+#: libnautilus-private/nautilus-volume-monitor.c:1548
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "A Nautilus nem tudta leválasztani a kijelölt kötetet."
 
 # libnautilus-private/nautilus-volume-monitor.c:1508
-#: libnautilus-private/nautilus-volume-monitor.c:1735
+#: libnautilus-private/nautilus-volume-monitor.c:1753
 msgid "ISO 9660 Volume"
 msgstr "ISO 9660 Kötet"
 
@@ -8877,7 +8877,9 @@ msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 #.
 #: src/nautilus-window-menus.c:648 src/nautilus-window-menus.c:649
 msgid "Translator Credits"
-msgstr "Fordítók"
+msgstr ""
+"Kovács Emese <emese@gnome.hu>\n"
+"Tímár András <timar@gnome.hu>"
 
 # src/nautilus-window-menus.c:563
 #: src/nautilus-window-menus.c:654
