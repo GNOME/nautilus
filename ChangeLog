@@ -1,3 +1,9 @@
+2003-02-28  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-volume-monitor.c (finish_creating_volume):
+	Correctly handle floppies and cdroms mounted outside /mnt too.
+	Based on patch from Mattias Eriksson <snaggen@acc.umu.se>.
+
 2003-02-21  Roozbeh Pournader  <rozobeh@sharif.edu>
 
 	* configure.in: Added "fa" to ALL_LINGUAS.

@@ -1826,7 +1826,16 @@ finish_creating_volume (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 	}
 
 	/* Identify device type */
-	if (eel_str_has_prefix (volume->mount_path, "/mnt/")) {		
+	if (eel_str_has_prefix (volume->device_path, floppy_device_path_prefix)) {
+                volume->device_type = NAUTILUS_DEVICE_FLOPPY_DRIVE;
+                volume->is_removable = TRUE;
+	} else if (eel_str_has_prefix (volume->device_path, "/dev/floppy")) { 
+                volume->device_type = NAUTILUS_DEVICE_FLOPPY_DRIVE;
+                volume->is_removable = TRUE;
+	} else if (eel_str_has_prefix (volume->device_path, "/dev/cdrom")) {
+                volume->device_type = NAUTILUS_DEVICE_CDROM_DRIVE;
+                volume->is_removable = TRUE;
+	} else if (eel_str_has_prefix (volume->mount_path, "/mnt/")) {		
 		name = volume->mount_path + strlen ("/mnt/");
 		
 		if (eel_str_has_prefix (name, "cdrom")
@@ -1836,9 +1845,6 @@ finish_creating_volume (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 		} else if (eel_str_has_prefix (name, "floppy")) {
 			volume->device_type = NAUTILUS_DEVICE_FLOPPY_DRIVE;
 				volume->is_removable = TRUE;
-		} else if (eel_str_has_prefix (volume->device_path, floppy_device_path_prefix)) {		
-			volume->device_type = NAUTILUS_DEVICE_FLOPPY_DRIVE;
-			volume->is_removable = TRUE;
 		} else if (eel_str_has_prefix (name, "zip")) {
 			volume->device_type = NAUTILUS_DEVICE_ZIP_DRIVE;
 			volume->is_removable = TRUE;
@@ -1873,7 +1879,7 @@ finish_creating_volume (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 			} else if (eel_str_has_prefix (name, "rmdisk")) {
 				volume->device_type = NAUTILUS_DEVICE_ZIP_DRIVE;
 				volume->is_removable = TRUE;
-				if( eel_str_has_suffix (volume->device_path, ":c")) {
+				if (eel_str_has_suffix (volume->device_path, ":c")) {
 					volume->device_path = eel_str_strip_trailing_str
 								(volume->device_path, ":c");
 				}
