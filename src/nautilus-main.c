@@ -148,16 +148,32 @@ main (int argc, char *argv[])
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
 	};
 
-	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
-	 * Unfortunately, this has to be done explicitly for each domain.
+	/* Make criticals and warnings stop in the debugger if
+	 * NAUTILUS_DEBUG is set. Unfortunately, this has to be done
+	 * explicitly for each domain.
 	 */
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
 		nautilus_make_warnings_and_criticals_stop_in_debugger
-			(G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", "ORBit", NULL);
+			(G_LOG_DOMAIN, g_log_domain_glib,
+			 "Bonobo",
+			 "Gdk",
+			 "GnomeUI",
+			 "GnomeVFS",
+			 "GnomeVFS-CORBA",
+			 "GnomeVFS-pthread",
+			 "Gtk",
+			 "Nautilus",
+			 "Nautilus-Authenticate",
+			 "Nautilus-Tree",
+			 "ORBit",
+			 NULL);
 	}
 	
 	/* Initialize gettext support */
-#ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
+	/* Sadly, we need this ifdef because otherwise the following
+	 * lines cause empty statement warnings.
+	 */
+#ifdef ENABLE_NLS
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
 #endif

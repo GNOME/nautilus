@@ -1,12 +1,46 @@
+2000-10-12  Darin Adler  <darin@eazel.com>
+
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_update_from_uri): Add a FIXME.
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(is_tentative), (get_non_tentative_file_list),
+	(nautilus_directory_monitor_add_internal), (ready_callback_call):
+	Change callbacks so they won't redundantly report files that
+	haven't really been discovered to exist.
+	
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_destroy): Fixed NautilusFile leak by adding an
+	unref of "directory_as_file".
+	(file_list_from_uri_list), (selection_changed_callback),
+	(display_pending_files): Simplified some selection-related code.
+	
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_real_merge_menus): Use DATADIR instead of
+	NAUTILUS_DATADIR, since that's where the UI XML files are. Not
+	sure why this wasn't checked in last time.
+	* src/nautilus-window.c: (nautilus_window_constructed): Use
+	DATADIR instead of NAUTILUS_DATADIR, since that's where the UI XML
+	files are. Not sure why this wasn't checked in last time.
+	
+	* src/nautilus-main.c: (main): Add more domains to the list of the
+	ones that are fatal. Maybe we can somehow use --g-fatal-warnings
+	instead some day, but that makes the warnings core dump, and we
+	like to be able to continue.
+	
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_begin_location_change): Removed the misguided
+	event loop from here. It could only cause problems and contained
+	no motivating comment explaining why it's a good idea.
+
 2000-10-12  J Shane Culpepper  <pepper@eazel.com>
 
-	* components/services/login/nautilus-view/nautilus-login-view.oafin
-	fo:
+	* components/services/login/nautilus-view/nautilus-login-view.oafinfo:
 	Fixing oafinfo to point to eazel-pw:
 
 2000-10-12  John Sullivan  <sullivan@eazel.com>
 
-	Fixed bug 3718 ("Opem With" submenu enabled when it shouldn't be)
+	Fixed bug 3718 ("Open With" submenu enabled when it shouldn't be)
 
 	* src/file-manager/fm-directory-view.c:
 	(selection_contains_one_item_in_menu_callback),
@@ -425,12 +459,6 @@
 	
 	* src/Makefile.am: Add DATADIR.
 	* src/file-manager/Makefile.am: Add DATADIR.
-	* src/file-manager/fm-directory-view.c:
-	(fm_directory_view_real_merge_menus): Use DATADIR instead of
-	NAUTILUS_DATADIR, since that's where the UI XML files are.
-	* src/nautilus-window.c: (nautilus_window_constructed): Use
-	DATADIR instead of NAUTILUS_DATADIR, since that's where the UI XML
-	files are.
 	
 	* src/nautilus-shell-ui.xml: Fix some upper-cased accelerators. Not
 	sure if they caused any real problem.

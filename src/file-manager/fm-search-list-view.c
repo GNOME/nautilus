@@ -508,7 +508,7 @@ real_merge_menus (FMDirectoryView *view)
 	bonobo_ui_component_set_container (search_view->details->ui,
 					   fm_directory_view_get_bonobo_ui_container (view));
 	bonobo_ui_util_set_ui (search_view->details->ui,
-			       NAUTILUS_DATADIR,
+			       DATADIR,
 			       "nautilus-search-list-view-ui.xml",
 			       "nautilus");
 	bonobo_ui_component_add_verb_list_with_data (search_view->details->ui, verbs, view);

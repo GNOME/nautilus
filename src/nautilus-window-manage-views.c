@@ -1376,10 +1376,6 @@ nautilus_window_begin_location_change (NautilusWindow *window,
                  (NautilusWindowStateItem) RESET_TO_IDLE,
                  (NautilusWindowStateItem) 0);
         
-        while (gdk_events_pending()) {
-                gtk_main_iteration();
-        }
-        
         window->location_change_type = type;
         window->location_change_distance = distance;
         

@@ -1,4 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /* fm-directory-view.c
  *
  * Copyright (C) 1999, 2000  Free Software Foundaton
@@ -113,7 +114,7 @@ struct FMDirectoryViewDetails
 	NautilusZoomable *zoomable;
 
 	NautilusDirectory *model;
-	NautilusFile      *directory_as_file;
+	NautilusFile *directory_as_file;
 	BonoboUIComponent *ui;
 	
 	guint display_selection_idle_id;
@@ -1071,6 +1072,7 @@ fm_directory_view_destroy (GtkObject *object)
 
 	disconnect_model_handlers (view);
 	nautilus_directory_unref (view->details->model);
+	nautilus_file_unref (view->details->directory_as_file);
 
 	if (view->details->display_selection_idle_id != 0) {
 		gtk_idle_remove (view->details->display_selection_idle_id);
@@ -1296,15 +1298,26 @@ load_location_callback (NautilusView *nautilus_view,
 	fm_directory_view_load_uri (directory_view, location);
 }
 
+static GList *
+file_list_from_uri_list (GList *uri_list)
+{
+	GList *file_list, *node;
+
+	file_list = NULL;
+	for (node = uri_list; node != NULL; node = node->next) {
+		file_list = g_list_prepend
+			(file_list,
+			 nautilus_file_get (node->data));
+	}
+	return g_list_reverse (file_list);
+}
+
 static void
 selection_changed_callback (NautilusView *nautilus_view,
 			    GList *selection_uris,
 			    FMDirectoryView *directory_view)
 {
-	GList *selection, *p;
-	NautilusFile *file;
-
-	selection = NULL;
+	GList *selection;
 
 	if (directory_view->details->loading) {
 		nautilus_g_list_free_deep (directory_view->details->pending_uris_selected);
@@ -1313,24 +1326,15 @@ selection_changed_callback (NautilusView *nautilus_view,
 
 	if (!directory_view->details->loading) {
 		/* If we aren't still loading, set the selection right now. */
-		for (p = selection_uris; p != NULL; p = p->next) {
-			file = nautilus_file_get (p->data);
-			if (file != NULL) {
-				selection = g_list_prepend (selection, file);
-			}
-		}
-		
+		selection = file_list_from_uri_list (selection_uris);		
 		fm_directory_view_set_selection (directory_view, selection);
-
 		nautilus_file_list_free (selection);
 	} else {
 		/* If we are still loading, add to the list of pending URIs instead. */
-		for (p = selection_uris; p != NULL; p = p->next) {
-			directory_view->details->pending_uris_selected = 
-				g_list_prepend (directory_view->details->pending_uris_selected, 
-						g_strdup (p->data));
-		}
-	} 
+		directory_view->details->pending_uris_selected =
+			g_list_concat (directory_view->details->pending_uris_selected,
+				       nautilus_g_str_list_copy (selection_uris));
+	}
 }
 
 static void
@@ -1448,7 +1452,6 @@ display_pending_files (FMDirectoryView *view)
 	GList *files_added, *files_changed, *uris_selected, *p;
 	NautilusFile *file;
 	GList *selection;
-	char *uri;
 
 	selection = NULL;
 
@@ -1470,7 +1473,7 @@ display_pending_files (FMDirectoryView *view)
 	gtk_signal_emit (GTK_OBJECT (view), signals[BEGIN_ADDING_FILES]);
 
 	for (p = files_added; p != NULL; p = p->next) {
-		file = p->data;
+		file = NAUTILUS_FILE (p->data);
 		
 		if (nautilus_directory_contains_file (view->details->model, file)) {
 			gtk_signal_emit (GTK_OBJECT (view),
@@ -1480,7 +1483,7 @@ display_pending_files (FMDirectoryView *view)
 	}
 
 	for (p = files_changed; p != NULL; p = p->next) {
-		file = p->data;
+		file = NAUTILUS_FILE (p->data);
 		
 		gtk_signal_emit (GTK_OBJECT (view),
 				 signals[FILE_CHANGED],
@@ -1496,12 +1499,7 @@ display_pending_files (FMDirectoryView *view)
 	    && uris_selected != NULL) {
 		view->details->pending_uris_selected = NULL;
 		
-		for (p = uris_selected; p != NULL; p = p->next) {
-			uri = p->data;
-
-			file = nautilus_file_get (uri);
-			selection = g_list_prepend (selection, file);
-		}
+		selection = file_list_from_uri_list (uris_selected);
 		nautilus_g_list_free_deep (uris_selected);
 
 		fm_directory_view_set_selection (view, selection);

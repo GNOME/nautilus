@@ -1480,7 +1480,7 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	bonobo_ui_component_set_container (icon_view->details->ui,
 					   fm_directory_view_get_bonobo_ui_container (view));
 	bonobo_ui_util_set_ui (icon_view->details->ui,
-			       NAUTILUS_DATADIR,
+			       DATADIR,
 			       "nautilus-icon-view-ui.xml",
 			       "nautilus");
 

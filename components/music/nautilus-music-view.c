@@ -1378,12 +1378,16 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	
 	/* install the album cover */
 	
-	got_image = FALSE;	
+	got_image = FALSE;
+
 	/* first, see if we can get it from metadata */
+        /* FIXME bugzilla.eazel.com 3720: We have to actually monitor
+         * or wait for the metadata. Otherwise we will always get NULL.
+         */
 	file = nautilus_file_get (music_view->details->uri);
 	album_path = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
-		
 	nautilus_file_unref (file);
+
 	if (album_path != NULL) {
 		g_free (image_path_uri);
 		image_path_uri = gnome_vfs_get_local_path_from_uri (album_path);
