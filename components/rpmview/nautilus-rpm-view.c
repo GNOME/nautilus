@@ -187,7 +187,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	table = GTK_TABLE(gtk_table_new(4, 4, FALSE));
 	gtk_widget_set_usize (GTK_WIDGET (table), 420, -1);
 	
-  	temp_widget = gtk_label_new(_("Size: "));
+  	temp_widget = gtk_label_new(_("Installed Size: "));
 	gtk_label_set_justify (GTK_LABEL (temp_widget), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC(temp_widget), 1.0, 0.5);
 	gtk_table_attach(table, temp_widget, 0,1, 1,2, GTK_FILL, GTK_FILL, 0,0);

@@ -1,3 +1,14 @@
+2001-02-26  Arik Devens  <arik@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	Fixed bug 7009, view as pkg lists inaccurate rpm filesize.
+	
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_initialize): Changed Size to Installed Size to
+	more accurately reflect the information we are attempting to
+	convey.
+
 2001-02-26  Dan Mueth  <dan@eazel.com>
 
 	reviewed by: Tux
