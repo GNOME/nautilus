@@ -65,13 +65,6 @@ to be a problem.</p>
 is usually to use a while loop. It's true that
 "easy to read" is a subjective thing.</p>
 
-<p><b>We declare local variables at the top of the function.</b> C allows you
-to declare variables at the top of any scope, like the scope in a control
-flow construct like an if statement. But putting the declarations there makes
-it harder to add and delete if statements, since the declarations have to move.
-So we just put them all at the top of the function, usually in the order that
-they are used in the function.</p>
-
 <p><b>We do not initialize local variables in their declarations.</b> C allows you
 to initialize a local variable when declaring it. But no other code can run before
 this, because the other statements in a function must be after all the declarations.
