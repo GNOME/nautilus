@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 8; tab-width: 8 -*- */
 /* 
  * Copyright (C) 2000 Eazel, Inc
  * Copyright (C) 2000 Helix Code, Inc
@@ -53,11 +53,13 @@ typedef enum _PackageSystemStatus PackageSystemStatus;
   trilobite-eazel-install.idl
   eazel-install-corba-types.c 
     - packagedata_from_corba_packagedatastruct
-    - corba_packagedatastruct_from_packagedata)
+    - corba_packagedatastruct_from_packagedata
   and
   eazel-package-system-types.c
     - packagedata_status_enum_to_str
     - packagedata_status_str_to_enum
+  and
+  eazel-install-problem.c
  */
 enum _PackageSystemStatus {
 	PACKAGE_UNKNOWN_STATUS=0,
@@ -71,7 +73,8 @@ enum _PackageSystemStatus {
 	PACKAGE_ALREADY_INSTALLED,
 	PACKAGE_CIRCULAR_DEPENDENCY,
 	PACKAGE_RESOLVED,
-	PACKAGE_CANCELLED
+	PACKAGE_CANCELLED,
+	PACKAGE_PACKSYS_FAILURE
 };
 /* Methods to convert enum to/from char* val. The returned
    char* must not be freed */

@@ -783,6 +783,9 @@ packagedata_status_enum_to_str (PackageSystemStatus st)
 	case PACKAGE_CIRCULAR_DEPENDENCY:
 		result = g_strdup ("CIRCULAR_DEPENDENCY");
 		break;
+	case PACKAGE_PACKSYS_FAILURE:
+		result = g_strdup ("PACKSYS_FAILURE");
+		break;
 	default:
 		g_assert_not_reached ();
 	}
@@ -808,6 +811,7 @@ packagedata_status_str_to_enum (const char *st)
 	else if (strcmp (st, "CANCELLED")==0) { result = PACKAGE_CANCELLED; } 
 	else if (strcmp (st, "ALREADY_INSTALLED")==0) { result = PACKAGE_ALREADY_INSTALLED; } 
 	else if (strcmp (st, "CIRCULAR_DEPENDENCY")==0) { result = PACKAGE_CIRCULAR_DEPENDENCY; } 
+	else if (strcmp (st, "PACKSYS_FAILURE")==0) { result = PACKAGE_PACKSYS_FAILURE; }
 	else { g_assert_not_reached (); result = PACKAGE_UNKNOWN_STATUS; };
 
 	return result;

@@ -86,6 +86,7 @@ corba_packagedatastruct_fill_from_packagedata (GNOME_Trilobite_Eazel_PackageData
 	corbapack->bytesize = pack->bytesize;
 	corbapack->filesize = pack->filesize;
 	corbapack->toplevel = pack->toplevel;
+	corbapack->anchor = FALSE;
 
 	switch (pack->status) {
 	case PACKAGE_UNKNOWN_STATUS:
@@ -124,6 +125,8 @@ corba_packagedatastruct_fill_from_packagedata (GNOME_Trilobite_Eazel_PackageData
 	case PACKAGE_CIRCULAR_DEPENDENCY:
 		corbapack->status = GNOME_Trilobite_Eazel_CIRCULAR_DEPENDENCY;
 		break;
+	case PACKAGE_PACKSYS_FAILURE:
+		corbapack->status = GNOME_Trilobite_Eazel_PACKSYS_FAILURE;
 	}
 
 	switch (pack->modify_status) {
@@ -145,7 +148,7 @@ corba_packagedatastruct_fill_from_packagedata (GNOME_Trilobite_Eazel_PackageData
 	}
 	
 
-	/* depends will be filled in further up, if they're required --
+	/* depends will be filled in later on, if they're required --
 	 * many times, this function is called to create a single corba package with no other package pointers */
 	corbapack->depends._length = 0;
 	corbapack->depends._buffer = NULL;
@@ -350,6 +353,10 @@ corba_packagedatastructlist_from_packagedata_tree (GList *packlist)
 		package = PACKAGEDATA (iter->data);
 		corba_packagedatastruct_fill_from_packagedata (&(corbalist->_buffer[i]), package);
 		corba_packagedatastruct_fill_deps (&(corbalist->_buffer[i]), package, md5_table);
+		if (g_list_find (packlist, package) != NULL) {
+			/* one of the anchor packages */
+			corbalist->_buffer[i].anchor = TRUE;
+		}
 	}
 
 	g_hash_table_destroy (md5_table);
@@ -421,6 +428,9 @@ packagedata_from_corba_packagedatastruct (const GNOME_Trilobite_Eazel_PackageDat
 	case GNOME_Trilobite_Eazel_RESOLVED:
 		pack->status = PACKAGE_RESOLVED;
 		break;
+	case GNOME_Trilobite_Eazel_PACKSYS_FAILURE:
+		pack->status = PACKAGE_PACKSYS_FAILURE;
+		break;
 	}
 
 	switch (corbapack->modify_status) {
@@ -490,10 +500,9 @@ packagedata_tree_from_corba_packagedatastructlist (const GNOME_Trilobite_Eazel_P
 	packlist = packagedata_list_from_corba_packagedatastructlist (corbalist);
 	md5_table = g_hash_table_new (g_str_hash, g_str_equal);
 
-	/* mark them all toplevel, first, and populate the MD5 hashtable */
+	/* first, populate the MD5 hashtable */
 	for (iter = g_list_first (packlist); iter != NULL; iter = g_list_next (iter)) {
 		pack = PACKAGEDATA (iter->data);
-		pack->toplevel = TRUE;
 		if (pack->md5 == NULL) {
 			pack->md5 = new_fake_md5 ();
 		}
@@ -569,9 +578,9 @@ packagedata_tree_from_corba_packagedatastructlist (const GNOME_Trilobite_Eazel_P
 
 	/* now make a list of JUST the toplevel packages */
 	outlist = NULL;
-	for (iter = g_list_first (packlist); iter != NULL; iter = g_list_next (iter)) {
-		pack = PACKAGEDATA (iter->data);
-		if (pack->toplevel) {
+	for (i = 0; i < corbalist->_length; i++) {
+		if (corbalist->_buffer[i].anchor) {
+			pack = g_hash_table_lookup (md5_table, corbalist->_buffer[i].md5);
 			gtk_object_ref (GTK_OBJECT (pack));
 			outlist = g_list_prepend (outlist, pack);
 		}

@@ -1,3 +1,53 @@
+2001-02-24  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Eskil Heyn Olsen <eskil@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (create_package):
+
+	Add '--package-version' (-V) option for installing a specific
+	version of a package (labs request).
+	
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-logic2.c:
+	(eazel_install_check_existing_packages), (download_packages):
+	* components/services/install/lib/eazel-install-problem.c:
+	(get_detailed_messages_foreach),
+	(get_detailed_uninstall_messages_foreach),
+	(get_detailed_cases_foreach),
+	(get_detailed_uninstall_cases_foreach):
+	* components/services/install/lib/eazel-package-system-types.c:
+	(packagedata_status_enum_to_str), (packagedata_status_str_to_enum):
+	* components/services/install/lib/eazel-package-system-types.h:
+
+	Add PACKSYS_FAILURE error code for reporting the ominous "failed
+	to lock rpmdb" errors.
+	
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_packagedatastruct_fill_from_packagedata),
+	(corba_packagedatastructlist_from_packagedata_tree),
+	(packagedata_from_corba_packagedatastruct),
+	(packagedata_tree_from_corba_packagedatastructlist):
+
+	Fix corba package-tree flattening and inflating by leaving the
+	toplevel field intact, and using a corba-only "anchor" field to
+	mark which packages should be anchored to the top list of the
+	package-tree after re-inflation.
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(osd_parse_implementation), (osd_parse_softpkg):
+
+	Check for the new ACTION="Unresolved" in softcat dependency
+	responses, and (for now) treat packages with unresolved deps as if
+	softcat didn't return that package at all.  Any packages that
+	softcat doesn't have deps for are errors right now, anyway.
+	
+	* nautilus-installer/src/prescript:
+
+	Fix the annoying "user is 8888" bug by working around a bug in
+	popt and passing the --user flag with an "=" instead of a space.
+	Very dumb but it works.
+
 2001-02-24  Arik Devens  <arik@eazel.com>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>

@@ -45,7 +45,7 @@ if test $UID -ne 0 -a "x$QUICK" '!=' "xyes"; then
 
     # Start
     xhost +localhost
-    /bin/su -s /bin/sh -c "$params && $export && cd $PWD && echo Uncompressing... && /bin/sh $0 $* --user $USER"
+    /bin/su -s /bin/sh -c "$params && $export && cd $PWD && echo Uncompressing... && /bin/sh $0 $* --user=$USER"
     xhost -localhost
 
     # FIXME: this will only work if they didn't run as root.

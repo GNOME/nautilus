@@ -317,7 +317,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 				    service->private->cur_root)==0) {
 				trilobite_debug ("some package dbs is locked by another process", 
 						 service->private->package_system->err->u.db_access.pid);
-				pack->status = PACKAGE_CANCELLED;
+				pack->status = PACKAGE_PACKSYS_FAILURE;
 				g_free (service->private->package_system->err);
 				return EAZEL_INSTALL_STATUS_QUO;
 				break;
@@ -2039,7 +2039,7 @@ download_packages (EazelInstall *service,
 	gboolean result = TRUE;
 	
 	flat_packages = flatten_packagedata_dependency_tree (packages);
-	g_message ("downloading %d packages", g_list_length (packages));
+	g_message ("downloading %d packages", g_list_length (flat_packages));
 
 	service->private->cancel_download = FALSE;
 	for (iterator = flat_packages; iterator; iterator = g_list_next (iterator)) {

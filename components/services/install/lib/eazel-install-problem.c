@@ -190,10 +190,8 @@ get_detailed_messages_foreach (GtkObject *foo, GetErrorsForEachData *data)
 		break;
 	case PACKAGE_CANNOT_OPEN:
 		if (previous_pack) {
-			if (previous_pack->status == PACKAGE_DEPENDENCY_FAIL) {
-				message = g_strdup_printf (_("%s requires %s, which could not be found on the server"), 
-							   required_by,required);
-			}
+			message = g_strdup_printf (_("%s requires %s, which could not be found on the server"), 
+						   required_by,required);
 		} else {
 			message = g_strdup_printf (_("%s could not be found on the server"), 
 						   required);
@@ -234,6 +232,9 @@ get_detailed_messages_foreach (GtkObject *foo, GetErrorsForEachData *data)
 		}
 		break;
 	case PACKAGE_RESOLVED:
+		break;
+	case PACKAGE_PACKSYS_FAILURE:
+		message = g_strdup_printf ("Cannot access the local package system");
 		break;
 	}
 
@@ -349,6 +350,9 @@ get_detailed_uninstall_messages_foreach (GtkObject *foo,
 	case PACKAGE_CIRCULAR_DEPENDENCY: 
 		break;
 	case PACKAGE_RESOLVED:
+		break;
+	case PACKAGE_PACKSYS_FAILURE:
+		message = g_strdup_printf ("Cannot access the local package system");
 		break;
 	}
 
@@ -759,6 +763,8 @@ get_detailed_cases_foreach (GtkObject *foo,
 		break;
 	case PACKAGE_RESOLVED:
 		break;
+	case PACKAGE_PACKSYS_FAILURE:
+		break;
 	}
 
 	if (no_problem_added) {
@@ -862,6 +868,8 @@ get_detailed_uninstall_cases_foreach (GtkObject *foo, GetErrorsForEachData *data
 	case PACKAGE_CIRCULAR_DEPENDENCY: 
 		break;
 	case PACKAGE_RESOLVED:
+		break;
+	case PACKAGE_PACKSYS_FAILURE:
 		break;
 	}
 

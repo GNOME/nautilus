@@ -90,7 +90,8 @@ char    *arg_server,
 	*arg_package_list,
 	*arg_username,
 	*arg_root,
-	*arg_batch;
+	*arg_batch,
+	*arg_version = NULL;
 
 /* Yeahyeah, but this was initially a test tool,
    so stop whining... */
@@ -132,6 +133,7 @@ static const struct poptOption options[] = {
 	{"username", '\0', POPT_ARG_STRING, &arg_username, 0, N_("Allow username"), NULL},
 	{"upgrade", 'u', POPT_ARG_NONE, &arg_upgrade, 0, N_("Allow upgrades"), NULL},
 	{"verbose", 'v', POPT_ARG_NONE, &arg_verbose, 0, N_("Verbose output"), NULL},
+	{"package-version", 'V', POPT_ARG_STRING, &arg_version, 0, N_("Install a specific package version"), "version"},
 	{NULL, '\0', 0, NULL, 0}
 };
 
@@ -744,6 +746,9 @@ create_package (char *name)
 		pack->suite_id = g_strdup (name);
 	} else {
 		pack->name = g_strdup (name);
+	}
+	if (arg_version) {
+		pack->version = g_strdup (arg_version);
 	}
 	pack->archtype = g_strdup (buf.machine);
 #ifdef ASSUME_ix86_IS_i386

@@ -793,22 +793,23 @@ osd_parse_feature_list (PackageData *pack, xmlNodePtr node)
 	pack->features = g_list_reverse (pack->features);
 }
 
-static void
+static gboolean
 osd_parse_implementation (PackageData *pack,
 			  xmlNodePtr node)
 {
 	xmlNodePtr child;
+	char *tmp;
 
 	child = node->xmlChildrenNode;
 	while (child) {
 		if (g_strcasecmp (child->name, "PROCESSOR")==0) {
 			pack->archtype = trilobite_xml_get_string (child, "VALUE");
 		} else if (g_strcasecmp (child->name, "OS")==0) {
-			char *dtmp = trilobite_xml_get_string (child, "VALUE");
-			if (dtmp) {
-				pack->distribution.name = trilobite_get_distribution_enum (dtmp,
+			tmp = trilobite_xml_get_string (child, "VALUE");
+			if (tmp) {
+				pack->distribution.name = trilobite_get_distribution_enum (tmp,
 											   TRUE);
-				g_free (dtmp);
+				g_free (tmp);
 			} 
 		} else if (g_strcasecmp (child->name, "CODEBASE")==0) {			
 			char *tmp;
@@ -834,12 +835,24 @@ osd_parse_implementation (PackageData *pack,
 			/* list of "features" (usually shared libs) in the toplevel package */
 			osd_parse_feature_list (pack, child);
 		} else if (g_strcasecmp (child->name, "DEPENDENCY")==0) {
-			osd_parse_dependency (pack, child);
+			tmp = trilobite_xml_get_string (child, "ACTION");
+			if (tmp != NULL) {
+				if (strcasecmp (tmp, "Install") == 0) {
+					osd_parse_dependency (pack, child);
+				} else if (strcasecmp (tmp, "Unresolved") == 0) {
+					g_warning ("Unresolved dependencies!  Get Adam on the bat-phone!");
+					return FALSE;
+				} else {
+					g_warning ("Unknown ACTION: '%s'", tmp);
+				}
+			}
 		} else {
 			/* trilobite_debug ("unparsed tag \"%s\" in IMPLEMENTATION", child->name); */
 		}
 		child = child->next;
 	}
+
+	return TRUE;
 }
 
 static PackageData*
@@ -867,7 +880,10 @@ osd_parse_softpkg (xmlNodePtr softpkg)
 			}
 			xmlFree (tmp);
 		} else if (g_strcasecmp (child->name, "IMPLEMENTATION")==0) {
-			osd_parse_implementation (result, child);
+			if (osd_parse_implementation (result, child) == FALSE) {
+				gtk_object_unref (GTK_OBJECT (result));
+				return NULL;
+			}
 		} else if (g_strcasecmp (child->name, "EAZEL_ID") == 0) {
 			result->eazel_id = trilobite_xml_get_string (child, "VALUE");
 		} else {

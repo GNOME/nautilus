@@ -1,4 +1,4 @@
-/* -*- Mode: IDL; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
+/* -*- Mode: IDL; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*- */
 
 #include <Bonobo.idl>
 
@@ -28,7 +28,8 @@ module Trilobite {
 			PARTLY_RESOLVED,      /* perhaps: the immediate deps where ok, check all in PackageDataStruct.soft/hard_depends */
 			RESOLVED,             /* good: all deps ok */
 			ALREADY_INSTALLED,    /* medium: you don't get to install it, but then again... */
-			CIRCULAR_DEPENDENCY   /* bad: two packages are fighting it out */
+			CIRCULAR_DEPENDENCY,  /* bad: two packages are fighting it out */
+			PACKSYS_FAILURE	      /* bad: can't lock rpmdb (usually) */
 		};
 
 		enum PackageModificationStatus {
@@ -121,6 +122,7 @@ module Trilobite {
 			long bytesize;
 			long filesize;
 			boolean toplevel;
+			boolean anchor;		/* internal use only */
 
 			/* The location the rpm is installed (if installed) */
 			string install_root;
