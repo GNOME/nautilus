@@ -44,6 +44,7 @@ struct _NautilusIndexPanelDetails {
 	GtkWidget *per_uri_container;
 	GtkWidget *notebook;
 	GtkWidget *index_tabs;
+	GtkWidget *title_tab;
 	char *uri;
 	gint selected_index;
 	NautilusDirectory *directory;
@@ -138,10 +139,14 @@ nautilus_index_panel_initialize (GtkObject *object)
 	/* allocate and install the vbox to hold the per-uri information */ 
 	make_per_uri_container (index_panel);
 
-	/* first, install the index tabs */
+	/* first, allocate the index tabs */
 	index_panel->details->index_tabs = GTK_WIDGET(nautilus_index_tabs_new(INDEX_PANEL_WIDTH));
 	index_panel->details->selected_index = -1;
 
+	/* also, allocate the title tab */
+	index_panel->details->title_tab = GTK_WIDGET(nautilus_index_tabs_new(INDEX_PANEL_WIDTH));
+	nautilus_index_tabs_set_title_mode(NAUTILUS_INDEX_TABS(index_panel->details->title_tab), TRUE);	
+	
 	if (USE_NEW_TABS)
 	  {
 	    gtk_widget_show (index_panel->details->index_tabs);
@@ -279,13 +284,22 @@ nautilus_index_panel_remove_meta_view (NautilusIndexPanel *index_panel, Nautilus
 static void
 nautilus_index_panel_activate_meta_view(NautilusIndexPanel *index_panel, gint which_view)
 {
+  gchar *title;
   GtkNotebook *notebook = GTK_NOTEBOOK(index_panel->details->notebook);
   if (index_panel->details->selected_index < 0)
     {
       gtk_widget_show (index_panel->details->notebook);
       gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->notebook, FALSE, FALSE, 0);
+      
+      gtk_widget_show (index_panel->details->title_tab);
+      gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->title_tab, FALSE, FALSE, 0);    
     }
+  
   index_panel->details->selected_index = which_view;
+  title = nautilus_index_tabs_get_title_from_index(NAUTILUS_INDEX_TABS(index_panel->details->index_tabs), which_view);
+  nautilus_index_tabs_set_title(NAUTILUS_INDEX_TABS(index_panel->details->title_tab), title);
+  g_free(title);
+  
   gtk_notebook_set_page(notebook, which_view);
 }
 
@@ -295,13 +309,19 @@ static gboolean
 nautilus_index_panel_press_event (GtkWidget *widget, GdkEventButton *event)
 {
   NautilusIndexPanel *index_panel = NAUTILUS_INDEX_PANEL (widget);
+  NautilusIndexTabs *index_tabs = NAUTILUS_INDEX_TABS(index_panel->details->index_tabs);
   gint rounded_y = floor(event->y + .5);
+  
   /* if the click is in the tabs, tell them about it */
   if (rounded_y >= index_panel->details->index_tabs->allocation.y)
     {
-      gint which_tab = nautilus_index_tabs_hit_test(NAUTILUS_INDEX_TABS(index_panel->details->index_tabs), event->x, event->y);
+      gint which_tab = nautilus_index_tabs_hit_test(index_tabs, event->x, event->y);
       if (which_tab >= 0)
-      	nautilus_index_panel_activate_meta_view(index_panel, which_tab);
+      	{
+	  nautilus_index_tabs_select_tab(index_tabs, which_tab);
+	  nautilus_index_panel_activate_meta_view(index_panel, which_tab);
+          gtk_widget_queue_draw(widget);	
+	}
     } 
   return TRUE;
 }
