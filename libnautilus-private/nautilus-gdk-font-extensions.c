@@ -49,6 +49,7 @@
 
 /* Indeces of some xlfd string entries.  The first entry is 1 */
 #define XLFD_WEIGHT_INDEX			3
+#define XLFD_SLANT_INDEX			4
 #define XLFD_SIZE_IN_PIXELS_INDEX		7
 #define XLFD_SIZE_IN_POINTS_INDEX		8
 #define XLFD_HORIZONTAL_RESOLUTION_INDEX	9
@@ -79,6 +80,9 @@ static gboolean            xlfd_string_could_be_scalable_non_bitmap (const char 
 
 /* Test functions for searching font lists */
 static gboolean            font_entry_has_bold_weight_test          (const NautilusStringList *string_list,
+								     const char               *string,
+								     gpointer                  callback_data);
+static gboolean            font_entry_has_italic_slant_test         (const NautilusStringList *string_list,
 								     const char               *string,
 								     gpointer                  callback_data);
 static gboolean            font_entry_is_scalable_non_bitmap_test   (const NautilusStringList *string_list,
@@ -143,6 +147,64 @@ nautilus_gdk_font_get_bold (GdkFont *font)
 	nautilus_string_list_free (font_list);	
 	g_free (pattern_match);
 	g_free (weight_pattern);
+	g_free (name);
+
+	return result;
+}
+
+/**
+ * nautilus_gdk_font_get_italic
+ * @plain_font: A font.
+ * Returns: An italic variant of @plain_font or NULL.
+ *
+ * Tries to find an italic flavor of a given font.  Return the same font
+ * if no italic font is found.
+ */
+GdkFont *
+nautilus_gdk_font_get_italic (GdkFont *font)
+{
+	char *name;
+	char *slant_pattern;
+	GdkFont *result = NULL;
+	char *pattern_match;
+	NautilusStringList *font_list;
+
+	name = nautilus_gdk_font_get_name (font);
+
+	/* Replace the slant with a wildard */
+	slant_pattern = xlfd_string_replace_nth (name, XLFD_SLANT_INDEX, "*");
+
+	font_list = nautilus_gdk_font_list_fonts (slant_pattern);
+	
+	/* Find one with an italic slant */
+	pattern_match = nautilus_string_list_find_by_function (font_list,
+							       font_entry_has_italic_slant_test,
+							       NULL);
+
+	if (pattern_match != NULL) {
+		char *slant_name;
+		char *italic_name;
+
+		/* Find out the italic slant */
+		slant_name = xlfd_string_get_nth (pattern_match, XLFD_SLANT_INDEX);
+		
+		/* Set the italic slant on the original name */
+		italic_name = xlfd_string_replace_nth (name, XLFD_SLANT_INDEX, slant_name);
+		
+		result = gdk_fontset_load (italic_name);
+		g_assert (result != NULL);
+
+		g_free (italic_name);
+		g_free (slant_name);
+	} else {
+		/* If no font was found, return the source font */
+		gdk_font_ref ((GdkFont *) font);
+		result = (GdkFont *) font;
+	}
+
+	nautilus_string_list_free (font_list);	
+	g_free (pattern_match);
+	g_free (slant_pattern);
 	g_free (name);
 
 	return result;
@@ -873,6 +935,34 @@ font_entry_has_bold_weight_test (const NautilusStringList *string_list,
  		|| nautilus_str_is_equal (weight, "black");
 
  	g_free (weight);
+
+ 	return result;
+}
+
+/* Test whether the given XLFD string has an italic slant */
+static gboolean
+font_entry_has_italic_slant_test (const NautilusStringList *string_list,
+				  const char *string,
+				  gpointer callback_data)
+{
+ 	gboolean result;
+	char *slant;
+
+	g_return_val_if_fail (string_list != NULL, FALSE);
+	g_return_val_if_fail (string != NULL, FALSE);
+
+	slant = xlfd_string_get_nth (string, XLFD_SLANT_INDEX);
+
+	/* FIXME bugzilla.eazel.com xxxx:
+	 * Are there any other italic slants besides these 2 ?
+	 * i = italic
+	 * o = oblique
+	 */
+ 	result = 
+ 		nautilus_str_is_equal (slant, "i")
+ 		|| nautilus_str_is_equal (slant, "o");
+
+ 	g_free (slant);
 
  	return result;
 }

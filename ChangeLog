@@ -1,3 +1,19 @@
+Sat Feb 24 19:50:16 2001  George Lebl <jirka@5z.com>
+
+	Gene Z. Ragan <gzr@eazel.com> said "Groovy", so I suppose that means
+	he approves of the patch.
+
+	* components/help/hyperbola-nav-tree.c (set_node_style)
+	  (ctree_populate_subnode) (reset_style_for_node) (reset_styles)
+	  (hyperbola_navigation_tree_new):  Nodes of type HYP_TREE_NODE_PAGE
+	  made italic to differentiate them from sections and categories,
+	  fixes #6911.
+
+	* libnautilus-extensions/nautilus-gdk-font-extensions.[ch]
+	  (font_entry_has_italic_slant_test) (nautilus_gdk_font_get_italic):
+	  Add a function for getting an italic font.  Mostly a cut and paste
+	  the the _get_bold function.
+
 2001-02-24  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: George Lebl <jirka@5z.com>

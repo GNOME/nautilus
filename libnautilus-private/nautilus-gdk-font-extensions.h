@@ -38,6 +38,7 @@ GdkFont *nautilus_gdk_font_get_largest_fitting (GdkFont    *font,
 						int         minimum_acceptable_font_size,
 						int         maximum_acceptable_font_size);
 GdkFont *nautilus_gdk_font_get_bold            (GdkFont    *plain);
+GdkFont *nautilus_gdk_font_get_italic          (GdkFont    *plain);
 GdkFont *nautilus_gdk_font_get_larger          (GdkFont    *font,
 						int         num_sizes);
 GdkFont *nautilus_gdk_font_get_smaller         (GdkFont    *font,

@@ -3,6 +3,7 @@
 #include "hyperbola-filefmt.h"
 #include <gtk/gtk.h>
 #include <libnautilus-extensions/nautilus-ctree.h>
+#include <libnautilus-extensions/nautilus-gdk-font-extensions.h>
 
 #include "hyperbola-nav.h"
 
@@ -23,6 +24,8 @@ typedef struct {
 	char *pending_location;
 
 	gint notify_count;
+
+	GtkStyle *italic_style;
 } HyperbolaNavigationTree;
 
 static void hyperbola_navigation_tree_destroy (GtkCTree * ctree,
@@ -40,9 +43,48 @@ static void hyperbola_navigation_tree_load_location (NautilusView *
 						     hview);
 
 typedef struct {
+	HyperbolaNavigationTree *view;
 	GtkWidget *ctree;
 	GtkCTreeNode *sibling, *parent;
 } PopulateInfo;
+
+static void
+ensure_italic_style (HyperbolaNavigationTree *view)
+{
+	if (view->italic_style == NULL) {
+		/* Set italic style for page names */
+		GdkFont *font;
+		GtkStyle *style = gtk_style_copy
+			(gtk_widget_get_style (view->ctree));
+
+		font = style->font;
+		style->font = nautilus_gdk_font_get_italic (font);
+		gdk_font_unref (font);
+
+		view->italic_style = style;
+	}
+}
+
+static void
+set_node_style (HyperbolaNavigationTree *view,
+		GtkCTree *ctree, GtkCTreeNode *node)
+{
+	HyperbolaTreeNode *tnode;
+
+	g_assert (GTK_IS_CTREE (ctree));
+
+	tnode = gtk_ctree_node_get_row_data (ctree, node);
+
+	if (tnode != NULL &&
+	    tnode->type == HYP_TREE_NODE_PAGE) {
+		ensure_italic_style (view);
+
+		gtk_ctree_node_set_row_style (ctree, node, view->italic_style);
+	} else {
+		/* no special style */
+		gtk_ctree_node_set_row_style (ctree, node, NULL);
+	}
+}
 
 static gboolean
 ctree_populate_subnode (gpointer key, gpointer value, gpointer user_data)
@@ -76,6 +118,9 @@ ctree_populate_subnode (gpointer key, gpointer value, gpointer user_data)
 				       NULL, NULL, NULL, term, FALSE);
 	node->user_data = pi->sibling;
 
+	set_node_style (pi->view, GTK_CTREE (pi->ctree), pi->sibling);
+	
+
 #ifdef ENABLE_SCROLLKEEPER_SUPPORT
 	if (title != node->title)
 		g_free (title);	/* We used the copy from the split */
@@ -101,6 +146,7 @@ ctree_populate (HyperbolaNavigationTree * view)
 	PopulateInfo subpi;
 
 #ifdef ENABLE_SCROLLKEEPER_SUPPORT
+	subpi.view = view;
 	subpi.ctree = view->top_ctree;
 	subpi.sibling = NULL;
 	subpi.parent = NULL;
@@ -109,12 +155,41 @@ ctree_populate (HyperbolaNavigationTree * view)
 			 G_IN_ORDER, &subpi);
 #endif
 	
+	subpi.view = view;
 	subpi.ctree = view->ctree;
 	subpi.sibling = NULL;
 	subpi.parent = NULL;
 
 	g_tree_traverse (view->doc_tree->children, ctree_populate_subnode,
 			 G_IN_ORDER, &subpi);
+}
+
+static void
+reset_style_for_node (GtkCTree *ctree, GtkCTreeNode *node, gpointer data)
+{
+	HyperbolaNavigationTree *view = data;
+
+	set_node_style (view, ctree, node);
+}
+
+static void
+reset_styles (GtkWidget *widget, GtkStyle *old_style, gpointer data)
+{
+	HyperbolaNavigationTree *view = data;
+
+	g_assert (GTK_IS_CTREE (widget));
+
+	if (view->italic_style != NULL) {
+		gtk_style_unref (view->italic_style);
+		view->italic_style = NULL;
+	}
+
+	gtk_clist_freeze (GTK_CLIST (widget));
+	gtk_ctree_post_recursive (GTK_CTREE (widget),
+				  NULL,
+				  reset_style_for_node,
+				  view);
+	gtk_clist_thaw (GTK_CLIST (widget));
 }
 
 BonoboObject *
@@ -144,6 +219,8 @@ hyperbola_navigation_tree_new (void)
 			    hyperbola_navigation_tree_select_row, view);
 	gtk_signal_connect (GTK_OBJECT (view->top_ctree), "destroy",
 			    hyperbola_navigation_tree_destroy, view);
+	gtk_signal_connect (GTK_OBJECT (view->top_ctree), "style_set",
+			    reset_styles, view);
 #endif
 
 	view->ctree = gtk_ctree_new (1, 0);
@@ -159,6 +236,10 @@ hyperbola_navigation_tree_new (void)
 			    hyperbola_navigation_tree_select_row, view);
 	gtk_signal_connect (GTK_OBJECT (view->ctree), "destroy",
 			    hyperbola_navigation_tree_destroy, view);
+	gtk_signal_connect (GTK_OBJECT (view->ctree), "style_set",
+			    reset_styles, view);
+
+	view->italic_style = NULL;
 			    
 #ifdef ENABLE_SCROLLKEEPER_SUPPORT
 	view->selected_ctree = NULL;
@@ -375,4 +456,9 @@ hyperbola_navigation_tree_destroy (GtkCTree * ctree,
 				   HyperbolaNavigationTree * view)
 {
 	set_pending_location (view, NULL);
+
+	if (view->italic_style != NULL) {
+		gtk_style_unref (view->italic_style);
+		view->italic_style = NULL;
+	}
 }
