@@ -120,9 +120,9 @@ check_disk_space (void)
 }
 
 static void
-segv_handler (int unused)
+segv_handler (int signo)
 {
-	fprintf (stderr, "\n\nSEGV -- CRASH BOOM, THE INSTALLER IS HOSED.\n\n");
+	fprintf (stderr, "\n\nSEGV (%d) -- SOMEBODY SET US UP THE BOMB.\n\n", signo);
 	while (1) {
 		sleep (1);
 	}
@@ -157,7 +157,13 @@ main (int argc, char *argv[])
 
 	gnome_init_with_popt_table ("eazel-installer", VERSION, argc, argv, options, 0, NULL);
 
+#ifdef DEBUG
 	signal (SIGSEGV, segv_handler);
+	signal (SIGABRT, segv_handler);
+	signal (SIGILL, segv_handler);
+	signal (SIGBUS, segv_handler);
+	signal (SIGFPE, segv_handler);
+#endif
 	gdk_rgb_init ();
 
 	if (installer_show_build) {

@@ -37,9 +37,15 @@
 
 /* pixmaps */
 #include "bootstrap-background.xpm"
+#if 0	/* LATER */
 #include "/h/robey/info.xpm"
 #include "/h/robey/bong.xpm"
 #include "/h/robey/rpm.xpm"
+#else
+char *info_xpm[] = { "" };
+char *bong_xpm[] = { "" };
+char *rpm_xpm[] = { "" };
+#endif
 
 #define RGB_BLACK	0x000000
 #define RGB_RED		0xFF0000

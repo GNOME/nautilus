@@ -1,7 +1,10 @@
 #!/bin/sh
 
-echo "* Stripping"
-strip eazel-installer
+echo $CFLAGS | grep -q "DEBUG"
+if [ $? != 0 ]; then
+	echo "* Stripping"
+	strip eazel-installer
+fi
 
 echo "* Packing"
 

@@ -1,3 +1,39 @@
+2001-02-22  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_install_failed), (impl_uninstall_failed):
+	* components/services/install/nautilus-view/forms.c:
+	(make_query_box):
+
+	Vera'fy the installer text.
+	
+	* nautilus-installer/install-lib/Makefile.am:
+	* nautilus-installer/src/Makefile.am:
+	* nautilus-installer/src/create-eazel-installer.sh:
+
+	Cause installer to be built with -g -O2, and to notice a debug
+	build and not strip the binary.
+
+	* nautilus-installer/src/installer.c: (report_unusual_errors),
+	(install_failed), (uninstall_failed), (download_failed),
+	(install_done):
+	* nautilus-installer/src/installer.h:
+
+	Remove crufted error-tree parsing code (install lib does this for
+	us now).  Notice when any install or download fails, and treat
+	that as an overall failure, even if install_done is called with
+	success = TRUE.
+
+	* nautilus-installer/src/main.c: (segv_handler), (main):
+
+	Catch more signals, but only in debug mode.
+
+	* nautilus-installer/src/package-tree.c:
+
+	Remove references to nonexistent icons.
+	
 2001-02-22  Ian McKellar  <ian@eazel.com>
 
 	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>

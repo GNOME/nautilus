@@ -6,6 +6,8 @@ endif
 
 noinst_LIBRARIES = $(LIBRARY)
 
+CFLAGS = -g -O2 -Wall -Werror
+
 libeazelinstall_minimal_a_SOURCES = 		\
 	eazel-install-metadata.c		\
 	eazel-install-protocols.c		\

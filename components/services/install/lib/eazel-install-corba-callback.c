@@ -246,7 +246,7 @@ impl_install_failed (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 		g_warning ("install_failed called with error in package tree!");
 	} else {
 		/* always called with only one package at the root of the tree */
-		gtk_signal_emit (GTK_OBJECT (servant->object), signals[INSTALL_FAILED], (PackageData *)(packages->data));
+		gtk_signal_emit (GTK_OBJECT (servant->object), signals[INSTALL_FAILED], PACKAGEDATA (packages->data));
 	}
 	g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
 	g_list_free (packages);
@@ -264,7 +264,7 @@ impl_uninstall_failed (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 		g_warning ("uninstall_failed called with error in package tree!");
 	} else {
 		/* always called with only one package at the root of the tree */
-		gtk_signal_emit (GTK_OBJECT (servant->object), signals[UNINSTALL_FAILED], (PackageData *)(packages->data));
+		gtk_signal_emit (GTK_OBJECT (servant->object), signals[UNINSTALL_FAILED], PACKAGEDATA (packages->data));
 	}
 	g_list_foreach (packages, (GFunc)gtk_object_unref, NULL);
 }

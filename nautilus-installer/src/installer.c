@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 8; tab-width: 8 -*- */
 /* 
  * Copyright (C) 2000, 2001  Eazel, Inc.
  *
@@ -53,15 +53,6 @@
 /* Include the pixmaps */
 #include "bootstrap-background.xpm"	/* background for every panel */
 #include "error-symbol.xpm"		/* icon to add to error panel */
-
-/* Data argument to get_detailed_errors_foreach.
-   Contains the installer and a path in the tree
-   leading to the actual package */
-typedef struct {
-	EazelInstaller *installer;
-	GList *path;
-	GList *touched;
-} GetErrorsForEachData;
 
 /* this means the services have to keep an insecure version running, that has enough stuff for ppl
  * to install nautilus.
@@ -185,7 +176,7 @@ char *text_labels[LAST_LABEL];
 
 /* FIXME -- CHANGE THIS BEFORE RELEASING! */
 int installer_debug = 1;
-char *installer_server = "checkpoint.eazel.com";
+char *installer_server = "triggerfish.eazel.com";
 int installer_server_port = 8888;
 
 int installer_spam = 0;		/* dump logging stuff to stderr (automatically adds --debug) */
@@ -937,51 +928,31 @@ add_force_remove (EazelInstaller *installer,
 }
 #endif
 
-static void get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data);
 
 static void
-get_detailed_errors_foreach_dep (PackageDependency *dep, GetErrorsForEachData *data)
+report_unusual_errors (const PackageData *pack, EazelInstaller *installer)
 {
-	get_detailed_errors_foreach (dep->package, data);
-}
-
-static void
-get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
-{
-	char *message, *distro;
-	EazelInstaller *installer = data->installer; 
-	PackageData *pack_in;
-	CategoryData *cat;
+	CategoryData *category;
+	PackageData *top_pack;
 	GList *iter, *iter2;
+	char *name, *message, *distro;
 
-	if (data->path != NULL) {
-		if (g_list_find (data->path, pack) != NULL) {
-			/* recursing... */
-			return;
-		}
+	name = packagedata_get_readable_name (pack);
+	log_debug ("error handling begins: errant package %s", name);
+	g_free (name);
+
+	if (eazel_install_failed_because_of_disk_full (installer->service)) {
+		installer->failure_info = g_list_prepend (installer->failure_info,
+							  g_strdup (_("You've run out of disk space!")));
 	}
 
-	if (data->touched != NULL) {
-		if (g_list_find (data->touched, pack) != NULL) {
-			/* revisiting a part of the tree we've already seen */
-			return;
-		}
-	}
-
-	log_debug ("pack->name = %s, pack->status = %d", pack->name, pack->status);
-
-	/* is this the right place for this check anymore? */
 	if (pack->status == PACKAGE_CANNOT_OPEN) {
-		/* check if the package we could not open was in categories, since
-		   then it's a distro issue. Don't use install_categories, as if eg. 
-		   gnumeric is added because of need upgrade, but fails for some reason, 
-		   people get told that it could be a distro issue. */
-		for (iter = installer->categories; iter; iter = g_list_next (iter)) {
-			cat = (CategoryData *)iter->data;
-			for (iter2 = cat->packages; iter2 ; iter2 = g_list_next (iter2)) {
-				pack_in = PACKAGEDATA (iter2->data);
-				log_debug ("pack->name = %s, pack_in->name = %s", pack->name, pack_in->name);
-				if (strcmp (pack->name, pack_in->name) == 0) {
+		/* check if it was a toplevel package */
+		for (iter = g_list_first (installer->categories); iter != NULL; iter = g_list_next (iter)) {
+			category = (CategoryData *)(iter->data);
+			for (iter2 = g_list_first (category->packages); iter2 != NULL; iter2 = g_list_next (iter2)) {
+				top_pack = PACKAGEDATA (iter2->data);
+				if (strcmp (pack->name, top_pack->name) == 0) {
 					g_message ("bad mojo: cannot open package %s", pack->name);
 					distro = trilobite_get_distribution_name (trilobite_get_distribution (),
 										  TRUE, FALSE);
@@ -995,58 +966,6 @@ get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 			}
 		}
 	}
-
-/*
-	if (pack->conflicts_checked && !pack->toplevel) {
-		GList *packages;
-		CategoryData *cat = (CategoryData*)(installer->install_categories->data);
-		g_message ("adding %s to install_categories", required);
-		packages = cat->packages;
-		packages = g_list_prepend (packages, pack); 		
-		cat->packages = packages;
-	}
-*/
-
-	/* Create the path list */
-	data->path = g_list_prepend (data->path, pack);
-	data->touched = g_list_prepend (data->touched, pack);
-
-	g_list_foreach (pack->depends, (GFunc)get_detailed_errors_foreach_dep, data);
-	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, data);
-	g_list_foreach (pack->breaks, (GFunc)get_detailed_errors_foreach, data);
-
-	/* Pop the currect pack from the path */
-	data->path = g_list_remove (data->path, pack);
-}
-
-static void
-get_detailed_errors (const PackageData *pack, EazelInstaller *installer)
-{
-	GetErrorsForEachData data;
-	PackageData *non_const_pack;
-	char *name;
-
-	name = packagedata_get_readable_name (pack);
-	log_debug ("error tree traversal begins: errant package %s", name);
-	g_free (name);
-
-	if (eazel_install_failed_because_of_disk_full (installer->service)) {
-		installer->failure_info = g_list_prepend (installer->failure_info,
-							  _("You've run out of disk space!"));
-	}
-
-	data.installer = installer;
-	data.path = NULL;
-	data.touched = NULL;
-	log_debug ("copying package");
-	non_const_pack = PACKAGEDATA (pack);
-	gtk_object_ref (GTK_OBJECT (non_const_pack));
-	//	non_const_pack = packagedata_copy (pack, TRUE);
-	log_debug ("getting detailed errors");
-	get_detailed_errors_foreach (non_const_pack, &data);
-	log_debug ("destroying copy");
-	gtk_object_unref (GTK_OBJECT (non_const_pack));
-	g_list_free (data.touched);
 }
 
 
@@ -1087,8 +1006,9 @@ install_failed (EazelInstall *service,
 {
 	g_message ("INSTALL FAILED.");
 	
-	get_detailed_errors (pd, installer);
+	report_unusual_errors (pd, installer);
 	collect_failure_info (service, pd, installer, FALSE);
+        installer->had_failures = TRUE;
 }
 
 static void
@@ -1098,6 +1018,7 @@ uninstall_failed (EazelInstall *service,
 {
 	g_message ("UNINSTALL FAILED.");
 	collect_failure_info (service, pd, installer, TRUE);
+        installer->had_failures = TRUE;
 }
 
 static void
@@ -1112,6 +1033,7 @@ download_failed (EazelInstall *service,
 		installer->failure_info = g_list_append (installer->failure_info, temp);
 	}
 	g_message ("Download FAILED for %s", package->name);
+        installer->had_failures = TRUE;
 }
 
 static gboolean
@@ -1229,9 +1151,15 @@ install_done (EazelInstall *service,
 {
 	char *temp = NULL;
 
-	installer->successful = result;
+        if (installer->had_failures) {
+                /* overrides a "TRUE" result */
+                installer->successful = FALSE;
+        } else {
+                installer->successful = result;
+        }
+
 	log_debug ("Done, result is %s", result ? "good" : "evil");
-	if (result == FALSE) {
+	if (! installer->successful) {
 		/* will call jump_to_error_page later */
 		if (installer->problems == NULL) {
 			if (! installer->failure_info) {

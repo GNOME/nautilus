@@ -84,6 +84,7 @@ struct _EazelInstaller
 	unsigned long last_KB;
 
 	gboolean successful;
+	gboolean had_failures;
 
 	/* once we've got this, we know mystery errors were caused by rpm (this is kind of a hack) */
 	gboolean got_dep_check;

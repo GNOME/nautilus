@@ -2,7 +2,7 @@
 
 NULL = 
 
-OGFLAG = -g
+OG_FLAG = -g -O2 -DDEBUG
 #OGFLAG = -O
 
 WARN_FLAG = -Wall -Werror
@@ -92,4 +92,4 @@ eazel_installer_LDADD = 	\
 #	$(NULL)
 
 eazel-installer.sh: eazel-installer prescript
-	sh create-eazel-installer.sh
+	export CFLAGS="$(CFLAGS)" && sh create-eazel-installer.sh

@@ -374,13 +374,14 @@ make_query_box (NautilusServiceInstallView *view, EazelInstallCallbackOperation 
 {
         GtkWidget *top_label;
         GtkWidget *bottom_label;
+        GtkWidget *bottom_label_2;
         GtkWidget *hbox_list;
         GtkWidget *vbox_list;
         GtkWidget *list_label;
         GtkWidget *hbox_buttons;
         GtkWidget *button_ok;
         GtkWidget *button_cancel;
-        char *text;
+        char *text, *text2;
         GList *iter;
         unsigned long total_k;
         PackageData *package;
@@ -389,16 +390,20 @@ make_query_box (NautilusServiceInstallView *view, EazelInstallCallbackOperation 
 
 	switch (op) {
 	case EazelInstallCallbackOperation_INSTALL:
-                text = _("These packages are about to be downloaded and installed:");
+                text = _("These packages are ready to be downloaded and installed:");
+		text2 = _("If you wish to download and install these packages, click Continue.");
 		break;
 	case EazelInstallCallbackOperation_UNINSTALL:
-                text = _("These packages are about to be uninstalled:");	
+                text = _("These packages are ready to be uninstalled:");
+		text2 = _("If you wish to uninstall these packages, click Continue.");
 		break;
 	case EazelInstallCallbackOperation_REVERT:
-                text = _("These packages are about to be reverted:");	
+                text = _("These packages are ready to be reverted:");
+		text2 = _("If you wish to revert these packages, click Continue.");
 		break;
         default:
                 text = "???";
+		text2 = "";
 	}
         top_label = eazel_services_label_new (NULL, 0, 0.0, 0.0, 0, 0,
 					      EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
@@ -407,6 +412,14 @@ make_query_box (NautilusServiceInstallView *view, EazelInstallCallbackOperation 
         nautilus_label_set_text (NAUTILUS_LABEL (top_label), text);
 	nautilus_label_set_justify (NAUTILUS_LABEL (top_label), GTK_JUSTIFY_LEFT);
         gtk_widget_show (top_label);
+
+	bottom_label_2 = eazel_services_label_new (NULL, 0, 0.0, 0.0, 0, 0,
+						   EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
+						   EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
+						   NULL, -1, FALSE);
+	nautilus_label_set_text (NAUTILUS_LABEL (bottom_label_2), text2);
+	nautilus_label_set_justify (NAUTILUS_LABEL (bottom_label_2), GTK_JUSTIFY_LEFT);
+	gtk_widget_show (bottom_label_2);
 
         /* build up vbox list of packages */
         vbox_list = gtk_vbox_new (FALSE, 0);
@@ -476,7 +489,8 @@ make_query_box (NautilusServiceInstallView *view, EazelInstallCallbackOperation 
         gtk_box_pack_start (GTK_BOX (view->details->query_box), top_label, FALSE, FALSE, 0);
         gtk_box_pack_start (GTK_BOX (view->details->query_box), hbox_list, FALSE, FALSE, 10);
         gtk_box_pack_start (GTK_BOX (view->details->query_box), bottom_label, FALSE, FALSE, 0);
-        gtk_box_pack_start (GTK_BOX (view->details->query_box), hbox_buttons, FALSE, FALSE, 10);
+	gtk_box_pack_start (GTK_BOX (view->details->query_box), bottom_label_2, FALSE, FALSE, 15);
+        gtk_box_pack_start (GTK_BOX (view->details->query_box), hbox_buttons, FALSE, FALSE, 0);
         gtk_widget_show (view->details->query_box);
 
         gtk_container_set_focus_child (GTK_CONTAINER (view->details->form), button_ok);
