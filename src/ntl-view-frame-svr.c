@@ -162,30 +162,6 @@ impl_Nautilus_ViewFrame_request_progress_change(impl_POA_Nautilus_ViewFrame * se
   nautilus_view_request_progress_change(servant->view, proginfo);
 }
 
-void
-nautilus_view_request_location_change(NautilusView *view,
-                                      Nautilus_NavigationRequestInfo *loc)
-{
-  nautilus_window_request_location_change(NAUTILUS_WINDOW(view->main_window), loc, GTK_WIDGET(view));
-}
 
-void
-nautilus_view_request_selection_change (NautilusView              *view,
-                                        Nautilus_SelectionRequestInfo *loc)
-{
-  nautilus_window_request_selection_change(NAUTILUS_WINDOW(view->main_window), loc, GTK_WIDGET(view));  
-}
 
-void
-nautilus_view_request_status_change    (NautilusView              *view,
-                                        Nautilus_StatusRequestInfo *loc)
-{
-  nautilus_window_request_status_change(NAUTILUS_WINDOW(view->main_window), loc, GTK_WIDGET(view));  
-}
 
-void
-nautilus_view_request_progress_change(NautilusView              *view,
-                                      Nautilus_ProgressRequestInfo *loc)
-{
-  nautilus_window_request_progress_change(NAUTILUS_WINDOW(view->main_window), loc, GTK_WIDGET(view));  
-}

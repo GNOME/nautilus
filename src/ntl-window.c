@@ -121,6 +121,15 @@ static void nautilus_window_goto_uri_cb (GtkWidget *widget,
                                          GtkWidget *window);
 static void nautilus_window_about_cb (GtkWidget *widget,
                                       NautilusWindow *window);
+static void nautilus_window_connect_view              (NautilusWindow *window, 
+                                                       NautilusView *view);
+static void nautilus_window_disconnect_view           (NautilusWindow *window, 
+                                                       NautilusView *view);
+static void nautilus_window_disconnect_view_exchanged (NautilusView *view, 
+                                                       NautilusWindow *window);
+
+
+
 
 #undef CONTENTS_AS_HBOX
 
@@ -329,36 +338,7 @@ nautilus_window_class_init (NautilusWindowClass *klass)
   widget_class = (GtkWidgetClass*) klass;
   klass->parent_class = gtk_type_class (gtk_type_parent (object_class->type));
 
-  klass->request_location_change = nautilus_window_real_request_location_change;
-  klass->request_selection_change = nautilus_window_real_request_selection_change;
-  klass->request_status_change = nautilus_window_real_request_status_change;
-  klass->request_progress_change = nautilus_window_real_request_progress_change;
-
   i = 0;
-  klass->window_signals[i++] = gtk_signal_new("request_location_change",
-					      GTK_RUN_LAST,
-					      object_class->type,
-					      GTK_SIGNAL_OFFSET (NautilusWindowClass, request_location_change),
-					      gtk_marshal_NONE__BOXED_OBJECT,
-					      GTK_TYPE_NONE, 2, GTK_TYPE_BOXED, GTK_TYPE_OBJECT);
-  klass->window_signals[i++] = gtk_signal_new("request_selection_change",
-					      GTK_RUN_LAST,
-					      object_class->type,
-					      GTK_SIGNAL_OFFSET (NautilusWindowClass, request_selection_change),
-					      gtk_marshal_NONE__BOXED_OBJECT,
-					      GTK_TYPE_NONE, 2, GTK_TYPE_BOXED, GTK_TYPE_OBJECT);
-  klass->window_signals[i++] = gtk_signal_new("request_status_change",
-					      GTK_RUN_LAST,
-					      object_class->type,
-					      GTK_SIGNAL_OFFSET (NautilusWindowClass, request_status_change),
-					      gtk_marshal_NONE__BOXED_OBJECT,
-					      GTK_TYPE_NONE, 2, GTK_TYPE_BOXED, GTK_TYPE_OBJECT);
-  klass->window_signals[i++] = gtk_signal_new("request_progress_change",
-					      GTK_RUN_LAST,
-					      object_class->type,
-					      GTK_SIGNAL_OFFSET (NautilusWindowClass, request_progress_change),
-					      gtk_marshal_NONE__BOXED_OBJECT,
-					      GTK_TYPE_NONE, 2, GTK_TYPE_BOXED, GTK_TYPE_OBJECT);
   gtk_object_class_add_signals (object_class, klass->window_signals, i);
 
   gtk_object_add_arg_type ("NautilusWindow::app_id",
@@ -592,14 +572,19 @@ nautilus_window_set_arg (GtkObject      *object,
 #endif
           }
 
+        nautilus_window_disconnect_view(window, window->content_view);
+
 	gtk_widget_unref(GTK_WIDGET(window->content_view));
       }
-    else if(new_cv)
+    
+    if (new_cv)
       {
+        nautilus_window_connect_view(window, NAUTILUS_VIEW(new_cv));
+
 #ifdef CONTENTS_AS_HBOX
-      gtk_box_pack_end(GTK_BOX(window->content_hbox), new_cv, TRUE, TRUE, GNOME_PAD);
+        gtk_box_pack_end(GTK_BOX(window->content_hbox), new_cv, TRUE, TRUE, GNOME_PAD);
 #else
-      gtk_paned_pack2(GTK_PANED(window->content_hbox), new_cv, TRUE, FALSE);
+        gtk_paned_pack2(GTK_PANED(window->content_hbox), new_cv, TRUE, FALSE);
 #endif
       }
 
@@ -629,6 +614,13 @@ nautilus_window_get_arg (GtkObject      *object,
 static void nautilus_window_destroy (NautilusWindow *window)
 {
   NautilusWindowClass *klass = NAUTILUS_WINDOW_CLASS(GTK_OBJECT(window)->klass);
+
+  if (window->content_view != NULL) {
+    nautilus_window_disconnect_view(window, window->content_view);
+  }
+  
+  g_slist_foreach(window->meta_views, (GFunc)nautilus_window_disconnect_view_exchanged, window);
+
   g_slist_free(window->meta_views);
   CORBA_free(window->ni);
   CORBA_free(window->si);
@@ -756,7 +748,7 @@ nautilus_window_send_show_properties(GtkWidget *dockitem, GdkEventButton *event,
 
   gtk_signal_emit_stop_by_name(GTK_OBJECT(dockitem), "button_press_event");
 
-  gtk_signal_emit_by_name(GTK_OBJECT(meta_view), "show_properties");
+  nautilus_view_show_properties(meta_view);
 
   return TRUE;
 }
@@ -779,6 +771,8 @@ nautilus_window_add_meta_view(NautilusWindow *window, NautilusView *meta_view)
 
   g_return_if_fail(!g_slist_find(window->meta_views, meta_view));
   g_return_if_fail(NAUTILUS_IS_META_VIEW(meta_view));
+
+  nautilus_window_connect_view(window, meta_view);
 
   desc = nautilus_meta_view_get_label(NAUTILUS_META_VIEW(meta_view));
   if(!desc)
@@ -810,6 +804,8 @@ nautilus_window_remove_meta_view(NautilusWindow *window, NautilusView *meta_view
   g_return_if_fail(pagenum >= 0);
 
   gtk_notebook_remove_page(GTK_NOTEBOOK(window->meta_notebook), pagenum);
+
+  nautilus_window_disconnect_view(window, meta_view);
 }
 
 /* FIXME: Factor toolbar stuff out into ntl-window-toolbar.c */
@@ -944,3 +940,87 @@ nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 {
    gtk_widget_set_sensitive(toolbar_info[7].widget, allow); 
 }
+
+
+static void
+nautilus_window_request_location_change_cb (NautilusView *view, 
+                                            Nautilus_NavigationRequestInfo *info, 
+                                            NautilusWindow *window)
+{
+  nautilus_window_request_location_change(window, info, view);
+}
+
+
+static void
+nautilus_window_request_selection_change_cb (NautilusView *view, 
+                                             Nautilus_SelectionRequestInfo *info, 
+                                             NautilusWindow *window)
+{
+  nautilus_window_request_selection_change(window, info, view);  
+}
+
+static void
+nautilus_window_request_status_change_cb (NautilusView *view,
+                                          Nautilus_StatusRequestInfo *info,
+                                          NautilusWindow *window)
+{
+  nautilus_window_request_status_change(window, info, view);  
+}
+
+static void
+nautilus_window_request_progress_change_cb (NautilusView *view,
+                                            Nautilus_ProgressRequestInfo *info,
+                                            NautilusWindow *window)
+{
+  nautilus_window_request_progress_change(window, info, view);  
+}
+
+
+
+
+static void
+nautilus_window_connect_view(NautilusWindow *window, NautilusView *view)
+{
+  gtk_signal_connect(GTK_OBJECT(view), 
+                     "request_location_change", 
+                     nautilus_window_request_location_change_cb, 
+                     window);
+  gtk_signal_connect(GTK_OBJECT(view), 
+                     "request_selection_change", 
+                     nautilus_window_request_selection_change_cb, 
+                     window);
+  gtk_signal_connect(GTK_OBJECT(view), 
+                     "request_status_change", 
+                     nautilus_window_request_status_change_cb, 
+                     window);
+  gtk_signal_connect(GTK_OBJECT(view), 
+                     "request_progress_change", 
+                     nautilus_window_request_progress_change_cb, 
+                     window);
+}
+
+
+static void
+nautilus_window_disconnect_view(NautilusWindow *window, NautilusView *view)
+{
+  gtk_signal_disconnect_by_func(GTK_OBJECT(view), 
+                                nautilus_window_request_location_change_cb, 
+                                window);
+  gtk_signal_disconnect_by_func(GTK_OBJECT(view), 
+                                nautilus_window_request_selection_change_cb, 
+                                window);
+  gtk_signal_disconnect_by_func(GTK_OBJECT(view), 
+                                nautilus_window_request_status_change_cb, 
+                                window);
+  gtk_signal_disconnect_by_func(GTK_OBJECT(view), 
+                                nautilus_window_request_progress_change_cb, 
+                                window);
+}
+
+static void
+nautilus_window_disconnect_view_exchanged(NautilusView *view, NautilusWindow *window)
+{
+  nautilus_window_disconnect_view(window, view);
+}
+
+

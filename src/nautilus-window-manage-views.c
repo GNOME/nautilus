@@ -5,7 +5,6 @@
 static void nautilus_window_notify_selection_change(NautilusWindow *window,
 						    NautilusView *view,
 						    Nautilus_SelectionInfo *loc,
-						    guint signum,
 						    NautilusView *requesting_view);
 
 static void
@@ -41,57 +40,50 @@ Nautilus_SelectionInfo__copy(Nautilus_SelectionInfo *dest_si, Nautilus_Selection
 void
 nautilus_window_request_status_change(NautilusWindow *window,
                                       Nautilus_StatusRequestInfo *loc,
-                                      GtkWidget *requesting_view)
+                                      NautilusView *requesting_view)
 {
-  NautilusWindowClass *klass;
-  GtkObject *obj;
-
-  obj = GTK_OBJECT(window);
-
-  klass = NAUTILUS_WINDOW_CLASS(obj->klass);
-  gtk_signal_emit(obj, klass->window_signals[2], loc, requesting_view);
+  nautilus_window_set_status(window, loc->status_string);
 }
 
 void
 nautilus_window_request_selection_change(NautilusWindow *window,
 					 Nautilus_SelectionRequestInfo *loc,
-					 GtkWidget *requesting_view)
+					 NautilusView *requesting_view)
 {
-  NautilusWindowClass *klass;
-  GtkObject *obj;
+  GSList *cur;
+  Nautilus_SelectionInfo selinfo;
 
-  obj = GTK_OBJECT(window);
+  selinfo.selected_uris = loc->selected_uris;
+  selinfo.content_view = nautilus_view_get_objref(NAUTILUS_VIEW(window->content_view));
 
-  klass = NAUTILUS_WINDOW_CLASS(obj->klass);
-  gtk_signal_emit(obj, klass->window_signals[1], loc, requesting_view);
+  CORBA_free(window->si);
+
+  window->si = Nautilus_SelectionInfo__alloc();
+  Nautilus_SelectionInfo__copy(window->si, &selinfo);
+
+  nautilus_window_notify_selection_change(window, window->content_view, &selinfo, requesting_view);
+
+  for(cur = window->meta_views; cur; cur = cur->next)
+    nautilus_window_notify_selection_change(window, cur->data, &selinfo, requesting_view);
 }
 
 void
 nautilus_window_request_location_change(NautilusWindow *window,
 					Nautilus_NavigationRequestInfo *loc,
-					GtkWidget *requesting_view)
-{
-  NautilusWindowClass *klass;
-  GtkObject *obj;
-
-  obj = GTK_OBJECT(window);
-
-  klass = NAUTILUS_WINDOW_CLASS(obj->klass);
-  gtk_signal_emit(obj, klass->window_signals[0], loc, requesting_view);
+					NautilusView *requesting_view)
+{  
+  nautilus_window_change_location(window, loc, requesting_view, FALSE);
 }
 
 void
 nautilus_window_request_progress_change(NautilusWindow *window,
 					Nautilus_ProgressRequestInfo *loc,
-					GtkWidget *requesting_view)
+					NautilusView *requesting_view)
 {
-  NautilusWindowClass *klass;
-  GtkObject *obj;
-
-  obj = GTK_OBJECT(window);
-
-  klass = NAUTILUS_WINDOW_CLASS(obj->klass);
-  gtk_signal_emit(obj, klass->window_signals[3], loc, requesting_view);
+  if(requesting_view != window->content_view)
+    return; /* Only pay attention to progress information from the main view, for now */
+  
+  g_message("Progress is %f", loc->amount);
 }
 
 static void
@@ -157,22 +149,18 @@ static void
 nautilus_window_update_view(NautilusWindow *window,
                             NautilusView *view,
                             NautilusNavigationInfo *loci,
-                            guint signum_location,
                             NautilusView *requesting_view)
 {
   g_return_if_fail(view);
 
   loci->navinfo.self_originated = (view == requesting_view);
 
-  if(!signum_location)
-    signum_location = gtk_signal_lookup("notify_location_change", nautilus_view_get_type());
-
-  gtk_signal_emit(GTK_OBJECT(view), signum_location, loci);
+  nautilus_view_notify_location_change(NAUTILUS_VIEW(view), &(loci->navinfo));
 
   if(window->si)
     {
       window->si->content_view = nautilus_view_get_client_objref(NAUTILUS_VIEW(window->content_view));
-      nautilus_window_notify_selection_change(window, view, window->si, 0, NULL);
+      nautilus_window_notify_selection_change(window, view, window->si, NULL);
     }
 }
 
@@ -180,7 +168,6 @@ static void
 nautilus_window_load_content_view(NautilusWindow *window,
                                   const char *iid,
                                   NautilusNavigationInfo *loci,
-                                  guint signum_location,
                                   NautilusView **requesting_view)
 {
   NautilusView *content_view = window->content_view;
@@ -198,27 +185,29 @@ nautilus_window_load_content_view(NautilusWindow *window,
         *requesting_view = NULL;
 
       new_view = NAUTILUS_VIEW(gtk_widget_new(nautilus_content_view_get_type(), "main_window", window, NULL));
+
+      nautilus_window_set_content_view(window, new_view);
       if(!nautilus_view_load_client(new_view, iid))
 	{
 	  gtk_widget_destroy(GTK_WIDGET(new_view));
-	  new_view = NULL;
 	}
 
-      nautilus_window_set_content_view(window, new_view);
     }
 
   if(window->content_view && NAUTILUS_IS_VIEW(window->content_view))
     {
       loci->navinfo.content_view = nautilus_view_get_client_objref(window->content_view);
 
-      nautilus_window_update_view(window, window->content_view, loci, signum_location, *requesting_view);
+      nautilus_window_update_view(window, window->content_view, loci, *requesting_view);
     }
   else
     {
       NautilusView *dummy_view;
 
-      dummy_view = (NautilusView *)gtk_label_new(_("The component needed to display this file was not found."));
-      nautilus_window_set_content_view(window, dummy_view);
+      /* FIXME - should be another view type - Commenting because set_content_view() would break */
+      // dummy_view = (NautilusView *)gtk_label_new(_("The component needed to display this file was not found."));
+      // nautilus_window_set_content_view(window, dummy_view);
+      nautilus_window_set_content_view(window, NULL);
     }
 }
 
@@ -226,7 +215,6 @@ static void
 nautilus_window_load_meta_view(NautilusWindow *window,
                                const char *iid,
                                NautilusNavigationInfo *loci,
-                               guint signum_location,
                                NautilusView *requesting_view)
 {
   NautilusView *meta_view;
@@ -253,7 +241,7 @@ nautilus_window_load_meta_view(NautilusWindow *window,
     }
 
   if(meta_view)
-    nautilus_window_update_view(window, meta_view, loci, 0, requesting_view);
+    nautilus_window_update_view(window, meta_view, loci, requesting_view);
 }
 
 /* This is the most complicated routine in Nautilus. Steps include:
@@ -270,7 +258,6 @@ nautilus_window_change_location(NautilusWindow *window,
 				NautilusView *requesting_view,
 				gboolean is_back)
 {
-  guint signum;
   NautilusNavigationInfo loci_spot, *loci;
   GSList *cur, *discard_views;
 
@@ -290,10 +277,9 @@ nautilus_window_change_location(NautilusWindow *window,
   nautilus_window_change_location_internal(window, loci, is_back);
 
   /* Step 4 */
-  signum = gtk_signal_lookup("notify_location_change", nautilus_view_get_type());
 
   if(loci->content_iid)
-    nautilus_window_load_content_view(window, loci->content_iid, loci, signum, &requesting_view);
+    nautilus_window_load_content_view(window, loci->content_iid, loci, &requesting_view);
   else
     nautilus_window_set_content_view(window, NULL);
 
@@ -315,7 +301,7 @@ nautilus_window_change_location(NautilusWindow *window,
     }
 
   for(cur = loci->meta_iids; cur; cur = cur->next)
-    nautilus_window_load_meta_view(window, cur->data, loci, signum, requesting_view);
+    nautilus_window_load_meta_view(window, cur->data, loci, requesting_view);
 
   for(cur = discard_views; cur; cur = cur->next)
     nautilus_window_remove_meta_view(window, cur->data);
@@ -328,66 +314,16 @@ static void
 nautilus_window_notify_selection_change(NautilusWindow *window,
 					NautilusView *view,
 					Nautilus_SelectionInfo *loc,
-					guint signum,
 					NautilusView *requesting_view)
 {
   loc->self_originated = (view == requesting_view);
 
-  if(!signum)
-    signum = gtk_signal_lookup("notify_selection_change", nautilus_view_get_type());
-
-  gtk_signal_emit(GTK_OBJECT(view), signum, loc);
+  nautilus_view_notify_selection_change(view, loc);
 }
 
-void
-nautilus_window_real_request_selection_change(NautilusWindow *window,
-					      Nautilus_SelectionRequestInfo *loc,
-					      NautilusView *requesting_view)
-{
-  GSList *cur;
-  guint signum;
-  Nautilus_SelectionInfo selinfo;
 
-  signum = gtk_signal_lookup("notify_selection_change", nautilus_view_get_type());
 
-  selinfo.selected_uris = loc->selected_uris;
-  selinfo.content_view = nautilus_view_get_objref(NAUTILUS_VIEW(window->content_view));
 
-  CORBA_free(window->si);
 
-  window->si = Nautilus_SelectionInfo__alloc();
-  Nautilus_SelectionInfo__copy(window->si, &selinfo);
 
-  signum = gtk_signal_lookup("notify_selection_change", nautilus_view_get_type());
-  nautilus_window_notify_selection_change(window, window->content_view, &selinfo, signum, requesting_view);
 
-  for(cur = window->meta_views; cur; cur = cur->next)
-    nautilus_window_notify_selection_change(window, cur->data, &selinfo, signum, requesting_view);
-}
-
-void
-nautilus_window_real_request_status_change(NautilusWindow *window,
-					   Nautilus_StatusRequestInfo *loc,
-					   NautilusView *requesting_view)
-{
-  nautilus_window_set_status(window, loc->status_string);
-}
-
-void
-nautilus_window_real_request_location_change (NautilusWindow *window,
-					      Nautilus_NavigationRequestInfo *loc,
-					      NautilusView *requesting_view)
-{
-  nautilus_window_change_location(window, loc, requesting_view, FALSE);
-}
-
-void
-nautilus_window_real_request_progress_change (NautilusWindow *window,
-					      Nautilus_ProgressRequestInfo *loc,
-					      NautilusView *requesting_view)
-{
-  if(requesting_view != window->content_view)
-    return; /* Only pay attention to progress information from the main view, for now */
-
-  g_message("Progress is %f", loc->amount);
-}

@@ -32,7 +32,10 @@
 #include "ntl-view-private.h"
 
 enum {
-  NOTIFY_LOCATION_CHANGE,
+  REQUEST_LOCATION_CHANGE,
+  REQUEST_SELECTION_CHANGE,
+  REQUEST_STATUS_CHANGE,
+  REQUEST_PROGRESS_CHANGE,
   LAST_SIGNAL
 };
 
@@ -40,6 +43,8 @@ enum {
   ARG_0,
   ARG_MAIN_WINDOW
 };
+
+
 
 
 static void nautilus_view_init       (NautilusView      *view);
@@ -56,13 +61,10 @@ static void nautilus_view_size_request (GtkWidget        *widget,
 					GtkRequisition   *requisition);
 static void nautilus_view_size_allocate (GtkWidget        *widget,
                                          GtkAllocation    *allocation);
-static void nautilus_view_notify_location_change(NautilusView *view,
-						 Nautilus_NavigationInfo *nav_context);
-static void nautilus_view_notify_selection_change(NautilusView *view,
-						  Nautilus_SelectionInfo *nav_context);
-static void nautilus_view_load_state(NautilusView *view, const char *config_path);
-static void nautilus_view_save_state(NautilusView *view, const char *config_path);
-static void nautilus_view_show_properties(NautilusView *view);
+
+
+static guint nautilus_view_signals[LAST_SIGNAL];
+
 
 GtkType
 nautilus_view_get_type (void)
@@ -130,45 +132,43 @@ nautilus_view_class_init (NautilusViewClass *klass)
   klass->vepv = &impl_Nautilus_ViewFrame_vepv;
 
   klass->parent_class = gtk_type_class (gtk_type_parent (object_class->type));
+  /* klass->request_location_change = NULL; */
+  /* klass->request_selection_change = NULL; */
+  /* klass->request_status_change = NULL; */
+  /* klass->request_progress_change = NULL; */
   klass->view_constructed = nautilus_view_constructed;
-  klass->notify_location_change = nautilus_view_notify_location_change;
-  klass->notify_selection_change = nautilus_view_notify_selection_change;
-  klass->load_state = nautilus_view_load_state;
-  klass->save_state = nautilus_view_save_state;
-  klass->show_properties = nautilus_view_show_properties;
 
-  i = 0;
-  klass->view_signals[i++] = gtk_signal_new("notify_location_change",
-					    GTK_RUN_LAST,
-					    object_class->type,
-					    GTK_SIGNAL_OFFSET (NautilusViewClass, notify_location_change),
-					    gtk_marshal_NONE__BOXED,
-					    GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
-  klass->view_signals[i++] = gtk_signal_new("load_state",
-					    GTK_RUN_LAST,
-					    object_class->type,
-					    GTK_SIGNAL_OFFSET (NautilusViewClass, load_state),
-					    gtk_marshal_NONE__STRING,
-					    GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
-  klass->view_signals[i++] = gtk_signal_new("save_state",
-					    GTK_RUN_LAST,
-					    object_class->type,
-					    GTK_SIGNAL_OFFSET (NautilusViewClass, save_state),
-					    gtk_marshal_NONE__STRING,
-					    GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
-  klass->view_signals[i++] = gtk_signal_new("show_properties",
-					    GTK_RUN_LAST,
-					    object_class->type,
-					    GTK_SIGNAL_OFFSET (NautilusViewClass, show_properties),
-					    gtk_marshal_NONE__NONE,
-					    GTK_TYPE_NONE, 0);
-  klass->view_signals[i++] = gtk_signal_new("notify_selection_change",
-					    GTK_RUN_LAST,
-					    object_class->type,
-					    GTK_SIGNAL_OFFSET (NautilusViewClass, notify_selection_change),
-					    gtk_marshal_NONE__BOXED,
-					    GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
-  gtk_object_class_add_signals (object_class, klass->view_signals, i);
+  nautilus_view_signals[REQUEST_LOCATION_CHANGE] = gtk_signal_new("request_location_change",
+                                                                  GTK_RUN_LAST,
+                                                                  object_class->type,
+                                                                  GTK_SIGNAL_OFFSET (NautilusViewClass, 
+                                                                                     request_location_change),
+                                                                  gtk_marshal_NONE__BOXED,
+                                                                  GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
+  nautilus_view_signals[REQUEST_SELECTION_CHANGE] = gtk_signal_new("request_selection_change",
+                                                                   GTK_RUN_LAST,
+                                                                   object_class->type,
+                                                                   GTK_SIGNAL_OFFSET (NautilusViewClass, 
+                                                                                      request_selection_change),
+                                                                   gtk_marshal_NONE__BOXED,
+                                                                   GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
+  nautilus_view_signals[REQUEST_STATUS_CHANGE] = gtk_signal_new("request_status_change",
+                                                                GTK_RUN_LAST,
+                                                                object_class->type,
+                                                                GTK_SIGNAL_OFFSET (NautilusViewClass, 
+                                                                                   request_status_change),
+                                                                gtk_marshal_NONE__BOXED,
+                                                                GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
+  nautilus_view_signals[REQUEST_PROGRESS_CHANGE] = gtk_signal_new("request_progress_change",
+                                                                   GTK_RUN_LAST,
+                                                                   object_class->type,
+                                                                   GTK_SIGNAL_OFFSET (NautilusViewClass, 
+                                                                                      request_progress_change),
+                                                                   gtk_marshal_NONE__BOXED,
+                                                                   GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
+
+  gtk_object_class_add_signals (object_class, nautilus_view_signals, LAST_SIGNAL);
+  
 
   gtk_object_add_arg_type ("NautilusView::main_window",
 			   GTK_TYPE_OBJECT,
@@ -371,7 +371,7 @@ nautilus_view_load_client(NautilusView *view, const char *iid)
   return TRUE;
 }
 
-static void
+void
 nautilus_view_notify_location_change(NautilusView *view,
 				     Nautilus_NavigationInfo *nav_context)
 {
@@ -397,7 +397,7 @@ nautilus_view_notify_location_change(NautilusView *view,
   CORBA_exception_free(&ev);
 }
 
-static void
+void
 nautilus_view_notify_selection_change(NautilusView *view,
 				      Nautilus_SelectionInfo *nav_context)
 {
@@ -414,7 +414,7 @@ nautilus_view_notify_selection_change(NautilusView *view,
   CORBA_exception_free(&ev);
 }
 
-static void
+void
 nautilus_view_load_state(NautilusView *view, const char *config_path)
 {
   CORBA_Environment ev;
@@ -430,7 +430,7 @@ nautilus_view_load_state(NautilusView *view, const char *config_path)
   CORBA_exception_free(&ev);
 }
 
-static void
+void
 nautilus_view_save_state(NautilusView *view, const char *config_path)
 {
   CORBA_Environment ev;
@@ -446,7 +446,7 @@ nautilus_view_save_state(NautilusView *view, const char *config_path)
   CORBA_exception_free(&ev);
 }
 
-static void
+void
 nautilus_view_show_properties(NautilusView *view)
 {
   CORBA_Environment ev;
@@ -479,3 +479,33 @@ nautilus_view_get_objref(NautilusView *view)
 {
   return view?gnome_object_corba_objref(view->view_frame):NULL;
 }
+
+
+void
+nautilus_view_request_location_change(NautilusView *view,
+                                      Nautilus_NavigationRequestInfo *loc)
+{
+  gtk_signal_emit(GTK_OBJECT(view), nautilus_view_signals[REQUEST_LOCATION_CHANGE], loc);
+}
+
+void
+nautilus_view_request_selection_change (NautilusView              *view,
+                                        Nautilus_SelectionRequestInfo *loc)
+{
+  gtk_signal_emit(GTK_OBJECT(view), nautilus_view_signals[REQUEST_SELECTION_CHANGE], loc);
+}
+
+void
+nautilus_view_request_status_change    (NautilusView              *view,
+                                        Nautilus_StatusRequestInfo *loc)
+{
+  gtk_signal_emit(GTK_OBJECT(view), nautilus_view_signals[REQUEST_STATUS_CHANGE], loc);
+}
+
+void
+nautilus_view_request_progress_change(NautilusView              *view,
+                                      Nautilus_ProgressRequestInfo *loc)
+{
+  gtk_signal_emit(GTK_OBJECT(view), nautilus_view_signals[REQUEST_PROGRESS_CHANGE], loc);
+}
+

@@ -5,15 +5,15 @@
 
 void nautilus_window_request_location_change(NautilusWindow *window,
 					     Nautilus_NavigationRequestInfo *loc,
-					     GtkWidget *requesting_view);
+					     NautilusView *requesting_view);
 void nautilus_window_request_selection_change(NautilusWindow *window,
 					      Nautilus_SelectionRequestInfo *loc,
-					      GtkWidget *requesting_view);
+					      NautilusView *requesting_view);
 void nautilus_window_request_status_change(NautilusWindow *window,
                                            Nautilus_StatusRequestInfo *loc,
-                                           GtkWidget *requesting_view);
+                                           NautilusView *requesting_view);
 void nautilus_window_request_progress_change(NautilusWindow *window,
 					     Nautilus_ProgressRequestInfo *loc,
-					     GtkWidget *requesting_view);
+					     NautilusView *requesting_view);
 
 #endif

@@ -51,19 +51,22 @@ struct _NautilusViewClass
 {
   GtkBinClass parent_spot;
 
-  void (*notify_location_change)	(NautilusView *view,
-					 Nautilus_NavigationInfo *nav_context);
-  void (*notify_selection_change)	(NautilusView *view,
-					 Nautilus_SelectionInfo *nav_context);
-  void (*load_state) (NautilusView *view, const char *config_path);
-  void (*save_state) (NautilusView *view, const char *config_path);
-  void (*show_properties) (NautilusView *view);
+  /* These signals correspond to the Natuilus:ViewFrame CORBA interface. They
+     are requests that the underlying view may make of the framework. */
+
+  void (*request_location_change)	(NautilusView *view,
+					 Nautilus_NavigationRequestInfo *navinfo);
+  void (*request_selection_change)      (NautilusView *view,
+				         Nautilus_SelectionRequestInfo *selinfo);
+  void (*request_status_change)         (NautilusView *view,
+                                         Nautilus_StatusRequestInfo *loc);
+  void (*request_progress_change)       (NautilusView *view,
+                                         Nautilus_ProgressRequestInfo *loc);
 
   /* Not a signal. Work-around for Gtk+'s lack of a 'constructed' operation */
   void (*view_constructed) (NautilusView *view);
 
   GtkBinClass *parent_class;
-  guint view_signals[6];
   guint num_construct_args;
 
   gpointer servant_init_func, servant_destroy_func, vepv;
@@ -90,13 +93,28 @@ struct _NautilusView
   gpointer component_data;
 };
 
-GtkType nautilus_view_get_type                (void);
+GtkType nautilus_view_get_type                  (void);
 gboolean nautilus_view_load_client              (NautilusView              *view,
                                                  const char *               iid);
-const char *nautilus_view_get_iid(NautilusView *view);
-CORBA_Object nautilus_view_get_client_objref(NautilusView *view);
-GnomeObject *nautilus_view_get_control_frame(NautilusView *view);
-CORBA_Object nautilus_view_get_objref(NautilusView *view);
+const char *nautilus_view_get_iid               (NautilusView *view);
+CORBA_Object nautilus_view_get_client_objref    (NautilusView *view);
+GnomeObject *nautilus_view_get_control_frame    (NautilusView *view);
+CORBA_Object nautilus_view_get_objref           (NautilusView *view);
+
+/* These functions correspond to methods of the Nautilus:View CORBAinterface */
+
+void nautilus_view_notify_location_change       (NautilusView *view,
+					         Nautilus_NavigationInfo *nav_context);
+void nautilus_view_notify_selection_change      (NautilusView *view,
+					         Nautilus_SelectionInfo *sel_context);
+void nautilus_view_load_state                   (NautilusView *view, 
+                                                 const char *config_path);
+void nautilus_view_save_state                   (NautilusView *view, 
+                                                 const char *config_path);
+void nautilus_view_show_properties              (NautilusView *view);
+
+
+
 
 /* This is a "protected" operation */
 void    nautilus_view_construct_arg_set(NautilusView *view);

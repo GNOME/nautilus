@@ -44,20 +44,7 @@ typedef struct {
 
   GnomeAppClass *parent_class;
 
-  void (* request_location_change)(NautilusWindow *window,
-				   Nautilus_NavigationRequestInfo *loc,
-				   NautilusView *requesting_view);
-  void (* request_selection_change)(NautilusWindow *window,
-				    Nautilus_SelectionRequestInfo *loc,
-				    NautilusView *requesting_view);
-  void (* request_status_change)   (NautilusWindow *window,
-                                    Nautilus_StatusRequestInfo *loc,
-                                    NautilusView *requesting_view);
-  void (* request_progress_change) (NautilusWindow *window,
-                                    Nautilus_ProgressRequestInfo *loc,
-                                    NautilusView *requesting_view);
-
-  guint window_signals[4];
+  guint window_signals[0];
 } NautilusWindowClass;
 
 struct _NautilusWindow {

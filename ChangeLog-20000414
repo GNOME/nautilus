@@ -1,3 +1,49 @@
+2000-01-03  Maciej Stachowiak  <mjs@eazel.com>
+
+	* src/ntl-prefs.c: Fix warnings.
+
+	* src/ntl-view.c, src/ntl-view.h, src/ntl-view-frame-svr.c
+	(nautilus_view_notify_location_change,
+	nautilus_view_notify_selection_change, nautilus_view_load_state,
+	nautilus_view_save_state, nautilus_view_show_properties): Made
+	these functions public and removed the corresponding signals;
+	these are operations you do to the NautilusView, not something it
+	informs other parts of the program of.
+	(request_location_change, request_selection_change,
+	request_status_change, request_progress_change): New
+	signals. These allow NautilusView to have less dependence on
+	NautilusWindow.
+	(nautilus_view_signals): Moved signal number table from view to
+	this static variable.
+	(nautilus_view_request_location_change,
+	nautilus_view_request_selection_change,
+	nautilus_view_request_status_change,
+	nautilus_view_request_progress_change): Move to ntl-view.c and
+	make them emit the proper signals in lieu of hardcoded handling.
+	* src/ntl-window.c, src/ntl-window.h src/ntl-window-msgs.c,
+	src/ntl-window-msgs.h, src/ntl-window-state.c
+	(request_location_change, request_selection_change,
+	request_status_change, request_progress_change): Removed these
+	signals; they are operations you do on a NautilusWindow, not
+	something it notifies you of, and any usefulness for inheritance
+	purposes is purely speculative right now.
+	(nautilus_window_connect_view, nautilus_window_disconnect_view):
+	Use these new helper functions to connect callbacks to
+	NautilusView's signals instead of expecting them to just get
+	called.
+	(nautilus_view_request_location_change,
+	nautilus_view_request_selection_change,
+	nautilus_view_request_status_change,
+	nautilus_view_request_progress_change): Execute bodies of real_
+	versions instead of emitting singals.
+	(nautilus_view_real_request_location_change,
+	nautilus_view_real_request_selection_change,
+	nautilus_view_real_request_status_change,
+	nautilus_view_real_request_progress_change): Removed these.
+	Finally, always call nautilus_winodow_set_content_view or
+	nautilus_window_add_meta_view before calling
+	nautilus_view_load_client to make sure no signals are lost.
+	
 2000-01-03  Elliot Lee  <sopwith@redhat.com>
 
 	* components/websearch, configure.in: The ten minute version of kwebsearch.

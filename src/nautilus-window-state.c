@@ -22,7 +22,6 @@ nautilus_window_load_state(NautilusWindow *window, const char *config_path)
   char *vtype;
   GSList *cur;
   int i, n;
-  guint signum;
   char cbuf[1024];
 
   /* Remove old stuff */
@@ -34,19 +33,18 @@ nautilus_window_load_state(NautilusWindow *window, const char *config_path)
   gnome_config_push_prefix(config_path);
 
   vtype = gnome_config_get_string("content_view_type=NONE");
-  signum = gtk_signal_lookup("load_state", nautilus_view_get_type());
 
   if(vtype && strcmp(vtype, "NONE")) /* Create new content view */
     {
       GtkWidget *w;
 
       w = gtk_widget_new(nautilus_content_view_get_type(), "main_window", window, NULL);
-      nautilus_view_load_client(NAUTILUS_VIEW(w), vtype);
       nautilus_window_set_content_view(window, NAUTILUS_VIEW(w));
+      nautilus_view_load_client(NAUTILUS_VIEW(w), vtype);
 
       g_snprintf(cbuf, sizeof(cbuf), "%s/Content_View/", config_path);
       gnome_config_push_prefix(cbuf);
-      gtk_signal_emit(GTK_OBJECT(w), signum, cbuf);
+      nautilus_view_load_state(NAUTILUS_VIEW(w), cbuf);
       gnome_config_pop_prefix();
 
       gtk_widget_show(w);
@@ -67,7 +65,7 @@ nautilus_window_load_state(NautilusWindow *window, const char *config_path)
       g_snprintf(cbuf, sizeof(cbuf), "%s/Meta_View_%d/", config_path, i);
 
       gnome_config_push_prefix(cbuf);
-      gtk_signal_emit(GTK_OBJECT(cur->data), signum, cbuf);
+      nautilus_view_load_state(NAUTILUS_VIEW(cur->data), cbuf);
       gnome_config_pop_prefix();
 
       nautilus_window_add_meta_view(window, NAUTILUS_VIEW(nvw));
@@ -82,13 +80,8 @@ nautilus_window_save_state(NautilusWindow *window, const char *config_path)
 {
   GSList *cur;
   int n;
-  guint signum;
   char cbuf[1024];
 
-  signum = gtk_signal_lookup("save_state", nautilus_view_get_type());
-
-  g_assert(signum != 0);
-  
   gnome_config_push_prefix(config_path);
   if(window->content_view)
     {
@@ -97,7 +90,7 @@ nautilus_window_save_state(NautilusWindow *window, const char *config_path)
 
       gnome_config_push_prefix(cbuf);
 
-      gtk_signal_emit(GTK_OBJECT(window->content_view), signum, cbuf);
+      nautilus_view_save_state(window->content_view, cbuf);
 
       gnome_config_pop_prefix();
     }
@@ -123,7 +116,7 @@ nautilus_window_save_state(NautilusWindow *window, const char *config_path)
 
       gnome_config_push_prefix(cbuf);
 
-      gtk_signal_emit(GTK_OBJECT(cur->data), signum, cbuf);
+      nautilus_view_save_state(NAUTILUS_VIEW(cur->data), cbuf);
 
       gnome_config_pop_prefix();
     }

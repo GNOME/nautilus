@@ -15,11 +15,11 @@ static void window_prefs_pull(gpointer data);
 static void window_prefs_apply(gpointer data);
 
 PrefsPageInfo pages[] = {
-  {N_("Windows"), window_prefs_create, window_prefs_pull, window_prefs_apply},
-  {NULL}
+  {N_("Windows"), window_prefs_create, window_prefs_pull, window_prefs_apply, NULL},
+  {NULL, NULL, NULL, NULL, NULL}
 };
 
-NautilusPrefs nautilus_prefs = {0};
+NautilusPrefs nautilus_prefs = {0,0};
 
 void
 nautilus_prefs_save(void)
