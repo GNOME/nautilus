@@ -29,7 +29,7 @@
 #include "nautilus-bookmark-parsing.h"
 
 #include <eel/eel-xml-extensions.h>
-#include <libxml/xmlmemory.h>
+#include <libxml/globals.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <stdlib.h>
 
