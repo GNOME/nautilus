@@ -471,7 +471,7 @@ nautilus_bonobo_set_label_for_toolitem_and_command (BonoboUIComponent *ui,
 	char *label_no_underscore;
 
 	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
-	g_return_if_fail (menu_item_path != NULL);
+	g_return_if_fail (toolitem_path != NULL);
 	g_return_if_fail (command_path != NULL);
 	g_return_if_fail (label_with_underscore != NULL);
 
