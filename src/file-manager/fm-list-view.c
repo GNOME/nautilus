@@ -1415,6 +1415,8 @@ fm_list_view_set_selection (FMDirectoryView *view, GList *selection)
 	list_view = FM_LIST_VIEW (view);
 	tree_selection = gtk_tree_view_get_selection (list_view->details->tree_view);
 
+	g_signal_handlers_block_by_func (tree_selection, list_selection_changed_callback, view);
+
 	gtk_tree_selection_unselect_all (tree_selection);
 	for (node = selection; node != NULL; node = node->next) {
 		file = node->data;
@@ -1422,6 +1424,9 @@ fm_list_view_set_selection (FMDirectoryView *view, GList *selection)
 			gtk_tree_selection_select_iter (tree_selection, &iter);
 		}
 	}
+
+	g_signal_handlers_unblock_by_func (tree_selection, list_selection_changed_callback, view);
+	fm_directory_view_notify_selection_changed (view);
 }
 
 static void
