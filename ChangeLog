@@ -1,5 +1,19 @@
 2000-05-26  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers),
+	(nautilus_global_preferences_get_disabled_sidebar_panel_view_identifiers):
+	* libnautilus-extensions/nautilus-global-preferences.h:
+
+	Add a function that returns the disabled sidebar panels.  Needed
+	so that on-the-fly sidebar panel toggling can be smart about
+	adding and removing views.
+
+	Also rename some variabled to make it obvious which are the enabled
+	and disabled lists.
+	
+2000-05-26  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* src/ntl-index-panel.c: (nautilus_index_panel_remove_meta_view):
 
 	Remove the tab associated with meta view as well.  Add a warning

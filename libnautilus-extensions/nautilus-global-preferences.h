@@ -74,6 +74,7 @@ void                      nautilus_global_preferences_show_dialog               
 
 /* Sidebar */
 GList *                   nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers (void);
+GList *                   nautilus_global_preferences_get_disabled_sidebar_panel_view_identifiers (void);
 
 BEGIN_GNOME_DECLS
 
