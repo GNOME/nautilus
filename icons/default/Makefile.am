@@ -3,13 +3,7 @@ NULL=
 icondir = $(datadir)/pixmaps/nautilus/default
 
 icon_DATA =\
-	Back.png \
-	Forward.png \
-	Home.png \
-	Refresh.png \
 	Search.png \
-	Stop.png \
-	Up.png \
 	decrement.png \
 	default.xml \
 	desktop-home.png \

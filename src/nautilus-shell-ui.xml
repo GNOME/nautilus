@@ -54,6 +54,7 @@
 		<placeholder name="New Items Placeholder" delimit="none">
 			<menuitem name="New Window"
 				  _label="New _Window"
+				  pixtype="stock" pixname="gtk-new"
 				  verb="New Window"/>
 		</placeholder>
 		<placeholder name="Open Placeholder" delimit="top"/>
@@ -62,11 +63,13 @@
 			  _label="_Close Window"
 			  _tip="Close this window"
 			  accel="*Control*w"
+			  pixtype="stock" pixname="gtk-close"
 			  verb="Close"/>
 		<menuitem name="Close All Windows"
 			  _label="Close _All Windows"
 			  _tip="Close all Nautilus windows"
 			  accel="*Control**Shift*w"
+			  pixtype="stock" pixname="gtk-close"
 			  verb="Close All Windows"/>
 
 		<menuitem name="Find"
@@ -191,18 +194,22 @@
 
 	<submenu name="Go" _label="_Go">
 		<menuitem name="Back" 
-			  _label="_Back" 
+			  _label="_Back"
+ 			  pixtype="stock" pixname="gtk-go-back"
 			  verb="Back"/>
 		<menuitem name="Forward" 
-			  _label="_Forward" 
+			  _label="_Forward"
+ 			  pixtype="stock" pixname="gtk-go-forward"
 			  verb="Forward"/>
 		<menuitem name="Up" 
 			  _label="_Up a Level" 
 			  accel="*Control*u"
+			  pixtype="stock" pixname="gtk-go-up"
 			  verb="Up"/>
 		<menuitem name="Home" 
 			  _label="_Home" 
 			  accel="*Control*h"
+			  pixtype="stock" pixname="gtk-home"
 			  verb="Home"/>
 		<menuitem name="Start Here" 
 			  _label="_Start Here" 
@@ -228,6 +235,7 @@
 			  _label="_Add Bookmark" 
 			  _tip="Add a bookmark for the current location to this menu"
 			  accel="*Control*b"
+			  pixtype="stock" pixname="gtk-add"
 			  verb="Add Bookmark"/>
 		<menuitem name="Edit Bookmarks" 
 			  _label="_Edit Bookmarks..." 

@@ -4,13 +4,7 @@ SUBDIRS = sidebar_tab_pieces backgrounds throbber
 
 crux_eggplant_DATA =				\
 	crux_eggplant.xml			\
-	Back.png				\
-	Forward.png				\
-	Up.png					\
-	Refresh.png				\
-	Home.png				\
 	Search.png				\
-	Stop.png				\
 	decrement.png				\
 	decrement-i.png				\
 	emblem-nowrite.png			\

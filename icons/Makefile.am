@@ -14,13 +14,7 @@ SUBDIRS =\
 icondir = $(datadir)/pixmaps/nautilus
 
 icon_DATA =\
-	Back.png \
-	Forward.png \
-	Home.png \
-	Refresh.png \
 	Search.png \
-	Stop.png \
-	Up.png \
 	audio.png \
 	backgrounds.png \
 	chit_frame.png \
