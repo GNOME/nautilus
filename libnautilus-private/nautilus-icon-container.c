@@ -2414,26 +2414,21 @@ size_allocate (GtkWidget *widget,
 
 	need_layout_redone = !container->details->has_been_allocated;
 
-	/* FIXME bugzilla.gnome.org 47219: 
-	 * We shouldn't have to redo the layout when x, y, or height
-	 * changes, only when width changes. However, just removing these
-	 * tests causes a problem when you're vertically stretching a window
-	 * taller than the size needed to display all contents (the whole
-	 * batch of contents start moving down, centered in the extra space).
-	 */
-	if (allocation->x != widget->allocation.x
-	    || allocation->width != widget->allocation.width
-	    || allocation->y != widget->allocation.y
-	    || allocation->height != widget->allocation.height) {
+	/* We have to relayout if the height grows, and the scrolled window
+	 * is smaller than the allocation because otherwise we won't
+	 * re-center the canvas. */
+	if (allocation->width != widget->allocation.width ||
+	    (allocation->height > widget->allocation.height &&
+	     GTK_LAYOUT (widget)->height < (guint)allocation->height)) {
 		need_layout_redone = TRUE;
 	}
-	
+
 	GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, allocation);
 
 	container->details->has_been_allocated = TRUE;
 
 	if (need_layout_redone) {
-		redo_layout (NAUTILUS_ICON_CONTAINER (widget));
+		redo_layout (container);
 	}
 }
 
