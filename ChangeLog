@@ -1,3 +1,22 @@
+2000-08-04  Mathieu Lacage  <set EMAIL_ADDRESS environment variable>
+
+	first draft at the 1744 and 1761 tasks.
+	They depend on another one I have to finish first to mek them 
+	work.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_emblem_names), (nautilus_file_is_directory),
+	(nautilus_file_is_in_trash): add nautilus_file_is_in_trash
+	add test on search results to see if they are from the trash.
+	* libnautilus-extensions/nautilus-file.h: add nautilus_file_is_in_trash
+	* libnautilus-extensions/nautilus-search-bar-criterion.c: 
+	(nautilus_search_bar_criterion_human_from_uri): add function.
+	* libnautilus-extensions/nautilus-search-bar-criterion.h: add function.
+	* src/file-manager/fm-search-list-view.c: (begin_loading_callback),
+	(fm_search_list_view_initialize): hoook onto the directoryview signals
+	to tell the view that the title is a new better one.
+	* src/nautilus-simple-search-bar.c:
+
 2000-08-04  Rebecca Schulman  <rebecka@eazel.com>
 
 	* components/music/nautilus-music-view.c: (sort_by_title),

@@ -29,7 +29,10 @@
 #include <config.h>
 #include "fm-search-list-view.h"
 
+#include "fm-directory-view.h"
 #include "fm-list-view-private.h"
+#include <libnautilus-extensions/nautilus-search-bar-criterion.h>
+
 #include <libgnome/gnome-i18n.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 
@@ -41,10 +44,29 @@ static int  real_get_link_column                 (FMListView       *list_view);
 static void real_get_column_specification        (FMListView       *list_view,
 						  int               column_number,
 						  FMListViewColumn *specification);
+static void begin_loading_callback               (FMDirectoryView *view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMSearchListView,
 				   fm_search_list_view,
 				   FM_TYPE_LIST_VIEW)
+static void
+begin_loading_callback (FMDirectoryView *view)
+{
+	char *human_string;
+	NautilusView *nautilus_view;
+	char *uri;
+	
+	uri = fm_directory_view_get_uri (view);
+
+	nautilus_view = fm_directory_view_get_nautilus_view (view);
+	
+	human_string = nautilus_search_bar_criterion_human_from_uri (uri);
+
+	nautilus_view_set_title (nautilus_view, human_string);
+
+	g_free (human_string);
+
+}
 
 static void
 fm_search_list_view_initialize_class (gpointer klass)
@@ -62,7 +84,19 @@ static void
 fm_search_list_view_initialize (gpointer object,
 				gpointer klass)
 {
+	FMDirectoryView *directory_view;
+
+
 	g_assert (GTK_BIN (object)->child == NULL);
+
+	directory_view = FM_DIRECTORY_VIEW (object);
+
+
+	gtk_signal_connect (GTK_OBJECT(directory_view),
+			    "begin_loading",
+			    GTK_SIGNAL_FUNC (begin_loading_callback),
+			    NULL);
+
 }
 
 static int
