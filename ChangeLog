@@ -1,5 +1,13 @@
 2000-05-31  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* nautilus-widgets/nautilus-preferences-pane.c:
+	(nautilus_preferences_pane_destroy), (prefs_pane_construct):
+
+	Fix bug 993.  Some frames in the preferences dialog were too big
+	cause the parent vbox was erroneously marked homogenous.
+	
+2000-05-31  Ramiro Estrugo  <ramiro@eazel.com>
+
 	Remove the user level pane from the preferences dialog.  Place the
 	user level choices directly in the settings menu.
 

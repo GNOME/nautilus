@@ -125,19 +125,18 @@ nautilus_preferences_pane_destroy(GtkObject* object)
 	}
 
 	g_free (prefs_pane->details);
-	
-	/* Chain */
-	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+
+	/* Chain destroy */
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /*
  * Private stuff
  */
 static void
-prefs_pane_construct (NautilusPreferencesPane *prefs_pane,
-		      const gchar *pane_title,
-		      const gchar *pane_description)
+prefs_pane_construct (NautilusPreferencesPane	*prefs_pane,
+		      const gchar		*pane_title,
+		      const gchar		*pane_description)
 {
 	g_assert (prefs_pane != NULL);
 	g_assert (prefs_pane->details != NULL);
@@ -199,7 +198,7 @@ prefs_pane_construct (NautilusPreferencesPane *prefs_pane,
 	}
 
 	/* Groups box */
-	prefs_pane->details->groups_box = gtk_vbox_new (TRUE, 0);
+	prefs_pane->details->groups_box = gtk_vbox_new (FALSE, 0);
 
 	/* Add groups box to ourselves */
 	gtk_box_pack_start (GTK_BOX (prefs_pane),
