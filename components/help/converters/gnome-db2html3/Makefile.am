@@ -1,8 +1,6 @@
 SUBDIRS= docbook gnome-customization
 
 INCLUDES = \
-	-I$(includedir)                                 \
-	-I$(top_srcdir)/intl -I$(top_builddir)/intl     \
         -DGNOMELOCALEDIR=\""$(datadir)/locale"\"        \
 	$(GNOMEUI_CFLAGS)                               \
 	-DPREFIXDIR=\""$(prefix)"\" 			\

@@ -1,8 +1,6 @@
 ## Process this file with automake to produce Makefile.in.
 
 INCLUDES = 			\
-	-I$(includedir)		\
-	-I$(top_srcdir)/intl -I$(top_builddir)/intl	\
 	$(GNOMEUI_CFLAGS)	
 
 LDADD = \
