@@ -119,7 +119,7 @@ main (int argc, char **argv)
 
 	file = nautilus_file_get (uri);
 
-	nautilus_mime_actions_wait_for_required_file_attributes (file);
+	nautilus_mime_actions_wait_for_full_file_attributes (file);
 
 	if (strcmp (field, "default_action_type") == 0) {
 		puts ("default_action_type");

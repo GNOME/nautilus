@@ -1050,7 +1050,7 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
 
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
-	attributes = nautilus_mime_actions_get_required_file_attributes ();
+	attributes = nautilus_mime_actions_get_full_file_attributes ();
 
 	/* FIXME: need to cancel this when appropriate... */
 	nautilus_file_call_when_ready (window->details->viewed_file, attributes, 
