@@ -216,7 +216,7 @@ fm_directory_view_list_initialize (gpointer object, gpointer klass)
 
 	/* Register to find out about icon theme changes */
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
-					       "theme_changed",
+					       "icons_changed",
 					       update_icons,
 					       GTK_OBJECT (list_view));	
 }

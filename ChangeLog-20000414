@@ -1,3 +1,61 @@
+2000-03-16  John Sullivan  <sullivan@eazel.com>
+
+	Made icon theme changes persist across sessions by
+	using preferences mechanism. When preferences mechanism
+	switches to using GConf this should (theoretically) make
+	icon theme changes work across multiple processes too.
+
+	* libnautilus/nautilus-global-preferences.h:
+	added #define for NAUTILUS_PREFERENCES_ICON_THEME
+	* libnautilus/nautilus-global-preferences.c:
+	(global_preferences_static_info[]): new entry for
+	NAUTILUS_PREFERENCES_ICON_THEME with initial value.
+
+	* libnautilus/nautilus-icon-factory.c:
+	(nautilus_get_current_icon_factory): get theme from preferences
+	and register callback to be notified of changes in preference.
+	(nautilus_icon_factory_destroy): unregister preferences callback.
+	(nautilus_icon_factory_get_theme): Removed this function.
+	(icon_theme_changed_callback): call set_theme when preference changes.
+	* libnautilus/nautilus-icon-factory.h: 
+	(nautilus_icon_factory_get_theme), 
+	(nautilus_icon_factory_set_theme): Removed public API. The 
+	rare client that cares about the name of the theme should
+	get/set it from preferences.
+
+	* src/nautilus-window-menus.c:
+	(use_eazel_theme_icons_cb): get and set theme from
+	preferences rather than with icon factory calls.
+	(nautilus_bonobo_ui_handler_menu_set_toggle_appearance):
+	New function, sets the state of the checkbox in a bonobo
+	menu item without invoking the callback. Perhaps this belongs
+	in bonobo or in libnautilus, but I'm waiting to hear what the
+	bonobo folks have to say about the current behavior, which
+	seems broken to me.
+	(update_eazel_theme_menu_item): Rewritten to change the
+	state of the menu item without invoking the callback. This
+	was broken in the case where the initial state of the menu
+	item was backwards, which was never the case before since
+	it always started with Eazel theme icons off.
+	
+	* libnautilus/nautilus-icon-factory.c: 
+	(nautilus_icon_factory_initialize_class), 
+	(nautilus_icon_factory_set_theme), 
+	* components/history/ntl-history-view.c: (make_obj),
+	* src/nautilus-bookmarks-window.c: 
+	(create_bookmarks_window),
+	* src/nautilus-window-menus.c: 
+	(nautilus_window_initialize_menus),
+	(nautilus_window_initialize_bookmarks_menu), 
+	(nautilus_window_initialize_go_menu),
+	* libnautilus/gnome-icon-container.c: 
+	(gnome_icon_container_initialize),
+	* src/file-manager/fm-directory-view-list.c:
+	(fm_directory_view_list_initialize): Changed name of signal 
+	emitted by icon factory from "theme_changed" to "icons_changed" 
+	since it may be used in the future for other kinds of changes 
+	in the available set of icons.
+
 2000-03-15  Darin Adler  <darin@eazel.com>
 
 	* HACKING: Tell people about the gnome-xml branch.

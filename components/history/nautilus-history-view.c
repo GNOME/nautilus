@@ -234,7 +234,7 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
   gtk_signal_connect(GTK_OBJECT(clist), "select_row", hyperbola_navigation_history_select_row, hview);
 
   gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
-					 "theme_changed",
+					 "icons_changed",
 					 history_view_update_icons,
 					 GTK_OBJECT (hview->clist));
 

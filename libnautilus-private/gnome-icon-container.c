@@ -1956,7 +1956,7 @@ gnome_icon_container_initialize (GnomeIconContainer *container)
 
 	/* Make sure that we find out if the theme changes. */
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
-					       "theme_changed",
+					       "icons_changed",
 					       gnome_icon_container_request_update_all,
 					       GTK_OBJECT (container));
 }

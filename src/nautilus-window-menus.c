@@ -229,15 +229,22 @@ static GnomeUIInfo bookmarks_menu_info[] = {
 static void
 use_eazel_theme_icons_cb (GtkCheckMenuItem *item, gpointer user_data)
 {
-	char *theme;
+	char *current_theme;
+	char *new_theme;
 
-	theme = nautilus_icon_factory_get_theme ();
-	if (nautilus_strcmp (theme, "eazel") == 0) {
-		nautilus_icon_factory_set_theme (NULL);
+	current_theme = nautilus_preferences_get_string (nautilus_preferences_get_global_preferences (),
+					       	 	 NAUTILUS_PREFERENCES_ICON_THEME);	
+	if (nautilus_strcmp (current_theme, "eazel") == 0) {
+		new_theme = "default";
 	} else {
-		nautilus_icon_factory_set_theme ("eazel");
+		new_theme = "eazel";
 	}
-	g_free (theme);
+
+	nautilus_preferences_set_string (nautilus_preferences_get_global_preferences (),
+					 NAUTILUS_PREFERENCES_ICON_THEME,
+					 new_theme);
+	
+	g_free (current_theme);
 }
 
 static GnomeUIInfo settings_menu_info[] = {
@@ -515,7 +522,7 @@ nautilus_window_initialize_bookmarks_menu (NautilusWindow *window)
 			   	               GTK_OBJECT (window));
 	 
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
-					       "theme_changed",
+					       "icons_changed",
 					       refresh_bookmarks_in_bookmarks_menu,
 					       GTK_OBJECT (window));
 
@@ -538,7 +545,7 @@ nautilus_window_initialize_go_menu (NautilusWindow *window)
 			   	               GTK_OBJECT (window));
 	 
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
-					       "theme_changed",
+					       "icons_changed",
 					       refresh_bookmarks_in_go_menu,
 					       GTK_OBJECT (window));
 
@@ -585,7 +592,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         /* Sign up to be notified of icon theme changes so Use Eazel Theme Icons
          * menu item will show correct toggle state. */        
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
-					       "theme_changed",
+					       "icons_changed",
 					       update_eazel_theme_menu_item,
 					       GTK_OBJECT (window));	
 
@@ -669,14 +676,49 @@ refresh_bookmarks_in_go_menu (NautilusWindow *window)
 	}	
 }
 
+/**
+ * nautilus_bonobo_ui_handler_menu_item_toggle_appearance
+ * 
+ * Changes a toggleable bonobo menu item's apparent state
+ * without invoking its callback.
+ * 
+ * @uih: The BonoboUIHandler for this menu item.
+ * @path: The standard bonobo-style path specifier for this menu item.
+ * @new_value: TRUE if item should appear checked (on), FALSE otherwise.
+ */
+/* FIXME: This doesn't belong here long-term. Need to determine whether
+ * it belongs in bonobo (or whether bonobo_ui_handler_menu_set_toggle_state
+ * should change to behave like this). If not in bonobo, this should be
+ * moved somewhere in libnautilus.
+ */
+static void
+nautilus_bonobo_ui_handler_menu_set_toggle_appearance (BonoboUIHandler *uih,
+				      	   		    const char *path,
+				      	   		    gboolean new_value)
+{
+	BonoboUIHandlerCallbackFunc saved_callback;
+	gpointer saved_callback_data;
+
+	/* Temporarily clear out callback and data so when we
+	 * set the toggle state the callback isn't called. 
+	 */
+	bonobo_ui_handler_menu_get_callback (uih, path, &saved_callback, &saved_callback_data);
+	bonobo_ui_handler_menu_set_callback (uih, path, NULL, NULL);
+        bonobo_ui_handler_menu_set_toggle_state (uih, path, new_value);
+	bonobo_ui_handler_menu_set_callback (uih, path, saved_callback, saved_callback_data);		
+}
+
 static void 
 update_eazel_theme_menu_item (NautilusWindow *window)
 {
         g_assert (NAUTILUS_IS_WINDOW (window));
 
-        bonobo_ui_handler_menu_set_toggle_state (
-                window->uih,
-                "/Settings/Use Eazel Theme Icons",
-                nautilus_eat_strcmp (nautilus_icon_factory_get_theme (), "eazel") == 0);
+	/* Change the state of the menu item without invoking our callback function. */
+	nautilus_bonobo_ui_handler_menu_set_toggle_appearance (
+		window->uih,
+		"/Settings/Use Eazel Theme Icons",
+		nautilus_eat_strcmp (nautilus_preferences_get_string (nautilus_preferences_get_global_preferences (),
+								      NAUTILUS_PREFERENCES_ICON_THEME), 
+				     "eazel") == 0);
 }
 

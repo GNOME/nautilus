@@ -74,7 +74,7 @@ typedef struct NautilusScalableIcon NautilusScalableIcon;
 /* Instead of a class declaration here, I will just document
  * the signals.
  *
- *	"theme_changed", no parameters
+ *	"icons_changed", no parameters
  */
 
 /* There's a single NautilusIconFactory object.
@@ -84,10 +84,6 @@ GtkObject *           nautilus_icon_factory_get                          (void);
 
 /* Relationship between zoom levels and icons sizes. */
 guint                 nautilus_get_icon_size_for_zoom_level              (NautilusZoomLevel      zoom_level);
-
-/* Switch themes. */
-char *                nautilus_icon_factory_get_theme                    (void);
-void                  nautilus_icon_factory_set_theme                    (const char            *theme_name);
 
 /* Choose the appropriate icon, but don't render it yet. */
 NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file            (NautilusFile          *file);

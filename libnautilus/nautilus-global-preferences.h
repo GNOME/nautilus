@@ -48,6 +48,7 @@ BEGIN_GNOME_DECLS
 
 /* Preferences not (currently?) displayed in dialog */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES	"/nautilus/icon_view/text_attribute_names"
+#define NAUTILUS_PREFERENCES_ICON_THEME				"/nautilus/preferences/icon_theme"
 
 enum
 {

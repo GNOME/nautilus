@@ -123,6 +123,13 @@ static NautilusPreferencesInfo global_preferences_static_info[] =
 		NAUTILUS_PREFERENCE_STRING,
 		"name|size|date_modified|type",
 		NULL
+	},
+	{
+		NAUTILUS_PREFERENCES_ICON_THEME,
+		"",	/* No caption since not currently displayed in preferences dialog */
+		NAUTILUS_PREFERENCE_STRING,
+		"default",
+		NULL
 	}
 };
 
