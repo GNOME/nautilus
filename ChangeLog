@@ -1,3 +1,18 @@
+2001-03-08  Darin Adler  <darin@eazel.com>
+
+	Merge from HEAD:
+
+	2001-03-08  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed and checked in by: Darin Adler <darin@eazel.com>
+
+	Fix bug 7549 - Should block bookman and symbols fonts in older
+	RedHat systems
+	
+	* libnautilus-extensions/nautilus-font-picker.c:
+	Add 2 more fonts to the black list.  There were already in the
+	list, but older RedHat systems name these fonts differently.
+
 2001-03-08  Pavel Cisler  <pavel@eazel.com>
 
 	Merge from HEAD:

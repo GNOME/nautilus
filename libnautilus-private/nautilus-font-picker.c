@@ -60,12 +60,14 @@ typedef struct {
  */
 static const char *black_listed_font_families[] = {
 	"Bookman",
+	"Bookman L",
 	"Webdings",
 	"Wingdings",
 	"OCR",
 	"Zapf Dingbats",
 	"Dingbats",
 	"Symbol",
+	"Standard Symbols L"
 	"cursor",
 	"mincho",
 	"gothic",
