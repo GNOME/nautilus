@@ -29,6 +29,8 @@
 
 #include "gnome-icon-container-private.h"
 #include "gnome-icon-container-dnd.h"
+void canvas_item_make_pixmap(GnomeCanvasItem *item, GdkPixmap **item_pixmap, GdkBitmap **item_mask);
+
 struct _DndSelectionItem {
 	gchar *uri;
 	gint x, y;
@@ -637,6 +639,30 @@ gnome_icon_container_dnd_fini (GnomeIconContainer *container)
 	g_free (dnd_info);
 }
 
+/* utility routine to render a canvas item.  This should probably go elsewhere */
+
+
+void canvas_item_make_pixmap(GnomeCanvasItem *item, GdkPixmap **item_pixmap, GdkBitmap **item_mask)
+	{
+	gint x_offset, y_offset;
+	GtkObject *object = (GtkObject*) item;
+	GnomeCanvasItemClass *item_class = (GnomeCanvasItemClass*) object->klass;
+	GtkWidget *widget = (GtkWidget*) item->canvas;
+	gint pix_width = item->x2 - item->x1;
+	gint pix_height = item->y2 - item->y1;
+	GdkPixmap* result_pixmap = gdk_pixmap_new(widget->window, pix_width, pix_height, -1);
+	
+	x_offset =  item->x1;
+	y_offset =  item->y1;
+    gdk_draw_rectangle (result_pixmap, widget->style->white_gc, TRUE, 0, 0, pix_width, pix_height);	
+
+	(*item_class->draw) (item, result_pixmap, x_offset, y_offset, pix_width, pix_height);
+	*item_pixmap = result_pixmap;
+
+	/* how to deal with the mask?  don't for now */
+	*item_mask = NULL;
+	}
+
 void
 gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 				     GdkDragAction actions,
@@ -648,6 +674,8 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 	GdkDragContext *context;
 	GnomeCanvasItem *pixbuf_item;
 	GdkPixbuf* temp_pixbuf;
+	GdkPixmap* pixmap_for_dragged_file;
+	GdkBitmap* mask_for_dragged_file;
 	
 	g_return_if_fail (container != NULL);
 	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
@@ -666,17 +694,17 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 			actions,
 			button,
 			(GdkEvent *) event);
-   
-   /* fetch the pixbuf associated with the icon */
-   pixbuf_item = container->priv->drag_icon->image_item;
-   pixbuf_args[0].name = "GnomeCanvasPixbuf::pixbuf";
-   gtk_object_getv(GTK_OBJECT(pixbuf_item), 1, pixbuf_args);
-   
-   /* render the pixbuf into a pixmap and mask */
-   
-   /* set the image for dragging 
-   gtk_drag_set_icon_pixmap(context, gtk_widget_get_colormap(GTK_WIDGET(container)), pixmap_for_dragged_file, mask_for_dragged_file, 0 , 0);
-   */
+    
+   /* disable the following code until we get the mask working properly */
+   return;
+     
+   /* set up the image for dragging */
+
+   pixbuf_item = (GnomeCanvasItem*) container->priv->drag_icon->item; 
+   canvas_item_make_pixmap(pixbuf_item, &pixmap_for_dragged_file, &mask_for_dragged_file);
+      
+   /* set the image for dragging */
+   gtk_drag_set_icon_pixmap(context, gtk_widget_get_colormap(GTK_WIDGET(container)), pixmap_for_dragged_file, mask_for_dragged_file, event->x - pixbuf_item->x1 , event->y - pixbuf_item->y1);
 }
 
 void
