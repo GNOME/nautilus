@@ -2469,7 +2469,13 @@ item_event_cb (GnomeCanvasItem *item,
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
 	case GDK_2BUTTON_PRESS:
-		return handle_icon_button_press (container, icon, &event->button);
+		if (handle_icon_button_press (container, icon, &event->button)) {
+			/* Stop the event from being passed along further. Returning
+			 * TRUE ain't enough. 
+			 */
+    			gtk_signal_emit_stop_by_name (GTK_OBJECT (item), "event");
+			return TRUE;
+		}
 	default:
 		return FALSE;
 	}

@@ -1,3 +1,11 @@
+2000-03-14  John Sullivan  <sullivan@eazel.com>
+
+        Fixed bug introduced in last checkin where two popup
+        menus appear if you right-click on an icon.
+
+        * libnautilus/gnome-icon-container.c: (item_event_cb):
+        Explicitly stop signal emission when button press is handled.
+
 2000-03-13  John Sullivan  <sullivan@eazel.com>
 
 	Cleanup of "icon selected for keyboard input" code and
