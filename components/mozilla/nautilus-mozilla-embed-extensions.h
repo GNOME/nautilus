@@ -35,17 +35,21 @@
 extern "C" {
 #endif /* __cplusplus */
 
-gboolean mozilla_charset_set_encoding             (GtkMozEmbed       *mozilla_embed,
-						   const char        *encoding);
-guint    mozilla_charset_get_num_encodings        (const GtkMozEmbed *mozilla_embed);
-char *   mozilla_charset_get_nth_encoding         (const GtkMozEmbed *mozilla_embed,
-						   guint              n);
-char *   mozilla_charset_get_nth_encoding_title   (const GtkMozEmbed *mozilla_embed,
-						   guint              n);
-char *   mozilla_charset_find_encoding_group      (const GtkMozEmbed *mozilla_embed,
-						   const char        *encoding);
-int      mozilla_charset_get_encoding_group_index (const GtkMozEmbed *mozilla_embed,
-						   const char        *encoding_group);
+gboolean mozilla_charset_set_encoding                      (GtkMozEmbed       *mozilla_embed,
+							    const char        *encoding);
+guint    mozilla_charset_get_num_encodings                 (const GtkMozEmbed *mozilla_embed);
+char *   mozilla_charset_get_nth_encoding                  (const GtkMozEmbed *mozilla_embed,
+							    guint              n);
+char *   mozilla_charset_get_nth_encoding_title            (const GtkMozEmbed *mozilla_embed,
+							    guint              n);
+char *   mozilla_charset_get_nth_translated_encoding_title (const GtkMozEmbed *mozilla_embed,
+							    guint              n);
+char *   mozilla_charset_find_encoding_group               (const GtkMozEmbed *mozilla_embed,
+							    const char        *encoding);
+char *   mozilla_charset_encoding_group_get_translated     (const GtkMozEmbed *mozilla_embed,
+							    const char        *encoding);
+int      mozilla_charset_get_encoding_group_index          (const GtkMozEmbed *mozilla_embed,
+							    const char        *encoding_group);
 
 #ifdef __cplusplus
 }

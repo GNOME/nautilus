@@ -1,6 +1,7 @@
 include $(top_srcdir)/Makefile.shared
 
 INCLUDES = \
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DPREFIX=\"$(prefix)\" \
 	-DG_LOG_DOMAIN=\"Nautilus-Mozilla\" \
 	-DDATADIR=\"$(datadir)\" \
@@ -21,22 +22,24 @@ bin_PROGRAMS =\
 	$(NULL)
 
 nautilus_mozilla_content_view_SOURCES = \
+	bonobo-extensions.c \
 	main.c \
 	mozilla-components.cpp \
 	mozilla-events.cpp \
 	mozilla-preferences.cpp \
-	nautilus-mozilla-embed-extensions.cpp \
 	nautilus-mozilla-content-view.c \
-	bonobo-extensions.c \
+	nautilus-mozilla-embed-extensions.cpp \
+	nautilus-mozilla-encoding-tables.c \
 	$(NULL)
 
 noinst_HEADERS =\
+	bonobo-extensions.h \
 	mozilla-components.h \
 	mozilla-events.h \
 	mozilla-preferences.h \
-	nautilus-mozilla-embed-extensions.h \
 	nautilus-mozilla-content-view.h \
-	bonobo-extensions.h \
+	nautilus-mozilla-embed-extensions.h \
+	nautilus-mozilla-encoding-tables.h \
 	$(NULL)
 
 nautilus_mozilla_content_view_LDADD = \

@@ -533,34 +533,36 @@ encoding_menu_data_free_cover (gpointer callback_data)
 	g_free (data->encoding);
 }
 
-
 static void
 mozilla_view_create_charset_encoding_submenu (NautilusMozillaContentView *mozilla_view)
 {
-	GList *node = NULL;
-	GList *groups = NULL;
+ 	GList *node = NULL;
+ 	GList *groups = NULL;
 	guint num_encodings;
-	guint i;
-	guint menu_index = 0;
+ 	guint i;
+ 	guint menu_index = 0;
+	const GtkMozEmbed *mozilla;
 	
 	g_return_if_fail (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (mozilla_view));
 	g_return_if_fail (BONOBO_IS_UI_COMPONENT (mozilla_view->details->ui));
 	g_return_if_fail (GTK_IS_MOZ_EMBED (mozilla_view->details->mozilla));
+
+	mozilla = mozilla_view->details->mozilla;
 	
-	num_encodings = mozilla_charset_get_num_encodings (mozilla_view->details->mozilla);
-	
+	num_encodings = mozilla_charset_get_num_encodings (mozilla);
+
 	/* Collect the list of encoding groups */
 	for (i = 0; i < num_encodings; i++) {
 		char *encoding_title;
 		char *encoding_group;
 		
-		encoding_title = mozilla_charset_get_nth_encoding_title (mozilla_view->details->mozilla, i);
-		encoding_group = mozilla_charset_find_encoding_group (mozilla_view->details->mozilla,
+		encoding_title = mozilla_charset_get_nth_encoding_title (mozilla, i);
+		encoding_group = mozilla_charset_find_encoding_group (mozilla,
 								      encoding_title);
 		
 		/* Add new encodings to the list only once */
 		if (encoding_group != NULL) {
-			if (!g_list_find_custom	(groups, encoding_group, (GCompareFunc) g_strcasecmp)) {
+			if (!g_list_find_custom	(groups, encoding_group, (GCompareFunc) strcoll)) {
 				groups = g_list_append (groups, encoding_group);
 			}
 		}
@@ -571,28 +573,34 @@ mozilla_view_create_charset_encoding_submenu (NautilusMozillaContentView *mozill
 	/* Create the encoding group submenus */
 	node = groups;
 	while (node) {
+		char *translated_encoding_group;
 		char *encoding_group;
-		char *encoded_encoding_group;
+		char *escaped_encoding_group;
 		char *path;
 		g_assert (node->data != NULL);
 		encoding_group = node->data;
-		encoded_encoding_group = bonobo_ui_util_encode_str (encoding_group);
+
+		translated_encoding_group = mozilla_charset_encoding_group_get_translated (mozilla,
+											   encoding_group);
+		g_assert (translated_encoding_group != NULL);
+		escaped_encoding_group = bonobo_ui_util_encode_str (encoding_group);
 		
-		/* From now onwards we use the groups list to store indeces of items */
+		/* HACK: From now onwards we use the groups list to store indeces of items */
 		node->data = GINT_TO_POINTER (0);
 		
 		nautilus_bonobo_add_submenu (mozilla_view->details->ui,
 					     MENU_VIEW_CHARSET_ENCODING_PATH,
-					     encoded_encoding_group);
-		path = g_strdup_printf ("%s/%s", MENU_VIEW_CHARSET_ENCODING_PATH, encoded_encoding_group);
+					     escaped_encoding_group);
+		path = g_strdup_printf ("%s/%s", MENU_VIEW_CHARSET_ENCODING_PATH, escaped_encoding_group);
 		nautilus_bonobo_set_label (mozilla_view->details->ui,
 					   path,
-					   encoding_group);
+					   translated_encoding_group);
 		g_free (path);
-		
+
 		node = node->next;
+		g_free (translated_encoding_group);
+		g_free (escaped_encoding_group);
 		g_free (encoding_group);
-		g_free (encoded_encoding_group);
 	}
 	
 	/* We start adding items to the root submenu right after the last encoding group submenu */
@@ -605,6 +613,7 @@ mozilla_view_create_charset_encoding_submenu (NautilusMozillaContentView *mozill
 	for (i = 0; i < num_encodings; i++) {
 		char *encoding;
 		char *encoding_title;
+		char *translated_encoding_title;
 		char *encoding_group;
 		char *ui_path;
 		char *verb_name;
@@ -612,19 +621,20 @@ mozilla_view_create_charset_encoding_submenu (NautilusMozillaContentView *mozill
 		char *new_item_path;
 		guint new_item_index;
 		
-		encoding = mozilla_charset_get_nth_encoding (mozilla_view->details->mozilla, i);
-		encoding_title = mozilla_charset_get_nth_encoding_title (mozilla_view->details->mozilla, i);
-		encoding_group = mozilla_charset_find_encoding_group (mozilla_view->details->mozilla,
+		encoding = mozilla_charset_get_nth_encoding (mozilla, i);
+		encoding_title = mozilla_charset_get_nth_encoding_title (mozilla, i);
+		encoding_group = mozilla_charset_find_encoding_group (mozilla,
 								      encoding_title);
-		
+		translated_encoding_title = mozilla_charset_get_nth_translated_encoding_title (mozilla, i);
+
 		/* Add item to an existing encoding group submenu */
 		if (encoding_group != NULL) {
 			int enconding_group_index;
 			GList *nth_node;
-			char *encoded_encoding_group;
+			char *escaped_encoding_group;
 
-			enconding_group_index = mozilla_charset_get_encoding_group_index (mozilla_view->details->mozilla,
-												  encoding_group);
+			enconding_group_index = mozilla_charset_get_encoding_group_index (mozilla,
+											  encoding_group);
 			g_assert (enconding_group_index >= 0);
 			g_assert ((guint) enconding_group_index < g_list_length (groups));
 			
@@ -632,12 +642,13 @@ mozilla_view_create_charset_encoding_submenu (NautilusMozillaContentView *mozill
 			g_assert (nth_node != NULL);
 
 			
-			encoded_encoding_group = bonobo_ui_util_encode_str (encoding_group);
+			escaped_encoding_group = bonobo_ui_util_encode_str (encoding_group);
 			
-			new_item_path = g_strdup_printf ("%s/%s", MENU_VIEW_CHARSET_ENCODING_PATH, encoded_encoding_group);
+			new_item_path = g_strdup_printf ("%s/%s", MENU_VIEW_CHARSET_ENCODING_PATH,
+							 escaped_encoding_group);
 			new_item_index = GPOINTER_TO_INT (nth_node->data);
 
-			g_free (encoded_encoding_group);
+			g_free (escaped_encoding_group);
 			
 			/* Bump the child index */
 			nth_node->data = GINT_TO_POINTER (new_item_index + 1);
@@ -651,7 +662,7 @@ mozilla_view_create_charset_encoding_submenu (NautilusMozillaContentView *mozill
 		nautilus_bonobo_add_numbered_menu_item (mozilla_view->details->ui, 
 							new_item_path, 
 							new_item_index,
-							encoding_title,
+							translated_encoding_title,
 							NULL);
 		
 		/* Add the status tip */
@@ -661,7 +672,7 @@ mozilla_view_create_charset_encoding_submenu (NautilusMozillaContentView *mozill
 		/* NOTE: The encoding_title comes to us already localized */
 		nautilus_bonobo_set_tip (mozilla_view->details->ui,
 					 ui_path,
-					 encoding_title);
+					 translated_encoding_title);
 		g_free (ui_path);
 		
 		/* Add verb to new bookmark menu item */
@@ -683,6 +694,7 @@ mozilla_view_create_charset_encoding_submenu (NautilusMozillaContentView *mozill
 		
 		g_free (encoding);
 		g_free (encoding_title);
+		g_free (translated_encoding_title);
 		g_free (encoding_group);
 	}
 	

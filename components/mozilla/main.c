@@ -187,7 +187,13 @@ main (int argc, char *argv[])
 						    mozilla_make_object,
 						    NULL);
 	g_free (registration_id);
-	
+
+	/* Initialize gettext support */
+#ifdef ENABLE_NLS
+	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
+	textdomain (PACKAGE);
+#endif
+
 	gnome_vfs_init ();
 
 #ifdef EAZEL_SERVICES

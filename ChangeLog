@@ -1,3 +1,30 @@
+2001-02-22  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com> (Post Mortem)
+
+	Fix bug 6824 - Mozilla component charset encodings are not translated.
+	
+	* components/mozilla/Makefile.am:
+	Add new encoding tables sources.  Add GNOMELOCALEDIR define to
+	make gettext happy.
+	* components/mozilla/main.c: (main):
+	Add gettext binding setup.
+	
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_view_create_charset_encoding_submenu):
+	Use the translated strings for menu labels.
+
+	* components/mozilla/nautilus-mozilla-embed-extensions.h:
+	* components/mozilla/nautilus-mozilla-embed-extensions.cpp:
+	Simplified by using an stl vector instead of a GList.  Moved the
+	encoding tables to their own place.   Added functions for
+	obtaining the encoding titles and encoding groups as translated
+	strings.
+	
+	* components/mozilla/nautilus-mozilla-encoding-tables.h:
+	* components/mozilla/nautilus-mozilla-encoding-tables.c:
+	Moved the encoding tables to their own place.
+	
 2001-02-22  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

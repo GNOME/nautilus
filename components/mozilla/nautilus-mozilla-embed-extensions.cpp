@@ -28,6 +28,7 @@
 #include <config.h>
 
 #include "nautilus-mozilla-embed-extensions.h"
+#include "nautilus-mozilla-encoding-tables.h"
 #include "gtkmozembed_internal.h"
 
 #include <libgnome/gnome-defs.h>
@@ -40,189 +41,97 @@
 #include "nsIMarkupDocumentViewer.h"
 #include "nsICharsetConverterManager.h"
 #include "nsICharsetConverterManager2.h"
+#include <vector>
+#include <string>
 
-typedef struct
+struct Encoding
 {
-	char *encoding;
-	char *encoding_title;
-} Entry;
+	Encoding (const char *encoding,
+	      const char *encoding_title,
+	      const char *translated_encoding_title) :
+		m_encoding (encoding),
+		m_encoding_title (encoding_title),
+		m_translated_encoding_title (translated_encoding_title)
+	{
+	}
 
-typedef struct
-{
-	char *encoding_title;
-	char *translated_encoding_title;
-} TranslatedEncoding;
-
-static GList *encoding_entry_list = NULL;
+	string m_encoding;
+	string m_encoding_title;
+	string m_translated_encoding_title;
+};
 
 static nsIDocShell *mozilla_embed_get_primary_docshell                     (const GtkMozEmbed *mozilla_embed);
 static guint        translated_encoding_get_count                          (void);
 static const char * translated_encoding_peek_nth_encoding_title            (guint              n);
 static const char * translated_encoding_peek_nth_translated_encoding_title (guint              n);
+static const char * translated_encoding_peek_nth_translated_encoding_title (guint              n);
 static const char * translated_encoding_find_translated_title              (const char        *title);
-
 static guint        encoding_group_get_count                               (void);
-
 static char *       convert_ns_string_to_c_string                          (const              nsString &ns_string);
 
-static void
-encoding_entry_list_free_one_entry (gpointer data,
-				    gpointer user_data)
+static vector<Encoding>
+encoding_get_encoding_table (void)
 {
-	Entry *entry;
-	g_return_if_fail (data != NULL);
-	entry = static_cast<Entry *>(data);
-	g_free (entry->encoding);
-	g_free (entry->encoding_title);
-	g_free (entry);
-}
+	static vector<Encoding> empty_encodings;
+	static vector<Encoding> encodings;
 
-static void
-encoding_entry_list_free (void)
-{
-	if (encoding_entry_list == NULL) {
-		return;
+	if (encodings.size () > 0) {
+		return encodings;
 	}
-
-	g_list_foreach (encoding_entry_list, encoding_entry_list_free_one_entry, NULL);
-	g_list_free (encoding_entry_list);
-	encoding_entry_list = NULL;
-}
-
-static const Entry *
-encoding_entry_list_find_entry (const char *encoding_title)
-{
-	GList *node;
-	const char *find;
-
-	node = encoding_entry_list;
-
-	while (node) {
-		const Entry *entry;
-		entry = static_cast<Entry *>(node->data);
-		g_assert (entry != NULL);
-
-		if (strcmp (entry->encoding_title, encoding_title) == 0) {
-			return entry;
-		}
-
-		node = node->next;
-	}
-
-	return NULL;
-}
-
-static const Entry *
-encoding_entry_list_peek_nth_entry (guint n)
-{
-	if (n >= g_list_length (encoding_entry_list)) {
-		return NULL;
-	}
-
-	return static_cast<Entry *>(g_list_nth_data (encoding_entry_list, n));
-}
-
-static guint
-encoding_entry_list_length (void)
-{
-	return g_list_length (encoding_entry_list);
-}
-
-static void
-encoding_entry_list_insert (const char *encoding,
-			    const char *encoding_title)
-{
-	Entry *entry;
-
-	g_return_if_fail (encoding != NULL);
-	g_return_if_fail (encoding[0] != '\0');
-	g_return_if_fail (encoding_title != NULL);
-	g_return_if_fail (encoding_title[0] != '\0');
-	g_return_if_fail (encoding_entry_list_find_entry (encoding_title) == NULL);
-
-	entry = g_new0 (Entry, 1);
-	entry->encoding = g_strdup (encoding);
-	entry->encoding_title = g_strdup (encoding_title);
-	encoding_entry_list = g_list_append (encoding_entry_list, entry);
-}
-
-static int
-compare_entry (const Entry *a,
-	       const Entry *b)
-{
-	g_return_val_if_fail (a != NULL, 1);
-	g_return_val_if_fail (b != NULL, 1);
-
-	return g_strcasecmp (a->encoding_title, b->encoding_title);
-}
-
-static void
-encoding_entry_list_populate_once (void)
-{
-	static gboolean populated = FALSE;
-
-	if (populated) {
-		return;
-	}
-
-	populated = TRUE;
-
 	nsresult rv;
-	PRUint32 cscount;
-	
-	nsCOMPtr<nsIAtom> docCharsetAtom;
 
-	nsCOMPtr<nsICharsetConverterManager2> ccm2 = do_GetService (NS_CHARSETCONVERTERMANAGER_CONTRACTID, &rv);
-	
-	g_return_if_fail (NS_SUCCEEDED (rv));
-	
-	nsCOMPtr <nsISupportsArray> cs_list;
+	nsCOMPtr<nsICharsetConverterManager2> charsetManager = 
+		do_GetService (NS_CHARSETCONVERTERMANAGER_CONTRACTID, &rv);
+	g_return_val_if_fail (NS_SUCCEEDED (rv), empty_encodings);
 
-	rv = ccm2->GetDecoderList(getter_AddRefs(cs_list));
+	nsCOMPtr <nsISupportsArray> decoderArray;
 
-	g_return_if_fail (NS_SUCCEEDED (rv));
-	
-	rv = cs_list->Count (&cscount);
-	g_assert (NS_SUCCEEDED (rv));
+	rv = charsetManager->GetDecoderList (getter_AddRefs (decoderArray));
+	g_return_val_if_fail (NS_SUCCEEDED (rv), empty_encodings);
 
-	for (PRUint32 i = 0; i < cscount; i++) {
-		nsCOMPtr<nsISupports> cssupports = (dont_AddRef)(cs_list->ElementAt(i));
-		nsCOMPtr<nsIAtom> csatom ( do_QueryInterface(cssupports) );
+	PRUint32 numDecoders;
+	rv = decoderArray->Count (&numDecoders);
+	g_return_val_if_fail (NS_SUCCEEDED (rv), empty_encodings);
 
-		nsString ns_charset;
-		rv = csatom->ToString (ns_charset);
-		g_assert (NS_SUCCEEDED (rv));
-		char *charset = convert_ns_string_to_c_string (ns_charset);
+	for (PRUint32 i = 0; i < numDecoders; i++) {
+		nsCOMPtr<nsISupports> decoder = (dont_AddRef) (decoderArray->ElementAt (i));
+		nsCOMPtr<nsIAtom> decoderAtom (do_QueryInterface (decoder));
+
+		nsString decoderName;
+		rv = decoderAtom->ToString (decoderName);
+		g_return_val_if_fail (NS_SUCCEEDED (rv), empty_encodings);
+
+		char *charset = convert_ns_string_to_c_string (decoderName);
 		g_assert (charset != NULL);
 
-		nsString ns_charset_title;
-		rv = ccm2->GetCharsetTitle2 (csatom, &ns_charset_title);
-		char *charset_title = NULL;
-		if (NS_SUCCEEDED (rv)) {
-			charset_title = convert_ns_string_to_c_string (ns_charset_title);
-		}
-		if (charset_title == NULL || charset_title[0] == '\0') {
-			g_free (charset_title);
-			charset_title = g_strdup (charset);
+
+		nsString decoderTitle;
+
+ 		rv = charsetManager->GetCharsetTitle2 (decoderAtom, &decoderTitle);
+ 		char *charset_title = NULL;
+
+ 		if (NS_SUCCEEDED (rv)) {
+ 			charset_title = convert_ns_string_to_c_string (decoderTitle);
+ 		}
+
+ 		if (charset_title == NULL || strlen (charset_title) <= 0) {
+ 			g_free (charset_title);
+ 			charset_title = g_strdup (charset);
 		}
 
-		const char *tmp = translated_encoding_find_translated_title (charset_title);
-		char *translated_charset_title;
+ 		const char *translated_charset_title = mozilla_encoding_table_find_translated (charset_title);
 
-		if (tmp && strlen (tmp) > 0) {
-			translated_charset_title = g_strdup (tmp);
-		} else {
-			translated_charset_title = g_strdup (charset_title);
+		if (translated_charset_title == NULL || strlen (translated_charset_title) <= 0) {
+			translated_charset_title = charset_title;
 		}
-		
- 		encoding_entry_list_insert (charset, translated_charset_title);
 
-		g_free (charset);
-		g_free (charset_title);
-		g_free (translated_charset_title);
+		encodings.push_back (Encoding (charset, charset_title, translated_charset_title));
+
+ 		g_free (charset);
+ 		g_free (charset_title);
 	}
 
-	encoding_entry_list = g_list_sort (encoding_entry_list, (GCompareFunc) compare_entry);
+	return encodings;
 }
 
 extern "C" guint
@@ -230,33 +139,45 @@ mozilla_charset_get_num_encodings (const GtkMozEmbed *mozilla_embed)
 {
 	g_return_val_if_fail (GTK_IS_MOZ_EMBED (mozilla_embed), 0);
 
-	encoding_entry_list_populate_once ();
+	vector<Encoding> encodings = encoding_get_encoding_table ();
 
-	return encoding_entry_list_length ();
+	return encodings.size ();
 }
 
 extern "C" char *
 mozilla_charset_get_nth_encoding (const GtkMozEmbed *mozilla_embed,
 				  guint n)
 {
-	g_return_val_if_fail (GTK_IS_MOZ_EMBED (mozilla_embed), NULL);
-	g_return_val_if_fail (n < mozilla_charset_get_num_encodings (mozilla_embed), NULL);
+ 	g_return_val_if_fail (GTK_IS_MOZ_EMBED (mozilla_embed), NULL);
+ 	g_return_val_if_fail (n < mozilla_charset_get_num_encodings (mozilla_embed), NULL);
 
-	const Entry *entry = encoding_entry_list_peek_nth_entry (n);
-	g_return_val_if_fail (entry != NULL, NULL);
-	return g_strdup (entry->encoding);
+	vector<Encoding> encodings = encoding_get_encoding_table ();
+
+	return g_strdup (encodings[n].m_encoding.c_str ());
 }
 
 extern "C" char *
 mozilla_charset_get_nth_encoding_title (const GtkMozEmbed *mozilla_embed,
 					guint n)
 {
-	g_return_val_if_fail (GTK_IS_MOZ_EMBED (mozilla_embed), NULL);
-	g_return_val_if_fail (n < mozilla_charset_get_num_encodings (mozilla_embed), NULL);
+ 	g_return_val_if_fail (GTK_IS_MOZ_EMBED (mozilla_embed), NULL);
+ 	g_return_val_if_fail (n < mozilla_charset_get_num_encodings (mozilla_embed), NULL);
 
-	const Entry *entry = encoding_entry_list_peek_nth_entry (n);
-	g_return_val_if_fail (entry != NULL, NULL);
-	return g_strdup (entry->encoding_title);
+	vector<Encoding> encodings = encoding_get_encoding_table ();
+
+	return g_strdup (encodings[n].m_encoding_title.c_str ());
+}
+
+extern "C" char *
+mozilla_charset_get_nth_translated_encoding_title (const GtkMozEmbed *mozilla_embed,
+						   guint n)
+{
+ 	g_return_val_if_fail (GTK_IS_MOZ_EMBED (mozilla_embed), NULL);
+ 	g_return_val_if_fail (n < mozilla_charset_get_num_encodings (mozilla_embed), NULL);
+
+	vector<Encoding> encodings = encoding_get_encoding_table ();
+
+	return g_strdup (encodings[n].m_translated_encoding_title.c_str ());
 }
 
 extern "C" gboolean
@@ -293,48 +214,6 @@ mozilla_charset_set_encoding (GtkMozEmbed *mozilla_embed,
 	return NS_SUCCEEDED (rv) ? TRUE : FALSE;
 }
 
-
-/* This nonsense is needed to get the allocators right */
-static char *
-convert_ns_string_to_c_string (const nsString & ns_string)
-{
-	char *c_string;
-	char *ns_c_string = ns_string.ToNewCString ();
-	
-	if (ns_c_string == NULL) {
-		return NULL;
-	}
-
-	c_string = g_strdup (ns_c_string);
-
-	nsMemory::Free (ns_c_string);
-
-	return c_string;
-}
-
-static char *encoding_groups[] =
-{
-	N_("Arabic"),
-	N_("Baltic"),
-	N_("Central European"),
-	N_("Chinese"),
-	N_("Cyrillic"),
-	N_("Greek"),
-	N_("Hebrew"),
-	N_("Japanese"), 
-	N_("Turkish"),
-	N_("Unicode"),
-	N_("UTF"),
-	N_("Vietnamese"),
-	N_("Western")
-};
-
-static guint
-encoding_group_get_count (void)
-{
-	return sizeof (encoding_groups) / sizeof ((encoding_groups)[0]);
-}
-
 extern "C" char *
 mozilla_charset_find_encoding_group (const GtkMozEmbed *mozilla_embed,
 				     const char *encoding)
@@ -344,14 +223,34 @@ mozilla_charset_find_encoding_group (const GtkMozEmbed *mozilla_embed,
 	g_return_val_if_fail (GTK_IS_MOZ_EMBED (mozilla_embed), NULL);
 	g_return_val_if_fail (encoding != NULL, NULL);
 
-	for (i = 0; i < encoding_group_get_count (); i++) {
-		const char *group = encoding_groups[i];
+	for (i = 0; i < mozilla_encoding_groups_table_get_count (); i++) {
+		const char *group = mozilla_encoding_groups_table_peek_nth (i);
 		char *find;
-
+		
 		find = strstr (encoding, group);
 		
 		if (find != NULL) {
 			return g_strdup (group);
+		}
+	}
+
+	return NULL;
+}
+
+extern "C" char *
+mozilla_charset_encoding_group_get_translated (const GtkMozEmbed *mozilla_embed,
+					       const char *encoding_group)
+{
+	guint i;
+
+	g_return_val_if_fail (GTK_IS_MOZ_EMBED (mozilla_embed), NULL);
+	g_return_val_if_fail (encoding_group != NULL, NULL);
+
+	for (i = 0; i < mozilla_encoding_groups_table_get_count (); i++) {
+		const char *group = mozilla_encoding_groups_table_peek_nth (i);
+
+		if (g_strcasecmp (encoding_group, group) == 0) {
+			return g_strdup (mozilla_encoding_groups_table_peek_nth_translated (i));
 		}
 	}
 
@@ -369,119 +268,15 @@ mozilla_charset_get_encoding_group_index (const GtkMozEmbed *mozilla_embed,
 	if (encoding_group == NULL) {
 		return -1;
 	}
-	for (i = 0; i < encoding_group_get_count (); i++) {
-		if (strcmp (encoding_groups[i], encoding_group) == 0) {
+	for (i = 0; i < mozilla_encoding_groups_table_get_count (); i++) {
+		const char *group = mozilla_encoding_groups_table_peek_nth (i);
+
+		if (g_strcasecmp (group, encoding_group) == 0) {
 			return i;
 		}
 	}
-
-	return -1;
-}
-
-static TranslatedEncoding translated_encodings[] =
-{
-	{ "Arabic (IBM-864)",			N_("Arabic (IBM-864)")},
-	{ "Arabic (ISO-8859-6)",		N_("Arabic (ISO-8859-6)")},
-	{ "Arabic (ISO-8859-6-E)",		N_("Arabic (ISO-8859-6-E)")},
-	{ "Arabic (ISO-8859-6-I)",		N_("Arabic (ISO-8859-6-I)")},
-	{ "Arabic (Windows-1256)",		N_("Arabic (Windows-1256)")},
-	{ "Armenian (ARMSCII-8)",		N_("Armenian (ARMSCII-8)")},
-	{ "Baltic (ISO-8859-13)",		N_("Baltic (ISO-8859-13)")},
-	{ "Baltic (ISO-8859-4)",		N_("Baltic (ISO-8859-4)")},
-	{ "Baltic (Windows-1257)",		N_("Baltic (Windows-1257)")},
-	{ "Celtic (ISO-8859-14)",		N_("Celtic (ISO-8859-14)")},
-	{ "Central European (IBM-852)",		N_("Central European (IBM-852)")},
-	{ "Central European (ISO-8859-2)",	N_("Central European (ISO-8859-2)")},
-	{ "Central European (MacCE)",		N_("Central European (MacCE)")},
-	{ "Central European (Windows-1250)",	N_("Central European (Windows-1250)")},
-	{ "Chinese Simplified (GB2312)",	N_("Chinese Simplified (GB2312)")},
-	{ "Chinese Simplified (GBK)",		N_("Chinese Simplified (GBK)")},
-	{ "Chinese Simplified (HZ)",		N_("Chinese Simplified (HZ)")},
-	{ "Chinese Traditional (Big5)",		N_("Chinese Traditional (Big5)")},
-	{ "Chinese Traditional (EUC-TW)",	N_("Chinese Traditional (EUC-TW)")},
-	{ "Croatian (MacCroatian)",		N_("Croatian (MacCroatian)")},
-	{ "Cyrillic (IBM-855)",			N_("Cyrillic (IBM-855)")},
-	{ "Cyrillic (ISO-8859-5)",		N_("Cyrillic (ISO-8859-5)")},
-	{ "Cyrillic (ISO-IR-111)",		N_("Cyrillic (ISO-IR-111)")},
-	{ "Cyrillic (KOI8-R)",			N_("Cyrillic (KOI8-R)")},
-	{ "Cyrillic (MacCyrillic)",		N_("Cyrillic (MacCyrillic)")},
-	{ "Cyrillic (Windows-1251)",		N_("Cyrillic (Windows-1251)")},
-	{ "Cyrillic/Russian (IBM-866)",		N_("Cyrillic/Russian (IBM-866)")},
-	{ "Cyrillic/Ukrainian (KOI8-U)",	N_("Cyrillic/Ukrainian (KOI8-U)")},
-	{ "Cyrillic/Ukrainian (MacUkrainian)",	N_("Cyrillic/Ukrainian (MacUkrainian)")},
-	{ "English (US-ASCII)",			N_("English (US-ASCII)")},
-	{ "Greek (ISO-8859-7)",			N_("Greek (ISO-8859-7)")},
-	{ "Greek (MacGreek)",			N_("Greek (MacGreek)")},
-	{ "Greek (Windows-1253)",		N_("Greek (Windows-1253)")},
-	{ "Hebrew (IBM-862)",			N_("Hebrew (IBM-862)")},
-	{ "Hebrew (ISO-8859-8-E)",		N_("Hebrew (ISO-8859-8-E)")},
-	{ "Hebrew (ISO-8859-8-I)",		N_("Hebrew (ISO-8859-8-I)")},
-	{ "Hebrew (Windows-1255)",		N_("Hebrew (Windows-1255)")},
-	{ "Icelandic (MacIcelandic)",		N_("Icelandic (MacIcelandic)")},
-	{ "Japanese (EUC-JP)",			N_("Japanese (EUC-JP)")},
-	{ "Japanese (ISO-2022-JP)",		N_("Japanese (ISO-2022-JP)")},
-	{ "Japanese (Shift_JIS)",		N_("Japanese (Shift_JIS)")},
-	{ "Korean (EUC-KR)",			N_("Korean (EUC-KR)")},
-	{ "Nordic (ISO-8859-10)",		N_("Nordic (ISO-8859-10)")},
-	{ "Romanian (MacRomanian)",		N_("Romanian (MacRomanian)")},
-	{ "South European (ISO-8859-3)",	N_("South European (ISO-8859-3)")},
-	{ "T.61-8bit",				N_("T.61-8bit")},
-	{ "Thai (TIS-620)",			N_("Thai (TIS-620)")},
-	{ "Turkish (IBM-857)",			N_("Turkish (IBM-857)")},
-	{ "Turkish (ISO-8859-9)",		N_("Turkish (ISO-8859-9)")},
-	{ "Turkish (MacTurkish)",		N_("Turkish (MacTurkish)")},
-	{ "Turkish (Windows-1254)",		N_("Turkish (Windows-1254)")},
-	{ "Unicode (UTF-7)",			N_("Unicode (UTF-7)")},
-	{ "Unicode (UTF-8)",			N_("Unicode (UTF-8)")},
-	{ "User Defined",			N_("User Defined")},
-	{ "UTF-16BE",				N_("UTF-16BE")},
-	{ "UTF-16LE",				N_("UTF-16LE")},
-	{ "UTF-32BE",				N_("UTF-32BE")},
-	{ "UTF-32LE",				N_("UTF-32LE")},
-	{ "Vietnamese (TCVN)",			N_("Vietnamese (TCVN)")},
-	{ "Vietnamese (VISCII)",		N_("Vietnamese (VISCII)")},
-	{ "Vietnamese (VPS)",			N_("Vietnamese (VPS)")},
-	{ "Vietnamese (Windows-1258)",		N_("Vietnamese (Windows-1258)")},
-	{ "Visual Hebrew (ISO-8859-8)",		N_("Visual Hebrew (ISO-8859-8)")},
-	{ "Western (IBM-850)",			N_("Western (IBM-850)")},
-	{ "Western (ISO-8859-1)",		N_("Western (ISO-8859-1)")},
-	{ "Western (ISO-8859-15)",		N_("Western (ISO-8859-15)")},
-	{ "Western (MacRoman)",			N_("Western (MacRoman)")},
-	{ "Western (Windows-1252)",		N_("Western (Windows-1252)")},
-	{ "windows-936",			N_("windows-936")},
-	{ "x-imap4-modified-utf7",		N_("x-imap4-modified-utf7")},
-	{ "x-u-escaped",			N_("x-u-escaped") }
-};
-
-static guint
-translated_encoding_get_count (void)
-{
-	return sizeof (translated_encodings) / sizeof ((translated_encodings)[0]);
-}
-
-static const char *
-translated_encoding_peek_nth_encoding_title (guint n)
-{
-	g_return_val_if_fail (n >= translated_encoding_get_count (), NULL);
-
-	return translated_encodings[n].encoding_title;
-}
-
-static const char *
-translated_encoding_find_translated_title (const char *title)
-{
-	g_return_val_if_fail (title != NULL, NULL);
-	g_return_val_if_fail (title[0] != '\0', NULL);
-
-	for (guint i = 0; i < translated_encoding_get_count (); i++) {
-		const char *encoding_title;
-		
-		if (g_strcasecmp (translated_encodings[i].encoding_title, title) == 0) {
-			return translated_encodings[i].translated_encoding_title;
-		}
-	}
 	
-	return NULL;
+	return -1;
 }
 
 /* FIXME: This is cut-n-pasted from mozilla-events.cpp */
@@ -513,3 +308,20 @@ mozilla_embed_get_primary_docshell (const GtkMozEmbed *mozilla_embed)
 	return doc_shell;
 }
 
+/* This nonsense is needed to get the allocators right */
+static char *
+convert_ns_string_to_c_string (const nsString & ns_string)
+{
+	char *c_string;
+	char *ns_c_string = ns_string.ToNewCString ();
+	
+	if (ns_c_string == NULL) {
+		return NULL;
+	}
+
+	c_string = g_strdup (ns_c_string);
+
+	nsMemory::Free (ns_c_string);
+
+	return c_string;
+}
