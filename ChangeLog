@@ -1,3 +1,27 @@
+2001-01-09  Mike Fleming  <mfleming@eazel.com>
+
+	Added dialogs as specified in:
+
+	3871 
+		Logging in to account that has not been activated
+		should produce activation instructions
+
+	3399
+		no bad passwd lockout dialog in Nautilus
+
+	Also, changed the way the "max login retries" condition was handled
+	(it previously wasn't) 
+
+	* components/services/summary/nautilus-view/nautilus-summary-callba
+	cks.c: (authn_cb_failed), (login_button_cb):
+	* components/services/summary/nautilus-view/nautilus-summary-dialog
+	s.c: (nautilus_summary_login_failure_dialog),
+	(generate_login_dialog):
+	* components/services/summary/nautilus-view/nautilus-summary-dialog
+	s.h:
+	* components/services/summary/nautilus-view/nautilus-summary-view-p
+	rivate.h:
+
 2001-01-09  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/nautilus-view/Nautilus_View_install.o

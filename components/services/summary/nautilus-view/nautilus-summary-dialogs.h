@@ -23,6 +23,9 @@
 #ifndef NAUTILUS_SUMMARY_DIALOGS_H
 #define NAUTILUS_SUMMARY_DIALOGS_H
 
+void	nautilus_summary_login_failure_dialog 	(NautilusSummaryView 		*view,
+						 const char 			*message);
+
 void	generate_error_dialog			(NautilusSummaryView		*view,
 						 const char			*message);
 void	generate_login_dialog			(NautilusSummaryView		*view);

@@ -60,6 +60,13 @@ static void		name_or_password_field_activated	(GtkWidget			*caption_table,
 								 int				active_entry,
 								 gpointer			user_data);
 
+void
+nautilus_summary_login_failure_dialog (NautilusSummaryView *view, const char *message)
+{
+	nautilus_error_dialog (message, 
+				        _("Eazel Service Login Error"), 
+				        get_window_from_summary_view (view));
+}
 
 void
 generate_error_dialog (NautilusSummaryView *view, const char *message)
@@ -127,15 +134,13 @@ generate_login_dialog (NautilusSummaryView	*view)
 			break;
 		case retry:
 			pixmap_name = "serv_dialog_alert.png";
-			message_text = _("Your user name or password were not correct, or you have not activated your account.  Please try again, or check your email for an account activation notice.");
-			break;
-		case fail:
-			pixmap_name = "serv_dialog_alert.png";
-			message_text = _("We're sorry, but your name and password are still not recognized.");
+			message_text = _("Your user name or password were not correct.  Please try again.");
 			break;
 		default:
-			pixmap_name = "serv_dialog_alert.png";
+			g_assert_not_reached();
+			pixmap_name = "big_services_icon.png";
 			message_text = _("Please log in to Eazel services");
+			break;
 	}
 
 	pixmap = create_image_widget (pixmap_name, DEFAULT_SUMMARY_BACKGROUND_COLOR);

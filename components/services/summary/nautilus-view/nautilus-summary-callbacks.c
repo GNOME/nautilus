@@ -55,6 +55,9 @@ static void	authn_cb_failed				(const EazelProxy_User		*user,
 							 CORBA_Environment		*ev);
 
 
+/* Be careful not to invoke another HTTP request; this call is
+ * invoked from a two-way CORBA call from ammonite
+ */
 static void
 authn_cb_succeeded (const EazelProxy_User *user, gpointer state, CORBA_Environment *ev)
 {
@@ -72,6 +75,9 @@ authn_cb_succeeded (const EazelProxy_User *user, gpointer state, CORBA_Environme
 	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 }
 
+/* Be careful not to invoke another HTTP request; this call is
+ * invoked from a two-way CORBA call from ammonite
+ */
 static void
 authn_cb_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *info, gpointer state, CORBA_Environment *ev)
 {
@@ -86,8 +92,39 @@ authn_cb_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *in
 	view->details->logged_in = FALSE;
 	
 	update_menu_items (view, FALSE);
-	
-	generate_login_dialog (view);
+
+	if (info && ( info->code == EAZELPROXY_AUTHN_FAIL_NETWORK
+	    || info->code == EAZELPROXY_AUTHN_FAIL_SERVER)) {
+		nautilus_summary_login_failure_dialog (view, _("I'm sorry, network problems are preventing you from connecting to Eazel Services."));
+		view->details->attempt_number = 0;
+		view->details->current_attempt = initial;
+	} else if (info && ( info->code == EAZELPROXY_AUTHN_FAIL_USER_NOT_ACTIVATED)) {
+		/* FIXME we really should use the services alert icon here, eh? */
+		nautilus_summary_login_failure_dialog (view, _("Your Eazel Service User Account has not yet been activated.\n\n"
+			    "You cannot log into Eazel Services until you have activated your account.\n\n"
+			    "Please check your email for activation instructions."));
+		view->details->attempt_number = 0;
+		view->details->current_attempt = initial;
+	} else if (info && ( info->code == EAZELPROXY_AUTHN_FAIL_USER_DISABLED)) {
+		/* FIXME we really should use the services alert icon here, eh? */
+		nautilus_summary_login_failure_dialog (view, _("Your Eazel Service User Account has been temporarily disabled.\n\n"
+			    "Please try again in a few minutes or contact Eazel Support if this continues."));
+		view->details->attempt_number = 0;
+		view->details->current_attempt = initial;
+	} else {
+		/* Most likely error: bad username or password */
+
+		view->details->attempt_number++;
+		if (view->details->attempt_number > 0 && view->details->attempt_number < 5) {
+			view->details->current_attempt = retry;
+			generate_login_dialog (view);
+		} else {
+			nautilus_summary_login_failure_dialog (view, _("We're sorry, but your name and password are still not recognized."));
+			view->details->attempt_number = 0;
+			view->details->current_attempt = initial;
+		}
+
+	}
 	
 	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 }
@@ -149,15 +186,6 @@ login_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 	}
 	
 	CORBA_exception_free (&ev);
-
-	view->details->attempt_number++;
-	if (view->details->attempt_number > 0 && view->details->attempt_number < 5) {
-		view->details->current_attempt = retry;
-	}	
-	else {
-		view->details->current_attempt = fail;
-	}
-
 }
 
 /* callback to handle the logout button.  Right now only does a simple redirect. */

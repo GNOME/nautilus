@@ -76,8 +76,7 @@ typedef enum {
 
 typedef enum {
 	initial,
-	retry,
-	fail,
+	retry
 } SummaryLoginAttemptType;
 
 
