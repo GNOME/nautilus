@@ -144,6 +144,7 @@ static NautilusIcon *get_first_selected_icon                        (NautilusIco
 static NautilusIcon *get_nth_selected_icon                          (NautilusIconContainer *container,
 								     int                    index);
 static gboolean      has_multiple_selection                         (NautilusIconContainer *container);
+static gboolean      has_selection                                  (NautilusIconContainer *container);
 static void          icon_destroy                                   (NautilusIconContainer *container,
 								     NautilusIcon          *icon);
 static void          end_renaming_mode                              (NautilusIconContainer *container,
@@ -3092,19 +3093,6 @@ button_release_event (GtkWidget *widget,
 		details->drag_button = 0;
 
 		switch (details->drag_state) {
-		case DRAG_STATE_MOVE_COPY_OR_MENU:
-			if (!details->drag_started) {
-				/* Right click, drag did not start,
-				 * show context menu.
-				 */
-				clear_drag_state (container);
-				g_signal_emit (container,
-						 signals[CONTEXT_CLICK_SELECTION], 0,
-						 event);
-				break;
-			}
-			/* fall through */
-
 		case DRAG_STATE_MOVE_OR_COPY:
 			if (!details->drag_started) {
 				nautilus_icon_container_did_not_drag (container, event);
@@ -3143,7 +3131,6 @@ motion_notify_event (GtkWidget *widget,
 
 	if (details->drag_button != 0) {
 		switch (details->drag_state) {
-		case DRAG_STATE_MOVE_COPY_OR_MENU:
 		case DRAG_STATE_MOVE_OR_COPY:
 			if (details->drag_started) {
 				break;
@@ -3341,13 +3328,21 @@ key_press_event (GtkWidget *widget,
 			undo_stretching (container);
 			handled = TRUE;
 			break;
-		case GDK_F10:
-			if (event->state & GDK_CONTROL_MASK) {
+		case GDK_F9:
+			if (event->state & GDK_SHIFT_MASK) {
 				handled = handle_popups (container, event,
 							 "context_click_background");
-			} else if (event->state & GDK_SHIFT_MASK) {
-				handled = handle_popups (container, event,
-							 "context_click_selection");
+			}
+			break;
+		case GDK_F10:
+			if (event->state & GDK_SHIFT_MASK) {
+				if (has_selection (container)) {
+					handled = handle_popups (container, event,
+								 "context_click_selection");
+				} else {
+					handled = handle_popups (container, event,
+								 "context_click_background");
+				}
 			}
 			break;
 		default:
@@ -3882,8 +3877,7 @@ handle_icon_button_press (NautilusIconContainer *container,
 		details->drag_icon = icon;
 		details->drag_x = event->x;
 		details->drag_y = event->y;
-		details->drag_state = event->button == DRAG_BUTTON
-			? DRAG_STATE_MOVE_OR_COPY : DRAG_STATE_MOVE_COPY_OR_MENU;
+		details->drag_state = DRAG_STATE_MOVE_OR_COPY;
 		details->drag_started = FALSE;
 
 		/* Check to see if this is a click on the stretch handles.
@@ -5004,6 +4998,12 @@ static gboolean
 has_multiple_selection (NautilusIconContainer *container)
 {
         return get_nth_selected_icon (container, 2) != NULL;
+}
+
+static gboolean
+has_selection (NautilusIconContainer *container)
+{
+        return get_nth_selected_icon (container, 1) != NULL;
 }
 
 /**

@@ -1,3 +1,22 @@
+2003-03-27  Alexander Larsson  <alexl@redhat.com>
+
+	* docs/key_mouse_navigation.txt:
+	Update keynav docs.
+	
+	* libnautilus-private/nautilus-icon-private.h:
+	* libnautilus-private/nautilus-icon-container.c:
+	(button_release_event), (motion_notify_event), (key_press_event),
+	(handle_icon_button_press), (has_multiple_selection),
+	(has_selection):
+	Don't do context menu on middle button.
+	Shift-F10 gives directory context menu if no selection
+	Change Ctrl-F10 to Shift-F9 to pop up directory context menu. Ctrl-F10 was
+	conflicting with Toolbar keynav.
+	
+	* src/nautilus-shell-ui.xml:
+	Remove Escape accelerator for escape. It was colliding with various
+	other uses of escape all over. Need to rethink this.
+
 2003-03-26  Christian Rose  <menthos@menthos.com>
 
 	* configure.in: Added "yi" to ALL_LINGUAS.

@@ -3,55 +3,63 @@ in the default Nautilus views in detail. This is useful as a a guide
 for people implementing a Nautilus view or something else that wants
 to have a feel that is compatible with Nautilus.
 
-Icon view:
-----------
+*********** Icon view ********************
 
 Keyboard:
 =========
 
+Navigation and selection:
+
 When the focus is on the icon view you can move the currently selected
 icon by using:
 
-arrow keys - moves one step in the direction
-tab - moves to the "next" icon in order (i.e. at the end of one row,
-      go to the first icon the next row)
-shift-tab - moves to the "previous" icon in order
-home - moves to the first icon
-end - moves to the last icon
+Arrow Keys - moves one step in the direction
+Tab        - moves to the "next" icon in order (i.e. at the end of one row,
+             go to the first icon the next row)
+Shift Tab  - moves to the "previous" icon in order
+Home       - moves to the first icon
+End        - moves to the last icon
   
 In order to allow multiple selection the above navigation keys can be
 combined with the Control key to move the keyboard focus without
-affecting the current selection.
+affecting the current selection. If you use normal movement (not using
+control) all the previously selected icons will be deselected.
 
-To select an icon position the keyboard focus on it and press
-ctlr-space. ctrl-space with no keyboard focus produces a keyboard
-focus at the first selected icon, or the first one if none are selected.
+If several icons are selected and there is no keyboard focus you press
+up or left will start navigating from the topmost leftmost icon, while
+pressing down or right will start from the bottommost rightmost
+icon. This works the same way if you hold down Control.
 
-In addition the following keyboard shortcuts are availible:
+To select or deselect an icon position the keyboard focus on it and
+press ctlr-space. ctrl-space with no keyboard focus produces a
+keyboard focus at the first selected icon, or the first one if none
+are selected.
+
+In manual layout (and especially, on the desktop) the keyboard arrow
+keys work in a slightly different way. To allow all icons to be
+reached the closest icon in the quadrant of the direction selected
+will be used as the "next" icon when navigating. 
+
+Other keyboard shortcuts:
 
 Return, Keypad Return - Activate the selected objects
 Space (without control) - Activate the selected objects
-Escape - Undo icon stretching
+Escape - Undo icon stretching if in progress
 
-alt left - go back
-alt right - go forward
-alt up - go up a directory
-alt down - enter directory / activate selection
+Alt Left - go back
+Alt Right - go forward
+Alt Up - go up a directory
+Alt Down - enter directory / activate selection
+
+Shift-F10 bring up context menu for selection, or the directory context menu if nothing is selected
+Shift-F9 bring up context menu for directory
 
 Other key presses are used for typeahead search
 
 In rename mode:
+
 Escape - Cancel rename
 Return, Keypad Return - Finish rename
-
-TODO:
-Add text about which icon is used for selection/keyboard focus when
-there is none and e.g. arrow keys are pressed.
-
-BUGS:
-I can't seem to get the context menu using the keyboard
-escape cancel rename doesn't seem to work
-escape to undo stretch doesn't seem to work
 
 Mouse:
 ======

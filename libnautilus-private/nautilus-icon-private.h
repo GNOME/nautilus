@@ -78,7 +78,6 @@ typedef struct {
 typedef enum {
 	DRAG_STATE_INITIAL,
 	DRAG_STATE_MOVE_OR_COPY,
-	DRAG_STATE_MOVE_COPY_OR_MENU,
 	DRAG_STATE_STRETCH
 } DragState;
 
