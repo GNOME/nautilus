@@ -1,3 +1,23 @@
+2002-03-30  Darin Adler  <darin@bentspoon.com>
+
+	Fixed security problem where we would write the metafile without
+	protecting against potential symbolic links.
+
+	* libnautilus-private/nautilus-metafile.c: (finalize): Update to
+	use more text URIs, and fewer GnomeVFSURI objects.
+	(construct_private_metafile_uri): Make a text URI, not a GnomeVFSURI.
+	(nautilus_metafile_set_directory_uri): Use text URIs, not GnomeVFSURIs,
+	for the locations of the public and private metafiles.
+	(metafile_get_file_uri): Much simplified to use text URIs.
+	(metafile_read_restart): Simplified to use text URIs.
+	(metafile_write_succeeded): Broke out this common code needed for
+	both local and async. success cases.
+	(metafile_write_success_close_callback): Call metafile_write_succeeded.
+	(metafile_write_local): New, does a metafile write safely using mkstemp
+	and rename. All synchronous, which should be OK most of the time.
+	(metafile_write_start): Use metafile_write_local for "file:" URLs and
+	the existing code for other URLs.
+
 2002-03-29  Jody Goldberg <jody@gnome.org>
 
 	* libnautilus-private/nautilus-program-chooser.c
