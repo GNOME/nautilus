@@ -54,6 +54,7 @@
 #include <gtk/gtkstock.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkvbox.h>
+#include <libegg/egg-screen-help.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnomeui/gnome-dialog.h>
@@ -68,7 +69,6 @@
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
-#include <libnautilus-private/egg-screen-help.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-view-identifier.h>
 #include <libnautilus/nautilus-undo.h>
@@ -2339,9 +2339,9 @@ help_button_callback (GtkWidget *widget, GtkWidget *property_window)
 	GError *error = NULL;
 	char *message;
 
-	egg_screen_help_display_desktop (
-		gtk_window_get_screen (GTK_WINDOW (property_window)),
-		NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-51", &error);
+	egg_help_display_desktop_on_screen (NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-51",
+					    gtk_window_get_screen (GTK_WINDOW (property_window)),
+&error);
 
 	if (error) {
 		message = g_strdup_printf (_("There was an error displaying help: \n%s"),

@@ -66,6 +66,7 @@
 #include <gtk/gtkradiobutton.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkviewport.h>
+#include <libegg/egg-screen-help.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-help.h>
@@ -84,7 +85,6 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-theme.h>
-#include <libnautilus-private/egg-screen-help.h>
 #include <math.h>
 #include <atk/atkrelationset.h>
 
@@ -1426,9 +1426,9 @@ help_button_callback (GtkWidget *widget, GtkWidget *property_browser)
 	GError *error = NULL;
 	GtkWidget *dialog;
 
-	egg_screen_help_display_desktop (
-		gtk_window_get_screen (GTK_WINDOW (property_browser)),
-		NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-50", &error);
+	egg_help_display_desktop_on_screen (
+		NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-50",
+		gtk_window_get_screen (GTK_WINDOW (property_browser)), &error);
 
 	if (error) {
 		dialog = gtk_message_dialog_new (GTK_WINDOW (property_browser),

@@ -7,25 +7,26 @@ bin_PROGRAMS=					\
 	nautilus-file-management-properties     \
 	nautilus-server-connect
 
-INCLUDES =\
-	-I$(top_srcdir) \
-	-I$(top_srcdir)/cut-n-paste-code/widgets/gimphwrapbox \
-	-I$(top_builddir)/libnautilus-private \
-	$(CORE_CFLAGS) \
-	-DDATADIR=\""$(datadir)"\" \
+INCLUDES =							\
+	-I$(top_srcdir) 					\
+	-I$(top_srcdir)/cut-n-paste-code/widgets/gimphwrapbox 	\
+	-I$(top_srcdir)/cut-n-paste-code			\
+	-I$(top_builddir)/libnautilus-private 			\
+	$(CORE_CFLAGS) 						\
+	-DDATADIR=\""$(datadir)"\" 				\
 	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
-	-DLIBDIR=\""$(libdir)"\" \
-	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
-	-DGLADEDIR=\""$(datadir)/nautilus/glade"\" \
-	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" \
-	-DPREFIX=\""$(prefix)"\" \
-	-DSYSCONFDIR=\""$(sysconfdir)"\" \
-	-DVERSION="\"$(VERSION)\"" \
-	-DG_DISABLE_DEPRECATED \
-	-DGDK_DISABLE_DEPRECATED \
-	-DGDK_PIXBUF_DISABLE_DEPRECATED \
-	-DGTK_DISABLE_DEPRECATED \
-	-DGNOME_DISABLE_DEPRECATED \
+	-DLIBDIR=\""$(libdir)"\" 				\
+	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 		\
+	-DGLADEDIR=\""$(datadir)/nautilus/glade"\" 		\
+	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" 	\
+	-DPREFIX=\""$(prefix)"\" 				\
+	-DSYSCONFDIR=\""$(sysconfdir)"\" 			\
+	-DVERSION="\"$(VERSION)\"" 				\
+	-DG_DISABLE_DEPRECATED 					\
+	-DGDK_DISABLE_DEPRECATED 				\
+	-DGDK_PIXBUF_DISABLE_DEPRECATED 			\
+	-DGTK_DISABLE_DEPRECATED 				\
+	-DGNOME_DISABLE_DEPRECATED 				\
 	$(NULL)
 
 LDADD =\

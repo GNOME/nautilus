@@ -151,19 +151,6 @@ static GMarkupParser parser = {start_element_handler, end_element_handler,
 			NULL,
 			error_handler};
 
-#if 0
-static void
-print_elapsed (struct timeval before, struct timeval after, const gchar *label)
-{
-	gdouble elapsed;
-
-	elapsed = after.tv_sec - before.tv_sec
-                + (after.tv_usec - before.tv_usec) / 1000000.0;
-
-	g_print ("%s:  %f elapsed.\n", label, elapsed);
-}
-#endif
-
 static gboolean
 egg_recent_model_string_match (const GSList *list, const gchar *str)
 {
@@ -689,20 +676,18 @@ egg_recent_model_monitor_cb (GnomeVFSMonitorHandle *handle,
 static void
 egg_recent_model_monitor (EggRecentModel *model, gboolean should_monitor)
 {
-	GnomeVFSResult res;
-
 	if (should_monitor && model->priv->monitor == NULL) {
 
-		res = gnome_vfs_monitor_add (&model->priv->monitor,
+		gnome_vfs_monitor_add (&model->priv->monitor,
 					     model->priv->path,
 					     GNOME_VFS_MONITOR_FILE,
 					     egg_recent_model_monitor_cb,
 					     model);
 
-		if (res != GNOME_VFS_OK)
-			g_warning ("Unable to monitor XML document.  Notification "
-				   "of changes in recent documents list will not be"
-				   "available.");
+		/* if the above fails, don't worry about it.
+		 * local notifications will still happen
+		 */
+
 	} else if (!should_monitor && model->priv->monitor != NULL) {
 		gnome_vfs_monitor_cancel (model->priv->monitor);
 		model->priv->monitor = NULL;
@@ -791,7 +776,7 @@ egg_recent_model_write (EggRecentModel *model, FILE *file, GList *list)
 		item = (EggRecentItem *)list->data;
 
 
-		uri = egg_recent_item_get_uri (item);
+		uri = egg_recent_item_get_uri_utf8 (item);
 		escaped_uri = g_markup_escape_text (uri,
 						    strlen (uri));
 		g_free (uri);
@@ -873,6 +858,9 @@ egg_recent_model_open_file (EggRecentModel *model)
 	
 	file = fopen (model->priv->path, "r+");
 	if (file == NULL) {
+		/* be paranoid */
+		umask (077);
+
 		file = fopen (model->priv->path, "w+");
 
 		g_return_val_if_fail (file != NULL, NULL);

@@ -24,7 +24,7 @@
 
 #include <config.h>
 #include "fm-list-model.h"
-#include <libnautilus-private/eggtreemultidnd.h>
+#include <libegg/eggtreemultidnd.h>
 
 #include <string.h>
 #include <eel/eel-gtk-macros.h>

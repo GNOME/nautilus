@@ -50,6 +50,7 @@
 #include <eel/eel-xml-extensions.h>
 #include <libxml/parser.h>
 #include <gtk/gtkmain.h>
+#include <libegg/egg-screen-help.h>
 #include <libgnome/gnome-help.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
@@ -62,7 +63,6 @@
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
-#include <libnautilus-private/egg-screen-help.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 
 #ifdef ENABLE_PROFILER
@@ -698,9 +698,9 @@ help_menu_nautilus_manual_callback (BonoboUIComponent *component,
 	error = NULL;
 	window = NAUTILUS_WINDOW (user_data);
 
-	egg_screen_help_display_desktop (
-		gtk_window_get_screen (GTK_WINDOW (window)),
-		NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-21", &error);
+	egg_help_display_desktop_on_screen (
+		NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-21",
+		gtk_window_get_screen (GTK_WINDOW (window)), &error);
 
 	if (error) {
 		dialog = gtk_message_dialog_new (GTK_WINDOW (window),

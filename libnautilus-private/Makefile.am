@@ -5,6 +5,7 @@ lib_LTLIBRARIES=libnautilus-private.la
 INCLUDES = 						\
 	-I$(top_srcdir) 				\
 	-I$(top_builddir) 				\
+	-I$(top_srcdir)/cut-n-paste-code		\
 	$(CORE_CFLAGS)					\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
 	-DDATADIR=\""$(datadir)"\" 			\
@@ -14,6 +15,7 @@ INCLUDES = 						\
 
 dependency_static_libs = \
         $(top_builddir)/cut-n-paste-code/widgets/gimphwrapbox/libgtkhwrapbox.la \
+	$(top_builddir)/cut-n-paste-code/libegg/libegg.la \
 	$(top_builddir)/libbackground/libbackground.la \
         $(NULL)
 
@@ -35,28 +37,9 @@ marshal_sources = \
 	nautilus-marshal-guts.c \
 	$(NULL)
 
-EGG_SCREEN_FILES =			\
-	egg-screen-exec.h	\
-	egg-screen-exec.c	\
-	egg-screen-url.h	\
-	egg-screen-url.c	\
-	egg-screen-help.h	\
-	egg-screen-help.c	\
-	$(NULL)
-
-EGG_RECENT_FILES =		\
-	egg-recent-model.c	\
-	egg-recent-model.h	\
-	egg-recent-item.c	\
-	egg-recent-item.h       \
-	egg-recent-vfs-utils.c  \
-	egg-recent-vfs-utils.h	\
-	$(NULL)
 
 libnautilus_private_la_SOURCES = \
 	$(nautilus_metafile_server_idl_sources)	\
-	eggtreemultidnd.c \
-	eggtreemultidnd.h \
 	nautilus-audio-player.c \
 	nautilus-audio-player.h \
 	nautilus-authn-manager.c \
@@ -184,8 +167,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-view-identifier.h \
 	nautilus-volume-monitor.c \
 	nautilus-volume-monitor.h \
-	$(EGG_SCREEN_FILES) \
-	$(EGG_RECENT_FILES) \
 	$(NULL)
 
 fsattributesdir = $(datadir)/nautilus
@@ -221,7 +202,6 @@ EXTRA_DIST = 				\
 	$(fsattributes_DATA)		\
 	nautilus-metafile-server.idl	\
 	nautilus-marshal.list		\
-	update-from-egg.sh		\
 	$(schema_DATA)			\
 	$(NULL)
 
@@ -234,9 +214,3 @@ CLEANFILES = \
 dist-hook:
 	cd $(distdir); rm -f $(CLEANFILES)
 
-EGG_SCREEN_DIR = $(srcdir)/../../libegg/libegg/screen-exec
-EGG_RECENT_DIR = $(srcdir)/../../libegg/libegg/recent-files
-
-regenerate-built-sources:
-	EGGFILES="$(EGG_SCREEN_FILES)" EGGDIR="$(EGG_SCREEN_DIR)" $(srcdir)/update-from-egg.sh
-	EGGFILES="$(EGG_RECENT_FILES)" EGGDIR="$(EGG_RECENT_DIR)" $(srcdir)/update-from-egg.sh

@@ -1,2 +1,2 @@
-SUBDIRS = widgets
+SUBDIRS = widgets libegg
 

@@ -1,4 +1,4 @@
-/* egg-screen-url.h
+/* egg-screen-help.h
  *
  * Copyright (C) 2002  Sun Microsystems Inc.
  *
@@ -20,25 +20,37 @@
  * Authors: Mark McLoughlin <mark@skynet.ie>
  */
 
-#ifndef __EGG_SCREEN_URL_H__
-#define __EGG_SCREEN_URL_H__
+#ifndef __EGG_SCREEN_HELP_H__
+#define __EGG_SCREEN_HELP_H__
 
+#include <glib.h>
 #include <gdk/gdk.h>
+#include <libgnome/gnome-program.h>
 
 G_BEGIN_DECLS
 
-/* Destined for libgnome.
- */
-gboolean egg_url_show_with_env (const char  *url,
-				char       **envp,
-				GError     **error);
-
 /* Destined for libgnomeui.
  */
-gboolean egg_screen_url_show   (GdkScreen   *screen,
-				const char  *url,
-				GError     **error);
+gboolean egg_help_display_on_screen             (const char    *file_name,
+						 const char    *link_id,
+						 GdkScreen     *screen,
+						 GError       **error);
+gboolean egg_help_display_with_doc_id_on_screen (GnomeProgram  *program,
+						 const char    *doc_id,
+						 const char    *file_name,
+						 const char    *link_id,
+						 GdkScreen     *screen,
+						 GError       **error);
+gboolean egg_help_display_desktop_on_screen     (GnomeProgram  *program,
+						 const char    *doc_id,
+						 const char    *file_name,
+						 const char    *link_id,
+						 GdkScreen     *screen,
+						 GError       **error);
+gboolean egg_help_display_uri_on_screen         (const char    *help_uri,
+						 GdkScreen     *screen,
+						 GError       **error);
 
 G_END_DECLS
 
-#endif /* __EGG_SCREEN_URL_H__ */
+#endif /* __EGG_SCREEN_HELP_H__ */
