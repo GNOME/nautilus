@@ -33,7 +33,7 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkimage.h>
 #include <gtk/gtklabel.h>
-#include <gtk/gtkmenuitem.h>
+#include <gtk/gtkimagemenuitem.h>
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkstock.h>
 #include <gtk/gtktogglebutton.h>
@@ -46,10 +46,10 @@ typedef struct {
 
 struct _NautilusSidePaneDetails {
 	GtkWidget *notebook;
-	
 	GtkWidget *menu;
-
+	
 	GtkWidget *title_label;
+	GtkWidget *current_image;
 	GList *panels;
 };
 
@@ -92,6 +92,28 @@ side_panel_free (SidePanel *panel)
 }
 
 static void
+update_current_image (NautilusSidePane *side_pane,
+		      SidePanel *panel)
+{
+	GtkWidget *image;
+
+	image = gtk_image_menu_item_get_image 
+		(GTK_IMAGE_MENU_ITEM (panel->menu_item));
+
+	if (image) {
+		gtk_image_set_from_pixbuf 
+			(GTK_IMAGE (side_pane->details->current_image),
+			 gtk_image_get_pixbuf (GTK_IMAGE (image)));
+		gtk_widget_show (side_pane->details->current_image);
+	} else {
+		gtk_image_set_from_pixbuf 
+			(GTK_IMAGE (side_pane->details->current_image),
+			 NULL);
+		gtk_widget_hide (side_pane->details->current_image);
+	}	
+}
+
+static void
 switch_page_callback (GtkWidget *notebook,
 		      GtkNotebookPage *page,
 		      guint page_num,
@@ -105,6 +127,11 @@ switch_page_callback (GtkWidget *notebook,
 	panel = panel_for_widget (side_pane,
 				  gtk_notebook_get_nth_page (GTK_NOTEBOOK (side_pane->details->notebook),
 							     page_num));
+
+	if (panel && side_pane->details->current_image) {
+		update_current_image (side_pane, panel);
+	}
+
 	if (panel && side_pane->details->title_label) {
 		gtk_label_set_text (GTK_LABEL (side_pane->details->title_label),
 				    panel->title);
@@ -266,6 +293,17 @@ menu_deactivate_callback (GtkWidget *widget,
 }
 
 static void
+menu_detach_callback (GtkWidget *widget,
+		      GtkMenu *menu)
+{
+	NautilusSidePane *side_pane;
+
+	side_pane = NAUTILUS_SIDE_PANE (widget);
+	
+	side_pane->details->menu = NULL;
+}
+
+static void
 nautilus_side_pane_init (GtkObject *object)
 {
 	NautilusSidePane *side_pane;
@@ -337,6 +375,13 @@ nautilus_side_pane_init (GtkObject *object)
 	
 	gtk_box_pack_end (GTK_BOX (hbox), close_button, FALSE, FALSE, 0);
 	
+	side_pane->details->current_image = gtk_image_new ();
+	eel_add_weak_pointer (&side_pane->details->current_image);
+	gtk_widget_show (side_pane->details->current_image);
+	gtk_box_pack_end (GTK_BOX (hbox), 
+			  side_pane->details->current_image,
+			  FALSE, FALSE, 0);
+
 	side_pane->details->notebook = gtk_notebook_new ();
 	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (side_pane->details->notebook), 
 				    FALSE);
@@ -359,6 +404,10 @@ nautilus_side_pane_init (GtkObject *object)
 			  "deactivate",
 			  G_CALLBACK (menu_deactivate_callback),
 			  select_button);
+	gtk_menu_attach_to_widget (GTK_MENU (side_pane->details->menu),
+				   GTK_WIDGET (side_pane),
+				   menu_detach_callback);
+	
 	gtk_widget_show (side_pane->details->menu);
 }
 
@@ -367,7 +416,12 @@ nautilus_side_pane_destroy (GtkObject *object)
 {
 	NautilusSidePane *side_pane;
 
-	side_pane = NAUTILUS_SIDE_PANE (object);	
+	side_pane = NAUTILUS_SIDE_PANE (object);
+
+	if (side_pane->details->menu) {
+		gtk_menu_detach (GTK_MENU (side_pane->details->menu));
+		side_pane->details->menu = NULL;
+	}
 
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -404,13 +458,19 @@ nautilus_side_pane_add_panel (NautilusSidePane *side_pane,
 {
 	SidePanel *panel;
 
+	g_return_if_fail (side_pane != NULL);
+	g_return_if_fail (NAUTILUS_IS_SIDE_PANE (side_pane));
+	g_return_if_fail (widget != NULL);
+	g_return_if_fail (GTK_IS_WIDGET (widget));
+	g_return_if_fail (title != NULL);
+
 	panel = g_new0 (SidePanel, 1);
 	panel->title = g_strdup (title);
 	panel->widget = widget;
 
 	gtk_widget_show (widget);	
 	
-	panel->menu_item = gtk_menu_item_new_with_label (title);
+	panel->menu_item = gtk_image_menu_item_new_with_label (title);
 	gtk_widget_show (panel->menu_item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (side_pane->details->menu),
 			       panel->menu_item);
@@ -436,6 +496,11 @@ nautilus_side_pane_remove_panel (NautilusSidePane *side_pane,
 	SidePanel *panel;
 	int page_num;
 
+	g_return_if_fail (side_pane != NULL);
+	g_return_if_fail (NAUTILUS_IS_SIDE_PANE (side_pane));
+	g_return_if_fail (widget != NULL);
+	g_return_if_fail (GTK_IS_WIDGET (widget));
+
 	panel = panel_for_widget (side_pane, widget);
 
 	g_return_if_fail (panel != NULL);
@@ -453,6 +518,36 @@ nautilus_side_pane_remove_panel (NautilusSidePane *side_pane,
 				       panel);
 
 		side_panel_free (panel);
+	}
+}
+
+void
+nautilus_side_pane_set_panel_image (NautilusSidePane *side_pane,
+				    GtkWidget *widget,
+				    GtkWidget *image)
+{
+	SidePanel *panel;
+	int current_page;
+
+	g_return_if_fail (side_pane != NULL);
+	g_return_if_fail (NAUTILUS_IS_SIDE_PANE (side_pane));
+	g_return_if_fail (widget != NULL);
+	g_return_if_fail (GTK_IS_WIDGET (widget));
+	g_return_if_fail (image == NULL || GTK_IS_IMAGE (image));
+
+	panel = panel_for_widget (side_pane, widget);
+	
+	g_return_if_fail (panel != NULL);
+	
+	if (panel) {
+		gtk_image_menu_item_set_image 
+			(GTK_IMAGE_MENU_ITEM (panel->menu_item), image);
+
+		current_page = gtk_notebook_get_current_page 
+			(GTK_NOTEBOOK (side_pane->details->notebook));
+		if (gtk_notebook_page_num (GTK_NOTEBOOK (side_pane->details->notebook), widget) == current_page) {
+			update_current_image (side_pane, panel);
+		}
 	}
 }
 

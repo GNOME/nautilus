@@ -1,5 +1,27 @@
 2002-09-22  Dave Camp  <dave@ximian.com>
 
+	* src/nautilus-side-pane.h:
+	* src/nautilus-side-pane.c: (menu_detach_callback),
+	(nautilus_side_pane_destroy), (nautilus_side_pane_init): Attach
+	and detach the menu widget.
+	(nautilus_side_pane_init), (update_current_image),
+	(switch_page_callback), (nautilus_side_pane_set_panel_image):
+	Allow the user to set images for each panel.
+	(nautilus_side_pane_add_panel), (nautilus_side_pane_remove_panel):
+	Added preconditions, use GtkImageMenuItem instead of GtkMenuItem
+	for panel menu items.
+	* src/nautilus-window-manage-views.c: (set_side_panel_image),
+	(side_panel_image_changed_callback), (connect_side_panel),
+	(view_loaded_callback): Listen to the "tab_image" property on side
+	panels, and update the side pane with the proper images.
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.c: (side_panel_set_open),
+	(side_pane_switch_page_callback),
+	(nautilus_window_set_up_sidebar): Set the "close" property of
+	panels as they are shown and hidden.
+
+2002-09-22  Dave Camp  <dave@ximian.com>
+
 	* src/nautilus-side-pane.h: 
 	* src/nautilus-side-pane.c: (switch_page_callback),
 	(nautilus_side_pane_class_init): Added a switch_page signal to the

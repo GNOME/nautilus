@@ -98,6 +98,7 @@ struct NautilusWindowDetails
 
         /* Side Pane */
         int side_pane_width;
+        GtkWidget *current_side_panel;
 };
 
 #define NAUTILUS_MENU_PATH_BACK_ITEM			"/menu/Go/Back"

@@ -33,9 +33,12 @@
 #include "nautilus-information-panel.h"
 #include "nautilus-location-bar.h"
 #include "nautilus-main.h"
+#include "nautilus-theme.h"
 #include "nautilus-window-private.h"
 #include "nautilus-zoom-control.h"
+#include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-ui-util.h>
+#include <bonobo/bonobo-property-bag-client.h>
 #include <eel/eel-accessibility.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-gdk-extensions.h>
@@ -1962,6 +1965,87 @@ title_changed_callback (NautilusViewFrame *view,
 }
 
 static void
+set_side_panel_image (NautilusWindow *window,
+                      NautilusViewFrame *side_panel,
+                      const char *image_name)
+{
+        GtkWidget *image;
+        char *image_path;
+
+        image = NULL;
+        
+        if (image_name && image_name[0]) {
+                image_path = nautilus_theme_get_image_path (image_name);
+                if (image_path) {
+                        image = gtk_image_new_from_file (image_path);
+                        gtk_widget_show (image);
+                        g_free (image_path);
+                }
+        }
+
+        nautilus_side_pane_set_panel_image (window->sidebar,
+                                            GTK_WIDGET (side_panel),
+                                            image);
+}
+
+static void
+side_panel_image_changed_callback (BonoboListener *listener,
+                                   const char *event_name,
+                                   const CORBA_any *arg,
+                                   CORBA_Environment *ev,
+                                   gpointer callback_data)
+{
+        NautilusViewFrame *side_panel;
+        NautilusWindow *window;
+
+        side_panel = NAUTILUS_VIEW_FRAME (callback_data);        
+        window = NAUTILUS_WINDOW (g_object_get_data (G_OBJECT (side_panel),
+                                                     "nautilus-window"));
+
+        set_side_panel_image (window, side_panel, BONOBO_ARG_GET_STRING (arg));
+}
+
+static void
+connect_side_panel (NautilusWindow *window,
+                    NautilusViewFrame *side_panel)
+{
+        Bonobo_Control control;
+        Bonobo_PropertyBag property_bag;
+        CORBA_Environment ev;
+        char *image_name;
+        
+        g_object_set_data (G_OBJECT (side_panel),
+                           "nautilus-window",
+                           window);
+        
+        control = nautilus_view_frame_get_control (side_panel);
+
+        if (control != CORBA_OBJECT_NIL) {
+                CORBA_exception_init (&ev);
+                property_bag = Bonobo_Control_getProperties (control, &ev);
+                if (property_bag != CORBA_OBJECT_NIL) {                        
+                        bonobo_event_source_client_add_listener 
+                                (property_bag,
+                                 side_panel_image_changed_callback,
+                                 "Bonobo/Property:change:tab_image",
+                                 NULL,
+                                 side_panel);
+                        
+                        /* Set the initial tab image */
+                        image_name = bonobo_property_bag_client_get_value_string
+                                (property_bag, 
+                                 "tab_image", 
+                                 NULL);
+                        set_side_panel_image (window, side_panel, image_name);
+                        g_free (image_name);
+                        
+                        bonobo_object_release_unref (property_bag, NULL);
+                }
+                CORBA_exception_free (&ev);
+        }
+}
+
+static void
 view_loaded_callback (NautilusViewFrame *view,
                       NautilusWindow *window)
 {
@@ -1980,6 +2064,11 @@ view_loaded_callback (NautilusViewFrame *view,
                                                        window->details->selection);
                 }
         }
+
+        if (view_frame_is_sidebar_panel (view)) {
+                connect_side_panel (window, view);
+        }
+
         if (window->details->title != NULL) {
                 nautilus_view_frame_title_changed (view, window->details->title);
         }

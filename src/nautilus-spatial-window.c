@@ -39,6 +39,7 @@
 #include "nautilus-window-manage-views.h"
 #include "nautilus-zoom-control.h"
 #include <bonobo/bonobo-exception.h>
+#include <bonobo/bonobo-property-bag-client.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-gdk-extensions.h>
@@ -586,6 +587,49 @@ setup_side_pane_width (NautilusWindow *window)
 }
 
 static void
+side_panel_set_open (GtkWidget *view,
+		     gboolean open)
+{
+	CORBA_Environment ev;
+	Bonobo_PropertyBag property_bag;
+	Bonobo_Control control;
+	
+	if (!view || !NAUTILUS_IS_VIEW_FRAME (view)) {
+		return;
+	}
+
+	control = nautilus_view_frame_get_control (NAUTILUS_VIEW_FRAME (view));
+	
+	if (control != CORBA_OBJECT_NIL) {
+		CORBA_exception_init (&ev);
+		property_bag = Bonobo_Control_getProperties (control, &ev);
+		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {
+			/* For some reason this was implemented as 'close'
+			 * before, but open seems more natural */
+			bonobo_property_bag_client_set_value_gboolean
+				(property_bag, "close", !open, &ev);
+			bonobo_object_release_unref (property_bag, NULL);
+		}
+	}
+}
+
+static void
+side_pane_switch_page_callback (NautilusSidePane *side_pane,
+				GtkWidget *panel,
+				NautilusWindow *window)
+{
+	if (window->details->current_side_panel) {
+		side_panel_set_open (window->details->current_side_panel, 
+				     FALSE);
+		eel_remove_weak_pointer (&window->details->current_side_panel);
+	}
+
+	side_panel_set_open (panel, TRUE);	
+	window->details->current_side_panel = panel;
+	eel_add_weak_pointer (&window->details->current_side_panel);
+}
+
+static void
 nautilus_window_set_up_sidebar (NautilusWindow *window)
 {
 	window->sidebar = nautilus_side_pane_new ();
@@ -593,6 +637,11 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
 	g_signal_connect (window->sidebar,
 			  "close_requested",
 			  G_CALLBACK (side_pane_close_requested_callback),
+			  window);
+
+	g_signal_connect (window->sidebar,
+			  "switch_page",
+			  G_CALLBACK (side_pane_switch_page_callback),
 			  window);
 
 	gtk_paned_pack1 (GTK_PANED (window->content_hbox),
