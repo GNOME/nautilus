@@ -308,7 +308,6 @@ static operand_criterion_item mod_time2_table [] = {
    -------------------------------------------------------
 */
 
-/* FIXME bugzilla.eazel.com 2369: not implemented in nautilus yet */
 static operand_criterion_item emblem2_table [] = {
         { "is_marked_with",
           N_("marked with \"%s\""),
@@ -368,7 +367,6 @@ static field_criterion_item main_table[] = {
         {"modified",
          N_(""),
          mod_time2_table},
-        /* FIXME bugzilla.eazel.com 2369: waiting for implementation */
         {"emblem",
          N_(""),
          emblem2_table},
