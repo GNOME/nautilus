@@ -36,10 +36,13 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 
+#include <liboaf/liboaf.h>
+
 #include <sys/types.h>
 #include <dirent.h>
 #include <limits.h>
 #include <ctype.h>
+#include <string.h>
 
 #include "ntl-types.h"
 
@@ -184,6 +187,54 @@ set_initial_content_iid (NautilusNavigationInfo *navinfo,
         g_free (remembered_value);
 }
 
+
+static char *nautilus_sort_criteria[4] = {
+        /* Prefer the html view most */
+        "iid == 'OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b'",
+        /* Prefer the icon view next */
+        "iid == 'OAFIID:ntl_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058'",
+        /* Prefer anything else over the sample view. */
+        "iid != 'OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae'",
+        NULL};
+
+static char *
+mime_type_get_supertype (const char *mime_type)
+{
+        char *slash_loc;
+        char *retval;
+
+        slash_loc = strchr (mime_type, '/');
+
+        g_assert (slash_loc != NULL);
+
+        retval = g_new0 (char, slash_loc - mime_type + 3);
+        
+        retval = strncpy (retval, mime_type, slash_loc - mime_type + 1);
+        retval [slash_loc-mime_type + 1] = '*';
+        retval [slash_loc-mime_type + 2] = '\0';
+
+        return retval;
+}
+
+
+static char *
+uri_string_get_scheme (const char *uri_string)
+{
+        char *colon_loc;
+        char *retval;
+
+        colon_loc = strchr (uri_string, ':');
+        g_assert (colon_loc != NULL);
+
+        retval = g_new0 (char, colon_loc - uri_string + 1);
+        
+        retval = strncpy (retval, uri_string, colon_loc - uri_string);
+        retval [colon_loc - uri_string] = '\0';
+
+        return retval;
+}
+
+
 static void
 my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                       GList *result_list,
@@ -194,8 +245,13 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
         NautilusNavigationInfo *navinfo;
         NautilusNavigationCallback notify_ready;
         gpointer notify_ready_data;
-        const char *fallback_iid;
         NautilusNavigationResult result_code;
+        const char *fallback_iid;
+        const char *mime_type;
+        char *mime_supertype;
+        char *uri_scheme;
+        const char *query;
+        OAF_ServerInfoList *oaf_result;
 
         g_assert (result_list != NULL);
         g_assert (result_list->data != NULL);
@@ -211,171 +267,130 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
         /* Get the content type. */
         file_result = result_list->data;
         vfs_result_code = file_result->result;
+
+        oaf_result = NULL;
+        query = NULL;
+
         if (vfs_result_code == GNOME_VFS_OK) {
-                navinfo->navinfo.content_type = g_strdup
-                        (gnome_vfs_file_info_get_mime_type (file_result->file_info));
+                /* FIXME: disgusting hack to make rpm view work. Why
+                   is the mime type not being detected properly in the
+                   first place? */
+
+                if (nautilus_str_has_suffix (navinfo->navinfo.requested_uri, ".rpm")) {
+                        navinfo->navinfo.content_type = g_strdup ("application/x-rpm");
+                } else {
+                        navinfo->navinfo.content_type = g_strdup
+                                (gnome_vfs_file_info_get_mime_type (file_result->file_info));
+                }
+
+                /* FIXME: hack for lack of good type descriptions. Can
+                   we remove this now? */
+
+
+                if (navinfo->navinfo.content_type == NULL) {
+                        navinfo->navinfo.content_type = g_strdup ("text/plain");
+                }
+
+
+                /* activate by scheme and mime type */
+
+                mime_type = navinfo->navinfo.content_type;
+                mime_supertype = mime_type_get_supertype (mime_type);
+                uri_scheme = uri_string_get_scheme (navinfo->navinfo.requested_uri);
+                query = g_strdup_printf 
+                        ("(repo_ids.has_all (['IDL:Bonobo/Control:1.0','IDL:Nautilus/ContentView:1.0'])"
+                         " OR (repo_ids.has_one (['IDL:Bonobo/Control:1.0','IDL:Bonobo/Embeddable:1.0'])"
+                         " AND repo_ids.has_one(['IDL:Bonobo/PersistStream:1.0', 'IDL:Bonobo/ProgressiveDataSink:1.0',"
+                         " 'IDL:Bonobo/PersistFile:1.0']))) AND (bonobo:supported_mime_types.defined()"
+                         " OR bonobo:supported_uri_schemes.defined ()) AND (NOT bonobo:supported_mime_types.defined()"
+                         " OR bonobo:supported_mime_types.has('%s') OR bonobo:supported_mime_types.has('%s') OR"
+                         " bonobo:supported_mime_types.has('*/*')) AND (NOT bonobo:supported_uri_schemes.defined()"
+                         " OR bonobo:supported_uri_schemes.has('%s') OR bonobo:supported_uri_schemes.has('*')) "
+                         " AND nautilus:view_as_name.defined()"
+                         /* FIXME: hack until music view is handled right. */
+                         " AND iid != 'OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391'"
+
+                         , mime_type, mime_supertype, uri_scheme);
+
+                g_free (mime_supertype);
+                g_free (uri_scheme);
+                
         } else if (vfs_result_code == GNOME_VFS_ERROR_NOTSUPPORTED
                    || vfs_result_code == GNOME_VFS_ERROR_INVALIDURI) {
-                /* Special scheme mapping stuff */
-                if (nautilus_str_has_prefix (navinfo->navinfo.requested_uri, "irc://")) {
-                        navinfo->navinfo.content_type = g_strdup ("special/x-irc-session");
+                /* Activate by scheme only */
+
+                uri_scheme = uri_string_get_scheme (navinfo->navinfo.requested_uri);
+
+                query = g_strdup_printf 
+                        ("(repo_ids.has_all(['IDL:Bonobo/Control:1.0','IDL:Nautilus/ContentView:1.0'])"
+                         " OR (repo_ids.has_one(['IDL:Bonobo/Control:1.0','IDL:Bonobo/Embeddable:1.0'])"
+                         " AND repo_ids.has('IDL:Bonobo/PersistFile:1.0'))) AND (bonobo:supported_uri_schemes.has('%s')"
+                         " OR bonobo:supported_uri_schemes.has('*')) AND (NOT bonobo:supported_mime_types.defined())"
+                         " AND nautilus:view_as_name.defined()", uri_scheme);
+                g_free (uri_scheme);
+        } 
+
+        if (query != NULL) {
+                CORBA_Environment ev;
+
+                CORBA_exception_init (&ev);
+
+                printf ("query: \"%s\"\n", query);
+
+                oaf_result = oaf_query (query, nautilus_sort_criteria, &ev);
+                
+                if (ev._major == CORBA_NO_EXCEPTION && oaf_result != NULL && oaf_result->_length > 0) {
+                        int i;
+                        OAF_ServerInfo *server;
+                        const char *iid = NULL;
+                        const char *view_as_name = NULL;
+                        
+                        CORBA_exception_free (&ev);
+                        
                         vfs_result_code = GNOME_VFS_OK;
-                } else if (nautilus_str_has_prefix (navinfo->navinfo.requested_uri, "eazel:")) {
-                        navinfo->navinfo.content_type = g_strdup ("special/eazel-service");
-                        vfs_result_code = GNOME_VFS_OK;
-                } else if (nautilus_str_has_prefix (navinfo->navinfo.requested_uri, "hardware:")) {
-                        navinfo->navinfo.content_type = g_strdup ("special/hardware");
-                        vfs_result_code = GNOME_VFS_OK;
-                /* FIXME bugzilla.eazel.com 522: 
-                 * This mozilla-hack should be short lived until http issues are solved 
-                 */
-                } else if (nautilus_str_has_prefix (navinfo->navinfo.requested_uri, "moz:")) {
-                        navinfo->navinfo.content_type = g_strdup ("special/mozilla-hack");
-                        vfs_result_code = GNOME_VFS_OK;
+                        
+                        for (i = 0; i < oaf_result->_length; i++) {
+                                server = &oaf_result->_buffer[i];
+                                iid = server->iid;
+                                /* FIXME MJS: need to pass proper set of languages as 
+                                   the last arg for i18 purposes */
+                                view_as_name = oaf_server_info_attr_lookup (server, "nautilus:view_as_name", NULL);
+                                if (view_as_name == NULL) {
+                                        view_as_name = oaf_server_info_attr_lookup (server, "name", NULL);
+                                }
+                                if (view_as_name == NULL) {
+                                        view_as_name = iid;
+                                }
+                                
+                                navinfo->content_identifiers = g_slist_append
+                                        (navinfo->content_identifiers, 
+                                         nautilus_view_identifier_new (iid, view_as_name));
+                        }
+                } else {
+                        result_code = NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE;
+                        CORBA_exception_free (&ev);
+                        goto out;
                 }
         }
-                        
+
         /* Map GnomeVFSResult to one of the types that Nautilus knows how to handle. */
         result_code = get_nautilus_navigation_result_from_gnome_vfs_result (vfs_result_code);
-  
+
         if (vfs_result_code != GNOME_VFS_OK) {
                 /* Leave navinfo intact so notify_ready function can access the uri.
                  * (notify_ready function is responsible for freeing navinfo).
                  */
                 goto out;
         }
-
-        /* Given a content type and a URI, what do we do? Basically the "expert system" below
-           tries to answer that question
-           
-           Check if the URI is in an abnormal scheme (e.g. one not supported by gnome-vfs)
-           If so
-             Lookup content views by scheme name, go.
-             Lookup meta views by scheme name, go.
-           
-           If not
-             Figure out content type.
-             Lookup content views by content type, go.
-             Lookup meta views by content type, go.
-           
-           The lookup-and-go process works like:
-             Generate a list of all possibilities ordered by quality.
-             Put possibilities on menu.
-           
-             Find if the user has specified any default(s) globally, modify selection.
-             Find if the user has specified any default(s) per-page, modify selection.
-        */
-        
-        /* This is just a hardcoded hack until OAF works with Bonobo.
-           In the future we will use OAF queries to determine this information. */
-        
-        if (navinfo->navinfo.content_type == NULL) {
-                navinfo->navinfo.content_type = g_strdup ("text/plain");
+               
+        if (navinfo->content_identifiers) {
+                fallback_iid = ((NautilusViewIdentifier *)
+                                (navinfo->content_identifiers->data))->iid;
+                printf ("XXX - fallback_iid: %s\n", fallback_iid);
         }
-        
-        if (strcmp (navinfo->navinfo.content_type, "text/html") == 0) {
-                fallback_iid = "OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b";
-                navinfo->content_identifiers = g_slist_append
-                        (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b", "Web Page"));
-                navinfo->content_identifiers = g_slist_append
-                        (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821", "Text"));
-        } else if (nautilus_str_has_prefix (navinfo->navinfo.content_type, "image/")) {
-                fallback_iid = "OAFIID:eog-image-viewer:f67c01c8-a44d-4c50-8ce1-dc893c961876";
-                navinfo->content_identifiers = g_slist_append
-                        (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("OAFIID:eog-image-viewer:f67c01c8-a44d-4c50-8ce1-dc893c961876", "Image"));
-        } else if (strcmp (navinfo->navinfo.content_type, "special/x-irc-session") == 0) {
-                fallback_iid = "xchat";
-                navinfo->content_identifiers = g_slist_append
-                        (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("xchat", "Chat room"));
-        } else if (strcmp(navinfo->navinfo.content_type, "special/directory") == 0
-                   || strcmp(navinfo->navinfo.content_type, "application/x-nautilus-vdir") == 0) {
-                fallback_iid = "OAFIID:ntl_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058";
-                navinfo->content_identifiers = g_slist_append
-                        (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("OAFIID:ntl_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058", "Icons"));
-                navinfo->content_identifiers = g_slist_append
-                        (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("OAFIID:ntl_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c", "List"));
+  
+        add_components_from_metadata (navinfo);
                 
-                /* besides the information in OAF/GConf, we also want to offer components that are specifically refered to in the metadata,
-                   so we ask the metadata for content views here and add them accordingly.  */      
-                
-                /* FIXME bugzilla.eazel.com 673:  
-                 * for now, we just do this for directories but it should apply to 
-                 * all places with available metadata 
-                 */
-                add_components_from_metadata (navinfo);
-        } else if (strcmp (navinfo->navinfo.content_type, "special/webdav-directory") == 0) {
-                fallback_iid = "OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b";
-                navinfo->content_identifiers = g_slist_append
-                        (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b", "Web Page"));
-                navinfo->content_identifiers = g_slist_append
-                        (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("OAFIID:ntl_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058", "Icons"));
-                navinfo->content_identifiers = g_slist_append
-                        (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("OAFIID:ntl_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c", "List"));
-                navinfo->content_identifiers = g_slist_append
-                        (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821", "Text"));
-                
-                /* besides the information in OAF/GConf, we also want to offer components that are specifically refered to in the metadata,
-                   so we ask the metadata for content views here and add them accordingly.  */      
-	   
-                /* FIXME bugzilla.eazel.com 673:  
-                 * for now, we just do this for directories but it should apply to 
-                 * all places with available metadata 
-                 */
-                add_components_from_metadata (navinfo);
-        } else if (strcmp (navinfo->navinfo.content_type, "application/x-rpm") == 0
-                 || nautilus_str_has_suffix (navinfo->navinfo.requested_uri, ".rpm")) {
-                fallback_iid = "OAFIID:nautilus_rpm_view:22ea002c-11e6-44fd-b13c-9445175a5e70";
-                navinfo->content_identifiers = g_slist_append
-                        (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("OAFIID:nautilus_rpm_view:22ea002c-11e6-44fd-b13c-9445175a5e70", 
-                                                       "Package"));      
-        } else if (strcmp(navinfo->navinfo.content_type, "special/eazel-service") == 0) {
-                fallback_iid = "OAFIID:nautilus_service_startup_view:a8f1b0ef-a39f-4f92-84bc-1704f0321a82";
-                navinfo->content_identifiers = g_slist_append
-                        (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("OAFIID:nautilus_service_startup_view:a8f1b0ef-a39f-4f92-84bc-1704f0321a82", "Service"));      
-        } else if (strcmp(navinfo->navinfo.content_type, "special/hardware") == 0) {
-                fallback_iid = "OAFIID:nautilus_hardware_view:20000422-2250";
-                navinfo->content_identifiers = g_slist_append
-                        (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("OAFIID:nautilus_hardware_view:20000422-2250", "Hardware"));      
-        /* FIXME bugzilla.eazel.com 522: 
-         * This mozilla-hack should be short lived until http issues are solved 
-         */
-        } else if (strcmp(navinfo->navinfo.content_type, "special/mozilla-hack") == 0) {
-                fallback_iid = "OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1";
-                navinfo->content_identifiers = g_slist_append
-                        (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1",
-                                                       "Mozilla"));
-        } else if (strcmp(navinfo->navinfo.content_type, "text/plain") == 0) {
-                fallback_iid = "OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821";
-                navinfo->content_identifiers = g_slist_append
-                        (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821", "Text"));
-        } else {
-                /* Can't display file; nothing registered to handle this file type. */
-                result_code = NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE;
-                goto out;
-        }
-        
-        /* FIXME bugzilla.eazel.com 674: 
-         * Should do this only when in some special testing mode or something. 
-         */
-        navinfo->content_identifiers = g_slist_append
-                (navinfo->content_identifiers, 
-                 nautilus_view_identifier_new ("OAFIID:nautilus_sample_content_view:45c746bd-7d64-4346-90d5-6410463b43ae", "Sample"));
-        
         add_meta_view_iids_from_preferences (navinfo);
         
         /* Now that all the content_identifiers are in place, we're ready to choose

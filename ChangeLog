@@ -1,3 +1,29 @@
+2000-04-27  Maciej Stachowiak  <mjs@eazel.com>
+
+	Fix bugzilla task #106:
+
+	* src/ntl-uri-map.c (mime_type_get_supertype,
+	uri_string_get_scheme): Helper functions for generating the
+	OAF queries.
+	(my_notify_when_ready): Replaced the hardcoded mess with calls to
+	a couple of OAF queries. This function still needs major
+	additional refactoring. I have also introduced some FIXMEs which
+	call attention to problems that were already there in the code in
+	most cases.
+
+	* components/hardware/nautilus-hardware-view.oafinfo,
+	components/help/hyperbola.oafinfo,
+	components/html/ntl-web-browser.oafinfo,
+	components/mozilla/nautilus-mozilla-content-view.oafinfo,
+	components/music/nautilus-music-view.oafinfo,
+	components/notes/ntl-notes.oafinfo,
+	components/rpmview/nautilus-rpm-view.oafinfo,
+	components/sample/nautilus-sample-content-view.oafinfo,
+	components/services/startup/nautilus-service-startup-view.oafinfo,
+	components/websearch/ntl-web-search.oafinfo, src/nautilus.oafinfo:
+	Added all relevant general, bonobo and nautilus properties to
+	content views; some to meta views.	
+
 2000-04-26  Andy Hertzfeld <andy@eazel.com>
 	
 	added an "About Nautilus" HTML file to the novice home directory
