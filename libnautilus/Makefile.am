@@ -5,7 +5,6 @@ lib_LTLIBRARIES=libnautilus.la
 INCLUDES=\
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
-	-I. \
 	$(NAUTILUS_DEPENDENCY_CFLAGS) \
 	-DDATADIR=\""$(datadir)"\" \
 	$(NULL)

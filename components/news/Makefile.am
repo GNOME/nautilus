@@ -3,7 +3,6 @@ NULL =
 bin_PROGRAMS=nautilus-news
 
 INCLUDES=\
-	-I$(top_srcdir)/components/news \
 	-I$(top_srcdir)		\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" \

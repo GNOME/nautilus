@@ -6,7 +6,8 @@ bin_PROGRAMS=nautilus
 
 INCLUDES =\
 	-I$(top_srcdir) \
-	-I$(top_srcdir)/cut-n-paste-code \
+	-I$(top_srcdir)/cut-n-paste-code/widgets/e-paned \
+	-I$(top_srcdir)/cut-n-paste-code/widgets/gimphwrapbox \
 	$(NAUTILUS_PRIVATE_CFLAGS) \
 	$(AMMONITE_CFLAGS) \
 	-DVERSION="\"$(VERSION)\"" \
@@ -21,7 +22,7 @@ LDADD =\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
-	$(AMMONITE_LIBS) \
+        $(AMMONITE_LIBS) \
 	$(NAUTILUS_PRIVATE_LIBS) \
 	$(NULL)
 
@@ -35,46 +36,6 @@ if ENABLE_PROFILER
 profiler_headers = nautilus-profiler.h
 profiler_sources = nautilus-profiler.c
 endif
-
-noinst_HEADERS = \
-	nautilus-about.h			\
-	nautilus-applicable-views.h		\
-	nautilus-application.h			\
-	nautilus-bookmark-list.h		\
-	nautilus-bookmark-parsing.h		\
-	nautilus-bookmarks-window.h		\
-	nautilus-complex-search-bar.h		\
-	nautilus-component-adapter-factory.h	\
-	nautilus-desktop-window.h		\
-	nautilus-first-time-druid.h		\
-	nautilus-link-set-window.h		\
-	nautilus-location-bar.h			\
-	nautilus-main.h				\
-	nautilus-navigation-bar.h		\
-	nautilus-preferences-dialog.h \
-	nautilus-property-browser.h		\
-	nautilus-search-bar-criterion-private.h	\
-	nautilus-search-bar-criterion.h		\
-	nautilus-search-bar-private.h		\
-	nautilus-search-bar.h			\
-	nautilus-self-check-functions.h 	\
-	nautilus-shell.h			\
-	nautilus-sidebar-tabs.h			\
-	nautilus-sidebar-title.h		\
-	nautilus-sidebar.h			\
-	nautilus-signaller.h			\
-	nautilus-simple-search-bar.h		\
-	nautilus-switchable-navigation-bar.h	\
-	nautilus-switchable-search-bar.h	\
-	nautilus-theme-selector.h		\
-	nautilus-view-frame-private.h		\
-	nautilus-view-frame.h			\
-	nautilus-window-manage-views.h		\
-	nautilus-window-private.h		\
-	nautilus-window.h			\
-	nautilus-zoom-control.h			\
-	$(profiler_headers)			\
-	$(NULL)
 
 nautilus_SOURCES = \
 	$(nautilus_shell_interface_idl_sources)	\
@@ -114,6 +75,43 @@ nautilus_SOURCES = \
 	nautilus-window.c			\
 	nautilus-zoom-control.c			\
 	$(profiler_sources)			\
+	nautilus-about.h			\
+	nautilus-applicable-views.h		\
+	nautilus-application.h			\
+	nautilus-bookmark-list.h		\
+	nautilus-bookmark-parsing.h		\
+	nautilus-bookmarks-window.h		\
+	nautilus-complex-search-bar.h		\
+	nautilus-component-adapter-factory.h	\
+	nautilus-desktop-window.h		\
+	nautilus-first-time-druid.h		\
+	nautilus-link-set-window.h		\
+	nautilus-location-bar.h			\
+	nautilus-main.h				\
+	nautilus-navigation-bar.h		\
+	nautilus-preferences-dialog.h \
+	nautilus-property-browser.h		\
+	nautilus-search-bar-criterion-private.h	\
+	nautilus-search-bar-criterion.h		\
+	nautilus-search-bar-private.h		\
+	nautilus-search-bar.h			\
+	nautilus-self-check-functions.h 	\
+	nautilus-shell.h			\
+	nautilus-sidebar-tabs.h			\
+	nautilus-sidebar-title.h		\
+	nautilus-sidebar.h			\
+	nautilus-signaller.h			\
+	nautilus-simple-search-bar.h		\
+	nautilus-switchable-navigation-bar.h	\
+	nautilus-switchable-search-bar.h	\
+	nautilus-theme-selector.h		\
+	nautilus-view-frame-private.h		\
+	nautilus-view-frame.h			\
+	nautilus-window-manage-views.h		\
+	nautilus-window-private.h		\
+	nautilus-window.h			\
+	nautilus-zoom-control.h			\
+	$(profiler_headers)			\
 	$(NULL)
 
 $(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp

@@ -47,7 +47,7 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
-#include <widgets/gimphwrapbox/gtkhwrapbox.h>
+#include "gtkhwrapbox.h"
 
 struct NautilusComplexSearchBarDetails {
 	GtkVBox *bar_container;

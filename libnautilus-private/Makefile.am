@@ -5,8 +5,7 @@ lib_LTLIBRARIES=libnautilus-private.la
 INCLUDES = 						\
 	-I$(top_srcdir) 				\
 	-I$(top_builddir) 				\
-	-I$(top_builddir)/libnautilus 			\
-	-I$(top_srcdir)/cut-n-paste-code 		\
+	-I$(top_srcdir)/cut-n-paste-code/widgets/e-paned	\
 	$(NAUTILUS_PRIVATE_CFLAGS)			\
 	$(ESD_CFLAGS)					\
 	$(MEDUSA_CFLAGS) 				\
@@ -17,8 +16,8 @@ INCLUDES = 						\
 
 dependency_static_libs = \
 	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la \
-	$(top_builddir)/cut-n-paste-code/widgets/gimphwrapbox/libgtkhwrapbox.la \
-	$(NULL)
+        $(top_builddir)/cut-n-paste-code/widgets/gimphwrapbox/libgtkhwrapbox.la \
+        $(NULL)
 
 if HAVE_CDDA
 CDDALIBADD = -lcdda_paranoia -lcdda_interface
@@ -101,10 +100,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-view-identifier.c \
 	nautilus-volume-monitor.c \
 	nautilus-authn-manager.c \
-	$(NULL)
-
-# Everything is private for now
-noinst_HEADERS = \
 	nautilus-audio-player.h \
 	nautilus-bonobo-extensions.h \
 	nautilus-bookmark.h \

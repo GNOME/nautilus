@@ -27,9 +27,6 @@ nautilus_mozilla_content_view_SOURCES = \
 	nautilus-mozilla-content-view.c \
 	nautilus-mozilla-embed-extensions.cpp \
 	nautilus-mozilla-encoding-tables.c \
-	$(NULL)
-
-noinst_HEADERS =\
 	bonobo-extensions.h \
 	mozilla-components.h \
 	mozilla-events.h \

@@ -21,9 +21,6 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-properties-window.c		\
 	fm-search-list-view.c		\
 	nautilus-indexing-info.c	\
-	$(NULL)
-
-noinst_HEADERS = 			\
 	fm-desktop-icon-view.h 		\
 	fm-directory-view.h 		\
 	fm-error-reporting.h 		\

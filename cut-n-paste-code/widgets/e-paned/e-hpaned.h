@@ -35,7 +35,7 @@
 #ifndef __E_HPANED_H__
 #define __E_HPANED_H__
 
-#include <widgets/e-paned/e-paned.h>
+#include "e-paned.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -5,7 +5,6 @@ lib_LTLIBRARIES=libnautilus-adapter.la
 
 INCLUDES=\
 	-I$(top_srcdir) \
-	-I. \
 	$(NAUTILUS_PRIVATE_CFLAGS) \
 	$(NULL)
 

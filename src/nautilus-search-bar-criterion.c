@@ -54,7 +54,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <widgets/gimphwrapbox/gtkhwrapbox.h>
+#include "gtkhwrapbox.h"
 
 enum {
 	CRITERION_TYPE_CHANGED,

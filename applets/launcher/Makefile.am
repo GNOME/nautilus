@@ -5,7 +5,6 @@ INCLUDES =\
 	-DDATADIR=\""$(datadir)"\" \
 	-DBINDIR=\""$(bindir)"\" \
 	-I$(top_srcdir) \
-	-I$(srcdir) \
 	$(APPLETS_CFLAGS) \
 	$(NAUTILUS_PRIVATE_CFLAGS) \
 	$(NULL)

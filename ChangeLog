@@ -1,3 +1,46 @@
+2001-08-26  Darin Adler  <darin@bentspoon.com>
+
+	Some makefile cleanup.
+
+	* Makefile.am: Don't build intl since we don't need it the way we
+	use gettext.
+	* applets/launcher/Makefile.am: Remove redundant -I$(srcdir).
+	* applets/preferences-applet/Makefile.am: Remove redundant
+	-I$(srcdir).
+	* components/adapter/Makefile.am: Remove redundant -I.
+	* components/mozilla/Makefile.am: Mark private headers as SOURCES,
+	not noinst_HEADERS, as suggested by automake book and manual.
+	* components/news/Makefile.am: Remove unneeded
+	-I$(top_srcdir)/components/news.
+	* configure.in: Don't build intl since we don't need it the way we
+	use gettext.
+	* libnautilus-adapter/Makefile.am: Remove redundant -I.
+	* libnautilus-private/Makefile.am: Change -I for new
+	cut-n-paste-code scheme. Also mark private headers as SOURCES, not
+	noinst_HEADERS, as suggested by automake book and manual.
+	* libnautilus/Makefile.am: Remove redundant -I.
+	* src/Makefile.am: Change -I for new cut-n-paste-code scheme. Also
+	mark private headers as SOURCES, not noinst_HEADERS, as suggested
+	by automake book and manual.
+	* src/file-manager/Makefile.am: Mark private headers as SOURCES,
+	not noinst_HEADERS, as suggested by automake book and manual.
+	
+	* check-THANKS.pl: Change Seth's preferred email address.
+
+	* cut-n-paste-code/widgets/e-paned/Makefile.am:
+	* cut-n-paste-code/widgets/gimphwrapbox/Makefile.am:
+	Don't use -static, since we plan to link 
+	Remove unneeded -I directives now that we handle includes
+	differently. Also mark private headers as SOURCES, not
+	noinst_HEADERS, as suggested by automake book and manual.
+
+	* cut-n-paste-code/widgets/e-paned/e-hpaned.h:
+	* cut-n-paste-code/widgets/e-paned/e-vpaned.h:
+	* libnautilus-private/nautilus-horizontal-splitter.h:
+	* src/nautilus-complex-search-bar.c:
+	* src/nautilus-search-bar-criterion.c:
+	Simpler include scheme for cut-n-paste code.
+
 2001-08-24  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-file.c:

@@ -4,7 +4,6 @@ INCLUDES =					\
 	-DG_LOG_DOMAIN=\"Nautilus-Adapter\"	\
 	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\" \
 	-I$(top_srcdir) \
-	-I. \
 	$(NAUTILUS_PRIVATE_CFLAGS) \
 	$(NULL)
 
