@@ -1,5 +1,11 @@
 2000-01-18  John Sullivan <sullivan@eazel.com>
 
+	* src/file-manager/fm-directory-view.c:
+	(display_selection_info): Call selection "items" rather than
+	"files" because users distinguish directories from files.
+
+2000-01-18  John Sullivan <sullivan@eazel.com>
+
 	* src/file-manager/fm-directory-view.h:
 	(enum _FMDirectoryViewSortType): added FM_DIRECTORY_VIEW_SORT_NONE
 	and FM_DIRECTORY_VIEW_SORT_BYMTIME

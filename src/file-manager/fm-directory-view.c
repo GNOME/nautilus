@@ -257,9 +257,9 @@ display_selection_info (FMDirectoryView *view)
 
 	size_string = gnome_vfs_file_size_to_string (size);
 	if (count == 1)
-		msg = g_strdup_printf (_("1 file selected -- %s"), size_string);
+		msg = g_strdup_printf (_("1 item selected -- %s"), size_string);
 	else
-		msg = g_strdup_printf (_("%d files selected -- %s"), count, size_string);
+		msg = g_strdup_printf (_("%d items selected -- %s"), count, size_string);
 	g_free (size_string);
 
 	memset(&sri, 0, sizeof(sri));
