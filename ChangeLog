@@ -1,5 +1,11 @@
 2000-04-28  Darin Adler  <darin@eazel.com>
 
+	* src/ntl-uri-map.c (async_get_file_info_text):
+	Fix bug that prevents non-vfs URIs from working.
+	Just need to initialize the async. handle to NULL.
+
+2000-04-28  Darin Adler  <darin@eazel.com>
+
 	This little check-in fixes the last April bug and maybe one or
 	two leaks in Nautilus.
 

@@ -700,6 +700,8 @@ async_get_file_info_text (GnomeVFSAsyncHandle **handle,
         vfs_uri = gnome_vfs_uri_new (text_uri);
         if (vfs_uri == NULL) {
                 /* Report the error. */
+
+                *handle = NULL;
                 
                 result_item.uri = NULL;
                 result_item.result = GNOME_VFS_ERROR_INVALIDURI;
