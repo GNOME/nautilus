@@ -58,51 +58,12 @@
 #include <stdio.h>
 #include <string.h>
 
-static gboolean drag_drop_callback                            (GtkWidget             *widget,
-							       GdkDragContext        *context,
-							       int                    x,
-							       int                    y,
-							       guint32                time,
-							       gpointer               data);
-static void     nautilus_icon_dnd_update_drop_target          (NautilusIconContainer *container,
-							       GdkDragContext        *context,
-							       int                    x,
-							       int                    y);
-static gboolean drag_motion_callback                          (GtkWidget             *widget,
-							       GdkDragContext        *context,
-							       int                    x,
-							       int                    y,
-							       guint32                time);
-static void     nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
-							       GdkDragContext        *context,
-							       int                    x,
-							       int                    y);
-static void     receive_dropped_tile_image                    (NautilusIconContainer *container,
-							       GtkSelectionData      *data);
-static void     receive_dropped_keyword                       (NautilusIconContainer *container,
-							       const char            *keyword,
-							       int                    x,
-							       int                    y);
-static void     receive_dropped_uri_list                      (NautilusIconContainer *container,
-							       const char            *uri_list,
-							       GdkDragAction          action,
-							       int                    x,
-							       int                    y);
-static void     nautilus_icon_container_free_drag_data        (NautilusIconContainer *container);
-static void     set_drop_target                               (NautilusIconContainer *container,
-							       NautilusIcon          *icon);
-
 static GtkTargetEntry drag_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
 	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
 	{ NAUTILUS_ICON_DND_TEXT_TYPE, 0, NAUTILUS_ICON_DND_TEXT }
 };
-
-/* this constant is logically part of the NAUTILUS_ICON_DND enumeration; it must be bigger
- * than the last one defined there
- */
-#define NAUTILUS_RESET_BACKGROUND_ENUM 10
 
 static GtkTargetEntry drop_types [] = {
 	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
@@ -111,7 +72,7 @@ static GtkTargetEntry drop_types [] = {
 	{ NAUTILUS_ICON_DND_COLOR_TYPE, 0, NAUTILUS_ICON_DND_COLOR },
 	{ NAUTILUS_ICON_DND_BGIMAGE_TYPE, 0, NAUTILUS_ICON_DND_BGIMAGE },
 	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD },
-	{ "x-special/gnome-reset-background",  0, NAUTILUS_RESET_BACKGROUND_ENUM }
+	{ NAUTILUS_ICON_DND_RESET_BACKGROUND_TYPE,  0, NAUTILUS_ICON_DND_RESET_BACKGROUND }
 };
 
 static GtkTargetList *drop_types_list = NULL;
@@ -373,120 +334,6 @@ nautilus_icon_container_dropped_icon_feedback (GtkWidget *widget,
 	dnd_info->drag_info.selection_list = nautilus_drag_build_selection_list (data);
 	dnd_info->shadow = create_selection_shadow (container, dnd_info->drag_info.selection_list);
 	nautilus_icon_container_position_shadow (container, x, y);
-}
-
-/** this callback is called in 2 cases.
-    It is called upon drag_motion events to get the actual data 
-    In that case, it just makes sure it gets the data.
-    It is called upon drop_drop events to execute the actual 
-    actions on the received action. In that case, it actually first makes sure
-    that we have got the data then processes it.
-*/
-
-static void
-drag_data_received_callback (GtkWidget *widget,
-			     GdkDragContext *context,
-			     int x,
-			     int y,
-			     GtkSelectionData *data,
-			     guint info,
-			     guint32 time,
-			     gpointer user_data)
-{
-    	NautilusDragInfo *drag_info;
-	EelBackground *background;
-	
-	drag_info = &(NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info->drag_info);
-
-	drag_info->got_drop_data_type = TRUE;
-	drag_info->data_type = info;
-
-	switch (info) {
-	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-		nautilus_icon_container_dropped_icon_feedback (widget, data, x, y);
-		break;
-	case NAUTILUS_ICON_DND_COLOR:
-	case NAUTILUS_ICON_DND_BGIMAGE:	
-	case NAUTILUS_ICON_DND_KEYWORD:
-	case NAUTILUS_ICON_DND_URI_LIST:
-	case NAUTILUS_RESET_BACKGROUND_ENUM:
-		/* Save the data so we can do the actual work on drop. */
-		g_assert (drag_info->selection_data == NULL);
-		drag_info->selection_data = gtk_selection_data_copy (data);
-		break;
-
-	/* Netscape keeps sending us the data, even though we accept the first drag */
-	case NAUTILUS_ICON_DND_URL:
-		if (drag_info->selection_data != NULL) {
-			gtk_selection_data_free (drag_info->selection_data);
-			drag_info->selection_data = gtk_selection_data_copy (data);
-		}
-		break;
-
-	default:
-		g_message ("drag_data_received_callback unknown");
-		break;
-	}
-
-
-	/* this is the second use case of this callback.
-	 * we have to do the actual work for the drop.
-	 */
-	if (drag_info->drop_occured) {
-
-		switch (info) {
-		case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-			nautilus_icon_container_receive_dropped_icons
-				(NAUTILUS_ICON_CONTAINER (widget),
-				 context, x, y);
-			gtk_drag_finish (context, TRUE, FALSE, time);
-			break;
-		case NAUTILUS_ICON_DND_COLOR:
-			eel_background_receive_dropped_color
-				(eel_get_widget_background (widget),
-				 widget, x, y, data);
-			gtk_drag_finish (context, TRUE, FALSE, time);
-			break;
-		case NAUTILUS_ICON_DND_BGIMAGE:
-			receive_dropped_tile_image
-				(NAUTILUS_ICON_CONTAINER (widget),
-				 data);
-			gtk_drag_finish (context, FALSE, FALSE, time);
-			break;
-		case NAUTILUS_ICON_DND_KEYWORD:
-			receive_dropped_keyword
-				(NAUTILUS_ICON_CONTAINER (widget),
-				 (char*) data->data, x, y);
-			gtk_drag_finish (context, FALSE, FALSE, time);
-			break;
-		case NAUTILUS_ICON_DND_URI_LIST:
-		case NAUTILUS_ICON_DND_URL:
-			receive_dropped_uri_list
-				(NAUTILUS_ICON_CONTAINER (widget),
-				 (char*) data->data, context->action, x, y);
-			gtk_drag_finish (context, TRUE, FALSE, time);
-			break;
-
-		case NAUTILUS_RESET_BACKGROUND_ENUM:
-			background = eel_get_widget_background (widget);
-			if (background != NULL) {
-				eel_background_reset (background);
-			}
-			gtk_drag_finish (context, FALSE, FALSE, time);			
-			break;	
-
-		default:
-			gtk_drag_finish (context, FALSE, FALSE, time);
-		}
-		
-		nautilus_icon_container_free_drag_data (NAUTILUS_ICON_CONTAINER (widget));
-		
-		set_drop_target (NAUTILUS_ICON_CONTAINER (widget), NULL);
-
-		/* reinitialise it for the next dnd */
-		drag_info->drop_occured = FALSE;
-	}
-
 }
 
 /* FIXME bugzilla.gnome.org 47445: Needs to become a shared function */
@@ -1056,19 +903,18 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 	
 	icon = nautilus_icon_container_item_at (container, world_x, world_y);
 
+	*default_action = 0;
+	*non_default_action = 0;
+
 	/* case out on the type of object being dragged */
 	switch (container->details->dnd_info->drag_info.data_type) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
 		if (container->details->dnd_info->drag_info.selection_list == NULL) {
-			*default_action = 0;
-			*non_default_action = 0;
 			return;
 		}
 		drop_target = nautilus_icon_container_find_drop_target (container,
 			context, x, y, &icon_hit);
 		if (!drop_target) {
-			*default_action = 0;
-			*non_default_action = 0;
 			return;
 		}
 		nautilus_drag_default_drop_action_for_icons (context, drop_target, 
@@ -1079,28 +925,20 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 
 	/* handle emblems by setting the action if we're over an object */
 	case NAUTILUS_ICON_DND_KEYWORD:
-		if (icon == NULL) {
-			*default_action = 0;
-			*non_default_action = 0;
-		} else {
+		if (icon != NULL) {
 			*default_action = context->suggested_action;
 			*non_default_action = context->suggested_action;
 		}
-		
 		break;
 	
 	/* handle colors and backgrounds by setting the action if we're over the background */		
 	case NAUTILUS_ICON_DND_COLOR:
 	case NAUTILUS_ICON_DND_BGIMAGE:
-	case NAUTILUS_RESET_BACKGROUND_ENUM:
+	case NAUTILUS_ICON_DND_RESET_BACKGROUND:
 		if (icon == NULL) {
 			*default_action = context->suggested_action;
 			*non_default_action = context->suggested_action;
-		} else {
-			*default_action = 0;
-			*non_default_action = 0;
-		}
-	
+		}	
 		break;
 	
 	case NAUTILUS_ICON_DND_URI_LIST:
@@ -1108,10 +946,10 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 		*default_action = context->suggested_action;
 		*non_default_action = context->suggested_action;
 		break;
-	default:
+
+	case NAUTILUS_ICON_DND_TEXT:
 		break;
 	}
-
 }
 
 static void
@@ -1211,58 +1049,6 @@ drag_leave_callback (GtkWidget *widget,
 	
 	stop_auto_scroll (NAUTILUS_ICON_CONTAINER (widget));
 	nautilus_icon_container_free_drag_data(NAUTILUS_ICON_CONTAINER (widget));
-}
-
-void
-nautilus_icon_dnd_init (NautilusIconContainer *container,
-			GdkBitmap *stipple)
-{
-	g_return_if_fail (container != NULL);
-	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
-
-
-	container->details->dnd_info = g_new0 (NautilusIconDndInfo, 1);
-	nautilus_drag_init (&container->details->dnd_info->drag_info,
-		drag_types, G_N_ELEMENTS (drag_types), stipple);
-
-	/* Set up the widget as a drag destination.
-	 * (But not a source, as drags starting from this widget will be
-         * implemented by dealing with events manually.)
-	 */
-	gtk_drag_dest_set (GTK_WIDGET (container),
-			   0,
-			   drop_types, G_N_ELEMENTS (drop_types),
-			   GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK | GDK_ACTION_ASK);
-
-	/* Messages for outgoing drag. */
-	g_signal_connect (container, "drag_data_get",
-			  G_CALLBACK (drag_data_get_callback), NULL);
-	g_signal_connect (container, "drag_end",
-			  G_CALLBACK (drag_end_callback), NULL);
-	
-	/* Messages for incoming drag. */
-	g_signal_connect (container, "drag_data_received",
-			  G_CALLBACK (drag_data_received_callback), NULL);
-	g_signal_connect (container, "drag_motion",
-			  G_CALLBACK (drag_motion_callback), NULL);
-	g_signal_connect (container, "drag_drop",
-			  G_CALLBACK (drag_drop_callback), NULL);
-	g_signal_connect (container, "drag_leave",
-			  G_CALLBACK (drag_leave_callback), NULL);
-
-}
-
-void
-nautilus_icon_dnd_fini (NautilusIconContainer *container)
-{
-	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
-
-	if (container->details->dnd_info != NULL) {
-		stop_auto_scroll (container);
-
-		nautilus_drag_finalize (&container->details->dnd_info->drag_info);
-		container->details->dnd_info = NULL;
-	}
 }
 
 void
@@ -1449,6 +1235,163 @@ nautilus_icon_dnd_uri_list_extract_uris (const char *uri_list)
 void
 nautilus_icon_dnd_uri_list_free_strings (GList *list)
 {
-	g_list_foreach (list, (GFunc)g_free, NULL);
-	g_list_free (list);
+	eel_g_list_free_deep (list);
+}
+
+/** this callback is called in 2 cases.
+    It is called upon drag_motion events to get the actual data 
+    In that case, it just makes sure it gets the data.
+    It is called upon drop_drop events to execute the actual 
+    actions on the received action. In that case, it actually first makes sure
+    that we have got the data then processes it.
+*/
+
+static void
+drag_data_received_callback (GtkWidget *widget,
+			     GdkDragContext *context,
+			     int x,
+			     int y,
+			     GtkSelectionData *data,
+			     guint info,
+			     guint32 time,
+			     gpointer user_data)
+{
+    	NautilusDragInfo *drag_info;
+	EelBackground *background;
+	gboolean success;
+	
+	drag_info = &(NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info->drag_info);
+
+	drag_info->got_drop_data_type = TRUE;
+	drag_info->data_type = info;
+
+	switch (info) {
+	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+		nautilus_icon_container_dropped_icon_feedback (widget, data, x, y);
+		break;
+	case NAUTILUS_ICON_DND_COLOR:
+	case NAUTILUS_ICON_DND_BGIMAGE:	
+	case NAUTILUS_ICON_DND_KEYWORD:
+	case NAUTILUS_ICON_DND_URI_LIST:
+	case NAUTILUS_ICON_DND_RESET_BACKGROUND:
+		/* Save the data so we can do the actual work on drop. */
+		g_assert (drag_info->selection_data == NULL);
+		drag_info->selection_data = gtk_selection_data_copy (data);
+		break;
+
+	/* Netscape keeps sending us the data, even though we accept the first drag */
+	case NAUTILUS_ICON_DND_URL:
+		if (drag_info->selection_data != NULL) {
+			gtk_selection_data_free (drag_info->selection_data);
+			drag_info->selection_data = gtk_selection_data_copy (data);
+		}
+		break;
+	}
+
+
+	/* this is the second use case of this callback.
+	 * we have to do the actual work for the drop.
+	 */
+	if (drag_info->drop_occured) {
+
+		success = FALSE;
+		switch (info) {
+		case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+			nautilus_icon_container_receive_dropped_icons
+				(NAUTILUS_ICON_CONTAINER (widget),
+				 context, x, y);
+			break;
+		case NAUTILUS_ICON_DND_COLOR:
+			eel_background_receive_dropped_color
+				(eel_get_widget_background (widget),
+				 widget, x, y, data);
+			success = TRUE;
+			break;
+		case NAUTILUS_ICON_DND_BGIMAGE:
+			receive_dropped_tile_image
+				(NAUTILUS_ICON_CONTAINER (widget),
+				 data);
+			break;
+		case NAUTILUS_ICON_DND_KEYWORD:
+			receive_dropped_keyword
+				(NAUTILUS_ICON_CONTAINER (widget),
+				 (char *) data->data, x, y);
+			break;
+		case NAUTILUS_ICON_DND_URI_LIST:
+		case NAUTILUS_ICON_DND_URL:
+			receive_dropped_uri_list
+				(NAUTILUS_ICON_CONTAINER (widget),
+				 (char *) data->data, context->action, x, y);
+			success = TRUE;
+			break;
+		case NAUTILUS_ICON_DND_RESET_BACKGROUND:
+			background = eel_get_widget_background (widget);
+			if (background != NULL) {
+				eel_background_reset (background);
+			}
+			gtk_drag_finish (context, FALSE, FALSE, time);			
+			break;
+		}
+		gtk_drag_finish (context, success, FALSE, time);
+		
+		nautilus_icon_container_free_drag_data (NAUTILUS_ICON_CONTAINER (widget));
+		
+		set_drop_target (NAUTILUS_ICON_CONTAINER (widget), NULL);
+
+		/* reinitialise it for the next dnd */
+		drag_info->drop_occured = FALSE;
+	}
+
+}
+
+void
+nautilus_icon_dnd_init (NautilusIconContainer *container,
+			GdkBitmap *stipple)
+{
+	g_return_if_fail (container != NULL);
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+
+	container->details->dnd_info = g_new0 (NautilusIconDndInfo, 1);
+	nautilus_drag_init (&container->details->dnd_info->drag_info,
+		drag_types, G_N_ELEMENTS (drag_types), stipple);
+
+	/* Set up the widget as a drag destination.
+	 * (But not a source, as drags starting from this widget will be
+         * implemented by dealing with events manually.)
+	 */
+	gtk_drag_dest_set (GTK_WIDGET (container),
+			   0,
+			   drop_types, G_N_ELEMENTS (drop_types),
+			   GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK | GDK_ACTION_ASK);
+
+	/* Messages for outgoing drag. */
+	g_signal_connect (container, "drag_data_get",
+			  G_CALLBACK (drag_data_get_callback), NULL);
+	g_signal_connect (container, "drag_end",
+			  G_CALLBACK (drag_end_callback), NULL);
+	
+	/* Messages for incoming drag. */
+	g_signal_connect (container, "drag_data_received",
+			  G_CALLBACK (drag_data_received_callback), NULL);
+	g_signal_connect (container, "drag_motion",
+			  G_CALLBACK (drag_motion_callback), NULL);
+	g_signal_connect (container, "drag_drop",
+			  G_CALLBACK (drag_drop_callback), NULL);
+	g_signal_connect (container, "drag_leave",
+			  G_CALLBACK (drag_leave_callback), NULL);
+
+}
+
+void
+nautilus_icon_dnd_fini (NautilusIconContainer *container)
+{
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	if (container->details->dnd_info != NULL) {
+		stop_auto_scroll (container);
+
+		nautilus_drag_finalize (&container->details->dnd_info->drag_info);
+		container->details->dnd_info = NULL;
+	}
 }

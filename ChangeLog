@@ -1,5 +1,45 @@
 2002-03-01  Darin Adler  <darin@bentspoon.com>
 
+	* libnautilus-private/nautilus-dnd.h:
+	Move reset constant into header.
+	
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_display_name): Use g_locale_to_utf8, so this
+	works even when G_BROKEN_FILENAMES is not set.
+	
+	* libnautilus-private/nautilus-icon-dnd.c:
+	Rearrange and clean up code a bit.
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_destroy), (add_new_pattern),
+	(show_color_selection_window), (add_new_color), (add_new_emblem):
+	
+	* src/nautilus-sidebar-title.c: (update_icon): Get rid of dead
+	code that gets uri and doesn't use it. It's been showing up in bug
+	reports too, so this is especially nice.
+	
+	* src/nautilus-window-manage-views.h:
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_manage_views_destroy),
+	(nautilus_window_manage_views_finalize): Break this up into two
+	functions again.
+	
+	* src/nautilus-window.c: (nautilus_window_destroy): Re-add this,
+	because some of the cleanup has to be done at destroy time.
+	(nautilus_window_finalize): Move some of this out.
+	(nautilus_window_class_init): Set up both.
+
+	* components/text/nautilus-text-view.c:
+	* components/tree/nautilus-tree-model.c:
+	* libnautilus-private/nautilus-file-operations.c:
+	* libnautilus-private/nautilus-program-choosing.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/nautilus-bookmark-list.c:
+	Miscellaneous porting to new names of functions, getting off
+	less-desirable functions.
+	
+2002-03-01  Darin Adler  <darin@bentspoon.com>
+
 	* src/nautilus-window-manage-views.h:
 	* src/nautilus-window-manage-views.c: (begin_location_change): Add
 	a ref/unref so that window->details won't go away at an

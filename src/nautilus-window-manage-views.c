@@ -1038,11 +1038,11 @@ report_sidebar_panel_failure_to_user (NautilusWindow *window, NautilusViewFrame 
 static void
 disconnect_and_destroy_sidebar_panel (NautilusWindow *window, NautilusViewFrame *view)
 {
-        gtk_widget_ref (GTK_WIDGET (view));
+        g_object_ref (view);
 	disconnect_view (window, view);
         nautilus_window_remove_sidebar_panel (window, view);
-	gtk_widget_destroy (GTK_WIDGET (view));
-        gtk_widget_unref (GTK_WIDGET (view));
+	gtk_object_destroy (GTK_OBJECT (view));
+        g_object_unref (view);
 }
 
 static void
@@ -2024,17 +2024,19 @@ disconnect_view_callback (gpointer list_item_data, gpointer callback_data)
 }
 
 void
-nautilus_window_manage_views_finalize (NautilusWindow *window)
+nautilus_window_manage_views_destroy (NautilusWindow *window)
 {
-        free_location_change (window);
-
 	/* Disconnect view signals here so they don't trigger when
 	 * views are destroyed.
          */
 	g_list_foreach (window->sidebar_panels, disconnect_view_callback, window);
         disconnect_view (window, window->content_view);
+}
 
-        /* Cancel callbacks. */
+void
+nautilus_window_manage_views_finalize (NautilusWindow *window)
+{
+        free_location_change (window);
         cancel_viewed_file_changed_callback (window);
 }
 

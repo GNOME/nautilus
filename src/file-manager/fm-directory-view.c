@@ -369,7 +369,7 @@ application_launch_parameters_new (GnomeVFSMimeApplication *application,
 
 	result = g_new0 (ApplicationLaunchParameters, 1);
 	result->application = gnome_vfs_mime_application_copy (application);
-	gtk_widget_ref (GTK_WIDGET (directory_view));
+	g_object_ref (directory_view);
 	result->directory_view = directory_view;
 	nautilus_file_ref (file);
 	result->file = file;
@@ -381,7 +381,7 @@ static void
 application_launch_parameters_free (ApplicationLaunchParameters *parameters)
 {
 	gnome_vfs_mime_application_free (parameters->application);
-	gtk_widget_unref (GTK_WIDGET (parameters->directory_view));
+	g_object_unref (parameters->directory_view);
 	nautilus_file_unref (parameters->file);
 	g_free (parameters);
 }			      
@@ -395,7 +395,7 @@ viewer_launch_parameters_new (NautilusViewIdentifier *identifier,
 
 	result = g_new0 (ViewerLaunchParameters, 1);
 	result->identifier = nautilus_view_identifier_copy (identifier);
-	gtk_widget_ref (GTK_WIDGET (directory_view));
+	g_object_ref (directory_view);
 	result->directory_view = directory_view;
 	result->uri = g_strdup (uri);
 
@@ -406,7 +406,7 @@ static void
 viewer_launch_parameters_free (ViewerLaunchParameters *parameters)
 {
 	nautilus_view_identifier_free (parameters->identifier);
-	gtk_widget_unref (GTK_WIDGET (parameters->directory_view));
+	g_object_unref (parameters->directory_view);
 	g_free (parameters->uri);
 	g_free (parameters);
 }			      
@@ -418,7 +418,7 @@ script_launch_parameters_new (NautilusFile *file,
 	ScriptLaunchParameters *result;
 
 	result = g_new0 (ScriptLaunchParameters, 1);
-	gtk_widget_ref (GTK_WIDGET (directory_view));
+	g_object_ref (directory_view);
 	result->directory_view = directory_view;
 	nautilus_file_ref (file);
 	result->file = file;
@@ -429,7 +429,7 @@ script_launch_parameters_new (NautilusFile *file,
 static void
 script_launch_parameters_free (ScriptLaunchParameters *parameters)
 {
-	gtk_widget_unref (GTK_WIDGET (parameters->directory_view));
+	g_object_unref (parameters->directory_view);
 	nautilus_file_unref (parameters->file);
 	g_free (parameters);
 }			      
@@ -1794,7 +1794,7 @@ copy_move_done_data_free (CopyMoveDoneData *data)
 {
 	g_assert (data != NULL);
 	
-	eel_nullify_cancel (&data->directory_view);
+	eel_remove_weak_pointer (&data->directory_view);
 	nautilus_file_list_free (data->added_files);
 	g_free (data);
 }
@@ -1819,16 +1819,14 @@ pre_copy_move (FMDirectoryView *directory_view)
 	copy_move_done_data = g_new0 (CopyMoveDoneData, 1);
 	copy_move_done_data->directory_view = directory_view;
 
-	eel_nullify_when_destroyed (&copy_move_done_data->directory_view);
+	eel_add_weak_pointer (&copy_move_done_data->directory_view);
 
 	/* We need to run after the default handler adds the folder we want to
 	 * operate on. The ADD_FILE signal is registered as G_SIGNAL_RUN_LAST, so we
 	 * must use connect_after.
 	 */
-	g_signal_connect (directory_view,
-			    "add_file",
-			    G_CALLBACK (pre_copy_move_add_file_callback),
-			    copy_move_done_data);
+	g_signal_connect (directory_view, "add_file",
+			  G_CALLBACK (pre_copy_move_add_file_callback), copy_move_done_data);
 
 	return copy_move_done_data;
 }

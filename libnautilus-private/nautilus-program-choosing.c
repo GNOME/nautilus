@@ -420,7 +420,7 @@ launch_parameters_new (NautilusFile *file,
 	launch_parameters = g_new0 (LaunchParameters, 1);
 	nautilus_file_ref (file);
 	launch_parameters->file = file;
-	gtk_widget_ref (GTK_WIDGET (parent_window));
+	g_object_ref (parent_window);
 	launch_parameters->parent_window = parent_window;
 
 	return launch_parameters;
@@ -432,7 +432,7 @@ launch_parameters_free (LaunchParameters *launch_parameters)
 	g_assert (launch_parameters != NULL);
 
 	nautilus_file_unref (launch_parameters->file);
-	gtk_widget_unref (GTK_WIDGET (launch_parameters->parent_window));
+	g_object_unref (launch_parameters->parent_window);
 	
 	g_free (launch_parameters);
 }

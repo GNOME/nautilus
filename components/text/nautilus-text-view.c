@@ -191,7 +191,7 @@ nautilus_text_view_init (NautilusTextView *text_view)
 	
 	/* allocate the text object */
 	text_view->details->text_display = gtk_text_new (NULL, NULL);
-        gtk_widget_ref (text_view->details->text_display);
+        g_object_ref (text_view->details->text_display);
 	gtk_text_set_editable (GTK_TEXT (text_view->details->text_display), FALSE);
 
 	/* add signal handlers to the text field to enable/disable the service menu items */
@@ -255,7 +255,7 @@ nautilus_text_view_destroy (BonoboObject *object)
 	}
 	
         if (text_view->details->text_display) {
-                gtk_widget_unref (text_view->details->text_display);
+                g_object_unref (text_view->details->text_display);
                 text_view->details->text_display = NULL;
         }
 }

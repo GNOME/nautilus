@@ -29,7 +29,7 @@
 #include <config.h>
 #include "nautilus-tree-model.h"
 
-#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-glib-extensions.h>
 #include <libgnome/gnome-i18n.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
@@ -813,8 +813,8 @@ done_loading_idle_callback (gpointer callback_data)
 	if (p->directory != NULL && p->model != NULL) {
 		done_loading_callback (p->directory, p->model);
 	}
-	eel_nullify_cancel (&p->model);
-	eel_nullify_cancel (&p->directory);
+	eel_remove_weak_pointer (&p->model);
+	eel_remove_weak_pointer (&p->directory);
 	g_free (p);
 
 	return FALSE;
@@ -860,8 +860,8 @@ start_monitoring_directory (NautilusTreeModel *model, TreeNode *node)
 		p = g_new (DoneLoadingParameters, 1);
 		p->directory = directory;
 		p->model = model;
-		eel_nullify_when_destroyed (&p->directory);
-		eel_nullify_when_destroyed (&p->model);
+		eel_add_weak_pointer (&p->directory);
+		eel_add_weak_pointer (&p->model);
 		g_idle_add (done_loading_idle_callback, p);
 	}
 }

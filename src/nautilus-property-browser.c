@@ -431,7 +431,7 @@ nautilus_property_browser_destroy (GtkObject *object)
 	
 	property_browser = NAUTILUS_PROPERTY_BROWSER (object);
 
-	eel_nullify_cancel (&property_browser->details->dialog);
+	eel_remove_weak_pointer (&property_browser->details->dialog);
 	
 	g_free (property_browser->details->path);
 	g_free (property_browser->details->category);
@@ -1102,7 +1102,7 @@ add_new_pattern (NautilusPropertyBrowser *property_browser)
 				(EelIconSelectionFunction) add_pattern_to_browser,
 				property_browser);						   
 
-		eel_nullify_when_destroyed (&property_browser->details->dialog);
+		eel_add_weak_pointer (&property_browser->details->dialog);
 	}
 }
 
@@ -1189,11 +1189,10 @@ show_color_selection_window (GtkWidget *widget, gpointer *data)
 	
 	/* connect the signals to the new dialog */
 	
-	eel_nullify_when_destroyed (&property_browser->details->dialog);
+	eel_add_weak_pointer (&property_browser->details->dialog);
 
-	g_signal_connect (property_browser->details->dialog,
-				 "clicked",
-				 (GtkSignalFunc) add_color_to_browser, property_browser);
+	g_signal_connect (property_browser->details->dialog, "clicked",
+			  G_CALLBACK (add_color_to_browser), property_browser);
 	gtk_window_set_position (GTK_WINDOW (property_browser->details->dialog), GTK_WIN_POS_MOUSE);
 	gtk_widget_show (GTK_WIDGET(property_browser->details->dialog));
 
@@ -1216,15 +1215,12 @@ add_new_color (NautilusPropertyBrowser *property_browser)
 		property_browser->details->dialog = gtk_color_selection_dialog_new (_("Select a color to add:"));
 		color_dialog = GTK_COLOR_SELECTION_DIALOG (property_browser->details->dialog);
 		
-		eel_nullify_when_destroyed (&property_browser->details->dialog);
+		eel_add_weak_pointer (&property_browser->details->dialog);
 
-		g_signal_connect (color_dialog->ok_button,
-				    "clicked",
-				    (GtkSignalFunc) show_color_selection_window, property_browser);
-		g_signal_connect_swapped (color_dialog->cancel_button,
-					  "clicked",
-					  (GtkSignalFunc) gtk_widget_destroy,
-					  color_dialog);
+		g_signal_connect (color_dialog->ok_button, "clicked",
+				  G_CALLBACK (show_color_selection_window), property_browser);
+		g_signal_connect_swapped (color_dialog->cancel_button, "clicked",
+					  G_CALLBACK (gtk_widget_destroy), color_dialog);
 		gtk_widget_hide(color_dialog->help_button);
 
 		gtk_window_set_position (GTK_WINDOW (color_dialog), GTK_WIN_POS_MOUSE);
@@ -1384,11 +1380,10 @@ add_new_emblem (NautilusPropertyBrowser *property_browser)
 	} else {
 		property_browser->details->dialog = nautilus_emblem_dialog_new (property_browser);		
 
-		eel_nullify_when_destroyed (&property_browser->details->dialog);
+		eel_add_weak_pointer (&property_browser->details->dialog);
 
-		g_signal_connect (property_browser->details->dialog,
-				    "clicked",
-				    (GtkSignalFunc) emblem_dialog_clicked, property_browser);
+		g_signal_connect (property_browser->details->dialog, "clicked",
+				  G_CALLBACK (emblem_dialog_clicked), property_browser);
 		gtk_window_set_position (GTK_WINDOW (property_browser->details->dialog), GTK_WIN_POS_MOUSE);
 		gtk_widget_show (GTK_WIDGET(property_browser->details->dialog));
 	}

@@ -30,13 +30,14 @@
 #include <gtk/gtkdnd.h>
 
 /* Drag & Drop target names. */
-#define NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE "x-special/gnome-icon-list"
-#define NAUTILUS_ICON_DND_URI_LIST_TYPE        "text/uri-list"
-#define NAUTILUS_ICON_DND_TEXT_TYPE            "text/plain"
-#define NAUTILUS_ICON_DND_URL_TYPE	          "_NETSCAPE_URL"
-#define NAUTILUS_ICON_DND_COLOR_TYPE           "application/x-color"
-#define NAUTILUS_ICON_DND_BGIMAGE_TYPE         "property/bgimage"
-#define NAUTILUS_ICON_DND_KEYWORD_TYPE         "property/keyword"
+#define NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE  "x-special/gnome-icon-list"
+#define NAUTILUS_ICON_DND_URI_LIST_TYPE         "text/uri-list"
+#define NAUTILUS_ICON_DND_TEXT_TYPE             "text/plain"
+#define NAUTILUS_ICON_DND_URL_TYPE	        "_NETSCAPE_URL"
+#define NAUTILUS_ICON_DND_COLOR_TYPE            "application/x-color"
+#define NAUTILUS_ICON_DND_BGIMAGE_TYPE          "property/bgimage"
+#define NAUTILUS_ICON_DND_KEYWORD_TYPE          "property/keyword"
+#define NAUTILUS_ICON_DND_RESET_BACKGROUND_TYPE "x-special/gnome-reset-background"
 
 /* Item of the drag selection list */
 typedef struct {
@@ -54,7 +55,8 @@ typedef enum {
 	NAUTILUS_ICON_DND_COLOR,
 	NAUTILUS_ICON_DND_BGIMAGE,
 	NAUTILUS_ICON_DND_KEYWORD,
-	NAUTILUS_ICON_DND_TEXT
+	NAUTILUS_ICON_DND_TEXT,
+	NAUTILUS_ICON_DND_RESET_BACKGROUND
 } NautilusIconDndTargetType;
 
 /* drag&drop-related information. */

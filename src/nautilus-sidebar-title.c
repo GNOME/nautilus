@@ -439,16 +439,10 @@ static void
 update_icon (NautilusSidebarTitle *sidebar_title)
 {
 	GdkPixbuf *pixbuf;
-	char *uri;
 	char *icon_name;
 	gboolean leave_pixbuf_unchanged;
 	
 	leave_pixbuf_unchanged = FALSE;
-	uri = NULL;
-	icon_name = NULL;
-	if (sidebar_title->details->file) {
-		uri = nautilus_file_get_uri (sidebar_title->details->file);
-	}	
 
 	/* see if the current content view is specifying an icon */
 	icon_name = get_property_from_component (sidebar_title, "icon_name");
@@ -470,7 +464,6 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 		 leave_pixbuf_unchanged = TRUE;
 	}
 	
-	g_free (uri);	
 	g_free (icon_name);
 	
 	if (pixbuf != NULL) {

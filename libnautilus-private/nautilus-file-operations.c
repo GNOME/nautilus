@@ -88,7 +88,7 @@ transfer_info_new (GtkWidget *parent_view)
 	result = g_new0 (TransferInfo, 1);
 	result->parent_view = parent_view;
 	
-	eel_nullify_when_destroyed (&result->parent_view);
+	eel_add_weak_pointer (&result->parent_view);
 	
 	return result;
 }
@@ -96,7 +96,7 @@ transfer_info_new (GtkWidget *parent_view)
 static void
 transfer_info_destroy (TransferInfo *transfer_info)
 {
-	eel_nullify_cancel (&transfer_info->parent_view);
+	eel_remove_weak_pointer (&transfer_info->parent_view);
 	
 	if (transfer_info->progress_dialog != NULL) {
 		nautilus_file_operations_progress_done (transfer_info->progress_dialog);
@@ -2048,7 +2048,7 @@ new_folder_transfer_callback (GnomeVFSAsyncHandle *handle,
 	switch (progress_info->phase) {
 
 	case GNOME_VFS_XFER_PHASE_COMPLETED:
-		eel_nullify_cancel (&state->parent_view);
+		eel_remove_weak_pointer (&state->parent_view);
 		g_free (state);
 		return 0;
 
@@ -2109,7 +2109,7 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 	state->done_callback = done_callback;
 	state->data = data;
 	state->parent_view = parent_view;
-	eel_nullify_when_destroyed (&state->parent_view);
+	eel_add_weak_pointer (&state->parent_view);
 
 	/* pass in the target directory and the new folder name as a destination URI */
 	parent_uri = gnome_vfs_uri_new (parent_dir);

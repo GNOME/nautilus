@@ -859,6 +859,26 @@ nautilus_window_unrealize (GtkWidget *widget)
 }
 
 static void
+nautilus_window_destroy (GtkObject *object)
+{
+	NautilusWindow *window;
+	
+	window = NAUTILUS_WINDOW (object);
+
+	nautilus_window_manage_views_destroy (window);
+
+	eel_g_object_list_free (window->sidebar_panels);
+	window->sidebar_panels = NULL;
+
+	if (window->content_view != NULL) {
+		gtk_object_destroy (GTK_OBJECT (window->content_view));
+		window->content_view = NULL;
+	}
+
+	GTK_OBJECT_CLASS (parent_class)->destroy (object);
+}
+
+static void
 nautilus_window_finalize (GObject *object)
 {
 	NautilusWindow *window;
@@ -882,8 +902,6 @@ nautilus_window_finalize (GObject *object)
 	}
 
 	nautilus_file_unref (window->details->viewed_file);
-
-	g_list_free (window->sidebar_panels);
 
 	free_stored_viewers (window);
 
@@ -1205,7 +1223,7 @@ update_extra_viewer_in_view_as_menus (NautilusWindow *window,
 	/* Remove menu before changing contents so it is resized properly
 	 * when reattached later in this function.
 	 */
-	gtk_widget_ref (menu);
+	g_object_ref (menu);
 	gtk_option_menu_remove_menu (GTK_OPTION_MENU (window->view_as_option_menu));
 
 	/* Remove old menu item, and either remove or add separator. */
@@ -1228,7 +1246,7 @@ update_extra_viewer_in_view_as_menus (NautilusWindow *window,
 	}
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (window->view_as_option_menu), menu);
-	gtk_widget_unref (menu);
+	g_object_unref (menu);
 
 	/* Also update the Bonobo View menu item */
 	if (id == NULL) {
@@ -1502,7 +1520,7 @@ nautilus_window_add_sidebar_panel (NautilusWindow *window,
 	
 	nautilus_sidebar_add_panel (window->sidebar, sidebar_panel);
 
-	gtk_widget_ref (GTK_WIDGET (sidebar_panel));
+	g_object_ref (sidebar_panel);
 	window->sidebar_panels = g_list_prepend (window->sidebar_panels, sidebar_panel);
 }
 
@@ -1518,7 +1536,7 @@ nautilus_window_remove_sidebar_panel (NautilusWindow *window, NautilusViewFrame 
 	
 	nautilus_sidebar_remove_panel (window->sidebar, sidebar_panel);
 	window->sidebar_panels = g_list_remove (window->sidebar_panels, sidebar_panel);
-	gtk_widget_unref (GTK_WIDGET (sidebar_panel));
+	g_object_unref (sidebar_panel);
 }
 
 void
@@ -1713,7 +1731,7 @@ nautilus_send_history_list_changed (void)
 static void
 free_history_list (void)
 {
-	eel_gtk_object_list_free (history_list);
+	eel_g_object_list_free (history_list);
 	history_list = NULL;
 }
 
@@ -1813,14 +1831,14 @@ nautilus_window_add_current_location_to_history_list (NautilusWindow *window)
 void
 nautilus_window_clear_forward_list (NautilusWindow *window)
 {
-	eel_gtk_object_list_free (window->forward_list);
+	eel_g_object_list_free (window->forward_list);
 	window->forward_list = NULL;
 }
 
 void
 nautilus_window_clear_back_list (NautilusWindow *window)
 {
-	eel_gtk_object_list_free (window->back_list);
+	eel_g_object_list_free (window->back_list);
 	window->back_list = NULL;
 }
 
@@ -2213,6 +2231,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	G_OBJECT_CLASS (class)->finalize = nautilus_window_finalize;
 	G_OBJECT_CLASS (class)->get_property = nautilus_window_get_property;
 	G_OBJECT_CLASS (class)->set_property = nautilus_window_set_property;
+	GTK_OBJECT_CLASS (class)->destroy = nautilus_window_destroy;
 	GTK_WIDGET_CLASS (class)->show = nautilus_window_show;
 	GTK_WIDGET_CLASS (class)->unrealize = nautilus_window_unrealize;
 	GTK_WIDGET_CLASS (class)->realize = nautilus_window_realize;

@@ -2205,7 +2205,7 @@ nautilus_file_get_display_name (NautilusFile *file)
 			if (has_local_path (file)) {
 				if (g_getenv ("G_BROKEN_FILENAMES") != NULL
 				    || !g_utf8_validate (name, -1, NULL)) {
-					utf8_name = g_filename_to_utf8 (name, -1, NULL, NULL, NULL);
+					utf8_name = g_locale_to_utf8 (name, -1, NULL, NULL, NULL);
 					if (utf8_name != NULL) {
 						g_free (name);
 						name = utf8_name;

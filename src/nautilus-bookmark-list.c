@@ -29,20 +29,16 @@
 #include "nautilus-bookmark-list.h"
 
 #include "nautilus-bookmark-parsing.h"
-
-#include <stdlib.h>
-
-#include <gtk/gtksignal.h>
-
-#include <libnautilus-private/nautilus-file-utilities.h>
+#include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-gtk-extensions.h>
-#include <libnautilus-private/nautilus-icon-factory.h>
 #include <eel/eel-string.h>
 #include <eel/eel-xml-extensions.h>
-
+#include <gtk/gtksignal.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+#include <stdlib.h>
 
 enum {
 	CONTENTS_CHANGED,
@@ -107,7 +103,7 @@ static void
 clear (NautilusBookmarkList *bookmarks)
 {
 	g_list_foreach (bookmarks->list, stop_monitoring_one, bookmarks);
-	eel_gtk_object_list_free (bookmarks->list);
+	eel_g_object_list_free (bookmarks->list);
 	bookmarks->list = NULL;
 }
 

@@ -29,6 +29,7 @@
 
 #include "nautilus-window.h"
 
+void                    nautilus_window_manage_views_destroy         (NautilusWindow         *window);
 void                    nautilus_window_manage_views_finalize        (NautilusWindow         *window);
 void                    nautilus_window_open_location                (NautilusWindow         *window,
                                                                       const char             *location);
