@@ -102,47 +102,69 @@ fi
 
 %defattr(0555, bin, bin)
 %doc AUTHORS COPYING COPYING.LIB ChangeLog NEWS README
-%{prefix}/bin/*
-%{prefix}/lib/lib*.so*
+%{prefix}/bin/*.sh
+%{prefix}/bin/gnome-db2html2
+%{prefix}/bin/gnome-info2html2
+%{prefix}/bin/gnome-man2html2
+%{prefix}/bin/hyperbola
+%{prefix}/bin/nautilus
+%{prefix}/bin/nautilus-authenticate
+%{prefix}/bin/nautilus-content-loser
+%{prefix}/bin/nautilus-hardware-view
+%{prefix}/bin/nautilus-history-view
+%{prefix}/bin/nautilus-mozilla-content-view
+%{prefix}/bin/nautilus-music-view
+%{prefix}/bin/nautilus-notes
+%{prefix}/bin/nautilus-rpm-view
+%{prefix}/bin/nautilus-sample-content-view
+%{prefix}/bin/nautilus-sidebar-loser
+%{prefix}/bin/nautilus-tree-view
+%{prefix}/bin/ntl-web-browser
+%{prefix}/bin/ntl-web-search
+%{prefix}/bin/run-nautilus
+%{prefix}/bin/test-ft
+%{prefix}/bin/test-rsvg
+%{prefix}/lib/*.0
+%{prefix}/lib/*.so
+%{prefix}/lib/vfs/modules/*.so
+%{prefix}/share/gnome/apps/Applications/*.desktop
+%{prefix}/share/hyperbola/maps/*.map
 
 %defattr (0444, bin, bin)
-%config /etc/vfs/modules/*conf
-%{prefix}/share/gnome/apps/Applications/*.desktop
-%{prefix}/share/hyperbola/maps/*map
-%{prefix}/share/locale/da/LC_MESSAGES/*.mo
-%{prefix}/share/locale/fr/LC_MESSAGES/*.mo
-%{prefix}/share/locale/gl/LC_MESSAGES/*.mo
-%{prefix}/share/locale/ja/LC_MESSAGES/*.mo
-%{prefix}/share/locale/ko/LC_MESSAGES/*.mo
-%{prefix}/share/locale/no/LC_MESSAGES/*.mo
-%{prefix}/share/locale/ru/LC_MESSAGES/*.mo
-%{prefix}/share/locale/sv/LC_MESSAGES/*.mo
-%{prefix}/share/locale/tr/LC_MESSAGES/*.mo
+%{config} %{sysconfig}/vfs/modules/*.conf
+%{prefix}/share/locale/*/LC_MESSAGES/*.mo
 %{prefix}/share/nautilus/*.xml
 %{prefix}/share/nautilus/backgrounds/*.jpg
 %{prefix}/share/nautilus/backgrounds/*.png
 %{prefix}/share/nautilus/emblems/*.gif
+%{prefix}/share/nautilus/emblems/*.png
+%{prefix}/share/nautilus/linksets/*.xml
 %{prefix}/share/nautilus/top/*.html
-%{prefix}/share/nautilus/top/*.link
+%{prefix}/share/nautilus/top/*.xml
+%{prefix}/share/nautilus/top/Computer
+%{prefix}/share/nautilus/top/Services
 %{prefix}/share/oaf/*.oafinfo
-%{prefix}/share/pixmaps/nautilus*.*
-%{prefix}/share/pixmaps/trilobite*
+%{prefix}/share/pixmaps/*.png
 %{prefix}/share/pixmaps/nautilus/*.gif
 %{prefix}/share/pixmaps/nautilus/*.png
-%{prefix}/share/pixmaps/nautilus/arlo/*
-%{prefix}/share/pixmaps/nautilus/eazel/*.png
 %{prefix}/share/pixmaps/nautilus/*.svg
+%{prefix}/share/pixmaps/nautilus/*.xml
+%{prefix}/share/pixmaps/nautilus/arlo/*.png
+%{prefix}/share/pixmaps/nautilus/arlo/*.xml
+%{prefix}/share/pixmaps/nautilus/arlo/backgrounds/*.png
+%{prefix}/share/pixmaps/nautilus/arlo/sidebar_tab_pieces/*.png
+%{prefix}/share/pixmaps/nautilus/eazel/*.png
 %{prefix}/share/pixmaps/nautilus/eazel/*.xml
+%{prefix}/share/pixmaps/nautilus/vector/*.png
 %{prefix}/share/pixmaps/nautilus/vector/*.svg
 %{prefix}/share/pixmaps/nautilus/vector/*.xml
+%{prefix}/share/websearch/*.eng
 
 %files devel
 
 %defattr(0555, bin, bin)
-%{prefix}/lib/*a
+%{prefix}/lib/*.la
+%{prefix}/lib/vfs/modules/*.la
 
 %defattr(0444, bin, bin)
-%{prefix}/idl/*.idl
 %{prefix}/include/libnautilus/*.h
-%{prefix}/include/librsvg/*.h
-%{prefix}/include/libtrilobite/*.h
