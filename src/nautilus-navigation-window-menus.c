@@ -33,6 +33,7 @@
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-property-browser.h"
 #include "nautilus-signaller.h"
+#include "nautilus-theme-selector.h"
 #include "nautilus-window-private.h"
 
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
@@ -133,6 +134,7 @@ bookmark_holder_free (BookmarkHolder *bookmark_holder)
  */
 
 #define NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM			"/Edit/Customize"
+#define NAUTILUS_MENU_PATH_CHANGE_APPEARANCE_ITEM	"/Edit/Change_Appearance"
 
 #define NAUTILUS_MENU_PATH_USER_LEVEL				"/UserLevel"
 #define NAUTILUS_MENU_PATH_NOVICE_ITEM				"/UserLevel/Novice"
@@ -313,6 +315,13 @@ customize_callback (BonoboUIHandler *ui_handler,
 	nautilus_property_browser_show ();
 }
 
+static void
+change_appearance_callback (BonoboUIHandler *ui_handler, 
+				  gpointer user_data,
+				  const char *path)
+{
+	nautilus_theme_selector_show ();
+}
 
 #ifdef WINDOW_ITEMS_TEST
 static void
@@ -1152,6 +1161,19 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 0,
         				 customize_callback,
         				 NULL);
+	
+	bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_CHANGE_APPEARANCE_ITEM,
+        				 _("_Change Appearance..."),
+        				 _("Displays a list of alternative appearances, to allow you to change the appearance"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 0,
+        				 0,
+        				 change_appearance_callback,
+        				 NULL);
+
 
 	/* Go menu */
         new_top_level_menu (window, NAUTILUS_MENU_PATH_GO_MENU, _("_Go"));

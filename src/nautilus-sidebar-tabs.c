@@ -114,8 +114,6 @@ static int      nautilus_sidebar_tabs_expose           (GtkWidget              *
 static void     nautilus_sidebar_tabs_destroy          (GtkObject              *object);
 static void     nautilus_sidebar_tabs_size_allocate    (GtkWidget              *widget,
 						        GtkAllocation          *allocatoin);
-static void     nautilus_sidebar_tabs_size_request     (GtkWidget              *widget,
-						        GtkRequisition         *requisition);
 
 static void	nautilus_sidebar_tabs_load_tab_pieces   (NautilusSidebarTabs *sidebar_tabs, const char *tab_piece_directory);
 static void	nautilus_sidebar_tabs_unload_tab_pieces (NautilusSidebarTabs *sidebar_tabs);
@@ -138,7 +136,6 @@ nautilus_sidebar_tabs_initialize_class (NautilusSidebarTabsClass *class)
 	
 	object_class->destroy = nautilus_sidebar_tabs_destroy;
 	widget_class->expose_event = nautilus_sidebar_tabs_expose;
-	widget_class->size_request = nautilus_sidebar_tabs_size_request;
 	widget_class->size_allocate = nautilus_sidebar_tabs_size_allocate;
 }
 
@@ -446,21 +443,6 @@ nautilus_sidebar_tabs_size_allocate(GtkWidget *widget, GtkAllocation *allocation
          widget->allocation.height -= delta_height;
          widget->allocation.y += delta_height;
     }
-}
-
-static void
-nautilus_sidebar_tabs_size_request (GtkWidget *widget, GtkRequisition *requisition)
-{
-	NautilusSidebarTabs *sidebar_tabs = NAUTILUS_SIDEBAR_TABS(widget);
-	
-	/* layout tabs to make sure height measurement is valid */
-	measure_total_height (sidebar_tabs);
- 	
-	requisition->width = widget->parent ? widget->parent->allocation.width: 136;  
-	if (sidebar_tabs->details->title_mode)
-		requisition->height = sidebar_tabs->details->tab_height;
-	else
-		requisition->height = sidebar_tabs->details->total_height + TAB_TOP_GAP;
 }
 
 /* draw a single tab using the default, non-themed approach */

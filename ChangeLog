@@ -1,3 +1,49 @@
+2000-08-13  Andy Hertzfeld  <andy@eazel.com>
+
+	added a separate theme selection window and removed theme selection from the
+	property browser
+	
+	* src/Makefile.am:
+	* src/nautilus-theme-selector.h:
+	added nautilus theme selector class		
+	
+	* src/nautilus-theme-selector.c:
+	(nautilus_theme_selector_initialize_class),
+	(nautilus_theme_selector_initialize),
+	(nautilus_theme_selector_destroy), (nautilus_theme_selector_new),
+	(nautilus_theme_selector_show),
+	(nautilus_theme_selector_delete_event_callback),
+	(add_new_button_callback), (remove_button_callback),
+	(nautilus_theme_selector_highlight_by_name),
+	(nautilus_theme_selector_theme_changed),
+	(theme_select_row_callback), (vfs_file_exists), (has_image_file),
+	(make_theme_description), (set_preferred_font_for_cell),
+	(add_theme), (populate_list_with_themes):
+	added a class that presents a window that describes the existing themes and
+	allows the user to switch between them.
+	
+	* src/nautilus-window-menus.c: (change_appearance_callback),
+	(nautilus_window_initialize_menus):
+	added a menu item to invoke the theme selector
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize), (make_category):
+	removed support for themes from the property browser
+	* data/browser.xml:
+	removed the themes browser category
+	
+	* icons/Makefile.am:
+	removed the themes.png icon
+	* icons/arlo/arlo.xml:
+	* icons/default.xml:
+	* icons/vector/vector.xml:
+	added descriptions for display in the theme selection
+
+	* src/nautilus-sidebar-tabs.c:
+	(nautilus_sidebar_tabs_initialize_class),
+	(nautilus_sidebar_tabs_size_allocate):
+	removed unnecessary override of size_request
+	
 2000-08-12  Raph Levien  <raph@acm.org>
 
 	* librsvg/rsvg-ft.c: Got glyph cache working. Eviction when
