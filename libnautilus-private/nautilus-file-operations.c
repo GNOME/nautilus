@@ -497,6 +497,7 @@ typedef enum {
 	ERROR_NOT_WRITABLE,
 	ERROR_NOT_ENOUGH_PERMISSIONS,
 	ERROR_NO_SPACE,
+	ERROR_SOURCE_IN_TARGET,
 	ERROR_OTHER
 } NautilusFileOperationsErrorKind;
 
@@ -581,10 +582,19 @@ build_error_string (const char *source_name, const char *target_name,
 		 */
 		switch (operation_kind) {
 		case TRANSFER_MOVE:
-			if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
+			switch (error_kind) {
+			case ERROR_NOT_ENOUGH_PERMISSIONS:
 				error_string = _("Error while moving.\n\n"
 						 "\"%s\" cannot be moved because you do not have "
 						 "permissions to change it or its parent folder.");
+				break;
+			case ERROR_SOURCE_IN_TARGET:
+				error_string = _("Error while moving.\n\n"
+						 "\"%s\" cannot be moved because it or its parent folder "
+						 "are contained in the destination.");
+				break;
+			default:
+				break;
 			}
 			break;
 		case TRANSFER_MOVE_TO_TRASH:
@@ -862,6 +872,10 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 		} else if (progress_info->vfs_status == GNOME_VFS_ERROR_NO_SPACE) {
 			error_location = ERROR_LOCATION_TARGET;
 			error_kind = ERROR_NO_SPACE;
+		} else if (progress_info->vfs_status == GNOME_VFS_ERROR_DIRECTORY_NOT_EMPTY
+			   && transfer_info->kind == TRANSFER_MOVE) {
+			error_location = ERROR_LOCATION_SOURCE_OR_PARENT;
+			error_kind = ERROR_SOURCE_IN_TARGET;
 		}
 
 		text = build_error_string (formatted_source_name, formatted_target_name,
@@ -890,7 +904,8 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			break;
 		}
 
-		if (error_location == ERROR_LOCATION_TARGET) {
+		if (error_location == ERROR_LOCATION_TARGET ||
+		    error_kind == ERROR_SOURCE_IN_TARGET) {
 			/* We can't continue, just tell the user. */
 			eel_run_simple_dialog (parent_for_error_dialog (transfer_info),
 				TRUE, text, dialog_title, _("Stop"), NULL);
