@@ -64,10 +64,10 @@ struct _NautilusRPMViewDetails {
         GtkWidget *package_distribution;
         GtkWidget *package_vendor;
         
-        GtkWidget *package_description;
-        
-        GtkVBox *package_container;
-
+        GtkWidget *package_description;    
+        GtkVBox   *package_container;
+	
+	GtkWidget *package_file_list;
         int background_connection;
 };
 
@@ -130,6 +130,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
   	NautilusBackground *background;
 	GtkWidget *temp_box, *temp_title_box, *temp_widget;
 	GtkTable *table;
+  	static gchar *list_headers[] = { "Package Contents" };
 	
 	rpm_view->details = g_new0 (NautilusRPMViewDetails, 1);
 
@@ -269,9 +270,23 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	gtk_box_pack_start (GTK_BOX (temp_title_box), GTK_WIDGET(table), 0, 0, 2);	
 	gtk_widget_show (GTK_WIDGET(table));
 	
+	/* add the list of files contained in the package */
 
+  	temp_widget = gtk_scrolled_window_new(NULL, NULL);
+  	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(temp_widget),
+				 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+   	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), temp_widget, 0, 0, 8);	
+  	gtk_widget_show(temp_widget);
+ 
+  	rpm_view->details->package_file_list = gtk_clist_new_with_titles(1, list_headers);
+  	gtk_widget_set_usize(rpm_view->details->package_file_list, -1, 104);
+  	gtk_clist_column_titles_passive(GTK_CLIST(rpm_view->details->package_file_list));
+  	gtk_container_add (GTK_CONTAINER (temp_widget), rpm_view->details->package_file_list);	
+  	gtk_widget_show(rpm_view->details->package_file_list);
+	
+	/* add the description */
 	rpm_view->details->package_description = gtk_label_new ("Description");
-	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), rpm_view->details->package_description, 0, 0, 2);	
+	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), rpm_view->details->package_description, 0, 0, 8);	
 	gtk_widget_show (rpm_view->details->package_description);
 	
 	/* prepare ourselves to receive dropped objects */
@@ -360,12 +375,15 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	HeaderIterator iterator;
 	Header header_info, signature;
 	char buffer[512];
-	int iterator_tag, type, data_size, result;
-	char *data_ptr, *temp_str;
-	int file_descriptor;
-	int *integer_ptr;
-	char *temp_version = NULL;
-	char *temp_release = NULL;
+	gint iterator_tag, type, data_size, result, index, file_count;
+	gchar *data_ptr, *temp_str;
+	gint file_descriptor;
+	gint *integer_ptr;
+  	
+	gchar **path = NULL;
+	gchar **links = NULL;	
+	gchar *temp_version = NULL;
+	gchar *temp_release = NULL;
 	const char *path_name = uri + 7;
 	
 	file_descriptor = open(path_name, O_RDONLY, 0644);
@@ -448,6 +466,34 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 		/* close the package */
 		close(file_descriptor);	
 	}
+	
+	/* add the files in the package to the list */
+
+  	gtk_clist_freeze(GTK_CLIST(rpm_view->details->package_file_list));
+  	gtk_clist_clear(GTK_CLIST(rpm_view->details->package_file_list));
+  	
+	headerGetEntry(header_info, RPMTAG_FILENAMES, NULL, (void **)&path, &file_count);
+  	headerGetEntry(header_info, RPMTAG_FILELINKTOS, NULL, (void **)&links, NULL);
+	
+  	for (index = 0; index < file_count; index++) {
+  
+    		if (*(links[index]) == '\0')
+      			temp_str = path[index];
+    		else {
+      			g_snprintf(buffer, 511, "%s -> %s", path[index], links[index]);
+      			temp_str = buffer;
+    		}
+    		gtk_clist_append(GTK_CLIST(rpm_view->details->package_file_list), &temp_str);
+ 	}
+  	
+
+	temp_str = g_strdup_printf("Package Contents: %d files", file_count);
+	gtk_clist_set_column_title (GTK_CLIST(rpm_view->details->package_file_list), 0, temp_str);
+	g_free(temp_str);
+	
+	g_free(path);
+  	g_free(links);
+  	gtk_clist_thaw(GTK_CLIST(rpm_view->details->package_file_list));
 	
 	/* determine if the package is installed or not */
 	
