@@ -901,7 +901,6 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 			- container->details->right_margin)
 		/ EEL_CANVAS (container)->pixels_per_unit;
 
-	icon = icons->data;
 	grid_width = get_grid_width (container);
 	icons_per_line = floor (canvas_width / grid_width);
 
