@@ -3306,7 +3306,7 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 			status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL);
 			if (status == NAUTILUS_REQUEST_DONE) {
 				/* This means no contents at all were readable */
-				return g_strdup ("?");
+				return g_strdup ("? bytes");
 			}
 			return g_strdup ("...");
 		} else if (strcmp (attribute_name, "deep_file_count") == 0
