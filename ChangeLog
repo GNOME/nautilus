@@ -1,3 +1,12 @@
+2001-02-06  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/file-manager/fm-properties-window.c:
+	(widget_destroy_callback), (icon_selected_callback),
+	(icon_cancel_pressed), (list_icon_selected_callback),
+	(entry_activated), (select_image_button_callback):
+	fixed bug 6280, custom icon selection should use gnome-icon-sel
+	instead of the generic file browser, so now it does.
+	 
 2001-02-06  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Michael Engber  <engber@eazel.com>
@@ -35,8 +44,6 @@
 	* Makefile.am: distribute .in versions of xml-i18n-tools.
 	
 2001-02-06  John Sullivan  <sullivan@eazel.com>
-
-	reviewed by: <delete if not using a buddy>
 
 	Fixed bug 5157 (Nautilus won't display directories for
 	which it thinks it doesn't have permissions)
