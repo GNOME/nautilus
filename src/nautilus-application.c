@@ -348,7 +348,11 @@ nautilus_app_startup (NautilusApp *app,
 			}
 		}
 	}
-	if (!manage_desktop && first_window == NULL) {
+	/* FIXME bugzilla.eazel.com 1051: Change this logic back so it won't
+	 * make a new window when asked to manage the desktop, once we have
+	 * a way to get rid of the desktop.
+	 */
+	if (/* !manage_desktop && */ first_window == NULL) {
 		first_window = nautilus_app_create_window (app);
 		nautilus_window_go_home (first_window);
 	}

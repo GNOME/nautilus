@@ -315,10 +315,10 @@ nautilus_window_goto_uri (NautilusWindow *window, const char *uri)
 
 static void
 nautilus_window_goto_uri_callback (GtkWidget *widget,
-                             const char *uri,
-                             GtkWidget *window)
+				   const char *uri,
+				   GtkWidget *window)
 {
-	nautilus_window_goto_uri(NAUTILUS_WINDOW(window), uri);
+	nautilus_window_goto_uri (NAUTILUS_WINDOW (window), uri);
 }
 
 static void
@@ -428,7 +428,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	window->sidebar = nautilus_sidebar_new ();
 	gtk_widget_show (GTK_WIDGET (window->sidebar));
 	gtk_container_add (GTK_CONTAINER (temp_frame), GTK_WIDGET (window->sidebar));
-	gtk_signal_connect (GTK_OBJECT(window->sidebar), "location_changed",
+	gtk_signal_connect (GTK_OBJECT (window->sidebar), "location_changed",
 			    nautilus_window_goto_uri_callback, window);
 	
 	/* FIXME: We should use inheritance instead of these special cases

@@ -50,6 +50,11 @@
 #include "nautilus-window-private.h"
 #include "nautilus-location-bar.h"
 
+/* FIXME: We should use inheritance instead of these special cases
+ * for the desktop window.
+ */
+#include "nautilus-desktop-window.h"
+
 /*#define EXTREME_DEBUGGING*/
 
 #ifdef EXTREME_DEBUGGING
@@ -640,6 +645,7 @@ nautilus_window_request_location_change (NautilusWindow *window,
                                          NautilusViewFrame *requesting_view)
 {  
         NautilusWindow *new_window;
+        gboolean create_new_window;
 
 	loc->requested_uri = gnome_vfs_unescape_string (loc->requested_uri);
 
@@ -647,13 +653,23 @@ nautilus_window_request_location_change (NautilusWindow *window,
 		return;
         }
         
-        if (loc->new_window_requested) {
+        create_new_window = loc->new_window_requested;
+
+	/* FIXME: We should use inheritance instead of these special cases
+	 * for the desktop window.
+	 */
+        if (NAUTILUS_IS_DESKTOP_WINDOW (window) && window->content_view != NULL) {
+                create_new_window = TRUE;
+        }
+
+        if (create_new_window) {
                 new_window = nautilus_app_create_window (NAUTILUS_APP(window->app));
                 nautilus_window_goto_uri (new_window, loc->requested_uri);
         } else {
-                nautilus_window_begin_location_change (window, loc,
-                                                       requesting_view,
-                                                       NAUTILUS_LOCATION_CHANGE_STANDARD, 0);
+                nautilus_window_begin_location_change
+                        (window, loc,
+                         requesting_view,
+                         NAUTILUS_LOCATION_CHANGE_STANDARD, 0);
         }
 }
 
