@@ -1,3 +1,10 @@
+2000-06-08  Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/install/command-line/Makefile.am:
+	Fixed include path to point to top level trilobite directory.
+	Could not build from a clean tree because helixcode-utils.h could
+	not be found.
+
 2000-06-08  Darin Adler  <darin@eazel.com>
 
 	* src/nautilus-window-manage-views.c:
