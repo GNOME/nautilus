@@ -910,14 +910,76 @@ delete_one (gpointer data, gpointer user_data)
 
 }
 
+static gboolean
+confirm_delete (FMDirectoryView *directory_view, GList *files)
+{
+        GtkWidget *dialog;
+        GtkWidget *prompt_widget;
+        GtkWidget *top_widget;
+        char *prompt;
+        int file_count;
+        int reply;
+
+        g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
+
+        file_count = g_list_length (files);
+        g_assert (file_count > 0);
+
+        /* Don't use GNOME_STOCK_BUTTON_CANCEL because the
+         * red X is confusing in this context.
+         */
+        dialog = gnome_dialog_new (_("Delete Selection"),
+                                   _("Delete"),
+                                   _("Cancel"),
+                                   NULL);
+        gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
+        gnome_dialog_close_hides (GNOME_DIALOG (dialog), TRUE);
+
+        top_widget = gtk_widget_get_toplevel (GTK_WIDGET (directory_view));
+        g_assert (GTK_IS_WINDOW (top_widget));
+        gnome_dialog_set_parent (GNOME_DIALOG (dialog), GTK_WINDOW (top_widget));
+        
+        if (file_count == 1) {
+                GnomeVFSURI *vfs_uri;
+                char *text_uri;
+                char *short_name;
+
+                text_uri = nautilus_file_get_name (NAUTILUS_FILE (files->data));
+                vfs_uri = gnome_vfs_uri_new (text_uri);
+                g_free (text_uri);
+
+                short_name = gnome_vfs_uri_extract_short_name (vfs_uri);
+                prompt = g_strdup_printf (_("Are you sure you want to delete \"%s\"?"), short_name);
+                g_free (short_name);
+        } else {
+                prompt = g_strdup_printf (_("Are you sure you want to delete the %d selected items?"), file_count);
+        }
+
+        prompt_widget = gtk_label_new (prompt);
+        g_free (prompt);
+        
+        gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
+                            prompt_widget,
+                            TRUE, TRUE, GNOME_PAD);
+
+        gtk_widget_show_all (dialog);
+
+        reply = gnome_dialog_run (GNOME_DIALOG (dialog));
+
+        return reply == 0;
+}
+
 static void
 delete_cb (GtkMenuItem *item, GList *files)
 {
 	FMDirectoryView *directory_view;
 
-	directory_view = FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view"));
+	directory_view = FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), 
+	                                    "directory_view"));
 
-	g_list_foreach (files, delete_one, directory_view);
+	if (confirm_delete (directory_view, files)) {
+	        g_list_foreach (files, delete_one, directory_view);    
+	}
 }
 
 /* handle the open command */
@@ -1056,7 +1118,7 @@ fm_directory_view_real_append_selection_context_menu_items (FMDirectoryView *vie
 
 	/* create and install the "Delete" item */
 	
-	menu_item = gtk_menu_item_new_with_label ("Delete");
+	menu_item = gtk_menu_item_new_with_label (_("Delete..."));
 	gtk_object_set_data_full (GTK_OBJECT (menu_item), "directory_view",
 				  view, (GtkDestroyNotify) gtk_object_unref);
 	gtk_object_ref (GTK_OBJECT (view));

@@ -1,8 +1,20 @@
+2000-02-25  John Sullivan <sullivan@eazel.com>
+
+        * src/file-manager/fm-directory-view-c:
+         (confirm-delete): New function, puts up a dialog confirming
+         whether to delete the selected items.
+         (delete_cb): Checks with confirm_delete before deleting.
+         It's too easy to accidentally delete files without this, as
+         I discovered yesterday in my foolish experimentations.
+         (fm_directory_view_real_append_selection_context_menu_items):
+         Renamed "Delete" menu item to "Delete..." to make it clear that
+         no deleting will occur without confirmation.
+
 2000-02-25  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus/gnome-icon-container.c:
-	set the scale factor so no icons are bigger than a specified size, at least initially.  Currently
-	the size is set to 80 pixels.
+	set the scale factor so no icons are bigger than a specified size, 
+	at least initially.  Currently the size is set to 80 pixels.
 	
 2000-02-24  Maciej Stachowiak  <mjs@eazel.com>
 
