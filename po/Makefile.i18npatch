@@ -5,9 +5,9 @@
  MSGFMT = @MSGFMT@
  XGETTEXT = PATH=../src:$$PATH @XGETTEXT@
 -MSGMERGE = PATH=../src:$$PATH msgmerge
-+MSGMERGE = PATH=../src:$$PATH ./update.pl --dist
-+GENPOT   = PATH=../src:$$PATH ./update.pl --pot
-+GENHEAD  = PATH=$(top_srcdir)/po:../src:$$PATH $(top_srcdir)/po/update.pl --headers
++MSGMERGE = PATH=$(top_srcdir)/po:../src:$$PATH perl $(top_srcdir)/po/update.pl --dist
++GENPOT   = PATH=$(top_srcdir)/po:../src:$$PATH perl $(top_srcdir)/po/update.pl --pot
++GENHEAD  = PATH=$(top_srcdir)/po:../src:$$PATH perl $(top_srcdir)/po/update.pl --headers
  
  DEFS = @DEFS@
  CFLAGS = @CFLAGS@
