@@ -1139,7 +1139,15 @@ ellipsize_string (const char *raw_text)
 {
 	char *result, *last_char_ptr;
 	int truncated_length;
-	
+
+#ifdef GNOME2_CONVERSION_COMPLETE
+        /* FIXME this is in no way UTF-8 safe. It should share code with
+         * nautilus-file-operations.c to ellipsize a string to a max char length
+         * (different from ellipsizing to a max pixel width as with
+         * eel_pango_layout_set_text_ellipsized)
+         */
+#endif
+        
 	if (raw_text == NULL) {
 		return NULL;
 	}

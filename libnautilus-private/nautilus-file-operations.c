@@ -227,6 +227,20 @@ ellipsize_string_for_dialog (const char *str)
 	GdkFont *font;
 	int maximum_width;
 
+	/* I believe the most appropriate fix here is to change it to be based on
+	 * some number of characters, rather than on a pixel width.
+	 * We just can't do anything sane with the pixel width since
+	 * we don't have all the PangoLayout information.
+	 *
+	 * So in brief we want an ellipsize function in eel which
+	 * takes a number of chars, computes log attrs for the string,
+	 * and chops the string at one of the is_cursor_position points,
+	 * such that the string has fewer chars than the given number.
+	 *
+	 * Code in nautilus-news.c implements this in a UTF-8-unsafe way,
+	 * should be moved to Eel and used here as well.
+	 */
+	
 	/* get a nice length to ellipsize to, based on the font */
 	font = get_label_font ();
 	maximum_width = gdk_string_width (font, "MMMMMMMMMMMMMMMMMMMMMM");
