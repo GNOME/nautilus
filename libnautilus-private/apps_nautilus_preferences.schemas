@@ -189,6 +189,24 @@
     </schema>
 
     <schema>
+      <key>/schemas/apps/nautilus/preferences/directory_limit</key>
+      <applyto>/apps/nautilus/preferences/directory_limit</applyto>
+      <owner>nautilus</owner>
+      <type>int</type>
+      <default>4000</default>
+      <locale name="C">
+         <short>Maximum handled files in a directory</short>
+         <long>
+	  Vast directories, over this size will be truncated to
+	  around this size. The purpose of this is to avoid unintentionally
+	  blowing the heap and killing nautilus on massive directories.
+	  A negative value denotes no limit. The limit is approximate due
+	  to the reading of directories chunk-wise.
+         </long>
+      </locale>
+    </schema>
+
+    <schema>
       <key>/schemas/apps/nautilus/preferences/preview_sound</key>
       <applyto>/apps/nautilus/preferences/preview_sound</applyto>
       <owner>nautilus</owner>

@@ -617,10 +617,28 @@ nautilus_directory_remove_file (NautilusDirectory *directory, NautilusFile *file
 	}
 }
 
+#define NAUTILUS_DIRECTORY_FILE_LIST_DEFAULT_LIMIT 4000
+
 gboolean
 nautilus_directory_file_list_length_reached (NautilusDirectory *directory)
 {
-	return directory->details->confirmed_file_count >= NAUTILUS_DIRECTORY_FILE_LIST_HARD_LIMIT;
+	static gboolean inited = FALSE;
+	static int directory_limit = 0;
+
+	if (!inited) {
+		eel_preferences_add_auto_integer
+			("/apps/nautilus/preferences/directory_limit",
+			 &directory_limit);
+		inited = TRUE;
+	}
+	if (directory_limit < 0) {  /* unlimited */
+		return FALSE;
+	}
+	if (directory_limit == 0) { /* dead gconfd */
+		directory_limit = NAUTILUS_DIRECTORY_FILE_LIST_DEFAULT_LIMIT;
+	}
+
+	return directory->details->confirmed_file_count >= directory_limit;
 }
 
 GList *

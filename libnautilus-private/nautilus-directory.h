@@ -57,14 +57,6 @@
 typedef struct NautilusFile NautilusFile;
 #endif
 
-/* FIXME bugzilla.gnome.org 45382:
- * Increase or remove this limit? 
- */
-/* FIXME bugzilla.gnome.org 45603:
- * This limit is not actually "hard", which can lead to some minor UI problems.
- */
-#define NAUTILUS_DIRECTORY_FILE_LIST_HARD_LIMIT     4000
-
 typedef struct NautilusDirectoryDetails NautilusDirectoryDetails;
 
 typedef struct
