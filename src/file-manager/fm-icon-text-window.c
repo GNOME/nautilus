@@ -69,15 +69,15 @@ static char * attribute_names[] = {
 };
 
 static char * attribute_labels[] = {
-	_("size"),
-	_("type"),
-	_("date modified"),
-	_("date changed"),
-	_("date accessed"),
-	_("owner"),
-	_("group"),
-	_("permissions"),
-	_("MIME type"),
+	N_("size"),
+	N_("type"),
+	N_("date modified"),
+	N_("date changed"),
+	N_("date accessed"),
+	N_("owner"),
+	N_("group"),
+	N_("permissions"),
+	N_("MIME type"),
 	NULL
 };
 
