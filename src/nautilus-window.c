@@ -1162,6 +1162,12 @@ real_get_title (NautilusWindow *window)
 }
 
 static char *
+nautilus_window_get_cached_title (NautilusWindow *window)
+{
+	return g_strdup (window->details->title);
+}
+
+static char *
 nautilus_window_get_title (NautilusWindow *window)
 {
 	return EEL_CALL_METHOD_WITH_RETURN_VALUE (NAUTILUS_WINDOW_CLASS, window,
@@ -1647,6 +1653,8 @@ nautilus_window_info_iface_init (NautilusWindowInfoIface *iface)
 	iface->close_window = nautilus_window_close;
 	iface->set_status = nautilus_window_set_status;
 	iface->get_window_type = nautilus_window_get_window_type;
+	iface->get_title = nautilus_window_get_cached_title;
+	iface->get_current_location = nautilus_window_get_location;
 	iface->get_ui_container = nautilus_window_get_ui_container;
 	iface->get_selection_count = nautilus_window_get_selection_count;
 	iface->get_selection = nautilus_window_get_selection;

@@ -423,10 +423,12 @@ nautilus_navigation_window_add_sidebar_panel (NautilusNavigationWindow *window,
 	g_free (label);
 
 	icon = nautilus_sidebar_get_tab_icon (sidebar_panel);
-        nautilus_side_pane_set_panel_image (NAUTILUS_NAVIGATION_WINDOW (window)->sidebar,
-                                            GTK_WIDGET (sidebar_panel),
-                                            icon);
-	g_object_unref (icon);
+	nautilus_side_pane_set_panel_image (NAUTILUS_NAVIGATION_WINDOW (window)->sidebar,
+					    GTK_WIDGET (sidebar_panel),
+					    icon);
+	if (icon) {
+		g_object_unref (icon);
+	}
 
 	g_signal_connect (sidebar_panel, "tab_icon_changed",
 			  (GCallback)side_panel_image_changed_callback, window);

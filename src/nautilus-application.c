@@ -35,6 +35,7 @@
 #include "file-manager/fm-list-view.h"
 #include "file-manager/fm-search-list-view.h"
 #include "file-manager/fm-tree-view.h"
+#include "nautilus-information-panel.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -165,10 +166,13 @@ nautilus_application_instance_init (NautilusApplication *application)
 	g_signal_connect_object (gnome_vfs_get_volume_monitor (), "volume_mounted",
 				 G_CALLBACK (volume_mounted_callback), application, 0);
 
+	/* register views */
 	fm_icon_view_register ();
 	fm_desktop_icon_view_register ();
 	fm_list_view_register ();
-	
+
+	/* register sidebars */
+	nautilus_information_panel_register ();
 }
 
 NautilusApplication *

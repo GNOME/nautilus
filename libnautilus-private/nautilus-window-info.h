@@ -78,7 +78,7 @@ struct _NautilusWindowInfoIface
 	/* signals: */
 
         void           (* loading_uri)            (NautilusWindowInfo *window,
-						   char               *uri);
+						   const char        *uri);
 	/* Emitted when the view in the window changes the selection */
         void           (* selection_changed)      (NautilusWindowInfo *window);
         void           (* title_changed)          (NautilusWindowInfo *window,
@@ -109,20 +109,23 @@ struct _NautilusWindowInfoIface
 	/* Returns a list of uris for th selected items in the view, caller frees it */	
 	GList *(* get_selection)      (NautilusWindowInfo    *window);
 
-	void (* open_location)        (NautilusWindowInfo *window,
+	char * (* get_current_location)  (NautilusWindowInfo *window);
+	void   (* set_status)            (NautilusWindowInfo *window,
+					  const char *status);
+	char * (* get_title)             (NautilusWindowInfo *window);
+	NautilusWindowType
+	       (* get_window_type)       (NautilusWindowInfo *window);
+	NautilusWindowShowHiddenFilesMode
+	       (* get_hidden_files_mode) (NautilusWindowInfo *window);
+	void   (* set_hidden_files_mode) (NautilusWindowInfo *window,
+				       NautilusWindowShowHiddenFilesMode mode);
+
+	void   (* open_location)      (NautilusWindowInfo *window,
 				       const char *location,
 				       NautilusWindowOpenMode mode,
 				       NautilusWindowOpenFlags flags,
 				       GList *selection);
-	void (* close_window)         (NautilusWindowInfo *window);
-	void (* set_status)           (NautilusWindowInfo *window,
-				       const char *status);
-	NautilusWindowType
-	     (* get_window_type)      (NautilusWindowInfo *window);
-	NautilusWindowShowHiddenFilesMode
-	     (* get_hidden_files_mode)(NautilusWindowInfo *window);
-	void (* set_hidden_files_mode)(NautilusWindowInfo *window,
-				       NautilusWindowShowHiddenFilesMode mode);
+	void   (* close_window)       (NautilusWindowInfo *window);
 	
 	/* Temporary bonoboui stuff: */
 	Bonobo_UIContainer (* get_ui_container) (NautilusWindowInfo *window);
@@ -145,6 +148,8 @@ void                              nautilus_window_info_close                    
 void                              nautilus_window_info_set_status               (NautilusWindowInfo                *window,
 										 const char                        *status);
 NautilusWindowType                nautilus_window_info_get_window_type          (NautilusWindowInfo                *window);
+char *                            nautilus_window_info_get_title                (NautilusWindowInfo                *window);
+char *                            nautilus_window_info_get_current_location     (NautilusWindowInfo                *window);
 int                               nautilus_window_info_get_selection_count      (NautilusWindowInfo                *window);
 GList *                           nautilus_window_info_get_selection            (NautilusWindowInfo                *window);
 NautilusWindowShowHiddenFilesMode nautilus_window_info_get_hidden_files_mode    (NautilusWindowInfo                *window);

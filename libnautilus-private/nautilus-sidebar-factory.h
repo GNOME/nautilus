@@ -37,7 +37,6 @@ struct _NautilusSidebarInfo {
 	NautilusSidebar * (*create) (NautilusWindowInfo *window);
 };
 
-
 void                       nautilus_sidebar_factory_register           (NautilusSidebarInfo *sidebar_info);
 const NautilusSidebarInfo *nautilus_sidebar_factory_lookup             (char                *id);
 NautilusSidebar *          nautilus_sidebar_factory_create             (char                *id,

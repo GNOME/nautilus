@@ -65,10 +65,12 @@
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
+#include <libnautilus-private/nautilus-sidebar-factory.h>
 #include <math.h>
 
 struct NautilusInformationPanelDetails {
 	GtkVBox *container;
+	NautilusWindowInfo *window;
 	NautilusSidebarTitle *title;
 	GtkHBox *button_box_centerer;
 	GtkVBox *button_box;
@@ -87,8 +89,6 @@ struct NautilusInformationPanelDetails {
 /* button assignments */
 #define CONTEXTUAL_MENU_BUTTON 3
 
-static void     nautilus_information_panel_class_init      (GtkObjectClass   *object_klass);
-static void     nautilus_information_panel_init            (GtkObject        *object);
 static gboolean nautilus_information_panel_press_event           (GtkWidget        *widget,
 							GdkEventButton   *event);
 static void     nautilus_information_panel_destroy               (GtkObject        *object);
@@ -110,6 +110,7 @@ static void     nautilus_information_panel_update_buttons        (NautilusInform
 static void     add_command_buttons                    (NautilusInformationPanel  *information_panel,
 							GList            *application_list);
 static void     background_metadata_changed_callback   (NautilusInformationPanel  *information_panel);
+static void     nautilus_information_panel_iface_init  (NautilusSidebarIface      *iface);
 
 static gboolean confirm_trash_auto_value = TRUE;
 
@@ -146,24 +147,62 @@ typedef enum {
 	ICON_PART
 } InformationPanelPart;
 
-EEL_CLASS_BOILERPLATE (NautilusInformationPanel, nautilus_information_panel, EEL_TYPE_BACKGROUND_BOX)
+
+G_DEFINE_TYPE_WITH_CODE (NautilusInformationPanel, nautilus_information_panel, EEL_TYPE_BACKGROUND_BOX,
+			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR,
+						nautilus_information_panel_iface_init));
+/* for EEL_CALL_PARENT */
+#define parent_class nautilus_information_panel_parent_class
+
+static const char *
+nautilus_information_panel_get_sidebar_id (NautilusSidebar *sidebar)
+{
+	return NAUTILUS_INFORMATION_PANEL_ID;
+}
+
+static char *
+nautilus_information_panel_get_tab_label (NautilusSidebar *sidebar)
+{
+	return _("Information");
+}
+
+static GdkPixbuf *
+nautilus_information_panel_get_tab_icon (NautilusSidebar *sidebar)
+{
+	return NULL;
+}
+
+static void
+nautilus_information_panel_is_visible_changed (NautilusSidebar *sidebar,
+					       gboolean         is_visible)
+{
+	/* Do nothing */
+}
+
+static void
+nautilus_information_panel_iface_init (NautilusSidebarIface *iface)
+{
+	iface->get_sidebar_id = nautilus_information_panel_get_sidebar_id;
+	iface->get_tab_label = nautilus_information_panel_get_tab_label;
+	iface->get_tab_icon = nautilus_information_panel_get_tab_icon;
+	iface->is_visible_changed = nautilus_information_panel_is_visible_changed;
+}
 
 /* initializing the class object by installing the operations we override */
 static void
-nautilus_information_panel_class_init (GtkObjectClass *object_klass)
+nautilus_information_panel_class_init (NautilusInformationPanelClass *klass)
 {
 	GtkWidgetClass *widget_class;
 	GObjectClass *gobject_class;
+	GtkObjectClass *object_class;
 	
-	NautilusInformationPanelClass *klass;
-
-	widget_class = GTK_WIDGET_CLASS (object_klass);
-	klass = NAUTILUS_INFORMATION_PANEL_CLASS (object_klass);
-	gobject_class = G_OBJECT_CLASS (object_klass);
+	gobject_class = G_OBJECT_CLASS (klass);
+	object_class = GTK_OBJECT_CLASS (klass);
+	widget_class = GTK_WIDGET_CLASS (klass);
 	
 	gobject_class->finalize = nautilus_information_panel_finalize;
 
-	object_klass->destroy = nautilus_information_panel_destroy;
+	object_class->destroy = nautilus_information_panel_destroy;
 	
 	widget_class->drag_data_received  = nautilus_information_panel_drag_data_received;
 	widget_class->button_press_event  = nautilus_information_panel_press_event;
@@ -172,7 +211,7 @@ nautilus_information_panel_class_init (GtkObjectClass *object_klass)
 	/* add the "location changed" signal */
 	signals[LOCATION_CHANGED] = g_signal_new
 		("location_changed",
-		 G_TYPE_FROM_CLASS (object_klass),
+		 G_TYPE_FROM_CLASS (klass),
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusInformationPanelClass,
 				    location_changed),
@@ -201,14 +240,12 @@ make_button_box (NautilusInformationPanel *information_panel)
 /* initialize the instance's fields, create the necessary subviews, etc. */
 
 static void
-nautilus_information_panel_init (GtkObject *object)
+nautilus_information_panel_init (NautilusInformationPanel *information_panel)
 {
 	GtkWidget *widget;
 	static gboolean setup_autos = FALSE;
-	NautilusInformationPanel *information_panel;
-	
-	information_panel = NAUTILUS_INFORMATION_PANEL (object);
-	widget = GTK_WIDGET (object);
+
+	widget = GTK_WIDGET (information_panel);
 
 	information_panel->details = g_new0 (NautilusInformationPanelDetails, 1);
 
@@ -353,13 +390,6 @@ nautilus_information_panel_create_context_menu (NautilusInformationPanel *inform
 				 G_CALLBACK (reset_background_callback), information_panel, 0);
 
 	return menu;
-}
-
-/* create a new instance */
-NautilusInformationPanel *
-nautilus_information_panel_new (void)
-{
-	return NAUTILUS_INFORMATION_PANEL (gtk_widget_new (nautilus_information_panel_get_type (), NULL));
 }
 
 /* set up the default backgrounds and images */
@@ -597,9 +627,9 @@ receive_dropped_keyword (NautilusInformationPanel *information_panel,
 
 static void  
 nautilus_information_panel_drag_data_received (GtkWidget *widget, GdkDragContext *context,
-					 int x, int y,
-					 GtkSelectionData *selection_data,
-					 guint info, guint time)
+					       int x, int y,
+					       GtkSelectionData *selection_data,
+					       guint info, guint time)
 {
 	NautilusInformationPanel *information_panel;
 	EelBackground *background;
@@ -1161,10 +1191,10 @@ background_metadata_changed_callback (NautilusInformationPanel *information_pane
 
 /* here is the key routine that populates the information_panel with the appropriate information when the uri changes */
 
-void
+static void
 nautilus_information_panel_set_uri (NautilusInformationPanel *information_panel, 
-			  const char* new_uri,
-			  const char* initial_title)
+				    const char* new_uri,
+				    const char* initial_title)
 {       
 	NautilusFile *file;
 	NautilusFileAttributes attributes;
@@ -1210,10 +1240,12 @@ nautilus_information_panel_set_uri (NautilusInformationPanel *information_panel,
 					 initial_title);
 }
 
-void
-nautilus_information_panel_set_title (NautilusInformationPanel *information_panel, const char* new_title)
+static void
+title_changed_callback (NautilusWindowInfo *window,
+			char               *new_title,
+			NautilusInformationPanel *panel)
 {       
-	nautilus_sidebar_title_set_text (information_panel->details->title,
+	nautilus_sidebar_title_set_text (panel->details->title,
 					 new_title);
 }
 
@@ -1227,3 +1259,65 @@ nautilus_information_panel_style_set (GtkWidget *widget, GtkStyle *previous_styl
 
 	nautilus_information_panel_theme_changed (information_panel);
 }
+
+static void
+loading_uri_callback (NautilusWindowInfo *window,
+		      char               *uri,
+		      NautilusInformationPanel *panel)
+{
+	char *title;
+
+	title = nautilus_window_info_get_title (window);
+	nautilus_information_panel_set_uri (panel, 
+					    uri,
+					    title);
+	g_free (title);
+}
+
+static void
+nautilus_information_panel_set_parent_window (NautilusInformationPanel *panel,
+					      NautilusWindowInfo *window)
+{
+	panel->details->window = window;
+	char *title, *location;
+
+	g_signal_connect_object (window, "loading_uri",
+				 G_CALLBACK (loading_uri_callback), panel, 0);
+	g_signal_connect_object (window, "title_changed",
+				 G_CALLBACK (title_changed_callback), panel, 0);
+	
+	title = nautilus_window_info_get_title (window);
+	location = nautilus_window_info_get_current_location (window);
+	nautilus_information_panel_set_uri (panel, 
+					    location,
+					    title);
+	g_free (location);
+	g_free (title);
+
+
+}
+
+static NautilusSidebar *
+nautilus_information_panel_create (NautilusWindowInfo *window)
+{
+	NautilusInformationPanel *panel;
+	
+	panel = g_object_new (nautilus_information_panel_get_type (), NULL);
+	nautilus_information_panel_set_parent_window (panel, window);
+	g_object_ref (panel);
+	gtk_object_sink (GTK_OBJECT (panel));
+
+	return NAUTILUS_SIDEBAR (panel);
+}
+
+static NautilusSidebarInfo information_sidebar = {
+	NAUTILUS_INFORMATION_PANEL_ID,
+	nautilus_information_panel_create,
+};
+
+void
+nautilus_information_panel_register (void)
+{
+	nautilus_sidebar_factory_register (&information_sidebar);
+}
+
