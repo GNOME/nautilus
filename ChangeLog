@@ -1,3 +1,29 @@
+2000-08-14  Darin Adler  <darin@eazel.com>
+
+	Some bug fixes, including a fix for bug 2156 (all sidebar panels
+	fail on view switch).
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(dequeue_pending_idle_callback), (directory_load_done): Make sure
+	files are actually on the file list before emitting the
+	files_added signal.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_internal): Fixed a mistake on my last check-in
+	relating to NULL directories.
+	
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_has_really_changed): Fixed code so that it removes
+	old sidebar panels in a way that won't seem like an error to the
+	error-detecting code.
+	(nautilus_window_set_state_info): Keep the same sidebar panels when
+	we change the view and not the location. Also took out two unused
+	"states".
+	(nautilus_window_begin_location_change): Got rid of "SYNC_STATE".
+	
+	* src/nautilus-window.c: A bit of reformatting.
+
 2000-08-14  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:

@@ -306,8 +306,10 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 	}
 
 	/* Check to see if it's a file that's already known. */
-	if (self_owned) {
-		file = directory == NULL ? NULL : directory->details->as_file;
+	if (directory == NULL) {
+		file = NULL;
+	} else if (self_owned) {
+		file = directory->details->as_file;
 	} else {
 		file = nautilus_directory_find_file (directory, file_name);
 	}

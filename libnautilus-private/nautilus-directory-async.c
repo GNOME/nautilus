@@ -837,7 +837,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 	GList *pending_file_info;
 	GList *p, *next;
 	NautilusFile *file;
-	GList *pending_files, *changed_files, *saw_again_files;
+	GList *pending_files, *changed_files, *saw_again_files, *added_files;
 	GnomeVFSFileInfo *file_info;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
@@ -904,25 +904,30 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		}
 	}
 
-	/* Tell the objects that are monitoring about changed files.
-	 * Send out added signals too, for the reload case.
-	 */
-	nautilus_directory_emit_files_added (directory, saw_again_files);
-	nautilus_directory_emit_files_changed (directory, changed_files);
-	nautilus_file_list_free (saw_again_files);
-	nautilus_file_list_free (changed_files);
-	
-	/* Tell the objects that are monitoring about these new files. */
-	nautilus_directory_emit_files_added (directory, pending_files);
+	/* Add all the new files to the list. */
 	directory->details->files = g_list_concat
-		(directory->details->files, pending_files);
+		(directory->details->files,
+		 nautilus_file_list_copy (pending_files));
+	
+	/* Send a files_added message for both files seen again and
+	 * truly new files.
+	 */
+	added_files = g_list_concat (saw_again_files, pending_files);
 
-	if (directory->details->directory_loaded && 
-	    !directory->details->directory_loaded_sent_notification) {
+	/* Send the changed and added signals. */
+	nautilus_directory_emit_files_changed (directory, changed_files);
+	nautilus_file_list_free (changed_files);
+	nautilus_directory_emit_files_added (directory, added_files);
+	nautilus_file_list_free (added_files);
+
+	/* Send the done_loading signal. */
+	if (directory->details->directory_loaded
+	    && !directory->details->directory_loaded_sent_notification) {
 		nautilus_directory_emit_done_loading (directory);
 		directory->details->directory_loaded_sent_notification = TRUE;
 	}
 
+	/* Get the state machine running again. */
 	nautilus_directory_async_state_changed (directory);
 	return FALSE;
 }
@@ -965,7 +970,6 @@ directory_load_done (NautilusDirectory *directory,
 	cancel_directory_load (directory);
 	directory->details->directory_loaded = TRUE;
 	directory->details->directory_loaded_sent_notification = FALSE;
-
 
 	/* Call the idle function right away. */
 	if (directory->details->dequeue_pending_idle_id != 0) {

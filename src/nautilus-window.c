@@ -623,9 +623,10 @@ nautilus_window_switch_views (NautilusWindow *window, NautilusViewIdentifier *id
         nautilus_window_allow_stop (window, TRUE);
         
         view = nautilus_window_load_content_view (window, id, NULL);
-        nautilus_window_set_state_info (window,
-                                        (NautilusWindowStateItem)NEW_CONTENT_VIEW_ACTIVATED, view,
-                                        (NautilusWindowStateItem)0);	
+        nautilus_window_set_state_info
+		(window,
+		 (NautilusWindowStateItem) NEW_CONTENT_VIEW_ACTIVATED, view,
+		 (NautilusWindowStateItem) 0);
 }
 
 static void
@@ -638,7 +639,7 @@ view_menu_switch_views_callback (GtkWidget *widget, gpointer data)
         g_return_if_fail (NAUTILUS_IS_WINDOW (gtk_object_get_data (GTK_OBJECT (widget), "window")));
         
         window = NAUTILUS_WINDOW (gtk_object_get_data (GTK_OBJECT (widget), "window"));
-        identifier = (NautilusViewIdentifier *)gtk_object_get_data (GTK_OBJECT (widget), "identifier");
+        identifier = (NautilusViewIdentifier *) gtk_object_get_data (GTK_OBJECT (widget), "identifier");
         
         nautilus_window_switch_views (window, identifier);
 }

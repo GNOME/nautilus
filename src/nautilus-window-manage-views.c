@@ -514,10 +514,12 @@ nautilus_window_has_really_changed (NautilusWindow *window)
         GList *discard_views;
         GList *p;
         GList *new_sidebar_panels;
+        NautilusViewFrame *view;
         
         new_sidebar_panels = window->new_sidebar_panels;
         window->new_sidebar_panels = NULL;
-        
+
+        /* Switch to the new content view. */
         if (window->new_content_view != NULL) {
                 if (GTK_WIDGET (window->new_content_view)->parent == NULL) {
                 	nautilus_window_disconnect_view (window, window->content_view);
@@ -525,7 +527,7 @@ nautilus_window_has_really_changed (NautilusWindow *window)
                 }
                 gtk_object_unref (GTK_OBJECT (window->new_content_view));
                 window->new_content_view = NULL;
-
+                
 		/* Update displayed view in menu. Only do this if we're not switching
 		 * locations though, because if we are switching locations we'll
 		 * install a whole new set of views in the menu later (the current
@@ -534,28 +536,38 @@ nautilus_window_has_really_changed (NautilusWindow *window)
                 if (window->pending_ni == NULL) {
                 	nautilus_window_synch_content_view_menu (window);
                 }
-        }
         
-        /* Do lots of shuffling to make sure we don't remove views that were already there, but add new views */
-        for (p = new_sidebar_panels; p != NULL; p = p->next) {
-                if (!GTK_OBJECT_DESTROYED (p->data) && !GTK_WIDGET (p->data)->parent)
-                        nautilus_window_add_sidebar_panel (window, p->data);
-                gtk_object_unref (p->data);
-        }
-        
-        discard_views = NULL;
-        for (p = window->sidebar_panels; p != NULL; p = p->next) {
-                if (!g_list_find (new_sidebar_panels, p->data)) {
-                        discard_views = g_list_prepend(discard_views, p->data);
+                /* Remove sidebar views that aren't going to be kept. */
+                discard_views = NULL;
+                for (p = window->sidebar_panels; p != NULL; p = p->next) {
+                        view = NAUTILUS_VIEW_FRAME (p->data);
+                        
+                        if (g_list_find (new_sidebar_panels, view) == NULL) {
+                                discard_views = g_list_prepend (discard_views, view);
+                        }
+                }
+                for (p = discard_views; p != NULL; p = p->next) {
+                        view = NAUTILUS_VIEW_FRAME (p->data);
+                        
+                        nautilus_window_disconnect_view (window, view);
+                        nautilus_window_remove_sidebar_panel (window, view);
+                }
+                g_list_free (discard_views);
+                
+                /* Add any new views */
+                for (p = new_sidebar_panels; p != NULL; p = p->next) {
+                        view = NAUTILUS_VIEW_FRAME (p->data);
+                        
+                        if (!GTK_OBJECT_DESTROYED (GTK_OBJECT (view))
+                            && GTK_WIDGET (view)->parent == NULL) {
+                                nautilus_window_add_sidebar_panel (window, view);
+                        }
                 }
         }
-        g_list_free (new_sidebar_panels);
-        
-        for (p = discard_views; p != NULL; p = p->next) {
-                nautilus_window_remove_sidebar_panel (window, p->data);
-        }
-        g_list_free (discard_views);
-        
+
+        nautilus_gtk_object_list_free (new_sidebar_panels);
+
+        /* Tell the window we are finished. */
         if (window->pending_ni != NULL) {
                 nautilus_window_update_internals (window);
                 nautilus_navigation_info_free (window->pending_ni);
@@ -865,6 +877,7 @@ nautilus_window_update_state (gpointer data)
         NautilusWindow *window;
         GList *p;
         gboolean result;
+        GList *sidebar_panel_identifiers;
 	
         window = data;
 
@@ -978,9 +991,10 @@ nautilus_window_update_state (gpointer data)
                 
                 x_message (("Changes pending"));
                 
-                if (window->pending_ni && !window->new_content_view && !window->cv_progress_error
+                if (window->pending_ni
+                    && !window->new_content_view
+                    && !window->cv_progress_error
                     && !window->view_activation_complete) {
-			GList *sidebar_panel_identifiers = NULL;
 
                         window->new_content_view = nautilus_window_load_content_view
                                 (window, window->pending_ni->initial_content_id,
@@ -989,23 +1003,21 @@ nautilus_window_update_state (gpointer data)
 			sidebar_panel_identifiers = 
 				nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers ();
 
-                        if (sidebar_panel_identifiers != NULL) {
-				for (p = sidebar_panel_identifiers; p != NULL; p = p->next) {
-					NautilusViewFrame *sidebar_panel;
-					NautilusViewIdentifier *identifier;
-					
-					identifier = (NautilusViewIdentifier *) p->data;
-					
-					sidebar_panel = nautilus_window_load_sidebar_panel
-						(window, identifier->iid, window->new_requesting_view);
-					if (sidebar_panel != NULL) {
-						nautilus_view_frame_set_label (sidebar_panel, identifier->name);
-						window->new_sidebar_panels = g_list_prepend (window->new_sidebar_panels, sidebar_panel);
-					}
-				}
-
-				nautilus_view_identifier_list_free (sidebar_panel_identifiers);
-			}
+                        for (p = sidebar_panel_identifiers; p != NULL; p = p->next) {
+                                NautilusViewFrame *sidebar_panel;
+                                NautilusViewIdentifier *identifier;
+                                
+                                identifier = (NautilusViewIdentifier *) p->data;
+                                
+                                sidebar_panel = nautilus_window_load_sidebar_panel
+                                        (window, identifier->iid, window->new_requesting_view);
+                                if (sidebar_panel != NULL) {
+                                        nautilus_view_frame_set_label (sidebar_panel, identifier->name);
+                                        window->new_sidebar_panels = g_list_prepend (window->new_sidebar_panels, sidebar_panel);
+                                }
+                        }
+                        
+                        nautilus_view_identifier_list_free (sidebar_panel_identifiers);
                         
                         window->view_activation_complete = TRUE;
                         window->made_changes++;
@@ -1132,21 +1144,17 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
                 case NEW_CONTENT_VIEW_ACTIVATED:
                         x_message (("NEW_CONTENT_VIEW_ACTIVATED"));
                         g_return_if_fail (window->new_content_view == NULL);
+                        g_return_if_fail (window->new_sidebar_panels == NULL);
                         new_view = va_arg (args, NautilusViewFrame*);
                         /* Don't ref here, reference is held by widget hierarchy. */
                         window->new_content_view = new_view;
+                        /* We only come here in cases where the location does not change,
+                         * so the sidebar panels don't change either.
+                         */
+                        window->new_sidebar_panels = nautilus_gtk_object_list_copy (window->sidebar_panels);
                         if (window->pending_ni == NULL) {
                                 window->view_activation_complete = TRUE;
                         }
-                        window->changes_pending = TRUE;
-                        window->views_shown = FALSE;
-                        break;
-
-                case NEW_SIDEBAR_PANEL_ACTIVATED:
-                        x_message (("NEW_SIDEBAR_PANEL_ACTIVATED"));
-                        new_view = va_arg (args, NautilusViewFrame*);
-                        /* Don't ref here, reference is held by widget hierarchy. */
-                        window->new_sidebar_panels = g_list_prepend (window->new_sidebar_panels, new_view);
                         window->changes_pending = TRUE;
                         window->views_shown = FALSE;
                         break;
@@ -1174,10 +1182,6 @@ nautilus_window_set_state_info (NautilusWindow *window, ...)
                 case RESET_TO_IDLE: /* Someone pressed the stop button or something */
                         x_message (("RESET_TO_IDLE"));
                         window->reset_to_idle = TRUE;
-                        break;
-
-                case SYNC_STATE:
-                        x_message (("SYNC_STATE"));
                         do_sync = TRUE;
                         break;
 
@@ -1378,7 +1382,6 @@ nautilus_window_begin_location_change (NautilusWindow *window,
         nautilus_window_set_state_info
                 (window,
                  (NautilusWindowStateItem) RESET_TO_IDLE,
-                 (NautilusWindowStateItem) SYNC_STATE,
                  (NautilusWindowStateItem) 0);
         
         while (gdk_events_pending()) {
