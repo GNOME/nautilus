@@ -1,3 +1,21 @@
+2000-11-15  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 1420, panel splitter drag outline edges are indistinct.
+
+	(nautilus_horizontal_splitter_motion):
+	New method overide to handle drawing splitter during drag.
+	
+	(nautilus_horizontal_splitter_button_release):
+	Add additonal code from parent class and don't call
+	parent class function at function exit.
+	
+	* libnautilus-extensions/nautilus-horizontal-splitter.c:
+	(nautilus_horizontal_splitter_initialize_class):
+	Overide motion method.
+	
+	(splitter_xor_line):
+	Draw splitter outline as two distinct edges.
+	
 2000-11-15  Michael Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-background.c:

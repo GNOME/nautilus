@@ -50,6 +50,8 @@ static gboolean nautilus_horizontal_splitter_button_press     (GtkWidget        
 							       GdkEventButton                  *event);
 static gboolean nautilus_horizontal_splitter_button_release   (GtkWidget                       *widget,
 							       GdkEventButton                  *event);
+static gboolean nautilus_horizontal_splitter_motion           (GtkWidget      		       *widget,
+							       GdkEventMotion 		       *event);
 
 /* GtkObjectClass methods */
 static void     nautilus_horizontal_splitter_destroy          (GtkObject                       *object);
@@ -79,6 +81,7 @@ nautilus_horizontal_splitter_initialize_class (NautilusHorizontalSplitterClass *
 	widget_class->draw = nautilus_horizontal_splitter_draw;
 	widget_class->button_press_event = nautilus_horizontal_splitter_button_press;
 	widget_class->button_release_event = nautilus_horizontal_splitter_button_release;
+	widget_class->motion_notify_event = nautilus_horizontal_splitter_motion;
 	
 }
 
@@ -340,12 +343,45 @@ nautilus_horizontal_splitter_button_press (GtkWidget *widget, GdkEventButton *ev
 	return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_press_event, (widget, event));
 }
 
+
+static void
+splitter_xor_line (EPaned *paned)
+{
+	GtkWidget *widget;
+	GdkGCValues values;
+	guint16 xpos, half_width;
+
+	widget = GTK_WIDGET(paned);
+
+	if (!paned->xor_gc) {
+		values.function = GDK_INVERT;
+		values.subwindow_mode = GDK_INCLUDE_INFERIORS;
+		paned->xor_gc = gdk_gc_new_with_values (widget->window, &values,
+							GDK_GC_FUNCTION | GDK_GC_SUBWINDOW);
+	}
+
+	gdk_gc_set_line_attributes (paned->xor_gc, 1, GDK_LINE_SOLID,
+				    GDK_CAP_NOT_LAST, GDK_JOIN_BEVEL);
+
+	xpos = paned->child1_size + GTK_CONTAINER (paned)->border_width + paned->handle_size / 2;
+	half_width = paned->handle_size / 2;
+	
+	gdk_draw_line (widget->window, paned->xor_gc, xpos - half_width, 0, xpos - half_width,
+		       widget->allocation.height - 1);
+
+	gdk_draw_line (widget->window, paned->xor_gc, xpos + half_width, 0, xpos + half_width,
+		       widget->allocation.height - 1);
+
+}
+
+
 /* handle mouse ups by seeing if it was a tap and toggling the open state accordingly */
 static gboolean
 nautilus_horizontal_splitter_button_release (GtkWidget *widget, GdkEventButton *event)
 {
 	NautilusHorizontalSplitter *splitter;
 	int delta, delta_time;
+	EPaned *paned;
 	
 	splitter = NAUTILUS_HORIZONTAL_SPLITTER (widget);
 
@@ -359,6 +395,46 @@ nautilus_horizontal_splitter_button_release (GtkWidget *widget, GdkEventButton *
 	}
 
 	splitter->details->down = FALSE;
-	
-	return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_release_event, (widget, event));
+
+
+	paned = E_PANED (widget);
+
+	if (paned->in_drag && (event->button == 1)) {
+		splitter_xor_line (paned);
+		paned->in_drag = FALSE;
+		paned->position_set = TRUE;
+		gdk_pointer_ungrab (event->time);
+		gtk_widget_queue_resize (GTK_WIDGET (paned));
+      		return TRUE;
+    	}
+
+  	return FALSE;  
 }
+
+static gboolean
+nautilus_horizontal_splitter_motion (GtkWidget *widget, GdkEventMotion *event)
+{
+	EPaned *paned;
+	gint x;
+
+	g_return_val_if_fail (widget != NULL, FALSE);
+	g_return_val_if_fail (E_IS_PANED (widget), FALSE);
+
+	paned = E_PANED (widget);
+
+	if (event->is_hint || event->window != widget->window) {
+		gtk_widget_get_pointer(widget, &x, NULL);
+	} else {
+		x = event->x;
+	}
+
+	if (paned->in_drag) {
+		gint size = x - GTK_CONTAINER (paned)->border_width - paned->handle_size / 2;
+		splitter_xor_line (paned);
+		paned->child1_size = CLAMP (e_paned_quantized_size (paned, size), paned->min_position, paned->max_position);
+		splitter_xor_line (paned);
+	}
+
+	return TRUE;
+}
+
