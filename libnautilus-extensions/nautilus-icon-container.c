@@ -764,7 +764,7 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 	GList *p, *line_start;
 	NautilusIcon *icon;
 	ArtDRect bounds;
-	double canvas_width, line_width, space_width, y;
+	double canvas_width, line_width, space_width, border_space_width, y;
 
 	/* Lay out icons a line at a time. */
 	canvas_width = GTK_WIDGET (container)->allocation.width / GNOME_CANVAS (container)->pixels_per_unit;
@@ -778,9 +778,13 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 		nautilus_gnome_canvas_item_get_world_bounds
 			(GNOME_CANVAS_ITEM (icon->item), &bounds);
 		space_width = get_icon_space_width (container, &bounds);
-
+		
+		/* we don't need the right-hand border space for the rightmost icon, so reduce
+		   the space width to compare with */
+		border_space_width = space_width * .75;
+		
 		/* If this icon doesn't fit, lay out the line that's queued up. */
-		if (line_start != p && line_width + space_width > canvas_width) {
+		if (line_start != p && line_width + border_space_width > canvas_width) {
 			lay_down_one_line (container, line_start, p, &y);
 			line_width = 0;
 			line_start = p;

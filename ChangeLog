@@ -1,3 +1,51 @@
+2000-11-27  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
+
+	added a new text view component with zooming, settable fonts and
+	text-oriented services. The services are currently hardwired but there
+	will be a framework soon.  You may have to delete your
+	/gnome/share/oaf/text-plain.oafinfo to see it in action.
+	
+	* configure.in:	
+	* components/Makefile.am:
+	* components/text/.cvsignore:
+	* components/text/Makefile.am:
+	build stuff for the new text view
+	
+	* components/text/main.c: (text_view_object_destroyed),
+	(text_view_make_object), (main):
+	factory object for the text view
+	
+	* components/text/nautilus-text-view-ui.xml:
+	xml file defining the menus for the text view
+
+	* components/text/nautilus-text-view.oafinfo:
+	oaf definitions for the text view
+	
+	* components/text/nautilus-text-view.h:
+	interface file for the text view
+	
+	* components/text/nautilus-text-view.c:
+	(nautilus_text_view_initialize_class),
+	(nautilus_text_view_initialize), (detach_file),
+	(nautilus_text_view_destroy),
+	(nautilus_text_view_get_nautilus_view),
+	(nautilus_text_view_update), (nautilus_text_view_load_uri),
+	(text_view_load_location_callback),
+	(nautilus_text_view_update_font), (get_selected_text),
+	(text_view_search_callback), (text_view_lookup_callback),
+	(nautilus_text_view_set_font), (handle_ui_event),
+	(merge_bonobo_menu_items), (nautilus_text_view_zoom_to_level),
+	(nautilus_text_view_bump_zoom_level), (zoomable_zoom_in_callback),
+	(zoomable_zoom_out_callback), (zoom_index_from_float),
+	(zoomable_set_zoom_level_callback),
+	(zoomable_zoom_to_fit_callback):
+	implementation for the text view
+		
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(lay_down_icons_horizontal):
+	fixed bug 3485, icon layout not using all of the available space, by tweaking the
+	code to not require the extra space between the columns
+	
 2000-11-27  Darin Adler  <darin@eazel.com>
 
 	* nautilus.spec.in: Removed a file that's no longer present.

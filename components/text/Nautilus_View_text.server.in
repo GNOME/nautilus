@@ -1,0 +1,30 @@
+<oaf_info>
+
+<oaf_server iid="OAFIID:nautilus_text_view_factory:112200" type="exe" location="nautilus-text-view">
+<oaf_attribute name="repo_ids" type="stringv">
+<item value="IDL:GNOME/ObjectFactory:1.0"/>
+</oaf_attribute>
+<oaf_attribute name="name" type="string" value="Music view factory"/>
+<oaf_attribute name="description" type="string" value="Factory for music view"/>
+</oaf_server>
+
+<oaf_server iid="OAFIID:nautilus_text_view:112200" type="factory" location="OAFIID:nautilus_text_view_factory:112200">
+<oaf_attribute name="repo_ids" type="stringv">
+<item value="IDL:Bonobo/Unknown:1.0"/>
+<item value="IDL:Bonobo/Control:1.0"/>
+<item value="IDL:Nautilus/View:1.0"/>
+</oaf_attribute>
+<oaf_attribute name="name" type="string" value="Text view"/>
+<oaf_attribute name="description" type="string" value="Text view"/>
+<oaf_attribute name="bonobo:editable" type="boolean" value="true"/>
+<oaf_attribute name="bonobo:supported_mime_types" type="stringv">
+<item value="text/plain"/>
+<item value="text/*"/>
+</oaf_attribute>
+<oaf_attribute name="bonobo:supported_uri_schemes" type="stringv">
+<item value="file"/>
+</oaf_attribute>
+<oaf_attribute name="nautilus:view_as_name" type="string" value="Text"/>
+</oaf_server>
+
+</oaf_info>

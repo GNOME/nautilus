@@ -27,6 +27,7 @@ SUBDIRS = \
 	music \
 	notes \
 	sample \
+	text \
 	tree \
 	$(SERVICE_SUBDIRS) \
 	$(RPMVIEW_COMPONENT_SUBDIRS) \
