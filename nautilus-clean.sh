@@ -16,7 +16,7 @@ for NAME in $AUX_PROGS; do
 
     EGREP_PATTERN=`echo $NAME | sed -e 's/\(.\)\(.*\)/[\1]\2/' | sed -e 's/\[\\\^\]/\[\\^\]/'`;
 
-    COUNT=`ps auxww | egrep $EGREP_PATTERN | wc -l`;
+    COUNT=`ps auxww | egrep $EGREP_PATTERN | grep -v emacs | wc -l`;
 
     if [ $COUNT -gt 0 ]; then
 	if [ -z $FOUND_ANY ]; then
