@@ -92,6 +92,7 @@ ElementInfo sect_elements[] = {
 	{ ENTRY, "entry", (startElementSAXFunc) sect_entry_start_element, (endElementSAXFunc) sect_entry_end_element, (charactersSAXFunc) sect_write_characters},
 	{ THEAD, "thead", (startElementSAXFunc) sect_thead_start_element, (endElementSAXFunc) sect_thead_end_element, NULL},
 	{ TBODY, "tbody", (startElementSAXFunc) sect_tbody_start_element, (endElementSAXFunc) sect_tbody_end_element, NULL},
+	{ ACRONYM, "acronym", NULL, NULL, (charactersSAXFunc) sect_write_characters},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 

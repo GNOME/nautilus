@@ -95,7 +95,8 @@ typedef enum ElementIndex {
 	ENTRY, /* 85 */
 	THEAD,
 	TBODY,
-	UNDEFINED /* 88 */
+	ACRONYM,
+	UNDEFINED /* 89 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;
