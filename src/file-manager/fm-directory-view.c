@@ -1340,10 +1340,7 @@ fm_directory_view_finalize (GObject *object)
 
 	g_hash_table_destroy (view->details->non_ready_files);
 
-	if (view->details->ui != NULL) {
-		g_object_remove_weak_pointer (G_OBJECT (view->details->ui),
-					      (gpointer *) &view->details->ui);
-	}
+	eel_remove_weak_pointer (&view->details->ui);
 
 	g_free (view->details);
 
@@ -4129,8 +4126,7 @@ real_merge_menus (FMDirectoryView *view)
 						     DATADIR,
 						     "nautilus-directory-view-ui.xml",
 						     "nautilus");
-	g_object_add_weak_pointer (G_OBJECT (view->details->ui),
-                                   (gpointer *) &view->details->ui);
+	eel_add_weak_pointer (&view->details->ui);
 
 	bonobo_ui_component_add_verb_list_with_data (view->details->ui, verbs, view);
 

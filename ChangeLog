@@ -1,5 +1,16 @@
 2002-03-01  Darin Adler  <darin@bentspoon.com>
 
+	* components/throbber/nautilus-throbber.c:
+	(nautilus_throbber_instance_init), (nautilus_throbber_finalize):
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_finalize), (real_merge_menus):
+	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):
+	Use eel_add_weak_pointer, since it's more foolproof than
+	g_object_add_weak_pointer. Also fix the about case so that
+	it only adds the weak pointer once per created window.
+
+2002-03-01  Darin Adler  <darin@bentspoon.com>
+
 	* libnautilus-private/nautilus-dnd.h:
 	Move reset constant into header.
 	

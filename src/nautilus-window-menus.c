@@ -637,9 +637,10 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 					 NULL);
 		
 		g_free (build_message);
+
+		eel_add_weak_pointer (&about);
 	}
 	
-	g_object_add_weak_pointer (G_OBJECT (about), (gpointer *)&about);
 	gtk_window_present (GTK_WINDOW (about));
 }
 

@@ -225,8 +225,7 @@ nautilus_throbber_instance_init (NautilusThrobber *throbber)
 	
 	/* make the bonobo control */
 	throbber->details->control = BONOBO_OBJECT (bonobo_control_new (widget));
-	g_object_add_weak_pointer (G_OBJECT (throbber->details->control),
-				   (gpointer *) &throbber->details->control);
+	eel_add_weak_pointer (&throbber->details->control);
 	
 	/* attach a property bag with the configure property */
 	throbber->details->property_bag = bonobo_property_bag_new (get_bonobo_properties, 
@@ -655,10 +654,7 @@ nautilus_throbber_finalize (GObject *object)
 	
 	bonobo_object_unref (throbber->details->property_bag);
 	
-	if (throbber->details->control != NULL) {
-		g_object_remove_weak_pointer (G_OBJECT (throbber->details->control),
-					      (gpointer *) &throbber->details->control);
-	}
+	eel_remove_weak_pointer (&throbber->details->control);
 
 	g_free (throbber->details);
 
