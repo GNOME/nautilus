@@ -30,9 +30,9 @@
 
 #undef DEBUG
 #ifdef DEBUG
-#define D(x...) g_message (x)
+#define D(x) g_message x
 #else
-#define D(x...) 
+#define D(x) 
 #endif
 
 #define NETWORK_USER_DIR "/.gnome2/vfolders/network/"
@@ -74,7 +74,7 @@ gnome_vfs_make_directory_with_parents_for_uri (GnomeVFSURI * uri,
 
 	while (result == GNOME_VFS_ERROR_NOT_FOUND) {
 		parent = gnome_vfs_uri_get_parent (work_uri);
-		D("trying to create: %s", gnome_vfs_uri_to_string (parent, 0));
+		D(("trying to create: %s", gnome_vfs_uri_to_string (parent, 0)));
 		result = gnome_vfs_make_directory_for_uri (parent, perm);
 
 		if (result == GNOME_VFS_ERROR_NOT_FOUND)
@@ -91,7 +91,7 @@ gnome_vfs_make_directory_with_parents_for_uri (GnomeVFSURI * uri,
 	}
 
 	while (result == GNOME_VFS_OK && list != NULL) {
-		D("creating: %s", gnome_vfs_uri_to_string (list->data, 0));
+		D(("creating: %s", gnome_vfs_uri_to_string (list->data, 0)));
 		result = gnome_vfs_make_directory_for_uri
 		    ((GnomeVFSURI *) list->data, perm);
 
@@ -109,11 +109,11 @@ gnome_vfs_make_directory_with_parents (const gchar * text_uri, guint perm)
 	GnomeVFSURI *uri;
 	GnomeVFSResult result;
 
-	D("gnome_vfs_make_directory_with_parents (%s)", text_uri);
+	D(("gnome_vfs_make_directory_with_parents (%s)", text_uri));
 	uri = gnome_vfs_uri_new (text_uri);
 	result = gnome_vfs_make_directory_with_parents_for_uri (uri, perm);
-	D ("gnome_vfs_make_directory_with_parents: %s\n",
-			gnome_vfs_result_to_string (result));
+	D(("gnome_vfs_make_directory_with_parents: %s\n",
+			gnome_vfs_result_to_string (result)));
 	gnome_vfs_uri_unref (uri);
 
 	return result;
@@ -124,7 +124,7 @@ browse (char *uri)
 {
 	char *argv[3] = {"nautilus", uri, NULL};
 
-	D ("browse (%s)", uri);
+	D (("browse (%s)", uri));
 	if (gnome_execute_async (g_get_home_dir (), 2, argv) < 0)
 	{
 		error (_("Couldn't execute nautilus\nMake sure nautilus is in your path and correctly installed"));
@@ -142,7 +142,7 @@ already_linked (char *uri)
 	path = g_strconcat (g_get_home_dir (), NETWORK_USER_DIR, NULL);
 	dir = g_dir_open (path, 0, NULL);
 
-	D ("already_linked: opened %s", path);
+	D (("already_linked: opened %s", path));
 
 	if (dir == NULL)
 	{
@@ -167,7 +167,7 @@ already_linked (char *uri)
 		const char *target;
 
 		long_path = g_strconcat (path, files, NULL);
-		D ("already_linked: opening desktop %s", long_path);
+		D (("already_linked: opening desktop %s", long_path));
 
 		di = gnome_desktop_item_new_from_file (long_path,
 				GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS,
@@ -175,7 +175,7 @@ already_linked (char *uri)
 		if (gnome_desktop_item_get_entry_type (di) !=
 				GNOME_DESKTOP_ITEM_TYPE_LINK)
 		{
-			D ("already_linked: %s not a link", long_path);
+			D (("already_linked: %s not a link", long_path));
 			g_free (long_path);
 			gnome_desktop_item_unref (di);
 			continue;
@@ -185,10 +185,10 @@ already_linked (char *uri)
 				GNOME_DESKTOP_ITEM_URL);
 		if (strncmp (target, uri, MIN (strlen (target), strlen (uri))) == 0)
 		{
-			D ("%s (%d) and %s (%d) matched (on %d chars)",
+			D (("%s (%d) and %s (%d) matched (on %d chars)",
 					target, strlen (target),
 					uri, strlen (uri),
-					MIN (strlen (target), strlen (uri)));
+					MIN (strlen (target), strlen (uri))));
 			found = TRUE;
 		}
 
@@ -198,7 +198,7 @@ already_linked (char *uri)
 
 	g_dir_close (dir);
 	g_free (path);
-	D ("already_linked: returning %s", found ? "TRUE" : "FALSE");
+	D (("already_linked: returning %s", found ? "TRUE" : "FALSE"));
 	return found;
 }
 
@@ -213,10 +213,10 @@ create_desktop (char *uri)
 		return created;
 
 	prefix = g_strdup (g_path_get_basename (uri));
-	D ("create_desktop: basename prefix %s", prefix);
+	D (("create_desktop: basename prefix %s", prefix));
 	if (prefix == NULL)
 	{
-		D ("create_desktop: dirname prefix %s", prefix);
+		D (("create_desktop: dirname prefix %s", prefix));
 		prefix = g_path_get_dirname (uri);
 	}
 
@@ -232,10 +232,10 @@ create_desktop (char *uri)
 		i++;
 
 		path = g_strdup_printf ("network:///%s.%d.desktop", prefix, i);
-		D ("create_desktop: trying %s", path);
+		D (("create_desktop: trying %s", path));
 		if (g_file_test (path, G_FILE_TEST_EXISTS) == TRUE)
 		{
-			D ("create_desktop: %s exists", path);
+			D (("create_desktop: %s exists", path));
 			g_free (path);
 			continue;
 		}
@@ -243,7 +243,7 @@ create_desktop (char *uri)
 		di = gnome_desktop_item_new ();
 		if (di == NULL)
 		{
-			D ("create_desktop: couldn't create an di");
+			D (("create_desktop: couldn't create an di"));
 			g_free (path);
 			continue;
 		}
@@ -281,12 +281,12 @@ can_connect (const char *uri)
 	GnomeVFSDirectoryHandle *handle;
 	GnomeVFSResult result;
 
-	D ("can_connect (%s)", uri);
+	D (("can_connect (%s)", uri));
 
 	result = gnome_vfs_directory_open (&handle, uri,
 			GNOME_VFS_FILE_INFO_DEFAULT);
-	D ("can_connect: %s (%d)", gnome_vfs_result_to_string (result),
-			result);
+	D (("can_connect: %s (%d)", gnome_vfs_result_to_string (result),
+	    result));
 
 	if (result == GNOME_VFS_OK)
 	{
@@ -355,7 +355,7 @@ button_clicked (GtkWidget *widget, int response, gpointer data)
 	while (gtk_events_pending())
 		gtk_main_iteration();
 
-	D ("button_clicked: %d", response);
+	D (("button_clicked: %d", response));
 
 	if (response == GTK_RESPONSE_CANCEL
 			|| response == GTK_RESPONSE_DELETE_EVENT)
@@ -365,7 +365,7 @@ button_clicked (GtkWidget *widget, int response, gpointer data)
 	uri = g_filename_from_utf8 (uri_utf8, -1, NULL, NULL, NULL);
 	g_free (uri_utf8);
 
-	D ("uri: %s", uri);
+	D (("uri: %s", uri));
 
 	if (uri == NULL || strcmp (uri, "") == 0)
 		exit (0);
@@ -388,7 +388,7 @@ button_clicked (GtkWidget *widget, int response, gpointer data)
 	{
 		char *msg;
 
-		D ("couldn't connect to %s", uri);
+		D (("couldn't connect to %s", uri));
 
 		msg = g_strdup_printf (_("Couldn't connect to URI %s\n"
 					"Please make sure that the address is "
