@@ -1,3 +1,11 @@
+2005-02-08  Martin Wehner  <martin.wehner@epost.de>
+
+	* src/file-manager/fm-list-view.c: (cell_renderer_edited),
+	(fm_list_view_start_renaming_file):
+	Set original_name to the new name as cell_renderer_edited()
+	might be called multiple times if the view looses focus.
+	Fixes bug #166120.
+
 2005-02-07  Martin Wehner  <martin.wehner@epost.de>
 
 	* src/file-manager/fm-properties-window.c: (get_original_file),

@@ -859,9 +859,9 @@ cell_renderer_edited (GtkCellRendererText *cell,
 	/* Only rename if name actually changed */
 	if (strcmp (new_text, view->details->original_name) != 0) {
 		fm_rename_file (file, new_text);
+		g_free (view->details->original_name);
+		view->details->original_name = g_strdup (new_text);
 	}
-	g_free (view->details->original_name);
-	view->details->original_name = NULL;
 	
 	nautilus_file_unref (file);
 
@@ -1917,6 +1917,10 @@ fm_list_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 				  TRUE);
 
 	entry = GTK_ENTRY (list_view->details->file_name_column->editable_widget);
+
+	/* Free a previously allocated original_name */
+	g_free (list_view->details->original_name);
+
 	list_view->details->original_name = g_strdup (gtk_entry_get_text (entry));
 	eel_filename_get_rename_region (list_view->details->original_name,
 					&start_offset, &end_offset);
