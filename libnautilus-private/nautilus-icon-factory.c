@@ -61,6 +61,7 @@
 #include "nautilus-string.h"
 #include "nautilus-theme.h"
 #include "nautilus-xml-extensions.h"
+#include "nautilus-scalable-font.h"
 
 /* List of suffixes to search when looking for an icon file. */
 static const char *icon_file_name_suffixes[] =
@@ -2214,42 +2215,84 @@ embedded_text_rect_usable (const ArtIRect *embedded_text_rect)
 	return TRUE;
 }
 
+/* FIXME bugzilla.eazel.com 2783: Icon factory needs support for speciiy whether
+ * embedded text Embedded text should be smoother or not.
+ */
+static gboolean smooth_graphics = TRUE;
+
 static GdkPixbuf *
 embed_text (GdkPixbuf *pixbuf_without_text,
 	    const ArtIRect *embedded_text_rect,
 	    const char *text)
 {
-
-	static GdkFont *font;
-
-	GdkPixbuf *pixbuf_with_text;
-
-	g_return_val_if_fail (pixbuf_without_text != NULL, NULL);
-	g_return_val_if_fail (embedded_text_rect != NULL, gdk_pixbuf_ref (pixbuf_without_text));
-
-	/* Get the font the first time through. */
-	if (font == NULL) {
+	if (smooth_graphics) {
+		GdkPixbuf		*pixbuf_with_text = NULL;
+		NautilusScalableFont	*font;
+		const guint		font_size = 9;
+		
+		/* Quick out for the case where there's no place to embed the
+		 * text or the place is too small or there's no text.
+		 */
+		if (!embedded_text_rect_usable (embedded_text_rect) || nautilus_strlen (text) == 0) {
+			return gdk_pixbuf_ref (pixbuf_without_text);
+		}
+		
 		/* FIXME bugzilla.eazel.com 1102: Embedded text should use preferences to determine
 		 * the font it uses
 		 */
+		font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL));
 		
-		/* for anti-aliased text, we choose a large font and scale it down */
-		font = gdk_font_load ("-*-helvetica-medium-r-normal-*-24-*-*-*-*-*-*-*");
-		g_return_val_if_fail (font != NULL, gdk_pixbuf_ref (pixbuf_without_text));
+		pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
+		
+		nautilus_scalable_font_draw_text_lines (font,
+							pixbuf_with_text,
+							embedded_text_rect->x0,
+							embedded_text_rect->y0,
+							embedded_text_rect,
+							font_size,
+							font_size,
+							text,
+							GTK_JUSTIFY_LEFT,
+							1,
+							NAUTILUS_RGB_COLOR_BLACK,
+							255);
+		
+		gtk_object_unref (GTK_OBJECT (font));
+		
+		return pixbuf_with_text;
 	}
-
-	/* Quick out for the case where there's no place to embed the
-	 * text or the place is too small or there's no text.
-	 */
-	if (!embedded_text_rect_usable (embedded_text_rect) || nautilus_strlen (text) == 0) {
-		return gdk_pixbuf_ref (pixbuf_without_text);
+	else {
+		static GdkFont *font;
+		
+		GdkPixbuf *pixbuf_with_text;
+		
+		g_return_val_if_fail (pixbuf_without_text != NULL, NULL);
+		g_return_val_if_fail (embedded_text_rect != NULL, gdk_pixbuf_ref (pixbuf_without_text));
+		
+		/* Get the font the first time through. */
+		if (font == NULL) {
+			/* FIXME bugzilla.eazel.com 1102: Embedded text should use preferences to determine
+			 * the font it uses
+			 */
+			
+			/* for anti-aliased text, we choose a large font and scale it down */
+			font = gdk_font_load ("-*-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*");
+			g_return_val_if_fail (font != NULL, gdk_pixbuf_ref (pixbuf_without_text));
+		}
+		
+		/* Quick out for the case where there's no place to embed the
+		 * text or the place is too small or there's no text.
+		 */
+		if (!embedded_text_rect_usable (embedded_text_rect) || nautilus_strlen (text) == 0) {
+			return gdk_pixbuf_ref (pixbuf_without_text);
+		}
+		
+		pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
+		
+		nautilus_gdk_pixbuf_draw_text (pixbuf_with_text, font, 1.0, embedded_text_rect, 
+					       text, NAUTILUS_RGB_COLOR_BLACK, 0xFF);
+		return pixbuf_with_text;
 	}
-
-	pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
-
-	nautilus_gdk_pixbuf_draw_text (pixbuf_with_text, font, .3333, embedded_text_rect, 
-					text, NAUTILUS_RGB_COLOR_BLACK, 0xFF);
-	return pixbuf_with_text;
 }
 
 static GdkPixbuf *
