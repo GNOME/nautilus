@@ -513,7 +513,7 @@ nautilus_window_destroy (NautilusWindow *window)
 
   g_slist_free(window->meta_views);
 
-  Nautilus_NavigationInfo_free (window->ni);
+  CORBA_free(window->ni);
   CORBA_free(window->si);
   g_slist_foreach(window->back_list, (GFunc)gtk_object_unref, NULL);
   g_slist_foreach(window->forward_list, (GFunc)gtk_object_unref, NULL);
@@ -942,4 +942,3 @@ nautilus_window_real_set_content_view (NautilusWindow *window, NautilusView *new
   gtk_widget_queue_resize(window->content_hbox);
   window->content_view = new_view;
 }
-

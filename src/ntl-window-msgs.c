@@ -104,9 +104,14 @@ nautilus_window_request_selection_change(NautilusWindow *window,
 {
   GSList *cur;
   Nautilus_SelectionInfo selinfo;
-
+  CORBA_Environment environment;
+  
+  CORBA_exception_init(&environment);
   selinfo.selected_uris = loc->selected_uris;
-  selinfo.content_view = nautilus_view_get_objref(NAUTILUS_VIEW(window->content_view));
+  selinfo.content_view = CORBA_Object_duplicate
+    (nautilus_view_get_objref(NAUTILUS_VIEW(window->content_view)),
+     &environment);
+  CORBA_exception_free(&environment);
 
   CORBA_free(window->si);
 
@@ -178,16 +183,6 @@ Nautilus_NavigationInfo__copy(Nautilus_NavigationInfo *dest_ni, Nautilus_Navigat
   dest_ni->referring_content_type = CORBA_string_dup(src_ni->referring_content_type);
   dest_ni->content_view = CORBA_OBJECT_NIL;
   dest_ni->self_originated = CORBA_FALSE;
-}
-
-
-void
-Nautilus_NavigationInfo_free (Nautilus_NavigationInfo *ni)
-{
-  if (ni != NULL) {
-    ni->content_view = CORBA_OBJECT_NIL;
-    CORBA_free(ni);
-  }
 }
 
 /* Handle the changes for the NautilusWindow itself. */
@@ -293,7 +288,7 @@ nautilus_window_update_internals(NautilusWindow *window, NautilusNavigationInfo 
       newni = Nautilus_NavigationInfo__alloc();
       Nautilus_NavigationInfo__copy(newni, &loci->navinfo);
 
-      Nautilus_NavigationInfo_free (window->ni);
+      CORBA_free(window->ni);
       
       window->ni = newni;
 
@@ -326,15 +321,23 @@ nautilus_window_update_view(NautilusWindow *window,
                             NautilusView *requesting_view,
 			    NautilusView *content_view)
 {
+  CORBA_Environment environment;
+  
   g_return_if_fail(view);
-
+  
   loci->self_originated = (view == requesting_view);
-
+  
   nautilus_view_notify_location_change(NAUTILUS_VIEW(view), loci);
-
+  
   if(seli)
     {
-      seli->content_view = nautilus_view_get_client_objref(content_view);
+      CORBA_exception_init(&environment);
+      CORBA_Object_release(seli->content_view, &environment);
+      seli->content_view = CORBA_Object_duplicate
+        (nautilus_view_get_client_objref(content_view),
+         &environment);
+      CORBA_exception_free(&environment);
+
       nautilus_window_notify_selection_change(window, view, seli, NULL);
     }
 }
@@ -518,7 +521,8 @@ nautilus_window_load_content_view(NautilusWindow *window,
 {
   NautilusView *content_view = window->content_view;
   NautilusView *new_view;
-
+  CORBA_Environment environment;
+  
   g_return_val_if_fail(iid, NULL);
   g_return_val_if_fail(navinfo, NULL);
 
@@ -553,7 +557,12 @@ nautilus_window_load_content_view(NautilusWindow *window,
     {
       gtk_object_ref (GTK_OBJECT (new_view));
       
-      navinfo->content_view = nautilus_view_get_client_objref (new_view);
+      CORBA_exception_init(&environment);
+      CORBA_Object_release(navinfo->content_view, &environment);
+      navinfo->content_view = CORBA_Object_duplicate
+        (nautilus_view_get_client_objref (new_view),
+         &environment);
+      CORBA_exception_free(&environment);
 
       nautilus_view_set_active_errors (new_view, TRUE);
     }

@@ -1,3 +1,30 @@
+2000-03-23  Darin Adler  <darin@eazel.com>
+
+	Fixed bug 336 (merged menu items don't go away when component
+	is swapped out).
+	
+	* src/file-manager/fm-directory-view.c: (fm_directory_view_destroy):
+	While debugging, I noticed that the view_frame was allocated by the
+	FMDirectoryView and never unref'd. The exact connection of this to
+	why the widgets don't go away is now lost in time. We added a call
+	to bonobo_object_unref to get rid of the view frame.
+
+	* src/ntl-window.h, src/ntl-window.c, src/ntl-window-msgs.c:
+	(Nautilus_NavigationInfo_free): Got rid of this routine. It turns
+	out that this was an incorrect hack to work around the error in
+	the surrounding code that was copying CORBA object references
+	without calling	CORBA_Object_duplicate.
+	(nautilus_window_destroy), (nautilus_window_request_selection_change):
+	Changed code that was calling Nautilus_NavigationInfo_free to just
+	call CORBA_free now that the incorrect hack is not needed.
+	(nautilus_window_request_selection_change),
+	(nautilus_window_update_view), 
+	(nautilus_window_update_internals),
+	(nautilus_window_load_content_view): Changed all code that was
+	manipulating content_view to use CORBA_Object_duplicate when
+	storing a reference and CORBA_Object_release when overwriting
+	a reference.
+
 2000-03-22  Darin Adler  <darin@eazel.com>
 
 	Fixed bug 334 (Need proper hit detection when hit-testing icons.
