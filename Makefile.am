@@ -45,6 +45,7 @@ EXTRA_DIST=					\
 	xml-i18n-extract			\
 	xml-i18n-merge				\
 	xml-i18n-update				\
+	Makefile.shared				\
 	$(DESKTOP_IN_FILES)			\
 	$(DESKTOP_FILES)			\
 	$(NULL)
