@@ -548,6 +548,7 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 {
 	static GtkWidget *about = NULL;
 	const char *authors[] = {
+		"Alexander Larsson",
 		"Ali Abdin",
 		"Andy Hertzfeld",
 		"Arlo Rose",

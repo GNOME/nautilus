@@ -1,3 +1,15 @@
+2002-04-20  Alexander Larsson  <alla@lysator.liu.se>
+
+	* libnautilus-private/nautilus-icon-container.c (lay_down_icons_horizontal):
+	Fruitless attempt to optimize icon layout. It turns out it is text-measure and
+	icon lookup bound. I'm checking in this optimization anyway, even though it
+	doesn't help much.
+	(nautilus_icon_container_class_init): icon_removed was using the wrong
+	struct offset.
+
+	* src/nautilus-window-menus.c:
+	Add me to authors :)
+
 2002-04-20  Anders Carlsson  <andersca@gnu.org>
 
 	* configure.in:

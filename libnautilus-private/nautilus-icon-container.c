@@ -801,64 +801,42 @@ get_icon_space_width (NautilusIconContainer *container, const ArtDRect *bounds)
 	return STANDARD_ICON_GRID_WIDTH;
 }
 
+typedef struct {
+	double width;
+	double x_offset;
+	double y_offset;
+} IconPositions;
+
 static void
 lay_down_one_line (NautilusIconContainer *container,
 		   GList *line_start,
 		   GList *line_end,
-		   double *y)
+		   double y,
+		   GArray *positions)
 {
 	GList *p;
-	double max_height_above, max_height_below;
 	NautilusIcon *icon;
-	ArtDRect bounds, icon_bounds;
-	double height_above, height_below, x, width;
+	double x;
+	IconPositions *position;
+	int i;
 
-	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_assert (y != NULL);
-
-	/* Compute the total height above and below the baseline. */
-	max_height_above = 0;
-	max_height_below = 0;
-	for (p = line_start; p != line_end; p = p->next) {
-		icon = p->data;
-
-		bounds = eel_gnome_canvas_item_get_world_bounds
-			(GNOME_CANVAS_ITEM (icon->item));
-		icon_bounds = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
-		height_above = icon_bounds.y1 - bounds.y0;
-		height_below = bounds.y1 - icon_bounds.y1;
-
-		if (height_above > max_height_above) {
-			max_height_above = height_above;
-		}
-		if (height_below > max_height_below) {
-			max_height_below = height_below;
-		}
-	}
-
-	/* Advance to the baseline. */
-	*y += ICON_PAD_TOP + max_height_above;
+	/* FIXME: Should layout differently when in RTL base mode */
 
 	/* Lay out the icons along the baseline. */
 	x = 0;
+	i = 0;
 	for (p = line_start; p != line_end; p = p->next) {
 		icon = p->data;
 
-		bounds = eel_gnome_canvas_item_get_world_bounds
-			(GNOME_CANVAS_ITEM (icon->item));
-		icon_bounds = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
-		width = get_icon_space_width (container, &bounds);
+		position = &g_array_index (positions, IconPositions, i++);
 
 		icon_set_position
 			(icon,
-			 x + (width - (icon_bounds.x1 - icon_bounds.x0)) / 2,
-			 *y - (icon_bounds.y1 - icon_bounds.y0));
+			 x + position->x_offset,
+			 y + position->y_offset);
 
-		x += width;
+		x += position->width;
 	}
-
-	/* Advance to next line. */
-	*y += max_height_below + ICON_PAD_BOTTOM;
 }
 
 
@@ -869,9 +847,20 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 {
 	GList *p, *line_start;
 	NautilusIcon *icon;
-	ArtDRect bounds;
 	double canvas_width, line_width, space_width, y;
+	GArray *positions;
+	IconPositions *position;
+	ArtDRect bounds;
+	ArtDRect icon_bounds;
+	GnomeCanvasItem *item;
+	double max_height_above, max_height_below;
+	double height_above, height_below;
+	int i;
 
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	positions = g_array_new (FALSE, FALSE, sizeof (IconPositions));
+	
 	/* Lay out icons a line at a time. */
 	canvas_width = (GTK_WIDGET (container)->allocation.width
 			- container->details->left_margin
@@ -880,14 +869,28 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 	line_width = 0;
 	line_start = icons;
 	y = start_y;
+	i = 0;
+	max_height_above = 0;
+	max_height_below = 0;
 	for (p = icons; p != NULL; p = p->next) {
 		icon = p->data;
 
 		/* Get the width of the icon. */
-		bounds = eel_gnome_canvas_item_get_world_bounds
-			(GNOME_CANVAS_ITEM (icon->item));
+		item = GNOME_CANVAS_ITEM (icon->item);
+		
+		/* Assume it's only one level hierarchy to avoid costly affine calculations */
+		gnome_canvas_item_get_bounds (item,
+					      &bounds.x0, &bounds.y0,
+					      &bounds.x1, &bounds.y1);
+		
 		space_width = get_icon_space_width (container, &bounds);
 		
+		icon_bounds = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
+
+		/* Calculate size above/below baseline */
+		height_above = icon_bounds.y1 - bounds.y0;
+		height_below = bounds.y1 - icon_bounds.y1;
+
 		/* If this icon doesn't fit, it's time to lay out the line that's queued up. */
 		
 		/* FIXME: why don't we want to guarantee a small white space to the right of
@@ -895,10 +898,34 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 		 * the first column?
 		 */
 		if (line_start != p && line_width + space_width - ICON_PAD_RIGHT > canvas_width) {
-			lay_down_one_line (container, line_start, p, &y);
+			/* Advance to the baseline. */
+			y += ICON_PAD_TOP + max_height_above;
+			
+			lay_down_one_line (container, line_start, p, y, positions);
+			
+			/* Advance to next line. */
+			y += max_height_below + ICON_PAD_BOTTOM;
+
 			line_width = 0;
 			line_start = p;
+			i = 0;
+			
+			max_height_above = height_above;
+			max_height_below = height_below;
+		} else {
+			if (height_above > max_height_above) {
+				max_height_above = height_above;
+			}
+			if (height_below > max_height_below) {
+				max_height_below = height_below;
+			}
 		}
+		
+		g_array_set_size (positions, i + 1);
+		position = &g_array_index (positions, IconPositions, i++);
+		position->width = space_width;
+		position->x_offset = (space_width - (icon_bounds.x1 - icon_bounds.x0)) / 2;
+		position->y_offset = icon_bounds.y0 - icon_bounds.y1;
 
 		/* Add this icon. */
 		line_width += space_width;
@@ -906,8 +933,16 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 
 	/* Lay down that last line of icons. */
 	if (line_start != NULL) {
-		lay_down_one_line (container, line_start, NULL, &y);
+		/* Advance to the baseline. */
+		y += ICON_PAD_TOP + max_height_above;
+		
+		lay_down_one_line (container, line_start, NULL, y, positions);
+		
+		/* Advance to next line. */
+		y += max_height_below + ICON_PAD_BOTTOM;
 	}
+
+	g_array_free (positions, TRUE);
 }
 
 /* Search for available space at location */
@@ -3289,7 +3324,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_TYPE_FROM_CLASS (class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
-						 icon_added),
+						 icon_removed),
 		                NULL, NULL,
 		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1, G_TYPE_POINTER);
