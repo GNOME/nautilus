@@ -1,24 +1,29 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
-/*
- *  libnautilus: A library for nautilus view implementations.
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
+/* 
+ * Copyright (C) 1999 Helix Code, Inc.
+ * Copyright (C) 2000 Red Hat, Inc.
+ * Copyright (C) 2000 Eazel, Inc
  *
- *  Copyright (C) 2000 Red Hat, Inc.
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
  *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Library General Public
- *  License as published by the Free Software Foundation; either
- *  version 2 of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Library General Public License for more details.
- *
- *  You should have received a copy of the GNU Library General Public
- *  License along with this library; if not, write to the Free
- *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  *
  * Author: Elliot Lee <sopwith@redhat.com>, based on bonobo-stream-fs.c by Miguel de Icaza.
+ */
+
+/*
  * bonobo-stream-vfs.c: Gnome VFS-based Stream implementation
  */
 
@@ -31,6 +36,14 @@
 #include <errno.h>
 #include <libnautilus/nautilus-bonobo-workarounds.h>
 
+
+struct BonoboStreamVFSDetails {
+	GnomeVFSHandle *handle;
+	gboolean got_eof;
+};
+
+
+
 static BonoboStreamClass *bonobo_stream_vfs_parent_class;
 static POA_Bonobo_Stream__vepv vepv;
 
@@ -39,13 +52,13 @@ vfs_write (BonoboStream *stream,
 	   const Bonobo_Stream_iobuf *buffer,
 	   CORBA_Environment *ev)
 {
-	BonoboStreamVFS *sfs;
+	BonoboStreamVFS *stream_vfs;
 	GnomeVFSResult res;
 	GnomeVFSFileSize written = 0;
 
-	sfs = BONOBO_STREAM_VFS (stream);
+	stream_vfs = BONOBO_STREAM_VFS (stream);
 
-	res = gnome_vfs_write (sfs->fd, buffer->_buffer, buffer->_length, &written);
+	res = gnome_vfs_write (stream_vfs->details->handle, buffer->_buffer, buffer->_length, &written);
 
 	if (res != GNOME_VFS_OK) {
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
@@ -59,21 +72,21 @@ vfs_write (BonoboStream *stream,
 static void
 vfs_read (BonoboStream *stream,
 	  CORBA_long count,
-	  Bonobo_Stream_iobuf ** buffer,
+	  Bonobo_Stream_iobuf **buffer,
 	  CORBA_Environment *ev)
 {
-	BonoboStreamVFS *sfs;
+	BonoboStreamVFS *stream_vfs;
 	CORBA_octet *data;
 	GnomeVFSResult res;
 	GnomeVFSFileSize nread = 0;
 	
-	sfs = BONOBO_STREAM_VFS (stream);
+	stream_vfs = BONOBO_STREAM_VFS (stream);
 
 	*buffer = Bonobo_Stream_iobuf__alloc ();
 	CORBA_sequence_set_release (*buffer, TRUE);
 	data = CORBA_sequence_CORBA_octet_allocbuf (count);
 
-	res = gnome_vfs_read (sfs->fd, data, count, &nread);
+	res = gnome_vfs_read (stream_vfs->details->handle, data, count, &nread);
 
 	if (res == GNOME_VFS_OK) {
 		(*buffer)->_buffer = data;
@@ -90,56 +103,57 @@ vfs_read (BonoboStream *stream,
 				     ex_Bonobo_Stream_IOError, NULL);
 	}
 
-	sfs->got_eof = (res == GNOME_VFS_ERROR_EOF);
+	stream_vfs->details->got_eof = (res == GNOME_VFS_ERROR_EOF);
 }
 
 static CORBA_long
 vfs_seek (BonoboStream *stream,
-	 CORBA_long ofvfset, Bonobo_Stream_SeekType whence,
-	 CORBA_Environment *ev)
+	  CORBA_long offset, 
+	  Bonobo_Stream_SeekType whence,
+	  CORBA_Environment *ev)
 {
-	BonoboStreamVFS *sfs;
-	GnomeVFSSeekPosition gwhence;
+	BonoboStreamVFS *stream_vfs;
+	GnomeVFSSeekPosition vfs_whence;
 	GnomeVFSFileSize pos;
 	GnomeVFSResult res;
 
-	sfs = BONOBO_STREAM_VFS (stream);
+	stream_vfs = BONOBO_STREAM_VFS (stream);
 
 	switch (whence) {
 	case Bonobo_Stream_SEEK_CUR:
-		gwhence = GNOME_VFS_SEEK_CURRENT;
+		vfs_whence = GNOME_VFS_SEEK_CURRENT;
 		break;
 	case Bonobo_Stream_SEEK_END:
-		gwhence = GNOME_VFS_SEEK_END;
+		vfs_whence = GNOME_VFS_SEEK_END;
 		break;
 	default:
-		gwhence = GNOME_VFS_SEEK_START;
+		vfs_whence = GNOME_VFS_SEEK_START;
 		break;
 	}
 
-	res = gnome_vfs_seek (sfs->fd, gwhence, ofvfset);
-	if (res != GNOME_VFS_OK)	{
+	res = gnome_vfs_seek (stream_vfs->details->handle, vfs_whence, offset);
+	if (res != GNOME_VFS_OK) {
 		pos = -1;
 	} else {
-		res = gnome_vfs_tell (sfs->fd, &pos);
+		res = gnome_vfs_tell (stream_vfs->details->handle, &pos);
 		if (res != GNOME_VFS_OK) {
 			pos = -1;
 		}
 	}
 	
-	sfs->got_eof = (res == GNOME_VFS_ERROR_EOF);
+	stream_vfs->details->got_eof = (res == GNOME_VFS_ERROR_EOF);
 	return pos;
 }
 
 static void
 vfs_truncate (BonoboStream *stream,
-	     const CORBA_long new_size, 
-	     CORBA_Environment *ev)
+	      const CORBA_long new_size, 
+	      CORBA_Environment *ev)
 {
-	BonoboStreamVFS *sfs;
+	BonoboStreamVFS *stream_vfs;
 
-	sfs = BONOBO_STREAM_VFS (stream);
-	gnome_vfs_truncate_handle (sfs->fd, new_size);
+	stream_vfs = BONOBO_STREAM_VFS (stream);
+	gnome_vfs_truncate_handle (stream_vfs->details->handle, new_size);
 }
 
 static void
@@ -150,7 +164,7 @@ vfs_copy_to  (BonoboStream *stream,
 	      CORBA_long *written_bytes,
 	      CORBA_Environment *ev)
 {
-	BonoboStreamVFS *sfs;
+	BonoboStreamVFS *stream_vfs;
 	CORBA_octet *data;
 	CORBA_unsigned_long more;
 	GnomeVFSHandle *fd_out;
@@ -159,7 +173,7 @@ vfs_copy_to  (BonoboStream *stream,
 
 #define READ_CHUNK_SIZE 65536
 
-	sfs = BONOBO_STREAM_VFS (stream);
+	stream_vfs = BONOBO_STREAM_VFS (stream);
 
 	data = CORBA_sequence_CORBA_octet_allocbuf (READ_CHUNK_SIZE);
 
@@ -173,9 +187,9 @@ vfs_copy_to  (BonoboStream *stream,
 
 	more = bytes;
 	do {
-		res = gnome_vfs_read (sfs->fd, data, MIN (READ_CHUNK_SIZE, more), &rsize);
+		res = gnome_vfs_read (stream_vfs->details->handle, data, MIN (READ_CHUNK_SIZE, more), &rsize);
 		
-		sfs->got_eof = (res == GNOME_VFS_ERROR_EOF);
+		stream_vfs->details->got_eof = (res == GNOME_VFS_ERROR_EOF);
 		
 		if (res != GNOME_VFS_OK) {
 			break;
@@ -205,42 +219,46 @@ static void
 vfs_close (BonoboStream *stream,
 	  CORBA_Environment *ev)
 {
-	BonoboStreamVFS *sfs;
+	BonoboStreamVFS *stream_vfs;
 
-	sfs = BONOBO_STREAM_VFS (stream);
+	stream_vfs = BONOBO_STREAM_VFS (stream);
 
-	gnome_vfs_close (sfs->fd);
+	gnome_vfs_close (stream_vfs->details->handle);
 	
-	sfs->fd = NULL;
-	sfs->got_eof = FALSE;
+	stream_vfs->details->handle = NULL;
+	stream_vfs->details->got_eof = FALSE;
 }
 
 static CORBA_boolean
 vfs_eos (BonoboStream *stream,
 	CORBA_Environment *ev)
 {
-	BonoboStreamVFS *sfs;
+	BonoboStreamVFS *stream_vfs;
 
-	sfs = BONOBO_STREAM_VFS (stream);
-	return sfs->got_eof;
+	stream_vfs = BONOBO_STREAM_VFS (stream);
+	return stream_vfs->details->got_eof;
 }
 	
 static CORBA_long
 vfs_length (BonoboStream *stream,
 	   CORBA_Environment *ev)
 {
-	BonoboStreamVFS *sfs;
-	GnomeVFSFileInfo fi;
+	BonoboStreamVFS *stream_vfs;
+	GnomeVFSFileInfo file_info;
 	CORBA_long size;
 
-	sfs = BONOBO_STREAM_VFS (stream);
-	gnome_vfs_file_info_init (&fi);
-	if (gnome_vfs_get_file_info_from_handle (sfs->fd, &fi, GNOME_VFS_FILE_INFO_DEFAULT) != GNOME_VFS_OK) {
+	stream_vfs = BONOBO_STREAM_VFS (stream);
+	gnome_vfs_file_info_init (&file_info);
+
+	if (gnome_vfs_get_file_info_from_handle (stream_vfs->details->handle, 
+						 &file_info, 
+						 GNOME_VFS_FILE_INFO_DEFAULT) != GNOME_VFS_OK) {
 		return 0;
 	}
+
 	/* FIXME: Ignores super-long files. */
-	size = fi.size;
-	gnome_vfs_file_info_clear (&fi);
+	size = file_info.size;
+	gnome_vfs_file_info_clear (&file_info);
 
 	return size;
 }
@@ -250,7 +268,7 @@ static void
 bonobo_stream_vfs_class_init (BonoboStreamVFSClass *klass)
 {
 	BonoboStreamClass *sclass = BONOBO_STREAM_CLASS (klass);
-	
+
 	bonobo_stream_vfs_parent_class = gtk_type_class (bonobo_stream_get_type ());
 
 	vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
@@ -265,6 +283,12 @@ bonobo_stream_vfs_class_init (BonoboStreamVFSClass *klass)
 	sclass->close    = vfs_close;
 	sclass->eos      = vfs_eos;
 	sclass->length   = vfs_length;
+}
+
+static void
+bonobo_stream_vfs_init (BonoboStreamVFS *stream)
+{
+	stream->details = g_new0 (BonoboStreamVFSDetails, 1);
 }
 
 /**
@@ -283,7 +307,7 @@ bonobo_stream_vfs_get_type (void)
 			sizeof (BonoboStreamVFS),
 			sizeof (BonoboStreamVFSClass),
 			(GtkClassInitFunc) bonobo_stream_vfs_class_init,
-			(GtkObjectInitFunc) NULL,
+			(GtkObjectInitFunc) bonobo_stream_vfs_init,
 			NULL, /* reserved 1 */
 			NULL, /* reserved 2 */
 			(GtkClassInitFunc) NULL
@@ -319,7 +343,7 @@ bonobo_stream_vfs_construct (BonoboStreamVFS *stream,
 }
 
 static Bonobo_Stream
-create_bonobo_stream_vfs (BonoboObject *object)
+Bonobo_Stream_vfs__create (BonoboObject *object)
 {
 	POA_Bonobo_Stream *servant;
 	CORBA_Environment ev;
@@ -341,7 +365,7 @@ create_bonobo_stream_vfs (BonoboObject *object)
 }
 
 static BonoboStream *
-bonobo_stream_create (GnomeVFSHandle *fd)
+bonobo_stream_vfs_new_internal (GnomeVFSHandle *handle)
 {
 	BonoboStreamVFS *stream_vfs;
 	Bonobo_Stream corba_stream;
@@ -349,9 +373,9 @@ bonobo_stream_create (GnomeVFSHandle *fd)
 
 	stream_vfs = BONOBO_STREAM_VFS (gtk_object_new (bonobo_stream_vfs_get_type (), NULL));
 	
-	stream_vfs->fd = fd;
+	stream_vfs->details->handle = handle;
 	
-	corba_stream = create_bonobo_stream_vfs (BONOBO_OBJECT (stream_vfs));
+	corba_stream = Bonobo_Stream_vfs__create (BONOBO_OBJECT (stream_vfs));
 	
 	CORBA_exception_init (&ev);
 	
@@ -378,29 +402,29 @@ bonobo_stream_create (GnomeVFSHandle *fd)
 BonoboStream *
 bonobo_stream_vfs_open (const char *uri, Bonobo_Storage_OpenMode mode)
 {
-	GnomeVFSHandle *fd;
+	GnomeVFSHandle *handle;
 	GnomeVFSResult result;
 
 	g_return_val_if_fail (uri != NULL, NULL);
 
-	fd = NULL;
+	handle = NULL;
 	if (mode == Bonobo_Storage_READ) {
-		result = gnome_vfs_open (&fd, uri, GNOME_VFS_OPEN_READ);
+		result = gnome_vfs_open (&handle, uri, GNOME_VFS_OPEN_READ);
 	} else if (mode == Bonobo_Storage_WRITE) {
-		result = gnome_vfs_open (&fd, uri, GNOME_VFS_OPEN_WRITE);
+		result = gnome_vfs_open (&handle, uri, GNOME_VFS_OPEN_WRITE);
 	} else {
 		result = GNOME_VFS_ERROR_NOT_SUPPORTED;
 	}
 	
-	if (result != GNOME_VFS_OK || fd == NULL) {
+	if (result != GNOME_VFS_OK || handle == NULL) {
 		return NULL;
 	}
 
-	return bonobo_stream_create (fd);
+	return bonobo_stream_vfs_new_internal (handle);
 }
 
 /**
- * bonobo_stream_vfs_create:
+ * bonobo_stream_vfs_new:
  * @uri: The path to the file to be opened.
  *
  * Creates a new BonoboStreamVFS object which is bound to the file
@@ -413,21 +437,21 @@ bonobo_stream_vfs_open (const char *uri, Bonobo_Storage_OpenMode mode)
  * Returns: the constructed BonoboStream object which is bound to the specified file.
  */
 BonoboStream *
-bonobo_stream_vfs_create (const char *uri)
+bonobo_stream_vfs_new (const char *uri)
 {
-	GnomeVFSHandle *fd;
+	GnomeVFSHandle *handle;
 	GnomeVFSResult result;
 
 	g_return_val_if_fail (uri != NULL, NULL);
 
-	fd = NULL;
-	result = gnome_vfs_create (&fd, uri,
+	handle = NULL;
+	result = gnome_vfs_create (&handle, uri,
 				   GNOME_VFS_OPEN_READ | GNOME_VFS_OPEN_WRITE,
 				   FALSE, 0666);
 
-	if (result != GNOME_VFS_OK || fd == NULL) {
+	if (result != GNOME_VFS_OK || handle == NULL) {
 		return NULL;
 	}
 
-	return bonobo_stream_create (fd);
+	return bonobo_stream_vfs_new_internal (handle);
 }

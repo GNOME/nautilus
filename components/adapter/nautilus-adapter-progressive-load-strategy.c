@@ -151,7 +151,7 @@ stop_loading (NautilusAdapterProgressiveLoadStrategy *strategy,
 	} while (0)
 
 
-#define LOAD_CHUNK 2048
+#define LOAD_CHUNK 16384
 
 static void
 nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStrategy *abstract_strategy,

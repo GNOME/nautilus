@@ -28,6 +28,8 @@ bin_PROGRAMS =					\
 
 nautilus_adapter_SOURCES =				\
 	main.c						\
+	bonobo-stream-vfs.c				\
+	bonobo-stream-vfs.h				\
 	nautilus-adapter-control-embed-strategy.c	\
 	nautilus-adapter-control-embed-strategy.h	\
 	nautilus-adapter-embed-strategy-private.h	\

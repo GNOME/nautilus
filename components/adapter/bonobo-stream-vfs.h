@@ -29,13 +29,9 @@
 
 BEGIN_GNOME_DECLS
 
-struct _BonoboStreamVFS;
-typedef struct _BonoboStreamVFS BonoboStreamVFS;
+struct BonoboStreamVFS;
+typedef struct BonoboStreamVFS BonoboStreamVFS;
 
-#ifndef _BONOBO_STORAGE_VFS_H_
-struct _BonoboStorageVFS;
-typedef struct _BonoboStorageVFS BonoboStorageVFS;
-#endif
 
 #define BONOBO_STREAM_VFS_TYPE        (bonobo_stream_vfs_get_type ())
 #define BONOBO_STREAM_VFS(o)          (GTK_CHECK_CAST ((o), BONOBO_STREAM_VFS_TYPE, BonoboStreamVFS))
@@ -43,16 +39,12 @@ typedef struct _BonoboStorageVFS BonoboStorageVFS;
 #define BONOBO_IS_STREAM_VFS(o)       (GTK_CHECK_TYPE ((o), BONOBO_STREAM_VFS_TYPE))
 #define BONOBO_IS_STREAM_VFS_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), BONOBO_STREAM_VFS_TYPE))
 
-typedef struct _BonoboStreamVFSPrivate BonoboStreamVFSPrivate;
+typedef struct BonoboStreamVFSDetails BonoboStreamVFSDetails;
 
-struct _BonoboStreamVFS {
-  BonoboStream stream;
+struct BonoboStreamVFS {
+	BonoboStream stream;
 
-  GnomeVFSURI *uri;
-  GnomeVFSHandle *fd;
-  gboolean got_eof;
-
-  BonoboStreamVFSPrivate *priv;
+	BonoboStreamVFSDetails *details;
 };
 
 typedef struct {
@@ -60,11 +52,12 @@ typedef struct {
 } BonoboStreamVFSClass;
 
 GtkType         bonobo_stream_vfs_get_type     (void);
-BonoboStream    *bonobo_stream_vfs_open         (const char *uri, Bonobo_Storage_OpenMode mode);
-BonoboStream    *bonobo_stream_vfs_create       (const char *uri);
-BonoboStream    *bonobo_stream_vfs_construct    (BonoboStreamVFS *stream,
-						 Bonobo_Stream corba_stream);
-	
+BonoboStream *  bonobo_stream_vfs_new          (const char              *uri);
+BonoboStream *  bonobo_stream_vfs_construct    (BonoboStreamVFS         *stream,
+						Bonobo_Stream            corba_stream);
+BonoboStream *  bonobo_stream_vfs_open         (const char              *uri, 
+						Bonobo_Storage_OpenMode  mode);
+
 END_GNOME_DECLS
 
 #endif /* _BONOBO_STREAM_VFS_H_ */

@@ -31,11 +31,11 @@
 #include <config.h>
 
 #include "nautilus-adapter-stream-load-strategy.h"
+#include "bonobo-stream-vfs.h"
 
 #include <gtk/gtkobject.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-view.h>
-#include <libnautilus-extensions/bonobo-stream-vfs.h>
 
 struct NautilusAdapterStreamLoadStrategyDetails {
 	Bonobo_PersistStream  persist_stream;

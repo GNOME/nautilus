@@ -1,3 +1,29 @@
+2000-10-20  Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/adapter/bonobo-stream-vfs.h,
+	components/adapter/bonobo-stream-vfs.c: (vfs_write), (vfs_read),
+	(vfs_seek), (vfs_truncate), (vfs_copy_to), (vfs_close), (vfs_eos),
+	(vfs_length), (bonobo_stream_vfs_class_init),
+	(bonobo_stream_vfs_init), (bonobo_stream_vfs_get_type),
+	(Bonobo_Stream_vfs__create), (bonobo_stream_vfs_new_internal),
+	(bonobo_stream_vfs_open), (bonobo_stream_vfs_new): Moved here from
+	libnautilus-extensions; bunches of cleanup to match nautilus style
+	better.
+
+	* components/adapter/Makefile.am: Added above two files to build.
+
+	* components/adapter/nautilus-adapter-progressive-load-strategy.c:
+	Up the load chunk.
+	
+	* components/adapter/nautilus-adapter-stream-load-strategy.c:
+	Include "bonobo-stream-vfs.h" not
+	<libnautilus-extensions-stream-vfs.h>
+
+	* libnautilus-extensions/bonobo-stream-vfs.c,
+	libnautilus-extensions/bonobo-stream-vfs.h: Removed from here.
+	
+	* libnautilus-extensions/Makefile.am: Removed from build.
+
 2000-10-20  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c
