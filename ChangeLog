@@ -1,3 +1,19 @@
+2001-08-01  Havoc Pennington  <hp@redhat.com>
+
+	* eazel-logos/default.xml: hang on - is this the default theme for
+	nautilus, or is the below file the default theme for nautilus? 
+	anyway, make same change to remove title colors.
+
+	* icons/default.xml: don't hardcode the title, title info, and
+	shadow colors; this prevented the auto-color-selection stuff
+	in nautilus-sidebar-title.c from working properly.
+	And the hardcoded values were the same thing the autoselector
+	would have chosen anyhow.
+
+	* libnautilus-private/nautilus-directory-metafile.c
+	(get_metafile): print error and exit if we fail to open the
+	metafile factory; somewhat cleaner than segfaulting.
+
 2001-08-01  Alex Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-container.c (lay_down_icons_tblr):

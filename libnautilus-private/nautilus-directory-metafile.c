@@ -140,12 +140,19 @@ get_metafile (NautilusDirectory *directory)
 
 		directory->details->metafile_corba_object = Nautilus_MetafileFactory_open (get_factory (), uri, &ev);
 
-		/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+		if (ev._major != CORBA_NO_EXCEPTION) {
+			g_error ("%s: CORBA error opening MetafileFactory: %s\n",
+				 g_get_prgname (),
+				 CORBA_exception_id (&ev));
+		}
+		
 		CORBA_exception_free (&ev);
 	
 		g_free (uri);
 	}
 
+	g_assert (directory->details->metafile_corba_object != CORBA_OBJECT_NIL);
+	
 	return bonobo_object_dup_ref (directory->details->metafile_corba_object, NULL);	
 }
 
