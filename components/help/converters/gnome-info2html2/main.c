@@ -213,7 +213,7 @@ main(int argc, char **argv)
 	      if ( node->contents )
 		free(node->contents);
 				
-	      free(node);
+	      g_free(node);
 	      BaseFilename = NULL;
 	    }
 	  }

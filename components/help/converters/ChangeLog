@@ -1,3 +1,13 @@
+Sat Jun 17 18:07:19 2000  George Lebl <jirka@5z.com>
+
+	* gnome-info2html2/main.c (main): Use g_free on the node as it
+	  has been allocated with g_malloc
+
+	* gnome-man2html2/gnome-man2html.c (scan_format):  Patch from gnome
+	  bug number 3925.  From the description: Briefly, gnome-man2html
+	  doesn't notice when the format lines in table declarations end if
+	  the last thing in the format specification is a font command. 
+
 2000-04-05  Darin Adler  <darin@eazel.com>
 
 	* gnome-db2html2/gdb3html.c: Removed some unnecessary \n from g_errors.

@@ -1054,7 +1054,7 @@ static char
 			c++;
 			curfield->font = toupper(*c);
 			c++;
-			if (!isspace(*c)) c++;
+			if (!isspace(*c) && *c!='.') c++;
 			break;
 		case 't': case 'T': curfield->valign='t'; c++; break;
 		case 'p': case 'P':
