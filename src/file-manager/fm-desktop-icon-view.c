@@ -26,6 +26,35 @@
 #include <config.h>
 #include "fm-desktop-icon-view.h"
 
+
+/* The folowing is an ugly hack to get nautilus to compile 
+   with -Werror with recent 2.2.x kernels ( at least
+   kernel >= 2.2.16). Evil Kernel Hackers is my new moto: EKH.
+   If your kernel is more recent than 2.2.16 and this is not 
+   necessary, please, let me know.
+   -- mathieu@eazel.com
+*/
+
+#include <linux/version-up.h>
+#if LINUX_VERSION_CODE >= KERNEL_VERSION (2,2,16)
+#include <linux/types.h>
+#define _LINUX_BYTEORDER_SWAB_H
+#include <asm/byteorder.h>
+#undef _LINUX_BYTEORDER_SWAB_H
+extern __inline__ __const__ __u16 __fswab16(__u16 x);
+extern __inline__ __u16 __swab16p(__u16 *x);
+extern __inline__ void __swab16s(__u16 *addr);
+extern __inline__ __const__ __u32 __fswab32(__u32 x);
+extern __inline__ __u32 __swab32p(__u32 *x);
+extern __inline__ void __swab32s(__u32 *addr);
+#ifdef __BYTEORDER_HAS_U64__ 
+extern __inline__ __const__ __u64 __fswab64(__u64 x);
+extern __inline__ __u64 __swab64p(__u64 *x);
+extern __inline__ void __swab64s(__u64 *addr);
+#endif /* __BYTEORDER_HAS_U64__ */
+#endif /* LINUX_VERSION_CODE > KERNEL_VERSION (2,2,12) */
+
+
 #include "fm-icon-view.h"
 #include "iso9660.h"
 #include "src/nautilus-application.h"
@@ -43,6 +72,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+
+
 
 #define MOUNT_TYPE_ISO9660 	"iso9660"
 #define MOUNT_TYPE_EXT2 	"ext2"
