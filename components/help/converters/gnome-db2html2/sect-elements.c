@@ -91,7 +91,7 @@ ElementInfo sect_elements[] = {
 	{ FILENAME, "filename", (startElementSAXFunc) sect_tt_start_element, (endElementSAXFunc) sect_tt_end_element, (charactersSAXFunc) sect_write_characters},
 	{ ITEMIZEDLIST, "itemizedlist", (startElementSAXFunc) sect_itemizedlist_start_element, (endElementSAXFunc) sect_itemizedlist_end_element, NULL},
 	{ ORDEREDLIST, "orderedlist", (startElementSAXFunc) sect_orderedlist_start_element, (endElementSAXFunc) sect_orderedlist_end_element, NULL},
-	{ VARIABLELIST, "variablelist", (startElementSAXFunc) sect_itemizedlist_start_element, (endElementSAXFunc) sect_itemizedlist_end_element, NULL},
+	{ VARIABLELIST, "variablelist", (startElementSAXFunc) sect_variablelist_start_element, (endElementSAXFunc) sect_variablelist_end_element, NULL},
 	{ LISTITEM, "listitem", (startElementSAXFunc) sect_listitem_start_element, (endElementSAXFunc) sect_listitem_end_element, NULL},
 	{ PROGRAMLISTING, "programlisting", (startElementSAXFunc) sect_programlisting_start_element, (endElementSAXFunc) sect_programlisting_end_element, (charactersSAXFunc) sect_write_characters},
 	{ SGMLTAG, "sgmltag", (startElementSAXFunc) sect_tt_start_element, (endElementSAXFunc) sect_tt_end_element, (charactersSAXFunc) sect_write_characters},
@@ -799,10 +799,17 @@ sect_figure_end_element (Context *context,
 		return;
 
 	if (sect_context->figure->img != NULL) {
+ 		if (sect_context->figure->id)
+			sect_print (context, "<A NAME=\"%s\">",
+				    sect_context->figure->id);
+		sect_print (context, "<P><B>Figure %d.",
+			    sect_context->figure_count);
  		if (sect_context->figure->title)
-			sect_print (context, "<P><B>Figure %d. %s</B><P>",
-				    sect_context->figure_count,
+			sect_print (context, " %s",
 				    sect_context->figure->title);
+ 		if (sect_context->figure->id)
+			sect_print (context, "</A>");
+		sect_print (context, "</B><P>");
 		sect_print (context, "<IMG SRC=\"%s\" ALT=\"%s\"><P>",
 			    sect_context->figure->img,
 			    (sect_context->figure->alt) ? sect_context->figure->alt : "IMAGE");
@@ -810,6 +817,7 @@ sect_figure_end_element (Context *context,
 	g_free (sect_context->figure->title);
 	g_free (sect_context->figure->alt);
 	g_free (sect_context->figure->img);
+	g_free (sect_context->figure->id);
 	g_free (sect_context->figure);
 	sect_context->figure = NULL;
 }
@@ -837,6 +845,11 @@ sect_graphic_start_element (Context *context,
 		} else if (!strcasecmp (*atrs_ptr, "fileref")) {
 			atrs_ptr++;
 			fileref =  *atrs_ptr;
+			atrs_ptr++;
+			continue;
+		} else if (!strcasecmp (*atrs_ptr, "id")) {
+			atrs_ptr++;
+			sect_context->figure->id = g_strdup (*atrs_ptr);
 			atrs_ptr++;
 			continue;
 		}

@@ -131,6 +131,7 @@ typedef struct FigureInfo {
 	gchar *title;
 	gchar *alt;
 	gchar *img;
+	gchar *id;
 } FigureInfo;
 
 void article_start_element (Context *context, const gchar *name, const xmlChar **atrs);
