@@ -102,6 +102,7 @@ nautilus_mime_get_default_application_for_file_internal (NautilusFile *file,
 	GnomeVFSMimeApplication *result;
 	char *default_application_string;
 	gboolean used_user_chosen_info;
+	char *uri_scheme;
 
 	if (!nautilus_mime_actions_check_if_open_with_attributes_ready (file)) {
 		return NULL;
@@ -115,25 +116,49 @@ nautilus_mime_get_default_application_for_file_internal (NautilusFile *file,
 	/* FIXME bugzilla.gnome.org 45085: should fall back to normal default 
 	   if user-specified default is bogus */
 
-	if (default_application_string == NULL) {
+	uri_scheme = nautilus_file_get_uri_scheme (file);
+
+	result = NULL;
+	if (default_application_string != NULL) {
+		result = gnome_vfs_application_registry_get_mime_application (default_application_string);
+		if (result != NULL && !application_supports_uri_scheme (result, uri_scheme)) {
+			gnome_vfs_mime_application_free (result);
+			result = NULL;
+		}
+	}
+
+	if (result == NULL) {
+		/* TODO: this should maybe use gnome_vfs_mime_get_default_application_for_scheme,
+		   but thats not public atm */
+		   
 		mime_type = nautilus_file_get_mime_type (file);
 		result = gnome_vfs_mime_get_default_application (mime_type);
+		if (result != NULL && !application_supports_uri_scheme (result, uri_scheme)) {
+			result = NULL;
+		}
 
 		if (result == NULL) {
-			GList *all_applications;
+			GList *all_applications, *l;
 			
 			all_applications = nautilus_mime_get_open_with_applications_for_file (file);
-			if (all_applications) {
-				result = gnome_vfs_mime_application_copy (all_applications->data);
-				gnome_vfs_mime_application_list_free (all_applications);
+
+			for (l = all_applications; l != NULL; l = l->next) {
+				result = gnome_vfs_mime_application_copy (l->data);
+				if (result != NULL && !application_supports_uri_scheme (result, uri_scheme)) {
+					gnome_vfs_mime_application_free (result);
+					result = NULL;
+				}
+				if (result != NULL)
+					break;
 			}
+			gnome_vfs_mime_application_list_free (all_applications);
 		}
 
 		g_free (mime_type);
 		used_user_chosen_info = FALSE;
-	} else {
-		result = gnome_vfs_application_registry_get_mime_application (default_application_string);
-	}
+	} 
+
+	g_free (uri_scheme);
 
 	if (user_chosen != NULL) {
 		*user_chosen = used_user_chosen_info;
