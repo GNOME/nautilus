@@ -3,8 +3,8 @@
 
 <!--
       (Do not remove this comment block.)
-  Version: 1.0
-  Last modified: March 7, 2001
+  Version: 1.0.1
+  Last modified: March 9, 2001
   This document is maintained by Eazel Inc.
   Maintainers:
                Eazel Inc.
@@ -70,7 +70,7 @@
   <title>Introduction</title>
 
   <para>
-   These release notes, last updated March 7, 2001, describe known
+   These release notes, last updated March 9, 2001, describe known
    issues for Nautilus versions 1.0.
   </para>
 
@@ -82,8 +82,8 @@
   <para>
    Solutions to some common problems with Nautilus can be found at the
    Eazel Customer Support site. Click <ulink type="http"
-   url="http://support.linuxcare.com/knowledgebase/eazel"> here</ulink>
-   to see if your problem is described.
+   url="http://support.eazel.com"> here</ulink> to see if your problem
+   is described.
   </para>
 
  </sect1>
@@ -138,8 +138,9 @@
 
    <listitem>
     <para>
-     Nautilus has several <guimenuitem>customization</guimenuitem> features: You can change
-     backgrounds, personalize icons, and switch themes.
+     Nautilus has several <guimenuitem>customization</guimenuitem>
+     features: You can change backgrounds, personalize icons, and
+     switch themes.
     </para>
    </listitem>
 
@@ -185,7 +186,9 @@
     The preview release versions of Nautilus created XML files (links
     and metafiles containing your customization information) with
     incorrect capitalization. Because of this error, your Nautilus
-    links may now appear as plain text files beginning with "&lt;?xml."
+    links may now appear as plain text files beginning with
+    "&lt;?xml," and customizations such as custom icons, captions, and
+    backgrounds may be lost.
    </para>
 
    <para>
@@ -217,33 +220,54 @@
    <para>
     If you installed Nautilus Preview Release 1 or 2, and you are
     having problems loading Web pages, you may need to delete two
-    directories. Do this:
+    directories. Follow these steps:
    </para>
 
-   <orderedlist>
-    <listitem><para>Shut down Nautilus and the gconfd utility. To do
-    this, open a terminal window and enter the following
-    command: killall gconfd</para></listitem>
+   <para>
+    1. Shut down Nautilus and the gconfd utility. To do this, open a
+    terminal window and enter the following commands:
+   </para>
 
-    <listitem><para>Remove the following two directories and then restart
-    Nautilus.</para></listitem>
+     <simplelist>
+      <member>nautilus --quit </member>
+      <member>nautilus-clean.sh -x</member>
+     </simplelist>
 
-   </orderedlist>
+    <para>
+     2. Remove the following two directories:
+    </para>
 
      <simplelist>
       <member>~/.gconf</member>
       <member>~/.gconfd</member>
      </simplelist>
 
+   <para>
+    3. Restart Nautilus.
+   </para>
+
    <para><guimenuitem>Medusa Off by Default</guimenuitem></para>
 
    <para>The Medusa daemon, which indexes your hard disk so fast
    searches can be performed, is turned off by default. To turn it on,
-   open a terminal window and enter the following command:
+   follow these steps:
    </para>
 
    <para>
-    medusa-searchd
+    1. Open the preferences menu and choose Preferences.
+   </para>
+
+   <para>
+    2. Click Search in the left-hand column of the Preferences dialog box.
+   </para>
+
+   <para>
+    3. In the Fast Search section, make sure that the button next to
+    Enable fast search is turned on.
+   </para>
+
+   <para>
+    4. Click OK to close the Preferences dialog box.
    </para>
 
    <para>Note: For Medusa to perform its indexing task, the crond
@@ -253,18 +277,104 @@
 
   </sect1>
 
-  <sect1 id="problems">
-   <title>Known Problems</title>
+  <sect1 id="session">
+   <title>Setting Nautilus to Start Automatically</title>
 
    <para>
-    Ximian packages from the Red Hat 6 category cannot be installed
-    from package view and will fail if your system is running Red Hat
-    7, because the installer is seeking a Red Hat 6.2-specific
-    library.
+    You can adjust your GNOME settings so Nautilus starts
+    automatically whenever you start GNOME. Follow these steps:
    </para>
 
-  </sect1>
+   <orderedlist>
 
+    <listitem>
+     <para>
+      Make sure Nautilus is running. You should see the Nautilus
+      desktop or an open Nautilus window.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Log out of GNOME (open the GNOME Main Menu and choose Log out).
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      In the Log out dialog box, click the "Save current setup" checkbox.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Proceed to log out. The next time you log into GNOME, Nautilus
+      will start automatically.
+     </para>
+    </listitem>
+
+   </orderedlist>
+
+   <para>
+    To stop Nautilus from launching automatically:
+   </para>
+
+   <orderedlist>
+
+    <listitem>
+     <para>
+      Open the GNOME Main Menu (footprint) and choose
+      <menuchoice><guimenu>Programs</guimenu>
+      <guisubmenu>Settings</guisubmenu>
+      <guimenuitem>Session</guimenuitem><guimenuitem>Startup
+      Programs</guimenuitem></menuchoice>. (The menu option may be
+      Session Properties and Startup Programs.)
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      The GNOME Control Center opens in the Session Properties and
+      Startup Programs section. If you see a Startup Programs tab,
+      click it.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Click the Browse Currently Running Programs button.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      In the list of programs, locate and select "nautilus."
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Click Remove.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Make sure the checkbox labeled "Automatically save changes to
+      session" is enabled. (If your GNOME Control Center window has
+      tabs, this checkbox is under the Session Options tab.)
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Click OK.
+     </para>
+    </listitem>
+
+   </orderedlist>
+
+ </sect1>
 
 </article>
 

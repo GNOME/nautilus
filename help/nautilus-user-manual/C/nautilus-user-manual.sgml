@@ -3,8 +3,8 @@
 
 <!--
       (Do not remove this comment block.)
-  Version: 1.0.1
-  Last modified: March 7, 2001
+  Version: 1.0.2
+  Last modified: March 9, 2001
   This document is maintained by Eazel Inc.
   Maintainers: 
                Eazel Inc.
@@ -73,7 +73,7 @@
 
   <!-- this is the version of manual, not application --> 
   <releaseinfo>
-   This is version 1.0.1 of the Nautilus User's Manual.
+   This is version 1.0.2 of the Nautilus User's Manual.
   </releaseinfo>
 
  </bookinfo>
@@ -294,6 +294,107 @@
   </sect1>
 
 
+  <!-- Introducing Nautilus: Setting Nautilus to Start Automatically -->
+  <sect1 id="session">
+   <title>Setting Nautilus to Start Automatically</title>
+
+   <para>
+    You can adjust your GNOME settings so Nautilus starts
+    automatically whenever you start GNOME. Follow these steps:
+   </para>
+
+   <orderedlist>
+
+    <listitem>
+     <para>
+      Make sure Nautilus is running. You should see the Nautilus
+      desktop or an open Nautilus window.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Log out of GNOME (open the GNOME Main Menu and choose Log out).
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      In the Log out dialog box, click the "Save current setup" checkbox.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Proceed to log out. The next time you log into GNOME, Nautilus
+      will start automatically.
+     </para>
+    </listitem>
+
+   </orderedlist>
+
+   <para>
+    To stop Nautilus from launching automatically:
+   </para>
+
+   <orderedlist>
+
+    <listitem>
+     <para>
+      Open the GNOME Main Menu (footprint) and choose
+      <menuchoice><guimenu>Programs</guimenu>
+      <guisubmenu>Settings</guisubmenu>
+      <guimenuitem>Session</guimenuitem><guimenuitem>Startup
+      Programs</guimenuitem></menuchoice>. (The menu option may be
+      Session Properties and Startup Programs.)
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      The GNOME Control Center opens in the Session Properties and
+      Startup Programs section. If you see a Startup Programs tab,
+      click it.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Click the Browse Currently Running Programs button.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      In the list of programs, locate and select "nautilus."
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Click Remove.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Make sure the checkbox labeled "Automatically save changes to
+      session" is enabled. (If your GNOME Control Center window has
+      tabs, this checkbox is under the Session Options tab.)
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      Click OK.
+     </para>
+    </listitem>
+
+   </orderedlist>
+
+  </sect1>
+
+
   <!-- Introducing Nautilus: About GNOME  -->
   <sect1 id="gnome">
    <title>About GNOME</title>
@@ -307,6 +408,7 @@
    </para>
 
   </sect1>
+
 
  </chapter>
 
@@ -1307,54 +1409,33 @@
     If you suspect that Medusa is not turned on, do this:
    </para>
 
-    <orderedlist>
+   <orderedlist>
 
-     <listitem>
-      <para>
-       Open a terminal window.
-      </para>
-     </listitem>
+    <listitem>
+     <para>
+      Open the preferences menu and choose Preferences.
+     </para>
+    </listitem>
 
-     <listitem>
-      <para>
-       Log into your system as root.
-      </para>
-     </listitem>
+    <listitem>
+     <para>
+      From the left column of the Preferences dialog box, choose
+      Search.
+     </para>
+    </listitem>
 
-     <listitem>
-      <para>
-       Enter this command at the command line: medusa-searchd
-      </para>
-     </listitem>
+    <listitem>
+     <para>
+      In the Fast Search section, turn on "Enable fast search."
+     </para>
+    </listitem>
 
-    </orderedlist>
+   </orderedlist>
 
-    <para>
-     If Medusa is still not turned on, do this:
-    </para>
-
-     <orderedlist>
-
-      <listitem>
-       <para>
-        Open the preferences menu and choose Preferences.
-       </para>
-      </listitem>
-
-      <listitem>
-       <para>
-        From the left column of the Preferences dialog box, choose
-        Search.
-       </para>
-      </listitem>
-
-      <listitem>
-       <para>
-        In the Fast Search section, turn on "Enable fast search."
-       </para>
-      </listitem>
-
-     </orderedlist>
+   <para>Note: For Medusa to perform its indexing task, the crond
+   program must also be running. If you have turned off crond, Medusa
+   won't work.
+   </para>
 
   </sect1>
 
