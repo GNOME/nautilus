@@ -1091,10 +1091,15 @@ nautilus_view_frame_get_first_visible_file (NautilusViewFrame *view)
 
 	ret = NULL;
 	if (view->details->positionable) {
-		uri = Nautilus_ScrollPositionable_get_first_visible_file (view->details->positionable, NULL);
+		CORBA_Environment ev;
+
+		CORBA_exception_init (&ev);
+		uri = Nautilus_ScrollPositionable_get_first_visible_file (view->details->positionable, &ev);
 		ret = g_strdup (uri);
 		CORBA_free (uri);
+		CORBA_exception_free (&ev);
 	}
+
 	return ret;
 }
 
@@ -1103,9 +1108,13 @@ nautilus_view_frame_scroll_to_file (NautilusViewFrame *view,
 				    const char        *uri)
 {
 	if (view->details->positionable) {
+		CORBA_Environment ev;
+		
+		CORBA_exception_init (&ev);
 		Nautilus_ScrollPositionable_scroll_to_file (view->details->positionable,
 							    uri,
-							    NULL);
+							    &ev);
+		CORBA_exception_free (&ev);
 	}
 }
 
