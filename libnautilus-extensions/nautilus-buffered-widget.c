@@ -96,6 +96,7 @@ static void       nautilus_buffered_widget_get_arg              (GtkObject      
 								 GtkArg                       *arg,
 								 guint                         arg_id);
 
+
 /* GtkWidgetClass methods */
 static void       nautilus_buffered_widget_realize              (GtkWidget                    *widget);
 static void       nautilus_buffered_widget_draw                 (GtkWidget                    *widget,
@@ -103,9 +104,11 @@ static void       nautilus_buffered_widget_draw                 (GtkWidget      
 static void       nautilus_buffered_widget_size_allocate        (GtkWidget                    *widget,
 								 GtkAllocation                *allocation);
 
+
 /* GtkWidgetClass event methods */
-static gint       nautilus_buffered_widget_expose               (GtkWidget                    *widget,
+static gint       nautilus_buffered_widget_expose_event         (GtkWidget                    *widget,
 								 GdkEventExpose               *event);
+
 /* Private NautilusBufferedWidget things */
 static void       background_appearance_changed_callback        (NautilusBackground           *background,
 								 gpointer                      callback_data);
@@ -121,6 +124,7 @@ static void       nautilus_gdk_pixbuf_tile_alpha                (GdkPixbuf      
 								 gint                          tile_origin_y,
 								 GdkInterpType                 interpolation_mode,
 								 guchar                        overall_alpha);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBufferedWidget, nautilus_buffered_widget, GTK_TYPE_MISC)
 
@@ -139,7 +143,7 @@ nautilus_buffered_widget_initialize_class (NautilusBufferedWidgetClass *buffered
 	/* GtkWidgetClass */
  	widget_class->realize = nautilus_buffered_widget_realize;
 	widget_class->draw = nautilus_buffered_widget_draw;
-	widget_class->expose_event = nautilus_buffered_widget_expose;
+	widget_class->expose_event = nautilus_buffered_widget_expose_event;
 	widget_class->size_allocate = nautilus_buffered_widget_size_allocate;
 
 	/* NautilusBufferedWidgetClass */
@@ -243,7 +247,6 @@ nautilus_buffered_widget_realize (GtkWidget *widget)
 	GtkWidget		*background_ancestor;
 	NautilusBufferedWidget	*buffered_widget;
 
-	g_return_if_fail (widget != NULL);
 	g_return_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (widget));
 	
 	buffered_widget = NAUTILUS_BUFFERED_WIDGET (widget);
@@ -302,7 +305,6 @@ nautilus_buffered_widget_draw (GtkWidget *widget, GdkRectangle *area)
 	GdkPoint	source_point;
 	GdkRectangle	destination_area;
 
-	g_return_if_fail (widget != NULL);
 	g_return_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (widget));
 	g_return_if_fail (area != NULL);
 	g_return_if_fail (GTK_WIDGET_REALIZED (widget));
@@ -334,7 +336,6 @@ nautilus_buffered_widget_size_allocate (GtkWidget *widget, GtkAllocation* alloca
 {
 	NautilusBufferedWidget *buffered_widget;
 
-	g_return_if_fail (widget != NULL);
 	g_return_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (widget));
 	g_return_if_fail (allocation != NULL);
 
@@ -351,12 +352,12 @@ nautilus_buffered_widget_size_allocate (GtkWidget *widget, GtkAllocation* alloca
 }
 
 static gint
-nautilus_buffered_widget_expose (GtkWidget *widget, GdkEventExpose *event)
+nautilus_buffered_widget_expose_event (GtkWidget *widget, GdkEventExpose *event)
 {
 	NautilusBufferedWidget	*buffered_widget;
 	
-	g_return_val_if_fail (widget != NULL, FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (widget), FALSE);
+	g_return_val_if_fail (event != NULL, FALSE);
 
 	buffered_widget = NAUTILUS_BUFFERED_WIDGET (widget);
 	

@@ -351,8 +351,6 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 	area.x1 = area.x0 + total_text_width + label->detail->drop_shadow_offset;
 	area.y1 = area.y0 + total_text_width + label->detail->drop_shadow_offset;
 
-	g_print ("vertical_offset = %d\n", vertical_offset);
-	
 	if (label->detail->num_text_lines > 0) {
 		if (label->detail->drop_shadow_offset > 0) {
 			nautilus_scalable_font_draw_text_lines (label->detail->font,

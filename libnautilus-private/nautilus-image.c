@@ -43,9 +43,9 @@ enum
 /* Detail member struct */
 struct _NautilusImageDetail
 {
-	GdkPixbuf	*pixbuf;
-	guchar		overall_alpha;
-	NautilusImageAlphaMode alpha_mode;
+	GdkPixbuf		*pixbuf;
+	guchar			overall_alpha;
+	NautilusImageAlphaMode	alpha_mode;
 };
 
 /* GtkObjectClass methods */
@@ -59,16 +59,35 @@ static void nautilus_image_get_arg          (GtkObject              *object,
 					     GtkArg                 *arg,
 					     guint                   arg_id);
 
+
+
+
+
 /* GtkWidgetClass methods */
 static void nautilus_image_size_request     (GtkWidget              *widget,
 					     GtkRequisition         *requisition);
+static void nautilus_image_draw             (GtkWidget              *widget,
+					     GdkRectangle           *area);
+
+
+
+
+
+/* GtkWidgetClass event methods */
+static gint nautilus_image_expose_event     (GtkWidget              *widget,
+					     GdkEventExpose         *event);
+
+
 
 
 /* NautilusBufferedWidgetClass methods */
 static void render_buffer_pixbuf            (NautilusBufferedWidget *buffered_widget,
 					     GdkPixbuf              *buffer,
-					     int		    horizontal_offset,
-					     int		    vertical_offset);
+					     int                     horizontal_offset,
+					     int                     vertical_offset);
+static void nautilus_image_paint            (NautilusImage          *image,
+					     const GdkRectangle     *area);
+
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusImage, nautilus_image, NAUTILUS_TYPE_BUFFERED_WIDGET)
@@ -111,6 +130,8 @@ nautilus_image_initialize_class (NautilusImageClass *image_class)
 
 	/* GtkWidgetClass */
 	widget_class->size_request = nautilus_image_size_request;
+	widget_class->draw = nautilus_image_draw;
+	widget_class->expose_event = nautilus_image_expose_event;
 
 	/* NautilusBufferedWidgetClass */
 	buffered_widget_class->render_buffer_pixbuf = render_buffer_pixbuf;
@@ -249,6 +270,45 @@ nautilus_image_size_request (GtkWidget		*widget,
    	requisition->height += misc->ypad * 2;
 }
 
+static void
+nautilus_image_draw (GtkWidget *widget, GdkRectangle *area)
+{
+	NautilusImage *image;
+
+	g_return_if_fail (NAUTILUS_IS_IMAGE (widget));
+	g_return_if_fail (area != NULL);
+	g_return_if_fail (GTK_WIDGET_REALIZED (widget));
+
+	image = NAUTILUS_IMAGE (widget);
+
+	if (image->detail->alpha_mode == NAUTILUS_IMAGE_FULL_ALPHA) {
+		NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, draw, (widget, area));
+	}
+	else {
+		nautilus_image_paint (image, area);
+	}
+}
+
+static gint
+nautilus_image_expose_event (GtkWidget *widget, GdkEventExpose *event)
+{
+	NautilusImage	*image;
+	
+	g_return_val_if_fail (NAUTILUS_IS_IMAGE (widget), FALSE);
+	g_return_val_if_fail (event != NULL, FALSE);
+
+	image = NAUTILUS_IMAGE (widget);
+	
+	if (image->detail->alpha_mode == NAUTILUS_IMAGE_FULL_ALPHA) {
+		return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, expose_event, (widget, event));
+	}
+	else {
+		nautilus_image_paint (image, &event->area);
+	}
+	
+	return TRUE;
+}
+
 /* Private NautilusImage things */
 static void
 render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
@@ -297,6 +357,60 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 				      1.0,
 				      GDK_INTERP_BILINEAR,
 				      image->detail->overall_alpha);
+	}
+}
+
+static void
+nautilus_image_paint (NautilusImage		*image,
+		      const GdkRectangle	*area)
+{
+	g_return_if_fail (NAUTILUS_IS_IMAGE (image));
+	g_return_if_fail (area != NULL);
+	g_return_if_fail (image->detail->alpha_mode == NAUTILUS_IMAGE_THRESHOLD_ALPHA);
+
+	if (!GTK_WIDGET_REALIZED (image)) {
+		return;
+	}
+
+	if (image->detail->pixbuf != NULL) {
+		GtkWidget *widget;
+		gint x;
+		gint y;
+		guint width = gdk_pixbuf_get_width (image->detail->pixbuf);
+		guint height = gdk_pixbuf_get_height (image->detail->pixbuf);
+		
+		widget = GTK_WIDGET (image);
+		
+		if (width <= widget->allocation.width) {
+			x = (widget->allocation.width - width) / 2;
+		}
+		else {
+			x = - (width - widget->allocation.width) / 2;
+		}
+		
+		if (height <= widget->allocation.height) {
+			y = (widget->allocation.height - height) / 2;
+		}
+		else {
+			y = - (height - widget->allocation.height) / 2;
+		}
+
+		x += widget->allocation.x;
+		y += widget->allocation.y;
+		
+		gdk_pixbuf_render_to_drawable_alpha (image->detail->pixbuf, 
+						     widget->window,
+						     0,
+						     0,
+						     x,
+						     y,
+						     width,
+						     height,
+						     GDK_PIXBUF_ALPHA_BILEVEL,
+						     128,
+						     GDK_RGB_DITHER_NORMAL,
+						     x,
+						     y);
 	}
 }
 
@@ -368,11 +482,11 @@ nautilus_image_set_alpha_mode (NautilusImage			*image,
 	if (alpha_mode != image->detail->alpha_mode)
 	{
 		image->detail->alpha_mode = alpha_mode;
+		
+		nautilus_buffered_widget_clear_buffer (NAUTILUS_BUFFERED_WIDGET (image));
+
+		gtk_widget_queue_draw (GTK_WIDGET (image));
 	}
-
-	nautilus_buffered_widget_clear_buffer (NAUTILUS_BUFFERED_WIDGET (image));
-
-	gtk_widget_queue_draw (GTK_WIDGET (image));
 }
 
 /**

@@ -1,5 +1,38 @@
 2000-08-25  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-buffered-widget.c:
+	(nautilus_buffered_widget_initialize_class),
+	(nautilus_buffered_widget_realize),
+	(nautilus_buffered_widget_draw),
+	(nautilus_buffered_widget_size_allocate),
+	(nautilus_buffered_widget_expose_event):
+	Some dumb renamings and superfluous assertion removal.
+
+	* libnautilus-extensions/nautilus-image.c:
+	(nautilus_image_initialize_class), (nautilus_image_draw),
+	(nautilus_image_expose_event), (nautilus_image_paint),
+	(nautilus_image_set_alpha_mode):
+	Add support for two alpha rendering modes: 1) FULL, the pixbuf is
+	composited on top of the widget's background - expensive.  2)
+	THRESHOLD, the pixbuf is drawn with an alpha threshold without any
+	compositing - fast but not as smooth.
+	
+	* libnautilus-extensions/nautilus-label.c: (render_buffer_pixbuf):
+	Remove a dumb printf i left in before.
+	
+	* src/nautilus-sidebar-title.c:
+	(nautilus_sidebar_title_initialize), (update_icon),
+	(nautilus_sidebar_title_hit_test_icon),
+	(sidebar_create_smooth_components_if_needed),
+	(sidebar_create_normal_components_if_needed),
+	(smooth_graphics_mode_changed_callback):
+	Use the new dual alpha support in the image class to simplify
+	things.  Create only one icon and change the alpha mode on that
+	when the smooth graphics preference changes.  Ill do the same for
+	emblems later.
+	
+2000-08-25  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* test/test-nautilus-label.c:
 	(red_label_color_value_changed_callback),
 	(green_label_color_value_changed_callback),
