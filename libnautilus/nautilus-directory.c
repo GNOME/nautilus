@@ -1199,8 +1199,8 @@ nautilus_file_compare_by_size_with_directories (NautilusFile *file_1, NautilusFi
 	int item_count_1;
 	int item_count_2;
 
-	is_directory_1 = file_1->info->type == GNOME_VFS_FILE_TYPE_DIRECTORY;
-	is_directory_2 = file_2->info->type == GNOME_VFS_FILE_TYPE_DIRECTORY;
+	is_directory_1 = nautilus_file_is_directory (file_1);
+	is_directory_2 = nautilus_file_is_directory (file_2);
 
 	if (is_directory_1 && !is_directory_2)
 		return -1;
@@ -1244,8 +1244,8 @@ nautilus_file_compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
 	 * that the string is dependent entirely on the mime type,
 	 * which is true now but might not be later.
 	 */
-	is_directory_1 = file_1->info->type == GNOME_VFS_FILE_TYPE_DIRECTORY;
-	is_directory_2 = file_2->info->type == GNOME_VFS_FILE_TYPE_DIRECTORY;
+	is_directory_1 = nautilus_file_is_directory (file_1);
+	is_directory_2 = nautilus_file_is_directory (file_2);
 	
 	if (is_directory_1 && is_directory_2)
 		return 0;
@@ -1516,6 +1516,27 @@ nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type
 }
 
 /**
+ * nautilus_file_get_directory_item_count
+ * 
+ * Get the number of items in a directory.
+ * @file: NautilusFile representing a directory. It is an error to
+ * call this function on a file that is not a directory.
+ * @ignore_invisible_items: TRUE if invisible items should not be
+ * included in count.
+ * 
+ * Returns: item count for this directory.
+ * 
+ **/
+guint
+nautilus_file_get_directory_item_count (NautilusFile *file, 
+					gboolean ignore_invisible_items)
+{
+	g_return_val_if_fail (nautilus_file_is_directory (file), 0);
+
+	return get_directory_item_count_hack (file, ignore_invisible_items);
+}
+
+/**
  * nautilus_file_get_size
  * 
  * Get the file size.
@@ -1550,7 +1571,7 @@ nautilus_file_get_permissions_as_string (NautilusFile *file)
 	gboolean is_link;
 
 	permissions = file->info->permissions;
-	is_directory = file->info->type == GNOME_VFS_FILE_TYPE_DIRECTORY;
+	is_directory = nautilus_file_is_directory (file);
 	is_link = GNOME_VFS_FILE_INFO_SYMLINK(file->info);
 	
 	return g_strdup_printf ("%c%c%c%c%c%c%c%c%c%c",
@@ -1641,7 +1662,7 @@ get_directory_item_count_hack (NautilusFile *file, gboolean ignore_invisible_ite
     int count;
     struct dirent * entry;
 
-	g_assert (file->info->type == GNOME_VFS_FILE_TYPE_DIRECTORY);
+	g_assert (nautilus_file_is_directory (file));
 
 	uri = nautilus_file_get_uri (file);
 	if (nautilus_has_prefix (uri, "file://"))
@@ -1686,7 +1707,7 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 {
 	g_return_val_if_fail (file != NULL, NULL);
 
-	if (file->info->type == GNOME_VFS_FILE_TYPE_DIRECTORY)
+	if (nautilus_file_is_directory (file))
 	{
 		/* FIXME: Since computing the item count is slow, we
 		 * want to do it in a deferred way. However, that
@@ -1773,7 +1794,7 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 {
 	g_return_val_if_fail (file != NULL, NULL);
 
-	if (file->info->type == GNOME_VFS_FILE_TYPE_DIRECTORY)
+	if (nautilus_file_is_directory (file))
 		/* Special-case this so it isn't "special/directory".
 		 * Should this be "folder" instead?
 		 */		
@@ -1834,6 +1855,23 @@ nautilus_file_is_symbolic_link (NautilusFile *file)
 	g_return_val_if_fail (file != NULL, FALSE);
 
 	return GNOME_VFS_FILE_INFO_SYMLINK (file->info);
+}
+
+/**
+ * nautilus_file_is_directory
+ * 
+ * Check if this file is a directory.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: TRUE if @file is a directory.
+ * 
+ **/
+gboolean
+nautilus_file_is_directory (NautilusFile *file)
+{
+	g_return_val_if_fail (file != NULL, FALSE);
+
+	return nautilus_file_get_type (file) == GNOME_VFS_FILE_TYPE_DIRECTORY;
 }
 
 /**

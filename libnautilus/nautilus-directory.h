@@ -144,6 +144,9 @@ GnomeVFSFileType   nautilus_file_get_type                 (NautilusFile         
 const char *	   nautilus_file_get_mime_type            (NautilusFile             *file);
 gboolean           nautilus_file_is_symbolic_link	  (NautilusFile             *file);
 gboolean           nautilus_file_is_executable            (NautilusFile             *file);
+gboolean	   nautilus_file_is_directory		  (NautilusFile		    *file);
+guint		   nautilus_file_get_directory_item_count (NautilusFile		    *file,
+							   gboolean		     ignore_invisible_items);
 
 /* Simple getting and setting top-level metadata. */
 char *             nautilus_file_get_metadata             (NautilusFile             *file,

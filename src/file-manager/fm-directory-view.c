@@ -254,25 +254,45 @@ static void
 display_selection_info (FMDirectoryView *view)
 {
 	NautilusFileList *selection;
-	GnomeVFSFileSize size;
-	guint count;
+	GnomeVFSFileSize non_folder_size;
+	guint non_folder_count;
+	guint folder_count;
+	guint folder_item_count;
 	NautilusFileList *p;
 	char *first_item_name;
+	char *non_folder_str;
+	char *folder_count_str;
+	char *folder_item_count_str;
 	Nautilus_StatusRequestInfo sri;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
 	selection = fm_directory_view_get_selection (view);
 	
-	count = 0;
-	size = 0;
+	folder_count = 0;
+	folder_item_count = 0;
+	non_folder_count = 0;
+	non_folder_size = 0;
 	first_item_name = NULL;
+	folder_count_str = NULL;
+	non_folder_str = NULL;
+	folder_item_count_str = NULL;
+	
 	for (p = selection; p != NULL; p = p->next) {
 		NautilusFile *file;
 
 		file = p->data;
-		count++;
-		size += nautilus_file_get_size (file);
+		if (nautilus_file_is_directory (file))
+		{
+			folder_count++;
+			folder_item_count += nautilus_file_get_directory_item_count (file, FALSE);
+		}
+		else
+		{
+			non_folder_count++;
+			non_folder_size += nautilus_file_get_size (file);
+		}
+
 		if (first_item_name == NULL)
 			first_item_name = nautilus_file_get_name (file);
 	}
@@ -281,36 +301,114 @@ display_selection_info (FMDirectoryView *view)
 	
 	memset(&sri, 0, sizeof(sri));
 
-	if (count == 0) 
-	{
-	        sri.status_string = "";
-	}
-	else
-	{
-		char *size_string;
 
-		size_string = gnome_vfs_file_size_to_string (size);
-		if (count == 1)
+	/* Break out cases for localization's sake. But note that there are still pieces
+	 * being assembled in a particular order. 
+	 */
+
+	if (folder_count != 0)
+	{
+		if (folder_count == 1)
 		{
-			g_assert (first_item_name != NULL && strlen (first_item_name) > 0);
-			
-			sri.status_string = g_strdup_printf (_("\"%s\" selected -- %s"), 
-							     first_item_name, 
-							     size_string);
+			if (non_folder_count == 0)
+			{
+				folder_count_str = g_strdup_printf (_("\"%s\" selected"), first_item_name);
+			}
+			else
+			{
+				folder_count_str = g_strdup (_("1 directory selected"));
+			}
 		}
 		else
 		{
-			sri.status_string = g_strdup_printf (_("%d items selected -- %s"), 
-							     count, 
-							     size_string);
+			folder_count_str = g_strdup_printf (_("%d directories selected"), folder_count);
 		}
+
+		if (folder_item_count == 0)
+		{
+			folder_item_count_str = g_strdup (_("(containing 0 items)"));
+		}
+		else if (folder_item_count == 1)
+		{
+			folder_item_count_str = g_strdup (_("(containing 1 item)"));
+		}
+		else
+		{
+			folder_item_count_str = g_strdup_printf (_("(containing %d items)"), folder_item_count);
+		}
+	}
+
+	if (non_folder_count != 0)
+	{
+		char *size_string;
+
+		size_string = gnome_vfs_file_size_to_string (non_folder_size);
+
+		if (folder_count == 0)
+		{
+			if (non_folder_count == 1)
+			{
+				non_folder_str = g_strdup_printf (_("\"%s\" selected (%s)"), 
+								  first_item_name,
+								  size_string);
+			}
+			else
+			{
+				non_folder_str = g_strdup_printf (_("%d items selected (%s)"), 
+								  non_folder_count, 
+								  size_string);
+			}
+		}
+		else
+		{
+			/* Folders selected also, use "other" terminology */
+			if (non_folder_count == 1)
+			{
+				non_folder_str = g_strdup_printf (_("1 other item selected (%s)"), 
+								  size_string);
+			}
+			else
+			{
+				non_folder_str = g_strdup_printf (_("%d other items selected (%s)"), 
+								  non_folder_count, 
+								  size_string);
+			}
+		}
+
 		g_free (size_string);
 	}
 
+	if (folder_count == 0 && non_folder_count == 0)
+	{
+		sri.status_string = g_strdup ("");
+	}
+	else if (folder_count == 0)
+	{
+		sri.status_string = g_strdup (non_folder_str);
+	}
+	else if (non_folder_count == 0)
+	{
+		sri.status_string = g_strdup_printf (_("%s %s"), 
+						     folder_count_str, 
+						     folder_item_count_str);
+	}
+	else
+	{
+		sri.status_string = g_strdup_printf (_("%s %s, %s"), 
+						     folder_count_str, 
+						     folder_item_count_str,
+						     non_folder_str);
+	}
+
 	g_free (first_item_name);
+	g_free (folder_count_str);
+	g_free (folder_item_count_str);
+	g_free (non_folder_str);
 
 	nautilus_view_frame_request_status_change
 		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &sri);
+
+	g_free (sri.status_string);
 }
 
 static void

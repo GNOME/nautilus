@@ -1,3 +1,23 @@
+2000-02-22  John Sullivan  <sullivan@eazel.com>
+
+	Improved the status text that appears after changing the
+	selection in the file manager.
+
+	* libnautilus/nautilus-directory.h,
+	* libnautilus/nautilus-directory.c:
+	(nautilus_file_is_directory): New convenience function.
+	I updated everywhere in this file that was checking for
+	directories to use this.
+	(nautilus_file_get_directory_item_count): New function
+	to get the item count of a directory. This is implemented
+	with the evil get_directory_item_count_hack, but we'll want
+	this API later even when the evil hack is gone.
+
+	* src/file-manager/fm-directory-view.c: 
+	(display_selection_info): The selection count/size string is
+	now broken into a directory part and an everything else part.
+	No more counting directories as 4.1K.
+
 2000-02-22  Elliot Lee  <sopwith@redhat.com>
 
 	* libnautilus/nautilus-file-utilities.c: include string.h to avoid warnings
