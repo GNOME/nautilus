@@ -3,7 +3,7 @@
    nautilus-icon-factory.c: Class for obtaining icons for files and other objects.
  
    Copyright (C) 1999, 2000 Red Hat Inc.
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as

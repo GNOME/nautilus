@@ -263,7 +263,8 @@ static gboolean
 has_removable_mntent_options (struct mntent *ent)
 {
 	/* Use "owner" or "user" or "users" as our way of determining a removable volume */
-	if (hasmntopt (ent, "user") != NULL || hasmntopt (ent, "users") != NULL
+	if (hasmntopt (ent, "user") != NULL
+	    || hasmntopt (ent, "users") != NULL
 	    || hasmntopt (ent, "owner") != NULL) {
 	    return TRUE;
 	}
@@ -371,7 +372,7 @@ char *
 nautilus_volume_monitor_get_volume_name (const NautilusVolume *volume)
 {
 	if (volume->volume_name == NULL) {
-		return g_strdup ("Unknown");
+		return g_strdup (_("Unknown"));
 	}
 	
 	return g_strdup (volume->volume_name);
@@ -390,7 +391,7 @@ modify_volume_name_for_display (NautilusVolume *volume)
 	char *name;
 
 	if (volume->volume_name == NULL) {
-		volume->volume_name = g_strdup ("Unknown");
+		volume->volume_name = g_strdup (_("Unknown"));
 		return;
 	}
 	

@@ -1,3 +1,59 @@
+2001-02-20  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Gene Ragan <gzr@eazel.com>
+
+	Fixed bug 5676 (Moving a directory with multiple nested
+	directories causes improper locations to be displayed):
+
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_moved_internal): Made this build a list of the
+	affected files.
+	(nautilus_directory_moved): Send a changed notice to each affected
+	file.
+	(nautilus_directory_notify_files_moved): Send a changed notice to
+	each affected file, but share code to avoid sending changed
+	notices twice for any directory.
+	
+	Fixed some callers that were assuming a
+	gnome_vfs_get_local_path_from_uri would return a non-NULL
+	value. This is not safe to assume just because
+	gnome_vfs_uri_get_local returns true.
+
+	* components/music/nautilus-music-view.c: (read_id_tag): Use
+	gnome_vfs_get_local_path_from_uri to define what a local path is.
+	The old code used a mix.
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_can_rename): Simplified code to use
+	gnome_vfs_get_local_path_from_uri to define what a local path
+	is. The old code used a mix.
+	* libnautilus-extensions/nautilus-thumbnails.c: (make_thumbnails):
+	Added NULL checks after calls to
+	gnome_vfs_get_local_path_from_uri.
+	* src/nautilus-sidebar.c: (uri_is_local_image): Took out redundant
+	check. The definition of local image we want here is: "uses a
+	standard file: URI".
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_link_type_in_selection): Fixed bug where it would
+	only look at the first item in the selection. Simplified logic.
+	(is_link_type_special): Added a new function.
+	(special_link_in_selection): Instead of calling
+	fm_directory_link_type_in_selection, copied it. The problem with
+	the other approach is that it was reading each link file three
+	time to rule out each of the three special link types.
+
+	Other changes.
+
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_get_volume_name),
+	(modify_volume_name_for_display): Marked "Unknown" for
+	localization.
+	
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	* src/file-manager/fm-icon-view.c:
+	Added 2001 to the copyright since we modified these recently.
+
 2001-02-20  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

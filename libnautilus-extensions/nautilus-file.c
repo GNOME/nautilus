@@ -2,7 +2,7 @@
 
    nautilus-file.c: Nautilus file model.
  
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -716,11 +716,8 @@ gboolean
 nautilus_file_can_rename (NautilusFile *file)
 {
 	NautilusFile *parent;
-	gboolean result;
-	const char *path;
-	char *text_uri, *unescaped_path;
-	GnomeVFSURI *uri;
-	gboolean can_rename_link;
+	gboolean can_rename;
+	char *uri, *path;
 	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
@@ -734,45 +731,37 @@ nautilus_file_can_rename (NautilusFile *file)
 		return FALSE;
 	}
 
+	can_rename = TRUE;
+	uri = nautilus_file_get_uri (file);
+	path = gnome_vfs_get_local_path_from_uri (uri);
+
 	/* Certain types of links can't be renamed */
-	if (nautilus_file_is_nautilus_link (file)) {
-		text_uri = nautilus_file_get_uri (file);
-		uri = gnome_vfs_uri_new (text_uri);
-		path = gnome_vfs_uri_get_path (uri);
-		unescaped_path = gnome_vfs_unescape_string_for_display (path);
-		
-		switch (nautilus_link_local_get_link_type (unescaped_path)) {
-			case NAUTILUS_LINK_HOME:
-			case NAUTILUS_LINK_GENERIC:
-				can_rename_link = TRUE;
-				break;
-							
-			case NAUTILUS_LINK_TRASH:
-			case NAUTILUS_LINK_MOUNT:
-				can_rename_link = FALSE;
-				break;
-								
-			default:
-				can_rename_link = FALSE;
-				break;
-		}
+	if (path != NULL && nautilus_file_is_nautilus_link (file)) {
+		/* FIXME: This reads the link file every time -- seems
+		 * bad to do that even though it's known to be local.
+		 */
+		switch (nautilus_link_local_get_link_type (path)) {
+		case NAUTILUS_LINK_TRASH:
+		case NAUTILUS_LINK_MOUNT:
+			can_rename = FALSE;
+			break;
 
-		g_free (text_uri);
-		gnome_vfs_uri_unref (uri);
-
-		if (!can_rename_link) {
-			return FALSE;
+		case NAUTILUS_LINK_HOME:
+		case NAUTILUS_LINK_GENERIC:
+			break;
 		}
 	}
 	
 	/* Nautilus trash directories cannot be renamed */
-	if (nautilus_file_is_directory (file)) {
-		text_uri = nautilus_file_get_uri (file);
-		if (nautilus_uri_is_trash_folder (text_uri)) {
-			g_free (text_uri);
-			return FALSE;
-		}
-		g_free (text_uri);
+	if (nautilus_uri_is_trash_folder (uri)) {
+		can_rename = FALSE;
+	}
+
+	g_free (uri);
+	g_free (path);
+
+	if (!can_rename) {
+		return FALSE;
 	}
 	
 	/* User must have write permissions for the parent directory. */
@@ -785,11 +774,11 @@ nautilus_file_can_rename (NautilusFile *file)
 		return TRUE;
 	}
 	
-	result = nautilus_file_can_write (parent);
+	can_rename = nautilus_file_can_write (parent);
 
 	nautilus_file_unref (parent);
 
-	return result;
+	return can_rename;
 }
 
 static GnomeVFSURI *

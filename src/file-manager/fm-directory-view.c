@@ -2439,7 +2439,8 @@ fm_directory_all_selected_items_in_trash (FMDirectoryView *view)
 }
 
 gboolean
-fm_directory_link_type_in_selection (FMDirectoryView *view, NautilusLinkType link_type)
+fm_directory_link_type_in_selection (FMDirectoryView *view,
+				     NautilusLinkType link_type)
 {
 	gboolean saw_link;
 	GList *selection, *node;
@@ -2451,52 +2452,43 @@ fm_directory_link_type_in_selection (FMDirectoryView *view, NautilusLinkType lin
 	saw_link = FALSE;
 
 	selection = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (view));
-	for (node = selection; node != NULL; node = node->next) {
-		file = NAUTILUS_FILE (selection->data);
 
-		if (!nautilus_file_is_nautilus_link (file)) {
-			continue;
-		}
+	for (node = selection; node != NULL; node = node->next) {
+		file = NAUTILUS_FILE (node->data);
+
 		uri = nautilus_file_get_uri (file);
 		path = gnome_vfs_get_local_path_from_uri (uri);
 
-		switch (link_type) {
-			case NAUTILUS_LINK_TRASH:
-				/* It's probably OK that this ignores trash links that
-                 	 	* are not local since the trash link we care about is
-		 	 	* on the desktop.
-		 	 	*/
-				saw_link = path != NULL && nautilus_link_local_is_trash_link (path);
-				if (saw_link) {
-					break;
-				}
-				break;
-
-			case NAUTILUS_LINK_MOUNT:
-				saw_link = path != NULL && nautilus_link_local_is_volume_link (path);
-				if (saw_link) {
-					break;
-				}
-				break;
-				
-			case NAUTILUS_LINK_HOME:
-				saw_link = path != NULL && nautilus_link_local_is_home_link (path);
-				if (saw_link) {
-					break;
-				}
-				break;
-
-			default:
-				break;
-
-		}
+		/* FIXME: This reads the link file every single time. */
+		saw_link = path != NULL
+			&& nautilus_file_is_nautilus_link (file)
+			&& nautilus_link_local_get_link_type (path) == link_type;
+		
 		g_free (path);
 		g_free (uri);
+		
+		if (saw_link) {
+			break;
+		}
 	}
 	
 	nautilus_file_list_free (selection);
 	
 	return saw_link;
+}
+
+static gboolean
+is_link_type_special (NautilusLinkType type)
+{
+	switch (type) {
+	case NAUTILUS_LINK_TRASH:
+	case NAUTILUS_LINK_HOME:
+	case NAUTILUS_LINK_MOUNT:
+		return TRUE;
+	case NAUTILUS_LINK_GENERIC:
+		return FALSE;
+	}
+	return FALSE;
 }
 
 /* special_link_in_selection
@@ -2509,19 +2501,39 @@ fm_directory_link_type_in_selection (FMDirectoryView *view, NautilusLinkType lin
 static gboolean
 special_link_in_selection (FMDirectoryView *view)
 {
-	if (fm_directory_link_type_in_selection (view, NAUTILUS_LINK_TRASH)) {
-		return TRUE;
-	}
+	gboolean saw_link;
+	GList *selection, *node;
+	NautilusFile *file;
+	char *uri, *path;
 
-	if (fm_directory_link_type_in_selection (view, NAUTILUS_LINK_HOME)) {
-		return TRUE;
-	}
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
-	if (fm_directory_link_type_in_selection (view, NAUTILUS_LINK_MOUNT)) {
-		return TRUE;
-	}
+	saw_link = FALSE;
 
-	return FALSE;
+	selection = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (view));
+
+	for (node = selection; node != NULL; node = node->next) {
+		file = NAUTILUS_FILE (node->data);
+
+		uri = nautilus_file_get_uri (file);
+		path = gnome_vfs_get_local_path_from_uri (uri);
+
+		/* FIXME: This reads the link file every single time. */
+		saw_link = path != NULL
+			&& nautilus_file_is_nautilus_link (file)
+			&& is_link_type_special (nautilus_link_local_get_link_type (path));
+		
+		g_free (path);
+		g_free (uri);
+		
+		if (saw_link) {
+			break;
+		}
+	}
+	
+	nautilus_file_list_free (selection);
+	
+	return saw_link;
 }
 
 static gboolean

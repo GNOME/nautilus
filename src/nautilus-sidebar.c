@@ -604,10 +604,6 @@ uri_is_local_image (const char *uri)
 	GdkPixbuf *pixbuf;
 	char *image_path;
 	
-	if (nautilus_is_remote_uri (uri)) {
-		return FALSE;
-	}
-	
 	image_path = gnome_vfs_get_local_path_from_uri (uri);
 	if (image_path == NULL) {
 		return FALSE;

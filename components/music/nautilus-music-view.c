@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*- */
 
 /*
- *  Copyright (C) 2000 Eazel, Inc.
+ *  Copyright (C) 2000, 2001 Eazel, Inc.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
@@ -799,30 +799,21 @@ is_mp3_file (GnomeVFSFileInfo *file_info)
 static gboolean
 read_id_tag (const char *song_uri, SongInfo *song_info)
 {
-	const char *path;
-	char *escaped_path;
-	GnomeVFSURI *uri;
+	char *path;
 	id3_t *id3;
 	struct id3v1tag_t id3v1tag;
 	struct id3tag_t tag;
 	FILE *file;
 	
-	uri = gnome_vfs_uri_new (song_uri);
-	if (uri == NULL) {
-		return FALSE;
-	}
-	
-	if (!gnome_vfs_uri_is_local (uri)) {
-		gnome_vfs_uri_unref (uri);
-		return FALSE;
-	}
-	
-	path = gnome_vfs_uri_get_path (uri);
-	escaped_path = gnome_vfs_unescape_string_for_display (path);
-	file = fopen (escaped_path, "rb");
+	path = gnome_vfs_get_local_path_from_uri (song_uri);
+        if (path == NULL) {
+                return FALSE;
+        }
+
+	file = fopen (path, "rb");
+        g_free (path);
+
 	if (file == NULL) {
-		gnome_vfs_uri_unref (uri);
-		g_free (escaped_path);
 		return FALSE;	
 	}
 	
@@ -839,9 +830,7 @@ read_id_tag (const char *song_uri, SongInfo *song_info)
 		mpg123_id3v1_to_id3v2 (&id3v1tag, &tag);
 	} else {
 		/* Failed to read any sort of tag */
-		gnome_vfs_uri_unref (uri);
 		fclose (file);
-		g_free (escaped_path);
 		return FALSE;		
 	}
 	
@@ -854,9 +843,7 @@ read_id_tag (const char *song_uri, SongInfo *song_info)
 	song_info->track_number = atoi (tag.track);
 
 	/* Clean up */
-	g_free (escaped_path);
 	fclose (file);
-	gnome_vfs_uri_unref (uri);	
 	return TRUE;
 }
 
