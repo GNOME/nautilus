@@ -373,6 +373,8 @@ make_notes_view (const char *iid, void *callback_data)
         gdk_font_unref (font);
 #endif
 	gtk_text_view_set_editable (GTK_TEXT_VIEW (notes->note_text_field), TRUE);	
+        gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (notes->note_text_field),
+                                     GTK_WRAP_WORD);
         gtk_box_pack_start (GTK_BOX (vbox), notes->note_text_field, TRUE, TRUE, 0);
 
         background = eel_get_widget_background (notes->note_text_field);
