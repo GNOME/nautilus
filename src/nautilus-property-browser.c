@@ -273,7 +273,6 @@ nautilus_property_browser_initialize (GtkObject *object)
  	viewport = gtk_viewport_new(NULL, NULL);	
 	gtk_widget_show (viewport);
 	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
-	/* gtk_widget_set_usize (viewport, 76, -1); */
 
 	gtk_box_pack_start (GTK_BOX (property_browser->details->container),
 			    property_browser->details->category_container, FALSE, FALSE, 0);
@@ -1923,10 +1922,8 @@ make_category_link (NautilusPropertyBrowser *property_browser, char* name, char 
 	 */
 	button = gtk_toggle_button_new();
 	gtk_widget_show(button);
-	/* gtk_widget_set_usize (button, 80, 60); */
 	
-	/* if the button represents the current category, highlight it */
-	
+	/* if the button represents the current category, highlight it */	
 	if (property_browser->details->category && !strcmp(property_browser->details->category, name)) {
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
 		property_browser->details->selected_button = button;		
