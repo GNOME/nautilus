@@ -56,10 +56,10 @@ appicon_DATA = 	nautilus-launch-icon.png 	\
 		gnome-starthere-96.png		\
 		gnome-starthere.png
 
-Applicationsdir = $(datadir)/gnome/apps/Applications
+Applicationsdir = $(datadir)/applications
 Applications_DATA = $(DESKTOP_FILES)
 
-Toplevelmenudir = $(datadir)/gnome/apps
+Toplevelmenudir = $(datadir)/applications
 Toplevelmenu_DATA = nautilus-help.desktop
 
 dist-hook: nautilus.spec
