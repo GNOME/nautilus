@@ -89,7 +89,7 @@ fm_icon_container_get_icon_description (NautilusIconContainer *container,
 {
 	NautilusFile *file;
 	char *mime_type;
-	char *description;
+	const char *description;
 
 	file = NAUTILUS_FILE (data);
 	g_assert (NAUTILUS_IS_FILE (file));
