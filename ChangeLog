@@ -1,3 +1,10 @@
+2000-09-29  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(proxy_changed), (register_proxy_preferences),
+	(global_preferences_register): Fix the NULL-passing problem that
+	was kiling the Tinderbox.
+
 2000-09-29  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3322 (context menus don't work in FTP site
