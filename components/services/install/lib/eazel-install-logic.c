@@ -1359,7 +1359,7 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 static void
 dump_one_package (PackageData *pack, char *prefix)
 {
-	char *softprefix, *hardprefix, *modprefix, *breakprefix;
+	char *softprefix, *modprefix, *breakprefix;
 	char *packname;
 
 	if (pack->name == NULL) {
@@ -1380,15 +1380,12 @@ dump_one_package (PackageData *pack, char *prefix)
 	g_free (packname);
 
 	softprefix = g_strdup_printf ("%s (s) ", prefix);
-	hardprefix = g_strdup_printf ("%s (h) ", prefix);
 	breakprefix = g_strdup_printf ("%s (b) ", prefix);
 	modprefix = g_strdup_printf ("%s (m) ", prefix);
 	g_list_foreach (pack->soft_depends, (GFunc)dump_one_package, softprefix);
-	g_list_foreach (pack->hard_depends, (GFunc)dump_one_package, hardprefix);
 	g_list_foreach (pack->modifies, (GFunc)dump_one_package, modprefix);
 	g_list_foreach (pack->breaks, (GFunc)dump_one_package, breakprefix);
 	g_free (softprefix);
-	g_free (hardprefix);
 	g_free (modprefix);
 	g_free (breakprefix);
 }

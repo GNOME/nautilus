@@ -1,3 +1,75 @@
+2001-01-30  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>
+	
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_packagedatastruct_from_packagedata),
+	(packagedata_from_corba_packagedatastruct):
+	* components/services/install/lib/eazel-install-logic.c:
+	(dump_one_package):
+	* components/services/install/lib/eazel-install-problem.c:
+	(get_detailed_messages_foreach),
+	(get_detailed_uninstall_messages_foreach),
+	(get_detailed_cases_foreach),
+	(get_detailed_uninstall_cases_foreach):
+	* components/services/install/lib/eazel-package-system-types.c:
+	(packagedata_initialize), (packagedata_finalize),
+	(packagedata_copy), (packagedata_fill_in_missing),
+	(packagedata_destroy), (packagedata_dump_int):
+	* components/services/install/lib/eazel-package-system-types.h:
+	* components/rpmview/nautilus-rpm-view-install.c:
+
+	Remove unused hard_depends member from PackageData.
+	
+	* components/services/install/lib/eazel-install-logic2.c:
+	(dump_tree_helper), (prune_failed_packages_helper),
+	(prune_failed_packages), (eazel_install_check_existing_packages),
+	(get_softcat_info), (dedupe_foreach_depends), (is_satisfied),
+	(check_tree_helper), (check_tree_for_conflicts),
+	(download_packages), (set_toplevel), (install_packages):
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package), (flatten_tree_func):
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(make_rpm_argument_list),
+	(eazel_package_system_rpm3_packagedata_fill_from_header),
+	(rpm_packagedata_new_from_file),
+	(eazel_package_system_rpm3_load_package):
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_load_package):
+
+	Backport Eskil's recursive-dep fix from PR3.  Use
+	name/sense/version to hash completed dependencies, so files will
+	work (not just softcat packages).
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_package), (eazel_install_packagedata_to_xml_int),
+	(eazel_install_packagedata_to_xml), (osd_parse_shared):
+
+	The best of all worlds: some backported PR3 patches from Eskil,
+	some removal of hard_depends usage, and some new code to encode &
+	decode the RPM filesize from the XML generated across the corba
+	pipe.
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_view_destroy),
+	(nautilus_install_parse_uri), (update_package_info_display),
+	(nautilus_service_install_downloading),
+	(nautilus_service_install_preflight_check),
+	(nautilus_service_install_download_failed),
+	(nautilus_service_install_installing),
+	(nautilus_service_install_done), (nautilus_service_install_failed),
+	(nautilus_service_install_view_update_from_uri),
+	(nautilus_service_install_view_load_uri),
+	(service_install_stop_loading_callback):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.h:
+
+	Backport changes to the install view from PR3 (I should've done
+	this when I checked them into PR3 but I was brain-fried): No
+	longer cylon (use the throbber to indicate busy-ness) and handle
+	early cancels better.  Also some new stuff to use the more
+	accurate filesize counts.
+	
 2001-01-30  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>

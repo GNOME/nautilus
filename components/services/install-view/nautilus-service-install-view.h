@@ -92,6 +92,7 @@ struct _NautilusServiceInstallViewDetails {
 	gboolean	cancelled_before_downloads;
 	unsigned long	download_bytes_total;
 	unsigned long	download_bytes_sofar;
+	char		*username;
 
 	EazelInstallCallback *installer;
 	EazelInstallProblem *problem;

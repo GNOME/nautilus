@@ -71,11 +71,19 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 	}
 
 	tmp = trilobite_xml_get_string (package, "BYTESIZE");
-	if (tmp) {
+	if (tmp != NULL) {
 		rv->bytesize = atoi (tmp);
 		g_free (tmp);
 	} else {
 		rv->bytesize = 0;
+	}
+
+	tmp = trilobite_xml_get_string (package, "FILESIZE");
+	if (tmp != NULL) {
+		rv->filesize = atoi (tmp);
+		g_free (tmp);
+	} else {
+		rv->filesize = 0;
 	}
 
 	tmp = trilobite_xml_get_string (package, "PROVIDES");
@@ -106,7 +114,6 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 	
 	/* Dependency Lists */
 	rv->soft_depends = NULL;
-	rv->hard_depends = NULL;
 	rv->breaks = NULL;
 	rv->modifies = NULL;
 
@@ -117,11 +124,6 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 
 			depend = parse_package (dep, FALSE);
 			packagedata_add_pack_to_soft_depends (rv, depend);
-		} else if (g_strcasecmp (dep->name, "HARD_DEPEND") == 0) {
-			PackageData* depend;
-
-			depend = parse_package (dep, FALSE);
-			packagedata_add_pack_to_hard_depends (rv, depend);
 		} else if (g_strcasecmp (dep->name, "BREAKS") == 0) {
 			PackageData* depend;
 
@@ -533,11 +535,12 @@ parse_pkg_template (const char* pkg_template_file, char **result) {
    If given a droot and a title, uses that so create a subnode
    (primarily used for the recursiveness of PackageData objects.
    If not, creates a node with the name "PACKAGE" */
-xmlNodePtr
-eazel_install_packagedata_to_xml (const PackageData *pack, 
-				  char *title, 
-				  xmlNodePtr droot, 
-				  gboolean include_provides)
+static xmlNodePtr
+eazel_install_packagedata_to_xml_int (const PackageData *pack, 
+				      char *title, 
+				      xmlNodePtr droot, 
+				      gboolean include_provides,
+				      GList **path)
 {
 	xmlNodePtr root, node;
 	char *tmp;
@@ -572,8 +575,12 @@ eazel_install_packagedata_to_xml (const PackageData *pack,
 		g_free (tmp);
 	}
 
-	tmp = g_strdup_printf ("%d", pack->bytesize);
+	tmp = g_strdup_printf ("%u", pack->bytesize);
 	node = xmlNewChild (root, NULL, "BYTESIZE", tmp);
+	g_free (tmp);
+
+	tmp = g_strdup_printf ("%u", pack->filesize);
+	node = xmlNewChild (root, NULL, "FILESIZE", tmp);
 	g_free (tmp);
 
 	if (include_provides && pack->provides) {
@@ -589,22 +596,20 @@ eazel_install_packagedata_to_xml (const PackageData *pack,
 	}
 
 	for (iterator = pack->depends; iterator; iterator = iterator->next) {
-		eazel_install_packagedata_to_xml (((PackageDependency*)iterator->data)->package, 
-						  "SOFT_DEPEND", 
-						  root, 
-						  include_provides);
+		if (g_list_find (*path, ((PackageDependency*)iterator->data)->package) == NULL) {
+			(*path) = g_list_prepend (*path, ((PackageDependency*)iterator->data)->package);
+			eazel_install_packagedata_to_xml_int (((PackageDependency*)iterator->data)->package, 
+							      "SOFT_DEPEND", 
+							      root, 
+							      include_provides,
+							      path);
+			(*path) = g_list_remove (*path, ((PackageDependency*)iterator->data)->package);
+		}
 	}
 	for (iterator = pack->soft_depends; iterator; iterator = iterator->next) {
 		eazel_install_packagedata_to_xml ((PackageData*)iterator->data, 
 						  "SOFT_DEPEND", 
 						  root, 
-						  include_provides);
-	}
-	for (iterator = pack->hard_depends; iterator; iterator = iterator->next) {
-		node = xmlNewChild (root, NULL, "HARD_DEPEND", NULL);
-		eazel_install_packagedata_to_xml ((PackageData*)iterator->data, 
-						  "HARD_DEPEND", 
-						  root,
 						  include_provides);
 	}
 	for (iterator = pack->breaks; iterator; iterator = iterator->next) {
@@ -621,6 +626,17 @@ eazel_install_packagedata_to_xml (const PackageData *pack,
 	}
 
 	return root;
+}
+
+xmlNodePtr
+eazel_install_packagedata_to_xml (const PackageData *pack, 
+				  char *title, 
+				  xmlNodePtr droot, 
+				  gboolean include_provides)
+{
+	GList *path = NULL;
+
+	return eazel_install_packagedata_to_xml_int (pack, title, droot, include_provides, &path);
 }
 
 xmlNodePtr
@@ -884,6 +900,7 @@ osd_parse_shared (xmlDocPtr doc)
 		if (g_strcasecmp (child->name, "SOFTPKG") == 0) {
 			PackageData *pack;
 			pack = osd_parse_softpkg (child);
+			g_message (packagedata_dump (pack, FALSE));
 			if (pack) {
 				result = g_list_prepend (result, pack);
 			} else {

@@ -185,7 +185,6 @@ struct _PackageData {
 	char* summary;
 	char* description;	
 	GList* soft_depends;
-	GList* hard_depends;
 	GList* depends;		/* GList<PackageDependency *> */
 	GList* breaks; 	
 
@@ -230,7 +229,7 @@ struct _PackageData {
 	/* List of packages that this package modifies */
 	GList *modifies;
 	/* how was the package modified 
-	   Eg. the toplevel pacakge will have INSTALLED, and some stuff in "soft/hard_depends."
+	   Eg. the toplevel pacakge will have INSTALLED, and some stuff in "soft_depends."
 	   if "modifies" has elements, these have the following meaning ;
  	     DOWNGRADED means that the package was replaced with an older version
 	     UPGRADED means that the package was replaced with a never version
@@ -274,7 +273,6 @@ int packagedata_hash_equal (PackageData *a, PackageData *b);
 
 void packagedata_add_pack_to_breaks (PackageData *pack, PackageData *b);
 void packagedata_add_pack_to_soft_depends (PackageData *pack, PackageData *b);
-void packagedata_add_pack_to_hard_depends (PackageData *pack, PackageData *b);
 void packagedata_add_pack_to_modifies (PackageData *pack, PackageData *b);
 
 GList *flatten_packagedata_dependency_tree (GList *packages);
@@ -313,6 +311,7 @@ void packagedependency_destroy (PackageDependency *dep);
 #define IS_PACKAGEDEPENDENCY(obj) (1)
 /*************************************************************************************************/
 
+	/* OBSOLETE */
 typedef struct {
 	PackageData *package;
 	PackageData *required;

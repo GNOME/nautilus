@@ -612,23 +612,27 @@ eazel_install_fetch_package (EazelInstall *service,
 	char *name = g_strdup (package->name);
 	char *version = g_strdup (package->version);
 
-	switch (eazel_install_get_protocol (service)) {
-	case PROTOCOL_FTP:
-	case PROTOCOL_HTTP: 
-	{
-		if (eazel_softcat_get_info (service->private->softcat, package, EAZEL_SOFTCAT_SENSE_GE,
-					    PACKAGE_FILL_NO_PROVIDES | PACKAGE_FILL_NO_DEPENDENCIES) 
-		    == EAZEL_SOFTCAT_SUCCESS) {
-			url = g_strdup (package->remote_url);
-		} else {
-			url = NULL;
-		}
-	}
-	break;
-	case PROTOCOL_LOCAL:
-		url = g_strdup_printf ("%s", rpmfilename_from_packagedata (package));
-		break;
-	};
+	if (package->remote_url != NULL) {
+		url = g_strdup (package->remote_url);
+	} else {
+		switch (eazel_install_get_protocol (service)) {
+		case PROTOCOL_FTP:
+		case PROTOCOL_HTTP: 
+			{
+				if (eazel_softcat_get_info (service->private->softcat, package, EAZEL_SOFTCAT_SENSE_GE,
+							    PACKAGE_FILL_NO_PROVIDES | PACKAGE_FILL_NO_DEPENDENCIES) 
+				    == EAZEL_SOFTCAT_SUCCESS) {
+					url = g_strdup (package->remote_url);
+				} else {
+					url = NULL;
+				}
+			}
+			break;
+		case PROTOCOL_LOCAL:
+			url = g_strdup_printf ("%s", rpmfilename_from_packagedata (package));
+			break;
+		};
+ 	}
 
 	if (url == NULL) {
 		char *rname = packagedata_get_readable_name (package);
@@ -692,11 +696,9 @@ flatten_tree_func (PackageData *pack, GList **out)
 {
 	trilobite_debug ("    --- %s", pack->name);
 	*out = g_list_append (*out, pack);
-	g_list_foreach (pack->hard_depends, (GFunc)flatten_tree_func, out);
 	g_list_foreach (pack->soft_depends, (GFunc)flatten_tree_func, out);
-	g_list_free (pack->hard_depends);
 	g_list_free (pack->soft_depends);
-	pack->hard_depends = pack->soft_depends = NULL;
+	pack->soft_depends = NULL;
 }
 
 /* this was never used yet */

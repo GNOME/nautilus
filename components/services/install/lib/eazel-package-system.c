@@ -27,6 +27,7 @@
 #include "eazel-package-system-private.h"
 #include <libtrilobite/trilobite-core-distribution.h>
 #include <libtrilobite/trilobite-core-utils.h>
+#include <libtrilobite/trilobite-md5-tools.h>
 
 enum {
 	START,
@@ -225,9 +226,14 @@ eazel_package_system_load_package (EazelPackageSystem *system,
 				   int detail_level)
 {
 	PackageData *result = NULL;
+	char md5[16];
 	EPS_SANE_VAL (system, NULL);
 	g_assert (system->private->load_package);
 	result = (*system->private->load_package) (system, in_package, filename, detail_level);
+	if (result) {
+		trilobite_md5_get_digest_from_file (filename, md5);
+		result->md5 = g_strdup (trilobite_md5_get_string_from_md5_digest (md5));
+	}
 	return result;
 }
 

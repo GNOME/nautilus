@@ -153,11 +153,6 @@ corba_packagedatastruct_from_packagedata (const PackageData *pack)
 	} else {
 		corbapack->soft_depends._length = 0;
 	}
-	if (pack->hard_depends) {
-		corbapack->hard_depends = corba_packagedatastructlist_from_packagedata_list (pack->hard_depends);
-	} else {
-		corbapack->hard_depends._length = 0;
-	}
 	if (pack->breaks) {
 		corbapack->breaks = corba_packagedatastructlist_from_packagedata_list (pack->breaks);
 	} else {
@@ -254,7 +249,6 @@ packagedata_from_corba_packagedatastruct (const GNOME_Trilobite_Eazel_PackageDat
 /*
   FIXME bugzilla.eazel.com 1542:
 	pack->soft_depends = packagedata_list_from_corba_packagedatastructlist (corbapack.soft_depends);
-	pack->hard_depends = packagedata_list_from_corba_packagedatastructlist (corbapack.hard_depends);
 	pack->breaks = packagedata_list_from_corba_packagedatastructlist (corbapack.breaks);
 */
 	return pack;

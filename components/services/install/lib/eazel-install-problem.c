@@ -100,7 +100,7 @@ get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
 		}
 		break;
 	case PACKAGE_DEPENDENCY_FAIL:
-		if (pack->soft_depends || pack->hard_depends) {
+		if (pack->soft_depends) {
 
 		} else {
 			if (previous_pack && previous_pack->status == PACKAGE_BREAKS_DEPENDENCY) {
@@ -191,7 +191,6 @@ get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
 	data->path = g_list_prepend (data->path, pack);
 
 	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_messages_foreach, data);
-	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_messages_foreach, data);
 	g_list_foreach (pack->modifies, (GFunc)get_detailed_messages_foreach, data);
 	g_list_foreach (pack->breaks, (GFunc)get_detailed_messages_foreach, data);
 
@@ -271,7 +270,6 @@ get_detailed_uninstall_messages_foreach (PackageData *pack,
 	data->path = g_list_prepend (data->path, pack);
 
 	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_uninstall_messages_foreach, data);
-	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_uninstall_messages_foreach, data);
 	g_list_foreach (pack->modifies, (GFunc)get_detailed_uninstall_messages_foreach, data);
 	g_list_foreach (pack->breaks, (GFunc)get_detailed_uninstall_messages_foreach, data);
 
@@ -602,7 +600,7 @@ get_detailed_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
 		}
 		break;
 	case PACKAGE_DEPENDENCY_FAIL:
-		if (pack->soft_depends || pack->hard_depends) {
+		if (pack->soft_depends) {
 		} else {
 			if (previous_pack && previous_pack->status == PACKAGE_BREAKS_DEPENDENCY) {
 				add_update_case (data->problem, pack, FALSE, &(data->errors)); 
@@ -636,7 +634,6 @@ get_detailed_cases_foreach (PackageData *pack, GetErrorsForEachData *data)
 	data->path = g_list_prepend (data->path, pack);
 
 	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_cases_foreach, data);
-	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_cases_foreach, data);
 	g_list_foreach (pack->modifies, (GFunc)get_detailed_cases_foreach, data);
 	g_list_foreach (pack->breaks, (GFunc)get_detailed_cases_foreach, data);
 
@@ -698,7 +695,6 @@ get_detailed_uninstall_cases_foreach (PackageData *pack, GetErrorsForEachData *d
 	data->path = g_list_prepend (data->path, pack);
 
 	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_uninstall_cases_foreach, data);
-	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_uninstall_cases_foreach, data);
 	g_list_foreach (pack->modifies, (GFunc)get_detailed_uninstall_cases_foreach, data);
 	g_list_foreach (pack->breaks, (GFunc)get_detailed_uninstall_cases_foreach, data);
 

@@ -237,7 +237,6 @@ packagedata_initialize (PackageData *package) {
 	package->install_root = NULL;
 	package->provides = NULL;
 	package->soft_depends = NULL;
-	package->hard_depends = NULL;
 	package->breaks = NULL;
 	package->modifies = NULL;
 	package->depends = NULL;
@@ -315,9 +314,6 @@ packagedata_finalize (GtkObject *obj)
 	g_list_foreach (pack->soft_depends, (GFunc)gtk_object_unref, NULL);
 	g_list_free (pack->soft_depends);
 
-	g_list_foreach (pack->hard_depends, (GFunc)gtk_object_unref, NULL);
-	g_list_free (pack->hard_depends);
-
 	g_list_foreach (pack->breaks, (GFunc)gtk_object_unref, NULL);
 	g_list_free (pack->breaks);
 
@@ -325,7 +321,6 @@ packagedata_finalize (GtkObject *obj)
 	g_list_free (pack->modifies);
 
 	pack->soft_depends = NULL;
-	pack->hard_depends = NULL;
 	pack->depends = NULL;
 	pack->breaks = NULL;
 	pack->modifies = NULL;
@@ -479,7 +474,6 @@ packagedata_copy (const PackageData *pack, gboolean deep)
 
 	if (deep) {
 		result->soft_depends = packagedata_list_copy (pack->soft_depends, TRUE);
-		result->hard_depends = packagedata_list_copy (pack->hard_depends, TRUE);
 		result->depends = packagedata_deplist_copy (pack->depends, TRUE);
 		result->modifies = packagedata_list_copy (pack->modifies, TRUE);
 		result->breaks = packagedata_list_copy (pack->breaks, TRUE);
@@ -555,14 +549,11 @@ packagedata_fill_in_missing (PackageData *package, const PackageData *full_packa
 	}
 	if (! (fill_flags & PACKAGE_FILL_NO_DEPENDENCIES)) {
 		g_list_foreach (package->soft_depends, (GFunc)gtk_object_unref, NULL);
-		g_list_foreach (package->hard_depends, (GFunc)gtk_object_unref, NULL);
 		g_list_foreach (package->depends, (GFunc)packagedependency_destroy, GINT_TO_POINTER (FALSE));
 		package->soft_depends = NULL;
-		package->hard_depends = NULL;
 		package->depends = NULL;
 
 		package->soft_depends = packagedata_list_copy (full_package->soft_depends, TRUE);
-		package->hard_depends = packagedata_list_copy (full_package->hard_depends, TRUE);
 		package->depends = packagedata_deplist_copy (full_package->depends, TRUE);
 	}
 	package->fillflag = fill_flags;
@@ -573,7 +564,6 @@ packagedata_destroy (PackageData *pack, gboolean deep)
 {
 	if (deep) {
 		g_list_foreach (pack->soft_depends, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
-		g_list_foreach (pack->hard_depends, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
 		g_list_foreach (pack->breaks, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
 		g_list_foreach (pack->modifies, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
 	}
@@ -855,15 +845,6 @@ packagedata_add_pack_to_soft_depends (PackageData *pack, PackageData *b)
 	g_assert (b);
 	g_assert (pack != b);
 	packagedata_add_pack_to (&pack->soft_depends, b);
-}
-
-void 
-packagedata_add_pack_to_hard_depends (PackageData *pack, PackageData *b)
-{
-	g_assert (pack);
-	g_assert (b);
-	g_assert (pack != b);
-	packagedata_add_pack_to (&pack->hard_depends, b);
 }
 
 void 
@@ -1408,14 +1389,8 @@ packagedata_dump_int (const PackageData *package, gboolean deep, int indent)
 
 	if (package->soft_depends != NULL) {
 		gstr_indent (out, indent);
-		g_string_sprintfa (out, "Soft depends: ");
+		g_string_sprintfa (out, "Soft (old) depends: ");
 		dump_package_list (out, package->soft_depends, deep, indent);
-		g_string_sprintfa (out, "\n");
-	}
-	if (package->hard_depends != NULL) {
-		gstr_indent (out, indent);
-		g_string_sprintfa (out, "Hard depends: ");
-		dump_package_list (out, package->hard_depends, deep, indent);
 		g_string_sprintfa (out, "\n");
 	}
 	if (package->depends != NULL) {

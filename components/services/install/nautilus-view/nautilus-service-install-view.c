@@ -67,7 +67,8 @@
 #define ASSUME_ix86_IS_i386 
 
 /* send the user here after a completed (success or failure) install */
-#define NEXT_URL	"eazel-services:/catalog"
+#define NEXT_URL_ANONYMOUS     "eazel:"
+#define NEXT_URL               "eazel-services:/catalog"
 
 
 static void       nautilus_service_install_view_initialize_class (NautilusServiceInstallViewClass	*klass);
@@ -437,6 +438,7 @@ nautilus_service_install_view_destroy (GtkObject *object)
 	g_hash_table_destroy (view->details->deps);
 	g_list_foreach (view->details->message, (GFunc)install_message_destroy, NULL);
 	g_list_free (view->details->message);
+	g_free (view->details->username);
 
 	if (view->details->root_client) {
 		trilobite_root_client_unref (GTK_OBJECT (view->details->root_client));
@@ -536,6 +538,7 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view,
 		p = strchr (host_spec, '@');
 		if (p) {
 			*p = 0;
+			g_free (*username);
 			*username = host_spec;
 			if (*(p+1)) {
 				g_free (*host);
@@ -613,33 +616,25 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view,
 	return result;
 }
 
-
-/* when the overall progress bar is in cylon mode, this will tap it to keep it spinning. */
-static gint
-spin_cylon (NautilusServiceInstallView *view)
-{
-	gfloat val;
-
-	val = gtk_progress_get_value (GTK_PROGRESS (view->details->total_progress_bar));
-	val += 1.0;
-	if (val > 100.0) {
-		val = 0.0;
-	}
-	gtk_progress_set_value (GTK_PROGRESS (view->details->total_progress_bar), val);
-
-	/* in case we're being called as a timer */
-	return TRUE;
-}
-
 static void
-turn_cylon_off (NautilusServiceInstallView *view, float progress)
+update_package_info_display (NautilusServiceInstallView *view, const PackageData *pack, const char *format)
 {
-	gtk_progress_set_activity_mode (GTK_PROGRESS (view->details->total_progress_bar), FALSE);
-	gtk_progress_set_percentage (GTK_PROGRESS (view->details->total_progress_bar), progress);
-	if (view->details->cylon_timer) {
-		gtk_timeout_remove (view->details->cylon_timer);
-		view->details->cylon_timer = 0;
-	}
+	char *out;
+
+       out = g_strdup_printf (format, pack->name);
+       nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_name), out);
+       g_free (out);
+
+       if ((pack->description != NULL) && 
+           (strchr (pack->description, '\n') != NULL)) {
+               nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->package_details), FALSE);
+       } else {
+               nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->package_details), TRUE);
+       }
+       nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_details), pack->description);
+       out = g_strdup_printf (_("Version: %s"), pack->version);
+       nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_version), out);
+       g_free (out);
 }
 
 /* replace the current progress bar (in the message box) with a centered label saying "Complete!" */
@@ -660,7 +655,6 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const PackageDat
 {
 	char *out;
 	const char *needed_by;
-	GList *iter;
 	InstallMessage *im = view->details->current_im;
 	float fake_amount;
 
@@ -675,7 +669,6 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const PackageDat
 	if (amount == 0) {
 		/* could be a redundant zero-trigger for the same rpm... */
 		if (view->details->current_rpm && (strcmp (view->details->current_rpm, pack->name) == 0)) {
-			/* spin_cylon (view); */
 			return;
 		}
 
@@ -687,15 +680,8 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const PackageDat
 		g_free (view->details->current_rpm);
 		view->details->current_rpm = g_strdup (pack->name);
 
-		/* figure out if this is a toplevel package, and if so, update the header */
-		for (iter = g_list_first (((CategoryData *)(view->details->categories->data))->packages);
-		     iter != NULL; iter = g_list_next (iter)) {
-			PackageData *pack2 = (PackageData *)(iter->data);
-			if ((pack2->name != NULL) && (strcmp (pack2->name, pack->name) == 0)) {
-				out = g_strdup_printf (_("Downloading \"%s\""), pack->name);
-				nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_name), out);
-				g_free (out);
-			}
+		if (pack->toplevel) {
+			update_package_info_display (view, pack, _("Downloading \"%s\""));
 		}
 
 		/* new progress message and bar */
@@ -732,7 +718,7 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const PackageDat
 		view->details->current_rpm = NULL;
 		view->details->current_im = NULL;
 		/* update downloaded bytes */
-		view->details->download_bytes_sofar += pack->bytesize;
+		view->details->download_bytes_sofar += (pack->filesize > 0 ? pack->filesize : pack->bytesize);
 		/* not until we get an rpm size */
 		gtk_progress_set_percentage (GTK_PROGRESS (view->details->total_progress_bar),
 					     (float) view->details->download_bytes_sofar /
@@ -755,7 +741,7 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const PackageDat
 		 * actual size (which we know once we start downloading the file) to match the   
 		 * previously-assumed size
 		 */
-		fake_amount = (float)amount * (float)pack->bytesize / (float)total;
+		fake_amount = (float)amount * (float)(pack->filesize > 0 ? pack->filesize : pack->bytesize) / (float)total;
 		gtk_progress_set_percentage (GTK_PROGRESS (view->details->total_progress_bar),
 					     ((float) view->details->download_bytes_sofar + fake_amount) /
 					     (float) view->details->download_bytes_total);
@@ -831,7 +817,6 @@ flatten_package_tree_foreach (PackageData *package, GList **flattened_list)
 	}
 
 	g_list_foreach (package->soft_depends, (GFunc)flatten_package_tree_foreach, flattened_list);
-	g_list_foreach (package->hard_depends, (GFunc)flatten_package_tree_foreach, flattened_list);
 }
 
 /* given a package tree containing possibly redundant packages, assemble a new list
@@ -856,10 +841,14 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 	GList *package_list;
 	GList *iter;
 	char *out;
+	char *extra;
 	unsigned long total_k;
 
-	/* turn off the cylon and show "real" progress */
-	turn_cylon_off (view, 0.0);
+	if (view->details->cancelled) {
+		/* user has already hit the cancel button */
+		view->details->cancelled_before_downloads = TRUE;
+		return FALSE;
+	}
 
 	/* assemble initial list of packages to browse */
 	package_list = NULL;
@@ -877,7 +866,7 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 		out = packagedata_get_readable_name (package);
 	        g_string_sprintfa (message, " \xB7 %s\n", out);
 		g_free (out);
-		view->details->download_bytes_total += package->bytesize;
+		view->details->download_bytes_total += (package->filesize > 0 ? package->filesize : package->bytesize);
 
 		if (package->toplevel) {
 			nautilus_service_install_check_for_desktop_files (view,
@@ -889,8 +878,10 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 	/* arbitrary dividing line */
 	if (total_k > 4096) {
 		out = g_strdup_printf (_("for a total of %ld MB."), (total_k+512)/1024);
+		extra = g_strdup_printf ("%ld MB", (total_k+512)/1024);
 	} else {
-		out = g_strdup_printf (_("for a total of %ld kB."), total_k);
+		out = g_strdup_printf (_("for a total of %ld KB."), total_k);
+		extra = g_strdup_printf ("%ld KB", total_k);
 	}
 	g_string_sprintfa (message, "\n%s", out);
 	g_free (out);
@@ -912,6 +903,7 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 
 	if (!answer) {
 		g_list_free (package_list);
+		g_free (extra);
 		view->details->cancelled = TRUE;
 		view->details->cancelled_before_downloads = TRUE;
 		/* EVIL EVIL hack that causes the next dialog to show up instead of being hidden */
@@ -922,12 +914,13 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 	}
 
 	if (g_list_length (package_list) == 1) {
-		out = g_strdup (_("Downloading 1 package"));
+		out = g_strdup_printf (_("Downloading 1 package (%s)"), extra);
 	} else {
-		out = g_strdup_printf (_("Downloading %d packages"), g_list_length (package_list));
+		out = g_strdup_printf (_("Downloading %d packages (%s)"), g_list_length (package_list), extra);
 	}
 	show_overall_feedback (view, out);
 	g_free (out);
+	g_free (extra);
 
 	g_list_free (package_list);
 	view->details->current_package = 0;
@@ -940,8 +933,6 @@ nautilus_service_install_download_failed (EazelInstallCallback *cb, const Packag
 					  NautilusServiceInstallView *view)
 {
 	char *out, *tmp;
-
-	turn_cylon_off (view, 0.0);
 
 	/* no longer "loading" anything */
 	nautilus_view_report_load_complete (view->details->nautilus_view);
@@ -1038,20 +1029,7 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 		view->details->current_package = current_package;
 
 		if (pack->toplevel) {
-			/* this package is a main one.  update package info display, now that we know it */
-			out = g_strdup_printf (_("Installing \"%s\""), pack->name);
-			nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_name), out);
-			gtk_widget_queue_draw (view->details->package_name);
-			g_free (out);
-			if (strchr (pack->description, '\n') != NULL) {
-				nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->package_details), FALSE);
-			} else {
-				nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->package_details), TRUE);
-			}
-			nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_details), pack->description);
-			out = g_strdup_printf (_("Version: %s"), pack->version);
-			nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_version), out);
-			g_free (out);
+			update_package_info_display (view, pack, _("Installing \"%s\""));
 		}
 	}
 
@@ -1261,7 +1239,8 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 		/* we have already indicated failure elsewhere.  good day to you, sir. */
 	}
 
-	turn_cylon_off (view, success ? 1.0 : 0.0);
+	gtk_progress_set_percentage (GTK_PROGRESS (view->details->total_progress_bar), success ? 1.0 : 0.0);
+
 	g_free (view->details->current_rpm);
 	view->details->current_rpm = NULL;
 
@@ -1356,7 +1335,13 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 		/* send them to the predetermined "next" url
 		 * -- but only if they haven't set jump-after-install off
 		 */
-		message = g_strdup (NEXT_URL);
+		if ((view->details->username != NULL) &&
+		    (strcasecmp (view->details->username, "anonymous") == 0)) {
+			/* send anonymous users elsewhere, so they won't have to login */
+			message = g_strdup (NEXT_URL_ANONYMOUS);
+		} else {
+			message = g_strdup (NEXT_URL);
+		}
 		if (eazel_install_configure_check_jump_after_install (&message)) {
 			nautilus_view_open_location_in_this_window (view->details->nautilus_view, message);
 		}
@@ -1370,8 +1355,6 @@ nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *pa
 	char *tmp, *message;
 
 	g_assert (NAUTILUS_IS_SERVICE_INSTALL_VIEW (view));
-
-	turn_cylon_off (view, 0.0);
 
 	/* override the "success" result for install_done signal */
 	view->details->failure = TRUE;
@@ -1493,7 +1476,6 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	CategoryData		*category_data;
 	char			*host;
 	int			port;
-	char			*username;
 	GNOME_Trilobite_Eazel_Install	service;
 	CORBA_Environment	ev;
 	char 			*out, *p;
@@ -1508,8 +1490,13 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	} else {
 		port = 80;
 	}
-	username = NULL;
-	set_auth = !(nautilus_install_parse_uri (uri, view, &host, &port, &username));
+
+	/* FIXME: this is very very wrong!  apparently this was needed to hack around some bug in ammonite,
+	 * but realistically in the future we'll need the username to be picked up from ammonite, not made up
+	 * like this.
+	 */
+	view->details->username = g_strdup ("anonymous");
+	set_auth = !(nautilus_install_parse_uri (uri, view, &host, &port, &view->details->username));
 
 	if (! view->details->categories) {
 		return;
@@ -1570,8 +1557,8 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	GNOME_Trilobite_Eazel_Install__set_server_port (service, port, &ev);
 	GNOME_Trilobite_Eazel_Install__set_auth (service, set_auth, &ev);
 
-	if (username != NULL) {
-		GNOME_Trilobite_Eazel_Install__set_username (service, username, &ev);
+	if (view->details->username != NULL) {
+		GNOME_Trilobite_Eazel_Install__set_username (service, view->details->username, &ev);
 	}
 	GNOME_Trilobite_Eazel_Install__set_test_mode (service, FALSE, &ev);
 
@@ -1597,9 +1584,7 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 
 	show_overall_feedback (view, _("Contacting the software catalog ..."));
 
-	/* might take a while... cylon a bit */
-	gtk_progress_set_activity_mode (GTK_PROGRESS (view->details->total_progress_bar), TRUE);
-	view->details->cylon_timer = gtk_timeout_add (100, (GtkFunction)spin_cylon, view);
+	/* might take a while (leave the throbber on) */
 }
 
 void
@@ -1631,9 +1616,10 @@ nautilus_service_install_view_load_uri (NautilusServiceInstallView	*view,
 	view->details->already_installed = FALSE;
 	view->details->cancelled = FALSE;
 	view->details->failure = FALSE;
-	
 
 	generate_install_form (view);
+
+	nautilus_view_report_load_underway (NAUTILUS_VIEW (view->details->nautilus_view));
 	nautilus_service_install_view_update_from_uri (view, uri);
 }
 
@@ -1653,8 +1639,17 @@ service_install_load_location_callback (NautilusView			*nautilus_view,
 static void
 service_install_stop_loading_callback (NautilusView *nautilus_view, NautilusServiceInstallView *view)
 {
-	GNOME_Trilobite_Eazel_Install	service;
+	GNOME_Trilobite_Eazel_Install service;
 	CORBA_Environment ev;
+
+	view->details->cancelled = TRUE;
+	show_overall_feedback (view, _("Aborting package downloads..."));
+	while (gtk_events_pending ()) {
+		gtk_main_iteration ();
+	}
+	/* have to set these up here, because if they hit STOP before any downloads have started, the
+	 * call to _stop below will freeze until we get the preflight signal later.
+	 */
 
 	g_assert (nautilus_view == view->details->nautilus_view);
 
@@ -1664,8 +1659,5 @@ service_install_stop_loading_callback (NautilusView *nautilus_view, NautilusServ
 	CORBA_exception_free (&ev);
 
 	show_overall_feedback (view, _("Package download aborted."));
-	turn_cylon_off (view, 0.0);
 	current_progress_bar_complete (view, _("Aborted"));
-
-	view->details->cancelled = TRUE;
 }
