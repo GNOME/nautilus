@@ -35,6 +35,7 @@
 #include <gtk/gtkimage.h>
 #include <gtk/gtkimagemenuitem.h>
 #include <gtk/gtksignal.h>
+#include <libgnome/gnome-macros.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
