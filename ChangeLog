@@ -1,3 +1,12 @@
+2001-01-31  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	* src/nautilus-application.c (nautilus_application_startup): Don't
+	loop more than 20 times when we get OAF_REG_ALREADY_ACTIVE trying
+	to register the factory, instead display an error message that
+	suggests killing oafd.
+
 2001-01-31  Arik Devens  <arik@eazel.com>
 
 	reviewed by: Maciej Stachowiak  <mjs@eazel.com>

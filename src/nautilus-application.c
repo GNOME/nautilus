@@ -337,6 +337,9 @@ nautilus_application_startup (NautilusApplication *application,
 	GnomeDialog *dialog;
 	Nautilus_URIList *url_list;
 	const CORBA_char *corba_geometry;
+	int num_failures;
+
+	num_failures = 0;
 
 	/* Perform check for nautilus being run as super user */
 	if (!check_for_and_run_as_super_user ()) {
@@ -362,7 +365,7 @@ nautilus_application_startup (NautilusApplication *application,
 	CORBA_exception_init (&ev);
 
 	/* Start up the factory. */
-	for (;;) {
+	while (TRUE) {
 		/* Try to register the file manager view factory with OAF. */
 		result = oaf_active_server_register
 			(FACTORY_IID,
@@ -435,7 +438,17 @@ nautilus_application_startup (NautilusApplication *application,
 				/* FIXME bugzilla.eazel.com 2538: When can this happen? */
 				message = _("Nautilus can't be used now, due to an unexpected error.");
 				detailed_message = _("Nautilus can't be used now, due to an unexpected error "
-						     "from OAF when attempting to locate the factory.");
+						     "from OAF when attempting to locate the factory."
+						     "Killing oafd and restarting Nautilus may help fix the problem.");
+			} else {
+				num_failures++;
+				if (num_failures > 20) {
+					message = _("Nautilus can't be used now, due to an unexpected error.");
+					detailed_message = _("Nautilus can't be used now, due to an unexpected error "
+							     "from OAF when attempting to locate the shell object. "
+							     "Killing oafd and restarting Nautilus may help fix the problem.");
+					
+				}
 			}
 		}
 
