@@ -152,14 +152,12 @@ scrollkeeper-update
 %{prefix}/bin/nautilus-clean.sh
 %{prefix}/bin/nautilus-verify-rpm.sh
 %{prefix}/bin/nautilus-restore-settings-to-default.sh
-%{prefix}/bin/eazel-helper
 %{prefix}/bin/gnome-db2html2
 %{prefix}/bin/gnome-info2html2
 %{prefix}/bin/gnome-man2html2
 %{prefix}/bin/hyperbola
 %{prefix}/bin/nautilus
 %{prefix}/bin/nautilus-adapter
-%{prefix}/bin/nautilus-authenticate
 %{prefix}/bin/nautilus-content-loser
 %{prefix}/bin/nautilus-error-dialog
 %{prefix}/bin/nautilus-hardware-view
@@ -175,7 +173,7 @@ scrollkeeper-update
 %{prefix}/bin/run-nautilus
 %{prefix}/bin/nautilus-launcher-applet
 %{prefix}/bin/nautilus-xml-migrate
-%{prefix}/idl/*.idl
+#%{prefix}/idl/*.idl
 %{prefix}/lib/libnautilus-adapter.so.0
 %{prefix}/lib/libnautilus-adapter.so.0.0.0
 %{prefix}/lib/libnautilus-extensions.so.0
@@ -235,7 +233,6 @@ scrollkeeper-update
 %{prefix}/share/pixmaps/nautilus/gnome/throbber/*.png
 %{prefix}/share/pixmaps/nautilus/sidebar_tab_pieces/*.png
 %{prefix}/share/pixmaps/nautilus/throbber/*.png
-%{prefix}/share/pixmaps/nautilus/gray_tab_pieces/*.png
 %{prefix}/share/pixmaps/nautilus/villanova/*.xml
 %{prefix}/share/pixmaps/nautilus/villanova/*.png
 %{prefix}/share/oaf/Nautilus_View_help.oaf
