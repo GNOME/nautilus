@@ -71,6 +71,7 @@
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
+#include <libnautilus-private/nautilus-trash-directory.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
 #include <libnautilus-private/nautilus-view-identifier.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
@@ -103,6 +104,7 @@
 #define FM_DIRECTORY_VIEW_COMMAND_OPEN_WITH				"/commands/Open With"
 #define FM_DIRECTORY_VIEW_COMMAND_NEW_FOLDER				"/commands/New Folder"
 #define FM_DIRECTORY_VIEW_COMMAND_DELETE                    		"/commands/Delete"
+#define FM_DIRECTORY_VIEW_COMMAND_SHOW_TRASH                    	"/commands/Show Trash"
 #define FM_DIRECTORY_VIEW_COMMAND_TRASH                    		"/commands/Trash"
 #define FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH                   	"/commands/Empty Trash"
 #define FM_DIRECTORY_VIEW_COMMAND_DUPLICATE                		"/commands/Duplicate"
@@ -4141,6 +4143,10 @@ real_update_menus (FMDirectoryView *view)
 	nautilus_bonobo_set_sensitive (view->details->ui,
 				       FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES,
 				       !is_read_only);
+
+	nautilus_bonobo_set_sensitive (view->details->ui,
+				       FM_DIRECTORY_VIEW_COMMAND_SHOW_TRASH,
+				       !NAUTILUS_IS_TRASH_DIRECTORY (fm_directory_view_get_model (view)));
 
 	bonobo_ui_component_thaw (view->details->ui, NULL);
 
