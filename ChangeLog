@@ -1,3 +1,23 @@
+2000-11-16  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* components/help/converters/gnome-info2html2/main.c: (main):
+	Fix uninitialized variable.
+
+	* components/services/vault/command-line/main.c:
+	Include stlib.h needed for exit().
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(call_ready_callbacks):
+	Fix uninitialized variable.
+	
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_draw_text):
+	Workaround int vs uint casting issues with new gcc compiler.
+
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(extract_prefix_add_suffix):
+	Workaround int vs uint casting issues with new gcc compiler.
+
 2000-11-16  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

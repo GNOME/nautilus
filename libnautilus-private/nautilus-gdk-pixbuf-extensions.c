@@ -549,7 +549,7 @@ nautilus_gdk_pixbuf_draw_text (GdkPixbuf	*pixbuf,
 			/* Extract the next line of text. */
 			end_of_line = strchr (line, '\n');
 			line_length = end_of_line == NULL
-				? strlen (line)
+				? (int) strlen (line)
 				: end_of_line - line;
 			
 			/* Draw the next line of text. */

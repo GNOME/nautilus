@@ -70,7 +70,7 @@ main(int argc, char **argv)
 	if(n == 1 && !file_exists(args[0]))
 	  {
 	    char *ctmp, *infopath = g_getenv("INFOPATH");
-	    char *dirs[64], *ext;
+	    char *dirs[64], *ext = NULL;
 	    int ndirs;
 	    char buf[PATH_MAX];
 

@@ -1949,6 +1949,7 @@ call_ready_callbacks (NautilusDirectory *directory)
 	GList *node, *next;
 	ReadyCallback *callback;
 
+	callback = NULL;
 	called_any = FALSE;
 	while (1) {
 		/* Check if any callbacks are satisifed and call them if they are. */

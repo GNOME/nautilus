@@ -1146,7 +1146,7 @@ extract_prefix_add_suffix (const char *string,
 
         separator_position = strstr (string, separator);
         prefix_length = separator_position == NULL
-                ? strlen (string)
+                ? (int) strlen (string)
                 : separator_position - string;
 
         result = g_malloc (prefix_length + strlen(suffix) + 1);
