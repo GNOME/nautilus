@@ -1,5 +1,21 @@
 2001-04-11  Andy Hertzfeld  <andy@eazel.com>
 
+	groundwork for supporting multiple annotations for file by
+	adding a selector parameter to various calls.
+	
+	* libnautilus-extensions/nautilus-annotation.c:
+	(nautilus_annotation_get_annotation),
+	(nautilus_annotation_get_annotation_for_display),
+	(nautilus_annotation_get_count):
+	* libnautilus-extensions/nautilus-annotation.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(prepend_automatic_emblem_names):
+	* src/file-manager/fm-annotation-window.c:
+	(create_annotation_window):
+	* src/file-manager/fm-icon-view.c: (get_icon_annotation_callback):
+
+2001-04-11  Andy Hertzfeld  <andy@eazel.com>
+
 	* libnautilus-extensions/nautilus-icon-container.c:
 	(handle_icon_button_press):
 	made clicking on emblems work properly in double-click mode.

@@ -2072,7 +2072,7 @@ get_icon_annotation_callback (NautilusIconContainer *container,
 	/* if the keyword is "note", return the file annotation instead */
 	if (eel_strcmp (keyword, "note") == 0) {
 		g_free (keyword);
-		keyword = nautilus_annotation_get_annotation (file);
+		keyword = nautilus_annotation_get_annotation (file, 0);
 	}
 	
 	return keyword;

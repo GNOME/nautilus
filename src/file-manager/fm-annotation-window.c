@@ -367,7 +367,7 @@ create_annotation_window (NautilusFile *file,  FMDirectoryView *directory_view)
         gtk_box_pack_start (GTK_BOX (content_box), window->details->text_field, TRUE, TRUE, 0);	
 
 	/* set up the annotation field with the initial text, if any */
-	annotation_text = nautilus_annotation_get_annotation_for_display (window->details->file);
+	annotation_text = nautilus_annotation_get_annotation_for_display (window->details->file, 0);
 	position = 0;
 	if (annotation_text) {
         	gtk_editable_insert_text (GTK_EDITABLE (window->details->text_field),

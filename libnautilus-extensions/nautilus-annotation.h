@@ -30,11 +30,11 @@
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 
-char *	nautilus_annotation_get_annotation (NautilusFile *file);
+char *	nautilus_annotation_get_annotation (NautilusFile *file, int which_annotation);
+char *  nautilus_annotation_get_annotation_for_display (NautilusFile *file, int which_annotation);
 char *	nautilus_annotation_get_display_text (const char* annotation_text);
-char *  nautilus_annotation_get_annotation_for_display (NautilusFile *file);
 
-int	nautilus_annotation_has_annotation (NautilusFile *file);
+int	nautilus_annotation_get_count (NautilusFile *file);
 
 void	nautilus_annotation_add_annotation (NautilusFile *file,
 					    const char *annotation_type,

@@ -1501,7 +1501,7 @@ prepend_automatic_emblem_names (NautilusFile *file,
 {
 	/* Prepend in reverse order. */
 
-	if (nautilus_annotation_has_annotation (file) > 0) {
+	if (nautilus_annotation_get_count (file) > 0) {
 		names = g_list_prepend
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_ANNOTATION));
 	}

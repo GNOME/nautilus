@@ -933,7 +933,7 @@ annotation_is_stale (const char *notes_info)
  * return NULL but queue a request for an annotation lookup, which will be processed
  * asynchronously and issue a "file_changed" signal if any is found.
  */
-char	*nautilus_annotation_get_annotation (NautilusFile *file)
+char	*nautilus_annotation_get_annotation (NautilusFile *file, int which_annotation)
 {
 	char *digest;
 	char *annotations;
@@ -1014,11 +1014,11 @@ nautilus_annotation_get_display_text (const char *note_text)
  * with a file
  */
 char *
-nautilus_annotation_get_annotation_for_display (NautilusFile *file)
+nautilus_annotation_get_annotation_for_display (NautilusFile *file, int which_annotation)
 {
 	char *raw_text, *display_text;
 	
-	raw_text = nautilus_annotation_get_annotation (file);
+	raw_text = nautilus_annotation_get_annotation (file, which_annotation);
 	if (raw_text != NULL) {
 		display_text = nautilus_annotation_get_display_text (raw_text);
 		g_free (raw_text);
@@ -1030,7 +1030,7 @@ nautilus_annotation_get_annotation_for_display (NautilusFile *file)
 /* return the number of annotations associated with the passed in file.  If we don't know,
  * return 0, but queue a request like above
  */
-int nautilus_annotation_has_annotation (NautilusFile *file)
+int nautilus_annotation_get_count (NautilusFile *file)
 {
 	char *digest_info, *digits, *temp_str;
 	int count = 0;
@@ -1048,13 +1048,13 @@ int nautilus_annotation_has_annotation (NautilusFile *file)
 		
 		/* if the date is stale, launch a new lookup */
 		if (annotation_is_stale (digest_info)) {
-			temp_str = nautilus_annotation_get_annotation (file);
+			temp_str = nautilus_annotation_get_annotation (file, 0);
 			g_free (temp_str);
 		}
 		return count;
 	} else {
 		/* initiate fetching the annotations from the server */
-		temp_str = nautilus_annotation_get_annotation (file);
+		temp_str = nautilus_annotation_get_annotation (file, 0);
 		g_free (temp_str);	
 	}
 	g_free (digest_info);
