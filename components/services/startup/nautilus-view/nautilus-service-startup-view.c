@@ -49,9 +49,13 @@ struct _NautilusServiceStartupViewDetails {
 	NautilusView	*nautilus_view;
 	GtkWidget	*form;
 	GtkWidget	*form_title;
+	GtkWidget	*progress_bar;
+	int		timer;
 	GtkWidget	*feedback_text;
 };
 
+int timer = 0;
+int counter = 0;
 
 #define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR  "rgb:0000/6666/6666"
 #define SERVICE_DOMAIN_NAME		       "testmachine.eazel.com"
@@ -65,11 +69,13 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusServiceStartupView, nautilus_service_
 static void 	service_load_location_callback			(NautilusView 				*view, 
 								 const char				*location,
 								 NautilusServiceStartupView		*services);
-static gboolean is_location					(char 					*document_str,
+static gboolean	is_location					(char 					*document_str,
 								 const char				*place_str);
 static void	generate_form_title				(NautilusServiceStartupView		*view,
 								 const char				*title_text);
-
+int		progress_timeout_cb				(gpointer				data);
+static void	go_to_uri					(NautilusServiceStartupView		*view,
+								 char					*uri);
 
 /* create the startup view */
 
@@ -77,6 +83,10 @@ static void
 generate_startup_form (NautilusServiceStartupView	*view) {
 
 	GtkWidget	*temp_widget;
+	GtkWidget	*temp_box;
+	char		*file_name;
+	GtkWidget	*align;
+	GtkAdjustment	*adjust;
 
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
@@ -84,18 +94,66 @@ generate_startup_form (NautilusServiceStartupView	*view) {
 	gtk_widget_show (view->details->form);
 
 	/* setup the title */
-	generate_form_title (view, "Initializing Eazel Services ...");
+	generate_form_title (view, "Welcome, your services are loading! ");
 
-	/* put a mystery label here as a placeholder. */
-	temp_widget = gtk_label_new ("I am just a view.  One day I will be gone.");
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_widget, 0, 0, 0);
+	/* create a fill space box */
+	temp_box = gtk_hbox_new (FALSE, 4);
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, 0, 0, 12);
+	gtk_widget_show (temp_box);
+
+	/* Add the watch icon */
+	temp_box = gtk_hbox_new (TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, 0, 0, 4);
+	gtk_widget_show (temp_box);
+	file_name = nautilus_pixmap_file ("service-watch.png");
+	temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
+	gtk_box_pack_start (GTK_BOX (temp_box), temp_widget, 0, 0, 8);
 	gtk_widget_show (temp_widget);
+	g_free (file_name);
+
+	/* Add a label for error status messages */
+	view->details->feedback_text = gtk_label_new ("");
+	gtk_box_pack_end (GTK_BOX (view->details->form), view->details->feedback_text, 0, 0, 8);
+
+	/* Create a center alignment object */
+	align = gtk_alignment_new (0.5, 0.5, 0, 0);
+	gtk_box_pack_end (GTK_BOX (view->details->form), align, FALSE, FALSE, 5);
+	gtk_widget_show (align);
+
+	/* Add the progress meter */
+	adjust = (GtkAdjustment *) gtk_adjustment_new (0, 1, 150, 0, 0, 0);
+	view->details->progress_bar = gtk_progress_bar_new_with_adjustment (adjust);
+	gtk_container_add (GTK_CONTAINER (align), view->details->progress_bar);
+	gtk_widget_show (view->details->progress_bar);
+	timer = gtk_timeout_add (100, progress_timeout_cb, view->details->progress_bar);
+	g_print ("%d\n", timer);
+
+}
+
+/* update the value of the progress bar */
+int
+progress_timeout_cb (gpointer	data) {
+
+	for (counter = 0; counter != 10001; counter++) {
+		float value;
+
+		value = (float) counter / 10000;
+
+		gtk_progress_set_percentage (GTK_PROGRESS (data), value);
+		while (gtk_events_pending ()) {
+			gtk_main_iteration ();
+		}
+		if (counter == 1000) {
+			gtk_timeout_remove (timer);
+		}
+	}
+	return 1;
 }
 
 /* utility routine to go to another uri */
 
 static void
-go_to_uri(NautilusServiceStartupView* view, char* uri) {
+go_to_uri (NautilusServiceStartupView	*view, char	*uri) {
 
   	nautilus_view_open_location (view->details->nautilus_view, uri);
 
@@ -125,11 +183,11 @@ generate_form_title (NautilusServiceStartupView	*view,
 
  	view->details->form_title = gtk_label_new (title_text);
 
-        font = nautilus_font_factory_get_font_from_preferences (18);
+        font = nautilus_font_factory_get_font_from_preferences (20);
 	nautilus_gtk_widget_set_font (view->details->form_title, font);
         gdk_font_unref (font);
 
-	gtk_box_pack_start (GTK_BOX (temp_container), view->details->form_title, 0, 0, 8);			 	
+	gtk_box_pack_end (GTK_BOX (temp_container), view->details->form_title, 0, 0, 8);			 	
 	gtk_widget_show (view->details->form_title);
 }
 
