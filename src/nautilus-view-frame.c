@@ -44,6 +44,9 @@
 #include <bonobo/bonobo-zoomable-frame.h>
 #include <bonobo/bonobo-zoomable.h>
 
+/* Milliseconds */
+#define ATTACH_CLIENT_TIMEOUT	12000
+
 enum {
 	CHANGE_SELECTION,
 	CHANGE_STATUS,
@@ -745,7 +748,7 @@ attach_client (NautilusViewFrame *view, BonoboObjectClient *client)
 	 */
 	g_assert (view->details->check_if_view_is_gone_timeout_id == 0);
 	view->details->check_if_view_is_gone_timeout_id
-		= g_timeout_add (10000, check_if_view_is_gone, view);
+		= g_timeout_add (ATTACH_CLIENT_TIMEOUT, check_if_view_is_gone, view);
 
 	return TRUE;
 }

@@ -1,3 +1,13 @@
+2001-01-14  J Shane Culpepper  <pepper@eazel.com>
+
+	* src/nautilus-view-frame.c: (attach_client):
+
+	Upped the timeout from 10 seconds to 12 seconds to be paranoid on
+	really slow machines. I think this is really generous for bug #4757.
+	In an attempt to reproduce the crash I started a build of mozilla
+	and gcc "emulate" a slow machine since I don't have one.  Adding
+	additional comments to bugzilla bug #4757.
+
 2001-01-13  Jim Garrison <garrison@users.sourceforge.net>
 
 	* nautilus.spec.in: package "extras" no longer depends on mpg123
