@@ -1394,6 +1394,7 @@ nautilus_window_go_up (NautilusWindow *window)
 {
 	GnomeVFSURI *current_uri;
 	GnomeVFSURI *parent_uri;
+	GList *selection;
 	char *parent_uri_string;
 	
 	if (window->details->location == NULL) {
@@ -1410,11 +1411,14 @@ nautilus_window_go_up (NautilusWindow *window)
 	}
 	
 	parent_uri_string = gnome_vfs_uri_to_string (parent_uri, GNOME_VFS_URI_HIDE_NONE);
-	gnome_vfs_uri_unref (parent_uri);  
+	gnome_vfs_uri_unref (parent_uri);
+
+	selection = g_list_prepend (NULL, g_strdup (window->details->location));
 	
-	nautilus_window_go_to (window, parent_uri_string);
+	nautilus_window_open_location_with_selection (window, parent_uri_string, selection);
 	
 	g_free (parent_uri_string);
+	nautilus_g_list_free_deep (selection);
 }
 
 void

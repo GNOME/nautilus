@@ -1,5 +1,21 @@
 2001-03-29  John Sullivan  <sullivan@eazel.com>
 
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 7921 ("Up" should select folder you came from)
+
+	* src/nautilus-window-manage-views.h:
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_open_location_with_selection):
+	New private-to-nautilus-window call, just calls
+	existing private call open_location with the
+	right parameters.
+	
+	* src/nautilus-window.c: (nautilus_window_go_up):
+	Set current location as selection when going up.
+
+2001-03-29  John Sullivan  <sullivan@eazel.com>
+
 	reviewed by: Ramiro Estrugo  <ramiro@eazel.com>
 
 	Fixed bug 3328 (Need a preference to specify upper bounds for

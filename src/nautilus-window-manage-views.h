@@ -32,6 +32,10 @@
 void nautilus_window_manage_views_destroy (NautilusWindow         *window);
 void nautilus_window_open_location        (NautilusWindow         *window,
                                            const char             *location);
+void nautilus_window_open_location_with_selection        
+					  (NautilusWindow         *window,
+                                           const char             *location,
+                                           GList		  *selection);
 void nautilus_window_stop_loading         (NautilusWindow         *window);
 void nautilus_window_set_content_view     (NautilusWindow         *window,
                                            NautilusViewIdentifier *id);

@@ -745,6 +745,14 @@ nautilus_window_open_location (NautilusWindow *window,
         open_location (window, location, FALSE, NULL);
 }
 
+void
+nautilus_window_open_location_with_selection (NautilusWindow *window,
+					      const char *location,
+					      GList *selection)
+{
+	open_location (window, location, FALSE, selection);
+}					      
+
 
 static ViewFrameInfo *
 view_frame_info_new (gboolean is_sidebar_panel, const char *label)
