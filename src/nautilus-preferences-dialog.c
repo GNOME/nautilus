@@ -66,27 +66,27 @@ static EelPreferencesItemDescription appearance_items[] = {
 static EelPreferencesItemDescription windows_items[] = {
 	{ N_("Opening New Windows"),
 	  NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-	  N_("Open each file or folder in a separate window"),
-	  EEL_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Opening New Windows"),
-	  NAUTILUS_PREFERENCES_START_WITH_TOOLBAR,
-	  N_("Display toolbar in new windows"),
-	  EEL_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Opening New Windows"),
-	  NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR,
-	  N_("Display location bar in new windows"),
-	  EEL_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Opening New Windows"),
-	  NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR,
-	  N_("Display status bar in new windows"),
+	  N_("_Open each file or folder in a separate window"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Opening New Windows"),
 	  NAUTILUS_PREFERENCES_START_WITH_SIDEBAR,
-	  N_("Display sidebar in new windows"),
+	  N_("Display _sidebar in new windows"),
+	  EEL_PREFERENCE_ITEM_BOOLEAN
+	},
+	{ N_("Opening New Windows"),
+	  NAUTILUS_PREFERENCES_START_WITH_TOOLBAR,
+	  N_("Display _toolbar in new windows"),
+	  EEL_PREFERENCE_ITEM_BOOLEAN
+	},
+	{ N_("Opening New Windows"),
+	  NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR,
+	  N_("Display location _bar in new windows"),
+	  EEL_PREFERENCE_ITEM_BOOLEAN
+	},
+	{ N_("Opening New Windows"),
+	  NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR,
+	  N_("Display st_atus bar in new windows"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ NULL }
@@ -95,22 +95,22 @@ static EelPreferencesItemDescription windows_items[] = {
 static EelPreferencesItemDescription desktop_and_trash_items[] = {
 	{ N_("Desktop"),
 	  NAUTILUS_PREFERENCES_SHOW_DESKTOP,
-	  N_("Use Nautilus to draw the desktop"),
+	  N_("_Use Nautilus to draw the desktop"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
         { N_("Desktop"),
 	  NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
-	  N_("Use your home folder as the desktop"),
+	  N_("Use your _home folder as the desktop"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Trash Behavior"),
 	  NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-	  N_("Ask before emptying the Trash or deleting files"),
+	  N_("_Ask before emptying the Trash or deleting files"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Trash Behavior"),
 	  NAUTILUS_PREFERENCES_ENABLE_DELETE,
-	  N_("Include a Delete command that bypasses Trash"),
+	  N_("_Include a Delete command that bypasses Trash"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ NULL }
@@ -129,22 +129,22 @@ static EelPreferencesItemDescription directory_views_items[] = {
 	},
 	{ N_("Show/Hide Options"),
 	  NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-	  N_("Show hidden files (file names start with \".\")"),
+	  N_("Show _hidden files (file names start with \".\")"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Show/Hide Options"),
 	  NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-	  N_("Show backup files (file names end with \"~\")"),
+	  N_("Show _backup files (file names end with \"~\")"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Show/Hide Options"),
 	  NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
-	  N_("Show special flags in Properties window"),
+	  N_("Show special flags in _Properties window"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Sorting Order"),
 	  NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
-	  N_("Always list folders before files"),
+	  N_("Always _list folders before files"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ NULL }
@@ -168,30 +168,30 @@ static EelPreferencesItemDescription icon_captions_items[] = {
 static EelPreferencesItemDescription view_preferences_items[] = {
 	{ N_("Default View"),
 	  NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
-	  N_("View new folders using:"),
+	  N_("_View new folders using:"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU
 	},
 
 	/* Icon View Defaults */
 	{ N_("Icon View Defaults"),
 	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
-	  N_("Arrange Items:"),
+	  N_("_Arrange Items:"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU
 	},
 	{ N_("Icon View Defaults"),
 	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
-	  N_("Sort in reversed order"),
+	  N_("_Sort in reversed order"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Icon View Defaults"),
 	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
-	  N_("Default zoom level:"),
+	  N_("_Default zoom level:"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU,
 	  NULL, 0, 1
 	},
 	{ N_("Icon View Defaults"),
 	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
-	  N_("Use tighter layout"),
+	  N_("Use _tighter layout"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN,
 	  NULL, 0, 1
 	},
@@ -199,17 +199,17 @@ static EelPreferencesItemDescription view_preferences_items[] = {
 	/* List View Defaults */
 	{ N_("List View Defaults"),
 	  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
-	  N_("Arrange Items:"),
+	  N_("Arrange _Items:"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU
 	},
 	{ N_("List View Defaults"),
 	  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
-	  N_("Sort in reversed order"),
+	  N_("Sort in _reversed order"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("List View Defaults"),
 	  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
-	  N_("Default zoom level:"),
+	  N_("Default _zoom level:"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU,
 	  NULL, 0, 1
 	},
@@ -236,12 +236,12 @@ static EelPreferencesItemDescription search_items[] = {
 static EelPreferencesItemDescription navigation_items[] = {
 	{ N_("Home"),
 	  NAUTILUS_PREFERENCES_HOME_URI,
-	  N_("Location:"),
+	  N_("_Location:"),
 	  EEL_PREFERENCE_ITEM_EDITABLE_STRING
 	},
 	{ N_("Built-in Bookmarks"),
 	  NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
-	  N_("Don't include the built-in bookmarks in the Bookmarks menu"),
+	  N_("_Don't include the built-in bookmarks in the Bookmarks menu"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ NULL }
@@ -265,7 +265,7 @@ static EelPreferencesItemDescription tradeoffs_items[] = {
 	},
 	{ N_("Show Thumbnails for Image Files"),
 	  NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
-	  N_("Don't make thumbnails for files larger than:"),
+	  N_("_Don't make thumbnails for files larger than:"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU_INTEGER
 	},
 	{ N_("Preview Sound Files"),
@@ -288,7 +288,7 @@ static EelPreferencesItemDescription sidebar_items[] = {
 	},
 	{ N_("Tree"),
 	  NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
-	  N_("Show only folders (no files) in the tree"),
+	  N_("_Show only folders (no files) in the tree"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ NULL }
@@ -298,12 +298,12 @@ static EelPreferencesItemDescription sidebar_items[] = {
 static EelPreferencesItemDescription news_panel_items[] = {
 	{ N_("Maximum items per site"),
 	  NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS,
-	  N_("Maximum number of items displayed per site"),
+	  N_("_Maximum number of items displayed per site"),
 	  EEL_PREFERENCE_ITEM_EDITABLE_INTEGER
 	},
 	{ N_("Update Minutes"),
 	  NAUTILUS_PREFERENCES_NEWS_UPDATE_INTERVAL,
-	  N_("Update frequency in minutes"),
+	  N_("_Update frequency in minutes"),
 	  EEL_PREFERENCE_ITEM_EDITABLE_INTEGER
 
 	},

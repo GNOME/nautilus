@@ -199,7 +199,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	gtk_widget_show (vbox3);
 	gtk_box_pack_start (GTK_BOX (right_side), vbox3, FALSE, FALSE, 0);
 
-	name_label = gtk_label_new (_("Name"));
+	name_label = gtk_label_new_with_mnemonic (_("_Name"));
 	gtk_widget_show (name_label);
 	gtk_box_pack_start (GTK_BOX (vbox3), name_label, FALSE, FALSE, 0);
 
@@ -208,11 +208,13 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	gtk_box_pack_start (GTK_BOX (vbox3), name_field, FALSE, FALSE, 0);
 	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (name_field), TRUE);
 	
+	gtk_label_set_mnemonic_widget (GTK_LABEL (name_label), name_field);
+
 	vbox4 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox4);
 	gtk_box_pack_start (GTK_BOX (right_side), vbox4, FALSE, FALSE, 0);
 
-	url_label = gtk_label_new (_("Location"));
+	url_label = gtk_label_new_with_mnemonic (_("_Location"));
 	gtk_widget_show (url_label);
 	gtk_box_pack_start (GTK_BOX (vbox4), url_label, FALSE, FALSE, 0);
 
@@ -220,6 +222,8 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 	gtk_widget_show (uri_field);
 	gtk_box_pack_start (GTK_BOX (vbox4), uri_field, FALSE, FALSE, 0);	
 	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (uri_field), TRUE);
+
+	gtk_label_set_mnemonic_widget (GTK_LABEL (url_label), uri_field);
 
 	hbox2 = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox2);

@@ -97,9 +97,9 @@ static PreferenceImportType OLD_PREFERENCES_TO_IMPORT[] = {
 
 /* Enumerations used to qualify some INTEGER preferences */
 static EelEnumerationEntry speed_tradeoff_enum_entries[] = {
-	{ "always",	    N_("Always"),		NAUTILUS_SPEED_TRADEOFF_ALWAYS },
-	{ "local_only",	    N_("Local Files Only"),	NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY },
-	{ "never",	    N_("Never"),		NAUTILUS_SPEED_TRADEOFF_NEVER },
+	{ "always",	    N_("_Always"),		NAUTILUS_SPEED_TRADEOFF_ALWAYS },
+	{ "local_only",	    N_("_Local Files Only"),	NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY },
+	{ "never",	    N_("_Never"),		NAUTILUS_SPEED_TRADEOFF_NEVER },
 	{ NULL }
 };
 
@@ -134,11 +134,11 @@ static EelEnumerationEntry file_size_enum_entries[] = {
 
 static EelEnumerationEntry click_policy_enum_entries[] = {
 	{ "single",
-	  N_("Activate items with a single click"),
+	  N_("Activate items with a _single click"),
 	  NAUTILUS_CLICK_POLICY_SINGLE
 	},
 	{ "double",
-	  N_("Activate items with a double click"),
+	  N_("Activate items with a _double click"),
 	  NAUTILUS_CLICK_POLICY_DOUBLE
 	},
 	{ NULL }
@@ -146,15 +146,15 @@ static EelEnumerationEntry click_policy_enum_entries[] = {
 
 static EelEnumerationEntry executable_text_activation_enum_entries[] = {
 	{ "launch",
-	  N_("Execute files when they are clicked"),
+	  N_("E_xecute files when they are clicked"),
 	  NAUTILUS_EXECUTABLE_TEXT_LAUNCH
 	},
 	{ "display",
-	  N_("Display files when they are clicked"),
+	  N_("Display _files when they are clicked"),
 	  NAUTILUS_EXECUTABLE_TEXT_DISPLAY
 	},
 	{ "ask",
-	  N_("Ask each time"),
+	  N_("_Ask each time"),
 	  NAUTILUS_EXECUTABLE_TEXT_ASK
 	},
 	{ NULL }
