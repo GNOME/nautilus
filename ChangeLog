@@ -1,3 +1,19 @@
+2000-08-01  Gene Z. Ragan  <gzr@eazel.com>
+
+	More work on the desktop volume mount menu item.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_create_background_context_menu_items):
+	Work on showing state of current removable mounts
+	in context menu item.
+	
+	* src/file-manager/fm-desktop-mounting.c:
+	* src/file-manager/fm-desktop-mounting.h:
+	(fm_desktop_mount_unmount_removable), (mount_device_check_change),
+	(mount_devices_update_is_mounted):
+	Fine tune mounting and unmounting removable volumes.
+	
+
 2000-08-01  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-graphic-effects.c:

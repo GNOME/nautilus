@@ -223,6 +223,7 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 		GList *disk_list;
 		GList *element;
 		GtkWidget *check_menu_item;
+		gboolean active;
 		
 		/* Get a list containing the mount point of all removable volumes in fstab */
 		disk_list = fm_desktop_get_removable_list ();
@@ -236,8 +237,9 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 			check_menu_item = gtk_check_menu_item_new_with_label (element->data);
 
 			/* Add check mark if volume is mounted */
-			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (check_menu_item), 
-							fm_desktop_volume_is_mounted (element->data));
+			active = fm_desktop_volume_is_mounted (element->data);
+			gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (check_menu_item), TRUE);
+			gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (check_menu_item), active);
 			
 			/* Add some data to the menu item for later mount operations */
 			gtk_object_set_data_full (GTK_OBJECT (check_menu_item), "mount_point",
@@ -246,7 +248,7 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 			gtk_signal_connect (GTK_OBJECT (check_menu_item),
 			    "activate",
 			     GTK_SIGNAL_FUNC (fm_desktop_mount_unmount_removable),
-			     NULL);
+			     FM_DESKTOP_ICON_VIEW (view));
 			     			
 			gtk_menu_append (sub_menu, check_menu_item);
 			gtk_widget_show (check_menu_item);

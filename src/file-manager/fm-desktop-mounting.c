@@ -68,6 +68,8 @@ static void     get_floppy_volume_name                                    (Devic
 static void     mount_device_mount                                        (FMDesktopIconView      *view,
 									   DeviceInfo             *device);
 static gboolean mount_device_is_mounted                                   (DeviceInfo             *device);
+static void	mount_device_activate 					  (FMDesktopIconView 	  *view, 
+									   DeviceInfo 		  *device);
 static void     mount_device_deactivate                                   (FMDesktopIconView      *icon_view,
 									   DeviceInfo             *device);
 static void     mount_device_activate_floppy                              (FMDesktopIconView      *view,
@@ -129,8 +131,54 @@ fm_desktop_get_removable_list (void)
 }
 
 void
-fm_desktop_mount_unmount_removable (GtkMenuItem *item)
+fm_desktop_mount_unmount_removable (GtkCheckMenuItem *item, FMDesktopIconView *icon_view)
 {
+	gboolean is_mounted, found_device;
+	char *mount_point;
+	char *argv[3];
+	GList *element;
+	DeviceInfo *device;
+
+	is_mounted = FALSE;
+	found_device = FALSE;
+	device = NULL;
+	
+	/* Locate our mount point data */
+	mount_point = gtk_object_get_data (GTK_OBJECT (item), "mount_point");
+	if (mount_point != NULL) {
+		/* Locate DeviceInfo for mount point */
+		for (element = icon_view->details->devices; element != NULL; element = element->next) {
+			device = element->data;
+			if (strcmp (mount_point, device->mount_path) == 0) {
+				found_device = TRUE;
+				break;
+			}
+		}
+
+		/* Get mount state and then decide to mount/unmount the volume */
+		if (found_device) {
+			is_mounted = fm_desktop_volume_is_mounted (mount_point);
+			argv[1] = mount_point;
+			argv[2] = NULL;
+
+			if (is_mounted) {
+				/* Unount */
+				argv[0] = "/bin/umount";
+				gnome_execute_async (g_get_home_dir(), 2, argv);
+				mount_device_deactivate (icon_view, device);
+				is_mounted = FALSE;
+			} else {
+				/* Mount */
+				argv[0] = "/bin/mount";
+				gnome_execute_async (g_get_home_dir(), 2, argv);
+				mount_device_activate (icon_view, device);
+				is_mounted = TRUE;
+			}
+		}
+	}
+	
+	/* Set the check state of menu item even thought the user may not see it */
+	gtk_check_menu_item_set_active (item, is_mounted);
 }
 
 gboolean
@@ -443,7 +491,7 @@ mount_device_check_change (gpointer data, gpointer callback_data)
 		/************  from: ACTIVE                   INACTIVE                 EMPTY */
 		/* to */
 		/* ACTIVE */   {     mount_device_do_nothing, mount_device_activate,   mount_device_activate   },
-		/* INACTIVE */ {     mount_device_deactivate, mount_device_do_nothing, mount_device_activate   },
+		/* INACTIVE */ {     mount_device_deactivate, mount_device_do_nothing, mount_device_do_nothing },
 		/* EMPTY */    {     mount_device_deactivate, mount_device_deactivate, mount_device_do_nothing }
 	};	
 
@@ -476,12 +524,12 @@ mount_devices_update_is_mounted (FMDesktopIconView *icon_view)
 {
 	FILE *fh;
 	char line[PATH_MAX * 3], mntpoint[PATH_MAX], devname[PATH_MAX];
-	GList *ltmp;
+	GList *element;
 	DeviceInfo *device;
 
 	/* Toggle mount state to off and then recheck in mtab. */
-	for (ltmp = icon_view->details->devices; ltmp; ltmp = ltmp->next) {
-		device = ltmp->data;
+	for (element = icon_view->details->devices; element != NULL; element = element->next) {
+		device = element->data;
 		device->is_mounted = FALSE;
 	}
 

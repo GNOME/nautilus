@@ -73,7 +73,8 @@ void		fm_desktop_free_device_info             (DeviceInfo             *device,
 						 	 FMDesktopIconView      *icon_view);
 void		fm_desktop_find_mount_devices        	(FMDesktopIconView      *icon_view,
 						 	 const char             *fstab_path);
-void		fm_desktop_mount_unmount_removable 	(GtkMenuItem 		*item);
+void		fm_desktop_mount_unmount_removable 	(GtkCheckMenuItem 	*item,
+							 FMDesktopIconView 	*icon_view);
 gboolean	fm_desktop_volume_is_mounted 		(const char 		*mount_point);
 
 #endif
