@@ -22,6 +22,8 @@
    Authors: Maciej Stachowiak <mjs@eazel.com>
 */
 
+#define DEBUG_MJS
+
 #include <config.h>
 #include "nautilus-mime-actions.h"
 
@@ -259,7 +261,7 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 	g_list_free (attributes);
 	nautilus_directory_unref (directory);
 
-	if (default_component_string == NULL && mime_type != NULL) {
+    	if (default_component_string == NULL && mime_type != NULL) {
 		mime_default = gnome_vfs_mime_get_default_component (mime_type);
 		if (mime_default != NULL) {
 			default_component_string = g_strdup (mime_default->iid);
@@ -280,7 +282,7 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 	supertype = mime_type_get_supertype (mime_type);
 
 	/* prefer the exact right IID */
-	if (default_component_string == NULL) {
+	if (default_component_string != NULL) {
 		sort_conditions[0] = g_strconcat ("iid == '", default_component_string, "'", NULL);
 	} else {
 		sort_conditions[0] = g_strdup ("true");
@@ -313,10 +315,19 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 
 	/* Prefer something that matches the exact type to something
 	   that matches the supertype */
-	sort_conditions[2] = g_strconcat ("bonobo:supported_mime_types.has ('",mime_type,"')", NULL);
+	if (mime_type != NULL) {
+		sort_conditions[2] = g_strconcat ("bonobo:supported_mime_types.has ('",mime_type,"')", NULL);
+	} else {
+		sort_conditions[2] = g_strdup ("true");
+	}
+
 	/* Prefer something that matches the supertype to something that matches `*' */
-	sort_conditions[3] = g_strconcat ("bonobo:supported_mime_types.has ('",supertype,"')", NULL);
-	
+	if (supertype != NULL) {
+		sort_conditions[3] = g_strconcat ("bonobo:supported_mime_types.has ('",supertype,"')", NULL);
+	} else {
+		sort_conditions[3] = g_strdup ("true");
+	}
+
 	sort_conditions[4] = NULL;
 	
 	info_list = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, 
@@ -333,6 +344,12 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 	} else {
 		g_assert (info_list == NULL);  /* or else we are leaking it */
 		server = NULL;
+		
+		/* FIXME bugzilla.eazel.com 1156: replace this
+                   assertion with proper reporting of the error, once
+                   the API supports error handling. */
+
+		g_assert_not_reached ();
 	}
 
 	g_free (sort_conditions[0]);
@@ -504,8 +521,6 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 		}
 	}
 		
-	/* FIXME bugzilla.eazel.com 1267: should pass the allowed iids into the query */
-
 	result = NULL;
 
 	if (iids != NULL) {
@@ -1075,7 +1090,7 @@ make_oaf_query_with_known_mime_type (const char *mime_type, const char *uri_sche
                   * PersistStream, ProgressiveDataSink, or
                   * PersistFile.
                   */
-                 "((repo_ids.has_all (['IDL:Bonobo/Control:1.0',"
+                 "(((repo_ids.has_all (['IDL:Bonobo/Control:1.0',"
                                       "'IDL:Nautilus/View:1.0'])"
                   "OR (repo_ids.has_one (['IDL:Bonobo/Control:1.0',"
                                          "'IDL:Bonobo/Embeddable:1.0'])"
@@ -1133,7 +1148,7 @@ make_oaf_query_with_known_mime_type (const char *mime_type, const char *uri_sche
                   /* Also select iids that were specifically requested
                      for this location, even if they do not otherwise
                      meet the requirements. */
-                  "OR %s"
+                  "OR %s)"
 
 		 /* Make it possible to add extra requirements */
 		 " AND (%s)"
@@ -1144,7 +1159,10 @@ make_oaf_query_with_known_mime_type (const char *mime_type, const char *uri_sche
                  , mime_type, mime_supertype, uri_scheme, uri_scheme
 
                  /* The explicit metafile iid query for the %s above. */
-                 , explicit_iid_query, extra_requirements != NULL ? extra_requirements : "true");
+                 , explicit_iid_query
+
+		 /* extra requirements */
+		 , extra_requirements != NULL ? extra_requirements : "true");
 
         g_free (mime_supertype);
         g_free (explicit_iid_query);
@@ -1166,7 +1184,7 @@ make_oaf_query_with_uri_scheme_only (const char *uri_scheme, GList *explicit_iid
                   * with a Bonobo Control or Embeddable that works on
                   * a file, which is indicated by Bonobo PersistFile.
                   */
-                  "((repo_ids.has_all(['IDL:Bonobo/Control:1.0',"
+                  "(((repo_ids.has_all(['IDL:Bonobo/Control:1.0',"
                                       "'IDL:Nautilus/View:1.0'])"
                    "OR (repo_ids.has_one(['IDL:Bonobo/Control:1.0',"
                                          "'IDL:Bonobo/Embeddable:1.0'])"
@@ -1176,8 +1194,8 @@ make_oaf_query_with_uri_scheme_only (const char *uri_scheme, GList *explicit_iid
                   /* Check if the component supports this particular
                    * URI scheme.
                    */
-                  "AND ((bonobo:supported_uri_schemes.has ('%s')"
-                        "OR bonobo:supported_uri_schemes.has ('*')"
+                  "AND (((bonobo:supported_uri_schemes.has ('%s')"
+                         "OR bonobo:supported_uri_schemes.has ('*'))"
 
                   /* Check that the component doesn't require
                    * particular MIME types. Note that even saying you support "all"
@@ -1203,7 +1221,7 @@ make_oaf_query_with_uri_scheme_only (const char *uri_scheme, GList *explicit_iid
                      for this location, even if they do not otherwise
                      meet the requirements. */
 
-                  "OR %s"
+                  "OR %s)"
 
 		 /* Make it possible to add extra requirements */
 		  " AND (%s)"
@@ -1213,7 +1231,7 @@ make_oaf_query_with_uri_scheme_only (const char *uri_scheme, GList *explicit_iid
 
                   /* The explicit metafile iid query for the %s above. */
                   , explicit_iid_query,
-		  extra_requirements);
+		  extra_requirements != NULL ? extra_requirements : "true");
            
         return result;
 }

@@ -1,5 +1,17 @@
 2000-06-19  Maciej Stachowiak  <mjs@eazel.com>
 
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_component_for_uri_internal),
+	(nautilus_mime_get_short_list_components_for_uri),
+	(make_oaf_query_with_known_mime_type),
+	(make_oaf_query_with_uri_scheme_only): Make sort conditions
+	syntactically valid when we don't have a MIME type. Added a FIXME
+	to report the error properly when we have better error handling.
+	* src/nautilus.oafinfo: Remove hardware: as a supported URI scheme
+	from the list view.
+
+2000-06-19  Maciej Stachowiak  <mjs@eazel.com>
+
 	* HACKING: Added docs on how to use the leak checker, thanks to
 	Pavel.
 
