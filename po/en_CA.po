@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-17 16:05-0500\n"
-"PO-Revision-Date: 2005-01-17 20:03-0400\n"
+"POT-Creation-Date: 2005-01-19 17:52-0500\n"
+"PO-Revision-Date: 2005-01-19 20:03-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: English/Canada <adamw@FreeBSD.org>\n"
 "MIME-Version: 1.0\n"
@@ -4867,7 +4867,7 @@ msgstr ""
 
 #: src/nautilus-bookmarks-window.c:154
 #: src/nautilus-file-management-properties.c:229
-#: src/nautilus-property-browser.c:1446 src/nautilus-window-menus.c:484
+#: src/nautilus-property-browser.c:1446 src/nautilus-window-menus.c:474
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -4909,7 +4909,7 @@ msgstr "You must enter a name for the server."
 msgid "Please enter a name and try again."
 msgstr "Please enter a name and try again."
 
-#: src/nautilus-connect-server-dialog.c:269 src/nautilus-window.c:990
+#: src/nautilus-connect-server-dialog.c:269 src/nautilus-window.c:959
 #, c-format
 msgid "%s on %s"
 msgstr "%s on %s"
@@ -5546,22 +5546,22 @@ msgstr "File Manager"
 
 #. Set initial window title
 #: src/nautilus-main.c:262 src/nautilus-spatial-window.c:330
-#: src/nautilus-window-menus.c:432 src/nautilus-window.c:178
+#: src/nautilus-window-menus.c:417 src/nautilus-window.c:147
 msgid "Nautilus"
 msgstr "Nautilus"
 
 #. translators: %s is an option (e.g. --check)
-#: src/nautilus-main.c:282 src/nautilus-main.c:291 src/nautilus-main.c:296
+#: src/nautilus-main.c:285 src/nautilus-main.c:294 src/nautilus-main.c:299
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "nautilus: %s cannot be used with URIs.\n"
 
-#: src/nautilus-main.c:287
+#: src/nautilus-main.c:290
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check cannot be used with other options.\n"
 
-#: src/nautilus-main.c:301
+#: src/nautilus-main.c:304
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry cannot be used with more than one URI.\n"
@@ -5723,7 +5723,7 @@ msgstr "_Forward"
 msgid "Go to the next visited location"
 msgstr "Go to the next visited location"
 
-#: src/nautilus-navigation-window.c:613 src/nautilus-window.c:683
+#: src/nautilus-navigation-window.c:613 src/nautilus-window.c:652
 #, c-format
 msgid "View as %s"
 msgstr "View as %s"
@@ -6044,25 +6044,7 @@ msgstr "Please select another viewer and try again."
 msgid "Go to the location specified by this bookmark"
 msgstr "Go to the location specified by this bookmark"
 
-#. Localize to deal with issues in the copyright
-#. * symbol characters -- do not translate the company
-#. * name, please.
-#.
-#: src/nautilus-window-menus.c:422
-msgid "Copyright (C) 1999-2001 Eazel, Inc."
-msgstr "Copyright (C) 1999-2001 Eazel, Inc."
-
-#. Translators should localize the following string
-#. * which will be displayed at the bottom of the about
-#. * box to give credit to the translator(s).
-#.
-#: src/nautilus-window-menus.c:429 src/nautilus-window-menus.c:430
-msgid "Translator Credits"
-msgstr ""
-"Maintainer: Adam Weinberger <adamw@gnome.org>\n"
-"Alexander Winston <alexander.winston@comcast.net>"
-
-#: src/nautilus-window-menus.c:435
+#: src/nautilus-window-menus.c:419
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
@@ -6070,41 +6052,59 @@ msgstr ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
 
-#: src/nautilus-window-menus.c:572
+#: src/nautilus-window-menus.c:423
+msgid ""
+"Copyright © 2002-2005 Red Hat, Inc\n"
+"Copyright © 2002-2004 Novell, Inc\n"
+"Copyright © 1999-2001 Eazel, Inc.\n"
+"And all the other authors"
+msgstr ""
+"Copyright © 2002-2005 Red Hat, Inc\n"
+"Copyright © 2002-2004 Novell, Inc\n"
+"Copyright © 1999-2001 Eazel, Inc.\n"
+"And all the other authors"
+
+#: src/nautilus-window-menus.c:429
+msgid "translator-credits"
+msgstr ""
+"Maintainer: Adam Weinberger <adamw@gnome.org>\n"
+"Alexander Winston <alexander.winston@comcast.net>"
+
+#: src/nautilus-window-menus.c:562
 msgid "_File"
 msgstr "_File"
 
 #. name, stock id, label
-#: src/nautilus-window-menus.c:573
+#: src/nautilus-window-menus.c:563
 msgid "_Edit"
 msgstr "_Edit"
 
 #. name, stock id, label
-#: src/nautilus-window-menus.c:574
+#: src/nautilus-window-menus.c:564
 msgid "_View"
 msgstr "_View"
 
 #. name, stock id, label
-#: src/nautilus-window-menus.c:575
+#: src/nautilus-window-menus.c:565
 msgid "_Help"
 msgstr "_Help"
 
 #. name, stock id, label
 #. name, stock id
-#: src/nautilus-window-menus.c:577
+#: src/nautilus-window-menus.c:567
 msgid "_Close"
 msgstr "_Close"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:578
+#: src/nautilus-window-menus.c:568
 msgid "Close this folder"
 msgstr "Close this folder"
 
-#: src/nautilus-window-menus.c:581
+#: src/nautilus-window-menus.c:571
 msgid "_Backgrounds and Emblems..."
 msgstr "_Backgrounds and Emblems..."
 
-#: src/nautilus-window-menus.c:582
+#: src/nautilus-window-menus.c:572
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
@@ -6112,166 +6112,166 @@ msgstr ""
 "Display patterns, colours, and emblems that can be used to customize "
 "appearance"
 
-#: src/nautilus-window-menus.c:585
+#: src/nautilus-window-menus.c:575
 msgid "Prefere_nces"
 msgstr "Prefere_nces"
 
-#: src/nautilus-window-menus.c:586
+#: src/nautilus-window-menus.c:576
 msgid "Edit Nautilus preferences"
 msgstr "Edit Nautilus preferences"
 
-#: src/nautilus-window-menus.c:588
+#: src/nautilus-window-menus.c:578
 msgid "_Undo"
 msgstr "_Undo"
 
 #. name, stock id, label
-#: src/nautilus-window-menus.c:589
+#: src/nautilus-window-menus.c:579
 msgid "Undo the last text change"
 msgstr "Undo the last text change"
 
-#: src/nautilus-window-menus.c:591
+#: src/nautilus-window-menus.c:581
 msgid "Open _Parent"
 msgstr "Open _Parent"
 
 #. name, stock id, label
-#: src/nautilus-window-menus.c:592
+#: src/nautilus-window-menus.c:582
 msgid "Open the parent folder"
 msgstr "Open the parent folder"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:598
+#: src/nautilus-window-menus.c:588
 msgid "_Stop"
 msgstr "_Stop"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:602
+#: src/nautilus-window-menus.c:592
 msgid "_Reload"
 msgstr "_Reload"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:606
+#: src/nautilus-window-menus.c:596
 msgid "_Contents"
 msgstr "_Contents"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:607
+#: src/nautilus-window-menus.c:597
 msgid "Display Nautilus help"
 msgstr "Display Nautilus help"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:610
+#: src/nautilus-window-menus.c:600
 msgid "_About"
 msgstr "_About"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:611
+#: src/nautilus-window-menus.c:601
 msgid "Display credits for the creators of Nautilus"
 msgstr "Display credits for the creators of Nautilus"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:614
+#: src/nautilus-window-menus.c:604
 msgid "Zoom _In"
 msgstr "Zoom _In"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:615 src/nautilus-zoom-control.c:97
+#: src/nautilus-window-menus.c:605 src/nautilus-zoom-control.c:97
 msgid "Show the contents in more detail"
 msgstr "Show the contents in more detail"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:618
+#: src/nautilus-window-menus.c:608
 msgid "Zoom _Out"
 msgstr "Zoom _Out"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:619 src/nautilus-zoom-control.c:98
+#: src/nautilus-window-menus.c:609 src/nautilus-zoom-control.c:98
 msgid "Show the contents in less detail"
 msgstr "Show the contents in less detail"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:622
+#: src/nautilus-window-menus.c:612
 msgid "Normal Si_ze"
 msgstr "Normal Si_ze"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:623
+#: src/nautilus-window-menus.c:613
 msgid "Show the contents at the normal size"
 msgstr "Show the contents at the normal size"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:626
+#: src/nautilus-window-menus.c:616
 msgid "Connect to _Server..."
 msgstr "Connect to _Server..."
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:627
+#: src/nautilus-window-menus.c:617
 msgid "Set up a connection to a network server"
 msgstr "Set up a connection to a network server"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:630
+#: src/nautilus-window-menus.c:620
 msgid "_Home"
 msgstr "_Home"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:631
+#: src/nautilus-window-menus.c:621
 msgid "Go to the home folder"
 msgstr "Go to the home folder"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:634
+#: src/nautilus-window-menus.c:624
 msgid "_Computer"
 msgstr "_Computer"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:635
+#: src/nautilus-window-menus.c:625
 msgid "Go to the computer location"
 msgstr "Go to the computer location"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:638
+#: src/nautilus-window-menus.c:628
 msgid "T_emplates"
 msgstr "T_emplates"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:639
+#: src/nautilus-window-menus.c:629
 msgid "Go to the templates folder"
 msgstr "Go to the templates folder"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:642
+#: src/nautilus-window-menus.c:632
 msgid "_Trash"
 msgstr "_Trash"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:643
+#: src/nautilus-window-menus.c:633
 msgid "Go to the trash folder"
 msgstr "Go to the trash folder"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:646
+#: src/nautilus-window-menus.c:636
 msgid "CD/_DVD Creator"
 msgstr "CD/_DVD Creator"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:647
+#: src/nautilus-window-menus.c:637
 msgid "Go to the CD/DVD Creator"
 msgstr "Go to the CD/DVD Creator"
 
-#: src/nautilus-window-menus.c:673
+#: src/nautilus-window-menus.c:663
 msgid "_Up"
 msgstr "_Up"
 
-#: src/nautilus-window.c:684
+#: src/nautilus-window.c:653
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Display this location with \"%s\""
 
-#: src/nautilus-window.c:1481
+#: src/nautilus-window.c:1450
 msgid "Application"
 msgstr "Application"
 
-#: src/nautilus-window.c:1482
+#: src/nautilus-window.c:1451
 msgid "The NautilusApplication associated with this window."
 msgstr "The NautilusApplication associated with this window."
 
