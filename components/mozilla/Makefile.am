@@ -21,6 +21,11 @@ nautilus_mozilla_content_view_SOURCES = \
 	nautilus-mozilla-content-view.h \
 	nautilus-mozilla-content-view.c \
 	main.c \
+	mozilla-preferences.cpp \
+	$(NULL)
+
+noinst_HEADERS =				\
+	mozilla-preferences.h \
 	$(NULL)
 
 nautilus_mozilla_content_view_LDFLAGS = \

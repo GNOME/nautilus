@@ -34,6 +34,7 @@
 #include "nautilus-mozilla-content-view.h"
 
 #include "gtkmozembed.h"
+#include "mozilla-preferences.h"
 
 #include <bonobo/bonobo-control.h>
 #include <gtk/gtksignal.h>
@@ -94,6 +95,8 @@ nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass 
 	object_class->destroy = nautilus_mozilla_content_view_destroy;
 }
 
+static gboolean mozilla_preferences_poked = FALSE;
+
 static void
 nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 {
@@ -103,6 +106,15 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 
 	/* Conjure up the beast.  May God have mercy on our souls. */
 	view->details->mozilla = gtk_moz_embed_new ();
+
+	if (!mozilla_preferences_poked)
+	{
+		mozilla_preferences_poked = TRUE;
+
+		mozilla_preference_set_boolean ("nglayout.widget.gfxscrollbars", FALSE);
+		mozilla_preference_set_boolean ("security.checkloaduri", FALSE);
+		mozilla_preference_set ("general.useragent.misc", "Nautilus");
+	}
 
 	/* Add callbacks to the beast */
 	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 

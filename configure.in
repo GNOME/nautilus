@@ -168,6 +168,7 @@ if test -n "$_mozilla_nspr_libs" -a \
 	-n "$_mozilla_gtk_super_win_libs" -a \
 	-n "$_mozilla_gtk_moz_embed_libs"
 then
+	AC_PROG_CXX
 	AC_MSG_RESULT(yes)
 	found_mozilla=true
 

@@ -1,3 +1,18 @@
+2000-06-29  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* components/mozilla/Makefile.am:
+	* components/mozilla/mozilla-preferences.cpp:
+	* components/mozilla/mozilla-preferences.h:
+	Add a small C wrapper for poking mozilla preferences.
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_initialize):
+	Poke some interesting preferences.
+	
+	* configure.in:
+	If the mozilla component is being built, add a check for the c++
+	compiler which is needed by the mozilla preferences C wrapper.
+	
 2000-06-29  Ali Abdin <aliabdin@aucegypt.edu
 
 	* components/help/Makefile.am: Install the libvfs-help.so module
