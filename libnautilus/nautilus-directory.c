@@ -1698,7 +1698,7 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 
 		item_count = get_directory_item_count_hack (file, FALSE);
 		if (item_count == 0)
-			return g_strdup ("empty");
+			return g_strdup ("0 items");
 		else if (item_count == 1)
 			return g_strdup ("1 item");
 		else
