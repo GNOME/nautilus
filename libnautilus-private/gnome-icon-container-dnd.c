@@ -198,6 +198,7 @@ set_gnome_icon_list_selection (GnomeIconContainer *container,
 			       GtkSelectionData *selection_data)
 {
 	GnomeIconContainerDetails *details;
+	GnomeCanvas* canvas = GNOME_CANVAS(container);
 	GList *p;
 	GString *data;
 
@@ -206,6 +207,7 @@ set_gnome_icon_list_selection (GnomeIconContainer *container,
 	data = g_string_new (NULL);
 	for (p = details->icons; p != NULL; p = p->next) {
 		GnomeIconContainerIcon *icon;
+		gint center_offset;
 		char *uri;
 		char *s;
 		GdkPixbuf *pixbuf;
@@ -215,8 +217,11 @@ set_gnome_icon_list_selection (GnomeIconContainer *container,
 		if (!icon->is_selected)
 			continue;
 
+		
+		center_offset = nautilus_icons_view_icon_item_center_offset(icon->item);
+		
 		/* Corner of the icon relative to the cursor. */
-		icon_x = icon->x - details->dnd_info->start_x;
+		icon_x = icon->x - details->dnd_info->start_x + floor(center_offset / canvas->pixels_per_unit);
 		icon_y = icon->y - details->dnd_info->start_y;
 
 		uri = nautilus_icons_controller_get_icon_uri (details->controller, icon->data);
