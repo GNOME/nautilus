@@ -1,3 +1,15 @@
+2000-06-13  Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus-extensions/nautilus-mime-actions.c
+	(nautilus_mime_get_short_list_components_for_uri): Completed task
+	1267 (component query should pass allowed iids).
+	
+	(nautilus_mime_get_default_component_for_uri_internal,
+	nautilus_mime_get_all_components_for_uri,
+	make_oaf_query_with_known_mime_type,
+	make_oaf_query_with_uri_scheme_only, nautilus_do_component_query):
+	Adjust to necessary interface changes.
+
 2000-06-13  John Sullivan  <sullivan@eazel.com>
 
 	Finished task 1044 (Make "Open With Other" behave sensibly

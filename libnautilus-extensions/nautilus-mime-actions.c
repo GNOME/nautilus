@@ -49,8 +49,8 @@ static char *mime_type_get_supertype (const char *mime_type);
 static char *uri_string_get_scheme (const char *uri_string);
 static GList *get_explicit_content_view_iids_from_metafile (NautilusDirectory *directory);
 static char *make_oaf_query_for_explicit_content_view_iids (GList *view_iids);
-static char *make_oaf_query_with_known_mime_type (const char *mime_type, const char *uri_scheme, GList *explicit_iids);
-static char *make_oaf_query_with_uri_scheme_only (const char *uri_scheme, GList *explicit_iids);
+static char *make_oaf_query_with_known_mime_type (const char *mime_type, const char *uri_scheme, GList *explicit_iids, const char *extra_requirements);
+static char *make_oaf_query_with_uri_scheme_only (const char *uri_scheme, GList *explicit_iids, const char *extra_requirements);
 static GHashTable *file_list_to_mime_type_hash_table (GList *files);
 static void free_key (gpointer key, gpointer value, gpointer user_data);
 static void mime_type_hash_table_destroy (GHashTable *table);
@@ -61,7 +61,8 @@ static GList *nautilus_do_component_query (const char *mime_type,
 					   const char *uri_scheme, 
 					   GList *files,
 					   GList *explicit_iids,
-					   char **extra_sort_criteria, 
+					   char **extra_sort_criteria,
+					   char *extra_requirements,
 					   CORBA_Environment *ev);
 static GList *str_list_difference   (GList *a, 
 				     GList *b);
@@ -329,7 +330,7 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 	sort_conditions[4] = NULL;
 	
 	info_list = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, 
-						 sort_conditions, &ev);
+						 sort_conditions, NULL, &ev);
 	
 
 	if (ev._major == CORBA_NO_EXCEPTION  && info_list != NULL) {
@@ -468,6 +469,8 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 	GList *files;
 	GList *explicit_iids;
 	CORBA_Environment ev;
+	char *extra_requirements;
+	char *prev;
 
 	CORBA_exception_init (&ev);
 
@@ -524,19 +527,39 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 	}
 		
 	/* FIXME bugzilla.eazel.com 1267: should pass the allowed iids into the query */
-	result = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, NULL, &ev);
 
-	result = nautilus_g_list_partition
-		(result,
-		 (NautilusGPredicateFunc) component_has_id_in_list,
-		 iids, &removed);
+	result = NULL;
+
+	if (iids != NULL) {
+		extra_requirements = g_strdup ("has (['");
+		
+		for (p = iids; p != NULL; p = p->next) {
+			prev = extra_requirements;
+
+			if (p->next != NULL) {
+				extra_requirements = g_strconcat (prev, p->data, "','", NULL);
+			} else {
+				extra_requirements = g_strconcat (prev, p->data, "'], iid)", NULL);
+			}
+
+			g_free (prev);
+		}
+
+
+		result = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, NULL, extra_requirements, &ev);
+		
+		result = nautilus_g_list_partition
+			(result,
+			 (NautilusGPredicateFunc) component_has_id_in_list,
+			 iids, &removed);
+	}
 
 	g_list_free (iids);
-
+	
 	gnome_vfs_mime_component_list_free (removed);
 	g_free (uri_scheme);
 	g_free (mime_type);
-
+	
 	return result;
 }
 
@@ -629,7 +652,7 @@ nautilus_mime_get_all_components_for_uri (const char *uri)
 	explicit_iids = get_explicit_content_view_iids_from_metafile (directory); 
 	g_list_free (attributes);
 
-	info_list = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, NULL, &ev);
+	info_list = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, NULL, NULL, &ev);
 	
 	g_free (uri_scheme);
 	g_free (mime_type);
@@ -1102,7 +1125,7 @@ make_oaf_query_for_explicit_content_view_iids (GList *view_iids)
 }
 
 static char *
-make_oaf_query_with_known_mime_type (const char *mime_type, const char *uri_scheme, GList *explicit_iids)
+make_oaf_query_with_known_mime_type (const char *mime_type, const char *uri_scheme, GList *explicit_iids, const char *extra_requirements)
 {
         char *mime_supertype;
         char *result;
@@ -1181,13 +1204,16 @@ make_oaf_query_with_known_mime_type (const char *mime_type, const char *uri_sche
                      meet the requirements. */
                   "OR %s"
 
+		 /* Make it possible to add extra requirements */
+		 " AND (%s)"
+
                  /* The MIME type, MIME supertype, and URI scheme for
                   * the %s above.
                   */
                  , mime_type, mime_supertype, uri_scheme, uri_scheme
 
                  /* The explicit metafile iid query for the %s above. */
-                 , explicit_iid_query);
+                 , explicit_iid_query, extra_requirements != NULL ? extra_requirements : "true");
 
         g_free (mime_supertype);
         g_free (explicit_iid_query);
@@ -1195,7 +1221,7 @@ make_oaf_query_with_known_mime_type (const char *mime_type, const char *uri_sche
 }
 
 static char *
-make_oaf_query_with_uri_scheme_only (const char *uri_scheme, GList *explicit_iids)
+make_oaf_query_with_uri_scheme_only (const char *uri_scheme, GList *explicit_iids, const char *extra_requirements)
 {
         char *result;
         char *explicit_iid_query;
@@ -1248,11 +1274,15 @@ make_oaf_query_with_uri_scheme_only (const char *uri_scheme, GList *explicit_iid
 
                   "OR %s"
 
+		 /* Make it possible to add extra requirements */
+		  " AND (%s)"
+
                   /* The URI scheme for the %s above. */
                   , uri_scheme, uri_scheme
 
                   /* The explicit metafile iid query for the %s above. */
-                  , explicit_iid_query);
+                  , explicit_iid_query,
+		  extra_requirements);
            
         return result;
 }
@@ -1357,7 +1387,8 @@ nautilus_do_component_query (const char *mime_type,
 			     const char *uri_scheme, 
 			     GList *files,
 			     GList *explicit_iids,
-			     char **extra_sort_criteria, 
+			     char **extra_sort_criteria,
+			     char *extra_requirements,
 			     CORBA_Environment *ev)
 { 
 	OAF_ServerInfoList *oaf_result;
@@ -1370,9 +1401,9 @@ nautilus_do_component_query (const char *mime_type,
 
         
 	if (mime_type != NULL) {
-                query = make_oaf_query_with_known_mime_type (mime_type, uri_scheme, explicit_iids);
+                query = make_oaf_query_with_known_mime_type (mime_type, uri_scheme, explicit_iids, extra_requirements);
         } else {
-                query = make_oaf_query_with_uri_scheme_only (uri_scheme, explicit_iids);
+                query = make_oaf_query_with_uri_scheme_only (uri_scheme, explicit_iids, extra_requirements);
         }
 
 #ifdef DEBUG_MJS
