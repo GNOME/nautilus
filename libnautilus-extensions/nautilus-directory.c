@@ -2,7 +2,7 @@
 
    nautilus-directory.c: Nautilus directory model.
  
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -1452,8 +1452,7 @@ nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 				     gconstpointer client,
 				     gboolean monitor_hidden_files,
 				     gboolean monitor_backup_files,
-				     GList *file_attributes,
-				     gboolean force_reload)
+				     GList *file_attributes)
 {
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (client != NULL);
@@ -1463,8 +1462,7 @@ nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 		 file_monitor_add, (directory, client,
 				    monitor_hidden_files,
 				    monitor_backup_files,
-				    file_attributes,
-				    force_reload));
+				    file_attributes));
 }
 
 void
@@ -1477,6 +1475,16 @@ nautilus_directory_file_monitor_remove (NautilusDirectory *directory,
 	NAUTILUS_CALL_VIRTUAL
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 file_monitor_remove, (directory, client));
+}
+
+void
+nautilus_directory_force_reload (NautilusDirectory *directory)
+{
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+
+	NAUTILUS_CALL_VIRTUAL
+		(NAUTILUS_DIRECTORY_CLASS, directory,
+		 force_reload, (directory));
 }
 
 gboolean
@@ -1538,8 +1546,7 @@ nautilus_self_check_directory (void)
 
 	nautilus_directory_file_monitor_add
 		(directory, &data_dummy,
-		 TRUE, TRUE,
-		 NULL, FALSE);
+		 TRUE, TRUE, NULL);
 
 	got_metadata_flag = FALSE;
 

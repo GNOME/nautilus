@@ -1,3 +1,87 @@
+2001-02-16  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Gene Ragan <gzr@eazel.com>
+
+	Finish fixing bug 6286 (need to re-apply optimization where we do
+	a single directory load):
+
+	* src/nautilus-window-manage-views.c: (begin_location_change): Do
+	the force_reload work in here. We want it on all 4 kinds of
+	location change (forward, back, new location, reload). Other
+	browsers don't do reload on back, so we may want to change this at
+	some point.
+	(nautilus_window_reload): Remove the old code to invalidate from
+	here now that it's done in begin_location_change.
+
+	* src/file-manager/fm-directory-view.c: (load_location_callback),
+	(load_directory), (finish_loading), (filtering_changed_callback):
+	Remove the old code to do force_reload. The NautilusDirectory part
+	of triggering a reload is now handled by the shell.
+
+	* libnautilus-extensions/nautilus-directory.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_file_monitor_add): No force_reload parameter
+	any more.
+	(nautilus_directory_force_reload): New separate call used to force
+	a reload. A method call so subclasses can implement.
+	(nautilus_self_check_directory): Removed the FALSE force_reload
+	argument to file_monitor_add.
+	* libnautilus-extensions/nautilus-vfs-directory.c:
+	(vfs_file_monitor_add): No force_reload parameter any more.
+	(vfs_force_reload): Call through to
+	nautilus_directory_force_reload_internal to do the real work.
+	(nautilus_vfs_directory_initialize_class): Install the new
+	force_reload function.
+	* libnautilus-extensions/nautilus-merged-directory.c:
+	(merged_file_monitor_add): No force_reload parameter any more.
+	(merged_force_reload): Tell all of the real directories to force a
+	reload.
+	(monitor_add_directory): No force_reload to track any more.
+	(nautilus_merged_directory_initialize_class): Install the new
+	force_reload function.
+	
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(nautilus_directory_force_reload_internal): Change the name of
+	this function, since there's now a public function that is named
+	nautilus_directory_force_reload.
+	
+	* libnautilus-extensions/nautilus-file-private.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_all_attributes): Made a separate call so other
+	parts of the framework can use it.
+	(nautilus_file_invalidate_all_attributes): Use the new call.
+	
+	* components/tree/nautilus-tree-model.c:
+	(nautilus_tree_model_monitor_add),
+	(nautilus_tree_model_node_begin_monitoring_no_connect): Use the
+	new force_reload call. The old one had more granularity and thus
+	forced less to be reloaded, but it's OK to do a little more here.
+	
+	* libnautilus-extensions/nautilus-trash-monitor.c:
+	(nautilus_trash_monitor_initialize): Removed the FALSE
+	force_reload argument to file_monitor_add.
+
+	Other stuff:
+	
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(get_metafile), (nautilus_directory_get_file_metadata),
+	(nautilus_directory_get_file_metadata_list),
+	(nautilus_directory_set_file_metadata),
+	(nautilus_directory_set_file_metadata_list),
+	(nautilus_directory_copy_file_metadata),
+	(nautilus_directory_remove_file_metadata),
+	(nautilus_directory_rename_file_metadata): Moved FIXMEs around.
+	Pass NULL instead of &ev when calling bonobo_object_release_unref
+	since we don't really want to do anything different if there's
+	some kind of error.
+	
+	* nautilus-installer/install-lib/.cvsignore:
+	* nautilus-installer/libtrilobite/.cvsignore:
+	Gotta create these files when you make new directories.
+
+	* README: Change xml-i18n-tools to mention the correct branch.
+
 2001-02-16  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/mozilla/Makefile.am:

@@ -2,7 +2,7 @@
 
    nautilus-directory.h: Nautilus directory model.
  
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -123,10 +123,10 @@ typedef struct
 					  gconstpointer              client,
 					  gboolean                   monitor_hidden_files,
 					  gboolean                   monitor_backup_files,
-					  GList                     *monitor_attributes,
-					  gboolean                   force_reload);
+					  GList                     *monitor_attributes);
 	void     (* file_monitor_remove) (NautilusDirectory         *directory,
 					  gconstpointer              client);
+	void     (* force_reload)        (NautilusDirectory         *directory);
 	gboolean (* are_all_files_seen)  (NautilusDirectory         *directory);
 	gboolean (* is_not_empty)        (NautilusDirectory         *directory);
 	char *	 (* get_name_for_self_as_new_file) (NautilusDirectory *directory);
@@ -183,10 +183,10 @@ void               nautilus_directory_file_monitor_add         (NautilusDirector
 								gconstpointer              client,
 								gboolean                   monitor_hidden_files,
 								gboolean                   monitor_backup_files,
-								GList                     *monitor_attributes,
-								gboolean                   force_reload);
+								GList                     *attributes);
 void               nautilus_directory_file_monitor_remove      (NautilusDirectory         *directory,
 								gconstpointer              client);
+void               nautilus_directory_force_reload             (NautilusDirectory         *directory);
 
 /* Return true if the directory has information about all the files.
  * This will be false until the directory has been read at least once.

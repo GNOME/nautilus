@@ -1297,6 +1297,9 @@ begin_location_change (NautilusWindow *window,
                        NautilusLocationChangeType type,
                        guint distance)
 {
+        NautilusDirectory *directory;
+        NautilusFile *file;
+
         g_assert (NAUTILUS_IS_WINDOW (window));
         g_assert (location != NULL);
         g_assert (type == NAUTILUS_LOCATION_CHANGE_BACK
@@ -1311,17 +1314,24 @@ begin_location_change (NautilusWindow *window,
         window->details->location_change_type = type;
         window->details->location_change_distance = distance;
 
+        directory = nautilus_directory_get (location);
+
+        /* In all 4 cases, we want fresh information. */
+        nautilus_directory_force_reload (directory);
+        file = nautilus_directory_get_corresponding_file (directory);
+        nautilus_file_invalidate_all_attributes (file);
+        nautilus_file_unref (file);
+
         /* We start monitoring files here so we get a single load of
          * the directory instead of multiple ones. The concept is that
          * our load of the directory is shared both with the possible
          * call_when_ready done by the nautilus_determine_initial_view
          * call and loads done by components (like the icon view).
          */
-        window->details->pending_location_as_directory =
-                nautilus_directory_get (location);
+        window->details->pending_location_as_directory = directory;
         nautilus_directory_file_monitor_add
                 (window->details->pending_location_as_directory, window,
-                 TRUE, TRUE, NULL, FALSE);
+                 TRUE, TRUE, NULL);
 
         window->details->determine_view_handle = nautilus_determine_initial_view
                 (location,
@@ -1851,13 +1861,6 @@ void
 nautilus_window_reload (NautilusWindow *window)
 {
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-        if (window->details->viewed_file != NULL) {
-                /* If we are reloading, invalidate all we know about the
-                 * file so we learn about new mime types, contents, etc. 
-                 */
-                nautilus_file_invalidate_all_attributes (window->details->viewed_file);
-        }        
 
 	begin_location_change
 		(window, window->details->location,

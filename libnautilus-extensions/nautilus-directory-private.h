@@ -161,7 +161,7 @@ void               nautilus_directory_stop_monitoring_file_list       (NautilusD
 void               nautilus_directory_cancel                          (NautilusDirectory         *directory);
 void               nautilus_metafile_write_start                      (NautilusDirectory         *directory);
 void               nautilus_async_destroying_file                     (NautilusFile              *file);
-void               nautilus_directory_force_reload                    (NautilusDirectory         *directory,
+void               nautilus_directory_force_reload_internal           (NautilusDirectory         *directory,
 								       GList                     *file_attributes);
 void               nautilus_directory_cancel_loading_file_attributes  (NautilusDirectory         *directory,
 								       NautilusFile              *file,

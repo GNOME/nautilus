@@ -129,7 +129,7 @@ nautilus_trash_monitor_initialize (gpointer object, gpointer klass)
 
 	/* Make sure we get notified about changes */
 	nautilus_directory_file_monitor_add
-		(trash_directory, trash_monitor, TRUE, TRUE, attributes, FALSE);
+		(trash_directory, trash_monitor, TRUE, TRUE, attributes);
 
 	g_list_free (attributes);
 

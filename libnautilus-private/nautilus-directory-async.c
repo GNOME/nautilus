@@ -2267,8 +2267,8 @@ nautilus_directory_invalidate_file_attributes (NautilusDirectory *directory,
 }
 
 void
-nautilus_directory_force_reload (NautilusDirectory *directory,
-				 GList             *file_attributes)
+nautilus_directory_force_reload_internal (NautilusDirectory *directory,
+					  GList *file_attributes)
 {
 	/* invalidate attributes that are getting reloaded for all files */
 	nautilus_directory_invalidate_file_attributes (directory, file_attributes);

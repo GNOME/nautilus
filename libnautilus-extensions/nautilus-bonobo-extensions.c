@@ -224,17 +224,17 @@ add_numbered_menu_item_internal (BonoboUIComponent *ui,
 	 */
 	if (is_toggle) {
 		xml_item = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" id=\"%s\" type=\"toggle\"/>\n", 
-						item_name, encoded_label, command_name);
+					    item_name, encoded_label, command_name);
 	} else if (pixbuf != NULL) {
 		/* Encode pixbuf type and data into XML string */			
 		pixbuf_data = bonobo_ui_util_pixbuf_to_xml (pixbuf);
 		
 		xml_item = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" verb=\"%s\" pixtype=\"pixbuf\" pixname=\"%s\"/>\n", 
-						item_name, encoded_label, command_name, pixbuf_data);	
+					    item_name, encoded_label, command_name, pixbuf_data);	
 		g_free (pixbuf_data);
 	} else {
 		xml_item = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" verb=\"%s\"/>\n", 
-						item_name, encoded_label, command_name);
+					    item_name, encoded_label, command_name);
 	}
 	g_free (encoded_label);
 	g_free (item_name);
@@ -251,7 +251,7 @@ add_numbered_menu_item_internal (BonoboUIComponent *ui,
 	g_free (xml_command);
 
 	g_free (command_name);
-}			 
+}
 
 /* Add a menu item specified by number into a given path. Used for
  * dynamically creating a related series of menu items. Each index
@@ -333,32 +333,33 @@ remove_commands (BonoboUIComponent *ui, const char *container_path)
 	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
 	g_return_if_fail (container_path != NULL);
 
+	path_node = bonobo_ui_component_get_tree (ui, container_path, TRUE, NULL);
+	if (path_node == NULL) {
+		return;
+	}
+
 	bonobo_ui_component_freeze (ui, NULL);
 
-	path_node = bonobo_ui_component_get_tree (ui, container_path, TRUE, NULL);
-
-	if (path_node != NULL) {
-		for (child_node = bonobo_ui_node_children (path_node);
-		     child_node != NULL;
-		     child_node = bonobo_ui_node_next (child_node)) {
-			verb_name = bonobo_ui_node_get_attr (child_node, "verb");
-			if (verb_name != NULL) {
-				bonobo_ui_component_remove_verb (ui, verb_name);
-				bonobo_ui_node_free_string (verb_name);
-			} else {
+	for (child_node = bonobo_ui_node_children (path_node);
+	     child_node != NULL;
+	     child_node = bonobo_ui_node_next (child_node)) {
+		verb_name = bonobo_ui_node_get_attr (child_node, "verb");
+		if (verb_name != NULL) {
+			bonobo_ui_component_remove_verb (ui, verb_name);
+			bonobo_ui_node_free_string (verb_name);
+		} else {
 				/* Only look for an id if there's no verb */
-				id_name = bonobo_ui_node_get_attr (child_node, "id");
-				if (id_name != NULL) {
-					bonobo_ui_component_remove_listener (ui, id_name);
-					bonobo_ui_node_free_string (id_name);
-				}
+			id_name = bonobo_ui_node_get_attr (child_node, "id");
+			if (id_name != NULL) {
+				bonobo_ui_component_remove_listener (ui, id_name);
+				bonobo_ui_node_free_string (id_name);
 			}
-
 		}
 	}
 
-	bonobo_ui_node_free (path_node);
 	bonobo_ui_component_thaw (ui, NULL);
+
+	bonobo_ui_node_free (path_node);
 }
 
 /**

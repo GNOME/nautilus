@@ -77,8 +77,6 @@ get_metafile (NautilusDirectory *directory, CORBA_Environment *ev)
 	uri = nautilus_directory_get_uri (directory);
 	metafile = Nautilus_MetafileFactory_open (get_factory (), uri, ev);
 	g_free (uri);
-
-	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
 	
 	return metafile;	
 }
@@ -100,12 +98,13 @@ nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 	g_return_val_if_fail (!nautilus_str_is_empty (file_name), NULL);
 	g_return_val_if_fail (!nautilus_str_is_empty (key), NULL);
 	
-	/* We can't pass NULL as a CORBA_string - pass "" instead.
-	 */
+	/* We can't pass NULL as a CORBA_string - pass "" instead. */
 	non_null_default = default_metadata != NULL ? default_metadata : "";
 
 	CORBA_exception_init (&ev);
 	metafile = get_metafile (directory, &ev);
+
+	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
 
 	corba_value = Nautilus_Metafile_get (metafile, file_name, key, non_null_default, &ev);
 
@@ -122,7 +121,7 @@ nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 
 	CORBA_free (corba_value);
 	
-	bonobo_object_release_unref (metafile, &ev);
+	bonobo_object_release_unref (metafile, NULL);
 	CORBA_exception_free (&ev);
 
 	return result;
@@ -149,6 +148,8 @@ nautilus_directory_get_file_metadata_list (NautilusDirectory *directory,
 	CORBA_exception_init (&ev);
 	metafile = get_metafile (directory, &ev);
 
+	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+
 	corba_value = Nautilus_Metafile_get_list (metafile, file_name, list_key, list_subkey, &ev);
 
 	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
@@ -160,7 +161,7 @@ nautilus_directory_get_file_metadata_list (NautilusDirectory *directory,
 	result = g_list_reverse (result);
 	CORBA_free (corba_value);
 	
-	bonobo_object_release_unref (metafile, &ev);
+	bonobo_object_release_unref (metafile, NULL);
 	CORBA_exception_free (&ev);
 
 	return result;
@@ -194,11 +195,13 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 	CORBA_exception_init (&ev);
 	metafile = get_metafile (directory, &ev);
 
+	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+
 	result = Nautilus_Metafile_set (metafile, file_name, key, default_metadata, metadata, &ev);
 	
 	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
 
-	bonobo_object_release_unref (metafile, &ev);
+	bonobo_object_release_unref (metafile, NULL);
 	CORBA_exception_free (&ev);
 
 	return result;
@@ -229,6 +232,8 @@ nautilus_directory_set_file_metadata_list (NautilusDirectory *directory,
 	CORBA_exception_init (&ev);
 	metafile = get_metafile (directory, &ev);
 
+	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+
 	len = g_list_length (list);
 	
 	corba_list = Nautilus_MetadataList__alloc ();
@@ -255,7 +260,7 @@ nautilus_directory_set_file_metadata_list (NautilusDirectory *directory,
 
 	CORBA_free (corba_list);
 
-	bonobo_object_release_unref (metafile, &ev);
+	bonobo_object_release_unref (metafile, NULL);
 	CORBA_exception_free (&ev);
 
 	return result;
@@ -371,6 +376,9 @@ nautilus_directory_copy_file_metadata (NautilusDirectory *source_directory,
 	
 	CORBA_exception_init (&ev);
 	source_metafile = get_metafile (source_directory, &ev);
+
+	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+
 	destination_uri = nautilus_directory_get_uri (destination_directory);
 
 	Nautilus_Metafile_copy (source_metafile, source_file_name, destination_uri, destination_file_name, &ev);
@@ -378,7 +386,7 @@ nautilus_directory_copy_file_metadata (NautilusDirectory *source_directory,
 	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
 
 	g_free (destination_uri);
-	bonobo_object_release_unref (source_metafile, &ev);
+	bonobo_object_release_unref (source_metafile, NULL);
 	CORBA_exception_free (&ev);
 }
 
@@ -395,11 +403,13 @@ nautilus_directory_remove_file_metadata (NautilusDirectory *directory,
 	CORBA_exception_init (&ev);
 	metafile = get_metafile (directory, &ev);
 
+	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+
 	Nautilus_Metafile_remove (metafile, file_name, &ev);
 
 	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
 	
-	bonobo_object_release_unref (metafile, &ev);
+	bonobo_object_release_unref (metafile, NULL);
 	CORBA_exception_free (&ev);
 }
 
@@ -418,10 +428,12 @@ nautilus_directory_rename_file_metadata (NautilusDirectory *directory,
 	CORBA_exception_init (&ev);
 	metafile = get_metafile (directory, &ev);
 
+	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+
 	Nautilus_Metafile_rename (metafile, old_file_name, new_file_name, &ev);
 
 	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
 	
-	bonobo_object_release_unref (metafile, &ev);
+	bonobo_object_release_unref (metafile, NULL);
 	CORBA_exception_free (&ev);
 }

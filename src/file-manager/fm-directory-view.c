@@ -137,7 +137,6 @@ struct FMDirectoryViewDetails
 	GList *pending_files_changed;
 	GList *pending_uris_selected;
 
-	gboolean force_reload;
 	gboolean loading;
 	gboolean menus_merged;
 	gboolean menu_states_untrustworthy;
@@ -197,8 +196,7 @@ static void                fm_directory_view_activate_file                      
 										   NautilusFile         *file,
 										   WindowChoice          choice);
 static void                load_directory                                         (FMDirectoryView      *view,
-										   NautilusDirectory    *directory,
-										   gboolean              force_reload);
+										   NautilusDirectory    *directory);
 static void                fm_directory_view_merge_menus                          (FMDirectoryView      *view);
 static void                real_file_limit_reached                                (FMDirectoryView      *view);
 static void		   real_load_error					  (FMDirectoryView 	*view,
@@ -1304,7 +1302,7 @@ load_location_callback (NautilusView *nautilus_view,
 	NautilusDirectory *directory;
 
 	directory = nautilus_directory_get (location);
-	load_directory (directory_view, directory, TRUE);
+	load_directory (directory_view, directory);
 	nautilus_directory_unref (directory);
 }
 
@@ -3745,8 +3743,7 @@ file_changed_callback (NautilusFile *file, gpointer callback_data)
  **/
 static void
 load_directory (FMDirectoryView *view,
-		NautilusDirectory *directory,
-		gboolean force_reload)
+		NautilusDirectory *directory)
 {
 	NautilusDirectory *old_directory;
 	NautilusFile *old_file;
@@ -3776,7 +3773,6 @@ load_directory (FMDirectoryView *view,
 		nautilus_directory_get_corresponding_file (directory);
 	nautilus_file_unref (old_file);
 
-	view->details->force_reload = force_reload;
 	view->details->reported_load_error = FALSE;
 
 	/* FIXME bugzilla.eazel.com 5062: In theory, we also need to monitor metadata here (as
@@ -3866,9 +3862,7 @@ finish_loading (FMDirectoryView *view)
 					     view,
 					     view->details->show_hidden_files,
 					     view->details->show_backup_files,
-					     attributes,
-					     view->details->force_reload);
-	view->details->force_reload = FALSE;
+					     attributes);
 
 	g_list_free (attributes);
 }
@@ -4251,8 +4245,7 @@ filtering_changed_callback (gpointer callback_data)
 	/* Reload the current uri so that the filtering changes take place. */
 	if (directory_view->details->model != NULL) {
 		load_directory (directory_view,
-				directory_view->details->model,
-				FALSE);
+				directory_view->details->model);
 	}
 }
 

@@ -57,7 +57,6 @@ typedef struct {
 	gboolean monitor_hidden_files;
 	gboolean monitor_backup_files;
 	GList *monitor_attributes;
-	gboolean force_reload;
 } MergedMonitor;
 
 enum {
@@ -289,8 +288,7 @@ merged_file_monitor_add (NautilusDirectory *directory,
 			 gconstpointer client,
 			 gboolean monitor_hidden_files,
 			 gboolean monitor_backup_files,
-			 GList *file_attributes,
-			 gboolean force_reload)
+			 GList *file_attributes)
 {
 	NautilusMergedDirectory *merged;
 	MergedMonitor *monitor;
@@ -314,14 +312,13 @@ merged_file_monitor_add (NautilusDirectory *directory,
 	monitor->monitor_hidden_files = monitor_hidden_files;
 	monitor->monitor_backup_files = monitor_backup_files;
 	monitor->monitor_attributes = nautilus_g_str_list_copy (file_attributes);
-	monitor->force_reload = force_reload;
 	
 	/* Call through to the real directory add calls. */
 	for (node = merged->details->directories; node != NULL; node = node->next) {
 		nautilus_directory_file_monitor_add
 			(node->data, monitor,
 			 monitor_hidden_files, monitor_backup_files,
-			 file_attributes, force_reload);
+			 file_attributes);
 	}
 }
 
@@ -351,6 +348,20 @@ merged_file_monitor_remove (NautilusDirectory *directory,
 
 	nautilus_g_list_free_deep (monitor->monitor_attributes);
 	g_free (monitor);
+}
+
+static void
+merged_force_reload (NautilusDirectory *directory)
+{
+	NautilusMergedDirectory *merged;
+	GList *node;
+
+	merged = NAUTILUS_MERGED_DIRECTORY (directory);
+
+	/* Call through to the real force_reload calls. */
+	for (node = merged->details->directories; node != NULL; node = node->next) {
+		nautilus_directory_force_reload (node->data);
+	}
 }
 
 /* Return true if any directory in the list does. */
@@ -444,8 +455,7 @@ monitor_add_directory (gpointer key,
 		(NAUTILUS_DIRECTORY (callback_data), monitor,
 		 monitor->monitor_hidden_files,
 		 monitor->monitor_backup_files,
-		 monitor->monitor_attributes,
-		 monitor->force_reload);
+		 monitor->monitor_attributes);
 }
 
 static void
@@ -603,6 +613,7 @@ nautilus_merged_directory_initialize_class (gpointer klass)
 	directory_class->cancel_callback = merged_cancel_callback;
 	directory_class->file_monitor_add = merged_file_monitor_add;
 	directory_class->file_monitor_remove = merged_file_monitor_remove;
+	directory_class->force_reload = merged_force_reload;
  	directory_class->are_all_files_seen = merged_are_all_files_seen;
 	directory_class->is_not_empty = merged_is_not_empty;
 

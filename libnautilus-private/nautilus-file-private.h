@@ -2,7 +2,7 @@
 
    nautilus-directory.c: Nautilus directory model.
  
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -113,7 +113,7 @@ void          nautilus_file_set_directory                  (NautilusFile        
 gboolean      nautilus_file_get_date                       (NautilusFile           *file,
 							    NautilusDateType        date_type,
 							    time_t                 *date);
-void	      nautilus_file_updated_deep_count_in_progress (NautilusFile	   *file);
+void          nautilus_file_updated_deep_count_in_progress (NautilusFile           *file);
 
 /* Compare file's state with a fresh file info struct, return FALSE if
  * no change, update file and return TRUE if the file info contains
@@ -133,6 +133,7 @@ gboolean      nautilus_file_should_get_top_left_text       (NautilusFile        
  */
 void          nautilus_file_invalidate_attributes_internal (NautilusFile           *file,
 							    GList                  *file_attributes);
+GList *       nautilus_file_get_all_attributes             (void);
 
 /* Recognizing special file names. */
 gboolean      nautilus_file_name_matches_hidden_pattern    (const char             *name_or_relative_uri);

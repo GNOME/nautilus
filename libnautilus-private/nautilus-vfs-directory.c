@@ -104,16 +104,10 @@ vfs_file_monitor_add (NautilusDirectory *directory,
 		      gconstpointer client,
 		      gboolean monitor_hidden_files,
 		      gboolean monitor_backup_files,
-		      GList *file_attributes,
-		      gboolean force_reload)
+		      GList *file_attributes)
 {
 	g_assert (NAUTILUS_IS_VFS_DIRECTORY (directory));
 	g_assert (client != NULL);
-
-	if (force_reload) {
-		nautilus_directory_force_reload (directory,
-						 file_attributes);
-	}
 
 	nautilus_directory_monitor_add_internal
 		(directory, NULL,
@@ -131,6 +125,19 @@ vfs_file_monitor_remove (NautilusDirectory *directory,
 	g_assert (client != NULL);
 	
 	nautilus_directory_monitor_remove_internal (directory, NULL, client);
+}
+
+static void
+vfs_force_reload (NautilusDirectory *directory)
+{
+	GList *all_attributes;
+
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+
+	all_attributes = nautilus_file_get_all_attributes ();
+	nautilus_directory_force_reload_internal (directory,
+						  all_attributes);
+	g_list_free (all_attributes);
 }
 
 static gboolean
@@ -193,6 +200,7 @@ nautilus_vfs_directory_initialize_class (gpointer klass)
 	directory_class->cancel_callback = vfs_cancel_callback;
 	directory_class->file_monitor_add = vfs_file_monitor_add;
 	directory_class->file_monitor_remove = vfs_file_monitor_remove;
+	directory_class->force_reload = vfs_force_reload;
 	directory_class->are_all_files_seen = vfs_are_all_files_seen;
 	directory_class->is_not_empty = vfs_is_not_empty;
 }

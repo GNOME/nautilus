@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* 
- * Copyright (C) 2000 Eazel, Inc
+ * Copyright (C) 2000, 2001 Eazel, Inc
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -314,11 +314,9 @@ nautilus_tree_model_monitor_add (NautilusTreeModel         *model,
 			 model);
 		
 		monitor_attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
-
 		nautilus_file_monitor_add (nautilus_tree_node_get_file (model->details->root_node),
 					   model,
 					   monitor_attributes);
-
 		g_list_free (monitor_attributes);
 	}
 
@@ -391,12 +389,15 @@ nautilus_tree_model_node_begin_monitoring_no_connect (NautilusTreeModel         
 
 	directory = nautilus_tree_node_get_directory (node);
 
+	if (force_reload) {
+		nautilus_directory_force_reload (directory);
+	}
+
 	monitor_attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
 	nautilus_directory_file_monitor_add (directory,
 					     model,
 					     TRUE, TRUE,
-					     monitor_attributes,
-					     force_reload);
+					     monitor_attributes);
 	g_list_free (monitor_attributes);
 }
 
