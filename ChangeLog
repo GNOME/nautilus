@@ -1,3 +1,24 @@
+Tue Mar 27 02:25:31 2001  George Lebl <jirka@5z.com>
+
+	* components/help/hyperbola-nav-tree.c (ensure_italic_style)
+	  (set_node_style) (reset_style_for_node) (reset_styles)
+	  (ensure_pixmap_and_mask) (ensure_icons) (get_node_icons)
+	  (ctree_populate_subnode) (ctree_populate)
+	  (hyperbola_navigation_tree_new) (pixmap_unref_and_null)
+	  (bitmap_unref_and_null) (hyperbola_navigation_tree_destroy):
+	  Remove the italic stuff and replace with icons.  There's a
+	  different icon for folders, different for books and different for
+	  sections.  The one for sections is the one used for man and info
+	  pages, but we could also have a separate one for those.  I suppose
+	  that's up to Arlo.  This should fix #6911, though I suppose I'll
+	  leave it open to get further feedback.
+
+	* icons/Makefile.am, hyperbola-book-closed.png,
+	  hyperbola-book-open.png, hyperbola-folder-closed.png,
+	  hyperbola-folder-open.png, hyperbola-section-closed.png,
+	  hyperbola-section-open.png:  Add some testing icons, stolen
+	  from the GTK+ testing program.
+
 Tue Mar 27 00:45:02 2001  George Lebl <jirka@5z.com>
 
 	* components/help/hyperbola-filefmt.c

@@ -134,6 +134,12 @@ icon_DATA =\
 	hand-72.png \
 	hand-96.png \
 	home.png \
+	hyperbola-book-closed.png \
+	hyperbola-book-open.png \
+	hyperbola-folder-closed.png \
+	hyperbola-folder-open.png \
+	hyperbola-section-closed.png \
+	hyperbola-section-open.png \
 	i-blockdev.png \
 	i-bookmark-20.png \
 	i-bookmark-missing-20.png \
