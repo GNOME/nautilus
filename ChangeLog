@@ -1,5 +1,15 @@
 2004-10-06  Martin Wehner  <martin.wehner@epost.de>
 
+	* src/file-manager/fm-directory-view.c:
+	(process_new_files):
+	* src/file-manager/fm-list-view.c:
+	(fm_list_view_sort_files), (fm_list_view_class_init):
+	* src/file-manager/fm-list-model.[ch]:
+	(fm_list_model_sort_files):
+	Implement sort_files for list view and sort old changed files.
+
+2004-10-06  Martin Wehner  <martin.wehner@epost.de>
+
 	* src/file-manager/fm-directory-view.c: (split_off_first_n),
 	(display_pending_files), (display_pending_idle_callback):
 	Process unlimited files at once instead of 300 each time.

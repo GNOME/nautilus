@@ -1940,6 +1940,16 @@ fm_list_view_sort_directories_first_changed (FMDirectoryView *view)
 }
 
 static void
+fm_list_view_sort_files (FMDirectoryView *view, GList **files)
+{
+	FMListView *list_view;
+
+	list_view = FM_LIST_VIEW (view);
+
+	fm_list_model_sort_files (list_view->details->model, files);
+}
+
+static void
 fm_list_view_dispose (GObject *object)
 {
 	FMListView *list_view;
@@ -2101,6 +2111,7 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->reveal_selection = fm_list_view_reveal_selection;
 	fm_directory_view_class->select_all = fm_list_view_select_all;
 	fm_directory_view_class->set_selection = fm_list_view_set_selection;
+	fm_directory_view_class->sort_files = fm_list_view_sort_files;
 	fm_directory_view_class->sort_directories_first_changed = fm_list_view_sort_directories_first_changed;
 	fm_directory_view_class->start_renaming_file = fm_list_view_start_renaming_file;
 	fm_directory_view_class->zoom_to_level = fm_list_view_zoom_to_level;

@@ -90,6 +90,8 @@ int      fm_list_model_get_sort_column_id_from_attribute (FMListModel *model,
 							  const char           *attribute);
 char    *fm_list_model_get_attribute_from_sort_column_id (FMListModel *model,
 							  int sort_column_id);
+void     fm_list_model_sort_files (FMListModel *model,
+							  GList **files);
 
 NautilusZoomLevel fm_list_model_get_zoom_level_from_column_id (int               column);
 int               fm_list_model_get_column_id_from_zoom_level (NautilusZoomLevel zoom_level);

@@ -472,6 +472,11 @@ fm_list_model_sort (FMListModel *model)
 	g_free (new_order);
 }
 
+void
+fm_list_model_sort_files (FMListModel *model, GList **files)
+{
+	*files = g_list_sort_with_data (*files, fm_list_model_compare_func, model);
+}
 
 static gboolean
 fm_list_model_get_sort_column_id (GtkTreeSortable *sortable,

@@ -2299,7 +2299,7 @@ ready_to_load (NautilusFile *file)
 /* Go through all the new added and changed files.
  * Put any that are not ready to load in the non_ready_files hash table.
  * Add all the rest to the old_added_files and old_changed_files lists.
- * Sort the old_added_files list if anything is added to it.
+ * Sort the old_*_files lists if anything was added to them.
  */
 static void
 process_new_files (FMDirectoryView *view)
@@ -2374,7 +2374,16 @@ process_new_files (FMDirectoryView *view)
 		EEL_INVOKE_METHOD (FM_DIRECTORY_VIEW_CLASS, view, sort_files,
 				   (view, &view->details->old_added_files));
 	}
-	view->details->old_changed_files = old_changed_files;
+
+	/* Resort old_changed_files too, since file attributes
+	 * relevant to sorting could have changed.
+	 */
+	if (old_changed_files != view->details->old_changed_files) {
+		view->details->old_changed_files = old_changed_files;
+		EEL_INVOKE_METHOD (FM_DIRECTORY_VIEW_CLASS, view, sort_files,
+				   (view, &view->details->old_changed_files));
+	}
+
 }
 
 static void
