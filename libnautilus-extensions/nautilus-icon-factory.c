@@ -649,7 +649,7 @@ set_theme (const char *theme_name)
 		}
 	} else {
 		if (theme_name != NULL
-		    && strcmp (theme_name, factory->theme_name) != 0) {
+		    && strcmp (theme_name, factory->theme_name) == 0) {
 			return;
 		}
 	}

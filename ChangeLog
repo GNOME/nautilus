@@ -1,3 +1,10 @@
+2000-09-19  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c: (set_theme):
+	fixed recently introduced bug where it would only use icons
+	from the default theme.  Fixed by flipping the sense of a
+	comparison in set_theme.
+	
 2000-09-19  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 1860 (Switching to complex search bar leaves
