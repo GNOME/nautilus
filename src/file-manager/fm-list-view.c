@@ -127,32 +127,19 @@ tree_view_has_selection (GtkTreeView *view)
 	return tree_selection_not_empty (gtk_tree_view_get_selection (view));
 }
 
-static void
-event_after_callback (GtkWidget *widget, GdkEventAny *event, gpointer callback_data)
-{
-	GList *file_list;
-	FMDirectoryView *view;
-
-	view = FM_DIRECTORY_VIEW (callback_data);
-
-	if (event->type == GDK_2BUTTON_PRESS &&
-	    click_policy_auto_value == NAUTILUS_CLICK_POLICY_DOUBLE) {
-		file_list = fm_list_view_get_selection (view);
-		fm_directory_view_activate_files (view, file_list);
-		nautilus_file_list_free (file_list);
-	}
-}
-
 static gboolean
 button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callback_data)
 {
 	FMListView *view;
 	GtkTreeView *tree_view;
 	GtkTreePath *path;
-	gboolean result;
+	gboolean call_parent;
+	GtkWidgetClass *tree_view_class;
+	GList *file_list;
 
 	view = FM_LIST_VIEW (callback_data);
 	tree_view = GTK_TREE_VIEW (widget);
+	tree_view_class = GTK_WIDGET_GET_CLASS (tree_view);
 
 	if (event->window != gtk_tree_view_get_bin_window (tree_view)) {
 		return FALSE;
@@ -163,19 +150,19 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 		 tree_view,
 		 event->x, event->y);
 
-	result = FALSE;
-
+	call_parent = TRUE;
 	if (gtk_tree_view_get_path_at_pos (tree_view, event->x, event->y,
 					   &path, NULL, NULL, NULL)) {
-		if (event->button == 3
+		if (event->button == 3 
 		    && gtk_tree_selection_path_is_selected (gtk_tree_view_get_selection (tree_view), path)) {
-			/* Don't let the default code run because if multiple rows
-			   are selected it will unselect all but one row; but we
-			   want the right click menu to apply to everything that's
-			   currently selected. */
-			result = TRUE;
+                       /* Don't let the default code run because if
+                          multiple rows are selected it will unselect
+                          all but one row; but we- want the right
+                          click menu to apply to everything that's
+                          currently selected. */
+			call_parent = FALSE;
 		}
-
+		    
 		gtk_tree_path_free (path);
 	} else {
 		/* Deselect if people click outside any row. It's OK to
@@ -183,37 +170,36 @@ button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callba
 		gtk_tree_selection_unselect_all (gtk_tree_view_get_selection (tree_view));
 	}
 
-	return result;
-}
-
-static gboolean
-button_release_callback (GtkWidget *widget, GdkEventButton *event, gpointer callback_data)
-{
-	FMDirectoryView *view;
-	GList *file_list;
-
-	view = FM_DIRECTORY_VIEW (callback_data);
-
-	if (event->window == gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget)) &&
-	    event->button == 1 &&
-	    click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE) {
-		/* Handle single click activation preference. */
-		file_list = fm_list_view_get_selection (view);
-		fm_directory_view_activate_files (view, file_list);
-		nautilus_file_list_free (file_list);
+	/* Instead of doing this, this list view should probably be a
+	 * derived widget.  I'm doing this quick hack because I'm hoping
+	 * that gtktreeview will have the input modes thing in 2.4, 
+	 * getting rid of this altogether.
+	 * If we still need this in 2.4, we should rewrite this widget
+	 * as a derived class. */
+	if (call_parent) {
+		tree_view_class->button_press_event (widget, event);
 	}
 
-	if (event->window == gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget))
-	    && (event->button == 3)) {
-		/* Put up the right kind of menu if we right click in the tree view. */
+	if (event->button == 3) {
 		if (tree_view_has_selection (GTK_TREE_VIEW (widget))) {
 			fm_directory_view_pop_up_selection_context_menu (FM_DIRECTORY_VIEW (view), (GdkEventButton *) event);
 		} else {
 			fm_directory_view_pop_up_background_context_menu (FM_DIRECTORY_VIEW (view), (GdkEventButton *) event);
 		}
+	} else if (event->button == 1
+		   && ((event->type == GDK_BUTTON_PRESS 
+			&& click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE)
+		       || (event->type == GDK_2BUTTON_PRESS 
+			   && click_policy_auto_value == NAUTILUS_CLICK_POLICY_DOUBLE))) {   
+		file_list = fm_list_view_get_selection (FM_DIRECTORY_VIEW (view));
+		fm_directory_view_activate_files (FM_DIRECTORY_VIEW (view),
+						  file_list);
+		nautilus_file_list_free (file_list);
 	}
-
-	return FALSE;
+	
+	/* We chained to the default handler in this method, so never
+	 * let the default handler run */ 
+	return TRUE;
 }
 
 static gboolean
@@ -390,12 +376,8 @@ create_and_set_up_tree_view (FMListView *view)
 				 "changed",
 				 G_CALLBACK (list_selection_changed_callback), view, 0);
 
-	g_signal_connect_object (view->details->tree_view, "event-after",
-				 G_CALLBACK (event_after_callback), view, 0);
 	g_signal_connect_object (view->details->tree_view, "button_press_event",
 				 G_CALLBACK (button_press_callback), view, 0);
-	g_signal_connect_object (view->details->tree_view, "button_release_event",
-				 G_CALLBACK (button_release_callback), view, 0);
 	g_signal_connect_object (view->details->tree_view, "key_press_event",
 				 G_CALLBACK (key_press_callback), view, 0);
 	
