@@ -1,3 +1,16 @@
+2000-12-13  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar-title.c:
+	(nautilus_sidebar_title_background_is_default),
+	(nautilus_sidebar_title_select_text_color):
+	gave Arlo the ability to control the sidebar text color for his new
+	sidebar by specifying the colors in the theme file.
+	* icons/eazel/eazel.xml:
+	specified the sidebar title text colors for the eazel theme
+	
+	* src/nautilus-theme-selector.c: (make_theme_description):
+	fixed memory leak.
+	
 2000-12-13  Josh Barrow  <josh@eazel.com>
 
 	* icons/eazel/eazel.xml:

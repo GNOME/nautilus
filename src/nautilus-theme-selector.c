@@ -667,6 +667,7 @@ make_theme_description (const char *theme_name, const char *theme_path_uri)
 			if (description_node != NULL) {
 				temp_str = xmlGetProp (description_node, "TEXT");
 				description_result = g_strdup (temp_str);
+				xmlFree (temp_str);
 			}
 			
 			xmlFreeDoc (theme_document);

@@ -279,6 +279,27 @@ nautilus_sidebar_title_background (NautilusSidebarTitle *sidebar_title)
 	}
 }
 
+/* utility to determine if the sidebar is using the default theme */
+static gboolean
+nautilus_sidebar_title_background_is_default (NautilusSidebarTitle *sidebar_title)
+{
+	char *background_color, *background_image;
+	gboolean is_default;
+	
+	background_color = nautilus_file_get_metadata (sidebar_title->details->file,
+						       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
+						       NULL);
+	background_image = nautilus_file_get_metadata (sidebar_title->details->file,
+						       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
+						       NULL);
+	
+	is_default = background_color == NULL && background_image == NULL;
+	g_free (background_color);
+	g_free (background_image);
+	
+	return is_default;
+}
+
 /* utility that returns true if the title is over a dark background.  We do this by finding the
    sidebar and asking its background */
 void
@@ -289,20 +310,42 @@ nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
 	char *sidebar_info_title_color;
 	char *sidebar_title_shadow_color;
 	
+	/* if the background is set to the default, the theme can explicitly define the title colors.  Check if
+	 * the background has been customized and if the theme specified any colors
+	 */
+	sidebar_title_color = NULL;
+	sidebar_info_title_color = NULL;
+	sidebar_title_shadow_color = NULL;
+	
 	background = nautilus_sidebar_title_background (sidebar_title);
 	if (background != NULL) {
-		/* FIXME bugzilla.eazel.com 2496: for now, both the title and info colors are the same */
-		if (nautilus_background_is_dark (background)) {
-			sidebar_title_color = g_strdup("rgb:FFFF/FFFF/FFFF");
-			sidebar_info_title_color = g_strdup("rgb:FFFF/FFFF/FFFF");
-			sidebar_title_shadow_color = g_strdup("rgb:0000/0000/0000");
-		
-		} else {
-			sidebar_title_color = g_strdup("rgb:0000/0000/0000");
-			sidebar_info_title_color = g_strdup("rgb:0000/0000/0000");
-			sidebar_title_shadow_color = g_strdup("rgb:FFFF/FFFF/FFFF");
+		if (nautilus_sidebar_title_background_is_default (sidebar_title)) {
+			sidebar_title_color = nautilus_theme_get_theme_data ("sidebar", "TITLE_COLOR");
+			sidebar_info_title_color = nautilus_theme_get_theme_data ("sidebar", "TITLE_INFO_COLOR");
+			sidebar_title_shadow_color = nautilus_theme_get_theme_data ("sidebar", "TITLE_SHADOW_COLOR"); 
 		}
-
+		
+		if (sidebar_title_color == NULL) {
+			/* FIXME bugzilla.eazel.com 2496: for now, both the title and info colors are the same */
+			if (nautilus_background_is_dark (background)) {
+				sidebar_title_color = g_strdup("rgb:FFFF/FFFF/FFFF");
+				sidebar_info_title_color = g_strdup("rgb:FFFF/FFFF/FFFF");
+				sidebar_title_shadow_color = g_strdup("rgb:0000/0000/0000");
+		
+			} else {
+				sidebar_title_color = g_strdup("rgb:0000/0000/0000");
+				sidebar_info_title_color = g_strdup("rgb:0000/0000/0000");
+				sidebar_title_shadow_color = g_strdup("rgb:FFFF/FFFF/FFFF");
+			}
+		} else {
+			if (sidebar_info_title_color == NULL) {
+				sidebar_info_title_color = g_strdup (sidebar_title_color);
+			}
+			if (sidebar_title_shadow_color == NULL) {
+				sidebar_title_shadow_color = g_strdup("rgb:FFFF/FFFF/FFFF");
+			}
+		}
+		
 		if (sidebar_title->details->smooth_graphics) {
 			nautilus_label_set_text_color (NAUTILUS_LABEL (sidebar_title->details->smooth_title_label),
 						       nautilus_parse_rgb_with_white_default (sidebar_title_color));
