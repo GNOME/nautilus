@@ -96,15 +96,15 @@ bonobo_subdoc_load_location (NautilusViewFrame *view,
     }
   else if (persist)
     {
-      /* FIXME: Free it. */
+      /* FIXME bugzilla.eazel.com 2579: Free it. */
     }
 
 
-  /* FIXME: Need to implement ProgressiveDataSink. */
+  /* FIXME bugzilla.eazel.com 2576: Need to implement ProgressiveDataSink. */
 
   persist_file = bonobo_object_client_query_interface(view->client_object, "IDL:Bonobo/PersistFile:1.0", NULL);
 
-  /* FIXME:
+  /* FIXME bugzilla.eazel.com 2577:
 
      The OAF query may return a component that supports PersistFile
      even it it's not a file:/// URI.
@@ -120,7 +120,7 @@ bonobo_subdoc_load_location (NautilusViewFrame *view,
 
       Bonobo_PersistFile_load(persist_file, local_path, ev);
 
-      /* FIXME: Find out whether the loading was successful. */
+      /* FIXME bugzilla.eazel.com 2578: Find out whether the loading was successful. */
 
       Bonobo_Unknown_unref(persist_file, ev);
       CORBA_Object_release(persist_file, ev);
@@ -140,7 +140,7 @@ bonobo_subdoc_load_location (NautilusViewFrame *view,
             }
           else
             {
-              /* FIXME: Free it. */
+              /* FIXME bugzilla.eazel.com 2579: Free it. */
             }
         }
 

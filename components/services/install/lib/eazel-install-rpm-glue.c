@@ -1326,7 +1326,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 	if (existing_packages) {
 		/* Get the existing package, set it's modify flag and add it */
 		GList *iterator;
-		/* FIXME: bugzilla.eazel.com: 2345
+		/* FIXME bugzilla.eazel.com 2345:
 		   Check the packages root */
 		for (iterator = existing_packages; iterator; iterator = iterator->next) {
 			int res;
@@ -1420,7 +1420,7 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 								 (gpointer)conflict.needsName,
 								 (GCompareFunc)eazel_install_package_name_compare);
 				if (pack_entry==NULL) {
-					/* FIXME: bugzilla.eazel.com
+					/* FIXME bugzilla.eazel.com 2583:
 					   Argh, if a lib*.so breaks a package,
 					   we end up here */
 					continue;
@@ -1510,7 +1510,7 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 			   might fail, and then we have to fail the package */
 			GList *extralist;
 
-			/* FIXME bugzilla.eazel.com:
+			/* FIXME bugzilla.eazel.com 2584:
 			   Need to check that the downloaded package is of sufficiently high version
 			*/
 

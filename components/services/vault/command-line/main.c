@@ -27,7 +27,7 @@
 #include <string.h>
 #include "vault-operations.h"
 
-#define _(X) X // eek! FIXME
+#define _(X) X // eek! FIXME bugzilla.eazel.com 2591
 
 gchar *vault_location;
 gboolean debug = FALSE;

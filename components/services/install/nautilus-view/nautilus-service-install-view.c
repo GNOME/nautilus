@@ -485,7 +485,7 @@ current_progress_bar_complete (NautilusServiceInstallView *view)
 
 	right = (GtkWidget *) g_list_nth_data (view->details->message_right, STATUS_ROWS-1);
 	view->details->message_right = g_list_remove (view->details->message_right, right);
-	/* FIXME -- this is an awful way to do it!  isn't there a better way? */
+	/* FIXME bugzilla.eazel.com 2585: this is an awful way to do it!  isn't there a better way? */
 	width = right->allocation.width;
 	height = right->allocation.height;
 	gtk_container_remove (GTK_CONTAINER (view->details->message_box), right);
@@ -511,7 +511,7 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 	const char *root_name, *tmp;
 
 	/* the "name" is annoyingly the entire path */
-	/* FIXME: this will change. */
+	/* FIXME bugzilla.eazel.com 2586: this will change. */
 	root_name = name;
 	while ((tmp = strchr (root_name, '/')) != NULL) {
 		root_name = tmp+1;
@@ -678,7 +678,7 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 	}
 }
 
-/* FIXME -- need to show whole dep tree here */
+/* FIXME bugzilla.eazel.com 2587:  need to show whole dep tree here */
 static void
 nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *pack, NautilusServiceInstallView *view)
 {

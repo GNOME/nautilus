@@ -42,7 +42,7 @@ typedef enum {
   NEW_CONTENT_VIEW_ACTIVATED,
 } NautilusWindowStateItem;
 
-/* FIXME: Need to migrate window fields into here. */
+/* FIXME bugzilla.eazel.com 2575: Need to migrate window fields into here. */
 struct NautilusWindowDetails
 {
 	guint refresh_dynamic_bookmarks_idle_id;

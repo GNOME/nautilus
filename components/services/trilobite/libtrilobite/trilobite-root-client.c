@@ -242,7 +242,7 @@ trilobite_root_client_initialize (TrilobiteRootClient *object)
 
 	corba_trilobite = trilobite_root_client_create_corba_object (BONOBO_OBJECT (object));
 	if (trilobite_root_client_construct (object, corba_trilobite) == FALSE) {
-		/* FIXME: no good way to bail out now */
+		/* FIXME bugzilla.eazel.com 2590: no good way to bail out now */
 		corba_trilobite = CORBA_OBJECT_NIL;
 	}
 

@@ -94,7 +94,7 @@ trilobite_pexec (const char *path, char * const argv[], int *stdin_fd, int *stdo
 			close(i);
 		}
 
-		/* FIXME: might we want to specify our own environment here? */
+		/* FIXME bugzilla.eazel.com 2589: might we want to specify our own environment here? */
 		execv (path, argv);
 
 		/* if we get here, then somehow, exec failed */
@@ -177,7 +177,8 @@ trilobite_close_log (void)
 
 
 /* trilobite_init -- does all the init stuff 
- * for now, this requires init_gnome, and thus a running X server: FIXME robey (1656)
+ * FIXME bugzilla.eazel.com 1656:
+ * for now, this requires init_gnome, and thus a running X server.
  * initializes OAF and bonobo, too.
  *
  * service_name should be your G_LOG_DOMAIN, if you set one, because of the way logging works

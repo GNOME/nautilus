@@ -1,5 +1,34 @@
 2000-08-29  John Sullivan  <sullivan@eazel.com>
 
+	Added more bug numbers to FIXMEs. All Nautilus FIXMEs currently
+	have bug numbers. Huzzah! (Too bad the same can't be said for
+	gnome-vfs, oaf, medusa, ...)
+
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_initialize):
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_check_existing_packages),
+	(eazel_install_fetch_rpm_dependencies):
+	* components/services/install/lib/eazel-install-types.c:
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (current_progress_bar_complete),
+	(nautilus_service_install_downloading):
+	* components/services/time/nautilus-view/trilobite-eazel-time-view.
+	c:
+	* components/services/trilobite/libtrilobite/helixcode-utils.c:
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_pexec):
+	* components/services/trilobite/libtrilobite/trilobite-root-client.
+	c: (trilobite_root_client_initialize):
+	* components/services/vault/command-line/main.c:
+	* src/nautilus-view-frame-bonobo-control.c:
+	(nautilus_view_frame_activate_uri):
+	* src/nautilus-view-frame-bonobo-embeddable.c:
+	(bonobo_subdoc_load_location):
+	* src/nautilus-window-private.h:
+
+2000-08-29  John Sullivan  <sullivan@eazel.com>
+
 	Added more bug numbers to FIXMEs. 21 to go.	
 
 	* cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-stand

@@ -139,7 +139,7 @@ packagedata_new_from_rpm_header (Header *hd)
 	return pack;
 };
 
-/* FIXME: bugzilla.eazel.com:2351
+/* FIXME bugzilla.eazel.com 2351:
    check possible leaks from using headerGetEntry */
 void 
 packagedata_fill_from_rpm_header (PackageData *pack, 

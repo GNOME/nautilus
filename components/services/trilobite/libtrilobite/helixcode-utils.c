@@ -30,7 +30,7 @@
 #include <config.h>
 #include "helixcode-utils.h"
 
-/* FIXME: bugzilla.eazel.com 2448
+/* FIXME bugzilla.eazel.com 2448:
    Change this into a const char * function, and modify all uses of
    it to g_strdup / peek */
 

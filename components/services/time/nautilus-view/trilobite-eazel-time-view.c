@@ -49,7 +49,7 @@
  *
  */
 
-/* FIXME: no way to save the url once you change it */
+/* FIXME bugzilla.eazel.com 2588: no way to save the url once you change it */
 #define DEFAULT_SERVER_URL	"http://testmachine.eazel.com:8888/examples/time/current"
 #define DEFAULT_TIME_DIFF	"180"
 

@@ -45,7 +45,7 @@ destroy_bonobo_control_view(NautilusViewFrame *view, CORBA_Environment *ev)
 static void
 nautilus_view_frame_activate_uri(BonoboControlFrame *frame, const char *uri, gboolean relative, NautilusViewFrame *view)
 {
-  /* FIXME: Can we ship with this assert?
+  /* FIXME bugzilla.eazel.com 2580: Can we ship with this assert?
    * Why is this not going to happen?
    */
   g_assert(!relative);

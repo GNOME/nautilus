@@ -492,7 +492,7 @@ eazel_install_initialize (EazelInstall *service) {
 		GList *list = NULL;
 		char *tmp;
 
-		/* FIXME: bugzilla.eazel.com
+		/* FIXME bugzilla.eazel.com 2581:
 		   RPM specific code */
 		tmp = g_strdup_printf ("%s/.nautilus/rpmdb/", g_get_home_dir ());		
 		if (g_file_test (tmp, G_FILE_TEST_ISDIR)==0) {			
