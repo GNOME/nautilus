@@ -93,11 +93,14 @@ static void notify_location_change_cb 		(NautilusViewFrame *view_frame,
 						 Nautilus_NavigationInfo *nav_context, 
 						 FMDirectoryView *directory_view);
 static void fm_directory_view_repopulate        (FMDirectoryView *view);
+static void zoom_in_cb                          (GtkMenuItem *item, FMDirectoryView *directory_view);
+static void zoom_out_cb                         (GtkMenuItem *item, FMDirectoryView *directory_view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_entry)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, bump_zoom_level)
 
 static void
 fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
@@ -147,6 +150,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, add_entry);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, clear);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selection);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, bump_zoom_level);
 }
 
 static void
@@ -358,6 +362,19 @@ stop_load (FMDirectoryView *view, gboolean error)
 
 
 
+/* handle the zoom in/out menu items */
+
+static void
+zoom_in_cb(GtkMenuItem *item, FMDirectoryView *directory_view)
+{
+    fm_directory_view_bump_zoom_level (directory_view, 1);
+}
+
+static void
+zoom_out_cb(GtkMenuItem *item, FMDirectoryView *directory_view)
+{
+    fm_directory_view_bump_zoom_level (directory_view, -1);
+}
 
 /**
  * fm_directory_view_repopulate:
@@ -587,6 +604,20 @@ fm_directory_view_begin_loading (FMDirectoryView *view)
 }
 
 /**
+ * fm_directory_view_bump_zoom_level:
+ *
+ * bump the current zoom level by invoking the relevant subclass through the slot
+ * 
+ **/
+void
+fm_directory_view_bump_zoom_level (FMDirectoryView *view, gint zoom_increment)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->bump_zoom_level) (view, zoom_increment);
+}
+
+/**
  * fm_directory_view_get_selection:
  *
  * Get a list of NautilusFile pointers that represents the
@@ -700,13 +731,17 @@ create_background_context_menu (FMDirectoryView *view)
 	gtk_menu_append (menu, menu_item);
 
 	menu_item = gtk_menu_item_new_with_label ("Zoom in");
-	gtk_widget_set_sensitive (menu_item, FALSE);
+	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
+		           GTK_SIGNAL_FUNC (zoom_in_cb), view);
+
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
 	menu_item = gtk_menu_item_new_with_label ("Zoom out");
-	gtk_widget_set_sensitive (menu_item, FALSE);
-	gtk_widget_show (menu_item);
+	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
+		           GTK_SIGNAL_FUNC (zoom_out_cb), view);
+	
+        gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
 	gtk_object_ref(GTK_OBJECT(menu));

@@ -1,3 +1,21 @@
+2000-01-27  Andy Hertzfeld <andy@eazel.com>
+
+        hooked zooming up to the background context menu; right now the canvas item
+        doesn't work at different zoom levels properly, which we'll fix soon.
+        
+        * libnautilus/fm-directory-view.c,h:
+        enable zoom in and zoom out items and hooked them up to callback
+        added a bump_zoom_level slot, to be overriden by subclasses, which the zoom callback use
+        
+        * libnautilus/fm-directory-view-icons.c:
+        added method for bump_zoom_index that calls the icon container to do the work
+        
+        * libnautilus/gnome-icon-container-private.h:
+        added a private instance variable for zoom level
+        
+        * libnautilus/gnome-icon-container.c,.h:
+        added methods for get_zoom_level and set_zoom_level
+        
 2000-01-27  Darin Adler  <darin@eazel.com>
 
 	* libnautilus/gnome-icon-container.c:

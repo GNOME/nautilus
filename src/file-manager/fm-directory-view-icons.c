@@ -61,6 +61,8 @@ static void fm_directory_view_icons_background_changed_cb (NautilusBackground *b
 							   FMDirectoryViewIcons *icon_view);
 static void fm_directory_view_icons_begin_loading
 				          	 (FMDirectoryView *view);
+static void fm_directory_view_icons_bump_zoom_level
+				          	 (FMDirectoryView *view, gint zoom_increment);
 static void fm_directory_view_icons_clear 	 (FMDirectoryView *view);
 static void fm_directory_view_icons_destroy      (GtkObject *view);
 static void fm_directory_view_icons_done_adding_entries 
@@ -114,14 +116,17 @@ fm_directory_view_icons_initialize_class (FMDirectoryViewIconsClass *klass)
 		= fm_directory_view_icons_begin_loading;
 	fm_directory_view_class->get_selection 
 		= fm_directory_view_icons_get_selection;	
+	fm_directory_view_class->bump_zoom_level 
+		= fm_directory_view_icons_bump_zoom_level;	
+
 }
 
 static void
 fm_directory_view_icons_initialize (FMDirectoryViewIcons *icon_view)
 {
 	GnomeIconContainer *icon_container;
-
-	g_return_if_fail (GTK_BIN (icon_view)->child == NULL);
+        
+        g_return_if_fail (GTK_BIN (icon_view)->child == NULL);
 
 	icon_view->details = g_new0 (FMDirectoryViewIconsDetails, 1);
 
@@ -288,6 +293,15 @@ fm_directory_view_icons_done_adding_entries (FMDirectoryView *view)
 static void
 fm_directory_view_icons_begin_loading (FMDirectoryView *view)
 {
+}
+
+static void
+fm_directory_view_icons_bump_zoom_level (FMDirectoryView *view, gint zoom_increment)
+{
+  GnomeIconContainer *icon_container = get_icon_container(FM_DIRECTORY_VIEW_ICONS (view));
+  gint current_zoom_level = gnome_icon_container_get_zoom_level(icon_container);
+  
+  gnome_icon_container_set_zoom_level(icon_container, current_zoom_level + zoom_increment);
 }
 
 static GList *

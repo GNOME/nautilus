@@ -99,6 +99,10 @@ struct _FMDirectoryViewClass {
 	 */
 	NautilusFileList *
 		(* get_selection) 	 (FMDirectoryView *view);
+
+        /* bump_zoom_level is a function pointer that subclasses override to
+         * change the zoom level of an object */
+       void     (* bump_zoom_level)   (FMDirectoryView *view, gint zoom_increment);
 };
 
 
@@ -129,13 +133,13 @@ void                      fm_directory_view_begin_adding_entries     (FMDirector
 void                      fm_directory_view_add_entry                (FMDirectoryView         *view,
 								      NautilusFile            *file);
 void                      fm_directory_view_done_adding_entries      (FMDirectoryView         *view);
-void                      fm_directory_view_begin_loading            (FMDirectoryView         *view);
-				       			 
+void                      fm_directory_view_begin_loading            (FMDirectoryView         *view);				       			 
 /* Hooks for subclasses to call. These are normally called only by 
  * FMDirectoryView and its subclasses 
  */
 void                      fm_directory_view_activate_entry           (FMDirectoryView         *view,
 								      NautilusFile            *file);
+void                      fm_directory_view_bump_zoom_level          (FMDirectoryView         *view, gint zoom_increment);
 void                      fm_directory_view_notify_selection_changed (FMDirectoryView         *view);
 NautilusDirectory *       fm_directory_view_get_model                (FMDirectoryView         *view);
 void                      fm_directory_view_popup_background_context_menu  (FMDirectoryView *view);

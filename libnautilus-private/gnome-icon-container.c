@@ -134,6 +134,7 @@ icon_new_pixbuf (GnomeIconContainer *container,
 	image = nautilus_icons_controller_get_icon_image (details->controller, data);
 	name = nautilus_icons_controller_get_icon_name (details->controller, data);
 	
+        
         new->item = gnome_canvas_item_new
 			(GNOME_CANVAS_GROUP (canvas->root),
 			nautilus_icons_view_icon_item_get_type (),
@@ -142,6 +143,7 @@ icon_new_pixbuf (GnomeIconContainer *container,
 			"x", (gdouble) 0,
 			"y", (gdouble) 0,	 
                         NULL);
+                        
 	g_free (name);
         
 	return new;
@@ -1642,7 +1644,8 @@ destroy (GtkObject *object)
 	icon_grid_destroy (container->details->grid);
 	g_hash_table_destroy (container->details->canvas_item_to_icon);
 	unschedule_kbd_icon_visibility (container);
-	if (container->details->idle_id != 0)
+	
+        if (container->details->idle_id != 0)
 		gtk_idle_remove (container->details->idle_id);
 	if (container->details->linger_selection_mode_timer_tag != -1)
 		gtk_timeout_remove (container->details->linger_selection_mode_timer_tag);
@@ -2029,6 +2032,7 @@ gnome_icon_container_initialize (GnomeIconContainer *container)
 	details->kbd_icon_visibility_timer_tag = -1;
 	details->linger_selection_mode_timer_tag = -1;
         
+        details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
         /* FIXME: soon we'll need fonts at multiple sizes */
         details->label_font = gdk_font_load("-bitstream-charter-medium-r-normal-*-12-*-*-*-*-*-*-*"); 	
 
@@ -2334,6 +2338,32 @@ gnome_icon_container_add_auto (GnomeIconContainer *container,
 	setup_icon_in_container (container, new_icon);
 
 	add_idle (container);
+}
+
+/* zooming */
+gint
+gnome_icon_container_get_zoom_level(GnomeIconContainer *container)
+{
+        return container->details->zoom_level;
+}
+
+void
+gnome_icon_container_set_zoom_level(GnomeIconContainer *container, gint new_level)
+{
+        gint pinned_level = new_level;
+	double zoom_levels[7] = { 0.25, 0.50, 0.75, 1.0, 1.5, 2.0, 4.0 };
+
+        if (pinned_level < NAUTILUS_ZOOM_LEVEL_SMALLEST)
+            pinned_level = NAUTILUS_ZOOM_LEVEL_SMALLEST;
+        else if (pinned_level > NAUTILUS_ZOOM_LEVEL_LARGEST)
+            pinned_level = NAUTILUS_ZOOM_LEVEL_LARGEST;
+ 
+        if (pinned_level != container->details->zoom_level)
+          {
+            container->details->zoom_level = pinned_level;
+	    gnome_canvas_set_pixels_per_unit(GNOME_CANVAS(container), zoom_levels[pinned_level]);
+
+          }       
 }
 
 

@@ -161,9 +161,25 @@ struct _GnomeIconContainerDetails {
 	/* DnD info.  */
 	GnomeIconContainerDndInfo *dnd_info;
 
+        /* zoom level */
+        gint zoom_level;
+        
         /* default font used to draw labels */
         GdkFont *label_font;
 };
+
+/* Names for Nautilus's different zoom levels, from tiniest items to largest items */
+/* FIXME:  These are also defined in fm-icon-cache.h and shouldn't be in both places */
+
+typedef enum {
+	NAUTILUS_ZOOM_LEVEL_SMALLEST,
+	NAUTILUS_ZOOM_LEVEL_SMALLER,
+	NAUTILUS_ZOOM_LEVEL_SMALL,
+	NAUTILUS_ZOOM_LEVEL_STANDARD,
+	NAUTILUS_ZOOM_LEVEL_LARGE,
+	NAUTILUS_ZOOM_LEVEL_LARGER,
+	NAUTILUS_ZOOM_LEVEL_LARGEST
+} NautilusZoomLevel;
 
 /* Layout and icon size constants.
    These will change based on the zoom level eventually, so they

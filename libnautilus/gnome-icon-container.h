@@ -85,6 +85,9 @@ void       gnome_icon_container_line_up                 (GnomeIconContainer     
 
 GList *    gnome_icon_container_get_selection           (GnomeIconContainer      *view);
 
+gint       gnome_icon_container_get_zoom_level          (GnomeIconContainer      *view);
+void       gnome_icon_container_set_zoom_level          (GnomeIconContainer      *view, gint new_zoom_level);
+
 void       gnome_icon_container_unselect_all            (GnomeIconContainer      *view);
 void       gnome_icon_container_select_all              (GnomeIconContainer      *view);
 
