@@ -1,3 +1,10 @@
+2001-01-04  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/file-manager/fm-icon-view.c: (should_preview_sound):
+	fixed bug 5108, remote sounds get preview image, but don't actually
+	preview.  Fixed by making can_preview_sound return FALSE for
+	non-local sounds.
+	
 2001-01-04  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: Rebecca Schulman  <rebecka@eazel.com>

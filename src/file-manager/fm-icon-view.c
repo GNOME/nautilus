@@ -1383,9 +1383,13 @@ should_preview_sound (NautilusFile *file) {
 	if (preview_mode == NAUTILUS_SPEED_TRADEOFF_NEVER) {
 		return FALSE;
 	}
+	/* the followinf is disabled until we can preview remote sounds, which we currently can't do */
+	/*
 	if (preview_mode == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
 		return TRUE;
 	}
+	*/
+	
 	return nautilus_file_is_local (file);
 }
 
