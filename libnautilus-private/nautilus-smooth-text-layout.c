@@ -642,11 +642,7 @@ nautilus_smooth_text_layout_draw_to_pixbuf (const NautilusSmoothTextLayout *smoo
 	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (destination_pixbuf));
 	g_return_if_fail (destination_area != NULL);
 	g_return_if_fail (justification >= GTK_JUSTIFY_LEFT && justification <= GTK_JUSTIFY_FILL);
-
-	/* Make sure there is some work to do */
-	if (art_irect_empty (destination_area)) {
-		return;
-	}
+	g_return_if_fail (!art_irect_empty (destination_area));
 
 	smooth_text_layout_ensure_lines (smooth_text_layout);
 	
@@ -683,6 +679,101 @@ nautilus_smooth_text_layout_draw_to_pixbuf (const NautilusSmoothTextLayout *smoo
 	/* Use a sub area pixbuf for simplicity */
 	sub_pixbuf = nautilus_gdk_pixbuf_new_from_pixbuf_sub_area (destination_pixbuf, &target);
 
+	smooth_text_layout_line_list_draw_to_pixbuf (smooth_text_layout->details->text_line_list,
+						     sub_pixbuf,
+						     -source_x,
+						     -source_y,
+						     justification,
+						     underlined,
+						     smooth_text_layout_get_empty_line_height (smooth_text_layout),
+						     smooth_text_layout_get_max_line_width (smooth_text_layout),
+						     smooth_text_layout->details->line_spacing,
+						     color,
+						     opacity);
+
+	gdk_pixbuf_unref (sub_pixbuf);
+}
+
+void
+nautilus_smooth_text_layout_draw_to_pixbuf_shadow (const NautilusSmoothTextLayout *smooth_text_layout,
+						   GdkPixbuf *destination_pixbuf,
+						   int source_x,
+						   int source_y,
+						   const ArtIRect *destination_area,
+						   int shadow_offset,
+						   GtkJustification justification,
+						   gboolean underlined,
+						   guint32 color,
+						   guint32 shadow_color,
+						   int opacity)
+{
+	NautilusDimensions dimensions;
+	ArtIRect target;
+	ArtIRect source;
+	int target_width;
+	int target_height;
+	int source_width;
+	int source_height;
+	GdkPixbuf *sub_pixbuf;
+
+	g_return_if_fail (NAUTILUS_IS_SMOOTH_TEXT_LAYOUT (smooth_text_layout));
+	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (destination_pixbuf));
+	g_return_if_fail (destination_area != NULL);
+	g_return_if_fail (shadow_offset > 0);
+	g_return_if_fail (justification >= GTK_JUSTIFY_LEFT && justification <= GTK_JUSTIFY_FILL);
+	g_return_if_fail (!art_irect_empty (destination_area));
+
+	smooth_text_layout_ensure_lines (smooth_text_layout);
+	
+	dimensions = nautilus_smooth_text_layout_get_dimensions (smooth_text_layout);
+	dimensions.width += shadow_offset;
+	dimensions.height += shadow_offset;
+
+	g_return_if_fail (source_x >= 0);
+	g_return_if_fail (source_y >= 0);
+	g_return_if_fail (source_x < dimensions.width);
+	g_return_if_fail (source_y < dimensions.height);
+
+	/* Clip the destination area to the pixbuf dimensions; bail if no work */
+	target = nautilus_gdk_pixbuf_intersect (destination_pixbuf, 0, 0, destination_area);
+	if (art_irect_empty (&target)) {
+ 		return;
+ 	}
+
+	/* Assign the source area */
+	nautilus_art_irect_assign (&source,
+				   source_x,
+				   source_y,
+				   dimensions.width - source_x,
+				   dimensions.height - source_y);
+
+	/* Adjust the target width if the source area is smaller than the
+	 * source pixbuf dimensions */
+	target_width = target.x1 - target.x0;
+	target_height = target.y1 - target.y0;
+	source_width = source.x1 - source.x0;
+	source_height = source.y1 - source.y0;
+
+	target.x1 = target.x0 + MIN (target_width, source_width);
+	target.y1 = target.y0 + MIN (target_height, source_height);
+
+	/* Use a sub area pixbuf for simplicity */
+	sub_pixbuf = nautilus_gdk_pixbuf_new_from_pixbuf_sub_area (destination_pixbuf, &target);
+
+	/* Draw the shadow text */
+	smooth_text_layout_line_list_draw_to_pixbuf (smooth_text_layout->details->text_line_list,
+						     sub_pixbuf,
+						     -source_x + shadow_offset,
+						     -source_y + shadow_offset,
+						     justification,
+						     underlined,
+						     smooth_text_layout_get_empty_line_height (smooth_text_layout),
+						     smooth_text_layout_get_max_line_width (smooth_text_layout),
+						     smooth_text_layout->details->line_spacing,
+						     shadow_color,
+						     opacity);
+
+	/* Draw the text */
 	smooth_text_layout_line_list_draw_to_pixbuf (smooth_text_layout->details->text_line_list,
 						     sub_pixbuf,
 						     -source_x,

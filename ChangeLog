@@ -1,3 +1,44 @@
+2001-02-27  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	Fix bug 7001 - CRITICAL received when dragging icons to sidebar
+	icon.  The problem was that the NautilusLabel text with a drop
+	shadow offset (such that 2 labels draw) was being clipped as one
+	single text layout.  So, some parts of the code assumed that the
+	whole content area (the union of the 2 text layouts) was available
+	for drawing and thus bad dimenstions were fed to the smooth text
+	layout drawing functsions.
+
+	* libnautilus-extensions/nautilus-smooth-text-layout.h:
+	* libnautilus-extensions/nautilus-smooth-text-layout.c:
+	(nautilus_smooth_text_layout_draw_to_pixbuf),
+	(nautilus_smooth_text_layout_draw_to_pixbuf_shadow): New function
+	to draw the layout text with a shadow.
+	
+	* libnautilus-extensions/nautilus-label.c:
+	(nautilus_label_size_request), (label_paint_pixbuf_callback): Pass
+	in the dirty area instead of the event.  Do this to make it clear
+	that the only thing we care about in this function is the dirty
+	area and no other event attributes.
+	change that I happened to make while fixing the bug.
+	(label_composite_text_callback)
+	(label_composite_text_and_shadow_callback): Factor out the code to
+	draw text and "text and shadow" into 2 callbacks.  
+	(label_composite_text_callback_cached): Factor out the code to
+	draw the cached label (for the solid background case)
+	(label_paint) (paint_label_smooth): Split up the expose event code
+	into 2 pieces to make it easier to grok.
+	(nautilus_label_expose_event): Split out the code from here into
+	two functions.
+	(label_get_text_dimensions): Return only the text dimensions
+	without the drop shadow text offset.  (label_get_text_bounds):
+	Return the bounds only for the text.
+	(label_get_content_dimensions):  New function to get the full
+	content dimension.  (label_get_content_bounds): New function to
+	get the content bounds; the content bounds is the union of the
+	text and drop shadow text bounds.
+
 2001-02-27  Dan Mueth  <dan@eazel.com>
 
 	reviewed by: Ramiro Estrugo  <ramiro@eazel.com>

@@ -95,6 +95,17 @@ void                              nautilus_smooth_text_layout_draw_to_pixbuf    
 											 gboolean                        underlined,
 											 guint32                         color,
 											 int                             opacity);
+void                              nautilus_smooth_text_layout_draw_to_pixbuf_shadow     (const NautilusSmoothTextLayout *smooth_text_layout,
+											 GdkPixbuf                      *destination_pixbuf,
+											 int                             source_x,
+											 int                             source_y,
+											 const ArtIRect                 *destination_area,
+											 int                             shadow_offset,
+											 GtkJustification                justification,
+											 gboolean                        underlined,
+											 guint32                         color,
+											 guint32                         shadow_color,
+											 int                             opacity);
 
 END_GNOME_DECLS
 

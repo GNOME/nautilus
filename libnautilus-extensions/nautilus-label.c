@@ -160,6 +160,8 @@ static gboolean           label_can_cache_contents            (const NautilusLab
 static gboolean           label_is_smooth                     (const NautilusLabel *label);
 static void               label_smooth_text_ensure            (const NautilusLabel *label);
 static void               label_smooth_text_clear             (NautilusLabel       *label);
+static NautilusDimensions label_get_content_dimensions        (const NautilusLabel *label);
+static ArtIRect           label_get_content_bounds            (const NautilusLabel *label);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusLabel, nautilus_label, GTK_TYPE_LABEL)
 
@@ -531,7 +533,7 @@ nautilus_label_size_request (GtkWidget *widget,
 {
 	NautilusLabel *label;
 
-	NautilusDimensions text_dimensions;
+	NautilusDimensions content_dimensions;
 	NautilusDimensions tile_dimensions;
 	NautilusDimensions preferred_dimensions;
 	
@@ -545,11 +547,11 @@ nautilus_label_size_request (GtkWidget *widget,
 		return;
 	}
 	
-	text_dimensions = label_get_text_dimensions (label);
+	content_dimensions = label_get_content_dimensions (label);
 	tile_dimensions = label_get_tile_dimensions (label);
 
 	preferred_dimensions = nautilus_smooth_widget_get_preferred_dimensions (widget,
-										&text_dimensions,
+										&content_dimensions,
 										&tile_dimensions,
 										label->details->tile_width,
 										label->details->tile_height);
@@ -593,7 +595,8 @@ label_paint_pixbuf_callback (GtkWidget *widget,
 			     gpointer callback_data)
 {
 	NautilusLabel *label;
-	GdkEventExpose *event;
+	const ArtIRect *screen_dirty_area;
+	GdkEventExpose event;
 
 	g_return_if_fail (NAUTILUS_IS_LABEL (widget));
 	g_return_if_fail (GTK_WIDGET_REALIZED (widget));
@@ -603,75 +606,64 @@ label_paint_pixbuf_callback (GtkWidget *widget,
 
 	label = NAUTILUS_LABEL (widget);
 
-	event = (GdkEventExpose *) callback_data;
+	screen_dirty_area = callback_data;
 
-	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, expose_event, (widget, event));
+	event.type = GDK_EXPOSE;
+	event.send_event = TRUE;
+	event.window = widget->window;
+	event.area = nautilus_art_irect_to_gdk_rectangle (screen_dirty_area);
+	event.count = 0;
+
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, expose_event, (widget, &event));
 }
 
 /* Compositing callback for smooth case */
 static void
-label_composite_pixbuf_callback (GtkWidget *widget,
-				 GdkPixbuf *destination_pixbuf,
-				 int source_x,
-				 int source_y,
-				 const ArtIRect *area,
-				 int opacity,
-				 gpointer callback_data)
+label_composite_text_callback_cached (GtkWidget *widget,
+				      GdkPixbuf *destination_pixbuf,
+				      int source_x,
+				      int source_y,
+				      const ArtIRect *area,
+				      int opacity,
+				      gpointer callback_data)
 {
 	NautilusLabel *label;
-	NautilusDimensions text_dimensions;
-	ArtIRect text_bounds;
-	GdkEventExpose *event;
+	NautilusDimensions content_dimensions;
+	ArtIRect cache_pixbuf_area;
 
 	g_return_if_fail (NAUTILUS_IS_LABEL (widget));
 	g_return_if_fail (GTK_WIDGET_REALIZED (widget));
 	g_return_if_fail (destination_pixbuf != NULL);
 	g_return_if_fail (area != NULL && !art_irect_empty (area));
-
-	label = NAUTILUS_LABEL (widget);
-	event = (GdkEventExpose *) callback_data;
-
-	text_dimensions = label_get_text_dimensions (label);
-	text_bounds = label_get_text_bounds (label);
 	
-	g_return_if_fail (!nautilus_dimensions_empty (&text_dimensions));
+	label = NAUTILUS_LABEL (widget);
 
-	/* Optimize the case where the background is solid */
-	if (label_can_cache_contents (label)) {
-		if (label->details->solid_cache_pixbuf == NULL) {
- 			ArtIRect cache_pixbuf_area;
-			label->details->solid_cache_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
-									     FALSE,
-									     8,
-									     text_dimensions.width,
-									     text_dimensions.height);
+	g_return_if_fail (label_can_cache_contents (label));
+
+	content_dimensions = label_get_content_dimensions (label);
+
+	g_return_if_fail (!nautilus_dimensions_empty (&content_dimensions));
+
+	if (label->details->solid_cache_pixbuf == NULL) {
+		label->details->solid_cache_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+								     FALSE,
+								     8,
+								     content_dimensions.width,
+								     content_dimensions.height);
+		
+		nautilus_gdk_pixbuf_fill_rectangle_with_color (label->details->solid_cache_pixbuf,
+							       NULL,
+							       label->details->solid_background_color);
+		
+		cache_pixbuf_area = nautilus_gdk_pixbuf_intersect (label->details->solid_cache_pixbuf,
+								   0,
+								   0,
+								   NULL);
+		g_return_if_fail (NAUTILUS_IS_SMOOTH_TEXT_LAYOUT (label->details->smooth_text_layout));
 			
-			nautilus_gdk_pixbuf_fill_rectangle_with_color (label->details->solid_cache_pixbuf,
-								       NULL,
-								       label->details->solid_background_color);
-			
- 			cache_pixbuf_area = nautilus_gdk_pixbuf_intersect (label->details->solid_cache_pixbuf,
-									   0,
-									   0,
-									   NULL);
-			g_return_if_fail (NAUTILUS_IS_SMOOTH_TEXT_LAYOUT (label->details->smooth_text_layout));
-			
-			if (label->details->smooth_drop_shadow_offset > 0) {
-				cache_pixbuf_area.x0 += label->details->smooth_drop_shadow_offset;
-				cache_pixbuf_area.y0 += label->details->smooth_drop_shadow_offset;
-				nautilus_smooth_text_layout_draw_to_pixbuf (label->details->smooth_text_layout,
-									    label->details->solid_cache_pixbuf,
-									    0,
-									    0,
-									    &cache_pixbuf_area,
-									    nautilus_label_get_text_justify (label),
-									    FALSE,
-									    label->details->smooth_drop_shadow_color,
-									    label->details->text_opacity);
-				cache_pixbuf_area.x0 -= label->details->smooth_drop_shadow_offset;
-				cache_pixbuf_area.y0 -= label->details->smooth_drop_shadow_offset;
-			}
-			
+		if (label->details->smooth_drop_shadow_offset > 0) {
+			cache_pixbuf_area.x0 += label->details->smooth_drop_shadow_offset;
+			cache_pixbuf_area.y0 += label->details->smooth_drop_shadow_offset;
 			nautilus_smooth_text_layout_draw_to_pixbuf (label->details->smooth_text_layout,
 								    label->details->solid_cache_pixbuf,
 								    0,
@@ -679,35 +671,51 @@ label_composite_pixbuf_callback (GtkWidget *widget,
 								    &cache_pixbuf_area,
 								    nautilus_label_get_text_justify (label),
 								    FALSE,
-								    label->details->smooth_text_color,
+								    label->details->smooth_drop_shadow_color,
 								    label->details->text_opacity);
+			cache_pixbuf_area.x0 -= label->details->smooth_drop_shadow_offset;
+			cache_pixbuf_area.y0 -= label->details->smooth_drop_shadow_offset;
 		}
-
-		nautilus_gdk_pixbuf_draw_to_pixbuf (label->details->solid_cache_pixbuf,
-						    destination_pixbuf,
-						    source_x,
-						    source_y,
-						    area);
-
-		return;
-	}
-
-	/* Draw just the dirty area */
-	g_return_if_fail (NAUTILUS_IS_SMOOTH_TEXT_LAYOUT (label->details->smooth_text_layout));
-	if (label->details->smooth_drop_shadow_offset > 0) {
-		ArtIRect drop_shadow_area = *area;
-		drop_shadow_area.x0 += label->details->smooth_drop_shadow_offset;
-		drop_shadow_area.y0 += label->details->smooth_drop_shadow_offset;
+		
 		nautilus_smooth_text_layout_draw_to_pixbuf (label->details->smooth_text_layout,
-							    destination_pixbuf,
-							    source_x,
-							    source_y,
-							    &drop_shadow_area,
+							    label->details->solid_cache_pixbuf,
+							    0,
+							    0,
+							    &cache_pixbuf_area,
 							    nautilus_label_get_text_justify (label),
 							    FALSE,
-							    label->details->smooth_drop_shadow_color,
+							    label->details->smooth_text_color,
 							    label->details->text_opacity);
 	}
+
+	g_return_if_fail (label->details->solid_cache_pixbuf != NULL);
+	
+	nautilus_gdk_pixbuf_draw_to_pixbuf (label->details->solid_cache_pixbuf,
+					    destination_pixbuf,
+					    source_x,
+					    source_y,
+					    area);
+}
+
+static void
+label_composite_text_callback (GtkWidget *widget,
+			       GdkPixbuf *destination_pixbuf,
+			       int source_x,
+			       int source_y,
+			       const ArtIRect *area,
+			       int opacity,
+			       gpointer callback_data)
+{
+	NautilusLabel *label;
+
+	g_return_if_fail (NAUTILUS_IS_LABEL (widget));
+	g_return_if_fail (GTK_WIDGET_REALIZED (widget));
+	g_return_if_fail (destination_pixbuf != NULL);
+	g_return_if_fail (area != NULL && !art_irect_empty (area));
+
+	label = NAUTILUS_LABEL (widget);
+
+	g_return_if_fail (!label_can_cache_contents (label));
 
 	nautilus_smooth_text_layout_draw_to_pixbuf (label->details->smooth_text_layout,
 						    destination_pixbuf,
@@ -720,24 +728,51 @@ label_composite_pixbuf_callback (GtkWidget *widget,
 						    label->details->text_opacity);
 }
 
-static int
-nautilus_label_expose_event (GtkWidget *widget,
-			     GdkEventExpose *event)
+static void
+label_composite_text_and_shadow_callback (GtkWidget *widget,
+					  GdkPixbuf *destination_pixbuf,
+					  int source_x,
+					  int source_y,
+					  const ArtIRect *area,
+					  int opacity,
+					  gpointer callback_data)
 {
- 	NautilusLabel *label;
-	ArtIRect dirty_area;
-	ArtIRect screen_dirty_area;
-	ArtIRect smooth_text_bounds;
+	NautilusLabel *label;
+
+	g_return_if_fail (NAUTILUS_IS_LABEL (widget));
+	g_return_if_fail (GTK_WIDGET_REALIZED (widget));
+	g_return_if_fail (destination_pixbuf != NULL);
+	g_return_if_fail (area != NULL && !art_irect_empty (area));
+
+	label = NAUTILUS_LABEL (widget);
+
+	g_return_if_fail (!label_can_cache_contents (label));
+
+	nautilus_smooth_text_layout_draw_to_pixbuf_shadow (label->details->smooth_text_layout,
+							   destination_pixbuf,
+							   source_x,
+							   source_y,
+							   area,
+							   label->details->smooth_drop_shadow_offset,
+							   nautilus_label_get_text_justify (label),
+							   FALSE,
+							   label->details->smooth_text_color,
+							   label->details->smooth_drop_shadow_color,
+							   label->details->text_opacity);
+}
+
+static void
+label_paint (NautilusLabel *label,
+	     const ArtIRect *screen_dirty_area,
+	     const ArtIRect *tile_bounds)
+{
 	ArtIRect widget_bounds;
-	ArtIRect tile_bounds;
-
-	g_return_val_if_fail (NAUTILUS_IS_LABEL (widget), TRUE);
-	g_return_val_if_fail (GTK_WIDGET_REALIZED (widget), TRUE);
-	g_return_val_if_fail (event != NULL, TRUE);
-	g_return_val_if_fail (event->window == widget->window, TRUE);
 	
- 	label = NAUTILUS_LABEL (widget);
-
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+	g_return_if_fail (GTK_WIDGET_REALIZED (label));
+	g_return_if_fail (screen_dirty_area != NULL);
+	g_return_if_fail (tile_bounds != NULL);
+	
 	/* The smooth and non smooth bounds are different.  We have
 	 * no way to have GtkLabel tell us what its bounds are.
 	 * So, we cheat and pretend that for the non smooth case,
@@ -749,13 +784,134 @@ nautilus_label_expose_event (GtkWidget *widget,
 	 * expose event so that we feed the exact exposure area
 	 * to GtkLabel's expose_event.
 	 */
-	widget_bounds = nautilus_gtk_widget_get_bounds (widget);
-	smooth_text_bounds = label_get_text_bounds (label);
-	tile_bounds = nautilus_smooth_widget_get_tile_bounds (widget,
-							      label->details->tile_pixbuf,
-							      label->details->tile_width,
-							      label->details->tile_height);
+	widget_bounds = nautilus_gtk_widget_get_bounds (GTK_WIDGET (label));
+
+	/* Make sure the area is screen visible before painting */
+	nautilus_smooth_widget_paint (GTK_WIDGET (label),
+				      GTK_WIDGET (label)->style->white_gc,
+				      FALSE,
+				      label->details->background_mode,
+				      label->details->solid_background_color,
+				      label->details->tile_pixbuf,
+				      tile_bounds,
+				      label->details->tile_opacity,
+				      label->details->tile_mode_vertical,
+				      label->details->tile_mode_horizontal,
+				      &widget_bounds,
+				      label->details->text_opacity,
+				      screen_dirty_area,
+				      label_paint_pixbuf_callback,
+				      label_composite_text_callback,
+				      (gpointer) screen_dirty_area);
+}
+
+static void
+paint_label_smooth (NautilusLabel *label,
+		    const ArtIRect *screen_dirty_area,
+		    const ArtIRect *tile_bounds)
+{
+	ArtIRect text_bounds;
+	ArtIRect content_bounds;
+
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+	g_return_if_fail (GTK_WIDGET_REALIZED (label));
+	g_return_if_fail (screen_dirty_area != NULL);
+	g_return_if_fail (tile_bounds != NULL);
+
+	if (label->details->smooth_drop_shadow_offset > 0) {
+		/* Paint the text and shadow if needed */
+		content_bounds = label_get_content_bounds (label);
+		if (!art_irect_empty (&content_bounds)) {
+			nautilus_smooth_widget_paint (GTK_WIDGET (label),
+						      GTK_WIDGET (label)->style->white_gc,
+						      TRUE,
+						      label->details->background_mode,
+						      label->details->solid_background_color,
+						      label->details->tile_pixbuf,
+						      tile_bounds,
+						      label->details->tile_opacity,
+						      label->details->tile_mode_vertical,
+						      label->details->tile_mode_horizontal,
+						      &content_bounds,
+						      label->details->text_opacity,
+						      screen_dirty_area,
+						      label_paint_pixbuf_callback,
+						      label_composite_text_and_shadow_callback,
+						      NULL);
+		}
+	} else {
+		/* Paint the text if needed */
+		text_bounds = label_get_text_bounds (label);
+		if (!art_irect_empty (&text_bounds)) {
+			nautilus_smooth_widget_paint (GTK_WIDGET (label),
+						      GTK_WIDGET (label)->style->white_gc,
+						      TRUE,
+						      label->details->background_mode,
+						      label->details->solid_background_color,
+						      label->details->tile_pixbuf,
+						      tile_bounds,
+						      label->details->tile_opacity,
+						      label->details->tile_mode_vertical,
+						      label->details->tile_mode_horizontal,
+						      &text_bounds,
+						      label->details->text_opacity,
+						      screen_dirty_area,
+						      label_paint_pixbuf_callback,
+						      label_composite_text_callback,
+						      NULL);
+		}
+	}
+}
+
+static void
+paint_label_smooth_cached (NautilusLabel *label,
+			   const ArtIRect *screen_dirty_area,
+			   const ArtIRect *tile_bounds)
+{
+	ArtIRect content_bounds;
+
+	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+	g_return_if_fail (GTK_WIDGET_REALIZED (label));
+	g_return_if_fail (screen_dirty_area != NULL);
+	g_return_if_fail (tile_bounds != NULL);
+	g_return_if_fail (label_can_cache_contents (label));
+
+	content_bounds = label_get_content_bounds (label);
+
+	nautilus_smooth_widget_paint (GTK_WIDGET (label),
+				      GTK_WIDGET (label)->style->white_gc,
+				      TRUE,
+				      label->details->background_mode,
+				      label->details->solid_background_color,
+				      label->details->tile_pixbuf,
+				      tile_bounds,
+				      label->details->tile_opacity,
+				      label->details->tile_mode_vertical,
+				      label->details->tile_mode_horizontal,
+				      &content_bounds,
+				      label->details->text_opacity,
+				      screen_dirty_area,
+				      label_paint_pixbuf_callback,
+				      label_composite_text_callback_cached,
+				      NULL);
+}
+
+static int
+nautilus_label_expose_event (GtkWidget *widget,
+			     GdkEventExpose *event)
+{
+ 	NautilusLabel *label;
+	ArtIRect dirty_area;
+	ArtIRect screen_dirty_area;
+	ArtIRect tile_bounds;
+
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (widget), TRUE);
+	g_return_val_if_fail (GTK_WIDGET_REALIZED (widget), TRUE);
+	g_return_val_if_fail (event != NULL, TRUE);
+	g_return_val_if_fail (event->window == widget->window, TRUE);
 	
+ 	label = NAUTILUS_LABEL (widget);
+
 	/* Check for the dumb case when theres nothing to do */
 	if (nautilus_strlen (label_peek_text (label)) == 0 && label->details->tile_pixbuf == NULL) {
 		return TRUE;
@@ -764,26 +920,30 @@ nautilus_label_expose_event (GtkWidget *widget,
 	/* Clip the dirty area to the screen */
 	dirty_area = nautilus_gdk_rectangle_to_art_irect (&event->area);
 	screen_dirty_area = nautilus_gdk_window_clip_dirty_area_to_screen (event->window,
-										 &dirty_area);
+									   &dirty_area);
 
-	/* Make sure the area is screen visible before painting */
-	if (!art_irect_empty (&screen_dirty_area)) {
-		nautilus_smooth_widget_paint (widget,
-					      widget->style->white_gc,
-					      label_is_smooth (label),
-					      label->details->background_mode,
-					      label->details->solid_background_color,
-					      label->details->tile_pixbuf,
-					      &tile_bounds,
-					      label->details->tile_opacity,
-					      label->details->tile_mode_vertical,
-					      label->details->tile_mode_horizontal,
-					      label_is_smooth (label) ? &smooth_text_bounds : &widget_bounds,
-					      label->details->text_opacity,
-					      &screen_dirty_area,
-					      label_paint_pixbuf_callback,
-					      label_composite_pixbuf_callback,
-					      event);
+	/* Bail if no work */
+	if (art_irect_empty (&screen_dirty_area)) {
+		return TRUE;
+	}
+
+	/* Fetch the tile bounds */
+	tile_bounds = nautilus_smooth_widget_get_tile_bounds (widget,
+							      label->details->tile_pixbuf,
+							      label->details->tile_width,
+							      label->details->tile_height);
+
+	/* Paint GtkLabel */
+	if (!label_is_smooth (label)) {
+		label_paint (label, &screen_dirty_area, &tile_bounds);
+		return TRUE;
+	}
+
+	/* Paint smooth */
+	if (label_can_cache_contents (label)) {
+		paint_label_smooth_cached (label, &screen_dirty_area, &tile_bounds);
+	} else {
+		paint_label_smooth (label, &screen_dirty_area, &tile_bounds);	
 	}
 
 	return TRUE;
@@ -822,6 +982,43 @@ label_get_text_dimensions (const NautilusLabel *label)
 
 	text_dimensions = nautilus_smooth_text_layout_get_dimensions (label->details->smooth_text_layout);
 
+	return text_dimensions;
+}
+
+static ArtIRect
+label_get_text_bounds (const NautilusLabel *label)
+{
+	ArtIRect content_bounds;
+	NautilusDimensions text_dimensions;
+	ArtIRect text_bounds;
+
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), NAUTILUS_ART_IRECT_EMPTY);
+	
+	content_bounds = label_get_content_bounds (label);
+	text_dimensions = label_get_text_dimensions (label);
+
+	if (nautilus_dimensions_empty (&text_dimensions)
+	    || art_irect_empty (&content_bounds)) {
+		return NAUTILUS_ART_IRECT_EMPTY;
+	}
+	
+	nautilus_art_irect_assign (&text_bounds,
+				   content_bounds.x0,
+				   content_bounds.y0,
+				   text_dimensions.width,
+				   text_dimensions.height);
+
+	return text_bounds;
+}
+
+static NautilusDimensions
+label_get_content_dimensions (const NautilusLabel *label)
+{
+	NautilusDimensions text_dimensions;
+
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), NAUTILUS_DIMENSIONS_EMPTY);
+
+	text_dimensions = label_get_text_dimensions (label);
 	text_dimensions.width += label->details->smooth_drop_shadow_offset;
 	text_dimensions.height += label->details->smooth_drop_shadow_offset;
 
@@ -829,25 +1026,25 @@ label_get_text_dimensions (const NautilusLabel *label)
 }
 
 static ArtIRect
-label_get_text_bounds (const NautilusLabel *label)
+label_get_content_bounds (const NautilusLabel *label)
 {
-	NautilusDimensions text_dimensions;
+	NautilusDimensions content_dimensions;
 	ArtIRect text_bounds;
 	ArtIRect bounds;
 
 	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), NAUTILUS_ART_IRECT_EMPTY);
 
-	text_dimensions = label_get_text_dimensions (label);
+	content_dimensions = label_get_content_dimensions (label);
 
-	if (nautilus_dimensions_empty (&text_dimensions)) {
+	if (nautilus_dimensions_empty (&content_dimensions)) {
 		return NAUTILUS_ART_IRECT_EMPTY;
 	}
 	
 	bounds = nautilus_gtk_widget_get_bounds (GTK_WIDGET (label));
 	
 	text_bounds = nautilus_art_irect_align (&bounds,
-						text_dimensions.width,
-						text_dimensions.height,
+						content_dimensions.width,
+						content_dimensions.height,
 						GTK_MISC (label)->xalign,
 						GTK_MISC (label)->yalign);
 		
@@ -1440,7 +1637,7 @@ nautilus_label_set_smooth_drop_shadow_offset (NautilusLabel *label,
 	 }
 	 
 	 label->details->smooth_drop_shadow_offset = drop_shadow_offset;
-	 
+	 label_solid_cache_pixbuf_clear (label);
 	 gtk_widget_queue_resize (GTK_WIDGET (label));
 }
 
@@ -1478,7 +1675,7 @@ nautilus_label_set_smooth_drop_shadow_color (NautilusLabel *label,
 	}
 	
 	label->details->smooth_drop_shadow_color = drop_shadow_color;
-	
+	label_solid_cache_pixbuf_clear (label);	
 	gtk_widget_queue_draw (GTK_WIDGET (label));
 }
 
