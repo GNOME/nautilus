@@ -36,6 +36,7 @@
 #include "nautilus-string.h"
 #include "nautilus-default-file-icon.h"
 #include "nautilus-metadata.h"
+#include "nautilus-lib-self-check-functions.h"
 
 #define ICON_NAME_DIRECTORY             "i-directory.png"
 #define ICON_NAME_DIRECTORY_CLOSED      "i-dirclosed.png"
@@ -94,7 +95,7 @@ typedef struct {
 	 * A circular list of the most recently used images is kept
 	 * around, and we don't let them go when we sweep the cache.
 	 */
-        GHashTable *icon_cache;
+	GHashTable *icon_cache;
 	NautilusCircularList recently_used_dummy_head;
 	guint recently_used_count;
         guint sweep_timer;
@@ -118,20 +119,23 @@ struct _NautilusScalableIcon {
 };
 
 /* The key to a hash table that holds the scaled icons as pixbufs.
+ * In a way, it's not really completely a key, because part of the
+ * data is stored in here, including the LRU chain.
  */
 typedef struct {
 	NautilusScalableIcon *scalable_icon;
 	guint size_in_pixels;
 
 	NautilusCircularList recently_used_node;
+
+	gboolean custom;
+	gboolean scaled;
 } NautilusIconCacheKey;
 
 /* forward declarations */
 
 static NautilusIconFactory * nautilus_get_current_icon_factory (void);
 static NautilusIconFactory * nautilus_icon_factory_new         (const char           *theme_name);
-static GdkPixbuf *           nautilus_icon_factory_scale       (GdkPixbuf            *standard_sized_image,
-								guint                 size_in_pixels);
 static NautilusScalableIcon *nautilus_scalable_icon_get        (const char           *uri,
 								const char           *name,
 								gboolean              is_symbolic_link);
@@ -142,6 +146,10 @@ static void                  nautilus_icon_cache_key_destroy   (NautilusIconCach
 static guint                 nautilus_icon_cache_key_hash      (gconstpointer         p);
 static gboolean              nautilus_icon_cache_key_equal     (gconstpointer         a,
 								gconstpointer         b);
+static GdkPixbuf *           get_image_from_cache              (NautilusScalableIcon *scalable_icon,
+								guint                 size_in_pixels,
+								gboolean              picky,
+								gboolean              custom);
 
 /* Return a pointer to the single global icon factory. */
 NautilusIconFactory *
@@ -295,19 +303,30 @@ nautilus_icon_factory_set_theme (const char *theme_name)
 static const char *
 nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 {
+	char *file_name;
+	gboolean is_core;
         const char *mime_type;
         const char *icon_name;
+
+	file_name = nautilus_file_get_name (file);
+	is_core = strcmp (file_name, "core") == 0;
+	g_free (file_name);
+	if (is_core) {
+		return ICON_NAME_CORE;
+	}
 
         mime_type = nautilus_file_get_mime_type (file);
         if (mime_type != NULL) {
                 icon_name = gnome_mime_get_value (mime_type, "icon-filename");
-		if (icon_name != NULL)
+		if (icon_name != NULL) {
 			return icon_name;
+		}
 	}
 
 	/* GNOME didn't give us a file name, so we have to fall back on special icon sets. */
-	if (nautilus_file_is_executable (file))
+	if (nautilus_file_is_executable (file)) {
 		return ICON_NAME_EXECUTABLE;
+	}
 	return ICON_NAME_REGULAR;
 }
 
@@ -377,6 +396,24 @@ nautilus_icon_factory_load_file (const char *name)
         return image;
 }
 
+/* Remove the suffix, add a size, and re-add the suffix. */
+static char *
+add_size_to_image_name (const char *name, guint size)
+{
+	const char *suffix;
+	char *name_without_suffix;
+	char *name_with_size;
+
+	suffix = strrchr (name, '.');
+	if (suffix == NULL)
+		return g_strdup_printf ("%s-%u", name, size);
+
+	name_without_suffix = g_strndup (name, suffix - name);
+	name_with_size = g_strdup_printf ("%s-%u%s", name_without_suffix, size, suffix);
+	g_free (name_without_suffix);
+	return name_with_size;
+}
+
 /* Splats one on top of the other, putting the src image
  * in the lower left corner of the dest image.
  */
@@ -405,15 +442,7 @@ nautilus_icon_factory_load_icon (const char *name, gboolean is_symbolic_link)
 	/* Load the image. */
 	image = nautilus_icon_factory_load_file (name);
 	if (image == NULL)
-		/* This is the fallback icon. */
-		image = gdk_pixbuf_new_from_data (nautilus_default_file_icon,
-						  ART_PIX_RGB,
-						  nautilus_default_file_icon_has_alpha,
-						  nautilus_default_file_icon_width,
-						  nautilus_default_file_icon_height,
-						  nautilus_default_file_icon_width * 4, /* stride */
-						  NULL, /* don't destroy data */
-						  NULL);
+		return NULL;
 
 	/* Overlay the symbolic link symbol on top of the image. */
 	if (is_symbolic_link) {
@@ -561,51 +590,211 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 	return scalable_icon;
 }
 
-static GdkPixbuf *
-nautilus_icon_factory_create_image_for_icon (NautilusScalableIcon *scalable_icon,
-					     guint size_in_pixels)
+static guint
+get_larger_icon_size (guint size)
 {
-	NautilusIconFactory *factory;
-        GdkPixbuf *image, *standard_size_image;
+	if (size < NAUTILUS_ICON_SIZE_SMALLEST) {
+		return NAUTILUS_ICON_SIZE_SMALLEST;
+	}
+	if (size < NAUTILUS_ICON_SIZE_SMALLER) {
+		return NAUTILUS_ICON_SIZE_SMALLER;
+	}
+	if (size < NAUTILUS_ICON_SIZE_SMALL) {
+		return NAUTILUS_ICON_SIZE_SMALL;
+	}
+	if (size < NAUTILUS_ICON_SIZE_STANDARD) {
+		return NAUTILUS_ICON_SIZE_STANDARD;
+	}
+	if (size < NAUTILUS_ICON_SIZE_LARGE) {
+		return NAUTILUS_ICON_SIZE_LARGE;
+	}
+	if (size < NAUTILUS_ICON_SIZE_LARGER) {
+		return NAUTILUS_ICON_SIZE_LARGER;
+	}
+	return NAUTILUS_ICON_SIZE_LARGEST;
+}
 
-        /* First cut at handling multiple sizes. If size is other than standard,
-         * scale the pixbuf here. Eventually we'll read in icon files at multiple
-	 * sizes rather than relying on scaling in every case (though we'll still
-	 * need scaling as a fallback).
-         */
-        if (size_in_pixels != NAUTILUS_ICON_SIZE_STANDARD)
-        {
-		standard_size_image = nautilus_icon_factory_get_pixbuf_for_icon
-			(scalable_icon, NAUTILUS_ICON_SIZE_STANDARD);
-		image = nautilus_icon_factory_scale
-			(standard_size_image, size_in_pixels);
-        	gdk_pixbuf_unref (standard_size_image);
-		return image;
-        }
-  
-	factory = nautilus_get_current_icon_factory (); 
+static guint
+get_smaller_icon_size (guint size)
+{
+	if (size > NAUTILUS_ICON_SIZE_LARGEST) {
+		return NAUTILUS_ICON_SIZE_LARGEST;
+	}
+	if (size > NAUTILUS_ICON_SIZE_LARGER) {
+		return NAUTILUS_ICON_SIZE_LARGER;
+	}
+	if (size > NAUTILUS_ICON_SIZE_LARGE) {
+		return NAUTILUS_ICON_SIZE_LARGE;
+	}
+	if (size > NAUTILUS_ICON_SIZE_STANDARD) {
+		return NAUTILUS_ICON_SIZE_STANDARD;
+	}
+	if (size > NAUTILUS_ICON_SIZE_SMALL) {
+		return NAUTILUS_ICON_SIZE_SMALL;
+	}
+	if (size > NAUTILUS_ICON_SIZE_SMALLER) {
+		return NAUTILUS_ICON_SIZE_SMALLER;
+	}
+	return NAUTILUS_ICON_SIZE_SMALLEST;
+}
 
-	/* FIXME: This works only with file:// images, because there's
-	 * no convenience function for loading an image with gnome-vfs
-	 * and gdk-pixbuf.
-	 */
-	image = NULL;
-	if (nautilus_has_prefix (scalable_icon->uri, "file://"))
-		image = gdk_pixbuf_new_from_file (scalable_icon->uri + 7);
-	
-	/* If there was no suitable custom icon URI, then use the icon set. */
-	if (image == NULL)
+/* Return true if there is another size to try.
+ * Set the size pointed to by @current_size to 0 to start.
+ */
+static gboolean
+get_next_icon_size_to_try (guint target_size, guint *current_size)
+{
+	guint size;
+
+	/* Get next larger size. */
+	size = *current_size;
+	if (size == 0 || size >= target_size) {
+		if (size == 0 && target_size != 0) {
+			size = target_size - 1;
+		}
+		if (size < NAUTILUS_ICON_SIZE_LARGEST) {
+			*current_size = get_larger_icon_size (size);
+			return TRUE;
+		}
+		size = target_size;
+	}
+
+	/* Already hit the largest size, get the next smaller size instead. */
+	if (size > NAUTILUS_ICON_SIZE_SMALLEST) {
+		*current_size = get_smaller_icon_size (size);
+		return TRUE;
+	}
+
+	/* Tried them all. */
+	return FALSE;
+}
+
+/* This load function returns NULL if the icon is not available at this size. */
+static GdkPixbuf *
+load_specific_image (NautilusScalableIcon *scalable_icon,
+		     guint size_in_pixels,
+		     gboolean custom)
+{
+	if (custom) {
+		/* Custom image. */
+		if (size_in_pixels != NAUTILUS_ICON_SIZE_STANDARD) {
+			return NULL;
+		}
+
+		/* FIXME: This works only with file:// images, because there's
+		 * no convenience function for loading an image with gnome-vfs
+		 * and gdk-pixbuf.
+		 */
+		if (!nautilus_has_prefix (scalable_icon->uri, "file://")) {
+			return NULL;
+		}
+
+		return gdk_pixbuf_new_from_file (scalable_icon->uri + 7);
+	} else {
+		char *name;
+		GdkPixbuf *image;
+
+		/* Standard image at a particular size. */
+		name = add_size_to_image_name (scalable_icon->name, size_in_pixels);
 		image = nautilus_icon_factory_load_icon
+			(name, scalable_icon->is_symbolic_link);
+		if (image != NULL)
+			return image;
+
+		/* Standard image at standard size. */
+		if (size_in_pixels != NAUTILUS_ICON_SIZE_STANDARD) {
+			return NULL;
+		}
+		return nautilus_icon_factory_load_icon
 			(scalable_icon->name, scalable_icon->is_symbolic_link);
+	}
+}
+
+/* This load function is not allowed to return NULL. */
+static GdkPixbuf *
+load_image_for_scaling (NautilusScalableIcon *scalable_icon,
+			guint requested_size,
+			guint *actual_size_result,
+			gboolean *custom)
+{
+        GdkPixbuf *image;
+	guint actual_size;
+	static GdkPixbuf *fallback_image;
+
+	/* First check for a custom image. */
+	actual_size = 0;
+	while (get_next_icon_size_to_try (requested_size, &actual_size)) {
+		image = get_image_from_cache (scalable_icon, actual_size, TRUE, TRUE);
+		if (image != NULL) {
+			*actual_size_result = actual_size;
+			*custom = TRUE;
+			return image;
+		}
+	}
 	
-        return image;
+	/* Next, go for the normal image. */
+	actual_size = 0;
+	while (get_next_icon_size_to_try (requested_size, &actual_size)) {
+		image = get_image_from_cache (scalable_icon, actual_size, TRUE, FALSE);
+		if (image != NULL) {
+			*actual_size_result = actual_size;
+			*custom = FALSE;
+			return image;
+		}
+	}
+
+	/* Finally, fall back on the hard-coded image. */
+	if (fallback_image == NULL)
+		fallback_image = gdk_pixbuf_new_from_data
+			(nautilus_default_file_icon,
+			 ART_PIX_RGB,
+			 nautilus_default_file_icon_has_alpha,
+			 nautilus_default_file_icon_width,
+			 nautilus_default_file_icon_height,
+			 nautilus_default_file_icon_width * 4, /* stride */
+			 NULL, /* don't destroy data */
+			 NULL);
+	gdk_pixbuf_ref (fallback_image);
+	*actual_size_result = NAUTILUS_ICON_SIZE_STANDARD;
+	*custom = FALSE;
+        return fallback_image;
+}
+
+/* This load function is not allowed to return NULL. */
+static GdkPixbuf *
+load_image_scale_if_necessary (NautilusScalableIcon *scalable_icon,
+			       guint requested_size,
+			       gboolean *scaled,
+			       gboolean *custom)
+{
+        GdkPixbuf *image, *scaled_image;
+	guint actual_size;
+	int scaled_width, scaled_height;
+	
+	/* Load the image for the icon that's closest in size to what we want. */
+	image = load_image_for_scaling (scalable_icon, requested_size,
+					&actual_size, custom);
+        if (requested_size == actual_size) {
+		*scaled = FALSE;
+		return image;
+	}
+	
+	/* Scale the image to the size we want. */
+	scaled_width = (gdk_pixbuf_get_width (image) * requested_size) / actual_size;
+	scaled_height = (gdk_pixbuf_get_height (image) * requested_size) / actual_size;
+	scaled_image = gdk_pixbuf_scale_simple
+		(image, scaled_width, scaled_height, ART_FILTER_BILINEAR);
+	
+	gdk_pixbuf_unref (image);
+	*scaled = TRUE;
+	return scaled_image;
 }
 
 /* Move this item to the head of the recently-used list,
  * bumping the last item off that list if necessary.
  */
 static void
-nautilus_icon_factory_mark_recently_used (NautilusCircularList *node)
+mark_recently_used (NautilusCircularList *node)
 {
 	NautilusIconFactory *factory;
 	NautilusCircularList *head, *last_node;
@@ -648,9 +837,16 @@ nautilus_icon_factory_mark_recently_used (NautilusCircularList *node)
 	}
 }
 
-GdkPixbuf *
-nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
-					   guint size_in_pixels)
+/* Get the image for icon, handling the caching.
+ * If @picky is true, then only an unscaled icon is acceptable.
+ * Also, if @picky is true, the icon must be a custom icon if
+ * @custom is true or a standard icon is @custom is false.
+ */
+static GdkPixbuf *
+get_image_from_cache (NautilusScalableIcon *scalable_icon,
+		      guint size_in_pixels,
+		      gboolean picky,
+		      gboolean custom)
 {
 	NautilusIconFactory *factory;
 	GHashTable *hash_table;
@@ -658,7 +854,7 @@ nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
         GdkPixbuf *image;
 	gpointer key_in_table, value;
 
-	g_return_val_if_fail(scalable_icon, NULL);
+	g_return_val_if_fail (scalable_icon != NULL, NULL);
 
 	factory = nautilus_get_current_icon_factory ();
 	hash_table = factory->icon_cache;
@@ -666,27 +862,52 @@ nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
 	/* Check to see if it's already in the table. */
 	lookup_key.scalable_icon = scalable_icon;
 	lookup_key.size_in_pixels = size_in_pixels;
-	if (g_hash_table_lookup_extended (hash_table, &lookup_key, &key_in_table, &value)) {
+	if (g_hash_table_lookup_extended (hash_table, &lookup_key,
+					  &key_in_table, &value)) {
 		/* Found it in the table. */
 		key = key_in_table;
 		image = value;
+		g_assert (image != NULL);
+
+		/* If we're going to be picky, then don't accept anything
+		 * other than exactly what we are looking for.
+		 */
+		if (picky && (key->scaled || custom != key->custom))
+			return NULL;
 	} else {
-		/* Not in the table, so create the image and put it in. */
-		image = nautilus_icon_factory_create_image_for_icon
-			(scalable_icon, size_in_pixels);
+		gboolean got_scaled_image;
+		gboolean got_custom_image;
+		
+		/* Not in the table, so load the image. */
+		if (picky) {
+			image = load_specific_image (scalable_icon, size_in_pixels, custom);
+			if (image == NULL) {
+				return NULL;
+			}
+
+			got_scaled_image = FALSE;
+			got_custom_image = custom;
+		} else {
+			image = load_image_scale_if_necessary (scalable_icon, size_in_pixels,
+							       &got_scaled_image,
+							       &got_custom_image);
+			g_assert (image != NULL);
+		}
 
 		/* Create the key for the table. */
 		key = g_new0 (NautilusIconCacheKey, 1);
 		nautilus_scalable_icon_ref (scalable_icon);
 		key->scalable_icon = scalable_icon;
 		key->size_in_pixels = size_in_pixels;
-
+		key->scaled = got_scaled_image;
+		key->custom = got_custom_image;
+		
 		/* Add the item to the hash table. */
 		g_hash_table_insert (hash_table, key, image);
 	}
 
 	/* Since this item was used, keep it in the cache longer. */
-	nautilus_icon_factory_mark_recently_used (&key->recently_used_node);
+	mark_recently_used (&key->recently_used_node);
 
 	/* Come back later and sweep the cache. */
 	nautilus_icon_factory_schedule_sweep ();
@@ -694,6 +915,14 @@ nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
 	/* Grab a ref for the caller. */
 	gdk_pixbuf_ref (image);
         return image;
+}
+
+GdkPixbuf *
+nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
+					   guint size_in_pixels)
+{
+	return get_image_from_cache (scalable_icon, size_in_pixels,
+				     FALSE, FALSE);
 }
 
 static void
@@ -721,24 +950,6 @@ nautilus_icon_cache_key_equal (gconstpointer a, gconstpointer b)
 
 	return key_a->scalable_icon == key_b->scalable_icon
 		&& key_a->size_in_pixels == key_b->size_in_pixels;
-}
-
-static GdkPixbuf *
-nautilus_icon_factory_scale (GdkPixbuf *standard_sized_image,
-			     guint size_in_pixels)
-{
-	int old_width, old_height, new_width, new_height;
-	
-	old_width = gdk_pixbuf_get_width (standard_sized_image);
-	old_height = gdk_pixbuf_get_height (standard_sized_image);
-
-	new_width = (old_width * size_in_pixels) / NAUTILUS_ICON_SIZE_STANDARD;
-	new_height = (old_height * size_in_pixels) / NAUTILUS_ICON_SIZE_STANDARD;
-
-	return gdk_pixbuf_scale_simple (standard_sized_image, 
-					new_width, 
-					new_height, 
-					ART_FILTER_BILINEAR);
 }
 
 /* Return nominal icon size for given zoom level.
@@ -781,6 +992,8 @@ nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
 	NautilusScalableIcon *icon;
 	GdkPixbuf *pixbuf;
 
+	g_return_val_if_fail (file != NULL, NULL);
+
 	icon = nautilus_icon_factory_get_icon_for_file (file);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon, size_in_pixels);
 	nautilus_scalable_icon_unref (icon);
@@ -799,13 +1012,117 @@ nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile *file,
 {
 	GdkPixbuf *pixbuf;
 
-	if(!file) {
-		*pixmap = NULL;
-		*mask = NULL;
-	}
-	g_return_if_fail(file);
+	g_return_if_fail (pixmap != NULL);
+	g_return_if_fail (mask != NULL);
+
+	*pixmap = NULL;
+	*mask = NULL;
+
+	g_return_if_fail (file != NULL);
 
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file, size_in_pixels);
 	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap, mask, 128);
 	gdk_pixbuf_unref (pixbuf);
 }
+
+#if ! defined (NAUTILUS_OMIT_SELF_CHECK)
+
+static char *
+self_test_next_icon_size_to_try (guint start_size, guint current_size)
+{
+	gboolean got_next_size;
+
+	got_next_size = get_next_icon_size_to_try (start_size, &current_size);
+	return g_strdup_printf ("%s,%d", got_next_size ? "TRUE" : "FALSE", current_size);
+}
+
+void
+nautilus_self_check_icon_factory (void)
+{
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (0), 12);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (1), 24);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (2), 36);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (3), 48);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (4), 72);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (5), 96);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_get_icon_size_for_zoom_level (6), 192);
+
+	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (0), 12);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (1), 12);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (11), 12);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (12), 24);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (23), 24);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (24), 36);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (35), 36);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (36), 48);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (47), 48);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (48), 72);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (71), 72);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (72), 96);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (95), 96);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (96), 192);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (191), 192);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (192), 192);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_larger_icon_size (0xFFFFFFFF), 192);
+
+	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (0), 12);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (1), 12);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (11), 12);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (12), 12);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (24), 12);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (25), 24);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (36), 24);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (37), 36);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (48), 36);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (49), 48);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (72), 48);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (73), 72);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (96), 72);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (97), 96);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (192), 96);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (193), 192);
+	NAUTILUS_CHECK_INTEGER_RESULT (get_smaller_icon_size (0xFFFFFFFF), 192);
+
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 0), "TRUE,12");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 12), "TRUE,24");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 24), "TRUE,36");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 36), "TRUE,48");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 48), "TRUE,72");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 72), "TRUE,96");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 96), "TRUE,192");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0, 192), "FALSE,192");
+
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 0), "TRUE,36");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 36), "TRUE,48");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 48), "TRUE,72");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 72), "TRUE,96");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 96), "TRUE,192");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 192), "TRUE,24");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 24), "TRUE,12");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (36, 12), "FALSE,12");
+
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 0), "TRUE,48");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 48), "TRUE,72");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 72), "TRUE,96");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 96), "TRUE,192");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 192), "TRUE,36");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 36), "TRUE,24");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 24), "TRUE,12");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (37, 12), "FALSE,12");
+
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 0), "TRUE,192");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 192), "TRUE,96");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 96), "TRUE,72");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 72), "TRUE,48");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 48), "TRUE,36");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 36), "TRUE,24");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 24), "TRUE,12");
+	NAUTILUS_CHECK_STRING_RESULT (self_test_next_icon_size_to_try (0xFFFFFFFF, 12), "FALSE,12");
+
+	NAUTILUS_CHECK_STRING_RESULT (add_size_to_image_name ("", 0), "-0");
+	NAUTILUS_CHECK_STRING_RESULT (add_size_to_image_name (".", 0), "-0.");
+	NAUTILUS_CHECK_STRING_RESULT (add_size_to_image_name ("a", 12), "a-12");
+	NAUTILUS_CHECK_STRING_RESULT (add_size_to_image_name ("a.png", 12), "a-12.png");
+}
+
+#endif /* ! NAUTILUS_OMIT_SELF_CHECK */

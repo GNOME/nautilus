@@ -393,15 +393,21 @@ select_all_cb(GtkMenuItem *item, FMDirectoryView *directory_view)
 /* handle the zoom in/out menu items */
 
 static void
-zoom_in_cb(GtkMenuItem *item, FMDirectoryView *directory_view)
+zoom_in_cb (GtkMenuItem *item, FMDirectoryView *directory_view)
 {
 	fm_directory_view_bump_zoom_level (directory_view, 1);
 }
 
 static void
-zoom_out_cb(GtkMenuItem *item, FMDirectoryView *directory_view)
+zoom_out_cb (GtkMenuItem *item, FMDirectoryView *directory_view)
 {
 	fm_directory_view_bump_zoom_level (directory_view, -1);
+}
+
+static void
+use_eazel_theme_icons_cb (GtkMenuItem *item, FMDirectoryView *directory_view)
+{
+	/* FIXME: This isn't implemented yet. */
 }
 
 static gboolean
@@ -788,36 +794,29 @@ open_in_new_window_cb (GtkMenuItem *item, NautilusFile *file)
 	fm_directory_view_activate_entry (directory_view, file, TRUE);
 }
 
+static void
+add_menu_item (FMDirectoryView *view, GtkMenu *menu, const char *label,
+	       void (*activate_handler) (GtkMenuItem *, FMDirectoryView *),
+	       gboolean sensitive)
+{
+	GtkWidget *menu_item;
+
+	menu_item = gtk_menu_item_new_with_label (label);
+	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
+			    GTK_SIGNAL_FUNC (activate_handler), view);
+	gtk_widget_set_sensitive (menu_item, sensitive);
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+}
 
 static void
 fm_directory_view_real_append_background_context_menu_items (FMDirectoryView *view, 
 							     GtkMenu *menu)
 {
-	GtkWidget *menu_item;
-
-	menu_item = gtk_menu_item_new_with_label ("Select all");
-	gtk_widget_show (menu_item);
-	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
-		           GTK_SIGNAL_FUNC (select_all_cb), view);
-	gtk_menu_append (menu, menu_item);
-
-
-	menu_item = gtk_menu_item_new_with_label ("Zoom in");	
-	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
-		           GTK_SIGNAL_FUNC (zoom_in_cb), view);
-
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
-	gtk_widget_set_sensitive (menu_item, fm_directory_view_can_zoom_in (view));
-
-	menu_item = gtk_menu_item_new_with_label ("Zoom out");
-	
-	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
-		           GTK_SIGNAL_FUNC (zoom_out_cb), view);
-	
-        gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
-	gtk_widget_set_sensitive (menu_item, fm_directory_view_can_zoom_out (view));
+	add_menu_item (view, menu, _("Select All"), select_all_cb, TRUE);
+	add_menu_item (view, menu, _("Zoom In"), zoom_in_cb, fm_directory_view_can_zoom_in (view));
+	add_menu_item (view, menu, _("Zoom Out"), zoom_out_cb, fm_directory_view_can_zoom_out (view));
+	add_menu_item (view, menu, _("Use Eazel Theme Icons"), use_eazel_theme_icons_cb, FALSE);
 }
 
 static void

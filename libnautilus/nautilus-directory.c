@@ -296,7 +296,7 @@ nautilus_directory_try_to_read_metafile (NautilusDirectory *directory, GnomeVFSU
 
 	if (result == GNOME_VFS_OK) {
 		/* Check for the case where the info doesn't give the file size. */
-		if ((metafile_info.flags & GNOME_VFS_FILE_INFO_FIELDS_SIZE) == 0)
+		if ((metafile_info.valid_fields & GNOME_VFS_FILE_INFO_FIELDS_SIZE) == 0)
 			result = GNOME_VFS_ERROR_GENERIC;
 	}
 
@@ -534,7 +534,7 @@ nautilus_make_directory_and_parents (GnomeVFSURI *uri, guint permissions)
 }
 
 static GnomeVFSURI *
-nautilus_directory_construct_alternate_metafile_uri (GnomeVFSURI *metafile_uri)
+nautilus_directory_construct_alternate_metafile_uri (GnomeVFSURI *uri)
 {
 	GnomeVFSResult result;
 	GnomeVFSURI *home_uri, *nautilus_directory_uri, *metafiles_directory_uri, *alternate_uri;
@@ -553,8 +553,7 @@ nautilus_directory_construct_alternate_metafile_uri (GnomeVFSURI *metafile_uri)
 	}
 
 	/* Construct a file name from the URI. */
-	uri_as_string = gnome_vfs_uri_to_string (metafile_uri,
-						 GNOME_VFS_URI_HIDE_NONE);
+	uri_as_string = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
 	escaped_uri = nautilus_directory_escape_slashes (uri_as_string);
 	g_free (uri_as_string);
 	file_name = g_strconcat (escaped_uri, ".xml", NULL);
@@ -594,7 +593,7 @@ nautilus_directory_new (const char* uri)
 		return NULL;
 
 	metafile_uri = gnome_vfs_uri_append_path (vfs_uri, METAFILE_NAME);
-	alternate_metafile_uri = nautilus_directory_construct_alternate_metafile_uri (metafile_uri);
+	alternate_metafile_uri = nautilus_directory_construct_alternate_metafile_uri (vfs_uri);
 
 	directory = gtk_type_new (NAUTILUS_TYPE_DIRECTORY);
 
@@ -1155,7 +1154,7 @@ nautilus_file_ref (NautilusFile *file)
 {
 	g_return_if_fail (file != NULL);
 
-	g_assert (file->ref_count < UINT_MAX);
+	g_assert (file->ref_count < G_MAXINT);
 	g_assert (file->directory != NULL);
 
 	/* Increment the ref count. */

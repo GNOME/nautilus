@@ -1,3 +1,5 @@
+SUBDIRS = eazel
+
 icondir = $(datadir)/pixmaps/nautilus
 
 icon_DATA =					\

@@ -92,9 +92,9 @@ nautilus_string_to_int (const char *string, int *integer)
 	result = strtol (string, &parse_end, 0);
 
 	/* Check that the result is in range. */
-	if ((result == LONG_MIN || result == LONG_MAX) && errno == ERANGE)
+	if ((result == G_MINLONG || result == G_MAXLONG) && errno == ERANGE)
 		return FALSE;
-	if (result < INT_MIN || result > INT_MAX)
+	if (result < G_MININT || result > G_MAXINT)
 		return FALSE;
 
 	/* Check that all the trailing characters are spaces. */

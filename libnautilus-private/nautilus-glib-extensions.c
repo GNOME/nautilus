@@ -68,7 +68,7 @@ nautilus_strdup_strftime (const char *format, struct tm *time_pieces)
 	char *result;
 	size_t string_length;
 
-	string_length = strftime (NULL, UINT_MAX, format, time_pieces);
+	string_length = strftime (NULL, G_MAXINT, format, time_pieces);
 	result = g_malloc (string_length + 1);
 	strftime (result, string_length + 1, format, time_pieces);
 

@@ -1,3 +1,76 @@
+2000-02-17  Darin Adler  <darin@eazel.com>
+
+	Hand tuned icons for multiple resolutions.
+	So for example you can have an icon designed for the 96x96
+	size, which is called i-directory-96.png, and it will be
+	loaded instead of loading i-directory.png and scaling it.
+
+	* libnautilus/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_name_for_regular_file),
+	(add_size_to_icon_name), (nautilus_icon_factory_load_icon),
+	(nautilus_icon_factory_create_image_for_item),
+	(get_larger_icon_size), (get_smaller_icon_size),
+	(get_next_icon_size_to_try), (load_specific_image),
+	(load_image_for_scaling), (load_image_scale_if_necessary),
+	(nautilus_icon_factory_mark_recently_used), (mark_recently_used),
+	(nautilus_icon_factory_get_pixbuf_for_icon),
+	(get_image_from_cache), (nautilus_icon_factory_scale): Changed the
+	icon factory so it will look for icons of multiple resolutions and
+	scale the nearest. Also made other improvements including sharing
+	a single fallback icon instead of making multiple ones, using the
+	"core-dump" icon for files named "core", adding some additional
+	g_return_if_fail.
+
+	* libnautilus/nautilus-icon-factory.c:
+	(self_test_next_icon_size_to_try),
+	(nautilus_self_check_icon_factory):
+	* libnautilus/nautilus-lib-self-check-functions.h:
+	The new code needed a bit of self-check code, so I added it.
+
+	* libnautilus/nautilus-directory.c:
+	(nautilus_directory_try_to_read_metafile),
+	(nautilus_directory_construct_alternate_metafile_uri):
+	Since "make check" was failing, I checked to see what was wrong.
+	The code that was respecting the new "valid_fields" part of
+	GnomeVFSFileInfo was looking at the wrong field (flags instead
+	of valid_fields), which caused all metafile reading to fail.
+	While debugging this, I noticed that the alternate metafiles
+	had particularly bad long names, so I fixed that too.
+
+	* libnautilus/nautilus-directory.c: (nautilus_file_ref):
+	* libnautilus/nautilus-glib-extensions.c:
+	(nautilus_strdup_strftime):
+	* libnautilus/nautilus-string.c: (nautilus_string_to_int):
+	Switched from using <limits.h> constants to the ones from
+	<glib.h>. I have no idea why I made this change. All hail
+	glib! C Standard be damned!
+
+	* fm-directory-view.c:
+	(use_eazel_theme_icons_cb), (add_menu_item),
+	(fm_directory_view_real_append_background_context_menu_items):
+	Started on a user interface to switch to the Eazel theme
+	icons so you can see the multiple-resolution icons, but
+	I wanted to check in, so I stopped before it was done.
+
+	* src/nautilus-index-title.c:
+	Reindented Andy's new code to match the emacs mode header.
+	
+	* configure.in:
+	* icons/Makefile.am:
+	* icons/eazel/.cvsignore:
+	* icons/eazel/Makefile.am:
+	* icons/eazel/i-directory-24.png:
+	* icons/eazel/i-directory-36.png:
+	* icons/eazel/i-directory-72.png:
+	* icons/eazel/i-directory-96.png:
+	* icons/eazel/i-directory.png:
+	I needed some variable-size icons to demonstrate the multiple
+	resolution support in the icon factory, so I added a few
+	directory icons from gnomad. Since these don't match the other
+	icons, I made them part of an "eazel" icons theme.
+	
+	* RENAMING: Some new name ideas.
+
 2000-02-17  Jonathan Blandford  <jrb@redhat.com>
 
 	* src/nautilus-index-title.c (nautilus_index_title_set_up_label):

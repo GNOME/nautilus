@@ -216,38 +216,36 @@ nautilus_index_title_set_up_label (NautilusIndexTitle *index_title, const char *
 	
 	/* split the filename into two lines if necessary */
 	
-	if (strlen(file_name) >= 16)
-	  {
-	    /* find an appropriate split point if we can */
-	    gint index;
-	    gint mid_point = strlen(file_name) >> 1;
-	    gint quarter_point = mid_point >> 1;
-	    for (index = 0; index < quarter_point; index++)
-	      {
-	        gint split_offset = 0;
-	        
-	        if (!isalnum(file_name[mid_point + index]))
-	            split_offset = mid_point + index;
-	        else if (!isalnum(file_name[mid_point - index]))
-	            split_offset = mid_point - index;
-	        
-	        if (split_offset != 0) {
-	            char *buffer = (char *) g_malloc(strlen(file_name) + 2);
-	            
-	            /* build the new string, with a CR inserted, also remembering them separately for measuring */
-	            
-	            memcpy(buffer, file_name, split_offset);
-	            buffer[split_offset] = '\n';
-	            strcpy(&buffer[split_offset + 1], &file_name[split_offset]);
-	            
-	            /* free up the old string and replace it with the new one with the return inserted */
-	            
-	            g_free(file_name);
-	            file_name = buffer;		  
-	        } 
-	      }
-	  }
-	  
+	if (strlen(file_name) >= 16) {
+		/* find an appropriate split point if we can */
+		gint index;
+		gint mid_point = strlen(file_name) >> 1;
+		gint quarter_point = mid_point >> 1;
+		for (index = 0; index < quarter_point; index++) {
+			gint split_offset = 0;
+			
+			if (!isalnum(file_name[mid_point + index]))
+				split_offset = mid_point + index;
+			else if (!isalnum(file_name[mid_point - index]))
+				split_offset = mid_point - index;
+			
+			if (split_offset != 0) {
+				char *buffer = (char *) g_malloc(strlen(file_name) + 2);
+				
+				/* build the new string, with a CR inserted, also remembering them separately for measuring */
+				
+				memcpy(buffer, file_name, split_offset);
+				buffer[split_offset] = '\n';
+				strcpy(&buffer[split_offset + 1], &file_name[split_offset]);
+				
+				/* free up the old string and replace it with the new one with the return inserted */
+				
+				g_free(file_name);
+				file_name = buffer;		  
+			} 
+		}
+	}
+	
 	if (index_title->details->title != NULL)
 		gtk_label_set_text (GTK_LABEL (index_title->details->title), file_name);
 	else {  
