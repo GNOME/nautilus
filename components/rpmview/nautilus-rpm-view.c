@@ -548,7 +548,9 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
         char *description;
 	char *default_icon_path;
 
-	char **path = NULL;
+	char **paths = NULL;
+	char **basenames = NULL;
+        int *pathindex;
 	char **links = NULL;	
 	char *temp_version = NULL;
 	char *temp_release = NULL;
@@ -573,6 +575,60 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 			return;
 		}
 			
+                /* add the files in the package to the list */
+                
+                gtk_clist_freeze (GTK_CLIST (rpm_view->details->package_file_list));
+                gtk_clist_clear (GTK_CLIST (rpm_view->details->package_file_list));
+                
+                /* support the RPM 3.0 way and earlier way of accessing the files, depending on whether
+                   RPMTAG_FILENAMES is defined or not */
+                
+#ifndef RPMTAG_FILENAMES
+                headerGetEntry(header_info, RPMTAG_BASENAMES, NULL, (void **)&basenames, &file_count);
+                headerGetEntry(header_info, RPMTAG_DIRINDEXES, NULL, (void **)&pathindex, NULL);
+                headerGetEntry(header_info, RPMTAG_DIRNAMES, NULL, (void **)&paths, NULL);
+                headerGetEntry(header_info, RPMTAG_FILELINKTOS, NULL, (void **)&links, NULL); 
+                rpm_view->details->file_count = file_count;
+                
+                for (index = 0; index < file_count; index++) {
+                        if (*(links[index]) == '\0') {
+                                g_snprintf(buffer, 511, "%s%s", 
+                                           paths[pathindex[index]], 
+                                           basenames[index]);
+                                temp_str = buffer;
+                        } else {
+                                g_snprintf(buffer, 511, "%s%s -> %s", 
+                                           paths[pathindex[index]], 
+                                           basenames[index], 
+                                           links[index]);
+                                temp_str = buffer;
+                        }
+
+                        gtk_clist_append (GTK_CLIST(rpm_view->details->package_file_list), &temp_str);
+                }
+#else
+                headerGetEntry(header_info, RPMTAG_FILENAMES, NULL, (void **)&basenames, &file_count);
+                headerGetEntry(header_info, RPMTAG_FILELINKTOS, NULL, (void **)&links, NULL);
+                rpm_view->details->file_count = file_count;
+                
+                for (index = 0; index < file_count; index++) {
+                        
+                        if (*(links[index]) == '\0') {
+                                temp_str = basenames[index];
+                        } else {
+                                g_snprintf(buffer, 511, "%s -> %s", path[index], links[index]);
+                                temp_str = buffer;
+                        }
+                        gtk_clist_append (GTK_CLIST(rpm_view->details->package_file_list), &temp_str);
+                }
+#endif  	
+                
+                temp_str = g_strdup_printf(_("Package Contents: %d files"), file_count);
+                gtk_clist_set_column_title (GTK_CLIST(rpm_view->details->package_file_list), 0, temp_str);
+                g_free(temp_str);
+                
+                gtk_clist_thaw(GTK_CLIST(rpm_view->details->package_file_list));
+                
 		iterator = headerInitIterator(header_info);
 		while (headerNextIterator(iterator, &iterator_tag, &type, (void**)&data_ptr, &data_size)) {
 			integer_ptr = (int*) data_ptr;
@@ -683,54 +739,6 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
                 gtk_widget_hide (rpm_view->details->package_uninstall_button);
                 gtk_widget_hide (rpm_view->details->package_verify_button);
         }	
-
-/* add the files in the package to the list */
-
-        gtk_clist_freeze (GTK_CLIST (rpm_view->details->package_file_list));
-        gtk_clist_clear (GTK_CLIST (rpm_view->details->package_file_list));
-
-/* support the RPM 3.0 way and earlier way of accessing the files, depending on whether
-   RPMTAG_FILENAMES is defined or not */
-
-#ifndef RPMTAG_FILENAMES
-        headerGetEntry(header_info, RPMTAG_BASENAMES, NULL, (void **)&path, &file_count);
-        headerGetEntry(header_info, RPMTAG_FILELINKTOS, NULL, (void **)&links, NULL);
-        rpm_view->details->file_count = file_count;
-	
-        for (index = 0; index < file_count; index++) {
-  
-                if (*(links[index]) == '\0') {
-                        temp_str = path[index];
-                } else {
-                        g_snprintf(buffer, 511, "%s -> %s", path[index], links[index]);
-                        temp_str = buffer;
-                }
-                gtk_clist_append (GTK_CLIST(rpm_view->details->package_file_list), &temp_str);
-        }
-#else
-        headerGetEntry(header_info, RPMTAG_FILENAMES, NULL, (void **)&path, &file_count);
-        headerGetEntry(header_info, RPMTAG_FILELINKTOS, NULL, (void **)&links, NULL);
-        rpm_view->details->file_count = file_count;
-	
-        for (index = 0; index < file_count; index++) {
-  
-                if (*(links[index]) == '\0') {
-                        temp_str = path[index];
-                } else {
-                        g_snprintf(buffer, 511, "%s -> %s", path[index], links[index]);
-                        temp_str = buffer;
-                }
-                gtk_clist_append (GTK_CLIST(rpm_view->details->package_file_list), &temp_str);
-        }
-#endif  	
-
-        temp_str = g_strdup_printf(_("Package Contents: %d files"), file_count);
-        gtk_clist_set_column_title (GTK_CLIST(rpm_view->details->package_file_list), 0, temp_str);
-        g_free(temp_str);
-	
-        g_free(path);
-        g_free(links);
-        gtk_clist_thaw(GTK_CLIST(rpm_view->details->package_file_list));
         
 #ifdef EAZEL_SERVICES
 /* NOTE: This adds a libeazelinstall packagedata object to the rpm_view */

@@ -48,9 +48,6 @@ extern "C" {
 #define IS_EAZEL_INSTALL(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_INSTALL))
 #define IS_EAZEL_INSTALL_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_INSTALL))
 
-/* Funky define to step a GList iterator one ahead */
-#define glist_step(iterator) iterator = g_list_next (iterator)
-
 typedef enum {
 	EAZEL_INSTALL_USE_RPM
 } PackageSystem;;

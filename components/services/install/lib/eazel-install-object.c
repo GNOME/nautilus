@@ -30,6 +30,10 @@
 #include "eazel-install-query.h"
 #include "eazel-install-xml-package-list.h"
 
+#ifndef EAZEL_INSTALL_SLIM
+#include <rpm/rpmmacro.h>
+#endif 
+
 #ifndef EAZEL_INSTALL_NO_CORBA
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
@@ -544,10 +548,7 @@ eazel_install_initialize (EazelInstall *service) {
 	service->private->root_dirs = NULL;
 	service->private->cur_root = NULL;
 	service->private->transaction_dir = g_strdup_printf ("%s/.nautilus/transactions", g_get_home_dir() );
-	service->private->packsys.rpm.conflicts = NULL;
-	service->private->packsys.rpm.num_conflicts = 0;
 	service->private->packsys.rpm.dbs = g_hash_table_new (g_str_hash, g_str_equal);
-	service->private->packsys.rpm.set = NULL;
 	service->private->logfile = NULL;
 	service->private->logfilename = NULL;
 	service->private->name_to_package_hash = g_hash_table_new ((GHashFunc)g_str_hash,
@@ -1065,7 +1066,8 @@ eazel_install_emit_preflight_check_default (EazelInstall *service,
 	CORBA_boolean result = FALSE;
 
 	CORBA_exception_init (&ev);
-	SANITY(service);
+	SANITY_VAL (service, FALSE);
+
 	if (service->callback != CORBA_OBJECT_NIL) {
 		CORBA_char *corbapackages;
 		corbapackages = xml_from_packagedata_list (packages);
@@ -1244,8 +1246,9 @@ eazel_install_emit_delete_files_default (EazelInstall *service)
 	CORBA_Environment ev;
 	CORBA_boolean result = FALSE;
 
+	SANITY_VAL (service, TRUE);
+
 	CORBA_exception_init (&ev);
-	SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
 		result = Trilobite_Eazel_InstallCallback_delete_files (service->callback, &ev);
 	}
@@ -1282,8 +1285,9 @@ eazel_install_emit_done_default (EazelInstall *service, gboolean result)
 /* Welcome to define madness. These are all the get/set methods. There is nothing of
  interest beyond this point, except for a fucking big dragon*/
 
-void string_list_copy (GList **in, 
-		       const GList *strings) {
+static void 
+string_list_copy (GList **in, 
+		  const GList *strings) {
 	GList *iterator;
 	const GList *iterator_c;
 

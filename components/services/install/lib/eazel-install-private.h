@@ -26,6 +26,10 @@
 
 #include "eazel-install-public.h"
 
+/* Funky define to step a GList iterator one ahead */
+#define glist_step(iterator) iterator = g_list_next (iterator)
+
+
 struct _EazelInstallPrivate {	
 	TransferOptions *topts;
 	InstallOptions *iopts;
@@ -48,9 +52,6 @@ struct _EazelInstallPrivate {
 	union {
 		struct {
 			GHashTable *dbs;
-			rpmTransactionSet set;
-			struct rpmDependencyConflict *conflicts;
-			int num_conflicts;
 			unsigned long total_size, 
 				current_installed_size, 
 				num_packages, 

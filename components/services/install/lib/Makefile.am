@@ -5,8 +5,6 @@ CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"eazel-install\"	\
 	$(NULL)
 
-CFLAGS=-g -O
-
 INCLUDES = \
 	-I$(top_srcdir)						\
 	-I$(top_builddir)					\

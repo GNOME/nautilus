@@ -169,7 +169,7 @@ impl_md5_check_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 		       const CORBA_char *actual_md5,
 		       CORBA_Environment * ev)
 {
-	PackageData *pack, *needs;
+	PackageData *pack;
 	g_message ("impl_md5_check_failed (..., %s)", actual_md5);
 	pack = packagedata_from_corba_packagedatastruct (*corbapack);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[MD5_CHECK_FAILED], pack, actual_md5);
@@ -208,7 +208,7 @@ impl_uninstall_failed (impl_POA_Trilobite_Eazel_InstallCallback *servant,
 		       CORBA_Environment * ev)
 {
 	GList *categories;
-	PackageData *pack;
+
 	categories = parse_memory_xml_package_list ((char*)xmlcorbapack, strlen (xmlcorbapack));
 	if (categories==NULL) {
 		g_warning ("uninstall_failed called with error in xml.");
@@ -306,15 +306,13 @@ eazel_install_callback_create_corba_object (BonoboObject *service) {
 void
 eazel_install_callback_unref (GtkObject *object)
 {
-	EazelInstallCallback *service;
-
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (EAZEL_INSTALL_CALLBACK (object));
 	
 	bonobo_object_unref (BONOBO_OBJECT (object));
 }
 
-void
+static void
 eazel_install_callback_finalize (GtkObject *object)
 {
 	EazelInstallCallback *service;

@@ -152,6 +152,8 @@ int main(int argc, char *argv[]) {
 		bonobo_main ();
 	} while (trilobites_active > 0);
 
+	g_message ("EazelInstall service terminating");
+
 	CORBA_exception_free (&ev);
 
 	return 0;

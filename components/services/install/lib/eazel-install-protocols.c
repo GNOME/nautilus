@@ -40,9 +40,10 @@
 #include <libgnomevfs/gnome-vfs.h>
 #endif /* EAZEL_INSTALL_SLIM */
 
+/* #define EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
+
 /* evil evil hack because RPM doesn't understand that a package for i386 is still okay to run on i686! */
 #define ASSUME_ix86_IS_i386
-
 
 typedef struct {
 	EazelInstall *service;
@@ -326,12 +327,6 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 	return FALSE; 	
 }
 
-static void 
-free_string (char *str, gpointer unused) \
-{
-	g_free (str);
-}
-
 gboolean 
 gnome_vfs_fetch_remote_file (EazelInstall *service, 
 			     char *url, 
@@ -342,9 +337,6 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 	GnomeVFSXferOptions xfer_options = 0;
 	GnomeVFSURI *src_uri;
 	GnomeVFSURI *dest_uri;
-	
-	GList *src_uri_list, *dest_uri_list;
-	char *tmp;
 	char *t_file;
 	gnome_vfs_callback_struct *cbstruct;
 
@@ -382,6 +374,9 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 		trilobite_debug ("File download successfull");
 	} else {
 		trilobite_debug ("File download failed");
+		if (result == GNOME_VFS_ERROR_BAD_PARAMETERS) {
+			trilobite_debug ("gnome_vfs_xfer_uri returned BAD_PARAMETERS");
+		}
 	}
  
 	/* Free the various stuff */
@@ -419,7 +414,7 @@ local_fetch_remote_file (EazelInstall *service,
 	return result;
 }
 
-eazel_install_file_fetch_function*
+static eazel_install_file_fetch_function*
 eazel_install_fill_file_fetch_table (void)
 {
 	eazel_install_file_fetch_function *res;
@@ -528,6 +523,14 @@ eazel_install_fetch_package (EazelInstall *service,
 	{
 		if (package->remote_url) {
 			url = g_strdup (package->remote_url);
+		} else if (package->eazel_id) {
+			url = get_url_for_package (service, RPMSEARCH_ENTRY_ID, 
+						   package->eazel_id, 
+						   package);
+		} else if (g_list_length (package->provides)==1) {
+			url = get_url_for_package (service, RPMSEARCH_ENTRY_PROVIDES, 
+						   package->provides->data,
+						   package);
 		} else {
 			url = get_url_for_package (service, RPMSEARCH_ENTRY_NAME, package, package);
 		}
@@ -564,55 +567,6 @@ eazel_install_fetch_package (EazelInstall *service,
 	}
 	
 	g_free (url);
-	return result;
-}
-
-gboolean eazel_install_fetch_package_which_provides (EazelInstall *service,
-						     const char *file,
-						     PackageData *package)
-{
-	gboolean result;
-	char *url;
-	char *targetname;
-
-	g_assert (package != NULL);
-
-	result = FALSE;
-
-	switch (eazel_install_get_protocol (service)) {
-	case PROTOCOL_FTP:
-	case PROTOCOL_HTTP: 
-	{
-		url = get_url_for_package (service, RPMSEARCH_ENTRY_PROVIDES, (const gpointer)file, package);
-	}
-	break;
-	case PROTOCOL_LOCAL:
-		g_warning (_("Using local protocol cannot resolve library dependencies"));
-		url = NULL;
-		break;
-	};
-
-	if (url == NULL) {
-		g_warning (_("Could not get a URL for %s"), file);
-	} else {
-		/* FIXME bugzilla.eazel.com 1315:
-		   Loose the check once a proper rpmsearch.cgi is up and running */
-		if (filename_from_url (url) && strlen (filename_from_url (url))>1) {
-			targetname = g_strdup_printf ("%s/%s",
-						      eazel_install_get_tmp_dir (service),
-						      filename_from_url (url));
-			result = eazel_install_fetch_file (service, url, NULL, targetname);
-			if (result) {
-				packagedata_fill_from_file (package, targetname);
-			} else {
-				package->status = PACKAGE_DEPENDENCY_FAIL;
-				g_warning (_("File download failed"));
-			}
-			g_free (targetname);
-		}
-		g_free (url);
-	}
-
 	return result;
 }
 
@@ -742,6 +696,7 @@ get_url_for_package  (EazelInstall *service,
 			g_list_free (packages);
 		}						
 #else /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
+		trilobite_debug ("using old cgi");
 		if (body) {
 			/* body is already null-terminated, luckily */
 			url = g_strdup (body);
@@ -753,14 +708,17 @@ get_url_for_package  (EazelInstall *service,
 		case RPMSEARCH_ENTRY_NAME:
 			g_warning (_("Could not retrieve a URL for %s"), 
 				   rpmfilename_from_packagedata ((PackageData*)data));
+			trilobite_debug ("entry type was NAME");
 			break;
 		case RPMSEARCH_ENTRY_PROVIDES:
 			g_warning (_("Could not retrieve a URL for %s"),
 				   (char*)data);
+			trilobite_debug ("entry type was PROVIDES");
 			break;
 		case RPMSEARCH_ENTRY_ID:
 			g_warning (_("Could not retrieve a URL for id %s"),
 				   (char *)data);
+			trilobite_debug ("entry type was ID");
 			break;
 		}
 	}

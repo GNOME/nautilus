@@ -120,12 +120,14 @@ packagedata_new ()
 	pack->version = NULL;
 	pack->minor = NULL;
 	pack->archtype = NULL;
-
+	pack->source_package = FALSE;
 	pack->description = NULL;
 	pack->bytesize = 0;
 	pack->distribution = trilobite_get_distribution ();
 	pack->filename = NULL;
+	pack->eazel_id = NULL;
 	pack->remote_url = NULL;
+	pack->conflicts_checked = FALSE;
 	pack->install_root = NULL;
 	pack->provides = NULL;
 	pack->soft_depends = NULL;
@@ -194,38 +196,47 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 	headerGetEntry (*hd,
 			RPMTAG_NAME, NULL,
 			(void **) &tmp, NULL);
+	g_free (pack->name);
 	pack->name = g_strdup (tmp);
 
 	headerGetEntry (*hd,
 			RPMTAG_VERSION, NULL,
 			(void **) &tmp, NULL);
+	g_free (pack->version);
 	pack->version = g_strdup (tmp);
 
 	headerGetEntry (*hd,
 			RPMTAG_RELEASE, NULL,
 			(void **) &tmp, NULL);
+	g_free (pack->minor);
 	pack->minor = g_strdup (tmp);
 
 	headerGetEntry (*hd,
 			RPMTAG_ARCH, NULL,
 			(void **) &tmp, NULL);
+	g_free (pack->archtype);
 	pack->archtype = g_strdup (tmp);
 
 	headerGetEntry (*hd,
 			RPMTAG_SIZE, NULL,
-			(void **) &sizep, NULL);
+			(void **) &sizep, NULL);	
 	pack->bytesize = *sizep;
 
 	headerGetEntry (*hd,
 			RPMTAG_DESCRIPTION, NULL,
 			(void **) &tmp, NULL);
+	g_free (pack->description);
 	pack->description = g_strdup (tmp);
 
 	pack->packsys_struc = (gpointer)hd;
 
+	g_list_foreach (pack->provides, (GFunc)g_free, NULL);
+	g_list_free (pack->provides);
+
 	{
 		char **paths = NULL;
 		char **names = NULL;
+		int *indexes;
 		int count;
 		int index;
 
@@ -233,22 +244,25 @@ packagedata_fill_from_rpm_header (PackageData *pack,
    Lets see if RPMTAG_PROVIDES works for the older ones */
 #ifdef RPMTAG_BASENAMES
 		headerGetEntry (*hd,			
-				RPMTAG_BASENAMES, NULL,
-				(void**)&names, &count);
+				RPMTAG_DIRINDEXES, NULL,
+				(void**)&indexes, NULL);
 		headerGetEntry (*hd,			
 				RPMTAG_DIRNAMES, NULL,
-				(void**)&paths, &count);
+				(void**)&paths, NULL);
+		headerGetEntry (*hd,			
+				RPMTAG_BASENAMES, NULL,
+				(void**)&names, &count);
 #else /* RPMTAG_BASENAMES */
 		/* This will most like make eazel_install_chekc_for_file_conflicts break... */
 		headerGetEntry (*hd,			
 				RPMTAG_FILENAMES, NULL,
 				(void**)&names, &count);
 #endif /* RPMTAG_BASENAMES */
-
+		
 		for (index=0; index<count; index++) {
 			char *fullname;
 			if (paths) {
-				fullname = g_strdup_printf ("%s%s", paths[index], names[index]);
+				fullname = g_strdup_printf ("%s%s", paths[indexes[index]], names[index]);
 			} else {
 				fullname = g_strdup (names[index]);
 			}
@@ -272,25 +286,41 @@ packagedata_new_from_file (const char *file)
 
 /* FIXME bugzilla.eazel.com 1532:
    RPM specific code */
-void 
+gboolean 
 packagedata_fill_from_file (PackageData *pack, const char *filename)
 {
 	static FD_t fd;
 	Header *hd;
 
+	/* Already loaded a packsys struc ? */
+	if (pack->packsys_struc) {
+		return TRUE;
+	}
+
+	/* Open rpm */
 	fd = fdOpen (filename, O_RDONLY, 0);
 
+	if (fd == NULL) {
+		g_warning (_("Cannot open %s"), filename);
+		pack->status = PACKAGE_CANNOT_OPEN;
+		return FALSE;
+	}
+
+	/* Get Header block */
 	hd = g_new0 (Header, 1);
-	rpmReadPackageHeader (fd, hd, NULL, NULL, NULL);
+	rpmReadPackageHeader (fd, hd, &pack->source_package, NULL, NULL);
 	packagedata_fill_from_rpm_header (pack, hd);	
 
+	/* Set filename field */
 	if (pack->filename != filename) {
 		g_free (pack->filename);
 		pack->filename = g_strdup (filename);
 	}
 
+	pack->status = PACKAGE_UNKNOWN_STATUS;
+
 	fdClose (fd);
-	
+	return TRUE;
 }
 
 void 
@@ -317,6 +347,8 @@ packagedata_destroy (PackageData *pack, gboolean deep)
 	pack->bytesize = 0;
 	g_free (pack->filename);
 	pack->filename = NULL;
+	g_free (pack->eazel_id);
+	pack->eazel_id = NULL;
 	g_free (pack->remote_url);
 	pack->remote_url = NULL;
 	g_free (pack->install_root);
@@ -538,6 +570,17 @@ packagedata_modstatus_str_to_enum (const char *st)
 	return result;
 }
 
+
+PackageRequirement* 
+packagerequirement_new (PackageData *pack, 
+			PackageData *req)
+{
+	PackageRequirement *result;
+	result = g_new0 (PackageRequirement, 1);
+	result->package = pack;
+	result->required = req;
+	return result;
+}
 /* The evil marshal func */
 
 typedef void (*GtkSignal_NONE__POINTER_INT_INT_INT_INT_INT_INT) (GtkObject * object,

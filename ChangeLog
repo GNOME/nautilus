@@ -1,3 +1,104 @@
+2000-10-02  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_update_from_uri):
+
+	Fixed the loading of files provided by the rpm.
+	
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (tree_helper), (md5_check_failed):
+	Clarified the debug output.
+	
+	* components/services/install/lib/Makefile.am:
+	Removed the evil CFLAGS assignment that remove -Werror
+	
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_md5_check_failed), (impl_uninstall_failed),
+	(eazel_install_callback_unref):
+	Fixed some warnings.
+	
+	* components/services/install/lib/eazel-install-private.h:
+	Moved the funky glist_step into -private.h
+	Removed some rpm vars.
+	
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_initialize),
+	Removed some of the rpm variables in the private part.
+	(eazel_install_emit_preflight_check_default),
+	(eazel_install_emit_delete_files_default), (string_list_copy):
+	Fixing warnings
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(gnome_vfs_fetch_remote_file), (eazel_install_fetch_package),
+	(get_url_for_package):
+	Fixing warnings. And made fetch_package be more generel, as
+	opposed to having three different fetchers. So I've removed
+	_which_provides and I need to remove _by_id.
+	
+	* components/services/install/lib/eazel-install-protocols.h:
+	Removed fetch_which_provides.
+	
+	* components/services/install/lib/eazel-install-public.h:
+	Moved the funky glist_step into -private.h
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_pre_install_packages), (install_new_packages),
+	(eazel_install_download_packages),
+	(eazel_install_check_for_file_conflicts),
+	(eazel_install_do_install_packages), (hest),
+	(eazel_install_add_to_rpm_set),
+	(eazel_install_requirement_dep_compare),
+	(eazel_install_package_version_compare),
+	(eazel_install_check_if_related_package),
+	(eazel_install_fetch_rpm_dependencies),
+	(eazel_install_fetch_dependencies),
+	(eazel_install_do_rpm_dependency_check),
+	(eazel_install_do_dependency_check), (eazel_install_ensure_deps),
+	(eazel_uninstall_upward_traverse):
+	Fixed most of bug 3373, completely revamped the dep checking. Now
+	theres a packagesystem dependent depchecker and a seperate filedep
+	check afterwards. The packagesystem dependent returns a list of
+	package pairs <a,b>, where a requires b. fetch_dependencies then
+	traverses that list, downloads and makes the nessecary checks. The
+	makes fetch_dependencies package independent, and also fixes bug
+	1698.
+	Also various debug message fixing etc.
+	
+	* components/services/install/lib/eazel-install-rpm-signature.c:
+	(read_rpm_signature), (trilobite_check_rpm_signature):
+	Warning fixing.
+	
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_new), (packagedata_fill_from_rpm_header),
+	(packagedata_fill_from_file), (packagedata_destroy),
+	(packagerequirement_new):
+	Added three new fields, eazel_id for the SoftCat id (as opposed to
+	using the name field, the conflicts_checked boolean to prevent
+	doing file conflict checking more then once and a boolean flag for
+	tagging a package as being a source package.
+	Also fixed 3344, the file list is now read correctly.
+ 	Created	the PacakgeRequirement structure, used for bug 3373.
+	Fixed warnings.
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_package), (parse_category), (osd_parse_implementation),
+	(osd_parse_softpkg):
+	Fixed the uses of xml_get_value since I changed the semantics to
+	be a "const char*" function.
+	
+	* components/services/install/server/main.c: (main):
+	Print a string when terminating.
+	
+	* components/services/summary/lib/eazel-summary-shared.c:
+	(parse_a_service), (parse_a_update_news_item):
+	Fixed the uses of xml_get_value since I changed the semantics to
+	be a "const char*" function.
+	
+	* components/services/trilobite/libtrilobite/helixcode-utils.h:
+	* components/services/trilobite/libtrilobite/helixcode-utils.c:
+	Changed xml_get_value to return const char* (bug 2448).
+	
 2000-10-02  Darin Adler  <darin@eazel.com>
 
 	More work on whittling the state machine down to size.

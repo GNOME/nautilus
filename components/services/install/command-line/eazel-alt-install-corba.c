@@ -322,10 +322,11 @@ tree_helper (EazelInstallCallback *service,
 			 rpmfilename_from_packagedata (pd));
 		break;
 	default:
-		fprintf (stdout, "%s%s%s %s (status %d)\n", 
+		fprintf (stdout, "%s%s%s-%s %s(status %d)\n", 
 			 indent,  indent_type,
 			 pd->name, 
-			 pd->status==PACKAGE_ALREADY_INSTALLED ? "already installed" : "",
+			 pd->version,
+			 pd->status==PACKAGE_ALREADY_INSTALLED ? "already installed " : "",
 			 pd->status);
 		break;
 	}
@@ -413,8 +414,8 @@ md5_check_failed (EazelInstallCallback *service,
 		  gpointer unused) 
 {
 	fprintf (stdout, "Package %s failed md5 check!\n", package->name);
-	fprintf (stdout, "MD5 checksum is  %s\n", package->md5);
-	fprintf (stdout, "should have been %s\n", actual_md5);
+	fprintf (stdout, "server MD5 checksum is %s\n", package->md5);
+	fprintf (stdout, "actual MD5 checksum is %s\n", actual_md5);
 }
 
 static PackageData*

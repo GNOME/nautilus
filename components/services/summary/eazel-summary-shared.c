@@ -120,11 +120,11 @@ parse_a_service (xmlNodePtr node)
 
 	return_value->name = g_strdup (xml_get_value (node, "NAME"));
 	return_value->icon = g_strdup (xml_get_value (node, "ICON"));
-	return_value->button_label = (xml_get_value (node, "BUTTON_LABEL"));
-	return_value->uri = (xml_get_value (node, "URI"));
-	return_value->description_header = (xml_get_value (node, "DESCRIPTION_HEADER"));
-	return_value->description = (xml_get_value (node, "DESCRIPTION"));
-	tempbuf = (xml_get_value (node, "ENABLED"));
+	return_value->button_label = g_strdup (xml_get_value (node, "BUTTON_LABEL"));
+	return_value->uri = g_strdup (xml_get_value (node, "URI"));
+	return_value->description_header = g_strdup (xml_get_value (node, "DESCRIPTION_HEADER"));
+	return_value->description = g_strdup (xml_get_value (node, "DESCRIPTION"));
+	tempbuf = g_strdup (xml_get_value (node, "ENABLED"));
 	if (tempbuf[0] == 'T' || tempbuf[0] == 't') {
 		return_value->enabled = TRUE;
 	}
@@ -161,12 +161,12 @@ parse_a_update_news_item (xmlNodePtr node)
 	return_value = update_news_data_new ();
 
 	return_value->name = g_strdup (xml_get_value (node, "NAME"));
-	return_value->version = (xml_get_value (node, "VERSION"));
+	return_value->version = g_strdup (xml_get_value (node, "VERSION"));
 	return_value->priority = g_strdup (xml_get_value (node, "PRIORITY"));
 	return_value->description = g_strdup (xml_get_value (node, "DESCRIPTION"));
 	return_value->icon = g_strdup (xml_get_value (node, "ICON"));
 	return_value->button_label = g_strdup (xml_get_value (node, "BUTTON_LABEL"));
-	return_value->uri = (xml_get_value (node, "URI"));
+	return_value->uri = g_strdup (xml_get_value (node, "URI"));
 
 	return return_value;
 

@@ -45,7 +45,7 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 
 	xmlNodePtr dep;
 	PackageData* rv;
-	char *temp;
+	const char *temp;
 
 	rv = packagedata_new ();
 
@@ -122,7 +122,7 @@ parse_category (xmlNode* cat) {
 	char *text;
 
 	category = categorydata_new ();
-	category->name = xml_get_value (cat, "name");
+	category->name = g_strdup (xml_get_value (cat, "name"));
 
 	pkg = cat->childs;
 	if (pkg == NULL) {
@@ -579,28 +579,26 @@ osd_parse_implementation (PackageData *pack,
 			  xmlNodePtr node)
 {
 	xmlNodePtr child;
-	char *temp;
 
 	child = node->childs;
 	while (child) {
 		if (g_strcasecmp (child->name, "PROCESSOR")==0) {
-			pack->archtype = xml_get_value (child, "VALUE");
+			pack->archtype = g_strdup (xml_get_value (child, "VALUE"));
 		} else if (g_strcasecmp (child->name, "OS")==0) {
 			char *dtmp = xmlGetProp (child, "VALUE");
 			if (dtmp) {
 				pack->distribution.name = trilobite_get_distribution_enum (dtmp,
 											   TRUE);
 			} 
-			g_free (dtmp);
 		} else if (g_strcasecmp (child->name, "CODEBASE")==0) {			
-			pack->remote_url = xml_get_value (child, "HREF");
+			const char *temp;
+			pack->remote_url = g_strdup (xml_get_value (child, "HREF"));
 			temp = xml_get_value (child, "SIZE");
 			if (temp) {
 				pack->bytesize = atoi (temp);
 			} else {
 				pack->bytesize = 0;
 			}
-			g_free (temp);
 		} else if (g_strcasecmp (child->name, "DEPENDENCY")==0) {
 			/* presume this is a soft-depends */
 			osd_parse_dependency (pack, child);
@@ -622,9 +620,9 @@ osd_parse_softpkg (xmlNodePtr softpkg)
 
 	result = packagedata_new ();
 
-	result->name = xml_get_value (softpkg, "NAME");
-	result->version = xml_get_value (softpkg, "VERSION");
-	result->md5 = xml_get_value (softpkg, "MD5");
+	result->name = g_strdup (xml_get_value (softpkg, "NAME"));
+	result->version = g_strdup (xml_get_value (softpkg, "VERSION"));
+	result->md5 = g_strdup (xml_get_value (softpkg, "MD5"));
 	
 	child = softpkg->childs;
 	while (child) {

@@ -32,8 +32,9 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <glib.h>
+#include <netinet/in.h>
+#include <libtrilobite/trilobite-core-utils.h>
 #include "eazel-install-rpm-signature.h"
-
 
 /* some older versions of librpm are COMPLETELY INCOMPATIBLE with newer versions,
  * even though they have the same library version number!
@@ -103,7 +104,7 @@ read_rpm_lead (int fd)
 /* returns -1 if there is no GPG signature, 0 on success */
 /* on success, you must g_free the signature when done */
 static int
-read_rpm_signature (int fd, void **signature, int *signature_len)
+read_rpm_signature (int fd, char **signature, int *signature_len)
 {
 	RPMHeader header;
 	RPMEntry *entry = NULL;
@@ -241,7 +242,7 @@ trilobite_check_rpm_signature (const char *filename, const char *keyring_filenam
 	int stdin_fd, stdout_fd, stderr_fd;
 	char *temp_filename;
 	char *p;
-	void *signature = NULL;
+	char *signature = NULL;
 	int err;
 	int i;
 	int status;

@@ -137,7 +137,7 @@ struct _CategoryData {
 	GList* packages;
 	GList* depends;			/* used only for the GUI: GList<char *> -- other category names */
 };
-CategoryData *categorydata_new ();
+CategoryData *categorydata_new (void);
 void categorydata_destroy_foreach (CategoryData *cd, gpointer ununsed);
 void categorydata_destroy (CategoryData *pd);
 
@@ -157,6 +157,12 @@ struct _PackageData {
 	char *remote_url;		/* url where we can get this rpm */
 	char *md5;
 	char *install_root;
+	
+	char *eazel_id;
+
+	gboolean source_package;
+	gboolean conflicts_checked; /* set to TRUE when the files provided by the package
+				       have been checked against already installed packages */
 	
 	/* 
 	   toplevel = TRUE if this a package the user requested.
@@ -197,7 +203,7 @@ PackageData* packagedata_new_from_rpm_header (Header*);
 PackageData* packagedata_new_from_rpm_conflict (struct rpmDependencyConflict);
 PackageData* packagedata_new_from_rpm_conflict_reversed (struct rpmDependencyConflict);
 
-void packagedata_fill_from_file (PackageData *pack, const char *filename);
+gboolean packagedata_fill_from_file (PackageData *pack, const char *filename);
 void packagedata_fill_from_rpm_header (PackageData *pack, Header*);
 
 void packagedata_remove_soft_dep (PackageData *remove, PackageData *from);
@@ -212,6 +218,13 @@ int packagedata_hash_equal (PackageData *a, PackageData *b);
 void packagedata_add_pack_to_breaks (PackageData *pack, PackageData *b);
 void packagedata_add_pack_to_soft_deps (PackageData *pack, PackageData *b);
 void packagedata_add_pack_to_hard_deps (PackageData *pack, PackageData *b);
+
+typedef struct {
+	PackageData *package;
+	PackageData *required;
+} PackageRequirement;
+
+PackageRequirement* packagerequirement_new (PackageData *pack, PackageData *req);
 
 /* Evil marshal func */
 
