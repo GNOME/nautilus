@@ -695,7 +695,8 @@ nautilus_icons_view_icon_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable
           {
 	    gint box_width = floor(item->x2 - item->x1);
             gint center_offset = (box_width - priv->pixbuf->art_pixbuf->width) >> 1;
- 
+            center_offset = 0; /* disabled for now, as it was causing glitches */
+            
             gnome_canvas_item_i2c_affine (item, i2c);
 	    compute_render_affine (icon_view_item, render_affine, i2c);
 
