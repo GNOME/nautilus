@@ -79,7 +79,7 @@ struct NautilusWindowDetails
 #define NAUTILUS_WINDOW_MIN_WIDTH			450
 #define NAUTILUS_WINDOW_MIN_HEIGHT			350
 
-#define NAUTILUS_WINDOW_DEFAULT_WIDTH			700
+#define NAUTILUS_WINDOW_DEFAULT_WIDTH			800
 #define NAUTILUS_WINDOW_DEFAULT_HEIGHT			550
 
 void               nautilus_window_set_status                     (NautilusWindow    *window,
