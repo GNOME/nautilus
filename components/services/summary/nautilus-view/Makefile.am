@@ -3,6 +3,7 @@ NULL =
 CPPFLAGS =							\
 	-DPREFIX=\"$(prefix)\"					\
 	 -DG_LOG_DOMAIN=\"trilobite-eazel-summary\"		\
+	-DDATADIR=\"$(datadir)\"		\
 	$(NULL)
 
 INCLUDES =								\
@@ -22,6 +23,8 @@ oafdir = $(datadir)/oaf
 oaf_DATA =								\
 	nautilus-summary-view.oafinfo
 
+uidir = $(datadir)/gnome/ui
+ui_DATA = nautilus-summary-view-ui.xml
 
 bin_PROGRAMS =								\
 	nautilus-summary-view
@@ -47,4 +50,4 @@ nautilus_summary_view_LDADD =						\
 	$(AMMONITE_LIBS)						\
 	$(NULL)
 
-EXTRA_DIST = $(oaf_DATA)
+EXTRA_DIST = $(oaf_DATA) $(ui_DATA)

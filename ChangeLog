@@ -1,3 +1,20 @@
+2000-10-19  Andy Hertzfeld  <andy@eazel.com>
+
+	first pass at making the summary view merge its menu commands onto
+	the services menu. This isn't finished yet.
+	
+	* components/services/summary/nautilus-view/Makefile.am:
+	added a ui xml file for the summary menu commands
+	* components/services/summary/nautilus-view/nautilus-summary-view-ui.xml:
+	defined the summary view menu items
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (nautilus_summary_view_initialize), (bonobo_register_callback),
+	(bonobo_login_callback), (detach_ui), (merge_bonobo_menu_items):
+	merge the menu items when the view is activated, unmerge when destroyed
+	
+	* src/nautilus-window-service-ui.c: (goto_software_catalog):
+	made the software catalog command use the real url.
+	
 2000-10-19  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-utilities.c:

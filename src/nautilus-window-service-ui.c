@@ -52,7 +52,7 @@ goto_software_catalog (BonoboUIComponent *component,
 		       const char *verb)
 {
 	nautilus_window_goto_uri (NAUTILUS_WINDOW (callback_data),
-				  "eazel:catalog");
+				  "eazel-services:/catalog");
 }
 
 static void

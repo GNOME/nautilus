@@ -29,6 +29,7 @@
 #include "shared-service-utilities.h"
 
 #include <gnome-xml/tree.h>
+#include <bonobo/bonobo-control.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -195,6 +196,9 @@ static void	generate_error_dialog			(NautilusSummaryView		*view);
 static void	generate_login_dialog			(NautilusSummaryView		*view);
 static void	widget_set_nautilus_background_color	(GtkWidget			*widget,
 							 const char			*color);
+static void	merge_bonobo_menu_items			(BonoboControl *control,
+							 gboolean state,
+							 gpointer user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, GTK_TYPE_EVENT_BOX)
 
@@ -1189,6 +1193,13 @@ nautilus_summary_view_initialize (NautilusSummaryView *view)
 		view->details->user_control = CORBA_OBJECT_NIL;
 	}
 
+	/* get notified when we are activated so we can merge in our menu items */
+        gtk_signal_connect (GTK_OBJECT (nautilus_view_get_bonobo_control
+					(view->details->nautilus_view)),
+                            "activate",
+                            merge_bonobo_menu_items,
+                            view);
+
 	gtk_widget_show (GTK_WIDGET (view));
 
 	CORBA_exception_free (&ev);
@@ -1259,4 +1270,67 @@ summary_load_location_callback (NautilusView		*nautilus_view,
 
 }
 
+static void
+bonobo_register_callback (BonoboUIComponent *ui, gpointer user_data, const char *verb)
+{
+	NautilusSummaryView *view;
+	
+	view = NAUTILUS_SUMMARY_VIEW (user_data);
+	register_button_cb (NULL, view);
+}
+
+static void
+bonobo_login_callback (BonoboUIComponent *ui, gpointer user_data, const char *verb)
+{
+	NautilusSummaryView *view;
+	
+	view = NAUTILUS_SUMMARY_VIEW (user_data);
+	login_button_cb (NULL, view);
+}
+
+static void
+detach_ui (gpointer data)
+{
+	BonoboUIComponent *ui;
+
+	ui = BONOBO_UI_COMPONENT (data);
+	bonobo_ui_component_unset_container (ui);
+	bonobo_object_unref (BONOBO_OBJECT (ui));
+}
+
+static void
+merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_data)
+{
+ 	NautilusSummaryView *view;
+	BonoboUIComponent *ui_component;
+	BonoboUIVerb verbs [] = {
+		BONOBO_UI_VERB ("Register", bonobo_register_callback),
+		BONOBO_UI_VERB ("Login", bonobo_login_callback),
+		BONOBO_UI_VERB_END
+	};
+
+	g_assert (BONOBO_IS_CONTROL (control));
+	
+	view = NAUTILUS_SUMMARY_VIEW (user_data);
+
+	if (state) {
+		ui_component = nautilus_view_set_up_ui (view->details->nautilus_view,
+							DATADIR,
+							"nautilus-summary-view-ui.xml",
+							"nautilus-summary-view");
+									
+		bonobo_ui_component_add_verb_list_with_data (ui_component, verbs, view);
+	
+		/* Attach the UI to the view, so we can detach it when destroyed. */
+		gtk_object_set_data_full (GTK_OBJECT (view),
+				  "summary UI",
+				  ui_component,
+				  detach_ui);
+	
+	}
+
+        /* Note that we do nothing if state is FALSE. Nautilus content
+         * views are never explicitly deactivated
+	 */
+}
 
