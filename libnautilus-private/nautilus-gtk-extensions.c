@@ -346,6 +346,7 @@ nautilus_popup_menu_position_func (GtkMenu   *menu,
 				   gpointer  user_data)
 {
 	GdkPoint *offset;
+	GtkRequisition requisition;
 
 	g_assert (x != NULL);
 	g_assert (y != NULL);
@@ -355,12 +356,13 @@ nautilus_popup_menu_position_func (GtkMenu   *menu,
 	g_assert (offset != NULL);
 
 	/*
-	 * XXX: Check for screen boundaries.  Also, the cast from 
-	 * gint16 might cause problems.  Unfortunately, GdkPoint
-	 * uses gint16.
+	 * FIXME: The cast from gint16 might cause problems.  
+	 * Unfortunately, GdkPoint uses gint16.
 	 */
-	*x += (int) offset->x;
-	*y += (int) offset->y;
+	gtk_widget_size_request (GTK_WIDGET (menu), &requisition);
+	  
+	*x = CLAMP (*x + (int) offset->x, 0, MAX (0, gdk_screen_width () - requisition.width));
+	*y = CLAMP (*y + (int) offset->y, 0, MAX (0, gdk_screen_height () - requisition.height));
 }
 
 /**

@@ -28,19 +28,9 @@
 
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-stock.h>
 
-static void
-show_error_message_box (const char *message)
-{
-	GtkWidget *message_box;
-
-	message_box = gnome_message_box_new
-		(message, GNOME_MESSAGE_BOX_ERROR,
-		 GNOME_STOCK_BUTTON_OK, NULL);
-	gtk_widget_show (message_box);
-}
+#include <libnautilus-extensions/nautilus-gnome-extensions.h>
 
 void
 fm_report_error_renaming_file (NautilusFile *file,
@@ -66,13 +56,14 @@ fm_report_error_renaming_file (NautilusFile *file,
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
 		g_warning ("Hit unhandled case %d in fm_report_error_renaming_file, tell sullivan@eazel.com", error);
+		/* fall through */
 		original_name = nautilus_file_get_name (file);
 		message = g_strdup_printf (_("Sorry, couldn't rename \"%s\" to \"%s\"."),
 					   original_name, new_name);
 		g_free (original_name);
 	}
 
-	show_error_message_box (message);
+	nautilus_error_dialog (message);
 	g_free (message);
 }
 
@@ -94,6 +85,6 @@ fm_report_error_setting_permissions (NautilusFile *file,
 		g_free (file_name);
 	}
 
-	show_error_message_box (message);
+	nautilus_error_dialog (message);
 	g_free (message);
 }		

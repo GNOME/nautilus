@@ -1,3 +1,27 @@
+2000-06-08  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 542 (context menus in directory view sometimes
+	partially offscreen)
+
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_popup_menu_position_func): Made the menu-positioning
+	function take screen size into account.
+
+	Fixed bug 541 (unusably wide dialog when trying to
+	rename a file to a gigantically long name)
+
+	* src/file-manager/fm-error-reporting.c:
+	(fm_report_error_renaming_file),
+	(fm_report_error_setting_permissions):
+	Used nautilus_error_dialog (which does word wrapping)
+	instead of GnomeMessageBox directly.
+
+	Fixed bug 1242 (Possibly unnecessary widget resizing when
+	content view swapped)
+
+	* src/nautilus-window.c: (nautilus_window_real_set_content_view):
+	Scientists proved that it was unnecessary. Removed it.
+
 2000-06-08  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/rpmview/nautilus-rpm-view.c:

@@ -1242,13 +1242,6 @@ nautilus_window_real_set_content_view (NautilusWindow *window, NautilusViewFrame
 		}
 	}
 
-	/* FIXME bugzilla.eazel.com 1242: 
-	 * Why is this needed? We just removed and added a new
-	 * view above? The content_hbox should be able to take care of
-	 * itself.
-	 */
-	gtk_widget_queue_resize (window->content_hbox);
-
 	window->content_view = new_view;
 }
 
