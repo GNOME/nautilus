@@ -1,5 +1,14 @@
 2000-04-10	John Sullivan <sullivan@eazel.com>
 
+	Fixed bug 377 (clipping emblems in list view looks bad
+	and loses information)
+
+	* libnautilus/nautilus-list.c:
+	(draw_row): Made it draw the ellipsis character if there's
+	not enough room to show all emblems.
+
+2000-04-10	John Sullivan <sullivan@eazel.com>
+
 	* libnautilus/nautilus-list.c:
 	(nautilus_list_initialize_class), (nautilus_list_initialize),
 	(select_or_unselect_row_callback), (emit_selection_changed),

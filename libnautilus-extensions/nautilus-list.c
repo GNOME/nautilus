@@ -1725,23 +1725,44 @@ draw_row (GtkCList     *clist,
 	  gdk_gc_set_clip_rectangle (fg_gc, NULL);
 	  break;
 	case NAUTILUS_CELL_PIXBUF_LIST:
-	  for (p = NAUTILUS_CELL_PIXBUF_LIST (clist_row->cell[i])->pixbufs; p != NULL; p = p->next) {
+	  {
 		  GdkPixmap *gdk_pixmap;
 		  GdkBitmap *mask;
+		  guint	     pixbuf_width;
+		  guint	     ellipsis_width;
 
-		  gdk_pixbuf_render_pixmap_and_mask (p->data, &gdk_pixmap, &mask, 128);
-		  height = gdk_pixbuf_get_height (p->data);
+		  ellipsis_width = gdk_string_width (style->font, "...");
+		  
+		  for (p = NAUTILUS_CELL_PIXBUF_LIST (clist_row->cell[i])->pixbufs; p != NULL; p = p->next) {
+			  gdk_pixbuf_render_pixmap_and_mask (p->data, &gdk_pixmap, &mask, 128);
+			  pixbuf_width = gdk_pixbuf_get_width (p->data);
 
-	  	  offset = draw_cell_pixbuf (clist->clist_window,
-		  			     &clip_rectangle, fg_gc,
-		  			     p->data,
-				    	     offset,
-				    	     clip_rectangle.y + clist_row->cell[i].vertical +
-				    	     (clip_rectangle.height - height) / 2);
+			  if ((p->next != NULL && pixbuf_width + ellipsis_width >= 
+			  			 clip_rectangle.x + clip_rectangle.width - offset) ||
+			      (pixbuf_width >= clip_rectangle.x + clip_rectangle.width - offset)) {
+				/* Not enough room for this icon & ellipsis, just draw ellipsis. */
+				
+				gdk_draw_string (clist->clist_window, style->font, fg_gc,
+					 offset,
+					 clip_rectangle.y + clip_rectangle.height/2,
+					 "...");
 
-		   offset += PIXBUF_LIST_SPACING;
-	  }
+				break;
+			  }
+
+			  height = gdk_pixbuf_get_height (p->data);
+
+		  	  offset = draw_cell_pixbuf (clist->clist_window,
+			  			     &clip_rectangle, fg_gc,
+			  			     p->data,
+					    	     offset,
+					    	     clip_rectangle.y + clist_row->cell[i].vertical +
+					    	     (clip_rectangle.height - height) / 2);
+
+			   offset += PIXBUF_LIST_SPACING;
+		  }
 	  break;
+	  }
 	default:
 	  break;
 	}
