@@ -36,6 +36,8 @@ extern "C" {
 
 char *mozilla_events_get_href_for_mouse_event (gpointer mouse_event);
 
+gboolean mozilla_events_is_in_form_POST_submit (gpointer mouse_event);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

@@ -1,3 +1,23 @@
+2000-10-07  Mike Fleming  <mfleming@eazel.com>
+
+	* components/mozilla/main.c: (main):
+	* components/mozilla/mozilla-events.cpp:
+	* components/mozilla/mozilla-events.h:
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_uris_differ_only_by_fragment_identifier),
+	(mozilla_progress_callback), (mozilla_dom_mouse_click_callback):
+
+	Support POST-based form submissions in embedded mozilla
+	(bugzilla.eazel.com 3484).  With this change, navigations involving
+	POST's aren't forwarded to Nautilus, they are handled inside Mozilla
+	directly.  This means that the URI won't change and the navigation won't
+	be logged in the history buffer, but its better than nothing.
+
+	Note that this fix only works when using Mozilla M18.
+
+	Note that there seem to be some general bumps with web-browsing with
+	both M17 and M18 right now.
+
 2000-10-07  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-file.c:

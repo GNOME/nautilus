@@ -635,6 +635,7 @@ mozilla_uris_differ_only_by_fragment_identifier (const char *uri1, const char *u
 {
 	char *uri1_hash;
 	char *uri2_hash;
+	gboolean ret = FALSE;
 
 	uri1_hash = strchr (uri1, '#');
 	uri2_hash = strchr (uri2, '#');
@@ -643,33 +644,31 @@ mozilla_uris_differ_only_by_fragment_identifier (const char *uri1, const char *u
 		/* neither has a fragment identifier - return true
 		 * only if they match exactly 
 		 */
-		return (strcasecmp (uri1, uri2) == 0);
-	}
-
-	if (uri1_hash == NULL) {
+		ret = (strcasecmp (uri1, uri2) == 0);
+	} else if (uri1_hash == NULL) {
 		/* only the second has an fragment identifier - return
 		 * true only if the part before the fragment
 		 * identifier matches the first URI 
 		 */
-		return (strncasecmp (uri1, uri2, uri2_hash - uri2) == 0);
-	}
-
-	if (uri2_hash == NULL) {
+		ret = (strncasecmp (uri1, uri2, uri2_hash - uri2) == 0);
+	} else if (uri2_hash == NULL) {
 		/* only the first has a fragment identifier - return
 		 * true only if the part before the fragment
 		 * identifier matches the second URI 
 		 */
-		return (strncasecmp (uri1, uri2, uri1_hash - uri1) == 0);
-	}
-
-	if (uri1_hash - uri1 == uri2_hash - uri2) {
+		ret = (strncasecmp (uri1, uri2, uri1_hash - uri1) == 0);
+	} else if (uri1_hash - uri1 == uri2_hash - uri2) {
 		/* both have a fragment identifier - return true only
 		 * if the parts before the fragment identifier match
 		 */
-		return (strncasecmp (uri1, uri2, uri1_hash - uri1) == 0);
+		ret = (strncasecmp (uri1, uri2, uri1_hash - uri1) == 0);
 	}
+
+	 if (ret) {
+	 	g_print("%s: returning TRUE for URI's '%s' and '%s'\n", __FUNCTION__, uri1, uri2);
+	 }
 	
-	return FALSE;
+	return ret;
 }
 
 static void
@@ -815,8 +814,8 @@ mozilla_link_message_callback (GtkMozEmbed *mozilla, gpointer user_data)
 
 static void
 mozilla_progress_callback (GtkMozEmbed *mozilla,
-			   gint         max_progress,
 			   gint         current_progress,
+			   gint         max_progress,
 			   gpointer     user_data)
 {
  	NautilusMozillaContentView	*view;
@@ -900,26 +899,34 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 	g_print ("%s (%p)\n", __FUNCTION__, dom_event);
 #endif
 
-	href = mozilla_events_get_href_for_mouse_event (dom_event);
+	if (mozilla_events_is_in_form_POST_submit (dom_event)) {
+		g_print ("%s: is a POST submit\n", __FUNCTION__);
+		/*blatant lie*/
+		view->details->got_called_by_nautilus = TRUE;
+	} else {
+		g_print ("%s: is NOT a POST submit\n", __FUNCTION__);
 
-	/* 
-	 * The return value over here needs to be psychoanlized some.
-	 * In theory, a return value of NS_OK, which is 0 (yes, zero)
-	 * in the Mozilla universe means that the dom event got handled
-	 *
-	 * Need to look at the gtkmozembed.cpp code more carefully.
-	 */
+		href = mozilla_events_get_href_for_mouse_event (dom_event);
 
-	if (href && mozilla_is_uri_handled_by_nautilus (href)) {
-#ifdef DEBUG_ramiro
-		g_print ("%s() href = %s\n", __FUNCTION__, href);
-#endif
-		bonobo_object_ref (BONOBO_OBJECT (view->details->nautilus_view));
-		nautilus_view_open_location (view->details->nautilus_view, href);
-		bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
-		g_free (href);
+		/* 
+		 * The return value over here needs to be psychoanlized some.
+		 * In theory, a return value of NS_OK, which is 0 (yes, zero)
+		 * in the Mozilla universe means that the dom event got handled
+		 *
+		 * Need to look at the gtkmozembed.cpp code more carefully.
+		 */
 
-		return 0;
+		if (href && mozilla_is_uri_handled_by_nautilus (href)) {
+	#ifdef DEBUG_ramiro
+			g_print ("%s() href = %s\n", __FUNCTION__, href);
+	#endif
+			bonobo_object_ref (BONOBO_OBJECT (view->details->nautilus_view));
+			nautilus_view_open_location (view->details->nautilus_view, href);
+			bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
+			g_free (href);
+
+			return 0;
+		}
 	}
 	
 	return TRUE;

@@ -35,6 +35,8 @@
 
 #include <stdlib.h>
 
+#define nopeDEBUG_mfleming 1
+
 static int object_count = 0;
 
 static void
@@ -106,6 +108,10 @@ main (int argc, char *argv[])
 	g_free (registration_id);
 
 	gnome_vfs_init ();
+
+#ifdef DEBUG_mfleming
+	g_print ("OAF registration complete.\n");
+#endif
 
 	do {
 		bonobo_main ();

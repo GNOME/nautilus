@@ -26,6 +26,7 @@
  */
 
 #define nopeDEBUG_ramiro 1
+#define nopeDEBUG_mfleming 1
 
 #include <config.h>
 
@@ -39,6 +40,8 @@
 #include "nsIDOMNode.h"
 #include "nsIDOMEventTarget.h"
 #include "nsIDOMHTMLElement.h"
+#include "nsIDOMHTMLInputElement.h"
+#include "nsIDOMHTMLFormElement.h"
 #include "nsIDOMNamedNodeMap.h"
 
 extern "C" char *
@@ -121,16 +124,87 @@ mozilla_events_get_href_for_mouse_event (gpointer mouse_event)
 		
 		// Test if we're at the top of the document
 		if (!parentNode) {
+#ifdef DEBUG_ramiro
 			g_print ("dont got no parent\n");
+#endif
 			node = nsnull;
 			break;
 		}
 		
+#ifdef DEBUG_ramiro
 		g_print ("looking at the parent\n");
+#endif
 		
 		node = parentNode;
 
 	} while (node);
 	
 	return NULL;
+}
+
+
+/*
+ * returns TRUE if the given event occurs in a SUBMIT button to a form with method=POST
+ */
+/* FIXME this doesn't handle form submissions with a BUTTON or by hitting <return> */
+extern "C" gboolean
+mozilla_events_is_in_form_POST_submit (gpointer mouse_event)
+{
+	g_return_val_if_fail (mouse_event != NULL, FALSE);
+
+	nsIDOMEvent* aMouseEvent = (nsIDOMEvent*) mouse_event;
+	
+	nsCOMPtr<nsIDOMMouseEvent> mouseEvent (do_QueryInterface (aMouseEvent));
+
+	if (!mouseEvent) {
+		return FALSE;
+	}
+	
+	nsCOMPtr<nsIDOMEventTarget> targetNode;
+	
+	aMouseEvent->GetTarget (getter_AddRefs (targetNode));
+	
+	if (!targetNode) {
+		return FALSE;
+	}
+	
+	nsCOMPtr<nsIDOMHTMLInputElement> node = do_QueryInterface (targetNode);
+
+	if (!node) {
+		return FALSE;
+	}
+
+	nsAutoString input_type_name;
+
+	node->GetType (input_type_name);
+
+#ifdef DEBUG_mfleming
+	char *cstr = input_type_name.ToNewCString();
+	g_print ("input node of type '%s'\n", cstr);
+	nsMemory::Free (cstr);
+#endif
+
+	if ( ! ( input_type_name.EqualsWithConversion ("SUBMIT", PR_TRUE)
+		|| input_type_name.EqualsWithConversion ("IMAGE", PR_TRUE) )
+	) {
+		return FALSE;
+	}
+
+	nsCOMPtr<nsIDOMHTMLFormElement> form_node;
+
+	node->GetForm (getter_AddRefs (form_node));
+
+	if (!form_node) {
+		return FALSE;
+	}
+
+	nsAutoString form_method;
+
+	form_node->GetMethod (form_method);
+
+	if (form_method.EqualsWithConversion ("POST", PR_TRUE)) {
+		return TRUE;
+	}
+
+	return FALSE;
 }
