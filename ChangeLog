@@ -1,3 +1,11 @@
+2000-12-15  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(hit_test_pixbuf):
+	liberalized the alpha threshold for hit-testing, so
+	semi-transparent areas hit test positively if they have
+	any opacity at all.
+	
 2000-12-15  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* components/services/install/lib/Makefile.am: added

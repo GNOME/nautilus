@@ -1830,7 +1830,7 @@ hit_test_pixbuf (GdkPixbuf *pixbuf, const ArtIRect *pixbuf_location, const ArtIR
 			pixel = gdk_pixbuf_get_pixels (pixbuf)
 				+ y * gdk_pixbuf_get_rowstride (pixbuf)
 				+ x * 4;
-			if (pixel[3] >= 128) {
+			if (pixel[3] > 1) {
 				return TRUE;
 			}
 		}
