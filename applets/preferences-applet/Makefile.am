@@ -4,10 +4,10 @@ INCLUDES = -I. -I$(srcdir) \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
-	-I$(includedir) \
+	-I$(cflags) \
 	$(GNOME_CFLAGS) \
-	$(EEL_INCLUDEDIR) \
-	$(LIBRSVG_INCLUDEDIR) \
+	$(EEL_CFLAGS) \
+	$(LIBRSVG_CFLAGS) \
 	$(APPLETS_CFLAGS) \
 	-DDATADIR=\""$(datadir)"\" \
 	-DBINDIR=\""$(bindir)"\" \

@@ -5,8 +5,8 @@ INCLUDES =					\
 	-DG_LOG_DOMAIN=\"Nautilus-Adapter\"	\
 	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\" \
 	-I$(top_srcdir) -I$(top_builddir) -I.	\
-	$(EEL_INCLUDEDIR) \
-	$(LIBRSVG_INCLUDEDIR) \
+	$(EEL_CFLAGS) \
+	$(LIBRSVG_CFLAGS) \
 	$(GNOMEUI_CFLAGS)			\
 	$(BONOBOX_CFLAGS)			\
 	$(OAF_CFLAGS)				\

@@ -1,3 +1,31 @@
+2001-05-01  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* applets/launcher/Makefile.am:
+	* applets/preferences-applet/Makefile.am:
+	* components/adapter/Makefile.am:
+	* components/hardware/Makefile.am:
+	* components/help/Makefile.am:
+	* components/history/Makefile.am:
+	* components/image-viewer/Makefile.am:
+	* components/loser/content/Makefile.am:
+	* components/loser/sidebar/Makefile.am:
+	* components/mozilla/Makefile.am:
+	* components/music/Makefile.am:
+	* components/notes/Makefile.am:
+	* components/sample/Makefile.am:
+	* components/text/Makefile.am:
+	* components/throbber/Makefile.am:
+	* components/tree/Makefile.am:
+	* configure.in:
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus/Makefile.am:
+	* src/Makefile.am:
+	* src/file-manager/Makefile.am:
+	* test/Makefile.am:
+	Patch from Christopher Lahey <clahey@ximian.com>.
+	Use EEL_CFLAGS, LIBRSVG_CFLAGS instead of EEL_INCLUDEDIR, and
+	EEL_CFLAGS.  Thanks Chris.
+	
 2001-05-01  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/news/nautilus-news.c: (draw_rss_title):
