@@ -1,3 +1,9 @@
+1999-12-20  Havoc Pennington  <hp@redhat.com>
+
+	* libnautilus/gnome-icon-container.c (set_kbd_current): return if 
+	the icon being set is NULL. This may be fixing a symptom rather
+	than a problem.
+
 1999-12-20  Elliot Lee  <sopwith@redhat.com>
 
 	* src/ntl-*.[ch]: Support multiple view types (Nautilus/View, GNOME/Control, GNOME/Embeddable)
