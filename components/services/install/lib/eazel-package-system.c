@@ -24,6 +24,7 @@
 #include <config.h>
 #include <gnome.h>
 #include "eazel-package-system-private.h"
+#include <libtrilobite/trilobite-core-distribution.h>
 
 enum {
 	START,
@@ -33,10 +34,224 @@ enum {
 	LAST_SIGNAL
 };
 
+/* FIXME bugzilla.eazel.com 4852 
+   This extern is to be removed when 4582 is fixed */
+extern EazelPackageSystemConstructor eazel_package_system_implementation;
+
 /* The signal array, used for building the signal bindings */
 static guint signals[LAST_SIGNAL] = { 0 };
 /* This is the parent class pointer */
 static GtkObjectClass *eazel_package_system_parent_class;
+
+/*****************************************/
+
+EazelPackageSystemId 
+eazel_package_system_suggest_id ()
+{
+	EazelPackageSystemId  result = EAZEL_PACKAGE_SYSTEM_UNSUPPORTED;
+	DistributionInfo dist = trilobite_get_distribution ();
+
+	switch (dist.name) {
+	case DISTRO_REDHAT: 
+		if (dist.version_major == 6) {
+			result = EAZEL_PACKAGE_SYSTEM_RPM_3;
+		} else {
+			result = EAZEL_PACKAGE_SYSTEM_RPM_4;
+		}
+		break;
+	case DISTRO_MANDRAKE: 
+	case DISTRO_YELLOWDOG:
+	case DISTRO_TURBOLINUX: 
+		result = EAZEL_PACKAGE_SYSTEM_RPM_3;
+		break;
+/* FIXME bugzilla.eazel.com 4853
+   straighten out which distro uses which package system,
+   and what version uses which rpm_x ? */
+	case DISTRO_CALDERA: 
+	case DISTRO_SUSE: 
+	case DISTRO_LINUXPPC: 
+	case DISTRO_COREL: 
+	case DISTRO_DEBIAN: 
+		result = EAZEL_PACKAGE_SYSTEM_DEB;
+		break;
+	case DISTRO_UNKNOWN:
+		result = EAZEL_PACKAGE_SYSTEM_UNSUPPORTED;
+		break;
+	}
+	return result;		
+}
+
+static EazelPackageSystem*
+eazel_package_system_load_implementation (EazelPackageSystemId id, GList *roots)
+{
+	EazelPackageSystem *result;
+	EazelPackageSystemConstructor const_func;
+
+	/* FIXME bugzilla.eazel.com 4852
+	   - id to string
+	   - lookup library using string (in some config file)
+           - g_module_open library and get the const_func
+	   - call const_func to get the object */
+
+	/* The constructor function will be a function called
+	   eazel_package_system_implementation in the .so file.
+	   So for now, I link against the rpm implementation and
+	   simply assign this function to const_func and call it */
+
+	const_func = (EazelPackageSystemConstructor)&eazel_package_system_implementation;
+
+	result = (*const_func)(roots);
+
+	return result;
+}
+
+PackageData*
+eazel_package_system_load_package (EazelPackageSystem *system,
+				   PackageData *in_package,
+				   const char *filename,
+				   int detail_level)
+{
+	PackageData *result = NULL;
+	EPS_SANE_VAL (system, NULL);
+	g_assert (system->private->load_package);
+	result = (*system->private->load_package) (system, in_package, filename, detail_level);
+	return result;
+}
+
+GList*               
+eazel_package_system_query (EazelPackageSystem *system,
+			    const char *root,
+			    const gpointer key,
+			    EazelPackageSystemQueryEnum flag,
+			    int detail_level)
+{
+	GList *result = NULL;
+	EPS_SANE_VAL (system, NULL);
+	g_assert (system->private->query);
+	result = (*system->private->query) (system, root, key, flag, detail_level);
+	return result;
+}
+
+void                 
+eazel_package_system_install (EazelPackageSystem *system, 
+			      const char *root,
+			      GList* packages,
+			      long flags,
+			      gpointer userdata)
+{
+	EPS_SANE (system);
+	g_assert (system->private->install);
+	(*system->private->install) (system, root, packages, flags, userdata);
+}
+
+void                 
+eazel_package_system_uninstall (EazelPackageSystem *system, 
+				const char *root,
+				GList* packages,
+				long flags,
+				gpointer userdata)
+{
+	EPS_SANE (system);
+	g_assert (system->private->uninstall);
+	(*system->private->uninstall) (system, root, packages, flags, userdata);
+}
+
+void                 
+eazel_package_system_verify (EazelPackageSystem *system, 
+			     const char *root,
+			     GList* packages,
+			     long flags,
+			     gpointer userdata)
+{
+	EPS_SANE (system);
+	g_assert (system->private->verify);
+	(*system->private->verify) (system, root, packages, flags, userdata);
+}
+
+/******************************************
+ The private emitter functions
+*******************************************/
+
+gboolean 
+eazel_package_system_emit_start (EazelPackageSystem *system, 
+				 EazelPackageSystemOperation op, 
+				 PackageData *package)
+{
+	gboolean result = TRUE;
+	EPS_API (system);
+	gtk_signal_emit (GTK_OBJECT (system),
+			 signals [START],
+			 system,
+			 op, 
+			 package,
+			 &result);
+	return result;
+}
+
+gboolean 
+eazel_package_system_emit_progress (EazelPackageSystem *system, 
+				    EazelPackageSystemOperation op, 
+				    unsigned long info[EAZEL_PACKAGE_SYSTEM_PROGRESS_LONGS],
+				    PackageData *package)
+{
+	gboolean result = TRUE;
+	int infos;
+	unsigned long *infoblock;
+
+	EPS_API (system);
+	infoblock = g_new0 (unsigned long, EAZEL_PACKAGE_SYSTEM_PROGRESS_LONGS+1);
+	for (infos = 0; infos < EAZEL_PACKAGE_SYSTEM_PROGRESS_LONGS; infos++) {
+		infoblock[infos] = info[infos];
+	}
+
+	gtk_signal_emit (GTK_OBJECT (system),
+			 signals [PROGRESS],
+			 system,
+			 op, 
+			 infoblock,
+			 package,
+			 &result);
+
+	g_free (infoblock);
+	return result;
+}
+
+gboolean 
+eazel_package_system_emit_failed (EazelPackageSystem *system, 
+				  EazelPackageSystemOperation op, 
+				  PackageData *package)
+{
+	gboolean result = TRUE;
+	EPS_API (system);
+
+	gtk_signal_emit (GTK_OBJECT (system),
+			 signals [FAILED],
+			 system,
+			 op, 
+			 package,
+			 &result);
+
+	return result;
+}
+
+gboolean 
+eazel_package_system_emit_end (EazelPackageSystem *system, 
+			       EazelPackageSystemOperation op, 
+			       PackageData *package)
+{
+	gboolean result = TRUE;
+	EPS_API (system);
+
+	gtk_signal_emit (GTK_OBJECT (system),
+			 signals [END],
+			 system,
+			 op, 
+			 package,
+			 &result);
+
+	return result;
+}
+
 
 /*****************************************
   GTK+ object stuff
@@ -57,13 +272,6 @@ eazel_package_system_finalize (GtkObject *object)
 	}
 }
 
-void eazel_package_system_unref (GtkObject *object) 
-{
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (EAZEL_PACKAGE_SYSTEM (object));
-	gtk_object_unref (object);
-}
-
 static void
 eazel_package_system_class_initialize (EazelPackageSystemClass *klass) 
 {
@@ -71,7 +279,6 @@ eazel_package_system_class_initialize (EazelPackageSystemClass *klass)
 
 	object_class = (GtkObjectClass*)klass;
 	object_class->finalize = eazel_package_system_finalize;
-	object_class->set_arg = eazel_package_system_set_arg;
 	
 	eazel_package_system_parent_class = gtk_type_class (gtk_object_get_type ());
 
@@ -79,32 +286,34 @@ eazel_package_system_class_initialize (EazelPackageSystemClass *klass)
 		gtk_signal_new ("start",
 				GTK_RUN_LAST,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (EazelPackageSystemClass, download_progress),
-				gtk_marshal_NONE__POINTER_INT_INT,
-				GTK_TYPE_NONE, 3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);	
+				GTK_SIGNAL_OFFSET (EazelPackageSystemClass, start),
+				eazel_package_system_marshal_BOOL__POINTER_ENUM_POINTER,
+				GTK_TYPE_BOOL, 3, 
+				GTK_TYPE_POINTER, GTK_TYPE_ENUM, GTK_TYPE_POINTER);	
 	signals[END] = 
 		gtk_signal_new ("end",
 				GTK_RUN_LAST,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (EazelPackageSystemClass, preflight_check),
-				gtk_marshal_BOOL__POINTER_INT_INT,
-				GTK_TYPE_BOOL, 3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
+				GTK_SIGNAL_OFFSET (EazelPackageSystemClass, end),
+				eazel_package_system_marshal_BOOL__POINTER_ENUM_POINTER,
+				GTK_TYPE_BOOL, 3, 
+				GTK_TYPE_POINTER, GTK_TYPE_ENUM, GTK_TYPE_POINTER);
 	signals[PROGRESS] = 
 		gtk_signal_new ("progress",
 				GTK_RUN_LAST,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (EazelPackageSystemClass, install_progress),
-				eazel_package_system_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT,
-				GTK_TYPE_NONE, 7, GTK_TYPE_POINTER, 
-				GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, 
-				GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
+				GTK_SIGNAL_OFFSET (EazelPackageSystemClass, progress),
+				eazel_package_system_marshal_BOOL__POINTER_ENUM_POINTER_POINTER,
+				GTK_TYPE_BOOL, 4, 
+				GTK_TYPE_POINTER, GTK_TYPE_ENUM, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
 	signals[FAILED] = 
 		gtk_signal_new ("failed",
 				GTK_RUN_LAST,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (EazelPackageSystemClass, download_failed),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+				GTK_SIGNAL_OFFSET (EazelPackageSystemClass, failed),
+				eazel_package_system_marshal_BOOL__POINTER_ENUM_POINTER,
+				GTK_TYPE_BOOL, 3, 
+				GTK_TYPE_POINTER, GTK_TYPE_ENUM, GTK_TYPE_POINTER);
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	klass->start = NULL;
@@ -115,8 +324,9 @@ eazel_package_system_class_initialize (EazelPackageSystemClass *klass)
 
 static void
 eazel_package_system_initialize (EazelPackageSystem *system) {
-	g_assert (system != NULL);
-	g_assert (IS_EAZEL_PACKAGE_SYSTEM (system));
+	EPS_API (system);
+	
+	system->private = g_new0 (EazelPackageSystemPrivate, 1);
 }
 
 GtkType
@@ -144,14 +354,89 @@ eazel_package_system_get_type() {
 	return system_type;
 }
 
+/* 
+   This is the real constructor 
+*/
 EazelPackageSystem *
-eazel_package_system_new (void)
+eazel_package_system_new_real ()
 {
 	EazelPackageSystem *system;
 
 	system = EAZEL_PACKAGE_SYSTEM (gtk_object_new (TYPE_EAZEL_PACKAGE_SYSTEM, NULL));
+
 	gtk_object_ref (GTK_OBJECT (system));
 	gtk_object_sink (GTK_OBJECT (system));
-	
+
 	return system;
+}
+
+/* 
+   This lets the user create a packagesystem with a specific 
+   id 
+*/
+EazelPackageSystem *
+eazel_package_system_new_with_id (EazelPackageSystemId id, GList *roots)
+{
+	return eazel_package_system_load_implementation (id, roots);
+}
+
+/*
+  Autodetect distribution and creates
+  an instance of a EazelPackageSystem with the appropriate
+  type
+ */
+EazelPackageSystem *
+eazel_package_system_new (GList *roots) 
+{
+	return eazel_package_system_new_with_id (eazel_package_system_suggest_id (), roots);
+}
+
+/* Marshal functions */
+
+typedef gboolean (*GtkSignal_BOOL__POINTER_ENUM_POINTER_POINTER) (GtkObject *object,
+								  gpointer arg1,
+								  gint arg2,
+								  gpointer arg3,
+								  gpointer arg4,
+								  gpointer user_data);
+
+void eazel_package_system_marshal_BOOL__POINTER_ENUM_POINTER_POINTER (GtkObject *object,
+								      GtkSignalFunc func,
+								      gpointer func_data, 
+								      GtkArg *args)
+{
+	GtkSignal_BOOL__POINTER_ENUM_POINTER_POINTER rfunc;
+	gboolean *result;
+
+	result = GTK_RETLOC_BOOL (args[4]);
+	rfunc = (GtkSignal_BOOL__POINTER_ENUM_POINTER_POINTER)func;
+	(*result) = (*rfunc) (object,
+			      GTK_VALUE_POINTER (args[0]),
+			      GTK_VALUE_ENUM (args[1]),
+			      GTK_VALUE_POINTER (args[2]),
+			      GTK_VALUE_POINTER (args[3]),
+			      func_data);
+}
+
+typedef gboolean (*GtkSignal_BOOL__POINTER_ENUM_POINTER) (GtkObject *object,
+							  gpointer arg1,
+							  gint arg2,
+							  gpointer arg3,
+							  gpointer user_data);
+
+void eazel_package_system_marshal_BOOL__POINTER_ENUM_POINTER (GtkObject *object,
+							      GtkSignalFunc func,
+							      gpointer func_data, 
+							      GtkArg *args)
+{
+	GtkSignal_BOOL__POINTER_ENUM_POINTER rfunc;
+	gboolean *result;
+	
+	rfunc = (GtkSignal_BOOL__POINTER_ENUM_POINTER)func;
+	result = GTK_RETLOC_BOOL (args[4]);
+	(*result) = (*rfunc) (object,
+			      GTK_VALUE_POINTER (args[0]),
+			      GTK_VALUE_ENUM (args[1]),
+			      GTK_VALUE_POINTER (args[2]),
+			      func_data);
 }

@@ -22,13 +22,15 @@ INCLUDES = \
 lib_LTLIBRARIES = \
 	libeazelinstall.la \
 	libeazelsoftcat.la	\
+	libeazelpackagesystem.la \
+	libeazelpackagesystem-rpm3.la \
+	libeazelpackagesystem-skeleton.la \
 	$(NULL)
 
-#	libeazelpackagesystem.la \
 
 # libeazelinstall
 
-libeazelinstallincludedir=$(includedir)/eazel/install
+libeazelinstallincludedir=$(includedir)/libtrilobite/eazel/install
 
 libeazelinstallinclude_HEADERS = 		\
 	eazel-install-public.h			\
@@ -74,7 +76,7 @@ libeazelinstall_la_LDFLAGS = \
 
 # libeazelpackagesystem
 
-libeazelpackagesystemincludedir=$(includedir)/eazel/package-system/
+libeazelpackagesystemincludedir=$(includedir)/libtrilobite/eazel/package-system/
 
 libeazelpackagesysteminclude_HEADERS = 		\
 	eazel-install-types.h	 		\
@@ -82,17 +84,32 @@ libeazelpackagesysteminclude_HEADERS = 		\
 	eazel-package-system-private.h		\
 	$(NULL)
 
-#libeazelpackagesystem_la_SOURCES = 		\
-#	eazel-install-types.c	 		\
-#	eazel-package-system.c			\
-#	$(NULL)
+libeazelpackagesystem_la_SOURCES = 		\
+	eazel-install-types.c	 		\
+	eazel-package-system.c			\
+	$(NULL)
 
-libeazelinstall_la_LDFLAGS = \
-	$(GHTTP_LIBS)
+# libeazelpackagesystem-skeleton
+
+noinst_HEADERS=eazel-package-system-skeleton.h
+
+libeazelpackagesystem_skeleton_la_SOURCES = 	\
+	eazel-package-system-skeleton.c		\
+	$(NULL)
+
+
+# libeazelpackagesystem-rpm3
+
+noinst_HEADERS=eazel-package-system-rpm3.h
+
+libeazelpackagesystem_rpm3_la_SOURCES = 	\
+	eazel-package-system-rpm3.c		\
+	$(NULL)
+
 
 # libeazelsoftcat
 
-libeazelsoftcatincludedir=$(includedir)/eazel/package-system/
+libeazelsoftcatincludedir=$(includedir)/libtrilobite/eazel/package-system/
 
 libeazelsoftcatinclude_HEADERS = 		\
 	eazel-install-types.h	 		\
@@ -104,10 +121,6 @@ libeazelsoftcat_la_SOURCES = 			\
 	eazel-install-types.c	 		\
 	eazel-softcat.c				\
 	$(NULL)
-
-libeazelinstall_la_LDFLAGS = \
-	$(GHTTP_LIBS)
-
 
 # stuff
 

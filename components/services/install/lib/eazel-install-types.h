@@ -235,6 +235,13 @@ void packagedata_add_pack_to_soft_depends (PackageData *pack, PackageData *b);
 void packagedata_add_pack_to_hard_depends (PackageData *pack, PackageData *b);
 void packagedata_add_pack_to_modifies (PackageData *pack, PackageData *b);
 
+/* all elements in "remove_list" that matches elements in "input" list
+   (comparison is done via eazel_install_package_name_compare).
+   If destroy is TRUE, packagedata_destroy is called on the removed
+   elements. If deep is TRUE, packagedata_destroy is called with deep destruction
+*/
+void packagedata_list_prune (GList **input, GList *remove_list, gboolean destroy, gboolean deep);
+
 typedef struct {
 	PackageData *package;
 	PackageData *required;

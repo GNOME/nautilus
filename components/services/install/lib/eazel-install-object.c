@@ -87,6 +87,8 @@ enum {
 	ARG_SERVER_PORT,
 	ARG_TRANSACTION_DIR,
 	ARG_CGI_PATH,
+	ARG_SSL_RENAME,
+	ARG_IGNORE_FILE_CONFLICTS,
 	ARG_EAZEL_AUTH
 };
 
@@ -295,6 +297,12 @@ eazel_install_set_arg (GtkObject *object,
 	case ARG_VERBOSE:
 		eazel_install_set_verbose (service, GTK_VALUE_BOOL(*arg));
 		break;
+	case ARG_IGNORE_FILE_CONFLICTS:
+		eazel_install_set_ignore_file_conflicts (service, GTK_VALUE_BOOL(*arg));
+		break;
+	case ARG_SSL_RENAME:
+		eazel_install_set_ssl_rename (service, GTK_VALUE_BOOL(*arg));
+		break;
 	case ARG_SILENT:
 		eazel_install_set_silent (service, GTK_VALUE_BOOL(*arg));
 		break;
@@ -469,6 +477,10 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				 GTK_TYPE_BOOL,
 				 GTK_ARG_READWRITE,
 				 ARG_VERBOSE);
+	gtk_object_add_arg_type ("EazelInstall::ignore_file_conflicts",
+				 GTK_TYPE_BOOL,
+				 GTK_ARG_READWRITE,
+				 ARG_IGNORE_FILE_CONFLICTS);
 	gtk_object_add_arg_type ("EazelInstall::silent",
 				 GTK_TYPE_BOOL,
 				 GTK_ARG_READWRITE,
@@ -517,6 +529,10 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE,
 				 ARG_SERVER);
+	gtk_object_add_arg_type ("EazelInstall::ssl_rename",
+				 GTK_TYPE_BOOL,
+				 GTK_ARG_READWRITE,
+				 ARG_SSL_RENAME);
 	gtk_object_add_arg_type ("EazelInstall::package_list_storage_path",
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE,
@@ -605,6 +621,8 @@ eazel_install_initialize (EazelInstall *service) {
 	trilobite_debug (_("Transactions are stored in %s"), service->private->transaction_dir);
 	trilobite_debug ("packsys.rpm.dbs = 0x%p", service->private->packsys.rpm.dbs);
 
+	/* FIXME: bugzilla.eazel.com 4851
+	   remove this when 4851 fixed */
 	/* Set default root dirs list */
 	{
 		GList *list = NULL;

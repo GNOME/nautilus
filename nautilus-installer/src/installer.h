@@ -84,6 +84,8 @@ struct _EazelInstaller
 
 	/* once we've got this, we know mystery errors were caused by rpm (this is kind of a hack) */
 	gboolean got_dep_check;
+
+	GList *packages_possible_broken;
 };
 
 GtkType            eazel_installer_get_type(void);

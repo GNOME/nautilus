@@ -1186,6 +1186,10 @@ find_dominant_problems (EazelInstallProblem *problem,
 		(*problems) = g_list_remove (*problems, iterator->data);
 	}
 
+	if (g_list_length (*problems) == 0) {
+		/* g_list_free (*problems); */
+		(*problems) = NULL;
+	}
 	return dominant_problems;
 }
       

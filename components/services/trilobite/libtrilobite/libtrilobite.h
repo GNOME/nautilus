@@ -34,6 +34,7 @@
 
 #include "trilobite-core-messaging.h"
 #include "trilobite-core-utils.h"
+#include "trilobite-core-distribution.h"
 #include "trilobite-core-network.h"
 #include "trilobite-core-package-manager.h"
 #include "trilobite-core-security-manager.h"

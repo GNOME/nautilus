@@ -42,6 +42,7 @@ typedef struct _EazelPackageSystemClass EazelPackageSystemClass;
 /* This enum identifies the package system
    used for the object instance */
 typedef enum {
+	EAZEL_PACKAGE_SYSTEM_UNSUPPORTED,
 	EAZEL_PACKAGE_SYSTEM_RPM_3,
 	EAZEL_PACKAGE_SYSTEM_RPM_4,
 	EAZEL_PACKAGE_SYSTEM_DEB
@@ -71,10 +72,13 @@ typedef enum {
            and then a search for packages requiring this */
 	EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES,
 
-	/* "key" is a const char* package-name-regexp eg. "glib", "gnome-.*" ".*-devel"
-	   returned packages are packages that has names that matches the given regexp.
-	    [3] */
+	/* "key" is a const char* package-name
+	    */
 	EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
+
+	/* "key" is a const char* substring that must occur in the name, eg. "gnome" gives
+	   all packages that has "gnome" in the name, and "" gives all packages */
+	EAZEL_PACKAGE_SYSTEM_QUERY_SUBSTR
 } EazelPackageSystemQueryEnum;
 
 enum {
@@ -93,8 +97,8 @@ enum {
 };
 
 enum {
-	EAZEL_INSTALL_PACKAGE_SYSTEM_QUERY_DETAIL_SHORT_SUMMARY = 0x1,
-	EAZEL_INSTALL_PACKAGE_SYSTEM_QUERY_DETAIL_LONG_SUMMARY = 0x2,
+	EAZEL_INSTALL_PACKAGE_SYSTEM_QUERY_DETAIL_DESCRIPTION = 0x1,
+	EAZEL_INSTALL_PACKAGE_SYSTEM_QUERY_DETAIL_SUMMARY = 0x2,
 	EAZEL_INSTALL_PACKAGE_SYSTEM_QUERY_DETAIL_FILES_PROVIDED = 0x4,
 	EAZEL_INSTALL_PACKAGE_SYSTEM_QUERY_DETAIL_PROVIDES = 0x8
 };
@@ -111,19 +115,19 @@ typedef enum {
 struct _EazelPackageSystemClass
 {
 	GtkObjectClass parent_class;
-	void (*start)(EazelPackageSystem*, 
-		      EazelPackageSystemOperation, 
-		      PackageData*);
-	void (*progress)(EazelPackageSystem*, 
-			 EazelPackageSystemOperation, 
-			 PackageData*, 
-			 unsigned long[6]);
-	void (*failed)(EazelPackageSystem*, 
-		       EazelPackageSystemOperation, 
-		       PackageData*);
-	void (*end)(EazelPackageSystem*, 
-		    EazelPackageSystemOperation, 
-		    PackageData*);
+	gboolean (*start)(EazelPackageSystem*, 
+			  EazelPackageSystemOperation, 
+			  PackageData*);
+	gboolean (*progress)(EazelPackageSystem*, 
+			     EazelPackageSystemOperation, 
+			     PackageData*, 
+			     unsigned long*);
+	gboolean (*failed)(EazelPackageSystem*, 
+			   EazelPackageSystemOperation, 
+			   PackageData*);
+	gboolean (*end)(EazelPackageSystem*, 
+			EazelPackageSystemOperation, 
+			PackageData*);
 };
 
 typedef struct _EazelPackageSystemPrivate EazelPackageSystemPrivate;
@@ -135,29 +139,43 @@ struct _EazelPackageSystem
 };
 
 EazelPackageSystemId eazel_package_system_suggest_id (void);
-EazelPackageSystem  *eazel_package_system_new (void);
-EazelPackageSystem  *eazel_package_system_new_with_id (EazelPackageSystemId);
+EazelPackageSystem  *eazel_package_system_new (GList *roots);
+EazelPackageSystem  *eazel_package_system_new_with_id (EazelPackageSystemId, GList *roots);
 GtkType              eazel_package_system_get_type (void);
-void                 eazel_package_system_unref        (GtkObject *object);
+
 PackageData         *eazel_package_system_load_package (EazelPackageSystem *package_system,
+							PackageData *in_package,
 							const char *filename,
 							int detail_level);
 GList*               eazel_package_system_query (EazelPackageSystem *package_system,
+						 const char *root,
 						 const gpointer key,
 						 EazelPackageSystemQueryEnum flag,
 						 int detail_level);
 void                 eazel_package_system_install (EazelPackageSystem *package_system, 
+						   const char *root,
 						   GList* packages,
 						   long flags,
 						   gpointer userdata);
 void                 eazel_package_system_uninstall (EazelPackageSystem *package_system, 
+						     const char *root,
 						     GList* packages,
 						     long flags,
 						     gpointer userdata);
 void                 eazel_package_system_verify (EazelPackageSystem *package_system, 
+						  const char *root,
 						  GList* packages,
 						  long flags,
 						  gpointer userdata);
+
+void eazel_package_system_marshal_BOOL__POINTER_ENUM_POINTER (GtkObject *object,
+							      GtkSignalFunc func,
+							      gpointer func_data,
+							      GtkArg *args);
+void eazel_package_system_marshal_BOOL__POINTER_ENUM_POINTER_POINTER (GtkObject *object,
+								      GtkSignalFunc func,
+								      gpointer func_data,
+								      GtkArg *args);
 
 #endif /* EAZEL_PACKAGE_SYSTEM_PUBLIC_H */
 

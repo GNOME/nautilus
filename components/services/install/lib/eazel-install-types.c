@@ -828,6 +828,35 @@ packagedata_add_pack_to_modifies (PackageData *pack, PackageData *b)
 	packagedata_add_pack_to (&pack->modifies, b);
 }
 
+/*
+  O(mn) complexity. 
+ */
+void 
+packagedata_list_prune (GList **input, 
+			GList *remove_list, 
+			gboolean destroy, 
+			gboolean deep)
+{
+	GList *in_it, *rm_it;
+	
+	for (rm_it = remove_list; rm_it; rm_it = g_list_next (rm_it)) {
+		PackageData *rm = (PackageData*)rm_it->data;
+		PackageData *in = (PackageData*)in_it->data;
+
+		for (in_it = *input; in_it; in_it = g_list_next (in_it)) {
+			in = (PackageData*)in_it->data;
+			if (eazel_install_package_name_compare (in, rm->name)==0) {
+				break;
+			}
+		}
+		if (in_it) {
+			(*input) = g_list_remove (*input, in);
+			if (destroy) {
+				packagedata_destroy (in, deep);
+			}
+		}
+	}
+}
 
 PackageRequirement* 
 packagerequirement_new (PackageData *pack, 

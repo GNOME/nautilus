@@ -1,3 +1,103 @@
+2000-11-29  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/Makefile.am:
+	* components/services/install/command-line/eazel-test-packsys.c:
+	(make_package), (test_packagelist_prune), (test_package_load),
+	(init_package_system), (test_matches_query), (main):
+	Some code to test some of the packagesystem functions
+	
+	* components/services/install/lib/Makefile.am:
+	build the skeleton and rpm3 package system
+
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(eazel_install_callback_simple_query):
+	Fixed indentation
+	
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_set_arg), (eazel_install_class_initialize),
+	(eazel_install_initialize):
+	added ssl_rename and ignore_file_conflicts to the gtkarg sytem.
+	Added some comments reg. bug 4851
+
+	* components/services/install/lib/eazel-install-problem.c:
+	(find_dominant_problems):
+	Null input if empty
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_start_transaction_make_rpm_argument_list):
+	Fixed a uninstall bug in the rpm arg building.
+	
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_list_prune):
+	Implemented a function to prune a list of packagedata objects from
+	another list.
+	
+	* components/services/install/lib/eazel-package-system-private.h:
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(get_and_set_string_tag), (rpm_packagedata_fill_from_rpm_header),
+	(rpm_packagedata_fill_from_file), (rpm_packagedata_new_from_file),
+	(eazel_package_system_rpm3_load_package),
+	(eazel_package_system_rpm3_query_impl),
+	(eazel_package_system_rpm3_query_substr),
+	(eazel_package_system_rpm3_query_foreach),
+	(eazel_package_system_rpm3_query),
+	(eazel_package_system_rpm3_install),
+	(eazel_package_system_rpm3_uninstall),
+	(eazel_package_system_rpm3_verify),
+	(eazel_package_system_rpm3_open_roots),
+	(eazel_package_system_rpm3_finalize),
+	(eazel_package_system_rpm3_class_initialize),
+	(eazel_package_system_rpm3_initialize),
+	(eazel_package_system_rpm3_get_type),
+	(eazel_package_system_rpm3_new),
+	(eazel_package_system_implementation):
+	* components/services/install/lib/eazel-package-system-rpm3.h:
+	* components/services/install/lib/eazel-package-system-skeleton.c:
+	(eazel_package_system_skeleton_load_package),
+	(eazel_package_system_skeleton_query),
+	(eazel_package_system_skeleton_install),
+	(eazel_package_system_skeleton_uninstall),
+	(eazel_package_system_skeleton_verify),
+	(eazel_package_system_skeleton_finalize),
+	(eazel_package_system_skeleton_class_initialize),
+	(eazel_package_system_skeleton_initialize),
+	(eazel_package_system_skeleton_get_type),
+	(eazel_package_system_skeleton_new),
+	(eazel_package_system_implementation):
+	* components/services/install/lib/eazel-package-system-skeleton.h:
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_suggest_id),
+	(eazel_package_system_load_implementation),
+	(eazel_package_system_load_package), (eazel_package_system_query),
+	(eazel_package_system_install), (eazel_package_system_uninstall),
+	(eazel_package_system_verify), (eazel_package_system_emit_start),
+	(eazel_package_system_emit_progress),
+	(eazel_package_system_emit_failed),
+	(eazel_package_system_emit_end),
+	(eazel_package_system_class_initialize),
+	(eazel_package_system_initialize), (eazel_package_system_new_real),
+	(eazel_package_system_new_with_id), (eazel_package_system_new),
+	(eazel_package_system_marshal_BOOL__POINTER_ENUM_POINTER_POINTER),
+	(eazel_package_system_marshal_BOOL__POINTER_ENUM_POINTER):
+	* components/services/install/lib/eazel-package-system.h:
+	working on 4850, 4851, 4852 and 4858.
+	
+	* components/services/trilobite/libtrilobite/libtrilobite.h:
+	
+	* nautilus-installer/src/callbacks.c: (begin_install):
+	* nautilus-installer/src/installer.c: (skip_over_remove_problems),
+	(jump_to_retry_page), (install_done), (go_live),
+	(eazel_installer_add_category), (eazel_installer_do_install),
+	(eazel_installer_post_install), (draw_splash_text),
+	(eazel_installer_set_default_texts), (eazel_installer_initialize):
+	* nautilus-installer/src/installer.h:
+	The last of the pr2.1 stuff.
+	
+	* nautilus.spec.in:
+	devel package includes libtrilobite/eazel/*
+
 2000-11-29  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

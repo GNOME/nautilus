@@ -57,10 +57,19 @@ begin_install (EazelInstaller  *installer)
 
 	gnome_druid_set_buttons_sensitive(druid, FALSE, FALSE, TRUE);
 
+	g_message ("%s:%d", __FILE__, __LINE__);
+
+	g_message ("%s %s %s %s", 
+		   installer->got_dep_check ? "TRUE" : "FALSE",
+		   installer->install_categories ? "TRUE" : "FALSE",
+		   installer->problems ? "TRUE" : "FALSE",
+		   installer->successful ? "TRUE" : "FALSE");
+
 	/* First time ? If so, check which categories were marked */
-	if (installer->install_categories == NULL) {
+	if (installer->got_dep_check==FALSE && installer->install_categories == NULL) {
 		GList *iterator;
 		GList *install_categories = NULL;
+		g_message ("%s:%d", __FILE__, __LINE__);
 		for (iterator = installer->categories; iterator; iterator = iterator->next) {
 			CategoryData *category = (CategoryData*)iterator->data;
 			GtkWidget *widget = gtk_object_get_data (GTK_OBJECT (window), category->name);
@@ -72,8 +81,9 @@ begin_install (EazelInstaller  *installer)
 		}
 		installer->install_categories = install_categories;
 	} 
-
+	
 	if (installer->successful && installer->force_remove_categories) { 
+		g_message ("%s:%d", __FILE__, __LINE__);
 		eazel_installer_do_install (installer, installer->force_remove_categories, TRUE);
 		eazel_installer_post_install (installer);
 		categorydata_list_destroy (installer->force_remove_categories);
@@ -81,6 +91,7 @@ begin_install (EazelInstaller  *installer)
 	}
 	
 	if (installer->problems) {
+		g_message ("%s:%d", __FILE__, __LINE__);
 		eazel_install_problem_handle_cases (installer->problem,
 						    installer->service,
 						    &(installer->problems),
@@ -88,16 +99,23 @@ begin_install (EazelInstaller  *installer)
 						    NULL,
 						    NULL);
 		eazel_installer_post_install (installer);
-		/* return TRUE; */
+		return TRUE;
 	} else {
+		g_message ("%s:%d", __FILE__, __LINE__);
 		if (installer->successful && installer->install_categories) { 
+			g_message ("%s:%d", __FILE__, __LINE__);
 			eazel_installer_do_install (installer, installer->install_categories, FALSE);
 			eazel_installer_post_install (installer);
+			if (installer->problems) {
+				g_message ("%sn:%d", __FILE__, __LINE__);
+				return TRUE;
+			} 
 		}
-
+		
 		gnome_druid_set_buttons_sensitive(druid, FALSE, TRUE, TRUE); 
 	}
 	
+	g_message ("%s:%d", __FILE__, __LINE__);
 	/* FALSE means remove this source */
 	return FALSE;
 }

@@ -30,7 +30,7 @@ LDADD =                                           \
 	$(RPM_LIBS)			\
 	$(NULL)
 
-bin_PROGRAMS = eazel-install eazel-gen-xml
+bin_PROGRAMS = eazel-install eazel-gen-xml eazel-test-packsys
 
 eazel_install_SOURCES = 		\
 	eazel-alt-install-corba.c	\
@@ -39,3 +39,14 @@ eazel_install_SOURCES = 		\
 eazel_gen_xml_SOURCES = 	\
 	eazel-gen-xml.c         \
 	$(NULL)                
+
+eazel_test_packsys_SOURCES = 	\
+	eazel-test-packsys.c         \
+	$(NULL)                
+
+eazel_test_packsys_LDADD = \
+	$(top_builddir)/components/services/install/lib/libeazelpackagesystem.la \
+	$(top_builddir)/components/services/install/lib/libeazelpackagesystem-rpm3.la \
+	$(LDADD) \
+	$(NULL)
+

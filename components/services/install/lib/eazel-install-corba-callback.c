@@ -555,9 +555,9 @@ eazel_install_callback_simple_query (EazelInstallCallback *service,
 	GNOME_Trilobite_Eazel_PackageDataStructList *corbares;
 
 	corbares = GNOME_Trilobite_Eazel_Install_simple_query (service->installservice_corba,
-							 query,
-							 root ? root : "",
-							 ev);
+							       query,
+							       root ? root : "",
+							       ev);
 	result = packagedata_list_from_corba_packagedatastructlist (*corbares);
 	CORBA_free (corbares); 
 	

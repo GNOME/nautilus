@@ -102,10 +102,12 @@ eazel_install_start_transaction_make_rpm_argument_list (EazelInstall *service,
 	} 
 	if (eazel_install_get_force (service)) {
 		g_warning ("Force mode!");
-		if (!eazel_install_get_uninstall (service)) {
+		if (eazel_install_get_uninstall (service)) {
 			(*args) = g_list_prepend (*args, g_strdup ("--nodeps"));
+		} else {
+			(*args) = g_list_prepend (*args, g_strdup ("--nodeps"));
+			(*args) = g_list_prepend (*args, g_strdup ("--force"));
 		}
-		(*args) = g_list_prepend (*args, g_strdup ("--force"));
 	}
 	if (eazel_install_get_ignore_file_conflicts (service) &&
 	    !eazel_install_get_force (service)) {

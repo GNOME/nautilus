@@ -56,7 +56,7 @@ struct _EazelInstallPrivate {
 	GList *downloaded_files;
 
 	gboolean use_local_package_list;
-	
+  	
 	PackageSystem package_system;
 	union {
 		struct {
@@ -70,7 +70,7 @@ struct _EazelInstallPrivate {
 			    interface_flags,
 			    problem_filters;
 		} rpm;
-	} packsys;
+	} packsys;  	
 
 	/* This hash maps from package name-version-release to the 
 	   package. Packages are added in eazel-install-rpm-glue.c do_rpm_install
