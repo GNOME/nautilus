@@ -1,5 +1,13 @@
 2000-07-11  Andy Hertzfeld  <andy@eazel.com>
 
+	* src/nautilus-window.c: (nautilus_window_realize):
+	fixed bug 609, set up nautilus mini-icon.  Also, removed the
+	private hacked gdk_pixbuf_render_pixmap_and_mask routine since the real
+	one in gdk_pixbuf is working properly now with images that lack
+	an alpha channel.
+	
+2000-07-11  Andy Hertzfeld  <andy@eazel.com>
+
 	* src/nautilus-sidebar-tabs.c: (draw_or_hit_test_all_tabs):
 	made the Arlo tabs use a new right edge when appropriate
 	* icons/arlo/arlo.xml:
@@ -63,7 +71,6 @@
 	* src/Makefile.am:
 	Added missing source file and replaced use of .. with $(top_srcdir).
 
->>>>>>> 1.958
 2000-07-11  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* test/Makefile.am:

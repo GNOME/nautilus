@@ -41,6 +41,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-generous-bin.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -472,69 +473,6 @@ nautilus_window_close (NautilusWindow *window)
 	gtk_widget_destroy (GTK_WIDGET (window));
 }
 
-
-/* The reason for this function is that
-   `gdk_pixbuf_render_pixmap_and_mask', as currently implemented, will
-   fail on a pixbuf with no alpha channel. This function will instead
-   return with NULL in *mask_retval in such a case. If that ever gets
-   fixed, this function should be removed.
-*/
-
-static void
-would_be_in_gdk_pixbuf_if_federico_wasnt_stubborn_pixbuf_render(GdkPixbuf  *pixbuf,
-                                                                GdkPixmap **pixmap,
-                                                                GdkBitmap **mask_retval,
-                                                                gint        alpha_threshold)
-{
-        GdkBitmap *mask = NULL;
-	
-        g_return_if_fail(pixbuf != NULL);
-	
-        /* generate mask */
-        if (gdk_pixbuf_get_has_alpha(pixbuf)) {
-                mask = gdk_pixmap_new(NULL,
-                                      gdk_pixbuf_get_width(pixbuf),
-                                      gdk_pixbuf_get_height(pixbuf),
-                                      1);
-
-                gdk_pixbuf_render_threshold_alpha(pixbuf, mask,
-                                                  0, 0, 0, 0,
-                                                  gdk_pixbuf_get_width(pixbuf),
-                                                  gdk_pixbuf_get_height(pixbuf),
-                                                  alpha_threshold);
-        }
-
-        /* Draw to pixmap */
-
-        if (pixmap != NULL) {
-                GdkGC* gc;
-
-                *pixmap = gdk_pixmap_new(NULL,
-                                         gdk_pixbuf_get_width(pixbuf),
-                                         gdk_pixbuf_get_height(pixbuf),
-                                         gdk_rgb_get_visual()->depth);
-
-                gc = gdk_gc_new(*pixmap);
-
-                gdk_gc_set_clip_mask(gc, mask);
-
-                gdk_pixbuf_render_to_drawable(pixbuf, *pixmap,
-                                              gc,
-                                              0, 0, 0, 0,
-                                              gdk_pixbuf_get_width(pixbuf),
-                                              gdk_pixbuf_get_height(pixbuf),
-                                              GDK_RGB_DITHER_NORMAL,
-                                              0, 0);
-
-                gdk_gc_unref(gc);
-        }
-
-        if (mask_retval)
-                *mask_retval = mask;
-        else
-                gdk_bitmap_unref(mask);
-}
-
 static void
 nautilus_window_realize (GtkWidget *widget)
 {
@@ -546,10 +484,7 @@ nautilus_window_realize (GtkWidget *widget)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
         
         /* Set the mini icon */
-        /* FIXME bugzilla.eazel.com 609:
-         * Need a real icon for Nautilus here. It should be 16x16.
-         */
-        filename = gnome_pixmap_file("panel-arrow-down.png");
+        filename = nautilus_pixmap_file("nautilus-mini-logo.png");
         
         if (filename != NULL) {
                 GdkPixbuf *pixbuf;
@@ -557,22 +492,23 @@ nautilus_window_realize (GtkWidget *widget)
                 pixbuf = gdk_pixbuf_new_from_file(filename);
 
                 if (pixbuf != NULL) {
-                        would_be_in_gdk_pixbuf_if_federico_wasnt_stubborn_pixbuf_render(pixbuf,
-                                                                                        &pixmap,
-                                                                                        &mask,
-                                                                                        128);
-                }
-        }
-                
-                
-        if (pixmap != NULL)
-                nautilus_set_mini_icon(widget->window,
+                        gdk_pixbuf_render_pixmap_and_mask (pixbuf,
+                                                           &pixmap,
+                                                           &mask, 
+							   128);				   
+			gdk_pixbuf_unref (pixbuf);
+		}
+        	g_free (filename);
+	}
+                     
+        if (pixmap != NULL) {
+                nautilus_set_mini_icon (widget->window,
                                        pixmap,
                                        mask);
-
-        /* FIXME bugzilla.eazel.com 610:
-         * I think we are leaking the pixmap/mask here.
-         */
+		
+		/* FIXME: bug 610 - we may be leaking the pixmap and mask here,
+		   but if we unref them here, the task bar crashes */
+	}
 }
 
 /*
