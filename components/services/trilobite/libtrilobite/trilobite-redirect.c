@@ -255,10 +255,10 @@ trilobite_get_services_address (void)
 
 	check_gconf_init ();
 	value = gconf_engine_get_string (conf_engine, SERVICES_GCONF_PATH, &error);
-	if (error != NULL) {
-		g_warning ("trilobite: no gconf key for %s", SERVICES_GCONF_PATH);
-		g_error_free (error);
-
+	if ((value == NULL) || (error != NULL)) {
+		if (error != NULL) {
+			g_error_free (error);
+		}
 		value = SERVICES_DEFAULT_HOST;
 	}
 

@@ -1,3 +1,11 @@
+2000-11-06  Robey Pointer  <robey@eazel.com>
+
+	* components/services/trilobite/libtrilobite/trilobite-redirect.c:
+	(trilobite_get_services_address):
+
+	Anita's bug 4544: If the gconf value is NULL, use the default
+	services address.
+
 2000-11-06  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* nautilus-installer/src/prescript:
