@@ -43,8 +43,7 @@ struct _EazelSoftCatPrivate {
         unsigned int delay;
 
 	/* This is used to track the server update status */
-	gboolean server_update_set;
-	guint server_update_val;
+	char *db_revision;
 };
 
 #endif /* EAZEL_SOFTCAT_PRIVATE_H */

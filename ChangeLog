@@ -1,3 +1,19 @@
+2001-02-14  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(osd_parse_shared), (eazel_install_packagelist_parse):
+	* components/services/install/lib/eazel-install-xml-package-list.h:
+	* components/services/install/lib/eazel-softcat-private.h:
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_finalize), (eazel_softcat_initialize),
+	(eazel_softcat_reset_server_update_flag), (eazel_softcat_query):
+
+	Return the softcat DB revision with the parsed package list, and
+	use that info to hook into Eskil's error trap.  Also free up the
+	softcat private data when the object goes away.
+
 2001-02-14  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 6653, throwing away something with the desktop not on will

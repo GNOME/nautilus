@@ -871,14 +871,14 @@ osd_parse_softpkg (xmlNodePtr softpkg)
 	return result;
 }
 
-static GList*
-osd_parse_shared (xmlDocPtr doc)
+static GList *
+osd_parse_shared (xmlDocPtr doc, char **db_revision)
 {
 	GList *result;
 	xmlNodePtr base, child;
-	char *tmp;
 
 	result = NULL;
+	*db_revision = NULL;
 
 	base = doc->root;
 	if (base == NULL) {
@@ -902,9 +902,17 @@ osd_parse_shared (xmlDocPtr doc)
 				trilobite_debug ("SOFTPKG parse failed");
 			}
 		} else if (g_strcasecmp (child->name, "DB_CONTROL") == 0) {
-			tmp = trilobite_xml_get_string (child, "VALUE");
-			trilobite_debug ("(softcat db revision %s)", tmp);
-			g_free (tmp);
+			if (*db_revision != NULL) {
+				g_warning ("weird: softcat has multiple DB versions simultaneously");
+				g_free (*db_revision);
+			}
+			*db_revision = trilobite_xml_get_string (child, "VALUE");
+			if ((*db_revision != NULL) && (strlen (*db_revision) == 0)) {
+				/* empty revision of "" should just be dropped */
+				g_free (*db_revision);
+				*db_revision = NULL;
+			}
+			trilobite_debug ("(softcat db revision %s)", *db_revision);
 		} else {
 			trilobite_debug ("child is not a SOFTPKG, but a \"%s\"", child->name);
 		}
@@ -916,7 +924,7 @@ osd_parse_shared (xmlDocPtr doc)
 
 /* returns FALSE if the XML was all horked */
 gboolean
-eazel_install_packagelist_parse (GList **list, const char *mem, int size)
+eazel_install_packagelist_parse (GList **list, const char *mem, int size, char **db_revision)
 {
 	xmlDocPtr doc;
 	char *ptr, *docptr, *end;
@@ -950,7 +958,7 @@ eazel_install_packagelist_parse (GList **list, const char *mem, int size)
 		return FALSE;
 	}
 
-	*list = osd_parse_shared (doc);	
+	*list = osd_parse_shared (doc, db_revision);
 
 	xmlFreeDoc (doc);
 	g_free (docptr);

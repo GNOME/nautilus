@@ -51,6 +51,19 @@ eazel_softcat_finalize (GtkObject *object)
 
 	softcat = EAZEL_SOFTCAT (object);
 
+	g_free (softcat->private->server);
+	softcat->private->server = NULL;
+	g_free (softcat->private->server_str);
+	softcat->private->server_str = NULL;
+	g_free (softcat->private->cgi_path);
+	softcat->private->cgi_path = NULL;
+	g_free (softcat->private->username);
+	softcat->private->username = NULL;
+	g_free (softcat->private->db_revision);
+	softcat->private->db_revision = NULL;
+
+	g_free (softcat->private);
+
 	if (GTK_OBJECT_CLASS (eazel_softcat_parent_class)->finalize) {
 		GTK_OBJECT_CLASS (eazel_softcat_parent_class)->finalize (object);
 	}
@@ -113,8 +126,7 @@ eazel_softcat_initialize (EazelSoftCat *softcat) {
 	softcat->private = g_new0 (EazelSoftCatPrivate, 1);
 	softcat->private->retries = 3;
 	softcat->private->delay = 100;
-	softcat->private->server_update_set = FALSE;
-	softcat->private->server_update_val = 0;
+	softcat->private->db_revision = NULL;
 }
 
 GtkType
@@ -282,8 +294,8 @@ eazel_softcat_set_retry (EazelSoftCat *softcat, unsigned int retries, unsigned i
 void 
 eazel_softcat_reset_server_update_flag (EazelSoftCat *softcat)
 {
-	softcat->private->server_update_set = FALSE;
-	softcat->private->server_update_val = 0;
+	g_free (softcat->private->db_revision);
+	softcat->private->db_revision = NULL;
 }
 
 const char *
@@ -624,8 +636,10 @@ eazel_softcat_query (EazelSoftCat *softcat, PackageData *package, int sense_flag
 	int tries_left;
 	gboolean got_happy;
 	GList *packages;
+	char *db_revision;
 	int err;
 
+	db_revision = NULL;
 	search_url = get_search_url_for_package (softcat, package, sense_flags);
 	if (search_url == NULL) {
 		trilobite_debug ("no search url :(");
@@ -640,7 +654,7 @@ eazel_softcat_query (EazelSoftCat *softcat, PackageData *package, int sense_flag
 	     tries_left--) {
 		got_happy = trilobite_fetch_uri (search_url, &body, &length);
 		if (got_happy) {
-			got_happy = eazel_install_packagelist_parse (&packages, body, length);
+			got_happy = eazel_install_packagelist_parse (&packages, body, length, &db_revision);
 			if (! got_happy) {
 				/* boo.  bogus xml.  long live softcat! */
 				trilobite_debug ("bogus xml.");
@@ -671,21 +685,17 @@ eazel_softcat_query (EazelSoftCat *softcat, PackageData *package, int sense_flag
 		return EAZEL_SOFTCAT_ERROR_SERVER_UNREACHABLE;
 	}
 
-	/* FIXME: bugzilla.eazel.com 4470
-	   Somehow check the majick db update int in the xml :
-
-	if (softcat->private->server_update_set == FALSE) {
-		softcat->private->server_update_set = TRUE;
-		softcat->private->server_update_val = majick;
-	} else {
-		if (softcat->private->server_update_val != majick) {
-			trilobite_debug ("Server has been updated since last request");
+	if ((db_revision != NULL) && (softcat->private->db_revision == NULL)) {
+		softcat->private->db_revision = db_revision;
+		db_revision = NULL;
+	} else if (db_revision != NULL) {
+		if (strcmp (softcat->private->db_revision, db_revision) != 0) {
+			g_warning ("SoftCat has been updated since last request!");
 			err = EAZEL_SOFTCAT_ERROR_SERVER_UPDATED;
 			goto out;
 		}
 	}
-	*/
-	
+
 	if (g_list_length (packages) == 0) {
 		trilobite_debug ("no matches for that package.");
 		err = EAZEL_SOFTCAT_ERROR_NO_SUCH_PACKAGE;
@@ -699,6 +709,7 @@ eazel_softcat_query (EazelSoftCat *softcat, PackageData *package, int sense_flag
 out:
 	g_free (body);
 	g_free (search_url);
+	g_free (db_revision);
 
 	return err;
 }

@@ -45,6 +45,6 @@ xmlNodePtr eazel_install_packagedata_to_xml (const PackageData *pack, gboolean i
 xmlNodePtr eazel_install_packagelist_to_xml (GList *packages, gboolean include_provides);
 xmlNodePtr eazel_install_categorydata_to_xml (const CategoryData *category);
 
-gboolean eazel_install_packagelist_parse (GList **list, const char *mem, int size);
+gboolean eazel_install_packagelist_parse (GList **list, const char *mem, int size, char **db_revision);
 
 #endif /* EAZEL_INSTALL_XML_PACKAGE_LIST_H */
