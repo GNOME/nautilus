@@ -130,10 +130,10 @@ dnl ==========================================================================
 
 dnl cdda
 
-AM_CONDITIONAL(HAVE_CDDA, false);
+AM_CONDITIONAL(HAVE_CDDA, false)
 AC_CHECK_HEADERS(cdda_interface.h cdda_paranoia.h, [
-	CDDA_LIBS="-lcdda_paranoia -lcdda_interface";
-	AM_CONDITIONAL(HAVE_CDDA, true);
+	CDDA_LIBS="-lcdda_paranoia -lcdda_interface"
+	AM_CONDITIONAL(HAVE_CDDA, true)
 	])
 
 dnl ==========================================================================
