@@ -886,6 +886,12 @@ operation_cancel (Operation *op)
 	operation_free (op);
 }
 
+static gboolean
+in_filesystem (NautilusFile *file)
+{
+	return eel_str_has_prefix (file->details->directory->details->uri, "file:");
+}
+
 static void
 rename_callback (GnomeVFSAsyncHandle *handle,
 		 GnomeVFSResult result,
@@ -950,11 +956,11 @@ name_is (NautilusFile *file, const char *new_name)
 	return equal;
 }
 
-void
-nautilus_file_rename (NautilusFile *file,
-		      const char *new_name,
-		      NautilusFileOperationCallback callback,
-		      gpointer callback_data)
+static void
+rename_guts (NautilusFile *file,
+	     const char *new_name,
+	     NautilusFileOperationCallback callback,
+	     gpointer callback_data)
 {
 	Operation *op;
 	GnomeVFSFileInfo *partial_file_info;
@@ -964,8 +970,8 @@ nautilus_file_rename (NautilusFile *file,
 	g_return_if_fail (new_name != NULL);
 	g_return_if_fail (callback != NULL);
 
-	 /* Make return an error for incoming names containing path separators. */
-	 if (strstr (new_name, "/") != NULL) {
+	/* Return an error for incoming names containing path separators. */
+	if (strstr (new_name, "/") != NULL) {
 		(* callback) (file, GNOME_VFS_ERROR_NOT_PERMITTED, callback_data);
 		return;
 	}
@@ -1013,7 +1019,6 @@ nautilus_file_rename (NautilusFile *file,
 
 	/* Do the renaming. */
 	partial_file_info = gnome_vfs_file_info_new ();
-	/* FIXME: Handle G_BROKEN_FILENAMES here? */
 	partial_file_info->name = g_strdup (new_name);
 	vfs_uri = nautilus_file_get_gnome_vfs_uri (file);
 	gnome_vfs_async_set_file_info (&op->handle,
@@ -1025,6 +1030,29 @@ nautilus_file_rename (NautilusFile *file,
 				       rename_callback, op);
 	gnome_vfs_file_info_unref (partial_file_info);
 	gnome_vfs_uri_unref (vfs_uri);
+}
+
+void
+nautilus_file_rename (NautilusFile *file,
+		      const char *new_name,
+		      NautilusFileOperationCallback callback,
+		      gpointer callback_data)
+{
+	char *locale_name;
+
+	if (!in_filesystem (file) || g_getenv ("G_BROKEN_FILENAMES") == NULL) {
+		rename_guts (file, new_name, callback, callback_data);
+		return;
+	}
+
+	locale_name = g_filename_from_utf8 (new_name, -1, NULL, NULL, NULL);
+	if (locale_name == NULL) {
+		(* callback) (file, GNOME_VFS_ERROR_NOT_PERMITTED, callback_data);
+		return;
+	}
+
+	rename_guts (file, locale_name, callback, callback_data);
+	g_free (locale_name);
 }
 
 void
@@ -2170,13 +2198,18 @@ nautilus_file_get_display_name (NautilusFile *file)
 		} else {
 			/* Support the G_BROKEN_FILENAMES feature of
 			 * glib by using g_filename_to_utf8 to convert
-			 * local filenames to UTF-8.
+			 * local filenames to UTF-8. Also do the same
+			 * thing with any local filename that does not
+			 * validate as good UTF-8.
 			 */
-			if (g_getenv ("G_BROKEN_FILENAMES") != NULL && nautilus_file_is_local (file)) {
-				utf8_name = g_filename_to_utf8 (name, -1, NULL, NULL, NULL);
-				if (utf8_name != NULL) {
-					g_free (name);
-					name = utf8_name;
+			if (in_filesystem (file)) {
+				if (g_getenv ("G_BROKEN_FILENAMES") != NULL
+				    || !g_utf8_validate (name, -1, NULL)) {
+					utf8_name = g_filename_to_utf8 (name, -1, NULL, NULL, NULL);
+					if (utf8_name != NULL) {
+						g_free (name);
+						name = utf8_name;
+					}
 				}
 			}
 		}

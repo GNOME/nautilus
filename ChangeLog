@@ -1,5 +1,15 @@
 2002-02-28  Darin Adler  <darin@bentspoon.com>
 
+	* libnautilus-private/nautilus-file.c: (in_filesystem): New.
+	(rename_guts): Rename nautilus_file_rename to this.
+	(nautilus_file_rename): Convert name to locale encoding if
+	G_BROKEN_FILENAMES is set.
+	(nautilus_file_get_display_name): Convert name to UTF-8
+	assuming the locale character set if it's not valid UTF-8.
+	It was already doing it when G_BROKEN_FILENAMES was set.
+
+2002-02-28  Darin Adler  <darin@bentspoon.com>
+
 	* src/nautilus-sidebar.c: (add_command_buttons): Use
 	eel_str_replace_substring to replace the %s rather than using
 	g_strdup_printf. It's not safe to use a string from a data
