@@ -1,3 +1,17 @@
+2000-10-18  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* configure.in:
+	If no bonobo-ui-extract, AC_MSG_ERROR rather then cryptic failure
+	during compile.
+	
+	* libnautilus/Makefile.am:
+	Removed some evil blankspace
+
+	* po/POTFILES.in
+	Had to remove nautitlus-mozilla-ui.xml.h, since it's a conditional
+	build, and eg. is not built on tinderbox.eazel.com. Better fix
+	will have to come later, need new rpms' in softcat.
+	
 2000-10-18  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

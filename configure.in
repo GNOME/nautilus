@@ -562,7 +562,7 @@ AC_SUBST(gnomelocaledir)
 AC_PATH_PROG(BONOBO_UI_EXTRACT, bonobo-ui-extract,no)
 
 	if test x"BONOBO_UI_EXTRACT" = xno ; then
-		AC_MSG_WARN([You must have bonobo >= 0.21 installed to do translation work based on this package])
+		AC_MSG_ERROR([You must have bonobo >= 0.21 installed to do translation work based on this package])
 	fi
 		
 dnl Checks for typedefs, structures, and compiler characteristics.
