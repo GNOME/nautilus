@@ -1,3 +1,26 @@
+2000-06-22  John Sullivan  <sullivan@eazel.com>
+
+	Finished task 877 (SUID/SGID/Sticky bits should be settable
+	in Properties). There are still several appearance loose ends
+	that I'll write up bugs for. This change requires the latest 
+	gnome-vfs.
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_permissions_as_string): Make permissions
+	string display funky bits using ls conventions.
+	* libnautilus-extensions/nautilus-global-preferences.h,
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog),
+	(global_preferences_register_for_ui): Added a preference for
+	allowing editing of the funky bits; defaults to on for hacker,
+	off otherwise.
+	* src/file-manager/fm-properties-window.c:
+	(add_special_execution_checkbox), (add_special_execution_flags),
+	(create_permissions_page): Wired up the funky bit checkboxes to
+	the right funky bits; made some but not yet all of the Arlo
+	layout improvements; decide whether to show funky bit checkboxes
+	based on preference.
+
 2000-06-22  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/services/install/command-line/.cvsignore:

@@ -1656,6 +1656,7 @@ nautilus_file_get_permissions_as_string (NautilusFile *file)
 	GnomeVFSFilePermissions permissions;
 	gboolean is_directory;
 	gboolean is_link;
+	gboolean suid, sgid, sticky;
 
 	if (!nautilus_file_can_get_permissions (file)) {
 		return NULL;
@@ -1667,18 +1668,28 @@ nautilus_file_get_permissions_as_string (NautilusFile *file)
 	is_directory = nautilus_file_is_directory (file);
 	is_link = GNOME_VFS_FILE_INFO_SYMLINK (file->details->info);
 
-	/* FIXME bugzilla.eazel.com 877: Need to reflect suid, guid, sticky bits */
+	/* We use ls conventions for displaying these three obscure flags */
+	suid = permissions & GNOME_VFS_PERM_SUID;
+	sgid = permissions & GNOME_VFS_PERM_SGID;
+	sticky = permissions & GNOME_VFS_PERM_STICKY;
+
 	return g_strdup_printf ("%c%c%c%c%c%c%c%c%c%c",
 				 is_link ? 'l' : is_directory ? 'd' : '-',
 		 		 permissions & GNOME_VFS_PERM_USER_READ ? 'r' : '-',
 				 permissions & GNOME_VFS_PERM_USER_WRITE ? 'w' : '-',
-				 permissions & GNOME_VFS_PERM_USER_EXEC ? 'x' : '-',
+				 permissions & GNOME_VFS_PERM_USER_EXEC 
+				 	? (suid ? 's' : 'x') 
+				 	: (suid ? 'S' : '-'),
 				 permissions & GNOME_VFS_PERM_GROUP_READ ? 'r' : '-',
 				 permissions & GNOME_VFS_PERM_GROUP_WRITE ? 'w' : '-',
-				 permissions & GNOME_VFS_PERM_GROUP_EXEC ? 'x' : '-',
+				 permissions & GNOME_VFS_PERM_GROUP_EXEC
+				 	? (sgid ? 's' : 'x') 
+				 	: (sgid ? 'S' : '-'),		
 				 permissions & GNOME_VFS_PERM_OTHER_READ ? 'r' : '-',
 				 permissions & GNOME_VFS_PERM_OTHER_WRITE ? 'w' : '-',
-				 permissions & GNOME_VFS_PERM_OTHER_EXEC ? 'x' : '-');
+				 permissions & GNOME_VFS_PERM_OTHER_EXEC
+				 	? (sticky ? 't' : 'x') 
+				 	: (sticky ? 'T' : '-'));
 }
 
 /**

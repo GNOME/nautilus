@@ -127,11 +127,16 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_CLICK_POLICY,
 							 NAUTILUS_PREFERENCE_ITEM_ENUM);
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), "Hidden Files");
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), "Display");
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
 							 2,
 							 NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
+							 2,
+							 NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
 	/*
@@ -582,10 +587,13 @@ global_preferences_register_for_ui (void)
 						     NAUTILUS_COMPLEX_SEARCH_BAR);
 
 	/*
-	 * These dont have a UI (yet ? maybe in the advanced settings ?).
+	 * FIXME: These dont have a UI (yet ? maybe in the advanced settings ?).
 	 * They do need to have appropiate defaults nontheless.
 	 */
 
+	/* FIXME: Many user-displayed strings in this file aren't 
+	 * marked with _(), so aren't being localized 
+	 */
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME,
 							   "Show entire filename",
 							   FALSE,
@@ -594,6 +602,12 @@ global_preferences_register_for_ui (void)
 
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 							   "Show hidden files",
+							   FALSE,
+							   FALSE,
+							   TRUE);
+
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
+							   "Show special flags in Properties window",
 							   FALSE,
 							   FALSE,
 							   TRUE);

@@ -48,11 +48,12 @@
 #include <gtk/gtktable.h>
 #include <gtk/gtkvbox.h>
 
+#include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <libnautilus-extensions/nautilus-entry.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
 
@@ -74,7 +75,9 @@ enum {
 	PERMISSIONS_PAGE_OWNER_ROW,
 	PERMISSIONS_PAGE_GROUP_ROW,
 	PERMISSIONS_PAGE_OTHERS_ROW,
-	PERMISSIONS_PAGE_SPECIAL_FLAGS_ROW,
+	PERMISSIONS_PAGE_SUID_ROW,
+	PERMISSIONS_PAGE_SGID_ROW,
+	PERMISSIONS_PAGE_STICKY_ROW,
 	PERMISSIONS_PAGE_FULL_STRING_ROW,
 	PERMISSIONS_PAGE_FULL_OCTAL_ROW,
 	PERMISSIONS_PAGE_DATE_ROW,
@@ -1017,45 +1020,46 @@ add_permissions_checkbox (GtkTable *table,
 }
 
 static void
-add_special_execution_checkbox (GtkHBox *hbox, NautilusFile *file, const char *label_text)
+add_special_execution_checkbox (GtkTable *table,
+				NautilusFile *file, 
+				int row,
+				const char *label_text,
+				GnomeVFSFilePermissions permission_to_check)
 {
 	GtkWidget *check_button;
 
 	check_button = gtk_check_button_new_with_label (label_text);
 	gtk_widget_show (check_button);
 
-	gtk_box_pack_start (GTK_BOX (hbox), check_button, FALSE, FALSE, 0);
+	gtk_table_attach (table, check_button,
+			  VALUE_COLUMN, VALUE_COLUMN + 1,
+			  row, row + 1,
+			  GTK_FILL | GTK_EXPAND, 0,
+			  0, 0);
 
-	/* FIXME: Need to pass real permission here */
-	set_up_permissions_checkbox (check_button, file, GNOME_VFS_PERM_USER_READ);
+	set_up_permissions_checkbox (check_button, file, permission_to_check);
 }
 
 static void
 add_special_execution_flags (GtkTable *table, 
-			     NautilusFile *file,
-			     int row,
-			     int initial_column,
-			     int column_span)
+			     NautilusFile *file)
 {
-	GtkWidget *frame;
-	GtkWidget *hbox;
+	add_permissions_row_label (table, file, 
+				   PERMISSIONS_PAGE_SUID_ROW, 
+				   _("Special Flags:"), NULL);
 
-	frame = gtk_frame_new (_("Special Execution Flags"));
-	gtk_widget_show (frame);
-	gtk_table_attach (table, frame,
-			  initial_column, initial_column + column_span,
-			  row, row+1,
-			  0, 0,
-			  0, 0);
-
-	hbox = gtk_hbox_new (TRUE, GNOME_PAD);
-	gtk_widget_show (hbox);
-	gtk_container_set_border_width (GTK_CONTAINER (hbox), GNOME_PAD_SMALL);
-	gtk_container_add (GTK_CONTAINER (frame), hbox);
-
-	add_special_execution_checkbox (GTK_HBOX (hbox), file, _("set user ID"));
-	add_special_execution_checkbox (GTK_HBOX (hbox), file, _("set group ID"));
-	add_special_execution_checkbox (GTK_HBOX (hbox), file, _("sticky"));
+	add_special_execution_checkbox (table, file,
+					PERMISSIONS_PAGE_SUID_ROW, 
+					_("set user ID"), 
+					GNOME_VFS_PERM_SUID);
+	add_special_execution_checkbox (table, file, 
+					PERMISSIONS_PAGE_SGID_ROW, 
+					_("set group ID"), 
+					GNOME_VFS_PERM_SGID);
+	add_special_execution_checkbox (table, file, 
+					PERMISSIONS_PAGE_STICKY_ROW, 
+					_("sticky"), 
+					GNOME_VFS_PERM_STICKY);
 }
 
 static void
@@ -1117,11 +1121,11 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 		
 		add_permissions_row_label (page_table, file, 
 					   PERMISSIONS_PAGE_FULL_STRING_ROW, 
-					   _("As Text:"), NULL);
+					   _("Text View:"), NULL);
 		
 		add_permissions_row_label (page_table, file, 
 					   PERMISSIONS_PAGE_FULL_OCTAL_ROW, 
-					   _("As Number:"), NULL);
+					   _("Number View:"), NULL);
 		
 		add_permissions_row_label (page_table, file, 
 					   PERMISSIONS_PAGE_DATE_ROW, 
@@ -1184,9 +1188,16 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
 					  GNOME_VFS_PERM_OTHER_EXEC);
 
-		add_special_execution_flags (page_table, file,
-					     PERMISSIONS_PAGE_SPECIAL_FLAGS_ROW,
-					     TITLE_COLUMN, VALUE_COLUMN+1 - TITLE_COLUMN);					  
+		/* FIXME: Would be better to show/hide this info dynamically, so if the
+		 * preference is changed while the window is open it would react.
+		 */
+		/* FIXME: Spacing is wrong if you just leave empty table cells; need
+		 * to size table appropriately in advance.
+		 */
+		if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS, 
+						      FALSE)) {
+			add_special_execution_flags (page_table, file);					  
+		}
 
 		install_value_field (page_table, 
 				     PERMISSIONS_PAGE_FULL_STRING_ROW, 
