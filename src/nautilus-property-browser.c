@@ -168,7 +168,7 @@ static void     nautilus_property_browser_drag_data_get         (GtkWidget      
 								 guint                    info,
 								 guint32                  time);
 static void     nautilus_property_browser_theme_changed         (gpointer                 user_data);
-void            emit_emblems_changed_signal                     (void);
+static void     emit_emblems_changed_signal                     (void);
 
 /* misc utilities */
 static char *   strip_extension                                 (const char              *string_to_strip);
@@ -1630,30 +1630,30 @@ make_property_tile (NautilusPropertyBrowser *property_browser, GtkWidget *pixmap
 {
 	
 	NautilusBackground *background;
-	
 	GtkWidget *temp_vbox, *event_box;
 	
-	temp_vbox = gtk_vbox_new(FALSE, 0);
-	gtk_widget_show(temp_vbox);
+	temp_vbox = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (temp_vbox);
 
-	event_box = gtk_event_box_new();
-	gtk_widget_show(event_box);
+	event_box = gtk_event_box_new ();
+	gtk_widget_show (event_box);
 		
 	background = nautilus_get_widget_background (GTK_WIDGET (event_box));
 	nautilus_background_set_color (background, BROWSER_BACKGROUND_COLOR);	
 
 	if (label != NULL) {
-		nautilus_buffered_widget_set_background_type (NAUTILUS_BUFFERED_WIDGET(label), NAUTILUS_BACKGROUND_SOLID);		
+		nautilus_buffered_widget_set_background_type
+			(NAUTILUS_BUFFERED_WIDGET(label), NAUTILUS_BACKGROUND_SOLID);		
 		nautilus_buffered_widget_set_background_color
 			(NAUTILUS_BUFFERED_WIDGET(label), NAUTILUS_RGB_COLOR_WHITE);		
 
-			gtk_box_pack_end (GTK_BOX(temp_vbox), label, FALSE, FALSE, 2);
-			gtk_widget_show(label);
+		gtk_box_pack_end (GTK_BOX (temp_vbox), label, FALSE, FALSE, 2);
+		gtk_widget_show (label);
 	}
 
 	gtk_widget_show (pixmap_widget);
 	gtk_container_add (GTK_CONTAINER(event_box), pixmap_widget);
-	gtk_box_pack_end (GTK_BOX(temp_vbox), event_box, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (temp_vbox), event_box, FALSE, FALSE, 0);
 	
 	gtk_object_set_user_data (GTK_OBJECT(event_box), property_browser);
 	gtk_signal_connect_full
@@ -2210,7 +2210,7 @@ nautilus_property_browser_set_path (NautilusPropertyBrowser *property_browser,
 	nautilus_property_browser_update_contents (property_browser);  	
 }
 
-void
+static void
 emit_emblems_changed_signal (void)
 {
 	gtk_signal_emit_by_name (GTK_OBJECT (nautilus_signaller_get_current ()),
