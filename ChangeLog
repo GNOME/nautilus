@@ -1,3 +1,9 @@
+2000-11-22  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* configure.in:
+	Build the mozilla component without rtti and without exceptions.
+	This causes problems on some g++ compilers.
+	
 2000-11-22  Rebecca Schulman  <rebecka@eazel.com>
 	Fixed bug 3919, that the numeric date field still
 	showed when "day is yesterday" was chosen
