@@ -436,12 +436,46 @@ nautilus_mozilla_content_view_new (void)
 /***********************************************************************************/
 /***********************************************************************************/
 
+/*
+ * For URI's that use the (not-recommended) GnomeVFSTransform mechanism,
+ * such as gnome-help:
+ * 
+ * Returns NULL if the uri is already a file: URI or it doesn't transform
+ * into one.
+ * 
+ */
+
+static char *
+try_transform_nautilus_uri_to_file_scheme (const char *uri)
+{
+	GnomeVFSURI *vfs_uri;
+	char *real_uri;
+
+ 	if (0 == strncmp ("file:///", uri, strlen ("file:///"))) {
+ 		return NULL;
+	} 
+
+	vfs_uri = gnome_vfs_uri_new (uri);
+	if (vfs_uri != NULL) {
+		real_uri = gnome_vfs_uri_to_string (vfs_uri, GNOME_VFS_URI_HIDE_NONE);
+		gnome_vfs_uri_unref (vfs_uri);
+		
+		if ( 0 == strncmp ("file:///", real_uri, strlen ("file:///"))) {
+			return real_uri;
+		}
+		g_free (real_uri);
+	}
+
+	return NULL;
+}
+
 static void
 view_load_location_callback (NautilusView *nautilus_view, 
 			     const char *location,
 			     gpointer data)
 {
 	NautilusMozillaContentView *view;
+	char *file_uri;
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (data);
 
@@ -451,7 +485,13 @@ view_load_location_callback (NautilusView *nautilus_view,
 
 	nautilus_view_report_load_underway (nautilus_view);
 
-	navigate_mozilla_to_nautilus_uri (view, location);
+	if ((file_uri = try_transform_nautilus_uri_to_file_scheme (location)) != NULL) {
+		navigate_mozilla_to_nautilus_uri (view, file_uri);
+		/* Immediately redirect nautilus to the file: uri */
+		update_nautilus_uri (view, file_uri);
+	} else {
+		navigate_mozilla_to_nautilus_uri (view, location);
+	}
 
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
 }
@@ -1632,11 +1672,16 @@ should_uri_navigate_bypass_nautilus (const char *uri)
 {
 	static const char *handled_by_nautilus[] =
 	{
-		"man",
-		"info",
+		/* URI's that use libvfs-help and the evil GnomeVFSTransform are
+		 * deliberately excluded
+		 */
+#if 0
 		"help",
 		"gnome-help",
 		"ghelp",
+#endif
+		"man",
+		"info",
 		"http",
 		"file",
 		"eazel-services"

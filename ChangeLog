@@ -1,3 +1,19 @@
+2001-02-18  Michael K. Fleming  <mfleming@eazel.com>
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(try_transform_nautilus_uri_to_file_scheme),
+	(view_load_location_callback),
+	(should_uri_navigate_bypass_nautilus):
+
+	Bug 4302: links in HTML help don't work.
+
+	Now they do.  Since the "gnome-help:" scheme stuff doesn't know
+	how to deal with files below the root and its to convoluted to fix,
+	the Mozilla component discovers if a gnome-help scheme isgoing to be
+	transformed into a file scheme and then redirects nautilus to that
+	URI.  This means the full path to the HTML file appears in the location
+	bar, just like in the old gnome help browser
+
 2001-02-18  Darin Adler  <darin@eazel.com>
 
 	* components/mozilla/nautilus-mozilla-embed-extensions.cpp:
