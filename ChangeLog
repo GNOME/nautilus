@@ -1,3 +1,26 @@
+2000-11-13  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	More work towards using Bonobo for context menus. Also, found
+	and fixed bug where "Open With" items weren't working from
+	the File menu (though they were from the context menu).
+
+	* src/file-manager/fm-directory-view.c:
+	(add_open_with_program_menu_item): Determine verb name from item
+	path, not item label. This was broken before, causing "Open With"
+	items in the File menu not to work. Not sure why this ever worked,
+	but I didn't spend too much time investigating its change history.
+	(add_open_with_app_bonobo_menu_item), 
+	(add_open_with_viewer_bonobo_menu_item): Removed these functions;
+	they were adding an extra layer that ended up hurting rather than
+	helping.
+	(add_application_to_bonobo_menu),
+	(add_component_to_bonobo_menu): consolidated with the removed
+	functions; add item to context menu as well as normal menu.
+	(reset_bonobo_open_with_menu): remove menu items and verbs from
+	context menu as well as normal menu.
+
 2000-11-13  Josh Barrow  <josh@eazel.com>
 
 	* libnautilus-extensions/nautilus-global-preferences.c:

@@ -97,6 +97,9 @@
 #define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND				"/popups/background"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_SELECTION				"/popups/selection"
 
+#define FM_DIRECTORY_VIEW_POPUP_PATH_APPLICATIONS_PLACEHOLDER    	"/popups/selection/Open Placeholder/Open With/Applications Placeholder"
+#define FM_DIRECTORY_VIEW_POPUP_PATH_VIEWERS_PLACEHOLDER    		"/popups/selection/Open Placeholder/Open With/Viewers Placeholder"
+
 enum {
 	ADD_FILE,
 	CREATE_BACKGROUND_CONTEXT_MENU_ITEMS,
@@ -3232,56 +3235,13 @@ add_open_with_program_menu_item (BonoboUIComponent *ui,
 	g_free (item_id);
 
 	nautilus_bonobo_set_tip (ui, item_path, tip);
+	
+	verb_name = nautilus_bonobo_get_menu_item_verb_name (item_path);
 	g_free (item_path);
 	
-	verb_name = nautilus_bonobo_get_menu_item_verb_name (label);
 	bonobo_ui_component_add_verb_full (ui, verb_name, callback, callback_data, destroy_notify);	   
 	g_free (verb_name);
 }				 
-
-static void
-add_open_with_app_bonobo_menu_item (BonoboUIComponent *ui,
-				    const char *label,
-				    int index,
-				    gpointer callback,
-				    gpointer callback_data,
-				    GDestroyNotify destroy_notify)
-{
-	char *tip;
-	
-	tip = g_strdup_printf (_("Use \"%s\" to open the selected item"), label);
-	add_open_with_program_menu_item (ui, 
-					 FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER,
-					 label,
-					 tip,
-					 index,
-					 callback,
-					 callback_data,
-					 destroy_notify);
-	g_free (tip);					 
-}
-
-static void
-add_open_with_viewer_bonobo_menu_item (BonoboUIComponent *ui,
-				       const char *label,
-				       int index,
-				       gpointer callback,
-				       gpointer callback_data,
-				       GDestroyNotify destroy_notify)
-{
-	char *tip;
-	
-	tip = g_strdup_printf (_("Use \"%s\" to view the selected item"), label);
-	add_open_with_program_menu_item (ui, 
-					 FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER,
-					 label,
-					 tip,
-					 index,
-					 callback,
-					 callback_data,
-					 destroy_notify);
-	g_free (tip);
-}
 
 static void
 add_application_to_bonobo_menu (FMDirectoryView *directory_view,
@@ -3290,16 +3250,32 @@ add_application_to_bonobo_menu (FMDirectoryView *directory_view,
 				int index)
 {
 	ApplicationLaunchParameters *launch_parameters;
+	char *tip;
 
 	launch_parameters = application_launch_parameters_new 
 		(application, uri, directory_view);
+	tip = g_strdup_printf (_("Use \"%s\" to open the selected item"), application->name);
 
-	add_open_with_app_bonobo_menu_item (directory_view->details->ui, 
-					    application->name,
-					    index,
-					    bonobo_launch_application_callback,
-					    launch_parameters,
-					    (GDestroyNotify) application_launch_parameters_free);
+	add_open_with_program_menu_item (directory_view->details->ui, 
+					 FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER,
+					 application->name,
+					 tip,
+					 index,
+					 bonobo_launch_application_callback,
+					 launch_parameters,
+					 (GDestroyNotify) application_launch_parameters_free);
+	/* Use same launch parameters and no DestroyNotify for popup item, which has same
+	 * lifetime as the item in the File menu in the menu bar.
+	 */
+	add_open_with_program_menu_item (directory_view->details->ui, 
+					 FM_DIRECTORY_VIEW_POPUP_PATH_APPLICATIONS_PLACEHOLDER,
+					 application->name,
+					 tip,
+					 index,
+					 bonobo_launch_application_callback,
+					 launch_parameters,
+					 NULL);
+	g_free (tip);
 }
 
 static void
@@ -3310,6 +3286,7 @@ add_component_to_bonobo_menu (FMDirectoryView *directory_view,
 {
 	NautilusViewIdentifier *identifier;
 	ViewerLaunchParameters *launch_parameters;
+	char *tip;
 	char *label;
 	
 	identifier = nautilus_view_identifier_new_from_content_view (content_view);
@@ -3318,13 +3295,28 @@ add_component_to_bonobo_menu (FMDirectoryView *directory_view,
 
 	label = g_strdup_printf (_("%s Viewer"),
 				 launch_parameters->identifier->name);
+	tip = g_strdup_printf (_("Use \"%s\" to open the selected item"), label);
 
-	add_open_with_viewer_bonobo_menu_item (directory_view->details->ui, 
-					       label,
-					       index, 
-					       bonobo_open_location_with_viewer_callback, 
-					       launch_parameters,
-					       (GDestroyNotify) viewer_launch_parameters_free);
+	add_open_with_program_menu_item (directory_view->details->ui, 
+					 FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER,
+					 label,
+					 tip,
+					 index,
+					 bonobo_open_location_with_viewer_callback,
+					 launch_parameters,
+					 (GDestroyNotify) viewer_launch_parameters_free);
+	/* Use same launch parameters and no DestroyNotify for popup item, which has same
+	 * lifetime as the item in the File menu in the menu bar.
+	 */
+ 	add_open_with_program_menu_item (directory_view->details->ui, 
+					 FM_DIRECTORY_VIEW_POPUP_PATH_VIEWERS_PLACEHOLDER,
+					 label,
+					 tip,
+					 index,
+					 bonobo_open_location_with_viewer_callback,
+					 launch_parameters,
+					 NULL);
+	g_free (tip);
 	g_free (label);
 }
 
@@ -3388,6 +3380,10 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 		(view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER);
 	nautilus_bonobo_remove_menu_items_and_verbs 
 		(view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER);
+	nautilus_bonobo_remove_menu_items_and_verbs 
+		(view->details->ui, FM_DIRECTORY_VIEW_POPUP_PATH_APPLICATIONS_PLACEHOLDER);
+	nautilus_bonobo_remove_menu_items_and_verbs 
+		(view->details->ui, FM_DIRECTORY_VIEW_POPUP_PATH_VIEWERS_PLACEHOLDER);
 	
 	/* This menu is only displayed when there's one selected item. */
 	if (!nautilus_g_list_exactly_one_item (selection)) {
