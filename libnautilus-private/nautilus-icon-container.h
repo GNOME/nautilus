@@ -141,7 +141,7 @@ gboolean   nautilus_icon_container_has_stretch_handles     (NautilusIconContaine
 gboolean   nautilus_icon_container_is_stretched            (NautilusIconContainer *container);
 void       nautilus_icon_container_show_stretch_handles    (NautilusIconContainer *container);
 void       nautilus_icon_container_unstretch               (NautilusIconContainer *container);
-void       nautilus_icon_container_show_rename_widget      (NautilusIconContainer *container);
+void	   nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *container);
 
 /* options */
 int        nautilus_icon_container_get_zoom_level          (NautilusIconContainer *view);

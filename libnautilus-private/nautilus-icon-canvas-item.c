@@ -628,7 +628,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		 (have_editable && have_additional) ? "\n" : "",
 		 have_additional ? details->additional_text : "",
 		 NULL);
-	
+
 	width_so_far = 0;
 	height_so_far = 0;
 
@@ -652,7 +652,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		icon_text_info = gnome_icon_layout_text
 			(details->font, text_piece, " -_,;.?/&", max_text_width, TRUE);
 		
-		/* Draw text if we are not is user rename mode */
+		/* Draw text if we are not in user rename mode */
 		if (drawable != NULL && details->is_renaming == FALSE) {
 			text_left = icon_left + (icon_width - icon_text_info->width) / 2;
 			gnome_icon_paint_text (icon_text_info, drawable, gc,
@@ -1403,9 +1403,10 @@ nautilus_icon_canvas_item_hit_test_rectangle (NautilusIconCanvasItem *item,
 	return hit_test (item, &canvas_rect);
 }
 
-/* Return coordinates of icon text location */
+/* Return coordinates of icon and text location */
+/*
 void
-nautilus_icon_canvas_get_text_bounds (NautilusIconCanvasItem *icon_item,
+nautilus_icon_canvas_item_get_bounds (NautilusIconCanvasItem *icon_item,
 				      ArtIRect *text_rect)
 {
 	ArtIRect icon_rect;
@@ -1414,12 +1415,49 @@ nautilus_icon_canvas_get_text_bounds (NautilusIconCanvasItem *icon_item,
 	g_return_if_fail (text_rect != NULL);
 	
 	get_icon_canvas_rectangle (icon_item, &icon_rect);
-	compute_text_rectangle (icon_item, &icon_rect, text_rect);
+}
+*/
+
+/* Get the rectangle of the canvas item, in world coordinates. */
+void
+nautilus_icon_canvas_item_get_bounds (NautilusIconCanvasItem *item,
+					      ArtIRect *rect)
+{
+	double i2w[6];
+	ArtPoint art_point;
+		
+	g_return_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item));
+	g_return_if_fail (rect != NULL);
+
+	gnome_canvas_item_i2w_affine (GNOME_CANVAS_ITEM (item), i2w);
+	
+	art_point.x = 0;
+	art_point.y = 0;
+	art_affine_point (&art_point, &art_point, i2w);
+	
+	rect->x0 = art_point.x;
+	rect->y0 = art_point.y;	
 }
 
+
+/* Return coordinates of icon text location */
+void
+nautilus_icon_canvas_item_get_text_bounds (NautilusIconCanvasItem *icon_item,
+					       ArtIRect *text_rect)
+{
+	ArtIRect icon_rect;
+
+	g_return_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (icon_item));
+	g_return_if_fail (icon_item->details->editable_text != NULL);
+	g_return_if_fail (text_rect != NULL);
+	
+	get_icon_canvas_rectangle (icon_item, &icon_rect);
+	compute_text_rectangle (icon_item, &icon_rect, text_rect);
+}
+								
 /* Return coordinates of icon editable_text location */
 void
-nautilus_icon_canvas_get_editable_text_bounds (NautilusIconCanvasItem *icon_item,
+nautilus_icon_canvas_item_get_editable_text_bounds (NautilusIconCanvasItem *icon_item,
 					       ArtIRect *text_rect)
 {
 	ArtIRect icon_rect;
@@ -1433,7 +1471,7 @@ nautilus_icon_canvas_get_editable_text_bounds (NautilusIconCanvasItem *icon_item
 }
 
 const char *
-nautilus_icon_canvas_get_editable_text (NautilusIconCanvasItem *icon_item)
+nautilus_icon_canvas_item_get_editable_text (NautilusIconCanvasItem *icon_item)
 {
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (icon_item), NULL);
 

@@ -100,6 +100,12 @@ static void          update_rename_widget_text                (NautilusIconConta
 							       char                       *new_text);
 #endif
 
+#if 0
+static void 					update_rename_widget_text			(NautilusIconContainer *container, 
+																	 NautilusIcon *icon, char *new_text);
+#endif																	
+static void						hide_rename_widget (NautilusIconContainer *container, NautilusIcon *icon);
+
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer, nautilus_icon_container, GNOME_TYPE_CANVAS)
 
 
@@ -1754,6 +1760,7 @@ key_press_event (GtkWidget *widget,
 		keyboard_space (container, event);
 		break;
 	case GDK_Return:
+	case GDK_KP_Enter:
 		if (container->details->renaming == TRUE){
 			end_renaming_mode(container, TRUE);	
 		}
@@ -2990,20 +2997,23 @@ nautilus_self_check_compute_stretch (int icon_x, int icon_y, int icon_size,
 }
 
 /**
- * nautilus_icon_container_show_rename_widget
+ * nautilus_icon_container_start_renaming_selected_item
  * @container: An icon container widget.
  * 
  * Displays the edit name widget on the first selected icon
  **/
  
 void
-nautilus_icon_container_show_rename_widget (NautilusIconContainer *container)
+nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *container)
 {
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
-	ArtIRect text_rect;
+	ArtIRect text_rect, icon_rect;
 	GdkFont *font;
 	const char *editable_text;
+	int max_text_width;
+	int cx, cy;
+	double ppu;
 	
 	/* Check if it already in renaming mode. */
 	details = container->details;
@@ -3018,10 +3028,10 @@ nautilus_icon_container_show_rename_widget (NautilusIconContainer *container)
 	}
 
 	/*	Get location of text item */
-	nautilus_icon_canvas_get_text_bounds(icon->item, &text_rect);
+	nautilus_icon_canvas_item_get_text_bounds(icon->item, &text_rect);
 
 	/* Make a copy of the original editable text for a later compare */
-	editable_text = nautilus_icon_canvas_get_editable_text(icon->item);
+	editable_text = nautilus_icon_canvas_item_get_editable_text(icon->item);
 	details->original_text = g_strdup(editable_text);
 
 	/* Create text renaming widget */	
@@ -3030,14 +3040,23 @@ nautilus_icon_container_show_rename_widget (NautilusIconContainer *container)
 								NULL));
 
 	font = details->label_font[details->zoom_level];
+	/* FIXME: There needs to be a way to get the max width constant from the canvas item */
+	ppu = GNOME_CANVAS_ITEM (icon->item)->canvas->pixels_per_unit;
+	max_text_width = floor (80 * ppu);
+	nautilus_icon_canvas_item_get_bounds(icon->item, &icon_rect);
+	gnome_canvas_w2c(GNOME_CANVAS(container), icon_rect.x0, icon_rect.y0, &cx, &cy);
+	
+	/* FIXME:  Why aren't the coordinate transforms taking the scroll amount into account? */
+	cx += GNOME_CANVAS(container)->scroll_x1 * ppu;
+	cy = text_rect.y0;
 	
 	nautilus_icon_text_item_configure (details->rename_widget, 
-					   text_rect.x0,	/* x 		*/ 
-					   text_rect.y0, 	/* y 		*/
-					   (text_rect.x1 - text_rect.x0) + 4, 	/* width 	*/
-					   font,
+					   cx,			/* x */
+					   cy,			/* y */		
+					   max_text_width + 4, 	/* width */
+					   font,		/* font */
 					   editable_text,	/* text */
-					   1);
+					   1);			/* allocate local copy */
 	
 	/* Set up the signals */
 	gtk_signal_connect (GTK_OBJECT (details->rename_widget), "editing_started",

@@ -410,8 +410,8 @@ rename_icon_callback (gpointer ignored, gpointer view)
 {
 	g_assert (FM_IS_ICON_VIEW (view));
 	
-	nautilus_icon_container_show_rename_widget
-		(get_icon_container (FM_ICON_VIEW (view)));
+	nautilus_icon_container_start_renaming_selected_item (
+				get_icon_container (FM_ICON_VIEW (view)));
 }
 
 static void
@@ -1104,6 +1104,12 @@ fm_icon_view_icon_text_changed_callback (NautilusIconContainer *container,
 		return;
 	}
 
+	/* Don't allow a rename with an empty string.  Revert to original 
+	without notifying user */
+	if (strlen (new_name) == 0) {
+		return;
+	}
+	
 	rename_result = nautilus_file_rename (file, new_name);
 
 	if (rename_result == GNOME_VFS_OK) {
@@ -1150,9 +1156,10 @@ get_icon_uri_callback (NautilusIconContainer *container,
 }
 
 
+
 /* This callback returns the text items that are editable by the user
- * using the "Rename" command. In the case of FMIconView, this
- * would be the file name.
+ * using the "Rename" command.  In the case of FMIconView, this
+ * would be the attribute with the name
  */
 static char *
 get_icon_editable_text_callback (NautilusIconContainer *container,
@@ -1160,14 +1167,19 @@ get_icon_editable_text_callback (NautilusIconContainer *container,
 			FMIconView *icon_view)
 {
 	char *file_name;
-	
+
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 
+	/* In the smallest zoom mode, no text is drawn */
+	if ( fm_icon_view_get_zoom_level (icon_view) == NAUTILUS_ZOOM_LEVEL_SMALLEST) {
+		file_name = NULL;
+		return file_name;
+	}
+
 	/* strip the suffix for nautilus object xml files */
 	/* FIXME: need a preference to disable this to show real file names for experts */
-	
 	
 	file_name = nautilus_link_get_display_name(nautilus_file_get_name (file));
 	

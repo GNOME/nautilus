@@ -13,6 +13,7 @@
 #include "nautilus-icon-text-item.h"
 
 #include <math.h>
+#include <stdio.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
@@ -61,6 +62,9 @@ typedef struct {
 	/* Whether we need to update because the editing/selected state changed */
 	guint need_state_update : 1;
 
+	/* Store min width and height.  These are used when the text entry is empty. */
+	guint min_width;
+	guint min_height;
 } ItiPrivate;
 
 
@@ -118,7 +122,6 @@ layout_text (Iti *iti)
 	priv = iti->priv;
 
 	/* Save old size */
-
 	if (iti->ti) {
 		old_width = iti->ti->width + 2 * MARGIN_X;
 		old_height = iti->ti->height + 2 * MARGIN_Y;
@@ -130,7 +133,6 @@ layout_text (Iti *iti)
 	}
 
 	/* Change the text layout */
-
 	if (iti->editing)
 		text = gtk_entry_get_text (priv->entry);
 	else
@@ -143,7 +145,6 @@ layout_text (Iti *iti)
 					  TRUE);
 
 	/* Check the sizes and see if we need to emit any signals */
-
 	width = iti->ti->width + 2 * MARGIN_X;
 	height = iti->ti->height + 2 * MARGIN_Y;
 
@@ -153,6 +154,7 @@ layout_text (Iti *iti)
 	if (height != old_height)
 		gtk_signal_emit (GTK_OBJECT (iti), iti_signals[HEIGHT_CHANGED]);
 }
+
 
 /* Accepts the text in the off-screen entry of an icon text item */
 static void
@@ -309,13 +311,21 @@ recompute_bounding_box (Iti *iti)
 	ArtPoint p, q;
 	int x1, y1, x2, y2;
 	int width, height;
+	ItiPrivate *priv;
 
 	item = GNOME_CANVAS_ITEM (iti);
 
-	/* Compute width, height, position */
+	priv = iti->priv;
 
+	/* Compute width, height, position */
 	width = iti->ti->width + 2 * MARGIN_X;
 	height = iti->ti->height + 2 * MARGIN_Y;
+
+	/* Verify we are not smaller than default settings */
+	if (width < priv->min_width)
+		width = priv->min_width;
+	if (height < priv->min_height)
+		height = priv->min_height;
 
 	x1 = iti->x + (iti->width - width) / 2;
 	y1 = iti->y;
@@ -323,7 +333,6 @@ recompute_bounding_box (Iti *iti)
 	y2 = y1 + height;
 
 	/* Translate to world coordinates */
-
 	gnome_canvas_item_i2w_affine (item, affine);
 
 	p.x = x1;
@@ -490,17 +499,25 @@ iti_draw (GnomeCanvasItem *item, GdkDrawable *drawable, int x, int y, int width,
 	GtkStyle *style;
 	int w, h;
 	int xofs, yofs;
+	ItiPrivate *priv;
 
 	iti = ITI (item);
+	priv = iti->priv;
 
 	if (iti->ti) {
 		w = iti->ti->width + 2 * MARGIN_X;
 		h = iti->ti->height + 2 * MARGIN_Y;
+
+		/* Make sure we aren't smaller than default settings */
+		if (w < priv->min_width)
+			w = priv->min_width;
+		if (h < priv->min_height)
+			h = priv->min_height;			
 	} else {
 		w = 2 * MARGIN_X;
 		h = 2 * MARGIN_Y;
 	}
-
+	
 	xofs = item->x1 - x;
 	yofs = item->y1 - y;
 
@@ -716,6 +733,7 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 		switch(event->key.keyval) {
 		case GDK_Escape:
 		case GDK_Return:
+		case GDK_KP_Enter:
 			return FALSE;
 
 		default:
@@ -926,10 +944,10 @@ iti_init (NautilusIconTextItem *iti)
 void
 nautilus_icon_text_item_configure (NautilusIconTextItem *iti, int x, int y,
 				int width, GdkFont *font,
-				const char *text,
-				gboolean is_static)
+				const char *text, gboolean is_static)
 {
 	ItiPrivate *priv;
+	GnomeIconTextInfo *min_text_info;
 
 	g_return_if_fail (iti != NULL);
 	g_return_if_fail (IS_ITI (iti));
@@ -975,8 +993,17 @@ nautilus_icon_text_item_configure (NautilusIconTextItem *iti, int x, int y,
 
 	layout_text (iti);
 
-	/* Request update */
+	/* Calculate and store min and max dimensions */	
+	min_text_info = gnome_icon_layout_text (priv->font,
+					  " ",
+					  DEFAULT_SEPARATORS,
+					  iti->width - 2 * MARGIN_X,
+					  TRUE);
+	priv->min_width = min_text_info->width + 2 * MARGIN_X;
+	priv->min_height = min_text_info->height + 2 * MARGIN_Y;
+	gnome_icon_text_info_free(min_text_info);
 
+	/* Request update */
 	priv->need_pos_update = TRUE;
 	priv->need_font_update = TRUE;
 	priv->need_text_update = TRUE;

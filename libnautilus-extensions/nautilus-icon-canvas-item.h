@@ -81,11 +81,13 @@ gboolean    nautilus_icon_canvas_item_hit_test_stretch_handles (NautilusIconCanv
 void        nautilus_icon_canvas_item_get_icon_rectangle       (NautilusIconCanvasItem *item,
 								ArtDRect               *world_rectangle);
 void        nautilus_icon_canvas_item_update_bounds            (NautilusIconCanvasItem *item);
-void        nautilus_icon_canvas_get_text_bounds               (NautilusIconCanvasItem *icon_item,
+void	    nautilus_icon_canvas_item_get_bounds 	       (NautilusIconCanvasItem *icon_item,
+				      			        ArtIRect *text_rect);
+void        nautilus_icon_canvas_item_get_text_bounds          (NautilusIconCanvasItem *icon_item,
 								ArtIRect               *text_rect);
-void        nautilus_icon_canvas_get_editable_text_bounds      (NautilusIconCanvasItem *icon_item,
+void        nautilus_icon_canvas_item_get_editable_text_bounds      (NautilusIconCanvasItem *icon_item,
 								ArtIRect               *text_rect);
-const char *nautilus_icon_canvas_get_editable_text             (NautilusIconCanvasItem *icon_item);
+const char *nautilus_icon_canvas_item_get_editable_text             (NautilusIconCanvasItem *icon_item);
 void        nautilus_icon_canvas_item_set_renaming             (NautilusIconCanvasItem *icon_item,
 								gboolean                state);
 
