@@ -33,23 +33,17 @@ module Nautilus {
 	 */
 	interface View : ::Bonobo::Unknown {
 		/* Called to tell the view about location changes.
-		 * Called again with the same parameter to request a
-		 * reload. Not called on the view that reported a
-		 * location change with report_location_change, but is
-		 * called on all other views, and on all views if
-		 * open_location or open_location_in_new_window is
-		 * used.
+		 * Called again with the same location again to request a
+		 * reload.
 		 */
 		oneway void load_location (in URI location);
 		oneway void stop_loading ();
 		
-		/* Called to tell the view about selection changes.
-		 * It's called on all views except the one that calls
-		 * report_selection_change.
-		 */
+		/* Called to tell the view about selection changes. */
 		oneway void selection_changed (in URIList selection);
 
-		oneway void title_changed ();
+		/* Called to tell the view about title changes. */
+		oneway void title_changed (in string title);
 	};
 	
 	/* The ViewFrame interface is used by the view to communicate

@@ -58,23 +58,23 @@ nautilus_navigation_bar_initialize_class (NautilusNavigationBarClass *klass)
 
 	object_class = GTK_OBJECT_CLASS (klass);
 	
-	signals[ACTIVATE]
-		= gtk_signal_new ("activate",
-				  GTK_RUN_FIRST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusNavigationBarClass,
-						     activate),
-				  gtk_marshal_NONE__NONE,
-				  GTK_TYPE_NONE, 0);
+	signals[ACTIVATE] = gtk_signal_new
+		("activate",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusNavigationBarClass,
+				    activate),
+		 gtk_marshal_NONE__NONE,
+		 GTK_TYPE_NONE, 0);
 
-	signals[LOCATION_CHANGED]
-		= gtk_signal_new ("location_changed",
-				  GTK_RUN_FIRST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusNavigationBarClass,
-						     location_changed),
-				  gtk_marshal_NONE__STRING,
-				  GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
+	signals[LOCATION_CHANGED] = gtk_signal_new
+		("location_changed",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusNavigationBarClass,
+				    location_changed),
+		 gtk_marshal_NONE__STRING,
+		 GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
 
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 

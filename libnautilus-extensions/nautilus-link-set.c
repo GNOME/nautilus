@@ -25,24 +25,23 @@
 #include <config.h>
 #include "nautilus-link-set.h"
 
-#include <stdlib.h>
-
-#include <parser.h>
-#include <xmlmemory.h>
-
-#include <libgnomevfs/gnome-vfs.h>
-#include <gtk/gtkwindow.h>
-#include <gtk/gtktogglebutton.h>
-
+#include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
-#include "nautilus-link.h"
-#include "nautilus-metadata.h"
-#include "nautilus-string.h"
-#include "nautilus-xml-extensions.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-link.h"
+#include "nautilus-metadata.h"
 #include "nautilus-preferences.h"
-#include "nautilus-file-utilities.h"
+#include "nautilus-string.h"
+#include "nautilus-xml-extensions.h"
+#include <gtk/gtktogglebutton.h>
+#include <gtk/gtkwindow.h>
+#include <libgnome/gnome-util.h>
+#include <libgnomevfs/gnome-vfs.h>
+#include <parser.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <xmlmemory.h>
 
 /* routine to create a new link file in the specified directory */
 static gboolean

@@ -29,6 +29,7 @@
 #include "nautilus-simple-search-bar.h"
 
 #include "nautilus-search-bar-criterion.h"
+#include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -36,6 +37,7 @@
 #include <libnautilus-extensions/nautilus-search-uri.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
+#include <stdio.h>
 
 struct NautilusSimpleSearchBarDetails {
 	NautilusEntry *entry;

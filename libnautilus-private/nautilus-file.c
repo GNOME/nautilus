@@ -38,6 +38,7 @@
 #include "nautilus-wait-until-ready.h"
 #include <ctype.h>
 #include <grp.h>
+#include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
@@ -70,20 +71,8 @@ static GHashTable *symbolic_links;
 static void  nautilus_file_initialize_class          (NautilusFileClass    *klass);
 static void  nautilus_file_initialize                (NautilusFile         *file);
 static void  destroy                                 (GtkObject            *object);
-static int   nautilus_file_compare_by_name           (NautilusFile         *file_1,
-						      NautilusFile         *file_2);
-static int   nautilus_file_compare_by_directory_name (NautilusFile         *file_1,
-						      NautilusFile         *file_2);
-static int   nautilus_file_compare_by_emblems        (NautilusFile         *file_1,
-						      NautilusFile         *file_2);
-static int   nautilus_file_compare_by_type           (NautilusFile         *file_1,
-						      NautilusFile         *file_2);
-static char *nautilus_file_get_date_as_string        (NautilusFile         *file,
-						      NautilusDateType      date_type);
 static char *nautilus_file_get_owner_as_string       (NautilusFile         *file,
 						      gboolean		    include_real_name);
-static char *nautilus_file_get_permissions_as_string (NautilusFile         *file);
-static char *nautilus_file_get_size_as_string        (NautilusFile         *file);
 static char *nautilus_file_get_type_as_string        (NautilusFile         *file);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusFile, nautilus_file, GTK_TYPE_OBJECT)
@@ -1200,51 +1189,16 @@ nautilus_file_compare_directories_by_size (NautilusFile *file_1, NautilusFile *f
 	return 0;
 }
 
-/**
- * compare_emblem_names
- * 
- * Compare two emblem names by canonical order. Canonical order
- * is alphabetical, except the symbolic link name goes first. NULL
- * is allowed, and goes last.
- * @name_1: The first emblem name.
- * @name_2: The second emblem name.
- * 
- * Return value: 0 if names are equal, -1 if @name_1 should be
- * first, +1 if @name_2 should be first.
- */
-static int
-compare_emblem_names (const char *name_1, const char *name_2)
-{
-	int strcmp_result;
-
-	strcmp_result = nautilus_strcmp (name_1, name_2);
-
-	if (strcmp_result == 0) {
-		return 0;
-	}
-
-	if (nautilus_strcmp (name_1, NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK) == 0) {
-		return -1;
-	}
-
-	if (nautilus_strcmp (name_2, NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK) == 0) {
-		return +1;
-	}
-
-	return strcmp_result;
-}
-
 static int
 nautilus_file_compare_by_name (NautilusFile *file_1, NautilusFile *file_2)
 {
-	char *name_1;
-	char *name_2;
+	char *name_1, *name_2;
 	int compare;
 
 	name_1 = nautilus_file_get_name (file_1);
 	name_2 = nautilus_file_get_name (file_2);
 
-	compare = nautilus_strcasecmp (name_1, name_2);
+	compare = nautilus_strcmp_case_breaks_ties (name_1, name_2);
 
 	g_free (name_1);
 	g_free (name_2);
@@ -1255,14 +1209,13 @@ nautilus_file_compare_by_name (NautilusFile *file_1, NautilusFile *file_2)
 static int
 nautilus_file_compare_by_directory_name (NautilusFile *file_1, NautilusFile *file_2)
 {
-	char *directory_1;
-	char *directory_2;
+	char *directory_1, *directory_2;
 	int compare;
 
 	directory_1 = nautilus_file_get_parent_uri_for_display (file_1);
 	directory_2 = nautilus_file_get_parent_uri_for_display (file_2);
 
-	compare = nautilus_strcasecmp (directory_1, directory_2);
+	compare = nautilus_strcmp_case_breaks_ties (directory_1, directory_2);
 
 	g_free (directory_1);
 	g_free (directory_2);
@@ -1271,40 +1224,91 @@ nautilus_file_compare_by_directory_name (NautilusFile *file_1, NautilusFile *fil
 }
 
 static int
+get_automatic_emblems_as_integer (NautilusFile *file)
+{
+	int integer;
+
+	/* Keep in proper order for sorting. */
+
+	integer = nautilus_file_is_symbolic_link (file);
+	integer <<= 1;
+	integer |= !nautilus_file_can_read (file);
+	integer <<= 1;
+	integer |= !nautilus_file_can_write (file);
+	integer <<= 1;
+	integer |= nautilus_file_is_in_trash (file);
+
+	return integer;
+}
+
+static GList *
+prepend_automatic_emblem_names (NautilusFile *file,
+				GList *names)
+{
+	/* Prepend in reverse order. */
+
+	if (nautilus_file_is_in_trash (file)) {
+		names = g_list_prepend
+			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_TRASH));
+	}
+	if (!nautilus_file_can_write (file)) {
+		names = g_list_prepend
+			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE));
+	}
+	if (!nautilus_file_can_read (file)) {
+		names = g_list_prepend
+			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_CANT_READ));
+	}
+	if (nautilus_file_is_symbolic_link (file)) {
+		names = g_list_prepend
+			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK));
+	}
+
+	return names;
+}
+
+static int
 nautilus_file_compare_by_emblems (NautilusFile *file_1, NautilusFile *file_2)
 {
-	GList *emblem_names_1;
-	GList *emblem_names_2;
-	GList *p1;
-	GList *p2;
+	int auto_1, auto_2;
+	GList *keywords_1, *keywords_2;
+	GList *node_1, *node_2;
 	int compare_result;
+ 
+	auto_1 = get_automatic_emblems_as_integer (file_1);
+	auto_2 = get_automatic_emblems_as_integer (file_2);
+	if (auto_1 < auto_2) {
+		return +1;
+	} else if (auto_1 > auto_2) {
+		return -1;
+	}
 
+	keywords_1 = nautilus_file_get_keywords (file_1);
+	keywords_2 = nautilus_file_get_keywords (file_2);
+
+	/* Compare each keyword. */
 	compare_result = 0;
-
-	emblem_names_1 = nautilus_file_get_emblem_names (file_1);
-	emblem_names_2 = nautilus_file_get_emblem_names (file_2);
-
-	p1 = emblem_names_1;
-	p2 = emblem_names_2;
-	while (p1 != NULL && p2 != NULL) {
-		compare_result = compare_emblem_names (p1->data, p2->data);
+	for (node_1 = keywords_1, node_2 = keywords_2;
+	     node_1 != NULL && node_2 != NULL;
+	     node_1 = node_1->next, node_2 = node_2->next) {
+		
+		compare_result = nautilus_strcmp_case_breaks_ties (node_1->data, node_2->data);
 		if (compare_result != 0) {
 			break;
 		}
-
-		p1 = p1->next;
-		p2 = p2->next;
 	}
 
 	if (compare_result == 0) {
 		/* One or both is now NULL. */
-		if (p1 != NULL || p2 != NULL) {
-			compare_result = p2 == NULL ? -1 : +1;
+		if (node_1 != NULL) {
+			compare_result = -1;
+		} else if (node_2 != NULL) {
+			compare_result = +1;
 		}
 	}
 
-	nautilus_g_list_free_deep (emblem_names_1);
-	nautilus_g_list_free_deep (emblem_names_2);
+	nautilus_g_list_free_deep (keywords_1);
+	nautilus_g_list_free_deep (keywords_2);
 
 	return compare_result;	
 }
@@ -1348,7 +1352,7 @@ nautilus_file_compare_by_type (NautilusFile *file_1, NautilusFile *file_2)
 	type_string_1 = nautilus_file_get_type_as_string (file_1);
 	type_string_2 = nautilus_file_get_type_as_string (file_2);
 
-	result = nautilus_strcmp (type_string_1, type_string_2);
+	result = nautilus_strcmp_case_breaks_ties (type_string_1, type_string_2);
 
 	g_free (type_string_1);
 	g_free (type_string_2);
@@ -1443,8 +1447,8 @@ nautilus_file_compare_for_sort (NautilusFile *file_1,
 
 	if (file_1->details->info == NULL) {
 		if (file_2->details->info == NULL) {
-			compare = g_strcasecmp (file_1->details->name,
-						file_2->details->name);
+			compare = nautilus_strcmp_case_breaks_ties
+				(file_1->details->name, file_2->details->name);
 		} else {
 			/* FIXME bugzilla.eazel.com 2426: 
 			 * We do have a name for file 2 to
@@ -1494,14 +1498,16 @@ nautilus_file_compare_for_sort_reversed (NautilusFile *file_1,
  * @file: A file object
  * @pattern: A string we are comparing it with
  * 
- * Return value: result of a case-insensitive comparison of the file
- * name and the given pattern.
+ * Return value: result of a comparison of the file name and the given pattern,
+ * using the same sorting order as sort by name.
  **/
 int
 nautilus_file_compare_name (NautilusFile *file,
 			    const char *pattern)
 {
-	return g_strcasecmp (file->details->name, pattern);
+	g_return_val_if_fail (pattern != NULL, -1);
+
+	return nautilus_strcmp_case_breaks_ties (file->details->name, pattern);
 }
 
 char *
@@ -2994,75 +3000,58 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 	if (strcmp (attribute_name, "name") == 0) {
 		return nautilus_file_get_name (file);
 	}
-
 	if (strcmp (attribute_name, "type") == 0) {
 		return nautilus_file_get_type_as_string (file);
 	}
-
 	if (strcmp (attribute_name, "mime_type") == 0) {
 		return nautilus_file_get_mime_type (file);
 	}
-
 	if (strcmp (attribute_name, "size") == 0) {
 		return nautilus_file_get_size_as_string (file);
 	}
-
 	if (strcmp (attribute_name, "deep_size") == 0) {
 		return nautilus_file_get_deep_size_as_string (file);
 	}
-
 	if (strcmp (attribute_name, "deep_file_count") == 0) {
 		return nautilus_file_get_deep_file_count_as_string (file);
 	}
-
 	if (strcmp (attribute_name, "deep_directory_count") == 0) {
 		return nautilus_file_get_deep_directory_count_as_string (file);
 	}
-
 	if (strcmp (attribute_name, "deep_total_count") == 0) {
 		return nautilus_file_get_deep_total_count_as_string (file);
 	}
-
 	if (strcmp (attribute_name, "date_modified") == 0) {
 		return nautilus_file_get_date_as_string (file, 
 							 NAUTILUS_DATE_TYPE_MODIFIED);
 	}
-
 	if (strcmp (attribute_name, "date_changed") == 0) {
 		return nautilus_file_get_date_as_string (file, 
 							 NAUTILUS_DATE_TYPE_CHANGED);
 	}
-
 	if (strcmp (attribute_name, "date_accessed") == 0) {
 		return nautilus_file_get_date_as_string (file,
 							 NAUTILUS_DATE_TYPE_ACCESSED);
 	}
-
 	if (strcmp (attribute_name, "date_permissions") == 0) {
 		return nautilus_file_get_date_as_string (file,
 							 NAUTILUS_DATE_TYPE_PERMISSIONS_CHANGED);
 	}
-
 	if (strcmp (attribute_name, "permissions") == 0) {
 		return nautilus_file_get_permissions_as_string (file);
 	}
-
 	if (strcmp (attribute_name, "octal_permissions") == 0) {
 		return nautilus_file_get_octal_permissions_as_string (file);
 	}
-
 	if (strcmp (attribute_name, "owner") == 0) {
 		return nautilus_file_get_owner_as_string (file, TRUE);
 	}
-
 	if (strcmp (attribute_name, "group") == 0) {
 		return nautilus_file_get_group_name (file);
 	}
-
 	if (strcmp (attribute_name, "uri") == 0) {
 		return nautilus_file_get_uri (file);
 	}
-
 	if (strcmp (attribute_name, "parent_uri") == 0) {
 		return nautilus_file_get_parent_uri_for_display (file);
 	}
@@ -3189,11 +3178,10 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 	/* We want to update gnome-vfs/data/mime/gnome-vfs.keys to include 
 	 * English (& localizable) versions of every mime type anyone ever sees.
 	 */
-	if (strcasecmp (mime_type, "x-directory/normal") == 0) {
+	if (g_strcasecmp (mime_type, "x-directory/normal") == 0) {
 		g_warning ("Can't find description even for \"x-directory/normal\". This "
 			   "probably means that your gnome-vfs.keys file is in the wrong place "
 			   "or isn't being found for some other reason.");
-			
 	} else {
 		g_warning ("No description found for mime type \"%s\" (file is \"%s\"), tell sullivan@eazel.com", 
 			    mime_type,
@@ -3254,7 +3242,7 @@ nautilus_file_is_mime_type (NautilusFile *file, const char *mime_type)
 	if (info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE)) {
 		return FALSE;
 	}
-	return nautilus_strcmp (file->details->info->mime_type, mime_type) == 0;
+	return nautilus_strcasecmp (file->details->info->mime_type, mime_type) == 0;
 }
 
 /**
@@ -3270,39 +3258,14 @@ nautilus_file_is_mime_type (NautilusFile *file, const char *mime_type)
 GList *
 nautilus_file_get_emblem_names (NautilusFile *file)
 {
-	GList *names;
-
 	if (file == NULL) {
 		return NULL;
 	}
-
+	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-	names = nautilus_file_get_keywords (file);
-						    					    
-	if (nautilus_file_is_in_trash (file)) {
-		names = g_list_append 
-			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_TRASH));
-	}
-
-	if (nautilus_file_is_symbolic_link (file)) {
-		names = g_list_append 
-			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK));
-	}
 	
-	if (!nautilus_file_can_write (file)) {
-		names = g_list_append 
-			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE));
-
-	}
-
-	if (!nautilus_file_can_read (file)) {
-		names = g_list_append 
-			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_CANT_READ));
-
-	}
-	
-	return names;
+	return prepend_automatic_emblem_names
+		(file, nautilus_file_get_keywords (file));
 }
 
 static GList *
@@ -3311,12 +3274,12 @@ sort_keyword_list_and_remove_duplicates (GList *keywords)
 	GList *p;
 	GList *duplicate_link;
 	
-	keywords = g_list_sort (keywords, (GCompareFunc) compare_emblem_names);
+	keywords = g_list_sort (keywords, (GCompareFunc) nautilus_strcmp_case_breaks_ties);
 
 	if (keywords != NULL) {
-		p = keywords;		
+		p = keywords;
 		while (p->next != NULL) {
-			if (nautilus_strcmp (p->data, p->next->data) == 0) {
+			if (strcmp (p->data, p->next->data) == 0) {
 				duplicate_link = p->next;
 				keywords = g_list_remove_link (keywords, duplicate_link);
 				nautilus_g_list_free_deep (duplicate_link);
@@ -4101,6 +4064,3 @@ nautilus_self_check_file (void)
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */
-
-
-

@@ -82,8 +82,7 @@
 enum {
 	ARG_0,
 	ARG_APP_ID,
-	ARG_APP,
-	ARG_CONTENT_VIEW
+	ARG_APP
 };
 
 /* Other static variables */
@@ -101,8 +100,7 @@ static void nautilus_window_get_arg                 (GtkObject           *object
 static void nautilus_window_size_request            (GtkWidget           *widget,
 						     GtkRequisition      *requisition);
 static void nautilus_window_realize                 (GtkWidget           *widget);
-static void nautilus_window_real_set_content_view   (NautilusWindow      *window,
-						     NautilusViewFrame   *new_view);
+static void update_sidebar_panels_from_preferences  (NautilusWindow      *window);
 static void sidebar_panels_changed_callback         (gpointer             user_data);
 static void nautilus_window_show                    (GtkWidget           *widget);
 
@@ -116,28 +114,23 @@ nautilus_window_initialize_class (NautilusWindowClass *klass)
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 	
-	parent_class = gtk_type_class(gnome_app_get_type());
-	
-	object_class = (GtkObjectClass*) klass;
+	object_class = (GtkObjectClass *) klass;
+	widget_class = (GtkWidgetClass *) klass;
+
 	object_class->destroy = nautilus_window_destroy;
 	object_class->get_arg = nautilus_window_get_arg;
 	object_class->set_arg = nautilus_window_set_arg;
 	
-	widget_class = (GtkWidgetClass*) klass;
 	widget_class->show = nautilus_window_show;
 	
 	gtk_object_add_arg_type ("NautilusWindow::app_id",
 				 GTK_TYPE_STRING,
-				 GTK_ARG_READWRITE|GTK_ARG_CONSTRUCT,
+				 GTK_ARG_READWRITE | GTK_ARG_CONSTRUCT,
 				 ARG_APP_ID);
 	gtk_object_add_arg_type ("NautilusWindow::app",
 				 GTK_TYPE_OBJECT,
-				 GTK_ARG_READWRITE|GTK_ARG_CONSTRUCT,
+				 GTK_ARG_READWRITE | GTK_ARG_CONSTRUCT,
 				 ARG_APP);
-	gtk_object_add_arg_type ("NautilusWindow::content_view",
-				 GTK_TYPE_OBJECT,
-				 GTK_ARG_READWRITE,
-				 ARG_CONTENT_VIEW);
 	
 	widget_class->realize = nautilus_window_realize;
 	widget_class->size_request = nautilus_window_size_request;	
@@ -160,31 +153,33 @@ nautilus_window_initialize (NautilusWindow *window)
 }
 
 static gboolean
-nautilus_window_clear_status(NautilusWindow *window)
+nautilus_window_clear_status (NautilusWindow *window)
 {
-	gtk_statusbar_pop(GTK_STATUSBAR(GNOME_APP(window)->statusbar), window->status_bar_context_id);
+	gtk_statusbar_pop (GTK_STATUSBAR (GNOME_APP (window)->statusbar), window->status_bar_context_id);
 	window->status_bar_clear_id = 0;
 	return FALSE;
 }
 
 void
-nautilus_window_set_status(NautilusWindow *window, const char *txt)
+nautilus_window_set_status (NautilusWindow *window, const char *txt)
 {
-	if(window->status_bar_clear_id)
-		g_source_remove(window->status_bar_clear_id);
+	if (window->status_bar_clear_id != 0) {
+		g_source_remove (window->status_bar_clear_id);
+	}
 	
-	gtk_statusbar_pop(GTK_STATUSBAR(GNOME_APP(window)->statusbar), window->status_bar_context_id);
-	if(txt && *txt)	{
+	gtk_statusbar_pop (GTK_STATUSBAR (GNOME_APP (window)->statusbar), window->status_bar_context_id);
+	if (txt != NULL && txt[0] != '\0') {
 		window->status_bar_clear_id = g_timeout_add(STATUS_BAR_CLEAR_TIMEOUT, (GSourceFunc)nautilus_window_clear_status, window);
 		gtk_statusbar_push(GTK_STATUSBAR(GNOME_APP(window)->statusbar), window->status_bar_context_id, txt);
-	} else
-		  window->status_bar_clear_id = 0;
+	} else {
+		window->status_bar_clear_id = 0;
+	}
 }
 
 void
 nautilus_window_goto_uri (NautilusWindow *window, const char *uri)
 {
-	nautilus_window_open_location (window, uri, NULL);
+	nautilus_window_open_location (window, uri);
 }
 
 static void
@@ -213,7 +208,6 @@ navigation_bar_mode_changed_callback (GtkWidget *widget,
 		g_assert_not_reached ();
 	}
 }
-
 
 void
 nautilus_window_zoom_in (NautilusWindow *window)
@@ -451,6 +445,9 @@ nautilus_window_constructed (NautilusWindow *window)
 
 	/* Set up undo manager */
 	nautilus_undo_manager_attach (window->application->undo_manager, GTK_OBJECT (window));	
+
+	/* Set up the sidebar panels. */
+	update_sidebar_panels_from_preferences (window);
 }
 
 static void
@@ -480,9 +477,6 @@ nautilus_window_set_arg (GtkObject *object,
 	case ARG_APP:
 		window->application = NAUTILUS_APPLICATION (GTK_VALUE_OBJECT (*arg));
 		break;
-	case ARG_CONTENT_VIEW:
-		nautilus_window_real_set_content_view (window, (NautilusViewFrame *) GTK_VALUE_OBJECT(*arg));
-		break;
 	}
 }
 
@@ -499,9 +493,6 @@ nautilus_window_get_arg (GtkObject *object,
 		break;
 	case ARG_APP:
 		GTK_VALUE_OBJECT (*arg) = GTK_OBJECT (NAUTILUS_WINDOW (object)->application);
-		break;
-	case ARG_CONTENT_VIEW:
-		GTK_VALUE_OBJECT (*arg) = GTK_OBJECT (NAUTILUS_WINDOW (object)->content_view);
 		break;
 	}
 }
@@ -682,34 +673,6 @@ nautilus_window_size_request (GtkWidget		*widget,
  */
 
 static void
-nautilus_window_switch_views (NautilusWindow *window, NautilusViewIdentifier *id)
-{
-        NautilusDirectory *directory;
-	NautilusFile *file;
-        NautilusViewFrame *view;
-
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-        g_return_if_fail (window->location != NULL);
-	g_return_if_fail (id != NULL);
-
-        directory = nautilus_directory_get (window->location);
-	file = nautilus_file_get (window->location);
-	g_assert (directory != NULL);
-        nautilus_mime_set_default_component_for_uri
-		(directory, file, id->iid);
-        nautilus_directory_unref (directory);
-        nautilus_file_unref (file);
-        
-        nautilus_window_allow_stop (window, TRUE);
-        
-        view = nautilus_window_load_content_view (window, id);
-        nautilus_window_set_state_info
-		(window,
-		 (NautilusWindowStateItem) NEW_CONTENT_VIEW_ACTIVATED, view,
-		 (NautilusWindowStateItem) 0);
-}
-
-static void
 view_menu_switch_views_callback (GtkWidget *widget, gpointer data)
 {
         NautilusWindow *window;
@@ -721,7 +684,7 @@ view_menu_switch_views_callback (GtkWidget *widget, gpointer data)
         window = NAUTILUS_WINDOW (gtk_object_get_data (GTK_OBJECT (widget), "window"));
         identifier = (NautilusViewIdentifier *) gtk_object_get_data (GTK_OBJECT (widget), "identifier");
         
-        nautilus_window_switch_views (window, identifier);
+        nautilus_window_set_content_view (window, identifier);
 }
 
 /* Note: The identifier parameter ownership is handed off to the menu item. */
@@ -735,11 +698,10 @@ create_content_view_menu_item (NautilusWindow *window, NautilusViewIdentifier *i
 	menu_item = gtk_menu_item_new_with_label (menu_label);
 	g_free (menu_label);
 
-	gtk_signal_connect
-	        (GTK_OBJECT (menu_item),
-	         "activate",
-	         GTK_SIGNAL_FUNC (view_menu_switch_views_callback), 
-	         NULL);
+	gtk_signal_connect (GTK_OBJECT (menu_item),
+			    "activate",
+			    view_menu_switch_views_callback, 
+			    NULL);
 
 	/* Store copy of iid in item; free when item destroyed. */
 	gtk_object_set_data_full (GTK_OBJECT (menu_item),
@@ -858,7 +820,7 @@ chose_component_callback (NautilusViewIdentifier *identifier, gpointer callback_
 
 	if (identifier != NULL) {
 		g_return_if_fail (NAUTILUS_IS_WINDOW (callback_data));
-		nautilus_window_switch_views (NAUTILUS_WINDOW (callback_data), identifier);
+		nautilus_window_set_content_view (NAUTILUS_WINDOW (callback_data), identifier);
 	}
 
 	/* FIXME bugzilla.eazel.com 1334: 
@@ -1006,13 +968,6 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
 	nautilus_file_unref (file);
 
 	nautilus_window_synch_content_view_menu (window);
-}
-
-void
-nautilus_window_set_content_view (NautilusWindow *window,
-				  NautilusViewFrame *content_view)
-{
-	nautilus_window_real_set_content_view (window, content_view);
 }
 
 void
@@ -1319,7 +1274,7 @@ nautilus_window_open_location_callback (NautilusViewFrame *view,
 					const char *location,
 					NautilusWindow *window)
 {
-	nautilus_window_open_location (window, location, view);
+	nautilus_window_open_location (window, location);
 }
 
 static void
@@ -1328,7 +1283,7 @@ nautilus_window_open_location_in_new_window_callback (NautilusViewFrame *view,
 						      GList *selection,
 						      NautilusWindow *window)
 {
-	nautilus_window_open_location_in_new_window (window, location, selection, view);
+	nautilus_window_open_location_in_new_window (window, location, selection);
 }
 
 static void
@@ -1352,14 +1307,6 @@ nautilus_window_report_load_underway_callback (NautilusViewFrame *view,
 					       NautilusWindow *window)
 {
 	nautilus_window_report_load_underway (window, view);
-}
-
-static void
-nautilus_window_report_load_progress_callback (NautilusViewFrame *view,
-					       double fraction_done,
-					       NautilusWindow *window)
-{
-	nautilus_window_report_load_progress (window, fraction_done, view);
 }
 
 static void
@@ -1470,7 +1417,6 @@ nautilus_window_connect_view (NautilusWindow *window, NautilusViewFrame *view)
 	CONNECT (report_selection_change);
 	CONNECT (report_status);
 	CONNECT (report_load_underway);
-	CONNECT (report_load_progress);
 	CONNECT (report_load_complete);
 	CONNECT (report_load_failed);
 	CONNECT (title_changed);
@@ -1526,8 +1472,9 @@ nautilus_window_display_error(NautilusWindow *window, const char *error_msg)
 	gtk_widget_show (dialog);
 }
 
-static void
-nautilus_window_real_set_content_view (NautilusWindow *window, NautilusViewFrame *new_view)
+void
+nautilus_window_set_content_view_widget (NautilusWindow *window,
+					 NautilusViewFrame *new_view)
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 	g_return_if_fail (new_view == NULL || NAUTILUS_IS_VIEW_FRAME (new_view));
@@ -1579,44 +1526,7 @@ nautilus_window_reload (NautilusWindow *window)
 }
 
 /**
- * window_find_sidebar_panel_by_identifier:
- * @window:	A NautilusWindow
- * @identifier: The NautilusViewIdentifier to look for
- *
- * Search the list of sidebar panels in the given window for one that
- * matches the given view identifier.
- *
- * Returns a referenced object, not a floating one. bonobo_object_unref
- * it when done playing with it.
- */
-static NautilusViewFrame *
-window_find_sidebar_panel_by_identifier (NautilusWindow *window, NautilusViewIdentifier *identifier)
-{
-        GList *iterator;
-
-	g_assert (window != NULL);
-	g_assert (NAUTILUS_IS_WINDOW (window));
-	g_assert (identifier != NULL);
-
-        for (iterator = window->sidebar_panels; iterator != NULL; iterator = iterator->next) {
-		NautilusViewFrame *sidebar_panel;
-		
-		g_assert (iterator->data != NULL);
-		g_assert (NAUTILUS_IS_VIEW_FRAME (iterator->data));
-		
-		sidebar_panel = NAUTILUS_VIEW_FRAME (iterator->data);
-		
-		if (strcmp (sidebar_panel->iid, identifier->iid) == 0) {
-			gtk_widget_ref (GTK_WIDGET (sidebar_panel));
-			return sidebar_panel;
-		}
-        }
-	
-	return NULL;
-}
-
-/**
- * window_update_sidebar_panels_from_preferences:
+ * update_sidebar_panels_from_preferences:
  * @window:	A NautilusWindow
  *
  * Update the current list of sidebar panels from preferences.   
@@ -1627,82 +1537,16 @@ window_find_sidebar_panel_by_identifier (NautilusWindow *window, NautilusViewIde
  *
  */
 static void
-window_update_sidebar_panels_from_preferences (NautilusWindow *window)
+update_sidebar_panels_from_preferences (NautilusWindow *window)
 {
-	GList *enabled_view_identifier_list = NULL;
-	GList *disabled_view_identifier_list = NULL;
-	GList *iterator = NULL;
+	GList *identifier_list;
 
-	g_assert (window != NULL);
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	/* Obtain list of disabled view identifiers */
-	disabled_view_identifier_list = 
-		nautilus_global_preferences_get_disabled_sidebar_panel_view_identifiers ();
-
-	/* Remove disabled panels from the window as needed */
-	for (iterator = disabled_view_identifier_list; iterator != NULL; iterator = iterator->next) {
-		NautilusViewIdentifier *identifier;
-		NautilusViewFrame *sidebar_panel;
-		
-		g_assert (iterator->data != NULL);
-		
-		identifier = (NautilusViewIdentifier *) iterator->data;
-		
-		sidebar_panel = window_find_sidebar_panel_by_identifier (window, identifier);
-
-		if (sidebar_panel != NULL) {
-			nautilus_window_disconnect_view	(window, sidebar_panel);
-			nautilus_window_remove_sidebar_panel (window, sidebar_panel);
-		}
-	}
-
-	if (disabled_view_identifier_list) {
-		nautilus_view_identifier_list_free (disabled_view_identifier_list);
-	}
-
 	/* Obtain list of enabled view identifiers */
-	enabled_view_identifier_list = 
-		nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers ();
-	
-	/* Add enabled panels from the window as needed */
-	for (iterator = enabled_view_identifier_list; iterator != NULL; iterator = iterator->next) {
-		NautilusViewIdentifier *identifier;
-		NautilusViewFrame *sidebar_panel;
-
-		g_assert (iterator->data != NULL);
-		
-		identifier = (NautilusViewIdentifier *) iterator->data;
-
-		sidebar_panel = window_find_sidebar_panel_by_identifier (window, identifier);
-
-		if (sidebar_panel == NULL) {
-			gboolean load_result;
-
-			sidebar_panel = nautilus_view_frame_new (window->ui_handler,
-								 window->application->undo_manager);
-			nautilus_window_connect_view (window, sidebar_panel);
-			
-			load_result = nautilus_view_frame_load_client (sidebar_panel, identifier->iid);
-			
-			/* Make sure the load_client succeeded */
-			if (load_result) {
-				nautilus_view_frame_set_label (sidebar_panel, identifier->name);
-				nautilus_window_add_sidebar_panel (window, sidebar_panel);
-			} else {
-				g_warning ("sidebar_panels_changed_callback: Failed to load_client for '%s' meta view.", 
-					   identifier->iid);
-				
-				gtk_widget_unref (GTK_WIDGET (sidebar_panel));
-				
-				sidebar_panel = NULL;
-			}
-		} else {
-			gtk_widget_unref (GTK_WIDGET (sidebar_panel));
-		}
-	}
-
-	nautilus_view_identifier_list_free (enabled_view_identifier_list);
+	identifier_list = nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers ();
+	nautilus_window_set_sidebar_panels (window, identifier_list);
+	nautilus_view_identifier_list_free (identifier_list);
 }
 
 /**
@@ -1715,7 +1559,7 @@ window_update_sidebar_panels_from_preferences (NautilusWindow *window)
 static void
 sidebar_panels_changed_callback (gpointer user_data)
 {
-	window_update_sidebar_panels_from_preferences (NAUTILUS_WINDOW (user_data));
+	update_sidebar_panels_from_preferences (NAUTILUS_WINDOW (user_data));
 }
 
 static void 
@@ -1767,7 +1611,6 @@ nautilus_window_hide_location_bar (NautilusWindow *window)
 {
 	hide_dock_item (window, URI_ENTRY_DOCK_ITEM);
 }
-
 
 void 
 nautilus_window_show_location_bar (NautilusWindow *window)
@@ -1861,7 +1704,8 @@ nautilus_window_status_bar_showing (NautilusWindow *window)
 
 	app = GNOME_APP (window);
 
-	return (app->statusbar != NULL && GTK_WIDGET_VISIBLE (GTK_WIDGET (app->statusbar)->parent));
+	return app->statusbar != NULL
+		&& GTK_WIDGET_VISIBLE (GTK_WIDGET (app->statusbar)->parent);
 }
 
 /**

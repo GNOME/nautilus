@@ -118,7 +118,7 @@ nautilus_background_initialize_class (gpointer klass)
 
 	signals[APPEARANCE_CHANGED] =
 		gtk_signal_new ("appearance_changed",
-				GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
+				GTK_RUN_LAST | GTK_RUN_NO_RECURSE,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusBackgroundClass,
 						   appearance_changed),
@@ -127,7 +127,7 @@ nautilus_background_initialize_class (gpointer klass)
 				0);
 	signals[SETTINGS_CHANGED] =
 		gtk_signal_new ("settings_changed",
-				GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,
+				GTK_RUN_LAST | GTK_RUN_NO_RECURSE,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusBackgroundClass,
 						   settings_changed),

@@ -26,28 +26,31 @@
  */
 
 #include <config.h>
-#include <stdlib.h>
-
-#include <parser.h>
-#include <xmlmemory.h>
-
-#include <libgnomevfs/gnome-vfs.h>
-#include <gtk/gtkwindow.h>
-#include <gtk/gtkvbox.h>
-#include <gtk/gtktogglebutton.h>
-
-#include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-link.h>
-#include <libnautilus-extensions/nautilus-link-set.h>
-#include <libnautilus-extensions/nautilus-metadata.h>
-#include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-xml-extensions.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-preferences.h>
+#include "nautilus-link-set-window.h"
 
 #include "nautilus-window.h"
-#include "nautilus-link-set-window.h"
+#include <gtk/gtkcheckbutton.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtkscrolledwindow.h>
+#include <gtk/gtktable.h>
+#include <gtk/gtktogglebutton.h>
+#include <gtk/gtkvbox.h>
+#include <gtk/gtkwindow.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-uidefs.h>
+#include <libgnomevfs/gnome-vfs.h>
+#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-link-set.h>
+#include <libnautilus-extensions/nautilus-link.h>
+#include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-preferences.h>
+#include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-xml-extensions.h>
+#include <parser.h>
+#include <stdlib.h>
+#include <xmlmemory.h>
 
 /* global to hold the currently allocated link set window, if any */
 

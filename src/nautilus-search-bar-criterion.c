@@ -60,7 +60,7 @@ enum {
 	LAST_SIGNAL
 };
 
-static guint nautilus_search_bar_criterion_signals[LAST_SIGNAL];
+static guint signals[LAST_SIGNAL];
 
 static char * criteria_titles [] = {
 	N_("Name"),
@@ -191,15 +191,15 @@ nautilus_search_bar_criterion_initialize_class (NautilusSearchBarCriterionClass 
 	object_class = GTK_OBJECT_CLASS (klass);
 	object_class->destroy = nautilus_search_bar_criterion_destroy;
 	
-	nautilus_search_bar_criterion_signals[CRITERION_TYPE_CHANGED] =
-		gtk_signal_new ("criterion_type_changed",
-				GTK_RUN_FIRST,
-				object_class->type,
-				0,
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+	signals[CRITERION_TYPE_CHANGED] = gtk_signal_new
+		("criterion_type_changed",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 0,
+		 gtk_marshal_NONE__NONE,
+		 GTK_TYPE_NONE, 0);
 
-	gtk_object_class_add_signals (object_class, nautilus_search_bar_criterion_signals, LAST_SIGNAL);
+	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 				
 }
 
@@ -894,7 +894,7 @@ criterion_type_changed_callback (GtkObject *object,
 	gtk_object_set_data (GTK_OBJECT (criterion), "type", 
 			     gtk_object_get_data (GTK_OBJECT (menu_item), "type"));
 	gtk_signal_emit (GTK_OBJECT (criterion),
-			 nautilus_search_bar_criterion_signals[CRITERION_TYPE_CHANGED]);
+			 signals[CRITERION_TYPE_CHANGED]);
 	
 }
 

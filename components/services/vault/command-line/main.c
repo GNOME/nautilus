@@ -95,7 +95,7 @@ int main (int argc, char *argv[]) {
 			valid_ops();
 			exit(1);
 		}
-		if(!strcasecmp(vop->name, operation)) {
+		if(!g_strcasecmp(vop->name, operation)) {
 			/* we've found a matching operation */
 			GList *args = NULL;
 			gint argcount = 0;

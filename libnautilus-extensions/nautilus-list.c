@@ -321,21 +321,21 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 
 	list_signals[CONTEXT_CLICK_SELECTION] =
 		gtk_signal_new ("context_click_selection",
-				GTK_RUN_FIRST,
+				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusListClass, context_click_selection),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
 	list_signals[CONTEXT_CLICK_BACKGROUND] =
 		gtk_signal_new ("context_click_background",
-				GTK_RUN_FIRST,
+				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusListClass, context_click_background),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
 	list_signals[ACTIVATE] =
 		gtk_signal_new ("activate",
-				GTK_RUN_FIRST,
+				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusListClass, activate),
 				gtk_marshal_NONE__POINTER,
@@ -343,14 +343,14 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 				GTK_TYPE_POINTER);
 	list_signals[SELECTION_CHANGED] =
 		gtk_signal_new ("selection_changed",
-				GTK_RUN_FIRST,
+				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusListClass, selection_changed),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
 	list_signals[SELECT_MATCHING_NAME] =
 		gtk_signal_new ("select_matching_name",
-				GTK_RUN_FIRST,
+				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusListClass, select_matching_name),
 				gtk_marshal_NONE__STRING,
@@ -358,21 +358,21 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 				GTK_TYPE_STRING, 0);
 	list_signals[SELECT_PREVIOUS_NAME] =
 		gtk_signal_new ("select_previous_name",
-				GTK_RUN_FIRST,
+				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusListClass, select_previous_name),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
 	list_signals[SELECT_NEXT_NAME] =
 		gtk_signal_new ("select_next_name",
-				GTK_RUN_FIRST,
+				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusListClass, select_next_name),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
 	list_signals[HANDLE_DROPPED_ITEMS] =
 		gtk_signal_new ("handle_dropped_items",
-				GTK_RUN_FIRST,
+				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusListClass, handle_dropped_items),
 				nautilus_gtk_marshal_NONE__INT_POINTER_INT_INT_UINT,
@@ -384,7 +384,7 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 				GTK_TYPE_UINT);
 	list_signals[GET_DRAG_PIXMAP] =
 		gtk_signal_new ("get_drag_pixmap",
-				GTK_RUN_FIRST,
+				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusListClass, get_drag_pixmap),
 				nautilus_gtk_marshal_NONE__POINTER_INT_POINTER_POINTER,
@@ -400,7 +400,6 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 				GTK_SIGNAL_OFFSET (NautilusListClass, get_sort_column_index),
 				nautilus_gtk_marshal_INT__NONE,
 				GTK_TYPE_INT, 0);
-	
 
 	gtk_object_class_add_signals (object_class, list_signals, LAST_SIGNAL);
 
@@ -1124,12 +1123,13 @@ keyboard_row_reveal_timeout_callback (gpointer data)
 	row_index = list->details->keyboard_row_to_reveal;
 
 	if (row_index >= 0 && row_index < GTK_CLIST (list)->rows) {	
-		/* Only reveal the icon if it's still the keyboard focus or if
-		 * it's still selected. Someone originally thought we should
-		 * cancel this reveal if the user manages to sneak a direct
-		 * scroll in before the timeout fires, but we later realized
-		 * this wouldn't actually be an improvement 
-		 * (see bugzilla.eazel.com 612).
+		/* Only reveal the icon if it's still the keyboard
+		 * focus or if it's still selected. Someone originally
+		 * thought we should cancel this reveal if the user
+		 * manages to sneak a direct scroll in before the
+		 * timeout fires, but we later realized this wouldn't
+		 * actually be an improvement (see bugzilla.eazel.com
+		 * 612).
 		 */
 		if (row_index == GTK_CLIST (list)->focus_row
 		    || nautilus_list_is_row_selected (list, row_index)) {

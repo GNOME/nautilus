@@ -33,6 +33,7 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
+#include <gtk/gtkradiomenuitem.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
 #include <libgnome/gnome-i18n.h>

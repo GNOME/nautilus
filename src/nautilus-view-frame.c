@@ -625,7 +625,8 @@ nautilus_view_frame_selection_changed (NautilusViewFrame *view,
 }
 
 void
-nautilus_view_frame_title_changed (NautilusViewFrame *view)
+nautilus_view_frame_title_changed (NautilusViewFrame *view,
+				   const char *title)
 {
 	CORBA_Environment ev;
 	
@@ -633,14 +634,14 @@ nautilus_view_frame_title_changed (NautilusViewFrame *view)
 	
 	CORBA_exception_init (&ev);
 	Nautilus_View_title_changed (bonobo_object_corba_objref (BONOBO_OBJECT (view->client_object)),
+				     title,
 				     &ev);
 	if (ev._major != CORBA_NO_EXCEPTION) {
 		/* FIXME: Self-destruct may not be the best way to indicate an error here. */
 		gtk_object_destroy (GTK_OBJECT (view));
 	}
 	CORBA_exception_free (&ev);
-}	
-
+}
 
 gboolean
 nautilus_view_frame_is_zoomable (NautilusViewFrame *view)
@@ -891,7 +892,6 @@ nautilus_view_frame_report_load_complete (NautilusViewFrame *view)
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
 	view_frame_loaded (view);
-	gtk_signal_emit (GTK_OBJECT (view), signals[REPORT_LOAD_COMPLETE]);
 }
 
 void

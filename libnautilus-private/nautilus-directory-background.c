@@ -35,7 +35,10 @@
 #include "nautilus-theme.h"
 #include <X11/Xatom.h>
 #include <gdk/gdkx.h>
+#include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
+#include <libgnome/gnome-config.h>
+#include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
 static void background_changed_callback     (NautilusBackground *background, NautilusDirectory  *directory);
@@ -174,7 +177,7 @@ nautilus_directory_background_read_desktop_settings (char **color,
 	image_local_path = gnome_config_get_string ("/Background/Default/wallpaper=none");
 	image_alignment  = gnome_config_get_int_with_default ("/Background/Default/wallpaperAlign", &no_alignment);
 
-	if (nautilus_strcasecmp (image_local_path, "none")) {
+	if (nautilus_strcasecmp (image_local_path, "none") != 0) {
 		*image = gnome_vfs_get_uri_from_local_path (image_local_path);
 	} else {
 		*image = NULL;

@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*- */
 
 /*
  *  Nautilus
@@ -50,106 +50,97 @@ typedef struct NautilusWindow NautilusWindow;
 #endif
 
 typedef struct {
-  GnomeAppClass parent_spot;
+        GnomeAppClass parent_spot;
 } NautilusWindowClass;
 
 typedef struct NautilusWindowStateInfo NautilusWindowStateInfo;
 
 typedef enum {
-  NAUTILUS_LOCATION_CHANGE_STANDARD,
-  NAUTILUS_LOCATION_CHANGE_BACK,
-  NAUTILUS_LOCATION_CHANGE_FORWARD,
-  NAUTILUS_LOCATION_CHANGE_RELOAD
+        NAUTILUS_LOCATION_CHANGE_STANDARD,
+        NAUTILUS_LOCATION_CHANGE_BACK,
+        NAUTILUS_LOCATION_CHANGE_FORWARD,
+        NAUTILUS_LOCATION_CHANGE_RELOAD
 } NautilusLocationChangeType;
 
 typedef struct NautilusWindowDetails NautilusWindowDetails;
 
 struct NautilusWindow {
-  GnomeApp parent_object;
-
-  NautilusWindowDetails *details;
-
-  /** UI stuff **/
-  NautilusSidebar *sidebar;
-  GtkWidget *content_hbox;
-  GtkWidget *view_as_option_menu;
-  GtkWidget *navigation_bar;
-
-  guint status_bar_context_id, status_bar_clear_id;
-
-  /** CORBA-related elements **/
-  BonoboUIHandler *ui_handler;
-  NautilusApplication *application;
-  
-  /* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
-  gboolean updating_bonobo_radio_menu_item;
-
-  /** State information **/
-
-  /* Information about current location/selection */
-  char *location;
-  GList *selection;
-  
-  /* Back/Forward chain, and history list. 
-   * The data in these lists are NautilusBookmark pointers. 
-   */
-  GList *back_list, *forward_list;
-
-  NautilusBookmark *current_location_bookmark; 
-  NautilusBookmark *last_location_bookmark;
-
-  /* Current views stuff */
-  NautilusViewFrame *content_view;
-  NautilusViewIdentifier *content_view_id;
-  GList *sidebar_panels;
-
-  /* Widgets to keep track of (for state changes, etc) */
-  GtkWidget *back_button;
-  GtkWidget *forward_button;
-  GtkWidget *up_button;
-  GtkWidget *reload_button;
-  GtkWidget *search_local_button;
-  GtkWidget *search_web_button;
-  GtkWidget *stop_button;
-  GtkWidget *home_button;
-  
-  GtkWidget *zoom_control;
-  GtkWidget *throbber;
-  
-  /* Pending changes */
-  NautilusNavigationInfo *pending_ni;
-  NautilusViewFrame *new_content_view;
-  GList *pending_selection;
-  GList *new_sidebar_panels;
-  GList *error_views;
-
-  NautilusNavigationInfo *cancel_tag;
-  gboolean location_change_end_reached;
-
-  guint16 making_changes;
-
-  NautilusLocationChangeType location_change_type;
-  guint location_change_distance;
-  
-  nautilus_boolean_bit changes_pending : 1;
-  nautilus_boolean_bit views_shown : 1;
-  nautilus_boolean_bit view_bombed_out : 1;
-  nautilus_boolean_bit view_activation_complete : 1;
-  nautilus_boolean_bit sent_update_view : 1;
-  nautilus_boolean_bit cv_progress_initial : 1;
-  nautilus_boolean_bit cv_progress_done : 1;
-  nautilus_boolean_bit cv_progress_error : 1;
-  nautilus_boolean_bit reset_to_idle : 1;
+        GnomeApp parent_object;
+        
+        NautilusWindowDetails *details;
+        
+        /** UI stuff **/
+        NautilusSidebar *sidebar;
+        GtkWidget *content_hbox;
+        GtkWidget *view_as_option_menu;
+        GtkWidget *navigation_bar;
+        
+        guint status_bar_context_id, status_bar_clear_id;
+        
+        /** CORBA-related elements **/
+        BonoboUIHandler *ui_handler;
+        NautilusApplication *application;
+        
+        /* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
+        gboolean updating_bonobo_radio_menu_item;
+        
+        /** State information **/
+        
+        /* Information about current location/selection */
+        char *location;
+        GList *selection;
+        
+        /* Back/Forward chain, and history list. 
+         * The data in these lists are NautilusBookmark pointers. 
+         */
+        GList *back_list, *forward_list;
+        
+        NautilusBookmark *current_location_bookmark; 
+        NautilusBookmark *last_location_bookmark;
+        
+        /* Current views stuff */
+        NautilusViewFrame *content_view;
+        NautilusViewIdentifier *content_view_id;
+        GList *sidebar_panels;
+        
+        /* Widgets to keep track of (for state changes, etc) */
+        GtkWidget *back_button;
+        GtkWidget *forward_button;
+        GtkWidget *up_button;
+        GtkWidget *reload_button;
+        GtkWidget *search_local_button;
+        GtkWidget *search_web_button;
+        GtkWidget *stop_button;
+        GtkWidget *home_button;
+        
+        GtkWidget *zoom_control;
+        GtkWidget *throbber;
+        
+        /* Pending changes */
+        NautilusNavigationInfo *pending_ni;
+        NautilusViewFrame *new_content_view;
+        GList *pending_selection;
+        GList *error_views;
+        NautilusNavigationInfo *cancel_tag;
+        gboolean location_change_end_reached;
+        
+        guint16 making_changes;
+        
+        NautilusLocationChangeType location_change_type;
+        guint location_change_distance;
+        
+        gboolean views_shown;
+        gboolean view_bombed_out;
+        gboolean view_activation_complete;
+        gboolean sent_update_view;
+        gboolean cv_progress_initial;
+        gboolean cv_progress_done;
+        gboolean cv_progress_error;
+        gboolean reset_to_idle;
 };
 
 GtkType          nautilus_window_get_type             (void);
 void             nautilus_window_close                (NautilusWindow    *window);
-void             nautilus_window_set_content_view     (NautilusWindow    *window,
-                                                       NautilusViewFrame *content_view);
-void             nautilus_window_add_sidebar_panel    (NautilusWindow    *window,
-                                                       NautilusViewFrame *sidebar_panel);
-void             nautilus_window_remove_sidebar_panel (NautilusWindow    *window,
-                                                       NautilusViewFrame *sidebar_panel);
 void             nautilus_window_goto_uri             (NautilusWindow    *window,
                                                        const char        *uri);
 gboolean         nautilus_window_get_search_mode      (NautilusWindow    *window);

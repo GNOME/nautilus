@@ -192,6 +192,7 @@ history_load_location (NautilusView *view,
 
 static void
 history_title_changed (NautilusView *view,
+		       const char *title,
 		       HistoryView *hview)
 {
 	history_load_location (view, NULL, hview);

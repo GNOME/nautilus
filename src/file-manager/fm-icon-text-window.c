@@ -30,6 +30,7 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkhseparator.h>
 #include <gtk/gtklabel.h>
+#include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtksignal.h>

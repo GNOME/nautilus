@@ -65,6 +65,7 @@ static void impl_Nautilus_View_selection_changed (PortableServer_Servant  servan
 						  const Nautilus_URIList *selection,
 						  CORBA_Environment      *ev);
 static void impl_Nautilus_View_title_changed     (PortableServer_Servant  servant,
+						  const CORBA_char       *title,
 						  CORBA_Environment      *ev);
 static void nautilus_view_initialize             (NautilusView           *view);
 static void nautilus_view_destroy                (GtkObject              *object);
@@ -167,11 +168,13 @@ impl_Nautilus_View_selection_changed (PortableServer_Servant servant,
 }
 
 static void 
-impl_Nautilus_View_title_changed     (PortableServer_Servant  servant,
-				      CORBA_Environment      *ev)
+impl_Nautilus_View_title_changed (PortableServer_Servant servant,
+				  const CORBA_char *title,
+				  CORBA_Environment *ev)
 {
 	gtk_signal_emit (GTK_OBJECT (((impl_POA_Nautilus_View *) servant)->bonobo_object),
-			 signals[TITLE_CHANGED]);
+			 signals[TITLE_CHANGED],
+			 title);
 }
 
 
@@ -249,8 +252,8 @@ nautilus_view_initialize_class (NautilusViewClass *klass)
 			       GTK_RUN_LAST,
 			       object_class->type,
 			       GTK_SIGNAL_OFFSET (NautilusViewClass, title_changed),
-			       gtk_marshal_NONE__NONE,
-			       GTK_TYPE_NONE, 0);
+			       gtk_marshal_NONE__STRING,
+			       GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
 	
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }

@@ -77,7 +77,7 @@ nautilus_bookmark_list_initialize_class (NautilusBookmarkListClass *class)
 
 	signals[CONTENTS_CHANGED] =
 		gtk_signal_new ("contents_changed",
-				GTK_RUN_FIRST,
+				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusBookmarkListClass, 
 						   contents_changed),

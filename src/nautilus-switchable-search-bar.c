@@ -33,8 +33,10 @@
 #include "nautilus-simple-search-bar.h"
 #include <gtk/gtkeventbox.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkvbox.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-dock.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>

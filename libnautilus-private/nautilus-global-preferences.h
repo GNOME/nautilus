@@ -25,7 +25,6 @@
 #ifndef NAUTILUS_PREFS_GLOBAL_H
 #define NAUTILUS_PREFS_GLOBAL_H
 
-#include <gnome.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
 
 BEGIN_GNOME_DECLS
@@ -127,20 +126,15 @@ typedef enum
 	NAUTILUS_SIMPLE_SEARCH_BAR
 } NautilusSearchBarMode;
 
-
-void   nautilus_global_preferences_initialize                                  (void);
-void   nautilus_global_preferences_show_dialog                                 (void);
-void   nautilus_global_preferences_hide_dialog                                 (void);
-void   nautilus_global_preferences_set_dialog_title                            (const char *title);
-void   nautilus_global_preferences_dialog_update                               (void);
+void   nautilus_global_preferences_initialize                                 (void);
+void   nautilus_global_preferences_show_dialog                                (void);
+void   nautilus_global_preferences_hide_dialog                                (void);
+void   nautilus_global_preferences_set_dialog_title                           (const char *title);
+void   nautilus_global_preferences_dialog_update                              (void);
 
 /* Sidebar */
-GList *nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers  (void);
-GList *nautilus_global_preferences_get_disabled_sidebar_panel_view_identifiers (void);
-
+GList *nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers (void);
 
 END_GNOME_DECLS
 
 #endif /* NAUTILUS_PREFS_GLOBAL_H */
-
-

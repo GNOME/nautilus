@@ -27,37 +27,31 @@
 
 #include <config.h>
 #include "fm-directory-view.h"
+
 #include "fm-desktop-icon-view.h"
-
-#include <math.h>
-
-#include <gtk/gtksignal.h>
+#include "fm-properties-window.h"
+#include "nautilus-trash-monitor.h"
+#include <bonobo/bonobo-control.h>
+#include <gtk/gtkcheckmenuitem.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenu.h>
-#include <gtk/gtkcheckmenuitem.h>
-
-#include <bonobo/bonobo-control.h>
+#include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-directory-list.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
+#include <libgnomevfs/gnome-vfs-result.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <libgnomevfs/gnome-vfs-result.h>
-
-#include <libnautilus/nautilus-bonobo-ui.h>
-#include <libnautilus/nautilus-zoomable.h>
-
-#include <src/nautilus-application.h>
-
 #include <libnautilus-extensions/nautilus-background.h>
-#include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
+#include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-drag.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-file-operations.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
@@ -66,14 +60,15 @@
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-mime-actions.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
-#include <libnautilus-extensions/nautilus-mime-actions.h>
-
-#include "fm-properties-window.h"
-#include "nautilus-trash-monitor.h"
+#include <libnautilus/nautilus-bonobo-ui.h>
+#include <libnautilus/nautilus-zoomable.h>
+#include <math.h>
+#include <src/nautilus-application.h>
 
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
 #define SILENT_WINDOW_OPEN_LIMIT	10
@@ -271,14 +266,14 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 		    		GTK_TYPE_NONE, 0);
 	signals[CREATE_SELECTION_CONTEXT_MENU_ITEMS] =
 		gtk_signal_new ("create_selection_context_menu_items",
-       				GTK_RUN_FIRST,
+       				GTK_RUN_LAST,
                     		object_class->type,
                     		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, create_selection_context_menu_items),
 		    		nautilus_gtk_marshal_NONE__BOXED_BOXED,
 		    		GTK_TYPE_NONE, 2, GTK_TYPE_BOXED, GTK_TYPE_BOXED);
 	signals[CREATE_BACKGROUND_CONTEXT_MENU_ITEMS] =
 		gtk_signal_new ("create_background_context_menu_items",
-       				GTK_RUN_FIRST,
+       				GTK_RUN_LAST,
                     		object_class->type,
                     		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, create_background_context_menu_items),
 		    		gtk_marshal_NONE__BOXED,

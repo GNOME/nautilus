@@ -31,14 +31,15 @@
 #include "nautilus-application.h"
 #include "nautilus-throbber.h"
 #include "nautilus-toolbar.h"
+#include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window.h"
 #include <gnome.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 
 /* forward declarations */
@@ -424,7 +425,7 @@ toolbar_reload_callback (GtkWidget *widget, NautilusWindow *window)
 static void
 toolbar_stop_callback (GtkWidget *widget, NautilusWindow *window)
 {
-	nautilus_window_set_state_info (window, RESET_TO_IDLE, 0);
+	nautilus_window_stop_loading (window);
 }
 
 #ifdef EAZEL_SERVICES

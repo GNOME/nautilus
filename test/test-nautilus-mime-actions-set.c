@@ -52,9 +52,9 @@ usage (const char *name)
 static GnomeVFSMimeActionType
 str_to_action_type (const char *str)
 {
-	if (strcasecmp (str, "component") == 0) {
+	if (g_strcasecmp (str, "component") == 0) {
 		return GNOME_VFS_MIME_ACTION_TYPE_COMPONENT;
-	} else if (strcasecmp (str, "application") == 0) {
+	} else if (g_strcasecmp (str, "application") == 0) {
 		return GNOME_VFS_MIME_ACTION_TYPE_APPLICATION;
 	} else {
 		return GNOME_VFS_MIME_ACTION_TYPE_NONE;

@@ -26,26 +26,22 @@
 #include "fm-properties-window.h"
 
 #include "fm-error-reporting.h"
-
 #include <gtk/gtkcheckbutton.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkhseparator.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtknotebook.h>
+#include <gtk/gtkoptionmenu.h>
 #include <gtk/gtkpixmap.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkvbox.h>
-
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
-
-#include <libnautilus/nautilus-undo.h>
-
 #include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
@@ -54,12 +50,12 @@
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
-#include <libnautilus-extensions/nautilus-image.h>
-
+#include <libnautilus/nautilus-undo.h>
 #include <string.h>
 
 static GHashTable *windows;

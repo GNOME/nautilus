@@ -392,26 +392,6 @@ nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers (void)
         return enabled_view_identifiers;
 }
 
-GList *
-nautilus_global_preferences_get_disabled_sidebar_panel_view_identifiers (void)
-{
-	GList *enabled_view_identifiers;
-	GList *disabled_view_identifiers;
-        
-	enabled_view_identifiers = global_preferences_get_sidebar_panel_view_identifiers ();
-        
-        enabled_view_identifiers = nautilus_g_list_partition
-		(enabled_view_identifiers,
-		 global_preferences_is_sidebar_panel_enabled_cover,
-		 NULL,
-		 &disabled_view_identifiers);
-	
-        nautilus_view_identifier_list_free (enabled_view_identifiers);
-	
-        return disabled_view_identifiers;
-}
-
-
 static void
 destroy_global_prefs_dialog (void)
 {

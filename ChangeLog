@@ -1,3 +1,184 @@
+2000-10-02  Darin Adler  <darin@eazel.com>
+
+	More work on whittling the state machine down to size.
+	
+	* README: libunicode, libglade, and eog are no longer required.
+	
+	* components/history/nautilus-history-view.c:
+	(history_title_changed):
+	* libnautilus/nautilus-view-component.idl:
+	* libnautilus/nautilus-view.c: (impl_Nautilus_View_title_changed),
+	(nautilus_view_initialize_class):
+	* libnautilus/nautilus-view.h:
+	* src/nautilus-view-frame.c: (nautilus_view_frame_title_changed):
+	* src/nautilus-view-frame.h:
+	Added title parameter for the title_changed function.
+	
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_report_load_complete): Got rid of extra
+	emission of report_load_complete, which is handled by
+	view_frame_loaded now.
+
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_initialize_class):
+	* libnautilus-extensions/nautilus-entry.c:
+	(nautilus_entry_initialize_class):
+	* libnautilus-extensions/nautilus-icon-text-item.c:
+	(iti_class_init):
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_initialize_class):
+	* src/nautilus-bookmark-list.c:
+	(nautilus_bookmark_list_initialize_class):
+	* src/nautilus-navigation-bar.c:
+	(nautilus_navigation_bar_initialize_class):
+	* src/nautilus-search-bar-criterion.c:
+	(nautilus_search_bar_criterion_initialize_class):
+	* src/nautilus-sidebar.c: (nautilus_sidebar_initialize_class):
+	* src/nautilus-switchable-navigation-bar.c:
+	(nautilus_switchable_navigation_bar_initialize_class):
+	Use GTK_RUN_LAST instead of GTK_RUN_FIRST.
+	
+	* libnautilus-extensions/nautilus-directory-background.c:
+	* libnautilus-extensions/nautilus-link-set.c:
+	* libnautilus-extensions/nautilus-link.c:
+	* src/file-manager/fm-icon-text-window.c:
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-properties-window.c:
+	* src/nautilus-complex-search-bar.c:
+	* src/nautilus-link-set-window.c:
+	* src/nautilus-simple-search-bar.c:
+	* src/nautilus-switchable-search-bar.c:
+	Add includes needed now that the #include <gnome.h> was removed
+	from nautilus-global-preferences.h.
+	
+	* libnautilus-extensions/nautilus-string.h:
+	* libnautilus-extensions/nautilus-string.c:
+	(nautilus_strcmp_case_breaks_ties): Added function, like
+	g_strcasecmp, but falls back on strcmp for strings that match
+	case-insensitive-wise.
+	(nautilus_istr_compare): Use nautilus_strcmp_case_breaks_ties
+	instead of nautilus_strcasecmp.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_compare_by_name): Use
+	nautilus_strcmp_case_breaks_ties instead of g_strcasecmp.
+	(nautilus_file_compare_by_directory_name): Use
+	nautilus_strcmp_case_breaks_ties instead of g_strcasecmp.
+	(get_automatic_emblems_as_integer): Convert automatic emblems to
+	integer form for simple sorting.
+	(prepend_automatic_emblem_names): Separate out the code that puts
+	on automatic emblem names, and make it put them first, before any
+	keyword-based emblems.
+	(nautilus_file_compare_by_emblems): Compare the automatic emblems
+	first, using the integer form.
+	(nautilus_file_compare_by_type): Use
+	nautilus_strcmp_case_breaks_ties instead of nautilus_strcmp.
+	(nautilus_file_compare_for_sort): Use
+	nautilus_strcmp_case_breaks_ties instead of g_strcasecmp.
+	(nautilus_file_compare_name): Use nautilus_strcmp_case_breaks_ties
+	instead of g_strcasecmp.
+	(nautilus_file_is_mime_type): Use nautilus_strcasecmp instead of
+	nautilus_strcmp.
+	(nautilus_file_get_emblem_names): Use
+	prepend_automatic_emblem_names.
+	(sort_keyword_list_and_remove_duplicates): Sort with
+	nautilus_strcmp_case_breaks_ties instead of
+	compare_emblem_names. Automatic emblem names are now dealt with
+	elsewhere.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(compare_icons_by_name): Use nautilus_strcmp_case_breaks_ties
+	instead of nautilus_strcasecmp.
+	
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_g_str_list_sort): Use nautilus_str_compare.
+	(nautilus_g_str_list_sort_case_insensitive): Use
+	nautilus_istr_compare.
+	
+	* components/services/vault/command-line/main.c: (main):
+	* test/test-nautilus-mime-actions-set.c: (str_to_action_type):
+	Use g_strcasecmp, not strcasecmp, for portability.
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	Removed _get_disabled_sidebar_panel_view_identifiers since the
+	logic now removes any not in the enabled list instead.
+	
+	* libnautilus-extensions/nautilus-view-identifier.h:
+	* libnautilus-extensions/nautilus-view-identifier.c:
+	(nautilus_view_identifier_list_copy): New function.
+	(nautilus_view_identifier_compare): Now sorts properly instead of
+	returning 1 for any two identifiers that are !=.
+	
+	* nautilus-clean.sh: Removed unadorned gconfd now that it's
+	ancient history and because it makes the script seem to fail all
+	the time.
+	
+	* src/nautilus-window-manage-views.h:
+	* src/nautilus-window-manage-views.c:
+	(compute_title): Renamed to a shorter name since it's a local function.
+	(update_title): Renamed to a shorter name since it's a local
+	function and made it do nothing if the title is already correct.
+	(nautilus_window_update_internals): Simplified code by using the
+	new cached title.
+	(nautilus_window_has_really_changed): Removed sidebar panel logic
+	that is no longer needed.
+	(nautilus_window_free_load_info): Remove some unused fields.
+	(nautilus_window_open_location): Removed unused parameter.
+	(nautilus_window_open_location_in_new_window): Removed unused
+	parameter.
+	(load_content_view): Renamed to shorter name since it's a local
+	function.
+	(handle_view_failure), (cancel_location_change),
+	(load_view_for_new_location), (set_view_location_and_selection):
+	Broke out big pieces of code used by the state machine. Soon we
+	won't have a state machine at all, but we'll still need functions
+	like these.
+	(nautilus_window_update_state): Removed a lot of the code and
+	broke the remaining bits into the above functions.
+	(nautilus_window_set_state_info): Removed sidebar management code
+	and some now-unused state variables.
+	(nautilus_window_stop_loading): Moved this function in here and
+	renamed it so the whole state machine is in one place.
+	(nautilus_window_set_content_view): Moved this function in here
+	and renamed it so the whole state machine is in one place.
+	(compare_view_identifier_with_iid),
+	(nautilus_window_set_sidebar_panels): Wrote new code to set up the
+	sidebar panels based on a list of view identifiers, based on the
+	code that was used before when preferences change. Moved here so
+	the whole state machine is in one place.
+	
+	* src/nautilus-window-toolbars.c: (toolbar_stop_callback): Call
+	the new function nautilus_window_stop_loading.
+	
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.h:
+	* src/nautilus-window.c: (nautilus_window_initialize_class):
+	Removed the "content_view" argument.
+	(nautilus_window_goto_uri): Removed the view frame parameter from
+	the open_location call.
+	(nautilus_window_constructed): Set up sidebars based on
+	preferences when the window is created.
+	(nautilus_window_set_arg): Removed the "content_view" argument.
+	(nautilus_window_get_arg): Removed the "content_view" argument.
+	(view_menu_switch_views_callback): Call the new function
+	nautilus_window_set_content_view.
+	(chose_component_callback), Call the new function
+	nautilus_window_set_content_view.
+	(nautilus_window_open_location_callback): Removed the view frame
+	parameter from the open_location call.
+	(nautilus_window_open_location_in_new_window_callback): Removed
+	the view frame parameter from the open_location_in_new_window
+	call.
+	(nautilus_window_connect_view): Don't connect to
+	report_load_progress any more. The view frame now handles this for
+	us.
+	(nautilus_window_set_content_view_widget): Renamed this to avoid
+	confusion with the new nautilus_window_set_content_view which is
+	used to change content views, given a new view identifier.
+	(update_sidebar_panels_from_preferences): Renamed and changed to
+	use the new nautilus_window_set_sidebar_panels call.
+
 2000-10-02  Andy Hertzfeld  <andy@eazel.com>
 
 	made some throbber changes for Arlo

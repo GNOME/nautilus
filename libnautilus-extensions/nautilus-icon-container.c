@@ -1972,7 +1972,7 @@ compare_icons_by_name (gconstpointer a, gconstpointer b)
 	/* _get_editable_text might return NULL here if called while the
 	 * icon container is loading, before each icon has been updated once. 
 	 */
-	return nautilus_strcasecmp
+	return nautilus_strcmp_case_breaks_ties
 		(nautilus_icon_canvas_item_get_editable_text (icon_a->item),
 		 nautilus_icon_canvas_item_get_editable_text (icon_b->item));
 }

@@ -33,8 +33,10 @@
 #include "nautilus-switchable-search-bar.h"
 #include <gtk/gtklabel.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkvbox.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-dock.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-search-uri.h>
@@ -76,14 +78,14 @@ nautilus_switchable_navigation_bar_initialize_class (NautilusSwitchableNavigatio
 	object_class = GTK_OBJECT_CLASS (klass);
 	navigation_bar_class = NAUTILUS_NAVIGATION_BAR_CLASS (klass);
 
-	signals[MODE_CHANGED]
-		= gtk_signal_new ("mode_changed",
-				  GTK_RUN_FIRST,
-				  object_class->type,
-				  GTK_SIGNAL_OFFSET (NautilusSwitchableNavigationBarClass,
-						     mode_changed),
-				  gtk_marshal_NONE__STRING,
-				  GTK_TYPE_NONE, 1, GTK_TYPE_INT);
+	signals[MODE_CHANGED] = gtk_signal_new
+		("mode_changed",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusSwitchableNavigationBarClass,
+				    mode_changed),
+		 gtk_marshal_NONE__STRING,
+		 GTK_TYPE_NONE, 1, GTK_TYPE_INT);
 
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 	

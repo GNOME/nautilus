@@ -1084,77 +1084,69 @@ iti_class_init (NautilusIconTextItemClass *text_item_class)
 
 	parent_class = gtk_type_class (gnome_canvas_item_get_type ());
 
-	iti_signals [TEXT_CHANGED] =
-		gtk_signal_new (
-			"text_changed",
-			GTK_RUN_LAST,
-			object_class->type,
-			GTK_SIGNAL_OFFSET (NautilusIconTextItemClass, text_changed),
-			gtk_marshal_BOOL__NONE,
-			GTK_TYPE_BOOL, 0);
+	iti_signals [TEXT_CHANGED] = gtk_signal_new
+		("text_changed",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusIconTextItemClass, text_changed),
+		 gtk_marshal_BOOL__NONE,
+		 GTK_TYPE_BOOL, 0);
 
-	iti_signals [TEXT_EDITED] =
-		gtk_signal_new (
-			"text_edited",
-			GTK_RUN_LAST,
-			object_class->type,
-			GTK_SIGNAL_OFFSET (NautilusIconTextItemClass, text_edited),
-			gtk_marshal_NONE__NONE,
-			GTK_TYPE_NONE, 0);
+	iti_signals [TEXT_EDITED] = gtk_signal_new
+		("text_edited",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusIconTextItemClass, text_edited),
+		 gtk_marshal_NONE__NONE,
+		 GTK_TYPE_NONE, 0);
 
-	iti_signals [HEIGHT_CHANGED] =
-		gtk_signal_new (
-			"height_changed",
-			GTK_RUN_LAST,
-			object_class->type,
-			GTK_SIGNAL_OFFSET (NautilusIconTextItemClass, height_changed),
-			gtk_marshal_NONE__NONE,
-			GTK_TYPE_NONE, 0);
+	iti_signals [HEIGHT_CHANGED] = gtk_signal_new
+		("height_changed",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusIconTextItemClass, height_changed),
+		 gtk_marshal_NONE__NONE,
+		 GTK_TYPE_NONE, 0);
 
-	iti_signals [WIDTH_CHANGED] =
-		gtk_signal_new (
-			"width_changed",
-			GTK_RUN_LAST,
-			object_class->type,
-			GTK_SIGNAL_OFFSET (NautilusIconTextItemClass, width_changed),
-			gtk_marshal_NONE__NONE,
-			GTK_TYPE_NONE, 0);
+	iti_signals [WIDTH_CHANGED] = gtk_signal_new
+		("width_changed",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusIconTextItemClass, width_changed),
+		 gtk_marshal_NONE__NONE,
+		 GTK_TYPE_NONE, 0);
 
-	iti_signals[EDITING_STARTED] =
-		gtk_signal_new (
-			"editing_started",
-			GTK_RUN_LAST,
-			object_class->type,
-			GTK_SIGNAL_OFFSET (NautilusIconTextItemClass, editing_started),
-			gtk_marshal_NONE__NONE,
-			GTK_TYPE_NONE, 0);
+	iti_signals[EDITING_STARTED] = gtk_signal_new
+		("editing_started",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusIconTextItemClass, editing_started),
+		 gtk_marshal_NONE__NONE,
+		 GTK_TYPE_NONE, 0);
 
-	iti_signals[EDITING_STOPPED] =
-		gtk_signal_new (
-			"editing_stopped",
-			GTK_RUN_LAST,
-			object_class->type,
-			GTK_SIGNAL_OFFSET (NautilusIconTextItemClass, editing_stopped),
-			gtk_marshal_NONE__NONE,
-			GTK_TYPE_NONE, 0);
+	iti_signals[EDITING_STOPPED] = gtk_signal_new
+		("editing_stopped",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusIconTextItemClass, editing_stopped),
+		 gtk_marshal_NONE__NONE,
+		 GTK_TYPE_NONE, 0);
 
-	iti_signals[SELECTION_STARTED] =
-		gtk_signal_new (
-			"selection_started",
-			GTK_RUN_FIRST,
-			object_class->type,
-			GTK_SIGNAL_OFFSET (NautilusIconTextItemClass, selection_started),
-			gtk_marshal_NONE__NONE,
-			GTK_TYPE_NONE, 0);
+	iti_signals[SELECTION_STARTED] = gtk_signal_new
+		("selection_started",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusIconTextItemClass, selection_started),
+		 gtk_marshal_NONE__NONE,
+		 GTK_TYPE_NONE, 0);
 
-	iti_signals[SELECTION_STOPPED] =
-		gtk_signal_new (
-			"selection_stopped",
-			GTK_RUN_FIRST,
-			object_class->type,
-			GTK_SIGNAL_OFFSET (NautilusIconTextItemClass, selection_stopped),
-			gtk_marshal_NONE__NONE,
-			GTK_TYPE_NONE, 0);
+	iti_signals[SELECTION_STOPPED] = gtk_signal_new
+		("selection_stopped",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusIconTextItemClass, selection_stopped),
+		 gtk_marshal_NONE__NONE,
+		 GTK_TYPE_NONE, 0);
 
 	gtk_object_class_add_signals (object_class, iti_signals, LAST_SIGNAL);
 

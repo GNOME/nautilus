@@ -82,13 +82,14 @@ nautilus_entry_initialize_class (NautilusEntryClass *class)
 	editable_class->delete_text = nautilus_entry_delete_text;
 
 	/* Set up signals */
-	signals[USER_CHANGED] = gtk_signal_new ("user_changed",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusEntryClass,
-						   user_changed),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+	signals[USER_CHANGED] = gtk_signal_new
+		("user_changed",
+		 GTK_RUN_LAST,
+		 object_class->type,
+		 GTK_SIGNAL_OFFSET (NautilusEntryClass,
+				    user_changed),
+		 gtk_marshal_NONE__NONE,
+		 GTK_TYPE_NONE, 0);
 				
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }

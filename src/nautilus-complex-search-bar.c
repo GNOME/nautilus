@@ -33,6 +33,10 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <glib.h>
 #include <gtk/gtkeventbox.h>
+#include <gtk/gtktable.h>
+#include <gtk/gtkvbox.h>
+#include <libgnomeui/gnome-dock.h>
+#include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
@@ -50,7 +54,6 @@ struct NautilusComplexSearchBarDetails {
 	GtkWidget *find_them;
 
 	GSList *search_criteria;
-
 };
 
 static void  real_activate				  (NautilusNavigationBar	       *bar);

@@ -133,11 +133,11 @@ We assume you want to install these packages in another prefix than
 /usr since you want to keep a working system. For the following, we
 assume you are installing in /usr/local. ie: ${prefix}=/usr/local
 
-Redefine your PATH env variable: 
+Redefine your PATH environment variable: 
         export PATH=$PATH:${prefix}/bin
-Redefine your LD_LIBRARY_PATH env variable: 
+Redefine your LD_LIBRARY_PATH environment variable: 
         export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${prefix}/lib
-Redefine your GNOME_PATH env variable: 
+Redefine your GNOME_PATH environment variable: 
         export GNOME_PATH=$GNOME_PATH:${prefix}
 
 In the order defined above and with the specific options detailed
@@ -171,9 +171,6 @@ The following lists the packages and the versions that are required.
     control-center     control-center-1-0
     gnome-vfs:         HEAD
     bonobo:            BEFORE_NEW_UI_HANDLER_1
-    libunicode:        HEAD
-    libglade:          HEAD
-    eog:               BEFORE_NEW_UI_HANDLER_1   --with-bonobo
     xpdf:              BEFORE_NEW_UI_HANDLER_1
     medusa:            HEAD
     nautilus:          HEAD
@@ -198,9 +195,10 @@ Earlier versions might work but no one has tested them.
 
 Once you have these tools, you need to follow the compilation
 instructions detailed above for tarballs but instead of running
-"./configure --stuff", you will run "./autogen.sh --stuff" Using this
+"./configure --stuff", you will run "./autogen.sh --stuff". Using this
 also requires you to create the ${prefix}/share/aclocal directory
-before compiling any package and setup the following env variable:
+before compiling any package and setup the following environment
+variable:
 
         export ACLOCAL_FLAGS="$ACLOCAL_FLAGS -I ${prefix}/share/aclocal"
 

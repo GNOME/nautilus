@@ -69,35 +69,26 @@ typedef struct {
 typedef struct {
         NautilusGenerousBinClass parent_spot;
         
-        /* These signals correspond to the Nautilus::ViewFrame CORBA interface. They
-         * are requests that the underlying view may make of the shell via the frame.
+        /* Some of these calls correspond to CORBA calls, others are
+         * higher level operations.
          */
         void (* open_location)	               (NautilusViewFrame *view,
-                                                const char *location);
+                                                const char        *location);
         void (* open_location_in_new_window)   (NautilusViewFrame *view,
-                                                const char *location,
-                                                GList *selection); /* list of char * */
-        void (* report_location_change)	       (NautilusViewFrame *view,
-                                                const char *location);
+                                                const char        *location,
+                                                GList             *selection); /* list of char * */
         void (* report_selection_change)       (NautilusViewFrame *view,
-                                                GList *selection); /* list of char * */
+                                                GList             *selection); /* list of char * */
         void (* report_status)                 (NautilusViewFrame *view,
-                                                const char *status);
+                                                const char        *status);
         void (* report_load_underway)          (NautilusViewFrame *view);
         void (* report_load_progress)          (NautilusViewFrame *view,
-                                                double fraction_done);
+                                                double             fraction_done);
         void (* report_load_complete)          (NautilusViewFrame *view);
         void (* report_load_failed)            (NautilusViewFrame *view);
-
-        /* These are higher-level signals. We are moving more work into
-         * this class, so we no longer have one signal for each CORBA
-         * signal.
-         */
         void (* title_changed)                 (NautilusViewFrame *view);
-
-        /* Part of Nautilus::ZoomableFrame CORBA interface. */
         void (* zoom_level_changed)            (NautilusViewFrame *view,
-                                                double zoom_level);
+                                                double             zoom_level);
 
         /* Error handling for when client goes away. */
         void (* client_gone)                   (NautilusViewFrame *view);
@@ -113,7 +104,6 @@ NautilusViewFrame *   nautilus_view_frame_new                       (BonoboUIHan
 gboolean              nautilus_view_frame_load_client               (NautilusViewFrame   *view,
                                                                      const char          *iid);
 const char *          nautilus_view_frame_get_iid                   (NautilusViewFrame   *view);
-char *                nautilus_view_frame_get_title                 (NautilusViewFrame   *view);
 
 /* Nautilus:View */
 void                  nautilus_view_frame_load_location             (NautilusViewFrame   *view,
@@ -141,6 +131,10 @@ void                  nautilus_view_frame_set_label                 (NautilusVie
                                                                      const char          *label);
 void                  nautilus_view_frame_activate                  (NautilusViewFrame   *view);
 Nautilus_HistoryList *nautilus_view_frame_get_history_list          (NautilusViewFrame   *view);
-void                  nautilus_view_frame_title_changed             (NautilusViewFrame   *view);
+void                  nautilus_view_frame_title_changed             (NautilusViewFrame   *view,
+                                                                     const char          *title);
+/* view state */
+char *                nautilus_view_frame_get_title                 (NautilusViewFrame   *view);
+gboolean              nautilus_view_frame_get_is_underway           (NautilusViewFrame   *view);
 
 #endif /* NAUTILUS_VIEW_FRAME_H */

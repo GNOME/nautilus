@@ -91,12 +91,11 @@ nautilus_view_identifier_new_from_oaf_server_info (OAF_ServerInfo *server, char 
         GSList *langs;
 
         langs = get_lang_list ();
+
         view_as_name = oaf_server_info_prop_lookup (server, name_attribute, langs);
-		
         if (view_as_name == NULL) {
                 view_as_name = oaf_server_info_prop_lookup (server, "name", langs);
         }
-
         if (view_as_name == NULL) {
                 view_as_name = server->iid;
         }
@@ -125,15 +124,15 @@ nautilus_view_identifier_new_from_oaf_server_info (OAF_ServerInfo *server, char 
 NautilusViewIdentifier *
 nautilus_view_identifier_new_from_content_view (OAF_ServerInfo *server)
 {
-	return nautilus_view_identifier_new_from_oaf_server_info (server, 
-								  "nautilus:view_as_name");
+	return nautilus_view_identifier_new_from_oaf_server_info
+		(server, "nautilus:view_as_name");
 }
 
 NautilusViewIdentifier *
 nautilus_view_identifier_new_from_sidebar_panel (OAF_ServerInfo *server)
 {
-	return nautilus_view_identifier_new_from_oaf_server_info (server, 
-								  "nautilus:sidebar_panel_name");
+	return nautilus_view_identifier_new_from_oaf_server_info
+		(server, "nautilus:sidebar_panel_name");
 }
 
 void
@@ -146,6 +145,19 @@ nautilus_view_identifier_free (NautilusViewIdentifier *identifier)
         }
 }
 
+GList *
+nautilus_view_identifier_list_copy (GList *list)
+{
+	GList *copy, *node;
+
+	copy = NULL;
+	for (node = list; node != NULL; node = node->next) {
+		copy = g_list_prepend
+			(copy, nautilus_view_identifier_copy (node->data));
+	}
+	return g_list_reverse (copy);
+}
+
 static void
 nautilus_view_identifier_free_callback (gpointer identifier, gpointer ignore)
 {
@@ -154,16 +166,20 @@ nautilus_view_identifier_free_callback (gpointer identifier, gpointer ignore)
 }
 
 void
-nautilus_view_identifier_list_free (GList *identifiers)
+nautilus_view_identifier_list_free (GList *list)
 {
 	nautilus_g_list_free_deep_custom
-		(identifiers,
-		 nautilus_view_identifier_free_callback,
-		 NULL);
+		(list, nautilus_view_identifier_free_callback, NULL);
 }
 
 int
 nautilus_view_identifier_compare (NautilusViewIdentifier *a, NautilusViewIdentifier *b)
 {
-	return (strcmp (a->iid, b->iid) || strcmp (a->name, b->name));
+	int result;
+
+	result = strcmp (a->iid, b->iid);
+	if (result != 0) {
+		return result;
+	}
+	return strcmp (a->name, b->name);
 } 

@@ -57,6 +57,18 @@ nautilus_strcasecmp (const char *string_a, const char *string_b)
 		             string_b == NULL ? "" : string_b);
 }
 
+int
+nautilus_strcmp_case_breaks_ties (const char *string_a, const char *string_b)
+{
+	int casecmp_result;
+
+	casecmp_result = nautilus_strcasecmp (string_a, string_b);
+	if (casecmp_result != 0) {
+		return casecmp_result;
+	}
+	return nautilus_strcmp (string_a, string_b);
+}
+
 gboolean
 nautilus_str_is_empty (const char *string_or_null)
 {
@@ -66,13 +78,13 @@ nautilus_str_is_empty (const char *string_or_null)
 gboolean
 nautilus_str_is_equal (const char *string_a, const char *string_b)
 {
-	return (nautilus_strcmp (string_a, string_b) == 0);
+	return nautilus_strcmp (string_a, string_b) == 0;
 }
 
 gboolean
 nautilus_istr_is_equal (const char *string_a, const char *string_b)
 {
-	return (nautilus_strcasecmp (string_a, string_b) == 0);
+	return nautilus_strcasecmp (string_a, string_b) == 0;
 }
 
 int
@@ -85,8 +97,8 @@ nautilus_str_compare (gconstpointer string_a, gconstpointer string_b)
 int
 nautilus_istr_compare (gconstpointer string_a, gconstpointer string_b)
 {
-	return nautilus_strcasecmp ((const char *) string_a,
-				    (const char *) string_b);
+	return nautilus_strcmp_case_breaks_ties ((const char *) string_a,
+						 (const char *) string_b);
 }
 
 gboolean

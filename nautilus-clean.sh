@@ -93,7 +93,7 @@ ntl-web-browser \
 
 if [ "$extreme" = "yes" ]
 then
-    AUX_PROGS="oafd gconfd gconfd-0.6 gconfd-1 eazel-proxy $AUX_PROGS"
+    AUX_PROGS="oafd gconfd-0.6 gconfd-1 eazel-proxy $AUX_PROGS"
 fi
 
 unset FOUND_ANY

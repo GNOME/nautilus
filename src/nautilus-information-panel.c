@@ -34,6 +34,9 @@
 #include "nautilus-sidebar-tabs.h"
 #include "nautilus-sidebar-title.h"
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtkdnd.h>
+#include <gtk/gtknotebook.h>
+#include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-application-registry.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
@@ -170,14 +173,14 @@ nautilus_sidebar_initialize_class (GtkObjectClass *object_klass)
 	widget_class->size_allocate = nautilus_sidebar_size_allocate;
 
 	/* add the "location changed" signal */
-	signals[LOCATION_CHANGED]
-		= gtk_signal_new ("location_changed",
-			GTK_RUN_FIRST,
-			object_klass->type,
-			GTK_SIGNAL_OFFSET (NautilusSidebarClass,
-				location_changed),
-			gtk_marshal_NONE__STRING,
-			GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
+	signals[LOCATION_CHANGED] = gtk_signal_new
+		("location_changed",
+		 GTK_RUN_LAST,
+		 object_klass->type,
+		 GTK_SIGNAL_OFFSET (NautilusSidebarClass,
+				    location_changed),
+		 gtk_marshal_NONE__STRING,
+		 GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
 
 	gtk_object_class_add_signals (object_klass, signals, LAST_SIGNAL);
 }
@@ -307,35 +310,35 @@ static gboolean
 nautilus_sidebar_sidebar_panel_enabled (const char *panel_iid)
 {
 	gboolean enabled;
-        gchar	 *key;
+        char *key;
 
 	key = nautilus_sidebar_get_sidebar_panel_key (panel_iid);
         enabled = nautilus_preferences_get_boolean (key, FALSE);
-
         g_free (key);
         return enabled;
 }
 
 /* callback to handle resetting the background */
 static void
-reset_background_callback(GtkWidget *menu_item, GtkWidget *sidebar)
+reset_background_callback (GtkWidget *menu_item, GtkWidget *sidebar)
 {
 	NautilusBackground *background;
+
 	background = nautilus_get_widget_background(sidebar);
-	if (background) { 
-		nautilus_background_reset(background); 
+	if (background != NULL) { 
+		nautilus_background_reset (background); 
 	}
 }
 
 /* callback for sidebar panel menu items to toggle their visibility */
 static void
-toggle_sidebar_panel(GtkWidget *widget, char *sidebar_id)
+toggle_sidebar_panel (GtkWidget *widget, char *sidebar_id)
 {
-        gchar	 *key;
+        char *key;
 
 	key = nautilus_sidebar_get_sidebar_panel_key (sidebar_id);
-	nautilus_preferences_set_boolean(key, !nautilus_preferences_get_boolean(key, FALSE));
-	g_free(key); 
+	nautilus_preferences_set_boolean (key, !nautilus_preferences_get_boolean (key, FALSE));
+	g_free (key); 
 }
 
 /* utility routine to add a menu item for each potential sidebar panel */
@@ -367,7 +370,7 @@ nautilus_sidebar_add_panel_items(NautilusSidebar *sidebar, GtkWidget *menu)
 			/* check to see if we've seen this one */
 			if (g_list_find_custom (name_list, id->name, (GCompareFunc) strcmp) == NULL) {
 				name_list = g_list_append (name_list, g_strdup (id->name));
-			
+				
 				/* add a check menu item */
 				menu_item = gtk_check_menu_item_new_with_label (id->name);
 				enabled = nautilus_sidebar_sidebar_panel_enabled (id->iid);

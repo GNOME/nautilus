@@ -25,8 +25,8 @@
 #include <config.h>
 #include "nautilus-link.h"
 
-#include "nautilus-directory.h"
 #include "nautilus-directory-notify.h"
+#include "nautilus-directory.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
@@ -34,6 +34,7 @@
 #include "nautilus-preferences.h"
 #include "nautilus-string.h"
 #include "nautilus-xml-extensions.h"
+#include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-mime.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <parser.h>
