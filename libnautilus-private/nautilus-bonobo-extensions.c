@@ -53,11 +53,7 @@ nautilus_bonobo_set_accelerator (BonoboUIComponent *ui,
 			   	 const char *path,
 			   	 const char *accelerator)
 {
-	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
-	bonobo_ui_component_set_prop (ui, path,
-				      "accel",
-				      accelerator,
-				      NULL);
+	bonobo_ui_component_set_prop (ui, path, "accel", accelerator, NULL);
 }
 
 void
@@ -65,11 +61,7 @@ nautilus_bonobo_set_label (BonoboUIComponent *ui,
 			   const char *path,
 			   const char *label)
 {
-	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
-	bonobo_ui_component_set_prop (ui, path,
-				      "label",
-				      label,
-				      NULL);
+	bonobo_ui_component_set_prop (ui, path, "label", label, NULL);
 }
 
 void
@@ -77,11 +69,7 @@ nautilus_bonobo_set_tip (BonoboUIComponent *ui,
 			 const char *path,
 			 const char *tip)
 {
-	g_return_if_fail (ui != NULL);
-	bonobo_ui_component_set_prop (ui, path,
-				      "tip",
-				      tip,
-				      NULL);
+	bonobo_ui_component_set_prop (ui, path, "tip", tip, NULL);
 }
 
 void
@@ -89,11 +77,7 @@ nautilus_bonobo_set_sensitive (BonoboUIComponent *ui,
 			       const char *path,
 			       gboolean sensitive)
 {
-	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
-	bonobo_ui_component_set_prop (ui, path,
-				      "sensitive",
-				      sensitive ? "1" : "0",
-				      NULL);
+	bonobo_ui_component_set_prop (ui, path, "sensitive", sensitive ? "1" : "0", NULL);
 }
 
 void
@@ -101,11 +85,7 @@ nautilus_bonobo_set_toggle_state (BonoboUIComponent *ui,
 			       	  const char *path,
 			       	  gboolean state)
 {
-	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
-	bonobo_ui_component_set_prop (ui, path,
-				      "state",
-				      state ? "1" : "0",
-				      NULL);
+	bonobo_ui_component_set_prop (ui, path, "state", state ? "1" : "0", NULL);
 }
 
 void
@@ -113,19 +93,13 @@ nautilus_bonobo_set_hidden (BonoboUIComponent *ui,
 			    const char *path,
 			    gboolean hidden)
 {
-	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
-	bonobo_ui_component_set_prop (ui, path,
-				      "hidden",
-				      hidden ? "1" : "0",
-				      NULL);
+	bonobo_ui_component_set_prop (ui, path, "hidden", hidden ? "1" : "0", NULL);
 }
 
 char * 
 nautilus_bonobo_get_label (BonoboUIComponent *ui,
 		           const char *path)
 {
-	g_return_val_if_fail (BONOBO_IS_UI_COMPONENT (ui), FALSE);
-
 	return bonobo_ui_component_get_prop (ui, path, "label", NULL);
 }
 
@@ -138,6 +112,7 @@ nautilus_bonobo_get_hidden (BonoboUIComponent *ui,
 	CORBA_Environment ev;
 
 	g_return_val_if_fail (BONOBO_IS_UI_COMPONENT (ui), FALSE);
+	g_return_val_if_fail (path != NULL, FALSE);
 
 	CORBA_exception_init (&ev);
 	value = bonobo_ui_component_get_prop (ui, path, "hidden", &ev);
@@ -157,17 +132,15 @@ nautilus_bonobo_get_hidden (BonoboUIComponent *ui,
 }
 
 static char *
-get_numbered_menu_item_name (BonoboUIComponent *ui,
-			      const char *container_path,
-			      guint index)
+get_numbered_menu_item_name (guint index)
 {
 	return g_strdup_printf ("%u", index);
 }			      
 
 char *
 nautilus_bonobo_get_numbered_menu_item_path (BonoboUIComponent *ui,
-					      const char *container_path, 
-					      guint index)
+					     const char *container_path, 
+					     guint index)
 {
 	char *item_name;
 	char *item_path;
@@ -175,7 +148,7 @@ nautilus_bonobo_get_numbered_menu_item_path (BonoboUIComponent *ui,
 	g_return_val_if_fail (BONOBO_IS_UI_COMPONENT (ui), NULL); 
 	g_return_val_if_fail (container_path != NULL, NULL);
 
-	item_name = get_numbered_menu_item_name (ui, container_path, index);
+	item_name = get_numbered_menu_item_name (index);
 	item_path = g_strconcat (container_path, "/", item_name, NULL);
 	g_free (item_name);
 
@@ -184,8 +157,8 @@ nautilus_bonobo_get_numbered_menu_item_path (BonoboUIComponent *ui,
 
 char *
 nautilus_bonobo_get_numbered_menu_item_command (BonoboUIComponent *ui,
-						 const char *container_path, 
-						 guint index)
+						const char *container_path, 
+						guint index)
 {
 	char *command_name;
 	char *path;
@@ -243,16 +216,17 @@ nautilus_bonobo_get_numbered_menu_item_container_path_from_command (const char *
 
 static void
 add_numbered_menu_item_internal (BonoboUIComponent *ui,
-			 	  const char *container_path,
-			 	  guint index,
-			 	  const char *label,
-			 	  NumberedMenuItemType type,
-			 	  GdkPixbuf *pixbuf,
-			 	  const char *radio_group_name)
+				 const char *container_path,
+				 guint index,
+				 const char *label,
+				 NumberedMenuItemType type,
+				 GdkPixbuf *pixbuf,
+			 	 const char *radio_group_name)
 {
 	char *xml_item, *xml_command; 
 	char *command_name;
 	char *item_name, *pixbuf_data;
+	char *path;
 
 	g_assert (BONOBO_IS_UI_COMPONENT (ui)); 
 	g_assert (container_path != NULL);
@@ -261,29 +235,28 @@ add_numbered_menu_item_internal (BonoboUIComponent *ui,
 	g_assert (type == NUMBERED_MENU_ITEM_RADIO || radio_group_name == NULL);
 	g_assert (type != NUMBERED_MENU_ITEM_RADIO || radio_group_name != NULL);
 
-	item_name = get_numbered_menu_item_name 
-		(ui, container_path, index);
+	item_name = get_numbered_menu_item_name (index);
 	command_name = nautilus_bonobo_get_numbered_menu_item_command 
 		(ui, container_path, index);
 
 	switch (type) {
 	case NUMBERED_MENU_ITEM_TOGGLE:
-		xml_item = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" id=\"%s\" type=\"toggle\"/>\n", 
-					    item_name, label, command_name);
+		xml_item = g_strdup_printf ("<menuitem name=\"%s\" id=\"%s\" type=\"toggle\"/>\n", 
+					    item_name, command_name);
 		break;
 	case NUMBERED_MENU_ITEM_RADIO:
-		xml_item = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" id=\"%s\" type=\"radio\" group=\"%s\"/>\n", 
-					    item_name, label, command_name, radio_group_name);
+		xml_item = g_strdup_printf ("<menuitem name=\"%s\" id=\"%s\" type=\"radio\" group=\"%s\"/>\n", 
+					    item_name, command_name, radio_group_name);
 		break;
 	case NUMBERED_MENU_ITEM_PLAIN:
 		if (pixbuf != NULL) {
 			pixbuf_data = bonobo_ui_util_pixbuf_to_xml (pixbuf);			
-			xml_item = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" verb=\"%s\" pixtype=\"pixbuf\" pixname=\"%s\"/>\n", 
-						    item_name, label, command_name, pixbuf_data);	
+			xml_item = g_strdup_printf ("<menuitem name=\"%s\" verb=\"%s\" pixtype=\"pixbuf\" pixname=\"%s\"/>\n", 
+						    item_name, command_name, pixbuf_data);
 			g_free (pixbuf_data);
 		} else {
-			xml_item = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" verb=\"%s\"/>\n", 
-						    item_name, label, command_name);
+			xml_item = g_strdup_printf ("<menuitem name=\"%s\" verb=\"%s\"/>\n", 
+						    item_name, command_name);
 		}
 		break;
 	default:
@@ -294,7 +267,12 @@ add_numbered_menu_item_internal (BonoboUIComponent *ui,
 	g_free (item_name);
 	
 	bonobo_ui_component_set (ui, container_path, xml_item, NULL);
+
 	g_free (xml_item);
+
+	path = nautilus_bonobo_get_numbered_menu_item_path (ui, container_path, index);
+	nautilus_bonobo_set_label (ui, path, label);
+	g_free (path);
 
 	/* Make the command node here too, so callers can immediately set
 	 * properties on it (otherwise it doesn't get created until some
@@ -314,10 +292,10 @@ add_numbered_menu_item_internal (BonoboUIComponent *ui,
  */
 void
 nautilus_bonobo_add_numbered_menu_item (BonoboUIComponent *ui, 
-					 const char *container_path, 
-					 guint index,
-			       		 const char *label, 
-			       		 GdkPixbuf *pixbuf)
+					const char *container_path, 
+					guint index,
+			       		const char *label, 
+			       		GdkPixbuf *pixbuf)
 {
 	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui)); 
 	g_return_if_fail (container_path != NULL);
@@ -334,9 +312,9 @@ nautilus_bonobo_add_numbered_menu_item (BonoboUIComponent *ui,
  */
 void
 nautilus_bonobo_add_numbered_toggle_menu_item (BonoboUIComponent *ui, 
-					        const char *container_path, 
-					        guint index,
-			       		        const char *label)
+					       const char *container_path, 
+					       guint index,
+					       const char *label)
 {
 	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui)); 
 	g_return_if_fail (container_path != NULL);
@@ -372,7 +350,12 @@ nautilus_bonobo_add_submenu (BonoboUIComponent *ui,
 			     const char *label,
 			     GdkPixbuf *pixbuf)
 {
-	char *xml_string, *name, *pixbuf_data;
+	char *xml_string, *name, *pixbuf_data, *submenu_path;
+
+	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
+	g_return_if_fail (path != NULL);
+	g_return_if_fail (label != NULL);
+	g_return_if_fail (pixbuf == NULL || GDK_IS_PIXBUF (pixbuf));
 
 	/* Labels may contain characters that are illegal in names. So
 	 * we create the name by URI-encoding the label.
@@ -381,22 +364,30 @@ nautilus_bonobo_add_submenu (BonoboUIComponent *ui,
 
 	if (pixbuf != NULL) {
 		pixbuf_data = bonobo_ui_util_pixbuf_to_xml (pixbuf);			
-		xml_string = g_strdup_printf ("<submenu name=\"%s\" label=\"%s\" pixtype=\"pixbuf\" pixname=\"%s\"/>\n", 
-					      name, label, pixbuf_data);	
+		xml_string = g_strdup_printf ("<submenu name=\"%s\" pixtype=\"pixbuf\" pixname=\"%s\"/>\n", 
+					      name, pixbuf_data);
 		g_free (pixbuf_data);
 	} else {
-		xml_string = g_strdup_printf ("<submenu name=\"%s\" label=\"%s\"/>\n", 
-					      name, label);
+		xml_string = g_strdup_printf ("<submenu name=\"%s\"/>\n", name);
 	}
+
 	bonobo_ui_component_set (ui, path, xml_string, NULL);
 
-	g_free (name);
 	g_free (xml_string);
+
+	submenu_path = g_strconcat (path, "/", name, NULL);
+	nautilus_bonobo_set_label (ui, submenu_path, label);
+	g_free (submenu_path);
+
+	g_free (name);
 }
 
 void
 nautilus_bonobo_add_menu_separator (BonoboUIComponent *ui, const char *path)
 {
+	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
+	g_return_if_fail (path != NULL);
+
 	bonobo_ui_component_set (ui, path, "<separator/>", NULL);
 }
 
@@ -407,9 +398,6 @@ remove_commands (BonoboUIComponent *ui, const char *container_path)
 	BonoboUINode *child_node;
 	char *verb_name;
 	char *id_name;
-
-	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
-	g_return_if_fail (container_path != NULL);
 
 	path_node = bonobo_ui_component_get_tree (ui, container_path, TRUE, NULL);
 	if (path_node == NULL) {
@@ -481,6 +469,11 @@ nautilus_bonobo_set_label_for_menu_item_and_command (BonoboUIComponent *ui,
 {
 	char *label_no_underscore;
 
+	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
+	g_return_if_fail (menu_item_path != NULL);
+	g_return_if_fail (command_path != NULL);
+	g_return_if_fail (label_with_underscore != NULL);
+
 	label_no_underscore = eel_str_strip_chr (label_with_underscore, '_');
 	nautilus_bonobo_set_label (ui,
 				   menu_item_path,
@@ -537,15 +530,16 @@ activation_cancel (NautilusBonoboActivationHandle *handle)
 
 static void
 bonobo_activation_activation_callback (Bonobo_Unknown activated_object, 
-			 const char *error_reason, 
-			 gpointer callback_data)
+				       const char *error_reason, 
+				       gpointer callback_data)
 {
 	NautilusBonoboActivationHandle *handle;
 	
 	handle = (NautilusBonoboActivationHandle *) callback_data;
 
-	if (activated_object == NULL)
+	if (activated_object == NULL) {
 		g_warning ("activation failed: %s", error_reason);
+	}
 
 	handle->activated_object = activated_object;
 

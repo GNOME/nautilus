@@ -1,3 +1,26 @@
+2002-03-05  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-bonobo-extensions.c:
+	(nautilus_bonobo_set_accelerator): Remove unneeded
+	g_return_if_fail. We call only one other function, so that can
+	handle parameter checking.
+	(nautilus_bonobo_set_label): Ditto.
+	(nautilus_bonobo_set_tip): Ditto.
+	(nautilus_bonobo_set_sensitive): Ditto.
+	(nautilus_bonobo_set_toggle_state): Ditto.
+	(nautilus_bonobo_set_hidden): Ditto.
+	(nautilus_bonobo_get_label): Ditto.
+	(nautilus_bonobo_get_hidden): Add g_return_if_fail.
+	(get_numbered_menu_item_name): Remove unused parameters.
+	(add_numbered_menu_item_internal): Set label with
+	nautilus_bonobo_set_label so there aren't any issues with XML
+	entity encoding.
+	(nautilus_bonobo_add_submenu): Ditto.
+	(nautilus_bonobo_add_menu_separator): Add g_return_if_fail.
+	(remove_commands): Remove g_return_if_fail since caller does it.
+	(nautilus_bonobo_set_label_for_menu_item_and_command): Add
+	g_return_if_fail.
+
 2002-03-06  Anders Carlsson  <andersca@gnu.org>
 
 	* libnautilus-private/nautilus-directory-async.c:

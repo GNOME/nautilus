@@ -45,6 +45,8 @@
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 
+#define SORT_MODEL_WORKS 1
+
 #define NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE "tree-sidebar-panel/expansion_state"
 
 struct NautilusTreeViewDetails {
