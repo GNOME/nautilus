@@ -112,6 +112,8 @@ NautilusDimensions nautilus_smooth_widget_get_preferred_dimensions (const GtkWid
 								    int                                tile_height);
 void               nautilus_smooth_widget_register_type            (GtkType                            type);
 
+void               nautilus_smooth_widget_global_set_is_smooth     (gboolean                           is_smooth);
+
 END_GNOME_DECLS
 
 #endif /* NAUTILUS_SMOOTH_WIDGET_H */

@@ -31,7 +31,6 @@
 #include "nautilus-glyph.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-lib-self-check-functions.h"
-#include "nautilus-global-preferences.h"
 #include "nautilus-string.h"
 #include <librsvg/rsvg-ft.h>
 #include <libgnome/gnome-util.h>

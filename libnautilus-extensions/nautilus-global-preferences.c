@@ -39,6 +39,7 @@
 #include "nautilus-stock-dialogs.h"
 #include "nautilus-view-identifier.h"
 #include "nautilus-sidebar-functions.h"
+#include "nautilus-smooth-widget.h"
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 #include <libgnome/gnome-i18n.h>
@@ -1535,6 +1536,17 @@ nautilus_global_preferences_get_default_smooth_bold_font (void)
 	return global_preferences_get_smooth_bold_font (default_smooth_font_auto_value);
 }
 
+/* Let the smooth widget machinery know about smoothness changes */
+static void
+smooth_graphics_mode_changed_callback (gpointer callback_data)
+{
+	gboolean is_smooth;
+
+	is_smooth = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
+	
+	nautilus_smooth_widget_global_set_is_smooth (is_smooth);
+}
+
 void
 nautilus_global_preferences_initialize (void)
 {
@@ -1554,4 +1566,13 @@ nautilus_global_preferences_initialize (void)
 					      &icon_view_smooth_font_auto_value);
 	nautilus_preferences_add_auto_string (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
 					      &default_smooth_font_auto_value);
+
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
+					   smooth_graphics_mode_changed_callback, 
+					   NULL);
+
+	/* Keep track of smooth graphics mode changes in order to notify the smooth
+	 * widget machinery.
+	 */
+	smooth_graphics_mode_changed_callback (NULL);
 }

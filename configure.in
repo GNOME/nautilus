@@ -991,6 +991,9 @@ fi
 
 AC_DEFINE_UNQUOTED(NAUTILUS_BUILD_MESSAGE, "$NAUTILUS_BUILD_MESSAGE")
 
+NAUTILUS_SOURCE_DIRECTORY=`(cd $srcdir && pwd)`
+AC_DEFINE_UNQUOTED(NAUTILUS_SOURCE_DIRECTORY, "$NAUTILUS_SOURCE_DIRECTORY")
+
 dnl
 dnl Define the build timestamp if given in the environment.
 dnl
@@ -1186,7 +1189,7 @@ echo "FREETYPE2_LIBS                    : $FREETYPE2_LIBS"
 dnl <= Snapshot things =>
 echo "EAZEL_BUILD_TIMESTAMP             : $EAZEL_BUILD_TIMESTAMP"
 echo "NAUTILUS_BUILD_MESSAGE            : $NAUTILUS_BUILD_MESSAGE"
-echo "NAUTILUS_BUILD_LOCATION           : $NAUTILUS_BUILD_LOCATION"
+echo "NAUTILUS_SOURCE_DIRECTORY         : $NAUTILUS_SOURCE_DIRECTORY"
 echo "HAVE_APPLETS                      : $HAVE_APPLETS"
 
 dnl <= End of configuration summary =>

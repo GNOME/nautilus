@@ -25,7 +25,6 @@
 #include <config.h>
 
 #include "nautilus-smooth-widget.h"
-#include "nautilus-global-preferences.h"
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-art-gtk-extensions.h"
 
@@ -78,13 +77,11 @@ static void              smooth_widget_paint_tile_and_content_transparent (GtkWi
 									   NautilusSmoothCompositeCallback    composite_callback,
 									   gpointer                           callback_data);
 
-/* We maintain a global list of smooth widgets.  We then monitor changes in
- * the Nautilus "smooth_graphics" preference.  When this preference changes,
- * we iterate through the global list of smooth widgets and toggle their
- * is_smooth attribute.
+/* We maintain a global list of smooth widgets.  The smoothness of all these
+ * widgets can then be changed with nautilus_smooth_widget_global_set_is_smooth().
  *
  * We do this so that labels and images will repect the "smooth_graphics"
- * preferences without any intervention from the users of these two widgets.
+ * automatically without any intervention from the users of these two widgets.
  */
 static GList *smooth_widget_list = NULL;
 
@@ -134,12 +131,6 @@ smooth_widget_set_is_smooth (GtkWidget *widget, gboolean is_smooth)
 	gtk_signal_emit_by_name (GTK_OBJECT (widget), "set_is_smooth", is_smooth);
 }
 
-static gboolean
-preferences_get_is_smooth (void)
-{
-	return nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
-}
-
 static void
 smooth_widget_destroy (GtkWidget *widget, gpointer callback_data)
 {
@@ -148,17 +139,17 @@ smooth_widget_destroy (GtkWidget *widget, gpointer callback_data)
 	smooth_widget_list = g_list_remove (smooth_widget_list, widget);
 }
 
-static void
-smooth_graphics_mode_changed_callback (gpointer callback_data)
-{
-	gboolean is_smooth;
-	GList *iterator;
+static gboolean global_is_smooth = TRUE;
 
-	is_smooth = preferences_get_is_smooth ();
-	
-	for (iterator = smooth_widget_list; iterator; iterator = iterator->next) {
-		smooth_widget_set_is_smooth (GTK_WIDGET (iterator->data),
-					       is_smooth);
+void
+nautilus_smooth_widget_global_set_is_smooth (gboolean is_smooth)
+{
+	GList *node;
+
+	global_is_smooth = is_smooth;
+
+	for (node = smooth_widget_list; node != NULL; node = node->next) {
+		smooth_widget_set_is_smooth (GTK_WIDGET (node->data), global_is_smooth);
 	}
 }
 
@@ -167,17 +158,15 @@ smooth_graphics_mode_changed_callback (gpointer callback_data)
  * @widget: A smooth widget.
  *
  * Register a smooth widget.  For the life time of the widget, its 
- * 'is_smooth' attribute will be toggled to match the value of 
- * the Nautilus "smooth_graphics" boolean preference.
+ * 'is_smooth' attribute will be toggled when 
+ * nautilus_smooth_widget_global_set_is_smooth() is called.
  */
 void
 nautilus_smooth_widget_register (GtkWidget *widget)
 {
-	static gboolean preferences_callback_registered = FALSE;
-	
 	g_return_if_fail (widget_is_smooth (widget));
 
-	smooth_widget_set_is_smooth (widget, preferences_get_is_smooth ());
+	smooth_widget_set_is_smooth (widget, global_is_smooth);
 
 	if (smooth_widget_list == NULL) {
 		g_atexit (smooth_widget_list_free);
@@ -190,15 +179,6 @@ nautilus_smooth_widget_register (GtkWidget *widget)
 			    "destroy",
 			    GTK_SIGNAL_FUNC (smooth_widget_destroy),
 			    NULL);
-
-	/* Add a preference callback.  This happens only once */
-	if (preferences_callback_registered == FALSE) {
-		preferences_callback_registered = TRUE;
-		
-		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
-						   smooth_graphics_mode_changed_callback, 
-						   NULL);
-	}
 }
 
 /* Return the origin point for the widget given vertical

@@ -48,11 +48,6 @@ typedef struct NautilusEntryDetails NautilusEntryDetails;
 typedef struct {
 	GtkEntry parent;
 	NautilusEntryDetails *details;
-	
-	/* FIXME: should be in details struct */
-	gboolean user_edit;
-	gboolean special_tab_handling;
-	gboolean cursor_obscured;
 } NautilusEntry;
 
 typedef struct {
@@ -62,13 +57,15 @@ typedef struct {
 	void (*selection_changed) (NautilusEntry *entry);
 } NautilusEntryClass;
 
-GtkType     nautilus_entry_get_type            (void);
-GtkWidget  *nautilus_entry_new                 (void);
-GtkWidget  *nautilus_entry_new_with_max_length (guint16        max);
-void        nautilus_entry_set_text            (NautilusEntry *entry,
-						const char    *text);
-void        nautilus_entry_select_all          (NautilusEntry *entry);
-void        nautilus_entry_select_all_at_idle  (NautilusEntry *entry);
+GtkType     nautilus_entry_get_type                 (void);
+GtkWidget  *nautilus_entry_new                      (void);
+GtkWidget  *nautilus_entry_new_with_max_length      (guint16        max);
+void        nautilus_entry_set_text                 (NautilusEntry *entry,
+						     const char    *text);
+void        nautilus_entry_select_all               (NautilusEntry *entry);
+void        nautilus_entry_select_all_at_idle       (NautilusEntry *entry);
+void        nautilus_entry_set_special_tab_handling (NautilusEntry *entry,
+						     gboolean       special_tab_handling);
 
 END_GNOME_DECLS
 

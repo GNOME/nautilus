@@ -26,7 +26,6 @@
 #include <config.h>
 #include "nautilus-font-manager.h"
 
-#include "nautilus-file-utilities.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-string-list.h"
@@ -58,6 +57,10 @@
 
 #define POSTSCRIPT_FONT_MIME_TYPE	"application/x-font-type1"
 #define TRUE_TYPE_FONT_MIME_TYPE	"application/x-font-ttf"
+
+#define SOURCE_FONT_DIRECTORY		NAUTILUS_SOURCE_DIRECTORY "/data/fonts/urw"
+#define DEFAULT_FONT			"n019003l.pfb"
+#define DEFAULT_BOLD_FONT		"n019004l.pfb"
 
 /* These font families are black listed, because they 
  * arent useful at all to display "normal" text - at 
@@ -397,7 +400,7 @@ font_description_table_add (FontDescriptionTable *table,
 		xlfd_delimeter++;
 	}
 
-	font_file_full_path = nautilus_make_path (table->directory, font_file_name);
+	font_file_full_path = g_strdup_printf ("%s/%s", table->directory, font_file_name);
 	font_type = font_get_font_type (font_file_full_path,
 					postscript_font_list,
 					true_type_font_list);
@@ -589,7 +592,7 @@ font_description_table_new (const char *font_directory,
 	g_return_val_if_fail (string_is_valid (font_directory), NULL);
 	g_return_val_if_fail (g_file_test (font_directory, G_FILE_TEST_ISDIR), NULL);
 
-	description_file = nautilus_make_path (font_directory, FONTS_DIR_FILE_NAME);
+	description_file = g_strdup_printf ("%s/%s", font_directory, FONTS_DIR_FILE_NAME);
 	description_contents = file_as_string (description_file);
 	
 	/* Error reading file, report errors by returning NULL. */
@@ -638,12 +641,12 @@ font_description_table_new (const char *font_directory,
 
 	/* Assign the alias file if found */
 	if (directory_contains_file (font_directory, FONTS_ALIAS_FILE_NAME)) {
-		table->fonts_alias_file = nautilus_make_path (font_directory, FONTS_ALIAS_FILE_NAME);
+		table->fonts_alias_file = g_strdup_printf ("%s/%s", font_directory, FONTS_ALIAS_FILE_NAME);
 	}
 	
 	/* Assign the alias scale if found */
 	if (directory_contains_file (font_directory, FONTS_SCALE_FILE_NAME)) {
-		table->fonts_scale_file = nautilus_make_path (font_directory, FONTS_SCALE_FILE_NAME);
+		table->fonts_scale_file = g_strdup_printf ("%s/%s", font_directory, FONTS_SCALE_FILE_NAME);
 	}
 
 	g_free (description_contents);
@@ -925,7 +928,7 @@ directory_contains_file (const char *directory,
 	g_return_val_if_fail (string_is_valid (directory), FALSE);
 	g_return_val_if_fail (string_is_valid (file_name), FALSE);
 
-	path = nautilus_make_path (directory, file_name);
+	path = g_strdup_printf ("%s/%s", directory, file_name);
 	result = g_file_exists (path);
 	g_free (path);
 
@@ -1088,23 +1091,27 @@ free_font_tables (void)
 static void
 ensure_local_font_table (void)
 {
-	char *user_directory;
 	char *user_font_dir;
 
 	if (global_font_table != NULL) {
 		return;
 	}
 
-	/* Populate the default font table if needed */
-	font_manager_collect_font_tables (DEFAULT_FONT_DIRECTORY, &global_font_table);
+	/* Populate the default font table if needed.  Use the installed fonts
+	 * if available.  Otherwise use the ones in the source tree itself, so that
+	 * checks will work even if Nautilus has not undergone 'make install.'
+	 */
+	if (g_file_exists (DEFAULT_FONT_DIRECTORY "/" DEFAULT_FONT)) {
+		font_manager_collect_font_tables (DEFAULT_FONT_DIRECTORY, &global_font_table);
+	} else {
+		font_manager_collect_font_tables (SOURCE_FONT_DIRECTORY, &global_font_table);
+	}
 
 	/* Populate the user font table if needed */
-	user_directory = nautilus_get_user_directory ();
-	user_font_dir = nautilus_make_path (user_directory, USER_FONT_DIRECTORY_NAME);
+	user_font_dir = g_strdup_printf ("%s/.nautilus/%s", g_get_home_dir (), USER_FONT_DIRECTORY_NAME);
 	if (g_file_test (user_font_dir, G_FILE_TEST_ISDIR)) {
 		font_manager_collect_font_tables (user_font_dir, &global_font_table);
 	}
-	g_free (user_directory);
 	g_free (user_font_dir);
 
 	/* Populate the system font table if needed - using the font server's configuration */
@@ -1153,24 +1160,18 @@ nautilus_font_manager_for_each_font (NautilusFontManagerCallback callback,
 	}
 }
 
+/* Return the default font.  It will be found either in place where nautilus
+ * gets installed (via 'make install') or the source directory if nautilus
+ * has not undergone 'make install'
+ */
 char *
 nautilus_font_manager_get_default_font (void)
 {
 	guint i;
 
-	/* FIXME bugzilla.eazel.com 7343:
-	 * We want this to work in the case where nautilus has
-	 * not undergone 'make install'.  In order to do that
-	 * we need to find out our fully qualified pwd - 
-	 * probably using a configure.on NAUTILUS_PWD=`pwd`
-	 * hack of some kind.  For now, commenting this out
-	 * to make checks work in tinderbox again.
-	 */
 	static const char *default_fonts[] = {
-		DEFAULT_FONT_DIRECTORY "/n019003l.pfb",
-		/* SOURCE_DATADIR "/fonts/urw/n019003l.pfb", */
-		"/usr/share/fonts/default/Type1/n019003l.pfb",
-		"/usr/X11R6/lib/X11/fonts/Type1/lcdxsr.pfa"
+		DEFAULT_FONT_DIRECTORY "/" DEFAULT_FONT,
+		SOURCE_FONT_DIRECTORY "/" DEFAULT_FONT
 	};
 
 	for (i = 0; i < NAUTILUS_N_ELEMENTS (default_fonts); i++) {
@@ -1182,15 +1183,18 @@ nautilus_font_manager_get_default_font (void)
 	return NULL;
 }
 
+/* Return the default vold font.  It will be found either in place where nautilus
+ * gets installed (via 'make install') or the source directory if nautilus
+ * has not undergone 'make install'
+ */
 char *
 nautilus_font_manager_get_default_bold_font (void)
 {
 	guint i;
 
 	static const char *default_bold_fonts[] = {
-		DEFAULT_FONT_DIRECTORY "/n019004l.pfb",
-		"/usr/share/fonts/default/Type1/n019003l.pfb",
-		/* SOURCE_DATADIR "/fonts/urw/n019004l.pfb", */
+		DEFAULT_FONT_DIRECTORY "/" DEFAULT_BOLD_FONT,
+		SOURCE_FONT_DIRECTORY "/" DEFAULT_BOLD_FONT
 	};
 
 	for (i = 0; i < NAUTILUS_N_ELEMENTS (default_bold_fonts); i++) {
@@ -1314,6 +1318,11 @@ nautilus_font_manager_weight_is_bold (const char *weight)
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
+#define TEST_FONT1 SOURCE_FONT_DIRECTORY "/" "n019003l.pfb"
+#define TEST_FONT2 SOURCE_FONT_DIRECTORY "/" "n019004l.pfb"
+#define TEST_FONT3 SOURCE_FONT_DIRECTORY "/" "n019023l.pfb"
+#define TEST_FONT4 SOURCE_FONT_DIRECTORY "/" "n019024l.pfb"
+
 static char *
 call_chop_off_comments (const char *input)
 {
@@ -1323,40 +1332,13 @@ call_chop_off_comments (const char *input)
 	return test_copy;
 }
 
-static char *
-get_test_font_dir (void)
-{
-	char *test_font_dir;
-	char *uri;
-	char *base_uri;
-	char *relative_part;
-	char *current_dir;
-	
-	current_dir = g_get_current_dir ();
-	
-	base_uri = g_strdup_printf ("file://%s/", current_dir);
-	relative_part = g_strdup_printf ("%s/%s", SOURCE_DATADIR, "/fonts/urw");
-	
-	uri = nautilus_uri_make_full_from_relative (base_uri, relative_part);
-	
-	test_font_dir = g_strdup (uri + strlen ("file://"));
-	
-	g_free (base_uri);
-	g_free (relative_part);
-	g_free (uri);
-	g_free (current_dir);
-
-	return test_font_dir;
-}
-
 void
 nautilus_self_check_font_manager (void)
 {
 	FontDescriptionTable *table;
 	const FontDescription *description;
 	GList *font_table_list = NULL;
-	char *test_font_dir;
-	char *font_name_table[4];
+	char *original_current_dir;
 
 	/* chop_off_comments() */
 	NAUTILUS_CHECK_STRING_RESULT (call_chop_off_comments ("foo bar"), "foo bar");
@@ -1367,34 +1349,29 @@ nautilus_self_check_font_manager (void)
 	NAUTILUS_CHECK_STRING_RESULT (call_chop_off_comments ("\\#foo bar"), "\\#foo bar");
 	NAUTILUS_CHECK_STRING_RESULT (call_chop_off_comments ("\\##foo bar"), "\\#");
 
-	test_font_dir = get_test_font_dir ();
+	original_current_dir = g_get_current_dir ();
 
-	g_return_if_fail (g_file_exists (test_font_dir));
+	g_return_if_fail (g_file_exists (SOURCE_FONT_DIRECTORY));
 
- 	font_name_table[0] = g_strdup_printf ("%s/%s", test_font_dir, "n019003l.pfb");
- 	font_name_table[1] = g_strdup_printf ("%s/%s", test_font_dir, "n019004l.pfb");
- 	font_name_table[2] = g_strdup_printf ("%s/%s", test_font_dir, "n019023l.pfb");
- 	font_name_table[3] = g_strdup_printf ("%s/%s", test_font_dir, "n019024l.pfb");
+	g_return_if_fail (g_file_exists (TEST_FONT1));
+	g_return_if_fail (g_file_exists (TEST_FONT2));
+	g_return_if_fail (g_file_exists (TEST_FONT3));
+	g_return_if_fail (g_file_exists (TEST_FONT4));
 
-	g_return_if_fail (g_file_exists (font_name_table[0]));
-	g_return_if_fail (g_file_exists (font_name_table[1]));
-	g_return_if_fail (g_file_exists (font_name_table[2]));
-	g_return_if_fail (g_file_exists (font_name_table[3]));
-
-	font_manager_collect_font_tables (test_font_dir, &font_table_list);
+	font_manager_collect_font_tables (SOURCE_FONT_DIRECTORY, &font_table_list);
 	g_return_if_fail (font_table_list != NULL);
 
 	g_return_if_fail (g_list_nth_data (font_table_list, 0) != NULL);
 	table = g_list_nth_data (font_table_list, 0);
 
  	NAUTILUS_CHECK_INTEGER_RESULT (font_description_table_get_length (table), 4);
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_table_get_nth_file_name (table, 0), font_name_table[0]);
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_table_get_nth_file_name (table, 1), font_name_table[1]);
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_table_get_nth_file_name (table, 2), font_name_table[2]);
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_table_get_nth_file_name (table, 3), font_name_table[3]);
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_table_get_nth_file_name (table, 0), TEST_FONT1);
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_table_get_nth_file_name (table, 1), TEST_FONT2);
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_table_get_nth_file_name (table, 2), TEST_FONT3);
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_table_get_nth_file_name (table, 3), TEST_FONT4);
 
 	description = font_description_table_peek_nth (table, 0);
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_file_name (description), font_name_table[0]);
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_file_name (description), TEST_FONT1);
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_foundry (description), "URW");
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_family (description), "Helvetica Default");
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_weight (description), "medium");
@@ -1403,7 +1380,7 @@ nautilus_self_check_font_manager (void)
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_char_set (description), "iso8859-1");
 
 	description = font_description_table_peek_nth (table, 1);
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_file_name (description), font_name_table[1]);
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_file_name (description), TEST_FONT2);
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_foundry (description), "URW");
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_family (description), "Helvetica Default");
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_weight (description), "bold");
@@ -1412,7 +1389,7 @@ nautilus_self_check_font_manager (void)
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_char_set (description), "iso8859-1");
 
 	description = font_description_table_peek_nth (table, 2);
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_file_name (description), font_name_table[2]);
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_file_name (description), TEST_FONT3);
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_foundry (description), "URW");
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_family (description), "Helvetica Default");
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_weight (description), "medium");
@@ -1421,19 +1398,13 @@ nautilus_self_check_font_manager (void)
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_char_set (description), "iso8859-1");
 
 	description = font_description_table_peek_nth (table, 3);
- 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_file_name (description), font_name_table[3]);
+ 	NAUTILUS_CHECK_STRING_RESULT (font_description_get_file_name (description), TEST_FONT4);
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_foundry (description), "URW");
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_family (description), "Helvetica Default");
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_weight (description), "bold");
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_slant (description), "o");
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_set_width (description), "normal");
  	NAUTILUS_CHECK_STRING_RESULT (font_description_get_char_set (description), "iso8859-1");
-
- 	g_free (font_name_table[0]);
- 	g_free (font_name_table[1]);
- 	g_free (font_name_table[2]);
- 	g_free (font_name_table[3]);
-	g_free (test_font_dir);
 
 	font_table_list_free (font_table_list);
 }

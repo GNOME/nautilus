@@ -1,3 +1,67 @@
+2001-04-02  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Gene Ragan <gzr@eazel.com>
+
+	* acconfig.h:
+	* configure.in:
+	Add a NAUTILUS_SOURCE_DIRECTORY that contains the location of the
+	nautilus source code, so that some checks can work without having
+	to do 'make install'
+	
+	* components/services/install-view/nautilus-service-install-view.c:
+	(nautilus_service_install_view_initialize_class):
+	Initialize preferences so that smooth widgets and other nautilus
+	specific preferences work.
+	
+	* components/services/summary/nautilus-summary-view.c:
+	(nautilus_summary_view_initialize_class):
+	Initialize preferences so that smooth widgets and other nautilus
+	specific preferences work.
+
+	* libnautilus-extensions/Makefile.am:
+	Remove macros that arent needed any more.
+
+	* libnautilus-extensions/nautilus-entry.h:
+	* libnautilus-extensions/nautilus-entry.c:
+	(nautilus_entry_initialize), (obscure_cursor),
+	(nautilus_entry_key_press), (nautilus_entry_motion_notify),
+	(nautilus_entry_set_text), (nautilus_entry_insert_text),
+	(nautilus_entry_delete_text), (nautilus_entry_initialize_class),
+	(nautilus_entry_set_special_tab_handling):
+	Make all the attributes private.	
+	
+	* libnautilus-extensions/nautilus-font-manager.c:
+	(at_exit_handler), (nautilus_free_static_storage_at_exit),
+	(gnome_vfs_init_if_needed), (font_description_table_add),
+	(font_description_table_new), (directory_contains_file),
+	(ensure_local_font_table),
+	(nautilus_font_manager_get_default_font),
+	(nautilus_font_manager_get_default_bold_font),
+	(nautilus_self_check_font_manager):
+	Remove dependency on nautilus-file-utilities.  Update for new
+	machanism for finding data in the source directory so that checks
+	work even when Nautilus has not undergone 'make install.'
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(smooth_graphics_mode_changed_callback),
+	(nautilus_global_preferences_initialize):
+	Keep track of preferences smooth graphics mode changes and call
+	the new smooth widget api for changing the smoothness of all
+	tracked widgets.
+	
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	Remove a rogue unused #include.
+	
+	* libnautilus-extensions/nautilus-smooth-widget.h:
+	* libnautilus-extensions/nautilus-smooth-widget.c:
+	(nautilus_smooth_widget_global_set_is_smooth),
+	(nautilus_smooth_widget_register):
+	Dont use preferences to track global smoothness changes.  Add a
+	function to that instead.  
+
+	* src/nautilus-location-bar.c: (nautilus_location_bar_initialize):
+	Update for privatized NautilusEntry attributes.
+
 2001-04-02  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

@@ -42,21 +42,21 @@
 #include "../inventory/eazel-inventory.h"
 #endif
 
-#include <libnautilus-extensions/nautilus-clickable-image.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
+#include <libnautilus-extensions/nautilus-clickable-image.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-tabs.h>
-#include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-viewport.h>
-
 
 #include <liboaf/liboaf.h>
 #include <libtrilobite/trilobite-redirect.h>
@@ -787,6 +787,7 @@ nautilus_summary_view_initialize_class (NautilusSummaryViewClass *klass)
 	parent_class = gtk_type_class (gtk_event_box_get_type ());
 	object_class->destroy = nautilus_summary_view_destroy;
 
+	nautilus_global_preferences_initialize ();
 }
 
 static void
