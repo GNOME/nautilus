@@ -51,6 +51,8 @@
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-dialog-util.h>
 
+#define NUM_ELEMENTS_IN_ARRAY(_a) (sizeof (_a) / sizeof ((_a)[0]))
+
 struct NautilusMozillaContentViewDetails {
 	char				 *uri;
 	GtkWidget			 *mozilla;
@@ -114,6 +116,11 @@ static void     mozilla_content_view_set_busy_cursor           (NautilusMozillaC
 static void     mozilla_content_view_clear_busy_cursor         (NautilusMozillaContentView      *view);
 static gboolean mozilla_is_uri_handled_by_nautilus             (const char                      *uri);
 static gboolean mozilla_is_uri_handled_by_mozilla              (const char                      *uri);
+static char *   mozilla_translate_uri_if_needed                (const char                      *uri);
+
+#if 0
+static char *   mozilla_untranslate_uri_if_needed              (const char                      *uri);
+#endif
 
 static GtkVBoxClass *parent_class = NULL;
 
@@ -522,12 +529,17 @@ mozilla_load_location_callback (NautilusView *nautilus_view,
 				const char *location,
 				NautilusMozillaContentView *view)
 {
+	char *translated_location;
+
 	g_assert (nautilus_view == view->details->nautilus_view);
 
-	/* g_print ("%s(%s)\n", __FUNCTION__, location); */
+	translated_location = mozilla_translate_uri_if_needed (location);
+
+	g_print ("%s(%s,%s)\n", __FUNCTION__, location, translated_location);
 	
 	nautilus_view_report_load_underway (nautilus_view);
-	nautilus_mozilla_content_view_load_uri (view, location);
+	nautilus_mozilla_content_view_load_uri (view, translated_location);
+	g_free (translated_location);
 }
 
 static void
@@ -589,7 +601,6 @@ bonobo_mozilla_callback (BonoboUIComponent *ui, gpointer user_data, const char *
 
 	gtk_moz_embed_load_url (GTK_MOZ_EMBED (view->details->mozilla), "http://www.gnome.org/");
 #endif
-
 }
 
 static void
@@ -958,24 +969,25 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 }
 #endif /* MOZILLA_MILESTONE >= 18 */
 
-static gboolean
-is_string_in_string_list (const char *string, const char *string_list[], guint num_strings)
+#define STRING_LIST_NOT_FOUND -1
+static gint
+string_list_get_index_of_string (const char *string_list[], guint num_strings, const char *string)
 {
-	guint i;
+	gint i;
 
-	g_return_val_if_fail (string != NULL, FALSE);
-	g_return_val_if_fail (string_list != NULL, FALSE);
-	g_return_val_if_fail (num_strings > 0, FALSE);
+	g_return_val_if_fail (string != NULL, STRING_LIST_NOT_FOUND);
+	g_return_val_if_fail (string_list != NULL, STRING_LIST_NOT_FOUND);
+	g_return_val_if_fail (num_strings > 0, STRING_LIST_NOT_FOUND);
 	
 	for (i = 0; i < num_strings; i++) {
 		g_assert (string_list[i] != NULL);
 		if (strlen (string) >= strlen (string_list[i]) 
 		    && (strncmp (string, string_list[i], strlen (string_list[i])) == 0)) {
-			return TRUE;
+			return i;
 		}
 	}
 	
-	return FALSE;
+	return STRING_LIST_NOT_FOUND;
 }
 
 
@@ -1006,9 +1018,8 @@ mozilla_is_uri_handled_by_nautilus (const char *uri)
 
 	g_return_val_if_fail (uri != NULL, FALSE);
 	
-	return is_string_in_string_list (uri,
-					 handled_by_nautilus, 
-					 sizeof (handled_by_nautilus) / sizeof ((handled_by_nautilus)[0]));
+	return string_list_get_index_of_string (handled_by_nautilus, NUM_ELEMENTS_IN_ARRAY (handled_by_nautilus),
+						uri) != STRING_LIST_NOT_FOUND;
 }
 
 /*
@@ -1025,10 +1036,58 @@ mozilla_is_uri_handled_by_mozilla (const char *uri)
 		"http"
 	};
 
-	return is_string_in_string_list (uri,
-					 handled_by_mozilla, 
-					 sizeof (handled_by_mozilla) / sizeof ((handled_by_mozilla)[0]));
+	return string_list_get_index_of_string (handled_by_mozilla, NUM_ELEMENTS_IN_ARRAY (handled_by_mozilla),
+						uri) != STRING_LIST_NOT_FOUND;
 }
+
+/*
+ * And yet another protocol hack.
+ */
+static const char *from_uri_list[] =
+{
+	"eazel-services://",
+	//"http://www.yahoo.com"
+};
+
+static const char *to_uri_list[] =
+{
+	"http://localhost:11600",
+	"http://localhost:80"
+};
+
+static char *
+mozilla_translate_uri_if_needed (const char *uri)
+{
+	gint i;
+
+	g_return_val_if_fail (uri != NULL, NULL);
+
+	i = string_list_get_index_of_string (from_uri_list, NUM_ELEMENTS_IN_ARRAY (from_uri_list), uri);
+
+	if (i == STRING_LIST_NOT_FOUND) {
+		return g_strdup (uri);
+	}
+
+	return g_strdup_printf ("%s%s", to_uri_list[i], uri + strlen (from_uri_list[i]));
+}
+
+#if 0
+static char *
+mozilla_untranslate_uri_if_needed (const char *uri)
+{
+	gint i;
+
+	g_return_val_if_fail (uri != NULL, NULL);
+
+	i = string_list_get_index_of_string (to_uri_list, NUM_ELEMENTS_IN_ARRAY (to_uri_list), uri);
+
+	if (i == STRING_LIST_NOT_FOUND) {
+		return g_strdup (uri);
+	}
+
+	return g_strdup_printf ("%s%s", from_uri_list[i], uri + strlen (to_uri_list[i]));
+}
+#endif
 
 GtkType
 nautilus_mozilla_content_view_get_type (void)

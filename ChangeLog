@@ -1,5 +1,18 @@
 2000-10-10  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_load_location_callback), (bonobo_mozilla_callback),
+	(string_list_get_index_of_string),
+	(mozilla_is_uri_handled_by_nautilus),
+	(mozilla_is_uri_handled_by_mozilla),
+	(mozilla_translate_uri_if_needed),
+	(mozilla_untranslate_uri_if_needed):
+	Work in progrss for bug 527.  Add a 'mechanism' to allow
+	eazel-services uris to be translated into localhost: so that the
+	ammonite proxy can serve them.
+	
+2000-10-10  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/mozilla/mozilla-events.cpp:
 	* components/mozilla/nautilus-mozilla-content-view.c:
 	(mozilla_content_view_set_proxy_preferences),
