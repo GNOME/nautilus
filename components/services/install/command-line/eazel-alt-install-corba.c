@@ -646,6 +646,7 @@ int main(int argc, char *argv[]) {
 	gnome_init_with_popt_table ("Eazel Install", "1.0", argc, argv, options, 0, &ctxt);
 #else
 	gtk_type_init ();
+	gtk_signal_init ();
 	gnomelib_init ("Eazel Install", "1.0");
 	gnomelib_register_popt_table (options, "Eazel Install");
 	ctxt = gnomelib_parse_args (argc, argv, 0);
@@ -665,12 +666,6 @@ int main(int argc, char *argv[]) {
 		category->packages = packages;
 		categories = g_list_prepend (NULL, category);		
 	} 
-
-	/* Check that we're root and on a redhat system */
-	if (!check_for_redhat ()) {
-		fprintf (stderr, "*** This tool can only be used on RedHat.\n");
-		exit (1);
-	}
 
 	orb = oaf_init (argc, argv);
 	
