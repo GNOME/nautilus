@@ -143,6 +143,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-vfs-directory.c		\
 	nautilus-vfs-file.c			\
 	nautilus-view-identifier.c		\
+	nautilus-viewport.c			\
 	nautilus-volume-monitor.c		\
 	nautilus-xml-extensions.c		\
 	$(NULL)
@@ -253,6 +254,7 @@ noinst_HEADERS =				\
 	nautilus-vfs-directory.h		\
 	nautilus-vfs-file.h			\
 	nautilus-view-identifier.h		\
+	nautilus-viewport.h			\
 	nautilus-volume-monitor.h		\
 	nautilus-xml-extensions.h		\
 	$(NULL)
