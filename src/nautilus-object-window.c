@@ -944,8 +944,7 @@ nautilus_window_destroy (GtkObject *object)
 	nautilus_window_manage_views_destroy (window);
 
 	/* Get rid of all callbacks. */
-
-	cancel_view_as_callback (window);
+	nautilus_window_set_viewed_file (window, NULL);
 	nautilus_window_remove_bookmarks_menu_callback (window);
 	nautilus_window_remove_go_menu_callback (window);
 	nautilus_window_toolbar_remove_theme_callback (window);
@@ -2274,19 +2273,22 @@ nautilus_window_set_viewed_file (NautilusWindow *window,
 		return;
 	}
 
+	nautilus_file_ref (file);
+
+	cancel_view_as_callback (window);
+	cancel_chose_component_callback (window);
+
 	if (window->details->viewed_file != NULL) {
 		nautilus_file_monitor_remove (window->details->viewed_file,
 					      window);
 	}
 
-	nautilus_file_ref (file);
+	if (file != NULL) {
+		attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_NAME);
+		nautilus_file_monitor_add (file, window, attributes);
+		g_list_free (attributes);
+	}
 
-	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_NAME);
-	nautilus_file_monitor_add (file, window, attributes);
-	g_list_free (attributes);
-
-	cancel_view_as_callback (window);
-	cancel_chose_component_callback (window);
 	nautilus_file_unref (window->details->viewed_file);
 	window->details->viewed_file = file;
 }

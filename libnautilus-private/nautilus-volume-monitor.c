@@ -1497,19 +1497,20 @@ mount_unmount_callback (void *arg)
 	info = arg;
 	
 	if (info != NULL) {	
+		old_locale = g_getenv ("LC_ALL");
+		eel_setenv ("LC_ALL", "C", TRUE);
+
 		open_error_pipe ();
-		old_locale = g_getenv("LC_ALL");
-		eel_setenv("LC_ALL", "C", TRUE);
 		file = popen (info->command, "r");
 		close_error_pipe (info->should_mount, info->mount_point);
 		pclose (file);
 		
 		if (old_locale != NULL) {
-			eel_setenv("LC_ALL", old_locale, TRUE);
-		}
-		else {
+			eel_setenv ("LC_ALL", old_locale, TRUE);
+		} else {
 			eel_unsetenv("LC_ALL");
 		}
+
 		g_free (info->command);
 		g_free (info->mount_point);
 		g_free (info);
