@@ -1,8 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
 
-   nautilus-directory.h: Nautilus directory model.
- 
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -23,9 +21,9 @@
 */
 
 #include <config.h>
+#include "nautilus-file-changes-queue.h"
 
 #include "nautilus-directory-notify.h"
-#include "nautilus-file-changes-queue.h"
 #include "nautilus-glib-extensions.h"
 
 #ifdef G_THREADS_ENABLED
@@ -44,7 +42,8 @@ typedef enum {
 	CHANGE_METADATA_COPIED,
 	CHANGE_METADATA_MOVED,
 	CHANGE_METADATA_REMOVED,
-	CHANGE_POSITION_SET
+	CHANGE_POSITION_SET,
+	CHANGE_POSITION_REMOVE
 } NautilusFileChangeKind;
 
 typedef struct {
@@ -227,8 +226,8 @@ nautilus_file_changes_queue_schedule_metadata_remove (const char *uri)
 }
 
 void
-nautilus_file_changes_queue_schedule_position_setting (const char *uri, 
-	GdkPoint point)
+nautilus_file_changes_queue_schedule_position_set (const char *uri, 
+						   GdkPoint point)
 {
 	NautilusFileChange *new_item;
 	NautilusFileChangesQueue *queue;
@@ -239,6 +238,20 @@ nautilus_file_changes_queue_schedule_position_setting (const char *uri,
 	new_item->kind = CHANGE_POSITION_SET;
 	new_item->from_uri = g_strdup (uri);
 	new_item->point = point;
+	nautilus_file_changes_queue_add_common (queue, new_item);
+}
+
+void
+nautilus_file_changes_queue_schedule_position_remove (const char *uri)
+{
+	NautilusFileChange *new_item;
+	NautilusFileChangesQueue *queue;
+
+	queue = nautilus_file_changes_queue_get ();
+
+	new_item = g_new (NautilusFileChange, 1);
+	new_item->kind = CHANGE_POSITION_REMOVE;
+	new_item->from_uri = g_strdup (uri);
 	nautilus_file_changes_queue_add_common (queue, new_item);
 }
 
@@ -293,10 +306,10 @@ pairs_list_free (GList *pairs)
 }
 
 static void
-position_setting_list_free (GList *list)
+position_set_list_free (GList *list)
 {
 	GList *p;
-	NautilusFileChangesQueuePositionSetting *item;
+	NautilusFileChangesQueuePosition *item;
 
 	for (p = list; p != NULL; p = p->next) {
 		item = p->data;
@@ -315,9 +328,9 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 	NautilusFileChange *change;
 	GList *additions, *deletions, *moves;
 	GList *metadata_copy_requests, *metadata_move_requests, *metadata_remove_requests;
-	GList *position_setting_requests;
+	GList *position_set_requests;
 	URIPair *pair;
-	NautilusFileChangesQueuePositionSetting *position_setting;
+	NautilusFileChangesQueuePosition *position_set;
 	guint chunk_count;
 	NautilusFileChangesQueue *queue;
 	gboolean flush_needed;
@@ -329,7 +342,7 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 	metadata_copy_requests = NULL;
 	metadata_move_requests = NULL;
 	metadata_remove_requests = NULL;
-	position_setting_requests = NULL;
+	position_set_requests = NULL;
 
 	queue = nautilus_file_changes_queue_get();
 		
@@ -347,51 +360,56 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 			flush_needed = TRUE;
 			/* no changes left, flush everything */
 		} else {
-			flush_needed = (additions != NULL
-				&& (change->kind != CHANGE_FILE_ADDED
-					&& change->kind != CHANGE_METADATA_COPIED
-					&& change->kind != CHANGE_POSITION_SET));
+			flush_needed = additions != NULL
+				&& change->kind != CHANGE_FILE_ADDED
+				&& change->kind != CHANGE_METADATA_COPIED
+				&& change->kind != CHANGE_POSITION_SET
+				&& change->kind != CHANGE_POSITION_REMOVE;
+			
+			flush_needed |= moves != NULL
+				&& change->kind != CHANGE_FILE_MOVED
+				&& change->kind != CHANGE_METADATA_MOVED
+				&& change->kind != CHANGE_POSITION_SET
+				&& change->kind != CHANGE_POSITION_REMOVE;
+			
+			flush_needed |= deletions != NULL
+				&& change->kind != CHANGE_FILE_REMOVED
+				&& change->kind != CHANGE_METADATA_REMOVED;
+		
+			flush_needed |= metadata_copy_requests != NULL
+				&& change->kind != CHANGE_FILE_ADDED
+				&& change->kind != CHANGE_METADATA_COPIED
+				&& change->kind != CHANGE_POSITION_SET
+				&& change->kind != CHANGE_POSITION_REMOVE;
+			
+			flush_needed |= metadata_move_requests != NULL
+				&& change->kind != CHANGE_FILE_MOVED
+				&& change->kind != CHANGE_METADATA_MOVED
+				&& change->kind != CHANGE_POSITION_SET
+				&& change->kind != CHANGE_POSITION_REMOVE;
 	
-			flush_needed |= (moves != NULL
-				&& (change->kind != CHANGE_FILE_MOVED
-					&& change->kind != CHANGE_METADATA_MOVED
-					&& change->kind != CHANGE_POSITION_SET));
+			flush_needed |= metadata_remove_requests != NULL
+				&& change->kind != CHANGE_FILE_REMOVED
+				&& change->kind != CHANGE_METADATA_REMOVED;
 	
-			flush_needed |= (deletions != NULL
-				&& (change->kind != CHANGE_FILE_REMOVED
-					&& change->kind != CHANGE_METADATA_REMOVED));
-	
-			flush_needed |= (metadata_copy_requests != NULL
-				&& (change->kind != CHANGE_FILE_ADDED
-					&& change->kind != CHANGE_METADATA_COPIED
-					&& change->kind != CHANGE_POSITION_SET));
-	
-			flush_needed |= (metadata_move_requests != NULL
-				&& (change->kind != CHANGE_FILE_MOVED
-					&& change->kind != CHANGE_METADATA_MOVED
-					&& change->kind != CHANGE_POSITION_SET));
-	
-			flush_needed |= (metadata_remove_requests != NULL
-				&& (change->kind != CHANGE_FILE_REMOVED
-					&& change->kind != CHANGE_METADATA_REMOVED));
-	
-			flush_needed |= (position_setting_requests != NULL
-				&& (change->kind != CHANGE_POSITION_SET
-					&& change->kind != CHANGE_FILE_ADDED
-					&& change->kind != CHANGE_FILE_MOVED
-					&& change->kind != CHANGE_METADATA_COPIED
-					&& change->kind != CHANGE_METADATA_MOVED));
+			flush_needed |= position_set_requests != NULL
+				&& change->kind != CHANGE_POSITION_SET
+				&& change->kind != CHANGE_POSITION_REMOVE
+				&& change->kind != CHANGE_FILE_ADDED
+				&& change->kind != CHANGE_FILE_MOVED
+				&& change->kind != CHANGE_METADATA_COPIED
+				&& change->kind != CHANGE_METADATA_MOVED;
 
 			flush_needed |= !consume_all && chunk_count >= CONSUME_CHANGES_MAX_CHUNK;
 				/* we have reached the chunk maximum */
 		}
-
+		
 		if (flush_needed) {
 			/* Send changes we collected off. 
 			 * At one time we may only have one of the lists
 			 * contain changes.
 			 */
-				
+			
 			if (deletions != NULL) {
 				nautilus_directory_notify_files_removed (deletions);
 				nautilus_g_list_free_deep (deletions);
@@ -422,10 +440,10 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 				nautilus_g_list_free_deep (metadata_remove_requests);
 				metadata_remove_requests = NULL;
 			}
-			if (position_setting_requests != NULL) {
-				nautilus_directory_schedule_position_setting (position_setting_requests);
-				position_setting_list_free (position_setting_requests);
-				position_setting_requests = NULL;
+			if (position_set_requests != NULL) {
+				nautilus_directory_schedule_position_set (position_set_requests);
+				position_set_list_free (position_set_requests);
+				position_set_requests = NULL;
 			}
 		}
 
@@ -471,11 +489,20 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 			break;
 
 		case CHANGE_POSITION_SET:
-			position_setting = g_new (NautilusFileChangesQueuePositionSetting, 1);
-			position_setting->uri = change->from_uri;
-			position_setting->point = change->point;
-			position_setting_requests = g_list_append (position_setting_requests,
-				position_setting);
+			position_set = g_new (NautilusFileChangesQueuePosition, 1);
+			position_set->uri = change->from_uri;
+			position_set->set = TRUE;
+			position_set->point = change->point;
+			position_set_requests = g_list_append (position_set_requests,
+							       position_set);
+			break;
+
+		case CHANGE_POSITION_REMOVE:
+			position_set = g_new (NautilusFileChangesQueuePosition, 1);
+			position_set->uri = change->from_uri;
+			position_set->set = FALSE;
+			position_set_requests = g_list_append (position_set_requests,
+							       position_set);
 			break;
 
 		default:

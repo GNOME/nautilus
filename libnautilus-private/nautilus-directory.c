@@ -1420,19 +1420,24 @@ nautilus_directory_schedule_metadata_remove (GList *uris)
 }
 
 void
-nautilus_directory_schedule_position_setting (GList *position_setting_list)
+nautilus_directory_schedule_position_set (GList *position_setting_list)
 {
 	GList *p;
-	const NautilusFileChangesQueuePositionSetting *item;
+	const NautilusFileChangesQueuePosition *item;
 	NautilusFile *file;
 	char *position_string;
 
 	for (p = position_setting_list; p != NULL; p = p->next) {
-		item = (const NautilusFileChangesQueuePositionSetting *) p->data;
+		item = (NautilusFileChangesQueuePosition *) p->data;
 
 		file = nautilus_file_get (item->uri);
 		
-		position_string = g_strdup_printf ("%d,%d", item->point.x, item->point.y);
+		if (item->set) {
+			position_string = g_strdup_printf ("%d,%d",
+							   item->point.x, item->point.y);
+		} else {
+			position_string = NULL;
+		}
 		nautilus_file_set_metadata
 			(file,
 			 NAUTILUS_METADATA_KEY_ICON_POSITION,
@@ -1443,7 +1448,6 @@ nautilus_directory_schedule_position_setting (GList *position_setting_list)
 		nautilus_file_unref (file);
 	}
 }
-
 
 gboolean
 nautilus_directory_contains_file (NautilusDirectory *directory,

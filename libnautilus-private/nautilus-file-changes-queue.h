@@ -1,8 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
 
-   nautilus-directory.h: Nautilus directory model.
- 
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -25,20 +23,21 @@
 #ifndef NAUTILUS_FILE_CHANGES_QUEUE_H
 #define NAUTILUS_FILE_CHANGES_QUEUE_H
 
-#include <glib.h>
+#include <gdk/gdktypes.h>
 
-void nautilus_file_changes_queue_file_added		   (const char *uri);
-void nautilus_file_changes_queue_file_removed		   (const char *uri);
-void nautilus_file_changes_queue_file_moved		   (const char *from_uri,
-							    const char *to_uri);
-void nautilus_file_changes_queue_schedule_metadata_copy	   (const char *from_uri,
-							    const char *to_uri);
-void nautilus_file_changes_queue_schedule_metadata_move	   (const char *from_uri,
-							    const char *to_uri);
-void nautilus_file_changes_queue_schedule_metadata_remove  (const char *uri);
-void nautilus_file_changes_queue_schedule_position_setting (const char *uri,
-							    GdkPoint point);
+void nautilus_file_changes_queue_file_added               (const char *uri);
+void nautilus_file_changes_queue_file_removed             (const char *uri);
+void nautilus_file_changes_queue_file_moved               (const char *from_uri,
+							   const char *to_uri);
+void nautilus_file_changes_queue_schedule_metadata_copy   (const char *from_uri,
+							   const char *to_uri);
+void nautilus_file_changes_queue_schedule_metadata_move   (const char *from_uri,
+							   const char *to_uri);
+void nautilus_file_changes_queue_schedule_metadata_remove (const char *uri);
+void nautilus_file_changes_queue_schedule_position_set    (const char *uri,
+							   GdkPoint    point);
+void nautilus_file_changes_queue_schedule_position_remove (const char *uri);
 
-void nautilus_file_changes_consume_changes		   (gboolean consume_all);
+void nautilus_file_changes_consume_changes                (gboolean    consume_all);
 
 #endif /* NAUTILUS_FILE_CHANGES_QUEUE_H */

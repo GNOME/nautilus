@@ -2,7 +2,7 @@
 
    nautilus-link.c: xml-based link files.
  
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -111,7 +111,7 @@ nautilus_link_local_create (const char *directory_path,
 	int result;
 	char *uri;
 	GList dummy_list;
-	NautilusFileChangesQueuePositionSetting item;
+	NautilusFileChangesQueuePosition item;
 
 	
 	g_return_val_if_fail (directory_path != NULL, FALSE);
@@ -151,17 +151,19 @@ nautilus_link_local_create (const char *directory_path,
 	dummy_list.next = NULL;
 	dummy_list.prev = NULL;
 	nautilus_directory_notify_files_added (&dummy_list);
-	
+	nautilus_directory_schedule_metadata_remove (&dummy_list);
+
 	if (point != NULL) {
+		item.uri = uri;
+		item.set = TRUE;
 		item.point.x = point->x;
 		item.point.y = point->y;
-		item.uri = uri;
 		
 		dummy_list.data = &item;
 		dummy_list.next = NULL;
 		dummy_list.prev = NULL;
 	
-		nautilus_directory_schedule_position_setting (&dummy_list);
+		nautilus_directory_schedule_position_set (&dummy_list);
 	}
 
 	g_free (uri);

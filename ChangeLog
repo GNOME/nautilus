@@ -1,5 +1,65 @@
 2001-03-23  Darin Adler  <darin@eazel.com>
 
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	More loose ends of the file copy and paste feature.
+
+	* libnautilus-extensions/nautilus-directory-notify.h:
+	Rename NautilusFileChangesQueuePositionSetting to
+	NautilusFileChangesQueuePosition. Add a field so it can
+	be used to set or remove a position. Rename
+	nautilus_directory_schedule_position_setting to
+	nautilus_directory_schedule_position_set.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_schedule_position_set): Change name and also
+	make it handle the case where we want to remove a position rather
+	than setting it.
+	
+	* libnautilus-extensions/nautilus-file-changes-queue.h:
+	* libnautilus-extensions/nautilus-file-changes-queue.c:
+	(nautilus_file_changes_queue_schedule_position_set): Name change.
+	(nautilus_file_changes_queue_schedule_position_remove): New
+	function used to remove a position.
+	(position_set_list_free): Name changes, added the new remove
+	flavor where needed.
+	(nautilus_file_changes_consume_changes): Updated SET case,
+	added case for REMOVE.
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(icon_position_iterator_get_next): New function, used to extract
+	the next position out of the iterator.
+	(apply_one_position): Simplified by using
+	icon_position_iterator_get_next, and also changed so that the
+	position is always either removed or set.
+
+	* libnautilus-extensions/nautilus-file-operations.h: Fixed header.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(event_get_time), (nautilus_get_current_event_time): Add new
+	function to get the current event time. This is available in GTK
+	2.0, so we can remove it when we move up.
+	
+	* libnautilus-extensions/nautilus-link.c:
+	(nautilus_link_local_create): Updated for change to notify API.
+	
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(nautilus_launch_application_from_command): Added FIXME.
+	
+	* src/file-manager/fm-directory-view.c: (copy_or_cut_files): Use
+	new nautilus_get_current_event_time function. Put up a status
+	string about the cut or copy. Since there's no other feedback this
+	is especially important.
+	(paste_files_callback): Use new nautilus_get_current_event_time
+	function.
+	(real_selection_clear_event): Erase the status string.
+	(real_selection_received): Put up a status string if the paste
+	does nothing. Since we can't desensitize the Paste Files command,
+	this is the next best thing.
+
+2001-03-23  Darin Adler  <darin@eazel.com>
+
 	reviewed by: John Sullivan <sullivan@eazel.com>
 
 	* src/file-manager/fm-directory-view.c: (real_update_menus):

@@ -33,22 +33,22 @@ typedef struct {
 
 typedef struct {
 	char *uri;
+	gboolean set;
 	GdkPoint point;
-} NautilusFileChangesQueuePositionSetting;
+} NautilusFileChangesQueuePosition;
 
 /* Almost-public change notification calls */
-void nautilus_directory_notify_files_added	  (GList *uris);
-void nautilus_directory_notify_files_moved	  (GList *uri_pairs);
-void nautilus_directory_notify_files_removed	  (GList *uris);
-void nautilus_directory_schedule_metadata_copy	  (GList *uri_pairs);
-void nautilus_directory_schedule_metadata_move	  (GList *uri_pairs);
-void nautilus_directory_schedule_metadata_remove  (GList *uris);
-void nautilus_directory_schedule_position_setting (GList *position_setting_list);
-
+void nautilus_directory_notify_files_added       (GList        *uris);
+void nautilus_directory_notify_files_moved       (GList        *uri_pairs);
+void nautilus_directory_notify_files_removed     (GList        *uris);
+void nautilus_directory_schedule_metadata_copy   (GList        *uri_pairs);
+void nautilus_directory_schedule_metadata_move   (GList        *uri_pairs);
+void nautilus_directory_schedule_metadata_remove (GList        *uris);
+void nautilus_directory_schedule_position_set    (GList        *position_setting_list);
 
 /* Change notification hack.
  * This is called when code modifies the file and it needs to trigger
  * a notification. Eventually this should become private, but for now
  * it needs to be used for code like the thumbnail generation.
  */
-void nautilus_file_changed                   	  (NautilusFile *file);
+void nautilus_file_changed                       (NautilusFile *file);

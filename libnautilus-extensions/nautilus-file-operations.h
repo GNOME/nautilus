@@ -3,6 +3,7 @@
 /* nautilus-file-operations: execute file operations.
 
    Copyright (C) 1999, 2000 Free Software Foundation
+   Copyright (C) 2000, 2001 Eazel, Inc.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -19,7 +20,8 @@
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
    
-   Author: Ettore Perazzoli <ettore@gnu.org>
+   Authors: Ettore Perazzoli <ettore@gnu.org>,
+            Pavel Cisler <pavel@eazel.com>
 */
 
 #ifndef NAUTILUS_FILE_OPERATIONS_H

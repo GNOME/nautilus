@@ -611,6 +611,12 @@ nautilus_launch_application_from_command (const char *command_string,
 	char *quoted_full_command;
 	char *final_command;
 
+	/* FIXME bugzilla.eazel.com 7830: This needs to support things
+	 * like the "xalf" hack. Perhaps the best way to do that is
+	 * to use gnome_desktop_entry_launch_with_args instead of
+	 * calling system or nautilus_gnome_open_terminal.
+	 */
+
 	if (parameter != NULL) {
 		quoted_parameter = nautilus_shell_quote (parameter);
 		full_command = g_strconcat (command_string, " ", quoted_parameter, NULL);
@@ -618,7 +624,6 @@ nautilus_launch_application_from_command (const char *command_string,
 	} else {
 		full_command = g_strdup (command_string);
 	}
-
 
 	if (use_terminal) {
 		quoted_full_command = nautilus_shell_quote (full_command);

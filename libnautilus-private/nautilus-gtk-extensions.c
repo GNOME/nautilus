@@ -33,6 +33,7 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkprivate.h>
 #include <gdk/gdkx.h>
+#include <gtk/gtkmain.h>
 #include <gtk/gtkselection.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkrc.h>
@@ -2052,3 +2053,71 @@ nautilus_get_window_list_ordered_front_to_back (void)
 
 	return windows;
 }
+
+static guint
+event_get_time (GdkEvent *event)
+{
+	if (event != NULL) {
+		switch (event->type) {
+		case GDK_MOTION_NOTIFY:
+			return event->motion.time;
+		case GDK_BUTTON_PRESS:
+		case GDK_2BUTTON_PRESS:
+		case GDK_3BUTTON_PRESS:
+		case GDK_BUTTON_RELEASE:
+			return event->button.time;
+		case GDK_KEY_PRESS:
+		case GDK_KEY_RELEASE:
+			return event->key.time;
+		case GDK_ENTER_NOTIFY:
+		case GDK_LEAVE_NOTIFY:
+			return event->crossing.time;
+		case GDK_PROPERTY_NOTIFY:
+			return event->property.time;
+		case GDK_SELECTION_CLEAR:
+		case GDK_SELECTION_REQUEST:
+		case GDK_SELECTION_NOTIFY:
+			return event->selection.time;
+		case GDK_PROXIMITY_IN:
+		case GDK_PROXIMITY_OUT:
+			return event->proximity.time;
+		case GDK_DRAG_ENTER:
+		case GDK_DRAG_LEAVE:
+		case GDK_DRAG_MOTION:
+		case GDK_DRAG_STATUS:
+		case GDK_DROP_START:
+		case GDK_DROP_FINISHED:
+			return event->dnd.time;
+		case GDK_CLIENT_EVENT:
+		case GDK_VISIBILITY_NOTIFY:
+		case GDK_NO_EXPOSE:
+		case GDK_CONFIGURE:
+		case GDK_FOCUS_CHANGE:
+		case GDK_NOTHING:
+		case GDK_DELETE:
+		case GDK_DESTROY:
+		case GDK_EXPOSE:
+		case GDK_MAP:
+		case GDK_UNMAP:
+			/* return current time */
+			break;
+		}
+	}
+	
+	return GDK_CURRENT_TIME;
+}
+
+guint
+nautilus_get_current_event_time (void)
+{
+	GdkEvent *event;
+	guint time;
+
+	event = gtk_get_current_event ();
+	time = event_get_time (event);
+	if (event != NULL) {
+		gdk_event_free (event);
+	}
+	return time;
+}
+

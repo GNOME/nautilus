@@ -103,6 +103,7 @@ void              nautilus_gtk_widget_set_background_color             (GtkWidge
 void              nautilus_gtk_widget_set_foreground_color             (GtkWidget                *widget,
 									const char               *color_spec);
 GtkWidget        *nautilus_gtk_widget_find_windowed_ancestor           (GtkWidget                *widget);
+guint             nautilus_get_current_event_time                      (void);
 
 /* GtkContainer */
 GtkWidget        *nautilus_gtk_container_get_first_child               (GtkContainer             *container);

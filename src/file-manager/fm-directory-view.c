@@ -3694,25 +3694,51 @@ create_popup_menu (FMDirectoryView *view, const char *popup_path)
 	return menu;
 }
 
-static guint
-get_current_event_time (void)
-{
-	/* FIXME: Maybe we should implement this for real? */
-	return GDK_CURRENT_TIME;
-}
-
 static void
 copy_or_cut_files (FMDirectoryView *view,
 		   gboolean cut)
 {
-	if (gtk_selection_owner_set (GTK_WIDGET (view),
-				     clipboard_atom,
-				     get_current_event_time ())) {
-		nautilus_file_list_free (view->details->clipboard_contents);
-		view->details->clipboard_contents
-			= fm_directory_view_get_selection (view);
-		view->details->clipboard_contents_were_cut = cut;
+	int count;
+	char *status_string, *name;
+
+	if (!gtk_selection_owner_set (GTK_WIDGET (view),
+				      clipboard_atom,
+				      nautilus_get_current_event_time ())) {
+		return;
 	}
+
+	nautilus_file_list_free (view->details->clipboard_contents);
+	view->details->clipboard_contents
+		= fm_directory_view_get_selection (view);
+	view->details->clipboard_contents_were_cut = cut;
+
+	count = g_list_length (view->details->clipboard_contents);
+	if (count == 1) {
+		name = nautilus_file_get_name (view->details->clipboard_contents->data);
+		if (cut) {
+			status_string = g_strdup_printf (_("\"%s\" will be moved "
+							   "if you select the Paste Files command"),
+							 name);
+		} else {
+			status_string = g_strdup_printf (_("\"%s\" will be copied "
+							   "if you select the Paste Files command"),
+							 name);
+		}
+		g_free (name);
+	} else {
+		if (cut) {
+			status_string = g_strdup_printf (_("The %d selected items will be moved "
+							   "if you select the Paste Files command"),
+							 count);
+		} else {
+			status_string = g_strdup_printf (_("The %d selected items will be copied "
+							   "if you select the Paste Files command"),
+							 count);
+		}
+	}
+	nautilus_view_report_status (view->details->nautilus_view,
+				     status_string);
+	g_free (status_string);
 }
 
 static void
@@ -3739,7 +3765,7 @@ paste_files_callback (BonoboUIComponent *component,
 	gtk_selection_convert (GTK_WIDGET (callback_data), 
 			       clipboard_atom, 
 			       copied_files_atom,
-			       get_current_event_time ());
+			       nautilus_get_current_event_time ());
 }
 
 static gboolean
@@ -3755,6 +3781,9 @@ real_selection_clear_event (GtkWidget *widget,
 	}
 
 	forget_clipboard_contents (view);
+
+	nautilus_view_report_status (view->details->nautilus_view, "");
+
 	return TRUE;
 }
 
@@ -3831,32 +3860,30 @@ real_selection_received (GtkWidget *widget,
 
 	if (selection_data->type != copied_files_atom
 	    || selection_data->length <= 0) {
-		return;
-	}
-
-	/* Not sure why it's legal to assume there's an extra byte
-	 * past the end of the selection data that it's safe to write
-	 * to. But gtk_editable_selection_received does this, so I
-	 * think it is OK.
-	 */
-	selection_data->data[selection_data->length] = '\0';
-	lines = g_strsplit (selection_data->data, "\n", 0);
-	item_uris = convert_lines_to_str_list (lines, &cut);
-	g_strfreev (lines);
-	if (item_uris == NULL) {
-		return;
+		item_uris = NULL;
+	} else {
+		/* Not sure why it's legal to assume there's an extra byte
+		 * past the end of the selection data that it's safe to write
+		 * to. But gtk_editable_selection_received does this, so I
+		 * think it is OK.
+		 */
+		selection_data->data[selection_data->length] = '\0';
+		lines = g_strsplit (selection_data->data, "\n", 0);
+		item_uris = convert_lines_to_str_list (lines, &cut);
+		g_strfreev (lines);
 	}
 
 	view_uri = fm_directory_view_get_uri (view);
-	if (view_uri == NULL) {
-		nautilus_g_list_free_deep (item_uris);
-		return;
-	}
 
-	fm_directory_view_move_copy_items (item_uris, NULL, view_uri,
-					   cut ? GDK_ACTION_MOVE : GDK_ACTION_COPY,
-					   0, 0,
-					   view);
+	if (item_uris == NULL|| view_uri == NULL) {
+		nautilus_view_report_status (view->details->nautilus_view,
+					     _("There is nothing on the clipboard to paste."));
+	} else {
+		fm_directory_view_move_copy_items (item_uris, NULL, view_uri,
+						   cut ? GDK_ACTION_MOVE : GDK_ACTION_COPY,
+						   0, 0,
+						   view);
+	}
 
 	nautilus_g_list_free_deep (item_uris);
 	g_free (view_uri);

@@ -20,9 +20,8 @@
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
    
-   Authors: 
-   	Ettore Perazzoli <ettore@gnu.org> 
-	Pavel Cisler <pavel@eazel.com> 
+   Authors: Ettore Perazzoli <ettore@gnu.org> 
+            Pavel Cisler <pavel@eazel.com> 
  */
 
 #include <config.h>
@@ -127,13 +126,11 @@ icon_position_iterator_new (GArray *icon_positions, const GList *uris)
 	g_assert (icon_positions->len == g_list_length ((GList *)uris));
 	result = g_new (IconPositionIterator, 1);
 	
-	result->icon_positions = g_new (GdkPoint, icon_positions->len);
-
 	/* make our own copy of the icon locations */
+	result->icon_positions = g_new (GdkPoint, icon_positions->len);
 	for (index = 0; index < icon_positions->len; index++) {
 		result->icon_positions[index] = g_array_index (icon_positions, GdkPoint, index);
 	}
-
 	result->last_icon_position_index = 0;
 
 	result->uris = nautilus_g_str_list_copy ((GList *)uris);
@@ -152,6 +149,48 @@ icon_position_iterator_free (IconPositionIterator *position_iterator)
 	g_free (position_iterator->icon_positions);
 	nautilus_g_list_free_deep (position_iterator->uris);
 	g_free (position_iterator);
+}
+
+static gboolean
+icon_position_iterator_get_next (IconPositionIterator *position_iterator,
+				 const char *next_uri,
+				 GdkPoint *point)
+{
+	if (position_iterator == NULL) {
+		return FALSE;
+	}
+		
+	for (;;) {
+		if (position_iterator->last_uri == NULL) {
+			/* we are done, no more points left */
+			return FALSE;
+		}
+
+		/* Scan for the next point that matches the source_name
+		 * uri.
+		 */
+		if (strcmp ((const char *) position_iterator->last_uri->data, 
+			    next_uri) == 0) {
+			break;
+		}
+		
+		/* Didn't match -- a uri must have been skipped by the copy 
+		 * engine because of a name conflict. All we need to do is 
+		 * skip ahead too.
+		 */
+		position_iterator->last_uri = position_iterator->last_uri->next;
+		position_iterator->last_icon_position_index++; 
+	}
+
+	/* apply the location to the target file */
+	*point = position_iterator->icon_positions
+		[position_iterator->last_icon_position_index];
+
+	/* advance to the next point for next time */
+	position_iterator->last_uri = position_iterator->last_uri->next;
+	position_iterator->last_icon_position_index++; 
+
+	return TRUE;
 }
 
 /* Hack to get the GdkFont used by a GtkLabel in an error dialog.
@@ -1492,45 +1531,16 @@ update_transfer_callback (GnomeVFSAsyncHandle *handle,
 
 static void
 apply_one_position (IconPositionIterator *position_iterator, 
-	const char *source_name, const char *target_name)
+		    const char *source_name,
+		    const char *target_name)
 {
-	const char *item_uri;
+	GdkPoint point;
 
-	if (position_iterator == NULL || position_iterator->last_uri == NULL) {
-		return;
+	if (icon_position_iterator_get_next (position_iterator, source_name, &point)) {
+		nautilus_file_changes_queue_schedule_position_set (target_name, point);
+	} else {
+		nautilus_file_changes_queue_schedule_position_remove (target_name);
 	}
-		
-	for (;;) {
-		/* Scan for the next point that matches the source_name
-		 * uri.
-		 */
-		if (strcmp ((const char *)position_iterator->last_uri->data, 
-			source_name) == 0) {
-			break;
-		}
-		/* Didn't match -- a uri must have been skipped by the copy 
-		 * engine because of a name conflict. All we need to do is 
-		 * skip ahead too.
-		 */
-		position_iterator->last_uri = position_iterator->last_uri->next;
-		position_iterator->last_icon_position_index++; 
-
-		if (position_iterator->last_uri == NULL) {
-			/* we are done, no more points left */
-			return;
-		}
-	}
-
-	item_uri = target_name != NULL ? target_name : source_name;
-
-	/* apply the location to the target file */
-	nautilus_file_changes_queue_schedule_position_setting (target_name, 
-		position_iterator->icon_positions
-			[position_iterator->last_icon_position_index]);
-
-	/* advance to the next point for next time */
-	position_iterator->last_uri = position_iterator->last_uri->next;
-	position_iterator->last_icon_position_index++; 
 }
 
 typedef struct {
@@ -1570,7 +1580,8 @@ sync_transfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 					nautilus_file_changes_queue_schedule_metadata_copy 
 						(progress_info->source_name, progress_info->target_name);
 
-					apply_one_position (position_iterator, progress_info->source_name,
+					apply_one_position (position_iterator,
+							    progress_info->source_name,
 							    progress_info->target_name);
 				}
 				if (debuting_uris != NULL) {
@@ -1587,7 +1598,8 @@ sync_transfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 				nautilus_file_changes_queue_schedule_metadata_move 
 					(progress_info->source_name, progress_info->target_name);
 				
-				apply_one_position (position_iterator, progress_info->source_name,
+				apply_one_position (position_iterator,
+						    progress_info->source_name,
 						    progress_info->target_name);
 				
 				if (debuting_uris != NULL) {
