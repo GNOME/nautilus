@@ -1,5 +1,24 @@
 2001-03-30  Ramiro Estrugo  <ramiro@eazel.com>
 
+	reviewed by: John Harper  <jsh@eazel.com>
+
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(preferences_item_value_changed_callback),
+	(preferences_item_create_enum),
+	(preferences_item_create_short_enum),
+	(preferences_item_create_boolean),
+	(preferences_item_create_editable_string),
+	(preferences_item_create_editable_integer),
+	(preferences_item_create_constrained_integer),
+	(preferences_item_create_font),
+	(preferences_item_create_smooth_font):
+	Add value changed callbacks for the preference associated with
+	each item.  In this callback, we update the diplay value of the
+	item.  This way, regardless of when and where the preference
+	values change, the preferences dialog will always be up to date.
+	
+2001-03-30  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-preferences-item.c:
 	(preferences_item_update_constrained_integer): Remove a rogue
 	printf I left in by accident.

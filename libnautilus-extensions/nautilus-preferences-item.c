@@ -239,6 +239,17 @@ preferences_item_update_enum (NautilusPreferencesItem *item)
 	}
 }
 
+/* This callback is called whenever the preference value changes, so that we can
+ * update the item widgets accordingly.
+ */
+static void
+preferences_item_value_changed_callback (gpointer callback_data)
+{
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (callback_data));
+	
+	nautilus_preferences_item_update_displayed_value (NAUTILUS_PREFERENCES_ITEM (callback_data));
+}
+
 static void
 preferences_item_create_enum (NautilusPreferencesItem *item,
 			      const char *preference_name)
@@ -270,6 +281,11 @@ preferences_item_create_enum (NautilusPreferencesItem *item,
 			    	    "changed",
 			    	    GTK_SIGNAL_FUNC (enum_radio_group_changed_callback),
 			    	    item);
+
+	nautilus_preferences_add_callback_while_alive (preference_name,
+						       preferences_item_value_changed_callback,
+						       item,
+						       GTK_OBJECT (item));
 }
 
 static void
@@ -327,6 +343,11 @@ preferences_item_create_short_enum (NautilusPreferencesItem *item,
 			    	    "changed",
 			    	    GTK_SIGNAL_FUNC (enum_radio_group_changed_callback),
 			    	    item);
+
+	nautilus_preferences_add_callback_while_alive (preference_name,
+						       preferences_item_value_changed_callback,
+						       item,
+						       GTK_OBJECT (item));
 }
 
 static void
@@ -345,7 +366,7 @@ static void
 preferences_item_create_boolean (NautilusPreferencesItem *item,
 				 const char *preference_name)
 {
-	char		*description;
+	char *description;
 
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item));
 	g_return_if_fail (nautilus_strlen (preference_name) > 0);
@@ -365,6 +386,11 @@ preferences_item_create_boolean (NautilusPreferencesItem *item,
 			    	    "toggled",
 			    	    GTK_SIGNAL_FUNC (boolean_button_toggled_callback),
 			    	    item);
+
+	nautilus_preferences_add_callback_while_alive (preference_name,
+						       preferences_item_value_changed_callback,
+						       item,
+						       GTK_OBJECT (item));
 }
 
 static void
@@ -412,6 +438,11 @@ preferences_item_create_editable_string (NautilusPreferencesItem *item,
 	 			    "changed",
 	 			    GTK_SIGNAL_FUNC (editable_string_changed_callback),
 			    	    item);
+
+	nautilus_preferences_add_callback_while_alive (preference_name,
+						       preferences_item_value_changed_callback,
+						       item,
+						       GTK_OBJECT (item));
 }
 
 static void
@@ -453,6 +484,11 @@ preferences_item_create_editable_integer (NautilusPreferencesItem *item,
 	 			    "changed",
 	 			    GTK_SIGNAL_FUNC (editable_integer_changed_callback),
 			    	    item);
+
+	nautilus_preferences_add_callback_while_alive (preference_name,
+						       preferences_item_value_changed_callback,
+						       item,
+						       GTK_OBJECT (item));
 }
 
 static void
@@ -511,6 +547,11 @@ preferences_item_create_constrained_integer (NautilusPreferencesItem *item,
 							      "changed",
 							      GTK_SIGNAL_FUNC (constrained_integer_changed_callback),
 							      item);
+
+	nautilus_preferences_add_callback_while_alive (preference_name,
+						       preferences_item_value_changed_callback,
+						       item,
+						       GTK_OBJECT (item));
 }
 
 static void
@@ -586,6 +627,11 @@ preferences_item_create_font (NautilusPreferencesItem *item,
 							      "changed",
 							      GTK_SIGNAL_FUNC (font_item_changed_callback),
 							      item);
+
+	nautilus_preferences_add_callback_while_alive (preference_name,
+						       preferences_item_value_changed_callback,
+						       item,
+						       GTK_OBJECT (item));
 }
 
 static void
@@ -643,6 +689,11 @@ preferences_item_create_smooth_font (NautilusPreferencesItem *item,
 							      "changed",
 							      GTK_SIGNAL_FUNC (preferences_smooth_font_changed_callback),
 							      item);
+
+	nautilus_preferences_add_callback_while_alive (preference_name,
+						       preferences_item_value_changed_callback,
+						       item,
+						       GTK_OBJECT (item));
 }
 
 /* NautilusPreferencesItem public methods */
