@@ -509,12 +509,7 @@ nautilus_search_bar_criterion_hide (NautilusSearchBarCriterion *criterion)
 char *
 nautilus_search_bar_criterion_human_from_uri (const char *location_uri)
 {
-	
-
-
 	return g_strdup (location_uri);
-
-
 }
 
 char *
@@ -543,13 +538,14 @@ nautilus_search_uri_get_first_criterion (const char *search_uri)
 	return first_criterion;
 }
 
+
 static char *                              
 get_name_location_for (int relation_number, char *name_text)
 {
-	const char *possible_relations[] = {"contains",
-					    "starts_with",
+	const char *possible_relations[] = { "contains",
+					    "begins_with",
 					    "ends_with",
-					    "matches_glob",
+					    "matches",
 					    "matches_regexp" };
 	
 	g_assert (relation_number >= 0);

@@ -1011,7 +1011,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 		}
 
 		if (first_item_name == NULL) {
-			first_item_name = nautilus_file_get_name (file);
+			first_item_name = nautilus_file_get_real_name (file);
 		}
 	}
 	
@@ -3068,17 +3068,6 @@ file_is_launchable (NautilusFile *file)
 		&& nautilus_file_can_execute (file);
 }
 
-/**
- * fm_directory_view_activate_file:
- * 
- * Activate a file in this view. This might involve switching the displayed
- * location for the current window, or launching an application.
- * @view: FMDirectoryView in question.
- * @file: A NautilusFile representing the file in this view to activate.
- * @use_new_window: Should this item be opened in a new window?
- * 
- **/
-
 typedef struct {
 	FMDirectoryView *view;
 	NautilusFile *file;
@@ -3155,6 +3144,17 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	g_free (uri);
 }
 
+
+/**
+ * fm_directory_view_activate_file:
+ * 
+ * Activate a file in this view. This might involve switching the displayed
+ * location for the current window, or launching an application.
+ * @view: FMDirectoryView in question.
+ * @file: A NautilusFile representing the file in this view to activate.
+ * @use_new_window: Should this item be opened in a new window?
+ * 
+ **/
 static void
 fm_directory_view_activate_file (FMDirectoryView *view, 
 				 NautilusFile *file,

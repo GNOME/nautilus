@@ -136,8 +136,6 @@ char *                  nautilus_file_get_top_left_text         (NautilusFile   
 /* Attributes that behave specially for search results */
 gboolean                nautilus_file_is_search_result          (NautilusFile                  *file);
 char *                  nautilus_file_get_real_name             (NautilusFile                  *file);
-char *                  nautilus_file_get_real_directory        (NautilusFile                  *file);
-
 
 /* Permissions. */
 gboolean                nautilus_file_can_get_permissions       (NautilusFile                  *file);

@@ -1,3 +1,41 @@
+2000-08-09  Rebecca Schulman  <rebecka@eazel.com>
+	Fixed bug 1843, so that search results are activated
+	as themselves.
+
+	* libnautilus-extensions/nautilus-file.c:
+	* libnautilus-extensions/nautilus-file.h:
+	(nautilus_file_get_real_parent_uri_as_string),
+	(nautilus_file_get_real_file),
+	(nautilus_file_get_real_parent_directory),
+	(nautilus_file_compare_by_real_directory),
+	(nautilus_file_get_string_attribute),
+	(nautilus_file_is_search_result), (nautilus_file_get_real_uri),
+	(nautilus_file_get_real_directory_name), (nautilus_file_mark_gone),
+	(nautilus_file_changed), (nautilus_file_check_if_ready),
+	(nautilus_file_call_when_ready),
+	(nautilus_file_cancel_call_when_ready):
+	
+	added special checks to get the real file and directory,
+	and call them appropriately before opening a file.
+	renamed the nautilus_file_get_real_directory function to
+	nautilus_file_get_real_directory_name, and 
+	made it private.  
+
+	* libnautilus-extensions/nautilus-search-bar-criterion.h:
+	* libnautilus-extensions/nautilus-search-bar-criterion.c:
+	(nautilus_search_bar_criterion_human_from_uri),
+	(get_name_location_for):
+	fixed a starts_with that should have been "begins_with"
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_display_selection_info):
+	moved a misplaced function comment
+	
+	* src/nautilus-switchable-navigation-bar.c:
+	(nautilus_switchable_navigation_bar_set_location):
+	added signalling to change to the search and location 
+	bar appropriately with each location change
+
 2000-08-09  Darin Adler  <darin@eazel.com>
 
 	After this change, you will get a warning each time you exit

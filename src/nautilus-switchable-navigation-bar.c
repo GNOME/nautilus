@@ -32,6 +32,7 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtksignal.h>
 
+#include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 #include <stdio.h>
@@ -159,6 +160,7 @@ nautilus_switchable_navigation_bar_set_location (NautilusNavigationBar *navigati
 						 const char *location)
 {
 	NautilusSwitchableNavigationBar *bar;
+	NautilusDirectory *directory;
 
 	bar = NAUTILUS_SWITCHABLE_NAVIGATION_BAR (navigation_bar);
 
@@ -169,4 +171,19 @@ nautilus_switchable_navigation_bar_set_location (NautilusNavigationBar *navigati
 					      location);
 	nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (bar->search_bar),
 					      location);
+	
+	/* Toggle the search button on and off appropriately */
+
+	/* FIXME: doing this may be a bit much */
+	directory = nautilus_directory_get (location);
+	if (nautilus_directory_is_search_directory (directory)) {
+		nautilus_switchable_navigation_bar_set_mode (bar,
+							     NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH);
+	}
+	else {
+		nautilus_switchable_navigation_bar_set_mode (bar,
+							     NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION);
+	}
+
+	nautilus_directory_unref (directory);
 }
