@@ -134,8 +134,8 @@ nautilus_undoable_save_undo_snapshot (GtkObject *target, GtkSignalFunc save_func
 	undoable->undo_target_class = target;
 	
 	/* Connect signals to target object */
-	gtk_signal_connect (GTK_OBJECT (undoable), "save_undo_snapshot", save_func, target);
-	gtk_signal_connect (GTK_OBJECT (undoable), "restore_from_undo_snapshot", restore_func, target);
+	gtk_signal_connect_while_alive (GTK_OBJECT (undoable), "save_undo_snapshot", save_func, target, target);
+	gtk_signal_connect_while_alive (GTK_OBJECT (undoable), "restore_from_undo_snapshot", restore_func, target, target);
 
 	/* Add undoable to current transaction */
 	result = nautilus_undo_manager_add_undoable_to_transaction (undoable);

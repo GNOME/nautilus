@@ -1271,8 +1271,7 @@ nautilus_icon_text_item_stop_editing (NautilusIconTextItem *iti,
 				   gboolean accept)
 {		
 	ItiPrivate *priv;
-	NautilusUndoTransaction *transaction;
-
+	
 	g_return_if_fail (iti != NULL);
 	g_return_if_fail (IS_ITI (iti));
 	
@@ -1285,13 +1284,6 @@ nautilus_icon_text_item_stop_editing (NautilusIconTextItem *iti,
 		iti_edition_accept (iti);
 	} else {
 		iti_stop_editing (iti);
-	}
-
-	/* Pop last undo transaction off.  We don't want an undo called on us when we 
-	 * are no longer in a selection mode */
-	transaction = nautilus_undo_manager_get_current_transaction ();
-	if (transaction != NULL) {
-		nautilus_undo_manager_remove_transaction (transaction);
 	}
 }
 

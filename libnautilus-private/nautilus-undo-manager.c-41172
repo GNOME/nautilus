@@ -198,6 +198,9 @@ nautilus_undo_manager_undo_last_transaction (void)
 		nautilus_undo_transaction_destroy(undo_transaction);
 	}
 
+	/* Fire off signal informing that an undo transaction has occurred */
+	gtk_signal_emit (GTK_OBJECT (global_undo_manager), signals[UNDO_TRANSACTION_OCCURED]);
+
 	return TRUE;
 }
 
@@ -340,6 +343,62 @@ nautilus_undo_manager_add_redo_transaction (NautilusUndoTransaction *transaction
 	return TRUE;
 }
 
+
+/* nautilus_undo_manager_unregister_object
+ * 
+ * Remove any transaction with object as target from
+ * the undo and redo queues
+ */
+  
+gboolean 
+nautilus_undo_manager_unregister_object (GtkObject *object)
+{
+	NautilusUndoTransaction *transaction;
+	gboolean success;
+	GList *list;
+	int index, length;
+
+	success = FALSE;
+	
+	/* Check undo list */
+	length = g_list_length(global_undo_manager->details->undo_list);
+	for (index = 0; index < length; index++) {
+		list = g_list_nth(global_undo_manager->details->undo_list, index);
+		if (list) {
+			transaction = list->data;
+			if (nautilus_undo_transaction_contains_object(transaction, object)) {
+				global_undo_manager->details->undo_list =
+					g_list_remove(global_undo_manager->details->undo_list, transaction);
+				nautilus_undo_transaction_destroy(transaction);
+				index--;
+				success = TRUE;
+			}
+		}
+	}
+
+	/* Check redo list */
+	length = g_list_length(global_undo_manager->details->redo_list);
+	for (index = 0; index < length; index++) {
+		list = g_list_nth(global_undo_manager->details->redo_list, index);
+		if (list) {
+			transaction = list->data;
+			if (nautilus_undo_transaction_contains_object(transaction, object)) {
+				global_undo_manager->details->redo_list =
+					g_list_remove(global_undo_manager->details->redo_list, transaction);
+				nautilus_undo_transaction_destroy(transaction);
+				index--;
+				success = TRUE;
+			}
+		}
+	}
+
+	if (success) {
+		/* Fire off signal informing that a transaction has occurred */
+		gtk_signal_emit (GTK_OBJECT (global_undo_manager), signals[UNDO_TRANSACTION_OCCURED]);
+	}
+	
+	return success;
+}
 
 /* nautilus_undo_manager_can_undo */
 gboolean 
@@ -525,6 +584,9 @@ nautilus_undo_manager_set_queue_depth (gint depth)
 		global_undo_manager->details->undo_list = prune_undo_manager_list (global_undo_manager->details->redo_list, 
 										   length - depth);
 	}
+
+	/* Fire off signal informing that an undo transaction has occurred */
+	gtk_signal_emit (GTK_OBJECT (global_undo_manager), signals[UNDO_TRANSACTION_OCCURED]);
 		
 	return TRUE;	
 }
@@ -576,4 +638,3 @@ prune_undo_manager_list (GList *list, gint items)
 
 	return list;
 }
-

@@ -411,6 +411,7 @@ create_properties_window (NautilusFile *file)
 
         /* Enable undo in name field */
         nautilus_entry_enable_undo (NAUTILUS_ENTRY(name_field), TRUE);
+        nautilus_entry_enable_undo_key (NAUTILUS_ENTRY(name_field), TRUE);
                       			    
 	/* React to name changes from elsewhere. */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),

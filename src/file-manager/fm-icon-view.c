@@ -28,8 +28,6 @@
 #include "fm-icon-text-window.h"
 #include "fm-error-reporting.h"
 
-#include "libnautilus-extensions/nautilus-undo-manager.h"
-
 #include <ctype.h>
 #include <errno.h>
 #include <stdio.h>

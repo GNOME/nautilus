@@ -78,9 +78,6 @@ static GtkTargetEntry drop_types [] = {
 static void nautilus_location_bar_initialize_class (NautilusLocationBarClass *class);
 static void nautilus_location_bar_initialize       (NautilusLocationBar      *bar);
 
-/* Signal callbacks */
-static void save_undo_snapshot_callback (NautilusUndoable *object);
-static void restore_from_undo_snapshot_callback (NautilusUndoable *object);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusLocationBar, nautilus_location_bar, GTK_TYPE_HBOX)
 
@@ -164,23 +161,6 @@ editable_activated_callback (GtkEditable *editable,
 			 gtk_entry_get_text (GTK_ENTRY (editable)));
 }	
 
-static void
-editable_changed_callback (GtkEditable *editable, NautilusLocationBar *bar)
-{
-	g_assert (GTK_IS_EDITABLE (editable));
-	g_assert (NAUTILUS_IS_LOCATION_BAR (bar));
-
-	/* Register undo transaction */	
-	if (!bar->undo_registered) {	
-		nautilus_undo_manager_begin_transaction ("Edit Location");
-		nautilus_undoable_save_undo_snapshot (GTK_OBJECT(bar), save_undo_snapshot_callback,
-					      restore_from_undo_snapshot_callback);
-		nautilus_undo_manager_end_transaction ();
-
-		bar->undo_registered = TRUE;
-	}
-}	
-
 
 static void
 destroy (GtkObject *object)
@@ -189,12 +169,11 @@ destroy (GtkObject *object)
 
 	bar = NAUTILUS_LOCATION_BAR (object);
 
+	/* Remove object transactions from undo manager */
+	nautilus_undo_manager_unregister_object(GTK_OBJECT(bar->entry));
+
 	gtk_widget_destroy (GTK_WIDGET (bar->label));
 	gtk_widget_destroy (GTK_WIDGET (bar->entry));
-
-	if (bar->undo_text != NULL) {
-		g_free (bar->undo_text);
-	}
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -238,8 +217,6 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 	entry = nautilus_entry_new ();
 	gtk_signal_connect (GTK_OBJECT (entry), "activate",
 			    editable_activated_callback, bar);
-	gtk_signal_connect (GTK_OBJECT (entry), "changed",
-			    editable_changed_callback, bar);
 	gtk_box_pack_start (GTK_BOX (bar), entry, TRUE, TRUE, 0);
 
 	/* Drag source */
@@ -264,9 +241,7 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 	gtk_widget_show_all (event_box);
 
 	bar->label = GTK_LABEL (label);
-	bar->entry = GTK_ENTRY (entry);
-	bar->undo_text = NULL;
-	bar->undo_registered = TRUE;
+	bar->entry = GTK_ENTRY (entry);	
 }
 
 
@@ -295,65 +270,5 @@ nautilus_location_bar_set_location (NautilusLocationBar *bar,
 	gtk_entry_set_text (bar->entry,
 			    location == NULL ? "" : location);
 
-	/* Set up undo variables */
-	if (location != NULL) {
-		if (bar->undo_text != NULL) { 
-			g_free (bar->undo_text);
-		}
-		bar->undo_registered = FALSE;
-		bar->undo_text = g_strdup(location);
-	}
+	nautilus_entry_enable_undo (NAUTILUS_ENTRY (bar->entry), TRUE);
 }
-
-
-/* save_undo_snapshot_callback
- * 
- * Get text at start of edit operation and store in undo data as 
- * string with a key of "undo_text".
- */
-static void
-save_undo_snapshot_callback(NautilusUndoable *undoable)
-{
-	char *undo_text;
-	NautilusLocationBar *target;
-
-	target = NAUTILUS_LOCATION_BAR(undoable->undo_target_class);
-	
-	/* Add some data to the data list */
-	undo_text = g_strdup(target->undo_text);
-	g_datalist_set_data(&undoable->undo_data, "undo_text", undo_text);
-}
-
-
-/* restore_from_undo_snapshot_callback
- * 
- * Restore edited text to data stored in undoable.  Data is stored as 
- * a string with a key of "undo_text".
- */
-static void
-restore_from_undo_snapshot_callback(NautilusUndoable *undoable)
-{		
-	char *undo_text;
-	NautilusLocationBar *bar;
-
-	bar = NAUTILUS_LOCATION_BAR(undoable->undo_target_class);
-
-	/* Register undo transaction */	
-	if (bar->undo_text != NULL) {
-		g_free (bar->undo_text);
-	}
-	bar->undo_text = g_strdup (gtk_entry_get_text (bar->entry));
-
-	nautilus_undo_manager_begin_transaction ("Edit Location");
-	nautilus_undoable_save_undo_snapshot (GTK_OBJECT(bar), save_undo_snapshot_callback,
-						      restore_from_undo_snapshot_callback);
-	nautilus_undo_manager_end_transaction ();
-
-	undo_text = g_datalist_get_data (&undoable->undo_data, "undo_text");
-	if (undo_text != NULL) {
-		gtk_entry_set_text(bar->entry, undo_text);
-	}
-
-	bar->undo_registered = FALSE;
-}
-

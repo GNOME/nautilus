@@ -42,6 +42,7 @@
 #include "nautilus-gtk-macros.h"
 #include "nautilus-icon-text-item.h"
 #include "nautilus-lib-self-check-functions.h"
+#include "nautilus-undo-manager.h"
 
 #include "nautilus-icon-grid.h"
 #include "nautilus-icon-private.h"
@@ -3177,6 +3178,9 @@ static void
 hide_rename_widget (NautilusIconContainer *container, NautilusIcon *icon)
 {
 	nautilus_icon_text_item_stop_editing (container->details->rename_widget, TRUE);
+
+	/* Remove object transactions from undo manager */
+	nautilus_undo_manager_unregister_object(GTK_OBJECT(container->details->rename_widget));
 
 	/* Destroy renaming widget */
 	gtk_object_destroy (GTK_OBJECT (container->details->rename_widget));

@@ -71,6 +71,7 @@ gboolean 		nautilus_undo_manager_add_redo_transaction 		 (NautilusUndoTransactio
 										  *transaction);
 gboolean 		nautilus_undo_manager_remove_transaction 		 (NautilusUndoTransaction 
 										  *transaction);
+gboolean 		nautilus_undo_manager_unregister_object 		 (GtkObject *object);
 gboolean 		nautilus_undo_manager_can_undo 		 		 (void);
 gboolean 		nautilus_undo_manager_can_redo 		 		 (void);
 gint			nautilus_undo_manager_get_current_undo_transaction_name	 (gchar *name, gint max_length);

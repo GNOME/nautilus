@@ -52,6 +52,7 @@ struct NautilusEntry {
 	gchar *undo_text;
 	gboolean undo_registered;
 	gboolean use_undo;
+	gboolean handle_undo_key;
 };
 
 struct NautilusEntryClass {
@@ -64,6 +65,7 @@ GtkWidget* nautilus_entry_new 		     (void);
 void	   nautilus_entry_select_all	     (NautilusEntry *entry);
 void	   nautilus_entry_select_all_at_idle (NautilusEntry *entry);
 void 	   nautilus_entry_enable_undo 	     (NautilusEntry *entry, gboolean value);
+void 	   nautilus_entry_enable_undo_key    (NautilusEntry *entry, gboolean value);
 
 
 END_GNOME_DECLS

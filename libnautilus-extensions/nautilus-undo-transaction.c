@@ -98,8 +98,12 @@ nautilus_undo_transaction_undo (NautilusUndoTransaction *transaction)
 	return TRUE;
 }
 
+/* nautilus_undo_transaction_contains_object 
+ * 
+ * Return name of requested transaction 
+ */
 const gchar *
-nautilus_undo_transaction_get_name	(NautilusUndoTransaction *transaction)
+nautilus_undo_transaction_get_name (NautilusUndoTransaction *transaction)
 {
 	g_return_val_if_fail(transaction != NULL, NULL);
 	
@@ -107,4 +111,30 @@ nautilus_undo_transaction_get_name	(NautilusUndoTransaction *transaction)
 }
 
 
+/* nautilus_undo_transaction_contains_object 
+ * 
+ * Return TRUE if object is contained by transaction
+ */
+gboolean		
+nautilus_undo_transaction_contains_object (NautilusUndoTransaction *transaction, 
+					   GtkObject *object)
+{
+	NautilusUndoable *undoable;
+	gint index;
+
+	g_return_val_if_fail(transaction != NULL, FALSE);
+		
+	for ( index = 0; index < g_list_length(transaction->transaction_list); index++) {
+
+		/* Get pointer to undoable */
+		undoable = g_list_nth_data(transaction->transaction_list, index);
+		
+		/* Check and see if we have a target object match */
+		if (undoable != NULL && undoable->undo_target_class == object) {
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
 

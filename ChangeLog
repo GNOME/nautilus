@@ -1,3 +1,40 @@
+2000-05-03  Gene Z. Ragan <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-entry.c
+	* libnautilus-extensions/nautilus-entry.h:
+	Refined undo support.
+	(nautilus_entry_enable_undo_key):
+	New function to set internal handling of ctl-z for undo.
+	
+	* libnautilus-extensions/nautilus-icon-container.c
+	(hide_rename_widget):
+	Removed deletion of undo transaction.  This is now handled
+	by the owner of the widget.
+	
+	* libnautilus-extensions/nautilus-undo-manager.c	
+	(nautilus_undo_manager_unregister_object):
+	New function to unregister a GtkObject form the undo manager.
+	Any transaction that contains the object is removed from the
+	undo and redo lists.  This should be called for any object that
+	is no longer available for user interaction.
+
+	* libnautilus-extensions/nautilus-undo-transaction.c
+	(nautilus_undo_transaction_contains_object):
+	Function added to support nautilus_undo_manager_unregister_object()
+	call in the undo manager.  Each NautilusUndoable in a transaction
+	is checked for the object to be removed.
+	
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-properties-window.c
+	(create_properties_window):
+	Added call to unregister rename widget form undo manager.
+
+	* src/nautilus-bookmarks-window.c
+	Added undo support for entry widgets.
+	
+	* src/nautilus-location-bar.c
+	Changed to support modified undo manager APIs.
+	
 2000-05-03  Kjartan Maraas  <kmaraas@online.no>
 
 	* components/html/Makefile.am: Added -DGNOMELOCALEDIR

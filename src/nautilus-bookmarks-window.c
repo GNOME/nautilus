@@ -24,6 +24,7 @@
 
 #include <config.h>
 #include "nautilus-bookmarks-window.h"
+#include "libnautilus-extensions/nautilus-undo-manager.h"
 #include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 
@@ -166,7 +167,7 @@ create_bookmarks_window(NautilusBookmarkList *list)
 	name_field = nautilus_entry_new ();
 	gtk_widget_show (name_field);
 	gtk_box_pack_start (GTK_BOX (vbox3), name_field, FALSE, FALSE, 0);
-
+	
 	vbox4 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox4);
 	gtk_box_pack_start (GTK_BOX (right_side), vbox4, FALSE, FALSE, 0);
@@ -520,6 +521,8 @@ on_text_field_focus_in_event (GtkWidget *widget,
 	g_assert (NAUTILUS_IS_ENTRY (widget));
 
 	nautilus_entry_select_all (NAUTILUS_ENTRY (widget));
+	nautilus_entry_enable_undo_key (NAUTILUS_ENTRY(widget), TRUE);
+	nautilus_entry_enable_undo(NAUTILUS_ENTRY(widget), TRUE);	
 	return FALSE;
 }
 
@@ -532,6 +535,7 @@ on_text_field_focus_out_event (GtkWidget *widget,
 
 	update_bookmark_from_text ();
 	gtk_editable_select_region (GTK_EDITABLE (widget), -1, -1);
+	nautilus_entry_enable_undo_key (NAUTILUS_ENTRY(widget), FALSE);
 	return FALSE;
 }
 
@@ -561,10 +565,18 @@ on_window_delete_event (GtkWidget *widget,
 			gpointer user_data)
 {
 	nautilus_bookmarks_window_save_geometry (widget);
-	 
+	
 	/* Hide but don't destroy */
 	gtk_widget_hide (widget);
 
+	/* Disable undo for entry widgets*/
+	nautilus_entry_enable_undo(NAUTILUS_ENTRY(name_field), FALSE);
+	nautilus_entry_enable_undo(NAUTILUS_ENTRY(uri_field), FALSE);
+
+	/* Remove object transactions from undo manager */
+	nautilus_undo_manager_unregister_object(GTK_OBJECT(name_field));
+	nautilus_undo_manager_unregister_object(GTK_OBJECT(uri_field));
+	
 	/* Seems odd to restore the geometry just after saving it,
 	 * and when the window is hidden, but this insures that
 	 * the next time the window is shown it will have the

@@ -37,12 +37,12 @@ struct NautilusUndoTransaction {
 };
 
 
-NautilusUndoTransaction *nautilus_undo_transaction_new		(const gchar *name);
-void			nautilus_undo_transaction_destroy 	(NautilusUndoTransaction *transaction);
-gboolean		nautilus_undo_transaction_add_undoable	(NautilusUndoTransaction *transaction, 
-								 NautilusUndoable *undoable);
-gboolean 		nautilus_undo_transaction_undo 		(NautilusUndoTransaction *transaction);
-	
-const gchar 		*nautilus_undo_transaction_get_name	(NautilusUndoTransaction *transaction);
-
+NautilusUndoTransaction *nautilus_undo_transaction_new		  (const gchar *name);
+void			nautilus_undo_transaction_destroy  	  (NautilusUndoTransaction *transaction);
+gboolean		nautilus_undo_transaction_add_undoable	  (NautilusUndoTransaction *transaction, 
+								   NautilusUndoable *undoable);
+gboolean 		nautilus_undo_transaction_undo 		  (NautilusUndoTransaction *transaction);
+const gchar 		*nautilus_undo_transaction_get_name	  (NautilusUndoTransaction *transaction);
+gboolean		nautilus_undo_transaction_contains_object (NautilusUndoTransaction *transaction,
+								   GtkObject *object);
 #endif

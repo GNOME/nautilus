@@ -74,6 +74,7 @@ nautilus_entry_initialize (NautilusEntry *entry)
 	entry->undo_text = NULL;
 	entry->undo_registered = TRUE;
 	entry->use_undo = FALSE;
+	entry->handle_undo_key = FALSE;
 }
 
 GtkWidget*
@@ -118,7 +119,8 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 
 		/* Undo */
 		case 'z':
-			if (entry->use_undo == TRUE && event->state & GDK_CONTROL_MASK) {
+			if (event->state & GDK_CONTROL_MASK && entry->use_undo == TRUE
+			    && entry->handle_undo_key == TRUE) {
 				nautilus_undo_manager_undo_last_transaction();
 				return FALSE;
 			}
@@ -194,7 +196,7 @@ nautilus_entry_changed (GtkEditable *editable)
 	entry = NAUTILUS_ENTRY(editable);
 
 	/* Register undo transaction */	
-	if (!entry->undo_registered) {
+	if (!entry->undo_registered && entry->use_undo) {
 		nautilus_undo_manager_begin_transaction (_("Edit"));
 		nautilus_undoable_save_undo_snapshot (GTK_OBJECT(entry), save_undo_snapshot_callback,
 					      restore_from_undo_snapshot_callback);
@@ -215,8 +217,11 @@ static void
 save_undo_snapshot_callback (NautilusUndoable *undoable)
 {
 	NautilusEntry *target;
-
+		
 	target = NAUTILUS_ENTRY (undoable->undo_target_class);
+
+	if (!target->use_undo)
+		return;
 	
 	/* Add our undo data to the data list */
 	g_datalist_set_data(&undoable->undo_data, "undo_text", g_strdup(target->undo_text));
@@ -235,6 +240,9 @@ restore_from_undo_snapshot_callback (NautilusUndoable *undoable)
 	NautilusEntry *entry;
 
 	entry = NAUTILUS_ENTRY (undoable->undo_target_class);
+
+	if (!entry->use_undo)
+		return;
 
 	/* Get copy of entry text */
 	entry->undo_registered = FALSE;
@@ -279,3 +287,13 @@ nautilus_entry_enable_undo (NautilusEntry *entry, gboolean value)
 	}
 }
 
+/* nautilus_entry_enable_undo_key
+ *
+ * Allow the use od ctl-z from within widget.  This should only be 
+ * set if there is no menu bar to use to undo the widget.
+ */
+void 
+nautilus_entry_enable_undo_key (NautilusEntry *entry, gboolean value)
+{
+	entry->handle_undo_key = value;
+}
