@@ -66,8 +66,8 @@ nautilus_tree_expansion_state_initialize_class (gpointer klass)
 
 }
 
-
-#define NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE		"tree-view/expansion_state"
+/* Give full gconf path so that this preference won't be coupled to user level. */
+#define NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE		"/apps/nautilus/tree-view/expansion_state"
 
 
 
