@@ -1,5 +1,16 @@
 2001-03-20  Andy Hertzfeld  <andy@eazel.com>
 
+	* libnautilus-extensions/nautilus-canvas-note-item.c:
+	(draw_item_aa_text), (nautilus_canvas_note_item_draw):
+	made the annotations layout for multiple lines, for both
+	the anti-aliased and non-aa cases.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(prepend_automatic_emblem_names):
+	removed debug statement
+	
+2001-03-20  Andy Hertzfeld  <andy@eazel.com>
+
 	made annotation size itself to the text
 	parse xml based annotations correctly
 	

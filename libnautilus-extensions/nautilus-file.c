@@ -1503,7 +1503,6 @@ prepend_automatic_emblem_names (NautilusFile *file,
 	if (nautilus_annotation_has_annotation (file) > 0) {
 		names = g_list_prepend
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_ANNOTATION));
-		g_message ("got annotation for %s", nautilus_file_get_uri (file));
 	}
 	if (nautilus_file_is_in_trash (file)) {
 		names = g_list_prepend

@@ -26,8 +26,10 @@
 
 #include <config.h>
 #include <math.h>
+
 #include <libgnomeui/gnome-canvas.h>
 #include <libgnomeui/gnome-canvas-util.h>
+#include <libgnomeui/gnome-icon-text.h>
 
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
@@ -43,6 +45,7 @@
 #include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-gnome-extensions.h"
 #include "nautilus-scalable-font.h"
+#include "nautilus-smooth-text-layout.h"
 #include "nautilus-string.h"
 
 enum {
@@ -65,6 +68,7 @@ enum {
 };
 
 #define ANNOTATION_WIDTH 240
+#define LINE_BREAK_CHARACTERS " -_,;.?/&"
 
 static void nautilus_canvas_note_item_class_init (NautilusCanvasNoteItemClass *class);
 static void nautilus_canvas_note_item_init       (NautilusCanvasNoteItem      *note_item);
@@ -696,27 +700,45 @@ static void
 draw_item_aa_text (GnomeCanvasBuf *buf, GnomeCanvasItem *item, const char *note_text)
 {
 	NautilusScalableFont *font;
-	NautilusDimensions text_dimensions;
 	GdkPixbuf *text_pixbuf;	
-	ArtIRect item_bounds;
-	int font_size = 12;
+	ArtIRect item_bounds, dest_bounds;
+	int width, height;
+	NautilusSmoothTextLayout *smooth_text_layout;
 	
 	font = nautilus_scalable_font_get_default_font ();
 
 	nautilus_gnome_canvas_item_get_canvas_bounds (item, &item_bounds);
-	text_dimensions = nautilus_scalable_font_measure_text (font, 
-				font_size,
-				note_text,
-				strlen (note_text));
-
+	width = item_bounds.x1 - item_bounds.x0;
+	height = item_bounds.y1 - item_bounds.y0;
+	
  	text_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
  				      TRUE,
  				      8,
- 				      text_dimensions.width + 8,
- 				      text_dimensions.height + 8);
+ 				      width,
+ 				      height);
 	nautilus_gdk_pixbuf_fill_rectangle_with_color (text_pixbuf, NULL,
 						       NAUTILUS_RGBA_COLOR_PACK (0, 0, 0, 0));
-		
+	
+	smooth_text_layout = nautilus_smooth_text_layout_new (
+				note_text, strlen(note_text),
+				font, 12, TRUE);
+	
+	nautilus_smooth_text_layout_set_line_wrap_width (smooth_text_layout, width - 4);
+	
+	dest_bounds.x0 = 0;
+	dest_bounds.y0 = 0;
+	dest_bounds.x1 = width;
+	dest_bounds.y1 = height;
+	 
+	nautilus_smooth_text_layout_draw_to_pixbuf
+		(smooth_text_layout, text_pixbuf,
+		 0, 0, &dest_bounds, GTK_JUSTIFY_LEFT,
+		 FALSE, NAUTILUS_RGBA_COLOR_OPAQUE_BLACK,
+		 NAUTILUS_OPACITY_FULLY_OPAQUE);
+	
+	gtk_object_destroy (GTK_OBJECT (smooth_text_layout));
+	
+	/*			 
 	nautilus_scalable_font_draw_text (font, text_pixbuf, 
 				0, font_size - 4,
 				NULL,
@@ -724,8 +746,9 @@ draw_item_aa_text (GnomeCanvasBuf *buf, GnomeCanvasItem *item, const char *note_
 				note_text, strlen (note_text),
 				NAUTILUS_RGBA_COLOR_OPAQUE_BLACK,
 				NAUTILUS_OPACITY_FULLY_OPAQUE);
-
-	nautilus_gnome_canvas_draw_pixbuf (buf, text_pixbuf, item_bounds.x0 + 4, item_bounds.y0 - 4);
+	*/
+	
+	nautilus_gnome_canvas_draw_pixbuf (buf, text_pixbuf, item_bounds.x0 + 4, item_bounds.y0 + 4);
 	
 	gdk_pixbuf_unref (text_pixbuf);	
 	gtk_object_unref (GTK_OBJECT (font));
@@ -768,6 +791,7 @@ nautilus_canvas_note_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable, in
 	int x1, y1, x2, y2;
 	ArtPoint i1, i2;
 	ArtPoint c1, c2;
+	GnomeIconTextInfo *text_info;
 
 	note_item = NAUTILUS_CANVAS_NOTE_ITEM (item);
 
@@ -804,12 +828,16 @@ nautilus_canvas_note_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable, in
 	if (note_item->note_text) {
 		font = nautilus_font_factory_get_font_from_preferences (12);		
 		display_text = get_display_text (note_item->note_text);
-		gdk_draw_string (drawable,
-			  font,
-			  note_item->outline_gc,
-			  x1 - x + 8,
-			  y1 - y + 15,
-			  display_text);
+
+		text_info = gnome_icon_layout_text
+			(font, display_text,
+			 LINE_BREAK_CHARACTERS,
+			 x2 - x1 - 2, TRUE);
+
+		gnome_icon_paint_text (text_info, drawable, note_item->outline_gc,
+			 	       x1  - x + 4, y1 - y + 4, GTK_JUSTIFY_LEFT);
+		gnome_icon_text_info_free (text_info);
+		
 		gdk_font_unref (font);
 		g_free (display_text);
 	}
