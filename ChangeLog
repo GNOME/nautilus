@@ -1,3 +1,20 @@
+2003-03-26  Dave Camp  <dave@ximian.com>
+
+	* src/file-manager/fm-list-view.c: (activate_selected_items),
+	(fm_list_view_did_not_drag), (drag_data_get_callback),
+	(selection_foreach), (get_selection_refs), (ref_list_free),
+	(stop_drag_check), (get_drag_pixbuf), (motion_notify_callback),
+	(button_event_modifies_selection), (button_press_callback),
+	(button_release_callback), (key_press_callback),
+	(create_and_set_up_tree_view), (fm_list_view_finalize): Implement
+	the widget side drag and drop here instead of eggtreemultidnd.c.
+	Clean up mouse event handling to be more similar to the icon view.
+
+	Fixes bug #48051, #89980, #90437, #105593, #108946, among others.
+
+	Thanks to marten ter borgh <marten@terborgh.demon.nl> for help
+	with this patch.
+	
 2003-03-26  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-icon-private.h: 
