@@ -52,7 +52,7 @@ typedef enum {
 	 * If this is returned, the extension must set the handle 
 	 * parameter and call the callback closure when the 
 	 * operation is complete. */
-	NAUTILUS_OPERATION_IN_PROGRESS,
+	NAUTILUS_OPERATION_IN_PROGRESS
 } NautilusOperationResult;
 
 GType nautilus_operation_result_get_type (void);

@@ -1,5 +1,44 @@
 2004-08-16  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-extension/nautilus-extension-types.h:
+	Remove extra comma in enum. Fixes bug #142351
+	Patch from Christian Neumair.
+	
+	* libnautilus-private/apps_nautilus_preferences.schemas.in:
+	Add computer_icon_name schema entry. Fixes bug #144728.
+	Patch from Christian Neumair.
+	
+	Remove add_to_session schema entry. 
+	
+	* src/nautilus-application.c: (update_session), (init_session):
+	* libnautilus-private/nautilus-global-preferences.c:
+	* libnautilus-private/nautilus-global-preferences.h:
+	Remove add_to_session preference. Fixes bug #91543
+	Patch from Havoc Pennington
+	
+	* nautilus.desktop.in:
+	Rename file browser entry. Fixes bug #131272.
+	Patch from Michael Terry.
+	
+	* src/file-manager/fm-directory-view.c:
+	(warn_mismatched_mime_types):
+	Don't show (null) for mimetypes with no description.
+	Fixes bug #141509.
+	Patch from Christian Neumair.
+	
+	* src/file-manager/fm-properties-window.c:
+	(create_properties_window):
+	Allow properties dialog to be resized.
+	Fixed bug #147918
+	Patch from Christian Neumair.
+	
+	* src/nautilus-window-menus.c:
+	(help_menu_nautilus_manual_callback):
+	Fix help link. Fixes bug #143927
+	Patch from Kaushal Kumar
+
+2004-08-16  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-connect-server-dialog.c:
 	(nautilus_connect_server_dialog_finalize), (connect_to_server),
 	(response_callback), (setup_for_type), (combo_changed_callback),

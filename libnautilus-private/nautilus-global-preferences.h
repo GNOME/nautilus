@@ -176,9 +176,6 @@ typedef enum
 	NAUTILUS_SIMPLE_SEARCH_BAR
 } NautilusSearchBarMode;
 
-/* Gnome session management */
-#define NAUTILUS_PREFERENCES_ADD_TO_SESSION		   "preferences/add_to_session"
-
 #define NAUTILUS_PREFERENCES_DESKTOP_HOME_VISIBLE          "desktop/home_icon_visible"
 #define NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME             "desktop/home_icon_name"
 #define NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_VISIBLE      "desktop/computer_icon_visible"

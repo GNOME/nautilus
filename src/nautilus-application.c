@@ -1211,12 +1211,11 @@ static void
 update_session (gpointer callback_data)
 {
 	set_session_restart (callback_data,
-			     eel_preferences_get_boolean (NAUTILUS_PREFERENCES_ADD_TO_SESSION)
 			     /* Only ever add ourselves to the session
 			      * if we have a desktop window. Prevents the
 			      * session thrashing that's seen otherwise
 			      */
-			     && nautilus_application_desktop_windows != NULL);
+			     nautilus_application_desktop_windows != NULL);
 }
 
 static void
@@ -1232,10 +1231,6 @@ init_session (void)
 	g_signal_connect (client, "die",
 			  G_CALLBACK (removed_from_session), NULL);
 	
-	eel_preferences_add_callback
-		(NAUTILUS_PREFERENCES_ADD_TO_SESSION,
-		 update_session, client);
-
 	update_session (client);
 }
 

@@ -4104,9 +4104,6 @@ warn_mismatched_mime_types (FMDirectoryView *view,
 	guessed_description = gnome_vfs_mime_get_description (guessed_mime_type);
 	real_description = gnome_vfs_mime_get_description (mime_type);
 
-	g_free (guessed_mime_type);
-	g_free (mime_type);
-	
 	name = nautilus_file_get_name (file);
 
 	primary = g_strdup_printf (_("Cannot open %s"), name);
@@ -4121,10 +4118,13 @@ warn_mismatched_mime_types (FMDirectoryView *view,
 		   "Alternatively, use the Open With menu to choose a specific application "
 		   "for the file. "),
 		 name, 
-		 guessed_description, 
-		 real_description,
-		 real_description);
-	
+		 guessed_description ? guessed_description : guessed_mime_type, 
+		 real_description ? real_description : mime_type,
+		 real_description ? real_description : mime_type);
+
+	g_free (guessed_mime_type);
+	g_free (mime_type);
+
 	dialog = eel_alert_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))),
 				       0,
 				       GTK_MESSAGE_ERROR,

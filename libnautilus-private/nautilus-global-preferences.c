@@ -513,12 +513,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  default_trash_link_name, g_free,
 	},
 	
-	/* non-visible preferences */
-	{ NAUTILUS_PREFERENCES_ADD_TO_SESSION,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (TRUE)
-	},
-
 	{ NULL }
 };
 
