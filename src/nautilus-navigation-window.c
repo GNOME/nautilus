@@ -44,6 +44,7 @@
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libnautilus-extensions/nautilus-any-width-bin.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
@@ -244,6 +245,31 @@ nautilus_window_zoom_to_fit (NautilusWindow *window)
 	}
 }
 
+/* This is our replacement for gnome_app_set_statusbar.
+ * It uses nautilus_any_width_bin to make text changes in the
+ * status bar not affect the width of the window.
+ */
+static void
+install_status_bar (GnomeApp *app,
+		   GtkWidget *status_bar)
+{
+	GtkWidget *bin;
+
+	g_assert (GNOME_IS_APP (app));
+	g_assert (GTK_IS_WIDGET (status_bar));
+	g_assert (app->statusbar == NULL);
+
+	app->statusbar = status_bar;
+	gtk_widget_show (status_bar);
+
+	bin = nautilus_any_width_bin_new ();
+	gtk_container_set_border_width (GTK_CONTAINER (bin), 0);
+	gtk_widget_show (bin);
+
+	gtk_container_add (GTK_CONTAINER (bin), status_bar);
+	gtk_box_pack_start (GTK_BOX (app->vbox), bin, FALSE, FALSE, 0);
+}
+
 static void
 nautilus_window_constructed (NautilusWindow *window)
 {
@@ -305,7 +331,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	
 	/* set up status bar */
 	status_bar = gtk_statusbar_new ();
-	gnome_app_set_statusbar (app, status_bar);
+	install_status_bar (app, status_bar);
 
 	/* insert a little padding so text isn't jammed against frame */
 	gtk_misc_set_padding (GTK_MISC (GTK_STATUSBAR (status_bar)->label), GNOME_PAD, 0);

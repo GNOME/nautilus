@@ -46,6 +46,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-file-operations-progress.c	\
 	nautilus-file-operations.c			\
 	bonobo-stream-vfs.c			\
+	nautilus-any-width-bin.c		\
 	nautilus-background-canvas-group.c	\
 	nautilus-background.c			\
 	nautilus-bonobo-extensions.c		\
@@ -133,6 +134,7 @@ noinst_HEADERS =				\
 	nautilus-file-operations.h 		\
 	nautilus-file-operations-progress.h 	\
 	bonobo-stream-vfs.h			\
+	nautilus-any-width-bin.h		\
 	nautilus-background-canvas-group.h	\
 	nautilus-background.h			\
 	nautilus-bonobo-extensions.h		\

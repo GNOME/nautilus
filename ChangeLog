@@ -1,3 +1,24 @@
+2000-09-12  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1305 (Selecting file with really long name makes
+	window wider)
+
+	* libnautilus-extensions/nautilus-any-width-bin.h:
+	* libnautilus-extensions/nautilus-any-width-bin.c:
+	(nautilus_any_width_bin_initialize_class),
+	(nautilus_any_width_bin_initialize), (nautilus_any_width_bin_new),
+	(nautilus_any_width_bin_size_request): New files, implementing
+	new bin class that ignores its childrens clamorous pleas for
+	width but generously distributes any width it obtains to them.
+	* libnautilus-extensions/Makefile.am: Add new files to build.
+	
+	* src/nautilus-window.c: 
+	(install_status_bar): New function, installs status bar into
+	a nautilus_any_width_bin. Now the status bar won't cause the
+	window to resize no matter how long the text is.
+	(nautilus_window_constructed): Call install_status_bar instead
+	of gnome_app_set_statusbar.
+
 2000-09-12  Mathieu Lacage  <mathieu@eazel.com>
 
 	* src/nautilus-sidebar.c: (nautilus_sidebar_press_event):
