@@ -509,7 +509,7 @@ nautilus_search_bar_criterion_human_from_uri (const char *location_uri)
 	
 
 
-	return g_strdup ("this is a test");
+	return g_strdup (location_uri);
 
 
 }
