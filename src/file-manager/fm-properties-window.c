@@ -179,7 +179,7 @@ static void remove_pending_file                   (StartupData             *data
 static void append_bonobo_pages                   (FMPropertiesWindow *window);
 
 GNOME_CLASS_BOILERPLATE (FMPropertiesWindow, fm_properties_window,
-			 GtkDialog, GTK_TYPE_DIALOG)
+			 GtkWindow, GTK_TYPE_WINDOW);
 
 typedef struct {
 	NautilusFile *file;
@@ -2369,6 +2369,7 @@ create_properties_window (StartupData *startup_data)
 	FMPropertiesWindow *window;
 	GList *attributes;
 	GtkWidget *vbox;
+	GtkWidget *hbox;
 	GtkWidget *button;
 
 	window = FM_PROPERTIES_WINDOW (gtk_widget_new (fm_properties_window_get_type (), NULL));
@@ -2380,6 +2381,7 @@ create_properties_window (StartupData *startup_data)
 	gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
 	gtk_window_set_screen (GTK_WINDOW (window),
 			       gtk_widget_get_screen (GTK_WIDGET (startup_data->directory_view)));
+	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_MOUSE);
 
 	/* Set initial window title */
 	update_properties_window_title (GTK_WINDOW (window), window->details->target_file);
@@ -2414,7 +2416,7 @@ create_properties_window (StartupData *startup_data)
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 5);
 	gtk_widget_show (vbox);
-	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(window)->vbox), 
+	gtk_container_add (GTK_CONTAINER (window),
 			   GTK_WIDGET (vbox));
 
 	/* Create the notebook tabs. */
@@ -2436,15 +2438,16 @@ create_properties_window (StartupData *startup_data)
 
 	/* append pages from available views */
 	append_bonobo_pages (window);
-	
-	/* Create buttons for action area. */
-	gtk_dialog_set_has_separator (GTK_DIALOG (window), FALSE);
-	gtk_button_box_set_layout (GTK_BUTTON_BOX (GTK_DIALOG (window)->action_area),
-				   GTK_BUTTONBOX_EDGE);
+
+	/* Create box for help and close buttons. */
+	hbox = gtk_hbutton_box_new ();
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (hbox), FALSE, TRUE, 5);
+	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbox), GTK_BUTTONBOX_EDGE);
 
 	button = gtk_button_new_from_stock (GTK_STOCK_HELP);
  	gtk_widget_show (button);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->action_area), GTK_WIDGET (button),
+	gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (button),
 			    FALSE, TRUE, 0);
 	g_signal_connect_object (button, "clicked",
 				 G_CALLBACK (help_button_callback),
@@ -2452,7 +2455,7 @@ create_properties_window (StartupData *startup_data)
 	
 	button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
 	gtk_widget_show (button);
-	gtk_box_pack_end (GTK_BOX (GTK_DIALOG (window)->action_area), GTK_WIDGET (button),
+	gtk_box_pack_end (GTK_BOX (hbox), GTK_WIDGET (button),
 			    FALSE, TRUE, 0);
 	g_signal_connect_swapped (button, "clicked",
 				  G_CALLBACK (gtk_widget_destroy),
@@ -2746,4 +2749,6 @@ static void
 fm_properties_window_instance_init (FMPropertiesWindow *window)
 {
 	window->details = g_new0 (FMPropertiesWindowDetails, 1);
+
+	eel_gtk_window_set_up_close_accelerator (GTK_WINDOW (window));
 }

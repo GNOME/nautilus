@@ -28,7 +28,7 @@
 
 #include "fm-directory-view.h"
 
-#include <gtk/gtkdialog.h>
+#include <gtk/gtkwindow.h>
 #include <libnautilus-private/nautilus-file.h>
 
 typedef struct FMPropertiesWindow FMPropertiesWindow;
@@ -47,12 +47,12 @@ typedef struct FMPropertiesWindow FMPropertiesWindow;
 typedef struct FMPropertiesWindowDetails FMPropertiesWindowDetails;
 
 struct FMPropertiesWindow {
-	GtkDialog window;
+	GtkWindow window;
 	FMPropertiesWindowDetails *details;	
 };
 
 struct FMPropertiesWindowClass {
-	GtkDialogClass parent_class;
+	GtkWindowClass parent_class;
 };
 
 typedef struct FMPropertiesWindowClass FMPropertiesWindowClass;
