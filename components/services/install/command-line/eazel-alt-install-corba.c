@@ -261,6 +261,30 @@ set_parameters_from_command_line (GNOME_Trilobite_Eazel_Install service)
 }
 
 static void 
+eazel_file_conflict_check_signal (EazelInstallCallback *service, 
+				  const PackageData *pack,
+				  gpointer unused)
+{
+	printf ("File conflict checking %s...\n", pack->name);
+}
+
+static void 
+eazel_file_uniqueness_check_signal (EazelInstallCallback *service, 
+				    const PackageData *pack,
+				    gpointer unused)
+{
+	printf ("File uniqueness checking %s...\n", pack->name);
+}
+
+static void 
+eazel_feature_consistency_check_signal (EazelInstallCallback *service, 
+					const PackageData *pack,
+					gpointer unused)
+{
+	printf ("Feature consistency checking %s...\n", pack->name);
+}
+
+static void 
 eazel_download_progress_signal (EazelInstallCallback *service, 
 				const PackageData *pack,
 				int amount, 
@@ -760,6 +784,16 @@ int main(int argc, char *argv[]) {
 	set_root_client (eazel_install_callback_bonobo (cb));
 	
 	/* Set up signal connections */
+	gtk_signal_connect (GTK_OBJECT (cb), "file_conflict_check", 
+			    GTK_SIGNAL_FUNC (eazel_file_conflict_check_signal), 
+			    NULL);
+	gtk_signal_connect (GTK_OBJECT (cb), "file_uniqueness_check", 
+			    GTK_SIGNAL_FUNC (eazel_file_uniqueness_check_signal), 
+			    NULL);
+	gtk_signal_connect (GTK_OBJECT (cb), "feature_consistency_check", 
+			    GTK_SIGNAL_FUNC (eazel_feature_consistency_check_signal), 
+			    NULL);
+
 	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", 
 			    GTK_SIGNAL_FUNC (eazel_download_progress_signal), 
 			    "Download progress");

@@ -675,7 +675,8 @@ packagedata_get_readable_name (const PackageData *pack)
 	} else if ((pack->name != NULL) && (pack->version != NULL)) {
 		/* This is a hack to shorten EazelSourceSnapshot names
 		   into the build date/time */
-		if (strstr (pack->version, "Eazel")!=NULL && strstr (pack->minor, "200") != NULL) {
+		if (pack->version && pack->minor &&
+		    strstr (pack->version, "Eazel")!=NULL && strstr (pack->minor, "200") != NULL) {
 			char *month[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
 					 "Sep", "Oct", "Nov", "Dec"};
 			char *temp, *temp2;

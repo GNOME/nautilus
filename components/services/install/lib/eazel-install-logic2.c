@@ -1126,6 +1126,7 @@ check_no_two_packages_has_same_file (EazelInstall *service,
 		pack = PACKAGEDATA (iter->data);
 
 		g_message ("file uniqueness checking %s", pack->name);
+		eazel_install_emit_file_uniqueness_check (service, pack);
 
 		for (iter_file = g_list_first (pack->provides); iter_file != NULL; iter_file = g_list_next (iter_file)) {
 			filename = (char *)(iter_file->data);
@@ -1253,6 +1254,7 @@ check_conflicts_against_already_installed_packages (EazelInstall *service,
 		}
 
 		g_message ("file conflict checking %s", pack->name);
+		eazel_install_emit_file_conflict_check (service, pack);
 
 		pack->conflicts_checked = TRUE;
 		for (iter_file = g_list_first (pack->provides); iter_file != NULL; iter_file = g_list_next (iter_file)) {
@@ -1375,6 +1377,7 @@ check_feature_consistency (EazelInstall *service,
 #else
 		g_message ("checking feature consistency of %s", pack->name);
 #endif
+		eazel_install_emit_feature_consistency_check (service, pack);
 
 		for (modify_it = pack->modifies; modify_it; modify_it = g_list_next (modify_it)) {
 			PackageData *pack_modified = PACKAGEDATA (modify_it->data);

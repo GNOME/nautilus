@@ -37,6 +37,10 @@
 #define OAF_ID "OAFIID:trilobite_eazel_install_service:8ff6e815-1992-437c-9771-d932db3b4a17"
 
 enum {
+	FILE_CONFLICT_CHECK,
+	FILE_UNIQUENESS_CHECK,
+	FEATURE_CONSISTENCY_CHECK,
+
 	DOWNLOAD_PROGRESS,
 	PREFLIGHT_CHECK,
 	INSTALL_PROGRESS,
@@ -67,6 +71,39 @@ typedef struct {
 	POA_GNOME_Trilobite_Eazel_InstallCallback poa;
 	EazelInstallCallback *object;
 } impl_POA_GNOME_Trilobite_Eazel_InstallCallback;
+
+static void
+impl_file_conflict_check (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
+			  const GNOME_Trilobite_Eazel_PackageDataStruct *corbapack,
+			  CORBA_Environment * ev)
+{
+	PackageData *pack;
+	pack = packagedata_from_corba_packagedatastruct (corbapack);
+	gtk_signal_emit (GTK_OBJECT (servant->object), signals[FILE_CONFLICT_CHECK], pack);
+	gtk_object_unref (GTK_OBJECT (pack));
+}
+
+static void
+impl_file_uniqueness_check (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
+			    const GNOME_Trilobite_Eazel_PackageDataStruct *corbapack,
+			    CORBA_Environment * ev)
+{
+	PackageData *pack;
+	pack = packagedata_from_corba_packagedatastruct (corbapack);
+	gtk_signal_emit (GTK_OBJECT (servant->object), signals[FILE_UNIQUENESS_CHECK], pack);
+	gtk_object_unref (GTK_OBJECT (pack));
+}
+
+static void
+impl_feature_consistency_check (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
+				const GNOME_Trilobite_Eazel_PackageDataStruct *corbapack,
+				CORBA_Environment * ev)
+{
+	PackageData *pack;
+	pack = packagedata_from_corba_packagedatastruct (corbapack);
+	gtk_signal_emit (GTK_OBJECT (servant->object), signals[FEATURE_CONSISTENCY_CHECK], pack);
+	gtk_object_unref (GTK_OBJECT (pack));
+}
 
 static void
 impl_download_progress (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
@@ -235,17 +272,22 @@ eazel_install_callback_get_epv ()
 	POA_GNOME_Trilobite_Eazel_InstallCallback__epv *epv;
 
 	epv = g_new0 (POA_GNOME_Trilobite_Eazel_InstallCallback__epv, 1);
-	epv->download_progress   = (gpointer)&impl_download_progress;
-	epv->preflight_check     = (gpointer)&impl_preflight_check;
-	epv->dependency_check    = (gpointer)&impl_dep_check;
-	epv->install_progress    = (gpointer)&impl_install_progress;
-	epv->uninstall_progress  = (gpointer)&impl_uninstall_progress;
-	epv->md5_check_failed    = (gpointer)&impl_md5_check_failed;
-	epv->install_failed      = (gpointer)&impl_install_failed;
-	epv->download_failed     = (gpointer)&impl_download_failed;
-	epv->uninstall_failed    = (gpointer)&impl_uninstall_failed;
-	epv->delete_files	 = (gpointer)&impl_delete_files;
-	epv->done                = (gpointer)&impl_done;
+
+	epv->file_conflict_check   = (gpointer)&impl_file_conflict_check;
+	epv->file_uniqueness_check = (gpointer)&impl_file_uniqueness_check;
+	epv->feature_consistency_check   = (gpointer)&impl_feature_consistency_check;
+
+	epv->download_progress     = (gpointer)&impl_download_progress;
+	epv->preflight_check       = (gpointer)&impl_preflight_check;
+	epv->dependency_check      = (gpointer)&impl_dep_check;
+	epv->install_progress      = (gpointer)&impl_install_progress;
+	epv->uninstall_progress    = (gpointer)&impl_uninstall_progress;
+	epv->md5_check_failed      = (gpointer)&impl_md5_check_failed;
+	epv->install_failed        = (gpointer)&impl_install_failed;
+	epv->download_failed       = (gpointer)&impl_download_failed;
+	epv->uninstall_failed      = (gpointer)&impl_uninstall_failed;
+	epv->delete_files	   = (gpointer)&impl_delete_files;
+	epv->done                  = (gpointer)&impl_done;
 
 	return epv;
 };
@@ -337,6 +379,28 @@ eazel_install_callback_class_initialize (EazelInstallCallbackClass *klass)
 	((POA_GNOME_Trilobite_Eazel_InstallCallback__vepv*)klass->servant_vepv)->GNOME_Trilobite_Eazel_InstallCallback_epv = 
 		eazel_install_callback_get_epv ();
 
+	signals[FILE_CONFLICT_CHECK] = 
+		gtk_signal_new ("file_conflict_check",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, file_conflict_check),
+				gtk_marshal_NONE__POINTER,
+				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+	signals[FILE_UNIQUENESS_CHECK] = 
+		gtk_signal_new ("file_uniqueness_check",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, file_uniqueness_check),
+				gtk_marshal_NONE__POINTER,
+				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+	signals[FEATURE_CONSISTENCY_CHECK] = 
+		gtk_signal_new ("feature_consistency_check",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, feature_consistency_check),
+				gtk_marshal_NONE__POINTER,
+				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+
 	signals[DOWNLOAD_PROGRESS] = 
 		gtk_signal_new ("download_progress",
 				GTK_RUN_LAST,
@@ -357,7 +421,9 @@ eazel_install_callback_class_initialize (EazelInstallCallbackClass *klass)
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallCallbackClass, install_progress),
 				eazel_install_gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT,
-				GTK_TYPE_NONE, 7, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
+				GTK_TYPE_NONE, 7, 
+				GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT, 
+				GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
 	signals[UNINSTALL_PROGRESS] = 
 		gtk_signal_new ("uninstall_progress",
 				GTK_RUN_LAST,

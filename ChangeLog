@@ -1,3 +1,35 @@
+2001-02-05  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (eazel_file_conflict_check_signal),
+	(eazel_file_uniqueness_check_signal),
+	(eazel_feature_consistency_check_signal), (main):
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_file_conflict_check), (impl_file_uniqueness_check),
+	(impl_feature_consistency_check), (eazel_install_callback_get_epv),
+	(eazel_install_callback_class_initialize):
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/lib/eazel-install-logic2.c:
+	(check_no_two_packages_has_same_file),
+	(check_conflicts_against_already_installed_packages),
+	(check_feature_consistency):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_class_initialize),
+	(eazel_install_emit_file_conflict_check),
+	(eazel_install_emit_file_conflict_check_default),
+	(eazel_install_emit_file_uniqueness_check),
+	(eazel_install_emit_file_uniqueness_check_default),
+	(eazel_install_emit_feature_consistency_check),
+	(eazel_install_emit_feature_consistency_check_default):
+	Fixed bug 3459 (emit signals when doing file-conflict,
+	feature-consistency and file-uniqueness checks).
+	
+	* components/services/install/lib/eazel-package-system-types.c:
+	(packagedata_get_readable_name):
+	Nyll poynter checking.
+
 2001-02-05  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 6359 (Choosing current view from "View as" menu crashes)

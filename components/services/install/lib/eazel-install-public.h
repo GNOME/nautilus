@@ -74,6 +74,9 @@ struct _EazelInstallClass
 #endif /* EAZEL_INSTALL_NO_CORBA */
 	/* signal prototypes */
 	void (*download_progress) (EazelInstall *service, const PackageData *package, int amount, int total);
+	void (*file_conflict_check) (EazelInstall *service, const PackageData *package);
+	void (*file_uniqueness_check) (EazelInstall *service, const PackageData *package);
+	void (*feature_consistency_check) (EazelInstall *service, const PackageData *package);
 
 	gboolean (*preflight_check) (EazelInstall *service, 
 				     GList *packages,
@@ -145,6 +148,12 @@ gboolean eazel_install_lock_tmp_dir               (EazelInstall *service);
 /* This sets mode 700 on tmpdir and downloaded files */
 gboolean eazel_install_unlock_tmp_dir               (EazelInstall *service);
 
+void eazel_install_emit_file_conflict_check       (EazelInstall *service,
+						   const PackageData *pack);
+void eazel_install_emit_file_uniqueness_check     (EazelInstall *service,
+						   const PackageData *pack);
+void eazel_install_emit_feature_consistency_check (EazelInstall *service,
+						   const PackageData *pack);
 void eazel_install_emit_install_progress          (EazelInstall *service, 
 						   const PackageData *pack,
 						   int package_num, int num_packages, 

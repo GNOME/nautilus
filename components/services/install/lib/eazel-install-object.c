@@ -57,6 +57,10 @@
 #include <dirent.h>
 
 enum {
+	FILE_CONFLICT_CHECK,
+	FILE_UNIQUENESS_CHECK,
+	FEATURE_CONSISTENCY_CHECK,
+
 	DOWNLOAD_PROGRESS,
 	PREFLIGHT_CHECK,
 	INSTALL_PROGRESS,
@@ -110,7 +114,12 @@ static BonoboObjectClass *eazel_install_parent_class;
 
 
 /* prototypes */
-
+void eazel_install_emit_file_conflict_check_default (EazelInstall *service, 
+						     const PackageData *package);
+void eazel_install_emit_file_uniqueness_check_default (EazelInstall *service, 
+						       const PackageData *package);
+void eazel_install_emit_feature_consistency_check_default (EazelInstall *service, 
+							   const PackageData *package);
 void eazel_install_emit_install_progress_default (EazelInstall *service,
 						  const PackageData *pack,
 						  int, int, int, int, int, int);
@@ -408,6 +417,28 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 	((POA_GNOME_Trilobite_Eazel_Install__vepv*)klass->servant_vepv)->GNOME_Trilobite_Eazel_Install_epv = eazel_install_get_epv ();
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
+	signals[FILE_CONFLICT_CHECK] = 
+		gtk_signal_new ("file_conflict_check",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallClass, file_conflict_check),
+				gtk_marshal_NONE__POINTER,
+				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+	signals[FILE_UNIQUENESS_CHECK] = 
+		gtk_signal_new ("file_uniqueness_check",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallClass, file_uniqueness_check),
+				gtk_marshal_NONE__POINTER,
+				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+	signals[FEATURE_CONSISTENCY_CHECK] = 
+		gtk_signal_new ("feature_consistency_check",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallClass, feature_consistency_check),
+				gtk_marshal_NONE__POINTER,
+				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+
 	signals[DOWNLOAD_PROGRESS] = 
 		gtk_signal_new ("download_progress",
 				GTK_RUN_LAST,
@@ -476,6 +507,9 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 #ifdef EAZEL_INSTALL_NO_CORBA
+	klass->file_conflict_check = NULL;
+	klass->file_uniqueness_check = NULL;
+	klass->feature_consistency_check = NULL;
 	klass->install_progress = NULL;
 	klass->download_progress = NULL;
 	klass->download_failed = NULL;
@@ -485,6 +519,9 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 	klass->dependency_check = NULL;
 	klass->preflight_check = NULL;
 #else
+	klass->file_conflict_check = eazel_install_emit_file_conflict_check_default;
+	klass->file_uniqueness_check = eazel_install_emit_file_uniqueness_check_default;
+	klass->feature_consistency_check = eazel_install_emit_feature_consistency_check_default;
 	klass->install_progress = eazel_install_emit_install_progress_default;
 	klass->download_progress = eazel_install_emit_download_progress_default;
 	klass->download_failed = eazel_install_emit_download_failed_default;
@@ -1264,6 +1301,90 @@ eazel_install_add_repository (EazelInstall *service, const char *dir)
   a corba callback, and if true, do the callback
 **************************************************/
 					 
+void 
+eazel_install_emit_file_conflict_check (EazelInstall *service, 
+					const PackageData *pack)
+{
+	EAZEL_INSTALL_SANITY(service);
+	gtk_signal_emit (GTK_OBJECT (service), signals[FILE_CONFLICT_CHECK], pack);
+}
+
+void 
+eazel_install_emit_file_conflict_check_default (EazelInstall *service, 
+						const PackageData *pack)
+{
+#ifndef EAZEL_INSTALL_NO_CORBA
+	CORBA_Environment ev;
+	CORBA_exception_init (&ev);
+	EAZEL_INSTALL_SANITY(service);
+	if (service->callback != CORBA_OBJECT_NIL) {
+		GNOME_Trilobite_Eazel_PackageDataStruct *package;
+		package = corba_packagedatastruct_from_packagedata (pack);
+		GNOME_Trilobite_Eazel_InstallCallback_file_conflict_check (service->callback, 
+									   package, 
+									   &ev);
+		CORBA_free (package);
+	} 
+	CORBA_exception_free (&ev);
+#endif /* EAZEL_INSTALL_NO_CORBA */
+}
+
+void 
+eazel_install_emit_file_uniqueness_check (EazelInstall *service, 
+					const PackageData *pack)
+{
+	EAZEL_INSTALL_SANITY(service);
+	gtk_signal_emit (GTK_OBJECT (service), signals[FILE_UNIQUENESS_CHECK], pack);
+}
+
+void 
+eazel_install_emit_file_uniqueness_check_default (EazelInstall *service, 
+						  const PackageData *pack)
+{
+#ifndef EAZEL_INSTALL_NO_CORBA
+	CORBA_Environment ev;
+	CORBA_exception_init (&ev);
+	EAZEL_INSTALL_SANITY(service);
+	if (service->callback != CORBA_OBJECT_NIL) {
+		GNOME_Trilobite_Eazel_PackageDataStruct *package;
+		package = corba_packagedatastruct_from_packagedata (pack);
+		GNOME_Trilobite_Eazel_InstallCallback_file_uniqueness_check (service->callback, 
+									     package, 
+									     &ev);
+		CORBA_free (package);
+	} 
+	CORBA_exception_free (&ev);
+#endif /* EAZEL_INSTALL_NO_CORBA */
+}
+
+void 
+eazel_install_emit_feature_consistency_check (EazelInstall *service, 
+					      const PackageData *pack)
+{
+	EAZEL_INSTALL_SANITY(service);
+	gtk_signal_emit (GTK_OBJECT (service), signals[FEATURE_CONSISTENCY_CHECK], pack);
+}
+
+
+void 
+eazel_install_emit_feature_consistency_check_default (EazelInstall *service, 
+						      const PackageData *pack)
+{
+#ifndef EAZEL_INSTALL_NO_CORBA
+	CORBA_Environment ev;
+	CORBA_exception_init (&ev);
+	EAZEL_INSTALL_SANITY(service);
+	if (service->callback != CORBA_OBJECT_NIL) {
+		GNOME_Trilobite_Eazel_PackageDataStruct *package;
+		package = corba_packagedatastruct_from_packagedata (pack);
+		GNOME_Trilobite_Eazel_InstallCallback_feature_consistency_check (service->callback, 
+										 package, 
+										 &ev);
+		CORBA_free (package);
+	} 
+	CORBA_exception_free (&ev);
+#endif /* EAZEL_INSTALL_NO_CORBA */
+}
 
 void 
 eazel_install_emit_install_progress (EazelInstall *service, 
