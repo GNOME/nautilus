@@ -31,7 +31,6 @@ eazel_installer_SOURCES = \
 eazel_installer_LDFLAGS = -static
 
 eazel_installer_LDADD = 	\
-        $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o 			\
         $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 	\
 	$(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a			\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite_minimal.a		\
@@ -57,7 +56,6 @@ eazel_installer_LDADD = 	\
 #
 #	/usr/lib/libesd.a \
 #	/usr/lib/libaudiofile.a \
-#        /gnome-source/nautilus/components/services/trilobite/libtrilobite/helixcode-utils.o 	\
 #	/gnome-source/nautilus/components/services/install/lib/libinstall.a			\
 #	$(GNOME_LIBDIR) 	\
 #	$(GNOMEUI_LIBS) 	\

@@ -235,7 +235,7 @@ nautilus_view_frame_destroy_client (NautilusViewFrame *view)
 		return;
 	}
 	
-	CORBA_exception_init(&ev);
+	CORBA_exception_init (&ev);
 	
 	g_free (view->iid);
 	view->iid = NULL;
@@ -306,7 +306,6 @@ view_frame_activating (NautilusViewFrame *view)
 
 	g_assert_not_reached ();
 }
-
 
 /* stimulus: unsuccessful activated_component call */
 static void
@@ -464,9 +463,7 @@ view_frame_wait_is_over (NautilusViewFrame *view)
 	g_assert_not_reached ();
 }
 
-
 /* stimulus: report_load_complete */
-
 static void
 view_frame_loaded (NautilusViewFrame *view)
 {
@@ -496,7 +493,6 @@ view_frame_loaded (NautilusViewFrame *view)
 }
 
 /* stimulus: report_load_failed */
-
 static void
 view_frame_failed (NautilusViewFrame *view)
 {

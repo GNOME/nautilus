@@ -75,7 +75,6 @@ noinst_HEADERS = \
 	trilobite-service-passwordquery-private.h	\
 	trilobite-root-client-private.h		\
 	trilobite-service-private.h		\
-	trilobite-service-private.h		\
 	$(NULL)
 
 libtrilobite_serviceinclude_HEADERS =		\

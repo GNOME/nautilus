@@ -31,7 +31,6 @@
 #define EAZEL_INSTALL_XML_PACKAGE_LIST_H
 
 #include "eazel-package-system-types.h"
-#include <libtrilobite/helixcode-utils.h>
 #include <gnome-xml/tree.h>
 
 GList* parse_memory_xml_package_list (const char *mem, int size);

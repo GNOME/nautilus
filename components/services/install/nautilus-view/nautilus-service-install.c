@@ -21,15 +21,14 @@
  */
 
 #include "nautilus-service-install.h"
-#include <libtrilobite/helixcode-utils.h>
 #include <libeazelinstall.h>
 
 #define OAF_ID "OAFIID:trilobite_eazel_install_service:8ff6e815-1992-437c-9771-d932db3b4a17"
 
 static void
 xnautilus_service_install_download_failed (EazelInstallCallback *service, 
-				   const char *name,
-				   NautilusServiceInstallView *view)
+					   const char *name,
+					   NautilusServiceInstallView *view)
 {
 	fprintf (stdout, "Download of %s FAILED\n", name);
 }
@@ -94,17 +93,17 @@ xnautilus_service_install_failed (EazelInstallCallback *service,
 
 static void
 xnautilus_service_install_dependency_check (EazelInstallCallback *service,
-				    const PackageData *package,
-				    const PackageData *needs,
-				    NautilusServiceInstallView *view) 
+					    const PackageData *package,
+					    const PackageData *needs,
+					    NautilusServiceInstallView *view) 
 {
 	g_message ("Doing dependency check for %s - need %s\n", package->name, needs->name);
 }
 
 static void
 xnautilus_service_install_done (EazelInstallCallback *service,
-			       gboolean result,
-			       NautilusServiceInstallView *view)
+				gboolean result,
+				NautilusServiceInstallView *view)
 {
 	char *tmp;
 	eazel_install_callback_unref (GTK_OBJECT (service));
@@ -116,7 +115,7 @@ xnautilus_service_install_done (EazelInstallCallback *service,
 
 void 
 xnautilus_service_install_view_install_package_callback (GtkWidget *widget,
-                                                        NautilusServiceInstallView *view)
+							 NautilusServiceInstallView *view)
 {
 	GList *packages;
 	GList *categories;
@@ -178,7 +177,7 @@ xnautilus_service_install_view_install_package_callback (GtkWidget *widget,
 
 void 
 xnautilus_service_install_view_uninstall_package_callback (GtkWidget *widget,
-			                		  NautilusServiceInstallView *view)
+							   NautilusServiceInstallView *view)
 {
 	GList *packages;
 	GList *categories;
