@@ -838,13 +838,12 @@ desktop_icons_compare_callback (NautilusIconContainer *container,
 				FMDesktopIconView *icon_view)
 {
 	SortCategory category_a, category_b;
-
+	
 	category_a = get_sort_category (file_a);
 	category_b = get_sort_category (file_b);
 
-	/* Let the previous handler do the compare. */
 	if (category_a == category_b) {
-		return 0;
+		return nautilus_file_compare_for_sort (file_a, file_b, NAUTILUS_FILE_SORT_BY_NAME);
 	}
 
 	/* We know the answer, so prevent the other handlers

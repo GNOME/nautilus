@@ -749,7 +749,7 @@ set_sort_reversed (FMIconView *icon_view, gboolean new_value)
 		return FALSE;
 	}
 	icon_view->details->sort_reversed = new_value;
-
+	
 	/* Store the new sort setting. */
 	fm_icon_view_set_directory_sort_reversed (icon_view, fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (icon_view)), new_value);
 	

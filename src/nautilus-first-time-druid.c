@@ -139,6 +139,7 @@ static void     initiate_file_download           (GnomeDruid *druid);
 static gboolean set_http_proxy                   (const char *proxy_url);
 static gboolean attempt_http_proxy_autoconfigure (void);
 static gboolean check_network_connectivity	 (void);
+static void	add_nautilus_to_session 	 (void);
 static void	convert_gmc_desktop_icons 	 (void);
 
 
@@ -189,6 +190,10 @@ druid_finished (GtkWidget *druid_page)
 	char *user_main_directory, *desktop_path;
 	const char *signup_uris[2];
 	
+	
+	/* Hide druid so we don't have a blocked dialog visible while we process the startup tasks. */
+	gtk_widget_hide_all (gtk_widget_get_toplevel (druid_page));
+	
 	user_main_directory = nautilus_get_user_main_directory ();
 
 	g_free (user_main_directory);
@@ -236,6 +241,7 @@ druid_finished (GtkWidget *druid_page)
 	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP, draw_desktop);
 	
 	if (add_to_session) {
+		add_nautilus_to_session ();
 	}
 
 	if (transfer_gmc_icons) {
@@ -796,6 +802,12 @@ next_proxy_configuration_page_callback (GtkWidget *button, GnomeDruid *druid)
 	}
 	
 	return TRUE;
+}
+
+static void
+add_nautilus_to_session (void)
+{
+
 }
 
 static void

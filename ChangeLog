@@ -1,3 +1,23 @@
+2001-02-01  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+	
+	Fixed bug 6941, 'Clean Up By Name' feature on the desktop keep switching
+	file locations after being 'cleaned up'
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(desktop_icons_compare_callback):
+	In the case of identical links tpyes, compare by name.	
+		
+	More work on gmc transtion tool
+	
+	* src/nautilus-first-time-druid.c:
+	(druid_finished):
+	Hide druid widget before performing startup tasks.
+	
+	(next_proxy_configuration_page_callback),
+	(add_nautilus_to_session):
+
 2001-02-01  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: Gene Ragan <gzr@eazel.com>
