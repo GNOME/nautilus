@@ -1,3 +1,21 @@
+2000-03-24  Andy Hertzfeld <andy@eazel.com>
+
+	moved pixbuf special effect routines into libnautilus, to prepare for
+	adding selection hilighting and others
+	
+	* libnautilus/nautilus-graphic-effects.h:
+	header file for pixbuf graphic effects routines
+	* libnautilus/nautilus-graphic-effects.c:
+	moved create_spotlight_pixbuf and make_semi_transparent here,
+	fixed bug in create_spotlight_pixbuf by using separate rowstride for
+	the src and dst like Darin did for make_semi_transparent
+	* libnautilus/Makefile.am:
+	added nautilus-graphic-effects.c & .h
+	* libnautilus/nautilus-icon-canvas-item.c:
+	removed create_spotlight_pixbuf routine
+	* libnautilus/nautilus-icon-dnd.c:
+	removed make_semi_transparent routine
+	
 2000-03-23  John Sullivan  <sullivan@eazel.com>
 
 	Put sample merged menu item and merged toolbar item

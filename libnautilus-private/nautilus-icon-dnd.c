@@ -36,6 +36,8 @@
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-gnome-extensions.h"
 #include "nautilus-background.h"
+#include "nautilus-graphic-effects.h"
+
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include "nautilus-icon-private.h"
 
@@ -719,71 +721,6 @@ nautilus_icon_dnd_fini (NautilusIconContainer *container)
 	g_free (dnd_info);
 }
 
-/* this routine takes the source pixbuf and returns a new one that's semi-transparent, by
-   clearing every other pixel's alpha value in a checkerboard grip.  We have to do the
-   checkerboard instead of reducing the alpha since it will be turned into an alpha-less
-   gdkpixmap and mask for the actual dragging */
-
-/* FIXME: this should probably be in a graphics effects library instead of here */
-
-static GdkPixbuf * 
-make_semi_transparent(GdkPixbuf *source_pixbuf)
-{
-	gint i, j, temp_alpha;
-	gint width, height, has_alpha, src_rowstride, dst_rowstride;
-	guchar *target_pixels;
-	guchar *original_pixels;
-	guchar *pixsrc;
-	guchar *pixdest;
-	guchar alpha_value;
-	GdkPixbuf *dest_pixbuf;
-	guchar start_alpha_value;
-	
-	has_alpha = gdk_pixbuf_get_has_alpha (source_pixbuf);
-	width = gdk_pixbuf_get_width (source_pixbuf);
-	height = gdk_pixbuf_get_height (source_pixbuf);
-	src_rowstride = gdk_pixbuf_get_rowstride (source_pixbuf);
-	
-	/* allocate the destination pixbuf to be a clone of the source */
-
-	dest_pixbuf = gdk_pixbuf_new (gdk_pixbuf_get_format (source_pixbuf),
-				      TRUE,
-				      gdk_pixbuf_get_bits_per_sample (source_pixbuf),
-				      width,
-				      height);
-	dst_rowstride = gdk_pixbuf_get_rowstride (dest_pixbuf);
-	
-	/* set up pointers to the actual pixels */
-	target_pixels = gdk_pixbuf_get_pixels (dest_pixbuf);
-	original_pixels = gdk_pixbuf_get_pixels (source_pixbuf);
-
-	/* loop through the pixels to do the actual work, copying from the source to the destination */
-	
-	start_alpha_value = ~0;
-	for (i = 0; i < height; i++) {
-		pixdest = target_pixels + i * dst_rowstride;
-		pixsrc = original_pixels + i * src_rowstride;
-		alpha_value = start_alpha_value;
-		for (j = 0; j < width; j++) {
-			*pixdest++ = *pixsrc++; /* red */
-			*pixdest++ = *pixsrc++; /* green */
-			*pixdest++ = *pixsrc++; /* blue */
-			
-			if (has_alpha) {
-				temp_alpha = *pixsrc++;
-			} else {
-				temp_alpha = ~0;
-			}
-			*pixdest++ = temp_alpha & alpha_value;
-			
-			alpha_value = ~alpha_value;
-		}
-		
-		start_alpha_value = ~start_alpha_value;
-	}
-	
-	return dest_pixbuf;
-}
 
 void
 nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,

@@ -39,6 +39,7 @@
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-gnome-extensions.h"
+#include "nautilus-graphic-effects.h"
 
 #define STRETCH_HANDLE_THICKNESS 5
 #define EMBLEM_SPACING 2
@@ -911,65 +912,6 @@ draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
 					     GDK_PIXBUF_ALPHA_BILEVEL, 128, GDK_RGB_DITHER_MAX,
 					     0, 0);
 
-}
-
-/* graphics routine to lighten a pixbuf */
-/* FIXME: should be in a graphics library somewhere */
-
-static guchar
-lighten_component (guchar cur_value)
-{
-	int new_value = cur_value;
-	new_value += 24 + (new_value >> 3);
-	if (new_value > 255)
-		new_value = 255;
-	return (guchar) new_value;
-}
-
-static void
-do_lighten (GdkPixbuf *dest, GdkPixbuf *src)
-{
-	int i, j;
-	int width, height, has_alpha, rowstride;
-	guchar *target_pixels;
-	guchar *original_pixels;
-	guchar *pixsrc;
-	guchar *pixdest;
-	
-	has_alpha = gdk_pixbuf_get_has_alpha (src);
-	width = gdk_pixbuf_get_width (src);
-	height = gdk_pixbuf_get_height (src);
-	rowstride = gdk_pixbuf_get_rowstride (src);
-	target_pixels = gdk_pixbuf_get_pixels (dest);
-	original_pixels = gdk_pixbuf_get_pixels (src);
-
-	for (i = 0; i < height; i++) {
-		pixdest = target_pixels + i*rowstride;
-		pixsrc = original_pixels + i*rowstride;
-		for (j = 0; j < width; j++) {		
-			*(pixdest++) = lighten_component(*(pixsrc++));
-			*(pixdest++) = lighten_component(*(pixsrc++));
-			*(pixdest++) = lighten_component(*(pixsrc++));
-			if (has_alpha) {
-				*(pixdest++) = *(pixsrc++);
-			}
-		}
-	}
-}
-
-/* utility routine to lighten a pixbuf for pre-lighting */
-
-static GdkPixbuf *
-create_spotlight_pixbuf (GdkPixbuf* source_pixbuf)
-{
-	GdkPixbuf *new = gdk_pixbuf_new (gdk_pixbuf_get_format (source_pixbuf),
-					 gdk_pixbuf_get_has_alpha (source_pixbuf),
-					 gdk_pixbuf_get_bits_per_sample (source_pixbuf),
-					 gdk_pixbuf_get_width (source_pixbuf),
-					 gdk_pixbuf_get_height (source_pixbuf));
-	do_lighten (new, source_pixbuf);
-
-	return new;
 }
 
 /* Draw the icon item. */

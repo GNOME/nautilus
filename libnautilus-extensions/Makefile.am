@@ -42,6 +42,7 @@ libnautilusinclude_HEADERS=			\
 	nautilus-glib-extensions.h		\
 	nautilus-global-preferences.h		\
 	nautilus-gnome-extensions.h		\
+	nautilus-graphic-effects.h		\
 	nautilus-gtk-extensions.h		\
 	nautilus-icon-container.h		\
 	nautilus-icon-factory.h			\
@@ -77,6 +78,7 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	nautilus-glib-extensions.c		\
 	nautilus-global-preferences.c		\
 	nautilus-gnome-extensions.c		\
+	nautilus-graphic-effects.c		\
 	nautilus-gtk-extensions.c		\
 	nautilus-icon-canvas-item.c       	\
 	nautilus-icon-container.c		\
