@@ -710,7 +710,7 @@ text_attribute_names_changed_callback (gpointer user_data)
 	}
 }
 
-/* FIXME: 
+/* FIXME bugzilla.eazel.com 1856: 
  * This #include and the call to nautilus_directory_async_state_changed
  * are a hack to get the embedded text to appear if the preference started
  * out off but gets turned on. This is obviously not the right API, but
