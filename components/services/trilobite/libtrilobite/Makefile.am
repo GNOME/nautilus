@@ -81,6 +81,7 @@ libtrilobite_la_SOURCES =			\
 	$(NULL)
 
 noinst_HEADERS = \
+	trilobite-service-passwordquery-private.h	\
 	trilobite-root-client-private.h		\
 	trilobite-service-private.h		\
 	trilobite-service-private.h		\
@@ -111,6 +112,7 @@ CLEANFILES= $(TRILOBITE_CORBA_GENERATED) idl_stamp
 trilobite-service.c: trilobite-service.h
 
 EXTRA_DIST = \
+	trilobite-service-passwordquery-private.h	\
 	trilobite-root-client-private.h		\
 	trilobite-service-private.h		\
 	trilobite-service-private.h		\
