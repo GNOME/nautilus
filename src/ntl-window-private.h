@@ -63,9 +63,9 @@ void nautilus_window_edit_bookmarks (NautilusWindow *window);
 void nautilus_window_initialize_menus (NautilusWindow *window);
 void nautilus_window_initialize_toolbars (NautilusWindow *window);
 
-void nautilus_window_back_cb (GtkWidget *widget, NautilusWindow *window);
-void nautilus_window_forward_cb (GtkWidget *widget, NautilusWindow *window);
-void nautilus_window_up_cb (GtkWidget *widget, NautilusWindow *window);
-void nautilus_window_home_cb (GtkWidget *widget, NautilusWindow *window);
+void nautilus_window_go_back (NautilusWindow *window);
+void nautilus_window_go_forward (NautilusWindow *window);
+void nautilus_window_go_up (NautilusWindow *window);
+void nautilus_window_go_home (NautilusWindow *window);
 
 #endif

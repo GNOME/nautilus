@@ -36,15 +36,16 @@
 typedef struct FMDirectoryView FMDirectoryView;
 typedef struct FMDirectoryViewClass FMDirectoryViewClass;
 
-/* Paths to use when creating & referring to bonobo menu items */
+/* Paths to use when creating & referring to bonobo menu items.
+ * These are the new ones defined by FMDirectoryView. The
+ * Nautilus-wide ones are in <libnautilus/nautilus-bonobo-ui.h>
+ */
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN                      	"/File/Open"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW        	"/File/OpenNew"
-#define FM_DIRECTORY_VIEW_MENU_PATH_CLOSE                     	"/File/Close"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_AFTER_CLOSE	"/File/SeparatorAfterClose"
 #define FM_DIRECTORY_VIEW_MENU_PATH_DELETE                    	"/File/Delete"
 #define FM_DIRECTORY_VIEW_MENU_PATH_TRASH                    	"/File/Trash"
 #define FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE                 	"/File/Duplicate"
-#define FM_DIRECTORY_VIEW_MENU_PATH_SELECT_ALL                	"/Edit/Select All"
 #define FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH                	"/File/Empty Trash"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES            	"/File/Set Properties"
 

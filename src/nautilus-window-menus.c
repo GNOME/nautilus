@@ -30,6 +30,8 @@
 #include "ntl-window-private.h"
 #include "libnautilus-extensions/nautilus-undo-manager.h"
 
+#include <libnautilus/nautilus-bonobo-ui.h>
+
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -37,34 +39,18 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 
-
-static void                  edit_menu_undo_callback             (GtkWidget *widget,
-								  gpointer data) ;
-static void                  edit_menu_cut_cb                    (GtkWidget *widget,
-								  gpointer data) ;
-static void                  edit_menu_copy_cb                   (GtkWidget *widget,
-								  gpointer data) ;
-static void                  edit_menu_paste_cb                  (GtkWidget *widget,
-								  gpointer data) ; 
-static void                  edit_menu_clear_cb                  (GtkWidget *widget,
-								  gpointer data) ; 
 static void                  activate_bookmark_in_menu_item      (BonoboUIHandler *uih, 
                                                                   gpointer user_data, 
                                                                   const char *path);
 static void                  append_bookmark_to_menu             (NautilusWindow *window, 
                                                                   const NautilusBookmark *bookmark, 
                                                                   const char *menu_item_path);
-static void                  append_separator_to_menu            (NautilusWindow *window, 
-                                                                  const char *separator_path);
 static void                  clear_appended_bookmark_items       (NautilusWindow *window, 
                                                                   const char *menu_path, 
                                                                   const char *last_static_item_path);
 static NautilusBookmarkList *get_bookmark_list                   (void);
 static GtkWidget            *get_bookmarks_window                (void);
-static void                  nautilus_window_about_cb            (GtkWidget *widget,
-                                                                  NautilusWindow *window);
-static void                  debug_menu_show_color_picker_cb     (GtkWidget *widget, 
-                                                                  NautilusWindow *window);
+
 static void                  refresh_bookmarks_in_go_menu        (NautilusWindow *window);
 static void                  refresh_bookmarks_in_bookmarks_menu (NautilusWindow *window);
 static void                  update_eazel_theme_menu_item        (NautilusWindow *window);
@@ -76,134 +62,104 @@ typedef struct {
         NautilusWindow *window;
 } BookmarkHolder;
 
+/* Private menu definitions; others are in <libnautilus/nautilus-bonobo-ui.h>.
+ * These are not part of the published set, either because they are
+ * development-only (e.g. Debug) or because we expect to change them and
+ * don't want other code relying on their existence.
+ */
+#define NAUTILUS_MENU_PATH_GENERAL_SETTINGS_ITEM	"/Settings/General Settings"
+#define NAUTILUS_MENU_PATH_USE_EAZEL_THEME_ICONS_ITEM	"/Settings/Use Eazel Theme Icons"
+#define NAUTILUS_MENU_PATH_DEBUG_MENU			"/Debug"
+#define NAUTILUS_MENU_PATH_SHOW_COLOR_SELECTOR_ITEM	"/Debug/Show Color Selector"
 
-/* menu definitions */
 
 static void
-file_menu_close_cb (GtkWidget *widget,
-                    gpointer data)
-{
-        g_assert (NAUTILUS_IS_WINDOW (data));
-	nautilus_window_close (NAUTILUS_WINDOW (data));
-}
-
-static void
-file_menu_new_window_cb (GtkWidget *widget,
-                         gpointer data)
+file_menu_new_window_callback (BonoboUIHandler *ui_handler, 
+			       gpointer user_data, 
+			       const char *path)
 {
   NautilusWindow *current_mainwin;
   NautilusWindow *new_mainwin;
 
-  g_return_if_fail(NAUTILUS_IS_WINDOW(data));
+  g_return_if_fail (NAUTILUS_IS_WINDOW (user_data));
   
-  current_mainwin = NAUTILUS_WINDOW(data);
+  current_mainwin = NAUTILUS_WINDOW (user_data);
 
-  new_mainwin = nautilus_app_create_window(NAUTILUS_APP(current_mainwin->app));
+  new_mainwin = nautilus_app_create_window (NAUTILUS_APP (current_mainwin->app));
 
-  nautilus_window_goto_uri(new_mainwin, 
-                           nautilus_window_get_requested_uri(current_mainwin));
+  nautilus_window_goto_uri (new_mainwin, 
+                            nautilus_window_get_requested_uri (current_mainwin));
 
-  gtk_widget_show(GTK_WIDGET(new_mainwin));
+  gtk_widget_show (GTK_WIDGET (new_mainwin));
 }
 
 static void
-file_menu_exit_cb (GtkWidget *widget,
-                   gpointer data)
+file_menu_close_window_callback (BonoboUIHandler *ui_handler, 
+			         gpointer user_data, 
+			         const char *path)
+{
+        g_assert (NAUTILUS_IS_WINDOW (user_data));
+	nautilus_window_close (NAUTILUS_WINDOW (user_data));
+}
+
+static void
+file_menu_exit_callback (BonoboUIHandler *ui_handler, 
+			 gpointer user_data, 
+			 const char *path)
 {
 	gtk_main_quit ();
 }
 
 static void
-general_settings_cb (GtkWidget *widget,
-                     GtkWindow *mainwin)
-{
-	nautilus_global_preferences_show_dialog ();
-}
-
-static GnomeUIInfo file_menu_info[] = {
-  {
-    GNOME_APP_UI_ITEM,
-    N_("New Window"), N_("Create a new window"),
-    file_menu_new_window_cb, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    'N', GDK_CONTROL_MASK, NULL
-  },
-  GNOMEUIINFO_MENU_CLOSE_ITEM(file_menu_close_cb, NULL),
-  GNOMEUIINFO_SEPARATOR,
-  GNOMEUIINFO_MENU_EXIT_ITEM(file_menu_exit_cb, NULL),
-  GNOMEUIINFO_END
-};
-
-/* These items are always present, but they're insensitive unless
- * a component has merged a sensitive item over them.
- * Except the undo item...
- */
-static GnomeUIInfo edit_menu_info[] = {
-  GNOMEUIINFO_MENU_UNDO_ITEM(edit_menu_undo_callback, NULL),
-  GNOMEUIINFO_SEPARATOR,
-  GNOMEUIINFO_MENU_CUT_ITEM(edit_menu_cut_cb, NULL),
-  GNOMEUIINFO_MENU_COPY_ITEM(edit_menu_copy_cb, NULL),
-  GNOMEUIINFO_MENU_PASTE_ITEM(edit_menu_paste_cb, NULL),
-  GNOMEUIINFO_MENU_CLEAR_ITEM(edit_menu_clear_cb, NULL),
-  GNOMEUIINFO_SEPARATOR,
-  /* Didn't use standard SELECT_ALL_ITEM 'cuz it didn't have accelerator */
-  {
-    GNOME_APP_UI_ITEM,
-    N_("Select All"), NULL,
-    NULL, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    'A', GDK_CONTROL_MASK, NULL
-  },
-  GNOMEUIINFO_END
-};
-
-
-static void
-edit_menu_undo_callback (GtkWidget *widget, gpointer data) 
+edit_menu_undo_callback (BonoboUIHandler *ui_handler, 
+		  	 gpointer user_data, 
+		  	 const char *path) 
 {
 	if (nautilus_undo_manager_can_undo ())
 		nautilus_undo_manager_undo_last_transaction ();
 }
 
 static void
-edit_menu_cut_cb (GtkWidget *widget,
-		  gpointer data) 
+edit_menu_cut_callback (BonoboUIHandler *ui_handler, 
+		  	gpointer user_data, 
+		  	const char *path) 
 {
 	GtkWindow *main_window;
-	
-	g_assert (GTK_IS_WINDOW (data));
-	main_window=GTK_WINDOW (data);
 
-        if (GTK_IS_EDITABLE (main_window->focus_widget)) {
+	g_assert (GTK_IS_WINDOW (user_data));
+	main_window=GTK_WINDOW (user_data);
+
+	if (GTK_IS_EDITABLE (main_window->focus_widget)) {
 		gtk_editable_cut_clipboard (GTK_EDITABLE (main_window->focus_widget));
 	}
+
 }
 
-
 static void
-edit_menu_copy_cb (GtkWidget *widget,
-		  gpointer data) 
+edit_menu_copy_callback (BonoboUIHandler *ui_handler, 
+		   	 gpointer user_data,
+		   	 const char *path) 
 {
 	GtkWindow *main_window;
 
-	g_assert (GTK_IS_WINDOW (data));
-	main_window=GTK_WINDOW (data);
+	g_assert (GTK_IS_WINDOW (user_data));
+	main_window=GTK_WINDOW (user_data);
 
 	if (GTK_IS_EDITABLE (main_window->focus_widget)) {
 		gtk_editable_copy_clipboard (GTK_EDITABLE (main_window->focus_widget));
 	}
 
-
 }
 
 
 static void
-edit_menu_paste_cb (GtkWidget *widget,
-		  gpointer data) 
+edit_menu_paste_callback (BonoboUIHandler *ui_handler, 
+		    	  gpointer user_data,
+		    	  const char *path) 
 {
 	GtkWindow *main_window;
 
-	main_window=GTK_WINDOW (data);
+	main_window=GTK_WINDOW (user_data);
 	if (GTK_IS_EDITABLE (main_window->focus_widget)) {
 		gtk_editable_paste_clipboard (GTK_EDITABLE (main_window->focus_widget));
 	}
@@ -212,11 +168,12 @@ edit_menu_paste_cb (GtkWidget *widget,
 
 
 static void
-edit_menu_clear_cb (GtkWidget *widget,
-		  gpointer data) 
+edit_menu_clear_callback (BonoboUIHandler *ui_handler, 
+		    	  gpointer user_data,
+		    	  const char *path) 
 {
 	GtkWindow *main_window;
-	main_window=GTK_WINDOW (data);
+	main_window=GTK_WINDOW (user_data);
 	if (GTK_IS_EDITABLE (main_window->focus_widget)) {
 		/* A negative index deletes until the end of the string */
 		gtk_editable_delete_text (GTK_EDITABLE (main_window->focus_widget),0, -1);
@@ -224,93 +181,74 @@ edit_menu_clear_cb (GtkWidget *widget,
 
 }
 
-
-
-static GnomeUIInfo go_menu_info[] = {
-  {
-    GNOME_APP_UI_ITEM,
-    N_("Back"), N_("Go to the previous visited location"),
-    nautilus_window_back_cb, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    'B', GDK_CONTROL_MASK, NULL
-  },
-  {
-    GNOME_APP_UI_ITEM,
-    N_("Forward"), N_("Go to the next visited location"),
-    nautilus_window_forward_cb, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    'F', GDK_CONTROL_MASK, NULL
-  },
-  {
-    GNOME_APP_UI_ITEM,
-    N_("Up"), N_("Go to the location that contains this one"),
-    nautilus_window_up_cb, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    'U', GDK_CONTROL_MASK, NULL
-  },
-  {
-    GNOME_APP_UI_ITEM,
-    N_("Home"), N_("Go to the home location"),
-    nautilus_window_home_cb, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    'H', GDK_CONTROL_MASK, NULL
-  },
-  GNOMEUIINFO_END
-};
-
 static void
-add_bookmark_cb (GtkMenuItem* item, gpointer func_data)
+go_menu_back_callback (BonoboUIHandler *ui_handler, 
+		       gpointer user_data,
+		       const char *path) 
 {
-	g_return_if_fail(NAUTILUS_IS_WINDOW (func_data));
-
-        nautilus_window_add_bookmark_for_current_location (NAUTILUS_WINDOW (func_data));
-}
-
-/* handle the OK button being pushed on the color selector */
-/* for now, just vanquish it, since it's only for testing */
-static void
-debug_color_confirm (GtkWidget *widget)
-{
-	gtk_widget_destroy (gtk_widget_get_toplevel (widget));
-}
-
-static void 
-debug_menu_show_color_picker_cb (GtkWidget *btn, NautilusWindow *window)
-{
-	GtkWidget *c;
-
-	c = gtk_color_selection_dialog_new (_("Color selector"));
-	gtk_signal_connect (GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (c)->ok_button),
-			    "clicked", GTK_SIGNAL_FUNC (debug_color_confirm), c);
-	gtk_widget_hide (GTK_COLOR_SELECTION_DIALOG (c)->cancel_button);
-	gtk_widget_hide (GTK_COLOR_SELECTION_DIALOG (c)->help_button);
-	gtk_widget_show (c);
+	g_assert (NAUTILUS_IS_WINDOW (user_data));
+	nautilus_window_go_back (NAUTILUS_WINDOW (user_data));
 }
 
 static void
-edit_bookmarks_cb(GtkMenuItem* item, gpointer user_data)
+go_menu_forward_callback (BonoboUIHandler *ui_handler, 
+		       	  gpointer user_data,
+		          const char *path) 
+{
+	g_assert (NAUTILUS_IS_WINDOW (user_data));
+	nautilus_window_go_forward (NAUTILUS_WINDOW (user_data));
+}
+
+static void
+go_menu_up_callback (BonoboUIHandler *ui_handler, 
+		     gpointer user_data,
+		     const char *path) 
+{
+	g_assert (NAUTILUS_IS_WINDOW (user_data));
+	nautilus_window_go_up (NAUTILUS_WINDOW (user_data));
+}
+
+static void
+go_menu_home_callback (BonoboUIHandler *ui_handler, 
+		       gpointer user_data,
+		       const char *path) 
+{
+	g_assert (NAUTILUS_IS_WINDOW (user_data));
+	nautilus_window_go_home (NAUTILUS_WINDOW (user_data));
+}
+
+static void
+bookmarks_menu_add_bookmark_callback (BonoboUIHandler *ui_handler, 
+		       		      gpointer user_data,
+		      		      const char *path)
+{
+	g_return_if_fail(NAUTILUS_IS_WINDOW (user_data));
+
+        nautilus_window_add_bookmark_for_current_location (NAUTILUS_WINDOW (user_data));
+}
+
+static void
+bookmarks_menu_edit_bookmarks_callback (BonoboUIHandler *ui_handler, 
+		       		      	gpointer user_data,
+		      		      	const char *path)
 {
         g_return_if_fail (NAUTILUS_IS_WINDOW (user_data));
 
         nautilus_window_edit_bookmarks (NAUTILUS_WINDOW (user_data));
 }
 
-static GnomeUIInfo bookmarks_menu_info[] = {
-  { 
-    GNOME_APP_UI_ITEM, 
-    N_("_Add Bookmark"),
-    N_("Add a bookmark for the current location to this menu."),
-    (gpointer)add_bookmark_cb, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL, 0, (GdkModifierType) 0, NULL
-  },
-  GNOMEUIINFO_ITEM_NONE(N_("_Edit Bookmarks..."), 
-  		        N_("Display a window that allows editing the bookmarks in this menu."), 
-		        edit_bookmarks_cb),
-  GNOMEUIINFO_END
-};
+static void
+settings_menu_general_settings_callback (BonoboUIHandler *ui_handler, 
+		       		      	 gpointer user_data,
+		      		      	 const char *path)
+{
+	nautilus_global_preferences_show_dialog ();
+}
 
 static void
-use_eazel_theme_icons_cb (GtkCheckMenuItem *item, gpointer user_data)
+settings_menu_use_eazel_theme_icons_callback (BonoboUIHandler *ui_handler, 
+		       		      	      gpointer user_data,
+		      		      	      const char *path)
 {
 	char *current_theme;
 	char *new_theme;
@@ -327,54 +265,61 @@ use_eazel_theme_icons_cb (GtkCheckMenuItem *item, gpointer user_data)
 	g_free (current_theme);
 }
 
-static GnomeUIInfo settings_menu_info[] = {
+static void
+help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler, 
+		       		   gpointer user_data,
+		      		   const char *path)
+{
+  static GtkWidget *aboot = NULL;
+
+  if (aboot == NULL)
   {
-    GNOME_APP_UI_ITEM,
-    N_("_General Settings..."), N_("Customize various aspects of Nautilus's appearance and behavior"),
-    general_settings_cb, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL,
-    0, 0, NULL
-  },
-  GNOMEUIINFO_SEPARATOR,
-  { 
-    GNOME_APP_UI_TOGGLEITEM, 
-    N_("Use _Eazel Theme Icons"),
-    N_("Select whether to use standard or Eazel icons"), 
-    use_eazel_theme_icons_cb, NULL, NULL,
-    GNOME_APP_PIXMAP_NONE, NULL, 
-    0, (GdkModifierType)0, NULL 
-  },
-  GNOMEUIINFO_END
-};
+    const char *authors[] = {
+      "Darin Adler",
+      "Ramiro Estrugo",
+      "Andy Hertzfeld",
+      "Elliot Lee",
+      "Ettore Perazzoli",
+      "Maciej Stachowiak",
+      "John Sullivan",
+      NULL
+    };
 
-static GnomeUIInfo help_menu_info[] = {
-  {
-    GNOME_APP_UI_ITEM,
-    N_("About Nautilus..."), N_("Info about the Nautilus program"),
-    nautilus_window_about_cb, NULL, NULL,
-    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_ABOUT,
-    0, 0, NULL
-  },
-  GNOMEUIINFO_END
-};
+    aboot = gnome_about_new(_("Nautilus"),
+                            VERSION,
+                            "Copyright (C) 1999, 2000",
+                            authors,
+                            _("The Cool Shell Program"),
+                            "nautilus/nautilus3.jpg");
 
-static GnomeUIInfo debug_menu_info [] = {
-	GNOMEUIINFO_ITEM_NONE (N_("Show Color selector..."), N_("Show the color picker window"), debug_menu_show_color_picker_cb),
-	GNOMEUIINFO_END
-};
+    gnome_dialog_close_hides (GNOME_DIALOG (aboot), TRUE);
+  }
 
+  nautilus_gtk_window_present (GTK_WINDOW (aboot));
+}
 
-static GnomeUIInfo main_menu[] = {
-  GNOMEUIINFO_MENU_FILE_TREE (file_menu_info),
-  GNOMEUIINFO_MENU_EDIT_TREE (edit_menu_info),
-  GNOMEUIINFO_SUBTREE(N_("_Go"), go_menu_info),
-  GNOMEUIINFO_SUBTREE(N_("_Bookmarks"), bookmarks_menu_info),
-  GNOMEUIINFO_MENU_SETTINGS_TREE (settings_menu_info),
-  GNOMEUIINFO_MENU_HELP_TREE (help_menu_info),
-  GNOMEUIINFO_SUBTREE(N_("_Debug"), debug_menu_info),
-  GNOMEUIINFO_END
-};
+/* handle the OK button being pushed on the color selector */
+/* for now, just vanquish it, since it's only for testing */
+static void
+debug_color_confirm (GtkWidget *widget)
+{
+	gtk_widget_destroy (gtk_widget_get_toplevel (widget));
+}
 
+static void 
+debug_menu_show_color_picker_callback (BonoboUIHandler *ui_handler, 
+		       		       gpointer user_data,
+		      		       const char *path)
+{
+	GtkWidget *c;
+
+	c = gtk_color_selection_dialog_new (_("Color selector"));
+	gtk_signal_connect (GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (c)->ok_button),
+			    "clicked", GTK_SIGNAL_FUNC (debug_color_confirm), c);
+	gtk_widget_hide (GTK_COLOR_SELECTION_DIALOG (c)->cancel_button);
+	gtk_widget_hide (GTK_COLOR_SELECTION_DIALOG (c)->help_button);
+	gtk_widget_show (c);
+}
 
 static void
 activate_bookmark_in_menu_item (BonoboUIHandler *uih, gpointer user_data, const char *path)
@@ -428,22 +373,6 @@ append_bookmark_to_menu (NautilusWindow *window,
 					 activate_bookmark_in_menu_item,
 					 bookmark_holder);
 	g_free (name);
-}
-
-static void
-append_separator_to_menu (NautilusWindow *window, const char *separator_path)
-{
-        bonobo_ui_handler_menu_new_item (window->uih,
-                                         separator_path,
-                                         NULL,
-                                         NULL,
-                                         -1,
-                                         BONOBO_UI_HANDLER_PIXMAP_NONE,
-                                         NULL,
-                                         0,
-                                         0,
-                                         NULL,
-                                         NULL);
 }
 
 /**
@@ -524,46 +453,6 @@ void
 nautilus_bookmarks_exiting (void)
 {
 	nautilus_bookmarks_window_save_geometry (get_bookmarks_window ());
-}
-
-/**
- * nautilus_window_about_cb:
- * 
- * Display about box, creating it first if necessary. Callback used when 
- * user selects "About Nautilus".
- * @widget: ignored
- * @window: ignored
- **/
-static void
-nautilus_window_about_cb (GtkWidget *widget,
-                          NautilusWindow *window)
-{
-  static GtkWidget *aboot = NULL;
-
-  if (aboot == NULL)
-  {
-    const char *authors[] = {
-      "Darin Adler",
-      "Ramiro Estrugo",
-      "Andy Hertzfeld",
-      "Elliot Lee",
-      "Ettore Perazzoli",
-      "Maciej Stachowiak",
-      "John Sullivan",
-      NULL
-    };
-
-    aboot = gnome_about_new(_("Nautilus"),
-                            VERSION,
-                            "Copyright (C) 1999, 2000",
-                            authors,
-                            _("The Cool Shell Program"),
-                            "nautilus/nautilus3.jpg");
-
-    gnome_dialog_close_hides (GNOME_DIALOG (aboot), TRUE);
-  }
-
-  nautilus_gtk_window_present (GTK_WINDOW (aboot));
 }
 
 /**
@@ -650,6 +539,33 @@ nautilus_window_initialize_go_menu (NautilusWindow *window)
 
 }
 
+static void
+append_separator (NautilusWindow *window, const char *separator_path)
+{
+        bonobo_ui_handler_menu_new_separator (window->uih,
+                                              separator_path,
+                                              -1);
+}
+
+static void
+new_top_level_menu (NautilusWindow *window, 
+		    const char *menu_path,
+		    const char *title)
+{
+	/* Note that we don't bother with hints for menu titles.
+	 * We can revisit this anytime if someone thinks they're useful.
+	 */
+	bonobo_ui_handler_menu_new_subtree (window->uih,
+					    menu_path,
+					    title,
+					    NULL,
+					    -1,
+					    BONOBO_UI_HANDLER_PIXMAP_NONE,
+					    NULL,
+					    0,
+					    0);
+}				    
+
 /**
  * nautilus_window_initialize_menus
  * 
@@ -660,25 +576,282 @@ void
 nautilus_window_initialize_menus (NautilusWindow *window)
 {
         BonoboUIHandler *ui_handler;
-        BonoboUIHandlerMenuItem *menu_items;
 
         ui_handler = window->uih;
         g_assert (ui_handler != NULL);
         
         bonobo_ui_handler_create_menubar (ui_handler);
 
-        /* Convert the menu items from their GnomeUIInfo form.
-         * Maybe we should eliminate this initial form altogether.
-         */
-        menu_items = bonobo_ui_handler_menu_parse_uiinfo_list_with_data (main_menu, window);
-        bonobo_ui_handler_menu_add_list (ui_handler, "/", menu_items);
-        bonobo_ui_handler_menu_free_list (menu_items);
+	/* File menu */
+        new_top_level_menu (window, NAUTILUS_MENU_PATH_FILE_MENU, _("_File"));
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM,
+        				 _("_New Window"),
+        				 _("Create a new window"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
+        				 GNOME_STOCK_MENU_NEW,
+        				 GNOME_KEY_NAME_NEW,
+        				 GNOME_KEY_MOD_NEW,
+        				 file_menu_new_window_callback,
+        				 window);
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_CLOSE_ITEM,
+        				 _("_Close Window"),
+        				 _("Close this window"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
+        				 GNOME_STOCK_MENU_CLOSE,
+        				 GNOME_KEY_NAME_CLOSE,
+        				 GNOME_KEY_MOD_CLOSE,
+        				 file_menu_close_window_callback,
+        				 window);
+
+        append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_EXIT);
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_EXIT_ITEM,
+        				 _("_Exit"),
+        				 _("Exit from Nautilus"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
+        				 GNOME_STOCK_MENU_EXIT,
+        				 GNOME_KEY_NAME_EXIT,
+        				 GNOME_KEY_MOD_EXIT,
+        				 file_menu_exit_callback,
+        				 NULL);
+
+
+	/* Edit menu */
+        new_top_level_menu (window, NAUTILUS_MENU_PATH_EDIT_MENU, _("_Edit"));
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_UNDO_ITEM,
+        				 _("_Undo"),
+        				 _("Undo the last text change"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
+        				 GNOME_STOCK_MENU_UNDO,
+        				 GNOME_KEY_NAME_UNDO,
+        				 GNOME_KEY_MOD_UNDO,
+        				 edit_menu_undo_callback,
+        				 NULL);
+
+        append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_AFTER_UNDO);
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_CUT_ITEM,
+        				 _("_Cut Text"),
+        				 _("Cuts the selected text to the clipboard"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
+        				 GNOME_STOCK_MENU_CUT,
+        				 GNOME_KEY_NAME_CUT,
+        				 GNOME_KEY_MOD_CUT,
+        				 edit_menu_cut_callback,
+        				 window);
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_COPY_ITEM,
+        				 _("_Copy Text"),
+        				 _("Copies the selected text to the clipboard"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
+        				 GNOME_STOCK_MENU_COPY,
+        				 GNOME_KEY_NAME_COPY,
+        				 GNOME_KEY_MOD_COPY,
+        				 edit_menu_copy_callback,
+        				 window);
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_PASTE_ITEM,
+        				 _("_Paste Text"),
+        				 _("Pastes the text stored on the clipboard"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
+        				 GNOME_STOCK_MENU_PASTE,
+        				 GNOME_KEY_NAME_PASTE,
+        				 GNOME_KEY_MOD_PASTE,
+        				 edit_menu_paste_callback,
+        				 window);
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_CLEAR_ITEM,
+        				 _("C_lear Text"),
+        				 _("Removes the selected text without putting it on the clipboard"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 GNOME_KEY_NAME_CLEAR,
+        				 GNOME_KEY_MOD_CLEAR,
+        				 edit_menu_clear_callback,
+        				 window);
+
+        append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_AFTER_CLEAR);
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_SELECT_ALL_ITEM,
+        				 _("_Select All"),
+        				 NULL,	/* No hint since it's insensitive here */
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 'A',	/* Keyboard shortcut applies to overriders too */
+        				 GDK_CONTROL_MASK,
+        				 NULL,
+        				 NULL);
+
+	/* Go menu */
+        new_top_level_menu (window, NAUTILUS_MENU_PATH_GO_MENU, _("_Go"));
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_BACK_ITEM,
+        				 _("_Back"),
+        				 _("Go to the previous visited location"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 'B',
+        				 GDK_CONTROL_MASK,
+        				 go_menu_back_callback,
+        				 window);
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_FORWARD_ITEM,
+        				 _("_Forward"),
+        				 _("Go to the next visited location"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 'F',
+        				 GDK_CONTROL_MASK,
+        				 go_menu_forward_callback,
+        				 window);
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_UP_ITEM,
+        				 _("_Up"),
+        				 _("Go to the location that contains this one"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 'U',
+        				 GDK_CONTROL_MASK,
+        				 go_menu_up_callback,
+        				 window);
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_HOME_ITEM,
+        				 _("_Home"),
+        				 _("Go to the home location"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 'H',
+        				 GDK_CONTROL_MASK,
+        				 go_menu_home_callback,
+        				 window);
+
+        append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_HISTORY);
+
+        
+	/* Bookmarks */
+        new_top_level_menu (window, NAUTILUS_MENU_PATH_BOOKMARKS_MENU, _("_Bookmarks"));
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_ADD_BOOKMARK_ITEM,
+        				 _("_Add Bookmark"),
+        				 _("Add a bookmark for the current location to this menu"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 0,
+        				 0,
+        				 bookmarks_menu_add_bookmark_callback,
+        				 window);
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_EDIT_BOOKMARKS_ITEM,
+        				 _("_Edit Bookmarks..."),
+        				 _("Display a window that allows editing the bookmarks in this menu"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 0,
+        				 0,
+        				 bookmarks_menu_edit_bookmarks_callback,
+        				 window);
+	/* Settings */
+        new_top_level_menu (window, NAUTILUS_MENU_PATH_SETTINGS_MENU, _("_Settings"));
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_GENERAL_SETTINGS_ITEM,
+        				 _("_General Settings..."),
+        				 _("Customize various aspects of Nautilus's appearance and behavior"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 0,
+        				 0,
+        				 settings_menu_general_settings_callback,
+        				 NULL);
+
+	/* It's called SEPARATOR_AFTER_USER_LEVELS because "General Settings" is
+	 * going to expand into the user level choices plus the choice that brings
+	 * up the user-level-details customizing dialog.
+	 */
+        append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_AFTER_USER_LEVELS);
+
+        bonobo_ui_handler_menu_new_toggleitem (ui_handler,
+        				       NAUTILUS_MENU_PATH_USE_EAZEL_THEME_ICONS_ITEM,
+        				       _("Use _Eazel Theme Icons"),
+        				       _("Select whether to use standard or Eazel icons"),
+        				       -1,
+        				       0,
+        				       0,
+        				       settings_menu_use_eazel_theme_icons_callback,
+        				       NULL);
+
+	/* Help */
+        new_top_level_menu (window, NAUTILUS_MENU_PATH_HELP_MENU, _("_Help"));
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_ABOUT_ITEM,
+        				 _("_About Nautilus..."),
+        				 _("Displays information about the Nautilus program"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_STOCK,
+        				 GNOME_STOCK_MENU_ABOUT,
+        				 0,
+        				 0,
+        				 help_menu_about_nautilus_callback,
+        				 NULL);
+
+	/* Debug */
+        new_top_level_menu (window, NAUTILUS_MENU_PATH_DEBUG_MENU, _("_Debug"));
+
+        bonobo_ui_handler_menu_new_item (ui_handler,
+        				 NAUTILUS_MENU_PATH_SHOW_COLOR_SELECTOR_ITEM,
+        				 _("Show _Color selector..."),
+        				 _("Show the color picker window"),
+        				 -1,
+        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
+        				 NULL,
+        				 0,
+        				 0,
+        				 debug_menu_show_color_picker_callback,
+        				 NULL);
+
 
         /* Desensitize the items that aren't implemented at this level.
          * Some (hopefully all) will be overridden by implementations by the
          * different content views.
          */
-        bonobo_ui_handler_menu_set_sensitivity(ui_handler, "/Edit/Select All", FALSE);
+        bonobo_ui_handler_menu_set_sensitivity(ui_handler, 
+        				       NAUTILUS_MENU_PATH_SELECT_ALL_ITEM, 
+        				       FALSE);
 
         /* Set initial toggle state of Eazel theme menu item */
         update_eazel_theme_menu_item (window);
@@ -712,13 +885,15 @@ refresh_bookmarks_in_bookmarks_menu (NautilusWindow *window)
 	bookmarks = get_bookmark_list ();
 
 	/* Remove old set of bookmarks. */
-	clear_appended_bookmark_items (window, "/Bookmarks", "/Bookmarks/Edit Bookmarks...");
+	clear_appended_bookmark_items (window, 
+				       NAUTILUS_MENU_PATH_BOOKMARKS_MENU, 
+				       NAUTILUS_MENU_PATH_EDIT_BOOKMARKS_ITEM);
 
 	bookmark_count = nautilus_bookmark_list_length (bookmarks);
 
         /* Add separator before bookmarks, unless there are no bookmarks. */
         if (bookmark_count > 0) {
-                append_separator_to_menu (window, "/Bookmarks/Separator");
+	        append_separator (window, NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_BOOKMARKS);
         }
 
 	/* append new set of bookmarks */
@@ -749,10 +924,9 @@ refresh_bookmarks_in_go_menu (NautilusWindow *window)
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	/* Remove old set of history items. */
-	clear_appended_bookmark_items (window, "/Go", "/Go/Home");
-
-        /* Add separator before history items */
-        append_separator_to_menu (window, "/Go/Separator");                                                                                  
+	clear_appended_bookmark_items (window, 
+				       NAUTILUS_MENU_PATH_GO_MENU, 
+				       NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_HISTORY);
 
 	/* Add in a new set of history items. */
 	index = 0;
@@ -777,7 +951,7 @@ update_eazel_theme_menu_item (NautilusWindow *window)
 	/* Change the state of the menu item without invoking our callback function. */
 	nautilus_bonobo_ui_handler_menu_set_toggle_appearance (
 		window->uih,
-		"/Settings/Use Eazel Theme Icons",
+		NAUTILUS_MENU_PATH_USE_EAZEL_THEME_ICONS_ITEM,
 		nautilus_eat_strcmp (nautilus_preferences_get (NAUTILUS_PREFERENCES_ICON_THEME,
 							       "default"), 
 				     "eazel") == 0);

@@ -37,7 +37,11 @@
 #include "nautilus-location-bar.h"
 #include "ntl-index-panel.h"
 #include "ntl-miniicon.h"
+
 #include <gdk-pixbuf/gdk-pixbuf.h>
+
+#include <libnautilus/nautilus-bonobo-ui.h>
+
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
@@ -803,13 +807,13 @@ nautilus_window_back_or_forward (NautilusWindow *window, gboolean back, guint di
 }
 
 void
-nautilus_window_back_cb (GtkWidget *widget, NautilusWindow *window)
+nautilus_window_go_back (NautilusWindow *window)
 {
   nautilus_window_back_or_forward (window, TRUE, 0);
 }
 
 void
-nautilus_window_forward_cb (GtkWidget *widget, NautilusWindow *window)
+nautilus_window_go_forward (NautilusWindow *window)
 {
   nautilus_window_back_or_forward (window, FALSE, 0);
 }
@@ -827,7 +831,7 @@ nautilus_window_get_uih(NautilusWindow *window)
 }
 
 void
-nautilus_window_up_cb (GtkWidget *widget, NautilusWindow *window)
+nautilus_window_go_up (NautilusWindow *window)
 {
   const char *requested_uri;
   GnomeVFSURI *current_uri;
@@ -850,7 +854,7 @@ nautilus_window_up_cb (GtkWidget *widget, NautilusWindow *window)
 }
 
 void
-nautilus_window_home_cb (GtkWidget *widget, NautilusWindow *window)
+nautilus_window_go_home (NautilusWindow *window)
 {
   nautilus_window_set_initial_state(window, NULL);
 }
@@ -860,21 +864,21 @@ void
 nautilus_window_allow_back (NautilusWindow *window, gboolean allow)
 {
    gtk_widget_set_sensitive(window->back_button, allow); 
-   bonobo_ui_handler_menu_set_sensitivity(window->uih, "/Go/Back", allow);
+   bonobo_ui_handler_menu_set_sensitivity(window->uih, NAUTILUS_MENU_PATH_BACK_ITEM, allow);
 }
 
 void
 nautilus_window_allow_forward (NautilusWindow *window, gboolean allow)
 {
    gtk_widget_set_sensitive(window->forward_button, allow); 
-   bonobo_ui_handler_menu_set_sensitivity(window->uih, "/Go/Forward", allow);
+   bonobo_ui_handler_menu_set_sensitivity(window->uih, NAUTILUS_MENU_PATH_FORWARD_ITEM, allow);
 }
 
 void
 nautilus_window_allow_up (NautilusWindow *window, gboolean allow)
 {
    gtk_widget_set_sensitive(window->up_button, allow); 
-   bonobo_ui_handler_menu_set_sensitivity(window->uih, "/Go/Up", allow);
+   bonobo_ui_handler_menu_set_sensitivity(window->uih, NAUTILUS_MENU_PATH_UP_ITEM, allow);
 }
 
 void

@@ -33,6 +33,7 @@ libnautilusincludedir=$(includedir)/libnautilus
 
 libnautilusinclude_HEADERS=			\
 	libnautilus.h				\
+	nautilus-bonobo-ui.h			\
 	nautilus-clipboard.h			\
 	nautilus-content-view-frame.h		\
 	nautilus-meta-view-frame.h		\

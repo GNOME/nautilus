@@ -31,8 +31,8 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 
 /* forward declarations */
-static void nautilus_window_reload_cb (GtkWidget *widget, NautilusWindow *window);
-static void nautilus_window_stop_cb (GtkWidget *widget, NautilusWindow *window);
+static void toolbar_reload_callback (GtkWidget *widget, NautilusWindow *window);
+static void toolbar_stop_callback (GtkWidget *widget, NautilusWindow *window);
 
 
 /* toolbar definitions */
@@ -46,27 +46,53 @@ static void nautilus_window_stop_cb (GtkWidget *widget, NautilusWindow *window);
 /* separator */
 #define TOOLBAR_STOP_BUTTON_INDEX	7
 
+
+static void
+toolbar_back_callback (GtkWidget *widget, NautilusWindow *window)
+{
+  nautilus_window_go_back (window);
+}
+
+static void
+toolbar_forward_callback (GtkWidget *widget, NautilusWindow *window)
+{
+  nautilus_window_go_forward (window);
+}
+
+static void
+toolbar_up_callback (GtkWidget *widget, NautilusWindow *window)
+{
+  nautilus_window_go_up (window);
+}
+
+static void
+toolbar_home_callback (GtkWidget *widget, NautilusWindow *window)
+{
+  nautilus_window_go_home (window);
+}
+
+
 static GnomeUIInfo toolbar_info[] = {
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Back"), N_("Go to the previously visited directory"),
-	 nautilus_window_back_cb, GNOME_STOCK_PIXMAP_BACK),
+	 toolbar_back_callback, GNOME_STOCK_PIXMAP_BACK),
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Forward"), N_("Go to the next directory"),
-	 nautilus_window_forward_cb, GNOME_STOCK_PIXMAP_FORWARD),
+	 toolbar_forward_callback, GNOME_STOCK_PIXMAP_FORWARD),
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Up"), N_("Go up a level in the directory heirarchy"),
-	 nautilus_window_up_cb, GNOME_STOCK_PIXMAP_UP),
+	 toolbar_up_callback, GNOME_STOCK_PIXMAP_UP),
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Reload"), N_("Reload this view"),
-	 nautilus_window_reload_cb, GNOME_STOCK_PIXMAP_REFRESH),
+	 toolbar_reload_callback, GNOME_STOCK_PIXMAP_REFRESH),
 	GNOMEUIINFO_SEPARATOR,
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Home"), N_("Go to your home directory"),
-	 nautilus_window_home_cb, GNOME_STOCK_PIXMAP_HOME),
+	 toolbar_home_callback, GNOME_STOCK_PIXMAP_HOME),
 	GNOMEUIINFO_SEPARATOR,
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Stop"), N_("Interrupt loading"),
-	 nautilus_window_stop_cb, GNOME_STOCK_PIXMAP_STOP),
+	 toolbar_stop_callback, GNOME_STOCK_PIXMAP_STOP),
 	GNOMEUIINFO_END
 };
 
@@ -85,13 +111,13 @@ activate_back_or_forward_menu_item (GtkMenuItem *menu_item,
 }
 
 static void
-activate_back_menu_item_cb (GtkMenuItem *menu_item, NautilusWindow *window)
+activate_back_menu_item_callback (GtkMenuItem *menu_item, NautilusWindow *window)
 {
 	activate_back_or_forward_menu_item (menu_item, window, TRUE);
 }
 
 static void
-activate_forward_menu_item_cb (GtkMenuItem *menu_item, NautilusWindow *window)
+activate_forward_menu_item_callback (GtkMenuItem *menu_item, NautilusWindow *window)
 {
 	activate_back_or_forward_menu_item (menu_item, window, FALSE);
 }
@@ -117,7 +143,7 @@ create_back_or_forward_menu (NautilusWindow *window, gboolean back)
 		gtk_widget_show (GTK_WIDGET (menu_item));
   		gtk_signal_connect(GTK_OBJECT(menu_item), 
   			"activate",
-                     	back ? activate_back_menu_item_cb : activate_forward_menu_item_cb, 
+                     	back ? activate_back_menu_item_callback : activate_forward_menu_item_callback, 
                      	window);
 		
 		gtk_menu_append (menu, menu_item);
@@ -129,7 +155,7 @@ create_back_or_forward_menu (NautilusWindow *window, gboolean back)
 }
 
 static int
-back_or_forward_button_clicked_cb (GtkWidget *widget, 
+back_or_forward_button_clicked_callback (GtkWidget *widget, 
 				   GdkEventButton *event, 
 				   gpointer *user_data)
 {
@@ -180,17 +206,17 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 
 	gtk_signal_connect (GTK_OBJECT (window->back_button),
 	      "button_press_event",
-	      GTK_SIGNAL_FUNC (back_or_forward_button_clicked_cb), 
+	      GTK_SIGNAL_FUNC (back_or_forward_button_clicked_callback), 
 	      window);
 
 	gtk_signal_connect (GTK_OBJECT (window->forward_button),
 	      "button_press_event",
-	      GTK_SIGNAL_FUNC (back_or_forward_button_clicked_cb), 
+	      GTK_SIGNAL_FUNC (back_or_forward_button_clicked_callback), 
 	      window);
 }
 
 static void
-nautilus_window_reload_cb (GtkWidget *widget, NautilusWindow *window)
+toolbar_reload_callback (GtkWidget *widget, NautilusWindow *window)
 {
 	Nautilus_NavigationRequestInfo nri;
 
@@ -201,7 +227,7 @@ nautilus_window_reload_cb (GtkWidget *widget, NautilusWindow *window)
 }
 
 static void
-nautilus_window_stop_cb (GtkWidget *widget, NautilusWindow *window)
+toolbar_stop_callback (GtkWidget *widget, NautilusWindow *window)
 {
 	nautilus_window_set_state_info (window, RESET_TO_IDLE, 0);
 }

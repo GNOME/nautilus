@@ -1,3 +1,49 @@
+2000-04-27  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 660 (Need to publish menu positions for components to use)
+
+	* libnautilus/nautilus-bonobo-ui.h:
+	New file, contains #defines for Bonobo-style menu paths for all
+	the menus & menu items in Nautilus that we promise components
+	will exist.
+	* libnautilus/Makefile.am: Include this new header file in library.
+	
+	* src/nautilus-window-menus.c: Extensive changes, too many to list
+	every function. Replaced all the GnomeUIInfo mechanism with
+	Bonobo-style menu creation, using the menu paths from
+	nautilus-bonobo-ui.h. While I was in here, I also renamed some
+	functions (especially xxx_cb -> xxx_callback), tweaked some text, 
+	and used some more standard Gnome menu item pixmaps (not sure if I 
+	like them or not yet).
+	
+	* src/ntl-window-private.h,
+	* src/ntl-window.c:
+	(nautilus_window_back_cb), (nautilus_window_forward_cb),
+	(nautilus_window_up_cb), (nautilus_window_home_cb): Replaced
+	these GtkWidget-callback style functions (formerly used
+	by both menu items and toolbar buttons) with new NautilusWindow
+	oriented ones nautilus_window_go_back, nautilus_window_go_forward,
+	nautilus_window_go_up, and nautilus_window_go_home.
+	(nautilus_window_allow_back), (nautilus_window_allow_forward),
+	(nautilus_window_allow_up): replaced hardwired Bonobo menu paths
+	with the new #defines.
+
+	* src/nautilus-window-toolbars.c:
+	Renamed some functions xxx_cb -> xxx_callback.
+	(toolbar_back_callback), (toolbar_forward_callback),
+	(toolbar_up_callback), (toolbar_home_callback): New GtkWidget-callback
+	style functions used exclusively by the toolbar.
+	
+	* src/file-manager/fm-directory-view.h:
+	Removed FM_DIRECTORY_VIEW_PATH_CLOSE and 
+	FM_DIRECTORY_VIEW_PATH_SELECT_ALL, since callers should use
+	the paths defined by Nautilus for these.
+	
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_real_merge_menus): Replaced special insider knowledge
+	of menu positions with use of the new #defines. Also tweaked with the
+	keyboard underscore shortcuts for some items.
+
 2000-04-27  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-async.c:

@@ -42,6 +42,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-result.h>
 
+#include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus/nautilus-zoomable.h>
 
 #include <libnautilus-extensions/nautilus-alloc.h>
@@ -1620,17 +1621,11 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 
         ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
 
-        /* FIXME bugzilla.eazel.com 660: 
-         * The first few items here have magic number indexes. Need to
-         * invent and use a scheme whereby Nautilus publishes some or all of
-         * its menu item paths so that components can merge items into the
-         * right places without special knowledge like this.
-         */
         bonobo_ui_handler_menu_new_item (ui_handler,
                                          FM_DIRECTORY_VIEW_MENU_PATH_OPEN,
                                          _("_Open"),
                                          _("Open the selected item in this window"),
-                                         1,
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM) + 1,
                                          BONOBO_UI_HANDLER_PIXMAP_NONE,
                                          NULL,
                                          'O',
@@ -1641,7 +1636,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW,
                                          _("Open in New Window"),
                                          _("Open each selected item in a new window"),
-                                         2,
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM) + 2,
                                          BONOBO_UI_HANDLER_PIXMAP_NONE,
                                          NULL,
                                          0,
@@ -1650,12 +1645,12 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          view);
         bonobo_ui_handler_menu_new_separator (ui_handler,
                                          FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_AFTER_CLOSE,
-                                         bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_CLOSE) + 1);
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 1);
         bonobo_ui_handler_menu_new_item (ui_handler,
                                          FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES,
                                          _("Set Properties..."),
                                          _("View or modify the properties of the selected items"),
-                                         bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_CLOSE) + 2,
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 2,
                                          BONOBO_UI_HANDLER_PIXMAP_NONE,
                                          NULL,
                                          0,
@@ -1670,7 +1665,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          FM_DIRECTORY_VIEW_MENU_PATH_DELETE,
                                          _("Delete..."),
                                          _("Delete all selected items"),
-                                         bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_CLOSE) + 3,
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 3,
                                          BONOBO_UI_HANDLER_PIXMAP_NONE,
                                          NULL,
                                          0,
@@ -1682,7 +1677,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
                                          _("Move to Trash"),
                                          _("Move all selected items to Trash"),
-                                         bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_CLOSE) + 3,
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 3,
                                          BONOBO_UI_HANDLER_PIXMAP_NONE,
                                          NULL,
                                          'T',
@@ -1693,7 +1688,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE,
                                          _("Duplicate"),
                                          _("Duplicate all selected items"),
-                                         bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_CLOSE) + 4,
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 4,
                                          BONOBO_UI_HANDLER_PIXMAP_NONE,
                                          NULL,
                                          'D',
@@ -1702,9 +1697,9 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          view);
         bonobo_ui_handler_menu_new_item (ui_handler,
                                          FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH,
-                                         _("Empty Trash"),
-                                         _("Empty the Trash folder"),
-                                         bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_CLOSE) + 5,
+                                         _("_Empty Trash"),
+                                         _("Delete all items in the trash"),
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 5,
                                          BONOBO_UI_HANDLER_PIXMAP_NONE,
                                          NULL,
                                          0,
@@ -1712,10 +1707,10 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          bonobo_menu_empty_trash_cb,
                                          view);
         bonobo_ui_handler_menu_new_item (ui_handler,
-                                         FM_DIRECTORY_VIEW_MENU_PATH_SELECT_ALL,
-                                         _("Select All"),
+                                         NAUTILUS_MENU_PATH_SELECT_ALL_ITEM,
+                                         _("_Select All"),
                                          _("Select all items in this window"),
-                                         bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_SELECT_ALL),
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_SELECT_ALL_ITEM),
                                          BONOBO_UI_HANDLER_PIXMAP_NONE,
                                          NULL,
                                          0,
@@ -2344,7 +2339,7 @@ fm_directory_view_get_context_menu_index(const char *menu_name)
 		return 2;
 	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE, menu_name) == 0) {
 		return 3;
-	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_SELECT_ALL, menu_name) == 0) {
+	} else if (g_strcasecmp(NAUTILUS_MENU_PATH_SELECT_ALL_ITEM, menu_name) == 0) {
 		return 4;
 	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES, menu_name) == 0) {
 		return 5;
