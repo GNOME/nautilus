@@ -318,6 +318,7 @@ try_to_expand_path (NautilusLocationBar *bar)
 	    || nautilus_strcmp (user_location, "~/") == 0) {
 		return FALSE;
 	}
+	gnome_vfs_expand_initial_tilde (user_location);
 	current_path = nautilus_make_uri_from_input (user_location);
 
 	if (!nautilus_istr_has_prefix (current_path, "file://")) {
@@ -328,6 +329,7 @@ try_to_expand_path (NautilusLocationBar *bar)
 	current_path_length = strlen(current_path);	
 	offset = current_path_length - strlen(user_location);
 
+	gnome_vfs_expand_initial_tilde (current_path);
 	uri = gnome_vfs_uri_new (current_path);
 	
 	base_name_ptr = gnome_vfs_uri_get_basename (uri);
@@ -379,8 +381,8 @@ try_to_expand_path (NautilusLocationBar *bar)
 		gtk_entry_append_text (GTK_ENTRY (editable), expand_text + base_length);
 		gtk_entry_select_region (GTK_ENTRY (editable), current_path_length - offset,
 					 current_path_length + strlen (expand_text) - base_length - offset);
-		g_free (expand_text);
 	}
+	g_free (expand_text);
 
 	tilde_expand_name = gtk_entry_get_text (GTK_ENTRY (editable));
 	if (*tilde_expand_name == '~') {
@@ -443,6 +445,7 @@ editable_key_press_callback (GtkObject *object,
 	int position;
 	gboolean *return_value_location;
 	NautilusLocationBar *bar;
+	char *expanded_text;
 	
 	g_assert (n_args == 1);
 	g_assert (args != NULL);
@@ -467,6 +470,13 @@ editable_key_press_callback (GtkObject *object,
 	    && bar->details->idle_id <= 0
 	    && entry_would_have_inserted_characters (event))  {
         	bar->details->idle_id = gtk_idle_add ( (GtkFunction) try_to_expand_path, bar);		
+	}
+
+	if (event->keyval == GDK_slash) {
+		expanded_text = gnome_vfs_expand_initial_tilde (gtk_entry_get_text (GTK_ENTRY (editable)));
+
+		gtk_entry_set_text (GTK_ENTRY (editable), expanded_text);
+		g_free (expanded_text);
 	}
 	
 	nautilus_location_bar_update_label (bar);
@@ -551,7 +561,6 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 
 	entry = nautilus_entry_new ();
 	NAUTILUS_ENTRY (entry)->special_tab_handling = TRUE;
-	NAUTILUS_ENTRY (entry)->expand_tilde = TRUE;
 	
 	gtk_signal_connect_object (GTK_OBJECT (entry), "activate",
 				   nautilus_navigation_bar_location_changed, GTK_OBJECT (bar));

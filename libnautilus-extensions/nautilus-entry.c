@@ -124,7 +124,6 @@ nautilus_entry_initialize (NautilusEntry *entry)
 	entry->user_edit = TRUE;
 	entry->special_tab_handling = FALSE;
 	entry->cursor_obscured = FALSE;
-	entry->expand_tilde = FALSE;
 
 	/* Allow pointer motion events so we can expose an obscured cursor if necessary */
 	gtk_widget_set_events (widget, gtk_widget_get_events (widget) | GDK_POINTER_MOTION_MASK);
@@ -210,15 +209,6 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 		 */
 		gtk_widget_activate (widget);
 		return TRUE;		
-
-	case GDK_slash:
-		if (entry->expand_tilde) {
-			/* FIXME: This handles only ~/, not the fancier variants. */
-			if (strcmp (gtk_entry_get_text (GTK_ENTRY (entry)), "~") == 0) {
-				gtk_entry_set_text (GTK_ENTRY (entry), g_get_home_dir ());
-			}
-		}
-		break;
 		
 	default:
 		break;

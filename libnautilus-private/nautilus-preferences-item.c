@@ -39,6 +39,8 @@
 #include "nautilus-string-picker.h"
 #include "nautilus-text-caption.h"
 
+#include "nautilus-global-preferences.h"
+
 /* Arguments */
 enum
 {
@@ -433,7 +435,7 @@ preferences_item_create_editable_string (NautilusPreferencesItem	*item,
 
 	/* FIXME This is a special case for the home uri preference,
 	   in the future this should be generalized. */
-	if (g_strcasecmp (preference_name, "preferences/home_uri") == 0)
+	if (g_strcasecmp (preference_name, NAUTILUS_PREFERENCES_HOME_URI) == 0)
 	{
 		nautilus_text_caption_set_expand_tilde (NAUTILUS_TEXT_CAPTION (item->details->child), TRUE);
 	}

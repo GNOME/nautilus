@@ -1,3 +1,31 @@
+2001-02-22  Arik Devens  <arik@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 6391, nautilus crashes on certain strings set as home
+	dir preference. This is actually only half the fix, for the "\"
+	char i am waiting on pavel's input.
+	
+	* libnautilus-extensions/nautilus-entry.c:
+	(nautilus_entry_initialize), (nautilus_entry_key_press): Removed
+	tilde expand code.
+	* libnautilus-extensions/nautilus-entry.h: Removed tilde_expand
+	gboolean.
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(preferences_item_create_editable_string): Cleanup to use
+	NAUTILUS_PREFERENCES_HOME_URI instead of "preferences/home_uri" as
+	per ramiro's advice.
+	* libnautilus-extensions/nautilus-text-caption.c:
+	(nautilus_text_caption_initialize), (entry_key_press_callback),
+	(nautilus_text_caption_set_expand_tilde): Added tilde_expand code
+	to the text-caption for use in the preferences dialog. Much
+	smarter tilde code, should handle any corner case (at least any i
+	could think of).
+	* src/nautilus-location-bar.c: (try_to_expand_path),
+	(editable_key_press_callback), (nautilus_location_bar_initialize):
+	Added handling of the ~/ case directly to the location bar instead
+	of going through the NautilusEntry.
+
 2001-02-22  John Harper  <jsh@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>
