@@ -1,5 +1,11 @@
 2004-04-16  Martin Wehner  <martin.wehner@epost.de>
 
+	* src/file-manager/fm-list-view.c (key_press_callback):
+	Make Shift+Enter and Shift+Space close window behind in
+	the list view (closes #139324).
+
+2004-04-16  Martin Wehner  <martin.wehner@epost.de>
+
 	* src/file-manager/fm-tree-model.c (fm_tree_model_remove_root_uri):
 	Disconnect changed handler on root node removal. Prevents a crash
 	related to removable media in the treeview (#128219).

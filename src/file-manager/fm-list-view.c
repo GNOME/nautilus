@@ -750,12 +750,20 @@ key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_dat
 			handled = FALSE;
 			break;
 		}
-		activate_selected_items (FM_LIST_VIEW (view));
+		if ((event->state & GDK_SHIFT_MASK) != 0) {
+			activate_selected_items_alternate (FM_LIST_VIEW (view), NULL);
+		} else {
+			activate_selected_items (FM_LIST_VIEW (view));
+		}
 		handled = TRUE;
 		break;
 	case GDK_Return:
 	case GDK_KP_Enter:
-		activate_selected_items (FM_LIST_VIEW (view));
+		if ((event->state & GDK_SHIFT_MASK) != 0) {
+			activate_selected_items_alternate (FM_LIST_VIEW (view), NULL);
+		} else {
+			activate_selected_items (FM_LIST_VIEW (view));
+		}
 		handled = TRUE;
 		break;
 
