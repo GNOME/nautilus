@@ -1,3 +1,13 @@
+2000-05-31  John Sullivan  <set EMAIL_ADDRESS environment variable>
+
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(populate_program_list): Change the way data from program lists
+	is freed; this clarifies the code and fixes a double-destroy.
+	* src/nautilus-sidebar.c: (nautilus_sidebar_update_buttons):
+	Don't display "Open With..." button if there are no available
+	choices. This fixes part of bug 1044 (need to do the same
+	kind of thing for menus). 
+
 2000-05-31  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:

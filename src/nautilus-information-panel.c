@@ -815,7 +815,7 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 void
 nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 {
-	GList *application_list;
+	GList *full_application_list, *short_application_list;
 	
 	/* dispose of any existing buttons */
 	if (sidebar->details->has_buttons) {
@@ -823,15 +823,24 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 				      GTK_WIDGET (sidebar->details->button_box_centerer)); 
 		make_button_box (sidebar);
 	}
-	
-	application_list = gnome_vfs_mime_get_short_list_applications_for_uri (sidebar->details->uri);
-	add_command_buttons (sidebar, application_list);
-	gnome_vfs_mime_application_list_free (application_list);
 
-	/* Hide button box if a sidebar panel is showing. */
-	if (sidebar->details->selected_index != -1) {
-		gtk_widget_hide (GTK_WIDGET (sidebar->details->button_box));
+	full_application_list =
+		gnome_vfs_mime_get_all_applications_for_uri (sidebar->details->uri);
+
+	/* Don't even put "Open With" button up if there are zero choices. */
+	if (full_application_list != NULL) {
+		short_application_list = 
+			gnome_vfs_mime_get_short_list_applications_for_uri (sidebar->details->uri);
+		add_command_buttons (sidebar, short_application_list);
+		gnome_vfs_mime_application_list_free (short_application_list);
+
+		/* Hide button box if a sidebar panel is showing. */
+		if (sidebar->details->selected_index != -1) {
+			gtk_widget_hide (GTK_WIDGET (sidebar->details->button_box));
+		}
 	}
+
+	gnome_vfs_mime_application_list_free (full_application_list);
 }
 
 /* this routine populates the sidebar with the per-uri information */

@@ -88,29 +88,33 @@ populate_program_list (NautilusProgramChooserType type,
 				((OAF_ServerInfo *)program->data);
 			text[PROGRAM_LIST_NAME_COLUMN] = g_strdup_printf 
 				("View as %s", view_identifier->name);
-			/* Free the OAF_ServerInfo now, we're done with it. */
-			CORBA_free (program->data);
 		} else {
 			application = (GnomeVFSMimeApplication *)program->data;
 			text[PROGRAM_LIST_NAME_COLUMN] = g_strdup (application->name);			
-			gnome_vfs_mime_application_free (application);
 		}		
 
 		new_row = gtk_clist_append (clist, text);
 
 		if (type == NAUTILUS_PROGRAM_CHOOSER_COMPONENTS) {
 			gtk_clist_set_row_data_full 
-				(clist, new_row, view_identifier, (GtkDestroyNotify)nautilus_view_identifier_free);
+				(clist, new_row, 
+				 view_identifier, 
+				 (GtkDestroyNotify)nautilus_view_identifier_free);
 		} else {
 			gtk_clist_set_row_data_full 
-				(clist, new_row, application, (GtkDestroyNotify)gnome_vfs_mime_application_free);
+				(clist, new_row, 
+				 gnome_vfs_mime_application_copy (application), 
+				 (GtkDestroyNotify)gnome_vfs_mime_application_free);
 		}
 		
 		g_strfreev (text);
 	}
 
-	/* Don't free the data here, just the list shell. The data is freed elsewhere. */
-	g_list_free (programs);
+	if (type == NAUTILUS_PROGRAM_CHOOSER_COMPONENTS) {
+		gnome_vfs_mime_component_list_free (programs);
+	} else {
+		gnome_vfs_mime_application_list_free (programs);
+	}
 }
 
 static NautilusFile *
