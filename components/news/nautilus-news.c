@@ -64,6 +64,7 @@
 /* property bag getting and setting routines */
 enum {
 	TAB_IMAGE,
+	CLOSE_NOTIFY,
 };
 
 /* data structure for the news view */
@@ -109,8 +110,11 @@ typedef struct {
 typedef struct {
 	char *item_title;
 	char *item_url;	
+	
 	int item_start_y;
 	int item_end_y;
+
+	gboolean new_item;
 } RSSItemData;
 
 /* per channel structure for rss channel */
@@ -143,6 +147,7 @@ typedef struct {
 	gboolean is_open;	
 	gboolean is_showing;
 	
+	gboolean channel_changed;
 	gboolean update_in_progress;
 	gboolean error_flag;
 } RSSChannelData;
@@ -173,6 +178,7 @@ static void update_size_and_redraw (News* news_data);
 static char* get_xml_path (const char *file_name, gboolean force_local);
 static int check_for_updates (gpointer callback_data);
 static RSSChannelData* get_channel_from_name (News *news_data, const char *channel_name);
+static void nautilus_news_clear_changed_flags (News* news_data);
 
 static void add_channel_entry (News *news_data, const char *channel_name,
 			       int index, gboolean is_showing);
@@ -204,7 +210,12 @@ get_bonobo_properties (BonoboPropertyBag *bag,
                 g_free (indicator_image);
                 break;
         }
-        
+        case CLOSE_NOTIFY: {
+		/* this shouldn't be read, but return FALSE anyway */
+		BONOBO_ARG_SET_BOOLEAN (arg, FALSE);
+		break;
+	}
+	
         default:
                 g_warning ("Unhandled arg %d", arg_id);
                 break;
@@ -218,7 +229,26 @@ set_bonobo_properties (BonoboPropertyBag *bag,
 			CORBA_Environment *ev,
 			gpointer callback_data)
 {
-	g_warning ("Can't set note property %u", arg_id);
+       News *news;
+
+	news = (News *) callback_data;
+	
+	switch (arg_id) {
+        case TAB_IMAGE:	{
+		g_warning ("cant set tab image in news view");
+                break;
+        }
+ 
+ 	/* when closed, clear the changed flags */
+        case CLOSE_NOTIFY: {
+		nautilus_news_clear_changed_flags (news);
+		break;
+	}
+	
+        default:
+                g_warning ("Unhandled arg %d", arg_id);
+                break;
+	}
 }
 
 
@@ -623,7 +653,6 @@ nautilus_news_expose_event( GtkWidget *widget, GdkEventExpose *event, News *news
 {
 	int pixbuf_width, pixbuf_height;
 	
-	/* this shouldn't be necessary - remove it soon */
 	nautilus_news_update_display (news_data, FALSE);
 	
 	pixbuf_width = gdk_pixbuf_get_width (news_data->pixbuf);
@@ -646,7 +675,6 @@ nautilus_news_set_prelight_index (RSSChannelData *channel_data, int new_prelight
 {
 	if (channel_data->prelight_index != new_prelight_index) {
 		channel_data->prelight_index = new_prelight_index;
-		nautilus_news_update_display (channel_data->owner, FALSE);
 		gtk_widget_queue_draw (GTK_WIDGET (channel_data->owner->news_display));				
 	}
 }
@@ -871,6 +899,59 @@ nautilus_news_free_channel_list (News *news_data)
 	news_data->channel_list = NULL;
 }
 
+/* utilities to deal with the changed flags */
+static void
+nautilus_news_set_news_changed (News *news_data, gboolean changed_flag)
+{
+	char *tab_image;
+	BonoboArg *tab_image_arg;
+	
+	if (news_data->news_changed != changed_flag) {
+		news_data->news_changed = changed_flag;
+
+		tab_image = news_get_indicator_image (news_data);	
+		
+		tab_image_arg = bonobo_arg_new (BONOBO_ARG_STRING);
+		BONOBO_ARG_SET_STRING (tab_image_arg, tab_image);			
+                
+		bonobo_property_bag_notify_listeners (news_data->property_bag,
+                                                      "tab_image", tab_image_arg, NULL);
+                
+		bonobo_arg_release (tab_image_arg);
+		g_free (tab_image);
+	}
+}
+
+static void
+clear_channel_changed_flags (RSSChannelData *channel_data)
+{
+	GList *current_item;
+	RSSItemData *item_data;
+	
+	current_item = channel_data->items;
+	while (current_item != NULL) {
+		item_data = (RSSItemData*) current_item->data;
+		item_data->new_item = FALSE;
+		current_item = current_item->next;
+	}
+	channel_data->channel_changed = FALSE;
+}
+
+static void
+nautilus_news_clear_changed_flags (News* news_data)
+{
+	GList *current_channel;
+	RSSChannelData *channel_data;
+	
+	current_channel = news_data->channel_list;
+	while (current_channel != NULL) {
+		channel_data = (RSSChannelData*) current_channel->data;
+		clear_channel_changed_flags (channel_data);
+		current_channel = current_channel->next;
+	}
+	nautilus_news_set_news_changed (news_data, FALSE);
+}
+
 /* utility to express boolean as a string */
 static char *
 bool_to_text (gboolean value)
@@ -995,9 +1076,50 @@ update_size_and_redraw (News* news_data)
 	display_size = nautilus_news_update_display (news_data, TRUE);
 	gtk_widget_set_usize (news_data->news_display, -1, display_size);
 	
-	nautilus_news_update_display (news_data, FALSE);
 	gtk_widget_queue_resize (GTK_WIDGET (news_data->news_display));				
 	gtk_widget_queue_draw (GTK_WIDGET (news_data->news_display));
+}
+
+/* utility routine to search for the passed-in url in an item list */
+static gboolean
+has_matching_uri (GList *items, const char *target_uri)
+{
+	GList *current_item;
+	RSSItemData *item_data;
+	
+	current_item = items;
+	while (current_item != NULL) {
+		item_data = (RSSItemData*) current_item->data;
+		if (eel_strcasecmp (item_data->item_url, target_uri) == 0) {
+			return TRUE;
+		}	
+		current_item = current_item->next;
+	}
+	return FALSE;
+}
+
+/* take a look at the newly generated items in the passed-in channel,
+ * comparing them with the old items and marking them as new if necessary.
+ */
+static void
+mark_new_items (RSSChannelData *channel_data, GList *old_items)
+{
+	GList *current_item;
+	RSSItemData *item_data;
+	
+	current_item = channel_data->items;
+	while (current_item != NULL) {
+	
+		item_data = (RSSItemData*) current_item->data;
+		if (!has_matching_uri (old_items, item_data->item_url)) {
+			item_data->new_item = TRUE;	
+			channel_data->channel_changed = TRUE;
+			nautilus_news_set_news_changed (channel_data->owner, TRUE);
+		} else {
+			item_data->new_item = FALSE;	
+		}
+		current_item = current_item->next;
+	}	
 }
 
 /* completion routine invoked when we've loaded the rss file uri.  Parse the xml document, and
@@ -1011,6 +1133,7 @@ rss_read_done_callback (GnomeVFSResult result,
 	xmlDocPtr rss_document;
 	xmlNodePtr image_node, channel_node;
 	xmlNodePtr  current_node, temp_node, uri_node;
+	GList *old_items;
 	char *image_uri, *title, *temp_str;
 	char *error_message;
 	int item_count;
@@ -1094,8 +1217,9 @@ rss_read_done_callback (GnomeVFSResult result,
 	}
 			
 	/* extract the items */
-	free_rss_channel_items (channel_data);
-	
+	old_items = channel_data->items;
+	channel_data->items = NULL;
+		
 	current_node = rss_document->root;
 	item_count = extract_items (channel_data, current_node);
 	
@@ -1103,8 +1227,11 @@ rss_read_done_callback (GnomeVFSResult result,
 	if (item_count == 0 && channel_node != NULL) {
 		item_count = extract_items (channel_data, channel_node);
 	}
+	
+	mark_new_items (channel_data, old_items);
 		
 	/* we're done, so free everything up */
+	eel_g_list_free_deep_custom (old_items, (GFunc) free_rss_data_item, NULL);
 	xmlFreeDoc (rss_document);
 	channel_data->update_in_progress = FALSE;
 	
@@ -1119,8 +1246,12 @@ static void
 nautilus_news_load_channel (News *news_data, RSSChannelData *channel_data)
 {
 	char *title;
-	/* load the uri asynchrounously, calling a completion routine when completed */
+	/* don't load if it's not showing, or it's already loading */
+	if (!channel_data->is_showing || channel_data->update_in_progress) {
+		return;
+	}
 	
+	/* load the uri asynchronously, calling a completion routine when completed */
 	channel_data->update_in_progress = TRUE;
 	channel_data->load_file_handle = eel_read_entire_file_async (channel_data->uri, rss_read_done_callback, channel_data);
 	
@@ -1280,7 +1411,7 @@ static char *
 news_get_indicator_image (News *news_data)
 {
 	if (news_data->news_changed) {
-		return g_strdup ("note-indicator.png");
+		return g_strdup ("news_bullet.png");
 	}
 	return NULL;
 }
@@ -1430,12 +1561,11 @@ add_command_buttons (News *news_data, const char* label, gboolean from_configure
 
   	/* Set the appearance of the Button Box */
   	gtk_button_box_set_layout (GTK_BUTTON_BOX (button_box), GTK_BUTTONBOX_END);
-  	
 	gtk_button_box_set_spacing (GTK_BUTTON_BOX (button_box), 4);
   	gtk_button_box_set_child_size (GTK_BUTTON_BOX (button_box), 24, 14);
 	
 	if (from_configure) {
-		button = gtk_button_new_with_label (_("Edit Sites"));
+		button = gtk_button_new_with_label (_("Edit"));
 		gtk_container_add (GTK_CONTAINER (button_box), button);
 
 		gtk_signal_connect (GTK_OBJECT (button), "clicked",
@@ -1830,7 +1960,7 @@ make_news_view (const char *iid, gpointer callback_data)
 
 	/* set up the update timeout */
 	news->timer_task = gtk_timeout_add (10000, check_for_updates, news);
-	       
+	
 	/* Create the nautilus view CORBA object. */
         news->view = nautilus_view_new (main_container);
         gtk_signal_connect (GTK_OBJECT (news->view), "destroy", do_destroy, news);
@@ -1843,14 +1973,18 @@ make_news_view (const char *iid, gpointer callback_data)
 	bonobo_control_set_properties (nautilus_view_get_bonobo_control (news->view), news->property_bag);
 	bonobo_property_bag_add (news->property_bag, "tab_image", TAB_IMAGE, BONOBO_ARG_STRING, NULL,
 				 "image indicating that the news has changed", 0);
+	bonobo_property_bag_add (news->property_bag, "close", CLOSE_NOTIFY,
+				 BONOBO_ARG_BOOLEAN, NULL, "close notification", 0);
+ 	
+	nautilus_news_clear_changed_flags (news);
  	
         /* read the channel definition file and start loading the channels */
         read_channel_list (news);
  
  	/* populate the configuration list */
 	add_channels_to_lists (news);
-         
-    	/* return the nautilus view */    
+
+  	/* return the nautilus view */    
         return news->view;
 }
 

@@ -1,3 +1,25 @@
+2001-04-22  Andy Hertzfeld  <andy@eazel.com>
+
+	implemented change tracking and made the sidebar tab get an
+	notification image whenever there's anything new.  Also, improved
+	updating and other tweaks.  The news view is pretty much done
+	now except for some images from Arlo and lots of testing/debugging.
+
+	* components/news/nautilus-news.c: (get_bonobo_properties),
+	(set_bonobo_properties), (nautilus_news_expose_event),
+	(nautilus_news_set_prelight_index),
+	(nautilus_news_set_news_changed), (clear_channel_changed_flags),
+	(nautilus_news_clear_changed_flags), (update_size_and_redraw),
+	(has_matching_uri), (mark_new_items), (rss_read_done_callback),
+	(nautilus_news_load_channel), (news_get_indicator_image),
+	(add_command_buttons), (make_news_view):
+	
+	* src/nautilus-sidebar.c: (notify_current_sidebar_view),
+	(nautilus_sidebar_activate_panel),
+	(nautilus_sidebar_deactivate_panel):
+	added open/close notifications for sidebar views using
+	the bonobo propery bag mechanism
+	
 2001-04-21  Andy Hertzfeld  <andy@eazel.com>
 
 	implemented the remove command for the news panel, plus

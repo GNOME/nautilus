@@ -33,6 +33,11 @@
 #include "nautilus-link-set-window.h"
 #include "nautilus-sidebar-tabs.h"
 #include "nautilus-sidebar-title.h"
+
+#include <bonobo/bonobo-property-bag-client.h>
+#include <bonobo/bonobo-ui-util.h>
+#include <bonobo/bonobo-exception.h>
+
 #include <eel/eel-background.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
@@ -925,6 +930,27 @@ nautilus_sidebar_remove_panel (NautilusSidebar *sidebar,
 	g_free (description);
 }
 
+static void
+notify_current_sidebar_view (NautilusSidebar *sidebar, const char *property)
+{
+	CORBA_Environment ev;
+	Bonobo_PropertyBag property_bag;
+	Bonobo_Control control;
+	GtkWidget *notebook_page;
+	
+	CORBA_exception_init (&ev);
+	notebook_page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (sidebar->details->notebook),
+					  sidebar->details->selected_index);
+
+	control = nautilus_view_frame_get_control (NAUTILUS_VIEW_FRAME (notebook_page));	
+	property_bag = Bonobo_Control_getProperties (control, &ev);
+	if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {
+		bonobo_property_bag_client_set_value_gboolean (property_bag, property, TRUE, &ev);
+		bonobo_object_release_unref (property_bag, &ev);
+	}
+	CORBA_exception_free (&ev);
+}
+
 /* utility to activate the panel corresponding to the passed in index  */
 static void
 nautilus_sidebar_activate_panel (NautilusSidebar *sidebar, int which_view)
@@ -932,6 +958,11 @@ nautilus_sidebar_activate_panel (NautilusSidebar *sidebar, int which_view)
 	char *title;
 	GtkNotebook *notebook;
 
+	/* nothing to do if it's already active */
+	if (sidebar->details->selected_index == which_view) {
+		return;
+	}
+	
 	notebook = sidebar->details->notebook;
 	if (sidebar->details->selected_index < 0) {
 		gtk_widget_show (GTK_WIDGET (notebook));
@@ -947,6 +978,8 @@ nautilus_sidebar_activate_panel (NautilusSidebar *sidebar, int which_view)
 					  GTK_WIDGET (sidebar->details->title_tab),
 					  FALSE, FALSE, 0);
 		}
+	} else {
+		notify_current_sidebar_view (sidebar, "close");
 	}
 	
 	sidebar->details->selected_index = which_view;
@@ -962,6 +995,7 @@ nautilus_sidebar_activate_panel (NautilusSidebar *sidebar, int which_view)
 	gtk_widget_hide (GTK_WIDGET (sidebar->details->title));
 	
 	gtk_notebook_set_page (notebook, which_view);
+	notify_current_sidebar_view (sidebar, "open");
 }
 
 /* utility to deactivate the active panel */
@@ -971,6 +1005,7 @@ nautilus_sidebar_deactivate_panel (NautilusSidebar *sidebar)
 	if (sidebar->details->selected_index >= 0) {
 		gtk_widget_hide (GTK_WIDGET (sidebar->details->notebook));
 		gtk_widget_hide (GTK_WIDGET (sidebar->details->title_tab));
+		notify_current_sidebar_view (sidebar, "close");
 	}
 	
 	gtk_widget_show (GTK_WIDGET (sidebar->details->button_box_centerer));
