@@ -187,7 +187,7 @@ nautilus_window_class_init (NautilusWindowClass *klass)
                         gdk_pixbuf_render_pixmap_and_mask
 				(pixbuf, &mini_icon_pixmap, &mini_icon_mask,
 				 EEL_STANDARD_ALPHA_THRESHHOLD);
-			g_object_unref (G_OBJECT (pixbuf));
+			g_object_unref (pixbuf);
 			g_atexit (unref_mini_icon);
 		}
         	g_free (filename);
@@ -915,10 +915,10 @@ nautilus_window_destroy (GtkObject *object)
 	nautilus_window_clear_forward_list (window);
 
 	if (window->current_location_bookmark != NULL) {
-		g_object_unref (G_OBJECT (window->current_location_bookmark));
+		g_object_unref (window->current_location_bookmark);
 	}
 	if (window->last_location_bookmark != NULL) {
-		g_object_unref (G_OBJECT (window->last_location_bookmark));
+		g_object_unref (window->last_location_bookmark);
 	}
 	
 	if (window->status_bar_clear_id != 0) {
@@ -1765,7 +1765,7 @@ remove_from_history_list (NautilusBookmark *bookmark)
 	/* Remove any older entry for this same item. There can be at most 1. */
 	if (node != NULL) {
 		history_list = g_list_remove_link (history_list, node);
-		g_object_unref (G_OBJECT (node->data));
+		g_object_unref (node->data);
 		g_list_free_1 (node);
 	}
 }
@@ -1787,7 +1787,7 @@ add_to_history_list (NautilusBookmark *bookmark)
 		free_history_list_is_set_up = TRUE;
 	}
 
-	g_object_ref (G_OBJECT (bookmark));
+	g_object_ref (bookmark);
 	remove_from_history_list (bookmark);
 	history_list = g_list_prepend (history_list, bookmark);
 
@@ -1795,7 +1795,7 @@ add_to_history_list (NautilusBookmark *bookmark)
 	if (extra_count > 0) {
 		history_list = g_list_reverse (history_list);
 		for (index = 0; index < extra_count; ++index) {
-			g_object_unref (G_OBJECT (history_list->data));
+			g_object_unref (history_list->data);
 			history_list = g_list_remove (history_list, history_list->data);
 		}
 		history_list = g_list_reverse (history_list);
@@ -1811,7 +1811,7 @@ nautilus_remove_from_history_list_no_notify (const char *uri)
 
 	bookmark = nautilus_bookmark_new (uri, "");
 	remove_from_history_list (bookmark);
-	g_object_unref (G_OBJECT (bookmark));
+	g_object_unref (bookmark);
 }
 
 static void

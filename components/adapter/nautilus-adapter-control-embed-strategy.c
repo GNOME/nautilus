@@ -157,7 +157,7 @@ nautilus_adapter_control_embed_strategy_new (Bonobo_Control control,
 	CORBA_Environment ev;
 
 	strategy = NAUTILUS_ADAPTER_CONTROL_EMBED_STRATEGY (g_object_new (NAUTILUS_TYPE_ADAPTER_CONTROL_EMBED_STRATEGY, NULL));
-	g_object_ref (G_OBJECT (strategy));
+	g_object_ref (strategy);
 	gtk_object_sink (GTK_OBJECT (strategy));
 
 	strategy->details->control_frame = bonobo_control_frame_new (ui_container);

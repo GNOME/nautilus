@@ -205,7 +205,7 @@ nautilus_tree_model_new (const char *root_uri)
 	NautilusTreeModel *model;
 
 	model = NAUTILUS_TREE_MODEL (g_object_new (NAUTILUS_TYPE_TREE_MODEL, NULL));
-	g_object_ref (G_OBJECT (model));
+	g_object_ref (model);
 	gtk_object_sink (GTK_OBJECT (model));
 
 	nautilus_tree_model_set_root_uri (model, root_uri);
@@ -294,7 +294,7 @@ remove_all_nodes (NautilusTreeModel *model)
 						NULL);
 
 	if (model->details->root_node != NULL) {
-		g_object_unref (G_OBJECT (model->details->root_node));
+		g_object_unref (model->details->root_node);
 		model->details->root_node = NULL;
 	}
 	model->details->root_node_reported = FALSE;
@@ -770,7 +770,7 @@ report_node_changed (NautilusTreeModel *model,
 			g_free (parent_uri);
 		}
 
-		g_object_ref (G_OBJECT (node));
+		g_object_ref (node);
 		g_hash_table_insert (model->details->file_to_node_map, 
 				     nautilus_tree_node_get_file (node),
 				     node);
@@ -794,7 +794,7 @@ report_node_changed (NautilusTreeModel *model,
 		} else {
 			/* A move or rename - model it as a remove followed by an add */
 
-			g_object_ref (G_OBJECT (node));
+			g_object_ref (node);
 
 
 			/* Let the view know that the rename is happening, this allows
@@ -822,7 +822,7 @@ report_node_changed (NautilusTreeModel *model,
 
 			report_node_changed (model, node);
 
-			g_object_unref (G_OBJECT (node));
+			g_object_unref (node);
 		}
 
 		g_free (file_uri);
@@ -869,7 +869,7 @@ report_node_removed_internal (NautilusTreeModel *model,
 		}
 
 
-		g_object_unref (G_OBJECT (node));
+		g_object_unref (node);
 	} 
 }
 
@@ -921,10 +921,10 @@ process_file_change (NautilusTreeModel *model,
 		if (node == NULL) {
 			node = nautilus_tree_node_new (file);
 		} else {
-			g_object_ref (G_OBJECT (node));
+			g_object_ref (node);
 		}
 		report_node_changed (model, node);
-		g_object_unref (G_OBJECT (node));
+		g_object_unref (node);
 	}
 }
 

@@ -307,11 +307,11 @@ do_destroy (GtkObject *obj, News *news)
 	g_free (news->uri);
 	
 	if (news->font) {
-		g_object_unref (G_OBJECT (news->font));
+		g_object_unref (news->font);
 	}
 	
 	if (news->bold_font) {
-		g_object_unref (G_OBJECT (news->bold_font));
+		g_object_unref (news->bold_font);
 	}
 
 	if (news->timer_task != 0) {
@@ -325,27 +325,27 @@ do_destroy (GtkObject *obj, News *news)
 	}
 	
         if (news->closed_triangle != NULL) {
-		g_object_unref (G_OBJECT (news->closed_triangle));
+		g_object_unref (news->closed_triangle);
 	}
         
 	if (news->closed_triangle_changed != NULL) {
-		g_object_unref (G_OBJECT (news->closed_triangle_changed));
+		g_object_unref (news->closed_triangle_changed);
 	}
         
 	if (news->open_triangle != NULL) {
-		g_object_unref (G_OBJECT (news->open_triangle));
+		g_object_unref (news->open_triangle);
 	}
 	
 	if (news->open_triangle_changed != NULL) {
-		g_object_unref (G_OBJECT (news->open_triangle_changed));
+		g_object_unref (news->open_triangle_changed);
 	}
 	
 	if (news->bullet != NULL) {
-		g_object_unref (G_OBJECT (news->bullet));
+		g_object_unref (news->bullet);
 	}	
 	
 	if (news->changed_bullet != NULL) {
-		g_object_unref (G_OBJECT (news->changed_bullet));
+		g_object_unref (news->changed_bullet);
 	}	
 	
 	/* free all the channel data */
@@ -434,7 +434,7 @@ draw_triangle (GdkPixbuf *pixbuf, RSSChannelData *channel_data, int v_offset)
 	pixbuf_composite (mapped_image, pixbuf, 2, triangle_position, 255);
 
 	if (mapped_image != triangle) {
-		g_object_unref (G_OBJECT (mapped_image));
+		g_object_unref (mapped_image);
 	}
 }
 
@@ -467,7 +467,7 @@ draw_rss_logo_image (RSSChannelData *channel_data,
 			}
 			pixbuf_composite (mapped_image, pixbuf, LOGO_LEFT_OFFSET, v_offset, 255);
 			if (mapped_image != channel_data->logo_image) {
-				g_object_unref (G_OBJECT (mapped_image));
+				g_object_unref (mapped_image);
 			}
 		}
 		v_offset += logo_height + 2;
@@ -636,7 +636,7 @@ draw_rss_items (RSSChannelData *channel_data,
 			}
 		}
 
-		g_object_unref (G_OBJECT (smooth_text_layout));
+		g_object_unref (smooth_text_layout);
 		
 		item_data->item_end_y = item_data->item_start_y + text_dimensions.height;
 		v_offset += text_dimensions.height + 4;
@@ -729,7 +729,7 @@ static gint
 nautilus_news_configure_event (GtkWidget *widget, GdkEventConfigure *event, News *news_data )
 {
 	if (news_data->pixbuf != NULL) {
-		g_object_unref (G_OBJECT (news_data->pixbuf));
+		g_object_unref (news_data->pixbuf);
 	}
 		
 	news_data->pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8,
@@ -979,7 +979,7 @@ free_channel (RSSChannelData *channel_data)
 	g_free (channel_data->title);
 	
 	if (channel_data->logo_image != NULL) {
-		g_object_unref (G_OBJECT (channel_data->logo_image));
+		g_object_unref (channel_data->logo_image);
 	}
 
 	if (channel_data->load_file_handle != NULL) {
@@ -1131,12 +1131,12 @@ rss_logo_callback (GnomeVFSResult  error, GdkPixbuf *pixbuf, gpointer callback_d
 	channel_data->load_image_handle = NULL;
 	
 	if (channel_data->logo_image) {
-		g_object_unref (G_OBJECT (channel_data->logo_image));
+		g_object_unref (channel_data->logo_image);
 		channel_data->logo_image = NULL;
 	}
 	
 	if (pixbuf != NULL) {
-		g_object_ref (G_OBJECT (pixbuf));
+		g_object_ref (pixbuf);
 		pixbuf = eel_gdk_pixbuf_scale_down_to_fit (pixbuf, 192, 40);		
 		channel_data->logo_image = pixbuf;
 		queue_update_size_and_redraw (channel_data->owner);
@@ -1747,7 +1747,7 @@ static void
 load_xpm_image (GdkPixbuf** image_result, const char** image_name)
 {
 	if (*image_result != NULL) {
-		g_object_unref (G_OBJECT (*image_result));
+		g_object_unref (*image_result);
 	}
 	*image_result = gdk_pixbuf_new_from_xpm_data (image_name);
 }
@@ -1764,7 +1764,7 @@ nautilus_news_load_images (News *news_data)
 	load_xpm_image (&news_data->open_triangle_changed, (const char**) open_triangle_changed_xpm);
 	
 	if (news_data->bullet != NULL) {
-		g_object_unref (G_OBJECT (news_data->bullet));
+		g_object_unref (news_data->bullet);
 	}
 	
 	news_bullet_path = nautilus_theme_get_image_path ("news_bullet.png");	
@@ -1774,7 +1774,7 @@ nautilus_news_load_images (News *news_data)
 	}
 
 	if (news_data->changed_bullet != NULL) {
-		g_object_unref (G_OBJECT (news_data->changed_bullet));
+		g_object_unref (news_data->changed_bullet);
 	}
 	
 	news_bullet_path = nautilus_theme_get_image_path ("changed_bullet.png");	
@@ -2537,12 +2537,8 @@ make_news_view (const char *iid, gpointer callback_data)
 int
 main(int argc, char *argv[])
 {
-	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
-	 * Unfortunately, this has to be done explicitly for each domain.
-	 */
-	if (g_getenv("NAUTILUS_DEBUG") != NULL) {
-		eel_make_warnings_and_criticals_stop_in_debugger
-			(G_LOG_DOMAIN, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", NULL);
+	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
+		eel_make_warnings_and_criticals_stop_in_debugger ();
 	}
 	
         return nautilus_view_standard_main ("nautilus-news",

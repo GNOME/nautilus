@@ -276,7 +276,7 @@ nautilus_sidebar_init (GtkObject *object)
 	
 	/* allocate and install the panel tabs */
   	sidebar->details->notebook = GTK_NOTEBOOK (gtk_notebook_new ());
-	g_object_ref (G_OBJECT (sidebar->details->notebook));
+	g_object_ref (sidebar->details->notebook);
 	gtk_object_sink (GTK_OBJECT (sidebar->details->notebook));
 		
 	gtk_notebook_set_show_tabs (sidebar->details->notebook, FALSE);
@@ -304,7 +304,7 @@ nautilus_sidebar_destroy (GtkObject *object)
 
 	sidebar = NAUTILUS_SIDEBAR (object);
 
-	g_object_unref (G_OBJECT (sidebar->details->notebook));
+	g_object_unref (sidebar->details->notebook);
 
 	if (sidebar->details->file != NULL) {
 		gtk_signal_disconnect (GTK_OBJECT (sidebar->details->file), 
@@ -681,7 +681,7 @@ uri_is_local_image (const char *uri)
 	if (pixbuf == NULL) {
 		return FALSE;
 	}
-	g_object_unref (G_OBJECT (pixbuf));
+	g_object_unref (pixbuf);
 	return TRUE;
 }
 

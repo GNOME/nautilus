@@ -68,7 +68,7 @@ main (int argc, char* argv[])
 		}
 		
 		if (strcmp (emblem_name, "erase") == 0) {
-			g_object_unref (G_OBJECT (pixbuf));
+			g_object_unref (pixbuf);
 			g_free (label);
 			g_free (emblem_name);
 			continue;
@@ -76,7 +76,7 @@ main (int argc, char* argv[])
 		
 		button = eel_labeled_image_check_button_new (label, pixbuf);
 		g_free (label);
-		g_object_unref (G_OBJECT (pixbuf));
+		g_object_unref (pixbuf);
 
 		/* Attach parameters and signal handler. */
 		g_object_set_data_full (G_OBJECT (button),

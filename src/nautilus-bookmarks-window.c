@@ -432,7 +432,7 @@ on_row_move (GtkCList *clist,
 	gtk_signal_handler_unblock(GTK_OBJECT(bookmarks), 
 				   bookmark_list_changed_signal_id);
 
-	g_object_unref (G_OBJECT (bookmark));
+	g_object_unref (bookmark);
 }
 
 static void
@@ -490,7 +490,7 @@ update_bookmark_from_text (void)
 		gtk_signal_handler_unblock (GTK_OBJECT (bookmarks), 
 					    bookmark_list_changed_signal_id);
 
-		g_object_unref (G_OBJECT (bookmark));
+		g_object_unref (bookmark);
 	}
 }
 

@@ -130,7 +130,7 @@ test_pixbuf_new_named (const char *name, float scale)
 
 		scaled = gdk_pixbuf_scale_simple (pixbuf, width, height, GDK_INTERP_BILINEAR);
 
-		g_object_unref (G_OBJECT (pixbuf));
+		g_object_unref (pixbuf);
 
 		g_return_val_if_fail (scaled != NULL, NULL);
 
@@ -160,7 +160,7 @@ test_image_new (const char *pixbuf_name,
 
 		if (pixbuf != NULL) {
 			eel_image_set_pixbuf (EEL_IMAGE (image), pixbuf);
-			g_object_unref (G_OBJECT (pixbuf));
+			g_object_unref (pixbuf);
 		}
 	}
 
@@ -339,5 +339,5 @@ test_pixbuf_draw_rectangle_tiled (GdkPixbuf *pixbuf,
 					     opacity,
 					     GDK_INTERP_NEAREST);
 
-	g_object_unref (G_OBJECT (tile_pixbuf));
+	g_object_unref (tile_pixbuf);
 }

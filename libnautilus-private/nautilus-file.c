@@ -160,7 +160,7 @@ nautilus_file_new_from_relative_uri (NautilusDirectory *directory,
 	} else {
 		file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
 	}
-	g_object_ref (G_OBJECT (file));
+	g_object_ref (file);
 	gtk_object_sink (GTK_OBJECT (file));
 
 #ifdef NAUTILUS_FILE_DEBUG_REF
@@ -276,7 +276,7 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
 	eazel_dump_stack_trace ("\t", 10);
 #endif
 
-	g_object_ref (G_OBJECT (file));
+	g_object_ref (file);
 	gtk_object_sink (GTK_OBJECT (file));
 
 	nautilus_directory_ref (directory);
@@ -469,7 +469,7 @@ nautilus_file_ref (NautilusFile *file)
 	eazel_dump_stack_trace ("\t", 10);
 #endif
 
-	g_object_ref (G_OBJECT (file));
+	g_object_ref (file);
 	return file;
 }
 
@@ -487,7 +487,7 @@ nautilus_file_unref (NautilusFile *file)
 	eazel_dump_stack_trace ("\t", 10);
 #endif
 
-	g_object_unref (G_OBJECT (file));
+	g_object_unref (file);
 }
 
 /**

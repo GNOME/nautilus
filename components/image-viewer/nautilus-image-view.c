@@ -81,17 +81,17 @@ release_pixbuf (bonobo_object_data_t *bod)
 	g_return_if_fail (bod != NULL);
 
 	if (bod->pixbuf != NULL) {
-		g_object_unref (G_OBJECT (bod->pixbuf));
+		g_object_unref (bod->pixbuf);
 	}
 	bod->pixbuf = NULL;
 
 	if (bod->zoomed != NULL) {
-		g_object_unref (G_OBJECT (bod->zoomed));
+		g_object_unref (bod->zoomed);
 	}
 	bod->zoomed = NULL;
 
 	if (bod->scaled != NULL) {
-		g_object_unref (G_OBJECT (bod->scaled));
+		g_object_unref (bod->scaled);
 	}
 	bod->scaled = NULL;
 }
@@ -409,7 +409,7 @@ rezoom_control (bonobo_object_data_t *bod, float new_zoom_level)
 	new_height = old_height * new_zoom_level;
 
 	if (bod->zoomed)
-		g_object_unref (G_OBJECT (bod->zoomed));
+		g_object_unref (bod->zoomed);
 
 	if (new_width >= 1 && new_height >= 1) {
 		bod->zoomed = gdk_pixbuf_scale_simple (pixbuf, new_width, 
@@ -484,7 +484,7 @@ load_image_from_stream (BonoboPersistStream *ps, Bonobo_Stream stream,
 		Bonobo_Stream_read (stream, LOAD_BUFFER_SIZE, &buffer, ev);
 		if (ev->_major != CORBA_NO_EXCEPTION) {
 			gdk_pixbuf_loader_close (loader, NULL);
-			g_object_unref (G_OBJECT (loader));
+			g_object_unref (loader);
 			return;
 		}
 		
@@ -496,7 +496,7 @@ load_image_from_stream (BonoboPersistStream *ps, Bonobo_Stream stream,
 										 ex_Bonobo_Persist_WrongDataType, NULL);
 				}				
 				gdk_pixbuf_loader_close (loader, NULL);
-				g_object_unref (G_OBJECT (loader));
+				g_object_unref (loader);
 				return;
 		}
 		
@@ -509,9 +509,9 @@ load_image_from_stream (BonoboPersistStream *ps, Bonobo_Stream stream,
 
 	if (bod->pixbuf == NULL) {
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION, ex_Bonobo_Persist_WrongDataType, NULL);
-		g_object_unref (G_OBJECT (loader));
+		g_object_unref (loader);
 	} else {
-		g_object_ref (G_OBJECT (bod->pixbuf));
+		g_object_ref (bod->pixbuf);
 		
 		/* Restore current zoomed pixbuf cache. */
 		if (bod->zoom_level != 1.0) {
@@ -559,7 +559,7 @@ control_size_allocate_callback (GtkWidget *drawing_area, GtkAllocation *allocati
 	if (allocation->width  == gdk_pixbuf_get_width (buf) &&
 	    allocation->height == gdk_pixbuf_get_height (buf)) {
 		if (bod->scaled != NULL) {
-			g_object_unref (G_OBJECT (bod->scaled));
+			g_object_unref (bod->scaled);
 			bod->scaled = NULL;
 		}
 		return;
@@ -572,7 +572,7 @@ control_size_allocate_callback (GtkWidget *drawing_area, GtkAllocation *allocati
 			return;
 		} else {
 			bod->scaled = NULL;
-			g_object_unref (G_OBJECT (control_buf));
+			g_object_unref (control_buf);
 			control_buf = NULL;
 		}
 	}
@@ -852,11 +852,8 @@ main (int argc, char *argv [])
 	textdomain (PACKAGE);
 #endif
 
-	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
-	 * Unfortunately, this has to be done explicitly for each domain.
-	 */
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
-		eel_make_warnings_and_criticals_stop_in_debugger (G_LOG_DOMAIN, NULL);
+		eel_make_warnings_and_criticals_stop_in_debugger ();
 	}
 
 	init_server_factory (argc, argv);

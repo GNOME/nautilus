@@ -429,11 +429,8 @@ make_notes_view (const char *iid, gpointer callback_data)
 int
 main(int argc, char *argv[])
 {
-	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
-	 * Unfortunately, this has to be done explicitly for each domain.
-	 */
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
-		eel_make_warnings_and_criticals_stop_in_debugger (G_LOG_DOMAIN, NULL);
+		eel_make_warnings_and_criticals_stop_in_debugger ();
 	}
 	
         return nautilus_view_standard_main ("nautilus-notes",

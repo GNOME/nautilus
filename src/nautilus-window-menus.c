@@ -152,7 +152,7 @@ bookmark_holder_new (NautilusBookmark *bookmark,
 	/* Ref the bookmark because it might be unreffed away while 
 	 * we're holding onto it (not an issue for window).
 	 */
-	g_object_ref (G_OBJECT (bookmark));
+	g_object_ref (bookmark);
 	new_bookmark_holder->prompt_for_removal = is_bookmarks_menu;
 
 	new_bookmark_holder->changed_handler_id = 
@@ -170,7 +170,7 @@ bookmark_holder_free (BookmarkHolder *bookmark_holder)
 {
 	gtk_signal_disconnect (GTK_OBJECT (bookmark_holder->bookmark), 
 			       bookmark_holder->changed_handler_id);
-	g_object_unref (G_OBJECT (bookmark_holder->bookmark));
+	g_object_unref (bookmark_holder->bookmark);
 	g_free (bookmark_holder);
 }
 
@@ -885,7 +885,7 @@ append_bookmark_to_menu (NautilusWindow *window,
 		 index_in_parent, 
 		 display_name, 
 		 pixbuf);
-	g_object_unref (G_OBJECT (pixbuf));
+	g_object_unref (pixbuf);
 	g_free (display_name);
 	
 	/* Add the status tip */
@@ -1002,7 +1002,7 @@ create_menu_item_from_node (NautilusWindow *window,
 	if (strcmp (node->name, "bookmark") == 0) {
 		bookmark = nautilus_bookmark_new_from_node (node);
 		append_bookmark_to_menu (window, bookmark, menu_path, *index, TRUE);		
-		g_object_unref (G_OBJECT (bookmark));
+		g_object_unref (bookmark);
 	} else if (strcmp (node->name, "separator") == 0) {
 		append_separator (window, menu_path);
 	} else if (strcmp (node->name, "folder") == 0) {
@@ -1063,7 +1063,7 @@ static NautilusBookmarkList *bookmarks = NULL;
 static void
 free_bookmark_list (void)
 {
-	g_object_unref (G_OBJECT (bookmarks));
+	g_object_unref (bookmarks);
 }
 
 static NautilusBookmarkList *

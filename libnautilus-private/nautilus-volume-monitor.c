@@ -380,7 +380,7 @@ nautilus_volume_monitor_destroy (GtkObject *object)
 static void
 unref_global_volume_monitor (void)
 {
-	g_object_unref (G_OBJECT (global_volume_monitor));
+	g_object_unref (global_volume_monitor);
 }
 
 /* Return the global instance of the NautilusVolumeMonitor.  Create one
@@ -393,7 +393,7 @@ nautilus_volume_monitor_get (void)
 		global_volume_monitor = NAUTILUS_VOLUME_MONITOR
 			(g_object_new (nautilus_volume_monitor_get_type(),
 					 NULL));
-		g_object_ref (G_OBJECT (global_volume_monitor));
+		g_object_ref (global_volume_monitor);
 		gtk_object_sink (GTK_OBJECT (global_volume_monitor));
 		g_atexit (unref_global_volume_monitor);
 	}

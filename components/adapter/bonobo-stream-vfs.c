@@ -459,7 +459,7 @@ bonobo_stream_vfs_new_internal (GnomeVFSHandle *handle)
 	CORBA_exception_init (&ev);
 	
 	if (CORBA_Object_is_nil (corba_stream, &ev)){
-		g_object_unref (G_OBJECT (stream_vfs));
+		g_object_unref (stream_vfs);
 		CORBA_exception_free (&ev);
 		return NULL;
 	}

@@ -219,7 +219,7 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 		pixbuf = eel_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, 
 								data->maximum_icon_width, 
 								data->maximum_icon_height);
-		g_object_unref (G_OBJECT (orig_pixbuf));
+		g_object_unref (orig_pixbuf);
 	}
 	
 	*pixbuf_out = pixbuf;
@@ -257,7 +257,7 @@ nautilus_customization_data_destroy (NautilusCustomizationData *data)
 		  data->private_file_list != NULL);
 
 	if (data->pattern_frame != NULL) {
-		g_object_unref (G_OBJECT (data->pattern_frame));
+		g_object_unref (data->pattern_frame);
 	}
 
 	gnome_vfs_file_info_list_free (data->public_file_list);
@@ -372,7 +372,7 @@ add_reset_text (GdkPixbuf *pixbuf)
 					  EEL_RGBA_COLOR_OPAQUE_WHITE,
 					  EEL_OPACITY_FULLY_OPAQUE);
 	
-	g_object_unref (G_OBJECT (font));
+	g_object_unref (font);
 }
 
 /* utility to make an attractive pattern image by compositing with a frame */
@@ -397,11 +397,11 @@ nautilus_customization_make_pattern_chit (GdkPixbuf *pattern_tile, GdkPixbuf *fr
 	if (dragging) {
 		temp_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, frame_width - 6, frame_height - 6);
 		gdk_pixbuf_copy_area (pixbuf, 2, 2, frame_width - 6, frame_height - 6, temp_pixbuf, 0, 0);
-		g_object_unref (G_OBJECT (pixbuf));
+		g_object_unref (pixbuf);
 		pixbuf = temp_pixbuf;
 	}
 			      
-	g_object_unref (G_OBJECT (pattern_tile));
+	g_object_unref (pattern_tile);
 
 	if (is_reset) {
 		add_reset_text (pixbuf);

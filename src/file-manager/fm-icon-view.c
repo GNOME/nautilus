@@ -2389,7 +2389,7 @@ fm_icon_view_update_icon_container_smooth_font (FMIconView *icon_view)
 
 	nautilus_icon_container_set_smooth_label_font (icon_container,
 						       scalable_font);
-	g_object_unref (G_OBJECT (scalable_font));
+	g_object_unref (scalable_font);
 	
 	nautilus_icon_container_request_update_all (icon_container);
 }

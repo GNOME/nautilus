@@ -327,7 +327,7 @@ select_throbber_image (NautilusThrobber *throbber)
 	GList *element;
 
 	if (throbber->details->timer_task == 0) {
-		return g_object_ref (G_OBJECT (throbber->details->quiescent_pixbuf));
+		return g_object_ref (throbber->details->quiescent_pixbuf);
 	}
 	
 	if (throbber->details->image_list == NULL) {
@@ -336,7 +336,7 @@ select_throbber_image (NautilusThrobber *throbber)
 
 	element = g_list_nth (throbber->details->image_list, throbber->details->current_frame);
 	
-	return g_object_ref (G_OBJECT (element->data));
+	return g_object_ref (element->data);
 }
 
 /* draw the throbber into the passed-in rectangle */
@@ -377,7 +377,7 @@ draw_throbber_image (GtkWidget *widget, GdkRectangle *box)
 		} else {
 			massaged_pixbuf = eel_create_spotlight_pixbuf (pixbuf);
 		}
-		g_object_unref (G_OBJECT (pixbuf));
+		g_object_unref (pixbuf);
 		pixbuf = massaged_pixbuf;
 	}
 	
@@ -387,7 +387,7 @@ draw_throbber_image (GtkWidget *widget, GdkRectangle *box)
 	
 	draw_pixbuf (pixbuf, widget->window, box->x + x_offset, box->y + y_offset);
 	
-	g_object_unref (G_OBJECT (pixbuf));
+	g_object_unref (pixbuf);
 }
 
 #ifdef GNOME2_CONVERSION_COMPLETE
@@ -504,14 +504,14 @@ nautilus_throbber_unload_images (NautilusThrobber *throbber)
 	GList *current_entry;
 
 	if (throbber->details->quiescent_pixbuf != NULL) {
-		g_object_unref (G_OBJECT (throbber->details->quiescent_pixbuf));
+		g_object_unref (throbber->details->quiescent_pixbuf);
 		throbber->details->quiescent_pixbuf = NULL;
 	}
 
 	/* unref all the images in the list, and then let go of the list itself */
 	current_entry = throbber->details->image_list;
 	while (current_entry != NULL) {
-		g_object_unref (G_OBJECT (current_entry->data));
+		g_object_unref (current_entry->data);
 		current_entry = current_entry->next;
 	}
 	
@@ -539,7 +539,7 @@ load_themed_image (const char *file_name, const char *image_theme, gboolean smal
 							       gdk_pixbuf_get_width (pixbuf) / 2,
 							       gdk_pixbuf_get_height (pixbuf) / 2,
 							       GDK_INTERP_BILINEAR);
-			g_object_unref (G_OBJECT (pixbuf));
+			g_object_unref (pixbuf);
 			pixbuf = temp_pixbuf;
 		}
 		

@@ -727,7 +727,7 @@ iti_render (GnomeCanvasItem *item, GnomeCanvasBuf *buffer)
 		
 	/* draw the pixbuf containing the label */
 	draw_pixbuf_aa (text_pixbuf, buffer, affine, eel_round (item->x1), eel_round (item->y1));
-	g_object_unref (G_OBJECT (text_pixbuf));
+	g_object_unref (text_pixbuf);
 
 	buffer->is_bg = FALSE;
 	buffer->is_buf = TRUE;

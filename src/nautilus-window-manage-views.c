@@ -309,7 +309,7 @@ set_displayed_location (NautilusWindow *window, const char *location)
         if (recreate) {
                 /* We've changed locations, must recreate bookmark for current location. */
                 if (window->last_location_bookmark != NULL)  {
-                        g_object_unref (G_OBJECT (window->last_location_bookmark));
+                        g_object_unref (window->last_location_bookmark);
                 }
                 window->last_location_bookmark = window->current_location_bookmark;
                 window->current_location_bookmark = location == NULL ? NULL
@@ -363,7 +363,7 @@ handle_go_back (NautilusWindow *window, const char *location)
         /* Use the first bookmark in the history list rather than creating a new one. */
         window->forward_list = g_list_prepend (window->forward_list,
                                                window->last_location_bookmark);
-        g_object_ref (G_OBJECT (window->forward_list->data));
+        g_object_ref (window->forward_list->data);
                                 
         /* Move extra links from Back to Forward list */
         for (i = 0; i < window->details->location_change_distance; ++i) {
@@ -375,7 +375,7 @@ handle_go_back (NautilusWindow *window, const char *location)
         /* One bookmark falls out of back/forward lists and becomes viewed location */
         link = window->back_list;
         window->back_list = g_list_remove_link (window->back_list, link);
-        g_object_unref (G_OBJECT (link->data));
+        g_object_unref (link->data);
         g_list_free_1 (link);
 }
 
@@ -400,7 +400,7 @@ handle_go_forward (NautilusWindow *window, const char *location)
         /* Use the first bookmark in the history list rather than creating a new one. */
         window->back_list = g_list_prepend (window->back_list,
                                             window->last_location_bookmark);
-        g_object_ref (G_OBJECT (window->back_list->data));
+        g_object_ref (window->back_list->data);
         
         /* Move extra links from Forward to Back list */
         for (i = 0; i < window->details->location_change_distance; ++i) {
@@ -412,7 +412,7 @@ handle_go_forward (NautilusWindow *window, const char *location)
         /* One bookmark falls out of back/forward lists and becomes viewed location */
         link = window->forward_list;
         window->forward_list = g_list_remove_link (window->forward_list, link);
-        g_object_unref (G_OBJECT (link->data));
+        g_object_unref (link->data);
         g_list_free_1 (link);
 }
 
@@ -434,7 +434,7 @@ handle_go_elsewhere (NautilusWindow *window, const char *location)
                         /* Use the first bookmark in the history list rather than creating a new one. */
                         window->back_list = g_list_prepend (window->back_list,
                                                             window->last_location_bookmark);
-                        g_object_ref (G_OBJECT (window->back_list->data));
+                        g_object_ref (window->back_list->data);
                 }
         }
 }
@@ -627,7 +627,7 @@ update_for_new_location (NautilusWindow *window)
 static gboolean
 unref_callback (gpointer callback_data)
 {
-        g_object_unref (G_OBJECT (callback_data));
+        g_object_unref (callback_data);
         return FALSE;
 }
 
@@ -658,7 +658,7 @@ location_has_really_changed (NautilusWindow *window)
                 disconnect_view (window, window->content_view);
                 nautilus_window_set_content_view_widget (window, window->new_content_view);
         }
-        g_object_unref (G_OBJECT (window->new_content_view));
+        g_object_unref (window->new_content_view);
         window->new_content_view = NULL;
         
         /* Update displayed view in menu. Only do this if we're not switching
@@ -971,14 +971,14 @@ load_content_view (NautilusWindow *window,
                 /* reuse existing content view */
                 view = window->content_view;
                 window->new_content_view = view;
-        	g_object_ref (G_OBJECT (view));
+        	g_object_ref (view);
                 set_to_pending_location_and_selection (window);
         } else {
                 /* create a new content view */
                 view = nautilus_view_frame_new (window->details->ui_container,
                                                 window->application->undo_manager);
                 window->new_content_view = view;
-                g_object_ref (G_OBJECT (view));
+                g_object_ref (view);
                 gtk_object_sink (GTK_OBJECT (view));
 		set_view_frame_info (view, FALSE, id);
                 connect_view (window, view);
@@ -1077,7 +1077,7 @@ free_location_change (NautilusWindow *window)
                         disconnect_view (window, window->new_content_view);
                         gtk_widget_destroy (GTK_WIDGET (window->new_content_view));
         	}
-        	g_object_unref (G_OBJECT (window->new_content_view));
+        	g_object_unref (window->new_content_view);
                 window->new_content_view = NULL;
         }
 }
@@ -1684,7 +1684,7 @@ get_history_list_callback (NautilusViewFrame *view,
 		g_free (name);
 		g_free (location);
 		g_free (pixbuf_xml);
-		g_object_unref (G_OBJECT (pixbuf));		
+		g_object_unref (pixbuf);		
 	}
 
 	return list;

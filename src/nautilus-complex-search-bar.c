@@ -433,7 +433,7 @@ load_find_them_pixmap_widget (void)
 	pixbuf = gdk_pixbuf_new_from_file (NAUTILUS_PIXMAPDIR "/search.png", NULL);
 	if (pixbuf != NULL) {
 		gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, EEL_STANDARD_ALPHA_THRESHHOLD);
-		g_object_unref (G_OBJECT (pixbuf));
+		g_object_unref (pixbuf);
 		widget = gtk_pixmap_new (pixmap, mask);
 
 		gdk_pixmap_unref (pixmap);

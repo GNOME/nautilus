@@ -998,7 +998,7 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 		}
 		
 		if (strcmp (emblem_name, "erase") == 0) {
-			g_object_unref (G_OBJECT (pixbuf));
+			g_object_unref (pixbuf);
 			g_free (label);
 			g_free (emblem_name);
 			continue;
@@ -1018,7 +1018,7 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 		gtk_widget_show_all (menu_item);
 		gtk_menu_append (GTK_MENU (value_menu), menu_item);
 
-		g_object_unref (G_OBJECT (pixbuf));
+		g_object_unref (pixbuf);
 		g_free (label);
 		g_free (emblem_name);
 	}

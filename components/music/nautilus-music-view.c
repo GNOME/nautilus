@@ -1719,10 +1719,10 @@ nautilus_music_view_set_album_image (NautilusMusicView *music_view, const char *
 		
 		if (pixbuf != NULL) {
 			scaled_pixbuf = eel_gdk_pixbuf_scale_down_to_fit (pixbuf, SCALED_IMAGE_WIDTH, SCALED_IMAGE_HEIGHT);
-			g_object_unref (G_OBJECT (pixbuf));
+			g_object_unref (pixbuf);
 
        			gdk_pixbuf_render_pixmap_and_mask (scaled_pixbuf, &pixmap, &mask, EEL_STANDARD_ALPHA_THRESHHOLD);
-			g_object_unref (G_OBJECT (scaled_pixbuf));
+			g_object_unref (scaled_pixbuf);
 			
 			if (music_view->details->album_image == NULL) {
 				music_view->details->album_image = gtk_pixmap_new (pixmap, mask);

@@ -267,7 +267,7 @@ update_properties_window_icon (EelImage *image)
 
 	eel_image_set_pixbuf (image, pixbuf);
 	
-	g_object_unref (G_OBJECT (pixbuf));
+	g_object_unref (pixbuf);
 }
 
 
@@ -289,7 +289,7 @@ uri_is_local_image (const char *uri)
 	if (pixbuf == NULL) {
 		return FALSE;
 	}
-	g_object_unref (G_OBJECT (pixbuf));
+	g_object_unref (pixbuf);
 	return TRUE;
 }
 
@@ -363,7 +363,7 @@ create_image_widget_for_file (NautilusFile *file)
 
 	eel_image_set_pixbuf (EEL_IMAGE (image), pixbuf);
 
-	g_object_unref (G_OBJECT (pixbuf));
+	g_object_unref (pixbuf);
 
 	nautilus_file_ref (file);
 	g_object_set_data_full (G_OBJECT (image),
@@ -477,7 +477,7 @@ rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_da
 		}
 	}
 
-	g_object_unref (G_OBJECT (window));
+	g_object_unref (window);
 }
 
 static void
@@ -513,7 +513,7 @@ name_field_done_editing (NautilusEntry *name_field, FMPropertiesWindow *window)
 		name_field_restore_original_name (NAUTILUS_ENTRY (name_field));
 	} else {
 		set_pending_name (window, new_name);
-		g_object_ref (G_OBJECT (window));
+		g_object_ref (window);
 		nautilus_file_rename (file, new_name,
 				      rename_callback, window);
 	}
@@ -1728,7 +1728,7 @@ create_emblems_page (FMPropertiesWindow *window)
 		}
 		
 		if (strcmp (emblem_name, "erase") == 0) {
-			g_object_unref (G_OBJECT (pixbuf));
+			g_object_unref (pixbuf);
 			g_free (label);
 			g_free (emblem_name);
 			continue;
@@ -1739,7 +1739,7 @@ create_emblems_page (FMPropertiesWindow *window)
 		eel_labeled_image_set_spacing (EEL_LABELED_IMAGE (GTK_BIN (button)->child), EMBLEM_LABEL_SPACING);
 		
 		g_free (label);
-		g_object_unref (G_OBJECT (pixbuf));
+		g_object_unref (pixbuf);
 
 		/* Attach parameters and signal handler. */
 		g_object_set_data_full (G_OBJECT (button),

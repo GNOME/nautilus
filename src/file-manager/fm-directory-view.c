@@ -1778,7 +1778,7 @@ debuting_uri_add_file_callback (FMDirectoryView *view,
 	uri = nautilus_file_get_uri (new_file);
 
 	if (g_hash_table_remove (data->debuting_uris, uri)) {
-		g_object_ref (G_OBJECT (new_file));
+		g_object_ref (new_file);
 		data->added_files = g_list_prepend (data->added_files, new_file);
 
 		if (g_hash_table_size (data->debuting_uris) == 0) {
@@ -1811,7 +1811,7 @@ copy_move_done_data_free (CopyMoveDoneData *data)
 static void
 pre_copy_move_add_file_callback (FMDirectoryView *view, NautilusFile *new_file, CopyMoveDoneData *data)
 {
-	g_object_ref (G_OBJECT (new_file));
+	g_object_ref (new_file);
 	data->added_files = g_list_prepend (data->added_files, new_file);
 }
 
@@ -3690,7 +3690,7 @@ add_script_to_script_menus (FMDirectoryView *directory_view,
 				launch_parameters,
 				NULL);
 
-	g_object_unref (G_OBJECT (pixbuf));
+	g_object_unref (pixbuf);
 	g_free (name);
 	g_free (tip);
 }
@@ -3709,7 +3709,7 @@ add_submenu_to_script_menus (FMDirectoryView *directory_view,
 		(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS, TRUE);
 	add_submenu (directory_view->details->ui, menu_path, name, pixbuf);
 	add_submenu (directory_view->details->ui, popup_path, name, pixbuf);
-	g_object_unref (G_OBJECT (pixbuf));
+	g_object_unref (pixbuf);
 	g_free (name);
 }
 

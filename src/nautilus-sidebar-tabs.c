@@ -241,7 +241,7 @@ nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
 
 	/* unload the old font if necessary */
 	if (sidebar_tabs->details->tab_font != NULL) {
-		g_object_unref (G_OBJECT (sidebar_tabs->details->tab_font));
+		g_object_unref (sidebar_tabs->details->tab_font);
 		sidebar_tabs->details->tab_font = NULL;
 	}
 
@@ -264,7 +264,7 @@ smooth_font_changed_callback (gpointer callback_data)
 	new_font = nautilus_global_preferences_get_default_smooth_bold_font ();
 
 	if (sidebar_tabs->details->tab_font != NULL) {
-		g_object_unref (G_OBJECT (sidebar_tabs->details->tab_font));
+		g_object_unref (sidebar_tabs->details->tab_font);
 		sidebar_tabs->details->tab_font = NULL;
 	}
 
@@ -353,7 +353,7 @@ tab_item_destroy (TabItem *item)
 	g_free (item->indicator_pixbuf_name);
 	
 	if (item->indicator_pixbuf != NULL) {
-		g_object_unref (G_OBJECT (item->indicator_pixbuf));
+		g_object_unref (item->indicator_pixbuf);
 	}
 
 	if (item->listener_id != 0) {
@@ -387,7 +387,7 @@ nautilus_sidebar_tabs_destroy (GtkObject *object)
 	}
 	
 	if (sidebar_tabs->details->tab_font != NULL) {
-		g_object_unref (G_OBJECT (sidebar_tabs->details->tab_font));
+		g_object_unref (sidebar_tabs->details->tab_font);
 		sidebar_tabs->details->tab_font = NULL;
 	}
 	
@@ -415,7 +415,7 @@ nautilus_sidebar_tabs_unload_tab_pieces (NautilusSidebarTabs *sidebar_tabs)
 	int index;
 	for (index = 0; index < LAST_TAB_OFFSET; index++) {
 		if (sidebar_tabs->details->tab_piece_images[index]) {
-			g_object_unref (G_OBJECT (sidebar_tabs->details->tab_piece_images[index]));
+			g_object_unref (sidebar_tabs->details->tab_piece_images[index]);
 			sidebar_tabs->details->tab_piece_images[index] = NULL;			
 		}
 	}	
@@ -688,7 +688,7 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc, char *tab_name
 					     GDK_RGB_DITHER_MAX,
 					     0, 0);
 	
-	g_object_unref (G_OBJECT (temp_pixbuf));	
+	g_object_unref (temp_pixbuf);	
 	
 	/* draw the bottom lines */
 	tab_bottom = y + sidebar_tabs->details->tab_height - 1;
@@ -1224,7 +1224,7 @@ draw_or_layout_all_tabs (NautilusSidebarTabs *sidebar_tabs, gboolean layout_only
 							     GDK_RGB_DITHER_MAX,
 							     0, 0);
 
-			g_object_unref (G_OBJECT (tab_pixbuf));
+			g_object_unref (tab_pixbuf);
 		}
 	}
 	
@@ -1307,7 +1307,7 @@ nautilus_sidebar_tabs_expose (GtkWidget *widget, GdkEventExpose *event)
 							     GDK_RGB_DITHER_MAX,
 							     0, 0);
 					
-			g_object_unref (G_OBJECT (pixbuf)); 
+			g_object_unref (pixbuf); 
 		} else {
 			draw_one_tab_plain (sidebar_tabs, temp_gc, sidebar_tabs->details->title, NULL,
 					    x_pos + TITLE_TAB_OFFSET, y_pos, sidebar_tabs->details->title_prelit, &sidebar_tabs->details->title_rect);
@@ -1355,7 +1355,7 @@ nautilus_sidebar_tabs_update_tab_item (NautilusSidebarTabs *sidebar_tabs, TabIte
 		tab_item->indicator_pixbuf_name = g_strdup (tab_image_name);	
 
 		if (tab_item->indicator_pixbuf != NULL) {
-			g_object_unref (G_OBJECT (tab_item->indicator_pixbuf));
+			g_object_unref (tab_item->indicator_pixbuf);
 			tab_item->indicator_pixbuf = NULL;	
 		}
 		if (tab_image_name != NULL) {

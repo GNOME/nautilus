@@ -34,13 +34,14 @@
 #include "nautilus-application.h"
 #include "nautilus-self-check-functions.h"
 #include "nautilus-window.h"
+#include <X11/Xlib.h>
+#include <bonobo-activation/bonobo-activation.h>
 #include <bonobo/bonobo-main.h>
 #include <dlfcn.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-self-checks.h>
 #include <gdk/gdkx.h>
-#include <libxml/parser.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
@@ -50,11 +51,10 @@
 #include <libnautilus-private/nautilus-directory-metafile.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-lib-self-check-functions.h>
-#include <bonobo-activation/bonobo-activation.h>
+#include <libxml/parser.h>
 #include <popt.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <X11/Xlib.h>
 
 /* Keeps track of everyone who wants the main event loop kept active */
 static GSList *event_loop_registrants;
@@ -161,27 +161,8 @@ main (int argc, char *argv[])
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
 	};
 
-	/* Make criticals and warnings stop in the debugger if
-	 * NAUTILUS_DEBUG is set. Unfortunately, this has to be done
-	 * explicitly for each domain.
-	 */
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
-		eel_make_warnings_and_criticals_stop_in_debugger
-			(G_LOG_DOMAIN,
-			 "Bonobo",
-			 "GLib",
-			 "GLib-GObject",
-			 "Gdk",
-			 "GnomeUI",
-			 "GnomeVFS",
-			 "GnomeVFS-CORBA",
-			 "GnomeVFS-pthread",
-			 "Gtk",
-			 "Nautilus",
-			 "Nautilus-Authenticate",
-			 "Nautilus-Tree",
-			 "ORBit",
-			 NULL);
+		eel_make_warnings_and_criticals_stop_in_debugger ();
 	}
 	
 	/* Initialize gettext support */

@@ -217,7 +217,7 @@ nautilus_bookmark_get_pixmap_and_mask (NautilusBookmark *bookmark,
 	}
 
 	gdk_pixbuf_render_pixmap_and_mask (pixbuf, pixmap_return, mask_return, EEL_STANDARD_ALPHA_THRESHHOLD);
-	g_object_unref (G_OBJECT (pixbuf));
+	g_object_unref (pixbuf);
 
 	return TRUE;
 }
@@ -518,7 +518,7 @@ nautilus_bookmark_new_with_icon (const char *uri, const char *name,
 	NautilusBookmark *new_bookmark;
 
 	new_bookmark = NAUTILUS_BOOKMARK (g_object_new (NAUTILUS_TYPE_BOOKMARK, NULL));
-	g_object_ref (G_OBJECT (new_bookmark));
+	g_object_ref (new_bookmark);
 	gtk_object_sink (GTK_OBJECT (new_bookmark));
 
 	new_bookmark->details->name = g_strdup (name);

@@ -284,7 +284,7 @@ set_up_special_bonobo_button (NautilusWindow *window,
 	nautilus_window_ui_freeze (window);
 
 	bonobo_ui_toolbar_button_item_set_image (item, gtk_image_new_from_pixbuf (pixbuf));
-	g_object_unref (G_OBJECT (pixbuf));
+	g_object_unref (pixbuf);
 
 #if GNOME2_CONVERSION_COMPLETE
 	/* FIXME bugzilla.gnome.org 45005:

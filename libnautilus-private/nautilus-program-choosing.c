@@ -86,7 +86,7 @@ choose_application_destroy (ChooseApplicationCallbackData *choose_data)
 {
 	nautilus_file_unref (choose_data->file);
 	if (choose_data->parent_window != NULL) {
-		g_object_unref (G_OBJECT (choose_data->parent_window));
+		g_object_unref (choose_data->parent_window);
 	}
 	g_free (choose_data);
 }
@@ -120,7 +120,7 @@ choose_component_destroy (ChooseComponentCallbackData *choose_data)
 {
 	nautilus_file_unref (choose_data->file);
 	if (choose_data->parent_window != NULL) {
-		g_object_unref (G_OBJECT (choose_data->parent_window));
+		g_object_unref (choose_data->parent_window);
 	}
 	g_free (choose_data);
 }
@@ -234,7 +234,7 @@ nautilus_choose_component_for_file (NautilusFile *file,
 	 */
 	nautilus_file_ref (file);
 	if (parent_window != NULL) {
-		g_object_ref (G_OBJECT (parent_window));
+		g_object_ref (parent_window);
 	}
 
 	/* Create data to pass through. */
@@ -374,7 +374,7 @@ nautilus_choose_application_for_file (NautilusFile *file,
 	 */
 	nautilus_file_ref (file);
 	if (parent_window != NULL) {
-		g_object_ref (G_OBJECT (parent_window));
+		g_object_ref (parent_window);
 	}
 
 	/* Create data to pass through. */

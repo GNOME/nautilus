@@ -170,7 +170,7 @@ update_history (NautilusHistoryView *view,
 		pixbuf = bonobo_ui_util_xml_to_pixbuf (item->icon);
 		install_icon (list, new_row, pixbuf);
 		if (pixbuf != NULL) {
-			g_object_unref (G_OBJECT (pixbuf));
+			g_object_unref (pixbuf);
 		}
 		
 		gtk_clist_columns_autosize (list);
@@ -279,7 +279,7 @@ nautilus_history_view_instance_init (NautilusHistoryView *view)
 	
 	nautilus_view_construct (NAUTILUS_VIEW (view), window);
 
-	g_object_ref (G_OBJECT (list));
+	g_object_ref (list);
 	view->list = list;
 
 	g_signal_connect (list,
@@ -308,7 +308,7 @@ nautilus_history_view_finalize (GObject *object)
 		*view->external_destroyed_flag = TRUE;
 	}
 
-	g_object_unref (G_OBJECT (view->list));
+	g_object_unref (view->list);
 
 	GNOME_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
@@ -322,11 +322,8 @@ nautilus_history_view_class_init (NautilusHistoryViewClass *klass)
 int
 main (int argc, char *argv[])
 {
-	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
-	 * Unfortunately, this has to be done explicitly for each domain.
-	 */
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
-		eel_make_warnings_and_criticals_stop_in_debugger (G_LOG_DOMAIN, NULL);
+		eel_make_warnings_and_criticals_stop_in_debugger ();
 	}
 
 	return nautilus_view_standard_main ("nautilus_history-view",

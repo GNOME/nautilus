@@ -96,7 +96,7 @@ nautilus_about_finalize (GObject *object)
 	about = NAUTILUS_ABOUT (object);
 	
 	if (about->details->background_pixbuf != NULL) {
-		g_object_unref (G_OBJECT (about->details->background_pixbuf));
+		g_object_unref (about->details->background_pixbuf);
 	}
 	
 	g_strfreev (about->details->authors);
@@ -386,8 +386,8 @@ nautilus_about_draw_info (NautilusAbout	*about,
 	g_strfreev (comment_array);
 		
 	/* release the fonts */	
-	g_object_unref (G_OBJECT(plain_font));
-	g_object_unref (G_OBJECT(bold_font));
+	g_object_unref(plain_font);
+	g_object_unref(bold_font);
 }
 
 /* update authors is called to randomize the author array and redraw it */ 
@@ -415,7 +415,7 @@ nautilus_about_update_authors (NautilusAbout *about)
 	/* redraw the authors */
 	plain_font = eel_scalable_font_get_default_font ();
 	draw_author_list (about, about->details->background_pixbuf, plain_font);
-	g_object_unref (G_OBJECT(plain_font));
+	g_object_unref(plain_font);
 	
 	about->details->last_update_time = time (NULL);
 

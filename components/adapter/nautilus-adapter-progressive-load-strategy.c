@@ -119,7 +119,7 @@ nautilus_adapter_progressive_load_strategy_new (Bonobo_ProgressiveDataSink  prog
 	CORBA_exception_init (&ev);
 
 	strategy = NAUTILUS_ADAPTER_PROGRESSIVE_LOAD_STRATEGY (g_object_new (NAUTILUS_TYPE_ADAPTER_PROGRESSIVE_LOAD_STRATEGY, NULL));
-	g_object_ref (G_OBJECT (strategy));
+	g_object_ref (strategy);
 	gtk_object_sink (GTK_OBJECT (strategy));
 
 	strategy->details->progressive_data_sink = progressive_data_sink;
@@ -188,7 +188,7 @@ stop_loading (NautilusAdapterProgressiveLoadStrategy *strategy,
 			nautilus_adapter_load_strategy_report_load_complete (NAUTILUS_ADAPTER_LOAD_STRATEGY (strategy));
 		}
 	}
-	g_object_unref (G_OBJECT (strategy));
+	g_object_unref (strategy);
 	gnome_vfs_close (handle);
 	CORBA_free (iobuf);
 	CORBA_exception_free (ev);
@@ -241,7 +241,7 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 
 	strategy->details->no_report_stop = FALSE;
 
-	g_object_ref (G_OBJECT (strategy));
+	g_object_ref (strategy);
 
 	strategy->details->loading = TRUE;
 	strategy->details->stop = FALSE;
@@ -256,7 +256,7 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 
 	if (gnome_vfs_open (&handle, uri, GNOME_VFS_OPEN_READ) != GNOME_VFS_OK) {
 		nautilus_adapter_load_strategy_report_load_failed (abstract_strategy);
-		g_object_unref (G_OBJECT (strategy));
+		g_object_unref (strategy);
 		CORBA_exception_free (&ev);
 		declare_done_loading (strategy);
 		return;
@@ -271,7 +271,7 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 
 	if (strategy->details->stop) {
 		nautilus_adapter_load_strategy_report_load_complete (abstract_strategy);
-		g_object_unref (G_OBJECT (strategy));
+		g_object_unref (strategy);
 		CORBA_exception_free (&ev);
 		declare_done_loading (strategy);
 		return;
@@ -312,7 +312,7 @@ nautilus_adapter_progressive_load_strategy_load_location (NautilusAdapterLoadStr
 			if (ev._major == CORBA_NO_EXCEPTION) {
 				Bonobo_ProgressiveDataSink_end (strategy->details->progressive_data_sink, &ev);
 				nautilus_adapter_load_strategy_report_load_complete (abstract_strategy);
-				g_object_unref (G_OBJECT (strategy));
+				g_object_unref (strategy);
 				gnome_vfs_close (handle);
 				CORBA_free (iobuf);
 				CORBA_exception_free (&ev);

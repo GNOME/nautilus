@@ -265,7 +265,7 @@ static gboolean
 select_all_at_idle (gpointer callback_data)
 {
 	nautilus_entry_select_all (NAUTILUS_ENTRY (callback_data));
-	g_object_unref (G_OBJECT (callback_data));
+	g_object_unref (callback_data);
 
 	return FALSE;
 }

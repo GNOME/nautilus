@@ -146,7 +146,7 @@ nautilus_directory_ref (NautilusDirectory *directory)
 
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
-	g_object_ref (G_OBJECT (directory));
+	g_object_ref (directory);
 }
 
 void
@@ -158,7 +158,7 @@ nautilus_directory_unref (NautilusDirectory *directory)
 
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
-	g_object_unref (G_OBJECT (directory));
+	g_object_unref (directory);
 }
 
 static void
@@ -511,7 +511,7 @@ nautilus_directory_new (const char *uri)
 	} else {
 		directory = NAUTILUS_DIRECTORY (g_object_new (NAUTILUS_TYPE_VFS_DIRECTORY, NULL));
 	}
-	g_object_ref (G_OBJECT (directory));
+	g_object_ref (directory);
 	gtk_object_sink (GTK_OBJECT (directory));
 
 	set_directory_uri (directory, uri);

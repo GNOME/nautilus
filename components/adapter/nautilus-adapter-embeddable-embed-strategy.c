@@ -169,7 +169,7 @@ nautilus_adapter_embeddable_embed_strategy_new (Bonobo_Embeddable embeddable,
 	CORBA_Environment ev;
 
 	strategy = NAUTILUS_ADAPTER_EMBEDDABLE_EMBED_STRATEGY (g_object_new (NAUTILUS_TYPE_ADAPTER_EMBEDDABLE_EMBED_STRATEGY, NULL));
-	g_object_ref (G_OBJECT (strategy));
+	g_object_ref (strategy);
 	gtk_object_sink (GTK_OBJECT (strategy));
 
 	embeddable_wrapper = bonobo_object_client_from_corba

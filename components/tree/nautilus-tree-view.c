@@ -258,8 +258,8 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 					    CLIST_AUTO_SORT);
 			view->details->inserting_node = FALSE;
 
-			g_object_unref (G_OBJECT (closed_pixbuf));
-			g_object_unref (G_OBJECT (open_pixbuf));
+			g_object_unref (closed_pixbuf);
+			g_object_unref (open_pixbuf);
 
 
 			eel_ctree_node_set_row_data (EEL_CTREE (view->details->tree),
@@ -451,8 +451,8 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 
 		g_free (name);
 
-		g_object_unref (G_OBJECT (closed_pixbuf));
-		g_object_unref (G_OBJECT (open_pixbuf));
+		g_object_unref (closed_pixbuf);
+		g_object_unref (open_pixbuf);
 
 
 
@@ -490,7 +490,7 @@ register_unparented_node (NautilusTreeView *view, NautilusTreeNode *node)
 	g_return_if_fail (!nautilus_tree_node_is_toplevel (node));
 
 	if (g_list_find (view->details->unparented_tree_nodes, node) == NULL) {
-		g_object_ref (G_OBJECT (node));
+		g_object_ref (node);
 		view->details->unparented_tree_nodes = g_list_prepend (view->details->unparented_tree_nodes, node);
 	}
 }
@@ -503,7 +503,7 @@ forget_unparented_node (NautilusTreeView *view, NautilusTreeNode *node)
 
 	if (g_list_find (view->details->unparented_tree_nodes, node) != NULL) {
 		view->details->unparented_tree_nodes = g_list_remove (view->details->unparented_tree_nodes, node);
-		g_object_unref (G_OBJECT (node));
+		g_object_unref (node);
 	}
 }
 
@@ -535,7 +535,7 @@ insert_unparented_nodes (NautilusTreeView *view, NautilusTreeNode *node)
 				sub_node = p->data;
 				view->details->unparented_tree_nodes = g_list_remove (view->details->unparented_tree_nodes, sub_node);
 				nautilus_tree_view_insert_model_node (view, sub_node);
-				g_object_unref (G_OBJECT (sub_node));
+				g_object_unref (sub_node);
 			}
 			g_list_free (to_add);
 		}
@@ -1114,7 +1114,7 @@ nautilus_tree_view_destroy (BonoboObject *object)
 	}
 
 	if (view->details->tree != NULL) {
-		g_object_unref (G_OBJECT (view->details->change_queue));
+		g_object_unref (view->details->change_queue);
 		
 		if (compare_cached_key == view->details->tree) {
 			compare_cached_key = NULL;
@@ -1147,10 +1147,10 @@ nautilus_tree_view_destroy (BonoboObject *object)
 		nautilus_tree_view_free_dnd (view);
 		
 		disconnect_model_handlers (view);
-		g_object_unref (G_OBJECT (view->details->model));
+		g_object_unref (view->details->model);
 		
 		nautilus_tree_expansion_state_save (view->details->expansion_state);
-		g_object_unref (G_OBJECT (view->details->expansion_state));
+		g_object_unref (view->details->expansion_state);
 
 		view->details->tree = NULL;
 	}
