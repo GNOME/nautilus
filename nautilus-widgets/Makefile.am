@@ -15,7 +15,7 @@ INCLUDES =\
 
 libnautilus_widgets_la_LDFLAGS=\
 	$(GNOME_LIBS) \
-	$(top_src_dir)/libnautilus/libnautilus.la
+	$(top_builddir)/libnautilus/.libs/libnautilus.so
 
 libnautilus_widgetsincludedir=$(includedir)/nautilus-widgets
 
