@@ -1271,9 +1271,13 @@ nautilus_file_rename (NautilusFile *file,
 		      gpointer callback_data)
 {
 	char *locale_name;
+	gboolean utf8_filenames;
+	const char *filename_charset;
+	
+	utf8_filenames = eel_get_filename_charset (&filename_charset);
 
 	/* Note: Desktop file renaming wants utf8, even with G_BROKEN_FILENAMES */
-	if (has_local_path (file) && nautilus_have_broken_filenames () &&
+	if (has_local_path (file) && !utf8_filenames &&
 	    !is_desktop_file (file)) {
 		locale_name = g_filename_from_utf8 (new_name, -1, NULL, NULL, NULL);
 		if (locale_name == NULL) {
@@ -2673,10 +2677,11 @@ static char *
 nautilus_file_get_display_name_nocopy (NautilusFile *file)
 {
 	char *name, *utf8_name, *short_name;
-	gboolean broken_filenames;
 	gboolean validated;
 	GnomeVFSURI *vfs_uri;
 	const char *method;
+	gboolean utf8_filenames;
+	const char *filename_charset;
 
 	if (file == NULL) {
 		return NULL;
@@ -2707,18 +2712,31 @@ nautilus_file_get_display_name_nocopy (NautilusFile *file)
 			 */
 			/* Keep in sync with nautilus_get_uri_shortname_for_display */
 			if (has_local_path (file)) {
-				broken_filenames = nautilus_have_broken_filenames ();
-				if (broken_filenames || !g_utf8_validate (name, -1, NULL)) {
-					utf8_name = g_locale_to_utf8 (name, -1, NULL, NULL, NULL);
+				utf8_filenames = eel_get_filename_charset (&filename_charset);
+				if (utf8_filenames) {
+					/* If not valid utf8, and filenames are utf8, test if converting
+					   from the locale works */
+					if (!g_utf8_validate (name, -1, NULL)) {
+						utf8_name = g_locale_to_utf8 (name, -1, NULL, NULL, NULL);
+						if (utf8_name != NULL) {
+							g_free (name);
+							name = utf8_name;
+							/* Guaranteed to be correct utf8 here */
+							validated = TRUE;
+						}
+					} else {
+						/* name was valid, no need to re-validate */
+						validated = TRUE;
+					}
+				} else {
+					/* Try to convert from filename charset to utf8 */
+					utf8_name = g_convert (name, -1, "UTF-8", filename_charset, NULL, NULL, NULL);
 					if (utf8_name != NULL) {
 						g_free (name);
 						name = utf8_name;
 						/* Guaranteed to be correct utf8 here */
 						validated = TRUE;
 					}
-				} else if (!broken_filenames) {
-					/* name was valid, no need to re-validate */
-					validated = TRUE;
 				}
 			} else if (strcmp (name, "/") == 0) {
 				/* Special-case the display name for roots that are not local files */

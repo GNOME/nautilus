@@ -162,6 +162,8 @@ try_to_expand_path (gpointer callback_data)
 	GList *element;
 	GnomeVFSURI *uri;
 	GtkEditable *editable;
+	gboolean utf8_filenames;
+	const char *filename_charset;
 
 	char *base_name_uri_escaped;
 	char *base_name;
@@ -240,6 +242,8 @@ try_to_expand_path (gpointer callback_data)
 		return FALSE;
 	}
 
+	utf8_filenames = eel_get_filename_charset (&filename_charset);
+
 	/* iterate through the directory, keeping the intersection of all the names that
 	   have the current basename as a prefix. */
 	expand_text = NULL;
@@ -251,23 +255,23 @@ try_to_expand_path (gpointer callback_data)
 			} else {
 				expand_name = g_strdup (current_file_info->name);
 			}
-			if (nautilus_have_broken_filenames()) {
-				expand_text = accumulate_name_locale (expand_text, expand_name);
-			} else {
+			if (utf8_filenames) {
 				expand_text = accumulate_name_utf8 (expand_text, expand_name);
+			} else {
+				expand_text = accumulate_name_locale (expand_text, expand_name);
 			}
 			g_free (expand_name);
 		}
 	}
 
-	if (nautilus_have_broken_filenames ()) {
+	if (!utf8_filenames) {
 		if (expand_text) {
-			expand_text_utf8 = g_locale_to_utf8 (expand_text, -1, NULL, NULL, NULL);
+			expand_text_utf8 = g_convert (expand_text, -1, "UTF-8", filename_charset, NULL, NULL, NULL);
 			g_free (expand_text);
 			expand_text = expand_text_utf8;
 		}
 		
-		base_name_utf8 = g_locale_to_utf8 (base_name, -1, NULL, NULL, NULL);
+		base_name_utf8 = g_convert (base_name, -1, "UTF-8", filename_charset, NULL, NULL, NULL);
 		g_free (base_name);
 		base_name = base_name_utf8;
 	} 

@@ -1,5 +1,16 @@
 2004-10-28  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-file-utilities.c:
+	(nautilus_get_uri_shortname_for_display):
+	* libnautilus-private/nautilus-file-utilities.h:
+	* libnautilus-private/nautilus-file.c: (nautilus_file_rename),
+	(nautilus_file_get_display_name_nocopy):
+	* src/nautilus-location-entry.c: (try_to_expand_path):
+	Use eel_get_filename_charset to handle the new filename
+	charset env vars.
+
+2004-10-28  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-global-preferences.c:
 	* src/nautilus-window-manage-views.c:
 	Fix warning due to NULL default string.
