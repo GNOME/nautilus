@@ -1,5 +1,13 @@
 2000-12-19  John Sullivan  <sullivan@eazel.com>
 
+	* libnautilus-extensions/nautilus-thumbnails.c:
+	(nautilus_update_thumbnail_file_renamed_one):
+	Removed a g_assert (!vfs_file_exists). I ran into this while
+	testing something unrelated and Darin convinced me that it is
+	loony to assert anything about the state of the files on disk.
+
+2000-12-19  John Sullivan  <sullivan@eazel.com>
+
 	reviewed by: Pavel Cisler <pavel@eazel.com>
 
 	Fixed bug 2392 (need timed wait when activating file)

@@ -365,7 +365,6 @@ nautilus_update_thumbnail_file_renamed_one (const char *old_file_name, const cha
 		new_thumbnail_uri = make_thumbnail_path (new_file_name, FALSE, is_local, anti_aliased, FALSE);
 
 		g_assert (new_thumbnail_uri != NULL);
-		g_assert (!vfs_file_exists (new_thumbnail_uri));
 
 		gnome_vfs_move (old_thumbnail_uri, new_thumbnail_uri, FALSE);
 
