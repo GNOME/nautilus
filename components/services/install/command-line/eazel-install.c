@@ -153,6 +153,7 @@ main (int argc, char* argv[]) {
 	TransferOptions* topts;
 	poptContext pctx;
 	char* config_file;
+	char* target_file;
 	char* popt_tmpdir;
 	char* popt_server;
 	char* popt_genpkg_file;
@@ -186,6 +187,7 @@ main (int argc, char* argv[]) {
 	popt_genpkg_file = NULL;
 
 	config_file = g_strdup ("/var/eazel/services/eazel-services-config.xml");
+	target_file = g_strdup ("package-list.xml");
 	
 	pctx = poptGetContext ("eazel-install", argc, argv, optionsTable, 0);
 
@@ -262,7 +264,7 @@ main (int argc, char* argv[]) {
 	topts = init_default_transfer_configuration (config_file);
 
 	if (popt_genpkg_file) {
-		generate_new_package_list (popt_genpkg_file, config_file);
+		generate_new_package_list (popt_genpkg_file, target_file);
 	}
 
 	if ( USE_FTP == TRUE ) {

@@ -30,6 +30,38 @@
 #include "helixcode-utils.h"
 #include <rpm/rpmlib.h>
 #include <rpm/rpmurl.h>
+#include <string.h>
+#include <time.h>
+
+#define UNKNOWN_SIZE 1024
+
+typedef void (*rpm_install_cb)(char* name, char* group, void* user_data);
+
+static int rpm_install (char* root_dir,
+                        char* file_name,
+                        char* location,
+                        int install_flags,
+                        int problem_filters,
+                        int interface_flags,
+                        rpm_install_cb callback,
+                        void* user_data);
+
+static int do_rpm_install (char* root_dir,
+                           GList* packages,
+                           char* location,
+                           int install_flags,
+                           int problem_filters,
+                           int interface_flags,
+                           rpm_install_cb callback,
+                           void* user_data);
+
+static void* rpm_show_progress (const Header h,
+                                const rpmCallbackType callback_type,
+                                const unsigned long amount,
+                                const unsigned long total,
+                                const void* pkgKey,
+                                void* data);
+
 
 gboolean
 install_new_packages (InstallOptions* iopts, TransferOptions* topts) {
@@ -78,18 +110,17 @@ install_new_packages (InstallOptions* iopts, TransferOptions* topts) {
 		g_print ("Install Category - %s\n", c->name);
 		while (t) {
 			PackageData* pack = t->data;
-			const char* pkg[2]; 
-			char *tmpbuf;
+			char* pkg; 
 			int retval;
 
 			retval = 0;
 			
-			tmpbuf = g_strdup_printf ("%s/%s-%s-%s.%s.rpm",
-                                                  topts->tmp_dir,
-                                                  pack->name,
-                                                  pack->version,
-                                                  pack->minor,
-                                                  pack->archtype);
+			pkg = g_strdup_printf ("%s/%s-%s-%s.%s.rpm",
+                                               topts->tmp_dir,
+                                               pack->name,
+                                               pack->version,
+                                               pack->minor,
+                                               pack->archtype);
 
 			if (iopts->protocol == PROTOCOL_HTTP) {
 				int rv;
@@ -97,14 +128,15 @@ install_new_packages (InstallOptions* iopts, TransferOptions* topts) {
 				char* targetname;
 				char* url;
 
-				rpmname = g_strdup_printf ("%s-%s-%s.%s.rpm",
+                                rpmname = g_strdup_printf ("%s-%s-%s.%s.rpm",
                                                            pack->name,
                                                            pack->version,
                                                            pack->minor,
                                                            pack->archtype);
-	
+
 				targetname = g_strdup_printf ("%s/%s",
-                                                topts->tmp_dir, rpmname);
+                                                              topts->tmp_dir,
+                                                              rpmname);
 				url = g_strdup_printf ("http://%s%s/%s",
                                                        topts->hostname,
                                                        topts->rpm_storage_path,
@@ -123,12 +155,12 @@ install_new_packages (InstallOptions* iopts, TransferOptions* topts) {
 
 			}
 			
-			pkg[0] = tmpbuf;
-			pkg[1] = NULL;
-			g_print ("Installing %s\n", pack->summary);
-			retval = rpmInstall ("/", pkg, install_flags,
-                                             interface_flags,
-                                             problem_filter, NULL);
+			g_print ("Installing %s\n", pkg);
+
+                        retval = rpm_install ("/", pkg, NULL, install_flags,
+                                              problem_filter, interface_flags,
+                                              NULL, NULL); 
+
 			if (retval == 0) {
 				g_print ("Package install successful !\n");
 				rv = TRUE;
@@ -137,7 +169,6 @@ install_new_packages (InstallOptions* iopts, TransferOptions* topts) {
 				g_print ("Package install failed !\n");
 				rv = FALSE;
 			}
-			g_free(tmpbuf);
 			t = t->next;
 		}
 		categories = categories->next;
@@ -227,3 +258,256 @@ uninstall_packages (InstallOptions* iopts, TransferOptions* topts) {
 	return rv;
 
 } /* end install_new_packages */
+
+
+static void*
+rpm_show_progress (const Header h,
+                   const rpmCallbackType callback_type,
+                   const unsigned long amount,
+                   const unsigned long total,
+                   const void* pkgKey,
+                   void* data) {
+
+	static FD_t fd;
+	int size;
+	unsigned long* sizep;
+	char* name;
+	const char* filename;
+
+	filename = pkgKey;
+
+	switch (callback_type) {
+		case RPMCALLBACK_INST_OPEN_FILE:
+			name = "";
+			size = 0;
+			fd = fdOpen (filename, O_RDONLY, 0);
+			headerGetEntry (h,
+                                        RPMTAG_SIZE,
+                                        NULL,
+                                        (void **)&sizep,
+                                        NULL);
+			headerGetEntry (h,
+                                        RPMTAG_NAME,
+                                        NULL,
+                                        (void **)&name,
+                                        NULL);
+			size = *sizep;
+
+			return fd;
+
+		case RPMCALLBACK_INST_CLOSE_FILE:
+			fdClose (fd);
+			break;
+
+		case RPMCALLBACK_INST_PROGRESS:
+			fprintf (stdout, "Progress - %% %f\r", (total ? ((float)
+                                 ((((float) amount) / total) * 100))
+                                 : 100.0));
+			fflush (stdout);
+			if (amount == total) {
+				fprintf (stdout, "\n");
+			}
+			break;
+
+		default:
+			break;
+	}
+	return NULL;
+} /* end rpm_show_progress */
+
+int
+do_rpm_install (char* root_dir, GList* packages, char* location,
+                int install_flags, int problem_filters, int interface_flags,
+                rpm_install_cb cb, void* user_data) {
+
+	int mode;
+	int rc;
+	int i;
+	int is_source;
+        int stop_install;
+        int pkg_count;
+	int num_packages;
+	int num_binary_packages;
+	int num_source_packages;
+	int num_failed;
+	int num_conflicts;
+	int total_size;
+	char** pkgs;
+	char* pkg_file;
+	Header* binary_headers;
+	rpmdb db;
+	rpmTransactionSet rpmdep;
+	rpmProblemSet probs;
+	unsigned long* sizep;
+	FD_t fd;
+
+	struct rpmDependencyConflict* conflicts;
+
+	stop_install = 0;
+	num_binary_packages = 0;
+	num_source_packages = 0;
+	num_failed = 0;
+	total_size = 0;
+	rpmdep = NULL;
+	probs = NULL;
+
+
+	if (install_flags & RPMTRANS_FLAG_TEST) {
+		mode = O_RDONLY;
+	}
+	else {
+		mode = O_RDWR | O_CREAT;
+	}
+
+	pkg_count = g_list_length (packages);
+	pkgs = g_new (char *, pkg_count + 1);
+	binary_headers = g_new (Header, pkg_count + 1);
+	for (num_packages = 0; packages != NULL; packages = packages->next) {
+		pkg_file = packages->data;
+		fd = fdOpen (pkg_file, O_RDONLY, 0644);
+		if (fdFileno (fd) < 0) {
+			num_failed++;
+			continue;
+		}
+		pkgs[num_packages++] = pkg_file;
+		rc = rpmReadPackageHeader (fd,
+                                           &binary_headers[num_binary_packages],
+                                           &is_source,
+                                           NULL,
+                                           NULL);
+		fdClose (fd);
+		if (binary_headers[num_binary_packages]) {
+			if (headerGetEntry (binary_headers[num_binary_packages],
+                                            RPMTAG_SIZE, NULL,
+                                            (void **) &sizep, NULL)) {
+				total_size += *sizep;
+			}
+		}
+		else {
+			total_size += UNKNOWN_SIZE;
+		}
+		if (rc) {
+			num_packages--;
+			num_failed++;
+		}
+		else if (is_source) {
+			if (binary_headers[num_binary_packages]) {
+				num_source_packages++;
+			}
+		}
+		else {
+			num_binary_packages++;
+		}
+	}
+	if (num_binary_packages) {
+		if (rpmdbOpen (root_dir, &db, mode, 0644)) {
+			for (i=0; i < num_binary_packages; i++) {
+				headerFree(binary_headers[i]);
+			}
+		g_free (binary_headers);
+		g_free (pkgs);
+		return num_packages;
+		}
+
+		rpmdep = rpmtransCreateSet (db, root_dir);
+
+		for (i =0; i < num_binary_packages; i++) {
+			rpmtransAddPackage (rpmdep,
+                                            binary_headers[i],
+                                            NULL,
+                                            pkgs[i],
+                                            interface_flags,
+                                            NULL);
+		}
+
+		if (!(interface_flags)) {
+			if (rpmdepCheck (rpmdep, &conflicts, &num_conflicts)) {
+				num_failed = num_packages;
+				stop_install = 1;
+			}
+			if (!stop_install && conflicts) {
+				g_print (_("Dependancy check failed.\n"));
+				printDepProblems(stderr, conflicts,
+                                                 num_conflicts);
+				num_failed = num_packages;
+				stop_install = 1;
+				rpmdepFreeConflicts (conflicts, num_conflicts);
+			}
+		}
+		if (!(interface_flags)) {
+			if (rpmdepOrder(rpmdep)) {
+				num_failed = num_packages;
+				stop_install = 1;
+			}
+		}
+  	}
+	else {
+		db = NULL;
+	}
+	if (!stop_install && rpmdep != NULL) {
+		/* do the actual install */
+		if (interface_flags) {
+			 g_print (_("Upgrading...\n"));
+		}
+		else {
+			g_print (_("Installing...\n"));
+		}
+
+		rc = rpmRunTransactions (rpmdep,
+                                         rpm_show_progress,
+                                         NULL,
+                                         NULL,
+                                         &probs,
+                                         install_flags,
+                                         problem_filters);
+
+		rpmProblemSetFree(probs);
+		if (rc == -1) {
+			 /* some error */
+			num_failed = num_packages;
+		}
+		else {
+			num_failed += rc;
+		}
+	}
+	for (i = 0; i < num_binary_packages; i++) {
+		headerFree (binary_headers[i]);
+	}
+	g_free (binary_headers);
+	if (db) {
+		rpmdbClose (db);
+	}
+	g_free(pkgs);
+	if (rpmdep != NULL) {
+		rpmtransFree (rpmdep);
+	}
+
+	return num_failed;
+} /* end do_rpm_install */
+
+int
+rpm_install (char* root_dir,
+             char* file,
+             char* location,
+             int install_flags,
+             int problem_filters,
+             int interface_flags,
+             rpm_install_cb cb,
+             void* user_data) {
+
+	GList* list;
+	int result;
+
+	list = g_list_append (NULL, file);
+	result = do_rpm_install (root_dir,
+                                 list,
+                                 location,
+                                 install_flags,
+                                 problem_filters,
+                                 interface_flags,
+                                 cb,
+                                 user_data);
+	g_list_free (list);
+	return result;
+} /* end rpm_install */
+

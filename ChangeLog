@@ -1,3 +1,17 @@
+2000-05-20  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/install/command-line/eazel-install.c: (main):
+	fixed the package list generation routine.  It was corrupting the
+        eazel-services-config.xml file instead of creating a package-list.xml.
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_new_packages), (rpm_show_progress), (do_rpm_install),
+	(rpm_install): Found the magic function rpmRunTransactions that allows
+	me to check for dependancies and get a progress callback without having
+	to hack rpmlib like helixcode did.  These functions need to be cleaned
+	up because they are too long but they work very well.
+	This is part of the fix of Bug # 731.  Need to clean up the uninstall
+	routine now as well using rpmRunTransactions instead of rpmErase.
+
 2000-05-20  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/music/mpg123_handler.c: (get_play_status),
@@ -344,7 +358,6 @@
 	(nautilus_undo_transaction_contains_object):
 	Added support for new Undo::Manager::Transaction object
 
->>>>>>> 1.356
 2000-05-19  Ali Abdin  <aliabdin@aucegypt.edu>
 
 	* components/help/converters/gnome-db2html2/gdb3html.c:
