@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-04-08 11:10-0400\n"
-"PO-Revision-Date: 2004-04-08 11:11-0400\n"
+"POT-Creation-Date: 2004-04-09 16:47-0400\n"
+"PO-Revision-Date: 2004-04-09 11:11-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: English/Canada <adamw@FreeBSD.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -247,11 +247,13 @@ msgstr "Software"
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
+msgid_plural ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
-msgstr ""
+msgstr[0] ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
+msgstr[1] ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
 
@@ -3778,8 +3780,10 @@ msgstr "Are you sure you want to permanently delete \"%s\"?"
 #: src/file-manager/fm-directory-view.c:897
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
+msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items?"
-msgstr "Are you sure you want to permanently delete the %d selected item?"
+msgstr[0] "Are you sure you want to permanently delete the %d selected item?"
+msgstr[1] ""
 "Are you sure you want to permanently delete the %d selected items?"
 
 #: src/file-manager/fm-directory-view.c:905
@@ -3908,11 +3912,13 @@ msgstr "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
+msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr ""
+msgstr[0] ""
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
+msgstr[1] ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
 
@@ -4046,18 +4052,22 @@ msgstr "\"%s\" will be copied if you select the Paste Files command"
 #, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
+msgid_plural ""
 "The %d selected items will be moved if you select the Paste Files command"
-msgstr ""
+msgstr[0] ""
 "The %d selected item will be moved if you select the Paste Files command"
+msgstr[1] ""
 "The %d selected items will be moved if you select the Paste Files command"
 
 #: src/file-manager/fm-directory-view.c:4865
 #, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
+msgid_plural ""
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr ""
+msgstr[0] ""
 "The %d selected item will be copied if you select the Paste Files command"
+msgstr[1] ""
 "The %d selected items will be copied if you select the Paste Files command"
 
 #: src/file-manager/fm-directory-view.c:4947
@@ -6461,7 +6471,7 @@ msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 #: src/nautilus-window-menus.c:598 src/nautilus-window-menus.c:599
 msgid "Translator Credits"
 msgstr ""
-"Adam Weinberger <adamw@FreeBSD.org>\n"
+"Adam Weinberger <adamw@gnome.org>\n"
 "Alexander Winston <alexander.winston@comcast.net>"
 
 #: src/nautilus-window-menus.c:604
@@ -6485,19 +6495,19 @@ msgstr "Go forward a number of pages"
 msgid "Display this location with \"%s\""
 msgstr "Display this location with \"%s\""
 
-#: src/nautilus-window.c:1586
+#: src/nautilus-window.c:1581
 msgid "Application ID"
 msgstr "Application ID"
 
-#: src/nautilus-window.c:1587
+#: src/nautilus-window.c:1582
 msgid "The application ID of the window."
 msgstr "The application ID of the window."
 
-#: src/nautilus-window.c:1593
+#: src/nautilus-window.c:1588
 msgid "Application"
 msgstr "Application"
 
-#: src/nautilus-window.c:1594
+#: src/nautilus-window.c:1589
 msgid "The NautilusApplication associated with this window."
 msgstr "The NautilusApplication associated with this window."
 
