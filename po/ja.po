@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-25 16:20+0100\n"
-"PO-Revision-Date: 2005-01-12 00:23+0900\n"
+"POT-Creation-Date: 2005-01-26 08:57+0900\n"
+"PO-Revision-Date: 2005-01-26 08:55+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -1870,7 +1870,7 @@ msgstr "全て置き換える(_A)"
 #.
 #: libnautilus-private/nautilus-file-operations.c:1195
 #: libnautilus-private/nautilus-file.c:4746
-#: src/file-manager/fm-directory-view.c:7865
+#: src/file-manager/fm-directory-view.c:7881
 #, c-format
 msgid "link to %s"
 msgstr "%s へのリンク"
@@ -2228,16 +2228,16 @@ msgid "Preparing to Empty the Trash..."
 msgstr "ゴミ箱を空にする準備中..."
 
 #: libnautilus-private/nautilus-file-operations.c:2562
-#, fuzzy
 msgid "Empty all of the items from the trash?"
-msgstr "ゴミ箱にある全てのアイテムを完全に削除してもよろしいですか？"
+msgstr "ゴミ箱から全てのアイテムを空にしてもよろしいですか？"
 
 #: libnautilus-private/nautilus-file-operations.c:2565
-#, fuzzy
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
-msgstr "ゴミ箱を空にすると、アイテムは完全に削除されます。"
+msgstr ""
+"ゴミ箱を空にすると、アイテムは完全に削除されます。それらを一つ一つ削除するこ"
+"とも可能です。"
 
 #. name, stock id
 #: libnautilus-private/nautilus-file-operations.c:2585
@@ -3612,7 +3612,7 @@ msgid "There is nothing on the clipboard to paste."
 msgstr "貼り付けるものがクリップボードにはありません。"
 
 #: src/file-manager/fm-directory-view.c:5398
-#: src/file-manager/fm-directory-view.c:6741
+#: src/file-manager/fm-directory-view.c:6775
 msgid "Mount Error"
 msgstr "マウント・エラー"
 
@@ -3914,15 +3914,13 @@ msgstr "選択したボリュームをアンマウントします"
 
 #. name, stock id
 #: src/file-manager/fm-directory-view.c:5831
-#, fuzzy
 msgid "_Eject"
-msgstr "取り出し(_J)"
+msgstr "取り出し(_E)"
 
 #. label, accelerator
 #: src/file-manager/fm-directory-view.c:5832
-#, fuzzy
 msgid "Eject the selected volume"
-msgstr "選択したボリュームのマウント"
+msgstr "選択したボリュームを取り出します"
 
 #. name, stock id
 #: src/file-manager/fm-directory-view.c:5835
@@ -3999,55 +3997,51 @@ msgstr "このリンクはリンク先 \"%s\" が存在しないので使用で�
 msgid "Broken Link"
 msgstr "リンク切れ"
 
-#: src/file-manager/fm-directory-view.c:6877
+#: src/file-manager/fm-directory-view.c:6893
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" を開いています。"
 
-#: src/file-manager/fm-directory-view.c:6884
+#: src/file-manager/fm-directory-view.c:6900
 msgid "Cancel Open?"
 msgstr "キャンセルしますか？"
 
-#: src/file-manager/fm-directory-view.c:7758
-#, fuzzy
+#: src/file-manager/fm-directory-view.c:7774
 msgid "Download location?"
-msgstr "%d 個の場所を表示しますか？"
+msgstr "場所をダウンロードしますか？"
 
-#: src/file-manager/fm-directory-view.c:7759
-#, fuzzy
+#: src/file-manager/fm-directory-view.c:7775
 msgid "You can download it or make a link to it."
-msgstr "フォルダをそのフォルダの中に移動できません。"
+msgstr "そのまま、あるいは、その場所のリンクをダウンロードできます。"
 
 #. as per HIG
-#: src/file-manager/fm-directory-view.c:7761
-#, fuzzy
+#: src/file-manager/fm-directory-view.c:7777
 msgid "Make a _Link"
-msgstr "リンクの作成(_K)"
+msgstr "リンクを作成する(_L)"
 
-#: src/file-manager/fm-directory-view.c:7763
-#, fuzzy
+#: src/file-manager/fm-directory-view.c:7779
 msgid "_Download"
-msgstr "再読込み(_R)"
+msgstr "ダウンロードする(_D)"
 
-#: src/file-manager/fm-directory-view.c:7811
-#: src/file-manager/fm-directory-view.c:7833
-#: src/file-manager/fm-directory-view.c:7947
+#: src/file-manager/fm-directory-view.c:7827
+#: src/file-manager/fm-directory-view.c:7849
+#: src/file-manager/fm-directory-view.c:7963
 msgid "Drag and drop is not supported."
 msgstr "ドラッグ＆ドロップはサポートしていません。"
 
-#: src/file-manager/fm-directory-view.c:7812
+#: src/file-manager/fm-directory-view.c:7828
 msgid "Drag and drop is only supported on local file systems."
 msgstr ""
 "ドラッグ＆ドロップはローカルのファイル・システムでのみサポートしています。"
 
-#: src/file-manager/fm-directory-view.c:7813
-#: src/file-manager/fm-directory-view.c:7835
-#: src/file-manager/fm-directory-view.c:7949
+#: src/file-manager/fm-directory-view.c:7829
+#: src/file-manager/fm-directory-view.c:7851
+#: src/file-manager/fm-directory-view.c:7965
 msgid "Drag and Drop Error"
 msgstr "ドラッグ＆ドロップのエラー"
 
-#: src/file-manager/fm-directory-view.c:7834
-#: src/file-manager/fm-directory-view.c:7948
+#: src/file-manager/fm-directory-view.c:7850
+#: src/file-manager/fm-directory-view.c:7964
 msgid "An invalid drag type was used."
 msgstr "使用したドラッグの種類は無効です。"
 
@@ -4288,9 +4282,8 @@ msgstr "名前順に整理する(_U)"
 
 #. label, accelerator
 #: src/file-manager/fm-icon-view.c:1402
-#, fuzzy
 msgid "Reposition icons to better fit in the window and avoid overlapping"
-msgstr "ウィンドウ内でアイコンを並び替えて、重ならないようにします"
+msgstr "ウィンドウに合わせてアイコンを並び替えて、重ならないようにします"
 
 #. name, stock id
 #: src/file-manager/fm-icon-view.c:1408
@@ -4899,9 +4892,9 @@ msgid "Edit Bookmarks"
 msgstr "ブックマークの編集"
 
 #: src/nautilus-connect-server-dialog-main.c:66
-#, fuzzy, c-format
+#, c-format
 msgid "Can't display location \"%s\""
-msgstr "場所を表示できません"
+msgstr "場所 \"%s\" を表示できません"
 
 #: src/nautilus-connect-server-dialog.c:143
 #: src/nautilus-connect-server-dialog.c:158
@@ -6057,6 +6050,9 @@ msgid ""
 "the Free Software Foundation; either version 2 of the License, or \n"
 "(at your option) any later version."
 msgstr ""
+"Nautilus はフリーソフトウェアです;\n"
+"フリーソフトウェア財団が発行する GNU 一般公有使用許諾契約書の第２版または\n"
+"それ以降の版の下で改変・修正・再配布が認められています。"
 
 #: src/nautilus-window-menus.c:411
 msgid ""
@@ -6065,6 +6061,9 @@ msgid ""
 "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the \n"
 "GNU General Public License for more details."
 msgstr ""
+"Nautilus は便利に使ってもらえるように配布されていますが、\n"
+"完全に無保証です。商用利用または特定の目的における適合性の\n"
+"保証もありません。詳細は GNU 一般公有使用許諾契約書をご覧下さい。"
 
 #: src/nautilus-window-menus.c:415
 msgid ""
@@ -6072,6 +6071,9 @@ msgid ""
 "along with Nautilus; if not, write to the Free Software Foundation, Inc., \n"
 "59 Temple Place, Suite 330, Boston, MA  02111-1307  USA"
 msgstr ""
+"本プログラムと一緒にGNU 一般公有使用許諾の写しを受ける必要があります。\n"
+"さもなくば、\"Free Software Foundation, Inc., 59 Temple Place - Suite 330,\n"
+"Boston, MA 02111-1307, USA. まで知らせて下さい。"
 
 #: src/nautilus-window-menus.c:444
 msgid ""
@@ -6082,10 +6084,9 @@ msgstr ""
 
 #: src/nautilus-window-menus.c:448
 msgid "Copyright © 1999-2005 The Nautilus authors"
-msgstr ""
+msgstr "Copyright © 1999-2005 Nautilus 開発チーム"
 
 #: src/nautilus-window-menus.c:453
-#, fuzzy
 msgid "translator-credits"
 msgstr ""
 "相花毅 <aihana@gnome.gr.jp>\n"
@@ -6331,12 +6332,3 @@ msgstr "ネットワーク・サーバ"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Nautilus でお使いのネットワークのサーバを表示します"
-
-#~ msgid "_Empty"
-#~ msgstr "空にする(_E)"
-
-#~ msgid "Use the default background for this location"
-#~ msgstr "この場所の背景をデフォルトに戻します"
-
-#~ msgid "Copyright (C) 1999-2001 Eazel, Inc."
-#~ msgstr "Copyright (C) 1999-2001 Eazel, Inc."
