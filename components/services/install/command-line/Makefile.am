@@ -20,7 +20,8 @@ INCLUDES = \
 	$(NULL)
 
 LDADD =                                           \
-        $(top_builddir)/components/services/install/lib/libeazelinstall.la\
+        $(top_builddir)/components/services/install/lib/libeazelinstall.la	\
+	$(top_builddir)/components/services/install/lib/libeazelsoftcat.la	\
         $(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(BONOBO_LIBS) \
 	$(GNOME_LIBS)                   \
@@ -30,7 +31,7 @@ LDADD =                                           \
 	$(RPM_LIBS)			\
 	$(NULL)
 
-bin_PROGRAMS = eazel-install eazel-gen-xml eazel-test-packsys
+bin_PROGRAMS = eazel-install eazel-gen-xml eazel-test-packsys eazel-softcat
 
 eazel_install_SOURCES = 		\
 	eazel-alt-install-corba.c	\
@@ -50,3 +51,6 @@ eazel_test_packsys_LDADD = \
 	$(LDADD) \
 	$(NULL)
 
+eazel_softcat_SOURCES =	\
+	eazel-test-softcat.c	\
+	$(NULL)
