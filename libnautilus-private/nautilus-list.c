@@ -86,10 +86,9 @@ struct NautilusListDetails
 	/* Drag state */
 	NautilusDragInfo *drag_info;
 	gboolean drag_started;
-	int clicked_row;
 	
 	/* Delayed selection information */
-	int dnd_select_pending;
+	gboolean dnd_select_pending;
 	guint dnd_select_pending_state;
 
 	/* Targets for drag data */
@@ -790,8 +789,9 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 	on_row = gtk_clist_get_selection_info (clist, event->x, event->y, &row_index, &column_index);
 	list->details->button_down_time = event->time;
 	list->details->drag_started = FALSE;
-	list->details->clicked_row = -1;
-	
+
+	list->details->button_down_row = -1;
+		
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
 		if (event->button == 1 || event->button == 2) {
@@ -822,7 +822,6 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 
 				if (!list->details->dnd_select_pending) {
 					select_row_from_mouse (list, row_index, event->state);
-					list->details->clicked_row = row_index;
 				}
 			} else {
 				gtk_clist_unselect_all (clist);
@@ -906,8 +905,12 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 	list->details->dnd_press_button = 0;
 	list->details->dnd_press_x = 0;
 	list->details->dnd_press_y = 0;
+
+	/* FIXME: This sounds backwards -- how can drag_started be true
+	 * when the mouse button was just released? But maybe the name is confusing?
+	 * Maybe it's really "done_processing_pending_drags" or something?
+	 */
 	list->details->drag_started = TRUE;
-	list->details->clicked_row = -1;
 
 	if (on_row) {
 		/* Clean up after abortive drag-and-drop attempt (since user can't
@@ -2568,7 +2571,7 @@ nautilus_list_drag_start (GtkWidget *widget, GdkEventMotion *event)
 	y_offset = 10;
 
 	gtk_signal_emit (GTK_OBJECT (list), list_signals[GET_DRAG_PIXMAP], 
-		list->details->clicked_row, &pixmap_for_dragged_file, 
+		list->details->button_down_row, &pixmap_for_dragged_file, 
 		&mask_for_dragged_file);
 
 	if (pixmap_for_dragged_file) {

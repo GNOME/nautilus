@@ -1,3 +1,23 @@
+2000-08-14  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2159 (crash when trying to drag a selected item
+	in list view). This was getting in the way of me trying to
+	figure out what does & doesn't work in the search results
+	view.
+
+	* libnautilus-extensions/nautilus-list.c:
+	Got rid of details->clicked_row, since there was already a 
+	details->button_down_row with the same intended use. 
+	Also changed dnd_select_pending from int to gboolean to match 
+	its use.
+	(nautilus_list_button_press): Set details->button_down_row to
+	-1 before handling click; remove line sometimes but not always
+	updating clicked_row (that was the source of the bug)
+	(nautilus_list_button_release): Remove line setting
+	clicked_row back to -1 after release; this was unnecessary.
+	(nautilus_list_drag_start): Use button_down_row instead of
+	clicked_row
+
 2000-08-14  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:
@@ -5,11 +25,6 @@
 	Fixed some sorting bugs when dealing with inital icon layout
 	in tblr mode.
 	
-2000-08-14  Gene Z. Ragan  <gzr@eazel.com>
-
-	* libnautilus-extensions/nautilus-icon-container.c:
-	(desktop_icons_sort), (lay_down_icons_tblr), (lay_down_icons):
-
 2000-08-14  Michael Engber  <engber@eazel.com>
 
 	Second cut at syncing our desktop background with GNOME's (bug 1047)
