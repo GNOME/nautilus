@@ -53,9 +53,6 @@ struct NautilusIconCanvasItem {
 
 struct NautilusIconCanvasItemClass {
 	GnomeCanvasItemClass parent_class;
-
-	void (* bounds_changed) (NautilusIconCanvasItem *item,
-				 const ArtDRect         *old_world_bounds);
 };
 
 /* GtkObject */

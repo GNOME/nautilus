@@ -1,3 +1,16 @@
+2002-04-11  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(nautilus_icon_canvas_item_accessible_get_type): return
+	an invalid type in an inaccessible scenario.
+	(nautilus_icon_canvas_item_accessible_create): return
+	a no-op object if no a11y enabled.
+
+2002-04-10  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.h:
+	remove bounds_changed.
+
 2002-04-07  David Emory Watson  <dwatson@cs.ucr.edu>
 
 	* src/file-manager/fm-list-model.c:

@@ -50,6 +50,7 @@
 #include <libgnomecanvas/gnome-canvas-util.h>
 #include <atk/atkimage.h>
 #include <atk/atkcomponent.h>
+#include <atk/atknoopobject.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -546,7 +547,7 @@ nautilus_icon_canvas_item_update_bounds (NautilusIconCanvasItem *item)
 		art_irect_union (&item->details->emblem_rect, &item->details->emblem_rect, &emblem_rect);
 	}
 
-	/* Send out the bounds_changed signal and queue a redraw. */
+	/* queue a redraw. */
 	eel_gnome_canvas_request_redraw_rectangle
 		(GNOME_CANVAS_ITEM (item)->canvas, before);
 	eel_gnome_canvas_item_request_redraw
@@ -1849,10 +1850,12 @@ nautilus_icon_canvas_item_accessible_get_type (void)
 			GNOME_TYPE_CANVAS_ITEM,
 			nautilus_icon_canvas_item_accessible_class_init);
 
-		g_type_add_interface_static (
-			type, ATK_TYPE_IMAGE, &atk_image_info);
+		if (type != G_TYPE_INVALID) {
+			g_type_add_interface_static (
+				type, ATK_TYPE_IMAGE, &atk_image_info);
 
-		eel_accessibility_add_simple_text (type);
+			eel_accessibility_add_simple_text (type);
+		}
 	}
 
 	return type;
@@ -1861,18 +1864,24 @@ nautilus_icon_canvas_item_accessible_get_type (void)
 static AtkObject *
 nautilus_icon_canvas_item_accessible_create (GObject *for_object)
 {
+	GType type;
 	AtkObject *accessible;
 	NautilusIconCanvasItem *item;
 
 	item = NAUTILUS_ICON_CANVAS_ITEM (for_object);
 	g_return_val_if_fail (item != NULL, NULL);
 
+	type = nautilus_icon_canvas_item_accessible_get_type ();
+
+	if (type == G_TYPE_INVALID) {
+		return atk_no_op_object_new (for_object);
+	}
+
 	item->details->text_util = gail_text_util_new ();
 	gail_text_util_text_setup (item->details->text_util,
 				   item->details->editable_text);
 
-	accessible = g_object_new
-		(nautilus_icon_canvas_item_accessible_get_type (), NULL);
+	accessible = g_object_new (type, NULL);
 
 	return eel_accessibility_set_atk_object_return
 		(for_object, accessible);
