@@ -29,13 +29,42 @@
 
 #include <libgnomeui/gnome-canvas.h>
 
-void     nautilus_gnome_canvas_world_to_canvas_rectangle (GnomeCanvas    *canvas,
-							  const ArtDRect *world_rectangle,
-							  ArtIRect       *canvas_rectangle);
-void     nautilus_gnome_canvas_world_to_window_rectangle (GnomeCanvas    *canvas,
-							  const ArtDRect *world_rectangle,
-							  ArtIRect       *window_rectangle);
-gboolean nautilus_art_irect_hits_irect                   (const ArtIRect *rect_a,
-							  const ArtIRect *rect_b);
+/* This is more handy than gnome_canvas_item_get_bounds because it
+ * always returns the bounds * in world coordinates and it returns
+ * them in a single rectangle.
+ */
+void     nautilus_gnome_canvas_item_get_world_bounds          (GnomeCanvasItem *item,
+							       ArtDRect        *world_bounds);
+
+/* This returns the current canvas bounds as computed by update.
+ * It's not as "up to date" as get_bounds, which is accurate even
+ * before an update happens.
+ */
+void     nautilus_gnome_canvas_item_get_current_canvas_bounds (GnomeCanvasItem *item,
+							       ArtIRect        *canvas_bounds);
+
+/* Convenience functions for doing things with whole rectangles. */
+void     nautilus_gnome_canvas_world_to_canvas_rectangle      (GnomeCanvas     *canvas,
+							       const ArtDRect  *world_rectangle,
+							       ArtIRect        *canvas_rectangle);
+void     nautilus_gnome_canvas_world_to_window_rectangle      (GnomeCanvas     *canvas,
+							       const ArtDRect  *world_rectangle,
+							       ArtIRect        *window_rectangle);
+void     nautilus_gnome_canvas_request_redraw_rectangle       (GnomeCanvas     *canvas,
+							       const ArtIRect  *canvas_rectangle);
+
+/* Requests the entire object be redrawn.
+ * Normally, you use request_update when calling from outside the canvas item
+ * code. This is for within canvas item code.
+ */
+void     nautilus_gnome_canvas_item_request_redraw            (GnomeCanvasItem *item);
+
+/* More functions for ArtIRect and ArtDRect. */
+gboolean nautilus_art_irect_hits_irect                        (const ArtIRect  *rect_a,
+							       const ArtIRect  *rect_b);
+gboolean nautilus_art_irect_equal                             (const ArtIRect  *rect_a,
+							       const ArtIRect  *rect_b);
+gboolean nautilus_art_drect_equal                             (const ArtDRect  *rect_a,
+							       const ArtDRect  *rect_b);
 
 #endif /* NAUTILUS_GNOME_EXTENSIONS_H */

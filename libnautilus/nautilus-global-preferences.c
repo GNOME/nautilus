@@ -22,7 +22,9 @@
    Authors: Ramiro Estrugo <ramiro@eazel.com>
 */
 
+#include <config.h>
 #include "nautilus-global-preferences.h"
+
 #include <nautilus-widgets/nautilus-preferences-group.h>
 #include <nautilus-widgets/nautilus-preferences-item.h>
 #include <nautilus-widgets/nautilus-preferences-dialog.h>
@@ -35,24 +37,24 @@
 
 /* Private stuff */
 static GtkWidget *global_preferences_create_dialog      (void);
-static GtkWidget *global_prefernces_create_enum_group   (GtkWidget     *pane,
-							 const gchar   *group_title,
-							 const gchar   *pref_name);
-static GtkWidget *global_preferences_create_check_group (GtkWidget     *pane,
-							 const gchar   *group_title,
-							 const gchar   *pref_names[],
-							 guint          num_prefs);
+static GtkWidget *global_preferences_create_enum_group  (GtkWidget           *pane,
+							 const char          *group_title,
+							 const char          *pref_name);
+static GtkWidget *global_preferences_create_check_group (GtkWidget           *pane,
+							 const char          *group_title,
+							 const char * const   pref_names[],
+							 guint                num_prefs);
 static GtkWidget *global_preferences_get_dialog         (void);
 static void       global_preferences_register_static    (NautilusPreferences *prefs);
 static void       global_preferences_register_dynamic   (NautilusPreferences *prefs);
 
-static const gchar *global_preferences_window_option_pref_names[] =
+static const char * const global_preferences_window_option_pref_names[] =
 {
 	NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 	NAUTILUS_PREFERENCES_WINDOW_SEARCH_EXISTING
 };
 
-static const gchar *global_preferences_meta_view_names[] =
+static const char * const global_preferences_meta_view_names[] =
 {
 	NAUTILUS_PREFERENCES_META_VIEWS_SHOW_ANNOTATIONS,
 	NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HELP_CONTENTS,
@@ -62,7 +64,7 @@ static const gchar *global_preferences_meta_view_names[] =
 	NAUTILUS_PREFERENCES_META_VIEWS_SHOW_WEB_SEARCH
 };
 
-static const gchar * global_preferences_user_level_names[] =
+static const char * const global_preferences_user_level_names[] =
 {
 	"novice",
 	"intermediate",
@@ -70,7 +72,7 @@ static const gchar * global_preferences_user_level_names[] =
 	"ettore"
 };
 
-static const gchar * global_preferences_user_level_descriptions[] =
+static const char * const global_preferences_user_level_descriptions[] =
 {
 	"Novice",
 	"Intermediate",
@@ -86,7 +88,7 @@ static const gint global_preferences_user_level_values[] =
 	NAUTILUS_USER_LEVEL_ETTORE
 };
 
-static NautilusPreferencesEnumData global_preferences_user_level_data =
+static const NautilusPreferencesEnumData global_preferences_user_level_data =
 {
 	global_preferences_user_level_names,
 	global_preferences_user_level_descriptions,
@@ -94,7 +96,7 @@ static NautilusPreferencesEnumData global_preferences_user_level_data =
 	NAUTILUS_N_ELEMENTS (global_preferences_user_level_names)
 };
 
-static NautilusPreferencesInfo global_preferences_static_info[] =
+static const NautilusPreferencesInfo global_preferences_static_info[] =
 {
 	{
 		NAUTILUS_PREFERENCES_USER_LEVEL,
@@ -151,7 +153,7 @@ global_preferences_create_dialog (void)
 						      "User Level",
 						      "User Level Something");
 
-	global_prefernces_create_enum_group (panes[0],
+	global_preferences_create_enum_group (panes[0],
 					     "User Level",
 					     NAUTILUS_PREFERENCES_USER_LEVEL);
 
@@ -177,10 +179,10 @@ global_preferences_create_dialog (void)
 }
 
 static GtkWidget *
-global_preferences_create_check_group (GtkWidget   *pane,
-				       const gchar *group_title,
-				       const gchar *pref_names[],
-				       guint        num_prefs)
+global_preferences_create_check_group (GtkWidget *pane,
+				       const char *group_title,
+				       const char * const pref_names[],
+				       guint num_prefs)
 {
 	GtkWidget *group;
 	guint i;
@@ -209,9 +211,9 @@ global_preferences_create_check_group (GtkWidget   *pane,
 }
 
 static GtkWidget *
-global_prefernces_create_enum_group (GtkWidget	*pane, 
-				     const gchar *group_title,
-				     const gchar	*pref_name)
+global_preferences_create_enum_group (GtkWidget	*pane, 
+				      const char *group_title,
+				      const char *pref_name)
 {
 	GtkWidget *group;
 	GtkWidget *item;

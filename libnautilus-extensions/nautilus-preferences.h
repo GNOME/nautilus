@@ -82,10 +82,10 @@ typedef struct
 
 typedef struct
 {
-	const char	**enum_names;
-	const char	**enum_descriptions;
-	const int	 *enum_values;
-	guint		  num_entries;
+	const char * const *enum_names;
+	const char * const *enum_descriptions;
+	const int	   *enum_values;
+	guint		    num_entries;
 } NautilusPreferencesEnumData;
 
 GtkType                        nautilus_preferences_get_type               (void);

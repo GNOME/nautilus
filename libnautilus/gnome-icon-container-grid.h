@@ -27,18 +27,18 @@
 
 struct GnomeIconContainerGrid {
 	/* Size of the grid. */
-	guint width, height;
+	int width, height;
 
 	/* This is the width that we can actually use for finding an empty
 	 * position.
 	 */
-	guint visible_width;
+	int visible_width;
 
 	/* Array of grid elements. */
 	GList **elems;
 
 	/* Size of the allocated array. */
-	guint alloc_width, alloc_height;
+	int alloc_width, alloc_height;
 
 	/* Position of the first free cell (used to speed up progressive
 	 * updates). If negative, there is no free cell.
@@ -47,39 +47,41 @@ struct GnomeIconContainerGrid {
 };
 
 
-GnomeIconContainerGrid *gnome_icon_container_grid_new             (void);
-void                    gnome_icon_container_grid_destroy         (GnomeIconContainerGrid *grid);
-void gnome_icon_container_grid_clear (GnomeIconContainerGrid *grid);
-void                    gnome_icon_container_grid_add             (GnomeIconContainerGrid *grid,
-								   GnomeIconContainerIcon *icon,
-								   guint                   x,
-								   guint                   y);
-void gnome_icon_container_grid_add_auto (GnomeIconContainerGrid *grid,
-		    GnomeIconContainerIcon *icon,
-				    guint *x_return, guint *y_return);
-void                    gnome_icon_container_grid_remove          (GnomeIconContainerGrid *grid,
-								   GnomeIconContainerIcon *icon,
-								   guint                   x,
-								   guint                   y);
-void gnome_icon_container_grid_set_visible_width (GnomeIconContainerGrid *grid,
-					     guint visible_width);
-void gnome_icon_container_grid_resize (GnomeIconContainerGrid *grid,
-				       guint width, guint height);
+GnomeIconContainerGrid *gnome_icon_container_grid_new               (void);
+void                    gnome_icon_container_grid_destroy           (GnomeIconContainerGrid *grid);
+void                    gnome_icon_container_grid_clear             (GnomeIconContainerGrid *grid);
 
-GList **                gnome_icon_container_grid_get_element_ptr (GnomeIconContainerGrid *grid,
-								   guint                   x,
-								   guint                   y);
-GnomeIconContainerIcon *gnome_icon_container_grid_find_first      (GnomeIconContainer     *container,
-								   gboolean                selected_only);
-GnomeIconContainerIcon *gnome_icon_container_grid_find_last       (GnomeIconContainer     *container,
-								   gboolean                selected_only);
-void                    gnome_icon_container_world_to_grid        (GnomeIconContainer     *container,
-								   int                     world_x,
-								   int                     world_y,
-								   guint                  *grid_x,
-								   guint                  *grid_y);
-void                    gnome_icon_container_grid_to_world        (GnomeIconContainer     *container,
-								   guint                   grid_x,
-								   guint                   grid_y,
-								   int                    *world_x,
-								   int                    *world_y);
+/* getting icons in and out of the grid */
+void                    gnome_icon_container_grid_add               (GnomeIconContainerGrid *grid,
+								     GnomeIconContainerIcon *icon);
+void                    gnome_icon_container_grid_remove            (GnomeIconContainerGrid *grid,
+								     GnomeIconContainerIcon *icon);
+
+void                    gnome_icon_container_grid_get_position      (GnomeIconContainerGrid *grid,
+								     GnomeIconContainerIcon *icon,
+								     int                    *world_x,
+								     int                    *world_y);
+
+void                    gnome_icon_container_grid_set_visible_width (GnomeIconContainerGrid *grid,
+								     int                     visible_width);
+void                    gnome_icon_container_grid_resize            (GnomeIconContainerGrid *grid,
+								     int                     width,
+								     int                     height);
+GList **                gnome_icon_container_grid_get_element_ptr   (GnomeIconContainerGrid *grid,
+								     int                     grid_x,
+								     int                     grid_y);
+GnomeIconContainerIcon *gnome_icon_container_grid_find_first        (GnomeIconContainerGrid *grid,
+								     gboolean                selected_only);
+GnomeIconContainerIcon *gnome_icon_container_grid_find_last         (GnomeIconContainerGrid *grid,
+								     gboolean                selected_only);
+
+void                    gnome_icon_container_world_to_grid          (GnomeIconContainerGrid *container,
+								     int                     world_x,
+								     int                     world_y,
+								     int                    *grid_x,
+								     int                    *grid_y);
+void                    gnome_icon_container_grid_to_world          (GnomeIconContainerGrid *grid,
+								     int                     grid_x,
+								     int                     grid_y,
+								     int                    *world_x,
+								     int                    *world_y);

@@ -53,6 +53,9 @@ struct NautilusIconsViewIconItem {
 
 struct NautilusIconsViewIconItemClass {
 	GnomeCanvasItemClass parent_class;
+
+	void (* bounds_changed) (NautilusIconsViewIconItem *item,
+				 const ArtDRect            *old_world_bounds);
 };
 
 /* GtkObject */
@@ -77,6 +80,7 @@ gboolean   nautilus_icons_view_icon_item_hit_test_stretch_handles (NautilusIcons
 								   const ArtPoint            *world_point);
 void       nautilus_icons_view_icon_item_get_icon_rectangle       (NautilusIconsViewIconItem *item,
 								   ArtDRect                  *world_rectangle);
+void       nautilus_icons_view_icon_item_update_bounds            (NautilusIconsViewIconItem *item);
 
 END_GNOME_DECLS
 

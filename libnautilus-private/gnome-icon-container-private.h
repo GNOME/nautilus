@@ -33,6 +33,9 @@
 /* An Icon. */
 
 typedef struct {
+	/* Object represented by this icon. */
+	GnomeIconContainerIconData *data;
+
 	/* Canvas item for the icon. */
 	NautilusIconsViewIconItem *item;
 
@@ -54,7 +57,8 @@ typedef struct {
 	/* Whether this item was selected before rubberbanding. */
 	gboolean was_selected_before_rubberband : 1;
 
-	GnomeIconContainerIconData *data;
+	/* Grid space occupied by this icon. */
+	ArtIRect grid_rectangle;
 } GnomeIconContainerIcon;
 
 
