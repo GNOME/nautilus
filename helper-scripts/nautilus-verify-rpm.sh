@@ -81,9 +81,9 @@ then
     then
 	title="Problem Running Nautilus"
 
-	message=`printf "This version of Nautilus requires Bonobo 0.26.  This computer has Bonobo  version %s installed.
-There might be a newer version of Nautilus available that will work with this version of Bonobo.
-Please check http://nautilus.eazel.com/." $bonobo_version`
+	message=`printf "This version of Nautilus requires Bonobo 0.26.  This computer has Bonobo version %s installed.  There might be a newer version of Nautilus available that will work with this version of Bonobo.
+
+Please check our download site at http://www.eazel.com/download" $bonobo_version`
 
 	nautilus-error-dialog --message "$message" --title "$title" 
 	exit 1
@@ -96,7 +96,7 @@ button_two="Cancel"
 
 message="Nautilus or some library it uses is damaged or missing. It might work, but more
 likely it will not. You could try to reinstall Nautilus from:
-http://download.eazel.com/.
+http://www.eazel.com/download.
 
 Do you want to try to run Nautilus anyway?
 "
