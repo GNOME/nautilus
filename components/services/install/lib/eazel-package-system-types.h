@@ -266,6 +266,8 @@ char *packagedata_get_readable_name (const PackageData *pack);
    from a given package, real meanign name[-version-[release]] string */
 char *packagedata_get_name (const PackageData *pack);
 
+void packagedata_destroy (PackageData *pd, gboolean deep);
+
 int packagedata_hash_equal (PackageData *a, PackageData *b);
 
 GList *flatten_packagedata_dependency_tree (GList *packages);
