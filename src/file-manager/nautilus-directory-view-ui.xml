@@ -87,6 +87,9 @@
         <cmd name="Media Properties Conditional"
          _label="Medi_a Properties"
          _tip="Show media properties for the selected volume"/>
+        <cmd name="Connect To Server Link Conditional"
+         _label="Connect To This Server"
+         _tip="Make a permanent connection to this server"/>
 </commands>
 <keybindings>
 	<accel name="*Control*BackSpace" verb="Trash"/>
@@ -321,6 +324,7 @@
                         <menuitem name="Format Media" verb="Format Conditional"/>
                         <menuitem name="Media Properties" verb="Media Properties Conditional"/>
                 </placeholder>
+                <menuitem name="Connect To Server Link" verb="Connect To Server Link Conditional"/>
 	</popup>
 </popups>
 </Root>

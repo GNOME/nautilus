@@ -144,6 +144,7 @@
 #define FM_DIRECTORY_VIEW_COMMAND_PROTECT_VOLUME_CONDITIONAL            "/commands/Protect Conditional"
 #define FM_DIRECTORY_VIEW_COMMAND_FORMAT_VOLUME_CONDITIONAL             "/commands/Format Conditional"
 #define FM_DIRECTORY_VIEW_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL   "/commands/Media Properties Conditional"
+#define FM_DIRECTORY_VIEW_COMMAND_CONNECT_TO_SERVER_LINK_CONDITIONAL    "/commands/Connect To Server Link Conditional"
 
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH				"/menu/File/Open Placeholder/Open With"
 #define FM_DIRECTORY_VIEW_MENU_PATH_NEW_DOCUMENTS			"/menu/File/New Items Placeholder/New Documents"
@@ -5232,6 +5233,130 @@ unmount_volume_callback (BonoboUIComponent *component,
 }
 
 static void
+connect_to_server_response_callback (GtkDialog *dialog,
+				     int response_id,
+				     gpointer data)
+{
+	GtkEntry *entry;
+	char *uri;
+	const char *name;
+	char *icon;
+
+	entry = GTK_ENTRY (data);
+	
+	switch (response_id) {
+	case GTK_RESPONSE_OK:
+		uri = g_object_get_data (G_OBJECT (dialog), "link-uri");
+		icon = g_object_get_data (G_OBJECT (dialog), "link-icon");
+		name = gtk_entry_get_text (entry);
+		gnome_vfs_connect_to_server (uri, (char *)name, icon);
+		gtk_widget_destroy (GTK_WIDGET (dialog));
+		break;
+	case GTK_RESPONSE_NONE:
+	case GTK_RESPONSE_DELETE_EVENT:
+	case GTK_RESPONSE_CANCEL:
+		gtk_widget_destroy (GTK_WIDGET (dialog));
+		break;
+	default :
+		g_assert_not_reached ();
+	}
+}
+
+static void
+entry_activate_callback (GtkEntry *entry,
+			 gpointer user_data)
+{
+	GtkDialog *dialog;
+	
+	dialog = GTK_DIALOG (user_data);
+	gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+}
+
+static void
+connect_to_server_link_callback (BonoboUIComponent *component,
+				 gpointer data,
+				 const char *verb)
+{
+	NautilusFile *file;
+	GList *selection;
+	FMDirectoryView *view;
+	char *uri;
+	char *icon;
+	char *name;
+	GtkWidget *dialog;
+	GtkWidget *label;
+	GtkWidget *entry;
+	GtkWidget *box;
+	char *title;
+
+        view = FM_DIRECTORY_VIEW (data);
+	
+	selection = fm_directory_view_get_selection (view);
+
+	if (!eel_g_list_exactly_one_item (selection)) {
+		nautilus_file_list_free (selection);
+		return;
+	}
+
+	file = NAUTILUS_FILE (selection->data);
+
+	uri = nautilus_file_get_activation_uri (file);
+	icon = nautilus_icon_factory_get_icon_for_file (file, FALSE);
+	name = nautilus_file_get_display_name (file);
+
+	if (uri != NULL) {
+		title = g_strdup_printf (_("Connect to Server %s"), name);
+		dialog = gtk_dialog_new_with_buttons (title,
+						      fm_directory_view_get_containing_window (view),
+						      GTK_DIALOG_NO_SEPARATOR,
+						      GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+						      _("_Connect"), GTK_RESPONSE_OK,
+						      NULL);
+
+		g_object_set_data_full (G_OBJECT (dialog), "link-uri", g_strdup (uri), g_free);
+		g_object_set_data_full (G_OBJECT (dialog), "link-icon", g_strdup (icon), g_free);
+		
+		gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+		gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 2);
+
+		box = gtk_hbox_new (FALSE, 12);
+		gtk_widget_show (box);
+		gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox),
+				    box, TRUE, TRUE, 0);
+		
+		label = gtk_label_new_with_mnemonic (_("Link _name:"));
+		gtk_widget_show (label);
+
+		gtk_box_pack_start (GTK_BOX (box), label, TRUE, TRUE, 12);
+		
+		entry = gtk_entry_new ();
+		if (name) {
+			gtk_entry_set_text (GTK_ENTRY (entry), name);
+		}
+		g_signal_connect (entry,
+				  "activate", 
+				  G_CALLBACK (entry_activate_callback),
+				  dialog);
+		
+		gtk_widget_show (entry);
+		gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
+		
+		gtk_box_pack_start (GTK_BOX (box), entry, TRUE, TRUE, 12);
+		
+		gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+						 GTK_RESPONSE_OK);
+		g_signal_connect (dialog, "response",
+				  G_CALLBACK (connect_to_server_response_callback),
+				  entry);
+		gtk_widget_show (dialog);
+	}
+	
+	g_free (uri);
+	g_free (icon);
+	g_free (name);
+}
+
+static void
 fm_directory_view_init_show_hidden_files (FMDirectoryView *view)
 {
 	Nautilus_ShowHiddenFilesMode mode;
@@ -5300,6 +5425,7 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("Trash", trash_callback),
 		BONOBO_UI_VERB ("Mount Volume Conditional", mount_volume_callback),
 		BONOBO_UI_VERB ("Unmount Volume Conditional", unmount_volume_callback),
+		BONOBO_UI_VERB ("Connect To Server Link Conditional", connect_to_server_link_callback),
 		BONOBO_UI_VERB_END
 	};
 
@@ -5453,8 +5579,10 @@ real_update_menus_volumes (FMDirectoryView *view,
 	gboolean show_format;
 	gboolean show_protect;
 	gboolean unmount_is_eject;
+	gboolean show_connect;
 	GnomeVFSVolume *volume;
 	GnomeVFSDrive *drive;
+	char *uri;
 
 	show_mount = FALSE;
 	show_unmount = FALSE;
@@ -5462,6 +5590,7 @@ real_update_menus_volumes (FMDirectoryView *view,
 	show_properties = FALSE;
 	show_format = FALSE;
 	show_protect = FALSE;
+	show_connect = FALSE;
 
 	if (selection_count == 1) {
 		file = NAUTILUS_FILE (selection->data);
@@ -5479,9 +5608,25 @@ real_update_menus_volumes (FMDirectoryView *view,
 			} else {
 				show_mount = TRUE;
 			}
-		} 
+		} else if (nautilus_file_is_nautilus_link (file)) {
+			uri = nautilus_file_get_activation_uri (file);
+			if (uri != NULL &&
+			    (eel_istr_has_prefix (uri, "ftp:") ||
+			     eel_istr_has_prefix (uri, "dav:") ||
+			     eel_istr_has_prefix (uri, "davs:"))) {
+				show_connect = TRUE;
+			}
+		} else if (nautilus_file_is_mime_type (file,
+						       "x-directory/smb-share")) {
+			show_connect = TRUE;
+		}
+										      
 	}
 
+	nautilus_bonobo_set_hidden (view->details->ui,
+				    FM_DIRECTORY_VIEW_COMMAND_CONNECT_TO_SERVER_LINK_CONDITIONAL,
+				    !show_connect);
+	
 	nautilus_bonobo_set_hidden (view->details->ui,
 				    FM_DIRECTORY_VIEW_COMMAND_MOUNT_VOLUME_CONDITIONAL,
 				    !show_mount);
