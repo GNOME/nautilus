@@ -1,3 +1,8 @@
+2002-12-02  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-thumbnails.c (thumbnail_thread_starter_cb):
+	Allocate 128K thread stack. Patch from marcus@freebsd.org. (#99917)
+
 2002-11-28  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/apps_nautilus_preferences.schemas:
