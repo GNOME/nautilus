@@ -486,11 +486,7 @@ nautilus_self_check_string_list (void)
 	NautilusStringList *cities;
 	NautilusStringList *cities_copy;
 	NautilusStringList *empty;
-	NautilusStringList *tokens;
 	NautilusStringList *single;
-
-	const char token_string[] = "london:paris:rome";
-	const char token_string_thick[] = "london####paris####rome";
 
 	/*
 	 * nautilus_string_list_contains
@@ -567,22 +563,6 @@ nautilus_self_check_string_list (void)
 	
 	nautilus_string_list_free (fruits);
 	nautilus_string_list_free (empty);
-
-	/*
-	 * nautilus_string_list_new_from_tokens
-	 */
-	tokens = nautilus_string_list_new_from_tokens (token_string, ":", TRUE);
-
- 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_equals (cities, tokens), TRUE);
-
-	nautilus_string_list_free (tokens);
-
-	tokens = nautilus_string_list_new_from_tokens (token_string_thick, "####", TRUE);
-
- 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_equals (cities, tokens), TRUE);
-
-	nautilus_string_list_free (cities);
-	nautilus_string_list_free (tokens);
 
 	/*
 	 * nautilus_string_list_new_from_string
@@ -845,6 +825,33 @@ nautilus_self_check_string_list (void)
 		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (l), 1);
 
 		nautilus_string_list_free (l);
+	}
+
+	/*
+	 * nautilus_string_list_new_from_tokens
+	 */
+	{
+		NautilusStringList *lines;
+		NautilusStringList *thick_lines;
+
+		const char lines_string[] = "This\nAre\nSome\n\nLines";
+		const char thick_lines_string[] = "This####Are####Some########Lines";
+		const guint num_lines = nautilus_str_count_characters (lines_string, '\n') + 1;
+
+		lines = nautilus_string_list_new_from_tokens (lines_string, "\n", TRUE);
+		thick_lines = nautilus_string_list_new_from_tokens (thick_lines_string, "####", TRUE);
+
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_equals (lines, thick_lines), TRUE);
+
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (lines), num_lines);
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (lines, 0), "This");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (lines, 1), "Are");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (lines, 2), "Some");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (lines, 3), "");
+		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (lines, 4), "Lines");
+		
+		nautilus_string_list_free (lines);
+		nautilus_string_list_free (thick_lines);
 	}
 }
 
