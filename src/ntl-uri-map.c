@@ -178,6 +178,8 @@ static char * const nautilus_sort_criteria[] = {
         "iid == 'OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b'",
         /* Prefer the icon view next */
         "iid == 'OAFIID:ntl_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058'",
+        /* Prefer anything else over the loser view. */
+        "iid != 'OAFIID:nautilus_content_loser:95901458-c68b-43aa-aaca-870ced11062d'",
         /* Prefer anything else over the sample view. */
         "iid != 'OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae'",
         NULL};
