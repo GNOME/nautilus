@@ -822,8 +822,9 @@ mpg123_seek(int time)
 }
 
 void 
-mpg123_pause(void)
+mpg123_pause (gboolean pause)
 {
+	esdout_pause (pause);
 }
 
 int 

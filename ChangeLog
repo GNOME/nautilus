@@ -1,3 +1,13 @@
+2000-12-07  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 4996, Repeatedly pressing pause "Pause" crashes music view
+
+	* components/music/mpg123.c: (mpg123_pause):
+	* components/music/mpg123.h:
+	* components/music/nautilus-music-view.c: (go_to_previous_track),
+	(play_button_callback), (pause_button_callback):
+	Fixed pause and added some logic to avoid redundant calls.
+
 2000-12-07 Rebecca Schulman  <rebecka@eazel.com>
 	Changes to fix bugs 2341, to match the sidebar
 	to Arlo's design for search results, and 3488

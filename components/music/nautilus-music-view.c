@@ -14,7 +14,7 @@
  *  General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this library; if not, write to the Free Software//
+ *  along with this library; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *  Author: Andy Hertzfeld <andy@eazel.com>
@@ -1091,15 +1091,12 @@ go_to_next_track (NautilusMusicView *music_view)
 static void
 go_to_previous_track (NautilusMusicView *music_view)
 {
-	//int frame;
-	
 	stop_if_playing (music_view);		
-	//frame = get_current_frame (music_view);
 	
 	/* if we're in the first 3 seconds of the song, go to the previous one, otherwise go to the beginning of this track */	
-	//if ((frame < 3*72) && (music_view->details->selected_index > 0)) {
-	//	music_view->details->selected_index -= 1;
-       // }
+	if ((esdout_get_output_time () < 300) && (music_view->details->selected_index > 0)) {
+		music_view->details->selected_index -= 1;
+	}
 	play_current_file (music_view, TRUE);
 }
 
@@ -1114,7 +1111,8 @@ play_button_callback (GtkWidget *widget, NautilusMusicView *music_view)
 	if (get_player_state (music_view) == PLAYER_PLAYING) {
 		return;
 	}
-	
+
+	mpg123_pause (FALSE);
 	play_current_file (music_view, FALSE);
 }
 
@@ -1127,8 +1125,10 @@ stop_button_callback (GtkWidget *widget, NautilusMusicView *music_view)
 static void
 pause_button_callback (GtkWidget *widget, NautilusMusicView *music_view)
 {
-	set_player_state (music_view, PLAYER_PAUSED);
-	mpg123_pause ();
+	if (get_player_state (music_view) == PLAYER_PLAYING) {
+		set_player_state (music_view, PLAYER_PAUSED);
+		mpg123_pause (TRUE);
+	}
 }
 
 static void

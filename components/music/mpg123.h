@@ -291,11 +291,11 @@ extern const gchar *mpg123_id3_genres[GENRE_MAX];
 extern int tabsel_123[2][3][16];
 
 
-void get_song_info(char *filename, char **title_real, int *len_real);
-void mpg123_play_file(const char *filename);
-void mpg123_stop(void);
-void mpg123_seek(int time);
-void mpg123_pause(void);
+void get_song_info (char *filename, char **title_real, int *len_real);
+void mpg123_play_file (const char *filename);
+void mpg123_stop (void);
+void mpg123_seek (int time);
+void mpg123_pause (gboolean pause);
 int get_time (void);
 
 #endif
