@@ -1,5 +1,32 @@
 2002-07-10  Michael Meeks  <michael@ximian.com>
 
+	* src/nautilus-sidebar.c (nautilus_sidebar_update_appearance):
+	update the title color only if the background has changed;
+	(nautilus_sidebar_finalize):
+	keep the current background colour/image on the sidebar as well
+	as the defaults.
+	(value_different, nautilus_sidebar_update_appearance): update
+	only when the values are different, pass the background in.
+	(nautilus_sidebar_create_context_menu): use stored boolean.
+	(nautilus_sidebar_background_is_default): do this
+	(nautilus_sidebar_update_appearance): inline, once here.
+
+	* src/nautilus-sidebar-title.c
+	(nautilus_sidebar_title_background_is_default): kill this method
+	cut and paste coded from nautilus-sidebar.c
+	(realize_callback, appearance_changed_callback): remove contorted
+	'wizard'ry ( and redundant pixbuf colouring logic )
+	(nautilus_sidebar_title_theme_changed): don't do title changed,
+	nautilus-sidebar.c will do it for us.
+	(update_all): don't update the title colour, every time we move
+	directory a file ( with pixbuf darkness test, etc. etc. )
+	(nautilus_sidebar_title_select_text_color): bin
+	background == NULL mess, it never happens now.
+	(nautilus_sidebar_title_background): more applied spaghetti hurling
+	gone.
+
+2002-07-10  Michael Meeks  <michael@ximian.com>
+
 	* src/nautilus-application.c (is_kdesktop_present): disable
 	the look_for_kdesktop_recursive code, since this takes ~1 second
 	at startup on my Ultra 2.

@@ -30,6 +30,7 @@
 #define NAUTILUS_SIDEBAR_TITLE_H
 
 #include <gtk/gtkvbox.h>
+#include <eel/eel-background.h>
 #include <libnautilus-private/nautilus-file.h>
 
 #define NAUTILUS_TYPE_SIDEBAR_TITLE	       (nautilus_sidebar_title_get_type ())
@@ -62,6 +63,8 @@ char *     nautilus_sidebar_title_get_text          (NautilusSidebarTitle *sideb
 gboolean   nautilus_sidebar_title_hit_test_icon     (NautilusSidebarTitle *sidebar_title,
 						     int                   x,
 						     int                   y);
-void       nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title);
+void       nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title,
+						     EelBackground        *background,
+						     gboolean              is_default);
 
 #endif /* NAUTILUS_SIDEBAR_TITLE_H */
