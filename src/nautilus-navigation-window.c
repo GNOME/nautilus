@@ -50,7 +50,6 @@
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-view-identifier.h>
 #include <libnautilus-extensions/nautilus-mini-icon.h>
 #include <libnautilus-extensions/nautilus-generous-bin.h>
 #include <libnautilus/nautilus-undo-manager.h>
@@ -533,6 +532,8 @@ nautilus_window_destroy (NautilusWindow *window)
 	
 	nautilus_window_toolbar_remove_theme_callback();
 	g_list_free (window->sidebar_panels);
+
+	nautilus_view_identifier_free (window->content_view_id);
 	
 	CORBA_free (window->ni);
 	CORBA_free (window->si);
@@ -664,29 +665,115 @@ nautilus_window_realize (GtkWidget *widget)
  */
 
 static void
-nautilus_window_switch_views (NautilusWindow *window, const char *iid)
+nautilus_window_switch_views (NautilusWindow *window, NautilusViewIdentifier *id)
 {
         NautilusDirectory *directory;
         NautilusViewFrame *view;
 
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
         g_return_if_fail (NAUTILUS_WINDOW (window)->ni != NULL);
-	g_return_if_fail (iid != NULL);
+	g_return_if_fail (id != NULL);
 
         directory = nautilus_directory_get (window->ni->requested_uri);
         g_assert (directory != NULL);
         nautilus_directory_set_metadata (directory,
                                          NAUTILUS_METADATA_KEY_INITIAL_VIEW,
                                          NULL,
-                                         iid);
+                                         id->iid);
         nautilus_directory_unref (directory);
         
         nautilus_window_allow_stop (window, TRUE);
         
-        view = nautilus_window_load_content_view (window, iid, window->ni, NULL);
+        view = nautilus_window_load_content_view (window, id, window->ni, NULL);
         nautilus_window_set_state_info (window,
                                         (NautilusWindowStateItem)NEW_CONTENT_VIEW_ACTIVATED, view,
                                         (NautilusWindowStateItem)0);	
+}
+
+static void
+view_menu_switch_views_callback (GtkWidget *widget, gpointer data)
+{
+        NautilusWindow *window;
+        NautilusViewIdentifier *identifier;
+        
+        g_return_if_fail (GTK_IS_MENU_ITEM (widget));
+        g_return_if_fail (NAUTILUS_IS_WINDOW (gtk_object_get_data (GTK_OBJECT (widget), "window")));
+        
+        window = NAUTILUS_WINDOW (gtk_object_get_data (GTK_OBJECT (widget), "window"));
+        identifier = (NautilusViewIdentifier *)gtk_object_get_data (GTK_OBJECT (widget), "identifier");
+        
+        nautilus_window_switch_views (window, identifier);
+}
+
+static GtkWidget *
+create_content_view_menu_item (NautilusWindow *window, NautilusViewIdentifier *identifier)
+{
+	GtkWidget *menu_item;
+        char *menu_label;
+
+	menu_label = g_strdup_printf (_("View as %s"), identifier->name);
+	menu_item = gtk_menu_item_new_with_label (menu_label);
+	g_free (menu_label);
+
+	gtk_signal_connect
+	        (GTK_OBJECT (menu_item),
+	         "activate",
+	         GTK_SIGNAL_FUNC (view_menu_switch_views_callback), 
+	         NULL);
+
+	/* Store copy of iid in item; free when item destroyed. */
+	gtk_object_set_data_full (GTK_OBJECT (menu_item),
+				  "identifier",
+				  nautilus_view_identifier_copy (identifier),
+				  (GtkDestroyNotify) nautilus_view_identifier_free);
+
+	/* Store reference to window in item; no need to free this. */
+	gtk_object_set_data (GTK_OBJECT (menu_item), "window", window);
+	gtk_widget_show (menu_item);
+
+	return menu_item;
+}
+
+/* Make a special first item in the "View as" option menu that represents
+ * the current content view. This should only be called if the current
+ * content view isn't already in the "View as" option menu.
+ */
+static void
+replace_special_current_view_in_content_view_menu (NautilusWindow *window)
+{
+	GList *menu_item_list;
+	GtkWidget *menu;
+	GtkWidget *first_menu_item;
+	GtkWidget *new_menu_item;
+	
+	menu = gtk_option_menu_get_menu (GTK_OPTION_MENU (window->view_as_option_menu));
+
+	/* Remove menu before changing contents so it is resized properly
+	 * when reattached later in this function.
+	 */
+	gtk_widget_ref (menu);
+	gtk_option_menu_remove_menu (GTK_OPTION_MENU (window->view_as_option_menu));
+
+	menu_item_list = gtk_container_children (GTK_CONTAINER (menu));
+	first_menu_item = GTK_WIDGET (menu_item_list->data);
+	g_list_free (menu_item_list);
+
+	if (GPOINTER_TO_INT (gtk_object_get_data 
+		(GTK_OBJECT (first_menu_item), "current content view")) == TRUE) {
+		gtk_container_remove (GTK_CONTAINER (menu), first_menu_item);
+	} else {
+		/* Prepend separator. */
+		new_menu_item = gtk_menu_item_new ();
+		gtk_widget_show (new_menu_item);
+		gtk_menu_prepend (GTK_MENU (menu), new_menu_item);
+	}
+
+	new_menu_item = create_content_view_menu_item (window, window->content_view_id);
+	gtk_object_set_data (GTK_OBJECT (new_menu_item), "current content view", GINT_TO_POINTER (TRUE));
+	gtk_menu_prepend (GTK_MENU (menu), new_menu_item);
+
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (window->view_as_option_menu), menu);
+	gtk_widget_unref (menu);
 }
 
 /**
@@ -702,7 +789,7 @@ nautilus_window_synch_content_view_menu (NautilusWindow *window)
 {
 	GList *children, *child;
 	GtkWidget *menu;
-	const char *item_iid;
+	NautilusViewIdentifier *item_id;
 	int index, matching_index;
 
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
@@ -711,23 +798,25 @@ nautilus_window_synch_content_view_menu (NautilusWindow *window)
 	if (menu == NULL) {
 		return;
 	}
+	
 	children = gtk_container_children (GTK_CONTAINER (menu));
 	matching_index = -1;
 
 	for (child = children, index = 0; child != NULL; child = child->next, ++index) {
-		item_iid = (const char *)(gtk_object_get_data (GTK_OBJECT (child->data), "iid"));
-		if (nautilus_strcmp (window->content_view->iid, item_iid) == 0) {
+		item_id = (NautilusViewIdentifier *)(gtk_object_get_data (GTK_OBJECT (child->data), "identifier"));
+		if (item_id != NULL && strcmp (window->content_view->iid, item_id->iid) == 0) {
 			matching_index = index;
 			break;
 		}
 	}
 
-	if (matching_index != -1) {
-		gtk_option_menu_set_history (GTK_OPTION_MENU (window->view_as_option_menu), 
-					     matching_index);
-	} else {
-		g_warning ("In nautilus_window_synch_content_view_menu, couldn't find matching menu item.");
+	if (matching_index == -1) {
+		replace_special_current_view_in_content_view_menu (window);
+		matching_index = 0;
 	}
+
+	gtk_option_menu_set_history (GTK_OPTION_MENU (window->view_as_option_menu), 
+				     matching_index);
 
 	g_list_free (children);
 }
@@ -738,9 +827,7 @@ chose_component_callback (NautilusViewIdentifier *identifier, gpointer callback_
 	g_return_if_fail (NAUTILUS_IS_WINDOW (callback_data));
 
 	if (identifier != NULL) {
-		/* FIXME: Need to add menu item for new identifier to "View as" menu. */
-		/* FIXME: After switching, option menu doesn't synch to new value. */
-		nautilus_window_switch_views (NAUTILUS_WINDOW (callback_data), identifier->iid);
+		nautilus_window_switch_views (NAUTILUS_WINDOW (callback_data), identifier);
 	}
 }
 
@@ -774,21 +861,6 @@ view_menu_choose_view_callback (GtkWidget *widget, gpointer data)
 	nautilus_file_unref (file);
 }
 
-static void
-view_menu_switch_views_callback (GtkWidget *widget, gpointer data)
-{
-        NautilusWindow *window;
-        const char *iid;
-        
-        g_return_if_fail (GTK_IS_MENU_ITEM (widget));
-        g_return_if_fail (NAUTILUS_IS_WINDOW (gtk_object_get_data (GTK_OBJECT (widget), "window")));
-        
-        window = NAUTILUS_WINDOW (gtk_object_get_data (GTK_OBJECT (widget), "window"));
-        iid = (const char *)gtk_object_get_data (GTK_OBJECT (widget), "iid");
-        
-        nautilus_window_switch_views (window, iid);        
-}
-
 void
 nautilus_window_load_content_view_menu (NautilusWindow *window,
                                         NautilusNavigationInfo *ni)
@@ -797,8 +869,6 @@ nautilus_window_load_content_view_menu (NautilusWindow *window,
         GtkWidget *new_menu;
         int index;
         GtkWidget *menu_item;
-        NautilusViewIdentifier *identifier;
-        char *menu_label;
 
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
         g_return_if_fail (GTK_IS_OPTION_MENU (window->view_as_option_menu));
@@ -809,27 +879,8 @@ nautilus_window_load_content_view_menu (NautilusWindow *window,
         /* Add a menu item for each available content view type */
         index = 0;
         for (p = ni->content_identifiers; p != NULL; p = p->next) {
-                identifier = (NautilusViewIdentifier *) p->data;
-                menu_label = g_strdup_printf (_("View as %s"), identifier->name);
-                menu_item = gtk_menu_item_new_with_label (menu_label);
-                g_free (menu_label);
-                
-                gtk_signal_connect
-                        (GTK_OBJECT (menu_item),
-                         "activate",
-                         GTK_SIGNAL_FUNC (view_menu_switch_views_callback), 
-                         NULL);
-
-		/* Store copy of iid in item; free when item destroyed. */
-		gtk_object_set_data_full (GTK_OBJECT (menu_item),
-					  "iid",
-					  g_strdup (identifier->iid),
-					  g_free);
-
-                /* Store reference to window in item; no need to free this. */
-                gtk_object_set_data (GTK_OBJECT (menu_item), "window", window);
+                menu_item = create_content_view_menu_item (window, (NautilusViewIdentifier *) p->data);
                 gtk_menu_append (GTK_MENU (new_menu), menu_item);
-                gtk_widget_show (menu_item);
 
                 ++index;
         }

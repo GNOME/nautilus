@@ -45,7 +45,7 @@ void nautilus_window_begin_location_change(NautilusWindow *window,
 void nautilus_window_load_content_view_menu (NautilusWindow *window, NautilusNavigationInfo *ni);
 void nautilus_window_synch_content_view_menu (NautilusWindow *window);
 NautilusViewFrame *nautilus_window_load_content_view(NautilusWindow *window,
-                                  const char *iid,
+                                  NautilusViewIdentifier *id,
                                   Nautilus_NavigationInfo *navinfo,
                                   NautilusViewFrame **requesting_view);
 void nautilus_window_connect_content_view (NautilusWindow *window, 

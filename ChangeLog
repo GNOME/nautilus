@@ -1,3 +1,47 @@
+2000-06-02  John Sullivan  <sullivan@eazel.com>
+
+	Finished task 968 (Add one-time viewer choice to "View as"
+	menu temporarily)
+
+	* libnautilus-extensions/nautilus-view-identifier.h,
+	* libnautilus-extensions/nautilus-view-identifier.c:
+	(nautilus_view_identifier_copy): New function, does the obvious.
+	
+	* src/nautilus-applicable-views.h: Made NautilusNavigationInfo
+	store a NautilusViewIdentifier instead of just the iid part
+	in initial_content_iid (now initial_content_id).
+
+	* src/nautilus-applicable-views.c: (set_initial_content_id),
+	(got_file_info_callback), (nautilus_navigation_info_free):
+	Reworked code to handle change from char *iid to NautilusViewIdentifier.
+
+	* src/nautilus-window.h: New field for content_view_id,
+	a NautilusViewIdentifier for the current view.
+
+	* src/nautilus-window-private.h,
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_load_content_view): Now takes a
+	NautilusViewIdentifier * instead of just a char *,
+	and resets content_view_id field.
+	(nautilus_window_update_state): Reworked code to handle
+	initial_content_iid change.
+	
+	* src/nautilus-window.c: 
+	(nautilus_window_destroy): Destroy content_view_id.
+	(nautilus_window_switch_views), (view_menu_switch_views_callback):
+	Reworked to take NautilusViewIdentifier * instead of just char *.
+	(create_content_view_menu_item): New helper function, extracted 
+	from nautilus_window_load_content_view_menu.
+	(replace_special_current_view_in_content_view_menu): New
+	function, does the work of putting the current content view
+	as the initial item in the menu, followed by a separator.
+	(nautilus_window_synch_content_view_menu): Calls
+	replace_special_current_view_in_content_menu if the current view
+	is not found in the menu.
+	(chose_component_callback): Took out fixed FIXMEs.
+	(nautilus_window_load_content_view_menu): Now calls function
+	that was extracted from it.
+
 2000-06-02  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Task 667.  Unhardcode font strings.

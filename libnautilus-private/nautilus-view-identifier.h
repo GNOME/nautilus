@@ -25,6 +25,10 @@
 #ifndef NAUTILUS_VIEW_IDENTIFIER_H
 #define NAUTILUS_VIEW_IDENTIFIER_H
 
+/* FIXME: Without this define liboaf doesn't include popt.h, causing trouble
+ * later; this mechanism should be fixed. 
+ */
+#define HAVE_POPT_H
 #include <liboaf/liboaf.h>
 
 typedef struct {
@@ -38,6 +42,7 @@ NautilusViewIdentifier *nautilus_view_identifier_new_from_oaf_server_info (OAF_S
 									   char                   *name_attribute);
 NautilusViewIdentifier *nautilus_view_identifier_new_from_content_view    (OAF_ServerInfo         *server);
 NautilusViewIdentifier *nautilus_view_identifier_new_from_sidebar_panel   (OAF_ServerInfo         *server);
+NautilusViewIdentifier *nautilus_view_identifier_copy			  (NautilusViewIdentifier *identifier);
 
 void                    nautilus_view_identifier_free                     (NautilusViewIdentifier *identifier);
 void                    nautilus_view_identifier_list_free                (GList                  *identifiers);

@@ -43,7 +43,6 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
-#include <libnautilus-extensions/nautilus-view-identifier.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include "nautilus-application.h"
 #include "nautilus-applicable-views.h"
@@ -683,7 +682,7 @@ nautilus_window_request_location_change (NautilusWindow *window,
 
 NautilusViewFrame *
 nautilus_window_load_content_view (NautilusWindow *window,
-                                   const char *iid,
+                                   NautilusViewIdentifier *id,
                                    Nautilus_NavigationInfo *navinfo,
                                    NautilusViewFrame **requesting_view)
 {
@@ -691,11 +690,11 @@ nautilus_window_load_content_view (NautilusWindow *window,
         NautilusViewFrame *new_view;
         CORBA_Environment environment;
         
-        g_return_val_if_fail(iid, NULL);
+        g_return_val_if_fail(id, NULL);
         g_return_val_if_fail(navinfo, NULL);
         
         if (!NAUTILUS_IS_VIEW_FRAME (content_view)
-            || strcmp (nautilus_view_frame_get_iid (content_view), iid) != 0) {
+            || strcmp (nautilus_view_frame_get_iid (content_view), id->iid) != 0) {
 
                 if (requesting_view != NULL && *requesting_view == window->content_view) {
                         /* If we are going to be zapping the old view,
@@ -710,7 +709,7 @@ nautilus_window_load_content_view (NautilusWindow *window,
                 
                 nautilus_window_connect_content_view (window, new_view);
                 
-                if (!nautilus_view_frame_load_client (new_view, iid)) {
+                if (!nautilus_view_frame_load_client (new_view, id->iid)) {
                         gtk_widget_unref(GTK_WIDGET(new_view));
                         new_view = NULL;
                 }
@@ -734,6 +733,9 @@ nautilus_window_load_content_view (NautilusWindow *window,
                         (nautilus_view_frame_get_client_objref (new_view),
                          &environment);
                 CORBA_exception_free(&environment);
+
+		nautilus_view_identifier_free (window->content_view_id);
+                window->content_view_id = nautilus_view_identifier_copy (id);
                 
                 nautilus_view_frame_set_active_errors (new_view, TRUE);
         }
@@ -862,7 +864,7 @@ nautilus_window_update_state (gpointer data)
 			GList *sidebar_panel_identifiers = NULL;
 
                         window->new_content_view = nautilus_window_load_content_view
-                                (window, window->pending_ni->initial_content_iid,
+                                (window, window->pending_ni->initial_content_id,
                                  &window->pending_ni->navinfo,
                                  &window->new_requesting_view);
 

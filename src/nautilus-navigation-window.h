@@ -31,6 +31,7 @@
 #include <libgnomeui/gnome-app.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>
+#include <libnautilus-extensions/nautilus-view-identifier.h>
 #include "nautilus-applicable-views.h"
 #include "nautilus-view-frame.h"
 #include "nautilus-sidebar.h"
@@ -93,6 +94,7 @@ struct _NautilusWindow {
 
   /* Current views stuff */
   NautilusViewFrame *content_view;
+  NautilusViewIdentifier *content_view_id;
   GList *sidebar_panels;
 
   /* Widgets to keep track of (for state changes, etc) */

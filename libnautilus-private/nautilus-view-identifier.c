@@ -45,6 +45,12 @@ nautilus_view_identifier_new (const char *iid, const char *name)
         return new_identifier;
 }
 
+NautilusViewIdentifier *
+nautilus_view_identifier_copy (NautilusViewIdentifier *identifier)
+{
+	return nautilus_view_identifier_new (identifier->iid, identifier->name);
+}
+
 
 static GSList *
 get_lang_list (void)

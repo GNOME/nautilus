@@ -108,25 +108,28 @@ check_iid (gconstpointer a, gconstpointer b)
 }
 
 /**
- * set_initial_content_iid:
+ * set_initial_content_id:
  * 
- * Sets the iid that will determine which content view to use when
+ * Sets the NautilusViewIdentifier that will determine which content view to use when
  * a URI is displayed.
  * 
  * @navinfo: The NautilusNavigationInfo representing the URI that's about
  * to be displayed.
- * @fallback_value: The iid to use for the content view if no better
+ * @fallback_value: The NautilusViewIdentifier to use for the content view if no better
  * one can be determined.
  */
 static void
-set_initial_content_iid (NautilusNavigationInfo *navinfo,
-			 const char *fallback_value)
+set_initial_content_id (NautilusNavigationInfo *navinfo,
+			NautilusViewIdentifier *fallback_view_id)
 {
-	char *remembered_value = NULL;
-	const char *value = NULL;
+	char *remembered_value;
+	NautilusViewIdentifier *new_id;
+	GList *node;
 
-	g_assert (fallback_value != NULL);
+	g_assert (fallback_view_id != NULL);
 	g_assert (g_list_length (navinfo->content_identifiers) > 0);
+
+	new_id = NULL;
 
 	/* NOTE: Darin doesn't like the unpredictability of this three-choice system.
 	 * He'd prefer a global setting and perhaps an explicit location-specific
@@ -138,9 +141,10 @@ set_initial_content_iid (NautilusNavigationInfo *navinfo,
         
         /* Use the remembered value if it's non-NULL and in the list of choices. */
         if (remembered_value != NULL) {
-                if (g_list_find_custom (navinfo->content_identifiers,
-                                        remembered_value, check_iid)) {
-                        value = remembered_value;
+        	node = g_list_find_custom (navinfo->content_identifiers,
+                                           remembered_value, check_iid);
+                if (node != NULL) {
+                        new_id = node->data;
                 } else {
                         g_message ("Unknown iid \"%s\" stored for %s",
                                    remembered_value,
@@ -148,24 +152,25 @@ set_initial_content_iid (NautilusNavigationInfo *navinfo,
                 }
         }
         
-	if (value == NULL) {
+	if (new_id == NULL) {
 		/* Can't use remembered value, use referring value if 
 		 * it's non-NULL and in the list of choices. 
 		 */
 		if (navinfo->referring_iid != NULL) {
-			if (g_list_find_custom (navinfo->content_identifiers,
-                                                navinfo->referring_iid, check_iid)) {
-				value = navinfo->referring_iid;
+			node = g_list_find_custom (navinfo->content_identifiers,
+                                                navinfo->referring_iid, check_iid);
+                        if (node != NULL) {
+				new_id = node->data;
 			}
 		}
 
 		/* Can't use remembered or referring value, use fallback value. */
-		if (value == NULL) {
-			value = fallback_value;
+		if (new_id == NULL) {
+			new_id = fallback_view_id;
 		}		
 	}
 
-	navinfo->initial_content_iid = g_strdup (value);
+	navinfo->initial_content_id = nautilus_view_identifier_copy (new_id);
 
         g_free (remembered_value);
 }
@@ -194,7 +199,7 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
         NautilusNavigationCallback notify_ready;
         gpointer notify_ready_data;
         NautilusNavigationResult result_code;
-        const char *fallback_iid;
+        NautilusViewIdentifier *fallback_id;
         GList *components;
         GList *p;
         OAF_ServerInfo *default_component;
@@ -232,14 +237,17 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
 
         gnome_vfs_mime_component_list_free (components);
 
-        /* FIXME: should also merge the default into
-           navinfo->content_identifiers if not already there */
-
         default_component = nautilus_mime_get_default_component_for_uri (navinfo->navinfo.requested_uri);
         
         if (default_component != NULL) {
-                fallback_iid = g_strdup (default_component->iid);
-                
+        	fallback_id = nautilus_view_identifier_new_from_content_view (default_component);
+
+                /* FIXME: This merges the default component into the list if it
+                 * wasn't already there. This might not be the right thing to do
+                 * since the View As menu already handles the case where the current
+                 * view is not in the standard list. I don't know when this case happens
+                 * in practice though.
+                 */
                 if (g_list_find_custom (navinfo->content_identifiers, default_component->iid, 
                                         (GCompareFunc) view_identifier_has_iid) == NULL) {
                         navinfo->content_identifiers = g_list_insert_sorted 
@@ -249,15 +257,13 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
                         
                 }
                 CORBA_free (default_component);
-        } else {
-                if (navinfo->content_identifiers != NULL) {
-                        fallback_iid = ((NautilusViewIdentifier *)
-                                        (navinfo->content_identifiers->data))->iid;
-                }
+        } else if (navinfo->content_identifiers != NULL) {              
+		/* No default component, just take first one from list. */
+                fallback_id = nautilus_view_identifier_copy (navinfo->content_identifiers->data);
         }
         
 #ifdef DEBUG_MJS
-        printf ("XXXXXX - fallback_iid: %s\n", fallback_iid);
+        printf ("XXXXXX - fallback_id: %s (%s)\n", fallback_id->iid, fallback_id->name);
 #endif
 
         if (navinfo->content_identifiers != NULL) {
@@ -277,8 +283,9 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
         /* Now that all the content_identifiers are in place, we're ready to choose
          * the initial one.
          */
-        g_assert (fallback_iid != NULL);
-        set_initial_content_iid (navinfo, fallback_iid);
+        g_assert (fallback_id != NULL);
+        set_initial_content_id (navinfo, fallback_id);
+        nautilus_view_identifier_free (fallback_id);
         
  out:
         (* notify_ready) (result_code, navinfo, notify_ready_data);
@@ -371,8 +378,8 @@ nautilus_navigation_info_free (NautilusNavigationInfo *info)
         nautilus_view_identifier_list_free (info->content_identifiers);
         nautilus_g_list_free_deep (info->explicit_iids);
 
+        nautilus_view_identifier_free (info->initial_content_id);
         g_free (info->referring_iid);
-        g_free (info->initial_content_iid);
         g_free (info->navinfo.requested_uri);
         g_free (info->navinfo.actual_uri);
         g_free (info->navinfo.content_type);

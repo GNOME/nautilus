@@ -32,6 +32,7 @@
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libnautilus/nautilus-view-component.h>
 #include <libnautilus-extensions/nautilus-directory.h>
+#include <libnautilus-extensions/nautilus-view-identifier.h>
 
 typedef struct NautilusNavigationInfo NautilusNavigationInfo;
 
@@ -57,11 +58,11 @@ typedef void (*NautilusNavigationCallback) (NautilusNavigationResult result,
 struct NautilusNavigationInfo {
 	Nautilus_NavigationInfo navinfo;
 
-	char *referring_iid;		     /* iid of content view that we're coming from */
-	char *initial_content_iid;     	     /* iid to use for content view that we're going to display */
-	GList *content_identifiers;	     /* list of NautilusViewIdentifiers */
-        GList *files;                        /* NautilusFile's for files in the dir, if it is one. */
-        GList *explicit_iids;                /* IIDs explicitly mentioned in the metafile. */
+	char *referring_iid;		     		/* iid of content view that we're coming from */
+	NautilusViewIdentifier *initial_content_id;	/* NautilusViewIdentifier for content view that we're going to display */
+	GList *content_identifiers;	     		/* list of NautilusViewIdentifiers */
+        GList *files;                        		/* NautilusFile's for files in the dir, if it is one. */
+        GList *explicit_iids;                		/* IIDs explicitly mentioned in the metafile. */
 
 	/* internal usage */
 	NautilusNavigationCallback callback;
