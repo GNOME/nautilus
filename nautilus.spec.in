@@ -131,7 +131,7 @@ fi
 %{prefix}/share/hyperbola/maps/*.map
 
 %defattr (0444, bin, bin)
-%{config} %{sysconfig}/vfs/modules/*.conf
+%config %{sysconfig}/vfs/modules/*.conf
 %{prefix}/share/locale/*/LC_MESSAGES/*.mo
 %{prefix}/share/nautilus/*.xml
 %{prefix}/share/nautilus/backgrounds/*.jpg
