@@ -27,7 +27,6 @@
 #include "nautilus-search-bar.h"
 #include "nautilus-simple-search-bar.h"
 #include "nautilus-complex-search-bar.h"
-#include "nautilus-search-bar-criterion.h"
 
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>

@@ -35,9 +35,7 @@
 #include <libnautilus-extensions/nautilus-search-uri.h>
 
 struct NautilusSimpleSearchBarDetails {
-
   GtkEntry *entry;
-  
   gchar undo_text;
   gboolean undo_registered;
 };
@@ -70,8 +68,7 @@ nautilus_simple_search_bar_initialize_class (NautilusSimpleSearchBarClass *klass
 
   search_bar_class = NAUTILUS_SEARCH_BAR_CLASS (klass);
   search_bar_class->set_search_controls = nautilus_simple_search_bar_set_search_controls;
-
-  klass->get_location = nautilus_simple_search_bar_get_location;
+  klass->get_location = nautilus_simple_search_bar_get_location;  
 }
 
 
@@ -123,7 +120,7 @@ nautilus_simple_search_bar_set_search_controls (NautilusSearchBar *search_bar,
 	   using a simple search bar */
 	g_return_if_fail (nautilus_search_uri_is_displayable_by_mode (location, NAUTILUS_SIMPLE_SEARCH_BAR));
 	/* Set the words in the box to
-	   be the words originally done in the search */
+	   be the words originally done in the search */ 
 	gtk_entry_set_text (bar->entry,
 			    nautilus_search_uri_to_simple_search_criteria (location));
 

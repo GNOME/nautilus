@@ -55,7 +55,6 @@ noinst_HEADERS = \
 	nautilus-location-bar.h			\
 	nautilus-navigation-bar.h		\
 	nautilus-property-browser.h		\
-	nautilus-search-bar-criterion.h		\
 	nautilus-search-bar-private.h		\
 	nautilus-search-bar.h			\
 	nautilus-self-check-functions.h 	\
@@ -91,7 +90,6 @@ nautilus_SOURCES = \
 	nautilus-main.c 			\
 	nautilus-navigation-bar.c         	\
 	nautilus-property-browser.c     	\
-	nautilus-search-bar-criterion.c		\
 	nautilus-search-bar.c			\
 	nautilus-self-check-functions.c 	\
 	nautilus-shell.c			\

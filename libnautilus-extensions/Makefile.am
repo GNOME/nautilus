@@ -89,6 +89,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-program-chooser.c		\
 	nautilus-program-choosing.c		\
 	nautilus-radio-button-group.c		\
+	nautilus-search-bar-criterion.c		\
 	nautilus-search-uri.c 			\
 	nautilus-self-checks.c			\
 	nautilus-stock-dialogs.c		\
@@ -164,6 +165,7 @@ noinst_HEADERS =				\
 	nautilus-program-chooser.h		\
 	nautilus-program-choosing.h		\
 	nautilus-radio-button-group.h		\
+	nautilus-search-bar-criterion.h		\
 	nautilus-search-uri.h			\
 	nautilus-self-checks.h			\
 	nautilus-stock-dialogs.h		\

@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-switcheable-search-bar.c - multimodal search bar
+/* nautilus-switchable-search-bar.c - multimodal search bar
 
    Copyright (C) 2000 Eazel, Inc.
 
@@ -27,7 +27,6 @@
 #include "nautilus-switchable-search-bar.h"
 #include "nautilus-simple-search-bar.h"
 #include "nautilus-complex-search-bar.h"
-#include "nautilus-search-bar-criterion.h"
 
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>

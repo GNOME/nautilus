@@ -1,3 +1,57 @@
+2000-07-26  Rebecca Schulman  <rebecka@eazel.com>
+	Redid the complex search bar to look the way we actually
+	wanted it.  There are still some bugs, but as far as i
+	can tell, it hasn't introduced horrid instability, and 
+	this way, mathieu, among other can work on the 
+	partial amount of stuff i have done.  
+
+	* libnautilus-extensions/Makefile.am:
+
+	* src/Makefile.am:
+	* src/nautilus-search-bar-criterion.c:
+	* src/nautilus-search-bar-criterion.h:
+	* libnautilus-extensions/nautilus-search-uri.h:
+	* src/nautilus-search-bar.c:
+	* src/nautilus-simple-search-bar.c:
+	(nautilus_simple_search_bar_initialize_class),
+	(nautilus_simple_search_bar_set_search_controls):
+	* src/nautilus-switchable-search-bar.c:
+	Moved nautilus-search-bar-criterion.c from src/ to 
+	libnautilus-extensions.  
+	
+	* libnautilus-extensions/nautilus-search-bar-criterion.c:
+	* libnautilus-extensions/nautilus-search-bar-criterion.h:
+	(nautilus_search_bar_criterion_destroy),
+	(nautilus_search_bar_criterion_new),
+	(nautilus_search_bar_criterion_new_from_values),
+	(nautilus_search_bar_criterion_next_new),
+	(nautilus_search_bar_criterion_first_new),
+	(nautilus_search_bar_criterion_list_get_last),
+	(get_next_default_search_criterion_type),
+	(nautilus_search_bar_criterion_show),
+	(nautilus_search_bar_criterion_hide):
+	redid this api, and made it saner.  Doesn't seem
+	like a gtk class is even necessary, or even useful here.
+	We just want to keep track of the widgets.
+	
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_initialize_class),
+	(nautilus_complex_search_bar_initialize),
+	(nautilus_complex_search_bar_get_location),
+	(nautilus_complex_search_bar_set_search_controls),
+	(attach_criterion_to_search_bar),
+	(unattach_criterion_from_search_bar), (more_options_callback),
+	(fewer_options_callback):
+	redid this to use tables, instead of all the boxes, as per
+	Gene's suggestion.  There are still a few bugs here
+	with criterion removal that need to be worked out,
+	and there also needs to be some level of translation to
+	uri, and re-setting up the search criteria to correspond to
+	a uri.
+
+	* libnautilus-extensions/nautilus-search-bar-criterion-private.h:
+	added to keep some sense of data privacy.
+	
 2000-07-26  Gene Z. Ragan  <gzr@eazel.com>
 
 	* src/file-manager/fm-desktop-icon-view.c: (mount_device_mount),
