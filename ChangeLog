@@ -1,5 +1,11 @@
 2002-04-22  Anders Carlsson  <andersca@gnu.org>
 
+	* libnautilus-private/nautilus-icon-container.c:
+	(lay_down_icons_tblr):
+	Take pixels_per_unit into account when setting width and height.
+	
+2002-04-22  Anders Carlsson  <andersca@gnu.org>
+
 	* src/nautilus-property-browser.c:
 	(nautilus_property_browser_init), (nautilus_emblem_dialog_new),
 	(nautilus_color_selection_dialog_new), (add_new_pattern),

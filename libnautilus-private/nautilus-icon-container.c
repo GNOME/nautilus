@@ -1097,10 +1097,12 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 	int row, column;
 
 	/* Get container dimensions */
-	width  = GTK_WIDGET (container)->allocation.width
+	width  = GTK_WIDGET (container)->allocation.width /
+		GNOME_CANVAS (container)->pixels_per_unit
 		- container->details->left_margin
 		- container->details->right_margin;
-	height = GTK_WIDGET (container)->allocation.height
+	height = GTK_WIDGET (container)->allocation.height /
+		GNOME_CANVAS (container)->pixels_per_unit
 		- container->details->top_margin
 		- container->details->bottom_margin;
 
