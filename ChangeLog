@@ -1,5 +1,15 @@
 2001-05-01  Andy Hertzfeld  <andy@eazel.com>
 
+	* components/news/nautilus-news.c: (do_destroy),
+	(rss_read_done_callback), (nautilus_news_load_channel),
+	(check_for_updates):
+	fixed bug 8216, removing the news panel when loading channels hangs
+	Nautilus.  Fixed by making sure we don't launch multiple I/O request
+	for a single channel.  I suspect there are still some problems lurking,
+	but the reported bug is no longer reproducible.
+	
+2001-05-01  Andy Hertzfeld  <andy@eazel.com>
+
 	* components/news/nautilus-news.c: (has_matching_uri),
 	(mark_new_items):
 	fixed problem where the new flag wasn't being maintained

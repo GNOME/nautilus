@@ -290,17 +290,6 @@ set_bonobo_properties (BonoboPropertyBag *bag,
 static void
 do_destroy (GtkObject *obj, News *news)
 {
-	/* If the widget is being destroyed first, make sure the bonobo object
-	 * that owns it is not destroyed half-way through the widget destroy
-	 * process by reffing the bonobo object and only unreffing it at idle
-	 * time. If the bonobo object is being destroyed first, then don't do
-	 * this because it exposes a bonobo bug.
-	 */
-	if (!GTK_OBJECT_DESTROYED (GTK_OBJECT (news->view))) {
-		bonobo_object_ref (BONOBO_OBJECT (news->view));
-		bonobo_object_idle_unref (BONOBO_OBJECT (news->view));
-        }
-
 	g_free (news->uri);
 	
 	if (news->font) {
@@ -342,7 +331,7 @@ do_destroy (GtkObject *obj, News *news)
 	
 	/* free all the channel data */
 	nautilus_news_free_channel_list (news);
-
+	
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS,
 					      max_items_changed,
 					      news);
@@ -1447,7 +1436,7 @@ rss_read_done_callback (GnomeVFSResult result,
 	}
 			
 	/* extract the image uri and, if found, load it asynchronously; don't refetch if we already have one */
-	if (channel_data->logo_image == NULL) {
+	if (channel_data->logo_image == NULL && channel_data->load_image_handle == NULL) {
 		if (!extract_rss_image (channel_data, rss_document)) {
 			extract_scripting_news_image (channel_data, rss_document);
 		}	
@@ -1487,7 +1476,8 @@ nautilus_news_load_channel (News *news_data, RSSChannelData *channel_data)
 {
 	char *title;
 	/* don't load if it's not showing, or it's already loading */
-	if (!channel_data->is_showing || channel_data->update_in_progress) {
+	if (!channel_data->is_showing || channel_data->update_in_progress ||
+	    channel_data->load_file_handle != NULL) {
 		return;
 	}
 	
@@ -1648,7 +1638,6 @@ check_for_updates (gpointer callback_data)
 		if (current_time > next_update_time && !channel_data->update_in_progress && channel_data->is_showing) {
 			nautilus_news_load_channel (news_data, channel_data);
 		}
-		
 		current_item = current_item->next;
 	}
 
