@@ -58,6 +58,10 @@ fm_report_error_loading_directory (NautilusFile *file,
 		message = g_strdup_printf (_("You do not have the permissions necessary to view the contents of \"%s\"."),
 					   file_name);
 		break;
+	case GNOME_VFS_ERROR_NOT_FOUND:
+		message = g_strdup_printf (_("\"%s\" couldn't be found. Perhaps it has recently been deleted."),
+					   file_name);
+		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
 		g_warning ("Hit unhandled case %d (%s) in fm_report_error_loading_directory, tell sullivan@eazel.com", 

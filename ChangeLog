@@ -1,3 +1,53 @@
+2001-03-16  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	First batch of work for bug 4875 (design for running arbitrary
+	scripts on selected items). Only works locally, doesn't notice
+	changes to scripts directory, doesn't pass selected items as
+	parameters, many other details unfinished.
+
+	* src/file-manager/nautilus-directory-view-ui.xml: Add "Run Script"
+	submenus to File and context menus; add missing tip I happened to
+	notice to Open With submenu.
+
+	* src/file-manager/fm-directory-view.c:
+	(script_launch_parameters_new), (script_launch_parameters_free):
+	New helper functions to manage lifetime of parameters for script
+	menu items.
+	(get_scripts_directory): New function, returns NautilusDirectory
+	object (or NULL) representing scripts directory.
+	(fm_directory_view_initialize): Remember scripts directory in
+	details struct.
+	(fm_directory_view_destroy): clean up scripts directory stuff.
+	(add_numbered_menu_item): renamed from add_open_with_program_menu_item
+	with no other changes, since it was already exactly general enough
+	for my new use.
+	(add_application_to_bonobo_menu), (add_component_to_bonobo_menu):
+	Update for name change.
+	(change_to_view_directory): New function to change working
+	directory to the one displayed.
+	(run_script_callback): New function to actually execute the script;
+	temporarily changes the working directory.
+	(add_script_to_menus): New function, adds one script to the two
+	Run Script menus.
+	(reset_scripts_menu): New function, fills in the two Run Script
+	menus from scratch.
+	(reset_scripts_menu_callback): New call_when_ready callback, calls
+	reset_scripts_menu.
+	(disconnect_script_handlers): New function, cleans up pending callbacks.
+	(schedule_reset_scripts_menu): New function, sets up a callback when
+	the files in the scripts directory are sufficiently known.
+	(real_merge_menus): Call schedule_reset_scripts_menu.
+	
+
+	Fixed bug 7232 (vague error message and console spam when
+	refreshing a directory deleted outside of Nautilus)
+
+	* src/file-manager/fm-error-reporting.c:
+	(fm_report_error_loading_directory): Handle the NOT_FOUND
+	case explicitly.
+
 2001-03-16  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

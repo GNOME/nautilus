@@ -73,6 +73,11 @@
 					  _label="Other _Viewer..."
 					  verb="OtherViewer"/>
 			</submenu>
+			<submenu name="Run Script"
+				 _label="R_un Script"
+				 _tip="Run a script from ~/Nautilus/scripts">
+				 <placeholder name="Scripts Placeholder" delimit="none"/>
+			</submenu>
 		</placeholder>
 
 		<placeholder name="File Items Placeholder">
@@ -137,13 +142,23 @@
 		<placeholder name="Open Placeholder" delimit="none">
 			<menuitem name="Open" verb="Open"/>
 			<menuitem name="OpenNew" verb="OpenNew"/>
-			<submenu name="Open With" _label="Open With" tearoff="0">
+			<submenu name="Open With" 
+				 _label="Open With" 
+				 tearoff="0"
+				 _tip="Choose a program with which to open the selected item">
 				<placeholder name="Applications Placeholder" delimit="none"/>
 				<menuitem name="OtherApplication" verb="OtherApplication"/>
 				<separator/>
 				<placeholder name="Viewers Placeholder" delimit="none"/>
 				<menuitem name="OtherViewer" verb="OtherViewer"/>
 			</submenu>
+			<submenu name="Run Script"
+				 _label="Run Script"
+				 _tip="Run a script from ~/Nautilus/scripts"
+				 tearoff="0">
+				 <placeholder name="Scripts Placeholder" delimit="none"/>
+			</submenu>
+
 		</placeholder>
 		<placeholder name="File Actions" delimit="top">
 			<menuitem name="Show Properties" verb="Show Properties"/>

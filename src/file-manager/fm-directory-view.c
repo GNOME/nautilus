@@ -79,23 +79,28 @@
 #define DUPLICATE_VERTICAL_ICON_OFFSET   30
 
 #define NAUTILUS_COMMAND_SPECIFIER "command:"
+#define SCRIPTS_DIRECTORY_NAME "scripts"
 
 /* Paths to use when referring to bonobo menu items. */
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW        		"/menu/File/Open Placeholder/OpenNew"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH				"/menu/File/Open Placeholder/Open With"
+#define FM_DIRECTORY_VIEW_MENU_PATH_RUN_SCRIPT				"/menu/File/Open Placeholder/Run Script"
 #define FM_DIRECTORY_VIEW_MENU_PATH_TRASH                    		"/menu/File/File Items Placeholder/Trash"
 #define FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH                    	"/menu/File/Global File Items Placeholder/Empty Trash"
 #define FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK                	 	"/menu/File/File Items Placeholder/Create Link"
 #define FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS			"/menu/Edit/Edit Items Placeholder/Remove Custom Icons"
 #define FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER    	"/menu/File/Open Placeholder/Open With/Applications Placeholder"
 #define FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER    		"/menu/File/Open Placeholder/Open With/Viewers Placeholder"
+#define FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS_PLACEHOLDER    		"/menu/File/Open Placeholder/Run Script/Scripts Placeholder"
 
 #define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND				"/popups/background"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_SELECTION				"/popups/selection"
 
 #define FM_DIRECTORY_VIEW_POPUP_PATH_APPLICATIONS_PLACEHOLDER    	"/popups/selection/Open Placeholder/Open With/Applications Placeholder"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_VIEWERS_PLACEHOLDER    		"/popups/selection/Open Placeholder/Open With/Viewers Placeholder"
+#define FM_DIRECTORY_VIEW_POPUP_PATH_SCRIPTS_PLACEHOLDER    		"/popups/selection/Open Placeholder/Run Script/Scripts Placeholder"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_OPEN_WITH				"/popups/selection/Open Placeholder/Open With"
+#define FM_DIRECTORY_VIEW_POPUP_PATH_RUN_SCRIPT				"/popups/selection/Open Placeholder/Run Script"
 
 enum {
 	ADD_FILE,
@@ -120,6 +125,8 @@ struct FMDirectoryViewDetails
 	NautilusDirectory *model;
 	NautilusFile *directory_as_file;
 	BonoboUIComponent *ui;
+
+	NautilusDirectory *scripts_directory;
 
 	guint display_selection_idle_id;
 	guint update_menus_timeout_id;
@@ -243,6 +250,7 @@ static void                schedule_timeout_display_of_pending_files            
 static void                unschedule_timeout_display_of_pending_files            (FMDirectoryView      *view);
 static void                unschedule_display_of_pending_files                    (FMDirectoryView      *view);
 static void                disconnect_model_handlers                              (FMDirectoryView      *view);
+static void                disconnect_script_handlers                             (FMDirectoryView      *view);
 static void                filtering_changed_callback                             (gpointer              callback_data);
 static NautilusStringList *real_get_emblem_names_to_exclude                       (FMDirectoryView      *view);
 static void                start_renaming_item                                    (FMDirectoryView      *view,
@@ -390,6 +398,11 @@ typedef struct {
 	FMDirectoryView *directory_view;
 } ViewerLaunchParameters;
 
+typedef struct {
+	NautilusFile *file;
+	FMDirectoryView *directory_view;
+} ScriptLaunchParameters;
+
 static ApplicationLaunchParameters *
 application_launch_parameters_new (GnomeVFSMimeApplication *application,
 			      	   NautilusFile *file,
@@ -438,6 +451,29 @@ viewer_launch_parameters_free (ViewerLaunchParameters *parameters)
 	nautilus_view_identifier_free (parameters->identifier);
 	gtk_widget_unref (GTK_WIDGET (parameters->directory_view));
 	g_free (parameters->uri);
+	g_free (parameters);
+}			      
+
+static ScriptLaunchParameters *
+script_launch_parameters_new (NautilusFile *file,
+			      FMDirectoryView *directory_view)
+{
+	ScriptLaunchParameters *result;
+
+	result = g_new0 (ScriptLaunchParameters, 1);
+	gtk_widget_ref (GTK_WIDGET (directory_view));
+	result->directory_view = directory_view;
+	nautilus_file_ref (file);
+	result->file = file;
+
+	return result;
+}
+
+static void
+script_launch_parameters_free (ScriptLaunchParameters *parameters)
+{
+	gtk_widget_unref (GTK_WIDGET (parameters->directory_view));
+	nautilus_file_unref (parameters->file);
 	g_free (parameters);
 }			      
 
@@ -972,6 +1008,29 @@ static float fm_directory_view_preferred_zoom_levels[] = {
 	(float) NAUTILUS_ICON_SIZE_LARGEST	/ NAUTILUS_ICON_SIZE_STANDARD
 };
 
+static NautilusDirectory *
+get_scripts_directory (void)
+{
+	char *main_directory_path;
+	char *scripts_directory_path;
+	NautilusDirectory *directory;
+	
+	if (!nautilus_user_main_directory_exists ()) {
+		return NULL;
+	}
+
+	main_directory_path = nautilus_get_user_main_directory ();
+	scripts_directory_path = nautilus_make_path 
+		(main_directory_path, SCRIPTS_DIRECTORY_NAME);
+	g_free (main_directory_path);
+
+	directory = nautilus_directory_get (scripts_directory_path);
+
+	g_free (scripts_directory_path);
+	
+	return directory;
+}
+
 static void
 fm_directory_view_initialize (FMDirectoryView *view)
 {
@@ -984,6 +1043,8 @@ fm_directory_view_initialize (FMDirectoryView *view)
 	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW (view), NULL);
 
 	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
+
+	view->details->scripts_directory = get_scripts_directory ();
 
 	view->details->zoomable = bonobo_zoomable_new ();
 	bonobo_zoomable_set_parameters_full (view->details->zoomable,
@@ -1103,6 +1164,9 @@ fm_directory_view_destroy (GtkObject *object)
 
 	fm_directory_view_stop (view);
 	fm_directory_view_clear (view);
+
+	disconnect_script_handlers (view);
+	nautilus_directory_unref (view->details->scripts_directory);
 
 	disconnect_model_handlers (view);
 	nautilus_directory_unref (view->details->model);
@@ -2931,14 +2995,14 @@ bonobo_open_location_with_viewer_callback (BonoboUIComponent *component, gpointe
 }
 
 static void
-add_open_with_program_menu_item (BonoboUIComponent *ui,
-				 const char *parent_path,
-				 const char *label,
-				 const char *tip,
-				 int index,
-				 gpointer callback,
-				 gpointer callback_data,
-				 GDestroyNotify destroy_notify)
+add_numbered_menu_item (BonoboUIComponent *ui,
+			const char *parent_path,
+			const char *label,
+			const char *tip,
+			int index,
+			gpointer callback,
+			gpointer callback_data,
+			GDestroyNotify destroy_notify)
 {
 	char *escaped_label, *verb_name, *item_path;
 	
@@ -2957,7 +3021,7 @@ add_open_with_program_menu_item (BonoboUIComponent *ui,
 
 	nautilus_bonobo_set_tip (ui, item_path, tip);
 	g_free (item_path);
-	
+
 	verb_name = nautilus_bonobo_get_numbered_menu_item_command 
 		(ui, parent_path, index);	
 	bonobo_ui_component_add_verb_full (ui, verb_name, callback, callback_data, destroy_notify);	   
@@ -2977,25 +3041,25 @@ add_application_to_bonobo_menu (FMDirectoryView *directory_view,
 		(application, file, directory_view);
 	tip = g_strdup_printf (_("Use \"%s\" to open the selected item"), application->name);
 
-	add_open_with_program_menu_item (directory_view->details->ui, 
-					 FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER,
-					 application->name,
-					 tip,
-					 index,
-					 bonobo_launch_application_callback,
-					 launch_parameters,
-					 (GDestroyNotify) application_launch_parameters_free);
+	add_numbered_menu_item (directory_view->details->ui, 
+				FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER,
+				application->name,
+				tip,
+				index,
+				bonobo_launch_application_callback,
+				launch_parameters,
+				(GDestroyNotify) application_launch_parameters_free);
 	/* Use same launch parameters and no DestroyNotify for popup item, which has same
 	 * lifetime as the item in the File menu in the menu bar.
 	 */
-	add_open_with_program_menu_item (directory_view->details->ui, 
-					 FM_DIRECTORY_VIEW_POPUP_PATH_APPLICATIONS_PLACEHOLDER,
-					 application->name,
-					 tip,
-					 index,
-					 bonobo_launch_application_callback,
-					 launch_parameters,
-					 NULL);
+	add_numbered_menu_item (directory_view->details->ui, 
+				FM_DIRECTORY_VIEW_POPUP_PATH_APPLICATIONS_PLACEHOLDER,
+				application->name,
+				tip,
+				index,
+				bonobo_launch_application_callback,
+				launch_parameters,
+				NULL);
 	g_free (tip);
 }
 
@@ -3017,25 +3081,25 @@ add_component_to_bonobo_menu (FMDirectoryView *directory_view,
 	label = g_strdup (launch_parameters->identifier->viewer_label);
 	tip = g_strdup_printf (_("Use \"%s\" to open the selected item"), label);
 
-	add_open_with_program_menu_item (directory_view->details->ui, 
-					 FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER,
-					 label,
-					 tip,
-					 index,
-					 bonobo_open_location_with_viewer_callback,
-					 launch_parameters,
-					 (GDestroyNotify) viewer_launch_parameters_free);
+	add_numbered_menu_item (directory_view->details->ui, 
+				FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER,
+				label,
+				tip,
+				index,
+				bonobo_open_location_with_viewer_callback,
+				launch_parameters,
+				(GDestroyNotify) viewer_launch_parameters_free);
 	/* Use same launch parameters and no DestroyNotify for popup item, which has same
 	 * lifetime as the item in the File menu in the menu bar.
 	 */
- 	add_open_with_program_menu_item (directory_view->details->ui, 
-					 FM_DIRECTORY_VIEW_POPUP_PATH_VIEWERS_PLACEHOLDER,
-					 label,
-					 tip,
-					 index,
-					 bonobo_open_location_with_viewer_callback,
-					 launch_parameters,
-					 NULL);
+ 	add_numbered_menu_item (directory_view->details->ui, 
+				FM_DIRECTORY_VIEW_POPUP_PATH_VIEWERS_PLACEHOLDER,
+				label,
+				tip,
+				index,
+				bonobo_open_location_with_viewer_callback,
+				launch_parameters,
+				NULL);
 	g_free (tip);
 	g_free (label);
 }
@@ -3096,6 +3160,187 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 	nautilus_bonobo_set_sensitive (view->details->ui,
 				       FM_DIRECTORY_VIEW_POPUP_PATH_OPEN_WITH,
 				       sensitive);
+}
+
+static char *
+change_to_view_directory (FMDirectoryView *view)
+{
+	char *uri;
+	char *path;
+	char *old_path;
+
+	old_path = g_get_current_dir ();
+
+	uri = nautilus_directory_get_uri (view->details->model);
+	path = gnome_vfs_get_local_path_from_uri (uri);
+
+	/* FIXME: What to do about non-local directories? */
+	if (path != NULL) {
+		chdir (path);
+	}
+
+	g_free (uri);
+	g_free (path);
+
+	return old_path;
+}
+
+static void
+run_script_callback (BonoboUIComponent *component, gpointer callback_data, const char *path)
+{
+	ScriptLaunchParameters *launch_parameters;
+	char *file_uri;
+	char *local_file_path;
+	char *old_working_dir;
+	GList *selection;
+	
+	launch_parameters = (ScriptLaunchParameters *) callback_data;
+
+	file_uri = nautilus_file_get_uri (launch_parameters->file);
+	local_file_path = gnome_vfs_get_local_path_from_uri (file_uri);
+	g_free (file_uri);
+
+	/* FIXME: handle errors with dialog? */
+	if (local_file_path != NULL) {
+		selection = fm_directory_view_get_selection (launch_parameters->directory_view);
+
+		if (selection != NULL) {
+			g_warning ("not yet implemented: scripts take no parameters at the moment");
+		}		
+
+		old_working_dir = change_to_view_directory (launch_parameters->directory_view);
+
+		/* FIXME: pass selected files or file paths */
+		nautilus_launch_application_from_command (local_file_path, NULL, FALSE);
+
+		chdir (old_working_dir);		
+		g_free (old_working_dir);
+		
+		nautilus_file_list_free (selection);
+	}
+	g_free (local_file_path);
+}				    
+
+static void
+add_script_to_menus (FMDirectoryView *directory_view,
+		     NautilusFile *file,
+		     int index)
+{
+	ScriptLaunchParameters *launch_parameters;
+	char *tip;
+	char *name;
+
+	name = nautilus_file_get_name (file);
+	tip = g_strdup_printf (_("Run \"%s\" on any selected items"), name);
+	
+	launch_parameters = script_launch_parameters_new (file, directory_view);
+
+ 	add_numbered_menu_item (directory_view->details->ui, 
+				FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS_PLACEHOLDER,
+				name,
+				tip,
+				index,
+				run_script_callback,
+				launch_parameters,
+				(GDestroyNotify) script_launch_parameters_free);
+
+	/* Use same launch parameters and no DestroyNotify for popup item, which has same
+	 * lifetime as the item in the File menu in the menu bar.
+	 */
+ 	add_numbered_menu_item (directory_view->details->ui, 
+				FM_DIRECTORY_VIEW_POPUP_PATH_SCRIPTS_PLACEHOLDER,
+				name,
+				tip,
+				index,
+				run_script_callback,
+				launch_parameters,
+				NULL);
+
+	g_free (name);
+	g_free (tip);
+}
+
+static void
+reset_scripts_menu (FMDirectoryView *view, GList *all_files)
+{
+	GList *node;
+	NautilusFile *file;
+	gboolean sensitive;
+	int index;
+	
+	nautilus_bonobo_remove_menu_items_and_commands
+		(view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS_PLACEHOLDER);
+	nautilus_bonobo_remove_menu_items_and_commands 
+		(view->details->ui, FM_DIRECTORY_VIEW_POPUP_PATH_SCRIPTS_PLACEHOLDER);
+
+	sensitive = FALSE;
+	/* FIXME: These should be alphabetized */
+	for (node = all_files, index = 0; node != NULL; node = node->next, ++index) {
+		file = node->data;
+
+		/* FIXME: how to handle non-launchable files? Ignore them, or put them
+		 * in the menu anyway and give an error message when they're selected?
+		 */
+		if (file_is_launchable (file)) {
+			add_script_to_menus (view, file, index);
+			sensitive = TRUE;
+		}
+	}
+
+	/* It's OK to set the sensitivity of the menu items (rather than the verbs)
+	 * here because these are submenu titles, not items with verbs.
+	 */
+	nautilus_bonobo_set_sensitive (view->details->ui,
+				       FM_DIRECTORY_VIEW_MENU_PATH_RUN_SCRIPT,
+				       sensitive);
+	nautilus_bonobo_set_sensitive (view->details->ui,
+				       FM_DIRECTORY_VIEW_POPUP_PATH_RUN_SCRIPT,
+				       sensitive);
+}
+
+static void
+reset_scripts_menu_callback (NautilusDirectory *directory,
+			     GList *files,
+			     gpointer callback_data)
+{
+	FMDirectoryView *view;
+
+	view = callback_data;
+
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_assert (view->details->scripts_directory == directory);
+
+	reset_scripts_menu (view, files);
+}
+
+static void
+disconnect_script_handlers (FMDirectoryView *view)
+{
+	if (view->details->scripts_directory == NULL) {
+		return;
+	}
+
+	nautilus_directory_cancel_callback (view->details->scripts_directory,
+					    reset_scripts_menu_callback,
+					    view);
+}
+
+static void
+schedule_reset_scripts_menu (FMDirectoryView *view)
+{
+	GList *attributes;
+
+	disconnect_script_handlers (view);
+
+	if (view->details->scripts_directory != NULL) {
+		/* Later we may want to add more attributes here to get icon, etc. */
+		attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES);
+		nautilus_directory_call_when_ready (view->details->scripts_directory,
+						    attributes,
+						    reset_scripts_menu_callback,
+						    view);
+		g_list_free (attributes);
+	}					    
 }
 
 static BonoboWindow *
@@ -3167,6 +3412,8 @@ real_merge_menus (FMDirectoryView *view)
 		nautilus_bonobo_set_hidden 
 			(view->details->ui, NAUTILUS_POPUP_PATH_ZOOM_ITEMS_PLACEHOLDER, TRUE);
 	}
+
+	schedule_reset_scripts_menu (view);
 }
 
 static gboolean confirm_trash = TRUE;
