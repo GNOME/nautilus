@@ -353,18 +353,28 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 
 		/* transfer error, prompt the user to continue or stop */
 
-		unescaped_name = gnome_vfs_unescape_string_for_display (progress_info->source_name);
+		if (progress_info->source_name == NULL) {
+			unescaped_name = g_strdup ("");
+		} else {
+			char *name;
+			name = gnome_vfs_unescape_string_for_display (progress_info->source_name);
+			unescaped_name = g_strdup_printf (" \"%s\"", name);
+			g_free (name);
+		}
+
+		
 		current_operation = g_strdup (xfer_info->progress_verb);
 
 		g_strdown (current_operation);
+
+		/* special case read only target errors */
 		if (progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM
 		    || progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY
 		    || progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
 			
 			text = g_strdup_printf
-				(_("Error while %s \"%s\".\n"
-				   "The destination is read-only. "
-				   "Would you like to continue?"),
+				(_("Error while %s%s.\n"
+				   "The destination is read-only."),
 				 current_operation,
 				 unescaped_name);
 			g_free (current_operation);
@@ -372,54 +382,58 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			
 			result = nautilus_simple_dialog
 				(xfer_info->parent_view, TRUE, text, 
-					 _("Error while Copying"),
-				 _("Skip"), _("Stop"), NULL);
-			while (result == -1) {
-				result = nautilus_simple_dialog
-					(xfer_info->parent_view, TRUE, text, 
-					 _("Error while Copying"),
-					 _("Skip"), _("Stop"), NULL);
-			}
+				_("Error while Copying"), _("Stop"), NULL);
 			g_free (text);
 
-			switch (result) {
-			case 0:
-				return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
-			default:
-				g_assert_not_reached ();
-				/* fall through */
-			case 1:
-				return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
-			}						
-		} else {
+			return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
+		}
 
+		/* special case read only target errors */
+		if (progress_info->vfs_status == GNOME_VFS_ERROR_NO_SPACE) {
+			
 			text = g_strdup_printf
-				(_("Error \"%s\" while %s \"%s\".\n"
-				   "Would you like to continue?"), 
-				 gnome_vfs_result_to_string (progress_info->vfs_status),
+				(_("Error while %s%s.\n"
+				   "There is no space on the destination."),
 				 current_operation,
 				 unescaped_name);
 			g_free (current_operation);
 			g_free (unescaped_name);
-
+			
 			result = nautilus_simple_dialog
 				(xfer_info->parent_view, TRUE, text, 
-				 _("Error while Copying"),
-				 _("Skip"), _("Retry"), _("Stop"), NULL);
+				_("Error while Copying"), _("Stop"), NULL);
 			g_free (text);
 
-			switch (result) {
-			case 0:
-				return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
-			case 1:
-				return GNOME_VFS_XFER_ERROR_ACTION_RETRY;
-			default:
-				g_assert_not_reached ();
-				/* fall through */
-			case 2:
-				return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
-			}						
+			return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 		}
+
+		text = g_strdup_printf
+			(_("Error \"%s\" while %s%s.\n"
+			   "Would you like to continue?"), 
+			 gnome_vfs_result_to_string (progress_info->vfs_status),
+			 current_operation,
+			 unescaped_name);
+		g_free (current_operation);
+		g_free (unescaped_name);
+
+		result = nautilus_simple_dialog
+			(xfer_info->parent_view, TRUE, text, 
+			 _("Error while Copying"),
+			 _("Skip"), _("Retry"), _("Stop"), NULL);
+		g_free (text);
+
+		switch (result) {
+		case 0:
+			return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
+		case 1:
+			return GNOME_VFS_XFER_ERROR_ACTION_RETRY;
+		default:
+			g_assert_not_reached ();
+			/* fall through */
+		case 2:
+			return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
+		}						
+
 
 	case GNOME_VFS_XFER_ERROR_MODE_ABORT:
 	default:
@@ -768,6 +782,7 @@ handle_xfer_duplicate (GnomeVFSXferProgressInfo *progress_info,
 		break;
 
 	case XFER_COPY:
+	case XFER_MOVE_TO_TRASH:
 		progress_info->duplicate_name = get_next_duplicate_name
 			(progress_info->duplicate_name,
 			 progress_info->duplicate_count);
@@ -992,7 +1007,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	GnomeVFSXferOptions move_options;
 	GList *source_uri_list, *target_uri_list;
 	GnomeVFSURI *source_uri, *target_uri;
-	GnomeVFSURI *target_dir_uri;
+	GnomeVFSURI *source_dir_uri, *target_dir_uri;
 	GnomeVFSURI *trash_dir_uri;
 	GnomeVFSURI *uri;
 
@@ -1000,6 +1015,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	GnomeVFSResult result;
 	gboolean same_fs;
 	gboolean is_trash_move;
+	gboolean duplicate;
 	
 	IconPositionIterator *icon_position_iterator;
 
@@ -1014,14 +1030,11 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	target_uri_list = NULL;
 	same_fs = TRUE;
 	is_trash_move = FALSE;
-
+	
+	duplicate = copy_action != GDK_ACTION_MOVE;
 	move_options = GNOME_VFS_XFER_RECURSIVE;
 
-	if (target_dir == NULL) {
-		/* assume duplication */
-		g_assert (copy_action != GDK_ACTION_MOVE);
-		move_options |= GNOME_VFS_XFER_USE_UNIQUE_NAMES;
-	} else {
+	if (target_dir != NULL) {
 		if (nautilus_uri_is_trash (target_dir)) {
 			is_trash_move = TRUE;
 		} else {
@@ -1037,6 +1050,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		/* Filter out special Nautilus link files */
 		if (!is_special_link (source_uri)) {
 			source_uri_list = g_list_prepend (source_uri_list, source_uri);
+			source_dir_uri = gnome_vfs_uri_get_parent (source_uri);
 			
 			if (target_dir != NULL) {
 				if (is_trash_move) {
@@ -1048,12 +1062,25 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				/* duplication */
 				target_uri = gnome_vfs_uri_ref (source_uri);
 				if (target_dir_uri == NULL) {
-					target_dir_uri = gnome_vfs_uri_get_parent (source_uri);
+					target_dir_uri = gnome_vfs_uri_ref (source_dir_uri);
 				}
 			}
 			target_uri_list = g_list_prepend (target_uri_list, target_uri);
 			gnome_vfs_check_same_fs_uris (source_uri, target_uri, &same_fs);
+
+			g_assert (target_dir_uri != NULL);
+			duplicate &= same_fs;
+			duplicate &= gnome_vfs_uri_equal (source_dir_uri, target_dir_uri);
+
+			gnome_vfs_uri_unref (source_dir_uri);
 		}
+	}
+
+	if (duplicate) {
+		/* Copy operation, parents match -> duplicate operation. Ask gnome-vfs 
+		 * to generate unique names for target files
+		 */
+		move_options |= GNOME_VFS_XFER_USE_UNIQUE_NAMES;
 	}
 
 	/* List may be NULL if we filtered all items out */

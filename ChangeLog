@@ -1,3 +1,30 @@
+2000-09-30  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(handle_xfer_vfs_error):
+	Fix a case where "NULL" would be displayed for a file name in file
+	copy error alert.
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(handle_xfer_vfs_error):
+	Rework the "destination not writable" alert to not offer 
+	to try to continue. Add special alert for out of space on destination.
+	Clean up some.
+	
+	* libnautilus-extensions/nautilus-file-operations.c: (handle_xfer_duplicate):
+	Part 2 of fix to 1314 - Move to Trash faild if name conflict in trash.
+	Handle move to Trash duplicates the same way as copy duplicates.
+	
+	* libnautilus-extensions/nautilus-file-operations.c: 
+	(nautilus_file_operations_copy_move):
+	Make in-place copy properly create a duplicate.
+	Clean up.
+	
+	* src/nautilus-theme-selector.c: (theme_select_row_callback):
+	Replace a gnome_vfs_xfer call with a gnome_vfs_xfer_delete_list. The
+	sync version of gnome_vfs_xfer does not support deleting like the async
+	one does.
+
 2000-09-29  Arlo Rose  <arlo@eazel.com>
 
 	* icons/arlo/Makefile.am:
@@ -559,6 +586,7 @@
 	Remove warnings from the bootstrap installer.  Arlo-ify the
 	bootstrap installer (over 50% done).
 	
+>>>>>>> 1.2126
 2000-09-28  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:

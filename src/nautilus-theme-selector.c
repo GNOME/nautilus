@@ -560,9 +560,9 @@ static void
 theme_select_row_callback (GtkCList * clist, int row, int column, GdkEventButton *event, NautilusThemeSelector *theme_selector)
 {
 	GnomeVFSResult result;
-	GnomeVFSURI *theme_uri;
 	char *theme_name, *current_theme;
-	char *user_directory, *themes_directory, *this_theme_directory;	
+	char *user_directory, *themes_directory, *this_theme_directory;
+	GList *uri_list;
 	
 	if (theme_selector->details->handling_theme_change || theme_selector->details->populating_theme_list)
 		return;
@@ -592,19 +592,13 @@ theme_select_row_callback (GtkCList * clist, int row, int column, GdkEventButton
 		themes_directory = nautilus_make_path (user_directory, "themes");
 		this_theme_directory = nautilus_make_path (themes_directory, theme_name);
 		
-		theme_uri = gnome_vfs_uri_new (this_theme_directory);			
-		result = gnome_vfs_xfer_uri (theme_uri, theme_uri,
-	      		      			GNOME_VFS_XFER_DELETE_ITEMS | GNOME_VFS_XFER_RECURSIVE,
-	      		      			GNOME_VFS_XFER_ERROR_MODE_QUERY, 
-	      		      			GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
-						NULL, NULL);
-		
-		gnome_vfs_uri_unref (theme_uri);
-		
-		/* for some reason, gnome-vfs is returning GNOME_VFS_ERROR_NOT_FOUND after successfully deleting the directory;
-		   we'll work around it by explicitly allowing that error, but we should fix gnome-vfs soon */
-		   
-		if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_NOT_FOUND) {
+		uri_list = g_list_append(NULL, gnome_vfs_uri_new (this_theme_directory));			
+		result = gnome_vfs_xfer_delete_list (uri_list, GNOME_VFS_XFER_RECURSIVE,
+	      		      			     GNOME_VFS_XFER_ERROR_MODE_ABORT,
+	      		      			     NULL, NULL);
+		gnome_vfs_uri_list_free (uri_list);
+				   
+		if (result != GNOME_VFS_OK) {
 			nautilus_error_dialog (_("Sorry, but that theme could not be removed!"), 
 					       _("Couldn't remove theme"), GTK_WINDOW (theme_selector));
 		
