@@ -24,8 +24,11 @@
    Author: Rebecca Schulman <rebecka@eazel.com>
 */
 
+#include "nautilus-customization-data.h"
 #include "nautilus-dateedit-extensions.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-gtk-macros.h"
+#include "nautilus-icon-factory.h"
 #include "nautilus-search-bar-criterion.h"
 #include "nautilus-search-bar-criterion-private.h"
 
@@ -103,13 +106,6 @@ static char *emblem_relations [] = {
 	NULL
 };
 
-static char *emblem_objects [] = {
-	/* FIXME bugzilla.eazel.com 2369: add emblem possibilities here.
-	   likely to be icon filenames
-	*/
-	NULL
-};
-	
 static char *modified_relations [] = {
 	N_("is"),
 	N_("is not"),
@@ -152,12 +148,12 @@ static char *                              get_file_type_location_for           
 static char *                              get_size_location_for                  (int relation_number,
 										   char *size_text);
 static char *                              get_emblem_location_for                (int relation_number,
-										   int value_number);
+										   GtkWidget *menu_item);
 static char *                              get_date_modified_location_for         (int relation_number,
 										   char *date);
 static char *                              get_owner_location_for                 (int relation_number,
 										   char *owner_number);
-
+static void                                make_emblem_value_menu                 (NautilusSearchBarCriterion *criterion);
 
 
 void
@@ -216,6 +212,7 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 	GtkWidget *search_criteria_option_menu, *search_criteria_menu; 
 	GtkWidget *relation_option_menu, *relation_menu;
 	GtkWidget *value_option_menu, *value_menu; 
+
 	int i;
 	
 	criterion = nautilus_search_bar_criterion_new ();
@@ -265,7 +262,7 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 		gtk_widget_show_all(GTK_WIDGET(criterion->details->value_entry));
 	}
 	criterion->details->use_value_menu = use_value_menu;
-	if (use_value_menu) {
+	if (use_value_menu && criterion->details->type != NAUTILUS_EMBLEM_SEARCH_CRITERION) {
 		g_return_val_if_fail (value_options != NULL, NULL);
 		value_option_menu = gtk_option_menu_new ();
 		value_menu = gtk_menu_new ();
@@ -292,6 +289,10 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 		criterion->details->date = GNOME_DATE_EDIT (gnome_date_edit_new (time (NULL), FALSE, FALSE));
 		gtk_widget_show_all (GTK_WIDGET (criterion->details->date));
 	}
+	if (criterion->details->type == NAUTILUS_EMBLEM_SEARCH_CRITERION) {
+		make_emblem_value_menu (criterion);
+	}
+
 	return criterion;
 }
 
@@ -345,10 +346,11 @@ nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionType criterion
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_EMBLEM_SEARCH_CRITERION,
 									       emblem_relations,
 									       FALSE,
-									       TRUE,
-									       emblem_objects,
+									       FALSE,
+									       NULL,
 									       FALSE,
 									       NULL);
+									       
 		break;
 	case NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION:
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION,
@@ -441,7 +443,7 @@ nautilus_search_bar_criterion_get_location (NautilusSearchBarCriterion *criterio
 					      value_text);
 	case NAUTILUS_EMBLEM_SEARCH_CRITERION:
 		return get_emblem_location_for (relation_number,
-						value_number);
+						menu_item);
 	case NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION:
 		return get_date_modified_location_for (relation_number,
 						       value_text);
@@ -619,10 +621,18 @@ get_size_location_for (int relation_number,
 
 static char *                              
 get_emblem_location_for  (int relation_number,
-			  int value_number)
+			  GtkWidget *menu_item)
 {
-	/* FIXME bugzilla.eazel.com 2369: not yet implemented */
-	return g_strdup_printf ("%s ", NAUTILUS_SEARCH_URI_TEXT_EMBLEMS);
+	const char *possible_relations[] = {"include", "does_not_include" };
+	char *emblem_text;
+	
+	g_assert (relation_number == 0 ||
+		  relation_number == 1);
+	emblem_text = gtk_object_get_data (GTK_OBJECT (menu_item),
+					   "emblem name");
+        return g_strdup_printf ("%s %s %s", NAUTILUS_SEARCH_URI_TEXT_EMBLEMS,
+				possible_relations[relation_number],
+				emblem_text);
 }
 
 static char *                              
@@ -634,8 +644,8 @@ get_date_modified_location_for (int relation_number,
 					     "is_after", 
 					     "is_before", 
 					     "--", 
-					     "is today",
-					     "is yesterday",
+					     "is_today",
+					     "is_yesterday",
 					     "--",
 					     "is_within_a_week_of", 
 					     "is_within_a_month_of" };
@@ -676,8 +686,47 @@ get_owner_location_for (int relation_number,
 	
 }
 
-
-
+static void                                
+make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
+{
+	NautilusCustomizationData *customization_data;
+	GtkWidget *temp_hbox;
+	GtkWidget *menu_item;
+	char *emblem_file_name;
+	char *emblem_display_name;
+	GtkWidget *emblem_pixmap_widget;
+	GtkLabel *emblem_label;
+	GtkWidget *value_option_menu, *value_menu; 
+	
+	/* Add the items to the emblems menu here */
+	/* FIXME: What are the variables for thumbnail icon height and width */
+	value_option_menu = gtk_option_menu_new ();
+	value_menu = gtk_menu_new ();
+	customization_data = nautilus_customization_data_new ("emblems",
+							      TRUE,
+							      NAUTILUS_ICON_SIZE_FOR_MENUS, 
+							      NAUTILUS_ICON_SIZE_FOR_MENUS);
+	while (nautilus_customization_data_get_next_element_for_display (customization_data,
+									 &emblem_file_name,
+									 &emblem_pixmap_widget,
+									 &emblem_label) == GNOME_VFS_OK) {
+		
+		menu_item = gtk_menu_item_new ();
+		gtk_label_get (emblem_label, &emblem_display_name);
+		gtk_object_set_data (GTK_OBJECT (menu_item), "emblem name", emblem_display_name);
+		temp_hbox = gtk_hbox_new (FALSE, GNOME_PAD_SMALL);
+		gtk_container_add (GTK_CONTAINER (menu_item), temp_hbox);
+		gtk_box_pack_start (GTK_BOX (temp_hbox), emblem_pixmap_widget, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (temp_hbox), GTK_WIDGET (emblem_label), FALSE, FALSE, 0);
+		gtk_menu_append (GTK_MENU (value_menu), menu_item);
+	}
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (value_option_menu),
+				  value_menu);
+	criterion->details->value_menu = GTK_OPTION_MENU (value_option_menu);
+	gtk_widget_show_all (GTK_WIDGET (criterion->details->value_menu));
+	criterion->details->use_value_menu = TRUE;
+	g_free (emblem_file_name);
+}
 
 
 

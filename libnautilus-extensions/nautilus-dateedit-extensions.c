@@ -40,7 +40,6 @@ nautilus_gnome_date_edit_get_date_as_string (GnomeDateEdit *dateedit)
 
 	selected_time = gnome_date_edit_get_date (dateedit);
 	if (selected_time < 0) {
-		printf ("That was no good\n");
 		return NULL;
 	}
 	time_struct = localtime (&selected_time);
@@ -50,7 +49,6 @@ nautilus_gnome_date_edit_get_date_as_string (GnomeDateEdit *dateedit)
 	year = time_struct->tm_year;
 
 	date_string = g_strdup_printf ("%d/%d/%d", month + 1, day, year + 1900);
-	printf ("returning date %s\n", date_string);
 	return date_string;
   
   

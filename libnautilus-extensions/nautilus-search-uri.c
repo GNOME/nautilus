@@ -200,7 +200,7 @@ struct _value_criterion_item {
 
 static operand_criterion_item file_name2_table [] = {
         {"contains", 
-         N_("that contain \"%s\""),
+         N_("that have \"%s\" in the name"),
          NULL},
         {"starts_with",
          N_("that start with \"%s\""),
@@ -278,13 +278,13 @@ static operand_criterion_item owner2_table [] = {
 */
 static operand_criterion_item size2_table [] = {
         {"larger_than",
-         N_("that are larger than %s kilobytes"),
+         N_("that are larger than %s bytes"),
          NULL},
         {"smaller_than",
-         N_("that are smaller than %s kilobytes"),
+         N_("that are smaller than %s bytes"),
          NULL},
         {"is",
-         N_("that are %s kilobytes"),
+         N_("that are %s bytes"),
          NULL},
         {NULL, NULL, NULL}
 };
@@ -295,10 +295,10 @@ static operand_criterion_item size2_table [] = {
 */
 static operand_criterion_item mod_time2_table [] = {
         {"updated", 
-         N_("modified after"), 
+         N_("modified after %s"), 
          NULL},
         {"not_updated", 
-         N_("modified before"), 
+         N_("modified before %s"), 
          NULL},
         {NULL, NULL, NULL}
 };
@@ -310,6 +310,12 @@ static operand_criterion_item mod_time2_table [] = {
 
 /* FIXME bugzilla.eazel.com 2369: not implemented in nautilus yet */
 static operand_criterion_item emblem2_table [] = {
+        { "is_marked_with",
+          N_("marked with \"%s\""),
+          NULL},
+        { "is_not_marked_with",
+          N_("not marked with \"%s\""),
+          NULL},
         {NULL, NULL, NULL}
 };
 
@@ -319,13 +325,19 @@ static operand_criterion_item emblem2_table [] = {
    -------------------------------------------------------
 */
 
-/* FIXME bugzilla.eazel.com 2439: I cannot find any doc on this one */
+
 static operand_criterion_item contains2_table [] = {
-        {"includes",
-         N_("with the word"),
+        {"includes_all_of",
+         N_("with all the words %s"),
          NULL},
-        {"does_not_include",
-         N_("without the word"),
+        {"includes_any_of",
+         N_("containing one of the words %s"),
+         NULL},
+        {"does_not_include_all_of",
+         N_("without all the words %s"),
+         NULL},
+        {"does_not_include_any_of",
+         N_("without any of the words %s"),
          NULL},
         {NULL, NULL, NULL},
 };
@@ -350,12 +362,10 @@ static field_criterion_item main_table[] = {
         {"size",
          N_(""),
          size2_table},
-        /* FIXME bugzilla.eazel.com 2439: waiting for doc */
-        {"contains",
+        {"content",
          N_(""),
          contains2_table},
-        /* FIXME bugzilla.eazel.com 2439: waiting for spec */
-        {"mod_time",
+        {"modified",
          N_(""),
          mod_time2_table},
         /* FIXME bugzilla.eazel.com 2369: waiting for implementation */

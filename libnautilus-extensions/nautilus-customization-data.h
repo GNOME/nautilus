@@ -1,0 +1,71 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
+/*
+ * Nautilus
+ *
+ * Copyright (C) 2000 Eazel, Inc.
+ *
+ * Nautilus is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Nautilus is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * Author: Rebecca Schulman <rebecka@eazel.com>
+ */
+
+/* nautilus-customization-data.h - functions to collect and load property
+   names and imges */
+
+
+
+#ifndef NAUTILUS_CUSTOMIZATION_DATA_H
+#define NAUTILUS_CUSTOMIZATION_DATA_H
+
+#include <glib.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtkwidget.h>
+#include <libgnomevfs/gnome-vfs-types.h>
+
+#define RESET_IMAGE_NAME "reset.png"
+
+typedef struct NautilusCustomizationData NautilusCustomizationData;
+
+
+
+NautilusCustomizationData* nautilus_customization_data_new                          (const char *customization_name,
+										     gboolean show_public_customizations,
+										     int maximum_icon_height,
+										     int maximum_icon_width);
+
+/* Fills the pixmap_widget and label_widget with widgets ready to display,
+   and fills in the name of the emblem and well
+ */
+GnomeVFSResult             nautilus_customization_data_get_next_element_for_display (NautilusCustomizationData *data,
+										     char **emblem_name,
+										     GtkWidget **pixmap_widget,
+
+
+										     GtkLabel **label_widget);
+
+
+gboolean                   nautilus_customization_data_private_data_was_displayed   (NautilusCustomizationData *data);
+
+void                       nautilus_customization_data_destroy                      (NautilusCustomizationData *data);
+									     
+
+
+GdkPixbuf*                 nautilus_customization_make_background_chit              (GdkPixbuf *background_tile, 
+										     GdkPixbuf *frame, 
+										     gboolean dragging);
+
+#endif /* NAUTILUS_CUSTOMIZATION_DATA_H */

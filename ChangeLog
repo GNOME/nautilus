@@ -1,3 +1,50 @@
+2000-08-30  Rebecca Schulman  <rebecka@eazel.com>
+	Most of the work on 2369, to add the emblems to the search
+	criteria.  This work involved refactoring the code to generate
+	property information for display.  This new code is used by the
+	code to create the search criterion, and also by the emblem
+	display code, which is in nautilus-property-browser.
+	
+
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-customization-data.c:
+	* libnautilus-extensions/nautilus-customization-data.h:
+	(nautilus_customization_data_new),
+	(nautilus_customization_data_get_next_element_for_display),
+	(nautilus_customization_data_private_data_was_displayed),
+	(nautilus_customization_data_destroy),
+	(get_global_customization_uri), (get_private_customization_uri),
+	(get_file_path_for_mode),
+	(nautilus_customization_make_background_chit),
+	(format_name_for_display), (strip_extension):
+	New file with extracted methods from nautilus-property browser.
+	The new API initiates a new structure, and has an iterative call
+	to "get the next element for display" which returns a correctly
+	sized pixmap widget and a label widget containing the name appropriate
+	for display.
+
+	* libnautilus-extensions/nautilus-dateedit-extensions.c:
+	(nautilus_gnome_date_edit_get_date_as_string):
+	Removed extraneous debugging printf.
+	
+	* libnautilus-extensions/nautilus-search-bar-criterion.c:
+	* libnautilus-extensions/nautilus-search-bar-criterion.h:
+	(nautilus_search_bar_criterion_new_from_values),
+	(nautilus_search_bar_criterion_next_new),
+	(nautilus_search_bar_criterion_get_location),
+	(get_emblem_location_for), (get_date_modified_location_for),
+	(make_emblem_value_menu):
+	Added code to generate the emblem menu, and to generate a 
+	search criterion for the search uri from the menu's settings.
+	
+	* libnautilus-extensions/nautilus-search-uri.c:
+	More language updated, and added text for emblems
+	
+	* src/nautilus-property-browser.c: (make_drag_image),
+	(make_properties_from_directories), (make_category):
+	Updated this code to deal with new refactoring.
+	
+
 2000-08-30  John Sullivan  <sullivan@eazel.com>
 
 	* src/file-manager/fm-icon-view.c: (fm_icon_view_merge_menus):

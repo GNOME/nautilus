@@ -37,12 +37,12 @@
 #include <parser.h>
 #include <xmlmemory.h>
 
-#include <libgnomevfs/gnome-vfs.h>
 
-#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <libgnomevfs/gnome-vfs.h>
 #include <gnome.h>
 
 #include <libnautilus-extensions/nautilus-background.h>
+#include <libnautilus-extensions/nautilus-customization-data.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-file.h>
@@ -131,9 +131,6 @@ static void  nautilus_property_browser_drag_data_get    (GtkWidget              
 							 guint                    info,
 							 guint32                  time);
 static void  nautilus_property_browser_theme_changed	(gpointer user_data);
-static GdkPixbuf* make_background_chit			(GdkPixbuf *background_tile,
-							 GdkPixbuf *frame,
-							 gboolean  dragging);
 
 /* misc utilities */
 static char *strip_extension                            (const char              *string_to_strip);
@@ -149,7 +146,7 @@ static char *get_xml_path                               (NautilusPropertyBrowser
 #define PROPERTY_BROWSER_WIDTH 528
 #define PROPERTY_BROWSER_HEIGHT 322
 
-#define RESET_IMAGE_NAME "reset.png"
+
 
 #define MAX_ICON_WIDTH 64
 #define MAX_ICON_HEIGHT 64
@@ -568,7 +565,7 @@ make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name
 		temp_str = nautilus_pixmap_file ("chit_frame.png");
 		frame = gdk_pixbuf_new_from_file (temp_str);
 		g_free (temp_str);
-		pixbuf = make_background_chit (orig_pixbuf, frame, TRUE);
+		pixbuf = nautilus_customization_make_background_chit (orig_pixbuf, frame, TRUE);
 		gdk_pixbuf_unref (frame);
 	} else {
 		pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
@@ -1324,38 +1321,6 @@ strip_extension (const char* string_to_strip)
 	return result_str;
 }
 
-/* utility to format the passed-in name for display by stripping the extension, mapping underscore
-   and capitalizing as necessary */
-
-static char*
-format_name_for_display (const char* name)
-{
-	gboolean need_to_cap;
-	int index, length;
-	char *formatted_str;
-
-	/* don't display a name for the "reset" property, since it's name is
-	   contained in its image and also to help distinguish it */  
-	if (!nautilus_strcmp(name, RESET_IMAGE_NAME)) {
-		return g_strdup("");
-	}
-		
-	formatted_str = strip_extension (name);
-	
-	need_to_cap = TRUE;
-	length = strlen (formatted_str);
-	for (index = 0; index < length; index++) {
-		if (need_to_cap && islower (formatted_str[index]))
-			formatted_str[index] = toupper (formatted_str[index]);
-		
-		if (formatted_str[index] == '_')
-			formatted_str[index] = ' ';
-		need_to_cap = formatted_str[index] == ' ';
-	}
-	
-	return formatted_str;	
-}
-
 /* handle preferences changing by updating the browser contents */
 
 static void
@@ -1377,190 +1342,79 @@ add_to_content_table (NautilusPropertyBrowser *property_browser, GtkWidget* widg
 			  GTK_FILL, GTK_FILL, padding, padding);
 }
 
-/* utility to make an attractive background image by compositing with a frame */
-static GdkPixbuf*
-make_background_chit (GdkPixbuf *background_tile, GdkPixbuf *frame, gboolean dragging)
-{
-	GdkPixbuf *pixbuf, *temp_pixbuf;
-	int frame_width, frame_height;
-	
-	
-	frame_width = gdk_pixbuf_get_width (frame);
-	frame_height = gdk_pixbuf_get_height (frame);
-	
-	/* scale the background tile to the proper size */
-	pixbuf = gdk_pixbuf_scale_simple (background_tile, frame_width, frame_height, GDK_INTERP_BILINEAR);
-			
-	/* composite the mask on top of it */
-	gdk_pixbuf_composite (frame, pixbuf, 0, 0, frame_width, frame_height,
-			      0.0, 0.0, 1.0, 1.0, GDK_INTERP_BILINEAR, 255);
-	
-	/* if we're dragging, get rid of the light-colored halo */
-	if (dragging) {
-		temp_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, frame_width - 6, frame_height - 6);
-		gdk_pixbuf_copy_area (pixbuf, 2, 2, frame_width - 6, frame_height - 6, temp_pixbuf, 0, 0);
-		gdk_pixbuf_unref (pixbuf);
-		pixbuf = temp_pixbuf;
-	}
-			      
-	gdk_pixbuf_unref (background_tile);
-	return pixbuf;
-}
 
-/* make_properties_from_directory_path generates widgets corresponding all of the objects in the passed in directory */
+/* make_properties_from_directories generates widgets corresponding all of the objects 
+   in the public and private directories */
 
 static int
-make_properties_from_directory_path (NautilusPropertyBrowser *property_browser,
-				     const char* directory_uri,
-				     int index)
+make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 {
-	char *temp_str;
+
 	NautilusBackground *background;
-	GdkPixbuf *background_frame;
-	GnomeVFSResult result;
-	GnomeVFSFileInfo *current_file_info;
-	GnomeVFSDirectoryList *list;
+	NautilusCustomizationData *customization_data;
+	char *emblem_name;
+	GtkWidget *pixmap_widget;
+	GtkLabel *label;
+	int index;
+
+
+	/* make room for the reset property if necessary */
+	index = (strcmp (property_browser->details->category, "backgrounds") == 0);
+	
 		
-		
-	result = gnome_vfs_directory_list_load (&list, directory_uri,
-						GNOME_VFS_FILE_INFO_GET_MIME_TYPE, NULL);
-	if (result != GNOME_VFS_OK) {
+	customization_data = nautilus_customization_data_new (property_browser->details->category,
+							      !property_browser->details->remove_mode,
+							      MAX_ICON_WIDTH,
+							      MAX_ICON_HEIGHT);
+	if (customization_data == NULL) {
 		return index;
 	}
 
-	/* load the frame if necessary */
-	if (!strcmp(property_browser->details->category, "backgrounds")) {
-		temp_str = nautilus_pixmap_file ("chit_frame.png");
-		background_frame = gdk_pixbuf_new_from_file (temp_str);
-		g_free (temp_str);
-	} else {
-		background_frame = NULL;
-	}
-	
-	/* interate through the directory for each file */
-	current_file_info = gnome_vfs_directory_list_first(list);
-	while (current_file_info != NULL) {
-		/* if the file is an image, generate a widget corresponding to it */
-		if (nautilus_istr_has_prefix (current_file_info->mime_type, "image/")) {
-			/* load a pixbuf scaled to the proper size, then create a pixbuf widget to hold it */
-			char *image_file_name, *filtered_name;
-			GdkPixmap *pixmap;
-			GdkBitmap *mask;
-			GdkPixbuf *pixbuf;
-			GdkPixbuf *orig_pixbuf;
-			GtkWidget *event_box, *temp_vbox;
-			GtkWidget *pixmap_widget, *label;
-
-			if (current_file_info->name[0] != '.') {
-				image_file_name = g_strdup_printf("%s/%s", directory_uri+7, current_file_info->name);
-				orig_pixbuf = gdk_pixbuf_new_from_file(image_file_name);
-				g_free(image_file_name);
-			
-				if (!strcmp(property_browser->details->category, "backgrounds")) {
-					pixbuf = make_background_chit (orig_pixbuf, background_frame, FALSE);
-				} else {
-					pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
-					gdk_pixbuf_unref (orig_pixbuf);
-				}
-
-				/* make a pixmap and mask to pass to the widget */
-	      			gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
-				gdk_pixbuf_unref (pixbuf);
-
-				/* allocate a pixmap and insert it into the table */
-				temp_vbox = gtk_vbox_new(FALSE, 0);
-				gtk_widget_show(temp_vbox);
-
-				event_box = gtk_event_box_new();
-				gtk_widget_show(event_box);
-
-				background = nautilus_get_widget_background (GTK_WIDGET (event_box));
-				nautilus_background_set_color (background, BROWSER_BACKGROUND_COLOR);	
-				
-				pixmap_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
-				gtk_widget_show (pixmap_widget);
-				gtk_container_add(GTK_CONTAINER(event_box), pixmap_widget);
-				gtk_box_pack_start(GTK_BOX(temp_vbox), event_box, FALSE, FALSE, 0);
-				
-				filtered_name = format_name_for_display (current_file_info->name);
-				label = nautilus_label_new (filtered_name);
-				nautilus_buffered_widget_set_background_type (NAUTILUS_BUFFERED_WIDGET (label),
-									      NAUTILUS_BACKGROUND_SOLID);
-				nautilus_buffered_widget_set_background_color (NAUTILUS_BUFFERED_WIDGET (label),
-									       NAUTILUS_RGB_COLOR_WHITE);
-				nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
-				
-				g_free(filtered_name);
-				gtk_box_pack_start (GTK_BOX(temp_vbox), label, FALSE, FALSE, 0);
-				gtk_widget_show(label);
-				
-				gtk_object_set_user_data (GTK_OBJECT(event_box), property_browser);
-				gtk_signal_connect_full
-					(GTK_OBJECT (event_box),
-					 "button_press_event", 
-					 GTK_SIGNAL_FUNC (element_clicked_callback),
-					 NULL,
-					 g_strdup (current_file_info->name),
-					 g_free,
-					 FALSE,
-					 FALSE);
-
-				/* put the reset item in the pole position */
-				add_to_content_table(property_browser, temp_vbox, 
-							strcmp(current_file_info->name, RESET_IMAGE_NAME) ? index++ : 0, 2);				
-			}
-	}
+	/* interate through the set of emblems and display each */
+	while (nautilus_customization_data_get_next_element_for_display (customization_data,
+									 &emblem_name,
+									 &pixmap_widget,
+									 &label) == GNOME_VFS_OK) {
+		GtkWidget *event_box, *temp_vbox;
 		
-		current_file_info = gnome_vfs_directory_list_next(list);
+		/* allocate a pixmap and insert it into the table */
+		temp_vbox = gtk_vbox_new(FALSE, 0);
+		gtk_widget_show(temp_vbox);
+		
+		event_box = gtk_event_box_new();
+		gtk_widget_show(event_box);
+		
+		background = nautilus_get_widget_background (GTK_WIDGET (event_box));
+		nautilus_background_set_color (background, BROWSER_BACKGROUND_COLOR);	
+		
+		gtk_widget_show (pixmap_widget);
+		gtk_container_add(GTK_CONTAINER(event_box), pixmap_widget);
+		gtk_box_pack_start(GTK_BOX(temp_vbox), event_box, FALSE, FALSE, 0);
+		
+		gtk_box_pack_start (GTK_BOX(temp_vbox), GTK_WIDGET (label), FALSE, FALSE, 0);
+		gtk_widget_show(GTK_WIDGET (label));
+		
+		gtk_object_set_user_data (GTK_OBJECT(event_box), property_browser);
+		gtk_signal_connect_full
+			(GTK_OBJECT (event_box),
+			 "button_press_event", 
+			 GTK_SIGNAL_FUNC (element_clicked_callback),
+			 NULL,
+			 g_strdup (emblem_name),
+			 g_free,
+			 FALSE,
+			 FALSE);
+		
+		/* put the reset item in the pole position */
+		add_to_content_table(property_browser, temp_vbox, 
+				     strcmp(emblem_name, RESET_IMAGE_NAME) ? index++ : 0, 2);			
+		g_free (emblem_name);
 	}
 	
-	if (background_frame != NULL) {
-		gdk_pixbuf_unref (background_frame);
-	}
-	
-	gnome_vfs_directory_list_destroy(list);
+	property_browser->details->has_local = nautilus_customization_data_private_data_was_displayed (customization_data);	
+	nautilus_customization_data_destroy (customization_data);
+
 	return index;
-}
-
-/* make_properties_from_directory generates widgets corresponding all of the objects in both 
-	gboolean remove_mode;
-	gboolean keep_around;the home and shared directories */
-
-static void
-make_properties_from_directory (NautilusPropertyBrowser *property_browser, const char* path)
-{
-	char *directory_path, *directory_uri;
-	int new_index;
-	int index = 0;
-	char *user_directory;	
-
-	/* make room for the reset property if necessary */
-	if (!strcmp (property_browser->details->category, "backgrounds")) {
-		index += 1;
-	}
-	
-	/* first, make properties from the shared space */
-	if (!property_browser->details->remove_mode) {
-		directory_path = nautilus_make_path (NAUTILUS_DATADIR,
-						     property_browser->details->category);
-		directory_uri = gnome_vfs_get_uri_from_local_path (directory_path);
-		g_free (directory_path);
-		index = make_properties_from_directory_path (property_browser, directory_uri, index);
-		g_free(directory_uri);
-	}
-
-	user_directory = nautilus_get_user_directory ();
-	
-	/* next, make them from the local space, if it exists */
-	directory_path = nautilus_make_path (user_directory,
-					     property_browser->details->category);
-	g_free (user_directory);
-	directory_uri = gnome_vfs_get_uri_from_local_path (directory_path);
-	g_free (directory_path);
-	new_index = make_properties_from_directory_path (property_browser, directory_uri,index);
-	g_free(directory_uri);	
-
-	property_browser->details->has_local = new_index != index;
 }
 
 /* utility to build a color label */
@@ -1677,7 +1531,7 @@ make_category(NautilusPropertyBrowser *property_browser, const char* path, const
 	
 	/* case out on the mode */
 	if (strcmp(mode, "directory") == 0)
-		make_properties_from_directory (property_browser, path);
+		make_properties_from_directories (property_browser);
 	else if (strcmp(mode, "inline") == 0)
 		make_properties_from_xml_node (property_browser, node);
 
