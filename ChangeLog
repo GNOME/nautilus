@@ -1,3 +1,11 @@
+2000-08-17  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(desktop_icons_sort), (lay_down_icons_tblr):
+	Fixed a bug in the sorting of icons for initial layout
+	in tblr mode.  Trash was not being placed last in the
+	list.
+
 2000-08-16  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 2169 ("Move to Trash" menu item needs refinement)

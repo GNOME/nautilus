@@ -692,14 +692,14 @@ desktop_icons_sort (gconstpointer a, gconstpointer b)
 	g_assert (file_a);
 	file_b = nautilus_file_get (uri_b);
 	g_assert (file_b);
-	
-	/* Non link files go after all links */
+
+	/* Non link files go in the middle */
 	if (!nautilus_file_is_nautilus_link (file_a)) {
 		nautilus_file_unref (file_a);
 		nautilus_file_unref (file_b);
 		g_free (uri_a);
 		g_free (uri_b);
-		return 1;
+		return 0;
 	}
 
 	if (!nautilus_file_is_nautilus_link (file_b)) {
@@ -707,17 +707,15 @@ desktop_icons_sort (gconstpointer a, gconstpointer b)
 		nautilus_file_unref (file_b);
 		g_free (uri_a);
 		g_free (uri_b);
-		return -1;
+		return 0;
 	}
 	
-	/* If we get here, both files are links */
-
 	/* Get uris */
 	vfs_uri_a = gnome_vfs_uri_new (uri_a);	
 	g_assert (vfs_uri_a);
 	vfs_uri_b = gnome_vfs_uri_new (uri_b);
 	g_assert (vfs_uri_b);
-
+	
 	/* Get paths */
 	path_a = gnome_vfs_uri_get_path (vfs_uri_a);
 	g_assert (path_a);
@@ -745,29 +743,6 @@ desktop_icons_sort (gconstpointer a, gconstpointer b)
 	link_type = nautilus_link_get_link_type (path_b);
 	if (link_type) {
 		if (strcmp (link_type, NAUTILUS_LINK_HOME) == 0) {
-			gnome_vfs_uri_unref (vfs_uri_a);
-			gnome_vfs_uri_unref (vfs_uri_b);
-			g_free (link_type);
-			return 1;
-		}
-		g_free (link_type);
-	}	
-
-	/* Trash goes last */
-	link_type = nautilus_link_get_link_type (path_a);
-	if (link_type) {
-		if (strcmp (link_type, NAUTILUS_LINK_TRASH) == 0) {
-			gnome_vfs_uri_unref (vfs_uri_a);
-			gnome_vfs_uri_unref (vfs_uri_b);
-			g_free (link_type);
-			return 1;
-		}
-		g_free (link_type);
-	}	
-
-	link_type = nautilus_link_get_link_type (path_b);
-	if (link_type) {
-		if (strcmp (link_type, NAUTILUS_LINK_TRASH) == 0) {
 			gnome_vfs_uri_unref (vfs_uri_a);
 			gnome_vfs_uri_unref (vfs_uri_b);
 			g_free (link_type);
@@ -1005,7 +980,7 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 		x = DESKTOP_PAD_HORIZONTAL;
 		y = DESKTOP_PAD_VERTICAL;
 		max_width = 0;
-		
+
 		for (p = icons; p != NULL; p = p->next) {
 			icon = p->data;
 			icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
@@ -1022,8 +997,8 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 			
 			/* Check and see if we need to move to a new column */
 			if (y > height - icon_height) {
-				x += max_width + 10;
-				y = 10;
+				x += max_width + DESKTOP_PAD_VERTICAL;
+				y = DESKTOP_PAD_VERTICAL;
 			}
 		}
 	}
