@@ -127,6 +127,7 @@ typedef struct
 					  gconstpointer              client);
 	gboolean (* are_all_files_seen)  (NautilusDirectory         *directory);
 	gboolean (* is_not_empty)        (NautilusDirectory         *directory);
+	char *	 (* get_name_for_self_as_new_file) (NautilusDirectory *directory);
 } NautilusDirectoryClass;
 
 /* Basic GtkObject requirements. */

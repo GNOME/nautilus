@@ -180,32 +180,18 @@ nautilus_window_report_load_failed (NautilusWindow *window,
 static char *
 compute_default_title (const char *text_uri)
 {
-        GnomeVFSURI *vfs_uri;
-        char *short_name, *colon_pos;
-	
-        if (text_uri != NULL) {
-                vfs_uri = gnome_vfs_uri_new (text_uri);
-                if (vfs_uri != NULL) {
-                        short_name = gnome_vfs_uri_extract_short_name (vfs_uri);
-                        gnome_vfs_uri_unref (vfs_uri);
-                        if (short_name == NULL) {
-                                short_name = g_strdup (_("(untitled)"));
-                        }
-                        return short_name;
-                } else {
-                	colon_pos = strchr (text_uri, ':');
-                	if (colon_pos != NULL) {
-                                if (colon_pos[1] != '\0') {
-                                        return g_strdup (colon_pos + 1);
-                                } else {
-                                        return g_strndup (text_uri,
-                                                          colon_pos - text_uri);
-                                }
-                        }
-                }
-        }
+	NautilusFile *file;
+	char *title;
 
-        return g_strdup ("");
+	if (text_uri == NULL) {
+		title = g_strdup ("");
+	} else {
+		file = nautilus_file_get (text_uri);
+		title = nautilus_file_get_name (file);
+		nautilus_file_unref (file);
+	}
+
+	return title;
 }
 
 /* nautilus_window_get_current_location_title:

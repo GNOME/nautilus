@@ -1,3 +1,38 @@
+2000-09-18  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2243 (trash window name should be "Trash"
+	with a capital T, localized)
+
+	* libnautilus-extensions/nautilus-directory-private.h:
+	Added prototype for nautilus_directory_get_
+	name_for_self_as_new_file
+	* libnautilus-extensions/nautilus-directory.h,
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_initialize_class),
+	(nautilus_directory_get_name_for_self_as_new_file),
+	(real_get_name_for_self_as_new_file): wired up new
+	overridable function pointer "get_name_for_self_as_new_file"
+	that's used to get the name from directories that aren't
+	vfs directories. Default implementation returns the scheme.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_internal): Use nautilus_directory_
+	get_name_for_self_as_new_file instead of hardwiring
+	scheme-getting logic here.
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	(trash_get_name_for_self_as_new_file),
+	(nautilus_trash_directory_initialize_class):
+	Override get_name_for_self_as_new_file to return _("Trash").
+
+	* src/nautilus-window-manage-views.c: 
+	(compute_default_title): Use NautilusFile to get the
+	default window title. Formerly it was using some similar
+	but slightly different logic to what nautilus_file uses
+	to get a name to display.
+
+	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):
+	* AUTHORS: Gave credit where credit was due.
+
 2000-09-18  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 3017, should not be able to copy desktop items

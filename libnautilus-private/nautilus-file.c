@@ -253,7 +253,7 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 	GnomeVFSURI *vfs_uri, *directory_vfs_uri;
 	char *directory_uri;
 	NautilusDirectory *directory;
-	char *file_name_escaped, *file_name, *colon;
+	char *file_name_escaped, *file_name;
 	NautilusFile *file;
 
 	g_return_val_if_fail (uri != NULL, NULL);
@@ -286,18 +286,7 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 		if (directory == NULL) {
 			file_name = NULL;
 		} else {
-			/* Name is URI (from directory in case it's
-			 * made canonical), but scheme part only if
-			 * it's there.
-			 */
-			directory_uri = directory->details->uri;
-			colon = strchr (directory_uri, ':');
-			if (colon == NULL) {
-				file_name = g_strdup (directory_uri);
-			} else {
-				file_name = g_strndup (directory_uri,
-						       colon - directory_uri);
-			}
+			file_name = nautilus_directory_get_name_for_self_as_new_file (directory);
 		}
 	} else {
 		file_name_escaped = gnome_vfs_uri_extract_short_path_name (vfs_uri);

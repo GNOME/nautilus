@@ -66,15 +66,17 @@ static GHashTable *directories;
 static void               nautilus_directory_destroy          (GtkObject   *object);
 static void               nautilus_directory_initialize       (gpointer     object,
 							       gpointer     klass);
-static void               nautilus_directory_initialize_class (gpointer     klass);
+static void               nautilus_directory_initialize_class (NautilusDirectoryClass *klass);
 static GnomeVFSResult     nautilus_make_directory_and_parents (GnomeVFSURI *uri,
 							       guint        permissions);
 static NautilusDirectory *nautilus_directory_new              (const char  *uri);
 
+static char		 *real_get_name_for_self_as_new_file  (NautilusDirectory *directory);
+
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDirectory, nautilus_directory, GTK_TYPE_OBJECT)
 
 static void
-nautilus_directory_initialize_class (gpointer klass)
+nautilus_directory_initialize_class (NautilusDirectoryClass *klass)
 {
 	GtkObjectClass *object_class;
 
@@ -112,6 +114,8 @@ nautilus_directory_initialize_class (gpointer klass)
 				GTK_TYPE_NONE, 0);
 
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+
+	klass->get_name_for_self_as_new_file = real_get_name_for_self_as_new_file;
 }
 
 static void
@@ -295,6 +299,40 @@ static NautilusDirectory *
 nautilus_directory_get_existing (const char *uri)
 {
 	return nautilus_directory_get_internal (uri, FALSE);
+}
+
+/* nautilus_directory_get_name_for_self_as_new_file:
+ * 
+ * Get a name to display for the file representing this
+ * directory. This is called only when there's no VFS
+ * directory for this NautilusDirectory.
+ */
+char *
+nautilus_directory_get_name_for_self_as_new_file (NautilusDirectory *directory)
+{
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
+	
+	return NAUTILUS_CALL_VIRTUAL
+		(NAUTILUS_DIRECTORY_CLASS, directory,
+		 get_name_for_self_as_new_file, (directory));
+}
+
+static char *
+real_get_name_for_self_as_new_file (NautilusDirectory *directory)
+{
+	const char *directory_uri;
+	char *name, *colon;
+	
+	directory_uri = directory->details->uri;
+
+	colon = strchr (directory_uri, ':');
+	if (colon == NULL) {
+		name = g_strdup (directory_uri);
+	} else {
+		name = g_strndup (directory_uri, colon - directory_uri);
+	}
+
+	return name;
 }
 
 char *

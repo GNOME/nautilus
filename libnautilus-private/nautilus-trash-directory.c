@@ -32,6 +32,8 @@
 #include "nautilus-gtk-macros.h"
 #include "nautilus-volume-monitor.h"
 #include <gtk/gtksignal.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 
 struct NautilusTrashDirectoryDetails {
 	GHashTable *volumes;
@@ -276,12 +278,23 @@ trash_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
+static char *
+trash_get_name_for_self_as_new_file (NautilusDirectory *directory)
+{
+	g_assert (NAUTILUS_IS_TRASH_DIRECTORY (directory));
+	return g_strdup (_("Trash"));
+}
+
 static void
 nautilus_trash_directory_initialize_class (gpointer klass)
 {
 	GtkObjectClass *object_class;
+	NautilusDirectoryClass *directory_class;
 
 	object_class = GTK_OBJECT_CLASS (klass);
+	directory_class = NAUTILUS_DIRECTORY_CLASS (klass);
 	
 	object_class->destroy = trash_destroy;
+
+	directory_class->get_name_for_self_as_new_file = trash_get_name_for_self_as_new_file;
 }

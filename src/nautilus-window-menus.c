@@ -627,6 +627,7 @@ help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler,
 		const char *authors[] = {
 			"Ali Abdin",
 			"Darin Adler",
+			"Josh Barrow",
 			"Pavel Císler",
 			"J Shane Culpepper",
 			"Mike Engber",
