@@ -18,7 +18,7 @@
  * Boston, MA 02111-1307, USA.
  *
  * Authors: Ramiro Estrugo <ramiro@eazel.com>
- 		    Andy Hertzfeld <andy@eazel.com>
+            Andy Hertzfeld <andy@eazel.com>
  */
 
 /* nautilus-services-content-view.c - services content view
@@ -34,6 +34,7 @@
 #include <libnautilus/nautilus-background.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-glib-extensions.h>
+#include <libnautilus/nautilus-global-preferences.h>
 #include <libnautilus/nautilus-file-utilities.h>
 
 #include <stdio.h>
@@ -72,6 +73,40 @@ config_button_cb (GtkWidget *button, char *data)
   		xmlFreeDoc(packages_file);
   		g_free(temp_str);
 	}
+}
+
+/* callback to handle the configuration button */    
+static void
+gather_config_button_cb (GtkWidget *button, char *data)
+{
+	g_message("gather configuration button clicked");
+}
+
+/* callback to handle the register button */    
+static void
+register_button_cb (GtkWidget *button, char *data)
+{
+	g_message("register button clicked");
+}
+
+/* FIXME: this routine should be someone else, and should take user preferences into account */
+static gchar*
+get_home_uri()
+{
+	return g_strdup_printf("file://%s", g_get_home_dir ());
+}
+
+/* callback to handle the register later button */    
+static void
+register_later_cb (GtkWidget *button, NautilusServicesContentView *view)
+{
+	Nautilus_NavigationRequestInfo nri;
+	
+	gchar* home_path = get_home_uri(); 
+  	memset(&nri, 0, sizeof(nri));
+  	nri.requested_uri = home_path;
+  	nautilus_view_frame_request_location_change((NautilusContentViewFrame*)view->details->view_frame, &nri);
+	g_free(home_path);
 }
 
 /* this creates the simple test form (just temporary) */
@@ -117,7 +152,7 @@ static void setup_form_title(GtkBox *container, const gchar* title_text)
 {
 	GtkWidget *temp_widget;
 	gchar *file_name;	
-	GtkHBox *temp_container = gtk_hbox_new(FALSE,0);
+	GtkWidget *temp_container = gtk_hbox_new(FALSE, 0);
 	
 	gtk_box_pack_start (GTK_BOX (container), temp_container, 0, 0, 4);	
 	gtk_widget_show(temp_container);
@@ -140,6 +175,7 @@ static void setup_signup_form(NautilusServicesContentView *view)
 	gchar *message;
 	GtkTable *table;
 	GtkWidget *temp_widget;
+	GtkWidget *temp_box, *config_button, *config_label;
 	
 	/* allocate a vbox as the container for the form */	
 	view->details->form = gtk_vbox_new(FALSE,0);
@@ -151,7 +187,7 @@ static void setup_signup_form(NautilusServicesContentView *view)
 
 	/* display a descriptive message */
 	/* FIXME: get the text from a file or from the service */
-	message = "Use this form to register for the Eazel Service, free of charge.  It will give you a storage space on the web that is easily accessed from Nautilus, and access to a customized software catalog that will allow you to install new applications with a single click";
+	message = "Use this form to register for the Eazel Service, free of charge.  It will give you a storage space on the web that is easily accessed from Nautilus, and access to a customized software catalog that will allow you to install new applications with a single click.";
 	temp_widget = gtk_label_new (message);
  	gtk_label_set_line_wrap(GTK_LABEL(temp_widget), TRUE);
 	
@@ -192,6 +228,35 @@ static void setup_signup_form(NautilusServicesContentView *view)
 	/* insert the table */
 	gtk_box_pack_start (GTK_BOX (view->details->form), GTK_WIDGET(table), 0, 0, 4);	
 	gtk_widget_show (GTK_WIDGET(table));	
+
+	/* allocate the command buttons - first the register button */
+	
+	config_button = gtk_button_new ();		    
+	config_label = gtk_label_new (" Register Now ");
+	gtk_widget_show (config_label);
+	gtk_container_add (GTK_CONTAINER (config_button), config_label); 	
+	
+	temp_box = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (temp_box), config_button, FALSE, FALSE, 16);
+
+	gtk_signal_connect (GTK_OBJECT (config_button), "clicked",
+			    GTK_SIGNAL_FUNC (register_button_cb), view);	
+	gtk_widget_show (config_button);
+
+	/* now allocate the decline button */
+	
+	config_button = gtk_button_new ();		    
+	config_label = gtk_label_new (" Register Later ");
+	gtk_widget_show (config_label);
+	gtk_container_add (GTK_CONTAINER (config_button), config_label); 	
+	gtk_box_pack_start (GTK_BOX (temp_box), config_button, FALSE, FALSE, 16);
+	gtk_signal_connect (GTK_OBJECT (config_button), "clicked",
+			    GTK_SIGNAL_FUNC (register_later_cb), view);	
+	gtk_widget_show (config_button);
+
+	/* show the buttons */
+	gtk_widget_show(temp_box);
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 16);
 }
 
 /* create the config form */
@@ -200,6 +265,7 @@ static void setup_config_form(NautilusServicesContentView *view)
 {
 	gchar *message;
 	GtkWidget *temp_widget;
+	GtkWidget *temp_box, *config_button, *config_label;
 	
 	/* allocate a vbox as the container */	
 	view->details->form = gtk_vbox_new(FALSE,0);
@@ -219,6 +285,33 @@ static void setup_config_form(NautilusServicesContentView *view)
  	gtk_widget_show (temp_widget);
 
 	/* add buttons for accepting and declining */	
+	
+	config_button = gtk_button_new ();		    
+	config_label = gtk_label_new (" Gather Configuration Data Now ");
+	gtk_widget_show (config_label);
+	gtk_container_add (GTK_CONTAINER (config_button), config_label); 	
+	
+	temp_box = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (temp_box), config_button, FALSE, FALSE, 16);
+
+	gtk_signal_connect (GTK_OBJECT (config_button), "clicked",
+			    GTK_SIGNAL_FUNC (gather_config_button_cb), view);	
+	gtk_widget_show (config_button);
+
+	/* now allocate the decline button */
+	
+	config_button = gtk_button_new ();		    
+	config_label = gtk_label_new (" No, Don't Gather Configuration Data ");
+	gtk_widget_show (config_label);
+	gtk_container_add (GTK_CONTAINER (config_button), config_label); 	
+	gtk_box_pack_start (GTK_BOX (temp_box), config_button, FALSE, FALSE, 16);
+	gtk_signal_connect (GTK_OBJECT (config_button), "clicked",
+			    GTK_SIGNAL_FUNC (register_later_cb), view);	
+	gtk_widget_show (config_button);
+
+	/* show the buttons */
+	gtk_widget_show(temp_box);
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 16);
 }
 
 static void
