@@ -1,3 +1,30 @@
+2000-09-01  Pavel Cisler  <pavel@eazel.com>
+
+	Fix bugzilla 2186 - Move/Copy/Make-Link for times from multiple directories
+	fails. Still needs more testing.
+	Reworked file operations to match new gnome_vfs_xfer... APIs that now take
+	lists of URIs for copy source and destination.
+
+	* components/services/install/lib/eazel-install-protocols.c:
+	(gnome_vfs_fetch_remote_file):
+	Update to use new API. 
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(check_target_directory_is_or_in_trash),
+	(new_uri_from_escaped_string), (append_basename_unescaped),
+	(nautilus_file_operations_copy_move),
+	(nautilus_file_operations_new_folder),
+	(nautilus_file_operations_move_to_trash),
+	(nautilus_file_operations_delete), (do_empty_trash):
+	Reworked to use new APIs.
+	Eliminated FIXME 1107.
+	Updated find_directory calls to use proper "create if needed" flags.
+	
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_user_main_directory):
+	* libnautilus-extensions/nautilus-file.c: (nautilus_file_rename):
+	Updated to use new APIs.
+
 2000-09-01  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/rpmview/nautilus-rpm-view-install.c:

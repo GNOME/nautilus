@@ -581,68 +581,39 @@ sync_xfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 	return 1;
 }
 
-	
-static void
-get_parent_make_name_list (const GList *item_uris, GnomeVFSURI **source_dir_uri,
-	GList **item_names)
+static gboolean
+check_target_directory_is_or_in_trash (GnomeVFSURI *trash_dir_uri, GnomeVFSURI *target_dir_uri)
 {
-	const GList *p;
-	GnomeVFSURI *item_uri;
-	const gchar *item_name;
-	char *unescaped_item_name;
+	g_assert (target_dir_uri != NULL);
 
-	/* FIXME bugzilla.eazel.com 2186: 
-	 * Doesn't handle multiple parents. 
-	 */
-	GnomeVFSURI *item_parent;
-	gboolean item_has_different_parent;
-	gboolean more_than_one_parent_directory;
-
-	more_than_one_parent_directory = FALSE;
-
-	/* convert URI list to a source parent URI and a list of names */
-	for (p = item_uris; p != NULL; p = p->next) {
-		item_uri = gnome_vfs_uri_new (p->data);
-		item_name = gnome_vfs_uri_get_basename (item_uri);
-		unescaped_item_name = gnome_vfs_unescape_string (item_name, NULL);
-		/* FIXME bugzilla.eazel.com 1107: If a file had %00 in
-		 * its name, then this assert would fail. Also, people
-		 * could pass us bad URIs and it would fail.
-		 */
-		g_assert (unescaped_item_name != NULL);
-
-		item_parent = gnome_vfs_uri_get_parent (item_uri);
-		item_has_different_parent = FALSE;
-		if (*source_dir_uri == NULL) {
-			*source_dir_uri = item_parent;
-		} else {
-			if (!gnome_vfs_uri_equal (*source_dir_uri, item_parent)) {
-				item_has_different_parent = TRUE;
-			}
-			gnome_vfs_uri_unref (item_parent);
-		}
-
-		if (!item_has_different_parent) {
-			*item_names = g_list_prepend (*item_names, unescaped_item_name);
-		} else {
-			more_than_one_parent_directory = TRUE;
-		}
-
-		gnome_vfs_uri_unref (item_uri);
+	if (trash_dir_uri == NULL) {
+		return FALSE;
 	}
 
-	if (more_than_one_parent_directory) {
-		nautilus_simple_dialog (NULL, 
-				 	_("Oops! These items are from two or more "
-				 	  "different directories. Nautilus can't "
-				 	  "handle this correctly, so some of "
-				 	  "the items will be ignored. Harrass someone "
-				 	  "into fixing bugzilla.eazel.com 2186"),
-				 	_("Bug alert!"),
-				 	GNOME_STOCK_BUTTON_OK,
-				 	NULL);
-	}
+	return gnome_vfs_uri_equal (trash_dir_uri, target_dir_uri)
+		|| gnome_vfs_uri_is_parent (trash_dir_uri, target_dir_uri, TRUE);
 }
+
+static GnomeVFSURI *
+new_uri_from_escaped_string (const char *string)
+{
+	char *unescaped_string;
+	GnomeVFSURI *result;
+	
+	unescaped_string = gnome_vfs_unescape_string (string, "/");
+	result = gnome_vfs_uri_new (unescaped_string);
+	g_free (unescaped_string);
+
+	return result;
+}
+
+static GnomeVFSURI *
+append_basename_unescaped (const GnomeVFSURI *target_directory, const GnomeVFSURI *source_directory)
+{
+	return gnome_vfs_uri_append_path (target_directory, 
+		gnome_vfs_uri_get_basename (source_directory));
+}
+
 
 void
 nautilus_file_operations_copy_move (const GList *item_uris,
@@ -652,55 +623,67 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				    GtkWidget *view)
 {
 	const GList *p;
-	GList *item_names;
 	GnomeVFSXferOptions move_options;
-	char *source_dir;
-	GnomeVFSURI *source_dir_uri;
+	GList *source_uri_list, *target_uri_list;
+	GnomeVFSURI *source_uri, *target_uri;
 	GnomeVFSURI *target_dir_uri;
 	GnomeVFSURI *trash_dir_uri;
 	GnomeVFSURI *uri;
+
+	
 	XferInfo *xfer_info;
-	char *target_dir_uri_text;
 	GnomeVFSResult result;
 	gboolean same_fs;
 	
 	g_assert (item_uris != NULL);
 
-	item_names = NULL;
-	source_dir_uri = NULL;
+	target_dir_uri = NULL;
 	trash_dir_uri = NULL;
 	result = GNOME_VFS_OK;
 
-	get_parent_make_name_list (item_uris, &source_dir_uri, &item_names);
+	source_uri_list = NULL;
+	target_uri_list = NULL;
+	same_fs = TRUE;
 
-	source_dir = gnome_vfs_uri_to_string (source_dir_uri, GNOME_VFS_URI_HIDE_NONE);
-	if (target_dir != NULL) {
-		target_dir_uri = gnome_vfs_uri_new (target_dir);
-		target_dir_uri_text = g_strdup (target_dir);
-	} else {
-		/* assume duplication */
-		target_dir_uri = gnome_vfs_uri_ref (source_dir_uri);
-		target_dir_uri_text = gnome_vfs_uri_to_string (target_dir_uri,
-							       GNOME_VFS_URI_HIDE_NONE);
-	}
-	/* figure out the right move/copy mode */
 	move_options = GNOME_VFS_XFER_RECURSIVE;
 
-	if (gnome_vfs_uri_equal (target_dir_uri, source_dir_uri)) {
+	if (target_dir == NULL) {
+		/* assume duplication */
 		g_assert (copy_action != GDK_ACTION_MOVE);
 		move_options |= GNOME_VFS_XFER_USE_UNIQUE_NAMES;
+	} else {
+		target_dir_uri = new_uri_from_escaped_string (target_dir);
 	}
+
+
+	/* build the source and target URI lists and figure out if all the files are on the
+	 * same disk
+	 */
+	for (p = item_uris; p != NULL; p = p->next) {
+		source_uri = new_uri_from_escaped_string ((const char *)p->data);
+		source_uri_list = g_list_prepend (source_uri_list, gnome_vfs_uri_ref (source_uri));
+
+		if (target_dir != NULL) {
+			target_uri = append_basename_unescaped (target_dir_uri, source_uri);
+		} else {
+			/* duplication */
+			target_uri = gnome_vfs_uri_ref (source_uri);
+			if (target_dir_uri == NULL) {
+				target_dir_uri = gnome_vfs_uri_get_parent (source_uri);
+			}
+		}
+		target_uri_list = g_list_prepend (target_uri_list, target_uri);
+		gnome_vfs_check_same_fs_uris (source_uri, target_uri, &same_fs);
+	}
+
+	source_uri_list = g_list_reverse (source_uri_list);
+	target_uri_list = g_list_reverse (target_uri_list);
+
 
 	if (copy_action == GDK_ACTION_MOVE) {
 		move_options |= GNOME_VFS_XFER_REMOVESOURCE;
 	} else if (copy_action == GDK_ACTION_LINK) {
 		move_options |= GNOME_VFS_XFER_LINK_ITEMS;
-	}
-
-	same_fs = TRUE;
-	if (source_dir_uri != NULL && target_dir_uri != NULL) {
-		gnome_vfs_check_same_fs_uris (source_dir_uri, 
-			target_dir_uri,	&same_fs);
 	}
 	
 	/* set up the copy/move parameters */
@@ -722,11 +705,11 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		xfer_info->show_progress_dialog = 
 			!same_fs || g_list_length ((GList *)item_uris) > 20;
 	} else if ((move_options & GNOME_VFS_XFER_LINK_ITEMS) != 0) {
-		xfer_info->operation_title = _("Creating a link to files");
+		xfer_info->operation_title = _("Creating links to files");
 		xfer_info->action_verb =_("linked");
-		xfer_info->progress_verb =_("linking");
+		xfer_info->progress_verb =_("Linking");
 		xfer_info->preparation_name = _("Preparing to Create Links...");
-		xfer_info->cleanup_name = _("Finishing linking...");
+		xfer_info->cleanup_name = _("Finishing Creating Links...");
 
 		xfer_info->kind = XFER_LINK;
 		xfer_info->show_progress_dialog =
@@ -743,15 +726,14 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		xfer_info->show_progress_dialog = TRUE;
 	}
 
+
 	/* we'll need to check for copy into Trash and for moving/copying the Trash itself */
 	gnome_vfs_find_directory (target_dir_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
 		&trash_dir_uri, FALSE, FALSE, 0777);
 
 	if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) == 0) {
-
-		if (trash_dir_uri != NULL
-			&& (gnome_vfs_uri_equal (trash_dir_uri, target_dir_uri)
-				|| gnome_vfs_uri_is_parent (trash_dir_uri, target_dir_uri, FALSE))) {
+		/* don't allow copying into Trash */
+		if (check_target_directory_is_or_in_trash (trash_dir_uri, target_dir_uri)) {
 			nautilus_simple_dialog (view, 
 				_("You cannot copy items into the Trash."), 
 				_("Error copying"),
@@ -761,11 +743,8 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	}
 
 	if (result == GNOME_VFS_OK) {
-		for (p = item_uris; p != NULL; p = p->next) {
-			gboolean bail;
-
-			bail = FALSE;
-			uri = gnome_vfs_uri_new (p->data);
+		for (p = source_uri_list; p != NULL; p = p->next) {
+			uri = (GnomeVFSURI *)p->data;
 
 			/* Check that the Trash is not being moved/copied */
 			if (trash_dir_uri != NULL && gnome_vfs_uri_equal (uri, trash_dir_uri)) {
@@ -775,26 +754,25 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 					: _("You cannot copy the Trash."), 
 					_("Error moving to Trash"),
 					_("OK"), NULL, NULL);			
-				bail = TRUE;
+
+				result = GNOME_VFS_ERROR_NOT_PERMITTED;
+				break;
 			}
 
 			/* Don't allow recursive move/copy into itself. 
 			 * (We would get a file system error if we proceeded but it is nicer to
 			 * detect and report it at this level)
 			 */
-			if ( ((move_options & GNOME_VFS_XFER_LINK_ITEMS) == 0) && 
-			     !bail && (gnome_vfs_uri_equal (uri, target_dir_uri)
-				|| gnome_vfs_uri_is_parent (uri, target_dir_uri, TRUE))) {
+			if ((move_options & GNOME_VFS_XFER_LINK_ITEMS) == 0
+				&& (gnome_vfs_uri_equal (uri, target_dir_uri)
+					|| gnome_vfs_uri_is_parent (uri, target_dir_uri, TRUE))) {
 				nautilus_simple_dialog (view, 
 					((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
 					? _("You cannot move an item into itself.")
 					: _("You cannot copy an item into itself."), 
 					_("Error moving to Trash"),
 					_("OK"), NULL, NULL);			
-				bail = TRUE;
-			}
-			gnome_vfs_uri_unref (uri);
-			if (bail) {
+
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;
 				break;
 			}
@@ -805,23 +783,17 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_QUERY;
 	
 	if (result == GNOME_VFS_OK) {
-		gnome_vfs_async_xfer (&xfer_info->handle, source_dir, item_names,
-		      		      target_dir_uri_text, NULL,
+		gnome_vfs_async_xfer (&xfer_info->handle, source_uri_list, target_uri_list,
 		      		      move_options, GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 		      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
 		      		      &update_xfer_callback, xfer_info,
 		      		      &sync_xfer_callback, NULL);
 	}
 
-	g_free (target_dir_uri_text);
-
 	if (trash_dir_uri != NULL) {
 		gnome_vfs_uri_unref (trash_dir_uri);
 	}
 	gnome_vfs_uri_unref (target_dir_uri);
-	gnome_vfs_uri_unref (source_dir_uri);
-	nautilus_g_list_free_deep (item_names);
-	g_free (source_dir);
 }
 
 typedef struct {
@@ -882,21 +854,27 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 				     gpointer data)
 {
 	NewFolderXferState *state;
-	GList *dest_names;
+	GList *target_uri_list;
+	GnomeVFSURI *uri, *parent_uri;
 
 	state = g_new (NewFolderXferState, 1);
 	state->done_callback = done_callback;
 	state->data = data;
 
-	dest_names = g_list_append (NULL, "untitled folder");
-	gnome_vfs_async_xfer (&state->handle, NULL, NULL,
-	      		      parent_dir, dest_names,
+	/* pass in the target directory and the new folder name as a destination URI */
+	parent_uri = new_uri_from_escaped_string (parent_dir);
+	uri = gnome_vfs_uri_append_path (parent_uri, _("untitled folder"));
+	target_uri_list = g_list_append (NULL, uri);
+	
+	gnome_vfs_async_xfer (&state->handle, NULL, target_uri_list,
 	      		      GNOME_VFS_XFER_NEW_UNIQUE_DIRECTORY,
 	      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 	      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
 	      		      &new_folder_xfer_callback, state,
 	      		      &sync_xfer_callback, NULL);
-	g_list_free (dest_names);
+
+	gnome_vfs_uri_list_free (target_uri_list);
+	gnome_vfs_uri_unref (parent_uri);
 }
 
 void 
@@ -904,12 +882,9 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 					GtkWidget *parent_view)
 {
 	const GList *p;
-	GList *item_names;
-	GnomeVFSURI *source_dir_uri;
 	GnomeVFSURI *trash_dir_uri;
-	GnomeVFSURI *uri;
-	char *source_dir;
-	char *trash_dir_uri_text;
+	GnomeVFSURI *source_uri;
+	GList *source_uri_list, *target_uri_list;
 	GnomeVFSResult result;
 	XferInfo *xfer_info;
 	gboolean bail;
@@ -918,29 +893,42 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 
 	g_assert (item_uris != NULL);
 	
-	item_names = NULL;
-	source_dir_uri = NULL;
 	trash_dir_uri = NULL;
-	
-	get_parent_make_name_list (item_uris, &source_dir_uri, &item_names);
-	source_dir = gnome_vfs_uri_to_string (source_dir_uri, GNOME_VFS_URI_HIDE_NONE);
+	source_uri_list = NULL;
+	target_uri_list = NULL;
 
-	result = gnome_vfs_find_directory (source_dir_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-		&trash_dir_uri, TRUE, FALSE, 0777);
-
+	/* build the source and uri list, checking if any of the delete itmes are Trash */
 	for (p = item_uris; p != NULL; p = p->next) {
 		bail = FALSE;
-		uri = gnome_vfs_uri_new (p->data);
+		source_uri = new_uri_from_escaped_string ((const char *)p->data);
+		source_uri_list = g_list_prepend (source_uri_list, source_uri);
 
-		if (gnome_vfs_uri_equal (uri, trash_dir_uri)) {
+		if (trash_dir_uri == NULL) {
+			GnomeVFSURI *source_dir_uri;
+			
+			source_dir_uri = gnome_vfs_uri_get_parent (source_uri);
+			result = gnome_vfs_find_directory (source_dir_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
+				&trash_dir_uri, FALSE, FALSE, 0777);
+			gnome_vfs_uri_unref (source_dir_uri);
+		}
+
+		if (result != GNOME_VFS_OK) {
+			break;
+		}
+
+		g_assert (trash_dir_uri != NULL);
+		target_uri_list = g_list_prepend (target_uri_list,
+			append_basename_unescaped (trash_dir_uri, source_uri));
+		
+		if (gnome_vfs_uri_equal (source_uri, trash_dir_uri)) {
 			nautilus_simple_dialog (parent_view, 
 				_("You cannot throw away the Trash."), 
 				_("Error moving to Trash"),
 				_("OK"), NULL, NULL);			
 			bail = TRUE;
-		} else if (gnome_vfs_uri_is_parent (uri, trash_dir_uri, TRUE)) {
+		} else if (gnome_vfs_uri_is_parent (source_uri, trash_dir_uri, TRUE)) {
 			item_name = nautilus_convert_to_unescaped_string_for_display 
-				(gnome_vfs_uri_extract_short_name (uri));
+				(gnome_vfs_uri_extract_short_name (source_uri));
 			text = g_strdup_printf ( _("You cannot throw \"%s\" "
 				"into the Trash."), item_name);
 
@@ -951,18 +939,18 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 			g_free (text);
 			g_free (item_name);
 		}
-		gnome_vfs_uri_unref (uri);
+
 		if (bail) {
 			result = GNOME_VFS_ERROR_NOT_PERMITTED;
 			break;
 		}
 	}
+	source_uri_list = g_list_reverse (source_uri_list);
+	target_uri_list = g_list_reverse (target_uri_list);
 
 	if (result == GNOME_VFS_OK) {
 		g_assert (trash_dir_uri != NULL);
 
-		trash_dir_uri_text = gnome_vfs_uri_to_string (trash_dir_uri, 
-							      GNOME_VFS_URI_HIDE_NONE);
 		/* set up the move parameters */
 		xfer_info = g_new (XferInfo, 1);
 		xfer_info->parent_view = parent_view;
@@ -983,36 +971,34 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 		xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
 		xfer_info->kind = XFER_MOVE_TO_TRASH;
 		
-		gnome_vfs_async_xfer (&xfer_info->handle, source_dir, item_names,
-		      		      trash_dir_uri_text, NULL,
+		gnome_vfs_async_xfer (&xfer_info->handle, source_uri_list, target_uri_list,
 		      		      GNOME_VFS_XFER_REMOVESOURCE | GNOME_VFS_XFER_USE_UNIQUE_NAMES,
 		      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 		      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
 		      		      &update_xfer_callback, xfer_info,
 		      		      &sync_xfer_callback, NULL);
 
-		g_free (trash_dir_uri_text);
 	}
 
+	gnome_vfs_uri_list_free (source_uri_list);
+	gnome_vfs_uri_list_free (target_uri_list);
 	gnome_vfs_uri_unref (trash_dir_uri);
-	gnome_vfs_uri_unref (source_dir_uri);
-	nautilus_g_list_free_deep (item_names);
-	g_free (source_dir);
 }
 
 void 
 nautilus_file_operations_delete (const GList *item_uris, 
 				 GtkWidget *parent_view)
 {
-	GnomeVFSURI *source_dir_uri;
-	char *source_dir;
-	GList *item_names;
+	GList *uri_list;
+	const GList *p;
 	XferInfo *xfer_info;
 
-	item_names = NULL;
-	source_dir_uri = NULL;
-	get_parent_make_name_list (item_uris, &source_dir_uri, &item_names);
-	source_dir = gnome_vfs_uri_to_string (source_dir_uri, GNOME_VFS_URI_HIDE_NONE);
+	uri_list = NULL;
+	for (p = item_uris; p != NULL; p = p->next) {
+		uri_list = g_list_prepend (uri_list, 
+			new_uri_from_escaped_string ((const char *)p->data));
+	}
+	uri_list = g_list_reverse (uri_list);
 
 	xfer_info = g_new (XferInfo, 1);
 	xfer_info->parent_view = parent_view;
@@ -1029,17 +1015,14 @@ nautilus_file_operations_delete (const GList *item_uris,
 	xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
 	xfer_info->kind = XFER_DELETE;
 	
-	gnome_vfs_async_xfer (&xfer_info->handle, source_dir, item_names,
-	      		      NULL, NULL,
+	gnome_vfs_async_xfer (&xfer_info->handle, uri_list,  NULL,
 	      		      GNOME_VFS_XFER_DELETE_ITEMS | GNOME_VFS_XFER_RECURSIVE,
 	      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 	      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
 	      		      &update_xfer_callback, xfer_info,
 	      		      &sync_xfer_callback, NULL);
 
-	gnome_vfs_uri_unref (source_dir_uri);
-	nautilus_g_list_free_deep (item_names);
-	g_free (source_dir);
+	gnome_vfs_uri_list_free (uri_list);
 }
 
 static void
@@ -1049,7 +1032,6 @@ do_empty_trash (GtkWidget *parent_view)
 	GnomeVFSResult result;
 	XferInfo *xfer_info;
 	GList *trash_dir_list;
-	char *trash_dir_name;
 
 	/* FIXME bugzilla.eazel.com 638:
 	 * add the different trash directories from the different volumes
@@ -1063,7 +1045,6 @@ do_empty_trash (GtkWidget *parent_view)
 
 		g_assert (trash_dir_uri != NULL);
 
-		trash_dir_list = NULL;
 
 		/* set up the move parameters */
 		xfer_info = g_new (XferInfo, 1);
@@ -1080,24 +1061,18 @@ do_empty_trash (GtkWidget *parent_view)
 		xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
 		xfer_info->kind = XFER_EMPTY_TRASH;
 
-		trash_dir_name = gnome_vfs_uri_to_string (trash_dir_uri, 
-							  GNOME_VFS_URI_HIDE_NONE);
-		trash_dir_list = g_list_append (trash_dir_list, trash_dir_name);
+		trash_dir_list = g_list_append (NULL, trash_dir_uri);
 
-		gnome_vfs_async_xfer (&xfer_info->handle, NULL, trash_dir_list,
-		      		      NULL, NULL,
+		gnome_vfs_async_xfer (&xfer_info->handle, trash_dir_list, NULL,
 		      		      GNOME_VFS_XFER_EMPTY_DIRECTORIES,
 		      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 		      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
 		      		      &update_xfer_callback, xfer_info,
 		      		      &sync_xfer_callback, NULL);
 
-		nautilus_g_list_free_deep (trash_dir_list);
 	}
 
-	if (trash_dir_uri != NULL) {
-		gnome_vfs_uri_unref (trash_dir_uri);
-	}
+	gnome_vfs_uri_list_free (trash_dir_list);
 }
 
 static gboolean

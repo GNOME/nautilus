@@ -316,29 +316,35 @@ nautilus_get_user_main_directory (void)
 	GnomeVFSResult result;
 	NautilusFile *file;
 	char *file_uri, *image_uri, *temp_str;
-	char *source_directory_uri, *destination_directory_uri;
-	GList *source_name_list, *destination_name_list;
+	char *source_directory_uri_text, *destination_directory_uri_text;
+	GnomeVFSURI *source_directory_uri, *destination_directory_uri;
+	GnomeVFSURI *source_uri, *destination_uri;
 	
 	user_main_directory = g_strdup_printf ("%s/%s",
 					       g_get_home_dir(),
 					       NAUTILUS_USER_MAIN_DIRECTORY_NAME);
 												
 	if (!g_file_exists (user_main_directory)) {			
-		source_directory_uri = gnome_vfs_get_uri_from_local_path (NAUTILUS_DATADIR);
-		destination_directory_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir());
-		source_name_list = g_list_prepend (NULL, "top");
-		destination_name_list = g_list_prepend (NULL, NAUTILUS_USER_MAIN_DIRECTORY_NAME);
+		source_directory_uri_text = gnome_vfs_get_uri_from_local_path (NAUTILUS_DATADIR);
+		source_directory_uri = gnome_vfs_uri_new (source_directory_uri_text);
+		g_free (source_directory_uri_text);
+		source_uri = gnome_vfs_uri_append_path (source_directory_uri, "top");
+		gnome_vfs_uri_unref (source_directory_uri);
+
+		destination_directory_uri_text = gnome_vfs_get_uri_from_local_path (g_get_home_dir());
+		destination_directory_uri = gnome_vfs_uri_new (destination_directory_uri_text);
+		g_free (destination_directory_uri_text);
+		destination_uri = gnome_vfs_uri_append_path (destination_directory_uri, 
+			NAUTILUS_USER_MAIN_DIRECTORY_NAME);
+		gnome_vfs_uri_unref (destination_directory_uri);
 		
-		result = gnome_vfs_xfer (source_directory_uri, source_name_list,
-					 destination_directory_uri, destination_name_list,
+		result = gnome_vfs_xfer_uri (source_uri, destination_uri,
 					 GNOME_VFS_XFER_RECURSIVE, GNOME_VFS_XFER_ERROR_MODE_ABORT,
 					 GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
 					 NULL, NULL);
 		
-		g_free (source_directory_uri);
-		g_free (destination_directory_uri);
-		g_list_free (source_name_list);
-		g_list_free (destination_name_list);
+		gnome_vfs_uri_unref (source_uri);
+		gnome_vfs_uri_unref (destination_uri);
 		
 		/* FIXME bugzilla.eazel.com 1286: 
 		 * Is a g_warning good enough here? This seems like a big problem. 

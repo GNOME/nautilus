@@ -824,8 +824,9 @@ nautilus_file_rename (NautilusFile *file,
 		      NautilusFileOperationCallback callback,
 		      gpointer callback_data)
 {
-	char *directory_uri;
-	GList *source_name_list, *target_name_list;
+	char *directory_uri_path;
+	GnomeVFSURI *directory_uri;
+	GList *source_uri_list, *target_uri_list;
 	GnomeVFSResult result;
 	Operation *op;
 
@@ -884,21 +885,25 @@ nautilus_file_rename (NautilusFile *file,
 	 * This call could use gnome_vfs_async_set_file_info
 	 * instead and it might be simpler.
 	 */
-	directory_uri = nautilus_directory_get_uri (file->details->directory);
-	source_name_list = g_list_prepend (NULL, file->details->name);
-	target_name_list = g_list_prepend (NULL, (char *) new_name);
+	directory_uri_path = nautilus_directory_get_uri (file->details->directory);
+	directory_uri = gnome_vfs_uri_new (directory_uri_path);
+	g_free (directory_uri_path);
+	source_uri_list = g_list_prepend (NULL, gnome_vfs_uri_append_path (directory_uri,
+		file->details->name));
+	target_uri_list = g_list_prepend (NULL, gnome_vfs_uri_append_path (directory_uri,
+		new_name));
+	gnome_vfs_uri_unref (directory_uri);
+
 	result = gnome_vfs_async_xfer
-		(&op->handle,
-		 directory_uri, source_name_list,
-		 directory_uri, target_name_list,
+		(&op->handle, source_uri_list, target_uri_list,
 		 GNOME_VFS_XFER_SAMEFS | GNOME_VFS_XFER_REMOVESOURCE,
 		 GNOME_VFS_XFER_ERROR_MODE_QUERY,
 		 GNOME_VFS_XFER_OVERWRITE_MODE_ABORT,
 		 rename_callback, op,
 		 NULL, NULL);
-	g_free (directory_uri);
-	g_list_free (source_name_list);
-	g_list_free (target_name_list);
+
+	gnome_vfs_uri_list_free (source_uri_list);
+	gnome_vfs_uri_list_free (target_uri_list);
 
 	if (result != GNOME_VFS_OK) {
 		operation_complete (op, result);

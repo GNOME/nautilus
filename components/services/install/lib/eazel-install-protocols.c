@@ -328,10 +328,10 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 {
 	GnomeVFSResult result;
 	GnomeVFSXferOptions xfer_options = 0;
-	GnomeVFSURI *src_uri, *src_dir_uri;
-	GnomeVFSURI *dest_uri, *dest_dir_uri;
-	GList *src_list;
-	GList *dest_list;
+	GnomeVFSURI *src_uri;
+	GnomeVFSURI *dest_uri;
+	
+	GList *src_uri_list, *dest_uri_list;
 	char *tmp;
 	char *t_file;
 	gnome_vfs_callback_struct *cbstruct;
@@ -346,25 +346,11 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 
 	g_message ("D: gnome_vfs_xfer_uri ( %s %s )", url, t_file);
 	
-	/* Create source uri, lots of assertions... */
 	src_uri = gnome_vfs_uri_new (url);
-	g_assert (src_uri);
-	src_dir_uri = gnome_vfs_uri_get_parent (src_uri);
-	g_assert (src_dir_uri);
-	tmp = g_strdup (gnome_vfs_uri_get_basename (src_uri));
-	g_assert (tmp);
-	src_list = g_list_prepend (NULL, tmp);
-	g_assert (src_list);
+	g_assert (src_uri != NULL);
 	
-	/* Create destination uri, lots of assertions... */
 	dest_uri = gnome_vfs_uri_new (t_file);
-	g_assert (dest_uri);
-	dest_dir_uri = gnome_vfs_uri_get_parent (dest_uri);
-	g_assert (dest_dir_uri);
-	tmp = g_strdup (gnome_vfs_uri_get_basename (dest_uri));
-	g_assert (tmp);
-	dest_list = g_list_prepend (NULL, tmp);
-	g_assert (dest_list);
+	g_assert (dest_uri != NULL);
 	
 	/* Setup the userdata for the callback, I need both the
 	   service object to emit signals too, and the filename to report */
@@ -373,8 +359,7 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 	cbstruct->file_to_report = file_to_report;
 
 	/* Execute the gnome_vfs copy */
-	result = gnome_vfs_xfer_uri (src_dir_uri, src_list,
-				     dest_dir_uri, dest_list,
+	result = gnome_vfs_xfer_uri (src_uri, dest_uri,
 				     xfer_options,
 				     GNOME_VFS_XFER_ERROR_MODE_QUERY,
 				     GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
@@ -389,16 +374,8 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 
 	/* Unref all the uri's */
 	gnome_vfs_uri_unref (src_uri);
-	gnome_vfs_uri_unref (src_dir_uri);
 	gnome_vfs_uri_unref (dest_uri);
-	gnome_vfs_uri_unref (dest_dir_uri);
 	
-	/* Free the uri lists */
-	g_list_foreach (src_list, (GFunc)free_string, NULL);
-	g_list_foreach (dest_list, (GFunc)free_string, NULL);
-	g_list_free (src_list);
-	g_list_free (dest_list);
-
 	return result == GNOME_VFS_OK ? TRUE : FALSE;
 }
 #endif /* EAZEL_INSTALL_SLIM */
