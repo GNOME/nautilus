@@ -1,3 +1,12 @@
+2000-10-11  Darin Adler  <darin@eazel.com>
+
+	* src/nautilus-shell-ui.xml: Remove the Undo command.
+	
+	* libnautilus-extensions/nautilus-entry.c:
+	(nautilus_entry_key_press): Clean up code structure in here a bit.
+	I expected to find code to handle Control-Z here, but I didn't
+	find it.
+
 2000-10-11  Michael Engber  <engber@eazel.com>
 
 	Tuck id of desktop window in root so other apps can detect when

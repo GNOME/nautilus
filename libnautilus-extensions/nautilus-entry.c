@@ -126,41 +126,44 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 	GtkEditable *editable;
 	int position;
 	
-	g_assert (NAUTILUS_IS_ENTRY (widget));
-
+	entry = NAUTILUS_ENTRY (widget);
 	editable = GTK_EDITABLE (widget);
 	
 	if (!editable->editable) {
 		return FALSE;
 	}
 
-	entry = NAUTILUS_ENTRY(widget);
-
-	/* the location bar entry wants TAB to work kind of like it does
-	   in the shell for command completion, so if we get a tab and
-	   there's a selection, we should position the insertion point
-	   at the end of the selection */
-	   
-	if (entry->special_tab_handling && (event->keyval == GDK_Tab) 
-		&& editable->has_selection) {
-		position = strlen (gtk_entry_get_text (GTK_ENTRY (editable)));
-		gtk_entry_select_region (GTK_ENTRY (editable), position, position);
-		return TRUE;
-	}
-	
-	/* Fix bug in GtkEntry where keypad Enter key inserts a
-	 * character rather than activating like the other Enter key.
-	 */
 	switch (event->keyval) {
-		case GDK_KP_Enter:
-			gtk_widget_activate (widget);
+	case GDK_Tab:
+		/* The location bar entry wants TAB to work kind of
+		 * like it does in the shell for command completion,
+		 * so if we get a tab and there's a selection, we
+		 * should position the insertion point at the end of
+		 * the selection.
+		 */
+		if (entry->special_tab_handling
+		    && editable->has_selection) {
+			position = strlen (gtk_entry_get_text (GTK_ENTRY (editable)));
+			gtk_entry_select_region (GTK_ENTRY (editable), position, position);
 			return TRUE;
-			
-		default:
-			break;
+		}
+		break;
+	
+	case GDK_KP_Enter:
+		/* Fix bug in GtkEntry where keypad Enter key inserts
+		 * a character rather than activating like the other
+		 * Enter key.
+		 */
+		gtk_widget_activate (widget);
+		return TRUE;
+		
+	default:
+		break;
 	}
 
-	return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, key_press_event, (widget, event));
+	return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS,
+					   key_press_event,
+					   (widget, event));
 }
 
 /**
