@@ -139,6 +139,8 @@ install_message_new (NautilusServiceInstallView *view, const char *package_name)
 	GtkWidget *bogus_label;
 	GList *iter;
 
+	im = NULL;
+	
 	for (iter = g_list_first (view->details->message); iter != NULL; iter = g_list_next (iter)) {
 		im = (InstallMessage *)(iter->data);
 		if (strcmp (im->package_name, package_name) == 0) {
