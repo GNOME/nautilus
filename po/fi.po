@@ -24,8 +24,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.1.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-24 14:56+0100\n"
-"PO-Revision-Date: 2004-02-11 01:01+0200\n"
+"POT-Creation-Date: 2004-02-28 19:10+0200\n"
+"PO-Revision-Date: 2004-02-28 19:19+0200\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
 "Language-Team: Gnome Finnish Translation Team <gnome-fi-laatu@lists."
 "sourceforge.net>\n"
@@ -980,7 +980,7 @@ msgstr "Tässä teemassa on todenmukaisen näköiset kansiot."
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
-#: src/file-manager/fm-list-view.c:1052
+#: src/file-manager/fm-list-view.c:1054
 #: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Nimi"
@@ -1209,7 +1209,7 @@ msgstr "Näytä \"erityiset\" liput tiedoston asetusikkunassa"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
 msgid "Enables the classic Nautilus behavior, where all windows are browsers"
-msgstr ""
+msgstr "Ottaa käyttöön \"klassisen\" Nautiluksen toiminnan, jossa jokainen ikkuna on selain"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid ""
@@ -1335,7 +1335,7 @@ msgid ""
 "If set to true, then all Nautilus windows will be browser windows. This is "
 "how Nautilus used to behave before version 2.6, and some people prefer this "
 "behavior."
-msgstr ""
+msgstr "Jos tosi, niin kaikki Nautilus-ikkunat ovat selainikkunoita. Nautilus toimi näin versioon 2.6 saakka, ja eräät saattavat pitää entisestä tavasta enemmän."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid ""
@@ -1687,26 +1687,23 @@ msgstr "Sivupaneelin leveys"
 
 #: libnautilus-private/nautilus-column-chooser.c:365
 msgid "Move _Up"
-msgstr ""
+msgstr "Siirrä _ylös"
 
 #: libnautilus-private/nautilus-column-chooser.c:374
 msgid "Move _Down"
-msgstr ""
+msgstr "Siirrä _alas"
 
 #: libnautilus-private/nautilus-column-chooser.c:383
-#, fuzzy
 msgid "_Show"
-msgstr "Näytä %s"
+msgstr "_Näytä"
 
 #: libnautilus-private/nautilus-column-chooser.c:393
-#, fuzzy
 msgid "_Hide"
-msgstr "_Etsi"
+msgstr "P_iilota"
 
 #: libnautilus-private/nautilus-column-chooser.c:406
-#, fuzzy
 msgid "_Use Default"
-msgstr "Käytä _oletustaustaa"
+msgstr "Käytä _oletusta"
 
 #: libnautilus-private/nautilus-column-utilities.c:44
 msgid "The name and icon of the file."
@@ -2167,6 +2164,10 @@ msgstr "Korvaa k_aikki"
 
 # This is very hard to do in Finnish...
 #. appended to new link file
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4714
 #, c-format
@@ -2222,6 +2223,9 @@ msgid " (another copy)"
 msgstr " (toinen kopio)"
 
 #. localizers: tag used to detect the x11th copy of a file
+#. localizers: tag used to detect the x12th copy of a file
+#. localizers: tag used to detect the x13th copy of a file
+#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2257,6 +2261,9 @@ msgid "%s (another copy)%s"
 msgstr "%s (toinen kopio) %s"
 
 #. localizers: appended to x11th file copy
+#. localizers: appended to x12th file copy
+#. localizers: appended to x13th file copy
+#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -2904,7 +2911,7 @@ msgid "Icon View"
 msgstr "Kuvakenäkymä"
 
 #: libnautilus-private/nautilus-global-preferences.c:179
-#: src/file-manager/fm-list-view.c:1105
+#: src/file-manager/fm-list-view.c:1107
 #: src/nautilus-file-management-properties.glade.h:54
 msgid "List View"
 msgstr "Luettelonäkymä"
@@ -4185,9 +4192,9 @@ msgid "An _Application..."
 msgstr "_Sovellus..."
 
 #: src/file-manager/fm-directory-view.c:3915
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot open %s"
-msgstr "Roskakoria ei voi kopioida"
+msgstr "Ei voi avata: %s"
 
 #: src/file-manager/fm-directory-view.c:3918
 #, c-format
@@ -4201,6 +4208,9 @@ msgid ""
 "extension for \"%s\", then open the file normally. Alternatively, use the "
 "Open With menu to choose a specific application for the file. "
 msgstr ""
+"Tiedostonimi \"%s\" ilmaisee, että tiedoston tyyppi on \"%s\". Sisältö kuitenkin ilmaisee, että tyyppi on \"%s\". Tämän tiedoston avaaminen saattaa olla turvallisuusriski järjestelmällesi.\n"
+"\n"
+"Älä avaa tiedostoa, jollet ole joko tehnyt sitä itse tai saanut sitä luotettavasta lähteestä. Tiedoston voi avata nimeämällä se uudestaan ja vaihtamalla tiedostopäätteeksi \"%s\", jonka jälkeen sen voi avata normaalisti. Vaihtoehtoisesti, tämän voi tehdä valitsemalla tiedoston avaava sovellus \"Avaa sovelluksella\"-valikosta."
 
 #: src/file-manager/fm-directory-view.c:4289
 #, c-format
@@ -4685,12 +4695,12 @@ msgstr "Veto- ja pudotusvirhe"
 msgid "An invalid drag type was used."
 msgstr "Vetotyyppi oli väärä."
 
-#: src/file-manager/fm-list-view.c:1512
+#: src/file-manager/fm-list-view.c:1514
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s: näkyvät sarakkeet"
 
-#: src/file-manager/fm-list-view.c:1531
+#: src/file-manager/fm-list-view.c:1533
 msgid "Choose the order of information to appear in this folder."
 msgstr "Valitse tietojen ilmestymisjärjestys tässä hakemistossa."
 
@@ -5788,6 +5798,7 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
+#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:570 src/nautilus-application.c:588
 #: src/nautilus-application.c:595
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -6271,23 +6282,28 @@ msgid "Nautilus"
 msgstr "Nautilus"
 
 #: src/nautilus-main.c:259
+#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: valitsinta --check ei voi käyttää URI:en kanssa.\n"
 
 #: src/nautilus-main.c:263
+#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr ""
 "nautilus: valitsinta --check ei voi käyttää muiden valitsinten kanssa.\n"
 
 #: src/nautilus-main.c:267
+#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: valitsinta --quit ei voi käyttää URI:en kanssa.\n"
 
 #: src/nautilus-main.c:271
+#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: valitsinta --restart ei voi käyttää URI:en kanssa.\n"
 
 #: src/nautilus-main.c:275
+#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr ""
 "nautilus: valitsinta --geometry ei voi käyttää yhtä useamman URI:n kanssa.\n"
