@@ -33,17 +33,7 @@
 
 #define NAUTILUS_METADATA_KEY_CONTENT_VIEWS              	"content_views"
 
-#define NAUTILUS_METADATA_KEY_DEFAULT_ACTION_TYPE	 	"default_action_type"
-#define NAUTILUS_METADATA_KEY_DEFAULT_APPLICATION	 	"default_application"
 #define NAUTILUS_METADATA_KEY_DEFAULT_COMPONENT		 	"default_component"
-#define NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_ADD 	"short_list_application_add"
-#define NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_REMOVE	"short_list_application_remove"
-#define NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION	  	"application"
-#define NAUTILUS_METADATA_SUBKEY_APPLICATION_ID		  	"id"
-#define NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_ADD   	"short_list_component_add"
-#define NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_REMOVE 	"short_list_component_remove"
-#define NAUTILUS_METADATA_KEY_EXPLICIT_COMPONENT	  	"explicit_content_view"
-#define NAUTILUS_METADATA_SUBKEY_COMPONENT_IID		  	"iid"
 
 #define NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_COLOR 	"background_color"
 #define NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_IMAGE 	"background_tile_image"

@@ -1,3 +1,22 @@
+2004-10-11  Anders Carlsson  <andersca@gnome.org>
+
+	* libnautilus-private/nautilus-metadata.h:
+	* libnautilus-private/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_application_for_file),
+	(nautilus_mime_get_open_with_applications_for_file),
+	(nautilus_mime_get_applications_for_file),
+	(gnome_vfs_mime_application_has_id):
+	* libnautilus-private/nautilus-view-query.c:
+	(nautilus_view_query_get_default_component_for_file_internal),
+	(nautilus_view_query_get_components_for_file),
+	(make_bonobo_activation_query_with_known_mime_type),
+	(make_bonobo_activation_query_with_uri_scheme_only),
+	(server_matches_content_requirements),
+	(nautilus_do_component_query),
+	(nautilus_view_query_get_popup_components_for_file),
+	(nautilus_view_query_get_property_components_for_file):
+	Remove a couple of unused keys from nautilus-metadata.h
+	
 2004-10-08  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-directory-view.c (extension_action_slow_mime_types_ready_callback):

@@ -37,10 +37,6 @@
 
 static int         gnome_vfs_mime_application_has_id             (GnomeVFSMimeApplication  *application,
 								  const char               *id);
-static int         gnome_vfs_mime_id_matches_application         (const char               *id,
-								  GnomeVFSMimeApplication  *application);
-static gboolean    gnome_vfs_mime_application_has_id_not_in_list (GnomeVFSMimeApplication  *application,
-								  GList                    *ids);
 static gboolean   application_supports_uri_scheme                (gpointer                 data,
 								  gpointer                 uri_scheme);
 
@@ -94,85 +90,49 @@ nautilus_mime_actions_get_full_file_attributes (void)
 		NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES;
 }
 
-static GnomeVFSMimeApplication *
-nautilus_mime_get_default_application_for_file_internal (NautilusFile *file,
-							 gboolean     *user_chosen)
+GnomeVFSMimeApplication *
+nautilus_mime_get_default_application_for_file (NautilusFile *file)
 {
 	char *mime_type;
 	GnomeVFSMimeApplication *result;
-	char *default_application_string;
-	gboolean used_user_chosen_info;
 	char *uri_scheme;
 
 	if (!nautilus_mime_actions_check_if_open_with_attributes_ready (file)) {
 		return NULL;
 	}
-
-	used_user_chosen_info = TRUE;
-
-	default_application_string = nautilus_file_get_metadata 
-		(file, NAUTILUS_METADATA_KEY_DEFAULT_APPLICATION, NULL);
-
-	/* FIXME bugzilla.gnome.org 45085: should fall back to normal default 
-	   if user-specified default is bogus */
-
 	uri_scheme = nautilus_file_get_uri_scheme (file);
 
-	result = NULL;
-	if (default_application_string != NULL) {
-		result = gnome_vfs_application_registry_get_mime_application (default_application_string);
-		if (result != NULL && !application_supports_uri_scheme (result, uri_scheme)) {
-			gnome_vfs_mime_application_free (result);
-			result = NULL;
-		}
+	/* TODO: this should maybe use gnome_vfs_mime_get_default_application_for_scheme,
+	   but thats not public atm */
+	
+	mime_type = nautilus_file_get_mime_type (file);
+	result = gnome_vfs_mime_get_default_application (mime_type);
+	if (result != NULL && !application_supports_uri_scheme (result, uri_scheme)) {
+		result = NULL;
 	}
-
+	
 	if (result == NULL) {
-		/* TODO: this should maybe use gnome_vfs_mime_get_default_application_for_scheme,
-		   but thats not public atm */
-		   
-		mime_type = nautilus_file_get_mime_type (file);
-		result = gnome_vfs_mime_get_default_application (mime_type);
-		if (result != NULL && !application_supports_uri_scheme (result, uri_scheme)) {
-			result = NULL;
-		}
-
-		if (result == NULL) {
-			GList *all_applications, *l;
-			
-			all_applications = nautilus_mime_get_open_with_applications_for_file (file);
-
-			for (l = all_applications; l != NULL; l = l->next) {
-				result = gnome_vfs_mime_application_copy (l->data);
-				if (result != NULL && !application_supports_uri_scheme (result, uri_scheme)) {
-					gnome_vfs_mime_application_free (result);
-					result = NULL;
-				}
-				if (result != NULL)
-					break;
+		GList *all_applications, *l;
+		
+		all_applications = nautilus_mime_get_open_with_applications_for_file (file);
+		
+		for (l = all_applications; l != NULL; l = l->next) {
+			result = gnome_vfs_mime_application_copy (l->data);
+			if (result != NULL && !application_supports_uri_scheme (result, uri_scheme)) {
+				gnome_vfs_mime_application_free (result);
+				result = NULL;
 			}
-			gnome_vfs_mime_application_list_free (all_applications);
+			if (result != NULL)
+				break;
 		}
-
-		g_free (mime_type);
-		used_user_chosen_info = FALSE;
-	} 
+		gnome_vfs_mime_application_list_free (all_applications);
+	}
+	
+	g_free (mime_type);
 
 	g_free (uri_scheme);
 
-	if (user_chosen != NULL) {
-		*user_chosen = used_user_chosen_info;
-	}
-
-	g_free (default_application_string);
-
 	return result;
-}
-
-GnomeVFSMimeApplication *
-nautilus_mime_get_default_application_for_file (NautilusFile *file)
-{
-	return nautilus_mime_get_default_application_for_file_internal (file, NULL);
 }
 
 static GList *
@@ -218,10 +178,6 @@ nautilus_mime_get_open_with_applications_for_file (NautilusFile      *file)
 	char *uri_scheme;
 	GList *result;
 	GList *removed;
-	GList *metadata_application_add_ids;
-	GList *metadata_application_remove_ids;
-	GList *p;
-	GnomeVFSMimeApplication *application;
 
 	if (!nautilus_mime_actions_check_if_open_with_attributes_ready (file)) {
 		return NULL;
@@ -236,81 +192,21 @@ nautilus_mime_get_open_with_applications_for_file (NautilusFile      *file)
 					    uri_scheme, &removed);
 	gnome_vfs_mime_application_list_free (removed);
 	g_free (uri_scheme);
-	
-	metadata_application_add_ids = nautilus_file_get_metadata_list 
-		(file,
-		 NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_ADD,
-		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
-	metadata_application_remove_ids = nautilus_file_get_metadata_list 
-		(file,
-		 NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_REMOVE,
-		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
 
-
-	result = eel_g_list_partition (result, (EelPredicateFunction) gnome_vfs_mime_application_has_id_not_in_list, 
-				       metadata_application_remove_ids, &removed);
-	
-	gnome_vfs_mime_application_list_free (removed);
-
-	result = g_list_reverse (result);
-	for (p = metadata_application_add_ids; p != NULL; p = p->next) {
-		if (g_list_find_custom (result,
-					p->data,
-					(GCompareFunc) gnome_vfs_mime_application_has_id) == NULL &&
-		    g_list_find_custom (metadata_application_remove_ids,
-					p->data,
-					(GCompareFunc) strcmp) == NULL) {
-			application = gnome_vfs_application_registry_get_mime_application (p->data);
-			if (application != NULL) {
-				result = g_list_prepend (result, application);
-			}
-		}
-	}
-	result = g_list_reverse (result);
-
-	eel_g_list_free_deep (metadata_application_add_ids);
-	eel_g_list_free_deep (metadata_application_remove_ids);
-
-	return result;
+	return g_list_reverse (result);
 }
 
 GList *
 nautilus_mime_get_applications_for_file (NautilusFile      *file)
 {
 	char *mime_type;
-	GList *result;
-	GList *metadata_application_ids;
-	GList *p;
-	GnomeVFSMimeApplication *application;
 
 	if (!nautilus_mime_actions_check_if_minimum_attributes_ready (file)) {
 		return NULL;
 	}
-
-	metadata_application_ids = nautilus_file_get_metadata_list 
-		(file,
-		 NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION,
-		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
-
 	mime_type = nautilus_file_get_mime_type (file);
 
-	result = gnome_vfs_mime_get_all_applications (mime_type);
-
-	for (p = metadata_application_ids; p != NULL; p = p->next) {
-		if (!g_list_find_custom (result,
-					 p->data,
-					 (GCompareFunc) gnome_vfs_mime_application_has_id)) {
-			application = gnome_vfs_application_registry_get_mime_application (p->data);
-
-			if (application != NULL) {
-				result = g_list_prepend (result, application);
-			}
-		}
-	}
-
-	eel_g_list_free_deep (metadata_application_ids);
-	g_free (mime_type);
-	return result;
+	return gnome_vfs_mime_get_all_applications (mime_type);
 }
 
 static int
@@ -344,39 +240,11 @@ nautilus_mime_has_any_applications_for_file (NautilusFile      *file)
 	return result;
 }
 
-GnomeVFSResult
-nautilus_mime_set_default_application_for_file (NautilusFile      *file,
-						const char        *application_id)
-{
-	g_return_val_if_fail (nautilus_mime_actions_check_if_minimum_attributes_ready (file), 
-			      GNOME_VFS_ERROR_GENERIC);
-
-	nautilus_file_set_metadata 
-		(file, NAUTILUS_METADATA_KEY_DEFAULT_APPLICATION, NULL, application_id);
-	
-	return GNOME_VFS_OK;
-}
-
 static int
 gnome_vfs_mime_application_has_id (GnomeVFSMimeApplication *application, 
 				   const char *id)
 {
 	return strcmp (application->id, id);
-}
-
-static int
-gnome_vfs_mime_id_matches_application (const char *id, 
-				       GnomeVFSMimeApplication *application)
-{
-	return gnome_vfs_mime_application_has_id (application, id);
-}
-
-static gboolean
-gnome_vfs_mime_application_has_id_not_in_list (GnomeVFSMimeApplication *application, 
-					       GList                   *ids)
-{
-	return g_list_find_custom (ids, application, 
-				   (GCompareFunc) gnome_vfs_mime_id_matches_application) == NULL;
 }
 
 static gboolean

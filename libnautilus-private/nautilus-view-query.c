@@ -38,13 +38,11 @@
 #include <stdio.h>
 
 static char       *mime_type_get_supertype                       (const char               *mime_type);
-static GList      *get_explicit_content_view_iids_from_metafile  (NautilusFile             *file);
 static gboolean    server_has_content_requirements               (Bonobo_ServerInfo           *server);
 static GList      *nautilus_do_component_query                   (const char               *mime_type,
 								  const char               *uri_scheme,
 								  GList                    *content_mime_types,
 								  gboolean                  ignore_content_mime_types,
-								  GList                    *explicit_iids,
 								  char                    **extra_sort_criteria,
 								  char                     *extra_requirements,
 								  gboolean                  must_be_view);
@@ -153,7 +151,6 @@ nautilus_view_query_get_default_component_for_file_internal (NautilusFile *file,
 	char *mime_type;
 	char *uri_scheme;
 	GList *item_mime_types;
-	GList *explicit_iids;
 	Bonobo_ServerInfo *server;
 	char **sort_conditions;
 	char *extra_requirements;
@@ -168,8 +165,6 @@ nautilus_view_query_get_default_component_for_file_internal (NautilusFile *file,
 	mime_type = nautilus_file_get_mime_type (file);
 
 	uri_scheme = nautilus_file_get_uri_scheme (file);
-
-	explicit_iids = get_explicit_content_view_iids_from_metafile (file); 
 
 	if (!nautilus_view_query_check_if_full_attributes_ready (file) || 
 	    !nautilus_file_get_directory_item_mime_types (file, &item_mime_types)) {
@@ -202,13 +197,13 @@ nautilus_view_query_get_default_component_for_file_internal (NautilusFile *file,
 	if (metadata_default) {
 		extra_requirements = g_strconcat ("iid == '", default_component_string, "'", NULL);
 		info_list = nautilus_do_component_query (mime_type, uri_scheme, item_mime_types, TRUE,
-							 explicit_iids, sort_conditions, extra_requirements, TRUE);
+							 sort_conditions, extra_requirements, TRUE);
 		g_free (extra_requirements);
 	}
 
 	if (info_list == NULL) {
 		info_list = nautilus_do_component_query (mime_type, uri_scheme, item_mime_types, FALSE, 
-							 explicit_iids, sort_conditions, NULL, TRUE);
+							 sort_conditions, NULL, TRUE);
 	}
 
 	if (info_list != NULL) {
@@ -219,7 +214,6 @@ nautilus_view_query_get_default_component_for_file_internal (NautilusFile *file,
 	}
 	
 	eel_g_list_free_deep (item_mime_types);
-	eel_g_list_free_deep (explicit_iids);
 	g_strfreev (sort_conditions);
 
 	g_free (uri_scheme);
@@ -250,7 +244,6 @@ nautilus_view_query_get_components_for_file (NautilusFile *file)
 	char *uri_scheme;
 	GList *item_mime_types;
 	GList *info_list;
-	GList *explicit_iids;
 
 	if (!nautilus_view_query_check_if_minimum_attributes_ready (file)) {
 		return NULL;
@@ -259,7 +252,6 @@ nautilus_view_query_get_components_for_file (NautilusFile *file)
 	uri_scheme = nautilus_file_get_uri_scheme (file);
 
 	mime_type = nautilus_file_get_mime_type (file);
-	explicit_iids = get_explicit_content_view_iids_from_metafile (file); 
 
 	if (!nautilus_view_query_check_if_full_attributes_ready (file) || 
 	    !nautilus_file_get_directory_item_mime_types (file, &item_mime_types)) {
@@ -268,10 +260,8 @@ nautilus_view_query_get_components_for_file (NautilusFile *file)
 
 	info_list = nautilus_do_component_query (mime_type, uri_scheme,
 						 item_mime_types, FALSE,
-						 explicit_iids, NULL,
-						 NULL, TRUE);
+						 NULL, NULL, TRUE);
 	
-	eel_g_list_free_deep (explicit_iids);
 	eel_g_list_free_deep (item_mime_types);
 
 	g_free (uri_scheme);
@@ -326,79 +316,17 @@ mime_type_get_supertype (const char *mime_type)
         return extract_prefix_add_suffix (mime_type, "/", "/*");
 }
 
-
-/*
- * The following routine uses metadata associated with the current url
- * to add content view components specified in the metadata. The
- * content views are specified in the string as <EXPLICIT_CONTENT_VIEW
- * IID="iid"/> elements inside the appropriate <FILE> element.  
- */
-
-static GList *
-get_explicit_content_view_iids_from_metafile (NautilusFile *file)
-{
-        if (file != NULL) {
-                return nautilus_file_get_metadata_list 
-                        (file,
-			 NAUTILUS_METADATA_KEY_EXPLICIT_COMPONENT,
-			 NAUTILUS_METADATA_SUBKEY_COMPONENT_IID);
-        } else {
-		return NULL;
-	}
-}
-
-static char *
-make_bonobo_activation_query_for_explicit_content_view_iids (GList *view_iids)
-{
-        GList *p;
-        char  *iid;
-        char  *query;
-        char  *old_query;
-
-        query = NULL;
-
-        for (p = view_iids; p != NULL; p = p->next) {
-                iid = (char *) p->data;
-                if (query != NULL) {
-                        old_query = query;
-                        query = g_strconcat (query, " OR ", NULL);
-                        g_free (old_query);
-                } else {
-                        query = g_strdup ("(");
-                }
-
-                old_query = query;
-                query = g_strdup_printf ("%s iid=='%s'", old_query, iid);
-                g_free (old_query);
-        }
-
-
-        if (query != NULL) {
-                old_query = query;
-                query = g_strconcat (old_query, ")", NULL);
-                g_free (old_query);
-        } else {
-                query = g_strdup ("false");
-        }
-
-        return query;
-}
-
 static char *
 make_bonobo_activation_query_with_known_mime_type (const char *mime_type, 
 						   const char *uri_scheme, 
-						   GList      *explicit_iids, 
 						   const char *extra_requirements,
 						   gboolean    must_be_view)
 {
         char *mime_supertype;
         char *result;
-        char *explicit_iid_query;
 	const char *view_as_name_logic;
 
         mime_supertype = mime_type_get_supertype (mime_type);
-
-        explicit_iid_query = make_bonobo_activation_query_for_explicit_content_view_iids (explicit_iids);
 
 	if (must_be_view) {
 		view_as_name_logic = "nautilus:view_as_name.defined ()";
@@ -432,7 +360,7 @@ make_bonobo_activation_query_with_known_mime_type (const char *mime_type,
                  /* Check that the supported MIME types include the
                   * URI's MIME type or its supertype.
                   */
-                 "((NOT bonobo:supported_mime_types.defined ()"
+                 "(NOT bonobo:supported_mime_types.defined ()"
                       "OR bonobo:supported_mime_types.has ('%s')"
                       "OR bonobo:supported_mime_types.has ('%s')"
                       "OR bonobo:supported_mime_types.has ('*/*'))"
@@ -458,12 +386,6 @@ make_bonobo_activation_query_with_known_mime_type (const char *mime_type,
                    * Nautilus appear.  */
 		  "AND %s)"
                   
-
-                  /* Also select iids that were specifically requested
-                     for this location, even if they do not otherwise
-                     meet the requirements. */
-                  "OR %s)"
-
 		 /* Make it possible to add extra requirements */
 		 " AND (%s)"
 
@@ -472,8 +394,7 @@ make_bonobo_activation_query_with_known_mime_type (const char *mime_type,
                   */
                  , mime_type, mime_supertype, uri_scheme, uri_scheme,
 
-                 /* The explicit metafile iid query for the %s above. */
-                 view_as_name_logic, explicit_iid_query
+                 view_as_name_logic
 
 		 /* extra requirements */
 		 , extra_requirements != NULL ? extra_requirements : "true");
@@ -507,22 +428,17 @@ make_bonobo_activation_query_with_known_mime_type (const char *mime_type,
 	}
 
         g_free (mime_supertype);
-        g_free (explicit_iid_query);
         return result;
 }
 
 static char *
 make_bonobo_activation_query_with_uri_scheme_only (const char *uri_scheme, 
-				     GList      *explicit_iids, 
-				     const char *extra_requirements,
-				     gboolean    must_be_view)
+						   const char *extra_requirements,
+						   gboolean    must_be_view)
 {
         char *result;
-        char *explicit_iid_query;
 	const char *view_as_name_logic;
         
-        explicit_iid_query = make_bonobo_activation_query_for_explicit_content_view_iids (explicit_iids);
-
 	if (must_be_view) {
 		view_as_name_logic = "nautilus:view_as_name.defined ()";
 	} else {
@@ -535,7 +451,7 @@ make_bonobo_activation_query_with_uri_scheme_only (const char *uri_scheme,
                   /* Check if the component supports this particular
                    * URI scheme.
                    */
-                  "(((bonobo:supported_uri_schemes.has ('%s')"
+                  "((bonobo:supported_uri_schemes.has ('%s')"
                          "OR bonobo:supported_uri_schemes.has ('*'))"
 
                   /* Check that the component doesn't require
@@ -557,12 +473,6 @@ make_bonobo_activation_query_with_uri_scheme_only (const char *uri_scheme,
                    * Nautilus appear.  */
 		  "AND %s)"
 
-                 /* Also select iids that were specifically requested
-                     for this location, even if they do not otherwise
-                     meet the requirements. */
-
-                  "OR %s)"
-
 		 /* Make it possible to add extra requirements */
 		  " AND (%s)"
 
@@ -570,8 +480,7 @@ make_bonobo_activation_query_with_uri_scheme_only (const char *uri_scheme,
                   , uri_scheme, uri_scheme, view_as_name_logic
 
                   /* The explicit metafile iid query for the %s above. */
-                  , explicit_iid_query,
-		  extra_requirements != NULL ? extra_requirements : "true");
+                  , extra_requirements != NULL ? extra_requirements : "true");
 	
 
 	if (must_be_view) {
@@ -602,9 +511,6 @@ make_bonobo_activation_query_with_uri_scheme_only (const char *uri_scheme,
 		result = str;
 	}
 		  
-
-	g_free (explicit_iid_query);
-	
         return result;
 }
 
@@ -668,17 +574,11 @@ server_has_content_requirements (Bonobo_ServerInfo *server)
 
 static gboolean
 server_matches_content_requirements (Bonobo_ServerInfo *server, 
-				     GHashTable     *type_table, 
-				     GList          *explicit_iids)
+				     GHashTable     *type_table)
 {
         Bonobo_ActivationProperty *prop;
         Bonobo_StringList types;
         guint i;
-
-        /* Components explicitly requested in the metafile are not capability tested. */
-        if (g_list_find_custom (explicit_iids, (gpointer) server->iid, (GCompareFunc) strcmp) != NULL) {
-                return TRUE;
-        }
 
         if (!server_has_content_requirements (server)) {
                 return TRUE;
@@ -716,7 +616,6 @@ nautilus_do_component_query (const char        *mime_type,
 			     const char        *uri_scheme, 
 			     GList             *item_mime_types,
 			     gboolean           ignore_content_mime_types,
-			     GList             *explicit_iids,
 			     char             **extra_sort_criteria,
 			     char              *extra_requirements,
 			     gboolean           must_be_view)
@@ -731,9 +630,9 @@ nautilus_do_component_query (const char        *mime_type,
         query = NULL;
 
         if (is_known_mime_type (mime_type)) {
-                query = make_bonobo_activation_query_with_known_mime_type (mime_type, uri_scheme, explicit_iids, extra_requirements, must_be_view);
+                query = make_bonobo_activation_query_with_known_mime_type (mime_type, uri_scheme, extra_requirements, must_be_view);
         } else {
-                query = make_bonobo_activation_query_with_uri_scheme_only (uri_scheme, explicit_iids, extra_requirements, must_be_view);
+                query = make_bonobo_activation_query_with_uri_scheme_only (uri_scheme, extra_requirements, must_be_view);
         }
 
 	all_sort_criteria = strv_concat (extra_sort_criteria, nautilus_sort_criteria);
@@ -759,7 +658,7 @@ nautilus_do_component_query (const char        *mime_type,
                         server = &bonobo_activation_result->_buffer[i];
 
                         if (ignore_content_mime_types || 
-			    server_matches_content_requirements (server, content_types, explicit_iids)) {
+			    server_matches_content_requirements (server, content_types)) {
                                 if (server->iid != NULL) {
                                 	retval = g_list_prepend
                                         	(retval, 
@@ -848,8 +747,7 @@ nautilus_view_query_get_popup_components_for_file (NautilusFile *file)
 
 	info_list = nautilus_do_component_query (mime_type, uri_scheme,
 						 item_mime_types, FALSE,
-						 NULL, NULL,
-						 extra_reqs, FALSE);
+						 NULL, extra_reqs, FALSE);
 	
 	eel_g_list_free_deep (item_mime_types);
 
@@ -886,8 +784,7 @@ nautilus_view_query_get_property_components_for_file (NautilusFile *file)
 
         info_list = nautilus_do_component_query (mime_type, uri_scheme,
                                                  item_mime_types, FALSE,
-                                                 NULL, NULL,
-                                                 extra_reqs, FALSE);
+                                                 NULL, extra_reqs, FALSE);
 
         eel_g_list_free_deep (item_mime_types);
 
