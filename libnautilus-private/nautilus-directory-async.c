@@ -1634,9 +1634,7 @@ lacks_link_info (NautilusFile *file)
 {
 	if (file->details->file_info_is_up_to_date && 
 	    !file->details->link_info_is_up_to_date) {
-		if ((nautilus_file_is_mime_type (file, "application/x-gmc-link") &&
-		     nautilus_file_is_in_desktop (file)) ||
-		    nautilus_file_is_nautilus_link (file) ||
+		if (nautilus_file_is_nautilus_link (file) ||
 		    nautilus_file_is_directory (file)) {
 			return TRUE;
 		} else {
@@ -2803,110 +2801,13 @@ link_info_nautilus_link_read_callback (GnomeVFSResult result,
 }
 
 
-
-
-static void
-link_info_gmc_link_read_callback (GnomeVFSResult result,
-				  GnomeVFSFileSize bytes_read,
-				  char *file_contents,
-				  gpointer callback_data)
-{
-	NautilusDirectory *directory;
-	char *end_of_line, *uri, *name, *path, *icon, *icon_path;
-	int size, res;
-	
-	directory = NAUTILUS_DIRECTORY (callback_data);
-
-	nautilus_directory_ref (directory);
-
-	uri = NULL;
-	name = NULL;
-	icon = NULL;
-	icon_path = NULL;
-
-	/* Handle the case where we read the GMC link. */
-	if (result != GNOME_VFS_OK || !eel_str_has_prefix (file_contents, "URL: ")) {
-		/* FIXME bugzilla.gnome.org 42433: We should report this error to the user. */
-	} else {
-		/* Make sure we don't run off the end of the buffer. */
-		end_of_line = memchr (file_contents, '\n', bytes_read);
-		if (end_of_line == NULL) {
-			end_of_line = file_contents + bytes_read;
-		}
-		uri = file_contents + strlen("URL: ");
-		uri = g_strndup (uri, end_of_line - uri);
-
-		path = gnome_vfs_get_local_path_from_uri (uri);
-		
-		if (path != NULL) {
-			/* FIXME: this gnome_metata_get call is synchronous, but better to
-			 * have it here where the results will at least be cached than in
-			 * nautilus_file_get_display_name. 
-			 */
-#if GNOME2_CONVERSION_COMPLETE
-			res = gnome_metadata_get (path, "icon-name", &size, &name);
-			if (res != 0) {
-				name = NULL;
-			}
-#else
-			size = 0;
-			res = -1;
-#endif
-		} else {
-		        res = -1;
-		}
-		
-		if (path != NULL) {
-			/* FIXME: this gnome_metata_get call is synchronous, but better to
-			 * have it here where the results will at least be cached than in
-			 * nautilus_file_get_display_name. 
-			 */
-#if GNOME2_CONVERSION_COMPLETE
-			res = gnome_metadata_get (path, "icon-filename", &size, &icon_path);
-#else
-			res = -1;
-#endif
-		} else {
-			res = -1;
-		}
-
-		if (res == 0 && icon_path != NULL) {
-			icon = gnome_vfs_get_uri_from_local_path (icon_path);
-			g_free (icon_path);
-		} else {
-			icon = NULL;
-		}
-
-		g_free (path);
-	}
-
-	g_free (file_contents);
-	link_info_read_done (directory, uri, name, icon);
-	g_free (uri);
-	g_free (name);
-	g_free (icon);
-
-	nautilus_directory_unref (directory);
-}
-
-static gboolean
-link_info_gmc_link_read_more_callback (GnomeVFSFileSize bytes_read,
-				       const char *file_contents,
-				       gpointer callback_data)
-{
-	g_assert (NAUTILUS_IS_DIRECTORY (callback_data));
-
-	/* We need the first 512 bytes to see if something is a gmc link. */
-	return bytes_read < 512;
-}
-
 static char *
 make_dot_directory_uri (const char *uri)
 {
 	char *dot_directory_uri;
 	GnomeVFSURI *vfs_uri;
 	GnomeVFSURI *dot_dir_vfs_uri;
-	
+
 	/* FIXME: what we really need is a uri_append_file_name call
 	 * that works on strings, so we can avoid the VFS parsing step.
 	 */
@@ -2965,7 +2866,7 @@ link_info_start (NautilusDirectory *directory,
 		 NautilusFile *file)
 {
 	char *uri, *dot_directory_uri = NULL;
-	gboolean gmc_style_link, nautilus_style_link, is_directory;
+	gboolean nautilus_style_link, is_directory;
 
 	if (directory->details->link_info_read_state != NULL) {
 		return;
@@ -2978,8 +2879,6 @@ link_info_start (NautilusDirectory *directory,
 	}
 
 	/* Figure out if it is a link. */
-	gmc_style_link = nautilus_file_is_mime_type (file, "application/x-gmc-link")
-		&& nautilus_file_is_in_desktop (file);
 	nautilus_style_link = nautilus_file_is_nautilus_link (file);
         is_directory = nautilus_file_is_directory (file);
 
@@ -2990,7 +2889,7 @@ link_info_start (NautilusDirectory *directory,
 	}
 	
 	/* If it's not a link we are done. If it is, we need to read it. */
-	if (!(gmc_style_link || nautilus_style_link || (is_directory && dot_directory_uri != NULL) )) {
+	if (!(nautilus_style_link || (is_directory && dot_directory_uri != NULL) )) {
 		link_info_done (directory, file, NULL, NULL, NULL);
 	} else {
 		if (!async_job_start (directory, "link info")) {
@@ -3001,14 +2900,7 @@ link_info_start (NautilusDirectory *directory,
 
 		directory->details->link_info_read_state = g_new0 (LinkInfoReadState, 1);
 		directory->details->link_info_read_state->file = file;
-		if (gmc_style_link) {
-			directory->details->link_info_read_state->handle = eel_read_file_async
-				(uri,
-				 GNOME_VFS_PRIORITY_DEFAULT,
-				 link_info_gmc_link_read_callback,
-				 link_info_gmc_link_read_more_callback,
-				 directory);
-		}  else if (is_directory) {
+		if (is_directory) {
 			directory->details->link_info_read_state->handle = eel_read_entire_file_async
 				(dot_directory_uri,
 				 GNOME_VFS_PRIORITY_DEFAULT,

@@ -38,10 +38,11 @@
 #include <libgnome/gnome-i18n.h>
 
 struct NautilusEntryDetails {
-	gboolean use_emacs_shortcuts;
 	gboolean user_edit;
 	gboolean special_tab_handling;
 	gboolean cursor_obscured;
+
+	guint select_idle_id;
 };
 
 enum {
@@ -64,9 +65,6 @@ emacs_shortcuts_preference_changed_callback (gpointer callback_data)
 	NautilusEntry *entry;
 
 	entry = NAUTILUS_ENTRY (callback_data);
-
-	entry->details->use_emacs_shortcuts =
-		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS);
 }
 
 static void
@@ -83,10 +81,6 @@ nautilus_entry_init (NautilusEntry *entry)
 	gtk_widget_set_events (widget, gtk_widget_get_events (widget) | GDK_POINTER_MOTION_MASK);
 
 	nautilus_undo_set_up_nautilus_entry_for_undo (entry);
-
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS,
-				      emacs_shortcuts_preference_changed_callback,
-				      entry);
 	emacs_shortcuts_preference_changed_callback (entry);
 }
 
@@ -114,9 +108,9 @@ nautilus_entry_finalize (GObject *object)
 
 	entry = NAUTILUS_ENTRY (object);
 
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS,
-					 emacs_shortcuts_preference_changed_callback,
-					 entry);
+	if (entry->details->select_idle_id != 0) {
+		gtk_idle_remove (entry->details->select_idle_id);
+	}
 	
 	g_free (entry->details);
 
@@ -164,27 +158,9 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 			return TRUE;
 		}
 		break;
-	
-	case GDK_KP_Enter:
-		/* Work around bug in GtkEntry where keypad Enter key
-		 * inserts a character rather than activating like the
-		 * other Enter key.
-		 */
-		gtk_widget_activate (widget);
-		return TRUE;		
-		
+
 	default:
 		break;
-	}
-
-	if (!entry->details->use_emacs_shortcuts) {
-		/* Filter out the emacs-style keyboard shortcuts in
-		 * GtkEntry for alt and control keys. They have
-		 * numerous conflicts with menu keyboard shortcuts.
-		 */
-		if (event->state & GDK_CONTROL_MASK || event->state & GDK_MOD1_MASK) {
-			return FALSE;
-		}
 	}
 	
 	obscure_cursor (entry);
@@ -264,9 +240,14 @@ nautilus_entry_select_all (NautilusEntry *entry)
 static gboolean
 select_all_at_idle (gpointer callback_data)
 {
-	nautilus_entry_select_all (NAUTILUS_ENTRY (callback_data));
-	g_object_unref (callback_data);
+	NautilusEntry *entry;
 
+	entry = NAUTILUS_ENTRY (callback_data);
+
+	nautilus_entry_select_all (entry);
+
+	entry->details->select_idle_id = 0;
+	
 	return FALSE;
 }
 
@@ -283,8 +264,6 @@ select_all_at_idle (gpointer callback_data)
 void
 nautilus_entry_select_all_at_idle (NautilusEntry *entry)
 {
-	GSource *source;
-	
 	g_return_if_fail (NAUTILUS_IS_ENTRY (entry));
 
 	/* If the text cursor position changes in this routine
@@ -292,12 +271,9 @@ nautilus_entry_select_all_at_idle (NautilusEntry *entry)
 	 * to move the text cursor position to the end).
 	 */
 
-	source = g_idle_source_new ();
-	g_source_set_callback (source, select_all_at_idle, entry, NULL);
-	g_signal_connect_swapped (entry, "destroy",
-				  G_CALLBACK (g_source_destroy), source);
-	g_source_attach (source, NULL);
-	g_source_unref (source);
+	if (entry->details->select_idle_id == 0) {
+		entry->details->select_idle_id = gtk_idle_add (select_all_at_idle, entry);
+	}
 }
 
 /**

@@ -1,3 +1,30 @@
+2002-01-21  Anders Carlsson  <andersca@gnu.org>
+
+	* configure.in:
+	Change libprofiler location.
+	
+	* libnautilus-private/nautilus-directory-async.c:
+	(lacks_link_info), (make_dot_directory_uri), (link_info_start):
+	Remove support for gmc style links.
+	
+	* libnautilus-private/nautilus-entry.c:
+	(emacs_shortcuts_preference_changed_callback),
+	(nautilus_entry_init), (nautilus_entry_finalize),
+	(nautilus_entry_key_press), (select_all_at_idle),
+	(nautilus_entry_select_all_at_idle):
+	Use gtk_idle_add instead and store the idle id in the details
+	struct. This fixes some weirdness in the file properties dialog, 
+	since the "destroy" signal can be emitted more than once.
+	
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(update_label_layouts):
+	Enable underlining.
+	
+	* libnautilus-private/nautilus-monitor.c: (get_event_uri):
+	Silently return if we can't find the base path. This is valid when
+	we've called nautilus_monitor_cancel but still have some events 
+	in the queue.
+	
 2002-01-18  Michael Meeks  <michael@ximian.com>
 
 	* src/nautilus-window-toolbars.c

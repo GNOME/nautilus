@@ -1192,15 +1192,11 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 static void
 update_label_layouts (NautilusIconCanvasItem *item)
 {
-	/* We have to disable this for now due to a bug in pangoft2 that causes a crash
-	 * when rendering an underlined layout.
-	 */
-#ifdef GNOME2_CONVERSION_COMPLETE
 	PangoUnderline underline;
-	
+
 	underline = (item->details->is_prelit && in_single_click_mode ()) ?
 		PANGO_UNDERLINE_SINGLE : PANGO_UNDERLINE_NONE;
-		
+
 	if (item->details->editable_text_layout != NULL) {
 		eel_pango_layout_set_underline (item->details->editable_text_layout, underline);
 	}
@@ -1208,7 +1204,6 @@ update_label_layouts (NautilusIconCanvasItem *item)
 	if (item->details->additional_text_layout != NULL) {
 		eel_pango_layout_set_underline (item->details->additional_text_layout, underline);
 	}
-#endif
 }
 
 static PangoLayout *

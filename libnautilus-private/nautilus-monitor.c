@@ -110,7 +110,14 @@ get_event_uri (const FAMEvent *event)
 	 */
 	base_path = g_hash_table_lookup (get_request_hash_table (),
 					 GINT_TO_POINTER (FAMREQUEST_GETREQNUM (&event->fr)));
-	g_return_val_if_fail (base_path != NULL, NULL);
+
+	/* base_path can be NULL if we've cancelled the monitor but still have
+	 * some change notifications in our queue. Just return NULL In that case.
+	 */
+	if (base_path == NULL) {
+		return NULL;
+	}
+
 	path = g_concat_dir_and_file (base_path, event->filename);
 	uri = gnome_vfs_get_uri_from_local_path (path);
 	g_free (path);
