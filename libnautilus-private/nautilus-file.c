@@ -3836,7 +3836,7 @@ sort_keyword_list_and_remove_duplicates (GList *keywords)
 
 		p = keywords;
 		while (p->next != NULL) {
-			if (strcmp (p->data, p->next->data) == 0) {
+			if (strcmp ((const char *) p->data, (const char *) p->next->data) == 0) {
 				duplicate_link = p->next;
 				keywords = g_list_remove_link (keywords, duplicate_link);
 				nautilus_g_list_free_deep (duplicate_link);

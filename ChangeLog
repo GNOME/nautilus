@@ -1,3 +1,16 @@
+2001-01-16  Seth Nickell  <seth@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(nautilus_directory_rename_file_metadata),
+	(nautilus_directory_remove_file_metadata):
+	* libnautilus-extensions/nautilus-file.c:
+	(sort_keyword_list_and_remove_duplicates):
+
+	Add casts to strcmp's performed on gpointers so they will
+	not generate warnings.
+	
 2001-01-16  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>

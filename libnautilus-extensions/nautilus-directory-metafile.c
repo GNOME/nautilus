@@ -643,7 +643,7 @@ nautilus_directory_rename_file_metadata (NautilusDirectory *directory,
 		found = g_hash_table_lookup_extended
 			(hash, old_file_name, &key, &value);
 		if (found) {
-			g_assert (strcmp (key, old_file_name) == 0);
+			g_assert (strcmp ((const char *) key, old_file_name) == 0);
 			file_node = value;
 			g_hash_table_remove (hash,
 					     old_file_name);
@@ -918,7 +918,7 @@ nautilus_directory_remove_file_metadata (NautilusDirectory *directory,
 		found = g_hash_table_lookup_extended
 			(hash, file_name, &key, &value);
 		if (found) {
-			g_assert (strcmp (key, file_name) == 0);
+			g_assert (strcmp ((const char *) key, file_name) == 0);
 			file_node = value;
 			g_hash_table_remove (hash,
 					     file_name);
