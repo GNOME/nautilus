@@ -33,6 +33,7 @@
 #include "nautilus-tree-view.h"
 
 #include "nautilus-tree-model.h"
+#include <eel/eel-glib-extensions.h>
 #include <eel/eel-preferences.h>
 #include <eel/eel-string.h>
 #include <gtk/gtkcellrendererpixbuf.h>
@@ -41,6 +42,7 @@
 #include <gtk/gtktreemodelsort.h>
 #include <gtk/gtktreeview.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 
 #define NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE "tree-sidebar-panel/expansion_state"
 
@@ -53,6 +55,10 @@ struct NautilusTreeViewDetails {
 	NautilusTreeModel *sort_model;
 #endif
 	NautilusTreeModel *child_model;
+
+	gboolean show_hidden_files;
+	gboolean show_backup_files;
+	gboolean show_only_directories;
 
 	NautilusFile *activation_file;
 	guint save_expansion_state_idle_id;
@@ -120,7 +126,7 @@ save_expansion_state (NautilusTreeView *view)
         gtk_tree_view_map_expanded_rows (view->details->tree_widget, prepend_one_uri, &p);
         p.uris = g_list_sort (p.uris, eel_strcmp_compare_func);
         uris = eel_string_list_new_from_g_list (p.uris, TRUE);
-	g_list_free (p.uris);
+	eel_g_list_free_deep (p.uris);
         eel_preferences_set_string_list (NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE, uris);
         eel_string_list_free (uris);
 }
@@ -194,7 +200,7 @@ row_activated_callback (GtkTreeView *tree_widget,
 
         cancel_activation (view);
 
-        view->details->activation_file = nautilus_file_ref (path_to_file (view, path));
+        view->details->activation_file = path_to_file (view, path);
 
         attrs = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
         nautilus_file_call_when_ready (view->details->activation_file, attrs,
@@ -231,6 +237,8 @@ create_tree (NautilusTreeView *view)
 	gtk_tree_view_column_pack_start (column, cell, FALSE);
 	gtk_tree_view_column_set_attributes (column, cell,
 					     "pixbuf", NAUTILUS_TREE_MODEL_CLOSED_PIXBUF_COLUMN,
+					     "pixbuf_expander_closed", NAUTILUS_TREE_MODEL_CLOSED_PIXBUF_COLUMN,
+					     "pixbuf_expander_open", NAUTILUS_TREE_MODEL_OPEN_PIXBUF_COLUMN,
 					     NULL);
 	
 	cell = gtk_cell_renderer_text_new ();
@@ -267,6 +275,42 @@ tree_activate_callback (BonoboControl *control, gboolean activating, gpointer us
 	}
 }
 
+static int
+get_filtering_as_integer (NautilusTreeView *view)
+{
+	return (((view->details->show_hidden_files << 1)
+		 | view->details->show_backup_files) << 1)
+		| view->details->show_only_directories;
+}
+
+static void
+update_filtering_from_preferences (NautilusTreeView *view)
+{
+	view->details->show_hidden_files =
+		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
+	view->details->show_backup_files =
+		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES);
+	view->details->show_only_directories =
+		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES);
+}
+
+static void
+filtering_changed_callback (gpointer callback_data)
+{
+	NautilusTreeView *view;
+	int filtering_before;
+
+	view = NAUTILUS_TREE_VIEW (callback_data);
+
+	filtering_before = get_filtering_as_integer (view);
+	update_filtering_from_preferences (view);
+	if (filtering_before == get_filtering_as_integer (view)) {
+		return;
+	}
+	
+	/* FIXME: reload the whole tree */
+}
+
 static void
 nautilus_tree_view_instance_init (NautilusTreeView *view)
 {
@@ -287,6 +331,15 @@ nautilus_tree_view_instance_init (NautilusTreeView *view)
 				 G_CALLBACK (tree_activate_callback), view, 0);
 
 	nautilus_view_construct_from_bonobo_control (NAUTILUS_VIEW (view), control);
+
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+				      filtering_changed_callback, view);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+				      filtering_changed_callback, view);
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
+				      filtering_changed_callback, view);
+
+	update_filtering_from_preferences (view);
 }
 
 static void
@@ -295,6 +348,13 @@ nautilus_tree_view_finalize (GObject *object)
 	NautilusTreeView *view;
 
 	view = NAUTILUS_TREE_VIEW (object);
+
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+					 filtering_changed_callback, view);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+					 filtering_changed_callback, view);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
+					 filtering_changed_callback, view);
 
 	cancel_activation (view);
 	if (view->details->save_expansion_state_idle_id != 0) {

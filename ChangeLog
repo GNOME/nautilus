@@ -1,3 +1,24 @@
+2002-02-08  Darin Adler  <darin@bentspoon.com>
+
+	* components/tree/nautilus-tree-model.h:
+	* components/tree/nautilus-tree-model.c: (tree_node_destroy),
+	(tree_node_get_pixbuf_from_factory), (tree_node_update_pixbuf),
+	(tree_node_update_closed_pixbuf), (tree_node_update_open_pixbuf),
+	(tree_node_get_closed_pixbuf), (tree_node_get_open_pixbuf),
+	(update_node_without_reporting),
+	(nautilus_tree_model_get_column_type),
+	(nautilus_tree_model_get_value):
+	Added open pixbuf support.
+
+	* components/tree/nautilus-tree-view.c: (save_expansion_state):
+	Fix storage leak.
+	(row_activated_callback): Fix NautilusFile ref. count leak.
+	(create_tree): Pass in open pixbuf for "pixbuf_expander_open".
+	(get_filtering_as_integer), (update_filtering_from_preferences),
+	(filtering_changed_callback), (nautilus_tree_view_instance_init),
+	(nautilus_tree_view_finalize): Starting on code needed to
+	respect the filtering preferences.
+
 2002-02-07  Darin Adler  <darin@bentspoon.com>
 
 	* components/tree/nautilus-tree-model.h:

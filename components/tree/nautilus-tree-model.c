@@ -50,6 +50,7 @@ struct TreeNode {
 	NautilusFile *file;
 	char *display_name;
 	GdkPixbuf *closed_pixbuf;
+	GdkPixbuf *open_pixbuf;
 
 	TreeNode *parent;
 	TreeNode *next;
@@ -148,6 +149,7 @@ tree_node_destroy (TreeNode *node)
 	g_object_unref (node->file);
 	g_free (node->display_name);
 	object_unref_if_not_NULL (node->closed_pixbuf);
+	object_unref_if_not_NULL (node->open_pixbuf);
 
 	g_assert (node->done_loading_id == 0);
 	g_assert (node->files_added_id == 0);
@@ -181,28 +183,43 @@ tree_node_parent (TreeNode *node, TreeNode *parent)
 }
 
 static GdkPixbuf *
-tree_node_get_closed_pixbuf_from_factory (TreeNode *node)
+tree_node_get_pixbuf_from_factory (TreeNode *node,
+				   const char *modifier)
 {
 	return nautilus_icon_factory_get_pixbuf_for_file
-		(node->file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS);
+		(node->file, modifier, NAUTILUS_ICON_SIZE_FOR_MENUS);
+}
+
+static gboolean
+tree_node_update_pixbuf (TreeNode *node,
+			 GdkPixbuf **pixbuf_storage,
+			 const char *modifier)
+{
+	GdkPixbuf *pixbuf;
+
+	if (*pixbuf_storage == NULL) {
+		return FALSE;
+	}
+	pixbuf = tree_node_get_pixbuf_from_factory (node, modifier);
+	if (pixbuf == *pixbuf_storage) {
+		g_object_unref (pixbuf);
+		return FALSE;
+	}
+	g_object_unref (*pixbuf_storage);
+	*pixbuf_storage = pixbuf;
+	return TRUE;
 }
 
 static gboolean
 tree_node_update_closed_pixbuf (TreeNode *node)
 {
-	GdkPixbuf *closed_pixbuf;
+	return tree_node_update_pixbuf (node, &node->closed_pixbuf, NULL);
+}
 
-	if (node->closed_pixbuf == NULL) {
-		return FALSE;
-	}
-	closed_pixbuf = tree_node_get_closed_pixbuf_from_factory (node);
-	if (closed_pixbuf == node->closed_pixbuf) {
-		g_object_unref (closed_pixbuf);
-		return FALSE;
-	}
-	g_object_unref (node->closed_pixbuf);
-	node->closed_pixbuf = closed_pixbuf;
-	return TRUE;
+static gboolean
+tree_node_update_open_pixbuf (TreeNode *node)
+{
+	return tree_node_update_pixbuf (node, &node->open_pixbuf, "accept");
 }
 
 static gboolean
@@ -227,9 +244,18 @@ static GdkPixbuf *
 tree_node_get_closed_pixbuf (TreeNode *node)
 {
 	if (node->closed_pixbuf == NULL) {
-		node->closed_pixbuf = tree_node_get_closed_pixbuf_from_factory (node);
+		node->closed_pixbuf = tree_node_get_pixbuf_from_factory (node, NULL);
 	}
 	return node->closed_pixbuf;
+}
+
+static GdkPixbuf *
+tree_node_get_open_pixbuf (TreeNode *node)
+{
+	if (node->open_pixbuf == NULL) {
+		node->open_pixbuf = tree_node_get_pixbuf_from_factory (node, "accept");
+	}
+	return node->open_pixbuf;
 }
 
 static const char *
@@ -513,8 +539,9 @@ update_node_without_reporting (NautilusTreeModel *model, TreeNode *node)
 		node->done_loading = FALSE;
 	}
 
-	changed |= tree_node_update_closed_pixbuf (node);
 	changed |= tree_node_update_display_name (node);
+	changed |= tree_node_update_closed_pixbuf (node);
+	changed |= tree_node_update_open_pixbuf (node);
 
 	return changed;
 }
@@ -742,6 +769,8 @@ nautilus_tree_model_get_column_type (GtkTreeModel *model, int index)
 		return G_TYPE_STRING;
 	case NAUTILUS_TREE_MODEL_CLOSED_PIXBUF_COLUMN:
 		return GDK_TYPE_PIXBUF;
+	case NAUTILUS_TREE_MODEL_OPEN_PIXBUF_COLUMN:
+		return GDK_TYPE_PIXBUF;
 	default:
 		g_assert_not_reached ();
 	}
@@ -873,6 +902,10 @@ nautilus_tree_model_get_value (GtkTreeModel *model, GtkTreeIter *iter, int colum
 	case NAUTILUS_TREE_MODEL_CLOSED_PIXBUF_COLUMN:
 		g_value_init (value, GDK_TYPE_PIXBUF);
 		g_value_set_object (value, node == NULL ? NULL : tree_node_get_closed_pixbuf (node));
+		break;
+	case NAUTILUS_TREE_MODEL_OPEN_PIXBUF_COLUMN:
+		g_value_init (value, GDK_TYPE_PIXBUF);
+		g_value_set_object (value, node == NULL ? NULL : tree_node_get_open_pixbuf (node));
 		break;
 	default:
 		g_assert_not_reached ();
