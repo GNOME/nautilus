@@ -1,3 +1,12 @@
+2000-05-24  John Sullivan  <sullivan@eazel.com>
+
+	* src/ntl-app.c: (display_caveat), (nautilus_app_startup):
+	Round one of caveat dialog improvement. I managed to get it
+	to be modeless and come up in front of the Nautilus window.
+	The word-wrapping had to be done by hand to work around
+	unsolved bug (963). The next round will involve using Arlo's
+	cool picture.
+
 2000-05-24  Darin Adler  <darin@eazel.com>
 
 	* libnautilus/Makefile.am:

@@ -270,32 +270,23 @@ nautilus_app_destroy (GtkObject *object)
 }
 
 static void
-display_prototype_caveat (void)
+display_caveat (GtkWindow *window)
 {
-	/* Inform the user that Nautilus has a long way to go
-	 * before they should be expecting it to work well.
+	/* FIXME: bugzilla.eazel.com 963:
+	 * This shouldn't have to be explicitly word-wrapped, but we ran into a bug
+	 * resulting in segfaulting in some tree code when closing this dialog when
+	 * we tried to use a word-wrapped version.
 	 */
-	if (getenv ("NAUTILUS_NO_CAVEAT_DIALOG") == NULL) {
-		/* Before you change this code back to use gnome_warning_dialog
-		 * or nautilus_warning_dialog, you better test it. See bug 963.
-		 */
-		nautilus_simple_dialog
-			(NULL,
-			 _("The Nautilus shell is under development; "
-			   "it's not ready for daily use. "
-			   "Many features, including some of the best ones, "
-			   "are not yet done, partly done, or unstable. "
-			   "The program doesn't look or act the way it "
-			   "will in version 1.0."
-			   "\n\n"
-			   "If you do decide to test this version of Nautilus, beware. "
-			   "The program could do something unpredictable and may even "
-			   "delete or overwrite files on your computer."
-			   "\n\n"
-			   "For more information, visit http://nautilus.eazel.com."),
-			 _("Nautilus: caveat"),
-			 GNOME_STOCK_BUTTON_OK, NULL);
-	}
+	gnome_warning_dialog_parented (_("The Nautilus shell is under development; it's not ready for daily use. "
+			   		 "\nMany features, including some of the best ones, are not yet done, "
+			   		 "\npartly done, or unstable. The program doesn't look or act the way it "
+			   		 "\nwill in version 1.0."
+			   		 "\n"
+			   		 "\nIf you do decide to test this version of Nautilus, beware. The program "
+			   		 "\ncould do something unpredictable and may even delete or overwrite "
+			   		 "\nfiles on your computer."
+			   		 "\n"
+			   		 "\nFor more information, visit http://nautilus.eazel.com."), window);
 }
 
 void
@@ -303,13 +294,18 @@ nautilus_app_startup(NautilusApp *app, const char *initial_url)
 {
 	NautilusWindow *mainwin;
 
-	/* Put up (modal) caveat. */
-	display_prototype_caveat ();
-
   	/* Set default configuration */
   	mainwin = nautilus_app_create_window (app);
   	bonobo_activate ();
   	nautilus_window_set_initial_state (mainwin, initial_url);
+
+	/* Show the "not ready for prime time" dialog after this
+	 * window appears, so it's on top.
+	 */
+	if (getenv ("NAUTILUS_NO_CAVEAT_DIALOG") == NULL) {
+	  	gtk_signal_connect (GTK_OBJECT (mainwin), "show",
+	  			    display_caveat, mainwin);
+  	}
 }
 
 static void
