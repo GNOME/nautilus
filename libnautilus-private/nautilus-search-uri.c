@@ -53,7 +53,7 @@ strip_uri_beginning (const char *location_uri)
         char *ptr;
         const char *ret_val;
 
-        first_token = g_strsplit (location_uri, " ", 1);
+        first_token = g_strsplit (location_uri, " ", 2);
         if (first_token[0] == NULL) {
                 g_strfreev (first_token);                
                 return NULL;
@@ -139,7 +139,7 @@ tokenize_uri (const char *string)
 
                 /* split a criterion in different tokens */
                 token_list = NULL;
-                tokens = g_strsplit (temp_string, " ", 2);
+                tokens = g_strsplit (temp_string, " ", 0);
                 for (j = 0, token = tokens[0]; token != NULL; j++, token = tokens[j]) {
                         /* g_strstrip does not return a newly allocated string. */
                         token_list = g_list_prepend (token_list, g_strdup (g_strstrip (token)));

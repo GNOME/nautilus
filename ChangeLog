@@ -1,3 +1,19 @@
+2001-12-04  Darin Adler  <darin@bentspoon.com>
+
+	Fix bugs exposed by "make check".
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(is_dot_or_dot_dot), (should_skip_file),
+	(dequeue_pending_idle_callback), (directory_load_one),
+	(count_non_skipped_files), (directory_count_callback),
+	(start_monitoring_file_list), (deep_count_one), (mime_list_one):
+	Add new code to handle stuff that we did with a gnome-vfs filter
+	in the old version.
+	
+	* libnautilus-private/nautilus-search-uri.c:
+	(strip_uri_beginning), (tokenize_uri): Fix use of g_strsplit since
+	the meaning of the parameter has changed.
+
 2001-12-03  Darin Adler  <darin@bentspoon.com>
 
 	* src/file-manager/fm-directory-view.c:

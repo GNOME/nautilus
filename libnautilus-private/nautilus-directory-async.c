@@ -672,8 +672,6 @@ set_file_unconfirmed (NautilusFile *file, gboolean unconfirmed)
 	}
 }
 
-#if GNOME2_CONVERSION_COMPLETE
-
 static gboolean show_hidden_files = TRUE;
 static gboolean show_backup_files = TRUE;
 
@@ -689,15 +687,29 @@ show_backup_files_changed_callback (gpointer callback_data)
 	show_backup_files = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES);
 }
 
-static GnomeVFSDirectoryFilterOptions
-get_filter_options_for_directory_count (void)
+static gboolean
+is_dot_or_dot_dot (const char *name)
+{
+	if (name[0] != '.') {
+		return FALSE;
+	}
+	if (name[1] == '\0') {
+		return TRUE;
+	}
+	if (name[1] != '.') {
+		return FALSE;
+	}
+	if (name[2] == '\0') {
+		return TRUE;
+	}
+	return FALSE;
+}
+
+static gboolean
+should_skip_file (GnomeVFSFileInfo *info)
 {
 	static gboolean show_hidden_files_changed_callback_installed = FALSE;
 	static gboolean show_backup_files_changed_callback_installed = FALSE;
-	GnomeVFSDirectoryFilterOptions filter_options;
-	
-	filter_options = GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR
-		| GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR;
 
 	/* Add the callback once for the life of our process */
 	if (!show_hidden_files_changed_callback_installed) {
@@ -720,18 +732,24 @@ get_filter_options_for_directory_count (void)
 		/* Peek for the first time */
 		show_backup_files_changed_callback (NULL);
 	}
-	
-	if (!show_hidden_files) {
-		filter_options |= GNOME_VFS_DIRECTORY_FILTER_NODOTFILES;
-	}
-	if (!show_backup_files) {
-		filter_options |= GNOME_VFS_DIRECTORY_FILTER_NOBACKUPFILES;
+
+	if (info == NULL || info->name == NULL) {
+		return TRUE;
 	}
 
-	return filter_options;
+	if (is_dot_or_dot_dot (info->name)) {
+		return TRUE;
+	}
+
+	if (!show_hidden_files && nautilus_file_name_matches_hidden_pattern (info->name)) {
+		return TRUE;
+	}
+	if (!show_backup_files && nautilus_file_name_matches_backup_pattern (info->name)) {
+		return TRUE;
+	}
+
+	return FALSE;
 }
-
-#endif
 
 static void
 load_directory_state_destroy (NautilusDirectory *directory)
@@ -803,17 +821,15 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		 * moving this into the actual callback instead of
 		 * waiting for the idle function.
 		 */
-#if GNOME2_CONVERSION_COMPLETE
-		/* if (gnome_vfs_directory_filter_apply (directory->details->load_file_count_filter,
-		   file_info)) */
-#endif
-		directory->details->load_file_count += 1;
+		if (!should_skip_file (file_info)) {
+			directory->details->load_file_count += 1;
 
-		/* Add the MIME type to the set. */
-		if ((file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) != 0
-			&& directory->details->load_mime_list_hash != NULL) {
-			istr_set_insert (directory->details->load_mime_list_hash,
-					 file_info->mime_type);
+			/* Add the MIME type to the set. */
+			if ((file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) != 0
+			    && directory->details->load_mime_list_hash != NULL) {
+				istr_set_insert (directory->details->load_mime_list_hash,
+						 file_info->mime_type);
+			}
 		}
 		
 		/* check if the file already exists */
@@ -908,7 +924,7 @@ static void
 directory_load_one (NautilusDirectory *directory,
 		    GnomeVFSFileInfo *info)
 {
-	if (info == NULL) {
+	if (info == NULL || is_dot_or_dot_dot (info->name)) {
 		return;
 	}
 
@@ -1343,6 +1359,21 @@ nautilus_directory_cancel_callback_internal (NautilusDirectory *directory,
 	}
 }
 
+static guint
+count_non_skipped_files (GList *list)
+{
+	guint count;
+	GList *node;
+
+	count = 0;
+	for (node = list; node != NULL; node = node->next) {
+		if (!should_skip_file (node->data)) {
+			count += 1;
+		}
+	}
+	return count;
+}
+
 static void
 directory_count_callback (GnomeVFSAsyncHandle *handle,
 			  GnomeVFSResult result,
@@ -1375,7 +1406,7 @@ directory_count_callback (GnomeVFSAsyncHandle *handle,
 	} else {
 		count_file->details->directory_count_failed = FALSE;
 		count_file->details->got_directory_count = TRUE;
-		count_file->details->directory_count = entries_read;
+		count_file->details->directory_count = count_non_skipped_files (list);
 	}
 	directory->details->count_file = NULL;
 	directory->details->count_in_progress = NULL;
@@ -1872,9 +1903,6 @@ start_monitoring_file_list (NautilusDirectory *directory)
 
 	directory->details->load_directory_file->details->loading_directory = TRUE;
 	directory->details->load_file_count = 0;
-#if GNOME2_CONVERSION_COMPLETE
-	directory->details->load_file_count_filter = get_file_count_filter (directory);
-#endif
 	directory->details->load_mime_list_hash = istr_set_new ();
 #ifdef DEBUG_LOAD_DIRECTORY
 	g_message ("load_directory called to monitor file list of %s", directory->details->uri);
@@ -2117,6 +2145,9 @@ deep_count_one (NautilusDirectory *directory,
 {
 	NautilusFile *file;
 	char *escaped_name, *uri;
+	
+	if (should_skip_file (info))
+		return;
 
 	file = directory->details->deep_count_file;
 
@@ -2284,6 +2315,10 @@ static void
 mime_list_one (NautilusDirectory *directory,
 	       GnomeVFSFileInfo *info)
 {
+	if (should_skip_file (info)) {
+		return;
+	}
+
 	if ((info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) != 0) {
 		istr_set_insert (directory->details->mime_list_hash, info->mime_type);
 	}
