@@ -1444,8 +1444,6 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 		index = 0;
 	}
 	
-	g_message ("in make properties!");
-			
 	customization_data = nautilus_customization_data_new (property_browser->details->category,
 							      !property_browser->details->remove_mode,
 							      FALSE,
