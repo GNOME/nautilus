@@ -146,8 +146,13 @@ struct FMDirectoryViewClass {
         void    (* bump_zoom_level)      	(FMDirectoryView *view,
 					  	 int zoom_increment);
 
-        /* bump_zoom_level is a function pointer that subclasses must override
-         * to change the zoom level of an object. */
+        /* zoom_to_level is a function pointer that subclasses must override
+         * to set the zoom level of an object to the specified level. */
+        void    (* zoom_to_level) 		(FMDirectoryView *view, 
+        				         gint 		 level);
+
+        /* restore_default_zoom_level is a function pointer that subclasses must override
+         * to restore the zoom level of an object to a default setting. */
         void    (* restore_default_zoom_level) (FMDirectoryView *view);
 
         /* can_zoom_in is a function pointer that subclasses must override to
@@ -217,6 +222,8 @@ gboolean           fm_directory_view_can_zoom_in                    (FMDirectory
 gboolean           fm_directory_view_can_zoom_out                   (FMDirectoryView       *view);
 void               fm_directory_view_bump_zoom_level                (FMDirectoryView       *view,
 								     int                    zoom_increment);
+void               fm_directory_view_zoom_to_level                  (FMDirectoryView        *view,
+								     int                    zoom_level);
 void               fm_directory_view_restore_default_zoom_level     (FMDirectoryView       *view);
 void               fm_directory_view_select_all                     (FMDirectoryView       *view);
 void               fm_directory_view_set_selection                  (FMDirectoryView       *view,

@@ -156,6 +156,9 @@ static void           zoomable_zoom_in_callback                                 
 										   FMDirectoryView          *directory_view);
 static void           zoomable_zoom_out_callback                                  (NautilusZoomable         *zoomable,
 										   FMDirectoryView          *directory_view);
+static void           zoomable_zoom_to_level_callback                             (NautilusZoomable         *zoomable,
+										   gint			    level,
+										   FMDirectoryView          *directory_view);										   
 static void           zoomable_zoom_default_callback                              (NautilusZoomable         *zoomable,
 										   FMDirectoryView          *directory_view);
 static void           schedule_idle_display_of_pending_files                      (FMDirectoryView          *view);
@@ -177,6 +180,7 @@ static void           metadata_ready_callback                                   
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_file)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, bump_zoom_level)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, zoom_to_level)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, restore_default_zoom_level)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, can_zoom_in)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, can_zoom_out)
@@ -262,6 +266,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	/* Function pointers that subclasses must override */
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, add_file);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, bump_zoom_level);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, zoom_to_level);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, restore_default_zoom_level);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, can_zoom_in);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, can_zoom_out);
@@ -711,6 +716,10 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 			    zoomable_zoom_out_callback,
 			    directory_view);
 	gtk_signal_connect (GTK_OBJECT (directory_view->details->zoomable), 
+			    "zoom_to_level", 
+			    zoomable_zoom_to_level_callback,
+			    directory_view);
+	gtk_signal_connect (GTK_OBJECT (directory_view->details->zoomable), 
 			    "zoom_default", 
 			    zoomable_zoom_default_callback,
 			    directory_view);
@@ -1025,6 +1034,12 @@ static void
 zoomable_zoom_out_callback (NautilusZoomable *zoomable, FMDirectoryView *directory_view)
 {
 	fm_directory_view_bump_zoom_level (directory_view, -1);
+}
+
+static void
+zoomable_zoom_to_level_callback (NautilusZoomable *zoomable, gint level, FMDirectoryView *view)
+{
+	fm_directory_view_zoom_to_level (view, level);
 }
 
 static void
@@ -1345,6 +1360,20 @@ fm_directory_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
 	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->bump_zoom_level) (view, zoom_increment);
+}
+
+/**
+ * fm_directory_view_zoom_to_level:
+ *
+ * Set the current zoom level by invoking the relevant subclass through the slot
+ * 
+ **/
+void
+fm_directory_view_zoom_to_level (FMDirectoryView *view, int zoom_level)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->zoom_to_level) (view, zoom_level);
 }
 
 /**

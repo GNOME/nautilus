@@ -56,6 +56,7 @@ struct NautilusZoomControlClass {
 	
 	void (*zoom_in)		(NautilusZoomControl *control);
 	void (*zoom_out) 	(NautilusZoomControl *control);
+	void (*zoom_to_level) 	(NautilusZoomControl *control);
 	void (*zoom_default) 	(NautilusZoomControl *control);
 };
 

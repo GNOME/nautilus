@@ -1,3 +1,48 @@
+2000-06-13  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug #306, right click menu in zoom control doesn't work.
+	The menu now works.
+	
+	* libnautilus/nautilus-view-component.idl:
+	Added zoom_to_level interface.
+	
+	* libnautilus/nautilus-zoomable.c:
+	(impl_Nautilus_Zoomable_zoom_to_level):
+	(nautilus_zoomable_initialize_class):
+	Implimentation of zoom_to_level interface
+	
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-directory-view.h:
+	(fm_directory_view_initialize_class),
+	(fm_directory_view_initialize), (zoomable_zoom_to_level_callback),
+	(fm_directory_view_zoom_to_level):
+	Added signal handling and callback for new ZOOM_TO_LEVEL signal.
+	
+	* src/file-manager/fm-icon-view.c: 
+	(fm_icon_view_zoom_to_level),
+	(fm_icon_view_initialize_class):
+	ZOOM_TO_LEVEL handling.
+	
+	* src/file-manager/fm-list-view.c: (fm_list_view_initialize_class),
+	(fm_list_view_zoom_to_level),
+	(fm_list_view_restore_default_zoom_level):
+	ZOOM_TO_LEVEL handling.
+	
+	* src/nautilus-view-frame.c: 
+	* src/nautilus-view-frame.h:
+	(nautilus_view_frame_zoom_to_level):
+	New public function for zoom to level.
+	
+	* src/nautilus-window.c: 
+	(zoom_to_level_callback):
+	Yes, a zoom to level callback.
+	
+	* src/nautilus-zoom-control.c:
+	* src/nautilus-zoom-control.h:
+	(nautilus_zoom_control_class_initialize), (zoom_menu_callback),
+	(create_zoom_menu), (set_zoom_level):
+	Enabled context zoom menu functionality.
+	
 2000-06-13  John Sullivan  <sullivan@eazel.com>
 
 	Finished task 994 (add button connecting "View as Other"
@@ -130,7 +175,7 @@
 
 2000-06-13  Gene Z. Ragan  <gzr@eazel.com>
 
-	Fixed bug #305.  CLicking in center of zoom control
+	Fixed bug #305.  Clicking in center of zoom control
 	does not change zoom level.
 
 	Clicking in the center of the zoom control emits a ZOOM_DEFAULT
@@ -172,7 +217,8 @@
 	(fm_list_view_restore_default_zoom_level):
 	New function to enable zoom to default.
 	
-	* src/file-manager/fm-properties-window.c: (create_basic_page):
+	* src/file-manager/fm-properties-window.c: 
+	(create_basic_page):
 
 	* src/nautilus-view-frame.c: 
 	* src/nautilus-view-frame.h:

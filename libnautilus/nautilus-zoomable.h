@@ -53,6 +53,8 @@ struct NautilusZoomableClass
 					 gdouble zoom_level);
 	void (*zoom_in)	                (NautilusZoomable *view);
 	void (*zoom_out)	        (NautilusZoomable *view);
+	void (*zoom_to_level)	        (NautilusZoomable *view,
+					 gint zoom_level);
 	void (*zoom_default)	        (NautilusZoomable *view);
 	void (*zoom_to_fit)	        (NautilusZoomable *view);
 

@@ -563,6 +563,24 @@ nautilus_view_frame_zoom_out (NautilusViewFrame *view)
   CORBA_exception_free (&ev);
 }
 
+void
+nautilus_view_frame_zoom_to_level (NautilusViewFrame *view, gint zoom_level)
+{
+  CORBA_Environment ev;
+
+  g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
+  CORBA_exception_init (&ev);
+
+  if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
+    Nautilus_Zoomable_zoom_to_level (view->zoomable, zoom_level, &ev);
+  } else {
+    /* do nothing */
+  }
+
+  CORBA_exception_free (&ev);
+}
+
 
 void
 nautilus_view_frame_zoom_default (NautilusViewFrame *view)

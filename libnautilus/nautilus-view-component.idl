@@ -110,10 +110,11 @@ module Nautilus {
 		/* High level operations.
 		 * These can cause a change in the zoom level.
 		 * The zoomable itself must decide what the concepts
-		 * "one level in", "one level out", and "to fit" mean.
+		 * "one level in", "one level out", "default" and "to fit" mean.
 		 */
 		oneway void zoom_in ();
 		oneway void zoom_out ();
+		oneway void zoom_to_level (in short zoom_level);
 		oneway void zoom_default ();
 		/* FIXME: Implement "zoom to fit" or delete. */
 		oneway void zoom_to_fit ();
