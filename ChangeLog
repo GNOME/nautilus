@@ -1,4 +1,17 @@
 2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
+	 
+	* libnautilus-extensions/nautilus-directory.c:
+	Check for NULL before dereferencing 'directories'.
+
+	I was playing around with test (moving their order of execution).
+	directories was null at exit time, and an assertion was triggered
+	inside the GHashTable.
+
+	(nautilus_directory_number_outstanding),
+	(nautilus_self_check_directory): Fix a typo that was making the
+	checks fail.
+	
+2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
 	(nautilus_gdk_pixbuf_render_to_pixbuf_tiled), Fix from andy to

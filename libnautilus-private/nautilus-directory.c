@@ -1019,7 +1019,7 @@ got_files_callback (NautilusDirectory *directory, GList *files, gpointer callbac
 int
 nautilus_directory_number_outstanding (void)
 {
-        return g_hash_table_size (directories);
+        return directories ? g_hash_table_size (directories) : 0;
 }
 
 void
@@ -1129,7 +1129,10 @@ nautilus_self_check_directory (void)
 	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical (""), "file:");
 	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("file:/"), "file:///");
 	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("file:///"), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("TRASH:XXX"), "gnome-trash:");
+	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("TRASH:XXX"), "trash:");
+	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("trash:xxx"), "trash:");
+	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("GNOME-TRASH:XXX"), "trash:");
+	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("gnome-trash:xxx"), "trash:");
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */
