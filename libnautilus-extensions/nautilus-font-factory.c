@@ -28,6 +28,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-string.h"
+#include "nautilus-gdk-font-extensions.h"
 #include <pthread.h>
 #include <unistd.h>
 
@@ -61,7 +62,6 @@ typedef struct {
 	GdkFont		*font;
 } FontHashNode;
 
-static GdkFont *fixed_font;
 static NautilusFontFactory *global_font_factory = NULL;
 
 static GtkType nautilus_font_factory_get_type         (void);
@@ -203,59 +203,6 @@ font_hash_node_lookup_with_insertion (const char *name)
 	return node;
 }
 
-static char *
-make_font_name_string (const char *foundry,
-		       const char *family,
-		       const char *weight,
-		       const char *slant,
-		       const char *set_width,
-		       const char *add_style,
-		       guint size_in_pixels)
-{
-	char *font_name;
-
-        const char *points = "*";
-        const char *hor_res = "*";
-        const char *ver_res = "*";
-        const char *spacing = "*";
-        const char *average_width = "*";
-        const char *char_set_registry = "*";
-        const char *char_set_encoding = "*";
-
-
-	/*                             +---------------------------------------------------- foundry
-	                               |  +------------------------------------------------- family
-				       |  |  +---------------------------------------------- weight
-				       |  |  |  +------------------------------------------- slant 
-				       |  |  |  |  +---------------------------------------- sel_width
-				       |  |  |  |  |  +------------------------------------- add-style
-				       |  |  |  |  |  |  +---------------------------------- pixels   	
-				       |  |  |  |  |  |  |  +------------------------------- points  
-				       |  |  |  |  |  |  |  |  +---------------------------- hor_res        
-				       |  |  |  |  |  |  |  |  |  +------------------------- ver_res        
-				       |  |  |  |  |  |  |  |  |  |  +---------------------- spacing        
-				       |  |  |  |  |  |  |  |  |  |  |  +------------------- average_width        
-				       |  |  |  |  |  |  |  |  |  |  |  |  +---------------- char_set_registry
-				       |  |  |  |  |  |  |  |  |  |  |  |  |  +------------- char_set_encoding */
-	font_name = g_strdup_printf ("-%s-%s-%s-%s-%s-%s-%d-%s-%s-%s-%s-%s-%s-%s",
-				     foundry,
-				     family,
-				     weight,
-				     slant,
-				     set_width,
-				     add_style,
-				     size_in_pixels,
-				     points,
-				     hor_res,
-				     ver_res,
-				     spacing,
-				     average_width,
-				     char_set_registry,
-				     char_set_encoding);
-	
-	return font_name;
-}
-
 /* Public functions */
 GdkFont *
 nautilus_font_factory_get_font_by_family (const char *family,
@@ -270,14 +217,14 @@ nautilus_font_factory_get_font_by_family (const char *family,
 	g_return_val_if_fail (size_in_pixels > 0, NULL);
 
 	factory = nautilus_get_current_font_factory ();
-	font_name = make_font_name_string ("*", 
-					   family,
-					   "medium",
-					   "r",
-					   "normal",
-					   "*",
-					   size_in_pixels);
-
+	font_name = nautilus_gdk_font_xlfd_string_new ("*", 
+						       family,
+						       "medium",
+						       "r",
+						       "normal",
+						       "*",
+						       size_in_pixels);
+	
 	node = font_hash_node_lookup_with_insertion (font_name);
 
 	if (node != NULL) {
@@ -285,7 +232,7 @@ nautilus_font_factory_get_font_by_family (const char *family,
 		font = node->font;
 		gdk_font_ref (font);
 	} else {
-		font = nautilus_font_factory_get_fallback_font ();
+		font = nautilus_gdk_font_get_fixed ();
 	}
 
 	g_free (font_name);
@@ -306,23 +253,4 @@ nautilus_font_factory_get_font_from_preferences (guint size_in_pixels)
 	g_free (family);
 
 	return font;
-}
-
-static void
-unref_fixed_font (void)
-{
-	gdk_font_unref (fixed_font);
-}
-
-GdkFont *
-nautilus_font_factory_get_fallback_font (void)
-{
-	if (fixed_font == NULL) {
-		fixed_font = gdk_fontset_load (_("fixed"));
-		g_assert (fixed_font != NULL);
-		g_atexit (unref_fixed_font);
-	}
-
-	gdk_font_ref (fixed_font);
-	return fixed_font;
 }

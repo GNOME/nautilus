@@ -1,3 +1,63 @@
+2001-01-30  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	Fix bug 5763 - Largest fitting font logic in Sidebar title causes
+	font criticals.  Cleanup some related stuff in the process.
+	
+	* libnautilus-extensions/nautilus-font-factory.h:
+	* libnautilus-extensions/nautilus-font-factory.c:
+	(nautilus_font_factory_get_font_by_family),
+	(nautilus_font_factory_get_font_from_preferences):
+	Move these functions to nautilus-gdk-font-extensions.[ch].
+	
+	* libnautilus-extensions/nautilus-gdk-font-extensions.h:
+	* libnautilus-extensions/nautilus-gdk-font-extensions.c:
+	(nautilus_gdk_font_get_largest_fitting), Rewrite the function to
+	not depend on any hard coded font sizes or XLFD names.
+	(nautilus_gdk_font_get_name), New function.
+	(nautilus_gdk_font_get_size_in_pixels), (unref_fixed_font),
+	(nautilus_gdk_font_get_fixed),
+	(nautilus_gdk_font_xlfd_string_new), Move these 2 here from
+	nautilus-font-factory.
+	(nautilus_self_check_ellipsize_start),
+	(nautilus_self_check_gdk_font_extensions):
+	* libnautilus-extensions/nautilus-scalable-font.h:
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(parse_font_description_file), (font_compare),
+	(font_family_find_font), (font_family_lookup),
+	(font_family_lookup_with_insertion), (font_family_table_add_fonts),
+	(nautilus_scalable_font_new),
+	(nautilus_scalable_font_measure_text),
+	(nautilus_scalable_font_text_width),
+	(nautilus_scalable_font_draw_text),
+	(nautilus_scalable_font_measure_text_lines),
+	(nautilus_scalable_font_draw_text_lines_with_dimensions),
+	(nautilus_scalable_font_draw_text_lines),
+	(nautilus_scalable_font_largest_fitting_font_size), Rewrite this
+	function to work just like nautilus_gdk_font_get_largest_fitting()
+	for greater consistency.
+	(font_family_table_for_each_append),
+	(font_family_table_for_each_free),
+	(nautilus_scalable_font_query_font), (text_layout_free_row),
+	(nautilus_text_layout_new), (nautilus_text_layout_paint):
+	Use signed integers for dimensions.  Lots of cleanup to comply
+	with the Nautilus coding style.
+	
+	* libnautilus-extensions/nautilus-string-list.h:
+	* libnautilus-extensions/nautilus-string-list.c:
+	(nautilus_string_list_new_from_tokens),
+	(nautilus_string_list_get_index_for_string),
+	(nautilus_string_list_as_concatenated_string),
+	(nautilus_string_list_get_longest_string),
+	(nautilus_string_list_get_longest_string_length),
+	(nautilus_self_check_string_list):
+	Use signed integers instead of guint.
+
+	* src/nautilus-sidebar-title.c: (update_font):
+	Update for largest fitting font api changes.  Get rid of the hard
+	coded list of font sizes.
+	
 2001-01-30  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

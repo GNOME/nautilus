@@ -40,10 +40,4 @@ GdkFont *  nautilus_font_factory_get_font_by_family        (const char *family,
 /* Get a font according to the family set in preferences. */
 GdkFont *  nautilus_font_factory_get_font_from_preferences (guint       size_in_pixels);
 
-
-
-/* Get the fallback font */
-GdkFont *  nautilus_font_factory_get_fallback_font         (void);
-
-
 #endif /* NAUTILUS_FONT_FACTORY_H */

@@ -398,38 +398,63 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 static void
 update_font (NautilusSidebarTitle *sidebar_title)
 {
-	guint largest_size;
-	const guint font_sizes[4] = { 20, 18, 14, 12 };
-	GdkFont *label_font;
+	const int maximum_acceptable_font_size = 20;
+	const int minimum_acceptable_font_size = 12;
+	const int slop_offset = 4;
+
+	int available_width;
+	GdkFont *template_font;
+	GdkFont *bold_template_font;
+	GdkFont *largest_fitting_font;
+	int largest_fitting_smooth_font_size;
 	NautilusScalableFont *smooth_font;
 
-	smooth_font = nautilus_label_get_smooth_font (NAUTILUS_LABEL (sidebar_title->details->title_label));
-	
-	largest_size = nautilus_scalable_font_largest_fitting_font_size (smooth_font,
-									 sidebar_title->details->title_text,
-									 GTK_WIDGET (sidebar_title)->allocation.width - 4,
-									 font_sizes,
-									 NAUTILUS_N_ELEMENTS (font_sizes));
-	gtk_object_unref (GTK_OBJECT (smooth_font));
-	
-	nautilus_label_set_smooth_font_size (NAUTILUS_LABEL (sidebar_title->details->title_label), largest_size);
-	
-	/* FIXME bugzilla.eazel.com 1103: Make this use the font
-	 * factory and be failsafe if the given font is not found.
-	 */
-		
-	/* leave 4 pixels of slop so the text doesn't go right up to the edge */
-	label_font = nautilus_get_largest_fitting_font
-		(sidebar_title->details->title_text,
-		 GTK_WIDGET (sidebar_title)->allocation.width - 4,
-		 "-adobe-helvetica-bold-r-normal-*-%d-*-*-*-*-*-*-*");
-	
-	if (label_font == NULL) {
-		label_font = nautilus_font_factory_get_fallback_font ();
+	/* Make sure theres work to do */
+	if (nautilus_strlen (sidebar_title->details->title_text) < 1) {
+		return;
+	}
+
+	available_width = GTK_WIDGET (sidebar_title)->allocation.width - slop_offset;
+
+	/* No work to do */
+	if (available_width <= 0) {
+		return;
 	}
 	
-	nautilus_gtk_widget_set_font (sidebar_title->details->title_label, label_font);
-	gdk_font_unref (label_font);
+	/* Update the smooth font */
+	smooth_font = nautilus_label_get_smooth_font (NAUTILUS_LABEL (sidebar_title->details->title_label));
+	largest_fitting_smooth_font_size = nautilus_scalable_font_largest_fitting_font_size (smooth_font,
+											     sidebar_title->details->title_text,
+											     available_width,
+											     minimum_acceptable_font_size,
+											     maximum_acceptable_font_size);
+	gtk_object_unref (GTK_OBJECT (smooth_font));
+
+	nautilus_label_set_smooth_font_size (NAUTILUS_LABEL (sidebar_title->details->title_label), largest_fitting_smooth_font_size);
+
+	/* FIXME bugzilla.eazel.com 1103: Hard coded font family. */
+	
+	/* Update the regular font */
+	template_font = nautilus_font_factory_get_font_by_family ("helvetica", maximum_acceptable_font_size);
+	g_assert (template_font != NULL);
+
+	bold_template_font = nautilus_gdk_font_get_bold (template_font);
+	
+	largest_fitting_font = nautilus_gdk_font_get_largest_fitting (template_font,
+								      sidebar_title->details->title_text,
+								      available_width,
+								      minimum_acceptable_font_size,
+								      maximum_acceptable_font_size);
+	
+	if (largest_fitting_font == NULL) {
+		largest_fitting_font = nautilus_gdk_font_get_fixed ();
+	}
+	
+	nautilus_gtk_widget_set_font (sidebar_title->details->title_label, largest_fitting_font);
+	
+	gdk_font_unref (largest_fitting_font);
+	gdk_font_unref (bold_template_font);
+	gdk_font_unref (template_font);
 }
 
 /* set up the filename label */

@@ -169,15 +169,15 @@ file_as_string (const char *file_name)
 }
 
 static gboolean
-parse_font_description_file (const char		*directory, 
+parse_font_description_file (const char *directory, 
 			     NautilusStringList **font_pfb_list_out,
 			     NautilusStringList **font_xfld_list_out)
 {
 	char			*fonts_dir_path;
 	char			*fonts_dir_content;
 	NautilusStringList	*tokenized_list;
-	guint			i;
-	guint			count;
+	int			i;
+	int			count;
 
 	g_return_val_if_fail (directory != NULL, FALSE);
 	g_return_val_if_fail (g_file_exists (directory), FALSE);
@@ -226,7 +226,7 @@ parse_font_description_file (const char		*directory,
 				
 				char *font_pfb;
 				char *font_pfb_path;
-				guint pfb_length;
+				int pfb_length;
 
 				pfb_length = delimeter - line;
 				font_pfb = g_malloc (sizeof (char) * pfb_length + 1);
@@ -352,7 +352,8 @@ font_family_insert_font (FontFamilyEntry *family_entry, FontEntry *font_entry)
 #define NOT_EQUAL 1
 
 static gint
-font_compare (gconstpointer a, gconstpointer b)
+font_compare (gconstpointer a,
+	      gconstpointer b)
 {
 	FontEntry *font_entry_a = (FontEntry *) a;
 	FontEntry *font_entry_b = (FontEntry *) b;
@@ -373,10 +374,10 @@ font_compare (gconstpointer a, gconstpointer b)
 }
 
 static FontEntry*
-font_family_find_font (const FontFamilyEntry	*family_entry, 
-		       const char		*weight, 
-		       const char		*slant, 
-		       const char		*set_width)
+font_family_find_font (const FontFamilyEntry *family_entry, 
+		       const char *weight, 
+		       const char *slant, 
+		       const char *set_width)
 {
 	FontEntry fake_font_entry;
 
@@ -397,7 +398,8 @@ font_family_find_font (const FontFamilyEntry	*family_entry,
 }
 
 static FontFamilyEntry *
-font_family_lookup (GHashTable *font_family_table, const char *family)
+font_family_lookup (GHashTable *font_family_table,
+		    const char *family)
 {
 	gpointer value;
 	
@@ -410,7 +412,8 @@ font_family_lookup (GHashTable *font_family_table, const char *family)
 }
 
 static FontFamilyEntry *
-font_family_lookup_with_insertion (GHashTable *font_family_table, const char *family)
+font_family_lookup_with_insertion (GHashTable *font_family_table,
+				   const char *family)
 {
 	FontFamilyEntry *entry;
 	
@@ -430,11 +433,12 @@ font_family_lookup_with_insertion (GHashTable *font_family_table, const char *fa
 }
 
 static void
-font_family_table_add_fonts (GHashTable *font_family_table, const char *font_path)
+font_family_table_add_fonts (GHashTable *font_family_table,
+			     const char *font_path)
 {
-	NautilusStringList	*font_pfb_list = NULL;
-	NautilusStringList	*font_xfld_list = NULL;
-	guint			i;
+	NautilusStringList *font_pfb_list = NULL;
+	NautilusStringList *font_xfld_list = NULL;
+	guint i;
 
 	g_return_if_fail (font_family_table != NULL);
 	g_return_if_fail (font_path != NULL);
@@ -454,18 +458,16 @@ font_family_table_add_fonts (GHashTable *font_family_table, const char *font_pat
 	}
 
 	for (i = 0; i < nautilus_string_list_get_length (font_pfb_list); i++) {
-		NautilusStringList	*tokenized_xfld;
-		char			*path;
-		char			*xfld;
-
-		char			*foundry;
-		char			*family;
-		char			*weight;
-		char			*slant;
-		char			*set_width;
-
-		FontFamilyEntry		*family_entry;
-		FontEntry		*font_entry;
+		NautilusStringList *tokenized_xfld;
+		char *path;
+		char *xfld;
+		char *foundry;
+		char *family;
+		char *weight;
+		char *slant;
+		char *set_width;
+		FontFamilyEntry *family_entry;
+		FontEntry *font_entry;
 
 		path = nautilus_string_list_nth (font_pfb_list, i);
 		g_assert (path != NULL);
@@ -553,10 +555,10 @@ font_family_string_map_new (void)
  *
  */
 NautilusScalableFont *
-nautilus_scalable_font_new (const char	*family,
-			    const char	*weight,
-			    const char	*slant,
-			    const char	*set_width)
+nautilus_scalable_font_new (const char *family,
+			    const char *weight,
+			    const char *slant,
+			    const char *set_width)
 {
 	/* const char	*foundry = "URW"; */
 	FontFamilyEntry *font_family_entry;
@@ -650,15 +652,15 @@ nautilus_scalable_font_make_bold (NautilusScalableFont *font)
 
 void
 nautilus_scalable_font_measure_text (const NautilusScalableFont	*font,
-				     guint			font_width,
-				     guint			font_height,
-				     const char			*text,
-				     guint			text_length,
-				     guint			*text_width_out,
-				     guint			*text_height_out)
+				     int font_width,
+				     int font_height,
+				     const char *text,
+				     guint text_length,
+				     int *text_width_out,
+				     int *text_height_out)
 {
- 	double	affine[6];
-	int	glyph_xy[2];
+ 	double affine[6];
+	int glyph_xy[2];
 	unsigned int dimensions[2];
 
 	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
@@ -692,15 +694,15 @@ nautilus_scalable_font_measure_text (const NautilusScalableFont	*font,
 	*text_height_out = dimensions[1];
 }
 
-guint
-nautilus_scalable_font_text_width (const NautilusScalableFont  *font,
-				   guint                        font_width,
-				   guint                        font_height,
-				   const char                  *text,
-				   guint                        text_length)
+int
+nautilus_scalable_font_text_width (const NautilusScalableFont *font,
+				   int font_width,
+				   int font_height,
+				   const char *text,
+				   guint text_length)
 {
-	guint	text_width = 0;
-	guint	text_height = 0;
+	int text_width = 0;
+	int text_height = 0;
 
 	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (font), 0);
 	g_return_val_if_fail (font_width > 0, 0);
@@ -729,23 +731,25 @@ nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 				  int x,
 				  int y,
 				  const ArtIRect *clip_area,
-				  guint font_width,
-				  guint font_height,
+				  int font_width,
+				  int font_height,
 				  const char *text,
 				  guint text_length,
 				  guint32 color,
 				  int opacity)
 {
-	RsvgFTGlyph	*glyph;
- 	double		affine[6];
-	int		glyph_xy[2];
-	ArtIRect	render_area;
-	ArtIRect	glyph_area;
+	RsvgFTGlyph *glyph;
+ 	double affine[6];
+	int glyph_xy[2];
+	ArtIRect render_area;
+	ArtIRect glyph_area;
 
 	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
 	g_return_if_fail (destination_pixbuf != NULL);
 	g_return_if_fail (font_width > 0);
 	g_return_if_fail (font_height > 0);
+	g_return_if_fail (opacity >= NAUTILUS_OPACITY_FULLY_TRANSPARENT);
+	g_return_if_fail (opacity <= NAUTILUS_OPACITY_FULLY_OPAQUE);
 
 	if (text == NULL || text[0] == '\0' || text_length == 0) {
 		return;
@@ -795,14 +799,13 @@ nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 
 	/* Render the glyph */
 	if (!art_irect_empty (&render_area)) {
-		guint		pixbuf_width;
-		guint		pixbuf_height;
-		guint		pixbuf_rowstride;
-		guchar		*pixbuf_pixels;
-		
-		ArtRender	*art_render;
-		ArtPixMaxDepth	art_color_array[3];
-		ArtAlphaType	alpha_type;
+		int pixbuf_width;
+		int pixbuf_height;
+		int pixbuf_rowstride;
+		guchar *pixbuf_pixels;
+		ArtRender *art_render;
+		ArtPixMaxDepth art_color_array[3];
+		ArtAlphaType alpha_type;
 		
 		pixbuf_width = gdk_pixbuf_get_width (destination_pixbuf);
 		pixbuf_height = gdk_pixbuf_get_height (destination_pixbuf);
@@ -845,16 +848,16 @@ nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 	}
 
 void
-nautilus_scalable_font_measure_text_lines (const NautilusScalableFont	*font,
-					   guint                        font_width,
-					   guint                        font_height,
-					   const char                  *text,
-					   guint			num_text_lines,
-					   double			empty_line_height,
-					   guint                        text_line_widths[],
-					   guint                        text_line_heights[],
-					   guint                       *max_width_out,
-					   guint                       *total_height_out)
+nautilus_scalable_font_measure_text_lines (const NautilusScalableFont *font,
+					   int font_width,
+					   int font_height,
+					   const char *text,
+					   guint num_text_lines,
+					   double empty_line_height,
+					   int text_line_widths[],
+					   int text_line_heights[],
+					   int *max_width_out,
+					   int *total_height_out)
 {
 	guint i;
 	const char *line;
@@ -883,8 +886,8 @@ nautilus_scalable_font_measure_text_lines (const NautilusScalableFont	*font,
 	 * string does indeed contain as many lines.
 	 */
 	for (i = 0; i < num_text_lines; i++) {
-		const char	*next_new_line;
-		guint		length;
+		const char *next_new_line;
+		int length;
 
 		g_assert (line != NULL);
 
@@ -933,29 +936,27 @@ nautilus_scalable_font_measure_text_lines (const NautilusScalableFont	*font,
 }
 
 void
-nautilus_scalable_font_draw_text_lines_with_dimensions (const NautilusScalableFont  *font,
-							GdkPixbuf                   *destination_pixbuf,
-							int                          x,
-							int                          y,
-							const ArtIRect              *clip_area,
-							guint                        font_width,
-							guint                        font_height,
-							const char                  *text,
-							guint                        num_text_lines,
-							const guint                 *text_line_widths,
-							const guint                 *text_line_heights,
-							GtkJustification             justification,
-							guint                        line_offset,
-							double			     empty_line_height,
-							guint32                      color,
-							int                          opacity)
+nautilus_scalable_font_draw_text_lines_with_dimensions (const NautilusScalableFont *font,
+							GdkPixbuf *destination_pixbuf,
+							int x,
+							int y,
+							const ArtIRect *clip_area,
+							int font_width,
+							int font_height,
+							const char *text,
+							guint num_text_lines,
+							const int *text_line_widths,
+							const int *text_line_heights,
+							GtkJustification justification,
+							int line_offset,
+							double empty_line_height,
+							guint32 color,
+							int opacity)
 {
-	guint		i;
-	const char	*line;
-	guint		available_width;
-	guint		available_height;
-
-//	guint max_num_text_lines;
+	guint i;
+	const char *line;
+	int available_width;
+	int available_height;
 
 	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
 	g_return_if_fail (destination_pixbuf != NULL);
@@ -969,11 +970,11 @@ nautilus_scalable_font_draw_text_lines_with_dimensions (const NautilusScalableFo
 	g_return_if_fail (num_text_lines <= (nautilus_str_count_characters (text, '\n') + 1));
 	g_return_if_fail (text_line_widths != NULL);
 	g_return_if_fail (text_line_widths != NULL);
+	g_return_if_fail (opacity >= NAUTILUS_OPACITY_FULLY_TRANSPARENT);
+	g_return_if_fail (opacity <= NAUTILUS_OPACITY_FULLY_OPAQUE);
 
 	available_width = clip_area->x1 - clip_area->x0;
 	available_height = clip_area->y1 - clip_area->y0;
-
-//	max_num_text_lines = (available_height / font_height);
 
 	line = text;
 
@@ -982,8 +983,8 @@ nautilus_scalable_font_draw_text_lines_with_dimensions (const NautilusScalableFo
 	 * string does indeed contain as many lines.
 	 */
 	for (i = 0; i < num_text_lines; i++) {
-		const char	*next_new_line;
-		guint		length;
+		const char *next_new_line;
+		int length;
 
 		g_assert (line != NULL);
 
@@ -1056,23 +1057,23 @@ nautilus_scalable_font_draw_text_lines_with_dimensions (const NautilusScalableFo
 }
 
 void
-nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
-					GdkPixbuf                   *destination_pixbuf,
-					int			     x,
-					int			     y,
-					const ArtIRect              *clip_area,
-					guint                        font_width,
-					guint                        font_height,
-					const char                  *text,
-					GtkJustification             justification,
-					guint                        line_offset,
-					double			     empty_line_height,
-					guint32                      color,
-					int                       opacity)
+nautilus_scalable_font_draw_text_lines (const NautilusScalableFont *font,
+					GdkPixbuf *destination_pixbuf,
+					int x,
+					int y,
+					const ArtIRect *clip_area,
+					int font_width,
+					int font_height,
+					const char *text,
+					GtkJustification justification,
+					int line_offset,
+					double empty_line_height,
+					guint32 color,
+					int opacity)
 {
-	guint	num_text_lines;
-	guint	*text_line_widths;
-	guint	*text_line_heights;
+	guint num_text_lines;
+	int *text_line_widths;
+	int *text_line_heights;
 
 	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
 	g_return_if_fail (destination_pixbuf != NULL);
@@ -1082,6 +1083,8 @@ nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
 	g_return_if_fail (justification >= GTK_JUSTIFY_LEFT && justification <= GTK_JUSTIFY_FILL);
 	g_return_if_fail (clip_area->x1 > clip_area->x0);
 	g_return_if_fail (clip_area->y1 > clip_area->y0);
+	g_return_if_fail (opacity >= NAUTILUS_OPACITY_FULLY_TRANSPARENT);
+	g_return_if_fail (opacity <= NAUTILUS_OPACITY_FULLY_OPAQUE);
 
  	if (text == NULL || text[0] == '\0') {
  		return;
@@ -1093,8 +1096,8 @@ nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
 	 */
 
  	num_text_lines = nautilus_str_count_characters (text, '\n') + 1;
-	text_line_widths = g_new (guint, num_text_lines);
-	text_line_heights = g_new (guint, num_text_lines);
+	text_line_widths = g_new (int, num_text_lines);
+	text_line_heights = g_new (int, num_text_lines);
 	
 	nautilus_scalable_font_measure_text_lines (font,
 						   font_width,
@@ -1128,25 +1131,38 @@ nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
 	g_free (text_line_heights);
 }
 
-guint
-nautilus_scalable_font_largest_fitting_font_size (const NautilusScalableFont  *font,
-						  const char                  *text,
-						  guint                        available_width,
-						  const guint		       font_sizes[],
-						  guint			       num_font_sizes)
+/**
+ * nautilus_scalable_font_largest_fitting_font_size
+ * @font: A NautilusScalableFont
+ * @text: Text to use for measurement.
+ * @available_width: How much space is available in pixels.
+ * @minimum_acceptable_font_size: The minimum acceptable font size in pixels.
+ * @maximum_acceptable_font_size: The maximum acceptable font size in pixels.
+ *
+ * Returns: A font size than when used to render &text, will fit it all in 
+ *          &available_width.  The minimum and maximum acceptable dimensions
+ *          control the limits on the size of the font.  The font size is
+ *          guranteed to be within this range.
+ */
+int
+nautilus_scalable_font_largest_fitting_font_size (const NautilusScalableFont *font,
+						  const char *text,
+						  int available_width,
+						  int minimum_acceptable_font_size,
+						  int maximum_acceptable_font_size)
 {
-	NautilusStringList	*tokenized_string;
-	guint			i;
-	char			*longest_string;
-	guint			longest_string_length;
+	NautilusStringList *tokenized_string;
+	int i;
+	char *longest_string;
+	int longest_string_length;
 
 	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (font), 0);
-	g_return_val_if_fail (font_sizes != NULL, 0);
-	g_return_val_if_fail (num_font_sizes > 0, 0);
-
- 	if (text == NULL || text[0] == '\0' || available_width < 1) {
- 		return font_sizes[num_font_sizes - 1];
- 	}
+	g_return_val_if_fail (text != NULL, 0);
+	g_return_val_if_fail (text[0] != '\0', 0);
+	g_return_val_if_fail (available_width > 0, 0);
+	g_return_val_if_fail (minimum_acceptable_font_size > 0, 0);
+	g_return_val_if_fail (maximum_acceptable_font_size > 0, 0);
+	g_return_val_if_fail (maximum_acceptable_font_size > minimum_acceptable_font_size, 0);
 
 	tokenized_string = nautilus_string_list_new_from_tokens (text, "\n", FALSE);
 	longest_string = nautilus_string_list_get_longest_string (tokenized_string);
@@ -1154,27 +1170,27 @@ nautilus_scalable_font_largest_fitting_font_size (const NautilusScalableFont  *f
 	nautilus_string_list_free (tokenized_string);
 	longest_string_length = strlen (longest_string);
 
-	for (i = 0; i < num_font_sizes; i++) {
-		guint	text_width;
-		guint	text_height;
-
+	for (i = maximum_acceptable_font_size; i >= minimum_acceptable_font_size; i--) {
+		int text_width;
+		int text_height;
+	
 		nautilus_scalable_font_measure_text (font,
-						     font_sizes[i],
-						     font_sizes[i],
+						     minimum_acceptable_font_size,
+						     minimum_acceptable_font_size,
 						     longest_string,
 						     longest_string_length,
 						     &text_width,
 						     &text_height);
-
+		
 		if (text_width <= available_width) {
 			g_free (longest_string);
-			return font_sizes[i];
+			return i;
 		}
 	}
 
 	g_free (longest_string);
 
-	return font_sizes[num_font_sizes - 1];
+	return minimum_acceptable_font_size;
 }
 
 NautilusScalableFont *
@@ -1192,12 +1208,12 @@ nautilus_scalable_font_get_default_font (void)
 }
 
 static void
-font_family_table_for_each_append (gpointer	key,
-				   gpointer	value,
-				   gpointer	user_data)
+font_family_table_for_each_append (gpointer key,
+				   gpointer value,
+				   gpointer user_data)
 {
 	NautilusStringList *list = (NautilusStringList *) user_data;
-	FontFamilyEntry	   *family_entry = (FontFamilyEntry *) value;
+	FontFamilyEntry *family_entry = (FontFamilyEntry *) value;
 
 	g_assert (family_entry != NULL);
  	g_assert (!nautilus_string_list_contains (list, family_entry->family));
@@ -1206,9 +1222,9 @@ font_family_table_for_each_append (gpointer	key,
 }
 
 static void
-font_family_table_for_each_free (gpointer	key,
-				 gpointer	value,
-				 gpointer	user_data)
+font_family_table_for_each_free (gpointer key,
+				 gpointer value,
+				 gpointer user_data)
 {
 	FontFamilyEntry *family_entry = (FontFamilyEntry *) value;
 	g_assert (family_entry != NULL);
@@ -1249,13 +1265,13 @@ font_family_table_free (GHashTable *font_family_table)
 }
 
 gboolean
-nautilus_scalable_font_query_font (const char		*family,
-				   NautilusStringList	**weights_out,
-				   NautilusStringList	**slants_out,
-				   NautilusStringList	**set_widths_out)
+nautilus_scalable_font_query_font (const char *family,
+				   NautilusStringList **weights_out,
+				   NautilusStringList **slants_out,
+				   NautilusStringList **set_widths_out)
 {
 	FontFamilyEntry	*family_entry;
-	GList		 *iterator;
+	GList *iterator;
 
 	g_return_val_if_fail (family != NULL, FALSE);
 
@@ -1411,7 +1427,8 @@ nautilus_scalable_font_get_rsvg_context (const NautilusScalableFont *font)
  *
  */
 static void
-text_layout_free_row (gpointer data, gpointer user_data)
+text_layout_free_row (gpointer data,
+		      gpointer user_data)
 {
 	NautilusTextLayoutRow *row;
 
@@ -1460,10 +1477,10 @@ nautilus_text_layout_free (NautilusTextLayout *text_layout)
  */
 NautilusTextLayout *
 nautilus_text_layout_new (const NautilusScalableFont *font,
-			  guint font_size,
+			  int font_size,
 			  const char *text,
 			  const char *separators,
-			  guint max_width,
+			  int max_width,
 			  gboolean confine)
 {
 	NautilusTextLayout *text_layout;
@@ -1472,7 +1489,7 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
 	const char *s, *word_start, *word_end, *old_word_end;
 	char *sub_text;
 	int i, w_len;
-	guint w;
+	int w;
 	const char *text_iter;
 	int text_len, separators_len;
 
@@ -1632,13 +1649,13 @@ nautilus_text_layout_new (const NautilusScalableFont *font,
  * rendering functions.
  */
 void
-nautilus_text_layout_paint (const NautilusTextLayout	*text_layout,
-			    GdkPixbuf			*destination_pixbuf,
-			    int				x, 
-			    int				y, 
-			    GtkJustification		justification,
-			    guint32			color,
-			    gboolean			underlined)
+nautilus_text_layout_paint (const NautilusTextLayout *text_layout,
+			    GdkPixbuf *destination_pixbuf,
+			    int x, 
+			    int y, 
+			    GtkJustification justification,
+			    guint32 color,
+			    gboolean underlined)
 {
 	GList *item;
 	const NautilusTextLayoutRow *row;
@@ -1654,7 +1671,7 @@ nautilus_text_layout_paint (const NautilusTextLayout	*text_layout,
 	color = NAUTILUS_RGBA_COLOR_PACK (NAUTILUS_RGBA_COLOR_GET_R (color),
 					  NAUTILUS_RGBA_COLOR_GET_G (color),
 					  NAUTILUS_RGBA_COLOR_GET_B (color),
-					  255);
+					  NAUTILUS_OPACITY_FULLY_OPAQUE);
 
 	for (item = text_layout->rows; item; item = item->next) {
 		if (item->data) {
@@ -1679,7 +1696,7 @@ nautilus_text_layout_paint (const NautilusTextLayout	*text_layout,
 					   (int) justification);
 				xpos = 0;
 			}
-			
+
 			nautilus_scalable_font_draw_text (text_layout->font,
 							  destination_pixbuf,
 							  x + xpos,
@@ -1690,8 +1707,8 @@ nautilus_text_layout_paint (const NautilusTextLayout	*text_layout,
 							  row->text,
 							  row->text_length,
 							  color,
-							  255);
-
+							  NAUTILUS_OPACITY_FULLY_OPAQUE);
+			
 			/* Underline the text if needed */
 			if (underlined) {
 				ArtIRect underline_rect;

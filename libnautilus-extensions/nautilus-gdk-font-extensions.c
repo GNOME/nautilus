@@ -33,6 +33,10 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-string-list.h"
 #include "nautilus-string.h"
+
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+
 #include <gdk/gdkprivate.h>
 #include <gdk/gdkx.h>
 
@@ -59,7 +63,8 @@
 
 /* Font functions that could be public */
 static NautilusStringList *nautilus_gdk_font_list_fonts             (const char               *pattern);
-static char *              nautilus_gdk_font_get_name               (GdkFont                  *font);
+static char *              nautilus_gdk_font_get_name               (const GdkFont            *font);
+static guint               nautilus_gdk_font_get_size_in_pixels               (const GdkFont            *font);
 
 /* XLFD string operations */
 static char *              xlfd_string_get_nth                      (const char               *xlfd_string,
@@ -84,7 +89,6 @@ static int                 compare_xlfd_by_size_in_points           (gconstpoint
 								     gconstpointer             string_b);
 static int                 compare_xlfd_by_size_in_pixels           (gconstpointer             string_a,
 								     gconstpointer             string_b);
-
 
 /**
  * nautilus_gdk_font_get_bold
@@ -401,61 +405,86 @@ nautilus_gdk_font_equal (GdkFont *font_a_null_allowed,
 }
 
 /**
- * nautilus_get_largest_fitting_font
- * @text_to_format: Text to format and fit in a constrained width.
- * @width: The consttraining width.
- * @font_template: An XLFD string.
+ * nautilus_gdk_font_get_largest_fitting
+ * @font: A GdkFont.
+ * @text: Text to use for measurement.
+ * @available_width: How much space is available in pixels.
+ * @minimum_acceptable_font_size: The minimum acceptable font size in pixels.
+ * @maximum_acceptable_font_size: The maximum acceptable font size in pixels.
  *
- * Return the largest font that fits the given string in the given
- * width.
- *
+ * Returns: A GdkFont that when used to render &text, will fit it all in 
+ *          &available_width.  The minimum and maximum acceptable dimensions
+ *          control the limits on the size of the font.  The font size is
+ *          guranteed to be within this range.
+ *          The resulting font needs to be freed with gdk_font_unref()
  */
 GdkFont *
-nautilus_get_largest_fitting_font (const char *text_to_format, int width, const char *font_template)
+nautilus_gdk_font_get_largest_fitting (GdkFont *font,
+				       const char *text,
+				       int available_width,
+				       int minimum_acceptable_font_size,
+				       int maximum_acceptable_font_size)
 {
-	guint font_index; 
-	int this_width;
-	char *font_name;
-	const int font_sizes[] = { 20, 18, 14, 12 };
-	GdkFont *candidate_font;
-	char *alt_text_to_format = NULL;
-	char *temp_str;
-	char *cr_pos;
+	GdkFont *largest_fitting_font = NULL;
+	NautilusStringList *tokenized_string;
+	char *longest_string;
+	guint longest_string_length;
 
-	temp_str = g_strdup (text_to_format == NULL ? "" : text_to_format);
-	cr_pos = strchr (temp_str, '\n');
-	if (cr_pos != NULL) {
-		*cr_pos = '\0';
-		alt_text_to_format = cr_pos + 1;
-	}
+	g_return_val_if_fail (font != NULL, NULL);
+	g_return_val_if_fail (text != NULL, 0);
+	g_return_val_if_fail (text[0] != '\0', 0);
+	g_return_val_if_fail (available_width > 0, NULL);
+	g_return_val_if_fail (minimum_acceptable_font_size > 0, NULL);
+	g_return_val_if_fail (maximum_acceptable_font_size > 0, NULL);
+	g_return_val_if_fail (maximum_acceptable_font_size > minimum_acceptable_font_size, NULL);
+
 	
-	candidate_font = NULL;
-	for (font_index = 0; font_index < NAUTILUS_N_ELEMENTS (font_sizes); font_index++) {
-		if (candidate_font != NULL) {
-			gdk_font_unref (candidate_font);
-		}
+	tokenized_string = nautilus_string_list_new_from_tokens (text, "\n", FALSE);
+	longest_string = nautilus_string_list_get_longest_string (tokenized_string);
+	g_assert (longest_string != NULL);
+	nautilus_string_list_free (tokenized_string);
+	longest_string_length = strlen (longest_string);
+
+	/* Make sure the font was specified in pixels */
+	if (nautilus_gdk_font_get_size_in_pixels (font) > 0) {
+		int candidate_size;
+		char *font_name;
+		gboolean done;
 		
-		font_name = g_strdup_printf (font_template, font_sizes[font_index]);
-		candidate_font = gdk_fontset_load (font_name);
-		g_free (font_name);
+		font_name = nautilus_gdk_font_get_name (font);
+		
+		/* Iterate through the fonts until we find one that works */
+		candidate_size = maximum_acceptable_font_size;
+		done = FALSE;
+		while (!done) {
+ 			GdkFont *candidate_font;
+ 			int candidate_width;
 
-		if (candidate_font != NULL) {
-			this_width = gdk_string_width (candidate_font, temp_str);
-			if (alt_text_to_format != NULL) {
-				int alt_width = gdk_string_width (candidate_font, alt_text_to_format);
-				if (this_width <= width && alt_width <= width) {
-					break;
-				}
+			candidate_font = font_bitmap_get_by_size (font_name,
+								  candidate_size,
+								  XLFD_SIZE_IN_PIXELS_INDEX,
+								  compare_xlfd_by_size_in_pixels);
+			g_assert (candidate_font != NULL);
+
+			candidate_width = gdk_string_width (candidate_font, longest_string);
+
+			if ((candidate_width <= available_width) 
+			    || (candidate_size <= minimum_acceptable_font_size)) {
+				done = TRUE;
+				largest_fitting_font = candidate_font;
 			} else {
-				if (this_width <= width) {
-					break;
-				}
+				gdk_font_unref (candidate_font);
 			}
+			
+			candidate_size--;
 		}
+
+		g_free (font_name);
 	}
-	
-	g_free (temp_str);
-	return candidate_font;
+
+	g_free (longest_string);
+
+	return largest_fitting_font;
 }
 
 /**
@@ -539,10 +568,12 @@ nautilus_gdk_font_list_fonts (const char *pattern)
 
 /* Return the font name - an xlfd string used by Gdk to allocate the font */
 static char *
-nautilus_gdk_font_get_name (GdkFont *font)
+nautilus_gdk_font_get_name (const GdkFont *font)
 {
 	GdkFontPrivate *font_private;
 	const char *font_name;
+
+	g_return_val_if_fail (font != NULL, NULL);
 
 	font_private = (GdkFontPrivate *)font;
 
@@ -556,6 +587,61 @@ nautilus_gdk_font_get_name (GdkFont *font)
 	font_name = g_slist_nth_data (font_private->names, 0);
 
 	return font_name ? g_strdup (font_name) : NULL;
+}
+
+/* Return the size of a font in pixels.  If the source font's
+ * XLFD spec is in something other than pixels (say points)
+ * then the result is 0.  If the font is scalable, then the
+ * result is 0 as well.  This function is only useful with
+ * bitmap fonts. 
+ */
+static guint
+nautilus_gdk_font_get_size_in_pixels (const GdkFont *font)
+{
+	char *name;
+	int size_in_pixels = 0;
+
+	g_return_val_if_fail (font != NULL, 0);
+
+	name = nautilus_gdk_font_get_name (font);
+
+	size_in_pixels = xlfd_string_get_nth_as_int (name, XLFD_SIZE_IN_PIXELS_INDEX);
+
+	g_free (name);
+
+	return size_in_pixels;
+}
+
+static GdkFont *fixed_font = NULL;
+
+static void
+unref_fixed_font (void)
+{
+	gdk_font_unref (fixed_font);
+}
+
+/**
+ * nautilus_gdk_font_get_fixed
+ *
+ * Returns: A fixed GdkFont that is guranteed to exist even in the
+ *          most limited user environment.  The fixed font is
+ *          useful in making code that deals with fonts simple by always
+ *          having the ability to fallback to this font.
+ *
+ *          You should free the font with gdk_font_unref() when you are
+ *          done with it.
+ */
+GdkFont *
+nautilus_gdk_font_get_fixed (void)
+{
+	if (fixed_font == NULL) {
+		fixed_font = gdk_fontset_load (_("fixed"));
+		g_assert (fixed_font != NULL);
+		g_atexit (unref_fixed_font);
+	}
+
+	gdk_font_ref (fixed_font);
+	return fixed_font;
 }
 
 /* Return a new string with just the nth XLFD string entry.  */
@@ -706,6 +792,60 @@ xlfd_string_could_be_scalable_non_bitmap (const char *xlfd_string)
 	return is_scalable_non_bitmap;
 }
 
+/* Allocate a new xlfd string with the given attrbitues. */
+char *
+nautilus_gdk_font_xlfd_string_new (const char *foundry,
+				   const char *family,
+				   const char *weight,
+				   const char *slant,
+				   const char *set_width,
+				   const char *add_style,
+				   guint size_in_pixels)
+{
+	char *font_name;
+
+        const char *points = "*";
+        const char *hor_res = "*";
+        const char *ver_res = "*";
+        const char *spacing = "*";
+        const char *average_width = "*";
+        const char *char_set_registry = "*";
+        const char *char_set_encoding = "*";
+
+
+	/*                             +---------------------------------------------------- foundry
+	                               |  +------------------------------------------------- family
+				       |  |  +---------------------------------------------- weight
+				       |  |  |  +------------------------------------------- slant 
+				       |  |  |  |  +---------------------------------------- sel_width
+				       |  |  |  |  |  +------------------------------------- add-style
+				       |  |  |  |  |  |  +---------------------------------- pixels   	
+				       |  |  |  |  |  |  |  +------------------------------- points  
+				       |  |  |  |  |  |  |  |  +---------------------------- hor_res        
+				       |  |  |  |  |  |  |  |  |  +------------------------- ver_res        
+				       |  |  |  |  |  |  |  |  |  |  +---------------------- spacing        
+				       |  |  |  |  |  |  |  |  |  |  |  +------------------- average_width        
+				       |  |  |  |  |  |  |  |  |  |  |  |  +---------------- char_set_registry
+				       |  |  |  |  |  |  |  |  |  |  |  |  |  +------------- char_set_encoding */
+	font_name = g_strdup_printf ("-%s-%s-%s-%s-%s-%s-%d-%s-%s-%s-%s-%s-%s-%s",
+				     foundry,
+				     family,
+				     weight,
+				     slant,
+				     set_width,
+				     add_style,
+				     size_in_pixels,
+				     points,
+				     hor_res,
+				     ver_res,
+				     spacing,
+				     average_width,
+				     char_set_registry,
+				     char_set_encoding);
+	
+	return font_name;
+}
+
 /* Test whether the given XLFD string has a bold weight */
 static gboolean
 font_entry_has_bold_weight_test (const NautilusStringList *string_list,
@@ -810,7 +950,7 @@ nautilus_self_check_ellipsize_start (const char *string, const char *truncate_to
 	char *result;
 
 	/* any old font will do */
-	font = nautilus_font_factory_get_fallback_font ();
+	font = nautilus_gdk_font_get_fixed ();
 	g_assert (font);
 
 	/* measure the length we want to truncate to */
@@ -830,7 +970,7 @@ nautilus_self_check_gdk_font_extensions (void)
 	GdkFont *font;
 
 	/* used to test ellipsize routines */
-	font = nautilus_font_factory_get_fallback_font ();
+	font = nautilus_gdk_font_get_fixed ();
 	g_assert (font);
 
 	/* nautilus_string_ellipsize_start */

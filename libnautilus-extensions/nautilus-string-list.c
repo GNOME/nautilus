@@ -130,7 +130,7 @@ nautilus_string_list_new_from_tokens (const char	*string,
 
 	if (string != NULL) {
 		char  **string_array;
-		guint i;
+		int i;
 
 		string_array = g_strsplit (string, delimiter, -1);
 		
@@ -403,7 +403,7 @@ int
 nautilus_string_list_get_index_for_string (const NautilusStringList	*string_list,
 					   const char			*string)
 {
-	gint	n = 0;
+	int	n = 0;
 	GList	*iterator;
 
 	g_return_val_if_fail (string_list != NULL, NAUTILUS_STRING_LIST_NOT_FOUND);
@@ -435,14 +435,14 @@ nautilus_string_list_as_concatenated_string (const NautilusStringList *string_li
 					     const char               *delimiter)
 {
 	char *result = NULL;
-	guint length;
+	int length;
 	
 	g_return_val_if_fail (string_list != NULL, NULL);
 	
 	length = nautilus_string_list_get_length (string_list);
 	
 	if (length > 0) {
-		guint	n;
+		int	n;
 		GList	*iterator;
 		GString	*tokens;
 
@@ -538,10 +538,10 @@ nautilus_string_list_for_each (const NautilusStringList *string_list,
 char *
 nautilus_string_list_get_longest_string (const NautilusStringList *string_list)
 {
-	guint	longest_length = 0;
-	guint	longest_index = 0;
+	int	longest_length = 0;
+	int	longest_index = 0;
 	GList	*iterator;
-	guint	i;
+	int	i;
 
 	g_return_val_if_fail (string_list != NULL, NULL);
 
@@ -550,7 +550,7 @@ nautilus_string_list_get_longest_string (const NautilusStringList *string_list)
 	}
 	
 	for (iterator = string_list->strings, i = 0; iterator != NULL; iterator = iterator->next, i++) {
-		guint current_length = nautilus_strlen ((const char *) iterator->data);
+		int current_length = nautilus_strlen ((const char *) iterator->data);
 		
 		if (current_length > longest_length) {
 			longest_index = i;
@@ -568,12 +568,12 @@ nautilus_string_list_get_longest_string (const NautilusStringList *string_list)
  *
  * Return value: The length of the longest string in the collection.
  */
-guint
+int
 nautilus_string_list_get_longest_string_length (const NautilusStringList *string_list)
 {
-	guint	longest_length = 0;
+	int	longest_length = 0;
 	GList	*iterator;
-	guint	i;
+	int	i;
 
 	g_return_val_if_fail (string_list != NULL, 0);
 
@@ -582,7 +582,7 @@ nautilus_string_list_get_longest_string_length (const NautilusStringList *string
 	}
 	
 	for (iterator = string_list->strings, i = 0; iterator != NULL; iterator = iterator->next, i++) {
-		guint current_length = nautilus_strlen ((const char *) iterator->data);
+		int current_length = nautilus_strlen ((const char *) iterator->data);
 		
 		if (current_length > longest_length) {
 			longest_length = current_length;
@@ -1016,7 +1016,7 @@ nautilus_self_check_string_list (void)
 
 		const char lines_string[] = "This\nAre\nSome\n\nLines";
 		const char thick_lines_string[] = "This####Are####Some########Lines";
-		const guint num_lines = nautilus_str_count_characters (lines_string, '\n') + 1;
+		const int num_lines = nautilus_str_count_characters (lines_string, '\n') + 1;
 
 		lines = nautilus_string_list_new_from_tokens (lines_string, "\n", TRUE);
 		thick_lines = nautilus_string_list_new_from_tokens (thick_lines_string, "####", TRUE);
