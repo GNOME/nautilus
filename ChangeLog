@@ -1,5 +1,22 @@
 2004-11-05  Alexander Larsson  <alexl@redhat.com>
 
+	* components/Makefile.am:
+	Remove stuff that are now replaced or not needed anymore.
+	
+	* libnautilus-private/nautilus-window-info.[ch]:
+	* src/nautilus-window.c:
+	Add nautilus_window_info_get_history.
+	
+	* src/Makefile.am:
+	* src/nautilus-history-sidebar.[ch]:
+	* src/nautilus-application.c: (nautilus_application_instance_init):
+	Add history sidebar widget, based on old component.
+	
+	* src/nautilus-information-panel.[ch]:
+	Some fixes
+
+2004-11-05  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-directory-background.c:
 	Fix spew
 	

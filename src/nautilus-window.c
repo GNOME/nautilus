@@ -1605,6 +1605,13 @@ nautilus_get_history_list (void)
 	return history_list;
 }
 
+static GList *
+nautilus_window_get_history (NautilusWindow *window)
+{
+	return eel_g_object_list_copy (history_list);
+}
+
+
 static NautilusWindowType
 nautilus_window_get_window_type (NautilusWindow *window)
 {
@@ -1654,6 +1661,7 @@ nautilus_window_info_iface_init (NautilusWindowInfoIface *iface)
 	iface->set_status = nautilus_window_set_status;
 	iface->get_window_type = nautilus_window_get_window_type;
 	iface->get_title = nautilus_window_get_cached_title;
+	iface->get_history = nautilus_window_get_history;
 	iface->get_current_location = nautilus_window_get_location;
 	iface->get_ui_container = nautilus_window_get_ui_container;
 	iface->get_selection_count = nautilus_window_get_selection_count;

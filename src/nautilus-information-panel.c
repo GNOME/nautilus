@@ -163,7 +163,7 @@ nautilus_information_panel_get_sidebar_id (NautilusSidebar *sidebar)
 static char *
 nautilus_information_panel_get_tab_label (NautilusSidebar *sidebar)
 {
-	return _("Information");
+	return g_strdup (_("Information"));
 }
 
 static GdkPixbuf *
@@ -1278,9 +1278,10 @@ static void
 nautilus_information_panel_set_parent_window (NautilusInformationPanel *panel,
 					      NautilusWindowInfo *window)
 {
-	panel->details->window = window;
 	char *title, *location;
 
+	panel->details->window = window;
+	
 	g_signal_connect_object (window, "loading_uri",
 				 G_CALLBACK (loading_uri_callback), panel, 0);
 	g_signal_connect_object (window, "title_changed",

@@ -191,6 +191,14 @@ nautilus_window_info_get_title (NautilusWindowInfo *window)
 	return (* NAUTILUS_WINDOW_INFO_GET_IFACE (window)->get_title) (window);
 }
 
+GList *
+nautilus_window_info_get_history (NautilusWindowInfo *window)
+{
+	g_return_val_if_fail (NAUTILUS_IS_WINDOW_INFO (window), NULL);
+	
+	return (* NAUTILUS_WINDOW_INFO_GET_IFACE (window)->get_history) (window);
+}
+
 char *
 nautilus_window_info_get_current_location (NautilusWindowInfo *window)
 {

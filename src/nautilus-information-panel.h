@@ -59,7 +59,5 @@ typedef struct {
 
 GType            nautilus_information_panel_get_type     (void);
 void             nautilus_information_panel_register     (void);
-/* BONOBOTODO: needed? */
-void             nautilus_information_panel_setup_width  (NautilusInformationPanel   *information_panel);
 
 #endif /* NAUTILUS_INFORMATION_PANEL_H */

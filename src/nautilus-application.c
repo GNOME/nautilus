@@ -36,6 +36,7 @@
 #include "file-manager/fm-search-list-view.h"
 #include "file-manager/fm-tree-view.h"
 #include "nautilus-information-panel.h"
+#include "nautilus-history-sidebar.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -173,6 +174,7 @@ nautilus_application_instance_init (NautilusApplication *application)
 
 	/* register sidebars */
 	nautilus_information_panel_register ();
+	nautilus_history_sidebar_register ();
 }
 
 NautilusApplication *
