@@ -43,7 +43,6 @@ typedef struct _NautilusUserLevelManager NautilusUserLevelManager;
 NautilusUserLevelManager*    nautilus_user_level_manager_get                    (void);
 void                         nautilus_user_level_manager_set_user_level         (guint       user_level);
 guint                        nautilus_user_level_manager_get_user_level         (void);
-guint                        nautilus_user_level_manager_get_num_user_levels    (void);
 char          		    *nautilus_user_level_manager_get_user_level_name_for_display   (guint user_level);
 char			    *nautilus_user_level_manager_make_current_gconf_key (const char *preference_name);
 char			    *nautilus_user_level_manager_make_gconf_key         (const char *preference_name,

@@ -349,14 +349,6 @@ nautilus_user_level_manager_get_user_level (void)
 	return (guint) index;
 }
 
-guint
-nautilus_user_level_manager_get_num_user_levels (void)
-{
-	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
-
-	return manager->num_user_levels;
-}
-
 char *
 nautilus_user_level_manager_get_user_level_name_for_display (guint user_level)
 {
