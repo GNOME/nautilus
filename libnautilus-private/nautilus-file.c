@@ -2104,13 +2104,22 @@ nautilus_file_is_backup_file (NautilusFile *file)
 		(file->details->relative_uri);
 }
 
+static gboolean
+is_file_hidden (NautilusFile *file)
+{
+	return g_hash_table_lookup (file->details->directory->details->hidden_file_hash,
+				    file->details->relative_uri) != NULL;
+	
+}
+
 gboolean 
 nautilus_file_should_show (NautilusFile *file, 
 			   gboolean show_hidden,
 			   gboolean show_backup)
 {
-	return (show_hidden || ! nautilus_file_is_hidden_file (file)) &&
-		(show_backup || ! nautilus_file_is_backup_file (file));
+	return (show_hidden || (!nautilus_file_is_hidden_file (file) && !is_file_hidden (file))) &&
+		(show_backup || !nautilus_file_is_backup_file (file));
+
 }
 
 gboolean

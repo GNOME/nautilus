@@ -502,7 +502,7 @@ create_tree (NautilusTreeView *view)
 	home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
 	nautilus_tree_model_add_root_uri (view->details->child_model, home_uri, _("Home Folder"), "gnome-home");
 	g_free (home_uri);
-	nautilus_tree_model_add_root_uri (view->details->child_model, "file:///", _("Filesystem Root"), "gnome-folder");
+	nautilus_tree_model_add_root_uri (view->details->child_model, "file:///", _("Filesystem"), "gnome-folder");
 #ifdef NOT_YET_USABLE
 	nautilus_tree_model_add_root_uri (view->details->child_model, "network:///", _("Network Neighbourhood"), "gnome-fs-network");
 #endif

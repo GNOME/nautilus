@@ -731,7 +731,7 @@ is_dot_or_dot_dot (const char *name)
 }
 
 static gboolean
-should_skip_file (GnomeVFSFileInfo *info)
+should_skip_file (NautilusDirectory *directory, GnomeVFSFileInfo *info)
 {
 	static gboolean show_hidden_files_changed_callback_installed = FALSE;
 	static gboolean show_backup_files_changed_callback_installed = FALSE;
@@ -766,7 +766,9 @@ should_skip_file (GnomeVFSFileInfo *info)
 		return TRUE;
 	}
 
-	if (!show_hidden_files && nautilus_file_name_matches_hidden_pattern (info->name)) {
+	if (!show_hidden_files && (nautilus_file_name_matches_hidden_pattern (info->name) ||
+				   (directory != NULL &&
+				    g_hash_table_lookup (directory->details->hidden_file_hash, info->name) != NULL))) {
 		return TRUE;
 	}
 	if (!show_backup_files && nautilus_file_name_matches_backup_pattern (info->name)) {
@@ -846,7 +848,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		 * moving this into the actual callback instead of
 		 * waiting for the idle function.
 		 */
-		if (!should_skip_file (file_info)) {
+		if (!should_skip_file (directory, file_info)) {
 			directory->details->load_file_count += 1;
 
 			/* Add the MIME type to the set. */
@@ -970,6 +972,12 @@ directory_load_cancel (NautilusDirectory *directory)
 	}
 }
 
+static gboolean
+remove_callback (gpointer key, gpointer value, gpointer user_data)
+{
+	return TRUE;
+}
+
 static void
 file_list_cancel (NautilusDirectory *directory)
 {
@@ -985,6 +993,8 @@ file_list_cancel (NautilusDirectory *directory)
 		directory->details->pending_file_info = NULL;
 	}
 
+	g_hash_table_foreach_remove (directory->details->hidden_file_hash, remove_callback, NULL);
+	
 	load_directory_state_destroy (directory);
 }
 
@@ -1398,7 +1408,7 @@ count_non_skipped_files (GList *list)
 
 	count = 0;
 	for (node = list; node != NULL; node = node->next) {
-		if (!should_skip_file (node->data)) {
+		if (!should_skip_file (NULL, node->data)) {
 			count += 1;
 		}
 	}
@@ -1944,6 +1954,66 @@ get_file_count_filter (NautilusDirectory *directory)
 
 #endif
 
+static void
+read_dot_hidden_file (NautilusDirectory *directory)
+{
+	char *dot_hidden_uri;
+	GnomeVFSURI *dot_hidden_vfs_uri;
+	GnomeVFSResult result;
+	int i, file_size;
+	char *file_contents;
+
+
+	/* FIXME: We only support .hidden on file: uri's for the moment.
+	 * Need to figure out if we should do this async or sync to extend
+	 * it to all types of uris.
+	 */
+	if (eel_strcasecmp (directory->details->vfs_uri->method_string, "file") != 0) {
+		return;
+	}
+	
+	/* FIXME: what we really need is a uri_append_file_name call
+	 * that works on strings, so we can avoid the VFS parsing step.
+	 */
+	dot_hidden_vfs_uri = gnome_vfs_uri_append_file_name (directory->details->vfs_uri, ".hidden");
+	dot_hidden_uri = gnome_vfs_uri_to_string (dot_hidden_vfs_uri, GNOME_VFS_URI_HIDE_NONE);
+	gnome_vfs_uri_unref (dot_hidden_vfs_uri);
+	
+	result = eel_read_entire_file (dot_hidden_uri, &file_size, &file_contents);	
+	g_free (dot_hidden_uri);
+
+	if (result != GNOME_VFS_OK) {
+		return;
+	}
+
+	/* Now parse the data */
+	i = 0;
+	while (i < file_size) {
+		int start;
+
+		start = i;
+		while (i < file_size && file_contents[i] != '\n') {
+			i++;
+		}
+
+		if (i > start) {
+			char *tmp, *tmp2;
+		
+			tmp = g_strndup (file_contents + start, i - start);
+			tmp2 = gnome_vfs_escape_string (tmp);
+			g_free (tmp);
+			
+			g_hash_table_insert (directory->details->hidden_file_hash,
+					     tmp2, tmp2);
+		}
+
+		i++;
+		
+	}
+
+	g_free (file_contents);
+}
+
 /* Start monitoring the file list if it isn't already. */
 static void
 start_monitoring_file_list (NautilusDirectory *directory)
@@ -1972,6 +2042,9 @@ start_monitoring_file_list (NautilusDirectory *directory)
 	directory->details->load_directory_file->details->loading_directory = TRUE;
 	directory->details->load_file_count = 0;
 	directory->details->load_mime_list_hash = istr_set_new ();
+
+	read_dot_hidden_file (directory);
+	
 #ifdef DEBUG_LOAD_DIRECTORY
 	g_message ("load_directory called to monitor file list of %s", directory->details->uri);
 #endif	
@@ -2214,7 +2287,7 @@ deep_count_one (NautilusDirectory *directory,
 	NautilusFile *file;
 	char *escaped_name, *uri;
 	
-	if (should_skip_file (info))
+	if (should_skip_file (NULL, info))
 		return;
 
 	file = directory->details->deep_count_file;
@@ -2383,7 +2456,7 @@ static void
 mime_list_one (NautilusDirectory *directory,
 	       GnomeVFSFileInfo *info)
 {
-	if (should_skip_file (info)) {
+	if (should_skip_file (NULL, info)) {
 		return;
 	}
 

@@ -105,6 +105,8 @@ struct NautilusDirectoryDetails
 	LinkInfoReadState *link_info_read_state;
 
 	GList *file_operations_in_progress; /* list of FileOperation * */
+
+	GHashTable *hidden_file_hash;
 };
 
 /* A request for information about one or more files. */

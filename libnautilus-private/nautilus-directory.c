@@ -134,6 +134,8 @@ nautilus_directory_init (gpointer object, gpointer klass)
 	directory->details->high_priority_queue = nautilus_file_queue_new ();
 	directory->details->low_priority_queue = nautilus_file_queue_new ();
 	directory->details->idle_queue = nautilus_idle_queue_new ();
+
+	directory->details->hidden_file_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 }
 
 void
@@ -201,6 +203,8 @@ nautilus_directory_finalize (GObject *object)
 	g_assert (directory->details->file_list == NULL);
 	g_hash_table_destroy (directory->details->file_hash);
 
+	g_hash_table_destroy (directory->details->hidden_file_hash);
+	
 	nautilus_file_queue_destroy (directory->details->high_priority_queue);
 	nautilus_file_queue_destroy (directory->details->low_priority_queue);
 	nautilus_idle_queue_destroy (directory->details->idle_queue);

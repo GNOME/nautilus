@@ -1,3 +1,21 @@
+2003-06-27  Alexander Larsson  <alexl@redhat.com>
+
+	* components/tree/nautilus-tree-view.c: (create_tree):
+	* libnautilus-private/nautilus-directory-async.c:
+	(should_skip_file), (dequeue_pending_idle_callback),
+	(remove_callback), (file_list_cancel), (count_non_skipped_files),
+	(read_dot_hidden_file), (start_monitoring_file_list),
+	(deep_count_one), (mime_list_one):
+	* libnautilus-private/nautilus-directory-private.h:
+	* libnautilus-private/nautilus-directory.c:
+	(nautilus_directory_init), (nautilus_directory_finalize):
+	* libnautilus-private/nautilus-file.c: (is_file_hidden),
+	(nautilus_file_should_show):
+	Implement .hidden files, synchronosly, for file:// only.
+	
+	* components/tree/nautilus-tree-view.c (create_tree):
+	Change root name to "Filesystem"
+
 2003-06-27  Dave Camp  <dave@ximian.com>
 
 	* src/file-manager/fm-desktop-icon-view.c: (update_disks_menu):
