@@ -83,6 +83,7 @@ nautilus-history-view \
 nautilus-image-view \
 nautilus-inventory-view \
 nautilus-mozilla-content-view \
+nautilus-mpg123 \
 nautilus-music-view \
 nautilus-notes \
 nautilus-rpm-view \

@@ -39,3 +39,12 @@ nautilus_music_view_LDADD =			\
 	$(GNORBA_LIBS)
 
 EXTRA_DIST = $(oaf_DATA)
+
+install-exec-hook:
+	MPG123_PATH=`which mpg123`; \
+	if test -x /usr/bin/mpg123; then \
+	ln -sf /usr/bin/mpg123 $(DESTDIR)/$(bindir)/nautilus-mpg123; \
+	elif test "x$${MPG123_PATH}" != "x"; then \
+	ln -sf "$${MPG123_PATH}" $(DESTDIR)/$(bindir)/nautilus-mpg123; \
+	fi
+

@@ -1,5 +1,13 @@
 2000-11-02  Maciej Stachowiak  <mjs@eazel.com>
 
+	* components/music/Makefile.am: Install a nautilus-mpg123 symlink
+	that points to the real mpg123 if it exists on the system.
+	* components/music/mpg123_handler.c (start_playing_file): Run nautilus-mpg123
+	* nautilus-clean.sh: Kill nautilus-mpg123
+	* nautilus-spec.in: Install the nautilus-mpg123 symlink
+	
+2000-11-02  Maciej Stachowiak  <mjs@eazel.com>
+
 	Believed fix to 4361 and possible progress on 4157.
 	
 	* components/tree/nautilus-tree-model.c:

@@ -650,7 +650,7 @@ void start_playing_file(gchar* filename, gboolean start_from_beginning)
 		
 	/* create all command line arguments */
 
-	strcpy(cmd_arguments[cmd_cnt],"mpg123");
+	strcpy(cmd_arguments[cmd_cnt],"nautilus-mpg123");
 	cmd_ptr[cmd_cnt] = cmd_arguments[cmd_cnt];
 	cmd_cnt++;
 
@@ -757,7 +757,7 @@ void start_playing_file(gchar* filename, gboolean start_from_beginning)
 		/* set the group (session) id to this process for future killing */
 		setsid();
 
-		execvp("mpg123",cmd_ptr);
+		execvp("nautilus-mpg123",cmd_ptr);
 		printf("unable to run mpg123 (in the path?)\n");
 		exit(1);
 		}
