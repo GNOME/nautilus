@@ -146,8 +146,6 @@ nautilus_link_local_get_image_uri (const char *path)
 	gchar *retval;
 
 	mime_type = gnome_vfs_mime_type_from_name (path);
-	g_print ("%s,%s\n", path, mime_type);
-	g_print ("%s,%s\n", gnome_vfs_get_local_path_from_uri (path), gnome_vfs_mime_type_from_name (gnome_vfs_get_local_path_from_uri (path)));
 	retval = NULL;
 
 	if (strcmp (mime_type, "application/x-nautilus-link") == 0) {
