@@ -28,6 +28,9 @@
 #include <bonobo/bonobo-ui-util.h>
 #include "nautilus-window-private.h"
 #include <gtk/gtksignal.h>
+#ifdef EAZEL_SERVICES
+#include <libtrilobite/libammonite.h>
+#include <bonobo/bonobo-main.h>
 
 static void
 goto_services_summary (BonoboUIComponent *component, 
@@ -43,8 +46,32 @@ goto_online_storage (BonoboUIComponent *component,
 		     gpointer callback_data, 
 		     const char *verb)
 {
+	char			*url;
+	char			*user_name;
+	gboolean		logged_in;
+	EazelProxy_UserControl	user_control;
+
+	url = g_strdup ("eazel:");
+	logged_in = FALSE;
+	user_name = NULL;
+	user_control = CORBA_OBJECT_NIL;
+
+	if (ammonite_init ((PortableServer_POA) bonobo_poa)) {
+		user_control = ammonite_get_user_control ();
+	}
+
+	logged_in = am_i_logged_in (user_control);
+
+	if (!logged_in) {
+		url = g_strdup ("eazel-services://anonymous/services");
+	} else {
+		user_name = who_is_logged_in (user_control);
+		url = g_strdup_printf ("eazel-services://~%s", user_name);
+	}
+
 	nautilus_window_goto_uri (NAUTILUS_WINDOW (callback_data),
-				  "eazel:vault");
+				  url);
+
 }
 
 static void
@@ -52,8 +79,29 @@ goto_software_catalog (BonoboUIComponent *component,
 		       gpointer callback_data, 
 		       const char *verb)
 {
+	char			*url;
+	gboolean		logged_in;
+	EazelProxy_UserControl	user_control;
+
+	url = g_strdup ("eazel:");
+	logged_in = FALSE;
+	user_control = CORBA_OBJECT_NIL;
+
+	if (ammonite_init ((PortableServer_POA) bonobo_poa)) {
+		user_control = ammonite_get_user_control ();
+	}
+
+	logged_in = am_i_logged_in (user_control);
+
+	if (!logged_in) {
+		url = g_strdup ("eazel-services://anonymous/catalog");
+	} else {
+		url = g_strdup ("eazel-services:/catalog");
+	}
+
 	nautilus_window_goto_uri (NAUTILUS_WINDOW (callback_data),
-				  "eazel-services:/catalog");
+				  url);
+
 }
 
 static void
@@ -98,3 +146,6 @@ nautilus_window_install_service_ui (NautilusWindow *window)
 			    detach_service_ui,
 			    service_ui);
 }
+
+#endif
+

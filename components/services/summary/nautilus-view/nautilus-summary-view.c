@@ -235,8 +235,6 @@ static void     goto_update_cb                         (GtkWidget               
 							ServicesButtonCallbackData *cbdata);
 static void     register_button_cb                     (GtkWidget                  *button,
 							NautilusSummaryView        *view);
-static gboolean am_i_logged_in                         (NautilusSummaryView        *view);
-static char*    who_is_logged_in                       (NautilusSummaryView        *view);
 static gint     logged_in_callback                     (gpointer                    raw);
 static gint     logged_out_callback                    (gpointer                    raw);
 static void     generate_error_dialog                  (NautilusSummaryView        *view,
@@ -325,7 +323,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	if (view->details->logged_in) {
 		char *text;
 		g_free (view->details->user_name);
-		view->details->user_name = who_is_logged_in (view);
+		view->details->user_name = who_is_logged_in (view->details->user_control);
 		text = g_strdup_printf (_("Welcome Back %s!"), view->details->user_name);
 		eazel_services_header_set_text (EAZEL_SERVICES_HEADER (title), text);
 		g_free (text);
@@ -1021,76 +1019,6 @@ logout_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 	CORBA_exception_free (&ev);
 }
 
-
-static gboolean
-am_i_logged_in (NautilusSummaryView	*view)
-{
-	CORBA_Environment	ev;
-	EazelProxy_User		*user;
-	gboolean		rv = FALSE;
-
-	rv = FALSE;
-	CORBA_exception_init (&ev);
-
-	if (CORBA_OBJECT_NIL != view->details->user_control) {
-
-		user = EazelProxy_UserControl_get_default_user (
-			view->details->user_control, &ev);
-
-		if (CORBA_NO_EXCEPTION != ev._major) {
-			g_message ("No Eazel Service User is currently logged in");
-			rv = FALSE;
-		}
-		else {
-			g_message ("Default Eazel Service User is '%s'", user->user_name);
-			CORBA_free (user);
-			rv = TRUE;
-		}
-	}
-
-	CORBA_exception_free (&ev);
-	return rv;
-} /* end am_i_logged_in */
-
-static char*
-who_is_logged_in (NautilusSummaryView	*view)
-{
-	CORBA_Environment	ev;
-	EazelProxy_UserList	*user;
-	char			*rv;
-	int			i;
-
-	rv = NULL;
-
-	CORBA_exception_init (&ev);
-
-	if (CORBA_OBJECT_NIL != view->details->user_control) {
-		/* Get list of currently active users */
-
-		user = EazelProxy_UserControl_get_active_users (
-			view->details->user_control, &ev);
-
-		if (CORBA_NO_EXCEPTION != ev._major) {
-			g_message ("No default user!");
-		} else {
-			g_message ("Default user found!");
-			for (i = 0; i < user->_length; i++) {
-				EazelProxy_User *current;
-	
-				current = user->_buffer + i;
-				if (current->is_default) {
-					rv = g_strdup (current->user_name);
-				}
-			}
-			CORBA_free (user);
-		}
-	}
-
-	CORBA_exception_free (&ev);
-	return rv;
-} /* end who_is_logged_in */
-
-
 static gint
 logged_in_callback (gpointer	raw)
 {
@@ -1467,7 +1395,7 @@ nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 	view->details->uri = g_strdup (uri);
 
 	/* get xml data and verify network connections */
-	view->details->logged_in = am_i_logged_in (view);
+	view->details->logged_in = am_i_logged_in (view->details->user_control);
 
 	got_url_table = trilobite_redirect_fetch_table 
 		(view->details->logged_in
@@ -1622,7 +1550,7 @@ merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_d
 							"nautilus-summary-view");
 									
 		bonobo_ui_component_add_verb_list_with_data (view->details->ui_component, verbs, view);
-		update_menu_items (view, am_i_logged_in (view));
+		update_menu_items (view, am_i_logged_in (view->details->user_control));
 	}
 
         /* Note that we do nothing if state is FALSE. Nautilus content

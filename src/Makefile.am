@@ -23,6 +23,10 @@ INCLUDES =\
 	-DDATADIR=\""$(datadir)"\" \
 	$(NULL)
 
+if EAZEL_SERVICES
+SERVICE_LIBS = $(AMMONITE_LIBS)
+endif
+
 LDADD =\
 	$(top_builddir)/src/file-manager/libnautilus-file-manager.la \
 	$(top_builddir)/libnautilus/libnautilus.la \
@@ -35,6 +39,7 @@ LDADD =\
 	$(GNOMECANVASPIXBUF_LIBS) \
 	$(VFS_LIBS) \
 	$(XML_LIBS) \
+	$(SERVICE_LIBS) \
 	$(NULL)
 
 nautilus_shell_interface_idl_sources =		\
