@@ -196,7 +196,7 @@ GList *            nautilus_directory_begin_file_name_change          (NautilusD
 void               nautilus_directory_end_file_name_change            (NautilusDirectory         *directory,
 								       NautilusFile              *file,
 								       GList                     *node);
-void               nautilus_directory_handle_directory_moved          (NautilusDirectory         *directory,
+void               nautilus_directory_moved                           (const char                *from_uri,
 								       const char                *to_uri);
 
 /* debugging functions */

@@ -73,7 +73,7 @@ static void     nautilus_about_draw_info        (NautilusAbout       *about,
 						 const char          *copyright,
 						 const char         **authors,
 						 const char          *comments,
-						 const char          *timestamp);
+						 const char          *time_stamp);
 static int      update_authors_if_necessary     (gpointer             callback_data);
 
 /* author box layout definitions */
@@ -182,19 +182,19 @@ nautilus_about_initialize (NautilusAbout *about)
 
 /* allocate a new about dialog */
 GtkWidget *
-nautilus_about_new (const char	*title,
-		    const char	*version,
-		    const char	*copyright,
-		    const char	**authors,
-		    const char	*comments,
-		    const char *timestamp)
+nautilus_about_new (const char *title,
+		    const char *version,
+		    const char *copyright,
+		    const char **authors,
+		    const char *comments,
+		    const char *time_stamp)
 {
 	NautilusAbout *about;
 	
 	about = NAUTILUS_ABOUT (gtk_widget_new (nautilus_about_get_type (), NULL));
 	
 	/* draw the info onto the pixbuf, once and for all */
-	nautilus_about_draw_info (about, title, version, copyright, authors, comments, timestamp);
+	nautilus_about_draw_info (about, title, version, copyright, authors, comments, time_stamp);
 	
 	return GTK_WIDGET (about);
 }
@@ -317,14 +317,13 @@ draw_author_list (NautilusAbout *about,
 
 /* draw the information onto the pixbuf */
 static void
-nautilus_about_draw_info (
-	NautilusAbout	*about,
-	const char	*title,
-	const char	*version,
-	const char	*copyright,
-	const char	**authors,
-	const char	*comments,
-	const char	*timestamp)
+nautilus_about_draw_info (NautilusAbout	*about,
+			  const char *title,
+			  const char *version,
+			  const char *copyright,
+			  const char **authors,
+			  const char *comments,
+			  const char *time_stamp)
 {
 	char *display_str, *temp_str;
 	char **comment_array;
@@ -334,7 +333,7 @@ nautilus_about_draw_info (
 	int xpos, ypos, total_height;
 	int index;
 
-	/* FIXME bugzilla.eazel.com 5056: Hard-coded font OK here? */
+	/* FIXME bugzilla.eazel.com 5056: Hard-coded font here. */
 	plain_font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL));
 	bold_font  = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL));
 
@@ -356,8 +355,8 @@ nautilus_about_draw_info (
 	/* draw the authors title */
 	draw_aa_string (bold_font, pixbuf, 20, 184, 64, black, black, _("Authors"), 0);
 	
-	/* draw the timestamp */
-	draw_aa_string (plain_font, pixbuf, 11, 284, total_height - 14, grey, black, timestamp, 0);
+	/* draw the time stamp */
+	draw_aa_string (plain_font, pixbuf, 11, 284, total_height - 14, grey, black, time_stamp, 0);
 	
 	/* remember the authors */
 	g_strfreev (about->details->authors);

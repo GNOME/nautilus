@@ -170,7 +170,7 @@ compute_title (NautilusWindow *window)
         return title;
 }
 
-/* window_set_title_with_timestamp
+/* window_set_title_with_time_stamp
  * 
  * Update the non-NautilusViewFrame objects that use the location's user-displayable
  * title in some way. Called when the location or title has changed.
@@ -179,29 +179,30 @@ compute_title (NautilusWindow *window)
  * 
  */
 static void
-window_set_title_with_timestamp (NautilusWindow *window, const char *title)
+window_set_title_with_time_stamp (NautilusWindow *window, const char *title)
 {
-        char *timestamp;
-	char *title_with_timestamp;
+        char *time_stamp;
+	char *title_with_time_stamp;
 	
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
         g_return_if_fail (title != NULL);
 
-	timestamp = nautilus_get_build_timestamp ();
+	time_stamp = nautilus_get_build_time_stamp ();
 	
-	if (timestamp != NULL) {
-		/* FIXME bugzilla.eazel.com 5037: The text Preview Release is hardcoded here.
-		 * Are all builds with timestamps really best described
-		 * as "preview release"?.
-		 */
-		title_with_timestamp = g_strdup_printf ("Preview Release %s: %s", timestamp, title);
-		gtk_window_set_title (GTK_WINDOW (window), title_with_timestamp);
-		g_free (title_with_timestamp);
+	if (time_stamp != NULL) {
+		/* FIXME bugzilla.eazel.com 5037: The text Preview
+		 * Release is hardcoded here. Are all builds with
+		 * time stamps really best described as "preview
+		 * release"?.
+                 */
+		title_with_time_stamp = g_strdup_printf (_("Preview Release %s: %s"), time_stamp, title);
+		gtk_window_set_title (GTK_WINDOW (window), title_with_time_stamp);
+		g_free (title_with_time_stamp);
 	} else {
 		gtk_window_set_title (GTK_WINDOW (window), title);
 	}
 
-	g_free (timestamp);
+	g_free (time_stamp);
 }
 
 /* update_title:
@@ -231,10 +232,10 @@ update_title (NautilusWindow *window)
         window->details->title = g_strdup (title);
 
         if (title[0] == '\0') {
-		window_set_title_with_timestamp (window, _("Nautilus"));
+		window_set_title_with_time_stamp (window, _("Nautilus"));
         } else {
                 window_title = nautilus_str_middle_truncate (title, MAX_TITLE_LENGTH);
-		window_set_title_with_timestamp (window, window_title);
+		window_set_title_with_time_stamp (window, window_title);
                 g_free (window_title);
         }
 

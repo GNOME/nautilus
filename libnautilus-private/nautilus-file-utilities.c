@@ -1273,16 +1273,14 @@ nautilus_unique_temporary_file_name (void)
 	return file_name;
 }
 
-#ifdef EAZEL_BUILD_TIMESTAMP
-static const char *BUILD_TIMESTAMP = EAZEL_BUILD_TIMESTAMP;
-#else
-static const char *BUILD_TIMESTAMP = NULL;
-#endif
-
 char *
-nautilus_get_build_timestamp (void)
+nautilus_get_build_time_stamp (void)
 {
-	return g_strdup (BUILD_TIMESTAMP);
+#ifdef EAZEL_BUILD_TIMESTAMP
+	return g_strdup (EAZEL_BUILD_TIMESTAMP);
+#else
+	return NULL;
+#endif
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

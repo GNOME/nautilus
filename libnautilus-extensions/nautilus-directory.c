@@ -67,15 +67,18 @@ static guint signals[LAST_SIGNAL];
 
 static GHashTable *directories;
 
-static void               nautilus_directory_destroy          (GtkObject   *object);
-static void               nautilus_directory_initialize       (gpointer     object,
-							       gpointer     klass);
+static void               nautilus_directory_destroy          (GtkObject              *object);
+static void               nautilus_directory_initialize       (gpointer                object,
+							       gpointer                klass);
 static void               nautilus_directory_initialize_class (NautilusDirectoryClass *klass);
-static NautilusDirectory *nautilus_directory_new              (const char  *uri);
+static NautilusDirectory *nautilus_directory_new              (const char             *uri);
+static char *             real_get_name_for_self_as_new_file  (NautilusDirectory      *directory);
+static void               set_directory_uri                   (NautilusDirectory      *directory,
+							       const char             *new_uri);
 
-static char		 *real_get_name_for_self_as_new_file  (NautilusDirectory *directory);
-
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDirectory, nautilus_directory, GTK_TYPE_OBJECT)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDirectory,
+				   nautilus_directory,
+				   GTK_TYPE_OBJECT)
 
 static void
 nautilus_directory_initialize_class (NautilusDirectoryClass *klass)
@@ -469,7 +472,6 @@ static NautilusDirectory *
 nautilus_directory_new (const char *uri)
 {
 	NautilusDirectory *directory;
-	GnomeVFSURI *vfs_uri;
 
 	g_assert (uri != NULL);
 
@@ -481,14 +483,7 @@ nautilus_directory_new (const char *uri)
 	gtk_object_ref (GTK_OBJECT (directory));
 	gtk_object_sink (GTK_OBJECT (directory));
 
-	directory->details->uri = g_strdup (uri);
-	directory->details->private_metafile_vfs_uri = construct_private_metafile_vfs_uri (uri);
-
-	vfs_uri = gnome_vfs_uri_new (uri);
-
-	directory->details->vfs_uri = vfs_uri;
-	directory->details->public_metafile_vfs_uri = vfs_uri == NULL ? NULL
-		: gnome_vfs_uri_append_file_name (vfs_uri, METAFILE_NAME);
+	set_directory_uri (directory, uri);
 
 	return directory;
 }
@@ -954,51 +949,174 @@ nautilus_directory_notify_files_removed (GList *uris)
 	g_hash_table_destroy (parent_directories);
 }
 
-void
-nautilus_directory_handle_directory_moved (NautilusDirectory *directory,
-					   const char *to_uri)
+static void
+set_directory_uri (NautilusDirectory *directory,
+		   const char *new_uri)
 {
-	GnomeVFSURI *vfs_uri;
+	GnomeVFSURI *new_vfs_uri;
+	GnomeVFSURI *new_public_metafile_vfs_uri;
+	GnomeVFSURI *new_private_metafile_vfs_uri;
 
-	/* I believe it's impossible for a self-owned file/directory to be
-           moved. But if that did somehow happen, carnage would
-           result. */
-	g_assert (directory->details->as_file == NULL);
-
-	g_hash_table_remove (directories, directory->details->uri);
+	new_vfs_uri = gnome_vfs_uri_new (new_uri);
+	new_public_metafile_vfs_uri = new_vfs_uri == NULL ? NULL
+		: gnome_vfs_uri_append_file_name (new_vfs_uri, METAFILE_NAME);
+	new_private_metafile_vfs_uri = construct_private_metafile_vfs_uri (new_uri);
 
 	g_free (directory->details->uri);
-	directory->details->uri = g_strdup (to_uri);
-
-	if (directory->details->private_metafile_vfs_uri != NULL) {
-		gnome_vfs_uri_unref (directory->details->private_metafile_vfs_uri);
-	}
-
-	directory->details->private_metafile_vfs_uri = construct_private_metafile_vfs_uri (to_uri);
-
-	/* FIXME bugzilla.eazel.com 5065: we also need to rename the private metafile, if it
-           exists, don't we. */
-
+	directory->details->uri = g_strdup (new_uri);
+	
 	if (directory->details->vfs_uri != NULL) {
 		gnome_vfs_uri_unref (directory->details->vfs_uri);
 	}
+	directory->details->vfs_uri = new_vfs_uri;
 
 	if (directory->details->public_metafile_vfs_uri != NULL) {
 		gnome_vfs_uri_unref (directory->details->public_metafile_vfs_uri);
 	}
+	directory->details->public_metafile_vfs_uri =
+		new_public_metafile_vfs_uri;
 
-	vfs_uri = gnome_vfs_uri_new (to_uri);
+	if (directory->details->private_metafile_vfs_uri != NULL) {
+		gnome_vfs_uri_unref (directory->details->private_metafile_vfs_uri);
+	}
+	directory->details->private_metafile_vfs_uri
+		= new_private_metafile_vfs_uri;
+}
 
-	directory->details->vfs_uri = vfs_uri;
-	directory->details->public_metafile_vfs_uri = vfs_uri == NULL ? NULL
-		: gnome_vfs_uri_append_file_name (vfs_uri, METAFILE_NAME);
+static char *
+get_path_from_vfs_uri (GnomeVFSURI *vfs_uri)
+{
+	char *uri, *path;
 
+	if (vfs_uri == NULL) {
+		return NULL;
+	}
+
+	uri = gnome_vfs_uri_to_string (vfs_uri, GNOME_VFS_URI_HIDE_NONE);
+	if (uri == NULL) {
+		return NULL;
+	}
+	path = gnome_vfs_get_local_path_from_uri (uri);
+	g_free (uri);
+	return path;
+}
+
+static char *
+get_private_metafile_path (NautilusDirectory *directory)
+{
+	return get_path_from_vfs_uri (directory->details->private_metafile_vfs_uri);
+}
+
+static void
+change_directory_uri (NautilusDirectory *directory,
+		      const char *new_uri)
+{
+	char *old_metafile_path, *new_metafile_path;
+
+	/* I believe it's impossible for a self-owned file/directory
+	 * to be moved. But if that did somehow happen, this function
+	 * wouldn't do enough to handle it.
+	 */
+	g_return_if_fail (directory->details->as_file == NULL);
+
+	old_metafile_path = get_private_metafile_path (directory);
+
+	g_hash_table_remove (directories,
+			     directory->details->uri);
+
+	set_directory_uri (directory, new_uri);
 
 	g_hash_table_insert (directories,
 			     directory->details->uri,
 			     directory);
 
-	/* FIXME bugzilla.eazel.com 5066: need to handle updating child directories as well */
+	new_metafile_path = get_private_metafile_path (directory);
+
+	if (old_metafile_path != NULL && new_metafile_path != NULL) {
+		rename (old_metafile_path, new_metafile_path);
+	}
+
+	g_free (old_metafile_path);
+	g_free (new_metafile_path);
+}
+
+typedef struct {
+	char *uri_prefix;
+	GList *directories;
+} CollectData;
+
+static void
+collect_directories_by_prefix (gpointer key, gpointer value, gpointer callback_data)
+{
+	const char *uri, *uri_suffix;
+	NautilusDirectory *directory;
+	CollectData *collect_data;
+
+	uri = (const char *) key;
+	directory = NAUTILUS_DIRECTORY (value);
+	collect_data = (CollectData *) callback_data;
+	
+	if (nautilus_str_has_prefix (uri, collect_data->uri_prefix)) {
+		uri_suffix = &uri[strlen (collect_data->uri_prefix)];
+		switch (uri_suffix[0]) {
+		case '\0':
+		case '/':
+			nautilus_directory_ref (directory);
+			collect_data->directories =
+				g_list_prepend (collect_data->directories,
+						directory);
+			break;
+		}
+	}
+}
+
+static char *
+str_replace_prefix (const char *str,
+		    const char *old_prefix,
+		    const char *new_prefix)
+{
+	const char *old_suffix;
+
+	g_return_val_if_fail (nautilus_str_has_prefix (str, old_prefix),
+			      g_strdup (str));
+
+	old_suffix = &str [strlen (old_prefix)];
+	return g_strconcat (new_prefix, old_suffix, NULL);
+}
+
+void
+nautilus_directory_moved (const char *old_uri,
+			  const char *new_uri)
+{
+	char *canonical_old_uri, *canonical_new_uri;
+	CollectData collection;
+	NautilusDirectory *directory;
+	char *new_directory_uri;
+	GList *node;
+
+	canonical_old_uri = nautilus_directory_make_uri_canonical (old_uri);
+	canonical_new_uri = nautilus_directory_make_uri_canonical (new_uri);
+
+	collection.uri_prefix = canonical_old_uri;
+	collection.directories = NULL;
+
+	g_hash_table_foreach (directories, collect_directories_by_prefix, &collection);
+
+	for (node = collection.directories; node != NULL; node = node->next) {
+		directory = NAUTILUS_DIRECTORY (node->data);
+		new_directory_uri = str_replace_prefix (directory->details->uri,
+							canonical_old_uri,
+							canonical_new_uri);
+		change_directory_uri (directory,
+				      new_directory_uri);
+		g_free (new_directory_uri);
+		nautilus_directory_unref (directory);
+	}
+
+	g_list_free (collection.directories);
+
+	g_free (canonical_old_uri);
+	g_free (canonical_new_uri);
 }
 
 void
@@ -1008,7 +1126,6 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 	URIPair *pair;
 	NautilusFile *file;
 	NautilusDirectory *old_directory, *new_directory;
-	NautilusDirectory *moved_directory;
 	GHashTable *parent_directories;
 	GList *new_files_list, *unref_list;
 	GHashTable *added_lists, *changed_lists;
@@ -1039,13 +1156,8 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 						    new_directory);
 		}
 
-		/* rename an existing directory */
-		moved_directory = nautilus_directory_get_existing (pair->from_uri);
-		if (moved_directory != NULL) {
-			nautilus_directory_handle_directory_moved (moved_directory, 
-								   pair->to_uri);
-			nautilus_directory_unref (moved_directory);
-		}
+		/* Update any directory objects that are affected. */
+		nautilus_directory_moved (pair->from_uri, pair->to_uri);
 
 		/* Move an existing file. */
 		file = nautilus_file_get_existing (pair->from_uri);
@@ -1085,7 +1197,10 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 				 * it from the get_parent_directory
 				 * function so we don't have to ref.
 				 */
-				/* FIXME bugzilla.eazel.com 5067: Doesn't update the link hash table. */
+				/* FIXME bugzilla.eazel.com 5067: This
+				 * needs to update the link hash
+				 * table.
+				 */
 				file->details->directory = new_directory;
 
 				/* Add to new directory. */

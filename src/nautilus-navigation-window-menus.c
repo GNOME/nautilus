@@ -563,67 +563,68 @@ change_appearance_callback (BonoboUIComponent *component,
 	nautilus_theme_selector_show ();
 }
 
-static char *
-get_about_box_timestamp_string (void)
-{
-	char *timestamp;
-
-	timestamp = nautilus_get_build_timestamp ();
-	
-	return timestamp ? timestamp : g_strdup ("");
-}
-
 static void
 help_menu_about_nautilus_callback (BonoboUIComponent *component, 
 			           gpointer user_data, 
 			           const char *verb)
 {
 	static GtkWidget *about = NULL;
+	char *time_stamp;
+	const char *authors[] = {
+		"Ali Abdin",
+		"Darin Adler",
+		"Josh Barrow",
+		"Pavel Císler",
+		"J Shane Culpepper",
+		"Mike Engber",
+		"Ramiro Estrugo",
+		"Mike Fleming",
+		"Eli Goldberg",
+		"Andy Hertzfeld",
+		"Susan Kare",
+		"Mathieu Lacage",
+		"George Lebl",
+		"Elliot Lee",
+		"Raph Levien",
+		"Ian McKellar",
+		"Seth Nickell",
+		"Eskil Heyn Olsen",
+		"Ettore Perazzoli",
+		"Robey Pointer",
+		"Gene Z. Ragan",
+		"Arlo Rose",
+		"Rebecca Schulman",
+		"Robin * Slomkowski",
+		"Maciej Stachowiak",
+		"John Sullivan",
+		"Bud Tribble",
+		NULL
+	};
+
 
 	if (about == NULL) {
-
-		const char *authors[] = {
-			"Ali Abdin",
-			"Darin Adler",
-			"Josh Barrow",
-			"Pavel Císler",
-			"J Shane Culpepper",
-			"Mike Engber",
-			"Ramiro Estrugo",
-			"Mike Fleming",
-			"Eli Goldberg",
-			"Andy Hertzfeld",
-			"Susan Kare",
-			"Mathieu Lacage",
-			"George Lebl",
-			"Elliot Lee",
-			"Raph Levien",
-			"Ian McKellar",
-			"Seth Nickell",
-			"Eskil Heyn Olsen",
-			"Ettore Perazzoli",
-			"Robey Pointer",
-			"Gene Z. Ragan",
-			"Arlo Rose",
-			"Rebecca Schulman",
-			"Robin * Slomkowski",
-			"Maciej Stachowiak",
-			"John Sullivan",
-			"Bud Tribble",
-			NULL
-		};
-
-		char *timestamp = get_about_box_timestamp_string ();
-		g_assert (timestamp != NULL);
-
+		time_stamp = nautilus_get_build_time_stamp ();
+		if (time_stamp == NULL) {
+			time_stamp = g_strdup ("");
+		}
+		
 		about = nautilus_about_new (_("Nautilus"),
 					    VERSION,
-					    "(C) 1999-2000 Eazel, Inc.",
+					    /* Localize to deal with
+					     * issues in the copyright
+					     * symbol characters -- do
+					     * not translate the
+					     * company name, please.
+					     */
+					    _("(C) 1999, 2000 Eazel, Inc."),
 					    authors,
-					    _("Nautilus is a graphical shell \nfor GNOME that makes it \neasy to manage your files \nand the rest of your system."),
-					    timestamp);
+					    _("Nautilus is a graphical shell\n"
+					      "for GNOME that makes it\n"
+					      "easy to manage your files\n"
+					      "and the rest of your system."),
+					    time_stamp);
 		
-		g_free (timestamp);
+		g_free (time_stamp);
 	} else {
 		nautilus_about_update_authors (NAUTILUS_ABOUT (about));
 	}

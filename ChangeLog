@@ -1,3 +1,58 @@
+2000-12-22  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 5065 (When Nautilus moves a directory it doesn't rename
+	the corresponding private metafile).
+
+	Fixed bug 5066 (Moving a directory doesn't update infomrration
+	about child directories in Nautilus).
+
+	Fixed bug 5297 (Make all (C) strings use gettext).
+
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(nautilus_directory_rename_file_metadata),
+	(nautilus_directory_remove_file_metadata): Add check for NULL hash
+	table. Without this check we kept running into asserts.
+	
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_new): Share URI-setup code with the renaming
+	case.
+	(set_directory_uri): New function shared with new directories and
+	renaming.
+	(get_path_from_vfs_uri), (get_private_metafile_path): Utility
+	functions to help get local paths for private metafiles.
+	(change_directory_uri): Update URI for an existing
+	NautilusDirectory object. This handles renaming the private
+	metafile too.
+	(collect_directories_by_prefix): Function to collect affected
+	directories when you rename a directory.
+	(str_replace_prefix): Utility to replace string prefix so we can
+	turn old directory name into the new one.
+	(nautilus_directory_moved): Renamed and changed to use URIs
+	instead of a directory object so it can be called even when no
+	directory exists. Also made it collect all affected directories
+	and do the work with change_directory_uri on each one.
+	* libnautilus-extensions/nautilus-file.c: (rename_callback): Use
+	the new nautilus_directory_moved.
+	
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_build_time_stamp):
+	* src/nautilus-about.h:
+	* src/nautilus-about.c: (nautilus_about_new),
+	(nautilus_about_draw_info):
+	* src/nautilus-window-manage-views.c:
+	(window_set_title_with_time_stamp), (update_title):
+	* src/nautilus-window-menus.c:
+	(help_menu_about_nautilus_callback):
+	Rename "timestamp" -> "time stamp".
+
+	* src/nautilus-window-menus.c:
+	(help_menu_about_nautilus_callback): Mark "(C)" string for
+	translation.
+	
 2000-12-21  John Harper  <jsh@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
@@ -252,7 +307,7 @@
 	(nautilus_debug_show_pixbuf_in_eog), (debug_delete_event),
 	(nautilus_debug_show_pixbuf):
 	Add a debug function to show pixbufs in process without having to
-	fork off eog.  This is more unseful than the eog version for
+	fork off eog. This is more useful than the eog version for
 	asynchronous stuff.
 	
 	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
@@ -261,8 +316,8 @@
 	(draw_tile_to_drawable_callback),
 	(nautilus_gdk_pixbuf_draw_to_pixbuf_tiled),
 	(nautilus_gdk_pixbuf_draw_to_drawable_tiled),
-	New function to tile pixbufs into drawables.  In order to reuse
-	the tiling algorithm from the "tile_to_pixbuf" function, i added a
+	New function to tile pixbufs into drawables. In order to reuse the
+	tiling algorithm from the "tile_to_pixbuf" function, I added a
 	simple callback mechanism.
 	
 	(nautilus_gdk_pixbuf_get_global_buffer),
@@ -270,8 +325,8 @@
 	
 	(nautilus_gdk_pixbuf_get_from_window_safe):
 	New function to wrap gdk_pixbuf_get_from_drawable with safety from
-	x errors and race conditions.  See code for detailed comments as
-	to the specific problems this wrapper addresses.
+	x errors and race conditions. See code for detailed comments as to
+	the specific problems this wrapper addresses.
 
 	* libnautilus-extensions/nautilus-gtk-extensions.h:
 	* libnautilus-extensions/nautilus-gtk-extensions.c:

@@ -644,8 +644,9 @@ nautilus_directory_rename_file_metadata (NautilusDirectory *directory,
 
 	if (directory->details->metafile_read) {
 		/* Move data in XML document if present. */
-		found = g_hash_table_lookup_extended (directory->details->metafile_node_hash,
-						      old_file_name, &key, &value);
+		found = directory->details->metafile_node_hash != NULL
+			&& g_hash_table_lookup_extended (directory->details->metafile_node_hash,
+							 old_file_name, &key, &value);
 		if (found) {
 			g_assert (strcmp (key, old_file_name) == 0);
 			file_node = value;
@@ -901,8 +902,9 @@ nautilus_directory_remove_file_metadata (NautilusDirectory *directory,
 
 	if (directory->details->metafile_read) {
 		/* Remove data in XML document if present. */
-		found = g_hash_table_lookup_extended (directory->details->metafile_node_hash,
-						      file_name, &key, &value);
+		found = directory->details->metafile_node_hash != NULL
+			&& g_hash_table_lookup_extended (directory->details->metafile_node_hash,
+							 file_name, &key, &value);
 		if (found) {
 			g_assert (strcmp (key, file_name) == 0);
 			file_node = value;

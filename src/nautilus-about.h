@@ -31,15 +31,11 @@
 #include <gdk/gdk.h>
 #include <libgnomeui/gnome-dialog.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
 #define NAUTILUS_TYPE_ABOUT		(nautilus_about_get_type ())
 #define NAUTILUS_ABOUT(obj)		(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_ABOUT, NautilusAbout))
 #define NAUTILUS_ABOUT_CLASS(klass)	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_ABOUT, NautilusAboutClass))
-#define NAUTILUS_IS_ABOUT(obj)	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_ABOUT))
-#define NAUTILUS_IS_ABOUT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_ABOUT))
+#define NAUTILUS_IS_ABOUT(obj)	        (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_ABOUT))
+#define NAUTILUS_IS_ABOUT_CLASS(klass)  (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_ABOUT))
 
 typedef struct NautilusAbout NautilusAbout;
 typedef struct NautilusAboutClass NautilusAboutClass;
@@ -54,19 +50,13 @@ struct NautilusAboutClass {
 	GnomeDialogClass parent_class;
 };
 
-GtkType		nautilus_about_get_type	(void);
-
-GtkWidget*	nautilus_about_new	(const gchar	*title,		/* Name of the application. */
-				 	 const char	*version,	/* Version. */
-				 	 const char	*copyright, 	/* Copyright notice */
-				 	 const char	**authors, 	/* NULL terminated list of authors. */
-				 	 const char	*comments, 	/* Other comments. */
-	 			 	 const char *timestamp  /* date and time of build */
-	 			 	);
-void		nautilus_about_update_authors (NautilusAbout *about);
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+GtkType    nautilus_about_get_type       (void);
+GtkWidget *nautilus_about_new            (const char     *title,
+					  const char     *version,
+					  const char     *copyright,
+					  const char    **authors,
+					  const char     *comments,
+					  const char     *time_stamp);
+void       nautilus_about_update_authors (NautilusAbout  *about);
 
 #endif /* NAUTILUS_ABOUT_H */
