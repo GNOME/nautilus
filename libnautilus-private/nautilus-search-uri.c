@@ -201,22 +201,35 @@ struct _value_criterion_item {
 */
 
 static operand_criterion_item file_name2_table [] = {
-        {"contains", 
-         N_("with \"%s\" in the name"),
+        {"contains",  
+         /* Part of a window title for search results: a
+            description of the set of files that contains a string */
+         N_("containing \"%s\" in their names"),
          NULL},
         {"starts_with",
+         /* Part of a window title for search results: a
+            description of the set of files that start with a string */
          N_("starting with \"%s\""),
          NULL},
         {"ends_with",
+         /* Part of a window title for search results: a
+            description of the set of files that end with a string */
          N_("ending with %s"),
          NULL},
         {"does_not_contain",
-         N_("without \"%s\" in their name"),
+         /* Part of a window title for search results: a
+            description of the set of files that end with a string */
+         N_("containing \"%s\" in their names"),
          NULL},
         {"regexp_matches",
+         /* Part of a window title for search results: a
+            description of the set of files that match a regular
+            expression */
          N_("matching the regular expression \"%s\""),
          NULL},
         {"matches",
+         /* Part of a window title for search results: a
+            description of the set of files that match a glob pattern */
          N_("matching the file pattern \"%s\""),
          NULL},
         {NULL, NULL, NULL}
@@ -230,30 +243,51 @@ static operand_criterion_item file_name2_table [] = {
 */
 static value_criterion_item file_type_options3_table [] = {
         {"file",
+         /* Part of a window title for search results: a
+            description of the set of files that are not directories,
+            sockets, etc. */
          N_("regular files"),
          NULL},
         {"text_file",
+         /* Part of a window title for search results: a
+            description of the set of files that are stored as plain
+            text */
          N_("text files"),
          NULL},
         {"application",
+         /* Part of a window title for search results: a
+            description of the set of files that are binary files or
+            applications you can run */
          N_("applications"),
          NULL},
         {"directory",
+         /* Part of a window title for search results: a
+            description of the set of items that are folders
+            (directories) */
          N_("folders"),
          NULL},
         {"music",
+         /* Part of a window title for search results: a
+            description of the set of items that are music files
+            (mp3s, wavs) */
          N_("music"),
          NULL},
         {NULL, NULL, NULL}
 };
 static operand_criterion_item file_type2_table [] = {
-        /* this one is not yet implemented in medusa */
         {"is_not",  
-         N_("are not %s"),
+         /* Part of a window title for search results: way of
+            describing the fact that files are not of a certain type
+            (folder, music, etc).  Context is "files that are [folder,
+            music]" */
+         N_("that are %s"),
          file_type_options3_table},
-        /* this one is implemented */
         {"is", 
-         N_("are %s"),
+         /* Part of a window title for search results: way of
+            describing the fact that files are of a certain type
+            (folder, music, etc).  Context is "files that are not
+            [folder, music]" */
+         N_("that are %s"),
          file_type_options3_table},
 };
 	
@@ -264,16 +298,28 @@ static operand_criterion_item file_type2_table [] = {
 */
 static operand_criterion_item owner2_table [] = {
         {"is_not",
+         /* Part of a window title for search results: way of
+            describing the fact that files are not owned by someone,
+            Context is files not ownd by xxx */
          N_("not owned by \"%s\""),
          NULL},
         {"is",
+         /* Part of a window title for search results: way of
+            describing the fact that files are owned by someone.
+            Context is files owned by root */
          N_("owned by \"%s\""),
          NULL},
-        /* folowing ones are not supported by Nautilus UI */
         {"has_uid",
+         /* Part of a window title for search results: way of
+            describing the fact that files have a specific owner uid.
+            Context is "files with owner UID xx" */
          N_("with owner UID \"%s\""),
          NULL},
         {"does_not_have_uid",
+         /* Part of a window title for search results: way of
+            describing the fact that files have a specific owner uid
+            other than this one.  Context is "files with owner uid
+            other than xx" */
          N_("with owner UID other than \"%s\""),
          NULL},
         {NULL, NULL, NULL}
@@ -285,13 +331,22 @@ static operand_criterion_item owner2_table [] = {
 */
 static operand_criterion_item size2_table [] = {
         {"larger_than",
+         /* Part of a window title for search results: way of
+            describing that the files are larger than a certain size.
+            Context is "files larger than %s bytes" */
          N_("larger than %s bytes"),
          NULL},
         {"smaller_than",
+         /* Part of a window title for search results: way of
+            describing that the files are larger than a certain size.
+            Context is "files smaller than %s bytes" */
          N_("smaller than %s bytes"),
          NULL},
         {"is",
-         N_("%s bytes"),
+         /* Part of a window title for search results: way of
+            describing that the files are larger than a certain size.
+            Context is "files of %s bytes" */
+         N_("of %s bytes"),
          NULL},
         {NULL, NULL, NULL}
 };
@@ -302,27 +357,57 @@ static operand_criterion_item size2_table [] = {
 */
 static operand_criterion_item mod_time2_table [] = {
         {"is today", 
+         /* Part of a window title for search results: way of
+            describing that the files were modified since midnight of
+            the current day.  Context is "files modified today" */
          N_("modified today"), 
          NULL},
         {"is yesterday",
+         /* Part of a window title for search results: way of
+            describing that the files were modified since midnight of
+            the previous day.  Context is "files modified yesterday" */
          N_("modified yesterday"),
          NULL},
         {"is",
+         /* Part of a window title for search results: way of
+            describing that the files were modified since midnight of
+            the date that will replace the %s.  Context is "files
+            modified on 11/20/00" */
          N_("modified on %s"),
          NULL},
         {"is_not", 
+         /* Part of a window title for search results: way of
+            describing that the files were not modified since midnight
+            of the date that will replace the %s.  Context is "files
+            not modified on 11/20/00" */
          N_("not modified on %s"), 
          NULL},
         {"is_before",
+         /* Part of a window title for search results: way of
+            describing that the files were not modified since midnight
+            of the date that will replace the %s. Context is "files
+            modified before 11/20/00" */
          N_("modified before %s"),
          NULL},
         {"is_after",
+         /* Part of a window title for search results: way of
+            describing that the files were modified after midnight of
+            the date field that will replace the %s.  Context is
+            "files modified after 11/20/00" */
          N_("modified after %s"),
          NULL},
         {"is_within_a_week_of",
+         /* Part of a window title for search results: way of
+            describing that the files were modified within a week of 
+            the date field that will replace the %s.  Context is
+            "files within a week of 11/20/00" */
          N_("modified within a week of %s"),
          NULL},
         {"is_within_a_month_of",
+         /* Part of a window title for search results: way of
+            describing that the files were modified within a week of 
+            the date field that will replace the %s.  Context is
+            "files within a month of 11/20/00" */
          N_("modified within a month of %s"),
          NULL},
         {NULL, NULL, NULL}
@@ -335,9 +420,17 @@ static operand_criterion_item mod_time2_table [] = {
 
 static operand_criterion_item emblem2_table [] = {
         { "include",
+         /* Part of a window title for search results: way of
+            describing that the files have emblems attached that include
+            the one that will replace the %s.  Context is "files
+            marked with Important" */
           N_("marked with \"%s\""),
           NULL},
         { "do_not_include",
+         /* Part of a window title for search results: way of
+            describing that the files have emblems attached that don't
+            include the one that will replace the %s.  Context is
+            "files not marked with Important" */
           N_("not marked with \"%s\""),
           NULL},
         {NULL, NULL, NULL}
@@ -352,15 +445,31 @@ static operand_criterion_item emblem2_table [] = {
 
 static operand_criterion_item contains2_table [] = {
         {"includes_all_of",
+         /* Part of a window title for search results: way of
+            describing that the (text) files searched for contain the
+            word or words that will replace the %s.  Context is "files
+            with all the word "bob frank" */
          N_("with all the words \"%s\""),
          NULL},
         {"includes_any_of",
+         /* Part of a window title for search results: way of
+            describing that the (text) files searched for contain the
+            word or one or more of the words that will replace the %s.
+            Context is "files containing one of the words "bob frank" */
          N_("containing one of the words \"%s\""),
          NULL},
         {"does_not_include_all_of",
+         /* Part of a window title for search results: way of
+            describing that the (text) files searched for don't
+            contain the word or all of the words that will replace the
+            %s.  Context is "files without all the word "bob frank" */
          N_("without all the words \"%s\""),
          NULL},
         {"does_not_include_any_of",
+         /* Part of a window title for search results: way of
+            describing that the (text) files searched for contain none of 
+            the word or words that will replace the %s.  Context is "files
+            with none of the words "bob frank" */
          N_("without any of the words \"%s\""),
          NULL},
         {NULL, NULL, NULL},
@@ -370,29 +479,61 @@ static operand_criterion_item contains2_table [] = {
 
 /* -------------------------------------------------------
    -       main table                                    -
-   -------------------------------------------------------
-*/
+   ------------------------------------------------------- */
 
 static field_criterion_item main_table[] = {
         {"file_name",
+         /* Part of a window title for search results: Optional
+            preposition that precedes the clause describing the file
+            name attribute matched.  Context is after "files" and
+            before the translation for "containing xx in the name" */
          N_(""),
          file_name2_table},
         {"file_type",
-         N_("that"),
+         /* Part of a window title for search results: Optional
+            preposition that precedes the clause describing the file
+            type attribute matched.  Context is after "files" and
+            before the translation for "that are music" */
+         N_(""),
          file_type2_table},
         {"owner",
+         /* Part of a window title for search results: Optional
+            preposition that precedes the clause describing the
+            properties of the file's owner that the search matched.
+            Context is after "files" and before the translation for
+            "owned by xx" */
          N_(""),
          owner2_table},
         {"size",
+         /* Part of a window title for search results: Optional
+            preposition that precedes the clause describing the
+            properties of the file's size that the search matched.
+            Context is after "files" and before the translation for
+            "larger than 500 bytes" */
          N_(""),
          size2_table},
         {"content",
+         /* Part of a window title for search results: Optional
+            preposition that precedes the clause describing the
+            properties of the file's content that the search matched.
+            Context is after "files" and before the translation for
+            "containing all the words" */
          N_(""),
          contains2_table},
         {"modified",
+         /* Part of a window title for search results: Optional
+            preposition that precedes the clause describing the
+            properties of the file's modification date that the search
+            matched.  Context is after "files" and before the
+            translation for "modified today" */
          N_(""),
          mod_time2_table},
         {"keywords",
+         /* Part of a window title for search results: Optional
+            preposition that precedes the clause describing the
+            properties of the file's attached emblems that the search
+            matched.  Context is after "files" and before the
+            translation for "marked with Important" */
          N_(""),
          emblem2_table},
         {NULL, NULL, NULL}
@@ -409,8 +550,7 @@ static field_criterion_item main_table[] = {
  * into the @current_table.
  * it returns -1 if it could not find it.
  * Yes, I know it is wrong to use the normal function return value
- * to pass error status.
- */
+ * to pass error status.  */
 static int 
 get_item_number (field_criterion_item *current_table, char *item) 
 {

@@ -64,72 +64,107 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 static char * criteria_titles [] = {
+	/* Menu item to search by file name in e.g. "Name starts with b" */
 	N_("Name"),
+	/* Menu item to search by file content in e.g. "Contains contains GNU" */
 	N_("Content"),
+	/* Menu item to search by file type in e.g. "Type is music" */
 	N_("Type"),
+	/* Menu item to search by file size in e.g. "Size larger than 500K" */
 	N_("Size"),
+	/* Menu item to search for files with an emblem attached in e.g. "With emblem marked with Important" */
 	N_("With Emblem"),
+	/* Menu item to search for files by the time they were last modified in e.g. "Last modified before [date]" */
 	N_("Last Modified"),
+	/* Menu item to search for files by their owner in e.g. "Owner is root" */
 	N_("Owner"),
 	NULL
 };
 
 
 static char *name_relations [] = {
+	/* The "contains" in a search for items where "file name contains" */
 	N_("contains"),
+	/* The "starts with" in a search for items where  "file name starts with" */
 	N_("starts with"),
+	/* The "ends with" in a search for items where "file name ends with" */
 	N_("ends with"),
+	/* The "matches glob" (eg *.c) in a search for items where "file name matches glob" */
 	N_("matches glob"),
+	/* The "matches regexp" (eg '[a-z]{2}+' in a search for items where "file name matches regexp" */
 	N_("matches regexp"),
 	NULL
 };
 
 static char *content_relations [] = {
+	/* The "includes all of" in a search for items where "content includes all of" */
 	N_("includes all of"),
+	/* The "includes any of" in a search for items where "content includes any of" */
 	N_("includes any of"),
+	/* The "does not include all of" in a search for items where "content does not include all of" */
 	N_("does not include all of"),
+	/* The "includes none of" in a search for items where "content includes none of" */
 	N_("includes none of"),
 	NULL
 
 };
 
 static char *type_relations [] = {
+	/* The "is" in a search for items where "Type is" */
 	N_("is"),
+	/* The "is not" in a search for items where "Type is not" */
 	N_("is not"),
 	NULL
 };
 
 static char *type_objects [] = {
+	/* A type of file you can search for; context is "Type is regular file" */
 	N_("regular file"),
+	/* A type of file you can search for; context is "Type is text file" */
 	N_("text file"),
+	/* A type of file you can search for; context is "Type is application" */
 	N_("application"),
+	/* A type of file you can search for; context is "Type is folder" */
 	N_("folder"),
+	/* A type of file you can search for; context is "Type is regular file" */
 	N_("music"),
 	NULL
 };
 
 static char *size_relations [] = {
+	/* In relation to file size; context is "Size larger than" */
 	N_("larger than"),
+	/* In relation to file size; context is "Size smaller than" */
 	N_("smaller than"),
 	NULL
 };
 
 static char *emblem_relations [] = {
+	/* In relation to emblems; context is "With emblem marked with" */
 	N_("marked with"),
+	/* in relation to emblems; context is "With emblem not marked with" */
 	N_("not marked with"),
 	NULL
 };
 
 static char *modified_relations [] = {
+	/* In relation to a file's last modfied time; context is "Last modified is 11/2/00" */
 	N_("is"),
+	/* In relation to a file's last modfied time; context is "Last modified is not 11/2/00" */
 	N_("is not"),
+	/* In relation to a file's last modfied time; context is "Last modified is after 11/2/00" */
 	N_("is after"),
+	/* In relation to a file's last modfied time; context is "Last modified is before 11/2/00" */
 	N_("is before"),
 	"",
+	/* In relation to a file's last modfied time; context is "Last modified is today" */
 	N_("is today"),
+	/* In relation to a file's last modfied time; context is "Last modified is yesterdat" */
 	N_("is yesterday"),
 	"",
+	/* In relation to a file's last modfied time; context is "Last modified is within a week of" */
 	N_("is within a week of"),
+	/* In relation to a file's last modfied time; context is "Last modified is within a month of" */
 	N_("is within a month of"),
 	NULL
 };
@@ -149,7 +184,9 @@ static gboolean modified_relation_shows_date [] = {
 };
 
 static char *owner_relations [] = {
+	/* In relation to a file's owner; context is "Owner is root" */
 	N_("is"),
+	/* In relation to a file's owner; context is "Owner is not root" */
 	N_("is not"),
 	NULL
 };
