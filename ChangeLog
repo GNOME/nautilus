@@ -1,3 +1,8 @@
+2000-05-29  Raph Levien  <raph@acm.org>
+
+	* librsvg/art_render_gradient.c (art_render_gradient_setpix): Fixed
+	an off-by-one loop error.
+
 2000-05-29  Andy Hertzfeld  <andy@eazel.com>
 
 	implemented task 259, simple UI for previewing sounds.  Implemented by
@@ -27,6 +32,58 @@
 	When the timeout fires, launch a player.  If we leave the icon, kill the
 	timeout and player as necessary.
 	
+2000-05-29  Raph Levien  <raph@acm.org>
+
+	This commit adds the ability to render SVG gradients to librsvg.
+	The full imaging model is supported. However, coordinate handling
+	is still a subset of the SVG spec. In particular, only
+	gradientUnits = userSpace is supported, and coordinates can only
+	be specified in user units (ie not percentages or other CSS
+	dimensions). Nonetheless, this level of functionality should be
+	adequate for rendering gradient-containing images converted from
+	Illustrator.
+
+	* librsvg/art_render.c:
+	* librsvg/art_render.h:
+	* librsvg/art_render_gradient.c:
+	* librsvg/art_render_gradient.h:
+	* librsvg/art_render_svp.c:
+	* librsvg/art_render_svp.h: Added these files, which provide
+	features of Libart 2.3.0 (ie, cvs HEAD as of today) conditionally
+	on systems with 2.2.0 (ie, cvs gnome-libs-1-0 as of today)
+	installed.
+
+	* librsvg/art_rgba.c:
+	* librsvg/art_rgba.h:
+	* librsvg/art_rgba_svp.c:
+	* librsvg/art_rgba_svp.h: Removed these libart source files, as
+	they are no longer used (rgba compositing is done in art_render
+	now).
+
+	* librsvg/rsvg.c: Numerous changes to accomodate new paint server
+	approach (based on libart's new modular rendering architecture).
+
+	* librsvg/rsvg-defs.h:
+	* librsvg/rsvg-defs.c: Added these files, containing utility
+	functions for managing SVG defs.
+
+	* librsvg/rsvg-css.h:
+	* librsvg/rsvg-css.c: Added these files. Moved all CSS parsing
+	functions of rsvg.c here.
+
+	* librsvg/rsvg-paint-server.h:
+	* librsvg/rsvg-paint-server.c: Added these files. Filling and
+	stroking are now done through the paint server abstraction
+	rather than direct calls to Libart.
+
+	* librsvg/test.svg: Added this test file containing some SVG
+	gradients.
+
+	* librsvg/Makefile.am: Added new files.
+
+	* librsvg/test-rsvg.c (main): Added multiple iteration option, for
+	memory leak testing.
+
 2000-05-29  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-list.c:

@@ -108,7 +108,7 @@ art_render_gradient_setpix (ArtRender *render,
   else if (ix == n_stops)
     ix--;
 
-  for (j = 0; j < n_ch + 1; j++)
+  for (j = 0; j < n_ch; j++)
     {
       int z;
       z = stops[ix].color[j];
