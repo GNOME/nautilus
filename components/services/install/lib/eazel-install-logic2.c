@@ -1007,7 +1007,6 @@ check_dependencies_foreach (PackageData *package,
 		packagedependency_destroy (dep);
 	}
 	g_list_free (remove);
-	
 }
 
 void
@@ -1405,7 +1404,6 @@ check_no_two_packages_has_same_file (EazelInstall *service,
 					other_conflicts++;
 				}
 				add_file_conflict (pack, pack_other, filename);
-				gtk_object_unref (GTK_OBJECT (pack_other));
 			} else {
 				/* file is okay */
 				g_hash_table_insert (file_table, filename, pack);
@@ -1548,7 +1546,7 @@ check_conflicts_against_already_installed_packages (EazelInstall *service,
 					/* the owner of this file is a package that we're upgrading, and the
 					 * new version no longer has this file, so everything's okay. */
 					g_message ("...but it's okay, we're upgrading %s and it ditched that file",
-							 pack_owner->name);
+						   pack_owner->name);
 				} else {
 					add_file_conflict (pack, pack_owner, filename);
 				}

@@ -1,3 +1,25 @@
+2001-02-15  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(check_dependencies_foreach),
+	(check_no_two_packages_has_same_file),
+	(check_conflicts_against_already_installed_packages):
+
+	Remove errant unref during dupe-file check.
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_install_parse_uri),
+	(nautilus_service_install_done), (nautilus_service_install_failed),
+	(nautilus_service_need_password),
+	(nautilus_service_install_view_update_from_uri_finish),
+	(nautilus_service_install_view_load_uri):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.h:
+
+	Set password prompt to something semi-reasonable.  Fix up a few
+	wrong behaviors in the case of having multiple toplevel packages.
+	This still isn't working very well.
+	
 2001-02-15  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bug 5599, make objects in $USER/Nautilus localizable.  Fixed

@@ -72,6 +72,7 @@
 #define NEXT_URL_ANONYMOUS     "eazel:"
 #define NEXT_URL               "eazel-services:/catalog"
 
+#define PASSWORD_PROMPT		_("Please enter your root password to continue installing. (This password is not saved or transmitted off your system.)")
 
 static void       nautilus_service_install_view_initialize_class (NautilusServiceInstallViewClass	*klass);
 static void       nautilus_service_install_view_initialize       (NautilusServiceInstallView		*view);
@@ -524,7 +525,7 @@ static gboolean
 nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view,
 			    char **host, int *port, char **username)
 {
-	char *p, *q, *pnext, *package_name, *host_spec;
+	char *p, *q, *pnext, *package_name, *host_spec, *rest, *ptr;
 	GList *packages = NULL;
 	PackageData *pack;
 	gboolean result = FALSE;
@@ -585,8 +586,10 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view,
 	}
 
 	if (*p) {
+		rest = g_strdup (p);
+		ptr = rest;
 		do {
-			pnext = strchr (p, ';');
+			pnext = strchr (ptr, ';');
 			if ((pnext != NULL) && (*(pnext+1) != '\0')) {
 				another_package = TRUE;
 				*pnext++ = '\0';
@@ -594,9 +597,9 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view,
 				another_package = FALSE;
 			}
 
-			trilobite_debug ("package '%s'", p);
+			trilobite_debug ("package '%s'", ptr);
 			/* version name specified? */
-			q = strchr (p, '?');
+			q = strchr (ptr, '?');
 			if (q) {
 				*q++ = 0;
 				if (strncmp (q, "version=", 8) == 0) {
@@ -604,7 +607,7 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view,
 				}
 			}
 
-			package_name = gnome_vfs_unescape_string_for_display (p);
+			package_name = gnome_vfs_unescape_string_for_display (ptr);
 			pack = create_package (package_name, view->details->using_local_file);
 			if (q) {
 				pack->version = g_strdup (q);
@@ -613,9 +616,10 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view,
 			g_free (package_name);
 
 			if (pnext != NULL) {
-				p = pnext;
+				ptr = pnext;
 			}
 		} while (another_package);
+		g_free (rest);
 	}
 
 	trilobite_debug ("host '%s:%d' username '%s'", *host ? *host : "(default)", *host ? *port : 0,
@@ -1276,20 +1280,28 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 	GtkWidget *toplevel;
 	GtkWidget *dialog;
 	char *message;
+	char *name;
 	GString *real_message;
 	gboolean answer = FALSE;
 	gboolean question_dialog;
+	GList *packlist, *iter;
+	PackageData *pack;
 
 	g_assert (NAUTILUS_IS_SERVICE_INSTALL_VIEW (view));
 
+	/* 'success' will be FALSE if even *one* package failed.  need to check for that. */
+
+	packlist = ((CategoryData *) view->details->categories->data)->packages;
+
+#if 1
+	for (iter = g_list_first (packlist); iter != NULL; iter = g_list_next (iter)) {
+		pack = PACKAGEDATA (iter->data);
+		trilobite_debug ("package %s status %d", pack->name, pack->status);
+	}
+#endif
+
 	/* no longer "loading" anything */
 	nautilus_view_report_load_complete (view->details->nautilus_view);
-
-	if (view->details->failure) {
-		success = FALSE;
-		view->details->failure = FALSE;
-		/* we have already indicated failure elsewhere.  good day to you, sir. */
-	}
 
 	gtk_progress_set_percentage (GTK_PROGRESS (view->details->total_progress_bar), success ? 1.0 : 0.0);
 
@@ -1303,8 +1315,34 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 	} else if (success) {
 		message = _("Installation complete.");
 	} else {
-		message = _("Installation failed.");
-		answer = nautilus_service_install_solve_cases (view);
+		if ((guint) view->details->failures == g_list_length (packlist)) {
+			message = _("Installation failed.");
+			answer = nautilus_service_install_solve_cases (view);
+		} else {
+			/* some succeeded; some failed */
+			real_message = g_string_new (_("Some packages installed successfully:"));
+			for (iter = g_list_first (packlist); iter != NULL; iter = g_list_next (iter)) {
+				pack = PACKAGEDATA (iter->data);
+				if (pack->status == PACKAGE_RESOLVED) {
+					name = packagedata_get_readable_name (pack);
+					g_string_sprintfa (real_message, "\n  \xB7 %s", name);
+					g_free (name);
+				}
+			}
+			g_string_sprintfa (real_message, _("\nSome packages failed:"));
+			for (iter = g_list_first (packlist); iter != NULL; iter = g_list_next (iter)) {
+				pack = PACKAGEDATA (iter->data);
+				if (pack->status != PACKAGE_RESOLVED) {
+					name = packagedata_get_readable_name (pack);
+					g_string_sprintfa (real_message, "\n  \xB7 %s", name);
+					g_free (name);
+				}
+			}
+
+			message = real_message->str;
+			g_string_free (real_message, FALSE);
+			answer = nautilus_service_install_solve_cases (view);
+		}
 	}
 
 	show_overall_feedback (view, message);
@@ -1333,7 +1371,7 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 			question_dialog = FALSE;
 			answer = TRUE;
 		} else if (view->details->downloaded_anything) {
-			if (view->details->cancelled || view->details->failure) {
+			if (view->details->cancelled || view->details->failures) {
 				g_string_sprintfa (real_message, "\n%s", _("Erase the RPM files?"));
 			} else {
 				g_string_sprintfa (real_message, "\n%s", _("Erase the leftover RPM files?"));
@@ -1421,7 +1459,7 @@ nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *pa
 	}
 
 	/* override the "success" result for install_done signal */
-	view->details->failure = TRUE;
+	view->details->failures++;
 
 	tmp = packagedata_get_readable_name (package);
 	message = g_strdup_printf (_("Installation failed on %s"), tmp);
@@ -1434,7 +1472,6 @@ nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *pa
 					    package,
 					    FALSE,
 					    &(view->details->problem_cases));
-
 }
 
 /* signal callback -- ask the user for the root password (for installs) */
@@ -1451,10 +1488,12 @@ nautilus_service_need_password (GtkObject *object, const char *prompt, NautilusS
 	}
 
 	if (view->details->password_attempts > 0) {
-		message = _("Incorrect password.");
+		message = g_strdup_printf ("%s\n \n%s", PASSWORD_PROMPT, _("Incorrect password."));
+	} else {
+		message = g_strdup (PASSWORD_PROMPT);
 	}
 
-	dialog = nautilus_password_dialog_new ("Authenticate Me", message, prompt, "", TRUE);
+	dialog = nautilus_password_dialog_new (_("Authenticate as root"), message, prompt, "", TRUE);
 	okay = nautilus_password_dialog_run_and_block (NAUTILUS_PASSWORD_DIALOG (dialog));
 
 	if (! okay) {
@@ -1474,6 +1513,8 @@ nautilus_service_need_password (GtkObject *object, const char *prompt, NautilusS
 	if (okay) {
 		view->details->password_attempts++;
 	}
+
+	g_free (message);
 
 	return out;
 }
@@ -1569,7 +1610,9 @@ nautilus_service_install_view_update_from_uri_finish (NautilusServiceInstallView
 
 	gtk_object_set_data (GTK_OBJECT (view), "packagedata", pack);
 
-	if ((pack->eazel_id != NULL) || (pack->suite_id != NULL)) {
+	if (g_list_length (category_data->packages) > 1) {
+		out = g_strdup_printf (_("Downloading packages"));
+	} else if ((pack->eazel_id != NULL) || (pack->suite_id != NULL)) {
 		out = g_strdup_printf (_("Downloading remote package"));
 	} else if (pack->name != NULL) {
 		out = g_strdup_printf (_("Downloading \"%s\""), pack->name);
@@ -1736,7 +1779,7 @@ nautilus_service_install_view_load_uri (NautilusServiceInstallView	*view,
 	/* clear some variables */
 	view->details->already_installed = FALSE;
 	view->details->cancelled = FALSE;
-	view->details->failure = FALSE;
+	view->details->failures = 0;
 	view->details->downloaded_anything = FALSE;
 
 	generate_install_form (view);
