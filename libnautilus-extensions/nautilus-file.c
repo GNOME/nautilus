@@ -433,7 +433,8 @@ destroy (GtkObject *object)
 	}
 	g_free (file->details->top_left_text);
 	g_free (file->details->activation_uri);
-
+	g_free (file->details->compare_by_emblem_cache);
+	
 	nautilus_g_list_free_deep (file->details->mime_list);
 
 	g_free (file->details);
@@ -1518,50 +1519,93 @@ prepend_automatic_emblem_names (NautilusFile *file,
 	return names;
 }
 
+static void
+fill_emblem_cache_if_needed (NautilusFile *file)
+{
+	GList *node, *keywords;
+	char *scanner;
+	size_t length;
+
+	if (file->details->compare_by_emblem_cache != NULL) {
+		/* Got a cache already. */
+		return;
+	}
+
+	keywords = nautilus_file_get_keywords (file);
+
+	/* Add up the keyword string lengths */
+	length = 1;
+	for (node = keywords; node != NULL; node = node->next) {
+		length += strlen ((const char *) node->data) + 1;
+	}
+
+	/* Now that we know how large the cache struct needs to be, allocate it. */
+	file->details->compare_by_emblem_cache = g_malloc (sizeof(NautilusFileSortByEmblemCache) + length);
+
+	/* Copy them into the cache. */
+	scanner = file->details->compare_by_emblem_cache->emblem_keywords;
+	for (node = keywords; node != NULL; node = node->next) {
+		length = strlen ((const char *) node->data) + 1;
+		memcpy (scanner, (const char *) node->data, length);
+		scanner += length;
+	}
+
+	/* Zero-terminate so we can tell where the list ends. */
+	*scanner = 0;
+
+	nautilus_g_list_free_deep (keywords);
+
+	/* Chache the values of the automatic emblems. */
+	file->details->compare_by_emblem_cache->automatic_emblems_as_integer
+		= get_automatic_emblems_as_integer (file);	
+}
+
 static int
 compare_by_emblems (NautilusFile *file_1, NautilusFile *file_2)
 {
-	int auto_1, auto_2;
-	GList *keywords_1, *keywords_2;
-	GList *node_1, *node_2;
+	const char *keyword_cache_1, *keyword_cache_2;
+	size_t length;
 	int compare_result;
  
-	auto_1 = get_automatic_emblems_as_integer (file_1);
-	auto_2 = get_automatic_emblems_as_integer (file_2);
-	if (auto_1 < auto_2) {
+
+	fill_emblem_cache_if_needed (file_1);
+	fill_emblem_cache_if_needed (file_2);
+
+	/* Compare automatic emblems. */
+	if (file_1->details->compare_by_emblem_cache->automatic_emblems_as_integer <
+		file_2->details->compare_by_emblem_cache->automatic_emblems_as_integer) {
 		return +1;
-	} else if (auto_1 > auto_2) {
+	} else if (file_1->details->compare_by_emblem_cache->automatic_emblems_as_integer >
+		file_2->details->compare_by_emblem_cache->automatic_emblems_as_integer) {
 		return -1;
 	}
 
-	keywords_1 = nautilus_file_get_keywords (file_1);
-	keywords_2 = nautilus_file_get_keywords (file_2);
-
 	/* Compare each keyword. */
 	compare_result = 0;
-	for (node_1 = keywords_1, node_2 = keywords_2;
-	     node_1 != NULL && node_2 != NULL;
-	     node_1 = node_1->next, node_2 = node_2->next) {
-		
-		compare_result = nautilus_strcoll (node_1->data, node_2->data);
+	keyword_cache_1 = file_1->details->compare_by_emblem_cache->emblem_keywords;
+	keyword_cache_2 = file_2->details->compare_by_emblem_cache->emblem_keywords;
+	for (; *keyword_cache_1 != '\0' && *keyword_cache_2 != '\0';) {
+		compare_result = nautilus_strcoll (keyword_cache_1, keyword_cache_2);
 		if (compare_result != 0) {
-			break;
+			return compare_result;
 		}
+		
+		/* Advance to the next keyword */
+		length = strlen (keyword_cache_1);
+		keyword_cache_1 += length + 1;
+		keyword_cache_2 += length + 1;
 	}
 
-	if (compare_result == 0) {
-		/* One or both is now NULL. */
-		if (node_1 != NULL) {
-			compare_result = -1;
-		} else if (node_2 != NULL) {
-			compare_result = +1;
-		}
+
+	/* One or both is now NULL. */
+	if (*keyword_cache_1 != '\0') {
+		g_assert (*keyword_cache_2 == '\0');
+		return -1;
+	} else if (*keyword_cache_2 != '\0') {
+		return +1;
 	}
 
-	nautilus_g_list_free_deep (keywords_1);
-	nautilus_g_list_free_deep (keywords_2);
-
-	return compare_result;	
+	return 0;	
 }
 
 static int
@@ -3943,6 +3987,10 @@ nautilus_file_set_keywords (NautilusFile *file, GList *keywords)
 {
 	GList *canonical_keywords;
 
+	/* Invalidate the emblem compare cache */
+	g_free (file->details->compare_by_emblem_cache);
+	file->details->compare_by_emblem_cache = NULL;
+	
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
 	canonical_keywords = sort_keyword_list_and_remove_duplicates
@@ -4245,6 +4293,14 @@ nautilus_file_emit_changed (NautilusFile *file)
 	GList *link_files, *p;
 
 	g_assert (NAUTILUS_IS_FILE (file));
+
+
+	/* Invalidate the emblem compare cache. -- This is not the cleanest
+	 * place to do it but it is the one guaranteed bottleneck through
+	 * which all change notifications pass.
+	 */
+	g_free (file->details->compare_by_emblem_cache);
+	file->details->compare_by_emblem_cache = NULL;
 
 	/* Send out a signal. */
 	gtk_signal_emit (GTK_OBJECT (file), signals[CHANGED], file);

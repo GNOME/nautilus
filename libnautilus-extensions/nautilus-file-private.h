@@ -39,6 +39,11 @@ typedef enum {
 	UNKNOWN
 } Knowledge;
 
+typedef struct {
+	int automatic_emblems_as_integer;
+	char emblem_keywords[1];
+} NautilusFileSortByEmblemCache;
+
 struct NautilusFileDetails
 {
 	NautilusDirectory *directory;
@@ -69,6 +74,10 @@ struct NautilusFileDetails
 	 */
 	GList *operations_in_progress;
 
+	/* We use this to cache automatic emblems and emblem keywords
+	   to speed up compare_by_emblems. */
+	NautilusFileSortByEmblemCache *compare_by_emblem_cache;
+	
 	/* boolean fields: bitfield to save space, since there can be
            many NautilusFile objects. */
 
