@@ -1,39 +1,15 @@
 2001-03-01  Eskil Heyn Olsen  <eskil@eazel.com>
 
-	reviewed by: <delete if not using a buddy>
+	reviewed by: Robey Pointer  <robey@eazel.com>
+	who hummed the twilight zone theme while reviewing...
 
-	* components/rpmview/nautilus-rpm-view-install.c:
-	(save_transaction), (nautilus_rpm_view_install_package_callback),
-	(nautilus_rpm_view_uninstall_package_callback):
-	* components/services/install-view/callbacks.c:
-	(nautilus_service_install_save_transaction):
-	* components/services/install-view/callbacks.h:
+	Fixes bug 7197 "install view's ``messages'' 
+	header doesn't reach across the window"
+
 	* components/services/install-view/forms.c:
 	(generate_install_form):
-	* components/services/install-view/nautilus-service-install-view.c:
-	(nautilus_service_install_view_update_from_uri_finish):
-	* components/services/install/command-line/eazel-alt-install-corba.
-	c: (eazel_save_transaction_signal), (main):
-	* components/services/install/idl/trilobite-eazel-install.idl:
-	* components/services/install/lib/eazel-install-corba-callback.c:
-	(impl_save_transaction), (eazel_install_callback_get_epv),
-	(eazel_install_callback_class_initialize):
-	* components/services/install/lib/eazel-install-corba-callback.h:
-	* components/services/install/lib/eazel-install-logic2.c:
-	(execute), (get_packages_with_mod_flag):
-	* components/services/install/lib/eazel-install-object.c:
-	(eazel_install_class_initialize), (eazel_install_install_packages),
-	(eazel_install_uninstall_packages),
-	(eazel_install_revert_transaction_from_xmlstring),
-	(eazel_install_emit_preflight_check_default),
-	(eazel_install_emit_save_transaction),
-	(eazel_install_emit_save_transaction_default):
-	* components/services/install/lib/eazel-install-public.h:
-	* components/services/install/lib/eazel-package-system-types.c:
-	(eazel_install_gtk_marshal_BOOL__ENUM_POINTER):
-	* components/services/install/lib/eazel-package-system-types.h:
-	* components/services/nautilus-dependent-shared/test-footer-header.
-	c: (main):
+	s/""/" "/ in eazel_services_header_middle_new,
+	fixes bug 7197
 
 2001-03-01  Dan Mueth  <dan@eazel.com>
 
