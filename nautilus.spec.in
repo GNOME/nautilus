@@ -18,13 +18,13 @@ Source: 	%{name}-%{ver}.tar.gz
 URL: 		http://nautilus.eazel.com/
 BuildRoot:	/var/tmp/%{name}-%{ver}-root
 Docdir: 	%{prefix}/doc
+Requires:	ORBit >= 0.5.6
 Requires:	glib >= 1.2.8
 Requires:	gtk+ >= 1.2.8
 Requires:	imlib >= 1.9.8
 Requires:	libxml >= 1.8.10
 Requires:	gnome-libs >= 1.2.8
 Requires:	GConf >= 0.12
-Requires:	ORBit >= 0.5.6
 Requires:	oaf >= 0.6.2
 Requires:	gnome-vfs >= 0.4.2
 Requires:	gdk-pixbuf >= 0.9.0

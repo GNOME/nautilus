@@ -195,7 +195,7 @@ window_set_title_with_time_stamp (NautilusWindow *window, const char *title)
 		 * time stamps really best described as "preview
 		 * release"?.
                  */
-		title_with_time_stamp = g_strdup_printf (_("Preview Release %s: %s"), time_stamp, title);
+		title_with_time_stamp = g_strdup_printf (_("Nautilus (%s): %s"), time_stamp, title);
 		gtk_window_set_title (GTK_WINDOW (window), title_with_time_stamp);
 		g_free (title_with_time_stamp);
 	} else {
