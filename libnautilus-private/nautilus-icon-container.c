@@ -3674,11 +3674,6 @@ handle_icon_button_press (NautilusIconContainer *container,
 			}
 		}
 	}
-	else if (event->button == CONTEXTUAL_MENU_BUTTON) {
-		g_signal_emit (container,
-			       signals[CONTEXT_CLICK_SELECTION], 0,
-			       event);
-	}
 
 	/* Modify the selection as appropriate. Selection is modified
 	 * the same way for contextual menu as it would be without. 
@@ -3692,6 +3687,12 @@ handle_icon_button_press (NautilusIconContainer *container,
 		icon_set_selected (container, icon, TRUE);
 		g_signal_emit (container,
 			       signals[SELECTION_CHANGED], 0);
+	}
+
+	if (event->button == CONTEXTUAL_MENU_BUTTON) {
+		g_signal_emit (container,
+			       signals[CONTEXT_CLICK_SELECTION], 0,
+			       event);
 	}
 
 	if (event->type == GDK_2BUTTON_PRESS && event->button == DRAG_BUTTON) {
