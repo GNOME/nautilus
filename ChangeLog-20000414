@@ -1,3 +1,23 @@
+2000-01-21  John Sullivan <sullivan@eazel.com>
+
+	Made list view activation work on single click, like icon view.
+
+	* libnautilus/gtkflist.c
+	(struct _GtkFListDetails): Added single_click_mode
+	and button_down_time, renamed dnd_select_pending_row to
+	button_down_row.
+	Added #define MAX_CLICK_TIME, copied from gnome_icon_container.
+	(gtk_flist_initialize): Initialize single_click_mode to TRUE
+	(activate_row): New function, extracts code needed to activate
+	an item from its row number.
+	(gtk_flist_button_press): Save button_down_time, save
+	button_down_row more often, use activate_row () for double-click.
+	(gtk_flist_button_release): Activate on single click if single_click_mode
+	is true, selection isn't being extended, mouse hasn't moved to a different 
+	row, and not too much time has passed.
+	(gtk_flist_motion): Deploy button_down_row name change.
+	
+
 2000-01-20  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus/gnome-icon-container.c:
@@ -9,8 +29,9 @@
 	* src/ntl-window-msgs.c:
 	Missed piece in last commit.
 
-	I added this entry for Elliot, who made this change three
-	hours later than his last checkin.
+	John added this entry for Elliot, who made this change three
+	hours later than his last checkin. The comment is from the
+	cvs commit.
 
 2000-01-20  Darin Adler  <darin@eazel.com>
 

@@ -24,20 +24,28 @@
 
 struct _GtkFListDetails
 {
+	/* Preferences */
+	gboolean single_click_mode;
+
 	/* The anchor row for range selections */
 	int anchor_row;
 
-	/* Mouse button and position saved on button press */
+	/* Mouse information saved on button press */
 	int dnd_press_button;
 	int dnd_press_x, dnd_press_y;
+	int button_down_row;
+	guint32 button_down_time;
 
 	/* Delayed selection information */
 	int dnd_select_pending;
 	guint dnd_select_pending_state;
-	int dnd_select_pending_row;
+	
 };
 
 #define ARRAY_LENGTH(a) (sizeof(a) / sizeof((a)[0]))
+
+/* maximum amount of milliseconds the mouse button is allowed to stay down and still be considered a click */
+#define MAX_CLICK_TIME 1500
 
 enum {
 	ROW_POPUP_MENU,
@@ -55,6 +63,8 @@ enum {
 static GtkTargetEntry gtk_flist_dnd_target_table[] = {
 	{ "application/x-color", 0, TARGET_COLOR }
 };
+
+static void activate_row (GtkFList *flist, gint row);
 
 static void gtk_flist_initialize_class (GtkFListClass *class);
 static void gtk_flist_initialize (GtkFList *flist);
@@ -160,6 +170,9 @@ gtk_flist_initialize (GtkFList *flist)
 
 	flist->details = g_new0 (GtkFListDetails, 1);
 	flist->details->anchor_row = -1;
+	
+	/* This should be read from preferences */
+	flist->details->single_click_mode = TRUE;
 
 	/* GtkCList does not specify pointer motion by default */
 	gtk_widget_add_events (GTK_WIDGET (flist), GDK_POINTER_MOTION_MASK);
@@ -170,6 +183,18 @@ gtk_flist_initialize (GtkFList *flist)
 			   gtk_flist_dnd_target_table,
 			   ARRAY_LENGTH (gtk_flist_dnd_target_table),
 			   GDK_ACTION_COPY);
+}
+
+static void
+activate_row (GtkFList *flist, gint row)
+{
+	GtkCListRow *elem;
+
+	elem = g_list_nth (GTK_CLIST (flist)->row_list,
+			   row)->data;
+	gtk_signal_emit (GTK_OBJECT (flist),
+			 flist_signals[ACTIVATE],
+			 elem->data);
 }
 
 static gboolean
@@ -258,17 +283,23 @@ gtk_flist_button_press (GtkWidget *widget, GdkEventButton *event)
 		return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_press_event, (widget, event));
 
 	on_row = gtk_clist_get_selection_info (clist, event->x, event->y, &row, &col);
+	flist->details->button_down_time = event->time;
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
 		if (event->button == 1 || event->button == 2) {
 			if (on_row) {
+
+				/* Save the clicked row for DnD and single-click activate */
+				
+				flist->details->button_down_row = row;
+
 				/* Save the mouse info for DnD */
 
 				flist->details->dnd_press_button = event->button;
 				flist->details->dnd_press_x = event->x;
 				flist->details->dnd_press_y = event->y;
-
+	
 				/* Handle selection */
 
 				if ((row_selected (flist, row)
@@ -277,7 +308,6 @@ gtk_flist_button_press (GtkWidget *widget, GdkEventButton *event)
 					&& !(event->state & GDK_SHIFT_MASK))) {
 					flist->details->dnd_select_pending = TRUE;
 					flist->details->dnd_select_pending_state = event->state;
-					flist->details->dnd_select_pending_row = row;
 				}
 
 				select_row (flist, row, event->state);
@@ -304,17 +334,15 @@ gtk_flist_button_press (GtkWidget *widget, GdkEventButton *event)
 
 	case GDK_2BUTTON_PRESS:
 		if (event->button == 1) {
-			GtkCListRow *elem;
-
 			flist->details->dnd_select_pending = FALSE;
 			flist->details->dnd_select_pending_state = 0;
 
 			if (on_row) {
-				elem = g_list_nth (GTK_CLIST (flist)->row_list,
-						   row)->data;
-				gtk_signal_emit (GTK_OBJECT (flist),
-						 flist_signals[ACTIVATE],
-						 elem->data);
+				/* Activate on double-click even if single_click_mode
+				 * is set, so second click doesn't get passed to child
+				 * directory.
+				 */
+				activate_row (flist, row);
 			}
 
 			retval = TRUE;
@@ -361,12 +389,29 @@ gtk_flist_button_release (GtkWidget *widget, GdkEventButton *event)
 	flist->details->dnd_press_y = 0;
 
 	if (on_row) {
+		/* Clean up after abortive drag-and-drop attempt (since user can't
+		 * reorder list view items, releasing mouse in list view cancels
+		 * drag-and-drop possibility). 
+		 */
 		if (flist->details->dnd_select_pending) {
-			/*  select_row (flist, row, flist->details->dnd_select_pending_state); */
 			flist->details->dnd_select_pending = FALSE;
 			flist->details->dnd_select_pending_state = 0;
 		}
 
+		/* Activate on single click if not extending selection, mouse hasn't moved to
+		 * a different row, and not too much time has passed.
+		 */
+		if (flist->details->single_click_mode && 
+		    !(event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)))
+		{
+			gint elapsed_time = event->time - flist->details->button_down_time;
+
+			if (elapsed_time < MAX_CLICK_TIME && flist->details->button_down_row == row)
+			{
+				activate_row (flist, row);
+			}
+		}		
+	
 		retval = TRUE;
 	}
 
@@ -406,7 +451,7 @@ gtk_flist_motion (GtkWidget *widget, GdkEventMotion *event)
 
 	if (flist->details->dnd_select_pending) {
 		select_row (flist,
-			    flist->details->dnd_select_pending_row,
+			    flist->details->button_down_row,
 			    flist->details->dnd_select_pending_state);
 
 		flist->details->dnd_select_pending = FALSE;
