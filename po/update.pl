@@ -38,7 +38,6 @@ if ($LANG=~/^-(.)*/){
     }
     elsif ($LANG eq "--pot" || "$LANG" eq "-P"){
 	if (-e ".headerlock"){
-	unlink(".headerlock");
    	&GeneratePot;
 	}else{
         &GenHeaders;
@@ -165,13 +164,13 @@ sub GenHeaders{
     open FILE, "<POTFILES.in";
     while (<FILE>) {
        if ($_=~ /(.*)(\.xml\.h)/o){
-          $filename = "\.\./$1\.xml";
+          $filename = "../$1.xml";
           $xmlfiles="\.\/ui-extract.pl --update $filename";
           system($xmlfiles);
           }
       
        elsif ($_=~ /(.*)(\.glade\.h)/o){
-          $filename = "\.\./$1\.glade";
+          $filename = "../$1.glade";
           $xmlfiles="\.\/ui-extract.pl --update $filename";
           system($xmlfiles);  
        }
