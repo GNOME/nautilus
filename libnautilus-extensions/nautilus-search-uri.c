@@ -172,6 +172,13 @@ typedef field_criterion_item *field_criterion_table;
 /* toplevel structure each entry points to a level 2 structure */
 struct _field_criterion_item {
 	char *id;
+        /* FIXME: This field is necessary so that
+           the size of this structure is the same
+           as the size of the other structures.
+           see the comment in the definition of "value_criterion_item"
+           to see what I mean.  Yay, evil! 
+           someone should make this go away. */
+        char *unused_field_for_hack_compatibility;
 	operand_criterion_table items;
 };
 /* second level structure. if items is NULL, the entry is a leaf
@@ -287,6 +294,7 @@ static operand_criterion_item file_type2_table [] = {
             [folder, music]" */
          N_("that are %s"),
          file_type_options3_table},
+        {NULL, NULL, NULL}
 };
 	
 
@@ -485,12 +493,14 @@ static field_criterion_item main_table[] = {
             preposition that precedes the clause describing the file
             name attribute matched.  Context is after "files" and
             before the translation for "containing xx in the name" */
+         NULL,
          file_name2_table},
         {"file_type",
          /* Part of a window title for search results: Optional
             preposition that precedes the clause describing the file
             type attribute matched.  Context is after "files" and
             before the translation for "that are music" */
+         NULL,
          file_type2_table},
         {"owner",
          /* Part of a window title for search results: Optional
@@ -498,6 +508,7 @@ static field_criterion_item main_table[] = {
             properties of the file's owner that the search matched.
             Context is after "files" and before the translation for
             "owned by xx" */
+         NULL,
          owner2_table},
         {"size",
          /* Part of a window title for search results: Optional
@@ -505,6 +516,7 @@ static field_criterion_item main_table[] = {
             properties of the file's size that the search matched.
             Context is after "files" and before the translation for
             "larger than 500 bytes" */
+         NULL,
          size2_table},
         {"content",
          /* Part of a window title for search results: Optional
@@ -512,6 +524,7 @@ static field_criterion_item main_table[] = {
             properties of the file's content that the search matched.
             Context is after "files" and before the translation for
             "containing all the words" */
+         NULL,
          contains2_table},
         {"modified",
          /* Part of a window title for search results: Optional
@@ -519,6 +532,7 @@ static field_criterion_item main_table[] = {
             properties of the file's modification date that the search
             matched.  Context is after "files" and before the
             translation for "modified today" */
+         NULL,
          mod_time2_table},
         {"keywords",
          /* Part of a window title for search results: Optional
@@ -526,6 +540,7 @@ static field_criterion_item main_table[] = {
             properties of the file's attached emblems that the search
             matched.  Context is after "files" and before the
             translation for "marked with Important" */
+         NULL,
          emblem2_table},
         {NULL, NULL}
 };
@@ -787,6 +802,8 @@ nautilus_self_check_search_uri (void)
         /* make sure all the code paths work */
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff"), 
                                       _("Items containing \"stuff\" in their names"));
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_type is file"), 
+                                      _("Items that are regular files"));
         /* FIXME bugzilla.eazel.com 5088: This may be what the function calls "human", but it's bad grammar. */
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"), 
                                       _("Items containing \"stuff\" in their names and that are regular files"));

@@ -1,3 +1,16 @@
+2001-01-22  Rebecca Schulman  <rebecka@eazel.com>
+
+	* libnautilus-extensions/nautilus-search-uri.c:
+	(nautilus_self_check_search_uri):
+	Fixed "make check."  Oh, the woes.
+	Earlier I removed a field from a struct in
+	nautilus-search-uri and broke binary compatibility
+	between the many mysterious structs here.  It seems
+	they all must be the same size.
+	Added a fixme so that we know this in the future,
+	hopefully.  Also added an additional test during
+	debugging.
+
 2001-01-22  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-sidebar-tabs.c: (draw_one_tab_themed),
