@@ -264,7 +264,6 @@ nautilus_property_browser_init (GtkObject *object)
 	gtk_window_set_default_size (GTK_WINDOW (property_browser),
 				     PROPERTY_BROWSER_WIDTH,
 				     PROPERTY_BROWSER_HEIGHT);
-	gtk_container_set_border_width (GTK_CONTAINER (widget), 0);				
 
 	/* set the title and standard close accelerator */
 	gtk_window_set_title (GTK_WINDOW (widget), _("Backgrounds and Emblems"));
@@ -272,13 +271,13 @@ nautilus_property_browser_init (GtkObject *object)
 	eel_gtk_window_set_up_close_accelerator (GTK_WINDOW (widget));
 
 	/* create the main vbox. */
-  	vbox = gtk_vbox_new (FALSE, 0);
+  	vbox = gtk_vbox_new (FALSE, 12);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (property_browser), vbox);
 
 	/* create the container box */  
-  	property_browser->details->container = GTK_HBOX (gtk_hbox_new (FALSE, 0));
-	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->container), 0);
+  	property_browser->details->container = GTK_HBOX (gtk_hbox_new (FALSE, 6));
 	gtk_widget_show (GTK_WIDGET (property_browser->details->container));
 	gtk_box_pack_start (GTK_BOX (vbox),
 			    GTK_WIDGET (property_browser->details->container),
@@ -286,7 +285,6 @@ nautilus_property_browser_init (GtkObject *object)
 
 	/* make the category container */
 	property_browser->details->category_container = gtk_scrolled_window_new (NULL, NULL);
-	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->category_container), 0);
  	property_browser->details->category_position = -1;	
  	
  	viewport = gtk_viewport_new (NULL, NULL);	
@@ -300,14 +298,13 @@ nautilus_property_browser_init (GtkObject *object)
 					GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
 	/* allocate a table to hold the category selector */
-  	property_browser->details->category_box = gtk_vbox_new (FALSE, 0);
-	gtk_container_set_border_width ( GTK_CONTAINER (property_browser->details->category_box), GNOME_PAD_SMALL);
+  	property_browser->details->category_box = gtk_vbox_new (FALSE, 6);
 	gtk_container_add(GTK_CONTAINER(viewport), property_browser->details->category_box); 
 	gtk_container_add (GTK_CONTAINER (property_browser->details->category_container), viewport);
 	gtk_widget_show (GTK_WIDGET (property_browser->details->category_box));
 
 	/* make the content container vbox */
-  	property_browser->details->content_container = gtk_vbox_new (FALSE, 0);
+  	property_browser->details->content_container = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (property_browser->details->content_container);
 	gtk_box_pack_start (GTK_BOX (property_browser->details->container),
 			    property_browser->details->content_container,
@@ -315,7 +312,6 @@ nautilus_property_browser_init (GtkObject *object)
 	
   	/* create the title box */
   	property_browser->details->title_box = gtk_event_box_new();
-	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->title_box), 0);				
  	
   	gtk_widget_show(property_browser->details->title_box);
 	gtk_box_pack_start (GTK_BOX(property_browser->details->content_container),
@@ -329,7 +325,6 @@ nautilus_property_browser_init (GtkObject *object)
   	
   	temp_hbox = gtk_hbox_new(FALSE, 0);
   	gtk_widget_show(temp_hbox);
- 	gtk_container_set_border_width (GTK_CONTAINER (temp_hbox), GNOME_PAD_SMALL);				
  
   	gtk_container_add(GTK_CONTAINER(temp_frame), temp_hbox);
  	
@@ -339,16 +334,15 @@ nautilus_property_browser_init (GtkObject *object)
 	eel_gtk_label_make_bold (GTK_LABEL (property_browser->details->title_label));
  	
 	gtk_widget_show(property_browser->details->title_label);
-	gtk_box_pack_start (GTK_BOX(temp_hbox), property_browser->details->title_label, FALSE, FALSE, 8);
+	gtk_box_pack_start (GTK_BOX(temp_hbox), property_browser->details->title_label, FALSE, FALSE, 0);
  
  	/* add the help label */
 	property_browser->details->help_label = gtk_label_new  ("");
 	gtk_widget_show(property_browser->details->help_label);
-	gtk_box_pack_end (GTK_BOX (temp_hbox), property_browser->details->help_label, FALSE, FALSE, 8);
+	gtk_box_pack_end (GTK_BOX (temp_hbox), property_browser->details->help_label, FALSE, FALSE, 0);
  	 	
   	/* add the bottom box to hold the command buttons */
   	temp_box = gtk_event_box_new();
-	gtk_container_set_border_width (GTK_CONTAINER (temp_box), 0);				
   	gtk_widget_show(temp_box);
 
   	temp_frame = gtk_frame_new(NULL);
@@ -356,9 +350,8 @@ nautilus_property_browser_init (GtkObject *object)
   	gtk_widget_show(temp_frame);
   	gtk_container_add(GTK_CONTAINER(temp_box), temp_frame);
 
-  	property_browser->details->bottom_box = gtk_hbox_new (FALSE, 0);
+  	property_browser->details->bottom_box = gtk_hbox_new (FALSE, 6);
 	gtk_widget_show (property_browser->details->bottom_box);
-	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->bottom_box), GNOME_PAD_SMALL);
 	
 	gtk_box_pack_end (GTK_BOX (vbox), temp_box, FALSE, FALSE, 0);
   	gtk_container_add (GTK_CONTAINER (temp_frame), property_browser->details->bottom_box);
@@ -367,16 +360,15 @@ nautilus_property_browser_init (GtkObject *object)
 	temp_button = gtk_button_new_from_stock (GTK_STOCK_HELP);
 
 	gtk_widget_show (temp_button);
-	gtk_box_pack_start (GTK_BOX (property_browser->details->bottom_box), temp_button, FALSE, FALSE, GNOME_PAD_SMALL);
+	gtk_box_pack_start (GTK_BOX (property_browser->details->bottom_box), temp_button, FALSE, FALSE, 0);
 	g_signal_connect_object (temp_button, "clicked", G_CALLBACK (help_button_callback), property_browser, 0);
 	
   	/* create the "done" button */
  	temp_button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
 	GTK_WIDGET_SET_FLAGS (temp_button, GTK_CAN_DEFAULT);
-	eel_gtk_button_set_padding (GTK_BUTTON (temp_button), GNOME_PAD_SMALL);
 
 	gtk_widget_show (temp_button);
-	gtk_box_pack_end (GTK_BOX (property_browser->details->bottom_box), temp_button, FALSE, FALSE, GNOME_PAD_SMALL);
+	gtk_box_pack_end (GTK_BOX (property_browser->details->bottom_box), temp_button, FALSE, FALSE, 0);
 	gtk_widget_grab_default (temp_button);
 	gtk_widget_grab_focus (temp_button);
  	g_signal_connect_object (temp_button, "clicked", G_CALLBACK (done_button_callback), property_browser, 0);
@@ -395,9 +387,8 @@ nautilus_property_browser_init (GtkObject *object)
 	gtk_container_add (GTK_CONTAINER (align), temp_hbox);
 	gtk_widget_show_all (property_browser->details->remove_button);
 
-	eel_gtk_button_set_padding (GTK_BUTTON (property_browser->details->remove_button), GNOME_PAD_SMALL);
 	gtk_box_pack_end (GTK_BOX (property_browser->details->bottom_box),
-			  property_browser->details->remove_button, FALSE, FALSE, GNOME_PAD_SMALL);
+			  property_browser->details->remove_button, FALSE, FALSE, 0);
 	
  	g_signal_connect_object (property_browser->details->remove_button, "clicked",
 				 G_CALLBACK (remove_button_callback), property_browser, 0);
@@ -417,9 +408,8 @@ nautilus_property_browser_init (GtkObject *object)
 	gtk_container_add (GTK_CONTAINER (align), temp_hbox);
 	gtk_widget_show_all (property_browser->details->add_button);
 
-	eel_gtk_button_set_padding (GTK_BUTTON (property_browser->details->add_button), GNOME_PAD_SMALL);
 	gtk_box_pack_end (GTK_BOX(property_browser->details->bottom_box),
-			  property_browser->details->add_button, FALSE, FALSE, GNOME_PAD_SMALL);
+			  property_browser->details->add_button, FALSE, FALSE, 0);
  	  
  	g_signal_connect_object (property_browser->details->add_button, "clicked",
 				 G_CALLBACK (add_new_button_callback), property_browser, 0);
@@ -505,7 +495,6 @@ nautilus_property_browser_new (GdkScreen *screen)
 	browser = NAUTILUS_PROPERTY_BROWSER
 		(gtk_widget_new (nautilus_property_browser_get_type (), NULL));
 
-	gtk_container_set_border_width (GTK_CONTAINER (browser), 0);
 	gtk_window_set_screen (GTK_WINDOW (browser), screen);
   	gtk_widget_show (GTK_WIDGET(browser));
 	
@@ -989,20 +978,20 @@ nautilus_emblem_dialog_new (NautilusPropertyBrowser *property_browser)
 
 	/* install the table in the dialog */	
 	gtk_widget_show (table);	
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), table, TRUE, TRUE, GNOME_PAD);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), table, TRUE, TRUE, 0);
 	gtk_dialog_set_default_response (GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 
 	/* make the keyword label and field */	
 	
 	widget = gtk_label_new_with_mnemonic(_("_Keyword:"));
 	gtk_widget_show(widget);
-	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 0, 1, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
+	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
 	
   	property_browser->details->keyword = gtk_entry_new ();
 	gtk_entry_set_activates_default (GTK_ENTRY (property_browser->details->keyword), TRUE);
 	gtk_entry_set_max_length (GTK_ENTRY (property_browser->details->keyword), 24);
 	gtk_widget_show(property_browser->details->keyword);
-	gtk_table_attach(GTK_TABLE(table), property_browser->details->keyword, 1, 2, 0, 1, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
+	gtk_table_attach(GTK_TABLE(table), property_browser->details->keyword, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_widget_grab_focus(property_browser->details->keyword);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (widget),
 				       GTK_WIDGET (property_browser->details->keyword));
@@ -1014,7 +1003,7 @@ nautilus_emblem_dialog_new (NautilusPropertyBrowser *property_browser)
 	/* set up a gnome icon entry to pick the image file */
 	widget = gtk_label_new_with_mnemonic (_("_Image:"));
 	gtk_widget_show(widget);
-	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 1, 2, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
+	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 0, 0);
 
 	property_browser->details->file_entry = gnome_icon_entry_new (NULL, _("Select an image file for the new emblem:"));
 	gnome_icon_entry_set_pixmap_subdir (GNOME_ICON_ENTRY(property_browser->details->file_entry),
@@ -1025,7 +1014,7 @@ nautilus_emblem_dialog_new (NautilusPropertyBrowser *property_browser)
 				       GTK_WIDGET (property_browser->details->file_entry));
 
 	gtk_widget_show(property_browser->details->file_entry);
-	gtk_table_attach(GTK_TABLE(table), property_browser->details->file_entry, 1, 2, 1, 2, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
+	gtk_table_attach(GTK_TABLE(table), property_browser->details->file_entry, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 0, 0);
 	
 	gnome_icon_entry_set_filename (GNOME_ICON_ENTRY (property_browser->details->file_entry), property_browser->details->image_path);	
 	return dialog;
@@ -1049,14 +1038,14 @@ nautilus_color_selection_dialog_new (NautilusPropertyBrowser *property_browser)
 	/* install the table in the dialog */
 	
 	gtk_widget_show (table);	
-	gtk_box_pack_start (GTK_BOX(GTK_DIALOG(dialog)->vbox), table, TRUE, TRUE, GNOME_PAD);
+	gtk_box_pack_start (GTK_BOX(GTK_DIALOG(dialog)->vbox), table, TRUE, TRUE, 0);
 	gtk_dialog_set_default_response (GTK_DIALOG(dialog), GTK_RESPONSE_OK);
 
 	/* make the name label and field */	
 	
 	widget = gtk_label_new_with_mnemonic(_("Color _name:"));
 	gtk_widget_show(widget);
-	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 0, 1, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
+	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
 	
   	property_browser->details->color_name = gtk_entry_new ();
 	gtk_entry_set_activates_default (GTK_ENTRY (property_browser->details->color_name), TRUE);
@@ -1064,7 +1053,7 @@ nautilus_color_selection_dialog_new (NautilusPropertyBrowser *property_browser)
 	gtk_widget_grab_focus (property_browser->details->color_name);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (widget), property_browser->details->color_name);
 	gtk_widget_show(property_browser->details->color_name);
-	gtk_table_attach(GTK_TABLE(table), property_browser->details->color_name, 1, 2, 0, 1, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
+	gtk_table_attach(GTK_TABLE(table), property_browser->details->color_name, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_widget_grab_focus(property_browser->details->color_name);
 
 	/* default image is the generic emblem */
@@ -1072,14 +1061,14 @@ nautilus_color_selection_dialog_new (NautilusPropertyBrowser *property_browser)
 		
 	widget = gtk_label_new_with_mnemonic(_("Color _value:"));
 	gtk_widget_show(widget);
-	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 1, 2, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
+	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 0, 0);
  
 	/* set up a gnome file entry to pick the image file */
 	property_browser->details->color_picker = gnome_color_picker_new ();
 	gtk_widget_show (property_browser->details->color_picker);
 	gtk_label_set_mnemonic_widget (GTK_LABEL (widget), property_browser->details->color_picker);
 
-	gtk_table_attach(GTK_TABLE(table), property_browser->details->color_picker, 1, 2, 1, 2, GTK_FILL, GTK_FILL, GNOME_PAD_SMALL, GNOME_PAD_SMALL);
+	gtk_table_attach(GTK_TABLE(table), property_browser->details->color_picker, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 0, 0);
 		
 	
 	return dialog;
@@ -1926,7 +1915,7 @@ make_category_link (NautilusPropertyBrowser *property_browser,
 
 	/* Place it in the category box */
 	gtk_box_pack_start (GTK_BOX (property_browser->details->category_box),
-			    button, FALSE, FALSE, 8);
+			    button, FALSE, FALSE, 0);
 	
 	property_browser->details->category_position += 1;
 	
@@ -1963,7 +1952,6 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	
 	/* allocate a new container, with a scrollwindow and viewport */
 	property_browser->details->content_frame = gtk_scrolled_window_new (NULL, NULL);
-	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->content_frame), 0);				
  	viewport = gtk_viewport_new (NULL, NULL);
 	gtk_widget_show(viewport);
 	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_IN);

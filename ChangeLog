@@ -1,5 +1,17 @@
 2004-08-16  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_init), (nautilus_property_browser_new),
+	(nautilus_emblem_dialog_new),
+	(nautilus_color_selection_dialog_new), (make_category_link),
+	(nautilus_property_browser_update_contents):
+
+	Fix property browser spacing.
+	Fixes bug #144249.
+	Patch from Jorn Baayen.
+	
+2004-08-16  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-extension/nautilus-extension-types.h:
 	Remove extra comma in enum. Fixes bug #142351
 	Patch from Christian Neumair.
