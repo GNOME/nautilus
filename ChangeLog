@@ -1,3 +1,20 @@
+2000-11-01  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-metadata.c:
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_view_update_from_uri):
+	* components/services/login/nautilus-view/nautilus-change-password-
+	view.c: (start_change_password):
+	* components/services/trilobite/libtrilobite/libtrilobite.h:
+	* components/services/trilobite/libtrilobite/trilobite-redirect.c:
+	* nautilus-installer/src/installer.c:
+	
+	Fix builtin uri's to point to a sane place by default.  Make the
+	install view use your trilobite gconf config and not a made-up
+	site (oops).  Remove leftover "eazel-auth:" uri.  Use good PR2
+	defaults for the bootstrap installer.  Fix missing ellipses that
+	were bothering Eli.
+
 2000-11-01  Darin Adler  <darin@eazel.com>
 
 	Fixed bug 4335 (music view does not work with Services:Vault)

@@ -49,11 +49,6 @@
 #include <liboaf/liboaf.h>
 #include <bonobo/bonobo-main.h>
 
-#if 0
-#define TEST_TARGET "http://tortoise.eazel.com:8080/protected/"
-#define TEST_LOGIN  "change_password.cgi"
-#endif
-
 
 typedef enum {
 	PENDING_NONE,
@@ -370,13 +365,8 @@ start_change_password (NautilusChangePasswordView *view, const char *username, c
 	authinfo = EazelProxy_AuthnInfo__alloc ();
 	authinfo->username = CORBA_string_dup (username);
 	authinfo->password = CORBA_string_dup (password);
-#ifdef TEST_TARGET
-	authinfo->services_redirect_uri = CORBA_string_dup (TEST_TARGET);
-	authinfo->services_change_password_path = CORBA_string_dup (TEST_LOGIN);
-#else
 	authinfo->services_redirect_uri = CORBA_string_dup ("");
 	authinfo->services_login_path = CORBA_string_dup ("");
-#endif
 
 	/* ref myself until the callback returns */
 	bonobo_object_ref (BONOBO_OBJECT (view->details->nautilus_view));

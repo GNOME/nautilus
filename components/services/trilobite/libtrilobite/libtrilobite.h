@@ -40,6 +40,7 @@
 #include "trilobite-core-metadata-manager.h"
 #include "trilobite-core-tests.h"
 #include "trilobite-root-helper.h"
+#include "trilobite-redirect.h"
 #include "helixcode-utils.h"
 #include "trilobite-root-client-public.h"
 

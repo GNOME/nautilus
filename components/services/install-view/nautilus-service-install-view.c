@@ -61,10 +61,6 @@
 
 #define NEXT_SERVICE_VIEW				"eazel:"
 
-/* this stuff will need to be configurable, once we have a config pane */
-#define INSTALL_HOST	      	"services.eazel.com"
-#define INSTALL_PORT		8888
-
 /* This ensures that if the arch is detected as i[3-9]86, the
    requested archtype will be set to i386 */
 #define ASSUME_ix86_IS_i386 
@@ -1166,10 +1162,16 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	char			*username;
 	Trilobite_Eazel_Install	service;
 	CORBA_Environment	ev;
-	char 			*out;
+	char 			*out, *p;
 
-	host = g_strdup (INSTALL_HOST);
-	port = INSTALL_PORT;
+	/* get default host/port */
+	host = g_strdup (trilobite_get_services_address ());
+	if ((p = strchr (host, ':')) != NULL) {
+		*p = 0;
+		port = atoi (p+1);
+	} else {
+		port = 443;
+	}
 	username = NULL;
 	nautilus_install_parse_uri (uri, view, &categories, &host, &port, &username);
 

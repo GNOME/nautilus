@@ -39,9 +39,8 @@ static GConfEngine *conf_engine = NULL;
 
 #define INSTALL_GCONF_PATH	"/apps/eazel-trilobite/install"
 
-/* these are NOT reasonable defaults. */
 #define DEFAULT_SERVER		"services.eazel.com"
-#define DEFAULT_PORT		8888
+#define DEFAULT_PORT		443
 #define DEFAULT_CGI_PATH	"/catalog/find"
 
 

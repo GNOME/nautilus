@@ -36,14 +36,10 @@
 #include "trilobite-core-utils.h"
 #include "trilobite-redirect.h"
 
-#if 0
-#define REDIRECT_TABLE_URL	"http://drig.eazel.com:8888/my/redirect"
-#else
-#define REDIRECT_TABLE_URL	"eazel-auth:/table.xml"
-#endif
+#define REDIRECT_TABLE_URL	"eazel-services:/table.xml"
 #define REDIRECT_GCONF_PATH	"/apps/eazel-trilobite/redirect-table"
 
-#define SERVICES_DEFAULT_HOST	"services.eazel.com:8888"
+#define SERVICES_DEFAULT_HOST	"services.eazel.com"
 #define SERVICES_GCONF_PATH	"/apps/eazel-trilobite/services-host"
 
 static GConfEngine *conf_engine = NULL;

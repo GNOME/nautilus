@@ -63,12 +63,14 @@ typedef struct {
 	GList *path;
 } GetErrorsForEachData;
 
-#define HOSTNAME "services.eazel.com"
-#define PORT_NUMBER 8888
-#define CGI_PATH "/catalog/find"
-#define TMP_DIR "/tmp/eazel-install"
-#define RPMRC "/usr/lib/rpm/rpmrc"
-#define REMOTE_RPM_DIR "/RPMS"
+/* this means the services have to keep an insecure version running, that has enough stuff for ppl
+ * to install nautilus.
+ */
+#define HOSTNAME	"services.eazel.com"
+#define PORT_NUMBER	80
+#define CGI_PATH	"/catalog/find"
+#define RPMRC		"/usr/lib/rpm/rpmrc"
+#define REMOTE_RPM_DIR	"/RPMS"
 #define PACKAGE_LIST	"package-list.xml"
 
 #define FONT_NORM_BOLD	_("-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*")
@@ -118,7 +120,7 @@ typedef struct {
 			     "that you should manually remove.")
 
 #define WHAT_TO_INSTALL_LABEL		_("What would you like to install?")
-#define WHAT_TO_INSTALL_LABEL_SINGLE	_("What we'll install")
+#define WHAT_TO_INSTALL_LABEL_SINGLE	_("What we'll install...")
 
 #define NAUTILUS_INSTALLER_RELEASE
 
