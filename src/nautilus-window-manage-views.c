@@ -1055,11 +1055,6 @@ free_location_change (NautilusWindow *window)
         g_free (window->details->pending_location);
         window->details->pending_location = NULL;
 
-        /* Important to do this first, because destroying the
-         * pending_location_as_directory can cause additional I/O to
-         * complete, which might cause the initial view callback to be
-         * called.
-         */
         if (window->details->determine_view_handle != NULL) {
                 nautilus_determine_initial_view_cancel (window->details->determine_view_handle);
                 window->details->determine_view_handle = NULL;
@@ -1072,13 +1067,6 @@ free_location_change (NautilusWindow *window)
         	}
         	gtk_object_unref (GTK_OBJECT (window->new_content_view));
                 window->new_content_view = NULL;
-        }
-        
-        if (window->details->pending_location_as_directory != NULL) {
-                nautilus_directory_file_monitor_remove (window->details->pending_location_as_directory,
-                                                        window);
-                nautilus_directory_unref (window->details->pending_location_as_directory);
-                window->details->pending_location_as_directory = NULL;
         }
 }
 
@@ -1392,17 +1380,6 @@ begin_location_change (NautilusWindow *window,
         file = nautilus_directory_get_corresponding_file (directory);
         nautilus_file_invalidate_all_attributes (file);
         nautilus_file_unref (file);
-
-        /* We start monitoring files here so we get a single load of
-         * the directory instead of multiple ones. The concept is that
-         * our load of the directory is shared both with the possible
-         * call_when_ready done by the nautilus_determine_initial_view
-         * call and loads done by components (like the icon view).
-         */
-        window->details->pending_location_as_directory = directory;
-        nautilus_directory_file_monitor_add
-                (window->details->pending_location_as_directory, window,
-                 TRUE, TRUE, NULL);
 
         window->details->determine_view_handle = nautilus_determine_initial_view
                 (location,

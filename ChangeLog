@@ -1,3 +1,14 @@
+2001-05-16  Darin Adler  <darin@eazel.com>
+
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-manage-views.c: (free_location_change),
+	(begin_location_change):
+	Finished up a loose end from when I made the change to
+	determine_initial_view to not get full attributes. This leftover
+	code was causing an extra directory load.
+
+	* THANKS: Added Yoann.
+	
 2001-05-15  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-sidebar.c: (notify_current_sidebar_view),
