@@ -2864,7 +2864,6 @@ create_permissions_page (FMPropertiesWindow *window)
 	GtkLabel *other_perm_label;
 	GtkOptionMenu *group_menu;
 	GtkOptionMenu *owner_menu;
-	GtkWidget *check_box;
 	GList *file_list;
 
 	vbox = create_page_with_vbox (window->details->notebook,
