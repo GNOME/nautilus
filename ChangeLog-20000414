@@ -1,3 +1,23 @@
+2000-02-09  John Sullivan <sullivan@eazel.com>
+
+	Fixed bug Andy found with icon-text window.
+
+	* src/file-manager/fm-icon-text-window.c:
+	* src/file-manager/fm-icon-text-window.h:
+	Removed icon_view static variable.
+	(changed_attributes_option_menu_cb): Removed assert that icon_view
+	is valid, since there's only a global setting; pass NULL as parameter
+	to fm_directory_view_icons_set_full_icon_text_attribute_names.
+	(fm_icon_text_window_set_view): Eliminated, since there's only a
+	global setting.
+
+	* src/file-manager/fm-directory-view-icons.c:
+	(customize_icon_text_cb): Removed call to fm_icon_text_window_set_view.
+	(fm_directory_view_icons_get_full_icon_text_attribute_names),
+	(fm_directory_view_icons_set_full_icon_text_attribute_names):
+	Clarified comments, and added assertion that no particular
+	viewer was specified.
+
 2000-02-09  Elliot Lee  <sopwith@redhat.com>
 
 	* libnautilus/bonobo-stream-vfs.[ch]: Implement truncate.
