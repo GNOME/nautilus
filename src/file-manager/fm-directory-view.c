@@ -1119,6 +1119,17 @@ scripts_added_or_changed_callback (NautilusDirectory *directory,
 }
 
 static void
+icons_changed_callback (gpointer callback_data)
+{
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	view->details->scripts_invalid = TRUE;
+	schedule_update_menus (view);
+}
+
+static void
 add_directory_to_scripts_directory_list (FMDirectoryView *view,
 					 NautilusDirectory *directory)
 {
@@ -1242,6 +1253,11 @@ fm_directory_view_init (FMDirectoryView *view)
 				 G_CALLBACK (fm_directory_view_trash_state_changed_callback),
 				 view, 0);
 
+	/* React to icon theme changes. */
+	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
+				 G_CALLBACK (icons_changed_callback),
+				 view, G_CONNECT_SWAPPED);
+
 	gtk_widget_show (GTK_WIDGET (view));
 
 	filtering_changed_callback (view);
@@ -1323,6 +1339,10 @@ fm_directory_view_finalize (GObject *object)
 
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 					 schedule_update_menus_callback, view);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+					 filtering_changed_callback, view);
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+					 filtering_changed_callback, view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
 					 schedule_update_menus_callback, view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,

@@ -1,3 +1,12 @@
+2002-03-04  David Emory Watson  <dwatson@cs.ucr.edu>
+
+	* src/file-manager/fm-directory-view.c:
+	(icons_changed_callback): New function.
+	(fm_directory_view_init): Connect to icons_changed_callback so that the
+	scripts menus will observe theme changes.
+	(fm_directory_view_finalize): Remember to remove NAUTILUS_PREFERENCES_*
+	callbacks when we are done with them.
+
 2002-03-04  Alexander Larsson  <alla@lysator.liu.se>
 
 	* libnautilus-adapter/Makefile.am:
