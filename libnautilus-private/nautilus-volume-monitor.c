@@ -1810,7 +1810,35 @@ finish_creating_volume (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 		} else {
 			volume->is_removable = FALSE;
 		}
-	}
+	} else if (eel_str_has_prefix (volume->device_path, "/vol/")) {
+			name = volume->mount_path + strlen ("/");
+		
+			if (eel_str_has_prefix (name, "cdrom")) {
+				volume->device_type = NAUTILUS_DEVICE_CDROM_DRIVE;
+				volume->is_removable = TRUE;
+			} else if (eel_str_has_prefix (name, "floppy")) {
+				volume->device_type = NAUTILUS_DEVICE_FLOPPY_DRIVE;
+				volume->is_removable = TRUE;
+			} else if (eel_str_has_prefix (volume->device_path, floppy_device_path_prefix)) {
+				volume->device_type = NAUTILUS_DEVICE_FLOPPY_DRIVE;
+				volume->is_removable = TRUE;
+			} else if (eel_str_has_prefix (name, "zip")) {
+				volume->device_type = NAUTILUS_DEVICE_ZIP_DRIVE;
+				volume->is_removable = TRUE;
+			} else if (eel_str_has_prefix (name, "jaz")) {
+				volume->device_type = NAUTILUS_DEVICE_JAZ_DRIVE;
+				volume->is_removable = TRUE;
+			} else if (eel_str_has_prefix (name, "camera")) {
+				volume->device_type = NAUTILUS_DEVICE_CAMERA;
+				volume->is_removable = TRUE;
+			} else if (eel_str_has_prefix (name, "memstick")) {
+				volume->device_type = NAUTILUS_DEVICE_MEMORY_STICK;
+				volume->is_removable = TRUE;
+			} else {
+				volume->is_removable = FALSE;
+			}
+		}
+
 	
 	return TRUE;
 }
