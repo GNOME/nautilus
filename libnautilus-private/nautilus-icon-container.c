@@ -5105,7 +5105,6 @@ nautilus_icon_container_set_font_size_table (NautilusIconContainer *container,
 	for (i = 0; i <= NAUTILUS_ZOOM_LEVEL_LARGEST; i++) {
 		if (container->details->font_size_table[i] != font_size_table[i]) {
 			container->details->font_size_table[i] = font_size_table[i];
-			changed = TRUE;
 		}
 	}
 
