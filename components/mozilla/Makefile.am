@@ -5,6 +5,7 @@ INCLUDES = \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DG_LOG_DOMAIN=\"Nautilus-Mozilla\" \
 	-DDATADIR=\"$(datadir)\" \
+	-DPREFIX=\"$(prefix)\" \
 	$(MOZILLA_COMPONENT_DEBUG_FLAGS) \
 	$(MOZILLA_PROFILES_CFLAGS) \
 	$(MOZILLA_COMPONENT_CFLAGS) \

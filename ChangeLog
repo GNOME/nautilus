@@ -1,3 +1,25 @@
+2001-05-10  Darin Adler  <darin@eazel.com>
+
+	Integrated a patch from peter@ximian.com to move the
+	MOZILLA_FIVE_HOME-setting code from the main Nautilus program
+	(where it does no good) to the Mozilla component (which is a nicer
+	place for it anyway).
+
+	While integrating the patch I made some other small cleanups to
+	the Mozilla component and the patch itself. I removed the code to
+	set up LD_LIBRARY_PATH, since it's not needed, and changed the name
+	of some things and simplified others.
+
+	* components/mozilla/Makefile.am: Define PREFIX.
+	* components/mozilla/main.c: (is_good_mozilla_path),
+	(get_mozilla_path), (set_up_MOZILLA_FIVE_HOME), (main): Add the
+	new code to set up MOZILLA_FIVE_HOME.
+	
+	* src/nautilus-application.c: (finish_startup): Remove the code
+	from the old place.
+
+	* check-THANKS.pl: Updated.
+
 2001-05-09  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-private/nautilus-metafile-factory.c:

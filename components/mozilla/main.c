@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
 /*
- *  Copyright (C) 2000 Eazel, Inc.
+ *  Copyright (C) 2000, 2001 Eazel, Inc.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -25,23 +25,20 @@
    content view component. */
 
 #include <config.h>
-
 #include "nautilus-mozilla-content-view.h"
 
-#include <gnome.h>
-#include <libgnomevfs/gnome-vfs.h>
-#include <liboaf/liboaf.h>
-#include <bonobo.h>
-#include <gtkmozembed.h>
+#include <bonobo/bonobo-generic-factory.h>
+#include <bonobo/bonobo-main.h>
 #include <eel/eel-debug.h>
-
+#include <eel/eel-glib-extensions.h>
 #include <gconf/gconf.h>
+#include <gtkmozembed.h>
+#include <libgnomevfs/gnome-vfs-init.h>
+#include <stdlib.h>
 
 #ifdef HAVE_AMMONITE
 #include <libtrilobite/libammonite-gtk.h>
 #endif
-
-#include <stdlib.h>
 
 #define nopeDEBUG_mfleming 1
 
@@ -58,9 +55,8 @@
 
 static int object_count = 0;
 static guint quit_timeout_id = 0;
-static gboolean quit_timeout_pending = FALSE;
 
-static guint /*GtkFunction*/
+static gboolean
 mozilla_process_delayed_exit (gpointer data)
 {
 	DEBUG_MSG (("mozilla_object_delayed_exit\n"));
@@ -72,6 +68,7 @@ mozilla_process_delayed_exit (gpointer data)
 
 		gtk_main_quit();
 	}
+
 	return FALSE;
 }
 
@@ -94,14 +91,12 @@ mozilla_object_destroyed (GtkObject *obj)
 	if (object_count == 0) {
 		DEBUG_MSG (("mozilla_object_destroyed: 0 objects remaining, scheduling quit\n"));
 
-		if (quit_timeout_pending) {
+		if (quit_timeout_id != 0) {
 			gtk_timeout_remove (quit_timeout_id);
 		}
 
-		quit_timeout_pending = TRUE;
-		
 		quit_timeout_id = gtk_timeout_add (delayed_exit_interval,
-						   (GtkFunction) mozilla_process_delayed_exit,
+						   mozilla_process_delayed_exit,
 						   NULL);
 	}
 }
@@ -126,10 +121,10 @@ mozilla_make_object (BonoboGenericFactory *factory,
 	gtk_signal_connect (GTK_OBJECT (bonobo_object), "destroy", mozilla_object_destroyed, NULL);
 
 	/* Remove any pending quit-timeout callback */
-	if (quit_timeout_pending) {
+	if (quit_timeout_id != 0) {
 		gtk_timeout_remove (quit_timeout_id);
+		quit_timeout_id = 0;
 	}
-	quit_timeout_pending = FALSE;
 
 	DEBUG_MSG (("-mozilla_make_object\n"));
 
@@ -144,6 +139,61 @@ run_test_cases (void)
 	return test_make_full_uri_from_relative ();
 }
 
+static gboolean
+is_good_mozilla_path (const char *path)
+{
+	char *file_name;
+	gboolean good;
+
+	file_name = g_strconcat (path, "/chrome/embed.jar", NULL);
+	good = g_file_exists (file_name);
+	g_free (file_name);
+	return good;
+}
+
+static char *
+get_mozilla_path (void)
+{
+	/* Use a set of paths that is similar to the one used by
+	 * Galeon. No real harm in searching too many places.
+	 */
+	guint i;
+	const char * const paths[] = {
+		PREFIX "/lib/mozilla",
+		"/usr/lib/mozilla",
+		"/usr/local/mozilla",
+		"/opt/mozilla",
+		PREFIX "/lib/mozilla-0.8.1" /* lame, but helpful for finding Ximian package */
+		"/usr/lib/mozilla-0.8.1" /* lame, but helpful for finding Ximian package */
+	};
+
+	for (i = 0; i < EEL_N_ELEMENTS (paths); i++) {
+		if (is_good_mozilla_path (paths[i])) {
+			return g_strdup (paths[i]);
+		}
+	}
+
+	return NULL;
+}
+
+static void
+set_up_MOZILLA_FIVE_HOME (void)
+{
+	char *mozilla_path;
+
+	if (g_getenv ("MOZILLA_FIVE_HOME") != NULL) {
+		return;
+	}
+
+	mozilla_path = get_mozilla_path ();
+	if (mozilla_path == NULL) {
+		g_warning ("Unable to find Mozilla with MOZILLA_FIVE_HOME or looking in standard places.");
+		return;
+	}
+	eel_setenv ("MOZILLA_FIVE_HOME", mozilla_path, TRUE);
+	g_free (mozilla_path);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -154,6 +204,9 @@ main (int argc, char *argv[])
 	char *fake_argv[] = { "nautilus-mozilla-content-view", NULL };
 
 	DEBUG_MSG (("nautilus-mozilla-content-view: starting...\n"));
+
+	/* set MOZILLA_FIVE_HOME if it's not already set */
+	set_up_MOZILLA_FIVE_HOME();
 
 	if (argc == 2 && 0 == strcmp (argv[1], "--self-test")) {
 		gboolean success;

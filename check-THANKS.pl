@@ -61,6 +61,7 @@ my %email_map =
    'chief_wanker@eazel.com' => 'eskil@eazel.com',
    'hp@pobox.com' => 'hp@redhat.com',
    'josh@eazel.com' => 'josh@whitecape.org',
+   'jrb@webwynk.net' => 'jrb@redhat.com',
    'kabalak@gmx.net' => 'kabalak@kabalak.net',
    'kabalak@gtranslator.org' => 'kabalak@kabalak.net',
    'kmaraas@gnu.org' => 'kmaraas@gnome.org',
