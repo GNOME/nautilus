@@ -89,7 +89,7 @@ main(int argc, char **argv)
 	     * necessary because we may not have an 'INFOPATH' set */
 	    ndirs = 2;
 	    if(infopath)
-	      for(ndirs = 2, ctmp = strtok((char *)args[0], ":"); ndirs < 64 && ctmp; ndirs++, ctmp = strtok(NULL, ":"))
+	      for(ndirs = 2, ctmp = strtok(infopath, ":"); ndirs < 64 && ctmp; ndirs++, ctmp = strtok(NULL, ":"))
 		dirs[ndirs] = strdup(ctmp);
 
 	    for(i = 0; i < ndirs; i++)
