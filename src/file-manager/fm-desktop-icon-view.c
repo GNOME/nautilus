@@ -72,6 +72,7 @@ static const char untranslated_trash_link_name[] = N_("Trash");
 struct FMDesktopIconViewDetails
 {
 	BonoboUIComponent *ui;
+	GList *mount_black_list;
 };
 
 typedef struct {
@@ -112,12 +113,12 @@ static int      desktop_icons_compare_callback                            (Nauti
 									   FMDesktopIconView      *icon_view);
 static void	create_or_rename_trash 					  (void);
 								   
-static gboolean real_supports_auto_layout     	 		  	  (FMIconView  	    *view);
-static void	real_merge_menus 		     	 		  (FMDirectoryView  *view);
-static void	real_update_menus 		     	 		  (FMDirectoryView  *view);
-static gboolean real_supports_zooming 	     	 		  	  (FMDirectoryView  *view);
-static void	update_disks_menu 					  (FMDesktopIconView *view);
-
+static gboolean real_supports_auto_layout     	 		  	  (FMIconView  	    	  *view);
+static void	real_merge_menus 		     	 		  (FMDirectoryView  	  *view);
+static void	real_update_menus 		     	 		  (FMDirectoryView  	  *view);
+static gboolean real_supports_zooming 	     	 		  	  (FMDirectoryView  	  *view);
+static void	update_disks_menu 					  (FMDesktopIconView	  *view);
+static void	free_volume_black_list					  (FMDesktopIconView	  *view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView,
 				   fm_desktop_icon_view,
@@ -148,7 +149,11 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 		bonobo_ui_component_unset_container (icon_view->details->ui);
 		bonobo_object_unref (BONOBO_OBJECT (icon_view->details->ui));
 	}
+	
+	free_volume_black_list (icon_view);
+	
 	g_free (icon_view->details);
+
 
 	/* Clean up any links that may be left over */
 	remove_old_mount_links ();
@@ -217,11 +222,44 @@ fm_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
 		    ButtonPressMask, (XEvent *) &x_event);
 }
 
+
 static void
-create_mount_link (const NautilusVolume *volume)
+free_volume_black_list (FMDesktopIconView *icon_view)
+{
+	GList *p;
+	for (p = icon_view->details->mount_black_list; p != NULL; p = p->next) {
+		g_free (p->data);
+	}
+	
+	g_list_free (icon_view->details->mount_black_list);
+	icon_view->details->mount_black_list = NULL;
+}
+
+
+static gboolean
+volume_in_black_list (const FMDesktopIconView *icon_view, const NautilusVolume *volume)
+{
+	GList *p;
+		
+	for (p = icon_view->details->mount_black_list; p != NULL; p = p->next) {
+		if (strcmp ((char *)p->data, volume->device_path) == 0) {
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+
+static void
+create_mount_link (const FMDesktopIconView *icon_view, const NautilusVolume *volume)
 {
 	char *desktop_path, *target_uri, *icon_name, *volume_name;
-
+	
+	if (volume_in_black_list (icon_view, volume)) {
+		return;
+	}
+	
 	/* Get icon type */
 	if (volume->type == NAUTILUS_VOLUME_CDROM) {
 		icon_name = g_strdup ("i-cdrom.png");
@@ -248,7 +286,9 @@ create_mount_link (const NautilusVolume *volume)
 static gboolean
 startup_create_mount_links (const NautilusVolume *volume, gpointer data)
 {
-	create_mount_link (volume);
+	FMDesktopIconView *desktop_icon_view = (FMDesktopIconView *)data;
+	
+	create_mount_link (desktop_icon_view, volume);
 	return TRUE;
 }
 
@@ -280,6 +320,13 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	desktop_icon_view->details = g_new0 (FMDesktopIconViewDetails, 1);	
 
 	nautilus_icon_container_set_is_fixed_size (icon_container, TRUE);
+	
+	/* Set up default mount black list */
+	desktop_icon_view->details->mount_black_list = NULL;
+	desktop_icon_view->details->mount_black_list =
+		g_list_append (desktop_icon_view->details->mount_black_list, g_strdup ("/proc"));
+	desktop_icon_view->details->mount_black_list =
+		g_list_append (desktop_icon_view->details->mount_black_list, g_strdup ("/dev/root"));
 
 	/* Set allocation to be at 0, 0 */
 	allocation = &GTK_WIDGET (icon_container)->allocation;
@@ -436,7 +483,7 @@ volume_mounted_callback (NautilusVolumeMonitor *monitor,
 			 NautilusVolume *volume, 
 			 FMDesktopIconView *icon_view)
 {
-	create_mount_link (volume);
+	create_mount_link (icon_view, volume);
 }
 
 static void

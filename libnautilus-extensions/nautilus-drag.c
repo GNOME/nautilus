@@ -355,10 +355,18 @@ add_one_uri_list (const char *uri, int x, int y, int w, int h,
 	g_string_append (result, "\r\n");
 }
 
+/* Encode a "_NETSCAPE_URL_" selection.  */
+static void
+add_one_url_list (const char *url, int x, int y, int w, int h, gpointer data)
+{
+	GString *result = (GString *)data;	
+	g_string_append (result, url);
+	g_string_append (result, "\n");
+}
+
 /* Encode a "text/path" selection.  */
 static void
-add_one_path_list (const char *uri, int x, int y, int w, int h, 
-	gpointer data)
+add_one_path_list (const char *uri, int x, int y, int w, int h, gpointer data)
 {
 	GString *result = (GString *)data;
 	const char *path, *scheme;
@@ -413,6 +421,11 @@ nautilus_drag_drag_data_get (GtkWidget *widget,
 	case NAUTILUS_ICON_DND_TEXT:
 		result = g_string_new (NULL);
 		each_selected_item_iterator (add_one_path_list, container_context, result);
+		break;
+		
+	case NAUTILUS_ICON_DND_URL:
+		result = g_string_new (NULL);
+		each_selected_item_iterator (add_one_url_list, container_context, result);
 		break;
 		
 	default:

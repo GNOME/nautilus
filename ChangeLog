@@ -1,3 +1,21 @@
+2000-12-25  Gene Z. Ragan  <gzr@eazel.com>
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_destroy), (free_volume_black_list),
+	(volume_in_black_list), (create_mount_link),
+	(startup_create_mount_links), (fm_desktop_icon_view_initialize),
+	(volume_mounted_callback):
+	Started work on volume black list.  Added proc and boot to
+	list.  Need to figure out a way to expose this to the UI
+	so it is easy for the user to specify what mounts they
+	wnat dispalyed on the desktop.
+
+	* libnautilus-extensions/nautilus-drag.c: (add_one_url_list),
+	(add_one_path_list), (nautilus_drag_drag_data_get):
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	Work on supporting drags form Nautilus into the attachments
+	frame of Netscape mail.
+	
 2000-12-23  John Harper  <jsh@eazel.com>
 
 	* libnautilus-extensions/nautilus-gdk-extensions.c
