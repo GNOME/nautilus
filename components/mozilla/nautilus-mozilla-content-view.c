@@ -465,6 +465,7 @@ mozilla_vfs_callback (GnomeVFSAsyncHandle *handle, GnomeVFSResult result, gpoint
 	}
 }
 
+#if 0
 /* Check whether two uris are "equal".  Equal means:
  *
  * Same uri regardless of mozilla canonicalization
@@ -508,8 +509,13 @@ uris_are_equal (const char *uri_one, const char *uri_two)
 		length_two--;
 	}
 
+	if (length_one != length_two) {
+		return FALSE;
+	}
+
 	return strncmp (uri_one, uri_two, MIN (length_one, length_two)) == 0;
 }
+#endif
  
 /**
  * nautilus_mozilla_content_view_load_uri:
@@ -532,7 +538,12 @@ nautilus_mozilla_content_view_load_uri (NautilusMozillaContentView	*view,
 	/* Check whether its the same uri.  Ignore the mozilla
 	 * added canonicalization.
 	 */
-	same_uri = uris_are_equal (view->details->uri, uri);
+
+	/* FIXME bugzilla.eazel.com 2780: 
+	 * Reload is broken.
+	 */
+	/* same_uri = uris_are_equal (view->details->uri, uri); */
+	same_uri = FALSE;
 
 	if (view->details->uri) {
 		g_free (view->details->uri);

@@ -1,5 +1,14 @@
 2000-10-24  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(uris_are_equal), (nautilus_mozilla_content_view_load_uri):
+	Fix for bug 3908.  Browsing to web documents deeper than the root
+	is broken.  I fixed it by backing out my previous broken fix for
+	"reloading" a web page.  There is a separate bug for the reload
+	issue which ill fix properly later.
+	
+2000-10-24  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* configure.in:
 	Make the require rpm version be 3.0.4 or greater.  Not just 3.0.4.
 	
