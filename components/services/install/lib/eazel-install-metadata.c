@@ -26,255 +26,171 @@
  */
 
 #include <config.h>
+#include <gconf/gconf.h>
+#include <gconf/gconf-engine.h>
 #include "eazel-install-metadata.h"
 
-#define EAZEL_SERVICES_DIR_HOME "/var/eazel"
-#define EAZEL_SERVICES_DIR EAZEL_SERVICES_DIR_HOME "/services"
+#define INSTALL_GCONF_PATH	"/apps/eazel-trilobite/install"
 
-static gboolean create_default_metadata (const char* config_file);
-static gboolean create_default_configuration_metafile (const char* target_file);
-static gboolean xml_doc_sanity_checks (xmlDocPtr doc);
-static URLType get_urltype_from_string (char* tmpbuf);
-static gboolean get_boolean_value_from_string (char* tmpbuf);
+/* these are NOT reasonable defaults. */
+#define DEFAULT_SERVER		"ham.eazel.com"
+#define DEFAULT_PORT		8888
 
-static gboolean
-create_default_metadata (const char* config_file) {
 
-	gboolean rv;
-	int retval;
+static GConfEngine *conf_engine = NULL;
 
-	g_print (_("Creating default configuration file ..."));
 
-	/* Ensure our services dir exists */
-	if (! g_file_test (EAZEL_SERVICES_DIR, G_FILE_TEST_ISDIR)) {
-		if (! g_file_test (EAZEL_SERVICES_DIR_HOME, G_FILE_TEST_ISDIR)) {
-			retval = mkdir (EAZEL_SERVICES_DIR_HOME, 0755);		       
-			if (retval < 0) {
-				if (errno != EEXIST) {
-					g_warning (_("*** Could not create services directory (%s)! ***"), 
-						   EAZEL_SERVICES_DIR_HOME);
-					rv = FALSE;
-				}
-			}
-		}
+/* called by atexit so we can close the gconf connection */
+static void
+done_with_gconf (void)
+{
+	gconf_engine_unref (conf_engine);
+}
 
-		retval = mkdir (EAZEL_SERVICES_DIR, 0755);
-		if (retval < 0) {
-			if (errno != EEXIST) {
-				g_warning (_("*** Could not create services directory (%s)! ***"), 
-					   EAZEL_SERVICES_DIR);
-				rv = FALSE;
-			}
+static void
+check_gconf_init (void)
+{
+	GConfError *error = NULL;
+
+	if (! gconf_is_initialized ()) {
+		char *argv[] = { "trilobite", NULL };
+
+		if (! gconf_init (1, argv, &error)) {
+			g_assert (error != NULL);
+			g_warning ("gconf init error: %s", error->str);
+			gconf_error_destroy (error);
 		}
 	}
 
-	rv = create_default_configuration_metafile (config_file);
-	if (rv == FALSE) {
-		g_warning (_("*** Could not create the default configuration file! ***"));
-		return FALSE;
+	if (conf_engine == NULL) {
+		conf_engine = gconf_engine_get_default ();
+		g_atexit (done_with_gconf);
 	}
-	return TRUE;
-} /* end create_default_metadata */
+}
+
+static char *
+get_conf_string (const char *key, const char *default_value)
+{
+	char *full_key;
+	char *value;
+
+	full_key = g_strdup_printf ("%s/%s", INSTALL_GCONF_PATH, key);
+	value = gconf_get_string (conf_engine, full_key, NULL);
+	if ((value == NULL) && (default_value != NULL)) {
+		value = g_strdup (default_value);
+	}
+	g_free (full_key);
+	return value;
+}
+
+static int
+get_conf_int (const char *key, int default_value)
+{
+	char *full_key;
+	int value;
+	GConfError *error = NULL;
+
+	full_key = g_strdup_printf ("%s/%s", INSTALL_GCONF_PATH, key);
+	value = gconf_get_int (conf_engine, full_key, &error);
+	if (error != NULL) {
+		value = default_value;
+		gconf_error_destroy (error);
+	}
+
+	g_free (full_key);
+	return value;
+}
 
 static gboolean
-create_default_configuration_metafile (const char* target_file) {
+get_conf_boolean (const char *key, gboolean default_value)
+{
+	char *full_key;
+	gboolean value;
+	GConfError *error = NULL;
 
-	xmlDocPtr doc;
-	xmlNodePtr tree;
-
-	doc = xmlNewDoc ("1.0");
-	doc->root = xmlNewDocNode (doc, NULL, "EAZEL_INSTALLER", NULL);
-	tree = xmlNewChild (doc->root, NULL, "PROTOCOL", "HTTP");
-	tree = xmlNewChild (doc->root, NULL, "PKG_LIST", "/var/eazel/services/package-list.xml");
-	tree = xmlNewChild (doc->root, NULL, "VERBOSE", "TRUE");
-	tree = xmlNewChild (doc->root, NULL, "SILENT", "FALSE");
-	tree = xmlNewChild (doc->root, NULL, "DEBUG", "TRUE");
-	tree = xmlNewChild (doc->root, NULL, "DRY_RUN", "FALSE");
-	tree = xmlNewChild (doc->root, NULL, "FORCE", "FALSE");
-	tree = xmlNewChild (doc->root, NULL, "DEPEND", "FALSE");
-	tree = xmlNewChild (doc->root, NULL, "UPDATE", "TRUE");
-	tree = xmlNewChild (doc->root, NULL, "UNINSTALL", "FALSE");
-	tree = xmlNewChild (doc->root, NULL, "DOWNGRADE", "FALSE");
-	tree = xmlNewChild (doc->root, NULL, "PORT", "8888");	
-	tree = xmlNewChild (doc->root, NULL, "HOSTNAME", "ham.eazel.com");
-	tree = xmlNewChild (doc->root, NULL, "PKG_LIST_STORAGE_PATH", "/package-list.xml");
-	tree = xmlNewChild (doc->root, NULL, "TMP_DIR", "/tmp/eazel-install");
-	tree = xmlNewChild (doc->root, NULL, "RPMRC_FILE", "/usr/lib/rpm/rpmrc");
-
-	if (doc == NULL) {
-		xmlFreeDoc (doc);
-		g_error (_("*** Error generating default configuration file! ***"));
+	full_key = g_strdup_printf ("%s/%s", INSTALL_GCONF_PATH, key);
+	value = gconf_get_bool (conf_engine, full_key, &error);
+	if (error != NULL) {
+		value = default_value;
+		gconf_error_destroy (error);
 	}
 
-	xmlSaveFile (target_file, doc);
-	xmlFreeDoc (doc);
-
-	return TRUE;
-
-} /* end create_default_configuration_metafile */
-
-static gboolean
-xml_doc_sanity_checks (xmlDocPtr doc) {
-
-	xmlNodePtr base;
-
-	if (doc == NULL) {
-		xmlFreeDoc (doc);
-		g_warning (_("*** Unable to open config file! ***"));
-		return FALSE;
-	}
-
-	base = doc->root;
-	if (base == NULL) {
-		xmlFreeDoc (doc);
-		g_warning (_("*** The config file contains no data! ***"));
-		return FALSE;
-	}
-	
-	if (g_strcasecmp (base->name, "EAZEL_INSTALLER")) {
-		g_print (_("*** Cannot find the EAZEL_INSTALLER xmlnode! ***"));
-		xmlFreeDoc (doc);
-		g_warning (_("*** Bailing from xmlparse! ***"));
-		return FALSE;
-	}
-
-	return TRUE;
-} /* end xml_doc_sanity_checks */
+	g_free (full_key);
+	return value;
+}
 
 static URLType
-get_urltype_from_string (char* tmpbuf) {
-
+get_urltype_from_string (char* tmpbuf)
+{
 	URLType rv;
 
 	if (tmpbuf[0] == 'l' || tmpbuf[0] == 'L') {
 		rv = PROTOCOL_LOCAL;
-	}
-	else if (tmpbuf[0] == 'h' || tmpbuf[0] == 'H') {
+	} else if (tmpbuf[0] == 'f' || tmpbuf[0] == 'F') {
+		rv = PROTOCOL_FTP;
+	} else if (tmpbuf[0] == 'h' || tmpbuf[0] == 'H') {
+		rv = PROTOCOL_HTTP;
+	} else {
+		g_warning (_("Could not set URLType from config file!"));
 		rv = PROTOCOL_HTTP;
 	}
-	else if (tmpbuf[0] == 'f' || tmpbuf[0] == 'F') {
-		rv = PROTOCOL_FTP;
-	}
-	else {
-		g_warning (_("Could not set URLType from config file!"));
-	}
 	return rv;
-} /* end get_urltype_from_string */
+}
 
-static gboolean
-get_boolean_value_from_string (char* tmpbuf) {
+InstallOptions *
+init_default_install_configuration (void)
+{
+	InstallOptions *rv;
+	char *temp;
 
-	gboolean rv;
-
-	if (tmpbuf[0] == 't' || tmpbuf[0] == 'T') {
-		rv = TRUE;
-	}
-	else if (tmpbuf[0] == 'f' || tmpbuf[0] == 'F') {
-		rv = FALSE;
-	}
-	return rv;
-} /* end get_boolean_value_from_string */
-
-InstallOptions*
-init_default_install_configuration (const char* config_file) {
-
-	InstallOptions* rv;
-	xmlDocPtr doc;
-	xmlNodePtr base;
-	char* tmpbuf;
-
-	g_return_val_if_fail (config_file != NULL, NULL);
-
-	if (!g_file_exists (config_file)) {
-		create_default_metadata (config_file);
-	}
-
-	doc = xmlParseFile (config_file);
-
-	if (xml_doc_sanity_checks (doc)==FALSE) {
-		return NULL;
-	}
-	
-	base = doc->root;
-
+	check_gconf_init ();
 	rv = g_new0 (InstallOptions, 1);
 
-	tmpbuf = xml_get_value (base, "PROTOCOL");
-	rv->protocol = get_urltype_from_string (tmpbuf);
+	temp = get_conf_string ("protocol", "http");
+	rv->protocol = get_urltype_from_string (temp);
+	g_free (temp);
 
-	rv->pkg_list = g_strdup (xml_get_value (base, "PKG_LIST"));
-	rv->transaction_dir = g_strdup (xml_get_value (base, "TRANSACTION_DIR"));	
+	rv->pkg_list = get_conf_string ("package-list", "/var/eazel/services/package-list.xml");
+	rv->transaction_dir = get_conf_string ("transaction-dir", NULL);
 	if (rv->transaction_dir == NULL) {
 		rv->transaction_dir = g_strdup_printf ("%s/.nautilus/transactions", g_get_home_dir ());
 	}
 
-	tmpbuf = xml_get_value (base, "VERBOSE");
-	rv->mode_verbose = get_boolean_value_from_string (tmpbuf);
+	rv->mode_verbose = get_conf_boolean ("verbose", TRUE);
+	rv->mode_silent = get_conf_boolean ("silent", FALSE);
+	rv->mode_debug = get_conf_boolean ("debug", TRUE);
+	rv->mode_test = get_conf_boolean ("dry-run", FALSE);
+	rv->mode_force = get_conf_boolean ("force", FALSE);
+	rv->mode_depend = get_conf_boolean ("depend", FALSE);
+	rv->mode_update = get_conf_boolean ("update", TRUE);
+	rv->mode_uninstall = get_conf_boolean ("uninstall", FALSE);
+	rv->mode_downgrade = get_conf_boolean ("downgrade", FALSE);
 
-	tmpbuf = xml_get_value (base, "SILENT");
-	rv->mode_silent = get_boolean_value_from_string (tmpbuf);
-
-	tmpbuf = xml_get_value (base, "DEBUG");
-	rv->mode_debug = get_boolean_value_from_string (tmpbuf);
-
-	tmpbuf = xml_get_value (base, "DRY_RUN");
-	rv->mode_test = get_boolean_value_from_string (tmpbuf);
-
-	tmpbuf = xml_get_value (base, "FORCE");
-	rv->mode_force = get_boolean_value_from_string (tmpbuf);
-
-	tmpbuf = xml_get_value (base, "DEPEND");
-	rv->mode_depend = get_boolean_value_from_string (tmpbuf);
-
-	tmpbuf = xml_get_value (base, "UPDATE");
-	rv->mode_update = get_boolean_value_from_string (tmpbuf);
-
-	tmpbuf = xml_get_value (base, "UNINSTALL");
-	rv->mode_uninstall = get_boolean_value_from_string (tmpbuf);
-
-	tmpbuf = xml_get_value (base, "DOWNGRADE");
-	rv->mode_downgrade = get_boolean_value_from_string (tmpbuf);
-
-	g_free (tmpbuf);
-	xmlFreeDoc (doc);
-	
 	return rv;
-} /* end init_default_install_configuration */
+}
 
-TransferOptions*
-init_default_transfer_configuration (const char* config_file) {
+TransferOptions *
+init_default_transfer_configuration (void)
+{
+	TransferOptions *rv;
 
-	TransferOptions* rv;
-	xmlDocPtr doc;
-	xmlNodePtr base;
-
-	g_return_val_if_fail (config_file != NULL, NULL);
-
-	doc = xmlParseFile (config_file);
-
-	if (xml_doc_sanity_checks (doc)==FALSE) {
-		return NULL;
-	}
-	
-	base = doc->root;
-
+	check_gconf_init ();
 	rv = g_new0 (TransferOptions, 1);
-	rv->port_number = atoi (xml_get_value (base, "PORT"));
-	rv->hostname = g_strdup (xml_get_value (base, "HOSTNAME"));
-	rv->pkg_list_storage_path = g_strdup (xml_get_value (base, "PKG_LIST_STORAGE_PATH"));
-	rv->tmp_dir = g_strdup (xml_get_value (base, "TMP_DIR"));	
-	rv->rpmrc_file = g_strdup (xml_get_value (base, "RPMRC_FILE"));
 
-	xmlFreeDoc (doc);
-	
+	rv->port_number = get_conf_int ("server/port", DEFAULT_PORT);
+	rv->hostname = get_conf_string ("server/hostname", DEFAULT_SERVER);
+	rv->pkg_list_storage_path = get_conf_string ("server/package-list-storage-path", "/package-list.xml");
+	rv->tmp_dir = get_conf_string ("server/temp-dir", "/tmp/eazel-install");
+	rv->rpmrc_file = get_conf_string ("server/rpmrc", "/usr/lib/rpm/rpmrc");
+
 	return rv;
-} /* end init_default_transfer_configuration */
-
+}
 
 void 
 transferoptions_destroy (TransferOptions *topts)
 {
 	g_return_if_fail (topts!=NULL);
+
 	g_free (topts->hostname);
 	topts->hostname = NULL;
 	g_free (topts->pkg_list_storage_path);
@@ -289,6 +205,7 @@ void
 installoptions_destroy (InstallOptions *iopts)
 {
 	g_return_if_fail (iopts!=NULL);
+
 	g_free (iopts->pkg_list);
 	g_free (iopts->transaction_dir);
 	iopts->pkg_list = NULL;

@@ -29,13 +29,10 @@
 #define EAZEL_INSTALL_METADATA_H
 
 #include "eazel-install-types.h"
-#include <libtrilobite/helixcode-utils.h>
-#include <errno.h>
-#include <sys/stat.h>
-#include <gnome-xml/tree.h>
-#include <gnome-xml/parser.h>
 
-InstallOptions* init_default_install_configuration (const char* config_file);
-TransferOptions* init_default_transfer_configuration (const char* config_file);
+InstallOptions *init_default_install_configuration (void);
+TransferOptions *init_default_transfer_configuration (void);
+void transferoptions_destroy (TransferOptions *topts);
+void installoptions_destroy (InstallOptions *iopts);
 
 #endif /* EAZEL_INSTALL_METADATA_H */

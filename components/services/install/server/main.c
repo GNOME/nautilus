@@ -35,7 +35,6 @@
 
 #include <libgnomevfs/gnome-vfs.h>
 
-#define DEFAULT_CONFIG_FILE "/var/eazel/services/eazel-services-config.xml"
 #define OAF_ID_FACTORY "OAFIID:trilobite_eazel_install_service_factory:b423ff3f-1941-4b0d-bd45-6542f64abbfc"
 #define OAF_ID "OAFIID:trilobite_eazel_install_service:8ff6e815-1992-437c-9771-d932db3b4a17"
 
@@ -100,7 +99,7 @@ eazel_install_service_factory (BonoboGenericFactory *this_factory,
 								      "prompt", "root", 
 								      NULL));
 
-	service = eazel_install_new_with_config (DEFAULT_CONFIG_FILE);
+	service = eazel_install_new_with_config ();
 
 	g_assert (trilobite != NULL);
 	g_assert (service != NULL);

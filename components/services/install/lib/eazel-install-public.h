@@ -107,7 +107,7 @@ struct _EazelInstall
 };
 
 EazelInstall                  *eazel_install_new (void);
-EazelInstall                  *eazel_install_new_with_config (const char *config_file);
+EazelInstall                  *eazel_install_new_with_config (void);
 GtkType                        eazel_install_get_type   (void);
 void                           eazel_install_unref       (GtkObject *object);
 

@@ -22,6 +22,7 @@
  */
 
 #include <config.h>
+#include <errno.h>
 #include <gnome.h>
 
 #include "eazel-install-public.h"
@@ -550,14 +551,14 @@ eazel_install_new()
 }
 
 EazelInstall*
-eazel_install_new_with_config (const char *config_file)
+eazel_install_new_with_config (void)
 {
 	EazelInstall *service;
 	TransferOptions *topts;
 	InstallOptions *iopts;
 
-	iopts = init_default_install_configuration (config_file);
-	topts = init_default_transfer_configuration (config_file);
+	iopts = init_default_install_configuration ();
+	topts = init_default_transfer_configuration ();
 
 	if (iopts==NULL || topts==NULL) {
 		return NULL;

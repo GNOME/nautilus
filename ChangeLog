@@ -1,3 +1,26 @@
+2000-09-07  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-metadata.c:
+	(done_with_gconf), (check_gconf_init), (get_conf_string),
+	(get_conf_int), (get_conf_boolean), (get_urltype_from_string),
+	(init_default_install_configuration),
+	(init_default_transfer_configuration), (transferoptions_destroy),
+	(installoptions_destroy):
+	* components/services/install/lib/eazel-install-metadata.h:
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_new_with_config):
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/server/main.c:
+	(eazel_install_service_factory):
+	
+	Rip out all the old XML-based configuration code, and replace it
+	with gconf-based code.
+
+	* components/services/trilobite/libtrilobite/trilobite-redirect.c:
+
+	Put redirection table into the same subtree as other trilobite
+	stuff.  (This may change soon anyway.)
+
 2000-09-08  Daniel Egger  <egger@suse.de>
 
 	* components/help/converters/gnome-db2html2/gdb3html.c:
