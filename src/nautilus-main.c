@@ -92,7 +92,7 @@ eel_gtk_main_quit_all (void)
 	 * This idler will be run by the current event loop, killing it, and then
 	 * by the next event loop, ...
 	 */
-	gtk_idle_add (quit_if_in_main_loop, NULL);
+	g_idle_add (quit_if_in_main_loop, NULL);
 }
 
 static void

@@ -188,7 +188,7 @@ nautilus_directory_finalize (GObject *object)
 	bonobo_object_release_unref (directory->details->metafile_corba_object, NULL);
 
 	if (directory->details->dequeue_pending_idle_id != 0) {
-		gtk_idle_remove (directory->details->dequeue_pending_idle_id);
+		g_source_remove (directory->details->dequeue_pending_idle_id);
 	}
  
 	g_free (directory->details->uri);

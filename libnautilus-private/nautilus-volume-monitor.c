@@ -367,7 +367,7 @@ nautilus_volume_monitor_finalize (GObject *object)
 	monitor = NAUTILUS_VOLUME_MONITOR (object);
 
 	/* Remove timer function */
-	gtk_timeout_remove (monitor->details->mount_volume_timer_id);
+	g_source_remove (monitor->details->mount_volume_timer_id);
 		
 	/* Clean up mount info */
 	free_mount_list (monitor->details->mounts);
@@ -1316,9 +1316,9 @@ find_volumes (NautilusVolumeMonitor *monitor)
 
 	/* Add a timer function to check for status change in mounted volumes periodically */
 	monitor->details->mount_volume_timer_id = 
-		gtk_timeout_add (CHECK_STATUS_INTERVAL,
-				 (GtkFunction) mount_volumes_check_status,
-				 monitor);
+		g_timeout_add (CHECK_STATUS_INTERVAL,
+			       (GtkFunction) mount_volumes_check_status,
+			       monitor);
 }
 
 void
@@ -1558,7 +1558,7 @@ close_error_pipe (gboolean mount, const char *mount_path)
 	info->detailed_message = g_strdup (detailed_msg);
 	info->mount_point = g_strdup (mount_path);
 	info->mount = mount;
-	gtk_idle_add (display_mount_error, info);	
+	g_idle_add (display_mount_error, info);	
 }
 
 

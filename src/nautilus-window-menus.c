@@ -1281,7 +1281,7 @@ void
 nautilus_window_remove_bookmarks_menu_callback (NautilusWindow *window)
 {
         if (window->details->refresh_bookmarks_menu_idle_id != 0) {
-                gtk_idle_remove (window->details->refresh_bookmarks_menu_idle_id);
+                g_source_remove (window->details->refresh_bookmarks_menu_idle_id);
 		window->details->refresh_bookmarks_menu_idle_id = 0;
         }
 }
@@ -1290,7 +1290,7 @@ void
 nautilus_window_remove_go_menu_callback (NautilusWindow *window)
 {
         if (window->details->refresh_go_menu_idle_id != 0) {
-                gtk_idle_remove (window->details->refresh_go_menu_idle_id);
+                g_source_remove (window->details->refresh_go_menu_idle_id);
 		window->details->refresh_go_menu_idle_id = 0;
         }
 }
@@ -1362,8 +1362,8 @@ schedule_refresh_bookmarks_menu (NautilusWindow *window)
 
 	if (window->details->refresh_bookmarks_menu_idle_id == 0) {
                 window->details->refresh_bookmarks_menu_idle_id
-                        = gtk_idle_add (refresh_bookmarks_menu_idle_callback,
-                                        window);
+                        = g_idle_add (refresh_bookmarks_menu_idle_callback,
+				      window);
 	}	
 }
 
@@ -1421,7 +1421,7 @@ schedule_refresh_go_menu (NautilusWindow *window)
 
 	if (window->details->refresh_go_menu_idle_id == 0) {
                 window->details->refresh_go_menu_idle_id
-                        = gtk_idle_add (refresh_go_menu_idle_callback,
-                                        window);
+                        = g_idle_add (refresh_go_menu_idle_callback,
+				      window);
 	}	
 }

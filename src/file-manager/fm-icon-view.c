@@ -226,7 +226,7 @@ fm_icon_view_finalize (GObject *object)
 	}
 
         if (icon_view->details->react_to_icon_change_idle_id != 0) {
-                gtk_idle_remove (icon_view->details->react_to_icon_change_idle_id);
+                g_source_remove (icon_view->details->react_to_icon_change_idle_id);
         }
 
 	/* kill any sound preview process that is ongoing */
@@ -1704,17 +1704,17 @@ preview_audio (FMIconView *icon_view, NautilusFile *file, gboolean start_flag)
 	}
 #endif
 	if (icon_view->details->audio_preview_timeout != 0) {
-		gtk_timeout_remove (icon_view->details->audio_preview_timeout);
+		g_source_remove (icon_view->details->audio_preview_timeout);
 		icon_view->details->audio_preview_timeout = 0;
 	}
 			
 	if (start_flag) {
 		icon_view->details->audio_preview_file = file;
 #if USE_OLD_AUDIO_PREVIEW			
-		icon_view->details->audio_preview_timeout = gtk_timeout_add (1000, play_file, icon_view);
+		icon_view->details->audio_preview_timeout = g_timeout_add (1000, play_file, icon_view);
 #else
 		/* FIXME: Need to kill the existing timeout if there is one? */
-		icon_view->details->audio_preview_timeout = gtk_timeout_add (1000, play_file, icon_view);
+		icon_view->details->audio_preview_timeout = g_timeout_add (1000, play_file, icon_view);
 #endif
 	}
 }
@@ -1925,8 +1925,8 @@ icon_position_changed_callback (NautilusIconContainer *container,
 	 */
 	if (icon_view->details->react_to_icon_change_idle_id == 0) {
                 icon_view->details->react_to_icon_change_idle_id
-                        = gtk_idle_add (fm_icon_view_react_to_icon_change_idle_callback,
-                                        icon_view);
+                        = g_idle_add (fm_icon_view_react_to_icon_change_idle_callback,
+				      icon_view);
 	}
 
 	/* Store the new position of the icon in the metadata. */

@@ -284,7 +284,7 @@ nautilus_throbber_expose (GtkWidget *widget, GdkEventExpose *event)
 	GdkPixbuf *pixbuf;
 	int x_offset, y_offset, width, height;
 	GdkRectangle pix_area, dest;
-
+	
 	g_return_val_if_fail (NAUTILUS_IS_THROBBER (widget), FALSE);
 
 	throbber = NAUTILUS_THROBBER (widget);
@@ -313,15 +313,12 @@ nautilus_throbber_expose (GtkWidget *widget, GdkEventExpose *event)
 		g_object_unref (pixbuf);
 		return FALSE;
 	}
-	
-	gdk_pixbuf_render_to_drawable_alpha (
-		pixbuf, widget->window, 
-		dest.x - x_offset, dest.y - y_offset,
-		dest.x, dest.y,
-		dest.width, dest.height,
-		GDK_PIXBUF_ALPHA_BILEVEL, 128,
-		GDK_RGB_DITHER_MAX,
-		0, 0);
+
+	gdk_draw_pixbuf (widget->window, NULL, pixbuf,
+			 dest.x - x_offset, dest.y - y_offset,
+			 dest.x, dest.y,
+			 dest.width, dest.height,
+			 GDK_RGB_DITHER_MAX, 0, 0);
 
 	g_object_unref (pixbuf);
 
@@ -371,21 +368,21 @@ nautilus_throbber_start (NautilusThrobber *throbber)
 	}
 
 	if (throbber->details->timer_task != 0) {
-		gtk_timeout_remove (throbber->details->timer_task);
+		g_source_remove (throbber->details->timer_task);
 	}
 	
 	/* reset the frame count */
 	throbber->details->current_frame = 0;
-	throbber->details->timer_task = gtk_timeout_add (throbber->details->delay,
-							 bump_throbber_frame,
-							 throbber);
+	throbber->details->timer_task = g_timeout_add (throbber->details->delay,
+						       bump_throbber_frame,
+						       throbber);
 }
 
 static void
 nautilus_throbber_remove_update_callback (NautilusThrobber *throbber)
 {
 	if (throbber->details->timer_task != 0) {
-		gtk_timeout_remove (throbber->details->timer_task);
+		g_source_remove (throbber->details->timer_task);
 	}
 	
 	throbber->details->timer_task = 0;

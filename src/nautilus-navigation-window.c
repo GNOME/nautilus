@@ -931,7 +931,7 @@ nautilus_window_finalize (GObject *object)
 	nautilus_window_remove_go_menu_callback (window);
 
 	if (window->details->ui_idle_id != 0) {
-		gtk_idle_remove (window->details->ui_idle_id);
+		g_source_remove (window->details->ui_idle_id);
 	}
 
 	if (window->details->shell_ui != NULL) {
@@ -965,7 +965,7 @@ nautilus_window_finalize (GObject *object)
 	bonobo_object_unref (window->details->ui_container);
 
 	if (window->details->location_change_at_idle_id != 0) {
-		gtk_idle_remove (window->details->location_change_at_idle_id);
+		g_source_remove (window->details->location_change_at_idle_id);
 	}
 
 	g_free (window->details->title);

@@ -109,7 +109,7 @@ nautilus_idle_queue_add (NautilusIdleQueue *queue,
 	queue->functions = g_list_prepend (queue->functions, function);
 
 	if (queue->idle_id == 0) {
-		queue->idle_id = gtk_idle_add (execute_queued_functions, queue);
+		queue->idle_id = g_idle_add (execute_queued_functions, queue);
 	}
 }
 
@@ -137,7 +137,7 @@ nautilus_idle_queue_destroy (NautilusIdleQueue *queue)
 	g_list_free (queue->functions);
 
 	if (queue->idle_id != 0) {
-		gtk_idle_remove (queue->idle_id);
+		g_source_remove (queue->idle_id);
 	}
 
 	g_free (queue);

@@ -547,8 +547,8 @@ bonobo_activation_activation_callback (Bonobo_Unknown activated_object,
 	if (handle->cancel) {
 		activation_cancel (handle);
 	} else {
-		handle->idle_id = gtk_idle_add (activation_idle_callback,
-						handle);
+		handle->idle_id = g_idle_add (activation_idle_callback,
+					      handle);
 	}
 }
 
@@ -610,7 +610,7 @@ nautilus_bonobo_activate_cancel (NautilusBonoboActivationHandle *handle)
 		/* no way to cancel the underlying bonobo-activation call, so we just set a flag */
 		handle->cancel = TRUE;
 	} else {
-		gtk_idle_remove (handle->idle_id);
+		g_source_remove (handle->idle_id);
 		activation_cancel (handle);
 	}
 }

@@ -1,5 +1,34 @@
 2003-02-28  Alexander Larsson  <alexl@redhat.com>
 
+	* components/throbber/nautilus-throbber.c:
+	* libnautilus-private/nautilus-bonobo-extensions.c:
+	* libnautilus-private/nautilus-directory-async.c:
+	* libnautilus-private/nautilus-directory.c:
+	* libnautilus-private/nautilus-dnd.c:
+	* libnautilus-private/nautilus-drag-window.c:
+	* libnautilus-private/nautilus-entry.c:
+	* libnautilus-private/nautilus-file-operations-progress.c:
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	* libnautilus-private/nautilus-icon-container.c:
+	* libnautilus-private/nautilus-metafile.c:
+	* libnautilus-private/nautilus-tree-view-drag-dest.c:
+	* libnautilus-private/nautilus-volume-monitor.c:
+	* libnautilus/nautilus-idle-queue.c:
+	* src/file-manager/fm-desktop-icon-view.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-properties-window.c:
+	* src/nautilus-bookmarks-window.c:
+	* src/nautilus-location-bar.c:
+	* src/nautilus-main.c:
+	* src/nautilus-view-frame.c:
+	* src/nautilus-window-menus.c:
+	* src/nautilus-window.c:
+	Don't use deprecated APIs.
+	Patch by iain <iain@prettypeople.org>
+
+2003-02-28  Alexander Larsson  <alexl@redhat.com>
+
 	* components/text/nautilus-text-view.c (nautilus_text_view_instance_init):
 	Use monospaced font for text view.
 	Patch by Luca Ferretti <elle.uca@libero.it>

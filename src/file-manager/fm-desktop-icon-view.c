@@ -263,7 +263,7 @@ fm_desktop_icon_view_finalize (GObject *object)
 
 	/* Remove desktop rescan timeout. */
 	if (icon_view->details->reload_desktop_timeout != 0) {
-		gtk_timeout_remove (icon_view->details->reload_desktop_timeout);
+		g_source_remove (icon_view->details->reload_desktop_timeout);
 	}
 
 	/* Delete all of the link files. */
@@ -618,7 +618,7 @@ delayed_init (FMDesktopIconView *desktop_icon_view)
 
 	/* Monitor desktop directory. */
 	desktop_icon_view->details->reload_desktop_timeout =
-		gtk_timeout_add (RESCAN_TIMEOUT, do_desktop_rescan, desktop_icon_view);
+		g_timeout_add (RESCAN_TIMEOUT, do_desktop_rescan, desktop_icon_view);
 
 	g_signal_handler_disconnect (desktop_icon_view,
 				     desktop_icon_view->details->delayed_init_signal);

@@ -145,7 +145,7 @@ remove_focus_timeout (GtkWindow *window)
 	details = get_details (window);
 
 	if (details != NULL && details->focus_timeout_tag != 0) {
-		gtk_timeout_remove (details->focus_timeout_tag);
+		g_source_remove (details->focus_timeout_tag);
 		details->focus_timeout_tag = 0;
 	}
 }
@@ -160,8 +160,8 @@ set_focus_timeout (GtkWindow *window)
 	if (details != NULL) {
 		remove_focus_timeout (window);
 		details->focus_timeout_tag
-		    = gtk_timeout_add (WINDOW_FOCUS_TIMEOUT,
-				       focus_timeout_callback, window);
+		    = g_timeout_add (WINDOW_FOCUS_TIMEOUT,
+                                     focus_timeout_callback, window);
 	}
 }
 

@@ -611,7 +611,7 @@ unschedule_keyboard_icon_reveal (NautilusIconContainer *container)
 	details = container->details;
 
 	if (details->keyboard_icon_reveal_timer_id != 0) {
-		gtk_timeout_remove (details->keyboard_icon_reveal_timer_id);
+		g_source_remove (details->keyboard_icon_reveal_timer_id);
 	}
 }
 
@@ -627,9 +627,9 @@ schedule_keyboard_icon_reveal (NautilusIconContainer *container,
 
 	details->keyboard_icon_to_reveal = icon;
 	details->keyboard_icon_reveal_timer_id
-		= gtk_timeout_add (KEYBOARD_ICON_REVEAL_TIMEOUT,
-				   keyboard_icon_reveal_timeout_callback,
-				   container);
+		= g_timeout_add (KEYBOARD_ICON_REVEAL_TIMEOUT,
+				 keyboard_icon_reveal_timeout_callback,
+				 container);
 }
 
 static void
@@ -1309,7 +1309,7 @@ static void
 unschedule_redo_layout (NautilusIconContainer *container)
 {
         if (container->details->idle_id != 0) {
-		gtk_idle_remove (container->details->idle_id);
+		g_source_remove (container->details->idle_id);
 		container->details->idle_id = 0;
 	}
 }
@@ -1319,7 +1319,7 @@ schedule_redo_layout (NautilusIconContainer *container)
 {
 	if (container->details->idle_id == 0
 	    && container->details->has_been_allocated) {
-		container->details->idle_id = gtk_idle_add
+		container->details->idle_id = g_idle_add
 			(redo_layout_callback, container);
 	}
 }
@@ -1716,7 +1716,7 @@ start_rubberbanding (NautilusIconContainer *container,
 	band_info->active = TRUE;
 
 	if (band_info->timer_id == 0) {
-		band_info->timer_id = gtk_timeout_add
+		band_info->timer_id = g_timeout_add
 			(RUBBERBAND_TIMEOUT_INTERVAL,
 			 rubberband_timeout_callback,
 			 container);
@@ -1737,7 +1737,7 @@ stop_rubberbanding (NautilusIconContainer *container,
 	band_info = &container->details->rubberband_info;
 
 	g_assert (band_info->timer_id != 0);
-	gtk_timeout_remove (band_info->timer_id);
+	g_source_remove (band_info->timer_id);
 	band_info->timer_id = 0;
 
 	band_info->active = FALSE;
@@ -2395,17 +2395,17 @@ destroy (GtkObject *object)
         nautilus_icon_container_clear (container);
 
 	if (container->details->rubberband_info.timer_id != 0) {
-		gtk_timeout_remove (container->details->rubberband_info.timer_id);
+		g_source_remove (container->details->rubberband_info.timer_id);
 		container->details->rubberband_info.timer_id = 0;
 	}
 
         if (container->details->idle_id != 0) {
-		gtk_idle_remove (container->details->idle_id);
+		g_source_remove (container->details->idle_id);
 		container->details->idle_id = 0;
 	}
 
 	if (container->details->stretch_idle_id != 0) {
-		gtk_idle_remove (container->details->stretch_idle_id);
+		g_source_remove (container->details->stretch_idle_id);
 		container->details->stretch_idle_id = 0;
 	}
        
@@ -2697,7 +2697,7 @@ static void
 remove_context_menu_timeout (NautilusIconContainer *container)
 {
 	if (container->details->context_menu_timeout_id != 0) {
-		gtk_timeout_remove (container->details->context_menu_timeout_id);
+		g_source_remove (container->details->context_menu_timeout_id);
 		container->details->context_menu_timeout_id = 0;
 	}
 }
@@ -2804,7 +2804,7 @@ continue_stretching (NautilusIconContainer *container,
 	container->details->world_y = world_y;
 
 	if (container->details->stretch_idle_id == 0) {		
-		container->details->stretch_idle_id = gtk_idle_add ((GtkFunction) update_stretch_at_idle, container);
+		container->details->stretch_idle_id = g_idle_add ((GtkFunction) update_stretch_at_idle, container);
 	}
 }
 

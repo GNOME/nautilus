@@ -712,7 +712,7 @@ on_window_hide_event (GtkWidget *widget,
 	nautilus_undo_unregister (G_OBJECT (uri_field));
 
 	/* restore_geometry only works after window is hidden */
-	gtk_idle_add (restore_geometry, widget);
+	g_idle_add (restore_geometry, widget);
 }
 
 static void
@@ -720,7 +720,7 @@ on_window_destroy_event (GtkWidget *widget,
 		      	 gpointer user_data)
 {
 	g_message ("destroying bookmarks window");
-	gtk_idle_remove_by_data (widget);
+	g_source_remove_by_user_data (widget);
 }
 
 static void

@@ -1851,7 +1851,7 @@ directory_request_write_metafile (NautilusMetafile *metafile)
 	if (metafile->details->write_idle_id == 0) {
 		bonobo_object_ref (metafile);
 		metafile->details->write_idle_id =
-			gtk_idle_add (metafile_write_idle_callback, metafile);
+			g_idle_add (metafile_write_idle_callback, metafile);
 	}
 }
 

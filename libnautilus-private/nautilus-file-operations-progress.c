@@ -532,7 +532,7 @@ nautilus_file_operations_progress_done (NautilusFileOperationsProgress *progress
 	/* No cancel button once the operation is done. */
 	gtk_dialog_set_response_sensitive (GTK_DIALOG (progress), GTK_RESPONSE_CANCEL, FALSE);
 
-	progress->details->delayed_close_timeout_id = gtk_timeout_add
+	progress->details->delayed_close_timeout_id = g_timeout_add
 		(MINIMUM_TIME_UP - time_up,
 		 delayed_close_callback,
 		 progress);

@@ -603,7 +603,7 @@ editable_event_after_callback (GtkEntry *entry,
 	if (position_and_selection_are_at_end (editable)) {
 		if (entry_would_have_inserted_characters (keyevent)) {
 			if (bar->details->idle_id == 0) {
-				bar->details->idle_id = gtk_idle_add (try_to_expand_path, bar);
+				bar->details->idle_id = g_idle_add (try_to_expand_path, bar);
 			}
 		}
 	} else {
@@ -611,7 +611,7 @@ editable_event_after_callback (GtkEntry *entry,
 		 * to change the position or selection.
 		 */
 		if (bar->details->idle_id != 0) {
-			gtk_idle_remove (bar->details->idle_id);
+			g_source_remove (bar->details->idle_id);
 			bar->details->idle_id = 0;
 		}
 	}
@@ -654,7 +654,7 @@ destroy (GtkObject *object)
 	
 	/* cancel the pending idle call, if any */
 	if (bar->details->idle_id != 0) {
-		gtk_idle_remove (bar->details->idle_id);
+		g_source_remove (bar->details->idle_id);
 		bar->details->idle_id = 0;
 	}
 	

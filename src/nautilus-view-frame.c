@@ -216,11 +216,11 @@ shut_down (NautilusViewFrame *view)
 	}
 
 	if (view->details->failed_idle_id != 0) {
-		gtk_idle_remove (view->details->failed_idle_id);
+		g_source_remove (view->details->failed_idle_id);
 		view->details->failed_idle_id = 0;
 	}
 	if (view->details->socket_gone_idle_id != 0) {
-		gtk_idle_remove (view->details->socket_gone_idle_id);
+		g_source_remove (view->details->socket_gone_idle_id);
 		view->details->socket_gone_idle_id = 0;
 	}
 }
@@ -645,7 +645,7 @@ queue_view_frame_failed (NautilusViewFrame *view)
 
 	if (view->details->failed_idle_id == 0) {
 		view->details->failed_idle_id =
-			gtk_idle_add (view_frame_failed_callback, view);
+			g_idle_add (view_frame_failed_callback, view);
 	}
 }
 
@@ -699,7 +699,7 @@ check_socket_gone_callback (GtkContainer *container,
 	 * widget in there.
 	 */
 	if (frame->details->socket_gone_idle_id == 0) {
-		frame->details->socket_gone_idle_id = gtk_idle_add
+		frame->details->socket_gone_idle_id = g_idle_add
 			(check_socket_gone_idle_callback, callback_data);
 	}
 }

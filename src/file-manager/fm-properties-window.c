@@ -1281,9 +1281,9 @@ schedule_directory_contents_update (FMPropertiesWindow *window)
 
 	if (window->details->update_directory_contents_timeout_id == 0) {
 		window->details->update_directory_contents_timeout_id
-			= gtk_timeout_add (DIRECTORY_CONTENTS_UPDATE_INTERVAL,
-					   update_directory_contents_callback,
-					   window);
+			= g_timeout_add (DIRECTORY_CONTENTS_UPDATE_INTERVAL,
+					 update_directory_contents_callback,
+					 window);
 	}
 }
 
@@ -2663,7 +2663,7 @@ real_destroy (GtkObject *object)
 	window->details->special_flags_widgets = NULL;
 
 	if (window->details->update_directory_contents_timeout_id != 0) {
-		gtk_timeout_remove (window->details->update_directory_contents_timeout_id);
+		g_source_remove (window->details->update_directory_contents_timeout_id);
 		window->details->update_directory_contents_timeout_id = 0;
 	}
 

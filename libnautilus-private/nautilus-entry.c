@@ -95,7 +95,7 @@ nautilus_entry_finalize (GObject *object)
 	entry = NAUTILUS_ENTRY (object);
 
 	if (entry->details->select_idle_id != 0) {
-		gtk_idle_remove (entry->details->select_idle_id);
+		g_source_remove (entry->details->select_idle_id);
 	}
 	
 	g_free (entry->details);
@@ -236,7 +236,7 @@ nautilus_entry_select_all_at_idle (NautilusEntry *entry)
 	 */
 
 	if (entry->details->select_idle_id == 0) {
-		entry->details->select_idle_id = gtk_idle_add (select_all_at_idle, entry);
+		entry->details->select_idle_id = g_idle_add (select_all_at_idle, entry);
 	}
 }
 

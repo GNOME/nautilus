@@ -1106,11 +1106,10 @@ draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
 	/* FIXME bugzilla.gnome.org 40703: 
 	 * Dither would be better if we passed dither values. 
 	 */
-	gdk_pixbuf_render_to_drawable_alpha (pixbuf, drawable, 0, 0, x, y,
-					     gdk_pixbuf_get_width (pixbuf),
-					     gdk_pixbuf_get_height (pixbuf),
-					     GDK_PIXBUF_ALPHA_BILEVEL, 128, GDK_RGB_DITHER_NORMAL,
-					     0, 0);
+	gdk_draw_pixbuf (drawable, NULL, pixbuf, 0, 0, x, y,
+			 gdk_pixbuf_get_width (pixbuf),
+			 gdk_pixbuf_get_height (pixbuf),
+			 GDK_RGB_DITHER_NORMAL, 0, 0);
 }
 
 /* shared code to highlight or dim the passed-in pixbuf */
