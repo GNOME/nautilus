@@ -1,3 +1,15 @@
+2000-04-19  John Sullivan  <sullivan@eazel.com>
+
+	Yet more tweakery to the file-monitoring code.
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(stop_monitoring_files): Renamed to stop_monitoring_file_list.
+	(nautilus_directory_destroy): Only stop monitoring list if we
+	were monitoring list, but always complain about non-NULL
+	file_monitors.
+	(nautilus_directory_file_monitor_remove_internal): Only
+	stop monitoring list if we had been monitoring it. This fixes
+	CRITICAL when you launch and immediately quit.
 
 2000-04-18 Shane Culpepper <pepper@eazel.com>
 
@@ -35,7 +47,7 @@
 	Moved FileMonitor struct out.
 	(nautilus_directory_destroy): assert that there's no count_in_progress.
 	(compare_file_monitor_with_client): changed name to
-	(compare_file_monitor_by_client_and_file) and behavior to match.
+	compare_file_monitor_by_client_and_file and behavior to match.
 	(find_file_monitor): Now takes a file and uses it in search.
 	(cancel_unneeded_file_attribute_requests): New function, cleans up 
 	no-longer-needed gnome vfs async calls.

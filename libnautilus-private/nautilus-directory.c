@@ -92,6 +92,7 @@ static gboolean                      dequeue_pending_idle_callback              
 static char *                        get_metadata_from_node                              (xmlNode                       *node,
 											  const char                    *key,
 											  const char                    *default_metadata);
+static gboolean			     is_file_list_monitored 				 (NautilusDirectory 		*directory);
 static void                          metafile_close_callback                             (GnomeVFSAsyncHandle           *handle,
 											  GnomeVFSResult                 result,
 											  gpointer                       callback_data);
@@ -146,7 +147,7 @@ static void                          nautilus_gnome_vfs_file_info_list_free     
 static void                          nautilus_gnome_vfs_file_info_list_unref             (GList                         *list);
 static void                          process_pending_file_attribute_requests             (NautilusDirectory             *directory);
 static void                          schedule_dequeue_pending                            (NautilusDirectory             *directory);
-static void                          stop_monitoring_files                               (NautilusDirectory             *directory);
+static void                          stop_monitoring_file_list                           (NautilusDirectory             *directory);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDirectory, nautilus_directory, GTK_TYPE_OBJECT)
 
@@ -243,9 +244,12 @@ nautilus_directory_destroy (GtkObject *object)
 	g_assert (directory->details->write_state == NULL);
 	metafile_read_cancel (directory);
 
+	if (is_file_list_monitored (directory)) {
+		stop_monitoring_file_list (directory);
+	}
+
 	if (directory->details->file_monitors != NULL) {
 		g_warning ("destroying a NautilusDirectory while it's being monitored");
-		stop_monitoring_files (directory);
 		nautilus_g_list_free_deep (directory->details->file_monitors);
 	}
 
@@ -1018,7 +1022,7 @@ nautilus_directory_file_monitor_add_internal (NautilusDirectory *directory,
 
 	/* No need to hold onto these new refs if we already have old ones
 	 * from when we started monitoring. Those will be cleared up in
-	 * stop_monitoring_files.
+	 * stop_monitoring_file_list.
 	 */
 	if (was_monitoring_file_list && file == NULL) {
 		nautilus_file_list_unref (directory->details->files);
@@ -1208,7 +1212,7 @@ nautilus_directory_load_callback (GnomeVFSAsyncHandle *handle,
 }
 
 static void
-stop_monitoring_files (NautilusDirectory *directory)
+stop_monitoring_file_list (NautilusDirectory *directory)
 {
 	if (directory->details->directory_load_in_progress != NULL) {
 		gnome_vfs_async_cancel (directory->details->directory_load_in_progress);
@@ -1223,13 +1227,17 @@ nautilus_directory_file_monitor_remove_internal (NautilusDirectory *directory,
 						 NautilusFile *file,
 						 gconstpointer client)
 {
+	gboolean was_monitoring_file_list;
+	
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+
+	was_monitoring_file_list = is_file_list_monitored (directory);
 
 	remove_file_monitor (directory, file, client);
 	cancel_unneeded_file_attribute_requests (directory);
 
-	if (!is_file_list_monitored (directory)) {
-		stop_monitoring_files (directory);
+	if (was_monitoring_file_list && !is_file_list_monitored (directory)) {
+		stop_monitoring_file_list (directory);
 	}
 }
 
