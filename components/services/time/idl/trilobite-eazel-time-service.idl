@@ -8,10 +8,10 @@ module Trilobite {
 			
 			exception CannotGetTime {};
 
-			void    set_max_difference (in long maxd);
-			void    set_time_url (in string url);
-			boolean check_time () raises (CannotGetTime);
-			void    update_time () raises (NotPermitted);
+			void          set_max_difference (in long maxd);
+			void          set_time_url (in string url);
+			unsigned long check_time () raises (CannotGetTime);
+			void          update_time () raises (NotPermitted);
 		};
 	};
 };

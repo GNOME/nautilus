@@ -1,3 +1,33 @@
+2000-05-19  Eskil Heyn Olsen  <eskil@eazel.om>
+
+	* components/services/time/service/trilobite-eazel-time-service.oafinfo: 
+	Fixed the horribly cut'n'paste errors.
+
+	* components/services/time/service/trilobite-eazel-time-service-public.h:
+	Stripped some superflous stuff from the TrilobiteEazelTimeService
+	structure.
+
+	* components/services/time/command-line/main.c (main): 
+	Implemented the basic cli for the time service
+
+	* components/services/time/idl/trilobite-eazel-time-service.idl: 
+	The check_time now returns the difference instead of a bool. If
+	diff != 0, your clock is wrong (or the server is).
+
+	* components/services/time/command-line/Makefile.am:
+	Lot of juju to make the time service cli work
+
+	* components/services/trilobite/src/trilobite-service.c
+	(trilobite_service_create_corba_object): Uncommented some
+	more g_message noise
+
+	* components/services/trilobite/src/libtrilobited.h: 
+	Now assuming the libtrilobited headers are in libtrilobite/, not
+	libtrilobited/
+
+	* components/services/trilobite/sample/command-line/Makefile.am: 
+	Some idl compiling rearranging.
+
 2000-05-19  Gene Z. Ragan  <gzr@eazel.com>
 	
 	* libnautilus/nautilus-undo-context.c:

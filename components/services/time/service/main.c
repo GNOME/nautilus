@@ -65,9 +65,8 @@ trilobite_eazel_time_service_factory (BonoboGenericFactory *this_factory,
 	TrilobiteService *trilobite;
 	TrilobiteEazelTimeService *service;
 
-	g_message ("in trilobite_eazel_time_service_factory");
-
 	if (strcmp (oaf_id, OAF_ID)) {
+		g_warning ("Unhandled OAF id %s", oaf_id);
 		return NULL;
 	}
 
@@ -81,6 +80,9 @@ trilobite_eazel_time_service_factory (BonoboGenericFactory *this_factory,
 						       NULL));
 
 	service = trilobite_eazel_time_service_new ();
+
+	g_assert (trilobite != NULL);
+	g_assert (service != NULL);
 
 	trilobites_active++;
 

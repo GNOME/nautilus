@@ -42,7 +42,7 @@ static GtkObjectClass *trilobite_eazel_time_service_parent_class;
 
 /* prototypes */
 
-time_t triloibte_eazel_time_service_get_server_time (TrilobiteEazelTimeService*);
+time_t trilobite_eazel_time_service_get_server_time (TrilobiteEazelTimeService*);
 
 /*****************************************
   Corba stuff
@@ -71,30 +71,31 @@ impl_Trilobite_Eazel_Time_Service_set_time_url (impl_POA_Trilobite_Eazel_Time_Se
 	if (service->object->private->time_url != NULL) {
 		g_free (service->object->private->time_url);
 	}
+	service->object->private->time_url = g_strdup (url);
 }
 
-static CORBA_boolean
+static CORBA_unsigned_long
 impl_Trilobite_Eazel_Time_Service_check_time  (impl_POA_Trilobite_Eazel_Time_Service *service,
 					       CORBA_Environment *ev) 
 {
 	time_t server_time;
 	time_t local_time;
-	CORBA_boolean result;
-	
+	CORBA_unsigned_long result;
+
+	result = 0;
 	local_time = time (NULL);
-	server_time = triloibte_eazel_time_service_get_server_time (service->object);
-	
+	server_time = trilobite_eazel_time_service_get_server_time (service->object);
+
 	/* If we did not get the time, raise an exception */
 	if (server_time == 0) {
 		Trilobite_Eazel_Time_CannotGetTime *exn; 
 		exn = Trilobite_Eazel_Time_CannotGetTime__alloc ();
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION, ex_Trilobite_Eazel_Time_CannotGetTime, exn);
-		return FALSE;
-	}
-
-	result = CORBA_TRUE;
-	if (abs (server_time - local_time) > service->object->private->maxd) {
-		result = CORBA_FALSE;
+	} else {
+		/* if we are beyond the max difference, return it */
+		if (abs (server_time - local_time) > service->object->private->maxd) {
+			result = server_time - local_time;
+		}
 	}
 
 	return result;
@@ -118,7 +119,7 @@ impl_Trilobite_Eazel_Time_Service_update_time  (impl_POA_Trilobite_Eazel_Time_Se
 	}
 	
 	if (get_time == TRUE) {
-		triloibte_eazel_time_service_get_server_time (service->object);
+		trilobite_eazel_time_service_get_server_time (service->object);
 	} else {
 		time_t diff;
 		
@@ -129,6 +130,7 @@ impl_Trilobite_Eazel_Time_Service_update_time  (impl_POA_Trilobite_Eazel_Time_Se
 
 	/* FIXME: bugzilla.eazel.com 938:
 	   do auth stuff and set time */
+
 	if (stime (&service->object->private->server_time) != 0) {
 		Trilobite_Eazel_Time_NotPermitted *exn; 
 		exn = Trilobite_Eazel_Time_NotPermitted__alloc ();
@@ -172,7 +174,17 @@ trilobite_eazel_time_service_destroy (GtkObject *object)
 	if (service->private->time_url) {
 		g_free (service->private->time_url);
 	}
+
 	g_free (service->private);
+
+	/* FIXME bugzilla.eazel.com 945:
+	   These defaults should probably be read from somewhere */
+
+	/* Default to the eazel test time server */
+	service->private->time_url = g_strdup ("http://eazel24.eazel.com/time.pl");
+
+	/* Default to 5 secs diff, to allow for network latency, bad weather and whotnot */
+	service->private->maxd = 5;
 
 	/* FIXME bugzilla.eazel.com 937:
 	   implement this properly */
@@ -208,7 +220,10 @@ trilobite_eazel_time_service_create_corba_object (BonoboObject *service) {
 	impl_POA_Trilobite_Eazel_Time_Service *servant;
 	CORBA_Environment ev;
 
+	/* g_message ("trilobite_eazel_time_service_create_corba_object"); */
+
 	g_assert (service != NULL);
+	g_assert (TRILOBITE_IS_EAZEL_TIME_SERVICE (service));
 	
 	CORBA_exception_init (&ev);
 	
@@ -239,6 +254,8 @@ static void
 trilobite_eazel_time_service_initialize (TrilobiteEazelTimeService *service) {
 	Trilobite_Eazel_Time corba_service;
 
+	/* g_message ("in trilobite_eazel_time_service_initialize"); */
+
 	g_assert (service != NULL);
 	g_assert (TRILOBITE_IS_EAZEL_TIME_SERVICE (service));
 
@@ -260,7 +277,7 @@ GtkType
 trilobite_eazel_time_service_get_type() {
 	static GtkType trilobite_service_type = 0;
 
-	g_message ("into trilobite_eazel_time_service_get_type"); 
+	/* g_message ("into trilobite_eazel_time_service_get_type");  */
 
 	/* First time it's called ? */
 	if (!trilobite_service_type)
@@ -293,20 +310,33 @@ trilobite_eazel_time_service_new()
 {
 	TrilobiteEazelTimeService *service;
 
-	g_message ("in trilobite_eazel_time_service_new");
+	/* g_message ("in trilobite_eazel_time_service_new"); */
 	
 	service = TRILOBITE_EAZEL_TIME_SERVICE (gtk_object_new (TRILOBITE_TYPE_EAZEL_TIME_SERVICE, NULL));
 	
 	return service;
 }
 
+/* 
+   NOTE: 
+   the parser isn't using XML, since the contents of body is so basic 
+ */
 static time_t
 trilobite_eazel_time_service_parse_body (char *body) 
 {
 	time_t result;
+	char *ptr, *nptr;
+	
+	result = 0;
+	ptr = strstr (body, "<time>");
 
-	g_message ("body is \"%s\"", body);
-	result = 13;
+	if (ptr!= NULL) {
+		ptr += strlen ("<time>");
+		result = strtol (ptr, &nptr, 10);
+		if (nptr == NULL || (strncmp (nptr, "</time>",7) != 0) ) {
+			result = 0;
+		}
+	}
 	
 	return result;
 }
@@ -315,7 +345,7 @@ trilobite_eazel_time_service_parse_body (char *body)
   Requesting via. HTTP
 */
 static time_t
-triloibte_eazel_time_service_do_http_request (TrilobiteEazelTimeService *service) 
+trilobite_eazel_time_service_do_http_request (TrilobiteEazelTimeService *service) 
 {
 	time_t result;
 	ghttp_request *request;
@@ -350,13 +380,13 @@ triloibte_eazel_time_service_do_http_request (TrilobiteEazelTimeService *service
 }
 
 time_t
-triloibte_eazel_time_service_get_server_time (TrilobiteEazelTimeService *service) 
+trilobite_eazel_time_service_get_server_time (TrilobiteEazelTimeService *service) 
 {
 	time_t result;
 
 	switch (service->private->method) {
 	case REQUEST_BY_HTTP:
-		result = triloibte_eazel_time_service_do_http_request (service);
+		result = trilobite_eazel_time_service_do_http_request (service);
 		break;
 	default:
 		result = 0;

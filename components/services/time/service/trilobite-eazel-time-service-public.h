@@ -37,25 +37,12 @@ extern "C" {
 #define TRILOBITE_IS_EAZEL_TIME_SERVICE(obj)        (GTK_CHECK_TYPE ((obj), TRILOBITE_TYPE_EAZEL_TIME_SERVICE))
 #define TRILOBITE_IS_EAZEL_TIME_SERVICE_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((obj), TRILOBITE_TYPE_EAZEL_TIME_SERVICE))
 
-/*	
-typedef enum {
-	NOT_PERMITTED
-} TrilobiteEazelTimeServiceUpdateStatus;
-*/
-
 typedef struct _TrilobiteEazelTimeService TrilobiteEazelTimeService;
 typedef struct _TrilobiteEazelTimeServiceClass TrilobiteEazelTimeServiceClass;
 
 struct _TrilobiteEazelTimeServiceClass 
 {
 	BonoboObjectClass parent_class;
-
-/*
-	void (*set_max_difference) (TrilobiteEazelTimeService *service, long maxd);
-	void (*set_time_url)       (TrilobiteEazelTimeService *service, const char *url);
-	gboolean (*check_time)     (TrilobiteEazelTimeService *service);
-	TrilobiteEazelTimeServiceUpdateStatus (*update_time)    (TrilobiteEazelTimeService *service);
-*/
 
 	gpointer servant_vepv;
 };

@@ -1,2 +1,2 @@
-#include <libtrilobited/trilobite-service.h>
-#include <libtrilobited/trilobite-service-public.h>
+#include <libtrilobite/trilobite-service.h>
+#include <libtrilobite/trilobite-service-public.h>

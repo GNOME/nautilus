@@ -30,8 +30,8 @@ $(CORBA_GENERATED): sample-service.h
 IDLDIR = $(top_srcdir)/components/services/trilobite/idl
 IDL = $(IDLDIR)/sample-service.idl
 
-sample-service.h: $(IDL) $(IDLDIR)/trilobite-service.idl
-	$(prefix)/bin/orbit-idl -I $(IDLDIR)  -I${datadir}/idl $(IDL)
+sample-service.h: $(IDL)
+	$(prefix)/bin/orbit-idl -I${datadir}/idl $(IDL)
 
 main.c: sample-service.h
 

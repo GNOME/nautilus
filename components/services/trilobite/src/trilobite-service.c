@@ -370,7 +370,7 @@ trilobite_service_create_corba_object (BonoboObject *trilobite)
 	void (*servant_init) (PortableServer_Servant servant, CORBA_Environment *ev);
 	CORBA_Environment ev;
 
-	g_message ("in trilobite_service_create_corba_object"); 
+	/* g_message ("in trilobite_service_create_corba_object"); */
 
 	g_assert (trilobite != NULL);
 
