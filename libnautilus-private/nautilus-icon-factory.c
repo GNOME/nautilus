@@ -48,6 +48,7 @@
 #include <eel/eel-pango-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
+#include <gtk/gtksettings.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
@@ -2255,7 +2256,9 @@ static gboolean embedded_text_preferences_callbacks_added = FALSE;
 static PangoFontDescription *embedded_text_font = NULL;
 
 static void
-embedded_text_font_changed_callback (gpointer callback_data)
+embedded_text_font_changed_callback (GtkSettings *settings,
+				     GParamSpec  *pspec,
+				     gpointer     callback_data)
 {
 	gboolean clear_cache;
 	char *font_name;
@@ -2266,7 +2269,15 @@ embedded_text_font_changed_callback (gpointer callback_data)
 		pango_font_description_free (embedded_text_font);
 	}
 
-	font_name = eel_preferences_get (NAUTILUS_PREFERENCES_DEFAULT_FONT);
+	font_name = NULL;
+	g_object_get (settings,
+		      "gtk-font-name", &font_name,
+		      NULL);
+
+	if (font_name == NULL) {
+		font_name = g_strdup ("Sans");
+	}
+	
 	embedded_text_font = pango_font_description_from_string (font_name);
 	g_free (font_name);
 
@@ -2286,6 +2297,7 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 	GdkPixbuf *pixbuf_with_text;
 	PangoLayout *layout;
 	static PangoContext *context;
+	GtkSettings *settings;
 	
 	g_return_val_if_fail (pixbuf_without_text != NULL, NULL);
 	
@@ -2300,10 +2312,10 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 	if (!embedded_text_preferences_callbacks_added) {
 		embedded_text_preferences_callbacks_added = TRUE;
 
-		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_FONT,
-					      embedded_text_font_changed_callback,
-					      GINT_TO_POINTER (TRUE));
-		embedded_text_font_changed_callback (GINT_TO_POINTER (FALSE));
+		settings = gtk_settings_get_default ();	
+		g_signal_connect (settings, "notify::gtk-font-name",
+				  G_CALLBACK (embedded_text_font_changed_callback), GINT_TO_POINTER (TRUE));
+		embedded_text_font_changed_callback (settings, NULL, GINT_TO_POINTER (FALSE));
 	}
 	
 	if (context == NULL) {

@@ -1,3 +1,61 @@
+2002-05-11  Alex Larsson  <alexl@redhat.com>
+
+	* components/music/nautilus-music-view.c: (set_up_tree_view):
+	Don't use custom font.
+	
+	* libnautilus-private/apps_nautilus_preferences.schemas:
+	Add preferences/desktop_font.
+	Remove old fonts keys
+	
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_display_name_nocopy):
+	Don't leak.
+	
+	* libnautilus-private/nautilus-global-preferences.c:
+	* libnautilus-private/nautilus-global-preferences.h:
+	Remove old font prefs. Add desktop font prefs.
+	
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(create_label_layout):
+	Use default widget font unless one is set.
+	
+	* libnautilus-private/nautilus-icon-container.c: (finalize),
+	(style_set), (nautilus_icon_container_class_init),
+	(nautilus_icon_container_instance_init),
+	(nautilus_icon_container_set_font):
+	* libnautilus-private/nautilus-icon-container.h:
+ 	* libnautilus-private/nautilus-icon-private.h:
+	Change nautilus_icon_container_set_font_name to
+	nautilus_icon_container_set_font.
+	Change font_size_table to have the difference from the base font size.
+	Invalidate labels on style_set.
+	
+	* libnautilus-private/nautilus-icon-factory.c:
+	(embedded_text_font_changed_callback), (embed_text):
+	Use default widget font for embedded text.
+	
+	* src/nautilus-preferences-dialog.c:
+	* src/nautilus-sidebar-title.c:
+	Remove font prefs. Update on style_set.
+	
+	* src/nautilus-sidebar-tabs.c: (nautilus_sidebar_tabs_class_init),
+	(nautilus_sidebar_tabs_load_theme_data), (style_set),
+	(nautilus_sidebar_tabs_init), (nautilus_sidebar_tabs_destroy),
+	(make_tab_text_layout):
+	Use normal gtk+ fonts.
+	
+	* src/file-manager/fm-desktop-icon-view.c: (font_changed_callback),
+	(fm_desktop_icon_view_update_icon_container_fonts),
+	(fm_desktop_icon_view_init):
+	Use desktop font.
+	
+	* src/file-manager/fm-icon-view.c:
+	(default_zoom_level_changed_callback), (create_icon_container),
+	(fm_icon_view_instance_init):
+	(nautilus_sidebar_title_class_init), (style_set),
+	(nautilus_sidebar_title_init), (update_title_font):
+	Remove font handling.
+
 2002-05-10  Anders Carlsson  <andersca@gnu.org>
 
 	* src/nautilus-bookmark-list.c: (nautilus_bookmark_list_load_file):

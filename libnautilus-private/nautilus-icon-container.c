@@ -2385,7 +2385,7 @@ finalize (GObject *object)
 	g_hash_table_destroy (details->icon_set);
 	details->icon_set = NULL;
 
-	g_free (details->font_name);
+	g_free (details->font);
 
 	g_free (details);
 
@@ -2468,6 +2468,21 @@ unrealize (GtkWidget *widget)
 	gtk_window_set_focus (window, NULL);
 
 	GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
+}
+
+static void
+style_set (GtkWidget *widget,
+	   GtkStyle  *previous_style)
+{
+	NautilusIconContainer *container;
+
+	if (GTK_WIDGET_REALIZED (widget)) {
+		container = NAUTILUS_ICON_CONTAINER (widget);
+		invalidate_label_sizes (container);
+		nautilus_icon_container_request_update_all (container);
+	}
+	
+	GTK_WIDGET_CLASS (parent_class)->style_set (widget, previous_style);
 }
 
 static gboolean
@@ -3361,6 +3376,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 	widget_class->motion_notify_event = motion_notify_event;
 	widget_class->key_press_event = key_press_event;
 	widget_class->get_accessible = get_accessible;
+	widget_class->style_set = style_set;
 
 	/* Initialize the stipple bitmap.  */
 
@@ -3391,13 +3407,13 @@ nautilus_icon_container_instance_init (NautilusIconContainer *container)
 
         details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
 
-	details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = 8;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER] = 8;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL] = 10;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] = 10;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE] = 12;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER] = 14;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST] = 14;
+	details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -3 * PANGO_SCALE;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER] = -3 * PANGO_SCALE;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL] = -2 * PANGO_SCALE;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] = 0 * PANGO_SCALE;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE] = 2 * PANGO_SCALE;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER] = 4 * PANGO_SCALE;
+        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST] = 4 * PANGO_SCALE;
 
 	container->details = details;
 
@@ -5165,20 +5181,21 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 }
 
 void
-nautilus_icon_container_set_font_name (NautilusIconContainer *container,
-				       const char *font_name)
+nautilus_icon_container_set_font (NautilusIconContainer *container,
+				  const char *font)
 {
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
-	if (eel_strcmp (container->details->font_name, font_name) == 0) {
+	if (eel_strcmp (container->details->font, font) == 0) {
 		return;
 	}
 
-	g_free (container->details->font_name);
-	container->details->font_name = g_strdup (font_name);
+	g_free (container->details->font);
+	container->details->font = g_strdup (font);
 
 	invalidate_label_sizes (container);
 	nautilus_icon_container_request_update_all (container);
+	gtk_widget_queue_draw (GTK_WIDGET (container));
 }
 
 void

@@ -335,27 +335,15 @@ time_cell_data_func (GtkTreeViewColumn *tree_column, GtkCellRenderer *cell, GtkT
 static void
 set_up_tree_view (NautilusMusicView *music_view)
 {
-	int standard_font_size;
-	char *font_name;
-	PangoFontDescription *new_font;
         GtkCellRenderer *cell;
         GtkTreeViewColumn *column;
         GtkTreeView *tree_view;
 
-	font_name = eel_preferences_get (NAUTILUS_PREFERENCES_LIST_VIEW_FONT);
-	standard_font_size = eel_preferences_get_enum (
-                NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE);
-        
-	new_font = pango_font_description_from_string (font_name);
-	pango_font_description_set_size (new_font, standard_font_size * PANGO_SCALE);
-
         tree_view = GTK_TREE_VIEW (music_view->details->tree_view);
-
-	gtk_widget_modify_font (GTK_WIDGET (tree_view), new_font);
 
         /* The track number column */
         cell = gtk_cell_renderer_text_new ();
-        g_object_set (cell, "xalign", 1.0, "font_desc", new_font, NULL);
+        g_object_set (cell, "xalign", 1.0, NULL);
 
         column = gtk_tree_view_column_new ();
         gtk_tree_view_column_set_title (column, _("Track"));
@@ -369,7 +357,6 @@ set_up_tree_view (NautilusMusicView *music_view)
 
         /* The name column */
         cell = gtk_cell_renderer_text_new ();
-        g_object_set (cell, "font_desc", new_font, NULL);
         column = gtk_tree_view_column_new_with_attributes (_("Title"),
                                                            cell,
                                                            "text", TITLE_COLUMN,
@@ -380,7 +367,6 @@ set_up_tree_view (NautilusMusicView *music_view)
 
         /* The artist column */
         cell = gtk_cell_renderer_text_new ();
-        g_object_set (cell, "font_desc", new_font, NULL);
         column = gtk_tree_view_column_new_with_attributes (_("Artist"),
                                                            cell,
                                                            "text", ARTIST_COLUMN,
@@ -391,7 +377,7 @@ set_up_tree_view (NautilusMusicView *music_view)
 
         /* The bitrate column */
         cell = gtk_cell_renderer_text_new ();
-        g_object_set (cell, "xalign", 1.0, "font_desc", new_font, NULL);
+        g_object_set (cell, "xalign", 1.0, NULL);
         column = gtk_tree_view_column_new ();
         gtk_tree_view_column_set_title (column, _("Bit Rate"));
         gtk_tree_view_column_pack_start (column, cell, TRUE);
@@ -404,7 +390,7 @@ set_up_tree_view (NautilusMusicView *music_view)
 
         /* The time column */
         cell = gtk_cell_renderer_text_new ();
-        g_object_set (cell, "xalign", 1.0, "font_desc", new_font, NULL);
+        g_object_set (cell, "xalign", 1.0, NULL);
         column = gtk_tree_view_column_new ();
         gtk_tree_view_column_set_title (column, _("Time"));
         gtk_tree_view_column_pack_start (column, cell, TRUE);
@@ -414,8 +400,6 @@ set_up_tree_view (NautilusMusicView *music_view)
         gtk_tree_view_column_set_sort_column_id (column, TIME_COLUMN);
         gtk_tree_view_column_set_resizable (column, TRUE);
         gtk_tree_view_append_column (tree_view, column);
-
-	pango_font_description_free (new_font);
 }
 
 /* initialize ourselves by connecting to the location change signal and allocating our subviews */

@@ -227,8 +227,8 @@ gboolean          nautilus_icon_container_get_is_fixed_size             (Nautilu
 void              nautilus_icon_container_set_is_fixed_size             (NautilusIconContainer  *container,
 									 gboolean                is_fixed_size);
 void              nautilus_icon_container_reset_scroll_region           (NautilusIconContainer  *container);
-void              nautilus_icon_container_set_font_name                 (NautilusIconContainer  *container,
-									 const char             *font_name); 
+void              nautilus_icon_container_set_font                      (NautilusIconContainer  *container,
+									 const char             *font); 
 void              nautilus_icon_container_set_font_size_table           (NautilusIconContainer  *container,
 									 const int               font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1]);
 void              nautilus_icon_container_set_margins                   (NautilusIconContainer  *container,

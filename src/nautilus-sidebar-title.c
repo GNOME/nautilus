@@ -79,8 +79,8 @@ static GtkWidget *         sidebar_title_create_more_info_label    (void);
 static void		   update_all 				   (NautilusSidebarTitle      *sidebar_title);
 static void		   update_title_font			   (NautilusSidebarTitle      *sidebar_title);
 static EelBackground 	  *nautilus_sidebar_title_background       (NautilusSidebarTitle      *sidebar_title);
-
-static const char *default_font_name;
+static void                style_set                               (GtkWidget                 *widget,
+								    GtkStyle                  *previous_style);
 
 struct NautilusSidebarTitleDetails {
 	NautilusFile		*file;
@@ -111,9 +111,8 @@ nautilus_sidebar_title_class_init (NautilusSidebarTitleClass *class)
 	
 	object_class->destroy = nautilus_sidebar_title_destroy;
 	widget_class->size_allocate = nautilus_sidebar_title_size_allocate;
+	widget_class->style_set = style_set;
 
-	eel_preferences_add_auto_string (NAUTILUS_PREFERENCES_DEFAULT_FONT,
-					 &default_font_name);
 }
 
 static void
@@ -136,26 +135,28 @@ realize_callback (NautilusSidebarTitle *sidebar_title)
 }
 
 static void
-default_font_changed_callback (gpointer callback_data)
+style_set (GtkWidget *widget,
+	   GtkStyle  *previous_style)
 {
 	NautilusSidebarTitle *sidebar_title;
 	PangoFontDescription *font_desc;
+	GtkStyle *style;
 
-	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (callback_data));
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (widget));
 
-	sidebar_title = NAUTILUS_SIDEBAR_TITLE (callback_data);
+	sidebar_title = NAUTILUS_SIDEBAR_TITLE (widget);
 
 	/* Update the dynamically-sized title font */
 	update_title_font (sidebar_title);
 
 	/* Update the fixed-size "more info" font */
-	font_desc = pango_font_description_from_string (default_font_name);
+	style = gtk_widget_get_style (widget);
+	font_desc = pango_font_description_copy (style->font_desc);
 	pango_font_description_set_size (font_desc, MORE_INFO_FONT_SIZE * PANGO_SCALE);
 	
 	gtk_widget_modify_font (sidebar_title->details->more_info_label,
 				font_desc);
 	pango_font_description_free (font_desc);
-	
 }
 
 static void
@@ -195,10 +196,6 @@ nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 
 	/* Keep track of changes in graphics trade offs */
 	update_all (sidebar_title);
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DEFAULT_FONT,
-						  default_font_changed_callback,
-						  sidebar_title,
-						  G_OBJECT (sidebar_title));
 
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_THEME,
 						  nautilus_sidebar_title_theme_changed,
@@ -207,7 +204,7 @@ nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 
 	/* initialize the label colors & fonts */
 	nautilus_sidebar_title_theme_changed (sidebar_title);
-	default_font_changed_callback (sidebar_title);
+	style_set (GTK_WIDGET (sidebar_title), NULL);
 }
 
 /* destroy by throwing away private storage */
@@ -477,6 +474,7 @@ update_title_font (NautilusSidebarTitle *sidebar_title)
 	int available_width;
 	PangoFontDescription *title_font;
 	int largest_fitting_font_size;
+	GtkStyle *style;
 
 	/* Make sure theres work to do */
 	if (eel_strlen (sidebar_title->details->title_text) < 1) {
@@ -490,7 +488,8 @@ update_title_font (NautilusSidebarTitle *sidebar_title)
 		return;
 	}
 
-	title_font = pango_font_description_from_string (default_font_name);
+	style = gtk_widget_get_style (GTK_WIDGET (sidebar_title));
+	title_font = pango_font_description_copy (style->font_desc);
 	largest_fitting_font_size = eel_pango_font_description_get_largest_fitting_font_size (
 		title_font,
 		gtk_widget_get_pango_context (sidebar_title->details->title_label),

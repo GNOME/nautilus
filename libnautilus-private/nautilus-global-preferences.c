@@ -447,31 +447,12 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_STRING,
 	  NULL, default_home_location_callback, g_free
 	},
-
-	/* Default fonts */
-	{ NAUTILUS_PREFERENCES_DEFAULT_FONT,
+	{ NAUTILUS_PREFERENCES_DESKTOP_FONT,
 	  PREFERENCE_STRING,
 	  NULL, default_font_callback, g_free
 	},
-	{ NAUTILUS_PREFERENCES_DEFAULT_FONT_SIZE,
-	  PREFERENCE_STRING,
-	  "12",
-	  NULL, NULL,
-	  "standard_font_size"
-	},
-	
+
 	/* Icon View Default Preferences */
-
-	{ NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
-	  PREFERENCE_STRING,
-	  NULL, default_font_callback, g_free
-	},
-	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
-	  PREFERENCE_STRING,
-	  "12",
-	  NULL, NULL,
-	  "standard_font_size"
-	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
 	  PREFERENCE_STRING,
 	  "name",
@@ -504,16 +485,6 @@ static const PreferenceDefault preference_defaults[] = {
 	},
 
 	/* List View Default Preferences */
-	{ NAUTILUS_PREFERENCES_LIST_VIEW_FONT,
-	  PREFERENCE_STRING,
-	  NULL, default_font_callback, g_free
-	},
-	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
-	  PREFERENCE_STRING,
-	  "12",
-	  NULL, NULL,
-	  "standard_font_size"
-	},
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
 	  PREFERENCE_STRING,
 	  "name",
@@ -679,7 +650,7 @@ global_preferences_install_defaults (void)
 static gpointer
 default_font_callback (void)
 {
-	return g_strdup ("sans");
+	return g_strdup ("sans 12");
 }
 
 static int

@@ -1159,11 +1159,13 @@ create_label_layout (NautilusIconCanvasItem *item,
 		     const char *text)
 {
 	PangoLayout *layout;
+	PangoContext *context;
 	PangoFontDescription *desc;
 	NautilusIconContainer *container;
 
 	container = NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (item)->canvas);
-	layout = pango_layout_new (eel_gnome_canvas_get_pango_context (GNOME_CANVAS_ITEM (item)->canvas));
+	context = eel_gnome_canvas_get_pango_context (GNOME_CANVAS_ITEM (item)->canvas);
+	layout = pango_layout_new (context);
 
 	pango_layout_set_text (layout, text, -1);
 	pango_layout_set_width (layout, floor (nautilus_icon_canvas_item_get_max_text_width (item)) * PANGO_SCALE);
@@ -1171,12 +1173,14 @@ create_label_layout (NautilusIconCanvasItem *item,
 	pango_layout_set_spacing (layout, LABEL_LINE_SPACING);
 
 	/* Create a font description */
-	if (container->details->font_name == NULL) {
-		desc = pango_font_description_new ();
+	if (container->details->font) {
+		desc = pango_font_description_from_string (container->details->font);
 	} else {
-		desc = pango_font_description_from_string (container->details->font_name);
+		desc = pango_font_description_copy (pango_context_get_font_description (context));
+		pango_font_description_set_size (desc,
+						 pango_font_description_get_size (desc) +
+						 container->details->font_size_table [container->details->zoom_level]);
 	}
-	pango_font_description_set_size (desc, container->details->font_size_table [container->details->zoom_level] * PANGO_SCALE);
 	pango_layout_set_font_description (layout, desc);
 	pango_font_description_free (desc);
 	

@@ -166,8 +166,10 @@ struct NautilusIconContainerDetails {
 	/* zoom level */
 	int zoom_level;
 
-	/* fonts used to draw labels */
-	char *font_name;
+	/* specific fonts used to draw labels */
+	char *font;
+	
+	/* font sizes used to draw labels */
 	int font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
 
 	/* pixbuf and color for label highlighting */

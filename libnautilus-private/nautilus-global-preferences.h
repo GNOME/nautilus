@@ -46,6 +46,7 @@ G_BEGIN_DECLS
 /* Desktop options */
 #define NAUTILUS_PREFERENCES_SHOW_DESKTOP			"preferences/show_desktop"
 #define NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR                "preferences/desktop_is_home_dir"
+#define NAUTILUS_PREFERENCES_DESKTOP_FONT			"preferences/desktop_font"
 
 /* Display  */
 #define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"/desktop/gnome/file_views/show_hidden_files"
@@ -58,10 +59,6 @@ G_BEGIN_DECLS
 /* Navigation  */
 #define NAUTILUS_PREFERENCES_HOME_URI                 		"preferences/home_uri"
 #define NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS		"preferences/hide_built_in_bookmarks"
-
-/* Content fonts */
-#define NAUTILUS_PREFERENCES_DEFAULT_FONT			"preferences/default_font"
-#define NAUTILUS_PREFERENCES_DEFAULT_FONT_SIZE			"preferences/default_font_size"
 
 /* Single/Double click preference  */
 #define NAUTILUS_PREFERENCES_CLICK_POLICY			"preferences/click_policy"
@@ -102,9 +99,7 @@ enum
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER		"icon_view/default_sort_order"
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT	"icon_view/default_use_tighter_layout"
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL		"icon_view/default_zoom_level"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE	"icon_view/default_zoom_level_font_size"
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT	"icon_view/default_use_manual_layout"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_FONT				"icon_view/font"
 
 /* The icon view uses 2 variables to store the sort order and
  * whether to use manual layout.  However, the UI for these
@@ -122,8 +117,6 @@ enum
 #define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"list_view/default_sort_in_reverse_order"
 #define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER		"list_view/default_sort_order"
 #define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL		"list_view/default_zoom_level"
-#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE	"list_view/default_zoom_level_font_size"
-#define NAUTILUS_PREFERENCES_LIST_VIEW_FONT				"list_view/font"
 
 /* News panel */
 #define NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS				"news/max_items"

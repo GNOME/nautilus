@@ -51,11 +51,6 @@ static void preferences_dialog_populate_themes_group       (EelPreferencesGroup 
 static GtkWidget *preferences_dialog;
 
 static EelPreferencesItemDescription appearance_items[] = {
-	{ N_("Fonts"),
-	  NAUTILUS_PREFERENCES_DEFAULT_FONT,
-	  N_("Default font:"),
-	  EEL_PREFERENCE_ITEM_FONT,
-	},
 	{ N_("Nautilus Themes"),
 	  NULL,
 	  NULL,
@@ -189,11 +184,6 @@ static EelPreferencesItemDescription view_preferences_items[] = {
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("Icon View Defaults"),
-	  NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
-	  N_("Font:"),
-	  EEL_PREFERENCE_ITEM_FONT
-	},
-	{ N_("Icon View Defaults"),
 	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
 	  N_("Default zoom level:"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU,
@@ -203,12 +193,6 @@ static EelPreferencesItemDescription view_preferences_items[] = {
 	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
 	  N_("Use tighter layout"),
 	  EEL_PREFERENCE_ITEM_BOOLEAN,
-	  NULL, 0, 1
-	},
-	{ N_("Icon View Defaults"),
-	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
-	  N_("Font size at default zoom level:"),
-	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU,
 	  NULL, 0, 1
 	},
 
@@ -224,11 +208,6 @@ static EelPreferencesItemDescription view_preferences_items[] = {
 	  EEL_PREFERENCE_ITEM_BOOLEAN
 	},
 	{ N_("List View Defaults"),
-	  NAUTILUS_PREFERENCES_LIST_VIEW_FONT,
-	  N_("Font:"),
-	  EEL_PREFERENCE_ITEM_FONT
-	},
-	{ N_("List View Defaults"),
 	  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
 	  N_("Default zoom level:"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU,
@@ -238,12 +217,6 @@ static EelPreferencesItemDescription view_preferences_items[] = {
 	  "dummy-string",
 	  NULL,
 	  EEL_PREFERENCE_ITEM_PADDING,
-	  NULL, 0, 1
-	},
-	{ N_("List View Defaults"),
-	  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
-	  N_("Font size at default zoom level:"),
-	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU,
 	  NULL, 0, 1
 	},
 	{ NULL }

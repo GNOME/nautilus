@@ -2283,8 +2283,8 @@ nautilus_file_get_display_name_nocopy (NautilusFile *file)
 					if (utf8_name != NULL) {
 						g_free (name);
 						name = utf8_name;
+						/* Guaranteed to be correct utf8 here */
 						validated = TRUE;
-						return name; /* Guaranteed to be correct utf8 here */
 					}
 				} else if (!broken_filenames) {
 					/* name was valid, no need to re-validate */
