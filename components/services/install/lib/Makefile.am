@@ -19,11 +19,11 @@ INCLUDES = \
 	$(GHTTP_CFLAGS)						\
 	$(NULL)
 
-if HAVE_RPM_30
+if COMPILE_RPM_30
 RPM3=libeazelpackagesystem-rpm3.la
 endif
 
-if HAVE_RPM_40
+if COMPILE_RPM_40
 RPM4=libeazelpackagesystem-rpm4.la
 endif
 
