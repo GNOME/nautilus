@@ -1,3 +1,10 @@
+2000-09-28  Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/tree/nautilus-tree-model.c
+	(nautilus_tree_model_get_node, dump_one_file_node): Enhance
+	debugging output to include hex addresses of files when we hit the
+	mysterious intermittent failure.
+
 2000-09-28  John Sullivan  <sullivan@eazel.com>
 
 	Fixed part of bug 3322 (context menus don't work correctly
