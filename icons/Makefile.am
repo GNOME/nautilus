@@ -22,6 +22,7 @@ icon_DATA =\
 	druid_sidebar.png \
 	eazel-logo.gif \
 	emblem-OK.svg \
+	emblem-broken-link.png \
 	emblem-certified.svg \
 	emblem-cool.svg \
 	emblem-danger.svg \
