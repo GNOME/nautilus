@@ -653,7 +653,7 @@ change_background_callback (BonoboUIComponent *component,
 {
 	nautilus_launch_application_from_command 
 		(_("Background"),
-		 "background-properties-capplet", NULL, FALSE);
+		 "gnome2-background-properties", NULL, FALSE);
 }
 
 static void
