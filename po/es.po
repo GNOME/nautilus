@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 2.x\n"
-"POT-Creation-Date: 2002-08-14 10:54+0200\n"
-"PO-Revision-Date: 2002-07-19 16:18GMT-03:00\n"
+"POT-Creation-Date: 2002-08-21 05:10+0200\n"
+"PO-Revision-Date: 2002-08-21 14:46GMT-03:00\n"
 "Last-Translator: Pablo del Campo <pablodc@bigfoot.com>\n"
 "Language-Team: Español <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -2997,8 +2997,7 @@ msgstr "Vaciar Papelera"
 
 # src/file-manager/fm-directory-view.c:1855
 #: libnautilus-private/nautilus-file-operations.c:2222
-msgid ""
-"Are you sure you want to permanently delete all of the items in the Trash?"
+msgid "Are you sure you want to permanently delete all of the items in the Trash?"
 msgstr ""
 "¿Está seguro que desea eliminar permanentemente todos los elementos de la "
 "Papelera?"
@@ -3794,53 +3793,61 @@ msgstr "Tipo MIME"
 msgid "none"
 msgstr "ninguno"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1846
+#: libnautilus-private/nautilus-icon-canvas-item.c:1870
 msgid "file icon"
 msgstr "icono de archivo"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1993
+#: libnautilus-private/nautilus-icon-canvas-item.c:2017
 msgid "editable text"
 msgstr "texto editable"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1994
+#: libnautilus-private/nautilus-icon-canvas-item.c:2018
 msgid "the editable label"
 msgstr "la etiqueta editable"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2001
+#: libnautilus-private/nautilus-icon-canvas-item.c:2025
 msgid "additional text"
 msgstr "texto adicional"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2002
+#: libnautilus-private/nautilus-icon-canvas-item.c:2026
 msgid "some more text"
 msgstr "un poco mas de texto"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2009
+#: libnautilus-private/nautilus-icon-canvas-item.c:2033
 msgid "highlighted for selection"
 msgstr "resaltado para la selección"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2010
+#: libnautilus-private/nautilus-icon-canvas-item.c:2034
 msgid "whether we are highlighted for a selection"
 msgstr "si destacamos para una selección"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2017
+#: libnautilus-private/nautilus-icon-canvas-item.c:2041
 msgid "highlighted as keyboard focus"
 msgstr "sobreiluminado a medida que toma el foco"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2018
+#: libnautilus-private/nautilus-icon-canvas-item.c:2042
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "como resaltaremos para dibujar el foco del teclado"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2026
+#: libnautilus-private/nautilus-icon-canvas-item.c:2050
 msgid "highlighted for drop"
 msgstr "resaltado para soltar"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2027
+#: libnautilus-private/nautilus-icon-canvas-item.c:2051
 msgid "whether we are highlighted for a D&D drop"
 msgstr "si resaltamos para soltar un A&S"
 
-#: libnautilus-private/nautilus-icon-container.c:1616
+#: libnautilus-private/nautilus-icon-container.c:1635
 msgid "The selection rectangle"
 msgstr "El rectángulo de selección"
+
+#: libnautilus-private/nautilus-icon-container.c:3414
+msgid "Frame Text"
+msgstr "Cuadro de texto"
+
+#: libnautilus-private/nautilus-icon-container.c:3415
+msgid "Draw a frame around unselected text"
+msgstr "Dibujar un cuadro alrededor del texto no seleccionado"
 
 # libnautilus-private/nautilus-icon-dnd.c:690
 #: libnautilus-private/nautilus-icon-dnd.c:625
@@ -4463,8 +4470,7 @@ msgstr "[Elementos ]sin ninguna de las palabras «%s»"
 
 #: libnautilus-private/nautilus-search-uri.c:555
 msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr ""
-"[Elementos mayores de 400K] y [sin ninguna de las palabras «manzana naranja»]"
+msgstr "[Elementos mayores de 400K] y [sin ninguna de las palabras «manzana naranja»]"
 
 #. Human readable description for a criterion in a search for
 #. files. Bracketed items are context, and are message
@@ -4881,8 +4887,7 @@ msgstr "Carpeta de inicio de %s"
 #: src/file-manager/fm-directory-view.c:476
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
-msgstr ""
-"Esto abrirá %d ventanas separadas. ¿Está seguro de que quiere hacer esto?"
+msgstr "Esto abrirá %d ventanas separadas. ¿Está seguro de que quiere hacer esto?"
 
 # src/file-manager/fm-directory-view.c:2128
 #: src/file-manager/fm-directory-view.c:478
@@ -5022,10 +5027,8 @@ msgstr "Demasiados archivos"
 
 #: src/file-manager/fm-directory-view.c:2997
 #, c-format
-msgid ""
-"\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
-msgstr ""
-"«%s» no puede ser movido a la Papelera. ¿Quiere eliminarlo directamente?"
+msgid "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
+msgstr "«%s» no puede ser movido a la Papelera. ¿Quiere eliminarlo directamente?"
 
 #: src/file-manager/fm-directory-view.c:3002
 #, c-format
@@ -5171,16 +5174,14 @@ msgstr "«%s» será copiado si selecciona la orden «Pegar Archivos»"
 
 #: src/file-manager/fm-directory-view.c:4059
 #, c-format
-msgid ""
-"The %d selected items will be moved if you select the Paste Files command"
+msgid "The %d selected items will be moved if you select the Paste Files command"
 msgstr ""
 "Los %d elementos seleccionados serán movidos si selecciona la orden «Pegar "
 "Archivos»"
 
 #: src/file-manager/fm-directory-view.c:4063
 #, c-format
-msgid ""
-"The %d selected items will be copied if you select the Paste Files command"
+msgid "The %d selected items will be copied if you select the Paste Files command"
 msgstr ""
 "Los %d elementos seleccionados serán copiados si selecciona la orden «Pegar "
 "Archivos»"
@@ -5351,15 +5352,13 @@ msgstr "¿Cancelar abrir?"
 # src/nautilus-window-manage-views.c:648
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
-msgid ""
-"You do not have the permissions necessary to view the contents of \"%s\"."
+msgid "You do not have the permissions necessary to view the contents of \"%s\"."
 msgstr "No tiene los permisos suficientes para ver el contenido de «%s»."
 
 #: src/file-manager/fm-error-reporting.c:61
 #, c-format
 msgid "\"%s\" couldn't be found. Perhaps it has recently been deleted."
-msgstr ""
-"«%s» no ha podido ser encontrado. Quizás haya sido eliminado recientemente."
+msgstr "«%s» no ha podido ser encontrado. Quizás haya sido eliminado recientemente."
 
 # src/file-manager/fm-error-reporting.c:115
 #: src/file-manager/fm-error-reporting.c:68
@@ -5374,16 +5373,14 @@ msgstr "Error al mostrar la carpeta"
 # src/file-manager/fm-error-reporting.c:50
 #: src/file-manager/fm-error-reporting.c:102
 #, c-format
-msgid ""
-"The name \"%s\" is already used in this folder. Please use a different name."
+msgid "The name \"%s\" is already used in this folder. Please use a different name."
 msgstr ""
 "El nombre «%s» ya está siendo usado en esta carpeta. Por favor seleccione un "
 "nombre distinto."
 
 #: src/file-manager/fm-error-reporting.c:107
 #, c-format
-msgid ""
-"There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
+msgid "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
 msgstr ""
 "No existe un «%s» en esta carpeta. Quizás fué movido o eliminado "
 "recientemente."
@@ -5431,8 +5428,7 @@ msgstr "Error al cambiar el nombre"
 # src/file-manager/fm-error-reporting.c:85
 #: src/file-manager/fm-error-reporting.c:163
 #, c-format
-msgid ""
-"You do not have the permissions necessary to change the group of \"%s\"."
+msgid "You do not have the permissions necessary to change the group of \"%s\"."
 msgstr "No tiene los permisos suficientes para cambiar el grupo de «%s»."
 
 #: src/file-manager/fm-error-reporting.c:167
@@ -5472,8 +5468,7 @@ msgstr "Error al cambiar el propietario"
 # src/file-manager/fm-error-reporting.c:137
 #: src/file-manager/fm-error-reporting.c:233
 #, c-format
-msgid ""
-"Couldn't change the permissions of \"%s\" because it is on a read-only disk"
+msgid "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
 msgstr ""
 "No se ha podido cambiar los permisos de «%s» porque está en un disco de sólo "
 "lectura"
@@ -5574,8 +5569,7 @@ msgstr "apuntando hacia «%s»"
 
 #: src/file-manager/fm-icon-view.c:2238
 msgid "Drag and drop is only supported to local file systems."
-msgstr ""
-"Arrastrar y soltar solo está soportado para sistemas de archivos locales."
+msgstr "Arrastrar y soltar solo está soportado para sistemas de archivos locales."
 
 #: src/file-manager/fm-icon-view.c:2239 src/file-manager/fm-icon-view.c:2257
 msgid "Drag and Drop error"
@@ -6188,8 +6182,7 @@ msgid "Protect the selected volume"
 msgstr "Proteger el volumen seleccionado"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:14
-msgid ""
-"Show a window that lets you set your desktop background's pattern or color"
+msgid "Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
 "Muestra una ventana que le deja configurar el patrón de fondo o el color de "
 "su escritorio"
@@ -6266,8 +6259,7 @@ msgid "Edit the launcher information"
 msgstr "Edita la información del lanzador"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
-msgid ""
-"Move or copy files previously selected by a Cut Files or Copy Files command"
+msgid "Move or copy files previously selected by a Cut Files or Copy Files command"
 msgstr ""
 "Mueve o copia archivos previamente seleccionados por una orden «Cortar» o "
 "«Copiar archivos»"
@@ -6343,8 +6335,7 @@ msgstr "Usa el fondo predeterminado para esta dirección"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:38
 msgid "View or modify the properties of each selected item"
-msgstr ""
-"Muestra o permite modificar las propiedades de cada elemento seleccionado"
+msgstr "Muestra o permite modificar las propiedades de cada elemento seleccionado"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-directory-view.c:2140
@@ -7256,8 +7247,7 @@ msgstr "Lo siento, pero «%s» no es un archivo de imagen que se pueda usar"
 
 #: src/nautilus-property-browser.c:1359
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
-msgstr ""
-"Lo siento, pero debe especificar una descripción para el nuevo emblema."
+msgstr "Lo siento, pero debe especificar una descripción para el nuevo emblema."
 
 # components/services/trilobite/libtrilobite/trilobite-core-utils.c:197
 #: src/nautilus-property-browser.c:1360 src/nautilus-property-browser.c:1363
@@ -7266,8 +7256,7 @@ msgid "Couldn't install emblem"
 msgstr "No se ha podido instalar el emblema"
 
 #: src/nautilus-property-browser.c:1362
-msgid ""
-"Sorry, but emblem keywords can only contain letters, spaces and numbers."
+msgid "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Lo siento, pero la descripción del emblema sólo puede contener letras, "
 "espacios y números."
@@ -7285,8 +7274,7 @@ msgstr ""
 #: src/nautilus-property-browser.c:1397
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
-msgstr ""
-"Lo siento, pero la imagen en %s no ha podido ser instalada como un emblema."
+msgstr "Lo siento, pero la imagen en %s no ha podido ser instalada como un emblema."
 
 # src/nautilus-property-browser.c:263 src/nautilus-property-browser.c:1977
 #: src/nautilus-property-browser.c:2063
@@ -7543,8 +7531,7 @@ msgstr "Cambia la visibilidad de la barra de herramientas de esta ventana"
 
 #: src/nautilus-shell-ui.xml.h:8
 msgid "Choose a view for the current location, or modify the set of views"
-msgstr ""
-"Elige una vista para la dirección actual o modificar el conjunto de vistas"
+msgstr "Elige una vista para la dirección actual o modificar el conjunto de vistas"
 
 #: src/nautilus-shell-ui.xml.h:9
 msgid "Clear contents of Go menu and Back/Forward lists"
@@ -7571,8 +7558,7 @@ msgstr "Muestra la ayuda de Nautilus"
 
 #: src/nautilus-shell-ui.xml.h:15
 msgid "Display a window that allows editing the bookmarks in this menu"
-msgstr ""
-"Muestra una ventana que permite editar los marcadores que hay en este menú"
+msgstr "Muestra una ventana que permite editar los marcadores que hay en este menú"
 
 #: src/nautilus-shell-ui.xml.h:16
 msgid "Display credits for the creators of Nautilus"
@@ -8040,8 +8026,7 @@ msgstr ""
 # src/nautilus-window-manage-views.c:1247
 #: src/nautilus-window-manage-views.c:1264
 #, c-format
-msgid ""
-"\"%s\" is not a valid location. Please check the spelling and try again."
+msgid "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
 "«%s» no es una dirección válida. Por favor verifique lo que ha escrito y "
 "pruébelo de nuevo."
@@ -8075,8 +8060,7 @@ msgstr ""
 #: src/nautilus-window-manage-views.c:1304
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
-msgstr ""
-"No se ha podido mostrar «%s», porque ha fallado el intento de registración."
+msgstr "No se ha podido mostrar «%s», porque ha fallado el intento de registración."
 
 # src/nautilus-window-manage-views.c:1287
 #: src/nautilus-window-manage-views.c:1309
@@ -8862,3 +8846,4 @@ msgstr "Configura el nivel de acercamiento de la vista actual"
 # src/nautilus-first-time-druid.c:272
 #~ msgid "Nautilus Release _Notes"
 #~ msgstr "_Notas de Liberación de Nautilus"
+
