@@ -821,6 +821,7 @@ osd_parse_softpkg (xmlNodePtr softpkg)
 
 	result->name = trilobite_xml_get_string (softpkg, "NAME");
 	result->version = trilobite_xml_get_string (softpkg, "VERSION");
+	result->minor = trilobite_xml_get_string (softpkg, "REVISION");
 	result->md5 = trilobite_xml_get_string (softpkg, "MD5");
 	
 	child = softpkg->xmlChildrenNode;

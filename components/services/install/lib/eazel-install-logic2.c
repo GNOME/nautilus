@@ -1055,6 +1055,9 @@ check_conflicts_against_already_installed_packages (EazelInstall *service,
 			   this is a patch to circumvent unwanted behaviour.
 			   Softcat doens't strip directories when giving NO_DIRS_IN_PROVIDES as fillflag,
 			   till it does, I use this check */
+			/* but wait!  this is also needed to fix bug 5799 until softcat fixes
+			 * forseti bug XXXX [files and directories need to be indicated differently in the xml]
+			 */
 			if (g_file_test (filename, G_FILE_TEST_ISDIR)) {
 				continue;
 			}

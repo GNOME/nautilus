@@ -1,3 +1,32 @@
+2001-01-19  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(check_conflicts_against_already_installed_packages):
+
+	Add comment about how a hack also fixes bug 5799.
+
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(osd_parse_softpkg):
+
+	Parse REVISION tag in softcat XML for the install lib.
+
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (generate_install_form), (show_overall_feedback),
+	(nautilus_install_parse_uri), (current_progress_bar_complete),
+	(nautilus_service_install_downloading),
+	(nautilus_service_install_dependency_check),
+	(flatten_package_tree_foreach), (flatten_package_tree),
+	(nautilus_service_install_preflight_check),
+	(nautilus_service_install_view_update_from_uri):
+
+	Re-layout a little bit of the top of the install view, to make the
+	overall feedback label not flicker.  Remove some redundant redraws
+	that had been stuck in to work around the NautilusLabel redraw
+	sizing bug.  Sneak in support for multiple packages in the eazel-
+	install URI scheme.  Remove repeating package names from the final
+	list during preflight.  Give some overall feedback during package
+	dependency checking so the user doesn't think we're lost in space.
+
 2001-01-19  Rebecca Schulman  <rebecka@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

@@ -285,7 +285,8 @@ generate_install_form (NautilusServiceInstallView	*view)
 	gtk_widget_show (temp_box);
 	view->details->total_progress_bar = gtk_progress_bar_new ();
 	gtk_widget_set_usize (view->details->total_progress_bar, -2, PROGRESS_BAR_HEIGHT);
-	gtk_box_pack_start (GTK_BOX (temp_box), view->details->total_progress_bar, FALSE, FALSE, 30);
+	add_padding_to_box (temp_box, 30, 0);
+	gtk_box_pack_start (GTK_BOX (temp_box), view->details->total_progress_bar, FALSE, FALSE, 0);
 	gtk_widget_show (view->details->total_progress_bar);
 
 	/* add a label for progress messages, but don't show it until there's a message */
@@ -297,7 +298,10 @@ generate_install_form (NautilusServiceInstallView	*view)
 									 EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
 									 NULL, -2, FALSE);
 	nautilus_label_set_justify (NAUTILUS_LABEL (view->details->overall_feedback_text), GTK_JUSTIFY_LEFT);
-	gtk_box_pack_start (GTK_BOX (temp_box), view->details->overall_feedback_text, FALSE, FALSE, 30);
+	nautilus_label_set_text (NAUTILUS_LABEL (view->details->overall_feedback_text), " ");
+	gtk_widget_show (view->details->overall_feedback_text);
+	add_padding_to_box (temp_box, 30, 0);
+	gtk_box_pack_start (GTK_BOX (temp_box), view->details->overall_feedback_text, TRUE, TRUE, 0);
 
 	add_padding_to_box (view->details->form, 0, 10);
 
@@ -358,8 +362,6 @@ static void
 show_overall_feedback (NautilusServiceInstallView *view, char *progress_message)
 {
 	nautilus_label_set_text (NAUTILUS_LABEL (view->details->overall_feedback_text), progress_message);
-	gtk_widget_show (view->details->overall_feedback_text);
-	gtk_widget_queue_draw (view->details->overall_feedback_text);
 }
 
 static void
@@ -488,17 +490,19 @@ create_package (char *name, int local_file)
 
 /* quick & dirty: parse the url into (host, port) and a category list */
 /* format:
- * "eazel-install:" [ "//" [ username "@" ] [ "hostname" [ ":" port ] ] "/" ] package-name [ "?version=" version ]
- returns TRUE is a hostname was parsed from the uri
+ * "eazel-install:" [ "//" [ username "@" ] [ "hostname" [ ":" port ] ] "/" ] 
+ * 	package-name [ "?version=" version ] ( ";" package-name [ "?version=" version ] )*
  */
+/* returns TRUE if a hostname was parsed from the uri */
 static gboolean
 nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view,
 			    char **host, int *port, char **username)
 {
-	char *p, *q, *package_name, *host_spec;
+	char *p, *q, *pnext, *package_name, *host_spec;
 	GList *packages = NULL;
 	PackageData *pack;
 	gboolean result = FALSE;
+	gboolean another_package;
 
 	view->details->categories = NULL;
 
@@ -553,22 +557,37 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view,
 	}
 
 	if (*p) {
-		/* version name specified? */
-		q = strchr (p, '?');
-		if (q) {
-			*q++ = 0;
-			if (strncmp (q, "version=", 8) == 0) {
-				q += 8;
+		do {
+			pnext = strchr (p, ';');
+			if ((pnext != NULL) && (*(pnext+1) != '\0')) {
+				another_package = TRUE;
+				*pnext++ = '\0';
+			} else {
+				another_package = FALSE;
 			}
-		}
 
-		package_name = gnome_vfs_unescape_string_for_display (p);
-		pack = create_package (package_name, view->details->using_local_file);
-		if (q) {
-			pack->version = g_strdup (q);
-		}
-		packages = g_list_prepend (packages, pack);
-		g_free (package_name);
+			trilobite_debug ("package '%s'", p);
+			/* version name specified? */
+			q = strchr (p, '?');
+			if (q) {
+				*q++ = 0;
+				if (strncmp (q, "version=", 8) == 0) {
+					q += 8;
+				}
+			}
+
+			package_name = gnome_vfs_unescape_string_for_display (p);
+			pack = create_package (package_name, view->details->using_local_file);
+			if (q) {
+				pack->version = g_strdup (q);
+			}
+			packages = g_list_prepend (packages, pack);
+			g_free (package_name);
+
+			if (pnext != NULL) {
+				p = pnext;
+			}
+		} while (another_package);
 	}
 
 	trilobite_debug ("host '%s:%d' username '%s'", *host ? *host : "(default)", *host ? *port : 0,
@@ -618,35 +637,6 @@ turn_cylon_off (NautilusServiceInstallView *view, float progress)
 static void
 current_progress_bar_complete (NautilusServiceInstallView *view, const char *text)
 {
-#if 0
-	GtkWidget *right;
-	int width, height;
-
-	right = (GtkWidget *) g_list_nth_data (view->details->message_right, STATUS_ROWS-1);
-	view->details->message_right = g_list_remove (view->details->message_right, right);
-	/* apparently there is no better way to do this :( */
-	width = right->allocation.width;
-	height = right->allocation.height;
-	gtk_container_remove (GTK_CONTAINER (view->details->message_box), right);
-	view->details->current_progress_bar = NULL;
-	right = eazel_services_label_new (text,
-					  0,
-					  0.5,
-					  0.5,
-					  0,
-					  0,
-					  EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
-					  EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
-					  NULL,
-					  0,
-					  FALSE);
-	nautilus_label_set_justify (NAUTILUS_LABEL (right), GTK_JUSTIFY_CENTER);
-	view->details->message_right = g_list_append (view->details->message_right, right);
-	gtk_table_attach (GTK_TABLE (view->details->message_box), right, 1, 2, STATUS_ROWS-1, STATUS_ROWS,
-			  GTK_EXPAND, 0, 12, 4);
-	gtk_widget_set_usize (right, width, height);
-	gtk_widget_show (right);
-#endif
 	/* can't figure out a decent way to do this yet... :( */
 	if (view->details->current_im != NULL) {
 		nautilus_label_set_text (NAUTILUS_LABEL (view->details->current_im->progress_label), text);
@@ -661,6 +651,7 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 {
 	char *out;
 	const char *root_name, *tmp, *needed_by;
+	GList *iter;
 	InstallMessage *im = view->details->current_im;
 
 	if (view->details->installer == NULL) {
@@ -691,6 +682,17 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 		view->details->current_rpm = g_strdup (root_name);
 
 		show_overall_feedback (view, " ");
+
+		/* figure out if this is a toplevel package, and if so, update the header */
+		for (iter = g_list_first (((CategoryData *)(view->details->categories->data))->packages);
+		     iter != NULL; iter = g_list_next (iter)) {
+			PackageData *pack = (PackageData *)(iter->data);
+			if (strcmp (pack->name, name) == 0) {
+				out = g_strdup_printf (_("Downloading \"%s\""), name);
+				nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_name), out);
+				g_free (out);
+			}
+		}
 
 		/* new progress message and bar */
 		im = view->details->current_im = install_message_new (view, root_name);
@@ -756,6 +758,10 @@ nautilus_service_install_dependency_check (EazelInstallCallback *cb, const Packa
 		g_free (value);
 	}
 	g_hash_table_insert (view->details->deps, g_strdup (needs->name), g_strdup (package->name));
+
+	value = g_strdup_printf (_("Getting information about package \"%s\" ..."), needs->name);
+	show_overall_feedback (view, value);
+	g_free (value);
 }
 
 static void
@@ -785,6 +791,40 @@ reply_callback (int reply, gboolean *answer)
 	*answer = (reply == 0);
 }
 
+static void
+flatten_package_tree_foreach (PackageData *package, GList **flattened_list)
+{
+	GList *iter;
+	gboolean found = FALSE;
+	PackageData *pack;
+
+	for (iter = g_list_first (*flattened_list); iter != NULL; iter = g_list_next (iter)) {
+		pack = (PackageData *)(iter->data);
+		if ((strcmp (pack->name, package->name) == 0) &&
+		    (strcmp (pack->version, package->version) == 0)) {
+			found = TRUE;
+			break;
+		}
+	}
+
+	if (! found) {
+		/* add it to the flattened list */
+		*flattened_list = g_list_prepend (*flattened_list, package);
+	}
+
+	g_list_foreach (package->soft_depends, (GFunc)flatten_package_tree_foreach, flattened_list);
+	g_list_foreach (package->hard_depends, (GFunc)flatten_package_tree_foreach, flattened_list);
+}
+
+/* given a package tree containing possibly redundant packages, assemble a new list
+ * which contains only those packages with unique <name, version>
+ */
+static void
+flatten_package_tree (GList *package_list_in, GList **flattened_list)
+{
+	g_list_foreach (package_list_in, (GFunc)flatten_package_tree_foreach, flattened_list);
+}
+
 static gboolean
 nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList *packages,
 					  int total_bytes, int total_packages,
@@ -795,7 +835,6 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 	GString *message;
 	gboolean answer;
 	PackageData *package;
-	GList *iter;
 	GList *package_list;
 	char *out;
 
@@ -806,27 +845,19 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 
 	/* assemble initial list of packages to browse */
 	package_list = NULL;
-	for (iter = g_list_first ((GList *)packages); iter; iter = g_list_next (iter)) {
-		package_list = g_list_append (package_list, iter->data);
-	}
+	flatten_package_tree ((GList *)packages, &package_list);
+	package_list = g_list_reverse (package_list);
+
+	show_overall_feedback (view, _("Preparing to download packages..."));
 
 	message = g_string_new ("");
-	message = g_string_append (message, _("I'm about to install the following packages:\n\n"));
+	message = g_string_append (message, _("I'm about to download and install the following packages:\n\n"));
 
-	/* treat package_list as a stack -- remove one package, print it, and then prepend any dependent
-	 * packages back to the stack for processing.
-	 */
 	while (package_list) {
 		package = (PackageData *) (package_list->data);
 		package_list = g_list_remove (package_list, package_list->data);
 	        g_string_sprintfa (message, " \xB7 %s v%s\n", package->name, package->version);
 
-		for (iter = g_list_first (package->soft_depends); iter; iter = g_list_next (iter)) {
-			package_list = g_list_prepend (package_list, iter->data);
-		}
-		for (iter = g_list_first (package->hard_depends); iter; iter = g_list_next (iter)) {
-			package_list = g_list_prepend (package_list, iter->data);
-		}
 		if (package->toplevel) {
 			nautilus_service_install_check_for_desktop_files (view,
 									  cb,
@@ -1123,6 +1154,7 @@ nautilus_install_service_locate_menu_entries (NautilusServiceInstallView *view)
 	return result;
 }
 
+/* most likely OBSOLETE */
 static gboolean
 nautilus_service_install_solve_cases (NautilusServiceInstallView *view)
 {
@@ -1496,7 +1528,7 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 
 	CORBA_exception_free (&ev);
 
-	show_overall_feedback (view, _("Contacting install server ..."));
+	show_overall_feedback (view, _("Contacting software catalog ..."));
 
 	/* might take a while... cylon a bit */
 	gtk_progress_set_activity_mode (GTK_PROGRESS (view->details->total_progress_bar), TRUE);
