@@ -49,6 +49,11 @@ struct NautilusWindowDetails
         BonoboUIComponent *shell_ui;
         gboolean updating_bonobo_state;
 
+	int ui_change_depth;
+	guint ui_idle_id;
+	gboolean ui_is_frozen;
+	gboolean ui_pending_initialize_menus_part_2;
+
         /* Menus. */
 	guint refresh_bookmarks_menu_idle_id;
 	guint refresh_go_menu_idle_id;
@@ -114,7 +119,8 @@ void               nautilus_window_set_status                            (Nautil
                                                                           const char        *status);
 void               nautilus_window_load_view_as_menu                     (NautilusWindow    *window);
 void               nautilus_window_synch_view_as_menu                    (NautilusWindow    *window);
-void               nautilus_window_initialize_menus                      (NautilusWindow    *window);
+void               nautilus_window_initialize_menus_part_1               (NautilusWindow    *window);
+void               nautilus_window_initialize_menus_part_2               (NautilusWindow    *window);
 void               nautilus_window_initialize_toolbars                   (NautilusWindow    *window);
 void               nautilus_window_go_back                               (NautilusWindow    *window);
 void               nautilus_window_go_forward                            (NautilusWindow    *window);

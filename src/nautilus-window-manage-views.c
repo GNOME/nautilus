@@ -927,6 +927,8 @@ load_content_view (NautilusWindow *window,
         	iid = id->iid;
         }
         
+	nautilus_window_ui_freeze (window);
+
         bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 				       NAUTILUS_COMMAND_ZOOM_IN,
@@ -960,6 +962,8 @@ load_content_view (NautilusWindow *window,
                 connect_view (window, view);
                 nautilus_view_frame_load_view (view, iid);
         }
+
+	nautilus_window_ui_thaw (window);
 }
 
 static void
@@ -1529,6 +1533,8 @@ zoom_level_changed_callback (NautilusViewFrame *view,
          * a zooming operation.
          */
 
+	nautilus_window_ui_freeze (window);
+
 	nautilus_zoom_control_set_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control),
                                               nautilus_view_frame_get_zoom_level (view));
 
@@ -1542,6 +1548,8 @@ zoom_level_changed_callback (NautilusViewFrame *view,
 				       NAUTILUS_COMMAND_ZOOM_NORMAL,
 				       TRUE);
 	/* FIXME bugzilla.eazel.com 3442: Desensitize "Zoom Normal"? */
+
+	nautilus_window_ui_thaw (window);
 }
 
 static void
@@ -1589,6 +1597,8 @@ zoom_parameters_changed_callback (NautilusViewFrame *view,
          */
         zoom_level = nautilus_view_frame_get_zoom_level (view);
         if (zoom_level == 0.0) {
+		nautilus_window_ui_freeze (window);
+
                 nautilus_bonobo_set_sensitive (window->details->shell_ui,
                                                NAUTILUS_COMMAND_ZOOM_IN,
                                                FALSE);
@@ -1598,6 +1608,8 @@ zoom_parameters_changed_callback (NautilusViewFrame *view,
                 nautilus_bonobo_set_sensitive (window->details->shell_ui,
                                                NAUTILUS_COMMAND_ZOOM_NORMAL,
                                                FALSE);
+
+		nautilus_window_ui_thaw (window);
 
                 /* Don't attempt to set 0.0 as zoom level. */
                 return;

@@ -209,6 +209,8 @@ set_up_standard_bonobo_button (NautilusWindow *window,
 
 	file_name = get_file_name_from_icon_name (icon_name);
 		
+	nautilus_window_ui_freeze (window);
+
 	/* set up the toolbar component with the new image */
 	bonobo_ui_component_set_prop (window->details->shell_ui, 
 				      item_path,
@@ -222,6 +224,8 @@ set_up_standard_bonobo_button (NautilusWindow *window,
 			      	      NULL);
 
 	g_free (file_name);
+
+	nautilus_window_ui_thaw (window);
 }
 
 static GdkPixbuf *
@@ -258,6 +262,8 @@ set_up_special_bonobo_button (NautilusWindow *window,
 		g_free (icon_file_name);
 	}
 	
+	nautilus_window_ui_freeze (window);
+
 	bonobo_ui_toolbar_button_item_set_icon (item, pixbuf);
 	gdk_pixbuf_unref (pixbuf);
 
@@ -272,12 +278,16 @@ set_up_special_bonobo_button (NautilusWindow *window,
 		 gnome_preferences_get_toolbar_labels ()
 		 	? BONOBO_UI_TOOLBAR_ITEM_STYLE_ICON_AND_TEXT_VERTICAL
 		 	: BONOBO_UI_TOOLBAR_ITEM_STYLE_ICON_ONLY);
+
+	nautilus_window_ui_thaw (window);
 }			      
 
 
 static void
 set_up_toolbar_images (NautilusWindow *window)
 {
+	nautilus_window_ui_freeze (window);
+
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 
 	set_up_special_bonobo_button (window, window->details->back_button_item, "/Toolbar/BackWrapper", "Back");
@@ -293,6 +303,8 @@ set_up_toolbar_images (NautilusWindow *window)
 	set_up_standard_bonobo_button (window, "/Toolbar/Extra Buttons Placeholder/Services", "Services");
 #endif
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
+
+	nautilus_window_ui_thaw (window);
 }
 
 
@@ -371,6 +383,8 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 		window->throbber = CORBA_OBJECT_NIL;
 	}
 
+	nautilus_window_ui_freeze (window);
+
 	bonobo_ui_component_object_set (window->details->shell_ui,
 					"/Toolbar/ThrobberWrapper",
 					window->throbber,
@@ -388,6 +402,8 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 		(NAUTILUS_PREFERENCES_THEME, 
 		 theme_changed_callback,
 		 window);
+
+	nautilus_window_ui_thaw (window);
 }
  
 void

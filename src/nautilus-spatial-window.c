@@ -175,6 +175,112 @@ nautilus_window_initialize (NautilusWindow *window)
 	nautilus_main_event_loop_register (GTK_OBJECT (window));
 }
 
+static gint
+ui_idle_handler (gpointer data)
+{
+	NautilusWindow *window;
+
+	window = data;
+
+	g_assert (window->details->ui_change_depth == 0);
+
+	/* Simulate an extra freeze/thaw so that calling window_ui_freeze
+	 * and thaw from within the idle handler doesn't try to remove it
+	 * (the already running idle handler)
+	 */
+	window->details->ui_change_depth++;
+
+	if (window->details->ui_pending_initialize_menus_part_2) {
+		nautilus_window_initialize_menus_part_2 (window);
+		window->details->ui_pending_initialize_menus_part_2 = FALSE;
+	}
+
+	if (window->details->ui_is_frozen) {
+		bonobo_ui_engine_thaw (bonobo_ui_container_get_engine (window->details->ui_container));
+		window->details->ui_is_frozen = FALSE;
+	}
+
+	window->details->ui_change_depth--;
+
+	window->details->ui_idle_id = 0;
+	return FALSE;
+}
+
+static inline void
+ui_install_idle_handler (NautilusWindow *window)
+{
+	if (window->details->ui_idle_id == 0) {
+		window->details->ui_idle_id = gtk_idle_add_priority (GTK_PRIORITY_LOW, ui_idle_handler, window);
+	}
+}
+
+static inline void
+ui_remove_idle_handler (NautilusWindow *window)
+{
+	if (window->details->ui_idle_id != 0) {
+		gtk_idle_remove (window->details->ui_idle_id);
+		window->details->ui_idle_id = 0;
+	}
+}
+
+/* Register that BonoboUI changes are going to be made to WINDOW. The UI
+ * won't actually be synchronised until some arbitrary date in the future.
+ */
+void
+nautilus_window_ui_freeze (NautilusWindow *window)
+{
+	if (window->details->ui_change_depth == 0) {
+		ui_remove_idle_handler (window);
+	}
+
+	if (!window->details->ui_is_frozen) {
+		bonobo_ui_engine_freeze (bonobo_ui_container_get_engine (window->details->ui_container));
+		window->details->ui_is_frozen = TRUE;
+	}
+
+	window->details->ui_change_depth++;
+}
+
+/* Register that the BonoboUI changes for WINDOW have finished. There _must_
+ * be one and only one call to this function for every call to
+ * starting_ui_change ()
+ */
+void
+nautilus_window_ui_thaw (NautilusWindow *window)
+{
+	window->details->ui_change_depth--;
+
+	g_assert (window->details->ui_change_depth >= 0);
+
+	if (window->details->ui_change_depth == 0
+	    && (window->details->ui_is_frozen
+		|| window->details->ui_pending_initialize_menus_part_2)) {
+		ui_install_idle_handler (window);
+	}
+}
+
+/* Unconditionally synchronize the BonoboUI of WINDOW. */
+static void
+nautilus_window_ui_update (NautilusWindow *window)
+{
+	BonoboUIEngine *engine;
+
+	engine = bonobo_ui_container_get_engine (window->details->ui_container);
+	if (window->details->ui_is_frozen) {
+		bonobo_ui_engine_thaw (engine);
+		if (window->details->ui_change_depth == 0) {
+			window->details->ui_is_frozen = FALSE;
+			if (!window->details->ui_pending_initialize_menus_part_2) {
+				ui_remove_idle_handler (window);
+			}
+		} else {
+			bonobo_ui_engine_freeze (engine);
+		}
+	} else {
+		bonobo_ui_engine_update (engine);
+	}
+}
+
 static gboolean
 nautilus_window_clear_status (gpointer callback_data)
 {
@@ -182,12 +288,16 @@ nautilus_window_clear_status (gpointer callback_data)
 
 	window = NAUTILUS_WINDOW (callback_data);
 
+	nautilus_window_ui_freeze (window);
+
 	/* FIXME bugzilla.eazel.com 3597:
 	 * Should pass "" or NULL here. This didn't work, then did, now doesn't again.
 	 * When this is fixed in Bonobo we should change this line.
 	 */
 	bonobo_ui_component_set_status (window->details->shell_ui, " ", NULL);
 	window->status_bar_clear_id = 0;
+
+	nautilus_window_ui_thaw (window);
 	return FALSE;
 }
 
@@ -198,6 +308,8 @@ nautilus_window_set_status (NautilusWindow *window, const char *text)
 		g_source_remove (window->status_bar_clear_id);
 	}
 	
+	nautilus_window_ui_freeze (window);
+
 	if (text != NULL && text[0] != '\0') {
 		bonobo_ui_component_set_status (window->details->shell_ui, text, NULL);
 		window->status_bar_clear_id = g_timeout_add
@@ -206,6 +318,8 @@ nautilus_window_set_status (NautilusWindow *window, const char *text)
 		nautilus_window_clear_status (window);
 		window->status_bar_clear_id = 0;
 	}
+
+	nautilus_window_ui_thaw (window);
 }
 
 void
@@ -242,6 +356,8 @@ navigation_bar_mode_changed_callback (GtkWidget *widget,
 	g_assert (mode == NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION 
 		  || mode == NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH);
 
+	nautilus_window_ui_freeze (window);
+
 	/* FIXME: bugzilla.eazel.com 3590:
 	 * We shouldn't need a separate command for the toggle button and menu item.
 	 * This is a Bonobo design flaw, explained in the bug report.
@@ -251,6 +367,8 @@ navigation_bar_mode_changed_callback (GtkWidget *widget,
 					  mode == NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH);
 	
 	window->details->updating_bonobo_state = FALSE;
+
+	nautilus_window_ui_thaw (window);
 }
 
 void
@@ -461,6 +579,9 @@ nautilus_window_constructed (NautilusWindow *window)
 	bonobo_ui_component_set_container
 		(window->details->shell_ui,
 		 nautilus_window_get_ui_container (window));
+
+	nautilus_window_ui_freeze (window);
+
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 	bonobo_ui_util_set_ui (window->details->shell_ui,
 			       DATADIR,
@@ -585,8 +706,11 @@ nautilus_window_constructed (NautilusWindow *window)
 	bonobo_object_unref (BONOBO_OBJECT (location_bar_wrapper));
 
 	/* initalize the menus and toolbars */
-	nautilus_window_initialize_menus (window);
+	nautilus_window_initialize_menus_part_1 (window);
 	nautilus_window_initialize_toolbars (window);
+
+	/* We'll do the second part later (bookmarks and go menus) */
+	window->details->ui_pending_initialize_menus_part_2 = TRUE;
 
 	/* watch for throbber location changes, too */
 	if (window->throbber != NULL) {
@@ -617,6 +741,8 @@ nautilus_window_constructed (NautilusWindow *window)
 
 	/* Register that things may be dragged from this window */
 	nautilus_drag_window_register (GTK_WINDOW (window));
+
+	nautilus_window_ui_thaw (window);
 }
 
 static void
@@ -693,6 +819,10 @@ nautilus_window_destroy (GtkObject *object)
 	nautilus_window_remove_bookmarks_menu_callback (window);
 	nautilus_window_remove_go_menu_callback (window);
 	nautilus_window_toolbar_remove_theme_callback (window);
+
+	if (window->details->ui_idle_id != 0) {
+		gtk_idle_remove (window->details->ui_idle_id);
+	}
 
 	/* Get rid of all owned objects. */
 
@@ -1275,6 +1405,8 @@ nautilus_window_go_home (NautilusWindow *window)
 void
 nautilus_window_allow_back (NautilusWindow *window, gboolean allow)
 {
+	nautilus_window_ui_freeze (window);
+
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 				       NAUTILUS_COMMAND_BACK, allow);
 	/* Have to handle non-standard Back button explicitly (it's
@@ -1282,11 +1414,15 @@ nautilus_window_allow_back (NautilusWindow *window, gboolean allow)
 	 */
 	gtk_widget_set_sensitive 
 		(GTK_WIDGET (window->details->back_button_item), allow);
+
+	nautilus_window_ui_thaw (window);
 }
 
 void
 nautilus_window_allow_forward (NautilusWindow *window, gboolean allow)
 {
+	nautilus_window_ui_freeze (window);
+
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 				       NAUTILUS_COMMAND_FORWARD, allow);
 	/* Have to handle non-standard Forward button explicitly (it's
@@ -1294,26 +1430,36 @@ nautilus_window_allow_forward (NautilusWindow *window, gboolean allow)
 	 */
 	gtk_widget_set_sensitive 
 		(GTK_WIDGET (window->details->forward_button_item), allow);
+
+	nautilus_window_ui_thaw (window);
 }
 
 void
 nautilus_window_allow_up (NautilusWindow *window, gboolean allow)
 {
+	nautilus_window_ui_freeze (window);
+
 	/* Because of verbs, we set the sensitivity of the menu to
 	 * control both the menu and toolbar.
 	 */
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 				       NAUTILUS_COMMAND_UP, allow);
+
+	nautilus_window_ui_thaw (window);
 }
 
 void
 nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
 {
+	nautilus_window_ui_freeze (window);
+
 	/* Because of verbs, we set the sensitivity of the menu to
 	 * control both the menu and toolbar.
 	 */
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 				       NAUTILUS_COMMAND_RELOAD, allow);
+
+	nautilus_window_ui_thaw (window);
 }
 
 void
@@ -1322,6 +1468,8 @@ nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 	CORBA_Environment ev;
 	Bonobo_PropertyBag property_bag;
 	
+	nautilus_window_ui_freeze (window);
+
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 				       NAUTILUS_COMMAND_STOP, allow);
 
@@ -1334,6 +1482,8 @@ nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 		}
 		CORBA_exception_free (&ev);
 	}
+
+	nautilus_window_ui_thaw (window);
 }
 
 void
@@ -1498,6 +1648,13 @@ nautilus_window_set_content_view_widget (NautilusWindow *window,
 	if (new_view != NULL) {
 		gtk_widget_show (GTK_WIDGET (new_view));
 
+		/* When creating the desktop window the UI needs to
+		 * be in sync. Otherwise I get failed assertions in
+		 * bonobo while trying to reference something called
+		 * `/commands/Unmount Volume Conditional'
+		 */
+		nautilus_window_ui_update (window);
+
 		/* FIXME bugzilla.eazel.com 1243: 
 		 * We should use inheritance instead of these special cases
 		 * for the desktop window.
@@ -1573,20 +1730,28 @@ show_dock_item (NautilusWindow *window, const char *dock_item_path)
 	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 		return;
 	}
+
+	nautilus_window_ui_freeze (window);
+
 	nautilus_bonobo_set_hidden (window->details->shell_ui,
 				    dock_item_path,
 				    FALSE);
 	nautilus_window_update_show_hide_menu_items (window);
+
+	nautilus_window_ui_thaw (window);
 }
 
 static void 
 hide_dock_item (NautilusWindow *window, const char *dock_item_path)
 {
-	
+	nautilus_window_ui_freeze (window);
+
 	nautilus_bonobo_set_hidden (window->details->shell_ui,
 				    dock_item_path,
 				    TRUE);
 	nautilus_window_update_show_hide_menu_items (window);
+
+	nautilus_window_ui_thaw (window);
 }
 
 static gboolean
@@ -1754,6 +1919,8 @@ nautilus_window_show (GtkWidget *widget)
 	} else {
 		nautilus_window_hide_sidebar (window);
 	}
+
+	nautilus_window_ui_update (window);
 }
 
 Bonobo_UIContainer 

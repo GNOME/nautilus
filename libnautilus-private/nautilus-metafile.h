@@ -41,6 +41,16 @@ typedef struct {
 	NautilusMetafileDetails *details;
 } NautilusMetafile;
 
+/* FIXME: move this back to nautilus-metafile.c after changes to 
+ * nautilus-directory-metafile.c mean that it doesn't need to access it.
+ */
+struct NautilusMetafileDetails {
+	NautilusDirectory *directory;
+
+	/* FIXME: remove this field when gratuitous ORBit hacks are removed */
+	gboolean directory_ref_is_gone;
+};
+
 typedef struct {
 	BonoboObjectClass parent_slot;
 } NautilusMetafileClass;

@@ -179,6 +179,10 @@ nautilus_directory_destroy (GtkObject *object)
 		nautilus_directory_unregister_metadata_monitor (directory);
 	}
 
+	if (directory->details->metafile_corba_object != CORBA_OBJECT_NIL) {
+		bonobo_object_release_unref (directory->details->metafile_corba_object, NULL);
+	}
+
 	g_hash_table_remove (directories, directory->details->uri);
 
 	if (directory->details->dequeue_pending_idle_id != 0) {

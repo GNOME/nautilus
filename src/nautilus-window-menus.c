@@ -415,6 +415,8 @@ nautilus_window_update_show_hide_menu_items (NautilusWindow *window)
 {
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
+	nautilus_window_ui_freeze (window);
+
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 	nautilus_bonobo_set_label (window->details->shell_ui,
 				   MENU_PATH_SHOW_HIDE_STATUS_BAR,
@@ -440,6 +442,8 @@ nautilus_window_update_show_hide_menu_items (NautilusWindow *window)
 				   ? _("Hide Location Bar")
 				   : _("Show Location Bar"));
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
+
+	nautilus_window_ui_thaw (window);
 }
 
 static void
@@ -678,6 +682,8 @@ switch_to_user_level (NautilusWindow *window, int new_user_level)
 
 	nautilus_preferences_set_user_level (new_user_level);
 	
+	nautilus_window_ui_freeze (window);
+
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 
 	/* change the item icons to reflect the new user level */
@@ -703,6 +709,8 @@ switch_to_user_level (NautilusWindow *window, int new_user_level)
 	g_free (new_user_level_icon_name);
 
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
+
+	nautilus_window_ui_thaw (window);
 } 
  
 static void
@@ -800,6 +808,8 @@ append_bookmark_to_menu (NautilusWindow *window,
 	g_assert (NAUTILUS_IS_WINDOW (window));
 	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
 
+	nautilus_window_ui_freeze (window);
+
 	bookmark_holder = bookmark_holder_new (bookmark, window, is_bookmarks_menu);
 
 	/* We double the underscores here to escape them so Bonobo will know they are
@@ -837,6 +847,8 @@ append_bookmark_to_menu (NautilusWindow *window,
 					   activate_bookmark_in_menu_item, bookmark_holder, 
 					   bookmark_holder_free_cover);
 	g_free (verb_name);
+
+	nautilus_window_ui_thaw (window);
 }
 
 static char *
@@ -906,7 +918,11 @@ get_static_bookmarks_file_path (void)
 static void
 append_separator (NautilusWindow *window, const char *path)
 {
+	nautilus_window_ui_freeze (window);
+
 	nautilus_bonobo_add_menu_separator (window->details->shell_ui, path);
+
+	nautilus_window_ui_thaw (window);
 }
 
 static void
@@ -922,6 +938,8 @@ create_menu_item_from_node (NautilusWindow *window,
 	
 	g_assert (NAUTILUS_IS_WINDOW (window));
 		
+	nautilus_window_ui_freeze (window);
+
 	if (strcmp (node->name, "bookmark") == 0) {
 		bookmark = nautilus_bookmark_new_from_node (node);
 		append_bookmark_to_menu (window, bookmark, menu_path, index, TRUE);		
@@ -947,6 +965,8 @@ create_menu_item_from_node (NautilusWindow *window,
 	} else {
 		g_message ("found unknown node '%s', ignoring", node->name);
 	}
+
+	nautilus_window_ui_thaw (window);
 }
 
 static void
@@ -1150,12 +1170,16 @@ add_user_level_menu_item (NautilusWindow *window,
 	icon_name = get_user_level_icon_name (user_level, current_user_level == user_level);
 
 
+	nautilus_window_ui_freeze (window);
+
 	nautilus_bonobo_set_icon (window->details->shell_ui,
 				  menu_path,
 				  icon_name);
 	
 
 	g_free (icon_name);
+
+	nautilus_window_ui_thaw (window);
 }
 
 /**
@@ -1165,7 +1189,7 @@ add_user_level_menu_item (NautilusWindow *window,
  * @window: A recently-created NautilusWindow.
  */
 void 
-nautilus_window_initialize_menus (NautilusWindow *window)
+nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 {
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("New Window", file_menu_new_window_callback),
@@ -1226,6 +1250,8 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 		BONOBO_UI_VERB_END
 	};
 
+	nautilus_window_ui_freeze (window);
+
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 
 	bonobo_ui_component_add_verb_list_with_data (window->details->shell_ui, verbs, window);
@@ -1248,12 +1274,22 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 						       window,
 						       GTK_OBJECT (window));
 
-        nautilus_window_initialize_bookmarks_menu (window);
-        nautilus_window_initialize_go_menu (window);
-
 #ifndef ENABLE_PROFILER
 	nautilus_bonobo_set_hidden (window->details->shell_ui, NAUTILUS_MENU_PATH_PROFILER, TRUE);
 #endif
+
+	nautilus_window_ui_thaw (window);
+}
+
+void 
+nautilus_window_initialize_menus_part_2 (NautilusWindow *window)
+{
+	nautilus_window_ui_freeze (window);
+
+        nautilus_window_initialize_bookmarks_menu (window);
+        nautilus_window_initialize_go_menu (window);
+
+	nautilus_window_ui_thaw (window);
 }
 
 void
@@ -1277,20 +1313,28 @@ nautilus_window_remove_go_menu_callback (NautilusWindow *window)
 void
 nautilus_window_remove_bookmarks_menu_items (NautilusWindow *window)
 {
+	nautilus_window_ui_freeze (window);
+
 	nautilus_bonobo_remove_menu_items_and_commands
 		(window->details->shell_ui, 
 		 MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER);					   
 	nautilus_bonobo_remove_menu_items_and_commands 
 		(window->details->shell_ui, 
 		 MENU_PATH_BOOKMARKS_PLACEHOLDER);					   
+
+	nautilus_window_ui_thaw (window);
 }
 
 void
 nautilus_window_remove_go_menu_items (NautilusWindow *window)
 {
+	nautilus_window_ui_freeze (window);
+
 	nautilus_bonobo_remove_menu_items_and_commands 
 		(window->details->shell_ui, 
 		 MENU_PATH_HISTORY_PLACEHOLDER);
+
+	nautilus_window_ui_thaw (window);
 }
 
 void
@@ -1299,6 +1343,8 @@ nautilus_window_update_find_menu_item (NautilusWindow *window)
 	char *label_string;
 
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
+	nautilus_window_ui_freeze (window);
 
 	label_string = g_strdup 
 		(nautilus_window_get_search_mode (window) 
@@ -1309,6 +1355,8 @@ nautilus_window_update_find_menu_item (NautilusWindow *window)
 				   MENU_PATH_TOGGLE_FIND_MODE,
 				   label_string);
 	g_free (label_string);
+
+	nautilus_window_ui_thaw (window);
 }
 
 
@@ -1425,6 +1473,8 @@ update_user_level_menu_items (NautilusWindow *window)
         g_assert (window != NULL);
         g_assert (NAUTILUS_IS_WINDOW (window));
 
+	nautilus_window_ui_freeze (window);
+
  	/* Update the user radio group to reflect reality */
 	user_level = nautilus_preferences_get_user_level ();
 	user_level_icon_name = get_user_level_icon_name (user_level, FALSE);
@@ -1433,6 +1483,8 @@ update_user_level_menu_items (NautilusWindow *window)
 				  NAUTILUS_MENU_PATH_USER_LEVEL,
 				  user_level_icon_name);
 	g_free (user_level_icon_name);
+
+	nautilus_window_ui_thaw (window);
 }
 
 

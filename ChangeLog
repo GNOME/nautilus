@@ -1,3 +1,74 @@
+2001-02-26  John Harper  <jsh@eazel.com>
+
+	reviewed by: Michael Engber <engber@eazel.com>
+
+	Fixed bug 6898 (Tree view initialization may be slower than in
+	PR3). Instead of instantiating and destroying Nautilus_Metafile
+	bonobo objects each time metadata is queried, cache an object
+	for each directory:
+
+	* libnautilus-extensions/nautilus-directory-metafile.c
+	(corba_object_is_local, corba_object_get_servant): new
+	functions. These are ORBit dependent hacks
+
+	(get_metafile): cache the Nautilus_Metafile object in the
+	NautilusDirectory. Use the above ORBit hacks to break the
+	circular reference when both client and servant are in the same
+	process (the servant has always referenced the directory,
+	caching the metafile in the directory introduces the cycle)
+
+	* libnautilus-extensions/nautilus-directory-private.h
+	(NautilusDirectoryDetails): added field metafile_corba_object
+
+	* libnautilus-extensions/nautilus-directory.c
+	(nautilus_directory_destroy): unref the cached
+	Nautilus_Metafile object if its non-nil
+
+	* libnautilus-extensions/nautilus-metafile.c,
+	libnautilus-extensions/nautilus-metafile.h
+	(NautilusMetafileDetails): temporarily moved to
+	nautilus-metafile.h
+
+	* libnautilus-extensions/nautilus-metafile.c (destroy): only
+	unref the metafile's NautilusDirectory if the
+	directory_ref_is_gone flag isn't set (set by the get_metafile
+	method of nautilus-directory-metafile.c when it breaks the
+	cycle)
+
+2001-02-26  John Harper  <jsh@eazel.com>
+
+	reviewed by Darin Adler <darin@eazel.com>
+
+	Moved much of the BonoboUI overhead to the idle handler. This
+	should decrease latency when opening new windows.
+
+	* src/nautilus-window-private.h: added fields to
+	NautilusWindowDetails structure: ui_change_depth, ui_idle_id,
+	ui_is_frozen, ui_pending_menu_initialize
+
+	* src/nautilus-window.c, src/nautilus-window.h
+	(nautilus_window_ui_freeze, nautilus_window_ui_thaw): new
+	functions. Used to intelligently freeze and thaw the
+	BonoboUIEngine associated with the window's container. The
+	thawing (and thus the updating) is done in an idle handler
+
+	(nautilus_window_ui_update): used to defeat the UI deferral,
+	and update immediately
+
+	(nautilus_window_constructed): moved part of the menu bar
+	initialization to the idle handler
+
+	* src/nautilus-window-manage-views.c,
+	src/nautilus-window-menus.c, src/nautilus-window-toolbar.c,
+	src/nautilus-window.c: call nautilus_window_ui_freeze before
+	doing any UI changes, and nautilus_window_ui_thaw afterwards
+
+	* src/nautilus-window-menus.c
+	(nautilus_window_initialize_menus): split into two functions:
+	nautilus_window_initialize_menus_part_1 and _part_2. Part two
+	populates the `Go' and `Bookmarks' menus (and is deferred until
+	the idle loop)
+
 2001-02-26  Eric Fischer <eric@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com> (code)

@@ -40,10 +40,6 @@
 
 #define METAFILE_XML_VERSION "1.0"
 
-struct NautilusMetafileDetails {
-	NautilusDirectory *directory;
-};
-
 static void nautilus_metafile_initialize       (NautilusMetafile      *metafile);
 static void nautilus_metafile_initialize_class (NautilusMetafileClass *klass);
 
@@ -204,8 +200,12 @@ destroy (GtkObject *object)
 
 	metafile  = NAUTILUS_METAFILE (object);
 	directory = metafile->details->directory;
-	
-	nautilus_directory_unref (directory);
+
+	/* FIXME: remove this conditional when the field goes away */
+	if (!metafile->details->directory_ref_is_gone) {
+		nautilus_directory_unref (directory);
+	}
+
 	g_free (metafile->details);
 
 	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));

@@ -34,6 +34,9 @@
 #include <liboaf/liboaf.h>
 #include <stdio.h>
 
+/* FIXME: remove this when evilness is removed */
+#include <libnautilus-extensions/nautilus-metafile.h>
+
 static Nautilus_MetafileFactory factory = CORBA_OBJECT_NIL;
 static gboolean get_factory_from_oaf = TRUE;
 
@@ -70,25 +73,49 @@ get_factory (void)
 	return factory;
 }
 
+/* FIXME: Remove this code. It's ORBit dependent and generally evil */
+static gboolean
+corba_object_is_local (CORBA_Object obj)
+{
+	return obj->vepv != NULL;
+}
+static PortableServer_Servant
+corba_object_get_servant (CORBA_Object obj)
+{
+	g_assert (corba_object_is_local (obj));
+	return obj->servant;
+}
+
 static Nautilus_Metafile
 get_metafile (NautilusDirectory *directory)
 {
 	char *uri;
 	CORBA_Environment ev;
-	Nautilus_Metafile metafile;
+	NautilusMetafile  *metafile;
 
 	uri = nautilus_directory_get_uri (directory);
 	
 	CORBA_exception_init (&ev);
-	
-	metafile = Nautilus_MetafileFactory_open (get_factory (), uri, &ev);
+
+	if (directory->details->metafile_corba_object == CORBA_OBJECT_NIL) {
+		directory->details->metafile_corba_object = Nautilus_MetafileFactory_open (get_factory (), uri, &ev);
+
+		/* FIXME: remove this cycle-breaking when no longer needed */
+		if (corba_object_is_local (directory->details->metafile_corba_object)) {
+			metafile = NAUTILUS_METAFILE (bonobo_object_from_servant (corba_object_get_servant (directory->details->metafile_corba_object)));
+			if (!metafile->details->directory_ref_is_gone) {
+				nautilus_directory_unref (metafile->details->directory);
+				metafile->details->directory_ref_is_gone = TRUE;
+			}
+		}
+	}
 	
 	/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
 	CORBA_exception_free (&ev);
 	
 	g_free (uri);
 
-	return metafile;	
+	return bonobo_object_dup_ref (directory->details->metafile_corba_object, NULL);	
 }
 
 gboolean

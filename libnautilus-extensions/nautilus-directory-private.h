@@ -33,6 +33,7 @@
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-directory-metafile-monitor.h"
+#include "nautilus-metafile-server.h"
 
 typedef struct ActivationURIReadState ActivationURIReadState;
 typedef struct MetafileReadState MetafileReadState;
@@ -71,6 +72,7 @@ struct NautilusDirectoryDetails
 
 	NautilusMetafileMonitor *metafile_monitor;
 	gboolean load_metafile_for_server;
+	Nautilus_Metafile metafile_corba_object;
 
 	gboolean in_async_service_loop;
 	gboolean state_changed;

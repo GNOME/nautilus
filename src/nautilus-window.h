@@ -106,6 +106,8 @@ struct NautilusWindow {
 };
 
 GtkType          nautilus_window_get_type             (void);
+void		 nautilus_window_ui_freeze	      (NautilusWindow	 *window);
+void		 nautilus_window_ui_thaw	      (NautilusWindow	 *window);
 void             nautilus_window_close                (NautilusWindow    *window);
 char *           nautilus_window_get_location         (NautilusWindow    *window);
 void             nautilus_window_go_to                (NautilusWindow    *window,
