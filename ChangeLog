@@ -1,3 +1,68 @@
+2000-10-10  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(get_detailed_errors_foreach):
+	Renamed would_be_lost to circular_dependency
+	
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (tree_helper), (create_package):
+	Renamed would_be_lost to circular_dependency.
+	Added support to install rpm's by asking for a provide.
+	
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	Renamed would_be_lost to circular_dependency.
+
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_packagedatastruct_from_packagedata),
+	(packagedata_from_corba_packagedatastruct):
+	Renamed would_be_lost to circular_dependency.
+
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_download_packages),
+	(eazel_install_check_for_file_conflicts),
+	(eazel_install_do_transaction_all_files_check),
+	(eazel_install_start_transaction),
+	(eazel_install_check_if_depends_on),
+	(eazel_install_prune_packages_helper),
+	(eazel_install_check_existing_packages),
+	(eazel_install_fetch_dependencies),
+	(eazel_install_do_file_conflict_check),
+	(eazel_install_ensure_deps), (eazel_uninstall_upward_traverse):
+	Fixed bug 3374, 3491 and 3585.
+	Uses the packagedata_add_pack_to_X calls now.
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(get_search_url_for_package):
+	s/flags/flag/
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_rpm_set_settings),
+	Only set the rpm debug flag if --debug
+	(eazel_install_do_rpm_dependency_check):
+	use packagedata_add_pack_to_X calls.
+
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_status_enum_to_str), (packagedata_status_str_to_enum),
+	Renamed would_be_lost to circular_dependency.
+	(packagedata_add_pack_to), (packagedata_add_pack_to_breaks),
+	(packagedata_add_pack_to_soft_depends),
+	(packagedata_add_pack_to_hard_depends),
+	(packagedata_add_pack_to_modifies),
+	Use these calls to add packages to the packagedata struct lists.
+	They do some funky checking.
+	(eazel_install_package_version_compare),
+	(eazel_install_package_other_version_compare):
+	Modfied some compare functions.
+
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_package), (osd_parse_dependency):
+	Use packagedata_add_pack_to_X calls.
+	
+	* nautilus-installer/src/installer.c:
+	(get_detailed_errors_foreach), (check_system):
+	Renamed would_be_lost to circular_dependency.
+
 2000-10-10  John Sullivan  <sullivan@eazel.com>
 
 	* src/nautilus-shell-ui.xml: Somehow missed converting a

@@ -85,7 +85,9 @@ eazel_install_rpm_set_settings (EazelInstall *service) {
 	service->private->packsys.rpm.interface_flags = interface_flags;
 	service->private->packsys.rpm.problem_filters = problem_filters;
 
-	rpmSetVerbosity (RPMMESS_DEBUG);
+	if (eazel_install_get_debug (service)) {
+		rpmSetVerbosity (RPMMESS_DEBUG);
+	}
 
 	rpmReadConfigFiles (eazel_install_get_rpmrc_file (service), NULL);
 
@@ -493,7 +495,7 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 					/* not the devel package, are we in force mode ? */
 					if (!eazel_install_get_force (service)) {
 						/* if not, remove the package */
-						pack->breaks = g_list_prepend (pack->breaks, dep);
+						packagedata_add_pack_to_breaks (pack, dep);
 						if (g_list_find (*failedpackages, pack) == NULL) {
 							(*failedpackages) = g_list_prepend (*failedpackages, pack);
 						}
@@ -537,7 +539,6 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 					   dep->name);
 			}
 		}
-		
 		
 		if (pack && dep) {
 			/* Check if a previous conflict solve has fixed this conflict. */

@@ -132,8 +132,8 @@ corba_packagedatastruct_from_packagedata (const PackageData *pack)
 	case PACKAGE_ALREADY_INSTALLED:
 		corbapack->status = Trilobite_Eazel_ALREADY_INSTALLED;
 		break;
-	case PACKAGE_WOULD_BE_LOST:
-		corbapack->status = Trilobite_Eazel_WOULD_BE_LOST;
+	case PACKAGE_CIRCULAR_DEPENDENCY:
+		corbapack->status = Trilobite_Eazel_CIRCULAR_DEPENDENCY;
 		break;
 	}
 
@@ -238,8 +238,8 @@ packagedata_from_corba_packagedatastruct (const Trilobite_Eazel_PackageDataStruc
 	case Trilobite_Eazel_ALREADY_INSTALLED:
 		pack->status = PACKAGE_ALREADY_INSTALLED;
 		break;
-	case Trilobite_Eazel_WOULD_BE_LOST:
-		pack->status = PACKAGE_WOULD_BE_LOST;
+	case Trilobite_Eazel_CIRCULAR_DEPENDENCY:
+		pack->status = PACKAGE_CIRCULAR_DEPENDENCY;
 		break;
 	case Trilobite_Eazel_RESOLVED:
 		pack->status = PACKAGE_RESOLVED;

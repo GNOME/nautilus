@@ -66,7 +66,7 @@ enum _PackageSystemStatus {
 	PACKAGE_CANNOT_OPEN,
 	PACKAGE_PARTLY_RESOLVED,
 	PACKAGE_ALREADY_INSTALLED,
-	PACKAGE_WOULD_BE_LOST,
+	PACKAGE_CIRCULAR_DEPENDENCY,
 	PACKAGE_RESOLVED
 };
 /* Methods to convert enum to/from char* val. The returned
@@ -218,8 +218,9 @@ void packagedata_destroy (PackageData *pd, gboolean deep);
 int packagedata_hash_equal (PackageData *a, PackageData *b);
 
 void packagedata_add_pack_to_breaks (PackageData *pack, PackageData *b);
-void packagedata_add_pack_to_soft_deps (PackageData *pack, PackageData *b);
-void packagedata_add_pack_to_hard_deps (PackageData *pack, PackageData *b);
+void packagedata_add_pack_to_soft_depends (PackageData *pack, PackageData *b);
+void packagedata_add_pack_to_hard_depends (PackageData *pack, PackageData *b);
+void packagedata_add_pack_to_modifies (PackageData *pack, PackageData *b);
 
 typedef struct {
 	PackageData *package;
@@ -236,6 +237,7 @@ int eazel_install_package_name_compare (PackageData *pack, char *name);
 int eazel_install_package_compare (PackageData *pack, PackageData *other);
 int eazel_install_requirement_dep_compare (PackageRequirement *req, PackageData *pack);
 int eazel_install_package_version_compare (PackageData *pack, char *version);
+int eazel_install_package_other_version_compare (PackageData *pack, PackageData *other);
 
 /* Evil marshal func */
 

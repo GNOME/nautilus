@@ -120,8 +120,8 @@ get_detailed_errors_foreach (const PackageData *pack, GString *message)
 	case PACKAGE_ALREADY_INSTALLED:
 		g_string_sprintfa (message, _("%s was already installed\n"), pack->name);
 		break;
-	case PACKAGE_WOULD_BE_LOST:
-		g_string_sprintfa (message, _("%s would be deleted but is needed\n"), pack->name);
+	case PACKAGE_CIRCULAR_DEPENDENCY:
+		g_string_sprintfa (message, _("%s causes a circular dependency problem\n"), pack->name);
 		break;
 	case PACKAGE_RESOLVED:
 		break;

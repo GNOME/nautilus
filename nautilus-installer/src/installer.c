@@ -692,15 +692,15 @@ get_detailed_errors_foreach (const PackageData *pack, GList **error_list)
 	char *message = NULL;
 	char *required;
 
-	required = pack->name;
+	required = g_strdup_printf ("%s v. %s", pack->name, pack->version);
 	if (required == NULL) {
-		required = pack->eazel_id;
+		required = g_strdup (pack->eazel_id);
 	}
 	if (required == NULL) {
-		required = pack->provides->data;
+		required = g_strdup (pack->provides->data);
 	}
 	if (required == NULL) {
-		required = "(an unknown package)";
+		required = g_strdup ("another package");
 	}
 
 	switch (pack->status) {
@@ -712,14 +712,14 @@ get_detailed_errors_foreach (const PackageData *pack, GList **error_list)
 		message = g_strdup_printf (_("%s had a file conflict"), required);
 		break;
 	case PACKAGE_DEPENDENCY_FAIL:
-		if (! pack->soft_depends && ! pack->hard_depends) {
+		if (pack->soft_depends || pack->hard_depends) {
 			/* only add this message if it's not going to be explained by a lower dependency */
 			/* (avoids redundant info like "nautilus would not work anymore" -- DUH) */
-			message = g_strdup_printf (_("%s would not work anymore"), required);
+			message = g_strdup_printf (_("%s requires the following :"), pack->name);
 		}
 		break;
 	case PACKAGE_BREAKS_DEPENDENCY:
-		message = g_strdup_printf (_("%s would break other installed packages"), required);
+		message = g_strdup_printf (_("%s would break other packages"), required);
 		break;
 	case PACKAGE_INVALID:
 		break;
@@ -731,13 +731,15 @@ get_detailed_errors_foreach (const PackageData *pack, GList **error_list)
 	case PACKAGE_ALREADY_INSTALLED:
 		message = g_strdup_printf (_("%s was already installed"), required);
 		break;
-	case PACKAGE_WOULD_BE_LOST:
-		message = g_strdup_printf (_("%s would be deleted but is needed\n"), required);
+	case PACKAGE_CIRCULAR_DEPENDENCY:
+		message = g_strdup_printf (_("%s causes a circular dependency problem\n"), required);
 		break;
 	case PACKAGE_RESOLVED:
 		break;
 	}
 
+	g_free (required);
+	
 	if (message != NULL) {
 		*error_list = g_list_append (*error_list, message);
 	}
@@ -1075,9 +1077,10 @@ check_system (EazelInstaller *installer)
 	if (!installer_test && g_strncasecmp (ub.nodename, "toothgnasher", 12)==0) {
 		GnomeDialog *d;
 
-		d = GNOME_DIALOG (gnome_warning_dialog_parented ("Eskil, din nar. Du må aldrig nogensinde\n"
+		d = GNOME_DIALOG (gnome_warning_dialog_parented ("Eskil, din pattestive smølf.\n"
+								 "Syn's du selv det går godt ? At\n"
 								 "udføre denne installation på din egen\n"
-								 "maskine! Den smadrer jo alt!\n"
+								 "maskine er jo en kende dumt.\n"
 								 "Jeg slår lige --test til...",
 								 GTK_WINDOW (installer->window)));
 		installer->test = 1;

@@ -66,6 +66,7 @@ int     arg_dry_run,
 	arg_query,
 	arg_revert,
 	arg_ssl_rename,
+	arg_provides,
 	arg_verbose;
 char    *arg_server,
 	*arg_config_file,
@@ -88,6 +89,7 @@ static const struct poptOption options[] = {
 	{"http", 'h', POPT_ARG_NONE, &arg_http, 0, N_("Use http"), NULL},
 	{"packagefile", '\0', POPT_ARG_STRING, &arg_package_list, 0, N_("Specify package file"), NULL},
 	{"port", '\0', POPT_ARG_INT, &arg_port, 0 , N_("Set port numer (80)"), NULL},
+	{"provides", '\0', POPT_ARG_NONE, &arg_provides, 0, N_("RPM args are needes files"), NULL},
 	{"query", 'q', POPT_ARG_NONE, &arg_query, 0, N_("Run Query"), NULL},
 	{"revert", 'r', POPT_ARG_NONE, &arg_revert, 0, N_("Revert"), NULL},
 	{"root", '\0', POPT_ARG_STRING, &arg_root, 0, N_("Set root"), NULL},
@@ -343,16 +345,15 @@ tree_helper (EazelInstallCallback *service,
 			 indent,  indent_type,
 			 rpmname_from_packagedata (pd));
 		break;
-	case PACKAGE_WOULD_BE_LOST:
-		fprintf (stdout, "%s%s%s, package would be removed\n", 
+	case PACKAGE_CIRCULAR_DEPENDENCY:
+		fprintf (stdout, "%s%s%s, package would cause circular dependency\n", 
 			 indent,  indent_type,
 			 rpmname_from_packagedata (pd));
 		break;
 	default:
-		fprintf (stdout, "%s%s%s-%s %s(status %d)\n", 
+		fprintf (stdout, "%s%s%s %s(status %d)\n", 
 			 indent,  indent_type,
-			 pd->name, 
-			 pd->version,
+			 rpmname_from_packagedata (pd),
 			 pd->status==PACKAGE_ALREADY_INSTALLED ? "already installed " : "",
 			 pd->status);
 		break;
@@ -480,6 +481,8 @@ create_package (char *name)
 			name[0]=='~' ?
 			g_strdup_printf ("%s/%s", g_get_home_dir (), name+1) :
 			g_strdup_printf ("%s/%s", g_get_current_dir (), name);
+	} else if (arg_provides) {
+		pack->provides = g_list_prepend (pack->provides, g_strdup (name));
 	} else {
 		pack->name = g_strdup (name);
 	}

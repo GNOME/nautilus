@@ -69,7 +69,7 @@ static void eazel_uninstall_globber (EazelInstall *service,
 static int eazel_install_check_existing_packages (EazelInstall *service, 
 						  PackageData *pack);
 
-static void eazel_install_prune_packages (EazelInstall *service, 
+static void eazel_install_prune_packages(EazelInstall *service, 
 					  PackageData *pack, 
 					  ...);
 
@@ -80,7 +80,11 @@ static gboolean eazel_install_download_packages (EazelInstall *service,
 
 static gboolean  eazel_install_check_for_file_conflicts (EazelInstall *service,
 							 PackageData *pack,
+							 GList **breaks,
 							 GList **requires);
+static void eazel_install_prune_packages (EazelInstall *service, 
+					  PackageData *pack, 
+					  ...);
 
 /*
   Iterate across the categories and assemble one long
@@ -274,7 +278,7 @@ eazel_install_download_packages (EazelInstall *service,
 			/* FIXME: bugzilla.eazel.com 3413
 			   Ugh, this isn't very nice. Not that there's a chance
 			   that any package will have the name "id%3D", but... */
-			if (strncmp (package->name, "id%3D", 5) == 0) {
+			if (package->name && strncmp (package->name, "id%3D", 5) == 0) {
 				/* nautilus encodes "id=" to "id%3D" */
 				result = eazel_install_fetch_package_by_id (service, package->name + 5, package);
 			} else {
@@ -320,6 +324,7 @@ eazel_install_download_packages (EazelInstall *service,
 static gboolean 
 eazel_install_check_for_file_conflicts (EazelInstall *service,
 					PackageData *pack,
+					GList **breaks,
 					GList **requires)
 {
 	GList *owners;
@@ -359,7 +364,7 @@ eazel_install_check_for_file_conflicts (EazelInstall *service,
 			
 			/* If the package owner is already in the breaks list for the package,
 			   or in the *requires, continue  */
-			if (g_list_find_custom (pack->breaks, owner->name, 
+			if (g_list_find_custom (*breaks, owner->name, 
 						(GCompareFunc)eazel_install_package_name_compare) ||
 			    g_list_find_custom (*requires, owner->name, 
 						(GCompareFunc)eazel_install_package_name_compare)) {
@@ -386,7 +391,7 @@ eazel_install_check_for_file_conflicts (EazelInstall *service,
 					(*requires) = g_list_prepend (*requires, owner);
 				} else {
 					owner->status = PACKAGE_FILE_CONFLICT;
-					pack->breaks = g_list_prepend (pack->breaks, owner);
+					(*breaks) = g_list_prepend (*breaks, owner);
 				}
 				
 			} /* else it's the same package and it's okay */
@@ -818,19 +823,19 @@ eazel_install_monitor_subcommand_pipe (EazelInstall *service,
  */
 static gboolean 
 eazel_install_do_transaction_all_files_check (EazelInstall *service,
-					      GList *packages)
+					      GList **packages)
 {
 	gboolean result = TRUE;
 	GList *iterator;
-	GList *conflicts = NULL;      /* PackageRequirements. ->package is the first found package
-					 that providing a file, ->required is the second file that
-					 has the same file */
+	GList *conflicts = NULL;  /* PackageRequirements. ->package is the first found package
+				     that providing a file, ->required is the second file that
+				     has the same file */
 	GHashTable *file_to_pack; /* maps from a filename to a packagedata struct */
 	
 	file_to_pack = g_hash_table_new (g_str_hash, g_str_equal);
 
 	/* Check all the packages */
-	for (iterator = packages; iterator; glist_step (iterator)) {
+	for (iterator = *packages; iterator; glist_step (iterator)) {
 		PackageData *pack = (PackageData*)iterator->data;
 		GList *file_iterator;
 
@@ -842,7 +847,10 @@ eazel_install_do_transaction_all_files_check (EazelInstall *service,
 								  fname);
 			if (npack) {
 				/* Dang, fname is owned by npack but pack also adds it */
-				trilobite_debug ("NONONONONO file %s yielded %s", fname, npack->name);
+				trilobite_debug ("conflict, file %s from package %s is also in %s", 
+						 fname, 
+						 pack->name,
+						 npack->name);
 				if (!g_list_find_custom (conflicts, 
 							 pack,
 							 (GCompareFunc)eazel_install_requirement_dep_compare)) {
@@ -853,7 +861,6 @@ eazel_install_do_transaction_all_files_check (EazelInstall *service,
 				}
 			} else {
 				/* File is ok */
-				trilobite_debug ("ok on %s", fname);
 				g_hash_table_insert (file_to_pack, 
 						     fname,
 						     pack);
@@ -864,9 +871,14 @@ eazel_install_do_transaction_all_files_check (EazelInstall *service,
 	for (iterator = conflicts; iterator; glist_step (iterator)) {
 		PackageRequirement *req = (PackageRequirement*)iterator->data;
 		
+		result = FALSE;
 		/* Need to fail the package here to fully fix bug
 		   FIXME: bugzilla.eazel.com 3374 */
-		trilobite_debug ("$$$$ %s vs %s", req->package->name, req->required->name);
+		trilobite_debug ("Conflict between %s and %s", req->package->name, req->required->name);
+		req->package->status = PACKAGE_FILE_CONFLICT;
+		req->required->status = PACKAGE_FILE_CONFLICT;
+		packagedata_add_pack_to_breaks (req->package, req->required);
+		eazel_install_prune_packages (service, req->package, packages);
 	}
 
 	return result;
@@ -948,9 +960,11 @@ eazel_install_start_transaction (EazelInstall *service,
 	res = 0;
 
 	if (service->private->downloaded_files) {
-		if (!eazel_install_do_transaction_all_files_check (service, packages) ||
+		/* I need to get the lenght here, because all_files_check can alter the list */
+		int l  = g_list_length (packages);
+		if (!eazel_install_do_transaction_all_files_check (service, &packages) ||
 		    !eazel_install_do_transaction_md5_check (service, packages)) {
-			res = g_list_length (packages);
+			res = l;
 		}
 	}
 
@@ -1072,6 +1086,32 @@ eazel_install_start_transaction (EazelInstall *service,
 	return res;
 } /* end start_transaction */
 
+
+/* Checks if pack depends on dep, by doing a deep tree search */
+static gboolean 
+eazel_install_check_if_depends_on (PackageData *pack, 
+				   PackageData *dep) 
+{
+	gboolean result = FALSE;
+	GList *iterator;
+
+	trilobite_debug ("eazel_install_check_if_depends_on");
+	for (iterator = pack->soft_depends; !result && iterator; glist_step (iterator)) {
+		PackageData *nisse = (PackageData*)iterator->data;
+		trilobite_debug ("comparing %s (0x%x) with %s (0x%x)", 
+				 nisse->name, nisse, 
+				 dep->name, dep);
+		if (nisse == dep) {
+			result = TRUE;
+		} else if (eazel_install_check_if_depends_on (nisse, dep)) {
+			trilobite_debug ("nope, recursing");
+			result = TRUE;
+		}
+	}
+
+	return result;
+}
+
 /*
   The helper for eazel_install_prune_packages.
   If the package is in "pruned", it has already been marked
@@ -1087,27 +1127,45 @@ eazel_install_prune_packages_helper (EazelInstall *service,
 {
 	GList *iterator;
 	g_return_if_fail (pack!=NULL);
+        /* If already pruned, abort */
 	if (g_list_find (*pruned, pack) || pack->name==NULL) {
 		return;
 	}
-	trilobite_debug (_("Removing package %s %s"), pack->name, pack->toplevel ? "(emit fail)" :"()");
+	trilobite_debug (_("Removing package %s-%s-%s (0x%x) %s"), 
+			 pack->name, pack->version, pack->minor,
+			 pack,
+			 pack->toplevel ? "(emit fail)" :"()");
 	if (pack->toplevel) {
 		/* We only emit signal for the toplevel packages, 
 		   and only delete them. They _destroy function destroys
 		   the entire dep tree */
 		eazel_install_emit_install_failed (service, pack);
 	}
+	/* Add to list of pruned packages */
 	(*pruned) = g_list_prepend (*pruned, pack);
+
+	/* Prune all it's soft_deps */
 	for (iterator = pack->soft_depends; iterator; iterator = g_list_next (iterator)) {
 		PackageData *sub;
 		sub = (PackageData*)iterator->data;
+		trilobite_debug ("prune_helper (%s->soft_depends)", sub->name);
 		eazel_install_prune_packages_helper (service, packages, pruned, sub);
 	}
+	
+	/* For all packages in "packages", check if they depend on this */
 	for (iterator = *packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *super;
 		
 		super = (PackageData*)iterator->data;
-		if (g_list_find (super->soft_depends, pack)) {			
+		trilobite_debug ("prune_helper (%s)", super->name);
+		/* FIXME bugzilla.eazel.com: 3542
+		   This is the cause of 3542. 
+		   In this specific case, gnome-print is removed from the toplevel and from
+		   1st sublevel of soft_deps.
+		   The problem is, that this g_list_find only looks down one level, and does'nt
+		   search the entire tree, duh.
+		   I need a find_custom call that does this the right way */
+		if (eazel_install_check_if_depends_on (super, pack)) {			
 			eazel_install_prune_packages_helper (service, packages, pruned, super);
 		}
 	}
@@ -1292,7 +1350,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 							 existing_package->version, 
 							 pack->version);
 				}
-				pack->modifies = g_list_prepend (pack->modifies, existing_package);
+				packagedata_add_pack_to_modifies (pack, existing_package);
 				existing_package->status = PACKAGE_RESOLVED;
 			} else {
 				pack->status = PACKAGE_ALREADY_INSTALLED;
@@ -1416,12 +1474,42 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 		   call in for every package system (when I say every, we know
 		   I mean "both"...) */
 		eazel_install_emit_dependency_check (service, pack, dep);
-		pack->soft_depends = g_list_prepend (pack->soft_depends, dep);
+		packagedata_add_pack_to_soft_depends (pack, dep);
 
 		fetch_result = eazel_install_fetch_package (service, dep);
 
 		if (fetch_result) {
-			/* This sets the dep->modifies.
+			/* If the package we just downloaded was already in packages,
+			   but we just had a dependency conflict, we're in the funky case,
+			   were pacakge foo is not installed. But the dependecy stuff has caused
+			   it to be downloaded in version x.y, and later in v.w. This means that
+			   the first conflict (causing x.y to be downloaded) now happens again.
+			*/
+			if (g_list_find_custom (*packages,
+						dep->name,
+						(GCompareFunc)eazel_install_package_name_compare)) {
+				GList *pack_entry;
+
+				pack_entry = g_list_find_custom (*packages,
+								 dep,
+								 (GCompareFunc)eazel_install_package_other_version_compare);
+				trilobite_debug ("Circular dependency  %s-%s-%s", dep->name, dep->version, dep->minor);
+
+				if (pack_entry) {
+					PackageData *evil_package = (PackageData*)pack_entry->data;
+					packagedata_add_pack_to_breaks (evil_package, dep); 
+					evil_package->status = PACKAGE_BREAKS_DEPENDENCY;
+				} else {
+					trilobite_debug ("I cannot set the funky break list");
+				}
+				dep->status = PACKAGE_CIRCULAR_DEPENDENCY;
+				fetch_result = FALSE;
+			}
+		}
+
+		if (fetch_result) {
+			/* This sets the dep->modifies and checks for a funky case.
+			   This case is sort of like the one above.
 			   If the call returns 0, the following must have happened ;
 			   We had a dependency saying that foo required bar-x.y.
 			   So we download bar and now discover that bar is already installed
@@ -1441,22 +1529,18 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 				trilobite_debug ("This is because some other package was downloaded");
 				trilobite_debug ("and crushed this, since %s is already installed", dep->name);
 				
+				/* Use name compare here, as we expect the package to have the same name */
 				pack_entry = g_list_find_custom (*packages,
 								 dep->name,
 								 (GCompareFunc)eazel_install_package_name_compare);
 				if (pack_entry) {
 					PackageData *evil_package = (PackageData*)pack_entry->data;
-					evil_package->breaks = g_list_prepend (evil_package->breaks, pack);
+					packagedata_add_pack_to_breaks (evil_package, dep);
 					evil_package->status = PACKAGE_BREAKS_DEPENDENCY;
-					/* Don't add it to failedpackages more then once */
-					if (g_list_find (*failedpackages, pack) == NULL) {
-						(*failedpackages) = g_list_prepend (*failedpackages, pack);
-					}
-					(*packages) = g_list_remove (*packages, pack);
 				} else {
 					trilobite_debug ("I cannot set the funky break list");
 				}
-				dep->status = PACKAGE_WOULD_BE_LOST;
+				dep->status = PACKAGE_CIRCULAR_DEPENDENCY;
 				fetch_result = FALSE;
 			}
 
@@ -1479,8 +1563,8 @@ eazel_install_fetch_dependencies (EazelInstall *service,
 			   Eg. nautilus requires libgconf-gtk-1.so and libgconf-1.so,
 			   both provided by gconf, so we fetch gconf twice */
 			if (g_list_find_custom (extras_in_this_batch,
-						dep->name,
-						(GCompareFunc)eazel_install_package_name_compare)) {
+						dep,
+						(GCompareFunc)eazel_install_package_compare)) {
 				trilobite_debug ("already handled %s", dep->name);
 				packagedata_remove_soft_dep (dep, pack); 
 				dep = NULL;
@@ -1644,24 +1728,38 @@ eazel_install_do_file_conflict_check (EazelInstall *service,
 		GList *required = NULL;
 
 		/* If we haven't tested conflicts yet */
-		if (pack->conflicts_checked == FALSE && 
-		    eazel_install_check_for_file_conflicts (service, pack, &required)) {
-			pack->conflicts_checked = TRUE;
-			if (required) {
-				/* Create PackageRequirements for all the requirements */
-				GList *reqiterator;
-				for (reqiterator = required;reqiterator;glist_step (reqiterator)) {
-					PackageData *required_pack = (PackageData*)reqiterator->data;
-					PackageRequirement *req;
-					req = packagerequirement_new (pack, required_pack);
-					(*requirements) = g_list_prepend (*requirements, req);
+		if (pack->conflicts_checked == FALSE) {
+			GList *breaks = NULL;
+			pack->conflicts_checked = TRUE;			
+			if (eazel_install_check_for_file_conflicts (service, pack, &breaks, &required)) {
+				if (required) {
+					/* Create PackageRequirements for all the requirements */
+					GList *reqiterator;
+					for (reqiterator = required;reqiterator;glist_step (reqiterator)) {
+						PackageData *required_pack = (PackageData*)reqiterator->data;
+						PackageRequirement *req;
+						req = packagerequirement_new (pack, required_pack);
+						(*requirements) = g_list_prepend (*requirements, req);
+					}
+				} else {
+					GList *break_iterator;
+					for (break_iterator = breaks; break_iterator; glist_step (break_iterator)) {
+						PackageData *broken_package = (PackageData*)break_iterator->data;
+						if (g_list_find_custom (*packages, 
+									broken_package->name,
+									(GCompareFunc)eazel_install_package_name_compare)) {
+							trilobite_debug ("breaking %s but we're updating it", broken_package->name);
+							packagedata_destroy (broken_package, FALSE);
+						} else {
+							packagedata_add_pack_to_breaks (pack, broken_package);
+						}
+					}
+					tmp_failed = g_list_prepend (tmp_failed, pack);
 				}
 			} else {
-				tmp_failed = g_list_prepend (tmp_failed, pack);
+				/* No file conflicts */
+				trilobite_debug ("package %s had no file conflicts", pack->name);
 			}
-		} else {
-			/* No file conflicts */
-			trilobite_debug ("package %s had no file conflicts", pack->name);
 		}
 	}
 	
@@ -1789,7 +1887,9 @@ eazel_install_ensure_deps (EazelInstall *service,
 	*/
 	if (*failedpackages) {
 		GList *iterator;
-		
+
+		trilobite_debug ("failedpackages != NULL");
+
 		for (iterator = *failedpackages; iterator; iterator = g_list_next (iterator)) {
 			PackageData *pack;
 			pack = (PackageData*)iterator->data;
@@ -1880,7 +1980,7 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 			*/
 
 			/* Guess not, mark it as breaking (and that pack is the offender */
-			pack->breaks = g_list_prepend (pack->breaks, requiredby);
+			packagedata_add_pack_to_breaks (pack, requiredby);
 			(*breaks) = g_list_prepend ((*breaks), requiredby);
 
 			/* If the package has not been failed yet (and is a toplevel),

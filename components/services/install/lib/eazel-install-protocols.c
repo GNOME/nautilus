@@ -841,7 +841,7 @@ char* get_search_url_for_package (EazelInstall *service,
 		/* FIXME bugzilla.eazel.com 3482
 		   support other flags then 8 */
 		if (pack->version) {
-			add_to_url (&url, "&flags=", "8");
+			add_to_url (&url, "&flag=", "8");
 		}
 		if (pack->distribution.name != DISTRO_UNKNOWN) {
 			dist = pack->distribution;
@@ -857,7 +857,7 @@ char* get_search_url_for_package (EazelInstall *service,
 		add_to_url (&url, "?provides=", (char*)data);
 		add_to_url (&url, "&arch=", arch);
 		/* hack, FIXME bugzilla.eazel.com 3481 */
-		add_to_url (&url, "&flags=", "0");
+		add_to_url (&url, "&flag=", "0");
 		add_to_url (&url, "&version=", "-");
 		g_free (arch);
 	}

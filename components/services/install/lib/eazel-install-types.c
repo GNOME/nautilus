@@ -515,8 +515,8 @@ packagedata_status_enum_to_str (PackageSystemStatus st)
 	case PACKAGE_ALREADY_INSTALLED:
 		result = g_strdup ("ALREADY_INSTALLED");
 		break;
-	case PACKAGE_WOULD_BE_LOST:
-		result = g_strdup ("WOULD_BE_LOST");
+	case PACKAGE_CIRCULAR_DEPENDENCY:
+		result = g_strdup ("CIRCULAR_DEPENDENCY");
 		break;
 	default:
 		g_assert_not_reached ();
@@ -541,7 +541,7 @@ packagedata_status_str_to_enum (const char *st)
 	else if (strcmp (st, "PARTLY_RESOLVED")==0) { result = PACKAGE_PARTLY_RESOLVED; } 
 	else if (strcmp (st, "RESOLVED")==0) { result = PACKAGE_RESOLVED; } 
 	else if (strcmp (st, "ALREADY_INSTALLED")==0) { result = PACKAGE_ALREADY_INSTALLED; } 
-	else if (strcmp (st, "WOULD_BE_LOST")==0) { result = PACKAGE_WOULD_BE_LOST; } 
+	else if (strcmp (st, "CIRCULAR_DEPENDENCY")==0) { result = PACKAGE_CIRCULAR_DEPENDENCY; } 
 	else { g_assert_not_reached (); result = PACKAGE_UNKNOWN_STATUS; };
 
 	return result;
@@ -591,6 +591,47 @@ packagedata_modstatus_str_to_enum (const char *st)
 	}
 
 	return result;
+}
+
+static void
+packagedata_add_pack_to (GList **list, PackageData *pack) {
+	(*list) = g_list_prepend (*list, pack);
+}
+
+void 
+packagedata_add_pack_to_breaks (PackageData *pack, PackageData *b) 
+{
+	g_assert (pack);
+	g_assert (b);
+	g_assert (pack != b);
+	packagedata_add_pack_to (&pack->breaks, b);
+}
+
+void 
+packagedata_add_pack_to_soft_depends (PackageData *pack, PackageData *b)
+{
+	g_assert (pack);
+	g_assert (b);
+	g_assert (pack != b);
+	packagedata_add_pack_to (&pack->soft_depends, b);
+}
+
+void 
+packagedata_add_pack_to_hard_depends (PackageData *pack, PackageData *b)
+{
+	g_assert (pack);
+	g_assert (b);
+	g_assert (pack != b);
+	packagedata_add_pack_to (&pack->hard_depends, b);
+}
+
+void 
+packagedata_add_pack_to_modifies (PackageData *pack, PackageData *b)
+{
+	g_assert (pack);
+	g_assert (b);
+	g_assert (pack != b);
+	packagedata_add_pack_to (&pack->modifies, b);
 }
 
 
@@ -697,6 +738,28 @@ eazel_install_package_version_compare (PackageData *pack,
 				       char *version)
 {
 	return strcmp (pack->version, version);
+}
+
+int 
+eazel_install_package_other_version_compare (PackageData *pack, 
+					     PackageData *other)
+{
+	if (pack->name && other->name) {
+		if (strcmp (pack->name, other->name)==0) {
+			if (pack->version && other->version) {
+				if (strcmp (pack->version, other->version)) {
+					return 0;
+				} else {
+					return 1;
+				}
+			} else {
+				return -11;
+			}
+		} else {
+			return 1;
+		}
+	} 
+	return -1;
 }
 
 

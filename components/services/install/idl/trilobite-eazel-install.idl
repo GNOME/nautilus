@@ -24,7 +24,7 @@ module Trilobite {
 			PARTLY_RESOLVED,      /* perhaps: the immediate deps where ok, check all in PackageDataStruct.soft/hard_depends */
 			RESOLVED,             /* good: all deps ok */
 			ALREADY_INSTALLED,    /* medium: you don't get to install it, but then again... */
-			WOULD_BE_LOST         /* medium: this package got lost */
+			CIRCULAR_DEPENDENCY   /* bad: two packages are fighting it out */
 		};
 		
 		enum ProtocolEnum {

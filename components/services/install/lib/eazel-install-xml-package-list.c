@@ -85,23 +85,22 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 			PackageData* depend;
 
 			depend = parse_package (dep, FALSE);
-			rv->soft_depends = g_list_append (rv->soft_depends, depend);
-		}
-		else if (g_strcasecmp (dep->name, "HARD_DEPEND") == 0) {
+			packagedata_add_pack_to_soft_depends (rv, depend);
+		} else if (g_strcasecmp (dep->name, "HARD_DEPEND") == 0) {
 			PackageData* depend;
 
 			depend = parse_package (dep, FALSE);
-			rv->hard_depends = g_list_append (rv->hard_depends, depend);
+			packagedata_add_pack_to_hard_depends (rv, depend);
 		} else if (g_strcasecmp (dep->name, "BREAKS") == 0) {
 			PackageData* depend;
 
 			depend = parse_package (dep, FALSE);
-			rv->breaks = g_list_append (rv->breaks, depend);
+			packagedata_add_pack_to_breaks (rv, depend);
 		} else if (g_strcasecmp (dep->name, "MODIFIES") == 0) {
 			PackageData* depend;
 
 			depend = parse_package (dep, FALSE);
-			rv->modifies = g_list_append (rv->modifies, depend);
+			packagedata_add_pack_to_modifies (rv, depend);
 		} 
 
 		dep = dep->next;
@@ -576,7 +575,7 @@ osd_parse_dependency (PackageData *pack, xmlNodePtr node)
 			/* dependent softpkg */
 			softpack = osd_parse_softpkg (child);
 			if (softpack != NULL) {
-				pack->soft_depends = g_list_prepend (pack->soft_depends, softpack);
+				packagedata_add_pack_to_soft_depends (pack, softpack);
 			} else {
 				trilobite_debug ("SOFTPKG dependency parse failed");
 			}
