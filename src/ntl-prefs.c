@@ -26,12 +26,12 @@ static void meta_prefs_pull(gpointer data);
 static void meta_prefs_apply(gpointer data);
 
 PrefsPageInfo pages[] = {
-  {N_("Windows"), window_prefs_create, window_prefs_pull, window_prefs_apply},
-  {N_("Meta Views"), meta_prefs_create, meta_prefs_pull, meta_prefs_apply},
-  {NULL}
+  {N_("Windows"), window_prefs_create, window_prefs_pull, window_prefs_apply, NULL},
+  {N_("Meta Views"), meta_prefs_create, meta_prefs_pull, meta_prefs_apply, NULL},
+  {NULL, NULL, NULL, NULL, NULL}
 };
 
-NautilusPrefs nautilus_prefs = {0,0};
+NautilusPrefs nautilus_prefs = {0,0, NULL};
 
 void
 nautilus_prefs_save(void)
