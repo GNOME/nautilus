@@ -752,7 +752,6 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 		view->details->current_package = current_package;
 
 		if (current_package == 1) {
-g_warning ("hey, summary: '%s'", pack->summary);
 			/* first package is the main one.  update top info, now that we know it */
 			out = g_strdup_printf (_("Installing \"%s\""), pack->name);
 			nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_name), out);
