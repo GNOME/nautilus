@@ -1,3 +1,48 @@
+2000-05-30  Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-drag.c:
+	* libnautilus-extensions/nautilus-drag.h:
+	(nautilus_drag_items_local), (nautilus_drag_can_accept_item),
+	(nautilus_drag_can_accept_items):
+	More drag&drop support calls shared between list and icon view.
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_container_selection_items_local),
+	(receive_dropped_keyword),
+	(nautilus_icon_container_receive_dropped_icons),
+	(nautilus_icon_dnd_update_drop_target):
+	Remove calls that are replaced by nautilus-drag.c equivalents.
+	Tweak some whitespace.
+
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	(nautilus_gtk_marshal_NONE__INT_INT_INT):
+	Add some more signal glue.
+	
+	* libnautilus-extensions/nautilus-list.h:
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_initialize_class), (nautilus_list_drag_drop),
+	(nautilus_list_row_at):
+	Add more drop handling. Add signal that sends of dropped data
+	and context to fm-list-view.c. Added nautilus_list_row_at
+	that fm-list-view.c needs to handle the drop.
+	
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c: (icon_view_can_accept_item),
+	(icon_view_get_container_uri), (icon_view_move_copy_items),
+	(create_icon_container), (fm_directory_view_get_uri), 
+	(fm_directory_view_move_copy_items),
+	(fm_directory_view_can_accept_item):
+	Rework public calls to not take a container view as an argument
+	and can be used by both list and icon view classes.
+	Add new private signal handler callbacks that replace the 
+	public calls.
+	
+	* src/file-manager/fm-list-view.c: (fm_list_nautilus_file_at),
+	(fm_list_handle_dropped_icons), (create_list):
+	Drop handling code.
+
 2000-05-30  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* nautilus-widgets/nautilus-preferences-group.c:

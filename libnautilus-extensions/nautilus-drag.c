@@ -25,6 +25,8 @@
 #include <config.h>
 #include "nautilus-drag.h"
 
+#include <libgnomevfs/gnome-vfs-types.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -141,3 +143,74 @@ nautilus_drag_build_selection_list (GtkSelectionData *data)
 	return result;
 }
 
+gboolean
+nautilus_drag_items_local (const char *target_uri_string, const GList *selection_list)
+{
+	/* check if the first item on the list has target_uri_string as a parent
+	 * we should really test each item but that would be slow for large selections
+	 * and currently dropped items can only be from the same container
+	 */
+	GnomeVFSURI *target_uri;
+	GnomeVFSURI *item_uri;
+	gboolean result;
+
+	/* must have at least one item */
+	g_assert (selection_list);
+
+	result = FALSE;
+
+	target_uri = gnome_vfs_uri_new (target_uri_string);
+
+	/* get the parent URI of the first item in the selection */
+	item_uri = gnome_vfs_uri_new (((DragSelectionItem *)selection_list->data)->uri);
+	result = gnome_vfs_uri_is_parent (target_uri, item_uri, FALSE);
+	
+	gnome_vfs_uri_unref (item_uri);
+	gnome_vfs_uri_unref (target_uri);
+	
+	return result;
+}
+
+gboolean
+nautilus_drag_can_accept_item (NautilusFile *drop_target_item,
+			       const char *item_uri)
+{
+	/* FIXME bugzilla.eazel.com 657:
+	 * elaborate here some more
+	 * should consider permissions, handle symlinks to directories, etc.
+	 * 
+	 * for now just allways return true if dropping into a directory
+	 */
+	if (nautilus_file_get_file_type (drop_target_item) 
+		!= GNOME_VFS_FILE_TYPE_DIRECTORY) {
+		return FALSE;
+	}
+
+	/* target is a directory, find out if it matches the item */
+	return !nautilus_file_matches_uri (drop_target_item, item_uri);
+}
+					       
+gboolean
+nautilus_drag_can_accept_items (NautilusFile *drop_target_item,
+				const GList *items)
+{
+	int max;
+
+	if (drop_target_item == NULL)
+		return FALSE;
+
+	g_assert (NAUTILUS_IS_FILE (drop_target_item));
+
+	/* Iterate through selection checking if item will get accepted by the
+	 * drop target. If more than 100 items selected, return an over-optimisic
+	 * result
+	 */
+	for (max = 100; items != NULL && max >=0 ; items = items->next, max--) {
+		if (!nautilus_drag_can_accept_item (drop_target_item, 
+			((DragSelectionItem *)items->data)->uri)) {
+			return FALSE;
+		}
+	}
+
+	return TRUE;		
+}

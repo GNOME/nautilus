@@ -456,13 +456,7 @@ static gboolean
 nautilus_icon_container_selection_items_local (const NautilusIconContainer *container,
 					       const GList *items)
 {
-	/* check if the first item on the list has the container as a parent
-	 * we should really test each item but that would be slow for large selections
-	 * and currently dropped items can only be from the same container
-	 */
 	char *container_uri_string;
-	GnomeVFSURI *container_uri;
-	GnomeVFSURI *item_uri;
 	gboolean result;
 
 	/* must have at least one item */
@@ -472,55 +466,10 @@ nautilus_icon_container_selection_items_local (const NautilusIconContainer *cont
 
 	/* get the URI associated with the container */
 	container_uri_string = get_container_uri (container);
-	g_assert (container_uri_string);
-	container_uri = gnome_vfs_uri_new (container_uri_string);
-
-	/* get the parent URI of the first item in the selection */
-	item_uri = gnome_vfs_uri_new (((DragSelectionItem *)items->data)->uri);
-	result = gnome_vfs_uri_is_parent (container_uri, item_uri, FALSE);
-	
-	gnome_vfs_uri_unref (item_uri);
-	gnome_vfs_uri_unref (container_uri);
+	result = nautilus_drag_items_local (container_uri_string, items);
 	g_free (container_uri_string);
 	
 	return result;
-}
-
-static gboolean
-nautilus_icon_canvas_item_can_accept_item (NautilusIconContainer *container,
-					   const NautilusIcon *drop_target_item,
-					   const char *item_uri)
-{
-	gboolean result;
-
-	/* ask the controller if the icon can accept the item */
-	gtk_signal_emit_by_name (GTK_OBJECT (container),
-			 "can_accept_item",
-			 drop_target_item->data,
-			 item_uri,
-			 &result);
-	return result;
-}
-					       
-static gboolean
-nautilus_icon_canvas_item_can_accept_items (NautilusIconContainer *container,
-					    const NautilusIcon *drop_target_item,
-					    const GList *items)
-{
-	int max;
-
-	/* Iterate through selection checking if item will get accepted by the
-	 * drop target. If more than 100 items selected, return an over-optimisic
-	 * result
-	 */
-	for (max = 100; items != NULL && max >=0 ; items = items->next, max--) {
-		if (!nautilus_icon_canvas_item_can_accept_item (container, drop_target_item, 
-						((DragSelectionItem *)items->data)->uri)) {
-			return FALSE;
-		}
-	}
-
-	return TRUE;		
 }
 
 /* handle dropped tile images */
@@ -552,8 +501,8 @@ receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x,
 		return;
 	
 	uri = nautilus_icon_container_get_icon_uri (container, drop_target_icon);
-	file = nautilus_file_get(uri);
-	g_free(uri);
+	file = nautilus_file_get (uri);
+	g_free (uri);
 	
 	keywords = nautilus_file_get_keywords (file);
 	word = g_list_find_custom (keywords, keyword, (GCompareFunc) strcmp);
@@ -710,8 +659,12 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 
 	/* Find the item we hit with our drop, if any */
 	drop_target_icon = nautilus_icon_container_item_at (container, world_x, world_y);
-	if (drop_target_icon != NULL && !nautilus_icon_canvas_item_can_accept_items 
-		(container, drop_target_icon, container->details->dnd_info->selection_list)) {
+	if (drop_target_icon != NULL 
+		&& !nautilus_drag_can_accept_items 
+			(nautilus_file_get (
+				nautilus_icon_container_get_icon_uri 
+					(container, drop_target_icon)), 
+			container->details->dnd_info->selection_list)) {
 		/* the item we dropped our selection on cannot accept the items,
 		 * do the same thing as if we just dropped the items on the canvas
 		 */
@@ -776,10 +729,12 @@ nautilus_icon_dnd_update_drop_target (NautilusIconContainer *container,
 	icon = nautilus_icon_container_item_at (container, world_x, world_y);
 
 	/* Find if target icon accepts our drop. */
-	if (icon != NULL && (container->details->dnd_info->data_type != NAUTILUS_ICON_DND_KEYWORD) 
-	    && !nautilus_icon_canvas_item_can_accept_items 
-	    (container, icon, container->details->dnd_info->selection_list
-	    )) {
+	if (icon != NULL 
+		&& (container->details->dnd_info->data_type != NAUTILUS_ICON_DND_KEYWORD) 
+		&& !nautilus_drag_can_accept_items 
+			(nautilus_file_get (
+				nautilus_icon_container_get_icon_uri (container, icon)), 
+			container->details->dnd_info->selection_list)) {
 		icon = NULL;
 	}
 

@@ -46,6 +46,7 @@
 #include <libnautilus/nautilus-zoomable.h>
 
 #include <libnautilus-extensions/nautilus-alloc.h>
+#include <libnautilus-extensions/nautilus-drag.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -2552,18 +2553,14 @@ show_hidden_files_changed_callback (gpointer		user_data)
 }
 
 char *
-fm_directory_view_get_container_uri (NautilusIconContainer *container,
-				     FMDirectoryView *view)
+fm_directory_view_get_uri (FMDirectoryView *view)
 {
-	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
-
 	return nautilus_directory_get_uri (view->details->model);
 }
 
 void
-fm_directory_view_move_copy_items (NautilusIconContainer *container,
-				   const GList *item_uris,
+fm_directory_view_move_copy_items (const GList *item_uris,
 				   const GdkPoint *relative_item_points,
 				   const char *target_dir,
 				   int copy_action,
@@ -2575,27 +2572,14 @@ fm_directory_view_move_copy_items (NautilusIconContainer *container,
 }
 
 gboolean
-fm_directory_view_can_accept_item (NautilusIconContainer *container,
-				   NautilusFile *target_item,
+fm_directory_view_can_accept_item (NautilusFile *target_item,
 				   const char *item_uri,
 				   FMDirectoryView *view)
 {
-	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (target_item));
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-	/* FIXME bugzilla.eazel.com 657:
-	 * elaborate here some more
-	 * should consider permissions, handle symlinks to directories, etc.
-	 * 
-	 * for now just allways return true if dropping into a directory
-	 */
-	if (nautilus_file_get_file_type (target_item) != GNOME_VFS_FILE_TYPE_DIRECTORY) {
-		return FALSE;
-	}
-
-	/* target is a directory, find out if it matches the item */
-	return !nautilus_file_matches_uri (target_item, item_uri);
+	return nautilus_drag_can_accept_item (target_item, item_uri);
 }
 
 /**

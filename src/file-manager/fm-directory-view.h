@@ -198,10 +198,8 @@ void               fm_directory_view_load_uri                       (FMDirectory
 								     const char            *uri);
 
 /* Functions callable from the user interface and elsewhere. */
-char *             fm_directory_view_get_container_uri              (NautilusIconContainer *container,
-								     FMDirectoryView       *view);
-gboolean           fm_directory_view_can_accept_item                (NautilusIconContainer *container,
-								     NautilusFile          *target_item,
+char *             fm_directory_view_get_uri		            (FMDirectoryView       *view);
+gboolean           fm_directory_view_can_accept_item                (NautilusFile          *target_item,
 								     const char            *item_uri,
 								     FMDirectoryView       *view);
 GList *            fm_directory_view_get_selection                  (FMDirectoryView       *view);
@@ -213,8 +211,7 @@ void               fm_directory_view_bump_zoom_level                (FMDirectory
 void               fm_directory_view_select_all                     (FMDirectoryView       *view);
 void               fm_directory_view_set_selection                  (FMDirectoryView       *view,
 								     GList                 *selection);
-void               fm_directory_view_move_copy_items                (NautilusIconContainer *container,
-								     const GList           *item_uris,
+void               fm_directory_view_move_copy_items                (const GList           *item_uris,
 								     const GdkPoint        *relative_item_points,
 								     const char            *target_uri,
 								     int                    copy_action,

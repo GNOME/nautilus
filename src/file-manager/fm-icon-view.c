@@ -1491,6 +1491,35 @@ fm_icon_view_initialize (FMIconView *icon_view)
 	icon_container = create_icon_container (icon_view);
 }
 
+static gboolean
+icon_view_can_accept_item (NautilusIconContainer *container,
+			   NautilusFile *target_item,
+			   const char *item_uri,
+			   FMDirectoryView *view)
+{
+	return fm_directory_view_can_accept_item (target_item, item_uri, view);
+}
+
+static char *
+icon_view_get_container_uri (NautilusIconContainer *container,
+			     FMDirectoryView *view)
+{
+	return fm_directory_view_get_uri (view);
+}
+
+static void
+icon_view_move_copy_items (NautilusIconContainer *container,
+			   const GList *item_uris,
+			   const GdkPoint *relative_item_points,
+			   const char *target_dir,
+			   int copy_action,
+			   int x, int y,
+			   FMDirectoryView *view)
+{
+	fm_directory_view_move_copy_items (item_uris, relative_item_points, target_dir,
+		copy_action, x, y, view);
+}
+
 static NautilusIconContainer *
 create_icon_container (FMIconView *icon_view)
 {
@@ -1544,15 +1573,15 @@ create_icon_container (FMIconView *icon_view)
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "move_copy_items",
-			    GTK_SIGNAL_FUNC (fm_directory_view_move_copy_items),
+			    GTK_SIGNAL_FUNC (icon_view_move_copy_items),
 			    directory_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "get_container_uri",
-			    GTK_SIGNAL_FUNC (fm_directory_view_get_container_uri),
+			    GTK_SIGNAL_FUNC (icon_view_get_container_uri),
 			    directory_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "can_accept_item",
-			    GTK_SIGNAL_FUNC (fm_directory_view_can_accept_item),
+			    GTK_SIGNAL_FUNC (icon_view_can_accept_item),
 			    directory_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "get_stored_icon_position",

@@ -115,6 +115,7 @@ struct NautilusListClass {
 	void (* select_matching_name) (GtkWidget *widget, const char *);
 	void (* select_previous_name) (GtkWidget *widget);
 	void (* select_next_name) (GtkWidget *widget);
+	void (* handle_dropped_icons) (GtkWidget *widget, GList *icons, int x, int y, int action);
 };
 
 GtkType    nautilus_list_get_type              (void);
@@ -136,5 +137,7 @@ void       nautilus_list_set_single_click_mode (NautilusList       *list,
 						gboolean            single_click_mode);
 void	   nautilus_list_select_row 	       (NautilusList 	   *list, 
 						int 		    row);
+GtkCListRow *nautilus_list_row_at 	       (NautilusList 	   *list, 
+						int 		    y);
 
 #endif /* NAUTILUS_LIST_H */

@@ -153,6 +153,7 @@ enum {
 	SELECT_MATCHING_NAME,
 	SELECT_PREVIOUS_NAME,
 	SELECT_NEXT_NAME,
+	HANDLE_DROPPED_ICONS,
 	LAST_SIGNAL
 };
 
@@ -347,6 +348,17 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 				GTK_SIGNAL_OFFSET (NautilusListClass, select_next_name),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
+	list_signals[HANDLE_DROPPED_ICONS] =
+		gtk_signal_new ("handle_dropped_icons",
+				GTK_RUN_FIRST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusListClass, handle_dropped_icons),
+				nautilus_gtk_marshal_NONE__INT_INT_INT,
+				GTK_TYPE_NONE, 3,
+				GTK_TYPE_POINTER,
+				GTK_TYPE_INT,
+				GTK_TYPE_INT,
+				GTK_TYPE_INT);
 
 	gtk_object_class_add_signals (object_class, list_signals, LAST_SIGNAL);
 
@@ -2395,8 +2407,8 @@ nautilus_list_drag_drop (GtkWidget *widget, GdkDragContext *context,
 
 	switch (list->details->data_type) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-		/* FIXME: handle the drop here */
-
+		gtk_signal_emit (GTK_OBJECT (list), list_signals[HANDLE_DROPPED_ICONS],
+			 list->details->selection_list, x, y, context->action);
 		nautilus_drag_destroy_selection_list (list->details->selection_list);
 		list->details->selection_list = NULL;
 		gtk_drag_finish (context, TRUE, FALSE, time);
@@ -2492,6 +2504,24 @@ nautilus_list_new_with_titles (int columns, const char * const *titles)
 				      GTK_SELECTION_MULTIPLE);
 
 	return GTK_WIDGET (list);
+}
+
+GtkCListRow *
+nautilus_list_row_at (NautilusList *list, int y)
+{
+	GtkCList *clist;
+	gint row_index, column_index;
+
+	clist = GTK_CLIST (list);
+	y -= (GTK_CONTAINER (list)->border_width +
+		GTK_WIDGET(list)->style->klass->ythickness +
+		clist->column_title_area.height);
+	
+	if (!gtk_clist_get_selection_info (clist, 10, y, &row_index, &column_index)) {
+		return NULL;
+	}
+	
+	return g_list_nth (clist->row_list, row_index)->data;
 }
 
 GList *

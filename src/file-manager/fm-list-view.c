@@ -31,10 +31,11 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-pixmap.h>
 #include <libgnomeui/gnome-uidefs.h>
+#include <libnautilus-extensions/nautilus-directory-background.h>
+#include <libnautilus-extensions/nautilus-drag.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-list.h>
-#include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
@@ -471,6 +472,71 @@ select_next_name_callback (GtkWidget *widget, FMListView *list_view)
 	select_previous_next_common (widget, list_view, FALSE);
 }
 
+static NautilusFile *
+fm_list_nautilus_file_at (NautilusList *list, int x, int y)
+{
+	GtkCListRow *row;
+
+	row = nautilus_list_row_at (list, y);
+	if (row == NULL) {
+		return NULL;
+	}
+	return (NautilusFile *)row->data;
+}
+
+static void
+fm_list_handle_dropped_icons (NautilusList *list, GList *drop_data, int x, int y, 
+	FMListView *list_view, int action)
+{
+	/* FIXME:
+	 * Merge this with nautilus_icon_container_receive_dropped_icons
+	 */ 
+	FMDirectoryView *directory_view;
+	char *list_view_uri;
+	char *target_item_uri;
+	NautilusFile *target_item;
+	GList *source_uris, *p;
+
+	target_item_uri = NULL;
+	source_uris = NULL;
+	directory_view = FM_DIRECTORY_VIEW (list_view);
+
+	/* find the item we hit and figure out if it will take the dropped items */
+	target_item = fm_list_nautilus_file_at (list, x, y);
+	if (target_item != NULL 
+		&& !nautilus_drag_can_accept_items (target_item, drop_data)) {
+		target_item = NULL;
+	}
+	
+	list_view_uri = fm_directory_view_get_uri (directory_view);
+	if (target_item != NULL 
+		|| action == GDK_ACTION_MOVE
+		|| !nautilus_drag_items_local (list_view_uri, drop_data)) {
+
+		/* build a list of URIs to copy */
+		for (p = drop_data; p != NULL; p = p->next) {
+			/* do a shallow copy of all the uri strings of the copied files */
+			source_uris = g_list_prepend (source_uris, 
+				((DragSelectionItem *)p->data)->uri);
+		}
+		source_uris = g_list_reverse (source_uris);
+
+		/* figure out the uri of the destination */
+		if (target_item != NULL) {
+			target_item_uri = nautilus_file_get_uri (target_item);
+		} else {
+			target_item_uri = g_strdup (list_view_uri);
+		}
+
+		/* start the copy */
+		fm_directory_view_move_copy_items (source_uris, NULL,
+			target_item_uri, action, x, y, directory_view);
+
+	}
+
+	g_free (target_item_uri);
+	g_free (list_view_uri);
+}
 
 static NautilusList *
 create_list (FMListView *list_view)
@@ -593,6 +659,11 @@ create_list (FMListView *list_view)
 			    "select_next_name",
 			    select_next_name_callback,
 			    list_view);
+	gtk_signal_connect (GTK_OBJECT (list),
+			    "handle_dropped_icons",
+			    fm_list_handle_dropped_icons,
+			    list_view);
+
 
 	gtk_container_add (GTK_CONTAINER (list_view), GTK_WIDGET (list));
 
