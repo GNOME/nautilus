@@ -423,6 +423,12 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 	object_class->destroy = nautilus_list_destroy;
 }
 
+static gboolean 
+event_state_modifies_selection (guint event_state)
+{
+	return (event_state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) != 0;
+}
+
 static void
 set_single_click_mode (NautilusList *list,
 		       gboolean single_click_mode)
@@ -524,15 +530,32 @@ emit_selection_changed (NautilusList *list)
 }
 
 static void
-activate_row (NautilusList *list, gint row)
+activate_row_data_list (NautilusList *list, GList *activate_list)
 {
-	GtkCListRow *elem;
-
-	elem = g_list_nth (GTK_CLIST (list)->row_list,
-			   row)->data;
 	gtk_signal_emit (GTK_OBJECT (list),
 			 list_signals[ACTIVATE],
-			 elem->data);
+			 activate_list);
+}
+
+static void
+activate_selected_rows (NautilusList *list)
+{
+	GList *selection;
+
+	selection = nautilus_list_get_selection (list);
+	activate_row_data_list (list, selection);
+	g_list_free (selection);
+}
+
+static void
+activate_row (NautilusList *list, gint row)
+{
+	GList *singleton_list;
+
+	singleton_list = NULL;
+	singleton_list = g_list_append (NULL, gtk_clist_get_row_data (GTK_CLIST (list), row));
+	activate_row_data_list (list, singleton_list);
+	g_list_free (singleton_list);
 }
 
 gboolean
@@ -765,7 +788,7 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 				/* Handle selection */
 
 				if ((nautilus_list_is_row_selected (list, row)
-				     && !(event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)))
+				     && !event_state_modifies_selection (event->state))
 				    || ((event->state & GDK_CONTROL_MASK)
 					&& !(event->state & GDK_SHIFT_MASK))) {
 					/* don't change selection just yet, wait for 
@@ -789,7 +812,9 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 				 * to modify selection as appropriate, then emit signal that
 				 * will bring up menu.
 				 */
-				select_row_from_mouse (list, row, event->state);
+				if (!nautilus_list_is_row_selected (list, row)) {
+					select_row_from_mouse (list, row, event->state);
+				}
 				gtk_signal_emit (GTK_OBJECT (list),
 						 list_signals[CONTEXT_CLICK_SELECTION]);
 			} else
@@ -811,7 +836,7 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 				 * is set, so second click doesn't get passed to child
 				 * directory.
 				 */
-				activate_row (list, row);
+				activate_selected_rows (list);
 			}
 
 			retval = TRUE;
@@ -866,9 +891,15 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 		 * drag-and-drop possibility). 
 		 */
 		if (list->details->dnd_select_pending) {
-			select_row_from_mouse (list,
-				    	       list->details->button_down_row,
-				    	       list->details->dnd_select_pending_state);
+			/* If clicked on a selected item, don't change selection 
+			 * (unless perhaps if modifiers were used)
+			 */
+			if (!nautilus_list_is_row_selected (list, row) 
+			    || event_state_modifies_selection (list->details->dnd_select_pending_state)) {
+				select_row_from_mouse (list,
+					    	       list->details->button_down_row,
+					    	       list->details->dnd_select_pending_state);
+			}
 
 			list->details->dnd_select_pending = FALSE;
 			list->details->dnd_select_pending_state = 0;
@@ -879,7 +910,7 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 		 * a different row, not too much time has passed, and this is a link-type cell.
 		 */
 		if (list->details->single_click_mode && 
-		    !(event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)))
+		    !event_state_modifies_selection (event->state))
 		{
 			gint elapsed_time = event->time - list->details->button_down_time;
 
@@ -894,6 +925,12 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 					text_width = gdk_string_width (style->font, GTK_CELL_TEXT (clist_row->cell[col])->text);
 					text_x = get_cell_horizontal_start_position (clist, clist_row, col, text_width);
 					if (event->x >= text_x && event->x <= text_x + text_width) {
+						/* Note that we activate only the clicked-on item,
+						 * not all selected items. This is because the UI
+						 * feedback makes it clear that you're clicking on
+						 * a link to activate that link, rather than activating
+						 * the whole selection.
+						 */
 						activate_row (list, row);
 					}
 				}
