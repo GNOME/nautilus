@@ -98,6 +98,7 @@ struct FMDirectoryViewDetails
 	NautilusDirectory *model;
 	
 	guint display_selection_idle_id;
+	guint update_menus_idle_id;
 	
 	guint display_pending_timeout_id;
 	guint display_pending_idle_id;
@@ -171,8 +172,9 @@ static void           zoomable_zoom_in_callback                                 
 										   FMDirectoryView          *directory_view);
 static void           zoomable_zoom_out_callback                                  (NautilusZoomable         *zoomable,
 										   FMDirectoryView          *directory_view);
-static void           zoomable_zoom_to_fit_callback                              (NautilusZoomable         *zoomable,
+static void           zoomable_zoom_to_fit_callback                               (NautilusZoomable         *zoomable,
 										   FMDirectoryView          *directory_view);
+static void	      schedule_update_menus 					  (FMDirectoryView 	    *view);
 static void           schedule_idle_display_of_pending_files                      (FMDirectoryView          *view);
 static void           unschedule_idle_display_of_pending_files                    (FMDirectoryView          *view);
 static void           schedule_timeout_display_of_pending_files                   (FMDirectoryView          *view);
@@ -984,6 +986,10 @@ fm_directory_view_destroy (GtkObject *object)
 		gtk_idle_remove (view->details->display_selection_idle_id);
 	}
 
+	if (view->details->update_menus_idle_id != 0) {
+		gtk_idle_remove (view->details->update_menus_idle_id);
+	}
+
 	unschedule_display_of_pending_files (view);
 
 	g_free (view->details);
@@ -1227,6 +1233,7 @@ done_loading (FMDirectoryView *view)
 	if (view->details->nautilus_view != NULL) {
 		nautilus_view_report_load_complete (view->details->nautilus_view);
 	}
+
 	view->details->loading = FALSE;
 }
 
@@ -1395,6 +1402,20 @@ display_selection_info_idle_callback (gpointer data)
 
 	fm_directory_view_display_selection_info (view);
 	fm_directory_view_send_selection_change (view);
+
+	return FALSE;
+}
+
+static gboolean
+update_menus_idle_callback (gpointer data)
+{
+	FMDirectoryView *view;
+	
+	view = FM_DIRECTORY_VIEW (data);
+
+	view->details->update_menus_idle_id = 0;
+
+	fm_directory_view_update_menus (view);
 
 	return FALSE;
 }
@@ -2287,7 +2308,7 @@ remove_custom_icons_callback (gpointer ignored, gpointer view)
 	nautilus_file_list_free (selection);
 
         /* Update menus because Remove Custom Icons item has changed state */
-	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
+	schedule_update_menus (FM_DIRECTORY_VIEW (view));
 }
 
 static void
@@ -2375,6 +2396,10 @@ compute_menu_item_info (FMDirectoryView *directory_view,
 		*return_sensitivity =  !nautilus_trash_monitor_is_empty ();
 	} else if (strcmp (path, NAUTILUS_MENU_PATH_SELECT_ALL_ITEM) == 0) {
 		name = g_strdup (_("_Select All Files"));
+		/* FIXME bugzilla.eazel.com 2598: 
+		 * Check whether any items are displayed (not the same as whether
+		 * no files are in directory, due to hidden files).
+		 */
 		*return_sensitivity = TRUE;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS) == 0) {
                 if (nautilus_g_list_more_than_one_item (selection)) {
@@ -3159,7 +3184,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 
 	gtk_signal_connect_object (GTK_OBJECT (fm_directory_view_get_background (view)),
 			    	   "settings_changed",
-			    	   fm_directory_view_update_menus,
+			    	   schedule_update_menus,
 			    	   GTK_OBJECT (view));
 
         nautilus_file_list_free (selection);
@@ -3211,6 +3236,9 @@ fm_directory_view_real_update_menus (FMDirectoryView *view)
 			      FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH);
 	update_one_menu_item (view, handler, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS);
+
+	update_one_menu_item (view, handler, selection,
+			      NAUTILUS_MENU_PATH_SELECT_ALL_ITEM);
 
 	nautilus_file_list_free (selection);
 }
@@ -3314,6 +3342,17 @@ fm_directory_view_pop_up_background_context_menu  (FMDirectoryView *view)
 				      0);
 }
 
+static void
+schedule_update_menus (FMDirectoryView *view) 
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	if (view->details->update_menus_idle_id == 0)
+		view->details->update_menus_idle_id
+			= gtk_idle_add (update_menus_idle_callback,
+					view);
+}
+
 /**
  * fm_directory_view_notify_selection_changed:
  * 
@@ -3327,8 +3366,8 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	/* Update menu item states to match selection */
-	fm_directory_view_update_menus (view);
+	/* Schedule an update of menu item states to match selection */
+	schedule_update_menus (view);
 
 	/* Schedule a display of the new selection. */
 	if (view->details->display_selection_idle_id == 0)
@@ -3517,7 +3556,7 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 	 * going to new location, so they won't have any
 	 * false lingering knowledge of old selection. */
 	if (view->details->menus_merged) {
-		fm_directory_view_update_menus (view);
+		schedule_update_menus (view);
 	}
 
 	disconnect_model_handlers (view);
@@ -3890,5 +3929,5 @@ fm_directory_view_trash_state_changed_callback (NautilusTrashMonitor *trash_moni
 	view = (FMDirectoryView *)callback_data;
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	
-	fm_directory_view_update_menus (view);
+	schedule_update_menus (view);
 }

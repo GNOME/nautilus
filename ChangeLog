@@ -1,3 +1,34 @@
+2000-09-06  John Sullivan  <sullivan@eazel.com>
+
+	I almost fixed bug 2598 ("Select All Files" enabled when the
+	directory is empty), only to realize at the last moment that
+	there is no current API to tell whether a directory view is
+	displaying any files or not (just as there is no API to tell
+	the count of displayed files, which is part of the problem
+	with bug 480).
+
+	While fixing this, I changed the directory view menu-updating 
+	mechanism so that the real work gets done in an idle handler 
+	instead of immediately, to prevent/fix performance problems 
+	caused by multiple menu	updates happening in succession. So I'm
+	checking in this performance change but not yet addressing
+	bug 2598 itself.
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_destroy): remove menu-updating idle handler.
+	(update_menus_idle_callback): New function, calls
+	fm_directory_view_update_menus and resets idle handler id.
+	(schedule_update_menus): New function, adds idle handler that
+	calls update_menus_idle_callback.
+	(remove_custom_icons_callback), 
+	(fm_directory_view_notify_selection_changed),
+	(fm_directory_view_load_uri),
+	(fm_directory_view_trash_state_changed_callback),
+	(fm_directory_view_real_merge_menus): schedule menu update instead
+	of doing it immediately.
+	(compute_menu_item_info): Add FIXME with bug 2598 here.
+	(fm_directory_view_real_update_menus): Update Select All item.
+
 000-09-06  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus-adapter/nautilus-adapter-factory.idl: New IDL
