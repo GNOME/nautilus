@@ -1,1 +1,1 @@
-SUBDIRS=history help html websearch
+SUBDIRS=history help html notes websearch

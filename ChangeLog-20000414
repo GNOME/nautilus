@@ -1,3 +1,20 @@
+2000-02-14  Andy Hertzfeld <andy@eazel.com>
+
+	first cut at annotation metaview
+	
+	* components/notes/Makefile.am:
+	automake file for notes component
+	* components/notes/ntl-notes.c:
+	implementation of annotation metaview
+	* components/notes/ntl-notes.goad:
+	activation file for notes component
+	* components/Makefile.am:
+	added notes folder
+	* configure.in:
+	added component/notes/Makefile
+	* src/ntl-prefs.c:
+	added annotation metaview to prefs
+	
 2000-02-14  John Sullivan <sullivan@eazel.com>
 
 	Back and Forward buttons now sprout right-click menus.
