@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: nautilus 2.5.8\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-04-19 16:41+0200\n"
-"PO-Revision-Date: 2004-02-25 01:05+0900\n"
+"PO-Revision-Date: 2004-04-21 02:07+0900\n"
 "Last-Translator: Young-Ho Cha <ganadist at mizi.com>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
@@ -2518,7 +2518,7 @@ msgstr "오늘 오후 00:00:00"
 
 #: libnautilus-private/nautilus-file.c:2933
 msgid "today at %-I:%M:%S %p"
-msgstr "오늘 %p %-I:%M:%S"
+msgstr "오늘 %p %l:%M:%S"
 
 #: libnautilus-private/nautilus-file.c:2935
 msgid "today at 00:00 PM"
@@ -2526,7 +2526,7 @@ msgstr "오늘 오후 00:00"
 
 #: libnautilus-private/nautilus-file.c:2936
 msgid "today at %-I:%M %p"
-msgstr "오늘 %p %-I:%M"
+msgstr "오늘 %p %l:%M"
 
 #: libnautilus-private/nautilus-file.c:2938
 msgid "today, 00:00 PM"
@@ -2534,7 +2534,7 @@ msgstr "오늘, 오후 00:00"
 
 #: libnautilus-private/nautilus-file.c:2939
 msgid "today, %-I:%M %p"
-msgstr "오늘, 오후 %-I:%M"
+msgstr "오늘, 오후 %l:%M"
 
 #: libnautilus-private/nautilus-file.c:2941
 #: libnautilus-private/nautilus-file.c:2942
@@ -2550,7 +2550,7 @@ msgstr "어제 오후 00:00:00"
 
 #: libnautilus-private/nautilus-file.c:2952
 msgid "yesterday at %-I:%M:%S %p"
-msgstr "어제 %p %-I:%M:%S"
+msgstr "어제 %p %l:%M:%S"
 
 #: libnautilus-private/nautilus-file.c:2954
 msgid "yesterday at 00:00 PM"
@@ -2558,7 +2558,7 @@ msgstr "어제 오후 00:00"
 
 #: libnautilus-private/nautilus-file.c:2955
 msgid "yesterday at %-I:%M %p"
-msgstr "어제 %p %-I:%M"
+msgstr "어제 %p %l:%M"
 
 #: libnautilus-private/nautilus-file.c:2957
 msgid "yesterday, 00:00 PM"
@@ -2566,7 +2566,7 @@ msgstr "어제, 오후 00:00"
 
 #: libnautilus-private/nautilus-file.c:2958
 msgid "yesterday, %-I:%M %p"
-msgstr "어제, %p %-I:%M"
+msgstr "어제, %p %l:%M"
 
 #: libnautilus-private/nautilus-file.c:2960
 #: libnautilus-private/nautilus-file.c:2961
@@ -2584,7 +2584,7 @@ msgstr "0000년 9월 00일 수요일 오후 00:00:00"
 
 #: libnautilus-private/nautilus-file.c:2973
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
-msgstr "%Y년 %b %-d일 %A %p %-I:%M:%S"
+msgstr "%Y년 %b %e일 %A %p %l:%M:%S"
 
 #: libnautilus-private/nautilus-file.c:2975
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
@@ -2592,7 +2592,7 @@ msgstr "0000년 10월 00일 (월) 오후 00:00:00"
 
 #: libnautilus-private/nautilus-file.c:2976
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
-msgstr "%Y년 %b %-d일 (%a)  %p %-I:%M:%S"
+msgstr "%Y년 %b %e일 (%a)  %p %l:%M:%S"
 
 #: libnautilus-private/nautilus-file.c:2978
 msgid "Mon, Oct 00 0000 at 00:00 PM"
@@ -2600,7 +2600,7 @@ msgstr "0000년 10월 00일 (월) 오후 00:00"
 
 #: libnautilus-private/nautilus-file.c:2979
 msgid "%a, %b %-d %Y at %-I:%M %p"
-msgstr "%Y년 %b %-d일 (%a)  %p %-I:%M"
+msgstr "%Y년 %b %e일 (%a)  %p %l:%M"
 
 #: libnautilus-private/nautilus-file.c:2981
 msgid "Oct 00 0000 at 00:00 PM"
@@ -2608,7 +2608,7 @@ msgstr "0000 10 00 오후 00:00"
 
 #: libnautilus-private/nautilus-file.c:2982
 msgid "%b %-d %Y at %-I:%M %p"
-msgstr "%Y년 %b %-d일 %p %-I:%M"
+msgstr "%Y년 %b %e일 %p %l:%M"
 
 #: libnautilus-private/nautilus-file.c:2984
 msgid "Oct 00 0000, 00:00 PM"
@@ -2616,7 +2616,7 @@ msgstr "0000 10 00, 오후 00:00"
 
 #: libnautilus-private/nautilus-file.c:2985
 msgid "%b %-d %Y, %-I:%M %p"
-msgstr "%Y년 %b %-d일, %p %-I:%M"
+msgstr "%Y년 %b %e일, %p %l:%M"
 
 #: libnautilus-private/nautilus-file.c:2987
 msgid "00/00/00, 00:00 PM"
@@ -2624,7 +2624,7 @@ msgstr "00/00/00, 오후 00:00"
 
 #: libnautilus-private/nautilus-file.c:2988
 msgid "%m/%-d/%y, %-I:%M %p"
-msgstr "%y/%m/%-d, %p %-I:%M"
+msgstr "%y/%m/%d, %p %l:%M"
 
 #: libnautilus-private/nautilus-file.c:2990
 msgid "00/00/00"
