@@ -71,6 +71,14 @@ struct NautilusIconDndInfo {
 
 	/* Shadow for the icons being dragged.  */
 	GnomeCanvasItem *shadow;
+
+
+	/* During drag&drop keep a saved pointer to the private drag context.
+	 * This is a hack-workaround to deal with the inability to override
+	 * drag action feedback in gtk and will be removed once the appropriate
+	 * interface gets added to gtkdnd to do this in a clean way
+	 */
+	gpointer saved_drag_source_info;
 };
 
 void nautilus_icon_dnd_init       (NautilusIconContainer *container,
@@ -81,5 +89,7 @@ void nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 				   gint                   button,
 				   GdkEventMotion        *event);
 void nautilus_icon_dnd_end_drag   (NautilusIconContainer *container);
+
+void nautilus_icon_dnd_update_drop_action (GtkWidget 	  *widget);
 
 #endif /* NAUTILUS_ICON_DND_H */

@@ -31,16 +31,24 @@
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
+#include <gdk/gdkx.h>
+#include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-extensions.h"
+#include "nautilus-gtk-macros.h"
 #include "nautilus-gnome-extensions.h"
 #include "nautilus-background.h"
 #include "nautilus-graphic-effects.h"
 
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include "nautilus-icon-private.h"
+
+static int 	nautilus_icon_drag_key_callback (GtkWidget *widget, GdkEventKey *event, 
+		 				 gpointer data);
+static gboolean	drag_drop_callback 		(GtkWidget *widget, GdkDragContext *context,
+		 				 int x, int y, guint32 time, gpointer data);
 
 typedef struct {
 	char *uri;
@@ -501,6 +509,8 @@ drag_motion_callback (GtkWidget *widget,
 		      int x, int y,
 		      guint32 time)
 {
+	nautilus_icon_dnd_update_drop_action (widget);
+
 	nautilus_icon_container_ensure_drag_data (NAUTILUS_ICON_CONTAINER (widget), context, time);
 	nautilus_icon_container_position_shadow (NAUTILUS_ICON_CONTAINER (widget), x, y);
 
@@ -817,43 +827,6 @@ nautilus_icon_container_free_drag_data (NautilusIconContainer *container)
 	}
 }
 
-static gboolean
-drag_drop_callback (GtkWidget *widget,
-		    GdkDragContext *context,
-		    int x,
-		    int y,
-		    guint32 time,
-		    gpointer data)
-{
-	NautilusIconDndInfo *dnd_info;
-
-	dnd_info = NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info;
-
-	nautilus_icon_container_ensure_drag_data (NAUTILUS_ICON_CONTAINER (widget), context, time);
-
-	g_assert (dnd_info->got_data_type);
-	switch (dnd_info->data_type) {
-	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-		nautilus_icon_container_receive_dropped_icons
-			(NAUTILUS_ICON_CONTAINER (widget),
-			 context, x, y);
-		gtk_drag_finish (context, TRUE, FALSE, time);
-		break;
-	case NAUTILUS_ICON_DND_COLOR:
-		nautilus_background_receive_dropped_color
-			(nautilus_get_widget_background (widget),
-			 widget, x, y, dnd_info->selection_data);
-		gtk_drag_finish (context, TRUE, FALSE, time);
-		break;
-	default:
-		gtk_drag_finish (context, FALSE, FALSE, time);
-	}
-
-	nautilus_icon_container_free_drag_data (NAUTILUS_ICON_CONTAINER (widget));
-
-	return FALSE;
-}
-
 static void
 drag_leave_callback (GtkWidget *widget,
 		     GdkDragContext *context,
@@ -910,6 +883,8 @@ nautilus_icon_dnd_init (NautilusIconContainer *container,
 			    GTK_SIGNAL_FUNC (drag_leave_callback), NULL);
 
 	container->details->dnd_info = dnd_info;
+	container->details->dnd_info->saved_drag_source_info = NULL;
+
 }
 
 void
@@ -935,6 +910,59 @@ nautilus_icon_dnd_fini (NautilusIconContainer *container)
 }
 
 
+/* During drag&drop keep a saved pointer to the private drag context.
+ * We also replace the severely broken gtk_drag_get_event_actions.
+ * To do this we copy a lot of code from gtkdnd.c.
+ * 
+ * This is a hack-workaround to deal with the inability to override
+ * drag action feedback in gtk and will be removed once the appropriate
+ * interface gets added to gtkdnd to do this in a clean way.
+ * For now we need to mirror the code here
+ * to allow us to control the drop action based on the modifier
+ * key state, drop target and other drag&drop state.
+ * 
+ * FIXME:
+ */
+
+typedef struct GtkDragDestInfo GtkDragDestInfo;
+typedef struct GtkDragStatus GtkDragStatus;
+
+typedef struct GtkDragSourceInfo 
+{
+  GtkWidget         *widget;
+  GtkTargetList     *target_list; /* Targets for drag data */
+  GdkDragAction      possible_actions; /* Actions allowed by source */
+  GdkDragContext    *context;	  /* drag context */
+  GtkWidget         *icon_window; /* Window for drag */
+  GtkWidget         *ipc_widget;  /* GtkInvisible for grab, message passing */
+  GdkCursor         *cursor;	  /* Cursor for drag */
+  gint hot_x, hot_y;		  /* Hot spot for drag */
+  gint button;			  /* mouse button starting drag */
+
+  gint	 	      status;	  /* drag status !!!  GtkDragStatus in real life*/
+  GdkEvent          *last_event;  /* motion event waiting for response */
+
+  gint               start_x, start_y; /* Initial position */
+  gint               cur_x, cur_y;     /* Current Position */
+
+  GList             *selections;  /* selections we've claimed */
+  
+  GtkDragDestInfo   *proxy_dest;  /* Set if this is a proxy drag */
+
+  guint              drop_timeout;     /* Timeout for aborting drop */
+  guint              destroy_icon : 1; /* If true, destroy icon_window
+					*/
+} GtkDragSourceInfo;
+
+static GtkDragSourceInfo *
+nautilus_icon_dnd_get_drag_source_info (GtkWidget *widget, GdkDragContext *context)
+{
+	if (context == NULL)
+		return NULL;
+
+	return g_dataset_get_data (context, "gtk-info");
+}
+
 void
 nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 			      GdkDragAction actions,
@@ -950,6 +978,7 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	int x_offset, y_offset;
 	ArtDRect world_rect;
 	ArtIRect window_rect;
+	GtkDragSourceInfo *info;
 	
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_return_if_fail (event != NULL);
@@ -971,7 +1000,19 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 				  actions,
 				  button,
 				  (GdkEvent *) event);
-	  
+
+	/* set up state for overriding the broken gtk_drag_get_event_actions call */
+	info = nautilus_icon_dnd_get_drag_source_info (GTK_WIDGET (container), context);
+	container->details->dnd_info->saved_drag_source_info = info;
+
+	g_assert (info != NULL);
+
+	gtk_signal_connect (GTK_OBJECT (info ? info->ipc_widget : NULL), "key_press_event",
+			    GTK_SIGNAL_FUNC (nautilus_icon_drag_key_callback), info);
+	gtk_signal_connect (GTK_OBJECT (info ? info->ipc_widget : NULL), "key_release_event",
+			    GTK_SIGNAL_FUNC (nautilus_icon_drag_key_callback), info);
+
+
         /* create a pixmap and mask to drag with */
         pixbuf = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item, NULL);
         
@@ -1009,6 +1050,55 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 				  x_offset, y_offset);
 }
 
+static gboolean
+drag_drop_callback (GtkWidget *widget,
+		    GdkDragContext *context,
+		    int x,
+		    int y,
+		    guint32 time,
+		    gpointer data)
+{
+	NautilusIconDndInfo *dnd_info;
+	GtkDragSourceInfo *info;
+
+	dnd_info = NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info;
+
+	nautilus_icon_container_ensure_drag_data (NAUTILUS_ICON_CONTAINER (widget), context, time);
+
+	g_assert (dnd_info->got_data_type);
+	switch (dnd_info->data_type) {
+	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+		nautilus_icon_container_receive_dropped_icons
+			(NAUTILUS_ICON_CONTAINER (widget),
+			 context, x, y);
+		gtk_drag_finish (context, TRUE, FALSE, time);
+		break;
+	case NAUTILUS_ICON_DND_COLOR:
+		nautilus_background_receive_dropped_color
+			(nautilus_get_widget_background (widget),
+			 widget, x, y, dnd_info->selection_data);
+		gtk_drag_finish (context, TRUE, FALSE, time);
+		break;
+	default:
+		gtk_drag_finish (context, FALSE, FALSE, time);
+	}
+
+	nautilus_icon_container_free_drag_data (NAUTILUS_ICON_CONTAINER (widget));
+
+	info = NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info->saved_drag_source_info;
+	g_assert (info != NULL);
+
+	if (info != NULL) {
+		gtk_signal_disconnect_by_func (GTK_OBJECT (info->ipc_widget),
+					GTK_SIGNAL_FUNC (nautilus_icon_drag_key_callback),
+					info);
+	}
+
+	NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info->saved_drag_source_info = NULL;
+
+	return FALSE;
+}
+
 void
 nautilus_icon_dnd_end_drag (NautilusIconContainer *container)
 {
@@ -1022,4 +1112,234 @@ nautilus_icon_dnd_end_drag (NautilusIconContainer *container)
 	/* Do nothing.
 	 * Can that possibly be right?
 	 */
+}
+
+static int
+nautilus_icon_dnd_modifier_based_action ()
+{
+	GdkModifierType modifiers;
+	gdk_window_get_pointer (NULL, NULL, NULL, &modifiers);
+
+	if ((modifiers & GDK_CONTROL_MASK) != 0) {
+		return GDK_ACTION_COPY;
+#if 0
+	/* FIXME:
+	 * don't know how to do links yet
+	 */
+	 } else if ((modifiers & GDK_MOD1_MASK) != 0) {
+		return GDK_ACTION_LINK;
+#endif
+	}
+
+	return GDK_ACTION_MOVE;
+}
+
+void
+nautilus_icon_dnd_update_drop_action (GtkWidget *widget)
+{
+	GtkDragSourceInfo *info;
+
+	info = NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info->saved_drag_source_info;
+	if (info == NULL)
+		return;
+
+	info->possible_actions = nautilus_icon_dnd_modifier_based_action ();
+}
+
+/* Replacement for broken gtk_drag_get_event_actions */
+
+static void
+nautilus_icon_dnd_get_event_actions (GdkEvent *event, 
+				    gint button, 
+				    GdkDragAction actions,
+				    GdkDragAction *suggested_action,
+				    GdkDragAction *possible_actions)
+{
+	*suggested_action = nautilus_icon_dnd_modifier_based_action ();
+	*possible_actions = *suggested_action;
+}
+		 
+/* Copied from gtkdnd.c to work around broken gtk_drag_get_event_actions */
+
+static guint32
+nautilus_icon_dnd_get_event_time (GdkEvent *event)
+{
+  guint32 tm = GDK_CURRENT_TIME;
+  
+  if (event)
+    switch (event->type)
+      {
+      case GDK_MOTION_NOTIFY:
+	tm = event->motion.time; break;
+      case GDK_BUTTON_PRESS:
+      case GDK_2BUTTON_PRESS:
+      case GDK_3BUTTON_PRESS:
+      case GDK_BUTTON_RELEASE:
+	tm = event->button.time; break;
+      case GDK_KEY_PRESS:
+      case GDK_KEY_RELEASE:
+	tm = event->key.time; break;
+      case GDK_ENTER_NOTIFY:
+      case GDK_LEAVE_NOTIFY:
+	tm = event->crossing.time; break;
+      case GDK_PROPERTY_NOTIFY:
+	tm = event->property.time; break;
+      case GDK_SELECTION_CLEAR:
+      case GDK_SELECTION_REQUEST:
+      case GDK_SELECTION_NOTIFY:
+	tm = event->selection.time; break;
+      case GDK_PROXIMITY_IN:
+      case GDK_PROXIMITY_OUT:
+	tm = event->proximity.time; break;
+      default:			/* use current time */
+	break;
+      }
+  
+  return tm;
+}
+
+/* Copied from gtkdnd.c to work around broken gtk_drag_get_event_actions */
+
+enum {
+  TARGET_MOTIF_SUCCESS = 0x40000000,
+  TARGET_MOTIF_FAILURE,
+  TARGET_DELETE
+};
+
+/* Copied from gtkdnd.c to work around broken gtk_drag_get_event_actions */
+
+static void
+nautilus_icon_dnd_source_check_selection (GtkDragSourceInfo *info, 
+				 GdkAtom            selection,
+				 guint32            time)
+{
+  GList *tmp_list;
+
+  tmp_list = info->selections;
+  while (tmp_list)
+    {
+      if (GPOINTER_TO_UINT (tmp_list->data) == selection)
+	return;
+      tmp_list = tmp_list->next;
+    }
+
+  gtk_selection_owner_set (info->ipc_widget, selection, time);
+  info->selections = g_list_prepend (info->selections,
+				     GUINT_TO_POINTER (selection));
+
+  tmp_list = info->target_list->list;
+  while (tmp_list)
+    {
+      GtkTargetPair *pair = tmp_list->data;
+
+      gtk_selection_add_target (info->ipc_widget,
+				selection,
+				pair->target,
+				pair->info);
+      tmp_list = tmp_list->next;
+    }
+  
+  if (info->context->protocol == GDK_DRAG_PROTO_MOTIF)
+    {
+      gtk_selection_add_target (info->ipc_widget,
+				selection,
+				gdk_atom_intern ("XmTRANSFER_SUCCESS", FALSE),
+				TARGET_MOTIF_SUCCESS);
+      gtk_selection_add_target (info->ipc_widget,
+				selection,
+				gdk_atom_intern ("XmTRANSFER_FAILURE", FALSE),
+				TARGET_MOTIF_FAILURE);
+    }
+
+  gtk_selection_add_target (info->ipc_widget,
+			    selection,
+			    gdk_atom_intern ("DELETE", FALSE),
+			    TARGET_DELETE);
+}
+
+/* Copied from gtkdnd.c to work around broken gtk_drag_get_event_actions */
+
+static void
+nautilus_icon_dnd_update (GtkDragSourceInfo *info,
+		 gint               x_root,
+		 gint               y_root,
+		 GdkEvent          *event)
+{
+  GdkDragAction action;
+  GdkDragAction possible_actions;
+  GdkWindow *window = NULL;
+  GdkWindow *dest_window;
+  GdkDragProtocol protocol;
+  GdkAtom selection;
+  guint32 time = nautilus_icon_dnd_get_event_time (event);
+
+  nautilus_icon_dnd_get_event_actions (event,
+				      info->button, 
+				      info->possible_actions,
+				      &action, &possible_actions);
+  info->cur_x = x_root;
+  info->cur_y = y_root;
+
+  if (info->icon_window)
+    {
+      gdk_window_raise (info->icon_window->window);
+      gtk_widget_set_uposition (info->icon_window, 
+				info->cur_x - info->hot_x, 
+				info->cur_y - info->hot_y);
+      window = info->icon_window->window;
+    }
+  
+  gdk_drag_find_window (info->context,
+			window, x_root, y_root,
+			&dest_window, &protocol);
+
+  if (gdk_drag_motion (info->context, dest_window, protocol,
+		       x_root, y_root, action, 
+		       possible_actions,
+		       time))
+    {
+      if (info->last_event)
+	gdk_event_free ((GdkEvent *)info->last_event);
+      
+      info->last_event = gdk_event_copy ((GdkEvent *)event);
+    }
+
+  if (dest_window)
+    gdk_window_unref (dest_window);
+
+  selection = gdk_drag_get_selection (info->context);
+
+  if (selection)
+    nautilus_icon_dnd_source_check_selection (info, selection, time);
+}
+
+/* Copied from gtkdnd.c to work around broken gtk_drag_get_event_actions */
+static int 
+nautilus_icon_drag_key_callback (GtkWidget *widget, GdkEventKey *event, 
+		 		 gpointer data)
+{
+	GtkDragSourceInfo *info = (GtkDragSourceInfo *)data;
+	GdkModifierType state;
+
+	g_return_val_if_fail (GTK_IS_WIDGET (widget), TRUE);
+	g_return_val_if_fail (event != NULL, TRUE);
+	g_return_val_if_fail (data != NULL, TRUE);
+
+	if (event->type == GDK_KEY_PRESS
+		&& event->keyval == GDK_Escape) {
+		return FALSE;
+	}
+
+	/* Now send a "motion" so that the modifier state is updated */
+
+	/* The state is not yet updated in the event, so we need
+	 * to query it here. We could use XGetModifierMapping, but
+	 * that would be overkill.
+	 */
+	gdk_window_get_pointer (GDK_ROOT_PARENT(), NULL, NULL, &state);
+
+	event->state = state;
+	nautilus_icon_dnd_update (info, info->cur_x, info->cur_y, (GdkEvent *)event);
+
+	return TRUE;
 }

@@ -1,3 +1,29 @@
+2000-04-10  Pavel Cisler <pavel@eazel.com>
+	Nasty hack to allow drag&drop actions to respond to modifier keys
+	and the drop context properly. This will one day get fixed by
+	adding proper hooks to Gtk+ and using them. For now we have to
+	do this.
+
+	* libnautilus/nautilus-icon-dnd.h:
+	* libnautilus/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_update_drop_action),
+	(nautilus_icon_dnd_modifier_based_action),
+	(nautilus_icon_dnd_get_event_actions),
+	(nautilus_icon_dnd_get_event_time),
+	(nautilus_icon_dnd_source_check_selection),
+	(nautilus_icon_dnd_update),
+	(nautilus_icon_drag_key_callback),
+	(nautilus_icon_dnd_begin_drag), (drag_drop_callback):
+	Pull in a bunch of code from gtkdnd.c. Add new call to
+	allow overriding drop actions based on modifiers and the drop 
+	context. Connect the "key_press_event" and "key_release_event"
+	to the copied code. All this to be able to call
+	nautilus_icon_dnd_get_event_actions instead of the broken
+	and private gtk_drag_get_event_actions.
+	I still have to add code to change the default action based
+	on the drop target between copy and move based whether the
+	source and drop containers are the same, etc.
+
 2000-04-10  Andy Hertzfeld <andy@eazel.com>
 
 	* components/rpmview/nautilus-rpmview.c:

@@ -1667,20 +1667,12 @@ motion_notify_event (GtkWidget *widget,
 				 */
 				motion->x = details->drag_x;
 				motion->y = details->drag_y;
-			
+
+				/* drag action passed in here gets updated in
+				 * nautilus_icon_dnd_update_drop_action
+				 */
 				nautilus_icon_dnd_begin_drag (container,
-							      GDK_ACTION_MOVE 
-#if 0
-	/* 
-	 * FIXME:
-	 *
-	 * disable copy operations for now -- the default drop action is
-	 * wrong (should be move, not copy) and the copy engine doesn't
-	 * handle conflicts correctly yet
-	 */
-							      | GDK_ACTION_COPY
-#endif
-							      ,
+							      GDK_ACTION_MOVE,
 							      details->drag_button,
 							      motion);
 			}
@@ -1700,6 +1692,9 @@ key_press_event (GtkWidget *widget,
 {
 	NautilusIconContainer *container;
 
+	/* allow the drag state update the drag action if modifiers changed */
+	nautilus_icon_dnd_update_drop_action (widget);
+	
 	if (NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, key_press_event, (widget, event))) {
 		return TRUE;
 	}
