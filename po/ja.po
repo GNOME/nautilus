@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus CVS-20000519\n"
-"POT-Creation-Date: 2000-05-19 22:50+0900\n"
-"PO-Revision-Date: 2000-05-19 23:26+0900\n"
+"POT-Creation-Date: 2000-05-22 03:11+0900\n"
+"PO-Revision-Date: 2000-05-22 03:12+0900\n"
 "Last-Translator: Akira TAGOH <tagoh@gnome.gr.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -31,12 +31,12 @@ msgstr "場所"
 msgid "Remove"
 msgstr "削除"
 
-#: src/file-manager/fm-properties-window.c:590 src/nautilus-location-bar.c:212
+#: src/file-manager/fm-properties-window.c:590 src/nautilus-location-bar.c:209
 msgid "Location:"
 msgstr "場所:"
 
-#: src/nautilus-window-menus.c:306 src/ntl-window-msgs.c:211
-#: src/ntl-window-msgs.c:246 src/ntl-window-msgs.c:247
+#: src/nautilus-window-menus.c:306 src/ntl-window-msgs.c:212
+#: src/ntl-window-msgs.c:247 src/ntl-window-msgs.c:248
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -269,8 +269,8 @@ msgstr "ホーム"
 msgid "Go to your home directory"
 msgstr "あなたのホームページへ移動する"
 
-#: components/music/nautilus-music-view.c:919 src/file-manager/dfos-xfer.c:216
-#: src/nautilus-window-toolbars.c:95
+#: components/music/nautilus-music-view.c:1197
+#: src/file-manager/dfos-xfer.c:216 src/nautilus-window-toolbars.c:95
 msgid "Stop"
 msgstr "停止"
 
@@ -282,34 +282,29 @@ msgstr "読み込みを中断する"
 msgid "Perform high-speed self-check tests."
 msgstr "高速自己チェックテストを実行する"
 
-#: src/ntl-view-bonobo-control.c:78
-#, c-format
-msgid "Control %p"
-msgstr "コントロール %p"
-
-#: src/ntl-window-msgs.c:249
+#: src/ntl-window-msgs.c:250
 #, c-format
 msgid "Nautilus: %s"
 msgstr "Nautilus: %s"
 
-#: src/ntl-window-msgs.c:624
+#: src/ntl-window-msgs.c:626
 #, c-format
 msgid "You do not have the right permissions to view \"%s.\""
 msgstr "あなたには \"%s\" を見る正しいパーミッションがありません"
 
-#: src/ntl-window-msgs.c:1090
+#: src/ntl-window-msgs.c:1098
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 "\"%s\" を見つける事が出来ませんでした．綴りをチェックして再試行して下さい"
 
-#: src/ntl-window-msgs.c:1094
+#: src/ntl-window-msgs.c:1102
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr "\"%s\" は有効な場所ではありません．綴りをチェックして再試行して下さい"
 
-#: src/ntl-window-msgs.c:1101
+#: src/ntl-window-msgs.c:1109
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot handle items of type \"%s\"."
@@ -317,7 +312,7 @@ msgstr ""
 "\"%s\" を表示できませんでした, だから Nautilus がタイプ \"%s\" "
 "のアイテムを扱うことが出来ません"
 
-#: src/ntl-window-msgs.c:1105
+#: src/ntl-window-msgs.c:1113
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot handle items of this type."
@@ -326,7 +321,7 @@ msgstr ""
 "はこのタイプのアイテムを扱うことが出来ません"
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/ntl-window-msgs.c:1115
+#: src/ntl-window-msgs.c:1123
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
@@ -337,25 +332,25 @@ msgstr ""
 #. * When this comes up, we should figure out what's really happening
 #. * and add another specific case.
 #.
-#: src/ntl-window-msgs.c:1125
+#: src/ntl-window-msgs.c:1133
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus は \"%s\" を表示できません"
 
-#: src/ntl-window-msgs.c:1182
+#: src/ntl-window-msgs.c:1190
 msgid "Gathering information"
 msgstr "情報収集"
 
-#: src/ntl-window.c:715
+#: src/ntl-window.c:716
 #, c-format
 msgid "View as %s"
 msgstr "%s で表示"
 
-#: src/ntl-window.c:742
+#: src/ntl-window.c:743
 msgid "View as ..."
 msgstr "表示..."
 
-#: src/ntl-window.c:1035
+#: src/ntl-window.c:1036
 msgid "Close"
 msgstr "閉じる"
 
@@ -1043,10 +1038,6 @@ msgstr "未知のタイプ"
 msgid " --"
 msgstr " --"
 
-#: libnautilus/nautilus-meta-view-frame.c:144
-msgid "Label"
-msgstr "ラベル"
-
 #. * From 'man(7)':
 #.
 #. The manual sections are traditionally defined as follows:
@@ -1154,14 +1145,6 @@ msgstr " (参照 \""
 msgid " (see also \""
 msgstr "(関連項目 \""
 
-#: components/help/hyperbola-nav-index.c:721
-msgid "Help Index"
-msgstr "ヘルプインデックス"
-
-#: components/history/ntl-history-view.c:247
-msgid "History"
-msgstr "履歴"
-
 #: components/html/gnome-dialogs.c:87
 msgid "Transfer Progress"
 msgstr "転送の進捗"
@@ -1248,56 +1231,64 @@ msgstr "テキストを入力してください"
 msgid "Enter Password"
 msgstr "パスワードを入力して下さい"
 
-#: components/music/nautilus-music-view.c:178
+#: components/music/nautilus-music-view.c:196
 msgid "Track "
 msgstr "トラック "
 
-#: components/music/nautilus-music-view.c:178
+#: components/music/nautilus-music-view.c:196
 msgid "Title"
 msgstr "タイトル"
 
-#: components/music/nautilus-music-view.c:178
+#: components/music/nautilus-music-view.c:196
 msgid "Artist"
 msgstr "アーティスト"
 
-#: components/music/nautilus-music-view.c:178
+#: components/music/nautilus-music-view.c:196
+msgid "Year"
+msgstr "年"
+
+#: components/music/nautilus-music-view.c:196
 msgid "Bitrate "
 msgstr "ビットレート "
 
-#: components/music/nautilus-music-view.c:178
+#: components/music/nautilus-music-view.c:196
 msgid "Time "
 msgstr "時間 "
 
+#: components/music/nautilus-music-view.c:196
+msgid "Album"
+msgstr "アルバム"
+
+#: components/music/nautilus-music-view.c:196
+msgid "Comment"
+msgstr "コメント"
+
 #. allocate a widget for the album title
-#: components/music/nautilus-music-view.c:200
+#: components/music/nautilus-music-view.c:220
 msgid "Album Title"
 msgstr "アルバムタイトル"
 
-#: components/music/nautilus-music-view.c:820
+#: components/music/nautilus-music-view.c:1109
 msgid "Song Title"
 msgstr "曲名"
 
-#: components/music/nautilus-music-view.c:862
-msgid "volume"
-msgstr "音量"
-
-#: components/music/nautilus-music-view.c:883
+#: components/music/nautilus-music-view.c:1161
 msgid "Previous"
 msgstr "戻る"
 
-#: components/music/nautilus-music-view.c:895
+#: components/music/nautilus-music-view.c:1173
 msgid "Play"
 msgstr "演奏"
 
-#: components/music/nautilus-music-view.c:907
+#: components/music/nautilus-music-view.c:1185
 msgid "Pause"
 msgstr "一時停止"
 
-#: components/music/nautilus-music-view.c:931
+#: components/music/nautilus-music-view.c:1209
 msgid "Next"
 msgstr "次"
 
-#: components/notes/ntl-notes.c:180 components/notes/ntl-notes.c:189
+#: components/notes/ntl-notes.c:211
 msgid "Notes"
 msgstr "ノート"
 
@@ -1433,6 +1424,5 @@ msgid "Results"
 msgstr "結果"
 
 #: components/websearch/ntl-web-search.c:228
-#: components/websearch/ntl-web-search.c:237
 msgid "WebSearch"
 msgstr "Web 検索"
