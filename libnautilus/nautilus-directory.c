@@ -1069,7 +1069,8 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 static int
 compare_file_with_name (gconstpointer a, gconstpointer b)
 {
-	return strcmp (((const NautilusFile *) a)->info->name, b);
+	return strcmp (((const NautilusFile *) a)->info->name,
+		       (const char *) b);
 }
 
 NautilusFile *

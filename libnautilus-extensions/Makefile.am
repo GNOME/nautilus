@@ -40,6 +40,7 @@ libnautilusinclude_HEADERS=			\
 	nautilus-file.h				\
 	nautilus-file-utilities.h		\
 	nautilus-glib-extensions.h		\
+	nautilus-gnome-extensions.h		\
 	nautilus-gtk-extensions.h		\
 	nautilus-icon-factory.h			\
 	nautilus-icons-controller.h		\
@@ -70,6 +71,7 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	nautilus-file.c				\
 	nautilus-file-utilities.c		\
 	nautilus-glib-extensions.c		\
+	nautilus-gnome-extensions.c		\
 	nautilus-gtk-extensions.c		\
 	nautilus-icon-factory.c			\
 	nautilus-icons-controller.c		\

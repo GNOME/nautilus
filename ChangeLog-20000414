@@ -1,3 +1,34 @@
+2000-03-10  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/Makefile.am, libnautilus/gnome-icon-container-dnd.c
+	  (set_gnome_icon_list_selection,
+	  gnome_icon_container_dnd_begin_drag),
+	  libnautilus/gnome-icon-container.c (icon_is_in_region,
+	  start_stretching), libnautilus/nautilus-icons-view-icon-item.h,
+	  libnautilus/nautilus-icons-view-icon-item.c (hit_stretch_handle,
+	  hit_test_pixbuf, hit_test, nautilus_icons_view_icon_item_point,
+	  nautilus_icons_view_icon_item_get_icon_world_rectangle,
+	  nautilus_icons_view_icon_item_get_icon_rectangle,
+	  nautilus_icons_view_icon_item_get_icon_window_rectangle,
+	  nautilus_icons_view_icon_item_get_hit_stretch_handle,
+	  hit_stretch_handle,
+	  nautilus_icons_view_icon_item_hit_test_stretch_handles,
+	  nautilus_icons_view_icon_item_hit_test_rectangle):
+	Fixed rubber banding to hit test with all the parts of the icon,
+	not just the icon pixbuf itself. Did this by changing all the
+	internal hit testing to use rects instead of points. At the same
+	time changed the external interface to always use world
+	coordinates for clarity.
+
+	* libnautilus/nautilus-directory.c (compare_file_with_name),
+	libnautilus/nautilus-file.c (nautilus_file_set_keywords): Fixed
+	some void * problems that upset newer versions of GCC but not the
+	older one that I'm using.
+
+	* libnautilus/nautilus-gtk-extensions.h,
+	libnautilus/nautilus-gtk-extensions.c: Formatting and include
+	statements fix up.
+	
 2000-03-10  Jonathan Blandford  <jrb@redhat.com>
 
 	* libnautilus/gnome-icon-container.c (button_press_event): Avoid a

@@ -41,7 +41,6 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_IS_ICONS_VIEW_ICON_ITEM_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((klass),	NAUTILUS_TYPE_ICONS_VIEW_ICON_ITEM))
 
-
 typedef struct NautilusIconsViewIconItem NautilusIconsViewIconItem;
 typedef struct NautilusIconsViewIconItemClass NautilusIconsViewIconItemClass;
 typedef struct NautilusIconsViewIconItemDetails NautilusIconsViewIconItemDetails;
@@ -55,22 +54,23 @@ struct NautilusIconsViewIconItemClass {
 	GnomeCanvasItemClass parent_class;
 };
 
+/* GtkObject */
 GtkType  nautilus_icons_view_icon_item_get_type                  (void);
 
+/* attributes */
 void     nautilus_icons_view_icon_item_set_emblems               (NautilusIconsViewIconItem *item,
 								  GList                     *emblem_pixbufs);
-
-void     nautilus_icons_view_icon_item_get_icon_world_rectangle  (NautilusIconsViewIconItem *item,
-								  ArtDRect                  *world_rectangle);
-void     nautilus_icons_view_icon_item_get_icon_window_rectangle (NautilusIconsViewIconItem *item,
-								  ArtIRect                  *window_rectangle);
-
 void     nautilus_icons_view_icon_item_set_show_stretch_handles  (NautilusIconsViewIconItem *item,
 								  gboolean                   show_stretch_handles);
 
-gboolean nautilus_icons_view_icon_item_get_hit_stretch_handle    (NautilusIconsViewIconItem *item,
-								  int                        canvas_x,
-								  int                        canvas_y);
+
+/* geometry and hit testing */
+gboolean nautilus_icons_view_icon_item_hit_test_rectangle        (NautilusIconsViewIconItem *item,
+								  const ArtDRect            *world_rectangle);
+gboolean nautilus_icons_view_icon_item_hit_test_stretch_handles  (NautilusIconsViewIconItem *item,
+								  const ArtPoint            *world_point);
+void     nautilus_icons_view_icon_item_get_icon_rectangle        (NautilusIconsViewIconItem *item,
+								  ArtDRect                  *world_rectangle);
 
 END_GNOME_DECLS
 

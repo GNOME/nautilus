@@ -29,12 +29,13 @@
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
-#include "nautilus-glib-extensions.h"
 #include <gtk/gtksignal.h>
+#include "nautilus-glib-extensions.h"
 #include "nautilus-gtk-extensions.h"
+#include "nautilus-gnome-extensions.h"
 #include "nautilus-background.h"
-#include "gnome-icon-container-private.h"
 #include <libgnomeui/gnome-canvas-rect-ellipse.h>
+#include "gnome-icon-container-private.h"
 
 typedef struct {
 	char *uri;
@@ -203,7 +204,8 @@ set_gnome_icon_list_selection (GnomeIconContainer *container,
 	data = g_string_new (NULL);
 	for (p = details->icons; p != NULL; p = p->next) {
 		GnomeIconContainerIcon *icon;
-		ArtIRect rect;
+		ArtDRect world_rect;
+		ArtIRect window_rect;
 		char *uri;
 		char *s;
 
@@ -211,17 +213,19 @@ set_gnome_icon_list_selection (GnomeIconContainer *container,
 		if (!icon->is_selected)
 			continue;
 
-		nautilus_icons_view_icon_item_get_icon_window_rectangle
-			(icon->item, &rect);
+		nautilus_icons_view_icon_item_get_icon_rectangle
+			(icon->item, &world_rect);
+		nautilus_gnome_canvas_world_to_window_rectangle
+			(GNOME_CANVAS (container), &world_rect, &window_rect);
 		uri = nautilus_icons_controller_get_icon_uri
 			(details->controller, icon->data);
 
 		s = g_strdup_printf ("%s\r%d:%d:%hu:%hu\r\n",
 				     uri,
-				     (int) (rect.x0 - details->dnd_info->start_x),
-				     (int) (rect.y0 - details->dnd_info->start_y),
-				     rect.x1 - rect.x0,
-				     rect.y1 - rect.y0);
+				     (int) (window_rect.x0 - details->dnd_info->start_x),
+				     (int) (window_rect.y0 - details->dnd_info->start_y),
+				     window_rect.x1 - window_rect.x0,
+				     window_rect.y1 - window_rect.y0);
 
 		g_free (uri);
 
@@ -787,7 +791,8 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 	GdkPixmap *pixmap_for_dragged_file;
 	GdkBitmap *mask_for_dragged_file;
 	int x_offset, y_offset;
-	ArtIRect rect;
+	ArtDRect world_rect;
+	ArtIRect window_rect;
 	
 	g_return_if_fail (GNOME_IS_ICON_CONTAINER (container));
 	g_return_if_fail (event != NULL);
@@ -820,23 +825,27 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 	   for relatively small pixbufs.  Eventually, we may have to remove this entirely
 	   for UI consistency reasons */
 	
-	if ((gdk_pixbuf_get_width(pixbuf) * gdk_pixbuf_get_height(pixbuf)) < 4096)
-		transparent_pixbuf = make_semi_transparent(pixbuf);
-	else
+	if ((gdk_pixbuf_get_width(pixbuf) * gdk_pixbuf_get_height(pixbuf)) < 4096) {
+		transparent_pixbuf = make_semi_transparent (pixbuf);
+	} else {
+		gdk_pixbuf_ref (pixbuf);
 		transparent_pixbuf = pixbuf;
+	}
 		
 	gdk_pixbuf_render_pixmap_and_mask (transparent_pixbuf,
 					   &pixmap_for_dragged_file,
 					   &mask_for_dragged_file,
 					   128);
-	if (transparent_pixbuf != pixbuf)
-		gdk_pixbuf_unref(transparent_pixbuf);
+
+	gdk_pixbuf_unref (transparent_pixbuf);
 	
         /* compute the image's offset */
-	nautilus_icons_view_icon_item_get_icon_window_rectangle
-		(container->details->drag_icon->item, &rect);
-        x_offset = dnd_info->start_x - rect.x0;
-        y_offset = dnd_info->start_y - rect.y0;
+	nautilus_icons_view_icon_item_get_icon_rectangle
+		(container->details->drag_icon->item, &world_rect);
+	nautilus_gnome_canvas_world_to_window_rectangle
+		(canvas, &world_rect, &window_rect);
+        x_offset = dnd_info->start_x - window_rect.x0;
+        y_offset = dnd_info->start_y - window_rect.y0;
         
         /* set the pixmap and mask for dragging */
         gtk_drag_set_icon_pixmap (context, gtk_widget_get_colormap (GTK_WIDGET (container)),

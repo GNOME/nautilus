@@ -298,13 +298,12 @@ icon_is_in_region (GnomeIconContainer *container,
 		   int x1, int y1)
 {
 	ArtDRect rect;
-
-	if (x0 >= x1 || y0 >= y1)
-		return FALSE;
-
-	nautilus_icons_view_icon_item_get_icon_world_rectangle
+	rect.x0 = x0;
+	rect.x1 = x1;
+	rect.y0 = y0;
+	rect.y1 = y1;
+	return nautilus_icons_view_icon_item_hit_test_rectangle
 		(icon->item, &rect);
-	return x0 < rect.x1 && x1 >= rect.x0 && y0 < rect.y1 && y1 >= rect.y0;
 }
 
 static void
@@ -1199,12 +1198,13 @@ rubberband_select_in_cell (GnomeIconContainer *container,
 						    prev_x1, prev_y1,
 						    prev_x2, prev_y2);
 
-		if (in_curr_region && ! in_prev_region)
+		if (in_curr_region && ! in_prev_region) {
 			selection_changed |= icon_set_selected (container, icon,
 								!icon->was_selected_before_rubberband);
-		else if (in_prev_region && ! in_curr_region)
+		} else if (in_prev_region && ! in_curr_region) {
 			selection_changed |= icon_set_selected (container, icon,
 								icon->was_selected_before_rubberband);
+		}
 	}
 
 	return selection_changed;
@@ -1931,24 +1931,26 @@ start_stretching (GnomeIconContainer *container)
 {
 	GnomeIconContainerDetails *details;
 	GnomeIconContainerIcon *icon;
-	int canvas_x, canvas_y;
+	ArtPoint world_point;
 
 	details = container->details;
 	icon = details->stretch_icon;
 	
-	gnome_canvas_w2c (GNOME_CANVAS (container),
-			  details->drag_x, details->drag_y,
-			  &canvas_x, &canvas_y);
-	
 	/* Check if we hit the stretch handles. */
-	if (!nautilus_icons_view_icon_item_get_hit_stretch_handle
-	    (icon->item, canvas_x, canvas_y))
+	world_point.x = details->drag_x;
+	world_point.y = details->drag_y;
+	if (!nautilus_icons_view_icon_item_hit_test_stretch_handles
+	    (icon->item, &world_point)) {
 		return FALSE;
+	}
 
 	/* Set up the dragging. */
 	details->drag_action = DRAG_ACTION_STRETCH;
-	details->stretch_start.pointer_x = canvas_x;
-	details->stretch_start.pointer_y = canvas_y;
+	gnome_canvas_w2c (GNOME_CANVAS (container),
+			  details->drag_x,
+			  details->drag_y,
+			  &details->stretch_start.pointer_x,
+			  &details->stretch_start.pointer_y);
 	gnome_canvas_w2c (GNOME_CANVAS (container),
 			  icon->x, icon->y,
 			  &details->stretch_start.icon_x,

@@ -37,6 +37,7 @@
 #include "nautilus-glib-extensions.h"
 #include "gdk-extensions.h"
 #include "nautilus-gtk-macros.h"
+#include "nautilus-gnome-extensions.h"
 
 #define STRETCH_HANDLE_THICKNESS 5
 #define EMBLEM_SPACING 2
@@ -156,6 +157,8 @@ static void     draw_pixbuf                                             (GdkPixb
 									 GdkDrawable                     *drawable,
 									 int                              x,
 									 int                              y);
+static gboolean hit_stretch_handle                                      (NautilusIconsViewIconItem       *item,
+									 const ArtIRect                  *canvas_rect);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconsViewIconItem, nautilus_icons_view_icon_item, GNOME_TYPE_CANVAS_ITEM)
 
@@ -978,9 +981,10 @@ compute_text_rectangle (NautilusIconsViewIconItem *item, const ArtIRect *icon_re
 }
 
 static gboolean
-hit_test_pixbuf (GdkPixbuf *pixbuf, int pixbuf_x, int pixbuf_y, int probe_x, int probe_y)
+hit_test_pixbuf (GdkPixbuf *pixbuf, const ArtIRect *pixbuf_location, const ArtIRect *probe_rect)
 {
-	int relative_x, relative_y;
+	ArtIRect relative_rect, pixbuf_rect;
+	int x, y;
 	guint8 *pixel;
 	
 	/* You can get here without a pixbuf in some strage cases. */
@@ -989,11 +993,16 @@ hit_test_pixbuf (GdkPixbuf *pixbuf, int pixbuf_x, int pixbuf_y, int probe_x, int
 	}
 	
 	/* Check to see if it's within the rectangle at all. */
-	relative_x = probe_x - pixbuf_x;
-	relative_y = probe_y - pixbuf_y;
-	if (relative_x < 0 || relative_y < 0
-	    || relative_x > gdk_pixbuf_get_width (pixbuf)
-	    || relative_y > gdk_pixbuf_get_height (pixbuf)) {
+	relative_rect.x0 = probe_rect->x0 - pixbuf_location->x0;
+	relative_rect.y0 = probe_rect->y0 - pixbuf_location->y0;
+	relative_rect.x1 = probe_rect->x1 - pixbuf_location->x0;
+	relative_rect.y1 = probe_rect->y1 - pixbuf_location->y0;
+	pixbuf_rect.x0 = 0;
+	pixbuf_rect.y0 = 0;
+	pixbuf_rect.x1 = gdk_pixbuf_get_width (pixbuf);
+	pixbuf_rect.y1 = gdk_pixbuf_get_height (pixbuf);
+	art_irect_intersect (&relative_rect, &relative_rect, &pixbuf_rect);
+	if (art_irect_empty (&relative_rect)) {
 		return FALSE;
 	}
 
@@ -1004,14 +1013,21 @@ hit_test_pixbuf (GdkPixbuf *pixbuf, int pixbuf_x, int pixbuf_y, int probe_x, int
 	g_assert (gdk_pixbuf_get_n_channels (pixbuf) == 4);
 	
 	/* Check the alpha channel of the pixel to see if we have a hit. */
-	pixel = gdk_pixbuf_get_pixels (pixbuf)
-		+ relative_y * gdk_pixbuf_get_rowstride (pixbuf)
-		+ relative_x * 4;
-	return pixel[3] >= 128;
+	for (x = pixbuf_rect.x0; x < pixbuf_rect.x1; x++) {
+		for (y = pixbuf_rect.y0; y < pixbuf_rect.y1; y++) {
+			pixel = gdk_pixbuf_get_pixels (pixbuf)
+				+ y * gdk_pixbuf_get_rowstride (pixbuf)
+				+ x * 4;
+			if (pixel[3] >= 128) {
+				return TRUE;
+			}
+		}
+	}
+	return FALSE;
 }
 
 static gboolean
-hit_test (NautilusIconsViewIconItem *icon_item, int cx, int cy)
+hit_test (NautilusIconsViewIconItem *icon_item, const ArtIRect *canvas_rect)
 {
 	NautilusIconsViewIconItemDetails *details;
 	ArtIRect icon_rect, text_rect, emblem_rect;
@@ -1021,27 +1037,27 @@ hit_test (NautilusIconsViewIconItem *icon_item, int cx, int cy)
 	details = icon_item->details;
 
 	/* Check for hits in the stretch handles. */
-	if (nautilus_icons_view_icon_item_get_hit_stretch_handle (icon_item, cx, cy)) {
+	if (hit_stretch_handle (icon_item, canvas_rect)) {
 		return TRUE;
 	}
 	
 	/* Check for hit in the icon. */
-	nautilus_icons_view_icon_item_get_icon_canvas_rectangle (icon_item, &icon_rect);
-	if (hit_test_pixbuf (details->pixbuf, icon_rect.x0, icon_rect.y0, cx, cy)) {
+	nautilus_icons_view_icon_item_get_icon_canvas_rectangle
+		(icon_item, &icon_rect);
+	if (hit_test_pixbuf (details->pixbuf, &icon_rect, canvas_rect)) {
 		return TRUE;
 	}
 
 	/* Check for hit in the text. */
 	compute_text_rectangle (icon_item, &icon_rect, &text_rect);
-	if (cx >= text_rect.x0 && cx <= text_rect.x1
-	    && cy >= text_rect.y0 && cy <= text_rect.y1) {
+	if (nautilus_art_irect_hits_irect (&text_rect, canvas_rect)) {
 		return TRUE;
 	}
 
 	/* Check for hit in the emblem pixbufs. */
 	emblem_layout_reset (&emblem_layout, icon_item, &icon_rect);
 	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
-		if (hit_test_pixbuf (emblem_pixbuf, emblem_rect.x0, emblem_rect.y0, cx, cy)) {
+		if (hit_test_pixbuf (emblem_pixbuf, &emblem_rect, canvas_rect)) {
 			return TRUE;
 		}
 	}
@@ -1050,17 +1066,23 @@ hit_test (NautilusIconsViewIconItem *icon_item, int cx, int cy)
 }
 
 /* Point handler for the icon canvas item. */
-/* FIXME: This currently only reports a hit if the pixbuf or stretch handles are hit,
- * and ignores hits on the text.
- */
 static double
 nautilus_icons_view_icon_item_point (GnomeCanvasItem *item, double x, double y, int cx, int cy,
 				     GnomeCanvasItem **actual_item)
 {
+	ArtIRect canvas_rect;
+
 	*actual_item = item;
-	if (hit_test (NAUTILUS_ICONS_VIEW_ICON_ITEM (item), cx, cy)) {
+	canvas_rect.x0 = cx;
+	canvas_rect.y0 = cy;
+	canvas_rect.x0 = cx + 1;
+	canvas_rect.y0 = cy + 1;
+	if (hit_test (NAUTILUS_ICONS_VIEW_ICON_ITEM (item), &canvas_rect)) {
 		return 0.0;
 	} else {
+		/* This value means not hit.
+		 * It's kind of arbitrary. Can we do better?
+		 */
 		return item->canvas->pixels_per_unit * 2 + 10;
 	}
 }
@@ -1122,8 +1144,8 @@ nautilus_icons_view_icon_item_bounds (GnomeCanvasItem *item, double *x1, double 
 
 /* Get the rectangle of the icon only, in world coordinates. */
 void
-nautilus_icons_view_icon_item_get_icon_world_rectangle (NautilusIconsViewIconItem *item,
-							ArtDRect *rect)
+nautilus_icons_view_icon_item_get_icon_rectangle (NautilusIconsViewIconItem *item,
+						  ArtDRect *rect)
 {
 	double i2w[6];
 	ArtPoint art_point;
@@ -1176,36 +1198,6 @@ nautilus_icons_view_icon_item_get_icon_canvas_rectangle (NautilusIconsViewIconIt
 	rect->y1 = rect->y0 + (pixbuf == NULL ? 0 : gdk_pixbuf_get_height (pixbuf));
 }
 
-/* Get the rectangle of the icon only, in window coordinates. */
-void
-nautilus_icons_view_icon_item_get_icon_window_rectangle (NautilusIconsViewIconItem *item,
-							 ArtIRect *rect)
-{
-	double i2w[6];
-	ArtPoint art_point;
-	GdkPixbuf *pixbuf;
-	
-	g_return_if_fail (NAUTILUS_IS_ICONS_VIEW_ICON_ITEM (item));
-	g_return_if_fail (rect != NULL);
-
-	gnome_canvas_item_i2w_affine (GNOME_CANVAS_ITEM (item), i2w);
-
-	art_point.x = 0;
-	art_point.y = 0;
-	art_affine_point (&art_point, &art_point, i2w);
-	gnome_canvas_world_to_window (GNOME_CANVAS_ITEM (item)->canvas,
-				      art_point.x, art_point.y,
-				      &art_point.x, &art_point.y);
-	
-	rect->x0 = floor (art_point.x);
-	rect->y0 = floor (art_point.y);
-
-	pixbuf = item->details->pixbuf;
-	
-	rect->x1 = rect->x0 + (pixbuf == NULL ? 0 : gdk_pixbuf_get_width (pixbuf));
-	rect->y1 = rect->y0 + (pixbuf == NULL ? 0 : gdk_pixbuf_get_height (pixbuf));
-}
-
 void
 nautilus_icons_view_icon_item_set_show_stretch_handles (NautilusIconsViewIconItem *item,
 							gboolean show_stretch_handles)
@@ -1222,11 +1214,11 @@ nautilus_icons_view_icon_item_set_show_stretch_handles (NautilusIconsViewIconIte
 }
 
 /* Check if one of the stretch handles was hit. */
-gboolean
-nautilus_icons_view_icon_item_get_hit_stretch_handle (NautilusIconsViewIconItem *item,
-						      int canvas_x, int canvas_y)
+static gboolean
+hit_stretch_handle (NautilusIconsViewIconItem *item,
+		    const ArtIRect *probe_canvas_rect)
 {
-	ArtIRect rect;
+	ArtIRect icon_rect;
 
 	g_return_val_if_fail (NAUTILUS_IS_ICONS_VIEW_ICON_ITEM (item), FALSE);
 
@@ -1235,17 +1227,49 @@ nautilus_icons_view_icon_item_get_hit_stretch_handle (NautilusIconsViewIconItem 
 		return FALSE;
 	}
 
-	/* Get both the point and the icon rectangle in canvas coordinates. */
-	nautilus_icons_view_icon_item_get_icon_canvas_rectangle (item, &rect);
-
-	/* Handle the case where it's not in the rectangle at all. */
-	if (canvas_x < rect.x0 || canvas_x >= rect.x1 || canvas_y < rect.y0 || canvas_y >= rect.y1) {
+	/* Quick check to see if the rect hits the icon at all. */
+	nautilus_icons_view_icon_item_get_icon_canvas_rectangle
+		(item, &icon_rect);
+	if (!nautilus_art_irect_hits_irect (probe_canvas_rect, &icon_rect)) {
 		return FALSE;
 	}
-
+	
 	/* Check for hits in the stretch handles. */
-	return (canvas_x < rect.x0 + STRETCH_HANDLE_THICKNESS
-     		|| canvas_x >= rect.x1 - STRETCH_HANDLE_THICKNESS)
-		&& (canvas_y < rect.y0 + STRETCH_HANDLE_THICKNESS
-		    || canvas_y >= rect.y1 - STRETCH_HANDLE_THICKNESS);
+	return (probe_canvas_rect->x0 < icon_rect.x0 + STRETCH_HANDLE_THICKNESS
+     		|| probe_canvas_rect->x1 >= icon_rect.x1 - STRETCH_HANDLE_THICKNESS)
+		&& (probe_canvas_rect->y0 < icon_rect.y0 + STRETCH_HANDLE_THICKNESS
+		    || probe_canvas_rect->y1 >= icon_rect.y1 - STRETCH_HANDLE_THICKNESS);
+}
+
+gboolean
+nautilus_icons_view_icon_item_hit_test_stretch_handles  (NautilusIconsViewIconItem *item,
+							 const ArtPoint *world_point)
+{
+	ArtIRect canvas_rect;
+
+	g_return_val_if_fail (NAUTILUS_IS_ICONS_VIEW_ICON_ITEM (item), FALSE);
+	g_return_val_if_fail (world_point != NULL, FALSE);
+
+	gnome_canvas_w2c (GNOME_CANVAS_ITEM (item)->canvas,
+			  world_point->x,
+			  world_point->y,
+			  &canvas_rect.x0,
+			  &canvas_rect.y0);
+	canvas_rect.x1 = canvas_rect.x0 + 1;
+	canvas_rect.y1 = canvas_rect.y0 + 1;
+	return hit_stretch_handle (item, &canvas_rect);
+}
+
+gboolean
+nautilus_icons_view_icon_item_hit_test_rectangle (NautilusIconsViewIconItem *item,
+						  const ArtDRect *world_rect)
+{
+	ArtIRect canvas_rect;
+
+	g_return_val_if_fail (NAUTILUS_IS_ICONS_VIEW_ICON_ITEM (item), FALSE);
+	g_return_val_if_fail (world_rect != NULL, FALSE);
+
+	nautilus_gnome_canvas_world_to_canvas_rectangle
+		(GNOME_CANVAS_ITEM (item)->canvas, world_rect, &canvas_rect);
+	return hit_test (item, &canvas_rect);
 }

@@ -917,7 +917,7 @@ nautilus_file_set_keywords (NautilusFile *file, GList *keywords)
 			next = child->next;
 			if (strcmp (child->name, "KEYWORD") == 0) {
 				property = xmlGetProp (child, "NAME");
-				if (property != NULL && p != NULL && strcmp (property, p->data) == 0) {
+				if (property != NULL && p != NULL && strcmp (property, (char *)p->data) == 0) {
 					p = p->next;
 				} else {
 					xmlUnlinkNode (child);

@@ -24,10 +24,13 @@
    Authors: John Sullivan <sullivan@eazel.com>
 */
 
+#include <config.h>
 #include "nautilus-gtk-extensions.h"
-#include <gnome.h>
 
-
+#include <gtk/gtkselection.h>
+#include <gtk/gtksignal.h>
+#include <libgnomeui/gnome-geometry.h>
+
 /**
  * nautilus_gtk_signal_connect_free_data:
  * 
@@ -70,7 +73,7 @@ nautilus_gtk_window_hide_retain_geometry (GtkWindow *window) {
 
 	/* Save and restore position to keep it in same position when next shown. */
 
-	geometry_string = gnome_geometry_string(GTK_WIDGET (window)->window);
+	geometry_string = gnome_geometry_string (GTK_WIDGET (window)->window);
     
 	gtk_widget_hide (GTK_WIDGET (window));
 
