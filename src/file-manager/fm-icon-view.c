@@ -959,6 +959,95 @@ fm_icon_view_end_loading (FMDirectoryView *view)
 	icon_view->details->loading = FALSE;
 }
 
+static void
+fm_icon_view_update_font_size_table (FMIconView *view)
+{
+	NautilusIconContainer *container;
+	int font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
+
+	container = get_icon_container (view);
+	g_assert (container != NULL);
+
+	switch (get_default_zoom_level ())
+	{
+	case NAUTILUS_ZOOM_LEVEL_LARGEST:
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -5 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  = -4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    = -4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   = -2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  0 * PANGO_SCALE;
+		break;
+	case NAUTILUS_ZOOM_LEVEL_LARGER:
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  = -4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    = -2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  0 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  2 * PANGO_SCALE;
+		break;
+	case NAUTILUS_ZOOM_LEVEL_LARGE:
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] = -2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    =  0 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  4 * PANGO_SCALE;
+		break;
+	case NAUTILUS_ZOOM_LEVEL_STANDARD:
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    = -2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] =  0 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    =  2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  4 * PANGO_SCALE;
+		break;
+	case NAUTILUS_ZOOM_LEVEL_SMALL:
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  = -2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    =  0 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] =  2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    =  4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  5 * PANGO_SCALE;
+		break;
+	case NAUTILUS_ZOOM_LEVEL_SMALLER:
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  =  0 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    =  2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] =  4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    =  4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  5 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  5 * PANGO_SCALE;
+		break;
+	case NAUTILUS_ZOOM_LEVEL_SMALLEST:
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] =  0 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  =  2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    =  4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] =  4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    =  5 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  5 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  6 * PANGO_SCALE;
+		break;
+	default:
+		g_warning ("invalid default list-view zoom level");
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  = -3 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    = -2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] =  0 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    =  2 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  4 * PANGO_SCALE;
+		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  4 * PANGO_SCALE;
+		break;
+	}
+
+	nautilus_icon_container_set_font_size_table (container, font_size_table);
+}
+
 static NautilusZoomLevel
 fm_icon_view_get_zoom_level (FMIconView *view)
 {
@@ -2012,6 +2101,7 @@ default_zoom_level_changed_callback (gpointer callback_data)
 		level = nautilus_file_get_integer_metadata (file, 
 							    NAUTILUS_METADATA_KEY_ICON_VIEW_ZOOM_LEVEL, 
 							    get_default_zoom_level ());
+		fm_icon_view_update_font_size_table (icon_view);
 		fm_icon_view_set_zoom_level (icon_view, level, TRUE);
 	}
 }
@@ -2130,6 +2220,7 @@ create_icon_container (FMIconView *icon_view)
 			   GTK_WIDGET (icon_container));
 
 	fm_icon_view_update_click_mode (icon_view);
+	fm_icon_view_update_font_size_table (icon_view);
 
 	gtk_widget_show (GTK_WIDGET (icon_container));
 }

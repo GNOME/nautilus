@@ -80,6 +80,9 @@ static GList *              fm_list_view_get_selection         (FMDirectoryView 
 static void                 fm_list_view_set_zoom_level        (FMListView *view,
 								NautilusZoomLevel new_level,
 								gboolean always_set_level);
+static void		    fm_list_view_scale_font_size       (FMListView *view, 
+								NautilusZoomLevel new_level,
+								gboolean update_size_table);
 
 GNOME_CLASS_BOILERPLATE (FMListView, fm_list_view,
 			 FMDirectoryView, FM_TYPE_DIRECTORY_VIEW)
@@ -411,6 +414,16 @@ set_sort_order_from_metadata_and_preferences (FMListView *list_view)
 					      sort_reversed ? GTK_SORT_DESCENDING : GTK_SORT_ASCENDING);
 }
 
+static gboolean
+list_view_changed_foreach (GtkTreeModel *model,
+              		   GtkTreePath  *path,
+			   GtkTreeIter  *iter,
+			   gpointer      data)
+{
+	gtk_tree_model_row_changed (model, path, iter);
+	return FALSE;
+}
+
 static void
 set_zoom_level_from_metadata_and_preferences (FMListView *list_view)
 {
@@ -423,6 +436,13 @@ set_zoom_level_from_metadata_and_preferences (FMListView *list_view)
 							    NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, 
 							    default_zoom_level_auto_value);
 		fm_list_view_set_zoom_level (list_view, level, TRUE);
+		
+		/* reset the font size table for the new default zoom level */
+		fm_list_view_scale_font_size (list_view, level, TRUE);
+		
+		/* updated the rows after updating the font size */
+		gtk_tree_model_foreach (GTK_TREE_MODEL (list_view->details->model),
+					list_view_changed_foreach, NULL);
 	}
 }
 
@@ -553,17 +573,117 @@ fm_list_view_reset_to_defaults (FMDirectoryView *view)
 }
 
 static void
+fm_list_view_scale_font_size (FMListView *view, 
+					NautilusZoomLevel new_level,
+					gboolean update_size_table)
+{
+	static gboolean first_time = TRUE;
+	static double pango_scale[7];	
+
+	if (update_size_table || first_time) {
+		first_time = FALSE;
+	
+		switch (default_zoom_level_auto_value)
+		{
+		case NAUTILUS_ZOOM_LEVEL_LARGEST:
+			pango_scale[0] = (1 / 1.2) * (1 / 1.2) * PANGO_SCALE_XX_SMALL;
+			pango_scale[1] = (1 / 1.2) * PANGO_SCALE_XX_SMALL;
+			pango_scale[2] = PANGO_SCALE_XX_SMALL;
+			pango_scale[3] = PANGO_SCALE_X_SMALL;
+			pango_scale[4] = PANGO_SCALE_SMALL;
+			pango_scale[5] = PANGO_SCALE_MEDIUM;
+			pango_scale[6] = PANGO_SCALE_LARGE;
+			break;
+		case NAUTILUS_ZOOM_LEVEL_LARGER:
+			pango_scale[0] = (1 / 1.2) * PANGO_SCALE_XX_SMALL;
+			pango_scale[1] = PANGO_SCALE_XX_SMALL;
+			pango_scale[2] = PANGO_SCALE_X_SMALL;
+			pango_scale[3] = PANGO_SCALE_SMALL;
+			pango_scale[4] = PANGO_SCALE_MEDIUM;
+			pango_scale[5] = PANGO_SCALE_LARGE;
+			pango_scale[6] = PANGO_SCALE_X_LARGE;
+			break;
+		case NAUTILUS_ZOOM_LEVEL_LARGE:
+			pango_scale[0] = PANGO_SCALE_XX_SMALL;
+			pango_scale[1] = PANGO_SCALE_X_SMALL;
+			pango_scale[2] = PANGO_SCALE_SMALL;
+			pango_scale[3] = PANGO_SCALE_MEDIUM;
+			pango_scale[4] = PANGO_SCALE_LARGE;
+			pango_scale[5] = PANGO_SCALE_X_LARGE;
+			pango_scale[6] = PANGO_SCALE_XX_LARGE;
+			break;
+		case NAUTILUS_ZOOM_LEVEL_STANDARD:
+			pango_scale[0] = PANGO_SCALE_X_SMALL;
+			pango_scale[1] = PANGO_SCALE_SMALL;
+			pango_scale[2] = PANGO_SCALE_MEDIUM;
+			pango_scale[3] = PANGO_SCALE_LARGE;
+			pango_scale[4] = PANGO_SCALE_X_LARGE;
+			pango_scale[5] = PANGO_SCALE_XX_LARGE;
+			pango_scale[6] = 1.2 * PANGO_SCALE_XX_LARGE;
+			break;
+		case NAUTILUS_ZOOM_LEVEL_SMALL:
+			pango_scale[0] = PANGO_SCALE_SMALL;
+			pango_scale[1] = PANGO_SCALE_MEDIUM;
+			pango_scale[2] = PANGO_SCALE_LARGE;
+			pango_scale[3] = PANGO_SCALE_X_LARGE;
+			pango_scale[4] = PANGO_SCALE_XX_LARGE;
+			pango_scale[5] = 1.2 * PANGO_SCALE_XX_LARGE;
+			pango_scale[6] = 1.2 * 1.2 * PANGO_SCALE_XX_LARGE;
+			break;
+		case NAUTILUS_ZOOM_LEVEL_SMALLER:
+			/* From here on down we use PANGO_SCALE_MEDIUM for the
+			 * default zoom. Since the icons are now smaller this 
+			 * looks better at default zoom.
+			 */
+			pango_scale[0] = PANGO_SCALE_SMALL;
+			pango_scale[1] = PANGO_SCALE_MEDIUM;
+			pango_scale[2] = PANGO_SCALE_LARGE;
+			pango_scale[3] = PANGO_SCALE_X_LARGE;
+			pango_scale[4] = PANGO_SCALE_XX_LARGE;
+			pango_scale[5] = 1.2 * PANGO_SCALE_XX_LARGE;
+			pango_scale[6] = 1.2 * 1.2 * PANGO_SCALE_XX_LARGE;
+			break;
+		case NAUTILUS_ZOOM_LEVEL_SMALLEST:
+			pango_scale[0] = PANGO_SCALE_MEDIUM;
+			pango_scale[1] = PANGO_SCALE_LARGE;
+			pango_scale[2] = PANGO_SCALE_X_LARGE;
+			pango_scale[3] = PANGO_SCALE_XX_LARGE;
+			pango_scale[4] = 1.2 * PANGO_SCALE_XX_LARGE;
+			pango_scale[5] = 1.2 * 1.2 * PANGO_SCALE_XX_LARGE;
+			pango_scale[6] = 1.2 * 1.2 * 1.2 * PANGO_SCALE_XX_LARGE;
+			break;
+		default:
+			g_warning ("invalid default list-view zoom level");
+			pango_scale[0] = PANGO_SCALE_X_SMALL;
+			pango_scale[1] = PANGO_SCALE_SMALL;
+			pango_scale[2] = PANGO_SCALE_MEDIUM;
+			pango_scale[3] = PANGO_SCALE_LARGE;
+			pango_scale[4] = PANGO_SCALE_X_LARGE;
+			pango_scale[5] = PANGO_SCALE_XX_LARGE;
+			pango_scale[6] = 1.2 * PANGO_SCALE_XX_LARGE;
+			break;
+		}
+	}
+					 
+	g_object_set (G_OBJECT (view->details->file_name_cell),
+		      "scale", pango_scale[new_level],
+		      NULL);
+	g_object_set (G_OBJECT (view->details->size_cell),
+		      "scale", pango_scale[new_level],
+		      NULL);
+	g_object_set (G_OBJECT (view->details->type_cell),
+		      "scale", pango_scale[new_level],
+		      NULL);
+	g_object_set (G_OBJECT (view->details->date_modified_cell),
+		      "scale", pango_scale[new_level],
+		      NULL);
+}
+
+static void
 fm_list_view_set_zoom_level (FMListView *view,
 			     NautilusZoomLevel new_level,
 			     gboolean always_set_level)
 {
-	static double pango_scale[7] = { PANGO_SCALE_X_SMALL,
-					 PANGO_SCALE_SMALL,
-					 PANGO_SCALE_MEDIUM,
-					 PANGO_SCALE_LARGE,
-					 PANGO_SCALE_X_LARGE,
-					 PANGO_SCALE_XX_LARGE,
-					 1.2 * PANGO_SCALE_XX_LARGE };
 	int icon_size;
 	int column;
 
@@ -595,18 +715,7 @@ fm_list_view_set_zoom_level (FMListView *view,
 					     NULL);
 
 	/* Scale text. */
-	g_object_set (G_OBJECT (view->details->file_name_cell),
-		      "scale", pango_scale[new_level],
-		      NULL);
-	g_object_set (G_OBJECT (view->details->size_cell),
-		      "scale", pango_scale[new_level],
-		      NULL);
-	g_object_set (G_OBJECT (view->details->type_cell),
-		      "scale", pango_scale[new_level],
-		      NULL);
-	g_object_set (G_OBJECT (view->details->date_modified_cell),
-		      "scale", pango_scale[new_level],
-		      NULL);
+	fm_list_view_scale_font_size (view, new_level, FALSE);
 
 	/* Make all rows the same size. */
 	icon_size = nautilus_get_icon_size_for_zoom_level (new_level);
@@ -843,6 +952,6 @@ fm_list_view_instance_init (FMListView *list_view)
 						  list_view, G_OBJECT (list_view));
 
 	click_policy_changed_callback (list_view);
-
+	
 	fm_list_view_sort_directories_first_changed (FM_DIRECTORY_VIEW (list_view));
 }
