@@ -288,7 +288,7 @@ zoom_level_from_index (int index)
 static void
 zoomable_zoom_in_callback (BonoboZoomable *zoomable, bonobo_object_data_t *bod)
 {
-	float new_zoom_level;
+	float this_zoom_level, new_zoom_level;
 	int index;
 
 	g_return_if_fail (bod != NULL);
@@ -297,9 +297,18 @@ zoomable_zoom_in_callback (BonoboZoomable *zoomable, bonobo_object_data_t *bod)
 	if (index == max_preferred_zoom_levels)
 		return;
 
-	index++;
-	new_zoom_level = zoom_level_from_index (index);
-
+	/* if we were zoomed to fit, we're not on one of the pre-defined level.
+	 * We want to zoom into the next real level instead of skipping it
+	 */
+	this_zoom_level = zoom_level_from_index (index);
+	
+	if (this_zoom_level > bod->zoom_level) {
+		new_zoom_level = this_zoom_level;
+	} else {  
+		index++;
+		new_zoom_level = zoom_level_from_index (index);
+	}
+	
 	gtk_signal_emit_by_name (GTK_OBJECT (zoomable), "set_zoom_level",
 				 new_zoom_level);
 }

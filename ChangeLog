@@ -1,3 +1,11 @@
+2000-11-30  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/image-viewer/nautilus-image-view.c:
+	(zoomable_zoom_in_callback):
+	fixed bug in image viewer where zooming in skipped a level if you
+	were zoomed to fit. Fixed by only incrementing the index if we're
+	already at the current level.
+	
 2000-11-30  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 4879, "unknown sort mode" warning upon sorting
