@@ -20,6 +20,28 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_ISC_POSIX
 
+AC_ARG_ENABLE(more-warnings,
+[--enable-more-warnings	Maximum compiler warnings],
+set_more_warnings="$enableval", set_more_warnings=yes)
+
+AC_ARG_ENABLE(fatal-warnings,
+[--enable-fatal-warnings	Make warnings fatal],
+set_fatal_warnings="$enableval", set_fatal_warnings=yes)
+
+# Arg is enabled
+if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
+	echo "enable compile warnings = $set_more_warnings"
+	CFLAGS="$CFLAGS \
+	-W -Wchar-subscripts -Wmissing-declarations -Wmissing-prototypes \
+	-Wnested-externs -Wpointer-arith \
+	-Wno-sign-compare -Wsign-promo -Wshadow \
+	-Wundef"
+fi
+if test "$GCC" = "yes" -a "$set_fatal_warnings" != "no"; then
+	echo "enable fatal warnings = $set_fatal_warnings"
+	CFLAGS="$CFLAGS -Werror"
+fi
+
 dnl Checks for libraries.
 AM_PATH_GLIB(1.2.0,,
 AC_MSG_ERROR([
@@ -41,25 +63,6 @@ AM_PATH_LIBGLADE(,AC_MSG_ERROR([*** Libglade 0.7 or better is needed.]), gnome)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
-
-dnl Some additional warning options.
-AC_ARG_ENABLE(more-warnings, [--enable-more-warnings	Maximum compiler warnings],
-	enable_compile_warnings="$enableval", enable_compile_warnings=yes)
-AC_ARG_ENABLE(fatal-warnings, [--enable-fatal-warnings	Make warnings fatal],
-	enable_fatal_warnings="$enableval", enable_fatal_warnings=yes)
-
-# Arg is enabled
-if test "$GCC" = "yes" && test "$enable_compile_warnings" != "no"; then
-	CFLAGS="$CFLAGS \
-	-W -Wcast-align -Wchar-subscripts \
-	-Wmissing-declarations -Wmissing-prototypes \
-	-Wnested-externs -Wpointer-arith \
-	-Wno-sign-compare -Wsign-promo -Wshadow \
-	-Wpadded -Wundef"
-fi
-if test "$GCC" = "yes" && test "$enable_fatal_warnings" != "no"; then
-	CFLAGS="$CFLAGS -Werror"
-fi
 
 AC_OUTPUT([
 Makefile

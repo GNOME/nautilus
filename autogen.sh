@@ -78,7 +78,11 @@ autoconf
 
 cd $ORIGDIR
 
-$srcdir/configure --enable-maintainer-mode "$@"
+if [ "`whoami`" = "sopwith" ]; then
+	SOPWITH_FLAGS_HACK="--enable-fatal-warnings=no --enable-more-warnings=no"
+fi
+
+$srcdir/configure --enable-maintainer-mode "$@" $SOPWITH_FLAGS_HACK
 
 echo 
 echo "Now type 'make' to compile $PROJECT."
