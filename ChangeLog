@@ -1,3 +1,12 @@
+2001-01-25  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 5981, Desktop Eazel serives icon won't work
+	without Mozilla installed.
+	
+	* src/nautilus-first-time-druid.c: (druid_finished):
+	Changed the link to use the eazel: protocol rather than
+	a http URI.
+	
 2001-01-25  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-softcat.c:
