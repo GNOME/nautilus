@@ -1,3 +1,48 @@
+2000-12-15  Darin Adler  <darin@eazel.com>
+	
+	reviewed by: Gene Ragan <gzr@eazel.com>
+
+	Fix bug 5176 (Theme descriptions not translated).
+
+	Fix bug 5187 (Real name in file ownership doesn't take GECOS data
+	into account).
+	
+	* src/nautilus-theme-selector.c: (make_theme_description): Get the
+	theme description (which I also moved to the theme node from its
+	own description node) by using
+	nautilus_xml_get_property_translated which handles using the
+	gettext database to translate the property if the XML file has it
+	with a _ prefix.
+
+	* icons/ardmore/ardmore.xml:
+	* icons/arlo/arlo.xml:
+	* icons/default.xml:
+	* icons/gnome/gnome.xml:
+	* icons/vector/vector.xml:
+	Moved description to be a property of the theme node and use the
+	name that indicates it needs to be localized.
+
+	* po/POTFILES.in: Add all of the theme .xml files which now
+	potentially have localizable theme descriptions in them.
+	
+	* libnautilus-extensions/nautilus-file.c: (get_real_name): Add
+	code to compute the real name from the GECOS info, by stripping
+	anything after the "," and substituting the login name,
+	capitalized, for any occurences of "&".
+	(get_user_and_real_name_from_id): Use get_real_name instead of
+	going for the pw_gecos field directly.
+	(nautilus_get_user_names): Use get_real_name instead of
+	going for the pw_gecos field directly.
+	
+	* libnautilus-extensions/nautilus-string.h:
+	* libnautilus-extensions/nautilus-string.c:
+	(nautilus_str_strip_substring_and_after),
+	(nautilus_str_replace_substring), (nautilus_self_check_string):
+	Add two new string utility functions and self-checks for them.
+	These were both needed for the GECOS change.
+	
+	* src/nautilus-property-browser.c: Tweak formatting.
+
 2000-12-15  John Harper  <jsh@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

@@ -650,7 +650,6 @@ make_theme_description (const char *theme_name, const char *theme_path_uri)
 	char *theme_file_name, *theme_path, *theme_local_path;
 	char *description_result, *temp_str;
 	xmlDocPtr theme_document;
-	xmlNodePtr description_node;
 	
 	description_result = NULL;
 	
@@ -664,14 +663,10 @@ make_theme_description (const char *theme_name, const char *theme_path_uri)
 		theme_document = xmlParseFile(theme_path);
 		
 		if (theme_document != NULL) {
-			/* fetch the description mode, of any */		
-			description_node = nautilus_xml_get_child_by_name (xmlDocGetRootElement (theme_document),
-									   "description");
-			if (description_node != NULL) {
-				temp_str = xmlGetProp (description_node, "TEXT");
-				description_result = g_strdup (temp_str);
-				xmlFree (temp_str);
-			}
+			/* fetch the description, if any */		
+			temp_str = nautilus_xml_get_property_translated (xmlDocGetRootElement (theme_document), "description");
+			description_result = g_strdup (temp_str);
+			xmlFree (temp_str);
 			
 			xmlFreeDoc (theme_document);
 		}
@@ -682,7 +677,7 @@ make_theme_description (const char *theme_name, const char *theme_path_uri)
 	g_free (theme_file_name);
 	if (description_result)
 		return description_result;
-	return g_strdup_printf (_("No information available for the \"%s\" theme"), theme_name);
+	return g_strdup_printf (_("No description available for the \"%s\" theme"), theme_name);
 }
 
 

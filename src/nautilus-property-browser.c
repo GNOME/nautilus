@@ -251,8 +251,8 @@ nautilus_property_browser_initialize (GtkObject *object)
 	gtk_container_set_border_width (GTK_CONTAINER (widget), 0);				
 
 	/* set the title and standard close accelerator */
-	gtk_window_set_title(GTK_WINDOW(widget), _("Backgrounds and Emblems"));
-	gtk_window_set_wmclass(GTK_WINDOW(widget), "property_browser", "Nautilus");
+	gtk_window_set_title (GTK_WINDOW (widget), _("Backgrounds and Emblems"));
+	gtk_window_set_wmclass (GTK_WINDOW (widget), "property_browser", "Nautilus");
 	nautilus_gtk_window_set_up_close_accelerator (GTK_WINDOW (widget));
 	
 	/* set up the background */

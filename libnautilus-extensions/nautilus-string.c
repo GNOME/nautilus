@@ -606,6 +606,78 @@ nautilus_str_count_characters (const char	*string,
 	return count;
 }
 
+char *
+nautilus_str_strip_substring_and_after (const char *string,
+					const char *substring)
+{
+	const char *substring_position;
+
+	g_return_val_if_fail (substring != NULL, g_strdup (string));
+	g_return_val_if_fail (substring[0] != '\0', g_strdup (string));
+
+	if (string == NULL) {
+		return NULL;
+	}
+
+	substring_position = strstr (string, substring);
+	if (substring_position == NULL) {
+		return g_strdup (string);
+	}
+
+	return g_strndup (string,
+			  substring_position - string);
+}
+
+char *
+nautilus_str_replace_substring (const char *string,
+				const char *substring,
+				const char *replacement)
+{
+	int substring_length, replacement_length, result_length, remaining_length;
+	const char *p, *substring_position;
+	char *result, *result_position;
+
+	g_return_val_if_fail (substring != NULL, g_strdup (string));
+	g_return_val_if_fail (substring[0] != '\0', g_strdup (string));
+
+	if (string == NULL) {
+		return NULL;
+	}
+
+	substring_length = strlen (substring);
+	replacement_length = nautilus_strlen (replacement);
+
+	result_length = strlen (string);
+	for (p = string; ; p = substring_position + substring_length) {
+		substring_position = strstr (p, substring);
+		if (substring_position == NULL) {
+			break;
+		}
+		result_length += replacement_length - substring_length;
+	}
+
+	result = g_malloc (result_length + 1);
+
+	result_position = result;
+	for (p = string; ; p = substring_position + substring_length) {
+		substring_position = strstr (p, substring);
+		if (substring_position == NULL) {
+			remaining_length = strlen (p);
+			memcpy (result_position, p, remaining_length);
+			result_position += remaining_length;
+			break;
+		}
+		memcpy (result_position, p, substring_position - p);
+		result_position += substring_position - p;
+		memcpy (result_position, replacement, replacement_length);
+		result_position += replacement_length;
+	}
+	g_assert (result_position - result == result_length);
+	result_position[0] = '\0';
+
+	return result;
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static int
@@ -796,7 +868,6 @@ nautilus_self_check_string (void)
 	TEST_INTEGER_CONVERSION_FUNCTIONS ("+21474836470", FALSE, 9999)
 	TEST_INTEGER_CONVERSION_FUNCTIONS ("-21474836480", FALSE, 9999)
 
-	/* nautilus_str_is_equal */
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_is_equal (NULL, NULL), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_is_equal (NULL, ""), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_is_equal ("", ""), TRUE);
@@ -805,7 +876,6 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_is_equal ("foo", "foo"), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_str_is_equal ("foo", "bar"), FALSE);
 
-	/* nautilus_istr_is_equal */
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_istr_is_equal (NULL, NULL), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_istr_is_equal (NULL, ""), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_istr_is_equal ("", ""), TRUE);
@@ -816,7 +886,6 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_istr_is_equal ("Foo", "foo"), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_istr_is_equal ("foo", "Foo"), TRUE);
 
-	/* nautilus_str_count_characters */
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_str_count_characters (NULL, 'x'), 0);
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_str_count_characters ("", 'x'), 0);
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_str_count_characters (NULL, '\0'), 0);
@@ -825,6 +894,24 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_str_count_characters ("foo", 'f'), 1);
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_str_count_characters ("foo", 'o'), 2);
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_str_count_characters ("xxxx", 'x'), 4);
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_substring_and_after (NULL, "bar"), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_substring_and_after ("", "bar"), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_substring_and_after ("foo", "bar"), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_substring_and_after ("foo bar", "bar"), "foo ");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_substring_and_after ("foo bar xxx", "bar"), "foo ");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_substring_and_after ("bar", "bar"), "");
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_replace_substring (NULL, "foo", NULL), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_replace_substring (NULL, "foo", "bar"), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_replace_substring ("bar", "foo", NULL), "bar");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_replace_substring ("", "foo", ""), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_replace_substring ("", "foo", "bar"), "");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_replace_substring ("bar", "foo", ""), "bar");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_replace_substring ("xxx", "x", "foo"), "foofoofoo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_replace_substring ("fff", "f", "foo"), "foofoofoo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_replace_substring ("foofoofoo", "foo", "f"), "fff");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_replace_substring ("foofoofoo", "f", ""), "oooooo");
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

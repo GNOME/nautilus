@@ -2575,19 +2575,44 @@ get_user_name_from_id (uid_t uid)
 	return g_strdup (password_info->pw_name);
 }
 
-static gboolean
-user_has_real_name (struct passwd *user)
+static char *
+get_real_name (struct passwd *user)
 {
-	if (nautilus_str_is_empty (user->pw_gecos)) {
-		return FALSE;
+	char *part_before_comma, *capitalized_login_name, *real_name;
+
+	if (user->pw_gecos == NULL) {
+		return NULL;
 	}
-	
-	return nautilus_strcmp (user->pw_name, user->pw_gecos) != 0;
+
+	part_before_comma = nautilus_str_strip_substring_and_after (user->pw_gecos, ",");
+
+	capitalized_login_name = nautilus_str_capitalize (user->pw_name);
+
+	if (capitalized_login_name == NULL) {
+		real_name = part_before_comma;
+	} else {
+		real_name = nautilus_str_replace_substring
+			(part_before_comma, "&", capitalized_login_name);
+		g_free (part_before_comma);
+	}
+
+
+	if (nautilus_str_is_empty (real_name)
+	    || nautilus_strcmp (user->pw_name, real_name) == 0
+	    || nautilus_strcmp (capitalized_login_name, real_name) == 0) {
+		g_free (real_name);
+		real_name = NULL;
+	}
+
+	g_free (capitalized_login_name);
+
+	return real_name;
 }
 
 static char *
 get_user_and_real_name_from_id (uid_t uid)
 {
+	char *real_name, *user_and_real_name;
 	struct passwd *password_info;
 	
 	/* No need to free result of getpwuid */
@@ -2597,11 +2622,16 @@ get_user_and_real_name_from_id (uid_t uid)
 		return NULL;
 	}
 
-	if (user_has_real_name (password_info)) {
-		return g_strdup_printf ("%s - %s", password_info->pw_name, password_info->pw_gecos);
+	real_name = get_real_name (password_info);
+	if (real_name != NULL) {
+		user_and_real_name = g_strdup_printf
+			("%s - %s", password_info->pw_name, real_name);
 	} else {
-		return g_strdup (password_info->pw_name);
-	}	
+		user_and_real_name = g_strdup (password_info->pw_name);
+	}
+	g_free (real_name);
+
+	return user_and_real_name;
 }
 
 static gboolean
@@ -2867,7 +2897,7 @@ GList *
 nautilus_get_user_names (void)
 {
 	GList *list;
-	char *name;
+	char *real_name, *name;
 	struct passwd *user;
 
 	list = NULL;
@@ -2875,11 +2905,13 @@ nautilus_get_user_names (void)
 	setpwent ();
 
 	while ((user = getpwent ()) != NULL) {
-		if (user_has_real_name (user)) {
-			name = g_strconcat (user->pw_name, "\n", user->pw_gecos, NULL);
+		real_name = get_real_name (user);
+		if (real_name != NULL) {
+			name = g_strconcat (user->pw_name, "\n", real_name, NULL);
 		} else {
 			name = g_strdup (user->pw_name);
 		}
+		g_free (real_name);
 		list = g_list_prepend (list, name);
 	}
 
