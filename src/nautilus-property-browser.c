@@ -147,6 +147,8 @@ static void  nautilus_property_browser_set_drag_type    (NautilusPropertyBrowser
 							 const char              *new_drag_type);
 static void  add_new_button_callback                    (GtkWidget               *widget,
 							 NautilusPropertyBrowser *property_browser);
+static void  cancel_remove_mode				(NautilusPropertyBrowser *property_browser);
+
 static void  done_button_callback			(GtkWidget               *widget,
 							 GtkWidget 		*property_browser);
 static void  remove_button_callback                     (GtkWidget               *widget,
@@ -464,6 +466,7 @@ nautilus_property_browser_delete_event_callback (GtkWidget *widget,
 					   gpointer   user_data)
 {
 	/* Hide but don't destroy */
+	cancel_remove_mode (NAUTILUS_PROPERTY_BROWSER (widget));
 	gtk_widget_hide(widget);
 	return TRUE;
 }
@@ -1256,6 +1259,17 @@ add_new_emblem(NautilusPropertyBrowser *property_browser)
 	}
 }
 
+/* cancelremove mode */
+static void
+cancel_remove_mode (NautilusPropertyBrowser *property_browser)
+{
+	if (property_browser->details->remove_mode) {
+		property_browser->details->remove_mode = FALSE;
+		nautilus_property_browser_update_contents(property_browser);
+		gtk_widget_show (property_browser->details->help_label);
+	}
+}
+
 /* handle the add_new button */
 
 static void
@@ -1263,9 +1277,7 @@ add_new_button_callback(GtkWidget *widget, NautilusPropertyBrowser *property_bro
 {
 	/* handle remove mode, where we act as a cancel button */
 	if (property_browser->details->remove_mode) {
-		property_browser->details->remove_mode = FALSE;
-		nautilus_property_browser_update_contents(property_browser);
-		gtk_widget_show (property_browser->details->help_label);
+		cancel_remove_mode (property_browser);
 		return;
 	}
 
@@ -1288,6 +1300,7 @@ add_new_button_callback(GtkWidget *widget, NautilusPropertyBrowser *property_bro
 static void
 done_button_callback (GtkWidget *widget, GtkWidget *property_browser)
 {
+	cancel_remove_mode (NAUTILUS_PROPERTY_BROWSER (property_browser));
 	gtk_widget_hide (property_browser);
 }
 

@@ -1307,7 +1307,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 				if (uri == NULL) {
 					uri = get_icon_file_path
 						(ICON_NAME_THUMBNAIL_LOADING, NULL,
-						 NAUTILUS_ICON_SIZE_STANDARD, FALSE, NULL);
+						 NAUTILUS_ICON_SIZE_STANDARD, anti_aliased, NULL);
 				}
 			}
 		}

@@ -1,3 +1,18 @@
+2000-10-31  Andy Hertzfeld  <andy@eazel.com>
+
+	* icons/Makefile.am:
+	* icons/loading.png:
+	* icons/loading-aa.png:
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file):
+	added a new "loading thumbnail" icon from Susan
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_delete_event_callback),
+	(cancel_remove_mode), (add_new_button_callback),
+	(done_button_callback):
+	made the property browser reset remove mode when it's dismissed
+	
 2000-10-31  Mathieu Lacage  <mathieu@eazel.com>
 
 	* nautilus.spec.in: add gnorba file in specfile.
