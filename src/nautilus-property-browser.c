@@ -1118,9 +1118,6 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 	user_directory = nautilus_get_user_directory ();
 
 	/* copy the image file to the backgrounds directory */
-	/* FIXME bugzilla.eazel.com 1250: 
-	 * do we need to do this with gnome-vfs? 
-	 */
 	directory_path = nautilus_make_path (user_directory, property_browser->details->category);
 	g_free (user_directory);
 	source_file_name = strrchr (path_name, '/');
@@ -1135,7 +1132,7 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 					  | GNOME_VFS_PERM_OTHER_READ);
 		g_free (directory_uri);
 	}
-		
+	
 	g_free(directory_path);
 	
 	result = nautilus_copy_uri_simple (path_name, destination_name);		
@@ -2109,7 +2106,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 			char *temp_category = g_strdup (property_browser->details->category);
 
 			/* FIXME: Not appropriate to assume the last
-			 * character is s for all languages. A potential
+			 * character is 's' for all languages. A potential
 			 * translation problem.
 			 */
 			temp_category[strlen(temp_category) - 1] = '\0'; /* strip trailing s */

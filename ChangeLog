@@ -1,3 +1,32 @@
+2000-11-28  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-view-identifier.h: Remove
+	HAVE_POPT_H define since the bug in OAF that we were working
+	around has been fixed.
+	
+	* components/music/nautilus-music-view.c: Remove unneeded
+	includes.
+	
+	* components/rpmview/nautilus-rpm-view.c: Remove unused
+	#define and FIXME for bug already fixed.
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_destroy): Remove FIXME for bug already fixed.
+	* libnautilus-extensions/nautilus-global-preferences.c: Remove
+	FIXME for bug already fixed.
+	* libnautilus-extensions/nautilus-user-level-manager.c: Remove
+	FIXME for bug already fixed.
+	* src/file-manager/fm-list-view.c: (fm_list_get_default_action):
+	Remove FIXME for bug already fixed.
+	* src/nautilus-property-browser.c: (add_background_to_browser):
+	Remove FIXME for bug already fixed.
+	* src/nautilus-window.h: Remove FIXME for bug already fixed.
+	
+	* tools/README: Remove file now that people have had a chance to
+	find the tools in their new location, so the directory will go
+	away.
+
 2000-11-28  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>
@@ -83,7 +112,6 @@
 	* /icons/villanova/villanova_green.png:
 	Fixed the white point problem on a few PNG files.
 	I don't think this got them all.
-
 
 2000-11-28  J Shane Culpepper  <pepper@eazel.com>
 
@@ -303,7 +331,6 @@
 	Turned out to be easy - the nautilus_file_contains_text was 
 	over-optimistic. Changed it to only mark for preview actual text files 
 	(files with the "text" MIME supertype).
-	
 
 2000-11-27  Andy Hertzfeld  <andy@eazel.com>
 

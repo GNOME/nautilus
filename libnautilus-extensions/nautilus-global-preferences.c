@@ -449,9 +449,6 @@ global_preferences_get_dialog (void)
 	return global_prefs_dialog;
 }
 
-/* FIXME bugzilla.eazel.com 1275: 
- * The actual defaults need to be user level specific.
- */
 static const char *novice_default_sidebar_panel_iids[] =
 {
 	"OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185",

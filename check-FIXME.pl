@@ -59,7 +59,7 @@ chomp $product;
 
 close FILE;
 
-print "Searching the bugzilla database's product $product for open fixme bugs\n";
+print "Searching the bugzilla database's product $product for open FIXME bugs\n";
 
 if (!grep /$product/, ( "nautilus", "gnome-vfs", "medusa", "oaf")) {
     print "Can't find your product in the bugzilla.eazel.com database\n";

@@ -73,13 +73,6 @@ enum {
         TARGET_GNOME_URI_LIST
 };
 
-/* FIXME: bugzilla.eazel.com 2674
-   Once nautilus label has beeen fixed, remove this define.
-   Don't forgot to fix the places its used, so
-   the description and summary are in gtk_label_new */
-#define LONG_FIELDS_IN_GTK_LABEL
-
-
 static GtkTargetEntry rpm_dnd_target_table[] = {
 	{ "text/uri-list",  0, TARGET_URI_LIST },
 	{ "application/x-color", 0, TARGET_COLOR },

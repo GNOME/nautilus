@@ -26,47 +26,39 @@
 #include <config.h>
 #include "nautilus-music-view.h"
 
-#include "mpg123_handler.h"
 #include "mp3head.h"
-
+#include "mpg123_handler.h"
 #include "pixmaps.h"
-
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <dirent.h>
 #include <ctype.h>
-
 #include <esd.h>
-
-#include <libnautilus/libnautilus.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gnome.h>
+#include <gtk/gtksignal.h>
+#include <libgnomevfs/gnome-vfs.h>
+#include <libgnorba/gnorba.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-directory-notify.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-label.h>
+#include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-scalable-font.h>
 #include <libnautilus-extensions/nautilus-sound.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-label.h>
-
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gtk/gtksignal.h>
-#include <gnome.h>
-#include <libgnomevfs/gnome-vfs.h>
-#include <libgnorba/gnorba.h>
+#include <libnautilus/libnautilus.h>
 #include <limits.h>
+#include <sys/types.h>
 
 struct _NautilusMusicViewDetails {
         NautilusFile *file;
@@ -597,7 +589,7 @@ read_id_tag (const char *song_uri, SongInfo *song_info)
 	char tag_buffer[129];
 	char temp_str[31];
 
-	result = gnome_vfs_open(&mp3_file, song_uri, GNOME_VFS_OPEN_READ);
+	result = gnome_vfs_open (&mp3_file, song_uri, GNOME_VFS_OPEN_READ);
 	if (result != GNOME_VFS_OK) {
 		return FALSE;
         }
@@ -733,16 +725,16 @@ fetch_song_info (const char *song_uri, GnomeVFSFileInfo *file_info, int file_ord
 		info->title = g_strdup (file_info->name);
 	}	
 
-	result = gnome_vfs_open(&mp3_file, song_uri, GNOME_VFS_OPEN_READ);
+	result = gnome_vfs_open (&mp3_file, song_uri, GNOME_VFS_OPEN_READ);
 	if (result == GNOME_VFS_OK) {
-  		result = gnome_vfs_read(mp3_file, buffer, sizeof(buffer), &length_read);
+  		result = gnome_vfs_read (mp3_file, buffer, sizeof(buffer), &length_read);
 		if ((result == GNOME_VFS_OK) && (length_read > 512)) {
 			info->bitrate = get_bitrate (buffer,length_read);
 			info->samprate = get_samprate (buffer,length_read);
 			info->stereo = get_stereo (buffer,length_read);
 			info->track_time = fetch_play_time (file_info, info->bitrate);
 		}
-		gnome_vfs_close(mp3_file);
+		gnome_vfs_close (mp3_file);
 	}
 
 	return	info;
@@ -987,7 +979,7 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 	if (song_uri == NULL) {
 		return;
 	}
-	song_filename = gnome_vfs_get_local_path_from_uri(song_uri);
+	song_filename = gnome_vfs_get_local_path_from_uri (song_uri);
 
 	/* for now, we can only play local files, so apologize to the user and give up */	
 	if (song_filename == NULL) {
@@ -1531,8 +1523,8 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 		
  		escaped_name = gnome_vfs_escape_string (current_file_info->name);
 		path_uri = nautilus_make_path (uri, escaped_name);
-		g_free(escaped_name);
-			
+		g_free (escaped_name);
+                
 		/* fetch info and queue it if it's an mp3 file */
 		info = fetch_song_info (path_uri, current_file_info, file_index);
 		if (info) {
@@ -1627,7 +1619,7 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 
                 album_name = determine_attribute (song_list, FALSE);
 		if (album_name == NULL) {
-			album_name = g_strdup (gnome_vfs_unescape_string_for_display(g_basename (uri)));
+			album_name = g_strdup (gnome_vfs_unescape_string_for_display (g_basename (uri)));
                 }
 		
 		artist_name = determine_attribute (song_list, TRUE);

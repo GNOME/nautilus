@@ -718,7 +718,6 @@ nautilus_tree_view_destroy (GtkObject *object)
 	}
 	nautilus_drag_finalize (view->details->dnd->drag_info);
 	g_free (view->details->dnd);
-	/* FIXME bugzilla.eazel.com 2422: destroy drag_info */
 
 	disconnect_model_handlers (view);
 	gtk_object_unref (GTK_OBJECT (view->details->model));

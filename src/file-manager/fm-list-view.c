@@ -689,7 +689,6 @@ fm_list_get_default_action (NautilusList *list,
 
 	switch (info) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-
 		if (drop_data == NULL) {
 			*default_action = 0;
 			*non_default_action = 0;
@@ -699,31 +698,28 @@ fm_list_get_default_action (NautilusList *list,
 		drop_target = nautilus_list_find_icon_list_drop_target (list, x, y,
 									drop_data,
 									list_view);
-		if (!drop_target) {
+		if (drop_target == NULL) {
 			*default_action = 0;
 			*non_default_action = 0;
 			return;
 		}
+
 		nautilus_drag_default_drop_action_for_icons (context, drop_target, 
 							     drop_data, 
 							     default_action, non_default_action);
 		break;
-
+		
 	case NAUTILUS_ICON_DND_COLOR:
 	case NAUTILUS_ICON_DND_BGIMAGE:
 		*default_action = context->suggested_action;
 		*non_default_action = context->suggested_action;
 		break;
-
+		
 	case NAUTILUS_ICON_DND_KEYWORD:
-		/* FIXME bugzilla.eazel.com 2572: Doesn't handle dropped keywords in 
-		   list view? Do we need to support this? */
 		*default_action = context->suggested_action;
 		*non_default_action = context->suggested_action;
 		break;
-	default:
 	}
-
 }
 
 

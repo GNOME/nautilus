@@ -79,9 +79,6 @@ struct NautilusWindow {
         /** CORBA-related elements **/
         NautilusApplication *application;
         
-        /* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
-        gboolean updating_bonobo_radio_menu_item;
-        
         /** State information **/
         
         /* Information about current location/selection */
