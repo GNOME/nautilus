@@ -1,3 +1,15 @@
+2000-12-18  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 2472, text_height and text_width shouldn't be
+	left alone when renaming.
+	
+	Preserve the text_width and text_height when renaming.
+	Don't reset the values, just block the draw when the
+	renaming widget is visibile.
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_label_text_aa):
+
 2000-12-17  Ali Abdin  <aliabdin@aucegypt.edu>
         
         Fix bug #4379 (problem with variablelist's)

@@ -1597,8 +1597,7 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, doub
 	gboolean have_editable;
 	gboolean have_additional;
 	
-	/* make sure this is really necessary */
-	
+	/* make sure this is really necessary */	
 	have_editable = icon_item->details->editable_text != NULL
 		&& icon_item->details->editable_text[0] != '\0';
 	have_additional = icon_item->details->additional_text != NULL
@@ -1613,10 +1612,10 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, doub
 	}
 	
 	if (icon_item->details->is_renaming) {
-		/* FIXME bugzilla.eazel.com 2472: 
-		 * Why is it OK to leave text_height and
-		 * text_width alone in this code path?
-		 */
+		/* Exit if we are renaming. We don't need to set the text
+		* width and height to 0 because there is text, it just is not
+		* drawn to the canvas while the renaming widget is dispalyed.
+		*/
 		return;
 	}
 		
