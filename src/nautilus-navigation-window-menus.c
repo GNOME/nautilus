@@ -3,7 +3,7 @@
 /*
  * Nautilus
  *
- * Copyright (C) 2000 Eazel, Inc.
+ * Copyright (C) 2000, 2001 Eazel, Inc.
  *
  * Nautilus is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -509,32 +509,32 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 	char *time_stamp;
 	const char *authors[] = {
 		"Ali Abdin",
-		"Darin Adler",
-		"Josh Barrow",
-		"Pavel Císler",
-		"J Shane Culpepper",
-		"Mike Engber",
-		"Ramiro Estrugo",
-		"Mike Fleming",
-		"Eli Goldberg",
 		"Andy Hertzfeld",
-		"Susan Kare",
-		"Mathieu Lacage",
-		"George Lebl",
+		"Arlo Rose",
+		"Darin Adler",
+		"Eli Goldberg",
 		"Elliot Lee",
-		"Raph Levien",
-		"Ian McKellar",
-		"Seth Nickell",
 		"Eskil Heyn Olsen",
 		"Ettore Perazzoli",
-		"Robey Pointer",
 		"Gene Z. Ragan",
-		"Arlo Rose",
-		"Rebecca Schulman",
-		"Robin * Slomkowski",
-		"Maciej Stachowiak",
+		"George Lebl",
+		"Ian McKellar",
+		"J Shane Culpepper",
+		"John Harper",
 		"John Sullivan",
-		"Bud Tribble",
+		"Josh Barrow",
+		"Maciej Stachowiak",
+		"Mathieu Lacage",
+		"Mike Engber",
+		"Mike Fleming",
+		"Pavel Císler",
+		"Ramiro Estrugo",
+		"Raph Levien",
+		"Rebecca Schulman",
+		"Robey Pointer",
+		"Robin * Slomkowski",
+		"Seth Nickell",
+		"Susan Kare",
 		NULL
 	};
 

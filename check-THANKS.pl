@@ -30,7 +30,6 @@
 use diagnostics;
 use strict;
 
-
 # Map from alternate names of some users to canonical versions
 
 my %name_map = ("Darin as Andy" => "Darin Adler",
@@ -38,10 +37,11 @@ my %name_map = ("Darin as Andy" => "Darin Adler",
                 "Shane Culpepper" => "J Shane Culpepper",
                 "Michael K. Fleming" => "Mike Fleming",
                 "Rebecka Schulman" => "Rebecca Schulman",
-                "Mike Engber" => "Michael Engber",
+                "Michael Engber" => "Mike Engber",
                 "Pavel Cisler" => "Pavel Císler",
                 "Pavel" => "Pavel Císler",
                 "Eskil Olsen" => "Eskil Heyn Olsen",
+		"Szabolcs BAN" => "Szabolcs Ban",
                 "Robin Slomkowski" => "Robin * Slomkowski");
 
 # Map from alternate email addresses of some users to canonical versions
@@ -49,10 +49,9 @@ my %name_map = ("Darin as Andy" => "Darin Adler",
 my %email_map = ('at@ue-spacy.com' => 'tagoh@gnome.gr.jp',
                  'sopwith@eazel.com' => 'sopwith@redhat.com',
                  'chief_wanker@eazel.com' => 'eskil@eazel.com',
-                 'eskil@eazel.om' => 'eskil@eazel.com',
-                 'yakk@yakk.net' => 'yakk@yakk.net.au',
+                 'yakk@yakk.net' => 'ian@eazel.com',
+                 'yakk@yakk.net.au' => 'ian@eazel.com',
                  'linuxfan@ionet..net' => 'josh@eazel.com',
-                 'rslokow@eazel.com' => 'rslomkow@eazel.com',
                  'snickell@stanford.edu' => 'seth@eazel.com',
                  'mathieu@gnome.org' => 'mathieu@eazel.com',
                  'hp@pobox.com' => 'hp@redhat.com',
@@ -60,6 +59,8 @@ my %email_map = ('at@ue-spacy.com' => 'tagoh@gnome.gr.jp',
                  'kmaraas@gnu.org' => 'kmaraas@gnome.org',
                  'raph@gimp.org' => 'raph@acm.org',
                  'baulig@suse.de' => 'martin@home-of-linux.org',
+                 'carlos@gnome-db.org' => 'carlos@hispalinux.es',
+                 'mawa@iname.com' => 'mawarkus@gnome.org',
                  'linuxfan@ionet.net' => 'josh@eazel.com');
 
 
@@ -70,137 +71,209 @@ my %no_credit = ('2000-09-08  Daniel Egger  <egger@suse.de>' => 1,
                  '2000-09-06  Daniel Egger  <egger@suse.de>' => 1);
 
 
+open CHANGELOGS, "cat `find . -name intl -prune -or -name 'ChangeLog*' -and \! -name '*~' -print`|" or die;
+
 my @lines;
-my @sort_lines;
-my @changelog_people;
-my @thanks_people;
-my @uncredited;
-my @double_credited;
-
-
-
-open (CHANGELOGS,"cat `find . -name intl -prune -or -name 'ChangeLog*' -print`|");
-
-
-LOOP: while (<CHANGELOGS>) {
-    my $name;
-    my $email;
-
+LOOP: while (<CHANGELOGS>)
+  {
     chomp;
-
-    if (/@/) {
-        if ($no_credit{$_}) {
+    
+    if (/@/)
+      {
+        if ($no_credit{$_})
+          {
             next LOOP;
-        }
+          }
 
-        if (/^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/) {
+        if (/^\d\d\d\d-\d\d-\d\d/)
+          {
             # Normal style ChangeLog comment 
-            s/^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ \t]*//;
-
-        } elsif (/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun).*[0-9][0-9][0-9][0-9]/) {
+            s/^\d\d\d\d-\d\d-\d\d[ \t]*//;
+          }
+        elsif (/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun).*\d\d\d\d/)
+          {
             # Old style ChangeLog comment 
-            s/^.*2000[ \t\n\r]*//;
-
-        } else { 
-            # FIXME bugzilla.eazel.com 3452: we should try to extract names & addresses from 
-            # entry body text.
-
+            s/^.*20\d\d\s*//;
+          }
+        else
+          {
+            # FIXME bugzilla.eazel.com 3452: we should also try to extract
+            # names & addresses from entry body text.
             next LOOP; # ignore unknown lines for now
-        }
-
+          }
         
-        $name = $_;
-        $email = $_;
+        my $name = $_;
         
         $name =~ s/[ \t]*<.*[\n\r]*$//;
-
-        if ($name_map{$name}) {
-            $name = $name_map{$name};
-        }
-
+        
+        $name = $name_map{$name} if $name_map{$name};
+        
+        my $email = $_;
         
         $email =~ s/^.*<//;
         $email =~ s/>.*$//;
         $email =~ s/[ \t\n\r]*$//;
+	$email =~ s/helixcode/ximian/;
         
-        if ($email_map{$email}) {
-            $email = $email_map{$email};
-        }
+        $email = $email_map{$email} if $email_map{$email};
 
         push @lines, "${name}  <${email}>";
     }
 }
 
-close (CHANGELOGS);
+close CHANGELOGS;
 
-@sort_lines = sort @lines;
-
+my @changelog_people;
 my $last_line = "";
-
-foreach my $line (@sort_lines) {
+foreach my $line (sort @lines)
+  {
     push @changelog_people, $line unless $line eq $last_line;
     $last_line = $line;
-}
+  }
 
-
-open (AUTHORS, "<AUTHORS");
+open AUTHORS, "AUTHORS" or die;
 
 my @authors;
 
 while (<AUTHORS>) {
     chomp;
-
     push @authors, $_;
 }
 
-close (AUTHORS);
+close AUTHORS;
 
-open (THANKS, "<THANKS");
+open THANKS, "THANKS" or die;
 
+my @thanks_people;
 
 while (<THANKS>) {
     chomp;
-    
     s/ - .*$//;
-
     push @thanks_people, $_;
 }
 
-close (THANKS);
+close THANKS;
+
+open ABOUT, "src/nautilus-window-menus.c" or die;
+
+my $found_about_authors = 0;
+
+while (<ABOUT>)
+  {
+    if (/const char \*authors/)
+      {
+        $found_about_authors = 1;
+        last;
+      }
+  }
+
+my @about_authors;
+
+if ($found_about_authors)
+  {
+    my $i = 0;
+    while (<ABOUT>)
+      {
+        last unless /^\s+\"(.*)\",\s*\n/;
+        push @about_authors, $1;
+      }
+  }
+
+close ABOUT;
 
 
-foreach my $person (@changelog_people) {
+my @uncredited;
+foreach my $person (@changelog_people)
+  {
     if (! (grep {$_ eq $person} @thanks_people) &&
-        ! (grep {$_ eq $person} @authors)) {
+        ! (grep {$_ eq $person} @authors))
+      {
         push @uncredited, $person;
-    }
-}
+      }
+  }
 
-if (@uncredited) {
-    print "The following people are in the ChangeLog but not credited in THANKS or AUTHORS:\n\n";
-
-    foreach my $person (@uncredited) {
-        print "${person}\n";
-    }
-    print "\n";
-}
-
-
-
-foreach my $person (@authors) {
-    if (grep {$_ eq $person} @thanks_people) {
+my @double_credited;
+foreach my $person (@authors)
+  {
+    if (grep {$_ eq $person} @thanks_people)
+      {
         push @double_credited, $person;
-    }
-}
+      }
+  }
 
+my @author_names;
+foreach my $person (@authors)
+  {
+    $person =~ s/\s*<.*//;
+    push @author_names, $person;
+  }
 
-if (@double_credited) {
-    print "The following people are listed in both THANKS and AUTHORS:\n\n";
+my @not_in_about;
+foreach my $person (@author_names)
+  {
+    push @not_in_about, $person unless grep {$_ eq $person} @about_authors;
+  }
 
-    foreach my $person (@double_credited) {
+my @only_in_about;
+foreach my $person (@about_authors)
+  {
+    push @only_in_about, $person unless grep {$_ eq $person} @author_names;
+  }
+
+my $printed = 0;
+
+if (@uncredited)
+  {
+    print "\nThe following people are in the ChangeLog but not credited in THANKS or AUTHORS:\n\n";
+    
+    foreach my $person (@uncredited)
+      {
         print "${person}\n";
-    }
-}
+      }
+    
+    $printed = 1;
+  }
 
-# FIXME bugzilla.eazel.com 3453: we should also make sure that AUTHORS matches the contents of
-# the About dialog.
+if (@double_credited)
+  {
+    print "\nThe following people are listed in both THANKS and AUTHORS:\n\n";
+    
+    foreach my $person (@double_credited)
+      {
+        print "${person}\n";
+      }
+    
+    $printed = 1;
+  }
+
+if (!$found_about_authors)
+  {
+    print "\nDidn't find authors section in nautilus-window-menus.c\n";
+    $printed = 1;
+  }
+
+if (@not_in_about)
+  {
+    print "\nThe following people are in AUTHORS but not the about screen:\n\n";
+    
+    foreach my $person (@not_in_about)
+      {
+        print "${person}\n";
+      }
+    
+    $printed = 1;
+  }
+
+if (@only_in_about)
+  {
+    print "\nThe following people are in the about screen but not AUTHORS:\n\n";
+    
+    foreach my $person (@only_in_about)
+      {
+        print "${person}\n";
+      }
+    
+    $printed = 1;
+  }
+
+print "\n" if $printed;

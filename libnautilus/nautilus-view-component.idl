@@ -4,7 +4,7 @@
  *  libnautilus: A library for nautilus view implementations.
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
- *  Copyright (C) 2000 Eazel, Inc.
+ *  Copyright (C) 2000, 2001 Eazel, Inc.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -119,7 +119,6 @@ module Nautilus {
 		 * indicates that.
 		 */
 		oneway void report_load_underway ();
-
 		oneway void report_load_progress (in float fraction_done);
 		oneway void report_load_complete ();
 		oneway void report_load_failed ();

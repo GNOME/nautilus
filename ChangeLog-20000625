@@ -2405,7 +2405,7 @@ Sun Jun 18 02:50:47 2000  George Lebl <jirka@5z.com>
 	Changed menu item title from "Customize Icon Text..." to
 	"Icon Captions...". Not sure if I like this verbless style yet.
 
-2000-06-14  Robin * Slomkowski <rslokow@eazel.com>
+2000-06-14  Robin * Slomkowski <rslomkow@eazel.com>
 
 	* nautilus.spec.in: added permission so it can run for non-root
 	* HACKING: clean up orginization, and added what could be used from Helix
@@ -8250,7 +8250,7 @@ Tue May 30 11:21:31 2000  Raph Levien  <raph@acm.org>
 	
 	* src/ntl-index-panel.c: (add_command_buttons): Format tweaking.
 	
-2000-05-24  Eskil Heyn Olsen  <eskil@eazel.om>
+2000-05-24  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* configure.in: 
 	* components/services/install/command-line/Makefile.am:
@@ -8288,7 +8288,7 @@ Tue May 30 11:21:31 2000  Raph Levien  <raph@acm.org>
 	* src/ntl-uri-map.c: Make content loser component have lower
 	priority than anything else.
 
-2000-05-24  Eskil Heyn Olsen  <eskil@eazel.om>
+2000-05-24  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/trilobite/Makefile.am:
 	Accidently removed the wrong subdir, reinserted lib and removed src.
@@ -8978,7 +8978,7 @@ Tue May 30 11:21:31 2000  Raph Levien  <raph@acm.org>
 	of the fix for Bug # 863.  This is a statically linked command line
 	implementation only right now.
 
-2000-05-22  Eskil Heyn Olsen  <eskil@eazel.om>
+2000-05-22  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* src/ntl-app.c (display_prototype_caveat): Changed to simply use
 	a gnome_warning_dialog instead of a nautilus_simple_dialog. We
@@ -9060,7 +9060,7 @@ Tue May 30 11:21:31 2000  Raph Levien  <raph@acm.org>
 	understand and better organized. Also added a "desktop" option
 	as a start for my next task.
 
-2000-05-22  Eskil Heyn Olsen  <eskil@eazel.om>
+2000-05-22  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/trilobite/src/trilobite-service-private.h: 
 	* components/services/trilobite/src/trilobite-service-public.h: 
@@ -9435,7 +9435,7 @@ Tue May 30 11:21:31 2000  Raph Levien  <raph@acm.org>
 	added playing code to the music view, but it's still not working
 	so it's disabled
 	
-2000-05-19  Eskil Heyn Olsen  <eskil@eazel.om>
+2000-05-19  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* configure.in:
 	added the components/services/time/ makefiles
@@ -9629,7 +9629,7 @@ Tue May 30 11:21:31 2000  Raph Levien  <raph@acm.org>
 	added sorting by bitrate,
 	more work on the play controls, but they don't actually play yet
 	
-2000-05-18  Eskil Heyn Olsen  <eskil@eazel.om>
+2000-05-18  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/trilobite/sample/command-line/Makefile.am:
 	* components/services/trilobite/sample/command-line/main.c: 
@@ -9809,7 +9809,7 @@ Tue May 30 11:21:31 2000  Raph Levien  <raph@acm.org>
 	* components/music/pixmaps.h:
 	some inline images for the buttons
 		
-2000-05-17  Eskil Heyn Olsen  <eskil@eazel.om>
+2000-05-17  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/trilobite/sample/service/sample-service-impl.c:
 	Added a bug for the destroyer
@@ -10056,7 +10056,7 @@ Tue May 30 11:21:31 2000  Raph Levien  <raph@acm.org>
 	Bottleneck location change requests to nautilus through a single
 	function.
 	
-2000-05-17  Eskil Heyn Olsen  <eskil@eazel.om>
+2000-05-17  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/trilobite/idl/sample-service.idl: 
 	* components/services/trilobite/sample/service/sample-service-public.h:
@@ -10225,7 +10225,7 @@ Tue May 30 11:21:31 2000  Raph Levien  <raph@acm.org>
 	* src/ntl-view.c: (nautilus_view_destroy_client):
 	Added bug numbers to some FIXMEs.
 
-2000-05-16  Eskil Heyn Olsen  <eskil@eazel.om>
+2000-05-16  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/trilobite/sample/service/Makefile.am
 	(sample-service.h): Missed a -I on the orbit-idl
@@ -10282,7 +10282,7 @@ Tue May 30 11:21:31 2000  Raph Levien  <raph@acm.org>
 	
 	* libnautilus-extensions/nautilus-string.h: Formatting.
 
-2000-05-16  Eskil Heyn Olsen  <eskil@eazel.om>
+2000-05-16  Eskil Heyn Olsen  <eskil@eazel.com>
 
     	* components/services/trilobite/src/trilobite-service-public.h: 
 	* components/services/trilobite/src/trilobite-service.c
@@ -10596,7 +10596,7 @@ Tue May 30 11:21:31 2000  Raph Levien  <raph@acm.org>
 	(notify_selection_change_callback), (display_pending_files):
 	some of Darin's recent changes wouldn't compile, so I fixed them
 	
-2000-05-12  Eskil Heyn Olsen  <eskil@eazel.om>
+2000-05-12  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* libnautilus/Makefile.am (BUILT_SOURCES): This is way people
 	should use a highlighting editor so you wouldn't have these broken
@@ -10634,7 +10634,7 @@ Tue May 30 11:21:31 2000  Raph Levien  <raph@acm.org>
 	* src/file-manager/fm-list-view.c: (create_list): Got rid of
 	the FIXME now that Pavel fixed bug 315.
 
-2000-05-12  Eskil Heyn Olsen  <eskil@eazel.om>
+2000-05-12  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/trilobite/sample/service/Makefile.am 
 	* components/services/trilobite/sample/nautilus-view/Makefile.am
@@ -10728,7 +10728,7 @@ Tue May 30 11:21:31 2000  Raph Levien  <raph@acm.org>
 	(get_sort_criterion_by_menu_path), (fm_icon_view_begin_loading),
 	(sort_callback): Add code to save and load the "sort by" setting.
 
-2000-05-12  Eskil Heyn Olsen  <eskil@eazel.om>
+2000-05-12  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* src/file-manager/Makefile.am (CLEANFILES): Fixed the CLEANFILES
 	so the corba generated file and the dfos_corba_stamp get's deleted

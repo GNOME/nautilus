@@ -1,3 +1,16 @@
+2001-01-24  Darin Adler  <darin@eazel.com>
+
+	* AUTHORS:
+	* THANKS:
+	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):
+	Updated based on recent check-ins and other contributions.
+
+	* check-THANKS.pl: Updated to check the about list against the
+	AUTHORS file and to fix some other things.
+
+	* libnautilus/nautilus-view-component.idl: Fix a comment and
+	remove a stray empty line.
+
 2001-01-24  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* applets/launcher/nautilus-launcher-applet.c: (create_pixbufs),
@@ -3454,7 +3467,7 @@
 	(nautilus_adapter_embeddable_embed_strategy_new): remove redundant
 	bonobo_item_container_add.
 
-2001-01-11  Andy Hertzfeld  <andy@eazel>
+2001-01-11  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-property-browser.c: (make_category_link):
 	make the category links use nautilus-image for anti-aliased
@@ -3936,7 +3949,7 @@
 	* components/services/inventory/Makefile.am: added $(IDL) to
 	EXTRA_DISTS
 
-2001-01-11  Ian McKellar  <ian@eazel.om>
+2001-01-11  Ian McKellar  <ian@eazel.com>
 
 	* components/services/install/command-line/Makefile.am:
 	Don't build the inventory test code here as the inventory code has
@@ -4535,7 +4548,7 @@
 	workaround to fix bug 3973.
 	
 
-Fri Jan 05 20:28:43 2001  George Lebl <jirka@5z.com>
+2001-01-05  George Lebl <jirka@5z.com>
 
 	Darin saw this patch and says it should not destroy the world
 	if I apply it.
@@ -5308,7 +5321,7 @@ Fri Jan 05 20:28:43 2001  George Lebl <jirka@5z.com>
 	(mozilla_content_view_one_time_happenings):
 	Add support for using mozilla caching.
 	
-Wed Jan 03 04:11:01 2001  George Lebl <jirka@5z.com>
+2001-01-03  George Lebl <jirka@5z.com>
 
 	Reviewed by Maciej, so if I broke something, blame him.
 
