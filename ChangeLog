@@ -1,5 +1,12 @@
 2000-10-13  John Sullivan  <sullivan@eazel.com>
 
+	* src/file-manager/fm-directory-view.c: Changed the
+	SILENT_WINDOW_OPEN_LIMIT from 10 to 5 after feedback that
+	opening 9 windows accidentally was dragging someone's
+	machine into the muck.
+
+2000-10-13  John Sullivan  <sullivan@eazel.com>
+
 	Added some conditionalized debugging spam to help
 	investigate bug 3389 (performance problem with
 	load_directory getting called so often)

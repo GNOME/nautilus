@@ -73,7 +73,7 @@
 #include <src/nautilus-application.h>
 
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
-#define SILENT_WINDOW_OPEN_LIMIT	10
+#define SILENT_WINDOW_OPEN_LIMIT	5
 
 /* Paths to use when referring to bonobo menu items. */
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN                      		"/menu/File/Open Placeholder/Open"
