@@ -38,7 +38,7 @@
 #ifdef HAVE_MEDUSA
 #include <libmedusa/medusa-indexed-search.h>
 #include <libmedusa/medusa-unindexed-search.h>
-#include <libmedusa/medusa-index-service.h>
+#include <libmedusa/medusa-index-progress.h>
 #endif
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
@@ -186,31 +186,32 @@ real_load_error (FMDirectoryView *nautilus_view,
 	
 	switch (result) {
 	case GNOME_VFS_ERROR_SERVICE_OBSOLETE:
-		load_error_dialog = eel_show_yes_no_dialog (_("The search you have selected "
-							           "is newer than the index on your "
-							           "system.  The search will return "
-							           "no results right now.  Would you like "
-							           "to create a new index now?"),
-							         _("Search for items that are too new"),
-							         _("Create a new index"),
-							         _("Don't create index"),
-							         NULL);
-		gtk_signal_connect (GTK_OBJECT (eel_gnome_dialog_get_button_by_index
-						(load_error_dialog, GNOME_OK)),
-				    "clicked",
-				    nautilus_indexing_info_request_reindex,
-				    NULL);
+		load_error_dialog = eel_show_info_dialog (_("The search you have selected "
+							    "is newer than the index on your "
+							    "system.  The search will return "
+							    "no results right now.  You can create a new "
+							    " index by running \"medusa-indexd\" as root "
+							    "on the command line."),
+							  _("Search for items that are too new"),
+							  NULL);
 		break;
 	case GNOME_VFS_ERROR_TOO_BIG:
 		eel_show_error_dialog (_("Every indexed file on your computer "
-					      "matches the criteria you selected. "
-					      "You can check the spelling on your selections "
-					      "or add more criteria to narrow your results."),
-				            _("Error during search"),
-				            NULL);
+					 "matches the criteria you selected. "
+					 "You can check the spelling on your selections "
+					 "or add more criteria to narrow your results."),
+				       _("Error during search"),
+				       NULL);
 		break;
 	case GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE:
-		/* We've handled this case in load_location_callback */
+		/* FIXME: This dialog does not get shown because a slow search
+		   will be performed and will not return an error.  */
+		eel_show_error_dialog (_("Find cannot open your file system index.  "
+					 "Your index may be missing or corrupt.  You can "
+					 "create a new index by running \"medusa-indexd\" as root "
+					 "on the command line."),
+				       _("Error reading file index"),
+				       NULL);
 		break;
 	case GNOME_VFS_ERROR_CANCELLED:
 		break;
@@ -232,11 +233,7 @@ real_load_error (FMDirectoryView *nautilus_view,
 static void
 display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 {
-
-	GnomeDialog *index_problem_dialog;
 	const char *error_string, *title_string;
-	MedusaIndexingRequestResult index_service_availability;
-	GtkButton *create_index_button;
 
 	if (medusa_indexed_search_system_index_files_look_available ()) {
 		/* There is an index on the system, but there is no
@@ -255,61 +252,23 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 			?  N_("Fast searches are not available")
 			:  N_("Content searches are not available");
 		eel_show_error_dialog_with_details (error_string,
-						         title_string,
-						         _("Your index files are available "
-						           "but the Medusa search daemon, which handles "
-						           "index requests, isn't running.  "
-						           "To start this program, log in as root and "
-						           "enter this command at the command line:\n"
-						           "medusa-searchd"),
-						         NULL);
+						    title_string,
+						    _("Your index files are available "
+						      "but the Medusa search daemon, which handles "
+						      "index requests, isn't running.  "
+						      "To start this program, log in as root and "
+						      "enter this command at the command line:\n\n"
+						      "medusa-searchd"),
+						    NULL);
 	}
 	else {
 		/* There is currently no index available, so we need to explain
-		   whether a new index needs to be made, and if nautilus can direct it
-		   to be made correctly. 
-		   There are three possibilities here:
-		   1.  There is no index on this system,  and one is not currently being made.
-		   2.  There is no index on this system, but one is currently being made.
-		   3.  We can't contact the indexing service. */
-		index_service_availability = medusa_index_service_is_available ();
-		switch (index_service_availability) {
-		case MEDUSA_INDEXER_READY_TO_INDEX:
-			error_string = backup_search_is_available
-				? N_("To do a fast search, Find requires an index "
-				     "of the files on your system.  "
-				     "Your computer does not have an index "
-				     "right now.  Because Find cannot use an "
-				     "index, this search may take several "
-				     "minutes.  "
-				     "Would you like to create an index? "
-				     "Creating an index will be done while "
-				     "you are not actively using your computer.")
-				: N_("To do a content search, Find requires an index "
-				     "of the content on your system.  "
-				     "Your computer does not have an index "
-				     "right now.  Would you like to create an index?  "
-				     "Creating an index will be done while you are not "
-				     "actively using your computer.");
-			title_string = backup_search_is_available
-				? N_("Indexed searches are not available")
-				: N_("Content searches are not available");
-			index_problem_dialog = eel_show_yes_no_dialog (error_string,
-								            title_string,
-								            _("Create an Index"),
-								            _("Don't Create an Index Now"),
-								            NULL);
-			create_index_button = eel_gnome_dialog_get_button_by_index (index_problem_dialog,
-											  GNOME_OK);
-			gtk_signal_connect (GTK_OBJECT (create_index_button),
-					    "clicked",
-					    nautilus_indexing_info_request_reindex,
-					    NULL);
-			break;
-		case MEDUSA_INDEXER_ALREADY_INDEXING:
+		   whether a new index needs to be made, or whether one is currently
+		   being made. */
+ 		if (medusa_indexing_is_currently_in_progress ()) {
 			error_string = backup_search_is_available 
 				? N_("To do a fast search, Find requires an index "
-				    "of the files on your system.  "
+				     "of the files on your system.  "
 				    "Your computer is currently creating that "
 				     "index.   Because Find cannot use an index, "
 				     "this search may take several "
@@ -323,10 +282,10 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 				? N_("Indexed searches are not available")
 				: N_("Content searches are not available");
 			eel_show_error_dialog (error_string,
-					            title_string,
-					            NULL);
-			break;
-		default:
+					       title_string,
+					       NULL);
+		}
+		else {
 			error_string = backup_search_is_available
 				? N_("To do a fast search, Find requires an index "
 				     "of the files on your system.  No index "
@@ -348,7 +307,6 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 			eel_show_error_dialog (error_string,
 					       title_string,
 					       NULL);
-			break;
 		}
 	}
 
@@ -507,15 +465,15 @@ real_get_emblem_names_to_exclude (FMDirectoryView *view)
 }
 
 static int
-real_get_emblems_column (FMListView *view)
-{
-	return 2;
-}
-
-static int
 real_get_link_column (FMListView *view)
 {
 	return 1;
+}
+
+static int
+real_get_emblems_column (FMListView *view)
+{
+	return 2;
 }
 
 static void

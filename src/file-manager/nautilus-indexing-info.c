@@ -57,14 +57,13 @@ typedef struct {
 
 typedef struct {
         GnomeDialog *last_index_time_dialog;
-        MedusaIndexingStatus indexing_service_status;
         GnomeDialog *index_in_progress_dialog;
-        gboolean show_last_index_time;
+        gboolean indexing_is_in_progress;
 } IndexingInfoDialogs;
 
 static IndexingInfoDialogs *dialogs = NULL;
 
-static GnomeDialog *   last_index_time_and_reindex_button_dialog_new      (void);
+static GnomeDialog *   last_index_time_dialog_new      (void);
 
 static int
 get_index_percentage_complete (void)
@@ -135,7 +134,7 @@ show_index_progress_dialog (void)
 
 
 static void
-show_reindex_request_dialog (void)
+show_last_index_time_dialog (void)
 {
         int callback_id;
 
@@ -143,98 +142,26 @@ show_reindex_request_dialog (void)
         gtk_widget_show_all (GTK_WIDGET (dialogs->last_index_time_dialog));
         callback_id = medusa_execute_once_when_system_state_changes (dialog_close_cover,
                                                                      dialogs->last_index_time_dialog);
-#if 0
         gtk_signal_connect_object (GTK_OBJECT (dialogs->last_index_time_dialog),
                                    "destroy",
                                    medusa_remove_state_changed_function,
                                    GINT_TO_POINTER (callback_id));
-#endif
-}
-
-static void
-recreate_and_show_reindex_request_dialog (void)
-{
-        gnome_dialog_close (dialogs->last_index_time_dialog);
-        gtk_widget_destroy (GTK_WIDGET (dialogs->last_index_time_dialog));
-        dialogs->last_index_time_dialog = last_index_time_and_reindex_button_dialog_new ();
-        gtk_widget_show_all (GTK_WIDGET (dialogs->last_index_time_dialog));
-}
-        
-static void
-update_file_index_callback (GtkWidget *widget, gpointer data)
-{
-	MedusaIndexingRequestResult result;
-	const char *error;
-
-	result = medusa_index_service_request_reindex ();
-        
-	switch (result) {
-	case MEDUSA_INDEXER_REQUEST_OK:
-		error = NULL;
-                dialogs->show_last_index_time = FALSE;
-                show_index_progress_dialog ();
-		break;
-	case MEDUSA_INDEXER_ERROR_BUSY:
-		error = _("The indexer is currently busy.");
-		break;
-	case MEDUSA_INDEXER_ERROR_NO_RESPONSE:
-                dialogs->indexing_service_status = MEDUSA_INDEXER_NOT_AVAILABLE;
-                recreate_and_show_reindex_request_dialog ();
-		error = _("An indexer is not running, or is not responding to requests to reindex your computer.");
-		break;
-	case MEDUSA_INDEXER_ERROR_INVALID_RESPONSE:
-                dialogs->indexing_service_status = MEDUSA_INDEXER_NOT_AVAILABLE;
-                recreate_and_show_reindex_request_dialog ();
-                error = _("An attempt to reindex, caused an Internal Indexer Error.  Tell rebecka@eazel.com");
-                break;
-        default:
-                g_assert_not_reached ();
-                error = NULL;
-	}
-        if (error) {
-                /* FIXME: Maybe we should include details here? */
-                eel_show_error_dialog (error,
-                                            _("Reindexing Failed"),
-                                            NULL);
-        }
-        
 }
 
 static GnomeDialog *
-last_index_time_and_reindex_button_dialog_new (void)
+last_index_time_dialog_new (void)
 {
 	char *time_str;
 	char *label_str;
         GtkWidget *label;
-        GtkWidget *button;
-        GtkWidget *hbox;
         GnomeDialog *dialog;
 
-        dialogs->indexing_service_status = medusa_index_service_is_available ();
-        switch (dialogs->indexing_service_status) {
-        case MEDUSA_INDEXER_ALREADY_INDEXING:
-                /* Fall through, we won't be showing this in the above case, anyways. */
-        case MEDUSA_INDEXER_READY_TO_INDEX:
-                
-                dialog = eel_create_info_dialog (_("Once a day your files and text content are indexed so "
-                                                        "your searches are fast. If you need to update your index "
-                                                        "now, click on the \"Update Now\" button."),
-                                                      _("Indexing Status"),
-                                                      NULL);
-                break;
-        case MEDUSA_INDEXER_NOT_AVAILABLE:
-                /* FIXME: Do we want to talk about the index not being available? */
-                dialog = eel_create_info_dialog (_("Once a day your files and text content are indexed so "
-                                                        "your searches are fast. "),
-                                                      _("Indexing Status"),
-                                                      NULL);
-                break;
-        default:
-                g_assert_not_reached ();
-                dialog = NULL;
-        }
-        
+        dialog = eel_create_info_dialog (_("Once a day your files and text content are indexed so "
+                                           "your searches are fast. "),
+                                         _("Indexing Status"),
+                                         NULL);
         set_close_hides_for_dialog (dialog);
+
         time_str = nautilus_indexing_info_get_last_index_time ();
         label_str = g_strdup_printf (_("Your files were last indexed at %s"),
                                      time_str);
@@ -246,17 +173,6 @@ last_index_time_and_reindex_button_dialog_new (void)
         eel_label_make_bold (EEL_LABEL (label));
         gtk_box_pack_start (GTK_BOX (dialog->vbox), label,
                             FALSE, FALSE, 0);
-
-        if (dialogs->indexing_service_status == MEDUSA_INDEXER_READY_TO_INDEX) {
-                hbox = gtk_hbox_new (FALSE, 0);
-                button = gtk_button_new_with_label (_("Update Now"));
-                gtk_signal_connect (GTK_OBJECT (button), "clicked",
-                                    update_file_index_callback, NULL);
-                
-                gtk_box_pack_end (GTK_BOX (hbox), button, FALSE, FALSE, 0);
-                gtk_box_pack_start (GTK_BOX (dialog->vbox), hbox,
-                            FALSE, FALSE, 0);
-        }
 
         return dialog;
 }
@@ -280,8 +196,8 @@ index_progress_dialog_new (void)
         guint timeout_id;
                 
         dialog = eel_create_info_dialog (_("Once a day your files and text content are indexed so "
-                                                "your searches are fast.  Your files are currently being indexed."),
-                                              _("Indexing Status"), NULL);
+                                           "your searches are fast.  Your files are currently being indexed."),
+                                         _("Indexing Status"), NULL);
         set_close_hides_for_dialog (dialog);        
         percentage_complete = get_index_percentage_complete ();
         indexing_progress_bar = gtk_progress_bar_new ();
@@ -363,16 +279,16 @@ show_indexing_info_dialog (void)
                 dialogs = g_new0 (IndexingInfoDialogs, 1);
                 g_atexit (destroy_indexing_info_dialogs_on_exit);
                 
-                dialogs->last_index_time_dialog = last_index_time_and_reindex_button_dialog_new ();
+                dialogs->last_index_time_dialog = last_index_time_dialog_new ();
                 dialogs->index_in_progress_dialog = index_progress_dialog_new ();
         }
  
-       dialogs->show_last_index_time = !medusa_index_is_currently_running ();
+       dialogs->indexing_is_in_progress = medusa_indexing_is_currently_in_progress ();
        
-       if (dialogs->show_last_index_time) {
-               show_reindex_request_dialog ();
-       } else {
+       if (dialogs->indexing_is_in_progress) {
                show_index_progress_dialog ();
+       } else {
+               show_last_index_time_dialog ();
        }
         
 }
@@ -389,14 +305,6 @@ show_search_service_not_available_dialog (void)
 }
 #endif
 
-
-void
-nautilus_indexing_info_request_reindex (void)
-{
-#ifdef HAVE_MEDUSA
-        medusa_index_service_request_reindex ();
-#endif
-}
 
 char *
 nautilus_indexing_info_get_last_index_time (void)

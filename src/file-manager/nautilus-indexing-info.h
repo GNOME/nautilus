@@ -30,7 +30,6 @@
  * just raise that one.
  */
 void  nautilus_indexing_info_show_dialog         (void);
-void  nautilus_indexing_info_request_reindex     (void);
 char *nautilus_indexing_info_get_last_index_time (void);
 
 #endif /* NAUTILUS_INDEXING_INFO_H */

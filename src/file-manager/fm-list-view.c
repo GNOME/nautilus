@@ -1118,10 +1118,10 @@ get_cell_text (GtkWidget *widget, int column_index, int cell_width,
 	if (strcmp (specification.attribute, "date_modified") == 0) {
 		/* special handling of dates */
 		return nautilus_file_fit_modified_date_as_string (
-			NAUTILUS_FILE (row->data),
-			cell_width,
-			measure_width_callback, truncate_middle_callback,
-			font);
+								  NAUTILUS_FILE (row->data),
+								  cell_width,
+								  measure_width_callback, truncate_middle_callback,
+								  font);
 	}
 
 	switch ((EelCellType)row->cell[column_index].type) {

@@ -1,3 +1,25 @@
+2001-04-26  Rebecca Schulman  <rebecka@eazel.com>
+	Fix bugzilla.eazel.com bug 7934, to remove the ability
+	to make an index using Nautilus.  
+
+	reviewed by: Darin Adler <darin@eazle.com>
+
+	* src/file-manager/fm-list-view.c: (get_cell_text):
+	* src/file-manager/fm-search-list-view.c: (real_load_error),
+	(display_indexed_search_problems_dialog), (real_get_link_column),
+	(real_get_emblems_column):
+	Simplify the dialog that allows a Nautilus user to request a new 
+	index.  Tell the user instead how to create an index if the user
+	has root access in this dialog instead.
+	* src/file-manager/nautilus-indexing-info.c:
+	(show_last_index_time_dialog), (last_index_time_dialog_new),
+	(index_progress_dialog_new), (show_indexing_info_dialog):
+	* src/file-manager/nautilus-indexing-info.h:
+	Remove the request reindex function.  Remove option to create a new
+	index.  Keep dialogs to show either the time of the last index creation,
+	or the progress of the current indexing task, depending on whether
+	an index is in progress or not.
+
 2001-04-26  Dan Mueth  <dan@eazel.com>
 
 	Committing first draft of the screenshot guidelines for Nautilus
