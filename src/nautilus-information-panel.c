@@ -829,6 +829,9 @@ view_loaded_callback (NautilusViewFrame *view_frame, gpointer user_data)
 	
 	sidebar = NAUTILUS_SIDEBAR (user_data);	
 	nautilus_sidebar_tabs_connect_view (sidebar->details->sidebar_tabs, GTK_WIDGET (view_frame));
+	
+	/* disconnect the signal, since it's only a one-time event */
+	gtk_signal_disconnect_by_func (GTK_OBJECT (view_frame), view_loaded_callback, user_data);
 }
 
 /* add a new panel to the sidebar */

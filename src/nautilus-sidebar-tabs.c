@@ -337,15 +337,16 @@ tab_item_destroy (TabItem *item)
 	if (item->listener_id != 0) {
 		CORBA_exception_init (&ev);
 		control = nautilus_view_frame_get_control (NAUTILUS_VIEW_FRAME (item->tab_view));	
-		property_bag = Bonobo_Control_getProperties (control, &ev);
-		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {	
-			bonobo_event_source_client_remove_listener
-				(property_bag,
-				 item->listener_id,
-				 &ev);
-			bonobo_object_release_unref (property_bag, &ev);	
+		if (control != NULL) {
+			property_bag = Bonobo_Control_getProperties (control, &ev);
+			if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {	
+				bonobo_event_source_client_remove_listener
+					(property_bag,
+				 	item->listener_id,
+				 	&ev);
+				bonobo_object_release_unref (property_bag, &ev);	
+			}
 		}
-	
 	}
 	g_free (item);
 }

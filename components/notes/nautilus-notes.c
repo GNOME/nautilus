@@ -255,10 +255,6 @@ do_destroy (GtkObject *obj, Notes *notes)
         g_free (notes->uri);
         g_free (notes);
 
-	if (notes->property_bag) {
-		bonobo_object_unref (BONOBO_OBJECT (notes->property_bag));
-	}
-
         notes_object_count--;
         if (notes_object_count <= 0) {
                 gtk_main_quit();
