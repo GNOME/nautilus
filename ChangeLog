@@ -1,3 +1,49 @@
+2002-02-07  Darin Adler  <darin@bentspoon.com>
+
+	* components/tree/nautilus-tree-model.h:
+	* components/tree/nautilus-tree-model.c:
+	(get_parent_node_from_file): New.
+	(insert_node): New.
+	(reparent_node): New.
+	(update_node): Handle files that disappear or move.
+	(process_file_change): Don't create nodes for files that are
+	already gone by the time we get here.
+	(done_loading_callback): Don't assert if the node for this file
+	is gone by the time this shows up.
+	(done_loading_idle_callback): New.
+	(start_monitoring_directory): Do a done_loading callback for
+	directories that are already fully loaded at the start. We have
+	to do this at idle time, though, since the tree code can't handle
+	all the new nodes showing up inside ref_node.
+	(nautilus_tree_model_iter_n_children): Add; was missing.
+	(destroy_unneeded_children): New.
+	(destroy_unneeded_children_idle_callback): New.
+	(last_child_unref): Destroy the children at idle time, not right
+	away. I did this to try to make GtkTreeModelSort work, but it
+	didn't fix the whole problem, so maybe take this out later.
+	(nautilus_tree_model_unref_node): Tighten assert.
+	(nautilus_tree_model_iter_get_file): New.
+	(nautilus_tree_model_finalize): Cleanup for new idle functions.
+	(nautilus_tree_model_tree_model_init):
+
+	* components/tree/nautilus-tree-view.c: (load_expansion_state):
+	New placeholder, not yet implemented.
+	(path_to_file): New.
+	(prepend_one_uri): New.
+	(save_expansion_state): New.
+	(save_expansion_state_idle_callback): New.
+	(schedule_save_expansion_state_callback): New.
+	(got_activation_uri_callback): New.
+	(cancel_activation): New.
+	(row_activated_callback): New.
+	(create_tree): Put in first cut at using GtkTreeModelSort;
+	couldn't get it working so it's ifdef'd out. Save list of expanded
+	URIs next idle after a row is expanded or collapsed. Switch the
+	view location when a row is activated.
+	(tree_activate_callback): Put in a call to load_expansion_state,
+	although it's not implemented yet.
+	(nautilus_tree_view_finalize): Cleanup for new idle functions.
+
 2002-02-08  Abel Cheung  <maddog@linux.org.hk>
 
 	* configure.in: Added "zh_CN" to ALL_LINGUAS.

@@ -28,6 +28,8 @@
 #define NAUTILUS_TREE_MODEL_H
 
 #include <glib-object.h>
+#include <gtk/gtktreemodel.h>
+#include <libnautilus-private/nautilus-file.h>
 
 #define NAUTILUS_TYPE_TREE_MODEL	    (nautilus_tree_model_get_type ())
 #define NAUTILUS_TREE_MODEL(obj)	    (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_TREE_MODEL, NautilusTreeModel))
@@ -52,7 +54,9 @@ typedef struct {
 	GObjectClass parent_class;
 } NautilusTreeModelClass;
 
-GType              nautilus_tree_model_get_type (void);
-NautilusTreeModel *nautilus_tree_model_new      (const char *root_uri);
+GType              nautilus_tree_model_get_type      (void);
+NautilusTreeModel *nautilus_tree_model_new           (const char        *root_uri);
+NautilusFile *     nautilus_tree_model_iter_get_file (NautilusTreeModel *model,
+						      GtkTreeIter       *iter);
 
 #endif /* NAUTILUS_TREE_MODEL_H */

@@ -29,13 +29,13 @@
 #include <config.h>
 #include "nautilus-tree-model.h"
 
-#include <string.h>
-#include <gtk/gtktreemodel.h>
+#include <eel/eel-gtk-extensions.h>
 #include <libgnome/gnome-i18n.h>
 #include <libnautilus-private/nautilus-directory.h>
-#include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
+#include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
+#include <string.h>
 
 /* The user_data of the GtkTreeIter is the TreeNode pointer.
  * It's NULL for the dummy node. If it's NULL, then user_data2
@@ -75,7 +75,14 @@ struct NautilusTreeModelDetails {
 	TreeNode *root_node;	
 	guint root_node_changed_id;
 	gboolean root_node_parented;
+
+	guint destroy_unneeded_children_idle_id;
 };
+
+typedef struct {
+	NautilusDirectory *directory;
+	NautilusTreeModel *model;
+} DoneLoadingParameters;
 
 static GObjectClass *parent_class;
 
@@ -305,6 +312,18 @@ get_node_from_file (NautilusTreeModel *model, NautilusFile *file)
 }
 
 static TreeNode *
+get_parent_node_from_file (NautilusTreeModel *model, NautilusFile *file)
+{
+	NautilusFile *parent_file;
+	TreeNode *parent_node;
+	
+	parent_file = nautilus_file_get_parent (file);
+	parent_node = get_node_from_file (model, parent_file);
+	nautilus_file_unref (parent_file);
+	return parent_node;
+}
+
+static TreeNode *
 create_node_for_file (NautilusTreeModel *model, NautilusFile *file)
 {
 	TreeNode *node;
@@ -501,15 +520,52 @@ update_node_without_reporting (NautilusTreeModel *model, TreeNode *node)
 }
 
 static void
+insert_node (NautilusTreeModel *model, TreeNode *parent, TreeNode *node)
+{
+	tree_node_parent (node, parent);
+	update_node_without_reporting (model, node);
+	report_node_inserted (model, node);
+}
+
+static void
+reparent_node (NautilusTreeModel *model, TreeNode *node)
+{
+	GtkTreePath *path;
+	TreeNode *new_parent;
+
+	new_parent = get_parent_node_from_file (model, node->file);
+	if (new_parent == NULL || new_parent->directory == NULL) {
+		destroy_node (model, node);
+		return;
+	}
+
+	path = get_node_path (model, node);
+
+	tree_node_unparent (node);
+
+	gtk_tree_model_row_deleted (GTK_TREE_MODEL (model), path);
+	gtk_tree_path_free (path);
+
+	insert_node (model, new_parent, node);
+}
+
+static void
 update_node (NautilusTreeModel *model, TreeNode *node)
 {
 	gboolean had_dummy_child, has_dummy_child;
 	gboolean had_directory, has_directory;
 	gboolean changed;
 
-	/* FIXME: Handle case where node is no longer its parent's
-	 * child because it is gone, or moved.
-	 */
+	if (nautilus_file_is_gone (node->file)) {
+		destroy_node (model, node);
+		return;
+	}
+
+	if (node->parent != NULL && node->parent->directory != NULL
+	    && !nautilus_directory_contains_file (node->parent->directory, node->file)) {
+		reparent_node (model, node);
+		return;
+	}
 
 	had_dummy_child = tree_node_has_dummy_child (node);
 	had_directory = node->directory != NULL;
@@ -539,8 +595,7 @@ static void
 process_file_change (NautilusTreeModel *model,
 		     NautilusFile *file)
 {
-	TreeNode *node, *parent_node;
-	NautilusFile *parent;
+	TreeNode *node, *parent;
 
 	node = get_node_from_file (model, file);
 	if (node != NULL) {
@@ -548,17 +603,16 @@ process_file_change (NautilusTreeModel *model,
 		return;
 	}
 
-	parent = nautilus_file_get_parent (file);
-	parent_node = get_node_from_file (model, parent);
-	nautilus_file_unref (parent);
-	if (parent_node == NULL) {
+	if (nautilus_file_is_gone (file)) {
 		return;
 	}
 
-	node = create_node_for_file (model, file);
-	tree_node_parent (node, parent_node);
-	update_node_without_reporting (model, node);
-	report_node_inserted (model, node);
+	parent = get_parent_node_from_file (model, file);
+	if (parent == NULL) {
+		return;
+	}
+
+	insert_node (model, parent, create_node_for_file (model, file));
 }
 
 static void
@@ -586,9 +640,7 @@ done_loading_callback (NautilusDirectory *directory,
 	file = nautilus_directory_get_corresponding_file (directory);
 	node = get_node_from_file (model, file);
 	nautilus_file_unref (file);
-	g_assert (node != NULL);
-
-	if (node->done_loading) {
+	if (node == NULL || node->done_loading) {
 		return;
 	}
 
@@ -614,11 +666,28 @@ get_tree_monitor_attributes (void)
 	return attrs;
 }
 
+static gboolean
+done_loading_idle_callback (gpointer callback_data)
+{
+	DoneLoadingParameters *p;
+
+	p = callback_data;
+	if (p->directory != NULL && p->model != NULL) {
+		done_loading_callback (p->directory, p->model);
+	}
+	eel_nullify_cancel (&p->model);
+	eel_nullify_cancel (&p->directory);
+	g_free (p);
+
+	return FALSE;
+}
+
 static void
 start_monitoring_directory (NautilusTreeModel *model, TreeNode *node)
 {
-	GList *attrs;
 	NautilusDirectory *directory;
+	GList *attrs;
+	DoneLoadingParameters *p;
 
 	if (node->done_loading_id != 0) {
 		return;
@@ -645,6 +714,18 @@ start_monitoring_directory (NautilusTreeModel *model, TreeNode *node)
 	nautilus_directory_file_monitor_add (directory, model, TRUE, TRUE, attrs,
 					     files_changed_callback, model);
 	g_list_free (attrs);
+
+	if (nautilus_directory_are_all_files_seen (directory)) {
+		/* Can't just remove the dummy node in here, so we do
+		 * it at idle time.
+		 */
+		p = g_new (DoneLoadingParameters, 1);
+		p->directory = directory;
+		p->model = model;
+		eel_nullify_when_destroyed (&p->directory);
+		eel_nullify_when_destroyed (&p->model);
+		g_idle_add (done_loading_idle_callback, p);
+	}
 }
 
 static int
@@ -868,6 +949,35 @@ nautilus_tree_model_iter_has_child (GtkTreeModel *model, GtkTreeIter *iter)
 	return node != NULL && node->directory != NULL;
 }
 
+static int
+nautilus_tree_model_iter_n_children (GtkTreeModel *model, GtkTreeIter *iter)
+{
+	NautilusTreeModel *tree_model;
+	TreeNode *parent, *node;
+	int n;
+	
+	g_return_val_if_fail (NAUTILUS_IS_TREE_MODEL (model), FALSE);
+	g_return_val_if_fail (iter == NULL || iter_is_valid (NAUTILUS_TREE_MODEL (model), iter), FALSE);
+	
+	tree_model = NAUTILUS_TREE_MODEL (model);
+
+	if (iter == NULL) {
+		return 1;
+	}
+
+	parent = iter->user_data;
+	if (parent == NULL) {
+		return 0;
+	}
+
+	n = tree_node_has_dummy_child (parent) ? 1 : 0;
+	for (node = parent->first_child; node != NULL; node = node->next) {
+		n++;
+	}
+
+	return n;
+}
+
 static gboolean
 nautilus_tree_model_iter_nth_child (GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIter *parent_iter, int n)
 {
@@ -907,6 +1017,32 @@ nautilus_tree_model_iter_nth_child (GtkTreeModel *model, GtkTreeIter *iter, GtkT
 }
 
 static void
+destroy_unneeded_children (NautilusTreeModel *model, TreeNode *node)
+{
+	TreeNode *child;
+
+	if (node->child_ref_count == 0) {
+		stop_monitoring_directory (model, node);
+		destroy_children (model, node);
+	} else {
+		for (child = node->first_child; child != NULL; child = child->next) {
+			destroy_unneeded_children (model, child);
+		}
+	}
+}
+
+static gboolean
+destroy_unneeded_children_idle_callback (gpointer callback_data)
+{
+	NautilusTreeModel *model;
+
+	model = NAUTILUS_TREE_MODEL (callback_data);
+	model->details->destroy_unneeded_children_idle_id = 0;
+	destroy_unneeded_children (model, model->details->root_node);
+	return FALSE;
+}
+
+static void
 first_child_ref (NautilusTreeModel *model, TreeNode *node)
 {
 	g_assert (node->child_ref_count == 1);
@@ -916,9 +1052,14 @@ first_child_ref (NautilusTreeModel *model, TreeNode *node)
 static void
 last_child_unref (NautilusTreeModel *model, TreeNode *node)
 {
+	/* Destroying nodes in here causes trouble, at least when we
+	 * use GtkTreeModelSort. I'm not sure if this is a bug or by
+	 * design. For now, sidestep this issue by deferring until idle.
+	 */
 	g_assert (node->child_ref_count == 0);
-	stop_monitoring_directory (model, node);
-	destroy_children (model, node);
+	if (model->details->destroy_unneeded_children_idle_id == 0) {
+		g_idle_add (destroy_unneeded_children_idle_callback, model);
+	}
 }
 
 static void
@@ -964,7 +1105,7 @@ nautilus_tree_model_unref_node (GtkTreeModel *model, GtkTreeIter *iter)
 	if (parent == NULL) {
 		g_assert (node == NAUTILUS_TREE_MODEL (model)->details->root_node);
 	} else {
-		g_assert (parent->child_ref_count >= 0);
+		g_assert (parent->child_ref_count > 0);
 		if (--parent->child_ref_count == 0) {
 			last_child_unref (NAUTILUS_TREE_MODEL (model), parent);
 		}
@@ -1016,6 +1157,18 @@ nautilus_tree_model_new (const char *root_uri)
 	return model;
 }
 
+NautilusFile *
+nautilus_tree_model_iter_get_file (NautilusTreeModel *model, GtkTreeIter *iter)
+{
+	TreeNode *node;
+
+	g_return_val_if_fail (NAUTILUS_IS_TREE_MODEL (model), 0);
+	g_return_val_if_fail (iter_is_valid (NAUTILUS_TREE_MODEL (model), iter), 0);
+
+	node = iter->user_data;
+	return node == NULL ? NULL : nautilus_file_ref (node->file);
+}
+
 static void
 nautilus_tree_model_init (NautilusTreeModel *model)
 {
@@ -1043,6 +1196,10 @@ nautilus_tree_model_finalize (GObject *object)
 		destroy_node_without_reporting (model, root);
 	}
 
+	if (model->details->destroy_unneeded_children_idle_id != 0) {
+		g_source_remove (model->details->destroy_unneeded_children_idle_id);
+	}
+
 	g_free (model->details);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -1067,8 +1224,9 @@ nautilus_tree_model_tree_model_init (GtkTreeModelIface *iface)
 	iface->iter_next = nautilus_tree_model_iter_next;
 	iface->iter_children = nautilus_tree_model_iter_children;
 	iface->iter_has_child = nautilus_tree_model_iter_has_child;
-	iface->iter_parent = nautilus_tree_model_iter_parent;
+	iface->iter_n_children = nautilus_tree_model_iter_n_children;
 	iface->iter_nth_child = nautilus_tree_model_iter_nth_child;
+	iface->iter_parent = nautilus_tree_model_iter_parent;
 	iface->ref_node = nautilus_tree_model_ref_node;
 	iface->unref_node = nautilus_tree_model_unref_node;
 }
