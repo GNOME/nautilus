@@ -6,15 +6,20 @@ Major changes since 2.2.2 are:
 
 * Lots of fixes to the icon view keyboard and mouse handling
 
-* Automatic notes emblem
+* Automatic notes emblem (requires gnome-icon-theme 1.0.2)
 
 * Correctly scale icons in list view
+
+* No more tearing when zooming the icon view
 
 * Don't select the extension for rename in the list view
 
 * Easier to trigger auto scrolling during drag and drop in the icon
   view 
 
+* Much better thumbnail queue handling. Visible thumbnails are
+  prioritized.
+  
 * Scroll to previous position on directory reload
 
 * Show volume and free space in the property dialog for directories
@@ -37,18 +42,15 @@ Major changes since 2.2.2 are:
 
 * Use startup notification when launching Nautilus
 
-* Much better thumbnail queue handling. Visible thumbnails are
-  prioritized.
-
 * Don't save window geometry when maximized
 
-* Migrate Nautilus 1.0.x scripts
+* Added code to migrate Nautilus 1.0.x scripts
 
 * Added some docs about keyboard and mouse navigation in nautilus views.
 
 * Better accessibility support in the icon view
 
-* Lots of other small bugfixes and polish
+* Some other small bugfixes and polish
 
 Major changes since 2.2.1 are:
 
