@@ -1,3 +1,47 @@
+2000-03-07  John Sullivan  <sullivan@eazel.com>
+
+        Added Stretch/Restore menu items to Settings menu, and made some
+        other menu mechanism tweaks.
+
+        * src/nautilus-window-menus.c: Gave General Settings an underline
+        accelerator character.
+        
+        * src/file-manager/fm-directory-view.h,
+        * src/file-manager/fm-directory-view.c:
+        (fm_directory_view_get_bonobo_ui_handler): New function, exposed
+        so subclasses can call.
+        (fm_directory_view_merge_menus), (fm_directory_view_real_merge_menus): 
+        Removed BonoboUIHandler parameter. Updated callers.
+        * src/file-manager/fm-directory-view-icons.c:
+        Store react_to_icon_change_idle_id in details.
+        (fm_directory_view_icons_initialize_class): fill in update_menus
+        function pointer.
+        (fm_directory_view_icons_merge_menus): Removed BonoboUIHandler
+        parameter.
+        (fm_directory_view-icons_destroy): remove react_to_icon_change_idle_id
+        if non-zero.
+        (show_stretch_handles_cb): update menus since stretch item might
+        have changed state.
+        (unstretch_icons_cb): update menus since restore item might have
+        changed state.
+        (fm_directory_view_icons_compute_menu_item_info): New helper
+        function used for both context and bonobo menus.
+        (append_one_context_menu_item): New helper function used for
+        context menus.
+        (fm_directory_view_icons_append_selection_context_menu_items),
+        (fm_directory_view_icons_append_background_context_menu_items):
+        Use the new helper functions.
+        (append_bonobo_menu_item), (update_bonobo_menu_item): New helper 
+        functions used for bonobo menus.
+        (fm_directory_view_icons_merge_menus): include stretch and restore
+        menu items in Settings menu.
+        (fm_directory_view_icons_update_menus): update wording and sensitivity
+        of stretch and restore menu items.
+        (fm_directory_view_icons_react_to_icon_change_idle_cb): update menus,
+        since at least Restore item may have changed.
+        (fm_directory_view_icons_icon_changed_cb): Schedule idle callback
+        to update menus, since doing it here affects stretching too much.
+
 2000-03-07  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/ntl-view-bonobo-subdoc.c (bonobo_subdoc_try_load_client):

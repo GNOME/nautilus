@@ -138,8 +138,7 @@ struct _FMDirectoryViewClass {
          * add their own menu items to the window's menu bar.
          * If overridden, subclasses must call parent class's function.
          */
-        void    (* merge_menus)         (FMDirectoryView *view, 
-                                         BonoboUIHandler *ui_handler);
+        void    (* merge_menus)         (FMDirectoryView *view);
 
         /* update_menus is a function pointer that subclasses can override to
          * update the sensitivity or wording of menu items in the menu bar.
@@ -189,6 +188,7 @@ void                      fm_directory_view_activate_entry                (FMDir
 									   NautilusFile    *file,
 									   gboolean         request_new_window);
 void                      fm_directory_view_notify_selection_changed      (FMDirectoryView *view);
+BonoboUIHandler *         fm_directory_view_get_bonobo_ui_handler         (FMDirectoryView *view);
 NautilusDirectory *       fm_directory_view_get_model                     (FMDirectoryView *view);
 void                      fm_directory_view_pop_up_background_context_menu (FMDirectoryView *view);
 void                      fm_directory_view_pop_up_selection_context_menu (FMDirectoryView *view); 

@@ -95,7 +95,7 @@ static void fm_directory_view_destroy 		(GtkObject *object);
 static void fm_directory_view_append_background_context_menu_items 
 						(FMDirectoryView *view,
 						 GtkMenu *menu);
-static void fm_directory_view_merge_menus       (FMDirectoryView *view, BonoboUIHandler *ui_handler);
+static void fm_directory_view_merge_menus       (FMDirectoryView *view);
 static void fm_directory_view_real_append_background_context_menu_items 		
 						(FMDirectoryView *view,
 						 GtkMenu *menu);
@@ -103,7 +103,7 @@ static void fm_directory_view_real_append_selection_context_menu_items
 						(FMDirectoryView *view,
 						 GtkMenu *menu,
 						 GList *files);
-static void fm_directory_view_real_merge_menus  (FMDirectoryView *view, BonoboUIHandler *ui_handler);
+static void fm_directory_view_real_merge_menus  (FMDirectoryView *view);
 static void fm_directory_view_real_update_menus (FMDirectoryView *view);
 static GtkMenu *create_selection_context_menu   (FMDirectoryView *view);
 static GtkMenu *create_background_context_menu  (FMDirectoryView *view);
@@ -302,7 +302,7 @@ bonobo_control_activate_cb (BonoboObject *control, gboolean state, gpointer user
                 bonobo_ui_handler_set_container (local_ui_handler, 
                                                  bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (control)));
                 /* Add new menu items and perhaps whole menus */
-                fm_directory_view_merge_menus (view, local_ui_handler);
+                fm_directory_view_merge_menus (view);
 	        /* Set initial sensitivity, wording, toggle state, etc. */       
                 fm_directory_view_update_menus (view);
         } else {
@@ -935,6 +935,25 @@ fm_directory_view_get_selection (FMDirectoryView *view)
 }
 
 /**
+ * fm_directory_view_get_bonobo_ui_handler:
+ *
+ * Get the BonoboUIHandler for this FMDirectoryView.
+ * This is normally called only by subclasses in order to
+ * install and modify bonobo menus and such.
+ * @view: FMDirectoryView of interest.
+ * 
+ * Return value: BonoboUIHandler for this view.
+ * 
+ **/
+BonoboUIHandler *
+fm_directory_view_get_bonobo_ui_handler (FMDirectoryView *view)
+{
+        g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
+        
+        return bonobo_control_get_ui_handler (get_bonobo_control (view));
+}
+
+/**
  * fm_directory_view_get_view_frame:
  *
  * Get the NautilusContentViewFrame for this FMDirectoryView.
@@ -1265,8 +1284,12 @@ fm_directory_view_real_append_selection_context_menu_items (FMDirectoryView *vie
 }
 
 static void
-fm_directory_view_real_merge_menus (FMDirectoryView *view, BonoboUIHandler *ui_handler)
+fm_directory_view_real_merge_menus (FMDirectoryView *view)
 {
+        BonoboUIHandler *ui_handler;
+
+        ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
+
         /* FIXME: The first few items here have magic number indexes. Need to
          * invent and use a scheme whereby Nautilus publishes some or all of
          * its menu item paths so that components can merge items into the
@@ -1337,7 +1360,7 @@ fm_directory_view_real_update_menus (FMDirectoryView *view)
 	GList *selection;
 	int count;
 
-        handler = bonobo_control_get_ui_handler (get_bonobo_control (view));
+        handler = fm_directory_view_get_bonobo_ui_handler (view);
 	selection = fm_directory_view_get_selection (view);
 	count = g_list_length (selection);
 	nautilus_file_list_free (selection);
@@ -1582,15 +1605,13 @@ fm_directory_view_load_uri (FMDirectoryView *view,
  * 
  * Add this view's menus to the window's menu bar.
  * @view: FMDirectoryView in question.
- * @ui_handler: BonoboUIHandler to use for bonobo_menu calls.
  */
 static void
-fm_directory_view_merge_menus (FMDirectoryView *view, BonoboUIHandler *ui_handler)
+fm_directory_view_merge_menus (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-	g_return_if_fail (BONOBO_IS_UI_HANDLER (ui_handler));
 
-	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->merge_menus) (view, ui_handler);
+	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->merge_menus) (view);
 }
 
 static void

@@ -243,7 +243,7 @@ use_eazel_theme_icons_cb (GtkCheckMenuItem *item, gpointer user_data)
 static GnomeUIInfo settings_menu_info[] = {
   {
     GNOME_APP_UI_ITEM,
-    N_("General Settings..."), N_("Customize various aspects of Nautilus's appearance and behavior"),
+    N_("_General Settings..."), N_("Customize various aspects of Nautilus's appearance and behavior"),
     general_settings_cb, NULL, NULL,
     GNOME_APP_PIXMAP_NONE, NULL,
     0, 0, NULL

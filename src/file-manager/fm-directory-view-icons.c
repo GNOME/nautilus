@@ -32,6 +32,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <stdio.h>
+#include <gtk/gtkmain.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtksignal.h>
@@ -48,6 +49,10 @@
 #define DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
 
 /* Paths to use when creating & referring to bonobo menu items */
+#define FM_DIRECTORY_VIEW_ICONS_MENU_PATH_BEFORE_STRETCH_SEPARATOR   "/Settings/Before Stretch Separator"
+#define FM_DIRECTORY_VIEW_ICONS_MENU_PATH_STRETCH_ICON   "/Settings/Stretch"
+#define FM_DIRECTORY_VIEW_ICONS_MENU_PATH_RESTORE_STRETCHED_ICONS   "/Settings/Restore"
+#define FM_DIRECTORY_VIEW_ICONS_MENU_PATH_AFTER_STRETCH_SEPARATOR   "/Settings/After Stretch Separator"
 #define FM_DIRECTORY_VIEW_ICONS_MENU_PATH_CUSTOMIZE_ICON_TEXT   "/Settings/Icon Text"
 
 
@@ -87,11 +92,12 @@ static GList *             fm_directory_view_icons_get_selection                
 static NautilusZoomLevel   fm_directory_view_icons_get_zoom_level                       (FMDirectoryViewIcons      *view);
 static void                fm_directory_view_icons_initialize                           (FMDirectoryViewIcons      *icon_view);
 static void                fm_directory_view_icons_initialize_class                     (FMDirectoryViewIconsClass *klass);
-static void                fm_directory_view_icons_merge_menus                          (FMDirectoryView           *view,
-                                                                                         BonoboUIHandler           *ui_handler);
+static void                fm_directory_view_icons_merge_menus                          (FMDirectoryView           *view);
+static gboolean            fm_directory_view_icons_react_to_icon_change_idle_cb         (gpointer data);
 static void                fm_directory_view_icons_select_all                           (FMDirectoryView           *view);
 static void                fm_directory_view_icons_set_zoom_level                       (FMDirectoryViewIcons      *view,
 											 NautilusZoomLevel          new_level);
+static void                fm_directory_view_icons_update_menus                         (FMDirectoryView           *view);
 static GnomeIconContainer *get_icon_container                                           (FMDirectoryViewIcons      *icon_view);
 static void                icon_container_activate_cb                                   (GnomeIconContainer        *container,
 											 NautilusFile              *icon_data,
@@ -114,6 +120,8 @@ struct _FMDirectoryViewIconsDetails
 {
 	GList *icons_not_positioned;
 	NautilusZoomLevel default_zoom_level;
+
+	guint react_to_icon_change_idle_id;
 };
 
 
@@ -156,6 +164,8 @@ fm_directory_view_icons_initialize_class (FMDirectoryViewIconsClass *klass)
         	= fm_directory_view_icons_append_background_context_menu_items;
         fm_directory_view_class->merge_menus
                 = fm_directory_view_icons_merge_menus;
+        fm_directory_view_class->update_menus
+                = fm_directory_view_icons_update_menus;
 
 	/* FIXME: Read this from global preferences */
 	default_icon_text_attribute_names = g_strdup ("name|size|date_modified|type");
@@ -186,6 +196,10 @@ fm_directory_view_icons_destroy (GtkObject *object)
 	FMDirectoryViewIcons *icon_view;
 
 	icon_view = FM_DIRECTORY_VIEW_ICONS (object);
+
+        if (icon_view->details->react_to_icon_change_idle_id != 0) {
+                gtk_idle_remove (icon_view->details->react_to_icon_change_idle_id);
+        }
 
 	nautilus_file_list_free (icon_view->details->icons_not_positioned);
 	g_free (icon_view->details);
@@ -306,24 +320,103 @@ add_icon_at_free_position (FMDirectoryViewIcons *icon_view,
 				       NAUTILUS_CONTROLLER_ICON (file));
 }
 
+/**
+ * Note that this is used both as a Bonobo menu callback and a signal callback.
+ * The first parameter is different in these cases, but we just ignore it anyway.
+ */
 static void
-show_stretch_handles_cb (GtkMenuItem *menu_item, gpointer view)
+show_stretch_handles_cb (gpointer ignored, gpointer view)
 {
-	g_assert (GTK_IS_MENU_ITEM (menu_item));
 	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (view));
 
 	gnome_icon_container_show_stretch_handles
 		(get_icon_container (FM_DIRECTORY_VIEW_ICONS (view)));
+
+        /* Update menus because Restore item may have changed state */
+	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
 }
 
+/**
+ * Note that this is used both as a Bonobo menu callback and a signal callback.
+ * The first parameter is different in these cases, but we just ignore it anyway.
+ */
 static void
-unstretch_item_cb (GtkMenuItem *menu_item, gpointer view)
+unstretch_icons_cb (gpointer ignored, gpointer view)
 {
-	g_assert (GTK_IS_MENU_ITEM (menu_item));
 	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (view));
 
 	gnome_icon_container_unstretch
 		(get_icon_container (FM_DIRECTORY_VIEW_ICONS (view)));
+
+        /* Update menus because Stretch item may have changed state */
+	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
+}
+
+static void
+fm_directory_view_icons_compute_menu_item_info (FMDirectoryViewIcons *view, 
+                                                GList *files, 
+                                                const char *menu_path,
+                                                gboolean include_accelerator_underbars,
+                                                char **return_name,
+                                                gboolean *sensitive_return)
+{
+	GnomeIconContainer *icon_container;
+
+	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (view));
+
+	icon_container = get_icon_container (view);
+
+	if (strcmp (FM_DIRECTORY_VIEW_ICONS_MENU_PATH_STRETCH_ICON, menu_path) == 0) {
+                *return_name = g_strdup (_("_Stretch Icon"));
+		/* Current stretching UI only works on one item at a time, so we'll
+		 * desensitize the menu item if that's not the case.
+		 */
+        	*sensitive_return = g_list_length (files) == 1
+        	                    && !gnome_icon_container_has_stretch_handles (icon_container);
+	} else if (strcmp (FM_DIRECTORY_VIEW_ICONS_MENU_PATH_RESTORE_STRETCHED_ICONS, menu_path) == 0) {
+                if (g_list_length (files) > 1) {
+                        *return_name = g_strdup (_("_Restore Icons to Unstretched Size"));
+                } else {
+                        *return_name = g_strdup (_("_Restore Icon to Unstretched Size"));
+                }
+
+        	*sensitive_return = gnome_icon_container_is_stretched (icon_container);
+
+	} else if (strcmp (FM_DIRECTORY_VIEW_ICONS_MENU_PATH_CUSTOMIZE_ICON_TEXT, menu_path) == 0) {
+                *return_name = g_strdup (_("Customize _Icon Text..."));
+        	*sensitive_return = TRUE;
+	} else {
+                g_assert_not_reached ();
+	}
+
+	if (!include_accelerator_underbars) {
+                nautilus_strstrip (*return_name, '_');
+        }
+}           
+
+static void
+append_one_context_menu_item (FMDirectoryViewIcons *view,
+                              GtkMenu *menu,
+                              GList *files,
+                              const char *menu_path,
+                              GtkSignalFunc callback)
+{
+	GtkWidget *menu_item;
+	char *label;
+	gboolean sensitive;
+        
+        fm_directory_view_icons_compute_menu_item_info (view, 
+                                                        files, 
+                                                        menu_path, 
+                                                        FALSE, 
+                                                        &label, 
+                                                        &sensitive); 
+        menu_item = gtk_menu_item_new_with_label (label);
+        g_free (label);
+        gtk_widget_set_sensitive (menu_item, sensitive);
+	gtk_widget_show (menu_item);
+	gtk_signal_connect (GTK_OBJECT (menu_item), "activate", callback, view);
+	gtk_menu_append (menu, menu_item);
 }
 
 static void
@@ -331,47 +424,22 @@ fm_directory_view_icons_append_selection_context_menu_items (FMDirectoryView *vi
 							     GtkMenu *menu,
 							     GList *files)
 {
-	GnomeIconContainer *icon_container;
-	GtkWidget *menu_item;
-	gboolean exactly_one_item_selected;
-
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (view));
 	g_assert (GTK_IS_MENU (menu));
 
 	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, 
 				    append_selection_context_menu_items, 
 				    (view, menu, files));
 
-	icon_container = get_icon_container (FM_DIRECTORY_VIEW_ICONS (view));
-
-	/* Current stretching UI only works on one item at a time, so we'll
-	 * desensitize the menu item if that's not the case.
-	 */
-	exactly_one_item_selected = g_list_length (files) == 1;
-
-	menu_item = gtk_menu_item_new_with_label (_("Stretch Icon"));
-	if (!exactly_one_item_selected || gnome_icon_container_has_stretch_handles (icon_container)) {
-		gtk_widget_set_sensitive (menu_item, FALSE);
-	}
-	gtk_widget_show (menu_item);
-	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
-			    GTK_SIGNAL_FUNC (show_stretch_handles_cb), view);
-	gtk_menu_append (menu, menu_item);
-
-	menu_item = gtk_menu_item_new_with_label (g_list_length (files) > 1
-						  ? _("Restore Icons to Unstretched Size")
-						  : _("Restore Icon to Unstretched Size"));
-	if (!gnome_icon_container_is_stretched (icon_container)) {
-		gtk_widget_set_sensitive (menu_item, FALSE);
-	}
-	gtk_widget_show (menu_item);
-	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
-			    GTK_SIGNAL_FUNC (unstretch_item_cb), view);
-	gtk_menu_append (menu, menu_item);
+        append_one_context_menu_item (FM_DIRECTORY_VIEW_ICONS (view), menu, files, 
+                                      FM_DIRECTORY_VIEW_ICONS_MENU_PATH_STRETCH_ICON, 
+                                      GTK_SIGNAL_FUNC (show_stretch_handles_cb));
+        append_one_context_menu_item (FM_DIRECTORY_VIEW_ICONS (view), menu, files, 
+                                      FM_DIRECTORY_VIEW_ICONS_MENU_PATH_RESTORE_STRETCHED_ICONS, 
+                                      GTK_SIGNAL_FUNC (unstretch_icons_cb));
 }
 
 /**
- *
  * Note that this is used both as a Bonobo menu callback and a signal callback.
  * The first parameter is different in these cases, but we just ignore it anyway.
  */
@@ -406,12 +474,9 @@ fm_directory_view_icons_append_background_context_menu_items (FMDirectoryView *v
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
-	menu_item = gtk_menu_item_new_with_label (_("Customize Icon Text..."));
-	gtk_widget_show (menu_item);
-	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
-			    GTK_SIGNAL_FUNC (customize_icon_text_cb), 
-			    view);
-	gtk_menu_append (menu, menu_item);
+        append_one_context_menu_item (FM_DIRECTORY_VIEW_ICONS (view), menu, NULL, 
+                                      FM_DIRECTORY_VIEW_ICONS_MENU_PATH_CUSTOMIZE_ICON_TEXT, 
+                                      GTK_SIGNAL_FUNC (customize_icon_text_cb));
 }
 
 static void
@@ -685,25 +750,98 @@ fm_directory_view_icons_get_selection (FMDirectoryView *view)
 }
 
 static void
-fm_directory_view_icons_merge_menus (FMDirectoryView *view, BonoboUIHandler *ui_handler)
+append_bonobo_menu_item (FMDirectoryViewIcons *view, 
+                         BonoboUIHandler *ui_handler,
+                         GList *files,
+                         const char *path,
+                         const char *hint,
+                         BonoboUIHandlerCallbackFunc callback,
+                         gpointer callback_data)
 {
+        char *label;
+        gboolean sensitive;
+        
+        fm_directory_view_icons_compute_menu_item_info (view, files, path, TRUE, &label, &sensitive);
+        bonobo_ui_handler_menu_new_item (ui_handler, path, label, hint, 
+                                         -1,                            /* Position, -1 means at end */
+                                         BONOBO_UI_HANDLER_PIXMAP_NONE, /* Pixmap type */
+                                         NULL,                          /* Pixmap data */
+                                         0,                             /* Accelerator key */
+                                         0,                             /* Modifiers for accelerator */
+                                         callback, callback_data);
+        g_free (label);
+        bonobo_ui_handler_menu_set_sensitivity (ui_handler, path, sensitive);
+}
+
+static void
+fm_directory_view_icons_merge_menus (FMDirectoryView *view)
+{
+        GList *selection;
+        BonoboUIHandler *ui_handler;
+
         g_assert (FM_IS_DIRECTORY_VIEW_ICONS (view));
 
-	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, 
-				    merge_menus, 
-				    (view, ui_handler));
+	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
 
-        bonobo_ui_handler_menu_new_item (ui_handler,
-                                         FM_DIRECTORY_VIEW_ICONS_MENU_PATH_CUSTOMIZE_ICON_TEXT,
-                                         _("Customize _Icon Text..."),
-                                         _("Choose which information appears beneath each icon's name"),
-                                         -1,
-                                         BONOBO_UI_HANDLER_PIXMAP_NONE,
-                                         NULL,
-                                         0,
-                                         0,
-                                         (BonoboUIHandlerCallbackFunc)customize_icon_text_cb,
-                                         view);
+        selection = fm_directory_view_get_selection (view);
+        ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
+
+        bonobo_ui_handler_menu_new_separator (ui_handler,
+                                              FM_DIRECTORY_VIEW_ICONS_MENU_PATH_BEFORE_STRETCH_SEPARATOR,
+                                              -1); 
+
+        append_bonobo_menu_item (FM_DIRECTORY_VIEW_ICONS (view), ui_handler, selection,
+                                 FM_DIRECTORY_VIEW_ICONS_MENU_PATH_STRETCH_ICON,
+                                 _("Make the selected icon stretchable"),
+                                 (BonoboUIHandlerCallbackFunc)show_stretch_handles_cb, view);
+        append_bonobo_menu_item (FM_DIRECTORY_VIEW_ICONS (view), ui_handler, selection,
+                                 FM_DIRECTORY_VIEW_ICONS_MENU_PATH_RESTORE_STRETCHED_ICONS,
+                                 _("Restore each selected icon to its original size"),
+                                 (BonoboUIHandlerCallbackFunc)unstretch_icons_cb, view);
+
+        bonobo_ui_handler_menu_new_separator (ui_handler,
+                                              FM_DIRECTORY_VIEW_ICONS_MENU_PATH_AFTER_STRETCH_SEPARATOR,
+                                              -1); 
+
+        append_bonobo_menu_item (FM_DIRECTORY_VIEW_ICONS (view), ui_handler, selection,
+                                 FM_DIRECTORY_VIEW_ICONS_MENU_PATH_CUSTOMIZE_ICON_TEXT,
+                                 _("Choose which information appears beneath each icon's name"),
+                                 (BonoboUIHandlerCallbackFunc)customize_icon_text_cb, view);
+
+        nautilus_file_list_free (selection);
+}
+
+static void
+update_bonobo_menu_item (FMDirectoryViewIcons *view, 
+                         BonoboUIHandler *ui_handler,
+                         GList *files,
+                         const char *menu_path)
+{
+	char *label;
+	gboolean sensitive;
+
+        fm_directory_view_icons_compute_menu_item_info (view, files, menu_path, TRUE, &label, &sensitive);
+        bonobo_ui_handler_menu_set_sensitivity (ui_handler, menu_path, sensitive);
+        bonobo_ui_handler_menu_set_label (ui_handler, menu_path, label);
+        g_free (label);
+}
+
+static void
+fm_directory_view_icons_update_menus (FMDirectoryView *view)
+{
+        GList *selection;
+        BonoboUIHandler *ui_handler;
+
+	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
+
+        ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
+        selection = fm_directory_view_get_selection (view);
+        
+        update_bonobo_menu_item (FM_DIRECTORY_VIEW_ICONS (view), ui_handler, selection, 
+                                 FM_DIRECTORY_VIEW_ICONS_MENU_PATH_STRETCH_ICON);
+        update_bonobo_menu_item (FM_DIRECTORY_VIEW_ICONS (view), ui_handler, selection, 
+                                 FM_DIRECTORY_VIEW_ICONS_MENU_PATH_RESTORE_STRETCHED_ICONS);
+        nautilus_file_list_free (selection);
 }
 
 static void
@@ -807,6 +945,25 @@ fm_directory_view_icons_background_changed_cb (NautilusBackground *background,
 	g_free (color_spec);
 }
 
+static gboolean
+fm_directory_view_icons_react_to_icon_change_idle_cb (gpointer data) 
+{        
+        FMDirectoryViewIcons *icon_view;
+        
+        g_assert (FM_IS_DIRECTORY_VIEW_ICONS (data));
+        
+        icon_view = FM_DIRECTORY_VIEW_ICONS (data);
+        icon_view->details->react_to_icon_change_idle_id = 0;
+        
+	/* Rebuild the menus since some of them (e.g. Restore Stretched Icons)
+	 * may be different now.
+	 */
+	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (icon_view));
+
+        /* Don't call this again (unless rescheduled) */
+        return FALSE;
+}
+
 static void
 fm_directory_view_icons_icon_changed_cb (GnomeIconContainer *container,
 					 NautilusFile *file,
@@ -820,6 +977,19 @@ fm_directory_view_icons_icon_changed_cb (GnomeIconContainer *container,
 	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
 	g_assert (container == get_icon_container (icon_view));
 	g_assert (file != NULL);
+
+	/* Schedule updating menus for the next idle. Doing it directly here
+	 * noticeably slows down icon stretching.  The other work here to
+	 * store the icon position and scale does not seem to noticeably
+	 * slow down icon stretching. It would be trickier to move to an
+	 * idle call, because we'd have to keep track of potentially multiple
+	 * sets of file/geometry info.
+	 */
+	if (icon_view->details->react_to_icon_change_idle_id == 0) {
+                icon_view->details->react_to_icon_change_idle_id
+                        = gtk_idle_add (fm_directory_view_icons_react_to_icon_change_idle_cb,
+                                        icon_view);
+	}
 
 	/* Store the new position of the icon in the metadata.
 	 * FIXME: Is a comma acceptable in locales where it is the decimal separator?
