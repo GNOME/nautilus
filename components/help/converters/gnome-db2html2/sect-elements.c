@@ -4,57 +4,6 @@
 
 #define IS_IN_SECT(context) (((SectContext *)context->data)->state == IN_SECT)
 
-static void sect_print (Context *context, gchar *format, ...);
-static void sect_write_characters (Context *context, const gchar *chars, int len);
-static void sect_article_end_element (Context *context, const gchar *name);
-static void sect_sect_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_sect_end_element (Context *context, const gchar *name);
-static void sect_para_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_para_end_element (Context *context, const gchar *name);
-static void sect_formalpara_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_formalpara_end_element (Context *context, const gchar *name);
-static void sect_author_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_author_characters (Context *context, const gchar *chars, int len);
-static void sect_email_characters (Context *context, const gchar *chars, int len);
-static void sect_copyright_characters (Context *context, const gchar *chars, int len);
-static void sect_title_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_title_end_element (Context *context, const gchar *name);
-static void sect_title_characters (Context *context, const gchar *chars, int len);
-static void sect_ulink_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_ulink_end_element (Context *context, const gchar *name);
-static void sect_xref_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_footnote_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_figure_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_figure_end_element (Context *context, const gchar *name);
-static void sect_graphic_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_em_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_em_end_element (Context *context, const gchar *name);
-static void sect_tt_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_tt_end_element (Context *context, const gchar *name);
-static void sect_b_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_b_end_element (Context *context, const gchar *name);
-static void sect_tti_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_tti_end_element (Context *context, const gchar *name);
-static void sect_btt_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_btt_end_element (Context *context, const gchar *name);
-static void sect_i_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_i_end_element (Context *context, const gchar *name);
-static void sect_itemizedlist_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_itemizedlist_end_element (Context *context, const gchar *name);
-static void sect_orderedlist_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_orderedlist_end_element (Context *context, const gchar *name);
-static void sect_variablelist_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_variablelist_end_element (Context *context, const gchar *name);
-static void sect_listitem_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_listitem_end_element (Context *context, const gchar *name);
-static void sect_programlisting_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_programlisting_end_element (Context *context, const gchar *name);
-static void sect_infobox_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_infobox_end_element (Context *context, const gchar *name);
-static void sect_cdata_characters (Context *context, const gchar *chars, int len);
-static void sect_keysym_start_element (Context *context, const gchar *name, const xmlChar **atrs);
-static void sect_keysym_end_element (Context *context, const gchar *name);
-
 ElementInfo sect_elements[] = {
 	{ ARTICLE, "article", (startElementSAXFunc) article_start_element, (endElementSAXFunc) sect_article_end_element, NULL},
 	{ BOOK, "book", NULL, NULL, NULL},
@@ -122,10 +71,11 @@ ElementInfo sect_elements[] = {
 	{ SYMBOL, "symbol", NULL, NULL, (charactersSAXFunc) sect_write_characters},
 	{ USERINPUT, "userinput", (startElementSAXFunc) sect_btt_start_element, (endElementSAXFunc) sect_btt_end_element, (charactersSAXFunc) sect_write_characters},
 	{ CAUTION, "caution", (startElementSAXFunc) sect_infobox_start_element, (endElementSAXFunc) sect_infobox_end_element, NULL},
+	{ LEGALPARA, "legalpara", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
-static void
+void
 sect_print (Context *context, gchar *format, ...)
 {
 	va_list args;
@@ -171,7 +121,7 @@ sect_init_data (void)
 	return (gpointer) retval;
 }
 
-static void
+void
 sect_write_characters (Context *context,
 		      const gchar *chars,
 		      int len)
@@ -186,7 +136,7 @@ sect_write_characters (Context *context,
 	g_free (temp);
 }
 
-static void
+void
 sect_article_end_element (Context *context, const gchar *name)
 {
 	if (context->footnotes) {
@@ -207,7 +157,7 @@ sect_article_end_element (Context *context, const gchar *name)
 	sect_print (context, "</BODY>\n</HEAD>\n");
 }
 
-static void
+void
 sect_para_start_element (Context *context, const gchar *name, const xmlChar **atrs)
 {
 	GSList *element_list = NULL;
@@ -248,7 +198,7 @@ sect_para_start_element (Context *context, const gchar *name, const xmlChar **at
 	};
 }
 
-static void
+void
 sect_para_end_element (Context *context, const gchar *name)
 {
 	GSList *element_list = NULL;
@@ -291,7 +241,7 @@ sect_para_end_element (Context *context, const gchar *name)
 
 
 
-static void
+void
 sect_formalpara_start_element (Context *context, const gchar *name, const xmlChar **atrs)
 {
 	if (!IS_IN_SECT (context))
@@ -300,7 +250,7 @@ sect_formalpara_start_element (Context *context, const gchar *name, const xmlCha
 	sect_print (context, "<P>");
 }
 
-static void
+void
 sect_formalpara_end_element (Context *context, const gchar *name)
 {
 	if (!IS_IN_SECT (context))
@@ -310,7 +260,7 @@ sect_formalpara_end_element (Context *context, const gchar *name)
 }
 
 
-static void
+void
 sect_sect_start_element (Context *context,
 			const gchar *name,
 			const xmlChar **atrs)
@@ -368,7 +318,7 @@ sect_sect_start_element (Context *context,
 	}
 }
 
-static void
+void
 sect_sect_end_element (Context *context,
 		      const gchar *name)
 {
@@ -403,7 +353,7 @@ sect_sect_end_element (Context *context,
 }
 
 
-static void
+void
 sect_author_start_element (Context *context,
 			  const gchar *name,
 			  const xmlChar **atrs)
@@ -426,7 +376,7 @@ sect_author_start_element (Context *context,
 	((SectContext *) context->data)->header->authors = g_slist_prepend (((SectContext *) context->data)->header->authors, author);
 }
 
-static void
+void
 sect_author_characters (Context *context, const gchar *chars, int len)
 {
 	GSList *element_list = NULL;
@@ -462,7 +412,7 @@ sect_author_characters (Context *context, const gchar *chars, int len)
 		g_free (temp);
 }
 
-static void
+void
 sect_email_characters (Context *context, const gchar *chars, int len)
 {
 	GSList *element_list = NULL;
@@ -486,7 +436,7 @@ sect_email_characters (Context *context, const gchar *chars, int len)
 	g_free (temp);
 }
 
-static void
+void
 sect_copyright_characters (Context *context,
 			  const gchar *chars,
 			  int len)
@@ -514,7 +464,7 @@ sect_copyright_characters (Context *context,
 	};
 }
 
-static void
+void
 sect_title_start_element (Context *context,
 			  const gchar *name,
 			  const xmlChar **atrs)
@@ -574,7 +524,7 @@ sect_title_start_element (Context *context,
 
 }
 
-static void
+void
 sect_title_end_element (Context *context,
 			const gchar *name)
 {
@@ -617,7 +567,7 @@ sect_title_end_element (Context *context,
 
 }
 
-static void
+void
 sect_title_characters (Context *context,
 		       const gchar *chars,
 		       int len)
@@ -724,7 +674,7 @@ sect_ulink_end_element (Context *context, const gchar *name)
 	ulink_end_element (context, name);
 }
 
-static void
+void
 sect_xref_start_element (Context *context,
 			const gchar *name,
 			const xmlChar **atrs)
@@ -755,7 +705,7 @@ sect_xref_start_element (Context *context,
 		sect_print (context, "\">the section <EM>%s</EM></A>", title);
 }
 
-static void
+void
 sect_footnote_start_element (Context *context, const gchar *name, const xmlChar **atrs)
 {
 	GString *footnote;
@@ -770,7 +720,7 @@ sect_footnote_start_element (Context *context, const gchar *name, const xmlChar 
 	g_print ("<A NAME=\"HEADNOTE%d\" HREF=\"#FOOTNOTE%d\">[%d]</A>", i, i, i);
 }
 
-static void
+void
 sect_figure_start_element (Context *context,
 			    const gchar *name,
 			    const xmlChar **atrs)
@@ -787,7 +737,7 @@ sect_figure_start_element (Context *context,
 	sect_context->figure_count ++;
 }
 
-static void
+void
 sect_figure_end_element (Context *context,
 			  const gchar *name)
 {
@@ -823,7 +773,7 @@ sect_figure_end_element (Context *context,
 	sect_context->figure = NULL;
 }
 
-static void
+void
 sect_graphic_start_element (Context *context,
 			    const gchar *name,
 			    const xmlChar **atrs)
@@ -866,7 +816,7 @@ sect_graphic_start_element (Context *context,
 		sect_context->figure->img = g_strdup_printf ("%s.png", fileref);
 }
 
-static void
+void
 sect_em_start_element (Context *context,
 		       const gchar *name,
 		       const xmlChar **atrs)
@@ -877,7 +827,7 @@ sect_em_start_element (Context *context,
 	sect_print (context, "<EM>");
 }
 
-static void
+void
 sect_em_end_element (Context *context,
 		     const gchar *name)
 {
@@ -887,7 +837,7 @@ sect_em_end_element (Context *context,
 	sect_print (context, "</EM>");
 }
 
-static void
+void
 sect_tt_start_element (Context *context,
 		       const gchar *name,
 		       const xmlChar **atrs)
@@ -898,7 +848,7 @@ sect_tt_start_element (Context *context,
 	sect_print (context, "<TT>");
 }
 
-static void
+void
 sect_tt_end_element (Context *context,
 		     const gchar *name)
 {
@@ -908,7 +858,7 @@ sect_tt_end_element (Context *context,
 	sect_print (context, "</TT>");
 }
 
-static void
+void
 sect_b_start_element (Context *context,
 		       const gchar *name,
 		       const xmlChar **atrs)
@@ -919,7 +869,7 @@ sect_b_start_element (Context *context,
 	sect_print (context, "<B>");
 }
 
-static void
+void
 sect_b_end_element (Context *context,
 		     const gchar *name)
 {
@@ -929,7 +879,7 @@ sect_b_end_element (Context *context,
 	sect_print (context, "</B>");
 }
 
-static void
+void
 sect_tti_start_element (Context *context,
 		       const gchar *name,
 		       const xmlChar **atrs)
@@ -940,7 +890,7 @@ sect_tti_start_element (Context *context,
 	sect_print (context, "<TT><I>");
 }
 
-static void
+void
 sect_tti_end_element (Context *context,
 		     const gchar *name)
 {
@@ -950,7 +900,7 @@ sect_tti_end_element (Context *context,
 	sect_print (context, "</I></TT>");
 }
 
-static void
+void
 sect_btt_start_element (Context *context,
 		       const gchar *name,
 		       const xmlChar **atrs)
@@ -961,7 +911,7 @@ sect_btt_start_element (Context *context,
 	sect_print (context, "<B><TT>");
 }
 
-static void
+void
 sect_btt_end_element (Context *context,
 		     const gchar *name)
 {
@@ -971,7 +921,7 @@ sect_btt_end_element (Context *context,
 	sect_print (context, "</TT></B>");
 }
 
-static void
+void
 sect_i_start_element (Context *context,
 		       const gchar *name,
 		       const xmlChar **atrs)
@@ -982,7 +932,7 @@ sect_i_start_element (Context *context,
 	sect_print (context, "<I>");
 }
 
-static void
+void
 sect_i_end_element (Context *context,
 		     const gchar *name)
 {
@@ -992,7 +942,7 @@ sect_i_end_element (Context *context,
 	sect_print (context, "</I>");
 }
 
-static void
+void
 sect_itemizedlist_start_element (Context *context,
 				 const gchar *name,
 				 const xmlChar **atrs)
@@ -1003,7 +953,7 @@ sect_itemizedlist_start_element (Context *context,
 	sect_print (context, "<UL>");
 }
 
-static void
+void
 sect_itemizedlist_end_element (Context *context,
 			       const gchar *name)
 {
@@ -1013,7 +963,7 @@ sect_itemizedlist_end_element (Context *context,
 	sect_print (context, "</UL>");
 }
 
-static void
+void
 sect_orderedlist_start_element (Context *context,
 				 const gchar *name,
 				 const xmlChar **atrs)
@@ -1024,7 +974,7 @@ sect_orderedlist_start_element (Context *context,
 	sect_print (context, "<OL>");
 }
 
-static void
+void
 sect_orderedlist_end_element (Context *context,
 			       const gchar *name)
 {
@@ -1034,7 +984,7 @@ sect_orderedlist_end_element (Context *context,
 	sect_print (context, "</OL>");
 }
 
-static void
+void
 sect_variablelist_start_element (Context *context,
 				 const gchar *name,
 				 const xmlChar **atrs)
@@ -1045,7 +995,7 @@ sect_variablelist_start_element (Context *context,
 	sect_print (context, "<OL>");
 }
 
-static void
+void
 sect_variablelist_end_element (Context *context,
 			       const gchar *name)
 {
@@ -1055,7 +1005,7 @@ sect_variablelist_end_element (Context *context,
 	sect_print (context, "</OL>");
 }
 
-static void
+void
 sect_listitem_start_element (Context *context,
 			     const gchar *name,
 			     const xmlChar **atrs)
@@ -1066,7 +1016,7 @@ sect_listitem_start_element (Context *context,
 	sect_print (context, "<LI>");
 }
 
-static void
+void
 sect_listitem_end_element (Context *context,
 			   const gchar *name)
 {
@@ -1076,7 +1026,7 @@ sect_listitem_end_element (Context *context,
 	sect_print (context, "<P>");
 }
 
-static void
+void
 sect_programlisting_start_element (Context *context,
 				   const gchar *name,
 				   const xmlChar **atrs)
@@ -1087,7 +1037,7 @@ sect_programlisting_start_element (Context *context,
 	sect_print (context, "<table border=\"0\" bgcolor=\"#E0E0E0\" width=\"100%%\">\n<tr><td>\n<pre>");
 }
 
-static void
+void
 sect_programlisting_end_element (Context *context,
 				 const gchar *name)
 {
@@ -1112,7 +1062,7 @@ sect_get_infobox_logo (const gchar *name)
 	return gnome_pixmap_file ("gnome-info.png");
 }
 
-static void
+void
 sect_infobox_start_element (Context *context,
 			const gchar *name,
 			const xmlChar **atrs)
@@ -1129,7 +1079,7 @@ sect_infobox_start_element (Context *context,
 	g_free (logo);
 }
 
-static void
+void
 sect_infobox_end_element (Context *context,
 		      const gchar *name)
 {
@@ -1139,7 +1089,7 @@ sect_infobox_end_element (Context *context,
 	sect_print (context, "</td></tr>\n</table>\n");
 }
 
-static void
+void
 sect_cdata_characters (Context *context,
 		      const gchar *chars,
 		      int len)
@@ -1158,7 +1108,7 @@ sect_cdata_characters (Context *context,
 
 }
 
-static void
+void
 sect_keysym_start_element (Context *context,
 			   const gchar *name,
 			   const xmlChar **atrs)
@@ -1169,7 +1119,7 @@ sect_keysym_start_element (Context *context,
 	sect_print (context, "<B>(");
 }
 
-static void
+void
 sect_keysym_end_element (Context *context, const gchar *name)
 {
 	if (!IS_IN_SECT (context))

@@ -85,6 +85,7 @@ ElementInfo toc_elements[] = {
 	{ SYMBOL, "symbol", NULL, NULL, NULL},
 	{ USERINPUT, "userinput", NULL, NULL, NULL},
 	{ CAUTION, "caution", NULL, NULL, NULL},
+	{ LEGALPARA, "legalpara", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 

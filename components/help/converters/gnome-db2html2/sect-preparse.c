@@ -31,7 +31,49 @@ ElementInfo sect_preparse[] = {
 	{ YEAR, "year", NULL, NULL, NULL},
 	{ HOLDER, "holder", NULL, NULL, NULL},
 	{ TITLE, "title", NULL, NULL, (charactersSAXFunc) sect_preparse_title_characters},
-
+	{ SUBTITLE, "subtitle", NULL, NULL, NULL},
+	{ ULINK, "ulink", NULL, NULL, NULL},
+	{ XREF, "xref", NULL, NULL, NULL},
+	{ FOOTNOTE, "footnote", NULL, NULL, NULL},
+	{ FIGURE, "figure", NULL, NULL, NULL},
+	{ GRAPHIC, "graphic", NULL, NULL, NULL},
+	{ CITETITLE, "citetitle", NULL, NULL, NULL},
+	{ APPLICATION, "application", NULL, NULL, NULL},
+	{ FILENAME, "filename", NULL, NULL, NULL},
+	{ ITEMIZEDLIST, "itemizedlist", NULL, NULL, NULL},
+	{ ORDEREDLIST, "orderedlist", NULL, NULL, NULL},
+	{ VARIABLELIST, "variablelist", NULL, NULL, NULL},
+	{ LISTITEM, "listitem", NULL, NULL, NULL},
+	{ PROGRAMLISTING, "programlisting", NULL, NULL, NULL},
+	{ SGMLTAG, "sgmltag", NULL, NULL, NULL},
+	{ EMPHASIS, "emphasis", NULL, NULL, NULL},
+	{ TIP, "tip", NULL, NULL, NULL},
+	{ WARNING, "warning", NULL, NULL, NULL},
+	{ IMPORTANT, "important", NULL, NULL, NULL},
+	{ NOTE, "note", NULL, NULL, NULL},
+	{ CDATA, "cdata", NULL, NULL, NULL},
+	{ SCREEN, "screen", NULL, NULL, NULL},
+	{ SCREENSHOT, "screenshot", NULL, NULL, NULL},
+	{ SCREENINFO, "screeninfo", NULL, NULL, NULL},
+	{ COMMAND, "command", NULL, NULL, NULL},
+	{ REPLACEABLE, "replaceable", NULL, NULL, NULL},
+	{ FUNCTION, "function", NULL, NULL, NULL},
+	{ GUIBUTTON, "guibutton", NULL, NULL, NULL},
+	{ GUIICON, "guiicon", NULL, NULL, NULL},
+	{ GUILABEL, "guilabel", NULL, NULL, NULL},
+	{ GUIMENU, "guimenu", NULL, NULL, NULL},
+	{ GUIMENUITEM, "guimenuitem", NULL, NULL, NULL},
+	{ HARDWARE, "hardware", NULL, NULL, NULL},
+	{ KEYCAP, "keycap", NULL, NULL, NULL},
+	{ KEYCAP, "keycode", NULL, NULL, NULL},
+	{ KEYCAP, "keysym", NULL, NULL, NULL},
+	{ LITERAL, "literal", NULL, NULL, NULL},
+	{ PARAMETER, "parameter", NULL, NULL, NULL},
+	{ PROMPT, "prompt", NULL, NULL, NULL},
+	{ SYMBOL, "symbol", NULL, NULL, NULL},
+	{ USERINPUT, "userinput", NULL, NULL, NULL},
+	{ CAUTION, "caution", NULL, NULL, NULL},
+	{ LEGALPARA, "legalpara", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -96,4 +138,12 @@ sect_preparse_title_characters (Context *context,
 		}
 		atrs_ptr += 2;
 	}
+}
+
+static void
+sect_preparse_para_chars (Context *context,
+			  const gchar *chars,
+			  gint len)
+{
+	
 }
