@@ -39,6 +39,7 @@ nautilus_app_exiting()
 {
   /* Do those things that gotta be done just once before quitting */
   nautilus_prefs_save();
+  nautilus_bookmarks_menu_exiting();
 }
 
 void

@@ -29,6 +29,7 @@
 
 #include <gnome-xml/parser.h>
 #include <gnome-xml/tree.h>
+#include <gnome-xml/xmlmemory.h>
 
 enum {
 	CONTENTS_CHANGED,
@@ -44,10 +45,13 @@ static void 	    destroy_bookmark	 		(gpointer list_element,
 static const gchar *nautilus_bookmarklist_get_file_path (NautilusBookmarklist *bookmarks);
 static void 	    nautilus_bookmarklist_load_file 	(NautilusBookmarklist *bookmarks);
 static void 	    nautilus_bookmarklist_save_file 	(NautilusBookmarklist *bookmarks);
+static void	    set_window_geometry_internal 	(const gchar *string);
 
 
 static GtkObjectClass *parent_class = NULL;
 static guint bookmarklist_signals[LAST_SIGNAL] = { 0 };
+
+static gchar *window_geometry = NULL;
 
 const unsigned default_gnomad_directory_mode = 0755;
 
@@ -262,6 +266,22 @@ nautilus_bookmarklist_get_file_path (NautilusBookmarklist *bookmarks)
 }
 
 /**
+ * nautilus_bookmarklist_get_window_geometry:
+ * 
+ * Get a string representing the bookmarklist's window's geometry.
+ * This is the value set earlier by nautilus_bookmarklist_set_window_geometry.
+ * @bookmarks: the list of bookmarks associated with the window.
+ * Return value: string representation of window's geometry, suitable for
+ * passing to gnome_parse_geometry(), or NULL if
+ * no window geometry has yet been saved for this bookmarklist.
+ **/
+const gchar *
+nautilus_bookmarklist_get_window_geometry (NautilusBookmarklist *bookmarks)
+{
+	return window_geometry;
+}
+
+/**
  * nautilus_bookmarklist_insert_item:
  * 
  * Insert a bookmark at a specified position.
@@ -346,12 +366,27 @@ nautilus_bookmarklist_load_file (NautilusBookmarklist *bookmarks)
 	{
 		if (strcmp(node->name, "bookmark") == 0)
 		{
+			xmlChar *xml_name;
+			xmlChar *xml_uri;
+			
 			/* Maybe should only accept bookmarks with both a name and uri? */
+			xml_name = xmlGetProp (node, "name");
+			xml_uri = xmlGetProp (node, "uri");
+			
 			bookmarks->list = g_list_append(
 				bookmarks->list,
-				nautilus_bookmark_new(
-					xmlGetProp(node, "name"),
-					xmlGetProp(node, "uri")));
+				nautilus_bookmark_new(xml_name, xml_uri));
+
+			xmlFree (xml_name);
+			xmlFree (xml_uri);
+		}
+		else if (strcmp (node->name, "window") == 0)
+		{
+			xmlChar *geometry_string;
+
+			geometry_string = xmlGetProp (node, "geometry");
+			set_window_geometry_internal (geometry_string);
+			xmlFree (geometry_string);
 		}
 		node = node->next;
 	}
@@ -390,8 +425,46 @@ nautilus_bookmarklist_save_file (NautilusBookmarklist *bookmarks)
 	doc = xmlNewDoc("1.0");
 	doc->root = xmlNewDocNode(doc, NULL, "bookmarks", NULL);
 
+	/* save window position */
+	if (window_geometry != NULL)
+	{
+		xmlNodePtr	node;
+
+		node = xmlNewChild(doc->root, NULL, "window", NULL);
+		xmlSetProp (node, "geometry", window_geometry);
+	}
+
+	/* save bookmarks */
 	g_list_foreach (bookmarks->list, append_bookmark_node, doc->root);
 
 	xmlSaveFile(nautilus_bookmarklist_get_file_path(bookmarks), doc);
 	xmlFreeDoc(doc);
+}
+
+/**
+ * nautilus_bookmarklist_set_window_geometry:
+ * 
+ * Set a bookmarks window's geometry (position & size), in string form. This is
+ * stored to disk by this class, and can be retrieved later in
+ * the same session or in a future session.
+ * @bookmarks: the list of bookmarks associated with the window.
+ * @geometry: the new window geometry string.
+ **/
+void
+nautilus_bookmarklist_set_window_geometry (NautilusBookmarklist *bookmarks,
+					const gchar *geometry)
+{
+	g_return_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks));
+	g_return_if_fail (geometry != NULL);
+
+	set_window_geometry_internal (geometry);
+
+	nautilus_bookmarklist_save_file(bookmarks);
+}
+
+static void
+set_window_geometry_internal (const gchar *string)
+{
+	g_free (window_geometry);
+	window_geometry = g_strdup (string);
 }

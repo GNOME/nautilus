@@ -54,6 +54,7 @@ struct _NautilusBookmarklistClass {
 
 typedef struct _NautilusBookmarklistClass NautilusBookmarklistClass;
 
+
 
 GtkType			nautilus_bookmarklist_get_type	(void);
 NautilusBookmarklist   *nautilus_bookmarklist_new	(void);
@@ -73,5 +74,11 @@ void			nautilus_bookmarklist_insert_item
 guint			nautilus_bookmarklist_length	(NautilusBookmarklist *bookmarks);
 const NautilusBookmark *nautilus_bookmarklist_item_at	(NautilusBookmarklist *bookmarks, 
 							 guint index);
+
+void			nautilus_bookmarklist_set_window_geometry
+							(NautilusBookmarklist *bookmarks,
+							 const gchar *geometry);
+const gchar 	       *nautilus_bookmarklist_get_window_geometry
+							(NautilusBookmarklist *bookmarks);
 
 #endif /* NAUTILUS_BOOKMARKLIST_H */

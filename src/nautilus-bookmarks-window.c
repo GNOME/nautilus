@@ -44,6 +44,8 @@ static gint		     uri_field_changed_signalID;
 static const NautilusBookmark *get_selected_bookmark (void);
 static guint	get_selected_row	      (void);
 static gboolean get_selection_exists 	      (void);
+static void	nautilus_bookmarks_window_restore_geometry
+					      (GtkWidget *window);
 static void	on_bookmarklist_changed       (NautilusBookmarklist *, 
 					       gpointer user_data);
 static void	on_name_field_changed 	      (GtkEditable *, gpointer user_data);
@@ -78,6 +80,12 @@ static void	repopulate		      (void);
 #define BOOKMARKS_WINDOW_INITIAL_WIDTH	500
 #define BOOKMARKS_WINDOW_INITIAL_HEIGHT	200
 
+/* Used for window position & size sanity-checking. The sizes are big enough to prevent
+ * at least normal-sized gnome panels from obscuring the window at the screen edges. 
+ */
+#define MINIMUM_ON_SCREEN_WIDTH		100
+#define MINIMUM_ON_SCREEN_HEIGHT	100
+
 
 /**
  * create_bookmarks_window:
@@ -105,9 +113,6 @@ create_bookmarks_window(NautilusBookmarklist *list)
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
 	gtk_window_set_title (GTK_WINDOW (window), _("nautilus: Bookmarks"));
-	gtk_window_set_default_size (GTK_WINDOW (window), 
-				     BOOKMARKS_WINDOW_INITIAL_WIDTH, 
-				     BOOKMARKS_WINDOW_INITIAL_HEIGHT);
 	gtk_widget_set_usize (window, 
 			      BOOKMARKS_WINDOW_MIN_WIDTH, 
 			      BOOKMARKS_WINDOW_MIN_HEIGHT);
@@ -255,6 +260,104 @@ get_selection_exists ()
 	return GTK_CLIST(bookmark_list_widget)->rows > 0;
 }
 
+/**
+ * nautilus_bookmarks_window_present:
+ * 
+ * Present the bookmarks window on screen in the saved position and size.
+ * Brings window to front and activates it.
+ * @window: The bookmarks window to present on screen.
+ **/
+void
+nautilus_bookmarks_window_present (GtkWidget *window)
+{
+	g_return_if_fail (GTK_IS_WINDOW (window));
+
+	if (GTK_WIDGET_VISIBLE(window))
+	{
+		/* Hide window first so it will reappear on top */
+		nautilus_bookmarks_window_save_geometry (window);
+		gtk_widget_hide (window);
+	}
+	else
+	{
+		gtk_widget_realize (window);
+	}
+
+	nautilus_bookmarks_window_restore_geometry (window);
+    	gtk_widget_show (window);
+}
+
+static void
+nautilus_bookmarks_window_restore_geometry (GtkWidget *window)
+{
+	const gchar *window_geometry;
+	
+	g_return_if_fail (GTK_IS_WINDOW (window));
+	g_return_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks));
+
+	window_geometry = nautilus_bookmarklist_get_window_geometry(bookmarks);
+
+	if (window_geometry != NULL) 
+	{	
+		gint left, top, width, height;
+
+		if (gnome_parse_geometry (window_geometry, &left, &top, &width, &height))
+		{
+			/* Adjust for sanity, in case screen size has changed or
+			 * stored numbers are bogus. Make the entire window fit
+			 * on the screen, so all controls can be reached. Also
+			 * make sure the window isn't ridiculously small. Also
+			 * make sure the top of the window is on screen, for
+			 * draggability (perhaps not absolutely required, depending
+			 * on window manager, but seems like a sensible rule anyway).
+			 */
+			width = CLAMP (width, BOOKMARKS_WINDOW_MIN_WIDTH, gdk_screen_width());
+			height = CLAMP (height, BOOKMARKS_WINDOW_MIN_HEIGHT, gdk_screen_height());
+
+			top = CLAMP (top, 0, gdk_screen_height() - MINIMUM_ON_SCREEN_HEIGHT);
+			/* FIXME: If window has negative left coordinate, set_uposition sends it
+			 * somewhere else entirely. Not sure what level contains this bug (XWindows?).
+			 * Hacked around by pinning the left edge to zero.
+			 */
+			left = CLAMP (left, 0, gdk_screen_width() - MINIMUM_ON_SCREEN_WIDTH);
+					    		
+			gtk_widget_set_uposition (window, left, top);
+			gtk_window_set_default_size (GTK_WINDOW (window), width, height);
+
+			return;
+		}
+	}
+
+	/* fall through to default if necessary */
+	gtk_window_set_default_size (GTK_WINDOW (window), 
+				     BOOKMARKS_WINDOW_INITIAL_WIDTH, 
+				     BOOKMARKS_WINDOW_INITIAL_HEIGHT);
+
+	/* Let window manager handle default position if no position stored */
+}
+
+/**
+ * nautilus_bookmarks_window_save_geometry:
+ * 
+ * Save window size & position to disk.
+ * @window: The bookmarks window whose geometry should be saved.
+ **/
+void
+nautilus_bookmarks_window_save_geometry (GtkWidget *window)
+{
+	g_return_if_fail (GTK_IS_WINDOW (window));
+	g_return_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks));
+
+	/* Don't bother if window is already closed */
+	if (GTK_WIDGET_VISIBLE (window))
+	{
+		gchar *geometry_string;
+		
+		geometry_string = gnome_geometry_string(window->window);	
+		nautilus_bookmarklist_set_window_geometry (bookmarks, geometry_string);
+		g_free (geometry_string);
+	}
+}
 
 static void
 on_bookmarklist_changed(NautilusBookmarklist *bookmarks, gpointer data)
@@ -398,7 +501,9 @@ on_window_delete_event (GtkWidget *widget,
 			GdkEvent  *event,
 			gpointer   user_data)
 {
-	g_return_val_if_fail(GTK_IS_WINDOW(widget), FALSE);
+	nautilus_bookmarks_window_save_geometry (widget);
+	 
+	/* Hide but don't destroy */
 	gtk_widget_hide(widget);
 
 	return TRUE;

@@ -28,6 +28,8 @@
 #include <gnome.h>
 #include "nautilus-bookmarklist.h"
 
-GtkWidget	*create_bookmarks_window(NautilusBookmarklist *bookmarks);
+GtkWidget	*create_bookmarks_window (NautilusBookmarklist *bookmarks);
+void		 nautilus_bookmarks_window_present (GtkWidget *window);
+void		 nautilus_bookmarks_window_save_geometry (GtkWidget *window);
 
 #endif /* NAUTILUS_BOOKMARKS_WINDOW_H */

@@ -1,4 +1,49 @@
-2000-01-06  Elliot Lee  <sopwith@redhat.com>
+2000-01-07  John Sullivan  <sullivan@eazel.com>
+
+	Bookmarks window position is now saved & restored within
+	a session and across sessions. Some of this work can be
+	turned into general-purpose utilities but I didn't do
+	that yet (I will when we have a second need for it)
+
+	* src/nautilus-bookmarklist.c:
+	* src/nautilus-bookmarklist.h:
+	(nautilus_bookmarklist_set_window_geometry):
+	(nautilus_bookmarklist_get_window_geometry): New functions,
+	take/return a string representing the window position.
+	* src/nautilus-bookmarklist.c:
+	(nautilus_bookmarklist_load_file):
+	(nautilus_bookmarklist_save_file): read/write xml node for
+	window geometry in addition to bookmarks. Also cleaned up
+	a couple of leaked results from xmlGetProp and reformatted.
+	(set_window_geometry_internal): New utility function.
+	* src/nautilus-bookmarks-menu.c: (edit_bookmarks_cb): Moved
+	window-displaying logic out of this routine and into new
+	routine nautilus_bookmarks_window_present(), which is now
+	called here.
+	* src/nautilus-boomarks-menu.c:
+	* src/nautilus-boomarks-menu.h:
+	(nautilus_bookmarks_menu_exiting): New function, handles telling
+	bookmarks window to save itself when application exits.
+	* src/ntl-app.c: (nautilus_app_exiting): Now calls
+	nautilus_bookmarks_menu_exiting.
+	* src/nautilus.h: Now #includes "nautilus-bookmarks-menu.h"
+	* src/nautilus-bookmarks-window.h:
+	* src/nautilus-bookmarks-window.c:
+	(nautilus_bookmarks_window_present): New function, handles
+	presenting the bookmarks window on screen regardless of current state.
+	(nautilus_bookmarks_window_save_geometry): New function, reads window
+	position & size and passes them along to 
+	nautilus_bookmarklist_set_window_geometry for safe-keeping.
+	* src/nautilus-bookmarks-window.c:
+	(nautilus_bookmarks_window_restore_geometry): New function, gets
+	window geometry from bookmarklist and sets window size & position
+	from it (after adjusting with some sanity checks)
+	(create_bookmarks_window): Replaced set_default_size call with
+	nautilus_bookmarks_window_restore_geometry call.
+	
+	
+
+2000-01-07  Elliot Lee  <sopwith@redhat.com>
 
 	* src/ntl-window.c, src/ntl-index-panel.c: Fix warnings.
 

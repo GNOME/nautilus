@@ -18,5 +18,6 @@
 #include "ntl-uri-map.h"
 
 #include "ntl-app.h"
+#include "nautilus-bookmarks-menu.h"
 
 #endif
