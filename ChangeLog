@@ -1,5 +1,17 @@
 2002-11-05  James Willcox  <jwillcox@gnome.org>
 
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-recent.[ch]:
+	* src/file-manager/Makefile.am:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_launch_application), (fm_directory_view_init),
+	(fm_directory_view_destroy):
+
+	Only make an EggRecentModel once, instead of for every new window.
+	Moved egg-recent*.[ch] into libnautilus-private
+
+2002-11-05  James Willcox  <jwillcox@gnome.org>
+
 	* libnautilus-private/apps_nautilus_preferences.schemas:
 	* libnautilus-private/nautilus-global-preferences.c:
 	* libnautilus-private/nautilus-sidebar-functions.c:

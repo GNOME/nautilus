@@ -35,13 +35,22 @@ marshal_sources = \
 	nautilus-marshal-guts.c \
 	$(NULL)
 
-EGGFILES =			\
+EGG_SCREEN_FILES =			\
 	egg-screen-exec.h	\
 	egg-screen-exec.c	\
 	egg-screen-url.h	\
 	egg-screen-url.c	\
 	egg-screen-help.h	\
 	egg-screen-help.c	\
+	$(NULL)
+
+EGG_RECENT_FILES =		\
+	egg-recent-model.c	\
+	egg-recent-model.h	\
+	egg-recent-item.c	\
+	egg-recent-item.h       \
+	egg-recent-vfs-utils.c  \
+	egg-recent-vfs-utils.h	\
 	$(NULL)
 
 libnautilus_private_la_SOURCES = \
@@ -141,6 +150,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-program-chooser.h \
 	nautilus-program-choosing.c \
 	nautilus-program-choosing.h \
+	nautilus-recent.h \
+	nautilus-recent.c \
 	nautilus-search-uri.c \
 	nautilus-search-uri.h \
 	nautilus-sidebar-functions.c \
@@ -173,7 +184,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-view-identifier.h \
 	nautilus-volume-monitor.c \
 	nautilus-volume-monitor.h \
-	$(EGGFILES) \
+	$(EGG_SCREEN_FILES) \
+	$(EGG_RECENT_FILES) \
 	$(NULL)
 
 fsattributesdir = $(datadir)/nautilus
@@ -222,7 +234,9 @@ CLEANFILES = \
 dist-hook:
 	cd $(distdir); rm -f $(CLEANFILES)
 
-EGGDIR = $(srcdir)/../../libegg/libegg/screen-exec
+EGG_SCREEN_DIR = $(srcdir)/../../libegg/libegg/screen-exec
+EGG_RECENT_DIR = $(srcdir)/../../libegg/libegg/recent-files
 
 regenerate-built-sources:
-	EGGFILES="$(EGGFILES)" EGGDIR="$(EGGDIR)" $(srcdir)/update-from-egg.sh
+	EGGFILES="$(EGG_SCREEN_FILES)" EGGDIR="$(EGG_SCREEN_DIR)" $(srcdir)/update-from-egg.sh
+	EGGFILES="$(EGG_RECENT_FILES)" EGGDIR="$(EGG_RECENT_DIR)" $(srcdir)/update-from-egg.sh
