@@ -243,7 +243,7 @@ nautilus_volume_monitor_initialize_class (NautilusVolumeMonitorClass *klass)
 				  GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
 	signals[VOLUME_UNMOUNT_FAILED] 
-		= gtk_signal_new ("volume_unmoun_failed",
+		= gtk_signal_new ("volume_unmount_failed",
 				  GTK_RUN_LAST,
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusVolumeMonitorClass, 
@@ -634,11 +634,11 @@ nautilus_volume_monitor_get_target_uri (const NautilusVolume *volume)
 	case NAUTILUS_VOLUME_MSDOS:
 	case NAUTILUS_VOLUME_NFS:
 	case NAUTILUS_VOLUME_PROC:
-	case NAUTILUS_VOLUME_REISER:
+	case NAUTILUS_VOLUME_REISERFS:
 	case NAUTILUS_VOLUME_SMB:
 	case NAUTILUS_VOLUME_UDF:
 	case NAUTILUS_VOLUME_UFS:
-	case NAUTILUS_VOLUME_UNSDOS:
+	case NAUTILUS_VOLUME_UMSDOS:
 	case NAUTILUS_VOLUME_VFAT:
 	case NAUTILUS_VOLUME_XENIX:
 	case NAUTILUS_VOLUME_XIAFS:
@@ -664,7 +664,7 @@ nautilus_volume_monitor_should_integrate_trash (const NautilusVolume *volume)
 	case NAUTILUS_VOLUME_EXT3:
 	case NAUTILUS_VOLUME_FAT:
 	case NAUTILUS_VOLUME_NFS:
-	case NAUTILUS_VOLUME_REISER:
+	case NAUTILUS_VOLUME_REISERFS:
 	case NAUTILUS_VOLUME_SMB:
 	case NAUTILUS_VOLUME_UFS:
 	case NAUTILUS_VOLUME_VFAT:
@@ -680,7 +680,7 @@ nautilus_volume_monitor_should_integrate_trash (const NautilusVolume *volume)
 	case NAUTILUS_VOLUME_MSDOS:
 	case NAUTILUS_VOLUME_PROC:
 	case NAUTILUS_VOLUME_UDF:
-	case NAUTILUS_VOLUME_UNSDOS:
+	case NAUTILUS_VOLUME_UMSDOS:
 	case NAUTILUS_VOLUME_XENIX:
 	case NAUTILUS_VOLUME_XIAFS:
 	case NAUTILUS_VOLUME_UNKNOWN:
@@ -789,7 +789,7 @@ mount_volume_make_name (NautilusVolume *volume)
 	case NAUTILUS_VOLUME_NFS:
 		return make_volume_name_from_path (volume, _("NFS Volume"));
 		
-	case NAUTILUS_VOLUME_REISER:
+	case NAUTILUS_VOLUME_REISERFS:
 		return make_volume_name_from_path (volume, _("ReiserFS Volume"));
 
 	case NAUTILUS_VOLUME_UFS:
@@ -805,7 +805,7 @@ mount_volume_make_name (NautilusVolume *volume)
 	case NAUTILUS_VOLUME_PROC:
 	case NAUTILUS_VOLUME_SMB:
 	case NAUTILUS_VOLUME_UDF:
-	case NAUTILUS_VOLUME_UNSDOS:
+	case NAUTILUS_VOLUME_UMSDOS:
 	case NAUTILUS_VOLUME_XENIX:
 	case NAUTILUS_VOLUME_XIAFS:
 	case NAUTILUS_VOLUME_UNKNOWN:
@@ -869,11 +869,11 @@ mount_volume_deactivate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 	case NAUTILUS_VOLUME_MSDOS:
 	case NAUTILUS_VOLUME_NFS:
 	case NAUTILUS_VOLUME_PROC:
-	case NAUTILUS_VOLUME_REISER:
+	case NAUTILUS_VOLUME_REISERFS:
 	case NAUTILUS_VOLUME_SMB:
 	case NAUTILUS_VOLUME_UDF:
 	case NAUTILUS_VOLUME_UFS:
-	case NAUTILUS_VOLUME_UNSDOS:
+	case NAUTILUS_VOLUME_UMSDOS:
 	case NAUTILUS_VOLUME_VFAT:
 	case NAUTILUS_VOLUME_XENIX:
 	case NAUTILUS_VOLUME_XIAFS:
@@ -1157,41 +1157,6 @@ mount_volumes_check_status (NautilusVolumeMonitor *monitor)
 	return TRUE;
 }
 
-static gboolean
-mount_volume_ext2_add (NautilusVolume *volume)
-{		
-	volume->volume_type = NAUTILUS_VOLUME_EXT2;
-	return TRUE;
-}
-
-static gboolean
-mount_volume_ext3_add (NautilusVolume *volume)
-{		
-	volume->volume_type = NAUTILUS_VOLUME_EXT3;
-	return TRUE;
-}
-
-static gboolean
-mount_volume_udf_add (NautilusVolume *volume)
-{		
-	volume->volume_type = NAUTILUS_VOLUME_UDF;
-	return TRUE;
-}
-
-static gboolean
-mount_volume_vfat_add (NautilusVolume *volume)
-{		
-	volume->volume_type = NAUTILUS_VOLUME_VFAT;
-	return TRUE;
-}
-
-static gboolean
-mount_volume_msdos_add (NautilusVolume *volume)
-{		
-	volume->volume_type = NAUTILUS_VOLUME_MSDOS;
-	return TRUE;
-}
-
 static int
 get_cdrom_type (const char *vol_dev_path, int* fd)
 {
@@ -1262,13 +1227,6 @@ mount_volume_iso9660_add (NautilusVolume *volume)
 	return TRUE;
 }
 
-static gboolean
-mount_volume_affs_add (NautilusVolume *volume)
-{
-	volume->volume_type = NAUTILUS_VOLUME_AFFS;
-	return TRUE;
-}
-
 /* This is intended mainly for adding removable volumes from /etc/fstab.
  * The auto type will not show up in /proc/mounts. The NAUTILUS_VOLUME_AUTO
  * type is just a practical placeholder.
@@ -1295,34 +1253,6 @@ mount_volume_cdda_add (NautilusVolume *volume)
 }
 
 static gboolean
-mount_volume_fat_add (NautilusVolume *volume)
-{
-	volume->volume_type = NAUTILUS_VOLUME_FAT;
-	return TRUE;
-}
-
-static gboolean
-mount_volume_hpfs_add (NautilusVolume *volume)
-{
-	volume->volume_type = NAUTILUS_VOLUME_HPFS;
-	return TRUE;
-}
-
-static gboolean
-mount_volume_hsfs_add (NautilusVolume *volume)
-{
-	volume->volume_type = NAUTILUS_VOLUME_HSFS;
-	return TRUE;
-}
-
-static gboolean
-mount_volume_minix_add (NautilusVolume *volume)
-{
-	volume->volume_type = NAUTILUS_VOLUME_MINIX;
-	return TRUE;
-}
-
-static gboolean
 mount_volume_nfs_add (NautilusVolume *volume)
 {
 	/* We need to filter out autofs magic NFS directories.  These entries will have the text
@@ -1341,59 +1271,12 @@ mount_volume_nfs_add (NautilusVolume *volume)
 	return TRUE;
 }
 
+/* if the filesystem needs no special handling in the add, just use this function
+   to avoid clutter and unnecessarily convolution */
 static gboolean
-mount_volume_proc_add (NautilusVolume *volume)
+mount_volume_generic_add (NautilusVolume *volume, NautilusVolumeType volume_type)
 {
-	volume->volume_type = NAUTILUS_VOLUME_PROC;
-	return TRUE;
-}
-
-static gboolean
-mount_volume_reiserfs_add (NautilusVolume *volume)
-{
-	volume->volume_type = NAUTILUS_VOLUME_REISER;
-	return TRUE;
-}
-
-static gboolean
-mount_volume_ufs_add (NautilusVolume *volume)
-{
-        volume->volume_type = NAUTILUS_VOLUME_UFS;
-        return TRUE;
-}
-
-static gboolean
-mount_volume_smb_add (NautilusVolume *volume)
-{
-	volume->volume_type = NAUTILUS_VOLUME_SMB;
-	return TRUE;
-}
-
-static gboolean
-mount_volume_unsdos_add (NautilusVolume *volume)
-{
-	volume->volume_type = NAUTILUS_VOLUME_UNSDOS;
-	return TRUE;
-}
-
-static gboolean
-mount_volume_xenix_add (NautilusVolume *volume)
-{
-	volume->volume_type = NAUTILUS_VOLUME_XENIX;
-	return TRUE;
-}
-
-static gboolean
-mount_volume_xfs_add (NautilusVolume *volume)
-{
-	volume->volume_type = NAUTILUS_VOLUME_XFS;
-	return TRUE;
-}
-
-static gboolean
-mount_volume_xiafs_add (NautilusVolume *volume)
-{
-	volume->volume_type = NAUTILUS_VOLUME_XIAFS;
+	volume->volume_type = volume_type;
 	return TRUE;
 }
 
@@ -1839,52 +1722,50 @@ mount_volume_prepend_filesystem (GList *volume_list, NautilusVolume *volume)
 	
 	added = FALSE;
 	
-	if (strcmp (volume->filesystem, "affs") == 0) {		
-		added = mount_volume_affs_add (volume);
-	} else if (strcmp (volume->filesystem, "auto") == 0) {		
+	if (strcmp (volume->filesystem, "auto") == 0) {		
 		added = mount_volume_auto_add (volume);
 	} else if (strcmp (volume->filesystem, "cdda") == 0) {		
 		added = mount_volume_cdda_add (volume);
-	} else if (strcmp (volume->filesystem, "hsfs") == 0) {	
-		added = mount_volume_hsfs_add (volume);
-	} else if (strcmp (volume->filesystem, "ext2") == 0) {		
-		added = mount_volume_ext2_add (volume);
-	} else if (strcmp (volume->filesystem, "ext3") == 0) {		
-		added = mount_volume_ext3_add (volume);
-	} else if (strcmp (volume->filesystem, "fat") == 0) {		
-		added = mount_volume_fat_add (volume);
-	} else if (strcmp (volume->filesystem, "hpfs") == 0) {		
-		added = mount_volume_hpfs_add (volume);
 	} else if (strcmp (volume->filesystem, "iso9660") == 0) {		    		
 		added = mount_volume_iso9660_add (volume);
-	} else if (strcmp (volume->filesystem, "minix") == 0) {		    		
-		added = mount_volume_minix_add (volume);
-	} else if (strcmp (volume->filesystem, "msdos") == 0) {		
-		added = mount_volume_msdos_add (volume);
 	} else if (strcmp (volume->filesystem, "nfs") == 0) {		
 		added = mount_volume_nfs_add (volume);
+	} else if (strcmp (volume->filesystem, "affs") == 0) {		
+		added = mount_volume_generic_add (volume, NAUTILUS_VOLUME_AFFS);
+	} else if (strcmp (volume->filesystem, "hsfs") == 0) {	
+		added = mount_volume_generic_add (volume, NAUTILUS_VOLUME_HSFS);
+	} else if (strcmp (volume->filesystem, "ext2") == 0) {		
+		added = mount_volume_generic_add (volume, NAUTILUS_VOLUME_EXT2);
+	} else if (strcmp (volume->filesystem, "ext3") == 0) {		
+		added = mount_volume_generic_add (volume, NAUTILUS_VOLUME_EXT3);
+	} else if (strcmp (volume->filesystem, "fat") == 0) {		
+		added = mount_volume_generic_add (volume, NAUTILUS_VOLUME_FAT);
+	} else if (strcmp (volume->filesystem, "hpfs") == 0) {		
+		added = mount_volume_generic_add (volume, NAUTILUS_VOLUME_HPFS);
+	} else if (strcmp (volume->filesystem, "minix") == 0) {		    		
+		added = mount_volume_generic_add (volume, NAUTILUS_VOLUME_MINIX);
+	} else if (strcmp (volume->filesystem, "msdos") == 0) {		
+		added = mount_volume_generic_add (volume, NAUTILUS_VOLUME_MSDOS);
 	} else if (strcmp (volume->filesystem, "proc") == 0) {		
-		added = mount_volume_proc_add (volume);
+		added = mount_volume_generic_add (volume, NAUTILUS_VOLUME_PROC);
 	} else if (strcmp (volume->filesystem, "reiserfs") == 0) {
-		added = mount_volume_reiserfs_add (volume);
+		added = mount_volume_generic_add (volume, NAUTILUS_VOLUME_REISERFS);
 	} else if (strcmp (volume->filesystem, "ufs") == 0) {
-		added = mount_volume_ufs_add (volume);
+		added = mount_volume_generic_add (volume, NAUTILUS_VOLUME_UFS);
 	} else if (strcmp (volume->filesystem, "smb") == 0) {		
-		added = mount_volume_smb_add (volume);
+		added = mount_volume_generic_add (volume, NAUTILUS_VOLUME_SMB);
 	} else if (strcmp (volume->filesystem, "udf") == 0) {		
-		added = mount_volume_udf_add (volume);
-	} else if (strcmp (volume->filesystem, "ufs") == 0) {		
-		added = mount_volume_udf_add (volume);
-	} else if (strcmp (volume->filesystem, "unsdos") == 0) {		
-		added = mount_volume_unsdos_add (volume);
+		added = mount_volume_generic_add (volume, NAUTILUS_VOLUME_UDF);
+	} else if (strcmp (volume->filesystem, "umsdos") == 0) {		
+		added = mount_volume_generic_add (volume, NAUTILUS_VOLUME_UMSDOS);
 	} else if (strcmp (volume->filesystem, "vfat") == 0) {		
-		added = mount_volume_vfat_add (volume);
+		added = mount_volume_generic_add (volume, NAUTILUS_VOLUME_VFAT);
 	} else if (strcmp (volume->filesystem, "xenix") == 0) {		
-		added = mount_volume_xenix_add (volume);
+		added = mount_volume_generic_add (volume, NAUTILUS_VOLUME_XENIX);
 	} else if (strcmp (volume->filesystem, "xfs") == 0) {
-		added = mount_volume_xfs_add (volume);
+		added = mount_volume_generic_add (volume, NAUTILUS_VOLUME_XFS);
 	} else if (strcmp (volume->filesystem, "xiafs") == 0) {
-		added = mount_volume_xiafs_add (volume);
+		added = mount_volume_generic_add (volume, NAUTILUS_VOLUME_XIAFS);
 	}
 
 	if (added) {

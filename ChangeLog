@@ -1,3 +1,41 @@
+2001-08-11  Seth Nickell  <snickell@stanford.edu>
+
+	Trying to make nautilus volume monitor work more
+	reliably. First step is to make the codebase more
+	maintainable so I can start tracking down bugs in
+	the volume monitor more easily.
+	(I get complaints about this from friends, family, and
+	coworkers all the time, so there must be some/one bugs).
+	
+	* libnautilus-private/nautilus-volume-monitor.h:
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_initialize_class),
+	(nautilus_volume_monitor_get_target_uri),
+	(nautilus_volume_monitor_should_integrate_trash),
+	(mount_volume_make_name), (mount_volume_deactivate),
+	(mount_volume_generic_add), (mount_volume_prepend_filesystem):
+
+	Remove mount_volume_*_add for filesystems that do
+	effectively the same thing. This added a large amount of
+	clutter to a module that already has a lot of similar
+	functions. Add a generic function that accepts the filesystem
+	type, and change calls to use this.
+
+	Fix signal in initialize_class to be "nautilus_volume_unmount_failed"
+	rather than "nautilus_volume_unmoun_failed" (nobody was assuming
+	the broken behavior eithe, I checked, maybe this will fix something).
+
+	Renamed NAUTILUS_VOLUME_REISER to NAUTILUS_VOLUME_REISERFS
+	to maintain the naming convention the other filesystems use.
+
+	Changed "unsdos" to "umsdos" everywhere. I don't think a unsdos
+	filesystem exists, after web searches, and umsdos *is* one of
+	the basic Linux filesystems. I suspect somebody misread a filesystem
+	name browsing the kernel compilation menu or somesuch.
+
+	Removed redundant (and erroneous) check for "ufs" type filesystems
+	(the check was already listed in the if then statement above).
+	
 2001-08-07  Darin Adler  <darin@bentspoon.com>
 
 	* components/mozilla/mozilla-events.cpp:
