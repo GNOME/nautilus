@@ -12,11 +12,6 @@ if BUILD_RPM_COMPONENTS
 RPMVIEW_COMPONENT_SUBDIRS = rpmview
 endif
 
-# These components are broken:
-#
-#       websearch
-#
-
 SUBDIRS = \
 	adapter \
 	hardware \

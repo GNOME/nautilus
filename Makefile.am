@@ -32,10 +32,10 @@ EXTRA_DIST=					\
 	nautilus-clean.sh			\
 	nautilus.desktop			\
 	nautilus-launch-icon.png		\
-	ChangeLog-200001018			\
 	ChangeLog-20000414			\
 	ChangeLog-20000625			\
 	ChangeLog-20000831			\
+	ChangeLog-20001018			\
 	xml-i18n-extract			\
 	xml-i18n-merge				\
 	xml-i18n-update				\
