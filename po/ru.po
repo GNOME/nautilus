@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2000-08-30 11:52+0400\n"
-"PO-Revision-Date: 2000-08-30 11:58+04:00\n"
+"POT-Creation-Date: 2000-08-30 18:58+0400\n"
+"PO-Revision-Date: 2000-08-30 19:00+04:00\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -89,7 +89,7 @@ msgid "XML package list successfully generated ...\n"
 msgstr "XML список пакетов успешно создан...\n"
 
 #: components/services/install/command-line/eazel-install.c:124
-#: components/services/install/lib/eazel-install-object.c:596
+#: components/services/install/lib/eazel-install-object.c:597
 msgid "Creating temporary download directory ...\n"
 msgstr "Создание временного каталога для скачивания...\n"
 
@@ -487,14 +487,96 @@ msgstr "в месяце"
 msgid "Details"
 msgstr "Детали"
 
+#: nautilus-installer/src/installer.c:117
+msgid "What to do ?"
+msgstr "Что делать?"
+
+#: nautilus-installer/src/installer.c:135
+msgid ""
+"You have several choices for what you would like the installer to do.\n"
+"Please choose one and click on the \"Next\" button to begin install."
+msgstr ""
+"У вас несколько вариантов выбора того, что должен сделать установщик.\n"
+"Выберите что-нибудь одно и нажмите кнопку \"Следующий\", чтобы начать "
+"установку."
+
+#: nautilus-installer/src/installer.c:180
+msgid "Currently downloading packages required to install Nautilus\n"
+msgstr "Скачиваемым в настоящий момент пакетам необходима установка Nautilus\n"
+
+#: nautilus-installer/src/installer.c:198
+msgid "Progress..."
+msgstr "Прогресс..."
+
+#: nautilus-installer/src/installer.c:251
+msgid "En fjФsing hedder Bent"
+msgstr ""
+
+#. set up the final page
+#: nautilus-installer/src/installer.c:309 src/nautilus-first-time-druid.c:738
+msgid "Finished"
+msgstr "Завершено"
+
+#: nautilus-installer/src/installer.c:311
+msgid ""
+"If the installation was successfull, you can\n"
+"find the nautilus icon in the applications menu.\n"
+"\n"
+"Thanks for taking the time to try out Nautilus.\n"
+"\n"
+"May your life be a healthy and happy one."
+msgstr ""
+"Если установка была успешной, вы можете\n"
+"найти пиктограмму Nautilus в меню приложений.\n"
+"\n"
+"Спасибо, за то что нашли время попробовать Nautilus.\n"
+"\n"
+"Возможно вы станете здоровее и счастливее."
+
+#: nautilus-installer/src/installer.c:336
+msgid "Nautilus install tool"
+msgstr "Средства установки Наутилус"
+
+#: nautilus-installer/src/installer.c:362
+msgid "Step one:"
+msgstr "Первый шаг:"
+
+#: nautilus-installer/src/installer.c:364
+msgid ""
+"This is the internal Nautilus installer.\n"
+"\n"
+"Lots of text should go here letting you know what you need\n"
+"to have installed before you should even begin to think about\n"
+"using this. For example:\n"
+"\n"
+"  * Stuff\n"
+"  * More stuff\n"
+"  * Other stuff\n"
+"\n"
+"If you meet these requirements, hit the \"Next\" button to continue!\n"
+"\n"
+msgstr ""
+
+#: nautilus-installer/src/installer.c:641
+#, c-format
+msgid ""
+"Now starting the install process.\n"
+"Starting the process takes some time, please be patient.\n"
+"In total, %d mb of software will be installed"
+msgstr ""
+"Запуск процесса установки.\n"
+"Это займет некоторое время, пожалуйста подождите.\n"
+"Всего будет установлено %d мегабайт программного обеспечения"
+
 #: components/services/install/lib/eazel-install-metadata.c:54
 #: components/services/install/lib/eazel-install-metadata.c:64
-#: nautilus-installer/src/installer.c:54 nautilus-installer/src/installer.c:63
+#: nautilus-installer/src/installer.c:732
+#: nautilus-installer/src/installer.c:741
 #, c-format
 msgid "*** Could not create services directory (%s)! ***\n"
 msgstr "*** Невозможно создать каталог сервисов (%s)! ***\n"
 
-#: nautilus-installer/src/installer.c:80
+#: nautilus-installer/src/installer.c:774
 msgid ""
 "This is a warning, you're running\n"
 "the installer for real, without \n"
@@ -504,7 +586,7 @@ msgstr ""
 "установку, без флага --test...\n"
 "Будьте внимательны!"
 
-#: nautilus-installer/src/installer.c:90
+#: nautilus-installer/src/installer.c:784
 msgid ""
 "This preview installer only works\n"
 "for RPM based systems. You will have\n"
@@ -514,7 +596,7 @@ msgstr ""
 "с системами основанными на RPM. Вам надо\n"
 "скачивать исходные тексты самостоятельно."
 
-#: nautilus-installer/src/installer.c:100
+#: nautilus-installer/src/installer.c:794
 msgid ""
 "You do not have HelixCode gnome installed.\n"
 "This means I will install the required parts\n"
@@ -531,101 +613,10 @@ msgstr ""
 "и скачать полный набор\n"
 "HelixCode Gnome"
 
-#: nautilus-installer/src/interface.c:106
-msgid "What to do ?"
-msgstr "Что делать?"
-
-#: nautilus-installer/src/interface.c:124
-msgid ""
-"You have several choices for what you would like the installer to do.\n"
-"Please choose one and click on the \"Next\" button to begin install."
-msgstr ""
-"У вас несколько вариантов выбора того, что должен сделать установщик.\n"
-"Выберите что-нибудь одно и нажмите кнопку \"Следующий\", чтобы начать "
-"установку."
-
-#: nautilus-installer/src/interface.c:169
-msgid "Currently downloading packages required to install Nautilus\n"
-msgstr "Скачиваемым в настоящий момент пакетам необходима установка Nautilus\n"
-
-#: nautilus-installer/src/interface.c:187
-msgid "Progress..."
-msgstr "Прогресс..."
-
-#: nautilus-installer/src/interface.c:240
-msgid "En fjФsing hedder Bent"
-msgstr ""
-
-#. set up the final page
-#: nautilus-installer/src/interface.c:323 src/nautilus-first-time-druid.c:738
-msgid "Finished"
-msgstr "Завершено"
-
-#: nautilus-installer/src/interface.c:325
-msgid ""
-"If the installation was successfull, you can\n"
-"find the nautilus icon in the applications menu.\n"
-"\n"
-"Thanks for taking the time to try out Nautilus.\n"
-"\n"
-"May your life be a healthy and happy one."
-msgstr ""
-"Если установка была успешной, вы можете\n"
-"найти пиктограмму Nautilus в меню приложений.\n"
-"\n"
-"Спасибо, за то что нашли время попробовать Nautilus.\n"
-"\n"
-"Возможно вы станете здоровее и счастливее."
-
-#: nautilus-installer/src/interface.c:350
-msgid "Nautilus install tool"
-msgstr "Средства установки Наутилус"
-
-#: nautilus-installer/src/interface.c:376
-msgid "Step one:"
-msgstr "Первый шаг:"
-
-#: nautilus-installer/src/interface.c:378
-msgid ""
-"This is the internal Nautilus installer.\n"
-"\n"
-"Lots of text should go here letting you know what you need\n"
-"to have installed before you should even begin to think about\n"
-"using this. For example:\n"
-"\n"
-"  * Stuff\n"
-"  * More stuff\n"
-"  * Other stuff\n"
-"\n"
-"If you meet these requirements, hit the \"Next\" button to continue!\n"
-"\n"
-msgstr ""
-
-#: nautilus-installer/src/interface.c:661
-#, c-format
-msgid ""
-"Now starting the install process.\n"
-"Starting the process takes some time, please be patient.\n"
-"In total, %d mb of software will be installed"
-msgstr ""
-"Запуск процесса установки.\n"
-"Это займет некоторое время, пожалуйста подождите.\n"
-"Всего будет установлено %d мегабайт программного обеспечения"
-
-#: nautilus-installer/src/interface.c:821
+#: nautilus-installer/src/installer.c:909
 #, c-format
 msgid "Cannot create %s"
 msgstr "Невозможно создать %s"
-
-#: nautilus-installer/src/support.c:100 nautilus-installer/src/support.c:141
-#, c-format
-msgid "Couldn't find pixmap file: %s"
-msgstr "Невозможно найти файл изображения: %s"
-
-#: nautilus-installer/src/support.c:116
-#, c-format
-msgid "Couldn't create pixmap from file: %s"
-msgstr "Невозможно создать картинку из файла: %s"
 
 #: src/file-manager/fm-desktop-icon-view.c:367
 msgid "Reset Desktop Background"
@@ -757,7 +748,7 @@ msgstr ""
 "Если вы хотите узнать больше об этих сервисах, просто нажмите\n"
 "кнопку \"Следующий\"."
 
-#: src/nautilus-first-time-druid.c:407 src/nautilus-window-toolbars.c:150
+#: src/nautilus-first-time-druid.c:407 src/nautilus-window-toolbars.c:151
 msgid "Eazel Services"
 msgstr "Сервисы Eazel"
 
@@ -1333,7 +1324,7 @@ msgstr "Пауза"
 #: components/music/nautilus-music-view.c:1170
 #: libnautilus-extensions/nautilus-file-operations.c:333
 #: libnautilus-extensions/nautilus-file-operations.c:353
-#: src/nautilus-window-toolbars.c:144
+#: src/nautilus-window-toolbars.c:145
 msgid "Stop"
 msgstr "Стоп"
 
@@ -1412,12 +1403,12 @@ msgstr "Описание"
 msgid "Package \"%s\" "
 msgstr "Пакет \"%s\" "
 
-#: components/rpmview/nautilus-rpm-view.c:574
+#: components/rpmview/nautilus-rpm-view.c:577
 #, c-format
 msgid "version %s-%s"
 msgstr "версия %s-%s"
 
-#: components/rpmview/nautilus-rpm-view.c:634
+#: components/rpmview/nautilus-rpm-view.c:637
 #, c-format
 msgid "Package Contents: %d files"
 msgstr "Состав пакета: %d файлов"
@@ -1546,29 +1537,29 @@ msgstr ""
 msgid "Could not set URLType from config file!"
 msgstr "Невозможно установить URLType из файла настроек!"
 
-#: components/services/install/lib/eazel-install-object.c:601
+#: components/services/install/lib/eazel-install-object.c:602
 msgid "Could not create temporary directory!\n"
 msgstr "Невозможно создать временный каталог!\n"
 
-#: components/services/install/lib/eazel-install-object.c:615
+#: components/services/install/lib/eazel-install-object.c:616
 msgid "Getting package list from remote server ...\n"
 msgstr "Получение списка пакетов с удаленного сервера...\n"
 
-#: components/services/install/lib/eazel-install-object.c:635
+#: components/services/install/lib/eazel-install-object.c:636
 msgid "Unable to retrieve package-list.xml!\n"
 msgstr "Невозможно получить package-list.xml!\n"
 
-#: components/services/install/lib/eazel-install-object.c:680
+#: components/services/install/lib/eazel-install-object.c:681
 #, c-format
 msgid "Cannot write to file %s, using default log handler"
 msgstr ""
 "Невозможна запись в файл %s, используется обработчик журнала по умолчанию"
 
-#: components/services/install/lib/eazel-install-object.c:709
+#: components/services/install/lib/eazel-install-object.c:710
 msgid "Install failed"
 msgstr "Сбой установки"
 
-#: components/services/install/lib/eazel-install-object.c:765
+#: components/services/install/lib/eazel-install-object.c:766
 msgid "Uninstall failed"
 msgstr "Сбой удаления пакета"
 
@@ -1589,7 +1580,7 @@ msgid "Could not open target file %s"
 msgstr "Невозможно открыть целевой файл %s"
 
 #: components/services/install/lib/eazel-install-protocols.c:133
-#: components/services/install/lib/eazel-install-protocols.c:632
+#: components/services/install/lib/eazel-install-protocols.c:655
 msgid "Could not create an http request !"
 msgstr "Невозможно создать http-запрос!"
 
@@ -1598,7 +1589,7 @@ msgid "Invalid uri !"
 msgstr "Неправильный uri!"
 
 #: components/services/install/lib/eazel-install-protocols.c:145
-#: components/services/install/lib/eazel-install-protocols.c:643
+#: components/services/install/lib/eazel-install-protocols.c:666
 msgid "Could not prepare http request !"
 msgstr "Невозможно подготовить http-запрос!"
 
@@ -1619,127 +1610,130 @@ msgstr "Невозможно получить тело запроса!"
 msgid "FTP not supported yet"
 msgstr "FTP пока не поддерживается"
 
-#: components/services/install/lib/eazel-install-protocols.c:412
+#: components/services/install/lib/eazel-install-protocols.c:415
 #, c-format
 msgid "Checking local file %s..."
 msgstr "Проверка локального файла %s..."
 
-#: components/services/install/lib/eazel-install-protocols.c:468
+#: components/services/install/lib/eazel-install-protocols.c:471
 #, c-format
 msgid "Failed to retreive %s!"
 msgstr "Не удалось получить %s!"
 
-#: components/services/install/lib/eazel-install-protocols.c:525
-#: components/services/install/lib/eazel-install-protocols.c:576
+#: components/services/install/lib/eazel-install-protocols.c:528
+#: components/services/install/lib/eazel-install-protocols.c:599
 #, c-format
 msgid "Could not get a URL for %s"
 msgstr "Невозможно получить URL для %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:570
+#: components/services/install/lib/eazel-install-protocols.c:562
+msgid "File download failed"
+msgstr "Сбой скачивания файла"
+
+#: components/services/install/lib/eazel-install-protocols.c:593
 msgid "Using local protocol cannot resolve library dependencies"
 msgstr ""
 "Использование локального протокола непозволяет разрешить зависимости "
 "библиотек"
 
-#: components/services/install/lib/eazel-install-protocols.c:628
+#: components/services/install/lib/eazel-install-protocols.c:651
 #, c-format
 msgid "Search URL: %s"
 msgstr "Поиск URL: %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:640
+#: components/services/install/lib/eazel-install-protocols.c:663
 msgid "Invalid uri"
 msgstr "Неправильный uri"
 
-#: components/services/install/lib/eazel-install-protocols.c:654
-#: components/services/install/lib/eazel-install-protocols.c:658
+#: components/services/install/lib/eazel-install-protocols.c:677
+#: components/services/install/lib/eazel-install-protocols.c:681
 #, c-format
 msgid "Could not retrieve a URL for %s"
 msgstr "Невозможно запросить URL для %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:106
-#: components/services/install/lib/eazel-install-rpm-glue.c:327
+#: components/services/install/lib/eazel-install-rpm-glue.c:110
+#: components/services/install/lib/eazel-install-rpm-glue.c:363
 msgid "Dry Run Mode Activated.  Packages will not actually be installed ..."
 msgstr ""
 "Активирован режим сухого запуска. В действительности пакеты установлены не "
 "будут..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:133
+#: components/services/install/lib/eazel-install-rpm-glue.c:137
 #, c-format
 msgid "Reading the install package list %s"
 msgstr "Считывание списка устанавливаемых пакетов %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:170
-#: components/services/install/lib/eazel-install-rpm-glue.c:302
-#, c-format
-msgid "Category = %s"
-msgstr "Категория = %s"
-
-#: components/services/install/lib/eazel-install-rpm-glue.c:199
+#: components/services/install/lib/eazel-install-rpm-glue.c:198
 #, c-format
 msgid "Will download %s"
 msgstr "Будет скачано %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:275
+#: components/services/install/lib/eazel-install-rpm-glue.c:243
 #, c-format
-msgid "Category = %s, %d packages"
-msgstr "Категория = %s, %d пакетов"
+msgid "Downloading packages for category %s"
+msgstr "Скачивание пакетов для категории %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:612
+#: components/services/install/lib/eazel-install-rpm-glue.c:338
+#, c-format
+msgid "Category = %s"
+msgstr "Категория = %s"
+
+#: components/services/install/lib/eazel-install-rpm-glue.c:645
 #, c-format
 msgid "Could not create transaction directory (%s)! ***\n"
 msgstr "Невозможно создать каталог транзакции (%s)!\n"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:634
+#: components/services/install/lib/eazel-install-rpm-glue.c:667
 #, c-format
 msgid "Writing transaction to %s"
 msgstr "Запись транзакции на %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:829
+#: components/services/install/lib/eazel-install-rpm-glue.c:862
 #, c-format
 msgid "Preflight (%d bytes, %d packages)"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:864
+#: components/services/install/lib/eazel-install-rpm-glue.c:897
 msgid "rpm running..."
 msgstr "запуск rpm ..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:914
+#: components/services/install/lib/eazel-install-rpm-glue.c:947
 #, c-format
 msgid "Removing package %s"
 msgstr "Удаление пакета %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1033
+#: components/services/install/lib/eazel-install-rpm-glue.c:1065
 #, c-format
 msgid "Cannot open %s"
 msgstr "Невозможно открыть %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1145
+#: components/services/install/lib/eazel-install-rpm-glue.c:1182
 msgid "RPM package database query failed !"
 msgstr "Сбой запроса к базе данных пакетов!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1163
+#: components/services/install/lib/eazel-install-rpm-glue.c:1200
 msgid "Preparing package system"
 msgstr "Подготовка системы пакетов"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1358
+#: components/services/install/lib/eazel-install-rpm-glue.c:1397
 #, c-format
 msgid "%s %s from %s to %s"
 msgstr "%s %s от %s до %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1360
+#: components/services/install/lib/eazel-install-rpm-glue.c:1399
 msgid "upgrades"
 msgstr "обновляются"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1360
+#: components/services/install/lib/eazel-install-rpm-glue.c:1399
 msgid "downgrades"
 msgstr "заменяются более старыми"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1363
+#: components/services/install/lib/eazel-install-rpm-glue.c:1402
 #, c-format
 msgid "%s version %s already installed"
 msgstr "%s версия %s уже установлена"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1415
+#: components/services/install/lib/eazel-install-rpm-glue.c:1454
 #, c-format
 msgid "%s %s breaks %s"
 msgstr "%s %s остановливает %s"
@@ -1747,27 +1741,27 @@ msgstr "%s %s остановливает %s"
 #. If we end here, it's a conflict is going to break something
 #. FIXME bugzilla.eazel.com 1514:
 #. Need to handle this more intelligently
-#: components/services/install/lib/eazel-install-rpm-glue.c:1465
+#: components/services/install/lib/eazel-install-rpm-glue.c:1518
 #, c-format
 msgid "%s conflicts %s-%s"
 msgstr "%s конфликтует с %s-%s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1479
+#: components/services/install/lib/eazel-install-rpm-glue.c:1532
 #, c-format
 msgid "Processing dep for %s : requires library %s"
 msgstr "Обработка зависимостей для %s: требуется библиотека %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1492
+#: components/services/install/lib/eazel-install-rpm-glue.c:1545
 #, c-format
 msgid "Processing dep for %s : requires %s"
 msgstr "Обработка зависимостей для %s: требуется %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1737
+#: components/services/install/lib/eazel-install-rpm-glue.c:1791
 #, c-format
 msgid "%d dependencies failed!"
 msgstr "Сбой %d зависимостей!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1801
+#: components/services/install/lib/eazel-install-rpm-glue.c:1855
 msgid "Dependencies are ok"
 msgstr "Зависимости в порядке"
 
@@ -1779,62 +1773,70 @@ msgstr "*** Начало дампа пакета ***\n"
 msgid "*** End pkg dump ***\n"
 msgstr "*** Конец дампа пакета ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:138
+#: components/services/install/lib/eazel-install-xml-package-list.c:139
 msgid "*** No package nodes! ***\n"
 msgstr "*** Нет узлов пакета! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:140
+#: components/services/install/lib/eazel-install-xml-package-list.c:141
 msgid "*** Bailing from package parse! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:164
+#: components/services/install/lib/eazel-install-xml-package-list.c:165
 msgid "*** The pkg list file contains no data! ***\n"
 msgstr "*** Файл списка пакетов не содержит данных! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:169
+#: components/services/install/lib/eazel-install-xml-package-list.c:170
 msgid "*** Cannot find the CATEGORIES xmlnode! ***\n"
 msgstr "*** Не удалось найти xml-узел CATEGORIES! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:171
+#: components/services/install/lib/eazel-install-xml-package-list.c:172
 msgid "*** Bailing from categories parse! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:177
+#: components/services/install/lib/eazel-install-xml-package-list.c:178
 msgid "*** No Categories! ***\n"
 msgstr "*** Нет категорий! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:179
+#: components/services/install/lib/eazel-install-xml-package-list.c:180
 msgid "*** Bailing from category parse! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:230
+#: components/services/install/lib/eazel-install-xml-package-list.c:231
 msgid "*** Cannot find the TRANSACTION xmlnode! ***\n"
 msgstr "*** Не удалось найти xml-узел TRANSACTION! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:232
-#: components/services/install/lib/eazel-install-xml-package-list.c:240
+#: components/services/install/lib/eazel-install-xml-package-list.c:233
+#: components/services/install/lib/eazel-install-xml-package-list.c:241
 msgid "*** Bailing from transaction parse! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:238
+#: components/services/install/lib/eazel-install-xml-package-list.c:239
 msgid "*** No packages! ***\n"
 msgstr "*** Нет пакетов! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:344
+#: components/services/install/lib/eazel-install-xml-package-list.c:347
 msgid "*** Error generating xml package list! ***\n"
 msgstr "*** Ошибка создания списка xml-пакетов! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:391
+#: components/services/install/lib/eazel-install-xml-package-list.c:394
 msgid "*** Error reading package list! ***\n"
 msgstr "*** Ошибка считывания списка пакетов! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:567
+#: components/services/install/lib/eazel-install-xml-package-list.c:572
 msgid "*** The osd xml contains no data! ***\n"
 msgstr "*** osd xml не содержит данных! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:572
+#: components/services/install/lib/eazel-install-xml-package-list.c:577
 msgid "*** Bailing from osd parse! ***\n"
 msgstr ""
+
+#: components/services/install/lib/eazel-install-xml-package-list.c:618
+msgid "Could not find <?xml tag in string"
+msgstr "Невозможно найти файл <?xml тэг в строке"
+
+#: components/services/install/lib/eazel-install-xml-package-list.c:641
+msgid "Could not parse the xml"
+msgstr "Невозможно проанализировать xml"
 
 #: components/services/time/command-line/main.c:43
 msgid "display service name and such"
@@ -2329,7 +2331,9 @@ msgstr ""
 msgid ""
 "Search results for items that contain \"stuff\", are regular files and that "
 "are smaller than 2000 kilobytes."
-msgstr "Результаты поиска для элементов, имена которых содержат \"stuff\" и обычных файлов и размером меньше чем 2000 килобайт."
+msgstr ""
+"Результаты поиска для элементов, имена которых содержат \"stuff\" и обычных "
+"файлов и размером меньше чем 2000 килобайт."
 
 #: libnautilus-extensions/nautilus-icon-canvas-item.c:704
 msgid " -_,;.?/&"
@@ -2398,7 +2402,7 @@ msgid "Prefs Box"
 msgstr "Окно настроек"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:188
-#: src/nautilus-window.c:618
+#: src/nautilus-window.c:619
 #, c-format
 msgid "View as %s"
 msgstr "Показать как %s"
@@ -3810,17 +3814,17 @@ msgstr "Открыть с помощью %s"
 msgid "Open with..."
 msgstr "Открыть с помощью..."
 
-#: src/nautilus-window.c:847
+#: src/nautilus-window.c:848
 #, c-format
 msgid "View as %s..."
 msgstr "Показать как %s..."
 
 #. Add "View as Other..." extra bonus choice.
-#: src/nautilus-window.c:869
+#: src/nautilus-window.c:870
 msgid "View as Other..."
 msgstr "Показать как другое..."
 
-#: src/nautilus-window.c:1400
+#: src/nautilus-window.c:1409
 msgid "Close"
 msgstr "Закрыть"
 
@@ -3906,12 +3910,16 @@ msgstr "Наутилус не может показать \"%s\"."
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
-msgstr "Вы уверены в том что хотите стереть историю? Если вы это сделаете, то не сможете воспроизвести ее."
+msgstr ""
+"Вы уверены в том что хотите стереть историю? Если вы это сделаете, то не "
+"сможете воспроизвести ее."
 
 #: src/nautilus-window-menus.c:345
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
-msgstr "Вы уверены в том что хотите чтобы Nautilus удалил информацию о том какие места вы посетили?"
+msgstr ""
+"Вы уверены в том что хотите чтобы Nautilus удалил информацию о том какие "
+"места вы посетили?"
 
 #: src/nautilus-window-menus.c:350
 msgid "Forget"
@@ -4115,7 +4123,7 @@ msgstr "Просмотр"
 msgid "_Refresh"
 msgstr "Обновить"
 
-#: src/nautilus-window-menus.c:1350 src/nautilus-window-toolbars.c:120
+#: src/nautilus-window-menus.c:1350 src/nautilus-window-toolbars.c:121
 msgid "Display the latest contents of the current location"
 msgstr "Отобразить последнее содержимое в текущем положении"
 
@@ -4282,63 +4290,63 @@ msgstr "Просмотреть"
 msgid "_Find"
 msgstr "Найти"
 
-#: src/nautilus-window-toolbars.c:105
+#: src/nautilus-window-toolbars.c:106
 msgid "Back"
 msgstr "Назад"
 
-#: src/nautilus-window-toolbars.c:105
+#: src/nautilus-window-toolbars.c:106
 msgid "Go to the previously visited directory"
 msgstr "Перейти к каталого посещенному ранее"
 
-#: src/nautilus-window-toolbars.c:110
+#: src/nautilus-window-toolbars.c:111
 msgid "Forward"
 msgstr "Вперед"
 
-#: src/nautilus-window-toolbars.c:110
+#: src/nautilus-window-toolbars.c:111
 msgid "Go to the next directory"
 msgstr "Перейти к следующему каталогу"
 
-#: src/nautilus-window-toolbars.c:115
+#: src/nautilus-window-toolbars.c:116
 msgid "Up"
 msgstr "Вверх"
 
-#: src/nautilus-window-toolbars.c:115
+#: src/nautilus-window-toolbars.c:116
 msgid "Go up a level in the directory hierarchy"
 msgstr "Подняться на один уровень в иерархии каталогов"
 
-#: src/nautilus-window-toolbars.c:120
+#: src/nautilus-window-toolbars.c:121
 msgid "Refresh"
 msgstr "Обновить"
 
-#: src/nautilus-window-toolbars.c:127
+#: src/nautilus-window-toolbars.c:128
 msgid "Home"
 msgstr "Домой"
 
-#: src/nautilus-window-toolbars.c:127
+#: src/nautilus-window-toolbars.c:128
 msgid "Go to your home directory"
 msgstr "Перейти в домашний каталог"
 
-#: src/nautilus-window-toolbars.c:132
+#: src/nautilus-window-toolbars.c:133
 msgid "Find"
 msgstr "Найти"
 
-#: src/nautilus-window-toolbars.c:132
+#: src/nautilus-window-toolbars.c:133
 msgid "Search this computer for files"
 msgstr "Поиск файлов на этом компьютере"
 
-#: src/nautilus-window-toolbars.c:137
+#: src/nautilus-window-toolbars.c:138
 msgid "Web Search"
 msgstr "Поиск в Web"
 
-#: src/nautilus-window-toolbars.c:137
+#: src/nautilus-window-toolbars.c:138
 msgid "Search the web"
 msgstr "Поиск в Web"
 
-#: src/nautilus-window-toolbars.c:144
+#: src/nautilus-window-toolbars.c:145
 msgid "Interrupt loading"
 msgstr "Прерывание загрузки"
 
-#: src/nautilus-window-toolbars.c:150
+#: src/nautilus-window-toolbars.c:151
 msgid "Services"
 msgstr "Сервисы"
 
