@@ -95,6 +95,7 @@ hyperbola_navigation_tree_new(void)
   gtk_clist_thaw(GTK_CLIST(view->ctree));
   gtk_widget_show(view->ctree);
   gtk_widget_show(wtmp);
+  gtk_widget_show(GTK_WIDGET(view->view_frame));
 
   return nautilus_view_frame_get_bonobo_object(view->view_frame);
 }
