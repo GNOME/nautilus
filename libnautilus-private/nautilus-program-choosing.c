@@ -493,6 +493,7 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 {
 	GtkDialog *message_dialog;
 	LaunchParameters *launch_parameters;
+	char *prompt;
 	char *message;
 	char *file_name;
 	int response;
@@ -501,17 +502,20 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 
 	if (nautilus_mime_has_any_applications_for_file (file)) {
 		if (application != NULL) {
+			prompt = _("Open Failed, would you like to choose another application?");
 			message = g_strdup_printf (_("\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
-						     "locations.  Would you like to choose another application?"),
+						     "locations."),
 						   application->name, file_name, 
 						   application->name, uri_scheme);
 		} else {
+			prompt = _("Open Failed, would you like to choose another action?");
 			message = g_strdup_printf (_("The default action can't open \"%s\" because it can't access files at \"%s\" "
-						     "locations.  Would you like to choose another action?"),
+						     "locations."),
 						   file_name, uri_scheme);
 		}
 		
-		message_dialog = eel_show_yes_no_dialog (message, 
+		message_dialog = eel_show_yes_no_dialog (prompt, 
+		                                         message,
 							 _("Can't Open Location"), 
 							 GTK_STOCK_OK,
 							 GTK_STOCK_CANCEL,
@@ -528,26 +532,28 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 				 launch_parameters);
 				 
 		}
-		
+		g_free (message);
 	} else {
 		if (application != NULL) {
-			message = g_strdup_printf (_("\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
-						     "locations.  No other applications are available to view this file.  "
-						     "If you copy this file onto your computer, you may be able to open "
-						     "it."), application->name, file_name, 
-						   application->name, uri_scheme);
+			prompt = g_strdup_printf (_("\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\"."
+						    "locations."), application->name, file_name, 
+						    application->name, uri_scheme);
+			message = _("No other applications are available to view this file.  "
+				    "If you copy this file onto your computer, you may be able to open "
+				    "it.");
 		} else {
-			message = g_strdup_printf (_("The default action can't open \"%s\" because it can't access files at \"%s\" "
-						     "locations.  No other actions are available to view this file.  "
-						     "If you copy this file onto your computer, you may be able to open "
-						     "it."), file_name, uri_scheme);
+			prompt = g_strdup_printf (_("The default action can't open \"%s\" because it can't access files at \"%s\"."
+						    "locations."), file_name, uri_scheme);
+     			message = _("No other actions are available to view this file.  "
+				    "If you copy this file onto your computer, you may be able to open "
+				    "it.");
 		}
 				
-		eel_show_info_dialog (message, _("Can't Open Location"), parent_window);
+		eel_show_info_dialog (prompt, message, _("Can't Open Location"), parent_window);
+		g_free (prompt);
 	}	
 
 	g_free (file_name);
-	g_free (message);
 }
 
 #ifdef HAVE_STARTUP_NOTIFICATION
@@ -1159,8 +1165,9 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 				     EEL_VFS_CAPABILITY_SAFE_TO_EXECUTE)) {
 		eel_show_error_dialog
 			(_("Sorry, but you can't execute commands from "
-			   "a remote site due to security considerations."), 
-			 _("Can't execute remote links"),
+			   "a remote site."), 
+			 _("This is disabled due to security considerations."),
+			 _("Can't Execute Remote Links"),
 			 parent_window);
 			 
 		return;
@@ -1170,11 +1177,11 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 	ditem = gnome_desktop_item_new_from_uri (desktop_file_uri, 0,
 						&error);	
 	if (error != NULL) {
-		message = g_strconcat (_("There was an error launching the application.\n\n"
-					 "Details: "), error->message, NULL);
+		message = g_strconcat (_("Details: "), error->message, NULL);
 		eel_show_error_dialog
-			(message,
-			 _("Error launching application"),
+			(_("There was an error launching the application."),
+			 message,
+			 _("Error Launching Application"),
 			 parent_window);			
 			 
 		g_error_free (error);
@@ -1202,10 +1209,10 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 		if (count == 0) {
 			/* all files are non-local */
 			eel_show_error_dialog
-				(_("This drop target only supports local files.\n\n"
-				   "To open non-local files copy them to a local folder and then"
+				(_("This drop target only supports local files."),
+				 _("To open non-local files copy them to a local folder and then"
 				   " drop them again."),
-				 _("Drop target only supports local files"),
+				 _("Drop Target Only Supports Local Files"),
 				 parent_window);
 			
 			gnome_desktop_item_unref (ditem);
@@ -1214,10 +1221,10 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 		} else if (count != total) {
 			/* some files were non-local */
 			eel_show_warning_dialog
-				(_("This drop target only supports local files.\n\n"
-				   "To open non-local files copy them to a local folder and then"
+				(_("This drop target only supports local files."),
+				 _("To open non-local files copy them to a local folder and then"
 				   " drop them again. The local files you dropped have already been opened."),
-				 _("Drop target only supports local files"),
+				 _("Drop Target Only Supports Local Files"),
 				 parent_window);
 		}		
 	}
@@ -1236,11 +1243,11 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 					    flags, envp,
 					    &error);
 	if (error != NULL) {
-		message = g_strconcat (_("There was an error launching the application.\n\n"
-					 "Details: "), error->message, NULL);
+		message = g_strconcat (_("Details: "), error->message, NULL);
 		eel_show_error_dialog
-			(message,
-			 _("Error launching application"),
+			(_("There was an error launching the application."),
+			 message,
+			 _("Error Launching Application"),
 			 parent_window);			
 			 
 		g_error_free (error);

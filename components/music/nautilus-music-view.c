@@ -742,7 +742,8 @@ set_album_cover (GtkWidget *widget, gpointer *data)
 		char *message = g_strdup_printf
 			(_("Sorry, but '%s' is not a usable image file."),
 			 path_name);
-		eel_show_error_dialog (message, _("Not an Image"), NULL);
+		eel_show_error_dialog (message, _("Please select an image file and try again."),
+		                       _("Not an Image"), NULL);
 		g_free (message);
 		
 		g_free (path_uri);
@@ -1213,8 +1214,8 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 	g_object_unref (client);
 
 	if (!enable_esd) {
-		eel_show_error_dialog (_("Sorry, but the music view is unable to play back sound right now. "
-					      "This is because the Enable sound server startup setting "
+		eel_show_error_dialog (_("Sorry, but the music view is unable to play back sound right now."),
+					    _("This is because the Enable sound server startup setting "
 					      "in the Sound section of the Control Center is turned off."),
 				            _("Unable to Play File"),
 					    //GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (&music_view->details->event_box->parent))));
@@ -1224,8 +1225,8 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 	}
 
 	if (!esdout_can_play ()) {
-		eel_show_error_dialog (_("Sorry, but the music view is unable to play back sound right now. "
-					      "Either another program is using or blocking the sound card, "
+		eel_show_error_dialog (_("Sorry, but the music view is unable to play back sound right now."),
+					    _("Either another program is using or blocking the sound card, "
 					      "or your sound card is not configured properly. Try quitting any "
 					      "applications that may be blocking use of the sound card."),
 				            _("Unable to Play File"),
@@ -1253,6 +1254,7 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
         if (song_filename == NULL) {
                 eel_show_error_dialog
                         ( _("Sorry, but the music view can't play non-local files yet."),
+			  _("Remote files are not supported."),
                           _("Can't Play Remote Files"),
                           NULL);
                 return;
@@ -1765,7 +1767,7 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 	if (result != GNOME_VFS_OK) {
 		path = gnome_vfs_get_local_path_from_uri (uri);
 		message = g_strdup_printf (_("Sorry, but there was an error reading %s."), path);
-		eel_show_error_dialog (message, _("Can't Read Folder"), 
+		eel_show_error_dialog (message, _("The folder cannot be read."), _("Can't Read Folder"), 
                                        GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (music_view->details->event_box))));
 		g_free (path);
 		g_free (message);

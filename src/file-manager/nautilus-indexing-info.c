@@ -161,22 +161,17 @@ last_index_time_dialog_new (void)
         GtkWidget *label;
         GtkDialog *dialog;
 
-        dialog = eel_create_info_dialog (_("Once a day your files and text content are indexed so "
+        time_str = nautilus_indexing_info_get_last_index_time ();
+        label_str = g_strdup_printf (_("Your files were last indexed at %s."),
+                                     time_str);
+        g_free (time_str);
+	
+        dialog = eel_create_info_dialog (label_str,
+	                                 _("Once a day your files and text content are indexed so "
                                            "your searches are fast. "),
                                          _("Indexing Status"),
                                          NULL);
         set_close_hides_for_dialog (dialog);
-
-        time_str = nautilus_indexing_info_get_last_index_time ();
-        label_str = g_strdup_printf (_("Your files were last indexed at %s"),
-                                     time_str);
-        g_free (time_str);
-        
-        label = gtk_label_new (label_str);
-        gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
-        eel_gtk_label_make_bold (GTK_LABEL (label));
-        gtk_box_pack_start (GTK_BOX (dialog->vbox), label,
-                            FALSE, FALSE, 0);
 
         return dialog;
 }
@@ -199,8 +194,9 @@ index_progress_dialog_new (void)
         ProgressChangeData *progress_data;
         guint timeout_id;
                 
-        dialog = eel_create_info_dialog (_("Once a day your files and text content are indexed so "
-                                           "your searches are fast.  Your files are currently being indexed."),
+        dialog = eel_create_info_dialog (_("Your files are currently being indexed."),
+                                         _("Once a day your files and text content are indexed so "
+                                           "your searches are fast."), 
                                          _("Indexing Status"), NULL);
         set_close_hides_for_dialog (dialog);        
         percentage_complete = get_index_percentage_complete ();
@@ -258,11 +254,12 @@ show_indexing_info_dialog (void)
 
         if (!medusa_system_services_are_enabled ()) {
                 details_string = nautilus_medusa_get_explanation_of_enabling ();
-                dialog_shown = eel_show_info_dialog_with_details (_("When Fast Search is enabled, Find creates an "
+                dialog_shown = eel_show_info_dialog_with_details (_("There is no index of your files right now."),
+                                                                    _("When Fast Search is enabled, Find creates an "
                                                                     "index to speed up searches.  Fast searching "
                                                                     "is not enabled on your computer, so you "
                                                                     "do not have an index right now."),
-                                                                  _("There is no index of your files right now."),
+								    _("No Index of Files"),
                                                                     details_string,
                                                                   NULL);
                 g_free (details_string);
@@ -300,6 +297,7 @@ static void
 show_search_service_not_available_dialog (void)
 {
         eel_show_error_dialog (_("Sorry, but the medusa search service is not available."),
+                                    _("Please verify medusa has been setup correctly."),
                                     _("Search Service Not Available"),
                                     NULL);
 }

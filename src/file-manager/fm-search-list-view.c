@@ -163,8 +163,9 @@ load_location_callback (NautilusView *nautilus_view, char *location)
 		}
 	}
 #else
-	eel_show_error_dialog (_("Sorry, but the Medusa search service is not available because it is not installed."),
-			            _("Search Service Not Available"),
+	eel_show_error_dialog (_("Sorry, but the Medusa search service is not available."), 
+			            _("Medusa is not installed."),
+				    _("Search Service Not Available"),
 			            NULL);
 #endif
 
@@ -179,7 +180,6 @@ real_load_error (FMDirectoryView *nautilus_view,
 		 GnomeVFSResult result)
 {
 	GtkDialog *load_error_dialog;
-	char *error_string;
 
 	/* Do not call parent's function; we handle all search errors
 	 * here and don't want fm-directory-view's default handling.
@@ -190,42 +190,38 @@ real_load_error (FMDirectoryView *nautilus_view,
 		load_error_dialog = eel_show_info_dialog (_("The search you have selected "
 							    "is newer than the index on your "
 							    "system.  The search will return "
-							    "no results right now.  You can create a new "
-							    " index by running \"medusa-indexd\" as root "
+							    "no results right now."),
+							  _("You can create a new "
+							    "index by running \"medusa-indexd\" as root "
 							    "on the command line."),
-							  _("Search for items that are too new"),
+							  _("Search For Items That Are Too New"),
 							  NULL);
 		break;
 	case GNOME_VFS_ERROR_TOO_BIG:
 		eel_show_error_dialog (_("Every indexed file on your computer "
-					 "matches the criteria you selected. "
-					 "You can check the spelling on your selections "
+					 "matches the criteria you selected. "),
+				       _("You can check the spelling on your selections "
 					 "or add more criteria to narrow your results."),
-				       _("Error during search"),
+				       _("Error During Search"),
 				       NULL);
 		break;
 	case GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE:
 		/* FIXME: This dialog does not get shown because a slow search
 		   will be performed and will not return an error.  */
 		eel_show_error_dialog (_("Find cannot open your file system index.  "
-					 "Your index may be missing or corrupt.  You can "
-					 "create a new index by running \"medusa-indexd\" as root "
+					 "Your index may be missing or corrupt."),
+				       _("You can create a new index by running \"medusa-indexd\" as root "
 					 "on the command line."),
-				       _("Error reading file index"),
+				       _("Error Reading File Index"),
 				       NULL);
 		break;
 	case GNOME_VFS_ERROR_CANCELLED:
 		break;
 	default:
-		error_string = g_strdup_printf (_("An error occurred while loading "
-							  "this search's contents: "
-							  "%s"),
-							gnome_vfs_result_to_string (result));
-		eel_show_error_dialog (error_string,
-				            _("Error during search"),
-				            NULL);
-		g_free (error_string);
-		
+		eel_show_error_dialog (_("An error occurred while loading this search's contents."), 
+				            gnome_vfs_result_to_string (result),
+				            _("Error During Search"),
+				            NULL);		
 	}
 }
 
@@ -234,7 +230,7 @@ real_load_error (FMDirectoryView *nautilus_view,
 static void
 display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 {
-	const char *error_string, *title_string;
+	const char *error_string, *detail_string, *title_string;
 
 	if (medusa_indexed_search_system_index_files_look_available ()) {
 		/* There is an index on the system, but there is no
@@ -242,17 +238,19 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 		   confused.  Tell the user this. */
 		error_string = backup_search_is_available 
 			? N_("To do a fast search, Find requires an index "
-			     "of the files on your system.  "
-			     "Find can't access your index right now "
+			     "of the files on your system.") 
+			: N_("To do a content search, Find requires an index "
+			     "of the files on your system.");
+		detail_string = backup_search_is_available 
+			? N_("Find can't access your index right now "
 			     "so a slower search will be performed that "
 			     "doesn't use the index.") 
-			: N_("To do a content search, Find requires an index "
-			     "of the files on your system.  "
-			     "Find can't access your index right now. ");
+			: N_("Find can't access your index right now.");
 		title_string = backup_search_is_available 
-			?  N_("Fast searches are not available")
-			:  N_("Content searches are not available");
+			?  N_("Fast Searches Are Not Available")
+			:  N_("Content Searches Are Not Available");
 		eel_show_error_dialog_with_details (error_string,
+						    detail_string,
 						    title_string,
 						    _("Your index files are available "
 						      "but the Medusa search daemon, which handles "
@@ -270,19 +268,23 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 			error_string = backup_search_is_available 
 				? N_("To do a fast search, Find requires an index "
 				     "of the files on your system.  "
-				    "Your computer is currently creating that "
-				     "index.   Because Find cannot use an index, "
-				     "this search may take several "
-				     "minutes.")
+				     "Your computer is currently creating that "
+				     "index.")
 				: N_("To do a content search, Find requires an index "
 				     "of the content on your system.  "
 				     "Your computer is currently creating that "
-				     "index.  Content searches will be available "
+				     "index.");
+     			detail_string = backup_search_is_available 
+				? N_("Because Find cannot use an index, "
+				     "this search may take several "
+				     "minutes.")
+				: N_("Content searches will be available "
 				     "when the index is complete.");
 			title_string = backup_search_is_available
-				? N_("Indexed searches are not available")
-				: N_("Content searches are not available");
+				? N_("Indexed Searches Are Not Available")
+				: N_("Content Searches Are Not Available");
 			eel_show_error_dialog (error_string,
+			                       detail_string,
 					       title_string,
 					       NULL);
 		}
@@ -290,22 +292,26 @@ display_indexed_search_problems_dialog (gboolean backup_search_is_available)
 			error_string = backup_search_is_available
 				? N_("To do a fast search, Find requires an index "
 				     "of the files on your system.  No index "
-				     "is available right now. You can create an "
+				     "is available right now.")
+				: N_("To do a content search, Find requires an index "
+				     "of the content on your system.  No index is "
+				     "available right now.");
+			detail_string = backup_search_is_available
+				? N_("You can create an "
 				     "index by running \"medusa-indexd\" as root "
 				     "on the command line.  Until a complete index "
 				     "is available, searches will "
 				     "take several minutes.")
-				: N_("To do a content search, Find requires an index "
-				     "of the content on your system.  No index is "
-				     "available right now.  You can create an "
+				: N_("You can create an "
 				     "index by running \"medusa-indexd\" as root "
 				     "on the command line.  Until a complete index "
 				     "is available, content searches cannot be "
 				     "performed.");
 			title_string = backup_search_is_available
-				? N_("Indexed searches are not available")
-				: N_("Content searches are not available");
+				? N_("Indexed Searches Are Not Available")
+				: N_("Content Searches Are Not Available");
 			eel_show_error_dialog (error_string,
+			                       detail_string,
 					       title_string,
 					       NULL);
 		}
@@ -320,11 +326,12 @@ display_system_services_are_disabled_dialog (gboolean unindexed_search_is_availa
 	char *details_string;
 
 	details_string = nautilus_medusa_get_explanation_of_enabling ();
-	dialog_shown = eel_show_info_dialog_with_details (_("To do a fast search, Find requires an index of "
+	dialog_shown = eel_show_info_dialog_with_details (_("Fast searches are not enabled on your computer."),
+							  _("To do a fast search, Find requires an index of "
 							    "the files on your system. Your system administrator "
 							    "has disabled fast search on your computer, so no index "
 							    "is available."),
-							  _("Fast searches are not enabled on your computer"),
+							  _("Fast Searches Not Enabled"),
 							  details_string,
 							  NULL);
 	g_free (details_string);
@@ -681,8 +688,8 @@ real_file_limit_reached (FMDirectoryView *view)
 	 * to the way files are collected in batches. So you can't assume that
 	 * no more than the constant limit are displayed.
 	 */
-	eel_show_warning_dialog (_("Nautilus found more search results than it can display. "
-				   "Some matching items will not be displayed. "), 
+	eel_show_warning_dialog (_("Nautilus found more search results than it can display."),
+				 _("Some matching items will not be displayed. "), 
 				 _("Too Many Matches"),
 				 fm_directory_view_get_containing_window (view));
 }

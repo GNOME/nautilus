@@ -2541,8 +2541,9 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 
 	if (eel_vfs_has_capability (container_uri,
 				    EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW)) {
-		eel_show_warning_dialog (_("Drag and drop is only supported to local file systems."),
-					 _("Drag and Drop error"),
+		eel_show_warning_dialog (_("Drag and drop is not supported."),
+					 _("Drag and drop is only supported on local file systems."),
+					 _("Drag and Drop Error"),
 					 fm_directory_view_get_containing_window (FM_DIRECTORY_VIEW (view)));
 		g_free (container_uri);
 		return;
@@ -2564,8 +2565,9 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	    (action != GDK_ACTION_COPY) &&
 	    (action != GDK_ACTION_MOVE) &&
 	    (action != GDK_ACTION_LINK)) {
-		eel_show_warning_dialog (_("An invalid drag type was used."),
-					 _("Drag and Drop error"),
+		eel_show_warning_dialog (_("Drag and drop is not supported."),
+					 _("An invalid drag type was used."),
+					 _("Drag and Drop Error"),
 					 fm_directory_view_get_containing_window (FM_DIRECTORY_VIEW (view)));
 		g_free (container_uri);
 		return;

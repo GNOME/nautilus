@@ -1755,11 +1755,13 @@ add_site_from_fields (GtkWidget *widget, News *news)
 
 	/* make sure there's something in the fields */
 	if (site_name == NULL || strlen (site_name) == 0) {
-		eel_show_error_dialog (_("Sorry, but you have not specified a name for the site!"), _("Missing Site Name Error"), NULL);
+		eel_show_error_dialog (_("Sorry, but you have not specified a name for the site."),
+		                       _("Please specify a name and try again."), _("Missing Site Name Error"), NULL);
 		return;
 	}
 	if (site_location == NULL || strlen (site_location) == 0) {
-		eel_show_error_dialog (_("Sorry, but you have not specified a URL for the site!"), _("Missing URL Error"), NULL);
+		eel_show_error_dialog (_("Sorry, but you have not specified a URL for the site."),
+		                       _("Please specify a URL and try again."), _("Missing URL Error"), NULL);
 		return;
 	}
 	
@@ -1776,7 +1778,8 @@ add_site_from_fields (GtkWidget *widget, News *news)
 	g_free (buffer);
 	if (!got_xml_file) {
 		g_free (site_uri);
-		eel_show_error_dialog (_("Sorry, but the specified url doesn't seem to be a valid RSS file!"), _("Invalid RSS URL"), NULL);
+		eel_show_error_dialog (_("Sorry, but the specified url doesn't seem to be a valid RSS file."), 
+		                       _("Please check the spelling of the url."), _("Invalid RSS URL"), NULL);
 		return;
 	}
 	

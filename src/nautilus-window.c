@@ -473,7 +473,6 @@ nautilus_window_launch_cd_burner (NautilusWindow *window)
 {
 	GError *error;
 	char *argv[] = { "nautilus-cd-burner", NULL};
-	char *text;
 
 	error = NULL;
 	if (!g_spawn_async (NULL,
@@ -482,11 +481,9 @@ nautilus_window_launch_cd_burner (NautilusWindow *window)
 			    NULL, NULL,
 			    NULL,
 			    &error)) {
-		text = g_strdup_printf (_("Unable to launch the cd burner application:\n%s"), error->message);
-		eel_show_error_dialog (text,
-				       _("Can't launch cd burner"),
+		eel_show_error_dialog (_("Unable to launch the cd burner application."), error->message,
+				       _("Can't Launch CD Burner"),
 				       GTK_WINDOW (window));
-		g_free (text);
 		g_error_free (error);
 	}
 }

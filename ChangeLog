@@ -1,3 +1,33 @@
+2003-12-11  Alexander Larsson  <alexl@redhat.com>
+
+	* components/emblem/nautilus-emblem-view.c:
+	* components/music/nautilus-music-view.c:
+	* components/news/nautilus-news.c:
+	* libnautilus-private/nautilus-desktop-link-monitor.c:
+	* libnautilus-private/nautilus-emblem-utils.c:
+	* libnautilus-private/nautilus-file-operations.c:
+	* libnautilus-private/nautilus-icon-dnd.c:
+	* libnautilus-private/nautilus-program-chooser.c:
+	* libnautilus-private/nautilus-program-choosing.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-error-reporting.c:
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-properties-window.c:
+	* src/file-manager/fm-search-list-view.c:
+	* src/file-manager/nautilus-indexing-info.c:
+	* src/nautilus-application.c:
+	* src/nautilus-connect-server-dialog.c:
+	* src/nautilus-information-panel.c:
+	* src/nautilus-location-bar.c:
+	* src/nautilus-navigation-window-menus.c:
+	* src/nautilus-navigation-window.c:
+	* src/nautilus-property-browser.c:
+	* src/nautilus-window-manage-views.c:
+	* src/nautilus-window.c:
+	Update error dialogs to be HIGy, and use the new
+	eel message dialog api.
+	Based on patch from dennis_cranston@yahoo.com
+
 2003-12-10  Federico Mena Quintero  <federico@ximian.com>
 
 	* src/nautilus-connect-server-dialog.c (response_callback): Use

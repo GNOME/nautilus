@@ -479,8 +479,8 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 
 	if (!exactly_one) {
 		eel_show_error_dialog
-			(_("You can't assign more than one custom icon at a time! "
-			   "Please drag just one image to set a custom icon."), 
+			(_("You can't assign more than one custom icon at a time!"),
+			 _("Please drag just one image to set a custom icon."), 
 			 _("More Than One Image"),
 			 window);
 	} else {		
@@ -490,15 +490,15 @@ fm_properties_window_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 		} else {	
 			if (eel_is_remote_uri (uris[0])) {
 				eel_show_error_dialog
-					(_("The file that you dropped is not local.  "
-					   "You can only use local images as custom icons."), 
+					(_("The file that you dropped is not local."),
+					 _("You can only use local images as custom icons."), 
 					 _("Local Images Only"),
 					 window);
 				
 			} else {
 				eel_show_error_dialog
-					(_("The file that you dropped is not an image.  "
-					   "You can only use local images as custom icons."),
+					(_("The file that you dropped is not an image."),
+					 _("You can only use local images as custom icons."),
 					 _("Images Only"),
 					 window);
 			}
@@ -1381,7 +1381,7 @@ activate_group_callback (GtkMenuItem *menu_item, FileNamePair *pair)
 		(cancel_group_change_callback,
 		 pair->file,
 		 _("Cancel Group Change?"),
-		 _("Changing group"),
+		 _("Changing group."),
 		 NULL); /* FIXME bugzilla.gnome.org 42397: Parent this? */
 	nautilus_file_set_group
 		(pair->file, pair->name,
@@ -1543,7 +1543,7 @@ activate_owner_callback (GtkMenuItem *menu_item, FileNamePair *pair)
 		(cancel_owner_change_callback,
 		 pair->file,
 		 _("Cancel Owner Change?"),
-		 _("Changing owner"),
+		 _("Changing owner."),
 		 NULL); /* FIXME bugzilla.gnome.org 42397: Parent this? */
 	nautilus_file_set_owner
 		(pair->file, pair->name,
@@ -3339,19 +3339,15 @@ static void
 help_button_callback (GtkWidget *widget, GtkWidget *property_window)
 {
 	GError *error = NULL;
-	char *message;
 
 	egg_help_display_desktop_on_screen (NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-51",
 					    gtk_window_get_screen (GTK_WINDOW (property_window)),
 &error);
 
 	if (error) {
-		message = g_strdup_printf (_("There was an error displaying help: \n%s"),
-					   error->message);
-		eel_show_error_dialog (message, _("Couldn't show help"),
+		eel_show_error_dialog (_("There was an error displaying help."), error->message, _("Couldn't Show Help"),
 				       GTK_WINDOW (property_window));
 		g_error_free (error);
-		g_free (message);
 	}
 }
 
@@ -3686,7 +3682,7 @@ fm_properties_window_present (GList *original_files,
 		(cancel_create_properties_window_callback,
 		 startup_data,
 		 _("Cancel Showing Properties Window?"),
-		 _("Creating Properties window"),
+		 _("Creating Properties window."),
 		 parent_window == NULL ? NULL : GTK_WINDOW (parent_window));
 
 

@@ -107,10 +107,11 @@ nautilus_desktop_link_monitor_delete_link (NautilusDesktopLinkMonitor *monitor,
 		eel_run_simple_dialog
 			(parent_view, 
 			 FALSE,
-			 _("You cannot delete a volume icon. If you want to eject "
-			   "the volume, please use Eject in the right-click menu of "
-			   "the volume."), 
-			 _("Can't delete volume"),
+			 GTK_MESSAGE_ERROR,
+			 _("You cannot delete a volume icon."),
+			 _("If you want to eject the volume, please use Eject in the "
+			   "right-click menu of the volume."),
+			 _("Can't Delete Volume"),
 			 GTK_STOCK_OK, NULL);
 		break;
 	}

@@ -130,6 +130,7 @@ drag_data_received_callback (GtkWidget *widget,
 	GdkScreen      *screen;
 	gboolean new_windows_for_extras;
 	char *prompt;
+	char *detail;
 
 	g_assert (NAUTILUS_IS_LOCATION_BAR (widget));
 	g_assert (data != NULL);
@@ -151,20 +152,24 @@ drag_data_received_callback (GtkWidget *widget,
 	 */
 	name_count = g_list_length (names);
 	if (name_count > 1) {
-		prompt = g_strdup_printf (_("Do you want to view these %d locations "
-					  "in separate windows?"), 
-					  name_count);
+		prompt = g_strdup_printf (_("Do you want to view %d locations?"), 
+					          name_count);	  
+		detail = g_strdup_printf (_("This will open %d separate windows."),
+		                                    name_count);			  
 		/* eel_run_simple_dialog should really take in pairs
 		 * like gtk_dialog_new_with_buttons() does. */
 		new_windows_for_extras = eel_run_simple_dialog 
 			(GTK_WIDGET (window),
 			 TRUE,
+			 GTK_MESSAGE_QUESTION,
 			 prompt,
+			 detail,
 			 _("View in Multiple Windows?"),
-			 GTK_STOCK_OK, GTK_STOCK_CANCEL,
-			 NULL) == 0 /* GNOME_OK */;
+			 GTK_STOCK_CANCEL, GTK_STOCK_OK,
+			 NULL) != 0 /* GNOME_OK */;
 
 		g_free (prompt);
+		g_free (detail);
 		
 		if (!new_windows_for_extras) {
 			gtk_drag_finish (context, FALSE, FALSE, time);

@@ -983,17 +983,6 @@ launch_mime_capplet (NautilusFile *file,
 }
 
 static void
-launch_mime_capplet_on_ok (GtkDialog *dialog, int response, gpointer callback_data)
-{
-	g_assert (GTK_IS_DIALOG (dialog));
-
-	if (response == GTK_RESPONSE_YES) {
-		launch_mime_capplet (callback_data, dialog);
-	}
-	gtk_object_destroy (GTK_OBJECT (dialog));
-}
-
-static void
 launch_mime_capplet_and_close_dialog (GtkButton *button, gpointer callback_data)
 {
 	ProgramFilePair *file_pair;
@@ -1594,6 +1583,7 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 	char *file_name;
 	char *dialog_title;
 	GtkDialog *dialog;
+	int response;
 
 	file_name = get_file_name_for_display (file);
 
@@ -1612,22 +1602,22 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 	 * user can't add components to the complete list even from the capplet.
 	 * (They can add applications though.)
 	 */
-	prompt = g_strdup_printf (_("%s\n\n"
-				    "You can configure GNOME to associate applications "
-				    "with file types. Do you want to associate an "
-				    "application with this file type now?"),
-				  unavailable_message);
-	
-	dialog = eel_show_yes_no_dialog 
-		(prompt, dialog_title, _("Associate Application"), GTK_STOCK_CANCEL, parent_window);
+	prompt = _("You can configure GNOME to associate applications "
+		   "with file types. Do you want to associate an "
+		   "application with this file type now?");
+
+	dialog = eel_show_yes_no_dialog (unavailable_message, prompt, dialog_title, 
+	                                 _("_Associate Application"), GTK_STOCK_CANCEL, parent_window);
+
+	response = gtk_dialog_run (dialog);
+	gtk_object_destroy (GTK_OBJECT (dialog));
 		
-	g_signal_connect_object (dialog, "response",
-				 G_CALLBACK (launch_mime_capplet_on_ok),
-				 file, 0);
+	if (response == GTK_RESPONSE_YES) {
+		launch_mime_capplet (file, dialog);	 
+	}
 
 	g_free (unavailable_message);
 	g_free (file_name);
-	g_free (prompt);
 	g_free (dialog_title);
 }
 
@@ -1641,6 +1631,7 @@ nautilus_program_chooser_show_invalid_message (GnomeVFSMimeActionType  action_ty
 	char *file_name;
 	char *dialog_title;
 	GtkDialog *dialog;
+	int response;
 
 	file_name = get_file_name_for_display (file);
 
@@ -1655,21 +1646,21 @@ nautilus_program_chooser_show_invalid_message (GnomeVFSMimeActionType  action_ty
 		dialog_title = g_strdup (_("Invalid Action Associated"));
 	}		
 
-	prompt = g_strdup_printf (_("%s\n\n"
-				    "You can configure GNOME to associate a different application "
-				    "or viewer with this file type. Do you want to associate an "
-				    "application or viewer with this file type now?"),
-				  unavailable_message);
+	prompt = _("You can configure GNOME to associate a different application "
+		   "or viewer with this file type. Do you want to associate an "
+		   "application or viewer with this file type now?");
 
-	dialog = eel_show_yes_no_dialog 
-		(prompt, dialog_title, _("Associate Action"), GTK_STOCK_CANCEL, parent_window);
+	dialog = eel_show_yes_no_dialog (unavailable_message, prompt, dialog_title, 
+	                                 _("_Associate Action"), GTK_STOCK_CANCEL, parent_window);
 	
-	g_signal_connect_object (dialog, "response",
-	G_CALLBACK (launch_mime_capplet_on_ok),
-	file, 0);
+	response = gtk_dialog_run (dialog);
+	gtk_object_destroy (GTK_OBJECT (dialog));
+		
+	if (response == GTK_RESPONSE_YES) {
+		launch_mime_capplet (file, dialog);	 
+	}
 
 	g_free (unavailable_message);
 	g_free (file_name);
-	g_free (prompt);
 	g_free (dialog_title);
 }

@@ -488,19 +488,20 @@ fm_directory_view_confirm_multiple_windows (FMDirectoryView *view, int count)
 	GtkDialog *dialog;
 	char *prompt;
 	char *title;
+	char *detail;
 	int response;
 
 	if (count <= SILENT_WINDOW_OPEN_LIMIT) {
 		return TRUE;
 	}
 
-	prompt = g_strdup_printf (_("This will open %d separate windows. "
-				    "Are you sure you want to do this?"), count);
 	title = g_strdup_printf (_("Open %d Windows?"), count);
-	dialog = eel_show_yes_no_dialog (prompt, title, 
+	prompt = _("Are you sure you want to open all files?");
+	detail = g_strdup_printf (_("This will open %d separate windows."), count);
+	dialog = eel_show_yes_no_dialog (prompt, detail, title, 
 					 GTK_STOCK_OK, GTK_STOCK_CANCEL,
 					 fm_directory_view_get_containing_window (view));
-	g_free (prompt);
+	g_free (detail);
 	g_free (title);
 
 	response = gtk_dialog_run (dialog);
@@ -843,6 +844,7 @@ confirm_delete_directly (FMDirectoryView *view,
 
 	dialog = eel_show_yes_no_dialog
 		(prompt,
+		 _("If you delete an item, it is permanently lost."), 
 		 _("Delete?"), GTK_STOCK_DELETE, GTK_STOCK_CANCEL,
 		 fm_directory_view_get_containing_window (view));
 
@@ -1804,14 +1806,14 @@ real_file_limit_reached (FMDirectoryView *view)
 	 * no more than the constant limit are displayed.
 	 */
 	message = g_strdup_printf (_("The folder \"%s\" contains more files than "
-			             "Nautilus can handle. Some files will not be "
-			             "displayed."), 
+			             "Nautilus can handle."), 
 			           directory_name);
 	g_free (directory_name);
 
 	dialog = eel_show_warning_dialog (message,
-					       _("Too Many Files"),
-					       fm_directory_view_get_containing_window (view));
+					  _("Some files will not be displayed."),
+					  _("Too Many Files"),
+					  fm_directory_view_get_containing_window (view));
 	g_free (message);
 }
 
@@ -3043,6 +3045,7 @@ fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean
 {
 	GtkDialog *dialog;
 	char *prompt;
+	char *detail;
 	int uri_count;
 	char *file_name;
 	int response;
@@ -3054,28 +3057,25 @@ fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean
 	
 	if (uri_count == 1) {
 		file_name = file_name_from_uri ((char *) uris->data);
-
-		prompt = g_strdup_printf (_("\"%s\" cannot be moved to the Trash. Do "
-					    "you want to delete it immediately?"), file_name);
+		prompt = _("Cannot move file to trash, do you want to delete immediately?");
+		detail = g_strdup_printf (_("The file \"%s\" cannot be moved to the trash."), file_name);
 		g_free (file_name);
 	} else {
 		if (all) {
-			prompt = g_strdup_printf (_("The %d selected items cannot be moved "
-						    "to the Trash. Do you want to delete them "
-						    "immediately?"), uri_count);
+			prompt = _("Cannot move items to trash, do you want to delete them immediately?");
+			detail = g_strdup_printf ("None of the %d selected items can be moved to the Trash", uri_count);
 		} else {
-			prompt = g_strdup_printf (_("%d of the selected items cannot be moved "
-						    "to the Trash. Do you want to delete those "
-						    "%d items immediately?"), uri_count, uri_count);
+			prompt = _("Cannot move some items to trash, do you want to delete these immediately?");
+			detail = g_strdup_printf ("%d of the selected items cannot be moved to the Trash", uri_count);
 		}
 	}
 
 	dialog = eel_show_yes_no_dialog
 		(prompt,
-		 _("Delete Immediately?"), GTK_STOCK_DELETE, GTK_STOCK_CANCEL,
+		 detail, _("Delete Immediately?"), GTK_STOCK_DELETE, GTK_STOCK_CANCEL,
 		 fm_directory_view_get_containing_window (view));
 	
-	g_free (prompt);
+	g_free (detail);
 
 	response = gtk_dialog_run (dialog);
 	gtk_object_destroy (GTK_OBJECT (dialog));
@@ -3105,15 +3105,15 @@ confirm_delete_from_trash (FMDirectoryView *view, GList *uris)
 	if (uri_count == 1) {
 		file_name = file_name_from_uri ((char *) uris->data);
 		prompt = g_strdup_printf (_("Are you sure you want to permanently delete \"%s\" "
-					    "from the Trash?"), file_name);
+					    "from the trash?"), file_name);
 		g_free (file_name);
 	} else {
 		prompt = g_strdup_printf (_("Are you sure you want to permanently delete "
-		  			    "the %d selected items from the Trash?"), uri_count);
+		  			    "the %d selected items from the trash?"), uri_count);
 	}
 
 	dialog = eel_show_yes_no_dialog (
-		prompt,
+		prompt, _("If you delete an item, it will be permanently lost."), 
 		_("Delete From Trash?"), GTK_STOCK_DELETE, GTK_STOCK_CANCEL,
 		fm_directory_view_get_containing_window (view));
 
@@ -4377,7 +4377,8 @@ open_scripts_folder_callback (BonoboUIComponent *component,
 	
 	eel_show_info_dialog_with_details 
 		(_("All executable files in this folder will appear in the "
-		   "Scripts menu. Choosing a script from the menu will run "
+		   "Scripts menu."),
+		 _("Choosing a script from the menu will run "
 		   "that script with any selected items as input."), 
 		 _("About Scripts"),
 		 _("All executable files in this folder will appear in the "
@@ -4705,7 +4706,8 @@ drive_mounted_callback (gboolean succeeded,
 			gpointer data)
 {
 	if (!succeeded) {
-		eel_show_error_dialog_with_details (error, _("Mount Error"), detailed_error, NULL);
+		eel_show_error_dialog_with_details (error, NULL,
+						    _("Mount Error"), detailed_error, NULL);
 	}
 }
 
@@ -4766,9 +4768,11 @@ volume_or_drive_unmounted_callback (gboolean succeeded,
 	eject = GPOINTER_TO_INT (data);
 	if (!succeeded) {
 		if (eject) {
-			eel_show_error_dialog_with_details (error, _("Unmount Error"), detailed_error, NULL);
+			eel_show_error_dialog_with_details (error, NULL, 
+			                                    _("Unmount Error"), detailed_error, NULL);
 		} else {
-			eel_show_error_dialog_with_details (error, _("Eject Error"), detailed_error, NULL);
+			eel_show_error_dialog_with_details (error, NULL, 
+			                                    _("Eject Error"), detailed_error, NULL);
 		}
 	}
 }
@@ -5378,6 +5382,7 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 {
 	char *target_path;
 	char *prompt;
+	char *detail;
 	GtkDialog *dialog;
 	GList file_as_list;
 	int response;
@@ -5385,17 +5390,16 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 	g_assert (nautilus_file_is_broken_symbolic_link (file));
 
 	target_path = nautilus_file_get_symbolic_link_target_path (file);
+	prompt = _("The link is borken, do you want to move it to the Trash?");
 	if (target_path == NULL) {
-		prompt = g_strdup_printf (_("This link can't be used, because it has no target. "
-					    "Do you want to move this link to the Trash?"));
+		detail = g_strdup (_("This link can't be used, because it has no target."));
 	} else {
-		prompt = g_strdup_printf (_("This link can't be used, because its target \"%s\" doesn't exist. "
-				 	    "Do you want to move this link to the Trash?"),
-					  target_path);
+		detail = g_strdup_printf (_("This link can't be used, because its target "
+					    "\"%s\" doesn't exist."), target_path);
 	}
 
 	dialog = eel_show_yes_no_dialog (prompt,
-					 _("Broken Link"), _("Mo_ve to Trash"), GTK_STOCK_CANCEL,
+					 detail, _("Broken Link"), _("Mo_ve to Trash"), GTK_STOCK_CANCEL,
 					 fm_directory_view_get_containing_window (view));
 
 	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_YES);
@@ -5420,7 +5424,7 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 	}
 
 	g_free (target_path);
-	g_free (prompt);
+	g_free (detail);
 }
 
 static ActivationAction
@@ -5429,6 +5433,7 @@ get_executable_text_file_action (FMDirectoryView *view, NautilusFile *file)
 	GtkDialog *dialog;
 	char *file_name;
 	char *prompt;
+	char *detail;
 	int preferences_value;
 	int response;
 
@@ -5452,21 +5457,25 @@ get_executable_text_file_action (FMDirectoryView *view, NautilusFile *file)
 
 
 	file_name = nautilus_file_get_display_name (file);
-	prompt = g_strdup_printf (_("\"%s\" is an executable text file. "
-				    "Do you want to run it, or display its contents?"),
-				  file_name);
+	prompt = g_strdup_printf (_("Do you want to run \"%s\", or display its contents?"), 
+	                            file_name);
+	detail = g_strdup_printf (_("\"%s\" is an executable text file."),
+				    file_name);
 	g_free (file_name);
 
 	dialog = eel_create_question_dialog (prompt,
+					     detail,
 					     _("Run or Display?"),
-					     _("_Display"), RESPONSE_DISPLAY,
 					     _("Run in _Terminal"), RESPONSE_RUN_IN_TERMINAL,
+     					     _("_Display"), RESPONSE_DISPLAY,
 					     fm_directory_view_get_containing_window (view));
 	gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
 	gtk_dialog_add_button (dialog, _("_Run"), RESPONSE_RUN);
+	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_CANCEL);
 	gtk_widget_show (GTK_WIDGET (dialog));
 	
 	g_free (prompt);
+	g_free (detail);
 
 	response = gtk_dialog_run (dialog);
 	gtk_object_destroy (GTK_OBJECT (dialog));
@@ -5591,7 +5600,10 @@ activation_drive_mounted_callback (gboolean succeeded,
 	} else {
 		if (!parameters->cancelled) {
 			eel_timed_wait_stop (cancel_activate_callback, parameters);
-			eel_show_error_dialog_with_details (error, _("Mount Error"), detailed_error, NULL);
+			eel_show_error_dialog_with_details (error, NULL,
+							    _("Mount Error"),
+			                                    detailed_error, 
+							    NULL);
 		}
 		
 		nautilus_file_unref (parameters->file);
@@ -5722,7 +5734,7 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 	parameters->cancelled = FALSE;
 
 	file_name = nautilus_file_get_display_name (file);
-	timed_wait_prompt = g_strdup_printf (_("Opening \"%s\""), file_name);
+	timed_wait_prompt = g_strdup_printf (_("Opening \"%s\"."), file_name);
 	g_free (file_name);
 	
 	eel_timed_wait_start
