@@ -241,6 +241,12 @@ nautilus_directory_background_write_desktop_settings (char *color, char *image, 
 
 	int wallpaper_align;
 
+	int i;
+	int wallpaper_count;
+	char *wallpaper_path_i;
+	char *wallpaper_config_path_i;
+	gboolean found_wallpaper;
+
 	if (color != NULL) {
 		start_color = nautilus_gradient_get_start_color_spec (color);
 		gnome_config_set_string ("/Background/Default/color1", start_color);		
@@ -258,7 +264,6 @@ nautilus_directory_background_write_desktop_settings (char *color, char *image, 
 	if (image != NULL) {
 		image_local_path = gnome_vfs_get_local_path_from_uri (image);
 		gnome_config_set_string ("/Background/Default/wallpaper", image_local_path);
-		g_free (image_local_path);
 		switch (placement) {
 			case NAUTILUS_BACKGROUND_TILED:
 				wallpaper_align = WALLPAPER_TILED;
@@ -277,7 +282,31 @@ nautilus_directory_background_write_desktop_settings (char *color, char *image, 
 				wallpaper_align = WALLPAPER_TILED;
 				break;	
 		}
+		
 		gnome_config_set_int ("/Background/Default/wallpaperAlign", wallpaper_align);
+
+		wallpaper_count = gnome_config_get_int ("/Background/Default/wallpapers=0");
+		found_wallpaper = FALSE;
+		for (i = 1; i <= wallpaper_count && !found_wallpaper; ++i) {
+			wallpaper_config_path_i = g_strdup_printf ("/Background/Default/wallpaper%d", i);
+			wallpaper_path_i = gnome_config_get_string (wallpaper_config_path_i);
+			g_free (wallpaper_config_path_i);
+			if (nautilus_strcmp (wallpaper_path_i, image_local_path) == 0) {
+				found_wallpaper = TRUE;
+			}
+			
+			g_free (wallpaper_path_i);			
+		}
+
+		if (!found_wallpaper) {
+			gnome_config_set_int ("/Background/Default/wallpapers", wallpaper_count + 1);
+			gnome_config_set_string ("/Background/Default/wallpapers_dir", image_local_path);
+			wallpaper_config_path_i = g_strdup_printf ("/Background/Default/wallpaper%d", wallpaper_count + 1);
+			gnome_config_set_string (wallpaper_config_path_i, image_local_path);
+			g_free (wallpaper_config_path_i);
+		}
+		
+		g_free (image_local_path);		
 	} else {
 		gnome_config_set_string ("/Background/Default/wallpaper", "none");
 	}
