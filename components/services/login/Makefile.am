@@ -1,1 +1,1 @@
-SUBDIRS = idl lib nautilus-view service
+SUBDIRS = idl lib nautilus-view
