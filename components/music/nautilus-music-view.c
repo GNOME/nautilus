@@ -384,7 +384,7 @@ nautilus_music_view_destroy (GtkObject *object)
         detach_file (music_view);
 	g_free (music_view->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* utility to return the text describing a song */

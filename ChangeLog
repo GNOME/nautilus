@@ -1,3 +1,306 @@
+2001-02-22  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix bug 6859 (GTK signal macros don't work in non-GCC compilers
+	for void return types).
+
+	* libnautilus-extensions/nautilus-gtk-macros.h:
+	Replaced old macros that accidentally relied on gccisms with
+	new ones that are portable to other compilers.
+
+		NAUTILUS_CALL_PARENT_CLASS is replaced by
+			NAUTILUS_CALL_PARENT
+		    and NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE.
+
+		NAUTILUS_CALL_VIRTUAL is replaced by
+			NAUTILUS_CALL_METHOD
+		    and NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+
+	* components/adapter/nautilus-adapter-control-embed-strategy.c:
+	(nautilus_adapter_control_embed_strategy_destroy):
+	* components/adapter/nautilus-adapter-embed-strategy.c:
+	(nautilus_adapter_embed_strategy_destroy),
+	(nautilus_adapter_embed_strategy_get_widget),
+	(nautilus_adapter_embed_strategy_get_zoomable):
+	* components/adapter/nautilus-adapter-embeddable-embed-strategy.c:
+	(nautilus_adapter_embeddable_embed_strategy_destroy):
+	* components/adapter/nautilus-adapter-factory-server.c:
+	(nautilus_adapter_factory_server_destroy):
+	* components/adapter/nautilus-adapter-file-load-strategy.c:
+	(nautilus_adapter_file_load_strategy_destroy):
+	* components/adapter/nautilus-adapter-load-strategy.c:
+	(nautilus_adapter_load_strategy_destroy),
+	(nautilus_adapter_load_strategy_load_location),
+	(nautilus_adapter_load_strategy_stop_loading):
+	* components/adapter/nautilus-adapter-progressive-load-strategy.c:
+	(nautilus_adapter_progressive_load_strategy_destroy):
+	* components/adapter/nautilus-adapter-stream-load-strategy.c:
+	(nautilus_adapter_stream_load_strategy_destroy):
+	* components/adapter/nautilus-adapter.c:
+	(nautilus_adapter_destroy):
+	* components/hardware/nautilus-hardware-view.c:
+	(nautilus_hardware_view_destroy):
+	* components/history/nautilus-history-view.c:
+	(nautilus_history_view_destroy):
+	* components/loser/content/nautilus-content-loser.c:
+	(nautilus_content_loser_destroy):
+	* components/loser/sidebar/nautilus-sidebar-loser.c:
+	(nautilus_sidebar_loser_destroy):
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_destroy):
+	* components/rpmview/nautilus-rpm-verify-window.c:
+	(nautilus_rpm_verify_window_destroy):
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_destroy):
+	* components/sample/nautilus-sample-content-view.c:
+	(nautilus_sample_content_view_destroy):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_view_destroy),
+	(nautilus_service_install_view_finalize):
+	* components/services/inventory-view/nautilus-inventory-config-page
+	.c: (nautilus_inventory_config_page_destroy):
+	* components/services/inventory-view/nautilus-inventory-view.c:
+	(nautilus_inventory_view_destroy):
+	* components/services/login/nautilus-view/nautilus-change-password-
+	view.c: (nautilus_change_password_view_destroy):
+	* components/services/nautilus-dependent-shared/eazel-services-foot
+	er.c: (footer_destroy):
+	* components/services/nautilus-dependent-shared/eazel-services-head
+	er.c: (header_destroy):
+	* components/services/summary/nautilus-summary-view.c:
+	(nautilus_summary_view_destroy):
+	* components/services/time/nautilus-view/trilobite-eazel-time-view.
+	c: (trilobite_eazel_time_view_destroy):
+	* components/text/nautilus-text-view.c:
+	(nautilus_text_view_destroy):
+	* components/throbber/nautilus-throbber.c:
+	(nautilus_throbber_destroy), (nautilus_throbber_map),
+	(nautilus_throbber_size_allocate):
+	* components/tree/nautilus-tree-change-queue.c:
+	(nautilus_tree_change_queue_destroy):
+	* components/tree/nautilus-tree-expansion-state.c:
+	(nautilus_tree_expansion_state_destroy):
+	* components/tree/nautilus-tree-model.c:
+	(nautilus_tree_model_destroy):
+	* components/tree/nautilus-tree-node.c:
+	(nautilus_tree_node_destroy):
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_destroy):
+	* help/nautilus-quick-reference/.cvsignore:
+	* help/nautilus-quick-reference/C/.cvsignore:
+	* libnautilus-extensions/nautilus-background-canvas-group.c:
+	(nautilus_background_canvas_group_update),
+	(nautilus_background_canvas_group_draw),
+	(nautilus_background_canvas_group_render):
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_destroy):
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_destroy):
+	* libnautilus-extensions/nautilus-caption.c:
+	(nautilus_caption_destroy), (nautilus_font_picker_show_all):
+	* libnautilus-extensions/nautilus-clickable-image.c:
+	(nautilus_clickable_image_destroy),
+	(nautilus_clickable_image_realize),
+	(nautilus_clickable_image_expose_event):
+	* libnautilus-extensions/nautilus-debug-drawing.c:
+	(debug_pixbuf_viewer_destroy):
+	* libnautilus-extensions/nautilus-directory-metafile-monitor.c:
+	(destroy):
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_destroy),
+	(nautilus_directory_get_name_for_self_as_new_file),
+	(nautilus_directory_are_all_files_seen),
+	(nautilus_directory_contains_file),
+	(nautilus_directory_call_when_ready),
+	(nautilus_directory_cancel_callback),
+	(nautilus_directory_file_monitor_add),
+	(nautilus_directory_file_monitor_remove),
+	(nautilus_directory_force_reload),
+	(nautilus_directory_is_not_empty):
+	* libnautilus-extensions/nautilus-druid-page-eazel.c:
+	(nautilus_druid_page_eazel_destroy),
+	(nautilus_druid_page_eazel_finalize),
+	(nautilus_druid_page_eazel_size_allocate),
+	(nautilus_druid_page_eazel_size_request):
+	* libnautilus-extensions/nautilus-ellipsizing-label.c:
+	(real_size_request), (real_size_allocate), (real_style_set):
+	* libnautilus-extensions/nautilus-entry.c:
+	(nautilus_entry_destroy), (nautilus_entry_key_press),
+	(nautilus_entry_motion_notify), (nautilus_entry_set_selection),
+	(nautilus_entry_insert_text), (nautilus_entry_delete_text),
+	(nautilus_entry_selection_clear):
+	* libnautilus-extensions/nautilus-file.c: (destroy),
+	(nautilus_file_monitor_add), (nautilus_file_monitor_remove),
+	(nautilus_file_get_date), (nautilus_file_get_where_string),
+	(nautilus_file_get_directory_item_count),
+	(nautilus_file_get_deep_counts), (nautilus_file_get_file_type),
+	(nautilus_file_check_if_ready), (nautilus_file_call_when_ready),
+	(nautilus_file_cancel_call_when_ready):
+	* libnautilus-extensions/nautilus-font-factory.c: (destroy):
+	* libnautilus-extensions/nautilus-font-picker.c:
+	(nautilus_font_picker_destroy):
+	* libnautilus-extensions/nautilus-horizontal-splitter.c:
+	(nautilus_horizontal_splitter_destroy),
+	(nautilus_horizontal_splitter_button_press):
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_destroy),
+	(nautilus_icon_canvas_item_update):
+	* libnautilus-extensions/nautilus-icon-container.c: (destroy),
+	(size_allocate), (realize), (unrealize), (button_press_event),
+	(button_release_event), (motion_notify_event), (key_press_event):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_destroy):
+	* libnautilus-extensions/nautilus-image-table.c:
+	(nautilus_image_table_destroy),
+	(nautilus_image_table_expose_event),
+	(nautilus_image_table_realize), (nautilus_image_table_unrealize),
+	(nautilus_image_table_remove):
+	* libnautilus-extensions/nautilus-image.c:
+	(nautilus_image_destroy):
+	* libnautilus-extensions/nautilus-keep-last-vertical-box.c:
+	(nautilus_keep_last_vertical_box_size_allocate):
+	* libnautilus-extensions/nautilus-label.c:
+	(nautilus_label_destroy), (nautilus_label_size_request),
+	(nautilus_label_size_allocate), (label_paint_pixbuf_callback):
+	* libnautilus-extensions/nautilus-labeled-image.c:
+	(nautilus_labeled_image_destroy):
+	* libnautilus-extensions/nautilus-list-column-title.c:
+	(nautilus_list_column_title_finalize):
+	* libnautilus-extensions/nautilus-list.c: (nautilus_list_destroy),
+	(nautilus_list_button_press), (nautilus_list_button_release),
+	(nautilus_list_key_press), (nautilus_list_style_set),
+	(nautilus_list_realize), (nautilus_list_unrealize), (draw_rows),
+	(draw_all), (nautilus_list_draw), (nautilus_list_expose),
+	(nautilus_list_resize_column), (nautilus_list_set_cell_contents),
+	(set_list_cell), (nautilus_list_track_new_column_width),
+	(nautilus_list_motion), (nautilus_list_clear), (insert_row):
+	* libnautilus-extensions/nautilus-merged-directory.c:
+	(merged_destroy):
+	* libnautilus-extensions/nautilus-metafile-factory.c: (destroy):
+	* libnautilus-extensions/nautilus-metafile.c: (destroy):
+	* libnautilus-extensions/nautilus-preferences-box.c:
+	(nautilus_preferences_box_destroy):
+	* libnautilus-extensions/nautilus-preferences-pane.c:
+	(nautilus_preferences_pane_destroy):
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_scalable_font_destroy):
+	* libnautilus-extensions/nautilus-string-picker.c:
+	(nautilus_string_picker_destroy):
+	* libnautilus-extensions/nautilus-tabs.c: (nautilus_tabs_destroy):
+	* libnautilus-extensions/nautilus-text-caption.c:
+	(nautilus_text_caption_destroy):
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	(trash_destroy):
+	* libnautilus-extensions/nautilus-trash-file.c: (trash_destroy):
+	* libnautilus-extensions/nautilus-undo-context.c: (destroy):
+	* libnautilus-extensions/nautilus-undo-manager.c: (destroy):
+	* libnautilus-extensions/nautilus-vfs-directory.c: (vfs_destroy):
+	* libnautilus-extensions/nautilus-vfs-file.c: (vfs_destroy):
+	* libnautilus-extensions/nautilus-viewport.c:
+	(nautilus_viewport_destroy), (nautilus_viewport_realize):
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_destroy):
+	* libnautilus-extensions/nautilus-wrap-table.c:
+	(nautilus_wrap_table_destroy):
+	* libnautilus/nautilus-undo-transaction.c:
+	(nautilus_undo_transaction_destroy):
+	* libnautilus/nautilus-view.c: (nautilus_view_destroy):
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_destroy), (real_update_menus),
+	(real_merge_menus):
+	* src/file-manager/fm-directory-view.c:
+	(text_attribute_names_changed_callback),
+	(image_display_policy_changed_callback),
+	(directory_view_font_family_changed_callback),
+	(click_policy_changed_callback),
+	(smooth_graphics_mode_changed_callback),
+	(fm_directory_view_destroy),
+	(fm_directory_view_file_limit_reached),
+	(fm_directory_view_bump_zoom_level),
+	(fm_directory_view_zoom_to_level),
+	(fm_directory_view_restore_default_zoom_level),
+	(fm_directory_view_can_zoom_in), (fm_directory_view_can_zoom_out),
+	(fm_directory_view_get_background_widget),
+	(fm_directory_view_get_selection), (reveal_newly_added_folder),
+	(fm_directory_view_get_emblem_names_to_exclude),
+	(fm_directory_view_merge_menus), (fm_directory_view_select_all),
+	(fm_directory_view_set_selection),
+	(fm_directory_get_selected_icon_locations),
+	(fm_directory_view_reveal_selection),
+	(fm_directory_view_is_read_only), (fm_directory_view_is_empty),
+	(fm_directory_view_supports_creating_files),
+	(fm_directory_view_accepts_dragged_files),
+	(fm_directory_view_supports_properties),
+	(fm_directory_view_supports_zooming),
+	(fm_directory_view_update_menus):
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_destroy),
+	(fm_icon_view_clean_up), (fm_icon_view_get_directory_sort_by),
+	(fm_icon_view_set_directory_sort_by),
+	(fm_icon_view_get_directory_sort_reversed),
+	(fm_icon_view_set_directory_sort_reversed),
+	(fm_icon_view_get_directory_auto_layout),
+	(fm_icon_view_set_directory_auto_layout),
+	(fm_icon_view_get_directory_tighter_layout),
+	(fm_icon_view_set_directory_tighter_layout),
+	(fm_icon_view_supports_auto_layout),
+	(fm_icon_view_start_renaming_item), (fm_icon_view_merge_menus),
+	(fm_icon_view_update_menus):
+	* src/file-manager/fm-list-view.c: (fm_list_view_adding_file),
+	(fm_list_view_removing_file), (fm_list_view_file_still_belongs),
+	(get_number_of_columns), (get_link_column),
+	(get_default_sort_attribute), (get_column_specification):
+	* src/file-manager/fm-properties-window.c: (real_shutdown),
+	(real_destroy), (real_finalize):
+	* src/file-manager/fm-search-list-view.c: (real_destroy),
+	(real_add_file), (real_adding_file), (real_removing_file),
+	(real_merge_menus), (real_update_menus):
+	* src/nautilus-about.c: (nautilus_about_destroy):
+	* src/nautilus-application.c: (nautilus_application_destroy),
+	(nautilus_application_startup):
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_destroy):
+	* src/nautilus-desktop-window.c: (destroy), (realize):
+	* src/nautilus-location-bar.c: (destroy):
+	* src/nautilus-navigation-bar.c:
+	(nautilus_navigation_bar_get_location),
+	(nautilus_navigation_bar_set_location):
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_destroy):
+	* src/nautilus-search-bar-criterion.c:
+	(nautilus_search_bar_criterion_destroy):
+	* src/nautilus-shell.c: (destroy):
+	* src/nautilus-sidebar-tabs.c: (nautilus_sidebar_tabs_destroy),
+	(nautilus_sidebar_tabs_size_allocate):
+	* src/nautilus-sidebar-title.c: (nautilus_sidebar_title_destroy),
+	(nautilus_sidebar_title_size_allocate):
+	* src/nautilus-sidebar.c: (nautilus_sidebar_destroy),
+	(nautilus_sidebar_size_allocate), (nautilus_sidebar_realize):
+	* src/nautilus-simple-search-bar.c:
+	(nautilus_simple_search_bar_destroy):
+	* src/nautilus-switchable-navigation-bar.c:
+	(nautilus_switchable_navigation_bar_destroy):
+	* src/nautilus-switchable-search-bar.c:
+	(nautilus_switchable_search_bar_destroy):
+	* src/nautilus-theme-selector.c: (nautilus_theme_selector_destroy):
+	* src/nautilus-view-frame.c: (nautilus_view_frame_destroy),
+	(nautilus_view_frame_finalize), (nautilus_view_frame_map):
+	* src/nautilus-window.c: (nautilus_window_destroy),
+	(nautilus_window_realize), (nautilus_window_size_request),
+	(nautilus_window_add_current_location_to_history_list),
+	(nautilus_window_show):
+	* src/nautilus-zoom-control.c: (nautilus_zoom_control_destroy),
+	(nautilus_zoom_control_size_allocate):
+	Use the macros by their new names.
+	
+	* RENAMING: Updated for some name changes and name change ideas.
+	
+	* user-guide/C/.cvsignore:
+	* user-guide/C/html/.cvsignore:
+	* user-guide/C/img/.cvsignore:
+	* user-guide/C/sgml/.cvsignore:
+	Added missing cvsignores.
+
 2001-02-22  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/help/test-help-method.c: (main):

@@ -104,7 +104,7 @@ nautilus_service_install_view_destroy (GtkObject *object)
 		eazel_install_callback_unref (GTK_OBJECT (view->details->installer));
 	}
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -124,7 +124,7 @@ nautilus_service_install_view_finalize (GtkObject *object)
 	g_free (view->details->username);
 	g_free (view->details);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, finalize, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, finalize, (object));
 }
 
 static void

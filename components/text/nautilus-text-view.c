@@ -254,7 +254,7 @@ nautilus_text_view_destroy (GtkObject *object)
 	 
 	g_free (text_view->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* here's a callback for the async close, which does nothing */

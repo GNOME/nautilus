@@ -147,7 +147,7 @@ nautilus_background_canvas_group_update (GnomeCanvasItem *item,
 				      GTK_WIDGET (item->canvas)->allocation.width,
 				      GTK_WIDGET (item->canvas)->allocation.height);
 
-	NAUTILUS_CALL_PARENT_CLASS (GNOME_CANVAS_ITEM_CLASS, update, (item, affine, clip_path, flags));				     
+	NAUTILUS_CALL_PARENT (GNOME_CANVAS_ITEM_CLASS, update, (item, affine, clip_path, flags));				     
 }
 
 static void
@@ -193,7 +193,7 @@ nautilus_background_canvas_group_draw (GnomeCanvasItem *item,
 	/* Call through to the GnomeCanvasGroup implementation, which
 	 * will draw all the canvas items.
 	 */
-	NAUTILUS_CALL_PARENT_CLASS (GNOME_CANVAS_ITEM_CLASS, draw, (item, drawable, x, y, width, height));				     
+	NAUTILUS_CALL_PARENT (GNOME_CANVAS_ITEM_CLASS, draw, (item, drawable, x, y, width, height));				     
 }
 
 
@@ -221,5 +221,5 @@ nautilus_background_canvas_group_render (GnomeCanvasItem *item, GnomeCanvasBuf *
 	/* Call through to the GnomeCanvasGroup implementation, which will draw all
 	 * the canvas items.
 	 */
-	NAUTILUS_CALL_PARENT_CLASS (GNOME_CANVAS_ITEM_CLASS, render, (item, buffer));
+	NAUTILUS_CALL_PARENT (GNOME_CANVAS_ITEM_CLASS, render, (item, buffer));
 }

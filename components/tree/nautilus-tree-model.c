@@ -181,7 +181,7 @@ nautilus_tree_model_destroy (GtkObject *object)
 
 	g_free (model->details);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 

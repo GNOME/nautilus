@@ -291,7 +291,7 @@ trash_destroy (GtkObject *object)
 	g_hash_table_destroy (trash->details->volumes);
 	g_free (trash->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static char *

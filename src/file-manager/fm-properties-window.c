@@ -2324,7 +2324,7 @@ real_shutdown (GtkObject *object)
 	gtk_signal_disconnect (GTK_OBJECT (window->details->target_file), 
 			       window->details->file_changed_handler_id);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, shutdown, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, shutdown, (object));
 }
 
 static void
@@ -2353,7 +2353,7 @@ real_destroy (GtkObject *object)
 	/* Note that file_changed_handler_id is disconnected in shutdown,
 	 * and details are freed in finalize 
 	 */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -2367,7 +2367,7 @@ real_finalize (GtkObject *object)
 	g_free (window->details->pending_name);
 	g_free (window->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, finalize, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, finalize, (object));
 }
 
 /* icon selection callback to set the image of the file object to the selected file */

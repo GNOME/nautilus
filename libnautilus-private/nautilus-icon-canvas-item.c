@@ -319,7 +319,7 @@ nautilus_icon_canvas_item_destroy (GtkObject *object)
 	
 	g_free (details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
  
 /* Currently we require pixbufs in this format (for hit testing).
@@ -634,8 +634,8 @@ nautilus_icon_canvas_item_update (GnomeCanvasItem *item,
 {
 	nautilus_icon_canvas_item_update_bounds (NAUTILUS_ICON_CANVAS_ITEM (item));
 	nautilus_gnome_canvas_item_request_redraw (item);
-	NAUTILUS_CALL_PARENT_CLASS (GNOME_CANVAS_ITEM_CLASS, update,
-				    (item, affine, clip_path, flags));
+	NAUTILUS_CALL_PARENT (GNOME_CANVAS_ITEM_CLASS, update,
+			      (item, affine, clip_path, flags));
 }
 
 /* Rendering */

@@ -164,7 +164,7 @@ destroy (GtkObject *object)
 	g_hash_table_foreach (factory->fonts, free_one_hash_node, NULL);
 	g_hash_table_destroy (factory->fonts);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static FontHashNode *

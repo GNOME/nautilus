@@ -81,7 +81,7 @@ nautilus_tree_change_queue_destroy (GtkObject *object)
 					   NULL);
 	g_free (queue->details);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 

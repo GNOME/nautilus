@@ -587,7 +587,7 @@ nautilus_icon_factory_destroy (GtkObject *object)
         g_free (factory->theme_name);
         g_free (factory->default_theme_name);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static gboolean

@@ -107,7 +107,7 @@ destroy (GtkObject *object)
 	factory = NAUTILUS_METAFILE_FACTORY (object);
 	g_free (factory->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static NautilusMetafileFactory *

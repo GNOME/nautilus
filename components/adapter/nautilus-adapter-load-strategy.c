@@ -120,7 +120,7 @@ nautilus_adapter_load_strategy_destroy (GtkObject *object)
 
 	strategy = NAUTILUS_ADAPTER_LOAD_STRATEGY (object);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 
@@ -178,8 +178,8 @@ nautilus_adapter_load_strategy_load_location (NautilusAdapterLoadStrategy *strat
 {
 	g_return_if_fail (NAUTILUS_IS_ADAPTER_LOAD_STRATEGY (strategy));
 
-	NAUTILUS_CALL_VIRTUAL (NAUTILUS_ADAPTER_LOAD_STRATEGY_CLASS, strategy,
-			       load_location, (strategy, uri));
+	NAUTILUS_CALL_METHOD (NAUTILUS_ADAPTER_LOAD_STRATEGY_CLASS, strategy,
+			      load_location, (strategy, uri));
 }
 
 void
@@ -188,8 +188,8 @@ nautilus_adapter_load_strategy_stop_loading  (NautilusAdapterLoadStrategy *strat
 
 	g_return_if_fail (NAUTILUS_IS_ADAPTER_LOAD_STRATEGY (strategy));
 
-	NAUTILUS_CALL_VIRTUAL (NAUTILUS_ADAPTER_LOAD_STRATEGY_CLASS, strategy,
-			       stop_loading, (strategy));
+	NAUTILUS_CALL_METHOD (NAUTILUS_ADAPTER_LOAD_STRATEGY_CLASS, strategy,
+			      stop_loading, (strategy));
 }
 
 

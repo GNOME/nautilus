@@ -121,7 +121,7 @@ nautilus_adapter_factory_server_initialize (NautilusAdapterFactoryServer *server
 static void
 nautilus_adapter_factory_server_destroy (GtkObject *object)
 {
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void

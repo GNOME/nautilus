@@ -94,7 +94,7 @@ nautilus_horizontal_splitter_initialize (NautilusHorizontalSplitter *horizontal_
 
 /* GtkObjectClass methods */
 static void
-nautilus_horizontal_splitter_destroy(GtkObject *object)
+nautilus_horizontal_splitter_destroy (GtkObject *object)
 {
 	NautilusHorizontalSplitter *horizontal_splitter;
 	
@@ -103,7 +103,7 @@ nautilus_horizontal_splitter_destroy(GtkObject *object)
 	g_free (horizontal_splitter->details);
 	
 	/* Chain */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -340,7 +340,8 @@ nautilus_horizontal_splitter_button_press (GtkWidget *widget, GdkEventButton *ev
 		splitter->details->down_time = event->time;
 	}
 
-	return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_press_event, (widget, event));
+	return NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+		(GTK_WIDGET_CLASS, button_press_event, (widget, event));
 }
 
 

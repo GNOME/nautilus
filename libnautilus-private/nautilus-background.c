@@ -200,7 +200,7 @@ nautilus_background_destroy (GtkObject *object)
 	nautilus_background_remove_current_image (background);
 	g_free (background->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* handle the combine mode getting and setting */

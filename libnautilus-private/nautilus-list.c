@@ -636,7 +636,7 @@ nautilus_list_destroy (GtkObject *object)
 
 	unschedule_keyboard_row_reveal (list);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 
 	unref_gcs (list);
 
@@ -949,7 +949,8 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 	nautilus_list_flush_typeselect_state (list);
 
 	if (event->window != clist->clist_window)
-		return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_press_event, (widget, event));
+		return NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+			(GTK_WIDGET_CLASS, button_press_event, (widget, event));
 
 	on_row = nautilus_clist_get_selection_info (clist, event->x, event->y, &row_index, &column_index);
 	list->details->button_down_time = event->time;
@@ -1058,7 +1059,8 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 	retval = FALSE;
 
 	if (event->window != clist->clist_window)
-		return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_release_event, (widget, event));
+		return NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+			(GTK_WIDGET_CLASS, button_release_event, (widget, event));
 
 	on_row = nautilus_clist_get_selection_info (clist, event->x, event->y, &row_index, &column_index);
 
@@ -1521,7 +1523,8 @@ nautilus_list_key_press (GtkWidget *widget,
 			return TRUE;
 		}
 
-		return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, key_press_event, (widget, event));
+		return NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+			(GTK_WIDGET_CLASS, key_press_event, (widget, event));
 	}
 
 	return TRUE;
@@ -1692,7 +1695,7 @@ nautilus_list_style_set (GtkWidget *widget, GtkStyle *previous_style)
 
 	list = NAUTILUS_LIST (widget);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, style_set, (widget, previous_style));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, style_set, (widget, previous_style));
 
 	if (GTK_WIDGET_REALIZED (widget)) {
 		make_gcs_and_colors (list);
@@ -1713,7 +1716,7 @@ nautilus_list_realize (GtkWidget *widget)
 
 	clist->column[0].button = list->details->title;
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
 
 	make_gcs_and_colors (list);
 
@@ -1741,7 +1744,7 @@ nautilus_list_unrealize (GtkWidget *widget)
 	/* unref all the gcs we've created */
 	unref_gcs (NAUTILUS_LIST (widget));
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, unrealize, (widget));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, unrealize, (widget));
 }
 
 /* this is here just temporarily */
@@ -2676,8 +2679,8 @@ draw_rows (NautilusCList *clist, GdkRectangle *area)
 			break;
 		}
 
-		NAUTILUS_CALL_VIRTUAL (NAUTILUS_CLIST_CLASS, clist, 
-			draw_row, (clist, area, row_index, list->data));
+		NAUTILUS_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, 
+				      draw_row, (clist, area, row_index, list->data));
 		list = list->next;
 	}
 
@@ -2693,7 +2696,7 @@ draw_all (NautilusCList *clist)
 	area.y = 0;
 	area.width = clist->clist_window_width;
 	area.height = clist->clist_window_height;
-	NAUTILUS_CALL_VIRTUAL (NAUTILUS_CLIST_CLASS, clist, draw_rows, (clist, &area));
+	NAUTILUS_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, draw_rows, (clist, &area));
 }
 
 static void
@@ -2727,7 +2730,7 @@ nautilus_list_draw (GtkWidget *widget, GdkRectangle *area)
 					(2 * widget->style->klass->ythickness) +
 				clist->column_title_area.height);
 
-		NAUTILUS_CALL_VIRTUAL (NAUTILUS_CLIST_CLASS, clist, draw_rows, (clist, area));
+		NAUTILUS_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, draw_rows, (clist, area));
 
 		/* Draw the title if it exists */
 		if (list->details->title) {
@@ -2763,8 +2766,8 @@ nautilus_list_expose (GtkWidget *widget, GdkEventExpose *event)
 					(2 * widget->style->klass->ythickness) +
 				clist->column_title_area.height);
 
-		NAUTILUS_CALL_VIRTUAL (NAUTILUS_CLIST_CLASS, clist, draw_rows, 
-			(clist, &event->area));
+		NAUTILUS_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, draw_rows, 
+				      (clist, &event->area));
 	}
 
 	return FALSE;
@@ -2780,7 +2783,7 @@ nautilus_list_resize_column (NautilusCList *clist, int column_index, int width)
 
 	gtk_widget_queue_draw (list->details->title);
 		
-	NAUTILUS_CALL_PARENT_CLASS (NAUTILUS_CLIST_CLASS, resize_column, (clist, column_index, width));
+	NAUTILUS_CALL_PARENT (NAUTILUS_CLIST_CLASS, resize_column, (clist, column_index, width));
 }
 
 
@@ -2856,7 +2859,8 @@ nautilus_list_set_cell_contents (NautilusCList    *clist,
 		row->cell[column_index].type = NAUTILUS_CELL_TEXT;
 	}
 
-	NAUTILUS_CALL_PARENT_CLASS (NAUTILUS_CLIST_CLASS, set_cell_contents, (clist, row, column_index, type, text, spacing, pixmap, mask));
+	NAUTILUS_CALL_PARENT (NAUTILUS_CLIST_CLASS, set_cell_contents,
+			      (clist, row, column_index, type, text, spacing, pixmap, mask));
 
 	if ((NautilusCellType)type == NAUTILUS_CELL_PIXBUF_LIST) {
 		row->cell[column_index].type = NAUTILUS_CELL_PIXBUF_LIST;
@@ -2898,14 +2902,14 @@ set_list_cell (NautilusList *list,
 	 * expected parameter type, we have to sneak it in by casting it into
 	 * one of the expected parameters.
 	 */
-	NAUTILUS_CALL_VIRTUAL (NAUTILUS_CLIST_CLASS, clist, set_cell_contents, 
-		(clist, row, column_index, type, NULL, 0, (GdkPixmap *) data, NULL));
+	NAUTILUS_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, set_cell_contents, 
+			      (clist, row, column_index, type, NULL, 0, (GdkPixmap *) data, NULL));
 
 	/* redraw the list if it's not frozen */
 	if (CLIST_UNFROZEN (clist) 
-		&& nautilus_clist_row_is_visible (clist, row_index) != GTK_VISIBILITY_NONE) {
-		NAUTILUS_CALL_VIRTUAL (NAUTILUS_CLIST_CLASS, clist, draw_row, 
-			(clist, NULL, row_index, row));
+	    && nautilus_clist_row_is_visible (clist, row_index) != GTK_VISIBILITY_NONE) {
+		NAUTILUS_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, draw_row, 
+				      (clist, NULL, row_index, row));
 	}
 }
 
@@ -3031,7 +3035,7 @@ nautilus_list_track_new_column_width (NautilusCList *clist, int column_index, in
 		area.x = clist->column[column_index].area.x;
 		area.height += clist->clist_window_height;
 
-		NAUTILUS_CALL_VIRTUAL (NAUTILUS_CLIST_CLASS, clist, draw_rows, (clist, &area));
+		NAUTILUS_CALL_METHOD (NAUTILUS_CLIST_CLASS, clist, draw_rows, (clist, &area));
 	}
 }
 
@@ -3094,7 +3098,8 @@ nautilus_list_motion (GtkWidget *widget, GdkEventMotion *event)
 	clist = NAUTILUS_CLIST (widget);
 
 	if (event->window != clist->clist_window) {
-		return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, motion_notify_event, (widget, event));
+		return NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+			(GTK_WIDGET_CLASS, motion_notify_event, (widget, event));
 	}
 	
 	if (!((list->details->dnd_press_button == ACTION_BUTTON && (event->state & GDK_BUTTON1_MASK))
@@ -3516,7 +3521,7 @@ nautilus_list_clear (NautilusCList *clist)
 	list = NAUTILUS_LIST (clist);
 	list->details->anchor_row = -1;
 
-	NAUTILUS_CALL_PARENT_CLASS (NAUTILUS_CLIST_CLASS, clear, (clist));
+	NAUTILUS_CALL_PARENT (NAUTILUS_CLIST_CLASS, clear, (clist));
 }
 
 
@@ -3703,7 +3708,7 @@ insert_row (NautilusCList *list, int row_index, char *text[])
 
 	had_focus = list->focus_row != -1;
 
-	result = NAUTILUS_CALL_PARENT_CLASS
+	result = NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
 		(NAUTILUS_CLIST_CLASS, insert_row, (list, row_index, text));
 
 	if (!had_focus) {

@@ -669,7 +669,7 @@ trash_destroy (GtkObject *object)
 
 	nautilus_directory_unref (NAUTILUS_DIRECTORY (trash_directory));
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void

@@ -749,7 +749,7 @@ nautilus_window_destroy (GtkObject *object)
 
 	g_free (window->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (GTK_OBJECT (window)));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (GTK_OBJECT (window)));
 }
 
 static void
@@ -812,7 +812,7 @@ nautilus_window_realize (GtkWidget *widget)
         GdkBitmap *mask;
         
         /* Create our GdkWindow */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
 
         /* Set the mini icon */
         filename = nautilus_pixmap_file ("nautilus-mini-logo.png");
@@ -846,7 +846,7 @@ nautilus_window_size_request (GtkWidget		*widget,
 	g_return_if_fail (NAUTILUS_IS_WINDOW (widget));
 	g_return_if_fail (requisition != NULL);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_request, (widget, requisition));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_request, (widget, requisition));
 
 	/* Limit the requisition to be within 90% of the available screen 
 	 * real state.
@@ -1363,8 +1363,8 @@ nautilus_window_add_current_location_to_history_list (NautilusWindow *window)
 {
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	NAUTILUS_CALL_VIRTUAL (NAUTILUS_WINDOW_CLASS, window,
-			       add_current_location_to_history_list, (window));
+	NAUTILUS_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			      add_current_location_to_history_list, (window));
 }
 
 void
@@ -1726,7 +1726,7 @@ nautilus_window_show (GtkWidget *widget)
 
 	window = NAUTILUS_WINDOW (widget);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, show, (widget));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, show, (widget));
 	
 	/* Initially show or hide views based on preferences; once the window is displayed
 	 * these can be controlled on a per-window basis from View menu items. 

@@ -233,7 +233,7 @@ nautilus_tabs_destroy (GtkObject *object)
 					  NULL);
 	g_free (tabs->details);
   	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* unload the tab piece images, if any */

@@ -556,7 +556,7 @@ nautilus_change_password_view_destroy (GtkObject *object)
 
 	CORBA_exception_free (&ev);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 NautilusView *

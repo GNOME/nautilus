@@ -122,7 +122,7 @@ nautilus_viewport_destroy (GtkObject *object)
 	g_free (viewport->details);
 
 	/* Chain destroy */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* GtkWidgetClass methods */
@@ -237,7 +237,7 @@ nautilus_viewport_realize (GtkWidget *widget)
 	nautilus_viewport = NAUTILUS_VIEWPORT (widget);
 
 	/* GtkViewport does the actual realization */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
 
  	gdk_window_set_static_gravities (GTK_VIEWPORT (nautilus_viewport)->bin_window,
 					 nautilus_viewport_get_is_smooth (nautilus_viewport));

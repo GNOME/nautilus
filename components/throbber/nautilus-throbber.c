@@ -202,7 +202,7 @@ nautilus_throbber_destroy (GtkObject *object)
 	
 	g_free (throbber->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 BonoboObject*
@@ -409,7 +409,7 @@ nautilus_throbber_map (GtkWidget *widget)
 	
 	throbber = NAUTILUS_THROBBER (widget);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, map, (widget));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, map, (widget));
 	throbber->details->ready = TRUE;
 }
 
@@ -617,7 +617,7 @@ nautilus_throbber_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 	int throbber_width, throbber_height;
 	NautilusThrobber *throbber = NAUTILUS_THROBBER (widget);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 
 	get_throbber_dimensions (throbber, &throbber_width, &throbber_height);
 	

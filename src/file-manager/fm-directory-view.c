@@ -892,7 +892,7 @@ text_attribute_names_changed_callback (gpointer callback_data)
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 text_attribute_names_changed, (view));
 }
@@ -904,7 +904,7 @@ image_display_policy_changed_callback (gpointer callback_data)
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 image_display_policy_changed, (view));
 }
@@ -916,7 +916,7 @@ directory_view_font_family_changed_callback (gpointer callback_data)
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 font_family_changed, (view));
 }
@@ -928,7 +928,7 @@ click_policy_changed_callback (gpointer callback_data)
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 click_policy_changed, (view));
 }
@@ -940,7 +940,7 @@ smooth_graphics_mode_changed_callback (gpointer callback_data)
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 smooth_graphics_mode_changed, (view));
 }
@@ -1123,7 +1123,7 @@ fm_directory_view_destroy (GtkObject *object)
 
 	g_free (view->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /**
@@ -1365,7 +1365,7 @@ fm_directory_view_file_limit_reached (FMDirectoryView *view)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-	NAUTILUS_CALL_VIRTUAL (FM_DIRECTORY_VIEW_CLASS, view,
+	NAUTILUS_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view,
 		 	       file_limit_reached, (view));
 }
 
@@ -2101,7 +2101,7 @@ fm_directory_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
 		return;
 	}
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 bump_zoom_level, (view, zoom_increment));
 }
@@ -2121,7 +2121,7 @@ fm_directory_view_zoom_to_level (FMDirectoryView *view, int zoom_level)
 		return;
 	}
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 zoom_to_level, (view, zoom_level));
 }
@@ -2159,7 +2159,7 @@ fm_directory_view_restore_default_zoom_level (FMDirectoryView *view)
 		return;
 	}
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 restore_default_zoom_level, (view));
 }
@@ -2182,7 +2182,7 @@ fm_directory_view_can_zoom_in (FMDirectoryView *view)
 		return FALSE;
 	}
 
-	return NAUTILUS_CALL_VIRTUAL
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 can_zoom_in, (view));
 }
@@ -2205,7 +2205,7 @@ fm_directory_view_can_zoom_out (FMDirectoryView *view)
 		return FALSE;
 	}
 
-	return NAUTILUS_CALL_VIRTUAL
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 can_zoom_out, (view));
 }
@@ -2215,7 +2215,7 @@ fm_directory_view_get_background_widget (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
 
-	return NAUTILUS_CALL_VIRTUAL
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 get_background_widget, (view));
 }
@@ -2243,7 +2243,7 @@ fm_directory_view_get_selection (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
 
-	return NAUTILUS_CALL_VIRTUAL
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 get_selection, (view));
 }
@@ -2751,7 +2751,7 @@ reveal_newly_added_folder (FMDirectoryView *view, NautilusFile *new_file, char* 
 		/* no need to select because start_renaming_item selects
 		 * fm_directory_view_select_file (view, new_file);
 		 */
-		NAUTILUS_CALL_VIRTUAL (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_item, (view, target_uri));
+		NAUTILUS_CALL_METHOD (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_item, (view, target_uri));
 		fm_directory_view_reveal_selection (view);
 	}
 }
@@ -3943,7 +3943,7 @@ fm_directory_view_get_emblem_names_to_exclude (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
 
-	return NAUTILUS_CALL_VIRTUAL
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 get_emblem_names_to_exclude, (view));
 }
@@ -3972,7 +3972,7 @@ fm_directory_view_merge_menus (FMDirectoryView *view)
 	 */
 	view->details->menus_merged = TRUE;
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 merge_menus, (view));
 }
@@ -4032,7 +4032,7 @@ fm_directory_view_select_all (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 select_all, (view));
 }
@@ -4049,7 +4049,7 @@ fm_directory_view_set_selection (FMDirectoryView *view, GList *selection)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 set_selection, (view, selection));
 }
@@ -4075,7 +4075,7 @@ fm_directory_get_selected_icon_locations (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
 
-	return NAUTILUS_CALL_VIRTUAL
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 get_selected_icon_locations, (view));
 }
@@ -4090,7 +4090,7 @@ fm_directory_view_reveal_selection (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 reveal_selection, (view));
 }
@@ -4120,7 +4120,7 @@ fm_directory_view_is_read_only (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
-	return NAUTILUS_CALL_VIRTUAL
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 is_read_only, (view));
 }
@@ -4130,7 +4130,7 @@ fm_directory_view_is_empty (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
-	return NAUTILUS_CALL_VIRTUAL
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 is_empty, (view));
 }
@@ -4146,7 +4146,7 @@ fm_directory_view_supports_creating_files (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
-	return NAUTILUS_CALL_VIRTUAL
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 supports_creating_files, (view));
 }
@@ -4156,7 +4156,7 @@ fm_directory_view_accepts_dragged_files (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
-	return NAUTILUS_CALL_VIRTUAL
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 accepts_dragged_files, (view));
 }
@@ -4202,7 +4202,7 @@ fm_directory_view_supports_properties (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
-	return NAUTILUS_CALL_VIRTUAL
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 supports_properties, (view));
 }
@@ -4220,7 +4220,7 @@ fm_directory_view_supports_zooming (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
-	return NAUTILUS_CALL_VIRTUAL
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 supports_zooming, (view));
 }
@@ -4244,7 +4244,7 @@ fm_directory_view_update_menus (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 update_menus, (view));
 

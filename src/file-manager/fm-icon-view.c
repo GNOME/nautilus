@@ -232,7 +232,7 @@ fm_icon_view_destroy (GtkObject *object)
 	nautilus_file_list_free (icon_view->details->icons_not_positioned);
 	g_free (icon_view->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static NautilusIconContainer *
@@ -343,7 +343,7 @@ unstretch_icons_callback (BonoboUIComponent *component, gpointer callback_data, 
 static void
 fm_icon_view_clean_up (FMIconView *icon_view)
 {
-	NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view, clean_up, (icon_view));
+	NAUTILUS_CALL_METHOD (FM_ICON_VIEW_CLASS, icon_view, clean_up, (icon_view));
 }
 
 static void
@@ -562,8 +562,9 @@ fm_icon_view_get_directory_sort_by (FMIconView *icon_view,
 		return g_strdup ("name");
 	}
 
-	return NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
-				      get_directory_sort_by, (icon_view, file));
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_ICON_VIEW_CLASS, icon_view,
+		 get_directory_sort_by, (icon_view, file));
 }
 
 static char *
@@ -584,7 +585,7 @@ fm_icon_view_set_directory_sort_by (FMIconView *icon_view,
 		return;
 	}
 
-	NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
+	NAUTILUS_CALL_METHOD (FM_ICON_VIEW_CLASS, icon_view,
 			       set_directory_sort_by, (icon_view, file, sort_by));
 }
 
@@ -607,8 +608,9 @@ fm_icon_view_get_directory_sort_reversed (FMIconView *icon_view,
 		return FALSE;
 	}
 
-	return NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
-				      get_directory_sort_reversed, (icon_view, file));
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_ICON_VIEW_CLASS, icon_view,
+		 get_directory_sort_reversed, (icon_view, file));
 }
 
 static gboolean
@@ -628,7 +630,7 @@ fm_icon_view_set_directory_sort_reversed (FMIconView *icon_view,
 		return;
 	}
 
-	NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
+	NAUTILUS_CALL_METHOD (FM_ICON_VIEW_CLASS, icon_view,
 			       set_directory_sort_reversed,
 			       (icon_view, file, sort_reversed));
 }
@@ -653,8 +655,9 @@ fm_icon_view_get_directory_auto_layout (FMIconView *icon_view,
 		return FALSE;
 	}
 
-	return NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
-				      get_directory_auto_layout, (icon_view, file));
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_ICON_VIEW_CLASS, icon_view,
+		 get_directory_auto_layout, (icon_view, file));
 }
 
 static gboolean
@@ -674,7 +677,7 @@ fm_icon_view_set_directory_auto_layout (FMIconView *icon_view,
 		return;
 	}
 
-	NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
+	NAUTILUS_CALL_METHOD (FM_ICON_VIEW_CLASS, icon_view,
 			       set_directory_auto_layout, (icon_view, file, auto_layout));
 }
 
@@ -693,8 +696,9 @@ static gboolean
 fm_icon_view_get_directory_tighter_layout (FMIconView *icon_view,
 					   NautilusFile *file)
 {
-	return NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
-				      get_directory_tighter_layout, (icon_view, file));
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_ICON_VIEW_CLASS, icon_view,
+		 get_directory_tighter_layout, (icon_view, file));
 }
 
 static gboolean
@@ -710,7 +714,7 @@ fm_icon_view_set_directory_tighter_layout (FMIconView *icon_view,
 					   NautilusFile *file,
 					   gboolean tighter_layout)
 {
-	NAUTILUS_CALL_VIRTUAL (FM_ICON_VIEW_CLASS, icon_view,
+	NAUTILUS_CALL_METHOD (FM_ICON_VIEW_CLASS, icon_view,
 			       set_directory_tighter_layout, (icon_view, file, tighter_layout));
 }
 
@@ -729,7 +733,7 @@ fm_icon_view_supports_auto_layout (FMIconView *view)
 {
 	g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
 
-	return NAUTILUS_CALL_VIRTUAL
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_ICON_VIEW_CLASS, view,
 		 supports_auto_layout, (view));
 }
@@ -1119,7 +1123,7 @@ static void
 fm_icon_view_start_renaming_item  (FMDirectoryView *view, const char *uri)
 {
 	/* call parent class to make sure the right icon is selected */
-	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, start_renaming_item, (view, uri));
+	NAUTILUS_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, start_renaming_item, (view, uri));
 	/* start renaming */
 	nautilus_icon_container_start_renaming_selected_item
 		(get_icon_container (FM_ICON_VIEW (view)));
@@ -1153,7 +1157,7 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	
         g_assert (FM_IS_ICON_VIEW (view));
 
-	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
+	NAUTILUS_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
 
 	icon_view = FM_ICON_VIEW (view);
 
@@ -1203,7 +1207,7 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 		return;
 	}
 	
-	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
+	NAUTILUS_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
 
         selection = fm_directory_view_get_selection (view);
         selection_count = g_list_length (selection);

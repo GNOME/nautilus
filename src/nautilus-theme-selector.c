@@ -327,7 +327,7 @@ nautilus_theme_selector_destroy (GtkObject *object)
 	if (object == GTK_OBJECT (main_theme_selector))
 		main_theme_selector = NULL;
 		
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 
 }
 

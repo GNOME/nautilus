@@ -456,7 +456,7 @@ real_destroy (GtkObject *object)
 	}
 	g_free (search_view->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static int
@@ -648,7 +648,7 @@ real_add_file (FMDirectoryView *view, NautilusFile *file)
 		/* Tell the normal list-view code to add this file. It will add
 		 * and ref it only if it's not already in the list.
 		 */ 
-		NAUTILUS_CALL_PARENT_CLASS 
+		NAUTILUS_CALL_PARENT 
 			(FM_DIRECTORY_VIEW_CLASS, add_file, (view, real_file));
 	}
 
@@ -665,7 +665,7 @@ real_adding_file (FMListView *view, NautilusFile *file)
 	g_assert (FM_IS_SEARCH_LIST_VIEW (view));
 	g_assert (NAUTILUS_IS_FILE (file));
 
-	NAUTILUS_CALL_PARENT_CLASS (FM_LIST_VIEW_CLASS, adding_file, (view, file));
+	NAUTILUS_CALL_PARENT (FM_LIST_VIEW_CLASS, adding_file, (view, file));
 
 	/* FIXME bugzilla.eazel.com 5059: this implies that positioning, custom icon, icon
 	 * stretching, etc, will be based on the real directory the file is in,
@@ -699,7 +699,7 @@ real_removing_file (FMListView *view, NautilusFile *file)
 	nautilus_file_monitor_remove (file, view);
 	gtk_signal_disconnect_by_func 
 		(GTK_OBJECT (file), fm_directory_view_queue_file_change, view);
-	NAUTILUS_CALL_PARENT_CLASS (FM_LIST_VIEW_CLASS, removing_file, (view, file));
+	NAUTILUS_CALL_PARENT (FM_LIST_VIEW_CLASS, removing_file, (view, file));
 }
 
 static gboolean
@@ -762,7 +762,7 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB_END
 	};
 
-	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
+	NAUTILUS_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
 
 	search_view = FM_SEARCH_LIST_VIEW (view);
 
@@ -811,7 +811,7 @@ real_update_menus (FMDirectoryView *view)
 {
 	g_assert (FM_IS_SEARCH_LIST_VIEW (view));
 
-	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
+	NAUTILUS_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
 
 	update_reveal_item (FM_SEARCH_LIST_VIEW (view));
 }

@@ -259,7 +259,7 @@ nautilus_list_column_title_finalize (GtkObject *object)
 
 	g_free (column_title->details);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, finalize, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, finalize, (object));
 }
 
 static void

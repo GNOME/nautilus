@@ -287,7 +287,7 @@ nautilus_history_view_destroy (GtkObject *object)
 
 	gtk_clist_clear (view->list);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 int

@@ -208,7 +208,7 @@ nautilus_directory_destroy (GtkObject *object)
 
 	g_free (directory->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -460,7 +460,7 @@ nautilus_directory_get_name_for_self_as_new_file (NautilusDirectory *directory)
 {
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 	
-	return NAUTILUS_CALL_VIRTUAL
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 get_name_for_self_as_new_file, (directory));
 }
@@ -563,7 +563,7 @@ nautilus_directory_are_all_files_seen (NautilusDirectory *directory)
 {
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 	
-	return NAUTILUS_CALL_VIRTUAL
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 are_all_files_seen, (directory));
 }
@@ -1433,7 +1433,7 @@ nautilus_directory_contains_file (NautilusDirectory *directory,
 		return FALSE;
 	}
 
-	return NAUTILUS_CALL_VIRTUAL
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 contains_file, (directory, file));
 }
@@ -1474,7 +1474,7 @@ nautilus_directory_call_when_ready (NautilusDirectory *directory,
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (callback != NULL);
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 call_when_ready, (directory, file_attributes,
 				   callback, callback_data));
@@ -1489,7 +1489,7 @@ nautilus_directory_cancel_callback (NautilusDirectory *directory,
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (callback != NULL);
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 cancel_callback, (directory, callback, callback_data));
 }
@@ -1504,7 +1504,7 @@ nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (client != NULL);
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 file_monitor_add, (directory, client,
 				    monitor_hidden_files,
@@ -1519,7 +1519,7 @@ nautilus_directory_file_monitor_remove (NautilusDirectory *directory,
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (client != NULL);
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 file_monitor_remove, (directory, client));
 }
@@ -1529,7 +1529,7 @@ nautilus_directory_force_reload (NautilusDirectory *directory)
 {
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 force_reload, (directory));
 }
@@ -1539,7 +1539,7 @@ nautilus_directory_is_not_empty (NautilusDirectory *directory)
 {
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 
-	return NAUTILUS_CALL_VIRTUAL
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 is_not_empty, (directory));
 }

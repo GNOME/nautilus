@@ -156,7 +156,7 @@ nautilus_entry_destroy (GtkObject *object)
 
 	entry = NAUTILUS_ENTRY (object);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -223,9 +223,8 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 	
 	obscure_cursor (entry);
 
-	return_code = NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS,
-						  key_press_event,
-						  (widget, event));
+	return_code = NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+		(GTK_WIDGET_CLASS, key_press_event, (widget, event));
 	gtk_signal_emit (GTK_OBJECT (widget), signals[SELECTION_CHANGED]);
 
 	return return_code;
@@ -256,7 +255,8 @@ nautilus_entry_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 	old_start_pos = GTK_EDITABLE (widget)->selection_start_pos;
 	old_end_pos = GTK_EDITABLE (widget)->selection_end_pos;
 
-	return_code = NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, motion_notify_event, (widget, event));
+	return_code = NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+		(GTK_WIDGET_CLASS, motion_notify_event, (widget, event));
 	if (GTK_EDITABLE (widget)->selection_start_pos != old_start_pos ||
 	    GTK_EDITABLE (widget)->selection_end_pos != old_end_pos) {
 		gtk_signal_emit (GTK_OBJECT (widget), signals[SELECTION_CHANGED]);
@@ -340,8 +340,8 @@ nautilus_entry_set_selection (GtkEditable *editable,
 			      gint end_pos)
 {
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_EDITABLE_CLASS, set_selection,
-				    (editable, start_pos, end_pos));
+	NAUTILUS_CALL_PARENT (GTK_EDITABLE_CLASS, set_selection,
+			      (editable, start_pos, end_pos));
 	gtk_signal_emit (GTK_OBJECT (editable), signals[SELECTION_CHANGED]);
 }
 
@@ -358,8 +358,8 @@ nautilus_entry_insert_text (GtkEditable *editable, const gchar *text,
 		gtk_signal_emit (GTK_OBJECT (editable), signals[USER_CHANGED]);
 	}
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_EDITABLE_CLASS, insert_text, 
-				   (editable, text, length, position));
+	NAUTILUS_CALL_PARENT (GTK_EDITABLE_CLASS, insert_text, 
+			      (editable, text, length, position));
 	gtk_signal_emit (GTK_OBJECT (editable), signals[SELECTION_CHANGED]);
 
 }
@@ -378,8 +378,8 @@ nautilus_entry_delete_text (GtkEditable *editable, gint start_pos, gint end_pos)
 		gtk_signal_emit (GTK_OBJECT (editable), signals[USER_CHANGED]);
 	}
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_EDITABLE_CLASS, delete_text, 
-				   (editable, start_pos, end_pos));
+	NAUTILUS_CALL_PARENT (GTK_EDITABLE_CLASS, delete_text, 
+			      (editable, start_pos, end_pos));
 
 	gtk_signal_emit (GTK_OBJECT (editable), signals[SELECTION_CHANGED]);
 }
@@ -393,17 +393,15 @@ nautilus_entry_delete_text (GtkEditable *editable, gint start_pos, gint end_pos)
  * gtk+/gtkselection.c, gtk_selection_clear.
  */
 static gboolean
-nautilus_entry_selection_clear (GtkWidget         *widget,
+nautilus_entry_selection_clear (GtkWidget *widget,
 			        GdkEventSelection *event)
 {
-  g_return_val_if_fail (NAUTILUS_IS_ENTRY (widget), FALSE);
-  g_return_val_if_fail (event != NULL, FALSE);
-
-  if (gdk_selection_owner_get (event->selection) == widget->window) {
-	return FALSE;
-  }
-
-  return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, 
-  				     selection_clear_event, 
-				     (widget, event));
+	g_return_val_if_fail (NAUTILUS_IS_ENTRY (widget), FALSE);
+	
+	if (gdk_selection_owner_get (event->selection) == widget->window) {
+		return FALSE;
+	}
+	
+	return NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+		(GTK_WIDGET_CLASS, selection_clear_event, (widget, event));
 }

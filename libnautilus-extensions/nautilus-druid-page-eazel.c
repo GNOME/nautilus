@@ -142,11 +142,11 @@ nautilus_druid_page_eazel_destroy(GtkObject *object)
 	druid_page_eazel->widget = NULL;
 
 	/* Chain destroy */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
-nautilus_druid_page_eazel_finalize(GtkObject *object)
+nautilus_druid_page_eazel_finalize (GtkObject *object)
 {
 	NautilusDruidPageEazel *druid_page_eazel =
 		NAUTILUS_DRUID_PAGE_EAZEL(object);
@@ -155,7 +155,7 @@ nautilus_druid_page_eazel_finalize(GtkObject *object)
 	druid_page_eazel->details = NULL;
 
 	/* Chain finalize */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, finalize, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, finalize, (object));
 }
 
 static void
@@ -389,8 +389,8 @@ static void
 nautilus_druid_page_eazel_size_allocate(GtkWidget               *widget,
 					GtkAllocation           *allocation)
 {
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate,
-				    (widget, allocation));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate,
+			      (widget, allocation));
 
 	gnome_canvas_set_scroll_region (GNOME_CANVAS (NAUTILUS_DRUID_PAGE_EAZEL (widget)->canvas),
 					0.0, 0.0,
@@ -409,8 +409,8 @@ nautilus_druid_page_eazel_size_request(GtkWidget           *widget,
 
 	druid_page_eazel = NAUTILUS_DRUID_PAGE_EAZEL (widget);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_request,
-				    (widget, requisition));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_request,
+			      (widget, requisition));
 
 	if (druid_page_eazel->widget) {
 		GtkRequisition child_requisition;

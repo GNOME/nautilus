@@ -166,7 +166,7 @@ nautilus_sample_content_view_destroy (GtkObject *object)
 
 	/* CHANGE: Pick one. */
 #if 0 /* nautilus-specific */	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 #else /* non-nautilus-specific */
 	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 #endif

@@ -226,7 +226,7 @@ nautilus_image_table_destroy (GtkObject *object)
 	g_free (image_table->details);
 
 	/* Chain destroy */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* GtkWidgetClass methods */
@@ -249,7 +249,8 @@ nautilus_image_table_expose_event (GtkWidget *widget,
 		image_table_clear_dirty_areas (image_table);
 	}
 	
-	return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, expose_event, (widget, event));
+	return NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+		(GTK_WIDGET_CLASS, expose_event, (widget, event));
 }
 
 static void
@@ -263,7 +264,7 @@ nautilus_image_table_realize (GtkWidget *widget)
 	image_table = NAUTILUS_IMAGE_TABLE (widget);
 
 	/* Chain realize */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
 
 	windowed_ancestor = nautilus_gtk_widget_find_windowed_ancestor (widget);
 	g_assert (GTK_IS_WIDGET (windowed_ancestor));
@@ -322,7 +323,7 @@ nautilus_image_table_unrealize (GtkWidget *widget)
 	}
 
 	/* Chain unrealize */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, unrealize, (widget));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, unrealize, (widget));
 }
 
 /* GtkContainerClass methods */
@@ -345,7 +346,7 @@ nautilus_image_table_remove (GtkContainer *container,
 		image_table->details->child_being_pressed = NULL;
 	}
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_CONTAINER_CLASS, remove, (container, child));
+	NAUTILUS_CALL_PARENT (GTK_CONTAINER_CLASS, remove, (container, child));
 }
 
 static GtkType

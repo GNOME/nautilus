@@ -112,7 +112,7 @@ debug_pixbuf_viewer_destroy (GtkObject *object)
 	nautilus_gdk_pixbuf_unref_if_not_null (viewer->pixbuf);
 	viewer->pixbuf = NULL;
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void

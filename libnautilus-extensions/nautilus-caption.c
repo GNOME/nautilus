@@ -111,14 +111,14 @@ nautilus_caption_destroy (GtkObject* object)
 	g_free (caption->detail);
 
 	/* Chain */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* GtkObjectClass methods */
 static void
 nautilus_font_picker_show_all (GtkWidget *widget)
 {
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, show_all, (widget));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, show_all, (widget));
 
 	/* Now update the title visibility */
 	update_title (NAUTILUS_CAPTION (widget));

@@ -201,7 +201,7 @@ nautilus_sidebar_title_destroy (GtkObject *object)
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME, nautilus_sidebar_title_theme_changed, sidebar_title);
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, smooth_graphics_mode_changed_callback, sidebar_title);
   	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* return a new index title object */
@@ -692,7 +692,7 @@ nautilus_sidebar_title_size_allocate (GtkWidget *widget,
 
 	old_width = widget->allocation.width;
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 
 	if (old_width != widget->allocation.width) {
 		/* Need to update the font if the width changes. */

@@ -96,7 +96,7 @@ nautilus_keep_last_vertical_box_size_allocate (GtkWidget *widget,
 	g_return_if_fail (NAUTILUS_IS_KEEP_LAST_VERTICAL_BOX (widget));
 	g_return_if_fail (allocation != NULL);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 
 	box = GTK_BOX (widget);
 	children = g_list_last (box->children);

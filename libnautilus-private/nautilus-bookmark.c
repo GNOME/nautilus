@@ -58,8 +58,6 @@ struct NautilusBookmarkDetails
 	NautilusFile *file;
 };
 
-
-
 static void	  nautilus_bookmark_connect_file	  (NautilusBookmark	 *file);
 static void	  nautilus_bookmark_disconnect_file	  (NautilusBookmark	 *file);
 static void       nautilus_bookmark_initialize_class      (NautilusBookmarkClass *class);
@@ -86,10 +84,9 @@ nautilus_bookmark_destroy (GtkObject *object)
 	g_free (bookmark->details);
 
 	/* Chain up */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
-
 /* Initialization.  */
 
 static void
@@ -119,7 +116,6 @@ nautilus_bookmark_initialize (NautilusBookmark *bookmark)
 	bookmark->details = g_new0 (NautilusBookmarkDetails, 1);
 }
 
-
 /**
  * nautilus_bookmark_compare_with:
  *

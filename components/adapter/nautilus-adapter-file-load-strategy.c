@@ -94,7 +94,7 @@ nautilus_adapter_file_load_strategy_destroy (GtkObject *object)
 
 	g_free (strategy->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 

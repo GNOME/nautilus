@@ -360,7 +360,7 @@ nautilus_view_frame_destroy (GtkObject *object)
 	 */
 	view->details->state = VIEW_FRAME_FAILED;
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -377,7 +377,7 @@ nautilus_view_frame_finalize (GtkObject *object)
 	g_free (view->details->label);
 	g_free (view->details);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, finalize, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, finalize, (object));
 }
 
 static void
@@ -1255,7 +1255,7 @@ nautilus_view_frame_map (GtkWidget *view_as_widget)
 
 	view = NAUTILUS_VIEW_FRAME (view_as_widget);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, map, (view_as_widget));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, map, (view_as_widget));
 
 	if (view->details->control_frame != NULL) {
 		bonobo_control_frame_control_activate (view->details->control_frame);

@@ -156,7 +156,7 @@ destroy (GtkObject *object)
 	nautilus_gtk_object_list_free (window->details->unref_list);
 	g_free (window->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -171,7 +171,7 @@ realize (GtkWidget *widget)
 			      | GDK_KEY_PRESS_MASK | GDK_KEY_PRESS_MASK);
 			      
 	/* Do the work of realizing. */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
 
 	/* FIXME bugzilla.eazel.com 1253: 
 	 * Looking at the gnome_win_hints implementation,

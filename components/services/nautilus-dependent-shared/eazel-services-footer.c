@@ -123,7 +123,7 @@ footer_destroy (GtkObject *object)
 	g_free (footer->details);
 
 	/* Chain destroy */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void

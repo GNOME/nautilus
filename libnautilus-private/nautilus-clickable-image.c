@@ -161,7 +161,7 @@ nautilus_clickable_image_destroy (GtkObject *object)
 	g_free (clickable_image->details);
 
 	/* Chain destroy */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -198,7 +198,7 @@ nautilus_clickable_image_realize (GtkWidget *widget)
 	clickable_image = NAUTILUS_CLICKABLE_IMAGE (widget);
 
 	/* Chain realize */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
 
 	windowed_ancestor = nautilus_gtk_widget_find_windowed_ancestor (widget);
 	g_assert (GTK_IS_WIDGET (windowed_ancestor));
@@ -478,7 +478,8 @@ nautilus_clickable_image_expose_event (GtkWidget *widget,
  	clickable_image = NAUTILUS_CLICKABLE_IMAGE (widget);
 
 	/* Chain expose */
-	return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, expose_event, (widget, event));
+	return NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+		(GTK_WIDGET_CLASS, expose_event, (widget, event));
 }
 
 static void 

@@ -438,7 +438,7 @@ destroy (GtkObject *object)
 
 	g_free (file->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 
@@ -2043,7 +2043,7 @@ nautilus_file_monitor_add (NautilusFile *file,
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (client != NULL);
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(NAUTILUS_FILE_CLASS, file,
 		 monitor_add, (file, client, attributes));
 }   
@@ -2055,7 +2055,7 @@ nautilus_file_monitor_remove (NautilusFile *file,
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (client != NULL);
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(NAUTILUS_FILE_CLASS, file,
 		 monitor_remove, (file, client));
 }			      
@@ -2138,8 +2138,9 @@ nautilus_file_get_date (NautilusFile *file,
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	return NAUTILUS_CALL_VIRTUAL (NAUTILUS_FILE_CLASS, file,
-				      get_date, (file, date_type, date));
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+		(NAUTILUS_FILE_CLASS, file,
+		 get_date, (file, date_type, date));
 }
 
 static char *
@@ -2151,8 +2152,9 @@ nautilus_file_get_where_string (NautilusFile *file)
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	return NAUTILUS_CALL_VIRTUAL (NAUTILUS_FILE_CLASS, file,
-				      get_where_string, (file));
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+		(NAUTILUS_FILE_CLASS, file,
+		 get_where_string, (file));
 }
 
 /**
@@ -2349,7 +2351,7 @@ nautilus_file_get_directory_item_count (NautilusFile *file,
 		return FALSE;
 	}
 
-	return NAUTILUS_CALL_VIRTUAL
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
 		(NAUTILUS_FILE_CLASS, file,
 		 get_item_count, (file, count, count_unreadable));
 }
@@ -2398,7 +2400,7 @@ nautilus_file_get_deep_counts (NautilusFile *file,
 		return file->details->deep_counts_status;
 	}
 
-	return NAUTILUS_CALL_VIRTUAL
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
 		(NAUTILUS_FILE_CLASS, file,
 		 get_deep_counts, (file,
 				   directory_count,
@@ -3804,7 +3806,8 @@ nautilus_file_get_file_type (NautilusFile *file)
 	if (file == NULL) {
 		return GNOME_VFS_FILE_TYPE_UNKNOWN;
 	}
-	return NAUTILUS_CALL_VIRTUAL (NAUTILUS_FILE_CLASS, file, get_file_type, (file));
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+		(NAUTILUS_FILE_CLASS, file, get_file_type, (file));
 }
 
 /**
@@ -4297,7 +4300,7 @@ nautilus_file_check_if_ready (NautilusFile *file,
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	return NAUTILUS_CALL_VIRTUAL
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
 		(NAUTILUS_FILE_CLASS, file,
 		 check_if_ready, (file, file_attributes));
 }			      
@@ -4318,7 +4321,7 @@ nautilus_file_call_when_ready (NautilusFile *file,
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(NAUTILUS_FILE_CLASS, file,
 		 call_when_ready, (file, file_attributes, 
 				   callback, callback_data));
@@ -4337,7 +4340,7 @@ nautilus_file_cancel_call_when_ready (NautilusFile *file,
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	NAUTILUS_CALL_VIRTUAL
+	NAUTILUS_CALL_METHOD
 		(NAUTILUS_FILE_CLASS, file,
 		 cancel_call_when_ready, (file, callback, callback_data));
 }

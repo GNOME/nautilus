@@ -117,8 +117,9 @@ nautilus_navigation_bar_get_location (NautilusNavigationBar *bar)
 {
 	g_return_val_if_fail (NAUTILUS_IS_NAVIGATION_BAR (bar), NULL);
 
-	return NAUTILUS_CALL_VIRTUAL (NAUTILUS_NAVIGATION_BAR_CLASS, bar,
-				      get_location, (bar));
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+		(NAUTILUS_NAVIGATION_BAR_CLASS, bar,
+		 get_location, (bar));
 }
 
 /**
@@ -135,8 +136,8 @@ nautilus_navigation_bar_set_location (NautilusNavigationBar *bar,
 {
 	g_return_if_fail (NAUTILUS_IS_NAVIGATION_BAR (bar));
 
-	NAUTILUS_CALL_VIRTUAL (NAUTILUS_NAVIGATION_BAR_CLASS, bar,
-			       set_location, (bar, location));
+	NAUTILUS_CALL_METHOD (NAUTILUS_NAVIGATION_BAR_CLASS, bar,
+			      set_location, (bar, location));
 }
 
 void

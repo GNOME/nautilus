@@ -266,7 +266,7 @@ static void
 fm_list_view_destroy (GtkObject *object)
 {
 	g_free (FM_LIST_VIEW (object)->details);
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void 
@@ -1355,7 +1355,7 @@ real_adding_file (FMListView *view, NautilusFile *file)
 static void
 fm_list_view_adding_file (FMListView *view, NautilusFile *file)
 {
-	NAUTILUS_CALL_VIRTUAL (FM_LIST_VIEW_CLASS, view,
+	NAUTILUS_CALL_METHOD (FM_LIST_VIEW_CLASS, view,
 			       adding_file, (view, file));
 }
 
@@ -1368,15 +1368,16 @@ real_removing_file (FMListView *view, NautilusFile *file)
 static void
 fm_list_view_removing_file (FMListView *view, NautilusFile *file)
 {
-	NAUTILUS_CALL_VIRTUAL (FM_LIST_VIEW_CLASS, view,
-			       removing_file, (view, file));
+	NAUTILUS_CALL_METHOD (FM_LIST_VIEW_CLASS, view,
+			      removing_file, (view, file));
 }
 
 static gboolean
 fm_list_view_file_still_belongs (FMListView *view, NautilusFile *file)
 {
-	return NAUTILUS_CALL_VIRTUAL (FM_LIST_VIEW_CLASS, view,
-				      file_still_belongs, (view, file));
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_LIST_VIEW_CLASS, view,
+		 file_still_belongs, (view, file));
 }
 
 static gboolean
@@ -1457,7 +1458,7 @@ real_start_renaming_item  (FMDirectoryView *view, const char *uri)
 	NautilusFile *file;
 
 	/* call parent class to make sure the right icon is selected */
-	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, start_renaming_item, (view, uri));
+	NAUTILUS_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, start_renaming_item, (view, uri));
 	/* Show properties window since we don't do in-place renaming here */
 	file = nautilus_file_get (uri);
 	fm_properties_window_present (file, view);
@@ -1826,22 +1827,25 @@ fm_list_view_font_family_changed (FMDirectoryView *view)
 static int
 get_number_of_columns (FMListView *list_view)
 {
-	return NAUTILUS_CALL_VIRTUAL (FM_LIST_VIEW_CLASS, list_view,
-				      get_number_of_columns, (list_view));
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_LIST_VIEW_CLASS, list_view,
+		 get_number_of_columns, (list_view));
 }
 
 static int
 get_link_column (FMListView *list_view)
 {
-	return NAUTILUS_CALL_VIRTUAL (FM_LIST_VIEW_CLASS, list_view,
-				      get_link_column, (list_view));
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_LIST_VIEW_CLASS, list_view,
+		 get_link_column, (list_view));
 }
 
 static char *
 get_default_sort_attribute (FMListView *list_view)
 {
-	return NAUTILUS_CALL_VIRTUAL (FM_LIST_VIEW_CLASS, list_view,
-				      get_default_sort_attribute, (list_view));
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_LIST_VIEW_CLASS, list_view,
+		 get_default_sort_attribute, (list_view));
 }
 
 static void
@@ -1851,10 +1855,10 @@ get_column_specification (FMListView *list_view,
 {
 	guint icon_size;
 
-	NAUTILUS_CALL_VIRTUAL (FM_LIST_VIEW_CLASS, list_view,
-			       get_column_specification,
-			       (list_view, column_number, specification));
-
+	NAUTILUS_CALL_METHOD (FM_LIST_VIEW_CLASS, list_view,
+			      get_column_specification,
+			      (list_view, column_number, specification));
+	
 	/* We have a special case for the width of the icons
 	 * column.
 	 */

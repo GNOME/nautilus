@@ -226,7 +226,7 @@ nautilus_application_destroy (GtkObject *object)
 	
 	bonobo_object_unref (BONOBO_OBJECT (application->undo_manager));
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static gboolean
@@ -512,7 +512,7 @@ nautilus_application_startup (NautilusApplication *application,
 	 * we could figure out a better lifetime rule.
 	 */
 	if (!(kill_shell || restart_shell)) {
-		bonobo_object_release_unref (shell, &ev);
+		bonobo_object_release_unref (shell, NULL);
 	}
 
  out:

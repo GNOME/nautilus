@@ -2303,7 +2303,7 @@ destroy (GtkObject *object)
 	
 	g_free (container->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* GtkWidget methods.  */
@@ -2333,7 +2333,7 @@ size_allocate (GtkWidget *widget,
 		need_layout_redone = TRUE;
 	}
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 
 	container->details->has_been_allocated = TRUE;
 
@@ -2348,7 +2348,7 @@ realize (GtkWidget *widget)
 	GtkStyle *style;
 	GtkWindow *window;
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
 
 	style = gtk_style_copy (gtk_widget_get_style (widget));
 	style->bg[GTK_STATE_NORMAL] = style->base[GTK_STATE_NORMAL];
@@ -2376,7 +2376,7 @@ unrealize (GtkWidget *widget)
         window = GTK_WINDOW (gtk_widget_get_toplevel (widget));
 	gtk_window_set_focus (window, NULL);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, unrealize, (widget));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, unrealize, (widget));
 }
 
 static gboolean
@@ -2423,7 +2423,8 @@ button_press_event (GtkWidget *widget,
 	nautilus_icon_container_flush_typeselect_state (container);
 	
 	/* Invoke the canvas event handler and see if an item picks up the event. */
-	clicked_on_icon = NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_press_event, (widget, event));
+	clicked_on_icon = NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+		(GTK_WIDGET_CLASS, button_press_event, (widget, event));
 	
 	/* Move focus to icon container, unless we're still renaming (to avoid exiting
 	 * renaming mode)
@@ -2728,7 +2729,8 @@ button_release_event (GtkWidget *widget,
 		return TRUE;
 	}
 
-	return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_release_event, (widget, event));
+	return NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+		(GTK_WIDGET_CLASS, button_release_event, (widget, event));
 }
 
 static int
@@ -2793,7 +2795,8 @@ motion_notify_event (GtkWidget *widget,
 		}
 	}
 
-	return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, motion_notify_event, (widget, event));
+	return NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+		(GTK_WIDGET_CLASS, motion_notify_event, (widget, event));
 }
 
 void
@@ -2953,7 +2956,8 @@ key_press_event (GtkWidget *widget,
 	}
 
 	if (!handled) {
-		handled = NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, key_press_event, (widget, event));
+		handled = NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE
+			(GTK_WIDGET_CLASS, key_press_event, (widget, event));
 	}
 
 	return handled;

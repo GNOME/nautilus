@@ -128,7 +128,7 @@ nautilus_ellipsizing_label_set_text (NautilusEllipsizingLabel *label,
 static void
 real_size_request (GtkWidget *widget, GtkRequisition *requisition)
 {
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_request, (widget, requisition));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_request, (widget, requisition));
 
 	/* Don't demand any particular width; will draw ellipsized into whatever size we're given */
 	requisition->width = 0;
@@ -139,7 +139,7 @@ real_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 {
 	recompute_ellipsized_text (NAUTILUS_ELLIPSIZING_LABEL (widget), allocation->width);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 }
 
 static void 
@@ -147,6 +147,6 @@ real_style_set (GtkWidget *widget, GtkStyle  *previous_style)
 {
 	recompute_ellipsized_text (NAUTILUS_ELLIPSIZING_LABEL (widget), widget->allocation.width);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, style_set, (widget, previous_style));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, style_set, (widget, previous_style));
 }
        			      

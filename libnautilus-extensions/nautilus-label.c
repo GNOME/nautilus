@@ -342,7 +342,7 @@ nautilus_label_destroy (GtkObject *object)
 	g_free (label->details);
 
 	/* Chain destroy */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -552,7 +552,7 @@ nautilus_label_size_request (GtkWidget *widget,
  	label = NAUTILUS_LABEL (widget);
 
 	if (!label_is_smooth (label)) {
-		NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_request, (widget, requisition));
+		NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_request, (widget, requisition));
 		return;
 	}
 	
@@ -580,7 +580,7 @@ nautilus_label_size_allocate (GtkWidget *widget,
   	label = NAUTILUS_LABEL (widget);
 	
 	/* Pre chain size_allocate */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 
 	if (label->details->adjust_wrap_on_resize) {
 		label->details->smooth_line_wrap_width = (int) allocation->width;
@@ -611,7 +611,7 @@ label_paint_pixbuf_callback (GtkWidget *widget,
 
 	event = (GdkEventExpose *) callback_data;
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, expose_event, (widget, event));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, expose_event, (widget, event));
 }
 
 /* Compositing callback for smooth case */

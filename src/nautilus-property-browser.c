@@ -457,7 +457,7 @@ nautilus_property_browser_destroy (GtkObject *object)
 	if (object == GTK_OBJECT (main_browser))
 		main_browser = NULL;
 		
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 
 }
 

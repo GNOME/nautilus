@@ -132,7 +132,7 @@ nautilus_string_picker_destroy (GtkObject* object)
 	g_free (string_picker->detail);
 
 	/* Chain */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* Option menu item callbacks */

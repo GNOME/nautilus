@@ -107,7 +107,7 @@ nautilus_switchable_search_bar_destroy (GtkObject *object)
 					      search_bar_preference_changed_callback,
 					      bar);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 GtkWidget *

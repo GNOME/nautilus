@@ -324,7 +324,7 @@ nautilus_sidebar_tabs_destroy (GtkObject *object)
 		
 	g_free (sidebar_tabs->details);
   	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* unload the tab piece images, if any */
@@ -467,7 +467,7 @@ nautilus_sidebar_tabs_size_allocate(GtkWidget *widget, GtkAllocation *allocation
 {
 	NautilusSidebarTabs *sidebar_tabs = NAUTILUS_SIDEBAR_TABS(widget);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 	
 	/* layout tabs to make sure height measurement is valid */
 	measure_total_height (sidebar_tabs);

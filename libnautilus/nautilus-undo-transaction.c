@@ -254,7 +254,7 @@ nautilus_undo_transaction_destroy (GtkObject *object)
 	CORBA_Object_release (transaction->owner, &ev);
 	CORBA_exception_free (&ev);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void

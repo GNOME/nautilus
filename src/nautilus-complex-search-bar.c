@@ -291,7 +291,7 @@ static void
 nautilus_complex_search_bar_destroy (GtkObject *object)
 {
 	g_free (NAUTILUS_COMPLEX_SEARCH_BAR (object)->details);
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static GtkWidget *

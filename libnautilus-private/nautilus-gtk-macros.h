@@ -2,7 +2,7 @@
 
    nautilus-gtk-macros.h: Macros to reduce boilerplate when using GTK.
  
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -25,6 +25,8 @@
 
 #ifndef NAUTILUS_GTK_MACROS_H
 #define NAUTILUS_GTK_MACROS_H
+
+#include <glib.h>
 
 /* Define a parent_class global and a get_type function for a GTK class.
    Since this is boilerplate, it's better not to repeat it over and over again.
@@ -71,20 +73,38 @@ class_name_in_function_format##_get_type (void)                                 
  * typo. Depends on the parent class pointer having the conventional
  * name "parent_class" as the boilerplate macro above does it.
  */
-#define NAUTILUS_CALL_PARENT_CLASS(parent_class_cast_macro, signal, parameters) \
-                                                                                \
-(parent_class_cast_macro (parent_class)->signal == NULL)                        \
-	? 0                                                                     \
+#define NAUTILUS_CALL_PARENT(parent_class_cast_macro, signal, parameters)                    \
+                                                                                             \
+G_STMT_START {                                                                               \
+	if (parent_class_cast_macro (parent_class)->signal != NULL) {                        \
+		(* parent_class_cast_macro (parent_class)->signal) parameters;               \
+        }                                                                                    \
+} G_STMT_END
+
+/* Same thing, for functions with a return value. */
+#define NAUTILUS_CALL_PARENT_WITH_RETURN_VALUE(parent_class_cast_macro, signal, parameters)  \
+                                                                                             \
+(parent_class_cast_macro (parent_class)->signal == NULL)                                     \
+	? 0                                                                                  \
 	: ((* parent_class_cast_macro (parent_class)->signal) parameters)
 
 /* Call a virtual function. Useful when the virtual function is not a
  * signal, otherwise you want to gtk_signal emit. Nice because it
  * documents what it's doing and there is less chance for a typo.
  */
-#define NAUTILUS_CALL_VIRTUAL(class_cast_macro, object, signal, parameters)        \
-                                                                                   \
-(class_cast_macro (GTK_OBJECT (object)->klass)->signal == NULL)                    \
-	? 0                                                                        \
+#define NAUTILUS_CALL_METHOD(class_cast_macro, object, signal, parameters)                   \
+                                                                                             \
+G_STMT_START {                                                                               \
+	if (class_cast_macro (GTK_OBJECT (object)->klass)->signal != NULL) {                 \
+		(* class_cast_macro (GTK_OBJECT (object)->klass)->signal) parameters;        \
+	}                                                                                    \
+} G_STMT_END
+
+/* Same thing, for functions with a return value. */
+#define NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE(class_cast_macro, object, signal, parameters) \
+                                                                                             \
+(class_cast_macro (GTK_OBJECT (object)->klass)->signal == NULL)                              \
+	? 0                                                                                  \
 	: ((* class_cast_macro (GTK_OBJECT (object)->klass)->signal) parameters)
 
 #ifndef G_DISABLE_ASSERT

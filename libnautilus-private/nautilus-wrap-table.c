@@ -176,7 +176,7 @@ nautilus_wrap_table_destroy (GtkObject *object)
 	 * The details will be used in the nautilus_wrap_box_remove () 
 	 * method as a result of the children being killed.
 	 */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 
 	g_list_free (wrap_table->details->children);
 

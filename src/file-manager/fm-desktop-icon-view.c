@@ -151,7 +151,7 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 	
 	g_free (icon_view->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
@@ -993,7 +993,7 @@ real_update_menus (FMDirectoryView *view)
 	
 	g_assert (FM_IS_DESKTOP_ICON_VIEW (view));
 
-	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
+	NAUTILUS_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
 
 	desktop_view = FM_DESKTOP_ICON_VIEW (view);
 
@@ -1066,7 +1066,7 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB_END
 	};
 
-	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
+	NAUTILUS_CALL_PARENT (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
 
 	desktop_view = FM_DESKTOP_ICON_VIEW (view);
 

@@ -312,7 +312,7 @@ nautilus_sidebar_destroy (GtkObject *object)
 					      sidebar);
 
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* utility routines to test if sidebar panel is currently enabled */
@@ -1590,7 +1590,7 @@ nautilus_sidebar_size_allocate (GtkWidget *widget,
 {
 	NautilusSidebar *sidebar = NAUTILUS_SIDEBAR(widget);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 	
 	/* remember the size if it changed */
 	
@@ -1607,7 +1607,7 @@ nautilus_sidebar_realize (GtkWidget *widget)
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR (widget));
 	
 	/* Superclass does the actual realize */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, realize, (widget));
 	
 	/* Tell X not to erase the window contents when resizing */
 	gdk_window_set_static_gravities (widget->window, TRUE);

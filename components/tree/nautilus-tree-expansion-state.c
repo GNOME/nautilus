@@ -160,7 +160,7 @@ nautilus_tree_expansion_state_destroy (GtkObject *object)
 
 	g_free (expansion_state->details);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 

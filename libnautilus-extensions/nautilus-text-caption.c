@@ -133,7 +133,7 @@ nautilus_text_caption_initialize (NautilusTextCaption *text_caption)
  * GtkObjectClass methods
  */
 static void
-nautilus_text_caption_destroy(GtkObject* object)
+nautilus_text_caption_destroy (GtkObject* object)
 {
 	NautilusTextCaption * text_caption;
 	
@@ -145,7 +145,7 @@ nautilus_text_caption_destroy(GtkObject* object)
 	g_free (text_caption->detail);
 
 	/* Chain */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /*

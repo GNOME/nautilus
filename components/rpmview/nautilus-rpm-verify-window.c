@@ -97,7 +97,7 @@ nautilus_rpm_verify_window_destroy (GtkObject *object)
 		
 	g_free (NAUTILUS_RPM_VERIFY_WINDOW (object)->details);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /* handle the continue button  */

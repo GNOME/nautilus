@@ -320,7 +320,7 @@ destroy (GtkObject *object)
 
 	release_transaction (manager);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 void

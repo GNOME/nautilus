@@ -108,7 +108,7 @@ nautilus_adapter_embed_strategy_destroy (GtkObject *object)
 
 	strategy = NAUTILUS_ADAPTER_EMBED_STRATEGY (object);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 
@@ -149,15 +149,17 @@ nautilus_adapter_embed_strategy_get (Bonobo_Unknown component)
 GtkWidget *
 nautilus_adapter_embed_strategy_get_widget (NautilusAdapterEmbedStrategy *strategy)
 {
-	return NAUTILUS_CALL_VIRTUAL (NAUTILUS_ADAPTER_EMBED_STRATEGY_CLASS, strategy,
-				      get_widget, (strategy));
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+		(NAUTILUS_ADAPTER_EMBED_STRATEGY_CLASS, strategy,
+		 get_widget, (strategy));
 }
 
 BonoboObject *
 nautilus_adapter_embed_strategy_get_zoomable (NautilusAdapterEmbedStrategy *strategy)
 {
-	return NAUTILUS_CALL_VIRTUAL (NAUTILUS_ADAPTER_EMBED_STRATEGY_CLASS, strategy,
-				      get_zoomable, (strategy));
+	return NAUTILUS_CALL_METHOD_WITH_RETURN_VALUE
+		(NAUTILUS_ADAPTER_EMBED_STRATEGY_CLASS, strategy,
+		 get_zoomable, (strategy));
 }
 
 

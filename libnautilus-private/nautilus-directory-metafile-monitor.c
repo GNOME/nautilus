@@ -111,7 +111,7 @@ destroy (GtkObject *object)
 	monitor = NAUTILUS_METAFILE_MONITOR (object);
 	g_free (monitor->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 NautilusMetafileMonitor *

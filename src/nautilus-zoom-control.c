@@ -189,7 +189,7 @@ nautilus_zoom_control_destroy (GtkObject *object)
 
 	g_free (NAUTILUS_ZOOM_CONTROL (object)->details);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static int
@@ -714,11 +714,11 @@ static gboolean nautilus_zoom_control_motion_notify (GtkWidget *widget, GdkEvent
 
 /* handle setting the size */
 static void
-nautilus_zoom_control_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
+nautilus_zoom_control_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 {
 	NautilusZoomControl *zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	NAUTILUS_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 	
 	widget->allocation.width = get_zoom_width (zoom_control);
    	widget->allocation.height = allocation->height;
