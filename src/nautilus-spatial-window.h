@@ -63,7 +63,7 @@ struct _NautilusWindow {
   /** UI stuff **/
   NautilusIndexPanel *index_panel;
   GtkWidget *content_hbox;
-  GtkWidget *option_cvtype, *ent_uri;
+  GtkWidget *view_as_option_menu, *ent_uri;
 
   guint statusbar_ctx, statusbar_clear_id;
 

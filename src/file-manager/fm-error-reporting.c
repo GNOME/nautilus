@@ -59,7 +59,7 @@ fm_report_error_renaming_file (NautilusFile *file,
 		break;
 	case GNOME_VFS_ERROR_ACCESSDENIED:
 		original_name = nautilus_file_get_name (file);
-		message = g_strdup_printf (_("You do not have the right permissions to rename \"%s.\""),
+		message = g_strdup_printf (_("You do not have the permissions necessary to rename \"%s.\""),
 					   original_name);
 		g_free (original_name);
 		break;

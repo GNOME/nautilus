@@ -61,6 +61,8 @@ libnautilus_extensionsinclude_HEADERS=		\
 	nautilus-list.h                         \
 	nautilus-metadata.h			\
 	nautilus-mime-type.h			\
+	nautilus-program-chooser.h		\
+	nautilus-program-choosing.h		\
 	nautilus-self-checks.h			\
 	nautilus-string-list.h			\
 	nautilus-string.h			\
@@ -111,6 +113,8 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-list-column-title.c		\
 	nautilus-list.c                         \
 	nautilus-mime-type.c			\
+	nautilus-program-chooser.c		\
+	nautilus-program-choosing.c		\
 	nautilus-self-checks.c			\
 	nautilus-string-list.c			\
 	nautilus-string.c			\

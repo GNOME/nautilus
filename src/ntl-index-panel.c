@@ -41,8 +41,9 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-keep-last-vertical-box.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
-#include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-mime-type.h>
+#include <libnautilus-extensions/nautilus-program-choosing.h>
+#include <libnautilus-extensions/nautilus-string.h>
 #include <nautilus-widgets/nautilus-preferences.h>
 #include "ntl-meta-view.h"
 #include "nautilus-index-tabs.h"
@@ -686,27 +687,48 @@ nautilus_index_panel_background_changed (NautilusIndexPanel *index_panel)
 	g_free (image);
 }
 
-/* utility to fork a process to actually execute the button command */
-
 static void
-command_button_cb (GtkWidget *button, char *command_str)
+command_button_callback (GtkWidget *button, char *command_str)
 {
-	pid_t button_pid; 
 	NautilusIndexPanel *index_panel;
-	char *parameter_ptr;
 	
 	index_panel = NAUTILUS_INDEX_PANEL (gtk_object_get_user_data (GTK_OBJECT (button)));
-	
-	parameter_ptr = index_panel->details->uri;
-	if (nautilus_str_has_prefix (parameter_ptr, "file://")) {
-		parameter_ptr +=  7;
+
+	nautilus_launch_application (command_str, index_panel->details->uri);	
+}
+
+static void
+nautilus_index_panel_chose_application_callback (char *command_string,
+						 gpointer callback_data)
+{
+	g_assert (NAUTILUS_IS_INDEX_PANEL (callback_data));
+
+	if (command_string != NULL) {
+		nautilus_launch_application 
+			(command_string, 
+			 NAUTILUS_INDEX_PANEL (callback_data)->details->uri);
 	}
+
+	g_free (command_string);
+}						 
+
+static void
+open_with_callback (GtkWidget *button, gpointer ignored)
+{
+	NautilusIndexPanel *index_panel;
+	NautilusFile *file;
 	
-	button_pid = fork();
-	if (button_pid == 0) {
-		execlp (command_str, command_str, parameter_ptr, NULL);
-		exit (0);
-	}
+	index_panel = NAUTILUS_INDEX_PANEL (gtk_object_get_user_data (GTK_OBJECT (button)));
+
+	file = nautilus_file_get (index_panel->details->uri);
+	g_return_if_fail (file != NULL);
+
+	nautilus_choose_application_for_file
+		(file,
+		 GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (index_panel))),
+		 nautilus_index_panel_chose_application_callback,
+		 index_panel);
+	
 }
 
 /* utility routine that allocates the command buttons from the command list */
@@ -741,7 +763,7 @@ add_command_buttons (NautilusIndexPanel *index_panel, GList *command_list)
 		nautilus_gtk_signal_connect_free_data 
 			(GTK_OBJECT (temp_button), 
 			 "clicked",
-			 GTK_SIGNAL_FUNC (command_button_cb), 
+			 GTK_SIGNAL_FUNC (command_button_callback), 
 			 command_string);
                 gtk_object_set_user_data (GTK_OBJECT (temp_button), index_panel);
 		
@@ -750,7 +772,12 @@ add_command_buttons (NautilusIndexPanel *index_panel, GList *command_list)
 
 	/* Catch-all button after all the others. */
 	temp_button = gtk_button_new_with_label (_("Open with ..."));
-	gtk_widget_set_sensitive (temp_button, FALSE);
+	nautilus_gtk_signal_connect_free_data 
+		(GTK_OBJECT (temp_button), 
+		 "clicked",
+		 open_with_callback, 
+		 NULL);
+                 gtk_object_set_user_data (GTK_OBJECT (temp_button), index_panel);
 	gtk_widget_show (temp_button);
 	gtk_box_pack_start (GTK_BOX (index_panel->details->button_box),
 			    temp_button,

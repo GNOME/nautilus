@@ -1,3 +1,73 @@
+2000-05-23  John Sullivan  <sullivan@eazel.com>
+
+	Some pieces of the application and component-choosing UI.
+	They don't do anything useful yet.
+
+	* libnautilus-extensions/nautilus-program-chooser.h,
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	New files with code for creating a program-choosing
+	dialog (which is really degenerate right now).
+
+	* libnautilus-extensions/nautilus-program-choosing.h,
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	New files with functions for choosing a component or other
+	program to display or open a file with. This uses the
+	dialog in nautilus-program-chooser, but callers don't
+	need to know that.
+
+	* libnautilus-extensions/Makefile.am: add these new
+	files to the build.
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_chose_application_callback),
+	(fm_directory_view_chose_component_callback), (choose_application),
+	(choose_component), (bonobo_menu_other_program_callback),
+	(other_application_callback), (other_viewer_callback): 
+	New functions that connect the program-choosing UI to the
+	menu items.
+	(compute_menu_item_info): Stop desensitizing the "Other ..." items.
+	(append_gtk_menu_item): Eliminated this function, made callers use
+	more elaborate append_gtk_menu_item_with_view instead.
+	(fm_directory_view_real_create_background_context_menu_items),
+	(create_open_with_gtk_menu):
+	Updated callers to append_gtk_menu_item.
+	(fm_directory_view_real_create_selection_context_menu_items):
+	Pass view to create_open_with_gtk_menu.
+	(reset_bonobo_open_with_menu): Now takes an FMDirectoryView and
+	uses it as callback data for "Other..." items.
+	(fm_directory_view_real_merge_menus),
+	(fm_directory_view_real_update_menus): Pass view to
+	reset_bonobo_open_with_menu.
+	
+	* src/ntl-index-panel.c: (command_button_callback): Renamed from
+	command_button_cb, also broke out application-launching code and
+	moved it to libnautilus-extensions/nautilus-program-choosing.c.
+	(nautilus_index_panel_chose_application_callback),
+	(open_with_callback): New functions, used to wire up functionality
+	of "Open with ..." button.
+	(add_command_buttons): Stop desensitizing "Open with ..." button,
+	and wire it up to do something.
+	
+	* src/ntl-window.h: Renamed field "option_cvtype" to "view_as_option_menu".
+	* src/ntl-window.c: 
+	(nautilus_window_constructed): Updated to match field name change.
+	(nautilus_window_switch_views): New function, broken out of
+	view_menu_switch_views_callback; switches window to new content view.
+	(view_menu_switch_views_callback): Now calls nautilus_window_switch_views.
+	(synch_view_as_menu): New function, resets displayed name of "View as"
+	menu to match current content view.
+	(chose_component_callback), (view_menu_choose_view_callback): New
+	functions, used to implement "View as ..." menu item.
+	(nautilus_window_load_content_view_menu): Store iid in menu item;
+	call synch_view_as_menu; wire up "View as ..." menu item.
+
+
+	* src/ntl-window-msgs.c: (handle_unreadable_location):
+	Tweaked wording of an error message.
+	
+	* src/file-manager/fm-error-reporting.c:
+	(fm_report_error_renaming_file): Tweaked wording of an error message.
+
 2000-05-23  Darin Adler  <darin@eazel.com>
 
 	* libnautilus/nautilus-undo-manager.c:

@@ -623,7 +623,7 @@ handle_unreadable_location (NautilusWindow *window, const char *uri) {
 
 	if (unreadable) {
 		file_name = nautilus_file_get_name (file);
-        	message = g_strdup_printf (_("You do not have the right permissions to view \"%s.\""), file_name);
+        	message = g_strdup_printf (_("You do not have the permissions necessary to view \"%s.\""), file_name);
                 gtk_widget_show (gnome_error_dialog_parented (message, 
               					              GTK_WINDOW (window)));
                 g_free (file_name);
