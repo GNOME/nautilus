@@ -59,4 +59,6 @@ GType		 nautilus_scroll_positionable_get_type                       (void) G_GNU
 
 NautilusScrollPositionable	*nautilus_scroll_positionable_new	(void);
 
+G_END_DECLS
+
 #endif /* NAUTILUS_SCROLL_POSITIONABLE_H */
