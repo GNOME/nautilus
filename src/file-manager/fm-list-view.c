@@ -640,8 +640,8 @@ fm_list_get_drag_pixmap (GtkWidget *widget, int row_index, GdkPixmap **pixmap,
 
 	g_assert (row != NULL);
 
-	*pixmap = GTK_CELL_PIXMAP (row->cell[LIST_VIEW_COLUMN_ICON])->pixmap;
-	*mask = GTK_CELL_PIXMAP (row->cell[LIST_VIEW_COLUMN_ICON])->mask;
+	*pixmap = gdk_pixmap_ref (GTK_CELL_PIXMAP (row->cell[LIST_VIEW_COLUMN_ICON])->pixmap);
+	*mask = gdk_bitmap_ref (GTK_CELL_PIXMAP (row->cell[LIST_VIEW_COLUMN_ICON])->mask);
 
 }
 

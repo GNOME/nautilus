@@ -36,6 +36,7 @@
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkmain.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
@@ -514,6 +515,166 @@ receive_dropped_keyword (NautilusIconContainer *container, char* keyword, int x,
 
 }
 
+#define AUTOSCROLL_TIMEOUT_INTERVAL 100
+	/* in milliseconds */
+
+#define AUTOSCROLL_INITIAL_DELAY 600000
+	/* in microseconds */
+
+#define AUTO_SCROLL_MARGIN 20
+	/* drag this close to the view edge to start auto scroll*/
+
+#define MIN_AUTOSCROLL_DELTA 5
+	/* the smallest amount of auto scroll used when we just enter the autoscroll
+	 * margin
+	 */
+	 
+#define MAX_AUTOSCROLL_DELTA 50
+	/* the largest amount of auto scroll used when we are right over the view
+	 * edge
+	 */
+
+static int
+auto_scroll_timeout_callback (gpointer data)
+{
+	NautilusIconContainer *container;
+	GtkWidget *widget;
+	int x, y;
+	float x_scroll_delta, y_scroll_delta;
+	GdkRectangle exposed_area;
+
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (data));
+	widget = GTK_WIDGET (data);
+	container = NAUTILUS_ICON_CONTAINER (widget);
+
+	if (container->details->waiting_to_autoscroll
+		&& container->details->start_auto_scroll_in < nautilus_get_system_time()) {
+		/* not yet */
+		return TRUE;
+	}
+
+	container->details->waiting_to_autoscroll = FALSE;
+
+	gdk_window_get_pointer (widget->window, &x, &y, NULL);
+
+	/* Find out if we are anywhere close to the container view edges
+	 * to see if we need to autoscroll.
+	 */
+	x_scroll_delta = 0;
+	y_scroll_delta = 0;
+	
+	if (x < AUTO_SCROLL_MARGIN) {
+		x_scroll_delta = (float)(x - AUTO_SCROLL_MARGIN);
+	}
+
+	if (x > widget->allocation.width - AUTO_SCROLL_MARGIN) {
+		if (x_scroll_delta != 0) {
+			/* Already trying to scroll because of being too close to 
+			 * the top edge -- must be the window is really short,
+			 * don't autoscroll.
+			 */
+			return TRUE;
+		}
+		x_scroll_delta = (float)(x - (widget->allocation.width - AUTO_SCROLL_MARGIN));
+	}
+
+	if (y < AUTO_SCROLL_MARGIN) {
+		y_scroll_delta = (float)(y - AUTO_SCROLL_MARGIN);
+	}
+
+	if (y > widget->allocation.height - AUTO_SCROLL_MARGIN) {
+		if (y_scroll_delta != 0) {
+			/* Already trying to scroll because of being too close to 
+			 * the top edge -- must be the window is really narrow,
+			 * don't autoscroll.
+			 */
+			return TRUE;
+		}
+		y_scroll_delta = (float)(y - (widget->allocation.height - AUTO_SCROLL_MARGIN));
+	}
+
+	if (x_scroll_delta == 0 && y_scroll_delta == 0) {
+		/* no work */
+		return TRUE;
+	}
+
+	/* Adjust the scroll delta to the proper acceleration values depending on how far
+	 * into the sroll margins we are.
+	 * FIXME:
+	 * we could use an exponential acceleration factor here for better feel
+	 */
+	if (x_scroll_delta != 0) {
+		x_scroll_delta /= AUTO_SCROLL_MARGIN;
+		x_scroll_delta *= (MAX_AUTOSCROLL_DELTA - MIN_AUTOSCROLL_DELTA);
+		x_scroll_delta += MIN_AUTOSCROLL_DELTA;
+	}
+	
+	if (y_scroll_delta != 0) {
+		y_scroll_delta /= AUTO_SCROLL_MARGIN;
+		y_scroll_delta *= (MAX_AUTOSCROLL_DELTA - MIN_AUTOSCROLL_DELTA);
+		y_scroll_delta += MIN_AUTOSCROLL_DELTA;
+	}
+
+	nautilus_icon_container_scroll (container, (int)x_scroll_delta, (int)y_scroll_delta);
+
+	/* update cached drag start offsets */
+	container->details->dnd_info->drag_info.start_x -= x_scroll_delta;
+	container->details->dnd_info->drag_info.start_y -= y_scroll_delta;
+
+	/* Due to a glitch in GtkLayout, whe need to do an explicit draw of the exposed
+	 * area. 
+	 * Calculate the size of the area we need to draw
+	 */
+	exposed_area.x = widget->allocation.x;
+	exposed_area.y = widget->allocation.y;
+	exposed_area.width = widget->allocation.width;
+	exposed_area.height = widget->allocation.height;
+
+	if (x_scroll_delta > 0) {
+		exposed_area.x = exposed_area.width - x_scroll_delta;
+	} else if (x_scroll_delta < 0) {
+		exposed_area.width = -x_scroll_delta;
+	}
+
+	if (y_scroll_delta > 0) {
+		exposed_area.y = exposed_area.height - y_scroll_delta;
+	} else if (y_scroll_delta < 0) {
+		exposed_area.height = -y_scroll_delta;
+	}
+
+	/* offset it to 0, 0 */
+	exposed_area.x -= widget->allocation.x;
+	exposed_area.y -= widget->allocation.y;
+
+	gtk_widget_queue_draw_area (widget, exposed_area.x, exposed_area.y,
+		exposed_area.width, exposed_area.height);
+
+	return TRUE;
+}
+
+static void
+set_up_auto_scroll_if_needed (NautilusIconContainer *container)
+{
+	if (container->details->auto_scroll_timeout_id == 0) {
+		container->details->waiting_to_autoscroll = TRUE;
+		container->details->start_auto_scroll_in = nautilus_get_system_time() 
+			+ AUTOSCROLL_INITIAL_DELAY;
+		container->details->auto_scroll_timeout_id = gtk_timeout_add
+				(AUTOSCROLL_TIMEOUT_INTERVAL,
+				 auto_scroll_timeout_callback,
+			 	 container);
+	}
+}
+
+static void
+stop_auto_scroll (NautilusIconContainer *container)
+{
+	if (container->details->auto_scroll_timeout_id) {
+		gtk_timeout_remove (container->details->auto_scroll_timeout_id);
+		container->details->auto_scroll_timeout_id = 0;
+	}
+}
+
 static gboolean
 confirm_switch_to_manual_layout (NautilusIconContainer *container)
 {
@@ -864,6 +1025,7 @@ drag_leave_callback (GtkWidget *widget,
 	if (dnd_info->shadow != NULL)
 		gnome_canvas_item_hide (dnd_info->shadow);
 	
+	stop_auto_scroll (NAUTILUS_ICON_CONTAINER (widget));
 	nautilus_icon_container_free_drag_data(NAUTILUS_ICON_CONTAINER (widget));
 }
 
@@ -914,6 +1076,7 @@ nautilus_icon_dnd_fini (NautilusIconContainer *container)
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_return_if_fail (container->details->dnd_info != NULL);
 
+	stop_auto_scroll (container);
 	if (container->details->dnd_info->shadow != NULL)
 		gtk_object_destroy (GTK_OBJECT (container->details->dnd_info->shadow));
 
@@ -1008,7 +1171,7 @@ drag_motion_callback (GtkWidget *widget,
 	nautilus_icon_container_ensure_drag_data (NAUTILUS_ICON_CONTAINER (widget), context, time);
 	nautilus_icon_container_position_shadow (NAUTILUS_ICON_CONTAINER (widget), x, y);
 	nautilus_icon_dnd_update_drop_target (NAUTILUS_ICON_CONTAINER (widget), context, x, y);
-
+	set_up_auto_scroll_if_needed (NAUTILUS_ICON_CONTAINER (widget));
 	/* Find out what the drop actions are based on our drag selection and
 	 * the drop target.
 	 */
@@ -1084,7 +1247,7 @@ nautilus_icon_dnd_end_drag (NautilusIconContainer *container)
 
 	dnd_info = container->details->dnd_info;
 	g_return_if_fail (dnd_info != NULL);
-
+	stop_auto_scroll (container);
 	/* Do nothing.
 	 * Can that possibly be right?
 	 */

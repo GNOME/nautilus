@@ -268,9 +268,9 @@ icon_get_bounding_box (NautilusIcon *icon,
 
 /* Utility functions for NautilusIconContainer.  */
 
-static void
-scroll (NautilusIconContainer *container,
-	int delta_x, int delta_y)
+void
+nautilus_icon_container_scroll (NautilusIconContainer *container,
+				int delta_x, int delta_y)
 {
 	GtkAdjustment *hadj, *vadj;
 
@@ -828,7 +828,7 @@ rubberband_timeout_callback (gpointer data)
 		return TRUE;
 	}
 
-	scroll (container, x_scroll, y_scroll);
+	nautilus_icon_container_scroll (container, x_scroll, y_scroll);
 
 	gnome_canvas_window_to_world (GNOME_CANVAS (container),
 				      x, y, &world_x, &world_y);

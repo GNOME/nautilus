@@ -295,7 +295,7 @@ nautilus_drag_default_drop_action (GdkDragContext *context,
    the location and size of each icon relative to the cursor.
 */
 static void
-add_one_gnome_icon_list(const char *uri, int x, int y, int w, int h, 
+add_one_gnome_icon_list (const char *uri, int x, int y, int w, int h, 
 	gpointer data)
 {
 	GString *result = (GString *)data;
@@ -310,7 +310,7 @@ add_one_gnome_icon_list(const char *uri, int x, int y, int w, int h,
 
 /* Encode a "text/uri-list" selection.  */
 static void
-add_one_uri_list(const char *uri, int x, int y, int w, int h, 
+add_one_uri_list (const char *uri, int x, int y, int w, int h, 
 	gpointer data)
 {
 	GString *result = (GString *)data;

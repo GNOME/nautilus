@@ -132,6 +132,9 @@ struct NautilusIconContainerDetails {
 	gboolean drag_started;
 	StretchState stretch_start;
 	int context_menu_timeout_id;
+	int auto_scroll_timeout_id;
+	gboolean waiting_to_autoscroll;
+	gint64 start_auto_scroll_in;
 
 	/* Renaming Details */
 	gboolean renaming;
@@ -192,4 +195,7 @@ gboolean      nautilus_icon_container_emit_preview_signal         (NautilusIconC
 								   NautilusIcon          *icon,
 								   gboolean               start_flag);
 
+void	      nautilus_icon_container_scroll			  (NautilusIconContainer *container,
+								   int 			  delta_x, 
+								   int 			  delta_y);
 #endif /* NAUTILUS_ICON_CONTAINER_PRIVATE_H */

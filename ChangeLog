@@ -1,3 +1,29 @@
+2000-07-10  Pavel Cisler  <set EMAIL_ADDRESS environment variable>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_scroll), (rubberband_timeout_callback):
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(auto_scroll_timeout_callback), (set_up_auto_scroll_if_needed),
+	(stop_auto_scroll), (handle_local_move), (drag_leave_callback),
+	(nautilus_icon_dnd_fini), (drag_motion_callback),
+	(nautilus_icon_dnd_end_drag):
+	Add support for auto-scroll during drag&drop in the icon view.
+	
+
+	* libnautilus-extensions/nautilus-icon-private.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_scroll):
+	Renamed scroll to nautilus_icon_container_scroll and made it
+	available to nautilus-icon-dnd.c.
+	
+	* src/file-manager/fm-list-view.c: (fm_list_get_drag_pixmap):
+	Fix a memory thrasher in the code that grabs the item icon during
+	a list view drag -- added a missing ref.
+
+	* libnautilus-extensions/nautilus-drag.c:
+	(add_one_gnome_icon_list), (add_one_uri_list):
+	Fix some whitespace.
+
 2000-07-10  Robey Pointer  <robey@eazel.com>
 
 	* components/services/trilobite/helper/eazel-helper.c: (main):
