@@ -115,7 +115,8 @@ find_first_element (Context *context, GSList *args)
 
 	for (ptr = context->stack; ptr; ptr = ptr->next) {
 		for (element_ptr = args; element_ptr; element_ptr = element_ptr->next) {
-			if (((StackElement*) ptr->data)->info->index == GPOINTER_TO_INT (element_ptr->data))
+			if (((StackElement*) ptr->data)->info &&
+			    ((StackElement*) ptr->data)->info->index == GPOINTER_TO_INT (element_ptr->data))
 				return (StackElement *) ptr->data;
 		}
 	}
@@ -200,9 +201,8 @@ end_element (Context *context,
 
 	element = find_element_info (context->elements, name);
 	stack_el = (StackElement *) context->stack->data;
-//	g_assert (stack_el->info == element);
 	if (stack_el->info == element) {
-		g_print ("<BR><B>ERROR</B> -- INVALID SYNTAX in tag %s<BR>\n", name);
+		/* Prolly a tag we ignored */
 		return;
 	}
 	if (element && element->end_element_func)
