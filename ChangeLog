@@ -1,3 +1,12 @@
+2001-01-16  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 5677, Drag files w/names of Specials to desktop -> malloc crash
+	Fixed bug 5673, Spaces are escaped in new "replace special desktop icon"
+	dialog.
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(handle_transfer_overwrite):
+
 2001-01-15  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
@@ -100,6 +109,7 @@
 	* src/nautilus-window-private.h:
 	added a field to hold the event source listener ID.
 
+>>>>>>> 1.3367
 2001-01-15  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/throbber/main.c: (main):

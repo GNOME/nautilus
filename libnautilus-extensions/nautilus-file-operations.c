@@ -959,30 +959,30 @@ handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 				if (nautilus_link_local_is_volume_link (unescaped_path) ||
 		      		    nautilus_link_local_is_trash_link (unescaped_path) ||
 		      		    nautilus_link_local_is_home_link (unescaped_path)) {		      		    
-					/* FIXME bugzilla.eazel.com 5533 Need good dialog text for failed replace of
-					 * special desktop icons. */
 					file_uri = nautilus_file_get_uri (file);
 					filename = g_basename (file_uri);
-					g_free (file_uri);
+					unescaped_name = nautilus_format_name_for_display (filename);
+				
 					if (transfer_info->kind == TRANSFER_MOVE) {
 						text = g_strdup_printf (_("%s could not be moved to the new location, "
 							  	  	  "because the name is already used for a special item that "
 				 			  	  	  "cannot be removed or replaced.  If you still want to move %s, "
-							   	  	  "rename it and try again."), filename, filename);
+							   	  	  "rename it and try again."), unescaped_name, unescaped_name);
 					} else {
 						text = g_strdup_printf (_("%s could not be copied to the new location, "
 							  	  	  "because the name is already used for a special item that "
 				 			  	  	  "cannot be removed or replaced.  If you still want to copy %s, "
-							   	  	  "rename it and try again."), filename, filename);
+							   	  	  "rename it and try again."), unescaped_name, unescaped_name);
 
 					};
 										
 				 	nautilus_simple_dialog (parent_for_error_dialog (transfer_info), TRUE, text,
 								_("Unable to replace file."), _("OK"), NULL, NULL);
-					g_free (text);					
+					g_free (text);
+					g_free (file_uri);
+					g_free (unescaped_name);
 					is_special_link = TRUE;
-				}
-				
+				}				
 				g_free (unescaped_path);
 			}
 		}
