@@ -1,5 +1,15 @@
 2001-03-27  Andy Hertzfeld  <andy@eazel.com>
 
+
+	* components/notes/nautilus-notes.c: (make_notes_view):
+	made it use the prefered font instead of hardwired helvetica
+	
+	* src/file-manager/fm-annotation-window.c: (create_options_table),
+	(create_annotation_window):
+	added widgets to the annotation window
+	
+2001-03-27  Andy Hertzfeld  <andy@eazel.com>
+
 	* src/file-manager/fm-annotation-window.c:
 	(fm_annotation_window_initialize), (real_destroy),
 	(create_annotation_window), (fm_annotation_window_present):

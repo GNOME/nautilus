@@ -37,6 +37,7 @@
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtktable.h>
+#include <gtk/gtktext.h>
 #include <gtk/gtkvbox.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
@@ -48,6 +49,7 @@
 #include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
@@ -70,7 +72,8 @@
 struct FMAnnotationWindowDetails {
 	NautilusFile *file;
 	GtkWidget *file_icon;
-	GtkLabel *file_title;	
+	GtkLabel  *file_title;	
+	GtkWidget *text_field;
 };
 
 
@@ -190,28 +193,70 @@ update_annotation_window_title (GtkWindow *window, NautilusFile *file)
 	g_free (title);
 }
 
-/*
-static void
-annotation_window_file_changed_callback (GtkWindow *window, NautilusFile *file)
+/* create the option table for the annotation window */
+static GtkWidget *
+create_options_table (FMAnnotationWindow *window)
 {
-	g_assert (GTK_IS_WINDOW (window));
-	g_assert (NAUTILUS_IS_FILE (file));
+	GtkWidget *table;
+	GtkWidget *label;
+	GtkWidget *type_menu_vbox;
+	GtkWidget *access_menu_vbox;
+	GtkWidget *option_menu;
+	GtkWidget *new_menu;
+	GtkWidget *menu_item;
+	
+	table = gtk_table_new (2, 2, FALSE);
 
-	if (nautilus_file_is_gone (file)) {
-		gtk_widget_destroy (GTK_WIDGET (window));
-	} else {
-		update_annotation_window_title (window, file);
-	}
+	label = gtk_label_new (_("Type:"));
+	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 4, 4);
+
+	/* type options will eventually be derived from an xml file, but there's only one
+	 * for now
+	 */
+	type_menu_vbox = gtk_vbox_new (FALSE, GNOME_PAD_SMALL);	
+	option_menu = gtk_option_menu_new ();
+	gtk_box_pack_end (GTK_BOX (type_menu_vbox), option_menu, TRUE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), type_menu_vbox, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 4, 4);
+	
+	new_menu = gtk_menu_new ();
+	menu_item = gtk_menu_item_new_with_label (_("free form note"));
+        gtk_widget_show (new_menu);
+        gtk_widget_show (menu_item);
+        gtk_menu_append (GTK_MENU (new_menu), menu_item);
+        gtk_option_menu_set_menu (GTK_OPTION_MENU (option_menu), new_menu);
+
+	/* now make the access option menu */
+	label = gtk_label_new (_("Access:"));
+	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
+	
+	access_menu_vbox = gtk_vbox_new (FALSE, GNOME_PAD_SMALL);	
+	option_menu = gtk_option_menu_new ();
+	gtk_box_pack_end (GTK_BOX (access_menu_vbox), option_menu, TRUE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), access_menu_vbox, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
+
+	new_menu = gtk_menu_new ();
+	menu_item = gtk_menu_item_new_with_label (_("keep local"));
+        gtk_widget_show (new_menu);
+        gtk_widget_show (menu_item);
+        gtk_menu_append (GTK_MENU (new_menu), menu_item);
+        gtk_option_menu_set_menu (GTK_OPTION_MENU (option_menu), new_menu);
+
+	menu_item = gtk_menu_item_new_with_label (_("share globally"));
+        gtk_menu_append (GTK_MENU (new_menu), menu_item);
+
+	return table;
 }
-*/
 
+/* create the annotation window, and allocate its widgets */
 static FMAnnotationWindow *
 create_annotation_window (NautilusFile *file,  FMDirectoryView *directory_view)
 {
 	FMAnnotationWindow *window;
 	GtkWidget *hbox, *content_box;
 	GtkWidget *label;
+	GtkWidget *table;
 	char *file_name, *title;
+	GdkFont *font;
 	
 	window = FM_ANNOTATION_WINDOW (gtk_widget_new (fm_annotation_window_get_type (), NULL));
 
@@ -227,7 +272,7 @@ create_annotation_window (NautilusFile *file,  FMDirectoryView *directory_view)
 	
 	/* allocate an hbox to hold the icon and the title */
 	hbox = gtk_hbox_new (FALSE, GNOME_PAD);
-	gtk_box_pack_start (GTK_BOX (content_box), hbox, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (content_box), hbox, FALSE, FALSE, GNOME_PAD);
 	 
 	/* allocate an icon and title */
 	window->details->file_icon = create_image_widget_for_file (window->details->file);
@@ -237,10 +282,25 @@ create_annotation_window (NautilusFile *file,  FMDirectoryView *directory_view)
 	title = g_strdup_printf (_("Add Annotation to\n%s"), file_name);
 	label = gtk_label_new (title);
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
-	g_free (file_name);
-	g_free (title);
-	
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, GNOME_PAD);
+	g_free (file_name);
+	g_free (title);	
+
+	/* now allocate a table to hold and populate the option boxes */
+	table = create_options_table (window);
+	gtk_box_pack_start (GTK_BOX (content_box), table, FALSE, FALSE, GNOME_PAD);
+	
+	/* add the views as defined by the currently selected type */
+	/* at first, there is only one hardwired type, so just add it here */
+	window->details->text_field = gtk_text_new (NULL, NULL);
+        
+        font = nautilus_font_factory_get_font_from_preferences (12);
+        nautilus_gtk_widget_set_font (window->details->text_field, font);
+        gdk_font_unref (font);
+
+        gtk_text_set_editable (GTK_TEXT (window->details->text_field), TRUE);	
+        gtk_box_pack_start (GTK_BOX (content_box), window->details->text_field, TRUE, TRUE, 0);	
+	
 	update_annotation_window_title (GTK_WINDOW (window), window->details->file);
 
 	gtk_widget_show_all (GTK_WIDGET (window));

@@ -279,7 +279,7 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         /* create the text container */               
         notes->note_text_field = gtk_text_new (NULL, NULL);
         
-        font = nautilus_font_factory_get_font_by_family (_("helvetica"), 14);
+        font = nautilus_font_factory_get_font_from_preferences (14);
         nautilus_gtk_widget_set_font (notes->note_text_field, font);
         gdk_font_unref (font);
 
