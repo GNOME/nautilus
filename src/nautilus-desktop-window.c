@@ -113,9 +113,6 @@ nautilus_desktop_window_new (NautilusApplication *application)
 				 "app_id", "nautilus",
 				 NULL));
 
-	nautilus_window_disable_keyboard_navigation_for_menus (NAUTILUS_WINDOW (window));
-
-
 	/* Special sawmill setting*/
 	gtk_window_set_wmclass (GTK_WINDOW (window), "desktop_window", "Nautilus");
 

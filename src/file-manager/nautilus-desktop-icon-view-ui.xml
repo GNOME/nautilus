@@ -13,6 +13,21 @@
          _label="Reset Desktop Background"
          _tip="Remove any custom pattern or color from the desktop background"/>
 </commands>
+<menu>
+	<!-- By re-labelling these submenus to names without underscores, we
+	     prevent the user from bringing up the otherwise-invisible menu bar
+	     menus on the desktop from the keyboard. Setting the labels to "" in
+	     code does not work (presumably Bonobo bug), but doing so here does.
+	-->
+	<submenu name="File" label=""/>
+	<submenu name="Edit" label=""/>
+	<submenu name="View" label=""/>
+	<submenu name="Go" label=""/>
+	<submenu name="Bookmarks" label=""/>
+	<submenu name="Profiler" label=""/>
+	<submenu name="Help" label=""/>
+	<submenu name="Preferences" label=""/>
+</menu>
 <popups>
         <popup name="background">
                 <placeholder name="Before Zoom Items">

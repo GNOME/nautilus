@@ -1,3 +1,24 @@
+2000-12-12  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 2327 (Alt-key combinations to show menus work on
+	Desktop, but shouldn't)
+
+	Had to abandon the old-Bonobo approach for this and make a
+	new-Bonobo approach.
+
+	* src/file-manager/nautilus-desktop-icon-view-ui.xml:
+	Redefine all top-level menus' labels to be "" so there won't
+	be any underline accelerator
+	
+	* src/nautilus-desktop-window.c: (nautilus_desktop_window_new):
+	* src/nautilus-window-menus.c: 
+	(remove_underline_accelerator_from_menu_title),
+	(nautilus_window_disable_keyboard_navigation_for_menus):
+	* src/nautilus-window.h: Remove the old now-useless trick to
+	do this.
+
 2000-12-12  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 4145, Music view fails if sound device in use

@@ -129,16 +129,6 @@ typedef struct {
         guint changed_handler_id;
 } BookmarkHolder;
 
-
-static const char * normal_menu_paths[] = {
-	NAUTILUS_MENU_PATH_FILE_MENU,
-	NAUTILUS_MENU_PATH_EDIT_MENU,
-	NAUTILUS_MENU_PATH_VIEW_MENU,
-	NAUTILUS_MENU_PATH_GO_MENU,
-	NAUTILUS_MENU_PATH_BOOKMARKS_MENU,
-	NAUTILUS_MENU_PATH_HELP_MENU
-};
-
 static BookmarkHolder *
 bookmark_holder_new (NautilusBookmark *bookmark, 
 		     NautilusWindow *window,
@@ -1067,42 +1057,6 @@ refresh_bookmarks_menu (NautilusWindow *window)
 
 	append_dynamic_bookmarks (window);
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
-}
-
-static void
-remove_underline_accelerator_from_menu_title (NautilusWindow *window, 
-					      const char *menu_path)
-{
-	char *old_label;
-	char *new_label;
-
-	old_label = nautilus_bonobo_get_label (window->details->shell_ui, menu_path);
-	new_label = nautilus_str_strip_chr (old_label, '_');
-	nautilus_bonobo_set_label (window->details->shell_ui, menu_path, new_label);
-
-	g_free (old_label);
-	g_free (new_label);
-}					      
-
-/**
- * nautilus_window_disable_keyboard_navigation_for_menus
- * 
- * Prevents alt-key shortcuts from pulling down menus.
- */
-void
-nautilus_window_disable_keyboard_navigation_for_menus (NautilusWindow *window)
-{
-	guint index;
-
-#ifdef UIH
-	/* FIXME bugzilla.eazel.com 2327: 
-	 * This trick doesn't work with the new Bonobo UI code. 
-	 * Changing the label to one without an underscore does not remove the accelerator.
-	 */
-#endif /* Just to remind us where this bug came from */
-	for (index = 0; index < NAUTILUS_N_ELEMENTS (normal_menu_paths); ++index) {
-		remove_underline_accelerator_from_menu_title (window, normal_menu_paths[index]);
-	}
 }
 
 /**
