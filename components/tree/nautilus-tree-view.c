@@ -909,13 +909,13 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 	GList *p;
 	GList *old_sequence;
 	NautilusCTreeNode *view_node;
-	gboolean at_least_one_found;
-	gboolean expanded_most_recent_node;
+	NautilusCTreeNode *last_valid_view_node;
+	gboolean expanded_last_valid_node;
 	NautilusFile *file;
 
 	view_node = NULL;
+	last_valid_view_node = NULL;
 
-	at_least_one_found = FALSE;
 	uri = NULL;
 
 	if (!view->details->root_seen) {
@@ -936,8 +936,8 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 			break;
 		}
 
-		expanded_most_recent_node = FALSE;
-		at_least_one_found = TRUE;
+		expanded_last_view_node = FALSE;
+		last_valid_view_node = view_node;
 
 		if (p->next != NULL) {
 			/* We don't want to expand the node if it's
@@ -948,7 +948,7 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 			if (!ctree_is_node_expanded (NAUTILUS_CTREE (view->details->tree), view_node)) {
 				nautilus_ctree_expand (NAUTILUS_CTREE (view->details->tree),
 						       view_node);
-				expanded_most_recent_node = TRUE;
+				expanded_last_view_node = TRUE;
 			}
 		} else {
 			g_free (view->details->selected_uri);
@@ -958,45 +958,37 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 		}
 	}
 		
-	if (!at_least_one_found) {
-		/* The target URI just isn't in the tree at all; don't
-                   expand, load or select anything */
+	if (p == NULL || last_valid_view_node == NULL) {
+		/* We already found it, or the the target URI just
+		   isn't in the tree at all. Clean up. */
 		
 		cancel_selection_in_progress (view);
 
 		return;
 	}
 
-	if (p != NULL) {
-		/* Not all the nodes existed yet, damn */
-		
-		old_sequence = view->details->in_progress_select_uris;
-		
-		view->details->in_progress_select_uris = p;
-
-		if (!expanded_most_recent_node) {
-			/* Force a shallow reload. */
-			reload_model_node (view,
-					   nautilus_tree_view_node_to_model_node (view,
-										  view_node));
-		}
+	/* Not all the nodes existed yet, damn */
 	
-		call_when_uri_loaded_or_parent_done_loading (view, uri, 
-							     nautilus_tree_model_get_node (view->details->model,
-											   (char *) p->prev->data),
-							     expand_uri_sequence_and_select_end);
-
-
-		p->prev->next = NULL;
-		p->prev = NULL;
-		nautilus_g_list_free_deep (old_sequence);
-
-		return;
+	old_sequence = view->details->in_progress_select_uris;
+	
+	view->details->in_progress_select_uris = p;
+	
+	if (!expanded_last_view_node) {
+		/* Force a shallow reload. */
+		reload_model_node (view,
+				   nautilus_tree_view_node_to_model_node (view,
+										  last_valid_view_node));
 	}
-
-	/* We're all done, clean up potential remaining junk. */
-
-	cancel_selection_in_progress (view);
+	
+	call_when_uri_loaded_or_parent_done_loading (view, uri, 
+						     nautilus_tree_model_get_node (view->details->model,
+										   (char *) p->prev->data),
+						     expand_uri_sequence_and_select_end);
+	
+	
+	p->prev->next = NULL;
+	p->prev = NULL;
+	nautilus_g_list_free_deep (old_sequence);
 }
 
 
