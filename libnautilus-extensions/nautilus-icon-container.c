@@ -106,6 +106,9 @@
 #define DESKTOP_PAD_VERTICAL 	10
 #define CELL_SIZE 		20
 
+/* Value used to protect against icons being dragged outside of the desktop bounds */
+#define DESKTOP_ICON_SAFETY_PAD 10
+
 enum {
 	NAUTILUS_TYPESELECT_FLUSH_DELAY = 1000000
 	/* After this time the current typeselect buffer will be
@@ -228,15 +231,15 @@ icon_set_position (NautilusIcon *icon,
 		icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
 		width = x2 - x1;
 		height = y2 - y1;
-
-		if (x > right - width) {
-			x = right - width;
+				
+		if (x > right) {
+			x = right - DESKTOP_ICON_SAFETY_PAD;
 		}
 		if (x < left) {
 			x = left;
 		}
 		if (y > bottom - height) {
-			y = bottom - height;
+			y = bottom - DESKTOP_ICON_SAFETY_PAD;
 		}
 		if (y < top) {
 			y = top;

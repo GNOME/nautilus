@@ -287,8 +287,7 @@ get_removable_volumes (void)
 			volume->device_path = g_strdup (ent->mnt_fsname);
 			volume->mount_path = g_strdup (ent->mnt_dir);
 			volume->filesystem = g_strdup (ent->mnt_type);
-			if (mount_volume_add_filesystem (volume)) {
-				mount_volume_get_name (volume);
+			if (mount_volume_add_filesystem (volume)) {				
 				volumes = g_list_append (volumes, volume);
 			} else {
 				nautilus_volume_monitor_free_volume (volume);
@@ -557,6 +556,11 @@ mount_volume_activate_msdos (NautilusVolumeMonitor *view, NautilusVolume *volume
 }
 
 static void
+mount_volume_activate_nfs (NautilusVolumeMonitor *view, NautilusVolume *volume)
+{
+}
+
+static void
 mount_volume_activate_generic (NautilusVolumeMonitor *view, NautilusVolume *volume)
 {	
 }
@@ -638,11 +642,14 @@ mount_volume_activate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 		mount_volume_activate_msdos (monitor, volume);		
 		break;
 		
+	case NAUTILUS_VOLUME_NFS:
+		mount_volume_activate_nfs (monitor, volume);		
+		break;
+		
 	case NAUTILUS_VOLUME_AFFS:
 	case NAUTILUS_VOLUME_FAT:
 	case NAUTILUS_VOLUME_HPFS:
 	case NAUTILUS_VOLUME_MINIX:
-	case NAUTILUS_VOLUME_NFS:
 	case NAUTILUS_VOLUME_SMB:
 	case NAUTILUS_VOLUME_UDF:
 	case NAUTILUS_VOLUME_UFS:
@@ -780,7 +787,6 @@ get_current_mount_list (void)
 					volume->filesystem = nautilus_string_list_nth (list, 2);
 
 					if (mount_volume_add_filesystem (volume)) {
-						mount_volume_get_name (volume);
 						current_mounts = g_list_append (current_mounts, volume);
 					} else {
 						nautilus_volume_monitor_free_volume (volume);
@@ -798,9 +804,11 @@ get_current_mount_list (void)
 		volume->device_path = g_strdup ("/dev/cdrom");
 		volume->mount_path = g_strdup ("/dev/cdrom");
 		volume->filesystem = g_strdup ("cdda");
-		mount_volume_add_filesystem (volume);
-		mount_volume_get_name (volume);
-		current_mounts = g_list_append (current_mounts, volume);		
+		if (mount_volume_get_name (volume)) {
+			current_mounts = g_list_append (current_mounts, volume);
+		} else {
+			nautilus_volume_monitor_free_volume (volume);
+		}
 	}
 #endif
 
@@ -1095,6 +1103,16 @@ mount_volume_minix_add (NautilusVolume *volume)
 static gboolean
 mount_volume_nfs_add (NautilusVolume *volume)
 {
+	/* We need to filter out autofs magic NFS directories.  These entries will have the text
+	 * "(pid" in the first element of its entry in /proc/mounts. An example would be eazel:(pid1234)
+	 * or eazel(pid1234).  If we signal that the volume monitor has added this type of file system
+	 * the trash monitor will become confused and recurse indefinitely.
+	 */
+	
+	if (strstr (volume->device_path, "(pid") != NULL) {
+		return FALSE;
+	}
+		
 	volume->type = NAUTILUS_VOLUME_NFS;
 	return TRUE;
 }
@@ -1575,9 +1593,7 @@ static gboolean
 mount_volume_add_filesystem (NautilusVolume *volume)
 {
 	gboolean mounted = FALSE;
-	
-	
-		
+			
 	if (nautilus_str_has_prefix (volume->device_path, FLOPPY_DEVICE_PATH_PREFIX)) {		
 		mounted = mount_volume_floppy_add (volume);
 	} else if (strcmp (volume->filesystem, "affs") == 0) {		
@@ -1616,9 +1632,12 @@ mount_volume_add_filesystem (NautilusVolume *volume)
 		mounted = mount_volume_xiafs_add (volume);
 	}
 	
-	volume->is_removable = volume_is_removable (volume);
-	volume->is_read_only = volume_is_read_only (volume);;
-	
+	if (mounted) {
+		volume->is_removable = volume_is_removable (volume);
+		volume->is_read_only = volume_is_read_only (volume);
+		mount_volume_get_name (volume);
+	}
+			
 	return mounted;
 }
 

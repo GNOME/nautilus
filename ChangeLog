@@ -1,5 +1,26 @@
 2001-02-07  Gene Z. Ragan  <gzr@eazel.com>
 
+	reviewed by: Robin Slomkowski <robin@eazel.com>
+	
+	Fixed bug 6389, Extremely poor performance when
+	autodir automounter is present
+	
+	Detect special NFS autofs directories and filter them out
+	of the mount list.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(get_removable_volumes), (mount_volume_activate_nfs),
+	(mount_volume_activate), (get_current_mount_list),
+	(mount_volume_nfs_add), (mount_volume_add_filesystem):
+
+	Worked on cleaning up placement of icons on the edges
+	of the desktop based on input from Arlo.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(icon_set_position):
+		
+2001-02-07  Gene Z. Ragan  <gzr@eazel.com>
+
 	Fixed bug 6363, "Set Cover Image" button assumes
 	fixed font height.
 	
