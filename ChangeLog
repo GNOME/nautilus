@@ -1,3 +1,11 @@
+2002-03-25  Alexander Larsson  <alla@lysator.liu.se>
+
+	* src/nautilus-location-bar.c: (style_set_handler):
+	Port to gnome 2.
+	(have_broken_filenames), (accumulate_name_utf8),
+	(accumulate_name_locale), (try_to_expand_path):
+	Fix filename completion, add support for G_BROKEN_FILENAMES
+
 === nautilus 1.1.11 ===
 
 2002-03-24  Alexander Larsson  <alla@lysator.liu.se>

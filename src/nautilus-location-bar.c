@@ -225,23 +225,76 @@ drag_data_get_callback (GtkWidget *widget,
 static void
 style_set_handler (GtkWidget *widget, GtkStyle *previous_style)
 {
-#if GNOME2_CONVERSION_COMPLETE
-	int width;
+	PangoLayout *layout;
+	int width, width2;
 
-	width = gdk_string_width (widget->style->font, GO_TO_LABEL);
-	width = MAX (width, gdk_string_width (widget->style->font, LOCATION_LABEL));
+	layout = gtk_label_get_layout (GTK_LABEL(widget));
+
+	layout = pango_layout_copy (layout);
+
+	pango_layout_set_text (layout, LOCATION_LABEL, -1);
+	pango_layout_get_pixel_size (layout, &width, NULL);
+	
+	pango_layout_set_text (layout, GO_TO_LABEL, -1);
+	pango_layout_get_pixel_size (layout, &width2, NULL);
+	width = MAX (width, width2);
 
 	width += 2 * GTK_MISC (widget)->xpad;
-	
-	gtk_widget_set_usize (widget, width, -1);
-#endif
+
+	gtk_widget_set_size_request (widget, width, -1);
 }
+
+static gboolean
+have_broken_filenames (void)
+{
+	static gboolean initialized = FALSE;
+	static gboolean broken;
+  
+	if (initialized) {
+		return broken;
+	}
+
+	broken = g_getenv ("G_BROKEN_FILENAMES") != NULL;
+  
+	initialized = TRUE;
+  
+	return broken;
+}
+
 
 /* utility routine to determine the string to expand to.  If we don't have anything yet, accept
    the whole string, otherwise accept the largest part common to both */
 
 static char *
-accumulate_name (char *full_name, char *candidate_name)
+accumulate_name_utf8 (char *full_name, char *candidate_name)
+{
+	char *result_name, *str1, *str2;
+
+	if (!g_utf8_validate (candidate_name, -1, NULL)) {
+		return full_name;
+	}
+	
+	if (full_name == NULL) {
+		result_name = g_strdup (candidate_name);
+	} else {
+		result_name = full_name;
+		if (!eel_str_has_prefix (full_name, candidate_name)) {
+			str1 = full_name;
+			str2 = candidate_name;
+
+			while ((g_utf8_get_char (str1) == g_utf8_get_char (str2))) {
+				str1 = g_utf8_next_char (str1);
+				str2 = g_utf8_next_char (str2);
+			}
+			*str1 = '\0';
+		}
+	}
+
+	return result_name;
+}
+
+static char *
+accumulate_name_locale (char *full_name, char *candidate_name)
 {
 	char *result_name, *str1, *str2;
 
@@ -253,9 +306,9 @@ accumulate_name (char *full_name, char *candidate_name)
 			str1 = full_name;
 			str2 = candidate_name;
 
-			while ((g_utf8_get_char (str1) == g_utf8_get_char (str2))) {
-				str1 = g_utf8_next_char (str1);
-				str2 = g_utf8_next_char (str2);
+			while (*str1 == *str2) {
+				str1++;
+				str2++;
 			}
 			*str1 = '\0';
 		}
@@ -304,17 +357,19 @@ try_to_expand_path (gpointer callback_data)
 
 	char *base_name_uri_escaped;
 	char *base_name;
+	char *base_name_utf8;
 	char *user_location;
 	char *current_path;
 	char *dir_name;
 	char *expand_text;
+	char *expand_text_utf8;
 	char *expand_name;
+	char *insert_text;
 
 	int base_name_length;
 	int user_location_length;
-	int current_path_length;
 	int expand_text_length;
-	int offset;
+	int pos;
 
 	bar = NAUTILUS_LOCATION_BAR (callback_data);
 	editable = GTK_EDITABLE (bar->details->entry);
@@ -335,9 +390,7 @@ try_to_expand_path (gpointer callback_data)
 		return FALSE;
 	}
 
-	current_path_length = g_utf8_strlen (current_path, -1);
 	user_location_length = g_utf8_strlen (user_location, -1);
-	offset = current_path_length - user_location_length;
 
 	g_free (user_location);
 
@@ -356,8 +409,6 @@ try_to_expand_path (gpointer callback_data)
 		g_free (current_path);
 		return FALSE;
 	}
-
-	base_name_length = g_utf8_strlen (base_name, -1);
 
 	dir_name = gnome_vfs_uri_extract_dirname (uri);
 
@@ -382,24 +433,43 @@ try_to_expand_path (gpointer callback_data)
 			} else {
 				expand_name = g_strdup (current_file_info->name);
 			}
-			expand_text = accumulate_name (expand_text, expand_name);
+			if (have_broken_filenames()) {
+				expand_text = accumulate_name_locale (expand_text, expand_name);
+			} else {
+				expand_text = accumulate_name_utf8 (expand_text, expand_name);
+			}
 			g_free (expand_name);
 		}
 	}
 
-	/* if we've got something, add it to the entry */
-	if (expand_text != NULL) {
-		expand_text_length = g_utf8_strlen (expand_text, -1);
-		if (!eel_str_has_suffix (current_path, expand_text)
-		    && base_name_length < expand_text_length) {
-			gtk_editable_insert_text (editable,
-						  g_utf8_offset_to_pointer (expand_text, base_name_length),
-						  expand_text_length - base_name_length,
-						  &user_location_length);
+	if (have_broken_filenames()) {
+		if (expand_text) {
+			expand_text_utf8 = g_locale_to_utf8 (expand_text, -1, NULL, NULL, NULL);
+			g_free (expand_text);
+			expand_text = expand_text_utf8;
+		}
+		
+		base_name_utf8 = g_locale_to_utf8 (base_name, -1, NULL, NULL, NULL);
+		g_free (base_name);
+		base_name = base_name_utf8;
+	} 
 
-			gtk_editable_select_region (editable,
-						    current_path_length - offset,
-						    current_path_length - offset + expand_text_length - base_name_length);
+	/* if we've got something, add it to the entry */
+	if (expand_text != NULL && base_name != NULL) {
+		expand_text_length = g_utf8_strlen (expand_text, -1);
+		base_name_length = g_utf8_strlen (base_name, -1);
+		
+		if (!eel_str_has_suffix (base_name, expand_text)
+		    && base_name_length < expand_text_length) {
+			insert_text = g_utf8_offset_to_pointer (expand_text, base_name_length);
+			pos = user_location_length;
+			gtk_editable_insert_text (editable,
+						  insert_text,
+						  strlen (insert_text),
+						  &pos);
+
+			pos = user_location_length;
+			gtk_editable_select_region (editable, pos, -1);
 		}
 	}
 	g_free (expand_text);
