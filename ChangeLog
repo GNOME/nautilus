@@ -1,5 +1,11 @@
 2004-02-11  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-view-identifier.c (get_lang_list):
+	Pass LC_MESSAGES. Fixes #48358.
+	Patch from Nuno Ferreira.
+
+2004-02-11  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-canvas-item.c (compute_text_rectangle): 
 	Fix bounds for text, #125558
 	Patch from  Martin Wehner

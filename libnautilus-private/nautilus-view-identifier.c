@@ -96,7 +96,7 @@ get_lang_list (void)
 
 	retval = NULL;
 	
-	for (l = gnome_i18n_get_language_list (NULL);
+	for (l = gnome_i18n_get_language_list ("LC_MESSAGES");
 	     l != NULL;
 	     l = g_list_next (l)) {
 		lang = l->data;
