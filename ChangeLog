@@ -1,3 +1,119 @@
+2001-08-14  Seth Nickell  <snickell@stanford.edu>
+
+	Load filesystems from an XML file rather than hardcoding
+	the various attributes and behaviors. Some properties, such
+	as for CDDA and NFS, are still hardcoded because they require
+	actual code. This also makes it easier to add new filesystems.
+	
+	* libnautilus-private/filesystem-attributes.xml
+
+	Filesystem description file.
+	
+	* libnautilus-private/Makefile.am:
+
+	Add filesystem-attribute.xml to the build.
+
+	* libnautilus-private/nautilus-volume-monitor.c: 
+
+	(mount_volume_prepend_filesystem):
+
+	Don't try to detect filesystem strings and associate them
+	with an enumeration type...nix the enumeration altogether
+	since its not compatible with dynamically loading the
+	filesystems.
+		
+	(get_xml_path), (load_filesystem_attributes_table)
+
+	Functions for reading in filesystem-attribute.xml and
+	loading the various filesystems into a hashtable.
+	
+	(nautilus_volume_monitor_initialize)
+
+	Read in the filesystem attributes table.
+	
+	(get_removable_volumes), (mount_volume_deactivate), 
+	(get_mount_list), (get_current_mount_list),
+	(verify_current_mount_state)
+
+	Take a file attributes hashtable, or pass one to a
+	subfunction.
+	
+	(nautilus_volume_monitor_get_target_uri),
+
+	CDDA is the only system we need to deal with in an unusual
+	way. Take out a long list and just check for CDDA.
+	
+	(nautilus_volume_monitor_should_integrate_trash)
+
+	Use information read from the file rather than hardcoding
+	a list of filesystems that can use trash (should be the
+	same for now).
+	
+	(make_volume_name_from_path), (mount_volume_make_name)
+
+	Get name out of the filesystem table rather than hardcoding.
+
+	(mount_volume_iso9660_add)
+
+	We were deciding if a device was *really* a CDROM by 
+	doing an ioctl on it to determine the drive status. This
+	is a good check...except that on systems using DevFS
+	devices can be user mountable without being user readable
+	by default. Also, on my system it fails if there's no
+	disk in the drive itself.
+
+	(mount_volume_auto_add)
+
+	Continue setting the device if its a floppy drive (eventually
+	this should probably be cleaned out too), but don't set the
+	filesystem type since we don't use the enum anymore.
+	
+	(mount_volume_cdda_add)
+
+	Set as a CDDA device, but not a CDDA volume (since we don't
+	have hardcoded volume types anymore).
+
+	(mount_volume_nfs_add)
+
+	Don't set NFS type since the enum was blown away.
+
+	(create_volume)
+
+	Accept a filesystem table and set attributes read from
+	filesystem-attributes.xml if a volume's filesystem is found
+	in the table. Perhaps eventually we should just assign a
+	reference to the volume entry, but this was simpler for
+	now since some functions modify things like the description.
+	
+	(copy_volume)
+
+	Deal with copying the new attributes.
+
+	* libnautilus-private/nautilus-volume-monitor.h:
+
+	Nix the filesystem enumeration. Change NAUTILUS_DEVICE_CD_ROM
+	to NAUTILUS_DEVICE_CDROM
+	
+	* src/file-manager/fm-desktop-icon-view.c: (create_mount_link),
+	(update_disks_menu):
+
+	Deal with rename of NAUTILUS_DEVICE_CD_ROM
+	
+	* src/nautilus-application.c: (volume_mounted_callback):
+
+	Deal with rename of NAUTILUS_DEVICE_CD_ROM
+	
+	* AUTHORS:
+
+	Update E-mail address.
+	
+	* configure.in:
+
+	Make "FAM not found" warning a little more serious and
+	informative. We particularly want to encourage distributors
+	to enable FAM support.
+
+
 2001-08-11  Seth Nickell  <snickell@stanford.edu>
 
 	Trying to make nautilus volume monitor work more

@@ -430,7 +430,7 @@ create_mount_link (FMDesktopIconView *icon_view,
 	/* Get icon type */
 	switch (volume->device_type) {
 	case NAUTILUS_DEVICE_AUDIO_CD:
-	case NAUTILUS_DEVICE_CD_ROM_DRIVE:
+	case NAUTILUS_DEVICE_CDROM_DRIVE:
 		icon_name = "i-cdrom";
 		break;
 
@@ -1217,6 +1217,7 @@ update_disks_menu (FMDesktopIconView *view)
 	     element = element->next, ++index) {
 		volume = element->data;
 		
+
 		/* Determine human-readable name from mount path */
 		name = nautilus_volume_monitor_get_mount_name_for_display (nautilus_volume_monitor_get (), volume);
 		

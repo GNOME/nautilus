@@ -105,13 +105,14 @@ AC_CHECK_FUNCS(setenv unsetenv putenv)
 dnl =============
 dnl Check for FAM 
 dnl =============
+FAM_MISSING_WARNING="Nautilus depends on FAM to provide notification when files are altered (either through filesystem polling, or a kernel notification mechanism). If Nautilus is built without FAM support, directories viewed with Nautilus will not remain in synch with the actual filesystem when they are altered by external processes. Particularly if you are a distributor please compile Nautilus with FAM support. FAM is available from http://oss.sgi.com/projects/fam/. A patch to add Linux Kernel 2.4 directory notify support to FAM (highly desirable) is available from http://people.redhat.com/alexl/files/"
 FAM_LIBS=
 AC_CHECK_LIB(fam, FAMOpen,
   AC_CHECK_HEADERS(fam.h,
     [AC_DEFINE(HAVE_LIBFAM)
      FAM_LIBS="-lfam"],
-    AC_MSG_WARN(*** FAM support will not be built (header files not found) ***)),
-  AC_MSG_WARN(*** FAM support will not be built (FAM library not found) ***))
+    AC_MSG_WARN(*** FAM support will not be built (header files not found) $FAM_MISSING_WARNING ***)),
+  AC_MSG_WARN(*** FAM support will not be built (FAM library not found) $FAM_MISSING_WARNING ***))
 AC_SUBST(FAM_LIBS)
 
 dnl ====================================

@@ -830,7 +830,7 @@ volume_mounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 	}
 	
 	/* Open a window to the CD if the user has set that preference. */
-	if (volume->device_type == NAUTILUS_DEVICE_CD_ROM_DRIVE
+	if (volume->device_type == NAUTILUS_DEVICE_CDROM_DRIVE
 		&& gnome_config_get_bool ("/magicdev/Options/do_fileman_window=true")) {		
 		window = nautilus_application_create_window (application);
 		uri = gnome_vfs_get_uri_from_local_path (volume->mount_path);

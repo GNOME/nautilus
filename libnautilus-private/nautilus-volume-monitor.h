@@ -42,6 +42,7 @@ struct NautilusVolumeMonitor {
 };
 
 typedef struct NautilusVolume NautilusVolume;
+typedef struct NautilusFilesystemType NautilusFilesystemType;
 
 struct NautilusVolumeMonitorClass {
 	GtkObjectClass parent_class;
@@ -58,35 +59,9 @@ struct NautilusVolumeMonitorClass {
 };
 
 typedef enum {
-	NAUTILUS_VOLUME_AFFS,
-	NAUTILUS_VOLUME_AUTO,
-	NAUTILUS_VOLUME_CDDA, 	
-	NAUTILUS_VOLUME_CDROM, 	
-	NAUTILUS_VOLUME_EXT2,
-	NAUTILUS_VOLUME_EXT3,
-	NAUTILUS_VOLUME_FAT,
-	NAUTILUS_VOLUME_HPFS,
-	NAUTILUS_VOLUME_HSFS,
-	NAUTILUS_VOLUME_MINIX,
-	NAUTILUS_VOLUME_MSDOS,
-	NAUTILUS_VOLUME_NFS,
-	NAUTILUS_VOLUME_PROC,
-	NAUTILUS_VOLUME_REISERFS,
-	NAUTILUS_VOLUME_SMB,
-	NAUTILUS_VOLUME_UDF,
-	NAUTILUS_VOLUME_UFS,
-	NAUTILUS_VOLUME_UMSDOS,
-	NAUTILUS_VOLUME_VFAT,
-	NAUTILUS_VOLUME_XENIX,
-	NAUTILUS_VOLUME_XFS,
-	NAUTILUS_VOLUME_XIAFS,
-	NAUTILUS_VOLUME_UNKNOWN
-} NautilusVolumeType;
-
-typedef enum {
 	NAUTILUS_DEVICE_AUDIO_CD,
 	NAUTILUS_DEVICE_CAMERA,
-	NAUTILUS_DEVICE_CD_ROM_DRIVE,
+	NAUTILUS_DEVICE_CDROM_DRIVE,
 	NAUTILUS_DEVICE_FLOPPY_DRIVE,
 	NAUTILUS_DEVICE_JAZ_DRIVE,
 	NAUTILUS_DEVICE_MEMORY_STICK,
@@ -95,8 +70,13 @@ typedef enum {
 	NAUTILUS_DEVICE_UNKNOWN
 } NautilusDeviceType;
 
+typedef struct {
+	char *name;
+	char *description;
+	gboolean use_trash;
+} NautilusVolumeInfo;
+
 struct NautilusVolume {
-	NautilusVolumeType volume_type;
 	NautilusDeviceType device_type;
 		
 	char *device_path;
@@ -104,8 +84,12 @@ struct NautilusVolume {
 	char *volume_name;
 	char *filesystem;
 	
+	char *description;
+
 	gboolean is_removable;	
 	gboolean is_read_only;
+	gboolean use_trash;
+	gboolean audio_cd;
 };
 
 typedef gboolean (* NautilusEachVolumeFunction) (const NautilusVolume *, gpointer);
