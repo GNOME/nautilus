@@ -1,3 +1,16 @@
+2000-02-29  John Sullivan <sullivan@eazel.com>
+
+        * src/ntl-window-msgs.c: (nautilus_window_set_state_info):
+          Replaced gtk_object_ref with comment explaining not to
+          ref in the cases NEW_CONTENT_VIEW_ACTIVATED and
+          NEW_META_VIEW_ACTIVATED. The former is called only when
+          switching views via the View As menu, and was leaving
+          an extra ref on the content_view, which was preventing 
+          it from getting destroyed when switching views, which
+          was preventing me from using the destroy signal for
+          menu unmerging. The latter is never called, but presumably
+          would have the same issue if anyone ever called it.
+
 2000-02-28  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/nautilus-window-menus.c (clear_appended_bookmark_items):

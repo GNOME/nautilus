@@ -808,7 +808,7 @@ nautilus_window_set_state_info(NautilusWindow *window, ...)
 #endif
           g_return_if_fail(!window->new_content_view);
           new_view = va_arg(args, NautilusView*);
-          gtk_object_ref(GTK_OBJECT(new_view));
+          /* Don't ref here, reference is held by widget hierarchy. */
           window->new_content_view = new_view;
           if(!window->pending_ni)
             window->view_activation_complete = TRUE;
@@ -820,7 +820,7 @@ nautilus_window_set_state_info(NautilusWindow *window, ...)
           g_message("NEW_META_VIEW_ACTIVATED");
 #endif
           new_view = va_arg(args, NautilusView*);
-          gtk_object_ref(GTK_OBJECT(new_view));
+          /* Don't ref here, reference is held by widget hierarchy. */
           window->new_meta_views = g_slist_prepend(window->new_meta_views, new_view);
           window->changes_pending = TRUE;
           window->views_shown = FALSE;
@@ -1015,7 +1015,7 @@ view_menu_switch_views_cb (GtkWidget *widget, gpointer data)
   nautilus_window_allow_stop(window, TRUE);
 
   view = nautilus_window_load_content_view (window, iid, window->ni, NULL);
-  nautilus_window_set_state_info(window, (NautilusWindowStateItem)NEW_CONTENT_VIEW_ACTIVATED, view, (NautilusWindowStateItem)0);
+  nautilus_window_set_state_info (window, (NautilusWindowStateItem)NEW_CONTENT_VIEW_ACTIVATED, view, (NautilusWindowStateItem)0);
   window->is_back = FALSE;
   window->is_reload = TRUE;
 }
