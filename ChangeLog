@@ -1,5 +1,12 @@
 2001-08-24  Darin Adler  <darin@bentspoon.com>
 
+	* libnautilus-private/nautilus-file.c:
+	(is_special_desktop_gmc_file), (nautilus_file_get_name):
+	Some new FIXMEs for I/O that's done at bad times -- these could
+	contribute to the performance problems that Alan Cox reported.
+
+2001-08-24  Darin Adler  <darin@bentspoon.com>
+
 	* src/file-manager/fm-directory-view.c:
 	(set_up_scripts_directory_global): Separate this from the code to
 	create the scripts directory.

@@ -1894,6 +1894,7 @@ is_special_desktop_gmc_file (NautilusFile *file)
 {
 	static char *home_dir;
 	static int home_dir_len;
+	/* FIXME: Is a fixed-size buffer here OK? */
 	char buffer [1024];
 	char *uri, *path;
 	int s;
@@ -1906,6 +1907,11 @@ is_special_desktop_gmc_file (NautilusFile *file)
 		return TRUE;
 	}
 
+	/* FIXME: This does I/O here (the readlink call) which should
+	 * be done at async. time instead. Doing the I/O here means
+	 * that we potentially do this readlink over and over again
+	 * every time this function is called, slowing Nautilus down.
+	 */
 	if (nautilus_file_is_symbolic_link (file)) {
 		/* You would think that
 		 * nautilus_file_get_symbolic_link_target_path would
@@ -1943,8 +1949,9 @@ is_special_desktop_gmc_file (NautilusFile *file)
 			
 		}
 		if (home_dir != NULL) {
-			if (strcmp (home_dir, buffer) == 0)
+			if (strcmp (home_dir, buffer) == 0) {
 				return TRUE;
+			}
 		}
 	}
 	return FALSE;
@@ -2218,6 +2225,15 @@ nautilus_file_get_name (NautilusFile *file)
 	}
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
+	/* FIXME: It's very bad to do this I/O here. For one thing,
+	 * this means that a file's name can change when the MIME
+	 * type is fetched. For another, it means that there's I/O
+	 * done every single time nautilus_file_get_name is called.
+	 * This goes against the design of NautilusFile. The proper
+	 * way to do this is to do this I/O in an async. way when
+	 * the object is created, but at the very least we need to
+	 * change this so it only does the I/O once!
+	 */
 	if (nautilus_file_is_mime_type (file, "application/x-gnome-app-info")) {
 		uri = nautilus_file_get_uri (file);
 		path = gnome_vfs_get_local_path_from_uri (uri);
@@ -2239,6 +2255,15 @@ nautilus_file_get_name (NautilusFile *file)
 		}
 	}
 
+	/* FIXME: It's very bad to do this I/O here. For one thing,
+	 * this means that a file's name can change when the MIME
+	 * type is fetched. For another, it means that there's I/O
+	 * done every single time nautilus_file_get_name is called.
+	 * This goes against the design of NautilusFile. The proper
+	 * way to do this is to do this I/O in an async. way when
+	 * the object is created, but at the very least we need to
+	 * change this so it only does the I/O once!
+	 */
 	/* Desktop directories contain special "URL" files, handle
 	 * those by using the gnome metadata caption.
 	 */
