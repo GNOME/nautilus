@@ -1,3 +1,34 @@
+2001-03-04  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	reviewed by: Robey Pointer <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(add_to_dedupe_hash), (post_get_softcat_info),
+	(dedupe_foreach_depends), (check_if_modification_is_ok),
+	(do_requirement_consistency_check_package),
+	(do_requirement_consistency_check_internal),
+	(check_if_related_package), (check_if_modified_related_package),
+	(check_tree_helper), (add_file_conflict),
+	(check_no_two_packages_has_same_file),
+	(check_conflicts_against_already_installed_packages),
+	(check_feature_consistency), (do_file_conflict_check),
+	(eazel_uninstall_upward_traverse),
+	(eazel_uninstall_check_for_install):
+
+	Mark packages that have had check-existing done on them, so we can
+	check them on each round and not miss any packages or check any
+	twice.  Dedupe packages even if they don't have softcat info yet
+	(their dupe might).  During consistency checking, don't bother to
+	check packages that are elsewhere in the tree -- assume we handled
+	them correctly already.  Split check_if_related_package into two
+	pieces, so we can re-use the first half when adding file
+	conflicts.  This way, we can avoid marking file conflicts between
+	two related packages (rpm4 allows this, for better or worse).
+	Prune dead packages after the file conflict checks.  Make a
+	passing reference to an unused softcat flag just to annoy Robey.
+	Automatically add related packages to the tree during uninstall.
+	This fixes bug 7245 and at least one other bug.
+
 2001-03-04  Dan Mueth  <dan@eazel.com>
 
         reviewed by: Maciej Stachowiak  <mjs@eazel.com>

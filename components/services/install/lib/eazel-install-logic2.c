@@ -538,6 +538,10 @@ static void
 add_to_dedupe_hash (EazelInstall *service,
 		    PackageData *package)
 {
+#if EI2_DEBUG & 0x4
+	trilobite_debug ("(adding %p %s %s to dedupe)", 
+			 package, package->name, package->md5);
+#endif
 	gtk_object_ref (GTK_OBJECT (package));
 	g_hash_table_insert (service->private->dedupe_hash, 
 			     package->md5, 
@@ -573,18 +577,28 @@ post_get_softcat_info (EazelInstall *service,
 	g_assert ((*package)->md5);
 	p1 = g_hash_table_lookup (service->private->dedupe_hash, (*package)->md5);
 	
-	if (p1) {
+	if (p1 != NULL) {
+		/* Don't dedupe yourself */
+		if (p1 != (*package)) {
 #if EI2_DEBUG & 0x4
-		trilobite_debug ("\tdeduping %p %s to %p", *package, (*package)->name, p1);
+			trilobite_debug ("\tdeduping %p %s to %p", *package, (*package)->name, p1);
 #endif		
-		
-		gtk_object_ref (GTK_OBJECT (p1));
-		gtk_object_unref (GTK_OBJECT (*package)); 
-		(*package) = p1;
-	} else {
+			
+			gtk_object_ref (GTK_OBJECT (p1));
+			gtk_object_unref (GTK_OBJECT (*package)); 
+			(*package) = p1;
+		} else {
+#if EI2_DEBUG & 0x4
+			trilobite_debug ("\tnot deduping myself %p %s", *package, (*package)->name, p1);
+#endif		
+		}
+	}
+
+	if (GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT ((*package)), "have-checked-existing")) == 0) {
 		EazelInstallStatus status;
 		
 		status = eazel_install_check_existing_packages (service, *package);
+		gtk_object_set_data (GTK_OBJECT ((*package)), "have-checked-existing", GINT_TO_POINTER (1));
 		
 #if 0
 		/* HACK to always fail gnome-libs for fun... */
@@ -758,6 +772,7 @@ dedupe_foreach_depends (PackageDependency *d,
 			 EazelInstall *service) 
 {
 	PackageData *p1;
+	PackageData *p11;
 
 	g_assert (d);
 	g_assert (IS_PACKAGEDEPENDENCY (d));
@@ -771,20 +786,15 @@ dedupe_foreach_depends (PackageDependency *d,
 		return;
 	}
 
-	if (~p1->fillflag & MUST_HAVE) {
-		PackageData *p11;
-
-		p11 = g_hash_table_lookup (service->private->dedupe_hash, p1->md5);
-
-		if (p11) {
-			gtk_object_ref (GTK_OBJECT (p11));
-			gtk_object_unref (GTK_OBJECT (p1)); 
-			d->package = p11;
-		} else {
-			gtk_object_ref (GTK_OBJECT (p1));
-			g_hash_table_insert (service->private->dedupe_hash, p1->md5, p1);			
-			dedupe_foreach (p1, service);
-		}
+	p11 = g_hash_table_lookup (service->private->dedupe_hash, p1->md5);
+	
+	if (p11) {
+		gtk_object_ref (GTK_OBJECT (p11));
+		gtk_object_unref (GTK_OBJECT (p1)); 
+		d->package = p11;
+	} else {
+		add_to_dedupe_hash (service, p1);
+		dedupe_foreach (p1, service);
 	}
 }
 
@@ -1264,7 +1274,7 @@ do_dep_check (EazelInstall *service,
 }
 
 /* This function is used by do_requirement_consistency_check_package.
-   pack is a package which modified updated, and dep is a 
+   "pack" is a package which modified "updated", and "dep" is a 
    dependency that someone else has on updated.
 
    To accept :
@@ -1298,7 +1308,7 @@ check_if_modification_is_ok (EazelInstall *service,
 	switch (updated->modify_status) {
 	case PACKAGE_MOD_UPGRADED:
 #if EI2_DEBUG & 0x4
-		trilobite_debug ("\t\t\t -> checking if upgrade is ok");
+		trilobite_debug ("\t\t\t\t -> checking if upgrade is ok");
 #endif
 		if (dep->sense & EAZEL_SOFTCAT_SENSE_GT) {
 			/* is sense it has > in it, upgrading is safe */
@@ -1319,7 +1329,7 @@ check_if_modification_is_ok (EazelInstall *service,
 		break;
 	case PACKAGE_MOD_DOWNGRADED:
 #if EI2_DEBUG & 0x4
-		trilobite_debug ("\t\t\t -> checking if downgrade is ok");
+		trilobite_debug ("\t\t\t\t -> checking if downgrade is ok");
 #endif
 		if (dep->sense & EAZEL_SOFTCAT_SENSE_LT) {
 			/* is sense it has < in it, 
@@ -1344,7 +1354,7 @@ check_if_modification_is_ok (EazelInstall *service,
 	}
 
 #if EI2_DEBUG & 0x4
-	trilobite_debug ("\t\t\t -> %s", accept ? "yarh" : "argh");
+	trilobite_debug ("\t\t\t\t -> %s", accept ? "yarh" : "argh");
 #endif
 
 	return accept;
@@ -1366,6 +1376,7 @@ find_break_by_package_name (PackageBreaks *breaks, PackageData *pack)
  */
 static void 
 do_requirement_consistency_check_package (EazelInstall *service, 
+					  GList *packages,
 					  PackageData *pack)
 {
 	GList *iterator;
@@ -1414,7 +1425,17 @@ do_requirement_consistency_check_package (EazelInstall *service,
 #if EI2_DEBUG & 0x4
 			trilobite_debug ("\t\t -> scanning deps for %s", requiredby->name);
 #endif
-			for (dep_it = requiredby->depends; dep_it; dep_it = g_list_next (dep_it)) {
+			/* If the package that requries something from the modified package is
+			   in the current workset, assume the other parts of the dependency voodoo
+			   works and we can there just continue... */
+
+			if (g_list_find_custom (packages, 
+						requiredby->name, 
+						(GCompareFunc)eazel_install_package_name_compare)) {
+#if EI2_DEBUG & 0x4
+				trilobite_debug ("\t\t -> since it's in packages, it's fine...");
+#endif
+			} else for (dep_it = requiredby->depends; dep_it; dep_it = g_list_next (dep_it)) {
 				PackageDependency *dep = PACKAGEDEPENDENCY (dep_it->data);
 				if (dep->package && dep->version) {
 					/* if this is a dep for the updated package, and sense
@@ -1425,16 +1446,18 @@ do_requirement_consistency_check_package (EazelInstall *service,
 					    strcmp (dep->package->name, updated->name)==0 &&
 					    dep->sense != EAZEL_SOFTCAT_SENSE_ANY) {
 #if EI2_DEBUG & 0x4
-						trilobite_debug ("\t\t -> %p %s requires %s %s %s",
+						trilobite_debug ("\t\t\t -> %p %s requires %s %s %s",
 								 requiredby, requiredby->name,
 								 dep->package->name,
 								 eazel_softcat_sense_flags_to_string (dep->sense),
 								 dep->version);
 #endif
-
-						/* If we fail, mark pack as breaking requiredby */
-						if (check_if_modification_is_ok (service, pack, updated, dep)
+						if (check_if_modification_is_ok (service, 
+										 pack, 
+										 updated, 
+										 dep)
 						    == FALSE) {
+							/* If we fail, mark pack as breaking requiredby */
 							if (g_list_find_custom (pack->breaks, 
 										updated,
 										(GCompareFunc)find_break_by_package_name)==NULL) {
@@ -1480,7 +1503,7 @@ do_requirement_consistency_check_internal (EazelInstall *service,
 #if EI2_DEBUG & 0x4
 			trilobite_debug ("\t -> checking %p %s", pack, pack->name);
 #endif
-			do_requirement_consistency_check_package (service, pack);
+			do_requirement_consistency_check_package (service, packages, pack);
 			
 		}
 	}
@@ -1510,10 +1533,11 @@ void check_no_two_packages_has_same_file (EazelInstall *service, GList *packages
 void check_feature_consistency (EazelInstall *service, GList *packages);
 void check_conflicts_against_already_installed_packages (EazelInstall *service, GList *packages);
 void check_tree_for_conflicts (EazelInstall *service, GList **packages, GList **extra_packages);
+gboolean check_if_modified_related_package (EazelInstall *service, PackageData *package, PackageData *dep);
 gboolean check_if_related_package (EazelInstall *service, PackageData *package, PackageData *dep);
 
 /*
-  This function tests wheter "package" and "dep"
+  This function tests whether "package" and "dep"
   seems to be related in some way.
   This is done by checking the package->modifies list for
   elements that have same version as dep->version.
@@ -1528,71 +1552,103 @@ check_if_related_package (EazelInstall *service,
 {
 	/* Pessimisn mode = HIGH */
 	gboolean result = FALSE;
-	GList *potiental_mates;
 	char **dep_name_elements;
-	
-	dep_name_elements = g_strsplit (dep->name, "-", 80);
+	char **mod_name_elements;
+	char *dep_name_iterator;
+	char *mod_name_iterator;
+	int cnt = 0;
 
-	/* First check, if package modifies a package with the same version
-	   number as dep->version */
-	potiental_mates = package->modifies;
-	while ((potiental_mates = g_list_find_custom (potiental_mates, 
-						      dep->version, 
-						      (GCompareFunc)eazel_install_package_version_compare))!=NULL) {
-		PackageData *modpack = (PackageData*)potiental_mates->data;
+#if EI2_DEBUG & 0x4
+	trilobite_debug ("check_if_related_package (%p %s-%s, %p %s-%s)",
+			 package, package->name, package->version,
+			 dep, dep->name, dep->version);
+#endif 	
+
+	dep_name_elements = g_strsplit (dep->name, "-", 80);		
+	mod_name_elements = g_strsplit (package->name, "-", 80);
 		
-		if ((modpack->modify_status == PACKAGE_MOD_UPGRADED) ||
-		    (modpack->modify_status == PACKAGE_MOD_DOWNGRADED)) {			
-			char **mod_name_elements;
-			char *dep_name_iterator;
-			char *mod_name_iterator;
-			int cnt = 0;
-
-			mod_name_elements = g_strsplit (modpack->name, "-", 80);
-			
-			for (cnt=0; TRUE;cnt++) {
-				dep_name_iterator = dep_name_elements[cnt];
-				mod_name_iterator = mod_name_elements[cnt];
+	for (cnt=0; TRUE;cnt++) {
+		dep_name_iterator = dep_name_elements[cnt];
+		mod_name_iterator = mod_name_elements[cnt];
 #if 0
-				trilobite_debug ("dep name iterator = \"%s\"", dep_name_iterator);
-				trilobite_debug ("mod name iterator = \"%s\"", mod_name_iterator);
+		trilobite_debug ("dep name iterator = \"%s\"", dep_name_iterator);
+		trilobite_debug ("mod name iterator = \"%s\"", mod_name_iterator);
 #endif
-				if ((dep_name_iterator==NULL) ||
-				    (mod_name_iterator==NULL)) {
-					break;
-				}
-				if ((strlen (dep_name_iterator) == strlen (mod_name_iterator)) &&
-				    (strcmp (dep_name_iterator, mod_name_iterator)==0)) {
-					continue;
-				}
-				break;
-			}
-			if (cnt >= 1) {
-#if EI2_DEBUG & 0x4
-				trilobite_debug ("%s-%s seems to be a child package of %s-%s, which %s-%s updates",
-						 dep->name, dep->version, 
-						 modpack->name, modpack->version,
-						 package->name, package->version);
-#endif
-				if (!result) {
-					result = TRUE;
-				} else {
-					trilobite_debug ("but what blows is, the previous also did!!");
-					package->status = PACKAGE_CANCELLED;
-					result = FALSE;
-				}				
-			} else {
-#if EI2_DEBUG & 0x4
-				trilobite_debug ("%s-%s is not related to %s-%s", 
-						 dep->name, dep->version, 
-						 package->name, package->version);
-#endif
-			}
-			g_strfreev (mod_name_elements);			
+		if ((dep_name_iterator==NULL) ||
+		    (mod_name_iterator==NULL)) {
+			break;
 		}
+		if ((strlen (dep_name_iterator) == strlen (mod_name_iterator)) &&
+		    (strcmp (dep_name_iterator, mod_name_iterator)==0)) {
+			continue;
+		}
+		break;
+	}
+	if (cnt >= 1) {
+		if (!result) {
+			result = TRUE;
+		} else {
+			trilobite_debug ("but what blows is, the previous also did!!");
+			package->status = PACKAGE_CANCELLED;
+			result = FALSE;
+		}				
+	} else {
+#if EI2_DEBUG & 0x4
+		trilobite_debug ("%s-%s is not related to %s-%s", 
+				 dep->name, dep->version, 
+				 package->name, package->version);
+#endif
+	}
+
+	g_strfreev (mod_name_elements);			
+	g_strfreev (dep_name_elements);
+	return result;
+}
+
+/*
+  This function tests whether "package" has modifieds that are related to "dep" in any way.
+*/
+gboolean
+check_if_modified_related_package (EazelInstall *service,
+				   PackageData *package,
+				   PackageData *dep)
+{
+	/* Pessimisn mode = HIGH */
+	gboolean result = FALSE;
+	GList *potiental_mates;
+
+	potiental_mates = package->modifies;
+
+	while ((result == FALSE) && 
+	       (potiental_mates = 
+		g_list_find_custom (potiental_mates, 
+				    dep->version, 
+				    (GCompareFunc)eazel_install_package_version_compare))!=NULL) {
+		PackageData *modpack = PACKAGEDATA (potiental_mates->data);
+#if EI2_DEBUG & 0x4
+		trilobite_debug ("checking against %p %s-%s %p %s-%s %p %s-%s", 
+				 package, 
+				 package->name, package->version,
+				 modpack,
+				 modpack->name,
+				 modpack->version,
+				 dep, dep->name, dep->version);
+#endif
+		if (check_if_related_package (service, 
+					      modpack, 
+					      dep) == TRUE) {
+#if EI2_DEBUG & 0x4
+			trilobite_debug ("%s-%s seems to be a related package of %s-%s, which %s-%s modifies",
+					 dep->name, dep->version, 
+					 modpack->name, modpack->version,
+					 package->name, package->version);
+#endif
+			result = TRUE;			
+		}
+		/* Skip one ahead */
 		potiental_mates = g_list_next (potiental_mates);
 	}
-	g_strfreev (dep_name_elements);
+
 	return result;
 }
 
@@ -1664,7 +1720,7 @@ check_tree_helper (EazelInstall *service,
 
 	if (g_list_find (*path, pack)) {
 #if EI2_DEBUG & 0x4
-		trilobite_debug ("... %p %s recurses .., softcat is probably in flux", pack, pack->name);
+		trilobite_debug ("... %p %s recurses ..", pack, pack->name);
 #endif
 		return;
 	}
@@ -1688,9 +1744,9 @@ check_tree_helper (EazelInstall *service,
 			PackageData *pack_update = NULL;
 			gboolean update_available = FALSE;
 			
-			if (check_if_related_package (service,
-						      pack,
-						      pack_broken)) {
+			if (check_if_modified_related_package (service,
+							       pack,
+							       pack_broken)) {
 				char *a, *b;
 				a = packagedata_get_readable_name (pack);
 				b = packagedata_get_readable_name (pack_broken);
@@ -1711,7 +1767,7 @@ check_tree_helper (EazelInstall *service,
 				if (eazel_softcat_get_info (service->private->softcat,
 							    pack_update,
 							    EAZEL_SOFTCAT_SENSE_EQ,
-							    UPDATE_MUST_HAVE) 
+							    MUST_HAVE) 
 				    != EAZEL_SOFTCAT_SUCCESS) {
 					update_available = FALSE;
 					        /* if we failed, delete the package object */
@@ -1727,7 +1783,7 @@ check_tree_helper (EazelInstall *service,
 					eazel_softcat_available_update (service->private->softcat,
 									pack_broken,
 									&pack_update,
-									UPDATE_MUST_HAVE);
+									MUST_HAVE);
 			}
 			
 			if (update_available) {
@@ -1832,12 +1888,29 @@ check_tree_for_conflicts (EazelInstall *service,
 #endif
 }
 
-static void
-add_file_conflict (PackageData *pack, 
+static gboolean
+add_file_conflict (EazelInstall *service, 
+		   PackageData *pack, 
 		   PackageData *broken,
 		   char *filename)
 {
 	GList *prev;
+
+	if (check_if_related_package (service, pack, broken) == TRUE) {
+#if EI2_DEBUG & 0x4				
+		trilobite_debug ("\%p %s %p %s are related, ignoring conflict",
+				 pack, pack->name,
+				 broken, broken->name);
+#endif	
+		return FALSE;
+	}
+
+#if EI2_DEBUG & 0x4				
+	trilobite_debug ("\tadding file conflict between %p %s %p %s",
+			 pack, pack->name,
+			 broken, broken->name);
+#endif	
+
 	prev = g_list_find_custom (pack->breaks, 
 				   broken,
 				   (GCompareFunc)find_break_by_package_name);
@@ -1857,6 +1930,8 @@ add_file_conflict (PackageData *pack,
 		packagedata_add_to_breaks (pack, PACKAGEBREAKS (conflict));
 		gtk_object_unref (GTK_OBJECT (conflict));
 	}
+	
+	return TRUE;
 }
 
 /* make sure none of the packages we're installing will share files
@@ -1948,7 +2023,9 @@ check_no_two_packages_has_same_file (EazelInstall *service,
 					other_conflicts++;
 				}
 
-				add_file_conflict (pack, pack_other, filename); 
+				if (add_file_conflict (service, pack, pack_other, filename) == FALSE) {
+					g_message (_("... but it's ok, the packages are related"));
+				}
 			} else {
 				/* file is okay */
 				g_hash_table_insert (file_table, filename, pack);
@@ -2100,7 +2177,9 @@ check_conflicts_against_already_installed_packages (EazelInstall *service,
 					g_message (_("...but it is okay, we're upgrading %s and it ditched that file"),
 						   pack_owner->name);
 				} else {
-					add_file_conflict (pack, pack_owner, filename);
+					if (add_file_conflict (service, pack, pack_owner, filename) == FALSE) {
+						g_message (_("... but it's ok, the packages are related"));
+					}
 				}
 				gtk_object_unref (GTK_OBJECT (pack_owner));
 			}
@@ -2303,6 +2382,7 @@ do_file_conflict_check (EazelInstall *service,
 	check_conflicts_against_already_installed_packages (service, *packages);
 	do_requirement_consistency_check (service, *packages);
 	check_tree_for_conflicts (service, packages, extra_packages);
+	prune_failed_packages (service, packages); 
 
 	/* If packages were revived (added to extra_packages,
 	   exit and we'll be recursed, otherwise check
@@ -2677,7 +2757,9 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 						      service->private->cur_root,
 						      pack,
 						      EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES,
-						      PACKAGE_FILL_NO_DIRS_IN_PROVIDES | PACKAGE_FILL_NO_DEPENDENCIES);
+						      PACKAGE_FILL_NO_TEXT |
+						      PACKAGE_FILL_NO_DIRS_IN_PROVIDES | 
+						      PACKAGE_FILL_NO_DEPENDENCIES);
 		
 		/* For all of them, mark as a break conflict */
 		for (match_iterator = matches; match_iterator; match_iterator = g_list_next (match_iterator)) {
@@ -2775,17 +2857,46 @@ eazel_uninstall_check_for_install (EazelInstall *service,
 	g_assert (packages);
 
 	for (iterator = *packages; iterator; iterator = g_list_next (iterator)) {		
-		PackageData *pack = (PackageData*)iterator->data;
+		PackageData *pack = (PackageData*)iterator->data;		
 
 		if (eazel_package_system_is_installed (service->private->package_system,
 						       service->private->cur_root,
 						       pack->name,
 						       pack->version,
 						       pack->minor,
-						       EAZEL_SOFTCAT_SENSE_EQ)) {
+						       EAZEL_SOFTCAT_SENSE_EQ)) {			
+			GList *qresult;
+			GList *qresult_it;
 			
-			pack->toplevel = TRUE;
-			result = g_list_prepend (result, pack);
+			qresult = eazel_package_system_query (service->private->package_system,
+							      service->private->cur_root,
+							      pack->name,
+							      EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
+							      PACKAGE_FILL_NO_DEPENDENCIES | 
+							      PACKAGE_FILL_NO_TEXT);
+			for (qresult_it = qresult; qresult_it; qresult_it = g_list_next (qresult_it)) {
+				PackageData *match = PACKAGEDATA (qresult_it->data);
+				gboolean proceed = FALSE;
+				if (pack->version == NULL) {
+					proceed = TRUE;
+				}
+				if (proceed == FALSE &&
+				    eazel_package_system_compare_version (service->private->package_system,
+									  pack->version,
+									  match->version) == 0) {
+					proceed = TRUE;
+				}
+				if (proceed) {					
+					pack->toplevel = TRUE;
+					packagedata_fill_in_missing (pack, match,
+								     PACKAGE_FILL_NO_DEPENDENCIES | 
+								     PACKAGE_FILL_NO_TEXT);
+					result = g_list_prepend (result, pack);
+					break;
+				}
+			}
+			g_list_foreach (qresult, (GFunc)gtk_object_unref, NULL);
+			g_list_free (qresult);
 		} else {
 #if EI2_DEBUG & 0x4
 			trilobite_debug ("\t %p %s is not installed", pack, pack->name);
