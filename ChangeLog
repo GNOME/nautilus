@@ -1,3 +1,9 @@
+2003-03-12  Bastien Nocera  <hadess@hadess.net>
+
+	* src/file-manager/fm-icon-view.c: (icon_view_handle_uri_list): do not
+	allow gnome-desktop to parse the file if it's not a .desktop file
+	(Closes: #106970 in Totem)
+
 2003-03-12  Alex Duggan  <aldug@astrolinux.com>
 
 	* Makefile.am: install nautilus-file-management-properties
