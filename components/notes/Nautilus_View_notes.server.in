@@ -1,13 +1,6 @@
 <oaf_info>
 
-<oaf_server iid="OAFIID:Nautilus_Notes_View_Factory" type="exe" location="nautilus-notes">
-	<oaf_attribute name="repo_ids" type="stringv">
-		<item value="IDL:GNOME/ObjectFactory:1.0"/>
-	</oaf_attribute>
-	<oaf_attribute name="description" type="string" _value="Factory for annotation view"/>
-</oaf_server>
-
-<oaf_server iid="OAFIID:Nautilus_Notes_View" type="factory" location="OAFIID:Nautilus_Notes_View_Factory">
+<oaf_server iid="OAFIID:Nautilus_Notes_View" type="shlib" location="libnautilus-notes-view.so">
 	<oaf_attribute name="repo_ids" type="stringv">
 		<item value="IDL:Bonobo/Unknown:1.0"/>
 		<item value="IDL:Bonobo/Control:1.0"/>

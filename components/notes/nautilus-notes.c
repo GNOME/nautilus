@@ -25,6 +25,8 @@
 
 /* notes sidebar panel -- allows editing per-directory notes */
 
+#define VIEW_IID "OAFIID:Nautilus_Notes_View"
+
 #include <config.h>
 
 #include <eel/eel-background.h>
@@ -352,7 +354,7 @@ notes_get_indicator_image (const char *notes_text)
 }
 
 static BonoboObject *
-make_notes_view (const char *iid, void *callback_data)
+make_notes_view ()
 {
         GtkWidget *vbox;
         Notes *notes;
@@ -419,22 +421,32 @@ make_notes_view (const char *iid, void *callback_data)
         return BONOBO_OBJECT (notes->view);
 }
 
-int
-main(int argc, char *argv[])
+
+static CORBA_Object
+notes_shlib_make_object (PortableServer_POA poa,
+			 const char *iid,
+			 gpointer impl_ptr,
+			 CORBA_Environment *ev)
 {
-	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
-		eel_make_warnings_and_criticals_stop_in_debugger ();
+	BonoboObject *view;
+
+	if (strcmp (iid, VIEW_IID) != 0) {
+		return CORBA_OBJECT_NIL;
 	}
-	
-        return nautilus_view_standard_main ("nautilus-notes",
-                                            VERSION,
-                                            GETTEXT_PACKAGE,
-                                            GNOMELOCALEDIR,
-                                            argc,
-                                            argv,
-                                            "OAFIID:Nautilus_Notes_View_Factory",
-                                            "OAFIID:Nautilus_Notes_View",
-                                            make_notes_view,
-                                            nautilus_global_preferences_init,
-                                            NULL);
+
+	view = make_notes_view ();
+
+	bonobo_activation_plugin_use (poa, impl_ptr);
+
+	return CORBA_Object_duplicate (BONOBO_OBJREF (view), ev);
 }
+
+static const BonoboActivationPluginObject notes_plugin_list[] = {
+	{ VIEW_IID, notes_shlib_make_object },
+	{ NULL }
+};
+
+const BonoboActivationPlugin Bonobo_Plugin_info = {
+	notes_plugin_list,
+	"Nautilus Notes Sidebar Panel"
+};

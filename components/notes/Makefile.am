@@ -1,7 +1,5 @@
 NULL =
 
-bin_PROGRAMS=nautilus-notes
-
 INCLUDES=\
 	-DG_LOG_DOMAIN=\"Nautilus-Notes\" \
 	-I$(top_srcdir)		\
@@ -10,13 +8,18 @@ INCLUDES=\
 	$(NULL)	\
 	-DGTK_ENABLE_BROKEN
 
-LDADD=\
+lib_LTLIBRARIES = libnautilus-notes-view.la
+
+libnautilus_notes_view_la_SOURCES = nautilus-notes.c
+
+libnautilus_notes_view_la_LIBADD =               \
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la	\
 	$(COMPONENT_LIBS) \
 	$(NULL)
 
-nautilus_notes_SOURCES=nautilus-notes.c
+libnautilus_notes_view_la_LDFLAGS = -module -avoid-version
+
 
 serverdir = $(libdir)/bonobo/servers
 server_in_files = Nautilus_View_notes.server.in
