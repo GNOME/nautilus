@@ -137,7 +137,7 @@ user_level_manager_new (void)
 			      NULL);
 	
 	manager->num_user_levels = DEFAULT_NUM_USER_LEVELS;
-	manager->user_level_names = nautilus_string_list_new ();
+	manager->user_level_names = nautilus_string_list_new (TRUE);
 
 	for (i = 0; i < DEFAULT_NUM_USER_LEVELS; i++) {
 		nautilus_string_list_insert (manager->user_level_names, DEFAULT_USER_LEVEL_NAMES[i]);
@@ -345,7 +345,7 @@ nautilus_user_level_manager_get_user_level_names (void)
 {
 	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
 
-	return nautilus_string_list_new_from_string_list (manager->user_level_names);
+	return nautilus_string_list_new_from_string_list (manager->user_level_names, TRUE);
 }
 
 char *

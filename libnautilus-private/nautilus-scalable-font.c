@@ -187,7 +187,7 @@ parse_font_description_file (const char		*directory,
 		return FALSE;
 	}
 
-	tokenized_list = nautilus_string_list_new_from_tokens (fonts_dir_content, "\n");
+	tokenized_list = nautilus_string_list_new_from_tokens (fonts_dir_content, "\n", TRUE);
 	g_free (fonts_dir_content);
 
 	if (tokenized_list == NULL) {
@@ -203,8 +203,8 @@ parse_font_description_file (const char		*directory,
 		return FALSE;
 	}
 
-	*font_pfb_list_out = nautilus_string_list_new ();
-	*font_xfld_list_out = nautilus_string_list_new ();
+	*font_pfb_list_out = nautilus_string_list_new (TRUE);
+	*font_xfld_list_out = nautilus_string_list_new (TRUE);
 
 	for (i = 0; i < count; i++) {
 		char *line = nautilus_string_list_nth (tokenized_list, i + 1);
@@ -461,7 +461,7 @@ font_family_table_add_fonts (GHashTable *font_family_table, const char *font_pat
 		xfld = nautilus_string_list_nth (font_xfld_list, i);
 		g_assert (xfld != NULL);
 
-		tokenized_xfld = nautilus_string_list_new_from_tokens (xfld, "-");
+		tokenized_xfld = nautilus_string_list_new_from_tokens (xfld, "-", TRUE);
 		
 		foundry = nautilus_string_list_nth (tokenized_xfld, 1);
 		family = nautilus_string_list_nth (tokenized_xfld, 2);
@@ -663,7 +663,7 @@ nautilus_scalable_font_largest_fitting_font_size (const NautilusScalableFont  *f
  		return font_sizes[num_font_sizes - 1];
  	}
 
-	tokenized_string = nautilus_string_list_new_from_tokens (text, "\n");
+	tokenized_string = nautilus_string_list_new_from_tokens (text, "\n", TRUE);
 	longest_string = nautilus_string_list_get_longest_string (tokenized_string);
 	g_assert (longest_string != NULL);
 	nautilus_string_list_free (tokenized_string);
@@ -928,7 +928,7 @@ font_family_table_get_family_list (GHashTable *font_family_table)
 
 	g_return_val_if_fail (font_family_table != NULL, NULL);
 
-	list = nautilus_string_list_new ();
+	list = nautilus_string_list_new (TRUE);
 	
 	g_hash_table_foreach (font_family_table, font_family_table_for_each_append, list);
 
@@ -996,15 +996,15 @@ nautilus_scalable_font_query_font (const char		*family,
 	}
 
 	if (weights_out != NULL) {
-		*weights_out = nautilus_string_list_new ();
+		*weights_out = nautilus_string_list_new (TRUE);
 	}
 
 	if (slants_out != NULL) {
-		*slants_out = nautilus_string_list_new ();
+		*slants_out = nautilus_string_list_new (TRUE);
 	}
 
 	if (set_widths_out != NULL) {
-		*set_widths_out = nautilus_string_list_new ();
+		*set_widths_out = nautilus_string_list_new (TRUE);
 	}
 
 	for (iterator = family_entry->fonts; iterator != NULL; iterator = iterator->next) {

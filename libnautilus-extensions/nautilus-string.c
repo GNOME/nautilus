@@ -82,6 +82,13 @@ nautilus_str_compare (gconstpointer string_a, gconstpointer string_b)
 				(const char *) string_b);
 }
 
+int
+nautilus_istr_compare (gconstpointer string_a, gconstpointer string_b)
+{
+	return nautilus_strcasecmp ((const char *) string_a,
+				    (const char *) string_b);
+}
+
 gboolean
 nautilus_str_has_prefix (const char *haystack, const char *needle)
 {

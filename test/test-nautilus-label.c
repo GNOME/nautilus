@@ -420,7 +420,7 @@ create_font_picker_frame (const char		*title,
 
 	font_size_list = nautilus_string_list_new_from_tokens ("5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,"
 							       "30,40,50,60,70,80,90,100,110,120,130,140,"
-							       "200,400,800", ",");
+							       "200,400,800", ",", TRUE);
 
 	nautilus_string_picker_set_string_list (NAUTILUS_STRING_PICKER (font_size_picker), font_size_list);
 	nautilus_string_list_free (font_size_list);

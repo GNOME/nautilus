@@ -3553,7 +3553,7 @@ real_get_emblem_names_to_exclude (FMDirectoryView *view)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
-	return nautilus_string_list_new_from_string (NAUTILUS_FILE_EMBLEM_NAME_TRASH);
+	return nautilus_string_list_new_from_string (NAUTILUS_FILE_EMBLEM_NAME_TRASH, TRUE);
 }
 
 /**

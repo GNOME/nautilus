@@ -203,7 +203,7 @@ font_picker_update_weight_picker (NautilusFontPicker *font_picker)
 	
 	family = nautilus_string_picker_get_selected_string (NAUTILUS_STRING_PICKER (font_picker->detail->family_picker));
 
-	unique_weight_list = nautilus_string_list_new_from_string_list (font_picker->detail->weight_list);
+	unique_weight_list = nautilus_string_list_new_from_string_list (font_picker->detail->weight_list, TRUE);
 	
 	nautilus_string_list_sort (unique_weight_list);
 	nautilus_string_list_remove_duplicates (unique_weight_list);
@@ -232,7 +232,7 @@ font_picker_update_slant_picker (NautilusFontPicker *font_picker)
 	g_assert (nautilus_string_list_get_length (font_picker->detail->slant_list) ==
 		  nautilus_string_list_get_length (font_picker->detail->weight_list));
 
-	unique_slant_list = nautilus_string_list_new ();
+	unique_slant_list = nautilus_string_list_new (TRUE);
 
 	for (i = 0; i < nautilus_string_list_get_length (font_picker->detail->slant_list); i++) {
 		char *weight = nautilus_string_list_nth (font_picker->detail->weight_list, i);
@@ -279,7 +279,7 @@ font_picker_update_set_width_picker (NautilusFontPicker *font_picker)
 	g_assert (nautilus_string_list_get_length (font_picker->detail->slant_list) ==
 		  nautilus_string_list_get_length (font_picker->detail->set_width_list));
 
-	unique_set_width_list = nautilus_string_list_new ();
+	unique_set_width_list = nautilus_string_list_new (TRUE);
 
 	for (i = 0; i < nautilus_string_list_get_length (font_picker->detail->set_width_list); i++) {
 		char *weight = nautilus_string_list_nth (font_picker->detail->weight_list, i);

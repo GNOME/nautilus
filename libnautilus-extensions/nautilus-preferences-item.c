@@ -467,7 +467,7 @@ preferences_item_create_font_family (NautilusPreferencesItem	*item,
 	g_free (description);
 
 	/* FIXME bugzilla.eazel.com 1274: Need to query system for available fonts */
-	font_list = nautilus_string_list_new ();
+	font_list = nautilus_string_list_new (TRUE);
 
 	nautilus_string_list_insert (font_list, "helvetica");
 	nautilus_string_list_insert (font_list, "times");
@@ -595,7 +595,7 @@ preferences_item_create_theme (NautilusPreferencesItem	*item,
 	
 	g_free (description);
 
-	theme_list = nautilus_string_list_new ();
+	theme_list = nautilus_string_list_new (TRUE);
 	nautilus_string_list_insert (theme_list, "default");
 	add_icon_themes(theme_list, "i-directory");
 	

@@ -249,9 +249,9 @@ preference_allocate_type_info (NautilusPreference *preference)
 			
 			info = g_new (PreferenceEnumInfo, 1);
 			
-			info->names = nautilus_string_list_new ();
+			info->names = nautilus_string_list_new (TRUE);
 			
-			info->descriptions = nautilus_string_list_new ();
+			info->descriptions = nautilus_string_list_new (TRUE);
 			
 			info->values = NULL;
 			

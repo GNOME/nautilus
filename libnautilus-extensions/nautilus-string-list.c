@@ -35,43 +35,51 @@ static gboolean supress_out_of_bounds_warning;
 
 struct _NautilusStringList
 {
-	GList *strings;
+	GList		*strings;
+	GCompareFunc	compare_function;
 };
+
+static gboolean str_is_equal (const char *a,
+			      const char *b,
+			      gboolean    case_sensitive);
 
 /**
  * nautilus_string_list_new:
  *
- * Construct an empty string list.
+ * @case_sensitive: Flag indicating whether the new string list is case sensitive.
  *
- * Returns the string list.
+ * Return value: A newly constructed string list.
  */
 NautilusStringList *
-nautilus_string_list_new (void)
+nautilus_string_list_new (gboolean case_sensitive)
 {
 	NautilusStringList * string_list;
 
 	string_list = g_new (NautilusStringList, 1);
 
 	string_list->strings = NULL;
+	string_list->compare_function = case_sensitive ? nautilus_str_compare : nautilus_istr_compare;
 
 	return string_list;
 }
 
 /**
- * nautilus_string_list_new:
+ * nautilus_string_list_new_from_string:
  *
- * Construct an empty string list.
+ * @other_or_null: A NautilusStringList or NULL
+ * @case_sensitive: Flag indicating whether the new string list is case sensitive.
  *
- * Returns the string list.
+ * Return value: A newly constructed string list with one entry 'string'.
  */
 NautilusStringList *
-nautilus_string_list_new_from_string (const char *string)
+nautilus_string_list_new_from_string (const char	*string,
+				      gboolean          case_sensitive)
 {
 	NautilusStringList * string_list;
 
 	g_return_val_if_fail (string != NULL, NULL);
 
-	string_list = nautilus_string_list_new ();
+	string_list = nautilus_string_list_new (case_sensitive);
 
 	nautilus_string_list_insert (string_list, string);
 
@@ -79,14 +87,16 @@ nautilus_string_list_new_from_string (const char *string)
 }
 
 /**
- * nautilus_string_list_new:
+ * nautilus_string_list_new_from_string_list:
  *
- * Construct an empty string list.
+ * @other_or_null: A NautilusStringList or NULL
+ * @case_sensitive: Flag indicating whether the new string list is case sensitive.
  *
- * Returns the string list.
+ * Return value: A newly allocated string list that is equal to other.
  */
 NautilusStringList *
-nautilus_string_list_new_from_string_list (const NautilusStringList *other_or_null)
+nautilus_string_list_new_from_string_list (const NautilusStringList	*other_or_null,
+					   gboolean			case_sensitive)
 {
 	NautilusStringList *string_list;
 
@@ -94,7 +104,7 @@ nautilus_string_list_new_from_string_list (const NautilusStringList *other_or_nu
 		return NULL;
 	}
 
-	string_list = nautilus_string_list_new ();
+	string_list = nautilus_string_list_new (case_sensitive);
 
 	nautilus_string_list_assign_from_string_list (string_list, other_or_null);
 
@@ -103,14 +113,15 @@ nautilus_string_list_new_from_string_list (const NautilusStringList *other_or_nu
 
 /* Construct a string list from tokens delimited by the given string and delimiter */
 NautilusStringList *
-nautilus_string_list_new_from_tokens (const char *string,
-				      const char *delimiter)
+nautilus_string_list_new_from_tokens (const char	*string,
+				      const char	*delimiter,
+				      gboolean          case_sensitive)
 {
 	NautilusStringList *string_list;
 
 	g_return_val_if_fail (delimiter != NULL, NULL);
 
-	string_list = nautilus_string_list_new ();
+	string_list = nautilus_string_list_new (case_sensitive);
 
 	if (string != NULL) {
 		char  **string_array;
@@ -196,8 +207,8 @@ nautilus_string_list_nth (const NautilusStringList *string_list, guint n)
 }
 
 gboolean
-nautilus_string_list_contains (const NautilusStringList *string_list,
-			       const char	  *string)
+nautilus_string_list_contains (const NautilusStringList	*string_list,
+			       const char		*string)
 {
 	GList *find;
 
@@ -207,7 +218,7 @@ nautilus_string_list_contains (const NautilusStringList *string_list,
 
 	g_return_val_if_fail (string != NULL, FALSE);
 
-	find = g_list_find_custom (string_list->strings, (gpointer) string, nautilus_str_compare);
+	find = g_list_find_custom (string_list->strings, (gpointer) string, string_list->compare_function);
 
 	return find == NULL ? FALSE : TRUE;
 }
@@ -243,7 +254,7 @@ nautilus_string_list_equals (const NautilusStringList *a,
 	for (a_iterator = a->strings, b_iterator = b->strings; 
 	     a_iterator != NULL && b_iterator != NULL;
 	     a_iterator = a_iterator->next, b_iterator = b_iterator->next) {
-		if (!nautilus_str_is_equal ((const char *) a_iterator->data, (const char *) b_iterator->data)) {
+		if (!str_is_equal ((const char *) a_iterator->data, (const char *) b_iterator->data, a->compare_function == b->compare_function)) {
 			return FALSE;
 		}
 	}
@@ -294,7 +305,7 @@ nautilus_string_list_get_index_for_string (const NautilusStringList	*string_list
 	g_return_val_if_fail (string != NULL, NAUTILUS_STRING_LIST_NOT_FOUND);
 
 	for (iterator = string_list->strings; iterator != NULL; iterator = iterator->next) {
-		if (nautilus_str_is_equal ((const char *) iterator->data, string)) {
+		if (str_is_equal ((const char *) iterator->data, string, string_list->compare_function == nautilus_str_compare)) {
 			return n;
 		}
 		
@@ -359,7 +370,7 @@ nautilus_string_list_sort (NautilusStringList *string_list)
 {
 	g_return_if_fail (string_list != NULL);
 
-	string_list->strings = g_list_sort (string_list->strings, nautilus_str_compare);
+	string_list->strings = g_list_sort (string_list->strings, string_list->compare_function);
 }
 
 void
@@ -374,7 +385,7 @@ nautilus_string_list_remove_duplicates (NautilusStringList *string_list)
 		const char *string = (const char *) iterator->data;
 		g_assert (string != NULL);
 
-		if (g_list_find_custom (new_strings, (gpointer) string, nautilus_str_compare) == NULL) {
+		if (g_list_find_custom (new_strings, (gpointer) string, string_list->compare_function) == NULL) {
 			new_strings = g_list_append (new_strings, g_strdup (string));
 		}
 	}
@@ -458,6 +469,14 @@ nautilus_string_list_get_longest_string_length (const NautilusStringList *string
 	return longest_length;
 }
 
+static gboolean
+str_is_equal (const char	*a,
+	      const char	*b,
+	      gboolean		case_sensitive)
+{
+	return case_sensitive ? nautilus_str_is_equal (a, b) : nautilus_istr_is_equal (a, b);
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 void
@@ -473,37 +492,46 @@ nautilus_self_check_string_list (void)
 	const char token_string[] = "london:paris:rome";
 	const char token_string_thick[] = "london####paris####rome";
 
-	empty = nautilus_string_list_new ();
+	/*
+	 * nautilus_string_list_contains
+	 */
+	empty = nautilus_string_list_new (TRUE);
 
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (empty), 0);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_contains (empty, "something"), FALSE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_contains (NULL, "something"), FALSE);
 
-	/********/
-
-	cities = nautilus_string_list_new ();
+	/*
+	 * nautilus_string_list_new
+	 */
+	cities = nautilus_string_list_new (TRUE);
 
  	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_equals (cities, empty), TRUE);
-
+	
 	nautilus_string_list_insert (cities, "london");
 	nautilus_string_list_insert (cities, "paris");
 	nautilus_string_list_insert (cities, "rome");
 
  	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_equals (cities, empty), FALSE);
 
-	/********/
-
-	cities_copy = nautilus_string_list_new_from_string_list (cities);
+	/*
+	 * nautilus_string_list_new_from_string_list
+	 */
+	cities_copy = nautilus_string_list_new_from_string_list (cities, TRUE);
 
  	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_equals (cities, cities_copy), TRUE);
 
 	nautilus_string_list_free (cities_copy);
 
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_new_from_string_list (NULL) == NULL, TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_new_from_string_list (NULL, TRUE) == NULL, TRUE);
 
-	/********/
-
-	fruits = nautilus_string_list_new ();
+	/*
+	 * nautilus_string_list_insert,
+	 * nautilus_string_list_nth,
+	 * nautilus_string_list_contains,
+	 * nautilus_string_list_get_length
+	 */
+	fruits = nautilus_string_list_new (TRUE);
 
  	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_equals (fruits, empty), TRUE);
 
@@ -540,24 +568,26 @@ nautilus_self_check_string_list (void)
 	nautilus_string_list_free (fruits);
 	nautilus_string_list_free (empty);
 
-	/********/
-
-	tokens = nautilus_string_list_new_from_tokens (token_string, ":");
+	/*
+	 * nautilus_string_list_new_from_tokens
+	 */
+	tokens = nautilus_string_list_new_from_tokens (token_string, ":", TRUE);
 
  	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_equals (cities, tokens), TRUE);
 
 	nautilus_string_list_free (tokens);
 
-	tokens = nautilus_string_list_new_from_tokens (token_string_thick, "####");
+	tokens = nautilus_string_list_new_from_tokens (token_string_thick, "####", TRUE);
 
  	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_equals (cities, tokens), TRUE);
 
 	nautilus_string_list_free (cities);
 	nautilus_string_list_free (tokens);
 
-	/********/
-
-	single = nautilus_string_list_new_from_string ("something");
+	/*
+	 * nautilus_string_list_new_from_string
+	 */
+	single = nautilus_string_list_new_from_string ("something", TRUE);
 
  	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_contains (single, "something"), TRUE);
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (single), 1);
@@ -574,7 +604,7 @@ nautilus_self_check_string_list (void)
 		GList			*glist_iterator;
 		NautilusStringList	*string_list;
 
-		string_list = nautilus_string_list_new ();
+		string_list = nautilus_string_list_new (TRUE);
 		
 		nautilus_string_list_insert (string_list, "orange");
 		nautilus_string_list_insert (string_list, "apple");
@@ -612,7 +642,7 @@ nautilus_self_check_string_list (void)
 	{
 		NautilusStringList *fruits;
 
-		fruits = nautilus_string_list_new ();
+		fruits = nautilus_string_list_new (TRUE);
 		
 		nautilus_string_list_insert (fruits, "orange");
 		nautilus_string_list_insert (fruits, "apple");
@@ -640,7 +670,7 @@ nautilus_self_check_string_list (void)
 	{
 		NautilusStringList *l;
 
-		l = nautilus_string_list_new ();
+		l = nautilus_string_list_new (TRUE);
 		
 		nautilus_string_list_insert (l, "x");
 
@@ -666,7 +696,7 @@ nautilus_self_check_string_list (void)
 	{
 		NautilusStringList *l;
 
-		l = nautilus_string_list_new ();
+		l = nautilus_string_list_new (TRUE);
 		
 		nautilus_string_list_insert (l, "dog");
 		nautilus_string_list_insert (l, "cat");
@@ -688,7 +718,7 @@ nautilus_self_check_string_list (void)
 	{
 		NautilusStringList *l;
 
-		l = nautilus_string_list_new ();
+		l = nautilus_string_list_new (TRUE);
 
 		nautilus_string_list_remove_duplicates (l);
 		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (l), 0);
@@ -728,8 +758,8 @@ nautilus_self_check_string_list (void)
 		NautilusStringList *l;
 		NautilusStringList *other;
 
-		l = nautilus_string_list_new ();
-		other = nautilus_string_list_new ();
+		l = nautilus_string_list_new (TRUE);
+		other = nautilus_string_list_new (TRUE);
 
 		/* assign an other with some items */
 		nautilus_string_list_insert (other, "dog");
@@ -747,7 +777,7 @@ nautilus_self_check_string_list (void)
 		nautilus_string_list_assign_from_string_list (l, other);
 		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (l), 1);
 		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (l, 0), "something");
-
+		
 		/* assign an empty other */
 		nautilus_string_list_clear (other);
 		nautilus_string_list_assign_from_string_list (l, other);
@@ -765,7 +795,7 @@ nautilus_self_check_string_list (void)
 	{
 		NautilusStringList *l;
 
-		l = nautilus_string_list_new ();
+		l = nautilus_string_list_new (TRUE);
 
 		NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_get_longest_string (l), NULL);
 		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_longest_string_length (l), 0);
@@ -786,6 +816,35 @@ nautilus_self_check_string_list (void)
 
 		nautilus_string_list_free (l);
 
+	}
+
+	/*
+	 * case insensitive tests
+	 *
+	 */
+	{
+		NautilusStringList *l;
+
+		l = nautilus_string_list_new (FALSE);
+
+		nautilus_string_list_insert (l, "foo");
+		nautilus_string_list_insert (l, "bar");
+
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_contains (l, "Foo"), TRUE);
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_contains (l, "foO"), TRUE);
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_contains (l, "fOo"), TRUE);
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_contains (l, "foo"), TRUE);
+
+		nautilus_string_list_clear (l);
+
+		nautilus_string_list_insert (l, "Foo");
+		nautilus_string_list_insert (l, "Foo");
+		nautilus_string_list_insert (l, "fOo");
+		nautilus_string_list_insert (l, "foO");
+		nautilus_string_list_remove_duplicates (l);
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (l), 1);
+
+		nautilus_string_list_free (l);
 	}
 }
 

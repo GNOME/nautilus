@@ -33,19 +33,22 @@
 typedef struct _NautilusStringList NautilusStringList;
 
 /* Construct an empty string list. */
-NautilusStringList *nautilus_string_list_new                       (void);
+NautilusStringList *nautilus_string_list_new                       (gboolean                 case_sensitive);
 
 
 /* Construct a string list with a single element */
-NautilusStringList *nautilus_string_list_new_from_string           (const char               *string);
+NautilusStringList *nautilus_string_list_new_from_string           (const char               *string,
+								    gboolean                 case_sensitive);
 
 
 /* Construct a string list that is a copy of another string list */
-NautilusStringList *nautilus_string_list_new_from_string_list      (const NautilusStringList *other_or_null);
+NautilusStringList *nautilus_string_list_new_from_string_list      (const NautilusStringList *other_or_null,
+								    gboolean                 case_sensitive);
 
 /* Construct a string list from tokens delimited by the given string and delimeter */
 NautilusStringList *nautilus_string_list_new_from_tokens           (const char               *string,
-								    const char               *delimiter);
+								    const char               *delimiter,
+								    gboolean                 case_sensitive);
 
 /* Assign the contents another string list.  The other string list can be null. */
 void                nautilus_string_list_assign_from_string_list   (NautilusStringList       *string_list,

@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
 
-   nautilus-string-list.h: A collection of strings.
+   nautilus-string-map.c: A many-to-one string mapping data structure.
  
    Copyright (C) 1999, 2000 Eazel, Inc.
   
@@ -48,12 +48,17 @@ typedef struct
 } MapEntry;
 
 /* MapEntry things */
-static MapEntry *map_entry_new                       (const char *string);
+static MapEntry *map_entry_new                       (const char *string,
+						      gboolean    case_sensitive);
 static void      map_entry_free                      (MapEntry   *map_entry);
 static MapEntry *map_entry_list_lookup_mapped_string (GList      *entry_list,
-						      const char *mapped_string);
+						      const char *mapped_string,
+						      gboolean    case_sensitive);
 static MapEntry *map_entry_list_lookup               (GList      *entry_list,
 						      const char *string);
+static gboolean  str_is_equal                        (const char *a,
+						      const char *b,
+						      gboolean    case_sensitive);
 
 /**
  * nautilus_string_map_new:
@@ -170,10 +175,10 @@ nautilus_string_map_add (NautilusStringMap	*string_map,
 	g_return_if_fail (string_maps_to != NULL);
 	g_return_if_fail (string != NULL);
 
-	map_entry = map_entry_list_lookup_mapped_string (string_map->map, string_maps_to);
+	map_entry = map_entry_list_lookup_mapped_string (string_map->map, string_maps_to, string_map->case_sensitive);
 
 	if (map_entry == NULL) {
-		map_entry = map_entry_new (string_maps_to);
+		map_entry = map_entry_new (string_maps_to, string_map->case_sensitive);
 
 		/* Add a mapping for the string_maps_to to simplify things */
 		nautilus_string_list_insert (map_entry->map_list, string_maps_to);
@@ -186,14 +191,15 @@ nautilus_string_map_add (NautilusStringMap	*string_map,
 
 /* MapEntry things */
 static MapEntry *
-map_entry_new (const char *string)
+map_entry_new (const char	*string,
+	       gboolean		case_sensitive)
 {
 	MapEntry *map_entry;
 
 	g_return_val_if_fail (string != NULL, NULL);
 
 	map_entry = g_new (MapEntry, 1);
-	map_entry->map_list = nautilus_string_list_new ();
+	map_entry->map_list = nautilus_string_list_new (case_sensitive);
 	map_entry->string = g_strdup (string);
 
 	return map_entry;
@@ -212,7 +218,8 @@ map_entry_free (MapEntry *map_entry)
 
 static MapEntry *
 map_entry_list_lookup_mapped_string (GList	*entry_list,
-				     const char	*mapped_string)
+				     const char	*mapped_string,
+				     gboolean	case_sensitive)
 {
 	GList *iterator;
 
@@ -226,7 +233,7 @@ map_entry_list_lookup_mapped_string (GList	*entry_list,
 		MapEntry *map_entry = (MapEntry *) iterator->data;
 		g_assert (map_entry != NULL);
 
-		if (nautilus_str_is_equal (map_entry->string, mapped_string)) {
+		if (str_is_equal (map_entry->string, mapped_string, case_sensitive)) {
 			return map_entry;
 		}
 	}
@@ -258,12 +265,19 @@ map_entry_list_lookup (GList		*entry_list,
 	return NULL;
 }
 
+static gboolean
+str_is_equal (const char	*a,
+	      const char	*b,
+	      gboolean		case_sensitive)
+{
+	return case_sensitive ? nautilus_str_is_equal (a, b) : nautilus_istr_is_equal (a, b);
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 void
 nautilus_self_check_string_map (void)
 {
-#if 0
 	NautilusStringMap *map;
 
 	map = nautilus_string_map_new (TRUE);
@@ -288,8 +302,33 @@ nautilus_self_check_string_map (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_map_lookup (map, "nerd"), "human");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_map_lookup (map, "lozer"), "human");
 
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_map_lookup (map, "Lozer"), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_map_lookup (map, "HuMaN"), NULL);
+
 	nautilus_string_map_free (map);
-#endif
+
+	/*
+	 * case insensitive tests
+	 *
+	 */
+	map = nautilus_string_map_new (FALSE);
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_map_lookup (map, "foo"), NULL);
+	
+	nautilus_string_map_clear (map);
+	
+	nautilus_string_map_add (map, "animal", "dog");
+	nautilus_string_map_add (map, "animal", "cat");
+	nautilus_string_map_add (map, "animal", "mouse");
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_map_lookup (map, "animal"), "animal");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_map_lookup (map, "Animal"), "animal");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_map_lookup (map, "cat"), "animal");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_map_lookup (map, "CAT"), "animal");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_map_lookup (map, "dog"), "animal");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_map_lookup (map, "DoG"), "animal");
+
+	nautilus_string_map_free (map);
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

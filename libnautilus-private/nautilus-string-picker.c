@@ -103,7 +103,7 @@ nautilus_string_picker_initialize (NautilusStringPicker *string_picker)
 	gtk_box_set_homogeneous (GTK_BOX (string_picker), FALSE);
 	gtk_box_set_spacing (GTK_BOX (string_picker), STRING_PICKER_SPACING);
 
-	string_picker->detail->string_list = nautilus_string_list_new ();
+	string_picker->detail->string_list = nautilus_string_list_new (TRUE);
 	string_picker->detail->menu = NULL;
 
 	string_picker->detail->option_menu = gtk_option_menu_new ();
@@ -243,7 +243,7 @@ nautilus_string_picker_get_string_list (const NautilusStringPicker *string_picke
  	g_return_val_if_fail (string_picker != NULL, NULL);
 	g_return_val_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker), NULL);
 
-	return nautilus_string_list_new_from_string_list (string_picker->detail->string_list);
+	return nautilus_string_list_new_from_string_list (string_picker->detail->string_list, TRUE);
 }
 
 /* FIXME bugzilla.eazel.com 1556: 
@@ -311,7 +311,7 @@ nautilus_string_picker_insert_string (NautilusStringPicker       *string_picker,
 
 	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
 
-	new_string_list = nautilus_string_list_new_from_string_list (string_picker->detail->string_list);
+	new_string_list = nautilus_string_list_new_from_string_list (string_picker->detail->string_list, TRUE);
 	nautilus_string_list_insert (new_string_list, string);
 	nautilus_string_picker_set_string_list (string_picker, new_string_list);
 	nautilus_string_list_free (new_string_list);

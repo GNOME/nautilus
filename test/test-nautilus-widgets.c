@@ -206,7 +206,7 @@ test_string_picker (void)
 	
 	nautilus_caption_set_title_label (NAUTILUS_CAPTION (picker), "Icon Font Family:");
 
-	font_list = nautilus_string_list_new ();
+	font_list = nautilus_string_list_new (TRUE);
 
 	nautilus_string_list_insert (font_list, "Helvetica");
 	nautilus_string_list_insert (font_list, "Times");

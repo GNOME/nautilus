@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
 
-   nautilus-string-list.h: A collection of strings.
+   nautilus-string-map.h: A many-to-one string mapping data structure.
  
    Copyright (C) 1999, 2000 Eazel, Inc.
   
@@ -22,6 +22,20 @@
    Author: Ramiro Estrugo <ramiro@eazel.com>
 */
 
+/* NautilusStringMap is a simple data structure to manage many-to-one 
+ * mappings of string.  For example:
+ * 
+ * map = map_new (TRUE);
+ * map_add (map, "animal", "dog");
+ * map_add (map, "animal", "cat");
+ * map_add (map, "animal", "mouse");
+ * 
+ * map_lookup (map, "dog") => "animal"
+ * map_lookup (map, "cat") => "animal"
+ * map_lookup (map, "animal") => "animal"
+ *
+ */
+
 #ifndef NAUTILUS_STRING_MAP_H
 #define NAUTILUS_STRING_MAP_H
 
@@ -30,17 +44,26 @@
 /* Opaque type declaration. */
 typedef struct _NautilusStringMap NautilusStringMap;
 
-/* Construct an empty string list. */
+/* Construct an empty string map. */
 NautilusStringMap *nautilus_string_map_new    (gboolean                 case_sensitive);
 
-/* Construct a string list with a single element */
+/* Add a mapping from 'string' to 'strings_maps_to' */
 void               nautilus_string_map_add    (NautilusStringMap       *string_map,
 					       const char              *string_maps_to,
 					       const char              *string);
+
+/* Free the string map */
 void               nautilus_string_map_free   (NautilusStringMap       *string_map);
+
+
+/* Clear the string map */
 void               nautilus_string_map_clear  (NautilusStringMap       *string_map);
+
+
+/* Lookup the string in the map.  Returns the string 'string' maps to or NULL of not found. */
 char *             nautilus_string_map_lookup (const NautilusStringMap *string_map,
-					       const char              *key);
+					       const char              *string);
+
 
 #endif /* NAUTILUS_STRING_MAP_H */
 

@@ -1,4 +1,63 @@
 2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-string-list.c:
+	(nautilus_string_list_new), (nautilus_string_list_new_from_string),
+	(nautilus_string_list_new_from_string_list),
+	(nautilus_string_list_new_from_tokens),
+	(nautilus_string_list_contains), (nautilus_string_list_equals),
+	(nautilus_string_list_get_index_for_string),
+	(nautilus_string_list_sort),
+	(nautilus_string_list_remove_duplicates), (str_is_equal),
+	(nautilus_self_check_string_list):
+	* libnautilus-extensions/nautilus-string-list.h:
+
+	Add support for case insensitive string lists.
+
+	* libnautilus-extensions/nautilus-string-map.c,
+	* libnautilus-extensions/nautilus-string-map.c:
+	(nautilus_string_map_add), (map_entry_new),
+	(map_entry_list_lookup_mapped_string), (str_is_equal),
+	(nautilus_self_check_string_map):
+
+	Add support for case insensitive string maps.
+
+	* libnautilus-extensions/nautilus-string.c:
+	(nautilus_istr_compare):
+
+	Add missing function that apparentlt was missing and unnoticed. 
+	
+	* libnautilus-extensions/nautilus-font-picker.c:
+	(font_picker_update_weight_picker),
+	(font_picker_update_slant_picker),
+	(font_picker_update_set_width_picker):
+	* libnautilus-extensions/nautilus-preference.c:
+	(preference_allocate_type_info):
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(preferences_item_create_font_family),
+	(preferences_item_create_theme):
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(parse_font_description_file), (font_family_table_add_fonts),
+	(nautilus_scalable_font_largest_fitting_font_size),
+	(font_family_table_get_family_list),
+	(nautilus_scalable_font_query_font):
+	* libnautilus-extensions/nautilus-string-picker.c:
+	(nautilus_string_picker_initialize),
+	(nautilus_string_picker_get_string_list),
+	(nautilus_string_picker_insert_string):
+	* libnautilus-extensions/nautilus-user-level-manager.c:
+	(user_level_manager_new),
+	(nautilus_user_level_manager_get_user_level_names):
+	* src/file-manager/fm-directory-view.c:
+	(real_get_emblem_names_to_exclude):
+	* src/nautilus-application.c:
+	(nautilus_application_check_user_directories):
+	* test/test-nautilus-image.c: (create_font_picker_frame):
+	* test/test-nautilus-label.c: (create_font_picker_frame):
+	* test/test-nautilus-widgets.c: (test_string_picker):
+
+	Update for case insensitive support changes in string list api.
+
+2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
 	 
 	* libnautilus-extensions/nautilus-directory.c:
 	Check for NULL before dereferencing 'directories'.

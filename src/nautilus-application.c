@@ -219,7 +219,7 @@ nautilus_application_check_user_directories (NautilusApplication *application)
 	user_main_directory = nautilus_get_user_main_directory ();
 	desktop_directory = nautilus_get_desktop_directory ();
 
-	dir_list = nautilus_string_list_new ();
+	dir_list = nautilus_string_list_new (TRUE);
 	
 	/* FIXME bugzilla.eazel.com 1115: Need better name for "User Directory"
 	 * and "User Data Directory".
