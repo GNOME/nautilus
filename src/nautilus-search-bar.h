@@ -54,6 +54,6 @@ typedef struct {
 	NautilusNavigationBarClass parent_class;
 } NautilusSearchBarClass;
 
-GtkType nautilus_search_bar_get_type (void);
+GType   nautilus_search_bar_get_type (void);
 
 #endif /* NAUTILUS_SEARCH_BAR_H */

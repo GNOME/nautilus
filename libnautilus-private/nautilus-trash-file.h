@@ -50,6 +50,6 @@ typedef struct {
 	NautilusFileClass parent_slot;
 } NautilusTrashFileClass;
 
-GtkType nautilus_trash_file_get_type (void);
+GType   nautilus_trash_file_get_type (void);
 
 #endif /* NAUTILUS_TRASH_FILE_H */

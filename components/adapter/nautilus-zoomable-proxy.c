@@ -267,7 +267,7 @@ nautilus_zoomable_proxy_init (NautilusZoomableProxy *proxy)
 /**
  * nautilus_zoomable_proxy_get_type:
  *
- * Returns: the GtkType for a NautilusZoomableProxy object.
+ * Returns: the GType for a NautilusZoomableProxy object.
  */
 GType
 nautilus_zoomable_proxy_get_type (void)

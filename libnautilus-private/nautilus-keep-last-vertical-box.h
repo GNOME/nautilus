@@ -45,7 +45,7 @@ struct NautilusKeepLastVerticalBoxClass {
 	GtkVBoxClass parent_class;
 };
 
-GtkType    nautilus_keep_last_vertical_box_get_type  (void);
+GType      nautilus_keep_last_vertical_box_get_type  (void);
 GtkWidget *nautilus_keep_last_vertical_box_new       (gint spacing);
 
 #endif /* NAUTILUS_KEEP_LAST_VERTICAL_BOX_H */

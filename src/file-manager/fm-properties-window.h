@@ -59,7 +59,7 @@ typedef struct FMPropertiesWindowClass FMPropertiesWindowClass;
 
 
 
-GtkType fm_properties_window_get_type   (void);
+GType   fm_properties_window_get_type   (void);
 void 	fm_properties_window_present 	(NautilusFile    *file, 
 					 FMDirectoryView *directory_view);
 

@@ -46,8 +46,8 @@ typedef struct {
 	NautilusAdapterEmbedStrategyClass parent;
 } NautilusAdapterControlEmbedStrategyClass;
 
-/* GtkObject support */
-GtkType                             nautilus_adapter_control_embed_strategy_get_type (void);
+/* GObject support */
+GType                               nautilus_adapter_control_embed_strategy_get_type (void);
 
 NautilusAdapterEmbedStrategy       *nautilus_adapter_control_embed_strategy_new      (Bonobo_Control     control,
 										      Bonobo_UIContainer ui_container);

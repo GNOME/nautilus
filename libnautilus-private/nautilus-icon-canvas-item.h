@@ -57,8 +57,8 @@ struct NautilusIconCanvasItemClass {
 	EelCanvasItemClass parent_class;
 };
 
-/* GtkObject */
-GtkType     nautilus_icon_canvas_item_get_type                 (void);
+/* GObject */
+GType       nautilus_icon_canvas_item_get_type                 (void);
 
 /* attributes */
 void        nautilus_icon_canvas_item_set_image                (NautilusIconCanvasItem       *item,

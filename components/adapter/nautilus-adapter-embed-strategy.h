@@ -59,19 +59,19 @@ typedef struct {
 
 } NautilusAdapterEmbedStrategyClass;
 
-/* GtkObject support */
-GtkType                      nautilus_adapter_embed_strategy_get_type      (void);
+/* GObject support */
+GType			      nautilus_adapter_embed_strategy_get_type	   (void);
 
 /* Instantiates the proper concrete subclass */
-NautilusAdapterEmbedStrategy *nautilus_adapter_embed_strategy_get       (Bonobo_Unknown     component);
+NautilusAdapterEmbedStrategy *nautilus_adapter_embed_strategy_get          (Bonobo_Unknown	component);
 
-void                          nautilus_adapter_embed_strategy_activate  (NautilusAdapterEmbedStrategy *strategy,
-									 Bonobo_UIContainer            ui_container);
-void                          nautilus_adapter_embed_strategy_deactivate(NautilusAdapterEmbedStrategy *strategy);
+void                          nautilus_adapter_embed_strategy_activate     (NautilusAdapterEmbedStrategy *strategy,
+									    Bonobo_UIContainer            ui_container);
+void                          nautilus_adapter_embed_strategy_deactivate   (NautilusAdapterEmbedStrategy *strategy);
 
-GtkWidget                   *nautilus_adapter_embed_strategy_get_widget (NautilusAdapterEmbedStrategy *strategy);
+GtkWidget                    *nautilus_adapter_embed_strategy_get_widget   (NautilusAdapterEmbedStrategy *strategy);
 
-BonoboObject                *nautilus_adapter_embed_strategy_get_zoomable (NautilusAdapterEmbedStrategy *strategy);
+BonoboObject                 *nautilus_adapter_embed_strategy_get_zoomable (NautilusAdapterEmbedStrategy *strategy);
 
 
 #endif /* NAUTILUS_ADAPTER_EMBED_STRATEGY_H */

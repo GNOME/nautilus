@@ -61,7 +61,7 @@ struct NautilusPropertyBrowserClass
 	GtkWindowClass parent_class;
 };
 
-GtkType                  nautilus_property_browser_get_type (void);
+GType                    nautilus_property_browser_get_type (void);
 NautilusPropertyBrowser *nautilus_property_browser_new      (GdkScreen               *screen);
 void                     nautilus_property_browser_show     (GdkScreen               *screen);
 void                     nautilus_property_browser_set_path (NautilusPropertyBrowser *panel,

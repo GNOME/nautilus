@@ -51,8 +51,8 @@ struct NautilusSidebarLoserClass {
 	GtkLabelClass parent_class;
 };
 
-/* GtkObject support */
-GtkType       nautilus_sidebar_loser_get_type          (void);
+/* GObject support */
+GType	      nautilus_sidebar_loser_get_type          (void);
 
 /* Component embedding support */
 NautilusView *nautilus_sidebar_loser_get_nautilus_view (NautilusSidebarLoser *view);

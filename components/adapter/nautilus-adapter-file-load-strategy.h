@@ -46,8 +46,8 @@ typedef struct {
 	NautilusAdapterLoadStrategyClass parent;
 } NautilusAdapterFileLoadStrategyClass;
 
-/* GtkObject support */
-GtkType                            nautilus_adapter_file_load_strategy_get_type (void);
+/* GObject support */
+GType                              nautilus_adapter_file_load_strategy_get_type (void);
 
 NautilusAdapterLoadStrategy       *nautilus_adapter_file_load_strategy_new      (Bonobo_PersistFile  persist_file);
 

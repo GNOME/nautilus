@@ -52,6 +52,6 @@ typedef struct {
 	
 } NautilusEmblemViewClass;
 
-GtkType              nautilus_emblem_view_get_type     (void);
+GType	nautilus_emblem_view_get_type     (void);
 
 #endif /* NAUTILUS_EMBLEM_VIEW_H */

@@ -51,8 +51,8 @@ struct NautilusContentLoserClass {
 	GtkLabelClass parent_class;
 };
 
-/* GtkObject support */
-GtkType       nautilus_content_loser_get_type          (void);
+/* GObject support */
+GType	      nautilus_content_loser_get_type          (void);
 
 /* Component embedding support */
 NautilusView *nautilus_content_loser_get_nautilus_view (NautilusContentLoser *view);

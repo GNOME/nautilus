@@ -56,7 +56,7 @@ typedef struct {
 	void (*selection_changed) (NautilusEntry *entry);
 } NautilusEntryClass;
 
-GtkType     nautilus_entry_get_type                 (void);
+GType       nautilus_entry_get_type                 (void);
 GtkWidget  *nautilus_entry_new                      (void);
 GtkWidget  *nautilus_entry_new_with_max_length      (guint16        max);
 void        nautilus_entry_set_text                 (NautilusEntry *entry,

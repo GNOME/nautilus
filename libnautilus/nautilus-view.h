@@ -64,7 +64,7 @@ typedef struct {
 				    GList                  *selection);
 } NautilusViewClass;
 
-GtkType            nautilus_view_get_type                             (void);
+GType              nautilus_view_get_type                             (void);
 NautilusView *     nautilus_view_new                                  (GtkWidget              *widget);
 NautilusView *     nautilus_view_new_from_bonobo_control              (BonoboControl          *bonobo_control);
 BonoboControl *    nautilus_view_get_bonobo_control                   (NautilusView           *view);

@@ -54,7 +54,7 @@ struct NautilusProgramChooserClass
 	GtkDialogClass parent_class;
 };
 
-GtkType                  nautilus_program_chooser_get_type                (void);
+GType                    nautilus_program_chooser_get_type                (void);
 GtkWidget 		*nautilus_program_chooser_new 		  	  (GnomeVFSMimeActionType  type, 
 					   			   	   NautilusFile 	  *file);
 

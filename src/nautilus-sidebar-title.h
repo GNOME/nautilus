@@ -52,7 +52,7 @@ typedef struct
 	GtkVBoxClass parent_class;
 } NautilusSidebarTitleClass;
 
-GtkType    nautilus_sidebar_title_get_type          (void);
+GType      nautilus_sidebar_title_get_type          (void);
 GtkWidget *nautilus_sidebar_title_new               (void);
 void       nautilus_sidebar_title_set_file          (NautilusSidebarTitle *sidebar_title,
 						     NautilusFile         *file,

@@ -45,7 +45,7 @@ typedef struct {
 	POA_Nautilus_MetafileMonitor__epv epv;
 } NautilusMetafileMonitorClass;
 
-GtkType                  nautilus_metafile_monitor_get_type (void);
+GType                    nautilus_metafile_monitor_get_type (void);
 NautilusMetafileMonitor *nautilus_metafile_monitor_new      (NautilusDirectory *directory);
 
 #endif /* NAUTILUS_METAFILE_MONITOR_H */

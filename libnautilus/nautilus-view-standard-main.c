@@ -415,7 +415,7 @@ nautilus_view_standard_main (const char *executable_name,
 						  user_data);
 }
 
-typedef GtkType (* TypeFunc) (void);
+typedef GType (* TypeFunc) (void);
 
 BonoboObject *
 nautilus_view_create_from_get_type_function (const char *iid, void *user_data)

@@ -54,7 +54,7 @@ struct NautilusBookmarkListClass {
 	void (* contents_changed) (NautilusBookmarkList *bookmarks);
 };
 
-GtkType                 nautilus_bookmark_list_get_type            (void);
+GType                   nautilus_bookmark_list_get_type            (void);
 NautilusBookmarkList *  nautilus_bookmark_list_new                 (void);
 void                    nautilus_bookmark_list_append              (NautilusBookmarkList   *bookmarks,
 								    NautilusBookmark *bookmark);

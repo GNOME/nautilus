@@ -127,8 +127,8 @@ typedef struct
 	char *	 (* get_name_for_self_as_new_file) (NautilusDirectory *directory);
 } NautilusDirectoryClass;
 
-/* Basic GtkObject requirements. */
-GtkType            nautilus_directory_get_type                 (void);
+/* Basic GObject requirements. */
+GType              nautilus_directory_get_type                 (void);
 
 /* Get a directory given a uri.
  * Creates the appropriate subclass given the uri mappings.

@@ -55,7 +55,7 @@ typedef struct {
 	NautilusSearchBarClass parent_class;
 } NautilusSimpleSearchBarClass;
 
-GtkType    nautilus_simple_search_bar_get_type     (void);
+GType      nautilus_simple_search_bar_get_type     (void);
 GtkWidget* nautilus_simple_search_bar_new          (NautilusWindow *window);
 
 #endif /* NAUTILUS_SIMPLE_SEARCH_BAR_H */

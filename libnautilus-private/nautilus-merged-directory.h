@@ -56,7 +56,7 @@ typedef struct {
 					NautilusDirectory       *real_directory);
 } NautilusMergedDirectoryClass;
 
-GtkType nautilus_merged_directory_get_type              (void);
+GType   nautilus_merged_directory_get_type              (void);
 void    nautilus_merged_directory_add_real_directory    (NautilusMergedDirectory *merged_directory,
 							 NautilusDirectory       *real_directory);
 void    nautilus_merged_directory_remove_real_directory (NautilusMergedDirectory *merged_directory,

@@ -74,7 +74,7 @@ typedef enum {
 
 typedef gboolean (* NautilusEachVolumeCallback) (const NautilusVolume *, gpointer callback_data);
 
-GtkType                  nautilus_volume_monitor_get_type                   (void);
+GType                    nautilus_volume_monitor_get_type                   (void);
 NautilusVolumeMonitor  	*nautilus_volume_monitor_get                        (void);
 void                     nautilus_volume_monitor_mount_unmount_removable    (NautilusVolumeMonitor      *monitor,
 									     const char                 *mount_point,

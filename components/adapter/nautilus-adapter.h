@@ -46,8 +46,8 @@ typedef struct {
 	GtkObjectClass parent;
 } NautilusAdapterClass;
 
-/* GtkObject support */
-GtkType          nautilus_adapter_get_type          (void);
+/* GObject support */
+GType            nautilus_adapter_get_type          (void);
 
 NautilusAdapter *nautilus_adapter_new               (Bonobo_Unknown component);
 NautilusView    *nautilus_adapter_get_nautilus_view (NautilusAdapter *adapter);

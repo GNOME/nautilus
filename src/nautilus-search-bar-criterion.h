@@ -72,7 +72,7 @@ typedef struct {
 typedef void (* NautilusSearchBarCriterionCallback) (NautilusSearchBarCriterion *old_criterion,
 						     gpointer data);
 
-GtkType                            nautilus_search_bar_criterion_get_type         (void);
+GType                              nautilus_search_bar_criterion_get_type         (void);
 
 /* Three new procedures, each with a separate purpose:
    create the initial search option with first_new,

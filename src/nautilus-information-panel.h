@@ -57,7 +57,7 @@ typedef struct {
 				  const char *location);
 } NautilusInformationPanelClass;
 
-GtkType          nautilus_information_panel_get_type     (void);
+GType            nautilus_information_panel_get_type     (void);
 NautilusInformationPanel *nautilus_information_panel_new          (void);
 void             nautilus_information_panel_set_uri      (NautilusInformationPanel   *information_panel,
 						const char        *new_uri,

@@ -116,7 +116,7 @@ struct NautilusWindow {
         NautilusWindowShowState show_state;
 };
 
-GtkType          nautilus_window_get_type             (void);
+GType            nautilus_window_get_type             (void);
 void		 nautilus_window_ui_freeze	      (NautilusWindow	 *window);
 void		 nautilus_window_ui_thaw	      (NautilusWindow	 *window);
 void             nautilus_window_close                (NautilusWindow    *window);

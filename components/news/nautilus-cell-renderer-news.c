@@ -88,7 +88,7 @@ static gpointer parent_class;
 GType
 nautilus_cell_renderer_news_get_type (void)
 {
-        static GtkType cell_news_type = 0;
+        static GType cell_news_type = 0;
 
         if (!cell_news_type) {
                 static const GTypeInfo cell_news_info = {

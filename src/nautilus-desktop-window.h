@@ -49,7 +49,7 @@ typedef struct {
 	NautilusWindowClass parent_spot;
 } NautilusDesktopWindowClass;
 
-GtkType                nautilus_desktop_window_get_type            (void);
+GType                  nautilus_desktop_window_get_type            (void);
 NautilusDesktopWindow *nautilus_desktop_window_new                 (NautilusApplication *application,
 								    GdkScreen           *screen);
 void                   nautilus_desktop_window_update_directory    (NautilusDesktopWindow *window);

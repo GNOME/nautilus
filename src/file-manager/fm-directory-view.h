@@ -282,8 +282,8 @@ struct FMDirectoryViewClass {
 	void	(* emblems_changed)                (FMDirectoryView *view);
 };
 
-/* GtkObject support */
-GtkType             fm_directory_view_get_type                         (void);
+/* GObject support */
+GType               fm_directory_view_get_type                         (void);
 
 /* Component embedding support */
 NautilusView *      fm_directory_view_get_nautilus_view                (FMDirectoryView  *view);

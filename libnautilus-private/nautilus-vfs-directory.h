@@ -50,6 +50,6 @@ typedef struct {
 	NautilusDirectoryClass parent_slot;
 } NautilusVFSDirectoryClass;
 
-GtkType nautilus_vfs_directory_get_type (void);
+GType   nautilus_vfs_directory_get_type (void);
 
 #endif /* NAUTILUS_VFS_DIRECTORY_H */

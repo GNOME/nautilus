@@ -55,7 +55,7 @@ typedef struct {
 	NautilusNavigationBarClass parent_class;
 } NautilusLocationBarClass;
 
-GtkType    nautilus_location_bar_get_type     	(void);
+GType      nautilus_location_bar_get_type     	(void);
 GtkWidget* nautilus_location_bar_new          	(NautilusWindow *window);
 
 #endif /* NAUTILUS_LOCATION_BAR_H */

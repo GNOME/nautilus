@@ -46,7 +46,7 @@ typedef struct {
 	POA_Nautilus_Metafile__epv epv;
 } NautilusMetafileClass;
 
-GtkType nautilus_metafile_get_type (void);
+GType   nautilus_metafile_get_type (void);
 
 NautilusMetafile *nautilus_metafile_get (const char *directory_uri);
 

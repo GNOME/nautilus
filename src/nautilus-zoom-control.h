@@ -59,7 +59,7 @@ struct NautilusZoomControlClass {
 				 GtkScrollType scroll);
 };
 
-GtkType    nautilus_zoom_control_get_type           (void);
+GType      nautilus_zoom_control_get_type           (void);
 GtkWidget *nautilus_zoom_control_new                (void);
 
 void       nautilus_zoom_control_set_zoom_level     (NautilusZoomControl *zoom_control,

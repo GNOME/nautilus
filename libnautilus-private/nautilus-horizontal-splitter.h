@@ -47,7 +47,7 @@ typedef struct {
 } NautilusHorizontalSplitterClass;
 
 /* NautilusHorizontalSplitter public methods */
-GtkType    nautilus_horizontal_splitter_get_type (void);
+GType      nautilus_horizontal_splitter_get_type (void);
 GtkWidget *nautilus_horizontal_splitter_new      (void);
 
 gboolean   nautilus_horizontal_splitter_is_hidden	(NautilusHorizontalSplitter *splitter);

@@ -60,8 +60,8 @@ typedef struct {
 	void  (*stop_loading)  (NautilusAdapterLoadStrategy *strategy);
 } NautilusAdapterLoadStrategyClass;
 
-/* GtkObject support */
-GtkType                      nautilus_adapter_load_strategy_get_type              (void);
+/* GObject support */
+GType			     nautilus_adapter_load_strategy_get_type              (void);
 
 /* Instantiates the proper concrete subclass */
 NautilusAdapterLoadStrategy *nautilus_adapter_load_strategy_get                   (Bonobo_Unknown  component);

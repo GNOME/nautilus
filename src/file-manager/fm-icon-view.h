@@ -86,8 +86,8 @@ struct FMIconViewClass {
 
 };
 
-/* GtkObject support */
-GtkType fm_icon_view_get_type      (void);
+/* GObject support */
+GType   fm_icon_view_get_type      (void);
 int     fm_icon_view_compare_files (FMIconView   *icon_view,
 				    NautilusFile *a,
 				    NautilusFile *b);

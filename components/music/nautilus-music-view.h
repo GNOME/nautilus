@@ -50,7 +50,7 @@ struct NautilusMusicViewClass {
 
 
 
-/* GtkObject support */
-GtkType       nautilus_music_view_get_type          (void);
+/* GObject support */
+GType	nautilus_music_view_get_type	    (void);
 
 #endif /* NAUTILUS_MUSIC_VIEW_H */

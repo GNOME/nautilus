@@ -49,8 +49,8 @@ struct _NautilusHardwareViewClass {
 	EelBackgroundBoxClass parent_class;
 };
 
-/* GtkObject support */
-GtkType       nautilus_hardware_view_get_type          (void);
+/* GObject support */
+GType	      nautilus_hardware_view_get_type          (void);
 
 /* Component embedding support */
 BonoboObject *nautilus_hardware_view_get_nautilus_view (NautilusHardwareView *view);

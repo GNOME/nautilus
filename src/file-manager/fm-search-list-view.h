@@ -44,7 +44,7 @@ typedef struct {
 	FMListViewClass parent_slot;
 } FMSearchListViewClass;
 
-/* GtkObject support */
-GtkType fm_search_list_view_get_type (void);
+/* GObject support */
+GType   fm_search_list_view_get_type (void);
 
 #endif /* FM_SEARCH_LIST_VIEW_H */

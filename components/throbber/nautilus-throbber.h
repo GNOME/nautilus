@@ -56,7 +56,7 @@ struct NautilusThrobberClass {
 				   const char       *location);
 };
 
-GtkType       nautilus_throbber_get_type       (void);
+GType         nautilus_throbber_get_type       (void);
 GtkWidget    *nautilus_throbber_new            (void);
 BonoboObject *nautilus_throbber_get_control    (NautilusThrobber *throbber);
 void          nautilus_throbber_start          (NautilusThrobber *throbber);

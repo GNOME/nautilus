@@ -43,7 +43,7 @@ typedef struct {
 	FMIconViewClass parent_class;
 } FMDesktopIconViewClass;
 
-/* GtkObject support */
-GtkType fm_desktop_icon_view_get_type (void);
+/* GObject support */
+GType   fm_desktop_icon_view_get_type (void);
 
 #endif /* FM_DESKTOP_ICON_VIEW_H */

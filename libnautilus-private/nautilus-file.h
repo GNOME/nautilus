@@ -83,8 +83,8 @@ typedef char * (*NautilusTruncateCallback)    (const char    *string,
 					       int	      width,
 					       void	     *context);
 
-/* GtkObject requirements. */
-GtkType                 nautilus_file_get_type                          (void);
+/* GObject requirements. */
+GType                   nautilus_file_get_type                          (void);
 
 /* Getting at a single file. */
 NautilusFile *          nautilus_file_get                               (const char                     *uri);
