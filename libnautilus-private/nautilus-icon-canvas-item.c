@@ -1509,15 +1509,9 @@ hit_test (NautilusIconCanvasItem *icon_item, ArtIRect canvas_rect)
 		return TRUE;
 	}
 	
-	/* Check for hit in the icon. If we're highlighted for dropping, anywhere in the rect is OK */
-	if (icon_item->details->is_highlighted_for_drop) {
-		if (eel_art_irect_hits_irect (icon_item->details->canvas_rect, canvas_rect)) {
-			return TRUE;
-		}
-	} else {
-		if (hit_test_pixbuf (details->pixbuf, icon_item->details->canvas_rect, canvas_rect)) {
-			return TRUE;
-		}
+	/* Check for hit in the icon. */
+	if (eel_art_irect_hits_irect (icon_item->details->canvas_rect, canvas_rect)) {
+		return TRUE;
 	}
 
 	/* Check for hit in the text. */
