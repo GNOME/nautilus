@@ -79,7 +79,12 @@ static void	on_uri_field_changed 	      (GtkEditable *, gpointer user_data);
 static gboolean on_window_delete_event 	      (GtkWidget *, 
 					       GdkEvent *, 
 					       gpointer user_data);
+static void     on_window_hide_event 	      (GtkWidget *, 
+					       gpointer user_data);
+static void     on_window_destroy_event       (GtkWidget *, 
+					       gpointer user_data);
 static void	repopulate		      (void);
+static void	set_up_close_accelerator      (GtkWidget *window);
 
 #define BOOKMARK_LIST_COLUMN_ICON		0
 #define BOOKMARK_LIST_COLUMN_NAME		1
@@ -94,7 +99,6 @@ static void	repopulate		      (void);
 /* Larger size initially; user can stretch or shrink (but not shrink below min) */
 #define BOOKMARKS_WINDOW_INITIAL_WIDTH	500
 #define BOOKMARKS_WINDOW_INITIAL_HEIGHT	200
-
 
 /**
  * create_bookmarks_window:
@@ -120,6 +124,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_sou
 	bookmarks = list;
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	set_up_close_accelerator (window);
 	nautilus_undo_share_undo_manager (GTK_OBJECT (window), undo_manager_source);
 	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
 	gtk_window_set_title (GTK_WINDOW (window), _("Bookmarks"));
@@ -204,6 +209,14 @@ create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_sou
 
 	gtk_signal_connect (GTK_OBJECT (window), "delete_event",
                     	    GTK_SIGNAL_FUNC (on_window_delete_event),
+                    	    NULL);
+                    	    
+	gtk_signal_connect (GTK_OBJECT (window), "hide",
+                    	    on_window_hide_event,
+                    	    NULL);
+                    	    
+	gtk_signal_connect (GTK_OBJECT (window), "destroy",
+                    	    on_window_destroy_event,
                     	    NULL);
                     	    
 	name_field_changed_signalID =
@@ -531,29 +544,56 @@ on_uri_field_changed (GtkEditable *editable,
 	text_changed = TRUE;
 }
 
+static void
+save_geometry_and_hide (GtkWindow *window)
+{
+	g_assert (GTK_IS_WINDOW (window));
+
+	nautilus_bookmarks_window_save_geometry (window);
+	gtk_widget_hide (GTK_WIDGET (window));
+}
+
 
 static gboolean
 on_window_delete_event (GtkWidget *widget,
 			GdkEvent *event,
 			gpointer user_data)
 {
+	save_geometry_and_hide (GTK_WINDOW (widget));
+	return TRUE;
+}
+
+static gboolean
+restore_geometry (gpointer data)
+{
+	g_assert (GTK_IS_WINDOW (data));
+
+	nautilus_bookmarks_window_restore_geometry (GTK_WIDGET (data));
+
+	/* Don't call this again */
+	return FALSE;
+}
+
+static void
+on_window_hide_event (GtkWidget *widget,
+		      gpointer user_data)
+{
 	nautilus_bookmarks_window_save_geometry (GTK_WINDOW (widget));
-	
-	/* Hide but don't destroy */
-	gtk_widget_hide (widget);
 
 	/* Disable undo for entry widgets */
 	nautilus_undo_unregister (GTK_OBJECT (name_field));
 	nautilus_undo_unregister (GTK_OBJECT (uri_field));
 
-	/* Seems odd to restore the geometry just after saving it,
-	 * and when the window is hidden, but this insures that
-	 * the next time the window is shown it will have the
-	 * right hints in it to appear in the correct place.
-	 */
-	nautilus_bookmarks_window_restore_geometry (widget);
+	/* restore_geometry only works after window is hidden */
+	gtk_idle_add (restore_geometry, widget);
+}
 
-	return TRUE;
+static void
+on_window_destroy_event (GtkWidget *widget,
+		      	 gpointer user_data)
+{
+	g_message ("destroying bookmarks window");
+	gtk_idle_remove_by_data (widget);
 }
 
 static void
@@ -613,4 +653,36 @@ repopulate (void)
 	}
 	  
 	gtk_clist_thaw (GTK_CLIST (bookmark_list_widget));
+}
+
+static int
+handle_close_accelerator (GtkWindow *window, 
+			  GdkEventKey *event, 
+			  gpointer user_data)
+{
+	g_assert (GTK_IS_WINDOW (window));
+	g_assert (event != NULL);
+	g_assert (user_data == NULL);
+
+	if (nautilus_gtk_window_event_is_close_accelerator (window, event)) {		
+		save_geometry_and_hide (window);
+		gtk_signal_emit_stop_by_name 
+			(GTK_OBJECT (window), "key_press_event");
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static void
+set_up_close_accelerator (GtkWidget *window)
+{
+	/* Note that we don't call nautilus_gtk_window_set_up_close_accelerator
+	 * here because we have to handle saving geometry before hiding the
+	 * window.
+	 */
+	gtk_signal_connect (GTK_OBJECT (window),
+			    "key_press_event",
+			    GTK_SIGNAL_FUNC (handle_close_accelerator),
+			    NULL);
 }

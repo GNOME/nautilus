@@ -33,7 +33,9 @@
 #include <gtk/gtkpixmap.h>
 #include <gtk/gtkwindow.h>
 
-#define NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT 2
+#define NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT 	2
+#define NAUTILUS_STANDARD_CLOSE_WINDOW_CONTROL_KEY 	'w'
+
 
 /* GtkButton */
 void              nautilus_gtk_button_auto_click               (GtkButton              *button);
@@ -106,6 +108,10 @@ void		  nautilus_gtk_window_set_initial_geometry_from_string
 								const char	       *geometry_string,
 								guint			minimum_width,
 								guint			minimum_height);
+void		  nautilus_gtk_window_set_up_close_accelerator (GtkWindow	       *window);
+gboolean	  nautilus_gtk_window_event_is_close_accelerator 
+							       (GtkWindow	       *window,
+								GdkEventKey	       *event);
 void              nautilus_gtk_window_present                  (GtkWindow              *window);
 
 /* selection data */

@@ -623,6 +623,12 @@ nautilus_search_uri_to_human (const char *search_uri)
         return human;
 }
 
+char *
+nautilus_get_target_uri_from_search_result_name (const char *search_result_name)
+{
+	return gnome_vfs_unescape_string (search_result_name, NULL);
+}
+
 gboolean
 nautilus_is_search_uri (const char *uri)
 {

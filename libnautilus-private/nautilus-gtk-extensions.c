@@ -30,6 +30,7 @@
 
 #include <gtk/gtkselection.h>
 #include <gtk/gtksignal.h>
+#include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-geometry.h>
 #include "nautilus-glib-extensions.h"
 #include "nautilus-string.h"
@@ -310,6 +311,75 @@ nautilus_gtk_window_present (GtkWindow *window) {
 	}
     
 	gtk_widget_show (GTK_WIDGET (window));
+}
+
+static int
+handle_standard_close_accelerator (GtkWindow *window, 
+				   GdkEventKey *event, 
+				   gpointer user_data)
+{
+	g_assert (GTK_IS_WINDOW (window));
+	g_assert (event != NULL);
+	g_assert (user_data == NULL);
+
+	if (nautilus_gtk_window_event_is_close_accelerator (window, event)) {
+		if (GNOME_IS_DIALOG (window)) {
+			gnome_dialog_close (GNOME_DIALOG (window));
+		} else {
+			gtk_widget_hide (GTK_WIDGET (window));
+		}
+		gtk_signal_emit_stop_by_name 
+			(GTK_OBJECT (window), "key_press_event");
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+/**
+ * nautilus_gtk_window_event_is_close_accelerator:
+ * 
+ * Tests whether a key event is the standard window close accelerator.
+ * Not needed for clients that use nautilus_gtk_window_set_up_close_accelerator;
+ * use only if you must set up your own key_event handler for your own reasons.
+ **/
+gboolean
+nautilus_gtk_window_event_is_close_accelerator (GtkWindow *window, GdkEventKey *event)
+{
+	g_return_val_if_fail (GTK_IS_WINDOW (window), FALSE);
+	g_return_val_if_fail (event != NULL, FALSE);
+
+	if (event->state & GDK_CONTROL_MASK) {
+		/* Note: menu item equivalents are case-sensitive, so we will
+		 * be case-sensitive here too.
+		 */		
+		if (event->keyval == NAUTILUS_STANDARD_CLOSE_WINDOW_CONTROL_KEY) {
+			return TRUE;
+		}
+	}
+
+	return FALSE;	
+}
+
+/**
+ * nautilus_gtk_window_set_up_close_accelerator:
+ * 
+ * Sets up the standard keyboard equivalent to close the window.
+ * Call this for windows that don't set up a keyboard equivalent to
+ * close the window some other way, e.g. via a menu item accelerator.
+ * 
+ * @window: The GtkWindow that should be hidden when the standard
+ * keyboard equivalent is typed.
+ **/
+void
+nautilus_gtk_window_set_up_close_accelerator (GtkWindow *window)
+{
+	g_return_if_fail (GTK_IS_WINDOW (window));
+
+	gtk_signal_connect (GTK_OBJECT (window),
+			    "key_press_event",
+			    GTK_SIGNAL_FUNC (handle_standard_close_accelerator),
+			    NULL);
 }
 
 static void

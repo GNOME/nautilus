@@ -35,7 +35,8 @@
 #define NAUTILUS_SEARCH_URI_TEXT_DATE_MODIFIED	"modified"
 #define NAUTILUS_SEARCH_URI_TEXT_OWNER		"owner"
 
-gboolean nautilus_is_search_uri       (const char *uri);
-char *   nautilus_search_uri_to_human (const char *search_uri);
+gboolean nautilus_is_search_uri       			 (const char *uri);
+char *   nautilus_search_uri_to_human 			 (const char *search_uri);
+char *   nautilus_get_target_uri_from_search_result_name (const char *search_result_name);
 
 #endif /* NAUTILUS_SEARCH_URI_H */

@@ -139,7 +139,7 @@ fm_properties_window_initialize_class (FMPropertiesWindowClass *class)
 	GtkObjectClass *object_class;
 
 	object_class = GTK_OBJECT_CLASS (class);
-
+	
 	object_class->destroy = real_destroy;
 	object_class->shutdown = real_shutdown;
 }
@@ -148,6 +148,8 @@ static void
 fm_properties_window_initialize (FMPropertiesWindow *window)
 {
 	window->details = g_new0 (FMPropertiesWindowDetails, 1);
+
+	nautilus_gtk_window_set_up_close_accelerator (GTK_WINDOW (window));
 }
 
 typedef struct {
@@ -1987,4 +1989,3 @@ real_destroy (GtkObject *object)
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
-

@@ -42,6 +42,7 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-string.h>
 
 static void     ensure_unique_attributes                  (int        menu_index);
@@ -257,6 +258,7 @@ create_icon_text_window (void)
   	int index;
 
   	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	nautilus_gtk_window_set_up_close_accelerator (GTK_WINDOW (window));
   	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
   	gtk_window_set_title (GTK_WINDOW (window), _("Icon Captions"));
   	gtk_window_set_policy (GTK_WINDOW (window), FALSE, FALSE, FALSE);

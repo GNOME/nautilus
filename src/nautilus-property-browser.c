@@ -160,6 +160,8 @@ static void     remove_button_callback                          (GtkWidget      
 static gboolean nautilus_property_browser_delete_event_callback (GtkWidget               *widget,
 								 GdkEvent                *event,
 								 gpointer                 user_data);
+static void     nautilus_property_browser_hide_callback 	(GtkWidget               *widget,
+								 gpointer                 user_data);
 static void     nautilus_property_browser_drag_end              (GtkWidget               *widget,
 								 GdkDragContext          *context);
 static void     nautilus_property_browser_drag_data_get         (GtkWidget               *widget,
@@ -248,8 +250,9 @@ nautilus_property_browser_initialize (GtkObject *object)
 	gtk_widget_set_usize (widget, PROPERTY_BROWSER_WIDTH, PROPERTY_BROWSER_HEIGHT);
 	gtk_container_set_border_width (GTK_CONTAINER (widget), 0);				
 
-	/* set the title */
+	/* set the title and standard close accelerator */
 	gtk_window_set_title(GTK_WINDOW(widget), _("Customization Options"));
+	nautilus_gtk_window_set_up_close_accelerator (GTK_WINDOW (widget));
 	
 	/* set up the background */
 	
@@ -413,6 +416,10 @@ nautilus_property_browser_initialize (GtkObject *object)
                     	    GTK_SIGNAL_FUNC (nautilus_property_browser_delete_event_callback),
                     	    NULL);
 
+	gtk_signal_connect (GTK_OBJECT (property_browser), "hide",
+                    	    nautilus_property_browser_hide_callback,
+                    	    NULL);
+
 	/* initially, display the top level */
 	nautilus_property_browser_set_path(property_browser, BROWSER_CATEGORIES_FILE_NAME);
 }
@@ -485,9 +492,15 @@ nautilus_property_browser_delete_event_callback (GtkWidget *widget,
 					   gpointer   user_data)
 {
 	/* Hide but don't destroy */
-	cancel_remove_mode (NAUTILUS_PROPERTY_BROWSER (widget));
 	gtk_widget_hide(widget);
 	return TRUE;
+}
+
+static void
+nautilus_property_browser_hide_callback (GtkWidget *widget,
+					 gpointer   user_data)
+{
+	cancel_remove_mode (NAUTILUS_PROPERTY_BROWSER (widget));
 }
 
 /* remember the name of the dragged file */

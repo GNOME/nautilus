@@ -1,3 +1,86 @@
+2000-12-08  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 5029 (File count in sidebar might not match displayed
+	search results list due to filtering)
+
+	* libnautilus-extensions/nautilus-search-uri.h:
+	* libnautilus-extensions/nautilus-search-uri.c:
+	(nautilus_get_target_uri_from_search_result_name):
+	New function to extract the sooper-secretly encoded
+	actual search result URI from the search result "file name".
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(should_display_file_name): New helper function that users
+	user preferences to determine whether a file should be
+	displayed, based only on its name.
+	(filter_search_uri): New filter function used on search
+	results
+	(get_file_count_filter) New function, result depends on
+	whether directory is a search directory.
+	(start_monitoring_file_list): Use get_file_count_filter.
+
+	* src/file-manager/fm-search-list-view.c: (real_add_file):
+	Use nautilus_get_target_uri_from_search_result_name instead
+	of spreading out the sooper secret knowledge.
+	
+
+	Fixed bug 5014 (Control-w should close the properties dialog)
+
+	I made Control-w close a bunch o' windows without menus.
+
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(handle_standard_close_accelerator): New helper function,
+	closes the window if the key was the close accelerator.
+	(nautilus_gtk_window_event_is_close_accelerator): New public
+	function, checks whether a key event is the close accelerator.
+	(nautilus_gtk_window_set_up_close_accelerator): New public
+	function, one-stop shopping for most clients that want to
+	have Control-w close a window.
+
+	* libnautilus-extensions/nautilus-preferences-dialog.c:
+	(nautilus_preferences_dialog_construct):
+	* src/file-manager/fm-icon-text-window.c:
+	(create_icon_text_window):
+	* src/nautilus-about.c: (nautilus_about_initialize):
+	* src/nautilus-profiler.c: (dump_dialog_new):
+	* src/nautilus-theme-selector.c:
+	(nautilus_theme_selector_initialize):
+	* src/file-manager/fm-properties-window.c:
+	(fm_properties_window_initialize):
+	Simple cases, just use nautilus_gtk_window_set_up_close_accelerator 
+	so Control-w closes window.
+	
+	* src/nautilus-bookmarks-window.c: 
+	(save_geometry_and_hide): New helper function, saves geometry
+	before hiding window.
+	(on_window_delete_event): Call save_geometry_and_hide; move
+	other code into hide event handler since it should happen on
+	every hide.
+	(restore_geometry): Idle function to restore geometry after
+	window is hidden (sounds strange, but that's the way it works).
+	(on_window_hide_event): Do the every-hide work formerly done
+	in delete_event handler; call restore_geometry at idle time
+	because it must be called after window is hidden to work right.
+	(on_window_destroy_event): remove idle handler in this case
+	(only happens when Nautilus is exiting).
+	(handle_close_accelerator), (set_up_close_accelerator):
+	Similar to nautilus_gtk_window_ versions of these functions,
+	but also handle saving the geometry before hiding.
+	(create_bookmarks_window): Call set_up_close_accelerator;
+	wire up "hide" and "destroy" events.
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_delete_event_callback),
+	(nautilus_property_browser_hide_callback): Move code that
+	should run on "hide" from "delete_event" handler to "hide"
+	handler; this didn't matter before when clicking was the only
+	way to close the window.
+	(nautilus_property_browser_initialize): Wire up "hide" handler;
+	call nautilus_gtk_window_set_up_close_accelerator.
+
 2000-12-08  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
@@ -11247,4 +11330,3 @@ Sun Oct 22 05:25:46 2000  George Lebl <jirka@5z.com>
 2000-10-18  Maciej Stachowiak  <mjs@eazel.com>
 
 	* ChangeLog: rolled over to ChangeLog-20001018.
-

@@ -153,8 +153,9 @@ nautilus_theme_selector_initialize (GtkObject *object)
 	gtk_widget_set_usize (widget, THEME_SELECTOR_WIDTH, THEME_SELECTOR_HEIGHT);
 	gtk_container_set_border_width (GTK_CONTAINER (widget), 0);				
 
-	/* set the title */
-	gtk_window_set_title (GTK_WINDOW(widget), _("Nautilus Theme Selector"));
+	/* set the title and standard close accelerator */
+	gtk_window_set_title (GTK_WINDOW (widget), _("Nautilus Theme Selector"));
+	nautilus_gtk_window_set_up_close_accelerator (GTK_WINDOW (widget));
 	
 	/* set up the background */	
 	background = nautilus_get_widget_background (GTK_WIDGET (theme_selector));

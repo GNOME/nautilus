@@ -423,7 +423,7 @@ real_add_file (FMDirectoryView *view, NautilusFile *file)
 	 * search results virtual file.
 	 */
 	fake_file_name = nautilus_file_get_name (file);
-	real_file_uri = gnome_vfs_unescape_string (fake_file_name, NULL);
+	real_file_uri = nautilus_get_target_uri_from_search_result_name (fake_file_name);
 	real_file = nautilus_file_get (real_file_uri);
 
 	/* We don't benefit from the filtering done in queue_pending_files,

@@ -2024,6 +2024,66 @@ mark_all_files_unconfirmed (NautilusDirectory *directory)
 	}
 }
 
+static gboolean
+should_display_file_name (const char *name, GnomeVFSDirectoryFilterOptions options)
+{
+	if (options & GNOME_VFS_DIRECTORY_FILTER_NODOTFILES) {
+		if (name[0] == '.') {
+			return FALSE;
+		}
+	}
+
+	if (options & GNOME_VFS_DIRECTORY_FILTER_NOBACKUPFILES) {
+		if (name[strlen (name) - 1] == '~') {
+			return FALSE;
+		}
+	}
+	
+	/* Note that we don't bother to check for "." or ".." here, because
+	 * this function is used only for search results, which never include
+	 * those special files. If we later use this function more generally,
+	 * we might have to change this.
+	 */
+	return TRUE;
+}
+
+/* Filter search results based on user preferences. This must be done
+ * differently than filtering other files because the search results
+ * are encoded: the entire file path is encoded and stored as the file
+ * name.
+ */
+static gboolean
+filter_search_uri (const GnomeVFSFileInfo *info, gpointer data)
+{
+	GnomeVFSDirectoryFilterOptions options;
+	char *real_file_uri;
+	gboolean result;
+
+	options = GPOINTER_TO_INT (data);
+	
+	real_file_uri = nautilus_get_target_uri_from_search_result_name (info->name);
+	result = should_display_file_name (g_basename (real_file_uri), options);	
+	g_free (real_file_uri);
+
+	return result;
+}
+
+static GnomeVFSDirectoryFilter *
+get_file_count_filter (NautilusDirectory *directory)
+{
+	if (nautilus_is_search_uri (directory->details->uri)) {
+		return gnome_vfs_directory_filter_new_custom
+			(filter_search_uri,
+			 GNOME_VFS_DIRECTORY_FILTER_NEEDS_NAME,
+			 GINT_TO_POINTER (get_filter_options_for_directory_count ()));
+	}
+
+	return gnome_vfs_directory_filter_new
+		(GNOME_VFS_DIRECTORY_FILTER_NONE,
+		 get_filter_options_for_directory_count (),
+		 NULL);
+}
+
 /* Start monitoring the file list if it isn't already. */
 static void
 start_monitoring_file_list (NautilusDirectory *directory)
@@ -2048,15 +2108,11 @@ start_monitoring_file_list (NautilusDirectory *directory)
 	g_assert (directory->details->uri != NULL);
 	directory->details->directory_load_list_last_handled
 		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
-	directory->details->load_file_count = 0;
         directory->details->load_directory_file =
 		nautilus_directory_get_corresponding_file (directory);
 	directory->details->load_directory_file->details->loading_directory = TRUE;
 	directory->details->load_file_count = 0;
-	directory->details->load_file_count_filter = gnome_vfs_directory_filter_new
-		(GNOME_VFS_DIRECTORY_FILTER_NONE,
-		 get_filter_options_for_directory_count (),
-		 NULL);
+	directory->details->load_file_count_filter = get_file_count_filter (directory);
 	directory->details->load_mime_list_hash = istr_set_new ();
 #ifdef DEBUG_LOAD_DIRECTORY
 	g_message ("load_directory called to monitor file list of %s", directory->details->uri);
