@@ -12,25 +12,22 @@ INCLUDES =					\
 	-DGTK_ENABLE_BROKEN			\
 	$(NULL)
 
-# bin_PROGRAMS = nautilus-text-view
+bin_PROGRAMS = nautilus-text-view
 
 nautilus_text_view_SOURCES =		        \
-	nautilus-text-view.c			\
-	nautilus-text-view.h			\
-	main.c
+	nautilus-text-view.c
 
-#nautilus_text_view_LDADD =			\
-#	$(top_builddir)/libnautilus/libnautilus.la	\
-#	$(top_builddir)/libnautilus-private/libnautilus-private.la \
-#	$(COMPONENT_LIBS)			\
-#	$(NULL)
+nautilus_text_view_LDADD =			\
+	../../libnautilus/libnautilus.la        \
+	$(COMPONENT_LIBS)			\
+	$(NULL)
 
-uidir = $(datadir)/gnome-2.0/ui
-ui_DATA = nautilus-text-view-ui.xml
+#uidir = $(datadir)/gnome-2.0/ui
+#ui_DATA = nautilus-text-view-ui.xml
 
 serverdir = $(libdir)/bonobo/servers
 server_in_files = Nautilus_View_text.server.in
-# server_DATA = $(server_in_files:.server.in=.server)
+server_DATA = $(server_in_files:.server.in=.server)
 @INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST = $(server_in_files) $(ui_DATA) $(nautilus_text_view_SOURCES) # $(server_DATA)
+EXTRA_DIST = $(server_in_files) $(nautilus_text_view_SOURCES) # $(server_DATA) #$(ui_data)
