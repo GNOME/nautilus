@@ -463,7 +463,7 @@ drag_data_received_cb (GtkWidget *widget,
 		dnd_info->selection_data = nautilus_gtk_selection_data_copy_deep (data);
 		break;
 	default:
-		g_warning ("drag_data_received_cb received data but could not handle it");
+		break;
 	}
 }
 
@@ -618,6 +618,7 @@ drag_drop_cb (GtkWidget *widget,
 		gnome_icon_container_receive_dropped_icons
 			(GNOME_ICON_CONTAINER (widget),
 			 context, x, y);
+		gtk_drag_finish (context, TRUE, FALSE, time);
 		break;
 	case GNOME_ICON_CONTAINER_DND_COLOR:
 		nautilus_background_receive_dropped_color
@@ -626,7 +627,7 @@ drag_drop_cb (GtkWidget *widget,
 		gtk_drag_finish (context, TRUE, FALSE, time);
 		break;
 	default:
-		g_warning ("drag_drop_cb received data but could not handle it");
+		gtk_drag_finish (context, FALSE, FALSE, time);
 	}
 
 	gnome_icon_container_free_drag_data (GNOME_ICON_CONTAINER (widget));

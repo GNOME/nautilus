@@ -1,3 +1,9 @@
+2000-03-14  Jonathan Blandford  <jrb@redhat.com>
+
+	* libnautilus/gnome-icon-container-dnd.c (drag_drop_cb): Add a
+	gtk_drag_finish to hopefully solve half the flying windows
+	problem.  Needs more thought then this, though...
+
 2000-03-14  John Sullivan  <sullivan@eazel.com>
 
         Fixed bug introduced in last checkin where two popup
