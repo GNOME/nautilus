@@ -92,6 +92,6 @@ char *              nautilus_preferences_get                  (const char       
 void                nautilus_preferences_shutdown             (void);
 
 
-BEGIN_GNOME_DECLS
+END_GNOME_DECLS
 
 #endif /* NAUTILUS_PREFERENCES_H */

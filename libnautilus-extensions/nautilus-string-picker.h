@@ -90,7 +90,7 @@ gboolean            nautilus_string_picker_contains            (const NautilusSt
 								const char                 *string);
 
 
-BEGIN_GNOME_DECLS
+END_GNOME_DECLS
 
 #endif /* NAUTILUS_STRING_PICKER_H */
 

@@ -41,6 +41,11 @@
 #define NAUTILUS_IS_USER_LEVEL_MANAGER(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_USER_LEVEL_MANAGER))
 #define NAUTILUS_IS_USER_LEVEL_MANAGER_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_USER_LEVEL_MANAGER))
 
+/* FIXME bugzilla.eazel.com 2806: 
+ * These names are used both by gconf paths and for user display.
+ * We need to maintain both separately, so the user-display ones can
+ * be capitalized and localized.
+ */
 static const char *DEFAULT_USER_LEVEL_NAMES[] =
 {
 	"novice",
@@ -48,12 +53,8 @@ static const char *DEFAULT_USER_LEVEL_NAMES[] =
 	"hacker"
 };
 
-#define USER_LEVEL_NOVICE	0
-#define USER_LEVEL_INTERMEDIATE	1
-#define USER_LEVEL_HACKER	2
-
 static const guint   DEFAULT_NUM_USER_LEVELS = NAUTILUS_N_ELEMENTS (DEFAULT_USER_LEVEL_NAMES);
-static const guint   DEFAULT_USER_LEVEL = USER_LEVEL_HACKER;
+static const guint   DEFAULT_USER_LEVEL = NAUTILUS_USER_LEVEL_HACKER;
 
 static const char    USER_LEVEL_KEY[] = "/apps/nautilus/user_level";
 static const char    USER_LEVEL_PATH[] = "/apps/nautilus";

@@ -94,7 +94,7 @@ void       nautilus_radio_button_group_set_entry_description_text (NautilusRadio
 								   guint                     entry_index,
 								   const char               *description);
 
-BEGIN_GNOME_DECLS
+END_GNOME_DECLS
 
 #endif /* NAUTILUS_RADIO_BUTTON_GROUP_H */
 

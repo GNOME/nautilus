@@ -107,6 +107,6 @@ void                nautilus_preference_enum_add_entry_by_name (const char      
 void nautilus_preference_shutdown (void);
 
 
-BEGIN_GNOME_DECLS
+END_GNOME_DECLS
 
 #endif /* NAUTILUS_PREFERENCE_H */

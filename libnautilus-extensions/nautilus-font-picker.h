@@ -73,7 +73,7 @@ char *     nautilus_font_picker_get_selected_weight    (const NautilusFontPicker
 char *     nautilus_font_picker_get_selected_slant     (const NautilusFontPicker *font_picker);
 char *     nautilus_font_picker_get_selected_set_width (const NautilusFontPicker *font_picker);
 
-BEGIN_GNOME_DECLS
+END_GNOME_DECLS
 
 #endif /* NAUTILUS_FONT_PICKER_H */
 

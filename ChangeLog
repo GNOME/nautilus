@@ -1,3 +1,63 @@
+2000-09-05  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1247 ("Edit Novice Settings" menu item
+	needs to be handled better)
+
+	Now this menu item is enabled, and choosing it explains
+	that you can't edited the Novice settings but offers
+	to switch to Intermediate and let you edit those
+	settings.
+
+	* libnautilus-extensions/nautilus-user-level-manager.c,
+	* libnautilus-extensions/nautilus-user-level-manager.h:
+	Made the #defines for the user level ints public, so
+	code elsewhere could use them rather than hardwiring
+	a bunch of 0s, 1s, and 2s.
+
+	* libnautilus-extensions/nautilus-caption-table.h:
+	* libnautilus-extensions/nautilus-caption.h:
+	* libnautilus-extensions/nautilus-font-picker.h:
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-password-dialog.h:
+	* libnautilus-extensions/nautilus-preference.h:
+	* libnautilus-extensions/nautilus-preferences-box.h:
+	* libnautilus-extensions/nautilus-preferences-dialog.h:
+	* libnautilus-extensions/nautilus-preferences-group.h:
+	* libnautilus-extensions/nautilus-preferences-item.h:
+	* libnautilus-extensions/nautilus-preferences-pane.h:
+	* libnautilus-extensions/nautilus-preferences-private.h:
+	* libnautilus-extensions/nautilus-preferences.h:
+	* libnautilus-extensions/nautilus-radio-button-group.h:
+	* libnautilus-extensions/nautilus-string-picker.h:
+	* libnautilus-extensions/nautilus-text-caption.h:
+	Changed the closing BEGIN_GNOME_DECLS in these header files
+	to END_GNOME_DECLS.
+	
+	* src/nautilus-window-menus.c:
+	(get_user_level_string_for_display): New function, extracted
+	from get_customize_user_level_string. Returns the user level
+	string to be put into user messages or menu item names.
+	(get_customize_user_level_string): Now calls 
+	get_user_level_string_for_display
+	(switch_and_show_intermediate_settings_callback): New function,
+	switches to intermediate level and displays the user level
+	settings dialog.
+	(user_level_customize_callback): If the current user level is
+	NAUTILUS_USER_LEVEL_NOVICE, puts up a dialog telling the user
+	that the Novice settings can't be changed, and asking them if
+	they want to switch to Intermediate and edit those settings.
+	(get_user_level_image), (user_level_changed_callback),
+	(nautilus_window_initialize_menus), 
+	(convert_menu_path_to_user_level),
+	(convert_user_level_to_menu_path): 
+	Use #defines for user levels instead of hardwiring integers.
+	(switch_to_user_level): New function, extracted from
+	user_level_menu_item_callback. Switches to a specified user
+	level and updates menu items & title image appropriately.
+	(user_level_menu_item_callback): Now calls switch_to_user_level.
+	(update_user_level_menu_items): Don't desensitize the Edit 
+	Settings item at Novice user level anymore.
+
 2000-09-05  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-shell.c: (display_caveat):

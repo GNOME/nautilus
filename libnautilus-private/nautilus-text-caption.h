@@ -69,7 +69,7 @@ char *nautilus_text_caption_get_text        (NautilusTextCaption      *text_capt
 void  nautilus_text_caption_set_text        (NautilusTextCaption      *text_caption,
 					     const char               *text);
 
-BEGIN_GNOME_DECLS
+END_GNOME_DECLS
 
 #endif /* NAUTILUS_TEXT_CAPTION_H */
 

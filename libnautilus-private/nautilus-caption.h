@@ -79,7 +79,7 @@ char *     nautilus_caption_get_title_label (const NautilusCaption *caption);
 void       nautilus_caption_set_child       (NautilusCaption       *caption,
 					     GtkWidget             *child);
 
-BEGIN_GNOME_DECLS
+END_GNOME_DECLS
 
 #endif /* NAUTILUS_CAPTION_H */
 

@@ -63,7 +63,7 @@ GtkWidget* nautilus_preferences_box_add_pane (NautilusPreferencesBox *prefs_box,
 					      const gchar      *pane_title,
 					      const gchar      *pane_description);
 
-BEGIN_GNOME_DECLS
+END_GNOME_DECLS
 
 #endif /* NAUTILUS_PREFERENCES_BOX_H */
 

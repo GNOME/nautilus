@@ -131,7 +131,7 @@ GList *nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers  (
 GList *nautilus_global_preferences_get_disabled_sidebar_panel_view_identifiers (void);
 
 
-BEGIN_GNOME_DECLS
+END_GNOME_DECLS
 
 #endif /* NAUTILUS_PREFS_GLOBAL_H */
 

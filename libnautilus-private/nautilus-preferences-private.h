@@ -34,6 +34,6 @@ BEGIN_GNOME_DECLS
 gboolean    nautilus_preferences_handle_error      (GConfError      **error);
 
 
-BEGIN_GNOME_DECLS
+END_GNOME_DECLS
 
 #endif /* NAUTILUS_PREFERENCES_PRIVATE_H */

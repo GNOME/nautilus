@@ -77,6 +77,6 @@ char *   nautilus_password_dialog_get_username            (NautilusPasswordDialo
 char *   nautilus_password_dialog_get_password            (NautilusPasswordDialog *password_dialog);
 gboolean nautilus_password_dialog_get_remember            (NautilusPasswordDialog *password_dialog);
 
-BEGIN_GNOME_DECLS
+END_GNOME_DECLS
 
 #endif /* NAUTILUS_PASSWORD_DIALOG_H */

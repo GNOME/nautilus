@@ -123,7 +123,10 @@ static guint                 convert_menu_path_to_user_level                (con
 static const char *          convert_user_level_to_menu_path                (guint                   user_level);
 static char *                get_customize_user_level_settings_menu_string  (void);
 static void                  update_user_level_menu_items                   (NautilusWindow         *window);
+static char *		     get_user_level_string_for_display 		    (int 		     user_level);
 static char *                get_customize_user_level_string                (void);
+static void		     switch_to_user_level 			    (NautilusWindow 	    *window, 
+									     int 		     new_user_level);
 static void		     update_preferences_dialog_title		    (void);
 
 static const char * normal_menu_titles[] = {
@@ -526,11 +529,61 @@ bookmarks_menu_edit_bookmarks_callback (BonoboUIHandler *ui_handler,
 }
 
 static void
+switch_and_show_intermediate_settings_callback (GtkWidget *button, gpointer user_data)
+{
+	g_assert (NAUTILUS_IS_WINDOW (user_data));
+
+	switch_to_user_level (NAUTILUS_WINDOW (user_data), NAUTILUS_USER_LEVEL_INTERMEDIATE);
+	nautilus_global_preferences_show_dialog ();
+}
+
+
+static void
 user_level_customize_callback (BonoboUIHandler *ui_handler, 
 					     gpointer user_data,
 					     const char *path)
 {
-	nautilus_global_preferences_show_dialog ();
+	GnomeDialog *dialog;
+	NautilusWindow *window;
+	char *novice_level_name;
+	char *intermediate_level_name;
+	char *expert_level_name;
+	char *prompt;
+	char *dialog_title;
+
+	window = NAUTILUS_WINDOW (user_data);
+
+	if (nautilus_user_level_manager_get_user_level () == NAUTILUS_USER_LEVEL_NOVICE) {
+		novice_level_name = get_user_level_string_for_display (NAUTILUS_USER_LEVEL_NOVICE);
+		intermediate_level_name = get_user_level_string_for_display (NAUTILUS_USER_LEVEL_INTERMEDIATE);
+		expert_level_name = get_user_level_string_for_display (NAUTILUS_USER_LEVEL_HACKER);
+		prompt = g_strdup_printf (_("The %s settings cannot be edited. If you want to "
+					    "edit the settings you must choose the %s or %s "
+					    "user level. Do you want to switch to %s now "
+					    "and edit its settings?"),
+					    novice_level_name,
+					    intermediate_level_name,
+					    expert_level_name,
+					    intermediate_level_name);
+
+		dialog_title = g_strdup_printf (_("Nautilus: Switch to %s?"), intermediate_level_name);
+		dialog = nautilus_yes_no_dialog (prompt,
+						 dialog_title,
+						 _("Switch"),
+						 GNOME_STOCK_BUTTON_CANCEL,
+						 GTK_WINDOW (window));
+		gnome_dialog_button_connect 
+			(dialog, GNOME_OK, switch_and_show_intermediate_settings_callback, window);
+		gnome_dialog_set_default (dialog, GNOME_CANCEL);
+
+		g_free (prompt);
+		g_free (dialog_title);
+		g_free (novice_level_name);
+		g_free (intermediate_level_name);
+		g_free (expert_level_name);
+	} else {
+		nautilus_global_preferences_show_dialog ();
+	}
 }
 
 static void
@@ -606,15 +659,13 @@ get_user_level_image (int user_level, gboolean is_selected)
 	
 	switch (user_level)
 	{
-		case 0:
+		case NAUTILUS_USER_LEVEL_NOVICE:
 			image_name = "novice";
 			break;
-		case 1:
-			image_name = "intermediate";
-			break;
-		case 2:
+		case NAUTILUS_USER_LEVEL_HACKER:
 			image_name = "expert";
 			break;
+		case NAUTILUS_USER_LEVEL_INTERMEDIATE:
 		default:
 			image_name = "intermediate";
 			break;
@@ -639,39 +690,58 @@ get_user_level_image (int user_level, gboolean is_selected)
 }
 
 /* handle user level changes */
-
 static void
-user_level_menu_item_callback (BonoboUIHandler *ui_handler, 
-		       		   gpointer user_data,
-		      		   const char *path)
+switch_to_user_level (NautilusWindow *window, int new_user_level)
 {
 	GdkPixbuf *pixbuf;
-	const char *old_menu_path;
-	int old_user_level, new_user_level;
-		
-	old_user_level = nautilus_user_level_manager_get_user_level ();
-	new_user_level = convert_menu_path_to_user_level (path);
+	int old_user_level;
 
-	if (old_user_level == new_user_level) {
+	old_user_level = nautilus_user_level_manager_get_user_level ();
+	if (new_user_level == old_user_level) {
 		return;
 	}
 
 	nautilus_user_level_manager_set_user_level (new_user_level);
 	
 	/* change the item pixbufs to reflect the new user level */
-	old_menu_path = convert_user_level_to_menu_path (old_user_level);
 	pixbuf = get_user_level_image (old_user_level, FALSE);
-	bonobo_ui_handler_menu_set_pixmap (ui_handler, old_menu_path, BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA, pixbuf);
+	bonobo_ui_handler_menu_set_pixmap 
+		(window->ui_handler, 
+		 convert_user_level_to_menu_path (old_user_level), 
+		 BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA, 
+		 pixbuf);
 	gdk_pixbuf_unref (pixbuf);
 	
 	pixbuf = get_user_level_image (new_user_level, TRUE);
-	bonobo_ui_handler_menu_set_pixmap (ui_handler, path, BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA, pixbuf);
+	bonobo_ui_handler_menu_set_pixmap 
+		(window->ui_handler, 
+		 convert_user_level_to_menu_path (new_user_level), 
+		 BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA, 
+		 pixbuf);
 	gdk_pixbuf_unref (pixbuf);
 	
 	/* set up the menu title image to reflect the new user level */
 	pixbuf = get_user_level_image (new_user_level, FALSE);
-	bonobo_ui_handler_menu_set_pixmap (ui_handler, NAUTILUS_MENU_PATH_USER_LEVEL, BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA, pixbuf);
+	bonobo_ui_handler_menu_set_pixmap 
+		(window->ui_handler, 
+		 NAUTILUS_MENU_PATH_USER_LEVEL, 
+		 BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA, 
+		 pixbuf);
 	gdk_pixbuf_unref (pixbuf);
+} 
+ 
+
+static void
+user_level_menu_item_callback (BonoboUIHandler *ui_handler, 
+		       		   gpointer user_data,
+		      		   const char *path)
+{
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (user_data);
+	g_assert (window->ui_handler == ui_handler);
+		
+	switch_to_user_level (window, convert_menu_path_to_user_level (path));
 }
 
 static void
@@ -1214,7 +1284,7 @@ user_level_changed_callback (GtkObject	*user_level_manager,
 	update_user_level_menu_items (NAUTILUS_WINDOW (user_data));
 
 	/* Hide the customize dialog for novice user level */
-	if (nautilus_user_level_manager_get_user_level () == 0) {
+	if (nautilus_user_level_manager_get_user_level () == NAUTILUS_USER_LEVEL_NOVICE) {
 		nautilus_global_preferences_hide_dialog ();
 	}
 	/* Otherwise update its title to reflect the user level */
@@ -1672,7 +1742,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 	gdk_pixbuf_unref (pixbuf);
 	
 	/* now add items for each of the three user levels */
-	pixbuf = get_user_level_image (0, current_user_level == 0);
+	pixbuf = get_user_level_image (NAUTILUS_USER_LEVEL_NOVICE, current_user_level == NAUTILUS_USER_LEVEL_NOVICE);
 	bonobo_ui_handler_menu_new_item (ui_handler,
         				 NAUTILUS_MENU_PATH_NOVICE_ITEM,
         				 _(" Novice"),
@@ -1686,7 +1756,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 window);
 	gdk_pixbuf_unref (pixbuf);
 
-	pixbuf = get_user_level_image (1, current_user_level == 1);
+	pixbuf = get_user_level_image (NAUTILUS_USER_LEVEL_INTERMEDIATE, current_user_level == NAUTILUS_USER_LEVEL_INTERMEDIATE);
 	bonobo_ui_handler_menu_new_item (ui_handler,
         				 NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM,
         				 _(" Intermediate"),
@@ -1701,7 +1771,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 
 	gdk_pixbuf_unref (pixbuf);
 
-	pixbuf = get_user_level_image (2, current_user_level == 2);
+	pixbuf = get_user_level_image (NAUTILUS_USER_LEVEL_HACKER, current_user_level == NAUTILUS_USER_LEVEL_HACKER);
 	bonobo_ui_handler_menu_new_item (ui_handler,
         				 NAUTILUS_MENU_PATH_EXPERT_ITEM,
         				 _(" Expert"),
@@ -1952,16 +2022,6 @@ update_user_level_menu_items (NautilusWindow *window)
 						convert_user_level_to_menu_path (user_level),
 						TRUE);
 
-	/* FIXME bugzilla.eazel.com 1247: 
-	 * We want to hide the customize button for the novice user level.
-	 * It cant find a bonobo ui handler call to hide a menu item, so make it 
-	 * insensitive for now.
-	 */
-	bonobo_ui_handler_menu_set_sensitivity (window->ui_handler,
-						NAUTILUS_MENU_PATH_USER_LEVEL_CUSTOMIZE,
-						(user_level > 0));
-
-
  	/* Update the "Edit Settings..." item to reflect the user level to customize */
 	bonobo_ui_handler_menu_set_label (window->ui_handler,
 					  NAUTILUS_MENU_PATH_USER_LEVEL_CUSTOMIZE,
@@ -1976,33 +2036,33 @@ convert_menu_path_to_user_level (const char *path)
         g_assert (path != NULL);
 	
 	if (strcmp (path, NAUTILUS_MENU_PATH_NOVICE_ITEM) == 0) {
-		return 0;
+		return NAUTILUS_USER_LEVEL_NOVICE;
 	}
 	else if (strcmp (path, NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM) == 0) {
-		return 1;
+		return NAUTILUS_USER_LEVEL_INTERMEDIATE;
 	}
 	else if (strcmp (path, NAUTILUS_MENU_PATH_EXPERT_ITEM) == 0) {
-		return 2;
+		return NAUTILUS_USER_LEVEL_HACKER;
 	}
 
 	g_assert_not_reached ();
 
-	return 0;
+	return NAUTILUS_USER_LEVEL_NOVICE;
 }
 
 static const char *
 convert_user_level_to_menu_path (guint user_level)
 {
 	switch (user_level) {
-	case 0:
+	case NAUTILUS_USER_LEVEL_NOVICE:
 		return NAUTILUS_MENU_PATH_NOVICE_ITEM;
 		break;
 
-	case 1:
+	case NAUTILUS_USER_LEVEL_INTERMEDIATE:
 		return NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM;
 		break;
 
-	case 2:
+	case NAUTILUS_USER_LEVEL_HACKER:
 		return NAUTILUS_MENU_PATH_EXPERT_ITEM;
 		break;
 	}
@@ -2013,23 +2073,39 @@ convert_user_level_to_menu_path (guint user_level)
 }
 
 static char *
+get_user_level_string_for_display (int user_level)
+{
+	NautilusStringList *user_level_names;
+	char *user_level_string_raw;
+	char *user_level_string_for_display;
+
+	user_level_names = nautilus_user_level_manager_get_user_level_names ();
+	user_level_string_raw = nautilus_string_list_nth (user_level_names, user_level);
+	g_assert (user_level_string_raw != NULL);
+	nautilus_string_list_free (user_level_names);
+	
+	/* FIXME bugzilla.eazel.com 2806: Capitalizing the user level string
+	 * is not a localizable solution. There's more info about this in the
+	 * bug report.
+	 */
+	user_level_string_for_display = nautilus_str_capitalize (user_level_string_raw);
+	g_free (user_level_string_raw);
+
+	return user_level_string_for_display;
+}
+
+static char *
 get_customize_user_level_string (void)
 {
-	char *user_level_string;
-	char *capitalized_user_level_string;
+	char *user_level_string_for_display;
 	char *title;
 	
-	user_level_string = nautilus_user_level_manager_get_user_level_as_string ();
-	g_assert (user_level_string != NULL);
+	user_level_string_for_display = 
+		get_user_level_string_for_display (nautilus_user_level_manager_get_user_level ());
 
-	capitalized_user_level_string = nautilus_str_capitalize (user_level_string);
-	g_assert (capitalized_user_level_string != NULL);
-	
-	g_free (user_level_string);
+	title = g_strdup_printf ("Edit %s Settings", user_level_string_for_display);
 
-	title = g_strdup_printf ("Edit %s Settings", capitalized_user_level_string);
-
-	g_free (capitalized_user_level_string);
+	g_free (user_level_string_for_display);
 
 	return title;
 }

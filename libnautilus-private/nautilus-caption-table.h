@@ -82,7 +82,7 @@ guint      nautilus_caption_table_get_num_rows       (NautilusCaptionTable *capt
 void       nautilus_caption_table_resize             (NautilusCaptionTable *caption_table,
 						      guint                 num_rows);
 
-BEGIN_GNOME_DECLS
+END_GNOME_DECLS
 
 #endif /* NAUTILUS_CAPTION_TABLE_H */
 

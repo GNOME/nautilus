@@ -63,7 +63,7 @@ GtkWidget* nautilus_preferences_group_add_item (NautilusPreferencesGroup    *gro
 						const char                  *preference_name,
 						NautilusPreferencesItemType  item_type);
 
-BEGIN_GNOME_DECLS
+END_GNOME_DECLS
 
 #endif /* NAUTILUS_PREFERENCES_GROUP_H */
 
