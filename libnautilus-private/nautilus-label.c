@@ -1707,24 +1707,26 @@ nautilus_label_get_text_justify (const NautilusLabel *label)
 	return GTK_LABEL (label)->jtype;
 }
 
-void
+gboolean
 nautilus_label_set_text (NautilusLabel *label,
 			 const char *text)
 {
 	GtkLabel *gtk_label;
 
-	g_return_if_fail (NAUTILUS_IS_LABEL (label));
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), FALSE);
 
 	gtk_label = GTK_LABEL (label);
 
 	if (nautilus_str_is_equal (text, gtk_label->label)) {
-		return;
+		return FALSE;
 	}
 
 	gtk_label_set_text (gtk_label, text);
 	
 	label_smooth_text_clear (label);
 	gtk_widget_queue_resize (GTK_WIDGET (label));
+
+	return TRUE;
 }
 
 char*

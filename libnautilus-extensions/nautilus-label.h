@@ -90,7 +90,7 @@ guint32                      nautilus_label_get_smooth_drop_shadow_color   (cons
 void                         nautilus_label_set_smooth_line_wrap_width     (NautilusLabel                *label,
 									    int                           line_wrap_width);
 int                          nautilus_label_get_smooth_line_wrap_width     (const NautilusLabel          *label);
-void                         nautilus_label_set_text                       (NautilusLabel                *label,
+gboolean                     nautilus_label_set_text                       (NautilusLabel                *label,
 									    const char                   *text);
 char*                        nautilus_label_get_text                       (const NautilusLabel          *label);
 void                         nautilus_label_set_justify                    (NautilusLabel                *label,

@@ -5417,6 +5417,7 @@ real_realize (GtkWidget *widget)
 	gdk_window_set_user_data (widget->window, widget);
 	
 	widget->style = gtk_style_attach (widget->style, widget->window);
+	gtk_style_set_background (widget->style, widget->window, GTK_STATE_NORMAL);
 }
 
 static void
@@ -5448,9 +5449,11 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
+	GtkScrolledWindowClass *scrolled_window_class;
 
 	object_class = GTK_OBJECT_CLASS (klass);
 	widget_class = GTK_WIDGET_CLASS (klass);
+	scrolled_window_class = GTK_SCROLLED_WINDOW_CLASS (klass);
 
 	object_class->destroy = fm_directory_view_destroy;
 
@@ -5459,6 +5462,11 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	widget_class->selection_get = real_selection_get;
 	widget_class->selection_received = real_selection_received;
 	widget_class->size_allocate = real_size_allocate;
+
+	/* Get rid of the strange 3-pixel gap that GtkScrolledWindow
+	 * uses by default. It does no good.
+	 */
+	scrolled_window_class->scrollbar_spacing = 0;
 
 	signals[CLEAR] =
 		gtk_signal_new ("clear",

@@ -1,3 +1,27 @@
+2001-03-29  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix bug 7915 (update_font called repeatedly causes slowdown).
+
+	Fix black line on right side of icon view that I introduced when I
+	was doing the cut/copy/paste work.
+
+	* libnautilus-extensions/nautilus-label.h:
+	* libnautilus-extensions/nautilus-label.c:
+	(nautilus_label_set_text): Add a boolean result to tell whether
+	the label text was changed for the convenience of callers who want
+	to do work only if it changes.
+	
+	* src/nautilus-sidebar-title.c: (update_title): Only call
+	update_font if the title changed.
+
+	* src/file-manager/fm-directory-view.c: (real_realize): Set
+	background to the normal background from the style. Now we see a
+	gray background again instead of a black one.
+	(fm_directory_view_initialize_class): Set scrollbar_spacing to 0
+	since the extra 3 pixels don't do us any good.
+	
 2001-03-29  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
@@ -13,8 +37,8 @@
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
 
-	Fix bug where failed sidebar panel still shows up in the sidebar
-	menu.
+	Fix bug 7596 (After sidebar panel crashes, right-click menu shows
+	wrong state):
 
 	* src/nautilus-sidebar.c: (get_page_iid): New function, shared by
 	old and new code.

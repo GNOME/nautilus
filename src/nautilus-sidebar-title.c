@@ -3,7 +3,7 @@
 /*
  * Nautilus
  *
- * Copyright (C) 2000 Eazel, Inc.
+ * Copyright (C) 2000, 2001 Eazel, Inc.
  *
  * Nautilus is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,16 +22,13 @@
  * Author: Andy Hertzfeld <andy@eazel.com>
  */
 
-/* This is the index title widget, which is the title part of the index panel
- */
+/* This is the sidebar title widget, which is the title part of the sidebar. */
 
 #include <config.h>
 #include "nautilus-sidebar-title.h"
-#include "nautilus-sidebar.h"
 
+#include "nautilus-sidebar.h"
 #include <ctype.h>
-#include <string.h>
-#include <math.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkpixmap.h>
@@ -41,6 +38,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
+#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-font-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
@@ -49,13 +47,14 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-image-with-background.h>
+#include <libnautilus-extensions/nautilus-label-with-background.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-search-uri.h>
-#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
-#include <libnautilus-extensions/nautilus-label-with-background.h>
-#include <libnautilus-extensions/nautilus-image-with-background.h>
+#include <math.h>
+#include <string.h>
 
 /* maximum allowable size to be displayed as the title */
 #define MAX_TITLE_SIZE 256
@@ -480,12 +479,13 @@ update_font (NautilusSidebarTitle *sidebar_title)
 	
 	/* Update the smooth font */
 	smooth_font = nautilus_global_preferences_get_default_smooth_font ();
-	largest_fitting_smooth_font_size = nautilus_scalable_font_largest_fitting_font_size (smooth_font,
-											     sidebar_title->details->title_text,
-											     available_width,
-											     minimum_acceptable_font_size,
-											     maximum_acceptable_font_size);
-
+	largest_fitting_smooth_font_size = nautilus_scalable_font_largest_fitting_font_size
+		(smooth_font,
+		 sidebar_title->details->title_text,
+		 available_width,
+		 minimum_acceptable_font_size,
+		 maximum_acceptable_font_size);
+	
 	nautilus_label_set_smooth_font (NAUTILUS_LABEL (sidebar_title->details->title_label), smooth_font);
 	nautilus_label_set_smooth_font_size (NAUTILUS_LABEL (sidebar_title->details->title_label), largest_fitting_smooth_font_size);
 	
@@ -499,32 +499,33 @@ update_font (NautilusSidebarTitle *sidebar_title)
 
 	bold_template_font = nautilus_gdk_font_get_bold (template_font);
 	
-	largest_fitting_font = nautilus_gdk_font_get_largest_fitting (template_font,
-								      sidebar_title->details->title_text,
-								      available_width,
-								      minimum_acceptable_font_size,
-								      maximum_acceptable_font_size);
+	largest_fitting_font = nautilus_gdk_font_get_largest_fitting
+		(template_font,
+		 sidebar_title->details->title_text,
+		 available_width,
+		 minimum_acceptable_font_size,
+		 maximum_acceptable_font_size);
 	
 	if (largest_fitting_font == NULL) {
 		largest_fitting_font = nautilus_gdk_font_get_fixed ();
 	}
 	
-	nautilus_gtk_widget_set_font (sidebar_title->details->title_label, largest_fitting_font);
+	nautilus_gtk_widget_set_font (sidebar_title->details->title_label,
+				      largest_fitting_font);
 	
 	gdk_font_unref (largest_fitting_font);
 	gdk_font_unref (bold_template_font);
 	gdk_font_unref (template_font);
 }
 
-/* set up the filename label */
 static void
 update_title (NautilusSidebarTitle *sidebar_title)
 {
 	/* FIXME bugzilla.eazel.com 2500: We could defer showing the title until the icon is ready. */
-	nautilus_label_set_text (NAUTILUS_LABEL (sidebar_title->details->title_label),
-				  sidebar_title->details->title_text);
-
-	update_font (sidebar_title);
+	if (nautilus_label_set_text (NAUTILUS_LABEL (sidebar_title->details->title_label),
+				     sidebar_title->details->title_text)) {
+		update_font (sidebar_title);
+	}
 }
 
 static void
@@ -573,8 +574,7 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 		g_free (search_string);
 		append_and_eat (info_string, "\n ",
 				nautilus_file_get_string_attribute (file, "size"));
-	}
-	else {
+	} else {
 		info_string = g_string_new (NULL);
 		type_string = nautilus_file_get_string_attribute (file, "type");
 		if (type_string != NULL) {
@@ -591,7 +591,7 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 	}
 
 	nautilus_label_set_text (NAUTILUS_LABEL (sidebar_title->details->more_info_label),
-				  info_string->str);
+				 info_string->str);
 
 	g_string_free (info_string, TRUE);
 }
