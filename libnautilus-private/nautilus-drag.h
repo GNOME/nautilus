@@ -117,4 +117,6 @@ gboolean 		nautilus_drag_drag_data_get 		(GtkWidget *widget,
 int 			nautilus_drag_modifier_based_action 	(int default_action, 
 								 int non_default_action);
 
+GdkDragAction		nautilus_drag_drop_action_ask		(GdkDragAction possible_actions);
+
 #endif

@@ -28,6 +28,8 @@
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
+#include <libgnomeui/gnome-uidefs.h>
+#include <libgnomeui/gnome-popup-menu.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -350,10 +352,59 @@ nautilus_drag_modifier_based_action (int default_action, int non_default_action)
 	
 	if ((modifiers & GDK_CONTROL_MASK) != 0) {
 		return non_default_action;
-	} else if ((modifiers & GDK_MOD1_MASK) != 0) {
+	} else if ((modifiers & GDK_SHIFT_MASK) != 0) {
 		return GDK_ACTION_LINK;
+	} else if ((modifiers & GDK_MOD1_MASK) != 0) {
+		return GDK_ACTION_ASK;
 	}
 
 	return default_action;
 }
 
+/* The menu of DnD actions */
+static GnomeUIInfo menu_items[] = {
+	GNOMEUIINFO_ITEM_NONE ("_Move here", NULL, NULL),
+	GNOMEUIINFO_ITEM_NONE ("_Copy here", NULL, NULL),
+	GNOMEUIINFO_ITEM_NONE ("_Link here", NULL, NULL),
+	GNOMEUIINFO_SEPARATOR,
+	GNOMEUIINFO_ITEM_NONE ("Cancel", NULL, NULL),
+	GNOMEUIINFO_END
+};
+
+/* Pops up a menu of actions to perform on dropped files */
+GdkDragAction
+nautilus_drag_drop_action_ask (GdkDragAction actions)
+{
+	GtkWidget *menu;
+	int action;
+
+	/* Create the menu and set the sensitivity of the items based on the
+	 * allowed actions.
+	 */
+	menu = gnome_popup_menu_new (menu_items);
+
+	gtk_widget_set_sensitive (menu_items[0].widget, (actions & GDK_ACTION_MOVE) != 0);
+	gtk_widget_set_sensitive (menu_items[1].widget, (actions & GDK_ACTION_COPY) != 0);
+	gtk_widget_set_sensitive (menu_items[2].widget, (actions & GDK_ACTION_LINK) != 0);
+
+	switch (gnome_popup_menu_do_popup_modal (menu, NULL, NULL, NULL, NULL)) {
+	case 0:
+		action = GDK_ACTION_MOVE;
+		break;
+
+	case 1:
+		action = GDK_ACTION_COPY;
+		break;
+
+	case 2:
+		action = GDK_ACTION_LINK;
+		break;
+
+	default:
+		action = -1; 
+	}
+
+	gtk_widget_destroy (menu);
+
+	return action;
+}

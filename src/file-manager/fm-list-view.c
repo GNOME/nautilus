@@ -507,37 +507,44 @@ fm_list_handle_dropped_icons (NautilusList *list, GList *drop_data, int x, int y
 	source_uris = NULL;
 	directory_view = FM_DIRECTORY_VIEW (list_view);
 
-	/* find the item we hit and figure out if it will take the dropped items */
-	target_item = fm_list_nautilus_file_at (list, x, y);
-	if (target_item != NULL 
-		&& !nautilus_drag_can_accept_items (target_item, drop_data)) {
-		target_item = NULL;
+	if (action == GDK_ACTION_ASK) {
+		action = nautilus_drag_drop_action_ask 
+			(GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
 	}
-	
-	list_view_uri = fm_directory_view_get_uri (directory_view);
-	if (target_item != NULL 
-		|| action != GDK_ACTION_MOVE
-		|| !nautilus_drag_items_local (list_view_uri, drop_data)) {
 
-		/* build a list of URIs to copy */
-		for (p = drop_data; p != NULL; p = p->next) {
-			/* do a shallow copy of all the uri strings of the copied files */
-			source_uris = g_list_prepend (source_uris, 
-				((DragSelectionItem *)p->data)->uri);
+	if (action >= 0) {
+		/* find the item we hit and figure out if it will take the dropped items */
+		target_item = fm_list_nautilus_file_at (list, x, y);
+		if (target_item != NULL 
+			&& !nautilus_drag_can_accept_items (target_item, drop_data)) {
+			target_item = NULL;
 		}
-		source_uris = g_list_reverse (source_uris);
+		
+		list_view_uri = fm_directory_view_get_uri (directory_view);
+		if (target_item != NULL 
+			|| action != GDK_ACTION_MOVE
+			|| !nautilus_drag_items_local (list_view_uri, drop_data)) {
 
-		/* figure out the uri of the destination */
-		if (target_item != NULL) {
-			target_item_uri = nautilus_file_get_uri (target_item);
-		} else {
-			target_item_uri = g_strdup (list_view_uri);
+			/* build a list of URIs to copy */
+			for (p = drop_data; p != NULL; p = p->next) {
+				/* do a shallow copy of all the uri strings of the copied files */
+				source_uris = g_list_prepend (source_uris, 
+					((DragSelectionItem *)p->data)->uri);
+			}
+			source_uris = g_list_reverse (source_uris);
+
+			/* figure out the uri of the destination */
+			if (target_item != NULL) {
+				target_item_uri = nautilus_file_get_uri (target_item);
+			} else {
+				target_item_uri = g_strdup (list_view_uri);
+			}
+
+			/* start the copy */
+			fm_directory_view_move_copy_items (source_uris, NULL,
+				target_item_uri, action, x, y, directory_view);
+
 		}
-
-		/* start the copy */
-		fm_directory_view_move_copy_items (source_uris, NULL,
-			target_item_uri, action, x, y, directory_view);
-
 	}
 
 	g_free (target_item_uri);

@@ -1988,7 +1988,8 @@ motion_notify_event (GtkWidget *widget,
 				nautilus_icon_dnd_begin_drag (container,
 							      GDK_ACTION_MOVE 
 							      | GDK_ACTION_COPY 
-							      | GDK_ACTION_LINK,
+							      | GDK_ACTION_LINK
+							      | GDK_ACTION_ASK,
 							      details->drag_button,
 							      motion);
 			}

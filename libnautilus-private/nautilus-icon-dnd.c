@@ -689,30 +689,39 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 	gboolean local_move_only;
 	double world_x, world_y;
 	gboolean icon_hit;
-	
+
+	drop_target = NULL;
+
 	if (container->details->dnd_info->drag_info.selection_list == NULL) {
 		return;
 	}
 
-  	gnome_canvas_window_to_world (GNOME_CANVAS (container),
-				      x, y, &world_x, &world_y);
-
-	drop_target = nautilus_icon_container_find_drop_target (container, 
-		context, x, y, &icon_hit);
-
-	local_move_only = FALSE;
-	if (!icon_hit && context->action == GDK_ACTION_MOVE) {
-		/* we can just move the icon positions if the move ended up in
-		 * the item's parent container
-		 */
-		local_move_only = nautilus_icon_container_selection_items_local
-			(container, container->details->dnd_info->drag_info.selection_list);
+	if (context->action == GDK_ACTION_ASK) {
+		context->action = nautilus_drag_drop_action_ask 
+			(GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
 	}
 
-	if (local_move_only) {
-		handle_local_move (container, world_x, world_y);
-	} else {
-		handle_nonlocal_move (container, context, x, y, drop_target, icon_hit);
+	if (context->action >= 0) {
+	  	gnome_canvas_window_to_world (GNOME_CANVAS (container),
+					      x, y, &world_x, &world_y);
+
+		drop_target = nautilus_icon_container_find_drop_target (container, 
+			context, x, y, &icon_hit);
+
+		local_move_only = FALSE;
+		if (!icon_hit && context->action == GDK_ACTION_MOVE) {
+			/* we can just move the icon positions if the move ended up in
+			 * the item's parent container
+			 */
+			local_move_only = nautilus_icon_container_selection_items_local
+				(container, container->details->dnd_info->drag_info.selection_list);
+		}
+
+		if (local_move_only) {
+			handle_local_move (container, world_x, world_y);
+		} else {
+			handle_nonlocal_move (container, context, x, y, drop_target, icon_hit);
+		}
 	}
 
 	g_free (drop_target);
@@ -863,7 +872,8 @@ nautilus_icon_dnd_init (NautilusIconContainer *container,
 	gtk_drag_dest_set  (GTK_WIDGET (container),
 			    0,
 			    drop_types, NAUTILUS_N_ELEMENTS (drop_types),
-			    GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK);
+			    GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK
+			    | GDK_ACTION_ASK);
 
 	/* Messages for outgoing drag. */
 	gtk_signal_connect (GTK_OBJECT (container), "drag_data_get",

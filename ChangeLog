@@ -1,3 +1,22 @@
+2000-07-05  Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_modifier_based_action),
+	(nautilus_drag_drop_action_ask):
+	* libnautilus-extensions/nautilus-drag.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(motion_notify_event):
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_container_receive_dropped_icons),
+	(nautilus_icon_dnd_init):
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_initialize), (nautilus_list_drag_start):
+	* src/file-manager/fm-list-view.c: (fm_list_handle_dropped_icons):
+	Did most of bug 1371:
+	Implemented a drop context menu that allows users to choose between
+	Copy, Move and link.
+	Added the GDK_ACTION_ASK selector and added support for it.
+
 2000-07-04  Andy Hertzfeld  <andy@eazel.com>
 
 	First cut at the first-time preferences druid.  It's still

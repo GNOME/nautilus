@@ -471,7 +471,8 @@ nautilus_list_initialize (NautilusList *list)
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
 			   nautilus_list_dnd_target_table,
 			   NAUTILUS_N_ELEMENTS (nautilus_list_dnd_target_table),
-			   GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK);
+			   GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK
+			   | GDK_ACTION_ASK);
 
 	/* Emit "selection changed" signal when parent class changes selection */
 	list->details->select_row_signal_id = gtk_signal_connect (GTK_OBJECT (list),
@@ -2330,7 +2331,7 @@ nautilus_list_drag_start (GtkWidget *widget, GdkEventMotion *event)
 	list->details->drag_started = TRUE;
 	list->details->dnd_select_pending = FALSE;
 	context = gtk_drag_begin (widget, list->details->drag_info->target_list,
-		GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK,
+		GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK,
 		list->details->dnd_press_button,
 		(GdkEvent *) event);
 
