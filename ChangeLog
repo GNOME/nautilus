@@ -1,5 +1,13 @@
 2000-08-23  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_read_entire_file): Added missing close calls.
+	(read_file_close_callback): Got rid of overzealous check for
+	error code on close. The close could fail, and we really don't
+	care much since we've already read the file contents.
+
+2000-08-23  Darin Adler  <darin@eazel.com>
+
 	* libnautilus-extensions/nautilus-directory-async.c:
 	(get_info_callback): Added missing call to nautilus_file_changed
 	for the case where get_file_info fails.

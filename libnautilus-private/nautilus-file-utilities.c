@@ -463,12 +463,14 @@ nautilus_read_entire_file (const char *uri,
 					 &bytes_read);
 		if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_EOF) {
 			g_free (buffer);
+			gnome_vfs_close (handle);
 			return result;
 		}
 
 		/* Check for overflow. */
 		if (total_bytes_read + bytes_read < total_bytes_read) {
 			g_free (buffer);
+			gnome_vfs_close (handle);
 			return GNOME_VFS_ERROR_TOO_BIG;
 		}
 
@@ -491,12 +493,9 @@ nautilus_read_entire_file (const char *uri,
 /* When close is complete, there's no more work to do. */
 static void
 read_file_close_callback (GnomeVFSAsyncHandle *handle,
-				 GnomeVFSResult result,
-				 gpointer callback_data)
+			  GnomeVFSResult result,
+			  gpointer callback_data)
 {
-	if (result != GNOME_VFS_OK) {
-		g_warning ("close failed -- this should never happen");
-	}
 }
 
 /* Do a close if it's needed.
