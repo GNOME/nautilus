@@ -281,8 +281,10 @@ void draw_number (GtkWidget *widget, GdkRectangle *box)
 	int char_height, char_width, char_offset;
 	int num_v_offset, num_h_offset;
 	NautilusZoomControl *zoom_control;
+	GdkPixbuf *number_pixbuf;
 	
 	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
+	number_pixbuf = NULL;
 	
 	num_v_offset = get_zoom_offset ("NUMBER_V_OFFSET");
 	num_h_offset = get_zoom_offset ("NUMBER_H_OFFSET");
@@ -301,11 +303,17 @@ void draw_number (GtkWidget *widget, GdkRectangle *box)
 	if (zoom_control->details->number_strip) {
 		cur_char = &buffer[0];
 		char_height = gdk_pixbuf_get_height (zoom_control->details->number_strip);
+		
+		number_pixbuf = zoom_control->details->number_strip;
+		if (zoom_control->details->prelight_mode == PRELIGHT_CENTER) {
+			number_pixbuf = nautilus_create_spotlight_pixbuf (number_pixbuf);
+		}
+		
 		while (*cur_char) {
 			/* draw the character */
 			
 			char_offset = (*cur_char++ - '0') * char_width;
-			gdk_pixbuf_render_to_drawable_alpha (zoom_control->details->number_strip,
+			gdk_pixbuf_render_to_drawable_alpha (number_pixbuf,
 					     widget->window, 
 					     char_offset, 0, x, y,
 					     char_width,
@@ -322,6 +330,10 @@ void draw_number (GtkWidget *widget, GdkRectangle *box)
 		
 		gdk_draw_string (widget->window, label_font, temp_gc, x, y, &buffer[0]);
 		gdk_font_unref(label_font);
+	}
+	
+	if (number_pixbuf != zoom_control->details->number_strip) {
+		gdk_pixbuf_unref (number_pixbuf);
 	}
 	
 	gdk_gc_unref(temp_gc);
