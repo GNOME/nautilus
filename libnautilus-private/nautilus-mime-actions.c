@@ -139,9 +139,9 @@ nautilus_mime_get_default_action_type_for_file (NautilusFile *file)
 		g_free (mime_type);
 		return action_type;
 	} else {
-		if (g_strcasecmp (action_type_string, "application") == 0) {
+		if (g_ascii_strcasecmp (action_type_string, "application") == 0) {
 			return GNOME_VFS_MIME_ACTION_TYPE_APPLICATION;
-		} else if (g_strcasecmp (action_type_string, "component") == 0) {
+		} else if (g_ascii_strcasecmp (action_type_string, "component") == 0) {
 			return GNOME_VFS_MIME_ACTION_TYPE_COMPONENT;
 		} else {
 			return GNOME_VFS_MIME_ACTION_TYPE_NONE;
@@ -1686,7 +1686,7 @@ application_supports_uri_scheme (gpointer data,
 
 	/* The default supported uri scheme is "file" */
 	if (application->supported_uri_schemes == NULL
-	    && g_strcasecmp ((const char *) uri_scheme, "file") == 0) {
+	    && g_ascii_strcasecmp ((const char *) uri_scheme, "file") == 0) {
 		return TRUE;
 	}
 	return g_list_find_custom (application->supported_uri_schemes,

@@ -5109,7 +5109,7 @@ nautilus_extract_top_left_text (const char *text,
 			if (*in == '\n') {
 				break;
 			}
-			if (isprint ((guchar) *in)) {
+			if (g_ascii_isprint (*in)) {
 				*out++ = *in;
 				i++;
 			}

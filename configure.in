@@ -82,11 +82,11 @@ dnl ==========================================================================
 
 ALL_LINGUAS="az ca cs da de el en_GB es fi fr ga gl hu it ja ko lt lv nl nn no pl pt pt_BR ro ru sk sl sv ta tr uk zh_TW"
 
-AM_GNOME2_GETTEXT
-# AM_GNOME2_GETTEXT above substs $DATADIRNAME
-# this is the directory where the *.{mo,gmo} files are installed
-gnomelocaledir='${prefix}/${DATADIRNAME}/locale'
-AC_SUBST(gnomelocaledir)
+GETTEXT_PACKAGE=nautilus
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE")
+
+AM_GLIB_GNU_GETTEXT
 
 AC_PROG_INTLTOOL
 
@@ -708,9 +708,5 @@ case "X$ENABLE_PROFILER" in
 	echo "Enable profiler                   : NO"
 	;;
 esac
-
-dnl <= Snapshot things =>
-
-echo "NAUTILUS_SOURCE_DIRECTORY         : $NAUTILUS_SOURCE_DIRECTORY"
 
 dnl <= End of configuration summary =>

@@ -239,7 +239,7 @@ nautilus_sidebar_loser_maybe_fail (const char *location)
 {
 	ensure_fail_env ();
 	
-	if (strcasecmp (location, failure_point) == 0) {
+	if (g_ascii_strcasecmp (location, failure_point) == 0) {
 		nautilus_sidebar_loser_fail ();
 	}
 }
@@ -251,14 +251,14 @@ nautilus_sidebar_loser_fail (void)
 {
 	ensure_fail_env ();
 	
-	if (strcasecmp (failure_mode, "hang") == 0) {
+	if (g_ascii_strcasecmp (failure_mode, "hang") == 0) {
 		while (1) {
 		}
-	} else if (strcasecmp (failure_mode, "exit") == 0) {
+	} else if (g_ascii_strcasecmp (failure_mode, "exit") == 0) {
 		exit (0);
-	} else if (strcasecmp (failure_mode, "error-exit") == 0) {
+	} else if (g_ascii_strcasecmp (failure_mode, "error-exit") == 0) {
 		exit (-1);
-	} else if (strcasecmp (failure_mode, "crash") == 0) {
+	} else if (g_ascii_strcasecmp (failure_mode, "crash") == 0) {
 		abort ();
 	} else {
 		puts ("XXX - would fail now, if NAUTILUS_SIDEBAR_LOSER_MODE were set properly.");

@@ -2171,10 +2171,10 @@ match_best_name (NautilusIconContainer *container,
 		}
 
 		/* Require the match pattern to already be lowercase. */
-		g_assert (((char) tolower ((guchar) match_state->name[match_length]))
+		g_assert (g_ascii_tolower (match_state->name[match_length])
 			  == match_state->name[match_length]);
 			
-		if (((char) tolower ((guchar) name[match_length]))
+		if (g_ascii_tolower (name[match_length])
 		    != match_state->name[match_length]) {
 			break;
 		}
@@ -2208,7 +2208,7 @@ select_matching_name (NautilusIconContainer *container,
 	for (index = 0; ; index++) {
 		if (match_state.name[index] == '\0')
 			break;
-		match_state.name[index] = tolower ((guchar) match_state.name[index]);
+		match_state.name[index] = g_ascii_tolower (match_state.name[index]);
 	}
 
 	icon = find_best_icon (container,
@@ -2899,7 +2899,7 @@ handle_typeahead (NautilusIconContainer *container, const char *key_string)
 
 	/* only handle if printable keys typed */
 	for (index = 0; index < key_string_length; index++) {
-		if (!isprint ((guchar) key_string[index])) {
+		if (!g_ascii_isprint (key_string[index])) {
 			return FALSE;
 		}
 	}

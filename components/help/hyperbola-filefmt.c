@@ -89,7 +89,7 @@ tree_node_destroy (gpointer key, gpointer data, gpointer user_data)
 static gint
 tree_key_compare (gconstpointer k1, gconstpointer k2)
 {
-	return g_strcasecmp (k1, k2);
+	return eel_strcoll (k1, k2);
 }
 
 HyperbolaDocTree *
@@ -231,7 +231,7 @@ fmt_read_mapping (TreeInfo * ti, const char *srcfile)
 		int regerr;
 		char real_regbuf[LINE_MAX];
 
-		if (aline[0] == '#' || isspace (aline[0]))
+		if (aline[0] == '#' || g_ascii_isspace (aline[0]))
 			continue;
 
 		g_strstrip (aline);
@@ -994,7 +994,7 @@ fmt_scrollkeeper_parse_toc_section (HyperbolaDocTree * tree, char **ancestors,
 	 * Set the correct separator token.  SGML requires ? but
 	 * the other use #
 	 */
-	if (!g_strncasecmp ("help", base_uri, 4)) {
+	if (!g_ascii_strncasecmp ("help", base_uri, 4)) {
 		separator[0] = '?';
 	} else {
 		separator[0] = '#';
@@ -1013,7 +1013,7 @@ fmt_scrollkeeper_parse_toc_section (HyperbolaDocTree * tree, char **ancestors,
 	if (go_deeper > 0) {
 		for (pos = 1, next_child = next_child->next;
 		     next_child != NULL; next_child = next_child->next) {
-			if (!g_strncasecmp (next_child->name, "tocsect", 7)) {
+			if (!g_ascii_strncasecmp (next_child->name, "tocsect", 7)) {
 				fmt_scrollkeeper_parse_toc_section (tree,
 								    section,
 								    next_child,
@@ -1089,7 +1089,7 @@ fmt_scrollkeeper_parse_doc_toc (HyperbolaDocTree * tree, char **ancestors,
 	/* Process the top-level tocsect nodes in the file */
 	for (pos = 1, next_child = toc_doc->children->children; next_child != NULL;
 	     next_child = next_child->next) {
-		if (!g_strncasecmp (next_child->name, "tocsect", 7)) {
+		if (!g_ascii_strncasecmp (next_child->name, "tocsect", 7)) {
 			fmt_scrollkeeper_parse_toc_section (tree, ancestors,
 							    next_child,
 							    base_uri, pos,
@@ -1147,11 +1147,11 @@ fmt_scrollkeeper_parse_document (HyperbolaDocTree * tree, char **ancestors,
 	/* Obtain info about the document from the XML node describing it */
 	for (; next_child != NULL; next_child = next_child->next) {
 
-		if (!g_strcasecmp (next_child->name, "doctitle")) {
+		if (!g_ascii_strcasecmp (next_child->name, "doctitle")) {
 			doc_data[0] = xmlNodeGetContent (next_child->children);
-		} else if (!g_strcasecmp (next_child->name, "docsource")) {
+		} else if (!g_ascii_strcasecmp (next_child->name, "docsource")) {
 			doc_data[1] = xmlNodeGetContent (next_child->children);
-		} else if (!g_strcasecmp (next_child->name, "docformat")) {
+		} else if (!g_ascii_strcasecmp (next_child->name, "docformat")) {
 			doc_data[2] = xmlNodeGetContent (next_child->children);
 		}
 	}
@@ -1163,13 +1163,13 @@ fmt_scrollkeeper_parse_document (HyperbolaDocTree * tree, char **ancestors,
 
 
 	/* Decide on the appropriate prefix */
-	if (!g_strcasecmp ("text/html", doc_data[2])) {
+	if (!g_ascii_strcasecmp ("text/html", doc_data[2])) {
 		doc_uri = g_strconcat ("file://", doc_data[1], NULL);
-	} else if (!g_strcasecmp ("text/sgml", doc_data[2])) {
+	} else if (!g_ascii_strcasecmp ("text/sgml", doc_data[2])) {
 		doc_uri = g_strconcat ("gnome-help:", doc_data[1], NULL);
-	} else if (!g_strcasecmp ("info", doc_data[2])) {
+	} else if (!g_ascii_strcasecmp ("info", doc_data[2])) {
 		doc_uri = g_strconcat ("info:", doc_data[1], NULL);
-	} else if (!g_strcasecmp ("applications/x-troff", doc_data[2])) {
+	} else if (!g_ascii_strcasecmp ("applications/x-troff", doc_data[2])) {
 		/* Man Pages */
 		doc_uri = g_strconcat ("man:", doc_data[1], NULL);
 	} else {
@@ -1280,10 +1280,10 @@ fmt_scrollkeeper_parse_section (HyperbolaDocTree * tree, char **ancestors,
 
 	for (; next_child->next != NULL; next_child = next_child->next) {
 
-		if (!g_strcasecmp (next_child->next->name, "sect")) {
+		if (!g_ascii_strcasecmp (next_child->next->name, "sect")) {
 			fmt_scrollkeeper_parse_section (tree, section,
 							next_child->next);
-		} else if (!g_strcasecmp (next_child->next->name, "doc")) {
+		} else if (!g_ascii_strcasecmp (next_child->next->name, "doc")) {
 			fmt_scrollkeeper_parse_document (tree, section,
 							 next_child->next);
 		}
@@ -1313,14 +1313,14 @@ fmt_scrollkeeper_parse_xml (HyperbolaDocTree * tree, char **defpath,
 
 	/* Ensure the document is valid and a real ScrollKeeper document */
 	if (!doc->children || !doc->children->name ||
-	    g_strcasecmp (doc->children->name, "ScrollKeeperContentsList")) {
+	    g_ascii_strcasecmp (doc->children->name, "ScrollKeeperContentsList")) {
 		g_warning ("Invalid ScrollKeeper XML Contents List!");
 		return;
 	}
 
 	/* Start parsing the list and add to the tree */
 	for (node = doc->children->children; node != NULL; node = node->next) {
-		if (!g_strcasecmp (node->name, "sect"))
+		if (!g_ascii_strcasecmp (node->name, "sect"))
 			fmt_scrollkeeper_parse_section (tree, defpath, node);
 	}
 }

@@ -1412,13 +1412,13 @@ add_buttons_from_metadata (NautilusSidebar *sidebar, const char *button_data)
 	
 	/* for each term, either create a button or attach a property to one */
 	for (index = 0; (term = terms[index]) != NULL; index++) {
-		current_term = g_strdup(term);
-		temp_str = strchr(current_term, '=');
+		current_term = g_strdup (term);
+		temp_str = strchr (current_term, '=');
 		if (temp_str) {
 			*temp_str = '\0';
-			if (!g_strcasecmp(current_term, "button")) {
-				button_name = g_strdup(temp_str + 1);
-			} else if (!g_strcasecmp(current_term, "script")) {
+			if (!g_ascii_strcasecmp (current_term, "button")) {
+				button_name = g_strdup (temp_str + 1);
+			} else if (!g_ascii_strcasecmp (current_term, "script")) {
 			        if (button_name != NULL) {
 			        	temp_button = gtk_button_new_with_label (button_name);		    
 					gtk_box_pack_start (GTK_BOX (sidebar->details->button_box), 

@@ -155,7 +155,7 @@ mozilla_encoding_groups_table_find_translated (const char *encoding_group)
 	g_return_val_if_fail (strlen (encoding_group) > 0, NULL);
 	
 	for (i = 0; i < mozilla_encoding_groups_table_get_count (); i++) {
-		if (g_strcasecmp (encoding_group, mozilla_encoding_groups_table_peek_nth (i)) == 0) {
+		if (g_ascii_strcasecmp (encoding_group, mozilla_encoding_groups_table_peek_nth (i)) == 0) {
 			return mozilla_encoding_groups_table_peek_nth_translated (i);
 		}
 	}
@@ -194,7 +194,7 @@ mozilla_encoding_table_find_translated (const char *encoding)
 	g_return_val_if_fail (strlen (encoding) > 0, NULL);
 	
 	for (i = 0; i < mozilla_encoding_table_get_count (); i++) {
-		if (g_strcasecmp (encoding, mozilla_encoding_table_peek_nth (i)) == 0) {
+		if (g_ascii_strcasecmp (encoding, mozilla_encoding_table_peek_nth (i)) == 0) {
 			return mozilla_encoding_table_peek_nth_translated (i);
 		}
 	}

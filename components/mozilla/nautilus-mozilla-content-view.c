@@ -493,7 +493,7 @@ try_transform_nautilus_uri_to_file_scheme (const char *uri)
 	GnomeVFSURI *vfs_uri;
 	char *real_uri;
 
- 	if (strncasecmp ("file:///", uri, strlen ("file:///")) == 0) {
+ 	if (g_ascii_strncasecmp ("file:///", uri, strlen ("file:///")) == 0) {
  		return NULL;
 	} 
 
@@ -1891,7 +1891,7 @@ string_list_get_index_of_string (const char *string_list[], guint num_strings, c
 	for (i = 0; i < num_strings; i++) {
 		g_assert (string_list[i] != NULL);
 		if (strlen (string) >= strlen (string_list[i]) 
-		    && (strncasecmp (string, string_list[i], strlen (string_list[i])) == 0)) {
+		    && (g_ascii_strncasecmp (string, string_list[i], strlen (string_list[i])) == 0)) {
 			return i;
 		}
 	}

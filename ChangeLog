@@ -1,5 +1,18 @@
 2001-11-07  Darin Adler  <darin@bentspoon.com>
 
+	* acconfig.h:
+	* configure.in:
+	Switch to glib's gettext.
+	
+	* components/help/converters/*:
+	Remove, since these were moved to libgnome.
+
+	* Many files:
+	Get rid of incorrect uses of many locale-specific functions like
+	g_strcasecmp and isspace.
+
+2001-11-07  Darin Adler  <darin@bentspoon.com>
+
 	* Makefile.am:
 	* README:
 	* nautilus-clean.sh:

@@ -894,7 +894,7 @@ set_default_for_type (ProgramFilePair *pair)
 	if (pair->action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
 		gnome_vfs_mime_set_default_application (mime_type, pair->application->id);
 	} else {
-		if (g_strcasecmp (mime_type, "x-directory/normal") == 0) {
+		if (g_ascii_strcasecmp (mime_type, "x-directory/normal") == 0) {
 			nautilus_global_preferences_set_default_folder_viewer (pair->view_identifier->iid);
 		} else {
 			gnome_vfs_mime_set_default_component (mime_type, pair->view_identifier->iid);

@@ -352,17 +352,17 @@ key_equal (gconstpointer v1,
          * and don't count leading/trailing spaces
          */
 
-        while (isspace ((guchar)*p1)) {
+        while (g_ascii_isspace (*p1)) {
                 ++p1;
 	}
 
-        while (isspace ((guchar)*p2)) {
+        while (g_ascii_isspace (*p2)) {
                 ++p2;
 	}
   
         while (*p1 && *p2 &&
                *p1 != '=' && *p2 != '=' &&
-               !isspace ((guchar)*p1) && !isspace ((guchar)*p2)) {
+               !g_ascii_isspace (*p1) && !g_ascii_isspace (*p2)) {
                 if (*p1 != *p2) {
                         return FALSE;
 		}
@@ -371,11 +371,11 @@ key_equal (gconstpointer v1,
                 ++p2;
         }
 
-        if (*p1 && *p1 != '=' && !isspace ((guchar)*p1)) {
+        if (*p1 && *p1 != '=' && !g_ascii_isspace (*p1)) {
                 return FALSE;
 	}
 
-        if (*p2 && *p2 != '=' && !isspace ((guchar)*p2)) {
+        if (*p2 && *p2 != '=' && !g_ascii_isspace (*p2)) {
                 return FALSE;
 	}
   
@@ -392,12 +392,12 @@ key_hash (gconstpointer key)
          * and don't count leading/trailing spaces
          */
   
-        while (isspace ((guchar)*p)) {
+        while (g_ascii_isspace (*p)) {
                 ++p;
 	}
 
         if (h) {
-                for (p += 1; *p != '\0' && *p != '=' && !isspace ((guchar)*p); p++) {
+                for (p += 1; *p != '\0' && *p != '=' && !g_ascii_isspace (*p); p++) {
                         h = (h << 5) - h + *p;
 		}
 	}
@@ -470,7 +470,7 @@ hash_lines (NautilusDesktopFile *df)
         while (iter != NULL && *iter != NULL) {
                 p = *iter;
 
-                while (isspace ((guchar)*p)) {
+                while (g_ascii_isspace (*p)) {
                         ++p;
 		}
 
@@ -507,7 +507,7 @@ hash_lines (NautilusDesktopFile *df)
 			} else {
                                 if (current_sect) {
                                         ++eq;
-                                        while (isspace ((guchar)*eq)) {
+                                        while (g_ascii_isspace (*eq)) {
                                                 ++eq;
 					}
                                         /* could overwrite an earlier copy of
@@ -644,7 +644,7 @@ key_foreach (gpointer key, gpointer value, gpointer data)
         
         key_end = (char*) key;
         while (*key_end &&
-               !isspace ((guchar)*key_end) &&
+               !g_ascii_isspace (*key_end) &&
                *key_end != '=') {
                 ++key_end;
         }

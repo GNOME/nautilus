@@ -315,8 +315,8 @@ text_matches (const char *text, const char *check_for)
 	check_len = strlen (check_for);
 
 	while (*ctmp) {
-		if (tolower (*ctmp) == tolower (*check_for)) {
-			if (!strncasecmp (ctmp, check_for, check_len))
+		if (g_ascii_tolower (*ctmp) == g_ascii_tolower (*check_for)) {
+			if (!g_ascii_strncasecmp (ctmp, check_for, check_len))
 				return TRUE;
 		}
 
@@ -954,7 +954,7 @@ despace (GString * s)
 
         g_assert (s->len == (int) strlen (s->str));
         for (ctmp = s->str, i = s->len; *ctmp; ctmp++, i--) {
-                if (isspace (*ctmp)) {
+                if (g_ascii_isspace (*ctmp)) {
                         if (*ctmp != ' ')
                                 *ctmp = ' ';
                         if (!ctmp_s)
@@ -990,11 +990,11 @@ get_entity (SAXParseInfo * spi, const gchar * name)
 static void
 start_element (SAXParseInfo * spi, const gchar * name, const xmlChar ** attrs)
 {
-        if (!g_strcasecmp (name, "indexterm")) {
+        if (!g_ascii_strcasecmp (name, "indexterm")) {
                 int i;
 
                 for (i = 0; attrs[i]; i++) {
-                        if (!g_strcasecmp (attrs[i], "id")) {
+                        if (!g_ascii_strcasecmp (attrs[i], "id")) {
                                 i++;
                                 break;
                         }
@@ -1014,13 +1014,13 @@ start_element (SAXParseInfo * spi, const gchar * name, const xmlChar ** attrs)
         if (!spi->in_term || spi->sub_type != NONE)
                 return;
 
-        if (!g_strcasecmp (name, "primary")) {
+        if (!g_ascii_strcasecmp (name, "primary")) {
                 spi->sub_type = PRIMARY;
-        } else if (!g_strcasecmp (name, "secondary")) {
+        } else if (!g_ascii_strcasecmp (name, "secondary")) {
                 spi->sub_type = SECONDARY;
-        } else if (!g_strcasecmp (name, "seealso")) {
+        } else if (!g_ascii_strcasecmp (name, "seealso")) {
                 spi->sub_type = SEEALSO;
-        } else if (!g_strcasecmp (name, "see")) {
+        } else if (!g_ascii_strcasecmp (name, "see")) {
                 spi->sub_type = SEE;
         } else
                 spi->sub_type = NONE;
@@ -1034,7 +1034,7 @@ end_element (SAXParseInfo * spi, const gchar * name)
 {
         int this_type;
 
-        if (!g_strcasecmp (name, "indexterm")) {
+        if (!g_ascii_strcasecmp (name, "indexterm")) {
                 int i;
                 IndexItem *parent_ii = NULL, *ii = NULL;
                 ItemType it;
@@ -1068,7 +1068,7 @@ end_element (SAXParseInfo * spi, const gchar * name)
                         if (!parent_ii->subitems)
                                 parent_ii->subitems =
                                         g_tree_new ((GCompareFunc)
-                                                    g_strcasecmp);
+                                                    eel_strcoll);
                         parent_tree = parent_ii->subitems;
 
                         if (spi->stinfo[SECONDARY])
@@ -1098,7 +1098,7 @@ end_element (SAXParseInfo * spi, const gchar * name)
                                 if (!ii->subitems)
                                         ii->subitems =
                                                 g_tree_new ((GCompareFunc)
-                                                            g_strcasecmp);
+                                                            eel_strcoll);
                                 parent_ii = ii;
                                 parent_tree = parent_ii->subitems;
 
@@ -1179,13 +1179,13 @@ end_element (SAXParseInfo * spi, const gchar * name)
         if (!spi->in_term || spi->sub_type == NONE)
                 return;
 
-        if (!g_strcasecmp (name, "primary")) {
+        if (!g_ascii_strcasecmp (name, "primary")) {
                 this_type = PRIMARY;
-        } else if (!g_strcasecmp (name, "secondary")) {
+        } else if (!g_ascii_strcasecmp (name, "secondary")) {
                 this_type = SECONDARY;
-        } else if (!g_strcasecmp (name, "seealso")) {
+        } else if (!g_ascii_strcasecmp (name, "seealso")) {
                 this_type = SEEALSO;
-        } else if (!g_strcasecmp (name, "see")) {
+        } else if (!g_ascii_strcasecmp (name, "see")) {
                 this_type = SEE;
         } else
                 this_type = NONE;
@@ -1212,7 +1212,7 @@ end_element (SAXParseInfo * spi, const gchar * name)
 static void
 start_element (SAXParseInfo * spi, const gchar * name, const xmlChar ** attrs)
 {
-	if (!g_strcasecmp (name, "indexitem") &&
+	if (!g_ascii_strcasecmp (name, "indexitem") &&
 				spi->sub_type==NONE) {
 		int i;
 		for (i = PRIMARY; i < NONE; i++){
@@ -1225,7 +1225,7 @@ start_element (SAXParseInfo * spi, const gchar * name, const xmlChar ** attrs)
 		return;
 	}
 
-	if (!g_strcasecmp (name, "indexitem") &&
+	if (!g_ascii_strcasecmp (name, "indexitem") &&
 				spi->sub_type==PRIMARY) {
 		process_index_term (spi, PRIMARY);
 		spi->sub_type = SECONDARY;
@@ -1233,7 +1233,7 @@ start_element (SAXParseInfo * spi, const gchar * name, const xmlChar ** attrs)
 		return;
 	}
 
-	if (!g_strcasecmp (name, "indexitem") &&
+	if (!g_ascii_strcasecmp (name, "indexitem") &&
 				spi->sub_type==SECONDARY) {
 		if(spi->in_indexitem > 1){
 			process_index_term (spi, SECONDARY);
@@ -1243,7 +1243,7 @@ start_element (SAXParseInfo * spi, const gchar * name, const xmlChar ** attrs)
 		return;
 	}
 
-	if (!g_strcasecmp (name, "indexitem") &&
+	if (!g_ascii_strcasecmp (name, "indexitem") &&
 				spi->sub_type==TERTIARY) {
 		if(spi->in_indexitem < 2)
 			spi->sub_type = SECONDARY;
@@ -1251,17 +1251,17 @@ start_element (SAXParseInfo * spi, const gchar * name, const xmlChar ** attrs)
 		return;
 	}
 
-	if (!g_strcasecmp (name, "title")){
+	if (!g_ascii_strcasecmp (name, "title")){
 		spi->in_term++;
 		g_string_assign (spi->sub_text, "");
 		return;
 	}
 
 	
-	if (!g_strcasecmp (name, "link")) {
+	if (!g_ascii_strcasecmp (name, "link")) {
 		int i, j;
 		for (i = 0; attrs[i]; i++) {
-			if (!g_strcasecmp (attrs[i], "linkid")){
+			if (!g_ascii_strcasecmp (attrs[i], "linkid")){
 				i++;
 				break;
 			}
@@ -1271,7 +1271,7 @@ start_element (SAXParseInfo * spi, const gchar * name, const xmlChar ** attrs)
 							g_strdup(attrs[i])); 
 
 		for(j=i+1; attrs[j]; j++){
-			if (!g_strcasecmp (attrs[j], "indexid")){
+			if (!g_ascii_strcasecmp (attrs[j], "indexid")){
 				j++;
 				break;
 			}
@@ -1282,10 +1282,10 @@ start_element (SAXParseInfo * spi, const gchar * name, const xmlChar ** attrs)
 		return;
 	}
 
-	if (!g_strcasecmp (name, "see")) {
+	if (!g_ascii_strcasecmp (name, "see")) {
 		int i;
 		for (i = 0; attrs[i]; i++) {
-			if (!g_strcasecmp (attrs[i], "indexid")){
+			if (!g_ascii_strcasecmp (attrs[i], "indexid")){
 				i++;
 				break;
 			}
@@ -1298,10 +1298,10 @@ start_element (SAXParseInfo * spi, const gchar * name, const xmlChar ** attrs)
 	}
 
 
-	if (!g_strcasecmp (name, "seealso")) {
+	if (!g_ascii_strcasecmp (name, "seealso")) {
 		int i;
 		for (i = 0; attrs[i]; i++) {
-			if (!g_strcasecmp (attrs[i], "indexid")){
+			if (!g_ascii_strcasecmp (attrs[i], "indexid")){
 				i++;
 				break;
 			}
@@ -1314,7 +1314,7 @@ start_element (SAXParseInfo * spi, const gchar * name, const xmlChar ** attrs)
 	}
 
 
-	if (!g_strcasecmp (name, "indexdoc")){
+	if (!g_ascii_strcasecmp (name, "indexdoc")){
 		spi->sub_type = NONE;
 		return;
 	}
@@ -1341,7 +1341,7 @@ process_index_term(SAXParseInfo *spi, ItemType it)
 		if (!parent_ii->subitems)
 			parent_ii->subitems = 
 				g_tree_new((GCompareFunc)
-						g_strcasecmp);
+						eel_strcoll);
 		spi->parent_tree = parent_ii->subitems;
 	}
 	ii =
@@ -1374,7 +1374,7 @@ process_index_term(SAXParseInfo *spi, ItemType it)
 				if (!ii->duplicates)
                                		ii->duplicates =
                                        			g_tree_new ((GCompareFunc)
-                                               		g_strcasecmp);
+                                               		eel_strcoll);
 
 				duplicate_ii =
 						g_tree_lookup (ii->duplicates,
@@ -1399,7 +1399,7 @@ process_index_term(SAXParseInfo *spi, ItemType it)
 		if (!ii->subitems)
 			ii->subitems = 
 				g_tree_new((GCompareFunc)
-						g_strcasecmp);
+						eel_strcoll);
 		spi->parent_tree = ii->subitems;
 	}
 
@@ -1408,7 +1408,7 @@ process_index_term(SAXParseInfo *spi, ItemType it)
 		if (!ii->ref_subitems)
                           ii->ref_subitems =
                                         g_tree_new ((GCompareFunc)
-                                                        g_strcasecmp);
+                                                        eel_strcoll);
 		parent_tree = ii->ref_subitems;
                 buf = g_strdup_printf ("%s%s%s",
                                         _("(see: "), spi->stinfo[SEE], ")");
@@ -1428,7 +1428,7 @@ process_index_term(SAXParseInfo *spi, ItemType it)
 		if (!ii->ref_subitems)
                           ii->ref_subitems =
                                         g_tree_new ((GCompareFunc)
-                                                        g_strcasecmp);
+                                                        eel_strcoll);
 		parent_tree = ii->ref_subitems;
                 buf = g_strdup_printf ("%s%s%s",
                                         _("(see also: "), spi->stinfo[SEEALSO], ")");
@@ -1463,7 +1463,7 @@ end_element (SAXParseInfo * spi, const gchar * name)
 	int this_type;/*, i;*/
 	ItemType it;
 
-	if (!g_strcasecmp (name, "indexitem")) {
+	if (!g_ascii_strcasecmp (name, "indexitem")) {
 
 		spi->in_indexitem--;
 		it = spi->sub_type;
@@ -1483,7 +1483,7 @@ end_element (SAXParseInfo * spi, const gchar * name)
 	}
        
 
-	if (!g_strcasecmp (name, "indexdoc")){
+	if (!g_ascii_strcasecmp (name, "indexdoc")){
 		spi->sub_type = NONE;
 		return;
 	}
@@ -1491,16 +1491,16 @@ end_element (SAXParseInfo * spi, const gchar * name)
 	if (spi->sub_type == NONE)
 		return;
 
-	if (!g_strcasecmp(name, "link")){
+	if (!g_ascii_strcasecmp(name, "link")){
 			this_type = spi->sub_type;
 			return;
-	} else if (!g_strcasecmp (name, "title")) {
+	} else if (!g_ascii_strcasecmp (name, "title")) {
 		this_type=spi->sub_type;
 		spi->in_term--;
-	} else if (!g_strcasecmp (name, "seealso")) {
+	} else if (!g_ascii_strcasecmp (name, "seealso")) {
 		this_type = SEEALSO;
 		spi->in_term--;
-	} else if (!g_strcasecmp (name, "see")) {
+	} else if (!g_ascii_strcasecmp (name, "see")) {
 		this_type = SEE;
 		spi->in_term--;
 	} else
@@ -1738,7 +1738,7 @@ hyperbola_navigation_index_new (void)
         char *dir;
 
         hni = g_new0 (HyperbolaNavigationIndex, 1);
-        hni->all_items = g_tree_new ((GCompareFunc) g_strcasecmp);
+        hni->all_items = g_tree_new ((GCompareFunc) eel_strcoll);
 
         dir = gnome_datadir_file ("gnome/help");
         if (!dir)
@@ -1840,7 +1840,7 @@ hyperbola_navigation_index_parse_index_files (HyperbolaNavigationIndex *hni,
 
 	memset (&spi, 0, sizeof (spi));
 	spi.idx = hni;
-	spi.index_items = g_tree_new ((GCompareFunc) g_strcasecmp);
+	spi.index_items = g_tree_new ((GCompareFunc) eel_strcoll);
 
 	switch(index_type){
 		case ALL_INDEX_FILES:
@@ -1861,7 +1861,7 @@ hyperbola_navigation_index_parse_index_files (HyperbolaNavigationIndex *hni,
 		spi.doc_uri = g_strdup((char *)tmp->data);
 		/* Set the correct separator token.  SGML requires ? but
 		 * the other use # */
-		if (!g_strncasecmp ("help", spi.doc_uri, 4)) {
+		if (!g_ascii_strncasecmp ("help", spi.doc_uri, 4)) {
 			spi.separator = "?";
 		} else {
 			spi.separator = "#";
@@ -2696,9 +2696,9 @@ GtkWidget *
 make_index_page (HyperbolaNavigationIndex *hni)
 {
 	GtkWidget *vbox;
-	hni->all_index_items = g_tree_new ((GCompareFunc) g_strcasecmp);
-	hni->index_selected_index_items = g_tree_new ((GCompareFunc) g_strcasecmp);
-	hni->contents_selected_index_items = g_tree_new ((GCompareFunc) g_strcasecmp);
+	hni->all_index_items = g_tree_new ((GCompareFunc) eel_strcoll);
+	hni->index_selected_index_items = g_tree_new ((GCompareFunc) eel_strcoll);
+	hni->contents_selected_index_items = g_tree_new ((GCompareFunc) eel_strcoll);
 
 	hni->index_selected_index_files = g_hash_table_new(g_str_hash, g_str_equal);
 	hni->contents_selected_index_files = g_hash_table_new(g_str_hash, g_str_equal);

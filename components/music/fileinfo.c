@@ -74,7 +74,7 @@ static gint find_genre_id(gchar * text)
 
 static gint genre_comp_func(gconstpointer a, gconstpointer b)
 {
-	return strcasecmp(a, b);
+	return eel_strcoll(a, b);
 }
 
 static void save_cb(GtkWidget * w, gpointer data)
@@ -82,7 +82,7 @@ static void save_cb(GtkWidget * w, gpointer data)
 	gint fd;
 	struct id3v1tag_t tag;
 
-	if (!strncasecmp(current_filename, "http://", 7))
+	if (!g_ascii_strncasecmp(current_filename, "http://", 7))
 		return;
 
 	if ((fd = open(current_filename, O_RDWR)) != -1)
@@ -132,7 +132,7 @@ static void remove_id3_cb(GtkWidget * w, gpointer data)
 	gint fd, len;
 	struct id3v1tag_t tag;
 
-	if (!strncasecmp(current_filename, "http://", 7))
+	if (!g_ascii_strncasecmp(current_filename, "http://", 7))
 		return;
 
 	if ((fd = open(current_filename, O_RDWR)) != -1)
@@ -385,7 +385,7 @@ void mpg123_file_info_box(char *filename)
 	gtk_label_set_text(GTK_LABEL(mpeg_flags), "");
 	gtk_label_set_text(GTK_LABEL(mpeg_fileinfo), "");
 
-	if (!strncasecmp(filename, "http://", 7))
+	if (!g_ascii_strncasecmp(filename, "http://", 7))
 	{
 		file_info_http(filename);
 		return;

@@ -201,7 +201,7 @@ get_themed_icon_file_path (const NautilusIconTheme *icon_theme,
 	
 	/* Try each suffix. */
 	for (i = 0; i < G_N_ELEMENTS (icon_file_name_suffixes); i++) {
-		if (include_size && g_strcasecmp (icon_file_name_suffixes[i], ".svg") != 0) {
+		if (include_size && g_ascii_strcasecmp (icon_file_name_suffixes[i], ".svg") != 0) {
 			/* Build a path for this icon. */
 			partial_path = g_strdup_printf ("%s-%u",
 							themed_icon_name,

@@ -973,7 +973,7 @@ extract_number(const char *name_str)
 	
 	found_digit = FALSE;
 	accumulator = 0;
-	if (isdigit (*name_str)) {
+	if (g_ascii_isdigit (*name_str)) {
                 temp_str = name_str;
 	} else if (strchr(name_str, '(') != NULL) {
                 temp_str = strchr(name_str, '(') + 1;
@@ -981,7 +981,7 @@ extract_number(const char *name_str)
                 return -1;
         }
 	
-	while (isdigit (*temp_str)) {
+	while (g_ascii_isdigit (*temp_str)) {
                 found_digit = TRUE;
                 accumulator = (10 * accumulator) + *temp_str - 48;
 		temp_str += 1;

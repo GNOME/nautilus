@@ -211,13 +211,13 @@ convert_file_to_uri (HelpURI *help_uri, char *file)
 	help_uri->file = file;
 	mime_type = gnome_vfs_get_file_mime_type (file, NULL, FALSE);
         
-	if (g_strcasecmp (mime_type, "text/sgml") == 0) {
+	if (g_ascii_strcasecmp (mime_type, "text/sgml") == 0) {
 		help_uri->type = SGML_FILE;
-	} else if (g_strcasecmp (mime_type, "text/xml") == 0) {
+	} else if (g_ascii_strcasecmp (mime_type, "text/xml") == 0) {
 		help_uri->type = XML_FILE;
-	} else if (g_strcasecmp (mime_type, "text/html") == 0) {
+	} else if (g_ascii_strcasecmp (mime_type, "text/html") == 0) {
 		help_uri->type = HTML_FILE;
-	} else if (g_strcasecmp (mime_type, "application/x-troff-man") == 0) {
+	} else if (g_ascii_strcasecmp (mime_type, "application/x-troff-man") == 0) {
                 /* FIXME bugzilla.gnome.org 42402: 
                  * The check above used to check for a prefix
                  * of "application/x-troff-man", but now we check for
