@@ -379,16 +379,27 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 
 		g_strdown (current_operation);
 
-		/* special case read only target errors */
+		/* special case read only target errors or non-readable sources */
 		if (progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM
 		    || progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY
 		    || progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
-			
-			text = g_strdup_printf
-				(_("Error while %s%s.\n"
-				   "The destination is read-only."),
-				 current_operation,
-				 unescaped_name);
+			if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED
+				&& progress_info->phase == GNOME_VFS_XFER_PHASE_OPENSOURCE) {
+				text = g_strdup_printf
+					(_("Error while %s.\n"
+					   "%s is not readable."),
+					 current_operation, unescaped_name);
+			} else {
+				if (progress_info->target_name != NULL) {
+					g_free (unescaped_name);
+					unescaped_name = gnome_vfs_unescape_string_for_display (
+						progress_info->target_name);
+				}
+				text = g_strdup_printf
+					(_("Error while %s items to \"%s\".\n"
+					   "The destination is read-only."),
+					 current_operation, unescaped_name);
+			}
 			g_free (current_operation);
 			g_free (unescaped_name);
 			
@@ -399,7 +410,6 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 
 			return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 		}
-
 		/* special case read only target errors */
 		if (progress_info->vfs_status == GNOME_VFS_ERROR_NO_SPACE) {
 			

@@ -1,3 +1,12 @@
+2000-10-31  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(handle_xfer_vfs_error):
+	Fix 4227 - Trying to copy an unreadable file gives a bogus
+	error message.
+	Added code that distinguishes between the read and write phases
+	of a copy.
+
 2000-10-31  John Sullivan  <sullivan@eazel.com>
 
 Fixed bug 4334 (changing layout separataes icon from name)
