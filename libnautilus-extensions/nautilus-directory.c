@@ -362,9 +362,13 @@ construct_alternate_metafile_uri (GnomeVFSURI *uri)
 	GnomeVFSResult result;
 	GnomeVFSURI *nautilus_directory_uri, *metafiles_directory_uri, *alternate_uri;
 	char *uri_as_string, *escaped_uri, *file_name;
+	char *user_directory;
 
 	/* Ensure that the metafiles directory exists. */
-	nautilus_directory_uri = gnome_vfs_uri_new (nautilus_get_user_directory ());
+	user_directory = nautilus_get_user_directory ();
+	nautilus_directory_uri = gnome_vfs_uri_new (user_directory);
+	g_free (user_directory);
+
 	metafiles_directory_uri = gnome_vfs_uri_append_file_name (nautilus_directory_uri,
 							     METAFILES_DIRECTORY_NAME);
 	gnome_vfs_uri_unref (nautilus_directory_uri);

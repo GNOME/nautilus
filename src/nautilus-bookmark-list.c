@@ -306,9 +306,14 @@ nautilus_bookmark_list_get_file_path (NautilusBookmarkList *bookmarks)
 	/* currently hardwired */
 
 	static char *file_path = NULL;
+
 	if (file_path == NULL) {
-		file_path = nautilus_make_path (nautilus_get_user_directory(),
-						"bookmarks.xml");
+		char *user_directory;
+		user_directory = nautilus_get_user_directory ();
+
+		file_path = nautilus_make_path (user_directory, "bookmarks.xml");
+
+		g_free (user_directory);
 	}
 
 	return file_path;

@@ -38,14 +38,14 @@ char *                  nautilus_make_uri_from_input     (const char            
 char *                  nautilus_make_path               (const char                *path,
 							  const char                *name);
 
-/* Return paths that don't need to be destroyed. We will probably
- * change these to return ones that do need to be destroyed for
- * consistency soon.
+/* Return paths that NEED to be destroyed.  
+ * These functions are meant to return something something that is not NULL and
+ * is guranteed to exist.
  */
-const char *            nautilus_get_user_directory      (void);
-const char *            nautilus_get_user_main_directory (void);
-const char *            nautilus_get_desktop_directory   (void);
-const char *            nautilus_get_pixmap_directory    (void);
+char *            nautilus_get_user_directory      (void);
+char *            nautilus_get_user_main_directory (void);
+char *            nautilus_get_desktop_directory   (void);
+char *            nautilus_get_pixmap_directory    (void);
 
 /* see if the user_main_directory exists.  This must be called before
    "nautilus_get_user_main_directory", which creates it */

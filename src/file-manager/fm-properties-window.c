@@ -1141,11 +1141,14 @@ get_property_names (void)
 {
 	char *directory_uri;
 	GList *property_list;
-	
+	char *user_directory;	
+
 	property_list = get_property_names_from_uri
 		("file://" NAUTILUS_DATADIR "/emblems", NULL);
 
-	directory_uri = g_strdup_printf ("file://%s/emblems", nautilus_get_user_directory ());
+	user_directory = nautilus_get_user_directory ();
+	directory_uri = g_strdup_printf ("file://%s/emblems", user_directory);
+	g_free (user_directory);
 	property_list = get_property_names_from_uri (directory_uri, property_list);
 	g_free (directory_uri);
 

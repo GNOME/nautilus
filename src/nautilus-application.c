@@ -220,9 +220,9 @@ display_caveat (GtkWindow *parent_window)
 static void
 nautilus_application_check_user_directories (NautilusApplication *application)
 {
-	const char		*user_directory;
-	const char		*user_main_directory;
-	const char		*desktop_directory;
+	char			*user_directory;
+	char			*user_main_directory;
+	char			*desktop_directory;
 	NautilusStringList	*dir_list;
 	
 	g_assert (NAUTILUS_IS_APPLICATION (application));
@@ -240,14 +240,17 @@ nautilus_application_check_user_directories (NautilusApplication *application)
 	if (!g_file_test (user_directory, G_FILE_TEST_ISDIR)) {
 		nautilus_string_list_insert (dir_list, "User Directory");
 	}
+	g_free (user_directory);
 	    
 	if (!g_file_test (user_main_directory, G_FILE_TEST_ISDIR)) {
 		nautilus_string_list_insert (dir_list, "User Main Directory");
 	}
+	g_free (user_main_directory);
 	    
 	if (!g_file_test (desktop_directory, G_FILE_TEST_ISDIR)) {
 		nautilus_string_list_insert (dir_list, "Desktop Directory");
 	}
+	g_free (desktop_directory);
 
 	if (nautilus_string_list_get_length (dir_list) > 0) {
 		char *dir_list_concatenated;

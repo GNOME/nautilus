@@ -644,10 +644,13 @@ get_themed_icon_file_path (const char *theme_name,
 	   
 	if (path == NULL && nautilus_str_has_prefix (icon_name, "emblem-")) {
 		for (i = 0; i < NAUTILUS_N_ELEMENTS (icon_file_name_suffixes); i++) {
+			char *user_directory;
+			user_directory = nautilus_get_user_directory ();
 			path = g_strdup_printf ("%s/emblems/%s%s", 
-						nautilus_get_user_directory(),
+						user_directory,
 						icon_name + 7, 
 						icon_file_name_suffixes[i]);
+			g_free (user_directory);
 			
 			if (g_file_exists (path)) {
 				break;

@@ -624,12 +624,11 @@ global_preferences_register_for_ui (void)
 							   TRUE);
 	
 	{
-		const char	*user_main_directory;
-		char		*novice_home_location;
-		char		*intermediate_home_location;
-		char		*hacker_home_location;
+		char	*user_main_directory;
+		char	*novice_home_location;
+		char	*intermediate_home_location;
+		char	*hacker_home_location;
 
-		/* FIXME bugzilla.eazel.com 715: This call needs to be spanked to conform.  Should return a strduped string */
 		user_main_directory = nautilus_get_user_main_directory ();
 		
 		novice_home_location = g_strdup_printf ("file://%s", user_main_directory);
@@ -642,6 +641,7 @@ global_preferences_register_for_ui (void)
 								  intermediate_home_location,
 								  hacker_home_location);
 
+		g_free (user_main_directory);
 		g_free (novice_home_location);
 		g_free (intermediate_home_location);
 		g_free (hacker_home_location);

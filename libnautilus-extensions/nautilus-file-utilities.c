@@ -130,12 +130,12 @@ nautilus_make_uri_from_input (const char *location)
  * Return value: the combined path name.
  **/
 char * 
-nautilus_make_path(const char *path, const char* name)
+nautilus_make_path (const char *path, const char* name)
 {
     	gboolean insert_separator;
     	int path_length;
 	char *result;
-
+	
 	path_length = strlen (path);
     	insert_separator = path_length > 0 && 
     			   name[0] != '\0' && 
@@ -150,10 +150,6 @@ nautilus_make_path(const char *path, const char* name)
 	return result;
 }
 
-/* FIXME bugzilla.eazel.com 1117: Change file-utilities.c to always create user
- * directories if needed. See bug for details.
- */
-
 /**
  * nautilus_get_user_directory:
  * 
@@ -161,19 +157,16 @@ nautilus_make_path(const char *path, const char* name)
  *
  * Return value: the directory path.
  **/
-const char *
+char *
 nautilus_get_user_directory (void)
 {
-	static char *user_directory = NULL;
+	char *user_directory = NULL;
 
-	if (user_directory == NULL) {
-		user_directory = nautilus_make_path (g_get_home_dir (),
-						     NAUTILUS_USER_DIRECTORY_NAME);
+	user_directory = nautilus_make_path (g_get_home_dir (),
+					     NAUTILUS_USER_DIRECTORY_NAME);
 
-		if (!g_file_exists (user_directory)) {
-			mkdir (user_directory, DEFAULT_NAUTILUS_DIRECTORY_MODE);
-		}
-
+	if (!g_file_exists (user_directory)) {
+		mkdir (user_directory, DEFAULT_NAUTILUS_DIRECTORY_MODE);
 	}
 
 	return user_directory;
@@ -186,18 +179,18 @@ nautilus_get_user_directory (void)
  *
  * Return value: the directory path.
  **/
-const char *
+char *
 nautilus_get_desktop_directory (void)
 {
-	static char *desktop_directory = NULL;
+	char *desktop_directory = NULL;
+	char *user_directory;
 
-	if (desktop_directory == NULL) {
-		desktop_directory = nautilus_make_path (nautilus_get_user_directory (),
-							DESKTOP_DIRECTORY_NAME);
-		if (!g_file_exists (desktop_directory)) {
-			mkdir (desktop_directory, DEFAULT_DESKTOP_DIRECTORY_MODE);
-		}
+	user_directory = nautilus_get_user_directory ();
+	desktop_directory = nautilus_make_path (user_directory, DESKTOP_DIRECTORY_NAME);
+	g_free (user_directory);
 
+	if (!g_file_exists (desktop_directory)) {
+		mkdir (desktop_directory, DEFAULT_DESKTOP_DIRECTORY_MODE);
 	}
 
 	return desktop_directory;
@@ -232,85 +225,82 @@ nautilus_user_main_directory_exists(void)
  *
  * Return value: the directory path.
  **/
-const char *
+char *
 nautilus_get_user_main_directory (void)
 {
-	static char *user_main_directory = NULL;
+	char *user_main_directory = NULL;
 	GnomeVFSResult result;
 	NautilusFile *file;
 	char *file_uri, *image_uri, *temp_str;
 	char *source_directory_uri, *destination_directory_uri;
 	GList *source_name_list, *destination_name_list;
 	
-	if (user_main_directory == NULL)
-	{
-		user_main_directory = g_strdup_printf ("%s/%s",
-							g_get_home_dir(),
-							NAUTILUS_USER_MAIN_DIRECTORY_NAME);
+	user_main_directory = g_strdup_printf ("%s/%s",
+					       g_get_home_dir(),
+					       NAUTILUS_USER_MAIN_DIRECTORY_NAME);
 												
-		if (!g_file_exists (user_main_directory)) {			
-			source_directory_uri = nautilus_get_uri_from_local_path (NAUTILUS_DATADIR);
-			destination_directory_uri = nautilus_get_uri_from_local_path (g_get_home_dir());
-			source_name_list = g_list_prepend (NULL, "top");
-			destination_name_list = g_list_prepend (NULL, NAUTILUS_USER_MAIN_DIRECTORY_NAME);
-			
-			result = gnome_vfs_xfer (source_directory_uri, source_name_list,
-						destination_directory_uri, destination_name_list,
-						GNOME_VFS_XFER_RECURSIVE, GNOME_VFS_XFER_ERROR_MODE_ABORT,
-						GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
-						NULL, NULL);
-			
-			g_free (source_directory_uri);
-			g_free (destination_directory_uri);
-			g_list_free (source_name_list);
-			g_list_free (destination_name_list);
-							
-			/* FIXME bugzilla.eazel.com 1286: 
-			 * Is a g_warning good enough here? This seems like a big problem. 
-			 */
-			if (result != GNOME_VFS_OK) {
-				g_warning ("could not install the novice home directory.  Make sure you typed 'make install'");
-			}
-					
-			/* assign a custom image for the directory icon */
-			file_uri = nautilus_get_uri_from_local_path (user_main_directory);
-			temp_str = nautilus_pixmap_file ("nautilus-logo.png");
-			image_uri = nautilus_get_uri_from_local_path (temp_str);
-			g_free (temp_str);
-			
-			file = nautilus_file_get (file_uri);
-			g_free (file_uri);
-			if (file != NULL) {
-				nautilus_file_set_metadata (file,
-							    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
-							    NULL,
-							    image_uri);
-				nautilus_file_unref (file);
-			}
-
-			/* now do the same for the about file */
-			temp_str = g_strdup_printf ("%s/About.html", user_main_directory);
-			file_uri = nautilus_get_uri_from_local_path (temp_str);
-			g_free (temp_str);
-			
-			file = nautilus_file_get (file_uri);
-			if (file != NULL) {
-				nautilus_file_set_metadata (file,
-							    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
-							    NULL,
-							    image_uri);
-				nautilus_file_unref (file);
-			}
-			g_free (file_uri);
-
-			g_free (image_uri);
-
-			/* install the default link set */
-			nautilus_link_set_install(user_main_directory, "apps");
-			/*
-			nautilus_link_set_install(user_main_directory, "search_engines");
-			*/
+	if (!g_file_exists (user_main_directory)) {			
+		source_directory_uri = nautilus_get_uri_from_local_path (NAUTILUS_DATADIR);
+		destination_directory_uri = nautilus_get_uri_from_local_path (g_get_home_dir());
+		source_name_list = g_list_prepend (NULL, "top");
+		destination_name_list = g_list_prepend (NULL, NAUTILUS_USER_MAIN_DIRECTORY_NAME);
+		
+		result = gnome_vfs_xfer (source_directory_uri, source_name_list,
+					 destination_directory_uri, destination_name_list,
+					 GNOME_VFS_XFER_RECURSIVE, GNOME_VFS_XFER_ERROR_MODE_ABORT,
+					 GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
+					 NULL, NULL);
+		
+		g_free (source_directory_uri);
+		g_free (destination_directory_uri);
+		g_list_free (source_name_list);
+		g_list_free (destination_name_list);
+		
+		/* FIXME bugzilla.eazel.com 1286: 
+		 * Is a g_warning good enough here? This seems like a big problem. 
+		 */
+		if (result != GNOME_VFS_OK) {
+			g_warning ("could not install the novice home directory.  Make sure you typed 'make install'");
 		}
+					
+		/* assign a custom image for the directory icon */
+		file_uri = nautilus_get_uri_from_local_path (user_main_directory);
+		temp_str = nautilus_pixmap_file ("nautilus-logo.png");
+		image_uri = nautilus_get_uri_from_local_path (temp_str);
+		g_free (temp_str);
+		
+		file = nautilus_file_get (file_uri);
+		g_free (file_uri);
+		if (file != NULL) {
+			nautilus_file_set_metadata (file,
+						    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
+						    NULL,
+						    image_uri);
+			nautilus_file_unref (file);
+		}
+		
+		/* now do the same for the about file */
+		temp_str = g_strdup_printf ("%s/About.html", user_main_directory);
+		file_uri = nautilus_get_uri_from_local_path (temp_str);
+		g_free (temp_str);
+		
+		file = nautilus_file_get (file_uri);
+		if (file != NULL) {
+			nautilus_file_set_metadata (file,
+						    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
+						    NULL,
+						    image_uri);
+			nautilus_file_unref (file);
+		}
+		g_free (file_uri);
+		
+		g_free (image_uri);
+		
+		/* install the default link set */
+		nautilus_link_set_install(user_main_directory, "apps");
+		/*
+		  nautilus_link_set_install(user_main_directory, "search_engines");
+		*/
 	}
 
 	return user_main_directory;
@@ -323,10 +313,14 @@ nautilus_get_user_main_directory (void)
  *
  * Return value: the directory path.
  **/
-const char *
+char *
 nautilus_get_pixmap_directory (void)
 {
-	return DATADIR "/pixmaps/nautilus";
+	char *pixmap_directory;
+
+	pixmap_directory = g_strdup_printf ("%s/%s", DATADIR, "pixmaps/nautilus");
+
+	return pixmap_directory;
 }
 
 /**

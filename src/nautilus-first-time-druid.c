@@ -59,8 +59,21 @@ druid_cancel (GtkWidget *druid)
 static void
 druid_finished (GtkWidget *druid_page)
 {
+	char *user_main_directory;
+
 	gtk_widget_destroy(gtk_widget_get_toplevel(druid_page));
-	nautilus_get_user_main_directory();
+
+	user_main_directory = nautilus_get_user_main_directory();
+
+	/* FIXME bugzilla.eazel.com 1555:
+	 * Need to post a error dialog if the user's main directory was not created
+	 */
+	if (!g_file_exists (user_main_directory)) {
+		g_print ("FIXME bugzilla.eazel.com 1555\n");
+		g_print ("Need to post a error dialog if the user's main directory was not created\n");
+	}
+	g_free (user_main_directory);
+
 	nautilus_application_startup(save_application, save_manage_desktop, NULL);
 }
 

@@ -1,5 +1,40 @@
 2000-07-05  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-directory.c:
+	(construct_alternate_metafile_uri):
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_make_path), (nautilus_get_user_directory),
+	(nautilus_get_desktop_directory),
+	(nautilus_get_user_main_directory),
+	(nautilus_get_pixmap_directory):
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_register_for_ui):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(get_themed_icon_file_path):
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(add_icon_themes):
+	* src/file-manager/fm-properties-window.c: (get_property_names):
+	* src/nautilus-application.c:
+	(nautilus_application_check_user_directories):
+	* src/nautilus-bookmark-list.c:
+	(nautilus_bookmark_list_get_file_path):
+	* src/nautilus-desktop-window.c: (nautilus_desktop_window_new):
+	* src/nautilus-first-time-druid.c: (druid_finished):
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_drag_data_get), (make_drag_image),
+	(remove_color), (remove_background), (remove_emblem),
+	(get_xml_path), (add_background_to_browser), (add_color_to_file),
+	(emblem_dialog_clicked), (make_properties_from_directory):
+	Change file utilities special directory access functions to always
+	return allocated strings.  Change all callers to match the new
+	functions and free the results.
+
+	Also change the file utilities functions to always create the
+	special directories if needed.
+	
+2000-07-05  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-global-preferences.c:
 	(compare_view_identifiers), (global_preferences_create_dialog):
 	Sort the sidebar panel names.
