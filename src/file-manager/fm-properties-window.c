@@ -1631,14 +1631,6 @@ create_basic_page (FMPropertiesWindow *window)
 }
 
 static void
-remove_default_viewport_shadow (GtkViewport *viewport)
-{
-	g_return_if_fail (GTK_IS_VIEWPORT (viewport));
-	
-	gtk_viewport_set_shadow_type (viewport, GTK_SHADOW_NONE);
-}
-
-static void
 create_emblems_page (FMPropertiesWindow *window)
 {
 	NautilusCustomizationData *customization_data;
@@ -1651,27 +1643,11 @@ create_emblems_page (FMPropertiesWindow *window)
 	file = window->details->target_file;
 
 	/* The emblems wrapped table */
-	emblems_table = eel_wrap_table_new (TRUE);
+	scroller = eel_scrolled_wrap_table_new (TRUE, &emblems_table);
 
-	gtk_widget_show (emblems_table);
 	gtk_container_set_border_width (GTK_CONTAINER (emblems_table), GNOME_PAD);
 	
-	scroller = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroller),
-					GTK_POLICY_NEVER,
-					GTK_POLICY_AUTOMATIC);
-
-	/* Viewport */
- 	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (scroller), 
- 					       emblems_table);
 	gtk_widget_show (scroller);
-
-	/* Get rid of default lowered shadow appearance. 
-	 * This must be done after the widget is realized, due to
-	 * an apparent bug in gtk_viewport_set_shadow_type.
-	 */
-	g_signal_connect (GTK_BIN (scroller)->child, "realize", 
-			  G_CALLBACK (remove_default_viewport_shadow), NULL);
 
 	gtk_notebook_append_page (window->details->notebook, 
 				  scroller, gtk_label_new (_("Emblems")));

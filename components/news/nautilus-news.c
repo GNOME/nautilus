@@ -1923,6 +1923,21 @@ check_button_toggled_callback (GtkToggleButton *toggle_button, gpointer user_dat
 	}	
 }
 
+static gboolean
+check_button_focus_in_callback (GtkWidget *widget, 
+                                GdkEventFocus *event, 
+                                gpointer data)
+{
+	g_return_val_if_fail (widget->parent && widget->parent->parent, FALSE);
+	g_return_val_if_fail (GTK_IS_VIEWPORT (widget->parent->parent), FALSE);
+        
+	eel_gtk_viewport_scroll_to_rect (GTK_VIEWPORT (widget->parent->parent), 
+					 &widget->allocation);
+	
+	return FALSE;
+}
+
+
 /* callback to maintain the current location */
 static void
 nautilus_news_load_location (NautilusView *view, const char *location, News *news)
@@ -2005,6 +2020,9 @@ add_channel_entry (News *news_data, const char *channel_name, int index, gboolea
 
 	g_signal_connect (check_button, "toggled",
                           G_CALLBACK (check_button_toggled_callback),
+                          news_data);
+        g_signal_connect (check_button, "focus_in_event",
+                          G_CALLBACK (check_button_focus_in_callback),
                           news_data);
 
 	/* reorder newly added button so it's sorted by it's name */

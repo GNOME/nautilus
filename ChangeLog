@@ -1,3 +1,13 @@
+2002-03-22  Dave Camp  <dave@ximian.com>
+
+	* src/file-manager/fm-properties-window.c: (create_emblems_page):
+	use eel_scrolled_wrap_box_new().
+
+	* components/news/nautilus-news.c:
+	(check_button_focus_in_callback), (add_channel_entry): Use the 
+	new eel_gtk_viewport functions to move the focused checkbox into
+	view on focus changes.
+
 2002-03-21 John Fleck <jfleck@inkstain.net>
 
 	* help/nautilus-user-manual/C/nautilus-user-manual.xml, legal.xml
