@@ -1,3 +1,50 @@
+2001-02-21  John Harper  <jsh@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 6828 (Moving directories in tree view makes contents
+	become top-level nodes):
+
+	* components/tree/nautilus-tree-node.h,
+	components/tree/nautilus-tree-node.c,
+	components/tree/nautilus-tree-node-private.h
+
+	(nautilus_tree_node_update_uri): new private function, updates
+	the node's cached URI from its NautilusFile and updates the new
+	is_toplevel flag
+
+	(nautilus_tree_node_is_toplevel): new function, returns true if
+	the node shouldn't have a parent node
+
+	* components/tree/nautilus-tree-model.c: track nodes that have
+	no parent but aren't top-level nodes. If suitable parents later
+	appear the unparented nodes will be connected to them
+
+	* components/tree/nautilus-tree-view.c,
+	components/tree/nautilus-tree-view-private.h: do similar
+	tracking of unparented nodes (but from the point of view of the
+	view, not the model)
+
+	[ Having both modules duplicate this similar functionality
+	isn't ideal, but I don't see how to unify it ]
+
+
+	Fixed bug 6820 (directory sort order is different in tree
+	view):
+
+	* components/tree/nautilus-tree-view.c (ctree_compare_rows):
+	new function, set as the comparison function for tree views.
+	It calls nautilus_file_compare_for_sort () on the files
+	associated with the tree rows (with hardcoded type
+	NAUTILUS_FILE_SORT_BY_NAME for now)
+
+	* libnautilus-extensions/nautilus-ctree.c
+	(nautilus_ctree_insert_node): for sorted insertions, link the
+	inserted node into the tree before finding the correct place,
+	then move it afterwards. This ensures that the comparison
+	function is able to find the node pointers from the row
+	pointers that it's given
+
 2001-02-21  Rebecca Schulman  <rebecka@eazel.com>
 	Remove the "backup unindexed search" preference for 1.0, which is
 	bugzilla.eazel.com bug 6775.  We will not be doing backup
@@ -62,7 +109,6 @@
 	so that they do not expand in strange ways or change their position
 	when a custom image is added.
 		
->>>>>>> 1.3858
 2001-02-21  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Mike Fleming <mfleming@eazel.com>

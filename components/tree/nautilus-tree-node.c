@@ -93,7 +93,7 @@ nautilus_tree_node_new (NautilusFile *file)
 	gtk_object_sink (GTK_OBJECT (node));
 
 	node->details->file = nautilus_file_ref (file);
-	node->details->uri = nautilus_file_get_uri (file);
+	nautilus_tree_node_update_uri (node);
 
 	return node;
 }
@@ -124,6 +124,21 @@ nautilus_tree_node_get_uri      (NautilusTreeNode   *node)
 	return g_strdup (node->details->uri);
 }
 
+void
+nautilus_tree_node_update_uri (NautilusTreeNode *node)
+{
+	char *uri, *parent_uri;
+
+	uri = nautilus_file_get_uri (node->details->file);
+
+	g_free (node->details->uri);
+	node->details->uri = uri;
+
+	parent_uri = nautilus_file_get_parent_uri (node->details->file);
+	node->details->is_toplevel = (parent_uri == NULL || *parent_uri == '\0');
+	g_free (parent_uri);
+}
+
 
 NautilusDirectory *
 nautilus_tree_node_get_directory (NautilusTreeNode   *node)
@@ -139,6 +154,12 @@ nautilus_tree_node_set_parent (NautilusTreeNode   *node,
 
 	node->details->parent = parent;
 	parent->details->children = g_list_append (parent->details->children, node);
+}
+
+gboolean
+nautilus_tree_node_is_toplevel (NautilusTreeNode *node)
+{
+	return node->details->is_toplevel;
 }
 
 

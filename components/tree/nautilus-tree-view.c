@@ -108,6 +108,12 @@ static void nautilus_tree_view_initialize_class (NautilusTreeViewClass *klass);
 static void nautilus_tree_view_initialize       (NautilusTreeView      *view);
 static void nautilus_tree_view_destroy          (GtkObject             *object);
 
+static void register_unparented_node		(NautilusTreeView      *view,
+						 NautilusTreeNode      *node);
+static void forget_unparented_node		(NautilusTreeView      *view,
+						 NautilusTreeNode      *node);
+static void insert_unparented_nodes		(NautilusTreeView      *view,
+						 NautilusTreeNode      *node);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTreeView, nautilus_tree_view, GTK_TYPE_SCROLLED_WINDOW)
@@ -249,73 +255,78 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 #endif
 
 
-	text[0] = nautilus_file_get_name (file);
-	text[1] = NULL;
+	if (parent_view_node == NULL && !nautilus_tree_node_is_toplevel (node)) {
+		register_unparented_node (view, node);
+	} else {
+		text[0] = nautilus_file_get_name (file);
+		text[1] = NULL;
 
-	if (nautilus_tree_view_model_node_to_view_node (view, node) == NULL) {
-		nautilus_icon_factory_get_pixmap_and_mask_for_file (file,
-								    NULL,
-								    NAUTILUS_ICON_SIZE_FOR_MENUS,
-								    &closed_pixmap,
-								    &closed_mask);
+		if (nautilus_tree_view_model_node_to_view_node (view, node) == NULL) {
+			nautilus_icon_factory_get_pixmap_and_mask_for_file (file,
+									    NULL,
+									    NAUTILUS_ICON_SIZE_FOR_MENUS,
+									    &closed_pixmap,
+									    &closed_mask);
 
-		nautilus_icon_factory_get_pixmap_and_mask_for_file (file,
-								    "accept",
-								    NAUTILUS_ICON_SIZE_FOR_MENUS,
-								    &open_pixmap,
-								    &open_mask);
+			nautilus_icon_factory_get_pixmap_and_mask_for_file (file,
+									    "accept",
+									    NAUTILUS_ICON_SIZE_FOR_MENUS,
+									    &open_pixmap,
+									    &open_mask);
 
 
-		view_node = nautilus_ctree_insert_node (NAUTILUS_CTREE (view->details->tree),
-							parent_view_node, 
-							NULL,
-							text,
-							TREE_SPACING,
-							closed_pixmap, closed_mask, open_pixmap, open_mask,
-							! nautilus_file_is_directory (file),
-							FALSE);
-		gdk_pixmap_unref (closed_pixmap);
-		gdk_pixmap_unref (open_pixmap);
-		if (closed_mask != NULL) {
-			gdk_bitmap_unref (closed_mask);
-		}
-		if (open_mask != NULL) {
-			gdk_bitmap_unref (open_mask);
-		}
+			view_node = nautilus_ctree_insert_node (NAUTILUS_CTREE (view->details->tree),
+								parent_view_node, 
+								NULL,
+								text,
+								TREE_SPACING,
+								closed_pixmap, closed_mask, open_pixmap, open_mask,
+								! nautilus_file_is_directory (file),
+								FALSE);
+			gdk_pixmap_unref (closed_pixmap);
+			gdk_pixmap_unref (open_pixmap);
+			if (closed_mask != NULL) {
+				gdk_bitmap_unref (closed_mask);
+			}
+			if (open_mask != NULL) {
+				gdk_bitmap_unref (open_mask);
+			}
 
-		nautilus_ctree_node_set_row_data (NAUTILUS_CTREE (view->details->tree),
-						  view_node,
-						  node);
+			nautilus_ctree_node_set_row_data (NAUTILUS_CTREE (view->details->tree),
+							  view_node,
+							  node);
 
-		g_assert (g_hash_table_lookup (view->details->file_to_node_map, file) == NULL);
+			g_assert (g_hash_table_lookup (view->details->file_to_node_map, file) == NULL);
 
-		nautilus_file_ref (file);
-		g_hash_table_insert (view->details->file_to_node_map, file, view_node); 
+			nautilus_file_ref (file);
+			g_hash_table_insert (view->details->file_to_node_map, file, view_node); 
 		
-		uri = nautilus_file_get_uri (file);
-		link_view_node_with_uri (view, view_node, uri);
+			uri = nautilus_file_get_uri (file);
+			link_view_node_with_uri (view, view_node, uri);
 
-		if (nautilus_file_is_directory (nautilus_tree_node_get_file (node))) {
-			if (nautilus_tree_expansion_state_is_node_expanded (view->details->expansion_state, uri)) {
-				if (!ctree_is_node_expanded (NAUTILUS_CTREE (view->details->tree),
-							     view_node)) {
-					nautilus_ctree_expand (NAUTILUS_CTREE (view->details->tree),
-							       view_node);
-				} 
-			} else {
-				if (ctree_is_node_expanded (NAUTILUS_CTREE (view->details->tree),
-							    view_node)) {
-					nautilus_ctree_collapse (NAUTILUS_CTREE (view->details->tree),
-								 view_node);
+			if (nautilus_file_is_directory (nautilus_tree_node_get_file (node))) {
+				if (nautilus_tree_expansion_state_is_node_expanded (view->details->expansion_state, uri)) {
+					if (!ctree_is_node_expanded (NAUTILUS_CTREE (view->details->tree),
+								     view_node)) {
+						nautilus_ctree_expand (NAUTILUS_CTREE (view->details->tree),
+								       view_node);
+					} 
+				} else {
+					if (ctree_is_node_expanded (NAUTILUS_CTREE (view->details->tree),
+								    view_node)) {
+						nautilus_ctree_collapse (NAUTILUS_CTREE (view->details->tree),
+									 view_node);
+					}
 				}
 			}
+
+			insert_unparented_nodes (view, node);
+		} else {
+			nautilus_tree_view_update_model_node (view, node);
 		}
-	} else {
-		nautilus_tree_view_update_model_node (view, node);
+
+		g_free (text[0]);
 	}
-
-	g_free (text[0]);
-
 	notify_node_seen (view, node);
 }
 
@@ -326,6 +337,8 @@ forget_view_node (NautilusTreeView *view,
 	NautilusFile *file;
 
 	file = nautilus_tree_view_node_to_file (view, view_node);
+
+	forget_unparented_node (view, nautilus_tree_view_node_to_model_node (view, view_node));
 
 	g_hash_table_remove (view->details->file_to_node_map, file);
 	nautilus_file_unref (file);
@@ -490,8 +503,58 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 
 			g_free (uri);
 		}
+
+		insert_unparented_nodes (view, node);
 	} else {
 		nautilus_tree_view_insert_model_node (view, node);
+	}
+}
+
+static void
+register_unparented_node (NautilusTreeView *view, NautilusTreeNode *node)
+{
+	g_return_if_fail (!nautilus_tree_node_is_toplevel (node));
+
+	if (g_list_find (view->details->unparented_tree_nodes, node) == NULL) {
+		view->details->unparented_tree_nodes = g_list_prepend (view->details->unparented_tree_nodes, node);
+	}
+}
+
+static void
+forget_unparented_node (NautilusTreeView *view, NautilusTreeNode *node)
+{
+	view->details->unparented_tree_nodes = g_list_remove (view->details->unparented_tree_nodes, node);
+}
+
+static void
+insert_unparented_nodes (NautilusTreeView *view, NautilusTreeNode *node)
+{
+	NautilusFile *file, *sub_file;
+	NautilusDirectory *directory;
+	GList *p, *to_add;
+	NautilusTreeNode *sub_node;
+
+	file = nautilus_tree_node_get_file (node);
+
+	if (nautilus_file_is_directory (file)) {
+		directory = nautilus_tree_node_get_directory (node);
+		if (directory != NULL) {
+			to_add = NULL;
+			for (p = view->details->unparented_tree_nodes; p != NULL; p = p->next) {
+				sub_node = p->data;
+				sub_file = nautilus_tree_node_get_file (sub_node);
+				if (nautilus_directory_contains_file (directory, sub_file)) {
+					to_add = g_list_prepend (to_add, sub_node);
+				}
+			}
+			for (p = to_add; p != NULL; p = p->next) {
+				sub_node = p->data;
+				view->details->unparented_tree_nodes = g_list_remove (view->details->unparented_tree_nodes, sub_node);
+				nautilus_tree_view_insert_model_node (view, sub_node);
+				
+			}
+			g_list_free (to_add);
+		}
 	}
 }
 
@@ -749,6 +812,27 @@ filtering_changed_callback (gpointer callback_data)
 }
 
 
+static gint
+ctree_compare_rows (GtkCList      *clist,
+		    gconstpointer  ptr1,
+		    gconstpointer  ptr2)
+{
+	NautilusTreeView *view;
+	NautilusFile *file1, *file2;
+
+	view = gtk_object_get_data (GTK_OBJECT (clist), "tree_view");
+	g_assert (view != NULL);
+
+	file1 = nautilus_tree_view_node_to_file (view, nautilus_ctree_find_node_ptr (NAUTILUS_CTREE (view->details->tree), (NautilusCTreeRow *) ptr1));
+	file2 = nautilus_tree_view_node_to_file (view, nautilus_ctree_find_node_ptr (NAUTILUS_CTREE (view->details->tree), (NautilusCTreeRow *) ptr2));
+
+	if (file1 == NULL || file2 == NULL) {
+		return 0;
+	}
+
+	return nautilus_file_compare_for_sort (file1, file2, NAUTILUS_FILE_SORT_BY_NAME);
+}
+
 static void
 nautilus_tree_view_initialize (NautilusTreeView *view)
 {
@@ -778,6 +862,8 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
         gtk_clist_set_selection_mode (GTK_CLIST (view->details->tree), GTK_SELECTION_SINGLE);
 	gtk_clist_set_auto_sort (GTK_CLIST (view->details->tree), TRUE);
 	gtk_clist_set_sort_type (GTK_CLIST (view->details->tree), GTK_SORT_ASCENDING);
+	gtk_clist_set_compare_func (GTK_CLIST (view->details->tree),
+				    ctree_compare_rows);
 	gtk_clist_set_column_auto_resize (GTK_CLIST (view->details->tree), 0, TRUE);
 	gtk_clist_columns_autosize (GTK_CLIST (view->details->tree));
 	gtk_clist_set_reorderable (GTK_CLIST (view->details->tree), FALSE);

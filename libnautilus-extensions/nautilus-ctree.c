@@ -3818,6 +3818,8 @@ nautilus_ctree_insert_node (NautilusCTree     *ctree,
 		 text[ctree->tree_column] : NULL, spacing, pixmap_closed,
 		 mask_closed, pixmap_opened, mask_opened, is_leaf, expanded);
 
+  nautilus_ctree_link (ctree, node, parent, sibling, TRUE);
+
   /* sorted insertion */
   if (GTK_CLIST_AUTO_SORT (clist))
     {
@@ -3826,12 +3828,13 @@ nautilus_ctree_insert_node (NautilusCTree     *ctree,
       else
 	sibling = NAUTILUS_CTREE_NODE (clist->row_list);
 
-      while (sibling && clist->compare
-	     (clist, NAUTILUS_CTREE_ROW (node), NAUTILUS_CTREE_ROW (sibling)) > 0)
+      while (sibling
+	     && (sibling == node || clist->compare (clist, NAUTILUS_CTREE_ROW (node), NAUTILUS_CTREE_ROW (sibling)) > 0))
 	sibling = NAUTILUS_CTREE_ROW (sibling)->sibling;
-    }
 
-  nautilus_ctree_link (ctree, node, parent, sibling, TRUE);
+      nautilus_ctree_unlink (ctree, node, TRUE);
+      nautilus_ctree_link (ctree, node, parent, sibling, TRUE);
+    }
 
   if (text && !GTK_CLIST_AUTO_RESIZE_BLOCKED (clist) &&
       nautilus_ctree_is_viewable (ctree, node))

@@ -50,6 +50,7 @@ struct NautilusTreeModelDetails {
 	GHashTable       *file_to_node_map;
 
 	GList            *monitor_clients;
+	GList		 *unparented_nodes;
 
 	NautilusTreeNode *root_node;
 	gboolean          root_node_reported;
@@ -629,6 +630,54 @@ report_root_node_if_possible (NautilusTreeModel *model)
 	}
 }
 
+static void
+register_unparented_node (NautilusTreeModel *model, NautilusTreeNode *node)
+{
+	if (!nautilus_tree_node_is_toplevel (node) && g_list_find (model->details->unparented_nodes, node) == NULL) {
+		model->details->unparented_nodes = g_list_prepend (model->details->unparented_nodes, node);
+	}
+}
+
+static void
+forget_unparented_node (NautilusTreeModel *model, NautilusTreeNode *node)
+{
+	model->details->unparented_nodes = g_list_remove (model->details->unparented_nodes, node);
+}
+
+static void
+connect_unparented_nodes (NautilusTreeModel *model, NautilusTreeNode *parent)
+{
+	NautilusDirectory *parent_directory;
+	char *parent_uri;
+	NautilusTreeNode *node;
+	GList *p, *to_parent;
+
+	parent_uri = nautilus_file_get_uri (parent->details->file);
+	parent_directory = nautilus_directory_get (parent_uri);
+	g_free (parent_uri);
+
+	if (parent_directory != NULL) {
+		to_parent = NULL;
+
+		for (p = model->details->unparented_nodes; p != NULL; p = p->next) {
+			node = p->data;
+			if (nautilus_directory_contains_file (parent_directory, node->details->file)) {
+				to_parent = g_list_prepend (to_parent, node);
+			}
+		}
+
+		for (p = to_parent; p != NULL; p = p->next) {
+			node = p->data;
+			nautilus_tree_node_set_parent (node, parent);
+			model->details->unparented_nodes = g_list_remove (model->details->unparented_nodes, node);
+		}
+
+		g_list_free (to_parent);
+
+		nautilus_directory_unref (parent_directory);
+	}
+}
+
 
 static void
 report_node_changed (NautilusTreeModel *model,
@@ -672,6 +721,8 @@ report_node_changed (NautilusTreeModel *model,
 			if (parent_node != NULL) {
 				nautilus_tree_node_set_parent (node,
 							       parent_node);
+			} else {
+				register_unparented_node (model, node);
 			}
 
 			g_free (parent_uri);
@@ -685,6 +736,9 @@ report_node_changed (NautilusTreeModel *model,
 		gtk_signal_emit (GTK_OBJECT (model),
 				 signals[NODE_ADDED],
 				 node);
+
+		connect_unparented_nodes (model, node);
+
 	} else {
 		/* really changed */
 
@@ -695,7 +749,6 @@ report_node_changed (NautilusTreeModel *model,
 			gtk_signal_emit (GTK_OBJECT (model),
 					 signals[NODE_CHANGED],
 					 node);
-			g_free (file_uri);
 		} else {
 			/* A move or rename - model it as a remove followed by an add */
 
@@ -712,8 +765,7 @@ report_node_changed (NautilusTreeModel *model,
 
 			report_node_removed (model, node);
 
-			g_free (node->details->uri);
-			node->details->uri = file_uri;
+			nautilus_tree_node_update_uri (node);
 			
 #if 0
 			if (node->details->directory != NULL) {
@@ -730,6 +782,8 @@ report_node_changed (NautilusTreeModel *model,
 
 			gtk_object_unref (GTK_OBJECT (node));
 		}
+
+		g_free (file_uri);
 	}
 	
 	g_free (node_uri);
@@ -741,6 +795,7 @@ report_node_removed_internal (NautilusTreeModel *model,
 			      gboolean signal)
 {
 	NautilusTreeNode *parent_node;
+	GList *p;
 
 	if (node == NULL) {
 		return;
@@ -755,11 +810,15 @@ report_node_removed_internal (NautilusTreeModel *model,
 			nautilus_tree_node_remove_from_parent (node);
 		}
 
+		for (p = node->details->children; p != NULL; p = p->next) {
+			register_unparented_node (model, p->data);
+		}
 		nautilus_tree_node_remove_children (node);
 
 		g_hash_table_remove (model->details->file_to_node_map, 
 				     nautilus_tree_node_get_file (node));
 	
+		forget_unparented_node (model, node);
 
 		if (signal) {
 			gtk_signal_emit (GTK_OBJECT (model),

@@ -59,6 +59,7 @@ GList             *nautilus_tree_node_get_children  (NautilusTreeNode   *node);
 NautilusFile      *nautilus_tree_node_get_file      (NautilusTreeNode   *node);
 char              *nautilus_tree_node_get_uri       (NautilusTreeNode   *node);
 NautilusDirectory *nautilus_tree_node_get_directory (NautilusTreeNode   *node);
+gboolean	   nautilus_tree_node_is_toplevel   (NautilusTreeNode   *node);
 
 
 #endif /* NAUTILUS_TREE_NODE_H */

@@ -65,6 +65,8 @@ struct NautilusTreeViewDetails {
 	NautilusTreeChangeQueue *change_queue;
 	guint pending_idle_id;
 
+	GList *unparented_tree_nodes;
+
 	TreeViewCallback root_seen_callback;
 	char *wait_uri;
 	NautilusTreeNode *wait_node;
