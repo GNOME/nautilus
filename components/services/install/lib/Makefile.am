@@ -13,6 +13,7 @@ INCLUDES = \
 	$(GCONF_CFLAGS)						\
 	$(XML_CFLAGS)						\
 	$(GNET_CFLAGS)						\
+	$(GHTTP_CFLAGS)						\
 	$(WERROR)						\
 	$(NULL)
 

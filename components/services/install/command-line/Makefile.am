@@ -14,6 +14,7 @@ INCLUDES = \
 	$(GCONF_CFLAGS)						\
 	$(XML_CFLAGS)						\
 	$(GNET_CFLAGS)						\
+	$(GHTTP_CFLAGS)						\
 	$(WERROR)						\
 	$(NULL)
 
@@ -28,6 +29,7 @@ eazel_install_LDADD =                                                     \
 	$(GNOME_LIBS)                                                     \
 	$(GCONF_LIBS)                                                     \
 	$(GNET_LIBS)                                                      \
+	$(GHTTP_LIBS)                                                     \
 	$(RPM_LIBS)                                                       \
         $(top_builddir)/components/services/install/lib/libinstall.a      \
 	$(NULL)

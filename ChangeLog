@@ -1,5 +1,18 @@
 2000-05-21  J Shane Culpepper  <pepper@eazel.com>
 
+	* components/services/install/command-line/Makefile.am:
+	* components/services/install/lib/Makefile.am:
+	* components/services/install/lib/eazel-install-protocols.c:
+	(http_fetch_remote_file):
+	* components/services/install/lib/eazel-install-protocols.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_new_packages):
+	* components/services/install/lib/eazel-install-rpm-glue.h:
+
+	Added async http fetches of remote files.  Fix for bug # 810.
+
+2000-05-21  J Shane Culpepper  <pepper@eazel.com>
+
         * components/services/install/lib/eazel-install-rpm-glue.c:
         (install_new_packages), (uninstall_packages), (do_rpm_install),
         (do_rpm_uninstall), (rpm_uninstall): Adding uninstall depend checks.

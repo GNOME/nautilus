@@ -27,11 +27,6 @@
  * file and install a services generated package-list.xml.
  */
 
-/* Portions of the rpm specific install were taken from James Henstridge's
- * gnomrpm and from rpm itself.  Because of that, I added the copyright notices
- * from rpm and gnorpm to be safe.
- */
-
 #include "eazel-install-rpm-glue.h"
 #include "eazel-install-xml-package-list.h"
 #include "helixcode-utils.h"
@@ -143,7 +138,7 @@ install_new_packages (InstallOptions* iopts, TransferOptions* topts) {
                                                pack->archtype);
 
 			if (iopts->protocol == PROTOCOL_HTTP) {
-				int rv;
+				gboolean rv;
 				char* rpmname;
 				char* targetname;
 				char* url;
@@ -163,8 +158,8 @@ install_new_packages (InstallOptions* iopts, TransferOptions* topts) {
                                                        rpmname);
 				
 				g_print ("Downloading %s...\n", rpmname);
-				rv = urlGetFile (url, targetname);
-				if (rv != 0) {
+				rv = http_fetch_remote_file (url, targetname);
+				if (rv != TRUE) {
 					fprintf (stderr, "***Failed to retreive %s !***\n", url);
 					exit (1);
 				}

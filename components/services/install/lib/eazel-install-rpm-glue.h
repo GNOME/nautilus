@@ -29,6 +29,7 @@
 #define __EAZEL_SERVICES__RPM_GLUE_H__
 
 #include "eazel-install-types.h"
+#include "eazel-install-protocols.h"
 
 gboolean install_new_packages (InstallOptions* iopts, TransferOptions* topts);
 gboolean uninstall_packages (InstallOptions* iopts, TransferOptions* topts);

@@ -30,12 +30,17 @@
 
 #include "eazel-install-types.h"
 #include "helixcode-utils.h"
+#include <ghttp.h>
 #include <gnet/gnet.h>
 #include <gnome-xml/parser.h>
+
+#define USER_AGENT_STRING "eazel-install/"
 
 gboolean http_fetch_xml_package_list (const char* hostname,
                                       int port,
                                       const char* path,
                                       const char* pkg_list_file);
+
+gboolean http_fetch_remote_file (char* url, const char* target_file);
 
 #endif /* __EAZEL_SERVICES_PROTOCOLS_H__ */
