@@ -801,7 +801,7 @@ mpg123_play_file (const char *filename)
 
 void 
 mpg123_stop (void)
-{
+{	
 	if (mpg123_info && mpg123_info->going) {
 		g_free (mpg123_filename);
 		mpg123_filename = NULL;
@@ -813,7 +813,7 @@ mpg123_stop (void)
 }
 
 void 
-mpg123_seek(int time)
+mpg123_seek (int time)
 {
 	mpg123_info->jump_to_time = time;
 

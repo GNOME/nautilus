@@ -1,3 +1,13 @@
+2000-12-12  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed silly bug involving the new Sound Busy dialog.
+	It now uses the proper routines to check the status of the
+	sound hardware.
+	
+	* components/music/mpg123.c: (mpg123_stop), (mpg123_seek):
+	* components/music/nautilus-music-view.c: (play_current_file),
+	(go_to_next_track), (go_to_previous_track):
+
 2000-12-12 Arlo Rose <arlo@eazel.com>
 
 	* icons/eazel/eazel.xml:

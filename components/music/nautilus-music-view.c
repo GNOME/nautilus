@@ -1045,7 +1045,7 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
         GnomeVFSFileInfo file_info;
 	int length;
 
-	if (!nautilus_sound_can_play_sound ()) {
+	if (esdout_playing ()) {
 		nautilus_error_dialog (_("Sorry, but the music view is unable to play back sound right now. "
 					 "Either another program is using or blocking the soundcard "
 					 "or your soundcard is not configured properly. "),
@@ -1101,35 +1101,29 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 	g_free (song_filename);
 }
 
-static void
-stop_if_playing (NautilusMusicView *music_view)
-{
-	mpg123_stop ();
-}
 
 static void
 go_to_next_track (NautilusMusicView *music_view)
 {
-	stop_if_playing (music_view);		
+	mpg123_stop ();		
 	if (music_view->details->selected_index < (GTK_CLIST (music_view->details->song_list)->rows - 1)) {
-		music_view->details->selected_index += 1;
+		music_view->details->selected_index += 1;		
 		play_current_file (music_view, TRUE);
 	} else {  
 		update_play_controls_status (music_view, get_player_state (music_view));
 		reset_playtime (music_view);
-		stop_playing_file (music_view);
 	}
 }
 
 static void
 go_to_previous_track (NautilusMusicView *music_view)
-{
-	stop_if_playing (music_view);		
-	
+{	
 	/* if we're in the first 3 seconds of the song, go to the previous one, otherwise go to the beginning of this track */	
 	if ((esdout_get_output_time () < 300) && (music_view->details->selected_index > 0)) {
 		music_view->details->selected_index -= 1;
 	}
+	
+	mpg123_stop ();	
 	play_current_file (music_view, TRUE);
 }
 
