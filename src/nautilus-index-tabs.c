@@ -36,6 +36,7 @@ struct _tabItem
 {
   gboolean visible;
   gchar *tab_text;
+  gint notebook_page;
   GtkWidget *tab_view;
 };
 
@@ -44,7 +45,7 @@ struct _NautilusIndexTabsDetails
   int tab_count;
   int selected_tab;	 
   int panel_width;
-  
+
   GdkColor tab_color;
   GdkColor line_color;
   GdkColor shadow_color;
@@ -153,10 +154,11 @@ nautilus_index_tabs_init (NautilusIndexTabs *index_tabs)
 }
 
 GtkWidget*
-nautilus_index_tabs_new ()
+nautilus_index_tabs_new (gint container_width)
 {
   NautilusIndexTabs *index_tabs;   
   index_tabs = gtk_type_new (nautilus_index_tabs_get_type ());   
+  index_tabs->details->panel_width = container_width;
   return GTK_WIDGET (index_tabs);
 }
 
@@ -188,6 +190,14 @@ nautilus_index_tabs_finalize (GtkObject *object)
  (* GTK_OBJECT_CLASS (parent_class)->finalize) (object);
 }
 
+/* determine the tab associated with the passed-in coordinates, and pass back the notebook
+   page index associated with it */
+
+gint nautilus_index_tabs_hit_test(NautilusIndexTabs *index_tabs, double x, double y)
+{
+  return 0; /* for now */
+}
+
 /* resize the widget based on the number of tabs */
 
 static void
@@ -195,7 +205,7 @@ recalculate_size(NautilusIndexTabs *index_tabs)
 {
   GtkWidget *widget = GTK_WIDGET (index_tabs);
   gint tab_rows = (index_tabs->details->tab_count + 1) >> 1;
-  widget->requisition.width = 136; /* FIXME: get width from index panel, passed in when created */
+  widget->requisition.width = index_tabs->details->panel_width;
   widget->requisition.height = (tab_left_edge->art_pixbuf->height + 3) * tab_rows + 3;
   gtk_widget_queue_resize (widget);
 }
@@ -206,7 +216,7 @@ static void
 draw_one_tab(NautilusIndexTabs *index_tabs, GdkGC *gc, gchar *tab_name, gint x, gint y, gboolean right_flag)
 {  
   GdkGCValues saved_values;
-  gint text_y_offset;
+  gint text_y_offset, tab_bottom, tab_right;
   /* measure the name and compute the bounding box */
   gint name_width = gdk_string_width(tab_font, tab_name) - 2*tab_indent;
   GtkWidget *widget = GTK_WIDGET(index_tabs);
@@ -246,6 +256,11 @@ draw_one_tab(NautilusIndexTabs *index_tabs, GdkGC *gc, gchar *tab_name, gint x, 
   gdk_draw_line(widget->window, gc, x + tab_left_edge->art_pixbuf->width, y + 1, x + tab_left_edge->art_pixbuf->width + name_width - 1, y + 1);
     
   /* draw the left bottom line */
+  tab_bottom = y + tab_left_edge->art_pixbuf->height;
+  tab_right = x + tab_left_edge->art_pixbuf->width + name_width + tab_right_edge->art_pixbuf->width;
+  gdk_gc_set_foreground (gc, &index_tabs->details->line_color);  
+  gdk_draw_line(widget->window, gc, tab_right, tab_bottom, index_tabs->details->panel_width, tab_bottom);
+
   /* draw the right bottom line */
 }
 
@@ -257,9 +272,9 @@ draw_all_tabs(NautilusIndexTabs *index_tabs)
   GList *next_tab = index_tabs->details->tab_items;
   GtkWidget *widget = GTK_WIDGET(index_tabs);  
   GdkGC* temp_gc = gdk_gc_new(widget->window);
-  gint tab_height = tab_right_edge->art_pixbuf->height + 4;
+  gint tab_height = tab_left_edge->art_pixbuf->height + 4;
   gint x_pos = widget->allocation.x - 3;
-  gint y_pos = widget->allocation.y + 3;
+  gint y_pos = widget->allocation.y + widget->allocation.height - tab_left_edge->art_pixbuf->height;
   
   /* we must draw two items at a time, drawing the second one first, because the first one overlaps the second */
     
@@ -324,7 +339,7 @@ nautilus_index_tabs_expose (GtkWidget *widget, GdkEventExpose *event)
 /* add a new tab entry, return TRUE if we succeed */
 
 gboolean
-nautilus_index_tabs_add_view(NautilusIndexTabs *index_tabs, const gchar *name, GtkWidget *new_view)
+nautilus_index_tabs_add_view(NautilusIndexTabs *index_tabs, const gchar *name, GtkWidget *new_view, gint page_num)
 {
   /* check to see if we already have one with this name, if so, refuse to add it */
   
@@ -338,7 +353,8 @@ nautilus_index_tabs_add_view(NautilusIndexTabs *index_tabs, const gchar *name, G
  new_tab_item->tab_text = strdup(name);
  new_tab_item->visible = TRUE;
  new_tab_item->tab_view = new_view;
-
+ new_tab_item->notebook_page = page_num;
+ 
  /* add it to the list */
  if (index_tabs->details->tab_items)
  	index_tabs->details->tab_items = g_list_append(index_tabs->details->tab_items, new_tab_item);

@@ -37,6 +37,7 @@
 #include <libnautilus/nautilus-metadata.h>
 #include <libnautilus/nautilus-string.h>
 #include <gnome.h>
+#include <math.h>
 
 struct _NautilusIndexPanelDetails {
 	GtkWidget *index_container;
@@ -44,12 +45,14 @@ struct _NautilusIndexPanelDetails {
 	GtkWidget *meta_tabs;
 	GtkWidget *index_tabs;
 	char *uri;
+	gint selected_index;
 	NautilusDirectory *directory;
 	int background_connection;
 };
 
 static void nautilus_index_panel_initialize_class (GtkObjectClass *object_klass);
 static void nautilus_index_panel_initialize (GtkObject *object);
+static gboolean nautilus_index_panel_press_event(GtkWidget *widget, GdkEventButton *event);
 static void nautilus_index_panel_destroy (GtkObject *object);
 static void nautilus_index_panel_finalize (GtkObject *object);
 
@@ -66,6 +69,7 @@ static GdkFont *select_font(const gchar *text_to_format, gint width, const gchar
 
 #define DEFAULT_BACKGROUND_COLOR "rgb:DDDD/DDDD/FFFF"
 #define USE_NEW_TABS 0
+#define INDEX_PANEL_WIDTH 136
 
 /* drag and drop definitions */
 
@@ -95,6 +99,7 @@ nautilus_index_panel_initialize_class (GtkObjectClass *object_klass)
 	object_klass->finalize = nautilus_index_panel_finalize;
 
 	widget_class->drag_data_received = nautilus_index_panel_drag_data_received;
+	widget_class->button_press_event = nautilus_index_panel_press_event;
 }
 
 /* common routine to make the per-uri container */
@@ -122,7 +127,7 @@ nautilus_index_panel_initialize (GtkObject *object)
 	index_panel->details = g_new0 (NautilusIndexPanelDetails, 1);
 	
 	/* set the size of the index panel */
-	gtk_widget_set_usize (widget, 136, 400);
+	gtk_widget_set_usize (widget, INDEX_PANEL_WIDTH, 400);
  
 	/* create the container box */
   	index_panel->details->index_container = gtk_vbox_new (FALSE, 0);
@@ -134,7 +139,8 @@ nautilus_index_panel_initialize (GtkObject *object)
 	make_per_uri_container (index_panel);
 
 	/* first, install the index tabs */
-	index_panel->details->index_tabs = GTK_WIDGET(nautilus_index_tabs_new());
+	index_panel->details->index_tabs = GTK_WIDGET(nautilus_index_tabs_new(INDEX_PANEL_WIDTH));
+	index_panel->details->selected_index = -1;
 
 	if (USE_NEW_TABS)
 	  {
@@ -142,13 +148,18 @@ nautilus_index_panel_initialize (GtkObject *object)
 	    gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->index_tabs, FALSE, FALSE, 0);
 	  }
 	  
-	/* allocate and install the meta-tabs (for now it's a notebook) */
+	/* allocate and install the meta-tabs */
   
 	index_panel->details->meta_tabs = gtk_notebook_new ();
-	gtk_widget_set_usize (index_panel->details->meta_tabs, 136, 200);
-	gtk_widget_show (index_panel->details->meta_tabs);
-	gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->meta_tabs, FALSE, FALSE, 0);
- 
+	gtk_widget_set_usize (index_panel->details->meta_tabs, INDEX_PANEL_WIDTH, 200);
+	if (USE_NEW_TABS)
+	    gtk_notebook_set_show_tabs(GTK_NOTEBOOK(index_panel->details->meta_tabs), FALSE);
+	else
+	  {
+	    gtk_widget_show (index_panel->details->meta_tabs);
+	    gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->meta_tabs, FALSE, FALSE, 0);
+ 	  }
+	  
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (index_panel),
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
@@ -225,58 +236,80 @@ nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 void
 nautilus_index_panel_add_meta_view (NautilusIndexPanel *index_panel, NautilusView *meta_view)
 {
-	GtkWidget *label;
-	const char *description;
-	char cbuf[32];
-
-	g_return_if_fail (NAUTILUS_IS_INDEX_PANEL (index_panel));
-	g_return_if_fail (NAUTILUS_IS_META_VIEW (meta_view));
-
-	description = nautilus_meta_view_get_label (NAUTILUS_META_VIEW (meta_view));
-	if (description == NULL) {
-		description = cbuf;
-		g_snprintf (cbuf, sizeof (cbuf), "%p", meta_view);
-	} 
-	label = gtk_label_new (description);
-	gtk_widget_show (label);
+  GtkWidget *label;
+  const char *description;
+  char cbuf[32];
+  gint page_num;
   
-	/*
-	  gtk_signal_connect(GTK_OBJECT(label), "button_press_event",
-	                     GTK_SIGNAL_FUNC(nautilus_window_send_show_properties), meta_view);
-	*/
+  g_return_if_fail (NAUTILUS_IS_INDEX_PANEL (index_panel));
+  g_return_if_fail (NAUTILUS_IS_META_VIEW (meta_view));
+
+  description = nautilus_meta_view_get_label (NAUTILUS_META_VIEW (meta_view));
+  if (description == NULL)
+    {
+      description = cbuf;
+      g_snprintf (cbuf, sizeof (cbuf), "%p", meta_view);
+    } 
+	
+  label = gtk_label_new (description);
+  gtk_widget_show (label);
+
+  gtk_notebook_prepend_page (GTK_NOTEBOOK (index_panel->details->meta_tabs), GTK_WIDGET (meta_view), label);
+  page_num = gtk_notebook_page_num (GTK_NOTEBOOK (index_panel->details->meta_tabs), GTK_WIDGET (meta_view));
   
-     /* FIXME: this is temporary for testing only */
-    /* tell the index tabs about it */
-    nautilus_index_tabs_add_view(NAUTILUS_INDEX_TABS(index_panel->details->index_tabs), description, GTK_WIDGET(meta_view));
+  /* tell the index tabs about it */
+  nautilus_index_tabs_add_view(NAUTILUS_INDEX_TABS(index_panel->details->index_tabs),
+                               description, GTK_WIDGET(meta_view), page_num);
     
-	gtk_notebook_prepend_page (GTK_NOTEBOOK (index_panel->details->meta_tabs), GTK_WIDGET (meta_view), label);
-	gtk_widget_show (GTK_WIDGET (meta_view));
-
+  gtk_widget_show (GTK_WIDGET (meta_view));
 }
 
 /* remove the passed-in meta-view from the index panel */
 void
 nautilus_index_panel_remove_meta_view (NautilusIndexPanel *index_panel, NautilusView *meta_view)
 {
-	gint page_num;
+  gint page_num;
 
-	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (index_panel->details->meta_tabs), GTK_WIDGET (meta_view));
-	g_return_if_fail (page_num >= 0);
-	gtk_notebook_remove_page (GTK_NOTEBOOK (index_panel->details->meta_tabs), page_num);
+  page_num = gtk_notebook_page_num (GTK_NOTEBOOK (index_panel->details->meta_tabs), GTK_WIDGET (meta_view));
+  g_return_if_fail (page_num >= 0);
+  gtk_notebook_remove_page (GTK_NOTEBOOK (index_panel->details->meta_tabs), page_num);
+}
+
+/* utility to activate the metaview corresponding to the passed in index  */
+static void
+nautilus_index_panel_activate_meta_view(NautilusIndexPanel *index_panel, gint which_view)
+{
+}
+
+/* hit-test the index tabs and activate if necessary */
+
+static gboolean
+nautilus_index_panel_press_event (GtkWidget *widget, GdkEventButton *event)
+{
+  NautilusIndexPanel *index_panel = NAUTILUS_INDEX_PANEL (widget);
+  gint rounded_y = floor(event->y + .5);
+  /* if the click is in the tabs, tell them about it */
+  if (rounded_y >= index_panel->details->index_tabs->allocation.y)
+    {
+      gint which_tab = nautilus_index_tabs_hit_test(NAUTILUS_INDEX_TABS(index_panel->details->index_tabs), event->x, event->y);
+      if (which_tab >= 0)
+      	nautilus_index_panel_activate_meta_view(index_panel, which_tab);
+    } 
+  return TRUE;
 }
 
 /* set up the logo image */
 void
 nautilus_index_panel_set_up_logo (NautilusIndexPanel *index_panel, const gchar *logo_path)
 {
-	gchar *file_name;
-	GtkWidget *pix_widget;
+  gchar *file_name;
+  GtkWidget *pix_widget;
     
-	file_name = gnome_pixmap_file (logo_path);
-	pix_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
-	gtk_widget_show (pix_widget);
-	gtk_box_pack_start (GTK_BOX (index_panel->details->per_uri_container), pix_widget, 0, 0, 0);
-	g_free (file_name);
+  file_name = gnome_pixmap_file (logo_path);
+  pix_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
+  gtk_widget_show (pix_widget);
+  gtk_box_pack_start (GTK_BOX (index_panel->details->per_uri_container), pix_widget, 0, 0, 0);
+  g_free (file_name);
 }
 
 /* utility routine (FIXME: should be located elsewhere) to find the largest font that fits */

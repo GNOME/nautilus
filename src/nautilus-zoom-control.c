@@ -228,7 +228,7 @@ set_zoom_level(NautilusZoomControl *zoom_control, gint new_level)
   /* FIXME: tell the content view about the zoom change here soon */
 }
 
-/* hit-test the index tabs and activate if necessary */
+/* handle button presses */
 
 static gboolean
 nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *event)
