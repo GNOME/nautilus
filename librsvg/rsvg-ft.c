@@ -377,6 +377,8 @@ rsvg_ft_intern (RsvgFTCtx *ctx, const char *font_file_name)
 	if (entry != NULL) {
 		/* found in font list */
 
+		/* todo: I think moving the font to the front of the
+		   lru list should happen on resolve, not intern */
 		/* move entry to front of LRU list */
 		if (entry->prev != NULL) {
 			entry->prev->next = entry->next;
@@ -433,7 +435,7 @@ rsvg_ft_intern (RsvgFTCtx *ctx, const char *font_file_name)
  **/
 void
 rsvg_ft_font_attach (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
-		     char *font_file_name)
+		     const char *font_file_name)
 {
 	RsvgFTFontCacheEntry *entry;
 	RsvgFTFont *font;

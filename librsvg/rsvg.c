@@ -230,6 +230,13 @@ rsvg_start_svg (RsvgCtx *ctx, const xmlChar **atts)
 	       width, height);
 #endif
 
+      if (width < 0 || height < 0)
+	{
+	  g_warning ("rsvg_start_svg: width and height attributes are not present in SVG\n");
+	  if (width < 0) width = 500;
+	  if (height < 0) height = 500;
+	}
+
       /* Scale size of target pixbuf */
       width = ceil (width * ctx->zoom);
       height = ceil (height * ctx->zoom);

@@ -1,3 +1,15 @@
+2000-09-06  Raph Levien  <raph@acm.org>
+
+	* librsvg/test-ft-gtk.c: Added "-a" option for attaching AFM
+	files, used to confirm that bugzilla.eazel.com 2141 affects
+	TrueType and not Type1 fonts. Also added const to filename
+	argument.
+
+	* librsvg/rsvg.c (rsvg_start_svg): Patch for bugzilla.eazel.com
+	2239. If width and height are not specified in the SVG file,
+	defaults are used. Previously, the creation of the pixbuf was
+	failing, causing downstream code to segfault on the NULL.
+
 2000-09-07  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-background.c:

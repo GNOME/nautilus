@@ -307,7 +307,8 @@ test_ft_quit (GtkWidget *widget, TestCtx *ctx)
 	gtk_main_quit ();
 }
 
-static TestCtx *new_test_window (const char *fn, int width, int height)
+static TestCtx *new_test_window (const char *fn, const char *afn,
+				 int width, int height)
 {
 	GtkWidget *topwin;
 	GtkWidget *vbox;
@@ -331,6 +332,7 @@ static TestCtx *new_test_window (const char *fn, int width, int height)
 
 	ctx->ctx = rsvg_ft_ctx_new ();
 	ctx->fh = rsvg_ft_intern (ctx->ctx, fn);
+	if (afn) rsvg_ft_font_attach (ctx->ctx, ctx->fh, afn);
 	ctx->n_lines = 0;
 	ctx->lines = NULL;
 	ctx->y_sp = 16;
@@ -415,6 +417,7 @@ int main(int argc, char **argv)
  	gint	font_width = 36;
  	gint	font_height = 36;
 	char	*font_file_name = "/usr/share/fonts/default/Type1/n021003l.pfb";
+	char	*add_font_file_name = NULL;
 	char *text_file_name = "rsvg-ft.c";
 
 	poptContext optCtx;
@@ -424,6 +427,7 @@ int main(int argc, char **argv)
 		{"font-width", 'w', POPT_ARG_INT, &font_width, 0, NULL, "Font Width"},
 		{"font-height", 'h', POPT_ARG_INT, &font_height, 0, NULL, "Font Height"},
 		{"font-file-name", 'f', POPT_ARG_STRING, &font_file_name, 0, NULL, "Font File Name"},
+		{"add-font-file-name", 'a', POPT_ARG_STRING, &add_font_file_name, 0, NULL, "Additional Font File Name"},
 		{"text-file-name", 't', POPT_ARG_STRING, &text_file_name, 0, NULL, "Text"},
 		POPT_AUTOHELP {NULL, 0, 0, NULL, 0}
 	};
@@ -445,7 +449,7 @@ int main(int argc, char **argv)
 	c = poptGetNextOpt(optCtx);
 	args = poptGetArgs(optCtx);
 
-	ctx = new_test_window (font_file_name, 640, 480);
+	ctx = new_test_window (font_file_name, add_font_file_name, 640, 480);
 
 	set_text (ctx, text_file_name);
 

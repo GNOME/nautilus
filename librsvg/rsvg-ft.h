@@ -22,7 +22,7 @@ rsvg_ft_intern (RsvgFTCtx *ctx, const char *font_file_name);
 
 void
 rsvg_ft_font_attach (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
-		     char *font_file_name);
+		     const char *font_file_name);
 
 #if 0
 void
