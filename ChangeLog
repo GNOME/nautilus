@@ -1,3 +1,10 @@
+2002-02-19  Bastien Nocera  <hadess@hadess.net>
+
+	* libnautilus-private/nautilus-authn-manager.c:
+	(present_authentication_dialog_nonblocking):
+	make password box work again, catching "response"
+	signal instead of "clicked"
+
 2002-02-19  Michael Meeks  <michael@ximian.com>
 
 	* src/nautilus-window-manage-views.c
