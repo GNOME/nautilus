@@ -68,7 +68,7 @@ POA_Nautilus_View__epv libnautilus_Nautilus_View_epv =
   (gpointer) & impl_Nautilus_View_notify_selection_change
 };
 
-static PortableServer_ServantBase__epv base_epv = { NULL};
+static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
 
 static POA_Nautilus_View__vepv impl_Nautilus_View_vepv =
 {

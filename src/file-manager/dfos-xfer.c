@@ -31,8 +31,6 @@
 
 #include "dfos-xfer.h"
 
-#define error(x...)
-
 
 struct _XferInfo {
 	GnomeVFSAsyncHandle *handle;
@@ -164,7 +162,7 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 	default:
 		dfos_xfer_progress_dialog_freeze (DFOS_XFER_PROGRESS_DIALOG
 						  (xfer_info->progress_dialog));
-		error (xfer_info->progress_dialog,
+		error (0, 0,
 		       _("Copy operation failed:\n%s"),
 		       gnome_vfs_result_to_string (progress_info->vfs_status));
 		dfos_xfer_progress_dialog_thaw (DFOS_XFER_PROGRESS_DIALOG

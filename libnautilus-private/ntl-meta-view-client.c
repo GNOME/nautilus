@@ -38,7 +38,7 @@ static POA_Nautilus_MetaView__epv impl_Nautilus_MetaView_epv = {
   NULL /* _private */
 };
 
-static PortableServer_ServantBase__epv base_epv = { NULL};
+static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
 
 static POA_Nautilus_MetaView__vepv impl_Nautilus_MetaView_vepv =
 {
@@ -110,9 +110,8 @@ nautilus_meta_view_set_label(NautilusMetaViewClient *mvc, const char *label)
   GnomePropertyBag *bag;
 
   ctl = nautilus_view_client_get_gnome_object(NAUTILUS_VIEW_CLIENT(mvc));
-  /* set description */
   bag = gnome_control_get_property_bag(GNOME_CONTROL(ctl));
-  gnome_property_bag_add(bag, "label", "string", label, label, _("Label"),
-			 GNOME_PROPERTY_READ_ONLY);
+  gnome_property_bag_add(bag, "label", "string",
+			 g_strdup(label), g_strdup(label),
+			 _("Label"), GNOME_PROPERTY_READ_ONLY);
 }
-

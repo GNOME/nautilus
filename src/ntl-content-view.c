@@ -27,7 +27,7 @@
 #include "ntl-content-view.h"
 #include <gtk/gtksignal.h>
 
-static PortableServer_ServantBase__epv base_epv = { NULL};
+static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
 
 static POA_Nautilus_ContentViewFrame__epv impl_Nautilus_ContentViewFrame_epv = {
   NULL
@@ -58,7 +58,10 @@ nautilus_content_view_get_type(void)
 	sizeof(NautilusContentView),
 	sizeof(NautilusContentViewClass),
 	(GtkClassInitFunc) nautilus_content_view_class_init,
-	(GtkObjectInitFunc) nautilus_content_view_init
+	(GtkObjectInitFunc) nautilus_content_view_init,
+        NULL,
+        NULL,
+        NULL
       };
 
       view_type = gtk_type_unique (nautilus_view_get_type(), &view_info);

@@ -1,3 +1,32 @@
+1999-12-14  Darin Adler  <darin@eazel.com>
+
+	* configure.in: Turned on more warnings, including -Werror.
+	  I found one or two real bugs, and made some minor changes
+	  to quiet the compiler so I could turn on some useful warnings
+	  that triggered on the existing code.
+	
+	* src/file-manager/dfos-xfer.c: (handle_xfer_vfs_error):
+	  Fixed a place where it was calling the gnome error(), but using
+	  the parameters from the old gnome-fm error() function.
+
+	* libnautilus/ntl-meta-view-client.c:
+	  (nautilus_meta_view_set_label): Fixed a place where we
+	  were passing in string literals to code that will free them.
+	  We need to call g_strdup before passing them to gnome_property_bag_add.
+
+	* libnautilus/gnome-icon-container.c: Fixed a warning.
+	* libnautilus/gtkscrollframe.c: Fixed a warning.
+	* libnautilus/ntl-content-view-client.c: Fixed a warning.
+	* libnautilus/ntl-view-client.c: Fixed a warning.
+	* libnautilus/ntl-content-view.c: Fixed a warning.
+	* src/ntl-main.c: Fixed a warning.
+	* src/ntl-meta-view.c: Fixed a warning.
+	* src/ntl-types.h: Fixed a warning.
+	* src/ntl-view.c: Fixed a warning.
+	* src/ntl-window.c: Fixed a warning.
+	* src/file-manager/dfos-xfer-progress-dialog.c: Fixed a warning.
+	* src/file-manager/fm-icon-cache.c: Fixed a warning.
+
 1999-12-14  Elliot Lee  <sopwith@redhat.com>
 
 	* src/*.c: Restructure the whole NautilusWindow code for sanity's sake.

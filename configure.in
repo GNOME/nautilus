@@ -42,6 +42,21 @@ AM_PATH_LIBGLADE(,AC_MSG_ERROR([*** Libglade 0.7 or better is needed.]), gnome)
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 
+dnl Some additional warning options.
+CFLAGS="$CFLAGS \
+-W \
+-Wcast-align \
+-Wchar-subscripts \
+-Werror \
+-Wmissing-declarations \
+-Wmissing-prototypes \
+-Wnested-externs \
+-Wpointer-arith \
+-Wno-sign-compare \
+-Wsign-promo \
+-trigraphs \
+"
+
 AC_OUTPUT([
 Makefile
 icons/Makefile

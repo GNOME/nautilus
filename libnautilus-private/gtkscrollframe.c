@@ -1137,7 +1137,7 @@ gtk_scroll_frame_set_shadow_type (GtkScrollFrame *sf, GtkShadowType shadow_type)
 
 	g_return_if_fail (sf != NULL);
 	g_return_if_fail (GTK_IS_SCROLL_FRAME (sf));
-	g_return_if_fail (shadow_type >= GTK_SHADOW_NONE && shadow_type <= GTK_SHADOW_ETCHED_OUT);
+	g_return_if_fail (shadow_type <= GTK_SHADOW_ETCHED_OUT);
 
 	priv = sf->priv;
 

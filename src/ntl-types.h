@@ -40,7 +40,7 @@ typedef struct {
 
   GnomeVFSFileInfo *vfs_fileinfo;
 
-  char *content_iid;
+  const char *content_iid;
   GSList *meta_iids;
 } NautilusNavigationInfo;
 

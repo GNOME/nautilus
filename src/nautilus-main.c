@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
   CORBA_Environment ev;
   CORBA_ORB orb;
   struct poptOption options[] = {
-    {NULL}
+    { NULL, '\0', 0, NULL, 0, NULL, NULL }
   };
   GtkWidget *mainwin;
   GnomeGenericFactory *gfact;

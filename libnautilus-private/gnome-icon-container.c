@@ -2388,8 +2388,9 @@ gnome_icon_container_get_type (void)
 			sizeof (GnomeIconContainerClass),
 			(GtkClassInitFunc) class_init,
 			(GtkObjectInitFunc) init,
-			(GtkArgSetFunc) NULL,
-			(GtkArgGetFunc) NULL
+			NULL,
+			NULL,
+			NULL
 		};
 
 		type = gtk_type_unique (gnome_canvas_get_type (), &type_info);
@@ -2426,7 +2427,7 @@ gnome_icon_container_set_icon_mode (GnomeIconContainer *container,
 {
 	g_return_if_fail (container != NULL);
 
-	if (mode < 0 || mode >= NUM_ICON_MODES) {
+	if (mode >= NUM_ICON_MODES) {
 		g_warning ("Unknown icon mode %d", mode);
 		return;
 	}

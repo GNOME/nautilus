@@ -38,7 +38,7 @@ static POA_Nautilus_ContentView__epv impl_Nautilus_ContentView_epv = {
   NULL /* _private */
 };
 
-static PortableServer_ServantBase__epv base_epv = { NULL};
+static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
 
 static POA_Nautilus_ContentView__vepv impl_Nautilus_ContentView_vepv =
 {

@@ -43,7 +43,7 @@ static POA_Nautilus_ViewWindow__epv impl_Nautilus_ViewWindow_epv =
   NULL
 };
 
-static PortableServer_ServantBase__epv base_epv = { NULL};
+static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
 
 static POA_Nautilus_ViewWindow__vepv impl_Nautilus_ViewWindow_vepv =
 {
@@ -124,7 +124,10 @@ nautilus_window_get_type(void)
 	sizeof(NautilusWindow),
 	sizeof(NautilusWindowClass),
 	(GtkClassInitFunc) nautilus_window_class_init,
-	(GtkObjectInitFunc) nautilus_window_init
+	(GtkObjectInitFunc) nautilus_window_init,
+        NULL,
+        NULL,
+        NULL
       };
 
       window_type = gtk_type_unique (gnome_app_get_type(), &window_info);
@@ -242,8 +245,7 @@ nautilus_window_goto_url(NautilusWindow *window, const char *url)
   navinfo.new_window_default = navinfo.new_window_suggested = Nautilus_V_FALSE;
   navinfo.new_window_enforced = Nautilus_V_UNKNOWN;
 
-  nautilus_window_request_location_change(NAUTILUS_WINDOW(window), &navinfo,
-                                          NULL);
+  nautilus_window_request_location_change(window, &navinfo, NULL);
 }
 
 static void
@@ -251,7 +253,7 @@ nautilus_window_goto_url_cb (GtkWidget *widget,
                           const char *url,
                           GtkWidget *window)
 {
-  nautilus_window_goto_url(window, url);
+  nautilus_window_goto_url(NAUTILUS_WINDOW(window), url);
 }
 
 static void

@@ -234,6 +234,7 @@ dfos_xfer_progress_dialog_get_type (void)
 			(GtkClassInitFunc) class_init,
 			(GtkObjectInitFunc) init,
 			NULL,
+			NULL,
 			NULL
 		};
 
