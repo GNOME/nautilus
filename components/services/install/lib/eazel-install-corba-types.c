@@ -82,6 +82,9 @@ corba_packagedatastruct_from_packagedata (const PackageData *pack)
 	case PACKAGE_DEPENDENCY_FAIL:
 		corbapack->status = Trilobite_Eazel_DEPENDENCY_FAIL;
 		break;
+	case PACKAGE_FILE_CONFLICT:
+		corbapack->status = Trilobite_Eazel_FILE_CONFLICT;
+		break;
 	case PACKAGE_BREAKS_DEPENDENCY:
 		corbapack->status = Trilobite_Eazel_BREAKS_DEPENDENCY;
 		break;
@@ -154,7 +157,6 @@ packagedata_from_corba_packagedatastruct (const Trilobite_Eazel_PackageDataStruc
 	pack->install_root = strlen (corbapack.install_root) ? g_strdup (corbapack.install_root) : NULL;
 	pack->md5 = strlen (corbapack.md5) ? g_strdup (corbapack.md5) : NULL;
 
-
 	pack->distribution.name = trilobite_get_distribution_enum (corbapack.distribution.name, FALSE);
 	pack->distribution.version_major = corbapack.distribution.major;
 	pack->distribution.version_minor = corbapack.distribution.minor;
@@ -168,6 +170,9 @@ packagedata_from_corba_packagedatastruct (const Trilobite_Eazel_PackageDataStruc
 		break;
 	case Trilobite_Eazel_DEPENDENCY_FAIL:
 		pack->status = PACKAGE_DEPENDENCY_FAIL;
+		break;
+	case Trilobite_Eazel_FILE_CONFLICT:
+		pack->status = PACKAGE_FILE_CONFLICT;
 		break;
 	case Trilobite_Eazel_BREAKS_DEPENDENCY:
 		pack->status = PACKAGE_BREAKS_DEPENDENCY;

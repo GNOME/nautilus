@@ -54,6 +54,9 @@ typedef gboolean (*eazel_install_file_fetch_function) (gpointer *obj,
    It should contain a %s for the server name, and later 
    a %d for the portnumber. In this order, no other
    order */
+#ifndef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
+#define EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
+#endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 
 #ifdef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
 #define CGI_BASE "http://%s:%d/cgi-bin/rpmsearch.cgi" 
@@ -678,11 +681,12 @@ get_url_for_package  (EazelInstall *service,
 					GINT_TO_POINTER (TRUE));
 		}						
 #else /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
-		url = g_strdup (ghttp_get_body (request));
-		if (url) {
-			url [ ghttp_get_body_len (request)] = 0;
+		if (body) {
+			body[length] = 0;
+			url = g_strdup (body);
 		}
 #endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
+		g_free (body);
 	} else {
 		switch (entry) {
 		case RPMSEARCH_ENTRY_NAME:
@@ -720,7 +724,7 @@ char* get_search_url_for_package (EazelInstall *service,
 		pack = (PackageData*)data;
 		add_to_url (&url, "?name=", pack->name);
 		add_to_url (&url, "&arch=", pack->archtype);
-		add_to_url (&url, "&version>=", pack->version);
+		add_to_url (&url, "&version=", pack->version);
 		if (pack->distribution.name != DISTRO_UNKNOWN) {
 			dist = pack->distribution;
 		} 

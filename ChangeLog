@@ -1,3 +1,64 @@
+2000-09-10  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/hardware/nautilus-hardware-view.c:
+	(setup_overview_form):
+	Fixed bug 2823
+	
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(get_detailed_errors_foreach):
+	Updated for the extra packagedata status enum
+	
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (tree_helper_helper), (tree_helper), (install_failed),
+	(uninstall_failed), (eazel_preflight_check_signal), (dep_check),
+	(main):
+	Nicer output.
+	
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_packagedatastruct_from_packagedata),
+	(packagedata_from_corba_packagedatastruct):
+	Added a PACKAGE_FILE_CONFLICT status enum to PackageData
+
+	* components/services/install/lib/eazel-install-protocols.c:
+	(get_url_for_package), (get_search_url_for_package):
+	Changed >= to = for version, 
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_download_packages),
+	(eazel_install_check_for_file_conflicts),
+	(eazel_install_pre_install_packages), (revert_transaction),
+	(eazel_install_monitor_rpm_propcess_pipe),
+	(eazel_install_do_transaction_md5_check),
+	(eazel_install_package_version_compare),
+	(eazel_install_package_provides_basename_compare),
+	(eazel_install_package_provides_compare),
+	(eazel_install_package_modifies_provides_compare),
+	(eazel_install_check_existing_packages),
+	(eazel_install_check_if_related_package),
+	(eazel_install_fetch_rpm_dependencies), (print_package_list),
+	(eazel_install_ensure_deps):
+	Mucho work, closed bug 2956, 2958, 1514 and 2596. Basically it
+	now handles the case where a installing eg. gnome-print which has
+	libgnomeprint.so.7 breaks gnumeric because it requires
+	libgnomeprint.so.6. It also now checks for file conflicts before
+	beginning the install. This is the one case that rpmDepCheck
+	doesn't check.
+	
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_fill_from_rpm_header),
+	Read the provides list with full filenames. Should hopefully also
+	work on rpm-3.0.x | x < 4.
+	(packagedata_status_enum_to_str),
+	(packagedata_status_str_to_enum):
+	Handle FILE_CONFLICT tag
+	
+	* components/services/install/lib/eazel-install-types.h:
+	Added the FILE_CONFLICT. If installed package A which has a file
+	foo which conflicts with B (already installed, and also has file
+	foo), file B will go into A->breaks with status =
+	PACKAGE_FILE_CONFLICT.
+
 2000-09-09  Josh Barrow  <linuxfan@ionet.net>
 
 	* components/music/nautilus-music-view.c:

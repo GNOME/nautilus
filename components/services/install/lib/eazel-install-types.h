@@ -48,12 +48,19 @@ typedef enum _PackageSystemStatus PackageSystemStatus;
 /*
   Adding here requires editing in
   trilobite-eazel-install.idl
-  eazel-install-corba-types.c (packagedata_from_corba_packagedatastruct) (corba_packagedatastruct_from_packagedata)
+  eazel-install-corba-types.c 
+    - packagedata_from_corba_packagedatastruct
+    - corba_packagedatastruct_from_packagedata)
+  and
+  eazel-install-types.c
+    - packagedata_status_enum_to_str
+    - packagedata_status_str_to_enum
  */
 enum _PackageSystemStatus {
 	PACKAGE_UNKNOWN_STATUS=0,
 	PACKAGE_SOURCE_NOT_SUPPORTED,
 	PACKAGE_DEPENDENCY_FAIL,
+	PACKAGE_FILE_CONFLICT,
 	PACKAGE_BREAKS_DEPENDENCY,
 	PACKAGE_INVALID,
 	PACKAGE_CANNOT_OPEN,
@@ -141,7 +148,7 @@ struct _PackageData {
 	char* description;	
 	GList* soft_depends;
 	GList* hard_depends;
-	GList* breaks; 
+	GList* breaks; 	
 
 	char *filename;
 	char *md5;

@@ -3,10 +3,21 @@
 module Trilobite {
 	module Eazel {
 
+		/* NOTE: adding enums here requires adding them in
+		   eazel-install-corba-types.c 
+		    - corba_packagedatastruct_from_packagedata
+		    - packagedata_from_corba_packagedatastruct
+		   eazel-install-types.c
+		    - packagedata_status_enum_to_str
+		    - packagedata_status_str_to_enum
+		*/
+		   
 		enum PackageStatusEnum {
 			UNKNOWN_STATUS,
 			SOURCE_NOT_SUPPORTED, /* bad: we don't install source packages */
 			DEPENDENCY_FAIL,      /* bad: a dependency failed in next level */
+			FILE_CONFLICT,        /* bad: this file owns a file that the
+						 package we're installing also wants to install */
 			BREAKS_DEPENDENCY,    /* bad: installing this breaks something, see PackageDataStruct.breaks */
 			INVALID,              /* bad: this is not a rpm, go away */
 			CANNOT_OPEN,          /* bad: cannot open/fetch/imagine this file */

@@ -77,6 +77,15 @@ static gboolean eazel_install_ensure_deps (EazelInstall *service,
 int eazel_install_package_name_compare (PackageData *pack, 
 					char *name);
 
+int eazel_install_package_version_compare (PackageData *pack, 
+					   char *version);
+
+int eazel_install_package_provides_compare (PackageData *pack,
+					    char *name);
+
+int eazel_install_package_modifies_provides_compare (PackageData *pack,
+						     char *name);
+
 static int eazel_install_package_conflict_compare (PackageData *pack,
 						   struct rpmDependencyConflict *conflict);
 
@@ -235,7 +244,9 @@ eazel_install_download_packages (EazelInstall *service,
 			   - after download, when we for sure have access to the version, check again
 			*/
 			int inst_status = eazel_install_check_existing_packages (service, package);
-			if (inst_status <= 0) {
+			if (inst_status == -1 && eazel_install_get_downgrade) {
+				/* must download... */
+			} else if (inst_status <= 0) {
 				/* Nuke the modifies list again, since we don't want to see them */
 				g_list_foreach (package->modifies, 
 						(GFunc)packagedata_destroy, 
@@ -280,6 +291,39 @@ eazel_install_download_packages (EazelInstall *service,
 	return result;
 }
 
+static gboolean 
+eazel_install_check_for_file_conflicts (EazelInstall *service,
+					PackageData *pack)
+{
+	GList *owners;
+	GList *iterator;
+	/* Set optimism to high */
+	gboolean result = TRUE;
+	
+	for (iterator = pack->provides; iterator; glist_step (iterator)) {
+		char *filename = (char*)iterator->data;		
+		owners = eazel_install_simple_query (service,
+						     filename,
+						     EI_SIMPLE_QUERY_OWNS,
+						     1,
+						     pack->modifies);
+		if (g_list_length (owners) > 1) {
+			/* FIXME: bugzilla.eazel.com 2959
+			   More then one packages owns this file,
+			   this cannot happen (or should not at least)
+			*/
+			g_assert_not_reached ();
+		} else if (g_list_length (owners) == 1) {
+			PackageData *owner = (PackageData*)owners->data;
+			
+			result = FALSE;
+			owner->status = PACKAGE_FILE_CONFLICT;
+			pack->breaks = g_list_prepend (pack->breaks, owner);
+		} 
+	}
+	return result;
+}
+
 /* Checks for pre-existance of all the packages
    and returns a flattened packagelist (flattens the
    soft_ and hard_depends */
@@ -293,6 +337,7 @@ eazel_install_pre_install_packages (EazelInstall *service,
 	for (iterator = *packages; iterator; iterator = g_list_next (iterator)) {
 		PackageData *pack;
 		int inst_status;
+		gboolean skip = FALSE;
 		
 		pack = (PackageData*)iterator->data;
 		inst_status = eazel_install_check_existing_packages (service, pack);
@@ -304,8 +349,16 @@ eazel_install_pre_install_packages (EazelInstall *service,
 		    (eazel_install_get_downgrade (service) && inst_status == -1) ||
 		    (eazel_install_get_update (service) && inst_status == 1) ||
 		    inst_status == 2) {
-			g_message (_("%s..."), pack->name);
+			if (eazel_install_check_for_file_conflicts (service, pack)) {
+				g_message (_("%s..."), pack->name);
+			} else {
+				skip = TRUE;
+			}
 		} else {
+			skip = TRUE;
+		}
+		
+		if (skip) {
 			g_message (_("Skipping %s..."), pack->name);
 			/* Nuke the modifies list again, since we don't want to see them */
 			g_list_foreach (pack->modifies, 
@@ -516,6 +569,7 @@ revert_transaction (EazelInstall *service,
 		eazel_install_set_downgrade (service, TRUE);
 		eazel_install_set_update (service, TRUE);
 		cat->packages = upgrade;
+		result |= install_new_packages (service, categories);
 		g_list_foreach (upgrade, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
 	}	
 }
@@ -721,8 +775,8 @@ eazel_install_monitor_rpm_propcess_pipe (GIOChannel *source,
 					 EazelInstall *service)
 {
 	char         tmp;
-	static       int package_name_length = 80;
-	static       char package_name [80];
+	static       int package_name_length = 256;
+	static       char package_name [256];
 	ssize_t      bytes_read;
 	static       PackageData *pack = NULL;
 	static       int pct;
@@ -780,6 +834,11 @@ eazel_install_monitor_rpm_propcess_pipe (GIOChannel *source,
 				}
 					/* read next byte */
 				g_io_channel_read (source, &tmp, 1, &bytes_read);
+				if (tmp=='\n') {
+					trilobite_debug ("panic ensues!");
+					package_name[0] = '\0';
+					break;
+				}
 			}
 			
 			/* Not percantage mark, that means filename, step ahead one file */
@@ -901,7 +960,7 @@ eazel_install_do_transaction_md5_check (EazelInstall *service,
 				trilobite_debug ("md5 match on %s", pack->name);
 			}
 		} else {
-			trilobite_debug ("No md5 for %s", pack->name);
+			trilobite_debug ("No MD5 available for %s", pack->name);
 		}
 	}	
 
@@ -1433,11 +1492,58 @@ eazel_install_package_name_compare (PackageData *pack,
 	return strcmp (pack->name, name);
 }
 
+int eazel_install_package_version_compare (PackageData *pack, 
+					   char *version)
+{
+	return strcmp (pack->version, version);
+}
+
 static int
 eazel_install_package_conflict_compare (PackageData *pack,
 					struct rpmDependencyConflict *conflict)
 {
 	return eazel_install_package_name_compare (pack, conflict->byName);
+}
+
+static int
+eazel_install_package_provides_basename_compare (char *a,
+						 char *b)
+{
+	return strcmp (g_basename (a), b);
+}
+
+int eazel_install_package_provides_compare (PackageData *pack,
+					    char *name)
+{
+	GList *ptr = NULL;
+	ptr = g_list_find_custom (pack->provides, 
+				  (gpointer)name, 
+				  (GCompareFunc)eazel_install_package_provides_basename_compare);
+	if (ptr) {
+		trilobite_debug ("package %s supplies %s", pack->name, name);
+		return 0;
+	} 
+	return -1;
+}
+
+int eazel_install_package_modifies_provides_compare (PackageData *pack,
+						     char *name)
+{
+	GList *ptr = NULL;
+	ptr = g_list_find_custom (pack->modifies, 
+				  (gpointer)name, 
+				  (GCompareFunc)eazel_install_package_provides_compare);
+	if (ptr) {
+		trilobite_debug ("package %s caused harm to %s", pack->name, name);
+		return 0;
+	} 
+/*
+	for (ptr = pack->provides; ptr; ptr = g_list_next (ptr)) {
+		g_message ("%s strcmp %s = %d", name, (char*)ptr->data, g_strcasecmp (name, (char*)ptr->data));
+	}
+	g_message ("package %s blows %d chunks", pack->name, g_list_length (pack->provides));
+*/
+	return -1;
 }
 
 static void
@@ -1480,6 +1586,13 @@ eazel_install_check_existing_packages (EazelInstall *service,
 			PackageData *existing_package;
 
 			existing_package = (PackageData*)iterator->data;			
+			if (g_list_find_custom (pack->modifies, 
+						existing_package->name,
+						(GCompareFunc)eazel_install_package_name_compare)) {
+				trilobite_debug ("%s already marked as modified", existing_package->name);
+				packagedata_destroy (existing_package, TRUE);
+				continue;
+			}
 			pack->modifies = g_list_prepend (pack->modifies, existing_package);
 			existing_package->status = PACKAGE_RESOLVED;
 			/* The order of arguments to rpmvercmp is important... */
@@ -1526,6 +1639,77 @@ eazel_install_check_existing_packages (EazelInstall *service,
 }
 
 
+static gboolean
+eazel_install_check_if_related_package (EazelInstall *service,
+					PackageData *package,
+					PackageData *dep)
+{
+	/* Pessimisn mode = HIGH */
+	gboolean result = FALSE;
+	GList *potiental_mates;
+	GList *iterator;
+	
+	/* First check, if package modifies a package with the same version
+	   number as dep->version */
+	potiental_mates = g_list_find_custom (package->modifies, 
+					      dep->version, 
+					      (GCompareFunc)eazel_install_package_version_compare);
+	for (iterator = potiental_mates; iterator; glist_step (iterator)) {
+		PackageData *modpack = (PackageData*)iterator->data;
+		
+		if ((modpack->modify_status == PACKAGE_MOD_UPGRADED) ||
+		    (modpack->modify_status == PACKAGE_MOD_DOWNGRADED)) {			
+			char **dep_name_elements;
+			char **mod_name_elements;
+			char *dep_name_iterator;
+			char *mod_name_iterator;
+			int cnt = 0;
+
+			mod_name_elements = g_strsplit (modpack->name, "-", 80);
+			dep_name_elements = g_strsplit (dep->name, "-", 80);
+			
+			for (cnt=0; TRUE;cnt++) {
+				dep_name_iterator = dep_name_elements[cnt];
+				mod_name_iterator = mod_name_elements[cnt];
+#if 0
+				trilobite_debug ("dep name iterator = \"%s\"", dep_name_iterator);
+				trilobite_debug ("mod name iterator = \"%s\"", mod_name_iterator);
+#endif
+				if ((dep_name_iterator==NULL) ||
+				    (mod_name_iterator==NULL)) {
+					break;
+				}
+				if ((strlen (dep_name_iterator) == strlen (mod_name_iterator)) &&
+				    (strcmp (dep_name_iterator, mod_name_iterator)==0)) {
+					continue;
+				}
+				break;
+			}
+			if (cnt >= 1) {
+				trilobite_debug ("%s-%s seems to be a child package of %s-%s, which %s-%s updates",
+						 dep->name, dep->version, 
+						 modpack->name, modpack->version,
+						 package->name, package->version);
+				if (result == FALSE) {
+					g_free (dep->version);
+					dep->version = g_strdup (package->version);
+					result = TRUE;
+				} else {
+					trilobite_debug ("but what blows is, the previous also did!!");
+					g_assert_not_reached ();
+				}				
+			} else {
+				trilobite_debug ("%s-%s is not related to %s-%s", 
+						 dep->name, dep->version, 
+						 package->name, package->version);
+			}
+			g_strfreev (dep_name_elements);
+			g_strfreev (mod_name_elements);			
+		}
+	}
+	return result;
+}
+
 /* FIXME bugzilla.eazel.com 1698:
    This function needs some refactoring. It's getting too huge */
 static gboolean
@@ -1543,6 +1727,7 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 	struct rpmDependencyConflict conflict;
 	gboolean fetch_from_file_dependency;
 	gboolean fetch_result;
+	gboolean fail_package;
 	
 	to_remove = NULL;
 	extras = g_hash_table_new (g_str_hash, g_str_equal);
@@ -1565,20 +1750,14 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 						 (GCompareFunc)eazel_install_package_conflict_compare);
 		if (pack_entry == NULL) {
 			switch (conflict.sense) {
-			case RPMDEP_SENSE_REQUIRES: {
-				char *tmp;
-				
-				g_warning (_("%s version %s breaks %s"), 
-					   conflict.needsName, 
-					   conflict.needsVersion, 
-					   conflict.byName);
+			case RPMDEP_SENSE_REQUIRES: {				
+				g_message (_("%s requires %s"), 
+					   conflict.byName,
+					   conflict.needsName);
 				pack_entry = g_list_find_custom (*packages, 
 								 (gpointer)conflict.needsName,
 								 (GCompareFunc)eazel_install_package_name_compare);
 				if (pack_entry==NULL) {
-					/* FIXME bugzilla.eazel.com 2583:
-					   Argh, if a lib*.so breaks a package,
-					   we end up here */
 					/* 
 					   I need to find the package P in "packages" that provides
 					   conflict.needsName, then fail P marking it's status as 
@@ -1588,8 +1767,13 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 					   Then then client can rerun the operation with all the C's as
 					   part of the update
 					*/
-					trilobite_debug ("await bugfix for bug 2583");
-					continue;
+					pack_entry = g_list_find_custom (*packages, 
+									 (gpointer)conflict.needsName,
+									 (GCompareFunc)eazel_install_package_modifies_provides_compare); 					
+					if (pack_entry == NULL) {
+						trilobite_debug ("This was certainly unexpected!");
+						g_assert_not_reached ();
+					}
 				}
 				
 				/* Create a packagedata for the dependecy */
@@ -1604,17 +1788,10 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 				   request it */
 				/* FIXME: bugzilla.eazel.com 2596
 				   It should handle z=x-y instead of only z=x-devel when x breaks z */
-				
-				tmp = g_strdup_printf ("%s-devel", pack->name);
-				if (strcmp (tmp, dep->name)==0) {
-					g_message ("breakage is the devel package");
-					g_free (dep->name);
-					dep->name = g_strdup (tmp);
-					g_free (dep->version);
-					dep->version = g_strdup (pack->version);
-					g_free (tmp);
+
+				if (eazel_install_check_if_related_package (service, pack, dep)) {
+					trilobite_debug ("check_if_related_package returned TRUE");
 				} else {
-					g_free (tmp);
 					/* not the devel package, are we in force mode ? */
 					if (!eazel_install_get_force (service)) {
 						/* if not, remove the package */
@@ -1678,6 +1855,9 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 			   might fail, and then we have to fail the package */
 			GList *extralist;
 			
+			/* Now assume the package is fine */
+			fail_package = FALSE;
+
 			/* Check if a previous conflict solve has fixed this conflict.
 			   Note, we don't check till after download, since only a download
 			   will reveal the packagename in case we need to download
@@ -1690,27 +1870,35 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 				continue;
 			}
 
+			if (eazel_install_check_for_file_conflicts (service, dep)) {
+				/* FIXME bugzilla.eazel.com 2584:
+				   Need to check that the downloaded package is of sufficiently high version
+				*/
 
-			/* FIXME bugzilla.eazel.com 2584:
-			   Need to check that the downloaded package is of sufficiently high version
-			*/
-
-			/* This call sets the dep->modifies if there are already
-			   packages installed of that name */
-			eazel_install_check_existing_packages (service, dep);
-
-			extralist = g_hash_table_lookup (extras, pack->name);
-			extralist = g_list_append (extralist, dep);
-			g_hash_table_insert (extras, pack->name, extralist);
-
-			/* This list contains all the packages added in this call
-			   to fetch_rpm_dependencies. It's used in the initial check,
-			   to avoid that multiple requests for a file results in 
-			   multiple downloads */
-			extras_in_this_batch = g_list_prepend (extras_in_this_batch, dep);
-
-			pack->status = PACKAGE_PARTLY_RESOLVED;
+				/* This call sets the dep->modifies if there are already
+				   packages installed of that name */
+				eazel_install_check_existing_packages (service, dep);
+				
+				extralist = g_hash_table_lookup (extras, pack->name);
+				extralist = g_list_append (extralist, dep);
+				g_hash_table_insert (extras, pack->name, extralist);
+				
+				/* This list contains all the packages added in this call
+				   to fetch_rpm_dependencies. It's used in the initial check,
+				   to avoid that multiple requests for a file results in 
+				   multiple downloads */
+				extras_in_this_batch = g_list_prepend (extras_in_this_batch, dep);
+				
+				pack->status = PACKAGE_PARTLY_RESOLVED;
+			} else {
+				/* Argh, file conflict, kill the file */
+				fail_package = TRUE;
+			}
 		} else {
+			fail_package = TRUE;
+		} 
+
+		if (fail_package) {
 			/*
 			  If it fails
 			  1) remove it from the extras hashtable for the package, 
@@ -1807,7 +1995,7 @@ print_package_list (char *str, GList *packages, gboolean show_deps)
 			while (it2) { 
 				char *tmp2;
 				tmp2 = g_strdup_printf ("%s%s ", tmp ,
-							rpmfilename_from_packagedata ((PackageData*)it2->data));
+							((PackageData*)it2->data)->name);
 				g_free (tmp);
 				tmp = tmp2;
 				it2 = g_list_next (it2);
@@ -1829,7 +2017,7 @@ print_package_list (char *str, GList *packages, gboolean show_deps)
 */
 		}
 		trilobite_debug ("* %s (%s) %s", 
-			   rpmfilename_from_packagedata (pack), 
+			   pack->name, 
 			   pack->toplevel ? "true" : "", 
 			   (tmp && strlen (tmp) > strlen (dep)) ? tmp : "");
 		g_free (tmp);
@@ -1923,7 +2111,7 @@ eazel_install_ensure_deps (EazelInstall *service,
 				pack->status = PACKAGE_PARTLY_RESOLVED;
 			}
 
-			g_message (_("%d dependency failure"), num_conflicts);
+			g_message (_("%d dependency failure(s)"), num_conflicts);
 			
 			/* Fetch the needed stuff. 
 			   "extrapackages" gets the new packages added,

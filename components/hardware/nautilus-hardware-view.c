@@ -395,7 +395,46 @@ static void setup_overview_form(NautilusHardwareView *view)
 	container_box = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->form), container_box, 0, 0, 2);	
 	gtk_widget_show (GTK_WIDGET(container_box));
+   
+	while( (temp_text = get_CPU_description(cpunum)) != NULL ) {
+		temp_box = gtk_vbox_new(FALSE, 4);
+		gtk_box_pack_start (GTK_BOX (container_box), temp_box, 0, 0, 24);	
+		gtk_widget_show (temp_box);
 
+		file_name = nautilus_pixmap_file ("cpu.png");
+                temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
+		gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0);		
+			gtk_widget_show(temp_widget);
+			g_free (file_name);
+		
+		//temp_text = get_CPU_description(cpunum);
+		temp_widget = nautilus_label_new (temp_text);
+		nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
+		g_free(temp_text);
+		gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0 );			
+		gtk_widget_show (temp_widget);
+
+		cpunum++;
+	}
+
+	/* set up the memory info */
+       	temp_box = gtk_vbox_new(FALSE, 4);
+  	gtk_box_pack_start (GTK_BOX (container_box), temp_box, 0, 0, 24);	
+	gtk_widget_show (temp_box);
+
+ 	file_name = nautilus_pixmap_file ("memory_chip.gif");
+  	temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
+	gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0);		
+  	gtk_widget_show(temp_widget);
+  	g_free (file_name);
+	
+	temp_text = get_RAM_description();
+	temp_widget = nautilus_label_new (temp_text);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
+	g_free(temp_text);
+	gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0 );			
+ 	gtk_widget_show (temp_widget);
+	
         /* Set up ide devices : by Shane Butler <shane_b@bigfoot.com> */
         /* Open the ide devices directory */
         if((directory = opendir("/proc/ide/")) != NULL) {
@@ -439,47 +478,6 @@ static void setup_overview_form(NautilusHardwareView *view)
                 }
                 closedir(directory);
         }
-   
-	while( (temp_text = get_CPU_description(cpunum)) != NULL ) {
-		temp_box = gtk_vbox_new(FALSE, 4);
-		gtk_box_pack_start (GTK_BOX (container_box), temp_box, 0, 0, 24);	
-		gtk_widget_show (temp_box);
-
-		file_name = nautilus_pixmap_file ("cpu.png");
-                temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
-		gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0);		
-			gtk_widget_show(temp_widget);
-			g_free (file_name);
-		
-		//temp_text = get_CPU_description(cpunum);
-		temp_widget = nautilus_label_new (temp_text);
-		nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
-		g_free(temp_text);
-		gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0 );			
-		gtk_widget_show (temp_widget);
-
-		cpunum++;
-	}
-
-	/* set up the memory info */
-	
-	temp_box = gtk_vbox_new(FALSE, 4);
-  	gtk_box_pack_start (GTK_BOX (container_box), temp_box, 0, 0, 24);	
-	gtk_widget_show (temp_box);
-
- 	file_name = nautilus_pixmap_file ("memory_chip.gif");
-  	temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
-	gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0);		
-  	gtk_widget_show(temp_widget);
-  	g_free (file_name);
-	
-	temp_text = get_RAM_description();
-	temp_widget = nautilus_label_new (temp_text);
-	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
-	g_free(temp_text);
-	gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0 );			
- 	gtk_widget_show (temp_widget);
-	
 }
 
 /* set up the widgetry for the CPU page */

@@ -98,6 +98,13 @@ static const struct poptOption options[] = {
 	{NULL, '\0', 0, NULL, 0}
 };
 
+static void tree_helper (EazelInstallCallback *service,
+			 const PackageData *pd,		
+			 gchar *indent,
+			 gchar *indent_type,
+			 int indent_level,
+			 char *title);
+
 #define check_ev(s) if (ev._major!=CORBA_NO_EXCEPTION) { g_warning ("%s: Caught exception %s", s, CORBA_exception_id (&ev)); }
 
 static void
@@ -180,26 +187,6 @@ set_parameters_from_command_line (Trilobite_Eazel_Install service)
 	}
 }
 
-static gboolean
-eazel_preflight_check_signal (EazelInstallCallback *service, 
-			      const GList *packages,
-			      int total_bytes,
-			      int total_packages,
-			      gpointer unused) 
-{	
-	const GList *iterator;
-
-	fprintf (stdout, "About to %s a total of %d packages, %dKb\n", 
-		 arg_erase ? "uninstall" : "install",
-		 total_packages, total_bytes/1024);
-	for (iterator = packages; iterator; iterator = iterator->next) {
-		PackageData *pack = (PackageData*)iterator->data;
-		fprintf (stdout, "%s\n", pack->name);
-	}
-
-	return TRUE;
-}
-
 static void 
 eazel_download_progress_signal (EazelInstallCallback *service, 
 				const char *name,
@@ -258,61 +245,154 @@ download_failed (EazelInstallCallback *service,
 	fprintf (stdout, "Download of %s FAILED\n", name);
 }
 
+/* This is ridiculous... */
+static void
+tree_helper_helper(EazelInstallCallback *service,
+		   gchar *indent,
+		   gchar *indent_type,
+		   int indent_level,
+		   GList *iterator,
+		   GList *next_list) 
+{
+	PackageData *pack = (PackageData*)iterator->data;
+	char *indent2;
+	char indenter;
+	gchar *extra_space=NULL;
+	int indent_level_cnt;
+
+	if (indent_level>0) {
+		extra_space = g_new0 (char, indent_level+1);
+		for (indent_level_cnt = 0; indent_level_cnt < indent_level; indent_level_cnt++) {
+			extra_space [indent_level_cnt] = ' ';
+		}
+	}
+
+	if (iterator->next || next_list) {
+		indenter = '|';
+	} else {
+		indenter = ' ';
+		*indent_type = '\\';
+	}
+	
+	indent2 = g_strdup_printf ("%s%s%c", indent, extra_space ? extra_space : "", indenter);
+	tree_helper (service, pack, indent2, indent_type, indent_level, NULL);
+	g_free (indent2);
+	g_free (extra_space);	
+}
+
+
+static void
+tree_helper (EazelInstallCallback *service,
+	     const PackageData *pd,		
+	     gchar *indent,
+	     gchar *indent_type,
+	     int indent_level,
+	     char *title)
+{
+	GList *iterator;
+
+	if (title && pd->toplevel) {
+		fprintf (stdout, title);
+	}
+
+	switch (pd->status) {
+	case PACKAGE_DEPENDENCY_FAIL:
+		fprintf (stdout, "%s%s%s, which FAILED\n", 
+			 indent,  indent_type, 
+			 rpmfilename_from_packagedata (pd));
+		break;
+	case PACKAGE_CANNOT_OPEN:
+		fprintf (stdout, "%s%s%s,which was NOT FOUND\n", 
+			 indent,  indent_type,
+			 rpmfilename_from_packagedata (pd));
+		break;		
+	case PACKAGE_SOURCE_NOT_SUPPORTED:
+		fprintf (stdout, "%s%s%s, which is a source package\n", 
+			 indent,  indent_type,
+			 rpmfilename_from_packagedata (pd));
+		break;
+	case PACKAGE_BREAKS_DEPENDENCY:
+		fprintf (stdout, "%s%s%s, which breaks deps\n", 
+			 indent,  indent_type,
+			 rpmfilename_from_packagedata (pd));
+		break;
+	case PACKAGE_FILE_CONFLICT:
+		fprintf (stdout, "%s%s%s, which has file conflict\n", 
+			 indent,  indent_type,
+			 rpmfilename_from_packagedata (pd));
+		break;
+	default:
+		fprintf (stdout, "%s%s%s %s (status %d)\n", 
+			 indent,  indent_type,
+			 pd->name, 
+			 pd->status==PACKAGE_ALREADY_INSTALLED ? "already installed" : "",
+			 pd->status);
+		break;
+	}
+	for (iterator = pd->soft_depends; iterator; iterator = iterator->next) {		
+		char *tmp;
+		tmp = g_strdup ("-d-");
+		tree_helper_helper (service, indent, tmp, indent_level, iterator, 
+				    pd->breaks ? pd->breaks : pd->modifies);
+		g_free (tmp);
+	}
+	for (iterator = pd->breaks; iterator; iterator = iterator->next) {			
+		char *tmp;
+		tmp = g_strdup ("-b-");
+		tree_helper_helper (service, indent, tmp, indent_level, iterator, pd->modifies);
+		g_free (tmp);
+	}
+	for (iterator = pd->modifies; iterator; iterator = iterator->next) {			
+		char *tmp;
+		tmp = g_strdup ("-m-");
+		tree_helper_helper (service, indent, tmp, indent_level, iterator, NULL);
+		g_free (tmp);
+	}
+}
+
 /*
   This dumps the entire tree for the failed package.
  */
 static void
 install_failed (EazelInstallCallback *service,
-		const PackageData *pd,
-		gchar *indent)
+		const PackageData *pd,		
+		gpointer unused)
 {
-	GList *iterator;
+	char *title;
+	title = g_strdup_printf ("\nPackage %s failed to install. Here's the tree...\n", pd->name);
+	tree_helper (service, pd, "", "", 4, title);
+	g_free (title);
+}
 
-	if (pd->toplevel) {
-		fprintf (stdout, "\n***The package %s failed. Here's the dep tree\n", pd->name);
+static void
+uninstall_failed (EazelInstallCallback *service,
+		  const PackageData *pd,		
+		  gpointer unused)
+{
+	char *title;
+	title = g_strdup_printf ("\nPackage %s failed to uninstall. Here's the tree...\n", pd->name);
+	tree_helper (service, pd, "", "", 4, title);
+	g_free (title);
+}
+
+static gboolean
+eazel_preflight_check_signal (EazelInstallCallback *service, 
+			      const GList *packages,
+			      int total_bytes,
+			      int total_packages,
+			      gpointer unused) 
+{	
+	const GList *iterator;
+
+	fprintf (stdout, "About to %s a total of %d packages, %dKb\n", 
+		 arg_erase ? "uninstall" : "install",
+		 total_packages, total_bytes/1024);
+	for (iterator = packages; iterator; iterator = iterator->next) {
+		PackageData *pack = (PackageData*)iterator->data;
+		tree_helper (service, pack, "", "", 4, NULL);
 	}
-	switch (pd->status) {
-	case PACKAGE_DEPENDENCY_FAIL:
-		fprintf (stdout, "%s%s, which FAILED\n", indent, rpmfilename_from_packagedata (pd));
-		break;
-	case PACKAGE_CANNOT_OPEN:
-		fprintf (stdout, "%s%s,which was NOT FOUND\n", indent, rpmfilename_from_packagedata (pd));
-		break;		
-	case PACKAGE_SOURCE_NOT_SUPPORTED:
-		fprintf (stdout, "%s%s, which is a source package\n", indent, rpmfilename_from_packagedata (pd));
-		break;
-	case PACKAGE_BREAKS_DEPENDENCY:
-		fprintf (stdout, "%s%s, which breaks deps\n", indent, rpmfilename_from_packagedata (pd));
-		break;
-	default:
-		fprintf (stdout, "%s%s %s\n", indent, pd->name, 
-			 pd->status==PACKAGE_ALREADY_INSTALLED ? "already installed" : "");
-		break;
-	}
-	for (iterator = pd->soft_depends; iterator; iterator = iterator->next) {			
-		PackageData *pack;
-		char *indent2;
-		indent2 = g_strconcat (indent, (iterator->next || pd->breaks) ? " |-d- " : " +-d- " , NULL);
-		pack = (PackageData*)iterator->data;
-		install_failed (service, pack, indent2);
-		g_free (indent2);
-	}
-	for (iterator = pd->breaks; iterator; iterator = iterator->next) {			
-		PackageData *pack;
-		char *indent2;
-		indent2 = g_strconcat (indent, iterator->next ? " |-b- " : " +-b- " , NULL);
-		pack = (PackageData*)iterator->data;
-		install_failed (service, pack, indent2);
-		g_free (indent2);
-	}
-	for (iterator = pd->modifies; iterator; iterator = iterator->next) {			
-		PackageData *pack;
-		char *indent2;
-		indent2 = g_strconcat (indent, iterator->next ? " |-m- " : " +-m- " , NULL);
-		pack = (PackageData*)iterator->data;
-		install_failed (service, pack, indent2);
-		g_free (indent2);
-	}
+
+	return TRUE;
 }
 
 static void
@@ -321,7 +401,9 @@ dep_check (EazelInstallCallback *service,
 	   const PackageData *needs,
 	   gpointer unused) 
 {
-	fprintf (stdout, "Doing dependency check for %s - need %s\n", package->name, needs->name);
+	fprintf (stdout, "Doing dependency check for %s-%s - need %s-%s\n", 
+		 package->name, package->version,
+		 needs->name, needs->version);
 }
 
 static void
@@ -511,13 +593,13 @@ int main(int argc, char *argv[]) {
 			    "");
 	gtk_signal_connect (GTK_OBJECT (cb), "install_failed", 
 			    GTK_SIGNAL_FUNC (install_failed), 
-			    "");
+			    NULL);
 	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_progress", 
 			    GTK_SIGNAL_FUNC (eazel_install_progress_signal), 
 			    "Uninstalling");
 	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_failed", 
-			    GTK_SIGNAL_FUNC (install_failed), 
-			    "");
+			    GTK_SIGNAL_FUNC (uninstall_failed), 
+			    NULL);
 	gtk_signal_connect (GTK_OBJECT (cb), "download_failed", 
 			    GTK_SIGNAL_FUNC (download_failed), 
 			    NULL);

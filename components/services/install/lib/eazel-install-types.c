@@ -218,17 +218,36 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 	pack->packsys_struc = (gpointer)hd;
 
 	{
-		char **paths;
+		char **paths = NULL;
+		char **names = NULL;
 		int count;
 		int index;
 
+/* RPM v.3.0.4 and above has RPMTAG_BASENAMES,
+   Lets see if RPMTAG_PROVIDES works for the older ones */
+#ifdef RPMTAG_BASENAMES
 		headerGetEntry (*hd,			
 				RPMTAG_BASENAMES, NULL,
+				(void**)&names, &count);
+		headerGetEntry (*hd,			
+				RPMTAG_DIRNAMES, NULL,
 				(void**)&paths, &count);
+#else /* RPMTAG_BASENAMES */
+		/* This will most like make eazel_install_chekc_for_file_conflicts break... */
+		headerGetEntry (*hd,			
+				RPMTAG_FILENAMES, NULL,
+				(void**)&names, &count);
+#endif /* RPMTAG_BASENAMES */
 
 		for (index=0; index<count; index++) {
-			pack->provides = g_list_prepend (pack->provides, g_strdup (paths[index]));
-			trilobite_debug ("Provides %s", paths[index]);
+			char *fullname;
+			if (paths) {
+				fullname = g_strdup_printf ("%s%s", paths[index], names[index]);
+			} else {
+				fullname = g_strdup (names[index]);
+			}
+			/* trilobite_debug ("provides %s", fullname); */
+			pack->provides = g_list_prepend (pack->provides, fullname);
 		}
 	}
 }
@@ -418,6 +437,9 @@ packagedata_status_enum_to_str (PackageSystemStatus st)
 	case PACKAGE_DEPENDENCY_FAIL:
 		result = g_strdup ("DEPENDENCY_FAIL");
 		break;
+	case PACKAGE_FILE_CONFLICT:
+		result = g_strdup ("FILE_CONFLICT");
+		break;
 	case PACKAGE_BREAKS_DEPENDENCY:
 		result = g_strdup ("BREAKS_DEPENDENCY");
 		break;
@@ -436,6 +458,8 @@ packagedata_status_enum_to_str (PackageSystemStatus st)
 	case PACKAGE_ALREADY_INSTALLED:
 		result = g_strdup ("ALREADY_INSTALLED");
 		break;
+	default:
+		g_assert_not_reached ();
 	}
 	return result;
 }
@@ -450,12 +474,14 @@ packagedata_status_str_to_enum (const char *st)
 	if (strcmp (st, "UNKNOWN_STATUS")==0) { result = PACKAGE_UNKNOWN_STATUS; } 
 	else if (strcmp (st, "SOURCE_NOT_SUPPORTED")==0) { result = PACKAGE_SOURCE_NOT_SUPPORTED; } 
 	else if (strcmp (st, "DEPENDENCY_FAIL")==0) { result = PACKAGE_DEPENDENCY_FAIL; } 
+	else if (strcmp (st, "FILE_CONFLICT")==0) { result = PACKAGE_FILE_CONFLICT; } 
 	else if (strcmp (st, "BREAKS_DEPENDENCY")==0) { result = PACKAGE_BREAKS_DEPENDENCY; } 
 	else if (strcmp (st, "INVALID")==0) { result = PACKAGE_INVALID; } 
 	else if (strcmp (st, "CANNOT_OPEN")==0) { result = PACKAGE_CANNOT_OPEN; } 
 	else if (strcmp (st, "PARTLY_RESOLVED")==0) { result = PACKAGE_PARTLY_RESOLVED; } 
 	else if (strcmp (st, "RESOLVED")==0) { result = PACKAGE_RESOLVED; } 
 	else if (strcmp (st, "ALREADY_INSTALLED")==0) { result = PACKAGE_ALREADY_INSTALLED; } 
+	else { g_assert_not_reached (); };
 
 	return result;
 }

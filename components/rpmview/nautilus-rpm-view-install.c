@@ -92,6 +92,7 @@ get_detailed_errors_foreach (const PackageData *pack, char **result)
 		break;
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
 		break;
+	case PACKAGE_FILE_CONFLICT:
 	case PACKAGE_DEPENDENCY_FAIL:
 		tmp = g_strdup_printf ("%s\n%s %s",
 				       *result, 
