@@ -1,3 +1,105 @@
+2000-09-27  Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-attributes.h: Rename
+	NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE to
+	NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE; add
+	NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE, for now just a synonym for
+	NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE.
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(set_up_request_by_file_attributes): Handle the new file
+	attributes.
+	* libnautilus-extensions/nautilus-directory.h: move
+	nautilus_directory_wait_until_ready call to
+	nautilus-wait-until-ready.h
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_self_check_directory): Include
+	nautilus-wait-until-ready.h, use new attributes.
+
+	* libnautilus-extensions/nautilus-wait-until-ready.h: New header
+	for the deprecated wait_until_ready calls.
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_wait_until_ready): file equivalent of
+	nautilus_directory_wait_until_ready; temporary to help me
+	refactor.
+	(file_wait_until_ready_callback): helper function.
+
+	* libnautilus-extensions/Makefile.am: Add
+	nautilus-wait-until-ready.h
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_required_file_attributes): Use new
+	attribute for mime type.
+
+	* libnautilus-extensions/nautilus-mime-actions.h,
+	libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_action_type_for_uri),
+	(nautilus_mime_get_default_action_for_uri),
+	(nautilus_mime_get_default_application_for_uri_internal),
+	(nautilus_mime_get_default_application_for_uri),
+	(nautilus_mime_is_default_application_for_uri_user_chosen),
+	(nautilus_mime_get_default_component_for_uri_internal),
+	(nautilus_mime_get_default_component_for_uri),
+	(nautilus_mime_is_default_component_for_uri_user_chosen),
+	(nautilus_mime_get_short_list_applications_for_uri),
+	(nautilus_mime_get_short_list_components_for_uri),
+	(nautilus_mime_get_short_list_methods_for_uri),
+	(nautilus_mime_get_all_applications_for_uri),
+	(nautilus_mime_has_any_applications_for_uri),
+	(nautilus_mime_get_all_components_for_uri),
+	(nautilus_mime_has_any_components_for_uri),
+	(nautilus_mime_set_default_action_type_for_uri),
+	(nautilus_mime_set_default_application_for_uri),
+	(nautilus_mime_set_default_component_for_uri),
+	(nautilus_mime_set_short_list_applications_for_uri),
+	(nautilus_mime_set_short_list_components_for_uri),
+	(nautilus_mime_add_application_to_short_list_for_uri),
+	(nautilus_mime_remove_application_from_short_list_for_uri),
+	(nautilus_mime_add_component_to_short_list_for_uri),
+	(nautilus_mime_remove_component_from_short_list_for_uri),
+	(nautilus_mime_extend_all_applications_for_uri),
+	(nautilus_mime_remove_from_all_applications_for_uri): All these
+	functions now take a NautilusDirectory and a NautilusFile, rather
+	than a URI.
+	
+	(gnome_vfs_mime_application_has_id),
+	(gnome_vfs_mime_id_matches_application),
+	(gnome_vfs_mime_application_has_id_not_in_list),
+	(string_not_in_list), (extract_prefix_add_suffix),
+	(make_oaf_query_with_known_mime_type),
+	(make_oaf_query_with_uri_scheme_only), (free_key),
+	(server_matches_content_requirements),
+	(nautilus_do_component_query), (str_list_difference),
+	(strv_concat): Reformatted.
+
+	(get_mime_type_from_file): Changed from get_mime_type_from_uri;
+	uses nautilus_file_wait_until_ready instead of synchronous I/O.
+	
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(repopulate_program_list), (is_application_default_for_uri),
+	(is_component_default_for_uri),
+	(is_component_in_short_list_for_uri),
+	(is_application_in_short_list_for_uri),
+	(program_file_pair_is_default_for_file),
+	(add_to_short_list_for_file), (remove_from_short_list_for_file),
+	(remove_default_for_item), (set_default_for_item):
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(any_programs_available_for_file):
+	* libnautilus-extensions/nautilus-wait-until-ready.h:
+	* src/file-manager/fm-directory-view.c: (switch_location_and_view),
+	(create_open_with_gtk_menu), (reset_bonobo_open_with_menu),
+	(activate_callback):
+	* src/nautilus-applicable-views.c: (got_file_info_callback),
+	(nautilus_navigation_info_new), (nautilus_navigation_info_free):
+	* src/nautilus-applicable-views.h:
+	* src/nautilus-sidebar.c: (nautilus_sidebar_update_buttons):
+	* src/nautilus-theme-selector.c: (add_theme_to_icons):
+	* src/nautilus-window.c: (nautilus_window_switch_views),
+	(nautilus_window_load_content_view_menu):
+	* test/test-nautilus-mime-actions-set.c: (main):
+	* test/test-nautilus-mime-actions.c: (main): Deal with above API changes.
+
 2000-09-27  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* librsvg/Makefile.am:

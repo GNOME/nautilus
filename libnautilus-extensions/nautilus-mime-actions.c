@@ -35,41 +35,54 @@
 #include "nautilus-file-attributes.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-metadata.h"
+#include "nautilus-wait-until-ready.h"
 
 #include <stdio.h>
 
 
-static gint gnome_vfs_mime_application_has_id (GnomeVFSMimeApplication *application, const char *id);
-static gint gnome_vfs_mime_id_matches_application (const char *id, GnomeVFSMimeApplication *application);
-static gboolean gnome_vfs_mime_application_has_id_not_in_list (GnomeVFSMimeApplication *application, GList *ids);
-static gboolean string_not_in_list (const char *str, GList *list);
-static char *extract_prefix_add_suffix (const char *string, const char *separator, const char *suffix);
-static char *mime_type_get_supertype (const char *mime_type);
-static char *uri_string_get_scheme (const char *uri_string);
-static GList *get_explicit_content_view_iids_from_metafile (NautilusDirectory *directory);
-static char *make_oaf_query_for_explicit_content_view_iids (GList *view_iids);
-static char *make_oaf_query_with_known_mime_type (const char *mime_type, const char *uri_scheme, GList *explicit_iids, const char *extra_requirements);
-static char *make_oaf_query_with_uri_scheme_only (const char *uri_scheme, GList *explicit_iids, const char *extra_requirements);
-static GHashTable *file_list_to_mime_type_hash_table (GList *files);
-static void free_key (gpointer key, gpointer value, gpointer user_data);
-static void mime_type_hash_table_destroy (GHashTable *table);
-static gboolean server_matches_content_requirements (OAF_ServerInfo *server, 
-						     GHashTable *type_table, 
-						     GList *explicit_iids);
-static GList *nautilus_do_component_query (const char *mime_type, 
-					   const char *uri_scheme, 
-					   GList *files,
-					   GList *explicit_iids,
-					   char **extra_sort_criteria,
-					   char *extra_requirements,
-					   CORBA_Environment *ev);
-static GList *str_list_difference   (GList *a, 
-				     GList *b);
-static char *get_mime_type_from_uri (const char 
-				     *text_uri);
-
-static int strv_length (char **a);
-static char **strv_concat (char **a, char **b);
+static gint        gnome_vfs_mime_application_has_id             (GnomeVFSMimeApplication *application, 
+								  const char              *id);
+static gint        gnome_vfs_mime_id_matches_application         (const char              *id, 
+								  GnomeVFSMimeApplication *application);
+static gboolean    gnome_vfs_mime_application_has_id_not_in_list (GnomeVFSMimeApplication *application, 
+								  GList                   *ids);
+static gboolean    string_not_in_list                            (const char              *str, 
+								  GList                   *list);
+static char       *extract_prefix_add_suffix                     (const char              *string, 
+								  const char              *separator, 
+								  const char              *suffix);
+static char       *mime_type_get_supertype                       (const char              *mime_type);
+static char       *uri_string_get_scheme                         (const char              *uri_string);
+static GList      *get_explicit_content_view_iids_from_metafile  (NautilusDirectory       *directory);
+static char       *make_oaf_query_for_explicit_content_view_iids (GList                   *view_iids);
+static char       *make_oaf_query_with_known_mime_type           (const char              *mime_type, 
+								  const char              *uri_scheme, 
+								  GList                   *explicit_iids, 
+								  const char              *extra_requirements);
+static char       *make_oaf_query_with_uri_scheme_only           (const char              *uri_scheme, 
+								  GList                   *explicit_iids, 
+								  const char              *extra_requirements);
+static GHashTable *file_list_to_mime_type_hash_table             (GList                   *files);
+static void        free_key                                      (gpointer                 key, 
+								  gpointer                 value, 
+								  gpointer                 user_data);
+static void        mime_type_hash_table_destroy                  (GHashTable              *table);
+static gboolean    server_matches_content_requirements           (OAF_ServerInfo          *server, 
+								  GHashTable              *type_table, 
+								  GList                   *explicit_iids);
+static GList      *nautilus_do_component_query                   (const char              *mime_type, 
+								  const char              *uri_scheme, 
+								  GList                   *files,
+								  GList                   *explicit_iids,
+								  char                   **extra_sort_criteria,
+								  char                    *extra_requirements,
+								  CORBA_Environment       *ev);
+static GList      *str_list_difference                           (GList                   *a, 
+								  GList                   *b);
+static char       *get_mime_type_from_file                       (NautilusFile            *file);
+static int         strv_length                                   (char                   **a);
+static char      **strv_concat                                   (char                   **a, 
+								  char                   **b);
 
 static gboolean
 is_known_mime_type (const char *mime_type)
@@ -100,28 +113,19 @@ nautilus_directory_wait_for_metadata (NautilusDirectory *directory)
 }
 
 GnomeVFSMimeActionType
-nautilus_mime_get_default_action_type_for_uri (const char *uri)
+nautilus_mime_get_default_action_type_for_uri (NautilusDirectory *directory,
+					       NautilusFile      *file)
 {
 	char *mime_type;
-	NautilusDirectory *directory;
 	char *action_type_string;
 	GnomeVFSMimeActionType action_type;
 
-	directory = nautilus_directory_get (uri);
 	nautilus_directory_wait_for_metadata (directory);
 	action_type_string = nautilus_directory_get_metadata
 		(directory, NAUTILUS_METADATA_KEY_DEFAULT_ACTION_TYPE, NULL);
-	nautilus_directory_unref (directory);
 
 	if (action_type_string == NULL) {
-		/* FIXME bugzilla.eazel.com 1263: 
-		   need NautilusDirectory cover for getting
-                   mime type, and need to tie it into the
-                   call_when_ready interface. Would want to use it
-                   here. That way we won't be computing the mime type
-                   over and over in the process of finding info on a
-                   target URI. */
-		mime_type = get_mime_type_from_uri (uri);
+		mime_type = get_mime_type_from_file (file);
 		action_type = gnome_vfs_mime_get_default_action_type (mime_type);
 		g_free (mime_type);
 		return action_type;
@@ -137,18 +141,19 @@ nautilus_mime_get_default_action_type_for_uri (const char *uri)
 }
 
 GnomeVFSMimeAction *
-nautilus_mime_get_default_action_for_uri (const char *uri)
+nautilus_mime_get_default_action_for_uri (NautilusDirectory *directory,
+					  NautilusFile      *file)
 {
 	GnomeVFSMimeAction *action;
 
 	action = g_new0 (GnomeVFSMimeAction, 1);
 
-	action->action_type = nautilus_mime_get_default_action_type_for_uri (uri);
+	action->action_type = nautilus_mime_get_default_action_type_for_uri (directory, file);
 
 	switch (action->action_type) {
 	case GNOME_VFS_MIME_ACTION_TYPE_APPLICATION:
 		action->action.application = 
-			nautilus_mime_get_default_application_for_uri (uri);
+			nautilus_mime_get_default_application_for_uri (directory, file);
 		if (action->action.application == NULL) {
 			g_free (action);
 			action = NULL;
@@ -156,7 +161,7 @@ nautilus_mime_get_default_action_for_uri (const char *uri)
 		break;
 	case GNOME_VFS_MIME_ACTION_TYPE_COMPONENT:
 		action->action.component = 
-			nautilus_mime_get_default_component_for_uri (uri);
+			nautilus_mime_get_default_component_for_uri (directory, file);
 		if (action->action.component == NULL) {
 			g_free (action);
 			action = NULL;
@@ -174,32 +179,23 @@ nautilus_mime_get_default_action_for_uri (const char *uri)
 
 
 static GnomeVFSMimeApplication *
-nautilus_mime_get_default_application_for_uri_internal (const char *uri, gboolean *user_chosen)
+nautilus_mime_get_default_application_for_uri_internal (NautilusDirectory *directory,
+							NautilusFile      *file,
+							gboolean          *user_chosen)
 {
 	char *mime_type;
 	GnomeVFSMimeApplication *result;
-	NautilusDirectory *directory;
 	char *default_application_string;
 	gboolean used_user_chosen_info;
 
 	used_user_chosen_info = TRUE;
 
-	directory = nautilus_directory_get (uri);
-
 	nautilus_directory_wait_for_metadata (directory);
 	default_application_string = nautilus_directory_get_metadata 
 		(directory, NAUTILUS_METADATA_KEY_DEFAULT_APPLICATION, NULL);
-	nautilus_directory_unref (directory);
 
 	if (default_application_string == NULL) {
-		/* FIXME bugzilla.eazel.com 1263: 
-		   need NautilusDirectory cover for getting
-                   mime type, and need to tie it into the
-                   call_when_ready interface. Would want to use it
-                   here. That way we won't be computing the mime type
-                   over and over in the process of finding info on a
-                   target URI. */
-		mime_type = get_mime_type_from_uri (uri);
+		mime_type = get_mime_type_from_file (file);
 		result = gnome_vfs_mime_get_default_application (mime_type);
 		g_free (mime_type);
 		used_user_chosen_info = FALSE;
@@ -215,18 +211,20 @@ nautilus_mime_get_default_application_for_uri_internal (const char *uri, gboolea
 }
 
 GnomeVFSMimeApplication *
-nautilus_mime_get_default_application_for_uri (const char *uri)
+nautilus_mime_get_default_application_for_uri (NautilusDirectory *directory,
+					       NautilusFile      *file)
 {
-	return nautilus_mime_get_default_application_for_uri_internal (uri, NULL);
+	return nautilus_mime_get_default_application_for_uri_internal (directory, file, NULL);
 }
 
 gboolean
-nautilus_mime_is_default_application_for_uri_user_chosen (const char *uri)
+nautilus_mime_is_default_application_for_uri_user_chosen (NautilusDirectory *directory,
+							  NautilusFile      *file)
 {
 	GnomeVFSMimeApplication *application;
 	gboolean user_chosen;
 
-	application = nautilus_mime_get_default_application_for_uri_internal (uri, &user_chosen);
+	application = nautilus_mime_get_default_application_for_uri_internal (directory, file, &user_chosen);
 
 	/* Doesn't count as user chosen if the user-specified data is bogus and doesn't
 	 * result in an actual application.
@@ -242,12 +240,14 @@ nautilus_mime_is_default_application_for_uri_user_chosen (const char *uri)
 
 
 static OAF_ServerInfo *
-nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean *user_chosen)
+nautilus_mime_get_default_component_for_uri_internal (NautilusDirectory *directory,
+						      NautilusFile      *file,
+						      gboolean          *user_chosen)
 {
 	GList *info_list;
 	OAF_ServerInfo *mime_default; 
-	NautilusDirectory *directory;
 	char *default_component_string;
+	char *uri;
 	char *mime_type;
 	char *uri_scheme;
 	GList *files;
@@ -266,21 +266,23 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 
 	CORBA_exception_init (&ev);
 
-	mime_type = get_mime_type_from_uri (uri);
+	mime_type = get_mime_type_from_file (file);
+
+	uri = nautilus_file_get_uri (file);
+
 	uri_scheme = uri_string_get_scheme (uri);
 
-	directory = nautilus_directory_get (uri);
+	g_free (uri);
 
         /* Arrange for all the file attributes we will need. */
         attributes = NULL;
-        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE);
+        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
 
 	files = nautilus_directory_wait_until_ready (directory, attributes, TRUE);
 	default_component_string = nautilus_directory_get_metadata 
 		(directory, NAUTILUS_METADATA_KEY_DEFAULT_COMPONENT, NULL);
 	explicit_iids = get_explicit_content_view_iids_from_metafile (directory); 
 	g_list_free (attributes);
-	nautilus_directory_unref (directory);
 
     	if (default_component_string == NULL && is_known_mime_type (mime_type)) {
 		mime_default = gnome_vfs_mime_get_default_component (mime_type);
@@ -311,7 +313,7 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 
 	/* Prefer something from the short list */
 
-	short_list = nautilus_mime_get_short_list_components_for_uri (uri);
+	short_list = nautilus_mime_get_short_list_components_for_uri (directory, file);
 
 	if (short_list != NULL) {
 		sort_conditions[1] = g_strdup ("has (['");
@@ -388,18 +390,20 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 
 
 OAF_ServerInfo *
-nautilus_mime_get_default_component_for_uri (const char *uri)
+nautilus_mime_get_default_component_for_uri (NautilusDirectory *directory,
+					     NautilusFile      *file)
 {
-	return nautilus_mime_get_default_component_for_uri_internal (uri, NULL);
+	return nautilus_mime_get_default_component_for_uri_internal (directory, file, NULL);
 }
 
 gboolean
-nautilus_mime_is_default_component_for_uri_user_chosen (const char *uri)
+nautilus_mime_is_default_component_for_uri_user_chosen (NautilusDirectory *directory,
+							NautilusFile      *file)
 {
 	OAF_ServerInfo *component;
 	gboolean user_chosen;
 
-	component = nautilus_mime_get_default_component_for_uri_internal (uri, &user_chosen);
+	component = nautilus_mime_get_default_component_for_uri_internal (directory, file, &user_chosen);
 
 	/* Doesn't count as user chosen if the user-specified data is bogus and doesn't
 	 * result in an actual component.
@@ -415,12 +419,12 @@ nautilus_mime_is_default_component_for_uri_user_chosen (const char *uri)
 
 
 GList *
-nautilus_mime_get_short_list_applications_for_uri (const char *uri)
+nautilus_mime_get_short_list_applications_for_uri (NautilusDirectory *directory,
+						   NautilusFile      *file)
 {
 	char *mime_type;
 	GList *result;
 	GList *removed;
-	NautilusDirectory *directory;
 	GList *metadata_application_add_ids;
 	GList *metadata_application_remove_ids;
 	GList *p;
@@ -428,8 +432,6 @@ nautilus_mime_get_short_list_applications_for_uri (const char *uri)
 	CORBA_Environment ev;
 
 	CORBA_exception_init (&ev);
-
-	directory = nautilus_directory_get (uri);
 
 	nautilus_directory_wait_for_metadata (directory);
 	metadata_application_add_ids = nautilus_directory_get_metadata_list 
@@ -440,9 +442,8 @@ nautilus_mime_get_short_list_applications_for_uri (const char *uri)
 		(directory,
 		 NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_REMOVE,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
-	nautilus_directory_unref (directory);
 
-	mime_type = get_mime_type_from_uri (uri);
+	mime_type = get_mime_type_from_file (file);
 	result = gnome_vfs_mime_get_short_list_applications (mime_type);
 	g_free (mime_type);
 
@@ -472,15 +473,16 @@ nautilus_mime_get_short_list_applications_for_uri (const char *uri)
 }
 
 GList *
-nautilus_mime_get_short_list_components_for_uri (const char *uri)
+nautilus_mime_get_short_list_components_for_uri (NautilusDirectory *directory,
+						 NautilusFile      *file)
 {
+	char *uri;
 	char *mime_type;
 	char *uri_scheme;
 	GList *servers;
 	GList *iids;
 	GList *result;
 	GList *removed;
-	NautilusDirectory *directory;
 	GList *metadata_component_add_ids;
 	GList *metadata_component_remove_ids;
 	GList *p;
@@ -494,13 +496,15 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 
 	CORBA_exception_init (&ev);
 
+	uri = nautilus_file_get_uri (file);
+
 	uri_scheme = uri_string_get_scheme (uri);
 
-	directory = nautilus_directory_get (uri);
+	g_free (uri);
 
         /* Arrange for all the file attributes we will need. */
         attributes = NULL;
-        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE);
+        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
 
 	files = nautilus_directory_wait_until_ready (directory, attributes, TRUE);
 	explicit_iids = get_explicit_content_view_iids_from_metafile (directory); 
@@ -514,9 +518,8 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 		(directory,
 		 NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_REMOVE,
 		 NAUTILUS_METADATA_SUBKEY_COMPONENT_IID);
-	nautilus_directory_unref (directory);
 
-	mime_type = get_mime_type_from_uri (uri);
+	mime_type = get_mime_type_from_file (file);
 	servers = gnome_vfs_mime_get_short_list_components (mime_type);
 	iids = NULL;
 
@@ -574,38 +577,38 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 	return result;
 }
 
+/* FIXME: we should disable this for 1.0 I think */
+
 char *
-nautilus_mime_get_short_list_methods_for_uri (const char *uri)
+nautilus_mime_get_short_list_methods_for_uri (NautilusDirectory *directory,
+					      NautilusFile      *file)
 {
 	char *mime_type;
 	const char *method;
 
-	mime_type = get_mime_type_from_uri (uri);
+	mime_type = get_mime_type_from_file (file);
 	method = gnome_vfs_mime_get_value (mime_type, "vfs-method");
 	g_free (mime_type);
 	return g_strdup (method);
 }
 
 GList *
-nautilus_mime_get_all_applications_for_uri (const char *uri)
+nautilus_mime_get_all_applications_for_uri (NautilusDirectory *directory,
+					    NautilusFile      *file)
 {
 	char *mime_type;
 	GList *result;
-	NautilusDirectory *directory;
 	GList *metadata_application_ids;
 	GList *p;
 	GnomeVFSMimeApplication *application;
-
-	directory = nautilus_directory_get (uri);
 
 	nautilus_directory_wait_for_metadata (directory);
 	metadata_application_ids = nautilus_directory_get_metadata_list 
 		(directory,
 		 NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID);
-	nautilus_directory_unref (directory);
 
-	mime_type = get_mime_type_from_uri (uri);
+	mime_type = get_mime_type_from_file (file);
 
 	result = gnome_vfs_mime_get_all_applications (mime_type);
 
@@ -626,12 +629,13 @@ nautilus_mime_get_all_applications_for_uri (const char *uri)
 }
 
 gboolean
-nautilus_mime_has_any_applications_for_uri (const char *uri)
+nautilus_mime_has_any_applications_for_uri (NautilusDirectory *directory,
+					    NautilusFile      *file)
 {
 	GList *list;
 	gboolean result;
 
-	list = nautilus_mime_get_all_applications_for_uri (uri);
+	list = nautilus_mime_get_all_applications_for_uri (directory, file);
 	result = list != NULL;
 	gnome_vfs_mime_application_list_free (list);
 
@@ -639,27 +643,29 @@ nautilus_mime_has_any_applications_for_uri (const char *uri)
 }
 
 GList *
-nautilus_mime_get_all_components_for_uri (const char *uri)
+nautilus_mime_get_all_components_for_uri (NautilusDirectory *directory,
+					  NautilusFile      *file)
 {
+	char *uri;
 	char *mime_type;
 	char *uri_scheme;
 	GList *files;
 	GList *attributes;
 	GList *info_list;
-	NautilusDirectory *directory;
 	GList *explicit_iids;
 	CORBA_Environment ev;
 
 	CORBA_exception_init (&ev);
 
-	mime_type = get_mime_type_from_uri (uri);
+	mime_type = get_mime_type_from_file (file);
+
+	uri = nautilus_file_get_uri (file);
 	uri_scheme = uri_string_get_scheme (uri);
-
-	directory = nautilus_directory_get (uri);
-
+	g_free (uri);
+	
         /* Arrange for all the file attributes we will need. */
         attributes = NULL;
-        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE);
+        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
 
 	files = nautilus_directory_wait_until_ready (directory, attributes, TRUE);
 	explicit_iids = get_explicit_content_view_iids_from_metafile (directory); 
@@ -676,12 +682,13 @@ nautilus_mime_get_all_components_for_uri (const char *uri)
 }
 
 gboolean
-nautilus_mime_has_any_components_for_uri (const char *uri)
+nautilus_mime_has_any_components_for_uri (NautilusDirectory *directory,
+					  NautilusFile      *file)
 {
 	GList *list;
 	gboolean result;
 
-	list = nautilus_mime_get_all_components_for_uri (uri);
+	list = nautilus_mime_get_all_components_for_uri (directory, file);
 	result = list != NULL;
 	gnome_vfs_mime_component_list_free (list);
 
@@ -689,10 +696,10 @@ nautilus_mime_has_any_components_for_uri (const char *uri)
 }
 
 GnomeVFSResult
-nautilus_mime_set_default_action_type_for_uri (const char             *uri,
+nautilus_mime_set_default_action_type_for_uri (NautilusDirectory      *directory,
+					       NautilusFile           *file,
 					       GnomeVFSMimeActionType  action_type)
 {
-	NautilusDirectory *directory;
 	const char *action_string;
 
 	switch (action_type) {
@@ -707,65 +714,54 @@ nautilus_mime_set_default_action_type_for_uri (const char             *uri,
 		action_string = "none";
 	}
 
-	directory = nautilus_directory_get (uri);
-
 	nautilus_directory_wait_for_metadata (directory);
 	nautilus_directory_set_metadata 
 		(directory, NAUTILUS_METADATA_KEY_DEFAULT_ACTION_TYPE, NULL, action_string);
-	nautilus_directory_unref (directory);
 
 	return GNOME_VFS_OK;
 }
 
 GnomeVFSResult
-nautilus_mime_set_default_application_for_uri (const char *uri,
-					       const char *application_id)
+nautilus_mime_set_default_application_for_uri (NautilusDirectory *directory,
+					       NautilusFile      *file,
+					       const char        *application_id)
 {
-	NautilusDirectory *directory;
-
-	directory = nautilus_directory_get (uri);
-
 	nautilus_directory_wait_for_metadata (directory);
 	nautilus_directory_set_metadata 
 		(directory, NAUTILUS_METADATA_KEY_DEFAULT_APPLICATION, NULL, application_id);
-	nautilus_directory_unref (directory);
 
 	/* If there's no default action type, set it to match this. */
 	if (application_id != NULL && 
-	    nautilus_mime_get_default_action_type_for_uri (uri) == GNOME_VFS_MIME_ACTION_TYPE_NONE) {
-		return nautilus_mime_set_default_action_type_for_uri (uri, GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
+	    nautilus_mime_get_default_action_type_for_uri (directory, file) == GNOME_VFS_MIME_ACTION_TYPE_NONE) {
+		return nautilus_mime_set_default_action_type_for_uri (directory, file, GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
 	}
 
 	return GNOME_VFS_OK;
 }
 
 GnomeVFSResult
-nautilus_mime_set_default_component_for_uri (const char *uri,
-					     const char *component_iid)
+nautilus_mime_set_default_component_for_uri (NautilusDirectory *directory,
+					     NautilusFile      *file,
+					     const char        *component_iid)
 {
-	NautilusDirectory *directory;
-
-	directory = nautilus_directory_get (uri);
-
 	nautilus_directory_wait_for_metadata (directory);
 	nautilus_directory_set_metadata 
 		(directory, NAUTILUS_METADATA_KEY_DEFAULT_COMPONENT, NULL, component_iid);
-	nautilus_directory_unref (directory);
 
 	/* If there's no default action type, set it to match this. */
 	if (component_iid != NULL && 
-	    nautilus_mime_get_default_action_type_for_uri (uri) == GNOME_VFS_MIME_ACTION_TYPE_NONE) {
-		return nautilus_mime_set_default_action_type_for_uri (uri, GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
+	    nautilus_mime_get_default_action_type_for_uri (directory, file) == GNOME_VFS_MIME_ACTION_TYPE_NONE) {
+		return nautilus_mime_set_default_action_type_for_uri (directory, file, GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
 	}
 
 	return GNOME_VFS_OK;
 }
 
 GnomeVFSResult
-nautilus_mime_set_short_list_applications_for_uri (const char *uri,
-						   GList *applications)
+nautilus_mime_set_short_list_applications_for_uri (NautilusDirectory *directory,
+						   NautilusFile      *file,
+						   GList             *applications)
 {
-	NautilusDirectory *directory;
 	GList *add_list;
 	GList *remove_list;
 	GList *normal_short_list;
@@ -775,7 +771,7 @@ nautilus_mime_set_short_list_applications_for_uri (const char *uri,
 
 	/* get per-mime short list */
 
-	mime_type = get_mime_type_from_uri (uri);
+	mime_type = get_mime_type_from_file (file);
 	normal_short_list = gnome_vfs_mime_get_short_list_applications (mime_type);
 	g_free (mime_type);
 
@@ -789,8 +785,6 @@ nautilus_mime_set_short_list_applications_for_uri (const char *uri,
 	add_list = str_list_difference (applications, normal_short_list_ids);
 	remove_list = str_list_difference (normal_short_list_ids, applications);
 
-	directory = nautilus_directory_get (uri);
-
 	nautilus_directory_wait_for_metadata (directory);
 	nautilus_directory_set_metadata_list 
 		(directory,
@@ -802,7 +796,6 @@ nautilus_mime_set_short_list_applications_for_uri (const char *uri,
 		 NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_REMOVE,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID,
 		 remove_list);
-	nautilus_directory_unref (directory);	
 
 	/* FIXME bugzilla.eazel.com 1269: 
 	 * need to free normal_short_list, normal_short_list_ids, add_list, remove_list 
@@ -812,10 +805,10 @@ nautilus_mime_set_short_list_applications_for_uri (const char *uri,
 }
 
 GnomeVFSResult
-nautilus_mime_set_short_list_components_for_uri (const char *uri,
-						 GList      *components)
+nautilus_mime_set_short_list_components_for_uri (NautilusDirectory *directory,
+						 NautilusFile      *file,
+						 GList             *components)
 {
-	NautilusDirectory *directory;
 	GList *add_list;
 	GList *remove_list;
 	GList *normal_short_list;
@@ -825,7 +818,7 @@ nautilus_mime_set_short_list_components_for_uri (const char *uri,
 
 	/* get per-mime short list */
 
-	mime_type = get_mime_type_from_uri (uri);
+	mime_type = get_mime_type_from_file (file);
 	normal_short_list = gnome_vfs_mime_get_short_list_components (mime_type);
 	g_free (mime_type);
 	
@@ -839,8 +832,6 @@ nautilus_mime_set_short_list_components_for_uri (const char *uri,
 	add_list = str_list_difference (components, normal_short_list_ids);
 	remove_list = str_list_difference (normal_short_list_ids, components);
 
-	directory = nautilus_directory_get (uri);
-
 	nautilus_directory_wait_for_metadata (directory);
 	nautilus_directory_set_metadata_list 
 		(directory,
@@ -852,7 +843,6 @@ nautilus_mime_set_short_list_components_for_uri (const char *uri,
 		 NAUTILUS_METADATA_KEY_SHORT_LIST_COMPONENT_REMOVE,
 		 NAUTILUS_METADATA_SUBKEY_COMPONENT_IID,
 		 remove_list);
-	nautilus_directory_unref (directory);	
 
 	/* FIXME bugzilla.eazel.com 1269: 
 	 * need to free normal_short_list, normal_short_list_ids, add_list, remove_list 
@@ -862,20 +852,21 @@ nautilus_mime_set_short_list_components_for_uri (const char *uri,
 }
 
 GnomeVFSResult
-nautilus_mime_add_application_to_short_list_for_uri (const char *uri,
-						     const char *application_id)
+nautilus_mime_add_application_to_short_list_for_uri (NautilusDirectory *directory,
+						     NautilusFile      *file,
+						     const char        *application_id)
 {
 	GList *old_list, *new_list;
 	GnomeVFSResult result;
 
 	result = GNOME_VFS_OK;
 
-	old_list = nautilus_mime_get_short_list_applications_for_uri (uri);
+	old_list = nautilus_mime_get_short_list_applications_for_uri (directory, file);
 
 	if (!gnome_vfs_mime_id_in_application_list (application_id, old_list)) {
 		new_list = g_list_append (gnome_vfs_mime_id_list_from_application_list (old_list), 
 					  g_strdup (application_id));
-		result = nautilus_mime_set_short_list_applications_for_uri (uri, new_list);
+		result = nautilus_mime_set_short_list_applications_for_uri (directory, file, new_list);
 		nautilus_g_list_free_deep (new_list);
 	}
 
@@ -885,14 +876,15 @@ nautilus_mime_add_application_to_short_list_for_uri (const char *uri,
 }
 
 GnomeVFSResult
-nautilus_mime_remove_application_from_short_list_for_uri (const char *uri,
-							  const char *application_id)
+nautilus_mime_remove_application_from_short_list_for_uri (NautilusDirectory *directory,
+							  NautilusFile      *file,
+							  const char        *application_id)
 {
 	GList *old_list, *new_list;
 	gboolean was_in_list;
 	GnomeVFSResult result;
 
-	old_list = nautilus_mime_get_short_list_applications_for_uri (uri);
+	old_list = nautilus_mime_get_short_list_applications_for_uri (directory, file);
 	old_list = gnome_vfs_mime_remove_application_from_list
 		(old_list, application_id, &was_in_list);
 
@@ -900,7 +892,7 @@ nautilus_mime_remove_application_from_short_list_for_uri (const char *uri,
 		result = GNOME_VFS_OK;
 	} else {
 		new_list = gnome_vfs_mime_id_list_from_application_list (old_list);
-		result = nautilus_mime_set_short_list_applications_for_uri (uri, new_list);
+		result = nautilus_mime_set_short_list_applications_for_uri (directory, file, new_list);
 		nautilus_g_list_free_deep (new_list);
 	}
 
@@ -910,20 +902,21 @@ nautilus_mime_remove_application_from_short_list_for_uri (const char *uri,
 }
 
 GnomeVFSResult
-nautilus_mime_add_component_to_short_list_for_uri (const char *uri,
-						   const char *iid)
+nautilus_mime_add_component_to_short_list_for_uri (NautilusDirectory *directory,
+						   NautilusFile      *file,
+						   const char        *iid)
 {
 	GList *old_list, *new_list;
 	GnomeVFSResult result;
 
-	old_list = nautilus_mime_get_short_list_components_for_uri (uri);
+	old_list = nautilus_mime_get_short_list_components_for_uri (directory, file);
 
 	if (gnome_vfs_mime_id_in_component_list (iid, old_list)) {
 		result = GNOME_VFS_OK;
 	} else {
 		new_list = g_list_append (gnome_vfs_mime_id_list_from_component_list (old_list), 
 					  g_strdup (iid));
-		result = nautilus_mime_set_short_list_components_for_uri (uri, new_list);
+		result = nautilus_mime_set_short_list_components_for_uri (directory, file, new_list);
 		nautilus_g_list_free_deep (new_list);
 	}
 
@@ -933,14 +926,15 @@ nautilus_mime_add_component_to_short_list_for_uri (const char *uri,
 }
 
 GnomeVFSResult
-nautilus_mime_remove_component_from_short_list_for_uri (const char *uri,
-							const char *iid)
+nautilus_mime_remove_component_from_short_list_for_uri (NautilusDirectory *directory,
+							NautilusFile      *file,
+							const char        *iid)
 {
 	GList *old_list, *new_list;
 	gboolean was_in_list;
 	GnomeVFSResult result;
 
-	old_list = nautilus_mime_get_short_list_components_for_uri (uri);
+	old_list = nautilus_mime_get_short_list_components_for_uri (directory, file);
 	old_list = gnome_vfs_mime_remove_component_from_list 
 		(old_list, iid, &was_in_list);
 
@@ -948,7 +942,7 @@ nautilus_mime_remove_component_from_short_list_for_uri (const char *uri,
 		result = GNOME_VFS_OK;
 	} else {
 		new_list = gnome_vfs_mime_id_list_from_component_list (old_list);
-		result = nautilus_mime_set_short_list_components_for_uri (uri, new_list);
+		result = nautilus_mime_set_short_list_components_for_uri (directory, file, new_list);
 		nautilus_g_list_free_deep (new_list);
 	}
 
@@ -958,15 +952,14 @@ nautilus_mime_remove_component_from_short_list_for_uri (const char *uri,
 }
 
 GnomeVFSResult
-nautilus_mime_extend_all_applications_for_uri (const char *uri,
-					       GList *applications)
+nautilus_mime_extend_all_applications_for_uri (NautilusDirectory *directory,
+					       NautilusFile      *file,
+					       GList             *applications)
 {
-	NautilusDirectory *directory;
 	GList *metadata_application_ids;
 	GList *extras;
 	GList *final_applications;
 
-	directory = nautilus_directory_get (uri);
 	nautilus_directory_wait_for_metadata (directory);
 
 	metadata_application_ids = nautilus_directory_get_metadata_list 
@@ -984,20 +977,17 @@ nautilus_mime_extend_all_applications_for_uri (const char *uri,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID,
 		 final_applications);
 
-	nautilus_directory_unref (directory);
-
 	return GNOME_VFS_OK;
 }
 
 GnomeVFSResult
-nautilus_mime_remove_from_all_applications_for_uri (const char *uri,
-						    GList *applications)
+nautilus_mime_remove_from_all_applications_for_uri (NautilusDirectory *directory,
+						    NautilusFile      *file,
+						    GList             *applications)
 {
-	NautilusDirectory *directory;
 	GList *metadata_application_ids;
 	GList *final_applications;
 
-	directory = nautilus_directory_get (uri);
 	nautilus_directory_wait_for_metadata (directory);
 
 	metadata_application_ids = nautilus_directory_get_metadata_list 
@@ -1012,37 +1002,43 @@ nautilus_mime_remove_from_all_applications_for_uri (const char *uri,
 		 NAUTILUS_METADATA_KEY_EXPLICIT_APPLICATION,
 		 NAUTILUS_METADATA_SUBKEY_APPLICATION_ID,
 		 final_applications);
-	nautilus_directory_unref (directory);
 
 	return GNOME_VFS_OK;
 }
 
 static gint
-gnome_vfs_mime_application_has_id (GnomeVFSMimeApplication *application, const char *id)
+gnome_vfs_mime_application_has_id (GnomeVFSMimeApplication *application, 
+				   const char              *id)
 {
 	return strcmp (application->id, id);
 }
 
 static gint
-gnome_vfs_mime_id_matches_application (const char *id, GnomeVFSMimeApplication *application)
+gnome_vfs_mime_id_matches_application (const char              *id, 
+				       GnomeVFSMimeApplication *application)
 {
 	return gnome_vfs_mime_application_has_id (application, id);
 }
 
 static gboolean
-gnome_vfs_mime_application_has_id_not_in_list (GnomeVFSMimeApplication *application, GList *ids)
+gnome_vfs_mime_application_has_id_not_in_list (GnomeVFSMimeApplication *application, 
+					       GList                   *ids)
 {
-	return g_list_find_custom (ids, application, (GCompareFunc) gnome_vfs_mime_id_matches_application) == NULL;
+	return g_list_find_custom (ids, application, 
+				   (GCompareFunc) gnome_vfs_mime_id_matches_application) == NULL;
 }
 
 static gboolean
-string_not_in_list (const char *str, GList *list)
+string_not_in_list (const char *str, 
+		    GList      *list)
 {
 	return g_list_find_custom (list, (gpointer) str, (GCompareFunc) strcmp) == NULL;
 }
 
 static char *
-extract_prefix_add_suffix (const char *string, const char *separator, const char *suffix)
+extract_prefix_add_suffix (const char *string, 
+			   const char *separator, 
+			   const char *suffix)
 {
         const char *separator_position;
         int prefix_length;
@@ -1138,7 +1134,10 @@ make_oaf_query_for_explicit_content_view_iids (GList *view_iids)
 }
 
 static char *
-make_oaf_query_with_known_mime_type (const char *mime_type, const char *uri_scheme, GList *explicit_iids, const char *extra_requirements)
+make_oaf_query_with_known_mime_type (const char *mime_type, 
+				     const char *uri_scheme, 
+				     GList      *explicit_iids, 
+				     const char *extra_requirements)
 {
         char *mime_supertype;
         char *result;
@@ -1237,7 +1236,9 @@ make_oaf_query_with_known_mime_type (const char *mime_type, const char *uri_sche
 }
 
 static char *
-make_oaf_query_with_uri_scheme_only (const char *uri_scheme, GList *explicit_iids, const char *extra_requirements)
+make_oaf_query_with_uri_scheme_only (const char *uri_scheme, 
+				     GList      *explicit_iids, 
+				     const char *extra_requirements)
 {
         char *result;
         char *explicit_iid_query;
@@ -1335,7 +1336,9 @@ file_list_to_mime_type_hash_table (GList *files)
 }
 
 static void
-free_key (gpointer key, gpointer value, gpointer user_data)
+free_key (gpointer key, 
+	  gpointer value, 
+	  gpointer user_data)
 {
         g_free (key);
 }
@@ -1348,7 +1351,9 @@ mime_type_hash_table_destroy (GHashTable *table)
 }
 
 static gboolean
-server_matches_content_requirements (OAF_ServerInfo *server, GHashTable *type_table, GList *explicit_iids)
+server_matches_content_requirements (OAF_ServerInfo *server, 
+				     GHashTable     *type_table, 
+				     GList          *explicit_iids)
 {
         OAF_Property *prop;
         GNOME_stringlist types;
@@ -1399,12 +1404,12 @@ static char *nautilus_sort_criteria[] = {
 
 
 static GList *
-nautilus_do_component_query (const char *mime_type, 
-			     const char *uri_scheme, 
-			     GList *files,
-			     GList *explicit_iids,
-			     char **extra_sort_criteria,
-			     char *extra_requirements,
+nautilus_do_component_query (const char        *mime_type, 
+			     const char        *uri_scheme, 
+			     GList             *files,
+			     GList             *explicit_iids,
+			     char             **extra_sort_criteria,
+			     char              *extra_requirements,
 			     CORBA_Environment *ev)
 { 
 	OAF_ServerInfoList *oaf_result;
@@ -1462,7 +1467,8 @@ nautilus_do_component_query (const char *mime_type,
 
 
 static GList *
-str_list_difference (GList *a, GList *b)
+str_list_difference (GList *a, 
+		     GList *b)
 {
 	GList *p;
 	GList *retval;
@@ -1481,36 +1487,29 @@ str_list_difference (GList *a, GList *b)
 
 
 static char *
-get_mime_type_from_uri (const char *text_uri)
+get_mime_type_from_file (NautilusFile *file)
 {
-        GnomeVFSURI *vfs_uri;
-	GnomeVFSFileInfo *file_info;
-	GnomeVFSResult result;
 	char *type;
-
+	GList *file_attributes;
+	
 	type = NULL;
 
-	if (text_uri != NULL) {
-		/* FIXME bugzilla.eazel.com 1263: 
-		   A better way would be to get this info using
-		   NautilusFile or NautilusDirectory or something, having
-		   previously ensured that the info has been computed
-		   async. */
+	/* FIXME bugzilla.eazel.com 1263: 
+	   A better way would be to get this info using
+	   NautilusFile or NautilusDirectory or something, having
+	   previously ensured that the info has been computed
+	   async. */
+
+	if (file != NULL) {
+		file_attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE);
 		
-		vfs_uri = gnome_vfs_uri_new (text_uri);
+		nautilus_file_wait_until_ready (file,
+						file_attributes,
+						FALSE);
 		
-		if (vfs_uri != NULL) {
-			file_info = gnome_vfs_file_info_new ();
-			
-			result = gnome_vfs_get_file_info_uri (vfs_uri, file_info,
-							      GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-							      | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
-			if (result == GNOME_VFS_OK) {
-				type = g_strdup (gnome_vfs_file_info_get_mime_type (file_info));
-				gnome_vfs_file_info_unref (file_info);
-				gnome_vfs_uri_unref (vfs_uri);
-			}
-		}
+		g_list_free (file_attributes);
+		
+		type = nautilus_file_get_mime_type (file);
 	}
 
 	return type == NULL ? g_strdup ("application/octet-stream") : type;
@@ -1528,7 +1527,8 @@ strv_length (char **a)
 }
 
 static char **
-strv_concat (char **a, char **b)
+strv_concat (char **a, 
+	     char **b)
 {
 	int a_length;
 	int b_length;

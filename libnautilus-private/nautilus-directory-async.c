@@ -733,7 +733,11 @@ set_up_request_by_file_attributes (Request *request,
 		 nautilus_str_compare) != NULL;
 	request->file_info = g_list_find_custom
 		(file_attributes,
-		 NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE,
+		 NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE,
+		 nautilus_str_compare) != NULL;
+	request->file_info |= g_list_find_custom
+		(file_attributes,
+		 NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE,
 		 nautilus_str_compare) != NULL;
 	request->file_info |= g_list_find_custom
 		(file_attributes,

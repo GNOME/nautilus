@@ -72,6 +72,7 @@ struct NautilusNavigationInfo {
 	gpointer callback_data;
 	GnomeVFSAsyncHandle *ah;
         NautilusDirectory *directory;
+        NautilusFile *file;
 };
 
 NautilusNavigationInfo *nautilus_navigation_info_new    (const char                 *location,

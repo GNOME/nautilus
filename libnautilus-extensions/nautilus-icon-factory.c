@@ -1308,7 +1308,7 @@ nautilus_icon_factory_get_required_file_attributes (void)
 
 	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON);
 	attributes = g_list_prepend (attributes,
-				     NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE);
+				     NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
 	attributes = g_list_prepend (attributes,
 				     NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
 

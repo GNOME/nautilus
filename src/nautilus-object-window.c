@@ -685,6 +685,7 @@ static void
 nautilus_window_switch_views (NautilusWindow *window, NautilusViewIdentifier *id)
 {
         NautilusDirectory *directory;
+	NautilusFile *file;
         NautilusViewFrame *view;
 
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
@@ -692,10 +693,12 @@ nautilus_window_switch_views (NautilusWindow *window, NautilusViewIdentifier *id
 	g_return_if_fail (id != NULL);
 
         directory = nautilus_directory_get (window->location);
-        g_assert (directory != NULL);
+	file = nautilus_file_get (window->location);
+	g_assert (directory != NULL);
         nautilus_mime_set_default_component_for_uri
-		(window->location, id->iid);
+		(directory, file, id->iid);
         nautilus_directory_unref (directory);
+        nautilus_file_unref (file);
         
         nautilus_window_allow_stop (window, TRUE);
         
@@ -932,14 +935,18 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
         GtkWidget *new_menu;
         GtkWidget *menu_item;
 	char *label;
+	NautilusDirectory *directory;
+	NautilusFile *file;
 
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
         g_return_if_fail (GTK_IS_OPTION_MENU (window->view_as_option_menu));
         
         new_menu = gtk_menu_new ();
         
+	file = nautilus_file_get (window->location);
+	directory = nautilus_directory_get (window->location);
         /* Add a menu item for each view in the preferred list for this location. */
-        components = nautilus_mime_get_short_list_components_for_uri (window->location);
+        components = nautilus_mime_get_short_list_components_for_uri (directory, file);
         for (p = components; p != NULL; p = p->next) {
                 menu_item = create_content_view_menu_item 
                 	(window, nautilus_view_identifier_new_from_content_view (p->data));
@@ -952,7 +959,7 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
 	 * one way trip if you choose one of these view menu items, but
 	 * it's better than nothing.
 	 */
-	method = nautilus_mime_get_short_list_methods_for_uri (window->location);
+	method = nautilus_mime_get_short_list_methods_for_uri (directory, file);
 	/* FIXME bugzilla.eazel.com 2466: Name of the function is plural, but it returns only
 	 * one item. That must be fixed.
 	 */
@@ -993,6 +1000,10 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
          */
         gtk_option_menu_set_menu (GTK_OPTION_MENU (window->view_as_option_menu),
                                   new_menu);
+
+
+	nautilus_directory_unref (directory);
+	nautilus_file_unref (file);
 
 	nautilus_window_synch_content_view_menu (window);
 }

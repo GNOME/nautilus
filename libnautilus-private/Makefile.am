@@ -225,6 +225,7 @@ noinst_HEADERS =				\
 	nautilus-vfs-directory.h		\
 	nautilus-view-identifier.h		\
 	nautilus-volume-monitor.h		\
+	nautilus-wait-until-ready.h		\
 	nautilus-xml-extensions.h		\
 	$(NULL)
 

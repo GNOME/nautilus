@@ -553,9 +553,15 @@ switch_location_and_view (NautilusViewIdentifier *identifier,
 			  const char *new_uri, 
 			  FMDirectoryView *directory_view)
 {
+	NautilusDirectory *directory;
+	NautilusFile *file;
+
 	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
 	g_assert (identifier != NULL);
 	g_assert (new_uri != NULL);
+
+	directory = nautilus_directory_get (new_uri);
+	file = nautilus_file_get (new_uri);
 
 	/* User has explicitly chosen a viewer other than the default, so
 	 * make it the default and then switch locations.
@@ -564,7 +570,10 @@ switch_location_and_view (NautilusViewIdentifier *identifier,
 	 * for switching location and viewer together, so we don't have to
 	 * rely on metadata for holding the default location.
 	 */
-	nautilus_mime_set_default_component_for_uri (new_uri, identifier->iid);
+	nautilus_mime_set_default_component_for_uri (directory, file, identifier->iid);
+
+	nautilus_directory_unref (directory);
+	nautilus_file_unref (file);
 
 	fm_directory_view_switch_location
 		(directory_view, new_uri,
@@ -2902,6 +2911,7 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
  	GList *applications, *components;
  	GList *node;
  	char *uri;
+	NautilusDirectory *directory;
 
 	open_with_menu = GTK_MENU (gtk_menu_new ());
 	gtk_widget_show (GTK_WIDGET (open_with_menu));
@@ -2910,7 +2920,9 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
 	if (nautilus_g_list_exactly_one_item (files)) {
 		uri = nautilus_file_get_uri (NAUTILUS_FILE (files->data));
 
-		applications = nautilus_mime_get_short_list_applications_for_uri (uri);
+		directory = nautilus_directory_get (uri);
+
+		applications = nautilus_mime_get_short_list_applications_for_uri (directory, NAUTILUS_FILE (files->data));
 		for (node = applications; node != NULL; node = node->next) {
 			add_application_to_gtk_menu (view, open_with_menu, node->data, uri);
 		}
@@ -2924,12 +2936,14 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
 
 		nautilus_gtk_menu_append_separator (open_with_menu);
 
-		components = nautilus_mime_get_short_list_components_for_uri (uri);
+		components = nautilus_mime_get_short_list_components_for_uri (directory, NAUTILUS_FILE (files->data));
 		for (node = components; node != NULL; node = node->next) {
 			add_component_to_gtk_menu (view, open_with_menu, node->data, uri);
 		}
 		gnome_vfs_mime_component_list_free (components); 
 
+
+		nautilus_directory_unref (directory);
 		g_free (uri);
 
 		append_gtk_menu_item (view,
@@ -3187,6 +3201,7 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler,
 	GList *applications, *components;
 	GList *node;
 	char *uri;
+	NautilusDirectory *directory;
 
 	/* Remove old copy of this menu (if any) */
 	bonobo_ui_handler_menu_remove 
@@ -3203,8 +3218,9 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler,
 	/* This menu is only displayed when there's one selected item. */
 	if (nautilus_g_list_exactly_one_item (selection)) {
 		uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
+		directory = nautilus_directory_get (uri);
 
-		applications = nautilus_mime_get_short_list_applications_for_uri (uri);
+		applications = nautilus_mime_get_short_list_applications_for_uri (directory, NAUTILUS_FILE (selection->data));
 
 		for (node = applications; node != NULL; node = node->next) {
 			add_application_to_bonobo_menu (ui_handler, node->data, uri, view);
@@ -3226,7 +3242,7 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler,
 			 FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_VIEWERS, 
 			 -1);
 
-		components = nautilus_mime_get_short_list_components_for_uri (uri);
+		components = nautilus_mime_get_short_list_components_for_uri (directory, NAUTILUS_FILE (selection->data));
 
 		for (node = components; node != NULL; node = node->next) {
 			add_component_to_bonobo_menu (ui_handler, node->data, uri, view);
@@ -3242,6 +3258,8 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler,
 			 -1,
 			 0, 0,
 			 (BonoboUIHandlerCallback) other_viewer_callback, view);
+
+		nautilus_directory_unref (directory);
 
 		g_free (uri);
 	}
@@ -3630,6 +3648,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	GnomeVFSMimeActionType action_type;
 	GnomeVFSMimeApplication *application;
 	gboolean performed_special_handling;
+	NautilusDirectory *directory;
 
 	parameters = callback_data;
 
@@ -3677,8 +3696,10 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	}
 
 	if (!performed_special_handling) {
-		action_type = nautilus_mime_get_default_action_type_for_uri (uri);
-		application = nautilus_mime_get_default_application_for_uri (uri);
+		directory = nautilus_directory_get (uri);
+
+		action_type = nautilus_mime_get_default_action_type_for_uri (directory, file);
+		application = nautilus_mime_get_default_application_for_uri (directory, file);
 
 		/* We need to check for the case of having
 		 * GNOME_VFS_MIME_ACTION_TYPE_APPLICATION as the
@@ -3707,6 +3728,8 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		if (application != NULL) {
 			gnome_vfs_mime_application_free (application);
 		}
+
+		nautilus_directory_unref (directory);
 	}
 
 	g_free (uri);

@@ -165,9 +165,6 @@ void               nautilus_directory_call_when_ready      (NautilusDirectory   
 							    gboolean                   wait_for_metadata,
 							    NautilusDirectoryCallback  callback,
 							    gpointer                   callback_data);
-GList *            nautilus_directory_wait_until_ready     (NautilusDirectory         *directory,
-							    GList                     *file_attributes,
-							    gboolean                   wait_for_metadata);
 void               nautilus_directory_cancel_callback      (NautilusDirectory         *directory,
 							    NautilusDirectoryCallback  callback,
 							    gpointer                   callback_data);

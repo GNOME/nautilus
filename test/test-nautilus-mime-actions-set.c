@@ -101,6 +101,8 @@ main (int argc, char **argv)
         const char *uri;  
 	const char *field;
 	const char *value;
+	NautilusDirectory *directory;
+	NautilusFile *file;
 
 	g_thread_init (NULL);
 	oaf_init (argc, argv);
@@ -116,31 +118,34 @@ main (int argc, char **argv)
 	field = argv[2];
  	value = argv[3];
 
+	directory = nautilus_directory_get (uri);
+	file = nautilus_file_get (uri);
+
 	if (strcmp (field, "default_action_type") == 0) {
 		puts ("default_action_type");
-		nautilus_mime_set_default_action_type_for_uri (uri, str_to_action_type (value));
+		nautilus_mime_set_default_action_type_for_uri (directory, file, str_to_action_type (value));
 	} else if (strcmp (field, "default_application") == 0) {
 		puts ("default_application");
-		nautilus_mime_set_default_application_for_uri (uri, value);
+		nautilus_mime_set_default_application_for_uri (directory, file, value);
 	} else if (strcmp (field, "default_component") == 0) {
 		puts ("default_component");
-		nautilus_mime_set_default_component_for_uri (uri, value);
+		nautilus_mime_set_default_component_for_uri (directory, file, value);
 	} else if (strcmp (field, "short_list_applicationss") == 0) {
 		puts ("short_list_applications");
 		nautilus_mime_set_short_list_applications_for_uri 
-			(uri, comma_separated_str_to_str_list (value));
+			(directory, file, comma_separated_str_to_str_list (value));
 	} else if (strcmp (field, "short_list_components") == 0) {
 		puts ("short_list_components");
 		nautilus_mime_set_short_list_components_for_uri
-			(uri, comma_separated_str_to_str_list (value));
+			(directory, file, comma_separated_str_to_str_list (value));
 	} else if (strcmp (field, "add_to_all_applicationss") == 0) {
 		puts ("add_to_all_applications");
 		nautilus_mime_extend_all_applications_for_uri
-			(uri, comma_separated_str_to_str_list (value));
+			(directory, file, comma_separated_str_to_str_list (value));
 	} else if (strcmp (field, "remove_from_all_applications") == 0) {
 		puts ("remove_from_all_applications");
 		nautilus_mime_remove_from_all_applications_for_uri 
-			(uri, comma_separated_str_to_str_list (value));
+			(directory, file, comma_separated_str_to_str_list (value));
 
 	} else {
 		usage (argv[0]);

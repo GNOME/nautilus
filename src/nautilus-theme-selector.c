@@ -365,6 +365,8 @@ add_theme_to_icons (GtkWidget *widget, gpointer *data)
 	NautilusThemeSelector *theme_selector;
 	GnomeVFSResult result;
 		
+	result = GNOME_VFS_OK;
+	
 	theme_selector = NAUTILUS_THEME_SELECTOR (data);
 	theme_path = g_strdup (gtk_file_selection_get_filename (GTK_FILE_SELECTION (theme_selector->details->dialog)));
 

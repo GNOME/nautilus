@@ -311,6 +311,7 @@ repopulate_program_list (GnomeDialog *program_chooser,
 {
 	char **text;
 	char *uri;
+	NautilusDirectory *directory;
 	GList *programs, *program;
 	ProgramFilePair *pair;
 	int new_row;
@@ -322,10 +323,13 @@ repopulate_program_list (GnomeDialog *program_chooser,
 		  || type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
 
 	uri = nautilus_file_get_uri (file);
-	programs = type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT
-		? nautilus_mime_get_all_components_for_uri (uri)
-		: nautilus_mime_get_all_applications_for_uri (uri);
+	directory = nautilus_directory_get (uri);
 	g_free (uri);
+
+	programs = type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT
+		? nautilus_mime_get_all_components_for_uri (directory, file)
+		: nautilus_mime_get_all_applications_for_uri (directory, file);
+	nautilus_directory_unref (directory);
 
 	gtk_clist_clear (clist);
 		
@@ -484,11 +488,18 @@ is_application_default_for_uri (GnomeVFSMimeApplication *application, const char
 {
 	GnomeVFSMimeApplication *default_application;
 	gboolean result;
+	NautilusFile *file;
+	NautilusDirectory *directory;
 
 	g_assert (application != NULL);
 
-	default_application = nautilus_mime_get_default_application_for_uri (uri);
+	file = nautilus_file_get (uri);
+	directory = nautilus_directory_get (uri);
+
+	default_application = nautilus_mime_get_default_application_for_uri (directory, file);
 	result = (default_application != NULL && strcmp (default_application->id, application->id) == 0);
+	nautilus_directory_unref (directory);
+	nautilus_file_unref (file);
 
 	gnome_vfs_mime_application_free (default_application);
 
@@ -500,11 +511,19 @@ is_component_default_for_uri (NautilusViewIdentifier *identifier, const char *ur
 {
 	OAF_ServerInfo *default_component;
 	gboolean result;
+	NautilusDirectory *directory;
+	NautilusFile *file;
 
 	g_assert (identifier != NULL);
 
-	default_component = nautilus_mime_get_default_component_for_uri (uri);
+	directory = nautilus_directory_get (uri);
+	file = nautilus_file_get (uri);
+
+	default_component = nautilus_mime_get_default_component_for_uri (directory, file);
 	result = (default_component != NULL && strcmp (default_component->iid, identifier->iid) == 0);
+
+	nautilus_directory_unref (directory);
+	nautilus_file_unref (file);
 
 	CORBA_free (default_component);
 
@@ -532,13 +551,21 @@ is_component_in_short_list_for_uri (NautilusViewIdentifier *identifier, const ch
 {
 	GList *list;
 	gboolean result;
+	NautilusDirectory *directory;
+	NautilusFile *file;
 
-	list = nautilus_mime_get_short_list_components_for_uri (uri);
+	directory = nautilus_directory_get (uri);
+	file = nautilus_file_get (uri);
+
+	list = nautilus_mime_get_short_list_components_for_uri (directory, file);
 	result = g_list_find_custom (list, 
 				     identifier, 
 				     (GCompareFunc)compare_component_with_view) 
 		 != NULL;
 	gnome_vfs_mime_component_list_free (list);
+
+	nautilus_file_unref (file);
+	nautilus_directory_unref (directory);
 
 	return result;
 }
@@ -564,14 +591,24 @@ is_application_in_short_list_for_uri (GnomeVFSMimeApplication *application, cons
 {
 	GList *list;
 	gboolean result;
+	NautilusDirectory *directory;
+	NautilusFile *file;
 
-	list = nautilus_mime_get_short_list_applications_for_uri (uri);
+	directory = nautilus_directory_get (uri);
+	file = nautilus_file_get (uri);
+
+
+	list = nautilus_mime_get_short_list_applications_for_uri (directory, file);
 	result = g_list_find_custom (list, 
 				     application, 
 				     (GCompareFunc)compare_mime_applications) 
 		 != NULL;
 	gnome_vfs_mime_application_list_free (list);
 
+
+	nautilus_directory_unref (directory);
+	nautilus_file_unref (file);
+	
 	return result;
 }
 
@@ -606,15 +643,19 @@ program_file_pair_is_default_for_file (ProgramFilePair *pair)
 {
 	char *uri;
 	gboolean result;
-	
+	NautilusDirectory *directory;
+
 	g_assert (pair != NULL);
 	g_assert (NAUTILUS_IS_FILE (pair->file));
 
 	uri = nautilus_file_get_uri (pair->file);
+	directory = nautilus_directory_get (uri);
 
-	if (pair->action_type != nautilus_mime_get_default_action_type_for_uri (uri)) {
+	if (pair->action_type != nautilus_mime_get_default_action_type_for_uri (directory, pair->file)) {
 		return FALSE;
 	}
+
+	nautilus_directory_unref (directory);
 
 	if (pair->action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
 		result = is_component_default_for_uri (pair->view_identifier, uri);
@@ -778,15 +819,18 @@ static void
 add_to_short_list_for_file (ProgramFilePair *pair)
 {
 	char *uri;
+	NautilusDirectory *directory;
 
 	uri = nautilus_file_get_uri (pair->file);
-	
-	if (pair->action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
-		nautilus_mime_add_application_to_short_list_for_uri (uri, pair->application->id);
-	} else {
-		nautilus_mime_add_component_to_short_list_for_uri (uri, pair->view_identifier->iid);
-	}
+	directory = nautilus_directory_get (uri);
 
+	if (pair->action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
+		nautilus_mime_add_application_to_short_list_for_uri (directory, pair->file, pair->application->id);
+	} else {
+		nautilus_mime_add_component_to_short_list_for_uri (directory, pair->file, pair->view_identifier->iid);
+	}
+	
+	nautilus_directory_unref (directory);
 	g_free (uri);
 }
 
@@ -794,15 +838,18 @@ static void
 remove_from_short_list_for_file (ProgramFilePair *pair)
 {
 	char *uri;
+	NautilusDirectory *directory;
 
 	uri = nautilus_file_get_uri (pair->file);
-	
+	directory = nautilus_directory_get (uri);
+
 	if (pair->action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
-		nautilus_mime_remove_application_from_short_list_for_uri (uri, pair->application->id);
+		nautilus_mime_remove_application_from_short_list_for_uri (directory, pair->file, pair->application->id);
 	} else {
-		nautilus_mime_remove_component_from_short_list_for_uri (uri, pair->view_identifier->iid);
+		nautilus_mime_remove_component_from_short_list_for_uri (directory, pair->file, pair->view_identifier->iid);
 	}
 
+	nautilus_directory_unref (directory);
 	g_free (uri);
 }
 
@@ -862,29 +909,32 @@ static void
 remove_default_for_item (ProgramFilePair *pair)
 {
 	char *uri;
+	NautilusDirectory *directory;
 
 	uri = nautilus_file_get_uri (pair->file);
+	directory = nautilus_directory_get (uri);
 	
 	if (pair->action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
 	    	/* If the default is just falling through to the default for this type,
 	    	 * don't do anything here.
 	    	 */
-	    	if (nautilus_mime_is_default_application_for_uri_user_chosen (uri)) {
+	    	if (nautilus_mime_is_default_application_for_uri_user_chosen (directory, pair->file)) {
 	    		if (is_application_default_for_uri (pair->application, uri)) {
-				nautilus_mime_set_default_application_for_uri (uri, NULL);
+				nautilus_mime_set_default_application_for_uri (directory, pair->file, NULL);
 		        }
 	    	}
 	} else {
 	    	/* If the default is just falling through to the default for this type,
 	    	 * don't do anything here.
 	    	 */
-	    	if (nautilus_mime_is_default_component_for_uri_user_chosen (uri)) {
+	    	if (nautilus_mime_is_default_component_for_uri_user_chosen (directory, pair->file)) {
 	    		if (is_component_default_for_uri (pair->view_identifier, uri)) {
-				nautilus_mime_set_default_component_for_uri (uri, NULL);
+				nautilus_mime_set_default_component_for_uri (directory, pair->file, NULL);
 		        }
 	    	}
 	}
 
+	nautilus_directory_unref (directory);
 	g_free (uri);
 }
 
@@ -910,17 +960,22 @@ static void
 set_default_for_item (ProgramFilePair *pair)
 {
 	char *uri;
+	NautilusDirectory *directory;
+
+	uri = nautilus_file_get_uri (pair->file);
+	directory = nautilus_directory_get (uri);
 
 	uri = nautilus_file_get_uri (pair->file);
 
 	if (pair->action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
-		nautilus_mime_set_default_application_for_uri (uri, pair->application->id);
+		nautilus_mime_set_default_application_for_uri (directory, pair->file, pair->application->id);
 	} else {
-		nautilus_mime_set_default_component_for_uri (uri, pair->view_identifier->iid);
+		nautilus_mime_set_default_component_for_uri (directory, pair->file, pair->view_identifier->iid);
 	}
 
-	nautilus_mime_set_default_action_type_for_uri (uri, pair->action_type);
-	
+	nautilus_mime_set_default_action_type_for_uri (directory, pair->file, pair->action_type);
+
+	nautilus_directory_unref (directory);
 	g_free (uri);
 }
 

@@ -1287,6 +1287,8 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 {
 	char *button_data;
 	GList *short_application_list;
+	NautilusDirectory *directory;
+	NautilusFile *file;
 	
 	/* dispose of any existing buttons */
 	if (sidebar->details->has_buttons) {
@@ -1304,13 +1306,16 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 		add_buttons_from_metadata(sidebar, button_data);
 		g_free(button_data);
 	}
+
+	directory = nautilus_directory_get (sidebar->details->uri);
+	file = nautilus_file_get (sidebar->details->uri);
 	
 	/* Make buttons for each item in short list + "Open with..." catchall,
 	 * unless there aren't any applications at all in complete list. 
 	 */
-	if (nautilus_mime_has_any_applications_for_uri (sidebar->details->uri)) {
+	if (nautilus_mime_has_any_applications_for_uri (directory, file)) {
 		short_application_list = 
-			nautilus_mime_get_short_list_applications_for_uri (sidebar->details->uri);
+			nautilus_mime_get_short_list_applications_for_uri (directory, file);
 		add_command_buttons (sidebar, short_application_list);
 		gnome_vfs_mime_application_list_free (short_application_list);
 
@@ -1322,6 +1327,9 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 			gtk_widget_show (GTK_WIDGET (sidebar->details->button_box_centerer));
 		}
 	}
+
+	nautilus_directory_unref (directory);
+	nautilus_file_unref (file);
 }
 
 void
