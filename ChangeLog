@@ -1,3 +1,21 @@
+2000-07-21  Ali Abdin  <aliabdin@aucegypt.edu>
+
+	* components/help/help-method.c:
+	(transform_absolute_file): Changed some stuff to fit Eazel style
+	guidelines. Fixed a couple of places that should use 'temp_file2'
+	instead of 'temp_file' (this prolly fixes a leak too).
+	(file_from_path): New function - returns the filename with no suffix
+	from a given path.
+	(transform_relative_file): Filled in this function. This fixed bug
+	#698 (i18n)
+	(help_uri_to_string): Make NULL the last argument to g_strconcat since
+	that is the required behavior (otherwise mem-corruption)
+	(convert_file_to_uri): Modified to match Eazel style guidelines.
+	Removed erroneous mime-type comparison for SGML files. Changed the
+	check for 'info' from a 'strncmp' to a 'strcmp'.
+
+	Also removed the FIXME's for bug #696 and #698
+
 2000-07-21  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* components/services/trilobite/libtrilobite/Makefile.am:
