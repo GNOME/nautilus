@@ -460,8 +460,6 @@ view_load_location_callback (NautilusView *nautilus_view,
 
 	DEBUG_MSG (("+%s\n", __FUNCTION__));
 
-	DEBUG_MSG ((">nautilus_view_report_load_underway\n"));
-
 	/* set to FALSE here so any URI reported in mozilla_location_callback
 	 * will not be sent back to nautilus
 	 */
@@ -473,11 +471,13 @@ view_load_location_callback (NautilusView *nautilus_view,
 		/* if this is a gnome-help: uri, transform it into a file: uri
 		 * and load again to get around the fact that the help translater doesn't
 		 * know how to deal with paths such as "gnome-help:control-center/foo"
-		 * FIXME this results in an extraneous entry in the nautilus history
 		 */
-		nautilus_view_open_location_in_this_window (view->details->nautilus_view, file_uri);
+		DEBUG_MSG ((">nautilus_view_report_redirect (%s,%s)\n", location, file_uri));
+		nautilus_view_report_redirect (view->details->nautilus_view, location, file_uri, NULL, file_uri);
+		navigate_mozilla_to_nautilus_uri (view, file_uri);
 		g_free (file_uri);
 	} else {
+		DEBUG_MSG ((">nautilus_view_report_load_underway\n"));		
 		nautilus_view_report_load_underway (nautilus_view);
 		navigate_mozilla_to_nautilus_uri (view, location);
 	}
@@ -739,6 +739,7 @@ static void
 mozilla_realize_callback (GtkWidget *mozilla, gpointer user_data)
 {
 	NautilusMozillaContentView	*view;
+	char *uri;
 
 	DEBUG_MSG (("+%s\n", __FUNCTION__));
 
@@ -748,7 +749,10 @@ mozilla_realize_callback (GtkWidget *mozilla, gpointer user_data)
 
 	if (view->details->uri != NULL) {
 		DEBUG_MSG (("=%s navigating to uri after realize '%s'\n", __FUNCTION__, view->details->uri));
-		navigate_mozilla_to_nautilus_uri (view, view->details->uri);
+
+		uri = g_strdup (view->details->uri);
+		navigate_mozilla_to_nautilus_uri (view, uri);
+		g_free (uri);
 	}
 
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
@@ -771,6 +775,7 @@ mozilla_title_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 	DEBUG_MSG (("=%s : new title='%s'\n", __FUNCTION__, new_title));
 
 	if (new_title != NULL && strcmp (new_title, "") != 0) {
+		DEBUG_MSG ((">nautilus_view_set_title '%s'\n", new_title));
 		nautilus_view_set_title (view->details->nautilus_view, new_title);
 	}
 	
@@ -830,7 +835,7 @@ mozilla_location_callback (GtkMozEmbed *mozilla, gpointer user_data)
 	DEBUG_MSG (("=%s : current='%s' new='%s'\n", __FUNCTION__, view->details->uri, new_location_translated));
 
 	/*
-	 * FIXME bug 6965
+	 * FIXME bug 7114
 	 * The user-initiated navigation check here is an attempt to be able
 	 * to prevent redirects that were handled by Mozilla from showing
 	 * up in the Nautilus history.
@@ -853,15 +858,15 @@ mozilla_location_callback (GtkMozEmbed *mozilla, gpointer user_data)
 		if (view->details->user_initiated_navigation) {
 			update_nautilus_uri (view, new_location_translated);
 		} else {
-			/* We still need to update our concept of the URI
-			 * so that our handling of relative URI's is correct.
-			 * This means a Nautilus-initiated reload will actually
-			 * fail to be communicated to mozilla as a special reload
-			 * event in view_load_location_callback.
-			 */
+			DEBUG_MSG (("=%s : Navigation not user initiated, reporting as redirect\n", __FUNCTION__));
+
+			DEBUG_MSG ((">nautilus_view_report_redirect (%s,%s)\n", view->details->uri, new_location_translated));
+
+			nautilus_view_report_redirect (view->details->nautilus_view, 
+				view->details->uri, new_location_translated, NULL, new_location_translated);
+
 			g_free (view->details->uri);
 			view->details->uri = g_strdup (new_location_translated);
-			DEBUG_MSG (("=%s : Navigation not user initiated, not reporting to nautilus\n", __FUNCTION__));
 		}
 	} else {
 		DEBUG_MSG (("=%s : URI's identical, ignoring request\n", __FUNCTION__));
@@ -967,6 +972,7 @@ mozilla_net_start_callback (GtkMozEmbed 	*mozilla,
 
 	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
 
+	DEBUG_MSG ((">nautilus_view_report_load_underway\n"));
 	nautilus_view_report_load_underway (view->details->nautilus_view);
 
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
@@ -984,6 +990,7 @@ mozilla_net_stop_callback (GtkMozEmbed 	*mozilla,
 
 	g_assert (GTK_MOZ_EMBED (mozilla) == view->details->mozilla);
 
+	DEBUG_MSG ((">nautilus_view_report_load_complete\n"));
 	nautilus_view_report_load_complete (view->details->nautilus_view);
 
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
@@ -1044,11 +1051,14 @@ mozilla_progress_callback (GtkMozEmbed *mozilla,
 	 */
 
 	if (max_progress == -1 || max_progress == 0) {
+		DEBUG_MSG ((">nautilus_view_report_load_progress %f\n", 0.0));
 		nautilus_view_report_load_progress (view->details->nautilus_view, 0);
 	} else if (max_progress < current_progress) {
+		DEBUG_MSG ((">nautilus_view_report_load_progress %f\n", 1.0));
 		nautilus_view_report_load_progress (view->details->nautilus_view, 1.0);
 	} else {
-		nautilus_view_report_load_progress (view->details->nautilus_view, current_progress / max_progress);
+		DEBUG_MSG ((">nautilus_view_report_load_progress %f\n", (double)current_progress / (double)max_progress));
+		nautilus_view_report_load_progress (view->details->nautilus_view, (double)current_progress / (double)max_progress);
 	}
 }
 
@@ -1162,23 +1172,23 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 			 * Right now, we report a load error.  But we
 			 * could tell ammonite to prompt for login
 			 */
+			DEBUG_MSG ((">nautilus_view_report_load_failed\n"));
 			nautilus_view_report_load_failed (view->details->nautilus_view);
 			ret = NS_DOM_EVENT_CONSUMED;
 		} else if (href[0] == '#') {
 			/* a navigation to an anchor within the same page */
 			view->details->user_initiated_navigation = TRUE;
 
-			/* Anchor navigation is busted for documents that have 
-			 * been streamed into embedded mozilla.
-			 * So, for stuff we've loaded over gnome-vfs,
-			 * we do it by hand
-			 */ 
+			/* bugzilla.mozilla.org 70311 -- anchor navigation
+			 * doesn't work on documents that have been streamed
+			 * into gtkmozembed.  So we do it outselves.
+			 */
 			if (should_mozilla_load_uri_directly (href_full)) {
 				DEBUG_MSG (("=%s : anchor navigation in normal uri, allowing navigate to continue\n", __FUNCTION__));
 				ret = NS_DOM_EVENT_IGNORED;
 			} else {
 				char *unescaped_anchor;
-				
+
 				/* href+1 to skip the fragment identifier */
 				unescaped_anchor = gnome_vfs_unescape_string (href+1, NULL);
 
@@ -1219,6 +1229,7 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 		} else {
 			/* With some schemes, navigation needs to be funneled through nautilus. */
 			DEBUG_MSG (("=%s : funnelling navigation through nautilus\n", __FUNCTION__));
+			DEBUG_MSG ((">nautilus_view_open_location_in_this_window '%s'", href_full));
 			nautilus_view_open_location_in_this_window (view->details->nautilus_view, href_full);
 
 			ret = NS_DOM_EVENT_CONSUMED;
@@ -1256,9 +1267,9 @@ vfs_open_callback (GnomeVFSAsyncHandle *handle, GnomeVFSResult result, gpointer 
 
 	if (result != GNOME_VFS_OK)
 	{
-		DEBUG_MSG ((">nautilus_view_report_load_failed\n"));
 		gtk_moz_embed_close_stream (view->details->mozilla);
 		/* NOTE: the view may go away after a call to report_load_failed */
+		DEBUG_MSG ((">nautilus_view_report_load_failed\n"));
 		nautilus_view_report_load_failed (view->details->nautilus_view);
 	} else {
 		if (view->details->vfs_read_buffer == NULL) {
@@ -1417,6 +1428,7 @@ navigate_mozilla_to_nautilus_uri (NautilusMozillaContentView     *view,
 	cancel_pending_vfs_operation (view);
 
 	if (mozilla_uri == NULL) {
+		DEBUG_MSG ((">nautilus_view_report_load_failed\n"));
 		nautilus_view_report_load_failed (view->details->nautilus_view);
 		goto error;
 	}
@@ -1484,6 +1496,7 @@ update_nautilus_uri (NautilusMozillaContentView *view, const char *nautilus_uri)
 
 	DEBUG_MSG (("=%s current URI is now '%s'\n", __FUNCTION__, view->details->uri));
 
+	DEBUG_MSG ((">nautilus_view_report_location_change '%s'\n", nautilus_uri));
 	nautilus_view_report_location_change (view->details->nautilus_view,
 					      nautilus_uri,
 					      NULL,

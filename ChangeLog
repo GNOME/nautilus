@@ -1,3 +1,17 @@
+2001-02-27  Mike Fleming  <mfleming@eazel.com>
+
+	Bug 6965 -- move to using report_redirect.
+	Commited so Darin can debug report_redirect.
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(view_load_location_callback), (mozilla_realize_callback),
+	(mozilla_title_changed_callback), (mozilla_location_callback),
+	(mozilla_net_start_callback), (mozilla_net_stop_callback),
+	(mozilla_progress_callback), (mozilla_dom_mouse_click_callback),
+	(vfs_open_callback), (navigate_mozilla_to_nautilus_uri),
+	(update_nautilus_uri):
+
+
 2001-02-27  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
