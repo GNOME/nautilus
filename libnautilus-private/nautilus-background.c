@@ -27,6 +27,8 @@
 
 #include "nautilus-background.h"
 
+#include <math.h>
+
 #include <gtk/gtksignal.h>
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gdk-pixbuf-extensions.h"
@@ -210,6 +212,40 @@ nautilus_background_new (void)
 	return NAUTILUS_BACKGROUND (gtk_type_new (NAUTILUS_TYPE_BACKGROUND));
 }
 
+static gboolean
+nautilus_background_image_fully_obscures (NautilusBackground *background, int dest_width, int dest_height, gboolean use_alpha)
+{
+	int image_width;
+	int image_height;
+	
+	if (background->details->image == NULL || (use_alpha && gdk_pixbuf_get_has_alpha (background->details->image)) {
+		return FALSE;
+	} else {
+		image_width = gdk_pixbuf_get_width (background->details->image);
+		image_height = gdk_pixbuf_get_height (background->details->image);
+
+		switch (background->details->image_placement) {
+			case NAUTILUS_BACKGROUND_SCALED:
+		  	case NAUTILUS_BACKGROUND_TILED:
+				return TRUE;
+			case NAUTILUS_BACKGROUND_SCALED_ASPECT:
+				/* See if the image has the same aspect ratio as the background.
+				 * Equivalent to: 
+				 *   image_width/image_height = rectangle->width/rectangle->height
+				 * but avoids floating point (& integer division pitfall)
+				 */
+				return image_width * dest_height == image_height * dest_width;
+			case NAUTILUS_BACKGROUND_CENTERED:
+				/* Check if it's smaller in either dimension.
+				 */
+				return !(image_width < dest_width || image_height < dest_height);
+			default:
+				g_assert_not_reached ();
+				return FALSE;
+		}
+	}
+}
+
 /* this routine is for gdk style rendering, which doesn't naturally support transparency, so we
    draw into a pixbuf offscreen if necessary */
 void
@@ -227,11 +263,7 @@ nautilus_background_draw (NautilusBackground *background,
 	char *start_color_spec, *end_color_spec;
 	guint32 start_rgb, end_rgb;
 	gboolean horizontal_gradient;
-	gboolean image_totally_obscures;
 
-	/* FIXME bugzilla.eazel.com 2189: combine mode only works with tiled images. If we decide we want
-	 * combo mode to work more generally, this needs to be fixed.
-	 */
 	if (background->details->combine_mode) {
 		/* allocate a pixbuf the size of the rectangle */
 		pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, rectangle->width, rectangle->height);
@@ -260,39 +292,7 @@ nautilus_background_draw (NautilusBackground *background,
 		gdk_pixbuf_unref (pixbuf);
 		
 		return;
-	}
-	
-	/* if the image won't totally obscure it, draw the background color
-	 */
-
-	if (background->details->image == NULL) {
-		image_totally_obscures = FALSE;
-	} else {
-		image_width = gdk_pixbuf_get_width (background->details->image);
-		image_height = gdk_pixbuf_get_height (background->details->image);
-
-		switch (background->details->image_placement) {
-			case NAUTILUS_BACKGROUND_SCALED:
-		  	case NAUTILUS_BACKGROUND_TILED:
-				image_totally_obscures = TRUE;
-				break;
-			case NAUTILUS_BACKGROUND_SCALED_ASPECT:
-				/* See if the image has the same aspect ratio as the background.
-				 * Equivalent to: 
-				 *   image_width/image_height = rectangle->width/rectangle->height
-				 * but avoids integer division pitfall and floating point.
-				 */
-				image_totally_obscures = image_width * rectangle->height == image_height * rectangle->width;
-				break;
-			default:
-				g_assert_not_reached ();
-			case NAUTILUS_BACKGROUND_CENTERED:
-				image_totally_obscures = !(image_width < rectangle->width || image_height < rectangle->height);
-				break;
-		}
-	}
-	
-	if (!image_totally_obscures) {
+	} else if (!nautilus_background_image_fully_obscures (background, rectangle->width, rectangle->height, FALSE)) {
 		start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
 		end_color_spec = nautilus_gradient_get_end_color_spec (background->details->color);
 		horizontal_gradient = nautilus_gradient_is_horizontal (background->details->color);
@@ -392,6 +392,64 @@ draw_pixbuf_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buf, double affine[6], int x_
 	affine[5] -= y_offset;
 }
 
+static void
+draw_pixbuf_scaled_aspect_aa(GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer, int entire_width, int entire_height)
+{
+	int image_width;
+	int image_height;
+	int image_left;
+	int image_top;
+
+	double scale;
+	double affine[6];
+
+	image_width = gdk_pixbuf_get_width (pixbuf);
+	image_height = gdk_pixbuf_get_height (pixbuf);
+
+	scale = MIN ((double) entire_width / image_width, (double) entire_height / image_height);
+
+	art_affine_identity (affine);
+	art_affine_scale (affine, scale, scale);
+
+	image_left = (entire_width - floor (image_width * scale + 0.5)) / 2;
+	image_top = (entire_height - floor (image_height * scale + 0.5)) / 2;
+	
+	draw_pixbuf_aa (pixbuf, buffer, affine, image_left, image_top);
+}
+
+static void
+draw_pixbuf_scaled_aa(GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer, int entire_width, int entire_height)
+{
+	double affine[6];
+
+	art_affine_identity (affine);
+	art_affine_scale (affine,
+			  (double) entire_width / gdk_pixbuf_get_width (pixbuf),
+			  (double) entire_height / gdk_pixbuf_get_height (pixbuf));
+			  
+	draw_pixbuf_aa (pixbuf, buffer, affine, 0, 0);	
+}
+
+static void
+draw_pixbuf_centered_aa(GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer, int entire_width, int entire_height)
+{
+	int image_width;
+	int image_height;
+	int image_left;
+	int image_top;
+	
+	double affine[6];
+
+	art_affine_identity (affine);
+	
+	image_width = gdk_pixbuf_get_width (pixbuf);
+	image_height = gdk_pixbuf_get_height (pixbuf);
+	image_left = (entire_width - image_width) / 2;
+	image_top = (entire_height - image_height) / 2;
+
+	draw_pixbuf_aa (pixbuf, buffer, affine, image_left, image_top);
+}
+
 /* fill the canvas buffer with a tiled pixmap */
 static void
 draw_pixbuf_tiled_aa(GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer)
@@ -407,7 +465,7 @@ draw_pixbuf_tiled_aa(GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer)
 	
 	double affine[6];
 	
-	art_affine_identity(affine);
+	art_affine_identity (affine);
 
 	tile_width = gdk_pixbuf_get_width (pixbuf);
 	tile_height = gdk_pixbuf_get_height (pixbuf);
@@ -430,7 +488,7 @@ draw_pixbuf_tiled_aa(GdkPixbuf *pixbuf, GnomeCanvasBuf *buffer)
 			tile_y = blit_y - y;
 			blit_height = MIN (tile_height, end_y - y) - tile_y;
 			
-			draw_pixbuf_aa(pixbuf, buffer, affine, x, y);
+			draw_pixbuf_aa (pixbuf, buffer, affine, x, y);
 		}
 	}
 }
@@ -453,7 +511,7 @@ void nautilus_background_draw_aa (NautilusBackground *background,
 	int accumulator, temp_value;
 	
 	if (!buffer->is_buf) {
-		if (background->details->combine_mode || (background->details->image == NULL)) {
+		if (!nautilus_background_image_fully_obscures (background, entire_width, entire_height, TRUE)) {
 			/* get the initial color */
 			start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
 			start_rgb = nautilus_parse_rgb_with_white_default (start_color_spec);
@@ -542,11 +600,26 @@ void nautilus_background_draw_aa (NautilusBackground *background,
 			}
 			*buffer = save_buf;
 		}
-		
-		if (background->details->image && background->details->image_placement == NAUTILUS_BACKGROUND_TILED) {
-			draw_pixbuf_tiled_aa (background->details->image, buffer);
-		} 		
-				
+
+		if (background->details->image != NULL) {
+			switch (background->details->image_placement) {
+			  	case NAUTILUS_BACKGROUND_TILED:
+					draw_pixbuf_tiled_aa (background->details->image, buffer);
+					break;
+				case NAUTILUS_BACKGROUND_SCALED:
+					draw_pixbuf_scaled_aa (background->details->image, buffer, entire_width, entire_height);
+					break;
+				case NAUTILUS_BACKGROUND_SCALED_ASPECT:
+					draw_pixbuf_scaled_aspect_aa (background->details->image, buffer, entire_width, entire_height);
+					break;
+				default:
+					g_assert_not_reached ();
+				case NAUTILUS_BACKGROUND_CENTERED:
+					draw_pixbuf_centered_aa (background->details->image, buffer, entire_width, entire_height);
+					break;
+			}
+		}
+						
 		buffer->is_buf = TRUE;
 	}
 }
