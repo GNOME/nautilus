@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2003-08-08 17:02+0200\n"
-"PO-Revision-Date: 2003-08-08 17:04+0200\n"
+"POT-Creation-Date: 2003-09-02 13:09+0200\n"
+"PO-Revision-Date: 2003-09-02 13:11+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -395,15 +395,15 @@ msgstr "(Tomt)"
 msgid "Loading..."
 msgstr "Läser in..."
 
-#: components/tree/nautilus-tree-view.c:505 nautilus.desktop.in.h:1
+#: components/tree/nautilus-tree-view.c:519 nautilus.desktop.in.h:1
 msgid "Home Folder"
 msgstr "Hemmapp"
 
-#: components/tree/nautilus-tree-view.c:507
+#: components/tree/nautilus-tree-view.c:521
 msgid "Filesystem"
 msgstr "Filsystem"
 
-#: components/tree/nautilus-tree-view.c:509
+#: components/tree/nautilus-tree-view.c:523
 msgid "Network Neighbourhood"
 msgstr "Nätverket"
 
@@ -1765,7 +1765,7 @@ msgid "Can't delete volume"
 msgstr "Kan inte ta bort volym"
 
 #: libnautilus-private/nautilus-desktop-link.c:139
-#: libnautilus-private/nautilus-file.c:5592
+#: libnautilus-private/nautilus-file.c:5600
 #: libnautilus-private/nautilus-global-preferences.c:545
 #: libnautilus-private/nautilus-trash-directory.c:383
 msgid "Trash"
@@ -3354,55 +3354,55 @@ msgstr "färgmarkerad för släpp"
 msgid "whether we are highlighted for a D&D drop"
 msgstr "huruvida vi är färgmarkerade för ett drag-och-släpp"
 
-#: libnautilus-private/nautilus-icon-container.c:2009
+#: libnautilus-private/nautilus-icon-container.c:2022
 msgid "The selection rectangle"
 msgstr "Markeringsrektangeln"
 
-#: libnautilus-private/nautilus-icon-container.c:4011
+#: libnautilus-private/nautilus-icon-container.c:4079
 msgid "Frame Text"
 msgstr "Rama in text"
 
-#: libnautilus-private/nautilus-icon-container.c:4012
+#: libnautilus-private/nautilus-icon-container.c:4080
 msgid "Draw a frame around unselected text"
 msgstr "Rita en ram runt omarkerad text"
 
-#: libnautilus-private/nautilus-icon-container.c:4018
+#: libnautilus-private/nautilus-icon-container.c:4086
 msgid "Selection Box Color"
 msgstr "Färg på markeringsruta"
 
-#: libnautilus-private/nautilus-icon-container.c:4019
+#: libnautilus-private/nautilus-icon-container.c:4087
 msgid "Color of the selection box"
 msgstr "Färg på markeringsrutan"
 
-#: libnautilus-private/nautilus-icon-container.c:4024
+#: libnautilus-private/nautilus-icon-container.c:4092
 msgid "Selection Box Alpha"
 msgstr "Alfa för markeringsruta"
 
-#: libnautilus-private/nautilus-icon-container.c:4025
+#: libnautilus-private/nautilus-icon-container.c:4093
 msgid "Opacity of the selection box"
 msgstr "Opacitet för markeringsrutan"
 
-#: libnautilus-private/nautilus-icon-container.c:4032
+#: libnautilus-private/nautilus-icon-container.c:4100
 msgid "Highlight Alpha"
 msgstr "Färgmarkeringsalfa"
 
-#: libnautilus-private/nautilus-icon-container.c:4033
+#: libnautilus-private/nautilus-icon-container.c:4101
 msgid "Opacity of the highlight for selected icons"
 msgstr "Opacitet för färgmarkeringen för markerade ikoner"
 
-#: libnautilus-private/nautilus-icon-container.c:4039
+#: libnautilus-private/nautilus-icon-container.c:4107
 msgid "Light Info Color"
 msgstr "Ljus informationsfärg"
 
-#: libnautilus-private/nautilus-icon-container.c:4040
+#: libnautilus-private/nautilus-icon-container.c:4108
 msgid "Color used for information text against a dark background"
 msgstr "Färg som används för informationstext mot en mörk bakgrund"
 
-#: libnautilus-private/nautilus-icon-container.c:4045
+#: libnautilus-private/nautilus-icon-container.c:4113
 msgid "Dark Info Color"
 msgstr "Mörk informationsfärg"
 
-#: libnautilus-private/nautilus-icon-container.c:4046
+#: libnautilus-private/nautilus-icon-container.c:4114
 msgid "Color used for information text against a light background"
 msgstr "Färg som används för informationstext mot en ljus bakgrund"
 
@@ -4852,7 +4852,7 @@ msgstr ""
 #: src/file-manager/fm-error-reporting.c:136
 #, c-format
 msgid "Sorry, couldn't rename \"%s\" to \"%s\"."
-msgstr "Tyvärr, kunde byta namn på \"%s\" till \"%s\"."
+msgstr "Tyvärr, kunde inte byta namn på \"%s\" till \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:143
 msgid "Renaming Error"
@@ -5891,11 +5891,11 @@ msgstr "Visa _indexeringsstatus"
 msgid "Show status of indexing used when searching"
 msgstr "Visa statusen för indexeringen som används av sökning"
 
-#: src/nautilus-application.c:220
+#: src/nautilus-application.c:221
 msgid "Couldn't Create Required Folder"
 msgstr "Kan inte skapa mapp som krävs"
 
-#: src/nautilus-application.c:221
+#: src/nautilus-application.c:222
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5906,11 +5906,11 @@ msgstr ""
 "Nautilus bör du skapa denna mapp, eller ställa in de nödvändiga "
 "rättigheterna för att Nautilus ska kunna skapa den."
 
-#: src/nautilus-application.c:226
+#: src/nautilus-application.c:227
 msgid "Couldn't Create Required Folders"
 msgstr "Kan inte skapa mappar som krävs"
 
-#: src/nautilus-application.c:227
+#: src/nautilus-application.c:228
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5927,11 +5927,11 @@ msgstr ""
 "Innan du kör Nautilus bör du skapa dessa mappar, eller ställa in de "
 "nödvändiga rättigheterna för att Nautilus ska kunna skapa dem."
 
-#: src/nautilus-application.c:298
+#: src/nautilus-application.c:299
 msgid "Link To Old Desktop"
 msgstr "Länk till gammalt skrivbord"
 
-#: src/nautilus-application.c:314
+#: src/nautilus-application.c:315
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
@@ -5941,7 +5941,7 @@ msgstr ""
 "\"Länk till gammalt skrivbord\" har skapats på skrivbordet. Du kan öppna "
 "denna för att flytta över de filer du vill ha och sedan ta bort länken."
 
-#: src/nautilus-application.c:317
+#: src/nautilus-application.c:318
 msgid "Migrated old desktop"
 msgstr "Migrerat gammalt skrivbord"
 
@@ -5955,7 +5955,7 @@ msgstr "Migrerat gammalt skrivbord"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:435
+#: src/nautilus-application.c:485
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5966,7 +5966,7 @@ msgstr ""
 "eller installera om Nautilus."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:441
+#: src/nautilus-application.c:491
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6012,12 +6012,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:471 src/nautilus-application.c:489
-#: src/nautilus-application.c:496
+#: src/nautilus-application.c:521 src/nautilus-application.c:539
+#: src/nautilus-application.c:546
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus kan inte användas just nu på grund av ett oväntat fel."
 
-#: src/nautilus-application.c:472
+#: src/nautilus-application.c:522
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -6025,7 +6025,7 @@ msgstr ""
 "Nautilus kan inte användas just nu på grund av ett oväntat fel från Bonobo "
 "inträffade när ett försök gjordes att registrera filhanterarens vyserver."
 
-#: src/nautilus-application.c:490
+#: src/nautilus-application.c:540
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -6035,7 +6035,7 @@ msgstr ""
 "när den skulle hitta fabriken. Om du dödar bonobo-activation-server och "
 "startar om Nautilus kanske problemet löser sig."
 
-#: src/nautilus-application.c:497
+#: src/nautilus-application.c:547
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
