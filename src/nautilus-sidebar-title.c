@@ -446,15 +446,14 @@ nautilus_index_title_set_uri (NautilusIndexTitle *index_title,
 						   "changed",
 						   update,
 						   GTK_OBJECT (index_title));
-	}
-
-	/* Monitor the item count so we can update when it is known. */
-	if (nautilus_file_is_directory (index_title->details->file)) {
-		attributes = g_list_prepend (NULL,
-					     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
-		nautilus_file_monitor_add (index_title->details->file, index_title,
-					   attributes, NULL);
-		g_list_free (attributes);
+		/* Monitor the item count so we can update when it is known. */
+		if (nautilus_file_is_directory (index_title->details->file)) {
+			attributes = g_list_prepend (NULL,
+						     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
+			nautilus_file_monitor_add (index_title->details->file, index_title,
+						   attributes, NULL);
+			g_list_free (attributes);
+		}
 	}
 
 	g_free (index_title->details->requested_text);

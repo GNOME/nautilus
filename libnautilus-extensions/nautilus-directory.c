@@ -80,11 +80,6 @@ struct MetafileWriteState {
 	gboolean write_again;
 };
 
-typedef struct {
-	gconstpointer client;
-	gboolean monitor_directory_counts;
-} FileMonitor;
-
 #define READ_CHUNK_SIZE (4 * 1024)
 
 static int                           compare_file_with_name                              (gconstpointer                  a,
@@ -273,6 +268,7 @@ nautilus_directory_destroy (GtkObject *object)
 	g_assert (directory->details->files == NULL);
 	xmlFreeDoc (directory->details->metafile);
 	g_assert (directory->details->directory_load_in_progress == NULL);
+	g_assert (directory->details->count_in_progress == NULL);
 	g_assert (directory->details->dequeue_pending_idle_id == 0);
 	nautilus_gnome_vfs_file_info_list_unref (directory->details->pending_file_info);
 	g_assert (directory->details->write_metafile_idle_id == 0);
@@ -851,59 +847,141 @@ nautilus_directory_new (const char* uri)
 }
 
 static int
-compare_file_monitor_with_client (gconstpointer a,
-				  gconstpointer client)
+compare_file_monitor_by_client_and_file (gconstpointer a,
+				  	 gconstpointer data)
 {
 	const FileMonitor *monitor;
+	const FileMonitor *compare_monitor;
 
 	monitor = a;
-	if (monitor->client < client) {
+	compare_monitor = data;
+	
+	if (monitor->client < compare_monitor->client) {
 		return -1;
 	}
-	if (monitor->client > client) {
+	if (monitor->client > compare_monitor->client) {
 		return +1;
 	}
+
+	if (monitor->file < compare_monitor->file) {
+		return -1;
+	}
+	if (monitor->file > compare_monitor->file) {
+		return +1;
+	}
+	
 	return 0;
 }
 
 static GList *
 find_file_monitor (NautilusDirectory *directory,
+		   NautilusFile *file,
 		   gconstpointer client)
 {
-	return g_list_find_custom (directory->details->file_monitors,
-				   (gpointer) client,
-				   compare_file_monitor_with_client);
+	GList *result;
+	FileMonitor *file_monitor;
+
+	file_monitor = g_new (FileMonitor, 1);
+	file_monitor->client = client;
+	file_monitor->file = file;
+
+	result = g_list_find_custom (directory->details->file_monitors,
+				     (gpointer) file_monitor,
+				     compare_file_monitor_by_client_and_file);
+
+	g_free (file_monitor);
+	
+	return result;
+}
+
+static void
+cancel_unneeded_file_attribute_requests (NautilusDirectory *directory)
+{
+	GList *p;
+	FileMonitor *file_monitor;
+
+	/* Cancel the directory-count request if no one cares anymore */
+	if (directory->details->count_in_progress != NULL) {
+		for (p = directory->details->file_monitors; p != NULL; p = p->next) {
+			file_monitor = p->data;
+			if (file_monitor->monitor_directory_counts) {
+				break;
+			}
+		}
+		if (p == NULL) {
+			gnome_vfs_async_cancel (directory->details->count_in_progress);
+			directory->details->count_in_progress = NULL;
+		}
+	}		
+}
+
+void
+remove_file_monitor_link (NautilusDirectory *directory, GList *link)
+{
+	directory->details->file_monitors =
+		g_list_remove_link (directory->details->file_monitors, link);
+	if (link != NULL) {
+		g_free (link->data);
+	}
+	g_list_free (link);
 }
 
 static void
 remove_file_monitor (NautilusDirectory *directory,
+		     NautilusFile *file,
 		     gconstpointer client)
 {
-	directory->details->file_monitors =
-		g_list_remove_link (directory->details->file_monitors,
-				    find_file_monitor (directory, client));
+	remove_file_monitor_link (directory, find_file_monitor (directory, file, client));
+}
+
+static gboolean
+is_file_list_monitored (NautilusDirectory *directory) 
+{
+	FileMonitor *file_monitor;
+	GList *p;
+
+	for (p = directory->details->file_monitors; p != NULL; p = p->next) {
+		file_monitor = p->data;
+		if (file_monitor->file == NULL) {
+			return TRUE;
+		}
+	}
+	
+	return FALSE;
 }
 
 void
-nautilus_directory_file_monitor_add (NautilusDirectory *directory,
-				     gconstpointer client,
-				     GList *attributes,
-				     GList *metadata_keys,
-				     NautilusFileListCallback callback,
-				     gpointer callback_data)
+nautilus_directory_file_monitor_add_internal (NautilusDirectory *directory,
+					      NautilusFile *file,
+				     	      gconstpointer client,
+				     	      GList *attributes,
+				     	      GList *metadata_keys,
+				     	      NautilusFileListCallback callback,
+				     	      gpointer callback_data)
 {
-	gboolean already_monitoring;
+	gboolean was_monitoring_file_list;
+	gboolean will_be_monitoring_file_list;
+	gboolean rely_on_directory_load;
 	FileMonitor *file_monitor;
 
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
-	g_return_if_fail (callback != NULL);
 
-	already_monitoring = directory->details->file_monitors != NULL;
+	/* If monitoring everything (file == NULL) then there must be
+	 * a callback. If not, there must not be.
+	 */
+	g_return_if_fail (file != NULL || callback != NULL);
+	g_return_if_fail (file == NULL || callback == NULL);
 
-	remove_file_monitor (directory, client);
+	was_monitoring_file_list = is_file_list_monitored (directory);
+	will_be_monitoring_file_list = was_monitoring_file_list || file == NULL;
+	rely_on_directory_load = will_be_monitoring_file_list && !directory->details->directory_loaded;
+
+	/* Replace any current monitor for this client/file pair. */
+	remove_file_monitor (directory, file, client);
 
 	file_monitor = g_new (FileMonitor, 1);
 	file_monitor->client = client;
+	file_monitor->file = file;
 	file_monitor->monitor_directory_counts = g_list_find_custom
 		(attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT,
@@ -912,24 +990,43 @@ nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 	directory->details->file_monitors =
 		g_list_prepend (directory->details->file_monitors, file_monitor);
 
-	nautilus_file_list_ref (directory->details->files);
+	/* Clean up stale requests only after (optionally) removing old 
+	 * monitor and adding new one. 
+	 */
+	cancel_unneeded_file_attribute_requests (directory);
 
-	if (directory->details->files != NULL) {
+	/* Keep a ref to all the files so they don't vanish while we're monitoring them. */
+	if (file == NULL) {
+		nautilus_file_list_ref (directory->details->files);
+	}
+
+	/* Tell the new monitor-er about the current set of
+	 * files, which may or may not be all of them.
+	 */
+	if (directory->details->files != NULL && file == NULL) {
 		(* callback) (directory,
 			      directory->details->files,
 			      callback_data);
 	}
 
-	if (directory->details->directory_loaded) {
+	/* Process pending requests if there's nothing (left) to load. 
+	 * Otherwise this will happen after the load.
+	 */
+	if (!rely_on_directory_load) {
 		process_pending_file_attribute_requests (directory);
 	}
 
-	if (already_monitoring) {
+	/* No need to hold onto these new refs if we already have old ones
+	 * from when we started monitoring. Those will be cleared up in
+	 * stop_monitoring_files.
+	 */
+	if (was_monitoring_file_list && file == NULL) {
 		nautilus_file_list_unref (directory->details->files);
 		return;
 	}
 
-	if (directory->details->directory_loaded) {
+	/* If we don't need to load any more files, bail out now. */
+	if (!rely_on_directory_load) {
 		return;
 	}
 
@@ -954,6 +1051,28 @@ nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 		 DIRECTORY_LOAD_ITEMS_PER_CALLBACK,               /* items_per_notification */
 		 nautilus_directory_load_callback,                /* callback */
 		 directory);
+}
+
+void
+nautilus_directory_file_monitor_add (NautilusDirectory *directory,
+				     gconstpointer client,
+				     GList *attributes,
+				     GList *metadata_keys,
+				     NautilusFileListCallback callback,
+				     gpointer callback_data)
+{
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	g_return_if_fail (client != NULL);
+	g_return_if_fail (attributes != NULL || metadata_keys != NULL);
+	g_return_if_fail (callback != NULL);
+
+	nautilus_directory_file_monitor_add_internal (directory,
+						      NULL,
+						      client,
+						      attributes,
+						      metadata_keys,
+						      callback,
+						      callback_data);
 }
 
 static gboolean
@@ -1100,15 +1219,38 @@ stop_monitoring_files (NautilusDirectory *directory)
 }
 
 void
+nautilus_directory_file_monitor_remove_internal (NautilusDirectory *directory,
+						 NautilusFile *file,
+						 gconstpointer client)
+{
+	GList *p;
+	FileMonitor *monitor;
+
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+
+	remove_file_monitor (directory, file, client);
+	cancel_unneeded_file_attribute_requests (directory);
+
+	/* Stop monitoring unless there are remaining monitors
+	 * that are watching all files (file == NULL).
+	 */	
+	for (p = directory->details->file_monitors; p != NULL; p = p->next) {
+		monitor = p->data;
+		if (monitor->file == NULL) {
+			break;
+		}
+	}
+	
+	if (p == NULL) {
+		stop_monitoring_files (directory);
+	}
+}
+
+void
 nautilus_directory_file_monitor_remove (NautilusDirectory *directory,
 					gconstpointer client)
 {
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
-
-	remove_file_monitor (directory, client);
-	if (directory->details->file_monitors == NULL) {
-		stop_monitoring_files (directory);
-	}
+	nautilus_directory_file_monitor_remove_internal (directory, NULL, client);
 }
 
 gboolean
@@ -1624,7 +1766,7 @@ directory_count_callback (GnomeVFSAsyncHandle *handle,
 static void
 process_pending_file_attribute_requests (NautilusDirectory *directory)
 {
-	GList *p;
+	GList *p, *p2;
 	FileMonitor *monitor;
 	NautilusFile *file;
 	char *uri;
@@ -1650,7 +1792,18 @@ process_pending_file_attribute_requests (NautilusDirectory *directory)
 		if (nautilus_file_is_directory (file)
 		    && !file->details->got_directory_count
 		    && !file->details->directory_count_failed) {
-			break;
+		    	/* Make sure that someone cares about this particular directory's count. */
+		    	for (p2 = directory->details->file_monitors; p2 != NULL; p2 = p2->next) {
+				monitor = p2->data;
+				if (monitor->monitor_directory_counts
+				    && (monitor->file == NULL || monitor->file == file)) {
+					break;
+				}
+		    	}
+
+			if (p2 != NULL) {
+				break;
+			}		    	
 		}
 	}
 	if (p == NULL) {

@@ -205,9 +205,24 @@ static void
 destroy (GtkObject *object)
 {
 	NautilusFile *file;
+	GList *p, *next;
+	FileMonitor *file_monitor;
 
 	file = NAUTILUS_FILE (object);
 
+	/* Make sure all monitors have been cleaned up first. */
+	p = file->details->directory->details->file_monitors;
+	while (p != NULL) {
+		next = p->next;
+		file_monitor = p->data;
+		if (file_monitor->file == file) {
+			/* Client should have removed monitor earlier. */
+			g_warning ("destroyed file still being monitored");
+			remove_file_monitor_link (file->details->directory, p);
+		}
+		p = next;
+	}
+	
 	if (file->details->is_gone) {
 		g_assert (g_list_find (file->details->directory->details->files, file) == NULL);
 	} else {
@@ -719,12 +734,27 @@ nautilus_file_monitor_add (NautilusFile         *file,
 			   GList                *attributes,
 			   GList                *metadata_keys)
 {
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	g_return_if_fail (client != NULL);
+	g_return_if_fail (attributes != NULL || metadata_keys != NULL);
+
+	nautilus_directory_file_monitor_add_internal (file->details->directory,
+						      file,
+						      client,
+						      attributes,
+						      metadata_keys,
+						      NULL,
+						      NULL);
 }			   
 			   
 void            
 nautilus_file_monitor_remove (NautilusFile         *file,
 			      gconstpointer         client)
 {
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	g_return_if_fail (client != NULL);
+
+	nautilus_directory_file_monitor_remove_internal (file->details->directory, file, client);
 }			      
 
 

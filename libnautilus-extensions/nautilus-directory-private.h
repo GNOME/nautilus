@@ -82,6 +82,13 @@ typedef struct {
 } QueuedCallback;
 
 typedef struct {
+	gconstpointer client;
+	NautilusFile *file;	/* Which file to monitor, NULL to monitor all. */
+	gboolean monitor_directory_counts;
+} FileMonitor;
+
+
+typedef struct {
 	char *from_uri;
 	char *to_uri;
 } URIPair;
@@ -107,6 +114,18 @@ void          nautilus_directory_cancel_callback_internal (NautilusDirectory    
 							   const QueuedCallback *callback);
 void          nautilus_directory_call_when_ready_internal (NautilusDirectory    *directory,
 							   const QueuedCallback *callback);
+void	      nautilus_directory_file_monitor_add_internal (NautilusDirectory   *directory,
+					      		   NautilusFile 	*file,
+				     	      		   gconstpointer 	 client,
+				     	      		   GList 		*attributes,
+				     	      		   GList 		*metadata_keys,
+				     	      		   NautilusFileListCallback callback,
+				     	      		   gpointer 		 callback_data);
+void	      nautilus_directory_file_monitor_remove_internal (NautilusDirectory *directory,
+						 	   NautilusFile 	*file,
+						 	   gconstpointer 	 client);
+void	      remove_file_monitor_link 			  (NautilusDirectory 	*directory, 
+							   GList 		*link);
 
 /* Change notification calls */
 void	      nautilus_directory_notify_files_added	  (GList *uris);

@@ -1,3 +1,48 @@
+2000-04-19  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 494 (initial directory count never appears in sidebar).
+
+	This was a missing pieces of the async framework. Darin helped
+	me finish it up.
+
+	* libnautilus-extensions/nautilus-directory-private.h:
+	Put FileMonitor struct here so NautilusFile can use it.
+	(nautilus_directory_file_monitor_add_internal),
+	(nautilus_directory_file_monitor_remove_internal),
+	(remove_file_monitor_link): New functions, shared between
+	NautilusDirectory and NautilusFile.
+	* libnautilus-extensions/nautilus-file.c:
+	(destroy): Complain about then clean up any remaining FileMonitors.
+	(nautilus_file_monitor_add), (nautilus_file_monitor_remove): Fill 
+	in the implementation for these formerly-empty routines.	
+	* libnautilus-extensions/nautilus-directory.c:
+	Moved FileMonitor struct out.
+	(nautilus_directory_destroy): assert that there's no count_in_progress.
+	(compare_file_monitor_with_client): changed name to
+	(compare_file_monitor_by_client_and_file) and behavior to match.
+	(find_file_monitor): Now takes a file and uses it in search.
+	(cancel_unneeded_file_attribute_requests): New function, cleans up 
+	no-longer-needed gnome vfs async calls.
+	(remove_file_monitor_link): New function, removes a file monitor
+	and cleans up storage.
+	(remove_file_monitor): Uses remove_file_monitor_link to fix
+	storage leak.
+	(is_file_list_monitored): New function, checks whether anyone is
+	monitoring all files in this directory.
+	(nautilus_directory_file_monitor_add_internal),
+	(nautilus_directory_file_monitor_remove): New functions,
+	generalized from old non-internal versions to handle the single-file
+	case too.
+	(nautilus_directory_file_monitor_add),
+	(nautilus_directory_file_monitor_remove): Now calls _internal function.
+	(process_pending_file_attribute_requests): Now handles single-file
+	case as well as all-files case.
+
+	* src/nautilus-index-title.c:
+	(nautilus_index_title_set_uri): Move the item-count-monitoring
+	code inside the file != NULL check so it doesn't fail at the
+	root (where, due to a bug, file is NULL).
+
 2000-04-18  Darin Adler  <darin@eazel.com>
 
 	Fixed bug where you'd see the name twice under each icon.
