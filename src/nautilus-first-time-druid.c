@@ -1077,7 +1077,7 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	label = new_body_label ( _("Click Finish to launch Nautilus. You'll start with two\n"
-				   "Nautilus windows: one shows your home directory, and the\n"
+				   "Nautilus windows: one shows your home folder, and the\n"
 				   "other tells you about Eazel's services that make the life\n"
 				   "of a Linux user easier.\n\n"
 				   "We hope you enjoy Nautilus!"));
