@@ -221,7 +221,7 @@ packagedata_new_from_rpm_conflict_reversed (struct rpmDependencyConflict conflic
 }
 
 PackageData*
-packagedata_new_from_rpm_header (Header *hd) 
+packagedata_new_from_rpm_header (Header hd) 
 {
 	PackageData *pack;
 
@@ -303,47 +303,47 @@ packagedata_copy (const PackageData *pack, gboolean deep)
 */
 void 
 packagedata_fill_from_rpm_header (PackageData *pack, 
-				  Header *hd) 
+				  Header hd)
 {
 	unsigned long *sizep;
 	char *tmp;
 
-	headerGetEntry (*hd,
+	headerGetEntry (hd,
 			RPMTAG_NAME, NULL,
 			(void **) &tmp, NULL);
 	g_free (pack->name);
 	pack->name = g_strdup (tmp);
 
-	headerGetEntry (*hd,
+	headerGetEntry (hd,
 			RPMTAG_VERSION, NULL,
 			(void **) &tmp, NULL);
 	g_free (pack->version);
 	pack->version = g_strdup (tmp);
 
-	headerGetEntry (*hd,
+	headerGetEntry (hd,
 			RPMTAG_RELEASE, NULL,
 			(void **) &tmp, NULL);
 	g_free (pack->minor);
 	pack->minor = g_strdup (tmp);
 
-	headerGetEntry (*hd,
+	headerGetEntry (hd,
 			RPMTAG_ARCH, NULL,
 			(void **) &tmp, NULL);
 	g_free (pack->archtype);
 	pack->archtype = g_strdup (tmp);
 
-	headerGetEntry (*hd,
+	headerGetEntry (hd,
 			RPMTAG_SIZE, NULL,
 			(void **) &sizep, NULL);	
 	pack->bytesize = *sizep;
 
-	headerGetEntry (*hd,
+	headerGetEntry (hd,
 			RPMTAG_DESCRIPTION, NULL,
 			(void **) &tmp, NULL);
 	g_free (pack->description);
 	pack->description = g_strdup (tmp);
 
-	headerGetEntry (*hd,
+	headerGetEntry (hd,
 			RPMTAG_SUMMARY, NULL,
 			(void **) &tmp, NULL);
 	g_free (pack->summary);
@@ -366,14 +366,13 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 
                 /* RPM v.3.0.4 and above has RPMTAG_BASENAMES */
 
-
-		headerGetEntry (*hd,			
+		headerGetEntry (hd,			
 				RPMTAG_DIRINDEXES, NULL,
 				(void**)&indexes, NULL);
-		headerGetEntry (*hd,			
+		headerGetEntry (hd,			
 				RPMTAG_DIRNAMES, NULL,
 				(void**)&paths, &num_paths);
-		headerGetEntry (*hd,			
+		headerGetEntry (hd,			
 				RPMTAG_BASENAMES, NULL,
 				(void**)&names, &count);
 
@@ -416,6 +415,8 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 			g_free (paths_copy[index]);
 		}
 		g_free (paths_copy);
+		xfree (paths);
+		xfree (names);
 	}
 }
 
@@ -440,7 +441,7 @@ gboolean
 packagedata_fill_from_file (PackageData *pack, const char *filename)
 {
 	static FD_t fd;
-	Header *hd;
+	Header hd;
 
 	/* Set filename field */
 	if (pack->filename != filename) {
@@ -452,7 +453,7 @@ packagedata_fill_from_file (PackageData *pack, const char *filename)
 	if (pack->packsys_struc) {
 		/* FIXME bugzilla.eazel.com
 		   This probably is a leak... */
-		g_free (pack->packsys_struc);
+		headerFree ((Header) pack->packsys_struc);
 	}
 
 	/* Open rpm */
@@ -465,8 +466,7 @@ packagedata_fill_from_file (PackageData *pack, const char *filename)
 	}
 
 	/* Get Header block */
-	hd = g_new0 (Header, 1);
-	rpmReadPackageHeader (fd, hd, &pack->source_package, NULL, NULL);
+	rpmReadPackageHeader (fd, &hd, &pack->source_package, NULL, NULL);
 	packagedata_fill_from_rpm_header (pack, hd);	
 
 	pack->status = PACKAGE_UNKNOWN_STATUS;
@@ -521,6 +521,7 @@ packagedata_destroy (PackageData *pack, gboolean deep)
 	g_free (pack->md5);
 	pack->md5 = NULL;
 	g_list_foreach (pack->provides, (GFunc)g_free, NULL); 
+	g_list_free (pack->provides);
 	pack->provides = NULL;
 
 	if (deep) {
@@ -529,6 +530,10 @@ packagedata_destroy (PackageData *pack, gboolean deep)
 		g_list_foreach (pack->breaks, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
 		g_list_foreach (pack->modifies, (GFunc)packagedata_destroy, GINT_TO_POINTER (deep));
 	}
+	g_list_free (pack->soft_depends);
+	g_list_free (pack->hard_depends);
+	g_list_free (pack->breaks);
+	g_list_free (pack->modifies);
 	pack->soft_depends = NULL;
 	pack->hard_depends = NULL;
 	pack->breaks = NULL;
@@ -539,8 +544,8 @@ packagedata_destroy (PackageData *pack, gboolean deep)
 		   RPM specific code */
 		/* even better, this just crashes 
 		 */
-		headerFree (*(pack->packsys_struc)); 
-		g_free (pack->packsys_struc);
+		headerFree ((Header) pack->packsys_struc);
+		pack->packsys_struc = NULL;
 	}
 
 	g_free (pack);

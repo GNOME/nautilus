@@ -1821,7 +1821,7 @@ more_check_system (EazelInstaller *installer)
 		if (rpmvercmp (pack->version, "4")>0) {
 			jump_to_error_page (installer,
 					    NULL,
-					    "RPM version 4.x is not supported, go away.",
+					    "RPM version 4.x is not supported, sorry.",
 					    NULL);
 		}
 		

@@ -1,3 +1,23 @@
+2000-11-08  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_check_for_file_conflicts),
+	(eazel_uninstall_downward_traverse):
+	* components/services/install/lib/eazel-install-query.c:
+	(eazel_install_simple_rpm_query):
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_add_to_rpm_set):
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_new_from_rpm_header),
+	(packagedata_fill_from_rpm_header), (packagedata_fill_from_file),
+	(packagedata_destroy):
+	* components/services/install/lib/eazel-install-types.h:
+	* nautilus-installer/src/installer.c: (more_check_system):
+	
+	Backport the memory leak fixes from PR2.  Also clean up the use of
+	'Header' structs from librpm since they turn out to be secret
+	pointers, not structs.
+
 2000-11-08  Darin Adler  <darin@eazel.com>
 
 	buddy: Gene Ragan <gzr@eazel.com>

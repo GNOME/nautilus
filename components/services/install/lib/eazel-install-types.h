@@ -210,12 +210,12 @@ PackageData* packagedata_new_from_file (const char *file);
 PackageData* packagedata_copy (const PackageData *pack, gboolean deep);
 GList *packagedata_list_copy (const GList *list, gboolean deep);
 
-PackageData* packagedata_new_from_rpm_header (Header*);
+PackageData* packagedata_new_from_rpm_header (Header );
 PackageData* packagedata_new_from_rpm_conflict (struct rpmDependencyConflict);
 PackageData* packagedata_new_from_rpm_conflict_reversed (struct rpmDependencyConflict);
 
 gboolean packagedata_fill_from_file (PackageData *pack, const char *filename);
-void packagedata_fill_from_rpm_header (PackageData *pack, Header*);
+void packagedata_fill_from_rpm_header (PackageData *pack, Header );
 
 void packagedata_remove_soft_dep (PackageData *remove, PackageData *from);
 

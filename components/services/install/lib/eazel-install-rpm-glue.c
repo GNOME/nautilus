@@ -361,7 +361,7 @@ eazel_install_add_to_rpm_set (EazelInstall *service,
 		if (!eazel_install_get_uninstall (service)) {
 			g_assert (pack->packsys_struc);
 			err = rpmtransAddPackage (set,
-						  *((Header*)pack->packsys_struc),
+						  ((Header) pack->packsys_struc),
 						  NULL, 
 						  NULL,
 						  interface_flags, 

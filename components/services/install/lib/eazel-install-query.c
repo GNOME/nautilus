@@ -124,12 +124,11 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 	if (rc == 0) {
 		for (i = 0; i < dbiIndexSetCount (matches); i++) {
 			unsigned int offset;
-			Header *hd;
+			Header hd;
 			PackageData *pack;
 			
 			offset = dbiIndexRecordOffset (matches, i);
-			hd = g_new0 (Header,1);
-			(*hd) = rpmdbGetRecord (db, offset);
+			hd = rpmdbGetRecord (db, offset);
 			pack = packagedata_new_from_rpm_header (hd);
 			pack->install_root = g_strdup (root);
 			if (g_list_find_custom (*result, 
@@ -139,7 +138,8 @@ eazel_install_simple_rpm_query (EazelInstall *service,
 			} else {
 				(*result) = g_list_prepend (*result, pack);
 			}
-		}	
+		}
+		dbiFreeIndexRecord (matches);
 	}
 	
 	if (free_db_system) {

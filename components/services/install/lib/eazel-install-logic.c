@@ -398,7 +398,7 @@ eazel_install_check_for_file_conflicts (EazelInstall *service,
 			    g_list_find_custom (*requires, owner->name, 
 						(GCompareFunc)eazel_install_package_name_compare)) {
 				/* trilobite_debug ("already breaking %s", owner->name); */
-				packagedata_destroy (owner, FALSE);
+				packagedata_destroy (owner, TRUE);
 				owner = NULL;
 				continue;
 			}
@@ -419,8 +419,13 @@ eazel_install_check_for_file_conflicts (EazelInstall *service,
 					(*breaks) = g_list_prepend (*breaks, owner);
 				}
 				
-			} /* else it's the same package and it's okay */
-		} 
+			} else {
+				/* else it's the same package and it's okay */
+				/* so FREE IT YOU SICK MONKEY! */
+				packagedata_destroy (owner, TRUE);
+			}
+		}
+		g_list_free (owners);
 
 #ifdef EAZEL_INSTALL_SLIM
 		/* In the slim, we need to enter the g_main_loop during file check */		
@@ -2343,7 +2348,7 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 			int j;
 
 			matched_pack = (PackageData*)match_iterator->data;
-			hd = *((Header*)matched_pack->packsys_struc);
+			hd = ((Header) matched_pack->packsys_struc);
 
 			if (!headerGetEntry(hd, RPMTAG_REQUIRENAME, &type, (void **) &require_name,
 					    &require_name_count)) {
