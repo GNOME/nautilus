@@ -1,9 +1,17 @@
+2002-03-05  Dave Camp  <dave@ximian.com>
+       
+	* components/notes/nautilus-notes.c:
+	(notify_listeners_if_changed): Remove the #ifdef
+	GNOME2_CONVERSION_COMPLETE and replace
+	bonobo_property_bag_notify_listeners with a
+	bonobo_event_source_notify_listeners_full call.
+	(make_notes_view): Remove the #ifdef GNOME2_CONVERSION_COMPLETE
+	and send the proper arguments to bonobo_control_set_properties.
+
 2002-03-05  Anders Carlsson  <andersca@gnu.org>
 
 	* src/file-manager/fm-list-view.c (event_after_callback): 
 	Display the background context menu if no item is selected.
-
-=== nautilus 1.1.8 ===
 
 2002-03-05  Darin Adler  <darin@bentspoon.com>
 

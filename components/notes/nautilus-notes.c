@@ -240,10 +240,13 @@ notify_listeners_if_changed (Notes *notes, char *new_notes)
 		
 		tab_image_arg = bonobo_arg_new (BONOBO_ARG_STRING);
 		BONOBO_ARG_SET_STRING (tab_image_arg, tab_image);			
-#ifdef GNOME2_CONVERSION_COMPLETE 
-		bonobo_property_bag_notify_listeners (notes->property_bag,
-                                                      "tab_image", tab_image_arg, NULL);
-#endif 
+
+                bonobo_event_source_notify_listeners_full (notes->property_bag->es, 
+                                                           "Bonobo/Property",
+                                                           "change",
+                                                           "tab_image",
+                                                           tab_image_arg,
+                                                           NULL);
 		bonobo_arg_release (tab_image_arg);
 		g_free (tab_image);
 	}
@@ -391,11 +394,9 @@ make_notes_view (const char *iid, gpointer callback_data)
 
 	/* allocate a property bag to reflect the TAB_IMAGE property */
 	notes->property_bag = bonobo_property_bag_new (get_bonobo_properties,  set_bonobo_properties, notes);
-#ifdef GNOME2_CONVERSION_COMPLETE	
-	bonobo_control_set_properties (nautilus_view_get_bonobo_control (notes->view), notes->property_bag);
+	bonobo_control_set_properties (nautilus_view_get_bonobo_control (notes->view), BONOBO_OBJREF (notes->property_bag), NULL);
 	bonobo_property_bag_add (notes->property_bag, "tab_image", TAB_IMAGE, BONOBO_ARG_STRING, NULL,
 				 "image indicating that a note is present", 0);
-#endif
         /* handle events */
         g_signal_connect (notes->view, "load_location",
                             G_CALLBACK (notes_load_location), notes);
