@@ -1,3 +1,30 @@
+2000-12-11  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fixed bug 5112 (Segfault on startup using non C locale). The error
+	was caused by localized text making it through bonobo to
+	gnome-xml, which only happened because we were using an incorrect
+	attribute name.
+
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	Removed nautilus_bonobo_set_description because there is no
+	attribute named "description" any more. It's now "tip".
+	
+	* src/file-manager/fm-directory-view.c: (real_update_menus):
+	Use set_tip instead of set_description.
+
+	Another cut at the placeholder changes. I caught one problem and
+	John caught some others when he reviewed my last check-in.
+	
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/file-manager/nautilus-icon-view-ui.xml:
+	* src/nautilus-service-ui.xml:
+	Removed some "delimit" and added others. Only the file that
+	actually defines a placeholder should use a delimit, and you must
+	always use a delimit when defining the placeholder.
+
 2000-12-11  J Shane Culpepper  <pepper@eazel.com>
 
 	reviewed by: <eskil@eazel.com>

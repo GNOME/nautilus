@@ -3047,9 +3047,9 @@ real_update_menus (FMDirectoryView *view)
 
 
 	if (fm_directory_all_selected_items_in_trash (view)) {
-		nautilus_bonobo_set_description (view->details->ui, 
-						 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
-						 _("Delete all selected items permanently"));
+		nautilus_bonobo_set_tip (view->details->ui, 
+					 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
+					 _("Delete all selected items permanently"));
 		nautilus_bonobo_set_accelerator (view->details->ui, 
 						 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
 						 "");
@@ -3057,9 +3057,9 @@ real_update_menus (FMDirectoryView *view)
 						   ? _("Delete from _Trash...") 
 						   : _("Delete from _Trash"));
 	} else {
-		nautilus_bonobo_set_description (view->details->ui, 
-						 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
-						 _("Move all selected items to the Trash"));
+		nautilus_bonobo_set_tip (view->details->ui, 
+					 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
+					 _("Move all selected items to the Trash"));
 		nautilus_bonobo_set_accelerator (view->details->ui, 
 						 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
 						 "*Control*t");

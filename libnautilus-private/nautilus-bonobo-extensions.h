@@ -33,9 +33,6 @@
 void     nautilus_bonobo_set_accelerator         (BonoboUIComponent *ui,
 						  const char        *path,
 						  const char        *accelerator);
-void     nautilus_bonobo_set_description         (BonoboUIComponent *ui,
-						  const char        *path,
-						  const char        *description);
 char *   nautilus_bonobo_get_label               (BonoboUIComponent *ui,
 						  const char        *path);
 void     nautilus_bonobo_set_label               (BonoboUIComponent *ui,

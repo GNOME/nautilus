@@ -46,18 +46,6 @@ nautilus_bonobo_set_accelerator (BonoboUIComponent *ui,
 }
 
 void
-nautilus_bonobo_set_description (BonoboUIComponent *ui,
-			   	 const char *path,
-			   	 const char *description)
-{
-	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
-	bonobo_ui_component_set_prop (ui, path,
-				      "descr",
-				      description,
-				      NULL);
-}
-
-void
 nautilus_bonobo_set_label (BonoboUIComponent *ui,
 			   const char *path,
 			   const char *label)
