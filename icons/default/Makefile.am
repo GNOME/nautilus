@@ -12,6 +12,10 @@ icon_DATA =\
 	emblem-mail.png \
 	emblem-pictures.png \
 	emblem-sound.png \
+	emblem-documents.png \
+	emblem-multimedia.png \
+	emblem-package.png \
+	emblem-web.png \
 	emblem-OK.svg \
 	emblem-broken-link.png \
 	emblem-certified.svg \
