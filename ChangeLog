@@ -1,3 +1,10 @@
+2000-04-18  Pavel Cisler  <pavel@eazel.com>
+
+	* src/file-manager/dfos-xfer.c:
+	(handle_xfer_vfs_error):
+	The function of the Abort and Retry buttons in the file operation error 
+	alert was inverted.
+ 
 2000-04-18  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* nautilus-widgets/nautilus-preferences.c:
@@ -159,7 +166,6 @@
 	Changed to use nautilus_directory_contains_file instead of
 	nautilus_file_is_gone.
 	
->>>>>>> 1.38
 2000-04-18  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/services/install/.cvsignore: Ignore more generated

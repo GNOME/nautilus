@@ -192,9 +192,9 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 		case 0:
 			return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
 		case 1:
-			return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
-		case 2:
 			return GNOME_VFS_XFER_ERROR_ACTION_RETRY;
+		case 2:
+			return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 		}						
 
 	case GNOME_VFS_XFER_ERROR_MODE_ABORT:
