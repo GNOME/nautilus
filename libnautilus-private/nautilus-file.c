@@ -1297,6 +1297,7 @@ nautilus_file_rename (NautilusFile *file,
 		
 		rename_guts (file, locale_name, callback, callback_data);
 		g_free (locale_name);
+		return;
 	}
 	
 	rename_guts (file, new_name, callback, callback_data);
@@ -5771,24 +5772,72 @@ nautilus_file_list_sort_by_display_name (GList *list)
 	return g_list_sort (list, compare_by_display_name_cover);
 }
 
+static char *
+try_to_make_utf8 (const char *text, int *length)
+{
+	static const char *encodings_to_try[2];
+	static int n_encodings_to_try = 0;
+        gsize converted_length;
+        GError *conversion_error;
+	char *utf8_text;
+	int i;
+	
+	if (n_encodings_to_try == 0) {
+		const char *charset;
+		gboolean charset_is_utf8;
+		
+		charset_is_utf8 = g_get_charset (&charset);
+		if (!charset_is_utf8) {
+			encodings_to_try[n_encodings_to_try++] = charset;
+		}
+        
+		if (g_ascii_strcasecmp (charset, "ISO-8859-1") != 0) {
+			encodings_to_try[n_encodings_to_try++] = "ISO-8859-1";
+		}
+	}
+
+        utf8_text = NULL;
+	for (i = 0; i < n_encodings_to_try; i++) {
+		conversion_error = NULL;
+		utf8_text = g_convert (text, *length, 
+					   "UTF-8", encodings_to_try[i],
+					   NULL, &converted_length, &conversion_error);
+		if (utf8_text != NULL) {
+			*length = converted_length;
+			break;
+		}
+		g_error_free (conversion_error);
+	}
+	
+	return utf8_text;
+}
+
+
+
 /* Extract the top left part of the read-in text. */
 char *
 nautilus_extract_top_left_text (const char *text,
 				int length)
 {
-	char buffer[(NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_CHARACTERS_PER_LINE + 1)
-		   * NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES + 1];
-	const char *in, *end;
-	char *out;
+        GString* buffer;
+	const gchar *in;
+	const gchar *end;
 	int line, i;
+	gunichar c;
+	char *text_copy;
 
-	if (length == 0) {
+        text_copy = NULL;
+        if (text != NULL && !g_utf8_validate (text, length, NULL)) {
+		text_copy = try_to_make_utf8 (text, &length);
+		text = text_copy;
+        }
+
+	if (text == NULL || length == 0) {
 		return NULL;
 	}
 
-	in = text;
-	end = text + length;
-	out = buffer;
+	buffer = g_string_new ("");
+	end = text + length; in = text;
 
 	for (line = 0; line < NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES; line++) {
 		/* Extract one line. */
@@ -5796,11 +5845,16 @@ nautilus_extract_top_left_text (const char *text,
 			if (*in == '\n') {
 				break;
 			}
-			if (g_ascii_isprint (*in)) {
-				*out++ = *in;
+			
+			c = g_utf8_get_char (in);
+			
+			if (g_unichar_isprint (c)) {
+				g_string_append_unichar (buffer, c);
 				i++;
 			}
-			if (++in == end) {
+			
+			in = g_utf8_next_char (in);
+			if (in == end) {
 				goto done;
 			}
 		}
@@ -5816,23 +5870,12 @@ nautilus_extract_top_left_text (const char *text,
 		}
 
 		/* Put a new-line separator in. */
-		*out++ = '\n';
+		g_string_append_c(buffer, '\n');
 	}
-	
  done:
-	/* Omit any trailing new-lines. */
-	while (out != buffer && out[-1] == '\n') {
-		out--;
-	}
-
-	/* Check again for special case of empty string. */
-	if (out == buffer) {
-		return NULL;
-	}
-
-	/* Allocate a copy to keep. */
-	*out = '\0';
-	return g_strdup (buffer);
+	g_free (text_copy);
+ 
+	return g_string_free(buffer, FALSE);
 }
 
 static void
