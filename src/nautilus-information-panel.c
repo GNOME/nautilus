@@ -1010,6 +1010,8 @@ background_appearance_changed_callback (NautilusBackground *background, Nautilus
 static void
 background_reset_callback (NautilusBackground *background, NautilusSidebar *sidebar)
 {
+	char *combine_mode;
+	
 	if (sidebar->details->directory == NULL) {
 		return;
 	}
@@ -1020,6 +1022,11 @@ background_reset_callback (NautilusBackground *background, NautilusSidebar *side
 					  sidebar);
 	nautilus_background_set_color (background, sidebar->details->default_background_color);	
 	nautilus_background_set_tile_image_uri (background, sidebar->details->default_background_image);
+	
+	combine_mode = nautilus_theme_get_theme_data ("sidebar", "COMBINE");
+	nautilus_background_set_combine_mode (background, combine_mode != NULL);
+	g_free (combine_mode);
+	
 	gtk_signal_handler_unblock_by_func (GTK_OBJECT(background),
 					    background_settings_changed_callback,
 					    sidebar);
@@ -1258,7 +1265,7 @@ nautilus_sidebar_update_info (NautilusSidebar *sidebar,
 	NautilusDirectory *directory;
 	NautilusBackground *background;
 	char *background_color, *color_spec;
-	char *background_image;
+	char *background_image, *combine_mode;
 
 	if (sidebar->details->uri == NULL) {
 		directory = NULL;
@@ -1309,6 +1316,10 @@ nautilus_sidebar_update_info (NautilusSidebar *sidebar,
 	
 	nautilus_background_set_tile_image_uri (background, background_image);
 	g_free (background_image);
+
+	combine_mode = nautilus_theme_get_theme_data ("sidebar", "COMBINE");
+	nautilus_background_set_combine_mode (background, combine_mode != NULL);
+	g_free (combine_mode);
 	
 	/* set up the color for the tabs */
 	color_spec = nautilus_directory_get_metadata (directory,

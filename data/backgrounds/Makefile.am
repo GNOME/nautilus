@@ -3,6 +3,7 @@ NULL=
 backdir = $(datadir)/nautilus/backgrounds
 
 back_DATA = \
+	.striated.png \
 	beige_tile.jpg \
 	blue_sky.png \
 	bricks.jpg \

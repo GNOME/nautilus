@@ -1195,55 +1195,57 @@ make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, c
 			GtkWidget *event_box, *temp_vbox;
 			GtkWidget *pixmap_widget, *label;
 
-			image_file_name = g_strdup_printf("%s/%s", directory_uri+7, current_file_info->name);
-			pixbuf = gdk_pixbuf_new_from_file(image_file_name);
-			g_free(image_file_name);
+			if (current_file_info->name[0] != '.') {
+				image_file_name = g_strdup_printf("%s/%s", directory_uri+7, current_file_info->name);
+				pixbuf = gdk_pixbuf_new_from_file(image_file_name);
+				g_free(image_file_name);
 			
-			if (!strcmp(property_browser->details->category, "backgrounds")) {
-				pixbuf = gdk_pixbuf_scale_simple (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT, GDK_INTERP_BILINEAR);
-			} else {
-				pixbuf = nautilus_gdk_pixbuf_scale_to_fit (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
+				if (!strcmp(property_browser->details->category, "backgrounds")) {
+					pixbuf = gdk_pixbuf_scale_simple (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT, GDK_INTERP_BILINEAR);
+				} else {
+					pixbuf = nautilus_gdk_pixbuf_scale_to_fit (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
+				}
+
+				/* make a pixmap and mask to pass to the widget */
+	      			gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
+				gdk_pixbuf_unref (pixbuf);
+
+				/* allocate a pixmap and insert it into the table */
+				temp_vbox = gtk_vbox_new(FALSE, 0);
+				gtk_widget_show(temp_vbox);
+
+				event_box = gtk_event_box_new();
+				gtk_widget_show(event_box);
+
+				background = nautilus_get_widget_background (GTK_WIDGET (event_box));
+				nautilus_background_set_color (background, BROWSER_BACKGROUND_COLOR);	
+				
+				pixmap_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
+				gtk_widget_show (pixmap_widget);
+				gtk_container_add(GTK_CONTAINER(event_box), pixmap_widget);
+				gtk_box_pack_start(GTK_BOX(temp_vbox), event_box, FALSE, FALSE, 0);
+				
+				filtered_name = strip_extension(current_file_info->name);
+				label = gtk_label_new(filtered_name);
+				g_free(filtered_name);
+				gtk_box_pack_start (GTK_BOX(temp_vbox), label, FALSE, FALSE, 0);
+				gtk_widget_show(label);
+				
+				gtk_object_set_user_data (GTK_OBJECT(event_box), property_browser);
+				gtk_signal_connect_full
+					(GTK_OBJECT (event_box),
+					 "button_press_event", 
+					 GTK_SIGNAL_FUNC (element_clicked_callback),
+					 NULL,
+					 g_strdup (current_file_info->name),
+					 g_free,
+					 FALSE,
+					 FALSE);
+
+				/* put the reset item in the pole position */
+				add_to_content_table(property_browser, temp_vbox, 
+					strcmp(current_file_info->name, RESET_IMAGE_NAME) ? index++ : 0, 2);				
 			}
-
-			/* make a pixmap and mask to pass to the widget */
-      			gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
-			gdk_pixbuf_unref (pixbuf);
-
-			/* allocate a pixmap and insert it into the table */
-			temp_vbox = gtk_vbox_new(FALSE, 0);
-			gtk_widget_show(temp_vbox);
-
-			event_box = gtk_event_box_new();
-			gtk_widget_show(event_box);
-
-			background = nautilus_get_widget_background (GTK_WIDGET (event_box));
-			nautilus_background_set_color (background, BROWSER_BACKGROUND_COLOR);	
-			
-			pixmap_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
-			gtk_widget_show (pixmap_widget);
-			gtk_container_add(GTK_CONTAINER(event_box), pixmap_widget);
-			gtk_box_pack_start(GTK_BOX(temp_vbox), event_box, FALSE, FALSE, 0);
-			
-			filtered_name = strip_extension(current_file_info->name);
-			label = gtk_label_new(filtered_name);
-			g_free(filtered_name);
-			gtk_box_pack_start (GTK_BOX(temp_vbox), label, FALSE, FALSE, 0);
-			gtk_widget_show(label);
-			
-			gtk_object_set_user_data (GTK_OBJECT(event_box), property_browser);
-			gtk_signal_connect_full
-				(GTK_OBJECT (event_box),
-				 "button_press_event", 
-				 GTK_SIGNAL_FUNC (element_clicked_callback),
-				 NULL,
-				 g_strdup (current_file_info->name),
-				 g_free,
-				 FALSE,
-				 FALSE);
-
-			/* put the reset item in the pole position */
-			add_to_content_table(property_browser, temp_vbox, 
-				strcmp(current_file_info->name, RESET_IMAGE_NAME) ? index++ : 0, 2);				
 	}
 		
 		current_file_info = gnome_vfs_directory_list_next(list);

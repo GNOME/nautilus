@@ -1,3 +1,28 @@
+2000-06-30  Andy Hertzfeld  <andy@eazel.com>
+
+	* configure.in:
+	* data/backgrounds/Makefile.am:
+	* icons/Makefile.am:
+	* icons/arlo/.cvsignore:
+	* icons/arlo/Makefile.am:
+	* icons/arlo/arlo.xml:
+	added a new theme for Arlo
+	* libnautilus-extensions/nautilus-background.c,h:
+	(nautilus_background_get_combine_mode),
+	(nautilus_background_set_combine_mode), (nautilus_background_draw),
+	(nautilus_background_draw_aa):
+	added "combine" mode where it draws a background overlayed with a
+	semi-transparent image.
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(directory_changed_callback), (background_reset_callback):
+	set up combine_mode if necessary
+	* src/nautilus-property-browser.c:
+	(make_properties_from_directory_path):
+	don't display images whose name starts with "."
+	* src/nautilus-sidebar.c: (background_reset_callback),
+	(nautilus_sidebar_update_info):
+	set up combine mode if necessary
+
 2000-06-29  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/command-line/Makefile.am:

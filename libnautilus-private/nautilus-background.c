@@ -76,6 +76,7 @@ struct NautilusBackgroundDetails {
 	GdkPixmap *tile_pixmap;
 	GdkPixbuf *tile_image;
 	NautilusPixbufLoadHandle *load_tile_image_handle;
+	gboolean combine_mode;
 };
 
 static void
@@ -150,24 +151,78 @@ nautilus_background_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
+/* handle the combine mode getting and setting */
+
+gboolean
+nautilus_background_get_combine_mode (NautilusBackground *background)
+{
+	return background->details->combine_mode;
+}
+
+void
+nautilus_background_set_combine_mode (NautilusBackground *background, gboolean new_combine_mode)
+{
+	if (new_combine_mode != background->details->combine_mode) {
+		background->details->combine_mode = new_combine_mode;
+		
+		gtk_signal_emit (GTK_OBJECT (background),
+			 signals[SETTINGS_CHANGED]);
+		gtk_signal_emit (GTK_OBJECT (background),
+			 signals[APPEARANCE_CHANGED]);
+	}
+}
+
 NautilusBackground *
 nautilus_background_new (void)
 {
 	return NAUTILUS_BACKGROUND (gtk_type_new (NAUTILUS_TYPE_BACKGROUND));
 }
 
+/* this routine is for gdk style rendering, which doesn't naturally support transparency, so we
+   draw into a pixbuf offscreen if necessary (coming soon */
+   
 void
 nautilus_background_draw (NautilusBackground *background,
-			  GdkDrawable *drawable,
+			  GdkDrawable *drawable,			  
 			  GdkGC *gc,
 			  const GdkRectangle *rectangle,
 			  int origin_x,
 			  int origin_y)
 {
+	GdkPixbuf *pixbuf;
+	GnomeCanvasBuf buffer;
 	char *start_color_spec, *end_color_spec;
 	guint32 start_rgb, end_rgb;
 	gboolean horizontal_gradient;
 
+	if (background->details->combine_mode) {
+		/* allocate a pixbuf the size of the rectangle */
+		pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, rectangle->width, rectangle->height);
+		
+		/* contrive a CanvasBuf structure to point to it */
+		buffer.buf =  gdk_pixbuf_get_pixels (pixbuf);
+		buffer.buf_rowstride =  gdk_pixbuf_get_rowstride (pixbuf);
+		buffer.rect.x0 = rectangle->x;
+		buffer.rect.y0 = rectangle->y;
+		buffer.rect.x1 = rectangle->x + rectangle->width;
+		buffer.rect.y1 = rectangle->y + rectangle->height;
+		buffer.bg_color = 0xFFFFFFFF;
+
+		/* invoke the anti-aliased code to do the work */
+		nautilus_background_draw_aa (background, &buffer, rectangle->width, rectangle->height);
+		
+		/* blit the pixbuf to the drawable */
+		gdk_pixbuf_render_to_drawable (pixbuf, drawable, gc,
+						       0, 0,
+						       rectangle->x, rectangle->y, rectangle->width, rectangle->height,
+						       GDK_RGB_DITHER_NORMAL, origin_x, origin_y);
+		
+		/* free things up and we're done */
+		gdk_pixbuf_unref (pixbuf);
+		
+		return;
+	}
+	
 	if (background->details->tile_image != NULL) {
 		nautilus_gdk_pixbuf_render_to_drawable_tiled (background->details->tile_image,
 							      drawable,
@@ -283,9 +338,7 @@ void nautilus_background_draw_aa (NautilusBackground *background,
 	gboolean horizontal_gradient;
 	
 	if (!buffer->is_buf) {
-		if (background->details->tile_image) {
-			draw_pixbuf_tiled_aa (background->details->tile_image, buffer);
-		} else {
+		if (background->details->combine_mode || (background->details->tile_image == NULL)) {
 			start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
 			end_color_spec = nautilus_gradient_get_end_color_spec (background->details->color);
 			horizontal_gradient = nautilus_gradient_is_horizontal (background->details->color);
@@ -304,6 +357,11 @@ void nautilus_background_draw_aa (NautilusBackground *background,
 			} else
 				gnome_canvas_buf_ensure_buf(buffer);
 		}
+		
+		if (background->details->tile_image) {
+			draw_pixbuf_tiled_aa (background->details->tile_image, buffer);
+		} 		
+				
 		buffer->is_buf = TRUE;
 	}
 }

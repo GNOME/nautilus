@@ -104,7 +104,7 @@ static void
 directory_changed_callback (NautilusDirectory *directory,
                             NautilusBackground *background)
 {
-        char *color, *image;
+        char *color, *image, *combine;
 
         g_assert (NAUTILUS_IS_DIRECTORY (directory));
         g_assert (NAUTILUS_IS_BACKGROUND (background));
@@ -125,20 +125,25 @@ directory_changed_callback (NautilusDirectory *directory,
 	image = nautilus_directory_get_metadata (directory,
                                                  NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE,
                                                  NULL);
-
+	combine = NULL; /* only from theme, at least for now */
+	
 	/* if there's none, read the default from the theme */
 	if (color == NULL && image == NULL) {
 		color = nautilus_theme_get_theme_data ("directory", NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR);
 		image = nautilus_theme_get_theme_data ("directory", NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE);
+		combine = nautilus_theme_get_theme_data ("directory", "COMBINE");		
+		
 		image = local_data_file_to_uri(image);
 	}
 
 	nautilus_background_set_color (background, color);     
 	nautilus_background_set_tile_image_uri (background, image);
+        nautilus_background_set_combine_mode (background, combine != NULL);
 	
 	g_free (color);
 	g_free (image);
-
+	g_free (combine);
+	
 	/* Unblock the handler. */
 	gtk_signal_handler_unblock_by_func (GTK_OBJECT (background),
                                         background_changed_callback,
@@ -165,12 +170,13 @@ static void
 background_reset_callback (NautilusBackground *background,
                            NautilusDirectory *directory)
 {
-	char *color, *image;
+	char *color, *image, *combine;
 	
 	color = nautilus_theme_get_theme_data ("directory", NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR);
 	image = nautilus_theme_get_theme_data ("directory", NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE);		
-	image = local_data_file_to_uri(image);
+	combine = nautilus_theme_get_theme_data ("directory", "COMBINE");		
 	
+	image = local_data_file_to_uri(image);
 	/* block the handler so we don't write metadata */
         gtk_signal_handler_block_by_func (GTK_OBJECT (background),
                                           background_changed_callback,
@@ -178,14 +184,15 @@ background_reset_callback (NautilusBackground *background,
 
 	nautilus_background_set_color (background, color);
 	nautilus_background_set_tile_image_uri (background, image);
+        nautilus_background_set_combine_mode (background, combine != NULL);
         
         /* Unblock the handler. */
         gtk_signal_handler_unblock_by_func (GTK_OBJECT (background),
                                             background_changed_callback,
                                             directory);
-	
 	g_free (color);
 	g_free (image);
+	g_free (combine);
 	
 	/* reset the metadata */
 	nautilus_directory_set_metadata (directory,
