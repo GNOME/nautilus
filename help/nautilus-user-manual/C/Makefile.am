@@ -1,27 +1,24 @@
 figs = \
-	figures/custicon.png		\
+	figures/custom_icon_num.png		\
+	figures/preferences_menu_num.png	\
+	figures/home_folder_num.png		\
+	figures/sidebar_num.png			\
+	figures/nautilus_window_full_num.png	\
+	figures/locationbar_nqr.png		\
 	figures/full-1.png		\
 	figures/full-2.png		\
 	figures/full-3.png		\
 	figures/full-4.png		\
 	figures/full-5.png		\
 	figures/full-6.png		\
-	figures/full.png		\
 	figures/link.png		\
-	figures/locbar.png		\
 	figures/noread.png		\
 	figures/nowrite.png		\
-	figures/part-1.png		\
-	figures/part-2.png		\
-	figures/part-3.png		\
-	figures/part.png		\
 	figures/player-1.png		\
 	figures/player-2.png		\
 	figures/player-3.png		\
 	figures/player-4.png		\
 	figures/player.png		\
-	figures/prefmenu.png		\
-	figures/sidebar.png		\
 	figures/viewmenu.png		\
 	figures/viewmusic.png
 docname=nautilus-user-manual
