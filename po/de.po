@@ -46,7 +46,7 @@ msgstr ""
 "Project-Id-Version: nautilus 1.0.x\n"
 "POT-Creation-Date: 2001-05-24 23:09+0200\n"
 "PO-Revision-Date: 2001-05-24 23:09+02:00\n"
-"Last-Translator: Christian Meyer <chrisime@gnome.org>\n"
+"Last-Translator: Matthias Warkus <mawarkus@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
@@ -958,12 +958,12 @@ msgstr ""
 "ein neues Fenster zu öffnen, aber Nautilus unterstützt das Öffnen neuer "
 "Fenster per JavaScript nicht.\n"
 "\n"
-"Versuchen Sie, diese Seite in einem anderen Web-Browser wie Mozilla zu "
+"Versuchen Sie, diese Seite in einem anderen Web-Browser wie Mozilla  zu "
 "betrachten."
 
 #: components/mozilla/nautilus-mozilla-content-view.c:768
 msgid "Nautilus JavaScript Warning"
-msgstr "Nautilus-JavaScript-Warnung"
+msgstr "Nautilus: JavaScript-Warnung"
 
 #: components/mozilla/nautilus-mozilla-ui.xml.h:1
 msgid "Charset Encoding"
@@ -2907,8 +2907,8 @@ msgstr ""
 #: libnautilus-private/nautilus-file.c:4137
 #, c-format
 msgid ""
-"No description found for mime type \"%s\" (file is \"%s\"), tell "
-"aaron@eazel.com"
+"No description found for mime type \"%s\" (file is \"%s\"), tell aaron@eazel."
+"com"
 msgstr ""
 "Keine Beschreibung für MIME-Type \"%s\" gefunden (Datei ist \"%s\", teilen "
 "Sie dies aaron@eazel.com mit"
@@ -4190,6 +4190,17 @@ msgid ""
 "Fast searches will not be available until an initial index of your files has "
 "been created.  This may take a long time."
 msgstr ""
+"Wenn Sie schnelle Suchen ermöglichen wollen, können Sie als root die Datei %"
+"s bearbeiten. Wenn Sie das Flag \"enabled\" auf \"yes\" setzen, schaltet "
+"dies die Medusa-Dienste ein.\n"
+"Um sofort die Indizierungs- und Suchdienste zu starten, sollten Sie auch die "
+"folgenden Befehle als root ausführen:\n"
+"\n"
+"medusa-index\n"
+"medusa-searchd\n"
+"\n"
+"Schnelle Suchen werden erst möglich, sobald ein erster Index Ihrer Dateien "
+"angelegt ist. Dies kann lange dauern."
 
 #: libnautilus-private/nautilus-medusa-support.c:139
 msgid ""
@@ -4200,6 +4211,12 @@ msgid ""
 "If you are using a packaged version of Nautilus, fast searching is not "
 "available.\n"
 msgstr ""
+"Medusa, die Anwendung, die Suchen durchführt, kann auf Ihrem System nicht "
+"gefunden werden. Falls Sie Nautilus selbst compiliert haben, müssen Sie eine "
+"Kopie von Medusa installieren und Nautilus neu compilieren. (Eine Kopie von "
+"Medusa kann wohl unter ftp://ftp.gnome.org gefunden werden.)\n"
+"Falls Sie eine abgepackte Version von Nautilus verwenden, ist schnelles "
+"Suchen nicht verfügbar.\n"
 
 #: libnautilus-private/nautilus-program-chooser.c:227
 msgid "not in menu"
@@ -4382,8 +4399,8 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"Sie können mit dem Modul \"Dateitypen und Programme\" des "
-"GNOME-Kontrollzentrum konfigurieren, welche Programme für welche Datei-Typen "
+"Sie können mit dem Modul \"Dateitypen und Programme\" des GNOME-"
+"Kontrollzentrum konfigurieren, welche Programme für welche Datei-Typen "
 "angeboten werden. Möchten Sie jetzt dorthin gehen?"
 
 #: libnautilus-private/nautilus-program-choosing.c:494
@@ -4660,7 +4677,7 @@ msgstr "Objekte mit \"medusa\" in ihren Namen, die Ordner sind"
 #: libnautilus-private/nautilus-theme.c:558
 #, c-format
 msgid "No description available for the \"%s\" theme"
-msgstr "Keine Beschreibung für das \"%s\"-Thema verfügbar."
+msgstr "Für das Thema \"%s\" ist keine Beschreibung verfügbar"
 
 #: libnautilus-private/nautilus-trash-directory.c:74
 msgid "Searching Disks"
@@ -4947,7 +4964,7 @@ msgstr "Nautilus-Dateimanager-Ansicht für Desktopicons"
 
 #: src/Nautilus_shell.oaf.in.h:12
 msgid "Nautilus file manager icon view"
-msgstr "Nautikus-Dateimanager-Iconansicht"
+msgstr "Nautilus-Dateimanager-Iconansicht"
 
 #: src/Nautilus_shell.oaf.in.h:13
 msgid "Nautilus file manager list view"
@@ -5662,7 +5679,6 @@ msgstr "Originalgrößen der Icons _wiederherstellen"
 msgid "_Restore Icon's Original Size"
 msgstr "Originalgröße des Icons _wiederherstellen"
 
-#: src/file-manager/fm-icon-view.c:1707
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "zeigt auf \"%s\""
@@ -6011,9 +6027,9 @@ msgstr "Indizierte Suche ist nicht verfügbar"
 #: src/file-manager/fm-search-list-view.c:290
 msgid ""
 "To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now. You can create an index by running "
-"\"medusa-indexd\" as root on the command line.  Until a complete index is "
-"available, searches will take several minutes."
+"index is available right now. You can create an index by running \"medusa-"
+"indexd\" as root on the command line.  Until a complete index is available, "
+"searches will take several minutes."
 msgstr ""
 "Um eine schnelle Suche durchzuführen, wird ein Index der Dateien auf Ihrem "
 "System benötigt. Momentan ist kein Index verfügbar. Sie können einen "
@@ -6455,6 +6471,7 @@ msgid "_Stretch Icon"
 msgstr "Icon _strecken"
 
 #: src/file-manager/nautilus-indexing-info.c:88
+#, c-format
 msgid "Indexing is %d%% complete."
 msgstr "Indizierung ist zu %d%% abgeschlossen."
 
@@ -6603,8 +6620,8 @@ msgid ""
 "\n"
 "OAF couldn't locate the Nautilus_shell.oaf file. One cause of this seems to "
 "be an LD_LIBRARY_PATH that does not include the oaf library's directory. "
-"Another possible cause would be bad install with a missing "
-"Nautilus_Shell.oaf file.\n"
+"Another possible cause would be bad install with a missing Nautilus_Shell."
+"oaf file.\n"
 "\n"
 "Running \"nautilus-clean.sh -x\" will kill all OAF and GConf processes, "
 "which may be needed by other applications.\n"
@@ -6613,9 +6630,9 @@ msgid ""
 "\n"
 "We have also seen this error when a faulty version of oaf was installed."
 msgstr ""
-"Nautilus kann jetzt nicht verwendet werden. Ausführen von "
-"\"nautilus-clean.sh -x\" auf der Konsole, Neustart des Computers oder "
-"Neuinstallation von Nautilus könnten das Problem beheben.\n"
+"Nautilus kann jetzt nicht verwendet werden. Ausführen von \"nautilus-clean."
+"sh -x\" auf der Konsole, Neustart des Computers oder Neuinstallation von "
+"Nautilus könnten das Problem beheben.\n"
 "\n"
 "OAF konnte die Datei Nautilus_Shell.oaf nicht finden. Ein Grund hierfür "
 "könnte es sein, dass ein LD_LIBRARY_PATH das Verzeichnis der oaf-Bibliothek "
@@ -6720,8 +6737,8 @@ msgid ""
 "You can manually erase this file to present the druid again.\n"
 "\n"
 msgstr ""
-"Die Existenz dieser Datei signalisiert, dass Sie den "
-"Nautilus-Konfigurations-\n"
+"Die Existenz dieser Datei signalisiert, dass Sie den Nautilus-"
+"Konfigurations-\n"
 "Druiden ausgefüllt haben.\n"
 "\n"
 "Sie können diese Datei von Hand löschen, um den Druiden nochmals zu "
@@ -7349,7 +7366,7 @@ msgstr "News-Paneel"
 
 #: src/nautilus-preferences-dialog.c:447
 msgid "Preferences"
-msgstr "Einstellungen"
+msgstr "Vorlieben"
 
 #: src/nautilus-preferences-dialog.c:476
 #, c-format
@@ -7831,7 +7848,7 @@ msgstr "Die neuesten Inhalte des aktuellen Ortes anzeigen"
 
 #: src/nautilus-shell-ui.xml.h:24
 msgid "Edit various Nautilus preferences"
-msgstr "Verschiedene Nautilus-Einstellungen bearbeiten"
+msgstr "Verschiedene Nautilus-Vorlieben bearbeiten"
 
 #: src/nautilus-shell-ui.xml.h:25
 msgid "Find"
@@ -7967,19 +7984,17 @@ msgstr "Rauf"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "Use preferences appropriate for beginners"
-msgstr "Für Anfänger angebrachte Einstellungen verwenden"
+msgstr "Für Anfänger angebrachte Vorlieben verwenden"
 
 #: src/nautilus-shell-ui.xml.h:61
 msgid "Use preferences appropriate for experts"
-msgstr "Für Experten angebrachte Einstellungen verwenden"
+msgstr "Für Experten angebrachte Vorlieben verwenden"
 
 #: src/nautilus-shell-ui.xml.h:62
 msgid "Use preferences appropriate for most people"
-msgstr "Für die meisten Leute angebrachte Einstellungen verwenden"
+msgstr "Für die meisten Leute angebrachte Vorlieben verwenden"
 
 #. Add "View as..." extra bonus choice.
-#: src/nautilus-shell-ui.xml.h:63 src/nautilus-window.c:647
-#: src/nautilus-window.c:1542
 msgid "View as..."
 msgstr "Betrachten als..."
 
@@ -8511,12 +8526,10 @@ msgstr "Zurück"
 msgid "Forward"
 msgstr "Vor"
 
-#: src/nautilus-window.c:1248
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Diesen Ort mit \"%s\" anzeigen"
 
-#: src/nautilus-window.c:1954
 msgid "Close"
 msgstr "Schließen"
 
@@ -8528,17 +8541,6 @@ msgid "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-iso8859-1"
 
 #: src/nautilus-zoom-control.c:592
+#, c-format
 msgid "%d%%"
 msgstr "%d%%"
-
-#~ msgid "GConf Error"
-#~ msgstr "GConf-Fehler"
-
-#~ msgid "Beginner"
-#~ msgstr "Anfänger"
-
-#~ msgid "Intermediate"
-#~ msgstr "Fortgeschrittene"
-
-#~ msgid "Advanced"
-#~ msgstr "Experten"
