@@ -41,7 +41,7 @@
 /* Keep track of the sound playing process */
 #define CURRENT_SOUND_STATE_KEY "/apps/nautilus/sound_state"
 
-static void
+static gboolean
 kill_sound_if_necessary (void)
 {
 	pid_t child;
@@ -55,7 +55,10 @@ kill_sound_if_necessary (void)
 	if (sound_process > 0) {
 		kill (-sound_process, SIGTERM);
  		child = waitpid (sound_process, &status_result, 0);
+		return TRUE;
 	}
+
+	return FALSE;
 }
 
 /* initialize_sound is called at application start up time.  It puts the sound system
@@ -72,11 +75,11 @@ void
 nautilus_sound_kill_sound (void)
 {
 	/* if there is a sound in progress, kill it */
-	kill_sound_if_necessary ();
-		
-	/* set the process state to quiescent */
-	eel_gconf_set_integer (CURRENT_SOUND_STATE_KEY, 0);
-	eel_gconf_suggest_sync ();
+	if (kill_sound_if_necessary ()) {
+		/* set the process state to quiescent */
+		eel_gconf_set_integer (CURRENT_SOUND_STATE_KEY, 0);
+		eel_gconf_suggest_sync ();
+	}
 }
 
 /* register a new sound process, including kill any old one if necessary */

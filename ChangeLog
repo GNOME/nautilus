@@ -1,3 +1,10 @@
+2001-07-10  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-sound.c: (kill_sound_if_necessary),
+	(nautilus_sound_kill_sound): Change the kill function to not set
+	the GConf value to 0 if it's already 0.  This may help with a
+	minor performance problem Yoann found in the directory view.
+
 2001-07-09  Darin Adler  <darin@bentspoon.com>
 
 	* cut-n-paste-code/widgets/gimphwrapbox/gtkwrapbox.c:
