@@ -127,8 +127,7 @@ notes_notify_location_change (NautilusViewFrame *view,
 }
 
 
-                               
-
+                              
 static void
 do_destroy (GtkObject *obj, Notes *notes)
 {
@@ -148,8 +147,8 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         GtkWidget *vbox;
         Notes *notes;
         NautilusBackground *background;
-        NautilusClipboardInfo *info; 
-        
+        NautilusClipboardInfo *info;
+         
         g_return_val_if_fail (strcmp (goad_id, "OAFIID:ntl_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185") == 0, NULL);
         notes = g_new0 (Notes, 1);
         notes->uri = g_strdup ("");
@@ -192,8 +191,8 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         /* set description */
         nautilus_meta_view_frame_set_label (NAUTILUS_META_VIEW_FRAME (notes->view),
                                             _("Notes"));
-        return BONOBO_OBJECT (notes->view);
-        
+
+        return BONOBO_OBJECT (notes->view);        
 }
 
 int

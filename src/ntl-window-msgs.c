@@ -38,6 +38,7 @@
 #include <libgnomeui/gnome-dialog-util.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -49,7 +50,7 @@
 #include "nautilus-location-bar.h"
 #include "ntl-types.h"
 
-/* #define EXTREME_DEBUGGING */
+/*#define EXTREME_DEBUGGING*/
 
 #ifdef EXTREME_DEBUGGING
 #define x_message(parameters) g_message parameters
@@ -635,6 +636,8 @@ nautilus_window_request_location_change (NautilusWindow *window,
                                          NautilusView *requesting_view)
 {  
         NautilusWindow *new_window;
+
+	loc->requested_uri = gnome_vfs_unescape_string(loc->requested_uri);
 
         if (handle_unreadable_location (window, loc->requested_uri)) {
 		return;

@@ -486,6 +486,25 @@ nautilus_view_frame_get_bonobo_control (NautilusViewFrame *view)
   return view->private->control;
 }
 
+CORBA_Object
+nautilus_view_frame_get_main_window (NautilusViewFrame *view)
+{
+	CORBA_Environment ev;
+	Nautilus_ViewWindow window;
+
+	CORBA_exception_init (&ev);
+
+	if (nautilus_view_frame_ensure_view_frame (view)) {	
+		window = Nautilus_ViewFrame__get_main_window (view->private->view_frame, &ev);
+	} else {
+		window = NULL;
+	}
+	
+	CORBA_exception_free (&ev);
+
+	return window;
+}
+
 
 void
 nautilus_view_frame_real_set_bonobo_control (NautilusViewFrame *view,
@@ -505,3 +524,4 @@ nautilus_view_frame_real_set_bonobo_control (NautilusViewFrame *view,
 
   CORBA_exception_free(&ev);
 }
+

@@ -85,6 +85,8 @@ void               nautilus_view_frame_request_status_change    (NautilusViewFra
 void               nautilus_view_frame_request_progress_change  (NautilusViewFrame              *view,
 								 Nautilus_ProgressRequestInfo   *loc);
 BonoboObject      *nautilus_view_frame_get_bonobo_control       (NautilusViewFrame              *view);
+CORBA_Object	  nautilus_view_frame_get_main_window 		(NautilusViewFrame 		*view);
+
 
 #ifdef __cplusplus
 }

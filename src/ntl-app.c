@@ -43,6 +43,9 @@ typedef struct {
 static Nautilus_ViewWindowList *
 impl_Nautilus_Application__get_view_windows(impl_POA_Nautilus_Application* servant,
                                             CORBA_Environment * ev);
+static Nautilus_UndoManager
+impl_Nautilus_Application__get_undo_manager(impl_POA_Nautilus_Application* servant,
+                                            CORBA_Environment * ev);
 static Nautilus_ViewWindow
 impl_Nautilus_Application_new_view_window(impl_POA_Nautilus_Application *servant,
                                           CORBA_Environment * ev);
@@ -59,6 +62,7 @@ impl_Nautilus_Application_create_object(impl_POA_Nautilus_Application *servant,
 static POA_Nautilus_Application__epv impl_Nautilus_Application_epv = {
    NULL,			/* _private */
    (gpointer) &impl_Nautilus_Application__get_view_windows,
+   (gpointer) &impl_Nautilus_Application__get_undo_manager,
    (gpointer) &impl_Nautilus_Application_new_view_window
 
 };
@@ -108,6 +112,15 @@ impl_Nautilus_Application__get_view_windows(impl_POA_Nautilus_Application *serva
 
    return retval;
 }
+
+
+static Nautilus_UndoManager
+impl_Nautilus_Application__get_undo_manager(impl_POA_Nautilus_Application *servant,
+                                            CORBA_Environment * ev)
+{
+	return CORBA_Object_duplicate(bonobo_object_corba_objref(servant->app->undo_manager), ev);
+}
+
 
 static Nautilus_ViewWindow
 impl_Nautilus_Application_new_view_window(impl_POA_Nautilus_Application *servant, CORBA_Environment * ev)

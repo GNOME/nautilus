@@ -1,7 +1,13 @@
 /* -*- Mode: IDL; tab-width: 8; indent-tabs-mode: 8; c-basic-offset: 8 -*- */
 
+
 #include <gnome-factory.idl>
 #include <Bonobo.idl>
+#include "../libnautilus-extensions/nautilus-undo-manager-component.idl"
+
+%{
+#pragma include_defs "libnautilus-extensions/nautilus-undo-manager-component.h"
+%}
 
 module Nautilus {
 	struct NavigationRequestInfo {
@@ -103,6 +109,7 @@ module Nautilus {
 	
 	interface Application : ::Bonobo::GenericFactory, ::Bonobo::Unknown {
 		readonly attribute ViewWindowList view_windows;
+		readonly attribute UndoManager undo_manager;
 		ViewWindow new_view_window ();
 	};
 };
