@@ -147,6 +147,8 @@ static void  nautilus_property_browser_set_drag_type    (NautilusPropertyBrowser
 							 const char              *new_drag_type);
 static void  add_new_button_callback                    (GtkWidget               *widget,
 							 NautilusPropertyBrowser *property_browser);
+static void  done_button_callback			(GtkWidget               *widget,
+							 GtkWidget 		*property_browser);
 static void  remove_button_callback                     (GtkWidget               *widget,
 							 NautilusPropertyBrowser *property_browser);
 static gboolean nautilus_property_browser_delete_event_callback (GtkWidget *widget,
@@ -218,6 +220,7 @@ nautilus_property_browser_initialize (GtkObject *object)
 	NautilusBackground *background;
  	NautilusPropertyBrowser *property_browser;
  	GtkWidget* widget, *temp_box, *temp_hbox, *temp_frame;
+	GtkWidget* temp_button, *temp_label;
 	GtkWidget *viewport;
 	char *temp_str;
 	
@@ -332,6 +335,16 @@ nautilus_property_browser_initialize (GtkObject *object)
   	gtk_widget_show(property_browser->details->bottom_box);
 	gtk_box_pack_end (GTK_BOX(property_browser->details->content_container), temp_box, FALSE, FALSE, 0);
   	gtk_container_add (GTK_CONTAINER (temp_frame), property_browser->details->bottom_box);
+  	
+  	/* create the "done" button */
+ 	temp_button = gtk_button_new ();
+	gtk_widget_show(temp_button);
+	
+	temp_label = gtk_label_new (_("Done"));
+	gtk_widget_show(temp_label);
+	gtk_container_add (GTK_CONTAINER(temp_button), temp_label);
+	gtk_box_pack_end (GTK_BOX(property_browser->details->bottom_box), temp_button, FALSE, FALSE, 4);  
+ 	gtk_signal_connect(GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (done_button_callback), property_browser);
   	
   	/* create the "add new" button */
   	property_browser->details->add_button = gtk_button_new ();
@@ -1269,6 +1282,13 @@ add_new_button_callback(GtkWidget *widget, NautilusPropertyBrowser *property_bro
 		default:
 			break;
 	}	
+}
+
+/* handle the "done" button */
+static void
+done_button_callback (GtkWidget *widget, GtkWidget *property_browser)
+{
+	gtk_widget_hide (property_browser);
 }
 
 /* handle the "remove" button */

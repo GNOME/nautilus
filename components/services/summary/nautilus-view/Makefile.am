@@ -6,6 +6,8 @@ CPPFLAGS =							\
 	-DDATADIR=\"$(datadir)\"		\
 	$(NULL)
 
+SUBDIRS = icons
+
 INCLUDES =								\
 	-I$(top_srcdir)							\
 	-I$(top_srcdir)/components/services/nautilus-dependent-shared	\

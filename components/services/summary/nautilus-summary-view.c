@@ -31,17 +31,20 @@
 #include <gnome-xml/tree.h>
 #include <bonobo/bonobo-control.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-caption-table.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
-#include <libnautilus-extensions/nautilus-caption-table.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-tabs.h>
+
 #include <libgnomeui/gnome-stock.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -126,7 +129,8 @@ struct _NautilusSummaryViewDetails {
 	char		*services_goto_label;
 	char		*services_redirects[500];
 	gboolean	services_button_enabled;
-
+	GtkWidget	*services_notebook;
+	
 	/* Login Frame Widgets */
 	GtkWidget	*username_label;
 	GtkWidget	*password_label;
@@ -225,6 +229,10 @@ static void	merge_bonobo_menu_items			(BonoboControl *control,
 							 gpointer user_data);
 static void	update_menu_items 			(NautilusSummaryView *view,
 							 gboolean logged_in);
+static void
+service_tab_selected_callback				(GtkWidget *widget,
+		   					int which_tab,
+		   					NautilusSummaryView *view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, GTK_TYPE_EVENT_BOX)
 
@@ -234,7 +242,7 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	GtkWidget		*frame;
 	GtkWidget		*title;
-	GtkWidget		*notebook;
+	GtkWidget		*notebook, *notebook_tabs;
 	GtkWidget		*tab_label_widget;
 	GtkWidget		*temp_box;
 	ServicesData		*service_node;
@@ -332,26 +340,27 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_container_add (GTK_CONTAINER (temp_scrolled_window), viewport);
 	gtk_box_pack_start (GTK_BOX (frame), temp_scrolled_window, TRUE, TRUE, 0);
 
+	/* add a set of tabs to control the notebook page switching */
+	notebook_tabs = nautilus_tabs_new ();
+	gtk_widget_show (notebook_tabs);
+	gtk_box_pack_start (GTK_BOX (frame), notebook_tabs, FALSE, FALSE, 0);
 
 	/* Create the notebook container for services */
 	notebook = gtk_notebook_new ();
 	gtk_widget_show (notebook);
 	gtk_container_add (GTK_CONTAINER (view->details->form), notebook);
-
-	/* Create the tab_label_widget */
-	tab_label_widget = nautilus_label_new ("Your Services");
-	nautilus_label_set_font_size (NAUTILUS_LABEL (tab_label_widget), 16);
-	nautilus_label_set_font_from_components (NAUTILUS_LABEL (tab_label_widget),
-						 "helvetica",
-						 "bold",
-						 NULL,
-						 NULL);
-	gtk_widget_show (tab_label_widget);
-
+	
+	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), FALSE);
+	view->details->services_notebook = notebook;
+	gtk_signal_connect (GTK_OBJECT (notebook_tabs), "tab_selected", service_tab_selected_callback, view);
+	
+	/* add the tab */
+	nautilus_tabs_add_tab (NAUTILUS_TABS (notebook_tabs), _("Your Services"), 0);
+	
 	/* Create the Services Listing Box */
 	frame = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (frame);
-	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), frame, tab_label_widget);
+	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), frame, NULL);
 
 	/* create the services scroll widget */
 	temp_scrolled_window = gtk_scrolled_window_new (NULL, NULL);
@@ -403,18 +412,11 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	/* create the Additional Services pane */
 
-	tab_label_widget = nautilus_label_new ("Additional Services");
-	nautilus_label_set_font_size (NAUTILUS_LABEL (tab_label_widget), 16);
-	nautilus_label_set_font_from_components (NAUTILUS_LABEL (tab_label_widget),
-						 "helvetica",
-						 "bold",
-						 NULL,
-						 NULL);
-	gtk_widget_show (tab_label_widget);
+	nautilus_tabs_add_tab (NAUTILUS_TABS (notebook_tabs), _("Additional Services"), 1);
 
 	temp_vbox = gtk_vbox_new (TRUE, 0);
 	gtk_widget_show (temp_vbox);
-	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), temp_vbox, tab_label_widget);
+	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), temp_vbox, NULL);
 
 	temp_hbox = gtk_hbox_new (TRUE, 0);
 	gtk_widget_show (temp_hbox);
@@ -1201,8 +1203,8 @@ generate_login_dialog (NautilusSummaryView	*view)
 	gnome_dialog_button_connect (GNOME_DIALOG (dialog), 0, GTK_SIGNAL_FUNC (register_button_cb), view);
 	gnome_dialog_button_connect (GNOME_DIALOG (dialog), 1, GTK_SIGNAL_FUNC (login_button_cb), view);
 
-	gnome_dialog_run (GNOME_DIALOG (dialog));
-
+  	gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
+	gtk_widget_show (GTK_WIDGET (dialog));
 }
 
 static void
@@ -1353,7 +1355,7 @@ nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 				(view, _("Found problem with data on Eazel servers. "
 					 "Please contact support@eazel.com."));
 		} else {
-			generate_summary_form (view);
+			generate_summary_form (view);		
 			if (!view->details->logged_in) {
 				generate_login_dialog (view);
 			}
@@ -1377,6 +1379,16 @@ summary_load_location_callback (NautilusView		*nautilus_view,
 
 }
 
+/* here is the callback to handle service tab selection */
+static void
+service_tab_selected_callback (GtkWidget *widget,
+		   int which_tab,
+		   NautilusSummaryView	*view)
+{
+	gtk_notebook_set_page (GTK_NOTEBOOK (view->details->services_notebook), which_tab);
+}
+
+/* here are the callbacks to handle bonobo menu items */
 static void
 bonobo_register_callback (BonoboUIComponent *ui, gpointer user_data, const char *verb)
 {

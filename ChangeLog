@@ -1,3 +1,56 @@
+2000-10-22  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
+
+	* components/services/summary/
+		nautilus-view/nautilus-summary-view.c
+	: (generate_summary_form), (generate_login_dialog),
+	(nautilus_summary_view_load_uri), (service_tab_selected_callback):
+	
+	added image-based tabs to the summary view.  Also, fixed problem where
+	the throbber kept spinning until the login dialog was dismissed by
+	making it a non-modal dialog by refraining from calling gnome_run_dialog
+	Currently, only the service tabs have been converted but the update
+	tab is coming soon.
+	
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-tabs.c:
+	(nautilus_tabs_initialize_class), (nautilus_tabs_initialize),
+	(nautilus_tabs_new), (tab_item_destroy), (tab_item_destroy_cover),
+	(nautilus_tabs_destroy), (nautilus_tabs_unload_tab_pieces),
+	(load_tab_piece), (nautilus_tabs_load_tab_pieces),
+	(nautilus_tabs_hit_test), (measure_height), (recalculate_size),
+	(nautilus_tabs_size_request), (draw_tab_piece_aa),
+	(draw_pixbuf_tiled_aa), (allocate_cleared_pixbuf),
+	(measure_tab_name), (draw_tab_label), (draw_all_tabs),
+	(tab_item_find_by_name), (nautilus_tabs_expose),
+	(nautilus_tabs_draw), (nautilus_tabs_add_tab),
+	(nautilus_tabs_remove_tab), (nautilus_tabs_prelight_tab),
+	(nautilus_tabs_select_tab), (nautilus_tabs_press_event),
+	(nautilus_tabs_leave_event), (nautilus_tabs_motion_event):
+	* libnautilus-extensions/nautilus-tabs.h:
+	added a new class for the fancy Arlo tabs in the summary view,
+	based on the sidebar tabs.
+
+	* configure.in:
+	* components/services/summary/
+		nautilus-view/Makefile.am:
+	* components/services/summary/
+		nautilus-view/icons/.cvsignore:
+	* components/services/summary/
+		nautilus-view/icons/Makefile.am:
+	* components/services/summary/
+		nautilus-view/icons/gray_tab_pieces/.cvsignore:
+	* components/services/summary/
+		nautilus-view/icons/gray_tab_pieces/*.png
+	
+	added Arlo's new tab images for the summary view
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize), (add_new_button_callback),
+	(done_button_callback):
+	
+	added a done button to the property dialog to make it easier to
+	dismiss it.
+	
 2000-10-22  Mike Fleming  <mfleming@eazel.com>
 
 	* libnautilus-extensions/nautilus-stock-dialogs.c:
