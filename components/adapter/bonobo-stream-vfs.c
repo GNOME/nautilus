@@ -67,7 +67,7 @@ vfs_read (BonoboStream *stream, CORBA_long count,
 
 	res = gnome_vfs_read(sfs->fd, data, count, &nread);
 
-	if (res == GNOME_VFS_OK){
+	if (res == GNOME_VFS_OK) {
 		(*buffer)->_buffer = data;
 		(*buffer)->_length = nread;
 	} else {
@@ -77,6 +77,7 @@ vfs_read (BonoboStream *stream, CORBA_long count,
 		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 				     ex_Bonobo_Stream_IOError, NULL);
 	}
+
 	sfs->got_eof = (res == GNOME_VFS_ERROR_EOF);
 }
 

@@ -1,3 +1,40 @@
+2000-09-20  Maciej Stachowiak  <mjs@eazel.com>
+
+	More work towards fixing bug 1994; in the process I think I might
+	also end up fixing 2576, 2577, 2578 and 2579 (might also end up
+	fixing 2580 later).
+	
+	* components/adapter/Makefile.am:
+
+	* components/adapter/nautilus-adapter-load-strategy.h,
+	components/adapter/nautilus-adapter-load-strategy.c: Abstract
+	class that gives the interface for loading up a component that
+	presents some particular interface.
+
+	* components/adapter/nautilus-adapter-file-load-strategy.h,
+	components/adapter/nautilus-adapter-file-load-strategy.c:
+	Concrete subclass for loading a component that has the
+	Bonobo::PersistFile interface.
+
+	* components/adapter/nautilus-adapter-progressive-load-strategy.h,
+	components/adapter/nautilus-adapter-progressive-load-strategy.c:
+	Concrete subclass for loading a component that has the
+	Bonobo::ProgressiveDataSink interface.
+
+	* components/adapter/nautilus-adapter-stream-load-strategy.c,
+	components/adapter/nautilus-adapter-stream-load-strategy.h:
+	Concrete subclass for loading a component that has the
+	Bonobo::PersistStream interface.
+
+	* components/adapter/nautilus-adapter.h,
+	components/adapter/nautilus-adapter.c:
+	(nautilus_adapter_destroy, nautilus_adapter_new,
+	nautilus_adapter_load_location_callback,
+	nautilus_adapter_stop_loading_callback): Use load strategies.
+
+	* libnautilus-extensions/bonobo-stream-vfs.c (vfs_read): Minor
+	formatting correction.
+
 2000-09-20  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/music/nautilus-music-view.c: (play_current_file):

@@ -21,11 +21,13 @@
  * Author: Maciej Stachowiak <mjs@eazel.com>
  */
 
-/* nautilus-adapter.c - 
+/* nautilus-adapter.c - Class for adapting bonobo controls/embeddables
+ * to look like Nautilus views.
  */
 
 #include <config.h>
 #include "nautilus-adapter.h"
+#include "nautilus-adapter-load-strategy.h"
 
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-container.h>
@@ -38,14 +40,13 @@
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-generous-bin.h>
-#include <libnautilus-extensions/bonobo-stream-vfs.h>
 #include <libnautilus-adapter/nautilus-adapter-factory.h>
 
 #include <stdio.h>
 
 struct NautilusAdapterDetails {
-	Bonobo_PersistStream  persist_stream;
-	NautilusView         *nautilus_view;
+	NautilusAdapterLoadStrategy *load_strategy;
+	NautilusView                *nautilus_view;
 };
 
 
@@ -102,6 +103,8 @@ nautilus_adapter_destroy (GtkObject *object)
 	
 	server = NAUTILUS_ADAPTER (object);
 	
+	gtk_object_unref (GTK_OBJECT (server->details->load_strategy));
+
 	g_free (server->details);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -132,8 +135,8 @@ nautilus_adapter_new (Bonobo_Unknown component)
 
 	embeddable = Bonobo_Unknown_query_interface (component,
 						     "IDL:Bonobo/Embeddable:1.0",
-									 &ev);
-
+						     &ev);
+	
 	if (ev._major != CORBA_NO_EXCEPTION || CORBA_Object_is_nil (embeddable, &ev)) {
 		CORBA_exception_free (&ev);
 		
@@ -142,27 +145,37 @@ nautilus_adapter_new (Bonobo_Unknown component)
 		return NULL;
 	}
 
-	adapter->details->persist_stream = Bonobo_Unknown_query_interface 
-		(component, "IDL:Bonobo/PersistStream:1.0", &ev);
+	bin =  gtk_widget_new (NAUTILUS_TYPE_GENEROUS_BIN, NULL);
+	control = bonobo_control_new (bin);
+	adapter->details->nautilus_view = nautilus_view_new_from_bonobo_control (control);
 
-	if (ev._major != CORBA_NO_EXCEPTION || 
-	    CORBA_Object_is_nil (adapter->details->persist_stream, &ev)) {
+
+	adapter->details->load_strategy = nautilus_adapter_load_strategy_get
+		(component, adapter->details->nautilus_view);
+
+	if (adapter->details->load_strategy == NULL) {
 		bonobo_object_release_unref (embeddable, &ev);
 		CORBA_exception_free (&ev);
+
+		bonobo_object_unref (BONOBO_OBJECT (control));
+		bonobo_object_unref (BONOBO_OBJECT (adapter->details->nautilus_view));
 
 		gtk_object_unref (GTK_OBJECT (adapter));
 		
 		return NULL;
 	}
 
+	gtk_signal_connect_object (GTK_OBJECT (adapter->details->nautilus_view),
+				   "destroy",
+				   gtk_object_unref,
+				   GTK_OBJECT (adapter));
+
+
 	component_wrapper = bonobo_object_client_from_corba (embeddable);
 
-	bin =  gtk_widget_new (NAUTILUS_TYPE_GENEROUS_BIN, NULL);
 
 	gtk_widget_show (bin);
 
-	control = bonobo_control_new (bin);
-	adapter->details->nautilus_view = nautilus_view_new_from_bonobo_control (control);
 
 	uih = bonobo_object_corba_objref (BONOBO_OBJECT (bonobo_control_get_ui_handler 
 							 (control)));
@@ -209,52 +222,8 @@ nautilus_adapter_load_location_callback (NautilusView    *view,
 					 const char      *location,
 					 NautilusAdapter *adapter)
 {
-	BonoboStream *stream;
-	CORBA_Environment ev;
-
-	puts ("XXX - loading");
-
-	CORBA_exception_init (&ev);
-
-	nautilus_view_report_load_underway (view);
-	
-	stream = bonobo_stream_vfs_open (location, Bonobo_Storage_READ);
-
-	if (stream == NULL) {
-		nautilus_view_report_load_failed (view);
-	} else {
-		/* FIXME bugzilla.eazel.com 1248: 
-		 * Dan Winship points out that we should pass the
-		 * MIME type here to work with new implementers of
-		 * PersistStream that pay attention to the MIME type. It
-		 * doesn't matter right now, but we should fix it
-		 * eventually. Currently, we don't store the MIME type, but
-		 * it should be easy to keep it around and pass it in here.
-		 */
-
-		puts ("XXX - really loading");
-
-		Bonobo_PersistStream_load
-			(adapter->details->persist_stream,
-			 bonobo_object_corba_objref (BONOBO_OBJECT (stream)),
-			 "", /* MIME type of stream */
-			 &ev);
-
-		puts ("XXX - done loading");
-
-		bonobo_object_unref (BONOBO_OBJECT (stream));
-
-		if (ev._major == CORBA_NO_EXCEPTION) {
-			puts ("XXX - succeeded");
-			nautilus_view_report_load_complete (view);
-		} else {
-			puts ("XXX - failed");
-			nautilus_view_report_load_failed (view);
-		}
-        }
-
-
-	CORBA_exception_free (&ev);
+	nautilus_adapter_load_strategy_load_location (adapter->details->load_strategy,
+						      location);
 }
 
 
@@ -263,6 +232,7 @@ static void
 nautilus_adapter_stop_loading_callback  (NautilusView    *view,
 					 NautilusAdapter *adapter)
 {
+	nautilus_adapter_load_strategy_stop_loading (adapter->details->load_strategy);
 }
 
 

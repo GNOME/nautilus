@@ -21,10 +21,7 @@
  * Author: Maciej Stachowiak <mjs@eazel.com>
  */
 
-/* nautilus-adapter-content-view.h - Adapter view component. This
- * component just displays a simple message and includes a menu item
- * and a toolbar button else. It should be a good basis for writing
- * Nautilus view components.
+/* nautilus-adapter.h - Adapter component. 
  */
 
 #ifndef NAUTILUS_ADAPTER_H
@@ -33,21 +30,21 @@
 #include <gtk/gtklabel.h>
 #include <libnautilus/nautilus-view.h>
 
-#define NAUTILUS_TYPE_ADAPTER	     (nautilus_adapter_get_type ())
-#define NAUTILUS_ADAPTER(obj)	     (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_ADAPTER, NautilusAdapter))
-#define NAUTILUS_ADAPTER_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_ADAPTER, NautilusAdapterClass))
-#define NAUTILUS_IS_ADAPTER(obj)	     (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_ADAPTER))
-#define NAUTILUS_IS_ADAPTER_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_ADAPTER))
+#define NAUTILUS_TYPE_ADAPTER	          (nautilus_adapter_get_type ())
+#define NAUTILUS_ADAPTER(obj)	          (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_ADAPTER, NautilusAdapter))
+#define NAUTILUS_ADAPTER_CLASS(klass)     (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_ADAPTER, NautilusAdapterClass))
+#define NAUTILUS_IS_ADAPTER(obj)	  (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_ADAPTER))
+#define NAUTILUS_IS_ADAPTER_CLASS(klass)  (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_ADAPTER))
 
 typedef struct NautilusAdapterDetails NautilusAdapterDetails;
 
 typedef struct {
-	BonoboObject parent;
+	GtkObject parent;
 	NautilusAdapterDetails *details;
 } NautilusAdapter;
 
 typedef struct {
-	BonoboObjectClass parent;
+	GtkObjectClass parent;
 } NautilusAdapterClass;
 
 /* GtkObject support */
