@@ -1,3 +1,16 @@
+2000-05-11  Andy Hertzfeld <andy@eazel.com>
+
+	* src/nautilus-index-tabs.c:
+	fixed bug #858, index tabs pre-darken, instead of prelighten, by
+	making the lighten and switching to black text so the labels are
+	still readable.
+	Also, made it choose light or dark text on the fly when the tab
+	color is changed, so the labels are always readable
+	
+	* components/services/trilobite/sample/nautilus-view/Makefile.am:
+	removed the icons subdir, since it had nothing in it and it was
+	breaking the build
+	
 2000-05-11  John Sullivan  <sullivan@eazel.com>
 
 	* src/file-manager/fm-directory-view.h,

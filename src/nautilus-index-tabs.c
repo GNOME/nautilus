@@ -53,6 +53,7 @@ struct NautilusIndexTabsDetails {
 	GdkColor hilight_color;
 	GdkColor prelight_color;
 	GdkColor text_color;  
+	GdkColor prelit_text_color;
 	
 	char *title;
 	gboolean title_prelit;
@@ -110,6 +111,24 @@ nautilus_index_tabs_initialize_class (NautilusIndexTabsClass *class)
 	tab_font = gdk_font_load ("-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");
 }
 
+/* utilities to set up the text color alternatives */
+
+static void
+setup_light_text(NautilusIndexTabs *index_tabs)
+{
+	gdk_color_parse ("rgb:ff/ff/ff", &index_tabs->details->text_color);
+	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
+				  &index_tabs->details->text_color, FALSE, TRUE);
+}
+
+static void
+setup_dark_text(NautilusIndexTabs *index_tabs)
+{
+	gdk_color_parse ("rgb:00/00/00", &index_tabs->details->text_color);
+	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
+				  &index_tabs->details->text_color, FALSE, TRUE);
+}
+
 static void
 nautilus_index_tabs_initialize (NautilusIndexTabs *index_tabs)
 {
@@ -118,11 +137,11 @@ nautilus_index_tabs_initialize (NautilusIndexTabs *index_tabs)
 	index_tabs->details = g_new0 (NautilusIndexTabsDetails, 1);
 	
 	/* set up the colors */
-	gdk_color_parse ("rgb:9c/9c/9c", &index_tabs->details->tab_color);
+	gdk_color_parse ("rgb:99/99/99", &index_tabs->details->tab_color);
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
 				  &index_tabs->details->tab_color, FALSE, TRUE);
 	
-	gdk_color_parse ("rgb:55/55/55", &index_tabs->details->prelight_color);
+	gdk_color_parse ("rgb:ee/ee/ee", &index_tabs->details->prelight_color);
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
 				  &index_tabs->details->prelight_color, FALSE, TRUE);
 	
@@ -138,10 +157,8 @@ nautilus_index_tabs_initialize (NautilusIndexTabs *index_tabs)
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
 				  &index_tabs->details->hilight_color, FALSE, TRUE);
 	
-	gdk_color_parse ("rgb:ff/ff/ff", &index_tabs->details->text_color);
-	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
-				  &index_tabs->details->text_color, FALSE, TRUE);
-
+	setup_light_text(index_tabs);
+	
 	index_tabs->details->title_prelit = FALSE;
 }
 
@@ -273,7 +290,7 @@ draw_one_tab (NautilusIndexTabs *index_tabs, GdkGC *gc,
 		
 	/* draw the metaview name */
 	text_y_offset = y + (TAB_HEIGHT >> 1) + 5;  
-	gdk_gc_set_foreground (gc, &index_tabs->details->text_color);  
+	gdk_gc_set_foreground (gc, prelight_flag ? &index_tabs->details->prelit_text_color : &index_tabs->details->text_color);  
 	gdk_draw_string (widget->window, tab_font, gc, x + TAB_MARGIN, text_y_offset, tab_name);
 	
 	
@@ -531,6 +548,17 @@ nautilus_index_tabs_select_tab (NautilusIndexTabs *index_tabs, int which_tab)
 	gtk_widget_queue_draw(GTK_WIDGET(index_tabs));	
 }
 
+/* utility routine that returns true if the passed-in color is lighter than average
+   this could be more sophisticated by weighting the components for luminosity, but the simple adding
+   should suffice, since either way is OK for the middle ground */
+   
+static gboolean
+is_light_color(GdkColor *color)
+{
+	int total_color = color->red + color->green + color->blue;
+	return total_color > 160*4096*3; /* biased slightly so the default of 99/99/99 uses light text */
+}
+
 /* set the background color associated with a tab */
 
 void
@@ -540,9 +568,14 @@ nautilus_index_tabs_set_color (NautilusIndexTabs *index_tabs,
 	gdk_color_parse (color_spec, &index_tabs->details->tab_color);
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
 				  &index_tabs->details->tab_color, FALSE, TRUE);
+
+	if (is_light_color(&index_tabs->details->tab_color))
+		setup_dark_text(index_tabs);
+	else
+		setup_light_text(index_tabs);
+	
 	gtk_widget_queue_draw (GTK_WIDGET(index_tabs));	
 }
- 
 
 /* receive a dropped color */
 
@@ -562,17 +595,12 @@ nautilus_index_tabs_receive_dropped_color (NautilusIndexTabs *index_tabs,
 	
 	channels = (guint16 *) selection_data->data;
 	color_spec = g_strdup_printf ("rgb:%04hX/%04hX/%04hX", channels[0], channels[1], channels[2]);
-	
-	gdk_color_parse (color_spec, &index_tabs->details->tab_color);
+	nautilus_index_tabs_set_color(index_tabs, color_spec);
 	g_free (color_spec);
-
-	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
-				  &index_tabs->details->tab_color, FALSE, TRUE);
-	
-	gtk_widget_queue_draw (GTK_WIDGET(index_tabs));	
 }
 
 /* set the title (used in title mode only) */
+
 void
 nautilus_index_tabs_set_title (NautilusIndexTabs *index_tabs, const char *new_title)
 {
