@@ -68,11 +68,16 @@ EXTRA_DIST =					\
 #	$(LINK) -rpath $(libdir) $(libleakcheck_la_LDFLAGS) $(libleakcheck_la_OBJECTS) $(libleakcheck_la_LIBADD) $(LIBS)
 
 
-# for now just hardcode a plain old link line, someday someone can figure out what the 
-# magic password is to make libtool do this cleanly
-libleakcheck.so: nautilus-leak-checker.c nautilus-leak-hash-table.c nautilus-leak-symbol-lookup.c
-	gcc nautilus-leak-checker.c nautilus-leak-hash-table.c nautilus-leak-symbol-lookup.c -Wall -o $@ -shared -I/gnome/include -I/gnome/lib/glib/include -L/gnome/lib -lglib -lpthread -ldl -Wl,-Bstatic -lbfd -liberty -Wl,-Bdynamic
+# for now just hardcode a plain old link line, someday someone can 
+#figure out what the magic password is to make libtool do this cleanly
 
-install: libleakcheck.so
-	cp -f libleakcheck.so $(DESTDIR)$(libdir)
+all: libleakcheck.so
+CLEANFILES += libleakcheck.so
+
+libleakcheck.so: nautilus-leak-checker.c nautilus-leak-hash-table.c nautilus-leak-symbol-lookup.c
+	gcc nautilus-leak-checker.c nautilus-leak-hash-table.c nautilus-leak-symbol-lookup.c -Wall -o $@ -shared $(GLIB_CFLAGS) $(GLIB_LIBS) -lpthread -ldl -Wl,-Bstatic -lbfd -liberty -Wl,-Bdynamic
+
+leakcheck_DATA = libleakcheck.so
+leakcheckdir= $(DESTDIR)$(libdir)
+
 
