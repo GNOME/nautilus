@@ -176,7 +176,6 @@ trilobite_redirect_parse_xml (char *blob, int length)
 			}
 
 			if ((name != NULL) && (uri != NULL)) {
-				trilobite_debug ("trilobite redirect: %s -> %s", name, uri);
 				add_redirect (name, uri);
 			} else {
 				g_warning ("trilobite redirect: incomplete node");

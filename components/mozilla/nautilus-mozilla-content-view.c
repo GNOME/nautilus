@@ -415,6 +415,10 @@ nautilus_mozilla_content_view_load_uri (NautilusMozillaContentView	*view,
 
 	g_assert (uri != NULL);
 
+#ifdef DEBUG_mfleming
+	g_print ("+%s uri='%s'\n", __FUNCTION__, uri);
+#endif
+
 	view->details->got_called_by_nautilus = TRUE;
 
 	/* Check whether its the same uri.  Ignore the mozilla
@@ -437,12 +441,21 @@ nautilus_mozilla_content_view_load_uri (NautilusMozillaContentView	*view,
 	g_print ("nautilus_mozilla_content_view_load_uri (uri = %s, same = %d)\n", 
 		 view->details->uri, same_uri);
 #endif
+	/* NOTE: (mfleming) I placed this here to fix bugzilla.eazel.com 5249
+	 * The belief is that calling load_underway here will cause
+	 * the Bonobo::Control::realize call to be made while this call is
+	 * pending, rather than later.  It's somewhat safer for that to occur
+	 * here.  Anyway, no harm is done: this is a totally legit place
+	 * to call load_underway
+	 */
+
+	nautilus_view_report_load_underway (view->details->nautilus_view);
+
 	/* If the request can be handled by mozilla, pass the uri as is.  Otherwise,
 	 * use gnome-vfs to open the uri and later stream the data into the gtkmozembed
 	 * widget.
 	 */
 	if (mozilla_is_uri_handled_by_mozilla (uri)) {
-
 		if (same_uri) {
 			gtk_moz_embed_reload (GTK_MOZ_EMBED (view->details->mozilla),
 					      GTK_MOZ_EMBED_FLAG_RELOADBYPASSCACHE);
@@ -452,7 +465,6 @@ nautilus_mozilla_content_view_load_uri (NautilusMozillaContentView	*view,
 						view->details->uri);
 		}
 	} else {
-		nautilus_view_report_load_underway (view->details->nautilus_view);
 		gnome_vfs_async_open (&async_handle, uri, GNOME_VFS_OPEN_READ, mozilla_vfs_callback, view);	
 	}
 }
@@ -493,6 +505,10 @@ mozilla_load_location_callback (NautilusView *nautilus_view,
 	char *translated_location;
 
 	g_assert (nautilus_view == view->details->nautilus_view);
+
+#ifdef DEBUG_mfleming
+	g_print ("+%s location='%s'\n", __FUNCTION__, location);
+#endif
 
 	translated_location = mozilla_translate_uri_if_needed (view, location);
 
@@ -585,6 +601,10 @@ mozilla_location_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
 
 	new_location = gtk_moz_embed_get_location (GTK_MOZ_EMBED (view->details->mozilla));
+
+#ifdef DEBUG_mfleming
+	g_print ("+%s current moz location='%s'\n", __FUNCTION__, new_location);
+#endif
 
 #ifdef DEBUG_ramiro
 	g_print ("mozilla_location_changed_callback (%s)\n", new_location);
@@ -759,6 +779,7 @@ mozilla_open_uri_callback (GtkMozEmbed *mozilla,
 {
 	gint                            abort_uri_open;
  	NautilusMozillaContentView     *view;
+	/*FIXME this static is shared between multiple browser windows! */
 	static gboolean                 do_nothing = FALSE;
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
@@ -767,6 +788,10 @@ mozilla_open_uri_callback (GtkMozEmbed *mozilla,
 
 	/* Determine whether we want to abort this uri load */
 	abort_uri_open = mozilla_is_uri_handled_by_nautilus (uri);
+
+#ifdef DEBUG_mfleming
+	g_print ("+%s do_nothing = %d, got_called_by_nautilus = %d\n", __FUNCTION__, do_nothing,  view->details->got_called_by_nautilus);
+#endif
 
 	/* FIXME: I believe that this will cause a navigation from
 	 * a page containing a specific iframe URL to that same URL
@@ -1039,7 +1064,7 @@ make_full_uri_from_relative (const char *base_uri, const char *uri)
 		g_free (mutable_uri); 
 
 #ifdef DEBUG_mfleming
-		g_print ("Relative URI converted base '%s' uri '%s' to '%s'", base_uri, uri, result);
+		g_print ("Relative URI converted base '%s' uri '%s' to '%s'\n", base_uri, uri, result);
 #endif
 	} else {
 		result = g_strdup (uri);
@@ -1238,7 +1263,7 @@ mozilla_translate_uri_if_needed (NautilusMozillaContentView *view, const char *u
 		ret = eazel_services_scheme_translate (view, uri, FALSE);
 
 #ifdef DEBUG_mfleming
-		g_message ("Mozilla: translated uri '%s' to '%s'", uri, ret ? ret : "<no such page>");
+		g_message ("Mozilla: translated uri '%s' to '%s'\n", uri, ret ? ret : "<no such page>");
 #endif
 
 	} else
@@ -1366,7 +1391,7 @@ eazel_services_scheme_untranslate (NautilusMozillaContentView	*view,
 
 	if (ERR_Success == err) {
 #ifdef DEBUG_mfleming
-		g_message ("Mozilla: untranslated uri '%s' to '%s'", uri, ret );
+		g_message ("Mozilla: untranslated uri '%s' to '%s'\n", uri, ret );
 #endif
 	} else {
 		ret = g_strdup (uri);

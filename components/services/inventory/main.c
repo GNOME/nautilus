@@ -118,7 +118,7 @@ main (int argc,
 		g_error ("Could not initialize trilobite. :(");
 		exit (1);
 	}
-	trilobite_set_debug_mode (TRUE);
+	trilobite_set_debug_mode (FALSE);
 
 	gnome_vfs_init ();
 

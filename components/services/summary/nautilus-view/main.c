@@ -31,6 +31,7 @@
 #include "nautilus-summary-view.h"
 #include <gconf/gconf.h>
 #include <libtrilobite/libammonite.h>
+#include <libtrilobite/trilobite-core-messaging.h>
 
 static int object_count =0;
 
@@ -80,8 +81,7 @@ main (int argc, char *argv[])
 #ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
 	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
 	textdomain (PACKAGE);
-#endif
-	
+#endif	
         gnome_init_with_popt_table ("nautilus-summary-view", VERSION, 
                                     argc, argv,
                                     oaf_popt_options, 0, NULL);
@@ -93,7 +93,9 @@ main (int argc, char *argv[])
 	gconf_init (argc, argv, NULL);
 
 	ammonite_init (bonobo_poa());
-	
+
+	trilobite_set_log_handler (NULL, G_LOG_DOMAIN);
+
         registration_id = oaf_make_registration_id ("OAFIID:nautilus_summary_view_factory:1b0b1018-e0ca-4f14-8d23-7a134486ab30", getenv ("DISPLAY"));
 
 	factory = bonobo_generic_factory_new_multi (registration_id, 

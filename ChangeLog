@@ -1,3 +1,24 @@
+2001-01-19  Mike Fleming  <mfleming@eazel.com>
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_load_uri),
+	(mozilla_load_location_callback),
+	(mozilla_location_changed_callback), (mozilla_open_uri_callback),
+	(make_full_uri_from_relative), (mozilla_translate_uri_if_needed),
+	(eazel_services_scheme_untranslate):
+
+	Bug 5249 -- resolve deadlock by calling load_underway sooner in the
+	case where nautilus directs the navigation.  (Other changes were to debug
+	printfs)
+	
+	* components/services/install/server/main.c: (main):
+	* components/services/inventory/main.c: (main):
+	* components/services/summary/nautilus-view/main.c: (main):
+	* components/services/trilobite/libtrilobite/trilobite-redirect.c:
+	(trilobite_redirect_parse_xml):
+
+	Remove obnx debug messages
+
 2001-01-19  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
