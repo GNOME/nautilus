@@ -1,3 +1,24 @@
+2000-11-16  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* src/file-manager/fm-directory-view.c: (open_callback),
+	(open_in_new_window_callback), (other_application_callback),
+	(other_viewer_callback), (trash_callback), (duplicate_callback),
+	(create_link_callback), (new_folder_callback),
+	(open_properties_window_callback), (reset_background_callback),
+	(remove_custom_icons_callback), (real_merge_menus):
+	* src/file-manager/fm-icon-view.c: (show_stretch_handles_callback),
+	(unstretch_icons_callback), (clean_up_callback),
+	(rename_icon_callback), (customize_icon_text_callback),
+	(fm_icon_view_merge_menus):
+	* src/file-manager/fm-search-list-view.c: (real_merge_menus),
+	(reveal_selected_items_callback):
+
+	Removed all function casts that were allowing us to use a single
+	callback for both Bonobo-style and gtk-style menus; converted
+	all the functions to take Bonobo-style parameters.
+
 2000-11-16  Martin Baulig  <martin@home-of-linux.org>
 
 	* libnautilus-adapter/nautilus-adapter-factory.idl:

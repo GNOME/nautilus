@@ -90,8 +90,9 @@ static gboolean real_supports_properties 	     	 (FMDirectoryView  *view);
 static void 	load_location_callback               	 (NautilusView 	   *nautilus_view, 
 						      	  char 		   *location);
 static void	real_update_menus 		     	 (FMDirectoryView  *view);
-static void	reveal_selected_items_callback 		 (gpointer 	    ignored, 
-							  gpointer 	    user_data);
+static void	reveal_selected_items_callback 		 (BonoboUIComponent *component, 
+							  gpointer 	    user_data, 
+							  const char 	   *verb);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMSearchListView,
@@ -508,7 +509,7 @@ real_merge_menus (FMDirectoryView *view)
 	FMSearchListView *search_view;
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("Indexing Info", indexing_info_callback),
-		BONOBO_UI_VERB ("Reveal", (BonoboUIVerbFn)reveal_selected_items_callback),
+		BONOBO_UI_VERB ("Reveal", reveal_selected_items_callback),
 		BONOBO_UI_VERB_END
 	};
 
@@ -566,12 +567,8 @@ real_update_menus (FMDirectoryView *view)
 	update_reveal_item (FM_SEARCH_LIST_VIEW (view));
 }
 
-/**
- * Note that this is used both as a Bonobo menu callback and a signal callback.
- * The first parameter is different in these cases, but we just ignore it anyway.
- */
 static void
-reveal_selected_items_callback (gpointer ignored, gpointer user_data)
+reveal_selected_items_callback (BonoboUIComponent *component, gpointer user_data, const char *verb)
 {
 	FMDirectoryView *directory_view;
 	char *parent_uri;

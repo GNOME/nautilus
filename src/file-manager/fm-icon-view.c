@@ -317,36 +317,28 @@ set_sort_criterion (FMIconView *icon_view, const SortCriterion *sort)
 	return TRUE;
 }
 
-/**
- * Note that this is used both as a Bonobo menu callback and a signal callback.
- * The first parameter is different in these cases, but we just ignore it anyway.
- */
 static void
-show_stretch_handles_callback (gpointer ignored, gpointer view)
+show_stretch_handles_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
-	g_assert (FM_IS_ICON_VIEW (view));
+	g_assert (FM_IS_ICON_VIEW (callback_data));
 
 	nautilus_icon_container_show_stretch_handles
-		(get_icon_container (FM_ICON_VIEW (view)));
+		(get_icon_container (FM_ICON_VIEW (callback_data)));
 
         /* Update menus because Stretch and Unstretch items have changed state */
-	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
+	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (callback_data));
 }
 
-/**
- * Note that this is used both as a Bonobo menu callback and a signal callback.
- * The first parameter is different in these cases, but we just ignore it anyway.
- */
 static void
-unstretch_icons_callback (gpointer ignored, gpointer view)
+unstretch_icons_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
-	g_assert (FM_IS_ICON_VIEW (view));
+	g_assert (FM_IS_ICON_VIEW (callback_data));
 
 	nautilus_icon_container_unstretch
-		(get_icon_container (FM_ICON_VIEW (view)));
+		(get_icon_container (FM_ICON_VIEW (callback_data)));
 
         /* Update menus because Stretch and Unstretch items have changed state */
-	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
+	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (callback_data));
 }
 
 static void
@@ -375,31 +367,23 @@ fm_icon_view_real_clean_up (FMIconView *icon_view)
 	set_sort_reversed (icon_view, saved_sort_reversed);
 }
 
-/**
- * Note that this is used both as a Bonobo menu callback and a signal callback.
- * The first parameter is different in these cases, but we just ignore it anyway.
- */
 static void
-clean_up_callback (gpointer ignored, gpointer view)
+clean_up_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
-	fm_icon_view_clean_up (FM_ICON_VIEW (view));
+	fm_icon_view_clean_up (FM_ICON_VIEW (callback_data));
 }
 
 	
 
-/**
- * Note that this is used both as a Bonobo menu callback and a signal callback.
- * The first parameter is different in these cases, but we just ignore it anyway.
- */
 static void
-rename_icon_callback (gpointer ignored, gpointer view)
+rename_icon_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
-	g_assert (FM_IS_ICON_VIEW (view));
+	g_assert (FM_IS_ICON_VIEW (callback_data));
   		
 	nautilus_icon_container_start_renaming_selected_item
-		(get_icon_container (FM_ICON_VIEW (view)));
+		(get_icon_container (FM_ICON_VIEW (callback_data)));
 
-	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
+	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (callback_data));
 }
 
 static void
@@ -565,11 +549,8 @@ handle_radio_item (FMIconView *view,
 	}
 }
 
-/* Note that this is used both as a Bonobo menu callback and a signal callback.
- * The first parameter is different in these cases, but we just ignore it anyway.
- */
 static void
-customize_icon_text_callback (gpointer ignored1, gpointer ignored2)
+customize_icon_text_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
 	nautilus_gtk_window_present (fm_icon_text_window_get_or_create ());
 }
@@ -1144,10 +1125,6 @@ set_sort_criterion_by_id (FMIconView *icon_view, const char *id)
 	nautilus_icon_container_sort (get_icon_container (icon_view));
 }
 
-/**
- * Note that this is used both as a Bonobo menu callback and a signal callback.
- * The first parameter is different in these cases, but we just ignore it anyway.
- */
 static void
 sort_reversed_state_changed_callback (BonoboUIComponent *component,
 				      const char        *path,
@@ -1232,11 +1209,11 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 {
 	FMIconView *icon_view;
 	BonoboUIVerb verbs [] = {
-		BONOBO_UI_VERB ("Rename", (BonoboUIVerbFn)rename_icon_callback),
-		BONOBO_UI_VERB ("Icon Text", (BonoboUIVerbFn)customize_icon_text_callback),
-		BONOBO_UI_VERB ("Stretch", (BonoboUIVerbFn)show_stretch_handles_callback),
-		BONOBO_UI_VERB ("Unstretch", (BonoboUIVerbFn)unstretch_icons_callback),
-		BONOBO_UI_VERB ("Clean Up", (BonoboUIVerbFn)clean_up_callback),
+		BONOBO_UI_VERB ("Rename", rename_icon_callback),
+		BONOBO_UI_VERB ("Icon Text", customize_icon_text_callback),
+		BONOBO_UI_VERB ("Stretch", show_stretch_handles_callback),
+		BONOBO_UI_VERB ("Unstretch", unstretch_icons_callback),
+		BONOBO_UI_VERB ("Clean Up", clean_up_callback),
 		BONOBO_UI_VERB_END
 	};
 	

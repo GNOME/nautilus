@@ -457,12 +457,8 @@ selection_not_empty_in_menu_callback (FMDirectoryView *view, GList *selection)
 	return FALSE;
 }
 
-/**
- * Note that this is used both as a Bonobo menu callback and a signal callback.
- * The first parameter is different in these cases, but we just ignore it anyway.
- */
 static void
-open_callback (gpointer ignored, gpointer callback_data)
+open_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
         FMDirectoryView *view;
         GList *selection;
@@ -484,12 +480,8 @@ open_callback (gpointer ignored, gpointer callback_data)
 	nautilus_file_list_free (selection);
 }
 
-/**
- * Note that this is used both as a Bonobo menu callback and a signal callback.
- * The first parameter is different in these cases, but we just ignore it anyway.
- */
 static void
-open_in_new_window_callback (gpointer ignored, gpointer callback_data)
+open_in_new_window_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
         FMDirectoryView *view;
         GList *selection;
@@ -659,12 +651,8 @@ open_with_other_program (FMDirectoryView *view, GnomeVFSMimeActionType action_ty
 	nautilus_file_list_free (selection);
 }
 
-/**
- * Note that this is used both as a Bonobo menu callback and a signal callback.
- * The first parameter is different in these cases, but we just ignore it anyway.
- */
 static void
-other_application_callback (gpointer ignored, gpointer callback_data)
+other_application_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
@@ -672,12 +660,8 @@ other_application_callback (gpointer ignored, gpointer callback_data)
 				 GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
 }
 
-/**
- * Note that this is used both as a Bonobo menu callback and a signal callback.
- * The first parameter is different in these cases, but we just ignore it anyway.
- */
 static void
-other_viewer_callback (gpointer ignored, gpointer callback_data)
+other_viewer_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
@@ -685,12 +669,8 @@ other_viewer_callback (gpointer ignored, gpointer callback_data)
 				 GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
 }
 
-/**
- * Note that this is used both as a Bonobo menu callback and a signal callback.
- * The first parameter is different in these cases, but we just ignore it anyway.
- */
 static void
-trash_callback (gpointer *ignored, gpointer callback_data)
+trash_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
         FMDirectoryView *view;
         GList *selection;
@@ -704,12 +684,8 @@ trash_callback (gpointer *ignored, gpointer callback_data)
         nautilus_file_list_free (selection);
 }
 
-/**
- * Note that this is used both as a Bonobo menu callback and a signal callback.
- * The first parameter is different in these cases, but we just ignore it anyway.
- */
 static void
-duplicate_callback (gpointer *ignored, gpointer callback_data)
+duplicate_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
         FMDirectoryView *view;
         GList *selection;
@@ -725,12 +701,8 @@ duplicate_callback (gpointer *ignored, gpointer callback_data)
         nautilus_file_list_free (selection);
 }
 
-/**
- * Note that this is used both as a Bonobo menu callback and a signal callback.
- * The first parameter is different in these cases, but we just ignore it anyway.
- */
 static void
-create_link_callback (gpointer ignored, gpointer callback_data)
+create_link_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
         FMDirectoryView *view;
         GList *selection;
@@ -779,24 +751,16 @@ bonobo_menu_empty_trash_callback (BonoboUIComponent *component,
 	nautilus_file_operations_empty_trash (GTK_WIDGET (FM_DIRECTORY_VIEW (callback_data)));
 }
 
-/**
- * Note that this is used both as a Bonobo menu callback and a signal callback.
- * The first parameter is different in these cases, but we just ignore it anyway.
- */
 static void
-new_folder_callback (gpointer ignored, gpointer callback_data)
+new_folder_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {                
         g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
 	fm_directory_view_new_folder (FM_DIRECTORY_VIEW (callback_data));
 }
 
-/**
- * Note that this is used both as a Bonobo menu callback and a signal callback.
- * The first parameter is different in these cases, but we just ignore it anyway.
- */
 static void
-open_properties_window_callback (gpointer ignored, gpointer callback_data)
+open_properties_window_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
         FMDirectoryView *view;
         GList *selection;
@@ -1403,12 +1367,8 @@ done_loading (FMDirectoryView *view)
 	view->details->loading = FALSE;
 }
 
-/**
- * Note that this is used both as a Bonobo menu callback and a signal callback.
- * The first parameter is different in these cases, but we just ignore it anyway.
- */
 static void
-reset_background_callback (gpointer ignored, gpointer callback_data)
+reset_background_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
 
@@ -2673,21 +2633,17 @@ files_have_any_custom_images (GList *files)
 	return FALSE;
 }
 
-/**
- * Note that this is used both as a Bonobo menu callback and a signal callback.
- * The first parameter is different in these cases, but we just ignore it anyway.
- */
 static void
-remove_custom_icons_callback (gpointer ignored, gpointer view)
+remove_custom_icons_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
 	GList *selection;
 
-	selection = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (view));
+	selection = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (callback_data));
 	g_list_foreach (selection, remove_custom_icon, NULL);
 	nautilus_file_list_free (selection);
 
         /* Update menus because Remove Custom Icons item has changed state */
-	schedule_update_menus (FM_DIRECTORY_VIEW (view));
+	schedule_update_menus (FM_DIRECTORY_VIEW (callback_data));
 }
 
 static void
@@ -3064,20 +3020,20 @@ static void
 real_merge_menus (FMDirectoryView *view)
 {
 	BonoboUIVerb verbs [] = {
-		BONOBO_UI_VERB ("New Folder", (BonoboUIVerbFn)new_folder_callback),
-		BONOBO_UI_VERB ("Open", (BonoboUIVerbFn)open_callback),
-		BONOBO_UI_VERB ("OpenNew", (BonoboUIVerbFn)open_in_new_window_callback),
-		BONOBO_UI_VERB ("OtherApplication", (BonoboUIVerbFn)other_application_callback),
-		BONOBO_UI_VERB ("OtherViewer", (BonoboUIVerbFn)other_viewer_callback),
-		BONOBO_UI_VERB ("Show Properties", (BonoboUIVerbFn)open_properties_window_callback),
-		BONOBO_UI_VERB ("Trash", (BonoboUIVerbFn)trash_callback),
-		BONOBO_UI_VERB ("Duplicate", (BonoboUIVerbFn)duplicate_callback),
-		BONOBO_UI_VERB ("Create Link", (BonoboUIVerbFn)create_link_callback),
+		BONOBO_UI_VERB ("New Folder", new_folder_callback),
+		BONOBO_UI_VERB ("Open", open_callback),
+		BONOBO_UI_VERB ("OpenNew", open_in_new_window_callback),
+		BONOBO_UI_VERB ("OtherApplication", other_application_callback),
+		BONOBO_UI_VERB ("OtherViewer", other_viewer_callback),
+		BONOBO_UI_VERB ("Show Properties", open_properties_window_callback),
+		BONOBO_UI_VERB ("Trash", trash_callback),
+		BONOBO_UI_VERB ("Duplicate", duplicate_callback),
+		BONOBO_UI_VERB ("Create Link", create_link_callback),
 		BONOBO_UI_VERB ("Show Trash", show_trash_callback),
 		BONOBO_UI_VERB ("Empty Trash", bonobo_menu_empty_trash_callback),
 		BONOBO_UI_VERB ("Select All", bonobo_menu_select_all_callback),
-		BONOBO_UI_VERB ("Remove Custom Icons", (BonoboUIVerbFn)remove_custom_icons_callback),
-		BONOBO_UI_VERB ("Reset Background", (BonoboUIVerbFn)reset_background_callback),
+		BONOBO_UI_VERB ("Remove Custom Icons", remove_custom_icons_callback),
+		BONOBO_UI_VERB ("Reset Background", reset_background_callback),
 		BONOBO_UI_VERB_END
 	};
 
