@@ -1,3 +1,9 @@
+2001-11-12  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus/nautilus-view.c
+	(view_frame_call_begin): guard against
+	CORBA_OBJECT_NIL return from get_control_frame.
+
 2001-11-12  Thomas Canty  <tommydal@optushome.com.au>
 	* configure.in: Initialise the gnome-vfs-module package,
 	which is required for the help component

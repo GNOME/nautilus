@@ -345,7 +345,8 @@ view_frame_call_begin (NautilusView *view, CORBA_Environment *ev)
 	CORBA_exception_init (ev);
 
 	control_frame = bonobo_control_get_control_frame (nautilus_view_get_bonobo_control (view), ev);
-	if (ev->_major != CORBA_NO_EXCEPTION) {
+	if (ev->_major != CORBA_NO_EXCEPTION ||
+	    control_frame == CORBA_OBJECT_NIL) {
 		return CORBA_OBJECT_NIL;
 	}
 

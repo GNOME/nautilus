@@ -40,6 +40,7 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
+#include <eel/eel-gobject-extensions.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-theme.h>
 #include <math.h>
@@ -298,11 +299,11 @@ nautilus_throbber_init (NautilusThrobber *throbber)
 	
 	/* make the bonobo control */
 	throbber->details->control = BONOBO_OBJECT (bonobo_control_new (widget));
-	gtk_signal_connect_while_alive (GTK_OBJECT (throbber->details->control),
+	eel_signal_connect_while_alive (G_OBJECT (throbber->details->control),
 					"destroy",
-					GTK_SIGNAL_FUNC (null_pointer_callback),
+					G_CALLBACK (null_pointer_callback),
 					&throbber->details->control,
-					GTK_OBJECT (throbber));
+					G_OBJECT (throbber));
 	
 	/* attach a property bag with the configure property */
 	throbber->details->property_bag = bonobo_property_bag_new (get_bonobo_properties, 
