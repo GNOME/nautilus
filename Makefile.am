@@ -1,9 +1,5 @@
 include $(top_srcdir)/Makefile.shared
 
-#XXX_DISABLED_FOR_PR2_XXX if HAVE_APPLETS
-#XXX_DISABLED_FOR_PR2_XXX APPLETS_SUBDIRS = applets
-#XXX_DISABLED_FOR_PR2_XXX endif
-
 SUBDIRS =			\
 	data 			\
 	icons 			\
@@ -17,7 +13,6 @@ SUBDIRS =			\
 	helper-scripts		\
 	src 			\
 	components		\
-	$(APPLETS_SUBDIRS)	\
 	test 			\
 	user-guide		\
 	po 			\
