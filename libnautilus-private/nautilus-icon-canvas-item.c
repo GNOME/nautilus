@@ -512,12 +512,18 @@ compute_text_rectangle (NautilusIconCanvasItem *item,
 			ArtIRect icon_rectangle)
 {
 	ArtIRect text_rectangle;
+	double pixels_per_unit;
+	double text_width, text_height;
+
+	pixels_per_unit = EEL_CANVAS_ITEM (item)->canvas->pixels_per_unit;
+	text_width = item->details->text_width / pixels_per_unit;
+	text_height = item->details->text_height / pixels_per_unit;
 
 	/* Compute text rectangle. */
-	text_rectangle.x0 = (icon_rectangle.x0 + icon_rectangle.x1) / 2 - item->details->text_width / 2;
-	text_rectangle.y0 = icon_rectangle.y1 + LABEL_OFFSET;
-	text_rectangle.x1 = text_rectangle.x0 + item->details->text_width;
-	text_rectangle.y1 = text_rectangle.y0 + item->details->text_height;
+	text_rectangle.x0 = (icon_rectangle.x0 + icon_rectangle.x1) / 2 - text_width / 2;
+	text_rectangle.y0 = icon_rectangle.y1 + LABEL_OFFSET / pixels_per_unit;
+	text_rectangle.x1 = text_rectangle.x0 + text_width;
+	text_rectangle.y1 = text_rectangle.y0 + text_height;
 
 	return text_rectangle;
 }
