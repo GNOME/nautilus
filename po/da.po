@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "POT-Creation-Date: 2000-10-29 04:41+0100\n"
-"PO-Revision-Date: 2000-12-22 11:38+02:00\n"
+"PO-Revision-Date: 2000-12-23 11:38+02:00\n"
 "Last-Translator: Keld Simonsen <keld@dkuug.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -2465,7 +2465,7 @@ msgstr "Erstat alt"
 
 #. appended to new link file
 #: libnautilus-extensions/nautilus-file-operations.c:1016
-#: libnautilus-extensions/nautilus-file.c:3724
+#: libnautilus-extensions/nautilus-file.c:3718
 #, c-format
 msgid "link to %s"
 msgstr "lænke til %s"
@@ -2991,104 +2991,104 @@ msgstr "foo foo (100000000000000te kopi).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-extensions/nautilus-file.c:2235
+#: libnautilus-extensions/nautilus-file.c:2229
 msgid "today at %-I:%M %p"
 msgstr "i dag kl %H:%M"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2240
+#: libnautilus-extensions/nautilus-file.c:2234
 msgid "yesterday at %-I:%M %p"
 msgstr "i går kl %H:%M"
 
 #. Current week, include day of week.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2245
+#: libnautilus-extensions/nautilus-file.c:2239
 msgid "%A %-m/%-d/%y at %-I:%M %p"
 msgstr "%A %Y-%-m-%-d %H:%M"
 
 #. Other dates.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2250
+#: libnautilus-extensions/nautilus-file.c:2244
 msgid "%-m/%-d/%y at %-I:%M %p"
 msgstr "%Y-%-m-%-d %H:%M"
 
-#: libnautilus-extensions/nautilus-file.c:3319
+#: libnautilus-extensions/nautilus-file.c:3313
 msgid "0 items"
 msgstr "0 ting"
 
-#: libnautilus-extensions/nautilus-file.c:3319
+#: libnautilus-extensions/nautilus-file.c:3313
 msgid "0 folders"
 msgstr "0 mapper"
 
-#: libnautilus-extensions/nautilus-file.c:3320
+#: libnautilus-extensions/nautilus-file.c:3314
 msgid "0 files"
 msgstr "0 filer"
 
-#: libnautilus-extensions/nautilus-file.c:3324
+#: libnautilus-extensions/nautilus-file.c:3318
 msgid "1 item"
 msgstr "1 ting"
 
-#: libnautilus-extensions/nautilus-file.c:3324
+#: libnautilus-extensions/nautilus-file.c:3318
 msgid "1 folder"
 msgstr "1 mappe"
 
-#: libnautilus-extensions/nautilus-file.c:3325
+#: libnautilus-extensions/nautilus-file.c:3319
 msgid "1 file"
 msgstr "1 fil"
 
-#: libnautilus-extensions/nautilus-file.c:3328
+#: libnautilus-extensions/nautilus-file.c:3322
 #, c-format
 msgid "%u items"
 msgstr "%u ting"
 
-#: libnautilus-extensions/nautilus-file.c:3328
+#: libnautilus-extensions/nautilus-file.c:3322
 #, c-format
 msgid "%u folders"
 msgstr "%u mapper"
 
-#: libnautilus-extensions/nautilus-file.c:3329
+#: libnautilus-extensions/nautilus-file.c:3323
 #, c-format
 msgid "%u files"
 msgstr "%u filer"
 
 #. This means no contents at all were readable
-#: libnautilus-extensions/nautilus-file.c:3629
-#: libnautilus-extensions/nautilus-file.c:3643
+#: libnautilus-extensions/nautilus-file.c:3623
+#: libnautilus-extensions/nautilus-file.c:3637
 msgid "? items"
 msgstr "? opføringer"
 
-#: libnautilus-extensions/nautilus-file.c:3647
+#: libnautilus-extensions/nautilus-file.c:3641
 msgid "unknown type"
 msgstr "ukendt type"
 
-#: libnautilus-extensions/nautilus-file.c:3649
+#: libnautilus-extensions/nautilus-file.c:3643
 msgid "unknown MIME type"
 msgstr "ukendt MIME-type"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-extensions/nautilus-file.c:3654
+#: libnautilus-extensions/nautilus-file.c:3648
 msgid "unknown"
 msgstr "ukendt"
 
-#: libnautilus-extensions/nautilus-file.c:3689
+#: libnautilus-extensions/nautilus-file.c:3683
 msgid "program"
 msgstr "program"
 
-#: libnautilus-extensions/nautilus-file.c:3718
+#: libnautilus-extensions/nautilus-file.c:3712
 msgid "link"
 msgstr "lænke"
 
-#: libnautilus-extensions/nautilus-file.c:3738
+#: libnautilus-extensions/nautilus-file.c:3732
 msgid "link (broken)"
 msgstr "lænke (ødelagt)"
 
-#: libnautilus-extensions/nautilus-file.c:4672
+#: libnautilus-extensions/nautilus-file.c:4666
 #: libnautilus-extensions/nautilus-trash-directory.c:261
 #: src/file-manager/fm-desktop-icon-view.c:65
 msgid "Trash"
@@ -3221,6 +3221,7 @@ msgid "Navigation Settings"
 msgstr "Indstillinger for navigation"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:323
+#: libnautilus-extensions/nautilus-global-preferences.c:1042
 msgid "Home Location"
 msgstr "Hjemmested"
 
@@ -3450,11 +3451,11 @@ msgstr "Skift"
 #. FIXME bugzilla.eazel.com 1102: Embedded text should use preferences
 #. * to determine what font it uses instead of this set of constants.
 #.
-#: libnautilus-extensions/nautilus-icon-factory.c:133
+#: libnautilus-extensions/nautilus-icon-factory.c:134
 msgid "helvetica"
 msgstr "helvetica"
 
-#: libnautilus-extensions/nautilus-icon-factory.c:134
+#: libnautilus-extensions/nautilus-icon-factory.c:135
 msgid "medium"
 msgstr "medium"
 
@@ -3955,8 +3956,8 @@ msgid ""
 "Items containing \"stuff\" in their names, that are regular files and "
 "smaller than 2000 bytes"
 msgstr ""
-"Elementer indeholdende \"ting\" i navnet, som er almindelige filer og som er mindre "
-"end 2000 bytes"
+"Elementer indeholdende \"ting\" i navnet, som er almindelige filer og som er "
+"mindre end 2000 bytes"
 
 #: libnautilus-extensions/nautilus-search-uri.c:836
 msgid "Items containing \"medusa\" in their names and that are folders"
@@ -4011,35 +4012,97 @@ msgstr "Viderekommen"
 msgid "Advanced"
 msgstr "Avanceret"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:328
+#: libnautilus-extensions/nautilus-volume-monitor.c:330
 msgid "Audio CD"
 msgstr "Lyd-cd"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1004
+#: libnautilus-extensions/nautilus-volume-monitor.c:997
+msgid "Mount Error"
+msgstr "Monteringsfejl"
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:999
+msgid "Unmount Error"
+msgstr "Felg ved afmontering"
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1026
+msgid "is not a valid block device"
+msgstr "er ikke en gyldig blok-enhed"
+
+#. Handle floppy case
+#: libnautilus-extensions/nautilus-volume-monitor.c:1030
+msgid ""
+"Nautilus was unable to mount the floppy drive. There is probably no floppy "
+"in the drive."
+msgstr ""
+"Nautilus kunne ikke montere disketten. Der er formentlig ingen diskette "
+"i diskettedrevet."
+
+#. All others
+#: libnautilus-extensions/nautilus-volume-monitor.c:1034
+msgid ""
+"Nautilus was unable to mount the volume. There is probably no media in the "
+"device."
+msgstr ""
+"Nautilus kunne ikke montere delarkivet. Der er formentlig intet media "
+"i enheden."
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1037
+msgid "wrong fs type, bad option, bad superblock on"
+msgstr "Forkert filsystemstype, dårligt tilvalg, dårlig superblok på"
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1040
+msgid ""
+"Nautilus was unable to mount the floppy drive. The floppy is probably in a "
+"format that cannot be mounted."
+msgstr ""
+"Nautilus kunne ikke montere disketten. Disketten er formentlig i et format, "
+"der ikke kan monteres."
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1043
+msgid ""
+"Nautilus was unable to mount the selected volume. The volume is probably in "
+"a format that cannot be mounted."
+msgstr ""
+"Nautilus kunne ikke montere det valgte delarkiv. Delarkivet er formentlig "
+"i et format, der ikke kan monteres."
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1048
+msgid "Nautilus was unable to mount the selected floppy drive."
+msgstr "Nautilus kunne ikke montere den valgte disketteenhed."
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1050
+msgid "Nautilus was unable to mount the selected volume."
+msgstr "Nautilus kunne ikke montere det valgte delarkiv."
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1054
+msgid "Nautilus was unable to unmount the selected volume."
+msgstr "Nautilus kunne ikke afmontere det valgte delarkiv."
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1140
 msgid "ISO 9660 Volume"
 msgstr "ISO 9660 delarkiv"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1017
+#: libnautilus-extensions/nautilus-volume-monitor.c:1153
 msgid "Root"
 msgstr "Rod"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1023
+#: libnautilus-extensions/nautilus-volume-monitor.c:1159
 msgid "Ext2 Volume"
 msgstr "Ext2 delarkiv"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1037
+#: libnautilus-extensions/nautilus-volume-monitor.c:1173
 msgid "MSDOS Volume"
 msgstr "MSDOS delarkiv"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1051
+#: libnautilus-extensions/nautilus-volume-monitor.c:1187
 msgid "NFS Volume"
 msgstr "NFS delarkiv"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1065
+#: libnautilus-extensions/nautilus-volume-monitor.c:1201
 msgid "Floppy"
 msgstr "Diskette"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1079
+#: libnautilus-extensions/nautilus-volume-monitor.c:1215
 msgid "Unknown Volume"
 msgstr "Ukendt delarkiv"
 
@@ -4828,7 +4891,7 @@ msgid "About Nautilus"
 msgstr "Om Nautilus"
 
 #. draw the authors title
-#: src/nautilus-about.c:357
+#: src/nautilus-about.c:356
 msgid "Authors"
 msgstr "Forfattere"
 
@@ -4850,7 +4913,7 @@ msgstr "Kan ikke oprette krævede mapper"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:371
+#: src/nautilus-application.c:373
 msgid ""
 "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
 "again may fix the problem."
@@ -4859,7 +4922,7 @@ msgstr ""
 "Nautilus kan måske løse problemet."
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:375
+#: src/nautilus-application.c:377
 msgid ""
 "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
 "again may fix the problem.\n"
@@ -4895,11 +4958,11 @@ msgstr ""
 #. * wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:400 src/nautilus-application.c:418
+#: src/nautilus-application.c:402 src/nautilus-application.c:420
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus kan ikke bruges nu, pga en uventet fejl."
 
-#: src/nautilus-application.c:401
+#: src/nautilus-application.c:403
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to register the file manager view server."
@@ -4907,7 +4970,7 @@ msgstr ""
 "Nautilus kan ikke bruges nu, pga en uventet fejl fra OAF ved forsøg på at "
 "registrere serveren for filhåndteringsvisning."
 
-#: src/nautilus-application.c:419
+#: src/nautilus-application.c:421
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the factory."
@@ -4915,7 +4978,7 @@ msgstr ""
 "Nautilus kan ikke bruges nu, pga en uventet fejl fra OAF ved forsøg på at at "
 "finde fabrikken."
 
-#: src/nautilus-application.c:556
+#: src/nautilus-application.c:562
 msgid ""
 "You are running Nautilus as root.\n"
 "\n"
@@ -4935,7 +4998,7 @@ msgstr "Bogmærker"
 msgid "Location"
 msgstr "Placering"
 
-#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:779
+#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:780
 msgid "Remove"
 msgstr "Fjern"
 
@@ -5204,37 +5267,49 @@ msgstr "Vil du vise disse %d lokationer i forskellige vinduer?"
 msgid "View in Multiple Windows?"
 msgstr "Vis i flere vinduer?"
 
-#: src/nautilus-main.c:140
+#: src/nautilus-main.c:141
 msgid "Perform high-speed self-check tests."
 msgstr "Udfør hurtig selvtest"
 
-#: src/nautilus-main.c:142
+#: src/nautilus-main.c:143
 msgid "Quit Nautilus."
 msgstr "Afslut Nautilus."
 
-#: src/nautilus-main.c:143
+#: src/nautilus-main.c:144
 msgid "Restart Nautilus."
 msgstr "Start Nautilus igen."
 
-#: src/nautilus-main.c:144
+#: src/nautilus-main.c:145
 msgid "Only create Nautilus windows for explicity specified URIs."
 msgstr "Opret kun Nautilus-vinduer for udtrykkeligt anførte URI-er."
 
-#: src/nautilus-main.c:195
+#: src/nautilus-main.c:146
+msgid "Create the initial window with the given geometry."
+msgstr "Opret det første vindue med den angivne geometri."
+
+#: src/nautilus-main.c:146
+msgid "GEOMETRY"
+msgstr "GEOMETRI"
+
+#: src/nautilus-main.c:197
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check kan ikke bruges med URIer.\n"
 
-#: src/nautilus-main.c:199
+#: src/nautilus-main.c:201
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check kan ikke bruges med andre valgmuligheder.\n"
 
-#: src/nautilus-main.c:203
+#: src/nautilus-main.c:205
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit kan ikke bruges med URIer.\n"
 
-#: src/nautilus-main.c:207
+#: src/nautilus-main.c:209
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --restart kan ikke bruges med URIer.\n"
+
+#: src/nautilus-main.c:213
+msgid "nautilus: --geometry cannot be used with more than one URI.\n"
+msgstr "nautilus: --geometry kan ikke bruges med mere end én URI.\n"
 
 #. set the title and standard close accelerator
 #: src/nautilus-property-browser.c:258
@@ -5551,11 +5626,11 @@ msgstr "er inden en uge"
 msgid "is within a month of"
 msgstr "er inden en måned"
 
-#: src/nautilus-shell.c:167
+#: src/nautilus-shell.c:174
 msgid "Caveat"
 msgstr "Advarsel"
 
-#: src/nautilus-shell.c:204
+#: src/nautilus-shell.c:211
 msgid ""
 "Thank you for your interest in Nautilus.\n"
 " \n"
@@ -5714,24 +5789,34 @@ msgstr "Kunne ikke fjerne tema"
 msgid "No description available for the \"%s\" theme"
 msgstr "Ingen beskrivelse tilstede for '%s' temaet"
 
-#: src/nautilus-window-manage-views.c:234 src/nautilus-window-menus.c:619
+#. FIXME bugzilla.eazel.com 5037: The text Preview
+#. * Release is hardcoded here. Are all builds with
+#. * time stamps really best described as "preview
+#. * release"?.
+#.
+#: src/nautilus-window-manage-views.c:198
+#, c-format
+msgid "Preview Release %s: %s"
+msgstr "Smugkig-udgave %s: %s"
+
+#: src/nautilus-window-manage-views.c:235 src/nautilus-window-menus.c:611
 msgid "Nautilus"
 msgstr "Nautilus"
 
-#: src/nautilus-window-manage-views.c:631
+#: src/nautilus-window-manage-views.c:632
 #, c-format
 msgid "You do not have the permissions necessary to view \"%s\"."
 msgstr "Du har ikke de nødvendige tilladelser til at se '%s.'"
 
-#: src/nautilus-window-manage-views.c:633
+#: src/nautilus-window-manage-views.c:634
 msgid "Inadequate Permissions"
 msgstr "Utilstrækkelige rettigheder"
 
-#: src/nautilus-window-manage-views.c:751
+#: src/nautilus-window-manage-views.c:752
 msgid "View Failed"
 msgstr "Visning mislykkedes"
 
-#: src/nautilus-window-manage-views.c:762
+#: src/nautilus-window-manage-views.c:763
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -5740,12 +5825,12 @@ msgstr ""
 "Visningen %s blev udsat for en fejl og kan ikke fortsætte. Du kan vælge en "
 "anden visning eller gå til et andet sted."
 
-#: src/nautilus-window-manage-views.c:773
+#: src/nautilus-window-manage-views.c:774
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "%s visningen blev udsat for en fejl ved opstart."
 
-#: src/nautilus-window-manage-views.c:873
+#: src/nautilus-window-manage-views.c:874
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -5753,7 +5838,7 @@ msgstr ""
 "Et af sidepanelerne blev udsat for en fejl og kan ikke fortsætte. "
 "Beklageligvis kan jeg ikke sige hvilket panel dette gælder."
 
-#: src/nautilus-window-manage-views.c:877
+#: src/nautilus-window-manage-views.c:878
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -5762,22 +5847,22 @@ msgstr ""
 "Sidepanelet %s blev udsat for en fejl og kan ikke fortsætte. Hvis dette "
 "fortsætter, kan du slå dette panel fra."
 
-#: src/nautilus-window-manage-views.c:882
+#: src/nautilus-window-manage-views.c:883
 msgid "Sidebar Panel Failed"
 msgstr "Sidelinjepanel mislykkedes"
 
-#: src/nautilus-window-manage-views.c:1274
+#: src/nautilus-window-manage-views.c:1275
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr "Kunne ikke finde \"%s\". Tjek venligst stavningen og prøv igen."
 
-#: src/nautilus-window-manage-views.c:1280
+#: src/nautilus-window-manage-views.c:1281
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr "\"%s\" er ikke et gyldigt sted. Tjek venligst stavningen og prøv igen."
 
-#: src/nautilus-window-manage-views.c:1294
+#: src/nautilus-window-manage-views.c:1295
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -5786,28 +5871,28 @@ msgstr ""
 "Kunne ikke vise \"%s\", fordi Nautilus ikke kan finde ud af hvilken filtype "
 "det er."
 
-#: src/nautilus-window-manage-views.c:1302
+#: src/nautilus-window-manage-views.c:1303
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "Nautilus har ingen installeret fremviser der kan vise '%s'."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1314
+#: src/nautilus-window-manage-views.c:1315
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr "Kunne ikke vise \"%s\", fordi Nautilus ikke kan behandle %s: steder."
 
-#: src/nautilus-window-manage-views.c:1320
+#: src/nautilus-window-manage-views.c:1321
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "Kunne ikke vise \"%s\", fordi pålogningsforsøget fejlede."
 
-#: src/nautilus-window-manage-views.c:1325
+#: src/nautilus-window-manage-views.c:1326
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Kunne ikke vise \"%s\", fordi adgang blev nægtet."
 
-#: src/nautilus-window-manage-views.c:1330
+#: src/nautilus-window-manage-views.c:1331
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host couldn't be found. Check that your "
@@ -5816,7 +5901,7 @@ msgstr ""
 "Kunne ikke vise \"%s\", fordi værten ikke blev fundet. Tjek at "
 "proxy-indstillingene er korrekte."
 
-#: src/nautilus-window-manage-views.c:1336
+#: src/nautilus-window-manage-views.c:1337
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -5825,7 +5910,7 @@ msgstr ""
 "Kunne ikke vise \"%s\", fordi værtsnavnet var tomt. Tjek at "
 "proxy-indstillingene er korrekte."
 
-#: src/nautilus-window-manage-views.c:1348
+#: src/nautilus-window-manage-views.c:1349
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -5836,16 +5921,16 @@ msgstr ""
 "søgetjenesten ikke kører. Vær sikker på at du har startet Medusa "
 "søgetjenesten, og hvis du ikke har et indeks, at MEDUSA indekseren kører."
 
-#: src/nautilus-window-manage-views.c:1352
+#: src/nautilus-window-manage-views.c:1353
 msgid "Searching Unavailable"
 msgstr "Søgning ikke tilgængelig"
 
-#: src/nautilus-window-manage-views.c:1356
+#: src/nautilus-window-manage-views.c:1357
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus kan ikke vise '%s'."
 
-#: src/nautilus-window-manage-views.c:1369
+#: src/nautilus-window-manage-views.c:1370
 msgid "Can't Display Location"
 msgstr "Kan ikke vise lokation"
 
@@ -5930,11 +6015,21 @@ msgstr ""
 msgid "Switch to %s Level?"
 msgstr "Skift til %s-niveau?"
 
-#: src/nautilus-window-menus.c:623
+#. Localize to deal with
+#. * issues in the copyright
+#. * symbol characters -- do
+#. * not translate the
+#. * company name, please.
+#.
+#: src/nautilus-window-menus.c:619
+msgid "(C) 1999, 2000 Eazel, Inc."
+msgstr "(C) 1999, 2000 Eazel, Inc."
+
+#: src/nautilus-window-menus.c:621
 msgid ""
-"Nautilus is a graphical shell \n"
-"for GNOME that makes it \n"
-"easy to manage your files \n"
+"Nautilus is a graphical shell\n"
+"for GNOME that makes it\n"
+"easy to manage your files\n"
 "and the rest of your system."
 msgstr ""
 "Nautilus er en grafisk skal\n"
@@ -5942,7 +6037,7 @@ msgstr ""
 "at håndtere dine filer\n"
 "og resten af dit system."
 
-#: src/nautilus-window-menus.c:774
+#: src/nautilus-window-menus.c:775
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -5951,28 +6046,28 @@ msgstr ""
 "Lokationen \"%s\" eksisterer ikke. Ønsker du at fjerne alle bogmærker med "
 "denne lokation fra din liste?"
 
-#: src/nautilus-window-menus.c:778
+#: src/nautilus-window-menus.c:779
 msgid "Bookmark for Nonexistent Location"
 msgstr "Bogmærke for ikke-eksisterende lokation"
 
-#: src/nautilus-window-menus.c:792
+#: src/nautilus-window-menus.c:793
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Lokationen \"%s\" eksisterer ikke længere."
 
-#: src/nautilus-window-menus.c:793
+#: src/nautilus-window-menus.c:794
 msgid "Go to Nonexistent Location"
 msgstr "Gå til ikke-eksisterende lokation"
 
-#: src/nautilus-window-menus.c:860
+#: src/nautilus-window-menus.c:861
 msgid "Go to the location specified by this bookmark"
 msgstr "Gå til stedet givet ved dette bogmærke"
 
-#: src/nautilus-window-menus.c:1310
+#: src/nautilus-window-menus.c:1311
 msgid "_Browse"
 msgstr "_Gennemse"
 
-#: src/nautilus-window-menus.c:1311
+#: src/nautilus-window-menus.c:1312
 msgid "_Find"
 msgstr "_Find"
 
@@ -5980,7 +6075,7 @@ msgstr "_Find"
 #. * dialog. %s will be replaced with the name of a user level
 #. * ("Beginner", "Intermediate", or "Advanced").
 #.
-#: src/nautilus-window-menus.c:1502
+#: src/nautilus-window-menus.c:1503
 #, c-format
 msgid "Edit %s Settings"
 msgstr "Redigér indstillinger for %s..."
@@ -5990,7 +6085,7 @@ msgstr "Redigér indstillinger for %s..."
 #. * the name of a user level ("Beginner", "Intermediate", or
 #. * "Advanced").
 #.
-#: src/nautilus-window-menus.c:1524
+#: src/nautilus-window-menus.c:1525
 #, c-format
 msgid "Edit %s Settings..."
 msgstr "Redigér indstillinger for %s..."
