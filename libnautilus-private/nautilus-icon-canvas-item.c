@@ -881,6 +881,7 @@ emblem_layout_next (EmblemLayout *layout,
 	width = gdk_pixbuf_get_width (pixbuf);
 	height = gdk_pixbuf_get_height (pixbuf);
 
+	/* handle the case of just one emblem by centering it in the icon */ 
 	/* Advance to the next emblem. */
 	layout->emblem = layout->emblem->next;
 
@@ -1039,12 +1040,12 @@ map_pixbuf(NautilusIconCanvasItem *icon_item)
 			audio_pixbuf = gdk_pixbuf_new_from_file(audio_filename);
 			
 			/* composite it onto the icon */
-			if (audio_pixbuf) {
+			if (audio_pixbuf) {	
 				gdk_pixbuf_composite (audio_pixbuf,
 			      		temp_pixbuf,
 			      		0, 0,
 			      		gdk_pixbuf_get_width(temp_pixbuf), gdk_pixbuf_get_height(temp_pixbuf),
-			     		0, 4,
+			     		4, 4,
 			      		canvas->pixels_per_unit, canvas->pixels_per_unit,
 			      		GDK_INTERP_BILINEAR, 0xFF);
 

@@ -1,3 +1,18 @@
+2000-06-15  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(load_specific_image):
+	fixed bug where images that had special characters (like blanks) wouldn't
+	display as custom icons, by unescaping the uri before using it as a path
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(map_pixbuf):
+	tweaked positioning of preview icon
+	* src/nautilus-window-toolbars.c:
+	fixed a misspelling in a tooltip (heirarchy -> hierarchy)
+	* icons/audio.png,
+	* icons/emblem-nowrite.png:
+	new icons from Susan
+	
 2000-06-14  Rebecka Schulman  <rebecka@eazel.com
 
 	* libnautilus-extensions/nautilus-global-preferences.c:

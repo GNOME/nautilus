@@ -90,7 +90,7 @@ static GnomeUIInfo toolbar_info[] = {
 	(N_("Forward"), N_("Go to the next directory"),
 	 toolbar_forward_callback, "nautilus/eazel/Forward.png"),
 	GNOMEUIINFO_ITEM_STOCK
-	(N_("Up"), N_("Go up a level in the directory heirarchy"),
+	(N_("Up"), N_("Go up a level in the directory hierarchy"),
 	 toolbar_up_callback, "nautilus/eazel/Up.png"),
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Reload"), N_("Reload this view"),

@@ -1227,6 +1227,7 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 		     gboolean custom,
 		     ArtIRect *text_rect)
 {
+	char *image_path;
 	g_assert (text_rect != NULL);
 
 	if (custom) {
@@ -1240,12 +1241,14 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 		 */
 
 		if (nautilus_str_has_prefix (scalable_icon->uri, "file://")) {
-			if (path_represents_svg_image (scalable_icon->uri)) {
-				return load_specific_image_svg (scalable_icon->uri + 7, size_in_pixels);
+			image_path = gnome_vfs_unescape_string (scalable_icon->uri, "/");
+			if (path_represents_svg_image (image_path)) {
+				return load_specific_image_svg (image_path + 7, size_in_pixels);
 			}
 			if (size_in_pixels == NAUTILUS_ICON_SIZE_STANDARD) {
-				return gdk_pixbuf_new_from_file (scalable_icon->uri + 7);
+				return gdk_pixbuf_new_from_file (image_path + 7);
 			}
+			g_free(image_path);
 		}
 		
 		return NULL;
