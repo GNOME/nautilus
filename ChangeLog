@@ -1,5 +1,22 @@
 2002-03-03  Alexander Larsson  <alla@lysator.liu.se>
 
+	Patch from Diego González <dggonz@yahoo.com>.
+
+	* libnautilus-private/nautilus-horizontal-splitter.c:
+	(splitter_hide), (splitter_show), (splitter_is_hidden),
+	(nautilus_horizontal_splitter_expand),
+	(nautilus_horizontal_splitter_hide),
+	(nautilus_horizontal_splitter_show),
+	(nautilus_horizontal_splitter_is_hidden):
+	* libnautilus-private/nautilus-horizontal-splitter.h:
+	Code to hide and show the sidebar fully.
+	
+	* src/nautilus-window.c: (nautilus_window_hide_sidebar),
+	(nautilus_window_show_sidebar), (nautilus_window_sidebar_showing):
+	Use the new horizontal splitter functions.
+
+2002-03-03  Alexander Larsson  <alla@lysator.liu.se>
+
 	* libnautilus-private/nautilus-directory-background.c
 	(desktop_background_realized):	Call
 	eel_background_set_is_constant_size() on the desktop

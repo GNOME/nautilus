@@ -2067,7 +2067,7 @@ nautilus_window_hide_sidebar (NautilusWindow *window)
 	if (window->sidebar == NULL) {
 		return;
 	}
-	nautilus_horizontal_splitter_collapse
+	nautilus_horizontal_splitter_hide
 		(NAUTILUS_HORIZONTAL_SPLITTER (window->content_hbox));
 	nautilus_window_update_show_hide_menu_items (window);
 }
@@ -2078,7 +2078,7 @@ nautilus_window_show_sidebar (NautilusWindow *window)
 	if (window->sidebar == NULL) {
 		return;
 	}
-	nautilus_horizontal_splitter_expand
+	nautilus_horizontal_splitter_show
 		(NAUTILUS_HORIZONTAL_SPLITTER (window->content_hbox));
 	nautilus_window_update_show_hide_menu_items (window);
 }
@@ -2088,8 +2088,8 @@ nautilus_window_sidebar_showing (NautilusWindow *window)
 {
 	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), FALSE);
 
-	return GTK_IS_PANED (window->content_hbox)
-		&& gtk_paned_get_position (GTK_PANED (window->content_hbox)) != 0;
+	return GTK_IS_PANED (window->content_hbox) 
+		&& nautilus_horizontal_splitter_is_hidden (NAUTILUS_HORIZONTAL_SPLITTER (window->content_hbox));
 }
 
 void 

@@ -103,10 +103,58 @@ splitter_toggle (NautilusHorizontalSplitter *splitter, int position)
 	}
 }
 
+static void
+splitter_hide (NautilusHorizontalSplitter *splitter)
+{
+	GtkPaned *parent;
+
+	parent = GTK_PANED (splitter);
+
+	gtk_widget_hide (parent->child1);
+}
+
+static void
+splitter_show (NautilusHorizontalSplitter *splitter)
+{
+	GtkPaned *parent;
+
+	parent = GTK_PANED (splitter);
+
+	gtk_widget_show (parent->child1);
+}
+
+static gboolean
+splitter_is_hidden (NautilusHorizontalSplitter *splitter)
+{
+	GtkPaned *parent;
+	
+	parent = GTK_PANED (splitter);
+
+	return GTK_WIDGET_VISIBLE (parent->child1);
+}
+
 void
 nautilus_horizontal_splitter_expand (NautilusHorizontalSplitter *splitter)
 {
 	splitter_expand (splitter, gtk_paned_get_position (GTK_PANED (splitter)));
+}
+
+void
+nautilus_horizontal_splitter_hide (NautilusHorizontalSplitter *splitter)
+{
+	splitter_hide (splitter);
+}
+
+void
+nautilus_horizontal_splitter_show (NautilusHorizontalSplitter *splitter)
+{
+	splitter_show (splitter);
+}
+
+gboolean
+nautilus_horizontal_splitter_is_hidden (NautilusHorizontalSplitter *splitter)
+{
+	return splitter_is_hidden (splitter);
 }
 
 void
