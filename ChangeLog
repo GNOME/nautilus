@@ -1,3 +1,10 @@
+2000-09-29  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(cache_icon_unref): Fix case where the fallback icon is getting
+	unref'd so that it properly removes the icon (need to NULL the
+	prev and next for later reinsertion).
+
 2000-09-29  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3352 (New Folder is not selected for renaming)
@@ -60,7 +67,7 @@
 	* libnautilus-extensions/nautilus-global-preferences.c:
 	(proxy_changed), (register_proxy_preferences),
 	(global_preferences_register): Fix the NULL-passing problem that
-	was kiling the Tinderbox.
+	was killing the Tinderbox.
 
 2000-09-29  John Sullivan  <sullivan@eazel.com>
 

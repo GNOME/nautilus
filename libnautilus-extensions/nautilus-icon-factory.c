@@ -475,6 +475,9 @@ cache_icon_unref (CacheIcon *icon)
 		node->next->prev = node->prev;
 		node->prev->next = node->next;
 
+		node->next = NULL;
+		node->prev = NULL;
+
 		factory->recently_used_count -= 1;
 	}
 
