@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus CVS-20010120\n"
-"POT-Creation-Date: 2001-02-21 17:09+0900\n"
+"POT-Creation-Date: 2001-02-21 04:46-0500\n"
 "PO-Revision-Date: 2001-02-21 18:29-0500\n"
 "Last-Translator: Yukihiro Nakai <nakai@gnome.gr.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
@@ -3585,7 +3585,7 @@ msgstr "Myplay"
 #. * to change it when we upgrade to GTK 2.0.
 #.
 #: data/static_bookmarks.xml.h:24 nautilus.desktop.in.h:1
-#: src/nautilus-window-manage-views.c:246 src/nautilus-window-menus.c:553
+#: src/nautilus-window-manage-views.c:246 src/nautilus-window-menus.c:555
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -7243,7 +7243,7 @@ msgstr "¥Ö¥Ã¥¯¥Þ¡¼¥¯"
 msgid "Location"
 msgstr "¾ì½ê"
 
-#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:734
+#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:736
 msgid "Remove"
 msgstr "ºï½ü"
 
@@ -7358,8 +7358,7 @@ msgstr ""
 "\n"
 "¤â¤·¥Þ¥·¥ó¤¬¥×¥í¥¯¥·¡¼·ÐÍ³¤ÎÀÜÂ³¤ò¤·¤Æ¤¤¤ë¾ì¹ç¤Ï¡¢¡Ö¤Ï¤¤¡×\n"
 "¤ò¥¯¥ê¥Ã¥¯¤·¤Æ¤¯¤À¤µ¤¤¡£Nautilus¤Ï¥×¥í¥¯¥·¡¼¤ò»È¤¦¤è¤¦¤Ë\n"
-"¤Ê¤ê¤Þ¤¹¡£"
-"\n"
+"¤Ê¤ê¤Þ¤¹¡£\n"
 "¿Ê¤à¤Ë¤Ï¡Ö¼¡¡×¤Î¥Ü¥¿¥ó¤ò²¡¤·¤Æ¤¯¤À¤µ¤¤¡£"
 
 #: src/nautilus-first-time-druid.c:560
@@ -7582,19 +7581,16 @@ msgid "Backgrounds and Emblems"
 msgstr ""
 
 #: src/nautilus-property-browser.c:359 src/nautilus-theme-selector.c:266
-#, fuzzy
 msgid "  Done  "
-msgstr "´°Î»"
+msgstr "  ´°Î»  "
 
 #: src/nautilus-property-browser.c:369
-#, fuzzy
 msgid "  Add new...  "
-msgstr "¿·µ¬ÄÉ²Ã..."
+msgstr "  ¿·µ¬ÄÉ²Ã...  "
 
 #: src/nautilus-property-browser.c:383
-#, fuzzy
 msgid "  Remove...  "
-msgstr "ºï½ü..."
+msgstr "  ºï½ü...  "
 
 #: src/nautilus-property-browser.c:874
 #, c-format
@@ -7621,9 +7617,8 @@ msgstr "¥­¡¼¥ï¡¼¥É:"
 
 #. set up a gnome icon entry to pick the image file
 #: src/nautilus-property-browser.c:957
-#, fuzzy
 msgid "Image:"
-msgstr "²èÁü"
+msgstr "²èÁü:"
 
 #: src/nautilus-property-browser.c:961
 msgid "Select an image file for the new emblem:"
@@ -8340,7 +8335,7 @@ msgstr "¥Ö¥Ã¥¯¥Þ¡¼¥¯¤ÎÊÔ½¸(_E)"
 msgid "_Feedback..."
 msgstr "¥Õ¥£¡¼¥É¥Ð¥Ã¥¯(_F)..."
 
-#: src/nautilus-shell-ui.xml.h:80 src/nautilus-window-menus.c:1290
+#: src/nautilus-shell-ui.xml.h:80 src/nautilus-window-menus.c:1292
 msgid "_Find"
 msgstr "¸¡º÷(_F)"
 
@@ -8738,19 +8733,24 @@ msgstr "ÀßÄê"
 #. * not translate the
 #. * company name, please.
 #.
-#: src/nautilus-window-menus.c:561
-msgid "Copyright © 1999-2001 Eazel, Inc."
-msgstr "Copyright © 1999-2001 Eazel, Inc."
-
 #: src/nautilus-window-menus.c:563
+msgid "Copyright © 1999-2001 Eazel, Inc."
+msgstr "Copyright (C) 1999-2001 Eazel, Inc."
+
+#: src/nautilus-window-menus.c:565
 msgid ""
 "Nautilus is a graphical shell\n"
 "for GNOME that makes it\n"
 "easy to manage your files\n"
 "and the rest of your system."
 msgstr ""
+"Nautilus¤ÏGNOME¤Î¥°¥é\n"
+"¥Õ¥£¥«¥ë¤Ê¥·¥§¥ë¤Ç¡¢¥Õ\n"
+"¥¡¥¤¥ë¤ä¥·¥¹¥Æ¥à¤ò´ÊÃ±\n"
+"¤Ë´ÉÍý¤¹¤ë¤³¤È¤¬¤Ç¤­¤Þ\n"
+"¤¹¡£"
 
-#: src/nautilus-window-menus.c:729
+#: src/nautilus-window-menus.c:731
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -8759,24 +8759,24 @@ msgstr ""
 "¾ì½ê \"%s\" ¤ÏÂ¸ºß¤·¤Þ¤»¤ó. "
 "¥ê¥¹¥È¤«¤é¤³¤Î¾ì½ê¤ò¤â¤Ã¤¿¥Ö¥Ã¥¯¥Þ¡¼¥¯¤òºï½ü¤·¤¿¤¤¤Ç¤¹¤«?"
 
-#: src/nautilus-window-menus.c:733
+#: src/nautilus-window-menus.c:735
 msgid "Bookmark for Nonexistent Location"
 msgstr "Â¸ºß¤·¤Ê¤¤¾ì½ê¤Î¥Ö¥Ã¥¯¥Þ¡¼¥¯"
 
-#: src/nautilus-window-menus.c:747
+#: src/nautilus-window-menus.c:749
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "¾ì½ê \"%s\" ¤Ï¤â¤Ï¤äÂ¸ºß¤·¤Þ¤»¤ó"
 
-#: src/nautilus-window-menus.c:748
+#: src/nautilus-window-menus.c:750
 msgid "Go to Nonexistent Location"
 msgstr "Â¸ºß¤·¤Ê¤¤¾ì½ê¤Ø°ÜÆ°¤¹¤ë"
 
-#: src/nautilus-window-menus.c:815
+#: src/nautilus-window-menus.c:817
 msgid "Go to the location specified by this bookmark"
 msgstr ""
 
-#: src/nautilus-window-menus.c:1289
+#: src/nautilus-window-menus.c:1291
 msgid "_Browse"
 msgstr "±ÜÍ÷(_B)"
 
