@@ -32,6 +32,7 @@
 
 #include "nautilus-self-check-functions.h"
 #include "nautilus-application.h"
+#include <dlfcn.h>
 #include <libnautilus-extensions/nautilus-debug.h>
 #include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
 #include <libnautilus-extensions/nautilus-self-checks.h>
@@ -43,6 +44,44 @@
 #include <liboaf/liboaf.h>
 #include <bonobo/bonobo-main.h>
 #include <stdlib.h>
+
+/* FIXME:
+ * Replace the leakchecker calls with weakly exported ones in libnautilus-extensions.
+ */
+void nautilus_leak_checker_init (const char *path);
+void nautilus_leak_print_leaks (int stack_grouping_depth, int stack_print_depth,
+	int max_count, int sort_by_count);
+
+void
+nautilus_leak_checker_init (const char *path)
+{
+	void (*real_nautilus_leak_checker_init)(const char *path);
+
+	/* Try to hook up with the leakchecker library.
+	 * This only succeeds if we run nautilus with a LD_PRELOAD=./libleakcheck.so
+	 * prefix.
+	 * If there isn't one, this call is benign.
+	 */
+	real_nautilus_leak_checker_init = dlsym (RTLD_NEXT, "nautilus_leak_checker_init");
+	if (real_nautilus_leak_checker_init != NULL) {
+		real_nautilus_leak_checker_init (path);
+	}
+}
+
+void 
+nautilus_leak_print_leaks (int stack_grouping_depth, int stack_print_depth,
+	int max_count, int sort_by_count)
+{
+	void (*real_nautilus_leak_print_leaks)(int stack_grouping_depth, 
+		int stack_print_depth, int max_count, int sort_by_count);
+
+	/* Try to hook up with the leakchecker library. */
+	real_nautilus_leak_print_leaks = dlsym (RTLD_NEXT, "nautilus_leak_print_leaks");
+	if (real_nautilus_leak_print_leaks != NULL) {
+		real_nautilus_leak_print_leaks (stack_grouping_depth, stack_print_depth,
+			max_count, sort_by_count);
+	}
+}
 
 int
 main(int argc, char *argv[])
@@ -61,6 +100,9 @@ main(int argc, char *argv[])
 		POPT_AUTOHELP
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
 	};
+
+	/* call to set up the leak checker symbol lookup */
+	nautilus_leak_checker_init (*argv);
 	
 	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
 	 * Unfortunately, this has to be done explicitly for each domain.
@@ -106,6 +148,9 @@ main(int argc, char *argv[])
 	}
 
 	gnome_vfs_shutdown ();
+
+	/* If leak checking, before exiting dump all the outstaniding allocations. */
+	nautilus_leak_print_leaks (8, 15, 40, TRUE);
 
 	return EXIT_SUCCESS;
 }

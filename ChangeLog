@@ -1,3 +1,68 @@
+2000-06-13  Pavel Cisler <pavel@eazel.com>
+
+	* test/nautilus-leak-checker-stubs.h:
+	* test/nautilus-leak-checker.c:
+	(nautilus_leak_allocation_record_init),
+	(nautilus_leak_allocation_record_copy),
+	(nautilus_leak_allocation_record_finalize),
+	(nautilus_leak_allocation_record_free),
+	(nautilus_leak_stack_crawl_compare), (nautilus_leak_initialize),
+	(get_stack_trace), (detect_reentry), (nautilus_leak_record_malloc),
+	(nautilus_leak_record_realloc), (nautilus_leak_record_free),
+	(nautilus_leak_initialize_if_needed), (__libc_malloc),
+	(__libc_memalign), (__libc_calloc), (__libc_realloc),
+	(__libc_free), (malloc), (realloc), (memalign), (calloc), (free),
+	(print_one_leak), (nautilus_leak_print_leaks),
+	(nautilus_leak_checker_init), (allocate_lots), (leak_mem2),
+	(leak_mem), (main):
+	* test/nautilus-leak-checker.h:
+	* test/nautilus-leak-hash-table.c:
+	(nautilus_leak_hash_element_finalize),
+	(nautilus_leak_hash_element_hash),
+	(nautilus_leak_hash_element_match),
+	(nautilus_leak_hash_element_vector_inititalize),
+	(nautilus_leak_hash_element_vector_finalize),
+	(nautilus_leak_hash_element_vector_at),
+	(nautilus_leak_hash_element_vector_add),
+	(nautilus_leak_hash_element_vector_remove),
+	(nautilus_leak_hash_table_optimal_size),
+	(nautilus_leak_hash_table_initialize),
+	(nautilus_leak_hash_table_finalize),
+	(nautilus_leak_hash_table_new), (nautilus_leak_hash_table_free),
+	(nautilus_leak_hash_table_hash), (nautilus_leak_hash_table_find),
+	(nautilus_leak_hash_table_add),
+	(nautilus_leak_hash_table_remove_element),
+	(nautilus_leak_hash_table_remove),
+	(nautilus_leak_table_new_entry_at),
+	(nautilus_leak_table_add_entry), (nautilus_leak_table_new),
+	(nautilus_leak_table_free), (sort_by_count),
+	(nautilus_leak_table_sort_by_count), (sort_by_size),
+	(nautilus_leak_table_sort_by_size),
+	(nautilus_leak_table_each_item):
+	* test/nautilus-leak-hash-table.h:
+	* test/nautilus-leak-symbol-lookup.c:
+	(nautilus_leak_find_symbol_in_map),
+	(nautilus_leak_symbol_map_load),
+	(nautilus_leak_symbol_map_load_if_needed),
+	(nautilus_leak_print_symbol_cleanup),
+	(nautilus_leak_find_symbol_address),
+	(nautilus_leak_print_symbol_address):
+	* test/nautilus-leak-symbol-lookup.h:
+	New small leakchecking library. It is a bit simpler than MemProf in that
+	it doesn't try to find leaks, just lists all the outstanding allocations
+	(which if done at application quit is a list of leaks). It borrows heavily
+	from MemProf.
+
+	* test/Makefile.am:
+	Currently broken makefile changes for the leakchecker library. Needs some
+	libtool wrestling that Ramiro kindly offered to help with.
+	
+	* src/nautilus-main.c: (nautilus_leak_checker_init),
+	(nautilus_leak_print_leaks), (main):
+	Call the leakchecker. Noop unless the leakchecker lib is loaded with
+	Nautilus using the LD_PRELOAD variable (the only way of turning the 
+	thing on/off).
+
 2000-06-14  Anders Carlsson  <andersca@gnu.org>
 
 	* libnautilus-extensions/nautilus-background-canvas-group.c 
