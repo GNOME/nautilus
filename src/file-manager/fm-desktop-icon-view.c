@@ -53,6 +53,7 @@
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-monitor.h>
@@ -739,4 +740,44 @@ real_supports_zooming (FMDirectoryView *view)
 	 * sorts of complications involving the fixed-size window.
 	 */
 	return FALSE;
+}
+
+static NautilusView *
+fm_desktop_icon_view_create (NautilusWindowInfo *window)
+{
+	FMIconView *view;
+
+	view = g_object_new (FM_TYPE_DESKTOP_ICON_VIEW, "window", window, NULL);
+	g_object_ref (view);
+	gtk_object_sink (GTK_OBJECT (view));
+	return NAUTILUS_VIEW (view);
+}
+
+static gboolean
+fm_desktop_icon_view_supports_uri (const char *uri,
+			   GnomeVFSFileType file_type,
+			   const char *mime_type)
+{
+	if (g_str_has_prefix (uri, "x-nautilus-desktop:")) {
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static NautilusViewInfo fm_desktop_icon_view = {
+	FM_DESKTOP_ICON_VIEW_ID,
+	N_("Desktop"),
+	N_("_Desktop"),
+	fm_desktop_icon_view_create,
+	fm_desktop_icon_view_supports_uri
+};
+
+void
+fm_desktop_icon_view_register (void)
+{
+	fm_desktop_icon_view.label = _(fm_desktop_icon_view.label);
+	fm_desktop_icon_view.label_with_mnemonic = _(fm_desktop_icon_view.label_with_mnemonic);
+	
+	nautilus_view_factory_register (&fm_desktop_icon_view);
 }

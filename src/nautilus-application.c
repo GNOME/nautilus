@@ -29,7 +29,6 @@
 #include "nautilus-application.h"
 
 
-#include "file-manager/fm-bonobo-provider.h"
 #include "file-manager/fm-ditem-page.h"
 #include "file-manager/fm-desktop-icon-view.h"
 #include "file-manager/fm-icon-view.h"
@@ -121,28 +120,13 @@ create_object (PortableServer_Servant servant,
 	       CORBA_Environment *ev)
 {
 	BonoboObject *object;
-	FMDirectoryView *directory_view;
 	NautilusApplication *application;
 
-	if (strcmp (iid, NAUTILUS_ICON_VIEW_IID) == 0) {
-		directory_view = FM_DIRECTORY_VIEW (g_object_new (fm_icon_view_get_type (), NULL));
-		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
-	} else if (strcmp (iid, NAUTILUS_DESKTOP_ICON_VIEW_IID) == 0) {
-		directory_view = FM_DIRECTORY_VIEW (g_object_new (fm_desktop_icon_view_get_type (), NULL));
-		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
-	} else if (strcmp (iid, NAUTILUS_LIST_VIEW_IID) == 0) {
-		directory_view = FM_DIRECTORY_VIEW (g_object_new (fm_list_view_get_type (), NULL));
-		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
-	} else if (strcmp (iid, SEARCH_LIST_VIEW_IID) == 0) {
-		directory_view = FM_DIRECTORY_VIEW (g_object_new (fm_search_list_view_get_type (), NULL));
-		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
-	} else if (strcmp (iid, SHELL_IID) == 0) {
+	if (strcmp (iid, SHELL_IID) == 0) {
 		application = NAUTILUS_APPLICATION (bonobo_object_from_servant (servant));
 		object = BONOBO_OBJECT (nautilus_shell_new (application));
 	} else if (strcmp (iid, METAFILE_FACTORY_IID) == 0) {
 		object = BONOBO_OBJECT (nautilus_metafile_factory_get_instance ());
-	} else if (strcmp (iid, TREE_VIEW_IID) == 0) {
-		object = BONOBO_OBJECT (g_object_new (fm_tree_view_get_type (), NULL));
 	} else {
 		object = CORBA_OBJECT_NIL;
 	}
@@ -162,12 +146,6 @@ nautilus_application_get_spatial_window_list (void)
 	return nautilus_application_spatial_window_list;
 }
 
-static CORBA_Object
-create_object_shortcut (const char *iid,
-			gpointer callback_data)
-{
-	return create_object (BONOBO_OBJREF (callback_data), iid, NULL);
-}
 
 static void
 nautilus_application_instance_init (NautilusApplication *application)
@@ -187,11 +165,10 @@ nautilus_application_instance_init (NautilusApplication *application)
 	g_signal_connect_object (gnome_vfs_get_volume_monitor (), "volume_mounted",
 				 G_CALLBACK (volume_mounted_callback), application, 0);
 
-	nautilus_bonobo_register_activation_shortcut (NAUTILUS_ICON_VIEW_IID, create_object_shortcut, application);
-	nautilus_bonobo_register_activation_shortcut (NAUTILUS_DESKTOP_ICON_VIEW_IID, create_object_shortcut, application);
-	nautilus_bonobo_register_activation_shortcut (NAUTILUS_LIST_VIEW_IID, create_object_shortcut, application);
-	nautilus_bonobo_register_activation_shortcut (SEARCH_LIST_VIEW_IID, create_object_shortcut, application);
-	nautilus_bonobo_register_activation_shortcut (TREE_VIEW_IID, create_object_shortcut, application);
+	fm_icon_view_register ();
+	fm_desktop_icon_view_register ();
+	fm_list_view_register ();
+	
 }
 
 NautilusApplication *
@@ -215,15 +192,9 @@ nautilus_application_destroy (BonoboObject *object)
 
 	application = NAUTILUS_APPLICATION (object);
 
-	nautilus_bonobo_unregister_activation_shortcut (NAUTILUS_ICON_VIEW_IID);
-	nautilus_bonobo_unregister_activation_shortcut (NAUTILUS_DESKTOP_ICON_VIEW_IID);
-	nautilus_bonobo_unregister_activation_shortcut (NAUTILUS_LIST_VIEW_IID);
-	nautilus_bonobo_unregister_activation_shortcut (SEARCH_LIST_VIEW_IID);
-	nautilus_bonobo_unregister_activation_shortcut (TREE_VIEW_IID);
-	
 	nautilus_bookmarks_exiting ();
 	
-	bonobo_object_unref (application->undo_manager);
+	g_object_unref (application->undo_manager);
 
 	EEL_CALL_PARENT (BONOBO_OBJECT_CLASS, destroy, (object));
 }
@@ -373,7 +344,6 @@ finish_startup (NautilusApplication *application)
 	/* initialize nautilus modules */
 	nautilus_module_init ();
 
-	nautilus_module_add_type (FM_TYPE_BONOBO_PROVIDER);
 	nautilus_module_add_type (FM_TYPE_DITEM_PAGE);
 	
 	/* initialize the sound machinery */
@@ -822,6 +792,9 @@ find_parent_spatial_window (NautilusSpatialWindow *window)
 	char *desktop_directory;
 
 	location = nautilus_window_get_location (NAUTILUS_WINDOW (window));
+	if (location == NULL) {
+		return NULL;
+	}
 	file = nautilus_file_get (location);
 	g_free (location);
 
@@ -974,10 +947,10 @@ nautilus_application_present_spatial_window (NautilusApplication *application,
 
 NautilusWindow *
 nautilus_application_present_spatial_window_with_selection (NautilusApplication *application,
-					     NautilusWindow      *requesting_window,
-					     const char          *location,
-					     GList		 *new_selection,
-					     GdkScreen           *screen)
+							    NautilusWindow      *requesting_window,
+							    const char          *location,
+							    GList		 *new_selection,
+							    GdkScreen           *screen)
 {
 	NautilusWindow *window;
 	GList *l;
@@ -991,7 +964,7 @@ nautilus_application_present_spatial_window_with_selection (NautilusApplication 
                	     
 		existing_window = NAUTILUS_WINDOW (l->data);
 		existing_location = existing_window->details->pending_location;
-                
+		
 		if (existing_location == NULL) {
 			existing_location = existing_window->details->location;
 		}
@@ -999,7 +972,7 @@ nautilus_application_present_spatial_window_with_selection (NautilusApplication 
 		if (eel_uris_match (existing_location, location)) {
 			gtk_window_present (GTK_WINDOW (existing_window));
 			if (new_selection) {
-				nautilus_view_frame_selection_changed (existing_window->content_view, new_selection);
+				nautilus_view_set_selection (existing_window->content_view, new_selection);
 			}
 			return existing_window;
 		}

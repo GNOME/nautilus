@@ -27,7 +27,7 @@
 #define NAUTILUS_UNDO_MANAGER_H
 
 #include <bonobo/bonobo-object.h>
-#include <libnautilus/nautilus-distributed-undo.h>
+#include <libnautilus-private/nautilus-undo.h>
 
 #define NAUTILUS_TYPE_UNDO_MANAGER \
 	(nautilus_undo_manager_get_type ())
@@ -43,13 +43,12 @@
 typedef struct NautilusUndoManagerDetails NautilusUndoManagerDetails;
 
 typedef struct {
-	BonoboObject parent;
+	GObject parent;
 	NautilusUndoManagerDetails *details;
 } NautilusUndoManager;
 
 typedef struct {
-	BonoboObjectClass parent_slot;
-	POA_Nautilus_Undo_Manager__epv epv;
+	GObjectClass parent_slot;
 	void (* changed) (GObject *object, gpointer data);
 } NautilusUndoManagerClass;
 
@@ -73,8 +72,9 @@ void                 nautilus_undo_manager_set_up_bonobo_ui_handler_undo_item (N
 void                 nautilus_undo_manager_attach                             (NautilusUndoManager *manager,
 									       GObject             *object);
 
-/* Attach the undo manager to a Bonobo object so another component can find it. */
-void                 nautilus_undo_manager_add_interface                      (NautilusUndoManager *manager,
-									       BonoboObject        *object);
+void		nautilus_undo_manager_append (NautilusUndoManager *manager,
+					      NautilusUndoTransaction *transaction);
+void            nautilus_undo_manager_forget (NautilusUndoManager *manager,
+					      NautilusUndoTransaction *transaction);
 
 #endif /* NAUTILUS_UNDO_MANAGER_H */

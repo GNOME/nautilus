@@ -33,7 +33,6 @@
 
 #include "nautilus-application.h"
 #include "nautilus-bookmarks-window.h"
-#include "nautilus-information-panel.h"
 #include "nautilus-main.h"
 #include "nautilus-signaller.h"
 #include "nautilus-switchable-navigation-bar.h"
@@ -76,11 +75,13 @@
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
-#include <libnautilus-private/nautilus-sidebar-functions.h>
+#include <libnautilus-private/nautilus-sidebar.h>
+#include <libnautilus-private/nautilus-sidebar-factory.h>
 #include <libnautilus-private/nautilus-theme.h>
-#include <libnautilus/nautilus-bonobo-ui.h>
-#include <libnautilus/nautilus-clipboard.h>
-#include <libnautilus/nautilus-undo.h>
+#include <libnautilus-private/nautilus-view-factory.h>
+#include <libnautilus-private/nautilus-bonobo-ui.h>
+#include <libnautilus-private/nautilus-clipboard.h>
+#include <libnautilus-private/nautilus-undo.h>
 #include <math.h>
 #include <sys/time.h>
 
@@ -114,12 +115,10 @@ enum {
 
 static int side_pane_width_auto_value = SIDE_PANE_MINIMUM_WIDTH;
 
-static void add_sidebar_panels                  (NautilusNavigationWindow *window);
-static void load_view_as_menu                   (NautilusWindow *window);
-static void side_panel_view_loaded_callback (NautilusViewFrame *view,
-					     gpointer user_data);
-static void side_panel_view_failed_callback (NautilusViewFrame *view,
-					     gpointer user_data);
+static void add_sidebar_panels                (NautilusNavigationWindow *window);
+static void load_view_as_menu                 (NautilusWindow           *window);
+static void side_panel_image_changed_callback (NautilusSidebar          *side_panel,
+					       gpointer                  callback_data);
 
 GNOME_CLASS_BOILERPLATE (NautilusNavigationWindow, nautilus_navigation_window,
 			 NautilusWindow, NAUTILUS_TYPE_WINDOW)
@@ -153,6 +152,8 @@ file_menu_new_window_callback (BonoboUIComponent *component,
 	nautilus_window_open_location (window, uri, FALSE);
 }
 
+#ifdef BONOBO_DONE
+/* see below */
 static void
 go_to_callback (GtkWidget *widget,
 		const char *uri,
@@ -162,6 +163,7 @@ go_to_callback (GtkWidget *widget,
 
 	nautilus_window_go_to (NAUTILUS_WINDOW (window), uri);
 }
+#endif
 
 static void
 navigation_bar_location_changed_callback (GtkWidget *widget,
@@ -255,67 +257,41 @@ setup_side_pane_width (NautilusNavigationWindow *window)
 }
 
 static void
-side_panel_set_open (GtkWidget *view,
-		     gboolean open)
-{
-	CORBA_Environment ev;
-	Bonobo_PropertyBag property_bag;
-	Bonobo_Control control;
-	
-	if (!view || !NAUTILUS_IS_VIEW_FRAME (view)) {
-		return;
-	}
-
-	control = nautilus_view_frame_get_control (NAUTILUS_VIEW_FRAME (view));
-	
-	if (control != CORBA_OBJECT_NIL) {
-		CORBA_exception_init (&ev);
-		property_bag = Bonobo_Control_getProperties (control, &ev);
-		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {
-			/* For some reason this was implemented as 'close'
-			 * before, but open seems more natural */
-			bonobo_property_bag_client_set_value_gboolean
-				(property_bag, "close", !open, &ev);
-			bonobo_object_release_unref (property_bag, NULL);
-		}
-	}
-}
-
-static void
 set_current_side_panel (NautilusNavigationWindow *window,
-			GtkWidget *panel)
+			NautilusSidebar *panel)
 {
 	if (window->details->current_side_panel) {
-		side_panel_set_open (window->details->current_side_panel, 
-				     FALSE);
+		nautilus_sidebar_is_visible_changed (window->details->current_side_panel,
+						     FALSE);
 		eel_remove_weak_pointer (&window->details->current_side_panel);
 	}
 
-	side_panel_set_open (panel, TRUE);	
+	if (panel != NULL) {
+		nautilus_sidebar_is_visible_changed (panel, TRUE);
+	}
 	window->details->current_side_panel = panel;
 	eel_add_weak_pointer (&window->details->current_side_panel);
 }
 
 static void
 side_pane_switch_page_callback (NautilusSidePane *side_pane,
-				GtkWidget *panel,
+				GtkWidget *widget,
 				NautilusNavigationWindow *window)
 {
-	const char *view_iid;
+	const char *id;
+	NautilusSidebar *sidebar;
 
-	set_current_side_panel (window, panel);
+	sidebar = NAUTILUS_SIDEBAR (widget);
 
-	if (NAUTILUS_IS_VIEW_FRAME (panel)) {
-		view_iid = nautilus_view_frame_get_view_iid (NAUTILUS_VIEW_FRAME (panel));
-		if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW)) {
-			eel_preferences_set (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW,
-					     view_iid);
-		}
+	if (sidebar == NULL) {
+		return;
+	}
 		
-	} else {
-		if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW)) {
-			eel_preferences_set (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW, "");
-		}
+	set_current_side_panel (window, sidebar);
+
+	id = nautilus_sidebar_get_sidebar_id (sidebar);
+	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW)) {
+		eel_preferences_set (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW, id);
 	}
 }
 
@@ -334,22 +310,10 @@ nautilus_navigation_window_set_up_sidebar (NautilusNavigationWindow *window)
 			  G_CALLBACK (side_pane_size_allocate_callback),
 			  window);
 	
-	window->information_panel = nautilus_information_panel_new ();
-	
-	if (NAUTILUS_WINDOW (window)->details->location != NULL &&
-	    NAUTILUS_WINDOW (window)->details->title != NULL) {
-		nautilus_information_panel_set_uri (window->information_panel,
-						    NAUTILUS_WINDOW (window)->details->location,
-						    NAUTILUS_WINDOW (window)->details->title);
-	}
-
+#ifdef BONOBO_DONE
 	g_signal_connect_object (window->information_panel, "location_changed",
 				 G_CALLBACK (go_to_callback), window, 0);
-
-	/* Set up the sidebar panels. */
-	nautilus_side_pane_add_panel (NAUTILUS_SIDE_PANE (window->sidebar), 
-				      GTK_WIDGET (window->information_panel),
-				      _("Information"));
+#endif
 
 	add_sidebar_panels (window);
 
@@ -362,8 +326,6 @@ nautilus_navigation_window_set_up_sidebar (NautilusNavigationWindow *window)
 			  "switch_page",
 			  G_CALLBACK (side_pane_switch_page_callback),
 			  window);
-	
-	gtk_widget_show (GTK_WIDGET (window->information_panel));
 	
 	gtk_widget_show (GTK_WIDGET (window->sidebar));
 }
@@ -378,7 +340,6 @@ nautilus_navigation_window_tear_down_sidebar (NautilusNavigationWindow *window)
 	nautilus_navigation_window_set_sidebar_panels (window, NULL);
 	gtk_widget_destroy (GTK_WIDGET (window->sidebar));
 	window->sidebar = NULL;
-	window->information_panel = NULL;
 }
 
 static void
@@ -404,7 +365,7 @@ nautilus_navigation_window_destroy (GtkObject *object)
 	window = NAUTILUS_NAVIGATION_WINDOW (object);
 
 	window->sidebar = NULL;
-	eel_g_object_list_free (window->sidebar_panels);
+	g_list_foreach (window->sidebar_panels, (GFunc)g_object_unref, NULL);
 	window->sidebar_panels = NULL;
 
 	window->view_as_option_menu = NULL;
@@ -443,47 +404,60 @@ nautilus_navigation_window_finalize (GObject *object)
 
 void
 nautilus_navigation_window_add_sidebar_panel (NautilusNavigationWindow *window,
-					      NautilusViewFrame *sidebar_panel)
+					      NautilusSidebar *sidebar_panel)
 {
+	const char *sidebar_id;
 	char *label;
-	const char *view_iid;
-	char *default_iid;
+	char *default_id;
+	GdkPixbuf *icon;
 
 	g_return_if_fail (NAUTILUS_IS_NAVIGATION_WINDOW (window));
-	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (sidebar_panel));
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR (sidebar_panel));
 	g_return_if_fail (NAUTILUS_IS_SIDE_PANE (window->sidebar));
 	g_return_if_fail (g_list_find (window->sidebar_panels, sidebar_panel) == NULL);	
 
-	label = nautilus_view_frame_get_label (sidebar_panel);
-	
+	label = nautilus_sidebar_get_tab_label (sidebar_panel);
 	nautilus_side_pane_add_panel (window->sidebar, 
 				      GTK_WIDGET (sidebar_panel), 
 				      label);
 	g_free (label);
 
+	icon = nautilus_sidebar_get_tab_icon (sidebar_panel);
+        nautilus_side_pane_set_panel_image (NAUTILUS_NAVIGATION_WINDOW (window)->sidebar,
+                                            GTK_WIDGET (sidebar_panel),
+                                            icon);
+	g_object_unref (icon);
+
+	g_signal_connect (sidebar_panel, "tab_icon_changed",
+			  (GCallback)side_panel_image_changed_callback, window);
+
+	
 	g_object_ref (sidebar_panel);
 	window->sidebar_panels = g_list_prepend (window->sidebar_panels, sidebar_panel);
 
-	view_iid = nautilus_view_frame_get_view_iid (sidebar_panel);
-	default_iid = eel_preferences_get (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW);
 
-	if (view_iid && default_iid && !strcmp (view_iid, default_iid)) {
+	/* Show if default */
+	sidebar_id = nautilus_sidebar_get_sidebar_id (sidebar_panel);
+	default_id = eel_preferences_get (NAUTILUS_PREFERENCES_SIDE_PANE_VIEW);
+	if (sidebar_id && default_id && !strcmp (sidebar_id, default_id)) {
 		nautilus_side_pane_show_panel (window->sidebar,
 					       GTK_WIDGET (sidebar_panel));
 	}	
-
-	g_free (default_iid);
+	g_free (default_id);
 }
 
 void
-nautilus_navigation_window_remove_sidebar_panel (NautilusNavigationWindow *window, NautilusViewFrame *sidebar_panel)
+nautilus_navigation_window_remove_sidebar_panel (NautilusNavigationWindow *window,
+						 NautilusSidebar *sidebar_panel)
 {
 	g_return_if_fail (NAUTILUS_IS_NAVIGATION_WINDOW (window));
-	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (sidebar_panel));
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR (sidebar_panel));
 
 	if (g_list_find (window->sidebar_panels, sidebar_panel) == NULL) {
 		return;
 	}
+
+	g_signal_handlers_disconnect_by_func (sidebar_panel, side_panel_image_changed_callback, window);
 	
 	nautilus_side_pane_remove_panel (window->sidebar, 
 					 GTK_WIDGET (sidebar_panel));
@@ -529,11 +503,7 @@ nautilus_navigation_window_go_home (NautilusNavigationWindow *window)
 
 	nautilus_navigation_window_set_search_mode (window, FALSE);
 
-#ifdef WEB_NAVIGATION_ENABLED
-	home_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
-#else
 	home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
-#endif
 	
 	g_assert (home_uri != NULL);
 	nautilus_window_go_to (NAUTILUS_WINDOW (window), home_uri);
@@ -613,13 +583,17 @@ view_as_menu_switch_views_callback (GtkWidget *widget, gpointer data)
 
 static GtkWidget *
 create_view_as_menu_item (NautilusWindow *window, 
-			  NautilusViewIdentifier *identifier,
+			  const char *identifier,
 			  guint index)
 {
 	GtkWidget *menu_item;
         char *menu_label;
+	const NautilusViewInfo *info;
 
-	menu_label = g_strdup (_(identifier->view_as_label));
+	info = nautilus_view_factory_lookup (identifier);
+
+	/* BONOBOTODO: nicer way for the labels */
+	menu_label = g_strdup_printf (_("View as %s"), _(info->label));
 	menu_item = gtk_menu_item_new_with_mnemonic (menu_label);
 	g_free (menu_label);
 
@@ -655,18 +629,17 @@ load_view_as_menu (NautilusWindow *window)
                 menu_item = create_view_as_menu_item (window, node->data, index);
                 gtk_menu_shell_append (GTK_MENU_SHELL (new_menu), menu_item);
 
-		if (nautilus_window_content_view_matches_iid (NAUTILUS_WINDOW (window), ((NautilusViewIdentifier *)node->data)->iid)) {
+		if (nautilus_window_content_view_matches_iid (NAUTILUS_WINDOW (window), (char *)node->data)) {
 			selected_index = index;
 		}
         }
 
 	if (selected_index == -1) {
-		NautilusViewIdentifier *id;
+		const char *id;
 		/* We're using an extra viewer, add a menu item for it */
 
 		id = nautilus_window_get_content_view_id (window);
                 menu_item = create_view_as_menu_item (window, id, index);
-		nautilus_view_identifier_free (id);
 		
                 gtk_menu_shell_append (GTK_MENU_SHELL (new_menu), menu_item);
 		selected_index = index;
@@ -698,17 +671,13 @@ real_set_title (NautilusWindow *window, const char *title)
 	
 	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS,
 			 set_title, (window, title));
+	
 	full_title = g_strdup_printf (_("File Browser: %s"), title);
 
 	window_title = eel_str_middle_truncate (full_title, MAX_TITLE_LENGTH);
 	gtk_window_set_title (GTK_WINDOW (window), window_title);
 	g_free (window_title);
 	g_free (full_title);
-
-	if (NAUTILUS_NAVIGATION_WINDOW (window)->information_panel) {
-		nautilus_information_panel_set_title 
-			(NAUTILUS_NAVIGATION_WINDOW (window)->information_panel, title);
-	}
 }
 
 static void
@@ -840,7 +809,7 @@ real_merge_menus_2 (NautilusWindow *nautilus_window)
 }
 
 static void
-zoom_level_changed_callback (NautilusViewFrame *view,
+zoom_level_changed_callback (NautilusView *view,
                              NautilusNavigationWindow *window)
 {
         g_assert (NAUTILUS_IS_WINDOW (window));
@@ -849,11 +818,11 @@ zoom_level_changed_callback (NautilusViewFrame *view,
          * a zooming operation.
          */
         nautilus_zoom_control_set_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control),
-                                              nautilus_view_frame_get_zoom_level (view));
+                                              nautilus_view_get_zoom_level (view));
 }
 
 static void
-zoom_parameters_changed_callback (NautilusViewFrame *view,
+zoom_parameters_changed_callback (NautilusView *view,
                                   NautilusNavigationWindow *window)
 {
         g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
@@ -881,11 +850,11 @@ zoom_parameters_changed_callback (NautilusViewFrame *view,
 
 	nautilus_zoom_control_set_parameters
 		(NAUTILUS_ZOOM_CONTROL (window->zoom_control),
-		 nautilus_view_frame_get_min_zoom_level (view),
-		 nautilus_view_frame_get_max_zoom_level (view),
-		 nautilus_view_frame_get_has_min_zoom_level (view),
-		 nautilus_view_frame_get_has_max_zoom_level (view),
-		 nautilus_view_frame_get_preferred_zoom_levels (view));
+		 nautilus_view_get_min_zoom_level (view),
+		 nautilus_view_get_max_zoom_level (view),
+		 nautilus_view_get_has_min_zoom_level (view),
+		 nautilus_view_get_has_max_zoom_level (view),
+		 nautilus_view_get_preferred_zoom_levels (view));
 
         /* "zoom_parameters_changed" always implies "zoom_level_changed",
          * but you won't get both signals, so we need to pass it down.
@@ -894,7 +863,7 @@ zoom_parameters_changed_callback (NautilusViewFrame *view,
 }
 
 static void
-connect_view (NautilusNavigationWindow *window, NautilusViewFrame *view)
+connect_view (NautilusNavigationWindow *window, NautilusView *view)
 {
 	g_signal_connect (view, "zoom_parameters_changed",
 			  G_CALLBACK (zoom_parameters_changed_callback),
@@ -905,7 +874,7 @@ connect_view (NautilusNavigationWindow *window, NautilusViewFrame *view)
 }
 
 static void
-disconnect_view (NautilusNavigationWindow *window, NautilusViewFrame *view)
+disconnect_view (NautilusNavigationWindow *window, NautilusView *view)
 {
 	if (!view) {
 		return;
@@ -923,7 +892,7 @@ disconnect_view (NautilusNavigationWindow *window, NautilusViewFrame *view)
 
 static void
 real_set_content_view_widget (NautilusWindow *nautilus_window,
-			      NautilusViewFrame *new_view)
+			      NautilusView *new_view)
 {
 	NautilusNavigationWindow *window;
 	
@@ -946,7 +915,7 @@ real_set_content_view_widget (NautilusWindow *nautilus_window,
 		NAUTILUS_HORIZONTAL_SPLITTER (window->details->content_paned),
 		GTK_WIDGET (new_view));
 
-	if (new_view != NULL && nautilus_view_frame_get_is_zoomable (new_view)) {
+	if (new_view != NULL && nautilus_view_get_is_zoomable (new_view)) {
 		gtk_widget_show (window->zoom_control);
 	} else {
 		gtk_widget_hide (window->zoom_control);
@@ -1005,174 +974,20 @@ nautilus_navigation_window_clear_back_list (NautilusNavigationWindow *window)
 	window->back_list = NULL;
 }
 
-static int
-compare_view_identifier_with_iid (gconstpointer passed_view_identifier,
-                                  gconstpointer passed_iid)
-{
-        return strcmp (((NautilusViewIdentifier *) passed_view_identifier)->iid,
-                       (char *) passed_iid);
-}
-
 static void
-disconnect_and_destroy_sidebar_panel (NautilusNavigationWindow *window, 
-                                      NautilusViewFrame *view)
-{
-        g_object_ref (view);
-
-	g_signal_handlers_disconnect_by_func 
-		(view, 
-		 G_CALLBACK (side_panel_view_failed_callback),
-		 window);
-	g_signal_handlers_disconnect_by_func 
-		(view, 
-		 G_CALLBACK (side_panel_view_loaded_callback),
-		 window);
-
-	nautilus_window_disconnect_extra_view (NAUTILUS_WINDOW (window), view);
-        nautilus_navigation_window_remove_sidebar_panel (window, view);
-	gtk_object_destroy (GTK_OBJECT (view));
-        g_object_unref (view);
-}
-
-static void
-set_side_panel_image (NautilusWindow *window,
-                      NautilusViewFrame *side_panel,
-                      const char *image_name)
-{
-        GdkPixbuf *pixbuf;
-        char *image_path;
-
-        pixbuf = NULL;
-        
-        if (image_name && image_name[0]) {
-                image_path = nautilus_theme_get_image_path (image_name);
-                if (image_path) {
-                        pixbuf = gdk_pixbuf_new_from_file (image_path, NULL);
-                        g_free (image_path);
-                }
-        }
-
-        nautilus_side_pane_set_panel_image (NAUTILUS_NAVIGATION_WINDOW (window)->sidebar,
-                                            GTK_WIDGET (side_panel),
-                                            pixbuf);
-        
-        if (pixbuf) {
-                g_object_unref (pixbuf);
-        }
-}
-
-static void
-side_panel_image_changed_callback (BonoboListener *listener,
-                                   const char *event_name,
-                                   const CORBA_any *arg,
-                                   CORBA_Environment *ev,
+side_panel_image_changed_callback (NautilusSidebar *side_panel,
                                    gpointer callback_data)
 {
-        NautilusViewFrame *side_panel;
         NautilusWindow *window;
+	GdkPixbuf *icon;
 
-        side_panel = NAUTILUS_VIEW_FRAME (callback_data);        
-        window = NAUTILUS_WINDOW (g_object_get_data (G_OBJECT (side_panel),
-                                                     "nautilus-window"));
+        window = NAUTILUS_WINDOW (callback_data);
 
-        set_side_panel_image (window, side_panel, BONOBO_ARG_GET_STRING (arg));
-}
-
-static void
-report_side_panel_failure_to_user (NautilusWindow *window, NautilusViewFrame *view_frame)
-{
-	char *message;
-	char *detail;
-	char *label;
-
-	label = nautilus_window_get_view_frame_label (view_frame);
-
-        if (label == NULL) {
-                message = g_strdup
-                        (_("One of the side panels encountered an error and can't continue."));
-		detail = _("Unfortunately I couldn't tell which one.");
-        } else {
-                message = g_strdup_printf
-                        (_("The %s side panel encountered an error and can't continue."), label);
-                detail = _("If this keeps happening, you might want to turn this panel off.");
-        }
-
-	eel_show_error_dialog (message, detail, _("Side Panel Failed"), GTK_WINDOW (window));
-
-	g_free (label);
-	g_free (message);
-}
-
-static void
-side_panel_view_failed_callback (NautilusViewFrame *view,
-				 gpointer user_data)
-{
-	NautilusWindow *window;
-	const char *current_iid;
-	
-	g_warning ("A view failed. The UI will handle this with a dialog but this should be debugged.");
-
-	window = NAUTILUS_WINDOW (user_data);	
-
-	report_side_panel_failure_to_user (window, view);
-	current_iid = nautilus_view_frame_get_view_iid (view);
-	disconnect_and_destroy_sidebar_panel (NAUTILUS_NAVIGATION_WINDOW (window), view);
-}
-
-static void
-connect_side_panel (NautilusWindow *window,
-                    NautilusViewFrame *side_panel)
-{
-        Bonobo_Control control;
-        Bonobo_PropertyBag property_bag;
-        CORBA_Environment ev;
-        char *image_name;
-        
-        g_object_set_data (G_OBJECT (side_panel),
-                           "nautilus-window",
-                           window);
-        
-        control = nautilus_view_frame_get_control (side_panel);
-
-	g_signal_connect_object (side_panel, 
-				 "failed",
-				 G_CALLBACK (side_panel_view_failed_callback),
-				 window, 0);
-
-        if (control != CORBA_OBJECT_NIL) {
-                CORBA_exception_init (&ev);
-                property_bag = Bonobo_Control_getProperties (control, &ev);
-                if (property_bag != CORBA_OBJECT_NIL) {                        
-                        bonobo_event_source_client_add_listener 
-                                (property_bag,
-                                 side_panel_image_changed_callback,
-                                 "Bonobo/Property:change:tab_image",
-                                 NULL,
-                                 side_panel);
-                        
-                        /* Set the initial tab image */
-                        image_name = bonobo_property_bag_client_get_value_string
-                                (property_bag, 
-                                 "tab_image", 
-                                 NULL);
-                        set_side_panel_image (window, side_panel, image_name);
-                        g_free (image_name);
-                        
-                        bonobo_object_release_unref (property_bag, NULL);
-                }
-                CORBA_exception_free (&ev);
-        }
-}
-
-static void
-side_panel_view_loaded_callback (NautilusViewFrame *view,
-				gpointer user_data)
-{
-	NautilusWindow *window;
-	
-	window = NAUTILUS_WINDOW (user_data);
-
-	connect_side_panel (window, view);
+	icon = nautilus_sidebar_get_tab_icon (side_panel);
+        nautilus_side_pane_set_panel_image (NAUTILUS_NAVIGATION_WINDOW (window)->sidebar,
+                                            GTK_WIDGET (side_panel),
+                                            icon);
+	g_object_unref (icon);
 }
 
 void
@@ -1181,9 +996,8 @@ nautilus_navigation_window_set_sidebar_panels (NautilusNavigationWindow *window,
 {
 	GList *identifier_list;
 	GList *node, *next, *found_node;
-	NautilusViewFrame *sidebar_panel;
-	NautilusViewIdentifier *identifier;
-	const char *current_iid;
+	NautilusSidebar *sidebar_panel;
+	char *identifier;
 
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
@@ -1194,22 +1008,16 @@ nautilus_navigation_window_set_sidebar_panels (NautilusNavigationWindow *window,
 	for (node = window->sidebar_panels; node != NULL; node = next) {
 		next = node->next;
 
-		sidebar_panel = NAUTILUS_VIEW_FRAME (node->data);
+		sidebar_panel = NAUTILUS_SIDEBAR (node->data);
 		
 		found_node = g_list_find_custom (identifier_list,
-						 (char *) nautilus_view_frame_get_view_iid (sidebar_panel),
-						 compare_view_identifier_with_iid);
+						 (char *) nautilus_sidebar_get_sidebar_id (sidebar_panel),
+						 (GCompareFunc)eel_strcmp);
 		if (found_node == NULL) {
-			current_iid = nautilus_view_frame_get_view_iid (sidebar_panel);
-			disconnect_and_destroy_sidebar_panel (window, sidebar_panel);
+			nautilus_navigation_window_remove_sidebar_panel (window,
+									 sidebar_panel);
 		} else {
-                        identifier = (NautilusViewIdentifier *) found_node->data;
-
-                        /* Right panel, make sure it has the right name. */
-                        /* FIXME: Is this set_label necessary? Shouldn't it already
-                         * have the right label here?
-                         */
-                        nautilus_view_frame_set_label (sidebar_panel, identifier->name);
+                        identifier = (char *) found_node->data;
 
                         /* Since this was found, there's no need to add it in the loop below. */
 			identifier_list = g_list_remove_link (identifier_list, found_node);
@@ -1221,33 +1029,16 @@ nautilus_navigation_window_set_sidebar_panels (NautilusNavigationWindow *window,
 	for (node = identifier_list; node != NULL; node = node->next) {
 		g_assert (node->data != NULL);
 		
-		identifier = (NautilusViewIdentifier *) node->data;
+		identifier = (char *) node->data;
 
                 /* Create and load the panel. */
-		sidebar_panel = nautilus_view_frame_new (NAUTILUS_WINDOW (window)->details->ui_container,
-                                                         NAUTILUS_WINDOW (window)->application->undo_manager,
-							 NAUTILUS_WINDOW_GET_CLASS (window)->window_type);
+		sidebar_panel = nautilus_sidebar_factory_create (identifier,
+								 NAUTILUS_WINDOW_INFO (window));
                 
-                eel_accessibility_set_name (sidebar_panel, _("Side Pane"));
-                eel_accessibility_set_description
-                        (sidebar_panel, _("Contains a side pane view"));
-                
-
-		nautilus_view_frame_set_label (sidebar_panel, identifier->name);
-		nautilus_window_connect_extra_view (NAUTILUS_WINDOW (window), 
-						    sidebar_panel,
-						    identifier);
-		g_signal_connect_object (sidebar_panel, 
-					 "view_loaded",
-					 G_CALLBACK (side_panel_view_loaded_callback),
-					 G_OBJECT (window), 0);
+		nautilus_navigation_window_add_sidebar_panel (window,
+							      sidebar_panel);
 		
-		nautilus_view_frame_load_view (sidebar_panel, identifier->iid);
-
-		connect_side_panel (NAUTILUS_WINDOW (window), sidebar_panel);
-		
-		nautilus_navigation_window_add_sidebar_panel (window, sidebar_panel);
-                gtk_object_sink (GTK_OBJECT (sidebar_panel));
+		g_object_unref (sidebar_panel);
 	}
 
 	g_list_free (identifier_list);
@@ -1263,7 +1054,8 @@ nautilus_navigation_window_set_sidebar_panels (NautilusNavigationWindow *window,
 static void
 add_sidebar_panels (NautilusNavigationWindow *window)
 {
-	GList *identifier_list;
+	GList *sidebar_list;
+	GtkWidget *current;
 
 	g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
 
@@ -1271,13 +1063,14 @@ add_sidebar_panels (NautilusNavigationWindow *window)
 		return;
 	}
 
-	identifier_list = nautilus_sidebar_get_all_sidebar_panel_view_identifiers ();
-	nautilus_navigation_window_set_sidebar_panels (window, identifier_list);
-	nautilus_view_identifier_list_free (identifier_list);
-
+	sidebar_list = nautilus_sidebar_factory_enumerate_sidebars ();
+	nautilus_navigation_window_set_sidebar_panels (window, sidebar_list);
+	eel_g_list_free_deep (sidebar_list);
+	
+	current = nautilus_side_pane_get_current_panel (window->sidebar);
 	set_current_side_panel
 		(window, 
-		 nautilus_side_pane_get_current_panel (window->sidebar));
+		 NAUTILUS_SIDEBAR (current));
 }
 
 static void 
@@ -1480,22 +1273,23 @@ real_window_close (NautilusWindow *window)
 }
 
 static void 
-real_get_default_size(NautilusWindow *window, guint *default_width, guint *default_height)
+real_get_default_size (NautilusWindow *window,
+		       guint *default_width, guint *default_height)
 {
 	
-    if(default_width) {
-	   *default_width = NAUTILUS_NAVIGATION_WINDOW_DEFAULT_WIDTH;
+	if (default_width) {
+		*default_width = NAUTILUS_NAVIGATION_WINDOW_DEFAULT_WIDTH;
 	}
 	
-	if(default_height) {
-       *default_height = NAUTILUS_NAVIGATION_WINDOW_DEFAULT_HEIGHT;	
+	if (default_height) {
+		*default_height = NAUTILUS_NAVIGATION_WINDOW_DEFAULT_HEIGHT;	
 	}
 }
 
 static void
 nautilus_navigation_window_class_init (NautilusNavigationWindowClass *class)
 {
-	NAUTILUS_WINDOW_CLASS (class)->window_type = Nautilus_WINDOW_NAVIGATION;
+	NAUTILUS_WINDOW_CLASS (class)->window_type = NAUTILUS_WINDOW_NAVIGATION;
 
 	G_OBJECT_CLASS (class)->finalize = nautilus_navigation_window_finalize;
 	GTK_OBJECT_CLASS (class)->destroy = nautilus_navigation_window_destroy;

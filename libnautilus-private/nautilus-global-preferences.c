@@ -52,7 +52,6 @@ static const char *EXTRA_MONITOR_PATHS[] = { "/system/gnome_vfs",
 static void     global_preferences_install_defaults      (void);
 static void     global_preferences_register_enumerations (void);
 static gpointer default_font_callback                    (void);
-static gpointer default_home_location_callback           (void);
 static void     import_old_preferences_if_needed         (void);
 static gpointer default_home_link_name                   (void);
 static gpointer default_computer_link_name               (void);
@@ -382,10 +381,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  NULL, NULL,
 	  NULL
 	},
-	{ NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
-	  PREFERENCE_BOOLEAN,
-	  GINT_TO_POINTER (FALSE)
-	},
 	/* FIXME bugzilla.gnome.org 41245: Saved in pixels instead of in %? */
 	{ NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
 	  PREFERENCE_INTEGER,
@@ -426,11 +421,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  GINT_TO_POINTER (NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW),
 	  NULL, NULL,
 	  "default_folder_viewer"
-	},
-	/* Home URI */
-	{ NAUTILUS_PREFERENCES_HOME_URI,
-	  PREFERENCE_STRING,
-	  NULL, default_home_location_callback, g_free
 	},
 	{ NAUTILUS_PREFERENCES_DESKTOP_FONT,
 	  PREFERENCE_STRING,
@@ -664,12 +654,6 @@ static gpointer
 default_font_callback (void)
 {
 	return g_strdup ("sans 12");
-}
-
-static gpointer
-default_home_location_callback (void)
-{
-	return gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
 }
 
 /*

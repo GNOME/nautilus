@@ -76,9 +76,7 @@
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
-#include <libnautilus-private/nautilus-view-identifier.h>
-#include <libnautilus/nautilus-undo.h>
-#include <libnautilus/nautilus-view.h>
+#include <libnautilus-private/nautilus-undo.h>
 #include <bonobo/bonobo-widget.h>
 #include <bonobo/bonobo-exception.h>
 #include <string.h>

@@ -75,10 +75,9 @@
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
-#include <libnautilus-private/nautilus-sidebar-functions.h>
-#include <libnautilus/nautilus-bonobo-ui.h>
-#include <libnautilus/nautilus-clipboard.h>
-#include <libnautilus/nautilus-undo.h>
+#include <libnautilus-private/nautilus-bonobo-ui.h>
+#include <libnautilus-private/nautilus-clipboard.h>
+#include <libnautilus-private/nautilus-undo.h>
 #include <math.h>
 #include <sys/time.h>
 
@@ -219,6 +218,9 @@ nautilus_spatial_window_finalize (GObject *object)
 	if (window->details->location != NULL) {
 		gnome_vfs_uri_unref (window->details->location);
 	}
+	
+	g_free (window->details);
+	window->details = NULL;
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -255,7 +257,12 @@ nautilus_spatial_window_save_scroll_position (NautilusSpatialWindow *window)
 	char *scroll_string;
 
 	parent = NAUTILUS_WINDOW(window);
-	scroll_string = nautilus_view_frame_get_first_visible_file (parent->content_view);
+	
+	if (parent->content_view == NULL) {
+		return;
+	}
+	
+	scroll_string = nautilus_view_get_first_visible_file (parent->content_view);
 	nautilus_file_set_metadata (parent->details->viewed_file,
 				    NAUTILUS_METADATA_KEY_WINDOW_SCROLL_POSITION,
 				    NULL,
@@ -267,11 +274,11 @@ void
 nautilus_spatial_window_save_show_hidden_files_mode (NautilusSpatialWindow *window)
 {
 	char *show_hidden_file_setting;
-	Nautilus_ShowHiddenFilesMode mode;
+	NautilusWindowShowHiddenFilesMode mode;
 
 	mode = NAUTILUS_WINDOW (window)->details->show_hidden_files_mode;
-	if (mode != Nautilus_SHOW_HIDDEN_FILES_DEFAULT) {
-		if (mode == Nautilus_SHOW_HIDDEN_FILES_ENABLE) {
+	if (mode != NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_DEFAULT) {
+		if (mode == NAUTILUS_WINDOW_SHOW_HIDDEN_FILES_ENABLE) {
 			show_hidden_file_setting = "1";
 		} else {
 			show_hidden_file_setting = "0";
@@ -331,6 +338,9 @@ static void
 real_set_title (NautilusWindow *window, const char *title)
 {
 
+	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS,
+			 set_title, (window, title));
+	
 	if (title[0] == '\0') {
 		gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
 	} else {
@@ -376,13 +386,17 @@ real_merge_menus (NautilusWindow *nautilus_window)
 
 static void
 real_set_content_view_widget (NautilusWindow *window,
-			      NautilusViewFrame *new_view)
+			      NautilusView *new_view)
 {
+	GtkWidget *widget;
+	
 	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS, set_content_view_widget,
 			 (window, new_view));
+
+	widget = nautilus_view_get_widget (new_view);
 	
 	gtk_container_add (GTK_CONTAINER (NAUTILUS_SPATIAL_WINDOW (window)->details->content_box),
-			   GTK_WIDGET (new_view));
+			   widget);
 }
 
 static void
@@ -661,7 +675,7 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 static void
 nautilus_spatial_window_class_init (NautilusSpatialWindowClass *class)
 {
-	NAUTILUS_WINDOW_CLASS (class)->window_type = Nautilus_WINDOW_SPATIAL;
+	NAUTILUS_WINDOW_CLASS (class)->window_type = NAUTILUS_WINDOW_SPATIAL;
 
 	G_OBJECT_CLASS (class)->finalize = nautilus_spatial_window_finalize;
 	GTK_OBJECT_CLASS (class)->destroy = nautilus_spatial_window_destroy;

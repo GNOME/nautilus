@@ -36,6 +36,8 @@ typedef struct FMIconViewClass FMIconViewClass;
 #define FM_IS_ICON_VIEW(obj)			(GTK_CHECK_TYPE ((obj), FM_TYPE_ICON_VIEW))
 #define FM_IS_ICON_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((klass), FM_TYPE_ICON_VIEW))
 
+#define FM_ICON_VIEW_ID "OAFIID:Nautilus_File_Manager_Icon_View"
+
 typedef struct FMIconViewDetails FMIconViewDetails;
 
 struct FMIconView {
@@ -103,5 +105,7 @@ int     fm_icon_view_compare_files (FMIconView   *icon_view,
 				    NautilusFile *a,
 				    NautilusFile *b);
 void    fm_icon_view_filter_by_screen (FMIconView *icon_view, gboolean filter);
+
+void    fm_icon_view_register       (void);
 
 #endif /* FM_ICON_VIEW_H */

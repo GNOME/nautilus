@@ -64,13 +64,13 @@
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
-#include <libnautilus/nautilus-bonobo-ui.h>
+#include <libnautilus-private/nautilus-bonobo-ui.h>
 
 #ifdef ENABLE_PROFILER
 #include "nautilus-profiler.h"
 #endif
 
-/* Private menu definitions; others are in <libnautilus/nautilus-bonobo-ui.h>.
+/* Private menu definitions; others are in <libnautilus-private/nautilus-bonobo-ui.h>.
  * These are not part of the published set, either because they are
  * development-only or because we expect to change them and
  * don't want other code relying on their existence.
@@ -140,7 +140,7 @@ bookmark_holder_free (BookmarkHolder *bookmark_holder)
 	g_free (bookmark_holder);
 }
 
-/* Private menu definitions; others are in <libnautilus/nautilus-bonobo-ui.h>.
+/* Private menu definitions; others are in <libnautilus-private/nautilus-bonobo-ui.h>.
  * These are not part of the published set, either because they are
  * development-only or because we expect to change them and
  * don't want other code relying on their existence.

@@ -32,9 +32,7 @@
 #include <bonobo/bonobo-window.h>
 #include <eel/eel-glib-extensions.h>
 #include <libnautilus-private/nautilus-bookmark.h>
-#include <libnautilus-private/nautilus-view-identifier.h>
-#include "nautilus-applicable-views.h"
-#include "nautilus-view-frame.h"
+#include <libnautilus-private/nautilus-window-info.h>
 #include "nautilus-application.h"
 #include "nautilus-information-panel.h"
 #include "nautilus-side-pane.h"
@@ -54,7 +52,7 @@ typedef struct NautilusWindow NautilusWindow;
 typedef struct {
         BonoboWindowClass parent_spot;
 
-        Nautilus_WindowType window_type;
+        NautilusWindowType window_type;
 
 	/* Function pointers for overriding, without corresponding signals */
 
@@ -72,7 +70,7 @@ typedef struct {
         void   (* merge_menus_2)   (NautilusWindow *window);
         void   (* load_view_as_menu) (NautilusWindow *window);
         void   (* set_content_view_widget) (NautilusWindow *window, 
-                                            NautilusViewFrame *frame);
+                                            NautilusView *new_view);
         void   (* set_throbber_active) (NautilusWindow *window,
                                         gboolean active);
         void   (* prompt_for_location) (NautilusWindow *window);
@@ -103,13 +101,10 @@ struct NautilusWindow {
         NautilusBookmark *last_location_bookmark;
 
         /* Current views stuff */
-        NautilusViewFrame *content_view;
+        NautilusView *content_view;
         
         /* Pending changes */
-        NautilusViewFrame *new_content_view;
-
-        /* All views */
-        GList *views;
+        NautilusView *new_content_view;
 };
 
 GType            nautilus_window_get_type             (void);

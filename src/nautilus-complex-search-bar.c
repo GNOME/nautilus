@@ -47,7 +47,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
-#include <libnautilus/nautilus-clipboard.h>
+#include <libnautilus-private/nautilus-clipboard.h>
 
 struct NautilusComplexSearchBarDetails {
 	GtkVBox *bar_container;
@@ -432,10 +432,12 @@ nautilus_complex_search_bar_new (NautilusWindow *window)
 	g_assert (first_criterion != NULL);
 	g_assert (first_criterion->details->use_value_entry);
 
+#ifdef BONOBO_DONE
 	nautilus_clipboard_set_up_editable 
 		(GTK_EDITABLE (first_criterion->details->value_entry),
 		 nautilus_window_get_ui_container (window),
 		 TRUE);
+#endif
 
 	return bar;
 }
@@ -450,9 +452,11 @@ nautilus_complex_search_bar_set_up_enclosed_entry_for_clipboard (NautilusComplex
 						 "associated_window");
 
 	g_assert (associated_window != NULL);
+#ifdef BONOBO_DONE
 	nautilus_clipboard_set_up_editable (GTK_EDITABLE (entry),
 					    nautilus_window_get_ui_container (associated_window),
 					    TRUE);
+#endif
 }
 
 static void                       

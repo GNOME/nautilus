@@ -62,7 +62,7 @@
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
-#include <libnautilus/nautilus-bonobo-ui.h>
+#include <libnautilus-private/nautilus-bonobo-ui.h>
 
 #ifdef ENABLE_PROFILER
 #include "nautilus-profiler.h"
@@ -70,7 +70,7 @@
 
 #define STATIC_BOOKMARKS_FILE_NAME	"static_bookmarks.xml"
 
-/* Private menu definitions; others are in <libnautilus/nautilus-bonobo-ui.h>.
+/* Private menu definitions; others are in <libnautilus-private/nautilus-bonobo-ui.h>.
  * These are not part of the published set, either because they are
  * development-only or because we expect to change them and
  * don't want other code relying on their existence.
@@ -299,71 +299,6 @@ bookmarks_menu_edit_bookmarks_callback (BonoboUIComponent *component,
         edit_bookmarks (NAUTILUS_NAVIGATION_WINDOW (user_data));
 }
 
-#ifdef WEB_NAVIGATION_ENABLED
-static char *
-get_static_bookmarks_file_path (void)
-{
-	char *update_xml_file_path, *built_in_xml_file_path;
-	char *update_uri, *built_in_uri;
-	char *user_directory_path;
-	gboolean update_exists, built_in_exists;
-	GnomeVFSFileInfo *update_info, *built_in_info;
-	char *result;
-	
-	/* see if there is a static bookmarks file in the updates directory and get its mod-date */
-	user_directory_path = nautilus_get_user_directory ();
-	update_xml_file_path = g_strdup_printf ("%s/updates/%s", user_directory_path, STATIC_BOOKMARKS_FILE_NAME);
-	update_exists = g_file_test (update_xml_file_path, G_FILE_TEST_EXISTS);
-	g_free (user_directory_path);
-	
-	/* get the mod date of the built-in static bookmarks file */
-	built_in_xml_file_path = g_build_filename (NAUTILUS_DATADIR, STATIC_BOOKMARKS_FILE_NAME, NULL);
-	built_in_exists = g_file_test (built_in_xml_file_path, G_FILE_TEST_EXISTS);
-	
-	/* if we only have one file, return its path as the one to use */
-	if (built_in_exists && !update_exists) {
-		g_free (update_xml_file_path);
-		return built_in_xml_file_path;
-	}
-
-	if (!built_in_exists && update_exists) {
-		g_free (built_in_xml_file_path);
-		return update_xml_file_path;
-	}
-	
-	/* if we have neither file, return NULL */		
-	if (!built_in_exists && !update_exists) {
-		g_free (built_in_xml_file_path);
-		g_free (update_xml_file_path);
-		return NULL;
-	}
-	
-	/* both files exist, so use the one with the most recent mod-date */
-	update_uri = gnome_vfs_get_uri_from_local_path (update_xml_file_path);
-	update_info = gnome_vfs_file_info_new ();
-	gnome_vfs_get_file_info (update_uri, update_info, GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
-	g_free (update_uri);
-	
-	built_in_uri = gnome_vfs_get_uri_from_local_path (built_in_xml_file_path);
-	built_in_info = gnome_vfs_file_info_new ();
-	gnome_vfs_get_file_info (built_in_uri, built_in_info, GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
-	g_free (built_in_uri);
-
-	/* see which is most recent */
-	if (update_info->mtime <= built_in_info->mtime) {
-		result = built_in_xml_file_path;
-		g_free (update_xml_file_path);
-	} else {
-		result = update_xml_file_path;
-		g_free (built_in_xml_file_path);
-	}
-
-	gnome_vfs_file_info_unref (update_info);
-	gnome_vfs_file_info_unref (built_in_info);
-	
-	return result;
-}
-#endif
 
 static void
 append_separator (NautilusNavigationWindow *window, const char *path)
@@ -502,36 +437,6 @@ create_menu_item_from_node (NautilusNavigationWindow *window,
 	nautilus_window_ui_thaw (NAUTILUS_WINDOW (window));
 }
 
-#ifdef WEB_NAVIGATION_ENABLED
-static void
-append_static_bookmarks (NautilusWindow *window, const char *menu_path)
-{
-	xmlDocPtr doc;
-	xmlNodePtr node;
-	char *file_path;
-	int index;
-
-	/* Walk through XML tree creating bookmarks, folders, and separators. */
-	file_path = get_static_bookmarks_file_path ();
-
-	if (file_path == NULL) {
-		return;
-	}
-	
-	doc = xmlParseFile (file_path);
-	g_free (file_path);
-
-	node = eel_xml_get_root_children (doc);
-	index = 0;
-
-	for (index = 0; node != NULL; node = node->next) {
-		create_menu_item_from_node (window, node, menu_path, &index);
-	}
-	
-	xmlFreeDoc(doc);
-}
-#endif
-
 static GtkWindow *
 get_or_create_bookmarks_window (GObject *undo_manager_source)
 {
@@ -582,12 +487,6 @@ edit_bookmarks (NautilusNavigationWindow *window)
         gtk_window_present (dialog);
 }
 
-void
-nautilus_window_bookmarks_preference_changed_callback (gpointer user_data)
-{
-	refresh_bookmarks_menu (NAUTILUS_NAVIGATION_WINDOW (user_data));
-}
-
 static void
 refresh_bookmarks_menu (NautilusNavigationWindow *window)
 {
@@ -601,12 +500,6 @@ refresh_bookmarks_menu (NautilusNavigationWindow *window)
 		(NAUTILUS_WINDOW (window)->details->shell_ui, NULL);
 
 	nautilus_navigation_window_remove_bookmarks_menu_items (window);
-
-#ifdef WEB_NAVIGATION_ENABLED
-	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS)) {
-		append_static_bookmarks (window, MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER);
-	}
-#endif
 
 	append_dynamic_bookmarks (window);
 
@@ -628,14 +521,6 @@ nautilus_navigation_window_initialize_bookmarks_menu (NautilusNavigationWindow *
 	/* Construct the initial set of bookmarks. */
 	refresh_bookmarks_menu (window);
 
-	/* Recreate static & dynamic part of menu if preference about
-	 * showing static bookmarks changes.
-	 */
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
-						  nautilus_window_bookmarks_preference_changed_callback,
-						  window,
-						  G_OBJECT (window));
-		
 	/* Recreate dynamic part of menu if bookmark list changes */
 	g_signal_connect_object (get_bookmark_list (), "contents_changed",
 				 G_CALLBACK (schedule_refresh_bookmarks_menu),

@@ -32,7 +32,7 @@
 #include "nautilus-window-private.h"
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <libnautilus/nautilus-clipboard.h>
+#include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-entry.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
@@ -127,10 +127,12 @@ nautilus_simple_search_bar_new (NautilusWindow *window)
 	bar->details->entry = NAUTILUS_ENTRY (nautilus_entry_new ());
 	nautilus_undo_set_up_nautilus_entry_for_undo (bar->details->entry);
 	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (bar->details->entry), TRUE);
+#ifdef BONOBO_DONE
 	nautilus_clipboard_set_up_editable
 		(GTK_EDITABLE (bar->details->entry),
 		 nautilus_window_get_ui_container (window),
 		 TRUE);
+#endif
 	
 	g_signal_connect_object (bar->details->entry, "activate",
 				 G_CALLBACK (gtk_widget_activate), bar->details->find_button, G_CONNECT_SWAPPED);

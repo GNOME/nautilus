@@ -3,7 +3,6 @@ include $(top_srcdir)/Makefile.shared
 lib_LTLIBRARIES=libnautilus-private.la
 
 libnautilus_private_la_LIBADD = \
-	../libnautilus/libnautilus.la \
 	../libnautilus-extension/libnautilus-extension.la
 
 INCLUDES = 						\
@@ -43,6 +42,10 @@ marshal_sources = \
 	nautilus-marshal-guts.c \
 	$(NULL)
 
+uidir = $(datadir)/gnome-2.0/ui
+ui_DATA = \
+	nautilus-clipboard-ui.xml	\
+	$(NULL)
 
 libnautilus_private_la_SOURCES = \
 	$(nautilus_metafile_server_idl_sources)	\
@@ -50,6 +53,7 @@ libnautilus_private_la_SOURCES = \
 	nautilus-audio-player.h \
 	nautilus-bonobo-extensions.c \
 	nautilus-bonobo-extensions.h \
+	nautilus-bonobo-ui.h \
 	nautilus-bookmark.c \
 	nautilus-bookmark.h \
 	nautilus-cell-renderer-pixbuf-emblem.c \
@@ -57,6 +61,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-cdrom-extensions.h \
 	nautilus-clipboard-monitor.c \
 	nautilus-clipboard-monitor.h \
+	nautilus-clipboard.c \
+	nautilus-clipboard.h \
 	nautilus-column-chooser.c \
 	nautilus-column-chooser.h \
 	nautilus-column-utilities.c \
@@ -125,6 +131,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-icon-factory.c \
 	nautilus-icon-factory.h \
 	nautilus-icon-private.h \
+	nautilus-idle-queue.c \
+	nautilus-idle-queue.h \
 	nautilus-iso9660.h \
 	nautilus-keep-last-vertical-box.c \
 	nautilus-keep-last-vertical-box.h \
@@ -159,8 +167,10 @@ libnautilus_private_la_SOURCES = \
 	nautilus-recent.c \
 	nautilus-search-uri.c \
 	nautilus-search-uri.h \
-	nautilus-sidebar-functions.c \
-	nautilus-sidebar-functions.h \
+	nautilus-sidebar-factory.c \
+	nautilus-sidebar-factory.h \
+	nautilus-sidebar.c \
+	nautilus-sidebar.h \
 	nautilus-sound.c \
 	nautilus-sound.h \
 	nautilus-theme.c \
@@ -175,20 +185,25 @@ libnautilus_private_la_SOURCES = \
 	nautilus-trash-monitor.h \
 	nautilus-tree-view-drag-dest.c \
 	nautilus-tree-view-drag-dest.h \
-	nautilus-undo-context.c \
-	nautilus-undo-context.h \
 	nautilus-undo-manager.c \
 	nautilus-undo-manager.h \
+	nautilus-undo-private.h \
 	nautilus-undo-signal-handlers.c \
 	nautilus-undo-signal-handlers.h \
+	nautilus-undo-transaction.c \
+	nautilus-undo-transaction.h \
+	nautilus-undo.c \
+	nautilus-undo.h \
 	nautilus-vfs-directory.c \
 	nautilus-vfs-directory.h \
 	nautilus-vfs-file.c \
 	nautilus-vfs-file.h \
-	nautilus-view-identifier.c \
-	nautilus-view-identifier.h \
-	nautilus-view-query.c \
-	nautilus-view-query.h \
+	nautilus-view-factory.c \
+	nautilus-view-factory.h \
+	nautilus-view.c \
+	nautilus-view.h \
+	nautilus-window-info.c \
+	nautilus-window-info.h \
 	$(NULL)
 
 $(lib_LTLIBRARIES): $(dependency_static_libs)
@@ -226,6 +241,7 @@ EXTRA_DIST = 				\
 	nautilus-metafile-server.idl	\
 	nautilus-marshal.list		\
 	$(schema_in_files)              \
+	$(ui_DATA)			\
 	$(NULL)
 
 CLEANFILES = \

@@ -49,7 +49,7 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-private/nautilus-icon-dnd.h>
-#include <libnautilus/nautilus-clipboard.h>
+#include <libnautilus-private/nautilus-clipboard.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -434,10 +434,12 @@ nautilus_location_bar_new (NautilusNavigationWindow *window)
 	location_bar = NAUTILUS_LOCATION_BAR (bar);
 
 	/* Clipboard */
+#ifdef BONOBO_DONE
 	nautilus_clipboard_set_up_editable
 		(GTK_EDITABLE (location_bar->details->entry),
 		 nautilus_window_get_ui_container (NAUTILUS_WINDOW (window)),
 		 TRUE);
+#endif
 
 	return bar;
 }

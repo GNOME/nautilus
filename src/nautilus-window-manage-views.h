@@ -30,33 +30,41 @@
 #include "nautilus-window.h"
 #include "nautilus-navigation-window.h"
 
-void                    nautilus_window_manage_views_destroy         (NautilusWindow         *window);
-void                    nautilus_window_manage_views_finalize        (NautilusWindow         *window);
-void                    nautilus_window_open_location                (NautilusWindow         *window,
-                                                                      const char             *location,
-                                                                      gboolean                close_behind);
-void                    nautilus_window_open_location_with_selection (NautilusWindow         *window,
-                                                                      const char             *location,
-                                                                      GList                  *selection,
-                                                                      gboolean                close_behind);
-void                    nautilus_window_stop_loading                 (NautilusWindow         *window);
-void                    nautilus_window_set_content_view             (NautilusWindow         *window,
-                                                                      NautilusViewIdentifier *id);
+void                    nautilus_window_manage_views_destroy          (NautilusWindow           *window);
+void                    nautilus_window_manage_views_finalize         (NautilusWindow           *window);
+void                    nautilus_window_open_location                 (NautilusWindow           *window,
+                                                                       const char               *location,
+                                                                       gboolean                  close_behind);
+void                    nautilus_window_open_location_with_selection  (NautilusWindow           *window,
+                                                                       const char               *location,
+                                                                       GList                    *selection,
+                                                                       gboolean                  close_behind);
+void                    nautilus_window_open_location_full            (NautilusWindow           *window,
+                                                                       const char               *location,
+                                                                       NautilusWindowOpenMode    mode,
+                                                                       NautilusWindowOpenFlags   flags,
+                                                                       GList                    *new_selection);
+void                    nautilus_window_stop_loading                  (NautilusWindow           *window);
+void                    nautilus_window_set_content_view              (NautilusWindow           *window,
+                                                                       const char               *id);
+gboolean                nautilus_window_content_view_matches_iid      (NautilusWindow           *window,
+                                                                       const char               *iid);
+const char             *nautilus_window_get_content_view_id           (NautilusWindow           *window);
+char                   *nautilus_window_get_view_label                (NautilusWindow           *window);
+void                    nautilus_navigation_window_set_sidebar_panels (NautilusNavigationWindow *window,
+                                                                       GList                    *view_identifier_list);
+void                    nautilus_navigation_window_back_or_forward    (NautilusNavigationWindow *window,
+                                                                       gboolean                  back,
+                                                                       guint                     distance);
 
-gboolean                nautilus_window_content_view_matches_iid     (NautilusWindow         *window,
-                                                                      const char             *iid);
-NautilusViewIdentifier *nautilus_window_get_content_view_id          (NautilusWindow         *window);
-void                    nautilus_window_connect_extra_view           (NautilusWindow         *window, 
-                                                                      NautilusViewFrame      *view,
-                                                                      NautilusViewIdentifier *id);
-void                    nautilus_window_disconnect_extra_view        (NautilusWindow         *window, 
-                                                                      NautilusViewFrame      *view);
-char                   *nautilus_window_get_view_frame_label         (NautilusViewFrame      *view);
-                                                                      
-void                    nautilus_navigation_window_set_sidebar_panels           (NautilusNavigationWindow         *window,
-                                                                                 GList                  *view_identifier_list);
-void                    nautilus_navigation_window_back_or_forward              (NautilusNavigationWindow         *window,
-                                                                                 gboolean                back,
-                                                                                 guint                   distance);
+
+/* NautilusWindowInfo implementation: */
+void nautilus_window_report_load_underway     (NautilusWindow     *window,
+                                               NautilusView       *view);
+void nautilus_window_report_selection_changed (NautilusWindowInfo *window);
+void nautilus_window_report_view_failed       (NautilusWindow     *window,
+                                               NautilusView       *view);
+void nautilus_window_report_load_complete     (NautilusWindow     *window,
+                                               NautilusView       *view);
 
 #endif /* NAUTILUS_WINDOW_MANAGE_VIEWS_H */

@@ -15,11 +15,10 @@ DESKTOP_SETTINGS_FILES=				\
 	nautilus-file-management-properties.desktop
 
 SUBDIRS =			\
-	libnautilus 		\
 	libnautilus-extension	\
 	cut-n-paste-code 	\
 	libbackground		\
-	libnautilus-private 	\
+	libnautilus-private	\
 	libnautilus-adapter	\
 	src 			\
 	test 			\

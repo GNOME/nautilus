@@ -65,7 +65,6 @@ struct NautilusWindowDetails
 
         /* Current location. */
         char *location;
-        GList *selection;
 	char *title;
 	NautilusFile *viewed_file;
         gboolean viewed_file_seen;
@@ -76,18 +75,17 @@ struct NautilusWindowDetails
         char *pending_location;
         char *pending_scroll_to;
         GList *pending_selection;
-        NautilusDetermineViewHandle *determine_view_handle;
-        NautilusFile *pending_file_for_position;
+        NautilusFile *determine_view_file;
 
         /* View As choices */
         GList *short_list_viewers;
-        NautilusViewIdentifier *extra_viewer;
+        char *extra_viewer;
 
         /* Deferred location change. */
         char *location_to_change_to_at_idle;
         guint location_change_at_idle_id;
 
-        Nautilus_ShowHiddenFilesMode show_hidden_files_mode;
+        NautilusWindowShowHiddenFilesMode show_hidden_files_mode;
 };
 
 struct _NautilusNavigationWindowDetails {
@@ -98,7 +96,7 @@ struct _NautilusNavigationWindowDetails {
 
         /* Side Pane */
         int side_pane_width;
-        GtkWidget *current_side_panel;
+        NautilusSidebar *current_side_panel;
 
 	/* Menus */
         guint refresh_bookmarks_menu_idle_id;
@@ -187,7 +185,7 @@ void               nautilus_window_zoom_to_level                         (Nautil
 void               nautilus_window_zoom_to_fit                           (NautilusWindow    *window);
 void		   nautilus_window_show_view_as_dialog			 (NautilusWindow    *window);
 void               nautilus_window_set_content_view_widget               (NautilusWindow    *window,
-                                                                          NautilusViewFrame *content_view);
+                                                                          NautilusView       *content_view);
 Bonobo_UIContainer nautilus_window_get_ui_container                      (NautilusWindow    *window);
 void               nautilus_window_set_viewed_file                       (NautilusWindow    *window,
                                                                           NautilusFile      *file);
@@ -215,5 +213,6 @@ void               nautilus_navigation_window_set_throbber_active               
                                                                                      gboolean                     active);
 void               nautilus_navigation_window_go_back                               (NautilusNavigationWindow    *window);
 void               nautilus_navigation_window_go_forward                            (NautilusNavigationWindow    *window);
+
 
 #endif /* NAUTILUS_WINDOW_PRIVATE_H */

@@ -64,7 +64,6 @@
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
-#include <libnautilus-private/nautilus-sidebar-functions.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
 #include <math.h>
 

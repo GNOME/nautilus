@@ -27,8 +27,6 @@ INCLUDES =							\
 
 LDADD =\
 	$(top_builddir)/src/file-manager/libnautilus-file-manager.la \
-	$(top_builddir)/libnautilus/libnautilus.la \
-	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
         $(top_builddir)/cut-n-paste-code/gsequence/libgsequence.la \
 	$(CORE_LIBS) \
@@ -52,13 +50,11 @@ nautilus_shell_interface_idl_sources =		\
 
 nautilus_SOURCES = \
 	$(nautilus_shell_interface_idl_sources)	\
-	nautilus-applicable-views.c		\
 	nautilus-application.c			\
 	nautilus-bookmark-list.c		\
 	nautilus-bookmark-parsing.c		\
 	nautilus-bookmarks-window.c		\
 	nautilus-complex-search-bar.c		\
-	nautilus-component-adapter-factory.c	\
 	nautilus-connect-server-dialog.c	\
 	nautilus-desktop-window.c		\
 	nautilus-first-time-druid.c		\
@@ -84,19 +80,15 @@ nautilus_SOURCES = \
 	nautilus-switchable-navigation-bar.c	\
 	nautilus-switchable-search-bar.c	\
 	nautilus-window-toolbars.c              \
-	nautilus-view-frame-corba.c		\
-	nautilus-view-frame.c			\
 	nautilus-window-manage-views.c		\
 	nautilus-window-menus.c         	\
 	nautilus-window.c			\
 	nautilus-zoom-control.c			\
-	nautilus-applicable-views.h		\
 	nautilus-application.h			\
 	nautilus-bookmark-list.h		\
 	nautilus-bookmark-parsing.h		\
 	nautilus-bookmarks-window.h		\
 	nautilus-complex-search-bar.h		\
-	nautilus-component-adapter-factory.h	\
 	nautilus-connect-server-dialog.h	\
 	nautilus-desktop-window.h		\
 	nautilus-first-time-druid.h		\
@@ -122,8 +114,6 @@ nautilus_SOURCES = \
 	nautilus-spatial-window.h               \
 	nautilus-switchable-navigation-bar.h	\
 	nautilus-switchable-search-bar.h	\
-	nautilus-view-frame-private.h		\
-	nautilus-view-frame.h			\
 	nautilus-window-manage-views.h		\
 	nautilus-window-private.h		\
 	nautilus-window.h			\

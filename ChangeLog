@@ -1,3 +1,113 @@
+2004-11-04  Alexander Larsson  <alexl@redhat.com>
+
+	* Makefile.am:
+	Don't build libnautilus subdir
+	
+	* libnautilus-private/Makefile.am:
+	Don't link to libnautilus
+	Add new files (some from libnautilus)
+	Remove not used files
+	
+	* libnautilus-private/apps_nautilus_preferences.schemas.in:
+	Remove hide_built_in_bookmarks
+	
+	* libnautilus-private/nautilus-bonobo-ui.h:
+	* libnautilus-private/nautilus-clipboard-ui.xml:
+	* libnautilus-private/nautilus-clipboard.[ch]:
+	* libnautilus-private/nautilus-idle-queue.[ch]:
+	Move here from libnautilus
+	
+	* libnautilus-private/nautilus-desktop-link.c:
+	* libnautilus-private/nautilus-global-preferences.[ch]:
+	Remove WEB_NAVIGATION_ENABLED ifdef and HOME_URI/BUILT_IN_BOOKMARKS
+	prefs
+	
+	* libnautilus-private/nautilus-directory-private.h:
+	* libnautilus-private/nautilus-metafile-server.idl:
+	* libnautilus-private/nautilus-program-choosing.h:
+	Remove not needed header inclusions
+	
+	* libnautilus-private/nautilus-sidebar-factory.[ch]:
+	NautilusSidebar registration and creation
+	
+	* libnautilus-private/nautilus-sidebar.[ch]:
+	New NautilusSidebar interface
+	
+	* libnautilus-private/nautilus-sidebar-functions.[ch]:
+	* libnautilus-private/nautilus-undo-context.[ch]:
+	* libnautilus-private/nautilus-view-identifier.[ch]:
+	* libnautilus-private/nautilus-view-query.[ch]:
+	Remove not needed files
+	
+	* libnautilus-private/nautilus-undo-manager.[ch]:
+	* libnautilus-private/nautilus-undo-private.h:
+	* libnautilus-private/nautilus-undo-transaction.[ch]:
+	* libnautilus-private/nautilus-undo.[ch]:
+	Convert from bonobo. Some moved from libnautilus.
+
+	* libnautilus-private/nautilus-view-factory.[ch]:
+	NautilusView registration and creation
+	
+	* libnautilus-private/nautilus-view.[ch]:
+	New NautilusView interface
+	
+	* libnautilus-private/nautilus-window-info.[ch]:
+	New NautilusWindowInfo interface
+	
+	* src/Makefile.am:
+	Don't link to libnautilus
+	Remove not used files
+	
+	* src/nautilus-applicable-views.[ch]:
+	* src/nautilus-component-adapter-factory.[ch]:
+	* src/nautilus-view-frame-corba.[ch]:
+	* src/nautilus-view-frame-private.h:
+	* src/nautilus-view-frame.[ch]:
+	Removed. Not needed anymore.
+	
+	* src/nautilus-bookmarks-window.c:
+	* src/nautilus-complex-search-bar.c:
+	* src/nautilus-information-panel.[ch]:
+	* src/nautilus-location-bar.c:
+	* src/nautilus-location-dialog.c:
+	* src/nautilus-location-entry.c:
+	* src/nautilus-shell-interface.idl:
+	* src/nautilus-side-pane.h:
+	* src/nautilus-sidebar-title.c:
+	* src/nautilus-simple-search-bar.c:
+	Minor changes to build.
+
+	* src/nautilus-shell.c:
+	Remove WEB_NAVIGATION_ENABLED
+	
+	* src/nautilus-application.c:
+	* src/nautilus-desktop-window.c:
+	* src/nautilus-navigation-window-menus.c:
+	* src/nautilus-navigation-window.[ch]:
+	* src/nautilus-spatial-window.c:
+	* src/nautilus-window-manage-views.[ch]:
+	* src/nautilus-window-menus.c:
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.[ch]:
+	Initial conversion to new NautilusView interface.
+
+	* src/file-manager/Makefile.am:
+	* src/file-manager/fm-bonobo-provider.[ch]:
+	Removed. Not needed anymore.
+	Temporary commented out fm-tree-view.[ch]
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	* src/file-manager/fm-desktop-icon-view.h:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-icon-view.h:
+	* src/file-manager/fm-list-view.c:
+	* src/file-manager/fm-list-view.h:
+	* src/file-manager/fm-properties-window.c:
+	* src/file-manager/fm-tree-view.h:
+	Initial conversion to new NautilusView interface.
+	
 2004-10-29  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

@@ -63,8 +63,8 @@
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-tree-view-drag-dest.h>
-#include <libnautilus/nautilus-scroll-positionable.h>
-#include <libnautilus/nautilus-clipboard.h>
+#include <libnautilus-private/nautilus-view-factory.h>
+#include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-cell-renderer-pixbuf-emblem.h>
 
 /* Included for the typeselect flush delay */
@@ -87,8 +87,6 @@ struct FMListViewDetails {
 	GList *cells;
 
 	NautilusZoomLevel zoom_level;
-
-	NautilusScrollPositionable *positionable;
 
 	NautilusTreeViewDragDest *drag_dest;
 
@@ -128,18 +126,25 @@ static NautilusZoomLevel        default_zoom_level_auto_value;
 static GList *                  default_visible_columns_auto_value;
 static GList *                  default_column_order_auto_value;
 
-static GList *              fm_list_view_get_selection         (FMDirectoryView *view);
-static void                 fm_list_view_set_zoom_level        (FMListView *view,
-								NautilusZoomLevel new_level,
-								gboolean always_set_level);
-static void		    fm_list_view_scale_font_size       (FMListView *view, 
-								NautilusZoomLevel new_level,
-								gboolean update_size_table);
-static void                 fm_list_view_scroll_to_file        (FMListView *view,
-								NautilusFile *file);
+static GList *fm_list_view_get_selection   (FMDirectoryView   *view);
+static void   fm_list_view_set_zoom_level  (FMListView        *view,
+					    NautilusZoomLevel  new_level,
+					    gboolean           always_set_level);
+static void   fm_list_view_scale_font_size (FMListView        *view,
+					    NautilusZoomLevel  new_level,
+					    gboolean           update_size_table);
+static void   fm_list_view_scroll_to_file  (FMListView        *view,
+					    NautilusFile      *file);
+static void   fm_list_view_iface_init      (NautilusViewIface *iface);
 
-GNOME_CLASS_BOILERPLATE (FMListView, fm_list_view,
-			 FMDirectoryView, FM_TYPE_DIRECTORY_VIEW)
+
+
+G_DEFINE_TYPE_WITH_CODE (FMListView, fm_list_view, FM_TYPE_DIRECTORY_VIEW, 
+			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_VIEW,
+						fm_list_view_iface_init));
+
+/* for EEL_CALL_PARENT */
+#define parent_class fm_list_view_parent_class
 
 static void
 list_selection_changed_callback (GtkTreeSelection *selection, gpointer user_data)
@@ -188,7 +193,7 @@ activate_selected_items (FMListView *view)
 	file_list = fm_list_view_get_selection (FM_DIRECTORY_VIEW (view));
 	fm_directory_view_activate_files (FM_DIRECTORY_VIEW (view),
 					  file_list,
-					  Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE,
+					  NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
 					  0);
 	nautilus_file_list_free (file_list);
 
@@ -209,8 +214,8 @@ activate_selected_items_alternate (FMListView *view,
 	}
 	fm_directory_view_activate_files (FM_DIRECTORY_VIEW (view),
 					  file_list,
-					  Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE,
-					  Nautilus_ViewFrame_OPEN_FLAG_CLOSE_BEHIND);
+					  NAUTILUS_WINDOW_OPEN_ACCORDING_TO_MODE,
+					  NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND);
 	nautilus_file_list_free (file_list);
 
 }
@@ -1869,10 +1874,12 @@ fm_list_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 	
 	gtk_tree_path_free (path);
 
+#ifdef BONOBO_DONE
 	nautilus_clipboard_set_up_editable_in_control
 		(GTK_EDITABLE (entry),
 		 fm_directory_view_get_bonobo_control (view),
 		 FALSE);
+#endif
 }
 
 static void
@@ -2035,12 +2042,14 @@ fm_list_view_emblems_changed (FMDirectoryView *directory_view)
 }
 
 static char *
-list_view_get_first_visible_file_callback (NautilusScrollPositionable *positionable,
-					   FMListView *list_view)
+fm_list_view_get_first_visible_file (NautilusView *view)
 {
 	NautilusFile *file;
 	GtkTreePath *path;
 	GtkTreeIter iter;
+	FMListView *list_view;
+
+	list_view = FM_LIST_VIEW (view);
 
 	if (gtk_tree_view_get_path_at_pos (list_view->details->tree_view,
 					   0, 0,
@@ -2069,7 +2078,8 @@ list_view_get_first_visible_file_callback (NautilusScrollPositionable *positiona
 }
 
 static void
-fm_list_view_scroll_to_file (FMListView *view, NautilusFile *file)
+fm_list_view_scroll_to_file (FMListView *view,
+			     NautilusFile *file)
 {
 	GtkTreePath *path;
 	GtkTreeIter iter;
@@ -2088,15 +2098,14 @@ fm_list_view_scroll_to_file (FMListView *view, NautilusFile *file)
 }
 
 static void
-list_view_scroll_to_file_callback (NautilusScrollPositionable *positionable,
-				   const char *uri,
-				   FMListView *list_view)
+list_view_scroll_to_file (NautilusView *view,
+			  const char *uri)
 {
 	NautilusFile *file;
 
 	if (uri != NULL) {
 		file = nautilus_file_get (uri);
-		fm_list_view_scroll_to_file (list_view, file);
+		fm_list_view_scroll_to_file (FM_LIST_VIEW (view), file);
 		nautilus_file_unref (file);
 	}
 }
@@ -2152,20 +2161,31 @@ fm_list_view_class_init (FMListViewClass *class)
 					       (const GList **) &default_column_order_auto_value);
 }
 
-static void
-fm_list_view_instance_init (FMListView *list_view)
+static const char *
+fm_list_view_get_id (NautilusView *view)
 {
-	NautilusView *nautilus_view;
+	return FM_LIST_VIEW_ID;
+}
+
+
+static void
+fm_list_view_iface_init (NautilusViewIface *iface)
+{
+	fm_directory_view_init_view_iface (iface);
 	
+	iface->get_view_id = fm_list_view_get_id;
+	iface->get_first_visible_file = fm_list_view_get_first_visible_file;
+	iface->scroll_to_file = list_view_scroll_to_file;
+	iface->get_title = NULL;
+}
+
+
+static void
+fm_list_view_init (FMListView *list_view)
+{
 	list_view->details = g_new0 (FMListViewDetails, 1);
 
 	create_and_set_up_tree_view (list_view);
-
-	list_view->details->positionable = nautilus_scroll_positionable_new ();
-	nautilus_view = fm_directory_view_get_nautilus_view (FM_DIRECTORY_VIEW (list_view));
-	bonobo_object_add_interface (BONOBO_OBJECT (nautilus_view),
-				     BONOBO_OBJECT (list_view->details->positionable));
-
 
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
 						  default_sort_order_changed_callback,
@@ -2192,10 +2212,49 @@ fm_list_view_instance_init (FMListView *list_view)
 		 "icons_changed",
 		 G_CALLBACK (icons_changed_callback),
 		 list_view, 0);
-	g_signal_connect_object (list_view->details->positionable, "get_first_visible_file",
-				 G_CALLBACK (list_view_get_first_visible_file_callback), list_view, 0);
-	g_signal_connect_object (list_view->details->positionable, "scroll_to_file",
-				 G_CALLBACK (list_view_scroll_to_file_callback), list_view, 0);
 	
 	list_view->details->type_select_state = NULL;
+}
+
+static NautilusView *
+fm_list_view_create (NautilusWindowInfo *window)
+{
+	FMListView *view;
+
+	view = g_object_new (FM_TYPE_LIST_VIEW, "window", window, NULL);
+	g_object_ref (view);
+	gtk_object_sink (GTK_OBJECT (view));
+	return NAUTILUS_VIEW (view);
+}
+
+static gboolean
+fm_list_view_supports_uri (const char *uri,
+			   GnomeVFSFileType file_type,
+			   const char *mime_type)
+{
+	if (file_type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
+		return TRUE;
+	}
+	if (g_str_has_prefix (uri, "trash:")) {
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static NautilusViewInfo fm_list_view = {
+	FM_LIST_VIEW_ID,
+	N_("List"),
+	N_("_List"),
+	fm_list_view_create,
+	fm_list_view_supports_uri
+};
+
+void
+fm_list_view_register (void)
+{
+	fm_list_view.label = _(fm_list_view.label);
+	fm_list_view.label_with_mnemonic = _(fm_list_view.label_with_mnemonic);
+	
+	nautilus_view_factory_register (&fm_list_view);
 }

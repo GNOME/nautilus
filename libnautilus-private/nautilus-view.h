@@ -1,0 +1,166 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
+
+   nautilus-view.h: Interface for nautilus views
+ 
+   Copyright (C) 2004 Red Hat Inc.
+  
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation; either version 2 of the
+   License, or (at your option) any later version.
+  
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+  
+   You should have received a copy of the GNU General Public
+   License along with this program; if not, write to the
+   Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+   Boston, MA 02111-1307, USA.
+  
+   Author: Alexander Larsson <alexl@redhat.com>
+*/
+
+#ifndef NAUTILUS_VIEW_H
+#define NAUTILUS_VIEW_H
+
+#include <glib-object.h>
+#include <gtk/gtkwidget.h>
+#include <bonobo/bonobo-ui-util.h>
+
+G_BEGIN_DECLS
+
+#define NAUTILUS_TYPE_VIEW           (nautilus_view_get_type ())
+#define NAUTILUS_VIEW(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_VIEW, NautilusView))
+#define NAUTILUS_IS_VIEW(obj)        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_VIEW))
+#define NAUTILUS_VIEW_GET_IFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), NAUTILUS_TYPE_VIEW, NautilusViewIface))
+
+
+typedef struct _NautilusView NautilusView; /* dummy typedef */
+typedef struct _NautilusViewIface NautilusViewIface;
+
+struct _NautilusViewIface 
+{
+	GTypeInterface g_iface;
+
+	/* Signals: */
+
+	/* emitted when the view-specific title as returned by get_title changes */
+        void           (* title_changed)          (NautilusView          *view);
+
+        void           (* zoom_parameters_changed)(NautilusView          *view);
+        void           (* zoom_level_changed)     (NautilusView          *view);
+	
+	/* VTable: */
+
+	/* Get the id string for this view. Its a constant string, not memory managed */
+	const char *   (* get_view_id)            (NautilusView          *view);
+
+	/* Get the widget for this view, can be the same object or a different
+	   object owned by the view. Doesn't ref the widget. */
+	GtkWidget *    (* get_widget)             (NautilusView          *view);
+
+	/* Called to tell the view to start loading a location, or to reload it.
+	   The view responds with a load_underway as soon as it starts loading,
+	   and a load_complete when the location is completely read. */
+  	void           (* load_location)          (NautilusView          *view,
+						   const char            *location_uri);
+	
+	/* Called to tell the view to stop loading the location its currently loading */
+	void           (* stop_loading)           (NautilusView          *view);
+
+	/* Returns the number of selected items in the view */	
+	int            (* get_selection_count)    (NautilusView          *view);
+	
+	/* Returns a list of uris for th selected items in the view, caller frees it */	
+	GList *        (* get_selection)          (NautilusView          *view);
+	
+	/* This is called when the window wants to change the selection in the view */
+	void           (* set_selection)          (NautilusView          *view,
+						   GList                 *list);
+	
+	/* Return the uri of the first visible file */	
+	char *         (* get_first_visible_file) (NautilusView          *view);
+	/* Scroll the view so that the file specified by the uri is at the top
+	   of the view */
+	void           (* scroll_to_file)	  (NautilusView          *view,
+						   const char            *uri);
+	
+	/* This function can supply a special window title, if you don't want one
+	   have this function return NULL, or just don't supply a function  */
+	char *         (* get_title)              (NautilusView          *view); 
+
+
+	/* BONOBOTODO: re-think this interface later */
+	gboolean       (*get_is_zoomable)         (NautilusView   *view);
+	float          (*get_zoom_level)          (NautilusView   *view);
+        void           (*set_zoom_level)          (NautilusView   *view,
+						   float           zoom_level);
+	float          (*get_min_zoom_level)      (NautilusView   *view);
+	float          (*get_max_zoom_level)      (NautilusView   *view);
+	gboolean       (*get_has_min_zoom_level)  (NautilusView   *view);
+	gboolean       (*get_has_max_zoom_level)  (NautilusView   *view);
+	gboolean       (*get_is_continuous)       (NautilusView   *view);
+	gboolean       (*get_can_zoom_in)         (NautilusView   *view);
+	gboolean       (*get_can_zoom_out)        (NautilusView   *view);
+
+	GList *        (*get_preferred_zoom_levels)(NautilusView   *view);
+	void           (*zoom_in)                 (NautilusView   *view);
+	void           (*zoom_out)                (NautilusView   *view);
+	void           (*zoom_to_fit)             (NautilusView   *view);
+	
+	/* Padding for future expansion */
+	void (*_reserved1) (void);
+	void (*_reserved2) (void);
+	void (*_reserved3) (void);
+	void (*_reserved4) (void);
+	void (*_reserved5) (void);
+	void (*_reserved6) (void);
+	void (*_reserved7) (void);
+	void (*_reserved8) (void);
+};
+
+GType             nautilus_view_get_type             (void);
+
+const char *nautilus_view_get_view_id               (NautilusView *view);
+GtkWidget * nautilus_view_get_widget                (NautilusView *view);
+void        nautilus_view_load_location             (NautilusView *view,
+						     const char   *location_uri);
+void        nautilus_view_stop_loading              (NautilusView *view);
+int         nautilus_view_get_selection_count       (NautilusView *view);
+GList *     nautilus_view_get_selection             (NautilusView *view);
+void        nautilus_view_set_selection             (NautilusView *view,
+						     GList        *list);
+char *      nautilus_view_get_first_visible_file    (NautilusView *view);
+void        nautilus_view_scroll_to_file            (NautilusView *view,
+						     const char   *uri);
+char *      nautilus_view_get_title                 (NautilusView *view);
+gboolean    nautilus_view_get_is_zoomable           (NautilusView *view);
+float       nautilus_view_get_zoom_level            (NautilusView *view);
+void        nautilus_view_set_zoom_level            (NautilusView *view,
+						     float         zoom_level);
+float       nautilus_view_get_min_zoom_level        (NautilusView *view);
+float       nautilus_view_get_max_zoom_level        (NautilusView *view);
+gboolean    nautilus_view_get_has_min_zoom_level    (NautilusView *view);
+gboolean    nautilus_view_get_has_max_zoom_level    (NautilusView *view);
+gboolean    nautilus_view_get_is_continuous         (NautilusView *view);
+gboolean    nautilus_view_get_can_zoom_in           (NautilusView *view);
+gboolean    nautilus_view_get_can_zoom_out          (NautilusView *view);
+GList *     nautilus_view_get_preferred_zoom_levels (NautilusView *view);
+void        nautilus_view_zoom_in                   (NautilusView *view);
+void        nautilus_view_zoom_out                  (NautilusView *view);
+void        nautilus_view_zoom_to_fit               (NautilusView *view);
+
+/* Temporary bonoboui stuff: */
+BonoboUIComponent * nautilus_view_set_up_ui (NautilusView *view,
+					     Bonobo_UIContainer ui_container,
+					     const char *datadir,
+					     const char *ui_file_name,
+					     const char *application_name);
+
+
+
+G_END_DECLS
+
+#endif /* NAUTILUS_VIEW_H */

@@ -23,17 +23,17 @@
  */
 
 #include <config.h>
-#include "nautilus-undo-manager.h"
+#include <libnautilus-private/nautilus-undo-manager.h>
+#include <libnautilus-private/nautilus-undo-transaction.h>
 
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-gtk-extensions.h>
 #include <gtk/gtksignal.h>
 #include <bonobo/bonobo-main.h>
-#include <libnautilus/nautilus-undo-private.h>
-#include "nautilus-undo-context.h"
+#include "nautilus-undo-private.h"
 
 struct NautilusUndoManagerDetails {
-	Nautilus_Undo_Transaction transaction;
+	NautilusUndoTransaction *transaction;
 
 	/* These are used to tell undo from redo. */
 	gboolean current_transaction_is_redo;
@@ -61,39 +61,27 @@ typedef struct {
 	char *no_undo_menu_item_hint;
 } UndoMenuHandlerConnection;
 
-BONOBO_CLASS_BOILERPLATE_FULL (NautilusUndoManager,
-			       nautilus_undo_manager,
-			       Nautilus_Undo_Manager,
-			       BonoboObject,
-			       BONOBO_OBJECT_TYPE)
+G_DEFINE_TYPE (NautilusUndoManager,
+	       nautilus_undo_manager,
+	       G_TYPE_OBJECT)
 
 static void
 release_transaction (NautilusUndoManager *manager)
 {
-	Nautilus_Undo_Transaction transaction;
-
-	CORBA_Environment ev;
-	
-	CORBA_exception_init (&ev);
+	NautilusUndoTransaction *transaction;
 
 	transaction = manager->details->transaction;
-	manager->details->transaction = CORBA_OBJECT_NIL;
-	if (!CORBA_Object_is_nil (transaction, &ev)) {
-		bonobo_object_release_unref (transaction, &ev);
+	manager->details->transaction = NULL;
+	if (transaction != NULL) {
+		g_object_unref (transaction);
 	}
-
-	CORBA_exception_free (&ev);
 }
 
-static void
-corba_append (PortableServer_Servant    servant,
-	      Nautilus_Undo_Transaction transaction,
-	      CORBA_Environment        *ev)
+void
+nautilus_undo_manager_append (NautilusUndoManager *manager,
+			      NautilusUndoTransaction *transaction)
 {
-	NautilusUndoManager *manager;
-	Nautilus_Undo_Transaction duplicate_transaction;
-
-	manager = NAUTILUS_UNDO_MANAGER (bonobo_object_from_servant (servant));
+	NautilusUndoTransaction *duplicate_transaction;
 
 	/* Check, complain, and ignore the passed-in transaction if we
 	 * get more than one within a single undo operation. The single
@@ -105,11 +93,10 @@ corba_append (PortableServer_Servant    servant,
 		g_return_if_fail (manager->details->num_transactions_during_undo == 1);		
 	}
 	
-	g_return_if_fail (!CORBA_Object_is_nil (transaction, ev));
+	g_return_if_fail (transaction != NULL);
 
 	/* Keep a copy of this transaction (dump the old one). */
-	duplicate_transaction = CORBA_Object_duplicate (transaction, ev);
-	Nautilus_Undo_Transaction_ref (duplicate_transaction, ev);
+	duplicate_transaction = g_object_ref (transaction);
 	release_transaction (manager);
 	manager->details->transaction = duplicate_transaction;
 	manager->details->current_transaction_is_redo =
@@ -119,19 +106,14 @@ corba_append (PortableServer_Servant    servant,
 	g_signal_emit (manager, signals[CHANGED], 0);
 }
 
-static void
-corba_forget (PortableServer_Servant    servant,
-	      Nautilus_Undo_Transaction transaction,
-	      CORBA_Environment        *ev)
+void
+nautilus_undo_manager_forget (NautilusUndoManager *manager,
+			      NautilusUndoTransaction *transaction)
 {
-	NautilusUndoManager *manager;
-
-	manager = NAUTILUS_UNDO_MANAGER (bonobo_object_from_servant (servant));
-
 	/* Nothing to forget unless the item we are passed is the
 	 * transaction we are currently holding.
 	 */
-	if (!CORBA_Object_is_equivalent (manager->details->transaction, transaction, ev)) {
+	if (transaction != manager->details->transaction) {
 		return;
 	}
 
@@ -142,16 +124,6 @@ corba_forget (PortableServer_Servant    servant,
 	g_signal_emit (manager, signals[CHANGED], 0);
 }
 
-static void
-corba_undo (PortableServer_Servant servant,
-	    CORBA_Environment     *ev)
-{
-	NautilusUndoManager *manager;
-
-	manager = NAUTILUS_UNDO_MANAGER (bonobo_object_from_servant (servant));
-	nautilus_undo_manager_undo (manager);
-}
-
 NautilusUndoManager *
 nautilus_undo_manager_new (void)
 {
@@ -159,7 +131,7 @@ nautilus_undo_manager_new (void)
 }
 
 static void
-nautilus_undo_manager_instance_init (NautilusUndoManager *manager)
+nautilus_undo_manager_init (NautilusUndoManager *manager)
 {
 	manager->details = g_new0 (NautilusUndoManagerDetails, 1);
 }
@@ -167,16 +139,13 @@ nautilus_undo_manager_instance_init (NautilusUndoManager *manager)
 void
 nautilus_undo_manager_undo (NautilusUndoManager *manager)
 {
-	CORBA_Environment ev;
-	Nautilus_Undo_Transaction transaction;
+	NautilusUndoTransaction *transaction;
 
 	g_return_if_fail (NAUTILUS_IS_UNDO_MANAGER (manager));
 
-  	CORBA_exception_init (&ev);
-
 	transaction = manager->details->transaction;
-	manager->details->transaction = CORBA_OBJECT_NIL;
-	if (!CORBA_Object_is_nil (transaction, &ev)) {
+	manager->details->transaction = NULL;
+	if (transaction != NULL) {
 		/* Perform the undo. New transactions that come in
 		 * during an undo are redo transactions. New
 		 * transactions that come in during a redo are undo
@@ -187,18 +156,16 @@ nautilus_undo_manager_undo (NautilusUndoManager *manager)
 			!manager->details->current_transaction_is_redo;
 		manager->details->undo_in_progress = TRUE;
 		manager->details->num_transactions_during_undo = 0;
-		Nautilus_Undo_Transaction_undo (transaction, &ev);
+		nautilus_undo_transaction_undo (transaction);
 		manager->details->undo_in_progress = FALSE;
 		manager->details->new_transaction_is_redo = FALSE;
 
 		/* Let go of the transaction. */
-		bonobo_object_release_unref (transaction, &ev);
+		g_object_unref (transaction);
 
 		/* Fire off signal indicating the undo state has changed. */
 		g_signal_emit (manager, signals[CHANGED], 0);
 	}
-
-	CORBA_exception_free (&ev);
 }
 
 static void
@@ -211,8 +178,10 @@ finalize (GObject *object)
 	release_transaction (manager);
 
 	g_free (manager->details);
-	
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+
+	if (G_OBJECT_CLASS (nautilus_undo_manager_parent_class)->finalize) {
+		(* G_OBJECT_CLASS (nautilus_undo_manager_parent_class)->finalize) (object);
+	}
 }
 
 void
@@ -221,19 +190,7 @@ nautilus_undo_manager_attach (NautilusUndoManager *manager, GObject *target)
 	g_return_if_fail (NAUTILUS_IS_UNDO_MANAGER (manager));
 	g_return_if_fail (G_IS_OBJECT (target));
 
-	nautilus_undo_attach_undo_manager (G_OBJECT (target), BONOBO_OBJREF (manager));
-}
-
-void
-nautilus_undo_manager_add_interface (NautilusUndoManager *manager, BonoboObject *object)
-{
-	NautilusUndoContext *context;
-
-	g_return_if_fail (NAUTILUS_IS_UNDO_MANAGER (manager));
-	g_return_if_fail (BONOBO_IS_OBJECT (object));
-
-	context = nautilus_undo_context_new (BONOBO_OBJREF (manager));
-	bonobo_object_add_interface (object, BONOBO_OBJECT (context));
+	nautilus_undo_attach_undo_manager (G_OBJECT (target), manager);
 }
 
 #ifdef UIH
@@ -347,8 +304,4 @@ nautilus_undo_manager_class_init (NautilusUndoManagerClass *class)
 		 NULL, NULL,
 		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
-
-	class->epv.append = corba_append;
-	class->epv.forget = corba_forget;
-	class->epv.undo = corba_undo;
 }

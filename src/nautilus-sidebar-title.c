@@ -54,6 +54,7 @@
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-search-uri.h>
 #include <libnautilus-private/nautilus-theme.h>
+#include <libnautilus-private/nautilus-sidebar.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -317,40 +318,8 @@ nautilus_sidebar_title_theme_changed (gpointer user_data)
 static char*
 get_property_from_component (NautilusSidebarTitle *sidebar_title, const char *property)
 {
-	GtkWidget *window;
-	Bonobo_Control control;
-	CORBA_Environment ev;
-	Bonobo_PropertyBag property_bag;
-	char* icon_name;
-		
-	window = gtk_widget_get_ancestor (GTK_WIDGET (sidebar_title), NAUTILUS_TYPE_WINDOW);
-
-	if (window == NULL || NAUTILUS_WINDOW (window)->content_view == NULL) {
-		return NULL;
-	}
-
-	
-	control = nautilus_view_frame_get_control (NAUTILUS_VIEW_FRAME (NAUTILUS_WINDOW (window)->content_view));	
-	if (control == NULL) {
-		return NULL;	
-	}
-
-	CORBA_exception_init (&ev);
-	property_bag = Bonobo_Control_getProperties (control, &ev);
-	if (BONOBO_EX (&ev)) {
-		property_bag = CORBA_OBJECT_NIL;
-	}
-	CORBA_exception_free (&ev);
-
-	if (property_bag == CORBA_OBJECT_NIL) {
-		return NULL;
-	}	
-	
-	icon_name = bonobo_property_bag_client_get_value_string
-		(property_bag, property, NULL);
-	bonobo_object_release_unref (property_bag, NULL);
-
-	return icon_name;
+	/* BONOBOTODO: way to get icon and summary_text from main view */
+	return NULL;
 }
 
 /* set up the icon image */

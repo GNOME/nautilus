@@ -32,7 +32,7 @@
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-metafile-server.h>
 #include <libnautilus-private/nautilus-monitor.h>
-#include <libnautilus/nautilus-idle-queue.h>
+#include <libnautilus-private/nautilus-idle-queue.h>
 #include <libnautilus-extension/nautilus-info-provider.h>
 #include <libxml/tree.h>
 

@@ -71,10 +71,6 @@ typedef enum
 /* Sidebar panels  */
 #define NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES         "sidebar_panels/tree/show_only_directories"
 
-/* Navigation  */
-#define NAUTILUS_PREFERENCES_HOME_URI                 		"preferences/home_uri"
-#define NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS		"preferences/hide_built_in_bookmarks"
-
 /* Single/Double click preference  */
 #define NAUTILUS_PREFERENCES_CLICK_POLICY			"preferences/click_policy"
 

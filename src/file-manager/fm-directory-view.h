@@ -38,7 +38,9 @@
 #include <libnautilus-private/nautilus-icon-container.h>
 #include <libnautilus-private/nautilus-link.h>
 #include <eel/eel-string-list.h>
-#include <libnautilus/nautilus-view.h>
+#include <libnautilus-private/nautilus-view.h>
+#include <libnautilus-private/nautilus-window-info.h>
+#include <bonobo/bonobo-ui-component.h>
 
 typedef struct FMDirectoryView FMDirectoryView;
 typedef struct FMDirectoryViewClass FMDirectoryViewClass;
@@ -289,10 +291,8 @@ struct FMDirectoryViewClass {
 /* GObject support */
 GType               fm_directory_view_get_type                         (void);
 
-/* Component embedding support */
-NautilusView *      fm_directory_view_get_nautilus_view                (FMDirectoryView  *view);
-
 /* Functions callable from the user interface and elsewhere. */
+NautilusWindowInfo *fm_directory_view_get_nautilus_window              (FMDirectoryView  *view);
 char *              fm_directory_view_get_uri                          (FMDirectoryView  *view);
 char *              fm_directory_view_get_backing_uri                  (FMDirectoryView  *view);
 gboolean            fm_directory_view_can_accept_item                  (NautilusFile     *target_item,
@@ -347,8 +347,8 @@ void                fm_directory_view_end_loading                      (FMDirect
  */
 void                fm_directory_view_activate_files                   (FMDirectoryView  *view,
 									GList            *files,
-									Nautilus_ViewFrame_OpenMode mode,
-									Nautilus_ViewFrame_OpenFlags flags);
+									NautilusWindowOpenMode mode,
+									NautilusWindowOpenFlags flags);
 void                fm_directory_view_start_batching_selection_changes (FMDirectoryView  *view);
 void                fm_directory_view_stop_batching_selection_changes  (FMDirectoryView  *view);
 gboolean            fm_directory_view_confirm_multiple_windows         (FMDirectoryView  *view,
@@ -357,7 +357,6 @@ void                fm_directory_view_queue_file_change                (FMDirect
 									NautilusFile     *file);
 void                fm_directory_view_notify_selection_changed         (FMDirectoryView  *view);
 Bonobo_UIContainer  fm_directory_view_get_bonobo_ui_container          (FMDirectoryView  *view);
-BonoboControl *     fm_directory_view_get_bonobo_control               (FMDirectoryView  *view);
 EelStringList *     fm_directory_view_get_emblem_names_to_exclude      (FMDirectoryView  *view);
 NautilusDirectory  *fm_directory_view_get_model                        (FMDirectoryView  *view);
 GtkWindow	   *fm_directory_view_get_containing_window	       (FMDirectoryView  *view);
@@ -376,5 +375,6 @@ void                fm_directory_view_new_folder                       (FMDirect
 void                fm_directory_view_new_file                         (FMDirectoryView  *view,
 									NautilusFile     *source);
 void                fm_directory_view_ignore_hidden_file_preferences   (FMDirectoryView  *view);
+void                fm_directory_view_init_view_iface                  (NautilusViewIface *iface);
 
 #endif /* FM_DIRECTORY_VIEW_H */

@@ -63,7 +63,6 @@ static void trash_state_changed_callback     (NautilusTrashMonitor *trash_monito
 					      gboolean              state,
 					      gpointer              callback_data);
 static void nautilus_desktop_link_changed    (NautilusDesktopLink  *link);
-static void home_uri_changed                 (gpointer              callback_data);
 
 EEL_CLASS_BOILERPLATE (NautilusDesktopLink,
 		       nautilus_desktop_link,
@@ -133,16 +132,9 @@ nautilus_desktop_link_new (NautilusDesktopLinkType type)
 
 		link->details->display_name = eel_preferences_get (NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME);
 		
-#ifdef WEB_NAVIGATION_ENABLED
-		link->details->activation_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
-#else
 		link->details->activation_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
-#endif
 		link->details->icon = g_strdup ("gnome-fs-home");
 
-		eel_preferences_add_callback (NAUTILUS_PREFERENCES_HOME_URI,
-					      home_uri_changed,
-					      link);
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME,
 					      home_name_changed,
 					      link);
@@ -301,24 +293,6 @@ trash_state_changed_callback (NautilusTrashMonitor *trash_monitor,
 	nautilus_desktop_link_changed (link);
 }
 
-static void
-home_uri_changed (gpointer callback_data)
-{
-	NautilusDesktopLink *link;
-
-	link = NAUTILUS_DESKTOP_LINK (callback_data);
-
-	g_free (link->details->activation_uri);
-#ifdef WEB_NAVIGATION_ENABLED
-	link->details->activation_uri = eel_preferences_get (NAUTILUS_PREFERENCES_HOME_URI);
-#else
-	link->details->activation_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
-#endif
-	
-	nautilus_desktop_link_changed (link);
-}
-
-
 gboolean
 nautilus_desktop_link_can_rename (NautilusDesktopLink     *link)
 {
@@ -383,9 +357,6 @@ desktop_link_finalize (GObject *object)
 	}
 
 	if (link->details->type == NAUTILUS_DESKTOP_LINK_HOME) {
-		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_HOME_URI,
-						 home_uri_changed,
-						 link);
 		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME,
 						 home_name_changed,
 						 link);

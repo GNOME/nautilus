@@ -40,12 +40,15 @@
 typedef struct FMTreeViewDetails FMTreeViewDetails;
 
 typedef struct {
-	NautilusView parent;
+	/* BONOBOTODO: pick parent */
+	/*NautilusView parent;*/
+	GObject parent;
+	
 	FMTreeViewDetails *details;
 } FMTreeView;
 
 typedef struct {
-	NautilusViewClass parent_class;
+	GObjectClass parent_class;
 } FMTreeViewClass;
 
 GType fm_tree_view_get_type (void);
