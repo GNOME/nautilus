@@ -135,6 +135,7 @@ static NautilusList *       get_list                                  (FMListVie
 static void                 update_icons                              (FMListView        *list_view);
 static int                  get_number_of_columns                     (FMListView        *list_view);
 static int                  get_link_column                           (FMListView        *list_view);
+static char *		    get_default_sort_attribute		      (FMListView	 *list_view);
 static void                 get_column_specification                  (FMListView        *list_view,
 								       int                column_number,
 								       FMListViewColumn  *specification);
@@ -145,6 +146,7 @@ static NautilusFileSortType get_column_sort_criterion                 (FMListVie
 								       int                column_number);
 static int                  real_get_number_of_columns                (FMListView        *list_view);
 static int                  real_get_link_column                      (FMListView        *list_view);
+static char *               real_get_default_sort_attribute           (FMListView        *list_view);
 static void                 real_get_column_specification             (FMListView        *list_view,
 								       int                column_number,
 								       FMListViewColumn  *specification);
@@ -191,6 +193,7 @@ fm_list_view_initialize_class (gpointer klass)
 	fm_list_view_class->get_number_of_columns = real_get_number_of_columns;
 	fm_list_view_class->get_link_column = real_get_link_column;
 	fm_list_view_class->get_column_specification = real_get_column_specification;
+	fm_list_view_class->get_default_sort_attribute = real_get_default_sort_attribute;
 }
 
 static void
@@ -977,6 +980,7 @@ fm_list_view_begin_loading (FMDirectoryView *view)
 {
 	NautilusDirectory *directory;
 	FMListView *list_view;
+	char *default_sort_attribute;
 
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 
@@ -995,16 +999,18 @@ fm_list_view_begin_loading (FMDirectoryView *view)
 			list_view->details->default_zoom_level),
 		TRUE);
 
+	default_sort_attribute = get_default_sort_attribute (list_view);
 	fm_list_view_sort_items (
 		list_view,
 		get_sort_column_from_attribute (list_view,
 						nautilus_directory_get_metadata (directory,
 										 NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN,
-										 LIST_VIEW_DEFAULT_SORTING_ATTRIBUTE)),
+										 default_sort_attribute)),
 		nautilus_directory_get_boolean_metadata (
 			directory,
 			NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED,
 			FALSE));
+	g_free (default_sort_attribute);
 }
 
 static void
@@ -1457,6 +1463,16 @@ get_link_column (FMListView *list_view)
 		->get_link_column) (list_view);
 }
 
+static char *
+get_default_sort_attribute (FMListView *list_view)
+{
+	/* For now, we just use the function pointer.
+	 * It might be better to use a signal later.
+	 */
+	return (* FM_LIST_VIEW_CLASS (GTK_OBJECT (list_view)->klass)
+		->get_default_sort_attribute) (list_view);
+}
+
 static void
 get_column_specification (FMListView *list_view,
 			  int column_number,
@@ -1544,6 +1560,12 @@ fm_list_view_column_set (FMListViewColumn *column,
 	column->default_width = default_width;
 	column->maximum_width = maximum_width;
 	column->right_justified = right_justified;
+}
+
+static char *
+real_get_default_sort_attribute (FMListView *view)
+{
+	return g_strdup (LIST_VIEW_DEFAULT_SORTING_ATTRIBUTE);
 }
 
 static int

@@ -3209,6 +3209,7 @@ fm_directory_view_activate_files (FMDirectoryView *view,
  * @uri: A string representing the uri to switch to.
  * 
  **/
+/* FIXME: Why is this function public? Left over from pre-Bonobo days? */
 void
 fm_directory_view_load_uri (FMDirectoryView *view,
 			    const char *uri)

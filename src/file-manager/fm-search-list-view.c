@@ -41,6 +41,7 @@ static void 	fm_search_list_view_initialize       (gpointer          object,
 static void 	fm_search_list_view_initialize_class (gpointer          klass);
 static int  	real_get_number_of_columns           (FMListView       *list_view);
 static int  	real_get_link_column                 (FMListView       *list_view);
+static char *   real_get_default_sort_attribute      (FMListView       *view);
 static void 	real_get_column_specification        (FMListView       *list_view,
 						      int               column_number,
 						      FMListViewColumn *specification);
@@ -83,6 +84,7 @@ fm_search_list_view_initialize_class (gpointer klass)
 	fm_list_view_class->get_number_of_columns = real_get_number_of_columns;
 	fm_list_view_class->get_link_column = real_get_link_column;
 	fm_list_view_class->get_column_specification = real_get_column_specification;
+	fm_list_view_class->get_default_sort_attribute = real_get_default_sort_attribute;
 }
 
 static void
@@ -108,6 +110,16 @@ static int
 real_get_number_of_columns (FMListView *view)
 {
 	return 7;
+}
+
+static char *
+real_get_default_sort_attribute (FMListView *view)
+{
+	/* FIXME bugzilla.eazel.com 1753:
+	 * Maybe we should start out sorted by the attribute that
+	 * most closely matches what was searched for.
+	 */
+	return g_strdup ("name");
 }
 
 static int

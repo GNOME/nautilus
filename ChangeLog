@@ -1,3 +1,34 @@
+2000-08-08  John Sullivan  <sullivan@eazel.com>
+
+	Did part of the work for bug 1753 (search view should start out
+	sorted by search criteria). We're still not sure if this is a
+	good UI, but I'll make it possible for us to try it out if it
+	isn't too much more work.
+
+	* src/file-manager/fm-directory-view.c: Added a FIXME comment
+	
+	* src/file-manager/fm-list-view.h: Added get_default_sort_attribute
+	function pointer.
+	* src/file-manager/fm-list-view.c: 
+	(fm_list_view_initialize_class): Wired up default_sort_attribute
+	function pointer.
+	(fm_list_view_begin_loading): use get_default_sort_attribute ()
+	instead of string constant.
+	(get_default_sort_attribute): Dispatch to possibly overridden 
+	function pointer.
+	(real_get_default_sort_attribute): return "name" (dupe, actually)
+	
+	* src/file-manager/fm-search-list-view.c:
+	(fm_search_list_view_initialize_class): Wired up 
+	get_default_sort_attribute function pointer
+	(real_get_default_sort_attribute): return "name" (dupe, actually).
+	This gives us the place to decide which attribute to start out
+	sorted by. To choose the attribute, we need to define a mapping
+	between the search URI and one of the column attributes. I'm
+	waiting on this part until mathieu gets farther along with the
+	search-URI-to-human-readable-string code, which I hope to
+	leverage.
+
 2000-08-08  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-sidebar-tabs.c: (nautilus_sidebar_tabs_initialize),
