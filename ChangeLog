@@ -1,3 +1,15 @@
+2002-04-11  Jody Goldberg <jody@gnome.org>
+
+	* libnautilus-private/nautilus-program-chooser.c :
+	Change file-types-capplet to gnome-file-types-properties.
+
+2002-03-30  Jody Goldberg <jody@gnome.org>
+
+	* libnautilus-private/nautilus-mime-actions.c
+	(nautilus_mime_set_short_list_components_for_file) : Don't free the
+	  objects while we're still looking at their iids.  Don't double free
+	  the iids.
+
 2002-04-11  Michael Meeks  <michael@ximian.com>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c

@@ -966,14 +966,13 @@ nautilus_mime_set_short_list_components_for_file (NautilusFile      *file,
 		normal_short_list_ids = g_list_prepend (normal_short_list_ids, ((Bonobo_ServerInfo *) p->data)->iid);
 	}
 
-	gnome_vfs_mime_component_list_free (normal_short_list);
-
 	/* compute delta */
 
 	add_list = str_list_difference (components, normal_short_list_ids);
 	remove_list = str_list_difference (normal_short_list_ids, components);
 
-	eel_g_list_free_deep (normal_short_list_ids);
+	gnome_vfs_mime_component_list_free (normal_short_list);
+	g_list_free (normal_short_list_ids);
 
 	nautilus_file_set_metadata_list 
 		(file,
