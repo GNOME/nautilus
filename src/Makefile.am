@@ -15,7 +15,6 @@ INCLUDES =							\
 	$(CORE_CFLAGS) 						\
 	$(EXIF_CFLAGS)						\
 	-DDATADIR=\""$(datadir)"\" 				\
-	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
 	-DLIBDIR=\""$(libdir)"\" 				\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 		\
 	-DGLADEDIR=\""$(datadir)/nautilus/glade"\" 		\
@@ -158,16 +157,17 @@ glade_DATA = \
 CLEANFILES = \
 	$(nautilus_shell_interface_idl_sources)	\
 	nautilus_shell_interface_idl_stamp	\
+	$(desktop_files)			\
+	$(server_DATA)				\
 	$(NULL)
 
 EXTRA_DIST =					\
 	$(server_in_files)			\
-	$(server_DATA)				\
 	$(glade_DATA)				\
 	$(ui_DATA)				\
 	check-nautilus				\
 	nautilus-shell-interface.idl		\
-	$(desktop_in_files) $(desktop_files)	\
+	$(desktop_in_files)			\
 	$(NULL)
 
 BUILT_SOURCES = \

@@ -1,3 +1,21 @@
+2004-01-11  James Henstridge  <james@jamesh.id.au>
+
+	* test/Makefile.am: don't define GNOMELOCALEDIR in INCLUDES.
+
+	* src/Makefile.am: remove desktop and server files on clean.
+	Don't include GNOMELOCALEDIR in INCLUDES, since it is now defined
+	in config.h.
+
+	* Makefile.am: remove desktop files on clean, and intltool files
+	on distclean.
+
+	* acconfig.h: remove, since it isn't needed anymore.
+
+	* configure.in: remove some macro calls not needed with newer
+	automakes, and use newer versions of some macros.
+
+	* autogen.sh: require Automake >= 1.7.
+
 2005-01-11  Alexander Larsson  <alexl@redhat.com>
 
 	* NEWS:

@@ -28,6 +28,7 @@ EXTRA_DIST=					\
 	COPYING-DOCS				\
 	HACKING					\
 	MAINTAINERS				\
+	nautilus.spec				\
 	nautilus.spec.in			\
 	nautilus.desktop			\
 	nautilus.desktop.in			\
@@ -43,5 +44,9 @@ EXTRA_DIST=					\
 	$(desktop_in_files)			\
 	$(NULL)
 
-dist-hook: nautilus.spec
-	cp nautilus.spec $(distdir)
+CLEANFILES = $(desktop_DATA)
+
+DISTCLEANFILES = \
+  intltool-extract \
+  intltool-merge \
+  intltool-update
