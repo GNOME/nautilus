@@ -785,7 +785,6 @@ lay_down_one_line (NautilusIconContainer *container,
 	double height_above, height_below, x, width;
 
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_assert (line_end == NULL || g_list_first (line_start) == g_list_first (line_end));
 	g_assert (y != NULL);
 
 	/* Compute the total height above and below the baseline. */

@@ -53,6 +53,16 @@ struct NautilusFileDetails
 	NautilusDirectory *directory;
 	char *relative_uri;
 
+	/* Cached version of the display name, guaranteed UTF8 safe.
+	 * This is used a lot for sorting views.
+	 */
+	char *cached_display_name;
+	/* We cache the result of g_utf8_collate_key() on
+	 * cached_display_name in order to do quick sorting on
+	 * the display name
+	 */
+	char *display_name_collation_key;
+
 	GnomeVFSFileInfo *info;
 	GnomeVFSResult get_info_error;
 
@@ -132,6 +142,8 @@ gboolean      nautilus_file_get_date                       (NautilusFile        
 							    NautilusDateType        date_type,
 							    time_t                 *date);
 void          nautilus_file_updated_deep_count_in_progress (NautilusFile           *file);
+void          nautilus_file_clear_cached_display_name      (NautilusFile           *file);
+
 
 /* Compare file's state with a fresh file info struct, return FALSE if
  * no change, update file and return TRUE if the file info contains

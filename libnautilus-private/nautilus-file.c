@@ -101,11 +101,14 @@ static guint signals[LAST_SIGNAL];
 
 static GHashTable *symbolic_links;
 
-static char *   nautilus_file_get_owner_as_string (NautilusFile      *file,
-						   gboolean           include_real_name);
-static char *   nautilus_file_get_type_as_string  (NautilusFile      *file);
-static gboolean update_info_and_name              (NautilusFile      *file,
-						   GnomeVFSFileInfo  *info);
+static char *   nautilus_file_get_owner_as_string            (NautilusFile     *file,
+							      gboolean          include_real_name);
+static char *   nautilus_file_get_type_as_string             (NautilusFile     *file);
+static gboolean update_info_and_name                         (NautilusFile     *file,
+							      GnomeVFSFileInfo *info);
+static char *   nautilus_file_get_display_name_nocopy        (NautilusFile     *file);
+static char *   nautilus_file_get_display_name_collation_key (NautilusFile     *file);
+
 
 GNOME_CLASS_BOILERPLATE (NautilusFile, nautilus_file,
 			 GtkObject, GTK_TYPE_OBJECT)
@@ -411,6 +414,8 @@ finalize (GObject *object)
 
 	nautilus_directory_unref (directory);
 	g_free (file->details->relative_uri);
+	g_free (file->details->cached_display_name);
+	g_free (file->details->display_name_collation_key);
 	if (file->details->info != NULL) {
 		gnome_vfs_file_info_unref (file->details->info);
 	}
@@ -1234,6 +1239,7 @@ update_info_internal (NautilusFile *file,
 				(file->details->directory, file);
 			g_free (file->details->relative_uri);
 			file->details->relative_uri = new_relative_uri;
+			nautilus_file_clear_cached_display_name (file);
 			nautilus_directory_end_file_name_change
 				(file->details->directory, file, node);
 		}
@@ -1281,6 +1287,7 @@ nautilus_file_update_name (NautilusFile *file, const char *name)
 			(file->details->directory, file);
 		g_free (file->details->relative_uri);
 		file->details->relative_uri = gnome_vfs_escape_string (name);
+		nautilus_file_clear_cached_display_name (file);
 		nautilus_directory_end_file_name_change
 			(file->details->directory, file, node);
 	} else {
@@ -1521,11 +1528,12 @@ static int
 compare_by_display_name (NautilusFile *file_1, NautilusFile *file_2)
 {
 	char *name_1, *name_2;
+	char *key_1, *key_2;
 	gboolean sort_last_1, sort_last_2;
 	int compare;
 
-	name_1 = nautilus_file_get_display_name (file_1);
-	name_2 = nautilus_file_get_display_name (file_2);
+	name_1 = nautilus_file_get_display_name_nocopy (file_1);
+	name_2 = nautilus_file_get_display_name_nocopy (file_2);
 
 	sort_last_1 = strchr (SORT_LAST_CHARACTERS, name_1[0]) != NULL;
 	sort_last_2 = strchr (SORT_LAST_CHARACTERS, name_2[0]) != NULL;
@@ -1535,11 +1543,10 @@ compare_by_display_name (NautilusFile *file_1, NautilusFile *file_2)
 	} else if (!sort_last_1 && sort_last_2) {
 		compare = -1;
 	} else {
-		compare = eel_strcoll (name_1, name_2);
+		key_1 = nautilus_file_get_display_name_collation_key (file_1);
+		key_2 = nautilus_file_get_display_name_collation_key (file_2);
+		compare = eel_strcmp (key_1, key_2);
 	}
-
-	g_free (name_1);
-	g_free (name_2);
 
 	return compare;
 }
@@ -2208,16 +2215,56 @@ make_valid_utf8 (char *name)
 	return g_string_free (string, FALSE);
 }
 
-char *
-nautilus_file_get_display_name (NautilusFile *file)
+void
+nautilus_file_clear_cached_display_name (NautilusFile *file)
+{
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	
+	g_free (file->details->cached_display_name);
+	file->details->cached_display_name = NULL;
+	g_free (file->details->display_name_collation_key);
+	file->details->display_name_collation_key = NULL;
+}
+
+static char *
+nautilus_file_get_display_name_collation_key (NautilusFile *file)
+{
+	char *display_name;
+	
+	if (file == NULL) {
+		return NULL;
+	}
+	
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+	if (file->details->display_name_collation_key != NULL) {
+		return file->details->display_name_collation_key;
+	}
+
+	display_name = nautilus_file_get_display_name_nocopy (file);
+	file->details->display_name_collation_key = g_utf8_collate_key (display_name, -1);
+
+	return file->details->display_name_collation_key;
+}
+
+static char *
+nautilus_file_get_display_name_nocopy (NautilusFile *file)
 {
 	char *name, *utf8_name;
+	gboolean broken_filenames;
+	gboolean validated;
 
 	if (file == NULL) {
 		return NULL;
 	}
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+	if (file->details->cached_display_name != NULL) {
+		return file->details->cached_display_name;
+	}
+
+	validated = FALSE;
 	
  	if (file->details->got_link_info && file->details->display_name != NULL) {
  		name = g_strdup (file->details->display_name);
@@ -2237,19 +2284,35 @@ nautilus_file_get_display_name (NautilusFile *file)
 			 * validate as good UTF-8.
 			 */
 			if (has_local_path (file)) {
-				if (have_broken_filenames ()
-				    || !g_utf8_validate (name, -1, NULL)) {
+				broken_filenames = have_broken_filenames ();
+				if (broken_filenames || !g_utf8_validate (name, -1, NULL)) {
 					utf8_name = g_locale_to_utf8 (name, -1, NULL, NULL, NULL);
 					if (utf8_name != NULL) {
 						g_free (name);
 						name = utf8_name;
+						validated = TRUE;
+						return name; /* Guaranteed to be correct utf8 here */
 					}
+				} else if (!broken_filenames) {
+					/* name was valid, no need to re-validate */
+					validated = TRUE;
 				}
 			}
 		}
 	}
 
-	return make_valid_utf8 (name);
+	if (!validated) {
+		name = make_valid_utf8 (name);
+	}
+	
+	file->details->cached_display_name = name;
+	return name;
+}
+
+char *
+nautilus_file_get_display_name (NautilusFile *file)
+{
+	return g_strdup (nautilus_file_get_display_name_nocopy (file));
 }
 
 char *

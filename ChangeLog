@@ -1,3 +1,33 @@
+2002-03-13  Alexander Larsson  <alla@lysator.liu.se>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	(link_info_done): After loading the link info with the new display
+	name, clear the old cached display name.
+
+	* libnautilus-private/nautilus-file-private.h:
+	(NautilusFileDetails):	Add cached utf-8 display name and the
+	collation key for the display name.
+	(nautilus_file_clear_cached_display_name): New function
+
+	* libnautilus-private/nautilus-file.c:
+	(finalize): Free cached display name and collation key.
+	(update_info_internal, nautilus_file_update_name): clear
+	cached display name when filename changes.
+	(compare_by_display_name): Use nautilus_file_get_display_name_nocopy()
+	to avoid copy. Use nautilus_file_get_display_name_collation_key() to
+	avoid repeating expensive collation.
+	(nautilus_file_clear_cached_display_name): New function to clear
+	the cached display name and collation key.
+	(nautilus_file_get_display_name_collation_key): Cache the
+	value of g_utf8_collate_key() in order to do fast sorting on the
+	display name.
+	(nautilus_file_get_display_name_nocopy, nautilus_file_get_display_name):
+	Cache the final display_name utf-8 value. Don't call g_utf8_validate()
+	twice.
+
+	* libnautilus-private/nautilus-icon-container.c:
+	Remove assert that was showing up g_list_first() in my profiles.
+
 2002-03-13  Gregory Leblanc  <gleblanc@linuxweasel.com>
 
 	* nautilus.spec.in: Big rework, less painful now.  Parts from
