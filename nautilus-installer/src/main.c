@@ -53,6 +53,7 @@ extern char* installer_package;
 extern char* installer_cgi_path;
 extern char* installer_tmpdir;
 extern char* installer_homedir;
+extern char* installer_cache_dir;
 
 static int installer_show_build = 0;
 static char *installer_user = NULL;
@@ -78,6 +79,7 @@ static const struct poptOption options[] = {
 	{"build", 'B', POPT_ARG_NONE, &installer_show_build, 0, N_("Display installer version"), NULL},
 	{"batch", '\0', POPT_ARG_NONE, &installer_dont_ask_questions, 0, N_("Solve installation issues without interaction"), NULL},
 	{"ignore-disk-space", '\0', POPT_ARG_NONE | POPT_ARGFLAG_DOC_HIDDEN, &installer_ignore_disk_space, 0, "", NULL},
+	{"cache-dir", 'C', POPT_ARG_STRING, &installer_cache_dir, 0, N_("Look here for cached package files"), "directory"},
 	{NULL, '\0', 0, NULL, 0}
 };
 

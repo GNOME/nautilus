@@ -95,6 +95,9 @@ struct _EazelInstallPrivate {
 	/* hacky way to notice if the disk is full */
 	gboolean disk_full;
 
+	/* look in these local directories for packages before downloading */
+	GList *local_repositories;
+
 	/* context to use for softcat queries */
 	EazelSoftCat *softcat;
 

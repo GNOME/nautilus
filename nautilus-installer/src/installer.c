@@ -211,6 +211,7 @@ int installer_server_port = 0;
 char *installer_cgi_path = NULL;
 char *installer_tmpdir = "/tmp";
 char *installer_homedir = NULL;
+char *installer_cache_dir = NULL;
 
 static void check_if_next_okay (GnomeDruidPage *page, void *unused, EazelInstaller *installer);
 static void jump_to_retry_page (EazelInstaller *installer);
@@ -1903,6 +1904,80 @@ start_logging (EazelInstaller *installer)
 }
 
 
+static void
+get_candidate_dirs (EazelInstall *install, char *dir)
+{
+	DIR *dirfd;
+	struct dirent *file;
+	char *candidate;
+	struct stat statbuf;
+
+	dirfd = opendir (dir);
+	if (dirfd == NULL) {
+		return;
+	}
+	while ((file = readdir (dirfd)) != NULL) {
+		candidate = g_strdup_printf ("%s/%s", dir, file->d_name);
+		if ((lstat (candidate, &statbuf) == 0) &&
+		    (statbuf.st_mode & S_IFDIR) &&
+		    ((statbuf.st_mode & S_IFLNK) != S_IFLNK) &&
+		    (statbuf.st_nlink == 2)) {
+			if ((strstr (file->d_name, "RPM") != NULL) ||
+			    (strstr (file->d_name, "package") != NULL)) {
+				/* good candidate! */
+				printf ("candidate: '%s'\n", candidate);
+				eazel_install_add_repository (install, candidate);
+			}
+		}
+		g_free (candidate);
+	}
+	closedir (dirfd);
+}
+
+/* look for a mounted cdrom:
+ * anything with "cdrom" or "iso9660" in the name
+ */
+static void
+search_for_local_cds (EazelInstall *install)
+{
+	FILE *fp;
+	char line[256];
+	char *p, *q;
+	char *dir;
+
+	fp = fopen ("/proc/mounts", "r");
+	if (fp == NULL) {
+		g_warning ("Couldn't open /proc/mounts");
+		return;
+	}
+	while (! feof (fp)) {
+		fgets (line, 250, fp);
+		if (feof (fp)) {
+			break;
+		}
+		line[250] = '\0';
+		if ((strstr (line, "cdrom") != NULL) ||
+		    (strstr (line, "iso9660") != NULL)) {
+			/* candidate: 2nd field is the mountpoint */
+			p = strchr (line, ' ');
+			if (p != NULL) {
+				p++;
+				q = strchr (p, ' ');
+				if (q != NULL) {
+					dir = g_strndup (p, q-p);
+					get_candidate_dirs (install, dir);
+					g_free (dir);
+				}
+			}
+		}
+	}
+	fclose (fp);
+
+	if (installer_cache_dir != NULL) {
+		eazel_install_add_repository (install, installer_cache_dir);
+	}
+}
+
 /* if there's an older tmpdir left over from a previous attempt, use it */
 #define TMPDIR_PREFIX "eazel-installer."
 static char *
@@ -2055,6 +2130,8 @@ eazel_installer_initialize (EazelInstaller *object)
 					       "transaction_dir", installer_tmpdir,
 					       "cgi_path", installer_cgi_path ? installer_cgi_path : CGI_PATH,
 					       NULL));
+
+	search_for_local_cds (installer->service);
 
 	gnome_druid_set_buttons_sensitive (installer->druid, FALSE, FALSE, TRUE);
 

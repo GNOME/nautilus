@@ -31,6 +31,9 @@
 #include "eazel-softcat.h"
 #include <ghttp.h>
 #include <config.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <errno.h>
 
 #include "eazel-package-system.h"
@@ -444,6 +447,46 @@ eazel_install_fill_file_fetch_table (void)
 	return res;
 }
 
+static void
+my_copy_file (const char *orig, const char *dest)
+{
+	int ofd, nfd;
+	char buffer[1024];
+	int n, n2, count;
+
+	ofd = open (orig, O_RDONLY);
+	if (ofd < 0) {
+		return;
+	}
+	nfd = open (dest, O_CREAT|O_WRONLY, 0644);
+	if (nfd < 0) {
+		close (ofd);
+		return;
+	}
+
+	while (1) {
+		n = read (ofd, buffer, sizeof (buffer));
+		if (n <= 0) {
+			break;
+		}
+		count = 0;
+		while (count < n) {
+			n2 = write (nfd, buffer+count, n-count);
+			if (n2 < 0) {
+				/* error */
+				close (ofd);
+				close (nfd);
+				unlink (dest);
+				return;
+			}
+			count += n2;
+		}
+	}
+	close (ofd);
+	close (nfd);
+	return;
+}
+
 gboolean
 eazel_install_fetch_file (EazelInstall *service,
 			  char *url, 
@@ -451,6 +494,8 @@ eazel_install_fetch_file (EazelInstall *service,
 			  const char* target_file) 
 {
 	gboolean result;
+	GList *iter;
+	char *filename;
 
 	static eazel_install_file_fetch_function *func_table = NULL;
 	
@@ -462,6 +507,16 @@ eazel_install_fetch_file (EazelInstall *service,
 
 	g_return_val_if_fail (url!=NULL, FALSE);
 	g_return_val_if_fail (target_file!=NULL, FALSE);
+
+	for (iter = g_list_first (service->private->local_repositories); iter != NULL; iter = g_list_next (iter)) {
+		filename = g_strdup_printf ("%s/%s", (char *)(iter->data), g_basename (target_file));
+		if (g_file_test (filename, G_FILE_TEST_ISFILE)) {
+			/* copy this file to target_file */
+			trilobite_debug ("%s found at %s, copying", file_to_report, filename);
+			my_copy_file (filename, target_file);
+		}
+		g_free (filename);
+	}
 
 	if (g_file_test (target_file, G_FILE_TEST_ISFILE)) {
 		trilobite_debug ("%s already present, not downloading", target_file);

@@ -1219,6 +1219,12 @@ eazel_install_query_package_system (EazelInstall *service,
 	return result;
 }
 
+void
+eazel_install_add_repository (EazelInstall *service, const char *dir)
+{
+	service->private->local_repositories = g_list_prepend (service->private->local_repositories, g_strdup (dir));
+}
+
 
 /************************************************
   Signal emitters and default handlers.

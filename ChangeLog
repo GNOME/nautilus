@@ -1,3 +1,40 @@
+2001-01-11  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(eazel_install_callback_initialize), (eazel_install_callback_new):
+
+	Turn g_error to g_warning in the EazelInstallCallback initializer,
+	so that it doesn't kill off the view when the install service
+	isn't around.  Instead, set some fields to NULL and return
+	normally.  The *_new call then returns NULL on failure.
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_installing),
+	(nautilus_service_install_view_update_from_uri):
+
+	Notice if the eazel_install_callback_new call returns NULL, and
+	gracefully handle it by ceasing operations and popping up a dialog
+	about the failure.  This solves the "don't crash if the install
+	service is missing" bug.
+
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_add_repository):
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-protocols.c:
+	(my_copy_file), (eazel_install_fetch_file):
+	* components/services/install/lib/eazel-install-public.h:
+	* nautilus-installer/src/installer.c: (get_candidate_dirs),
+	(search_for_local_cds), (eazel_installer_initialize):
+	* nautilus-installer/src/main.c:
+
+	Retrofit the --cache-dir option and code to automatically add
+	mounted CD packages to the repository, from the PR3 installer
+	branch.
+	
+	* nautilus-installer/src/Makefile:
+
+	Help me, Obi-wan, you're my only hope.
+
 2001-01-11  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>

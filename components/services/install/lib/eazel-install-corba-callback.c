@@ -448,22 +448,24 @@ eazel_install_callback_initialize (EazelInstallCallback *service) {
 
 	service->installservice_bonobo = bonobo_object_activate (OAF_ID, 0);
 	if ( !service->installservice_bonobo) {
-		g_error ("Cannot activate %s\n", OAF_ID);
+		g_warning ("Cannot activate %s\n", OAF_ID);
+	} else {
+		if (! bonobo_object_client_has_interface (service->installservice_bonobo, "IDL:Trilobite/Service:1.0", &ev)) {
+			g_warning ("Object does not support IDL:Trilobite/Service:1.0");
+		}
+		if (! bonobo_object_client_has_interface (service->installservice_bonobo, "IDL:GNOME/Trilobite/Eazel/Install:1.0", &ev)) {
+			g_warning ("Object does not support IDL:GNOME/Trilobite/Eazel/Install:1.0");
+		}
+		service->installservice_corba = bonobo_object_query_interface (BONOBO_OBJECT (service->installservice_bonobo),
+									       "IDL:GNOME/Trilobite/Eazel/Install:1.0");
 	}
-	if (! bonobo_object_client_has_interface (service->installservice_bonobo, "IDL:Trilobite/Service:1.0", &ev)) {
-		g_error ("Object does not support IDL:Trilobite/Service:1.0");
-	}
-	if (! bonobo_object_client_has_interface (service->installservice_bonobo, "IDL:GNOME/Trilobite/Eazel/Install:1.0", &ev)) {
-		g_error ("Object does not support IDL:GNOME/Trilobite/Eazel/Install:1.0");
-	}
-	service->installservice_corba = bonobo_object_query_interface (BONOBO_OBJECT (service->installservice_bonobo),
-								       "IDL:GNOME/Trilobite/Eazel/Install:1.0");
 
 	/* This sets the bonobo structures in service using the corba object */
 	if (!bonobo_object_construct (BONOBO_OBJECT (service), service->cb)) {
 		g_warning ("bonobo_object_construct failed");
-	}	
-	CORBA_exception_free (&ev);		
+	}
+
+	CORBA_exception_free (&ev);
 }
 
 GtkType
@@ -500,6 +502,10 @@ eazel_install_callback_new (void)
 	EazelInstallCallback *service;
 
 	service = EAZEL_INSTALL_CALLBACK (gtk_object_new (TYPE_EAZEL_INSTALL_CALLBACK, NULL));
+	if (! service->installservice_bonobo || ! service->installservice_corba) {
+		bonobo_object_unref (BONOBO_OBJECT (service));
+		service = NULL;
+	}
 
 	return service;
 }

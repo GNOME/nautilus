@@ -974,7 +974,6 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 				nautilus_label_set_wrap (NAUTILUS_LABEL (view->details->package_details), TRUE);
 			}
 			nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_details), pack->description);
-			//abacab
 			out = g_strdup_printf (_("Version: %s"), pack->version);
 			nautilus_label_set_text (NAUTILUS_LABEL (view->details->package_version), out);
 			g_free (out);
@@ -1354,6 +1353,25 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 
 	CORBA_exception_init (&ev);
 	view->details->installer = eazel_install_callback_new ();
+	if (view->details->installer == NULL) {
+		GtkWidget *toplevel, *dialog;
+		char *message;
+
+		nautilus_view_report_load_complete (view->details->nautilus_view);
+		gtk_widget_hide (view->details->form);
+
+		message = g_strdup (_("The Eazel install service is missing:\nInstalls will not work."));
+		toplevel = gtk_widget_get_toplevel (view->details->message_box);
+		if (GTK_IS_WINDOW (toplevel)) {
+			dialog = gnome_error_dialog_parented (message, GTK_WINDOW (toplevel));
+		} else {
+			dialog = gnome_error_dialog (message);
+		}
+		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
+		return;
+	}
+
 	view->details->problem = eazel_install_problem_new ();
 	view->details->root_client = set_root_client (eazel_install_callback_bonobo (view->details->installer), view);
 	service = eazel_install_callback_corba_objref (view->details->installer);
