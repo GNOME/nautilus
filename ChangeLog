@@ -1,5 +1,12 @@
 2001-08-01  Havoc Pennington  <hp@redhat.com>
 
+	* src/nautilus-desktop-window.c (map): Set background of our child
+	widgets in addition to our own background. This gets rid of the
+	last of the ugliness during Nautilus startup, I believe.
+
+2001-08-01  Havoc Pennington  <hp@redhat.com>
+
+	
 	* libnautilus-private/nautilus-link-impl-desktop.c: use 
 	desktop_file_get_locale_string() instead of
 	desktop_file_get_string() to get the names from the desktop files.
