@@ -93,7 +93,11 @@ get_nautilus_navigation_result_from_gnome_vfs_result (GnomeVFSResult gnome_vfs_r
                  * what GnomeVFSResult code the message reported, and what caused it to
                  * fire).
                  */
-                g_warning ("in nautilus-applicable-views.c, got unhandled GnomeVFSResult %d, please tell sullivan@eazel.com", gnome_vfs_result);
+                g_warning ("in nautilus-applicable-views.c, got unhandled GnomeVFSResult %d (%s). If this is a "
+                	   "legitimate get_file_info result, please tell sullivan@eazel.com so he can "
+                	   "write a decent user-level error message for it.", 
+                	   gnome_vfs_result,
+                	   gnome_vfs_result_to_string (gnome_vfs_result));
                 return NAUTILUS_NAVIGATION_RESULT_UNSPECIFIC_ERROR;
         }
 }

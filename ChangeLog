@@ -1,3 +1,11 @@
+2000-10-23  John Sullivan  <sullivan@eazel.com>
+
+	* src/nautilus-applicable-views.c:
+	(get_nautilus_navigation_result_from_gnome_vfs_result):
+	Improved the warning message output to the terminal when 
+	get-file-info returns a GnomeVFSResult for which we don't 
+	have a nice user error message.
+
 2000-10-23  Mike Fleming  <mfleming@eazel.com>
 
 	* components/services/trilobite/libtrilobite/trilobite-redirect.c:
@@ -104,7 +112,6 @@
 	added a done button to the property dialog to make it easier to
 	dismiss it.
 	
->>>>>>> 1.2504
 2000-10-22  Mike Fleming  <mfleming@eazel.com>
 
 	* libnautilus-extensions/nautilus-stock-dialogs.c:
@@ -113,7 +120,6 @@
 	Made timed-wait dialog remember the dialog.  Was being triggered
 	during a DAV rename w/ debug info on.
 
->>>>>>> 1.2502
 2000-10-22  Robert Brady  <rwb197@zepler.org>
 
 	* configure.in: Added en_GB to ALL_LINGUAS.
