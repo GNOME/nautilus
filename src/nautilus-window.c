@@ -1544,6 +1544,7 @@ nautilus_window_real_set_content_view (NautilusWindow *window, NautilusViewFrame
 	if (window->content_view != NULL) {
 		gtk_container_remove (GTK_CONTAINER (window->content_hbox),
 				      GTK_WIDGET (window->content_view));      
+		window->content_view = NULL;
 	}
 
 	/* Here's an explicit check for a problem that happens all too often. */

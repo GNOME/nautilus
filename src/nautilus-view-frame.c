@@ -250,7 +250,11 @@ nautilus_view_frame_destroy_client (NautilusViewFrame *view)
 
 	bonobo_object_unref (view->view_frame);
 	view->view_frame = NULL;
-	
+	/* we can NULL those since we just unref'ed them 
+	   with the aggregate view frame. */
+	view->history_frame = CORBA_OBJECT_NIL;
+	view->zoomable_frame = CORBA_OBJECT_NIL;
+
 	CORBA_exception_free (&ev);
 
 	if (view->details->check_if_view_is_gone_timeout_id != 0) {
@@ -271,6 +275,7 @@ nautilus_view_frame_destroy (GtkObject *object)
 	g_free (frame->details->title);
 	g_free (frame->details->label);
 	g_free (frame->details);
+	frame->details = NULL;
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -534,6 +539,7 @@ nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 	bonobo_object_release_unref (control, NULL);
 	
 	view->iid = g_strdup (iid);
+	g_print ("IID: %s, view frame: %p\n", view->iid, view);
 
 	gtk_signal_connect_while_alive
 		(GTK_OBJECT (view->client_object), "destroy",

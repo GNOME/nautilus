@@ -27,6 +27,8 @@
 /* nautilus-view-frame-corba.c: CORBA server implementation of the object
    representing a data view frame. */
 
+#define DEBUG_MATHIEU 1
+
 #include <config.h>
 
 #include "nautilus-view-frame-private.h"
@@ -136,6 +138,9 @@ impl_Nautilus_ViewFrame_open_location (PortableServer_Servant servant,
 				       Nautilus_URI location,
 				       CORBA_Environment *ev)
 {
+#if DEBUG_MATHIEU
+	g_print ("open location \n");
+#endif /* DEBUG_MATHIEU */
 	nautilus_view_frame_open_location
 		(((impl_POA_Nautilus_ViewFrame *) servant)->view, location);
 }
@@ -145,6 +150,9 @@ impl_Nautilus_ViewFrame_open_location_in_new_window (PortableServer_Servant serv
 						     Nautilus_URI location,
 						     CORBA_Environment *ev)
 {
+#if DEBUG_MATHIEU
+	g_print ("open location in new window\n");
+#endif /* DEBUG_MATHIEU */
 	nautilus_view_frame_open_location_in_new_window
 		(((impl_POA_Nautilus_ViewFrame *) servant)->view, location);
 }
@@ -156,7 +164,9 @@ impl_Nautilus_ViewFrame_open_in_new_window_and_select (PortableServer_Servant se
 						       CORBA_Environment *ev)
 {
 	GList *selection_as_g_list;
-
+#if DEBUG_MATHIEU
+	g_print ("open location in new window and select\n");
+#endif /* DEBUG_MATHIEU */
 	selection_as_g_list = nautilus_shallow_g_list_from_uri_list (selection);
 	nautilus_view_frame_open_in_new_window_and_select
 		(((impl_POA_Nautilus_ViewFrame *) servant)->view, location, selection_as_g_list);
@@ -168,6 +178,9 @@ impl_Nautilus_ViewFrame_report_location_change (PortableServer_Servant servant,
 						Nautilus_URI location,
 						CORBA_Environment *ev)
 {
+#if DEBUG_MATHIEU
+	g_print ("report location change \n");
+#endif /* DEBUG_MATHIEU */
 	nautilus_view_frame_report_location_change
 		(((impl_POA_Nautilus_ViewFrame *) servant)->view, location);
 }
@@ -178,6 +191,9 @@ impl_Nautilus_ViewFrame_report_selection_change (PortableServer_Servant servant,
 						 CORBA_Environment *ev)
 {
 	GList *selection_as_g_list;
+#if DEBUG_MATHIEU
+	g_print ("selection change \n");
+#endif /* DEBUG_MATHIEU */
 	
 	selection_as_g_list = nautilus_shallow_g_list_from_uri_list (selection);
 	nautilus_view_frame_report_selection_change
@@ -190,6 +206,10 @@ impl_Nautilus_ViewFrame_report_status (PortableServer_Servant servant,
 				       const CORBA_char *status,
 				       CORBA_Environment *ev)
 {
+#if DEBUG_MATHIEU
+	g_print ("report status \n");
+#endif /* DEBUG_MATHIEU */
+
 	nautilus_view_frame_report_status
 		(((impl_POA_Nautilus_ViewFrame *) servant)->view, status);
 }
@@ -198,6 +218,10 @@ static void
 impl_Nautilus_ViewFrame_report_load_underway (PortableServer_Servant servant,
 					      CORBA_Environment *ev)
 {
+#if DEBUG_MATHIEU
+	g_print ("report load underway \n");
+#endif /* DEBUG_MATHIEU */
+
 	nautilus_view_frame_report_load_underway
 		(((impl_POA_Nautilus_ViewFrame *) servant)->view);
 }
@@ -207,6 +231,10 @@ impl_Nautilus_ViewFrame_report_load_progress (PortableServer_Servant servant,
 					      CORBA_float fraction_done,
 					      CORBA_Environment *ev)
 {
+#if DEBUG_MATHIEU
+	g_print ("report load progress \n");
+#endif /* DEBUG_MATHIEU */
+
 	nautilus_view_frame_report_load_progress
 		(((impl_POA_Nautilus_ViewFrame *) servant)->view, fraction_done);
 }
@@ -215,6 +243,10 @@ static void
 impl_Nautilus_ViewFrame_report_load_complete (PortableServer_Servant servant,
 					      CORBA_Environment *ev)
 {
+#if DEBUG_MATHIEU
+	g_print ("report load complete \n");
+#endif /* DEBUG_MATHIEU */
+
 	nautilus_view_frame_report_load_complete
 		(((impl_POA_Nautilus_ViewFrame *) servant)->view);
 }
@@ -223,6 +255,10 @@ static void
 impl_Nautilus_ViewFrame_report_load_failed (PortableServer_Servant servant,
 					    CORBA_Environment *ev)
 {
+#if DEBUG_MATHIEU
+	g_print ("report load failed \n");
+#endif /* DEBUG_MATHIEU */
+
 	nautilus_view_frame_report_load_failed
 		(((impl_POA_Nautilus_ViewFrame *) servant)->view);
 }
@@ -232,6 +268,10 @@ impl_Nautilus_ViewFrame_set_title (PortableServer_Servant servant,
 				   const CORBA_char *title,
 				   CORBA_Environment *ev)
 {
+#if DEBUG_MATHIEU
+	g_print ("set title \n");
+#endif /* DEBUG_MATHIEU */
+
 	nautilus_view_frame_set_title
 		(((impl_POA_Nautilus_ViewFrame *) servant)->view, title);
 }

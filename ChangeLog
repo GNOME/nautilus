@@ -1,3 +1,25 @@
+2000-09-26  Mathieu Lacage  <mathieu@eazel.com>
+
+	try to debug some mozilla-related pbs.
+	* src/nautilus-view-frame-corba.c:
+	(impl_Nautilus_ViewFrame_open_location),
+	(impl_Nautilus_ViewFrame_open_location_in_new_window),
+	(impl_Nautilus_ViewFrame_open_in_new_window_and_select),
+	(impl_Nautilus_ViewFrame_report_location_change),
+	(impl_Nautilus_ViewFrame_report_selection_change),
+	(impl_Nautilus_ViewFrame_report_status),
+	(impl_Nautilus_ViewFrame_report_load_underway),
+	(impl_Nautilus_ViewFrame_report_load_progress),
+	(impl_Nautilus_ViewFrame_report_load_complete),
+	(impl_Nautilus_ViewFrame_report_load_failed),
+	(impl_Nautilus_ViewFrame_set_title):
+	add debugging output.
+	* src/nautilus-view-frame.c: (nautilus_view_frame_destroy_client),
+	(nautilus_view_frame_destroy), (nautilus_view_frame_load_client):
+	NULL freed' fields.
+	* src/nautilus-window.c: (nautilus_window_real_set_content_view):
+	idem.
+
 2000-09-26  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 382 (Deleting file viewed in other window leaves
