@@ -717,7 +717,7 @@ nautilus_emblem_view_drag_received_cb (GtkWidget *widget,
 		if (had_failure && emblems != NULL) {
 			eel_show_error_dialog (_("Some of the files could not be added as emblems because they did not appear to be valid images."), _("Couldn't add emblems"), NULL);
 		} else if (had_failure && emblems == NULL) {
-			eel_show_error_dialog (_("None of the files could not be added as emblems because they did not appear to be valid images."), _("Couldn't add emblems"), NULL);
+			eel_show_error_dialog (_("None of the files could be added as emblems because they did not appear to be valid images."), _("Couldn't add emblems"), NULL);
 
 		}
  
