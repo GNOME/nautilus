@@ -27,6 +27,7 @@
 #include "nautilus-index-tabs.h"
 
 #include <math.h>
+#include <stdio.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnome/gnome-defs.h>
@@ -55,6 +56,7 @@ struct _NautilusIndexTabsDetails {
 	GdkColor text_color;  
 	
 	char *title;
+	gboolean title_prelit;
 	GList *tab_items;
 };
 
@@ -135,6 +137,7 @@ nautilus_index_tabs_initialize (NautilusIndexTabs *index_tabs)
 	gdk_color_parse ("rgb:ff/ff/ff", &index_tabs->details->text_color);
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
 				  &index_tabs->details->text_color, FALSE, TRUE);
+
 }
 
 GtkWidget*
@@ -369,7 +372,7 @@ nautilus_index_tabs_expose (GtkWidget *widget, GdkEventExpose *event)
 		int x_pos = widget->allocation.x;
 		int y_pos = widget->allocation.y;
 		
-		draw_one_tab(index_tabs, temp_gc, index_tabs->details->title, x_pos + TITLE_TAB_OFFSET, y_pos, FALSE);  
+		draw_one_tab(index_tabs, temp_gc, index_tabs->details->title, x_pos + TITLE_TAB_OFFSET, y_pos, index_tabs->details->title_prelit);  
 		gdk_gc_unref(temp_gc);   
 	} else
 		if (index_tabs->details->tab_count > 0)
@@ -459,14 +462,22 @@ nautilus_index_tabs_prelite_tab(NautilusIndexTabs *index_tabs, int which_tab)
 	gboolean is_prelit;
 	gboolean changed = FALSE;
 	
-	for (next_tab = index_tabs->details->tab_items; next_tab != NULL; next_tab = next_tab->next) {
-		tabItem *item = (tabItem*) next_tab->data;
-		is_prelit = (item->notebook_page == which_tab);
-		if (item->prelit != is_prelit) {
-			item->prelit = is_prelit;
+	if (index_tabs->details->title_mode) {
+		gboolean is_prelit = which_tab != -1;
+		if (index_tabs->details->title_prelit != is_prelit) {
+			index_tabs->details->title_prelit = is_prelit;
 			changed = TRUE;
 		}
 	}
+	else	
+		for (next_tab = index_tabs->details->tab_items; next_tab != NULL; next_tab = next_tab->next) {
+			tabItem *item = (tabItem*) next_tab->data;
+			is_prelit = (item->notebook_page == which_tab);
+			if (item->prelit != is_prelit) {
+				item->prelit = is_prelit;
+				changed = TRUE;
+			}
+		}
 	
 	if (changed)
 		gtk_widget_queue_draw(GTK_WIDGET(index_tabs));	

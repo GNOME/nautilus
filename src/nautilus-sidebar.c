@@ -356,6 +356,9 @@ nautilus_index_panel_motion_event (GtkWidget *widget, GdkEventMotion *event)
 			gint which_tab = nautilus_index_tabs_hit_test(NAUTILUS_INDEX_TABS(index_panel->details->title_tab), (double) x, (double) y);
 			nautilus_index_tabs_prelite_tab(NAUTILUS_INDEX_TABS(index_panel->details->title_tab), which_tab);			
 		}
+		else
+			nautilus_index_tabs_prelite_tab(NAUTILUS_INDEX_TABS(index_panel->details->title_tab), -1);			
+			
 	}
 
 
