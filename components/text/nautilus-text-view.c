@@ -196,26 +196,28 @@ nautilus_text_view_instance_init (NautilusTextView *view)
 }
 
 static void
-nautilus_text_view_destroy (GtkObject *object)
+nautilus_text_view_finalize (GObject *object)
 {
         NautilusTextView *view;
         
         view = (NautilusTextView*)object;        
                 
         cancel_load (view);
+
+        G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
 nautilus_text_view_class_init (NautilusTextViewClass *class)
 {
-        GtkObjectClass *object_class = GTK_OBJECT_CLASS (class);
+        GObjectClass *object_class = G_OBJECT_CLASS (class);
         NautilusViewClass *view_class = NAUTILUS_VIEW_CLASS (class);
         const char *charset;
         gboolean utf8;
 
         view_class->load_location = load_location;
 
-        object_class->destroy = nautilus_text_view_destroy;
+        object_class->finalize = nautilus_text_view_finalize;
 
         n_encodings_to_try = 0;
         utf8 = g_get_charset (&charset);

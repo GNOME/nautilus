@@ -550,6 +550,7 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 	const char *authors[] = {
 		"Alexander Larsson",
 		"Ali Abdin",
+		"Anders Carlsson",
 		"Andy Hertzfeld",
 		"Arlo Rose",
 		"Darin Adler",
@@ -606,7 +607,8 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 		 * which will be displayed at the bottom of the about
 		 * box to give credit to the translator(s).
 		 */
-		translator_credits = _("Translator Credits");
+		translator_credits = (strcmp (_("Translator Credits"), "Translator Credits") == 0) ?
+			NULL : _("Translator Credits");
 		
 		about = gnome_about_new (_("Nautilus"),
 					 VERSION,

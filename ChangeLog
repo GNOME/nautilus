@@ -1,3 +1,17 @@
+2002-04-21  Anders Carlsson  <andersca@gnu.org>
+
+	* components/text/nautilus-text-view.c:
+	(nautilus_text_view_finalize), (nautilus_text_view_class_init):
+	NautilusView is a GObject, not a GtkObject.
+	
+	* src/nautilus-sidebar-title.c:
+	(nautilus_sidebar_title_select_text_color),
+	Set shadow color and offset using new eel functions.
+	
+	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):
+	Don't show translator credits when we don't need to.
+	Also add myself as an author :)
+	
 2002-04-20	Diego González  <diego@pemas.net
 
 	* src/nautilus-preferences-dialog.c: split "Windows & Desktop" into two

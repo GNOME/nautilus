@@ -64,7 +64,7 @@
 
 #define MORE_INFO_FONT_SIZE 	 12
 #define MIN_TITLE_FONT_SIZE 	 12
-#define MAX_TITLE_FONT_SIZE 	 20
+#define MAX_TITLE_FONT_SIZE 	 18
 #define TITLE_PADDING		  4
 
 static void                nautilus_sidebar_title_class_init (NautilusSidebarTitleClass *klass);
@@ -160,9 +160,9 @@ default_font_changed_callback (gpointer callback_data)
 
 static void
 nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
-{ 
+{
 	sidebar_title->details = g_new0 (NautilusSidebarTitleDetails, 1);
-
+	
 	/* Register to find out about icon theme changes */
 	g_signal_connect_object (nautilus_icon_factory_get (), "icons_changed",
 				 G_CALLBACK (update_icon), sidebar_title, G_CONNECT_SWAPPED);
@@ -354,16 +354,15 @@ nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
 		eel_gtk_widget_set_foreground_color (sidebar_title->details->more_info_label,
 						     sidebar_info_title_color);
 
-#if GNOME2_CONVERSION_COMPLETE
-		eel_label_set_smooth_drop_shadow_color (EEL_LABEL (sidebar_title->details->title_label),
-							eel_parse_rgb_with_white_default (sidebar_title_shadow_color));
-		eel_label_set_smooth_drop_shadow_color (EEL_LABEL (sidebar_title->details->more_info_label),
-							eel_parse_rgb_with_white_default (sidebar_title_shadow_color));
-		eel_label_set_smooth_drop_shadow_offset (EEL_LABEL (sidebar_title->details->title_label),
-							 sidebar_title->details->shadow_offset);
-		eel_label_set_smooth_drop_shadow_offset (EEL_LABEL (sidebar_title->details->more_info_label),
-							 sidebar_title->details->shadow_offset);
-#endif
+		eel_gtk_label_set_drop_shadow_color (GTK_LABEL (sidebar_title->details->title_label),
+						     eel_parse_rgb_with_white_default (sidebar_title_shadow_color));
+		eel_gtk_label_set_drop_shadow_color (GTK_LABEL (sidebar_title->details->more_info_label),
+						     eel_parse_rgb_with_white_default (sidebar_title_shadow_color));
+
+		eel_gtk_label_set_drop_shadow_offset (GTK_LABEL (sidebar_title->details->title_label),
+						      sidebar_title->details->shadow_offset);
+		eel_gtk_label_set_drop_shadow_offset (GTK_LABEL (sidebar_title->details->more_info_label),
+						      sidebar_title->details->shadow_offset);
 		
 		g_free (sidebar_title_color);	
 		g_free (sidebar_info_title_color);	
