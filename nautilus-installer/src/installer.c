@@ -1423,6 +1423,7 @@ eazel_install_dep_check (EazelInstall *service,
 	gtk_label_set_text (GTK_LABEL (label_overall), temp);
 
 	LOG_DEBUG (("DEP CHECK : %s\n", temp));
+	installer->got_dep_check = TRUE;
 
 	g_free (temp);
 	g_free (required);
@@ -1444,7 +1445,11 @@ install_done (EazelInstall *service,
 	if (result == FALSE) {
 		/* will call jump_to_error_page later */
 		if (installer->failure_info == NULL) {
-			temp = g_strdup (_("The RPM installer gave an unexpected error code -- run for your life!"));
+			if (installer->got_dep_check) {
+				temp = g_strdup (_("The RPM installer gave an unexpected error"));
+			} else {
+				temp = g_strdup (_("Eazel's servers are temporarily out of service"));
+			}
 			installer->failure_info = g_list_append (installer->failure_info, temp);
 		}
 	}

@@ -553,7 +553,7 @@ eazel_install_fetch_package (EazelInstall *service,
 	};
 
 	if (url == NULL) {
-		g_warning (_("Could not get a URL for %s"), rpmfilename_from_packagedata (package));
+		g_warning (_("Could not get an URL for %s"), rpmfilename_from_packagedata (package));
 	} else {
 		targetname = g_strdup_printf ("%s/%s",
 					      eazel_install_get_tmp_dir (service),

@@ -1,3 +1,13 @@
+2000-10-31  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package):
+	* nautilus-installer/src/installer.c: (eazel_install_dep_check),
+	(install_done):
+	* nautilus-installer/src/installer.h:
+
+	Don't blame RPM if the real error is that services is down.
+
 2000-10-31  Mathieu Lacage  <mathieu@eazel.com>
 
 	* nautilus.spec.in: add applet to the spec file.
