@@ -22,6 +22,7 @@
    Boston, MA 02111-1307, USA.
 
    Authors: John Sullivan <sullivan@eazel.com>
+            Ramiro Estrugo <ramiro@eazel.com>
 */
 
 #include <config.h>
@@ -30,6 +31,7 @@
 
 #include <gtk/gtkselection.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkrc.h>
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-geometry.h>
 #include "nautilus-glib-extensions.h"
@@ -1570,4 +1572,43 @@ nautilus_gtk_style_shade (GdkColor *a,
 	b->red = red * 65535.0;
 	b->green = green * 65535.0;
 	b->blue = blue * 65535.0;
+}
+
+/**
+ * nautilus_gtk_class_name_make_like_existing_type:
+ * @class_name: The class name for the custom widget.
+ * @existing_gtk_type: The GtkType of the existing GtkWidget.
+ *
+ * Make the given class name act like an existing GtkType for
+ * gtk theme/style purposes.  This can be used by custom 
+ * widget to emulate the styles of stock Gtk widgets.  For
+ * example:
+ *
+ * nautilus_gtk_class_name_make_like_existing ("NautilusCustomButton",
+ *                                             GTK_TYPE_BUTTON);
+ *
+ *
+ * You should call this function only once from the class_initialize()
+ * method of the custom widget.
+ **/
+void
+nautilus_gtk_class_name_make_like_existing_type (const char *class_name,
+						 GtkType existing_gtk_type)
+{
+	GtkWidget *bogus;
+	GtkStyle *style;
+	GtkRcStyle *rc_style;
+
+	g_return_if_fail (class_name != NULL);
+	g_return_if_fail (existing_gtk_type > 0);
+
+	bogus = gtk_widget_new (existing_gtk_type, NULL);
+	gtk_widget_ensure_style (bogus);
+		
+	style = gtk_widget_get_style (bogus);
+	rc_style = style->rc_style;
+
+	gtk_rc_add_widget_class_style (rc_style, class_name);
+		
+	gtk_widget_destroy (bogus);
 }

@@ -22,6 +22,7 @@
    Boston, MA 02111-1307, USA.
 
    Authors: John Sullivan <sullivan@eazel.com>
+            Ramiro Estrugo <ramiro@eazel.com>
 */
 
 #ifndef NAUTILUS_GTK_EXTENSIONS_H
@@ -152,6 +153,11 @@ void              nautilus_gtk_adjustment_clamp_value          (GtkAdjustment   
 void              nautilus_gtk_style_shade                     (GdkColor               *a,
 								GdkColor               *b,
 								gdouble                 k);
+
+/* Make the given class name act like an existing GtkType for
+ * gtk style/theme purposes. */
+void              nautilus_gtk_class_name_make_like_existing_type (const char          *class_name,
+								   GtkType              existing_gtk_type);
 
 /* marshals */
 

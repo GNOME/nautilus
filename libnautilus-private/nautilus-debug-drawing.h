@@ -35,4 +35,7 @@ void nautilus_debug_draw_rectangle_and_cross (GdkWindow       *window,
 /* Show the given pixbuf in eog */
 void nautilus_debug_show_pixbuf_in_eog       (const GdkPixbuf *pixbuf);
 
+/* Show the given pixbuf in an in process window */
+void nautilus_debug_show_pixbuf              (const GdkPixbuf *pixbuf);
+
 #endif /* NAUTILUS_DEBUG_DRAWING_H */

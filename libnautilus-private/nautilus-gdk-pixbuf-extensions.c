@@ -30,6 +30,8 @@
 #include "nautilus-glib-extensions.h"
 #include "nautilus-string.h"
 #include <gdk-pixbuf/gdk-pixbuf-loader.h>
+#include <gdk/gdkx.h>
+#include <gdk/gdkprivate.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -706,8 +708,8 @@ nautilus_gdk_pixbuf_draw_to_drawable (const GdkPixbuf *pixbuf,
  * @destination_area: The destination area within the destination pixbuf.
  *                    This area will be clipped if invalid in any way.
  *
- * Copy one pixbuf onto another another.  This function has some advantages
- * over plain gdk_pixbuf_composite():
+ * Copy one pixbuf onto another another..  This function has some advantages
+ * over plain gdk_pixbuf_copy_area():
  *
  *   Composition paramters (source coordinate, destination area) are
  *   given in a way that is consistent with the rest of the extensions
@@ -715,7 +717,7 @@ nautilus_gdk_pixbuf_draw_to_drawable (const GdkPixbuf *pixbuf,
  *   nautilus_gdk_pixbuf_draw_to_pixbuf_alpha() and 
  *   nautilus_gdk_pixbuf_draw_to_drawable() very closely.
  *
- *   All values are clipped to make sure the are valid.
+ *   All values are clipped to make sure they are valid.
  *
  */
 void
@@ -801,7 +803,7 @@ nautilus_gdk_pixbuf_draw_to_pixbuf (const GdkPixbuf *pixbuf,
  *   nautilus_gdk_pixbuf_draw_to_pixbuf() and 
  *   nautilus_gdk_pixbuf_draw_to_drawable() very closely.
  *
- *   All values are clipped to make sure the are valid.
+ *   All values are clipped to make sure they are valid.
  *
  *   Workaround a limitation in gdk_pixbuf_composite() that does not allow
  *   the source (x,y) to be greater than (0,0)
@@ -973,34 +975,42 @@ nautilus_gdk_pixbuf_new_from_pixbuf_sub_area (GdkPixbuf *pixbuf,
 	return sub_pixbuf;
 }
 
-/**
- * nautilus_gdk_pixbuf_draw_to_pixbuf_tiled:
- * @pixbuf: Source tile pixbuf.
- * @destination_pixbuf: Destination pixbuf.
- * @destination_area: Area of the destination pixbuf to tile.
- * @tile_width: Width of the tile.  This can be less than width of the
- *              tile pixbuf, but not greater.
- * @tile_height: Height of the tile.  This can be less than width of the
- *               tile pixbuf, but not greater.
- * @tile_origin_x: The x coordinate of the tile origin.  Can be negative.
- * @tile_origin_y: The y coordinate of the tile origin.  Can be negative.
- * @opacity: The opacity of the drawn tiles where 0 <= opacity <= 255.
- * @interpolation_mode: The interpolation mode.  See <gdk-pixbuf.h>
- *
- * Fill an area of a pixbuf with a tile.
+/* The tile algorithm is identical whether the destination is 
+ * a pixbuf or a drawable.  So, we use a simple callback
+ * mechanism to share it regardless of the destination.
  */
-void
-nautilus_gdk_pixbuf_draw_to_pixbuf_tiled (const GdkPixbuf *pixbuf,
-					  GdkPixbuf *destination_pixbuf,
-					  const ArtIRect *destination_area,
-					  int tile_width,
-					  int tile_height,
-					  int tile_origin_x,
-					  int tile_origin_y,
-					  guchar opacity,
-					  GdkInterpType interpolation_mode)
+typedef struct {
+	GdkPixbuf *destination_pixbuf;
+	int opacity;
+	GdkInterpType interpolation_mode;
+} PixbufTileData;
+
+typedef struct {
+	GdkDrawable *drawable;
+	GdkGC *gc;
+	GdkRgbDither dither;
+	GdkPixbufAlphaMode alpha_compositing_mode;
+	int alpha_threshold;
+} DrawableTileData;
+
+typedef void (* DrawPixbufTileCallback) (const GdkPixbuf *pixbuf,
+					 int x,
+					 int y,
+					 const ArtIRect *destination_area,
+					 gpointer callback_data);
+
+/* The shared tiliing implementation */
+static void
+pixbuf_draw_tiled (const GdkPixbuf *pixbuf,
+		   const ArtIRect *destination_frame,
+		   const ArtIRect *destination_area,
+		   int tile_width,
+		   int tile_height,
+		   int tile_origin_x,
+		   int tile_origin_y,
+		   DrawPixbufTileCallback callback,
+		   gpointer callback_data)
 {
-	ArtIRect frame;
 	ArtIRect target;
 	int x;
 	int y;
@@ -1009,26 +1019,22 @@ nautilus_gdk_pixbuf_draw_to_pixbuf_tiled (const GdkPixbuf *pixbuf,
 	int num_left;
 	int num_above;
 
-	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (destination_pixbuf));
-	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (pixbuf));
+	g_return_if_fail (pixbuf != NULL);
+	g_return_if_fail (destination_frame != NULL);
 	g_return_if_fail (tile_width > 0);
 	g_return_if_fail (tile_height > 0);
 	g_return_if_fail (tile_width <= gdk_pixbuf_get_width (pixbuf));
 	g_return_if_fail (tile_height <= gdk_pixbuf_get_height (pixbuf));
-	g_return_if_fail (opacity != NAUTILUS_OPACITY_FULL);
-	g_return_if_fail (interpolation_mode >= GDK_INTERP_NEAREST);
-	g_return_if_fail (interpolation_mode <= GDK_INTERP_HYPER);
-
-	frame = nautilus_gdk_pixbuf_get_frame (destination_pixbuf);
+	g_return_if_fail (callback != NULL);
 
 	if (destination_area != NULL) {
-		art_irect_intersect (&target, destination_area, &frame);
+		art_irect_intersect (&target, destination_area, destination_frame);
 
 		if (art_irect_empty (&target)) {
 			return;
 		}
 	} else {
-		target = frame;
+		target = *destination_frame;
 	}
 
 	/* The number of tiles left and above the target area */
@@ -1059,22 +1065,353 @@ nautilus_gdk_pixbuf_draw_to_pixbuf_tiled (const GdkPixbuf *pixbuf,
 				g_assert (area.x0 >= x);
 				g_assert (area.y0 >= y);
 
-				if (opacity == NAUTILUS_OPACITY_NONE) {
-					nautilus_gdk_pixbuf_draw_to_pixbuf (pixbuf,
-									    destination_pixbuf,
-									    area.x0 - x,
-									    area.y0 - y,
-									    &area);
-				} else {
-					nautilus_gdk_pixbuf_draw_to_pixbuf_alpha (pixbuf,
-										  destination_pixbuf,
-										  area.x0 - x,
-										  area.y0 - y,
-										  &area,
-										  opacity,
-										  interpolation_mode);
-				}
+				(* callback) (pixbuf,
+					      area.x0 - x,
+					      area.y0 - y,
+					      &area,
+					      callback_data);
 			}
 		}
 	}
+}
+
+static void
+draw_tile_to_pixbuf_callback (const GdkPixbuf *pixbuf,
+			      int x,
+			      int y,
+			      const ArtIRect *area,
+			      gpointer callback_data)
+{
+	PixbufTileData *pixbuf_tile_data;
+
+	g_return_if_fail (pixbuf != NULL);
+	g_return_if_fail (area != NULL);
+	g_return_if_fail (callback_data != NULL);
+
+	pixbuf_tile_data = (PixbufTileData *) callback_data;
+
+	if (pixbuf_tile_data->opacity == NAUTILUS_OPACITY_FULL) {
+		nautilus_gdk_pixbuf_draw_to_pixbuf (pixbuf,
+						    pixbuf_tile_data->destination_pixbuf,
+						    x,
+						    y,
+						    area);
+	} else {
+		nautilus_gdk_pixbuf_draw_to_pixbuf_alpha (pixbuf,
+							  pixbuf_tile_data->destination_pixbuf,
+							  x,
+							  y,
+							  area,
+							  pixbuf_tile_data->opacity,
+							  pixbuf_tile_data->interpolation_mode);
+	}
+}
+
+static void
+draw_tile_to_drawable_callback (const GdkPixbuf *pixbuf,
+				int x,
+				int y,
+				const ArtIRect *area,
+				gpointer callback_data)
+{
+	DrawableTileData *drawable_tile_data;
+	
+	g_return_if_fail (pixbuf != NULL);
+	g_return_if_fail (area != NULL);
+	g_return_if_fail (callback_data != NULL);
+
+	drawable_tile_data = (DrawableTileData *) callback_data;
+
+	nautilus_gdk_pixbuf_draw_to_drawable (pixbuf,
+					      drawable_tile_data->drawable,
+					      drawable_tile_data->gc,
+					      x,
+					      y,
+					      area,
+					      drawable_tile_data->dither,
+					      drawable_tile_data->alpha_compositing_mode,
+					      drawable_tile_data->alpha_threshold);
+}
+
+/**
+ * nautilus_gdk_pixbuf_draw_to_pixbuf_tiled:
+ * @pixbuf: Source tile pixbuf.
+ * @destination_pixbuf: Destination pixbuf.
+ * @destination_area: Area of the destination pixbuf to tile.
+ * @tile_width: Width of the tile.  This can be less than width of the
+ *              tile pixbuf, but not greater.
+ * @tile_height: Height of the tile.  This can be less than width of the
+ *               tile pixbuf, but not greater.
+ * @tile_origin_x: The x coordinate of the tile origin.  Can be negative.
+ * @tile_origin_y: The y coordinate of the tile origin.  Can be negative.
+ * @opacity: The opacity of the drawn tiles where 0 <= opacity <= 255.
+ * @interpolation_mode: The interpolation mode.  See <gdk-pixbuf.h>
+ *
+ * Fill an area of a GdkPixbuf with a tile.
+ */
+void
+nautilus_gdk_pixbuf_draw_to_pixbuf_tiled (const GdkPixbuf *pixbuf,
+					  GdkPixbuf *destination_pixbuf,
+					  const ArtIRect *destination_area,
+					  int tile_width,
+					  int tile_height,
+					  int tile_origin_x,
+					  int tile_origin_y,
+					  int opacity,
+					  GdkInterpType interpolation_mode)
+{
+	PixbufTileData pixbuf_tile_data;
+	ArtIRect destination_frame;
+
+	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (destination_pixbuf));
+	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (pixbuf));
+	g_return_if_fail (tile_width > 0);
+	g_return_if_fail (tile_height > 0);
+	g_return_if_fail (tile_width <= gdk_pixbuf_get_width (pixbuf));
+	g_return_if_fail (tile_height <= gdk_pixbuf_get_height (pixbuf));
+	g_return_if_fail (opacity >= NAUTILUS_OPACITY_FULL);
+	g_return_if_fail (opacity <= NAUTILUS_OPACITY_NONE);
+	g_return_if_fail (interpolation_mode >= GDK_INTERP_NEAREST);
+	g_return_if_fail (interpolation_mode <= GDK_INTERP_HYPER);
+
+	destination_frame = nautilus_gdk_pixbuf_get_frame (destination_pixbuf);
+
+	pixbuf_tile_data.destination_pixbuf = destination_pixbuf;
+	pixbuf_tile_data.opacity = opacity;
+	pixbuf_tile_data.interpolation_mode = interpolation_mode;
+
+	pixbuf_draw_tiled (pixbuf,
+			   &destination_frame,
+			   destination_area,
+			   tile_width,
+			   tile_height,
+			   tile_origin_x,
+			   tile_origin_y,
+			   draw_tile_to_pixbuf_callback,
+			   &pixbuf_tile_data);
+}
+
+/**
+ * nautilus_gdk_pixbuf_draw_to_drawable_tiled:
+ * @pixbuf: Source tile pixbuf.
+ * @gc: GC for copy area operation.
+ * @drawable: Destination drawable.
+ * @destination_area: Area of the destination pixbuf to tile.
+ * @tile_width: Width of the tile.  This can be less than width of the
+ *              tile pixbuf, but not greater.
+ * @tile_height: Height of the tile.  This can be less than width of the
+ *               tile pixbuf, but not greater.
+ * @tile_origin_x: The x coordinate of the tile origin.  Can be negative.
+ * @tile_origin_y: The y coordinate of the tile origin.  Can be negative.
+ * @dither: Dither type to use (see <gdkrgb.h>)
+ * @dither: Dither type to use (see <gdkrgb.h>)
+ * @alpha_compositing_mode: The alpha compositing mode.  See <gdk-pixbuf.h>
+ *
+ * Fill an area of a GdkDrawable with a tile.
+ */
+void
+nautilus_gdk_pixbuf_draw_to_drawable_tiled (const GdkPixbuf *pixbuf,
+					    GdkDrawable *drawable,
+					    GdkGC *gc,
+					    const ArtIRect *destination_area,
+					    int tile_width,
+					    int tile_height,
+					    int tile_origin_x,
+					    int tile_origin_y,
+					    GdkRgbDither dither,
+					    GdkPixbufAlphaMode alpha_compositing_mode,
+					    int alpha_threshold)
+{
+	DrawableTileData drawable_tile_data;
+	ArtIRect destination_frame;
+
+	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (pixbuf));
+	g_return_if_fail (drawable != NULL);
+	g_return_if_fail (tile_width > 0);
+	g_return_if_fail (tile_height > 0);
+	g_return_if_fail (tile_width <= gdk_pixbuf_get_width (pixbuf));
+	g_return_if_fail (tile_height <= gdk_pixbuf_get_height (pixbuf));
+ 	g_return_if_fail (alpha_threshold > NAUTILUS_OPACITY_FULL);
+ 	g_return_if_fail (alpha_threshold <= NAUTILUS_OPACITY_NONE);
+ 	g_return_if_fail (alpha_compositing_mode >= GDK_PIXBUF_ALPHA_BILEVEL);
+ 	g_return_if_fail (alpha_compositing_mode <= GDK_PIXBUF_ALPHA_FULL);
+
+	destination_frame = nautilus_gdk_window_get_frame (drawable);
+	
+	drawable_tile_data.drawable = drawable;
+	drawable_tile_data.gc = gc;
+	drawable_tile_data.dither = dither;
+	drawable_tile_data.alpha_compositing_mode = alpha_compositing_mode;
+	drawable_tile_data.alpha_threshold = alpha_threshold;
+	
+	pixbuf_draw_tiled (pixbuf,
+			   &destination_frame,
+			   destination_area,
+			   tile_width,
+			   tile_height,
+			   tile_origin_x,
+			   tile_origin_y,
+			   draw_tile_to_drawable_callback,
+			   &drawable_tile_data);
+}
+
+/**
+ * nautilus_gdk_pixbuf_get_global_buffer:
+ * @minimum_width: The minimum width for the requested buffer.
+ * @minimum_height: The minimum height for the requested buffer.
+ *
+ * Return value: A GdkPixbuf that is at least as big as the passed in 
+ *               dimensions.
+ *
+ * Access a global buffer for temporary GdkPixbuf operations.  
+ * The returned buffer will be at least as big as the passed in 
+ * dimensions.  The contents are not guaranteed to be anything at
+ * anytime.  Also, it is not thread safe at all. */
+
+static GdkPixbuf *global_buffer = NULL;
+
+static void
+destroy_global_buffer (void)
+{
+	if (global_buffer != NULL) {
+		gdk_pixbuf_unref (global_buffer);
+		global_buffer = NULL;
+	}
+}
+
+GdkPixbuf *
+nautilus_gdk_pixbuf_get_global_buffer (int minimum_width,
+				       int minimum_height)
+{
+	static gboolean at_exit_deallocator_installed = FALSE;
+
+	g_return_val_if_fail (minimum_width > 0, NULL);
+	g_return_val_if_fail (minimum_height > 0, NULL);
+
+	if (global_buffer != NULL) {
+		if (gdk_pixbuf_get_width (global_buffer) >= minimum_width
+		    && gdk_pixbuf_get_height (global_buffer) >= minimum_height) {
+			return global_buffer;
+		}
+
+		destroy_global_buffer ();		
+	}
+
+	g_assert (global_buffer == NULL);
+
+	global_buffer = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, 
+					minimum_width, minimum_height);
+
+
+	if (at_exit_deallocator_installed == FALSE) {
+		at_exit_deallocator_installed = TRUE;
+		g_atexit (destroy_global_buffer);
+	}
+
+	return global_buffer;
+}
+
+/* Same as gdk_pixbuf_get_from_drawable() except it deals with 
+ * race conditions and other evil things that can happen */
+GdkPixbuf *
+nautilus_gdk_pixbuf_get_from_window_safe (GdkWindow *window,
+					  int x,
+					  int y,
+					  int width,
+					  int height)
+{
+	GdkWindowPrivate *window_private;
+	GdkPixbuf *pixbuf;
+	int error_code;
+	GdkWindowType save_window_type;
+	GdkColormap *colormap;
+
+	g_return_val_if_fail (window != NULL, NULL);
+
+
+	/* Push an error handler so that we can catch
+	 * the very rare (but possible) case where 
+	 * the GetImage() event fails.  See HACK2 below
+	 * for more complete excuse.
+	 */
+	gdk_error_trap_push ();
+
+	/* Save the window type and colormap.  Otherwise
+	 * GdkPixbuf will try to fetch them from a hacked
+	 * window.  See HACK1 below for reason why we
+	 * hack the private window contents.
+	 */
+	save_window_type = gdk_window_get_type (window);
+	colormap = gdk_window_get_colormap (window);
+
+	/* HACK1:
+	 *
+	 * This horrible thing we do here is needed to
+	 * prevent GdkPixbuf from doing geometry sanity
+	 * checks on the the window.  By pretending it
+	 * is a Pixmap, we fool GdkPixbuf into not doing
+	 * these checks.  
+	 *
+	 * Why ? The sanity checks that GdkPixbuf does
+	 * are good most of the time, but not 100% of 
+	 * the time.  This is because there is no guarantee
+	 * that when the x server gets the GetImage request,
+	 * the geometry of that window is what GdkPixbuf
+	 * thought it was.
+	 *
+	 * For example, the window manager could have triggered
+	 * a sequence of events causing the window to resize.
+	 */
+	window_private = (GdkWindowPrivate*) window;
+	window_private->window_type = GDK_WINDOW_PIXMAP;
+
+	pixbuf = gdk_pixbuf_get_from_drawable (NULL,
+					       window,
+					       colormap,
+					       x,
+					       y,
+					       0,
+					       0,
+					       width,
+					       height);
+
+	/* Restore the window's guts */
+	window_private->window_type = save_window_type;
+		
+	/* HACK2:
+	 *
+	 * Now we pop the error handler and see whether an error
+	 * occured.
+	 * 
+	 * It is very rare that an error might occur.  The conditions
+	 * under which it might are:
+	 *
+	 * 1) Race condition as described above in HACK1
+	 *
+	 * 2) Bogus coordinates and/or dimensions given to
+	 *    the GetImage() request - which GdkPixbuf cant
+	 *    safely sanity check against.
+	 *
+	 * So, if we get an error, we simply drop this request on
+	 * the floor and return NULL.  The caller needs to deal with
+	 * the fact that their request couldnt be executed.  Most of
+	 * the time, all that is needed is to simply ignore it.
+	 */
+	error_code = gdk_error_trap_pop ();
+	
+	if (error_code != 0) {
+		/* HACK3:
+		 *
+		 * The magical number "8" is the minor x error request
+		 * code.  That is the only error we are expecting.
+		 *
+		 * Otherwise we still return NULL, but the caller
+		 * gets a critical.
+		 */
+		g_return_val_if_fail (error_code == 8, NULL);
+
+		return NULL;
+	}
+
+	return pixbuf;
 }

@@ -1,3 +1,39 @@
+2000-12-20  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-debug-drawing.h:
+	* libnautilus-extensions/nautilus-debug-drawing.c:
+	(nautilus_debug_show_pixbuf_in_eog), (debug_delete_event),
+	(nautilus_debug_show_pixbuf):
+	Add a debug function to show pixbufs in process without having to
+	fork off eog.  This is more unseful than the eog version for
+	asynchronous stuff.
+	
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(pixbuf_draw_tiled), (draw_tile_to_pixbuf_callback),
+	(draw_tile_to_drawable_callback),
+	(nautilus_gdk_pixbuf_draw_to_pixbuf_tiled),
+	(nautilus_gdk_pixbuf_draw_to_drawable_tiled),
+	New function to tile pixbufs into drawables.  In order to reuse
+	the tiling algorithm from the "tile_to_pixbuf" function, i added a
+	simple callback mechanism.
+	
+	(nautilus_gdk_pixbuf_get_global_buffer),
+	New function to access a global buffer.
+	
+	(nautilus_gdk_pixbuf_get_from_window_safe):
+	New function to wrap gdk_pixbuf_get_from_drawable with safety from
+	x errors and race conditions.  See code for detailed comments as
+	to the specific problems this wrapper addresses.
+
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_class_name_make_like_existing_type):
+	New function that custom widgets can call to make themselves look
+	like stock widgets wrt to the gtk thememing engine.
+
 2000-12-21  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>
