@@ -1,3 +1,15 @@
+2000-06-19  Maciej Stachowiak  <mjs@eazel.com>
+
+	FIXME 1262 believed fixed now:
+	
+	* libnautilus-extensions/nautilus-mime-actions.c
+	(nautilus_mime_get_short_list_components_for_uri,
+	gnome_vfs_mime_application_has_id_not_in_list): Fixed some memory
+	leaks.
+	
+	* src/nautilus-window.c (nautilus_window_load_content_view_menu):
+	Fixed a memory leak.
+
 2000-06-19  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/html/ntl-web-browser.oafinfo:

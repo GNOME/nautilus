@@ -841,6 +841,8 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
                 ++index;
         }
 
+	gnome_vfs_mime_component_list_free (components);
+
         /* Add "View as Other..." extra bonus choice, with separator before it.
          * Leave separator out if there are no viewers in menu by default. 
          */

@@ -39,9 +39,7 @@
 
 static gint gnome_vfs_mime_application_has_id (GnomeVFSMimeApplication *application, const char *id);
 static gint gnome_vfs_mime_id_matches_application (const char *id, GnomeVFSMimeApplication *application);
-static gint gnome_vfs_mime_id_matches_component (const char *iid, OAF_ServerInfo *component);
 static gboolean gnome_vfs_mime_application_has_id_not_in_list (GnomeVFSMimeApplication *application, GList *ids);
-static gboolean component_has_id_in_list (OAF_ServerInfo *server, GList *iids);
 static gboolean string_not_in_list (const char *str, GList *list);
 static char *extract_prefix_add_suffix (const char *string, const char *separator, const char *suffix);
 static char *mime_type_get_supertype (const char *mime_type);
@@ -70,9 +68,6 @@ static char *get_mime_type_from_uri (const char
 
 static int strv_length (char **a);
 static char **strv_concat (char **a, char **b);
-
-
-/* FIXME bugzilla.eazel.com 1262: free the mallocs everywhere */
 
 
 
@@ -539,15 +534,10 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 
 		result = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, NULL, extra_requirements, &ev);
 		
-		result = nautilus_g_list_partition
-			(result,
-			 (NautilusGPredicateFunc) component_has_id_in_list,
-			 iids, &removed);
 	}
 
+	gnome_vfs_mime_component_list_free (servers);
 	g_list_free (iids);
-	
-	gnome_vfs_mime_component_list_free (removed);
 	g_free (uri_scheme);
 	g_free (mime_type);
 	
@@ -950,22 +940,10 @@ gnome_vfs_mime_id_matches_application (const char *id, GnomeVFSMimeApplication *
 	return gnome_vfs_mime_application_has_id (application, id);
 }
 
-static gint
-gnome_vfs_mime_id_matches_component (const char *iid, OAF_ServerInfo *component)
-{
-	return strcmp (component->iid, iid);
-}
-
 static gboolean
 gnome_vfs_mime_application_has_id_not_in_list (GnomeVFSMimeApplication *application, GList *ids)
 {
 	return g_list_find_custom (ids, application, (GCompareFunc) gnome_vfs_mime_id_matches_application) == NULL;
-}
-
-static gboolean
-component_has_id_in_list (OAF_ServerInfo *server, GList *iids)
-{
-	return g_list_find_custom (iids, server, (GCompareFunc) gnome_vfs_mime_id_matches_component) != NULL;
 }
 
 static gboolean
