@@ -1,3 +1,16 @@
+2000-10-12  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3717 (Unchecking "show built-in bookmarks" doesn't
+	make them go away)
+
+	* src/nautilus-window-menus.c: 
+	tweaked the names of a couple of #defines
+	(refresh_bookmarks_menu): Added parameter check.
+	(nautilus_window_remove_bookmarks_menu_items): Remove the
+	built-in bookmarks as well as the dynamic ones.
+	(nautilus_window_remove_go_menu_items), (append_dynamic_bookmarks),
+	(refresh_go_menu): Updated for #define name change.
+
 2000-10-12  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-background.c: Change

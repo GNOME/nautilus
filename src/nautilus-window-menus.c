@@ -77,10 +77,10 @@
 #define NAUTILUS_MENU_PATH_SHOW_HIDE_LOCATION_BAR		"/menu/View/Show Hide Placeholder/Show Hide Location Bar"
 #define NAUTILUS_MENU_PATH_SHOW_HIDE_STATUS_BAR			"/menu/View/Show Hide Placeholder/Show Hide Status Bar"
 
-#define NAUTILUS_MENU_PATH_HISTORY_ITEMS_PLACEHOLDER		"/menu/Go/History Placeholder"
+#define NAUTILUS_MENU_PATH_HISTORY_PLACEHOLDER			"/menu/Go/History Placeholder"
 
 #define NAUTILUS_MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER	"/menu/Bookmarks/Built-in Bookmarks Placeholder"
-#define NAUTILUS_MENU_PATH_BOOKMARK_ITEMS_PLACEHOLDER		"/menu/Bookmarks/Bookmarks Placeholder"
+#define NAUTILUS_MENU_PATH_BOOKMARKS_PLACEHOLDER		"/menu/Bookmarks/Bookmarks Placeholder"
 #define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_BOOKMARKS   	"/menu/Bookmarks/Separator before Bookmarks"
 
 #define NAUTILUS_MENU_PATH_ABOUT_ITEM				"/menu/Help/About Nautilus"
@@ -1019,6 +1019,8 @@ edit_bookmarks (NautilusWindow *window)
 static void
 refresh_bookmarks_menu (NautilusWindow *window)
 {
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
 	/* Unregister any pending call to this function. */
 	nautilus_window_remove_bookmarks_menu_callback (window);
 
@@ -1288,15 +1290,23 @@ nautilus_window_remove_go_menu_callback (NautilusWindow *window)
 void
 nautilus_window_remove_bookmarks_menu_items (NautilusWindow *window)
 {
+	/* FIXME bugzilla.eazel.com 3568:
+	 * We leak the verbs when we remove the menu items.
+	 */
 	nautilus_bonobo_remove_menu_items (window->details->shell_ui, 
-					   NAUTILUS_MENU_PATH_BOOKMARK_ITEMS_PLACEHOLDER);					   
+					   NAUTILUS_MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER);					   
+	nautilus_bonobo_remove_menu_items (window->details->shell_ui, 
+					   NAUTILUS_MENU_PATH_BOOKMARKS_PLACEHOLDER);					   
 }
 
 void
 nautilus_window_remove_go_menu_items (NautilusWindow *window)
 {
+	/* FIXME bugzilla.eazel.com 3568:
+	 * We leak the verbs when we remove the menu items.
+	 */
 	nautilus_bonobo_remove_menu_items (window->details->shell_ui, 
-					   NAUTILUS_MENU_PATH_HISTORY_ITEMS_PLACEHOLDER);
+					   NAUTILUS_MENU_PATH_HISTORY_PLACEHOLDER);
 }
 
 void
@@ -1336,7 +1346,7 @@ append_dynamic_bookmarks (NautilusWindow *window)
 		name = g_strdup_printf ("Bookmark%d", index);
 		append_bookmark_to_menu (window,
 		                         nautilus_bookmark_list_item_at (bookmarks, index),
-		                         NAUTILUS_MENU_PATH_BOOKMARK_ITEMS_PLACEHOLDER,
+		                         NAUTILUS_MENU_PATH_BOOKMARKS_PLACEHOLDER,
 		                         name,
 		                         TRUE);
                 g_free (name);
@@ -1394,7 +1404,7 @@ refresh_go_menu (NautilusWindow *window)
 		name = g_strdup_printf ("History%d", index); 
 		append_bookmark_to_menu (window,
 					 NAUTILUS_BOOKMARK (node->data),
-					 NAUTILUS_MENU_PATH_HISTORY_ITEMS_PLACEHOLDER,
+					 NAUTILUS_MENU_PATH_HISTORY_PLACEHOLDER,
 					 name,
 					 FALSE);
 		g_free (name);
