@@ -4007,7 +4007,7 @@ extension_action_slow_mime_types_ready_callback (GList *selection,
 		
 		g_object_get (l->data, "name", &name, NULL);
 		
-		if (strcmp (name, item_name)) {
+		if (strcmp (name, item_name) == 0) {
 			is_valid = TRUE;
 			g_free (name);
 			break;
