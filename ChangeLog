@@ -1,3 +1,16 @@
+2000-08-22  Mathieu Lacage  <mathieu@eazel.com>
+
+	Add rebecka's class for queues.
+	
+	* libnautilus-extensions/Makefile.am: add files.
+	* libnautilus-extensions/nautilus-lib-self-check-functions.h:
+	add self-test function for queues
+	* libnautilus-extensions/nautilus-queue.c: (nautilus_queue_new),
+	(nautilus_queue_add), (nautilus_queue_remove),
+	(nautilus_queue_free_deep), (nautilus_queue_is_empty),
+	(nautilus_queue_free), (nautilus_self_check_queue):
+	* libnautilus-extensions/nautilus-queue.h: 
+
 2000-08-22  John Sullivan  <sullivan@eazel.com>
 
 	More work on bug 1653 (new menu layout)
