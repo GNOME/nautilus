@@ -42,6 +42,8 @@
 
 #include "io-png.h"
 
+#define LOAD_BUFFER_SIZE 65536
+
 /*
  * Number of running objects
  */ 
@@ -479,7 +481,7 @@ load_image_from_stream (BonoboPersistStream *ps, Bonobo_Stream stream,
 
 	/* Load new data from stream */
 	do {
-		Bonobo_Stream_read (stream, 4096, &buffer, ev);
+		Bonobo_Stream_read (stream, LOAD_BUFFER_SIZE, &buffer, ev);
 		if (ev->_major != CORBA_NO_EXCEPTION) {
 			gdk_pixbuf_loader_close (loader);
 			gtk_object_unref (GTK_OBJECT (loader));
