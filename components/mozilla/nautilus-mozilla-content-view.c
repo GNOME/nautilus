@@ -541,12 +541,12 @@ mozilla_net_status_callback (GtkMozEmbed *mozilla, gint flags, gpointer user_dat
 	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
 
 	/* win_start */
-	if (flags & gtk_moz_embed_flag_win_start) {
+	if (flags & GTK_MOZ_EMBED_FLAG_WIN_START) {
 		mozilla_content_view_set_busy_cursor (view);
 	}
 
 	/* win_stop */
-	if (flags & gtk_moz_embed_flag_win_stop) {
+	if (flags & GTK_MOZ_EMBED_FLAG_WIN_STOP) {
 		mozilla_content_view_clear_busy_cursor (view);
 	}
 	
@@ -554,72 +554,72 @@ mozilla_net_status_callback (GtkMozEmbed *mozilla, gint flags, gpointer user_dat
  	g_print ("mozilla_net_status_callback (");
 
 	/* net_start */
-	if (flags & gtk_moz_embed_flag_net_start) {
+	if (flags & GTK_MOZ_EMBED_FLAG_NET_START) {
 		g_print ("net_start ");
 	}
 
 	/* net_stop */
-	if (flags & gtk_moz_embed_flag_net_stop) {
+	if (flags & GTK_MOZ_EMBED_FLAG_NET_STOP) {
 		g_print ("net_stop ");
 	}
 
 	/* net_dns */
-	if (flags & gtk_moz_embed_flag_net_dns) {
+	if (flags & GTK_MOZ_EMBED_FLAG_NET_DNS) {
 		g_print ("net_dns ");
 	}
 
 	/* net_connecting */
-	if (flags & gtk_moz_embed_flag_net_connecting) {
+	if (flags & GTK_MOZ_EMBED_FLAG_NET_CONNECTING) {
 		g_print ("net_connecting ");
 	}
 
 	/* net_redirecting */
-	if (flags & gtk_moz_embed_flag_net_redirecting) {
+	if (flags & GTK_MOZ_EMBED_FLAG_NET_REDIRECTING) {
 		g_print ("net_redirecting ");
 	}
 
 	/* net_negotiating */
-	if (flags & gtk_moz_embed_flag_net_negotiating) {
+	if (flags & GTK_MOZ_EMBED_FLAG_NET_NEGOTIATING) {
 		g_print ("net_negotiating ");
 	}
 
 	/* net_transferring */
-	if (flags & gtk_moz_embed_flag_net_transferring) {
+	if (flags & GTK_MOZ_EMBED_FLAG_NET_TRANSFERRING) {
 		g_print ("net_transferring ");
 	}
 
 	/* net_failedDNS */
-	if (flags & gtk_moz_embed_flag_net_failedDNS) {
+	if (flags & GTK_MOZ_EMBED_FLAG_NET_FAILEDDNS) {
 		g_print ("net_failedDNS ");
 	}
 
 	/* net_failedConnect */
-	if (flags & gtk_moz_embed_flag_net_failedConnect) {
+	if (flags & GTK_MOZ_EMBED_FLAG_NET_FAILEDCONNECT) {
 		g_print ("net_failedConnect ");
 	}
 
 	/* net_failedTransfer */
-	if (flags & gtk_moz_embed_flag_net_failedTransfer) {
+	if (flags & GTK_MOZ_EMBED_FLAG_NET_FAILEDTRANSFER) {
 		g_print ("net_failedTransfer ");
 	}
 
 	/* net_failedTimeout */
-	if (flags & gtk_moz_embed_flag_net_failedTimeout) {
+	if (flags & GTK_MOZ_EMBED_FLAG_NET_FAILEDTIMEOUT) {
 		g_print ("net_failedTimeout ");
 	}
 
 	/* net_userCancelled */
-	if (flags & gtk_moz_embed_flag_net_userCancelled) {
+	if (flags & GTK_MOZ_EMBED_FLAG_NET_USERCANCELLED) {
 		g_print ("net_userCancelled ");
 	}
 
 	/* win_start */
-	if (flags & gtk_moz_embed_flag_win_start) {
+	if (flags & GTK_MOZ_EMBED_FLAG_WIN_START) {
 		g_print ("win_start ");
 	}
 
 	/* win_stop */
-	if (flags & gtk_moz_embed_flag_win_stop) {
+	if (flags & GTK_MOZ_EMBED_FLAG_WIN_STOP) {
 		g_print ("win_stop ");
 	}
 
