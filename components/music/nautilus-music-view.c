@@ -1796,8 +1796,7 @@ stop_playing_file (NautilusMusicView *music_view)
 static PlayerState
 get_player_state (NautilusMusicView *music_view)
 {
-	if (music_view->details->player_state == PLAYER_PLAYING && esdout_playing ()
-	    && (esdout_get_output_time () + 500) >= music_view->details->current_duration) {
+	if (music_view->details->player_state == PLAYER_PLAYING && !esdout_playing ()) {
 		music_view->details->player_state = PLAYER_NEXT;
 	}
 
