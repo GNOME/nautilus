@@ -50,10 +50,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus-1.0.5\n"
-"POT-Creation-Date: 2001-11-07 17:31-0800\n"
-"PO-Revision-Date: 2001-10-26 18:06+02:00\n"
-"Last-Translator: Christian Meyer <chrisime@gnome.org>\n"
+"Project-Id-Version: nautilus-1.0.6cvs\n"
+"POT-Creation-Date: 2001-11-10 15:03+0100\n"
+"PO-Revision-Date: 2001-11-10 15:46+01:00\n"
+"Last-Translator: Benedikt Roth <Benedikt.Roth@gmx.net>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
@@ -435,35 +435,32 @@ msgid " (see also \""
 msgstr " (siehe auch \""
 
 #: components/help/hyperbola-nav-index.c:1414
-#, fuzzy
 msgid "(see: "
-msgstr "siehe "
+msgstr "(siehe: "
 
 #: components/help/hyperbola-nav-index.c:1434
-#, fuzzy
 msgid "(see also: "
-msgstr "siehe auch "
+msgstr "(siehe auch: "
 
 #: components/help/hyperbola-nav-index.c:1974
-#, fuzzy
 msgid "_Index:"
-msgstr "Indie"
+msgstr "_Index:"
 
 #: components/help/hyperbola-nav-index.c:2004
 msgid ""
 "Select _documents to show \n"
 "in index tab"
 msgstr ""
+"Wählen Sie die _Dokumente welche\n"
+"im Index-Reiter angezeigt werden sollen"
 
 #: components/help/hyperbola-nav-index.c:2030
-#, fuzzy
 msgid "Select Al_l"
-msgstr "Alles auswählen"
+msgstr "A_lles auswählen"
 
 #: components/help/hyperbola-nav-index.c:2035
-#, fuzzy
 msgid "Select _None"
-msgstr "_Alles auswählen"
+msgstr "_Nichts auswählen"
 
 #: components/help/hyperbola-nav-index.c:2039 data/browser.xml.h:55
 #: libnautilus-private/nautilus-file-operations.c:1087
@@ -478,22 +475,20 @@ msgid "Cancel"
 msgstr "Abbrechen"
 
 #: components/help/hyperbola-nav-index.c:2205
-#, fuzzy
 msgid "Show indexes for:"
-msgstr "Sei_tenleiste zeigen"
+msgstr ""
 
 #: components/help/hyperbola-nav-index.c:2214
-#, fuzzy
 msgid "Selection on Contents _tab"
-msgstr "Inhaltsverzeichnis"
+msgstr ""
 
 #: components/help/hyperbola-nav-index.c:2223
 msgid "_All documents"
-msgstr ""
+msgstr "_Alle Dokumente"
 
 #: components/help/hyperbola-nav-index.c:2231
 msgid "_Specific documents"
-msgstr ""
+msgstr "_Spezifische Dokumente"
 
 #: components/help/hyperbola-nav-index.c:2261
 msgid "S_how all index terms"
@@ -505,12 +500,11 @@ msgstr ""
 
 #: components/help/hyperbola-nav-index.c:2288
 msgid "Sho_w"
-msgstr ""
+msgstr "An_zeigen"
 
 #: components/help/hyperbola-nav-index.c:2302
-#, fuzzy
 msgid "Inde_x:"
-msgstr "Indie"
+msgstr "Inde_x:"
 
 #: components/help/hyperbola-nav-tree.c:307
 msgid "Introductory Documents"
@@ -521,14 +515,22 @@ msgid "Documents by Subject"
 msgstr "Dokumente nach Thema"
 
 #: components/help/hyperbola-nav-tree.c:482
-#, fuzzy
 msgid "_Contents"
-msgstr "Inhalt:"
+msgstr "In_halt:"
 
 #: components/help/hyperbola-nav-tree.c:499
-#, fuzzy
 msgid "_Index"
-msgstr "Indie"
+msgstr "_Index"
+
+#: components/help/nautilus-hyperbola-ui.xml.h:1
+#, fuzzy
+msgid "All Selected"
+msgstr "Alle ausgewählten"
+
+#: components/help/nautilus-hyperbola-ui.xml.h:2
+#, fuzzy
+msgid "Contents Selected"
+msgstr "Ausgewählte Inhalte"
 
 #: components/history/Nautilus_View_history.oaf.in.h:1
 msgid "Factory for history views"
@@ -2105,14 +2107,23 @@ msgstr "_Helvetica"
 msgid "_Times"
 msgstr "_Times"
 
-#: components/text/nautilus-text-view.c:332
+#. create label, add formating changes, and place it in frame
+#: components/text/nautilus-text-view.c:192
+msgid ""
+"This text is read only\n"
+"To edit it, choose an option from the sidebar"
+msgstr ""
+"Dieser Text ist schreibgeschützt.\n"
+"Um ihn zu bearbeiten, wählen Sie eine Option aus der Seitenleiste."
+
+#: components/text/nautilus-text-view.c:339
 #, c-format
 msgid "Sorry, but %s is too large for Nautilus to load all of it."
 msgstr ""
 "Entschuldigung, aber %s ist so groß, dass Nautilus nicht alles davon laden "
 "kann."
 
-#: components/text/nautilus-text-view.c:335
+#: components/text/nautilus-text-view.c:342
 msgid "File too large"
 msgstr "Datei zu groß"
 
