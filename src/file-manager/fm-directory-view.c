@@ -1359,6 +1359,8 @@ fm_directory_view_init (FMDirectoryView *view)
 				      sort_directories_first_changed_callback, view);
 
 	view->details->recent_model = egg_recent_model_new (EGG_RECENT_MODEL_SORT_NONE);
+	/* we aren't interested at all in viewing the list */
+	egg_recent_model_set_limit (view->details->recent_model, 0);
 }
 
 static void
