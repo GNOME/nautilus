@@ -1,3 +1,12 @@
+2000-03-12  Andy Hertzfeld <andy@eazel.com>
+
+	* src/file-manager/fm-properties-window.c:
+	fixed bug where closing the properties window would cause a crash.
+	It was caused by double deleting nautilus_file objects and fixed by
+	removing the callback to delete the nautilus file in
+	create_properties_window.  Darin better check this to make sure
+	we're not leaking here.
+
 2000-03-12  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* nautilus-widgets/nautilus-preferences.c:
