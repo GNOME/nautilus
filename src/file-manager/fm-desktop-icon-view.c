@@ -580,7 +580,7 @@ change_background_callback (BonoboUIComponent *component,
 
 	nautilus_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (data)),
 						  _("Background"),
-						  "gnome-wallpaper-properties",
+						  "gnome-background-properties",
 						  NULL,
 						  FALSE);
 }
