@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-11 12:30+0100\n"
-"PO-Revision-Date: 2004-01-26 13:07+0800\n"
+"POT-Creation-Date: 2004-02-11 15:45+0100\n"
+"PO-Revision-Date: 2004-02-12 02:19+0800\n"
 "Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
@@ -112,15 +112,13 @@ msgid ""
 msgstr "输入徽标旁边的描述性名称。此名称将在其它位置用于标识徽标。"
 
 #: components/emblem/nautilus-emblem-view.c:742
-#, fuzzy
 msgid "Some of the files could not be added as emblems."
-msgstr "某些文件无法添加为徽标，原因是这些文件不像是有效的图像。"
+msgstr "某些文件无法添加为徽标。"
 
 #: components/emblem/nautilus-emblem-view.c:742
 #: components/emblem/nautilus-emblem-view.c:744
-#, fuzzy
 msgid "The emblems do not appear to be valid images."
-msgstr "文件“%s”不像是有效的图像。"
+msgstr "徽标不像是有效的图像。"
 
 #: components/emblem/nautilus-emblem-view.c:742
 #: components/emblem/nautilus-emblem-view.c:744
@@ -128,15 +126,14 @@ msgid "Couldn't Add Emblems"
 msgstr "无法添加徽标"
 
 #: components/emblem/nautilus-emblem-view.c:744
-#, fuzzy
 msgid "None of the files could be added as emblems."
-msgstr "无法将任意一个文件添加为徽标，原因是这些文件都不像是有效的图像。"
+msgstr "无法将任意一个文件添加为徽标。"
 
 #: components/emblem/nautilus-emblem-view.c:765
 #: components/emblem/nautilus-emblem-view.c:790
 #: components/emblem/nautilus-emblem-view.c:840
 msgid "The emblem cannot be added."
-msgstr ""
+msgstr "无法添加徽标。"
 
 #: components/emblem/nautilus-emblem-view.c:765
 msgid "The dragged text was not a valid file location."
@@ -982,7 +979,7 @@ msgstr "属性"
 
 #: libnautilus-extension/nautilus-column.c:183
 msgid "The attribute name to display"
-msgstr ""
+msgstr "要显示的属性名"
 
 #: libnautilus-extension/nautilus-column.c:189
 #: libnautilus-extension/nautilus-menu-item.c:213
@@ -1016,7 +1013,7 @@ msgstr "项目名称"
 
 #: libnautilus-extension/nautilus-menu-item.c:214
 msgid "Label to display to the user"
-msgstr ""
+msgstr "显示给用户的标签"
 
 #: libnautilus-extension/nautilus-menu-item.c:220
 msgid "Tip"
@@ -1063,9 +1060,8 @@ msgid "Page"
 msgstr "页"
 
 #: libnautilus-extension/nautilus-property-page.c:191
-#, fuzzy
 msgid "Widget for the property page"
-msgstr "侧栏宽度"
+msgstr "属性页部件"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:1
 msgid ""
@@ -1828,14 +1824,12 @@ msgid "The permissions of the file, in octal notation."
 msgstr "无法确定选中文件的权限。"
 
 #: libnautilus-private/nautilus-column-utilities.c:113
-#, fuzzy
 msgid "MIME Type"
 msgstr "MIME类型"
 
 #: libnautilus-private/nautilus-column-utilities.c:114
-#, fuzzy
 msgid "The mime type of the file."
-msgstr "[文件类型是] 文本文件"
+msgstr "文件的 MIME 类型。"
 
 #: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
@@ -1848,9 +1842,8 @@ msgid "on the desktop"
 msgstr "在桌面上"
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:105
-#, fuzzy
 msgid "You cannot delete a volume icon."
-msgstr "无法删除卷"
+msgstr "您无法删除卷图标。"
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:106
 #, fuzzy
@@ -1860,7 +1853,6 @@ msgid ""
 msgstr "您不能删除卷图标。如果您想要弹出卷，请使用该卷右键菜单中的弹出功能。"
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:108
-#, fuzzy
 msgid "Can't Delete Volume"
 msgstr "无法删除卷"
 
@@ -1898,7 +1890,7 @@ msgstr "设置为本文件夹的背景(_T)"
 #: libnautilus-private/nautilus-emblem-utils.c:257
 #: libnautilus-private/nautilus-emblem-utils.c:274
 msgid "The emblem cannot be installed."
-msgstr ""
+msgstr "无法安装徽标。"
 
 #: libnautilus-private/nautilus-emblem-utils.c:198
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
@@ -1963,11 +1955,9 @@ msgid "Error while moving."
 msgstr "移动时发生错误。"
 
 #: libnautilus-private/nautilus-file-operations.c:552
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" cannot be moved because it is on a read-only disk."
 msgstr ""
-"移动时发生错误。\n"
-"\n"
 "无法移动“%s”，因为它在只读磁盘上。"
 
 #: libnautilus-private/nautilus-file-operations.c:562
@@ -1976,31 +1966,25 @@ msgid "Error while deleting."
 msgstr "删除时发生错误。"
 
 #: libnautilus-private/nautilus-file-operations.c:563
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" cannot be deleted because you do not have permissions to modify its "
 "parent folder."
 msgstr ""
-"删除时发生错误。\n"
-"\n"
 "无法删除“%s”，您没有权限修改它的父目录。"
 
 #: libnautilus-private/nautilus-file-operations.c:569
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" cannot be deleted because it is on a read-only disk."
 msgstr ""
-"删除时发生错误。\n"
-"\n"
 "无法删除“%s”，因为它在只读磁盘上。"
 
 #: libnautilus-private/nautilus-file-operations.c:600
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\"%s\" cannot be moved because you do not have permissions to change it or "
 "its parent folder."
 msgstr ""
-"移动时发生错误。\n"
-"\n"
 "无法移动“%s”，因为您没有权限修改它或者它的父目录。"
 
 #: libnautilus-private/nautilus-file-operations.c:604
@@ -2008,23 +1992,19 @@ msgid "Error while moving. "
 msgstr "移动时发生错误。"
 
 #: libnautilus-private/nautilus-file-operations.c:605
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Cannot move \"%s\" because it or its parent folder are contained in the "
 "destination."
 msgstr ""
-"移动时发生错误。\n"
-"\n"
 "无法移动“%s”，因为该文件本身或其父文件夹包含在目标位置中。"
 
 #: libnautilus-private/nautilus-file-operations.c:615
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Cannot move \"%s\" to the trash because you do not have permissions to "
 "change it or its parent folder."
 msgstr ""
-"移动时发生错误。\n"
-"\n"
 "无法将“%s”移动到回收站，因为您没有权限修改它或者它的父目录。"
 
 #: libnautilus-private/nautilus-file-operations.c:637
@@ -2032,76 +2012,65 @@ msgid "Error while copying."
 msgstr "复制时发生错误。"
 
 #: libnautilus-private/nautilus-file-operations.c:638
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" cannot be copied because you do not have permissions to read it."
 msgstr ""
-"复制时发生错误。\n"
-"\n"
 "无法复制“%s”，因为您没有读取它的权限。"
 
 #: libnautilus-private/nautilus-file-operations.c:658
 #: libnautilus-private/nautilus-file-operations.c:679
 #: libnautilus-private/nautilus-file-operations.c:683
-#, fuzzy, c-format
+#, c-format
 msgid "Error while copying to \"%s\"."
-msgstr "复制时发生错误。"
+msgstr "复制到“%s”时发生错误。"
 
 #: libnautilus-private/nautilus-file-operations.c:659
 #: libnautilus-private/nautilus-file-operations.c:664
 #: libnautilus-private/nautilus-file-operations.c:668
-#, fuzzy
 msgid "There is not enough space on the destination."
 msgstr ""
-"移动到“%s”时发生错误。\n"
-"\n"
 "目标位置中没有足够空间。"
 
 #: libnautilus-private/nautilus-file-operations.c:663
-#, fuzzy, c-format
+#, c-format
 msgid "Error while moving to \"%s\"."
-msgstr "移动时发生错误。"
+msgstr "移动到“%s”时发生错误。"
 
 #: libnautilus-private/nautilus-file-operations.c:667
-#, fuzzy, c-format
+#, c-format
 msgid "Error while creating link in \"%s\"."
-msgstr "创建链接时发生错误。"
+msgstr "在“%s”中创建链接时发生错误。"
 
 #: libnautilus-private/nautilus-file-operations.c:680
 #: libnautilus-private/nautilus-file-operations.c:691
 #: libnautilus-private/nautilus-file-operations.c:702
-#, fuzzy
 msgid "You do not have permissions to write to this folder."
 msgstr ""
-"将文件复制到“%s”时发生错误。\n"
-"\n"
 "您没有该文件夹的写权限。"
 
 #: libnautilus-private/nautilus-file-operations.c:684
 #: libnautilus-private/nautilus-file-operations.c:695
 #: libnautilus-private/nautilus-file-operations.c:706
-#, fuzzy
 msgid "The destination disk is read-only."
 msgstr ""
-"将文件复制到“%s”时发生错误。\n"
-"\n"
 "目标磁盘是只读的。"
 
 #: libnautilus-private/nautilus-file-operations.c:690
 #: libnautilus-private/nautilus-file-operations.c:694
-#, fuzzy, c-format
+#, c-format
 msgid "Error while moving items to \"%s\"."
-msgstr "移动时发生错误。"
+msgstr "移动到“%s”时发生错误。"
 
 #: libnautilus-private/nautilus-file-operations.c:701
 #: libnautilus-private/nautilus-file-operations.c:705
-#, fuzzy, c-format
+#, c-format
 msgid "Error while creating links in \"%s\"."
-msgstr "创建链接时发生错误。"
+msgstr "在“%s”中创建链接时发生错误。"
 
 #: libnautilus-private/nautilus-file-operations.c:733
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while copying \"%s\"."
-msgstr "复制时发生错误。"
+msgstr "复制“%2$s”时发生错误“%1$s”。"
 
 #: libnautilus-private/nautilus-file-operations.c:734
 #: libnautilus-private/nautilus-file-operations.c:738
@@ -2111,60 +2080,53 @@ msgstr "复制时发生错误。"
 #: libnautilus-private/nautilus-file-operations.c:767
 #: libnautilus-private/nautilus-file-operations.c:771
 #: libnautilus-private/nautilus-file-operations.c:777
-#, fuzzy
 msgid "Would you like to continue?"
 msgstr ""
-"移动时发生错误“%s”。\n"
-"\n"
 "您要继续吗？"
 
 #: libnautilus-private/nautilus-file-operations.c:737
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while moving \"%s\"."
-msgstr "移动时发生错误。"
+msgstr "移动“%2$s”时发生错误“%1$s”。"
 
 #: libnautilus-private/nautilus-file-operations.c:741
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while creating a link to \"%s\"."
 msgstr ""
-"创建指向“%2$s”的链接时发生错误“%1$s”。\n"
-"\n"
-"您要继续吗？"
+"创建指向“%2$s”的链接时发生错误“%1$s”。"
 
 #: libnautilus-private/nautilus-file-operations.c:747
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while deleting \"%s\"."
-msgstr "删除时发生错误。"
+msgstr "删除“%2$s”时发生错误“%1$s”。"
 
 #: libnautilus-private/nautilus-file-operations.c:762
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while copying."
-msgstr "复制时发生错误。"
+msgstr "复制时发生错误“%s”。"
 
 #: libnautilus-private/nautilus-file-operations.c:766
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while moving."
-msgstr "移动时发生错误。"
+msgstr "移动时发生错误“%s”。"
 
 #: libnautilus-private/nautilus-file-operations.c:770
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while linking."
-msgstr "创建链接时发生错误。"
+msgstr "创建链接时发生错误“%s”。"
 
 #: libnautilus-private/nautilus-file-operations.c:776
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" while deleting."
-msgstr "删除时发生错误。"
+msgstr "删除时发生错误“%s”。"
 
 #: libnautilus-private/nautilus-file-operations.c:902
-#, fuzzy
 msgid "Error While Copying"
-msgstr "复制时发生错误。"
+msgstr "复制时发生错误"
 
 #: libnautilus-private/nautilus-file-operations.c:905
-#, fuzzy
 msgid "Error While Moving"
-msgstr "移动时发生错误。"
+msgstr "移动时发生错误"
 
 #: libnautilus-private/nautilus-file-operations.c:908
 msgid "Error While Linking"
@@ -2186,54 +2148,45 @@ msgid "_Retry"
 msgstr "重试(_R)"
 
 #: libnautilus-private/nautilus-file-operations.c:1027
-#, fuzzy, c-format
+#, c-format
 msgid "Could not move \"%s\" to the new location."
-msgstr "无法完成指定操作。"
+msgstr "无法将“%s”移动至新位置。"
 
 #: libnautilus-private/nautilus-file-operations.c:1030
-#, fuzzy
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to move the item, rename it and try again."
 msgstr ""
-"无法将“%s”移动到新位置，因为该名称已被另一个无法被删除或替换的特殊项目使"
-"用。\n"
-"\n"
-"如果您想移动“%s”，请给它更名后再重试。"
+"该名称已被另一个无法被删除或替换的特殊项目使"
+"用。如果您想移动项目，请给它更名后再重试。"
 
 #: libnautilus-private/nautilus-file-operations.c:1034
-#, fuzzy, c-format
+#, c-format
 msgid "Could not copy \"%s\" to the new location."
-msgstr "无法完成指定操作。"
+msgstr "无法将“%s”复制到新位置。"
 
 #: libnautilus-private/nautilus-file-operations.c:1037
-#, fuzzy
 msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to copy the item, rename it and try again."
 msgstr ""
-"无法将“%s”复制到新位置，因为该名称已被另一个无法被删除或替换的特殊项目使"
-"用。\n"
-"\n"
-"如果您想复制“%s”，请给它更名后再重试。"
+"该名称已被另一个无法被删除或替换的特殊项目使"
+"用。如果您想复制项目，请给它更名后再重试。"
 
 #: libnautilus-private/nautilus-file-operations.c:1043
-#, fuzzy
 msgid "Unable to Replace File"
-msgstr "无法替换文件。"
+msgstr "无法替换文件"
 
 #: libnautilus-private/nautilus-file-operations.c:1056
-#, fuzzy, c-format
+#, c-format
 msgid "The file \"%s\" already exists.  Would you like to replace it?"
 msgstr ""
-"文件“%s”已经存在。\n"
-"\n"
-"您要替换它吗？"
+"文件“%s”已经存在。您要替换它吗？"
 
 #: libnautilus-private/nautilus-file-operations.c:1069
 #: libnautilus-private/nautilus-file-operations.c:1088
 msgid "If you replace an existing file, its contents will be overwritten."
-msgstr ""
+msgstr "如果您要替换已有文件，其内容将会被覆盖。"
 
 #: libnautilus-private/nautilus-file-operations.c:1070
 #: libnautilus-private/nautilus-file-operations.c:1089
@@ -2250,6 +2203,10 @@ msgid "Replace _All"
 msgstr "全部替换(_A)"
 
 #. appended to new link file
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4690
 #, c-format
@@ -2304,6 +2261,9 @@ msgid " (another copy)"
 msgstr " (另一个复件)"
 
 #. localizers: tag used to detect the x11th copy of a file
+#. localizers: tag used to detect the x12th copy of a file
+#. localizers: tag used to detect the x13th copy of a file
+#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2339,6 +2299,9 @@ msgid "%s (another copy)%s"
 msgstr "%s (另一个复件)%s"
 
 #. localizers: appended to x11th file copy
+#. localizers: appended to x12th file copy
+#. localizers: appended to x13th file copy
+#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -2464,30 +2427,28 @@ msgid "Preparing To Copy..."
 msgstr "正在准备复制..."
 
 #: libnautilus-private/nautilus-file-operations.c:1930
-#, fuzzy
 msgid "You cannot copy items into the trash."
 msgstr "您不能把项目复制到回收站。"
 
 #: libnautilus-private/nautilus-file-operations.c:1931
-#, fuzzy
 msgid "You cannot create links inside the trash."
-msgstr "您不能把项目复制到回收站。"
+msgstr "您不能在回收站内创建链接。"
 
 #: libnautilus-private/nautilus-file-operations.c:1932
 msgid "Files and folders can only be moved into the trash."
-msgstr ""
+msgstr "文件和文件夹只能被移至回收站中。"
 
 #: libnautilus-private/nautilus-file-operations.c:1956
 msgid "You cannot move this trash folder."
-msgstr "您不能移动回收站文件夹。"
+msgstr "您不能移动此回收站文件夹。"
 
 #: libnautilus-private/nautilus-file-operations.c:1957
 msgid "You cannot copy this trash folder."
-msgstr "您不能复制回收站文件夹。"
+msgstr "您不能复制此回收站文件夹。"
 
 #: libnautilus-private/nautilus-file-operations.c:1958
 msgid "A trash folder is used for storing items moved to the trash."
-msgstr ""
+msgstr "回收站文件夹用来存放被移动到其中的项目。"
 
 #: libnautilus-private/nautilus-file-operations.c:1960
 msgid "Can't Change Trash Location"
@@ -2506,9 +2467,8 @@ msgid "You cannot copy a folder into itself."
 msgstr "您不能将文件夹复制到它本身。"
 
 #: libnautilus-private/nautilus-file-operations.c:1987
-#, fuzzy
 msgid "The destination folder is inside the source folder."
-msgstr "在该文件夹中创建新的空文件夹"
+msgstr "目的文件夹位于源文件夹内。"
 
 #: libnautilus-private/nautilus-file-operations.c:1989
 msgid "Can't Move Into Self"
@@ -2524,7 +2484,7 @@ msgstr "您不能将文件复制到它本身。"
 
 #: libnautilus-private/nautilus-file-operations.c:2004
 msgid "The destination and source are the same file."
-msgstr ""
+msgstr "目的文件和源文件是同一个文件。"
 
 #: libnautilus-private/nautilus-file-operations.c:2005
 msgid "Can't Copy Over Self"
@@ -2532,20 +2492,14 @@ msgstr "不能复制到本身"
 
 #: libnautilus-private/nautilus-file-operations.c:2057
 #: libnautilus-private/nautilus-file-operations.c:2197
-#, fuzzy
 msgid "You do not have permissions to write to the destination."
 msgstr ""
-"创建新文件夹时发生错误。\n"
-"\n"
 "您没有写入目标位置的权限。"
 
 #: libnautilus-private/nautilus-file-operations.c:2059
 #: libnautilus-private/nautilus-file-operations.c:2199
-#, fuzzy
 msgid "There is no space on the destination."
 msgstr ""
-"创建新文件夹时发生错误。\n"
-"\n"
 "目标位置中没有空间。"
 
 #: libnautilus-private/nautilus-file-operations.c:2061
@@ -2554,12 +2508,10 @@ msgid "Error \"%s\" creating new folder."
 msgstr "创建新文件夹时发生错误“%s”。"
 
 #: libnautilus-private/nautilus-file-operations.c:2066
-#, fuzzy
 msgid "Error creating new folder."
-msgstr "创建新文件夹时发生错误"
+msgstr "创建新文件夹时发生错误。"
 
 #: libnautilus-private/nautilus-file-operations.c:2066
-#, fuzzy
 msgid "Error Creating New Folder"
 msgstr "创建新文件夹时发生错误"
 
@@ -2569,24 +2521,21 @@ msgid "untitled folder"
 msgstr "未命名文件夹"
 
 #: libnautilus-private/nautilus-file-operations.c:2201
-#, fuzzy, c-format
+#, c-format
 msgid "Error \"%s\" creating new document."
-msgstr "创建新文件夹时发生错误“%s”。"
+msgstr "创建新文档时发生错误“%s”。"
 
 #: libnautilus-private/nautilus-file-operations.c:2206
-#, fuzzy
 msgid "Error creating new document."
-msgstr "创建新文件夹时发生错误"
+msgstr "创建新文档时发生错误。"
 
 #: libnautilus-private/nautilus-file-operations.c:2206
-#, fuzzy
 msgid "Error Creating New Document"
-msgstr "创建新文件夹时发生错误"
+msgstr "创建新文档时发生错误"
 
 #: libnautilus-private/nautilus-file-operations.c:2353
-#, fuzzy
 msgid "new file"
-msgstr "1 个文件"
+msgstr "新文件"
 
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:2425
@@ -2619,13 +2568,12 @@ msgid "Preparing to Empty the Trash..."
 msgstr "正在准备清空回收站..."
 
 #: libnautilus-private/nautilus-file-operations.c:2529
-#, fuzzy
 msgid "Are you sure you want to empty all of the items from the trash?"
-msgstr "您确定要永久删除回收站中的所有项目吗？"
+msgstr "您确定要清空回收站中的全部项目吗？"
 
 #: libnautilus-private/nautilus-file-operations.c:2543
 msgid "If you empty the trash, items will be permanently deleted."
-msgstr ""
+msgstr "如果您清空了回收站，其中的项目将被永久删除。"
 
 #: libnautilus-private/nautilus-file-operations.c:2555
 msgid "_Empty"
@@ -3590,14 +3538,11 @@ msgid "Drop Target Only Supports Local Files"
 msgstr "拖放目标只支持本地文件"
 
 #: libnautilus-private/nautilus-program-choosing.c:1249
-#, fuzzy
 msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
 msgstr ""
-"该拖放目标只支持本地文件。\n"
-"\n"
-"要打开非本地邮件，将它们复制到本地文件夹中再拖放它们。您拖放的本地文件已经被"
+"要打开非本地文件，请将它们复制到本地文件夹中再拖放它们。您拖放的本地文件已经被"
 "打开。"
 
 #. Human readable description for a criterion in a search for
@@ -4148,7 +4093,7 @@ msgid_plural "%d other items selected (%s)"
 msgstr[0] "又选中了 %d 项 (%s)"
 
 #: src/file-manager/fm-directory-view.c:1817
-#, fuzzy, c-format
+#, c-format
 msgid "%s, Free space: %s"
 msgstr "%s，剩余空间：%s"
 
@@ -4191,15 +4136,13 @@ msgid "The file \"%s\" cannot be moved to the trash."
 msgstr "无法将“%s”移动到回收站中。"
 
 #: src/file-manager/fm-directory-view.c:3247
-#, fuzzy
 msgid "Cannot move items to trash, do you want to delete them immediately?"
-msgstr "无法将“%s”移动到回收站。您要立即删除它吗？"
+msgstr "无法将项目移动到回收站。您要立即删除它们吗？"
 
 #: src/file-manager/fm-directory-view.c:3250
-#, fuzzy
 msgid ""
 "Cannot move some items to trash, do you want to delete these immediately?"
-msgstr "无法将“%s”移动到回收站。您要立即删除它吗？"
+msgstr "无法将某些项目移动到回收站。您要立即删除它们吗？"
 
 #: src/file-manager/fm-directory-view.c:3257
 msgid "Delete Immediately?"
@@ -4250,22 +4193,19 @@ msgstr "在任意选中的项目上运行“%s”"
 #: src/file-manager/fm-directory-view.c:4315
 #, c-format
 msgid "Create Document from template \"%s\""
-msgstr ""
+msgstr "根据模板“%s”创建文档"
 
 #: src/file-manager/fm-directory-view.c:4499
-#, fuzzy
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
-"该文件夹中的所有执行文件将显示在脚本菜单中。从该菜单中选择某脚本将会用任意选"
-"中项目作为输入来执行那个脚本。"
+"该文件夹中的所有执行文件将显示在脚本菜单中。"
 
 #: src/file-manager/fm-directory-view.c:4501
-#, fuzzy
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr ""
-"该文件夹中的所有执行文件将显示在脚本菜单中。从该菜单中选择某脚本将会用任意选"
+"从该菜单中选择某脚本将会用任意选"
 "中项目作为输入来执行那个脚本。"
 
 #: src/file-manager/fm-directory-view.c:4503
@@ -4343,151 +4283,149 @@ msgstr[0] "如果您选择了粘贴文件命令，将复制选中的 %d 个项�
 msgid "There is nothing on the clipboard to paste."
 msgstr "剪贴板中没有东西可以粘贴。"
 
-#: src/file-manager/fm-directory-view.c:4838
-#: src/file-manager/fm-directory-view.c:5849
+#: src/file-manager/fm-directory-view.c:4837
+#: src/file-manager/fm-directory-view.c:5848
 msgid "Mount Error"
 msgstr "挂载错误"
 
-#: src/file-manager/fm-directory-view.c:4900
+#: src/file-manager/fm-directory-view.c:4899
 msgid "Unmount Error"
 msgstr "卸载错误"
 
-#: src/file-manager/fm-directory-view.c:4903
+#: src/file-manager/fm-directory-view.c:4902
 msgid "Eject Error"
 msgstr "弹出错误"
 
-#: src/file-manager/fm-directory-view.c:5127
+#: src/file-manager/fm-directory-view.c:5126
 msgid "E_ject"
 msgstr "弹出(_J)"
 
-#: src/file-manager/fm-directory-view.c:5127
+#: src/file-manager/fm-directory-view.c:5126
 #: src/file-manager/nautilus-directory-view-ui.xml.h:62
 msgid "_Unmount Volume"
 msgstr "卸载文件卷(_U)"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5258
+#: src/file-manager/fm-directory-view.c:5257
 #: src/file-manager/fm-tree-view.c:960
 #, c-format
 msgid "Open in New Window"
 msgid_plural "Open in %d New Windows"
 msgstr[0] "在%d个新窗口中打开"
 
-#: src/file-manager/fm-directory-view.c:5265
+#: src/file-manager/fm-directory-view.c:5264
 msgid "Browse Folder"
 msgstr "浏览文件夹"
 
-#: src/file-manager/fm-directory-view.c:5267
+#: src/file-manager/fm-directory-view.c:5266
 msgid "Browse Folders"
 msgstr "浏览文件夹"
 
-#: src/file-manager/fm-directory-view.c:5290
+#: src/file-manager/fm-directory-view.c:5289
 msgid "_Delete from Trash"
 msgstr "从回收站中删除(_D)"
 
-#: src/file-manager/fm-directory-view.c:5292
+#: src/file-manager/fm-directory-view.c:5291
 msgid "Delete all selected items permanently"
 msgstr "永久删除所有选中的项目"
 
-#: src/file-manager/fm-directory-view.c:5295
-#: src/file-manager/fm-directory-view.c:5633
+#: src/file-manager/fm-directory-view.c:5294
+#: src/file-manager/fm-directory-view.c:5632
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Mo_ve to Trash"
 msgstr "移动到回收站(_V)"
 
-#: src/file-manager/fm-directory-view.c:5297
+#: src/file-manager/fm-directory-view.c:5296
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
 msgid "Move each selected item to the Trash"
 msgstr "把每个选中项目都移到回收站"
 
-#: src/file-manager/fm-directory-view.c:5321
+#: src/file-manager/fm-directory-view.c:5320
 #: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "_Delete"
 msgstr "删除(_D)"
 
-#: src/file-manager/fm-directory-view.c:5341
+#: src/file-manager/fm-directory-view.c:5340
 msgid "Ma_ke Links"
 msgstr "创建链接(_K)"
 
-#: src/file-manager/fm-directory-view.c:5342
+#: src/file-manager/fm-directory-view.c:5341
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Ma_ke Link"
 msgstr "创建链接(_K)"
 
-#: src/file-manager/fm-directory-view.c:5355
+#: src/file-manager/fm-directory-view.c:5354
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "_Empty Trash"
 msgstr "清空回收站(_E)"
 
-#: src/file-manager/fm-directory-view.c:5371
+#: src/file-manager/fm-directory-view.c:5370
 msgid "Cu_t File"
 msgstr "剪切文件(_T)"
 
-#: src/file-manager/fm-directory-view.c:5372
+#: src/file-manager/fm-directory-view.c:5371
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Cu_t Files"
 msgstr "剪切文件(_T)"
 
-#: src/file-manager/fm-directory-view.c:5381
+#: src/file-manager/fm-directory-view.c:5380
 msgid "_Copy File"
 msgstr "复制文件(_C)"
 
-#: src/file-manager/fm-directory-view.c:5382
+#: src/file-manager/fm-directory-view.c:5381
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "_Copy Files"
 msgstr "复制文件(_C)"
 
-#: src/file-manager/fm-directory-view.c:5624
-#, fuzzy
+#: src/file-manager/fm-directory-view.c:5623
 msgid "The link is broken, do you want to move it to the Trash?"
-msgstr "无法使用该链接，因为它没有目标。您要将该链接移动到回收站中吗？"
+msgstr "链接已经损坏。您要将该链接移动到回收站中吗？"
 
-#: src/file-manager/fm-directory-view.c:5626
-#, fuzzy
+#: src/file-manager/fm-directory-view.c:5625
 msgid "This link can't be used, because it has no target."
-msgstr "无法使用该链接，因为它没有目标。您要将该链接移动到回收站中吗？"
+msgstr "无法使用该链接，因为它没有目标。"
 
-#: src/file-manager/fm-directory-view.c:5628
-#, fuzzy, c-format
+#: src/file-manager/fm-directory-view.c:5627
+#, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
-msgstr "无法使用该链接，它的目标“%s”不存在。您要将该链接移动到回收站中吗？"
+msgstr "无法使用该链接，因为其目标“%s”不存在。"
 
-#: src/file-manager/fm-directory-view.c:5633
+#: src/file-manager/fm-directory-view.c:5632
 msgid "Broken Link"
 msgstr "错误链接"
 
-#: src/file-manager/fm-directory-view.c:5691
+#: src/file-manager/fm-directory-view.c:5690
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "您是要运行“%s”，还是显示它的内容？"
 
-#: src/file-manager/fm-directory-view.c:5693
+#: src/file-manager/fm-directory-view.c:5692
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "“%s”是可执行的文本文件。"
 
-#: src/file-manager/fm-directory-view.c:5699
+#: src/file-manager/fm-directory-view.c:5698
 msgid "Run or Display?"
 msgstr "运行还是显示？"
 
-#: src/file-manager/fm-directory-view.c:5700
+#: src/file-manager/fm-directory-view.c:5699
 msgid "Run in _Terminal"
 msgstr "在终端中运行(_T)"
 
-#: src/file-manager/fm-directory-view.c:5701
+#: src/file-manager/fm-directory-view.c:5700
 msgid "_Display"
 msgstr "显示(_D)"
 
-#: src/file-manager/fm-directory-view.c:5704
+#: src/file-manager/fm-directory-view.c:5703
 msgid "_Run"
 msgstr "运行(_R)"
 
-#: src/file-manager/fm-directory-view.c:5982
-#, fuzzy, c-format
+#: src/file-manager/fm-directory-view.c:5981
+#, c-format
 msgid "Opening \"%s\"."
-msgstr "正在打开“%s”"
+msgstr "打开“%s”。"
 
-#: src/file-manager/fm-directory-view.c:5988
+#: src/file-manager/fm-directory-view.c:5987
 msgid "Cancel Open?"
 msgstr "取消打开？"
 
@@ -4508,9 +4446,8 @@ msgid "Sorry, couldn't display all the contents of \"%s\"."
 msgstr "抱歉，无法显示“%s”的全部内容。"
 
 #: src/file-manager/fm-error-reporting.c:71
-#, fuzzy
 msgid "The folder contents could not be displayed."
-msgstr "无法确定“%s”的权限。"
+msgstr "无法显示文件夹内容。"
 
 #: src/file-manager/fm-error-reporting.c:72
 msgid "Error Displaying Folder"
@@ -4580,9 +4517,8 @@ msgid "Sorry, couldn't change the group of \"%s\"."
 msgstr "抱歉，无法修改“%s”的群组。"
 
 #: src/file-manager/fm-error-reporting.c:181
-#, fuzzy
 msgid "The group could not be changed."
-msgstr "无法确定“%s”的权限。"
+msgstr "无法更改群组。"
 
 #: src/file-manager/fm-error-reporting.c:181
 msgid "Error Setting Group"
@@ -5005,7 +4941,7 @@ msgstr "抱歉，Medusa 搜索服务不可用。"
 
 #: src/file-manager/fm-search-list-view.c:167
 msgid "Medusa is not installed."
-msgstr ""
+msgstr "Medusa 未安装。"
 
 #: src/file-manager/fm-search-list-view.c:168
 #: src/file-manager/nautilus-indexing-info.c:301
@@ -5013,22 +4949,19 @@ msgid "Search Service Not Available"
 msgstr "搜索服务不可用"
 
 #: src/file-manager/fm-search-list-view.c:190
-#, fuzzy
 msgid ""
 "The search you have selected is newer than the index on your system.  The "
 "search will return no results right now."
 msgstr ""
-"您选择的搜索比系统上的索引更新。现在，搜索将不会返回任何结果。您可以在命令行"
-"以根用户身份运行“medusa-indexd”命令来创建一个新索引。"
+"您选择的搜索比系统上的索引更新。现在，搜索将不会返回任何结果。"
 
 #: src/file-manager/fm-search-list-view.c:194
 #: src/file-manager/fm-search-list-view.c:213
-#, fuzzy
 msgid ""
 "You can create a new index by running \"medusa-indexd\" as root on the "
 "command line."
 msgstr ""
-"Find 命令无法打开您的文件系统索引。您的索引可能已遗失或损坏。您可以在命令行以"
+"您可以在命令行以"
 "根用户身份运行“medusa-indexd”来创建一个新索引。"
 
 #: src/file-manager/fm-search-list-view.c:197
@@ -5037,19 +4970,16 @@ msgid "Search For Items That Are Too New"
 msgstr "搜索太新的项目"
 
 #: src/file-manager/fm-search-list-view.c:201
-#, fuzzy
 msgid "Every indexed file on your computer matches the criteria you selected. "
 msgstr ""
-"您的计算机上每个被索引的文件都匹配您的选择条件。您可以检查一下选择条件的拼写"
-"或添加更多条件来缩小搜索结果的范围。"
+"您的计算机上每个被索引的文件都匹配您的选择条件。"
 
 #: src/file-manager/fm-search-list-view.c:203
-#, fuzzy
 msgid ""
 "You can check the spelling on your selections or add more criteria to narrow "
 "your results."
 msgstr ""
-"您的计算机上每个被索引的文件都匹配您的选择条件。您可以检查一下选择条件的拼写"
+"您可以检查一下选择条件的拼写"
 "或添加更多条件来缩小搜索结果的范围。"
 
 #: src/file-manager/fm-search-list-view.c:205
@@ -5060,51 +4990,43 @@ msgstr "搜索时出错"
 #. FIXME: This dialog does not get shown because a slow search
 #. will be performed and will not return an error.
 #: src/file-manager/fm-search-list-view.c:211
-#, fuzzy
 msgid ""
 "Find cannot open your file system index.  Your index may be missing or "
 "corrupt."
 msgstr ""
-"Find 命令无法打开您的文件系统索引。您的索引可能已遗失或损坏。您可以在命令行以"
-"根用户身份运行“medusa-indexd”来创建一个新索引。"
+"Find 命令无法打开您的文件系统索引。您的索引可能已遗失或损坏。"
 
 #: src/file-manager/fm-search-list-view.c:215
 msgid "Error Reading File Index"
 msgstr "读取文件索引时发生错误"
 
 #: src/file-manager/fm-search-list-view.c:221
-#, fuzzy
 msgid "An error occurred while loading this search's contents."
-msgstr "载入搜索内容时发生错误：%s"
+msgstr "载入搜索内容时发生错。"
 
 #: src/file-manager/fm-search-list-view.c:240
-#, fuzzy
 msgid ""
 "To do a fast search, Find requires an index of the files on your system."
 msgstr ""
-"要执行内容搜索，Find 需要一个您的系统上的文件索引。Find 目前无法使用您的索"
-"引。"
+"要执行快速搜索，Find 需要一个您的系统上的文件索引。"
 
 #: src/file-manager/fm-search-list-view.c:242
-#, fuzzy
 msgid ""
 "To do a content search, Find requires an index of the files on your system."
 msgstr ""
-"要执行内容搜索，Find 需要一个您的系统上的文件索引。Find 目前无法使用您的索"
-"引。"
+"要执行内容搜索，Find 需要一个您的系统上的文件索引。"
 
 #: src/file-manager/fm-search-list-view.c:245
-#, fuzzy
 msgid ""
 "Find can't access your index right now so a slower search will be performed "
 "that doesn't use the index."
 msgstr ""
-"要执行快速搜索，Find 需要一个您的系统上的文件索引。Find 目前无法使用您的索"
+"Find 目前无法访问您的索"
 "引，因此它将执行不需索引的慢速搜索。"
 
 #: src/file-manager/fm-search-list-view.c:248
 msgid "Find can't access your index right now."
-msgstr ""
+msgstr "Find 目前无法访问您的索引。"
 
 #: src/file-manager/fm-search-list-view.c:250
 msgid "Fast Searches Are Not Available"
@@ -5159,42 +5081,38 @@ msgid "Indexed Searches Are Not Available"
 msgstr "索引搜索不可用"
 
 #: src/file-manager/fm-search-list-view.c:293
-#, fuzzy
 msgid ""
 "To do a fast search, Find requires an index of the files on your system.  No "
 "index is available right now."
 msgstr ""
-"要执行内容搜索，Find 需要一个您的系统上的文件索引。Find 目前无法使用您的索"
-"引。"
+"要执行快速搜索，Find 需要一个您的系统上的文件索引。目前索"
+"引不可用。"
 
 #: src/file-manager/fm-search-list-view.c:296
-#, fuzzy
 msgid ""
 "To do a content search, Find requires an index of the content on your "
 "system.  No index is available right now."
 msgstr ""
-"要执行内容搜索，Find 需要一个您的系统上的文件索引。Find 目前无法使用您的索"
-"引。"
+"要执行内容搜索，Find 需要一个您的系统上的文件索引。目前索"
+"引不可用。"
 
 #: src/file-manager/fm-search-list-view.c:300
-#, fuzzy
 msgid ""
 "You can create an index by running \"medusa-indexd\" as root on the command "
 "line.  Until a complete index is available, searches will take several "
 "minutes."
 msgstr ""
-"要执行快速搜索，Find 需要一个您的系统上的文件索引。目前没有可用的索引。您可以"
+"您可以"
 "在命令行以 root 用户身份运行“medusa indexd”来创建索引。在完整索引可用之前，搜"
 "索将会花几分钟时间。"
 
 #: src/file-manager/fm-search-list-view.c:305
-#, fuzzy
 msgid ""
 "You can create an index by running \"medusa-indexd\" as root on the command "
 "line.  Until a complete index is available, content searches cannot be "
 "performed."
 msgstr ""
-"要执行内容搜索，Find 需要一个您的系统上的文件索引。目前没有可用的索引。您可以"
+"您可以"
 "在命令行以 root 用户身份运行“medusa indexd”来创建索引。在完整索引可用之前，将"
 "无法执行内容搜索。"
 
@@ -5405,16 +5323,15 @@ msgstr "将先前由剪切文件或复制文件命令所选中的文件移动或
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:25
 msgid "No templates Installed"
-msgstr ""
+msgstr "没有安装模板"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Open Wit_h"
 msgstr "打开方式(_H)"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:27
-#, fuzzy
 msgid "Open each selected item in a navigation window"
-msgstr "在新窗口中打开选中的项目"
+msgstr "在导航窗口中打开每个选中的项目"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:28
 msgid "Open in Navigation Window"
@@ -5469,9 +5386,8 @@ msgid "Select all items in this window"
 msgstr "选择该窗口中的所有项目"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:42
-#, fuzzy
 msgid "Select items in this window matching a given pattern"
-msgstr "选择该窗口中的所有项目"
+msgstr "选择此窗口中匹配给定模式的的项目"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:43
 msgid "Show media properties for the selected volume"
@@ -5495,7 +5411,7 @@ msgstr "查看或修改每个选中项目的属性"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:51
 msgid "_Empty File"
-msgstr "空文件(_E)"
+msgstr "清空文件(_E)"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:53
 msgid "_Format"
@@ -5631,12 +5547,10 @@ msgid "Indexing Status"
 msgstr "索引状态"
 
 #: src/file-manager/nautilus-indexing-info.c:197
-#, fuzzy
 msgid "Your files are currently being indexed."
-msgstr "您的文件最后一次索引于 %s"
+msgstr "正在对您的文件进行索引。"
 
 #: src/file-manager/nautilus-indexing-info.c:198
-#, fuzzy
 msgid ""
 "Once a day your files and text content are indexed so your searches are fast."
 msgstr "每天将您的文件和文本内容进行一次索引，以便加快您的搜索速度。"
@@ -5656,7 +5570,7 @@ msgstr ""
 
 #: src/file-manager/nautilus-indexing-info.c:262
 msgid "No Index of Files"
-msgstr ""
+msgstr "没有文件索引"
 
 #: src/file-manager/nautilus-indexing-info.c:299
 msgid "Sorry, but the medusa search service is not available."
@@ -5664,16 +5578,15 @@ msgstr "抱歉，medusa 搜索服务不可用。"
 
 #: src/file-manager/nautilus-indexing-info.c:300
 msgid "Please verify medusa has been setup correctly."
-msgstr ""
+msgstr "请检查 medusa 是否安装正确。"
 
 #: src/file-manager/nautilus-indexing-info.c:315
 msgid "%I:%M %p, %x"
 msgstr "%Y年%-m月%-d日%-H:%M"
 
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
-#, fuzzy
 msgid "Select the columns visible in this folder"
-msgstr "在该文件夹中创建新的空文件夹"
+msgstr "选择此文件夹中的可见列"
 
 #: src/file-manager/nautilus-list-view-ui.xml.h:2
 msgid "Visible _Columns..."
@@ -5704,17 +5617,16 @@ msgid "Couldn't Create Required Folder"
 msgstr "无法创建所需的文件夹"
 
 #: src/nautilus-application.c:265
-#, fuzzy, c-format
+#, c-format
 msgid "Nautilus could not create the required folder \"%s\"."
-msgstr "无法创建所需文件夹"
+msgstr "Nautilus 无法创建所需的文件夹“%s”。"
 
 #: src/nautilus-application.c:267
-#, fuzzy
 msgid ""
 "Before running Nautilus, please create the following folder, or set "
 "permissions such that Nautilus can create it."
 msgstr ""
-"Nautilus 无法创建所需的文件夹“%s”。在运行 Nautilus 前，请创建该文件夹，或设置"
+"在运行 Nautilus 前，请创建该文件夹，或设置"
 "好权限以使 Nautilus 可以创建它。"
 
 #: src/nautilus-application.c:270
@@ -5724,18 +5636,13 @@ msgstr "无法创建所需文件夹"
 #: src/nautilus-application.c:271
 #, c-format
 msgid "Nautilus could not create the following required folders: %s."
-msgstr ""
+msgstr "Nautilus 无法创建下列所需的文件夹：%s。"
 
 #: src/nautilus-application.c:273
-#, fuzzy
 msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
 msgstr ""
-"Nautilus 无法创建下列所需的文件夹：\n"
-"\n"
-"%s\n"
-"\n"
 "在运行 Nautilus 前，请创建这些文件夹，或设置好权限以使 Nautilus 可以创建它"
 "们。"
 
@@ -5745,16 +5652,16 @@ msgstr "旧桌面的链接"
 
 #: src/nautilus-application.c:357
 msgid "A link called \"Link To Old Desktop\" has been created on the desktop."
-msgstr ""
+msgstr "桌面上会创建一个名为“旧桌面的链接”的链"
+"接。"
 
 #: src/nautilus-application.c:358
-#, fuzzy
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. You can open "
 "the link and move over the files you want, then delete the link."
 msgstr ""
-"Gnome 2.4 中桌面目录的位置发生了变化。桌面上会创建一个名为“旧桌面的链接”的链"
-"接。您可以打开此链接，将其中的文件移出后删除此链接。"
+"GNOME 2.4 中桌面目录的位置发生了变化。"
+"您可以打开此链接，将其中的文件移出后删除此链接。"
 
 #: src/nautilus-application.c:360
 msgid "Migrated Old Desktop"
@@ -5823,6 +5730,7 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
+#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:570 src/nautilus-application.c:588
 #: src/nautilus-application.c:595
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -5901,11 +5809,11 @@ msgstr "找到了！"
 
 #: src/nautilus-connect-server-dialog.c:86
 msgid "You must enter a name for the server."
-msgstr ""
+msgstr "您必须输入服务器的名称。"
 
 #: src/nautilus-connect-server-dialog.c:87
 msgid "Please enter a name and try again."
-msgstr ""
+msgstr "请输入名称，然后再试一次。"
 
 #: src/nautilus-connect-server-dialog.c:88
 #: src/nautilus-connect-server-dialog.c:104
@@ -5930,7 +5838,6 @@ msgid "Connect to Server"
 msgstr "连接到服务器"
 
 #: src/nautilus-connect-server-dialog.c:191
-#, fuzzy
 msgid "Link _name:"
 msgstr "链接名称(_N)："
 
@@ -5995,9 +5902,8 @@ msgid "<span weight=\"bold\">Icon View Defaults</span>"
 msgstr "<span weight=\"bold\">图标视图默认值</span>"
 
 #: src/nautilus-file-management-properties.glade.h:30
-#, fuzzy
 msgid "<span weight=\"bold\">List Columns</span>"
-msgstr "<span weight=\"bold\">文件夹</span>"
+msgstr "<span weight=\"bold\">列表列</span>"
 
 #: src/nautilus-file-management-properties.glade.h:31
 msgid "<span weight=\"bold\">List View Defaults</span>"
@@ -6070,7 +5976,7 @@ msgstr "图标标题"
 
 #: src/nautilus-file-management-properties.glade.h:53
 msgid "List Columns"
-msgstr ""
+msgstr "列表列"
 
 #: src/nautilus-file-management-properties.glade.h:55
 msgid "Local Files Only"
@@ -6200,14 +6106,12 @@ msgstr ""
 "您可以手工删除该文件以再次运行配置向导。\n"
 
 #: src/nautilus-information-panel.c:506
-#, fuzzy
 msgid "You can't assign more than one custom icon at a time."
-msgstr "您不能一次指定多个定制图标！请仅拖放一个图像文件来设置定制图标。"
+msgstr "您不能一次指定多个定制图标。"
 
 #: src/nautilus-information-panel.c:535
-#, fuzzy
 msgid "You can only use images as custom icons."
-msgstr "您拖放的文件不是本地文件。您只能使用本地的图像文件作为定制图标。"
+msgstr "您只能使用图像文件作为定制图标。"
 
 #: src/nautilus-information-panel.c:882
 #, c-format
@@ -6245,7 +6149,7 @@ msgstr "转到："
 #, c-format
 msgid "Do you want to view %d location?"
 msgid_plural "Do you want to view %d locations?"
-msgstr[0] "您要在分开的窗口中查看这 %d 个位置吗？"
+msgstr[0] "您想要查看这 %d 个位置吗？"
 
 #: src/nautilus-location-bar.c:170
 msgid "View in Multiple Windows?"
@@ -6304,22 +6208,27 @@ msgid "Nautilus"
 msgstr "Nautilus"
 
 #: src/nautilus-main.c:259
+#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus：--check 无法和 URI 一起使用。\n"
 
 #: src/nautilus-main.c:263
+#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus：--check 无法和其它选项一起使用。\n"
 
 #: src/nautilus-main.c:267
+#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus：--quit 无法和 URI 一起使用。\n"
 
 #: src/nautilus-main.c:271
+#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus：--restart 无法和 URI 一起使用。\n"
 
 #: src/nautilus-main.c:275
+#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus：--geometry 无法和多个URI 一起使用。\n"
 
@@ -6668,11 +6577,11 @@ msgstr "无法安装图案"
 
 #: src/nautilus-property-browser.c:1122
 msgid "Sorry, but you can't replace the reset image."
-msgstr "抱歉，您不能替换复位图像。"
+msgstr "抱歉，您不能替换重置图像。"
 
 #: src/nautilus-property-browser.c:1123
 msgid "Reset is a special image that cannot be deleted."
-msgstr ""
+msgstr "重置是特殊图像，无法删除。"
 
 #: src/nautilus-property-browser.c:1124 src/nautilus-property-browser.c:1328
 #: src/nautilus-property-browser.c:1344
@@ -6972,9 +6881,8 @@ msgid "Choose a view for the current location, or modify the set of views"
 msgstr "选择当前位置的视图，或修改视图集"
 
 #: src/nautilus-shell-ui.xml.h:3
-#, fuzzy
 msgid "Close this folder"
-msgstr "关闭此文件夹的父文件夹"
+msgstr "关闭此文件夹"
 
 #: src/nautilus-shell-ui.xml.h:5
 msgid "Display Nautilus help"
@@ -7075,9 +6983,8 @@ msgid "_CD Creator"
 msgstr "_CD 刻录"
 
 #: src/nautilus-shell-ui.xml.h:33
-#, fuzzy
 msgid "_Close"
-msgstr "关闭窗口(_C)"
+msgstr "关闭(_C)"
 
 #: src/nautilus-shell-ui.xml.h:34
 msgid "_Contents"
@@ -7254,9 +7161,9 @@ msgid "Nautilus has no installed viewer capable of displaying the file."
 msgstr "Nautilus 没有安装能够显示文件的查看器。"
 
 #: src/nautilus-window-manage-views.c:1297
-#, fuzzy, c-format
+#, c-format
 msgid "Nautilus cannot handle %s: locations."
-msgstr "Nautilus 无法处理 %2$s: 位置，因此无法显示“%1$s”。"
+msgstr "Nautilus 无法处理 %s: 位置。"
 
 #: src/nautilus-window-manage-views.c:1305
 msgid "The attempt to log in failed."
@@ -7414,8 +7321,3 @@ msgstr "网络服务器"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "在 Nautilus 文件管理器中查看您的网络服务器"
 
-#~ msgid "File name"
-#~ msgstr "文件名"
-
-#~ msgid "Close this window"
-#~ msgstr "关闭该窗口"
