@@ -1,3 +1,9 @@
+2000-01-05  John Sullivan  <sullivan@eazel.com>
+
+	* src/nautilus-bookmarks-menu.c: (nautilus_bookmarks_menu_fill):
+	Stopped using GNOMEUIINFO_ITEM_DATA macro, because it doesn't work
+	right (on some machines) when there's no pixmap for the item.
+
 2000-01-04  John Sullivan  <sullivan@eazel.com>
 
 	* src/nautilus-bookmarks-menu.c: comment changes only

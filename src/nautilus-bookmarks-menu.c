@@ -264,10 +264,14 @@ nautilus_bookmarks_menu_fill (NautilusBookmarksMenu *menu)
 	GtkWidget 	      *item; 
 	gboolean   	       has_tearoff_item;
 	GnomeUIInfo	       static_items[] = 
+	{
 		{
-		GNOMEUIINFO_ITEM_DATA(N_("_Add Bookmark"), 
-				      N_("Add a bookmark for the current location to this menu."), 
-				      add_bookmark_cb, menu, NULL),
+		GNOME_APP_UI_ITEM, 
+		N_("_Add Bookmark"),
+		N_("Add a bookmark for the current location to this menu."),
+		(gpointer)add_bookmark_cb, menu, NULL,
+		GNOME_APP_PIXMAP_NONE, NULL, 0, (GdkModifierType) 0, NULL
+		},
 		GNOMEUIINFO_ITEM_NONE(N_("_Edit Bookmarks..."), 
 				      N_("Display a window that allows editing the bookmarks in this menu."), 
 				      edit_bookmarks_cb),
