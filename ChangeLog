@@ -1,5 +1,25 @@
 2002-02-12  Darin Adler  <darin@bentspoon.com>
 
+	* components/tree/nautilus-tree-model.c:
+	(schedule_destroy_unneeded_children): Record the idle ID so we can
+	cancel it properly.
+	* components/tree/nautilus-tree-view.c: (sort_model_iter_to_file):
+	New.
+	(sort_model_path_to_file): Renamed from path_to_file to clarify
+	which kid of path.
+	(selection_changed_callback): Replaces the old row_activated_callback.
+	Switch to the selected directory when you click on a row.
+	(create_tree): Connect the "changed" to the selection object.
+
+	* src/file-manager/fm-directory-view.c: Formatting tweaks.
+	(update_directory_in_scripts_menu): Fix storage leak.
+
+	* src/file-manager/fm-icon-view.c: (renaming_icon_callback): Enable
+	a bit of GNOME2_CONVERSION_COMPLETE code.
+	(create_icon_container): Formatting tweaks.
+
+2002-02-12  Darin Adler  <darin@bentspoon.com>
+
 	* src/file-manager/fm-directory-view.c:
 	(metadata_for_directory_as_file_ready_callback),
 	(metadata_for_files_in_directory_ready_callback):

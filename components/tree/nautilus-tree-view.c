@@ -40,6 +40,7 @@
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtktreemodelsort.h>
+#include <gtk/gtktreeselection.h>
 #include <gtk/gtktreeview.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -85,17 +86,26 @@ load_expansion_state (NautilusTreeView *view)
 }
 
 static NautilusFile *
-path_to_file (NautilusTreeView *view, GtkTreePath *path)
+sort_model_iter_to_file (NautilusTreeView *view, GtkTreeIter *iter)
+{
+	GtkTreeIter copy;
+
+	copy = *iter;
+#if SORT_MODEL_WORKS
+	gtk_tree_model_sort_convert_iter_to_child_iter (view->details->sort_model, &copy, &copy);
+#endif
+	return nautilus_tree_model_iter_get_file (view->details->child_model, &copy);
+}
+
+static NautilusFile *
+sort_model_path_to_file (NautilusTreeView *view, GtkTreePath *path)
 {
 	GtkTreeIter iter;
 
 	if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (view->details->sort_model), &iter, path)) {
 		return NULL;
 	}
-#if SORT_MODEL_WORKS
-	gtk_tree_model_sort_convert_iter_to_child_iter (view->details->sort_model, &iter, &iter);
-#endif
-	return nautilus_tree_model_iter_get_file (view->details->child_model, &iter);
+	return sort_model_iter_to_file (view, &iter);
 }
 
 static void
@@ -107,7 +117,7 @@ prepend_one_uri (GtkTreeView *tree_view,
 	NautilusFile *file;
 
 	p = callback_data;
-	file = path_to_file (p->view, path);
+	file = sort_model_path_to_file (p->view, path);
 	if (file == NULL) {
 		return;
 	}
@@ -191,20 +201,26 @@ cancel_activation (NautilusTreeView *view)
 }
 
 static void
-row_activated_callback (GtkTreeView *tree_widget,
-			GtkTreePath *path,
-			GtkTreeViewColumn *column,
-			NautilusTreeView *view)
+selection_changed_callback (GtkTreeSelection *selection,
+			    NautilusTreeView *view)
 {
 	GList *attrs;
+	GtkTreeIter iter;
 
         cancel_activation (view);
 
-        view->details->activation_file = path_to_file (view, path);
+	if (!gtk_tree_selection_get_selected (selection, NULL, &iter)) {
+		return;
+	}
 
-        attrs = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
-        nautilus_file_call_when_ready (view->details->activation_file, attrs,
-                                       got_activation_uri_callback, view);
+	view->details->activation_file = sort_model_iter_to_file (view, &iter);
+	if (view->details->activation_file == NULL) {
+		return;
+	}
+		
+	attrs = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
+	nautilus_file_call_when_ready (view->details->activation_file, attrs,
+				       got_activation_uri_callback, view);
 	g_list_free (attrs);
 }
 
@@ -299,8 +315,10 @@ create_tree (NautilusTreeView *view)
 				  G_CALLBACK (schedule_save_expansion_state_callback), view);
 	g_signal_connect_swapped (view->details->tree_widget, "row_collapsed",
 				  G_CALLBACK (schedule_save_expansion_state_callback), view);
-	g_signal_connect (view->details->tree_widget, "row_activated",
-			  G_CALLBACK (row_activated_callback), view);
+
+	g_signal_connect (gtk_tree_view_get_selection (GTK_TREE_VIEW (view->details->tree_widget)),
+			  "changed",
+			  G_CALLBACK (selection_changed_callback), view);
 }
 
 static void

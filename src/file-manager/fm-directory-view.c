@@ -1137,15 +1137,11 @@ add_scripts_directory (FMDirectoryView *view,
 
 	g_list_free (attributes);
 
-	g_signal_connect (directory,
-			    "files_added",
-			    G_CALLBACK (scripts_added_or_changed_callback),
-			    view);
+	g_signal_connect (directory, "files_added",
+			  G_CALLBACK (scripts_added_or_changed_callback), view);
 
-	g_signal_connect (directory, 
-			    "files_changed",
-			    G_CALLBACK (scripts_added_or_changed_callback),
-			    view);
+	g_signal_connect (directory, "files_changed",
+			  G_CALLBACK (scripts_added_or_changed_callback), view);
 
 	view->details->scripts_directory_list = g_list_prepend
 		(view->details->scripts_directory_list, directory);
@@ -1204,49 +1200,31 @@ fm_directory_view_init (FMDirectoryView *view)
 	view->details->sort_directories_first = 
 		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
 
-	g_signal_connect (view->details->nautilus_view, 
-			    "stop_loading",
-			    G_CALLBACK (stop_loading_callback),
-			    view);
-	g_signal_connect (view->details->nautilus_view, 
-			    "load_location",
-			    G_CALLBACK (load_location_callback), 
-			    view);
+	g_signal_connect (view->details->nautilus_view,  "stop_loading",
+			  G_CALLBACK (stop_loading_callback), view);
+	g_signal_connect (view->details->nautilus_view, "load_location",
+			  G_CALLBACK (load_location_callback), view);
 
 	nautilus_view_set_listener_mask (
 		NAUTILUS_VIEW (view->details->nautilus_view),
 		NAUTILUS_VIEW_LISTEN_SELECTION);
 
-	g_signal_connect (view->details->nautilus_view, 
-			    "selection_changed",
-			    G_CALLBACK (selection_changed_callback), 
-			    view);
+	g_signal_connect (view->details->nautilus_view, "selection_changed",
+			  G_CALLBACK (selection_changed_callback), view);
 
-        g_signal_connect (fm_directory_view_get_bonobo_control (view),
-                            "activate",
-                            G_CALLBACK (bonobo_control_activate_callback),
-                            view);
+        g_signal_connect (fm_directory_view_get_bonobo_control (view), "activate",
+                            G_CALLBACK (bonobo_control_activate_callback), view);
 
-	g_signal_connect (view->details->zoomable, 
-			    "zoom_in",
-			    G_CALLBACK (zoomable_zoom_in_callback),
-			    view);
-	g_signal_connect (view->details->zoomable, 
-			    "zoom_out", 
-			    G_CALLBACK (zoomable_zoom_out_callback),
-			    view);
-	g_signal_connect (view->details->zoomable, 
-			    "set_zoom_level", 
-			    G_CALLBACK (zoomable_set_zoom_level_callback),
-			    view);
-	g_signal_connect (view->details->zoomable, 
-			    "zoom_to_fit", 
-			    G_CALLBACK (zoomable_zoom_to_fit_callback),
-			    view);
-	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_trash_monitor_get ()),
-				        "trash_state_changed",
-				        G_CALLBACK (fm_directory_view_trash_state_changed_callback),
-				        view,
+	g_signal_connect (view->details->zoomable, "zoom_in",
+			  G_CALLBACK (zoomable_zoom_in_callback), view);
+	g_signal_connect (view->details->zoomable, "zoom_out", 
+			  G_CALLBACK (zoomable_zoom_out_callback), view);
+	g_signal_connect (view->details->zoomable, "set_zoom_level", 
+			  G_CALLBACK (zoomable_set_zoom_level_callback), view);
+	g_signal_connect (view->details->zoomable, "zoom_to_fit", 
+			  G_CALLBACK (zoomable_zoom_to_fit_callback), view);
+	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_trash_monitor_get ()), "trash_state_changed",
+				        G_CALLBACK (fm_directory_view_trash_state_changed_callback), view,
 				        GTK_OBJECT (view));
 
 	gtk_widget_show (GTK_WIDGET (view));
@@ -1254,32 +1232,23 @@ fm_directory_view_init (FMDirectoryView *view)
 	filtering_changed_callback (view);
 	
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-				      schedule_update_menus_callback,
-				      view);
+				      schedule_update_menus_callback, view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-				      filtering_changed_callback,
-				      view);
+				      filtering_changed_callback, view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-				      filtering_changed_callback,
-				      view);
+				      filtering_changed_callback, view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-				      schedule_update_menus_callback,
-				      view);
+				      schedule_update_menus_callback, view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,
-				      schedule_update_menus_callback,
-				      view);
+				      schedule_update_menus_callback, view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-				      text_attribute_names_changed_callback,
-				      view);
+				      text_attribute_names_changed_callback, view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
-				      image_display_policy_changed_callback,
-				      view);
+				      image_display_policy_changed_callback, view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-				      click_policy_changed_callback,
-				      view);
+				      click_policy_changed_callback, view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST, 
-				      sort_directories_first_changed_callback, 
-				      view);
+				      sort_directories_first_changed_callback, view);
 }
 
 static void
@@ -1338,26 +1307,19 @@ fm_directory_view_finalize (GObject *object)
 	fm_directory_view_ignore_hidden_file_preferences (view);
 
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-					 schedule_update_menus_callback,
-					 view);
+					 schedule_update_menus_callback, view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-					 schedule_update_menus_callback,
-					 view);
+					 schedule_update_menus_callback, view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,
-					 schedule_update_menus_callback,
-					 view);
+					 schedule_update_menus_callback, view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-					 text_attribute_names_changed_callback,
-					 view);
+					 text_attribute_names_changed_callback, view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
-					 image_display_policy_changed_callback,
-					 view);
+					 image_display_policy_changed_callback, view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					 click_policy_changed_callback,
-					 view);
+					 click_policy_changed_callback, view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
-					 sort_directories_first_changed_callback,
-					 view);
+					 sort_directories_first_changed_callback, view);
 
 	forget_clipboard_contents (view);
 
@@ -3779,7 +3741,7 @@ update_directory_in_scripts_menu (FMDirectoryView *view, NautilusDirectory *dire
 {
 	char *directory_uri;
 	char *menu_path, *popup_path;
-	GList *file_list, *node;
+	GList *file_list, *filtered, *node;
 	gboolean any_scripts;
 	int i;
 	NautilusFile *file;
@@ -3793,9 +3755,11 @@ update_directory_in_scripts_menu (FMDirectoryView *view, NautilusDirectory *dire
 				  NULL);
 	g_free (directory_uri);
 
-	file_list = nautilus_file_list_sort_by_display_name
-		(nautilus_file_list_filter_hidden_and_backup
-		 (nautilus_directory_get_file_list (directory), FALSE, FALSE));
+	file_list = nautilus_directory_get_file_list (directory);
+	filtered = nautilus_file_list_filter_hidden_and_backup (file_list, FALSE, FALSE);
+	nautilus_file_list_free (file_list);
+
+	file_list = nautilus_file_list_sort_by_display_name (filtered);
 
 	any_scripts = FALSE;
 	i = 0;

@@ -1748,18 +1748,16 @@ icon_container_preview_callback (NautilusIconContainer *container,
 
 static void
 renaming_icon_callback (NautilusIconContainer *container,
-			GtkEditable *editable,
+			GtkWidget *widget,
 			gpointer callback_data)
 {
 	FMDirectoryView *directory_view;
 
 	directory_view = FM_DIRECTORY_VIEW (callback_data);
-#ifdef GNOME2_CONVERSION_COMPLETE
 	nautilus_clipboard_set_up_editable_in_control
-		(editable,
+		(GTK_EDITABLE (widget),
 		 fm_directory_view_get_bonobo_control (directory_view),
 		 TRUE);
-#endif
 }
 
 static int
@@ -2506,14 +2504,10 @@ create_icon_container (FMIconView *icon_view)
 			    "layout_changed",
 			    G_CALLBACK (layout_changed_callback),
 			    directory_view);
-	g_signal_connect (icon_container,
-			    "preview",
-			    G_CALLBACK (icon_container_preview_callback),
-			    icon_view);
-	g_signal_connect (icon_container,
-			    "renaming_icon",
-			    G_CALLBACK (renaming_icon_callback),
-			    directory_view);
+	g_signal_connect (icon_container, "preview",
+			  G_CALLBACK (icon_container_preview_callback), icon_view);
+	g_signal_connect (icon_container, "renaming_icon",
+			  G_CALLBACK (renaming_icon_callback), directory_view);
 	gtk_signal_connect_object (GTK_OBJECT (icon_container),
 			           "icon_stretch_started",
 			           G_CALLBACK (fm_directory_view_update_menus),

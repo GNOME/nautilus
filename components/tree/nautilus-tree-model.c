@@ -1190,7 +1190,8 @@ static void
 schedule_destroy_unneeded_children (NautilusTreeModel *model)
 {
 	if (model->details->destroy_unneeded_children_idle_id == 0) {
-		g_idle_add (destroy_unneeded_children_idle_callback, model);
+		model->details->destroy_unneeded_children_idle_id =
+			g_idle_add (destroy_unneeded_children_idle_callback, model);
 	}
 }
 
