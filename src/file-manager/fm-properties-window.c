@@ -42,10 +42,6 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dialog.h>
-#include <libgnomeui/gnome-file-entry.h>
-#include <libgnomeui/gnome-icon-list.h>
-#include <libgnomeui/gnome-icon-sel.h>
-#include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extensions/nautilus-customization-data.h>
@@ -56,6 +52,7 @@
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
@@ -2329,30 +2326,14 @@ real_finalize (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, finalize, (object));
 }
 
-/* callbacks to handle adding and removing custom icons */
-
-static gboolean
-widget_destroy_callback (gpointer callback_data)
-{
-	gtk_widget_destroy (GTK_WIDGET (callback_data));
-	return FALSE;
-}
-
-/* set the image of the file object to the selected file */
+/* icon selection callback to set the image of the file object to the selected file */
 static void
-icon_selected_callback (GtkWidget *button, FMPropertiesWindow *properties_window)
+set_icon_callback (const char* icon_path, FMPropertiesWindow *properties_window)
 {
-	const gchar *icon_path;
 	NautilusFile *file;
-	GtkWidget *entry;
 	
 	g_return_if_fail (properties_window != NULL);
 	g_return_if_fail (FM_IS_PROPERTIES_WINDOW (properties_window));
-
-	gnome_icon_selection_stop_loading ( GNOME_ICON_SELECTION (properties_window->details->icon_selection));
-
-	entry = gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (properties_window->details->file_entry));
-	icon_path = gtk_entry_get_text (GTK_ENTRY (entry));
 
 	if (icon_path != NULL) {
 		file = properties_window->details->file;
@@ -2361,133 +2342,24 @@ icon_selected_callback (GtkWidget *button, FMPropertiesWindow *properties_window
 
 		/* re-enable the property window's clear image button */ 
 		gtk_widget_set_sensitive (properties_window->details->remove_image_button, TRUE);
-	}
-	
-	/* we have to get rid of the icon selection dialog, but we can't do it now, since the
-	 * file entry might still need it.  Do it when the next idle rolls around
-	 */
-        g_idle_add (widget_destroy_callback, gtk_widget_get_toplevel (button));
+	}	
 }
 
-/* handle the cancel button being pressed */
-static void
-icon_cancel_pressed (GtkWidget *button, FMPropertiesWindow *properties_window)
-{
-	g_return_if_fail (properties_window != NULL);
-	g_return_if_fail (FM_IS_PROPERTIES_WINDOW (properties_window));
-
-	gnome_icon_selection_stop_loading(GNOME_ICON_SELECTION (properties_window->details->icon_selection));
-	
-	gtk_widget_destroy (gtk_widget_get_toplevel (button));
-}
-
-/* handle an icon being selected by updating the file entry */
-static void
-list_icon_selected_callback (GnomeIconList *gil, gint num, GdkEvent *event, FMPropertiesWindow *properties_window)
-{
-	const gchar *icon;
-	GtkWidget *entry;
-	
-	icon = gnome_icon_selection_get_icon (GNOME_ICON_SELECTION (properties_window->details->icon_selection), TRUE);
-
-	if (icon != NULL) {
-		entry = gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (properties_window->details->file_entry));
-		gtk_entry_set_text(GTK_ENTRY (entry), icon);
-	}
-
-	/* handle double-clicks as if the user pressed OK */
-	if(event && event->type == GDK_2BUTTON_PRESS && ((GdkEventButton *)event)->button == 1) {
-		icon_selected_callback (properties_window->details->file_entry, properties_window);
-	}
-}
-
-/* handle the file entry changing */
-static void
-entry_activated (GtkWidget *widget, FMPropertiesWindow *properties_window)
-{
-	struct stat buf;
-	GtkWidget *icon_selection;
-	gchar *filename;
-
-	g_return_if_fail (properties_window != NULL);
-	g_return_if_fail (FM_IS_PROPERTIES_WINDOW (properties_window));
-
-	filename = gtk_entry_get_text (GTK_ENTRY (widget));
-	if (!filename) {
-		return;
-	}
-	
-	stat (filename, &buf);
-	if (S_ISDIR (buf.st_mode)) {
-		icon_selection = properties_window->details->icon_selection;
-		gnome_icon_selection_clear (GNOME_ICON_SELECTION (icon_selection), TRUE);
-		gnome_icon_selection_add_directory (GNOME_ICON_SELECTION (icon_selection), filename);
-		gnome_icon_selection_show_icons(GNOME_ICON_SELECTION (icon_selection));
-	} else {
-		/* We pretend like ok has been called */
-		icon_selected_callback (properties_window->details->file_entry, properties_window);
-	}
-}
 
 /* handle the "select icon" button */
 static void
 select_image_button_callback (GtkWidget *widget, NautilusFile *file)
 {
-	GtkWidget *dialog, *entry;
+	GtkWidget *dialog;
 	FMPropertiesWindow *properties_window;
 
 	properties_window = FM_PROPERTIES_WINDOW (gtk_widget_get_toplevel (widget));
 
-	dialog = gnome_dialog_new(_("Select an icon:"),
-					GNOME_STOCK_BUTTON_OK,
-					GNOME_STOCK_BUTTON_CANCEL,
-					NULL);
-
-	gnome_dialog_close_hides(GNOME_DIALOG(dialog), TRUE);
-	gnome_dialog_set_close  (GNOME_DIALOG(dialog), TRUE);
-
-	gtk_window_set_policy(GTK_WINDOW(dialog), TRUE, TRUE, TRUE);
-
-	properties_window->details->icon_selection = gnome_icon_selection_new();
-
-	properties_window->details->file_entry = gnome_file_entry_new (NULL,NULL);
-	gtk_box_pack_start(GTK_BOX(GNOME_DIALOG(dialog)->vbox),
-				   properties_window->details->file_entry, FALSE, FALSE, 0);
-
-	gtk_box_pack_start(GTK_BOX(GNOME_DIALOG(dialog)->vbox),
-				   properties_window->details->icon_selection, TRUE, TRUE, 0);
-
-	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_MOUSE);
-	gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (properties_window));
- 	gtk_window_set_wmclass (GTK_WINDOW (dialog), "file_selector", "Nautilus");
-	gtk_widget_show_all (dialog);
-	
-
-	entry = gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY (properties_window->details->file_entry));
-	gtk_entry_set_text(GTK_ENTRY (entry), DATADIR "/pixmaps");
-
-	gnome_icon_selection_add_directory(GNOME_ICON_SELECTION (properties_window->details->icon_selection),
-						   DATADIR "/pixmaps");	
-	gnome_icon_selection_show_icons( GNOME_ICON_SELECTION (properties_window->details->icon_selection));
-	
-	gnome_dialog_button_connect(GNOME_DIALOG(dialog), 
-					    0, /* OK button */
-					    GTK_SIGNAL_FUNC(icon_selected_callback),
-					    properties_window);
-	
-	gnome_dialog_button_connect(GNOME_DIALOG(dialog), 
-					    1, /* Cancel button */
-					    GTK_SIGNAL_FUNC(icon_cancel_pressed),
-					    properties_window);
-	
-	gtk_signal_connect_after(GTK_OBJECT (GNOME_ICON_SELECTION (properties_window->details->icon_selection)->gil),
-					 "select_icon",
-					 GTK_SIGNAL_FUNC(list_icon_selected_callback),
-					 properties_window);
-
-	gtk_signal_connect_while_alive( GTK_OBJECT (entry), "activate",
-				       GTK_SIGNAL_FUNC(entry_activated),
-				       properties_window, GTK_OBJECT (properties_window->details->file_entry));
+	dialog = nautilus_gnome_icon_selector_new (_("Select an icon:"),
+						   NULL,
+						   GTK_WINDOW (properties_window),
+						   (NautilusIconSelectionFunction) set_icon_callback,
+						   properties_window);						   
 }
 
 static void

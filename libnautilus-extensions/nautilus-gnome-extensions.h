@@ -34,6 +34,9 @@
 #include <gtk/gtkwindow.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
+/* icon selection callback function. */
+typedef void (* NautilusIconSelectionFunction) (const char *icon_path, gpointer callback_data);
+
 /* Causes an update as needed. The GnomeCanvas code says it should, but it doesn't. */
 void       nautilus_gnome_canvas_set_scroll_region                      (GnomeCanvas     *canvas,
 									 double           x1,
@@ -113,6 +116,13 @@ char 	  *nautilus_gnome_get_terminal_path 				(void);
 /* Open up a new terminal, optionally passing in a command to execute */
 void       nautilus_gnome_open_terminal                                 (const char      *command);
 
+/* Create an icon selection dialog */
+GtkWidget	*nautilus_gnome_icon_selector_new			(const char	 *title,
+									 const char	 *icon_directory,
+									 GtkWindow	 *owner,
+									 NautilusIconSelectionFunction selected,
+									 gpointer	 callback_data);
+									 
 /* Set an icon on GnomeStock widget. If the setting fails register this
  * as a new file.  Returns FALSE if even that failed.
  */

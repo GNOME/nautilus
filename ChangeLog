@@ -1,3 +1,29 @@
+2001-02-07  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 6281, property browser should user gnome icon
+	selection UI for adding patterns and emblems instead of
+	generic file browsing
+	
+	* libnautilus-extensions/nautilus-gnome-extensions.c,h:
+	(nautilus_gnome_open_terminal), (widget_destroy_callback),
+	(icon_selected_callback), (icon_cancel_pressed),
+	(list_icon_selected_callback), (entry_activated),
+	(nautilus_gnome_icon_selector_new):
+	moved code to integrate icon picking UI from the properties
+	window into gnome-extensions, so other parts of nautilus can
+	use it.
+	
+	* src/file-manager/fm-properties-window.c: (set_icon_callback),
+	(select_image_button_callback):
+	moved icon picking code out of properties window, but call it
+	from here instead.
+	
+	* src/nautilus-property-browser.c: (nautilus_emblem_dialog_new),
+	(add_pattern_to_browser), (add_new_pattern),
+	(emblem_dialog_clicked):
+	use icon picking code in property browser to pick patterns, and
+	rework the emblem dialog to use gnome-icon-entry.
+	
 2001-02-07  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: Robin Slomkowski <robin@eazel.com>

@@ -53,7 +53,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-color-picker.h>
-#include <libgnomeui/gnome-file-entry.h>
+#include <libgnomeui/gnome-icon-entry.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
@@ -68,6 +68,7 @@
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-image.h>
@@ -924,58 +925,7 @@ nautilus_property_browser_remove_element (NautilusPropertyBrowser *property_brow
 	}
 }
 
-/* utility to set up the emblem image from the passed-in file */
-
-static void
-set_emblem_image_from_file (NautilusPropertyBrowser *property_browser)
-{
-	GdkPixbuf *pixbuf;
-	GdkPixbuf *scaled_pixbuf;
-
-	pixbuf = gdk_pixbuf_new_from_file (property_browser->details->image_path);			
-	scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);			
-	gdk_pixbuf_unref (pixbuf);
-	
-	if (property_browser->details->emblem_image == NULL) {
-		property_browser->details->emblem_image = nautilus_image_new (NULL);
-		gtk_widget_show(property_browser->details->emblem_image);
-	} 
-	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (property_browser->details->emblem_image), scaled_pixbuf);
-	gdk_pixbuf_unref (scaled_pixbuf);
-}
-
-/* this callback is invoked when a file is selected by the file selection */
-static void
-emblem_image_file_changed (GtkWidget *entry, NautilusPropertyBrowser *property_browser)
-{
-	char *new_uri;
-
-	new_uri = gnome_vfs_get_uri_from_local_path (gtk_entry_get_text (GTK_ENTRY(entry)));
-	if (!ensure_uri_is_image (new_uri)) {
-		char *message = g_strdup_printf
-			(_("Sorry, but '%s' is not a usable image file!"),
-			 gtk_entry_get_text(GTK_ENTRY(entry)));
-		nautilus_show_error_dialog (message, _("Not an Image"), GTK_WINDOW (property_browser));
-		g_free (message);
-		
-		gtk_entry_set_text(GTK_ENTRY(entry), property_browser->details->image_path);
-		g_free(new_uri);
-		return;
-	}
-	
-	g_free (new_uri);
-	g_free (property_browser->details->image_path);
-	property_browser->details->image_path = gtk_entry_get_text(GTK_ENTRY(entry));
-	if (property_browser->details->image_path)
-		property_browser->details->image_path = g_strdup(property_browser->details->image_path);
-	
-	/* set up the pixmap in the dialog */
-	
-	set_emblem_image_from_file(property_browser);
-}
-
 /* here's where we create the emblem dialog */
-
 static GtkWidget*
 nautilus_emblem_dialog_new (NautilusPropertyBrowser *property_browser)
 {
@@ -994,28 +944,27 @@ nautilus_emblem_dialog_new (NautilusPropertyBrowser *property_browser)
 	gtk_table_attach(GTK_TABLE(table), property_browser->details->keyword, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 4, 4);
 
 	/* default image is the generic emblem */
-	g_free(property_browser->details->image_path);
-		
-	property_browser->details->image_path = nautilus_pixmap_file ("emblem-generic.png"); 
-	property_browser->details->emblem_image = NULL; /* created lazily by set_emblem_image */
-	set_emblem_image_from_file(property_browser);
-	gtk_table_attach(GTK_TABLE(table), property_browser->details->emblem_image, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
- 
-	/* set up a gnome file entry to pick the image file */
-	property_browser->details->file_entry = gnome_file_entry_new ("nautilus", _("Select an image file for the new emblem:"));
-	gnome_file_entry_set_default_path(GNOME_FILE_ENTRY(property_browser->details->file_entry), property_browser->details->image_path);
+	g_free(property_browser->details->image_path);		
+	property_browser->details->image_path = gnome_pixmap_file ("gnome-question.png"); 
+	
+	/* set up a gnome icon entry to pick the image file */
+	widget = gtk_label_new(_("Image:"));
+	gtk_widget_show(widget);
+	gtk_table_attach(GTK_TABLE(table), widget, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
+
+	property_browser->details->file_entry = gnome_icon_entry_new (NULL, _("Select an image file for the new emblem:"));
+	gnome_icon_entry_set_pixmap_subdir (GNOME_ICON_ENTRY(property_browser->details->file_entry),
+						DATADIR "/pixmaps");
+	gnome_icon_entry_set_icon (GNOME_ICON_ENTRY(property_browser->details->file_entry),
+					property_browser->details->image_path);
 	
 	gtk_widget_show(property_browser->details->file_entry);
 	gtk_table_attach(GTK_TABLE(table), property_browser->details->file_entry, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
 	
-	/* connect to the activate signal of the entry to change images */
-	entry = gnome_file_entry_gtk_entry (GNOME_FILE_ENTRY(property_browser->details->file_entry));
+	entry = gnome_icon_entry_gtk_entry (GNOME_ICON_ENTRY(property_browser->details->file_entry));
 	gtk_entry_set_text(GTK_ENTRY(entry), property_browser->details->image_path);
 	
-	gtk_signal_connect (GTK_OBJECT (entry), "activate", (GtkSignalFunc) emblem_image_file_changed, property_browser);
-		
-	/* install the table in the dialog */
-	
+	/* install the table in the dialog */	
 	gtk_widget_show(table);	
 	gtk_box_pack_start(GTK_BOX(GNOME_DIALOG(dialog)->vbox), table, TRUE, TRUE, GNOME_PAD);
 	gnome_dialog_set_default(GNOME_DIALOG(dialog), GNOME_OK);
@@ -1068,9 +1017,8 @@ nautilus_color_selection_dialog_new (NautilusPropertyBrowser *property_browser)
 
 /* add the newly selected file to the browser images */
 static void
-add_pattern_to_browser (GtkWidget *widget, gpointer *data)
+add_pattern_to_browser (const char *path_name, gpointer *data)
 {
-	gboolean is_image;
 	char *directory_path, *source_file_name, *destination_name;
 	char *path_uri, *basename;
 	char *user_directory;	
@@ -1079,12 +1027,6 @@ add_pattern_to_browser (GtkWidget *widget, gpointer *data)
 	
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(data);
 
-	/* get the file path from the file selection widget */
-	char *path_name = g_strdup(gtk_file_selection_get_filename (GTK_FILE_SELECTION (property_browser->details->dialog)));
-	
-	gtk_widget_destroy (property_browser->details->dialog);
-	property_browser->details->dialog = NULL;
-
 	/* fetch the mime type and make sure that the file is an image */
 	path_uri = gnome_vfs_get_uri_from_local_path (path_name);	
 
@@ -1092,24 +1034,14 @@ add_pattern_to_browser (GtkWidget *widget, gpointer *data)
 	basename = nautilus_uri_get_basename (path_uri);
 	if (basename && nautilus_strcmp (basename, RESET_IMAGE_NAME) == 0) {
 		nautilus_show_error_dialog (_("Sorry, but you can't replace the reset image."), _("Not an Image"), NULL);
-		g_free (path_name);
 		g_free (path_uri);
 		g_free (basename);
 		return;
 	}
 		
-	is_image = ensure_uri_is_image(path_uri);
 	g_free(path_uri);	
 	g_free (basename);
 	
-	if (!is_image) {
-		char *message = g_strdup_printf (_("Sorry, but '%s' is not a usable image file!"), path_name);
-		nautilus_show_error_dialog (message, _("Not an Image"), NULL);
-		g_free (message);
-		g_free (path_name);
-		return;
-	}
-
 	user_directory = nautilus_get_user_directory ();
 
 	/* copy the image file to the patterns directory */
@@ -1137,7 +1069,6 @@ add_pattern_to_browser (GtkWidget *widget, gpointer *data)
 		g_free (message);
 	}
 				
-	g_free(path_name);	
 	g_free(destination_name);
 	
 	/* update the property browser's contents to show the new one */
@@ -1155,27 +1086,14 @@ add_new_pattern (NautilusPropertyBrowser *property_browser)
 			gdk_window_raise(property_browser->details->dialog->window);
 		}
 	} else {
-		GtkFileSelection *file_dialog;
+		property_browser->details->dialog = 
+			nautilus_gnome_icon_selector_new (_("Select an image file to add as a pattern:"),
+				DATADIR "/pixmaps/tiles/",
+				GTK_WINDOW (property_browser),
+				(NautilusIconSelectionFunction) add_pattern_to_browser,
+				property_browser);						   
 
-		property_browser->details->dialog = gtk_file_selection_new
-			(_("Select an image file to add as a pattern:"));
-		file_dialog = GTK_FILE_SELECTION (property_browser->details->dialog);
-		
-		nautilus_nullify_when_destroyed (&property_browser->details->dialog);
-		
-		gtk_signal_connect (GTK_OBJECT (file_dialog->ok_button),
-				    "clicked",
-				    add_pattern_to_browser,
-				    property_browser);
-		gtk_signal_connect_object (GTK_OBJECT (file_dialog->cancel_button),
-					   "clicked",
-					   gtk_widget_destroy,
-					   GTK_OBJECT (file_dialog));
-
-		gtk_window_set_position (GTK_WINDOW (file_dialog), GTK_WIN_POS_MOUSE);
-		gtk_window_set_transient_for (GTK_WINDOW (file_dialog), GTK_WINDOW (property_browser));
- 		gtk_window_set_wmclass (GTK_WINDOW (file_dialog), "file_selector", "Nautilus");
-		gtk_widget_show (GTK_WIDGET (file_dialog));
+		nautilus_nullify_when_destroyed (&property_browser->details->dialog);		
 	}
 }
 
@@ -1358,8 +1276,7 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 
 		/* update the image path from the file entry */
 		if (property_browser->details->file_entry) {
-			emblem_path = gnome_file_entry_get_full_path (GNOME_FILE_ENTRY (property_browser->details->file_entry),
-									FALSE);
+			emblem_path = gnome_icon_entry_get_filename (GNOME_ICON_ENTRY (property_browser->details->file_entry));
 			if (emblem_path) {
 				emblem_uri = gnome_vfs_get_uri_from_local_path (emblem_path);
 				if (ensure_uri_is_image (emblem_uri)) {
