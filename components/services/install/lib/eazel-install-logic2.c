@@ -591,7 +591,7 @@ post_get_softcat_info (EazelInstall *service,
 		/* Don't dedupe yourself */
 		if (p1 != (*package)) {
 #if EI2_DEBUG & 0x4
-			trilobite_debug ("\tdeduping %p %s to %p", *package, (*package)->name, p1);
+			trilobite_debug ("\tdeduping(a) %p %s to %p", *package, (*package)->name, p1);
 #endif		
 			
 			gtk_object_ref (GTK_OBJECT (p1));
@@ -599,7 +599,7 @@ post_get_softcat_info (EazelInstall *service,
 			(*package) = p1;
 		} else {
 #if EI2_DEBUG & 0x4
-			trilobite_debug ("\tnot deduping myself %p %s", *package, (*package)->name, p1);
+			trilobite_debug ("\tnot deduping(a) myself %p %s", *package, (*package)->name, p1);
 #endif		
 		}
 	}
@@ -799,9 +799,18 @@ dedupe_foreach_depends (PackageDependency *d,
 	p11 = g_hash_table_lookup (service->private->dedupe_hash, p1->md5);
 	
 	if (p11) {
-		gtk_object_ref (GTK_OBJECT (p11));
-		gtk_object_unref (GTK_OBJECT (p1)); 
-		d->package = p11;
+		if (p11 != p1) {
+#if EI2_DEBUG & 0x4
+			trilobite_debug ("\tdeduping(b) %p %s to %p", p11, p11->name, p1);
+#endif		
+			gtk_object_ref (GTK_OBJECT (p11));
+			gtk_object_unref (GTK_OBJECT (p1)); 
+			d->package = p11;
+		} else {
+#if EI2_DEBUG & 0x4
+			trilobite_debug ("\tnot deduping(b) myself %p %s", p11, p11->name, p1);
+#endif		
+		}			
 	} else {
 		add_to_dedupe_hash (service, p1);
 		dedupe_foreach (p1, service);

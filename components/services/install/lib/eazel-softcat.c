@@ -652,7 +652,20 @@ eazel_softcat_query (EazelSoftCat *softcat, PackageData *package, int sense_flag
 	for (got_happy = FALSE, tries_left = softcat->private->retries;
 	     !got_happy && (tries_left > 0);
 	     tries_left--) {
+
 		got_happy = trilobite_fetch_uri (search_url, &body, &length);
+		
+		{
+			char **strs;
+			int i;
+			body [length] = 0;
+			strs = g_strsplit (body, "\n", 0);
+			for (i = 0; strs[i] != NULL; i++) {
+				trilobite_debug ("xml spam: %s", strs[i]);
+			}			
+			g_strfreev (strs);
+		}
+
 		if (got_happy) {
 			got_happy = eazel_install_packagelist_parse (&packages, body, length, &db_revision);
 			if (! got_happy) {

@@ -1,3 +1,15 @@
+2001-03-09  Eskil Olsen  <eskil@eazel.com>
+
+	reviewed by: Robey Pointer  <robey@eazel.com>
+
+	Fixes bug 7648, log xml to track softcat weirdness.
+	
+	* components/services/install/lib/eazel-install-logic2.c:
+	(post_get_softcat_info), (dedupe_foreach_depends):
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_query):
+	
+
 2001-03-10  Mike Fleming  <mfleming@eazel.com>
 
 	Merge from HEAD:
