@@ -408,7 +408,7 @@ nautilus_window_constructed(NautilusWindow *window)
 
   window->ent_url = explorer_location_bar_new();
   gtk_signal_connect(GTK_OBJECT(window->ent_url), "location_changed",
-                     nautilus_window_goto_url, window);
+                     nautilus_window_goto_url_cb, window);
   gnome_app_add_docked(app, window->ent_url, "url-entry",
                        GNOME_DOCK_ITEM_BEH_LOCKED|GNOME_DOCK_ITEM_BEH_EXCLUSIVE|GNOME_DOCK_ITEM_BEH_NEVER_VERTICAL,
                        GNOME_DOCK_TOP, 1, 0, 0);

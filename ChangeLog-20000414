@@ -1,5 +1,12 @@
 1999-12-15  Darin Adler  <darin@eazel.com>
 
+	* src/ntl-window.c (nautilus_window_constructed):
+        Fixed signal handler to point to nautilus_window_goto_url_cb
+        instead of nautilus_window_goto_url. This was causing a bad
+        cast when a new URL was typed.
+
+1999-12-15  Darin Adler  <darin@eazel.com>
+
 	* src/ntl-uri-map.c (nautilus_navinfo_new): Changed back to
         const gchar*. To compile, you need to install the latest
         gnome-vfs.
