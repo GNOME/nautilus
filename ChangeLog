@@ -1,3 +1,19 @@
+2001-03-05  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 7363 (change to smooth font choice doesn't affect
+	sidebar in currently open windows)
+
+	* src/nautilus-sidebar-title.c: 
+	(smooth_font_changed_callback): New callback, gets the smooth
+	font preference and tells the two NautilusLabels to use it.
+	(nautilus_sidebar_title_initialize): Register callbacks
+	for the anti-aliased and non-anti-aliased fonts changing.
+	(nautilus_sidebar_title_destroy): Remove new callbacks.
+	(update_all_cover): Renamed from smooth_graphics_mode_changed_callback
+	since it's now used for more than just that.
+
 2001-03-05  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: John Harper  <jsh@eazel.com>

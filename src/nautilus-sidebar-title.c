@@ -69,7 +69,8 @@ static void                nautilus_sidebar_title_theme_changed    (gpointer    
 static void                update_icon                             (NautilusSidebarTitle      *sidebar_title);
 static GtkWidget *         sidebar_title_create_title_label        (void);
 static GtkWidget *         sidebar_title_create_more_info_label    (void);
-static void                smooth_graphics_mode_changed_callback   (gpointer                   callback_data);
+static void                update_all_cover   			   (gpointer                   callback_data);
+static void		   update_all 				   (NautilusSidebarTitle      *sidebar_title);
 static NautilusBackground *nautilus_sidebar_title_background       (NautilusSidebarTitle      *sidebar_title);
 
 struct NautilusSidebarTitleDetails {
@@ -124,6 +125,22 @@ realize_callback (NautilusSidebarTitle *sidebar_title)
 }
 
 static void
+smooth_font_changed_callback (gpointer callback_data)
+{
+	NautilusScalableFont *new_font;
+	NautilusSidebarTitle *sidebar_title;
+
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (callback_data));
+
+	sidebar_title = NAUTILUS_SIDEBAR_TITLE (callback_data);
+
+	new_font = nautilus_global_preferences_get_smooth_font ();
+
+	nautilus_label_set_smooth_font (NAUTILUS_LABEL (sidebar_title->details->title_label), new_font);
+	nautilus_label_set_smooth_font (NAUTILUS_LABEL (sidebar_title->details->more_info_label), new_font);
+}
+
+static void
 nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 { 
 	sidebar_title->details = g_new0 (NautilusSidebarTitleDetails, 1);
@@ -154,15 +171,26 @@ nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 	gtk_widget_show (sidebar_title->details->emblem_box);
 	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->emblem_box, 0, 0, 0);
 
+	/* FIXME: This should use NautilusLabel like the other displayed text.
+	 * But I don't think this feature is ever used? Someone should consult
+	 * with Andy about this. (This is not the same as the info in the Notes
+	 * sidebar panel.)
+	 */
 	sidebar_title->details->notes = GTK_WIDGET (gtk_label_new (NULL));
 	gtk_label_set_line_wrap (GTK_LABEL (sidebar_title->details->notes), TRUE);
 	gtk_widget_show (sidebar_title->details->notes);
 	gtk_box_pack_start (GTK_BOX (sidebar_title), sidebar_title->details->notes, 0, 0, 0);
 
 	/* Keep track of changes in graphics trade offs */
-	smooth_graphics_mode_changed_callback (sidebar_title);
+	update_all (sidebar_title);
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
-					   smooth_graphics_mode_changed_callback, 
+					   update_all_cover, 
+					   sidebar_title);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
+					   update_all_cover,
+					   sidebar_title);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT,
+					   smooth_font_changed_callback,
 					   sidebar_title);
 
 	/* set up the label colors according to the theme, and get notified of changes */
@@ -200,8 +228,18 @@ nautilus_sidebar_title_destroy (GtkObject *object)
 	g_free (sidebar_title->details->title_text);
 	g_free (sidebar_title->details);
 
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME, nautilus_sidebar_title_theme_changed, sidebar_title);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, smooth_graphics_mode_changed_callback, sidebar_title);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME, 
+					      nautilus_sidebar_title_theme_changed, 
+					      sidebar_title);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
+					      update_all_cover, 
+					      sidebar_title);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY, 
+					      update_all_cover, 
+					      sidebar_title);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT,
+					      smooth_font_changed_callback,
+					      sidebar_title);
   	
 	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -752,7 +790,7 @@ sidebar_title_create_more_info_label (void)
 }
 
 static void
-smooth_graphics_mode_changed_callback (gpointer callback_data)
+update_all_cover (gpointer callback_data)
 {
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (callback_data));
 	
