@@ -1,5 +1,13 @@
 2003-01-12  Dave Camp  <dave@ximian.com>
 
+	* src/file-manager/fm-list-view.c (key_press_callback): Only
+	handle keypresses on the bin window.
+
+	Fixes #102259, thanks to Pasupathi <pasupathi.duraisamy@wipro.com>
+	for helping to track this down.
+	
+2003-01-12  Dave Camp  <dave@ximian.com>
+
 	* src/file-manager/fm-list-view.c (button_press_callback): In
 	single click mode, don't activate if shift or control is held
 	down.  This matches the icon view behavior.

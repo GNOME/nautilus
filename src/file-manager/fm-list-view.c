@@ -212,6 +212,10 @@ key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_dat
 	GList *file_list;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
+	
+	if (event->window != gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget))) {
+		return FALSE;
+	}
 
 	switch (event->keyval) {
 	case GDK_space:
