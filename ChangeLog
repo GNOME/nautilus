@@ -1,5 +1,35 @@
 2002-03-04  Darin Adler  <darin@bentspoon.com>
 
+	* libnautilus-private/nautilus-global-preferences.c:
+	(nautilus_global_preferences_init_with_folder_browsing):
+	Call the real nautilus_global_preferences_init. Without this, all
+	hell breaks loose.
+	
+	* libnautilus/nautilus-clipboard.c:
+	(merge_in_clipboard_menu_items), (merge_out_clipboard_menu_items):
+	Don't do anything if things are NULL. Helps us destroy cleanly.
+	(focus_changed_callback): Add missing gboolean return value. These
+	days, signal handlers have to be more careful.
+	(target_destroy_callback): NULL things out instead of freeing
+	since destroy can happen more than once.
+	(nautilus_clipboard_set_up_editable): Do a weak ref so the target
+	data gets freed.
+	(first_focus_callback): Add missing gboolean return value. These
+	days, signal handlers have to be more careful.
+	
+	* src/file-manager/fm-properties-window.c: (name_field_focus_out):
+	Return FALSE, not TRUE.
+
+2002-03-04  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus/nautilus-clipboard.c:
+	(clipboard_items_are_merged_in), (focus_changed_callback),
+	(target_destroy_callback), (nautilus_clipboard_set_up_editable),
+	(first_focus_callback):
+	* src/file-manager/fm-properties-window.c: (name_field_focus_out):
+
+2002-03-04  Darin Adler  <darin@bentspoon.com>
+
 	* libnautilus-private/nautilus-directory.c:
 	(nautilus_directory_notify_files_removed): Don't pay any attention
 	if we're told about removal of a file we're renaming.

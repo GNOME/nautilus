@@ -199,14 +199,14 @@ set_clipboard_menu_items_insensitive (BonoboUIComponent *component)
 typedef struct {
 	BonoboUIComponent *component;
 	Bonobo_UIContainer container;
-	gboolean           editable_shares_selection_changes;
+	gboolean editable_shares_selection_changes;
 } TargetCallbackData;
 
 static gboolean
 clipboard_items_are_merged_in (GtkWidget *widget)
 {
 	return GPOINTER_TO_INT (g_object_get_data (G_OBJECT (widget),
-						     "Nautilus:clipboard_menu_items_merged"));
+						   "Nautilus:clipboard_menu_items_merged"));
 }
 
 static void
@@ -230,6 +230,10 @@ merge_in_clipboard_menu_items (GObject *widget_as_object,
 	ui = target_data->component;
 	container = target_data->container;
 	add_selection_callback = target_data->editable_shares_selection_changes;
+
+	if (ui == NULL || container == CORBA_OBJECT_NIL) {
+		return;
+	}
 
 	bonobo_ui_component_set_container (ui, container, NULL);
 	bonobo_ui_component_freeze (ui, NULL);
@@ -263,6 +267,11 @@ merge_out_clipboard_menu_items (GObject *widget_as_object,
 	g_assert (target_data != NULL);
 	ui = BONOBO_UI_COMPONENT (target_data->component);
 	selection_callback_was_added = target_data->editable_shares_selection_changes;
+
+	if (ui == NULL) {
+		return;
+	}
+
 	bonobo_ui_component_unset_container (ui, NULL);
 
 	if (selection_callback_was_added) {
@@ -275,31 +284,23 @@ merge_out_clipboard_menu_items (GObject *widget_as_object,
 	set_clipboard_items_are_merged_in (widget_as_object, FALSE);
 }
 
-static void
+static gboolean
 focus_changed_callback (GtkWidget *widget,
 			GdkEventAny *event,
 			gpointer callback_data)
 {
-	TargetCallbackData *target_data;
-	BonoboUIComponent *ui;
-
-	g_assert (GTK_IS_EDITABLE (widget));
-	g_assert (callback_data != NULL);
-	target_data = callback_data;
-	g_assert (BONOBO_IS_UI_COMPONENT (target_data->component));
-
 	/* Connect the component to the container if the widget has focus. */
-	ui = target_data->component;
 	if (GTK_WIDGET_HAS_FOCUS (widget)) {
 		if (!clipboard_items_are_merged_in (widget)) {
-			merge_in_clipboard_menu_items (G_OBJECT (widget), target_data);
+			merge_in_clipboard_menu_items (G_OBJECT (widget), callback_data);
 		}
 	} else {
 		if (clipboard_items_are_merged_in (widget)) {
-			merge_out_clipboard_menu_items (G_OBJECT (widget), target_data);
+			merge_out_clipboard_menu_items (G_OBJECT (widget), callback_data);
 		}
-
 	}
+
+	return FALSE;
 }
 
 static void
@@ -332,15 +333,14 @@ target_destroy_callback (GtkObject *object,
 
 	g_assert (callback_data != NULL);
 	target_data = callback_data;
-	g_assert (BONOBO_IS_UI_COMPONENT (target_data->component));
 
-	/* Disconnect the component from the container, and then free
-	 * everything.
-	 */
-	bonobo_ui_component_unset_container (target_data->component, NULL);
-	bonobo_object_unref (target_data->component);
+	if (target_data->component != NULL) {
+		bonobo_ui_component_unset_container (target_data->component, NULL);
+		bonobo_object_unref (target_data->component);
+		target_data->component = NULL;
+	}
 	bonobo_object_release_unref (target_data->container, NULL);
-	g_free (target_data);
+	target_data->container = CORBA_OBJECT_NIL;
 }
 
 static TargetCallbackData *
@@ -370,8 +370,7 @@ initialize_clipboard_component_with_callback_data (GtkEditable *target,
 	target_data = g_new (TargetCallbackData, 1);
 	target_data->component = ui;
 	target_data->container = bonobo_object_dup_ref (ui_container, NULL);
-	target_data->editable_shares_selection_changes = 
-		shares_selection_changes;
+	target_data->editable_shares_selection_changes = shares_selection_changes;
 
 	return target_data;
 }
@@ -391,20 +390,20 @@ nautilus_clipboard_set_up_editable (GtkEditable *target,
 		 ui_container,
 		 shares_selection_changes);
 
-	g_signal_connect_after (target, "focus_in_event",
-				G_CALLBACK (focus_changed_callback), target_data);
-	g_signal_connect_after (target, "focus_out_event",
-				G_CALLBACK (focus_changed_callback), target_data);
-
+	g_signal_connect (target, "focus_in_event",
+			  G_CALLBACK (focus_changed_callback), target_data);
+	g_signal_connect (target, "focus_out_event",
+			  G_CALLBACK (focus_changed_callback), target_data);
 	g_signal_connect (target, "destroy",
-			    G_CALLBACK (target_destroy_callback), target_data);
+			  G_CALLBACK (target_destroy_callback), target_data);
+
+	g_object_weak_ref (G_OBJECT (target), (GWeakNotify) g_free, target_data);
 	
 	/* Call the focus changed callback once to merge if the window is
 	 * already in focus.
 	 */
 	focus_changed_callback (GTK_WIDGET (target), NULL, target_data);
 }
-
 
 static gboolean
 widget_was_set_up_with_selection_sensitivity (GtkWidget *widget)
@@ -413,7 +412,7 @@ widget_was_set_up_with_selection_sensitivity (GtkWidget *widget)
 						     "Nautilus:shares_selection_changes"));
 }
 
-static void
+static gboolean
 first_focus_callback (GtkWidget *widget,
 		      GdkEventAny *event,
 		      gpointer callback_data)
@@ -430,6 +429,8 @@ first_focus_callback (GtkWidget *widget,
 		(GTK_EDITABLE (widget),
 		 bonobo_control_get_remote_ui_container (BONOBO_CONTROL (callback_data), NULL),
 		 widget_was_set_up_with_selection_sensitivity (widget));
+
+	return FALSE;
 }
 
 static void

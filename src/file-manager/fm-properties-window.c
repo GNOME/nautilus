@@ -527,7 +527,7 @@ name_field_focus_out (NautilusEntry *name_field,
 		name_field_done_editing (name_field, FM_PROPERTIES_WINDOW (callback_data));
 	}
 
-	return TRUE;
+	return FALSE;
 }
 
 static void

@@ -918,6 +918,8 @@ nautilus_global_preferences_init_with_folder_browsing (void)
 		"default_folder_viewer"
 	};
 
+	nautilus_global_preferences_init ();
+
 	if (browse_initialized) {
 		return;
 	}
