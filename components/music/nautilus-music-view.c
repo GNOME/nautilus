@@ -1182,8 +1182,9 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 
 	if (esdout_playing ()) {
 		nautilus_error_dialog (_("Sorry, but the music view is unable to play back sound right now. "
-					 "Either another program is using or blocking the soundcard "
-					 "or your soundcard is not configured properly. "),
+					 "Either another program is using or blocking the sound card, "
+					 "or your sound card is not configured properly. Try quitting any "
+					 "applications that may be blocking use of the sound card."),
 				         _("Unable to Play File"),
 					GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (&music_view->parent))));
 		
