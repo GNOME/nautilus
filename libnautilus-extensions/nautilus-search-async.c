@@ -22,9 +22,16 @@
    Author: Rebecca Schulman <rebecka@eazel.com>
 */
 
+#include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/un.h>
+#include <fcntl.h>
+#include <unistd.h>
+
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <pthread.h>
 #include <nautilus-directory-private.h>
+#include <medusa-search-service.h>
 
 #include "nautilus-search-async.h"
 
@@ -42,7 +49,10 @@ typedef struct {
 
 
 
-static void *  run_search                     (void *data);
+static void *           run_search                        (void *data);
+static int              initialize_socket                 (struct sockaddr_un *daemon_address);
+static int              get_key_from_cookie               (void);
+static void             parse_results                     (char *transmission);
 
 /* this procedure is meant to mimic the behavior of the
    async load directory uri calls, so it takes
@@ -81,6 +91,12 @@ static void *
 run_search (void *data) 
 {
 	NautilusSearchThreadClosure *closure;
+	int search_request_port;
+	struct sockaddr_un *server_address;
+	char cookie_request[MAX_LINE];
+	char request_field[MAX_LINE];
+	char results[MAX_LINE];
+	int key;
 
 	
 	closure = (NautilusSearchThreadClosure *) data;
@@ -89,9 +105,101 @@ run_search (void *data)
 	g_return_val_if_fail (closure->search_uri != NULL, NULL);
 	g_return_val_if_fail (nautilus_uri_is_search_uri (closure->search_uri), NULL);
 
+
+	/* For now run a dummy search */
+	search_request_port = initialize_socket (server_address);
+
+
+	/* Send request for cookie */
+	sprintf (cookie_request, "%s\t%d\t%d\n", COOKIE_REQUEST, getuid (), getpid());
+	printf ("Sending %s\n", cookie_request);
+	write (search_request_port, cookie_request, strlen (cookie_request));
+
+	
+
+	key = get_key_from_cookie ();
+	printf ("Got cookie %d from cookie file\n", key);
+	sprintf (request_field, "%d %d %d\tFile_Name ^ tmp\n", getuid (), getpid (), key);
+	
+	printf ("Sending %s", request_field);
+	g_return_val_if_fail (write (search_request_port, request_field, 
+				     strlen(request_field)) > 0, NULL);
+	
+	memset (request_field, 0, MAX_LINE);
+	sprintf (request_field,"%d %d %d\tDONE\n", getuid (), getpid (), key);
+
+
+	/* Wait for results */
+	for (; ;) {
+		read (search_request_port, results, MAX_LINE);
+		parse_results (results);
+  }
 	return NULL;
 }
 
 
 
 
+static int
+initialize_socket (struct sockaddr_un *daemon_address)
+{
+  int search_request_port;
+    
+  search_request_port = socket (AF_LOCAL, SOCK_STREAM, 0);
+  g_return_val_if_fail (search_request_port != -1, 3);
+
+  daemon_address->sun_family = AF_LOCAL;
+  /* FIXME:  This number (108) sucks, but it has no #define in the header.
+     What to do? (POSIX requires 100 bytes at least, here)  */
+  snprintf (daemon_address->sun_path, 100, "%s", SEARCH_SOCKET_PATH);
+
+  g_return_val_if_fail (connect (search_request_port, (struct sockaddr *) daemon_address,
+			     SUN_LEN (daemon_address)) != -1, -1);
+  
+  
+
+  return search_request_port;
+}
+
+
+static int
+get_key_from_cookie ()
+{
+  char file_name[MAX_LINE];
+  int cookie_fd, key;
+  /* Go look for cookie */
+  sprintf (file_name, "%s/%d_%d", COOKIE_PATH, getuid (), getpid ());
+  printf ("Looking in cookie file %s\n", file_name);
+
+  cookie_fd = open (file_name, O_RDONLY);
+  /* Keep looking if cookie file isn't created yet */
+  while (cookie_fd == -1) {
+    cookie_fd = open (file_name, O_RDONLY);
+  }
+  read (cookie_fd, &key, sizeof (int));
+  close (cookie_fd);
+  
+  return key;
+}
+
+
+
+static void
+parse_results (char *transmission)
+{
+  char *line;
+  line = transmission;
+#ifdef SEARCH_DAEMON_DEBUG
+  /* printf ("Received %s\n", line); */
+#endif
+  while ((line - 1) != NULL && *line != 0) {
+    if (strncmp (line, SEARCH_FILE_TRANSMISSION, strlen (SEARCH_FILE_TRANSMISSION)) == 0) {
+      printf ("next file is %s", line);
+    }
+    else if (strncmp (line, SEARCH_END_TRANSMISSION, strlen (SEARCH_END_TRANSMISSION)) == 0) {
+      exit (1);
+    }
+    line = strchr (line, 0);
+    line++;
+  }
+}
