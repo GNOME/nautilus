@@ -163,6 +163,7 @@ static void     	get_ext2_volume_name                         	(NautilusVolume  
 static void     	get_msdos_volume_name                         	(NautilusVolume             	*volume);
 static void     	get_nfs_volume_name                         	(NautilusVolume             	*volume);
 static void     	get_reiser_volume_name                         	(NautilusVolume             	*volume);
+static void             get_ufs_volume_name                             (NautilusVolume                *volume);
 static void     	get_floppy_volume_name                         	(NautilusVolume             	*volume);
 static void     	get_generic_volume_name                         (NautilusVolume             	*volume);
 static void		mount_volume_get_name 				(NautilusVolume 		*volume);
@@ -595,6 +596,7 @@ nautilus_volume_monitor_should_integrate_trash (const NautilusVolume *volume)
 		|| volume->type == NAUTILUS_VOLUME_VFAT
 		|| volume->type == NAUTILUS_VOLUME_FLOPPY
 		|| volume->type == NAUTILUS_VOLUME_REISER
+		|| volume->type == NAUTILUS_VOLUME_UFS
 		|| volume->type == NAUTILUS_VOLUME_SMB;
 }
 
@@ -787,13 +789,15 @@ mount_volume_get_name (NautilusVolume *volume)
 	case NAUTILUS_VOLUME_REISER:
 		get_reiser_volume_name (volume);
 		break;
+	case NAUTILUS_VOLUME_UFS:
+		get_ufs_volume_name (volume);
+		break;
 
 	case NAUTILUS_VOLUME_AFFS:
 	case NAUTILUS_VOLUME_HPFS:
 	case NAUTILUS_VOLUME_MINIX:
 	case NAUTILUS_VOLUME_SMB:
 	case NAUTILUS_VOLUME_UDF:
-	case NAUTILUS_VOLUME_UFS:
 	case NAUTILUS_VOLUME_UNSDOS:
 	case NAUTILUS_VOLUME_XENIX:
 	case NAUTILUS_VOLUME_XIAFS:
@@ -840,9 +844,9 @@ mount_volume_activate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 	case NAUTILUS_VOLUME_HPFS:
 	case NAUTILUS_VOLUME_MINIX:
 	case NAUTILUS_VOLUME_REISER:
+	case NAUTILUS_VOLUME_UFS:
 	case NAUTILUS_VOLUME_SMB:
 	case NAUTILUS_VOLUME_UDF:
-	case NAUTILUS_VOLUME_UFS:
 	case NAUTILUS_VOLUME_UNSDOS:
 	case NAUTILUS_VOLUME_VFAT:
 	case NAUTILUS_VOLUME_XENIX:
@@ -1335,6 +1339,13 @@ mount_volume_reiserfs_add (NautilusVolume *volume)
 }
 
 static gboolean
+mount_volume_ufs_add (NautilusVolume *volume)
+{
+        volume->type = NAUTILUS_VOLUME_UFS;
+        return TRUE;
+}
+
+static gboolean
 mount_volume_smb_add (NautilusVolume *volume)
 {
 	volume->type = NAUTILUS_VOLUME_SMB;
@@ -1821,6 +1832,22 @@ get_reiser_volume_name (NautilusVolume *volume)
 	}
 }
 
+
+static void
+get_ufs_volume_name (NautilusVolume *volume)
+{
+	char *name;
+
+	name = strrchr (volume->mount_path, '/');
+	if (name != NULL) {
+		name++;
+		volume->volume_name = g_strdup (name);
+		modify_volume_name_for_display (volume);
+	} else {
+		volume->volume_name = g_strdup (_("UFS Volume"));
+	}
+}
+
 static void
 get_floppy_volume_name (NautilusVolume *volume)
 {
@@ -1882,6 +1909,8 @@ mount_volume_add_filesystem (NautilusVolume *volume, GList *volume_list)
 		mounted = mount_volume_proc_add (volume);
 	} else if (strcmp (volume->filesystem, "reiserfs") == 0) {
 		mounted = mount_volume_reiserfs_add (volume);
+	} else if (strcmp (volume->filesystem, "ufs") == 0) {
+		mounted = mount_volume_ufs_add (volume);
 	} else if (strcmp (volume->filesystem, "smb") == 0) {		
 		mounted = mount_volume_smb_add (volume);
 	} else if (strcmp (volume->filesystem, "udf") == 0) {		
