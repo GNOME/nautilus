@@ -1,5 +1,12 @@
 2000-09-22  Michael Engber  <engber@eazel.com>
 
+	horizontal & vertical desktop gradient settings were
+	being written out bassackwards: bug 3247.
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(nautilus_directory_background_write_desktop_settings):
+
+2000-09-22  Michael Engber  <engber@eazel.com>
+
 	Sped up gradient drawing. Also changed the n-point
 	gradient syntax to use a '%' to indicate percentage
 	instead of a '|'.

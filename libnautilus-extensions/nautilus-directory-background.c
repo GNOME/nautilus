@@ -254,7 +254,7 @@ nautilus_directory_background_write_desktop_settings (char *color, char *image, 
 		g_free (end_color);
 
 		gnome_config_set_string ("/Background/Default/simple", nautilus_gradient_is_gradient (color) ? "gradient" : "solid");
-		gnome_config_set_string ("/Background/Default/gradient", nautilus_gradient_is_horizontal (color) ? "vertical" : "horizontal");
+		gnome_config_set_string ("/Background/Default/gradient", nautilus_gradient_is_horizontal (color) ? "horizontal" : "vertical");
 	}
 
 	if (image != NULL) {
