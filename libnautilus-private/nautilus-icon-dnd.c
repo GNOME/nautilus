@@ -74,7 +74,7 @@ static void     nautilus_icon_container_receive_dropped_icons    (NautilusIconCo
 								  GdkDragContext *context,
 								  int x, int y);
 static void     receive_dropped_tile_image                       (NautilusIconContainer *container, 
-								  gpointer data);
+								  GtkSelectionData *data);
 static void     receive_dropped_keyword                          (NautilusIconContainer *container, 
 								  char* keyword, 
 								  int x, 
@@ -537,11 +537,11 @@ nautilus_icon_container_selection_items_local (const NautilusIconContainer *cont
 
 /* handle dropped tile images */
 static void
-receive_dropped_tile_image (NautilusIconContainer *container, gpointer data)
+receive_dropped_tile_image (NautilusIconContainer *container, GtkSelectionData *data)
 {
 	g_assert (data != NULL);
 	nautilus_background_receive_dropped_background_image
-		(nautilus_get_widget_background (GTK_WIDGET (container)), data);
+		(nautilus_get_widget_background (GTK_WIDGET (container)), data->data);
 }
 
 /* handle dropped keywords */

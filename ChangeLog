@@ -1,3 +1,13 @@
+2000-09-07  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(receive_dropped_tile_image):
+	fixed bug 2896, tiled backgrounds don't work in the icon view.
+	nautilus_background_receive_dropped_background_image was passing the
+	GtkSelectionData object, instead of the data it points to.  Mathieu
+	caused this when he reworked the drag and drop stuff recently.
+	
+	
 2000-09-07  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 2218 (Duplicate items appear in history list)
