@@ -44,6 +44,7 @@
 #include <libnautilus/nautilus-alloc.h>
 #include <libnautilus/nautilus-global-preferences.h>
 #include <libnautilus/nautilus-gtk-extensions.h>
+#include <libnautilus/nautilus-glib-extensions.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-icon-factory.h>
 #include <libnautilus/nautilus-metadata.h>
@@ -61,6 +62,7 @@
 #define MENU_PATH_CLOSE                     "/File/Close"
 #define MENU_PATH_SEPARATOR_AFTER_CLOSE	    "/File/SeparatorAfterClose"
 #define MENU_PATH_DELETE                    "/File/Delete"
+#define MENU_PATH_DUPLICATE                 "/File/Duplicate"
 #define MENU_PATH_SELECT_ALL                "/Edit/Select All"
 #define MENU_PATH_SET_PROPERTIES            "/File/Set Properties"
 
@@ -117,6 +119,8 @@ static void           fm_directory_view_initialize_class                        
 static void           fm_directory_view_initialize                                (FMDirectoryView          *view);
 static void           fm_directory_view_delete_with_confirm                       (FMDirectoryView          *view,
 										   GList                    *files);
+static void	      fm_directory_duplicate_selection 				  (FMDirectoryView 	    *view, 
+										   GList 		    *files);
 static void           fm_directory_view_destroy                                   (GtkObject                *object);
 static void           fm_directory_view_activate_file_internal                    (FMDirectoryView          *view,
 										   NautilusFile             *file,
@@ -345,6 +349,27 @@ bonobo_menu_delete_cb (BonoboUIHandler *ui_handler, gpointer user_data, const ch
         g_assert (g_list_length(selection) > 0);
 
         fm_directory_view_delete_with_confirm (view, selection);
+
+        nautilus_file_list_free (selection);
+}
+
+static void
+bonobo_menu_duplicate_cb (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
+{
+        FMDirectoryView *view;
+        GList *selection;
+        
+        g_assert (FM_IS_DIRECTORY_VIEW (user_data));
+
+        view = FM_DIRECTORY_VIEW (user_data);
+	selection = fm_directory_view_get_selection (view);
+
+        /* UI should have prevented this from being called unless at least
+         * one item is selected.
+         */
+        g_assert (g_list_length(selection) > 0);
+
+        fm_directory_duplicate_selection (view, selection);
 
         nautilus_file_list_free (selection);
 }
@@ -1359,9 +1384,49 @@ fm_directory_view_delete_with_confirm (FMDirectoryView *view, GList *files)
 }
 
 static void
+append_uri_one (gpointer data, gpointer user_data)
+{
+	NautilusFile *file;
+	GList **result;
+	
+	g_assert (NAUTILUS_IS_FILE (data));
+
+	result = (GList **)user_data;
+	file = (NautilusFile *)data;
+	*result = g_list_append (*result, nautilus_file_get_uri (file));
+}
+
+static void
+fm_directory_duplicate_selection (FMDirectoryView *view, GList *files)
+{
+	GList *uris;
+
+        g_assert (FM_IS_DIRECTORY_VIEW (view));
+        g_assert (g_list_length (files) > 0);
+
+	uris = NULL;
+	/* create a list of URIs */
+	g_list_foreach (files, append_uri_one, &uris);    
+
+        g_assert (g_list_length (uris) == g_list_length (files));
+
+        
+	fs_xfer (uris, NULL, NULL, GDK_ACTION_COPY, GTK_WIDGET (view));
+	nautilus_g_list_free_deep (uris);
+}
+
+static void
 delete_cb (GtkMenuItem *item, GList *files)
 {
         fm_directory_view_delete_with_confirm
+		(FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view")), 
+		 files);
+}
+
+static void
+duplicate_cb (GtkMenuItem *item, GList *files)
+{
+        fm_directory_duplicate_selection
 		(FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view")), 
 		 files);
 }
@@ -1473,6 +1538,9 @@ compute_menu_item_info (const char *path,
 	} else if (strcmp (path, MENU_PATH_DELETE) == 0) {
 		name = g_strdup (_("_Delete..."));
 		*return_sensitivity = selection_length > 0;
+	} else if (strcmp (path, MENU_PATH_DUPLICATE) == 0) {
+		name = g_strdup (_("_Duplicate"));
+		*return_sensitivity = selection_length > 0;
 	} else if (strcmp (path, MENU_PATH_SET_PROPERTIES) == 0) {
 		name = g_strdup (_("Set _Properties..."));
 		*return_sensitivity = selection_length > 0;
@@ -1534,6 +1602,8 @@ fm_directory_view_real_append_selection_context_menu_items (FMDirectoryView *vie
 				    MENU_PATH_OPEN_IN_NEW_WINDOW, open_in_new_window_cb);
 	append_selection_menu_item (view, menu, files,
 				    MENU_PATH_DELETE, delete_cb);
+	append_selection_menu_item (view, menu, files,
+				    MENU_PATH_DUPLICATE, duplicate_cb);
 	append_selection_menu_item (view, menu, files,
 				    MENU_PATH_SET_PROPERTIES, open_properties_window_cb);
 }
@@ -1598,6 +1668,17 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          bonobo_menu_delete_cb,
                                          view);                
         bonobo_ui_handler_menu_new_item (ui_handler,
+                                         MENU_PATH_DUPLICATE,
+                                         _("Duplicate"),
+                                         _("Duplicate all selected items"),
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, MENU_PATH_CLOSE) + 4,
+                                         BONOBO_UI_HANDLER_PIXMAP_NONE,
+                                         NULL,
+                                         'D',
+                                         GDK_CONTROL_MASK,
+                                         bonobo_menu_duplicate_cb,
+                                         view);                
+        bonobo_ui_handler_menu_new_item (ui_handler,
                                          MENU_PATH_SELECT_ALL,
                                          _("Select All"),
                                          _("Select all items in this window"),
@@ -1625,19 +1706,20 @@ update_one_menu_item (BonoboUIHandler *local_ui_handler, const char* menu_path, 
 static void
 fm_directory_view_real_update_menus (FMDirectoryView *view)
 {
-        BonoboUIHandler *handler;
+	BonoboUIHandler *handler;
 	GList *selection;
 	int count;
 
-        handler = fm_directory_view_get_bonobo_ui_handler (view);
+	handler = fm_directory_view_get_bonobo_ui_handler (view);
 	selection = fm_directory_view_get_selection (view);
 	count = g_list_length (selection);
 	nautilus_file_list_free (selection);
 
-        update_one_menu_item (handler, MENU_PATH_OPEN, count);
-        update_one_menu_item (handler, MENU_PATH_OPEN_IN_NEW_WINDOW, count);
-        update_one_menu_item (handler, MENU_PATH_DELETE, count);
-        update_one_menu_item (handler, MENU_PATH_SET_PROPERTIES, count);
+	update_one_menu_item (handler, MENU_PATH_OPEN, count);
+	update_one_menu_item (handler, MENU_PATH_OPEN_IN_NEW_WINDOW, count);
+	update_one_menu_item (handler, MENU_PATH_DELETE, count);
+	update_one_menu_item (handler, MENU_PATH_DUPLICATE, count);
+	update_one_menu_item (handler, MENU_PATH_SET_PROPERTIES, count);
 }
 
 static GtkMenu *
@@ -2108,11 +2190,7 @@ fm_directory_view_move_copy_items (NautilusIconContainer *container,
 				   int y,
 				   FMDirectoryView *view)
 {
-	fs_xfer (item_uris,
-		relative_item_points,
-		target_dir,
-		copy_action,
-		GTK_WIDGET (view));
+	fs_xfer (item_uris, relative_item_points, target_dir, copy_action, GTK_WIDGET (view));
 }
 
 gboolean

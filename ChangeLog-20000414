@@ -1,3 +1,27 @@
+2000-04-12  Pavel Cisler <pavel@eazel.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_duplicate_selection), (bonobo_menu_duplicate_cb),
+	(append_uri_one), (duplicate_cb), (fm_directory_view_real_update_menus):
+	Added a Duplicate menu item. (task 329)
+
+	* src/file-manager/dfos-xfer.c:
+	(fs_xfer)
+	Added support for the duplicate command. Passing in a NULL for
+	target directory now starts a duplicate operation.
+
+	* src/file-manager/dfos-xfer.c:
+	(fs_xfer)
+	Made the progress dialog receive the text for the setup state. Pass
+	in proper text for copy and move operations.
+
+	* src/file-manager/dfos-xfer.c:
+	(handle_xfer_ok)
+	Pin the values of the bytes_copied to the preflight maximum -- a copy
+	may end up copying more than it estimated when items are added to
+	the hierarchy after the copy started. (I was hitting this when copying
+	a folder into itself, which is a separate bug).
+
 2000-04-12  Andy Hertzfeld <andy@eazel.com>
 
 	added a framework for using custom images for icons to reflect their
@@ -56,7 +80,7 @@
 	* aconfig.h:	  changed for i18n
 	* po/ru.po:       added russian translation.
 
-2000-04-11  Pavel Cisler <pavel@eazel.com>
+2000-04-12  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus/nautilus-icon-dnd.c:
 	* libnautilus/nautilus-icon-dnd.h:

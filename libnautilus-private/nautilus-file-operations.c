@@ -34,6 +34,7 @@ typedef struct XferInfo {
 	GnomeVFSAsyncHandle *handle;
 	GtkWidget *progress_dialog;
 	const char *operation_name;
+	const char *preparation_name;
 	GnomeVFSXferErrorMode error_mode;
 	GnomeVFSXferOverwriteMode overwrite_mode;
 	GtkWidget *parent_view;
@@ -106,7 +107,7 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 		dfos_xfer_progress_dialog_set_operation_string
 			(DFOS_XFER_PROGRESS_DIALOG
 				 (xfer_info->progress_dialog),
-				 "Preparing Copy...");
+				 xfer_info->preparation_name);
 		return TRUE;
 
 	case GNOME_VFS_XFER_PHASE_READYTOGO:
@@ -136,8 +137,10 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 			dfos_xfer_progress_dialog_update
 				(DFOS_XFER_PROGRESS_DIALOG
 				 (xfer_info->progress_dialog),
-				 progress_info->bytes_copied,
-				 progress_info->total_bytes_copied);
+				 MIN (progress_info->bytes_copied, 
+				 	progress_info->bytes_total),
+				 MIN (progress_info->total_bytes_copied,
+				 	progress_info->bytes_total));
 		}
 		return TRUE;
 
@@ -376,9 +379,9 @@ fs_xfer (const GList *item_uris,
 	GnomeVFSURI *source_dir_uri;
 	GnomeVFSURI *target_dir_uri;
 	XferInfo *xfer_info;
+	const char *target_dir_uri_text;
 	
 	g_assert (item_uris != NULL);
-	g_assert (target_dir != NULL);
 	
 	item_names = NULL;
 	source_dir_uri = NULL;
@@ -399,8 +402,15 @@ fs_xfer (const GList *item_uris,
 	}
 
 	source_dir = gnome_vfs_uri_to_string (source_dir_uri, GNOME_VFS_URI_HIDE_NONE);
-	target_dir_uri = gnome_vfs_uri_new (target_dir);
-
+	if (target_dir != NULL) {
+		target_dir_uri = gnome_vfs_uri_new (target_dir);
+		target_dir_uri_text = target_dir;
+	} else {
+		/* assume duplication */
+		target_dir_uri = gnome_vfs_uri_ref (source_dir_uri);
+		target_dir_uri_text = gnome_vfs_uri_to_string (target_dir_uri,
+							       GNOME_VFS_URI_HIDE_NONE);
+	}
 	/* figure out the right move/copy mode */
 	move_options = GNOME_VFS_XFER_RECURSIVE;
 
@@ -416,21 +426,27 @@ fs_xfer (const GList *item_uris,
 	xfer_info->parent_view = view;
 	xfer_info->progress_dialog = NULL;
 
-	if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0)
+	if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) {
 		xfer_info->operation_name = _("Moving");
-	else
+		xfer_info->preparation_name =_("Preparing To Move...");
+	} else {
 		xfer_info->operation_name = _("Copying");
+		xfer_info->preparation_name =_("Preparing To Copy...");
+	}
 
 	xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
 	xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_QUERY;
 	
 	gnome_vfs_async_xfer (&xfer_info->handle, source_dir, item_names,
-	      		      target_dir, NULL,
+	      		      target_dir_uri_text, NULL,
 	      		      move_options, GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 	      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
 	      		      &xfer_callback, xfer_info);
 
-	gnome_vfs_uri_unref (target_dir_uri); 
+	if (!target_dir)
+		g_free ((char *)target_dir_uri_text);
+
+	gnome_vfs_uri_unref (target_dir_uri);
 	gnome_vfs_uri_unref (source_dir_uri);
 	g_free (source_dir);
 }
