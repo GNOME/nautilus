@@ -1,3 +1,13 @@
+2001-01-30  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Gene Z. Ragan <gzr@eazel.com>
+
+	* components/tree/libmain.c: (tree_shlib_object_destroyed):
+	Removed accidentally checked in call to `oaf_plugin_unuse' to fix
+	bug 6154 (creating new window after closing initial window crashes
+	creating tree view). It's not actually safe to unload a shared
+	library that declares a GtkType because it makes Gtk unhappy.
+
 2001-01-30  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Michael Engber  <engber@eazel.com>
