@@ -28,9 +28,9 @@
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libnautilus-extensions/nautilus-mime-actions.h>
+#include <gnome.h>
 
 #include <stdio.h>
-
 
 static void
 print_application (GnomeVFSMimeApplication *application)
@@ -118,6 +118,8 @@ main (int argc, char **argv)
 	g_thread_init (NULL);
 	oaf_init (argc, argv);
 	gnome_vfs_init ();
+	gnome_init("test-nautilus-mime-actions", "0.0",
+		       argc, argv);
 
 	if (argc != 2) {
 		fprintf (stderr, "Usage: %s uri\n", *argv);
