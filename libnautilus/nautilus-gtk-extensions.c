@@ -229,6 +229,11 @@ typedef void (*NautilusGtkSignal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE) (GtkObject
 								       double arg5,
 								       gpointer user_data);
 
+
+typedef void (*NautilusGtkSignal_NONE__DOUBLE) (GtkObject * object,
+						double arg1,
+						gpointer user_data);
+
 void
 nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE (GtkObject * object,
 						   GtkSignalFunc func,
@@ -257,5 +262,19 @@ nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE (GtkObject * object,
 		 GTK_VALUE_INT (args[2]), 
 		 GTK_VALUE_DOUBLE (args[3]), 
 		 GTK_VALUE_DOUBLE (args[4]), 
+		 func_data);
+}
+
+
+
+void
+nautilus_gtk_marshal_NONE__DOUBLE (GtkObject    *object,
+				   GtkSignalFunc func,
+				   gpointer      func_data,
+				   GtkArg        *args)
+{
+	(* (NautilusGtkSignal_NONE__DOUBLE) func)
+		(object,
+		 GTK_VALUE_DOUBLE (args[0]),
 		 func_data);
 }

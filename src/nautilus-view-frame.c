@@ -27,16 +27,18 @@
    and its associated CORBA object for proxying requests into this
    object. */
 
+#include "ntl-view-private.h"
+#include "nautilus.h"
+#include <libnautilus/nautilus-gtk-extensions.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtk.h>
-#include "nautilus.h"
-#include "ntl-view-private.h"
 
 enum {
   REQUEST_LOCATION_CHANGE,
   REQUEST_SELECTION_CHANGE,
   REQUEST_STATUS_CHANGE,
   REQUEST_PROGRESS_CHANGE,
+  NOTIFY_ZOOM_LEVEL,
   LAST_SIGNAL
 };
 
@@ -131,6 +133,10 @@ nautilus_view_class_init (NautilusViewClass *klass)
   klass->servant_destroy_func = POA_Nautilus_ViewFrame__fini;
   klass->vepv = &impl_Nautilus_ViewFrame_vepv;
 
+  klass->zoomable_servant_init_func = POA_Nautilus_ZoomableFrame__init;
+  klass->zoomable_servant_destroy_func = POA_Nautilus_ZoomableFrame__fini;
+  klass->zoomable_vepv = &impl_Nautilus_ZoomableFrame_vepv;
+
   klass->parent_class = gtk_type_class (gtk_type_parent (object_class->type));
   /* klass->request_location_change = NULL; */
   /* klass->request_selection_change = NULL; */
@@ -166,6 +172,14 @@ nautilus_view_class_init (NautilusViewClass *klass)
                                                                                       request_progress_change),
                                                                    gtk_marshal_NONE__BOXED,
                                                                    GTK_TYPE_NONE, 1, GTK_TYPE_BOXED);
+
+  nautilus_view_signals[NOTIFY_ZOOM_LEVEL] = gtk_signal_new("notify_zoom_level",
+                                                            GTK_RUN_LAST,
+                                                            object_class->type,
+                                                            GTK_SIGNAL_OFFSET (NautilusViewClass, 
+                                                                               notify_zoom_level),
+                                                            nautilus_gtk_marshal_NONE__DOUBLE,
+                                                            GTK_TYPE_NONE, 1, GTK_TYPE_DOUBLE);
 
   gtk_object_class_add_signals (object_class, nautilus_view_signals, LAST_SIGNAL);
   
@@ -338,6 +352,8 @@ gboolean /* returns TRUE if successful */
 nautilus_view_load_client(NautilusView *view, const char *iid)
 {
   CORBA_Object obj;
+  CORBA_Object zoomable;
+
   CORBA_Environment ev;
   int i;
   NautilusViewComponentType *component_types[] = {
@@ -359,6 +375,7 @@ nautilus_view_load_client(NautilusView *view, const char *iid)
     return FALSE;
 
   view->view_frame = impl_Nautilus_ViewFrame__create(view, &ev);
+  view->zoomable_frame = impl_Nautilus_ZoomableFrame__create(view, &ev);
 
   /* Now figure out which type of embedded object it is: */
 
@@ -371,6 +388,11 @@ nautilus_view_load_client(NautilusView *view, const char *iid)
 
       if(CORBA_Object_is_nil(obj, &ev))
         continue;
+
+      zoomable = bonobo_object_query_interface (BONOBO_OBJECT (view->client_object), 
+                                                "IDL:Nautilus/Zoomable:1.0");
+
+      view->zoomable = zoomable;
 
       if(component_types[i]->try_load(view, obj, &ev))
         view->component_class = component_types[i];
@@ -519,6 +541,182 @@ nautilus_view_stop_location_change(NautilusView *view)
 }
 
 
+gboolean
+nautilus_view_is_zoomable (NautilusView *view)
+{
+  CORBA_Environment ev;
+  gboolean retval;
+
+  CORBA_exception_init (&ev);
+
+  retval = CORBA_Object_is_nil (view->zoomable, &ev);
+
+  CORBA_exception_free (&ev);
+
+  return retval;
+}
+
+gdouble
+nautilus_view_get_zoom_level (NautilusView *view)
+{
+  CORBA_Environment ev;
+  gdouble retval;
+
+  g_return_val_if_fail (view, 0);
+
+  CORBA_exception_init (&ev);
+
+  if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
+    retval = Nautilus_Zoomable__get_zoom_level (view->zoomable, &ev);
+  } else {
+    retval = 1.0;
+  }
+
+  CORBA_exception_free (&ev);
+
+  return retval;
+}
+
+void
+nautilus_view_set_zoom_level (NautilusView *view,
+                              gdouble       zoom_level)
+{
+  CORBA_Environment ev;
+
+  g_return_if_fail (view);
+
+  CORBA_exception_init (&ev);
+
+  if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
+    Nautilus_Zoomable__set_zoom_level (view->zoomable, zoom_level, &ev);
+  } else {
+    /* do nothing */
+  }
+
+  CORBA_exception_free (&ev);
+}
+
+gdouble
+nautilus_view_get_min_zoom_level (NautilusView *view)
+{
+  CORBA_Environment ev;
+  gdouble retval;
+
+  g_return_val_if_fail (view, 0);
+
+  CORBA_exception_init (&ev);
+
+  if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
+    retval = Nautilus_Zoomable__get_min_zoom_level (view->zoomable, &ev);
+  } else {
+    retval = 1.0;
+  }
+
+  CORBA_exception_free (&ev);
+
+  return retval;
+}
+
+gdouble
+nautilus_view_get_max_zoom_level (NautilusView *view)
+{
+  CORBA_Environment ev;
+  gdouble retval;
+
+  g_return_val_if_fail (view, 0);
+
+  CORBA_exception_init (&ev);
+
+  if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
+    retval = Nautilus_Zoomable__get_max_zoom_level (view->zoomable, &ev);
+  } else {
+    retval = 1.0;
+  }
+
+  CORBA_exception_free (&ev);
+
+  return retval;
+}
+
+gboolean
+nautilus_view_get_is_continuous (NautilusView *view)
+{
+  CORBA_Environment ev;
+  gboolean retval;
+
+  g_return_val_if_fail (view, FALSE);
+
+  CORBA_exception_init (&ev);
+
+  if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
+    retval = Nautilus_Zoomable__get_zoom_level (view->zoomable, &ev);
+  } else {
+    retval = FALSE;
+  }
+
+  CORBA_exception_free (&ev);
+
+  return retval;
+}
+
+
+void
+nautilus_view_zoom_in (NautilusView *view)
+{
+  CORBA_Environment ev;
+
+  g_return_if_fail(view);
+
+  CORBA_exception_init (&ev);
+
+  if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
+    Nautilus_Zoomable_zoom_in (view->zoomable, &ev);
+  } else {
+    /* do nothing */
+  }
+
+  CORBA_exception_free (&ev);
+}
+
+
+void
+nautilus_view_zoom_out (NautilusView *view)
+{
+  CORBA_Environment ev;
+
+  g_return_if_fail(view);
+
+  CORBA_exception_init (&ev);
+
+  if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
+    Nautilus_Zoomable_zoom_out (view->zoomable, &ev);
+  } else {
+    /* do nothing */
+  }
+
+  CORBA_exception_free (&ev);
+}
+
+
+void
+nautilus_view_zoom_to_fit (NautilusView *view)
+{
+  CORBA_Environment ev;
+
+  g_return_if_fail(view);
+
+  CORBA_exception_init (&ev);
+
+  if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
+    Nautilus_Zoomable_zoom_to_fit (view->zoomable, &ev);
+  } else {
+    /* do nothing */
+  }
+
+  CORBA_exception_free (&ev);
+}
+
+
 const char *
 nautilus_view_get_iid(NautilusView *view)
 {
@@ -565,6 +763,14 @@ nautilus_view_request_progress_change(NautilusView              *view,
 {
   gtk_signal_emit(GTK_OBJECT(view), nautilus_view_signals[REQUEST_PROGRESS_CHANGE], loc);
 }
+
+void
+nautilus_view_notify_zoom_level (NautilusView *view,
+                                 gdouble       level)
+{
+  gtk_signal_emit (GTK_OBJECT (view), nautilus_view_signals[NOTIFY_ZOOM_LEVEL], level);
+}
+
 
 static gboolean
 check_object(NautilusView *view)

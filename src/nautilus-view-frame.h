@@ -63,6 +63,8 @@ struct _NautilusViewClass
                                          Nautilus_StatusRequestInfo *loc);
   void (*request_progress_change)       (NautilusView *view,
                                          Nautilus_ProgressRequestInfo *loc);
+  void (*notify_zoom_level)             (NautilusView *view,
+                                         gdouble       zoom_level);
 
   /* Not a signal. Work-around for Gtk+'s lack of a 'constructed' operation */
   void (*view_constructed) (NautilusView *view);
@@ -71,6 +73,7 @@ struct _NautilusViewClass
   guint num_construct_args;
 
   gpointer servant_init_func, servant_destroy_func, vepv;
+  gpointer zoomable_servant_init_func, zoomable_servant_destroy_func, zoomable_vepv;
 };
 
 typedef struct _NautilusViewComponentType NautilusViewComponentType;
@@ -87,7 +90,9 @@ struct _NautilusView
   GtkWidget *client_widget;
 
   BonoboObject *view_frame;
+  BonoboObject *zoomable_frame;
 
+  Nautilus_Zoomable zoomable;
   NautilusViewComponentType *component_class;
   gpointer component_data;
 
@@ -118,6 +123,19 @@ void nautilus_view_save_state                   (NautilusView *view,
 void nautilus_view_show_properties              (NautilusView *view);
 void nautilus_view_stop_location_change         (NautilusView *view);
 void nautilus_view_set_active_errors            (NautilusView *view, gboolean enabled);
+
+
+gboolean  nautilus_view_is_zoomable                (NautilusView *view);
+gdouble   nautilus_view_get_zoom_level             (NautilusView *view);
+void      nautilus_view_set_zoom_level             (NautilusView *view,
+                                                    gdouble       zoom_level);
+gdouble   nautilus_view_get_min_zoom_level         (NautilusView *view);
+gdouble   nautilus_view_get_max_zoom_level         (NautilusView *view);
+gboolean  nautilus_view_get_is_continuous          (NautilusView *view);
+void      nautilus_view_zoom_in                    (NautilusView *view);
+void      nautilus_view_zoom_out	           (NautilusView *view);
+void      nautilus_view_zoom_to_fit	           (NautilusView *view);
+
 
 /* This is a "protected" operation */
 void    nautilus_view_construct_arg_set(NautilusView *view);

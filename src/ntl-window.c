@@ -467,7 +467,7 @@ nautilus_window_constructed(NautilusWindow *window)
 {
   GnomeApp *app;
   GtkWidget *location_bar_box, *statusbar;
-  GtkWidget *temp_frame, *zoom_control;
+  GtkWidget *temp_frame;
   GtkWidget *toolbar;
   
   app = GNOME_APP(window);
@@ -497,9 +497,9 @@ nautilus_window_constructed(NautilusWindow *window)
 
   /* allocate the zoom control and place on the right next to the menu */
   
-  zoom_control = nautilus_zoom_control_new();
-  gtk_widget_show(zoom_control);
-  gtk_box_pack_end(GTK_BOX(location_bar_box), zoom_control, FALSE, FALSE, 0);
+  window->zoom_control = nautilus_zoom_control_new ();
+  gtk_widget_show (window->zoom_control);
+  gtk_box_pack_end (GTK_BOX (location_bar_box), window->zoom_control, FALSE, FALSE, 0);
   
   gtk_widget_show_all(location_bar_box);
 
@@ -1073,13 +1073,12 @@ nautilus_window_real_set_content_view (NautilusWindow *window, NautilusView *new
 
   if (window->content_view != NULL)
     {
-      gtk_container_remove(GTK_CONTAINER(window->content_hbox), GTK_WIDGET(window->content_view));      
+      gtk_container_remove (GTK_CONTAINER(window->content_hbox), GTK_WIDGET(window->content_view));      
     }
 
   if (new_view != NULL)
     {
       gtk_widget_show (GTK_WIDGET (new_view));
-
 
       nautilus_content_view_set_active (NAUTILUS_CONTENT_VIEW (new_view)); 
 

@@ -59,4 +59,10 @@ void              nautilus_gtk_marshal_NONE__POINTER_INT_INT_DOUBLE_DOUBLE (GtkO
 									    gpointer                func_data,
 									    GtkArg                 *args);
 
+void              nautilus_gtk_marshal_NONE__DOUBLE                        (GtkObject    *object,
+									    GtkSignalFunc func,
+									    gpointer      func_data,
+									    GtkArg       *args);
+
+
 #endif /* NAUTILUS_GTK_EXTENSIONS_H */

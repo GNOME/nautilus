@@ -1,5 +1,19 @@
 2000-03-10  Maciej Stachowiak  <mjs@eazel.com>
 
+	* src/ntl-window.c, src/ntl-window.h: store zoom_control object in
+	the window.
+	
+	* src/nautilus-zoomable-frame-svr.c: New file; implement CORBA
+	server for Nautilus::ZommableFrame interface.
+	* src/ntl-view-private.h: prototypes for shared stuff needed to make
+	this work.
+	* src/ntl-view.c: Attach a Nautilus::ZoomableFrame interface to
+	the Nautilus::ViewFrame.
+
+	* libnautilus/nautilus-gtk-extensions.h,
+	libnautilus/nautilus-gtk-extensions.c
+	(nautilus_gtk_marshal_NONE__DOUBLE): New function.
+
 	* src/ntl-uri-map.c (my_notify_when_ready): Enable both
 	html-appropriate and directory-appropriate views for
 	special/webdav-directory mime type (temporary hack).

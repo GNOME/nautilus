@@ -30,16 +30,25 @@
 #include "nautilus.h"
 
 extern POA_Nautilus_ViewFrame__vepv impl_Nautilus_ViewFrame_vepv;
-BonoboObject *impl_Nautilus_ViewFrame__create(NautilusView *view, CORBA_Environment * ev);
+extern POA_Nautilus_ZoomableFrame__vepv impl_Nautilus_ZoomableFrame_vepv;
 
-void nautilus_view_request_location_change(NautilusView *view,
-					   Nautilus_NavigationRequestInfo *loc);
-void nautilus_view_request_selection_change(NautilusView *view,
-					    Nautilus_SelectionRequestInfo *loc);
-void nautilus_view_request_status_change(NautilusView *view,
-					 Nautilus_StatusRequestInfo *loc);
-void nautilus_view_request_progress_change(NautilusView              *view,
-					   Nautilus_ProgressRequestInfo *loc);
+BonoboObject *impl_Nautilus_ViewFrame__create      (NautilusView *view, 
+                                                    CORBA_Environment * ev);
+BonoboObject *impl_Nautilus_ZoomableFrame__create  (NautilusView *view, 
+                                                    CORBA_Environment * ev);
+
+void  nautilus_view_request_location_change   (NautilusView *view,
+                                              Nautilus_NavigationRequestInfo *loc);
+void  nautilus_view_request_selection_change  (NautilusView *view,
+                                               Nautilus_SelectionRequestInfo *loc);
+void  nautilus_view_request_status_change     (NautilusView *view,
+                                               Nautilus_StatusRequestInfo *loc);
+void  nautilus_view_request_progress_change   (NautilusView              *view,
+                                               Nautilus_ProgressRequestInfo *loc);
+
+void  nautilus_view_notify_zoom_level         (NautilusView              *view,
+                                               double                     level);
+
 
 struct _NautilusViewComponentType {
   const char *primary_repoid;
