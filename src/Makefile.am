@@ -124,7 +124,7 @@ $(nautilus_OBJECTS): nautilus_shell_interface_idl_stamp
 
 TESTS=check-nautilus
 
-serverdir = $(datadir)/server
+serverdir = $(libdir)/bonobo/servers
 server_in_files = Nautilus_shell.server.in
 server_DATA = $(server_in_files:.server.in=.server)
 

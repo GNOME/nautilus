@@ -15,44 +15,45 @@ Group:		User Interface/Desktop
 Source: 	ftp://ftp.gnome.org/pub/GNOME/stable/sources/%{name}-%{ver}.tar.gz
 URL: 		http://nautilus.eazel.com/
 BuildRoot:	/var/tmp/%{name}-%{ver}-root
-Requires:	glib >= @GLIB_REQUIRED@
-Requires:	gtk+ >= @GTK_REQUIRED@
-Requires:	imlib >= @IMLIB_REQUIRED@
-Requires:	libxml >= @LIBXML_REQUIRED@
-Requires:	gnome-libs >= @GNOME_LIBS_REQUIRED@
+
 Requires:	GConf >= @GCONF_REQUIRED@
 Requires:	ORBit >= @ORBIT_REQUIRED@
-Requires:	oaf >= @OAF_REQUIRED@
-Requires:	gnome-vfs >= @GNOME_VFS_REQUIRED@
-Requires:	gdk-pixbuf >= @GDK_PIXBUF_REQUIRED@
 Requires:	bonobo >= @BONOBO_REQUIRED@
-Requires:	popt >= @POPT_REQUIRED@
-Requires:	medusa >= @MEDUSA_REQUIRED@
+Requires:	bonobo-activation >= @BONOBO_ACTIVATION_REQUIRED@
+Requires:	eel >= @EEL_REQUIRED@
 Requires:	esound >= @ESOUND_REQUIRED@
-Requires:	scrollkeeper >= @SCROLLKEEPER_REQUIRED@
+Requires:	gdk-pixbuf >= @GDK_PIXBUF_REQUIRED@
+Requires:	glib >= @GLIB_REQUIRED@
+Requires:	gnome-libs >= @GNOME_LIBS_REQUIRED@
+Requires:	gnome-vfs >= @GNOME_VFS_REQUIRED@
+Requires:	gtk+ >= @GTK_REQUIRED@
+Requires:	imlib >= @IMLIB_REQUIRED@
 Requires:	libpng
 Requires:	librsvg >= @LIBRSVG_REQUIRED@
-Requires:	eel >= @EEL_REQUIRED@
+Requires:	libxml >= @LIBXML_REQUIRED@
+Requires:	medusa >= @MEDUSA_REQUIRED@
+Requires:	popt >= @POPT_REQUIRED@
+Requires:	scrollkeeper >= @SCROLLKEEPER_REQUIRED@
 
-BuildRequires:	glib-devel >= @GLIB_REQUIRED@
-BuildRequires:	gtk+-devel >= @GTK_REQUIRED@
-BuildRequires:	imlib-devel >= @IMLIB_REQUIRED@
-BuildRequires:	libxml-devel >= @LIBXML_REQUIRED@
-BuildRequires:	gnome-libs-devel >= @GNOME_LIBS_REQUIRED@
 BuildRequires:	GConf-devel >= @GCONF_REQUIRED@
 BuildRequires:	ORBit-devel >= @ORBIT_REQUIRED@
-BuildRequires:	oaf-devel >= @OAF_REQUIRED@
-BuildRequires:	gnome-vfs-devel >= @GNOME_VFS_REQUIRED@
-BuildRequires:	gdk-pixbuf-devel >= @GDK_PIXBUF_REQUIRED@
+BuildRequires:	bonobo-activation-devel >= @BONOBO_ACTIVATION_REQUIRED@
 BuildRequires:	bonobo-devel >= @BONOBO_REQUIRED@
-BuildRequires:	popt >= @POPT_REQUIRED@
-BuildRequires:	medusa-devel >= @MEDUSA_REQUIRED@
+BuildRequires:	eel-devel >= @EEL_REQUIRED@
 BuildRequires:	esound-devel >= @ESOUND_REQUIRED@
-BuildRequires:	scrollkeeper >= @SCROLLKEEPER_REQUIRED@
+BuildRequires:	gdk-pixbuf-devel >= @GDK_PIXBUF_REQUIRED@
+BuildRequires:	glib-devel >= @GLIB_REQUIRED@
+BuildRequires:	gnome-libs-devel >= @GNOME_LIBS_REQUIRED@
+BuildRequires:	gnome-vfs-devel >= @GNOME_VFS_REQUIRED@
+BuildRequires:	gtk+-devel >= @GTK_REQUIRED@
+BuildRequires:	imlib-devel >= @IMLIB_REQUIRED@
 BuildRequires:	libpng-devel
 BuildRequires:	librsvg-devel >= @LIBRSVG_REQUIRED@
-BuildRequires:	eel-devel >= @EEL_REQUIRED@
+BuildRequires:	libxml-devel >= @LIBXML_REQUIRED@
+BuildRequires:	medusa-devel >= @MEDUSA_REQUIRED@
 BuildRequires:	mozilla-devel >= 0.8
+BuildRequires:	popt >= @POPT_REQUIRED@
+BuildRequires:	scrollkeeper >= @SCROLLKEEPER_REQUIRED@
 BuildRequires:	xpdf >= 0.90
 
 %description
@@ -75,7 +76,7 @@ files to allow you to develop Nautilus components.
 Summary:        Nautilus component for use with Mozilla
 Group:          User Interface/Desktop
 Requires:       %name = %{PACKAGE_VERSION}
-Requires:	mozilla >= 0.8
+Requires:	mozilla >= 0.9.5
 Conflicts:	mozilla = M18
 Conflicts:	mozilla = M17
 
@@ -95,11 +96,6 @@ Summary:	Nautilus and a suggested set of components
 Group:          User Interface/Desktop
 Requires:       %name = %{PACKAGE_VERSION}
 Requires:	%name-mozilla = %{PACKAGE_VERSION}
-##
-## FIXME: We need to deal with the fact that trilobite builds after
-##        nautilus.
-##
-##Requires:	%name-trilobite = %{PACKAGE_VERSION}
 Requires:	%name-extras = %{PACKAGE_VERSION}
 
 %description suggested
@@ -231,19 +227,19 @@ scrollkeeper-update
 %{_datadir}/pixmaps/nautilus/throbber/*.png
 %{_datadir}/pixmaps/nautilus/sierra/*.xml
 %{_datadir}/pixmaps/nautilus/sierra/*.png
-%{_datadir}/oaf/Nautilus_View_help.server
-%{_datadir}/oaf/Nautilus_ComponentAdapterFactory_std.server
-%{_datadir}/oaf/Nautilus_View_hardware.server
-%{_datadir}/oaf/Nautilus_View_history.server
-%{_datadir}/oaf/Nautilus_View_image.server
-%{_datadir}/oaf/Nautilus_View_music.server
-%{_datadir}/oaf/Nautilus_View_news.server
-%{_datadir}/oaf/Nautilus_View_notes.server
-%{_datadir}/oaf/Nautilus_View_sample.server
-%{_datadir}/oaf/Nautilus_View_text.server
-%{_datadir}/oaf/Nautilus_View_tree.server
-%{_datadir}/oaf/Nautilus_shell.server
-%{_datadir}/oaf/Nautilus_Control_throbber.server
+%{_libdir}/bonobo/servers/Nautilus_View_help.server
+%{_libdir}/bonobo/servers/Nautilus_ComponentAdapterFactory_std.server
+%{_libdir}/bonobo/servers/Nautilus_View_hardware.server
+%{_libdir}/bonobo/servers/Nautilus_View_history.server
+%{_libdir}/bonobo/servers/Nautilus_View_image.server
+%{_libdir}/bonobo/servers/Nautilus_View_music.server
+%{_libdir}/bonobo/servers/Nautilus_View_news.server
+%{_libdir}/bonobo/servers/Nautilus_View_notes.server
+%{_libdir}/bonobo/servers/Nautilus_View_sample.server
+%{_libdir}/bonobo/servers/Nautilus_View_text.server
+%{_libdir}/bonobo/servers/Nautilus_View_tree.server
+%{_libdir}/bonobo/servers/Nautilus_shell.server
+%{_libdir}/bonobo/servers/Nautilus_Control_throbber.server
 
 # We put the idl files in the main package, not the devel package
 # because the perl corba bindings can use the .idl files at run time.
@@ -271,7 +267,7 @@ scrollkeeper-update
 %{_bindir}/nautilus-mozilla-content-view
 
 %defattr(0444, bin, bin)
-%{_datadir}/oaf/Nautilus_View_mozilla.oaf
+%{_libdir}/bonobo/servers/Nautilus_View_mozilla.server
 
 %files extras
 

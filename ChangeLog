@@ -1,5 +1,10 @@
 2001-11-02  Darin Adler  <darin@bentspoon.com>
 
+	* src/Makefile.am: Put the server file in the right directory.
+	* nautilus.spec.in: Fix some things -- still totally wrong.
+
+2001-11-02  Darin Adler  <darin@bentspoon.com>
+
 	* src/nautilus-location-bar.c: (try_to_expand_path): Get rid of
 	use of gnome_vfs_uri_get_basename. Not sure if I fixed this
 	right. This could have been the one caller who really wanted a
