@@ -1195,8 +1195,7 @@ get_icon_editable_text_callback (NautilusIconContainer *container,
 
 	/* In the smallest zoom mode, no text is drawn */
 	if ( fm_icon_view_get_zoom_level (icon_view) == NAUTILUS_ZOOM_LEVEL_SMALLEST) {
-		file_name = NULL;
-		return file_name;
+		return NULL;
 	}
 
 	/* strip the suffix for nautilus object xml files */
@@ -1221,7 +1220,7 @@ get_icon_additional_text_callback (NautilusIconContainer *container,
 {
 	char *attribute_names;
 	char **text_array;
-	char *result;
+	char *result, *actual_uri;
 	int i;
 	char *attribute_string;
 
@@ -1229,6 +1228,15 @@ get_icon_additional_text_callback (NautilusIconContainer *container,
 	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 
+	/* handle link files specially */
+	
+	actual_uri = nautilus_file_get_uri(file);
+	if (actual_uri && nautilus_link_is_link_file(actual_uri)) {
+		result = nautilus_link_get_additional_text(actual_uri);
+		g_free(actual_uri);
+		return result;
+	}
+	
 	attribute_names = fm_icon_view_get_icon_text_attribute_names
 		(icon_view);
 	text_array = g_strsplit (attribute_names, "|", 0);

@@ -44,6 +44,23 @@ nautilus_link_is_link_file(const char *file_uri)
 	return nautilus_str_has_suffix(file_uri, LINK_SUFFIX);
 }
 
+/* returns additional text to display under the name, NULL if none */
+char* nautilus_link_get_additional_text(const char *link_file_uri)
+{
+	xmlDoc *doc;
+	char *extra_text = NULL;
+	
+	if (link_file_uri == NULL)
+		return NULL;
+	
+	doc = xmlParseFile (link_file_uri + 7);
+	if (doc) {
+		extra_text = xmlGetProp (doc->root, NAUTILUS_METADATA_KEY_EXTRA_TEXT);
+		xmlFreeDoc (doc);
+	}
+	return extra_text;
+}
+
 /* returns the image associated with a link file */
 
 char*

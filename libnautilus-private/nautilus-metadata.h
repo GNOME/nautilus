@@ -55,4 +55,8 @@
 #define NAUTILUS_METADATA_KEY_ICON_SCALE                 "ICON_SCALE"
 #define NAUTILUS_METADATA_KEY_CUSTOM_ICON                "CUSTOM_ICON"
 
+/* per link file */
+
+#define NAUTILUS_METADATA_KEY_EXTRA_TEXT		 "EXTRA_TEXT"
+
 #endif /* NAUTILUS_METADATA_H */

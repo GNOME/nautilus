@@ -1,3 +1,18 @@
+2000-04-18  Andy Hertzfeld
+
+	made link files control the additional text displayed beneath them.
+	
+	* libnautilus/nautilus-link.c,.h:
+	added nautilus_link_get_additional_text, which returns text specified
+	in the xml file, if any,
+	* libnautilus/nautilus-metadata.h:
+	added tag to use for the additional text in the link file
+	* src/file-manager/fm-icon-view.c:
+	made it get additional text for link files using the new
+	routines in nautilus-link
+	* data/top/Makefile.am:
+	removed the placeholder "Welcome" file from the novice home directory
+	
 2000-04-18  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/mozilla/.cvsignore: Ignore built binary
@@ -202,13 +217,17 @@
 	* libnautilus/Makefile.am:
 	added nautilus-link.c,h to build
 	* libnautilus/nautilus-file.c:
-	use nautilus_link_get_link_uri in nautilus-link instead of accessing link files directly
+	use nautilus_link_get_link_uri in nautilus-link instead of
+	accessing link files directly
 	* libnautilus/nautilus-icon-factory.c:
-	use nautilus_link_get_image_uri in nautilus-link instead of accessing directly
+	use nautilus_link_get_image_uri in nautilus-link instead of
+	accessing directly
 	* src/file-manager/fm-icon-view.c:
-	use nautilus_link_get_display_name to suppress display of identifying suffix
+	use nautilus_link_get_display_name to suppress display of
+	identifying suffix
 	* src/file-manager/fm-icon-text-window.c:
-	fixed bug that caused crash when preference file is deleted by checking for NULL
+	fixed bug that caused crash when preference file is deleted
+	by checking for NULL
 	and using default in fm_get_text_attribute_names_preference_or_default
 	* icons/computer.png:
 	new icon for novice home

@@ -33,6 +33,9 @@
 /* given a uri, returns TRUE if it's a link file */
 gboolean	nautilus_link_is_link_file(const char *file_uri);
 
+/* returns additional text to display under the name, NULL if none */
+char*		nautilus_link_get_additional_text(const char *link_file_uri);
+
 /* returns the image associated with a link file */
 char*		nautilus_link_get_image_uri(const char *link_file_uri);
 
