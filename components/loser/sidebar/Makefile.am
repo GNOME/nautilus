@@ -21,7 +21,6 @@ nautilus_sidebar_loser_SOURCES =		\
 
 nautilus_sidebar_loser_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
-	$(top_builddir)/libnautilus-private/libnautilus-private.la	\
 	$(NAUTILUS_PRIVATE_LIBS) \
 	$(NULL)
 

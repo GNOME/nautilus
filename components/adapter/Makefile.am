@@ -51,8 +51,7 @@ nautilus_adapter_SOURCES =				\
 nautilus_adapter_LDADD =							\
 	$(top_builddir)/libnautilus/libnautilus.la				\
 	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la		\
-	$(top_builddir)/libnautilus-private/libnautilus-private.la	\
-	$(NAUTILUS_PRIVATE_LIBS) \
+	$(NAUTILUS_PRIVATE_LIBS)						\
 	$(NULL)
 
 EXTRA_DIST = $(oaf_in_files) $(oaf_DATA)

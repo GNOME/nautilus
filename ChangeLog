@@ -1,3 +1,28 @@
+2001-08-31  Darin Adler  <darin@bentspoon.com>
+
+	* components/adapter/Makefile.am:
+	* components/image-viewer/Makefile.am:
+	* components/loser/content/Makefile.am:
+	* components/loser/sidebar/Makefile.am:
+	Don't link in the libnautilus-private library for components that
+	don't use it.
+	* components/sample/Makefile.am: Pretty up the sample a bit.
+	Don't link with GConf since we're not using it directly.
+	
+	* components/shell/shell.oafinfo: Remove this obsolete file.
+	
+	* components/news/nautilus-news.c: (draw_rss_items): Fix a leak
+	by unref'ing the text layout object instead of just destroying it.
+	* src/nautilus-complex-search-bar.c:
+	(search_bar_criterion_type_changed_callback): Fix leak of the
+	criterion object by sinking it instead of destroying it. The
+	criterion object seems to be a widget that's never used as one.
+	It should be a GtkObject instead.
+	
+	* src/nautilus-location-bar.c:
+	(nautilus_location_bar_set_location): Simplified code a bit by
+	getting rid of special cases for NULL.
+
 2001-09-01  Wang Jian  <lark@linux.net.cn>
 
 	* configure.in: zh_CN (Simplified Chinese) added in ALL_LINGUAS

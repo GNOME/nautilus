@@ -631,7 +631,8 @@ draw_rss_items (RSSChannelData *channel_data,
 				}	
 			}
 		}
-		gtk_object_destroy (GTK_OBJECT (smooth_text_layout));
+
+		gtk_object_unref (GTK_OBJECT (smooth_text_layout));
 		
 		item_data->item_end_y = item_data->item_start_y + text_dimensions.height;
 		v_offset += text_dimensions.height + 4;
@@ -1679,6 +1680,7 @@ read_channel_list (News *news_data)
 {
 	char *path;
 	xmlDocPtr channel_doc;
+
 	/* free the old channel data, if any  */
 	nautilus_news_free_channel_list (news_data);
 	
@@ -1691,7 +1693,7 @@ read_channel_list (News *news_data)
 			nautilus_news_add_channels (news_data, channel_doc);
 			xmlFreeDoc (channel_doc);
 		}
-	g_free (path);
+                g_free (path);
 	}
 }
 
@@ -2270,7 +2272,7 @@ make_remove_widgets (News *news, GtkWidget *container)
 	news->remove_button = gtk_button_new_with_label (_("Remove Site"));
 	gtk_container_add (GTK_CONTAINER (button_box), news->remove_button);
 	gtk_signal_connect (GTK_OBJECT (news->remove_button), "clicked",
-		(GtkSignalFunc) remove_selected_site, news);
+                            (GtkSignalFunc) remove_selected_site, news);
 }
 
 /* generate the add new site widgets */

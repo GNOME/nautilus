@@ -709,7 +709,6 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
 	NautilusLocationBar *bar;
 	char *formatted_location;
 
-
 	g_assert (location != NULL);
 	
 	bar = NAUTILUS_LOCATION_BAR (navigation_bar);
@@ -723,15 +722,11 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
 	g_free (formatted_location);
 
 	/* free up the cached file info from the previous location */
-	if (bar->details->current_directory) {
-		g_free (bar->details->current_directory);
-		bar->details->current_directory = NULL;
-	}
+	g_free (bar->details->current_directory);
+	bar->details->current_directory = NULL;
 	
-	if (bar->details->file_info_list) {
-		gnome_vfs_file_info_list_free (bar->details->file_info_list);	
-		bar->details->file_info_list = NULL;			
-	}
+	gnome_vfs_file_info_list_free (bar->details->file_info_list);	
+	bar->details->file_info_list = NULL;			
 	
 	/* remember the original location for later comparison */
 	

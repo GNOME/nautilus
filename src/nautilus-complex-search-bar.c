@@ -121,9 +121,8 @@ search_bar_criterion_type_changed_callback (GtkObject *old_criterion_object,
 	old_criterion_location = g_slist_find (bar->details->search_criteria,
 					       criterion);
 	old_criterion_location->data = new_criterion;
-	unattach_criterion_from_search_bar (bar,
-					    criterion);
-	gtk_object_destroy (GTK_OBJECT (criterion));
+	unattach_criterion_from_search_bar (bar, criterion);
+	gtk_object_sink (GTK_OBJECT (criterion));
 	nautilus_search_bar_criterion_show (new_criterion);
 	attach_criterion_to_search_bar (bar,
 					new_criterion,
