@@ -133,8 +133,7 @@ static void                  text_attribute_names_changed_callback              
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryViewIcons, fm_directory_view_icons, FM_TYPE_DIRECTORY_VIEW);
 
-
-struct _FMDirectoryViewIconsDetails
+struct FMDirectoryViewIconsDetails
 {
 	GList *icons_not_positioned;
 	NautilusZoomLevel default_zoom_level;
@@ -143,7 +142,6 @@ struct _FMDirectoryViewIconsDetails
 	guint react_to_icon_change_idle_id;
 };
 
-
 /* GtkObject methods.  */
 
 static void
@@ -824,22 +822,6 @@ fm_directory_view_icons_select_all (FMDirectoryView *view)
 
 	icon_container = get_icon_container (FM_DIRECTORY_VIEW_ICONS (view));
         gnome_icon_container_select_all(icon_container);
-}
-
-
-/**
- * fm_directory_view_icons_line_up_icons:
- *
- * Line up the icons in this view.
- * @icon_view: FMDirectoryViewIcons whose ducks should be in a row.
- * 
- **/
-void
-fm_directory_view_icons_line_up_icons (FMDirectoryViewIcons *icon_view)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
-
-	gnome_icon_container_line_up (get_icon_container (icon_view));
 }
 
 static void

@@ -412,22 +412,6 @@ schedule_kbd_icon_visibility (GnomeIconContainer *container)
 				   container);
 }
 
-static void
-prepare_for_layout (GnomeIconContainer *container)
-{
-	GnomeIconContainerDetails *details;
-	GList *p;
-
-	details = container->details;
-
-	for (p = details->icons; p != NULL; p = p->next) {
-		GnomeIconContainerIcon *icon;
-
-		icon = p->data;
-		icon->layout_done = FALSE;
-	}
-}
-
 /* Set `icon' as the icon currently selected for keyboard operations.  */
 static void
 set_kbd_current (GnomeIconContainer *container,
@@ -749,7 +733,7 @@ rubberband_select (GnomeIconContainer *container,
 				selection_changed = TRUE;
 		}
 
-		p += grid->alloc_width;
+		p += grid->width;
 	}
 
 	if (selection_changed) {
@@ -1073,7 +1057,7 @@ kbd_left (GnomeIconContainer *container,
 		max_x = G_MAXINT;
 		gnome_icon_container_grid_to_world (container->details->grid, grid_x, 0, &x, NULL);
 
-		e -= grid->alloc_width;
+		e -= grid->width;
 		grid_y--;
 		y -= GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
 	}
@@ -1144,7 +1128,7 @@ kbd_up (GnomeIconContainer *container,
 			break;
 		}
 
-		e -= grid->alloc_width;
+		e -= grid->width;
 		grid_y--;
 		y -= GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
 	}
@@ -1227,7 +1211,7 @@ kbd_right (GnomeIconContainer *container,
 		min_x = 0;
 		x = 0;
 
-		e += grid->alloc_width;
+		e += grid->width;
 		grid_y++;
 		y += GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
 	}
@@ -1294,7 +1278,7 @@ kbd_down (GnomeIconContainer *container,
 			break;
 		}
 
-		e += grid->alloc_width;
+		e += grid->width;
 		grid_y++;
 		y += GNOME_ICON_CONTAINER_CELL_HEIGHT (container);
 	}
@@ -1394,23 +1378,7 @@ size_allocate (GtkWidget *widget,
 					    allocation->width, 0,
 					    &visible_width, &visible_height);
 
-	if (visible_width == 0) {
-		visible_width = 1;
-	}
-
-#if 0
-	grid->visible_width = visible_width;
-	grid->height = MAX(visible_height, grid->height);
-	gnome_icon_container_relayout(container);
-#elif 0
-	if (visible_width > grid->width || visible_height > grid->height) {
-		gnome_icon_container_grid_resize (grid,
-				  MAX (visible_width, grid->width),
-				  MAX (visible_height, grid->height));
-	}
-	gnome_icon_container_grid_resize(grid, visible_width, visible_height);
 	gnome_icon_container_grid_set_visible_width (grid, visible_width);
-#endif
 
 	set_scroll_region (container);
 }
@@ -2423,7 +2391,24 @@ gnome_icon_container_request_update_all (GnomeIconContainer *container)
 	}
 }
 
-
+#if 0
+
+static void
+prepare_for_layout (GnomeIconContainer *container)
+{
+	GnomeIconContainerDetails *details;
+	GList *p;
+
+	details = container->details;
+
+	for (p = details->icons; p != NULL; p = p->next) {
+		GnomeIconContainerIcon *icon;
+
+		icon = p->data;
+		icon->layout_done = FALSE;
+	}
+}
+
 static int
 icon_compare_by_x (gconstpointer ap,
 		   gconstpointer bp)
@@ -2478,8 +2463,6 @@ gnome_icon_container_relayout (GnomeIconContainer *container)
 						  old_grid->visible_width,
 						  details->num_icons / old_grid->visible_width);
 	}
-
-	gnome_icon_container_grid_set_visible_width (new_grid, old_grid->visible_width);
 
 	sp = old_grid->elems;
 	dp = new_grid->elems;
@@ -2620,7 +2603,6 @@ gnome_icon_container_line_up (GnomeIconContainer *container)
 
 	new_grid = gnome_icon_container_grid_new ();
 	gnome_icon_container_grid_resize (new_grid, new_grid_width, grid->height);
-        gnome_icon_container_grid_set_visible_width (new_grid, grid->visible_width);
 
 	/* Allocate the icons in the new grid, one per cell.  */
 
@@ -2704,6 +2686,8 @@ gnome_icon_container_line_up (GnomeIconContainer *container)
 
 	request_idle (container);
 }
+
+#endif
 
 
 

@@ -1,5 +1,24 @@
 2000-03-17  Darin Adler  <darin@eazel.com>
 
+	Fixed the "tall line of icons" bug.
+
+	* libnautilus/gnome-icon-container-grid.h:
+	* libnautilus/gnome-icon-container-grid.c:
+	* libnautilus/gnome-icon-container.c:
+	Rewrote the routines to not have a separate concept of the
+	actual grid height and the allocated grid height. Most important
+	change was to update the first_free variables when resizing.
+
+	* src/file-manager/fm-directory-view-icons.h:
+	* src/file-manager/fm-directory-view-icons.c:
+	(fm_directory_view_icons_line_up_icons):
+	Removed the unused line_up_icons call. This feature will return,
+	but for now it's just a waste of space.
+
+2000-03-17  Darin Adler  <darin@eazel.com>
+
+	Fixed the "rubberband does not work" bug.
+
 	* libnautilus/gnome-icon-container-grid.h:
 	* libnautilus/gnome-icon-container-grid.c:
 	* libnautilus/gnome-icon-container-private.h:

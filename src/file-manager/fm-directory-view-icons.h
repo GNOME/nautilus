@@ -28,8 +28,8 @@
 #include "fm-directory-view.h"
 #include <libnautilus/gnome-icon-container.h>
 
-typedef struct _FMDirectoryViewIcons      FMDirectoryViewIcons;
-typedef struct _FMDirectoryViewIconsClass FMDirectoryViewIconsClass;
+typedef struct FMDirectoryViewIcons      FMDirectoryViewIcons;
+typedef struct FMDirectoryViewIconsClass FMDirectoryViewIconsClass;
 
 #define FM_TYPE_DIRECTORY_VIEW_ICONS			(fm_directory_view_icons_get_type ())
 #define FM_DIRECTORY_VIEW_ICONS(obj)			(GTK_CHECK_CAST ((obj), FM_TYPE_DIRECTORY_VIEW_ICONS, FMDirectoryViewIcons))
@@ -37,24 +37,18 @@ typedef struct _FMDirectoryViewIconsClass FMDirectoryViewIconsClass;
 #define FM_IS_DIRECTORY_VIEW_ICONS(obj)			(GTK_CHECK_TYPE ((obj), FM_TYPE_DIRECTORY_VIEW_ICONS))
 #define FM_IS_DIRECTORY_VIEW_ICONS_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), FM_TYPE_DIRECTORY_VIEW_ICONS))
 
-typedef struct _FMDirectoryViewIconsDetails FMDirectoryViewIconsDetails;
+typedef struct FMDirectoryViewIconsDetails FMDirectoryViewIconsDetails;
 
-struct _FMDirectoryViewIcons {
+struct FMDirectoryViewIcons {
 	FMDirectoryView parent;
 	FMDirectoryViewIconsDetails *details;
 };
 
-struct _FMDirectoryViewIconsClass {
+struct FMDirectoryViewIconsClass {
 	FMDirectoryViewClass parent_class;
 };
 
 /* GtkObject support */
-GtkType fm_directory_view_icons_get_type                           (void);
-
-/*
- * FIXME: None of the following are currently used. Remove them eventually if
- * we're not going to use them.
- */
-void    fm_directory_view_icons_line_up_icons 		           (FMDirectoryViewIcons *view);
+GtkType fm_directory_view_icons_get_type (void);
 
 #endif /* FM_DIRECTORY_VIEW_ICONS_H */
