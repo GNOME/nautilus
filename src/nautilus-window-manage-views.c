@@ -1326,7 +1326,18 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
                                    "don't have an index, that the Medusa indexer is running."));
 			dialog_title = g_strdup (_("Searching Unavailable"));
 			break;
-		} /* else fall through */
+		} else {
+			/* This is a special case for the smb: module */
+			if (eel_istr_has_prefix(location, "smb:") == 0)
+			{
+				error_message = g_strdup_printf
+					(_("Couldn't display \"%s\", because Nautilus cannot contact the SMB master browser.\n"
+					"Check that an SMB server is running in the local network."),
+					uri_for_display);
+				break;
+			}
+		}
+		/* else fall through */
         default:
                 error_message = g_strdup_printf (_("Nautilus cannot display \"%s\"."),
                                                  uri_for_display);
