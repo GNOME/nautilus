@@ -26,14 +26,16 @@
 
 #include "nautilus-complex-search-bar.h"
 
-#include <glib.h>
 
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <glib.h>
 #include <gtk/gtkeventbox.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-search-uri.h>
 #include <libnautilus-extensions/nautilus-search-bar-criterion.h>
 #include <libnautilus-extensions/nautilus-search-bar-criterion-private.h>
+#include <libnautilus-extensions/nautilus-string.h>
 
 struct NautilusComplexSearchBarDetails {
 	GtkVBox *bar_container;
@@ -41,6 +43,7 @@ struct NautilusComplexSearchBarDetails {
 
 	GtkWidget *more_options;
 	GtkWidget *fewer_options;
+	GtkWidget *find_them;
 
 	GSList *search_criteria;
 	gchar *undo_text;
@@ -64,7 +67,7 @@ static void  fewer_options_callback                       (GtkObject            
 static void  criterion_callback                           (NautilusSearchBarCriterion *old_criterion,
 							   NautilusSearchBarCriterion *new_criterion,
 							   gpointer data);
-
+static GtkWidget *  load_find_them_pixmap_widget                 (void);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusComplexSearchBar, nautilus_complex_search_bar, NAUTILUS_TYPE_SEARCH_BAR)
 
@@ -118,12 +121,18 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 {
 	NautilusSearchBarCriterion *file_name_criterion;
 	GtkWidget *hbox;
+	GtkWidget *find_them_box, *find_them_pixmap_widget, *find_them_label;
 	
 	bar->details = g_new0 (NautilusComplexSearchBarDetails, 1);
 	
-	bar->details->bar_container = GTK_VBOX (gtk_vbox_new (FALSE, 0));
+	bar->details->bar_container = GTK_VBOX (gtk_vbox_new (FALSE, GNOME_PAD_SMALL));
 
-	bar->details->table = GTK_TABLE (gtk_table_new (1, 1, FALSE));
+	bar->details->table = GTK_TABLE (gtk_table_new (1, 3, TRUE));
+	gtk_table_set_col_spacings (bar->details->table,
+				    1);
+
+	gtk_container_set_resize_mode (GTK_CONTAINER (bar->details->table),
+				       GTK_RESIZE_IMMEDIATE);
 	file_name_criterion = nautilus_search_bar_criterion_first_new ();
 	nautilus_search_bar_criterion_set_callback (file_name_criterion, 
 						    criterion_callback,
@@ -141,23 +150,54 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 			    0);
 	gtk_widget_show (GTK_WIDGET (bar->details->table));
 
-	hbox = gtk_hbox_new (0, FALSE);
+	hbox = gtk_hbox_new (FALSE, 1);
 
-	bar->details->more_options = gtk_button_new_with_label ("More Options");
-	gtk_signal_connect (GTK_OBJECT (bar->details->more_options), "clicked",
-			    more_options_callback, bar);
-	gtk_box_pack_start (GTK_BOX (hbox),
-			     bar->details->more_options,
-			     TRUE, FALSE, 0);
-	gtk_widget_show (bar->details->more_options);
+
+	bar->details->find_them = gtk_button_new ();
+	find_them_box = gtk_hbox_new (FALSE, 1);
+	find_them_pixmap_widget = load_find_them_pixmap_widget ();
+	gtk_box_pack_start (GTK_BOX (find_them_box),
+			    find_them_pixmap_widget,
+			    TRUE,
+			    FALSE,
+			    1);
+	find_them_label = gtk_label_new ("Find Them!");
+	gtk_box_pack_start (GTK_BOX (find_them_box),
+			    find_them_label,
+			    TRUE,
+			    FALSE,
+			    1);
+
+	gtk_container_add (GTK_CONTAINER (bar->details->find_them), find_them_box);
+	gtk_signal_connect_object (GTK_OBJECT (bar->details->find_them), "pressed",
+				   nautilus_navigation_bar_location_changed,
+				   GTK_OBJECT (bar));
+
+	gtk_box_pack_end (GTK_BOX (hbox), 
+			  bar->details->find_them, FALSE, FALSE, 0);
+	gtk_widget_show (bar->details->find_them);
+
+
 	
 	bar->details->fewer_options = gtk_button_new_with_label ("Fewer Options");
 	gtk_signal_connect (GTK_OBJECT (bar->details->fewer_options), "clicked",
 			    fewer_options_callback, bar);
-	gtk_box_pack_start (GTK_BOX (hbox),
+
+	gtk_box_pack_end (GTK_BOX (hbox),
 			    bar->details->fewer_options,
-			    TRUE, FALSE, 0);
+			    FALSE, FALSE, 2 * GNOME_PAD_SMALL);
+
 	gtk_widget_show (bar->details->fewer_options);
+
+	bar->details->more_options = gtk_button_new_with_label ("More Options");
+	gtk_signal_connect (GTK_OBJECT (bar->details->more_options), "clicked",
+			    more_options_callback, bar);
+				
+				
+	gtk_box_pack_end (GTK_BOX (hbox),
+			     bar->details->more_options,
+			     FALSE, FALSE, 0);
+	gtk_widget_show (bar->details->more_options);
 
 	gtk_box_pack_start (GTK_BOX (bar->details->bar_container),
 			    hbox,
@@ -174,26 +214,31 @@ static char *
 nautilus_complex_search_bar_get_location (NautilusNavigationBar *navigation_bar)
 {
 	NautilusComplexSearchBar *bar;
-	char *uri;
+	char *criteria_text, *trimmed_fragment, *escaped_fragment;
+	char *search_uri;
 	GSList *list;
 
 	bar = NAUTILUS_COMPLEX_SEARCH_BAR (navigation_bar);
 
-	uri = g_strdup ("search:[file:///]");
+	criteria_text = g_strdup ("[file:///]");
 
 	for (list = bar->details->search_criteria; list != NULL; list = list->next) {
-		char *temp_uri, *criterion_uri;
+		char *temp_criterion, *criterion_text;
 		NautilusSearchBarCriterion *criterion;
 		criterion = (NautilusSearchBarCriterion *) list->data;
-		criterion_uri = nautilus_search_bar_criterion_get_location (criterion);
-		temp_uri = g_strconcat (uri, criterion_uri, NULL);
-		g_free (uri);
-		g_free (criterion_uri);
-		uri = temp_uri;
+		criterion_text = nautilus_search_bar_criterion_get_location (criterion);
+		temp_criterion = g_strconcat (criteria_text, criterion_text, " & ", NULL);
+		g_free (criteria_text);
+		g_free (criterion_text);
+		criteria_text = temp_criterion;
 	}
+	trimmed_fragment = nautilus_str_strip_trailing_str (criteria_text, " & ");
+	g_free (criteria_text);
 
-
-	return uri;
+	escaped_fragment = gnome_vfs_escape_string (trimmed_fragment);
+	search_uri = g_strconcat ("search:", escaped_fragment, NULL);
+	g_free (escaped_fragment);
+	return search_uri;
 }
 
 static void                       
@@ -212,15 +257,16 @@ attach_criterion_to_search_bar (NautilusComplexSearchBar *bar,
 				NautilusSearchBarCriterion *criterion,
 				int row)
 {
+
 	g_return_if_fail (NAUTILUS_IS_COMPLEX_SEARCH_BAR (bar));
 
 	gtk_table_attach_defaults (bar->details->table,
-				   GTK_WIDGET (criterion->details->available_option_menu),
+				   GTK_WIDGET (criterion->details->available_criteria),
 				   0, 1, row - 1, row);
 	
-	gtk_table_attach_defaults (bar->details->table,
-				   GTK_WIDGET (criterion->details->operator_menu),
-				   1, 2, row - 1, row);
+	gtk_table_attach_defaults  (bar->details->table,
+				    GTK_WIDGET (criterion->details->relation_menu),
+				    1, 2, row - 1, row);
 	g_assert (criterion->details->use_value_entry + 
 		  criterion->details->use_value_menu == 1);
 	if (criterion->details->use_value_entry) {
@@ -233,6 +279,8 @@ attach_criterion_to_search_bar (NautilusComplexSearchBar *bar,
 					   GTK_WIDGET (criterion->details->value_menu),
 					   2, 3, row - 1, row);
 	}
+	gtk_table_resize (bar->details->table, row, 3);
+
 }
 
 static void
@@ -240,10 +288,10 @@ unattach_criterion_from_search_bar (NautilusComplexSearchBar *bar,
 				    NautilusSearchBarCriterion *criterion)
 {
 	gtk_container_remove (GTK_CONTAINER (bar->details->table),
-			      GTK_WIDGET (criterion->details->available_option_menu));
+			      GTK_WIDGET (criterion->details->available_criteria));
 
 	gtk_container_remove (GTK_CONTAINER (bar->details->table),
-			      GTK_WIDGET (criterion->details->operator_menu));
+			      GTK_WIDGET (criterion->details->relation_menu));
 	g_assert (criterion->details->use_value_entry + 
 		  criterion->details->use_value_menu == 1);
 	if (criterion->details->use_value_entry) {
@@ -254,7 +302,24 @@ unattach_criterion_from_search_bar (NautilusComplexSearchBar *bar,
 		gtk_container_remove (GTK_CONTAINER (bar->details->table),
 				      GTK_WIDGET (criterion->details->value_menu));
 	}
+	gtk_table_resize (bar->details->table, 
+			  g_slist_length (bar->details->search_criteria) - 1, 
+			  3);
 
+}
+
+static GtkWidget *
+load_find_them_pixmap_widget (void)
+{
+	GdkPixbuf *pixbuf;
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
+	
+	pixbuf = gdk_pixbuf_new_from_file ("/gnome/share/pixmaps/nautilus/search.png");
+	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
+	gdk_pixbuf_unref (pixbuf);
+
+	return gtk_pixmap_new (pixmap, mask);
 }
 				  
 
@@ -320,8 +385,7 @@ fewer_options_callback (GtkObject *object,
 
 	/* Assert that the old criteria got removed from the criteria list */
 	new_length = g_slist_length (bar->details->search_criteria);
-	g_assert ( new_length + 1 == old_length);
-	gtk_table_resize (bar->details->table, 3, new_length);
+	g_assert (new_length + 1 == old_length);
 
 	/* FIXME: the folowing is pretty much evil since it relies on the run-time
 	   widget hierarchy of the nautilus toolbar. 

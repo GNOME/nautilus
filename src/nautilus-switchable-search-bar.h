@@ -41,8 +41,6 @@ typedef struct {
 
 	NautilusSearchBarMode mode;
 	GtkHBox *container;
-	GtkLabel *label;
-	GtkButton *search_button;
 	GtkWidget *complex_search_bar;
 	GtkWidget *simple_search_bar;
 } NautilusSwitchableSearchBar;

@@ -24,12 +24,13 @@
    Author: Rebecca Schulman <rebecka@eazel.com>
 */
 
+
 struct NautilusSearchBarCriterionDetails {
 	NautilusSearchBarCriterionType type;
 
 	/* various widgets hold by the criterion */
-	GtkOptionMenu *available_option_menu;
-	GtkOptionMenu *operator_menu;
+	GtkOptionMenu *available_criteria;
+	GtkOptionMenu *relation_menu;
 	gboolean use_value_entry;
 	GtkEntry *value_entry;
 	gboolean use_value_menu;

@@ -35,14 +35,17 @@
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-search-uri.h>
 
-static void  nautilus_switchable_search_bar_set_location     (NautilusNavigationBar            *bar,
-							      const char                       *location);
-static char *nautilus_switchable_search_bar_get_location     (NautilusNavigationBar            *bar);
-static void  nautilus_switchable_search_bar_initialize_class (NautilusSwitchableSearchBarClass *class);
-static void  nautilus_switchable_search_bar_initialize       (NautilusSwitchableSearchBar      *bar);
-static void  nautilus_switchable_search_bar_destroy          (GtkObject                	       *object);
+static void                  nautilus_switchable_search_bar_set_location     (NautilusNavigationBar            *bar,
+									      const char                       *location);
+static char *                nautilus_switchable_search_bar_get_location     (NautilusNavigationBar            *bar);
+static void                  nautilus_switchable_search_bar_initialize_class (NautilusSwitchableSearchBarClass *class);
+static void                  nautilus_switchable_search_bar_initialize       (NautilusSwitchableSearchBar      *bar);
+
+static NautilusSearchBarMode other_search_mode                               (NautilusSearchBarMode            mode);
+static NautilusSearchBarMode nautilus_search_uri_to_search_bar_mode          (const char *uri);
+static gboolean              nautilus_search_uri_is_displayable_by_mode      (const char *uri,
+									      NautilusSearchBarMode mode);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableSearchBar,
 				   nautilus_switchable_search_bar,
@@ -53,24 +56,6 @@ nautilus_switchable_search_bar_initialize_class (NautilusSwitchableSearchBarClas
 {
 	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->get_location = nautilus_switchable_search_bar_get_location;
 	NAUTILUS_NAVIGATION_BAR_CLASS (klass)->set_location = nautilus_switchable_search_bar_set_location;
-
-	GTK_OBJECT_CLASS (klass)->destroy = nautilus_switchable_search_bar_destroy;
-}
-
-static void
-search_bar_preference_changed_callback (gpointer user_data)
-{
-	g_assert (NAUTILUS_IS_SWITCHABLE_SEARCH_BAR (user_data));
-
-	/* Switch immediately as long as the current search_uri doesn't veto the switch.
-	 * FIXME: Perhaps switch immediately anyway and blow away partially-formed
-	 * search criteria?
-	 */
-	nautilus_switchable_search_bar_set_mode 
-		(NAUTILUS_SWITCHABLE_SEARCH_BAR (user_data), 
-		 nautilus_search_uri_to_search_bar_mode 
-			(nautilus_switchable_search_bar_get_location 
-				(NAUTILUS_NAVIGATION_BAR (user_data))));
 }
 
 static void
@@ -81,7 +66,6 @@ nautilus_switchable_search_bar_initialize (NautilusSwitchableSearchBar *bar)
 	GtkWidget *event_box;
 	GtkWidget *vbox;
 	GtkWidget *hbox;
-	GtkWidget *find_them, *find_them_label;
 	
 	hbox = gtk_hbox_new (0, FALSE);
 	event_box = gtk_event_box_new ();
@@ -100,46 +84,14 @@ nautilus_switchable_search_bar_initialize (NautilusSwitchableSearchBar *bar)
 			     0);
 	gtk_box_pack_start  (GTK_BOX (hbox), bar->simple_search_bar, TRUE, TRUE,
 			     0);
-
-	find_them = gtk_button_new ();
-	find_them_label = gtk_label_new ("Find Them!");
-	gtk_container_add (GTK_CONTAINER (find_them), find_them_label);
-	gtk_signal_connect_object (GTK_OBJECT (find_them), "pressed",
-				   nautilus_navigation_bar_location_changed,
-				   GTK_OBJECT (bar));
-
-	gtk_box_pack_start (GTK_BOX (hbox), find_them, FALSE, TRUE, 1);
-
 	
 	gtk_container_add (GTK_CONTAINER (bar), hbox);
 
-	bar->label = GTK_LABEL (label);
-	bar->search_button = GTK_BUTTON (find_them);
-
 	gtk_widget_show_all (hbox);
 	nautilus_switchable_search_bar_set_mode
-		(bar, 
+		(bar,
 		 nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 						NAUTILUS_SIMPLE_SEARCH_BAR));
-
-	/* React to future preference changes. */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
-					   search_bar_preference_changed_callback,
-					   bar);
-}
-
-static void
-nautilus_switchable_search_bar_destroy (GtkObject *object)
-{
-	NautilusSwitchableSearchBar *bar;
-
-	bar = NAUTILUS_SWITCHABLE_SEARCH_BAR (object);
-
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
-					      search_bar_preference_changed_callback,
-					      bar);
-
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 GtkWidget *
@@ -165,12 +117,7 @@ nautilus_switchable_search_bar_set_mode (NautilusSwitchableSearchBar *bar,
 		return;
 	}
 	g_free (location);
-
-	/* FIXME bugzilla.eazel.com 1860: 
-	 * Switching to the complex search bar, which is taller, leaves
-	 * the navigation bar forever at the taller height, even after switching
-	 * back to the simple search bar or the location bar.
-	 */
+	
 	switch (mode) {
 	case NAUTILUS_SIMPLE_SEARCH_BAR:
 		gtk_widget_show (bar->simple_search_bar);
@@ -227,3 +174,49 @@ nautilus_switchable_search_bar_set_location (NautilusNavigationBar *navigation_b
 	nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (bar->complex_search_bar),
 					      location);
 }
+
+
+
+NautilusSearchBarMode 
+nautilus_search_uri_to_search_bar_mode (const char *uri)
+{
+	NautilusSearchBarMode preferred_mode;
+
+	preferred_mode = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
+							NAUTILUS_SIMPLE_SEARCH_BAR);
+	if (nautilus_search_uri_is_displayable_by_mode (uri, preferred_mode)) {
+		return preferred_mode;
+	}
+	else {
+		return (other_search_mode (preferred_mode));
+	}
+}
+
+
+
+gboolean
+nautilus_search_uri_is_displayable_by_mode (const char *uri,
+					    NautilusSearchBarMode mode)
+{
+	/* FIXME */
+	return TRUE;
+}
+
+
+static NautilusSearchBarMode
+other_search_mode (NautilusSearchBarMode mode)
+{
+	switch (mode) {
+	case NAUTILUS_SIMPLE_SEARCH_BAR:
+		return NAUTILUS_COMPLEX_SEARCH_BAR;
+		break;
+	case NAUTILUS_COMPLEX_SEARCH_BAR:
+		return NAUTILUS_SIMPLE_SEARCH_BAR;
+		break;
+	default:
+		g_assert_not_reached ();
+	}
+	return NAUTILUS_COMPLEX_SEARCH_BAR;
+}
+
+

@@ -44,7 +44,6 @@ static char * criteria_titles [] = {
 	  N_("Type"),
 	  N_("Stored"),
 	  N_("Size"),
-	  N_("With Note"),
 	  N_("With Emblem"),
 	  N_("Last Modified"),
 	  N_("Owned By"),
@@ -74,7 +73,7 @@ static char *type_relations [] = {
 	NULL
 };
 
-static char *type_options [] = {
+static char *type_objects [] = {
 	N_("regular file"),
 	N_("text file"),
 	N_("application"),
@@ -88,7 +87,7 @@ static char *location_relations [] = {
 	NULL
 };
 
-static char *location_options [] = {
+static char *location_objects [] = {
 	N_("on this computer"),
 	N_("in my vault"),
 	NULL
@@ -100,7 +99,7 @@ static char *size_relations [] = {
 	NULL
 };
 
-static char *size_options [] = {
+static char *size_objects [] = {
 	N_("1 KB"),
 	N_("10 KB"),
 	N_("100 KB"),
@@ -111,11 +110,6 @@ static char *size_options [] = {
 };
 
 
-static char *notes_relations [] = {
-	N_("including"),
-	N_("not including"),
-	NULL
-};
 
 static char *emblem_relations [] = {
 	N_("marked with"),
@@ -123,7 +117,7 @@ static char *emblem_relations [] = {
 	NULL
 };
 
-static char *emblem_options [] = {
+static char *emblem_objects [] = {
 	/* FIXME: add emblem possibilities here.
 	   likely to be icon filenames
 	*/
@@ -136,7 +130,7 @@ static char *modified_relations [] = {
 	NULL
 };
 
-static char *modified_options [] = {
+static char *modified_objects [] = {
 	N_("today"),
 	N_("this week"),
 	N_("this month"),
@@ -159,6 +153,22 @@ static NautilusSearchBarCriterion * nautilus_search_bar_criterion_new_from_value
 
 NautilusSearchBarCriterionType      get_next_default_search_criterion_type         (NautilusSearchBarCriterionType type) ;
 
+static char *                              get_name_location_for                  (int relation_number,
+										   char *name_text);
+static char *                              get_content_location_for               (int relation_number,
+										   char *name_text);
+static char *                              get_file_type_location_for             (int relation_number,
+										   int value_number);
+static char *                              get_size_location_for                  (int relation_number,
+										   char *size_text);
+static char *                              get_emblem_location_for                (int relation_number,
+										   int value_number);
+static char *                              get_date_modified_location_for         (int relation_number,
+										   int value_number);
+static char *                              get_owner_location_for                 (int relation_number,
+										   char *owner_number);
+
+
 
 void
 nautilus_search_bar_criterion_destroy (NautilusSearchBarCriterion *criterion)
@@ -174,8 +184,6 @@ nautilus_search_bar_criterion_new (void)
 	return g_new0 (NautilusSearchBarCriterion, 1);
 }
 
-static void
-option_menu_callback (GtkWidget *widget, gpointer data);
 
 static void
 option_menu_callback (GtkWidget *widget, gpointer data)
@@ -207,14 +215,14 @@ nautilus_search_bar_criterion_set_callback     (NautilusSearchBarCriterion *crit
 
 static NautilusSearchBarCriterion *
 nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType type,
-					       char *operator_options[],
+					       char *relation_options[],
 					       gboolean use_value_entry,
 					       gboolean use_value_menu,
 					       char *value_options[])
 {
 	NautilusSearchBarCriterion *criterion;
 	GtkWidget *search_criteria_option_menu, *search_criteria_menu; 
-	GtkWidget *operator_option_menu, *operator_menu;
+	GtkWidget *relation_option_menu, *relation_menu;
 	GtkWidget *value_option_menu, *value_menu; 
 	int i;
 	
@@ -239,24 +247,24 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 	gtk_menu_set_active (GTK_MENU (search_criteria_menu), type);
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (search_criteria_option_menu),
 				  search_criteria_menu);
-	criterion->details->available_option_menu = GTK_OPTION_MENU (search_criteria_option_menu);
+	criterion->details->available_criteria = GTK_OPTION_MENU (search_criteria_option_menu);
 	gtk_widget_show_all (GTK_WIDGET(search_criteria_option_menu));
 
 
 
-	operator_option_menu = gtk_option_menu_new ();
-	operator_menu = gtk_menu_new ();
-	for (i = 0; operator_options[i] != NULL; i++) {
+	relation_option_menu = gtk_option_menu_new ();
+	relation_menu = gtk_menu_new ();
+	for (i = 0; relation_options[i] != NULL; i++) {
 		GtkWidget *item;
-		item = gtk_menu_item_new_with_label (_(operator_options[i]));
+		item = gtk_menu_item_new_with_label (_(relation_options[i]));
 		gtk_object_set_data (GTK_OBJECT(item), "type", GINT_TO_POINTER(i));
-		gtk_menu_append (GTK_MENU (operator_menu),
+		gtk_menu_append (GTK_MENU (relation_menu),
 				 item);
 	}
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (operator_option_menu),
-				  operator_menu);
-	criterion->details->operator_menu = GTK_OPTION_MENU (operator_option_menu);
-	gtk_widget_show_all (GTK_WIDGET(operator_option_menu));
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (relation_option_menu),
+				  relation_menu);
+	criterion->details->relation_menu = GTK_OPTION_MENU (relation_option_menu);
+	gtk_widget_show_all (GTK_WIDGET(relation_option_menu));
 
 
 
@@ -316,42 +324,35 @@ nautilus_search_bar_criterion_next_new (NautilusSearchBarCriterionType criterion
 									       type_relations,
 									       FALSE,
 									       TRUE,
-									       type_options);
+									       type_objects);
 		break;
 	case NAUTILUS_LOCATION_SEARCH_CRITERION:
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_LOCATION_SEARCH_CRITERION,
 									       location_relations,
 									       FALSE,
 									       TRUE,
-									       location_options);
+									       location_objects);
 		break;
 	case NAUTILUS_SIZE_SEARCH_CRITERION:
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_SIZE_SEARCH_CRITERION,
 									       size_relations,
 									       FALSE,
 									       TRUE,
-									       size_options);
-		break;
-	case NAUTILUS_NOTES_SEARCH_CRITERION:
-		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_NOTES_SEARCH_CRITERION,
-									       notes_relations,
-									       TRUE,
-									       FALSE,
-									       NULL);
+									       size_objects);
 		break;
 	case NAUTILUS_EMBLEM_SEARCH_CRITERION:
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_EMBLEM_SEARCH_CRITERION,
 									       emblem_relations,
 									       FALSE,
 									       TRUE,
-									       emblem_options);
+									       emblem_objects);
 		break;
 	case NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION:
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION,
 									       modified_relations,
 									       FALSE,
 									       TRUE,
-									       modified_options);
+									       modified_objects);
 		break;
 	case NAUTILUS_OWNER_SEARCH_CRITERION:
 		new_criterion = nautilus_search_bar_criterion_new_from_values (NAUTILUS_OWNER_SEARCH_CRITERION,
@@ -382,6 +383,11 @@ nautilus_search_bar_criterion_first_new (void)
 char *
 nautilus_search_bar_criterion_get_location (NautilusSearchBarCriterion *criterion)
 {
+	GtkWidget *menu;
+	GtkWidget *menu_item;
+	int name_number, relation_number, value_number;
+	char *value_text;
+	
 	/* There is ONE thing you should be aware of while implementing this function.
 	   You have to make sure you use non-translated strings for building the uri.
 	   So, to implement this, you are supposed to:
@@ -391,8 +397,49 @@ nautilus_search_bar_criterion_get_location (NautilusSearchBarCriterion *criterio
 		  menu_item = gtk_menu_get_active (optin_menu)
 		  number = gtk_object_get_data (menu_item, "type")
 	 */
+	menu = gtk_option_menu_get_menu (criterion->details->available_criteria);
+	menu_item = gtk_menu_get_active (GTK_MENU (menu));
+	name_number = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (menu_item), "type"));
 
+	menu = gtk_option_menu_get_menu (criterion->details->relation_menu);
+	menu_item = gtk_menu_get_active (GTK_MENU (menu));
+	relation_number = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (menu_item), "type"));
 
+	if (criterion->details->use_value_menu) {
+		menu = gtk_option_menu_get_menu (criterion->details->value_menu);
+		menu_item = gtk_menu_get_active (GTK_MENU (menu));
+		value_number = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (menu_item), "type"));
+	}
+	else {
+		value_text = gtk_entry_get_text (GTK_ENTRY (criterion->details->value_entry));
+	}
+
+	switch (name_number) {
+	case NAUTILUS_FILE_NAME_SEARCH_CRITERION:
+		return get_name_location_for (relation_number,
+					       value_text);
+	case NAUTILUS_CONTENT_SEARCH_CRITERION:
+		return get_content_location_for (relation_number,
+						 value_text);
+	case NAUTILUS_FILE_TYPE_SEARCH_CRITERION:
+		return get_file_type_location_for (relation_number,
+						   value_number);
+	case NAUTILUS_SIZE_SEARCH_CRITERION:
+		return get_size_location_for (relation_number,
+					      value_text);
+	case NAUTILUS_EMBLEM_SEARCH_CRITERION:
+		return get_emblem_location_for (relation_number,
+						value_number);
+	case NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION:
+		return get_date_modified_location_for (relation_number,
+						       value_number);
+	case NAUTILUS_OWNER_SEARCH_CRITERION:
+		return get_owner_location_for (relation_number,
+					       value_text);
+	default:
+		g_assert_not_reached ();
+		return NULL;
+	}
 	return g_strdup ("file_name contains evolution ");
 }
 
@@ -410,9 +457,7 @@ get_next_default_search_criterion_type (NautilusSearchBarCriterionType type)
 	case NAUTILUS_LOCATION_SEARCH_CRITERION:
 		return NAUTILUS_SIZE_SEARCH_CRITERION;
 	case NAUTILUS_SIZE_SEARCH_CRITERION:
-		return NAUTILUS_NOTES_SEARCH_CRITERION;
-	case NAUTILUS_NOTES_SEARCH_CRITERION:
-		return NAUTILUS_EMBLEM_SEARCH_CRITERION;
+		return NAUTILUS_SIZE_SEARCH_CRITERION;
 	case NAUTILUS_EMBLEM_SEARCH_CRITERION:
 		return NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION;
 	case NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION:
@@ -430,8 +475,8 @@ void
 nautilus_search_bar_criterion_show (NautilusSearchBarCriterion *criterion)
 {
 	
-	gtk_widget_show (GTK_WIDGET (criterion->details->available_option_menu));
-	gtk_widget_show (GTK_WIDGET (criterion->details->operator_menu));
+	gtk_widget_show (GTK_WIDGET (criterion->details->available_criteria));
+	gtk_widget_show (GTK_WIDGET (criterion->details->relation_menu));
 
 	if (criterion->details->use_value_entry) {
 		gtk_widget_show (GTK_WIDGET (criterion->details->value_entry));
@@ -447,8 +492,8 @@ void
 nautilus_search_bar_criterion_hide (NautilusSearchBarCriterion *criterion)
 {
 	
-	gtk_widget_hide (GTK_WIDGET (criterion->details->available_option_menu));
-	gtk_widget_hide (GTK_WIDGET (criterion->details->operator_menu));
+	gtk_widget_hide (GTK_WIDGET (criterion->details->available_criteria));
+	gtk_widget_hide (GTK_WIDGET (criterion->details->relation_menu));
 
 	if (criterion->details->use_value_entry) {
 		gtk_widget_hide (GTK_WIDGET (criterion->details->value_entry));
@@ -458,6 +503,95 @@ nautilus_search_bar_criterion_hide (NautilusSearchBarCriterion *criterion)
 	}
 }
 
+static char *                              
+get_name_location_for (int relation_number, char *name_text)
+{
+	const char *possible_relations[] = { "contains",
+					    "starts_with",
+					    "ends_with",
+					    "matches_glob",
+					    "matches_regexp" };
+	
+	g_assert (relation_number >= 0);
+	g_assert (relation_number < 5);
+
+	return g_strdup_printf ("file_name %s %s", possible_relations[relation_number], 
+				name_text);
+	
+}
+
+static char *                              
+get_content_location_for (int relation_number, char *name_text)
+{
+	const char *possible_relations[] = { "includes",
+					    "does_not_include" };
+	
+	g_assert (relation_number == 0 || relation_number == 1);
+
+	return g_strdup_printf ("content %s %s", possible_relations[relation_number],
+				name_text);
+}
+
+static char *                              
+get_file_type_location_for (int relation_number,
+			    int value_number)
+{
+	const char *possible_relations[] = { "is", "is_not" };
+	const char *possible_values[] = {"file", "text_file", "application", "directory", "music" };
+
+	g_assert (relation_number == 0 || relation_number == 1);
+	g_assert (value_number >= 0);
+	g_assert (value_number < 5);
+	return g_strdup_printf ("file_type %s %s", possible_relations[relation_number],
+				possible_values[value_number]);
+}
+
+
+static char *                              
+get_size_location_for (int relation_number,
+		       char *size_text)
+{
+	const char *possible_relations[] = { "larger_than", "smaller_than" };
+	
+	g_assert (relation_number == 0 || relation_number == 1);
+	/* FIXME:  Need checks for appropriate size here */
+	return g_strdup_printf ("size %s %s", possible_relations[relation_number], size_text);
+
+}
+
+static char *                              
+get_emblem_location_for  (int relation_number,
+			  int value_number)
+{
+	/* FIXME */
+	return g_strdup ("");
+}
+
+static char *                              
+get_date_modified_location_for (int relation_number,
+				int value_number)
+{
+	const char *possible_relations[] = { "updated", "not_updated" };
+	const char *possible_values[] = { "today", "this_week", "this_month" };
+
+	g_assert (relation_number == 0 || relation_number == 1);
+	g_assert (value_number >= 0);
+	g_assert (value_number < 3);
+
+	return g_strdup_printf ("mod_time %s %s", possible_relations[relation_number],
+				possible_values[value_number]);
+
+}
+
+static char *                              
+get_owner_location_for (int relation_number,
+			char *owner_text)
+{
+	const char *possible_relations[] = { "is", "is not" };
+	g_assert (relation_number == 0 || relation_number == 1);
+	return g_strdup_printf ("owner %s %s", possible_relations[relation_number], owner_text);
+	
+}
 
 
 

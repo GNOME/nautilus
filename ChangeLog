@@ -1,3 +1,66 @@
+2000-08-02  Rebecca Schulman  <rebecka@eazel.com>
+	Completed bug 1433, the interface to search by file
+	name and attribute.  
+
+	* libnautilus-extensions/nautilus-search-uri.c:
+	* libnautilus-extensions/nautilus-search-uri.h:
+	* libnautilus-extensions/Makefile.am:
+	removed the search uri files and placed their functionality 
+	in the appropriate search bar classes.
+	
+	* libnautilus-extensions/nautilus-search-bar-criterion-private.h:
+	* libnautilus-extensions/nautilus-search-bar-criterion.h:
+	* libnautilus-extensions/nautilus-search-bar-criterion.c:
+	(nautilus_search_bar_criterion_new_from_values),
+	(nautilus_search_bar_criterion_next_new),
+	(nautilus_search_bar_criterion_get_location),
+	(get_next_default_search_criterion_type),
+	(nautilus_search_bar_criterion_show),
+	(nautilus_search_bar_criterion_hide), (get_name_location_for),
+	(get_content_location_for), (get_file_type_location_for),
+	(get_size_location_for), (get_emblem_location_for),
+	(get_date_modified_location_for), (get_owner_location_for):
+	added ability to turn the criteria state into a text 
+	explanation for the search uri.  It is slightly circuitous,
+	because search uris are not internationalized.
+	
+
+	* libnautilus-extensions/nautilus-string.c:
+	* libnautilus-extensions/nautilus-string.h:
+	(nautilus_str_strip_trailing_str), (nautilus_self_check_string):
+	added new string function used by the search bar criterion code,
+	to strip a string off the end of an existing string.
+
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_initialize),
+	(nautilus_complex_search_bar_get_location),
+	(attach_criterion_to_search_bar),
+	(unattach_criterion_from_search_bar),
+	(load_find_them_pixmap_widget), (fewer_options_callback):
+	tweaks to make sizing an spacing on the bar better, and
+	added search pixmap to the find button.  Moved the find
+	them button here from the switchable search bar
+	class for appearance reasons.
+	
+	* src/nautilus-simple-search-bar.c:
+	(nautilus_simple_search_bar_initialize),
+	(nautilus_simple_search_bar_set_location),
+	(nautilus_simple_search_bar_get_location),
+	(nautilus_search_uri_to_simple_search_criteria),
+	(nautilus_simple_search_criteria_to_search_uri):
+	moved search uri functionality and 
+	find them button into the simple search bar class for
+	apprearance reasons.
+	
+	* src/nautilus-switchable-search-bar.c:
+	* src/nautilus-switchable-search-bar.h:
+	(nautilus_switchable_search_bar_initialize_class),
+	(nautilus_switchable_search_bar_initialize),
+	(nautilus_switchable_search_bar_set_mode),
+	(nautilus_search_uri_to_search_bar_mode),
+	(nautilus_search_uri_is_displayable_by_mode), (other_search_mode):
+	moved the find them button out of this class.
+
 2000-08-02  Darin Adler  <darin@eazel.com>
 
 	Finished task 222 "Don't look for metafile for some URIs for

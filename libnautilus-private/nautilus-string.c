@@ -348,6 +348,26 @@ nautilus_str_strip_trailing_chr (const char *source, char remove_this)
         return g_strndup (source, end - source);
 }
 
+char *   
+nautilus_str_strip_trailing_str (const char *source, const char *remove_this)
+{
+	const char *end;
+	if (source == NULL) {
+		return NULL;
+	}
+	if (remove_this == NULL) {
+		return g_strdup (source);
+	}
+	end = source + strlen (source);
+	if (strcmp (end - strlen (remove_this), remove_this) != 0) {
+		return g_strdup (source);
+	}
+	else {
+		return g_strndup (source, strlen (source) - strlen(remove_this));
+	}
+	
+}
+
 gboolean
 nautilus_eat_str_to_int (char *source, int *integer)
 {
@@ -561,6 +581,11 @@ nautilus_self_check_string (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr ("foo_", '_'), "foo");	
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr ("_foo__", '_'), "_foo");	
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_chr ("_f_o__o_", '_'), "_f_o__o");	
+
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_str (NULL, "bar"), NULL);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_str ("foo", "bar"), "foo");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_str ("foo bar", "bar"), "foo ");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_strip_trailing_str ("bar", "bar"), "bar");
 	
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_double_underscores (NULL), NULL);
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_str_double_underscores (""), "");

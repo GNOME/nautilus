@@ -70,6 +70,8 @@ char *   nautilus_str_strip_chr          (const char    *string,
 					  char           remove_this);
 char *   nautilus_str_strip_trailing_chr (const char    *string,
 					  char           remove_this);
+char *   nautilus_str_strip_trailing_str (const char    *string,
+					  const char    *remove_this);
 
 /* Conversions to and from strings. */
 gboolean nautilus_str_to_int             (const char    *string,
