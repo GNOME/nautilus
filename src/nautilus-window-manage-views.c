@@ -1004,8 +1004,9 @@ handle_view_failure (NautilusWindow *window,
         g_warning ("A view failed. The UI will handle this with a dialog but this should be debugged.");
 
         if (view == window->content_view) {
+                disconnect_view(window, window->content_view);			
                 nautilus_window_set_content_view_widget (window, NULL);
-                
+			
                 /* FIXME bugzilla.gnome.org 45039: We need a
                  * way to report the specific error that
                  * happens in this case - adapter factory not
