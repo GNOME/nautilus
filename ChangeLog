@@ -3,6 +3,16 @@
 	* src/file-manager/fm-directory-view.c:
 	(fm_directory_view_pop_up_selection_context_menu),
 	(fm_directory_view_pop_up_background_context_menu):
+	Enabled Bonobo context menus again, because Darin has
+	now checked in the fixes to Bonobo that make them work
+	properly. Let me know about any (new) context-menu bugs
+	you might run into.
+
+2000-11-15  John Sullivan  <sullivan@eazel.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_pop_up_selection_context_menu),
+	(fm_directory_view_pop_up_background_context_menu):
 	Oops, I accidentally checked in the Bonobo context
 	menus enabled. They are now disabled again.
 
