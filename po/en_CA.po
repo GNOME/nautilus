@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-26 02:26-0500\n"
-"PO-Revision-Date: 2005-03-26 20:03-0400\n"
+"POT-Creation-Date: 2005-03-30 02:32-0500\n"
+"PO-Revision-Date: 2005-03-30 20:03-0400\n"
 "Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
 "Language-Team: Canadian English <adamw@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1396,20 +1396,20 @@ msgstr "Sorry, unable to save custom emblem."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Sorry, unable to save custom emblem name."
 
-#: ../libnautilus-private/nautilus-file-operations-progress.c:408
+#: ../libnautilus-private/nautilus-file-operations-progress.c:169
+#, c-format
+msgid "%s %ld of %ld %s"
+msgstr "%s %ld of %ld %s"
+
+#: ../libnautilus-private/nautilus-file-operations-progress.c:448
 #, c-format
 msgid "(%d:%02d:%d Remaining)"
 msgstr "(%d:%02d:%d Remaining)"
 
-#: ../libnautilus-private/nautilus-file-operations-progress.c:413
+#: ../libnautilus-private/nautilus-file-operations-progress.c:453
 #, c-format
 msgid "(%d:%02d Remaining)"
 msgstr "(%d:%02d Remaining)"
-
-#: ../libnautilus-private/nautilus-file-operations-progress.c:526
-#, c-format
-msgid "%ld of %ld"
-msgstr "%ld of %ld"
 
 #. "From" dialog label, source path gets placed next to it in the dialog
 #: ../libnautilus-private/nautilus-file-operations.c:358
@@ -5296,7 +5296,7 @@ msgid "File Manager"
 msgstr "File Manager"
 
 #. Set initial window title
-#: ../src/nautilus-main.c:331 ../src/nautilus-spatial-window.c:330
+#: ../src/nautilus-main.c:331 ../src/nautilus-spatial-window.c:336
 #: ../src/nautilus-window-menus.c:442 ../src/nautilus-window.c:147
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -5396,7 +5396,7 @@ msgstr "_Location..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:554
-#: ../src/nautilus-spatial-window.c:582
+#: ../src/nautilus-spatial-window.c:662
 msgid "Specify a location to open"
 msgstr "Specify a location to open"
 
@@ -5692,30 +5692,30 @@ msgstr "Close the side pane"
 msgid "Show %s"
 msgstr "Show %s"
 
-#: ../src/nautilus-spatial-window.c:580
+#: ../src/nautilus-spatial-window.c:660
 msgid "_Places"
 msgstr "_Places"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:581
+#: ../src/nautilus-spatial-window.c:661
 msgid "Open _Location..."
 msgstr "Open _Location..."
 
-#: ../src/nautilus-spatial-window.c:584
+#: ../src/nautilus-spatial-window.c:664
 msgid "Close P_arent Folders"
 msgstr "Close P_arent Folders"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:585
+#: ../src/nautilus-spatial-window.c:665
 msgid "Close this folder's parents"
 msgstr "Close this folder's parents"
 
-#: ../src/nautilus-spatial-window.c:587
+#: ../src/nautilus-spatial-window.c:667
 msgid "Clos_e All Folders"
 msgstr "Clos_e All Folders"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:588
+#: ../src/nautilus-spatial-window.c:668
 msgid "Close all folder windows"
 msgstr "Close all folder windows"
 
