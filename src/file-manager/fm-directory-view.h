@@ -28,19 +28,7 @@
 #include <gtk/gtkscrolledwindow.h>
 #include <libnautilus/ntl-content-view-frame.h>
 #include <libnautilus/nautilus-directory.h>
-
 
-
-enum _FMDirectoryViewSortType {
-	FM_DIRECTORY_VIEW_SORT_NONE,
-	FM_DIRECTORY_VIEW_SORT_BYNAME,
-	FM_DIRECTORY_VIEW_SORT_BYSIZE,
-	FM_DIRECTORY_VIEW_SORT_BYTYPE,
-	FM_DIRECTORY_VIEW_SORT_BYMTIME
-};
-typedef enum _FMDirectoryViewSortType FMDirectoryViewSortType;
-
-
 typedef struct _FMDirectoryView      FMDirectoryView;
 typedef struct _FMDirectoryViewClass FMDirectoryViewClass;
 
@@ -120,9 +108,6 @@ void                      fm_directory_view_load_uri                 (FMDirector
 /* Functions callable from the user interface and elsewhere. */
 GList *                   fm_directory_view_get_selection            (FMDirectoryView         *view);
 void                      fm_directory_view_stop                     (FMDirectoryView         *view);
-void                      fm_directory_view_sort                     (FMDirectoryView         *view,
-								      FMDirectoryViewSortType  sort_type,
-								      gboolean                 reverse_sort);
 
 /* Wrappers for signal emitters. These are normally called 
  * only by FMDirectoryView itself. They have corresponding signals
@@ -141,6 +126,9 @@ void                      fm_directory_view_activate_entry           (FMDirector
 								      NautilusFile            *file);
 void                      fm_directory_view_bump_zoom_level          (FMDirectoryView         *view, gint zoom_increment);
 void                      fm_directory_view_notify_selection_changed (FMDirectoryView         *view);
+
+
+
 NautilusDirectory *       fm_directory_view_get_model                (FMDirectoryView         *view);
 void                      fm_directory_view_popup_background_context_menu  (FMDirectoryView *view);
 void                      fm_directory_view_popup_item_context_menu  (FMDirectoryView *view,

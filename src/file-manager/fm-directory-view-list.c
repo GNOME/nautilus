@@ -65,11 +65,14 @@ struct _FMDirectoryViewListDetails
 
 
 /* forward declarations */
-static void add_to_flist 			    (FMDirectoryViewList *list_view,
+static void add_to_flist	 		    (FMDirectoryViewList *list_view,
 		   		 		     NautilusFile *file);
 static void column_clicked_cb 			    (GtkCList *clist,
 			       	 		     gint column,
 			       	 		     gpointer user_data);
+static gint compare_rows 			    (GtkCList *clist,
+	      					     gconstpointer  ptr1,
+	      					     gconstpointer  ptr2);
 static void context_click_row_cb		    (GtkCList *clist,
 						     gint row,
 						     FMDirectoryViewList *list_view);
@@ -109,6 +112,7 @@ static void install_icon 			    (FMDirectoryViewList *list_view,
 static void show_sort_indicator 		    (GtkFList *flist, 
 						     gint column, 
 						     gboolean sort_reversed);
+static int sort_criterion_from_column 		    (int column);
 
 static char * down_xpm[] = {
 "6 5 2 1",
@@ -129,6 +133,8 @@ static char * up_xpm[] = {
 " .... ",
 "      ",
 "......"};
+
+static NautilusFile *pending_row_data = NULL;
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryViewList, fm_directory_view_list, FM_TYPE_DIRECTORY_VIEW);
@@ -168,7 +174,7 @@ fm_directory_view_list_initialize (gpointer object, gpointer klass)
 	list_view->details = g_new0 (FMDirectoryViewListDetails, 1);
 
 	/* FIXME: These should be read from metadata */
-	list_view->details->sort_column = LIST_VIEW_COLUMN_NONE;
+	list_view->details->sort_column = LIST_VIEW_COLUMN_NAME;
 	list_view->details->sort_reversed = FALSE;
 	list_view->details->icon_size = NAUTILUS_ICON_SIZE_SMALLER;
 	
@@ -207,11 +213,44 @@ column_clicked_cb (GtkCList *clist, gint column, gpointer user_data)
 	fm_directory_view_list_sort_items (list_view, column, reversed);
 }
 
+static gint
+compare_rows (GtkCList *clist,
+	      gconstpointer  ptr1,
+	      gconstpointer  ptr2)
+{
+	GtkCListRow *row1;
+	GtkCListRow *row2;
+	NautilusFile *file1;
+	NautilusFile *file2;
+	int sort_criterion;
+  
+	g_return_val_if_fail (GTK_IS_FLIST (clist), 0);
 
+	row1 = (GtkCListRow *) ptr1;
+	row2 = (GtkCListRow *) ptr2;
 
-static void context_click_row_cb		    (GtkCList *clist,
-						     gint row,
-						     FMDirectoryViewList *list_view)
+	file1 = (NautilusFile *) row1->data;
+	file2 = (NautilusFile *) row2->data;
+
+	/* All of our rows have a NautilusFile in the row data. Therefore if
+	 * the row data is NULL it must be a row that's being added, and hasn't
+	 * had a chance to have its row data set yet. Use our special hack-o-rama
+	 * static variable for that case.
+	 */
+	g_assert (file1 != NULL || file2 != NULL);
+	if (file1 == NULL)
+		file1 = pending_row_data;
+	else if (file2 == NULL)
+		file2 = pending_row_data;
+	g_assert (file1 != NULL && file2 != NULL);
+	
+	sort_criterion = sort_criterion_from_column (clist->sort_column);
+
+	return nautilus_file_compare_for_sort (file1, file2, sort_criterion);
+}
+
+static void 
+context_click_row_cb (GtkCList *clist, gint row, FMDirectoryViewList *list_view)
 {
 	NautilusFile * file;
 
@@ -224,8 +263,8 @@ static void context_click_row_cb		    (GtkCList *clist,
 }
 
 
-static void context_click_background_cb		    (GtkCList *clist,
-						     FMDirectoryViewList *list_view)
+static void 
+context_click_background_cb (GtkCList *clist, FMDirectoryViewList *list_view)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW_LIST (list_view));
 
@@ -237,6 +276,8 @@ static GtkFList *
 create_flist (FMDirectoryViewList *list_view)
 {
 	GtkFList *flist;
+	GtkCList *clist;
+	
 	gchar *titles[] = {
 		NULL,
 		_("Name"),
@@ -256,6 +297,7 @@ create_flist (FMDirectoryViewList *list_view)
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_LIST (list_view), NULL);
 
 	flist = GTK_FLIST (gtk_flist_new_with_titles (LIST_VIEW_COLUMN_COUNT, titles));
+	clist = GTK_CLIST (flist);
 
 	for (i = 0; i < LIST_VIEW_COLUMN_COUNT; ++i)
 	{
@@ -267,7 +309,7 @@ create_flist (FMDirectoryViewList *list_view)
 
 		right_justified = (i == LIST_VIEW_COLUMN_SIZE);
 	
-		gtk_clist_set_column_width (GTK_CLIST (flist), i, widths[i]);
+		gtk_clist_set_column_width (clist, i, widths[i]);
 
 		/* Column header button contains three views, a title,
 		 * a "sort downward" indicator, and a "sort upward" indicator. 
@@ -297,7 +339,7 @@ create_flist (FMDirectoryViewList *list_view)
 			gtk_box_pack_start (GTK_BOX (hbox), sort_down_indicator, FALSE, FALSE, GNOME_PAD);
 			gtk_box_pack_end (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
-			gtk_clist_set_column_justification (GTK_CLIST (flist), i, GTK_JUSTIFY_RIGHT);
+			gtk_clist_set_column_justification (clist, i, GTK_JUSTIFY_RIGHT);
 		}
 		else
 		{
@@ -306,11 +348,24 @@ create_flist (FMDirectoryViewList *list_view)
 			gtk_box_pack_end (GTK_BOX (hbox), sort_down_indicator, FALSE, FALSE, GNOME_PAD);
 		}
 
-		gtk_clist_set_column_widget (GTK_CLIST (flist), i, hbox);
+		gtk_clist_set_column_widget (clist, i, hbox);
 	}
 
+	g_assert (list_view->details->sort_column != LIST_VIEW_COLUMN_NONE);
+
+	gtk_clist_set_auto_sort (clist, TRUE);
+	gtk_clist_set_compare_func (clist, compare_rows);
+
+	gtk_clist_set_sort_column (clist, list_view->details->sort_column);
+	gtk_clist_set_sort_type (clist, list_view->details->sort_reversed
+		? GTK_SORT_DESCENDING
+		: GTK_SORT_ASCENDING);
+	show_sort_indicator (flist, 
+			     list_view->details->sort_column, 
+			     list_view->details->sort_reversed);
+
 	/* Make height tall enough for icons to look good */
-	gtk_clist_set_row_height (GTK_CLIST (flist), list_view->details->icon_size);
+	gtk_clist_set_row_height (clist, list_view->details->icon_size);
 	
 	GTK_WIDGET_SET_FLAGS (flist, GTK_CAN_FOCUS);
 
@@ -341,8 +396,6 @@ create_flist (FMDirectoryViewList *list_view)
 			    GTK_SIGNAL_FUNC (fm_directory_view_list_background_changed_cb),
 			    list_view);
 
-
-
 	gtk_container_add (GTK_CONTAINER (list_view), GTK_WIDGET (flist));
 	gtk_widget_show (GTK_WIDGET (flist));
 
@@ -372,8 +425,7 @@ flist_selection_changed_cb (GtkFList *flist,
 }
 
 static void
-add_to_flist (FMDirectoryViewList *list_view,
-	      NautilusFile *file)
+add_to_flist (FMDirectoryViewList *list_view, NautilusFile *file)
 {
 	GtkCList *clist;
 	gchar *text[LIST_VIEW_COLUMN_COUNT];
@@ -381,8 +433,10 @@ add_to_flist (FMDirectoryViewList *list_view,
 	gchar *size_string;
 	gchar *modified_string;
 	gchar *type_string;
+	int new_row;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (list_view));
+	g_return_if_fail (file != NULL);
 
 	text[LIST_VIEW_COLUMN_ICON] = NULL;
 	
@@ -399,12 +453,19 @@ add_to_flist (FMDirectoryViewList *list_view,
 	text[LIST_VIEW_COLUMN_MIME_TYPE] = type_string;
 	
 	clist = GTK_CLIST (get_flist(list_view));
-	gtk_clist_append (clist, text);
-	gtk_clist_set_row_data (clist, clist->rows - 1, file);
+
+	/* Temporarily set static variable value as hack for the problem
+	 * that compare_rows is called before the row data can be set.
+	 */
+	pending_row_data = file;
+	/* Note that since list is auto-sorted new_row isn't necessarily last row. */
+	new_row = gtk_clist_append (clist, text);
+	gtk_clist_set_row_data (clist, new_row, file);
+	pending_row_data = NULL;
 
 	install_icon (list_view, 
 		      file, 
-		      clist->rows - 1, 
+		      new_row, 
 		      LIST_VIEW_COLUMN_ICON);
 
 	g_free (name);
@@ -481,45 +542,30 @@ fm_directory_view_list_sort_items (FMDirectoryViewList *list_view,
 				   int column, 
 				   gboolean reversed)
 {
-	FMDirectoryViewSortType sort_type;
 	GtkFList *flist;
+	GtkCList *clist;
 	
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (list_view));
+	g_return_if_fail (column >= 0);
+	g_return_if_fail (column < GTK_CLIST (get_flist (list_view))->columns);
 
 	flist = get_flist (list_view);
+	clist = GTK_CLIST (flist);
+	hide_sort_indicator (flist, list_view->details->sort_column);
+	show_sort_indicator (flist, column, reversed);
 	
-	switch (column)
+	list_view->details->sort_column = column;
+
+	if (reversed != list_view->details->sort_reversed)
 	{
-		case LIST_VIEW_COLUMN_ICON:	
-			sort_type = FM_DIRECTORY_VIEW_SORT_BYTYPE;
-			break;
-		case LIST_VIEW_COLUMN_NAME:
-			sort_type = FM_DIRECTORY_VIEW_SORT_BYNAME;
-			break;
-		case LIST_VIEW_COLUMN_SIZE:
-			sort_type = FM_DIRECTORY_VIEW_SORT_BYSIZE;
-			break;
-		case LIST_VIEW_COLUMN_DATE_MODIFIED:
-			sort_type = FM_DIRECTORY_VIEW_SORT_BYMTIME;
-			break;
-		case LIST_VIEW_COLUMN_MIME_TYPE:
-			sort_type = FM_DIRECTORY_VIEW_SORT_BYTYPE;
-			break;
-		default: 
-			g_assert_not_reached();
-			sort_type = FM_DIRECTORY_VIEW_SORT_NONE;
-			break;
+		gtk_clist_set_sort_type (clist, reversed
+			? GTK_SORT_DESCENDING
+			: GTK_SORT_ASCENDING);
+		list_view->details->sort_reversed = reversed;
 	}
 
-	hide_sort_indicator (flist, list_view->details->sort_column);
-	list_view->details->sort_column = column;
-	list_view->details->sort_reversed = reversed;
-	show_sort_indicator (flist, column, reversed);
-
-	
-	fm_directory_view_sort (FM_DIRECTORY_VIEW (list_view), 
-				sort_type,
-				reversed);
+	gtk_clist_set_sort_column (clist, column);
+	gtk_clist_sort (clist);
 }
 
 static void
@@ -620,6 +666,8 @@ install_icon (FMDirectoryViewList *list_view,
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (list_view));
 	g_return_if_fail (file != NULL);
+	g_return_if_fail (column >= 0);
+	g_return_if_fail (column < GTK_CLIST (get_flist (list_view))->rows);
 	
 	pixbuf = fm_icon_cache_get_icon_for_file (fm_get_current_icon_cache(), 
 					 	  file,
@@ -641,4 +689,24 @@ show_sort_indicator (GtkFList *flist, gint column, gboolean sort_reversed)
 		return;
 
 	gtk_widget_show (get_sort_indicator (flist, column, sort_reversed));
+}
+
+static int
+sort_criterion_from_column (int column)
+{
+	switch (column)
+	{
+		case LIST_VIEW_COLUMN_ICON:	
+			return NAUTILUS_FILE_SORT_BY_TYPE;
+		case LIST_VIEW_COLUMN_NAME:
+			return NAUTILUS_FILE_SORT_BY_NAME;
+		case LIST_VIEW_COLUMN_SIZE:
+			return NAUTILUS_FILE_SORT_BY_SIZE;
+		case LIST_VIEW_COLUMN_DATE_MODIFIED:
+			return NAUTILUS_FILE_SORT_BY_MTIME;
+		case LIST_VIEW_COLUMN_MIME_TYPE:
+			return NAUTILUS_FILE_SORT_BY_TYPE;
+		default: 
+			return NAUTILUS_FILE_SORT_NONE;
+	}
 }

@@ -92,7 +92,6 @@ static void stop_location_change_cb 		(NautilusViewFrame *view_frame,
 static void notify_location_change_cb 		(NautilusViewFrame *view_frame, 
 						 Nautilus_NavigationInfo *nav_context, 
 						 FMDirectoryView *directory_view);
-static void fm_directory_view_repopulate        (FMDirectoryView *view);
 static void zoom_in_cb                          (GtkMenuItem *item, FMDirectoryView *directory_view);
 static void zoom_out_cb                         (GtkMenuItem *item, FMDirectoryView *directory_view);
 
@@ -374,48 +373,6 @@ static void
 zoom_out_cb(GtkMenuItem *item, FMDirectoryView *directory_view)
 {
     fm_directory_view_bump_zoom_level (directory_view, -1);
-}
-
-/**
- * fm_directory_view_repopulate:
- *
- * Fill view with already-discovered entries for current location, after emptying 
- * any old contents. This is normally called only by FMDirectoryView.
- * @view: FMDirectoryView to fill.
- * 
- **/
-static void
-fm_directory_view_repopulate (FMDirectoryView *view)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-
-	/* Always start from scratch */
-	fm_directory_view_clear (view);
-
-	if (view->details->directory_list != NULL) 
-	{
-		GnomeVFSDirectoryListPosition *position;
-
-		position = gnome_vfs_directory_list_get_first_position
-			(view->details->directory_list);
-
-		fm_directory_view_begin_adding_entries (view);
-
-		while (position != view->details->current_position) {
-			GnomeVFSFileInfo *info;
-
-			info = gnome_vfs_directory_list_get
-				(view->details->directory_list, position);
-
-			fm_directory_view_add_entry
-				(view, nautilus_directory_new_file (view->details->model, info));
-
-			position = gnome_vfs_directory_list_position_next
-				(position);
-		}
-
-		fm_directory_view_done_adding_entries (view);
-	}
 }
 
 static void
@@ -933,72 +890,4 @@ fm_directory_view_stop (FMDirectoryView *view)
 
 	display_pending_entries (view);
 	stop_load (view, FALSE);
-}
-
-/**
- * fm_directory_view_sort:
- * 
- * Reorder the items in this view.
- * @view: FMDirectoryView whose items will be reordered.
- * @sort_type: FMDirectoryViewSortType specifying what new order to use.
- * @reverse_sort: TRUE if items should be sorted in reverse of standard order.
- * 
- **/
-void
-fm_directory_view_sort (FMDirectoryView *view,
-			FMDirectoryViewSortType sort_type,
-			gboolean reverse_sort)
-{
-	GnomeVFSDirectorySortRule *rules;
-
-#define ALLOC_RULES(n) alloca ((n) * sizeof (GnomeVFSDirectorySortRule))
-
-	g_return_if_fail (view != NULL);
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-
-	if (view->details->directory_list == NULL)
-		return;
-
-	switch (sort_type) {
-	case FM_DIRECTORY_VIEW_SORT_BYNAME:
-		rules = ALLOC_RULES (2);
-		/* Note: This used to put directories first. I
-		 * thought that was counterintuitive and removed it,
-		 * but I can imagine discussing this further.
-		 * John Sullivan <sullivan@eazel.com>
-		 */
-		rules[0] = GNOME_VFS_DIRECTORY_SORT_BYNAME;
-		rules[1] = GNOME_VFS_DIRECTORY_SORT_NONE;
-		break;
-	case FM_DIRECTORY_VIEW_SORT_BYSIZE:
-		rules = ALLOC_RULES (4);
-		rules[0] = GNOME_VFS_DIRECTORY_SORT_DIRECTORYFIRST;
-		rules[1] = GNOME_VFS_DIRECTORY_SORT_BYSIZE;
-		rules[2] = GNOME_VFS_DIRECTORY_SORT_BYNAME;
-		rules[3] = GNOME_VFS_DIRECTORY_SORT_NONE;
-		break;
-	case FM_DIRECTORY_VIEW_SORT_BYTYPE:
-		rules = ALLOC_RULES (4);
-		rules[0] = GNOME_VFS_DIRECTORY_SORT_DIRECTORYFIRST;
-		rules[1] = GNOME_VFS_DIRECTORY_SORT_BYMIMETYPE;
-		rules[2] = GNOME_VFS_DIRECTORY_SORT_BYNAME;
-		rules[3] = GNOME_VFS_DIRECTORY_SORT_NONE;
-		break;
-	case FM_DIRECTORY_VIEW_SORT_BYMTIME:
-		rules = ALLOC_RULES (3);
-		rules[0] = GNOME_VFS_DIRECTORY_SORT_BYMTIME;
-		rules[1] = GNOME_VFS_DIRECTORY_SORT_BYNAME;
-		rules[2] = GNOME_VFS_DIRECTORY_SORT_NONE;
-		break;
-	default:
-		g_warning ("fm_directory_view_sort: Unknown sort mode %d\n",
-			   sort_type);
-		return;
-	}
-
-	gnome_vfs_directory_list_sort (view->details->directory_list, reverse_sort, rules);
-
-	fm_directory_view_repopulate (view);
-
-#undef ALLOC_RULES
 }

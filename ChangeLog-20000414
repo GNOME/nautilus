@@ -1,3 +1,38 @@
+2000-01-27  John Sullivan  <sullivan@eazel.com>
+
+	Finished this round of sorting architecture improvements.
+
+	* libnautilus/nautilus-directory.c:
+	(nautilus_file_compare_for_sort_internal): Made sorting NautilusFiles
+	by name be case-insensitive.
+	
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	Removed enum FMDirectoryViewSortType (replaced by recently-added
+	NautilusFileSortType)
+	(fm_directory_view_sort): Removed this function; subclasses now
+	must handle sorting internally.
+	(fm_directory_view_repopulate): Removed this function, formerly
+	called only by fm_directory_view_sort.
+	
+	* src/file-manager/fm-directory-view-list.c:
+	(fm_directory_view_list_initialize): list_view->details->sort_column
+	now starts out at LIST_VIEW_COLUMN_NAME.
+	(compare_rows): New function to compare rows for sorting GtkCList-style.
+	(create_flist): Set up GtkCList sorting mechanism; formerly I had been
+	ignoring it (unaware) and handling sorting from scratch.
+	(add_to_flist): Don't assume that newly-added item will be at end; also
+	add hack to make pending row data accessible to compare function.
+	(sort_criterion_from_column): New function, broken out of 
+	fm_directory_view_list_sort_items.
+	(fm_directory_view_list_sort_items): Broke out sort criterion choosing,
+	now uses GtkCList-style sorting instead of asking FMDirectoryView to sort.
+	(install_icon): Added a couple more g_return_if_fails.
+	
+	
+	
+	
+
 2000-01-27  Darin Adler  <darin@eazel.com>
 
 	* src/ntl-app.c: Added missing includes to get it to compile.
