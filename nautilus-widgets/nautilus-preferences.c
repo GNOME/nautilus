@@ -525,8 +525,7 @@ preference_get (const NautilusPreferences	*preferences,
 
 	g_assert (pref_hash_node != NULL);
 
-	/* If the stored default_value is NULL, then used the provided one */
-	*value_out = (pref_hash_node->value ? pref_hash_node->value : default_value);
+	*value_out = pref_hash_node->value;
 }
 
 /*
@@ -986,6 +985,10 @@ nautilus_preferences_get (const NautilusPreferences	*preferences,
 			NAUTILUS_PREFERENCE_STRING,
 			(gconstpointer) default_value,
 			&value);
+	
+ 	/* If the stored default_value is NULL, then used the provided one */
+  	if (!value)
+  		value = default_value;
 	
 	return g_strdup (value);
 }

@@ -126,10 +126,10 @@ nautilus_preferences_item_initialize (NautilusPreferencesItem *item)
 {
 	item->details = g_new (NautilusPreferencesItemDetails, 1);
 
+	item->details->preferences = NULL;
 	item->details->preference_name = NULL;
 	item->details->item_type = PREFERENCES_ITEM_UNDEFINED_ITEM;
 	item->details->child = NULL;
-	item->details->preferences = NULL;
 }
 
 /* GtkObjectClass methods */
@@ -315,7 +315,8 @@ preferences_item_create_enum (NautilusPreferencesItem	*item,
 
 		g_free (description);
 		
-		if (i == value) {
+		if (value == nautilus_preference_enum_get_nth_entry_value (preference, i)) {
+			
 			nautilus_radio_button_group_set_active_index (NAUTILUS_RADIO_BUTTON_GROUP (item->details->child), i);
 		}
 	}
@@ -383,17 +384,22 @@ nautilus_preferences_item_new (const NautilusPreferences	*preferences,
 static void
 enum_radio_group_changed_cb (GtkWidget *buttons, GtkWidget * button, gpointer user_data)
 {
-	NautilusPreferencesItem * item = (NautilusPreferencesItem *) user_data;
-
-	gint i;
+	NautilusPreferencesItem		*item = (NautilusPreferencesItem *) user_data;
+	const NautilusPreference	*preference;
+	gint				i;
 
 	g_assert (item != NULL);
+	g_assert (item->details->preference_name != NULL);
+	g_assert (item->details->preferences != NULL);
+
+	preference = nautilus_preferences_get_preference (item->details->preferences,
+							  item->details->preference_name);
 
 	i = nautilus_radio_button_group_get_active_index (NAUTILUS_RADIO_BUTTON_GROUP (buttons));
 
 	nautilus_preferences_set_enum (NAUTILUS_PREFERENCES (item->details->preferences),
 				       item->details->preference_name,
-				       i);
+				       nautilus_preference_enum_get_nth_entry_value (preference, i));
 }
 
 static void

@@ -39,7 +39,8 @@
 
 enum
 {
-	NAUTILUS_USER_LEVEL_NOVICE,
+	/* Start at something other than zero - which is reserved as the unspecified default value. */
+	NAUTILUS_USER_LEVEL_NOVICE = 100,
 	NAUTILUS_USER_LEVEL_INTERMEDIATE,
 	NAUTILUS_USER_LEVEL_HACKER
 };
@@ -388,6 +389,7 @@ user_level_changed_callback (NautilusPreferences	*preferences,
 		break;
 		
 	case NAUTILUS_USER_LEVEL_HACKER:
+	default:
 		g_string_append (home_uri_string, g_get_home_dir ());
 		show_hidden_files = TRUE;
 		break;
@@ -449,5 +451,10 @@ nautilus_global_preferences_startup (void)
 						NAUTILUS_PREFERENCES_USER_LEVEL,
 						user_level_changed_callback,
 						NULL);
+
+	/* Invoke the callback once to make sure stuff is properly setup */
+	user_level_changed_callback (preferences,
+				     NAUTILUS_PREFERENCES_USER_LEVEL,
+				     NULL);
 }
 

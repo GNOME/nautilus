@@ -1,3 +1,26 @@
+2000-04-18  Ramiro Estrugo  <ramiro@eazel.com>
+
+	*  nautilus-widgets/nautilus-preferences.c:
+	(nautilus_preferences_get):  If the stored default value is null,
+	is the given on.  Do this only for strings, since integral types
+	can legally have a value of zero.
+
+	* nautilus-widgets/nautilus-preferences-item.c:
+	(preferences_item_create_enum), (enum_radio_group_changed_cb):
+	Deal with the enumeration values.   Before it was assuming it
+	started at ZERO.
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	NAUTILUS_USER_LEVEL_*: Make this enum begin with a non zero
+	value.  The zero value can be misintepreted by preferences as a
+	default leading to confusion.
+
+	(user_level_changed_callback): Add a default case just in case!
+
+	(nautilus_global_preferences_startup): Invoke
+	user_level_changed_callback once to make sure stuff is properly
+	setup.
+
 2000-04-18  Pavel Cisler  <pavel@eazel.com>
 
 	* src/file-manager/dfos-xfer.c:
