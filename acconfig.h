@@ -10,6 +10,7 @@
 #undef bzDecompress
 #undef bzDecompressInit
 #undef EAZEL_SERVICES
+#undef ENABLE_PROFILER
 #undef ENABLE_NLS
 #undef HAVE_CATGETS
 #undef HAVE_GETTEXT
