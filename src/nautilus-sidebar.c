@@ -218,6 +218,9 @@ nautilus_sidebar_initialize (GtkObject *object)
 
 	/* load the default background from the current theme */
 	nautilus_sidebar_read_theme(sidebar);
+
+	/* enable mouse tracking */
+	gtk_widget_add_events (GTK_WIDGET (sidebar), GDK_POINTER_MOTION_MASK);
 	  	
 	/* create the container box */
   	sidebar->details->container = GTK_VBOX (gtk_vbox_new (FALSE, 0));

@@ -352,10 +352,6 @@ nautilus_window_constructed (NautilusWindow *window)
 		e_paned_pack1 (E_PANED(window->content_hbox), GTK_WIDGET(window->sidebar), FALSE, FALSE);
 	}
 	
-	/* enable mouse tracking for the index panel */
-	/* FIXME bugzilla.eazel.com 1246: How about the sidebar doing this for itself? */
-	gtk_widget_add_events (GTK_WIDGET (window->sidebar), GDK_POINTER_MOTION_MASK);
-
 	/* CORBA and Bonobo setup */
 	window->ui_handler = bonobo_ui_handler_new ();
 	bonobo_ui_handler_set_app (window->ui_handler, app);

@@ -39,6 +39,7 @@
 #include <gtk/gtkmenuitem.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-pixmap.h>
+#include <libnautilus-extensions/nautilus-graphic-effects.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -55,6 +56,13 @@ enum {
 	LAST_SIGNAL
 };
 
+typedef enum {
+	PRELIGHT_NONE,
+	PRELIGHT_MINUS,
+	PRELIGHT_CENTER,
+	PRELIGHT_PLUS
+} PrelightMode;
+
 #define	GAP_WIDTH 2
 
 struct NautilusZoomControlDetails {
@@ -68,7 +76,9 @@ struct NautilusZoomControlDetails {
 	GdkPixbuf *zoom_decrement_image;
 	GdkPixbuf *zoom_increment_image;
 	GdkPixbuf *number_strip;
+	PrelightMode prelight_mode;
 };
+
 
 static guint signals[LAST_SIGNAL];
 
@@ -77,14 +87,20 @@ static void     nautilus_zoom_control_initialize       	 (NautilusZoomControl *z
 static void	nautilus_zoom_control_destroy		 (GtkObject *object);
 static void     nautilus_zoom_control_draw 	       	 (GtkWidget *widget, 
 							  GdkRectangle *box);
-static int     nautilus_zoom_control_expose 		 (GtkWidget *widget, 
+static int	nautilus_zoom_control_expose 		 (GtkWidget *widget, 
 							  GdkEventExpose *event);
-static gboolean nautilus_zoom_control_button_press_event (GtkWidget *widget, 
+static 		gboolean nautilus_zoom_control_button_press_event (GtkWidget *widget, 
 							  GdkEventButton *event);
+static int	nautilus_zoom_control_leave_notify	 (GtkWidget        *widget,
+			 				  GdkEventCrossing *event);
+static gboolean nautilus_zoom_control_motion_notify       (GtkWidget        *widget,
+						     	  GdkEventMotion   *event);
+
 static void	nautilus_zoom_control_load_images	 (NautilusZoomControl *zoom_control);
 static void	nautilus_zoom_control_unload_images	 (NautilusZoomControl *zoom_control);
 static void	nautilus_zoom_control_theme_changed 	 (gpointer user_data);
 static void	nautilus_zoom_control_size_allocate	 (GtkWidget *widget, GtkAllocation *allocation);
+static void	nautilus_zoom_control_set_prelight_mode	 (NautilusZoomControl *zoom_control, PrelightMode mode);
 
 
 void            draw_number		                 (GtkWidget *widget, 
@@ -106,6 +122,9 @@ nautilus_zoom_control_initialize_class (NautilusZoomControlClass *zoom_control_c
 	widget_class->draw = nautilus_zoom_control_draw;
 	widget_class->expose_event = nautilus_zoom_control_expose;
 	widget_class->button_press_event = nautilus_zoom_control_button_press_event;
+  	widget_class->leave_notify_event = nautilus_zoom_control_leave_notify;
+	widget_class->motion_notify_event = nautilus_zoom_control_motion_notify;
+
 	widget_class->size_allocate = nautilus_zoom_control_size_allocate;
 	
 	signals[ZOOM_IN] =
@@ -208,7 +227,9 @@ nautilus_zoom_control_initialize (NautilusZoomControl *zoom_control)
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
 					  nautilus_zoom_control_theme_changed,
 					  zoom_control);	
-
+	
+	/* enable mouse motion events */
+	gtk_widget_add_events (GTK_WIDGET (zoom_control), GDK_POINTER_MOTION_MASK);
 }
 
 /* allocate a new zoom control */
@@ -306,7 +327,7 @@ void draw_number (GtkWidget *widget, GdkRectangle *box)
 	gdk_gc_unref(temp_gc);
 }
 
-/* utility to simplify drawing */
+/* utilities to simplify drawing */
 static void
 draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
 {
@@ -315,6 +336,22 @@ draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
 					     gdk_pixbuf_get_height (pixbuf),
 					     GDK_PIXBUF_ALPHA_BILEVEL, 128, GDK_RGB_DITHER_MAX,
 					     0, 0);
+}
+
+static void
+draw_pixbuf_with_prelight (NautilusZoomControl *zoom_control, GdkPixbuf *pixbuf, int x_pos, int y_pos, PrelightMode mode)
+{
+	GdkPixbuf *temp_pixbuf;
+	
+	temp_pixbuf = pixbuf;
+	if (zoom_control->details->prelight_mode == mode) {
+		temp_pixbuf = nautilus_create_spotlight_pixbuf (temp_pixbuf);
+	}
+	draw_pixbuf (temp_pixbuf, GTK_WIDGET (zoom_control)->window, x_pos, y_pos + zoom_control->details->y_offset);
+	if (pixbuf != temp_pixbuf) {
+		gdk_pixbuf_unref (temp_pixbuf);
+	}
+
 }
 
 /* draw the zoom control image into the passed-in rectangle */
@@ -327,9 +364,10 @@ draw_zoom_control_image (GtkWidget *widget, GdkRectangle *box)
 		
 	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
 
-	/* draw the decrement symbol if necessary */
+	/* draw the decrement symbol if necessary, complete with prelighting */
 	if (zoom_control->details->zoom_level > zoom_control->details->min_zoom_level) {
-		draw_pixbuf (zoom_control->details->zoom_decrement_image, widget->window, box->x, box->y + zoom_control->details->y_offset);
+		draw_pixbuf_with_prelight (zoom_control, zoom_control->details->zoom_decrement_image,
+						box->x, box->y, PRELIGHT_MINUS);
 	} else {
 		width  = gdk_pixbuf_get_width (zoom_control->details->zoom_decrement_image);
 		height = gdk_pixbuf_get_height (zoom_control->details->zoom_decrement_image);		
@@ -343,13 +381,16 @@ draw_zoom_control_image (GtkWidget *widget, GdkRectangle *box)
 	}
 	
 	offset = gdk_pixbuf_get_width (zoom_control->details->zoom_decrement_image) + GAP_WIDTH;
-	/* draw the body image */
-	draw_pixbuf (zoom_control->details->zoom_body_image, widget->window, box->x + offset, box->y + zoom_control->details->y_offset);
+	/* draw the body image, prelighting if necessary */
+	draw_pixbuf_with_prelight (zoom_control, zoom_control->details->zoom_body_image,
+					box->x + offset, box->y, PRELIGHT_CENTER);
+	
 	offset += gdk_pixbuf_get_width (zoom_control->details->zoom_body_image) + GAP_WIDTH;
 	
-	/* draw the increment symbol if necessary */
+	/* draw the increment symbol if necessary, complete with prelighting */
 	if (zoom_control->details->zoom_level < zoom_control->details->max_zoom_level) {
-		draw_pixbuf (zoom_control->details->zoom_increment_image, widget->window, box->x + offset, box->y + zoom_control->details->y_offset);
+		draw_pixbuf_with_prelight (zoom_control, zoom_control->details->zoom_increment_image,
+					   box->x + offset, box->y, PRELIGHT_PLUS);
 	} else {
 		width  = gdk_pixbuf_get_width (zoom_control->details->zoom_increment_image);
 		height = gdk_pixbuf_get_height (zoom_control->details->zoom_increment_image);		
@@ -399,6 +440,16 @@ nautilus_zoom_control_expose (GtkWidget *widget, GdkEventExpose *event)
 	return FALSE;
 }
 
+/* set the prelight mode and redraw as necessary */
+static void
+nautilus_zoom_control_set_prelight_mode (NautilusZoomControl *zoom_control, PrelightMode mode)
+{
+	if (mode != zoom_control->details->prelight_mode) {
+		zoom_control->details->prelight_mode = mode;		
+		gtk_widget_queue_draw (GTK_WIDGET (zoom_control));	
+	}
+	
+}
 
 /* routines to load the images used to draw the control */
 
@@ -564,6 +615,48 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *eve
   
 	return TRUE;
 }
+
+/* handle setting the prelight mode */
+
+/* handle enter, leave and motion events to maintain the prelight state */
+
+static gint
+nautilus_zoom_control_leave_notify (GtkWidget        *widget,
+			 	    GdkEventCrossing *event)
+{
+	nautilus_zoom_control_set_prelight_mode (NAUTILUS_ZOOM_CONTROL (widget), PRELIGHT_NONE);
+  	return FALSE;
+}
+
+static gboolean nautilus_zoom_control_motion_notify (GtkWidget *widget, GdkEventMotion   *event)
+{
+	int x, y, x_offset;
+	int width, center;
+	NautilusZoomControl *zoom_control;
+	PrelightMode mode;
+	
+	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
+	
+	gtk_widget_get_pointer(widget, &x, &y);
+	
+	x_offset = x ;
+	width = widget->allocation.width;
+	center = width >> 1;
+
+	mode = PRELIGHT_NONE;
+	if (x_offset < (width / 3) && (zoom_control->details->zoom_level > zoom_control->details->min_zoom_level)) {
+		mode = PRELIGHT_MINUS;		
+	} else if ((x_offset > ((2 * width) / 3)) && (zoom_control->details->zoom_level < zoom_control->details->max_zoom_level)) {
+		mode = PRELIGHT_PLUS;
+	} else if ((x_offset >= (center - (width >> 3))) && (x_offset <= (center + (width >> 3)))) {
+		mode = PRELIGHT_CENTER;
+	}
+
+	nautilus_zoom_control_set_prelight_mode (zoom_control, mode);
+	
+	return TRUE;
+}
+
 
 /* handle setting the size */
 static void

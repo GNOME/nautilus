@@ -1,3 +1,20 @@
+2000-09-07  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar.c: (nautilus_sidebar_initialize):
+	fixed bug 1246 by adding event initializing code
+	* src/nautilus-window.c: (nautilus_window_constructed):
+	removed the sidebar event initializing code from the window class.
+	
+	* src/nautilus-zoom-control.c:
+	(nautilus_zoom_control_initialize_class),
+	(nautilus_zoom_control_initialize), (draw_pixbuf_with_prelight),
+	(draw_zoom_control_image),
+	(nautilus_zoom_control_set_prelight_mode),
+	(nautilus_zoom_control_leave_notify),
+	(nautilus_zoom_control_motion_notify):
+	fixed bug 838, zoom control doesn't prelight, by receiving motion
+	events and prelighting appropriately.
+	
 2000-09-07  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug causing icon view not to display trash:
