@@ -27,6 +27,7 @@ SUBDIRS =			\
 	test 			\
 	user-guide		\
 	po 			\
+	omf-install		\
 	$(NULL)
 
 EXTRA_DIST=					\

@@ -3,10 +3,20 @@ NULL=
 LANG=C
 
 DOC_MODULE=nautilus
-
+OMFFILE=nautilus-C.omf
+SGMLFILE=nautilus.sgml
 SGML_DIR=$(datadir)/gnome/help
+OMF_DIR=$(top_srcdir)/omf-install
 
 TARGET_DIR=$(SGML_DIR)/$(DOC_MODULE)/$(LANG)/
+
+EXTRA_DIST = $(OMFFILE)
+
+all: omf
+
+omf: $(OMFFILE)
+	which scrollkeeper-preinstall >/dev/null 2>&1 && scrollkeeper-preinstall $(DESTDIR)$(TARGET_DIR)$(SGMLFILE) $(OMFFILE) $(OMF_DIR)/$(OMFFILE)
+
 
 install-data-local: 
 	$(mkinstalldirs) $(DESTDIR)$(TARGET_DIR) 

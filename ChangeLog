@@ -1,3 +1,21 @@
+2001-02-17  Dan Mueth  <dan@eazel.com>
+
+	reviewed by: Eskil
+
+	Updated toplevel docs data file. Updated and added FDL/GPL
+	licenses. Added OMF file for Nautilus User Guide.
+
+	* Makefile.am:  Adding omf-install/
+	* components/help/topleveldocs.xml: Updated toplevel docs
+	* configure.in: Adding omf-install and user-guide/gnugpl
+	* omf-install/Makefile.am: Added for OMF files
+	* user-guide/C/Makefile.am: Updated for OMF file
+	* user-guide/C/nautilus-C.omf: Added this OMF file
+	* user-guide/Makefile.am: Added gnufdl/
+	* user-guide/gnufdl/gnufdl.sgml: Updated
+	* user-guide/gnugpl/Makefile.am: Added this file
+	* user-guide/gnugpl/gnugpl.sgml: Added this file, GPL
+
 2001-02-17  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* src/file-manager/fm-search-list-view.c: Fix typo.
