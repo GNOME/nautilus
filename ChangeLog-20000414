@@ -1,3 +1,36 @@
+2000-04-09  John Sullivan <sullivan@eazel.com>
+
+	Finished task 307 (keyboard navigation in list view should
+	use same keys/behavior as in icon view). There are a few
+	minor bugs remaining that I'll write up separately.
+
+	* libnautilus/nautilus-list.c:
+	NautilusListDetails struct: added fields for
+	keyboard_row_to_reveal and keyboard_row_reveal_timer_id;
+	(nautilus_list_initialize_class): Removed key binding set for
+	this class (uses key_press_event function instead); used
+	gtk_binding_entry_clear to get rid of all the unwanted GtkCList
+	key bindings; wire up key_press_event function; wire up
+	destroy function
+	(nautilus_list_destroy): New function, destroy details struct
+	(this was storage leak) and clean up pending timer.
+	(nautilus_list_clear_keyboard_focus), (nautilus_list_set_keyboard_focus),
+	(nautilus_list_keyboard_move_to), (keyboard_row_reveal_timeout_callback),
+	(unschedule_keyboard_row_reveal), (schedule_keyboard_row_reveal),
+	(reveal_row), (nautilus_list_keyboard_navigation_key_press),
+	(nautilus_list_keyboard_home), (nautilus_list_keyboard_end), 
+	(nautilus_list_keyboard_up), (nautilus_list_keyboard_down), 
+	(nautilus_list_keyboard_page_up), (nautilus_list_keyboard_page_down), 
+	(nautilus_list_keyboard_space), (nautilus_list_activate_selected_items),
+	(nautilus_list_get_first_selected_row), 
+	(nautilus_list_get_last_selected_row), 
+	(nautilus_list_key_press): New functions, all the mechanism for
+	handling key presses similarly to NautilusIconContainer. Bonus
+	key handling for Page Up and Page Down.
+	(nautilus_list_move_focus_row), (scroll_vertical): Removed these
+	functions that were used by the GtkCList key bindings in favor of
+	nautilus_list_key_press and friends.
+
 2000-04-07  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus/nautilus-icon-canvas-item.c:

@@ -32,6 +32,8 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkbindings.h>
 #include <gtk/gtkdnd.h>
+#include <gtk/gtkenums.h>
+#include <gtk/gtkmain.h>
 #include <glib.h>
 #include "nautilus-gdk-extensions.h"
 
@@ -41,6 +43,12 @@
 #include "nautilus-gtk-macros.h"
 #include "nautilus-background.h"
 #include "nautilus-list-column-title.h"
+
+/* Timeout for making the row currently selected for keyboard operation
+ * visible. FIXME: This *must* be higher than the double-click time in GDK,
+ * but there is no way to access its value from outside.
+ */
+#define KEYBOARD_ROW_REVEAL_TIMEOUT 300
 
 struct NautilusListDetails
 {
@@ -55,6 +63,13 @@ struct NautilusListDetails
 	int dnd_press_x, dnd_press_y;
 	int button_down_row;
 	guint32 button_down_time;
+
+	/* Timeout used to make a selected row fully visible after a short
+	 * period of time. (The timeout is needed to make sure
+	 * double-clicking still works, and to optimize holding down arrow key.)
+	 */
+	guint keyboard_row_reveal_timer_id;
+	int keyboard_row_to_reveal;
 
 	/* Delayed selection information */
 	int dnd_select_pending;
@@ -134,6 +149,7 @@ static void get_cell_style (GtkCList *clist, GtkCListRow *clist_row,
 
 static void nautilus_list_initialize_class (NautilusListClass *class);
 static void nautilus_list_initialize (NautilusList *list);
+static void nautilus_list_destroy (GtkObject *object);
 
 static gint nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event);
 static gint nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event);
@@ -150,7 +166,16 @@ static gboolean nautilus_list_drag_drop (GtkWidget *widget, GdkDragContext *cont
 static void nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 					  gint x, gint y, GtkSelectionData *data,
 					  guint info, guint time);
+static void nautilus_list_clear_keyboard_focus (NautilusList *list);
 static void nautilus_list_draw_focus      (GtkWidget *widget);
+static int nautilus_list_get_first_selected_row (NautilusList *list);
+static int nautilus_list_get_last_selected_row (NautilusList *list);
+static gint nautilus_list_key_press	  (GtkWidget *widget,
+					   GdkEventKey *event);
+
+static void reveal_row (NautilusList *list, int row);
+static void schedule_keyboard_row_reveal (NautilusList *list, int row);
+static void unschedule_keyboard_row_reveal (NautilusList *list);
 static void select_or_unselect_row_callback (GtkCList *clist, gint row, gint column, 
 				       GdkEvent *event);
 
@@ -158,9 +183,6 @@ static void nautilus_list_clear (GtkCList *clist);
 static void draw_row (GtkCList *list, GdkRectangle *area, gint row, GtkCListRow *clist_row);
 
 static void nautilus_list_realize (GtkWidget *widget);
-static void nautilus_list_scroll_vertical (GtkCList *clist,
-					   GtkScrollType scroll_type,
-					   gfloat position);
 static void nautilus_list_set_cell_contents (GtkCList    *clist,
 		   	   		     GtkCListRow *clist_row,
 		   		 	     gint         column,
@@ -191,7 +213,6 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 	NautilusListClass *list_class;
 
 	GtkBindingSet *clist_binding_set;
-	GtkBindingSet *list_binding_set;
 
 	object_class = (GtkObjectClass *) klass;
 	widget_class = (GtkWidgetClass *) klass;
@@ -239,14 +260,39 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 
 	gtk_object_class_add_signals (object_class, list_signals, LAST_SIGNAL);
 
-	/* Add new key bindings. Some of these clobber GtkCList ones that we don't like. */
-	list_binding_set = gtk_binding_set_by_class (list_class);
-	gtk_binding_entry_add_signal (list_binding_set, GDK_space, GDK_CONTROL_MASK,
-				      "toggle_focus_row", 0);
-
-	/* Turn off the GtkCList key bindings that we want entirely unbound. */
+	/* Turn off the GtkCList key bindings that we want unbound.
+	 * We only need to do this for the keys that we don't handle
+	 * in nautilus_list_key_press. These extra ones are turned off
+	 * to avoid inappropriate GtkCList code and to standardize the
+	 * keyboard behavior in Nautilus.
+	 */
 	clist_binding_set = gtk_binding_set_by_class (clist_class);
-	gtk_binding_entry_clear (clist_binding_set, GDK_space, 0);
+
+	/* Use Control-A for Select All, not Control-/ */
+	gtk_binding_entry_clear (clist_binding_set, 
+				 '/', 
+				 GDK_CONTROL_MASK);
+	/* Don't use Control-\ for Unselect All (maybe invent Nautilus 
+	 * standard for this?) */
+	gtk_binding_entry_clear (clist_binding_set, 
+				 '\\', 
+				 GDK_CONTROL_MASK);
+	/* Hide GtkCList's weird extend-selection-from-keyboard stuff.
+	 * Users can use control-navigation and control-space to create
+	 * extended selections.
+	 */
+	gtk_binding_entry_clear (clist_binding_set, 
+				 GDK_Shift_L, 
+				 GDK_RELEASE_MASK | GDK_SHIFT_MASK);
+	gtk_binding_entry_clear (clist_binding_set, 
+				 GDK_Shift_R, 
+				 GDK_RELEASE_MASK | GDK_SHIFT_MASK);
+	gtk_binding_entry_clear (clist_binding_set, 
+				 GDK_Shift_L, 
+				 GDK_RELEASE_MASK | GDK_SHIFT_MASK | GDK_CONTROL_MASK);
+	gtk_binding_entry_clear (clist_binding_set, 
+				 GDK_Shift_R, 
+				 GDK_RELEASE_MASK | GDK_SHIFT_MASK | GDK_CONTROL_MASK);
 
 	list_class->column_resize_track_start = nautilus_list_column_resize_track_start;
 	list_class->column_resize_track = nautilus_list_column_resize_track;
@@ -255,7 +301,6 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 	clist_class->clear = nautilus_list_clear;
 	clist_class->draw_row = draw_row;
   	clist_class->resize_column = nautilus_list_resize_column;
-	clist_class->scroll_vertical = nautilus_list_scroll_vertical;
   	clist_class->set_cell_contents = nautilus_list_set_cell_contents;
 
 	widget_class->button_press_event = nautilus_list_button_press;
@@ -269,8 +314,11 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 	widget_class->drag_drop = nautilus_list_drag_drop;
 	widget_class->drag_data_received = nautilus_list_drag_data_received;
 	widget_class->draw_focus = nautilus_list_draw_focus;
+	widget_class->key_press_event = nautilus_list_key_press;
 	widget_class->realize = nautilus_list_realize;
 	widget_class->size_request = nautilus_list_size_request;
+
+	object_class->destroy = nautilus_list_destroy;
 }
 
 /* Standard object initialization function */
@@ -304,6 +352,20 @@ nautilus_list_initialize (NautilusList *list)
 			    list);
 
 	list->details->title = GTK_WIDGET (nautilus_list_column_title_new());
+}
+
+static void
+nautilus_list_destroy (GtkObject *object)
+{
+	NautilusList *list;
+
+	list = NAUTILUS_LIST (object);
+
+	unschedule_keyboard_row_reveal (list);
+
+	g_free (list->details);
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 
@@ -564,6 +626,303 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 }
 
 static void
+nautilus_list_clear_keyboard_focus (NautilusList *list)
+{
+	if (GTK_CLIST (list)->focus_row >= 0) {
+		gtk_widget_draw_focus (GTK_WIDGET (list));
+	}
+
+	GTK_CLIST (list)->focus_row = -1;
+}
+
+static void
+nautilus_list_set_keyboard_focus (NautilusList *list, int row)
+{
+	g_assert (row >= 0 && row < GTK_CLIST (list)->rows);
+
+	if (row == GTK_CLIST (list)->focus_row) {
+		return;
+	}
+
+	nautilus_list_clear_keyboard_focus (list);
+
+	GTK_CLIST (list)->focus_row = row;
+
+	gtk_widget_draw_focus (GTK_WIDGET (list));
+}
+
+static void
+nautilus_list_keyboard_move_to (NautilusList *list, int row, GdkEventKey *event)
+{
+	GtkCList *clist;
+
+	g_assert (NAUTILUS_IS_LIST (list));
+	g_assert (row >= 0 || row < GTK_CLIST (list)->rows);
+
+	clist = GTK_CLIST (list);
+
+	if ((event->state & GDK_CONTROL_MASK) != 0) {
+		/* Move the keyboard focus. */
+		nautilus_list_set_keyboard_focus (list, row);
+	} else {
+		/* Select row and get rid of special keyboard focus. */
+		nautilus_list_clear_keyboard_focus (list);
+		/* FIXME: This sends numerous selection_changed messages
+		 * instead of only one. It also flashes unpleasantly when
+		 * selection is pinned up at first row.
+		 */
+		gtk_clist_unselect_all (clist);
+		gtk_clist_select_row (clist, row, -1);
+	}
+
+	schedule_keyboard_row_reveal (list, row);
+}
+
+static gboolean
+keyboard_row_reveal_timeout_callback (gpointer data)
+{
+	NautilusList *list;
+	int row;
+
+	GDK_THREADS_ENTER ();
+
+	list = NAUTILUS_LIST (data);
+	row = list->details->keyboard_row_to_reveal;
+
+	if (row >= 0 && row < GTK_CLIST (list)->rows) {	
+		/* Only reveal the row if it's still the keyboard focus
+		 * or if it's still selected.
+		 * FIXME: Need to unschedule this if the user scrolls explicitly.
+		 */
+		if (row == GTK_CLIST (list)->focus_row
+		    || nautilus_list_is_row_selected (list, row)) {
+			reveal_row (list, row);
+		}
+		list->details->keyboard_row_reveal_timer_id = 0;
+	}
+
+	GDK_THREADS_LEAVE ();
+
+	return FALSE;
+}
+
+static void
+unschedule_keyboard_row_reveal (NautilusList *list) 
+{
+	if (list->details->keyboard_row_reveal_timer_id != 0) {
+		gtk_timeout_remove (list->details->keyboard_row_reveal_timer_id);
+	}
+}
+
+static void
+schedule_keyboard_row_reveal (NautilusList *list, int row)
+{
+	unschedule_keyboard_row_reveal (list);
+
+	list->details->keyboard_row_to_reveal = row;
+	list->details->keyboard_row_reveal_timer_id
+		= gtk_timeout_add (KEYBOARD_ROW_REVEAL_TIMEOUT,
+				   keyboard_row_reveal_timeout_callback,
+				   list);
+}
+
+static void
+reveal_row (NautilusList *list, int row)
+{
+	GtkCList *clist;
+
+	g_assert (NAUTILUS_IS_LIST (list));
+	
+	clist = GTK_CLIST (list);
+	
+	if (ROW_TOP_YPIXEL (clist, row) + clist->row_height >
+      		      clist->clist_window_height) {
+		gtk_clist_moveto (clist, row, -1, 1, 0);
+     	} else if (ROW_TOP_YPIXEL (clist, row) < 0) {
+		gtk_clist_moveto (clist, row, -1, 0, 0);
+     	}
+}
+
+static void
+nautilus_list_keyboard_navigation_key_press (NautilusList *list, GdkEventKey *event,
+			          	     GtkScrollType scroll_type, gboolean jump_to_end)
+{
+	GtkCList *clist;
+	int start_row;
+	int destination_row;
+	int rows_per_page;
+
+	g_assert (NAUTILUS_IS_LIST (list));
+
+	clist = GTK_CLIST (list);
+	
+	if (scroll_type == GTK_SCROLL_JUMP) {
+		destination_row = (jump_to_end ?
+				   clist->rows - 1 :
+				   0);
+	} else {
+		/* Choose the row to start with.
+		 * If we have a keyboard focus, start with it.
+		 * If there's a selection, use the selected row farthest toward the end.
+		 */
+
+		if (GTK_CLIST (list)->focus_row >= 0) {
+			start_row = clist->focus_row;
+		} else {
+			start_row = (scroll_type == GTK_SCROLL_STEP_FORWARD || scroll_type == GTK_SCROLL_PAGE_FORWARD ?
+				     nautilus_list_get_last_selected_row (list) :
+				     nautilus_list_get_first_selected_row (list));
+		}
+
+		/* If there's no row to start with, select the row farthest toward the end.
+		 * If there is a row to start with, select the next row in the arrow direction.
+		 */
+		if (start_row < 0) {
+			destination_row = (scroll_type == GTK_SCROLL_STEP_FORWARD || scroll_type == GTK_SCROLL_PAGE_FORWARD ?
+					   clist->rows - 1 :
+					   0);
+		} else if (scroll_type == GTK_SCROLL_STEP_FORWARD) {
+			destination_row = MIN (clist->rows - 1, start_row + 1);
+		} else if (scroll_type == GTK_SCROLL_STEP_BACKWARD) {
+			destination_row = MAX (0, start_row - 1);
+		} else {
+			g_assert (scroll_type == GTK_SCROLL_PAGE_FORWARD || GTK_SCROLL_PAGE_BACKWARD);
+			rows_per_page = (2 * clist->clist_window_height -
+					 clist->row_height - CELL_SPACING) /
+					(2 * (clist->row_height + CELL_SPACING));
+			
+			if (scroll_type == GTK_SCROLL_PAGE_FORWARD) {
+				destination_row = MIN (clist->rows - 1, 
+						       start_row + rows_per_page);
+			} else {
+				destination_row = MAX (0,
+						       start_row - rows_per_page);
+			}
+		}
+	}
+
+	nautilus_list_keyboard_move_to (list, destination_row, event);
+}			   
+
+static void
+nautilus_list_keyboard_home (NautilusList *list, GdkEventKey *event)
+{
+	/* Home selects the first row.
+	 * Control-Home sets the keyboard focus to the first row.
+	 */
+	nautilus_list_keyboard_navigation_key_press (list, event, GTK_SCROLL_JUMP, FALSE); 
+}
+
+static void
+nautilus_list_keyboard_end (NautilusList *list, GdkEventKey *event)
+{
+	/* End selects the last row.
+	 * Control-End sets the keyboard focus to the last row.
+	 */
+	nautilus_list_keyboard_navigation_key_press (list, event, GTK_SCROLL_JUMP, TRUE); 
+}
+
+static void
+nautilus_list_keyboard_up (NautilusList *list, GdkEventKey *event)
+{
+	/* Up selects the next higher row.
+	 * Control-Up sets the keyboard focus to the next higher icon.
+	 */
+	nautilus_list_keyboard_navigation_key_press (list, event, GTK_SCROLL_STEP_BACKWARD, FALSE); 
+}
+
+static void
+nautilus_list_keyboard_down (NautilusList *list, GdkEventKey *event)
+{
+	/* Down selects the next lower row.
+	 * Control-Down sets the keyboard focus to the next lower icon.
+	 */
+	nautilus_list_keyboard_navigation_key_press (list, event, GTK_SCROLL_STEP_FORWARD, FALSE); 
+}
+
+static void
+nautilus_list_keyboard_page_up (NautilusList *list, GdkEventKey *event)
+{
+	/* Page Up selects a row one screenful higher.
+	 * Control-Page Up sets the keyboard focus to the row one screenful higher.
+	 */
+	nautilus_list_keyboard_navigation_key_press (list, event, GTK_SCROLL_PAGE_BACKWARD, FALSE); 
+}
+
+static void
+nautilus_list_keyboard_page_down (NautilusList *list, GdkEventKey *event)
+{
+	/* Page Down selects a row one screenful lower.
+	 * Control-Page Down sets the keyboard focus to the row one screenful lower.
+	 */
+	nautilus_list_keyboard_navigation_key_press (list, event, GTK_SCROLL_PAGE_FORWARD, FALSE); 
+}
+
+static void
+nautilus_list_keyboard_space (NautilusList *list, GdkEventKey *event)
+{
+	if (event->state & GDK_CONTROL_MASK) {
+		gtk_signal_emit_by_name (GTK_OBJECT (list), "toggle_focus_row");
+	}
+}
+
+static void
+nautilus_list_activate_selected_items (NautilusList *list)
+{
+	int row;
+
+	for (row = 0; row < GTK_CLIST (list)->rows; ++row) {
+		if (nautilus_list_is_row_selected (list, row)) {
+			activate_row (list, row);
+		}
+	}
+}
+
+static int
+nautilus_list_key_press (GtkWidget *widget,
+		 	 GdkEventKey *event)
+{
+	NautilusList *list;
+
+	list = NAUTILUS_LIST (widget);
+
+	switch (event->keyval) {
+	case GDK_Home:
+		nautilus_list_keyboard_home (list, event);
+		break;
+	case GDK_End:
+		nautilus_list_keyboard_end (list, event);
+		break;
+	case GDK_Page_Up:
+		nautilus_list_keyboard_page_up (list, event);
+		break;
+	case GDK_Page_Down:
+		nautilus_list_keyboard_page_down (list, event);
+		break;
+	case GDK_Up:
+		nautilus_list_keyboard_up (list, event);
+		break;
+	case GDK_Down:
+		nautilus_list_keyboard_down (list, event);
+		break;
+	case GDK_space:
+		nautilus_list_keyboard_space (list, event);
+		break;
+	case GDK_Return:
+		nautilus_list_activate_selected_items (list);
+		break;
+	default:
+		if (NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, key_press_event, (widget, event))) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
+static void
 nautilus_list_realize (GtkWidget *widget)
 {
 	NautilusList *list;
@@ -803,7 +1162,7 @@ nautilus_list_draw_focus (GtkWidget *widget)
 	if (clist->focus_row < 0) {
 		return;
 	}
-  
+
   	gdk_gc_get_values (clist->xor_gc, &saved_values);
 
   	gdk_gc_set_stipple (clist->xor_gc, nautilus_stipple_bitmap ());
@@ -1591,105 +1950,6 @@ nautilus_list_column_resize_track_end (GtkWidget *widget, int column)
 	clist->drag_pos = -1;
 }
 
-static void
-nautilus_list_move_focus_row (NautilusList      *list,
-		GtkScrollType  scroll_type,
-		gfloat         position)
-{
-	/* FIXME: Moved over from gtkclist.c. Should
-	 * be cleaned up stylistically and possibly
-	 * eliminated as a concept. Instead, determine
-	 * destination position and then determine whether
-	 * it should be selected or just focused. I'll do
-	 * this in the next few days (John Sullivan, 4/7/00)
-	 */
-  GtkCList *clist;
-  GtkWidget *widget;
-
-  g_return_if_fail (NAUTILUS_IS_LIST (list));
-
-  clist = GTK_CLIST (list);
-  widget = GTK_WIDGET (list);
-
-  switch (scroll_type)
-    {
-    case GTK_SCROLL_STEP_BACKWARD:
-      if (clist->focus_row <= 0)
-	return;
-      gtk_widget_draw_focus (widget);
-      clist->focus_row--;
-      gtk_widget_draw_focus (widget);
-      break;
-    case GTK_SCROLL_STEP_FORWARD:
-      if (clist->focus_row >= clist->rows - 1)
-	return;
-      gtk_widget_draw_focus (widget);
-      clist->focus_row++;
-      gtk_widget_draw_focus (widget);
-      break;
-    case GTK_SCROLL_PAGE_BACKWARD:
-      if (clist->focus_row <= 0)
-	return;
-      gtk_widget_draw_focus (widget);
-      clist->focus_row = MAX (0, clist->focus_row -
-			      (2 * clist->clist_window_height -
-			       clist->row_height - CELL_SPACING) / 
-			      (2 * (clist->row_height + CELL_SPACING)));
-      gtk_widget_draw_focus (widget);
-      break;
-    case GTK_SCROLL_PAGE_FORWARD:
-      if (clist->focus_row >= clist->rows - 1)
-	return;
-      gtk_widget_draw_focus (widget);
-      clist->focus_row = MIN (clist->rows - 1, clist->focus_row + 
-			      (2 * clist->clist_window_height -
-			       clist->row_height - CELL_SPACING) / 
-			      (2 * (clist->row_height + CELL_SPACING)));
-      gtk_widget_draw_focus (widget);
-      break;
-    case GTK_SCROLL_JUMP:
-      if (position >= 0 && position <= 1)
-	{
-          gtk_widget_draw_focus (widget);
-	  clist->focus_row = position * (clist->rows - 1);
-          gtk_widget_draw_focus (widget);
-	}
-      break;
-    default:
-      break;
-    }
-}
-
-static void 
-nautilus_list_scroll_vertical (GtkCList *clist,
-			       GtkScrollType scroll_type,
-			       gfloat position)
-{
-	/* Pulled over from GtkCList and simplified for our purposes. May
-	 * eliminate this entirely by replacing all the key bindings.
-	 */
-	g_return_if_fail (clist != NULL);
-	g_return_if_fail (NAUTILUS_IS_LIST (clist));
-	g_return_if_fail (clist->selection_mode == GTK_SELECTION_MULTIPLE);
-
-	/* Stolen from scroll_vertical in gtkclist.c. I don't know 
-	 * exactly what this is for.
-	 */
-	if (gdk_pointer_is_grabbed () && GTK_WIDGET_HAS_GRAB (clist))
-		return;
-
-
-	nautilus_list_move_focus_row (NAUTILUS_LIST (clist), scroll_type, position);
-
-	if (ROW_TOP_YPIXEL (clist, clist->focus_row) + clist->row_height > 
-			           clist->clist_window_height) {
-		gtk_clist_moveto (clist, clist->focus_row, -1, 1, 0);
-	}
-      else if (ROW_TOP_YPIXEL (clist, clist->focus_row) < 0) {
-		gtk_clist_moveto (clist, clist->focus_row, -1, 0, 0);
-      }
-}			    
-
 /* We override the drag_begin signal to do nothing */
 static void
 nautilus_list_drag_begin (GtkWidget *widget, GdkDragContext *context)
@@ -1798,6 +2058,50 @@ nautilus_list_new_with_titles (int columns, const char * const *titles)
 				      GTK_SELECTION_MULTIPLE);
 
 	return GTK_WIDGET (list);
+}
+
+static int
+nautilus_list_get_first_selected_row (NautilusList *list)
+{
+	GtkCListRow *row;
+	GList *p;
+	int row_number;
+
+	g_return_val_if_fail (NAUTILUS_IS_LIST (list), -1);
+
+	row_number = 0;
+	for (p = GTK_CLIST (list)->row_list; p != NULL; p = p->next) {
+		row = p->data;
+		if (row->state == GTK_STATE_SELECTED) {
+			return row_number;	
+		}
+
+		++row_number;
+	}
+
+	return -1;
+}
+
+static int
+nautilus_list_get_last_selected_row (NautilusList *list)
+{
+	GtkCListRow *row;
+	GList *p;
+	int row_number;
+
+	g_return_val_if_fail (NAUTILUS_IS_LIST (list), -1);
+
+	row_number = GTK_CLIST (list)->rows - 1;
+	for (p = GTK_CLIST (list)->row_list_end; p != NULL; p = p->prev) {
+		row = p->data;
+		if (row->state == GTK_STATE_SELECTED) {
+			return row_number;	
+		}
+
+		--row_number;
+	}
+
+	return -1;
 }
 
 GList *
