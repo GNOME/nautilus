@@ -83,14 +83,14 @@ static gboolean			default_sort_reversed_auto_value;
 #define LIST_VIEW_MINIMUM_ROW_HEIGHT	20
 
 
-/* We hard-code that first column must contain an icon and the second
+/* We hard-code that first column must contain an icon and the third
  * must contain emblems. The rest can be controlled by the subclass. 
  * Also, many details of these columns are controlled by the subclass; 
  * not too much is hard-coded.
  */
 #define LIST_VIEW_COLUMN_NONE		(-1)
 #define LIST_VIEW_COLUMN_ICON		0
-#define LIST_VIEW_COLUMN_EMBLEMS	1
+#define LIST_VIEW_COLUMN_EMBLEMS	2
 
 
 
@@ -2318,7 +2318,7 @@ real_get_number_of_columns (FMListView *view)
 static int
 real_get_link_column (FMListView *view)
 {
-	return 2;
+	return 1;
 }
 
 static void
@@ -2335,15 +2335,15 @@ real_get_column_specification (FMListView *view,
 		break;
 	case 1:
 		fm_list_view_column_set (specification,
-					 "emblems", NULL,
-					 NAUTILUS_FILE_SORT_BY_EMBLEMS,
-					 20, 40, 300, FALSE);
-		break;
-	case 2:
-		fm_list_view_column_set (specification,
 					 "name", _("Name"),
 					 NAUTILUS_FILE_SORT_BY_NAME,
 					 30, 170, 300, FALSE);
+		break;
+	case 2:
+		fm_list_view_column_set (specification,
+					 "emblems", _("Emblems"),
+					 NAUTILUS_FILE_SORT_BY_EMBLEMS,
+					 20, 40, 300, FALSE);
 		break;
 	case 3:
 		fm_list_view_column_set (specification,
