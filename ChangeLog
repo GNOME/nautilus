@@ -58,6 +58,8 @@
 	dependencies (no remote fetch yet, requires a search script on the
 	server side) untill all deps are satisfies. If deps failed, it
 	prunes the tree and emit signals.
+	I've tried to do it modular enough to add support for other
+	package systems then rpm, but rpm calls are still strewm about.
 
 	* components/services/install/command-line/Makefile.am:
 	* components/services/install/command-line/eazel-alt-install.c:
