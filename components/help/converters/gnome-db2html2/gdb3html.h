@@ -179,6 +179,7 @@ struct _Context {
 
 	gboolean empty_element; /* This is to determine if the element is
 				   empty or not */
+	gboolean in_glossterm;
 	DocType doctype;
 	GSList *footnotes;
 	xmlParserCtxtPtr ParserCtxt;

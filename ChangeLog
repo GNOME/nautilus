@@ -1,3 +1,15 @@
+2000-12-04  Ali Abdin  <aliabdin@aucegypt.edu>
+
+        * components/help/converters/gnome-db2html2/sect-preparse.c:
+        * components/help/converters/gnome-db2html2/gdb3html.h:
+        (sect_preparse_glossterm_characters),
+        (sect_preparse_acronym_characters),
+        (sect_preparse_glossterm_start_element),
+        (sect_preparse_glossterm_end_element),
+        (gloss_term_append):
+        Changed around the glossary a bit (partial fix for a bug). Leaks some
+        memory though.
+
 2000-12-04  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>
