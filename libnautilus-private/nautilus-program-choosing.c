@@ -678,16 +678,16 @@ nautilus_launch_application_from_command (const char *name,
 	}
 
 	xalf_prefix = get_xalf_prefix (name);
+	final_command = g_strconcat (xalf_prefix, full_command, NULL);
 
+	g_free (full_command);
+	g_free (xalf_prefix);
+	
 	if (use_terminal) {
-		final_command = g_strconcat (xalf_prefix, full_command, NULL);
 		eel_gnome_open_terminal (final_command);
 	} else {
-		final_command = g_strconcat (xalf_prefix, full_command, " &", NULL);
-		system (final_command);
+	    	eel_gnome_shell_execute (final_command);
 	}
 
 	g_free (final_command);
-	g_free (full_command);
-	g_free (xalf_prefix);
 }

@@ -1,3 +1,24 @@
+2002-01-28  Remi Cohen-Scali  <remi@cohen-scali.com>
+
+	* libnautilus-private/nautilus-program-choosing.c 
+	(nautilus_launch_application_from_command): Changed the system(3) call to 
+	launch application from command. Instead use eel_gnome_shell_execute.
+
+	* src/file-manager/fm-directory-view.c (activate_callback): 
+	Now use newly public NautilusDesktopFile class & nautilus_desktop_file_launch
+	to launch the corresponding command.
+
+	* libnautilus-private/nautilus-desktop-file-loader.c: 
+	* libnautilus-private/nautilus-desktop-file-loader.h: 
+	Made the NautilusDesktopFile class public. The struct has been moved
+	from the source to the header. The nautilus_desktop_file_new method
+	is not static any more.
+
+	* libnautilus-private/nautilus-desktop-file-loader.c 
+	(nautilus_desktop_file_launch):
+	Add the locale name taken from the desktop file to display it
+	through xalf (launch feedback).	
+
 2002-01-22  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-icon-container.c:
