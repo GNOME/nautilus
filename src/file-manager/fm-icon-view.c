@@ -1703,7 +1703,7 @@ play_file (gpointer callback_data)
 	file = icon_view->details->audio_preview_file;
 	file_uri = nautilus_file_get_uri (file);
 	mime_type = nautilus_file_get_mime_type (file);
-	is_mp3 = eel_strcasecmp (mime_type, "audio/x-mp3") == 0;
+	is_mp3 = eel_strcasecmp (mime_type, "audio/mpeg") == 0;
 	is_ogg = eel_strcasecmp (mime_type, "application/x-ogg") == 0;
 
 	mp3_pid = fork ();
@@ -1783,7 +1783,7 @@ play_file (gpointer callback_data)
 	file_path = gnome_vfs_get_local_path_from_uri (file_uri);
 	mime_type = nautilus_file_get_mime_type (icon_view->details->audio_preview_file);
 
-	is_mp3 = eel_strcasecmp (mime_type, "audio/x-mp3") == 0;
+	is_mp3 = eel_strcasecmp (mime_type, "audio/mpeg") == 0;
 
 	if (file_path != NULL && !is_mp3) {
 		icon_view->details->audio_player_data = nautilus_audio_player_play (file_path);
