@@ -856,7 +856,7 @@ mozilla_title_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 
 	g_assert (GTK_MOZ_EMBED (mozilla) == view->details->mozilla);
 
-	new_title = gtk_moz_embed_get_title (view->details->mozilla);
+	new_title = mozilla_get_document_title (view->details->mozilla);
 
 	DEBUG_MSG (("=%s : new title='%s'\n", __FUNCTION__, new_title));
 

@@ -325,3 +325,71 @@ convert_ns_string_to_c_string (const nsString & ns_string)
 
 	return c_string;
 }
+
+/* This is from Galeon */
+static char*
+mozilla_unicode_to_locale (const PRUnichar *uniStr)
+{
+	PRInt32 sSize;
+	wchar_t *wide;
+	gchar *output;
+	gint i, count;
+
+	/* sanity */
+	if (uniStr == NULL) {
+		return NULL;
+	}
+
+	const nsString str (uniStr);
+	sSize = str.Length ();
+
+	/* allocate a wide string big enough to hold the unicode string,
+	 * this is necessary since wchar_t is 32-bits with glibc */
+	wide = g_new0 (wchar_t, sSize + 1);
+	for (i = 0; i < sSize + 1; i++) {
+		wide[i] = uniStr[i];
+	}
+
+	/* use glibc function to determine the size of this string once
+	 * encoded to a locale specfic multibyte string */
+	count = wcstombs (NULL, wide, 0);
+
+	/* check for success */
+	if (count == -1) {
+		/* let Mozilla do a (lossy) conversion then */
+		nsCString str;
+		str.AssignWithConversion(uniStr);
+		g_free (wide);
+		return g_strdup (str.get()); /* FIXME strdup needed? */
+					     /* Phil: Oh Yes! indeed. */
+	}
+
+	/* allocate a string big enough and do the actual conversion */
+	output = g_new0 (gchar, count + 1);
+	count = wcstombs (output, wide, count + 1);
+	g_assert (count != -1);
+
+	/* free wide version and return */
+	g_free (wide);
+	return output;
+}
+
+extern "C" char * 
+mozilla_get_document_title (const GtkMozEmbed *mozilla_embed)
+{
+	PRUnichar *unicode_title;
+	gchar *title;
+
+	/* get the title in unicode */
+	unicode_title = gtk_moz_embed_get_title_unichar ((GtkMozEmbed *) mozilla_embed);
+	
+	/* attempt conversion */
+	title = mozilla_unicode_to_locale (unicode_title);
+
+	/* free unicode version */
+	g_free (unicode_title);
+
+	/* return it */
+	return title;
+}
+

@@ -50,6 +50,8 @@ char *   mozilla_charset_encoding_group_get_translated     (const GtkMozEmbed *m
 							    const char        *encoding);
 int      mozilla_charset_get_encoding_group_index          (const GtkMozEmbed *mozilla_embed,
 							    const char        *encoding_group);
+char *   mozilla_get_document_title                        (const GtkMozEmbed *mozilla_embed);
+
 
 #ifdef __cplusplus
 }

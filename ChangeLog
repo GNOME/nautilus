@@ -1,3 +1,15 @@
+2001-08-17  Havoc Pennington  <hp@redhat.com>
+
+	* components/mozilla/nautilus-mozilla-embed-extensions.cpp
+	(mozilla_get_document_title): add this from Galeon
+	
+	* components/mozilla/nautilus-mozilla-embed-extensions.cpp
+	(mozilla_unicode_to_locale): copy code from Galeon to use Mozilla
+	conversion features to convert unicode to locale encoding
+
+	* components/mozilla/nautilus-mozilla-content-view.c
+	(mozilla_title_changed_callback): set title in locale encoding
+	
 2001-08-17  Alex Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-thumbnails.c (nautilus_get_thumbnail_uri):
