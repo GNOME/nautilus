@@ -1123,7 +1123,9 @@ mozilla_is_uri_handled_by_nautilus (const char *uri)
 		"eazel-services",
 		"man",
 		"info",
-		"help"
+		"help",
+		"gnome-help",
+		"ghelp"
 	};
 
 	g_return_val_if_fail (uri != NULL, FALSE);
