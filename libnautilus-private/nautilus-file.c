@@ -346,11 +346,7 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 			g_assert (directory->details->as_file == NULL);
 			directory->details->as_file = file;
 		} else {
-			if (nautilus_directory_is_file_list_monitored (directory)) {
-				nautilus_file_ref (file);
-			}
-			directory->details->files =
-				g_list_prepend (directory->details->files, file);
+			nautilus_directory_add_file (directory, file);
 		}
 	}
 
@@ -377,7 +373,6 @@ destroy (GtkObject *object)
 {
 	NautilusDirectory *directory;
 	NautilusFile *file;
-	GList **files;
 
 	file = NAUTILUS_FILE (object);
 
@@ -392,12 +387,8 @@ destroy (GtkObject *object)
 	if (directory->details->as_file == file) {
 		directory->details->as_file = NULL;
 	} else {
-		files = &directory->details->files;
-		if (file->details->is_gone) {
-			g_assert (g_list_find (*files, file) == NULL);
-		} else {
-			g_assert (g_list_find (*files, file) != NULL);
-			*files = g_list_remove (*files, file);
+		if (!file->details->is_gone) {
+			nautilus_directory_remove_file (directory, file);
 		}
 	}
 
@@ -806,16 +797,22 @@ operation_cancel (Operation *op)
 static void
 rename_update_info_and_metafile (Operation *op)
 {
+	GList *node;
+
 	nautilus_directory_rename_file_metadata
 		(op->file->details->directory,
 		 op->file->details->name,
 		 op->new_name);
 	
+	node = nautilus_directory_begin_file_name_change (op->file->details->directory,
+							  op->file);
 	g_free (op->file->details->name);
 	op->file->details->name = g_strdup (op->new_name);
 	if (op->file->details->info != NULL) {
 		op->file->details->info->name = op->file->details->name;
 	}
+	nautilus_directory_end_file_name_change (op->file->details->directory,
+						 op->file, node);
 }
 
 static int
@@ -1097,6 +1094,8 @@ gboolean
 nautilus_file_update_info (NautilusFile *file, GnomeVFSFileInfo *info,
 			   gboolean got_slow_mime_type)
 {
+	GList *node;
+
 	if (file->details->is_gone) {
 		return FALSE;
 	}
@@ -1114,6 +1113,8 @@ nautilus_file_update_info (NautilusFile *file, GnomeVFSFileInfo *info,
 
 	remove_from_link_hash_table (file);
 
+	node = nautilus_directory_begin_file_name_change
+		(file->details->directory, file);
 	gnome_vfs_file_info_ref (info);
 	if (file->details->info == NULL) {
 		g_free (file->details->name);
@@ -1141,6 +1142,8 @@ nautilus_file_update_info (NautilusFile *file, GnomeVFSFileInfo *info,
 		}
 	}
 	file->details->name = info->name;
+	nautilus_directory_end_file_name_change (file->details->directory,
+						 file, node);
 
 	add_to_link_hash_table (file);
 
@@ -1153,6 +1156,7 @@ gboolean
 nautilus_file_update_name (NautilusFile *file, const char *name)
 {
 	GnomeVFSFileInfo *info;
+	GList *node;
 
 	g_assert (name != NULL);
 
@@ -1166,8 +1170,12 @@ nautilus_file_update_name (NautilusFile *file, const char *name)
 	}
 
 	if (file->details->info == NULL) {
+		node = nautilus_directory_begin_file_name_change
+			(file->details->directory, file);
 		g_free (file->details->name);
 		file->details->name = g_strdup (name);
+		nautilus_directory_end_file_name_change
+			(file->details->directory, file, node);
 	} else {
 		info = gnome_vfs_file_info_new ();
 		gnome_vfs_file_info_copy (info, file->details->info);
@@ -3705,11 +3713,16 @@ void
 nautilus_file_mark_gone (NautilusFile *file)
 {
 	NautilusDirectory *directory;
-	GList **files;
 
 	file->details->is_gone = TRUE;
 
 	update_links_if_target (file);
+
+	/* Let the directory know it's gone. */
+	directory = file->details->directory;
+	if (directory->details->as_file != file) {
+		nautilus_directory_remove_file (directory, file);
+	}
 	
 	/* Drop away all the old file information, but keep the name. */
 	/* FIXME bugzilla.eazel.com 2429: 
@@ -3722,17 +3735,6 @@ nautilus_file_mark_gone (NautilusFile *file)
 		file->details->name = g_strdup (file->details->name);
 		gnome_vfs_file_info_unref (file->details->info);
 		file->details->info = NULL;
-	}
-
-	/* Let the directory know it's gone. */
-	directory = file->details->directory;
-	if (directory->details->as_file != file) {
-		files = &directory->details->files;
-		g_assert (g_list_find (*files, file) != NULL);
-		*files = g_list_remove (*files, file);
-		if (nautilus_directory_is_file_list_monitored (directory)) {
-			nautilus_file_unref (file);
-		}
 	}
 }
 

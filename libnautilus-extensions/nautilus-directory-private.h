@@ -48,7 +48,8 @@ struct NautilusDirectoryDetails
 
 	/* The file objects. */
 	NautilusFile *as_file;
-	GList *files;
+	GList *file_list;
+	GHashTable *file_hash;
 
 	/* The metadata. */
 	gboolean metafile_read;
@@ -139,8 +140,6 @@ void               nautilus_async_destroying_file                    (NautilusFi
 void               nautilus_directory_force_reload                   (NautilusDirectory         *directory);
 
 /* Calls shared between directory, file, and async. code. */
-NautilusFile *     nautilus_directory_find_file                      (NautilusDirectory         *directory,
-								      const char                *file_name);
 void               nautilus_directory_emit_metadata_changed          (NautilusDirectory         *directory);
 void               nautilus_directory_emit_files_added               (NautilusDirectory         *directory,
 								      GList                     *added_files);
@@ -152,6 +151,19 @@ void               nautilus_directory_emit_done_loading              (NautilusDi
 NautilusDirectory *nautilus_directory_get_internal                   (const char                *uri,
 								      gboolean                   create);
 char		  *nautilus_directory_get_name_for_self_as_new_file  (NautilusDirectory		*directory);
+
+/* Interface to the file list. */
+NautilusFile *     nautilus_directory_find_file                      (NautilusDirectory         *directory,
+								      const char                *file_name);
+void               nautilus_directory_add_file                       (NautilusDirectory         *directory,
+								      NautilusFile              *file);
+void               nautilus_directory_remove_file                    (NautilusDirectory         *directory,
+								      NautilusFile              *file);
+GList *            nautilus_directory_begin_file_name_change         (NautilusDirectory         *directory,
+								      NautilusFile              *file);
+void               nautilus_directory_end_file_name_change           (NautilusDirectory         *directory,
+								      NautilusFile              *file,
+								      GList                     *node);
 
 /* debugging functions */
 int                nautilus_directory_number_outstanding             (void);

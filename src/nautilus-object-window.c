@@ -174,11 +174,7 @@ nautilus_window_clear_status (gpointer callback_data)
 	NautilusWindow *window;
 
 	window = NAUTILUS_WINDOW (callback_data);
-	/* FIXME bugzilla.eazel.com 3597: 
-	 * Passing empty string here should work, but does not, due to Bonobo bug.
-	 * We should change this to "" when the Bonobo bug is fixed.
-	 */
-	bonobo_ui_component_set_status (window->details->shell_ui, " ", NULL);
+	bonobo_ui_component_set_status (window->details->shell_ui, NULL, NULL);
 	window->status_bar_clear_id = 0;
 	return FALSE;
 }

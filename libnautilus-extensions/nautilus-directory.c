@@ -127,6 +127,7 @@ nautilus_directory_initialize (gpointer object, gpointer klass)
 	directory = NAUTILUS_DIRECTORY(object);
 
 	directory->details = g_new0 (NautilusDirectoryDetails, 1);
+	directory->details->file_hash = g_hash_table_new (g_str_hash, g_str_equal);
 }
 
 void
@@ -189,7 +190,8 @@ nautilus_directory_destroy (GtkObject *object)
 	if (directory->details->public_metafile_vfs_uri != NULL) {
 		gnome_vfs_uri_unref (directory->details->public_metafile_vfs_uri);
 	}
-	g_assert (directory->details->files == NULL);
+	g_assert (directory->details->file_list == NULL);
+	g_hash_table_destroy (directory->details->file_hash);
 	nautilus_directory_metafile_destroy (directory);
 	g_assert (directory->details->directory_load_in_progress == NULL);
 	g_assert (directory->details->count_in_progress == NULL);
@@ -514,19 +516,110 @@ nautilus_directory_are_all_files_seen (NautilusDirectory *directory)
 		 are_all_files_seen, (directory));
 }
 
+static void
+add_to_hash_table (NautilusDirectory *directory, NautilusFile *file, GList *node)
+{
+	g_assert (node != NULL);
+	g_assert (g_hash_table_lookup (directory->details->file_hash,
+				       file->details->name) == NULL);
+	g_hash_table_insert (directory->details->file_hash,
+			     file->details->name, node);
+}
+
+static GList *
+extract_from_hash_table (NautilusDirectory *directory, NautilusFile *file)
+{
+	char *name;
+	GList *node;
+
+	name = file->details->name;
+	if (name == NULL) {
+		return NULL;
+	}
+
+	/* Find the list node in the hash table. */
+	node = g_hash_table_lookup (directory->details->file_hash, name);
+	g_hash_table_remove (directory->details->file_hash, name);
+
+	return node;
+}
+
+void
+nautilus_directory_add_file (NautilusDirectory *directory, NautilusFile *file)
+{
+	GList *node;
+
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (file->details->name != NULL);
+
+	/* Add to list. */
+	node = g_list_prepend (directory->details->file_list, file);
+	directory->details->file_list = node;
+
+	/* Add to hash table. */
+	add_to_hash_table (directory, file, node);
+
+	/* Ref if we are monitoring. */
+	if (nautilus_directory_is_file_list_monitored (directory)) {
+		nautilus_file_ref (file);
+	}
+}
+
+void
+nautilus_directory_remove_file (NautilusDirectory *directory, NautilusFile *file)
+{
+	GList *node;
+
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (file->details->name != NULL);
+
+	/* Find the list node in the hash table. */
+	node = extract_from_hash_table (directory, file);
+	g_assert (node != NULL);
+	g_assert (node->data == file);
+
+	/* Remove the item from the list. */
+	directory->details->file_list = g_list_remove_link
+		(directory->details->file_list, node);
+	g_list_free_1 (node);
+
+	/* Unref if we are monitoring. */
+	if (nautilus_directory_is_file_list_monitored (directory)) {
+		nautilus_file_unref (file);
+	}
+}
+
+GList *
+nautilus_directory_begin_file_name_change (NautilusDirectory *directory,
+					   NautilusFile *file)
+{
+	/* Find the list node in the hash table. */
+	return extract_from_hash_table (directory, file);
+}
+
+void
+nautilus_directory_end_file_name_change (NautilusDirectory *directory,
+					 NautilusFile *file,
+					 GList *node)
+{
+	/* Add the list node to the hash table. */
+	if (node != NULL) {
+		add_to_hash_table (directory, file, node);
+	}
+}
+
 NautilusFile *
 nautilus_directory_find_file (NautilusDirectory *directory, const char *name)
 {
-	GList *list_entry;
+	GList *node;
 
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 
-	list_entry = g_list_find_custom (directory->details->files,
-					 (gpointer) name,
-					 nautilus_compare_file_with_name);
-
-	return list_entry == NULL ? NULL : list_entry->data;
+	node = g_hash_table_lookup (directory->details->file_hash, name);
+	return node == NULL ? NULL : NAUTILUS_FILE (node->data);
 }
 
 void
@@ -575,7 +668,7 @@ nautilus_directory_emit_metadata_changed (NautilusDirectory *directory)
 	 * have metadata, but this is a fine rough cut for now.
 	 */
 	nautilus_directory_emit_change_signals_deep
-		(directory, directory->details->files);
+		(directory, directory->details->file_list);
 }
 
 void
@@ -860,7 +953,6 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 	GHashTable *parent_directories;
 	GList *new_files_list, *unref_list;
 	GHashTable *added_lists, *changed_lists;
-	GList **files;
 	char *name;
 
 	/* Make a list of added and changed files in each directory. */
@@ -909,9 +1001,7 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 			 */
 			if (new_directory != old_directory) {
 				/* Remove from old directory. */
-				files = &old_directory->details->files;
-				g_assert (g_list_find (*files, file) != NULL);
-				*files = g_list_remove (*files, file);
+				nautilus_directory_remove_file (old_directory, file);
 
 				/* Update the name. */
 				name = uri_get_basename (pair->to_uri);
@@ -919,30 +1009,14 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 				g_free (name);
 				
 				/* Add to new directory. */
-				files = &new_directory->details->files;
-				g_assert (g_list_find (*files, file) == NULL);
-				*files = g_list_prepend (*files, file);
+				nautilus_directory_add_file (new_directory, file);
 				
 				/* Handle notification in the new directory. */
 				hash_table_list_prepend (added_lists,
 							 new_directory,
 							 file);
-
-				/* If the old directory was monitoring files, then it
-				 * may have been the only one with a ref to the file.
-				 */
-				if (nautilus_directory_is_file_list_monitored (old_directory)) {
-					unref_list = g_list_prepend (unref_list, file);
-				}
-				/* If the new directory is monitored, need to ref the file
-				 * as it would get if it was in the directory when we started the monitor
-				 */
-				if (nautilus_directory_is_file_list_monitored (new_directory)) {
-					nautilus_file_ref (file);
-				}
 			}
 
-			
 			/* Done with the old directory. */
 			nautilus_directory_unref (old_directory);
 
@@ -956,7 +1030,6 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 	g_hash_table_destroy (changed_lists);
 	g_hash_table_foreach (added_lists, call_files_added_free_list, NULL);
 	g_hash_table_destroy (added_lists);
-
 
 	/* Let the file objects go. */
 	nautilus_file_list_free (unref_list);
@@ -1321,7 +1394,7 @@ nautilus_self_check_directory (void)
 		gtk_main_iteration ();
 	}
 
-	NAUTILUS_CHECK_BOOLEAN_RESULT (directory->details->files == NULL, TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (directory->details->file_list == NULL, TRUE);
 
 	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 1);
 

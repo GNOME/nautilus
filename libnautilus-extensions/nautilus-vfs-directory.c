@@ -158,14 +158,14 @@ vfs_is_not_empty (NautilusDirectory *directory)
 	g_return_val_if_fail (nautilus_directory_is_anyone_monitoring_file_list (directory), FALSE);
 	
 	if (directory->details->public_metafile_vfs_uri == NULL) {
-		not_empty = directory->details->files != NULL;
+		not_empty = directory->details->file_list != NULL;
 	} else {
 		public_metafile_uri = gnome_vfs_uri_to_string
 			(directory->details->public_metafile_vfs_uri,
 			 GNOME_VFS_URI_HIDE_NONE);
 		
 		/* Return TRUE if the directory contains anything besides a metafile. */
-		not_empty = g_list_find_custom (directory->details->files,
+		not_empty = g_list_find_custom (directory->details->file_list,
 						public_metafile_uri,
 						any_non_metafile_item) != NULL;
 		

@@ -1,3 +1,46 @@
+2000-10-11  Darin Adler  <darin@eazel.com>
+
+	Added a hash table to make access of files by name fast.
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(dequeue_pending_idle_callback): Call the new
+	nautilus_directory_remove_file function to do the removing instead
+	of doing it here. Call the new nautilus_directory_add_file
+	function to do the adding instead of doing it here.
+	* libnautilus-extensions/nautilus-directory-private.h: Added hash
+	table.
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_initialize): Create hash table.
+	(nautilus_directory_destroy): Destroy hash table.
+	(add_to_hash_table), (extract_from_hash_table),
+	(nautilus_directory_add_file), (nautilus_directory_remove_file):
+	New functions to add and remove files that put things into hash
+	table as well.
+	(nautilus_directory_begin_file_name_change),
+	(nautilus_directory_end_file_name_change): Functions to deal with
+	cases where the name changes so the hash table entry can be moved.
+	(nautilus_directory_find_file): Use the hash table instead of
+	searching the list.
+	(nautilus_directory_notify_files_moved): Use
+	nautilus_directory_remove_file and nautilus_directory_add_file
+	instead of modifying the file list directly.
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_internal): Use nautilus_directory_add_file
+	instead of adding to the file list directly.
+	(destroy): Use nautilus_directory_remove_file instead of removing
+	from the file list directly.
+	(rename_update_info_and_metafile), (nautilus_file_update_info),
+	(nautilus_file_update_name): Use the new file name change calls to
+	let the directory know it needs to move the hash table entry.
+	(nautilus_file_mark_gone): Use nautilus_directory_remove_file
+	instead of removing from the file list directly.
+	* libnautilus-extensions/nautilus-vfs-directory.c: Update for name
+	change of file list field.
+	
+	* src/nautilus-window.c: (nautilus_window_clear_status): Take
+	advantage of Bonobo fix. We now use NULL to tell the status bar to
+	erase our status message.
+
 2000-10-11  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-window-toolbars.c: (set_up_throbber_frame_type):

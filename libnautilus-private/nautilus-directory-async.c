@@ -804,9 +804,9 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 	 * Old monitorers already know about them, but it's harmless
 	 * to hear about the same files again.
 	 */
-	if (file == NULL && directory->details->files != NULL) {
+	if (file == NULL && directory->details->file_list != NULL) {
 		nautilus_directory_emit_files_added
-			(directory, directory->details->files);
+			(directory, directory->details->file_list);
 	}
 
 	/* Kick off I/O. */
@@ -845,7 +845,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 {
 	NautilusDirectory *directory;
 	GList *pending_file_info;
-	GList *p, *next;
+	GList *node, *next;
 	NautilusFile *file;
 	GList *pending_files, *changed_files, *saw_again_files, *added_files;
 	GnomeVFSFileInfo *file_info;
@@ -869,8 +869,8 @@ dequeue_pending_idle_callback (gpointer callback_data)
 	saw_again_files = NULL;
 
 	/* Build a list of NautilusFile objects. */
-	for (p = pending_file_info; p != NULL; p = p->next) {
-		file_info = p->data;
+	for (node = pending_file_info; node != NULL; node = node->next) {
+		file_info = node->data;
 
 		/* check if the file already exists */
 		file = nautilus_directory_find_file (directory, file_info->name);
@@ -896,36 +896,24 @@ dequeue_pending_idle_callback (gpointer callback_data)
          * files are gone.
 	 */
 	if (directory->details->directory_loaded) {
-		for (p = directory->details->files; p != NULL; p = next) {
-			file = p->data;
-			next = p->next;
+		for (node = directory->details->file_list; node != NULL; node = next) {
+			file = node->data;
+			next = node->next;
 
 			if (file->details->unconfirmed) {
 				nautilus_file_ref (file);
 				changed_files = g_list_prepend (changed_files, file);
 
 				file->details->is_gone = TRUE;
-				directory->details->files = g_list_remove_link
-					(directory->details->files, p);
-				g_list_free_1 (p);
-
-				/* Since we removed from the files
-				 * list, we must unref in the case
-				 * where the directory was monitored
-				 * (holding a ref on each item in the
-				 * files list).
-				 */
-				if (nautilus_directory_is_file_list_monitored (directory)) {
-					nautilus_file_unref (file);
-				}
+				nautilus_directory_remove_file (directory, file);
 			}
 		}
 	}
 
 	/* Add all the new files to the list. */
-	directory->details->files = g_list_concat
-		(directory->details->files,
-		 nautilus_file_list_copy (pending_files));
+	for (node = pending_files; node != NULL; node = node->next) {
+		nautilus_directory_add_file (directory, node->data);
+	}
 	
 	/* Send a files_added message for both files seen again and
 	 * truly new files.
@@ -998,7 +986,7 @@ directory_load_done (NautilusDirectory *directory,
 		 * they won't be marked "gone" later -- we don't know enough
 		 * about them to know whether they are really gone.
 		 */
-		for (node = directory->details->files; node != NULL; node = node->next) {
+		for (node = directory->details->file_list; node != NULL; node = node->next) {
 			NAUTILUS_FILE (node->data)->details->unconfirmed = FALSE;
 		}
 	}
@@ -1123,7 +1111,7 @@ ready_callback_call (NautilusDirectory *directory,
 		if (directory == NULL || !callback->request.file_list) {
 			file_list = NULL;
 		} else {
-			file_list = directory->details->files;
+			file_list = directory->details->file_list;
 		}
 
 		/* Pass back the file list if the user was waiting for it. */
@@ -1222,7 +1210,7 @@ nautilus_directory_cancel_callback_internal (NautilusDirectory *directory,
 					     gpointer callback_data)
 {
 	ReadyCallback callback;
-	GList *p;
+	GList *node;
 
 	if (directory == NULL) {
 		return;
@@ -1243,11 +1231,11 @@ nautilus_directory_cancel_callback_internal (NautilusDirectory *directory,
 	callback.callback_data = callback_data;
 
 	/* Remove queued callback from the list. */
-	p = g_list_find_custom (directory->details->call_when_ready_list,
+	node = g_list_find_custom (directory->details->call_when_ready_list,
 				&callback,
 				ready_callback_key_compare);
-	if (p != NULL) {
-		remove_callback_link (directory, p);
+	if (node != NULL) {
+		remove_callback_link (directory, node);
 		nautilus_directory_async_state_changed (directory);
 	}
 }
@@ -1296,7 +1284,7 @@ new_files_callback (GnomeVFSAsyncHandle *handle,
 		    GList *results,
 		    gpointer callback_data)
 {
-	GList **handles, *p;
+	GList **handles, *node;
 	NautilusDirectory *directory;
 	GnomeVFSGetFileInfoResult *result;
 
@@ -1308,8 +1296,8 @@ new_files_callback (GnomeVFSAsyncHandle *handle,
 	*handles = g_list_remove (*handles, handle);
 
 	/* Queue up the new files. */
-	for (p = results; p != NULL; p = p->next) {
-		result = p->data;
+	for (node = results; node != NULL; node = node->next) {
+		result = node->data;
 
 		if (result->result == GNOME_VFS_OK) {
 			directory_load_one (directory, result->file_info);
@@ -1340,7 +1328,7 @@ nautilus_async_destroying_file (NautilusFile *file)
 {
 	NautilusDirectory *directory;
 	gboolean changed;
-	GList *p, *next;
+	GList *node, *next;
 	ReadyCallback *callback;
 	Monitor *monitor;
 
@@ -1348,27 +1336,27 @@ nautilus_async_destroying_file (NautilusFile *file)
 	changed = FALSE;
 
 	/* Check for callbacks. */
-	for (p = directory->details->call_when_ready_list; p != NULL; p = next) {
-		next = p->next;
-		callback = p->data;
+	for (node = directory->details->call_when_ready_list; node != NULL; node = next) {
+		next = node->next;
+		callback = node->data;
 
 		if (callback->file == file) {
 			/* Client should have cancelled callback. */
 			g_warning ("destroyed file has call_when_ready pending");
-			remove_callback_link (directory, p);
+			remove_callback_link (directory, node);
 			changed = TRUE;
 		}
 	}
 
 	/* Check for monitors. */
-	for (p = directory->details->monitor_list; p != NULL; p = next) {
-		next = p->next;
-		monitor = p->data;
+	for (node = directory->details->monitor_list; node != NULL; node = next) {
+		next = node->next;
+		monitor = node->data;
 
 		if (monitor->file == file) {
 			/* Client should have removed monitor earlier. */
 			g_warning ("destroyed file still being monitored");
-			remove_monitor_link (directory, p);
+			remove_monitor_link (directory, node);
 			changed = TRUE;
 		}
 	}
@@ -1493,14 +1481,14 @@ wants_activation_uri (const Request *request)
 static gboolean
 has_problem (NautilusDirectory *directory, NautilusFile *file, FileCheck problem)
 {
-	GList *p;
+	GList *node;
 
 	if (file != NULL) {
 		return (* problem) (file);
 	}
 
-	for (p = directory->details->files; p != NULL; p = p->next) {
-		if ((* problem) (p->data)) {
+	for (node = directory->details->file_list; node != NULL; node = node->next) {
+		if ((* problem) (node->data)) {
 			return TRUE;
 		}
 	}
@@ -1560,26 +1548,26 @@ static gboolean
 call_ready_callbacks (NautilusDirectory *directory)
 {
 	gboolean called_any;
-	GList *p, *next;
+	GList *node, *next;
 	ReadyCallback *callback;
 
 	called_any = FALSE;
 	while (1) {
 		/* Check if any callbacks are satisifed and call them if they are. */
-		for (p = directory->details->call_when_ready_list; p != NULL; p = next) {
-			next = p->next;
-			callback = p->data;
+		for (node = directory->details->call_when_ready_list; node != NULL; node = next) {
+			next = node->next;
+			callback = node->data;
 
 			if (request_is_satisfied (directory, callback->file, &callback->request)) {
 				break;
 			}
 		}
-		if (p == NULL) {
+		if (node == NULL) {
 			return called_any;
 		}
 		
 		/* Callbacks are one-shots, so remove it now. */
-		remove_callback_link_keep_data (directory, p);
+		remove_callback_link_keep_data (directory, node);
 		
 		/* Call the callback. */
 		ready_callback_call (directory, callback);
@@ -1592,19 +1580,19 @@ call_ready_callbacks (NautilusDirectory *directory)
 gboolean
 nautilus_directory_is_anyone_monitoring_file_list (NautilusDirectory *directory)
 {
-	GList *p;
+	GList *node;
 	ReadyCallback *callback;
 	Monitor *monitor;
 
-	for (p = directory->details->call_when_ready_list; p != NULL; p = p->next) {
-		callback = p->data;
+	for (node = directory->details->call_when_ready_list; node != NULL; node = node->next) {
+		callback = node->data;
 		if (callback->request.file_list) {
 			return TRUE;
 		}
 	}
 
-	for (p = directory->details->monitor_list; p != NULL; p = p->next) {
-		monitor = p->data;
+	for (node = directory->details->monitor_list; node != NULL; node = node->next) {
+		monitor = node->data;
 		if (monitor->request.file_list) {
 			return TRUE;
 		}
@@ -1617,19 +1605,19 @@ nautilus_directory_is_anyone_monitoring_file_list (NautilusDirectory *directory)
 static gboolean
 is_anyone_waiting_for_metafile (NautilusDirectory *directory)
 {
-	GList *p;
+	GList *node;
 	ReadyCallback *callback;
 	Monitor *monitor;	
 
-	for (p = directory->details->call_when_ready_list; p != NULL; p = p->next) {
-		callback = p->data;
+	for (node = directory->details->call_when_ready_list; node != NULL; node = node->next) {
+		callback = node->data;
 		if (callback->request.metafile) {
 			return TRUE;
 		}
 	}
 
-	for (p = directory->details->monitor_list; p != NULL; p = p->next) {
-		monitor = p->data;
+	for (node = directory->details->monitor_list; node != NULL; node = node->next) {
+		monitor = node->data;
 		if (monitor->request.metafile) {
 			return TRUE;
 		}
@@ -1648,11 +1636,11 @@ nautilus_directory_is_file_list_monitored (NautilusDirectory *directory)
 static void
 mark_all_files_unconfirmed (NautilusDirectory *directory)
 {
-	GList *p;
+	GList *node;
 	NautilusFile *file;
 
-	for (p = directory->details->files; p != NULL; p = p->next) {
-		file = p->data;
+	for (node = directory->details->file_list; node != NULL; node = node->next) {
+		file = node->data;
 
 		file->details->unconfirmed = TRUE;
 	}
@@ -1665,7 +1653,7 @@ start_monitoring_file_list (NautilusDirectory *directory)
 	if (!directory->details->file_list_monitored) {
 		g_assert (directory->details->directory_load_in_progress == NULL);
 		directory->details->file_list_monitored = TRUE;
-		nautilus_file_list_ref (directory->details->files);
+		nautilus_file_list_ref (directory->details->file_list);
 	}
 
 	if (directory->details->directory_loaded
@@ -1705,7 +1693,7 @@ nautilus_directory_stop_monitoring_file_list (NautilusDirectory *directory)
 
 	directory->details->file_list_monitored = FALSE;
 	cancel_directory_load (directory);
-	nautilus_file_list_unref (directory->details->files);
+	nautilus_file_list_unref (directory->details->file_list);
 
 	directory->details->directory_loaded = FALSE;
 }
@@ -1760,7 +1748,7 @@ is_needy (NautilusFile *file,
 	  RequestCheck check_wanted)
 {
 	NautilusDirectory *directory;
-	GList *p;
+	GList *node;
 	ReadyCallback *callback;
 	Monitor *monitor;
 
@@ -1771,9 +1759,9 @@ is_needy (NautilusFile *file,
 	}
 
 	directory = file->details->directory;
-	for (p = directory->details->call_when_ready_list;
-	     p != NULL; p = p->next) {
-		callback = p->data;
+	for (node = directory->details->call_when_ready_list;
+	     node != NULL; node = node->next) {
+		callback = node->data;
 		if ((* check_wanted) (&callback->request)) {
 			if (callback->file == file) {
 				return TRUE;
@@ -1784,9 +1772,9 @@ is_needy (NautilusFile *file,
 			}
 		}
 	}
-	for (p = directory->details->monitor_list;
-	     p != NULL; p = p->next) {
-		monitor = p->data;
+	for (node = directory->details->monitor_list;
+	     node != NULL; node = node->next) {
+		monitor = node->data;
 		if ((* check_wanted) (&monitor->request)) {
 			if (monitor->file == file) {
 				return TRUE;
@@ -1805,52 +1793,52 @@ select_needy_file (NautilusDirectory *directory,
 		   FileCheck check_missing,
 		   RequestCheck check_wanted)
 {
-	GList *p, *p2;
+	GList *node, *node_2;
 	ReadyCallback *callback;
 	Monitor *monitor;
 	NautilusFile *file;
 
 	/* Quick out if no one is interested. */
-	for (p = directory->details->call_when_ready_list; p != NULL; p = p->next) {
-		callback = p->data;
+	for (node = directory->details->call_when_ready_list; node != NULL; node = node->next) {
+		callback = node->data;
 		if ((* check_wanted) (&callback->request)) {
 			break;
 		}
 	}
-	if (p == NULL) {
-		for (p = directory->details->monitor_list; p != NULL; p = p->next) {
-			monitor = p->data;
+	if (node == NULL) {
+		for (node = directory->details->monitor_list; node != NULL; node = node->next) {
+			monitor = node->data;
 			if ((* check_wanted) (&monitor->request)) {
 				break;
 			}
 		}
-		if (p == NULL) {
+		if (node == NULL) {
 			return NULL;
 		}
 	}
 
 	/* Search for a file that has an unfulfilled request. */
-	for (p = directory->details->files; p != NULL; p = p->next) {
-		file = p->data;
+	for (node = directory->details->file_list; node != NULL; node = node->next) {
+		file = node->data;
 		if ((* check_missing) (file)) {
-		    	for (p2 = directory->details->call_when_ready_list; p2 != NULL; p2 = p2->next) {
-				callback = p2->data;
+		    	for (node_2 = directory->details->call_when_ready_list; node_2 != NULL; node_2 = node_2->next) {
+				callback = node_2->data;
 				if ((callback->file == NULL || callback->file == file)
 				    && (* check_wanted) (&callback->request)) {
 					break;
 				}
 		    	}
-			if (p2 != NULL) {
+			if (node_2 != NULL) {
 				return file;
 			}
-			for (p2 = directory->details->monitor_list; p2 != NULL; p2 = p2->next) {
-				monitor = p2->data;
+			for (node_2 = directory->details->monitor_list; node_2 != NULL; node_2 = node_2->next) {
+				monitor = node_2->data;
 				if ((monitor->file == NULL || monitor->file == file)
 				    && (* check_wanted) (&monitor->request)) {
 					break;
 				}
 			}
-			if (p2 != NULL) {
+			if (node_2 != NULL) {
 				return file;
 			}
 		}
@@ -1860,24 +1848,24 @@ select_needy_file (NautilusDirectory *directory,
 	file = directory->details->as_file;
 	if (file != NULL) {
 		if ((* check_missing) (file)) {
-		    	for (p2 = directory->details->call_when_ready_list; p2 != NULL; p2 = p2->next) {
-				callback = p2->data;
+		    	for (node_2 = directory->details->call_when_ready_list; node_2 != NULL; node_2 = node_2->next) {
+				callback = node_2->data;
 				if (callback->file == file
 				    && (* check_wanted) (&callback->request)) {
 					break;
 				}
 		    	}
-			if (p2 != NULL) {
+			if (node_2 != NULL) {
 				return file;
 			}
-			for (p2 = directory->details->monitor_list; p2 != NULL; p2 = p2->next) {
-				monitor = p2->data;
+			for (node_2 = directory->details->monitor_list; node_2 != NULL; node_2 = node_2->next) {
+				monitor = node_2->data;
 				if (monitor->file == file
 				    && (* check_wanted) (&monitor->request)) {
 					break;
 				}
 			}
-			if (p2 != NULL) {
+			if (node_2 != NULL) {
 				return file;
 			}
 		}
