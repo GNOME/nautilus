@@ -1,3 +1,18 @@
+2000-12-17  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize_class),
+	(nautilus_property_browser_get_category_width),
+	(set_up_category_width), (update_category_width),
+	(nautilus_property_browser_update_contents),
+	(nautilus_property_browser_set_path),
+	(nautilus_property_browser_size_allocate):
+	
+	fixed bug 3310, contents of property browser should relayout
+	to fit the window, by calculating the number of columns
+	from the window width, and overriding size_allocate to
+	relayout if necessary when the size changes. 
+
 2000-12-17  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 3890, Resort columns while MP3 plays,

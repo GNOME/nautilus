@@ -169,6 +169,9 @@ static void     nautilus_property_browser_drag_data_get         (GtkWidget      
 								 GtkSelectionData        *selection_data,
 								 guint                    info,
 								 guint32                  time);
+static void     nautilus_property_browser_size_allocate		(GtkWidget		 *widget,
+						     		 GtkAllocation		 *allocation);
+
 static void     nautilus_property_browser_theme_changed         (gpointer                 user_data);
 static void     emit_emblems_changed_signal                     (void);
 
@@ -219,6 +222,7 @@ nautilus_property_browser_initialize_class (GtkObjectClass *object_klass)
 	object_klass->destroy = nautilus_property_browser_destroy;
 	widget_class->drag_data_get  = nautilus_property_browser_drag_data_get;
 	widget_class->drag_end  = nautilus_property_browser_drag_end;
+	widget_class->size_allocate = nautilus_property_browser_size_allocate;
 }
 
 /* initialize the instance's fields, create the necessary subviews, etc. */
@@ -1957,29 +1961,56 @@ make_category_link (NautilusPropertyBrowser *property_browser, char* name, char 
 	g_free (file_name);
 }
 
+/* return the width of the current category for layout */
+static int
+nautilus_property_browser_get_category_width (NautilusPropertyBrowser *property_browser)
+{
+	int category_width;
+	switch (property_browser->details->category_type) {
+		case NAUTILUS_PROPERTY_PATTERN:
+			category_width = 86;
+			break;
+		case NAUTILUS_PROPERTY_COLOR:
+			category_width = 79;
+			break;
+		case NAUTILUS_PROPERTY_EMBLEM:
+			category_width = 64;
+			break;
+		default:
+			category_width = 80;
+			break;
+	}
+	return category_width;
+}
+
 /* extract the number of columns for the current category from the xml file */
 static void
-set_up_category_width (NautilusPropertyBrowser *property_browser, xmlDocPtr document)
+set_up_category_width (NautilusPropertyBrowser *property_browser)
 {
-	char *column_str, *category_name;
-	xmlNodePtr cur_node;
+	int container_width, category_width;
 	
 	/* set up the default */
 	property_browser->details->content_table_width = 5;
+
+	container_width = property_browser->details->content_container->allocation.width;
+	category_width = nautilus_property_browser_get_category_width (property_browser);
 	
-	for (cur_node = nautilus_xml_get_children (xmlDocGetRootElement (document));
-	     cur_node != NULL; cur_node = cur_node->next) {
-		if (strcmp(cur_node->name, "category") == 0) {
-			category_name =  xmlGetProp (cur_node, "name");
-			if (!nautilus_strcmp (category_name, property_browser->details->category)) {
-				column_str = xmlGetProp (cur_node, "columns");
-				if (column_str) {
-					property_browser->details->content_table_width = atoi (column_str);	
-				}
-				xmlFree (column_str);
-			}
-			xmlFree (category_name);
-		}
+	if (container_width > 64) {
+		property_browser->details->content_table_width = container_width / category_width;
+		return;
+	} 
+	
+}
+
+static void
+update_category_width (NautilusPropertyBrowser *property_browser)
+{
+	int current_width;
+	
+	current_width = property_browser->details->content_table_width;
+	set_up_category_width (property_browser);
+	if (current_width != property_browser->details->content_table_width) {
+		nautilus_property_browser_update_contents (property_browser);
 	}
 }
 
@@ -2007,7 +2038,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	}
 	
 	/* set up the content_table_width field so we know how many columns to put in the table */
-	set_up_category_width (property_browser, document);
+	set_up_category_width (property_browser);
 	
 	/* allocate a new container, with a scrollwindow and viewport */
 	
@@ -2238,6 +2269,17 @@ nautilus_property_browser_set_path (NautilusPropertyBrowser *property_browser,
 	
 	/* populate the per-uri box with the info */
 	nautilus_property_browser_update_contents (property_browser);  	
+}
+
+/* handle resizing ourselves by relaying out if necessary */
+static void
+nautilus_property_browser_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
+{
+	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER (widget);
+	
+	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	
+	update_category_width (property_browser);	
 }
 
 static void
