@@ -143,17 +143,19 @@ static void
 file_menu_new_window_cb (GtkWidget *widget,
 	       gpointer data)
 {
-  GtkWidget *current_mainwin;
-  GtkWidget *new_mainwin;
+  NautilusWindow *current_mainwin;
+  NautilusWindow *new_mainwin;
+
+  g_return_if_fail(NAUTILUS_IS_WINDOW(data));
   
-  current_mainwin = (GtkWidget *)(data);
+  current_mainwin = NAUTILUS_WINDOW(data);
 
-  new_mainwin = gtk_widget_new(nautilus_window_get_type(), "app_id", "nautilus", NULL);
+  new_mainwin = nautilus_app_create_window();
 
-  nautilus_window_goto_uri(NAUTILUS_WINDOW(new_mainwin), 
-                           nautilus_window_get_requested_uri(NAUTILUS_WINDOW(current_mainwin)));
+  nautilus_window_goto_uri(new_mainwin, 
+                           nautilus_window_get_requested_uri(current_mainwin));
 
-  gtk_widget_show(new_mainwin);
+  gtk_widget_show(GTK_WIDGET(new_mainwin));
 }
 
 static void

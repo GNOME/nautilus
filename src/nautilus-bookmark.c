@@ -105,16 +105,41 @@ nautilus_bookmark_get_type (void)
 }
 
 
-NautilusBookmark *
-nautilus_bookmark_new (const gchar *name, const gchar *uri)
+/**
+ * nautilus_bookmark_compare_with:
+ *
+ * Check whether two bookmarks are considered identical.
+ * @a: first NautilusBookmark*.
+ * @b: second NautilusBookmark*.
+ * 
+ * Return value: 0 if @a and @b have same name and uri, 1 otherwise 
+ * (GCompareFunc style)
+ **/
+gint		    
+nautilus_bookmark_compare_with (gconstpointer a, gconstpointer b)
 {
-	NautilusBookmark *new_bookmark;
+	NautilusBookmark *bookmark_a;
+	NautilusBookmark *bookmark_b;
 
-	new_bookmark = gtk_type_new (NAUTILUS_TYPE_BOOKMARK);
-	g_string_assign(new_bookmark->name, name);
-	g_string_assign(new_bookmark->uri, uri);
+	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK(a), FALSE);
+	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK(b), FALSE);
 
-	return new_bookmark;
+	bookmark_a = NAUTILUS_BOOKMARK(a);
+	bookmark_b = NAUTILUS_BOOKMARK(b);
+
+	if (strcmp(nautilus_bookmark_get_name(bookmark_a),
+		   nautilus_bookmark_get_name(bookmark_b)) != 0)
+	{
+		return 1;
+	}
+	
+	if (strcmp(nautilus_bookmark_get_uri(bookmark_a),
+		   nautilus_bookmark_get_uri(bookmark_b)) != 0)
+	{
+		return 1;
+	}
+	
+	return 0;
 }
 
 const gchar *
@@ -128,3 +153,16 @@ nautilus_bookmark_get_uri (const NautilusBookmark *bookmark)
 {
 	return bookmark->uri->str;
 }
+
+NautilusBookmark *
+nautilus_bookmark_new (const gchar *name, const gchar *uri)
+{
+	NautilusBookmark *new_bookmark;
+
+	new_bookmark = gtk_type_new (NAUTILUS_TYPE_BOOKMARK);
+	g_string_assign(new_bookmark->name, name);
+	g_string_assign(new_bookmark->uri, uri);
+
+	return new_bookmark;
+}
+

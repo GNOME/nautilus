@@ -53,10 +53,12 @@ struct _NautilusBookmarkClass {
 typedef struct _NautilusBookmarkClass NautilusBookmarkClass;
 
 
-GtkType		    nautilus_bookmark_get_type	(void);
-NautilusBookmark   *nautilus_bookmark_new	(const gchar *name,
-						 const gchar *uri);
-const gchar	   *nautilus_bookmark_get_name	(const NautilusBookmark *);
-const gchar	   *nautilus_bookmark_get_uri	(const NautilusBookmark *);
+GtkType		    nautilus_bookmark_get_type	   (void);
+NautilusBookmark   *nautilus_bookmark_new	   (const gchar *name,
+						    const gchar *uri);
+const gchar	   *nautilus_bookmark_get_name	   (const NautilusBookmark *);
+const gchar	   *nautilus_bookmark_get_uri	   (const NautilusBookmark *);
+
+gint		    nautilus_bookmark_compare_with (gconstpointer a, gconstpointer b);
 
 #endif /* NAUTILUS_BOOKMARK_H */

@@ -59,6 +59,8 @@ GtkType			nautilus_bookmarklist_get_type	(void);
 NautilusBookmarklist   *nautilus_bookmarklist_new	(void);
 void			nautilus_bookmarklist_append	(NautilusBookmarklist*, 
 							 const NautilusBookmark*);
+gboolean		nautilus_bookmarklist_contains	(NautilusBookmarklist*,
+							 const NautilusBookmark*);
 void			nautilus_bookmarklist_contents_changed	
 							(NautilusBookmarklist *);
 guint			nautilus_bookmarklist_length	(NautilusBookmarklist*);

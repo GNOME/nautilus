@@ -112,10 +112,11 @@ init (NautilusBookmarksMenu *bookmarks_menu)
 			    GINT_TO_POINTER(TRUE));
 	nautilus_bookmarks_menu_append(bookmarks_menu, item);
 
-	gtk_signal_connect(GTK_OBJECT(bookmarks),
-			   "contents_changed",
-			   GTK_SIGNAL_FUNC(list_changed_cb),
-			   bookmarks_menu);
+	gtk_signal_connect_while_alive(GTK_OBJECT(bookmarks),
+			   	       "contents_changed",
+			   	       GTK_SIGNAL_FUNC(list_changed_cb),
+			   	       bookmarks_menu,
+			   	       GTK_OBJECT(bookmarks_menu));
 
 	nautilus_bookmarks_menu_repopulate(bookmarks_menu);
 }
@@ -136,7 +137,11 @@ add_bookmark_cb(GtkMenuItem* item, gpointer func_data)
 
 	/* FIXME: initial name should be extracted from http document title (e.g.) */
 	bookmark = nautilus_bookmark_new(current_uri, current_uri);
-	nautilus_bookmarklist_append(bookmarks, bookmark);
+
+	if (!nautilus_bookmarklist_contains(bookmarks, bookmark))
+	{
+		nautilus_bookmarklist_append(bookmarks, bookmark);
+	}
 	gtk_object_destroy(GTK_OBJECT(bookmark));
 }
 

@@ -1,5 +1,22 @@
 1999-12-28  John Sullivan  <sullivan@eazel.com>
 
+	* src/nautilus-bookmark.[ch]: (nautilus_bookmark_compare_with): 
+	  new function, compares two bookmarks for equivalence, used by:
+	* src/nautilus-bookmarklist.[ch]: (nautilus_bookmarklist_contains): 
+	  new function, checks whether a given bookmark is already in the 
+	  list, used by:
+	* src/nautilus-bookmarks-menu.[ch]:
+	  (add_bookmark_cb): now silently refuses to add another bookmark
+	  for the current location if there's one already in the list.
+	  (init): now uses connect_signal_while_alive to avoid nastiness
+	  when trying to add a bookmark after one or more windows were closed.
+	* src/ntl-window.c: (file_menu_new_window_cb): Now calls
+	  nautilus_app_create_window() instead of creating the new window
+	  in line, so that the window count gets properly updated and closing
+	  windows works correctly.
+	  
+1999-12-28  John Sullivan  <sullivan@eazel.com>
+
 	* src/ntl-view.c: (nautilus_view_load_client):
 	  Undid the previous change. It turned out I
 	  needed to rebuild the latest ORBit and then

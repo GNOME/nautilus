@@ -111,7 +111,7 @@ nautilus_bookmarklist_get_type (void)
  * nautilus_bookmarklist_append:
  *
  * Append a bookmark to a bookmarklist.
- * @list: NautilusBookmarklist to append to.
+ * @bookmarks: NautilusBookmarklist to append to.
  * @bookmark: Bookmark to append a copy of.
  **/
 void
@@ -126,6 +126,25 @@ nautilus_bookmarklist_append (NautilusBookmarklist *bookmarks,
 			
 	bookmarks->list = g_list_append(bookmarks->list, new_bookmark);
 	nautilus_bookmarklist_contents_changed(bookmarks);
+}
+
+/**
+ * nautilus_bookmarklist_contains:
+ *
+ * Check whether a bookmark with matching name and url is already in the list.
+ * @bookmarks: NautilusBookmarklist to check contents of.
+ * @bookmark: NautilusBookmark to match against.
+ * 
+ * Return value: TRUE if matching bookmark is in list, FALSE otherwise
+ **/
+gboolean
+nautilus_bookmarklist_contains (NautilusBookmarklist *bookmarks, 
+			      const NautilusBookmark *bookmark)
+{
+	return g_list_find_custom(bookmarks->list, 
+				  (gpointer)bookmark, 
+				  nautilus_bookmark_compare_with) 
+		!= NULL;
 }
 
 /**
