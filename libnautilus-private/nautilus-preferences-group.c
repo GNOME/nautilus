@@ -163,6 +163,40 @@ nautilus_preferences_group_add_item (NautilusPreferencesGroup *group,
 	return item;
 }
 
+GtkWidget *
+nautilus_preferences_group_add_custom_item (NautilusPreferencesGroup *group,
+					    const char *preference_name,
+					    GtkWidget *child,
+					    const char *signal_name,
+					    int column)
+{
+	GtkWidget *item;
+
+	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group), NULL);
+	g_return_val_if_fail (preference_name != NULL, NULL);
+	g_return_val_if_fail (GTK_IS_WIDGET (child), NULL);
+	g_return_val_if_fail (signal_name != NULL, NULL);
+	g_return_val_if_fail (column >= 0, NULL);
+	g_return_val_if_fail (column <= 1, NULL);
+	
+	item = nautilus_preferences_item_new_custom (preference_name,
+						     child,
+						     signal_name);
+
+	group->details->items[column] = g_list_append (group->details->items[column],
+						       item);
+
+	gtk_box_pack_start (GTK_BOX (group->details->columns[column]),
+			    item,
+ 			    FALSE,
+ 			    FALSE,
+			    0);
+
+	gtk_widget_show (item);
+
+	return item;
+}
+
 void
 nautilus_preferences_group_update (NautilusPreferencesGroup *group)
 {

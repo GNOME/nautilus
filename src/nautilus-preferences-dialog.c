@@ -24,6 +24,7 @@
 
 #include <config.h>
 #include "nautilus-preferences-dialog.h"
+#include "nautilus-theme-selector.h"
 
 #include "libnautilus-extensions/nautilus-global-preferences.h"
 #include "libnautilus-extensions/nautilus-preferences-box.h"
@@ -44,6 +45,7 @@
  */
 
 static void preferences_dialog_populate_sidebar_tabs_group (NautilusPreferencesGroup *group);
+static void preferences_dialog_populate_themes_group       (NautilusPreferencesGroup *group);
 
 static GtkWidget *preferences_dialog;
 
@@ -62,6 +64,15 @@ static NautilusPreferencesItemDescription appearance_items[] = {
 	  NAUTILUS_PREFERENCES_DEFAULT_FONT,
 	  N_("Default non-smooth font:"),
 	  NAUTILUS_PREFERENCE_ITEM_FONT,
+	},
+	{ N_("Nautilus Themes"),
+	  NULL,
+	  NULL,
+	  0,
+	  NULL,
+	  0,
+	  0,
+	  preferences_dialog_populate_themes_group
 	},
 	{ NULL }
 };
@@ -464,6 +475,82 @@ preferences_dialog_populate_sidebar_tabs_group (NautilusPreferencesGroup *group)
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group));
 
 	nautilus_sidebar_for_each_panel (global_preferences_populate_sidebar_panels_callback, group);
+}
+
+/* Callback for when the user chooses a new theme from the list */
+static void
+theme_changed_callback (NautilusThemeSelector *theme_selector,
+			gpointer callback_data)
+{
+	char *selected_theme;
+
+	g_return_if_fail (NAUTILUS_IS_THEME_SELECTOR (theme_selector));
+
+	selected_theme = nautilus_theme_selector_get_selected_theme (NAUTILUS_THEME_SELECTOR (theme_selector));
+	g_return_if_fail (selected_theme != NULL);
+
+	nautilus_preferences_set (NAUTILUS_PREFERENCES_THEME, selected_theme);
+
+	g_free (selected_theme);
+}
+
+/* PreferenceItem callback for when its time to update the theme chooser
+ * with the theme currently stored in preferences
+*/
+static void
+update_theme_selector_displayed_value_callback (NautilusPreferencesItem *item,
+					       gpointer callback_data)
+{
+	char *current_theme_name;
+
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item));
+	g_return_if_fail (NAUTILUS_IS_THEME_SELECTOR (callback_data));
+
+	current_theme_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME);
+
+	nautilus_theme_selector_set_selected_theme (NAUTILUS_THEME_SELECTOR (callback_data),
+						   current_theme_name);
+
+	g_free (current_theme_name);
+}
+
+static void
+preferences_dialog_populate_themes_group (NautilusPreferencesGroup *group)
+{
+	GtkWidget *item;
+	GtkWidget *child;
+	GtkWidget *parent_window;
+
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group));
+
+	child = nautilus_theme_selector_new ();
+
+	parent_window = gtk_widget_get_ancestor (GTK_WIDGET (group), GTK_TYPE_WINDOW);
+
+	if (GTK_IS_WINDOW (parent_window)) {
+		nautilus_theme_selector_set_parent_window (NAUTILUS_THEME_SELECTOR (child),
+							  GTK_WINDOW (parent_window));
+	}
+	
+	item = nautilus_preferences_group_add_custom_item (group,
+							   NAUTILUS_PREFERENCES_THEME,
+							   child,
+							   "theme_changed",
+							   0);
+	/* Keep track of theme chooser changes */
+	gtk_signal_connect (GTK_OBJECT (child),
+			    "theme_changed",
+			    GTK_SIGNAL_FUNC (theme_changed_callback),
+			    NULL);
+
+	/* Have the custom preferences item tell us when its time to update the displayed
+	 * with with the one stored in preferences
+	 */
+	gtk_signal_connect (GTK_OBJECT (item),
+			    "custom_update_displayed_value",
+			    GTK_SIGNAL_FUNC (update_theme_selector_displayed_value_callback),
+			    child);
+	update_theme_selector_displayed_value_callback (NAUTILUS_PREFERENCES_ITEM (item), child);
 }
 
 static void

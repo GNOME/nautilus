@@ -65,6 +65,7 @@ struct NautilusPreferencesItemClass
 typedef enum
 {
 	NAUTILUS_PREFERENCE_ITEM_BOOLEAN,
+	NAUTILUS_PREFERENCE_ITEM_CUSTOM,
 	NAUTILUS_PREFERENCE_ITEM_EDITABLE_INTEGER,
 	NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING,
 	NAUTILUS_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO,
@@ -86,6 +87,9 @@ typedef enum
 GtkType    nautilus_preferences_item_get_type                               (void);
 GtkWidget* nautilus_preferences_item_new                                    (const char                           *preference_name,
 									     NautilusPreferencesItemType           item_type);
+GtkWidget* nautilus_preferences_item_new_custom                             (const char                           *preference_name,
+									     GtkWidget *child,
+									     const char                           *signal_name);
 char *     nautilus_preferences_item_get_name                               (const NautilusPreferencesItem        *preferences_item);
 void       nautilus_preferences_item_set_control_preference                 (NautilusPreferencesItem              *preferences_item,
 									     const char                           *control_preference_name);

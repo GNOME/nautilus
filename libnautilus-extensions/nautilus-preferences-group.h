@@ -62,6 +62,11 @@ GtkWidget* nautilus_preferences_group_add_item              (NautilusPreferences
 							     const char                     *preference_name,
 							     NautilusPreferencesItemType     item_type,
 							     int                             column);
+GtkWidget* nautilus_preferences_group_add_custom_item       (NautilusPreferencesGroup       *group,
+							     const char                     *preference_name,
+							     GtkWidget *child,
+							     const char                     *signal_name,
+							     int                             column);
 void       nautilus_preferences_group_update                (NautilusPreferencesGroup       *group);
 guint      nautilus_preferences_group_get_num_visible_items (const NautilusPreferencesGroup *group);
 char *     nautilus_preferences_group_get_title_label       (const NautilusPreferencesGroup *group);

@@ -37,7 +37,6 @@
 #include "nautilus-services.h"
 #include "nautilus-signaller.h"
 #include "nautilus-switchable-navigation-bar.h"
-#include "nautilus-theme-selector.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include <bonobo/bonobo-ui-util.h>
@@ -180,7 +179,6 @@ bookmark_holder_free (BookmarkHolder *bookmark_holder)
  */
 
 #define NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM			"/menu/Edit/Customization"
-#define NAUTILUS_MENU_PATH_CHANGE_APPEARANCE_ITEM		"/menu/Edit/Change_Appearance"
 
 static void
 bookmark_holder_free_cover (gpointer callback_data)
@@ -558,14 +556,6 @@ customize_callback (BonoboUIComponent *component,
 		    const char *verb)
 {
 	nautilus_property_browser_show ();
-}
-
-static void
-change_appearance_callback (BonoboUIComponent *component, 
-			    gpointer user_data, 
-			    const char *verb)
-{
-	nautilus_theme_selector_show ();
 }
 
 static void
@@ -1279,7 +1269,6 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB ("Go to Web Search", file_menu_web_search_callback),
 		BONOBO_UI_VERB ("Undo", edit_menu_undo_callback),
 		BONOBO_UI_VERB ("Customize", customize_callback),
-		BONOBO_UI_VERB ("Change Appearance", change_appearance_callback),
 		BONOBO_UI_VERB ("Back", go_menu_back_callback),
 		BONOBO_UI_VERB ("Forward", go_menu_forward_callback),
 		BONOBO_UI_VERB ("Up", go_menu_up_callback),

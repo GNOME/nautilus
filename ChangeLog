@@ -1,3 +1,70 @@
+2001-04-26  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-preferences-group.c:
+	* libnautilus-extensions/nautilus-preferences-group.h:
+	Add support for custom preferences items.
+
+	* libnautilus-extensions/nautilus-preferences-item.h:
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	Add support for custom preferences items.  For now only the theme
+	selector uses this powerful technology.
+
+	Fix bug 8167 - Crash boinking on single-click mode.  It was a dumb
+	mistake left over from a previous fix.  Wrong number of arguments
+	to a signal.
+
+	Fix bug where strings in enumeration menus would show up
+	untranslated in the preferences dialog, even in locales where
+	translations exist.
+	
+	* libnautilus-extensions/nautilus-theme.h:
+	* libnautilus-extensions/nautilus-theme.c: (load_theme_document),
+	(nautilus_pixmap_file_may_be_local),
+	(nautilus_theme_get_image_path_from_theme),
+	(nautilus_theme_make_preview_pixbuf): Rename this function from
+	nautilus_theme_make_selector for greater clarity.
+	(has_image_file), (theme_get_property), (theme_get_name_property),
+	(theme_get_description_property), (theme_list_insert),
+	(theme_get_themes_for_location): Replace some cut-n-paste code by
+	a shared function.  Add some FIXMEs for the funky handling of the
+	"default" theme.
+	(theme_get_builtin_themes), (theme_get_user_themes),
+	(theme_get_default_themes): Functions for reaping the
+	different types of themes available to Nautilus.
+	(nautilus_theme_for_each_theme), (theme_list_invoke_callback): New
+	function to iterate all the themese available to Nautilus.  Makes
+	Nautilus code that needs to operate on themes (like the theme
+	selector) easier to write.
+	(nautilus_theme_get_user_themes_directory),
+	(nautilus_theme_remove_user_theme),
+	(nautilus_theme_install_user_theme):  Functions for reaping the
+	different types of themes available to Nautilus.
+	
+	* src/nautilus-preferences-dialog.c:
+	(preferences_dialog_populate_sidebar_tabs_group),
+	(theme_changed_callback),
+	(update_theme_selector_displayed_value_callback),
+	(preferences_dialog_populate_themes_group):
+	Add a custom preference item for the theme chooser.
+	
+	* src/nautilus-theme-selector.h:
+	* src/nautilus-theme-selector.c:
+	Use regular Gtk widgets in the list so that all the things that
+	are expect to work do indeed work.  This includes Gtk+ theme
+	changes and custom tweaks made in the code to satisfy the design.
+	Larger and bolder labels for example.
+
+	Simplify this code alot by using iterators for the available
+	themes.  Also maintain two lists instead of managing a remove_mode
+	boolean.  Makes the code simpler.
+	
+	* src/nautilus-window-menus.c:
+	(nautilus_window_initialize_menus_part_1):
+	Remove the standalone theme selector handling code.
+	
+	* src/nautilus-shell-ui.xml:
+	Remove the standalone theme selector ui.
+
 2001-04-26  John Sullivan  <sullivan@eazel.com>
 
 	Made the emblems column wider to fit the title "Emblems" (in
