@@ -291,7 +291,7 @@ context_click_row_cb (GtkCList *clist, gint row, FMDirectoryViewList *list_view)
 	g_assert (GTK_IS_CLIST (clist));
 	g_assert (FM_IS_DIRECTORY_VIEW_LIST (list_view));
 
-	file = NAUTILUS_FILE(gtk_clist_get_row_data (clist, clist->rows - 1));
+	file = NAUTILUS_FILE(gtk_clist_get_row_data (clist, row));
 
 	fm_directory_view_popup_item_context_menu (FM_DIRECTORY_VIEW (list_view), file);
 }

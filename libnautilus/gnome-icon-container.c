@@ -2096,6 +2096,11 @@ handle_icon_button_press (GnomeIconContainer *container,
 		details->drag_button = 0;
 		details->drag_icon = NULL;
 
+		/* Context menu applies to single item (at least
+		 * for now). Select item first to make this obvious.
+		 */
+		select_one_unselect_others (container, icon);
+
 		gtk_signal_emit (GTK_OBJECT (container),
 				 signals[CONTEXT_CLICK_ICON],
 				 icon->data);

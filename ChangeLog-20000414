@@ -1,3 +1,23 @@
+2000-02-11  John Sullivan <sullivan@eazel.com>
+
+	Made right-clicking on an item select just that one item
+	before popping up context menu. This makes it clear what
+	the context menu is operating on.
+
+	* libnautilus/gnome-icon-container.c:
+	(handle_icon_button_press): Select just the clicked icon
+	before sending CONTEXT_CLICK_ICON signal.
+	* libnautilus/gtkflist.c:
+	(gtk_flist_button_press): Select just the clicked row
+	before sending CONTEXT_CLICK_ROW signal.
+
+	Fixed bug where "Open" and "Open in New Window" had
+	unexpected results in list view.
+
+	* src/file-manager/fm-directory-view-list.c:
+	(context_click_row_cb): Fixed bug where this routine was passing
+	the wrong item to the context menu.
+
 2000-02-11  Elliot Lee  <sopwith@redhat.com>
 	* src/ntl-window.c: If an empty string is passed for a status string, just unset it all.
 	* src/ntl-window-msgs.c: If we get a selection of size 1, indicate it on the status bar.

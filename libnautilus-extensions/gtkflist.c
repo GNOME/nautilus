@@ -328,6 +328,11 @@ gtk_flist_button_press (GtkWidget *widget, GdkEventButton *event)
 			retval = TRUE;
 		} else if (event->button == 3) {
 			if (on_row) {
+				/* Context menu applies to single item (at least
+				 * for now). Select item first to make this obvious.
+				 */
+				gtk_clist_unselect_all (clist);
+				gtk_clist_select_row (clist, row, 0);
 				gtk_signal_emit (GTK_OBJECT (flist),
 						 flist_signals[CONTEXT_CLICK_ROW],
 						 row);
