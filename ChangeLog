@@ -1,3 +1,41 @@
+2000-06-06  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1219 (saved viewer not used if not in preferred list)
+
+	* libnautilus-extensions/nautilus-metadata.h:
+	Removed NAUTILUS_METADATA_KEY_INITIAL_VIEW 'cuz it's not needed
+	anymore.
+	
+	* libnautilus-extensions/nautilus-mime-actions.h:
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_component_for_uri_internal):
+	New private function, returns both the default component
+	and whether it was user-chosen (as opposed to just inherited
+	from the value for this MIME type).
+	(nautilus_mime_get_default_component_for_uri): Now calls
+	this new function. Also fixed a bug where it was using a
+	different metadata string than _set_default_, and thus
+	never retrieving the stored value.
+	(nautilus_mime_is_default_component_for_uri_user_chosen):
+	New public function, reports whether the default component
+	was chosen by the user or just inherited.
+	
+	* src/nautilus-window.c: (nautilus_window_switch_views):
+	Call nautilus_mime_set_default_component_for_uri when the
+	user explicitly chooses a view, rather than setting the
+	now-obsolete "INITIAL_VIEW" metadata.
+
+	* src/nautilus-applicable-views.c: 
+	(got_file_info_callback): Rename "fallback_id" to "default_id"
+	and eliminate code that adds default component to menu here.
+	The current view is always added to the menu in a special way
+	if required later.
+	(set_initial_content_id): Don't get remembered value, instead
+	use nautilus_mime_is_default_component_for_uri_user_chosen to
+	choose priority between default component and referring component.
+	And don't require that the initial component is in the preferred
+	list.
+
 2000-06-06  Andy Hertzfeld  <andy@eazel.com>
 
 	made tiled image backgrounds work properly in anti-aliased mode

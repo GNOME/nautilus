@@ -182,10 +182,8 @@ nautilus_mime_get_default_application_for_uri (const char *uri)
 	return result;
 }
 
-
-
-OAF_ServerInfo *
-nautilus_mime_get_default_component_for_uri (const char *uri)
+static OAF_ServerInfo *
+nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean *user_chosen)
 {
 	GList *info_list;
 	OAF_ServerInfo *mime_default; 
@@ -197,7 +195,10 @@ nautilus_mime_get_default_component_for_uri (const char *uri)
 	GList *attributes;
 	GList *explicit_iids;
 	CORBA_Environment ev;
-	OAF_ServerInfo *server; 
+	OAF_ServerInfo *server;
+	gboolean used_user_chosen_info;
+
+	used_user_chosen_info = TRUE;
 
 	CORBA_exception_init (&ev);
 
@@ -211,14 +212,19 @@ nautilus_mime_get_default_component_for_uri (const char *uri)
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE);
 
 	files = nautilus_directory_wait_until_ready (directory, attributes, TRUE);
-	default_component_string = nautilus_directory_get_metadata (directory, "DEFAULT_COMPONENT_IID", NULL);
+	default_component_string = nautilus_directory_get_metadata (directory, "DEFAULT_COMPONENT", NULL);
 	explicit_iids = get_explicit_content_view_iids_from_metafile (directory); 
 	g_list_free (attributes);
+	nautilus_directory_unref (directory);
 
 	if (default_component_string == NULL && mime_type != NULL) {
 		mime_default = gnome_vfs_mime_get_default_component (mime_type);
 		if (mime_default != NULL) {
 			default_component_string = g_strdup (mime_default->iid);
+			if (default_component_string != NULL) {
+				/* Default component chosen based only on type. */
+				used_user_chosen_info = FALSE;
+			}
 			CORBA_free (mime_default);
 		}
 	} 
@@ -230,6 +236,7 @@ nautilus_mime_get_default_component_for_uri (const char *uri)
 
 	if (default_component_string == NULL) {
 		info_list = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, NULL, &ev);
+		used_user_chosen_info = TRUE;	/* Default component chosen based on user-stored explicit_iids. */
 	} else {
 		char *iid_condition;
 		char *sort_conditions[2];
@@ -260,8 +267,33 @@ nautilus_mime_get_default_component_for_uri (const char *uri)
 	}
 
 	CORBA_exception_free (&ev);
-	nautilus_directory_unref (directory);
+
+	if (user_chosen != NULL) {
+		*user_chosen = used_user_chosen_info;
+	}
+	
 	return server;
+}
+
+
+OAF_ServerInfo *
+nautilus_mime_get_default_component_for_uri (const char *uri)
+{
+	return nautilus_mime_get_default_component_for_uri_internal (uri, NULL);
+}
+
+gboolean
+nautilus_mime_is_default_component_for_uri_user_chosen (const char *uri)
+{
+	OAF_ServerInfo *component;
+	gboolean user_chosen;
+
+	component = nautilus_mime_get_default_component_for_uri_internal (uri, &user_chosen);
+
+	/* Doesn't count as user chosen if the user-specified data is bogus and doesn't
+	 * result in an actual component.
+	 */
+	return user_chosen && component != NULL;
 }
 
 

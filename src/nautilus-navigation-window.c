@@ -48,6 +48,7 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-mime-actions.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-mini-icon.h>
@@ -676,10 +677,8 @@ nautilus_window_switch_views (NautilusWindow *window, NautilusViewIdentifier *id
 
         directory = nautilus_directory_get (window->ni->requested_uri);
         g_assert (directory != NULL);
-        nautilus_directory_set_metadata (directory,
-                                         NAUTILUS_METADATA_KEY_INITIAL_VIEW,
-                                         NULL,
-                                         id->iid);
+        nautilus_mime_set_default_component_for_uri (window->ni->requested_uri, 
+        					     id->iid);
         nautilus_directory_unref (directory);
         
         nautilus_window_allow_stop (window, TRUE);
