@@ -63,7 +63,7 @@ char *        nautilus_directory_get_file_metadata      (NautilusDirectory *dire
 							 const char        *file_name,
 							 const char        *tag,
 							 const char        *default_metadata);
-void          nautilus_directory_set_file_metadata      (NautilusDirectory *directory,
+gboolean      nautilus_directory_set_file_metadata      (NautilusDirectory *directory,
 							 const char        *file_name,
 							 const char        *tag,
 							 const char        *default_metadata,

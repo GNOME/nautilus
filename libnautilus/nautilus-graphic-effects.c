@@ -25,12 +25,7 @@
 /* This file contains pixbuf manipulation routines used for graphical effects like pre-lighting
    and selection hilighting */
 
-#include <libgnome/gnome-defs.h>
-#include <libgnomeui/gnome-canvas.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <libart_lgpl/art_rgb_pixbuf_affine.h>
-#include <libgnomeui/gnome-canvas-util.h>
-
+#include <config.h>
 #include "nautilus-graphic-effects.h"
 
 /* shared utility to create a new pixbuf from the passed-in one */
@@ -38,11 +33,17 @@
 static GdkPixbuf *
 create_new_pixbuf (GdkPixbuf *src)
 {
+	g_return_val_if_fail (gdk_pixbuf_get_format (src) == ART_PIX_RGB, NULL);
+	g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
+			       && gdk_pixbuf_get_n_channels (src) == 3)
+			      || (gdk_pixbuf_get_has_alpha (src)
+				  && gdk_pixbuf_get_n_channels (src) == 4), NULL);
+
 	return gdk_pixbuf_new (gdk_pixbuf_get_format (src),
-				gdk_pixbuf_get_has_alpha (src),
-				gdk_pixbuf_get_bits_per_sample (src),
-				gdk_pixbuf_get_width (src),
-				gdk_pixbuf_get_height (src));
+			       gdk_pixbuf_get_has_alpha (src),
+			       gdk_pixbuf_get_bits_per_sample (src),
+			       gdk_pixbuf_get_width (src),
+			       gdk_pixbuf_get_height (src));
 }
 
 /* utility routine to bump the level of a color component with pinning */
@@ -52,41 +53,47 @@ lighten_component (guchar cur_value)
 {
 	int new_value = cur_value;
 	new_value += 24 + (new_value >> 3);
-	if (new_value > 255)
+	if (new_value > 255) {
 		new_value = 255;
+	}
 	return (guchar) new_value;
 }
 
 GdkPixbuf *
-create_spotlight_pixbuf (GdkPixbuf* src)
+nautilus_create_spotlight_pixbuf (GdkPixbuf* src)
 {
-	int i, j;
-	int width, height, has_alpha, src_rowstride, dst_rowstride;
-	guchar *target_pixels;
-	guchar *original_pixels;
-	guchar *pixsrc;
-	guchar *pixdest;
 	GdkPixbuf *dest;
-	
+	int i, j;
+	int width, height, has_alpha, src_row_stride, dst_row_stride;
+	guchar *target_pixels, *original_pixels;
+	guchar *pixsrc, *pixdest;
+
+	g_return_val_if_fail (gdk_pixbuf_get_format (src) == ART_PIX_RGB, NULL);
+	g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
+			       && gdk_pixbuf_get_n_channels (src) == 3)
+			      || (gdk_pixbuf_get_has_alpha (src)
+				  && gdk_pixbuf_get_n_channels (src) == 4), NULL);
+	g_return_val_if_fail (gdk_pixbuf_get_bits_per_sample (src) == 8, NULL);
+
 	dest = create_new_pixbuf (src);
 	
 	has_alpha = gdk_pixbuf_get_has_alpha (src);
 	width = gdk_pixbuf_get_width (src);
 	height = gdk_pixbuf_get_height (src);
-	src_rowstride = gdk_pixbuf_get_rowstride (src);
-	dst_rowstride = gdk_pixbuf_get_rowstride (dest);
+	dst_row_stride = gdk_pixbuf_get_rowstride (dest);
+	src_row_stride = gdk_pixbuf_get_rowstride (src);
 	target_pixels = gdk_pixbuf_get_pixels (dest);
 	original_pixels = gdk_pixbuf_get_pixels (src);
 
 	for (i = 0; i < height; i++) {
-		pixdest = target_pixels + i*dst_rowstride;
-		pixsrc = original_pixels + i*src_rowstride;
+		pixdest = target_pixels + i * dst_row_stride;
+		pixsrc = original_pixels + i * src_row_stride;
 		for (j = 0; j < width; j++) {		
-			*(pixdest++) = lighten_component(*(pixsrc++));
-			*(pixdest++) = lighten_component(*(pixsrc++));
-			*(pixdest++) = lighten_component(*(pixsrc++));
+			*pixdest++ = lighten_component (*pixsrc++);
+			*pixdest++ = lighten_component (*pixsrc++);
+			*pixdest++ = lighten_component (*pixsrc++);
 			if (has_alpha) {
-				*(pixdest++) = *(pixsrc++);
+				*pixdest++ = *pixsrc++;
 			}
 		}
 	}
@@ -96,137 +103,155 @@ create_spotlight_pixbuf (GdkPixbuf* src)
 
 /* the following routine was stolen from the panel to darken a pixbuf, by manipulating the saturation */
 
-#define INTENSITY(r, g, b) (((r)*77 + (g)*150 + (b)*28)>>8)
-
 /* saturation is 0-255, darken is 0-255 */
 
 GdkPixbuf *
-create_darkened_pixbuf (GdkPixbuf *src, int saturation, int darken)
+nautilus_create_darkened_pixbuf (GdkPixbuf *src, int saturation, int darken)
 {
 	gint i, j;
-	gint width, height, has_alpha, src_rowstride, dst_rowstride;
-	guchar *target_pixels;
-	guchar *original_pixels;
-	guchar *pixsrc;
-	guchar *pixdest;
+	gint width, height, src_row_stride, dest_row_stride;
+	gboolean has_alpha;
+	guchar *target_pixels, *original_pixels;
+	guchar *pixsrc, *pixdest;
 	guchar intensity;
 	guchar alpha;
 	guchar negalpha;
-	guchar r,g,b;
+	guchar r, g, b;
 	GdkPixbuf *dest;
+
+	g_return_val_if_fail (gdk_pixbuf_get_format (src) == ART_PIX_RGB, NULL);
+	g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
+			       && gdk_pixbuf_get_n_channels (src) == 3)
+			      || (gdk_pixbuf_get_has_alpha (src)
+				  && gdk_pixbuf_get_n_channels (src) == 4), NULL);
+	g_return_val_if_fail (gdk_pixbuf_get_bits_per_sample (src) == 8, NULL);
 
 	dest = create_new_pixbuf (src);
 
 	has_alpha = gdk_pixbuf_get_has_alpha (src);
 	width = gdk_pixbuf_get_width (src);
 	height = gdk_pixbuf_get_height (src);
-	src_rowstride = gdk_pixbuf_get_rowstride (src);
-	dst_rowstride = gdk_pixbuf_get_rowstride (dest);
+	dest_row_stride = gdk_pixbuf_get_rowstride (dest);
+	src_row_stride = gdk_pixbuf_get_rowstride (src);
 	target_pixels = gdk_pixbuf_get_pixels (dest);
 	original_pixels = gdk_pixbuf_get_pixels (src);
 
 	for (i = 0; i < height; i++) {
-		pixdest = target_pixels + i*dst_rowstride;
-		pixsrc = original_pixels + i*src_rowstride;
+		pixdest = target_pixels + i * dest_row_stride;
+		pixsrc = original_pixels + i * src_row_stride;
 		for (j = 0; j < width; j++) {
-			r = *(pixsrc++);
-			g = *(pixsrc++);
-			b = *(pixsrc++);
-			intensity = INTENSITY(r,g,b);
-			negalpha = ((255 - saturation)*darken)>>8;
-			alpha = (saturation*darken)>>8;
-			*(pixdest++) = (negalpha * intensity + alpha * r) >> 8;
-			*(pixdest++) = (negalpha * intensity + alpha * g) >> 8;
-			*(pixdest++) = (negalpha * intensity + alpha * b) >> 8;
-			if (has_alpha)
-				*(pixdest++) = *(pixsrc++);
-		}
-	}
-	return dest;
-}
-#undef INTENSITY
-
-/* this routine colorizes the passed-in pixbuf by multiplying each pixel with the passed in color */
-
-GdkPixbuf *
-create_colorized_pixbuf(GdkPixbuf *src, int red_value, int green_value, int blue_value)
-{
-	int i, j;
-	int width, height, has_alpha, src_rowstride, dst_rowstride;
-	guchar *target_pixels;
-	guchar *original_pixels;
-	guchar *pixsrc;
-	guchar *pixdest;
-	GdkPixbuf *dest;
-	
-	dest = create_new_pixbuf (src);
-	
-	has_alpha = gdk_pixbuf_get_has_alpha (src);
-	width = gdk_pixbuf_get_width (src);
-	height = gdk_pixbuf_get_height (src);
-	src_rowstride = gdk_pixbuf_get_rowstride (src);
-	dst_rowstride = gdk_pixbuf_get_rowstride (dest);
-	target_pixels = gdk_pixbuf_get_pixels (dest);
-	original_pixels = gdk_pixbuf_get_pixels (src);
-
-	for (i = 0; i < height; i++) {
-		pixdest = target_pixels + i*dst_rowstride;
-		pixsrc = original_pixels + i*src_rowstride;
-		for (j = 0; j < width; j++) {		
-			*(pixdest++) = (*(pixsrc++) * red_value) >> 8;
-			*(pixdest++) = (*(pixsrc++) * green_value) >> 8;
-			*(pixdest++) = (*(pixsrc++) * blue_value) >> 8;
+			r = *pixsrc++;
+			g = *pixsrc++;
+			b = *pixsrc++;
+			intensity = (r * 77 + g * 150 + b * 28) >> 8;
+			negalpha = ((255 - saturation) * darken) >> 8;
+			alpha = (saturation * darken) >> 8;
+			*pixdest++ = (negalpha * intensity + alpha * r) >> 8;
+			*pixdest++ = (negalpha * intensity + alpha * g) >> 8;
+			*pixdest++ = (negalpha * intensity + alpha * b) >> 8;
 			if (has_alpha) {
-				*(pixdest++) = *(pixsrc++);
+				*pixdest++ = *pixsrc++;
 			}
 		}
 	}
 	return dest;
 }
 
+/* this routine colorizes the passed-in pixbuf by multiplying each pixel with the passed in color */
+
+GdkPixbuf *
+nautilus_create_colorized_pixbuf(GdkPixbuf *src,
+				 int red_value,
+				 int green_value,
+				 int blue_value)
+{
+	int i, j;
+	int width, height, has_alpha, src_row_stride, dst_row_stride;
+	guchar *target_pixels;
+	guchar *original_pixels;
+	guchar *pixsrc;
+	guchar *pixdest;
+	GdkPixbuf *dest;
+	
+	g_return_val_if_fail (gdk_pixbuf_get_format (src) == ART_PIX_RGB, NULL);
+	g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
+			       && gdk_pixbuf_get_n_channels (src) == 3)
+			      || (gdk_pixbuf_get_has_alpha (src)
+				  && gdk_pixbuf_get_n_channels (src) == 4), NULL);
+	g_return_val_if_fail (gdk_pixbuf_get_bits_per_sample (src) == 8, NULL);
+
+	g_return_val_if_fail (gdk_pixbuf_get_format (src) == ART_PIX_RGB, NULL);
+	g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
+			       && gdk_pixbuf_get_n_channels (src) == 3)
+			      || (gdk_pixbuf_get_has_alpha (src)
+				  && gdk_pixbuf_get_n_channels (src) == 4), NULL);
+	g_return_val_if_fail (gdk_pixbuf_get_bits_per_sample (src) == 8, NULL);
+
+	dest = create_new_pixbuf (src);
+	
+	has_alpha = gdk_pixbuf_get_has_alpha (src);
+	width = gdk_pixbuf_get_width (src);
+	height = gdk_pixbuf_get_height (src);
+	src_row_stride = gdk_pixbuf_get_rowstride (src);
+	dst_row_stride = gdk_pixbuf_get_rowstride (dest);
+	target_pixels = gdk_pixbuf_get_pixels (dest);
+	original_pixels = gdk_pixbuf_get_pixels (src);
+
+	for (i = 0; i < height; i++) {
+		pixdest = target_pixels + i*dst_row_stride;
+		pixsrc = original_pixels + i*src_row_stride;
+		for (j = 0; j < width; j++) {		
+			*pixdest++ = (*pixsrc++ * red_value) >> 8;
+			*pixdest++ = (*pixsrc++ * green_value) >> 8;
+			*pixdest++ = (*pixsrc++ * blue_value) >> 8;
+			if (has_alpha) {
+				*pixdest++ = *pixsrc++;
+			}
+		}
+	}
+	return dest;
+}
 
 /* this routine takes the source pixbuf and returns a new one that's semi-transparent, by
    clearing every other pixel's alpha value in a checkerboard grip.  We have to do the
    checkerboard instead of reducing the alpha since it will be turned into an alpha-less
    gdkpixmap and mask for the actual dragging */
 
-GdkPixbuf * 
-make_semi_transparent(GdkPixbuf *source_pixbuf)
+GdkPixbuf *
+nautilus_make_semi_transparent (GdkPixbuf *src)
 {
 	gint i, j, temp_alpha;
-	gint width, height, has_alpha, src_rowstride, dst_rowstride;
-	guchar *target_pixels;
-	guchar *original_pixels;
-	guchar *pixsrc;
-	guchar *pixdest;
+	gint width, height, has_alpha, src_row_stride, dst_row_stride;
+	guchar *target_pixels, *original_pixels;
+	guchar *pixsrc, *pixdest;
 	guchar alpha_value;
 	GdkPixbuf *dest_pixbuf;
 	guchar start_alpha_value;
 	
-	has_alpha = gdk_pixbuf_get_has_alpha (source_pixbuf);
-	width = gdk_pixbuf_get_width (source_pixbuf);
-	height = gdk_pixbuf_get_height (source_pixbuf);
-	src_rowstride = gdk_pixbuf_get_rowstride (source_pixbuf);
-	
-	/* allocate the destination pixbuf to be a clone of the source */
+	g_return_val_if_fail (gdk_pixbuf_get_format (src) == ART_PIX_RGB, NULL);
+	g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
+			       && gdk_pixbuf_get_n_channels (src) == 3)
+			      || (gdk_pixbuf_get_has_alpha (src)
+				  && gdk_pixbuf_get_n_channels (src) == 4), NULL);
+	g_return_val_if_fail (gdk_pixbuf_get_bits_per_sample (src) == 8, NULL);
 
-	dest_pixbuf = gdk_pixbuf_new (gdk_pixbuf_get_format (source_pixbuf),
-				      TRUE,
-				      gdk_pixbuf_get_bits_per_sample (source_pixbuf),
-				      width,
-				      height);
-	dst_rowstride = gdk_pixbuf_get_rowstride (dest_pixbuf);
+	dest_pixbuf = create_new_pixbuf (src);
+
+	has_alpha = gdk_pixbuf_get_has_alpha (src);
+	width = gdk_pixbuf_get_width (src);
+	height = gdk_pixbuf_get_height (src);
+	src_row_stride = gdk_pixbuf_get_rowstride (src);
+	dst_row_stride = gdk_pixbuf_get_rowstride (dest_pixbuf);
 	
 	/* set up pointers to the actual pixels */
 	target_pixels = gdk_pixbuf_get_pixels (dest_pixbuf);
-	original_pixels = gdk_pixbuf_get_pixels (source_pixbuf);
+	original_pixels = gdk_pixbuf_get_pixels (src);
 
 	/* loop through the pixels to do the actual work, copying from the source to the destination */
-	
 	start_alpha_value = ~0;
 	for (i = 0; i < height; i++) {
-		pixdest = target_pixels + i * dst_rowstride;
-		pixsrc = original_pixels + i * src_rowstride;
+		pixdest = target_pixels + i * dst_row_stride;
+		pixsrc = original_pixels + i * src_row_stride;
 		alpha_value = start_alpha_value;
 		for (j = 0; j < width; j++) {
 			*pixdest++ = *pixsrc++; /* red */

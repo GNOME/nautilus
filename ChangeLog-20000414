@@ -1,3 +1,54 @@
+2000-03-28  Darin Adler  <darin@eazel.com>
+
+	* libnautilus/nautilus-background.h:
+	* libnautilus/nautilus-background.c:
+	Preparing for support for background images.
+
+	* libnautilus/nautilus-background.c:
+	* libnautilus/nautilus-debug.c:
+	* libnautilus/nautilus-icon-canvas-item.c:
+	* libnautilus/nautilus-icon-dnd.c:
+	Add those braces that Maciej, John, and the style guide all prefer.
+
+	* libnautilus/nautilus-file.c: (nautilus_file_set_metadata):
+	A change to metadata is considered a change to the file.
+
+	* libnautilus/nautilus-graphic-effects.c:
+	* libnautilus/nautilus-graphic-effects.h:
+	Added nautilus_ prefix to all the functions in here.
+
+	* libnautilus/nautilus-gtk-extensions.c:
+	* libnautilus/nautilus-gtk-extensions.h:
+	(nautilus_point_in_allocation),	(nautilus_point_in_widget):
+	Added hit testing help functions that check if a point is
+	in a particular allocation/widget.
+
+	* libnautilus/nautilus-icon-dnd.c: (get_gnome_icon_list_selection):
+	Fixed a bug that happens when you get a 0-length piece of
+	selection data.
+
+	* libnautilus/nautilus-icon-dnd.h:
+	Changed the icon list back to "x-gnome-icon-list".
+	That's how the other GNOME folks want it, not "x-nautilus-icon-list".
+
+	* src/nautilus-index-tabs.c:
+	* src/nautilus-index-tabs.h:
+	* src/nautilus-index-title.c:
+	* src/nautilus-index-title.h:
+	* src/ntl-index-panel.c:
+	* src/ntl-index-panel.h:
+	lite -> light, Other cleanup.
+
+	* src/nautilus-index-title.c:
+	* src/nautilus-index-title.h:
+	(nautilus_index_title_hit_test_icon):
+	* src/ntl-index-panel.c:
+	(hit_test), (uri_is_local_image), (receive_dropped_uri_list),
+	(receive_dropped_color):
+	Added code needed to support dropping an image on the icon to set
+	a custom icon. This doesn't yet update the icon in the panel itself,
+	but I'll do that soon.
+
 2000-03-28  John Sullivan <sullivan@eazel.com>
 
 	Maciej, Darin and I discussed the notify_title_change

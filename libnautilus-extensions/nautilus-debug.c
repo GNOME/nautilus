@@ -75,8 +75,9 @@ nautilus_make_warnings_and_criticals_stop_in_debugger (const char *first_domain,
 
 	for (;;) {
 		domain = va_arg (domains, const char *);
-		if (domain == NULL)
+		if (domain == NULL) {
 			break;
+		}
 		nautilus_set_stop_after_default_log_handler (domain);
 	}
 

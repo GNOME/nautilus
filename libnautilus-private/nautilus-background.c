@@ -36,7 +36,6 @@ static void nautilus_background_initialize_class (gpointer       klass);
 static void nautilus_background_initialize       (gpointer       object,
 						  gpointer       klass);
 static void nautilus_background_destroy          (GtkObject     *object);
-static void nautilus_background_finalize         (GtkObject     *object);
 
 static void nautilus_background_draw_flat_box    (GtkStyle      *style,
 						  GdkWindow     *window,
@@ -59,7 +58,7 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-struct _NautilusBackgroundDetails
+struct NautilusBackgroundDetails
 {
 	char *color;
 	char *tile_image_uri;
@@ -84,7 +83,6 @@ nautilus_background_initialize_class (gpointer klass)
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	object_class->destroy = nautilus_background_destroy;
-	object_class->finalize = nautilus_background_finalize;
 }
 
 static void
@@ -103,19 +101,9 @@ nautilus_background_destroy (GtkObject *object)
 	NautilusBackground *background;
 
 	background = NAUTILUS_BACKGROUND (object);
-
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
-}
-
-static void
-nautilus_background_finalize (GtkObject *object)
-{
-	NautilusBackground *background;
-
-	background = NAUTILUS_BACKGROUND (object);
 	g_free (background->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, finalize, (object));
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 NautilusBackground *
@@ -171,14 +159,29 @@ nautilus_background_set_color (NautilusBackground *background,
 	gtk_signal_emit (GTK_OBJECT (background), signals[CHANGED]);
 }
 
+#if 0
+
+void
+nautilus_background_set_tile_image_uri (NautilusBackground *background,
+					const char *image_uri)
+{
+	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
+
+	g_free (background->details->color);
+	background->details->color = g_strdup (color);
+
+	gtk_signal_emit (GTK_OBJECT (background), signals[CHANGED]);
+}
+
+#endif
+
 static GtkStyleClass *
 nautilus_gtk_style_get_default_class (void)
 {
 	static GtkStyleClass *default_class;
-
+	GtkStyle *style;
+	
 	if (default_class == NULL) {
-		GtkStyle *style;
-
 		style = gtk_style_new ();
 		default_class = style->klass;
 		gtk_style_unref (style);
@@ -194,12 +197,13 @@ nautilus_gdk_window_update_sizes (GdkWindow *window, int *width, int *height)
 	g_return_if_fail (width != NULL);
 	g_return_if_fail (height != NULL);
 
-	if (*width == -1 && *height == -1)
+	if (*width == -1 && *height == -1) {
 		gdk_window_get_size (window, width, height);
-	else if (*width == -1)
+	} else if (*width == -1) {
 		gdk_window_get_size (window, width, NULL);
-	else if (*height == -1)
+	} else if (*height == -1) {
 		gdk_window_get_size (window, NULL, height);
+	}
 }
 
 static void
@@ -226,8 +230,9 @@ nautilus_background_draw_flat_box (GtkStyle *style,
 	if (state_type == GTK_STATE_NORMAL) {
 		background = nautilus_get_widget_background (widget);
 		if (background != NULL) {
-			if (nautilus_gradient_is_gradient (background->details->color))
+			if (nautilus_gradient_is_gradient (background->details->color)) {
 				call_parent = FALSE;
+			}
 		}
 	}
 
@@ -405,7 +410,7 @@ nautilus_background_receive_dropped_color (NautilusBackground *background,
 		g_warning ("received invalid color data");
 		return;
 	}
-	channels = (guint16 *)selection_data->data;
+	channels = (guint16 *) selection_data->data;
 	color_spec = g_strdup_printf ("rgb:%04hX/%04hX/%04hX", channels[0], channels[1], channels[2]);
 
 	/* Figure out if the color was dropped close enough to an edge to create a gradient.
@@ -416,16 +421,17 @@ nautilus_background_receive_dropped_color (NautilusBackground *background,
 	right_border = widget->allocation.width - 32;
 	top_border = 32;
 	bottom_border = widget->allocation.height - 32;
-	if (drop_location_x < left_border && drop_location_x <= right_border)
+	if (drop_location_x < left_border && drop_location_x <= right_border) {
 		new_gradient_spec = nautilus_gradient_set_left_color_spec (background->details->color, color_spec);
-	else if (drop_location_x >= left_border && drop_location_x > right_border)
+	} else if (drop_location_x >= left_border && drop_location_x > right_border) {
 		new_gradient_spec = nautilus_gradient_set_right_color_spec (background->details->color, color_spec);
-	else if (drop_location_y < top_border && drop_location_y <= bottom_border)
+	} else if (drop_location_y < top_border && drop_location_y <= bottom_border) {
 		new_gradient_spec = nautilus_gradient_set_top_color_spec (background->details->color, color_spec);
-	else if (drop_location_y >= top_border && drop_location_y > bottom_border)
+	} else if (drop_location_y >= top_border && drop_location_y > bottom_border) {
 		new_gradient_spec = nautilus_gradient_set_bottom_color_spec (background->details->color, color_spec);
-	else
+	} else {
 		new_gradient_spec = g_strdup (color_spec);
+	}
 	
 	g_free (color_spec);
 

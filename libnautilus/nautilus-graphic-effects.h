@@ -25,21 +25,24 @@
 #ifndef NAUTILUS_GRAPHIC_EFFECTS_H
 #define NAUTILUS_GRAPHIC_EFFECTS_H
 
-#include <libgnome/gnome-defs.h>
-#include <libgnomeui/gnome-canvas.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 /* return a lightened pixbuf for pre-lighting */
-GdkPixbuf* create_spotlight_pixbuf (GdkPixbuf* source_pixbuf);
+GdkPixbuf *nautilus_create_spotlight_pixbuf (GdkPixbuf *source_pixbuf);
 
 /* return a darkened pixbuf for selection hiliting */
-GdkPixbuf* create_darkened_pixbuf (GdkPixbuf *src, int saturation, int darken);
+GdkPixbuf *nautilus_create_darkened_pixbuf  (GdkPixbuf *source_pixbuf,
+					     int        saturation,
+					     int        darken);
 
-/* return a pixbuf colorized with the color specified by the parameter */
-GdkPixbuf* create_colorized_pixbuf(GdkPixbuf *src, int red_value, int green_value, int blue_value);
+/* return a pixbuf colorized with the color specified by the parameters */
+GdkPixbuf* nautilus_create_colorized_pixbuf (GdkPixbuf *source_pixbuf,
+					     int        red_value,
+					     int        green_value,
+					     int        blue_value);
 
 /* return a semi-transparent pixbuf from the source pixbuf using a checkboard
    stipple in the alpha channel (so it can be converted to an alpha-less pixmap) */
-GdkPixbuf* make_semi_transparent(GdkPixbuf *source_pixbuf);
+GdkPixbuf *nautilus_make_semi_transparent   (GdkPixbuf *source_pixbuf);
 
 #endif /* NAUTILUS_GRAPHIC_EFFECTS_H */

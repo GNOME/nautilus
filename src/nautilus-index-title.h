@@ -26,9 +26,7 @@
 #ifndef NAUTILUS_INDEX_TITLE_H
 #define NAUTILUS_INDEX_TITLE_H
 
-
 #include <gtk/gtkvbox.h>
-
 
 #define NAUTILUS_TYPE_INDEX_TITLE	     (nautilus_index_title_get_type ())
 #define NAUTILUS_INDEX_TITLE(obj)	     (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_INDEX_TITLE, NautilusIndexTitle))
@@ -36,29 +34,30 @@
 #define NAUTILUS_IS_INDEX_TITLE(obj)	     (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_INDEX_TITLE))
 #define NAUTILUS_IS_INDEX_TITLE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_INDEX_TITLE))
 
-typedef struct _NautilusIndexTitle NautilusIndexTitle;
-typedef struct _NautilusIndexTitleClass NautilusIndexTitleClass;
-typedef struct _NautilusIndexTitleDetails NautilusIndexTitleDetails;
+typedef struct NautilusIndexTitle NautilusIndexTitle;
+typedef struct NautilusIndexTitleClass NautilusIndexTitleClass;
+typedef struct NautilusIndexTitleDetails NautilusIndexTitleDetails;
 
-struct _NautilusIndexTitle
+struct NautilusIndexTitle
 {
 	GtkVBox box;
 	NautilusIndexTitleDetails *details; 
 };
 
-struct _NautilusIndexTitleClass
+struct NautilusIndexTitleClass
 {
 	GtkVBoxClass parent_class;
 };
 
-
-GtkType    nautilus_index_title_get_type (void);
-GtkWidget* nautilus_index_title_new      (void);
-void       nautilus_index_title_set_uri  (NautilusIndexTitle *index_title,
-					  const char         *new_uri,
-					  const char	     *initial_text);
-void	   nautilus_index_title_set_text (NautilusIndexTitle *index_title,
-					  const char	     *new_title);
-
+GtkType    nautilus_index_title_get_type      (void);
+GtkWidget *nautilus_index_title_new           (void);
+void       nautilus_index_title_set_uri       (NautilusIndexTitle *index_title,
+					       const char         *new_uri,
+					       const char         *initial_text);
+void       nautilus_index_title_set_text      (NautilusIndexTitle *index_title,
+					       const char         *new_title);
+gboolean   nautilus_index_title_hit_test_icon (NautilusIndexTitle *index_title,
+					       int                 x,
+					       int                 y);
 
 #endif /* NAUTILUS_INDEX_TITLE_H */

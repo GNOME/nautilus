@@ -47,6 +47,14 @@ guint             nautilus_gtk_signal_connect_free_data                    (GtkO
 									    GtkSignalFunc           func,
 									    gpointer                data);
 
+/* GtkWidget */
+gboolean          nautilus_point_in_allocation                             (const GtkAllocation    *allocation,
+									    int                     x,
+									    int                     y);
+gboolean          nautilus_point_in_widget                                 (GtkWidget              *widget,
+									    int                     x,
+									    int                     y);
+
 /* GtkWindow */
 void              nautilus_gtk_window_present                              (GtkWindow              *window);
 

@@ -1035,7 +1035,7 @@ nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 		 tag, default_metadata);
 }
 
-void
+gboolean
 nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 				      const char *file_name,
 				      const char *tag,
@@ -1048,9 +1048,9 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 	const char *value;
 	xmlAttr *property_node;
 
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
-	g_return_if_fail (tag);
-	g_return_if_fail (tag[0]);
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
+	g_return_val_if_fail (tag != NULL, FALSE);
+	g_return_val_if_fail (tag[0] != '\0', FALSE);
 
 	/* If the data in the metafile is already correct, do nothing. */
 	old_metadata = nautilus_directory_get_file_metadata
@@ -1058,7 +1058,7 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 	old_metadata_matches = nautilus_strcmp (old_metadata, metadata) == 0;
 	g_free (old_metadata);
 	if (old_metadata_matches) {
-		return;
+		return FALSE;
 	}
 
 	/* Data that matches the default is represented in the tree by
@@ -1084,6 +1084,8 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 	
 	/* Since we changed the tree, arrange for it to be written. */
 	nautilus_directory_request_write_metafile (directory);
+
+	return TRUE;
 }
 
 static int

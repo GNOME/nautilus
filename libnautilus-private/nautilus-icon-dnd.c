@@ -49,13 +49,13 @@ typedef struct {
 } DndSelectionItem;
 
 static GtkTargetEntry drag_types [] = {
-	{ NAUTILUS_ICON_DND_NAUTILUS_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_NAUTILUS_ICON_LIST },
+	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
 	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL }
 };
 
 static GtkTargetEntry drop_types [] = {
-	{ NAUTILUS_ICON_DND_NAUTILUS_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_NAUTILUS_ICON_LIST },
+	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
 	{ NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
 	{ NAUTILUS_ICON_DND_URL_TYPE, 0, NAUTILUS_ICON_DND_URL },
 	{ NAUTILUS_ICON_DND_COLOR_TYPE, 0, NAUTILUS_ICON_DND_COLOR }
@@ -73,12 +73,14 @@ create_selection_shadow (NautilusIconContainer *container,
 	GList *p;
 	double pixels_per_unit;
 
-	if (list == NULL)
-	    return NULL;
+	if (list == NULL) {
+		return NULL;
+	}
 
 	/* if we're only dragging a single item, don't worry about the shadow */
-	if (list->next == NULL)
+	if (list->next == NULL) {
 		return NULL;
+	}
 		
 	stipple = container->details->dnd_info->stipple;
 	g_return_val_if_fail (stipple != NULL, NULL);
@@ -110,8 +112,9 @@ create_selection_shadow (NautilusIconContainer *container,
 
 		item = p->data;
 
-		if (!item->got_icon_position)
+		if (!item->got_icon_position) {
 			continue;
+		}
 
 		x1 = item->icon_x;
 		y1 = item->icon_y;
@@ -191,13 +194,13 @@ destroy_selection_list (GList *list)
 
 /* Source-side handling of the drag.  */
 
-/* Encode a "special/x-nautilus-icon-list" selection.
+/* Encode a "special/x-gnome-icon-list" selection.
    Along with the URIs of the dragged files, this encodes
    the location and size of each icon relative to the cursor.
 */
 static void
-set_nautilus_icon_list_selection (NautilusIconContainer *container,
-				  GtkSelectionData *selection_data)
+set_gnome_icon_list_selection (NautilusIconContainer *container,
+			       GtkSelectionData *selection_data)
 {
 	NautilusIconContainerDetails *details;
 	GList *p;
@@ -301,8 +304,8 @@ drag_data_get_callback (GtkWidget *widget,
 	container = NAUTILUS_ICON_CONTAINER (widget);
 
 	switch (info) {
-	case NAUTILUS_ICON_DND_NAUTILUS_ICON_LIST:
-		set_nautilus_icon_list_selection (container, selection_data);
+	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+		set_gnome_icon_list_selection (container, selection_data);
 		break;
 	case NAUTILUS_ICON_DND_URI_LIST:
 		set_uri_list_selection (container, selection_data);
@@ -315,8 +318,8 @@ drag_data_get_callback (GtkWidget *widget,
 /* Target-side handling of the drag.  */
 
 static void
-get_nautilus_icon_list_selection (NautilusIconContainer *container,
-				  GtkSelectionData *data)
+get_gnome_icon_list_selection (NautilusIconContainer *container,
+			       GtkSelectionData *data)
 {
 	NautilusIconDndInfo *dnd_info;
 	const guchar *p, *oldp;
@@ -327,7 +330,7 @@ get_nautilus_icon_list_selection (NautilusIconContainer *container,
 	oldp = data->data;
 	size = data->length;
 
-	while (1) {
+	while (size > 0) {
 		DndSelectionItem *item;
 		guint len;
 
@@ -340,8 +343,9 @@ get_nautilus_icon_list_selection (NautilusIconContainer *container,
 		/* 1: Decode name. */
 
 		p = memchr (oldp, '\r', size);
-		if (p == NULL)
+		if (p == NULL) {
 			break;
+		}
 
 		item = dnd_selection_item_new ();
 
@@ -357,7 +361,7 @@ get_nautilus_icon_list_selection (NautilusIconContainer *container,
 				= g_list_prepend (dnd_info->selection_list,
 						  item);
 			if (p == 0) {
-				g_warning ("Invalid special/x-nautilus-icon-list data received: "
+				g_warning ("Invalid special/x-gnome-icon-list data received: "
 					   "missing newline character.");
 				break;
 			} else {
@@ -374,19 +378,21 @@ get_nautilus_icon_list_selection (NautilusIconContainer *container,
 		item->got_icon_position = sscanf (p, "%d:%d:%d:%d%*s",
 						  &item->icon_x, &item->icon_y,
 						  &item->icon_width, &item->icon_height) == 4;
-		if (!item->got_icon_position)
-			g_warning ("Invalid special/x-nautilus-icon-list data received: "
+		if (!item->got_icon_position) {
+			g_warning ("Invalid special/x-gnome-icon-list data received: "
 				   "invalid icon position specification.");
+		}
 
 		dnd_info->selection_list
 			= g_list_prepend (dnd_info->selection_list, item);
 
 		p = memchr (p, '\r', size);
 		if (p == NULL || p[1] != '\n') {
-			g_warning ("Invalid special/x-nautilus-icon-list data received: "
+			g_warning ("Invalid special/x-gnome-icon-list data received: "
 				   "missing newline character.");
-			if (p == NULL)
+			if (p == NULL) {
 				break;
+			}
 		} else {
 			p += 2;
 		}
@@ -404,8 +410,9 @@ nautilus_icon_container_position_shadow (NautilusIconContainer *container,
 	double world_x, world_y;
 
 	shadow = container->details->dnd_info->shadow;
-	if (shadow == NULL)
+	if (shadow == NULL) {
 		return;
+	}
 
 	gnome_canvas_window_to_world (GNOME_CANVAS (container),
 				      x, y, &world_x, &world_y);
@@ -431,11 +438,12 @@ nautilus_icon_container_dropped_icon_feedback (GtkWidget *widget,
 	}
 
 	/* Delete old shadow if any. */
-	if (dnd_info->shadow != NULL)
+	if (dnd_info->shadow != NULL) {
 		gtk_object_destroy (GTK_OBJECT (dnd_info->shadow));
+	}
 
 	/* Build the selection list and the shadow. */
-	get_nautilus_icon_list_selection (container, data);
+	get_gnome_icon_list_selection (container, data);
 	dnd_info->shadow = create_selection_shadow (container, dnd_info->selection_list);
 	nautilus_icon_container_position_shadow (container, x, y);
 }
@@ -458,7 +466,7 @@ drag_data_received_callback (GtkWidget *widget,
 	dnd_info->data_type = info;
 
 	switch (info) {
-	case NAUTILUS_ICON_DND_NAUTILUS_ICON_LIST:
+	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
 		nautilus_icon_container_dropped_icon_feedback (widget, data, x, y);
 		break;
 	case NAUTILUS_ICON_DND_COLOR:
@@ -479,10 +487,11 @@ nautilus_icon_container_ensure_drag_data (NautilusIconContainer *container,
 
 	dnd_info = container->details->dnd_info;
 
-	if (!dnd_info->got_data_type)
+	if (!dnd_info->got_data_type) {
 		gtk_drag_get_data (GTK_WIDGET (container), context,
 				   GPOINTER_TO_INT (context->targets->data),
 				   time);
+	}
 }
 
 static gboolean
@@ -617,7 +626,7 @@ drag_drop_callback (GtkWidget *widget,
 
 	g_assert (dnd_info->got_data_type);
 	switch (dnd_info->data_type) {
-	case NAUTILUS_ICON_DND_NAUTILUS_ICON_LIST:
+	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
 		nautilus_icon_container_receive_dropped_icons
 			(NAUTILUS_ICON_CONTAINER (widget),
 			 context, x, y);
@@ -668,25 +677,22 @@ nautilus_icon_dnd_init (NautilusIconContainer *container,
 
 	dnd_info->stipple = gdk_bitmap_ref (stipple);
 
-
-	/* Set up the widget as a drag destination.  */
-	/* (But not a source, as drags starting from this widget will be
-           implemented by dealing with events manually.)  */
-
+	/* Set up the widget as a drag destination.
+	 * (But not a source, as drags starting from this widget will be
+         * implemented by dealing with events manually.)
+	 */
 	gtk_drag_dest_set  (GTK_WIDGET (container),
 			    0,
 			    drop_types, NAUTILUS_N_ELEMENTS (drop_types),
 			    GDK_ACTION_COPY | GDK_ACTION_MOVE);
 
 	/* Messages for outgoing drag. */
-
 	gtk_signal_connect (GTK_OBJECT (container), "drag_data_get",
 			    GTK_SIGNAL_FUNC (drag_data_get_callback), NULL);
 	gtk_signal_connect (GTK_OBJECT (container), "drag_end",
 			    GTK_SIGNAL_FUNC (drag_end_callback), NULL);
 
 	/* Messages for incoming drag. */
-
 	gtk_signal_connect (GTK_OBJECT (container), "drag_data_received",
 			    GTK_SIGNAL_FUNC (drag_data_received_callback), NULL);
 	gtk_signal_connect (GTK_OBJECT (container), "drag_motion",
@@ -766,8 +772,8 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	   for relatively small pixbufs.  Eventually, we may have to remove this entirely
 	   for UI consistency reasons */
 	
-	if ((gdk_pixbuf_get_width(pixbuf) * gdk_pixbuf_get_height(pixbuf)) < 4096) {
-		transparent_pixbuf = make_semi_transparent (pixbuf);
+	if (gdk_pixbuf_get_width(pixbuf) * gdk_pixbuf_get_height(pixbuf) < 4096) {
+		transparent_pixbuf = nautilus_make_semi_transparent (pixbuf);
 	} else {
 		gdk_pixbuf_ref (pixbuf);
 		transparent_pixbuf = pixbuf;

@@ -251,8 +251,10 @@ nautilus_icon_canvas_item_destroy (GtkObject *object)
 	}
 	nautilus_gdk_pixbuf_list_free (details->emblem_pixbufs);
 	g_free (details->text);
-	if (details->font != NULL)
-		gdk_font_unref (details->font);			
+	if (details->font != NULL) {
+		gdk_font_unref (details->font);
+	}
+			
 	g_free (details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -266,8 +268,10 @@ static gboolean
 pixbuf_is_acceptable (GdkPixbuf *pixbuf)
 {
 	return gdk_pixbuf_get_format (pixbuf) == ART_PIX_RGB
-		&& (gdk_pixbuf_get_n_channels (pixbuf) == 3
-		    || gdk_pixbuf_get_n_channels (pixbuf) == 4)
+		&& ((!gdk_pixbuf_get_has_alpha (pixbuf)
+		     && gdk_pixbuf_get_n_channels (pixbuf) == 3)
+		    || (gdk_pixbuf_get_has_alpha (pixbuf)
+			&& gdk_pixbuf_get_n_channels (pixbuf) == 4))
 		&& gdk_pixbuf_get_bits_per_sample (pixbuf) == 8;
 }
 
@@ -912,13 +916,13 @@ draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
 /* Draw the icon item. */
 static void
 nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
-                                    int x, int y, int width, int height)
+				int x, int y, int width, int height)
 {
 	NautilusIconCanvasItem *icon_item;
 	NautilusIconCanvasItemDetails *details;
 	ArtIRect icon_rect, emblem_rect;
 	EmblemLayout emblem_layout;
-	GdkPixbuf *emblem_pixbuf, *temp_pixbuf;
+	GdkPixbuf *emblem_pixbuf, *temp_pixbuf, *old_pixbuf;
 	
 	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
 	details = icon_item->details;
@@ -939,19 +943,24 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 	
 	temp_pixbuf = details->pixbuf;
 	
-	if (details->is_prelit)
-		temp_pixbuf = create_spotlight_pixbuf (details->pixbuf);
+	if (details->is_prelit) {
+		temp_pixbuf = nautilus_create_spotlight_pixbuf (details->pixbuf);
+	}
 	
 	if (details->is_highlighted_for_selection) {
-		GdkPixbuf* old_pixbuf = temp_pixbuf;
-		temp_pixbuf = create_darkened_pixbuf (temp_pixbuf, (int)(0.6*255), (int)(0.6*255));
-		if (old_pixbuf != details->pixbuf)
-			gdk_pixbuf_unref (old_pixbuf);	
+		old_pixbuf = temp_pixbuf;
+		temp_pixbuf = nautilus_create_darkened_pixbuf (temp_pixbuf,
+							       0.6 * 255,
+							       0.6 * 255);
+		if (old_pixbuf != details->pixbuf) {
+			gdk_pixbuf_unref (old_pixbuf);
+		}
 	} 
 	
 	draw_pixbuf (temp_pixbuf, drawable, icon_rect.x0, icon_rect.y0);
-	if (temp_pixbuf != details->pixbuf)
-		gdk_pixbuf_unref (temp_pixbuf);	
+	if (temp_pixbuf != details->pixbuf) {
+		gdk_pixbuf_unref (temp_pixbuf);
+	}
 
 	/* Draw the emblem pixbufs. */
 	emblem_layout_reset (&emblem_layout, icon_item, &icon_rect);

@@ -301,3 +301,25 @@ nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER (GtkObject *object,
 		 GTK_VALUE_POINTER (args[2]),
 		 func_data);
 }
+
+gboolean
+nautilus_point_in_allocation (const GtkAllocation *allocation,
+			      int x, int y)
+{
+	g_return_val_if_fail (allocation != NULL, FALSE);
+	return x >= allocation->x
+		&& y >= allocation->y
+		&& x < allocation->x + allocation->width 
+		&& y < allocation->y + allocation->height;
+}
+
+gboolean
+nautilus_point_in_widget (GtkWidget *widget,
+			  int x, int y)
+{
+	if (widget == NULL) {
+		return FALSE;
+	}
+	g_return_val_if_fail (GTK_IS_WIDGET (widget), FALSE);
+	return nautilus_point_in_allocation (&widget->allocation, x, y);
+}

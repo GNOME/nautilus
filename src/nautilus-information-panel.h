@@ -29,8 +29,8 @@
 #include <gtk/gtkeventbox.h>
 #include "ntl-view.h"
 
-typedef struct _NautilusIndexPanel NautilusIndexPanel;
-typedef struct _NautilusIndexPanelClass  NautilusIndexPanelClass;
+typedef struct NautilusIndexPanel NautilusIndexPanel;
+typedef struct NautilusIndexPanelClass  NautilusIndexPanelClass;
 
 #define NAUTILUS_TYPE_INDEX_PANEL \
 	(nautilus_index_panel_get_type ())
@@ -43,15 +43,15 @@ typedef struct _NautilusIndexPanelClass  NautilusIndexPanelClass;
 #define NAUTILUS_IS_INDEX_PANEL_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_INDEX_PANEL))
 
-typedef struct _NautilusIndexPanelDetails NautilusIndexPanelDetails;
+typedef struct NautilusIndexPanelDetails NautilusIndexPanelDetails;
 
-struct _NautilusIndexPanel
+struct NautilusIndexPanel
 {
 	GtkEventBox event_box;
 	NautilusIndexPanelDetails *details;
 };
 
-struct _NautilusIndexPanelClass
+struct NautilusIndexPanelClass
 {
 	GtkEventBoxClass parent_class;
 };
@@ -64,7 +64,7 @@ void                nautilus_index_panel_remove_meta_view (NautilusIndexPanel *p
 							   NautilusView       *meta_view);
 void                nautilus_index_panel_set_uri          (NautilusIndexPanel *panel,
 							   const char         *new_uri,
-							   const char	      *initial_title);
+							   const char         *initial_title);
 void                nautilus_index_panel_set_title        (NautilusIndexPanel *panel,
 							   const char         *new_title);
 

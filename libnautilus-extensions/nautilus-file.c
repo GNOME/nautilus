@@ -409,6 +409,7 @@ nautilus_file_set_metadata (NautilusFile *file,
 					      tag,
 					      default_metadata,
 					      metadata);
+	nautilus_file_changed (file);
 }
 
 char *

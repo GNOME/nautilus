@@ -43,8 +43,8 @@
 #include <gdk/gdktypes.h>
 #include <gtk/gtkwidget.h>
 
-typedef struct _NautilusBackground NautilusBackground;
-typedef struct _NautilusBackgroundClass NautilusBackgroundClass;
+typedef struct NautilusBackground NautilusBackground;
+typedef struct NautilusBackgroundClass NautilusBackgroundClass;
 
 #define NAUTILUS_TYPE_BACKGROUND \
 	(nautilus_background_get_type ())
@@ -87,15 +87,15 @@ void		    nautilus_background_receive_dropped_color (NautilusBackground     *bac
 /* Gets or creates a background so that it's attached to a widget. */
 NautilusBackground *nautilus_get_widget_background            (GtkWidget              *widget);
 
-typedef struct _NautilusBackgroundDetails NautilusBackgroundDetails;
+typedef struct NautilusBackgroundDetails NautilusBackgroundDetails;
 
-struct _NautilusBackground
+struct NautilusBackground
 {
 	GtkObject object;
 	NautilusBackgroundDetails *details;
 };
 
-struct _NautilusBackgroundClass
+struct NautilusBackgroundClass
 {
 	GtkObjectClass parent_class;
 

@@ -37,17 +37,17 @@ typedef enum NautilusIconDndTargetType NautilusIconDndTargetType;
 
 /* Standard DnD types. */
 enum NautilusIconDndTargetType {
-	NAUTILUS_ICON_DND_NAUTILUS_ICON_LIST,
+	NAUTILUS_ICON_DND_GNOME_ICON_LIST,
 	NAUTILUS_ICON_DND_URI_LIST,
 	NAUTILUS_ICON_DND_URL,
 	NAUTILUS_ICON_DND_COLOR
 };
 
 /* DnD target names. */
-#define NAUTILUS_ICON_DND_NAUTILUS_ICON_LIST_TYPE "special/x-nautilus-icon-list"
-#define NAUTILUS_ICON_DND_URI_LIST_TYPE 	    "text/uri-list"
-#define NAUTILUS_ICON_DND_URL_TYPE	            "_NETSCAPE_URL"
-#define NAUTILUS_ICON_DND_COLOR_TYPE              "application/x-color"
+#define NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE "special/x-gnome-icon-list"
+#define NAUTILUS_ICON_DND_URI_LIST_TYPE        "text/uri-list"
+#define NAUTILUS_ICON_DND_URL_TYPE	       "_NETSCAPE_URL"
+#define NAUTILUS_ICON_DND_COLOR_TYPE           "application/x-color"
 
 /* DnD-related information. */
 struct NautilusIconDndInfo {

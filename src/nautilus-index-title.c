@@ -24,18 +24,18 @@
  */
 
 #include <config.h>
+#include "nautilus-index-title.h"
+
 #include <ctype.h>
 #include <string.h>
 #include <math.h>
-
-#include "nautilus-index-title.h"
-
 #include <gtk/gtklabel.h>
 #include <gtk/gtkpixmap.h>
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libnautilus/nautilus-glib-extensions.h>
+#include <libnautilus/nautilus-gtk-extensions.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-directory.h>
 #include <libnautilus/nautilus-icon-factory.h>
@@ -47,15 +47,15 @@ static void     nautilus_index_title_initialize         (NautilusIndexTitle     
 static gboolean nautilus_index_title_button_press_event (GtkWidget               *widget,
 							 GdkEventButton          *event);
 static GdkFont *select_font                             (const char              *text_to_format,
-							 gint                     width,
+							 int                      width,
 							 const char              *font_template);
-static void     set_up_font                             (GtkWidget               *widget,
+static void     update_font                             (GtkWidget               *widget,
 							 GdkFont                 *font);
-static void     nautilus_index_title_set_up_icon        (NautilusIndexTitle      *index_title);
-static void     nautilus_index_title_set_up_label       (NautilusIndexTitle      *index_title);
-static void     nautilus_index_title_set_up_info        (NautilusIndexTitle      *index_title);
+static void     nautilus_index_title_update_icon        (NautilusIndexTitle      *index_title);
+static void     nautilus_index_title_update_label       (NautilusIndexTitle      *index_title);
+static void     nautilus_index_title_update_info        (NautilusIndexTitle      *index_title);
 
-struct _NautilusIndexTitleDetails {
+struct NautilusIndexTitleDetails {
 	char *uri;
 	char *requested_text;
 	GtkWidget *icon;
@@ -66,8 +66,8 @@ struct _NautilusIndexTitleDetails {
 
 /* constants */
 
-#define MAX_ICON_WIDTH 100.0
-#define MAX_ICON_HEIGHT 120.0
+#define MAX_ICON_WIDTH 100
+#define MAX_ICON_HEIGHT 120
 
 /* button assignments */
 
@@ -94,7 +94,7 @@ nautilus_index_title_initialize (NautilusIndexTitle *index_title)
 	/* Register to find out about icon theme changes */
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
 					       "icons_changed",
-					       nautilus_index_title_set_up_icon,
+					       nautilus_index_title_update_icon,
 					       GTK_OBJECT (index_title));
 }
 
@@ -122,10 +122,10 @@ nautilus_index_title_new (void)
 
 /* set up the icon image */
 static void
-nautilus_index_title_set_up_icon (NautilusIndexTitle *index_title)
+nautilus_index_title_update_icon (NautilusIndexTitle *index_title)
 {
-	NautilusFile *file_object;
-	gint width, height;
+	NautilusFile *file;
+	int width, height;
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
 	GdkPixbuf *pixbuf;
@@ -133,58 +133,60 @@ nautilus_index_title_set_up_icon (NautilusIndexTitle *index_title)
 	double h_scale = 1.0;
 	double v_scale = 1.0;
 
-	file_object = nautilus_file_get (index_title->details->uri);
-	
-	if (file_object == NULL)
+	file = nautilus_file_get (index_title->details->uri);
+	if (file == NULL) {
 		return;
+	}
 	
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_file(file_object, NAUTILUS_ICON_SIZE_STANDARD);
-	nautilus_file_unref (file_object);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (file,
+							    NAUTILUS_ICON_SIZE_STANDARD);
+	nautilus_file_unref (file);
 
 	/* even though we asked for standard size, it might still be really huge, if it's not
 	   part of the standard set, so scale it down if necessary */
 	
 	width  = gdk_pixbuf_get_width(pixbuf);
 	height = gdk_pixbuf_get_height(pixbuf);
-	if (width > MAX_ICON_WIDTH)
+	if (width > MAX_ICON_WIDTH) {
 		h_scale = MAX_ICON_WIDTH / (double) width;
-	if (height > MAX_ICON_HEIGHT)
+	}
+	if (height > MAX_ICON_HEIGHT) {
 		v_scale = MAX_ICON_HEIGHT  / (double) height;
-	if (h_scale < v_scale)
-		scale_factor = h_scale;
-	else
-		scale_factor = v_scale;
+	}
+	scale_factor = MIN (h_scale, v_scale);
 	
 	if (scale_factor < 1.0) {
 		GdkPixbuf *scaled_pixbuf;
-		gint scaled_width  =  floor(width * scale_factor + .5);
-		gint scaled_height =  floor(height * scale_factor + .5);
+		int scaled_width  = floor(width * scale_factor + .5);
+		int scaled_height = floor(height * scale_factor + .5);
 				
-		scaled_pixbuf = gdk_pixbuf_scale_simple(pixbuf, scaled_width, scaled_height, ART_FILTER_BILINEAR);	
-		gdk_pixbuf_unref(pixbuf);
+		scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf,
+							 scaled_width, scaled_height,
+							 ART_FILTER_BILINEAR);	
+		gdk_pixbuf_unref (pixbuf);
 		pixbuf = scaled_pixbuf;
 	}
 	
 	/* make a pixmap and mask to pass to the widget */
         gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
-	gdk_pixbuf_unref(pixbuf);
+	gdk_pixbuf_unref (pixbuf);
 	
 	/* if there's no pixmap so far, so allocate one */
-	if (index_title->details->icon)
+	if (index_title->details->icon) {
 		gtk_pixmap_set (GTK_PIXMAP (index_title->details->icon),
 				pixmap, mask);
-	else {
+	} else {
 		index_title->details->icon = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
 		gtk_widget_show (index_title->details->icon);
 		gtk_box_pack_start (GTK_BOX (index_title), index_title->details->icon, 0, 0, 0);
 		gtk_box_reorder_child (GTK_BOX (index_title), index_title->details->icon, 0);
-	}   
+	}
 }
 
 /* utility routine (FIXME: should be located elsewhere) to find the largest font that fits */
 
 GdkFont *
-select_font(const char *text_to_format, gint width, const char* font_template)
+select_font (const char *text_to_format, int width, const char* font_template)
 {
 	gint font_index, this_width;
 	char *font_name;
@@ -232,7 +234,7 @@ select_font(const char *text_to_format, gint width, const char* font_template)
 
 /* utility to apply font */
 void
-set_up_font(GtkWidget *widget, GdkFont *font)
+update_font (GtkWidget *widget, GdkFont *font)
 {
 	GtkStyle *temp_style;
 	gtk_widget_realize (widget);	
@@ -243,9 +245,8 @@ set_up_font(GtkWidget *widget, GdkFont *font)
 
 
 /* set up the filename label */
-
 void
-nautilus_index_title_set_up_label (NautilusIndexTitle *index_title)
+nautilus_index_title_update_label (NautilusIndexTitle *index_title)
 {
 	GdkFont *label_font;
 	char *displayed_text;
@@ -258,7 +259,6 @@ nautilus_index_title_set_up_label (NautilusIndexTitle *index_title)
 	}
 	
 	/* split the filename into two lines if necessary */
-	
 	if (strlen(displayed_text) >= 16) {
 		/* find an appropriate split point if we can */
 		gint index;
@@ -273,10 +273,9 @@ nautilus_index_title_set_up_label (NautilusIndexTitle *index_title)
 				split_offset = mid_point - index;
 			
 			if (split_offset != 0) {
-				char *buffer = (char *) g_malloc(strlen(displayed_text) + 2);
+				char *buffer = g_malloc(strlen(displayed_text) + 2);
 				
 				/* build the new string, with a CR inserted, also remembering them separately for measuring */
-				
 				memcpy(buffer, displayed_text, split_offset);
 				buffer[split_offset] = '\n';
 				strcpy(&buffer[split_offset + 1], &displayed_text[split_offset]);
@@ -289,9 +288,9 @@ nautilus_index_title_set_up_label (NautilusIndexTitle *index_title)
 		}
 	}
 	
-	if (index_title->details->title != NULL)
+	if (index_title->details->title != NULL) {
 		gtk_label_set_text (GTK_LABEL (index_title->details->title), displayed_text);
-	else {  
+	} else {  
 		index_title->details->title = GTK_WIDGET (gtk_label_new (displayed_text));
 		gtk_label_set_line_wrap (GTK_LABEL (index_title->details->title), TRUE);   
 		gtk_label_set_justify(GTK_LABEL(index_title->details->title), GTK_JUSTIFY_CENTER);
@@ -301,35 +300,35 @@ nautilus_index_title_set_up_label (NautilusIndexTitle *index_title)
 	}   
 	
 	/* FIXME: don't use hardwired font like this - get it from preferences */    	
-	label_font = select_font(displayed_text, GTK_WIDGET (index_title)->allocation.width - 4,
-				 "-bitstream-courier-medium-r-normal-*-%d-*-*-*-*-*-*-*");	
+	label_font = select_font (displayed_text, GTK_WIDGET (index_title)->allocation.width - 4,
+				  "-bitstream-courier-medium-r-normal-*-%d-*-*-*-*-*-*-*");	
 	
-	set_up_font(index_title->details->title, label_font);	
+	update_font(index_title->details->title, label_font);	
 	g_free (displayed_text);
 }
 
 /* set up more info about the file */
 
 void
-nautilus_index_title_set_up_info (NautilusIndexTitle *index_title)
+nautilus_index_title_update_info (NautilusIndexTitle *index_title)
 {
-	NautilusFile *file_object;
+	NautilusFile *file;
 	GdkFont *label_font;
 	char *notes_text;
-	char *temp_string = NULL;
+	char *temp_string;
 	char *info_string;
 	
-	file_object = nautilus_file_get (index_title->details->uri);
-	
-	if (file_object == NULL)
+	file = nautilus_file_get (index_title->details->uri);
+	if (file == NULL) {
 		return;
+	}
 	
-	info_string = nautilus_file_get_string_attribute(file_object, "type");
+	info_string = nautilus_file_get_string_attribute(file, "type");
 	
 	if (info_string != NULL) {
 		/* combine the type and the size */
 	  
-		temp_string = nautilus_file_get_string_attribute(file_object, "size");
+		temp_string = nautilus_file_get_string_attribute(file, "size");
 		if (temp_string != NULL) {
 			char *new_info_string = g_strconcat(info_string, ", ", temp_string, NULL);
 			g_free (info_string);
@@ -338,7 +337,7 @@ nautilus_index_title_set_up_info (NautilusIndexTitle *index_title)
 		}
 		
 		/* append the date modified */
-		temp_string = nautilus_file_get_string_attribute(file_object, "date_modified");
+		temp_string = nautilus_file_get_string_attribute(file, "date_modified");
 		if (temp_string != NULL) {
 			char *new_info_string = g_strconcat(info_string, "\n", temp_string, NULL);
 			g_free (info_string);
@@ -357,12 +356,12 @@ nautilus_index_title_set_up_info (NautilusIndexTitle *index_title)
 		
 		/* FIXME: shouldn't use hardwired font */     	
 		label_font = gdk_font_load("-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");	
-		set_up_font(index_title->details->more_info, label_font);	
+		update_font(index_title->details->more_info, label_font);	
 		
 		g_free(info_string);
 		
 		/* see if there are any notes for this file. If so, display them */
-		notes_text = nautilus_file_get_metadata(file_object, NAUTILUS_NOTES_METADATA_KEY, NULL);
+		notes_text = nautilus_file_get_metadata(file, NAUTILUS_NOTES_METADATA_KEY, NULL);
 		if (notes_text)	{
 			if (index_title->details->notes != NULL)
 				gtk_label_set_text(GTK_LABEL(index_title->details->notes), notes_text);
@@ -376,7 +375,7 @@ nautilus_index_title_set_up_info (NautilusIndexTitle *index_title)
 			
 			/* FIXME: don't use hardwired font like this */    	
 			label_font = gdk_font_load("-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");	 
-			set_up_font(index_title->details->notes, label_font);	
+			update_font(index_title->details->notes, label_font);	
 			
 			g_free (notes_text);     
 		}
@@ -384,7 +383,7 @@ nautilus_index_title_set_up_info (NautilusIndexTitle *index_title)
 			gtk_label_set_text(GTK_LABEL(index_title->details->notes), "");
 	}
 
-	nautilus_file_unref (file_object);
+	nautilus_file_unref (file);
 }
 
 /* here's the place where we set everything up passed on the passed in uri */
@@ -396,7 +395,7 @@ nautilus_index_title_set_text (NautilusIndexTitle *index_title, const char* new_
 	index_title->details->requested_text = g_strdup (new_text);
 
 	/* Recompute the displayed text. */
-	nautilus_index_title_set_up_label (index_title);
+	nautilus_index_title_update_label (index_title);
 }
 
 void
@@ -404,31 +403,20 @@ nautilus_index_title_set_uri(NautilusIndexTitle *index_title,
 			     const char* new_uri, 
 			     const char* initial_text)
 {
-	NautilusFile *file_object;
-
 	g_free (index_title->details->uri);
 	index_title->details->uri = g_strdup (new_uri);
 
 	g_free (index_title->details->requested_text);
 	index_title->details->requested_text = g_strdup (initial_text);
 
-	file_object = nautilus_file_get(new_uri);
-
 	/* add the icon */
-	nautilus_index_title_set_up_icon (index_title);
+	nautilus_index_title_update_icon (index_title);
 
 	/* add the name, in a variable-sized label */
-	nautilus_index_title_set_up_label (index_title);
+	nautilus_index_title_update_label (index_title);
 
 	/* add various info */
-	nautilus_index_title_set_up_info(index_title);
-
-	/* FIXME: file_object can be NULL if this is a bad url, or one that
-	 * NautilusFile can't handle (e.g. http). The UI here needs to
-	 * be changed to account for that too.
-	 */
-	if (file_object != NULL)
-		nautilus_file_unref (file_object);
+	nautilus_index_title_update_info (index_title);
 }
 
 /* handle a button press */
@@ -442,4 +430,10 @@ nautilus_index_title_button_press_event (GtkWidget *widget, GdkEventButton *even
 	g_message ("button press");
 	
 	return TRUE;
+}
+
+gboolean
+nautilus_index_title_hit_test_icon (NautilusIndexTitle *title, int x, int y)
+{
+	return nautilus_point_in_widget (title->details->icon, x, y);
 }
