@@ -799,8 +799,8 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 		/* No text in icon column */
 		if (column != LIST_VIEW_COLUMN_ICON) {
 			text[column] = 
-				nautilus_file_get_string_attribute (file, 
-								    get_attribute_from_column (column));
+				nautilus_file_get_string_attribute_with_default 
+					(file, get_attribute_from_column (column));
 		}
 	}
 

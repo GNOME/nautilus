@@ -64,9 +64,9 @@ enum {
 	BASIC_PAGE_TYPE_ROW,
 	BASIC_PAGE_SIZE_ROW,
 	BASIC_PAGE_ACCESSED_DATE_ROW,
-	BASIC_PAGE_CHANGED_DATE_ROW,
 	BASIC_PAGE_MODIFIED_DATE_ROW,
-	BASIC_PAGE_ROW_COUNT_WITH_SEPARATE_MODIFICATION_DATE
+	BASIC_PAGE_MIME_TYPE_ROW,
+	BASIC_PAGE_ROW_COUNT
 };
 
 enum {
@@ -77,6 +77,7 @@ enum {
 	PERMISSIONS_PAGE_SPECIAL_FLAGS_ROW,
 	PERMISSIONS_PAGE_FULL_STRING_ROW,
 	PERMISSIONS_PAGE_FULL_OCTAL_ROW,
+	PERMISSIONS_PAGE_DATE_ROW,
 	PERMISSIONS_PAGE_ROW_COUNT
 };
 
@@ -88,11 +89,6 @@ enum {
 };
 
 #define PERMISSIONS_CHECKBOXES_ROW_COUNT (PERMISSIONS_PAGE_OTHERS_ROW+1)
-
-enum {
-	MORE_PAGE_MIME_TYPE_ROW,
-	MORE_PAGE_ROW_COUNT
-};
 
 enum {
 	TITLE_COLUMN,
@@ -404,7 +400,7 @@ value_field_update (GtkLabel *label, NautilusFile *file)
 	g_assert (NAUTILUS_IS_FILE (file));
 
 	attribute_name = gtk_object_get_data (GTK_OBJECT (label), "file_attribute");
-	attribute_value = nautilus_file_get_string_attribute (file, attribute_name);
+	attribute_value = nautilus_file_get_string_attribute_with_default (file, attribute_name);
 	gtk_label_set_text (label, attribute_value);
 	g_free (attribute_value);
 }
@@ -526,35 +522,22 @@ create_page_with_table_in_vbox (GtkNotebook *notebook,
 	}
 }		
 
-static gboolean
-mtime_and_ctime_different (NautilusFile *file)
-{
-	char *mtime_string, *ctime_string;
-	gboolean result;
-
-	mtime_string = nautilus_file_get_string_attribute (file, "date_modified");
-	ctime_string = nautilus_file_get_string_attribute (file, "date_changed");
-
-	result = strcmp (mtime_string, ctime_string) != 0;
-
-	g_free (mtime_string);
-	g_free (ctime_string);
-
-	return result;
-}	
-
 static void
 create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 {
 	GtkWidget *table;
 	GtkWidget *icon_pixmap_widget, *name_field;
-	gboolean separate_modification_date;
+	gboolean is_directory;
 	int row_count;
 
-	separate_modification_date = mtime_and_ctime_different (file);
-	row_count = separate_modification_date
-		? BASIC_PAGE_ROW_COUNT_WITH_SEPARATE_MODIFICATION_DATE
-		: BASIC_PAGE_ROW_COUNT_WITH_SEPARATE_MODIFICATION_DATE -1;
+	is_directory = nautilus_file_is_directory (file);
+
+	/* We hide MIME type for directories, so we need one fewer row */
+	if (is_directory) {
+		row_count = BASIC_PAGE_ROW_COUNT - 1;
+	} else {
+		row_count = BASIC_PAGE_ROW_COUNT;
+	}
 
 	create_page_with_table_in_vbox (notebook, 
 					_("Basic"), 
@@ -616,22 +599,19 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 					       GTK_OBJECT (name_field));
 
 	install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_LOCATION_ROW,
-				  _("location:"), file, "parent_uri");
+				  _("Location:"), file, "parent_uri");
 	install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_TYPE_ROW,
-				  _("type:"), file, "type");
+				  _("Type:"), file, "type");
 	install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_SIZE_ROW,
-				  _("size:"), file, "size");
-	if (separate_modification_date) {
-		install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_CHANGED_DATE_ROW,
-					  _("permissions changed:"), file, "date_changed");
-		install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_MODIFIED_DATE_ROW,
-					  _("contents changed:"), file, "date_modified");
-	} else {
-		install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_CHANGED_DATE_ROW,
-					  _("changed:"), file, "date_changed");
-	}				  
+				  _("Size:"), file, "size");
+	install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_MODIFIED_DATE_ROW,
+				  _("Modified:"), file, "date_modified");
 	install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_ACCESSED_DATE_ROW,
-				  _("accessed:"), file, "date_accessed");
+				  _("Accessed:"), file, "date_accessed");
+	if (!is_directory) {
+		install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_MIME_TYPE_ROW,
+					  _("MIME type:"), file, "mime_type");
+	}				  
 }
 
 static GtkWidget *
@@ -843,7 +823,7 @@ permissions_label_update (GtkLabel *label, NautilusFile *file)
 	if (attribute_name == NULL) {
 		gtk_label_set_text (label, pattern);
 	} else {
-		attribute_value = nautilus_file_get_string_attribute (file, attribute_name);
+		attribute_value = nautilus_file_get_string_attribute_with_default (file, attribute_name);
 		label_text = g_strdup_printf (pattern, attribute_value);
 		gtk_label_set_text (label, label_text);
 		g_free (label_text);
@@ -989,21 +969,11 @@ permissions_check_button_toggled (GtkToggleButton *toggle_button, gpointer user_
 }
 
 static void
-add_permissions_checkbox (GtkTable *table, 
-			  NautilusFile *file,
-			  int row, int column, 
-			  GnomeVFSFilePermissions permission_to_check)
+set_up_permissions_checkbox (GtkWidget *check_button, 
+			     NautilusFile *file,
+			     GnomeVFSFilePermissions permission)
 {
-	GtkWidget *check_button;
 	guint toggled_signal_id;
-
-	check_button = gtk_check_button_new ();
-	gtk_widget_show (check_button);
-	gtk_table_attach (table, check_button,
-			  column, column + 1,
-			  row, row + 1,
-			  0, 0,
-			  0, 0);
 
 	toggled_signal_id = gtk_signal_connect (GTK_OBJECT (check_button), "toggled",
       	              	    			GTK_SIGNAL_FUNC (permissions_check_button_toggled),
@@ -1015,7 +985,7 @@ add_permissions_checkbox (GtkTable *table,
         		     GINT_TO_POINTER (toggled_signal_id));
         gtk_object_set_data (GTK_OBJECT (check_button), 
         		     "permission", 
-        		     GINT_TO_POINTER (permission_to_check));
+        		     GINT_TO_POINTER (permission));
 	
 	/* Set initial state. */
         update_permissions_check_button_state (check_button, file);
@@ -1028,7 +998,26 @@ add_permissions_checkbox (GtkTable *table,
 }
 
 static void
-add_special_execution_checkbox (GtkHBox *hbox, const char *label_text)
+add_permissions_checkbox (GtkTable *table, 
+			  NautilusFile *file,
+			  int row, int column, 
+			  GnomeVFSFilePermissions permission_to_check)
+{
+	GtkWidget *check_button;
+
+	check_button = gtk_check_button_new ();
+	gtk_widget_show (check_button);
+	gtk_table_attach (table, check_button,
+			  column, column + 1,
+			  row, row + 1,
+			  0, 0,
+			  0, 0);
+
+	set_up_permissions_checkbox (check_button, file, permission_to_check);
+}
+
+static void
+add_special_execution_checkbox (GtkHBox *hbox, NautilusFile *file, const char *label_text)
 {
 	GtkWidget *check_button;
 
@@ -1036,6 +1025,9 @@ add_special_execution_checkbox (GtkHBox *hbox, const char *label_text)
 	gtk_widget_show (check_button);
 
 	gtk_box_pack_start (GTK_BOX (hbox), check_button, FALSE, FALSE, 0);
+
+	/* FIXME: Need to pass real permission here */
+	set_up_permissions_checkbox (check_button, file, GNOME_VFS_PERM_USER_READ);
 }
 
 static void
@@ -1061,9 +1053,9 @@ add_special_execution_flags (GtkTable *table,
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), GNOME_PAD_SMALL);
 	gtk_container_add (GTK_CONTAINER (frame), hbox);
 
-	add_special_execution_checkbox (GTK_HBOX (hbox), _("set user ID"));
-	add_special_execution_checkbox (GTK_HBOX (hbox), _("set group ID"));
-	add_special_execution_checkbox (GTK_HBOX (hbox), _("sticky"));
+	add_special_execution_checkbox (GTK_HBOX (hbox), file, _("set user ID"));
+	add_special_execution_checkbox (GTK_HBOX (hbox), file, _("set group ID"));
+	add_special_execution_checkbox (GTK_HBOX (hbox), file, _("sticky"));
 }
 
 static void
@@ -1115,33 +1107,37 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 					   "", NULL);
 		add_permissions_row_label (page_table, file, 
 					   PERMISSIONS_PAGE_OWNER_ROW, 
-					   _("owner (%s):"), "owner");
+					   _("Owner (%s):"), "owner");
 		add_permissions_row_label (page_table, file, 
 					   PERMISSIONS_PAGE_GROUP_ROW, 
-					   _("group (%s):"), "group");
+					   _("Group (%s):"), "group");
 		add_permissions_row_label (page_table, file, 
 					   PERMISSIONS_PAGE_OTHERS_ROW, 
-					   _("others:"), NULL);
+					   _("Others:"), NULL);
 		
 		add_permissions_row_label (page_table, file, 
 					   PERMISSIONS_PAGE_FULL_STRING_ROW, 
-					   _("as text:"), NULL);
+					   _("As Text:"), NULL);
 		
 		add_permissions_row_label (page_table, file, 
 					   PERMISSIONS_PAGE_FULL_OCTAL_ROW, 
-					   _("as octal number:"), NULL);
+					   _("As Number:"), NULL);
+		
+		add_permissions_row_label (page_table, file, 
+					   PERMISSIONS_PAGE_DATE_ROW, 
+					   _("Last Changed:"), NULL);
 		
 		add_permissions_column_label (check_button_table, 
 					      PERMISSIONS_CHECKBOXES_READ_COLUMN,
-					      _("read"));
+					      _("Read"));
 
 		add_permissions_column_label (check_button_table, 
 					      PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
-					      _("write"));
+					      _("Write"));
 
 		add_permissions_column_label (check_button_table, 
 					      PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
-					      _("execute"));
+					      _("Execute"));
 
 		add_permissions_checkbox (check_button_table, file, 
 					  PERMISSIONS_PAGE_OWNER_ROW,
@@ -1203,6 +1199,12 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 				     VALUE_COLUMN, 
 				     1, 
 				     file, "octal_permissions"); 
+
+		install_value_field (page_table, 
+				     PERMISSIONS_PAGE_DATE_ROW, 
+				     VALUE_COLUMN, 
+				     1, 
+				     file, "date_permissions"); 
 	} else {
 		file_name = nautilus_file_get_name (file);
 		prompt_text = g_strdup_printf (_("The permissions of \"%s\" could not be determined."), file_name);
@@ -1210,26 +1212,6 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 		add_prompt (GTK_VBOX (vbox), prompt_text, TRUE);
 		g_free (prompt_text);
 	}
-}
-
-static void
-create_more_page (GtkNotebook *notebook, NautilusFile *file)
-{
-	GtkWidget *table;
-	GtkWidget *vbox;
-
-	create_page_with_table_in_vbox (notebook, 
-					_("More"), 
-					MORE_PAGE_ROW_COUNT, 
-					&table, 
-					&vbox);
-
-	install_title_value_pair (GTK_TABLE (table), MORE_PAGE_MIME_TYPE_ROW,
-				  _("MIME type:"), file, "mime_type");
-
-	add_prompt_and_separator (
-		GTK_VBOX (vbox),
-		_("Tell sullivan@eazel.com all your good ideas for what should go here."));
 }
 
 static GtkWindow *
@@ -1261,7 +1243,6 @@ create_properties_window (NautilusFile *file)
 	create_basic_page (GTK_NOTEBOOK (notebook), file);
 	create_emblems_page (GTK_NOTEBOOK (notebook), file);
 	create_permissions_page (GTK_NOTEBOOK (notebook), file);
-	create_more_page (GTK_NOTEBOOK (notebook), file);
 
 	return window;
 }

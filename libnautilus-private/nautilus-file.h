@@ -175,6 +175,9 @@ void                    nautilus_file_set_metadata_list         (NautilusFile   
 /* Attributes for file objects as user-displayable strings. */
 char *                  nautilus_file_get_string_attribute      (NautilusFile                  *file,
 								 const char                    *attribute_name);
+char *                  nautilus_file_get_string_attribute_with_default      
+								(NautilusFile                  *file,
+								 const char                    *attribute_name);
 
 /* Matching with another URI. */
 gboolean                nautilus_file_matches_uri               (NautilusFile                  *file,

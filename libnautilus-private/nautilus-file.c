@@ -54,7 +54,8 @@
 typedef enum {
 	NAUTILUS_DATE_TYPE_MODIFIED,
 	NAUTILUS_DATE_TYPE_CHANGED,
-	NAUTILUS_DATE_TYPE_ACCESSED
+	NAUTILUS_DATE_TYPE_ACCESSED,
+	NAUTILUS_DATE_TYPE_PERMISSIONS_CHANGED
 } NautilusDateType;
 
 #define EMBLEM_NAME_SYMBOLIC_LINK "symbolic-link"
@@ -1354,7 +1355,8 @@ nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type
 
 	g_return_val_if_fail (date_type == NAUTILUS_DATE_TYPE_CHANGED
 			      || date_type == NAUTILUS_DATE_TYPE_ACCESSED
-			      || date_type == NAUTILUS_DATE_TYPE_MODIFIED, NULL);
+			      || date_type == NAUTILUS_DATE_TYPE_MODIFIED
+			      || date_type == NAUTILUS_DATE_TYPE_PERMISSIONS_CHANGED, NULL);
 
 	switch (date_type) {
 	case NAUTILUS_DATE_TYPE_CHANGED:
@@ -1377,6 +1379,23 @@ nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type
 			return NULL;
 		}
 		file_time = localtime (&file->details->info->mtime);
+		break;
+	case NAUTILUS_DATE_TYPE_PERMISSIONS_CHANGED:
+		/* Before we have info on a file, the date is unknown. */
+		if (info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_MTIME) ||
+		    info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_CTIME)) {
+			return NULL;
+		}
+		/* mtime is when the contents changed; ctime is when the
+		 * contents or the permissions (inc. owner/group) changed.
+		 * So we can only know when the permissions changed if mtime
+		 * and ctime are different.
+		 */
+		if (file->details->info->mtime == file->details->info->ctime) {
+			return NULL;
+		}
+		
+		file_time = localtime (&file->details->info->ctime);
 		break;
 	default:
 		g_assert_not_reached ();
@@ -1614,7 +1633,7 @@ nautilus_file_get_octal_permissions_as_string (NautilusFile *file)
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
 	if (!nautilus_file_can_get_permissions (file)) {
-		return g_strdup (_("unknown permissions"));
+		return NULL;
 	}
 
 	permissions = file->details->info->permissions;
@@ -1639,7 +1658,7 @@ nautilus_file_get_permissions_as_string (NautilusFile *file)
 	gboolean is_link;
 
 	if (!nautilus_file_can_get_permissions (file)) {
-		return g_strdup (_("unknown permissions"));
+		return NULL;
 	}
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
@@ -1690,7 +1709,7 @@ nautilus_file_get_owner_as_string (NautilusFile *file)
 	password_info = getpwuid (file->details->info->uid);
 
 	if (password_info == NULL) {
-		return g_strdup (_("unknown owner"));
+		return NULL;
 	}
 	
 	return g_strdup (password_info->pw_name);
@@ -1724,7 +1743,7 @@ nautilus_file_get_group_as_string (NautilusFile *file)
 	group_info = getgrgid (file->details->info->gid);
 
 	if (group_info == NULL) {
-		return g_strdup (_("unknown group"));
+		return NULL;
 	}
 	
 	return g_strdup (group_info->gr_name);
@@ -1751,7 +1770,7 @@ nautilus_file_get_mime_type_as_string_attribute (NautilusFile *file)
 	if (mime_string != NULL) {
 		return mime_string;
 	}
-	return g_strdup (_("unknown MIME type"));
+	return NULL;
 }
 
 /**
@@ -1779,7 +1798,7 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 	
 	if (nautilus_file_is_directory (file)) {
 		if (!nautilus_file_get_directory_item_count (file, &item_count, &count_unreadable)) {
-			return g_strdup (count_unreadable ? _("xxx") : _("--"));
+			return NULL;
 		}
 		if (item_count == 0) {
 			return g_strdup (_("0 items"));
@@ -1791,7 +1810,7 @@ nautilus_file_get_size_as_string (NautilusFile *file)
 	}
 	
 	if (info_missing (file, GNOME_VFS_FILE_INFO_FIELDS_SIZE)) {
-		return g_strdup (_("--"));
+		return NULL;
 	}
 	return gnome_vfs_format_file_size_for_display (file->details->info->size);
 }
@@ -1800,15 +1819,18 @@ nautilus_file_get_size_as_string (NautilusFile *file)
  * nautilus_file_get_string_attribute:
  * 
  * Get a user-displayable string from a named attribute. Use g_free to
- * free this string.
+ * free this string. If the value is unknown, returns NULL. You can call
+ * nautilus_file_get_string_attribute_with_default if you want a non-NULL
+ * default.
  * 
  * @file: NautilusFile representing the file in question.
  * @attribute_name: The name of the desired attribute. The currently supported
  * set includes "name", "type", "mime_type", "size", "date_modified", "date_changed",
- * "date_accessed", "owner", "group", "permissions", "octal_permissions", "uri", "parent_uri".
+ * "date_accessed", "date_permissions", "owner", "group", "permissions", "octal_permissions", 
+ * "uri", "parent_uri".
  * 
  * Returns: Newly allocated string ready to display to the user, or NULL
- * if @attribute_name is not supported.
+ * if the value is unknown or @attribute_name is not supported.
  * 
  **/
 char *
@@ -1849,6 +1871,11 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 							 NAUTILUS_DATE_TYPE_ACCESSED);
 	}
 
+	if (strcmp (attribute_name, "date_permissions") == 0) {
+		return nautilus_file_get_date_as_string (file,
+							 NAUTILUS_DATE_TYPE_PERMISSIONS_CHANGED);
+	}
+
 	if (strcmp (attribute_name, "permissions") == 0) {
 		return nautilus_file_get_permissions_as_string (file);
 	}
@@ -1877,6 +1904,59 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 }
 
 /**
+ * nautilus_file_get_string_attribute:
+ * 
+ * Get a user-displayable string from a named attribute. Use g_free to
+ * free this string. If the value is unknown, returns a string representing
+ * the unknown value, which varies with attribute. You can call
+ * nautilus_file_get_string_attribute if you want NULL instead of a default
+ * result.
+ * 
+ * @file: NautilusFile representing the file in question.
+ * @attribute_name: The name of the desired attribute. See the description of
+ * nautilus_file_get_string for the set of available attributes.
+ * 
+ * Returns: Newly allocated string ready to display to the user, or a string
+ * such as "unknown" if the value is unknown or @attribute_name is not supported.
+ * 
+ **/
+char *
+nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char *attribute_name)
+{
+	char *result;
+	gint item_count;
+	gboolean count_unreadable;
+
+	result = nautilus_file_get_string_attribute (file, attribute_name);
+
+	if (result == NULL) {
+		/* Supply default values for the ones we know about. */
+		/* FIXME bugzilla.eazel.com 646: 
+		 * Use hash table and switch statement or function pointers for speed? 
+		 */
+		if (strcmp (attribute_name, "size") == 0) {
+			count_unreadable = FALSE;
+			if (nautilus_file_is_directory (file)) {
+				nautilus_file_get_directory_item_count (file, &item_count, &count_unreadable);
+			}
+			
+			result = g_strdup (count_unreadable ? _("xxx") : _("--"));
+		} else if (strcmp (attribute_name, "type") == 0) {
+			result = g_strdup (_("unknown type"));
+		} else if (strcmp (attribute_name, "mime_type") == 0) {
+			result = g_strdup (_("unknown MIME type"));
+		} else {
+			/* Fallback, use for both unknown attributes and attributes
+			 * for which we have no more appropriate default.
+			 */
+			result = g_strdup (_("unknown"));
+		}
+	}
+
+	return result;
+}
+
+/**
  * nautilus_file_get_type_as_string:
  * 
  * Get a user-displayable string representing a file type. The caller
@@ -1901,7 +1981,7 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 			return g_strdup (_("program"));
 		}
 
-		return g_strdup (_("unknown type"));
+		return NULL;
 	}
 
 	description = gnome_vfs_mime_description (mime_type);

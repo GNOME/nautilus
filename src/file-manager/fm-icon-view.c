@@ -1485,17 +1485,9 @@ get_icon_text_callback (NautilusIconContainer *container,
 
 	/* Get the attributes. */
 	for (i = 0; text_array[i] != NULL; i++)	{
-		attribute_string = nautilus_file_get_string_attribute
+		attribute_string = nautilus_file_get_string_attribute_with_default
 			(file, text_array[i]);
-		
-		/* Unknown attributes get turned into blank lines (also note that
-		 * leaving a NULL in text_array would cause it to be incompletely
-		 * freed).
-		 */
-		if (attribute_string == NULL) {
-			attribute_string = g_strdup ("");
-		}
-		
+				
 		/* Replace each attribute name in the array with its string value */
 		g_free (text_array[i]);
 		text_array[i] = attribute_string;

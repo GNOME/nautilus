@@ -219,14 +219,20 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 {
 	NautilusFile *file;
 	GString *info_string;
+	char *type_string;
 
 	file = sidebar_title->details->file;
 	
 	info_string = g_string_new (NULL);
-	append_and_eat (info_string, NULL,
-			nautilus_file_get_string_attribute (file, "type"));
-	append_and_eat (info_string, ", ",
-			nautilus_file_get_string_attribute (file, "size"));
+	type_string = nautilus_file_get_string_attribute (file, "type");
+	if (type_string != NULL) {
+		append_and_eat (info_string, NULL, type_string);
+		append_and_eat (info_string, ", ",
+				nautilus_file_get_string_attribute (file, "size"));
+	} else {
+		append_and_eat (info_string, NULL,
+				nautilus_file_get_string_attribute (file, "size"));
+	}
 	append_and_eat (info_string, "\n",
 			nautilus_file_get_string_attribute (file, "date_modified"));
 	g_string_append_c (info_string, '\0');

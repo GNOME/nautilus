@@ -481,7 +481,7 @@ update_selected_item_details (GnomeDialog *dialog)
 		frame_label_text = g_strdup (row_text);
 
 		if (is_default_for_file_type (dialog, file, selected_row_data)) {
-			file_type = nautilus_file_get_string_attribute (file, "type");
+			file_type = nautilus_file_get_string_attribute_with_default (file, "type");
 			status_label_text = g_strdup_printf (_("Is the default for \"%s\" items."), 
 					      		     file_type);	
 			g_free (file_type);
@@ -491,7 +491,7 @@ update_selected_item_details (GnomeDialog *dialog)
 					      		     file_name);				
 			g_free (file_name);
 		} else if (is_in_short_list_for_file_type (dialog, file, selected_row_data)) {
-			file_type = nautilus_file_get_string_attribute (file, "type");
+			file_type = nautilus_file_get_string_attribute_with_default (file, "type");
 			status_label_text = g_strdup_printf (_("Is in the menu for \"%s\" items."), 
 					      		     file_type);	
 			g_free (file_type);
@@ -501,7 +501,7 @@ update_selected_item_details (GnomeDialog *dialog)
 					      		     file_name);				
 			g_free (file_name);
 		} else {
-			file_type = nautilus_file_get_string_attribute (file, "type");
+			file_type = nautilus_file_get_string_attribute_with_default (file, "type");
 			status_label_text = g_strdup_printf (_("Is not in the menu for \"%s\" items."), 
 					      		     file_type);
 			g_free (file_type);
@@ -749,7 +749,7 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 	file = nautilus_program_chooser_get_file (program_chooser);
 	clist = nautilus_program_chooser_get_clist (program_chooser);
 
-	file_type = nautilus_file_get_string_attribute (file, "type");
+	file_type = nautilus_file_get_string_attribute_with_default (file, "type");
 	file_name = nautilus_file_get_name (file);
 
 	selected_row = nautilus_gtk_clist_get_first_selected_row (clist);

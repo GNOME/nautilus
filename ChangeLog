@@ -1,3 +1,56 @@
+2000-06-21  John Sullivan  <sullivan@eazel.com>
+
+	Made nautilus_file_get_string_attribute return NULL
+	for unknown/missing attributes; added new
+	nautilus_file_get_string_attribute_with_default that
+	never returns NULL; callers can choose which behavior
+	they prefer.
+
+	* libnautilus-extensions/nautilus-file.h,
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_string_attribute_with_default):
+	New function, calls _get_string_attribute and chooses
+	default strings for the NULL cases. The default default
+	string is "unknown", but some attributes get more
+	specific ones.
+	
+	(nautilus_file_get_octal_permissions_as_string),
+	(nautilus_file_get_permissions_as_string),
+	(nautilus_file_get_owner_as_string),
+	(nautilus_file_get_group_as_string),
+	(nautilus_file_get_mime_type_as_string_attribute),
+	(nautilus_file_get_size_as_string),
+	(nautilus_file_get_string_attribute),
+	(nautilus_file_get_type_as_string): Changed these to
+	return NULL if the value is unknown/unknowable.
+
+	(nautilus_file_get_date_as_string): Changed to return NULL
+	in some cases; also added case for "date_permissions",
+	which returns ctime iff it differs from mtime, otherwise
+	NULL.
+
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(update_selected_item_details),
+	(run_program_configurator_callback):
+	* src/file-manager/fm-icon-view.c: (get_icon_text_callback):
+	* src/file-manager/fm-list-view.c: (add_to_list):
+	use nautilus_file_get_string_attribute_with_value
+	
+	* src/nautilus-sidebar-title.c: (update_more_info):
+	when the type is NULL, don't put ", " before the size.
+
+
+	More work on the obscure unixisms of the Properties window.
+
+	* src/file-manager/fm-properties-window.c: (value_field_update),
+	(create_basic_page), (permissions_label_update),
+	(set_up_permissions_checkbox), (add_permissions_checkbox),
+	(add_special_execution_checkbox), (add_special_execution_flags),
+	(create_permissions_page), (create_properties_window):
+	Wired up GUID/SUID/Sticky bit checkboxes in a temporary way
+	(not to the correct bits); moved some stuff around and
+	renamed some stuff.
+
 2000-06-21  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-utilities.h:
