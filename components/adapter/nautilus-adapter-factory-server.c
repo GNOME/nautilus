@@ -39,7 +39,6 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-adapter/nautilus-adapter-factory.h>
 
-
 typedef struct {
 	POA_Nautilus_ComponentAdapterFactory  servant;
 	NautilusAdapterFactoryServer         *bonobo_object;
@@ -151,8 +150,9 @@ impl_Nautilus_ComponentAdapterFactory_create_adapter (PortableServer_Servant  se
 		gtk_signal_connect (GTK_OBJECT (adapter), "destroy",
 				    adapter_object_destroyed, factory_servant->bonobo_object);
 
-		
-		return bonobo_object_corba_objref (BONOBO_OBJECT (nautilus_adapter_get_nautilus_view (adapter)));
+		return CORBA_Object_duplicate 
+			(bonobo_object_corba_objref 
+			 (BONOBO_OBJECT (nautilus_adapter_get_nautilus_view (adapter))), ev);
 	}
 }
 

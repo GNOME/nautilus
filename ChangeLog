@@ -1,3 +1,42 @@
+2000-09-17  Maciej Stachowiak  <mjs@eazel.com>
+
+	More work towards bug 1994. I'm not yet checking in the code to
+	actually use the adapter yet, but it sort of works on my system.
+	
+	* nautilus-clean.sh: Added nautilus-adapter
+
+	* components/adapter/main.c (main): Do the stop in debugger
+	trick. Also, initialize gnome-vfs (and threads). Duh!
+	
+	* components/adapter/nautilus-adapter-factory-server.c
+	(impl_Nautilus_ComponentAdapterFactory_create_adapter):
+	CORBA_Object_duplicate the object reference we return, because
+	CORBA's just cool like that.
+	
+	* components/adapter/nautilus-adapter.c
+	(nautilus_adapter_new): Show me the widgets, Lebowski. That's
+	right, a few missing gtk_widget_show calls were the only bugs in
+	this hairy mess of CORBA/Bonobo code (well, other than the obvious
+	resource leaks).
+	
+	* components/adapter/nautilus-adapter.oafinfo: Updated to match
+	reality.
+
+	* libnautilus-extensions/nautilus-icon-factory.c
+	(vfs_file_exists, nautilus_make_directory_and_parents,
+	make_thumbnail_path, nautilus_icon_factory_get_thumbnail_uri,
+	check_for_thumbnails): Put FIXMEs for a bunch of synchronous I/O
+	that is making it a pain in the ass to test 1994.
+
+	* src/nautilus-component-adapter-factory.c:
+	Fill in the right IID.
+	(nautilus_component_adapter_factory_initialize): Allocate the details.
+	(nautilus_component_adapter_factory_create_adapter): Return the
+	actual adapted view, not CORBA_OOBJECT_BIL (hello?).
+
+	* src/nautilus-main.c (main): Add "ORBit" log domain to ones that
+	stop in the debugger.
+	
 2000-09-17  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bug 2319, "Find" and "Web Search" shouldn't have the same icon.  Fixed by

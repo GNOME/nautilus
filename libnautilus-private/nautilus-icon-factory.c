@@ -1206,18 +1206,28 @@ vfs_file_exists (const char *file_uri)
 	GnomeVFSFileInfo *file_info;
 
 	file_info = gnome_vfs_file_info_new ();
+	
+	/* FIXME bugzilla.eazel.com 3137: the synchronous I/O here means this call is
+           unsuitable for use on anything that might be remote. */
+
 	result = gnome_vfs_get_file_info (file_uri, file_info, 0);
 	gnome_vfs_file_info_unref (file_info);
 	return result == GNOME_VFS_OK;
 }
 
-/* utility copied from Nautilus directory */
+/* FIXME bugzilla.eazel.com 3138: why is this call cut and pasted instead
+   of putting it in a common place? */
 
+/* utility copied from Nautilus directory */
 static GnomeVFSResult
 nautilus_make_directory_and_parents (GnomeVFSURI *uri, guint permissions)
 {
 	GnomeVFSResult result;
 	GnomeVFSURI *parent_uri;
+
+	/* FIXME bugzilla.eazel.com 3137: the synchronous I/O in this
+           call means it's unsuitable for calling on a URI that might
+           be remote. */
 
 	/* Make the directory, and return right away unless there's
 	   a possible problem with the parent.
@@ -1277,6 +1287,11 @@ make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean us
 		/* we must create the directory if it doesnt exist */
 			
 		thumbnail_directory_uri = gnome_vfs_uri_new (thumbnail_uri);
+
+		/* FIXME bugzilla.eazel.com 3137: synchronous I/O - it
+                   looks like the URI will be local-only, but best to
+                   make sure. */
+
 		result = nautilus_make_directory_and_parents (thumbnail_directory_uri, THUMBNAIL_DIR_PERMISSIONS);
 		gnome_vfs_uri_unref (thumbnail_directory_uri);
 	}
@@ -1393,6 +1408,16 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file, gboolean anti_alias
 	thumbnail_uri = make_thumbnail_path (file_uri, FALSE, TRUE, anti_aliased);
 		
 	/* if the thumbnail file already exists locally, simply return the uri */
+	
+	/* FIXME bugzilla.eazel.com 3137: this synchronous I/O is a
+	   disaster when loading remote locations. It blocks the UI
+	   when trying to load a slow remote image over http for
+	   instance. The fact that we must do this potentially slow
+	   operation implies the IconFactory interface needs to be
+	   asynchronous! Either that, or thumbnail existence is
+	   somthing we need to be able to monitor/call_when_ready on,
+	   on a NautilusFile. */
+
 	if (vfs_file_exists (thumbnail_uri)) {
 		
 		/* see if the file changed since it was thumbnailed by comparing the modification time */
@@ -1404,6 +1429,11 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file, gboolean anti_alias
 			return thumbnail_uri;
 		} else {
 			nautilus_icon_factory_clear_image(thumbnail_uri);
+
+
+			/* FIXME bugzilla.eazel.com 3137: more potentially
+                           losing synch I/O. */
+
 			gnome_vfs_unlink(thumbnail_uri);
 		}
 	}
@@ -1414,6 +1444,12 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file, gboolean anti_alias
 		thumbnail_uri = make_thumbnail_path (file_uri, FALSE, FALSE, anti_aliased);
 		
 		/* if the thumbnail file already exists in the common area,  return that uri */
+
+		/* FIXME bugzilla.eazel.com 3137: more potentially losing
+		   synch I/O - this should be guaranteed local, so
+		   perhaps not as bad (unless you have an NFS homedir,
+		   say... */
+
 		if (vfs_file_exists (thumbnail_uri)) {
 		
 			/* see if the file changed since it was thumbnailed by comparing the modification time */
@@ -1425,6 +1461,10 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file, gboolean anti_alias
 				return thumbnail_uri;
 			} else {
 				nautilus_icon_factory_clear_image(thumbnail_uri);
+				/* FIXME bugzilla.eazel.com 3137: more potentially losing
+				   synch I/O - this should be guaranteed local, so
+				   perhaps not as bad (unless you have an NFS homedir,
+				   say... */
 				gnome_vfs_unlink(thumbnail_uri);
 			}
 		}
@@ -1434,6 +1474,11 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file, gboolean anti_alias
 	g_free (thumbnail_uri);
 	local_flag = TRUE;
 	thumbnail_uri = make_thumbnail_path (file_uri, TRUE, local_flag, anti_aliased);
+	
+				
+	/* FIXME bugzilla.eazel.com 3137: more potentially losing
+	   synch I/O - this could be remote */
+
 	result = gnome_vfs_make_directory (thumbnail_uri, THUMBNAIL_DIR_PERMISSIONS);
 
 	/* if we can't make if locally, try it in the global place */
@@ -1441,6 +1486,9 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file, gboolean anti_alias
 		g_free (thumbnail_uri);
 		local_flag = FALSE;
 		thumbnail_uri = make_thumbnail_path (file_uri, TRUE, local_flag, anti_aliased);
+		/* FIXME bugzilla.eazel.com 3137: more potentially
+		   losing synch I/O - this is probably local? */
+
 		result = gnome_vfs_make_directory (thumbnail_uri, THUMBNAIL_DIR_PERMISSIONS);	
 	}
 	
@@ -2385,6 +2433,7 @@ check_for_thumbnails (NautilusIconFactory *factory)
 	     next_thumbnail = next_thumbnail->next) {
 		info = (NautilusThumbnailInfo*) next_thumbnail->data;
 		current_thumbnail = make_thumbnail_path (info->thumbnail_uri, FALSE, info->is_local, info->anti_aliased);
+		/* FIXME bugzilla.eazel.com 3137: synchronous I/O */
 		if (vfs_file_exists (current_thumbnail)) {
 			/* we found one, so update the icon and remove all of the elements up to and including
 			   this one from the pending list. */

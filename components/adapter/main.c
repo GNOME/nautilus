@@ -35,6 +35,9 @@
 #include <bonobo/bonobo-main.h>
 #include "nautilus-adapter-factory-server.h"
 
+#include <libnautilus-extensions/nautilus-debug.h>
+#include <libgnomevfs/gnome-vfs-init.h>
+
 #define META_FACTORY_IID "OAFIID:nautilus_adapter_factory_generic_factory:8e62e106-807d-4d37-b14a-00dc82ecf88f"
 
 
@@ -95,11 +98,18 @@ main (int argc, char *argv[])
 	CORBA_ORB orb;
 	BonoboGenericFactory *factory;
 
+	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
+		nautilus_make_warnings_and_criticals_stop_in_debugger
+			(G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", "ORBit", NULL);
+	}
+
 	/* Initialize libraries. */
         gnome_init_with_popt_table ("nautilus-adapter", VERSION, 
 				    argc, argv,
 				    oaf_popt_options, 0, NULL); 
+	g_thread_init (NULL);
 	orb = oaf_init (argc, argv);
+	gnome_vfs_init ();
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
 	/* Create the factory. */

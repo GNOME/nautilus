@@ -41,6 +41,7 @@
 #include <libnautilus-extensions/bonobo-stream-vfs.h>
 #include <libnautilus-adapter/nautilus-adapter-factory.h>
 
+#include <stdio.h>
 
 struct NautilusAdapterDetails {
 	Bonobo_PersistStream  persist_stream;
@@ -158,6 +159,8 @@ nautilus_adapter_new (Bonobo_Unknown component)
 
 	bin =  gtk_widget_new (NAUTILUS_TYPE_GENEROUS_BIN, NULL);
 
+	gtk_widget_show (bin);
+
 	control = bonobo_control_new (bin);
 	adapter->details->nautilus_view = nautilus_view_new_from_bonobo_control (control);
 
@@ -171,6 +174,8 @@ nautilus_adapter_new (Bonobo_Unknown component)
 
 	view_frame = bonobo_client_site_new_view (client_site, uih);
 	client_widget = bonobo_view_frame_get_wrapper(view_frame);
+
+	gtk_widget_show (client_widget);
 
 	gtk_container_add (GTK_CONTAINER (bin), client_widget);
      	bonobo_wrapper_set_visibility (BONOBO_WRAPPER (client_widget), FALSE);
@@ -207,6 +212,8 @@ nautilus_adapter_load_location_callback (NautilusView    *view,
 	BonoboStream *stream;
 	CORBA_Environment ev;
 
+	puts ("XXX - loading");
+
 	CORBA_exception_init (&ev);
 
 	nautilus_view_report_load_underway (view);
@@ -224,17 +231,24 @@ nautilus_adapter_load_location_callback (NautilusView    *view,
 		 * eventually. Currently, we don't store the MIME type, but
 		 * it should be easy to keep it around and pass it in here.
 		 */
+
+		puts ("XXX - really loading");
+
 		Bonobo_PersistStream_load
 			(adapter->details->persist_stream,
 			 bonobo_object_corba_objref (BONOBO_OBJECT (stream)),
 			 "", /* MIME type of stream */
 			 &ev);
 
+		puts ("XXX - done loading");
+
 		bonobo_object_unref (BONOBO_OBJECT (stream));
 
 		if (ev._major == CORBA_NO_EXCEPTION) {
+			puts ("XXX - succeeded");
 			nautilus_view_report_load_complete (view);
 		} else {
+			puts ("XXX - failed");
 			nautilus_view_report_load_failed (view);
 		}
         }

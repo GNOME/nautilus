@@ -35,7 +35,7 @@
 
 
 
-#define NAUTILUS_COMPONENT_ADAPTER_FACTORY_IID "OAFIID:fill_me_in"
+#define NAUTILUS_COMPONENT_ADAPTER_FACTORY_IID "OAFIID:nautilus_adapter_factory:fd24ecfc-0a6e-47ab-bc53-69d7487c6ad4"
 
 struct NautilusComponentAdapterFactoryDetails
 {
@@ -66,7 +66,7 @@ nautilus_component_adapter_factory_initialize (NautilusComponentAdapterFactory *
 {
 	BonoboObjectClient *object_client;
 
-	factory->details = g_new0 (NautilusComponentAdapterFactoryDetails, 0);
+	factory->details = g_new0 (NautilusComponentAdapterFactoryDetails, 1);
 
 	/* FIXME: what if activation fails? Is it valid for an
            initialize function to fail, and if so, how should it do
@@ -79,8 +79,8 @@ nautilus_component_adapter_factory_initialize (NautilusComponentAdapterFactory *
            initialize function to fail, and if so, how should it do
            so?? */
 
-	factory->details->corba_factory = bonobo_object_client_query_interface 
-		(object_client, "IDL:Nautilus/ComponentAdapterFactory:1.0", NULL);
+	factory->details->corba_factory = bonobo_object_query_interface 
+		(BONOBO_OBJECT (object_client), "IDL:Nautilus/ComponentAdapterFactory:1.0");
 
 	/* FIXME: Do we want a gtk_object_unref or a bonobo_object_unref? */
 	bonobo_object_unref (BONOBO_OBJECT (object_client)); 
@@ -148,7 +148,6 @@ nautilus_component_adapter_factory_create_adapter (NautilusComponentAdapterFacto
 		/* Object has the View interface, great! We might not
                    need to adapt it. */
 
-
 		bonobo_control = bonobo_object_client_query_interface 
 			(component, "IDL:Bonobo/Control:1.0", NULL); 
 
@@ -186,7 +185,7 @@ nautilus_component_adapter_factory_create_adapter (NautilusComponentAdapterFacto
 
 		CORBA_exception_free (&ev);
 
-		return CORBA_OBJECT_NIL;
+		return nautilus_view;
 	}
 }
 

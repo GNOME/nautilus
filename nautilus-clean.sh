@@ -73,6 +73,7 @@ bonobo-image-generic \
 bonobo-text-plain \
 gnome-vfs-slave \
 hyperbola \
+nautilus-adapter \
 nautilus-history-view \
 nautilus-content-loser \
 nautilus-hardware-view \
