@@ -1124,11 +1124,12 @@ keyboard_row_reveal_timeout_callback (gpointer data)
 	row_index = list->details->keyboard_row_to_reveal;
 
 	if (row_index >= 0 && row_index < GTK_CLIST (list)->rows) {	
-		/* Only reveal the row if it's still the keyboard focus
-		 * or if it's still selected.
-		 */
-		/* FIXME bugzilla.eazel.com 612: 
-		 * Need to unschedule this if the user scrolls explicitly.
+		/* Only reveal the icon if it's still the keyboard focus or if
+		 * it's still selected. Someone originally thought we should
+		 * cancel this reveal if the user manages to sneak a direct
+		 * scroll in before the timeout fires, but we later realized
+		 * this wouldn't actually be an improvement 
+		 * (see bugzilla.eazel.com 612).
 		 */
 		if (row_index == GTK_CLIST (list)->focus_row
 		    || nautilus_list_is_row_selected (list, row_index)) {

@@ -387,10 +387,11 @@ keyboard_icon_reveal_timeout_callback (gpointer data)
 	g_assert (icon != NULL);
 
 	/* Only reveal the icon if it's still the keyboard focus or if
-	 * it's still selected.
-	 */
-	/* FIXME bugzilla.eazel.com 612: 
-	 * Need to unschedule this if the user scrolls explicitly.
+	 * it's still selected. Someone originally thought we should
+	 * cancel this reveal if the user manages to sneak a direct
+	 * scroll in before the timeout fires, but we later realized
+	 * this wouldn't actually be an improvement 
+	 * (see bugzilla.eazel.com 612).
 	 */
 	if (icon == container->details->keyboard_focus
 	    || icon->is_selected) {
