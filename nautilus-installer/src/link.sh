@@ -1,6 +1,6 @@
 #! /bin/bash
 
-DEBUG="yes"
+DEBUG="no"
 
 GNOME=/gnome
 BUILD_DATE=`date +%d%b%y-%H%M`
@@ -52,7 +52,7 @@ popd && \
 
 make clean && \
 make CFLAGS="$OG_FLAG $WARN_FLAG -DNO_TEXT_BOX -DBUILD_DATE=\\\"${BUILD_DATE}\\\"" LDFLAGS="-static" && \
-gcc -static $OG_FLAG $WARN_FLAG -o eazel-installer main.o support.o callbacks.o installer.o proxy.o 	\
+gcc -static $OG_FLAG $WARN_FLAG -o eazel-installer main.o callbacks.o installer.o proxy.o 	\
 ../../components/services/install/lib/libeazelinstall_minimal.a 			\
 ../../components/services/trilobite/libtrilobite/libtrilobite_minimal.a 		\
 ../../libnautilus-extensions/nautilus-druid.o						\
