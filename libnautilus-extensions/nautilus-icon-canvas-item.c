@@ -929,9 +929,10 @@ draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
 }
 
 static void
-draw_pixbuf_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buf, double affine[6], int x, int y)
+draw_pixbuf_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buf, double affine[6], int x_offset, int y_offset)
 {
-	/* FIXME: must take x,y into account in affine */
+	affine[4] += x_offset;
+	affine[5] += y_offset;
 	
 	if (gdk_pixbuf_get_has_alpha(pixbuf))
 		art_rgb_rgba_affine (buf->buf,
@@ -953,6 +954,8 @@ draw_pixbuf_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buf, double affine[6], int x,
 				affine,
 				ART_FILTER_NEAREST,
 				NULL);
+	affine[4] -= x_offset;
+	affine[5] -= y_offset;
 }
 
 /* shared code to highlight or dim the passed-in pixbuf */
@@ -1077,9 +1080,12 @@ nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 		gdk_pixbuf_unref(temp_pixbuf);
 
 	/* draw the emblems */
+	get_icon_canvas_rectangle (icon_item, &icon_rect);
+	
 	emblem_layout_reset (&emblem_layout, icon_item, &icon_rect);
 	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
-		draw_pixbuf_aa (emblem_pixbuf, buf, i2c, emblem_rect.x0, emblem_rect.y0);
+		draw_pixbuf_aa (emblem_pixbuf, buf, i2c, emblem_rect.x0 - icon_rect.x0, 
+				emblem_rect.y0 - icon_rect.y0);
 	}
 	
 	/* draw the stretch handles */
