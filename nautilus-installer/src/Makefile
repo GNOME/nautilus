@@ -192,7 +192,7 @@ $(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a \
 $(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite_minimal.a \
 $(top_builddir)/libnautilus-extensions/nautilus-druid.o \
 $(top_builddir)/libnautilus-extensions/nautilus-druid-page-eazel.o
-CFLAGS = 	-Wall 	-Wchar-subscripts -Wmissing-declarations -Wmissing-prototypes 	-Wnested-externs -Wpointer-arith 	-Werror 	-gdwarf-2 -O
+CFLAGS = 	-Wall 	-Wchar-subscripts -Wmissing-declarations -Wmissing-prototypes 	-Wnested-externs -Wpointer-arith 	-Wcast-align -Wsign-compare 	-Werror 	-gdwarf-2 -O
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
