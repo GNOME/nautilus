@@ -20,8 +20,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-01-17 01:25+0100\n"
-"PO-Revision-Date: 2001-01-17 01:27+0100\n"
+"POT-Creation-Date: 2001-01-17 12:44+0100\n"
+"PO-Revision-Date: 2001-01-17 12:47+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1202,9 +1202,9 @@ msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil."
 
 #: components/music/nautilus-music-view.c:686
-#: src/file-manager/fm-properties-window.c:2130
-#: src/nautilus-property-browser.c:977 src/nautilus-property-browser.c:1113
-#: src/nautilus-property-browser.c:1126 src/nautilus-property-browser.c:1394
+#: src/file-manager/fm-properties-window.c:2144
+#: src/nautilus-property-browser.c:986 src/nautilus-property-browser.c:1122
+#: src/nautilus-property-browser.c:1135 src/nautilus-property-browser.c:1403
 msgid "Not an Image"
 msgstr "Inte en bild"
 
@@ -1381,7 +1381,7 @@ msgid "Install Failed"
 msgstr "Installationen misslyckades"
 
 #: components/rpmview/nautilus-rpm-view-install.c:297
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1232
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1309
 msgid "Incorrect password."
 msgstr "Felaktigt lösenord."
 
@@ -2312,50 +2312,50 @@ msgstr "Version: %s"
 msgid "%d%%"
 msgstr "%d%%"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1012
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1041
 #, c-format
-msgid " · %s is in the KDE menu.\n"
-msgstr " · %s är i KDE-menyn.\n"
+msgid " · %s is in the Gnome menu under %s"
+msgstr " · %s är i Gnome-menyn under %s"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1023
-#, c-format
-msgid " · %s is in the Gnome menu under %s.\n"
-msgstr " · %s är i Gnome-menyn under %s.\n"
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1027
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1059
 #, c-format
 msgid " · %s is in the Gnome menu.\n"
 msgstr " · %s är i Gnome-menyn.\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1063
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1086
+#, c-format
+msgid " · %s is in the KDE menu.\n"
+msgstr " · %s är i KDE-menyn.\n"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1138
 msgid "I ran into problems while installing."
 msgstr "Jag råkade ut för problem vid installationen."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1064
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1139
 msgid "I'd like to try the following :"
 msgstr "Jag vill prova följande:"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1073
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1148
 msgid "Is this ok ?"
 msgstr "Är det okej?"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1116
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1191
 msgid "Installation aborted."
 msgstr "Installationen avbröts."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1118
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1193
 msgid "This package has already been installed."
 msgstr "Det här paketet har redan installerats."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1120
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1195
 msgid "Installation complete!"
 msgstr "Installationen är färdig!"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1122
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1197
 msgid "Installation failed!"
 msgstr "Installationen misslyckades!"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1137
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1214
 #, c-format
 msgid ""
 "%s\n"
@@ -2366,7 +2366,7 @@ msgstr ""
 "%s\n"
 "Ska jag ta bort de RPM-filer som blev över?"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1142
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1219
 #, c-format
 msgid ""
 "%s\n"
@@ -2375,7 +2375,7 @@ msgstr ""
 "%s\n"
 "Ta bort RPM-filerna?"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1144
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1221
 #, c-format
 msgid ""
 "%s\n"
@@ -2384,7 +2384,7 @@ msgstr ""
 "%s\n"
 "Ska jag ta bort de RPM-filer som blev över?"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1165
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1242
 msgid ""
 "A core package of Nautilus has been\n"
 "updated.  You should restart Nautilus.\n"
@@ -2396,25 +2396,25 @@ msgstr ""
 "\n"
 "Vill du göra det nu?"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1205
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1282
 #, c-format
 msgid "Installation failed on %s"
 msgstr "Installationen misslyckades vid %s"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1350
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1427
 msgid "Downloading remote package"
 msgstr "Hämtar fjärrpaket"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1352
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1429
 #, c-format
 msgid "Downloading \"%s\""
 msgstr "Hämtar \"%s\""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1354
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1431
 msgid "Downloading some package"
 msgstr "Hämtar något paket"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1368
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1445
 msgid ""
 "The Eazel install service is missing:\n"
 "Installs will not work."
@@ -2422,15 +2422,15 @@ msgstr ""
 "Eazel-installationstjänsten saknas:\n"
 "Installationer kommer inte att fungera."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1413
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1490
 msgid "Contacting install server ..."
 msgstr "Kontaktar installationsserver ..."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1470
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1558
 msgid "Package download aborted."
 msgstr "Pakethämtningen avbröts."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1472
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1560
 msgid "Aborted"
 msgstr "Avbruten"
 
@@ -2612,8 +2612,8 @@ msgstr ""
 #. FIXME we really should use the services alert icon here, eh?
 #: components/services/summary/nautilus-view/nautilus-summary-callbacks.c:102
 msgid ""
-"Your Eazel Services account has not yet been activated.  You cannot log into "
-"Eazel Services until you have activated your account.\n"
+"Your Eazel Services account has not yet been activated.  You can't log into "
+"Eazel Services until you activate your account.\n"
 "\n"
 "Please check your email for activation instructions."
 msgstr ""
@@ -2627,7 +2627,8 @@ msgstr ""
 msgid ""
 "Your Eazel Service User Account has been temporarily disabled.\n"
 "\n"
-"Please try again in a few minutes or contact Eazel Support if this continues."
+"Please try again in a few minutes, or contact Eazel support if this problem "
+"continues."
 msgstr ""
 "Ditt Eazel Services-konto har deaktiverats tillfälligt.\n"
 "\n"
@@ -2908,9 +2909,8 @@ msgid "Sorry, but %s is too large for Nautilus to load all of it."
 msgstr "Tyvärr, %s är för stor för att Nautilus ska kunna läsa in hela."
 
 #: components/text/nautilus-text-view.c:317
-#: src/nautilus-property-browser.c:878 src/nautilus-property-browser.c:907
-msgid "Couldn't delete pattern"
-msgstr "Kunde inte ta bort mönster"
+msgid "File too large"
+msgstr "Filen är för stor"
 
 #: components/tree/Nautilus_View_tree.oaf.in.h:1
 msgid "Nautilus Tree sidebar panel"
@@ -3056,7 +3056,7 @@ msgstr "Dra ett emblem till ett objekt för att lägga till det till objektet"
 msgid "Eclipse"
 msgstr "Förmörkelse"
 
-#: data/browser.xml.h:34 src/file-manager/fm-properties-window.c:1364
+#: data/browser.xml.h:34 src/file-manager/fm-properties-window.c:1372
 msgid "Emblems"
 msgstr "Emblem"
 
@@ -4988,7 +4988,7 @@ msgstr "Inkludera inte i menyn för \"%s\"-objekt"
 
 #. Menu item to search by file name in e.g. "Name starts with b"
 #: libnautilus-extensions/nautilus-program-chooser.c:1165
-#: src/file-manager/fm-list-view.c:1915
+#: src/file-manager/fm-list-view.c:1920
 #: src/file-manager/fm-search-list-view.c:334
 #: src/nautilus-bookmarks-window.c:164 src/nautilus-search-bar-criterion.c:67
 msgid "Name"
@@ -5021,7 +5021,7 @@ msgid "Choose"
 msgstr "Välj"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:1231
-#: src/nautilus-property-browser.c:364
+#: src/nautilus-property-browser.c:365
 msgid "Done"
 msgstr "Klar"
 
@@ -5753,14 +5753,14 @@ msgstr ""
 msgid "Too Many Files"
 msgstr "För många filer"
 
-#: src/file-manager/fm-directory-view.c:2603
+#: src/file-manager/fm-directory-view.c:2604
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the trash. Do you want to delete it immediately?"
 msgstr ""
 "\"%s\" kan inte flyttas till papperskorgen. Vill du ta bort det omedelbart?"
 
-#: src/file-manager/fm-directory-view.c:2608
+#: src/file-manager/fm-directory-view.c:2609
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the trash. Do you want to delete "
@@ -5769,7 +5769,7 @@ msgstr ""
 "De %d markerade objekten kan inte flyttas till papperskorgen. Vill du ta "
 "bort dem omedelbart?"
 
-#: src/file-manager/fm-directory-view.c:2612
+#: src/file-manager/fm-directory-view.c:2613
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the trash. Do you want to delete "
@@ -5778,21 +5778,21 @@ msgstr ""
 "%d av de markerade objekten kan inte flyttas till papperskorgen. Vill du ta "
 "bort de %d objekten omedelbart?"
 
-#: src/file-manager/fm-directory-view.c:2620
+#: src/file-manager/fm-directory-view.c:2621
 msgid "Delete Immediately?"
 msgstr "Ta bort omedelbart?"
 
-#: src/file-manager/fm-directory-view.c:2621
-#: src/file-manager/fm-directory-view.c:2662
+#: src/file-manager/fm-directory-view.c:2622
+#: src/file-manager/fm-directory-view.c:2663
 msgid "Delete"
 msgstr "Ta bort"
 
-#: src/file-manager/fm-directory-view.c:2651
+#: src/file-manager/fm-directory-view.c:2652
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Är du säker att du vill ta bort \"%s\" permanent från papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:2655
+#: src/file-manager/fm-directory-view.c:2656
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
@@ -5800,79 +5800,79 @@ msgid ""
 msgstr ""
 "Är du säker att du vill ta bort de %d objekten i papperskorgen permanent?"
 
-#: src/file-manager/fm-directory-view.c:2661
+#: src/file-manager/fm-directory-view.c:2662
 msgid "Delete From Trash?"
 msgstr "Ta bort från papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:2934
-#: src/file-manager/fm-directory-view.c:2975
+#: src/file-manager/fm-directory-view.c:2935
+#: src/file-manager/fm-directory-view.c:2976
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Använd \"%s\" för att öppna det markerade objektet"
 
-#: src/file-manager/fm-directory-view.c:2973
+#: src/file-manager/fm-directory-view.c:2974
 #, c-format
 msgid "%s Viewer"
 msgstr "%svisare"
 
-#: src/file-manager/fm-directory-view.c:3161
+#: src/file-manager/fm-directory-view.c:3162
 msgid "Open in _New Window"
 msgstr "Öppna i _nytt fönster"
 
-#: src/file-manager/fm-directory-view.c:3163
+#: src/file-manager/fm-directory-view.c:3164
 #, c-format
 msgid "Open in %d _New Windows"
 msgstr "Öppna i %d _nya fönster"
 
-#: src/file-manager/fm-directory-view.c:3189
+#: src/file-manager/fm-directory-view.c:3190
 msgid "Delete all selected items permanently"
 msgstr "Ta bort alla markerade objekt permanent"
 
-#: src/file-manager/fm-directory-view.c:3194
+#: src/file-manager/fm-directory-view.c:3195
 msgid "Delete from _Trash..."
 msgstr "Ta bort från _papperskorgen..."
 
-#: src/file-manager/fm-directory-view.c:3195
+#: src/file-manager/fm-directory-view.c:3196
 msgid "Delete from _Trash"
 msgstr "Ta bort från _papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:3199
+#: src/file-manager/fm-directory-view.c:3200
 msgid "Move all selected items to the Trash"
 msgstr "Flytta alla markerade objekt till papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:3203
+#: src/file-manager/fm-directory-view.c:3204
 #: src/file-manager/nautilus-directory-view-ui.xml.h:14
 msgid "Move to _Trash"
 msgstr "Flytta till _papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:3232
+#: src/file-manager/fm-directory-view.c:3233
 msgid "Create _Links"
 msgstr "Skapa _länkar"
 
-#: src/file-manager/fm-directory-view.c:3233
+#: src/file-manager/fm-directory-view.c:3234
 #: src/file-manager/nautilus-directory-view-ui.xml.h:5
 msgid "Create _Link"
 msgstr "Skapa _länk"
 
-#: src/file-manager/fm-directory-view.c:3251
+#: src/file-manager/fm-directory-view.c:3252
 msgid "_Empty Trash..."
 msgstr "_Töm papperskorgen..."
 
-#: src/file-manager/fm-directory-view.c:3252
+#: src/file-manager/fm-directory-view.c:3253
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "_Empty Trash"
 msgstr "_Töm papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:3263
+#: src/file-manager/fm-directory-view.c:3264
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "R_emove Custom Images"
 msgstr "Ta bort _anpassade bilder"
 
-#: src/file-manager/fm-directory-view.c:3264
+#: src/file-manager/fm-directory-view.c:3265
 msgid "R_emove Custom Image"
 msgstr "Ta bort _anpassad bild"
 
-#: src/file-manager/fm-directory-view.c:3403
+#: src/file-manager/fm-directory-view.c:3404
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the trash?"
@@ -5880,7 +5880,7 @@ msgstr ""
 "Den här länken kan inte användas eftersom den inte har något mål. Vill du "
 "kasta den här länken i papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:3406
+#: src/file-manager/fm-directory-view.c:3407
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -5889,15 +5889,15 @@ msgstr ""
 "Den här länken kan inte användas eftersom dess mål \"%s\" inte finns. Vill "
 "du kasta den här länken i papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:3412
+#: src/file-manager/fm-directory-view.c:3413
 msgid "Broken Link"
 msgstr "Trasig länk"
 
-#: src/file-manager/fm-directory-view.c:3413
+#: src/file-manager/fm-directory-view.c:3414
 msgid "Throw Away"
 msgstr "Kasta"
 
-#: src/file-manager/fm-directory-view.c:3469
+#: src/file-manager/fm-directory-view.c:3470
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
@@ -5905,16 +5905,16 @@ msgstr ""
 "Tyvärr, men du kan inte köra kommandon från en fjärrplats på grund av "
 "säkerhetsskäl."
 
-#: src/file-manager/fm-directory-view.c:3470
+#: src/file-manager/fm-directory-view.c:3471
 msgid "Can't execute remote links"
 msgstr "Kunde inte köra fjärrlänkar"
 
-#: src/file-manager/fm-directory-view.c:3590
+#: src/file-manager/fm-directory-view.c:3591
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Öppnar \"%s\""
 
-#: src/file-manager/fm-directory-view.c:3596
+#: src/file-manager/fm-directory-view.c:3597
 msgid "Cancel Open?"
 msgstr "Avbryt öppning?"
 
@@ -6149,20 +6149,20 @@ msgid "pointing at \"%s\""
 msgstr "pekar på \"%s\""
 
 #. Menu item to search by file size in e.g. "Size larger than 500K"
-#: src/file-manager/fm-list-view.c:1921
+#: src/file-manager/fm-list-view.c:1926
 #: src/file-manager/fm-search-list-view.c:346
 #: src/nautilus-search-bar-criterion.c:73
 msgid "Size"
 msgstr "Storlek"
 
 #. Menu item to search by file type in e.g. "Type is music"
-#: src/file-manager/fm-list-view.c:1927
+#: src/file-manager/fm-list-view.c:1932
 #: src/file-manager/fm-search-list-view.c:352
 #: src/nautilus-search-bar-criterion.c:71
 msgid "Type"
 msgstr "Typ"
 
-#: src/file-manager/fm-list-view.c:1933
+#: src/file-manager/fm-list-view.c:1938
 #: src/file-manager/fm-search-list-view.c:358
 msgid "Date Modified"
 msgstr "Modifieringsdatum"
@@ -6255,95 +6255,95 @@ msgstr "Välj anpassad ikon..."
 msgid "Remove Custom Icon"
 msgstr "Ta bort anpassad ikon"
 
-#: src/file-manager/fm-properties-window.c:1618
+#: src/file-manager/fm-properties-window.c:1632
 msgid "Set User ID"
 msgstr "Ställ in användar-ID"
 
-#: src/file-manager/fm-properties-window.c:1619
+#: src/file-manager/fm-properties-window.c:1633
 msgid "Special Flags:"
 msgstr "Specialflaggor:"
 
-#: src/file-manager/fm-properties-window.c:1621
+#: src/file-manager/fm-properties-window.c:1635
 msgid "Set Group ID"
 msgstr "Ställ in grupp-ID"
 
-#: src/file-manager/fm-properties-window.c:1622
+#: src/file-manager/fm-properties-window.c:1636
 msgid "Sticky"
 msgstr "Klistrig"
 
-#: src/file-manager/fm-properties-window.c:1640
+#: src/file-manager/fm-properties-window.c:1654
 msgid "Permissions"
 msgstr "Rättigheter"
 
-#: src/file-manager/fm-properties-window.c:1646
+#: src/file-manager/fm-properties-window.c:1660
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Du är inte ägaren, så du kan inte ändra dessa rättigheter."
 
-#: src/file-manager/fm-properties-window.c:1660
+#: src/file-manager/fm-properties-window.c:1674
 msgid "File Owner:"
 msgstr "Filägare:"
 
-#: src/file-manager/fm-properties-window.c:1669
+#: src/file-manager/fm-properties-window.c:1683
 msgid "File Group:"
 msgstr "Filgrupp:"
 
-#: src/file-manager/fm-properties-window.c:1687
+#: src/file-manager/fm-properties-window.c:1701
 msgid "Owner:"
 msgstr "Ägare:"
 
-#: src/file-manager/fm-properties-window.c:1688
+#: src/file-manager/fm-properties-window.c:1702
 msgid "Group:"
 msgstr "Grupp:"
 
-#: src/file-manager/fm-properties-window.c:1689
+#: src/file-manager/fm-properties-window.c:1703
 msgid "Others:"
 msgstr "Andra:"
 
-#: src/file-manager/fm-properties-window.c:1708
+#: src/file-manager/fm-properties-window.c:1722
 msgid "Read"
 msgstr "Läs"
 
-#: src/file-manager/fm-properties-window.c:1712
+#: src/file-manager/fm-properties-window.c:1726
 msgid "Write"
 msgstr "Skriv"
 
-#: src/file-manager/fm-properties-window.c:1716
+#: src/file-manager/fm-properties-window.c:1730
 msgid "Execute"
 msgstr "Kör program"
 
-#: src/file-manager/fm-properties-window.c:1773
+#: src/file-manager/fm-properties-window.c:1787
 msgid "Text View:"
 msgstr "Textvy:"
 
-#: src/file-manager/fm-properties-window.c:1774
+#: src/file-manager/fm-properties-window.c:1788
 msgid "Number View:"
 msgstr "Talvy:"
 
-#: src/file-manager/fm-properties-window.c:1775
+#: src/file-manager/fm-properties-window.c:1789
 msgid "Last Changed:"
 msgstr "Senast ändrad:"
 
-#: src/file-manager/fm-properties-window.c:1779
+#: src/file-manager/fm-properties-window.c:1793
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Rättigheterna för \"%s\" kunde inte fastställas."
 
-#: src/file-manager/fm-properties-window.c:2033
+#: src/file-manager/fm-properties-window.c:2047
 msgid "Cancel Showing Properties Window?"
 msgstr "Avbryt visandet av egenskapsfönstret?"
 
-#: src/file-manager/fm-properties-window.c:2034
+#: src/file-manager/fm-properties-window.c:2048
 msgid "Creating Properties window"
 msgstr "Skapar fönstret Egenskaper"
 
-#: src/file-manager/fm-properties-window.c:2129
-#: src/nautilus-property-browser.c:975 src/nautilus-property-browser.c:1125
-#: src/nautilus-property-browser.c:1393
+#: src/file-manager/fm-properties-window.c:2143
+#: src/nautilus-property-browser.c:984 src/nautilus-property-browser.c:1134
+#: src/nautilus-property-browser.c:1402
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil!"
 
-#: src/file-manager/fm-properties-window.c:2159
+#: src/file-manager/fm-properties-window.c:2173
 msgid "Select an image to represent the file:"
 msgstr "Välj en bild som ska representera filen:"
 
@@ -7258,105 +7258,104 @@ msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry kan inte användas med mer än en URI.\n"
 
 #. set the title and standard close accelerator
-#: src/nautilus-property-browser.c:259
+#: src/nautilus-property-browser.c:260
 msgid "Backgrounds and Emblems"
 msgstr "Bakgrunder och emblem"
 
-#. add the title label
-#: src/nautilus-property-browser.c:330 src/nautilus-property-browser.c:2142
-msgid "Select A Category:"
-msgstr "Välj en kategori:"
-
-#: src/nautilus-property-browser.c:374
+#: src/nautilus-property-browser.c:375
 msgid "Add new..."
 msgstr "Lägg till ny..."
 
-#: src/nautilus-property-browser.c:388
+#: src/nautilus-property-browser.c:389
 msgid "Remove..."
 msgstr "Ta bort..."
 
-#: src/nautilus-property-browser.c:877
+#: src/nautilus-property-browser.c:886
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "Tyvärr, mönstret %s kunde inte tas bort."
 
-#: src/nautilus-property-browser.c:906
+#: src/nautilus-property-browser.c:887 src/nautilus-property-browser.c:916
+msgid "Couldn't delete pattern"
+msgstr "Kunde inte ta bort mönster"
+
+#: src/nautilus-property-browser.c:915
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "Tyvärr, emblemet %s kunde inte tas bort."
 
-#: src/nautilus-property-browser.c:1002
+#: src/nautilus-property-browser.c:1011
 msgid "Create a New Emblem:"
 msgstr "Skapa ett nytt emblem:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:1007
+#: src/nautilus-property-browser.c:1016
 msgid "Keyword:"
 msgstr "Nyckelord:"
 
 #. set up a gnome file entry to pick the image file
-#: src/nautilus-property-browser.c:1024
+#: src/nautilus-property-browser.c:1033
 msgid "Select an image file for the new emblem:"
 msgstr "Välj en bildfil för det nya emblemet:"
 
-#: src/nautilus-property-browser.c:1052
+#: src/nautilus-property-browser.c:1061
 msgid "Create a New Color:"
 msgstr "Skapa en ny färg:"
 
 #. make the name label and field
-#: src/nautilus-property-browser.c:1057
+#: src/nautilus-property-browser.c:1066
 msgid "Color name:"
 msgstr "Färgnamn:"
 
-#: src/nautilus-property-browser.c:1068
+#: src/nautilus-property-browser.c:1077
 msgid "Color value:"
 msgstr "Färgvärde:"
 
-#: src/nautilus-property-browser.c:1113
+#: src/nautilus-property-browser.c:1122
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Tyvärr, du kan inte ersätta återställningsbilden."
 
-#: src/nautilus-property-browser.c:1154
+#: src/nautilus-property-browser.c:1163
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Tyvärr, mönstret %s kunde inte installeras."
 
-#: src/nautilus-property-browser.c:1155
+#: src/nautilus-property-browser.c:1164
 msgid "Couldn't install pattern"
 msgstr "Kunde inte installera mönster"
 
-#: src/nautilus-property-browser.c:1180
+#: src/nautilus-property-browser.c:1189
 msgid "Select an image file to add as a pattern:"
 msgstr "Välj en bildfil att lägga till som mönster:"
 
-#: src/nautilus-property-browser.c:1252
+#: src/nautilus-property-browser.c:1261
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Tyvärr, du måste ange ett icke-tomt namn för det nya emblemet."
 
-#: src/nautilus-property-browser.c:1253
+#: src/nautilus-property-browser.c:1262
 msgid "Couldn't install color"
 msgstr "Kunde inte installera färg"
 
-#: src/nautilus-property-browser.c:1310
+#: src/nautilus-property-browser.c:1319
 msgid "Select a color to add:"
 msgstr "Välj en färg att lägga till:"
 
-#: src/nautilus-property-browser.c:1411
+#: src/nautilus-property-browser.c:1420
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Tyvärr, du måste ange ett icke-tomt nyckelord för det nya emblemet."
 
-#: src/nautilus-property-browser.c:1412 src/nautilus-property-browser.c:1415
-#: src/nautilus-property-browser.c:1419 src/nautilus-property-browser.c:1448
+#: src/nautilus-property-browser.c:1421 src/nautilus-property-browser.c:1424
+#: src/nautilus-property-browser.c:1428 src/nautilus-property-browser.c:1457
 msgid "Couldn't install emblem"
 msgstr "Kunde inte installera emblem"
 
-#: src/nautilus-property-browser.c:1414
+#: src/nautilus-property-browser.c:1423
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Tyvärr, emblemnyckelord kan bara innehålla bokstäver, blanksteg och siffror."
 
-#: src/nautilus-property-browser.c:1417
+#: src/nautilus-property-browser.c:1426
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
@@ -7365,60 +7364,64 @@ msgstr ""
 "Tyvärr, namnet \"%s\" är ett redan existerande nyckelord. Var vänlig och "
 "välj ett annat namn på det."
 
-#: src/nautilus-property-browser.c:1447
+#: src/nautilus-property-browser.c:1456
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "Tyvärr, bilden på %s kunde inte installeras som ett emblem."
 
-#: src/nautilus-property-browser.c:2150 src/nautilus-theme-selector.c:503
+#: src/nautilus-property-browser.c:2169
+msgid "Select A Category:"
+msgstr "Välj en kategori:"
+
+#: src/nautilus-property-browser.c:2177 src/nautilus-theme-selector.c:503
 msgid "Cancel Remove"
 msgstr "Avbryt borttagning"
 
-#: src/nautilus-property-browser.c:2154
+#: src/nautilus-property-browser.c:2181
 msgid "Add a new pattern"
 msgstr "Lägg till ett nytt mönster"
 
-#: src/nautilus-property-browser.c:2157
+#: src/nautilus-property-browser.c:2184
 msgid "Add a new color"
 msgstr "Lägg till en ny färg"
 
-#: src/nautilus-property-browser.c:2160
+#: src/nautilus-property-browser.c:2187
 msgid "Add a new emblem"
 msgstr "Lägg till ett nytt emblem"
 
-#: src/nautilus-property-browser.c:2183
+#: src/nautilus-property-browser.c:2210
 msgid "Click on a pattern to remove it"
 msgstr "Klicka på ett mönster för att ta bort det"
 
-#: src/nautilus-property-browser.c:2186
+#: src/nautilus-property-browser.c:2213
 msgid "Click on a color to remove it"
 msgstr "Klicka på en färg för att ta bort den"
 
-#: src/nautilus-property-browser.c:2189
+#: src/nautilus-property-browser.c:2216
 msgid "Click on an emblem to remove it"
 msgstr "Klicka på ett emblem för att ta bort det"
 
-#: src/nautilus-property-browser.c:2198
+#: src/nautilus-property-browser.c:2225
 msgid "Patterns:"
 msgstr "Mönster:"
 
-#: src/nautilus-property-browser.c:2201
+#: src/nautilus-property-browser.c:2228
 msgid "Colors:"
 msgstr "Färger:"
 
-#: src/nautilus-property-browser.c:2204
+#: src/nautilus-property-browser.c:2231
 msgid "Emblems:"
 msgstr "Emblem:"
 
-#: src/nautilus-property-browser.c:2222
+#: src/nautilus-property-browser.c:2249
 msgid "Remove a pattern"
 msgstr "Ta bort ett mönster"
 
-#: src/nautilus-property-browser.c:2225
+#: src/nautilus-property-browser.c:2252
 msgid "Remove a color"
 msgstr "Ta bort en färg"
 
-#: src/nautilus-property-browser.c:2228
+#: src/nautilus-property-browser.c:2255
 msgid "Remove an emblem"
 msgstr "Ta bort ett emblem"
 
@@ -7593,7 +7596,7 @@ msgstr "Tjänster"
 
 #: src/nautilus-service-ui.xml.h:6
 msgid "Software _Catalog"
-msgstr "Programvaru_katalog"
+msgstr "_Programvarukatalog"
 
 #: src/nautilus-service-ui.xml.h:7
 msgid "_Eazel Services Home"
@@ -7768,7 +7771,7 @@ msgstr "Öppna ytterligare ett Nautilus-fönster för den visade platsen"
 
 #: src/nautilus-shell-ui.xml.h:44
 msgid "Refresh"
-msgstr "Ladda om"
+msgstr "Läs om"
 
 #: src/nautilus-shell-ui.xml.h:45
 msgid "Removes the selected text without putting it on the clipboard"
@@ -7818,7 +7821,7 @@ msgstr "Stoppa profilering"
 
 #: src/nautilus-shell-ui.xml.h:57
 msgid "Stop loading this location"
-msgstr "Sluta ladda denna plats"
+msgstr "Sluta läsa in denna plats"
 
 #: src/nautilus-shell-ui.xml.h:58
 msgid "Undo the last text change"
@@ -7934,7 +7937,7 @@ msgstr "_Profilerare"
 
 #: src/nautilus-shell-ui.xml.h:89
 msgid "_Refresh"
-msgstr "_Ladda om"
+msgstr "_Läs om"
 
 #: src/nautilus-shell-ui.xml.h:90
 msgid "_Report Profiling"
