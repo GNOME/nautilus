@@ -38,6 +38,7 @@
 #include <libgnome/gnome-config.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
+#include <libgnome/gnome-desktop-item.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -693,4 +694,115 @@ nautilus_launch_application_from_command (const char *name,
 	}
 
 	g_free (final_command);
+}
+
+void
+nautilus_launch_desktop_file (const char	*desktop_file_uri,
+				const GList	*parameter_uris,
+				GtkWindow	*parent_window)
+{
+	GError *error;
+	GnomeDesktopItem *ditem;
+	const char *command_string;
+	char *local_path, *message;
+	const GList *p;
+	int total, count;
+
+	/* strip the leading command specifier */
+	if (eel_str_has_prefix (desktop_file_uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
+		desktop_file_uri += strlen (NAUTILUS_DESKTOP_COMMAND_SPECIFIER);
+	}
+
+	/* Don't allow command execution from remote locations where the
+	 * uri scheme isn't file:// (This is because files on for example
+	 * nfs are treated as remote) to partially mitigate the security
+	 * risk of executing arbitrary commands.
+	 */
+	local_path = gnome_vfs_get_local_path_from_uri (desktop_file_uri);
+	if (local_path == NULL) {
+		eel_show_error_dialog
+			(_("Sorry, but you can't execute commands from "
+			   "a remote site due to security considerations."), 
+			 _("Can't execute remote links"),
+			 parent_window);
+	
+		return;
+	}
+	g_free (local_path);
+	
+	error = NULL;
+	ditem = gnome_desktop_item_new_from_uri (desktop_file_uri,
+						GNOME_DESKTOP_ITEM_LOAD_ONLY_IF_EXISTS,
+						&error);	
+	if (error != NULL) {
+		message = g_strconcat (_("There was an error launching the application.\n\n"
+					 "Details: "), error->message, NULL);
+		eel_show_error_dialog
+			(message,
+			 _("Error launching application"),
+			 parent_window);			
+			 
+		g_error_free (error);
+		g_free (message);
+		return;
+	}
+	
+	/* check if this app only supports local files */
+	command_string = gnome_desktop_item_get_string (ditem, GNOME_DESKTOP_ITEM_EXEC);
+	if ((strstr (command_string, "%F") || strstr (command_string, "%f"))
+		&& !(strstr (command_string, "%U") || strstr (command_string, "%u"))
+		&& parameter_uris != NULL) {
+	
+		/* count the number of uris with local paths */
+		count = 0;
+		total = g_list_length ((GList *) parameter_uris);
+		for (p = parameter_uris; p != NULL; p = p->next) {
+			local_path = gnome_vfs_get_local_path_from_uri ((const char *) p->data);
+			if (local_path != NULL) {
+				g_free (local_path);
+				count++;
+			}
+		}
+
+		if (count == 0) {
+			/* all files are non-local */
+			eel_show_error_dialog
+				(_("This drop target only supports local files.\n\n"
+				   "To open non-local files copy them to a local folder and then"
+				   " drop them again."),
+				 _("Drop target only supports local files"),
+				 parent_window);
+			
+			gnome_desktop_item_unref (ditem);
+			return;
+
+		} else if (count != total) {
+			/* some files were non-local */
+			eel_show_warning_dialog
+				(_("This drop target only supports local files.\n\n"
+				   "To open non-local files copy them to a local folder and then"
+				   " drop them again. The local files you dropped have already been opened."),
+				 _("Drop target only supports local files"),
+				 parent_window);
+		}		
+	}
+	
+	error = NULL;
+	gnome_desktop_item_launch (ditem, (GList *) parameter_uris,
+				   GNOME_DESKTOP_ITEM_LAUNCH_APPEND_URIS,
+				   &error);
+
+	if (error != NULL) {
+		message = g_strconcat (_("There was an error launching the application.\n\n"
+					 "Details: "), error->message, NULL);
+		eel_show_error_dialog
+			(message,
+			 _("Error launching application"),
+			 parent_window);			
+			 
+		g_error_free (error);
+		g_free (message);
+	}
+	
+	gnome_desktop_item_unref (ditem);
 }

@@ -42,8 +42,10 @@
 #include <gtk/gtktreemodelsort.h>
 #include <gtk/gtktreeselection.h>
 #include <gtk/gtktreeview.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-program-choosing.h>
 
 #define NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE "tree-sidebar-panel/expansion_state"
 
@@ -228,23 +230,49 @@ save_expansion_state_callback (GtkTreeView      *tree_widget,
 static void
 got_activation_uri_callback (NautilusFile *file, gpointer callback_data)
 {
-        char *uri;
+        char *uri, *file_uri;
         NautilusTreeView *view;
 	
         view = NAUTILUS_TREE_VIEW (callback_data);
 	
         g_assert (file == view->details->activation_file);
 
+	/* FIXME: reenable && !eel_uris_match_ignore_fragments (view->details->current_main_view_uri, uri) */
+
 	uri = nautilus_file_get_activation_uri (file);
 	if (uri != NULL
-	    /* FIXME: reenable && !eel_uris_match_ignore_fragments (view->details->current_main_view_uri, uri) */
-	    && strncmp (uri, "command:", strlen ("command:")) != 0) {
+	    && eel_str_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER)) {
+
+		uri += strlen (NAUTILUS_COMMAND_SPECIFIER);
+		nautilus_launch_application_from_command (NULL, uri, NULL, FALSE);
+
+	} else if (uri != NULL
+	    	   && eel_str_has_prefix (uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
+		   
+		file_uri = nautilus_file_get_uri (file);
+		nautilus_launch_desktop_file (file_uri, NULL, NULL);
+		g_free (file_uri);
+		
+	} else if (uri != NULL
+		   && nautilus_file_is_executable (file)
+		   && nautilus_file_can_execute (file)
+		   && !nautilus_file_is_directory (file)) {	
+		   
+		file_uri = gnome_vfs_get_local_path_from_uri (uri);
+
+		/* Non-local executables don't get launched. They act like non-executables. */
+		if (file_uri == NULL) {
+			nautilus_view_open_location_in_this_window (NAUTILUS_VIEW (view), uri);
+		} else {
+			nautilus_launch_application_from_command (NULL, file_uri, NULL, FALSE);
+			g_free (file_uri);
+		}
+		   
+	} else if (uri != NULL) {	
 		nautilus_view_open_location_in_this_window (NAUTILUS_VIEW (view), uri);
 	}
+
 	g_free (uri);
-	
-	/* FIXME: show_file (view, file); */
-	
 	nautilus_file_unref (view->details->activation_file);
 	view->details->activation_file = NULL;
 }

@@ -29,6 +29,7 @@
 #include <config.h>
 #include "nautilus-dnd.h"
 
+#include "nautilus-program-choosing.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
@@ -44,8 +45,6 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <stdio.h>
 #include <string.h>
-
-#define COMMAND_SPECIFIER "command:"
 
 /* a set of defines stolen from the eel-icon-dnd.c file.
  * These are in microseconds.
@@ -293,7 +292,8 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 		}
 		return;
 
-	} else if (eel_str_has_prefix (target_uri_string, COMMAND_SPECIFIER)) {
+	} else if (eel_str_has_prefix (target_uri_string, NAUTILUS_COMMAND_SPECIFIER)
+			|| eel_str_has_prefix (target_uri_string, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
 		if (actions & GDK_ACTION_MOVE) {
 			*action = GDK_ACTION_MOVE;
 		}

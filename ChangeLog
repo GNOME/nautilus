@@ -1,3 +1,31 @@
+2002-06-25  Frank Worsley  <fworsley@shaw.ca>
+
+	* components/tree/nautilus-tree-view.c:
+	(got_activation_uri_callback):
+	implement viewing/opening and executing of files 
+	for the	tree view
+	
+	* libnautilus-private/nautilus-dnd.c:
+	* libnautilus-private/nautilus-link-desktop-file.c:
+	* libnautilus-private/nautilus-link-historical.c:
+	updated for new desktop-file: command specifier to allow
+	proper launching of desktop files
+	
+	* libnautilus-private/nautilus-program-choosing.c:
+	(nautilus_launch_desktop_file):
+	new function to launch desktop files with proper exec
+	parameter support
+	
+	* libnautilus-private/nautilus-program-choosing.h:
+	define command specifiers in one place
+	
+	* src/file-manager/fm-directory-view.c:
+	(get_executable_text_file_action):
+	add "run in terminal" button, partial fix for #41773
+	
+	(activate_callback), (fm_directory_view_move_copy_items):
+	support proper launching of and dnd to desktop files
+
 2002-06-25  Dave Camp  <dave@ximian.com>
 
 	* src/file-manager/fm-icon-view.c (get_icon_drop_target_uri_callback): 

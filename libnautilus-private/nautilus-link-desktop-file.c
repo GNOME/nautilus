@@ -32,6 +32,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
 #include "nautilus-metadata.h"
+#include "nautilus-program-choosing.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-stock-dialogs.h>
@@ -266,9 +267,7 @@ nautilus_link_desktop_file_local_get_link_type (const char *path)
 static char *
 nautilus_link_desktop_file_get_link_uri_from_desktop (GnomeDesktopItem *desktop_file)
 {
-	char *terminal_command;
 	const char *launch_string;
-	gboolean need_term;
 	const char *type;
 	char *retval;
 
@@ -284,15 +283,9 @@ nautilus_link_desktop_file_get_link_uri_from_desktop (GnomeDesktopItem *desktop_
 		if (launch_string == NULL) {
 			return NULL;
 		}
-
-		need_term = gnome_desktop_item_get_boolean (desktop_file, "Terminal");
-		if (need_term) {
-			terminal_command = eel_gnome_make_terminal_command (launch_string);
-			retval = g_strconcat ("command:", terminal_command, NULL);
-			g_free (terminal_command);
-		} else {
-			retval = g_strconcat ("command:", launch_string, NULL);
-		}
+		
+		launch_string = gnome_desktop_item_get_location (desktop_file);
+		retval = g_strconcat (NAUTILUS_DESKTOP_COMMAND_SPECIFIER, launch_string, NULL);
 	} else if (strcmp (type, "URL") == 0) {
 		/* Some old broken desktop files use this nonstandard feature, we need handle it though */
 		retval = g_strdup (gnome_desktop_item_get_string (desktop_file, "Exec"));

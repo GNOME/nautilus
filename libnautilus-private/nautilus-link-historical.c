@@ -32,6 +32,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
+#include "nautilus-program-choosing.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-preferences.h>
@@ -406,10 +407,10 @@ nautilus_link_historical_local_create_from_gnome_entry (GnomeDesktopItem *entry,
 	case GNOME_DESKTOP_ITEM_TYPE_APPLICATION:
 		if (gnome_desktop_item_get_boolean (entry, GNOME_DESKTOP_ITEM_TERMINAL)) {
 			terminal_command = eel_gnome_make_terminal_command (arguments);
-			launch_string = g_strconcat ("command:", terminal_command, NULL);
+			launch_string = g_strconcat (NAUTILUS_COMMAND_SPECIFIER, terminal_command, NULL);
 			g_free (terminal_command);
 		} else {
-			launch_string = g_strconcat ("command:", arguments, NULL);
+			launch_string = g_strconcat (NAUTILUS_COMMAND_SPECIFIER, arguments, NULL);
 		}
 		break;
 	case GNOME_DESKTOP_ITEM_TYPE_LINK:

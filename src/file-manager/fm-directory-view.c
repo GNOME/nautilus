@@ -93,10 +93,9 @@
 #define DUPLICATE_HORIZONTAL_ICON_OFFSET 70
 #define DUPLICATE_VERTICAL_ICON_OFFSET   30
 
-#define NAUTILUS_COMMAND_SPECIFIER "command:"
-
 #define RESPONSE_RUN 1000
 #define RESPONSE_DISPLAY 1001
+#define RESPONSE_RUN_IN_TERMINAL 1002
 
 /* MOD2 is num lock -- I would include MOD3-5 if I was sure they were not lock keys */
 #define ALL_NON_LOCK_MODIFIER_KEYS (GDK_SHIFT_MASK | GDK_CONTROL_MASK | GDK_MOD1_MASK)
@@ -248,6 +247,7 @@ typedef enum {
 
 typedef enum {
 	ACTIVATION_ACTION_LAUNCH,
+	ACTIVATION_ACTION_LAUNCH_IN_TERMINAL,
 	ACTIVATION_ACTION_DISPLAY,
 	ACTIVATION_ACTION_DO_NOTHING
 } ActivationAction;
@@ -4763,10 +4763,11 @@ get_executable_text_file_action (FMDirectoryView *view, NautilusFile *file)
 
 	dialog = eel_create_question_dialog (prompt,
 					     _("Run or Display?"),
-					     _("Run"), RESPONSE_RUN,
-					     _("Display"), RESPONSE_DISPLAY,
+					     _("_Display"), RESPONSE_DISPLAY,
+					     _("Run in _Terminal"), RESPONSE_RUN_IN_TERMINAL,
 					     fm_directory_view_get_containing_window (view));
 	gtk_dialog_add_button (dialog, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+	gtk_dialog_add_button (dialog, _("_Run"), RESPONSE_RUN);
 	gtk_widget_show (GTK_WIDGET (dialog));
 	
 	g_free (prompt);
@@ -4777,6 +4778,8 @@ get_executable_text_file_action (FMDirectoryView *view, NautilusFile *file)
 	switch (response) {
 	case RESPONSE_RUN:
 		return ACTIVATION_ACTION_LAUNCH;
+	case RESPONSE_RUN_IN_TERMINAL:
+		return ACTIVATION_ACTION_LAUNCH_IN_TERMINAL;
 	case RESPONSE_DISPLAY:
 		return ACTIVATION_ACTION_DISPLAY;
 	default:
@@ -4789,11 +4792,10 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 {
 	ActivateParameters *parameters;
 	FMDirectoryView *view;
-	char *uri, *command, *executable_path, *quoted_path, *name, *file_uri, *file_uri_scheme;
+	char *uri, *file_uri;
+	char *executable_path, *quoted_path, *name;
 	GnomeVFSMimeApplication *application;
 	ActivationAction action;
-	GnomeDesktopItem *desktop_item;
-	int error;
 	
 	parameters = callback_data;
 
@@ -4812,51 +4814,19 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	if (nautilus_file_is_broken_symbolic_link (file)) {
 		report_broken_symbolic_link (view, file);
 		action = ACTIVATION_ACTION_DO_NOTHING;
-	} else if (eel_istr_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER)) {
-		/* Don't allow command execution from remote locations where the
-		 * uri scheme isn't file:// (This is because files on for example
-		 * nfs are treated as remote)
-		 * to partially mitigate the security risk of
-		 * executing arbitrary commands.
-		 */
-		file_uri_scheme = nautilus_file_get_uri_scheme (file);
-		
-		if (!nautilus_file_is_local (file) && strcmp (file_uri_scheme, "file") != 0) {
-			eel_show_error_dialog
-				(_("Sorry, but you can't execute commands from "
-				   "a remote site due to security considerations."), 
-				 _("Can't execute remote links"),
+	} else if (eel_str_has_prefix (uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
+		file_uri = nautilus_file_get_uri (file);
+		nautilus_launch_desktop_file
+				(file_uri, NULL,
 				 fm_directory_view_get_containing_window (view));
-			action = ACTIVATION_ACTION_DO_NOTHING;
-		} else {
-			file_uri = nautilus_file_get_uri (file); 
-			desktop_item = gnome_desktop_item_new_from_uri (file_uri, 0, NULL);
-			g_free (file_uri);
-			if (desktop_item == NULL) {
-				error = -1;
-			} else {
-				error = gnome_desktop_item_launch (desktop_item, NULL, 0, NULL);
-				gnome_desktop_item_unref (desktop_item);
-			}
-			if (error == -1) {
-				/* As an additional precaution, only execute
-				 * commands without any parameters, which is
-				 * enforced by using a call that uses
-				 * fork/execlp instead of system.
-				 * cf.: nautilus-program-choosing.c
-				 */
-				command = uri + strlen (NAUTILUS_COMMAND_SPECIFIER);
-				nautilus_launch_application_from_command ("",
-									  command,
-									  NULL, /* param */
-									  FALSE);
-			}
-
-			action = ACTIVATION_ACTION_DO_NOTHING;
-		}
-
-		g_free (file_uri_scheme);
+		g_free (file_uri);		 
+		action = ACTIVATION_ACTION_DO_NOTHING;
+	} else if (eel_str_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER)) {
+		uri += strlen (NAUTILUS_COMMAND_SPECIFIER);
+		nautilus_launch_application_from_command (NULL, uri, NULL, FALSE);
+		action = ACTIVATION_ACTION_DO_NOTHING;
 	}
+
 	if (action != ACTIVATION_ACTION_DO_NOTHING && file_is_launchable (file)) {
 
 		action = ACTIVATION_ACTION_LAUNCH;
@@ -4881,20 +4851,17 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 			action = get_executable_text_file_action (view, file);
 		}
 
-		if (action == ACTIVATION_ACTION_LAUNCH) {
+		if (action == ACTIVATION_ACTION_LAUNCH ||
+		    action == ACTIVATION_ACTION_LAUNCH_IN_TERMINAL) {
 			quoted_path = g_shell_quote (executable_path);
 			name = nautilus_file_get_name (file);
-			/* FIXME bugzilla.gnome.org 41773: This is a
-			 * lame way to run command-line tools, since
-			 * there's no terminal for the output. But if
-			 * we always had a terminal, that would be
-			 * just as bad.
-			 */
-			nautilus_launch_application_from_command (name, quoted_path, NULL, FALSE);
+			nautilus_launch_application_from_command 
+						(name, quoted_path, NULL,
+						 (action == ACTIVATION_ACTION_LAUNCH_IN_TERMINAL) /* use terminal */ );
 			g_free (name);
 			g_free (quoted_path);
 		}
-		
+
 		g_free (executable_path);
 	}
 
@@ -5666,9 +5633,8 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 				   int x, int y,
 				   FMDirectoryView *view)
 {
-	char *command_string, *scanner;
-	int length;
-	const GList *p;
+	char *parameters, *temp;
+	GList *p;
 	
 	g_assert (relative_item_points == NULL
 		  || relative_item_points->len == 0 
@@ -5678,35 +5644,25 @@ fm_directory_view_move_copy_items (const GList *item_uris,
 	offset_drop_points (relative_item_points, x, y);
 
 	/* special-case "command:" here instead of starting a move/copy */
-	if (eel_str_has_prefix (target_uri, NAUTILUS_COMMAND_SPECIFIER)) {
-		/* execute command, passing it the dragged uris */
-		
-		/* strip the leading "command:" */
-		target_uri += strlen (NAUTILUS_COMMAND_SPECIFIER);
+	if (eel_str_has_prefix (target_uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
+		nautilus_launch_desktop_file
+				(target_uri, item_uris,
+			 	 fm_directory_view_get_containing_window (view));
+		return;
+	} else if (eel_str_has_prefix (target_uri, NAUTILUS_COMMAND_SPECIFIER)) {
+		parameters = NULL;
+		for (p = (GList *) item_uris; p != NULL; p = p->next) {
+			temp = g_strconcat ((char *) p->data, " ", parameters, NULL);
+			if (parameters != NULL) {
+				g_free (parameters);
+			}
+			parameters = temp;
+		}
 
-		/* how long will the command string be? */
-		length = strlen (target_uri) + 1;
-		for (p = item_uris; p != NULL; p = p->next) {
-			length += strlen ((const char *) p->data) + 1;
-		}
+		target_uri += strlen (NAUTILUS_COMMAND_SPECIFIER);
+		nautilus_launch_application_from_command (NULL, target_uri, parameters, FALSE);
+		g_free (parameters);
 		
-		command_string = g_malloc (length);
-		scanner = command_string;
-		
-		/* copy the command string */
-		strcpy (scanner, target_uri);
-		scanner += strlen (scanner);
-		
-		/* copy the uris */
-		for (p = item_uris; p != NULL; p = p->next) {
-			sprintf (scanner, " %s", (const char *) p->data);
-			scanner += strlen (scanner);
-		}
-		
-		/* execute the command */
-		eel_gnome_shell_execute (command_string);
-		
-		g_free (command_string);
 		return;
 	}
 	
