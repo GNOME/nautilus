@@ -1,5 +1,12 @@
 2000-05-11  Andy Hertzfeld <andy@eazel.com>
 
+	* src/ntl-index-panel.c:
+	fixed bug #600, command buttons don't handle file names with spaces,
+	by quoting the file name.  There's still a weakness for file names
+	containing single quotes, but we can address that later.
+	
+2000-05-11  Andy Hertzfeld <andy@eazel.com>
+
 	* src/nautilus-index-tabs.c:
 	fixed bug #858, index tabs pre-darken, instead of prelighten, by
 	making the lighten and switching to black text so the labels are

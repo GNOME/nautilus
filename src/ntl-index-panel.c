@@ -724,15 +724,12 @@ add_command_buttons(NautilusIndexPanel *index_panel, GList *command_list)
 		gtk_button_set_relief (GTK_BUTTON (temp_button), GTK_RELIEF_NORMAL);
 		gtk_widget_set_usize (GTK_WIDGET (temp_button), 80, 20);
 
-		/* FIXME bugzilla.eazel.com 600: 
-		 * we must quote the uri in case it has blanks.
-		 */
-		if (nautilus_str_has_prefix (index_panel->details->uri, "file://")) {
-			temp_str = index_panel->details->uri + 7;
-		} else {
-			temp_str = index_panel->details->uri;
-		}
+		temp_str = g_strdup_printf("'%s'", 
+		             nautilus_str_has_prefix (index_panel->details->uri, "file://") ?
+			     index_panel->details->uri + 7 : index_panel->details->uri);
+
 		command_string = g_strdup_printf (info->command_string, temp_str); 		
+		g_free(temp_str);
 		
 		gtk_signal_connect (GTK_OBJECT (temp_button), "clicked",
 				    GTK_SIGNAL_FUNC (command_button_cb), command_string);
