@@ -1,3 +1,19 @@
+2000-08-14  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	* libnautilus-extensions/nautilus-icon-container.h:
+	(desktop_icons_sort), (find_open_grid_space),
+	(get_best_empty_grid_location), (mark_icon_location_in_grid),
+	(mark_icon_locations_in_grid), (lay_down_icons_tblr),
+	(lay_down_icons), (nautilus_icon_container_add):
+	New functions for desktop layout mode.  We use a grid and
+	decide where to place icons based on the first, best available
+	free space on the desktop.	
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize):
+	Set our layout mode to be top-bottom-left-right
+
 2000-08-14  Raph Levien  <raph@acm.org>
 
 	* librsvg/test-ft-gtk.c: Substantial new code to fiddle

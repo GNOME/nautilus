@@ -33,7 +33,6 @@
 #include "nautilus-gtk-macros.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-link.h"
-#include "nautilus-link.h"
 #include "nautilus-string.h"
 #include <ctype.h>
 #include <grp.h>
