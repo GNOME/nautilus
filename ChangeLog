@@ -1,3 +1,58 @@
+2000-06-17  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/install/lib/eazel-install-metadata.h:
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-protocols.h:
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-rpm-glue.h:
+	* components/services/install/lib/eazel-install-tests.h:
+	* components/services/install/lib/eazel-install-types.h:
+	* components/services/install/lib/eazel-install-xml-package-list.h:
+
+	Fixed install headers to use correct ifdefs.  Mostly cosmetic.
+
+	* components/services/trilobite/sample/lib/sample-service-public.h:
+	* components/services/trilobite/sample/nautilus-view/.cvsignore:
+	* components/services/trilobite/sample/nautilus-view/Makefile.am:
+	*
+	components/services/trilobite/sample/nautilus-view/nautilus-eazel-s
+	ample-service-view.oafinfo:
+	*
+	components/services/trilobite/sample/nautilus-view/nautilus-sample-
+	service-view.oafinfo:
+	*
+	components/services/trilobite/sample/service/sample-service-public.
+	h:
+
+	More sample fixes to standardize our defacto service template.
+
+	* components/services/vault/.cvsignore:
+	* components/services/vault/Makefile.am:
+	* components/services/vault/command-line/.cvsignore:
+	* components/services/vault/command-line/Makefile.am:
+	* components/services/vault/command-line/main.c: (main):
+	* components/services/vault/idl/.cvsignore:
+	* components/services/vault/idl/Makefile.am:
+	* components/services/vault/idl/trilobite-eazel-vault.idl:
+	* components/services/vault/lib/.cvsignore:
+	* components/services/vault/lib/Makefile.am:
+	* components/services/vault/lib/trilobite-eazel-vault-public.h:
+	* components/services/vault/nautilus-view/.cvsignore:
+	* components/services/vault/nautilus-view/Makefile.am:
+	* components/services/vault/nautilus-view/icons/.cvsignore:
+	* components/services/vault/nautilus-view/icons/Makefile.am:
+	* components/services/vault/nautilus-view/main.c: (main):
+	* components/services/vault/nautilus-view/nautilus-vault-view.c:
+	* components/services/vault/nautilus-view/nautilus-vault-view.h:
+	* components/services/vault/service/.cvsignore:
+	* components/services/vault/service/Makefile.am:
+	* components/services/vault/service/main.c: (main):
+	* components/services/vault/service/trilobite-eazel-vault-impl.c:
+	* configure.in:
+
+	Added the vault skeleton.  Not hooked up to the build yet since there's
+	nothing of substance here yet.  It will build though.
+
 2000-06-16  Andy Hertzfeld  <andy@eazel.com>
 
 	* icons/Makefile.am:

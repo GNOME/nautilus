@@ -1,0 +1,36 @@
+NULL =
+
+CPPFLAGS =								\
+	-DPREFIX=\"$(prefix)\"
+	-DG_LOG_DOMAIN=\"trilobite-eazel-vault-service\"
+
+INCLUDES =								\
+	-I$(top_srcdir)							\
+	-I$(top_builddir)						\
+	-I$(top_srcdir)/components/services/trilobite 			\
+	-I$(top_srcdir)/components/services/vault/lib		 	\
+	$(GNOMEUI_CFLAGS)                       			\
+	$(GCONF_CFLAGS)							\
+	$(WERROR)							\
+	$(NULL)
+
+bin_PROGRAMS =								\
+	eazel-vault
+
+eazel_vault_SOURCES =							\
+	main.c								\
+	$(NULL)
+
+eazel_vault_LDFLAGS =							\
+	$(BONOBO_LIBS)							\
+	$(GNOMEUI_LIBS)							\
+	$(GCONF_LIBS)							\
+	$(VFS_LIBS)							\
+	$(OAF_LIBS)							\
+	$(NULL)
+
+eazel_vault_LDADD =							\
+	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
+	$(top_builddir)/components/services/vault/lib/libvault_corba.a \
+	$(NULL)
+

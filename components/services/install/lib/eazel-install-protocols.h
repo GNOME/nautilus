@@ -25,8 +25,8 @@
  * file and install a services generated package-list.xml.
  */
 
-#ifndef __EAZEL_SERVICES_PROTOCOLS_H__
-#define __EAZEL_SERVICES_PROTOCOLS_H__
+#ifndef EAZEL_INSTALL_PROTOCOLS_H
+#define EAZEL_INSTALL_PROTOCOLS_H
 
 #include "eazel-install-types.h"
 #include <ghttp.h>
@@ -44,4 +44,4 @@ gboolean eazel_install_fetch_file (EazelInstall *service,
 gboolean eazel_install_fetch_package (EazelInstall *service,
 				      PackageData *package);
 
-#endif /* __EAZEL_SERVICES_PROTOCOLS_H__ */
+#endif /* EAZEL_INSTALL_PROTOCOLS_H */

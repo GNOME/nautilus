@@ -27,8 +27,8 @@
  * file and install a services generated package-list.xml.
  */
 
-#ifndef __EAZEL_SERVICES_TYPES_H__
-#define __EAZEL_SERVICES_TYPES_H__
+#ifndef EAZEL_INSTALL_TYPES_H
+#define EAZEL_INSTALL_TYPES_H
 
 #include <gnome.h>
 #include <stdio.h>
@@ -150,4 +150,4 @@ void packagedata_destroy (PackageData *pd);
 int packagedata_hash (PackageData *pd);
 int packagedata_equal (PackageData *a, PackageData *b);
 
-#endif /* __EAZEL_SERVICES_TYPES_H__ */
+#endif /* EAZEL_INSTALL_TYPES_H */

@@ -27,8 +27,8 @@
  * file and install a services generated package-list.xml.
  */
 
-#ifndef __EAZEL_SERVICES_XML_PACKAGE_LISTH__
-#define __EAZEL_SERVICES_XML_PACKAGE_LIST_H__
+#ifndef EAZEL_INSTALL_XML_PACKAGE_LIST_H
+#define EAZEL_INSTALL_XML_PACKAGE_LIST_H
 
 #include "eazel-install-types.h"
 #include <libtrilobite/helixcode-utils.h>
@@ -40,4 +40,4 @@ void free_categories (GList* categories);
 gboolean generate_xml_package_list (const char* pkg_template_file,
                                     const char* target_file);
 
-#endif /* __EAZEL_SERVICES_XML_PACKAGE_LIST_H__ */
+#endif /* EAZEL_INSTALL_XML_PACKAGE_LIST_H */

@@ -21,8 +21,8 @@
  *
  */
 
-#ifndef EAZEL_INSTALL__PRIVATE_H
-#define EAZEL_INSTALL__PRIVATE_H
+#ifndef EAZEL_INSTALL_PRIVATE_H
+#define EAZEL_INSTALL_PRIVATE_H
 
 #include "eazel-install-public.h"
 
@@ -51,4 +51,4 @@ struct _EazelInstallPrivate {
 	FILE *logfile;
 };
 
-#endif /* EAZEL_TIME__PRIVATE_H */
+#endif /* EAZEL_INSTALL_PRIVATE_H */

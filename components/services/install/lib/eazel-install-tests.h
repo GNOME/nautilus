@@ -25,11 +25,11 @@
  * file and install a services generated package-list.xml.
  */
 
- #ifndef __EAZEL_SERVICES_TESTS_H__
- #define __EAZEL_SERVICES_TESTS_H__
+#ifndef EAZEL_INSTALL_TESTS_H
+#define EAZEL_INSTALL_TESTS_H
 
- #include "eazel-install-types.h"
+#include "eazel-install-types.h"
 
- void dump_package_list (PackageData* pkg);
+void dump_package_list (PackageData* pkg);
 
- #endif /* __EAZEL_SERVICES_TESTS_H__ */
+#endif /* EAZEL_INSTALL_TESTS_H */

@@ -28,7 +28,7 @@
  */
 
 #ifndef EAZEL_INSTALL_PUBLIC_H
-#define EAZEL_INSTALL_PUBLIC_H 
+#define EAZEL_INSTALL_PUBLIC_H
 
 #include <libgnome/gnome-defs.h>
 #ifndef STANDALONE
@@ -232,3 +232,4 @@ ei_access_decl (package_system, int);
 #endif /* __cplusplus */
 
 #endif /* EAZEL_INSTALL_PUBLIC_H */
+

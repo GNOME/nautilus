@@ -25,8 +25,8 @@
  * file and install a services generated package-list.xml.
  */
 
-#ifndef __EAZEL_SERVICES__RPM_GLUE_H__
-#define __EAZEL_SERVICES__RPM_GLUE_H__
+#ifndef EAZEL_INSTALL_RPM_GLUE_H
+#define EAZEL_INSTALL_RPM_GLUE_H
 
 #include "eazel-install-types.h"
 #include "eazel-install-protocols.h"
@@ -36,4 +36,4 @@ gboolean install_new_packages (EazelInstall *service, GList *categories);
 gboolean uninstall_packages (EazelInstall *service);
 
 
-#endif /* __EAZEL_SERVICES_RPM_GLUE_H__ */
+#endif /* EAZEL_INSTALL_RPM_GLUE_H */

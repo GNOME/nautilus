@@ -20,22 +20,8 @@
  * Authors: J Shane Culpepper <pepper@eazel.com>
  */
 
-/* eazel-install - services command line install/update/uninstall
- * component.  This program will parse the eazel-services-config.xml
- * file and install a services generated package-list.xml.
- */
+#ifndef NAUTILUS_VAULT_VIEW_H
+#define NAUTILUS_VAULT_VIEW_H
 
-#ifndef EAZEL_INSTALL_METADATA_H
-#define EAZEL_INSTALL_METADATA_H
+#endif /* NAUTILUS_VAULT_VIEW_H */
 
-#include "eazel-install-types.h"
-#include <libtrilobite/helixcode-utils.h>
-#include <errno.h>
-#include <sys/stat.h>
-#include <gnome-xml/tree.h>
-#include <gnome-xml/parser.h>
-
-InstallOptions* init_default_install_configuration (const char* config_file);
-TransferOptions* init_default_transfer_configuration (const char* config_file);
-
-#endif /* EAZEL_INSTALL_METADATA_H */
