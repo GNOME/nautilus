@@ -1036,13 +1036,13 @@ make_oaf_query_with_known_mime_type (const char *mime_type, const char *uri_sche
                   * PersistStream, ProgressiveDataSink, or
                   * PersistFile.
                   */
-                 "((repo_ids.has_all(['IDL:Bonobo/Control:1.0',"
-                                     "'IDL:Nautilus/View:1.0'])"
-                  "OR (repo_ids.has_one(['IDL:Bonobo/Control:1.0',"
-                                        "'IDL:Bonobo/Embeddable:1.0'])"
-                      "AND repo_ids.has_one(['IDL:Bonobo/PersistStream:1.0',"
-                                            "'IDL:Bonobo/ProgressiveDataSink:1.0',"
-                                            "'IDL:Bonobo/PersistFile:1.0'])))"
+                 "((repo_ids.has_all (['IDL:Bonobo/Control:1.0',"
+                                      "'IDL:Nautilus/View:1.0'])"
+                  "OR (repo_ids.has_one (['IDL:Bonobo/Control:1.0',"
+                                         "'IDL:Bonobo/Embeddable:1.0'])"
+                      "AND repo_ids.has_one (['IDL:Bonobo/PersistStream:1.0',"
+                                             "'IDL:Bonobo/ProgressiveDataSink:1.0',"
+                                             "'IDL:Bonobo/PersistFile:1.0'])))"
                  
                  /* Check that the component either has a specific
                   * MIME type or URI scheme. If neither is specified,
@@ -1050,31 +1050,46 @@ make_oaf_query_with_known_mime_type (const char *mime_type, const char *uri_sche
                   * and all schemes". For that, you have to do a
                   * wildcard for the MIME type or for the scheme.
                   */
-                 "AND (bonobo:supported_mime_types.defined()"
-                      "OR bonobo:supported_uri_schemes.defined ())"
+                 "AND (bonobo:supported_mime_types.defined ()"
+                      "OR bonobo:supported_uri_schemes.defined ()"
+		      "OR bonobo:additional_uri_schemes.defined ())"
+
+		 /* One of two possibilties */
+
+		 /* FIXME: this comment is not very clear. */
+		 /* 1 The mime type and URI scheme match the supported
+                    attributes. */
+
+		 "AND ("
 
                  /* Check that the supported MIME types include the
                   * URI's MIME type or its supertype.
                   */
-                 "AND (NOT bonobo:supported_mime_types.defined()"
-                      "OR bonobo:supported_mime_types.has('%s')"
-                      "OR bonobo:supported_mime_types.has('%s')"
-                      "OR bonobo:supported_mime_types.has('*/*'))"
+                 "((NOT bonobo:supported_mime_types.defined ()"
+                      "OR bonobo:supported_mime_types.has ('%s')"
+                      "OR bonobo:supported_mime_types.has ('%s')"
+                      "OR bonobo:supported_mime_types.has ('*/*'))"
 
                  /* Check that the supported URI schemes include the
                   * URI's scheme.
                   */
-                 "AND (NOT bonobo:supported_uri_schemes.defined()"
-                      "OR bonobo:supported_uri_schemes.has('%s')"
-                      "OR bonobo:supported_uri_schemes.has('*'))"
+                 "AND (NOT bonobo:supported_uri_schemes.defined ()"
+                      "OR bonobo:supported_uri_schemes.has ('%s')"
+                      "OR bonobo:supported_uri_schemes.has ('*')))"
+
+		 /* 2 OR The additional URI schemes include this URI's
+		    scheme; if that is the case, this view applies
+		    whether or not the mime type is supported. */
+
+		 "OR (bonobo:additional_uri_schemes.has ('%s')"
+                      "OR bonobo:additional_uri_schemes.has ('*')))"
 
                   /* Check that the component makes it clear that it's
                    * intended for Nautilus by providing a "view_as"
                    * name. We could instead support a default, but
                    * that would make components that are untested with
-                   * Nautilus appear.
-                   */
-                 "AND nautilus:view_as_name.defined())"
+                   * Nautilus appear.  */
+                 "AND nautilus:view_as_name.defined ())"
 
                   /* Also select iids that were specifically requested
                      for this location, even if they do not otherwise
@@ -1084,7 +1099,7 @@ make_oaf_query_with_known_mime_type (const char *mime_type, const char *uri_sche
                  /* The MIME type, MIME supertype, and URI scheme for
                   * the %s above.
                   */
-                 , mime_type, mime_supertype, uri_scheme
+                 , mime_type, mime_supertype, uri_scheme, uri_scheme
 
                  /* The explicit metafile iid query for the %s above. */
                  , explicit_iid_query);
@@ -1115,24 +1130,32 @@ make_oaf_query_with_uri_scheme_only (const char *uri_scheme, GList *explicit_iid
                                          "'IDL:Bonobo/Embeddable:1.0'])"
                        "AND repo_ids.has('IDL:Bonobo/PersistFile:1.0')))"
 
+
                   /* Check if the component supports this particular
                    * URI scheme.
                    */
-                  "AND (bonobo:supported_uri_schemes.has('%s')"
-                       "OR bonobo:supported_uri_schemes.has('*'))"
+                  "AND ((bonobo:supported_uri_schemes.has ('%s')"
+                        "OR bonobo:supported_uri_schemes.has ('*')"
 
                   /* Check that the component doesn't require
                    * particular MIME types. Note that even saying you support "all"
                    */
-                  "AND (NOT bonobo:supported_mime_types.defined())"
+                  "AND (NOT bonobo:supported_mime_types.defined ()))"
+
+		  /* FIXME: improve the comment explaining this. */
+		  
+		  /* This attribute allows uri schemes to be supported
+		     even for unsupported mime types or no mime type. */
+		  "OR (bonobo:additional_uri_schemes.has ('%s')"
+		      "OR bonobo:additional_uri_schemes.has ('*')))"
+
 
                   /* Check that the component makes it clear that it's
                    * intended for Nautilus by providing a "view_as"
                    * name. We could instead support a default, but
                    * that would make components that are untested with
-                   * Nautilus appear.
-                   */
-                  "AND nautilus:view_as_name.defined())"
+                   * Nautilus appear.  */
+                  "AND nautilus:view_as_name.defined ())"
 
                  /* Also select iids that were specifically requested
                      for this location, even if they do not otherwise
@@ -1141,7 +1164,7 @@ make_oaf_query_with_uri_scheme_only (const char *uri_scheme, GList *explicit_iid
                   "OR %s"
 
                   /* The URI scheme for the %s above. */
-                  , uri_scheme
+                  , uri_scheme, uri_scheme
 
                   /* The explicit metafile iid query for the %s above. */
                   , explicit_iid_query);
