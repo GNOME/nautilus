@@ -1,3 +1,26 @@
+2000-12-12  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-package-system-private.h:
+	* components/services/install/lib/eazel-package-system-rpm3-private
+	.h:
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(rpm_packagedata_fill_from_rpm_header),
+	(rpm_packagedata_fill_from_file), (rpm_packagedata_new_from_file),
+	(eazel_package_system_rpm3_load_package),
+	(eazel_package_system_rpm3_query_impl),
+	(eazel_package_system_rpm3_query_substr),
+	(eazel_package_system_rpm3_query_requires),
+	(eazel_package_system_rpm3_query):
+	* components/services/install/lib/eazel-package-system-skeleton.c:
+	(eazel_package_system_skeleton_query):
+	* components/services/install/lib/eazel-package-system-types.c:
+	(packagedata_new):
+	* components/services/install/lib/eazel-package-system-types.h:
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_load_package), (eazel_package_system_query):
+	* components/services/install/lib/eazel-package-system.h:
+	unsigned long to int replacement on various types.
+
 2000-12-12  Arik Devens  <arik@gnome.org>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
@@ -126,6 +149,7 @@
 	that did a hide followed by a show. Corrected an assert that
 	should have been a return_if_fail.
 	
+>>>>>>> 1.3120
 2000-12-12  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

@@ -33,7 +33,7 @@ void eazel_package_system_rpm3_create_dbs (EazelPackageSystemRpm3 *system);
 PackageData* eazel_package_system_rpm3_load_package (EazelPackageSystemRpm3 *system,
 						     PackageData *in_package,
 						     const char *filename,
-						     unsigned long detail_level);
+						     int detail_level);
 void eazel_package_system_rpm3_install (EazelPackageSystemRpm3 *system, 
 					const char *dbpath,
 					GList* packages,
@@ -49,7 +49,7 @@ GList* eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
 					const char *dbpath,
 					const gpointer key,
 					EazelPackageSystemQueryEnum flag,
-					unsigned long detail_level);
+					int detail_level);
 
 typedef void (*EazelPackageSystemRpmQueryForeach)(char *dbpath, gpointer db, gpointer pig);
 
@@ -57,7 +57,7 @@ struct RpmQueryPiggyBag {
 	EazelPackageSystemRpm3 *system;
 	gpointer key;
 	EazelPackageSystemQueryEnum flag;
-	unsigned long detail_level;
+	int detail_level;
 	GList **result;
 };
 

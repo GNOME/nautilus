@@ -147,7 +147,7 @@ PackageData*
 eazel_package_system_load_package (EazelPackageSystem *system,
 				   PackageData *in_package,
 				   const char *filename,
-				   unsigned long detail_level)
+				   int detail_level)
 {
 	PackageData *result = NULL;
 	EPS_SANE_VAL (system, NULL);
@@ -161,7 +161,7 @@ eazel_package_system_query (EazelPackageSystem *system,
 			    const char *root,
 			    const gpointer key,
 			    EazelPackageSystemQueryEnum flag,
-			    unsigned long detail_level)
+			    int detail_level)
 {
 	GList *result = NULL;
 	EPS_SANE_VAL (system, NULL);

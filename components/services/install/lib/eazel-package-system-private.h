@@ -47,12 +47,12 @@ typedef EazelPackageSystem*(*EazelPackageSystemConstructorFunc) (GList*);
 typedef	PackageData* (*EazelPackageSytemLoadPackageFunc) (EazelPackageSystem*,
 							  PackageData*, 
 							  const char*, 
-							  unsigned long);
+							  int);
 typedef GList* (*EazelPackageSytemQueryFunc) (EazelPackageSystem*, 
 					      const char*, 
 					      gpointer key, 
 					      EazelPackageSystemQueryEnum, 
-					   unsigned long);
+					      int);
 typedef void (*EazelPackageSytemInstallFunc) (EazelPackageSystem*, 
 					      const char*,
 					      GList*, 

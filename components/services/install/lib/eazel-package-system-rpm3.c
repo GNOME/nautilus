@@ -479,7 +479,7 @@ static void
 rpm_packagedata_fill_from_rpm_header (EazelPackageSystemRpm3 *system,
 				      PackageData *pack, 
 				      Header hd,
-				      unsigned long detail_level)
+				      int detail_level)
 {
 	unsigned long *sizep;
 
@@ -499,6 +499,8 @@ rpm_packagedata_fill_from_rpm_header (EazelPackageSystemRpm3 *system,
 
 	/* FIXME: bugzilla.eazel.com 4862 */
 	pack->packsys_struc = (gpointer)hd;
+	
+	pack->fillflag = detail_level;
 
 	/* FIXME: bugzilla.eazel.com 4863 */
 	if (~detail_level & PACKAGE_FILL_NO_PROVIDES) {
@@ -577,7 +579,7 @@ static gboolean
 rpm_packagedata_fill_from_file (EazelPackageSystemRpm3 *system,
 				PackageData *pack, 
 				const char *filename, 
-				unsigned long detail_level)
+				int detail_level)
 {
 	static FD_t fd;
 	Header hd;
@@ -615,7 +617,7 @@ rpm_packagedata_fill_from_file (EazelPackageSystemRpm3 *system,
 static PackageData* 
 rpm_packagedata_new_from_file (EazelPackageSystemRpm3 *system,
 			       const char *file, 
-			       unsigned long detail_level)
+			       int detail_level)
 {
 	PackageData *pack;
 
@@ -628,7 +630,7 @@ PackageData*
 eazel_package_system_rpm3_load_package (EazelPackageSystemRpm3 *system,
 					PackageData *in_package,
 					const char *filename,
-					unsigned long detail_level)
+					int detail_level)
 {
 	PackageData *result = NULL;
 
@@ -652,7 +654,7 @@ eazel_package_system_rpm3_query_impl (EazelPackageSystemRpm3 *system,
 				      const char *dbpath,
 				      const char* key,
 				      EazelPackageSystemQueryEnum flag,
-				      unsigned long detail_level,
+				      int detail_level,
 				      GList **result)
 {
 	rpmdb db;
@@ -716,7 +718,7 @@ static void
 eazel_package_system_rpm3_query_substr (EazelPackageSystemRpm3 *system,
 					const char *dbpath,
 					const char *key,
-					unsigned long detail_level,
+					int detail_level,
 					GList **result)
 {
 	int offset;
@@ -740,7 +742,7 @@ eazel_package_system_rpm3_query_substr (EazelPackageSystemRpm3 *system,
 		rpm_packagedata_fill_from_rpm_header (system, pack, hd, 0);
 
 		if (strstr (pack->name, key)) {
-			rpm_packagedata_fill_from_rpm_header (system, pack, hd, detail_level);
+			rpm_packagedata_fill_from_rpm_header (system, pack, hd, detail_level);			
 			(*result) = g_list_prepend (*result, pack);
 		} else {
 			packagedata_destroy (pack, TRUE);
@@ -753,7 +755,7 @@ static void
 eazel_package_system_rpm3_query_requires (EazelPackageSystemRpm3 *system,
 					  const char *dbpath,
 					  const gpointer *key,
-					  unsigned long detail_level,
+					  int detail_level,
 					  GList **result)
 {
 	const PackageData *pack = (PackageData*)key;
@@ -825,7 +827,7 @@ eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
 				 const char *dbpath,
 				 const gpointer key,
 				 EazelPackageSystemQueryEnum flag,
-				 unsigned long detail_level)
+				 int detail_level)
 {
 #ifdef HAVE_RPM_30
 	GList *result = NULL;

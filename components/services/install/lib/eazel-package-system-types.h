@@ -106,7 +106,8 @@ enum _PackageFillFlags {
 	PACKAGE_FILL_NO_PROVIDES = 0x02,
 	PACKAGE_FILL_NO_DEPENDENCIES = 0x04,
 	PACKAGE_FILL_NO_DIRS_IN_PROVIDES = 0x8, /* only used if PACKAGE_FILL_NO_PROVIDES is not set */
-	PACKAGE_FILL_MINIMAL = 0xff
+	PACKAGE_FILL_MINIMAL = 0xff,
+	PACAKGE_FILL_INVALID = -1
 };
 
 /* FIXME eventually this is going away completely */
@@ -172,6 +173,8 @@ struct _PackageData {
 	gboolean source_package;
 	gboolean conflicts_checked; /* set to TRUE when the files provided by the package
 				       have been checked against already installed packages */
+
+	int fillflag;
 	
 	/* 
 	   toplevel = TRUE if this a package the user requested.

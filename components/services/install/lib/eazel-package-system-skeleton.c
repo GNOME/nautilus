@@ -51,7 +51,7 @@ eazel_package_system_skeleton_query (EazelPackageSystemSkeleton *system,
 				     const char *dbpath,
 				     const gpointer key,
 				     EazelPackageSystemQueryEnum flag,
-				     unsigned long detail_level)
+				     int detail_level)
 {
 	GList *result = NULL;
 	g_assert (system);

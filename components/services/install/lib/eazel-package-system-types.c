@@ -191,6 +191,7 @@ packagedata_new ()
 	pack->md5 = NULL;
 	pack->packsys_struc = NULL;
 	pack->features = NULL;
+	pack->fillflag = PACAKGE_FILL_INVALID;
 	return pack;
 }
 

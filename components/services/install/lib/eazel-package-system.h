@@ -120,12 +120,12 @@ gboolean             eazel_package_system_is_installed (EazelPackageSystem *pack
 PackageData         *eazel_package_system_load_package (EazelPackageSystem *package_system,
 							PackageData *in_package,
 							const char *filename,
-							unsigned long detail_level);
+							int detail_level);
 GList*               eazel_package_system_query (EazelPackageSystem *package_system,
 						 const char *dbpath,
 						 const gpointer key,
 						 EazelPackageSystemQueryEnum flag,
-						 unsigned long detail_level);
+						 int detail_level);
 void                 eazel_package_system_install (EazelPackageSystem *package_system, 
 						   const char *dbpath,
 						   GList* packages,
