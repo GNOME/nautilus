@@ -1,3 +1,18 @@
+2000-09-11  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 2447, Check permissions when mounting floppy
+	The check permissions call is not needed.
+
+	Fixed bug 2453, Error ignored when mounting/unmounting
+	We now check for the error.
+
+	Fixed bug 2449, Directory path creation does not handle
+	paths containing ".."
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(mount_volume_floppy_add), (mount_volume_add_aliases),
+	(nautilus_volume_monitor_mount_unmount_removable):
+
 2000-09-10  Maciej Stachowiak  <mjs@eazel.com>
 
 	* configure.in: Add AM_PATH_GTK check

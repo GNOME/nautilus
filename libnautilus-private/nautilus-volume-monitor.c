@@ -637,15 +637,6 @@ mount_volume_floppy_add (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 {
 	volume->type = NAUTILUS_VOLUME_FLOPPY;
 	return TRUE;
-
-	/* FIXME bugzilla.eazel.com 2447: Is this code needed or not? */
-#if 0
-	if (check_permissions (volume->fsname, R_OK)) {
-		return FALSE;
-	}
-	
-	return TRUE;
-#endif
 }
 
 static gboolean
@@ -711,7 +702,6 @@ mount_volume_add_aliases (NautilusVolumeMonitor *monitor, const char *alias, Nau
 	if (buf[0] == '/') {
 		path = g_strdup (buf);
 	} else {
-		/* FIXME bugzilla.eazel.com 2449: This doesn't work well for paths with ".." in them. */
 		directory_path = g_dirname (alias);
     		path = g_strconcat (directory_path,
 				    "/",
@@ -871,9 +861,9 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 		argv[2] = NULL;
 
 		exec_err = gnome_execute_async (g_get_home_dir(), 2, argv);
-		/* FIXME bugzilla.eazel.com 2453: Ignore error? */
-
-		is_mounted = !is_mounted;
+		if (exec_err == -1) {
+			is_mounted = !is_mounted;
+		}
 	}
 
 	return is_mounted;
