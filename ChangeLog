@@ -1,3 +1,12 @@
+2000-11-14  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed a bug where changing the Nautilus theme would cause
+	the history view to crash.  The problem was with an
+	improperly defined signal handler.
+	
+	* components/history/nautilus-history-view.c:
+	(history_view_update_icons), (do_destroy), (make_obj):
+
 2000-11-14  Robey Pointer  <robey@eazel.com>
 
 	* components/services/trilobite/libtrilobite/trilobite-core-distrib

@@ -111,7 +111,7 @@ install_icon (GtkCList *clist, gint row, GdkPixbuf *pixbuf)
 }
 
 static void
-history_view_update_icons (HistoryView *hview)
+history_view_update_icons (GtkObject *ignored, HistoryView *hview)
 {
 	/* Reload all bookmarks and pixbufs */
 	history_load_location (hview->view, NULL, hview);
@@ -260,6 +260,8 @@ do_destroy(GtkObject *obj, HistoryView *hview)
 	if(object_count <= 0) {
     		gtk_main_quit();
     	}
+    	
+    	gtk_signal_disconnect_by_data (nautilus_icon_factory_get (), hview);
 }
 
 
@@ -298,17 +300,15 @@ make_obj (BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 	hview->clist = (GtkCList *)clist;
 
 	/* handle events */
-	gtk_signal_connect(GTK_OBJECT(hview->view), "load_location", 
+	gtk_signal_connect (GTK_OBJECT(hview->view), "load_location", 
 			   history_load_location, hview);
-	gtk_signal_connect(GTK_OBJECT(hview->view), "title_changed", 
+	gtk_signal_connect (GTK_OBJECT(hview->view), "title_changed", 
 			   history_title_changed, hview);
 
-	gtk_signal_connect(GTK_OBJECT(clist), "button-press-event", history_button_press, hview);
-	gtk_signal_connect(GTK_OBJECT(clist), "button-release-event", history_button_release, hview);
+	gtk_signal_connect (GTK_OBJECT (clist), "button-press-event", history_button_press, hview);
+	gtk_signal_connect (GTK_OBJECT (clist), "button-release-event", history_button_release, hview);
+	gtk_signal_connect (nautilus_icon_factory_get (), "icons_changed", history_view_update_icons, hview);
 
-	gtk_signal_connect (nautilus_icon_factory_get (), "icons_changed",
-			    history_view_update_icons, hview);
-					 
 	return BONOBO_OBJECT (hview->view);
 }
 
