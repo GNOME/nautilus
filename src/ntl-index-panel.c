@@ -668,6 +668,9 @@ nautilus_index_panel_update_buttons (NautilusIndexPanel *index_panel)
 			if (command_list != NULL) {
 				add_command_buttons (index_panel, command_list);
 			        nautilus_mime_type_dispose_list (command_list);
+			
+				if (index_panel->details->selected_index != -1)
+					gtk_widget_hide (GTK_WIDGET (index_panel->details->button_box));
 			}
 		}
 

@@ -1,3 +1,11 @@
+2000-04-16  Andy Hertzfeld <andy@eazel.com>
+
+	* src/ntl-index-panel.c:
+	fixed problem where the command buttons in the index panel were overlapping
+	the metaview.  They are not supposed to be showing if a metaview is selected.
+	Fixed by hiding them in nautilus_index_panel_update_buttons if a metaview
+	is selected.
+	
 2000-04-15  Andy Hertzfeld <andy@eazel.com>
 
 	installed some icons for common file types, purloined from gmc
