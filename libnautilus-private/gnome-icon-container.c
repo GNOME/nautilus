@@ -1467,7 +1467,7 @@ start_rubberbanding (GnomeIconContainer *container,
 					 "y2", rinfo->start_y,
 					 "outline_color", "black",
 					 "outline_stipple", stipple,
-					 "width_pixels", 1,
+					 "width_pixels", 2,
 					 NULL);
 
 	rinfo->prev_x = rinfo->prev_x1 = rinfo->prev_x2 = event->x;
@@ -1818,6 +1818,10 @@ destroy (GtkObject *object)
 	icon_grid_destroy (container->priv->grid);
 
 	gnome_icon_container_dnd_fini (container);
+
+	g_free (container->priv->base_uri);
+
+	g_hash_table_destroy (container->priv->canvas_item_to_icon);
 
 	g_free (container->priv);
 

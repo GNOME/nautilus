@@ -93,6 +93,7 @@ gnome_icon_container_layout_add (GnomeIconContainerLayout *layout,
 	info->x = x;
 	info->y = y;
 
+	g_hash_table_remove (layout->name_to_layout, info->text);
 	g_hash_table_insert (layout->name_to_layout, info->text, info);
 }
 
