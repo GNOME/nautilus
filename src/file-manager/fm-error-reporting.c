@@ -67,6 +67,50 @@ fm_report_error_renaming_file (NautilusFile *file,
 }
 
 void
+fm_report_error_setting_group (NautilusFile *file,
+			       GnomeVFSResult error)
+{
+	char *file_name;
+	char *message;
+
+	switch (error) {
+	case GNOME_VFS_OK:
+		return;
+	default:
+		/* We should invent decent error messages for every case we actually experience. */
+		g_warning ("Hit unhandled case %d in fm_report_error_setting_group, tell sullivan@eazel.com", error);
+		file_name = nautilus_file_get_name (file);
+		message = g_strdup_printf (_("Sorry, couldn't change the group of \"%s\"."), file_name);
+		g_free (file_name);
+	}
+
+	nautilus_error_dialog (message);
+	g_free (message);
+}		
+
+void
+fm_report_error_setting_owner (NautilusFile *file,
+			       GnomeVFSResult error)
+{
+	char *file_name;
+	char *message;
+
+	switch (error) {
+	case GNOME_VFS_OK:
+		return;
+	default:
+		/* We should invent decent error messages for every case we actually experience. */
+		g_warning ("Hit unhandled case %d in fm_report_error_setting_owner, tell sullivan@eazel.com", error);
+		file_name = nautilus_file_get_name (file);
+		message = g_strdup_printf (_("Sorry, couldn't change the owner of \"%s\"."), file_name);
+		g_free (file_name);
+	}
+
+	nautilus_error_dialog (message);
+	g_free (message);
+}		
+
+void
 fm_report_error_setting_permissions (NautilusFile *file,
 			       	     GnomeVFSResult error)
 {

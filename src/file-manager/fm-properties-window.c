@@ -72,10 +72,12 @@ enum {
 };
 
 enum {
-	PERMISSIONS_PAGE_TITLE_ROW,
 	PERMISSIONS_PAGE_OWNER_ROW,
 	PERMISSIONS_PAGE_GROUP_ROW,
-	PERMISSIONS_PAGE_OTHERS_ROW,
+	PERMISSIONS_PAGE_TITLE_ROW,
+	PERMISSIONS_PAGE_OWNER_CHECKBOX_ROW,
+	PERMISSIONS_PAGE_GROUP_CHECKBOX_ROW,
+	PERMISSIONS_PAGE_OTHERS_CHECKBOX_ROW,
 	PERMISSIONS_PAGE_SUID_ROW,
 	PERMISSIONS_PAGE_SGID_ROW,
 	PERMISSIONS_PAGE_STICKY_ROW,
@@ -86,13 +88,19 @@ enum {
 };
 
 enum {
+	PERMISSIONS_CHECKBOXES_TITLE_ROW,
+	PERMISSIONS_CHECKBOXES_OWNER_ROW,
+	PERMISSIONS_CHECKBOXES_GROUP_ROW,
+	PERMISSIONS_CHECKBOXES_OTHERS_ROW,
+	PERMISSIONS_CHECKBOXES_ROW_COUNT
+};
+
+enum {
 	PERMISSIONS_CHECKBOXES_READ_COLUMN,
 	PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
 	PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
 	PERMISSIONS_CHECKBOXES_COLUMN_COUNT
 };
-
-#define PERMISSIONS_CHECKBOXES_ROW_COUNT (PERMISSIONS_PAGE_OTHERS_ROW+1)
 
 enum {
 	TITLE_COLUMN,
@@ -100,7 +108,33 @@ enum {
 	COLUMN_COUNT
 };
 
-static void name_field_update_to_match_file (NautilusEntry *name_field);
+typedef struct {
+	NautilusFile *file;
+	char *name;
+} FileNamePair;
+
+static FileNamePair *
+file_name_pair_new (NautilusFile *file, const char *name)
+{
+	FileNamePair *new_pair;
+
+	new_pair = g_new0 (FileNamePair, 1);
+	new_pair->file = file;
+	new_pair->name = g_strdup (name);
+
+	nautilus_file_ref (file);
+
+	return new_pair;
+}
+
+static void
+file_name_pair_free (FileNamePair *pair)
+{
+	nautilus_file_unref (pair->file);
+	g_free (pair->name);
+	
+	g_free (pair);
+}
 
 static void
 add_prompt (GtkVBox *vbox, const char *prompt_text, gboolean pack_at_start)
@@ -191,6 +225,59 @@ create_pixmap_widget_for_file (NautilusFile *file)
 }
 
 static void
+name_field_update_to_match_file (NautilusEntry *name_field)
+{
+	NautilusFile *file;
+	char *original_name, *current_name, *displayed_name;
+
+	file = gtk_object_get_data (GTK_OBJECT (name_field), "nautilus_file");
+
+	if (file == NULL || nautilus_file_is_gone (file)) {
+		gtk_widget_set_sensitive (GTK_WIDGET (name_field), FALSE);
+		gtk_entry_set_text (GTK_ENTRY (name_field), "");
+		return;
+	}
+
+	original_name = (char *) gtk_object_get_data (GTK_OBJECT (name_field),
+						      "original_name");
+
+	/* If the file name has changed since the original name was stored,
+	 * update the text in the text field, possibly (deliberately) clobbering
+	 * an edit in progress. If the name hasn't changed (but some other
+	 * aspect of the file might have), then don't clobber changes.
+	 */
+	current_name = nautilus_file_get_name (file);
+	if (nautilus_strcmp (original_name, current_name) != 0) {
+		gtk_object_set_data_full (GTK_OBJECT (name_field),
+					  "original_name",
+					  current_name,
+					  g_free);
+
+		/* Only reset the text if it's different from what is
+		 * currently showing. This causes minimal ripples (e.g.
+		 * selection change).
+		 */
+		displayed_name = gtk_editable_get_chars (GTK_EDITABLE (name_field), 0, -1);
+		if (strcmp (displayed_name, current_name) != 0) {
+			gtk_entry_set_text (GTK_ENTRY (name_field), current_name);
+		}
+		g_free (displayed_name);
+	} else {
+		g_free (current_name);
+	}
+
+	/* 
+	 * The UI would look better here if the name were just drawn as
+	 * a plain label in the case where it's not editable, with no
+	 * border at all. That doesn't seem to be possible with GtkEntry,
+	 * so we'd have to swap out the widget to achieve it. I don't
+	 * care enough to change this now.
+	 */
+	gtk_widget_set_sensitive (GTK_WIDGET (name_field), 
+				  nautilus_file_can_rename (file));
+}
+
+static void
 rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
 {
 	char *new_name;
@@ -257,59 +344,6 @@ name_field_activate (NautilusEntry *name_field)
 	name_field_done_editing (name_field);
 
 	nautilus_entry_select_all_at_idle (name_field);
-}
-
-static void
-name_field_update_to_match_file (NautilusEntry *name_field)
-{
-	NautilusFile *file;
-	char *original_name, *current_name, *displayed_name;
-
-	file = gtk_object_get_data (GTK_OBJECT (name_field), "nautilus_file");
-
-	if (file == NULL || nautilus_file_is_gone (file)) {
-		gtk_widget_set_sensitive (GTK_WIDGET (name_field), FALSE);
-		gtk_entry_set_text (GTK_ENTRY (name_field), "");
-		return;
-	}
-
-	original_name = (char *) gtk_object_get_data (GTK_OBJECT (name_field),
-						      "original_name");
-
-	/* If the file name has changed since the original name was stored,
-	 * update the text in the text field, possibly (deliberately) clobbering
-	 * an edit in progress. If the name hasn't changed (but some other
-	 * aspect of the file might have), then don't clobber changes.
-	 */
-	current_name = nautilus_file_get_name (file);
-	if (nautilus_strcmp (original_name, current_name) != 0) {
-		gtk_object_set_data_full (GTK_OBJECT (name_field),
-					  "original_name",
-					  current_name,
-					  g_free);
-
-		/* Only reset the text if it's different from what is
-		 * currently showing. This causes minimal ripples (e.g.
-		 * selection change).
-		 */
-		displayed_name = gtk_editable_get_chars (GTK_EDITABLE (name_field), 0, -1);
-		if (strcmp (displayed_name, current_name) != 0) {
-			gtk_entry_set_text (GTK_ENTRY (name_field), current_name);
-		}
-		g_free (displayed_name);
-	} else {
-		g_free (current_name);
-	}
-
-	/* 
-	 * The UI would look better here if the name were just drawn as
-	 * a plain label in the case where it's not editable, with no
-	 * border at all. That doesn't seem to be possible with GtkEntry,
-	 * so we'd have to swap out the widget to achieve it. I don't
-	 * care enough to change this now.
-	 */
-	gtk_widget_set_sensitive (GTK_WIDGET (name_field), 
-				  nautilus_file_can_rename (file));
 }
 
 static void
@@ -473,8 +507,265 @@ attach_value_field (GtkTable *table,
 					       "changed",
 					       value_field_update,
 					       GTK_OBJECT (value_field));	
+}
+
+static void
+group_change_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
+{
+	g_assert (callback_data == NULL);
+	
+	/* Report the error if it's an error. */
+	fm_report_error_setting_group (file, result);
+}
+
+static void
+activate_group_callback (GtkMenuItem *menu_item, FileNamePair *pair)
+{
+	g_assert (pair != NULL);
+
+	/* Try to change file owner. If this fails, complain to user. */
+	nautilus_file_set_group
+		(pair->file, pair->name,
+		 group_change_callback, NULL);
+}
+
+static GtkWidget *
+create_group_menu_item (NautilusFile *file, const char *group_name)
+{
+	GtkWidget *menu_item;
+
+	menu_item = gtk_menu_item_new_with_label (group_name);
+	gtk_widget_show (menu_item);
+
+	nautilus_gtk_signal_connect_free_data_custom (GTK_OBJECT (menu_item),
+			    		       	      "activate",
+			    		       	      activate_group_callback,
+			    		       	      file_name_pair_new (file, group_name),
+			    		       	      (GtkDestroyNotify)file_name_pair_free);
+
+	return menu_item;
+}
+
+static void
+synch_groups_menu (GtkOptionMenu *option_menu, NautilusFile *file)
+{
+	GList *groups;
+	GList *node;
+	GtkWidget *new_menu;
+	GtkWidget *menu_item;
+	const char *group_name;
+	char *current_group_name;
+	int group_index;
+	int current_group_index;
+
+	g_assert (GTK_IS_OPTION_MENU (option_menu));
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	current_group_name = nautilus_file_get_string_attribute (file, "group");
+	current_group_index = -1;
+
+	groups = nautilus_file_get_settable_group_names (file);
+	new_menu = gtk_menu_new ();
+
+	for (node = groups, group_index = 0; node != NULL; node = node->next, ++group_index) {
+		group_name = (const char *)node->data;
+		if (strcmp (group_name, current_group_name) == 0) {
+			current_group_index = group_index;
+		}
+		menu_item = create_group_menu_item (file, group_name);
+		gtk_menu_append (GTK_MENU (new_menu), menu_item);
+	}
+
+	/* If current group wasn't in list, we prepend it (with a separator). 
+	 * This can happen if the current group is an id with no matching
+	 * group in the groups file.
+	 */
+	if (current_group_index < 0) {
+		if (groups != NULL) {
+			menu_item = gtk_menu_item_new ();
+			gtk_widget_show (menu_item);
+			gtk_menu_prepend (GTK_MENU (new_menu), menu_item);
+		}
+		menu_item = create_group_menu_item (file, current_group_name);
+		gtk_menu_prepend (GTK_MENU (new_menu), menu_item);
+		current_group_index = 0;
+	}
+
+        /* We create and attach a new menu here because adding/removing
+         * items from existing menu screws up the size of the option menu.
+         */
+        gtk_option_menu_set_menu (option_menu, new_menu);
+
+	gtk_option_menu_set_history (option_menu, current_group_index);
+
+	g_free (current_group_name);
+	nautilus_g_list_free_deep (groups);
 }	
 
+static void
+attach_group_menu (GtkTable *table,
+		   int row,
+		   NautilusFile *file)
+{
+	GtkWidget *option_menu;
+
+	option_menu = gtk_option_menu_new ();
+	gtk_widget_show (option_menu);
+
+	/* FIXME: for reasons I don't understand, passing
+	 * GTK_FILL here is not making the option menu
+	 * minimally-sized horizontally. Might have to pack
+	 * it in an hbox or something.
+	 */	
+	gtk_table_attach (table, option_menu,
+			  VALUE_COLUMN, VALUE_COLUMN + 1,
+			  row, row + 1,
+			  GTK_FILL, 0,
+			  0, 0);
+
+	synch_groups_menu (GTK_OPTION_MENU (option_menu), file);
+
+	/* Connect to signal to update menu when file changes. */
+	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
+					       "changed",
+					       synch_groups_menu,
+					       GTK_OBJECT (option_menu));	
+}	
+
+static void
+owner_change_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
+{
+	g_assert (callback_data == NULL);
+	
+	/* Report the error if it's an error. */
+	fm_report_error_setting_owner (file, result);
+}
+
+static void
+activate_owner_callback (GtkMenuItem *menu_item, FileNamePair *pair)
+{
+	g_assert (pair != NULL);
+
+	/* Try to change file owner. If this fails, complain to user. */
+	nautilus_file_set_owner
+		(pair->file, pair->name,
+		 owner_change_callback, NULL);
+}
+
+static GtkWidget *
+create_owner_menu_item (NautilusFile *file, const char *user_name)
+{
+	GtkWidget *menu_item;
+	char **name_array;
+	char *label_text;
+
+	name_array = g_strsplit (user_name, "\n", 2);
+	if (name_array[1] != NULL) {
+		label_text = g_strdup_printf ("%s (%s)", name_array[0], name_array[1]);
+	} else {
+		label_text = g_strdup (name_array[0]);
+	}
+
+	menu_item = gtk_menu_item_new_with_label (label_text);
+	g_free (label_text);
+
+	gtk_widget_show (menu_item);
+
+	nautilus_gtk_signal_connect_free_data_custom (GTK_OBJECT (menu_item),
+			    		       	      "activate",
+			    		       	      activate_owner_callback,
+			    		       	      file_name_pair_new (file, name_array[0]),
+			    		       	      (GtkDestroyNotify)file_name_pair_free);
+	g_strfreev (name_array);
+	return menu_item;
+}
+
+static void
+synch_user_menu (GtkOptionMenu *option_menu, NautilusFile *file)
+{
+	GList *users;
+	GList *node;
+	GtkWidget *new_menu;
+	GtkWidget *menu_item;
+	const char *user_name;
+	char *owner_name;
+	int user_index;
+	int owner_index;
+
+	g_assert (GTK_IS_OPTION_MENU (option_menu));
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	owner_name = nautilus_file_get_string_attribute (file, "owner");
+	owner_index = -1;
+
+	users = nautilus_get_user_names ();
+	new_menu = gtk_menu_new ();
+
+	for (node = users, user_index = 0; node != NULL; node = node->next, ++user_index) {
+		user_name = (const char *)node->data;
+		if (strcmp (user_name, owner_name) == 0) {
+			owner_index = user_index;
+		}
+		menu_item = create_owner_menu_item (file, user_name);
+		gtk_menu_append (GTK_MENU (new_menu), menu_item);
+	}
+
+	/* If owner wasn't in list, we prepend it (with a separator). 
+	 * This can happen if the owner is an id with no matching
+	 * identifier in the passwords file.
+	 */
+	if (owner_index < 0) {
+		if (users != NULL) {
+			menu_item = gtk_menu_item_new ();
+			gtk_widget_show (menu_item);
+			gtk_menu_prepend (GTK_MENU (new_menu), menu_item);
+		}
+		menu_item = create_owner_menu_item (file, owner_name);
+		gtk_menu_prepend (GTK_MENU (new_menu), menu_item);
+		owner_index = 0;
+	}
+
+        /* We create and attach a new menu here because adding/removing
+         * items from existing menu screws up the size of the option menu.
+         */
+        gtk_option_menu_set_menu (option_menu, new_menu);
+
+	gtk_option_menu_set_history (option_menu, owner_index);
+
+	g_free (owner_name);
+	nautilus_g_list_free_deep (users);
+}	
+
+static void
+attach_owner_menu (GtkTable *table,
+		   int row,
+		   NautilusFile *file)
+{
+	GtkWidget *option_menu;
+
+	option_menu = gtk_option_menu_new ();
+	gtk_widget_show (option_menu);
+
+	/* FIXME: for reasons I don't understand, passing
+	 * GTK_FILL here is not making the option menu
+	 * minimally-sized horizontally. Might have to pack
+	 * it in an hbox or something.
+	 */	
+	gtk_table_attach (table, option_menu,
+			  VALUE_COLUMN, VALUE_COLUMN + 1,
+			  row, row + 1,
+			  GTK_FILL, 0,
+			  0, 0);
+
+	synch_user_menu (GTK_OPTION_MENU (option_menu), file);
+
+	/* Connect to signal to update menu when file changes. */
+	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
+					       "changed",
+					       synch_user_menu,
+					       GTK_OBJECT (option_menu));	
+}	
+ 
 static void
 directory_contents_value_field_update (GtkLabel *label, NautilusFile *file)
 {
@@ -854,7 +1145,7 @@ get_property_names (void)
 	property_list = get_property_names_from_uri (directory_uri, property_list);
 	g_free (directory_uri);
 
-	return g_list_sort(property_list, (GCompareFunc) nautilus_strcmp);		
+	return nautilus_g_str_list_sort (property_list);
 }
 
 static void
@@ -964,73 +1255,6 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 }
 
 static void
-permissions_label_update (GtkLabel *label, NautilusFile *file)
-{
-	const char *attribute_name;
-	const char *pattern;
-	char *attribute_value;
-	char *label_text;
-
-	g_assert (GTK_IS_LABEL (label));
-	g_assert (NAUTILUS_IS_FILE (file));
-
-	attribute_name = gtk_object_get_data (GTK_OBJECT (label), "file_attribute");
-	pattern = gtk_object_get_data (GTK_OBJECT (label), "pattern");
-
-	/* The pattern must be a plain string if there's no attribute,
-	 * or a pattern with exactly one %s if there is an attribute.
-	 */
-	if (attribute_name == NULL) {
-		gtk_label_set_text (label, pattern);
-	} else {
-		attribute_value = nautilus_file_get_string_attribute_with_default (file, attribute_name);
-		label_text = g_strdup_printf (pattern, attribute_value);
-		gtk_label_set_text (label, label_text);
-		g_free (label_text);
-		g_free (attribute_value);
-	}
-}
-
-static void
-add_permissions_row_label (GtkTable *table, 
-			   NautilusFile *file, 
-			   int row, 
-			   const char *pattern, 
-			   const char *attribute_name)
-{
-	GtkLabel *label;
-
-	label = attach_title_field (table, row, "");
-
-	/* Stash copies of the pattern and file attribute name in the label 
-	 * for the callback's sake. 
-	 */
-	if (attribute_name != NULL) {
-		gtk_object_set_data_full (GTK_OBJECT (label),
-					  "file_attribute",
-					  g_strdup (attribute_name),
-					  g_free);
-	}
-	gtk_object_set_data_full (GTK_OBJECT (label),
-				  "pattern",
-				  g_strdup (pattern),
-				  g_free);
-
-	/* Fill in the value. */
-	permissions_label_update (label, file);
-
-	/* Connect to signal to update value when file changes, if
-	 * there's an attribute that might change. 
-	 */
-	if (attribute_name != NULL) {
-		gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
-						       "changed",
-						       permissions_label_update,
-						       GTK_OBJECT (label));
-	}
-}			   
-
-static void
 add_permissions_column_label (GtkTable *table, 
 			      int column, 
 			      const char *title_text)
@@ -1044,8 +1268,8 @@ add_permissions_column_label (GtkTable *table,
 	
 	gtk_table_attach_defaults (table, label,
 			  	   column, column + 1,
-			  	   PERMISSIONS_PAGE_TITLE_ROW, 
-			  	   PERMISSIONS_PAGE_TITLE_ROW + 1);
+			  	   PERMISSIONS_CHECKBOXES_TITLE_ROW, 
+			  	   PERMISSIONS_CHECKBOXES_TITLE_ROW + 1);
 }	
 
 static void
@@ -1191,9 +1415,8 @@ static void
 add_special_execution_flags (GtkTable *table, 
 			     NautilusFile *file)
 {
-	add_permissions_row_label (table, file, 
-				   PERMISSIONS_PAGE_SUID_ROW, 
-				   _("Special Flags:"), NULL);
+	attach_title_field (table, PERMISSIONS_PAGE_SUID_ROW,
+				   _("Special Flags:"));
 
 	add_special_execution_checkbox (table, file,
 					PERMISSIONS_PAGE_SUID_ROW, 
@@ -1244,39 +1467,55 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 		gtk_widget_show (GTK_WIDGET (check_button_table));
 		gtk_table_attach (page_table, GTK_WIDGET (check_button_table),
 				  VALUE_COLUMN, VALUE_COLUMN + 1,
-				  PERMISSIONS_PAGE_TITLE_ROW, PERMISSIONS_CHECKBOXES_ROW_COUNT,
+				  PERMISSIONS_PAGE_TITLE_ROW, 
+				  PERMISSIONS_PAGE_TITLE_ROW + PERMISSIONS_CHECKBOXES_ROW_COUNT,
 				  0, 0,
 				  0, 0);
 
-		/* This first empty label is a hack to make the title row
+		attach_title_field (page_table, PERMISSIONS_PAGE_OWNER_ROW, _("Owner:"));
+		if (nautilus_file_can_set_owner (file)) {
+			/* Option menu in this case. */
+			attach_owner_menu (page_table, PERMISSIONS_PAGE_OWNER_ROW, file);
+		} else {
+			/* Static text in this case. */
+			attach_value_field (page_table, PERMISSIONS_PAGE_OWNER_ROW, 
+					    VALUE_COLUMN, file, "owner"); 
+		}
+
+		attach_title_field (page_table, PERMISSIONS_PAGE_GROUP_ROW, _("Group:"));
+		if (nautilus_file_can_set_group (file)) {
+			/* Option menu in this case. */
+			attach_group_menu (page_table, PERMISSIONS_PAGE_GROUP_ROW, file);
+		} else {
+			/* Static text in this case. */
+			attach_value_field (page_table, PERMISSIONS_PAGE_GROUP_ROW, 
+					    VALUE_COLUMN, file, "group"); 
+		}
+
+		/* This next empty label is a hack to make the title row
 		 * in the main table the same height as the title row in
 		 * the checkboxes sub-table so the other row titles will
 		 * line up horizontally with the checkbox rows.
 		 */
-		add_permissions_row_label (page_table, file, 
-					   PERMISSIONS_PAGE_TITLE_ROW, 
-					   "", NULL);
-		add_permissions_row_label (page_table, file, 
-					   PERMISSIONS_PAGE_OWNER_ROW, 
-					   _("Owner (%s):"), "owner");
-		add_permissions_row_label (page_table, file, 
-					   PERMISSIONS_PAGE_GROUP_ROW, 
-					   _("Group (%s):"), "group");
-		add_permissions_row_label (page_table, file, 
-					   PERMISSIONS_PAGE_OTHERS_ROW, 
-					   _("Others:"), NULL);
+		attach_title_field (page_table, PERMISSIONS_PAGE_TITLE_ROW, "");
+
+		attach_title_field (page_table, PERMISSIONS_PAGE_OWNER_CHECKBOX_ROW, 
+				    _("Owner:"));
+
+		attach_title_field (page_table, PERMISSIONS_PAGE_GROUP_CHECKBOX_ROW, 
+				    _("Group:"));
+
+		attach_title_field (page_table, PERMISSIONS_PAGE_OTHERS_CHECKBOX_ROW, 
+				    _("Others:"));
 		
-		add_permissions_row_label (page_table, file, 
-					   PERMISSIONS_PAGE_FULL_STRING_ROW, 
-					   _("Text View:"), NULL);
+		attach_title_value_pair (page_table, PERMISSIONS_PAGE_FULL_STRING_ROW,
+					 _("Text View:"), file, "permissions");
 		
-		add_permissions_row_label (page_table, file, 
-					   PERMISSIONS_PAGE_FULL_OCTAL_ROW, 
-					   _("Number View:"), NULL);
+		attach_title_value_pair (page_table, PERMISSIONS_PAGE_FULL_OCTAL_ROW,
+					 _("Number View:"), file, "octal_permissions");
 		
-		add_permissions_row_label (page_table, file, 
-					   PERMISSIONS_PAGE_DATE_ROW, 
-					   _("Last Changed:"), NULL);
+		attach_title_value_pair (page_table, PERMISSIONS_PAGE_DATE_ROW,
+					 _("Last Changed:"), file, "date_permissions");
 		
 		add_permissions_column_label (check_button_table, 
 					      PERMISSIONS_CHECKBOXES_READ_COLUMN,
@@ -1291,47 +1530,47 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 					      _("Execute"));
 
 		add_permissions_checkbox (check_button_table, file, 
-					  PERMISSIONS_PAGE_OWNER_ROW,
+					  PERMISSIONS_CHECKBOXES_OWNER_ROW,
 					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
 					  GNOME_VFS_PERM_USER_READ);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  PERMISSIONS_PAGE_OWNER_ROW,
+					  PERMISSIONS_CHECKBOXES_OWNER_ROW,
 					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
 					  GNOME_VFS_PERM_USER_WRITE);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  PERMISSIONS_PAGE_OWNER_ROW,
+					  PERMISSIONS_CHECKBOXES_OWNER_ROW,
 					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
 					  GNOME_VFS_PERM_USER_EXEC);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  PERMISSIONS_PAGE_GROUP_ROW,
+					  PERMISSIONS_CHECKBOXES_GROUP_ROW,
 					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
 					  GNOME_VFS_PERM_GROUP_READ);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  PERMISSIONS_PAGE_GROUP_ROW,
+					  PERMISSIONS_CHECKBOXES_GROUP_ROW,
 					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
 					  GNOME_VFS_PERM_GROUP_WRITE);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  PERMISSIONS_PAGE_GROUP_ROW,
+					  PERMISSIONS_CHECKBOXES_GROUP_ROW,
 					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
 					  GNOME_VFS_PERM_GROUP_EXEC);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  PERMISSIONS_PAGE_OTHERS_ROW,
+					  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
 					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
 					  GNOME_VFS_PERM_OTHER_READ);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  PERMISSIONS_PAGE_OTHERS_ROW,
+					  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
 					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
 					  GNOME_VFS_PERM_OTHER_WRITE);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  PERMISSIONS_PAGE_OTHERS_ROW,
+					  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
 					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
 					  GNOME_VFS_PERM_OTHER_EXEC);
 
@@ -1346,20 +1585,6 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 			add_special_execution_flags (page_table, file);					  
 		}
 
-		attach_value_field (page_table, 
-				     PERMISSIONS_PAGE_FULL_STRING_ROW, 
-				     VALUE_COLUMN, 
-				     file, "permissions"); 
-
-		attach_value_field (page_table, 
-				     PERMISSIONS_PAGE_FULL_OCTAL_ROW, 
-				     VALUE_COLUMN, 
-				     file, "octal_permissions"); 
-
-		attach_value_field (page_table, 
-				     PERMISSIONS_PAGE_DATE_ROW, 
-				     VALUE_COLUMN, 
-				     file, "date_permissions"); 
 	} else {
 		file_name = nautilus_file_get_name (file);
 		prompt_text = g_strdup_printf (_("The permissions of \"%s\" could not be determined."), file_name);

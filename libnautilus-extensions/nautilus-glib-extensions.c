@@ -197,6 +197,55 @@ nautilus_g_str_list_copy (GList *list)
 }
 
 
+static int
+compare_strings (gconstpointer string_a, gconstpointer string_b)
+{
+        return nautilus_strcmp (string_a, string_b);
+}
+
+/**
+ * nautilus_g_str_list_sort
+ *
+ * Sort a list of strings using strcmp.
+ *
+ * @list: List of strings and/or NULLs.
+ * 
+ * Return value: @list, sorted.
+ **/
+GList *
+nautilus_g_str_list_sort (GList *list)
+{
+	return g_list_sort (list, compare_strings);
+}
+
+static int
+compare_strings_case_insensitive (gconstpointer string_a, gconstpointer string_b)
+{
+	int insensitive_result;
+
+	insensitive_result =  g_strcasecmp (string_a, string_b);
+	if (insensitive_result != 0) {
+		return insensitive_result;
+	} else {
+		return compare_strings (string_a, string_b);
+	}
+}
+
+/**
+ * nautilus_g_str_list_sort_case_insensitive
+ *
+ * Sort a list of strings using g_strcasecmp.
+ *
+ * @list: List of strings and/or NULLs.
+ * 
+ * Return value: @list, sorted.
+ **/
+GList *
+nautilus_g_str_list_sort_case_insensitive (GList *list)
+{
+	return g_list_sort (list, compare_strings_case_insensitive);
+}
+
 /**
  * nautilus_g_list_free_deep_custom
  *

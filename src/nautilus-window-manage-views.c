@@ -66,12 +66,6 @@
 #define x_message(parameters)
 #endif
 
-static int
-compare_strings (gconstpointer string_a, gconstpointer string_b)
-{
-        return strcmp (string_a, string_b);
-}
-
 void
 nautilus_window_report_selection_change (NautilusWindow *window,
                                          GList *selection,
@@ -82,7 +76,7 @@ nautilus_window_report_selection_change (NautilusWindow *window,
         /* Sort list into canonical order and check if it's the same as
          * the selection we already have.
          */
-        sorted = g_list_sort (nautilus_g_str_list_copy (selection), compare_strings);
+        sorted = nautilus_g_str_list_sort (nautilus_g_str_list_copy (selection));
         if (nautilus_g_str_list_equal (sorted, window->selection)) {
                 nautilus_g_list_free_deep (sorted);
                 return;

@@ -82,8 +82,8 @@ static int   nautilus_file_compare_for_sort_internal (NautilusFile         *file
 						      gboolean              reversed);
 static char *nautilus_file_get_date_as_string        (NautilusFile         *file,
 						      NautilusDateType      date_type);
-static char *nautilus_file_get_owner_as_string       (NautilusFile         *file);
-static char *nautilus_file_get_group_as_string       (NautilusFile         *file);
+static char *nautilus_file_get_owner_as_string       (NautilusFile         *file,
+						      gboolean		    include_real_name);
 static char *nautilus_file_get_permissions_as_string (NautilusFile         *file);
 static char *nautilus_file_get_size_as_string        (NautilusFile         *file);
 static char *nautilus_file_get_type_as_string        (NautilusFile         *file);
@@ -1691,6 +1691,577 @@ nautilus_file_set_permissions (NautilusFile *file,
 	(* callback) (file, result, callback_data);
 }
 
+static char *
+get_user_name_from_id (uid_t uid)
+{
+	struct passwd *password_info;
+	
+	/* No need to free result of getpwuid */
+	password_info = getpwuid (uid);
+
+	if (password_info == NULL) {
+		return NULL;
+	}
+	
+	return g_strdup (password_info->pw_name);
+}
+
+static gboolean
+user_has_real_name (struct passwd *user)
+{
+	if (nautilus_str_is_empty (user->pw_gecos)) {
+		return FALSE;
+	}
+	
+	return nautilus_strcmp (user->pw_name, user->pw_gecos) != 0;
+}
+
+static char *
+get_user_and_real_name_from_id (uid_t uid)
+{
+	struct passwd *password_info;
+	
+	/* No need to free result of getpwuid */
+	password_info = getpwuid (uid);
+
+	if (password_info == NULL) {
+		return NULL;
+	}
+
+	if (user_has_real_name (password_info)) {
+		return g_strdup_printf ("%s (%s)", password_info->pw_name, password_info->pw_gecos);
+	} else {
+		return g_strdup (password_info->pw_name);
+	}	
+}
+
+static gboolean
+get_group_id_from_group_name (const char *group_name, uid_t *gid)
+{
+	struct group *group;
+
+	g_assert (gid != NULL);
+
+	group = getgrnam (group_name);
+
+	if (group == NULL) {
+		return FALSE;
+	}
+
+	*gid = group->gr_gid;
+
+	return TRUE;
+}
+
+static gboolean
+get_ids_from_user_name (const char *user_name, uid_t *uid, uid_t *gid)
+{
+	struct passwd *password_info;
+
+	g_assert (uid != NULL || gid != NULL);
+
+	password_info = getpwnam (user_name);
+
+	if (password_info == NULL) {
+		return FALSE;
+	}
+
+	if (uid != NULL) {
+		*uid = password_info->pw_uid;
+	}
+
+	if (gid != NULL) {
+		*gid = password_info->pw_gid;
+	}
+
+	return TRUE;
+}
+
+static gboolean
+get_user_id_from_user_name (const char *user_name, uid_t *id)
+{
+	return get_ids_from_user_name (user_name, id, NULL);
+}
+
+static gboolean
+get_group_id_from_user_name (const char *user_name, uid_t *id)
+{
+	return get_ids_from_user_name (user_name, NULL, id);
+}
+
+static gboolean
+get_id_from_digit_string (const char *digit_string, uid_t *id)
+{
+	g_assert (id != NULL);
+
+	/* Only accept string if it has one integer with nothing
+	 * afterwards.
+	 */
+	return sscanf (digit_string, "%d%*s", id) == 1;
+}
+
+/**
+ * nautilus_file_can_get_owner:
+ * 
+ * Check whether the owner a file is determinable.
+ * This might not be the case for files on non-UNIX file systems.
+ * 
+ * @file: The file in question.
+ * 
+ * Return value: TRUE if the owner is valid.
+ */
+gboolean
+nautilus_file_can_get_owner (NautilusFile *file)
+{
+	/* Before we have info on a file, the owner is unknown. */
+	/* FIXME bugzilla.eazel.com 644: 
+	 * Can we trust the uid in the file info? Might
+	 * there be garbage there? What will it do for non-local files?
+	 */
+	return !info_missing (file, 0 /* FIXME: GNOME_VFS_FILE_INFO_FIELDS_UID */);
+}
+
+/**
+ * nautilus_file_get_owner_name:
+ * 
+ * Get the user name of the file's owner. If the owner has no
+ * name, returns the userid as a string. The caller is responsible
+ * for g_free-ing this string.
+ * 
+ * @file: The file in question.
+ * 
+ * Return value: A newly-allocated string.
+ */
+char *
+nautilus_file_get_owner_name (NautilusFile *file)
+{
+	return nautilus_file_get_owner_as_string (file, FALSE);
+}
+
+/**
+ * nautilus_file_can_set_owner:
+ * 
+ * Check whether the current user is allowed to change
+ * the owner of a file.
+ * 
+ * @file: The file in question.
+ * 
+ * Return value: TRUE if the current user can change the
+ * owner of @file, FALSE otherwise. It's always possible
+ * that when you actually try to do it, you will fail.
+ */
+gboolean
+nautilus_file_can_set_owner (NautilusFile *file)
+{
+	/* Not allowed to set the owner if we can't
+	 * even read it. This can happen on non-UNIX file
+	 * systems.
+	 */
+	if (!nautilus_file_can_get_owner (file)) {
+		return FALSE;
+	}
+
+	/* Only root is also allowed to set the owner. */
+	return geteuid() == 0;
+}
+
+/**
+ * nautilus_file_set_owner:
+ * 
+ * Set the owner of a file. This will only have any effect if
+ * nautilus_file_can_set_owner returns TRUE.
+ * 
+ * @file: The file in question.
+ * @user_name_or_id: The user name to set the owner to.
+ * If the string does not match any user name, and the
+ * string is an integer, the owner will be set to the
+ * userid represented by that integer.
+ * @callback: Function called when asynch owner change succeeds or fails.
+ * @callback_data: Parameter passed back with callback function.
+ */
+void
+nautilus_file_set_owner (NautilusFile *file, 
+			 const char *user_name_or_id,
+			 NautilusFileOperationCallback callback,
+			 gpointer callback_data)
+{
+	uid_t new_id;
+	char *uri;
+	GnomeVFSFileInfo *partial_file_info;
+	GnomeVFSResult result;
+
+	if (!nautilus_file_can_set_owner (file)) {
+		/* Claim that something changed even if the permission change failed.
+		 * This makes it easier for some clients who see the "reverting"
+		 * to the old permissions as "changing back".
+		 */
+		nautilus_file_changed (file);
+		(* callback) (file, GNOME_VFS_ERROR_ACCESS_DENIED, callback_data);
+		return;
+	}
+
+	if (!get_user_id_from_user_name (user_name_or_id, &new_id)) {
+		/* No match treating user_name_or_id as name.
+		 * Try treating it as id.
+		 */
+		if (!get_id_from_digit_string (user_name_or_id, &new_id)) {
+			/* Claim that something changed even if the permission change failed.
+			 * This makes it easier for some clients who see the "reverting"
+			 * to the old permissions as "changing back".
+			 */
+			nautilus_file_changed (file);
+			(* callback) (file, GNOME_VFS_ERROR_BAD_PARAMETERS, callback_data);
+			return;		
+		}
+	}
+
+	if (new_id == file->details->info->uid) {
+		(* callback) (file, GNOME_VFS_OK, callback_data);
+		return;
+	}
+
+	/* FIXME bugzilla.eazel.com 845: This needs to be asynch. */
+	/* Change the file-on-disk owner. */
+	partial_file_info = gnome_vfs_file_info_new ();
+	partial_file_info->uid = new_id;
+	/* Must set owner & group at same time. */
+	partial_file_info->gid = file->details->info->gid;
+	uri = nautilus_file_get_uri (file);
+	result = gnome_vfs_set_file_info (uri, partial_file_info, 
+				 	  GNOME_VFS_SET_FILE_INFO_OWNER);
+	gnome_vfs_file_info_unref (partial_file_info);
+	g_free (uri);
+
+	/* Update the owner in our NautilusFile object. */
+	if (result == GNOME_VFS_OK) {
+		file->details->info->uid = new_id;
+	}
+
+	/* Claim that something changed even if the permission change failed.
+	 * This makes it easier for some clients who see the "reverting"
+	 * to the old permissions as "changing back".
+	 */
+	nautilus_file_changed (file);
+	(* callback) (file, result, callback_data);
+}
+
+/**
+ * nautilus_get_user_names:
+ * 
+ * Get a list of user names. For users with a different associated 
+ * "real name", the real name follows the standard user name, separated 
+ * by a carriage return. The caller is responsible for freeing this list 
+ * and its contents.
+ */
+GList *
+nautilus_get_user_names (void)
+{
+	GList *list;
+	char *name;
+	struct passwd *user;
+
+	list = NULL;
+	
+	setpwent ();
+
+	while ((user = getpwent ()) != NULL) {
+		if (user_has_real_name (user)) {
+			name = g_strconcat (user->pw_name, "\n", user->pw_gecos, NULL);
+		} else {
+			name = g_strdup (user->pw_name);
+		}
+		list = g_list_prepend (list, name);
+	}
+
+	endpwent ();
+
+	return nautilus_g_str_list_sort (list);
+}
+
+/**
+ * nautilus_file_can_get_group:
+ * 
+ * Check whether the group a file is determinable.
+ * This might not be the case for files on non-UNIX file systems.
+ * 
+ * @file: The file in question.
+ * 
+ * Return value: TRUE if the group is valid.
+ */
+gboolean
+nautilus_file_can_get_group (NautilusFile *file)
+{
+	/* Before we have info on a file, the group is unknown. */
+	/* FIXME bugzilla.eazel.com 644: 
+	 * Can we trust the gid in the file info? Might
+	 * there be garbage there? What will it do for non-local files?
+	 */
+	return !info_missing (file, 0 /* FIXME: GNOME_VFS_FILE_INFO_FIELDS_GID */);
+}
+
+/**
+ * nautilus_file_get_group_name:
+ * 
+ * Get the name of the file's group. If the group has no
+ * name, returns the groupid as a string. The caller is responsible
+ * for g_free-ing this string.
+ * 
+ * @file: The file in question.
+ * 
+ * Return value: A newly-allocated string.
+ **/
+char *
+nautilus_file_get_group_name (NautilusFile *file)
+{
+	struct group *group_info;
+
+	/* Before we have info on a file, the owner is unknown. */
+	if (info_missing (file, 0 /* FIXME: GNOME_VFS_FILE_INFO_FIELDS_GID */)) {
+		return NULL;
+	}
+
+	/* FIXME bugzilla.eazel.com 644: 
+	 * Can we trust the gid in the file info? Might
+	 * there be garbage there? What will it do for non-local files?
+	 */
+	/* No need to free result of getgrgid */
+	group_info = getgrgid (file->details->info->gid);
+
+	if (group_info != NULL) {
+		return g_strdup (group_info->gr_name);
+	}
+	
+	/* In the oddball case that the group name has been set to an id for which
+	 * there is no defined group, return the id in string form.
+	 */
+	return g_strdup_printf ("%d", file->details->info->gid);
+}
+
+/**
+ * nautilus_file_can_set_group:
+ * 
+ * Check whether the current user is allowed to change
+ * the group of a file.
+ * 
+ * @file: The file in question.
+ * 
+ * Return value: TRUE if the current user can change the
+ * group of @file, FALSE otherwise. It's always possible
+ * that when you actually try to do it, you will fail.
+ */
+gboolean
+nautilus_file_can_set_group (NautilusFile *file)
+{
+	uid_t user_id;
+
+	/* Not allowed to set the permissions if we can't
+	 * even read them. This can happen on non-UNIX file
+	 * systems.
+	 */
+	if (!nautilus_file_can_get_group (file)) {
+		return FALSE;
+	}
+
+	/* Check the user. */
+	user_id = geteuid();
+
+	/* Owner is allowed to set group (with restrictions). */
+	if (user_id == file->details->info->uid) {
+		return TRUE;
+	}
+
+	/* Root is also allowed to set group. */
+	if (user_id == 0) {
+		return TRUE;
+	}
+
+	/* Nobody else is allowed. */
+	return FALSE;
+}
+
+static gboolean
+group_includes_user (struct group *group, const char *username)
+{
+	char *member;
+	int member_index;
+	uid_t user_gid;
+
+	/* Check whether user is in group. Check not only member list,
+	 * but also group id of username, since user is not explicitly
+	 * listed in member list of own group.
+	 */
+	if (get_group_id_from_user_name (username, &user_gid)) {
+		if (user_gid == group->gr_gid) {
+			return TRUE;
+		}
+	}
+
+	member_index = 0;
+	while ((member = (group->gr_mem [member_index++])) != NULL) {
+		if (strcmp (member, username) == 0) {
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+/* Get a list of group names, filtered to only the ones
+ * that contain the given username. If the username is
+ * NULL, returns a list of all group names.
+ */
+static GList *
+nautilus_get_group_names_including (const char *username)
+{
+	GList *list;
+	struct group *group;
+
+	list = NULL;
+
+	setgrent ();
+
+	while ((group = getgrent ()) != NULL) {
+		if (username != NULL && !group_includes_user (group, username)) {
+			continue;
+		}
+
+		list = g_list_prepend (list, g_strdup (group->gr_name));
+	}
+
+	endgrent ();
+
+	return nautilus_g_str_list_sort (list);
+}
+
+/**
+ * nautilus_get_group_names:
+ * 
+ * Get a list of all group names.
+ */
+GList *
+nautilus_get_group_names (void)
+{
+	return nautilus_get_group_names_including (NULL);
+}
+
+/**
+ * nautilus_file_get_settable_group_names:
+ * 
+ * Get a list of all group names that the current user
+ * can set the group of a specific file to.
+ * 
+ * @file: The NautilusFile in question.
+ */
+GList *
+nautilus_file_get_settable_group_names (NautilusFile *file)
+{
+	uid_t user_id;
+	char *user_name_string;
+	GList *result;
+
+	if (!nautilus_file_can_set_group (file)) {
+		return NULL;
+	}	
+
+	/* Check the user. */
+	user_id = geteuid();
+
+	if (user_id == 0) {
+		/* Root is allowed to set group to anything. */
+		result = nautilus_get_group_names_including (NULL);
+	} else if (user_id == file->details->info->uid) {
+		/* Owner is allowed to set group to any that owner is member of. */
+		user_name_string = get_user_name_from_id (user_id);
+		result = nautilus_get_group_names_including (user_name_string);
+		g_free (user_name_string);
+	} else {
+		g_warning ("Unhandled case in nautilus_get_settable_group_names");
+		result = NULL;
+	}
+
+	return result;
+}
+
+/**
+ * nautilus_file_set_group:
+ * 
+ * Set the group of a file. This will only have any effect if
+ * nautilus_file_can_set_group returns TRUE.
+ * 
+ * @file: The file in question.
+ * @group_name_or_id: The group name to set the owner to.
+ * If the string does not match any group name, and the
+ * string is an integer, the group will be set to the
+ * group id represented by that integer.
+ * @callback: Function called when asynch group change succeeds or fails.
+ * @callback_data: Parameter passed back with callback function.
+ */
+void
+nautilus_file_set_group (NautilusFile *file, 
+			 const char *group_name_or_id,
+			 NautilusFileOperationCallback callback,
+			 gpointer callback_data)
+{
+	uid_t new_id;
+	char *uri;
+	GnomeVFSFileInfo *partial_file_info;
+	GnomeVFSResult result;
+
+	if (!nautilus_file_can_set_group (file)) {
+		/* Claim that something changed even if the permission change failed.
+		 * This makes it easier for some clients who see the "reverting"
+		 * to the old permissions as "changing back".
+		 */
+		nautilus_file_changed (file);
+		(* callback) (file, GNOME_VFS_ERROR_ACCESS_DENIED, callback_data);
+		return;
+	}
+
+	if (!get_group_id_from_group_name (group_name_or_id, &new_id)) {
+		/* No match treating group_name_or_id as name.
+		 * Try treating it as id.
+		 */
+		if (!get_id_from_digit_string (group_name_or_id, &new_id)) {
+			/* Claim that something changed even if the permission change failed.
+			 * This makes it easier for some clients who see the "reverting"
+			 * to the old permissions as "changing back".
+			 */
+			nautilus_file_changed (file);
+			(* callback) (file, GNOME_VFS_ERROR_BAD_PARAMETERS, callback_data);
+			return;		
+		}
+	}
+
+	if (new_id == file->details->info->gid) {
+		(* callback) (file, GNOME_VFS_OK, callback_data);
+		return;
+	}
+
+	/* FIXME bugzilla.eazel.com 845: This needs to be asynch. */
+	/* Change the file-on-disk group. */
+	partial_file_info = gnome_vfs_file_info_new ();
+	partial_file_info->gid = new_id;
+	/* Must set owner & group at same time. */
+	partial_file_info->uid = file->details->info->uid;
+	uri = nautilus_file_get_uri (file);
+	result = gnome_vfs_set_file_info (uri, partial_file_info, 
+				 	  GNOME_VFS_SET_FILE_INFO_OWNER);
+	gnome_vfs_file_info_unref (partial_file_info);
+	g_free (uri);
+
+	/* Update the group in our NautilusFile object. */
+	if (result == GNOME_VFS_OK) {
+		file->details->info->gid = new_id;
+	}
+
+	/* Claim that something changed even if the permission change failed.
+	 * This makes it easier for some clients who see the "reverting"
+	 * to the old permissions as "changing back".
+	 */
+	nautilus_file_changed (file);
+	(* callback) (file, result, callback_data);
+}
+
 /**
  * nautilus_file_get_octal_permissions_as_string:
  * 
@@ -1775,66 +2346,40 @@ nautilus_file_get_permissions_as_string (NautilusFile *file)
  * Get a user-displayable string representing a file's owner. The caller
  * is responsible for g_free-ing this string.
  * @file: NautilusFile representing the file in question.
+ * @include_real_name: Whether or not to append the real name (if any)
+ * for this user after the user name.
  * 
  * Returns: Newly allocated string ready to display to the user.
  * 
  **/
 static char *
-nautilus_file_get_owner_as_string (NautilusFile *file)
+nautilus_file_get_owner_as_string (NautilusFile *file, gboolean include_real_name)
 {
-	struct passwd *password_info;
+	char *user_name;
 
 	/* Before we have info on a file, the owner is unknown. */
-	if (info_missing (file, 0 /* FIXME: GNOME_VFS_FILE_INFO_FIELDS_UID */)) {
-		return NULL;
-	}
-
 	/* FIXME bugzilla.eazel.com 644: 
 	 * Can we trust the uid in the file info? Might
 	 * there be garbage there? What will it do for non-local files?
 	 */
-	/* No need to free result of getpwuid */
-	password_info = getpwuid (file->details->info->uid);
-
-	if (password_info == NULL) {
-		return NULL;
-	}
-	
-	return g_strdup (password_info->pw_name);
-}
-
-/**
- * nautilus_file_get_group_as_string:
- * 
- * Get a user-displayable string representing a file's group. The caller
- * is responsible for g_free-ing this string.
- * @file: NautilusFile representing the file in question.
- * 
- * Returns: Newly allocated string ready to display to the user.
- * 
- **/
-static char *
-nautilus_file_get_group_as_string (NautilusFile *file)
-{
-	struct group *group_info;
-
-	/* Before we have info on a file, the owner is unknown. */
-	if (info_missing (file, 0 /* FIXME: GNOME_VFS_FILE_INFO_FIELDS_GID */)) {
+	if (info_missing (file, 0 /* FIXME: GNOME_VFS_FILE_INFO_FIELDS_UID */)) {
 		return NULL;
 	}
 
-	/* FIXME bugzilla.eazel.com 644: 
-	 * Can we trust the gid in the file info? Might
-	 * there be garbage there? What will it do for non-local files?
+	if (include_real_name) {
+		user_name = get_user_and_real_name_from_id (file->details->info->uid);
+	} else {
+		user_name = get_user_name_from_id (file->details->info->uid);
+	}
+
+	if (user_name != NULL) {
+		return user_name;
+	}
+
+	/* In the oddball case that the user name has been set to an id for which
+	 * there is no defined user, return the id in string form.
 	 */
-	/* No need to free result of getgrgid */
-	group_info = getgrgid (file->details->info->gid);
-
-	if (group_info == NULL) {
-		return NULL;
-	}
-	
-	return g_strdup (group_info->gr_name);
+	return g_strdup_printf ("%d", file->details->info->uid);
 }
 
 /**
@@ -2141,11 +2686,11 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 	}
 
 	if (strcmp (attribute_name, "owner") == 0) {
-		return nautilus_file_get_owner_as_string (file);
+		return nautilus_file_get_owner_as_string (file, TRUE);
 	}
 
 	if (strcmp (attribute_name, "group") == 0) {
-		return nautilus_file_get_group_as_string (file);
+		return nautilus_file_get_group_name (file);
 	}
 
 	if (strcmp (attribute_name, "uri") == 0) {

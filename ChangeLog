@@ -1,3 +1,100 @@
+2000-06-26  John Sullivan  <sullivan@eazel.com>
+
+	Finished task 876 (owner and group should be changeable
+	in Properties window). The only part I didn't get done was
+	using asynch gnome-vfs calls. I made that part of bug 845.
+
+	* libnautilus-extensions/nautilus-string.h,
+	* libnautilus-extensions/nautilus-string.c: 
+	(nautilus_strcasecmp): New NULL-handling form of
+	strcasecmp.
+
+	* libnautilus-extensions/nautilus-glib-extensions.h,
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_g_str_list_sort),	
+	(nautilus_g_str_list_sort_case_insensitive): New functions
+	to sort a list of strings.
+	(compare_strings), (compare_strings_case_insensitive):
+	New helper routines used by the new _sort calls.
+
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_report_selection_change): Use 
+	nautilus_g_str_list_sort.
+
+	* libnautilus-extensions/nautilus-file.h,
+	* libnautilus-extensions/nautilus-file.c: 
+	(user_has_real_name): New helper function, returns TRUE
+	if a password-file-entry user has a real name distinguishable
+	from the username.
+
+	(get_user_name_from_id), (get_user_and_real_name_from_id),
+	(get_group_id_from_group_name), (get_ids_from_user_name),
+	(get_user_id_from_user_name), (get_group_id_from_user_name):
+	New helper functions for converting between user & group 
+	names & ids.
+	
+	(get_id_from_digit_string): New helper function for converting 
+	between	an integer as text and an integer.
+
+	(nautilus_get_user_names): New public function for getting the
+	list of all user names, with the real name (if distinguishable)
+	thrown in for good measure.
+
+	(nautilus_get_group_names): New public function for getting the
+	list of all group names.
+	
+	(nautilus_file_can_get_owner), (nautilus_file_get_owner_name), 
+	(nautilus_file_can_set_owner), (nautilus_file_set_owner), 
+	(nautilus_file_can_get_group), (nautilus_file_get_group_name),
+	(nautilus_file_can_set_group), (nautilus_file_set_group): 
+	New public functions for reading and setting the group and owner.
+	The setters define an asynch API though currently they're
+	using non-asynch calls internally.
+
+	(nautilus_file_get_settable_group_names): New public function
+	returning a list of all group names that the current user can
+	set this file's group to.
+
+	(group_includes_user), (nautilus_get_group_names_including):
+	New helper functions used by _get_settable_group_names.
+	
+	(nautilus_file_get_owner_as_string): Now optionally includes
+	real name in result.
+	
+	(nautilus_file_get_string_attribute): Changed to call
+	_get_owner_as_string with the real name included.
+
+	* src/file-manager/fm-error-reporting.h:
+	* src/file-manager/fm-error-reporting.c:
+	(fm_report_error_setting_group), (fm_report_error_setting_owner):
+	Error messages for when our predictions fail for whether a
+	group or owner-setting operation will succeed.
+	
+	* src/file-manager/fm-properties-window.c: 
+	(file_name_pair_new), (file_name_pair_free): New helper functions
+	for passing around a file and string together (used in callbacks).
+
+	(group_change_callback), (activate_group_callback), 
+	(create_group_menu_item), (synch_groups_menu), 
+	(attach_group_menu), (owner_change_callback),
+	(activate_owner_callback), (create_owner_menu_item),
+	(synch_user_menu), (attach_owner_menu): New functions for setting
+	up widgets for display and control of owner and group.
+
+	(add_special_execution_flags): Use attach_title_field instead of
+	add_permissions_row_label.
+
+	(permissions_label_update), (add_permissions_row_label): Removed
+	these no-longer-needed functions.
+	
+	(add_permissions_column_label): Change row number constants to 
+	match new layout.
+
+	(create_permissions_page): Use static text for owner & group if
+	non-editable, option menu if editable.
+
+	(get_property_names): Now calls nautilus_g_str_list_sort.
+	
 2000-06-26  Darin Adler  <darin@eazel.com>
 
 	* components/hardware/nautilus-hardware-view.c:

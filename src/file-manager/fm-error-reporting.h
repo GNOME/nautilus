@@ -37,4 +37,10 @@ void fm_report_error_renaming_file 	 (NautilusFile   *file,
 void fm_report_error_setting_permissions (NautilusFile   *file,
 					  GnomeVFSResult  error_code);			    
 
+void fm_report_error_setting_owner 	 (NautilusFile   *file,
+					  GnomeVFSResult  error_code);  
+
+void fm_report_error_setting_group 	 (NautilusFile   *file,
+					  GnomeVFSResult  error_code);
+
 #endif /* FM_ERROR_REPORTING_H */

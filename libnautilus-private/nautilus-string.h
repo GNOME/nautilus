@@ -40,6 +40,8 @@ char *   nautilus_strchr                 (const char    *haystack,
 					  char           needle);
 int      nautilus_strcmp                 (const char    *string_a,
 					  const char    *string_b);
+int	 nautilus_strcasecmp		 (const char	*string_a,
+					  const char	*string_b);					  
 
 /* GCompareFunc version. */
 int      nautilus_str_compare            (gconstpointer  string_a,

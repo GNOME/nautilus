@@ -137,6 +137,16 @@ gboolean                nautilus_file_can_get_permissions       (NautilusFile   
 gboolean                nautilus_file_can_set_permissions       (NautilusFile                  *file);
 GnomeVFSFilePermissions nautilus_file_get_permissions           (NautilusFile                  *file);
 
+gboolean		nautilus_file_can_get_owner		(NautilusFile		       *file);
+gboolean		nautilus_file_can_set_owner		(NautilusFile		       *file);
+gboolean		nautilus_file_can_get_group		(NautilusFile		       *file);
+gboolean		nautilus_file_can_set_group		(NautilusFile		       *file);
+char *			nautilus_file_get_owner_name		(NautilusFile		       *file);
+char *			nautilus_file_get_group_name		(NautilusFile		       *file);
+GList *			nautilus_get_user_names			(void);
+GList *			nautilus_get_group_names		(void);
+GList *			nautilus_file_get_settable_group_names	(NautilusFile		       *file);
+
 /* "Capabilities". */
 gboolean                nautilus_file_can_read                  (NautilusFile                  *file);
 gboolean                nautilus_file_can_write                 (NautilusFile                  *file);
@@ -144,6 +154,14 @@ gboolean                nautilus_file_can_execute               (NautilusFile   
 gboolean                nautilus_file_can_rename                (NautilusFile                  *file);
 
 /* Basic operations for file objects. */
+void			nautilus_file_set_owner			(NautilusFile		       *file,
+								 const char		       *user_name_or_id,
+								 NautilusFileOperationCallback  callback,
+								 gpointer                       callback_data);
+void			nautilus_file_set_group			(NautilusFile		       *file,
+								 const char		       *group_name_or_id,
+								 NautilusFileOperationCallback  callback,
+								 gpointer                       callback_data);
 void                    nautilus_file_set_permissions           (NautilusFile                  *file,
 								 GnomeVFSFilePermissions        permissions,
 								 NautilusFileOperationCallback  callback,

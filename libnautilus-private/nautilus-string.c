@@ -50,6 +50,13 @@ nautilus_strcmp (const char *string_a, const char *string_b)
 		       string_b == NULL ? "" : string_b);
 }
 
+int
+nautilus_strcasecmp (const char *string_a, const char *string_b)
+{
+	return g_strcasecmp (string_a == NULL ? "" : string_a,
+		             string_b == NULL ? "" : string_b);
+}
+
 gboolean
 nautilus_str_is_empty (const char *string_or_null)
 {
