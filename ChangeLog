@@ -1,3 +1,123 @@
+2002-11-06  Anders Carlsson  <andersca@gnu.org>
+
+	* configure.in:
+	* cut-n-paste-code/Makefile.am:
+	* cut-n-paste-code/libegg/Makefile.am:
+	* cut-n-paste-code/libegg/egg-recent-item.c: (egg_recent_item_new),
+	(egg_recent_item_free), (egg_recent_item_ref),
+	(egg_recent_item_unref), (egg_recent_item_new_from_uri),
+	(egg_recent_item_set_uri), (egg_recent_item_get_uri),
+	(egg_recent_item_peek_uri), (egg_recent_item_get_uri_utf8),
+	(egg_recent_item_get_uri_for_display),
+	(egg_recent_item_set_mime_type), (egg_recent_item_get_mime_type),
+	(egg_recent_item_set_timestamp), (egg_recent_item_get_timestamp),
+	(egg_recent_item_get_groups), (egg_recent_item_in_group),
+	(egg_recent_item_add_group), (egg_recent_item_remove_group),
+	(egg_recent_item_set_private), (egg_recent_item_get_private),
+	(egg_recent_item_get_type):
+	* cut-n-paste-code/libegg/egg-recent-item.h:
+	* cut-n-paste-code/libegg/egg-recent-model.c:
+	(egg_recent_model_string_match), (egg_recent_model_write_raw),
+	(egg_recent_model_delete_from_list),
+	(egg_recent_model_add_new_groups), (egg_recent_model_update_item),
+	(egg_recent_model_read_raw), (parse_info_init), (parse_info_free),
+	(push_state), (pop_state), (peek_state), (start_element_handler),
+	(list_compare_func_mru), (list_compare_func_lru),
+	(end_element_handler), (text_handler), (error_handler),
+	(egg_recent_model_enforce_limit), (egg_recent_model_sort),
+	(egg_recent_model_group_match), (egg_recent_model_filter),
+	(egg_recent_model_monitor_list_cb),
+	(egg_recent_model_monitor_list),
+	(egg_recent_model_changed_timeout), (egg_recent_model_monitor_cb),
+	(egg_recent_model_monitor), (egg_recent_model_set_limit_internal),
+	(egg_recent_model_read), (egg_recent_model_write),
+	(egg_recent_model_open_file), (egg_recent_model_lock_file),
+	(egg_recent_model_unlock_file), (egg_recent_model_finalize),
+	(egg_recent_model_set_property), (egg_recent_model_get_property),
+	(egg_recent_model_class_init), (egg_recent_model_limit_changed),
+	(egg_recent_model_expiration_changed), (egg_recent_model_init),
+	(egg_recent_model_new), (egg_recent_model_add_full),
+	(egg_recent_model_add), (egg_recent_model_delete),
+	(egg_recent_model_get_list), (egg_recent_model_set_limit),
+	(egg_recent_model_get_limit), (egg_recent_model_clear),
+	(egg_recent_model_set_filter_mime_types),
+	(egg_recent_model_set_filter_groups),
+	(egg_recent_model_set_filter_uri_schemes),
+	(egg_recent_model_set_sort), (egg_recent_model_changed),
+	(egg_recent_model_remove_expired_list),
+	(egg_recent_model_remove_expired), (egg_recent_model_get_type):
+	* cut-n-paste-code/libegg/egg-recent-model.h:
+	* cut-n-paste-code/libegg/egg-recent-vfs-utils.c:
+	(make_valid_utf8), (istr_has_prefix), (str_has_prefix),
+	(uri_is_local_scheme), (handle_trailing_slashes),
+	(make_uri_canonical), (format_uri_for_display),
+	(egg_recent_vfs_format_uri_for_display),
+	(is_valid_scheme_character), (has_valid_scheme),
+	(escape_high_chars), (make_uri_from_input_internal),
+	(egg_recent_vfs_make_uri_from_input),
+	(make_uri_canonical_strip_fragment), (uris_match),
+	(egg_recent_vfs_uris_match), (egg_recent_vfs_get_uri_scheme):
+	* cut-n-paste-code/libegg/egg-recent-vfs-utils.h:
+	* cut-n-paste-code/libegg/egg-screen-exec.c:
+	(egg_screen_exec_display_string), (egg_screen_exec_environment),
+	(egg_screen_execute_async), (egg_screen_execute_shell),
+	(egg_screen_execute_command_line_async):
+	* cut-n-paste-code/libegg/egg-screen-exec.h:
+	* cut-n-paste-code/libegg/egg-screen-help.c:
+	(egg_help_display_on_screen),
+	(egg_help_display_with_doc_id_on_screen),
+	(egg_help_display_desktop_on_screen),
+	(egg_help_display_uri_on_screen):
+	* cut-n-paste-code/libegg/egg-screen-help.h:
+	* cut-n-paste-code/libegg/egg-screen-url.c:
+	(egg_url_show_on_screen):
+	* cut-n-paste-code/libegg/egg-screen-url.h:
+	* cut-n-paste-code/libegg/eggtreemultidnd.c:
+	(egg_tree_multi_drag_source_get_type),
+	(egg_tree_multi_drag_source_row_draggable),
+	(egg_tree_multi_drag_source_drag_data_delete),
+	(egg_tree_multi_drag_source_drag_data_get), (stop_drag_check),
+	(egg_tree_multi_drag_button_release_event), (selection_foreach),
+	(path_list_free), (set_context_data), (get_context_data),
+	(get_info), (egg_tree_multi_drag_drag_data_get),
+	(egg_tree_multi_drag_motion_event),
+	(egg_tree_multi_drag_button_press_event),
+	(egg_tree_multi_drag_add_drag_support):
+	* cut-n-paste-code/libegg/eggtreemultidnd.h:
+	* cut-n-paste-code/libegg/update-from-egg.sh:
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/egg-recent-item.c:
+	* libnautilus-private/egg-recent-item.h:
+	* libnautilus-private/egg-recent-model.c:
+	* libnautilus-private/egg-recent-model.h:
+	* libnautilus-private/egg-recent-vfs-utils.c:
+	* libnautilus-private/egg-recent-vfs-utils.h:
+	* libnautilus-private/egg-screen-exec.c:
+	* libnautilus-private/egg-screen-exec.h:
+	* libnautilus-private/egg-screen-help.c:
+	* libnautilus-private/egg-screen-help.h:
+	* libnautilus-private/egg-screen-url.c:
+	* libnautilus-private/egg-screen-url.h:
+	* libnautilus-private/eggtreemultidnd.c:
+	* libnautilus-private/eggtreemultidnd.h:
+	* libnautilus-private/nautilus-program-chooser.c: (help_cb):
+	* libnautilus-private/update-from-egg.sh:
+	* src/Makefile.am:
+	* src/file-manager/Makefile.am:
+	* src/file-manager/fm-desktop-icon-view.c:
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-list-model.c:
+	* src/file-manager/fm-list-view.c:
+	* src/file-manager/fm-properties-window.c: (help_button_callback):
+	* src/file-manager/update-from-egg.sh:
+	* src/nautilus-bookmarks-window.c:
+	(nautilus_bookmarks_window_response_callback):
+	* src/nautilus-property-browser.c: (help_button_callback):
+	* src/nautilus-window-menus.c:
+	(help_menu_nautilus_manual_callback):
+	Move libegg stuff to cut-n-paste-code and update to the latest
+	egg versions.
+
 2002-11-05  Dave Camp  <dave@ximian.com>
 
 	* test/Makefile.am:
