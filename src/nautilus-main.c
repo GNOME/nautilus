@@ -183,7 +183,12 @@ main (int argc, char *argv[])
 				      GNOME_PARAM_POPT_TABLE, options,
 				      GNOME_PARAM_HUMAN_READABLE_NAME, _("Nautilus"),
 				      NULL);
-
+	
+	/* Need to set this to the canonical DISPLAY value, since
+	   thats where we're registering per-display components */
+	bonobo_activation_set_activation_env_value ("DISPLAY",
+						    gdk_display_get_name (gdk_display_get_default()));
+	
 	g_object_get_property (G_OBJECT (program),
 			       GNOME_PARAM_POPT_CONTEXT,
 			       g_value_init (&context_as_value, G_TYPE_POINTER));
