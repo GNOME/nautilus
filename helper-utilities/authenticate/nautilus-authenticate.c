@@ -73,6 +73,7 @@ int main (int argc, char *argv[])
 		command = g_strdup("");
 	
 	password_dialog = nautilus_password_dialog_new ("Privileged Command Execution",
+							NULL,
 							"root",
 							"",
 							TRUE);

@@ -44,6 +44,7 @@ struct _NautilusPasswordDialogDetails
 	/* Internal widgetry and flags */
 	GtkWidget	*table;
 	GtkWidget	*remember_button;
+	GtkLabel	*message;
 };
 
 static const char * stock_buttons[] =
@@ -117,6 +118,7 @@ nautilus_password_dialog_initialize (NautilusPasswordDialog *password_dialog)
 
 	password_dialog->details->table = NULL;
 	password_dialog->details->remember_button = NULL;
+	password_dialog->details->message = NULL;
 }
 
 /* GtkObjectClass methods */
@@ -140,6 +142,10 @@ nautilus_password_dialog_destroy (GtkObject* object)
 
 	if (password_dialog->details->remember_label_text) {
 		g_free (password_dialog->details->remember_label_text);
+	}
+
+	if (password_dialog->details->message) {
+		gtk_widget_destroy (GTK_WIDGET (password_dialog->details->message));
 	}
 
 	g_free (password_dialog->details);
@@ -206,6 +212,7 @@ caption_table_activate_callback (GtkWidget *widget, gint entry, gpointer callbac
 /* Public NautilusPasswordDialog methods */
 GtkWidget*
 nautilus_password_dialog_new (const char	*dialog_title,
+			      const char	*message,
 			      const char	*username,
 			      const char	*password,
 			      gboolean		readonly_username)
@@ -274,6 +281,19 @@ nautilus_password_dialog_new (const char	*dialog_title,
 
 	gtk_box_set_spacing (GTK_BOX (GNOME_DIALOG (password_dialog)->vbox), 10);
 	
+	if (message) {
+		password_dialog->details->message =
+			GTK_LABEL (gtk_label_new (message));
+		gtk_label_set_justify (password_dialog->details->message, GTK_JUSTIFY_LEFT);
+		gtk_label_set_line_wrap (password_dialog->details->message, TRUE);
+
+		gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (password_dialog)->vbox),
+				    GTK_WIDGET (password_dialog->details->message),
+				    TRUE,	/* expand */
+				    TRUE,	/* fill */
+				    0);		/* padding */
+	}
+
 	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (password_dialog)->vbox),
 			    password_dialog->details->table,
 			    TRUE,	/* expand */

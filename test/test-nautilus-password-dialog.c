@@ -16,6 +16,7 @@ authenticate_boink_callback (GtkWidget *button, gpointer user_data)
 
 	if (password_dialog == NULL) {
 		password_dialog = nautilus_password_dialog_new ("Authenticate Me",
+								"My secret message.",
 								"foouser",
 								"sekret",
 								TRUE);

@@ -19,8 +19,9 @@
  * Boston, MA 02111-1307, USA.
  *
  * Authors:  Michael Fleming <mfleming@eazel.com>
- * Based on nautilus-sample-content-view by Maciej Stachowiak <mjs@eazel.com>
+ *           Robey Pointer <robey@eazel.com>
  *
+ * Based on nautilus-sample-content-view by Maciej Stachowiak <mjs@eazel.com>
  */
 
 /* trilobite-eazel-time-view.c: a simple Nautilus view for a simple service
@@ -49,17 +50,12 @@
  */
 
 /* FIXME: no way to save the url once you change it */
-/* FIXME: externally visible time server no longer exists */
-#if 0
-#define DEFAULT_SERVER_URL	"http://eazel24.eazel.com/time.pl"
-#else
 #define DEFAULT_SERVER_URL	"http://testmachine.eazel.com:8888/examples/time/current"
-#endif
 #define DEFAULT_TIME_DIFF	"180"
 
-#define OAFIID_TIME_SERVICE "OAFIID:trilobite_eazel_time_service:13a2dbd9-84f9-4400-bd9e-bb4575b86894"
+#define OAFIID_TIME_SERVICE	"OAFIID:trilobite_eazel_time_service:13a2dbd9-84f9-4400-bd9e-bb4575b86894"
 
-#define STATUS_ERROR_NO_SERVER   "Could not load time service backend"
+#define STATUS_ERROR_NO_SERVER	"Could not load time service backend"
 
 /* A NautilusContentView's private information. */
 struct TrilobiteEazelTimeViewDetails {
@@ -74,6 +70,8 @@ struct TrilobiteEazelTimeViewDetails {
 	Trilobite_Eazel_Time service;
 	guint		timeout_slot;
 	TrilobiteRootClient *root_client;
+	char *		remembered_password;
+	guint		password_attempts;
 };
 
 static void trilobite_eazel_time_view_initialize_class (TrilobiteEazelTimeViewClass *klass);
@@ -82,12 +80,6 @@ static void trilobite_eazel_time_view_destroy          (GtkObject               
 static void load_location_callback                     (NautilusView                *nautilus_view,
 							const char                  *location,
 							TrilobiteEazelTimeView      *view);
-
-#if 0
-static void sample_merge_bonobo_items_callback            (BonoboObject                   *control,
-							   gboolean                        state,
-							   gpointer                        user_data);
-#endif /* 0 */
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (TrilobiteEazelTimeView, trilobite_eazel_time_view, GTK_TYPE_EVENT_BOX)
@@ -107,26 +99,51 @@ sync_button_pressed( GtkButton *p_button, TrilobiteEazelTimeView *view )
 	
 	g_assert (TRILOBITE_IS_EAZEL_TIME_VIEW (view));
 
+	if (! view->details->service) {
+		set_status_text (view, STATUS_ERROR_NO_SERVER);
+		return;
+	}
+
+	view->details->password_attempts = 0;
+
 	CORBA_exception_init (&ev);
 
-	if (view->details->service) {
+	while (1) {
 		Trilobite_Eazel_Time_update_time (view->details->service, &ev);
 
-		if (CORBA_USER_EXCEPTION == ev._major) {
-			if ( 0 == strcmp( ex_Trilobite_Eazel_Time_NotPermitted, CORBA_exception_id (&ev) ) ) {
+		if (ev._major != CORBA_USER_EXCEPTION) {
+			set_status_text (view, "Set time!");
+			break;
+		}
+
+		if ( 0 == strcmp( ex_Trilobite_Eazel_Time_NotPermitted, CORBA_exception_id (&ev) ) ) {
+			/* bad password -- let em try again? */
+			if (view->details->password_attempts == 0) {
+				/* cancelled */
+				set_status_text (view, "Cancelled");
+				break;
+			}
+
+			/* a wrong password shouldn't be remembered :) */
+			g_free (view->details->remembered_password);
+			view->details->remembered_password = NULL;
+			CORBA_exception_free (&ev);
+
+			if (view->details->password_attempts >= 3) {
+				/* give up. */
 				set_status_text (view, "Operation not permitted");
-			} else {
-				set_status_text (view, "Exception: could not set time");
+				break;
 			}
 		} else {
-			set_status_text (view, "Updated local time");
-		}	
-	} else {
-		set_status_text (view, STATUS_ERROR_NO_SERVER);
-	}	
-		
+			set_status_text (view, "Exception: could not set time");
+			break;
+		}
+	}
+
 	CORBA_exception_free (&ev);
 }
+
+
 static void
 url_button_pressed( GtkButton *p_button, TrilobiteEazelTimeView *view )
 {
@@ -216,18 +233,43 @@ update_time_display( TrilobiteEazelTimeView *view )
 }
 
 static char *
-trilobite_eazel_time_view_get_password (GtkObject *object, const char *prompt)
+trilobite_eazel_time_view_get_password (GtkObject *object, const char *prompt, void *my_object)
 {
+	TrilobiteEazelTimeView *view;
 	GtkWidget *dialog;
-	gboolean rv;
+	gboolean okay;
 	char *tmp;
+	char *message = NULL;
 
-	dialog = nautilus_password_dialog_new ("Authenticate Me", prompt, "", TRUE);
+	view = TRILOBITE_EAZEL_TIME_VIEW (my_object);
 
-	rv = nautilus_password_dialog_run_and_block (NAUTILUS_PASSWORD_DIALOG (dialog));
-	tmp =  nautilus_password_dialog_get_password (NAUTILUS_PASSWORD_DIALOG (dialog));
+	if (view->details->remembered_password) {
+		return g_strdup (view->details->remembered_password);
+	}
+
+	if (view->details->password_attempts > 0) {
+		message = "Incorrect password.";
+	}
+
+	dialog = nautilus_password_dialog_new ("Authenticate Me", message, prompt, "", TRUE);
+	okay = nautilus_password_dialog_run_and_block (NAUTILUS_PASSWORD_DIALOG (dialog));
+
+	if (! okay) {
+		view->details->password_attempts = 0;
+		tmp = g_strdup ("");
+	} else {
+		tmp =  nautilus_password_dialog_get_password (NAUTILUS_PASSWORD_DIALOG (dialog));
+		if (nautilus_password_dialog_get_remember (NAUTILUS_PASSWORD_DIALOG (dialog))) {
+			view->details->remembered_password = g_strdup (tmp);
+		}
+	}
 	gtk_widget_destroy (dialog);
 	gtk_main_iteration ();
+
+	if (okay) {
+		view->details->password_attempts++;
+	}
+
 	return tmp;
 }
 
@@ -359,7 +401,7 @@ trilobite_eazel_time_view_initialize (TrilobiteEazelTimeView *view)
 	view->details->root_client = trilobite_root_client_new ();
 	trilobite_root_client_attach (view->details->root_client, p_service);
 	gtk_signal_connect (GTK_OBJECT (view->details->root_client), "need_password",
-			    GTK_SIGNAL_FUNC (trilobite_eazel_time_view_get_password), NULL);
+			    GTK_SIGNAL_FUNC (trilobite_eazel_time_view_get_password), view);
 
 	if (p_service) {
 		bonobo_object_unref (BONOBO_OBJECT(p_service));
@@ -401,6 +443,7 @@ trilobite_eazel_time_view_destroy (GtkObject *object)
 	
 	g_free (view->details->server_url);
 	g_free (view->details->max_time_diff);
+	g_free (view->details->remembered_password);
 
 	Trilobite_Eazel_Time_unref (view->details->service, NULL);
 	trilobite_root_client_unref (GTK_OBJECT (view->details->root_client));

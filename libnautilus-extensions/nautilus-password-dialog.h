@@ -54,6 +54,7 @@ struct _NautilusPasswordDialogClass
 
 GtkType    nautilus_password_dialog_get_type                (void);
 GtkWidget* nautilus_password_dialog_new                     (const char             *dialog_title,
+							     const char		    *message,
 							     const char             *username,
 							     const char             *password,
 							     gboolean                readonly_username);

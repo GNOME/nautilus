@@ -1,3 +1,24 @@
+2000-07-28  Robey Pointer  <robey@eazel.com>
+
+	*
+	components/services/time/nautilus-view/trilobite-eazel-time-view.c:
+	(sync_button_pressed), (trilobite_eazel_time_view_get_password),
+	(trilobite_eazel_time_view_initialize),
+	(trilobite_eazel_time_view_destroy):
+	* helper-utilities/authenticate/nautilus-authenticate.c: (main):
+	* libnautilus-extensions/nautilus-password-dialog.c:
+	(nautilus_password_dialog_initialize),
+	(nautilus_password_dialog_destroy), (nautilus_password_dialog_new):
+	* libnautilus-extensions/nautilus-password-dialog.h:
+	* test/test-nautilus-password-dialog.c:
+	(authenticate_boink_callback):
+
+	Ammend password dialog to accept an optional message to display
+	at the top (for example, when asking for a retry after a bad
+	password).  Fix time service to use the password dialog correctly
+	and obey the cancel button and the "remember" checkbox, and to
+	give you three tries before giving up.
+
 2000-07-28  Arlo Rose  <arlo@eazel.com>
 
         * icons/arlo/side_bar_images/fill-active.png  
