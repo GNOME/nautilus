@@ -101,14 +101,30 @@ BEGIN_GNOME_DECLS
 /* Sorting order */
 #define NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST		"preferences/sort_directories_first"
 
+/* The default folder viewer - one of the two enums below */
+#define NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER		"preferences/default_folder_viewer"
+
+enum
+{
+	NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW,
+	NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW
+};
+
 /* Icon View */
-#define NAUTILUS_PREFERENCES_ICON_VIEW_FONT			"icon-view/font"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT		"icon-view/smooth_font"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_STANDARD_FONT_SIZE	"icon-view/standard_font_size"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"icon-view/default_sort_in_reverse_order"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER		"icon-view/default_sort_order"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT	"icon-view/default_use_tighter_layout"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL		"icon-view/default_zoom_level"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE	"icon-view/default_zoom_level_font_size"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_FONT				"icon-view/font"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT			"icon-view/smooth_font"
 
 /* List View */
-#define NAUTILUS_PREFERENCES_LIST_VIEW_FONT			"list-view/font"
-#define NAUTILUS_PREFERENCES_LIST_VIEW_STANDARD_FONT_SIZE	"list-view/standard_font_size"
+#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"list-view/default_sort_in_reverse_order"
+#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER		"list-view/default_sort_order"
+#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL		"list-view/default_zoom_level"
+#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE	"list-view/default_zoom_level_font_size"
+#define NAUTILUS_PREFERENCES_LIST_VIEW_FONT				"list-view/font"
 
 /* File Indexing */
 #define NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE			"preferences/search_bar_type"
@@ -152,15 +168,15 @@ typedef enum
 /* Gnome session management */
 #define NAUTILUS_PREFERENCES_ADD_TO_SESSION		"preferences/add_to_session"
 
-void                         nautilus_global_preferences_initialize                                 (void);
-void                         nautilus_global_preferences_show_dialog                                (void);
-void                         nautilus_global_preferences_hide_dialog                                (void);
-void                         nautilus_global_preferences_set_dialog_title                           (const char *title);
+void                    nautilus_global_preferences_initialize                   (void);
+void                    nautilus_global_preferences_show_dialog                  (void);
+void                    nautilus_global_preferences_hide_dialog                  (void);
+void                    nautilus_global_preferences_set_dialog_title             (const char *title);
 
 /* Sidebar */
-struct EelScalableFont *nautilus_global_preferences_get_icon_view_smooth_font                  (void);
-struct EelScalableFont *nautilus_global_preferences_get_default_smooth_font                    (void);
-struct EelScalableFont *nautilus_global_preferences_get_default_smooth_bold_font               (void);
+struct EelScalableFont *nautilus_global_preferences_get_icon_view_smooth_font    (void);
+struct EelScalableFont *nautilus_global_preferences_get_default_smooth_font      (void);
+struct EelScalableFont *nautilus_global_preferences_get_default_smooth_bold_font (void);
 
 END_GNOME_DECLS
 

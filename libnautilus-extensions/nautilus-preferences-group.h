@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-prefs-group-check.h - Check button prefs group interface.
+/* nautilus-preferences-group.h - A group of preferences items bounded by a frame.
 
    Copyright (C) 1999, 2000 Eazel, Inc.
 
@@ -38,32 +38,38 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_IS_PREFERENCES_GROUP(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_PREFERENCES_GROUP))
 #define NAUTILUS_IS_PREFERENCES_GROUP_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_PREFERENCES_GROUP))
 
-typedef struct _NautilusPreferencesGroup	   NautilusPreferencesGroup;
-typedef struct _NautilusPreferencesGroupClass      NautilusPreferencesGroupClass;
-typedef struct _NautilusPreferencesGroupDetails    NautilusPreferencesGroupDetails;
+typedef struct NautilusPreferencesGroup		   NautilusPreferencesGroup;
+typedef struct NautilusPreferencesGroupClass	   NautilusPreferencesGroupClass;
+typedef struct NautilusPreferencesGroupDetails	   NautilusPreferencesGroupDetails;
 
-struct _NautilusPreferencesGroup
+struct NautilusPreferencesGroup
 {
 	/* Super Class */
-	GtkFrame			frame;
+	GtkFrame frame;
 	
 	/* Private stuff */
 	NautilusPreferencesGroupDetails	*details;
 };
 
-struct _NautilusPreferencesGroupClass
+struct NautilusPreferencesGroupClass
 {
-	GtkFrameClass	parent_class;
+	GtkFrameClass parent_class;
 };
 
 GtkType    nautilus_preferences_group_get_type              (void);
 GtkWidget* nautilus_preferences_group_new                   (const gchar                    *title);
 GtkWidget* nautilus_preferences_group_add_item              (NautilusPreferencesGroup       *group,
 							     const char                     *preference_name,
-							     NautilusPreferencesItemType     item_type);
+							     NautilusPreferencesItemType     item_type,
+							     int                             column);
 void       nautilus_preferences_group_update                (NautilusPreferencesGroup       *group);
 guint      nautilus_preferences_group_get_num_visible_items (const NautilusPreferencesGroup *group);
 char *     nautilus_preferences_group_get_title_label       (const NautilusPreferencesGroup *group);
+int        nautilus_preferences_group_get_max_caption_width (const NautilusPreferencesGroup *group,
+							     int                             column);
+void       nautilus_preferences_group_align_captions        (NautilusPreferencesGroup       *group,
+							     int                             max_caption_width,
+							     int                             column);
 
 END_GNOME_DECLS
 

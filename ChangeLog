@@ -1,3 +1,78 @@
+2001-04-08  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_register_enumerations),
+	(global_preferences_create_dialog),
+	(global_preferences_populate_sidebar_panels_callback),
+	(global_preferences_install_font_defaults),
+	(global_preferences_populate_pane):
+	Make the way we deal with enumerations simpler.  Add "View
+	Preferences" pane and all the related defines.
+	
+	* libnautilus-extensions/nautilus-preferences-group.h:
+	* libnautilus-extensions/nautilus-preferences-group.c:
+	(nautilus_preferences_group_initialize_class),
+	(nautilus_preferences_group_initialize),
+	(nautilus_preferences_group_destroy),
+	(nautilus_preferences_group_new),
+	(nautilus_preferences_group_add_item),
+	(nautilus_preferences_group_update),
+	(nautilus_preferences_group_get_num_visible_items),
+	(nautilus_preferences_group_get_title_label),
+	(nautilus_preferences_group_get_max_caption_width),
+	(nautilus_preferences_group_align_captions):
+	Add support for 2 columns.  Add better support for caption
+	alignment.  Some minor style tweaking.
+	
+	* libnautilus-extensions/nautilus-preferences-item.h:
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(preferences_item_destroy),
+	(preferences_item_update_enumeration_radio),
+	(preferences_item_create_enumeration_radio),
+	(preferences_item_create_boolean),
+	(preferences_item_create_editable_string),
+	(preferences_item_create_editable_integer),
+	(preferences_item_update_enumeration_menu),
+	(preferences_item_create_enumeration_menu),
+	(preferences_item_create_font), (preferences_item_create_padding),
+	(smooth_font_changed_callback),
+	(preferences_item_create_smooth_font),
+	(nautilus_preferences_item_new),
+	(enumeration_radio_changed_callback), (font_changed_callback),
+	(enumeration_menu_changed_callback),
+	(preferences_item_update_displayed_value),
+	(nautilus_preferences_item_get_child_width),
+	(nautilus_preferences_item_update_showing):
+	Add support for padding items.  Rename the enumeration items to
+	better describe their look and function.
+	No longer need to store the whole enumeration.  We just need the
+	enumeration id to make enumeration queries.  Remove the
+	constrained integer stuff which is replaced by the use of an
+	enumeration id.
+	
+	* libnautilus-extensions/nautilus-preferences-pane.h:
+	* libnautilus-extensions/nautilus-preferences-pane.c:
+	(nautilus_preferences_pane_add_item_to_nth_group),
+	(preferences_pane_get_max_caption_width),
+	(nautilus_preferences_pane_update),
+	(nautilus_preferences_pane_get_num_visible_groups):
+	Better caption alignment.
+	
+	* libnautilus-extensions/nautilus-preferences.h:
+	* libnautilus-extensions/nautilus-preferences.c:
+	(preferences_entry_free), (nautilus_preferences_get_description),
+	(nautilus_preferences_set_enumeration_id),
+	(nautilus_preferences_get_enumeration_id):
+	No longer store the whole enumeration, just an enumeration id.
+	
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_initialize),
+	(fm_icon_view_update_icon_container_font_size_table):
+	* src/file-manager/fm-list-view.c: (fm_list_view_initialize),
+	(fm_list_view_update_font):
+	Update for new "View Preferences" preferences.  Not hooked up for
+	real yet.
+	
 2001-04-07  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3787 (If location bar is turned off, user cannot

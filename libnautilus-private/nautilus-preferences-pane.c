@@ -35,7 +35,7 @@
 static const guint GROUPS_BOX_TOP_OFFSET = 0;
 static const guint IN_BETWEEN_OFFSET = 4;
 
-struct _NautilusPreferencesPaneDetails
+struct NautilusPreferencesPaneDetails
 {
 	GtkWidget *groups_box;
 	GList *groups;
@@ -144,16 +144,19 @@ nautilus_preferences_pane_add_group (NautilusPreferencesPane *preferences_pane,
 }
 
 GtkWidget *
-nautilus_preferences_pane_add_item_to_nth_group (NautilusPreferencesPane	*preferences_pane,
-						 guint				n,
-						 const char			*preference_name,
-						 NautilusPreferencesItemType	item_type)
+nautilus_preferences_pane_add_item_to_nth_group (NautilusPreferencesPane *preferences_pane,
+						 guint n,
+						 const char *preference_name,
+						 NautilusPreferencesItemType item_type,
+						 int column)
 {
 	GtkWidget *item;
 	GtkWidget *group;
 
 	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_PANE (preferences_pane), NULL);
 	g_return_val_if_fail (preference_name != NULL, NULL);
+	g_return_val_if_fail (column >= 0, NULL);
+	g_return_val_if_fail (column <= 1, NULL);
 
 	if (!preferences_pane->details->groups) {
 		g_warning ("nautilus_preferences_pane_add_item_to_nth_group () There are no groups!");
@@ -172,23 +175,74 @@ nautilus_preferences_pane_add_item_to_nth_group (NautilusPreferencesPane	*prefer
 
 	item = nautilus_preferences_group_add_item (NAUTILUS_PREFERENCES_GROUP (group),
 						    preference_name,
-						    item_type);
+						    item_type,
+						    column);
 
 	return item;
+}
+
+static int
+preferences_pane_get_max_caption_width (const NautilusPreferencesPane *preferences_pane,
+					int column)
+{
+	NautilusPreferencesGroup *group;
+	GList *node;
+	int max_caption_width = 0;
+
+	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_PANE (preferences_pane), 0);
+	g_return_val_if_fail (column >= 0, 0);
+	g_return_val_if_fail (column <= 1, 0);
+
+	for (node = preferences_pane->details->groups; node != NULL; node = node->next) {
+		g_assert (NAUTILUS_IS_PREFERENCES_GROUP (node->data));
+		group = NAUTILUS_PREFERENCES_GROUP (node->data);
+
+		if (GTK_WIDGET_VISIBLE (group)) {
+			max_caption_width = MAX (max_caption_width,
+						 nautilus_preferences_group_get_max_caption_width (group, column));
+		}
+	}
+
+	return max_caption_width;
 }
 
 void
 nautilus_preferences_pane_update (NautilusPreferencesPane *preferences_pane)
 {
-	GList *iterator;
+	GList *node;
+	int max_caption_widths[2];
+	NautilusPreferencesGroup *group;
 
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_PANE (preferences_pane));
 
-	for (iterator = preferences_pane->details->groups; iterator != NULL; iterator = iterator->next) {
-		NautilusPreferencesGroup *group = NAUTILUS_PREFERENCES_GROUP (iterator->data);
+	for (node = preferences_pane->details->groups; node != NULL; node = node->next) {
+		g_assert (NAUTILUS_IS_PREFERENCES_GROUP (node->data));
+		group = NAUTILUS_PREFERENCES_GROUP (node->data);
 		nautilus_preferences_group_update (group);
 		eel_gtk_widget_set_shown (GTK_WIDGET (group),
-					       nautilus_preferences_group_get_num_visible_items (group) > 0);
+					  nautilus_preferences_group_get_num_visible_items (group) > 0);
+	}
+
+	max_caption_widths[0] = preferences_pane_get_max_caption_width (preferences_pane, 0);
+	max_caption_widths[1] = preferences_pane_get_max_caption_width (preferences_pane, 1);
+
+	for (node = preferences_pane->details->groups; node != NULL; node = node->next) {
+		g_assert (NAUTILUS_IS_PREFERENCES_GROUP (node->data));
+		group = NAUTILUS_PREFERENCES_GROUP (node->data);
+
+		if (GTK_WIDGET_VISIBLE (group)) {
+			if (max_caption_widths[0] > 0) {
+				nautilus_preferences_group_align_captions (group,
+									   max_caption_widths[0],
+									   0);
+			}
+
+			if (max_caption_widths[1] > 0) {
+				nautilus_preferences_group_align_captions (group,
+									   max_caption_widths[1],
+									   1);
+			}
+		}
 	}
 }
 
@@ -196,12 +250,12 @@ guint
 nautilus_preferences_pane_get_num_visible_groups (const NautilusPreferencesPane *pane)
 {
 	guint n = 0;
-	GList *iterator;
+	GList *node;
 
 	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_PANE (pane), 0);
 
-	for (iterator = pane->details->groups; iterator != NULL; iterator = iterator->next) {
-		NautilusPreferencesGroup *group = NAUTILUS_PREFERENCES_GROUP (iterator->data);
+	for (node = pane->details->groups; node != NULL; node = node->next) {
+		NautilusPreferencesGroup *group = NAUTILUS_PREFERENCES_GROUP (node->data);
 
 		if (GTK_WIDGET_VISIBLE (group)) {
 			n++;

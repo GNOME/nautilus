@@ -27,19 +27,14 @@
 
 #include "nautilus-gconf-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
-
-#include <eel/eel-enumeration.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string-list.h>
 #include <eel/eel-string.h>
-
 #include <gconf/gconf-client.h>
 #include <gconf/gconf.h>
 #include <gtk/gtksignal.h>
-
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-dialog-util.h>
 
@@ -70,7 +65,7 @@ typedef struct {
 	GList *callback_list;
 	GList *auto_storage_list;
 	int gconf_connection_id;
-	EelEnumeration *enumeration;
+	char *enumeration_id;
 	GConfValue *cached_value;
 } PreferencesEntry;
 
@@ -1213,9 +1208,9 @@ preferences_entry_free (PreferencesEntry *entry)
 
 	g_free (entry->name);
 	g_free (entry->description);
+	g_free (entry->enumeration_id);
 
 	nautilus_gconf_value_free (entry->cached_value);
-	eel_enumeration_free (entry->enumeration);
 
 	g_free (entry);
 }
@@ -1520,82 +1515,6 @@ nautilus_preferences_remove_callback (const char *name,
 }
 
 void
-nautilus_preferences_enumeration_insert (const char *name,
-					 const char *entry,
-					 const char *description,
-					 int value)
-{
-	PreferencesEntry *preferences_entry;
-
-	g_return_if_fail (name != NULL);
-	g_return_if_fail (entry != NULL);
-
-	preferences_entry = preferences_global_table_lookup_or_insert (name);
-	g_assert (preferences_entry != NULL);
-
-	if (preferences_entry->enumeration == NULL) {
-		preferences_entry->enumeration = eel_enumeration_new ();
-	}
-
-	eel_enumeration_insert (preferences_entry->enumeration, entry, description, value);
-}
-
-char *
-nautilus_preferences_enumeration_get_nth_entry (const char *name,
-						guint n)
-{
-	PreferencesEntry *preferences_entry;
-
-	g_return_val_if_fail (name != NULL, NULL);
-
-	preferences_entry = preferences_global_table_lookup_or_insert (name);
-	g_assert (preferences_entry != NULL);
-
-	return eel_enumeration_get_nth_entry (preferences_entry->enumeration, n);
-}
-
-char *
-nautilus_preferences_enumeration_get_nth_description (const char *name,
-						      guint n)
-{
-	PreferencesEntry *preferences_entry;
-
-	g_return_val_if_fail (name != NULL, NULL);
-
-	preferences_entry = preferences_global_table_lookup_or_insert (name);
-	g_assert (preferences_entry != NULL);
-
-	return eel_enumeration_get_nth_description (preferences_entry->enumeration, n);
-}
-
-int
-nautilus_preferences_enumeration_get_nth_value (const char *name,
-						guint n)
-{
-	PreferencesEntry *preferences_entry;
-	
-	g_return_val_if_fail (name != NULL, 0);
-	
-	preferences_entry = preferences_global_table_lookup_or_insert (name);
-	g_assert (preferences_entry != NULL);
-
-	return eel_enumeration_get_nth_value (preferences_entry->enumeration, n);
-}
-
-guint
-nautilus_preferences_enumeration_get_num_entries (const char *name)
-{
-	PreferencesEntry *preferences_entry;
-	
-	g_return_val_if_fail (name != NULL, 0);
-	
-	preferences_entry = preferences_global_table_lookup_or_insert (name);
-	g_assert (preferences_entry != NULL);
-
-	return eel_enumeration_get_num_entries (preferences_entry->enumeration);
-}
-
-void
 nautilus_preferences_set_description (const char *name,
 				      const char *description)
 {
@@ -1621,6 +1540,34 @@ nautilus_preferences_get_description (const char *name)
 	entry = preferences_global_table_lookup_or_insert (name);
 
 	return g_strdup (entry->description ? entry->description : "");
+}
+
+void
+nautilus_preferences_set_enumeration_id (const char *name,
+					 const char *enumeration_id)
+{
+	PreferencesEntry *entry;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (enumeration_id != NULL);
+
+	entry = preferences_global_table_lookup_or_insert (name);
+	g_assert (entry != NULL);
+
+	g_free (entry->enumeration_id);
+	entry->enumeration_id = g_strdup (enumeration_id);
+}
+
+char *
+nautilus_preferences_get_enumeration_id (const char *name)
+{
+	PreferencesEntry *entry;
+
+	g_return_val_if_fail (name != NULL, NULL);
+
+	entry = preferences_global_table_lookup_or_insert (name);
+
+	return entry->enumeration_id ? g_strdup (entry->enumeration_id) : NULL;
 }
 
 char *

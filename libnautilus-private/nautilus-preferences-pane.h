@@ -37,11 +37,11 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_IS_PREFERENCES_PANE(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_PREFERENCES_PANE))
 #define NAUTILUS_IS_PREFERENCES_PANE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_PREFERENCES_PANE))
 
-typedef struct _NautilusPreferencesPane	   NautilusPreferencesPane;
-typedef struct _NautilusPreferencesPaneClass      NautilusPreferencesPaneClass;
-typedef struct _NautilusPreferencesPaneDetails    NautilusPreferencesPaneDetails;
+typedef struct NautilusPreferencesPane		  NautilusPreferencesPane;
+typedef struct NautilusPreferencesPaneClass	  NautilusPreferencesPaneClass;
+typedef struct NautilusPreferencesPaneDetails	  NautilusPreferencesPaneDetails;
 
-struct _NautilusPreferencesPane
+struct NautilusPreferencesPane
 {
 	/* Super Class */
 	GtkVBox vbox;
@@ -50,7 +50,7 @@ struct _NautilusPreferencesPane
 	NautilusPreferencesPaneDetails *details;
 };
 
-struct _NautilusPreferencesPaneClass
+struct NautilusPreferencesPaneClass
 {
 	GtkVBoxClass parent_class;
 };
@@ -62,7 +62,8 @@ GtkWidget *nautilus_preferences_pane_add_group              (NautilusPreferences
 GtkWidget *nautilus_preferences_pane_add_item_to_nth_group  (NautilusPreferencesPane       *preferences_pane,
 							     guint                          n,
 							     const char                    *preference_name,
-							     NautilusPreferencesItemType    item_type);
+							     NautilusPreferencesItemType    item_type,
+							     int                            column);
 void       nautilus_preferences_pane_update                 (NautilusPreferencesPane       *preferences_pane);
 guint      nautilus_preferences_pane_get_num_groups         (const NautilusPreferencesPane *pane);
 guint      nautilus_preferences_pane_get_num_visible_groups (const NautilusPreferencesPane *pane);

@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-prefs-group-radio.c - Radio button prefs group implementation.
+/* nautilus-preferences-group.c - A group of preferences items bounded by a frame.
 
    Copyright (C) 1999, 2000 Eazel, Inc.
 
@@ -24,54 +24,28 @@
 
 #include <config.h>
 #include "nautilus-preferences-group.h"
+
 #include <eel/eel-gtk-extensions.h>
-
-#include <gnome.h>
-#include <gtk/gtkradiobutton.h>
-#include <gtk/gtksignal.h>
 #include <eel/eel-gtk-macros.h>
+#include <gnome.h>
 
-/* Signals */
-typedef enum
+struct NautilusPreferencesGroupDetails
 {
-	CHANGED,
-	LAST_SIGNAL
-} RadioGroupSignals;
-
-typedef struct
-{
-	GtkWidget	*radio_button;
-} ButtonInfo;
-
-struct _NautilusPreferencesGroupDetails
-{
-	GtkWidget	*main_box;
-	GtkWidget	*content_box;
-	GtkWidget	*description_label;
-	gboolean	show_description;
-
-	GList		*items;
+	GtkWidget *main_box;
+	GtkWidget *columns[2];
+	GList *items[2];
 };
-
-static const gint PREFERENCES_GROUP_NOT_FOUND = -1;
 
 /* NautilusPreferencesGroupClass methods */
 static void nautilus_preferences_group_initialize_class (NautilusPreferencesGroupClass *klass);
 static void nautilus_preferences_group_initialize       (NautilusPreferencesGroup      *preferences_group);
 
-
 /* GtkObjectClass methods */
 static void nautilus_preferences_group_destroy          (GtkObject                     *object);
 
-
-/* Private stuff */
-static void preferences_group_construct                 (NautilusPreferencesGroup      *prefs_group,
-							 const gchar                   *title);
-static void preferences_group_align_captions            (NautilusPreferencesGroup      *group);
-
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesGroup,
-				   nautilus_preferences_group,
-				   GTK_TYPE_FRAME);
+			      nautilus_preferences_group,
+			      GTK_TYPE_FRAME);
 
 /*
  * NautilusPreferencesGroupClass methods
@@ -80,13 +54,9 @@ static void
 nautilus_preferences_group_initialize_class (NautilusPreferencesGroupClass *preferences_group_class)
 {
 	GtkObjectClass *object_class;
-	GtkWidgetClass *widget_class;
 	
 	object_class = GTK_OBJECT_CLASS (preferences_group_class);
-	widget_class = GTK_WIDGET_CLASS (preferences_group_class);
 
- 	parent_class = gtk_type_class (gtk_frame_get_type ());
-	
 	/* GtkObjectClass */
 	object_class->destroy = nautilus_preferences_group_destroy;
 }
@@ -94,130 +64,27 @@ nautilus_preferences_group_initialize_class (NautilusPreferencesGroupClass *pref
 static void
 nautilus_preferences_group_initialize (NautilusPreferencesGroup *group)
 {
-	group->details = g_new (NautilusPreferencesGroupDetails, 1);
-
-	group->details->main_box = NULL;
-	group->details->content_box = NULL;
-	group->details->description_label = NULL;
-	group->details->show_description = FALSE;
-	group->details->items = NULL;
+	group->details = g_new0 (NautilusPreferencesGroupDetails, 1);
 }
 
 /*
  * GtkObjectClass methods
  */
 static void
-nautilus_preferences_group_destroy(GtkObject* object)
+nautilus_preferences_group_destroy (GtkObject *object)
 {
 	NautilusPreferencesGroup *group;
 	
-	g_return_if_fail (object != NULL);
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (object));
 	
 	group = NAUTILUS_PREFERENCES_GROUP (object);
 
-	g_list_free (group->details->items);
+	g_list_free (group->details->items[0]);
+	g_list_free (group->details->items[1]);
 	g_free (group->details);
-	
-	/* Chain */
-	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
-}
 
-/*
- * Private stuff
- */
-static void
-preferences_group_construct (NautilusPreferencesGroup *group,
-			     const gchar * title)
-{
-	g_assert (group != NULL);
-	g_assert (title != NULL);
-
-	g_assert (group->details->content_box == NULL);
-	g_assert (group->details->main_box == NULL);
-	g_assert (group->details->description_label == NULL);
-
-	/* Ourselves */
-	gtk_frame_set_shadow_type (GTK_FRAME (group),
-				   GTK_SHADOW_ETCHED_IN);
-
-	gtk_frame_set_label (GTK_FRAME (group), title);
-
-	/* Main box */
-	group->details->main_box = gtk_vbox_new (FALSE, 0);
-
-	gtk_container_add (GTK_CONTAINER (group),
-			   group->details->main_box);
-
-	/* Description label */
-	group->details->description_label = gtk_label_new ("Blurb");
-
-	gtk_label_set_justify (GTK_LABEL (group->details->description_label),
-			       GTK_JUSTIFY_LEFT);
-
-	gtk_box_pack_start (GTK_BOX (group->details->main_box),
-			    group->details->description_label,
-			    FALSE,
-			    FALSE,
-			    0);
-
-	if (group->details->show_description)
-	{
-		gtk_widget_show (group->details->description_label);
-	}
-
-	/* Content box */
-	group->details->content_box = 
-		gtk_vbox_new (FALSE, 0);
-
-	gtk_box_pack_start (GTK_BOX (group->details->main_box),
-			    group->details->content_box,
-			    FALSE,
-			    FALSE,
-			    0);
-
-	gtk_container_set_border_width (GTK_CONTAINER (group->details->content_box),
-					4);
-
-	gtk_widget_show (group->details->content_box);
-	gtk_widget_show (group->details->main_box);
-}
-
-static void
-preferences_group_align_captions (NautilusPreferencesGroup *group)
-{
-	GList *node;
-	NautilusPreferencesItem *item;
-	int max_title_width = 0;
-	int width;
-
-	g_return_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group));
-
-	/* Compute the max caption title label width */
-	for (node = group->details->items; node != NULL; node = node->next) {
-		g_assert (NAUTILUS_IS_PREFERENCES_ITEM (node->data));
-		item = NAUTILUS_PREFERENCES_ITEM (node->data);
-		
-		if (GTK_WIDGET_VISIBLE (item) && nautilus_preferences_item_child_is_caption (item)) {
-			max_title_width = MAX (max_title_width,
-					       nautilus_preferences_item_get_caption_title_label_width (item));
-		}
-	}
-	
-	/* Set the spacing on all the captions accordingly */
-	for (node = group->details->items; node != NULL; node = node->next) {
-		g_assert (NAUTILUS_IS_PREFERENCES_ITEM (node->data));
-		item = NAUTILUS_PREFERENCES_ITEM (node->data);
-
-		if (GTK_WIDGET_VISIBLE (item) && nautilus_preferences_item_child_is_caption (item)) {
-			width = nautilus_preferences_item_get_caption_title_label_width (item);
-
-			g_assert (width <= max_title_width);
-			
-			nautilus_preferences_item_set_caption_extra_spacing (item, max_title_width - width);
-		}
-	}
+	/* Chain destroy */
+	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 /*
@@ -227,37 +94,68 @@ GtkWidget *
 nautilus_preferences_group_new (const gchar *title)
 {
 	NautilusPreferencesGroup *group;
-
+	
 	g_return_val_if_fail (title != NULL, NULL);
 
 	group = NAUTILUS_PREFERENCES_GROUP
 		(gtk_widget_new (nautilus_preferences_group_get_type (), NULL));
 
-	preferences_group_construct (group, title);
+	/* Ourselves */
+	gtk_frame_set_shadow_type (GTK_FRAME (group), GTK_SHADOW_ETCHED_IN);
+
+	gtk_frame_set_label (GTK_FRAME (group), title);
+
+	/* Main box */
+	group->details->main_box = gtk_hbox_new (FALSE, 20);
+	gtk_container_add (GTK_CONTAINER (group), group->details->main_box);
+
+	/* Column 1 */
+	group->details->columns[0] = gtk_vbox_new (TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (group->details->main_box),
+			    group->details->columns[0],
+			    TRUE,
+			    TRUE,
+			    0);
+
+	/* Column 2 */
+	group->details->columns[1] = gtk_vbox_new (TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (group->details->main_box),
+			    group->details->columns[1],
+			    TRUE,
+			    TRUE,
+			    0);
+
+	gtk_container_set_border_width (GTK_CONTAINER (group->details->columns[0]), 6);
+
+	gtk_widget_show (group->details->columns[0]);
+	gtk_widget_show (group->details->columns[1]);
+	gtk_widget_show (group->details->main_box);
 	
 	return GTK_WIDGET (group);
 }
 
 GtkWidget *
-nautilus_preferences_group_add_item (NautilusPreferencesGroup		*group,
-				     const char				*preference_name,
-				     NautilusPreferencesItemType	item_type)
+nautilus_preferences_group_add_item (NautilusPreferencesGroup *group,
+				     const char *preference_name,
+				     NautilusPreferencesItemType item_type,
+				     int column)
 {
 	GtkWidget *item;
 
-	g_return_val_if_fail (group != NULL, NULL);
 	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group), NULL);
-
 	g_return_val_if_fail (preference_name != NULL, NULL);
+	g_return_val_if_fail (column >= 0, NULL);
+	g_return_val_if_fail (column <= 1, NULL);
 
 	item = nautilus_preferences_item_new (preference_name, item_type);
 
-	group->details->items = g_list_append (group->details->items, item);
-	
-	gtk_box_pack_start (GTK_BOX (group->details->content_box),
+	group->details->items[column] = g_list_append (group->details->items[column],
+						       item);
+
+	gtk_box_pack_start (GTK_BOX (group->details->columns[column]),
 			    item,
-			    FALSE,
-			    FALSE,
+ 			    FALSE,
+ 			    FALSE,
 			    0);
 
 	gtk_widget_show (item);
@@ -268,36 +166,46 @@ nautilus_preferences_group_add_item (NautilusPreferencesGroup		*group,
 void
 nautilus_preferences_group_update (NautilusPreferencesGroup *group)
 {
-	GList *iterator;
-
-	g_return_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group));
+	GList *node;
 	
-	for (iterator = group->details->items; iterator != NULL; iterator = iterator->next) {
-		g_assert (NAUTILUS_IS_PREFERENCES_ITEM (iterator->data));
-		
-		nautilus_preferences_item_update_showing (NAUTILUS_PREFERENCES_ITEM (iterator->data));
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group));
+
+	for (node = group->details->items[0]; node != NULL; node = node->next) {
+		g_assert (NAUTILUS_IS_PREFERENCES_ITEM (node->data));
+		nautilus_preferences_item_update_showing (NAUTILUS_PREFERENCES_ITEM (node->data));
 	}
 
-	preferences_group_align_captions (group);
+	for (node = group->details->items[1]; node != NULL; node = node->next) {
+		g_assert (NAUTILUS_IS_PREFERENCES_ITEM (node->data));
+		nautilus_preferences_item_update_showing (NAUTILUS_PREFERENCES_ITEM (node->data));
+	}
 }
 
 guint
 nautilus_preferences_group_get_num_visible_items (const NautilusPreferencesGroup *group)
 {
 	guint n = 0;
-	GList *iterator;
+	GList *node;
+	char *name;
 
 	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group), 0);
 
-	for (iterator = group->details->items; iterator != NULL; iterator = iterator->next) {
-		char *name;
-		name = nautilus_preferences_item_get_name (NAUTILUS_PREFERENCES_ITEM (iterator->data));
+	for (node = group->details->items[0]; node != NULL; node = node->next) {
+		name = nautilus_preferences_item_get_name (NAUTILUS_PREFERENCES_ITEM (node->data));
 		if (nautilus_preferences_is_visible (name)) {
 			n++;
 		}
 		g_free (name);
 	}
 
+	for (node = group->details->items[1]; node != NULL; node = node->next) {
+		name = nautilus_preferences_item_get_name (NAUTILUS_PREFERENCES_ITEM (node->data));
+		if (nautilus_preferences_is_visible (name)) {
+			n++;
+		}
+		g_free (name);
+	}
+	
 	return n;
 }
 
@@ -307,5 +215,58 @@ nautilus_preferences_group_get_title_label (const NautilusPreferencesGroup *grou
 	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group), NULL);
 
 	return g_strdup (GTK_FRAME (group)->label);
+}
+
+int
+nautilus_preferences_group_get_max_caption_width (const NautilusPreferencesGroup *group,
+						  int column)
+{
+	GList *node;
+	NautilusPreferencesItem *item;
+	int max_caption_width = 0;
+	
+	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group), 0);
+	g_return_val_if_fail (column >= 0, 0);
+	g_return_val_if_fail (column <= 1, 0);
+
+	for (node = group->details->items[column]; node != NULL; node = node->next) {
+		g_assert (NAUTILUS_IS_PREFERENCES_ITEM (node->data));
+		item = NAUTILUS_PREFERENCES_ITEM (node->data);
+		
+		if (GTK_WIDGET_VISIBLE (item) && nautilus_preferences_item_child_is_caption (item)) {
+			max_caption_width = MAX (max_caption_width,
+						 nautilus_preferences_item_get_child_width (item));
+		}
+	}
+
+	return max_caption_width;
+}
+
+void
+nautilus_preferences_group_align_captions (NautilusPreferencesGroup *group,
+					   int max_caption_width,
+					   int column)
+{
+	GList *node;
+	NautilusPreferencesItem *item;
+	int width;
+
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_GROUP (group));
+	g_return_if_fail (max_caption_width > 0);
+	g_return_if_fail (column >= 0);
+	g_return_if_fail (column <= 1);
+
+	/* Set the spacing on all the captions */
+	for (node = group->details->items[column]; node != NULL; node = node->next) {
+		g_assert (NAUTILUS_IS_PREFERENCES_ITEM (node->data));
+		item = NAUTILUS_PREFERENCES_ITEM (node->data);
+		
+		if (GTK_WIDGET_VISIBLE (item)
+		    && nautilus_preferences_item_child_is_caption (item)) {
+			width = nautilus_preferences_item_get_child_width (item);
+			g_assert (width <= max_caption_width);
+			nautilus_preferences_item_set_caption_extra_spacing (item, max_caption_width - width);
+		}
+	}
 }
 

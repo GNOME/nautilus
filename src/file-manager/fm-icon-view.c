@@ -1995,7 +1995,7 @@ fm_icon_view_initialize (FMIconView *icon_view)
 						       smooth_font_changed_callback, 
 						       icon_view,
 						       GTK_OBJECT (icon_view));
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_STANDARD_FONT_SIZE,
+	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
 						       standard_font_size_changed_callback,
 						       icon_view,
 						       GTK_OBJECT (icon_view));
@@ -2070,7 +2070,7 @@ fm_icon_view_update_icon_container_font_size_table (FMIconView *icon_view)
 	icon_container = get_icon_container (icon_view);
 	g_assert (icon_container != NULL);
 	
-	standard_font_size = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_ICON_VIEW_STANDARD_FONT_SIZE);
+	standard_font_size = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE);
 	
 	for (i = 0; i <= NAUTILUS_ZOOM_LEVEL_LARGEST; i++) {
 		font_size_table[i] = standard_font_size + font_size_delta_table[i];

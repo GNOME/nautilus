@@ -272,7 +272,7 @@ fm_list_view_initialize (gpointer object, gpointer klass)
 						       font_or_font_size_changed_callback, 
 						       list_view,
 						       GTK_OBJECT (list_view));
-	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_STANDARD_FONT_SIZE,
+	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
 						       font_or_font_size_changed_callback, 
 						       list_view,
 						       GTK_OBJECT (list_view));
@@ -1048,7 +1048,7 @@ fm_list_view_update_font (FMListView *list_view)
 	g_return_if_fail (FM_IS_LIST_VIEW (list_view));
 
 	font_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_LIST_VIEW_FONT);
-	standard_font_size = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_LIST_VIEW_STANDARD_FONT_SIZE);
+	standard_font_size = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE);
 	
 	font_size = standard_font_size + font_size_delta_table[list_view->details->zoom_level];
 
