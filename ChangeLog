@@ -1,3 +1,13 @@
+2001-07-22  Dan Mueth  <d-mueth@uchicago.edu>
+
+	Updating doc build stuff so it works properly on RH7.1 and
+	any other newer distributions which have the updated docbook
+	tools where db2html doesn't work with GNOME's modified DTD.
+	For these systems, we use jw instead of db2html.
+
+	* configure.in:
+	* help/sgmldocs.make:
+
 2001-07-22  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/music/nautilus-music-view.c: (string_non_empty),

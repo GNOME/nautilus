@@ -525,6 +525,21 @@ dnl = End tests for scrollkeeper
 dnl =======================
 
 dnl ====================================
+dnl = Test whether jw is installed
+dnl ====================================
+AC_PATH_PROG(JW,jw,no)
+if test x$JW = xno; then
+  HAVE_JW="no"
+else
+  HAVE_JW="yes"
+fi
+AM_CONDITIONAL(HAVE_JW, test "x$HAVE_JW" = "xyes")
+AC_SUBST(HAVE_JW)
+dnl ====================================
+dnl = End tests for jw
+dnl ====================================
+
+dnl ====================================
 dnl = begin applet checks
 dnl ====================================
 AC_MSG_CHECKING(for applets)
