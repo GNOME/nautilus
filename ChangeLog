@@ -1,3 +1,47 @@
+2001-11-06  Darin Adler  <darin@bentspoon.com>
+
+	Update for gnome-vfs API changes.
+
+	* libnautilus-private/nautilus-file.c:
+	Remove include of gnome-vfs-mime-info.h. Also switch to
+	g_ascii_strcasecmp instead of g_strcasecmp.
+	
+	* libnautilus-private/nautilus-icon-factory.c:
+	Remove includes of gnome-vfs-mime.h and gnome-vfs-mime-info.h.
+	
+	* libnautilus-private/nautilus-link-desktop-file.c:
+	Remove include of gnome-vfs-mime.h.
+	
+	* libnautilus-private/nautilus-link-historical.c:
+	(local_get_root_property): Rewrote to use
+	gnome_vfs_get_file_info. Removed include of gnome-vfs-mime.h.
+	
+	* libnautilus-private/nautilus-link.c:
+	(get_link_style_for_mime_type): New function.
+	(get_link_style_for_local_file): New function, uses
+	gnome_vfs_get_file_info instead of gnome_vfs_get_mime_type.
+	(get_link_style_for_data): New function.
+	(nautilus_link_local_create),
+	(nautilus_link_local_set_icon), (nautilus_link_local_set_link_uri),
+	(nautilus_link_local_set_type),
+	(nautilus_link_local_get_additional_text),
+	(nautilus_link_local_get_link_uri),
+	(nautilus_link_local_get_link_type),
+	(nautilus_link_get_link_uri_given_file_contents),
+	(nautilus_link_get_link_name_given_file_contents),
+	(nautilus_link_get_link_icon_given_file_contents),
+	(nautilus_link_local_is_volume_link),
+	(nautilus_link_local_is_home_link),
+	(nautilus_link_local_is_trash_link),
+	(nautilus_link_local_create_from_gnome_entry):
+	Rewrote all of these to simplify and get rid of spread-out MIME
+	type code.
+	
+	* libnautilus-private/nautilus-mime-actions.c:
+	Remove include of gnome-vfs-mime-info.h.
+	
+	* src/Makefile.am: Remove extra dist-hook.
+
 2001-11-06  Michael Meeks  <michael@ximian.com>
 
 	* src/nautilus-view-frame.c

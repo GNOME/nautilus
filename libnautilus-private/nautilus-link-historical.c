@@ -42,7 +42,6 @@
 #include <libxml/xmlmemory.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
-#include <libgnomevfs/gnome-vfs-mime.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <stdlib.h>
 
@@ -186,24 +185,40 @@ static char *
 local_get_root_property (const char *path,
 			 const char *key)
 {
+	GnomeVFSFileInfo *info;
+	char *uri;
+	GnomeVFSResult result;
+	gboolean is_link;
 	xmlDoc *document;
 	char *property;
-	const char *mime_type;
 	
-	property = NULL;
-
 	/* Check mime type. Exit if it is not a nautilus link */
-	mime_type = gnome_vfs_get_file_mime_type (path, NULL, FALSE);
-	if (strcmp (mime_type, "application/x-nautilus-link") != 0) {
+
+	info = gnome_vfs_file_info_new ();
+
+	uri = gnome_vfs_get_uri_from_local_path (path);
+	result = gnome_vfs_get_file_info (uri, info,
+					  GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+					  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
+	g_free (uri);
+
+	is_link = result == GNOME_VFS_OK
+		&& (info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) != 0
+		&& g_ascii_strcasecmp (info->mime_type, "application/x-nautilus-link") == 0;
+
+	gnome_vfs_file_info_unref (info);
+
+	if (!is_link) {
 		return NULL;
 	}
 	
 	document = xmlParseFile (path);
-	if (document != NULL) {
-		property = xml_get_root_property (document, key);
-		xmlFreeDoc (document);
+	if (document == NULL) {
+		return NULL;
 	}
 
+	property = xml_get_root_property (document, key);
+	xmlFreeDoc (document);
 	return property;
 }
 

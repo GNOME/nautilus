@@ -24,18 +24,16 @@
 
 #include <config.h>
 #include "nautilus-mime-actions.h"
-
+ 
 #include "nautilus-file-attributes.h"
 #include "nautilus-file.h"
-#include <eel/eel-glib-extensions.h>
 #include "nautilus-metadata.h"
+#include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <libgnomevfs/gnome-vfs-application-registry.h>
-#include <libgnomevfs/gnome-vfs-mime-info.h>
 #include <libgnomevfs/gnome-vfs-mime.h>
-#include <libgnomevfs/gnome-vfs.h>
 #include <stdio.h>
- 
+
 static int         gnome_vfs_mime_application_has_id             (GnomeVFSMimeApplication  *application,
 								  const char               *id);
 static int         gnome_vfs_mime_id_matches_application         (const char               *id,
@@ -64,15 +62,7 @@ static char      **strv_concat                                   (char          
 static gboolean
 is_known_mime_type (const char *mime_type)
 {
-	if (mime_type == NULL) {
-		return FALSE;
-	}
-	
-	if (g_strcasecmp (mime_type, GNOME_VFS_MIME_TYPE_UNKNOWN) == 0) {
-		return FALSE;
-	}
-	
-	return TRUE;
+	return eel_strcasecmp (mime_type, GNOME_VFS_MIME_TYPE_UNKNOWN) != 0;
 }
 
 static gboolean

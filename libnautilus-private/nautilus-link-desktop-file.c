@@ -41,8 +41,7 @@
 #include <libxml/xmlmemory.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
-#include <libgnomevfs/gnome-vfs-mime.h>
-#include <libgnomevfs/gnome-vfs.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <stdlib.h>
 
 #define NAUTILUS_LINK_GENERIC_TAG	"Link"

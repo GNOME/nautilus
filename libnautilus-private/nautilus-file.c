@@ -43,19 +43,18 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
-#include <libxml/parser.h>
 #include <grp.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
-#include <libgnomevfs/gnome-vfs-mime-info.h>
 #include <libgnomevfs/gnome-vfs-mime.h>
+#include <libxml/parser.h>
 #include <pwd.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <sys/time.h>
 #include <time.h>
+#include <unistd.h>
 
 /* Time in seconds to cache getpwuid results */
 #define GETPWUID_CACHE_TIME (5*60)
@@ -4170,7 +4169,7 @@ get_description (NautilusFile *file)
 		return NULL;
 	}
 
-	if (g_strcasecmp (mime_type, GNOME_VFS_MIME_TYPE_UNKNOWN) == 0
+	if (g_ascii_strcasecmp (mime_type, GNOME_VFS_MIME_TYPE_UNKNOWN) == 0
 	    && nautilus_file_is_executable (file)) {
 		return _("program");
 	}
@@ -4183,7 +4182,7 @@ get_description (NautilusFile *file)
 	/* We want to update gnome-vfs/data/mime/gnome-vfs.keys to include 
 	 * English (& localizable) versions of every mime type anyone ever sees.
 	 */
-	if (g_strcasecmp (mime_type, "x-directory/normal") == 0) {
+	if (g_ascii_strcasecmp (mime_type, "x-directory/normal") == 0) {
 		g_warning (_("Can't find description even for \"x-directory/normal\". This "
 			     "probably means that your gnome-vfs.keys file is in the wrong place "
 			     "or isn't being found for some other reason."));
@@ -4290,7 +4289,7 @@ nautilus_file_is_mime_type (NautilusFile *file, const char *mime_type)
 		return FALSE;
 	}
 	return eel_strcasecmp (file->details->info->mime_type,
-				    mime_type) == 0;
+			       mime_type) == 0;
 }
 
 /**

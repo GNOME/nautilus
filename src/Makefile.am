@@ -153,9 +153,6 @@ BUILT_SOURCES = \
 	$(nautilus_shell_interface_idl_sources) \
 	$(NULL)
 
-dist-hook:
-	cd $(distdir) ; rm -f $(BUILT_SOURCES)
-
 install-data-hook: run-nautilus
 	$(mkinstalldirs) $(DESTDIR)/$(prefix)/bin
 	@list='run-nautilus'; for p in $$list; do\
