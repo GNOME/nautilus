@@ -1,5 +1,11 @@
 2002-12-27  Bastien Nocera  <hadess@hadess.net>
 
+	* src/nautilus-server-connect.c: (update_icon): disable DEBUG
+	(Closes: #101430), use GnomeIconTheme stuff so we get the icons back
+	as in the old times
+
+2002-12-27  Bastien Nocera  <hadess@hadess.net>
+
 	* configure.in: require libgnome 2.1.1 for the libegg stuff
 	(gnome_url_show_with_env is required)
 

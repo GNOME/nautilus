@@ -19,13 +19,15 @@
 #include <config.h>
 #include <stdio.h>
 #include <string.h>
+#include <glib.h>
 #include <gnome.h>
 #include <gconf/gconf-client.h>
 #include <glade/glade.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnome/gnome-desktop-item.h>
+#include <libgnomeui/gnome-icon-theme.h>
 
-#define DEBUG
+#undef DEBUG
 #ifdef DEBUG
 #define D(x...) g_message (x)
 #else
@@ -33,12 +35,12 @@
 #endif
 
 #define NETWORK_USER_DIR "/.gnome2/vfolders/network/"
+#define ICON_SIZE_STANDARD 48
 
 static GladeXML *xml = NULL;
 static GtkWidget *toplevel = NULL;
 static GtkWidget *entry = NULL;
 static GtkWidget *image = NULL;
-static const char *icon_name = NULL;
 static const char *naut_icon = NULL;
 
 static void
@@ -297,8 +299,11 @@ can_connect (const char *uri)
 static void
 update_icon (GtkEntry *entry, gpointer user_data)
 {
+	GnomeIconTheme *theme;
 	GtkWidget *button;
 	char *uri_utf8, *uri, *filename;
+	const GnomeIconData *icon_data;
+	int base_size;
 
 	uri_utf8 = gtk_editable_get_chars (GTK_EDITABLE (entry), 0, -1);
 	if (uri_utf8 == NULL)
@@ -312,29 +317,29 @@ update_icon (GtkEntry *entry, gpointer user_data)
 	if (uri == NULL || strcmp (uri, "") == 0)
 	{
 		gtk_widget_set_sensitive (button, FALSE);
-		icon_name = "gnome-fs-network.png";
-		naut_icon = "gnome-fs-network";
+		naut_icon = "gnome-fs-share";
 	} else {
 		gtk_widget_set_sensitive (button, TRUE);
-		if ((strncmp (uri, "smb:", strlen("smb:")) == 0)
+		if (g_str_has_prefix (uri, "smb:")
 				|| (g_strrstr (uri, ":") == NULL)) {
-			icon_name = "gnome-fs-smb.png";
 			naut_icon = "gnome-fs-smb";
-		} else if (strncmp (uri, "ftp:", strlen("ftp:")) == 0) {
-			icon_name = "gnome-fs-ftp.png";
+		} else if (g_str_has_prefix (uri, "ftp:")) {
 			naut_icon = "gnome-fs-ftp";
-		} else if (strncmp (uri, "http:", strlen("http:")) == 0) {
-			icon_name = "gnome-fs-web.png";
+		} else if (g_str_has_prefix (uri, "http:")) {
 			naut_icon = "gnome-fs-web";
+		} else if (g_str_has_prefix (uri, "ssh:")) {
+			naut_icon = "gnome-fs-ssh";
 		} else {
-			icon_name = "gnome-fs-network.png";
-			naut_icon = "gnome-fs-network";
+			naut_icon = "gnome-fs-share";
 		}
 	}
 
-	filename = gnome_program_locate_file (NULL,
-			GNOME_FILE_DOMAIN_PIXMAP,
-			icon_name, TRUE, NULL);
+	theme = gnome_icon_theme_new ();
+	filename = gnome_icon_theme_lookup_icon (theme, naut_icon,
+			ICON_SIZE_STANDARD,
+			&icon_data,
+			&base_size);
+
 	gtk_image_set_from_file (GTK_IMAGE (image), filename);
 	g_free (filename);
 	g_free (uri);
