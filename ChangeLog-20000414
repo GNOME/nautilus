@@ -1,3 +1,11 @@
+2000-04-11  Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus/nautilus-icon-dnd.c:
+	* libnautilus/nautilus-icon-dnd.h:
+	Fix a problem where drag actions did't update properly when dragging
+	between two windows. The pointer to the private GtkDragStatus needs
+	to be global, not stored in the drag originator widget.
+
 2000-04-11  Andy Hertzfeld <andy@eazel.com>
 
 	* components/services/startup/eazel-register.c:

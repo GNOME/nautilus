@@ -72,14 +72,6 @@ struct NautilusIconDndInfo {
 	/* Shadow for the icons being dragged.  */
 	GnomeCanvasItem *shadow;
 
-
-	/* During drag&drop keep a saved pointer to the private drag context.
-	 * This is a hack-workaround to deal with the inability to override
-	 * drag action feedback in gtk and will be removed once the appropriate
-	 * interface gets added to gtkdnd to do this in a clean way
-	 */
-	gpointer saved_drag_source_info;
-
 	/* last highlighted drop target*/
 	gpointer current_drop_target_icon;
 };

@@ -54,6 +54,10 @@ static gboolean	drag_drop_callback 			(GtkWidget *widget,
 static void 	nautilus_icon_dnd_update_drop_target 	(NautilusIconContainer *container, 
 				      			 GdkDragContext *context,
 				      			 int x, int y);
+static gboolean drag_motion_callback 			(GtkWidget *widget,
+							 GdkDragContext *context,
+							 int x, int y,
+							 guint32 time);
 
 
 typedef struct {
@@ -509,22 +513,6 @@ nautilus_icon_container_ensure_drag_data (NautilusIconContainer *container,
 	}
 }
 
-static gboolean
-drag_motion_callback (GtkWidget *widget,
-		      GdkDragContext *context,
-		      int x, int y,
-		      guint32 time)
-{
-	nautilus_icon_dnd_update_drop_action (widget);
-	nautilus_icon_container_ensure_drag_data (NAUTILUS_ICON_CONTAINER (widget), context, time);
-	nautilus_icon_container_position_shadow (NAUTILUS_ICON_CONTAINER (widget), x, y);
-	nautilus_icon_dnd_update_drop_target (NAUTILUS_ICON_CONTAINER (widget), context, x, y);
-
-	gdk_drag_status (context, context->suggested_action, time);
-
-	return TRUE;
-}
-
 static void
 drag_end_callback (GtkWidget *widget,
 		   GdkDragContext *context,
@@ -903,75 +891,6 @@ drag_leave_callback (GtkWidget *widget,
 		gnome_canvas_item_hide (dnd_info->shadow);
 }
 
-void
-nautilus_icon_dnd_init (NautilusIconContainer *container,
-			GdkBitmap *stipple)
-{
-	NautilusIconDndInfo *dnd_info;
-
-	g_return_if_fail (container != NULL);
-	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
-
-	dnd_info = g_new0 (NautilusIconDndInfo, 1);
-
-	dnd_info->target_list = gtk_target_list_new (drag_types,
-						     NAUTILUS_N_ELEMENTS (drag_types));
-
-	dnd_info->stipple = gdk_bitmap_ref (stipple);
-
-	/* Set up the widget as a drag destination.
-	 * (But not a source, as drags starting from this widget will be
-         * implemented by dealing with events manually.)
-	 */
-	gtk_drag_dest_set  (GTK_WIDGET (container),
-			    0,
-			    drop_types, NAUTILUS_N_ELEMENTS (drop_types),
-			    GDK_ACTION_COPY | GDK_ACTION_MOVE);
-
-	/* Messages for outgoing drag. */
-	gtk_signal_connect (GTK_OBJECT (container), "drag_data_get",
-			    GTK_SIGNAL_FUNC (drag_data_get_callback), NULL);
-	gtk_signal_connect (GTK_OBJECT (container), "drag_end",
-			    GTK_SIGNAL_FUNC (drag_end_callback), NULL);
-
-	/* Messages for incoming drag. */
-	gtk_signal_connect (GTK_OBJECT (container), "drag_data_received",
-			    GTK_SIGNAL_FUNC (drag_data_received_callback), NULL);
-	gtk_signal_connect (GTK_OBJECT (container), "drag_motion",
-			    GTK_SIGNAL_FUNC (drag_motion_callback), NULL);
-	gtk_signal_connect (GTK_OBJECT (container), "drag_drop",
-			    GTK_SIGNAL_FUNC (drag_drop_callback), NULL);
-	gtk_signal_connect (GTK_OBJECT (container), "drag_leave",
-			    GTK_SIGNAL_FUNC (drag_leave_callback), NULL);
-
-	container->details->dnd_info = dnd_info;
-	container->details->dnd_info->saved_drag_source_info = NULL;
-
-}
-
-void
-nautilus_icon_dnd_fini (NautilusIconContainer *container)
-{
-	NautilusIconDndInfo *dnd_info;
-
-	g_return_if_fail (container != NULL);
-	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
-
-	dnd_info = container->details->dnd_info;
-	g_return_if_fail (dnd_info != NULL);
-
-	gtk_target_list_unref (dnd_info->target_list);
-	destroy_selection_list (dnd_info->selection_list);
-
-	if (dnd_info->shadow != NULL)
-		gtk_object_destroy (GTK_OBJECT (dnd_info->shadow));
-
-	gdk_bitmap_unref (dnd_info->stipple);
-
-	g_free (dnd_info);
-}
-
-
 /* During drag&drop keep a saved pointer to the private drag context.
  * We also replace the severely broken gtk_drag_get_event_actions.
  * To do this we copy a lot of code from gtkdnd.c.
@@ -1015,6 +934,76 @@ typedef struct GtkDragSourceInfo
   guint              destroy_icon : 1; /* If true, destroy icon_window
 					*/
 } GtkDragSourceInfo;
+static GtkDragSourceInfo *saved_drag_source_info;
+
+void
+nautilus_icon_dnd_init (NautilusIconContainer *container,
+			GdkBitmap *stipple)
+{
+	NautilusIconDndInfo *dnd_info;
+
+	g_return_if_fail (container != NULL);
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	dnd_info = g_new0 (NautilusIconDndInfo, 1);
+
+	dnd_info->target_list = gtk_target_list_new (drag_types,
+						     NAUTILUS_N_ELEMENTS (drag_types));
+
+	dnd_info->stipple = gdk_bitmap_ref (stipple);
+
+	/* Set up the widget as a drag destination.
+	 * (But not a source, as drags starting from this widget will be
+         * implemented by dealing with events manually.)
+	 */
+	gtk_drag_dest_set  (GTK_WIDGET (container),
+			    0,
+			    drop_types, NAUTILUS_N_ELEMENTS (drop_types),
+			    GDK_ACTION_COPY | GDK_ACTION_MOVE);
+
+	/* Messages for outgoing drag. */
+	gtk_signal_connect (GTK_OBJECT (container), "drag_data_get",
+			    GTK_SIGNAL_FUNC (drag_data_get_callback), NULL);
+	gtk_signal_connect (GTK_OBJECT (container), "drag_end",
+			    GTK_SIGNAL_FUNC (drag_end_callback), NULL);
+
+	/* Messages for incoming drag. */
+	gtk_signal_connect (GTK_OBJECT (container), "drag_data_received",
+			    GTK_SIGNAL_FUNC (drag_data_received_callback), NULL);
+	gtk_signal_connect (GTK_OBJECT (container), "drag_motion",
+			    GTK_SIGNAL_FUNC (drag_motion_callback), NULL);
+	gtk_signal_connect (GTK_OBJECT (container), "drag_drop",
+			    GTK_SIGNAL_FUNC (drag_drop_callback), NULL);
+	gtk_signal_connect (GTK_OBJECT (container), "drag_leave",
+			    GTK_SIGNAL_FUNC (drag_leave_callback), NULL);
+
+	container->details->dnd_info = dnd_info;
+	saved_drag_source_info = NULL;
+
+}
+
+void
+nautilus_icon_dnd_fini (NautilusIconContainer *container)
+{
+	NautilusIconDndInfo *dnd_info;
+
+	g_return_if_fail (container != NULL);
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	dnd_info = container->details->dnd_info;
+	g_return_if_fail (dnd_info != NULL);
+
+	gtk_target_list_unref (dnd_info->target_list);
+	destroy_selection_list (dnd_info->selection_list);
+
+	if (dnd_info->shadow != NULL)
+		gtk_object_destroy (GTK_OBJECT (dnd_info->shadow));
+
+	gdk_bitmap_unref (dnd_info->stipple);
+
+	g_free (dnd_info);
+}
+
 
 static GtkDragSourceInfo *
 nautilus_icon_dnd_get_drag_source_info (GtkWidget *widget, GdkDragContext *context)
@@ -1040,7 +1029,6 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	int x_offset, y_offset;
 	ArtDRect world_rect;
 	ArtIRect window_rect;
-	GtkDragSourceInfo *info;
 	
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_return_if_fail (event != NULL);
@@ -1064,15 +1052,13 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 				  (GdkEvent *) event);
 
 	/* set up state for overriding the broken gtk_drag_get_event_actions call */
-	info = nautilus_icon_dnd_get_drag_source_info (GTK_WIDGET (container), context);
-	container->details->dnd_info->saved_drag_source_info = info;
-
-	g_assert (info != NULL);
-
-	gtk_signal_connect (GTK_OBJECT (info ? info->ipc_widget : NULL), "key_press_event",
-			    GTK_SIGNAL_FUNC (nautilus_icon_drag_key_callback), info);
-	gtk_signal_connect (GTK_OBJECT (info ? info->ipc_widget : NULL), "key_release_event",
-			    GTK_SIGNAL_FUNC (nautilus_icon_drag_key_callback), info);
+	saved_drag_source_info = nautilus_icon_dnd_get_drag_source_info (GTK_WIDGET (container), context);
+	g_assert (saved_drag_source_info != NULL);
+	
+	gtk_signal_connect (GTK_OBJECT (saved_drag_source_info ? saved_drag_source_info->ipc_widget : NULL), "key_press_event",
+			    GTK_SIGNAL_FUNC (nautilus_icon_drag_key_callback), saved_drag_source_info);
+	gtk_signal_connect (GTK_OBJECT (saved_drag_source_info ? saved_drag_source_info->ipc_widget : NULL), "key_release_event",
+			    GTK_SIGNAL_FUNC (nautilus_icon_drag_key_callback), saved_drag_source_info);
 
 
 	container->details->dnd_info->current_drop_target_icon = NULL;
@@ -1115,6 +1101,22 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 }
 
 static gboolean
+drag_motion_callback (GtkWidget *widget,
+		      GdkDragContext *context,
+		      int x, int y,
+		      guint32 time)
+{
+	nautilus_icon_dnd_update_drop_action (widget);
+	nautilus_icon_container_ensure_drag_data (NAUTILUS_ICON_CONTAINER (widget), context, time);
+	nautilus_icon_container_position_shadow (NAUTILUS_ICON_CONTAINER (widget), x, y);
+	nautilus_icon_dnd_update_drop_target (NAUTILUS_ICON_CONTAINER (widget), context, x, y);
+
+	gdk_drag_status (context, context->suggested_action, time);
+
+	return TRUE;
+}
+
+static gboolean
 drag_drop_callback (GtkWidget *widget,
 		    GdkDragContext *context,
 		    int x,
@@ -1123,7 +1125,6 @@ drag_drop_callback (GtkWidget *widget,
 		    gpointer data)
 {
 	NautilusIconDndInfo *dnd_info;
-	GtkDragSourceInfo *info;
 
 	dnd_info = NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info;
 
@@ -1149,16 +1150,13 @@ drag_drop_callback (GtkWidget *widget,
 
 	nautilus_icon_container_free_drag_data (NAUTILUS_ICON_CONTAINER (widget));
 
-	info = NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info->saved_drag_source_info;
-	g_assert (info != NULL);
-
-	if (info != NULL) {
-		gtk_signal_disconnect_by_func (GTK_OBJECT (info->ipc_widget),
+	if (saved_drag_source_info != NULL) {
+		gtk_signal_disconnect_by_func (GTK_OBJECT (saved_drag_source_info->ipc_widget),
 					GTK_SIGNAL_FUNC (nautilus_icon_drag_key_callback),
-					info);
+					saved_drag_source_info);
 	}
 
-	NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info->saved_drag_source_info = NULL;
+	saved_drag_source_info = NULL;
 	NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info->current_drop_target_icon = NULL;
 
 	return FALSE;
@@ -1202,13 +1200,10 @@ nautilus_icon_dnd_modifier_based_action ()
 void
 nautilus_icon_dnd_update_drop_action (GtkWidget *widget)
 {
-	GtkDragSourceInfo *info;
-
-	info = NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info->saved_drag_source_info;
-	if (info == NULL)
+	if (saved_drag_source_info == NULL)
 		return;
 
-	info->possible_actions = nautilus_icon_dnd_modifier_based_action ();
+	saved_drag_source_info->possible_actions = nautilus_icon_dnd_modifier_based_action ();
 }
 
 /* Replacement for broken gtk_drag_get_event_actions */
