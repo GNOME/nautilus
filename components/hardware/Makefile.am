@@ -8,6 +8,7 @@ INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
 	$(GCONF_CFLAGS) 			\
+	$(VFS_CFLAGS) 				\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	$(GNOMEUI_CFLAGS)                       \
 	$(WERROR)

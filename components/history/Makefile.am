@@ -1,6 +1,7 @@
 bin_PROGRAMS=nautilus-history-view
 
-INCLUDES=-I$(top_srcdir) -I$(top_builddir) $(GNOMEUI_CFLAGS) $(GCONF_CFLAGS) $(BONOBO_CFLAGS) $(WERROR)
+INCLUDES=-I$(top_srcdir) -I$(top_builddir) $(GNOMEUI_CFLAGS) $(GCONF_CFLAGS) \
+	$(BONOBO_CFLAGS) $(VFS_CFLAGS) $(WERROR)
 
 LDADD=\
 	$(top_builddir)/libnautilus/libnautilus.la \

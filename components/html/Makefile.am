@@ -12,6 +12,7 @@ INCLUDES =					\
 	$(GCONF_CFLAGS) \
 	$(GNOMEUI_CFLAGS)			\
 	$(GTKHTML_CFLAGS)			\
+	$(VFS_CFLAGS)				\
 	$(LIBWWW_CFLAGS)
 
 oafdir = $(datadir)/oaf

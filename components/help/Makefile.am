@@ -9,6 +9,7 @@ INCLUDES = \
 	$(GNOMEUI_CFLAGS) \
 	$(BONOBO_CFLAGS) \
 	$(GCONF_CFLAGS) \
+	$(VFS_CFLAGS) \
 	$(XML_CFLAGS) \
 	-DHYPERBOLA_DATADIR=\""$(datadir)/hyperbola"\" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
