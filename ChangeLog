@@ -1,9 +1,22 @@
 2000-09-21  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 2598 ("Select All Files" should be insensitive in
+	views that have 0 files)
+
+	* src/file-manager/fm-directory-view.c: 
+	(no_items_showing): New function, checks directory item
+	count. I can trust this now that the directory item count
+	filters the same way the directory view does, thanks to
+	rebecka's recent change.
+	(compute_menu_item_info): Use no_items_showing to set the
+	sensitivity of "Select All Files".
+
+2000-09-21  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 3236 (Window titles are indistinguishable in taskbar)
 
 	Removed "Nautilus: " from the main Nautilus window and all
-	the dialogs. Took this opportunity to standardize book title
+	the dialogs. Took this opportunity to standardize on book title
 	capitalization for all dialog titles. Also softened the caveat
 	text just a bit.
 

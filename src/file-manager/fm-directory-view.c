@@ -2457,6 +2457,49 @@ remove_custom_icon (gpointer file, gpointer callback_data)
 				    NULL, NULL);
 }
 
+static NautilusFile *
+get_directory_as_file (FMDirectoryView *view)
+{
+	NautilusDirectory *directory;
+	NautilusFile *directory_as_file;
+	char *uri;
+
+	directory = fm_directory_view_get_model (view);
+	uri = nautilus_directory_get_uri (directory);
+	directory_as_file = nautilus_file_get (uri);
+	g_free (uri);
+
+	return directory_as_file;
+}
+
+static gboolean
+no_items_showing (FMDirectoryView *directory_view)
+{
+	NautilusFile *directory_as_file;
+	guint item_count;
+	gboolean count_known;
+	gboolean count_unreadable;
+
+	directory_as_file = get_directory_as_file (directory_view);
+	
+	/* This can happen when it's too early to tell. */
+	if (!nautilus_file_is_directory (directory_as_file)) {
+		return FALSE;
+	}
+
+	count_known = nautilus_file_get_directory_item_count (directory_as_file,
+							      &item_count,
+							      &count_unreadable);
+	nautilus_file_unref (directory_as_file);
+
+	/* If we don't or can't know the count, then we don't really know
+	 * (yet) whether any items are showing. This should never happen,
+	 * but just to be safe we'll only claim that no items are showing
+	 * when we know for sure. 
+	 */
+	return count_known && item_count == 0;
+}
+
 static gboolean
 files_have_any_custom_images (GList *files)
 {
@@ -2587,11 +2630,7 @@ compute_menu_item_info (FMDirectoryView *directory_view,
 		*return_sensitivity =  !nautilus_trash_monitor_is_empty ();
 	} else if (strcmp (path, NAUTILUS_MENU_PATH_SELECT_ALL_ITEM) == 0) {
 		name = g_strdup (_("_Select All Files"));
-		/* FIXME bugzilla.eazel.com 2598: 
-		 * Check whether any items are displayed (not the same as whether
-		 * no files are in directory, due to hidden files).
-		 */
-		*return_sensitivity = TRUE;
+		*return_sensitivity = !no_items_showing (directory_view);
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS) == 0) {
                 if (nautilus_g_list_more_than_one_item (selection)) {
                         name = g_strdup (_("R_emove Custom Images"));
@@ -4032,21 +4071,6 @@ fm_directory_view_is_read_only (FMDirectoryView *view)
 	return NAUTILUS_CALL_VIRTUAL
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 is_read_only, (view));
-}
-
-static NautilusFile *
-get_directory_as_file (FMDirectoryView *view)
-{
-	NautilusDirectory *directory;
-	NautilusFile *directory_as_file;
-	char *uri;
-
-	directory = fm_directory_view_get_model (view);
-	uri = nautilus_directory_get_uri (directory);
-	directory_as_file = nautilus_file_get (uri);
-	g_free (uri);
-
-	return directory_as_file;
 }
 
 static gboolean
