@@ -24,19 +24,21 @@
 #include <config.h>
 #include <gnome.h>
 
-#ifndef STANDALONE
+#include "eazel-install-public.h"
+#include "eazel-install-private.h"
+
+#ifndef EAZEL_INSTALL_NO_CORBA
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
 #include <libtrilobite/libtrilobite.h>
 #include "trilobite-eazel-install.h"
-#endif /* STANDALONE */
-
-#include "eazel-install-public.h"
-#include "eazel-install-private.h"
+#include "eazel-install-corba-types.h"
+#endif /* EAZEL_INSTALL_NO_CORBA */
 
 #include "eazel-install-metadata.h"
 #include "eazel-install-protocols.h"
-#include "eazel-install-rpm-glue.c"
+#include "eazel-install-rpm-glue.h"
+#include "eazel-install-types.h"
 
 enum {
 	DOWNLOAD_PROGRESS,
@@ -47,6 +49,7 @@ enum {
 	UNINSTALL_FAILED,
 
 	DEPENDENCY_CHECK,
+	DONE,
 	
 	LAST_SIGNAL
 };
@@ -65,13 +68,13 @@ enum {
 	ARG_PROTOCOL,
 	ARG_TMP_DIR,
 	ARG_RPMRC_FILE,
-	ARG_HOSTNAME,
+	ARG_SERVER,
 	ARG_RPM_STORAGE_PATH,
 	ARG_PACKAGE_LIST_STORAGE_PATH,
 	ARG_PACKAGE_LIST,
 	ARG_ROOT_DIR,
 	ARG_PACKAGE_SYSTEM,
-	ARG_PORT_NUMBER
+	ARG_SERVER_PORT
 };
 
 /* The signal array, used for building the signal bindings */
@@ -80,16 +83,38 @@ static guint signals[LAST_SIGNAL] = { 0 };
 
 /* This is the parent class pointer */
 
-#ifdef STANDALONE
+#ifdef EAZEL_INSTALL_NO_CORBA
 static GtkObjectClass *eazel_install_parent_class;
 #else
 static BonoboObjectClass *eazel_install_parent_class;
-#endif /* STANDALONE */
+#endif /* EAZEL_INSTALL_NO_CORBA */
 
 
 /* prototypes */
 
-#ifndef STANDALONE
+void eazel_install_emit_install_progress_default (EazelInstall *service,
+						  const PackageData *pack,
+						  int amount,
+						  int total);
+
+void  eazel_install_emit_download_progress_default (EazelInstall *service, 
+						    const char *name,
+						    int amount, 
+						    int total);
+
+void  eazel_install_emit_download_failed_default (EazelInstall *service, 
+						  const char *name);
+
+void eazel_install_emit_install_failed_default (EazelInstall *service,
+						const PackageData *pack);
+
+void eazel_install_emit_dependency_check_default (EazelInstall *service,
+						  const PackageData *pack,
+						  const PackageData *needs);
+
+void eazel_install_emit_done_default (EazelInstall *service);
+
+#ifndef EAZEL_INSTALL_NO_CORBA
 
 /*****************************************
   Corba stuff
@@ -97,32 +122,7 @@ static BonoboObjectClass *eazel_install_parent_class;
 
 static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
 
-typedef struct {
-	POA_Trilobite_Eazel_Install poa;
-	EazelInstall *object;
-} impl_POA_Trilobite_Eazel_Install;
-
-static void 
-impl_Eazel_Install_new_packages(impl_POA_Trilobite_Eazel_Install *servant,
-					  const Eazel_InstallCallback cb,
-					  CORBA_Environment * ev) 
-{
-	servant->object->callback = cb;
-
-	return;
-}
-
-POA_Trilobite_Eazel_Install__epv* 
-eazel_install_get_epv () 
-{
-	POA_Trilobite_Eazel_Install__epv *epv;
-
-	epv = g_new0 (POA_Trilobite_Eazel_Install__epv, 1);
-	epv->new_packages = (gpointer)&impl_Eazel_Install_new_packages;
-	return epv;
-};
-
-#endif /* STANDALONE */
+#endif /* EAZEL_INSTALL_NO_CORBA */
 
 /*****************************************
   GTK+ object stuff
@@ -189,8 +189,8 @@ eazel_install_set_arg (GtkObject *object,
 	case ARG_RPMRC_FILE:
 		eazel_install_set_rpmrc_file (service, (char*)GTK_VALUE_POINTER(*arg));
 		break;
-	case ARG_HOSTNAME:
-		eazel_install_set_hostname (service, (char*)GTK_VALUE_POINTER(*arg));
+	case ARG_SERVER:
+		eazel_install_set_server (service, (char*)GTK_VALUE_POINTER(*arg));
 		break;
 	case ARG_RPM_STORAGE_PATH:
 		eazel_install_set_rpm_storage_path (service, (char*)GTK_VALUE_POINTER(*arg));
@@ -201,8 +201,8 @@ eazel_install_set_arg (GtkObject *object,
 	case ARG_PACKAGE_LIST:
 		eazel_install_set_package_list (service, (char*)GTK_VALUE_POINTER(*arg));
 		break;
-	case ARG_PORT_NUMBER:
-		eazel_install_set_port_number (service, GTK_VALUE_UINT(*arg));
+	case ARG_SERVER_PORT:
+		eazel_install_set_server_port (service, GTK_VALUE_UINT(*arg));
 		break;
 	case ARG_PACKAGE_SYSTEM:
 		eazel_install_set_package_system (service, GTK_VALUE_ENUM(*arg));
@@ -222,15 +222,15 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 	object_class->destroy = (void(*)(GtkObject*))eazel_install_destroy;
 	object_class->set_arg = eazel_install_set_arg;
 	
-#ifdef STANDALONE
+#ifdef EAZEL_INSTALL_NO_CORBA
 	eazel_install_parent_class = gtk_type_class (gtk_object_get_type ());
 #else
 	eazel_install_parent_class = gtk_type_class (bonobo_object_get_type ());
 	klass->servant_vepv = g_new0 (POA_Trilobite_Eazel_Install__vepv,1);
 	((POA_Trilobite_Eazel_Install__vepv*)klass->servant_vepv)->_base_epv = &base_epv; 
 	((POA_Trilobite_Eazel_Install__vepv*)klass->servant_vepv)->Bonobo_Unknown_epv = bonobo_object_get_epv ();
-	((POA_Trilobite_Eazel_Install__vepv*)klass->servant_vepv)->Eazel_Install_epv = eazel_install_get_epv ();
-#endif /* STANDALONE */
+	((POA_Trilobite_Eazel_Install__vepv*)klass->servant_vepv)->Trilobite_Eazel_Install_epv = eazel_install_get_epv ();
+#endif /* EAZEL_INSTALL_NO_CORBA */
 
 	signals[DOWNLOAD_PROGRESS] = 
 		gtk_signal_new ("download_progress",
@@ -252,7 +252,7 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallClass, download_failed),
 				gtk_marshal_NONE__POINTER_POINTER,
-				GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
+				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
 	signals[INSTALL_FAILED] = 
 		gtk_signal_new ("install_failed",
 				GTK_RUN_LAST,
@@ -274,7 +274,21 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				GTK_SIGNAL_OFFSET (EazelInstallClass, dependency_check),
 				gtk_marshal_NONE__POINTER_POINTER,
 				GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
+	signals[DONE] = 
+		gtk_signal_new ("done",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (EazelInstallClass, done),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE, 0);
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+
+	klass->install_progress = eazel_install_emit_install_progress_default;
+	klass->download_progress = eazel_install_emit_download_progress_default;
+	klass->download_failed = eazel_install_emit_download_failed_default;
+	klass->install_failed = eazel_install_emit_install_failed_default;
+	klass->dependency_check = eazel_install_emit_dependency_check_default;
+	klass->done = eazel_install_emit_done_default;
 
 	gtk_object_add_arg_type ("EazelInstall::verbose",
 				 GTK_TYPE_BOOL,
@@ -324,10 +338,10 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE,
 				 ARG_RPMRC_FILE);
-	gtk_object_add_arg_type ("EazelInstall::hostname",
+	gtk_object_add_arg_type ("EazelInstall::server",
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE,
-				 ARG_HOSTNAME);
+				 ARG_SERVER);
 	gtk_object_add_arg_type ("EazelInstall::rpm_storage_path",
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE,
@@ -344,65 +358,35 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				 GTK_TYPE_POINTER,
 				 GTK_ARG_READWRITE,
 				 ARG_ROOT_DIR);
-	gtk_object_add_arg_type ("EazelInstall::port_number",
+	gtk_object_add_arg_type ("EazelInstall::server_port",
 				 GTK_TYPE_UINT,
 				 GTK_ARG_READWRITE,
-				 ARG_PORT_NUMBER);
+				 ARG_SERVER_PORT);
 	gtk_object_add_arg_type ("EazelInstall::package_system",
 				 GTK_TYPE_ENUM,
 				 GTK_ARG_READWRITE,
 				 ARG_PACKAGE_SYSTEM);
 }
 
-#ifndef STANDALONE
-static Eazel_Install
-eazel_install_create_corba_object (BonoboObject *service) {
-	impl_POA_Trilobite_Eazel_Install *servant;
-	CORBA_Environment ev;
-
-	g_assert (service != NULL);
-	g_assert (IS_EAZEL_INSTALL (service));
-	
-	CORBA_exception_init (&ev);
-	
-	servant = (impl_POA_Trilobite_Eazel_Install*)g_new0 (PortableServer_Servant,1);
-	((POA_Trilobite_Eazel_Install*) servant)->vepv = EAZEL_INSTALL_CLASS ( GTK_OBJECT (service)->klass)->servant_vepv;
-	POA_Trilobite_Eazel_Install__init (servant, &ev);
-	ORBIT_OBJECT_KEY (((POA_Trilobite_Eazel_Install*)servant)->_private)->object = NULL;
-
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		g_warning ("Cannot instantiate Eazel_Install corba object");
-		g_free (servant);
-		CORBA_exception_free (&ev);		
-		return CORBA_OBJECT_NIL;
-	}
-
-	CORBA_exception_free (&ev);		
-
-	/* Return the bonobo activation of the servant */
-	return (Eazel_Install) bonobo_object_activate_servant (service, servant);
-}
-#endif /* STANDALONE */
-
 static void
 eazel_install_initialize (EazelInstall *service) {
-#ifndef STANDALONE
-	Eazel_Install corba_service;
-#endif /* STANDALONE */
+#ifndef EAZEL_INSTALL_NO_CORBA
+	Trilobite_Eazel_Install corba_service;
+#endif /* EAZEL_INSTALL_NO_CORBA */
 
 	/* g_message ("in eazel_install_initialize"); */
 
 	g_assert (service != NULL);
 	g_assert (IS_EAZEL_INSTALL (service));
 
-#ifndef STANDALONE
+#ifndef EAZEL_INSTALL_NO_CORBA
 	corba_service = eazel_install_create_corba_object (BONOBO_OBJECT (service));
 
 	/* This sets the bonobo structures in service using the corba object */
 	if (!bonobo_object_construct (BONOBO_OBJECT (service), corba_service)) {
 		g_warning ("bonobo_object_construct failed");
 	}	
-#endif /* STANDALONE */
+#endif /* EAZEL_INSTALL_NO_CORBA */
 
 	service->private = g_new0 (EazelInstallPrivate,1);
 	service->private->topts = g_new0 (TransferOptions, 1);
@@ -413,6 +397,7 @@ eazel_install_initialize (EazelInstall *service) {
 	service->private->packsys.rpm.db = NULL;
 	service->private->packsys.rpm.set = NULL;
 	service->private->logfile = NULL;
+	service->private->logfilename = NULL;
 }
 
 GtkType
@@ -436,11 +421,11 @@ eazel_install_get_type() {
 			(GtkClassInitFunc) NULL,
 		};
 
-#ifdef STANDALONE
+#ifdef EAZEL_INSTALL_NO_CORBA
 		service_type = gtk_type_unique (gtk_object_get_type (), &service_info);
 #else
 		service_type = gtk_type_unique (bonobo_object_get_type (), &service_info);
-#endif /* STANDALONE */
+#endif /* EAZEL_INSTALL_NO_CORBA */
 	}
 
 	return service_type;
@@ -483,10 +468,10 @@ eazel_install_new_with_config (const char *config_file)
 							   "protocol", iopts->protocol,
 							   "tmp_dir", topts->tmp_dir,
 							   "rpmrc_file", topts->rpmrc_file,
-							   "hostname", topts->hostname,
+							   "server", topts->hostname,
 							   "rpm_storage_path", topts->rpm_storage_path,
 							   "package_list_storage_path", topts->pkg_list_storage_path,
-							   "port_number", topts->port_number,
+							   "server_port", topts->port_number,
 							   NULL));
 
 	/* FIXME bugzilla.eazel.com 982:
@@ -522,7 +507,7 @@ eazel_install_fetch_remote_package_list (EazelInstall *service)
 	g_print (_("Getting package list from remote server ...\n"));
 
 	url = g_strdup_printf ("http://%s%s", 
-			       eazel_install_get_hostname (service),
+			       eazel_install_get_server (service),
 			       eazel_install_get_package_list_storage_path (service));
 	
 	retval = eazel_install_fetch_file (service, url, eazel_install_get_package_list (service));
@@ -535,60 +520,6 @@ eazel_install_fetch_remote_package_list (EazelInstall *service)
 	g_free (url);
 	return TRUE;
 } 
-
-void 
-eazel_install_emit_install_progress (EazelInstall *service, 
-				     const char *name,
-				     int amount, 
-				     int total)
-{
-	SANITY(service);
-	gtk_signal_emit (GTK_OBJECT (service), signals[INSTALL_PROGRESS], name, amount, total);
-}
-
-void 
-eazel_install_emit_download_progress (EazelInstall *service, 
-				      const char *name,
-				      int amount, 
-				      int total)
-{
-	SANITY(service);
-	gtk_signal_emit (GTK_OBJECT (service), signals[DOWNLOAD_PROGRESS], name, amount, total);
-}
-
-void 
-eazel_install_emit_download_failed (EazelInstall *service, 
-				    const char *name,
-				    gpointer info)
-{
-	SANITY(service);
-	gtk_signal_emit (GTK_OBJECT (service), signals[DOWNLOAD_FAILED], name, info);
-}
-
-void 
-eazel_install_emit_install_failed (EazelInstall *service, 
-				   const PackageData *pd)
-{
-	SANITY(service);
-	gtk_signal_emit (GTK_OBJECT (service), signals[INSTALL_FAILED], pd);
-}
-
-void 
-eazel_install_emit_uninstall_failed (EazelInstall *service, 
-				     const PackageData *pd)
-{
-	SANITY(service);
-	gtk_signal_emit (GTK_OBJECT (service), signals[UNINSTALL_FAILED], pd);
-}
-
-void 
-eazel_install_emit_dependency_check (EazelInstall *service, 
-				     const PackageData *package,
-				     const PackageData *needs)
-{
-	SANITY(service);
-	gtk_signal_emit (GTK_OBJECT (service), signals[DEPENDENCY_CHECK], package, needs);
-}
 
 static void 
 eazel_install_log (const char *domain,
@@ -614,7 +545,14 @@ eazel_install_open_log (EazelInstall *service,
 
 	g_message ("in eazel_install_open_log");
 
+	if (service->private->logfile) {
+		fclose (service->private->logfile);
+	}
 	service->private->logfile = fopen (fname, "wt");
+	if (service->private->logfilename) {
+		g_free (service->private->logfilename);
+	}
+	service->private->logfilename = g_strdup (fname);
 	if (service->private->logfile!=NULL) {
 		g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_WARNING | G_LOG_LEVEL_ERROR, 
 				   (GLogFunc)eazel_install_log, 
@@ -631,7 +569,7 @@ eazel_install_install_packages (EazelInstall *service, GList *categories)
 {
 	SANITY (service);
 
-	g_message ("eazel_install_new_packages");
+	g_message ("eazel_install_install_packages");
 
 	if (!g_file_exists (eazel_install_get_tmp_dir (service))) {
 		create_temporary_directory (eazel_install_get_tmp_dir (service));
@@ -653,6 +591,7 @@ eazel_install_install_packages (EazelInstall *service, GList *categories)
 	if (install_new_packages (service, categories)==FALSE) {
 		g_warning ("*** Install failed");
 	} 
+	eazel_install_emit_done (service);
 }
 
 void 
@@ -660,7 +599,7 @@ eazel_install_uninstall (EazelInstall *service)
 {
 	SANITY (service);
 
-	g_message ("eazel_install_new_packages");
+	g_message ("eazel_install_uninstall");
 
 	switch (service->private->iopts->protocol) {
 	case PROTOCOL_HTTP:
@@ -677,6 +616,179 @@ eazel_install_uninstall (EazelInstall *service)
 	} 
 }
 
+/************************************************
+  Signal emitters and default handlers.
+  The default handlers check for the existance of
+  a corba callback, and if true, do the callback
+**************************************************/
+					 
+
+void 
+eazel_install_emit_install_progress (EazelInstall *service, 
+				     const PackageData *pack,
+				     int amount, 
+				     int total)
+{
+	SANITY(service);
+	gtk_signal_emit (GTK_OBJECT (service), signals[INSTALL_PROGRESS], pack, amount, total);
+}
+
+void 
+eazel_install_emit_install_progress_default (EazelInstall *service, 
+					     const PackageData *pack,
+					     int amount, 
+					     int total)
+{
+#ifndef EAZEL_INSTALL_NO_CORBA
+	CORBA_Environment ev;
+	CORBA_exception_init (&ev);
+	SANITY(service);
+	if (service->callback != CORBA_OBJECT_NIL) {
+		Trilobite_Eazel_PackageStruct package;
+		package = corba_packagestruct_from_packagedata (pack);
+		Trilobite_Eazel_InstallCallback_install_progress (service->callback, &package, amount, total, &ev);	
+	} 
+	CORBA_exception_free (&ev);
+#endif /* EAZEL_INSTALL_NO_CORBA */
+} 
+
+void 
+eazel_install_emit_download_progress (EazelInstall *service, 
+				      const char *name,
+				      int amount, 
+				      int total)
+{
+	SANITY(service);
+	gtk_signal_emit (GTK_OBJECT (service), signals[DOWNLOAD_PROGRESS], name, amount, total);
+}
+
+void 
+eazel_install_emit_download_progress_default (EazelInstall *service, 
+					      const char *name,
+					      int amount, 
+					      int total)
+{
+#ifndef EAZEL_INSTALL_NO_CORBA
+	CORBA_Environment ev;
+	CORBA_exception_init (&ev);
+	SANITY(service);
+	if (service->callback != CORBA_OBJECT_NIL) {
+		Trilobite_Eazel_InstallCallback_download_progress (service->callback, name, amount, total, &ev);	
+	} 
+	CORBA_exception_free (&ev);
+#endif /* EAZEL_INSTALL_NO_CORBA */
+} 
+
+void 
+eazel_install_emit_download_failed (EazelInstall *service, 
+				    const char *name)
+{
+	SANITY(service);
+	g_message ("DOWNLOAD_FAILED %s", name);
+	gtk_signal_emit (GTK_OBJECT (service), signals[DOWNLOAD_FAILED], name);
+}
+
+void 
+eazel_install_emit_download_failed_default (EazelInstall *service, 
+					    const char *name)
+{
+#ifndef EAZEL_INSTALL_NO_CORBA
+	CORBA_Environment ev;
+	CORBA_exception_init (&ev);
+	SANITY(service);
+	if (service->callback != CORBA_OBJECT_NIL) {
+		Trilobite_Eazel_InstallCallback_download_failed (service->callback, name, &ev);	
+	} 
+	CORBA_exception_free (&ev);
+#endif /* EAZEL_INSTALL_NO_CORBA */
+} 
+
+void 
+eazel_install_emit_install_failed (EazelInstall *service, 
+				   const PackageData *pd)
+{
+	SANITY(service);
+	g_message ("INSTALL_FAILED %s", pd->name);
+	gtk_signal_emit (GTK_OBJECT (service), signals[INSTALL_FAILED], pd);
+}
+
+void 
+eazel_install_emit_install_failed_default (EazelInstall *service, 
+					   const PackageData *pack)
+{
+#ifndef EAZEL_INSTALL_NO_CORBA
+	CORBA_Environment ev;
+	CORBA_exception_init (&ev);
+	SANITY(service);
+	if (service->callback != CORBA_OBJECT_NIL) {
+		Trilobite_Eazel_PackageStruct package;
+		package = corba_packagestruct_from_packagedata (pack);
+		Trilobite_Eazel_InstallCallback_install_failed (service->callback, &package, &ev);	
+	} 
+	CORBA_exception_free (&ev);
+#endif /* EAZEL_INSTALL_NO_CORBA */
+} 
+
+void 
+eazel_install_emit_uninstall_failed (EazelInstall *service, 
+				     const PackageData *pd)
+{
+	SANITY(service);
+	gtk_signal_emit (GTK_OBJECT (service), signals[UNINSTALL_FAILED], pd);
+}
+
+void 
+eazel_install_emit_dependency_check (EazelInstall *service, 
+				     const PackageData *package,
+				     const PackageData *needs)
+{
+	SANITY(service);
+	gtk_signal_emit (GTK_OBJECT (service), signals[DEPENDENCY_CHECK], package, needs);
+}
+
+void 
+eazel_install_emit_dependency_check_default (EazelInstall *service, 
+					     const PackageData *pack,
+					     const PackageData *needs)
+{
+#ifndef EAZEL_INSTALL_NO_CORBA
+	CORBA_Environment ev;
+	CORBA_exception_init (&ev);
+	SANITY(service);
+	if (service->callback != CORBA_OBJECT_NIL) {
+		Trilobite_Eazel_PackageStruct corbapack;
+		Trilobite_Eazel_PackageDataStruct corbaneeds;
+
+		corbapack = corba_packagestruct_from_packagedata (pack);
+		corbaneeds = corba_packagedatastruct_from_packagedata (needs);
+
+		Trilobite_Eazel_InstallCallback_dependency_check (service->callback, &corbapack, &corbaneeds, &ev);	
+	} 
+	CORBA_exception_free (&ev);
+#endif /* EAZEL_INSTALL_NO_CORBA */
+} 
+
+void 
+eazel_install_emit_done (EazelInstall *service)
+{
+	SANITY(service);
+	gtk_signal_emit (GTK_OBJECT (service), signals[DONE]);
+}
+
+void 
+eazel_install_emit_done_default (EazelInstall *service)
+{
+#ifndef EAZEL_INSTALL_NO_CORBA
+	CORBA_Environment ev;
+	CORBA_exception_init (&ev);
+	SANITY(service);
+	if (service->callback != CORBA_OBJECT_NIL) {
+		Trilobite_Eazel_InstallCallback_done (service->callback, &ev);	
+	} 
+	CORBA_exception_free (&ev);
+#endif /* EAZEL_INSTALL_NO_CORBA */
+} 
+
 
 /* Welcome to define madness. These are all the get/set methods. There is nothing of
  interest beyond this point, except for a fucking big dragon*/
@@ -691,14 +803,14 @@ ei_mutator_impl (update, gboolean, iopts->mode_update);
 ei_mutator_impl (uninstall, gboolean, iopts->mode_uninstall);
 ei_mutator_impl (downgrade, gboolean, iopts->mode_downgrade);
 ei_mutator_impl (protocol, URLType, iopts->protocol);
-ei_mutator_impl_string (tmp_dir, char*, topts->tmp_dir);
-ei_mutator_impl_string (rpmrc_file, char*, topts->rpmrc_file);
-ei_mutator_impl_string (hostname, char*, topts->hostname);
-ei_mutator_impl_string (rpm_storage_path, char*, topts->rpm_storage_path);
-ei_mutator_impl_string (package_list_storage_path, char*, topts->pkg_list_storage_path);
-ei_mutator_impl_string (package_list, char*, iopts->pkg_list);
-ei_mutator_impl_string (root_dir, char*, root_dir);
-ei_mutator_impl (port_number, guint, topts->port_number);
+ei_mutator_impl_copy (tmp_dir, char*, topts->tmp_dir, g_strdup);
+ei_mutator_impl_copy (rpmrc_file, char*, topts->rpmrc_file, g_strdup);
+ei_mutator_impl_copy (server, char*, topts->hostname, g_strdup);
+ei_mutator_impl_copy (rpm_storage_path, char*, topts->rpm_storage_path, g_strdup);
+ei_mutator_impl_copy (package_list_storage_path, char*, topts->pkg_list_storage_path, g_strdup);
+ei_mutator_impl_copy (package_list, char*, iopts->pkg_list, g_strdup);
+ei_mutator_impl_copy (root_dir, char*, root_dir, g_strdup);
+ei_mutator_impl (server_port, guint, topts->port_number);
 
 ei_mutator_impl (install_flags, int, install_flags);
 ei_mutator_impl (interface_flags, int, interface_flags);
@@ -716,14 +828,14 @@ ei_access_impl (update, gboolean, iopts->mode_update, FALSE);
 ei_access_impl (uninstall, gboolean, iopts->mode_uninstall, FALSE);
 ei_access_impl (downgrade, gboolean, iopts->mode_downgrade, FALSE);
 ei_access_impl (protocol, URLType , iopts->protocol, PROTOCOL_LOCAL);
-ei_access_impl (tmp_dir, const char*, topts->tmp_dir, NULL);
-ei_access_impl (rpmrc_file, const char*, topts->rpmrc_file, NULL);
-ei_access_impl (hostname, const char*, topts->hostname, NULL);
-ei_access_impl (rpm_storage_path, const char*, topts->rpm_storage_path, NULL);
-ei_access_impl (package_list_storage_path, const char*, topts->pkg_list_storage_path, NULL);
-ei_access_impl (package_list, const char*, iopts->pkg_list, NULL);
-ei_access_impl (root_dir, const char*, root_dir, NULL);
-ei_access_impl (port_number, guint, topts->port_number, 0);
+ei_access_impl (tmp_dir, char*, topts->tmp_dir, NULL);
+ei_access_impl (rpmrc_file, char*, topts->rpmrc_file, NULL);
+ei_access_impl (server, char*, topts->hostname, NULL);
+ei_access_impl (rpm_storage_path, char*, topts->rpm_storage_path, NULL);
+ei_access_impl (package_list_storage_path, char*, topts->pkg_list_storage_path, NULL);
+ei_access_impl (package_list, char*, iopts->pkg_list, NULL);
+ei_access_impl (root_dir, char*, root_dir, NULL);
+ei_access_impl (server_port, guint, topts->port_number, 0);
 
 ei_access_impl (install_flags, int, install_flags, 0);
 ei_access_impl (interface_flags, int, interface_flags, 0);

@@ -114,20 +114,6 @@ int main(int argc, char *argv[]) {
 		g_error ("Could not register factory");
 	}
 
-	if (0) {
-		TrilobiteService *test;
-		test = trilobite_service_new (); 
-		g_assert (test);
-		trilobite_service_set_name (test, "roevbanan");
-		g_message ("name is %s",trilobite_service_get_name (test));
-		trilobite_service_destroy (GTK_OBJECT (test));		
-	}
-	if (0) {
-		SampleService *test;
-		test = sample_service_new ();
-		sample_service_destroy (GTK_OBJECT (test));		
-	}
-
 	bonobo_activate();
 
 	g_message ("%s ready", argv[0]);

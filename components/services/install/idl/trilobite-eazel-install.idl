@@ -3,14 +3,124 @@
 module Trilobite {
 	module Eazel {
 
-		interface InstallCallback {
+		enum PackageStatusEnum {
+			UNKNOWN_STATUS,
+			SOURCE_NOT_SUPPORTED, /* bad: we don't install source packages */
+			DEPENDENCY_FAIL,      /* bad: a dependency failed in next level */
+			BREAKS_DEPENDENCY,    /* bad: installing this breaks something, see PackageDataStruct.breaks */
+			INVALID,              /* bad: this is not a rpm, go away */
+			CANNOT_OPEN,          /* bad: cannot open/fetch/imagine this file */
+			PARTLY_RESOLVED,      /* perhaps: the immediate deps where ok, check all in PackageDataStruct.soft/hard_depends */
+			RESOLVED              /* good: all deps ok */
+		};
+		
+		enum ProtocolEnum {
+			PROTOCOL_HTTP,
+			PROTOCOL_FTP,
+			PROTOCOL_LOCAL
+		};
+
+		struct DistributionStruct {
+			string name;
+			long major;
+			long minor;
+		};
+
+		exception NoAccess {};         /* Raised if access to the package system wasn't allowed */
+		exception PackagesFailed {};   /* Raised if some packages failed (un)install */
+
+		struct PackageDataStruct {
+			/*
+			  These fields should be set when passed to 
+			   Eazel:Install::install () 
+			*/
+			string name;
+			string version;
+			/* or set this you want to install a local file and
+			   still use eg. protocol HTTP to do dep stuff */
+			string filename;
+
+			/*
+			  Eazel:Install::install ()
+			   will set these if not set.
+			*/
+			string archtype;
+			DistributionStruct distribution;
+
+			/*
+			  Not needed for 
+			  Eazel:Install::install (), but will
+			  (if available) be set when callbacks are called.
+			 */
+			string release;
+			string summary;
+			long bytesize;
+			boolean toplevel;
+
+			/* When Eazel::IntallCallback::install_failed is
+			   called, this is set. The toplevel will have
+			   PARTLY_RESOLVED and in soft_ & hard_depends,
+			   packages will have typically eiter
+			   RESOLVED for the good deps, 
+			   bad deps will have one of the
+			   bad: deps.
+			*/
+			PackageStatusEnum status;
+		};		
+		typedef sequence <PackageDataStruct> PackageDataStructList;
+
+		struct PackageStruct {
+			PackageDataStruct data;
+			PackageDataStructList soft_depends;
+			PackageDataStructList hard_depends;
+			PackageDataStructList breaks;
+		};
+		typedef sequence <PackageStruct> PackageStructList;
+
+		interface InstallCallback : Bonobo::Unknown {
+			/* Called during download of a file */
 			oneway void download_progress (in string file, in long amount, in long total);
-			oneway void install_progress (in string name, in long amount, in long total);
+
+			/* Called when dependency check is being handled */
+			oneway void dependency_check (in PackageStruct package, in PackageDataStruct needs);
+			
+			/* Called during (un)installation of a package */
+			oneway void install_progress (in PackageStruct package, in long amount, in long total);
+			oneway void uninstall_progress (in PackageStruct package, in long amount, in long total);
+
+			/* Called whenever a package (un)install fails
+			*/
+			oneway void download_failed (in string file);
+			oneway void install_failed (in PackageStruct package);
+			oneway void uninstall_failed (in PackageStruct package);
+
+			/* Called when the operation is finished */
 			void done ();
 		};
 
-		interface Install : Bonobo::Unknown {			
-			oneway void new_packages (in InstallCallback cb);
+		interface Install : Bonobo::Unknown {
+			attribute boolean verbose;     /* Mucho log output */
+			attribute boolean silent;      /* Minimal log output */
+			attribute boolean test_mode;   /* dry run, do not install, but act as if... */
+			attribute boolean force;       /* force install specified package (DANGER WILL ROBINSON) */
+			attribute boolean update;      /* enable update (default is TRUE) */
+
+			attribute string server;      /* server to use for both file and package list download */
+			attribute long server_port;   /*  */
+
+			attribute string log_file;  /* where to put the logfile (otherwise it blurps to stdout */
+			attribute string tmp_dir;   /* directory to store tmp files in (/tmp/eazel-install) */
+
+			attribute ProtocolEnum protocol; /*
+
+			/* Install/uninstall using the packagelist from the server */
+			oneway void install (in string packagelist, in InstallCallback cb);
+			oneway void uninstall (in string packagelist, in InstallCallback cb);
+
+			/* These are for installing/uninstalling specific packages */
+			oneway void install_packages (in PackageStructList packages, in InstallCallback cb);
+			oneway void uninstall_packages (in PackageStructList packages, in InstallCallback cb);
+
 		};
 	};
 };

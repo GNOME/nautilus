@@ -98,6 +98,12 @@ static gboolean eazel_install_ensure_deps (EazelInstall *service,
 					   GList **filenames, 
 					   GList **fails);
 
+static int eazel_install_package_name_compare (PackageData *pack, 
+					       char *name);
+
+static int eazel_install_package_conflict_compare (PackageData *pack,
+						   struct rpmDependencyConflict *conflict);
+
 gboolean
 install_new_packages (EazelInstall *service, GList *categories) {
 
@@ -126,9 +132,9 @@ install_new_packages (EazelInstall *service, GList *categories) {
 
 	if (eazel_install_get_force (service) == TRUE) {
 		problem_filters |= RPMPROB_FILTER_REPLACEPKG |
-                                   RPMPROB_FILTER_REPLACEOLDFILES |
-                                   RPMPROB_FILTER_REPLACENEWFILES |
-                                   RPMPROB_FILTER_OLDPACKAGE;
+			RPMPROB_FILTER_REPLACEOLDFILES |
+			RPMPROB_FILTER_REPLACENEWFILES |
+			RPMPROB_FILTER_OLDPACKAGE;
 	}
 
 	eazel_install_set_install_flags (service, install_flags);
@@ -180,7 +186,7 @@ download_all_packages (EazelInstall *service,
 
 			if (eazel_install_fetch_package (service, package) == FALSE) {
 				g_warning ("*** Failed to retreive %s! ***", package->name);
-				eazel_install_emit_download_failed (service, package->name, NULL);
+				eazel_install_emit_download_failed (service, package->name);
 				remove = g_list_prepend (remove, package); 
 			}
 
@@ -217,7 +223,7 @@ install_all_packages (EazelInstall *service,
 		if (pkgs) {
 			eazel_install_ensure_deps (service, &pkgs, &failedfiles);
 		}
-
+		
 		g_message ("Category = %s, %d packages", cat->name, g_list_length (pkgs));
 /*
 		if (pkgs == NULL) {
@@ -387,70 +393,42 @@ rpm_show_progress (const Header h,
 	filename = pkgKey;
 
 	switch (callback_type) {
-		case RPMCALLBACK_INST_OPEN_FILE:
-			name = "";
-			size = 0;
-			fd = fdOpen (filename, O_RDONLY, 0);
-			headerGetEntry (h,
-                                        RPMTAG_SIZE,
-                                        NULL,
-                                        (void **)&sizep,
-                                        NULL);
-			headerGetEntry (h,
-                                        RPMTAG_NAME,
-                                        NULL,
-                                        (void **)&name,
-                                        NULL);
-			size = *sizep;
+	case RPMCALLBACK_INST_OPEN_FILE:
+		name = "";
+		size = 0;
+		fd = fdOpen (filename, O_RDONLY, 0);
+		headerGetEntry (h,
+				RPMTAG_SIZE,
+				NULL,
+				(void **)&sizep,
+				NULL);
+		headerGetEntry (h,
+				RPMTAG_NAME,
+				NULL,
+				(void **)&name,
+				NULL);
+		size = *sizep;
 
-			return fd;
+		return fd;
 
-		case RPMCALLBACK_INST_CLOSE_FILE:
-			fdClose (fd);
-			break;
+	case RPMCALLBACK_INST_CLOSE_FILE:
+		fdClose (fd);
+		break;
+			
+	case RPMCALLBACK_INST_PROGRESS: {
+		PackageData *pack;
+		pack = packagedata_new ();
+		pack->name = g_strdup (filename);		
+		eazel_install_emit_install_progress (service, pack, amount, total);
+		packagedata_destroy (pack);
+	}
+	break;
 
-		case RPMCALLBACK_INST_PROGRESS:			
-			eazel_install_emit_install_progress (service, filename, amount, total);
-			break;
-
-		default:
-			break;
+	default:
+		break;
 	}
 	return NULL;
-} /* end rpm_show_progress */
-
-static GList*
-build_packagedata_list_from_deps (struct rpmDependencyConflict* conflicts, 
-				  int num_conflicts) 
-{
-	GList *result;
-	int i;
-	
-	g_return_val_if_fail (num_conflicts >= 1, NULL);
-	g_return_val_if_fail (conflicts != NULL, NULL);
-
-	result = NULL;
-
-	for (i = 0; i < num_conflicts; i++) {
-		struct rpmDependencyConflict c;
-		PackageData *pd;
-
-		c = conflicts [i];
-
-		pd = packagedata_new ();
-		pd->name = g_strdup (c.needsName);
-		pd->version = g_strdup (c.needsVersion);
-		pd->minor = NULL;
-		pd->archtype = NULL;
-		pd->bytesize = 0;
-		pd->summary = NULL;
-		pd->soft_depends = NULL;
-		pd->hard_depends = NULL;
-
-		result = g_list_prepend (result, pd);
-	}
-	return result;
-}
+	} /* end rpm_show_progress */
 
 int
 do_rpm_install (EazelInstall *service,
@@ -579,29 +557,35 @@ do_rpm_install (EazelInstall *service,
 
 		if (!(eazel_install_get_interface_flags (service) & INSTALL_NODEPS)) {
 			/* Check the dependencies */
-			if (rpmdepCheck (rpmdep, &conflicts, &num_conflicts)) {
-				num_failed = num_packages;
-				stop_install = 1;
-			}
-			/* Deps failed ? */
-			if (!stop_install && conflicts) {
-				PackageData *pd;
-				GList *deps;
+			rpmdepCheck (rpmdep, &conflicts, &num_conflicts);
+			if (!stop_install && num_conflicts) {
+				if (!eazel_install_get_force (service)) {
+					PackageData *pack, *dep;
+					GList *pack_entry;
+					int cnt;
+					
+					for (cnt = 0; cnt < num_conflicts; cnt++) {
+						pack_entry = g_list_find_custom (packages, 
+										 (gpointer)&conflicts[cnt],
+										 (GCompareFunc)eazel_install_package_conflict_compare);
+						
+						if (pack_entry) {
+							pack = (PackageData*)(pack_entry->data);
+							dep = packagedata_new_from_rpm_conflict (conflicts[cnt]);
+							dep->status = PACKAGE_CANNOT_OPEN;
+							pack->status = PACKAGE_DEPENDENCY_FAIL;
+							g_assert (dep->name != NULL);
+							pack->soft_depends = g_list_prepend (pack->soft_depends, dep);
+							eazel_install_emit_install_failed (service, pack); 
+						} else {
+							g_error ("I did not expect the package to not appear in the packages list");
+						}
+					}
+					
+					num_failed = num_packages;
+					stop_install = 1;
+				}
 
-				deps = build_packagedata_list_from_deps (conflicts, num_conflicts);
-				pd = packagedata_new();
-				pd->name = g_strdup (conflicts[0].byName);
-
-				g_message ("Dep failed for %s",pd->name);
-				pd->status = PACKAGE_DEPENDENCY_FAIL;
-				pd->soft_depends = deps;
-				eazel_install_emit_install_failed (service, pd); 
-
-				num_failed = num_packages;
-				stop_install = 1;
-
-				packagedata_destroy (pd);
-				g_list_foreach (deps, (GFunc)packagedata_destroy_foreach, NULL);
 				rpmdepFreeConflicts (conflicts, num_conflicts);								
 			}
 		}
@@ -781,7 +765,7 @@ eazel_install_prune_packages_helper (EazelInstall *service,
 	if (g_list_find (*pruned, pack) || pack->name==NULL) {
 		return;
 	}
-	g_message ("Stripping package %s", pack->name);
+	g_message ("Stripping package %s (%s)", pack->name, pack->toplevel ? "top" : "");
 	if (pack->toplevel) {
 		/* We only emit signal for the toplevel packages, 
 		   and only delete them. They _destroy function destroys
@@ -998,7 +982,7 @@ eazel_install_free_rpm_system (EazelInstall *service)
 }
 
 static gboolean
-eazel_install_prepare_rpm_system (EazelInstall *service)
+eazel_install_prepare_rpm_system(EazelInstall *service)
 {
 	int mode;
 	const char *root_dir;
@@ -1011,11 +995,14 @@ eazel_install_prepare_rpm_system (EazelInstall *service)
 	root_dir = eazel_install_get_root_dir (service) ? eazel_install_get_root_dir (service) : "";
 
 	if (eazel_install_get_install_flags (service) & RPMTRANS_FLAG_TEST) {
+		g_message ("rpmdbOpen with mode rdonly");
 		mode = O_RDONLY;
 	}
 	else {
+		g_message ("rpmdbOpen with mode rdwr");
 		mode = O_RDWR | O_EXCL;
 	}
+	g_message ("rpmdbOpen with mode %d", mode);
 	if (rpmdbOpen (root_dir, db, mode, 0644)) {
 		const char* dn;
 		dn = rpmGetPath (root_dir, "%{_dbpath}", NULL);
@@ -1026,7 +1013,7 @@ eazel_install_prepare_rpm_system (EazelInstall *service)
 	}
 	if (set) {
 		(*set) = rpmtransCreateSet (*db, root_dir);
-		if (*set == NULL) {
+		if (set == NULL) {
 			g_message ("Create set failed");
 			return FALSE;
 		}
@@ -1076,7 +1063,7 @@ eazel_install_add_headers_to_rpm_set (EazelInstall *service,
 		PackageData *pack;
 		int err;
 		pack = (PackageData*)iterator->data;
-		g_message ("adding %s", pack->name);
+		g_message ("adding %s (%s)", pack->name, pack->toplevel ? "true" : "");
 		err = rpmtransAddPackage (service->private->packsys.rpm.set,
 					  *((Header*)pack->packsys_struc),
 					  NULL, 
@@ -1110,7 +1097,6 @@ eazel_install_package_conflict_compare (PackageData *pack,
 {
 	return eazel_install_package_name_compare (pack, conflict->byName);
 }
-
 
 static void
 eazel_install_add_to_extras_foreach (char *key, GList *list, GList **extrapackages)
@@ -1148,9 +1134,13 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 		/* FIXME bugzilla.eazel.com 1316
 		   Need to find a solid way to capture file dependencies, and once they do not
 		   appear at this point anymore, remove them. And in the end, check the list is
-		   empty. */
+		   empty. 
+
+		   Perhaps the smartest thing is to check at the final install. We can't resolve
+		   these deps anyway, as we have on idea as to where the file is from.
+
+		*/
 		if (strncmp (conflict.needsName, "lib",3)==0 && strstr (conflict.needsName, ".so")) {
-			g_warning ("LIB dependency");
 			continue;
 		}
 
@@ -1158,9 +1148,6 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 						 (gpointer)&conflict,
 						 (GCompareFunc)eazel_install_package_conflict_compare);
 		if (pack_entry == NULL) {
-			/* If we end here, it's a conflict is going to break something */
-			/* FIXME: bugzilla.eazel.com
-			   Need to handle this */
 			switch (conflict.sense) {
 			case RPMDEP_SENSE_REQUIRES:
 				g_warning ("%s needs %s %s", conflict.byName, conflict.needsName, conflict.needsVersion);
@@ -1168,16 +1155,27 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 								 (gpointer)conflict.needsName,
 								 (GCompareFunc)eazel_install_package_name_compare);
 				dep = packagedata_new_from_rpm_conflict_reversed (conflict);
+				dep->archtype = g_strdup (pack->archtype);
 				pack = (PackageData*)(pack_entry->data);
 				pack->status = PACKAGE_BREAKS_DEPENDENCY;
-				pack->breaks = g_list_prepend (pack->breaks, dep);
-				if (g_list_find (*failedpackages, pack) == NULL) {
-					(*failedpackages) = g_list_prepend (*failedpackages, pack);
+				g_assert (dep!=NULL);
+				/* FIXME: bugzilla.eazel.com 1363
+				   Here, it'd be cool to compare dep->name to pack->name to see if
+				   dep is pack's devel package. And if so, replace dep->version with
+				   pack->version and not fail pack, but continue */
+				if (!eazel_install_get_force (service)) {
+					pack->breaks = g_list_prepend (pack->breaks, dep);
+					if (g_list_find (*failedpackages, pack) == NULL) {
+						(*failedpackages) = g_list_prepend (*failedpackages, pack);
+					}
+					to_remove = g_list_remove (to_remove, pack);
 				}
-				to_remove = g_list_remove (to_remove, pack);
 				continue;
 				break;
 			case RPMDEP_SENSE_CONFLICTS:
+				/* If we end here, it's a conflict is going to break something */
+				/* FIXME: bugzilla.eazel.com
+				   Need to handle this more intelligently */
 				g_warning ("%s conflicts %s-%s", conflict.byName, conflict.needsName, conflict.needsVersion);
 				continue;
 				break;
@@ -1185,18 +1183,13 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 		} else {
 			pack = (PackageData*)(pack_entry->data);
 			dep = packagedata_new_from_rpm_conflict (conflict);
+			dep->archtype = g_strdup (pack->archtype);
 		}
+		g_assert (dep->name != NULL);
 		eazel_install_emit_dependency_check (service, pack, dep);
-		dep->archtype = g_strdup (pack->archtype);
-				
-		/* 
-		   FIXME: bugzilla.eazel.com 1300
-		   We need the service to accept a url of a format
-		   that specifies, that this package is to be resolved,
-		   as in 
-		   "get package name=pack->name && version>=pack->version && arch=pack->archtype && highest release-number"
-		*/
-				
+		dep->archtype = g_strdup (pack->archtype);	       						
+		pack->soft_depends = g_list_prepend (pack->soft_depends, dep);
+
 		g_message ("Processing dep for %s : requires %s", pack->name, dep->name);
 
 		if (eazel_install_fetch_package (service, dep)) {
@@ -1210,7 +1203,6 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 			g_hash_table_insert (extras, pack->name, extralist);
 
 			pack->status = PACKAGE_PARTLY_RESOLVED;
-			pack->soft_depends = g_list_prepend (pack->soft_depends, dep);			
 		} else {
 			/*
 			  If it fails
@@ -1222,24 +1214,28 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 			  to return zero. This is fine if we then just do a continue, but
 			  this way, we get all the missing deps into pack->soft_depends
 			  3) add to list of failed packages
-			 */
+			*/
 			GList *extralist;
-
-			eazel_install_emit_download_failed (service, dep->name, NULL);
-
+			
+			eazel_install_emit_download_failed (service, dep->name);				
+			
 			pack->status = PACKAGE_DEPENDENCY_FAIL;
 			dep->status = PACKAGE_CANNOT_OPEN;
-			pack->soft_depends = g_list_prepend (pack->soft_depends, dep);
-
-			extralist = g_hash_table_lookup (extras, pack->name);
-			g_list_foreach (extralist, (GFunc)packagedata_destroy_foreach, NULL);
-			g_hash_table_remove (extras, pack->name);
-
-			/* Don't add it to failedpackages more then once */
-			if (g_list_find (*failedpackages, pack) == NULL) {
-				(*failedpackages) = g_list_prepend (*failedpackages, pack);
+			
+			if (!eazel_install_get_force (service)) {
+				extralist = g_hash_table_lookup (extras, pack->name);
+				g_list_foreach (extralist, (GFunc)packagedata_destroy_foreach, NULL);
+				g_hash_table_remove (extras, pack->name);
+				
+				/* Don't add it to failedpackages more then once */
+				if (g_list_find (*failedpackages, pack) == NULL) {
+					(*failedpackages) = g_list_prepend (*failedpackages, pack);
+				}
+				to_remove = g_list_prepend (to_remove, pack);
+				
+				/* Don't process anymore */
+				break;
 			}
-			to_remove = g_list_remove (to_remove, pack);
 		}
 	}
 	
@@ -1317,7 +1313,10 @@ print_package_list (char *str, GList *packages, gboolean show_deps)
 				it2 = it2->next;
 			}
 		}
-		g_message ("* %s%s", rpmfilename_from_packagedata (pack), (strlen (tmp) > strlen (dep)) ? tmp : "");
+		g_message ("* %s (%s) %s", 
+			   rpmfilename_from_packagedata (pack), 
+			   pack->toplevel ? "true" : "", 
+			   (strlen (tmp) > strlen (dep)) ? tmp : "");
 	}
 }
 
@@ -1350,7 +1349,15 @@ eazel_install_ensure_deps (EazelInstall *service,
 	   and are places in service->private->packsys.
 	*/
 	eazel_install_load_headers (service, packages);
-	eazel_install_prepare_package_system (service);
+	if (eazel_install_prepare_package_system (service) == FALSE) {
+		GList *iterator;
+		for (iterator = *packages; iterator; iterator = iterator->next) {
+			(*packages) = g_list_prepend (*packages, iterator->data);			
+		}
+		g_list_free (*packages);
+		(*packages) = NULL;
+		return FALSE;
+	}
 	eazel_install_add_headers_to_set (service, *packages);
 
 	/* Weak attempt at making it easy to extend to other
@@ -1505,3 +1512,93 @@ rpm_uninstall (EazelInstall *service,
   return result;
 } /* end rpm_uninstall */
 
+/*****************************************************************************/
+/* Query mechanisms                                                          */
+/*****************************************************************************/
+
+/*
+
+  query syntax :
+  " '<package>'.[<attr><op>'<arg>']*
+
+  attr and op pairs :
+  -------------------
+  version = < > <= >=
+  arch    =
+  
+  query examples:
+  "'gnome-core'" check for package gnome-core
+  "'nautilus'.version>='0.1'.arch=i386" Check for nautilus, i386 binary version >= 0.1
+  "'popt'.version='1.5'" check for popt version 1.5 (no more, no less)
+
+*/  
+
+typedef enum {
+	EI_Q_VERSION,
+	EI_Q_ARCH
+} AttributeEnum;
+
+typedef enum {
+	EI_OP_EQ = 0x01,
+	EI_OP_LT = 0x02,
+	EI_OP_GT = 0x04,
+	EI_OP_NEG = 0x08,
+} AttributeOpEnum;
+
+typedef struct {
+	AttributeEnum attrib;
+	AttributeOpEnum op;
+	char *arg;
+} AttributeOpArg;
+
+
+/*
+  return codes
+  0 - ok
+  1 - same attribute occured twice or more
+  2 - bad bad bad parameters;
+ */
+static int
+ei_extract_attributes (char *query, GList **result)
+{
+	int i;
+        /* these should be in the correct order according to the enum */
+	char *query_attribs[] = {".version", ".arch", NULL};
+
+	g_return_val_if_fail (query!=NULL, 2);
+	(*result) = NULL;
+
+	for (i = 0; query_attribs[i]; i++) {
+		char *location;
+		char *op;
+		char *arg;
+		AttributeOpArg *argument;
+
+		/* Check for the i'th attribute in the query */
+		if ((location = strstr (query, query_attribs[i]))!=NULL) {
+			argument = g_new0 (AttributeOpArg, 1);
+
+			/* Does it occur again ? */
+			if (strstr (location, query_attribs[i])) {
+				g_free (argument);
+				return 1;
+			}
+			arg = op = location + strlen (query_attribs[i]);
+			while (*arg && *arg!='\'') { arg ++; }
+			if (strcasecmp (location, ".version")==0) {
+				argument->attrib = EI_Q_VERSION;
+			}
+			(*result) = g_list_prepend (*result, argument);
+		}
+	}
+
+	return 0;
+}
+
+GList*
+eazel_install_query_package_system (char *query, int flags) 
+{
+	GList *attribs;
+	ei_extract_attributes (query, &attribs);
+	return NULL;
+}

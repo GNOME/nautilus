@@ -34,6 +34,18 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include <string.h>
+
+#define RHAT "Red Hat Linux"
+#define DEBI "Debian GNU/Linux"
+#define CALD "Caldera"
+#define SUSE "S.u.S.E"
+#define LPPC "LinuxPPC"
+#define TURB "TurboLinux"
+#define CORL "CorelLinux"
+#define MAND "Mandrake"
+#define UNKW "unkown"
+
 /* FIXME bugzilla.eazel.com 908
    need to implement the rest of the determine_FOO_version
 */
@@ -165,31 +177,31 @@ trilobite_get_distribution_name (DistributionInfo distinfo,
 
 	switch (distinfo.name) {
 	case DISTRO_REDHAT:
-		name = g_strdup ("Red Hat Linux");
+		name = g_strdup (RHAT);
 		break;
 	case DISTRO_DEBIAN:
-		name = g_strdup ("Debian");
+		name = g_strdup (DEBI);
 		break;
 	case DISTRO_CALDERA:
-		name = g_strdup ("Caldera");
+		name = g_strdup (CALD);
 		break;
 	case DISTRO_SUSE:
-		name = g_strdup ("S.u.S.E.");
+		name = g_strdup (SUSE);
 		break;
 	case DISTRO_LINUXPPC:
-		name = g_strdup ("LinuxPPC");
+		name = g_strdup (LPPC);
 		break;
 	case DISTRO_TURBOLINUX:
-		name = g_strdup ("TurboLinux");
+		name = g_strdup (TURB);
 		break;
 	case DISTRO_COREL:
-		name = g_strdup ("Corel");
+		name = g_strdup (CORL);
 		break;
 	case DISTRO_MANDRAKE:
-		name = g_strdup ("Mandrake");
+		name = g_strdup (MAND);
 		break;
 	default:
-		name = g_strdup ("Unknown");
+		name = g_strdup (UNKW);
 		break;
 	}
 	
@@ -215,4 +227,28 @@ trilobite_get_distribution_name (DistributionInfo distinfo,
 	g_free (arch);
 
 	return result;
+}
+
+DistributionName 
+trilobite_get_distribution_enum (const char *name)
+{
+	g_return_val_if_fail (name!=NULL, DISTRO_UNKNOWN);
+	if (strncmp (name, RHAT, strlen (RHAT)) == 0) {
+		return DISTRO_REDHAT;
+	} else if (strncmp (name, DEBI, strlen (DEBI)) == 0) {
+		return DISTRO_DEBIAN;
+	} else if (strncmp (name, CALD, strlen (CALD)) == 0) {
+		return DISTRO_CALDERA;
+	} else if (strncmp (name, SUSE, strlen (SUSE)) == 0) {
+		return DISTRO_SUSE;
+	} else if (strncmp (name, LPPC, strlen (LPPC)) == 0) {
+		return DISTRO_LINUXPPC;
+	} else if (strncmp (name, TURB, strlen (TURB)) == 0) {
+		return DISTRO_TURBOLINUX;
+	} else if (strncmp (name, CORL, strlen (CORL)) == 0) {
+		return DISTRO_COREL;
+	} else if (strncmp (name, MAND, strlen (MAND)) == 0) {
+		return DISTRO_MANDRAKE;
+	} 
+	return DISTRO_UNKNOWN;
 }

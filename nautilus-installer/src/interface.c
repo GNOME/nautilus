@@ -87,7 +87,7 @@ create_window (void)
   gnome_druid_page_start_set_logo_bg_color (GNOME_DRUID_PAGE_START (start_page), &start_page_logo_bg_color);
   gnome_druid_page_start_set_title_color (GNOME_DRUID_PAGE_START (start_page), &start_page_title_color);
   gnome_druid_page_start_set_title (GNOME_DRUID_PAGE_START (start_page), _("Step one:"));
-  gnome_druid_page_start_set_text (GNOME_DRUID_PAGE_START (start_page), _("This is the internal Nautilus installer.\n\nLots of text should go here letting you know what you need\nto have installed before you should even begin to think about\nusing this. For example:\n\n  * Helix Gnome\n  * GTK+ Development Environment\n  * Other stuff\n\nIf you meet these requirements, hit the \"Next\" button to continue!\n\n"));
+  gnome_druid_page_start_set_text (GNOME_DRUID_PAGE_START (start_page), _("This is the internal Nautilus installer.\n\nLots of text should go here letting you know what you need\nto have installed before you should even begin to think about\nusing this. For example:\n\n  * Stuff\n  * More stuff\n  * Other stuff\n\nIf you meet these requirements, hit the \"Next\" button to continue!\n\n"));
 
   what_to_do_page = gnome_druid_page_standard_new_with_vals ("", NULL);
 
@@ -222,7 +222,7 @@ create_window (void)
   gtk_widget_show (vbox5);
   gtk_box_pack_start (GTK_BOX (druid_vbox2), vbox5, TRUE, TRUE, 0);
 
-  label11 = gtk_label_new (_("Press the big begin, and watch the installer is do it's thing..."));
+  label11 = gtk_label_new (_("Press the big begin button, and watch the installer do it's thing..."));
   gtk_widget_set_name (label11, "label11");
   gtk_widget_ref (label11);
   gtk_object_set_data_full (GTK_OBJECT (window), "label11", label11,

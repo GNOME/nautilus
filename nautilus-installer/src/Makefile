@@ -113,9 +113,9 @@ LN_S = ln -s
 MAINT = 
 MAKEINFO = makeinfo
 MKINSTALLDIRS = ./mkinstalldirs
-MOZILLA_COMPONENT_CFLAGS = -I/usr/include/mozilla
-MOZILLA_COMPONENT_LDFLAGS = -L/usr/lib/mozilla
-MOZILLA_COMPONENT_LIBS = -lgtkembedmoz 				-lgtksuperwin 				-lxpcom 				-lnspr4 				-lplc4 				-lplds4
+MOZILLA_COMPONENT_CFLAGS = 
+MOZILLA_COMPONENT_LDFLAGS = 
+MOZILLA_COMPONENT_LIBS = 
 NM = /usr/bin/nm -B
 OAF_CFLAGS = -I/gnome/include -I/gnome/lib/glib/include
 OAF_CONFIG = /gnome/bin/oaf-config
@@ -159,7 +159,7 @@ nautilus_installer_SOURCES =  	main.c 	support.c support.h 	interface.c interfac
 
 nautilus_installer_LDFLAGS = -static
 
-nautilus_installer_LDADD =          $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o 			        $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 		$(top_builddir)/components/services/install/lib/libinstall.a						-L/gnome/lib 	-lgnomeui 	-lgnome 	-lart_lgpl 	-lgdk_imlib 	-lgtk 	-lgdk 	-lgmodule 	-lglib 	-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE 	/usr/lib/libesd.a 	/usr/lib/libaudiofile.a 	-lghttp 	-L/usr/lib -lrpm -lz -ldb1 	-lpopt 	-lxml 
+nautilus_installer_LDADD =          $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o 			        $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 		$(top_builddir)/components/services/install/lib/libinstall_gtk.a					$(top_builddir)/components/services/install/lib/libinstall_base.a					-L/gnome/lib 	-lgnomeui 	-lgnome 	-lart_lgpl 	-lgdk_imlib 	-lgtk 	-lgdk 	-lgmodule 	-lglib 	-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE 	/usr/lib/libesd.a 	/usr/lib/libaudiofile.a 	-lghttp 	-L/usr/lib -lrpm -lz -ldb1 	-lpopt 	-lxml 
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -176,7 +176,8 @@ installer.o
 nautilus_installer_DEPENDENCIES =  \
 $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o \
 $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o \
-$(top_builddir)/components/services/install/lib/libinstall.a \
+$(top_builddir)/components/services/install/lib/libinstall_gtk.a \
+$(top_builddir)/components/services/install/lib/libinstall_base.a \
 /usr/lib/libesd.a /usr/lib/libaudiofile.a
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)

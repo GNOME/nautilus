@@ -22,7 +22,7 @@
  */
 
 /*
-  If compiled with STANDALONE, 
+  If compiled with EAZEL_INSTALL_NO_CORBA, 
   the object should _NOT_ use Bonobo, OAF, ORBIT
   and whatnot. This is to facilite the statically linked nautilus bootstrap thingy
  */
@@ -31,10 +31,10 @@
 #define EAZEL_INSTALL_PUBLIC_H
 
 #include <libgnome/gnome-defs.h>
-#ifndef STANDALONE
+#ifndef EAZEL_INSTALL_NO_CORBA
 #include "bonobo.h"
 #include "trilobite-eazel-install.h"
-#endif /*  STANDALONE */
+#endif /*  EAZEL_INSTALL_NO_CORBA */
 
 #include "eazel-install-types.h"
 
@@ -57,41 +57,43 @@ typedef struct _EazelInstallClass EazelInstallClass;
 
 struct _EazelInstallClass 
 {
-#ifdef STANDALONE	
+#ifdef EAZEL_INSTALL_NO_CORBA	
 	GtkObjectClass parent_class;
 #else 
 	BonoboObjectClass parent_class;
-#endif /* STANDALONE */
+#endif /* EAZEL_INSTALL_NO_CORBA */
 	/* signal prototypes */
-	void (*download_progress) (char *file, int amount, int total);
-	void (*install_progress)  (char *name, int amount, int total);
-	void (*dependency_check) (const PackageData *package, const PackageData *needed );
+	void (*download_progress) (EazelInstall *service, const char *file, int amount, int total);
+	void (*install_progress)  (EazelInstall *service, const PackageData *pack, int amount, int total);
+	void (*dependency_check) (EazelInstall *service, const PackageData *pack, const PackageData *needed);
 	/* 
 	   if the set URLType is PROTOCOL_HTTP, info is a HTTPError struc 
 	*/
-	void (*download_failed) (char *name, gpointer info);
+	void (*download_failed) (EazelInstall *service, const char *name);
 	/*
 	  if RPM_FAIL is RPM_SRC_NOT_SUPPORTED, info is NULL
 	                 RPM_DEP_FAIL, info is a GSList of required packages (PackageData objects)
 			 RPM_NOT_AN_RPM, info is NULL
 	*/
-	void (*install_failed) (PackageData *pd);
-	void (*uninstall_failed) (PackageData *pd);
-#ifndef STANDALONE
+	void (*install_failed) (EazelInstall *service, const PackageData *pd);
+	void (*uninstall_failed) (EazelInstall *service, const PackageData *pd);
+
+	void (*done) (EazelInstall *service);
+#ifndef EAZEL_INSTALL_NO_CORBA
 	gpointer servant_vepv;
-#endif /* STANDALONE */
+#endif /* EAZEL_INSTALL_NO_CORBA */
 };
 
 typedef struct _EazelInstallPrivate EazelInstallPrivate;
 
 struct _EazelInstall
 {
-#ifdef STANDALONE	
+#ifdef EAZEL_INSTALL_NO_CORBA	
 	GtkObject parent;
 #else 
 	BonoboObject parent;
 	Trilobite_Eazel_InstallCallback callback;
-#endif /* STANDALONE */
+#endif /* EAZEL_INSTALL_NO_CORBA */
 	EazelInstallPrivate *private;
 };
 
@@ -100,15 +102,16 @@ EazelInstall                  *eazel_install_new_with_config (const char *config
 GtkType                        eazel_install_get_type   (void);
 void                           eazel_install_destroy    (GtkObject *object);
 
-#ifndef STANDALONE
+#ifndef EAZEL_INSTALL_NO_CORBA
 POA_Trilobite_Eazel_Install__epv *eazel_install_get_epv (void);
-#endif /* STANDALONE */
+Trilobite_Eazel_Install eazel_install_create_corba_object (BonoboObject *service);
+#endif /* EAZEL_INSTALL_NO_CORBA */
 
 void eazel_install_open_log                       (EazelInstall *service,
 						   const char *fname);
 
 void eazel_install_emit_install_progress          (EazelInstall *service, 
-						   const char *name,
+						   const PackageData *pack,
 						   int amount, 
 						   int total);
 void eazel_install_emit_download_progress         (EazelInstall *service, 
@@ -116,8 +119,7 @@ void eazel_install_emit_download_progress         (EazelInstall *service,
 						   int amount, 
 						   int total);
 void eazel_install_emit_download_failed           (EazelInstall *service, 
-						   const char *name,
-						   const gpointer info);
+						   const char *name);
 void eazel_install_emit_install_failed            (EazelInstall *service, 
 						   const PackageData *pd);
 void eazel_install_emit_uninstall_failed          (EazelInstall *service, 
@@ -125,6 +127,7 @@ void eazel_install_emit_uninstall_failed          (EazelInstall *service,
 void eazel_install_emit_dependency_check          (EazelInstall *service, 
 						   const PackageData *package, 
 						   const PackageData *needed );
+void eazel_install_emit_done                      (EazelInstall *service);
 
 /* This is in flux */
 void eazel_install_fetch_pockage_list (EazelInstall *service);
@@ -160,7 +163,7 @@ type eazel_install_get_##name (EazelInstall *service) { \
 
 #define ei_mutator_decl(name, type) \
 void eazel_install_set_##name (EazelInstall *service, \
-                                         type name)
+                                         const type name)
 
 #define ei_mutator_impl(name, type,var) \
 void eazel_install_set_##name (EazelInstall *service, \
@@ -169,12 +172,12 @@ void eazel_install_set_##name (EazelInstall *service, \
 	service->private->var = name; \
 }
 
-#define ei_mutator_impl_string(name, type, var) \
+#define ei_mutator_impl_copy(name, type, var, copyfunc) \
 void eazel_install_set_##name (EazelInstall *service, \
-                                         type name) { \
+                                         const type name) { \
         SANITY (service); \
         g_free (service->private->var); \
-	service->private->var = g_strdup ( name ); \
+	service->private->var = copyfunc ( name ); \
 }
 
 ei_mutator_decl (verbose, gboolean);
@@ -189,12 +192,12 @@ ei_mutator_decl (downgrade, gboolean);
 ei_mutator_decl (protocol, URLType);
 ei_mutator_decl (tmp_dir, char*);
 ei_mutator_decl (rpmrc_file, char*);
-ei_mutator_decl (hostname, char*);
+ei_mutator_decl (server, char*);
 ei_mutator_decl (rpm_storage_path, char*);
 ei_mutator_decl (package_list_storage_path, char*);
 ei_mutator_decl (package_list, char*);
 ei_mutator_decl (root_dir, char*);
-ei_mutator_decl (port_number, guint);
+ei_mutator_decl (server_port, guint);
 
 ei_mutator_decl (install_flags, int);
 ei_mutator_decl (interface_flags, int);
@@ -212,14 +215,14 @@ ei_access_decl (update, gboolean);
 ei_access_decl (uninstall, gboolean);
 ei_access_decl (downgrade, gboolean);
 ei_access_decl (protocol, URLType );
-ei_access_decl (tmp_dir, const char*);
-ei_access_decl (rpmrc_file, const char*);
-ei_access_decl (hostname, const char*);
-ei_access_decl (rpm_storage_path, const char*);
-ei_access_decl (package_list_storage_path, const char*);
-ei_access_decl (package_list, const char*);
-ei_access_decl (root_dir, const char*);
-ei_access_decl (port_number, guint);
+ei_access_decl (tmp_dir, char*);
+ei_access_decl (rpmrc_file, char*);
+ei_access_decl (server, char*);
+ei_access_decl (rpm_storage_path, char*);
+ei_access_decl (package_list_storage_path, char*);
+ei_access_decl (package_list, char*);
+ei_access_decl (root_dir, char*);
+ei_access_decl (server_port, guint);
 
 ei_access_decl (install_flags, int);
 ei_access_decl (interface_flags, int);

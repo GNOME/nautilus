@@ -27,8 +27,8 @@
  * file and install a services generated package-list.xml.
  */
 
-#ifndef EAZEL_INSTALL_TYPES_H
-#define EAZEL_INSTALL_TYPES_H
+#ifndef EAZEL_INSTALL_SERVICES_TYPES_H
+#define EAZEL_INSTALL_SERVICES_TYPES_H
 
 #include <gnome.h>
 #include <stdio.h>
@@ -45,6 +45,11 @@ typedef struct _CategoryData CategoryData;
 typedef struct _PackageData PackageData;
 typedef enum _PackageSystemStatus PackageSystemStatus;
 
+/*
+  Adding here requires editing in
+  trilobite-eazel-install.idl
+  eazel-install-corba-types.c (packagedata_from_corba_packagedatastruct) (corba_packagedatastruct_from_packagedata)
+ */
 enum _PackageSystemStatus {
 	PACKAGE_UNKNOWN_STATUS=0,
 	PACKAGE_SOURCE_NOT_SUPPORTED,
@@ -150,4 +155,4 @@ void packagedata_destroy (PackageData *pd);
 int packagedata_hash (PackageData *pd);
 int packagedata_equal (PackageData *a, PackageData *b);
 
-#endif /* EAZEL_INSTALL_TYPES_H */
+#endif /* EAZEL_INSTALL_SERVICES_TYPES_H */

@@ -1,2 +1,2 @@
-SUBDIRS = lib command-line idl
+SUBDIRS = idl lib server command-line
 

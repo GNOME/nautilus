@@ -49,6 +49,7 @@ struct _EazelInstallPrivate {
 	} packsys;
 
 	FILE *logfile;
+	char *logfilename;
 };
 
 #endif /* EAZEL_INSTALL_PRIVATE_H */

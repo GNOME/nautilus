@@ -9,13 +9,12 @@
 
 #include <sys/utsname.h>
 
-#define HOSTNAME "toothgnasher.eazel.com"
+#define HOSTNAME "testmachine.eazel.com"
 #define PORT_NUMBER 80
 #define PROTOCOL PROTOCOL_HTTP
 #define TMP_DIR "/tmp/eazel-install"
 #define RPMRC "/usr/lib/rpm/rpmrc"
 #define REMOTE_RPM_DIR "/RPMS"
-#define PACKAGE_LIST "package-list.xml"
 
 static char *package_list[LAST] = {
 	"/package-list.xml",
@@ -168,45 +167,6 @@ install_failed (EazelInstall *service,
 	}
 }
 
-static PackageData*
-create_package (char *name) 
-{
-	struct utsname buf;
-	PackageData *pack;
-
-	uname (&buf);
-	pack = packagedata_new ();
-	pack->name = g_strdup (name);
-	pack->archtype = g_strdup (buf.machine);
-
-	if (strlen (pack->archtype)==4 && pack->archtype[0]=='i' &&
-	    pack->archtype[1]>='3' && pack->archtype[1]<='9' &&
-	    pack->archtype[2]=='8' && pack->archtype[3]=='6') {
-		g_free (pack->archtype);
-		pack->archtype = g_strdup ("i386");
-	}
-
-	pack->distribution = trilobite_get_distribution ();
-	pack->toplevel = TRUE;
-	return pack;
-}
-
-static GList *
-create_categories () 
-{
-	GList *categories;
-	CategoryData *cat;
-	GList *packages;
-
-	packages = g_list_prepend (NULL, create_package("nautilus"));
-	cat = g_new0 (CategoryData,1);
-	cat->name = g_strdup ("Nautilus");
-	cat->packages = packages;	
-	categories = g_list_prepend (NULL, cat);
-	
-	return categories;
-}
-
 void installer (GtkWidget *window,
 		gint method) 
 {
@@ -223,7 +183,7 @@ void installer (GtkWidget *window,
 						 "verbose", TRUE,
 						 "silent", FALSE,
 						 "debug", TRUE,
-						 "test", TRUE, //FALSE,
+						 "test", FALSE,
 						 "force", FALSE,
 						 "depend", FALSE,
 						 "update", method==UPGRADE ? TRUE : FALSE,
@@ -235,19 +195,18 @@ void installer (GtkWidget *window,
 						 "hostname", HOSTNAME,
 						 "rpm_storage_path", REMOTE_RPM_DIR,
 						 "package_list_storage_path", package_list [ method ],
-						 "package_list", PACKAGE_LIST, 
 						 "port_number", PORT_NUMBER,
 						 NULL));
 
 	service = eazel_install_new_with_config ("/var/eazel/services/eazel-services-config.xml");
 	g_assert (service != NULL);
 
-	eazel_install_set_hostname (service, HOSTNAME);
+	eazel_install_set_server (service, HOSTNAME);
 	eazel_install_set_rpmrc_file (service, RPMRC);
 	eazel_install_set_package_list_storage_path (service, "/package-list.xml");
 	eazel_install_set_rpm_storage_path (service, REMOTE_RPM_DIR);
 	eazel_install_set_tmp_dir (service, TMP_DIR);
-	eazel_install_set_port_number (service, PORT_NUMBER);
+	eazel_install_set_server_port (service, PORT_NUMBER);
 	eazel_install_set_protocol (service, PROTOCOL);	
 
 	g_assert (service != NULL);
@@ -264,7 +223,7 @@ void installer (GtkWidget *window,
 	case NAUTILUS_ONLY:
 	case SERVICES_ONLY:
 	case UPGRADE:		
-		eazel_install_install_packages (service, create_categories ());
+		eazel_install_install_packages (service, NULL);
 		break;
 	case UNINSTALL:
 		eazel_install_uninstall (service);
@@ -278,5 +237,7 @@ void installer (GtkWidget *window,
 	gtk_label_set_text (package_label, "Completed :");
 	gtk_progress_bar_update (progressbar, 1);
 
-	gnome_error_dialog_parented (failure_info, GTK_WINDOW (window));
+	if (strlen (failure_info)>1) {
+		gnome_error_dialog_parented (failure_info, GTK_WINDOW (window));
+	}
 }

@@ -295,11 +295,13 @@ get_url_for_package  (EazelInstall *service,
 				case ghttp_done:
 					if (ghttp_status_code (request) != 404) {
 						url = g_strdup (ghttp_get_body (request));
-						url [ ghttp_get_body_len (request)] = 0;
+						if (url) {
+							url [ ghttp_get_body_len (request)] = 0;
+						}
 					} else {
 						/*
 						url = g_strdup_printf("http://%s%s/%s",
-								      eazel_install_get_hostname (service),
+								      eazel_install_get_server (service),
 								      eazel_install_get_rpm_storage_path (service),
 								      rpmfilename_from_packagedata (package));
 						*/
@@ -322,8 +324,9 @@ char* get_search_url_for_package (EazelInstall *service,
 				  PackageData *pack)
 {
 	char *url;
-	url = g_strdup_printf ("http://%s/cgi-bin/rpmsearch.cgi",
-			       eazel_install_get_hostname (service));
+	url = g_strdup_printf ("http://%s:%d/cgi-bin/rpmsearch.cgi",
+			       eazel_install_get_server (service),
+			       eazel_install_get_server_port (service));
 	add_to_url (&url, "?name=", pack->name);
 	add_to_url (&url, "&arch=", pack->archtype);
 	/* add_to_url (&url, "&version>=", pack->version); */
@@ -339,6 +342,8 @@ char* get_search_url_for_package (EazelInstall *service,
 		break;
 	}
 /*
+  FIXME: bugzilla.eazel.com 1333
+  We need to sent distro name at some point. Depends on the rpmsearch cgi script
 	if (pack->name != DISTRO_UNKNOWN) {
 		char *distro;
 		distro = g_strconcat ("\"", trilobite_get_distribution_name (pack->distribution, TRUE), "\"", NULL);

@@ -37,7 +37,6 @@ oaf_DATA = trilobite-eazel-time-service.oafinfo
 
 CORBA_GENERATED = \
 	trilobite-eazel-time-service.h 		\
-	trilobite-eazel-sample-service-common.c	\
 	trilobite-eazel-time-service-skels.c	\
 	trilobite-eazel-time-service-stubs.c	\
 	trilobite-eazel-time-service-common.c	\

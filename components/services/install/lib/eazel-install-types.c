@@ -205,7 +205,7 @@ rpmfilename_from_packagedata (const PackageData *pack)
 						    pack->name,
 						    pack->archtype);
 		} else {
-			filename = g_strconcat (pack->name,".rpm", NULL); 
+			filename = g_strconcat (pack->name, NULL); 
 		}
 	}
 

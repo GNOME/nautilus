@@ -1,0 +1,30 @@
+<oaf_info>
+
+<oaf_server iid="OAFIID:trilobite_eazel_install_service_factory:b423ff3f-1941-4b0d-bd45-6542f64abbfc" type="exe" location="trilobite-eazel-install-service">
+<oaf_attribute name="repo_ids" type="stringv">
+<item value="IDL:GNOME/GenericFactory:1.0"/>
+</oaf_attribute>
+<oaf_attribute name="description" type="string" value="Factory for the install service"/>
+</oaf_server>
+
+<oaf_server iid="OAFIID:trilobite_eazel_install_service:8ff6e815-1992-437c-9771-d932db3b4a17" type="factory" location="OAFIID:trilobite_eazel_install_service_factory:b423ff3f-1941-4b0d-bd45-6542f64abbfc">
+<oaf_attribute name="repo_ids" type="stringv">
+<item value="IDL:Bonobo/Unknown:1.0"/>
+<item value="IDL:Trilobite/Service:1.0"/>
+<item value="IDL:Trilobite/Eazel/Install:1.0"/>
+</oaf_attribute>
+
+<oaf_attribute name="trilobite:name" type="string" value="Install"/>
+<oaf_attribute name="trilobite:version" type="string" value="0.1"/>
+<oaf_attribute name="trilobite:vendor_name" type="string" value="Eazel, inc."/>
+<oaf_attribute name="trilobite:vendor_url" type="string" value="http://www.eazel.com"/>
+<oaf_attribute name="trilobite:info_url" type="string" value="http://www.eazel.com/install/"/>
+<oaf_attribute name="trilobite:icon" type="string" value="trilobite-install-service.png"/>
+<oaf_attribute name="trilobite:uri_scheme" type="string" value="eazel-install:"/>
+<oaf_attribute name="bonobo:supported_uri_schemes" type="stringv">
+<item value="eazel-install"/>
+</oaf_attribute>
+
+</oaf_server>
+	
+</oaf_info>

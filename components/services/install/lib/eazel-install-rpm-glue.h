@@ -34,6 +34,7 @@
 
 gboolean install_new_packages (EazelInstall *service, GList *categories);
 gboolean uninstall_packages (EazelInstall *service);
+GList* eazel_install_query_package_system (char *query, int flags);
 
 
 #endif /* EAZEL_INSTALL_RPM_GLUE_H */

@@ -260,7 +260,7 @@ trilobite_eazel_time_service_initialize (TrilobiteEazelTimeService *service) {
 	   These defaults should probably be read from somewhere */
 
 	/* Default to the eazel test time server */
-	service->private->time_url = g_strdup ("http://eazel24.eazel.com/time.pl");
+	service->private->time_url = g_strdup ("http://testmachine.eazel.com:8888/examples/time/current");
 
 	/* Default to 180 seconds allowed diff */
 	service->private->maxd = 180;

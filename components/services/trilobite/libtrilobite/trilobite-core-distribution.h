@@ -59,4 +59,13 @@ DistributionInfo trilobite_get_distribution (void);
 char* trilobite_get_distribution_name (DistributionInfo distinfo,
 				       gboolean show_version);
 
+/*
+  Returns the enum corresponding to the given string,
+  which should be one of the strings that trilobite_get_distribution_name
+  returns. The version part (if show_version = TRUE was used) is
+  _not_ parsed */
+
+DistributionName trilobite_get_distribution_enum (const char *name);
+
 #endif /* EAZEL_SERVICES_DISTRIBUTION_H */
+

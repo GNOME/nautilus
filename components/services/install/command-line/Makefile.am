@@ -20,17 +20,18 @@ INCLUDES = \
 	$(WERROR)						\
 	$(NULL)
 
-bin_PROGRAMS = eazel-alt-install
+bin_PROGRAMS = eazel-alt-install-corba
 
-eazel_alt_install_SOURCES = 	\
-	eazel-alt-install.c		\
+eazel_alt_install_corba_SOURCES = 	\
+	eazel-alt-install-corba.c		\
 	$(NULL)
 
-eazel_alt_install_LDADD =                                                     \
+eazel_alt_install_corba_LDADD =                                           \
+        $(top_builddir)/components/services/install/lib/libinstall_corba.a\
+        $(top_builddir)/components/services/install/lib/libinstall_base.a \
         $(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(GNOME_LIBS)                                                     \
 	$(GCONF_LIBS)                                                     \
 	$(GHTTP_LIBS)                                                     \
 	$(RPM_LIBS)                                                       \
-        $(top_builddir)/components/services/install/lib/libinstall.a      \
 	$(NULL)

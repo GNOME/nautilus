@@ -1,3 +1,121 @@
+2000-06-21  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/Makefile.am:
+	* components/services/install/command-line/Makefile.am:
+	*
+	components/services/install/command-line/eazel-alt-install-corba.c:
+	(set_parameters_from_command_line),
+	(eazel_download_progress_signal), (eazel_install_progress_signal),
+	(download_failed), (install_failed), (dep_check), (create_package),
+	(done), (main):
+	* components/services/install/command-line/genpkg_list.example:
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/Makefile.am:
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_download_progress), (impl_download_failed), (impl_dep_check),
+	(impl_install_progress), (impl_uninstall_progress),
+	(impl_install_failed), (impl_uninstall_failed), (impl_done),
+	(eazel_install_callback_get_epv),
+	(eazel_install_callback_create_corba_object),
+	(eazel_install_callback_destroy),
+	(eazel_install_callback_class_initialize),
+	(eazel_install_callback_initialize),
+	(eazel_install_callback_get_type), (eazel_install_callback_new),
+	(eazel_install_callback_corba):
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_packagestructlist_from_packagedata_list),
+	(corba_packagedatastructlist_from_packagedata_list),
+	(corba_packagedatastruct_from_packagedata),
+	(corba_packagestruct_from_packagedata),
+	(packagedata_list_from_corba_packagestructlist),
+	(packagedata_list_from_corba_packagedatastructlist),
+	(packagedata_from_corba_packagedatastruct),
+	(packagedata_from_corba_packagestruct):
+	* components/services/install/lib/eazel-install-corba-types.h:
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install_install), (impl_Eazel_Install_uninstall),
+	(impl_Eazel_Install_install_packages),
+	(impl_Eazel_Install_uninstall_packages),
+	(impl_Eazel_Install__set_verbose),
+	(impl_Eazel_Install__get_verbose),
+	(impl_Eazel_Install__set_silent), (impl_Eazel_Install__get_silent),
+	(impl_Eazel_Install__set_test_mode),
+	(impl_Eazel_Install__get_test_mode),
+	(impl_Eazel_Install__set_force), (impl_Eazel_Install__get_force),
+	(impl_Eazel_Install__set_update), (impl_Eazel_Install__get_update),
+	(impl_Eazel_Install__set_tmp_dir),
+	(impl_Eazel_Install__get_tmp_dir),
+	(impl_Eazel_Install__set_server), (impl_Eazel_Install__get_server),
+	(impl_Eazel_Install__set_server_port),
+	(impl_Eazel_Install__get_server_port),
+	(impl_Eazel_Install__set_log_file),
+	(impl_Eazel_Install__get_log_file),
+	(impl_Eazel_Install__set_protocol),
+	(impl_Eazel_Install__get_protocol), (eazel_install_get_epv),
+	(eazel_install_create_corba_object):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_set_arg), (eazel_install_class_initialize),
+	(eazel_install_initialize), (eazel_install_get_type),
+	(eazel_install_new_with_config),
+	(eazel_install_fetch_remote_package_list),
+	(eazel_install_open_log), (eazel_install_install_packages),
+	(eazel_install_uninstall), (eazel_install_emit_install_progress),
+	(eazel_install_emit_install_progress_default),
+	(eazel_install_emit_download_progress),
+	(eazel_install_emit_download_progress_default),
+	(eazel_install_emit_download_failed),
+	(eazel_install_emit_download_failed_default),
+	(eazel_install_emit_install_failed),
+	(eazel_install_emit_install_failed_default),
+	(eazel_install_emit_uninstall_failed),
+	(eazel_install_emit_dependency_check),
+	(eazel_install_emit_dependency_check_default),
+	(eazel_install_emit_done), (eazel_install_emit_done_default):
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-protocols.c:
+	(get_url_for_package), (get_search_url_for_package):
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_new_packages), (download_all_packages),
+	(install_all_packages), (rpm_show_progress), (do_rpm_install),
+	(eazel_install_prune_packages_helper),
+	(eazel_install_prepare_rpm_system),
+	(eazel_install_add_headers_to_rpm_set),
+	(eazel_install_fetch_rpm_dependencies), (print_package_list),
+	(eazel_install_ensure_deps), (ei_extract_attributes),
+	(eazel_install_query_package_system):
+	* components/services/install/lib/eazel-install-rpm-glue.h:
+	* components/services/install/lib/eazel-install-types.c:
+	(rpmfilename_from_packagedata):
+	* components/services/install/lib/eazel-install-types.h:
+	*
+	components/services/install/lib/trilobite-eazel-install-service.oaf
+	info:
+	* components/services/install/server/Makefile.am:
+	*
+	components/services/install/server/trilobite-eazel-install-service.
+	oafinfo:
+	* components/services/time/service/Makefile.am:
+	* components/services/time/service/trilobite-eazel-time-service.c:
+	(trilobite_eazel_time_service_initialize):
+	*
+	components/services/trilobite/libtrilobite/trilobite-core-distribut
+	ion.c: (trilobite_get_distribution_name),
+	(trilobite_get_distribution_enum):
+	*
+	components/services/trilobite/libtrilobite/trilobite-core-distribut
+	ion.h:
+	* configure.in:
+	* nautilus-installer/src/HACKING:
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/Makefile.am:
+	* nautilus-installer/src/installer.c: (installer):
+	* nautilus-installer/src/interface.c: (create_window):
+	* nautilus-installer/src/link.sh:
+	* nautilus-installer/src/prescript:
+	* nautilus.spec.in:
+
 2000-06-21  Darin Adler  <darin@eazel.com>
 
 	* components/hardware/nautilus-hardware-view.c:

@@ -95,9 +95,11 @@ int main(int argc, char *argv[]) {
 
 		Trilobite_Eazel_Sample_remember (sample_service, "horsedung", &ev);
 		Trilobite_Eazel_Sample_say_it (sample_service, &ev);
+		CORBA_Object_release (sample_service, &ev);
 	} 
 
-	Trilobite_Service_unref (trilobite, &ev);
+	Bonobo_Unknown_unref (trilobite, &ev);
+	bonobo_object_unref (BONOBO_OBJECT (service));
 	CORBA_exception_free (&ev);
 
 	return 0;
