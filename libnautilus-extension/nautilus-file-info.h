@@ -50,6 +50,8 @@ typedef struct _NautilusFileInfoIface NautilusFileInfoIface;
 
 struct _NautilusFileInfoIface 
 {
+	GTypeInterface g_iface;
+
 	gboolean          (*is_gone)              (NautilusFileInfo *file);
 	
 	char *            (*get_name)             (NautilusFileInfo *file);
