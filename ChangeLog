@@ -1,3 +1,10 @@
+2001-07-15  Anders Carlsson  <andersca@codefactory.se>
+
+	* src/file-manager/fm-icon-view.c (icon_container_preview_callback): Check
+	that the file mime type is correct (that the files is a music file) before calling 
+	nautilus_sound_can_play_sound () since that function launches esd which we
+	don't want to do unless we have a music file.
+
 2001-07-15  Andy Hertzfeld  <andy@differnet.com>
 
 	allowed components to specify their sidebar icons and text info
@@ -100,6 +107,7 @@
 	getpid() returns an int. Instead cast it to unsigned long for
 	printing.
 
+>>>>>>> 1.4689
 2001-07-11  Alex Larsson  <alexl@redhat.com>
 
 	* acconfig.h:

@@ -1685,13 +1685,14 @@ icon_container_preview_callback (NautilusIconContainer *container,
 	
 	/* preview files based on the mime_type. */
 	/* at first, we just handle sounds */
-	if (should_preview_sound (file)
-	    && nautilus_sound_can_play_sound ()) {
+	if (should_preview_sound (file)) {
 		mime_type = nautilus_file_get_mime_type (file);
+
 		if ((eel_istr_has_prefix (mime_type, "audio/")
 		     || eel_istr_has_prefix (mime_type, "application/x-ogg"))
 		    && eel_strcasecmp (mime_type, "audio/x-pn-realaudio") != 0
-		    && eel_strcasecmp (mime_type, "audio/x-mpegurl") != 0) {
+		    && eel_strcasecmp (mime_type, "audio/x-mpegurl") != 0
+		    && nautilus_sound_can_play_sound ()) {
 			result = 1;
 			preview_audio (icon_view, file, start_flag);
 		}	
