@@ -48,11 +48,33 @@ static char	 *last_theme_name = NULL;
 static xmlDocPtr last_theme_document = NULL;
 static xmlDocPtr default_theme_document = NULL;
 
+static char *theme_from_preferences = NULL;
+
+static void
+theme_changed_callback (gpointer callback_data)
+{
+	g_free (theme_from_preferences);
+	theme_from_preferences = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME);
+}
+
 /* return the current theme by asking the preferences machinery */
 char *
 nautilus_theme_get_theme (void)
 {
-	return nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME);
+	static gboolean theme_changed_callback_installed = FALSE;
+
+	/* Add the callback once for the life of our process */
+	if (!theme_changed_callback_installed) {
+		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
+						   theme_changed_callback,
+						   NULL);
+		theme_changed_callback_installed = TRUE;
+		
+		/* Peek for the first time */
+		theme_changed_callback (NULL);
+	}
+	
+	return g_strdup (theme_from_preferences);
 }
 
 /* set the current theme */
@@ -198,7 +220,7 @@ nautilus_theme_get_theme_data (const char *resource_name, const char *property_n
 {
 	char *result;
 	char *theme_name;
-	theme_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME);
+	theme_name = nautilus_theme_get_theme ();
 	result = nautilus_theme_get_theme_data_from_theme (resource_name, property_name, theme_name);
 	g_free (theme_name);
 	return result;
@@ -290,7 +312,7 @@ nautilus_theme_get_image_path (const char *image_name)
 {
 	char *theme_name, *image_path;
 	
-	theme_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME);	
+	theme_name = nautilus_theme_get_theme ();
 	image_path = nautilus_theme_get_image_path_from_theme (image_name, theme_name);	
 	g_free (theme_name);
 	

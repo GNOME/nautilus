@@ -1070,34 +1070,6 @@ nautilus_file_is_local (NautilusFile *file)
 	return nautilus_directory_is_local (file->details->directory);
 }
 
-static gboolean
-get_speed_tradeoff_preference_for_file (NautilusFile *file, const char *preference_name)
-{
-	NautilusSpeedTradeoffValue preference_value;
-	
-	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-	preference_value = nautilus_preferences_get_integer (preference_name);
-
-	if (preference_value == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
-		return TRUE;
-	}
-	
-	if (preference_value == NAUTILUS_SPEED_TRADEOFF_NEVER) {
-		return FALSE;
-	}
-
-	g_assert (preference_value == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
-	return nautilus_file_is_local (file);
-}
-
-gboolean
-nautilus_file_should_get_top_left_text (NautilusFile *file)
-{
-	return get_speed_tradeoff_preference_for_file 
-		(file, NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS);
-}
-
 static void
 update_link (NautilusFile *link_file, NautilusFile *target_file)
 {
@@ -2292,11 +2264,86 @@ nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type
 	return nautilus_strdup_strftime (format, file_time);
 }
 
+static NautilusSpeedTradeoffValue show_directory_item_count;
+static NautilusSpeedTradeoffValue show_text_in_icons;
+
+static void
+show_text_in_icons_changed_callback (gpointer callback_data)
+{
+	show_text_in_icons = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS);
+}
+
+static void
+show_directory_item_count_changed_callback (gpointer callback_data)
+{
+	show_directory_item_count = nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS);
+}
+
+static gboolean
+get_speed_tradeoff_preference_for_file (NautilusFile *file, NautilusSpeedTradeoffValue value)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+	
+	if (value == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
+		return TRUE;
+	}
+	
+	if (value == NAUTILUS_SPEED_TRADEOFF_NEVER) {
+		return FALSE;
+	}
+
+	g_assert (value == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
+	return nautilus_file_is_local (file);
+}
+
 gboolean
 nautilus_file_should_show_directory_item_count (NautilusFile *file)
 {
-	return get_speed_tradeoff_preference_for_file 
-		(file, NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS);
+	static gboolean show_directory_item_count_callback_added = FALSE;
+	
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	/* Add the callback once for the life of our process */
+	if (!show_directory_item_count_callback_added) {
+		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
+						   show_directory_item_count_changed_callback,
+						   NULL);
+		show_directory_item_count_callback_added = TRUE;
+
+		/* Peek for the first time */
+		show_directory_item_count_changed_callback (NULL);
+	}
+
+	return get_speed_tradeoff_preference_for_file (file, show_directory_item_count);
+}
+
+gboolean
+nautilus_file_should_get_top_left_text (NautilusFile *file)
+{
+	static gboolean show_text_in_icons_callback_added = FALSE;
+	
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	/* Add the callback once for the life of our process */
+	if (!show_text_in_icons_callback_added) {
+		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
+						   show_text_in_icons_changed_callback,
+						   NULL);
+		show_text_in_icons_callback_added = TRUE;
+
+		/* Peek for the first time */
+		show_text_in_icons_changed_callback (NULL);
+	}
+	
+	if (show_text_in_icons == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
+		return TRUE;
+	}
+	
+	if (show_text_in_icons == NAUTILUS_SPEED_TRADEOFF_NEVER) {
+		return FALSE;
+	}
+
+	return get_speed_tradeoff_preference_for_file (file, show_text_in_icons);
 }
 
 /**

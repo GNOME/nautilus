@@ -1,3 +1,32 @@
+2001-02-07  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(show_hidden_files_changed_callback),
+	(show_backup_files_changed_callback),
+	(get_filter_options_for_directory_count):
+	* libnautilus-extensions/nautilus-file.c:
+	(show_text_in_icons_changed_callback),
+	(show_directory_item_count_changed_callback),
+	(get_speed_tradeoff_preference_for_file),
+	(nautilus_file_should_show_directory_item_count),
+	(nautilus_file_should_get_top_left_text):
+	* libnautilus-extensions/nautilus-theme.c:
+	(theme_changed_callback), (nautilus_theme_get_theme),
+	(nautilus_theme_get_theme_data), (nautilus_theme_get_image_path):
+	* src/file-manager/fm-directory-view.c:
+	(confirm_trash_changed_callback), (real_update_menus):
+	* src/file-manager/fm-icon-text-window.c:
+	(icon_captions_changed_callback),
+	(fm_get_text_attribute_names_preference_or_default):
+	Use calllbacks for some preferences values instead of peeking
+	diectly.  The preferences in question here are peeked a lot during
+	large directory loads, even though they hardly ever change.  This
+	should get preferences stuff mostly out of Pavel's profiles.  Now,
+	im still working on bug 6054 which is about making peeking
+	preferences in general faster.
+
 2001-02-06  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: Mike Fleming <mfleming@eazel.com>
