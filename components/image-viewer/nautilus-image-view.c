@@ -814,13 +814,12 @@ init_bonobo_image_generic_factory (void)
 static void
 init_server_factory (int argc, char **argv)
 {
-	/* Disable session manager connection */
-#ifdef GNOME2_CONVERSION_COMPLETE
-	gnome_client_disable_master_connection ();
-#endif
-
 	if (!bonobo_ui_init ("bonobo-image-generic", VERSION, &argc, argv))
 		g_error (_("I could not initialize Bonobo"));
+
+	/* Disable session manager connection */
+	g_object_set (G_OBJECT (gnome_program_get()),
+	              GNOME_CLIENT_PARAM_SM_CONNECT, FALSE, NULL);
 }
 
 int

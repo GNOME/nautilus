@@ -26,19 +26,18 @@
 
 #include <config.h>
 
-#include <libgnome/gnome-init.h> /* must come before liboaf.h */
-
 #include "nautilus-adapter-factory-server.h"
+#include <bonobo-activation/bonobo-activation.h>
+#include <bonobo/bonobo-generic-factory.h>
 #include <bonobo/bonobo-main.h>
 #include <bonobo/bonobo-ui-main.h>
-#include <bonobo/bonobo-generic-factory.h>
+#include <eel/eel-debug.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
+#include <libgnome/gnome-init.h>
+#include <libgnomeui/gnome-client.h>
 #include <libgnomevfs/gnome-vfs-init.h>
-#include <eel/eel-debug.h>
-#include <bonobo-activation/bonobo-activation.h>
 #include <stdlib.h>
-
 #include <string.h>
 
 #define META_FACTORY_IID "OAFIID:nautilus_adapter_factory_generic_factory:8e62e106-807d-4d37-b14a-00dc82ecf88f"
@@ -96,14 +95,13 @@ main (int argc, char *argv[])
 		eel_make_warnings_and_criticals_stop_in_debugger ();
 	}
 	
-#ifdef GNOME2_CONVERSION_COMPLETE
-	/* Disable session manager connection */
-	gnome_client_disable_master_connection ();
-#endif
-
 	if (!bonobo_ui_init ("nautilus-adapter", VERSION, &argc, argv)) {
 		g_error (_("bonobo_ui_init() failed."));
 	}
+
+	/* Disable session manager connection */
+	g_object_set (G_OBJECT (gnome_program_get()),
+	              GNOME_CLIENT_PARAM_SM_CONNECT, FALSE, NULL);
 
 	/* Create the factory. */
 

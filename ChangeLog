@@ -1,3 +1,16 @@
+2002-01-23  Darin Adler  <darin@bentspoon.com>
+
+	* components/adapter/main.c: (main):
+	* components/image-viewer/nautilus-image-view.c:
+	(init_server_factory):
+	* components/throbber/main.c: (main):
+	Use newfangled gnome-client.h calls to turn off session management.
+
+	* libnautilus/nautilus-view-standard-main.c:
+	(nautilus_view_standard_main_multi): Since we think
+	the per-display IID scheme is broken in bonobo-activation,
+	we turned it off there, rather than turning it off here.
+
 2002-01-23  Michael Meeks  <michael@ximian.com>
 
 	* libnautilus/nautilus-view-standard-main.c

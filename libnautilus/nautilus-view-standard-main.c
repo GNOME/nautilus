@@ -38,6 +38,7 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-client.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <stdlib.h>
 #include <string.h>
@@ -191,16 +192,15 @@ nautilus_view_standard_main_multi (const char *executable_name,
 	}
 #endif
 
-#if GNOME2_CONVERSION_COMPLETE
-	/* Disable session manager connection */
-	gnome_client_disable_master_connection ();
-#endif
-
 	/* Initialize libraries. */
 	g_thread_init (NULL);
 	gnome_vfs_init ();
 
 	bonobo_ui_init (executable_name, version, &argc, argv);
+
+	/* Disable session manager connection */
+	g_object_set (G_OBJECT (gnome_program_get()),
+	              GNOME_CLIENT_PARAM_SM_CONNECT, FALSE, NULL);
 
 	if (post_initialize_callback != NULL) {
 		(* post_initialize_callback) ();
@@ -214,11 +214,7 @@ nautilus_view_standard_main_multi (const char *executable_name,
 	callback_data.delayed_quit_timeout_id = 0;
 
 	/* Create the factory. */
-#ifdef GNOME2_CONVERSION_COMPLETE
         registration_id = bonobo_activation_make_registration_id (factory_iid, DisplayString (gdk_display));
-#else
-	registration_id = g_strdup (factory_iid);
-#endif
 	factory = bonobo_generic_factory_new (registration_id, 
 					      make_object,
 					      &callback_data);

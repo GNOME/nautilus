@@ -23,12 +23,13 @@
 /* main.c - main function and object activation function for the throbber component. */
 
 #include <config.h>
-#include <string.h>
 #include "nautilus-throbber.h"
 
 #include <eel/eel-debug.h>
+#include <libgnomeui/gnome-client.h>
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
+#include <string.h>
 
 static int object_count = 0;
 
@@ -74,11 +75,11 @@ main (int argc, char *argv[])
 		eel_make_warnings_and_criticals_stop_in_debugger ();
 	}
 
-	/* Disable session manager connection */
-#ifdef GNOME2_CONVERSION_COMPLETE
-	gnome_client_disable_master_connection ();
-#endif
 	bonobo_ui_init ("nautilus-throbber", VERSION, &argc, argv);
+
+	/* Disable session manager connection */
+	g_object_set (G_OBJECT (gnome_program_get()),
+	              GNOME_CLIENT_PARAM_SM_CONNECT, FALSE, NULL);
 
 	nautilus_global_preferences_init ();   
 
