@@ -499,7 +499,6 @@ nautilus_list_destroy (GtkObject *object)
 	list = NAUTILUS_LIST (object);
 
 	nautilus_drag_finalize (list->details->drag_info);
-	g_free (list->details->drag_info);
 
 	unschedule_keyboard_row_reveal (list);
 

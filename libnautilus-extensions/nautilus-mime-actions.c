@@ -276,6 +276,7 @@ nautilus_mime_get_default_component_for_uri_internal (const char *uri, gboolean 
 		server = NULL;
 	}
 
+	g_free (uri_scheme);
 	g_free (mime_type);
 	g_free (default_component_string);
 
@@ -454,6 +455,7 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 	g_list_free (iids);
 
 	gnome_vfs_mime_component_list_free (removed);
+	g_free (uri_scheme);
 	g_free (mime_type);
 
 	return result;
@@ -537,6 +539,7 @@ nautilus_mime_get_all_components_for_uri (const char *uri)
 
 	info_list = nautilus_do_component_query (mime_type, uri_scheme, files, explicit_iids, NULL, &ev);
 	
+	g_free (uri_scheme);
 	g_free (mime_type);
 	CORBA_exception_free (&ev);
 
