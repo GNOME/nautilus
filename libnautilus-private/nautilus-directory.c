@@ -313,7 +313,6 @@ nautilus_directory_get_internal (const char *uri, gboolean create)
 
 	/* If the object is already in the hash table, look it up. */
 
-	g_assert (nautilus_uri_is_canonical_uri (canonical_uri));
 	directory = g_hash_table_lookup (directories,
 					 canonical_uri);
 	if (directory != NULL) {

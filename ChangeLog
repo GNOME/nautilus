@@ -1,5 +1,22 @@
 2000-10-27  John Sullivan  <sullivan@eazel.com>
 
+	Grumble grumble canonical grumble ui grumble.
+
+	Josh found another assertion failure involving
+	canonical uris. Yay Josh! Boo canonical uri troubles!
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_get_internal): Removed call to
+	nautilus_uri_is_canonical_uri since it isn't quite the
+	right check. Decided that the right check here is
+	pointless.
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	Removed nautilus_uri_is_canonical_uri since it now has
+	no callers.
+
+2000-10-27  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 4085 for now (need Support menu item in Services menu)
 
 	The URL will have to be updated again later, as the bug report says.

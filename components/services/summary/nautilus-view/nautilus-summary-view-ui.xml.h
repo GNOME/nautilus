@@ -8,9 +8,9 @@
 
 gchar *s = N_("Configure your service preferences");
 gchar *s = N_("Go to the Eazel Services Registration Form");
-gchar *s = N_("Log _In to Eazel Services");
-gchar *s = N_("Log _Out from Eazel Services");
 gchar *s = N_("Log out from Eazel Services");
 gchar *s = N_("Service _Preferences");
 gchar *s = N_("Show the log-in dialog box");
+gchar *s = N_("_Log in to Eazel Services");
+gchar *s = N_("_Log out from Eazel Services");
 gchar *s = N_("_Register for Eazel Services");

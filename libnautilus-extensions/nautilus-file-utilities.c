@@ -1171,19 +1171,6 @@ nautilus_copy_uri_simple ( const char *source_uri, const char *dest_uri)
 	return  result;
 }
 
-gboolean
-nautilus_uri_is_canonical_uri (const char *uri)
-{
-	gboolean result;
-	char *canonical_uri;
-
-	canonical_uri = nautilus_make_uri_canonical (uri);
-	result = nautilus_strcmp (uri, canonical_uri) == 0;
-	g_free (canonical_uri);
-
-	return result;
-}
-
 #ifdef EAZEL_BUILD_TIMESTAMP
 static const char *BUILD_TIMESTAMP = EAZEL_BUILD_TIMESTAMP;
 #else
