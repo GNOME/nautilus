@@ -16,7 +16,8 @@ LDADD=\
 	$(GCONF_LIBS) \
 	$(GNOMEUI_LIBS)
 
-ntl_web_search_SOURCES=ntl-web-search.c
+ntl_web_search_SOURCES=\
+	ntl-web-search.c
 
 oafdir=$(datadir)/oaf
 oaf_DATA=ntl-web-search.oafinfo
@@ -24,4 +25,4 @@ oaf_DATA=ntl-web-search.oafinfo
 enginesdir=$(datadir)/websearch
 engines_DATA=standard.eng
 
-EXTRA_DIST=$(oaf_DATA) $(engines_DATA)
+EXTRA_DIST=$(oaf_DATA) $(engines_DATA) $(ntl_web_search_SOURCES)
