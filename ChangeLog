@@ -1,3 +1,47 @@
+2000-12-13  Robey Pointer  <robey@eazel.com>
+
+	* nautilus.spec.in:
+
+	Fix some of the RPM descriptions and summaries so they're not
+	quite so wrong or vague.
+
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_initialize):
+
+	Don't try to open a user-specific rpmdb in slim mode.
+	
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_load_implementation):
+	* components/services/install/lib/eazel-package-system.h:
+
+	Allow direct linking with a package system in slim mode (so that
+	the bootstrap installer can be built linked statically against the
+	rpm3 package system).
+	
+	* components/services/install/lib/makefile.staticlib.in:
+
+	Include different parts of the package system in the slim
+	version.  Eventually we're going to have to make this a little
+	more flexible to allow for building an rpm3 vs. rpm4 slim library.
+	
+	* nautilus-installer/src/Makefile.am:
+	* nautilus-installer/src/gtk-hackery.c:
+	* nautilus-installer/src/package-tree.c:
+	* nautilus-installer/src/installer.h:
+	* nautilus-installer/src/installer.c: (create_install_page),
+	(add_bullet_point_to_vbox), (jump_to_error_page),
+	(insert_info_page), (create_finish_page_good), (create_window),
+	(eazel_install_preflight), (eazel_installer_add_category),
+	(more_check_system), (draw_splash_text), (find_old_tmpdir),
+	(eazel_installer_initialize):
+	* nautilus-installer/src/link.sh:
+	
+	Move all GTK hackery into its own file (there are getting to be a
+	lot of these, sadly).  Fix the installer to use the new package
+	system for now, though it will need to continue to change.  Add a
+	new page for customizing the package tree, and temporarily make it
+	mandatory.
+
 2000-12-13  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>

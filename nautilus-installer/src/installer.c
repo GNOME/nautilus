@@ -36,19 +36,21 @@
 #include <eazel-install-xml-package-list.h>
 #include <eazel-install-protocols.h>
 #include <eazel-install-query.h>
+#include <eazel-package-system.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <dirent.h>
 #include <sys/utsname.h>
 
+#if 0
 #include <rpm/misc.h>
+#endif
 
 #include <nautilus-druid.h>
 #include <nautilus-druid-page-eazel.h>
 
 #include "installer.h"
 #include "callbacks.h"
-#include "installer.h"
 #include "support.h"
 #include "proxy.h"
 
@@ -197,83 +199,6 @@ log_debug (const gchar *format, ...)
 	}
 }
 
-static void
-get_pixmap_x_y (char **xpmdata, int *x, int *y)
-{
-	char *ptr;
-
-	ptr = strchr (xpmdata[0], ' ');
-	if (ptr == NULL) {
-		*x = *y = 0;
-		return;
-	}
-	*x = atoi (xpmdata[0]);
-	*y = atoi (ptr);
-}
-
-static GdkPixbuf*
-create_pixmap (GtkWidget *widget,
-	       char **xpmdata)
-{
-	GdkColormap *colormap;                                                        
-	GdkPixmap *gdkpixmap;                                                         
-	GdkBitmap *mask;	
-	GdkPixbuf *pixbuf;
-	int x, y;
-
-	get_pixmap_x_y (xpmdata, &x, &y);
-
-	colormap = gtk_widget_get_colormap (widget);
-	
-	gdkpixmap = gdk_pixmap_colormap_create_from_xpm_d (NULL, 
-							   colormap, 
-							   &mask,
-							   NULL, 
-							   (gchar**)xpmdata); 
-	
-	g_assert (gdkpixmap != NULL);
-
-	pixbuf = gdk_pixbuf_get_from_drawable (NULL,
-					       gdkpixmap,
-					       colormap,
-					       0,0,0,0, 
-					       x, y);
-
-	gdk_pixmap_unref (gdkpixmap);   
-	if (mask != NULL) {
-		gdk_bitmap_unref (mask);
-	}
-
-	return pixbuf;     
-}
-
-static GtkWidget *
-gtk_label_new_with_font (const char *text, const char *fontname)
-{
-	GtkWidget *label;
-	GtkStyle *style;
-
-	label = gtk_label_new (text);
-	style = gtk_style_copy (label->style);
-	gdk_font_unref (style->font);
-	/* oh how low we've sunk... */
-	style->font = gdk_fontset_load (fontname);
-	gtk_widget_set_style (label, style);
-	gtk_style_unref (style);
-
-	return label;
-}
-
-static void
-add_padding_to_box (GtkWidget *box, int pad_x, int pad_y)
-{
-	GtkWidget *filler;
-
-	filler = gtk_label_new ("");
-	gtk_widget_set_usize (filler, pad_x ? pad_x : 1, pad_y ? pad_y : 1);
-	gtk_widget_show (filler);
-	gtk_box_pack_start (GTK_BOX (box), filler, FALSE, FALSE, 0);
-}
 
 static void
 start_over (EazelInstaller *installer)
@@ -448,13 +373,13 @@ create_install_page (EazelInstaller *installer)
 	gtk_widget_ref (hbox);
 	gtk_object_set_data_full (GTK_OBJECT (installer->window), "hbox_label_single", label_single,
 				  (GtkDestroyNotify) gtk_widget_unref);
-	add_padding_to_box (hbox, 50, 0);
+	gtk_box_add_padding (hbox, 50, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), label_single, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), label_single_2, FALSE, FALSE, 0);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox,  FALSE, FALSE, 0);
 
-	add_padding_to_box (vbox, 0, 15);
+	gtk_box_add_padding (vbox, 0, 15);
 
 	install_label = gtk_label_new_with_font (_("Overall Progress:"), FONT_NORM_BOLD);
 	gtk_label_set_justify (GTK_LABEL (install_label), GTK_JUSTIFY_LEFT);
@@ -544,7 +469,7 @@ add_bullet_point_to_vbox (GtkWidget *vbox, const char *text)
 
 	/* put the anchored bullet and the explanation into an hbox */
 	hbox = gtk_hbox_new (FALSE, 0);
-	add_padding_to_box (hbox, 45, 0);
+	gtk_box_add_padding (hbox, 45, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), inner_vbox, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show (hbox);
@@ -586,7 +511,7 @@ jump_to_error_page (EazelInstaller *installer, GList *bullets, char *text, char 
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
-	add_padding_to_box (vbox, 0, 20);
+	gtk_box_add_padding (vbox, 0, 20);
 
 	label = gtk_label_new (text);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
@@ -597,13 +522,13 @@ jump_to_error_page (EazelInstaller *installer, GList *bullets, char *text, char 
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
-	add_padding_to_box (vbox, 0, 15);
+	gtk_box_add_padding (vbox, 0, 15);
 
 	for (iter = g_list_first (bullets); iter != NULL; iter = g_list_next (iter)) {
 		add_bullet_point_to_vbox (vbox, (char *)(iter->data));
 	}
 
-	add_padding_to_box (vbox, 0, 15);
+	gtk_box_add_padding (vbox, 0, 15);
 
 	label = gtk_label_new (text2);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
@@ -662,7 +587,7 @@ insert_info_page (EazelInstaller *installer,
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
-	add_padding_to_box (vbox, 0, 20);
+	gtk_box_add_padding (vbox, 0, 20);
 
 	label = gtk_label_new (info_text);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
@@ -773,7 +698,7 @@ create_finish_page_good (GtkWidget *druid,
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
-	add_padding_to_box (vbox, 0, 20);
+	gtk_box_add_padding (vbox, 0, 20);
 
 	label = gtk_label_new (text);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
@@ -803,7 +728,7 @@ create_window (EazelInstaller *installer)
 	gtk_window_set_title (GTK_WINDOW (window), window_title);
 	g_free (window_title);
 	gtk_window_set_policy (GTK_WINDOW (window), FALSE, FALSE, TRUE);
-	get_pixmap_x_y (bootstrap_background, &x, &y);
+	get_pixmap_width_height (bootstrap_background, &x, &y);
 	gtk_widget_set_usize (window, x, y+45);
 
 	druid = nautilus_druid_new ();
@@ -1121,6 +1046,11 @@ eazel_install_preflight (EazelInstall *service,
 	char *temp;
 	int total_mb;
 
+	if (strcmp (((PackageData *)(packages->data))->name, "eazel-hacking") != 0) {
+		jump_to_package_tree_page (installer, (GList *)packages);
+		while (1) { while (gtk_events_pending ()) { gtk_main_iteration (); } }
+	}
+
 	label_single = gtk_object_get_data (GTK_OBJECT (installer->window), "download_label");
 	label_single_2 = gtk_object_get_data (GTK_OBJECT (installer->window), "download_label_2");
 	label_overall = gtk_object_get_data (GTK_OBJECT (installer->window), "label_overall");
@@ -1373,7 +1303,7 @@ eazel_installer_add_category (EazelInstaller *installer,
 		gtk_widget_show (button);
 	}
 	gtk_widget_show (button_name);
-	add_padding_to_box (hbox, 10, 0);
+	gtk_box_add_padding (hbox, 10, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), button, 0, 0, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), button_name, 0, 0, 0);
 
@@ -1422,7 +1352,7 @@ eazel_installer_add_category (EazelInstaller *installer,
 
 		if (*p) {
 			lastp = p+2;
-			add_padding_to_box (vbox_desc, 0, 10);
+			gtk_box_add_padding (vbox_desc, 0, 10);
 		} else {
 			lastp = p;
 		}
@@ -1441,9 +1371,9 @@ eazel_installer_add_category (EazelInstaller *installer,
 	if (render) {
 		gtk_widget_show (hbox);
 		gtk_widget_show (vbox_desc);
-		add_padding_to_box (vbox, 0, 10);
+		gtk_box_add_padding (vbox, 0, 10);
 		gtk_box_pack_start (GTK_BOX (vbox), hbox, 0, 0, 0);
-		add_padding_to_box (vbox, 0, 3);
+		gtk_box_add_padding (vbox, 0, 3);
 		gtk_box_pack_start (GTK_BOX (vbox), vbox_desc, 0, 0, 0);
 	}
 
@@ -1529,19 +1459,19 @@ check_system (EazelInstaller *installer)
 	return TRUE;
 }
 
-static gboolean
+static void
 more_check_system (EazelInstaller *installer)
 {
-	
+	EazelPackageSystem *packsys;
 	GList *matches = NULL;
-	matches = eazel_install_simple_query (installer->service, 
-					      "eazel-hacking",
-					      EI_SIMPLE_QUERY_MATCHES,
-					      0,
-					      NULL);
-	if (matches) {
-		
+
+	packsys = eazel_package_system_new (NULL);
+	matches = eazel_package_system_query (packsys, NULL, "eazel-hacking",
+					      EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
+					      PACKAGE_FILL_MINIMAL);
+	if (matches && 0) {
 		PackageData *pack = packagedata_new ();
+
 		pack->name = g_strdup ("eazel-hacking");
 		add_force_remove (installer, pack);
 		
@@ -1552,33 +1482,31 @@ more_check_system (EazelInstaller *installer)
 		g_list_foreach (matches, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
 		matches = NULL;
 	}
-	
-	matches = eazel_install_simple_query (installer->service, 
-					      "rpm",
-					      EI_SIMPLE_QUERY_MATCHES,
-					      0,
-					      NULL);
+
+	matches = eazel_package_system_query (packsys, NULL, "rpm",
+					      EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
+					      PACKAGE_FILL_MINIMAL);
 	if (matches) {		
 		PackageData *pack = (PackageData*)matches->data;
 		
 		log_debug ("** installed rpm has version %s", pack->version);
+#if 0
 		if (rpmvercmp (pack->version, "4")>0) {
 			jump_to_error_page (installer,
 					    NULL,
 					    D_ERROR_RPM_4_NOT_SUPPORTED,
 					    NULL);
 		}
+#endif
 		
 		g_list_foreach (matches, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
 		matches = NULL;
-
-		return FALSE;
 	} else {
 		log_debug ("** rpm not installed!");
-		return FALSE;
 	}
 
-	return TRUE;
+	/* NEEDED: eazel_package_system_unref (packsys); */
+	gtk_object_unref (GTK_OBJECT (packsys));
 }
 
 #if 0
@@ -1693,7 +1621,7 @@ draw_splash_text (EazelInstaller *installer, const char *splash_text)
 
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox1, FALSE, FALSE, 0);
-	add_padding_to_box (vbox, 0, 10);
+	gtk_box_add_padding (vbox, 0, 10);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox2, FALSE, FALSE, 0);	
 	gtk_widget_set_uposition (vbox, CONTENT_X, CONTENT_Y);
 	gtk_widget_show (vbox);
@@ -1704,7 +1632,7 @@ draw_splash_text (EazelInstaller *installer, const char *splash_text)
 	gtk_object_ref (GTK_OBJECT (button));
 	gtk_object_set_data_full (GTK_OBJECT (installer->window), "kohberg", button,
 				  (GtkDestroyNotify) gtk_widget_unref);
-	add_padding_to_box (vbox, 0, 10);
+	gtk_box_add_padding (vbox, 0, 10);
 	gtk_box_pack_start (GTK_BOX (vbox), button, 0, 0, 0);
 	gtk_signal_connect (GTK_OBJECT (button), "toggled", GTK_SIGNAL_FUNC (go_live),
 			    installer);
@@ -1977,7 +1905,7 @@ find_old_tmpdir (void)
 		    (strncmp (file->d_name, TMPDIR_PREFIX, strlen (TMPDIR_PREFIX)) == 0)) {
 			old_tmpdir = g_strdup_printf ("%s/%s", installer_tmpdir, file->d_name);
 			if ((stat (old_tmpdir, &statbuf) == 0) &&
-			    ((statbuf.st_mode & 0777) == 0700) &&
+			    ((statbuf.st_mode & 0077) == 0) &&
 			    (statbuf.st_mode & S_IFDIR) &&
 			    ((statbuf.st_mode & S_IFLNK) != S_IFLNK) &&
 			    (statbuf.st_nlink == 2) &&
@@ -1988,6 +1916,7 @@ find_old_tmpdir (void)
 				old_package_list = g_strdup_printf ("%s/%s", old_tmpdir, PACKAGE_LIST);
 				unlink (old_package_list);
 				g_free (old_package_list);
+				chmod (old_tmpdir, 0700);
 			} else {
 				g_free (old_tmpdir);
 				old_tmpdir = NULL;
@@ -2108,7 +2037,7 @@ eazel_installer_initialize (EazelInstaller *object)
 					       "transaction_dir", installer_tmpdir,
 					       "cgi_path", installer_cgi_path ? installer_cgi_path : CGI_PATH,
 					       NULL));
-	
+
 	gnome_druid_set_buttons_sensitive (installer->druid, FALSE, FALSE, TRUE);
 
 	/* show what we have so far */
@@ -2186,7 +2115,7 @@ eazel_installer_initialize (EazelInstaller *object)
 			eazel_install_fetch_definitive_category_info (installer->service, (CategoryData *)(iterator->data));
 #endif
 			eazel_installer_add_category (installer, (CategoryData*)iterator->data, FALSE);
-			add_padding_to_box (vbox, 0, 5);
+			gtk_box_add_padding (vbox, 0, 5);
 		}
 	} else {
 		/* single category */

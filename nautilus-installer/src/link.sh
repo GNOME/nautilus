@@ -1,10 +1,45 @@
 #! /bin/bash
 
 DEBUG="no"
+FULL="yes"
 
 GNOME=/gnome
 BUILD_DATE=`date +%d%b%y-%H%M`
 XFREE=`rpm -q --queryformat="%{VERSION}" XFree86`
+
+if test "x$1" = "x--help"; then
+    echo
+    echo "--debug / --no-debug    build with debug symbols or not"
+    echo "--full / --quick        build all static libs too (full) or not"
+    echo
+    exit 0
+fi
+
+if test "x$1" = "x--debug"; then
+    DEBUG="yes"
+    echo "* Debug mode."
+    shift
+fi
+if test "x$1" = "x--no-debug"; then
+    DEBUG="no"
+    echo "* Optimized mode."
+    shift
+fi
+if test "x$1" = "x--full"; then
+    FULL="yes"
+    echo "* Full build."
+    shift
+fi
+if test "x$1" = "x--no-full"; then
+    FULL="no"
+    echo "* Quick build."
+    shift
+fi
+if test "x$1" = "x--quick"; then
+    FULL="no"
+    echo "* Quick build."
+    shift
+fi
 
 if test "$DEBUG" = "yes"; then
     OG_FLAG="-g"
@@ -16,6 +51,7 @@ fi
 
 XLIBS="-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE "
 GLOG="-DG_LOG_DOMAIN=\\\"Nautilus-Installer\\\""
+WARN_FLAG="-Wall -Werror"
 
 if test "x$XFREE" = "x"; then
     echo "* XFree86 not installed as rpm, I will check for libXext";
@@ -38,21 +74,25 @@ else
     fi
 fi
 
-
-WARN_FLAG="-Wall -Werror"
-
-pushd `pwd`
-cd ../../components/services/install/lib
-    make -f makefile.staticlib clean
-    make CFLAGS="$OG_FLAG $WARN_FLAG $GLOG" DEFINES="-DEAZEL_INSTALL_NO_CORBA -DEAZEL_INSTALL_SLIM" -f makefile.staticlib && \
-    cd ../../trilobite/libtrilobite && \
-    make -f makefile.staticlib clean && \
-    make CFLAGS="$OG_FLAG $WARN_FLAG $GLOG" DEFINES="-DTRILOBITE_SLIM" -f makefile.staticlib && \
-popd && \
+if test "x$FULL" = "xyes"; then
+    pushd `pwd`
+    cd ../../components/services/install/lib
+        make -f makefile.staticlib clean
+        make CFLAGS="$OG_FLAG $WARN_FLAG $GLOG" DEFINES="-DEAZEL_INSTALL_NO_CORBA -DEAZEL_INSTALL_SLIM" -f makefile.staticlib && \
+        cd ../../trilobite/libtrilobite && \
+        make -f makefile.staticlib clean && \
+        make CFLAGS="$OG_FLAG $WARN_FLAG $GLOG" DEFINES="-DTRILOBITE_SLIM" -f makefile.staticlib && \
+    popd
+    if test $? -ne 0; then
+        echo "* Aborting."
+        exit 1
+    fi
+fi
 
 make clean && \
 make CFLAGS="$OG_FLAG $WARN_FLAG -DNO_TEXT_BOX -DBUILD_DATE=\\\"${BUILD_DATE}\\\"" LDFLAGS="-static" && \
-gcc -static $OG_FLAG $WARN_FLAG -o eazel-installer main.o callbacks.o installer.o proxy.o 	\
+gcc -static $OG_FLAG $WARN_FLAG -o eazel-installer \
+main.o callbacks.o installer.o proxy.o package-tree.o gtk-hackery.o			\
 ../../components/services/install/lib/libeazelinstall_minimal.a 			\
 ../../components/services/trilobite/libtrilobite/libtrilobite_minimal.a 		\
 ../../libnautilus-extensions/nautilus-druid.o						\

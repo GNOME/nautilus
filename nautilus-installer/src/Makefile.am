@@ -22,6 +22,8 @@ bin_PROGRAMS = eazel-installer
 
 eazel_installer_SOURCES = \
 	main.c \
+	package-tree.c \
+	gtk-hackery.c \
 	callbacks.c callbacks.h \
 	proxy.c proxy.h \
 	installer.c installer.h 
