@@ -84,6 +84,7 @@ static const struct poptOption options[] = {
 	{"batch", '\0', POPT_ARG_NONE, &installer_dont_ask_questions, 0, N_("Solve installation issues without interaction"), NULL},
 	{"ignore-disk-space", '\0', POPT_ARG_NONE | POPT_ARGFLAG_DOC_HIDDEN, &installer_ignore_disk_space, 0, "", NULL},
 	{"cache-dir", 'C', POPT_ARG_STRING, &installer_cache_dir, 0, N_("Look here for cached package files"), "directory"},
+	POPT_AUTOHELP
 	{NULL, '\0', 0, NULL, 0}
 };
 
@@ -163,6 +164,11 @@ main (int argc, char *argv[])
 		exit (0);
 	}
 
+	ctx = poptGetContext ("eazel-installer", argc, (const char **)argv, options, 0);
+	while (poptGetNextOpt (ctx) >= 0) {
+        }
+	poptFreeContext (ctx);
+
 	fake_argc = 1;
 	fake_argv[0] = g_strdup (fake_argv0);
 	fake_argv[1] = NULL;
@@ -177,11 +183,6 @@ main (int argc, char *argv[])
 	signal (SIGFPE, segv_handler);
 #endif
 	gdk_rgb_init ();
-
-	ctx = poptGetContext ("eazel-installer", argc, (const char **)argv, options, 0);
-	while (poptGetNextOpt (ctx) >= 0) {
-        }
-	poptFreeContext (ctx);
 
 	if (installer_show_build) {
 		printf ("\nEazel Installer v%s (build %s)\n\n", VERSION, BUILD_DATE);
