@@ -1,5 +1,11 @@
 2001-08-01  Havoc Pennington  <hp@redhat.com>
 
+	* libnautilus-private/nautilus-link-impl-desktop.c: use 
+	desktop_file_get_locale_string() instead of
+	desktop_file_get_string() to get the names from the desktop files.
+
+2001-08-01  Havoc Pennington  <hp@redhat.com>
+
 	* eazel-logos/default.xml: hang on - is this the default theme for
 	nautilus, or is the below file the default theme for nautilus? 
 	anyway, make same change to remove title colors.

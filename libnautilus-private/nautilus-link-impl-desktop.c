@@ -175,7 +175,8 @@ get_tag (NautilusLinkType type)
 
 static gchar *
 slurp_key_string (const char *path,
-		  const char *keyname)
+		  const char *keyname,
+                  gboolean    localize)
 {
 	DesktopFile *desktop_file;
 	gchar *text;
@@ -191,10 +192,17 @@ slurp_key_string (const char *path,
 
 	if (desktop_file == NULL)
 		return NULL;
-	set = desktop_file_get_string (desktop_file,
-				       "Desktop Entry",
-				       keyname,
-				       &text);
+
+        if (localize)
+                set = desktop_file_get_locale_string (desktop_file,
+                                                      "Desktop Entry",
+                                                      keyname,
+                                                      &text);
+        else
+                set = desktop_file_get_string (desktop_file,
+                                               "Desktop Entry",
+                                               keyname,
+                                               &text);
 	desktop_file_free (desktop_file);
 	if (set == FALSE)
 		return NULL;
@@ -310,7 +318,7 @@ nautilus_link_impl_desktop_local_set_link_uri (const char *path,
 char *
 nautilus_link_impl_desktop_local_get_text (const char *path)
 {
-	return slurp_key_string (path, "Name");
+	return slurp_key_string (path, "Name", TRUE);
 }
 
 char *
@@ -319,13 +327,13 @@ nautilus_link_impl_desktop_local_get_additional_text (const char *path)
 	gchar *type;
 	gchar *retval;
 
-	type = slurp_key_string (path, "Type");
+	type = slurp_key_string (path, "Type", FALSE);
 	retval = NULL;
 	if (type == NULL)
 		return NULL;
 
 	if (strcmp (type, "Application") == 0)
-		retval = slurp_key_string (path, "Comment");
+		retval = slurp_key_string (path, "Comment", TRUE);
 	g_free (type);
 
 	return retval;
@@ -338,14 +346,14 @@ nautilus_link_impl_desktop_local_get_image_uri (const char *path)
 	char *local_path, *local_uri;
 	NautilusLinkIconNotificationInfo *info;
 
-	icon_uri = slurp_key_string (path, "X-Nautilus-Icon");
+	icon_uri = slurp_key_string (path, "X-Nautilus-Icon", FALSE);
 
 	if (icon_uri == NULL) {
 		gchar *absolute;
 		gchar *icon_name;
 
 		/* Fall back to a standard icon. */
-		icon_name = slurp_key_string (path, "Icon");
+		icon_name = slurp_key_string (path, "Icon", FALSE);
 		if (icon_name == NULL)
 			return NULL;
 
@@ -397,7 +405,7 @@ nautilus_link_impl_desktop_local_get_link_type (const char *path)
 	gchar *type;
 	NautilusLinkType retval;
 
-	type = slurp_key_string (path, "Type");
+	type = slurp_key_string (path, "Type", FALSE);
 
 	if (type == NULL)
 		return NAUTILUS_LINK_GENERIC;
