@@ -3034,7 +3034,9 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 static gboolean
 file_is_launchable (NautilusFile *file)
 {
-	return !nautilus_file_is_directory (file) && nautilus_file_can_execute (file);
+	return !nautilus_file_is_directory (file) 
+		&& nautilus_file_can_get_permissions (file)
+		&& nautilus_file_can_execute (file);
 }
 
 /**
@@ -3062,6 +3064,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	char *uri, *command, *executable_path;
 	GnomeVFSMimeActionType action_type;
 	GnomeVFSMimeApplication *application;
+	gboolean performed_special_handling;
 
 	parameters = callback_data;
 
@@ -3069,11 +3072,14 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	uri = nautilus_file_get_activation_uri (file);
 
+	performed_special_handling = FALSE;
+
 	/* FIXME: Quite a security hole here. */
 	if (nautilus_istr_has_prefix (uri, "command:")) {
 		command = g_strconcat (uri + 8, " &", NULL);
 		system (command);
 		g_free (command);
+		performed_special_handling = TRUE;
 	} else if (file_is_launchable (file)) {
 		/* FIXME: This should check if the activation URI points to
 		 * something launchable, not the original file. Also, for
@@ -3085,9 +3091,18 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		 * run command-line tools.
 		 */
 		executable_path = nautilus_get_local_path_from_uri (uri);
-		nautilus_launch_application_from_command (executable_path, NULL);
-		g_free (executable_path);
-	} else {
+
+		/* Non-local executables don't get launched. They fall through
+		 * and act like non-executables.
+		 */
+		if (executable_path != NULL) {
+			nautilus_launch_application_from_command (executable_path, NULL);
+			g_free (executable_path);
+			performed_special_handling = TRUE;
+		}
+	}
+
+	if (!performed_special_handling) {
 		action_type = nautilus_mime_get_default_action_type_for_uri (uri);
 		if (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
 			application = nautilus_mime_get_default_application_for_uri (uri);

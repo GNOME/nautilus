@@ -1,3 +1,17 @@
+2000-08-08  John Sullivan  <sullivan@eazel.com>
+
+	Fixed a couple of problems that yakk ran into that were
+	preventing files from opening correctly in WebDAV.
+
+	* src/file-manager/fm-directory-view.c: 
+	(file_is_launchable): Check for "can_get_permissions" before
+	checking executability. If you can't get the permissions then
+	we won't assume the file is launchable.
+	(activate_callback): This was launching local executables
+	but trying to launch NULL in the remote executable case.
+	Reworked to fall through to the non-executable code for remote
+	executables.
+
 2000-08-08  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-gdk-extensions.c:
