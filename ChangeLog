@@ -1,7 +1,90 @@
+2000-07-10  Darin Adler  <darin@eazel.com>
+
+	* components/history/nautilus-history-view.c:
+	(history_view_update_icons), (get_history_list),
+	(hyperbola_navigation_history_load_location):
+	* libnautilus/nautilus-view-component.idl:
+	* src/nautilus-history-frame.c:
+	(impl_Nautilus_HistoryFrame_get_history_list):
+	* src/nautilus-view-frame.h:
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_get_history_list):
+	* src/nautilus-window.c:
+	(nautilus_window_get_history_list_callback),
+	(nautilus_window_connect_view):
+	Changed history list to include a separate position field
+	instead of having a position in each entry.
+	
+	* components/notes/nautilus-notes.c: (done_with_file):
+	Name changed from nautilus_file_cancel_callback to
+	nautilus_file_cancel_call_when_ready to reduce confusion with
+	nautilus_file_cancel.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_get): Made NULL for URI be legal (and result
+	in NULL for the directory object).
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(get_mime_type_from_uri): Made NULL for URI be legal (and result
+	in NULL for MIME type).
+
+	* libnautilus-extensions/nautilus-entry.c:
+	(nautilus_entry_set_text): Minor tweak.
+	
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-file-private.h:
+	* libnautilus-extensions/nautilus-file.c: (operation_new),
+	(operation_free), (operation_complete), (operation_cancel),
+	(rename_update_info_and_metafile), (rename_callback),
+	(nautilus_file_rename), (nautilus_file_cancel),
+	(nautilus_file_set_owner), (nautilus_file_cancel_call_when_ready):
+	Added cancelling to rename as a prelude to doing the same for
+	set_file_info-based calls.
+	
+	* libnautilus-extensions/nautilus-graphic.c:
+	Fixed a formatting mistake and a typo.
+	
+	* libnautilus-extensions/nautilus-stock-dialogs.h:
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	(timed_wait_hash), (timed_wait_hash_equal),
+	(nautilus_timed_wait_start), (nautilus_timed_wait_free),
+	(nautilus_timed_wait_stop): Re-did timed wait API now that
+	we are really using it. Still unimplemented.
+	
+	* src/Makefile.am:
+	Since IDL dependencies are not understood by automake, added
+	an explicit one so we pick up the change to the libnautilus
+	view component IDL.
+	
+	* src/file-manager/fm-error-reporting.h:
+	* src/file-manager/fm-error-reporting.c: (rename_callback),
+	(cancel_rename_callback), (fm_rename_file): Moved code for
+	renaming into here so it can be shared between the icon view
+	and the properties dialog. Perhaps it needs to be renamed.
+	
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_icon_text_changed_callback): Use the shared
+	code instead of having the rename code here.
+	
+	* src/nautilus-application.c: (create_object): Make a new
+	shell object each time instead of trying to share one.
+	(nautilus_application_startup): Activate the shell object
+	using OAF. This makes it work across processes and adds
+	the feature.
+	
+	* src/nautilus-main.c: (main): Call bonobo_activate explicitly so
+	CORBA calls work before the main loop.
+	
+	* src/nautilus-shell.c: (display_caveat_first_time),
+	(corba_manage_desktop): Got rid of all state in NautilusShell
+	so we can use multiple shell objects if we want.
+	
+	* src/nautilus-sidebar.c: (nautilus_sidebar_update_info):
+	Got rid of code that checks for NULL.
+	
 2000-07-10  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* icons/eazel/Services.png:
-	New icon from arlo.
+	New icon from Arlo.
 
 2000-07-10  Michael Engber  <engber@eazel.com>
 
@@ -69,9 +152,8 @@
 
 	* test/test-nautilus-graphic.c: (main):
 	Update for new boundary offset support.
-	
-	components/services/install/nautilus-view/nautilus-service-install-
-	view.c: (generate_install_form), (create_graphic_widget),
+	* components/services/install/nautilus-view/nautilus-service-install-view.c:
+	(generate_install_form), (create_graphic_widget),
 	(create_title_widget):
 	* components/services/login/nautilus-view/nautilus-login-view.c:
 	(generate_login_form), (create_graphic_widget),
@@ -82,16 +164,12 @@
 
 	* components/services/trilobite/libtrilobite/Makefile.am:
 	* components/services/trilobite/libtrilobite/libtrilobite.h:
-	*
-	components/services/trilobite/libtrilobite/trilobite-core-utils.c:
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c:
 	(trilobite_pexec):
-	*
-	components/services/trilobite/libtrilobite/trilobite-core-utils.h:
-	*
-	components/services/trilobite/libtrilobite/trilobite-root-helper.c:
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.h:
+	* components/services/trilobite/libtrilobite/trilobite-root-helper.c:
 	new file
-	*
-	components/services/trilobite/libtrilobite/trilobite-root-helper.h:
+	* components/services/trilobite/libtrilobite/trilobite-root-helper.h:
 	new file
 
 	Add baseline TrilobiteRootHelper object.  It uses the "userhelper"

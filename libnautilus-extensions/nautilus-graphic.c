@@ -23,8 +23,8 @@
 */
 
 #include <config.h>
-
 #include "nautilus-graphic.h"
+
 #include "nautilus-gtk-macros.h"
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gdk-pixbuf-extensions.h"
@@ -33,7 +33,7 @@
 
 /* FIXME bugzilla.eazel.com 1612: 
  * We should use NautilusBackground for the background.  This will simplify
- * lots of things, be more effecient, and remove the need for a lot of the
+ * lots of things, be more efficient, and remove the need for a lot of the
  * tiling code.
  */
 
@@ -208,8 +208,8 @@ NAUTILUS_MACRO_END
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusGraphic, nautilus_graphic, GTK_TYPE_WIDGET)
 
 /* Class init methods */
-	static void
-	nautilus_graphic_initialize_class (NautilusGraphicClass *graphic_class)
+static void
+nautilus_graphic_initialize_class (NautilusGraphicClass *graphic_class)
 {
 	GtkObjectClass		*object_class = GTK_OBJECT_CLASS (graphic_class);
 	GtkWidgetClass		*widget_class = GTK_WIDGET_CLASS (graphic_class);

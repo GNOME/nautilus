@@ -108,26 +108,20 @@ history_view_update_icons (GtkCList *clist)
 {
 	int row;
 
-	for (row = 0; row < clist->rows; ++row) 
-	{
+	for (row = 0; row < clist->rows; ++row) {
 		install_icon (clist, row);
 	}
 }
 
-static Nautilus_HistoryList *
+static Nautilus_History *
 get_history_list (HistoryView *hview)
 {
 	CORBA_Environment ev;
 	Nautilus_HistoryFrame view_frame;
-	Nautilus_HistoryList *list;
+	Nautilus_History *list;
 
-	list = NULL;
-	
 	view_frame = history_view_frame_call_begin (hview->view, &ev);
-	if (view_frame != CORBA_OBJECT_NIL) {
-		list = Nautilus_HistoryFrame_get_history_list (view_frame, &ev);		
-	}
-	
+	list = Nautilus_HistoryFrame_get_history_list (view_frame, &ev);		
 	history_view_frame_call_end (view_frame, &ev);
 
 	return list;
@@ -142,51 +136,46 @@ hyperbola_navigation_history_load_location (NautilusView *view,
 	int new_rownum;
 	GtkCList *clist;
 	NautilusBookmark *bookmark;
-	//int i;
-	//GnomeVFSURI *vfs_uri;
-	//char *short_name;
-	
-	Nautilus_HistoryList *history_list;
+	Nautilus_History *history;
 	Nautilus_HistoryItem *item;
-	int index;
+	int i;
 
 	hview->notify_count++;
 
 	clist = hview->clist;
-	gtk_clist_freeze(clist);
+	gtk_clist_freeze (clist);
 
 	/* Clear out list */
+	/* FIXME: Storage leak of column names here. */
 	gtk_clist_clear (clist);
 
 	/* Populate with data from main history list */	
-	history_list = get_history_list (hview);
-	if (history_list != NULL) {
-		for (index = 0; index < history_list->_length; index++) {
-			item = &history_list->_buffer[index];		
-			bookmark = nautilus_bookmark_new (item->location, item->name);
+	history = get_history_list (hview);
+	for (i = 0; i < history->list._length; i++) {
+		item = &history->list._buffer[i];		
+		bookmark = nautilus_bookmark_new (item->location, item->title);
+		
+		cols[HISTORY_VIEW_COLUMN_ICON] = NULL;
+		/* FIXME: Storage leak of column names when list goes away. */
+		cols[HISTORY_VIEW_COLUMN_NAME] = g_strdup (item->title);
 
-			cols[HISTORY_VIEW_COLUMN_ICON] = NULL;
-			cols[HISTORY_VIEW_COLUMN_NAME] = item->name;
-			new_rownum = gtk_clist_append(clist, cols);
-
-  			gtk_clist_set_row_data_full (clist, new_rownum, bookmark,
-  			       			    (GtkDestroyNotify)gtk_object_unref);
-  			install_icon (clist, new_rownum);
-
-  			gtk_clist_columns_autosize(clist);
-
-  			if(gtk_clist_row_is_visible(clist, new_rownum) != GTK_VISIBILITY_FULL) {
-    				gtk_clist_moveto(clist, new_rownum, -1, 0.5, 0.0);
-    			}
-
+		new_rownum = gtk_clist_append (clist, cols);
+		
+		gtk_clist_set_row_data_full (clist, new_rownum, bookmark,
+					     (GtkDestroyNotify) gtk_object_unref);
+		install_icon (clist, new_rownum);
+		
+		gtk_clist_columns_autosize (clist);
+		
+		if (gtk_clist_row_is_visible(clist, new_rownum) != GTK_VISIBILITY_FULL) {
+			gtk_clist_moveto(clist, new_rownum, -1, 0.5, 0.0);
 		}
-
-		CORBA_free (history_list);
 	}
+	CORBA_free (history);
 
-	gtk_clist_select_row(clist, 0, 0);
+	gtk_clist_select_row (clist, 0, 0);
 	
-	gtk_clist_thaw(clist);
+	gtk_clist_thaw (clist);
 	
   	hview->notify_count--;
 }
@@ -249,14 +238,14 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 	gtk_clist_set_row_height (clist, NAUTILUS_ICON_SIZE_SMALLER);
 	gtk_clist_set_selection_mode(clist, GTK_SELECTION_BROWSE);
 	gtk_clist_columns_autosize(clist);
-	wtmp = gtk_scrolled_window_new(gtk_clist_get_hadjustment(clist),
-				 gtk_clist_get_vadjustment(clist));
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wtmp),
-				 GTK_POLICY_AUTOMATIC,
-				 GTK_POLICY_AUTOMATIC);
-	gtk_container_add(GTK_CONTAINER(wtmp), GTK_WIDGET (clist));
+	wtmp = gtk_scrolled_window_new (gtk_clist_get_hadjustment (clist),
+					gtk_clist_get_vadjustment (clist));
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (wtmp),
+					GTK_POLICY_AUTOMATIC,
+					GTK_POLICY_AUTOMATIC);
+	gtk_container_add (GTK_CONTAINER (wtmp), GTK_WIDGET (clist));
 
-	gtk_widget_show_all(wtmp);
+	gtk_widget_show_all (wtmp);
 
 	/* create object */
 	hview->view = nautilus_view_new (wtmp);
@@ -267,7 +256,7 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 
 	/* handle events */
 	gtk_signal_connect(GTK_OBJECT(hview->view), "load_location",
-                     hyperbola_navigation_history_load_location, hview);
+			   hyperbola_navigation_history_load_location, hview);
 	gtk_signal_connect(GTK_OBJECT(clist), "select_row", hyperbola_navigation_history_select_row, hview);
 
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
@@ -278,20 +267,20 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 	return BONOBO_OBJECT (hview->view);
 }
 
-int main(int argc, char *argv[])
+int
+main (int argc, char *argv[])
 {
 	BonoboGenericFactory *factory;
 	CORBA_ORB orb;
 
-	gnome_init_with_popt_table("nautilus-history-view", VERSION, 
-                             argc, argv,
-                             oaf_popt_options, 0, NULL); 
+	gnome_init_with_popt_table ("nautilus-history-view", VERSION, 
+				    argc, argv,
+				    oaf_popt_options, 0, NULL); 
 	orb = oaf_init (argc, argv);
-
 	bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 	gnome_vfs_init ();
 
-	factory = bonobo_generic_factory_new_multi("OAFIID:nautilus_history_view_factory:912d6634-d18f-40b6-bb83-bdfe16f1d15e", make_obj, NULL);
+	factory = bonobo_generic_factory_new_multi ("OAFIID:nautilus_history_view_factory:912d6634-d18f-40b6-bb83-bdfe16f1d15e", make_obj, NULL);
 
 	do {
 		bonobo_main();

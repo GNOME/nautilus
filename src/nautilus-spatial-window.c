@@ -1156,48 +1156,44 @@ nautilus_window_zoom_level_changed_callback (NautilusViewFrame *view,
 	}
 }
 
-static void
+static Nautilus_History *
 nautilus_window_get_history_list_callback (NautilusViewFrame *view,
-                                    	     Nautilus_HistoryList **out_list,
-                                    	     NautilusWindow *window)
+					   NautilusWindow *window)
 {
-	Nautilus_HistoryList *local_list;
-	Nautilus_HistoryItem *history_item;
+	Nautilus_History *history;
+	Nautilus_HistoryList *list;
 	NautilusBookmark *bookmark;
-	int length, index;
-	GSList *element;
+	int length, i;
+	GSList *p;
 	char *name, *location;
 
 	/* Get total number of history items */
 	length = g_slist_length (history_list);
-	if (length <= 0) {
-		*out_list = NULL;
-		return;
-	}
 
-	local_list = Nautilus_HistoryList__alloc ();
-	local_list->_length = length;
-	local_list->_maximum = length;
-	local_list->_buffer = CORBA_sequence_Nautilus_HistoryItem_allocbuf (length);
+	history = Nautilus_History__alloc ();
+	list = &history->list;
+	history->position = 0; /* FIXME */
+
+	list->_length = length;
+	list->_maximum = length;
+	list->_buffer = CORBA_sequence_Nautilus_HistoryItem_allocbuf (length);
+	CORBA_sequence_set_release (list, CORBA_TRUE);
 	
 	/* Iterate through list and copy item data */
-	for (index = 0, element = history_list; index < length; index++, element = element->next) {
-		bookmark = element->data;
+	for (i = 0, p = history_list; i < length; i++, p = p->next) {
+		bookmark = p->data;
+
 		name = nautilus_bookmark_get_name (bookmark);
 		location = nautilus_bookmark_get_uri (bookmark);
 		
-		history_item = &local_list->_buffer[index];
-		history_item->name = CORBA_string_dup (name);
-		history_item->location = CORBA_string_dup (location);
-		
-		history_item->position = index;
+		list->_buffer[i].title = CORBA_string_dup (name);
+		list->_buffer[i].location = CORBA_string_dup (location);
 		
 		g_free (name);
 		g_free (location);
 	}
-	CORBA_sequence_set_release (local_list, CORBA_TRUE);
 
-	*out_list = local_list;
+	return history;
 }
 
 void
@@ -1207,7 +1203,7 @@ nautilus_window_connect_view (NautilusWindow *window, NautilusViewFrame *view)
 	
 	view_object = GTK_OBJECT (view);
 
-	#define CONNECT(signal) gtk_signal_connect (view_object, #signal, nautilus_window_##signal##_callback, window)
+	#define CONNECT(signal) gtk_signal_connect (view_object, #signal, GTK_SIGNAL_FUNC (nautilus_window_##signal##_callback), window)
 
 	CONNECT (open_location);
 	CONNECT (open_location_in_new_window);

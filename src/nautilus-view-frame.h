@@ -107,52 +107,50 @@ typedef struct {
         void (* client_gone)                (NautilusViewFrame *view);
 
 	/* Get a CORBA copy of the history list */
-	void (*get_history_list)	    (NautilusViewFrame *view,
-					     Nautilus_HistoryList **out_list);
+	Nautilus_History *
+             (* get_history_list)	    (NautilusViewFrame *view);
 
 } NautilusViewFrameClass;
 
-GtkType            	nautilus_view_frame_get_type            (void);
-NautilusViewFrame 	*nautilus_view_frame_new                (BonoboUIHandler     *ui_handler,
-                                                           	 NautilusUndoManager *undo_manager);
-gboolean           	nautilus_view_frame_load_client        	(NautilusViewFrame   *view,
-                                                           	 const char          *iid);
-const char *       	nautilus_view_frame_get_iid             (NautilusViewFrame   *view);
-CORBA_Object       	nautilus_view_frame_get_client_objref   (NautilusViewFrame   *view);
-BonoboObject *     	nautilus_view_frame_get_control_frame   (NautilusViewFrame   *view);
-CORBA_Object       	nautilus_view_frame_get_objref          (NautilusViewFrame   *view);
+GtkType            nautilus_view_frame_get_type           (void);
+NautilusViewFrame *nautilus_view_frame_new                (BonoboUIHandler     *ui_handler,
+                                                           NautilusUndoManager *undo_manager);
+gboolean           nautilus_view_frame_load_client        (NautilusViewFrame   *view,
+                                                           const char          *iid);
+const char *       nautilus_view_frame_get_iid            (NautilusViewFrame   *view);
+CORBA_Object       nautilus_view_frame_get_client_objref  (NautilusViewFrame   *view);
+BonoboObject *     nautilus_view_frame_get_control_frame  (NautilusViewFrame   *view);
+CORBA_Object       nautilus_view_frame_get_objref         (NautilusViewFrame   *view);
 
 /* These functions correspond to methods of the Nautilus:View CORBAinterface. */
-void               	nautilus_view_frame_load_location       (NautilusViewFrame   *view,
-                                                           	 const char          *location);
-void               	nautilus_view_frame_stop_loading        (NautilusViewFrame   *view);
-void               	nautilus_view_frame_selection_changed   (NautilusViewFrame   *view,
-                                                           	 GList               *selection);
+void               nautilus_view_frame_load_location      (NautilusViewFrame   *view,
+                                                           const char          *location);
+void               nautilus_view_frame_stop_loading       (NautilusViewFrame   *view);
+void               nautilus_view_frame_selection_changed  (NautilusViewFrame   *view,
+                                                           GList               *selection);
 
 /* Nautilus:Zoomable */
-gboolean           	nautilus_view_frame_is_zoomable        (NautilusViewFrame   *view);
-gdouble            	nautilus_view_frame_get_zoom_level     (NautilusViewFrame   *view);
-void               	nautilus_view_frame_set_zoom_level     (NautilusViewFrame   *view,
-                                                           	double              zoom_level);
-gdouble            	nautilus_view_frame_get_min_zoom_level (NautilusViewFrame   *view);
-gdouble            	nautilus_view_frame_get_max_zoom_level (NautilusViewFrame   *view);
-gboolean           	nautilus_view_frame_get_is_continuous  (NautilusViewFrame   *view);
+gboolean           nautilus_view_frame_is_zoomable        (NautilusViewFrame   *view);
+gdouble            nautilus_view_frame_get_zoom_level     (NautilusViewFrame   *view);
+void               nautilus_view_frame_set_zoom_level     (NautilusViewFrame   *view,
+                                                           double               zoom_level);
+gdouble            nautilus_view_frame_get_min_zoom_level (NautilusViewFrame   *view);
+gdouble            nautilus_view_frame_get_max_zoom_level (NautilusViewFrame   *view);
+gboolean           nautilus_view_frame_get_is_continuous  (NautilusViewFrame   *view);
 GList *		   	nautilus_view_frame_get_preferred_zoom_levels
-							  	(NautilusViewFrame  *view);
-
-void               	nautilus_view_frame_zoom_in            (NautilusViewFrame   *view);
-void               	nautilus_view_frame_zoom_out           (NautilusViewFrame   *view);
-void               	nautilus_view_frame_zoom_to_fit        (NautilusViewFrame   *view);
+(NautilusViewFrame  *view);
+void               nautilus_view_frame_zoom_in            (NautilusViewFrame   *view);
+void               nautilus_view_frame_zoom_out           (NautilusViewFrame   *view);
+void               nautilus_view_frame_zoom_to_fit        (NautilusViewFrame   *view);
 
 /* Other. */
-void               	nautilus_view_frame_set_active_errors  (NautilusViewFrame   *view,
-                                                           	gboolean            enabled);
-char *             	nautilus_view_frame_get_label          (NautilusViewFrame   *view);
-void               	nautilus_view_frame_set_label          (NautilusViewFrame   *view,
-                                                           	const char          *label);
-void               	nautilus_view_frame_activate           (NautilusViewFrame   *view);
-
-Nautilus_HistoryList 	*nautilus_view_frame_get_history_list	(NautilusViewFrame  *view);
+void               nautilus_view_frame_set_active_errors  (NautilusViewFrame   *view,
+                                                           gboolean             enabled);
+char *             nautilus_view_frame_get_label          (NautilusViewFrame   *view);
+void               nautilus_view_frame_set_label          (NautilusViewFrame   *view,
+                                                           const char          *label);
+void               nautilus_view_frame_activate           (NautilusViewFrame   *view);
+Nautilus_History * nautilus_view_frame_get_history_list   (NautilusViewFrame   *view);
 
 #ifdef __cplusplus
 }

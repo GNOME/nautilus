@@ -117,7 +117,7 @@ nautilus_SOURCES = \
 	$(NULL)
 
 $(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp
-nautilus_shell_interface_idl_stamp: nautilus-shell-interface.idl
+nautilus_shell_interface_idl_stamp: nautilus-shell-interface.idl ../libnautilus/nautilus-view-component.idl
 	$(ORBIT_IDL) $(IDL_CFLAGS) -I.. nautilus-shell-interface.idl
 	touch nautilus_shell_interface_idl_stamp
 

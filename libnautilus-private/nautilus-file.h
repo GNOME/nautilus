@@ -99,7 +99,7 @@ void                    nautilus_file_call_when_ready           (NautilusFile   
 								 gboolean                       wait_for_metadata,
 								 NautilusFileCallback           callback,
 								 gpointer                       callback_data);
-void                    nautilus_file_cancel_callback           (NautilusFile                  *file,
+void                    nautilus_file_cancel_call_when_ready    (NautilusFile                  *file,
 								 NautilusFileCallback           callback,
 								 gpointer                       callback_data);
 gboolean		nautilus_file_check_if_ready		(NautilusFile		       *file,
@@ -172,7 +172,8 @@ void                    nautilus_file_rename                    (NautilusFile   
 gboolean                nautilus_file_is_rename_in_progress     (NautilusFile                  *file,
 								 char                         **old_name,
 								 char                         **new_name);
-void                    nautilus_file_cancel                    (NautilusFileOperationCallback  callback,
+void                    nautilus_file_cancel                    (NautilusFile                  *file,
+								 NautilusFileOperationCallback  callback,
 								 gpointer                       callback_data);
 
 /* Return true if this file has already been deleted.

@@ -30,19 +30,18 @@
 
 #include <config.h>
 
-#include "nautilus-self-check-functions.h"
 #include "nautilus-application.h"
+#include "nautilus-self-check-functions.h"
+#include <bonobo/bonobo-main.h>
 #include <dlfcn.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-init.h>
+#include <libgnomevfs/gnome-vfs-init.h>
 #include <libnautilus-extensions/nautilus-debug.h>
 #include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
 #include <libnautilus-extensions/nautilus-self-checks.h>
-#include <popt.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-init.h>
-
-#include <libgnomevfs/gnome-vfs-init.h>
 #include <liboaf/liboaf.h>
-#include <bonobo/bonobo-main.h>
+#include <popt.h>
 #include <stdlib.h>
 
 /* FIXME: Replace the leak checker calls with weakly exported ones in
@@ -136,6 +135,7 @@ main (int argc, char *argv[])
 	orb = oaf_init (argc, argv);
 	gnome_vfs_init ();
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+	bonobo_activate (); /* do now since we need it before main loop */
 
 	/* Do either the self-check or the real work. */
 	if (perform_self_check) {
@@ -151,7 +151,9 @@ main (int argc, char *argv[])
 		nautilus_application_startup (application,
 					      manage_desktop,
 					      poptGetArgs (popt_context));
-		bonobo_main ();
+		if (application->windows != NULL) {
+			bonobo_main ();
+		}
 		bonobo_object_unref (BONOBO_OBJECT (application));
 	}
 

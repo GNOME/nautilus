@@ -48,6 +48,13 @@ struct NautilusFileDetails
 
 	gboolean got_top_left_text;
 	char *top_left_text;
+
+	/* The following is for file operations in progress. Since
+	 * there are normally only a few of these, we can move them to
+	 * a separate hash table or something if required to keep the
+	 * file objects small.
+	 */
+	GList *operations_in_progress;
 };
 
 #define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_CHARACTERS_PER_LINE 80

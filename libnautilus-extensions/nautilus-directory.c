@@ -270,7 +270,9 @@ nautilus_directory_get (const char *uri)
 	char *canonical_uri;
 	NautilusDirectory *directory;
 
-	g_return_val_if_fail (uri != NULL, NULL);
+	if (uri == NULL) {
+		return NULL;
+	}
 
 	canonical_uri = make_uri_canonical (uri);
 

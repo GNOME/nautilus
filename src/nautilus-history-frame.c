@@ -27,7 +27,6 @@
    Nautilus::HistoryFrame interface of a Nautilus HistoryFrame. */
 
 #include <config.h>
-
 #include "nautilus-history-frame.h"
 
 typedef struct {
@@ -36,8 +35,8 @@ typedef struct {
 	NautilusViewFrame *view;
 } impl_POA_Nautilus_HistoryFrame;
 
-static Nautilus_HistoryList *impl_Nautilus_HistoryFrame_get_history_list (PortableServer_Servant  servant,
-							    		   CORBA_Environment      *ev);
+static Nautilus_History *impl_Nautilus_HistoryFrame_get_history_list (PortableServer_Servant  servant,
+								      CORBA_Environment      *ev);
 
 POA_Nautilus_HistoryFrame__epv impl_Nautilus_HistoryFrame_epv =
 {
@@ -95,10 +94,10 @@ impl_Nautilus_HistoryFrame__create (NautilusViewFrame *view,
 	return bonobo_object;
 }
 
-static Nautilus_HistoryList *
+static Nautilus_History *
 impl_Nautilus_HistoryFrame_get_history_list (PortableServer_Servant servant,
-					     CORBA_Environment 	    *ev)
+					     CORBA_Environment *ev)
 {
-	return (nautilus_view_frame_get_history_list 
-		(((impl_POA_Nautilus_HistoryFrame *)servant)->view));
+	return nautilus_view_frame_get_history_list
+		(((impl_POA_Nautilus_HistoryFrame *)servant)->view);
 }

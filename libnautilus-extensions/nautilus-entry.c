@@ -202,13 +202,13 @@ nautilus_entry_select_all_at_idle (NautilusEntry *entry)
  * @test: The text to set
  **/
 
-void 
+void
 nautilus_entry_set_text (NautilusEntry *entry, const gchar *text)
 {
+	g_return_if_fail (NAUTILUS_IS_ENTRY (entry));
+
 	entry->user_edit = FALSE;
-	
-	gtk_entry_set_text ( GTK_ENTRY (entry), text);
-	
+	gtk_entry_set_text (GTK_ENTRY (entry), text);
 	entry->user_edit = TRUE;
 }
 

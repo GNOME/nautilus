@@ -1391,22 +1391,6 @@ icon_position_changed_callback (NautilusIconContainer *container,
 	setlocale (LC_NUMERIC, locale);
 }
 
-static void
-rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
-{
-	char *new_name;
-
-	g_assert (NAUTILUS_IS_FILE (file));
-	g_assert (callback_data != NULL);
-
-	new_name = (char *) callback_data;
-
-	/* If rename failed, notify the user. */
-	fm_report_error_renaming_file (file, new_name, result);
-
-	g_free (new_name);
-}
-
 /* Attempt to change the filename to the new text.  Notify user if operation fails. */
 static void
 fm_icon_view_icon_text_changed_callback (NautilusIconContainer *container,
@@ -1415,17 +1399,15 @@ fm_icon_view_icon_text_changed_callback (NautilusIconContainer *container,
 					 FMIconView *icon_view)
 {
 	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (new_name != NULL);
 
 	/* Don't allow a rename with an empty string. Revert to original 
 	 * without notifying the user.
 	 */
-	if (nautilus_strlen (new_name) == 0) {
+	if (new_name[0] == '\0') {
 		return;
 	}
-	
-	/* Start the rename. */
-	nautilus_file_rename (file, new_name,
-			      rename_callback, g_strdup (new_name));
+	fm_rename_file (file, new_name);
 }
 
 static NautilusScalableIcon *

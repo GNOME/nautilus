@@ -77,7 +77,7 @@ finish_loading_note (NautilusFile *file,
 static void
 done_with_file (Notes *notes)
 {
-        nautilus_file_cancel_callback (notes->file, finish_loading_note, notes);
+        nautilus_file_cancel_call_when_ready (notes->file, finish_loading_note, notes);
         nautilus_file_unref (notes->file);
 }
 

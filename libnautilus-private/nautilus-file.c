@@ -520,58 +520,81 @@ typedef struct {
 
 	/* Operation-specific data. */
 	char *new_name; /* rename */
-} FileOperationState;
+} Operation;
 
-static FileOperationState *
-file_operation_state_new (NautilusFile *file,
-			  NautilusFileOperationCallback callback,
-			  gpointer callback_data)
+static Operation *
+operation_new (NautilusFile *file,
+	       NautilusFileOperationCallback callback,
+	       gpointer callback_data)
 {
-	FileOperationState *state;
+	Operation *op;
 
 	nautilus_file_ref (file);
 
-	state = g_new0 (FileOperationState, 1);
-	state->file = file;
-	state->callback = callback;
-	state->callback_data = callback_data;
+	op = g_new0 (Operation, 1);
+	op->file = file;
+	op->callback = callback;
+	op->callback_data = callback_data;
 
-	return state;
+	op->file->details->operations_in_progress = g_list_prepend
+		(op->file->details->operations_in_progress, op);
+
+	return op;
 }
 
 static void
-file_operation_state_free (FileOperationState *state)
+operation_free (Operation *op)
 {
-	nautilus_file_unref (state->file);
-	g_free (state->new_name);
-	g_free (state);
+	op->file->details->operations_in_progress = g_list_remove
+		(op->file->details->operations_in_progress, op);
+
+	nautilus_file_unref (op->file);
+
+	g_free (op->new_name);
+
+	g_free (op);
 }
 
 static void
-file_operation_state_complete (FileOperationState *state,
-			       GnomeVFSResult result)
+operation_complete (Operation *op,
+		    GnomeVFSResult result)
 {
 	/* Claim that something changed even if the operation failed.
 	 * This makes it easier for some clients who see the "reverting"
 	 * as "changing back".
 	 */
-	nautilus_file_changed (state->file);
-	(* state->callback) (state->file, result, state->callback_data);
-	file_operation_state_free (state);
+	nautilus_file_changed (op->file);
+	(* op->callback) (op->file, result, op->callback_data);
+	operation_free (op);
 }
 
 static void
-rename_update_info_and_metafile (FileOperationState *state)
+operation_cancel (Operation *op)
+{
+	/* Cancel the operation if it's still in progress. */
+	g_assert (op->handle != NULL);
+	gnome_vfs_async_cancel (op->handle);
+
+	/* Claim that something changed even though the operation was
+	 * canceled in case some work was partly done, but don't call
+	 * the callback.
+	 */
+	nautilus_file_changed (op->file);
+	operation_free (op);
+}
+
+static void
+rename_update_info_and_metafile (Operation *op)
 {
 	nautilus_directory_update_file_metadata
-		(state->file->details->directory,
-		 state->file->details->name,
-		 state->new_name);
+		(op->file->details->directory,
+		 op->file->details->name,
+		 op->new_name);
 	
-	g_free (state->file->details->name);
-	state->file->details->name = g_strdup (state->new_name);
-	if (state->file->details->info != NULL) {
-		state->file->details->info->name = state->file->details->name;
+	g_free (op->file->details->name);
+	op->file->details->name = g_strdup (op->new_name);
+	if (op->file->details->info != NULL) {
+		op->file->details->info->name = op->file->details->name;
 	}
 }
 
@@ -580,10 +603,10 @@ rename_callback (GnomeVFSAsyncHandle *handle,
 		 GnomeVFSXferProgressInfo *info,
 		 gpointer callback_data)
 {
-	FileOperationState *state;
+	Operation *op;
 
-	state = callback_data;
-	g_assert (handle == state->handle);
+	op = callback_data;
+	g_assert (handle == op->handle);
 	g_assert (info != NULL);
 
 	/* We aren't really interested in progress, but we do need to see
@@ -594,16 +617,17 @@ rename_callback (GnomeVFSAsyncHandle *handle,
 		if (info->phase == GNOME_VFS_XFER_PHASE_COMPLETED) {
 			/* Here's the case where we are done renaming. */
 			if (info->vfs_status == GNOME_VFS_OK) {
-				rename_update_info_and_metafile (state);
+				rename_update_info_and_metafile (op);
 			}
-			file_operation_state_complete (state, info->vfs_status);
+			operation_complete (op, info->vfs_status);
 		}
 		break;
 	case GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR:
 		/* We have to handle this case because if you pass
 		 * GNOME_VFS_ERROR_MODE_ABORT, you never get the
 		 * error code for a failed rename.
-		 * FIXME bugzilla.eazel.com 912: I believe this
+		 */
+		/* FIXME bugzilla.eazel.com 912: I believe this
 		 * represents a bug in GNOME VFS.
 		 */
 		return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
@@ -611,8 +635,10 @@ rename_callback (GnomeVFSAsyncHandle *handle,
 		break;
 	}
 
-	/* FIXME bugzilla.eazel.com 886: Pavel says I should return
-	 * this, but he promises he will fix the API.
+	/* FIXME bugzilla.eazel.com 886: Pavel says we should return
+	 * this, but he promises he will fix the API so we don't have
+	 * to have special "occult knowledge" to understand this must
+	 * be a 1.
 	 */
 	return 1;
 }
@@ -626,7 +652,7 @@ nautilus_file_rename (NautilusFile *file,
 	char *directory_uri_text;
 	GList *source_name_list, *target_name_list;
 	GnomeVFSResult result;
-	FileOperationState *state;
+	Operation *op;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (new_name != NULL);
@@ -660,35 +686,48 @@ nautilus_file_rename (NautilusFile *file,
 		return;
 	}
 
-	state = file_operation_state_new (file, callback, callback_data);
-	state->new_name = g_strdup (new_name);
+	/* Set up a renaming operation. */
+	op = operation_new (file, callback, callback_data);
+	op->new_name = g_strdup (new_name);
 
 	directory_uri_text = nautilus_directory_get_uri (file->details->directory);
 	source_name_list = g_list_prepend (NULL, file->details->name);
 	target_name_list = g_list_prepend (NULL, (char *) new_name);
 	result = gnome_vfs_async_xfer
-		(&state->handle,
+		(&op->handle,
 		 directory_uri_text, source_name_list,
 		 directory_uri_text, target_name_list,
 		 GNOME_VFS_XFER_SAMEFS | GNOME_VFS_XFER_REMOVESOURCE,
 		 GNOME_VFS_XFER_ERROR_MODE_QUERY,
 		 GNOME_VFS_XFER_OVERWRITE_MODE_ABORT,
-		 rename_callback, state,
+		 rename_callback, op,
 		 NULL, NULL);
 	g_free (directory_uri_text);
 	g_list_free (source_name_list);
 	g_list_free (target_name_list);
 
 	if (result != GNOME_VFS_OK) {
-		file_operation_state_free (state);
+		operation_complete (op, result);
+	}
+}
 
-	       	/* Claim that something changed even if the rename failed.
-		 * This makes it easier for some clients who see the "reverting"
-		 * to the old name as "changing back".
-		 */
-		nautilus_file_changed (file);
-		(* callback) (file, result, callback_data);
-		return;
+void
+nautilus_file_cancel (NautilusFile *file,
+		      NautilusFileOperationCallback callback,
+		      gpointer callback_data)
+{
+	GList *p, *next;
+	Operation *op;
+
+	for (p = file->details->operations_in_progress; p != NULL; p = next) {
+		next = p->next;
+		op = p->data;
+
+		g_assert (op->file == file);
+		if (op->callback == callback
+		    && op->callback_data == callback_data) {
+			operation_cancel (op);
+		}
 	}
 }
 
@@ -1893,7 +1932,7 @@ nautilus_file_set_owner (NautilusFile *file,
 	if (!nautilus_file_can_set_owner (file)) {
 		/* Claim that something changed even if the permission change failed.
 		 * This makes it easier for some clients who see the "reverting"
-		 * to the old permissions as "changing back".
+		 * to the old owner as "changing back".
 		 */
 		nautilus_file_changed (file);
 		(* callback) (file, GNOME_VFS_ERROR_ACCESS_DENIED, callback_data);
@@ -3330,9 +3369,9 @@ nautilus_file_call_when_ready (NautilusFile *file,
 }
 
 void
-nautilus_file_cancel_callback (NautilusFile *file,
-			       NautilusFileCallback callback,
-			       gpointer callback_data)
+nautilus_file_cancel_call_when_ready (NautilusFile *file,
+				      NautilusFileCallback callback,
+				      gpointer callback_data)
 {
 	g_return_if_fail (callback != NULL);
 

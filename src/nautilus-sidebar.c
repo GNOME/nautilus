@@ -1278,11 +1278,7 @@ nautilus_sidebar_update_info (NautilusSidebar *sidebar,
 	char *background_color, *color_spec;
 	char *background_image, *combine_mode;
 
-	if (sidebar->details->uri == NULL) {
-		directory = NULL;
-	} else {
-		directory = nautilus_directory_get (sidebar->details->uri);
-	}
+	directory = nautilus_directory_get (sidebar->details->uri);
 	nautilus_directory_unref (sidebar->details->directory);
 	sidebar->details->directory = directory;
 	
@@ -1352,8 +1348,8 @@ nautilus_sidebar_update_info (NautilusSidebar *sidebar,
 	
 	/* tell the title widget about it */
 	nautilus_sidebar_title_set_uri (sidebar->details->title,
-		                      sidebar->details->uri,
-				      initial_title);
+					sidebar->details->uri,
+					initial_title);
 	
 	/* set up the command buttons */
 	nautilus_sidebar_update_buttons (sidebar);

@@ -31,6 +31,8 @@
 
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 
+#include <libnautilus-extensions/nautilus-file.h>
+
 void
 fm_report_error_renaming_file (NautilusFile *file,
 			       const char *new_name,
@@ -131,3 +133,75 @@ fm_report_error_setting_permissions (NautilusFile *file,
 	nautilus_error_dialog (message, NULL);
 	g_free (message);
 }		
+
+typedef struct {
+	NautilusFile *file;
+	char *new_name;
+} RenameCallbackData;
+
+static void cancel_rename_callback (gpointer callback_data);
+
+static void
+rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
+{
+	RenameCallbackData *data;
+
+	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (callback_data != NULL);
+
+	data = (RenameCallbackData *) callback_data;
+
+	g_assert (file == data->file);
+	g_assert (data->new_name != NULL);
+
+	/* We are done, no need to cancel any more. */
+	nautilus_timed_wait_stop (cancel_rename_callback, data);
+
+	/* If rename failed, notify the user. */
+	fm_report_error_renaming_file (file, data->new_name, result);
+
+	g_free (data->new_name);
+	g_free (data);
+}
+
+static void
+cancel_rename_callback (gpointer callback_data)
+{
+	RenameCallbackData *data;
+
+	g_assert (callback_data != NULL);
+
+	data = (RenameCallbackData *) callback_data;
+
+	g_assert (NAUTILUS_IS_FILE (data->file));
+	g_assert (data->new_name != NULL);
+
+	nautilus_file_cancel (data->file, rename_callback, callback_data);
+}
+
+void
+fm_rename_file (NautilusFile *file,
+		const char *new_name)
+{
+	char *new_name_dup, *old_name, *wait_message;
+
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	g_return_if_fail (new_name != NULL);
+
+	old_name = nautilus_file_get_name (file);
+	wait_message = g_strdup_printf (_("Renaming %s to %s."),
+					old_name,
+					new_name);
+	g_free (old_name);
+
+	/* Start the rename. */
+	new_name_dup = g_strdup (new_name);
+	nautilus_file_rename (file, new_name_dup,
+			      rename_callback, new_name_dup);
+	nautilus_timed_wait_start (cancel_rename_callback,
+				   new_name_dup,
+				   _("Cancel Rename?"),
+				   wait_message,
+				   NULL); /* FIXME: Parent this? */
+	g_free (wait_message);
+}

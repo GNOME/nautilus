@@ -30,17 +30,18 @@
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libnautilus-extensions/nautilus-file.h>
 
-void fm_report_error_renaming_file 	 (NautilusFile   *file,
-				    	  const char     *new_name,
-				    	  GnomeVFSResult  error_code);
-
+void fm_report_error_renaming_file       (NautilusFile   *file,
+					  const char     *new_name,
+					  GnomeVFSResult  error_code);
 void fm_report_error_setting_permissions (NautilusFile   *file,
 					  GnomeVFSResult  error_code);			    
-
-void fm_report_error_setting_owner 	 (NautilusFile   *file,
+void fm_report_error_setting_owner       (NautilusFile   *file,
 					  GnomeVFSResult  error_code);  
-
-void fm_report_error_setting_group 	 (NautilusFile   *file,
+void fm_report_error_setting_group       (NautilusFile   *file,
 					  GnomeVFSResult  error_code);
+
+/* FIXME: Should this file be renamed or should these be moved? */
+void fm_rename_file                      (NautilusFile   *file,
+					  const char     *new_name);
 
 #endif /* FM_ERROR_REPORTING_H */

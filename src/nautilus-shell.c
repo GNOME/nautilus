@@ -45,8 +45,6 @@
 
 struct NautilusShellDetails {
 	NautilusApplication *application;
-	NautilusDesktopWindow *desktop_window;
-	gboolean showed_caveat;
 };
 
 static void nautilus_shell_initialize       (NautilusShell          *shell);
@@ -198,18 +196,20 @@ display_caveat (GtkWindow *parent_window)
 static void
 display_caveat_first_time (NautilusShell *shell, NautilusWindow *window)
 {
+	static gboolean showed_caveat;
+
 	/* Show the "not ready for prime time" dialog after the first
 	 * window appears, so it's on top.
 	 */
 	/* FIXME bugzilla.eazel.com 1256: It's not on top of the
          * windows other than the first one.
 	 */
-	if (!shell->details->showed_caveat
+	if (!showed_caveat
 	    && g_getenv ("NAUTILUS_NO_CAVEAT_DIALOG") == NULL) {
 		gtk_signal_connect (GTK_OBJECT (window), "show",
 				    display_caveat, window);
 	}
-	shell->details->showed_caveat = TRUE;
+	showed_caveat = TRUE;
 }
 
 static void
@@ -260,12 +260,13 @@ corba_manage_desktop (PortableServer_Servant servant,
 		      CORBA_Environment *ev)
 {
 	NautilusShell *shell;
+	static NautilusDesktopWindow *desktop_window;
 
 	shell = NAUTILUS_SHELL (((BonoboObjectServant *) servant)->bonobo_object);
 
 	/* Create a desktop window. */
-	if (shell->details->desktop_window == NULL) {
-		shell->details->desktop_window = nautilus_desktop_window_new (shell->details->application);
+	if (desktop_window == NULL) {
+		desktop_window = nautilus_desktop_window_new (shell->details->application);
 	}
-	gtk_widget_show (GTK_WIDGET (shell->details->desktop_window));
+	gtk_widget_show (GTK_WIDGET (desktop_window));
 }

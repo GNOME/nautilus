@@ -1459,6 +1459,10 @@ get_mime_type_from_uri (const char *text_uri)
         const char *ctype;
 	char *type;
 
+	if (text_uri == NULL) {
+		return NULL;
+	}
+
 	type = NULL;
 
 	/* FIXME bugzilla.eazel.com 1263: 

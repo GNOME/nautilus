@@ -35,31 +35,59 @@
 #include "nautilus-string.h"
 #include "nautilus-gnome-extensions.h"
 
-struct NautilusTimedWait {
-	char *window_title;
-	char *wait_message;
+typedef struct {
 	NautilusCancelCallback cancel_callback;
 	gpointer callback_data;
-	GDestroyNotify destroy_notify;
+
+	/* Parameters for creation of the window. */
+	char *window_title;
+	char *wait_message;
 	GtkWindow *parent_window;
-};
+
+	/* Window, once it's created. */
+} NautilusTimedWait;
+
+static GHashTable *timed_wait_hash_table;
 
 static void find_message_label_callback (GtkWidget *widget, gpointer callback_data);
 
-NautilusTimedWait *
-nautilus_timed_wait_start (const char *window_title,
-			   const char *wait_message,
-			   NautilusCancelCallback cancel_callback,
+static guint
+timed_wait_hash (gconstpointer value)
+{
+	const NautilusTimedWait *wait;
+
+	wait = value;
+
+	return GPOINTER_TO_UINT (wait->cancel_callback)
+		^ GPOINTER_TO_UINT (wait->callback_data);
+}
+
+static gboolean
+timed_wait_hash_equal (gconstpointer value1, gconstpointer value2)
+{
+	const NautilusTimedWait *wait1, *wait2;
+
+	wait1 = value1;
+	wait2 = value2;
+
+	return wait1->cancel_callback == wait2->cancel_callback
+		&& wait1->callback_data == wait2->callback_data;
+}
+
+void
+nautilus_timed_wait_start (NautilusCancelCallback cancel_callback,
 			   gpointer callback_data,
-			   GDestroyNotify destroy_notify,
+			   const char *window_title,
+			   const char *wait_message,
 			   GtkWindow *parent_window)
 {
 	NautilusTimedWait *timed_wait;
-
-	g_return_val_if_fail (window_title != NULL, NULL);
-	g_return_val_if_fail (wait_message != NULL, NULL);
-	g_return_val_if_fail (cancel_callback != NULL, NULL);
-	g_return_val_if_fail (parent_window == NULL || GTK_IS_WINDOW (parent_window), NULL);
+	
+	g_return_if_fail (cancel_callback != NULL);
+	g_return_if_fail (callback_data != NULL);
+	g_return_if_fail (window_title != NULL);
+	g_return_if_fail (wait_message != NULL);
+	g_return_if_fail (parent_window == NULL || GTK_IS_WINDOW (parent_window));
 
 	/* Create the timed wait record. */
 	timed_wait = g_new (NautilusTimedWait, 1);
@@ -67,39 +95,49 @@ nautilus_timed_wait_start (const char *window_title,
 	timed_wait->wait_message = g_strdup (wait_message);
 	timed_wait->cancel_callback = cancel_callback;
 	timed_wait->callback_data = callback_data;
-	timed_wait->destroy_notify = destroy_notify;
 	timed_wait->parent_window = parent_window;
 	if (parent_window != NULL) {
 		gtk_widget_ref (GTK_WIDGET (parent_window));
 	}
 
-	return timed_wait;
+	if (timed_wait_hash_table == NULL) {
+		timed_wait_hash_table = g_hash_table_new
+			(timed_wait_hash, timed_wait_hash_equal);
+	}
+	g_assert (g_hash_table_lookup (timed_wait_hash_table, timed_wait) == NULL);
+	g_hash_table_insert (timed_wait_hash_table, timed_wait, timed_wait);
 }
 
 static void
 nautilus_timed_wait_free (NautilusTimedWait *timed_wait)
 {
-	/* Let the caller destroy the callback data. */
-	if (timed_wait->destroy_notify != NULL) {
-		(* timed_wait->destroy_notify) (timed_wait->callback_data);
-	}
-
-	/* Now free the other stuff we were holding onto. */
 	g_free (timed_wait->window_title);
 	g_free (timed_wait->wait_message);
 	if (timed_wait->parent_window != NULL) {
 		gtk_widget_unref (GTK_WIDGET (timed_wait->parent_window));
 	}
-
+	
 	/* And the wait object itself. */
 	g_free (timed_wait);
 }
 
 void
-nautilus_timed_wait_stop (NautilusTimedWait *timed_wait)
+nautilus_timed_wait_stop (NautilusCancelCallback cancel_callback,
+			  gpointer callback_data)
 {
+	NautilusTimedWait key;
+	NautilusTimedWait *timed_wait;
+
+	g_return_if_fail (cancel_callback != NULL);
+	g_return_if_fail (callback_data != NULL);
+	
+	key.cancel_callback = cancel_callback;
+	key.callback_data = callback_data;
+	timed_wait = g_hash_table_lookup (timed_wait_hash_table, &key);
+
 	g_return_if_fail (timed_wait != NULL);
 
+	g_hash_table_remove (timed_wait_hash_table, timed_wait);
 	nautilus_timed_wait_free (timed_wait);
 }
 

@@ -98,7 +98,6 @@ create_object (PortableServer_Servant servant,
 {
 	BonoboObject *object;
 	FMDirectoryView *directory_view;
-	static NautilusShell *shell;
 	NautilusApplication *application;
 
 	if (strcmp (iid, ICON_VIEW_IID) == 0) {
@@ -111,13 +110,8 @@ create_object (PortableServer_Servant servant,
 		directory_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_list_view_get_type (), NULL));
 		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
 	} else if (strcmp (iid, SHELL_IID) == 0) {
-		if (shell == NULL) {
-			application = NAUTILUS_APPLICATION (((BonoboObjectServant *) servant)->bonobo_object);
-			shell = nautilus_shell_new (application);
-		} else {
-			bonobo_object_ref (BONOBO_OBJECT (shell));
-		}
-		object = BONOBO_OBJECT (shell);
+		application = NAUTILUS_APPLICATION (((BonoboObjectServant *) servant)->bonobo_object);
+		object = BONOBO_OBJECT (nautilus_shell_new (application));
 	} else {
 		return CORBA_OBJECT_NIL;
 	}
@@ -297,17 +291,10 @@ nautilus_application_startup (NautilusApplication *application,
 	 */
 	nautilus_application_check_user_directories (application);
 
-	/* Start up the factory. */
-#if 0
-	for (;;) {
-		shell = oaf_activate_from_id (SHELL_IID, OAF_FLAG_EXISTING_ONLY, NULL, NULL);
-		if (shell != CORBA_OBJECT_NIL) {
-			g_message ("did activate");
-			break;
-		}
-		g_message ("didn't activate");
-#endif
+	CORBA_exception_init (&ev);
 
+	/* Start up the factory. */
+	for (;;) {
 		/* Try to register the file manager view factory with OAF. */
 		result = oaf_active_server_register
 			(FACTORY_IID,
@@ -315,6 +302,8 @@ nautilus_application_startup (NautilusApplication *application,
 		switch (result) {
 		case OAF_REG_SUCCESS:
 			/* We are registered with OAF and all is right with the world. */
+		case OAF_REG_ALREADY_ACTIVE:
+			/* Another copy of . */
 			message = NULL;
 			break;
 		case OAF_REG_NOT_LISTED:
@@ -344,15 +333,6 @@ nautilus_application_startup (NautilusApplication *application,
 					     "the problem, but we don't know why. "
 					     "We need a much less confusing message here for Nautilus 1.0.");
 			break;
-		case OAF_REG_ALREADY_ACTIVE:
-			/* Another copy of Nautilus is already running. */
-			/* FIXME: We want to "glom on" to this old copy. */
-			message = _("Nautilus is already running. "
-				    "Soon, instead of presenting this dialog, "
-				    "the already-running copy of Nautilus will "
-				    "respond by opening windows.");
-			detailed_message = NULL;
-			break;
 		default:
 			/* This should never happen. */
 			g_warning ("bad error code from oaf_active_server_register");
@@ -361,28 +341,43 @@ nautilus_application_startup (NautilusApplication *application,
 			 * version of OAF). Show dialog and terminate the
 			 * program.
 			 */
+			/* FIXME: Looks like this does happen with the
+			 * current OAF. I guess I read the code
+			 * wrong. Need to figure out when and make a
+			 * good message.
+			 */
 			message = _("Nautilus can't be used now, due to an unexpected error.");
 			detailed_message = _("Nautilus can't be used now, due to an unexpected error "
 					     "from OAF when attempting to register the file manager view server.");
 			break;
 		}
+
+		/* Get the shell object. */
+		if (message == NULL) {
+			shell = oaf_activate_from_id (SHELL_IID, 0, NULL, NULL);
+			if (!CORBA_Object_is_nil (shell, &ev)) {
+				break;
+			}
+
+			/* If we couldn't find ourselves it's a bad problem so
+			 * we better stop looping.
+			 */
+			if (result == OAF_REG_SUCCESS) {
+				/* FIXME: When can this happen? */
+				message = _("Nautilus can't be used now, due to an unexpected error.");
+				detailed_message = _("Nautilus can't be used now, due to an unexpected error "
+						     "from OAF when attempting to locate the factory.");
+			}
+		}
+
 		if (message != NULL) {
 			dialog = nautilus_error_dialog_with_details
 				(message, detailed_message, NULL);
 			gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
 					    gtk_main_quit, NULL);
-			return;
+			goto out;
 		}
-#if 0
 	}
-#endif
-
-	CORBA_exception_init (&ev);
-
-	/* FIXME: This is a temporary hack so we can use the CORBA
-         * interface even though I can't get activation to work.
-	 */
-	shell = CORBA_Object_duplicate (bonobo_object_corba_objref (BONOBO_OBJECT (nautilus_shell_new (application))), &ev);
 
 	/* Set up the desktop. */
 	if (manage_desktop) {
@@ -408,6 +403,7 @@ nautilus_application_startup (NautilusApplication *application,
 	Nautilus_Shell_unref (shell, &ev);
 	CORBA_Object_release (shell, &ev);
 
+ out:
 	CORBA_exception_free (&ev);
 }
 
@@ -416,7 +412,7 @@ nautilus_application_destroy_window (GtkObject *obj, NautilusApplication *applic
 {
 	application->windows = g_slist_remove (application->windows, obj);
 	if (application->windows == NULL) {
-  		nautilus_application_quit();
+  		nautilus_application_quit ();
 	}
 }
 
